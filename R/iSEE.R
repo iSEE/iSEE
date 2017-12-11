@@ -110,16 +110,18 @@ iSEE <- function(
   iSEE_server <- function(input, output) {
 
     # storage for all the reactive objects
-    rObjects <- reactiveValues()
+    rObjects <- reactiveValues(
+        se = NULL
+    )
 
-    rObjects$sce <- as(se, "SingleCellExperiment")
+    if (!is.null(se)){ rObjects$sce <- as(se, "SingleCellExperiment") }
 
     # info boxes, to keep on top of the page  on the left side?
 
     output$box_sce_obj <- renderUI({
       if(!is.null(rObjects$sce)){
         return(valueBox(
-          "SingleCellExperiment object",
+          "SCE Object",
           sprintf(
             "%i genes - %i samples",
             nrow(rObjects$sce),
@@ -131,7 +133,7 @@ iSEE <- function(
         ))
       } else {
         return(valueBox(
-          "dds object",
+          "SCE Object",
           "yet to create",
           icon = icon("list"),
           color = "red",width = NULL

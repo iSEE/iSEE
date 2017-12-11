@@ -1,21 +1,50 @@
-Package: SummarizedExplorer
+Package: iSEE
+Title: interactive SingleCell/Summarized Experiment Explorer
 Version: 0.98.0
 Date: 2017-12-06
-Title: Summarized Experiment Explorer
 Authors@R: c(person("Charlotte", "Soneson", role=c("aut", "cre"),
-        email="charlotte.soneson@uzh.ch"), person("Aaron", "Lun", 
-        role="ctb", "alun@wehi.edu.au"))
-Depends: R (>= 3.5), SummarizedExperiment, SingleCellExperiment
-Imports: S4Vectors, methods, BiocGenerics, utils
-Suggests: testthat, BiocStyle, knitr
-biocViews: Visualization, GUI, DimensionReduction, 
-        FeatureExtraction, Clustering, Transcription, 
-        GeneExpression, Transcriptomics, SingleCell
+    email="charlotte.soneson@uzh.ch"), person("Aaron", "Lun", 
+    role="ctb", email="alun@wehi.edu.au"), person("Federico",
+    "Marini",role="aut", email="marinif@uni-mainz.de"), 
+    person("Kevin", "Rue-Albrecht", role = "aut",
+    email = "kevin.rue-albrecht@kennedy.ox.ac.uk"))
+Maintainer: John/Jane Doe <tobeclarified@who.does.it>
 Description: Provides functions for creating an interactive 
-        Shiny-based graphical user interface for exploring data 
-        stored in SummarizedExperiment objects, including row- and
-        column-level metadata. Particular attencion is given to 
-        single-cell data in a SingleCellExperiment object with 
-        visualization of dimensionality reduction results.
-License: GPL-3
+    Shiny-based graphical user interface for exploring data 
+    stored in SummarizedExperiment objects, including row- and
+    column-level metadata. Particular attencion is given to 
+    single-cell data in a SingleCellExperiment object with 
+    visualization of dimensionality reduction results.
+Depends: 
+    R (>= 3.5),
+    SummarizedExperiment, 
+    SingleCellExperiment
+Imports: 
+    S4Vectors, 
+    methods,
+    BiocGenerics, 
+    utils,
+    shiny,
+    shinydashboard,
+    shinyBS,
+    rintrojs,
+    ggplot2,
+    DT,
+    ggrepel,
+    viridis,
+    scater
+Suggests: 
+    testthat,
+    BiocStyle,
+    knitr,
+    rmarkdown,
+    scRNAseq,
+    Rtsne
+URL: https://github.com/csoneson/SEE
+BugReports: https://github.com/csoneson/SEE/issues
+biocViews: Visualization, GUI, DimensionReduction, 
+    FeatureExtraction, Clustering, Transcription, 
+    GeneExpression, Transcriptomics, SingleCell
+License: MIT + file LICENSE
 VignetteBuilder: knitr
+RoxygenNote: 6.0.1

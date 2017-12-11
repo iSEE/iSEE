@@ -1,4 +1,6 @@
-# SummarizedExplorer
+[![Travis build status](https://travis-ci.org/csoneson/SEE.svg?branch=master)](https://travis-ci.org/csoneson/SEE)
+
+# iSEE/SummarizedExplorer
 
 ## Overview
 

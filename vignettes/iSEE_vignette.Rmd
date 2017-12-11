@@ -1,0 +1,71 @@
+---
+title: "iSEE User's Guide"
+author:
+- name: Federico Marini
+  affiliation: 
+  - &id1 Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz
+  - Center for Thrombosis and Hemostasis (CTH), Mainz
+  email: marinif@uni-mainz.de
+- name: Aaron Lun
+  affiliation: 
+  - &id2 Aaron's full
+  email:
+- name: Charlotte Soneson
+  affiliation: 
+  - &id3 Charlotte's full
+  email:
+- name: Kevin Rue-Albrecht
+  affiliation: 
+  - &id4 Kev's full
+  email:
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('iSEE')`"
+abstract: >
+  Abstract for iSEE
+output: 
+  BiocStyle::html_document:
+    toc_float: true
+vignette: >
+  %\VignetteIndexEntry{iSEE User's Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}  
+  %\VignettePackage{iSEE}
+  %\VignetteKeywords{GeneExpression, RNASeq, Sequencing, Visualization, QualityControl, GUI}
+---
+<!-- as biocviews: -->
+<!-- Visualization, GUI, DimensionReduction,  -->
+<!--         FeatureExtraction, Clustering, Transcription,  -->
+<!--         GeneExpression, Transcriptomics, SingleCell -->
+
+<!-- **Package**: `r Rpackage("iSEE")` -->
+
+<!-- **Authors**: `r packageDescription("iSEE")[["Author"]]` -->
+
+<!-- **Version**: `r packageDescription("iSEE")$Version` -->
+
+**Compiled date**: `r Sys.Date()`
+
+**Last edited**: 2017-12-08
+
+**License**: `r packageDescription("iSEE")[["License"]]`
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Getting started
+
+<!-- logo? -->
+
+`r Biocpkg("iSEE")` is an R package distributed as part of the [Bioconductor](http://bioconductor.org) project. To install the package, start R and enter:
+
+```{r installation, eval=FALSE}
+source("http://bioconductor.org/biocLite.R")
+biocLite("iSEE")
+```
+
+
+

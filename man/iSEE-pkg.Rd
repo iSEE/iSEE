@@ -6,10 +6,7 @@
 \alias{iSEE-pkg-package}
 \title{iSEE: interactive SingleCell/Summarized Experiment Explorer}
 \description{
-iSEE does this
-}
-\details{
-iSEE does that
+iSEE does this (description)
 }
 \author{
 Aaron Lun \email{alun@wehi.edu.au}

@@ -19,27 +19,19 @@ Depends:
     R (>= 3.5),
     SummarizedExperiment, 
     SingleCellExperiment
-Imports: 
-    S4Vectors, 
+Imports:
     methods,
     BiocGenerics, 
     utils,
     shiny,
     shinydashboard,
-    shinyBS,
-    rintrojs,
-    ggplot2,
-    DT,
-    ggrepel,
-    viridis,
-    scater
+    rintrojs
 Suggests: 
     testthat,
     BiocStyle,
     knitr,
     rmarkdown,
-    scRNAseq,
-    Rtsne
+    scRNAseq
 URL: https://github.com/csoneson/SEE
 BugReports: https://github.com/csoneson/SEE/issues
 biocViews: Visualization, GUI, DimensionReduction, 

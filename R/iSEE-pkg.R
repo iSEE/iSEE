@@ -1,26 +1,18 @@
 #' iSEE: interactive SingleCell/Summarized Experiment Explorer
 #'
-#' iSEE does this
-#'
-#' iSEE does that
+#' iSEE does this (description)
 #'
 #' @import SingleCellExperiment
 #' @import SummarizedExperiment
-#' @import S4Vectors
-#' @import methods
-#' @import BiocGenerics
-#' @import utils
-#' @import shiny
-#' @import shinydashboard
-#' @import shinyBS
-#' @import rintrojs
-#' @import ggplot2
-#' @import DT
-#' @import ggrepel
-#' @import viridis
-#'
-#'
-#'
+#' @importMethodsFrom BiocGenerics ncol nrow
+#' @importFrom methods as
+#' @importFrom rintrojs introjsUI
+#' @importFrom shiny actionButton fluidRow icon reactiveValues renderUI
+#' shinyApp tabPanel HTML br h1 h2
+#' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
+#' dashboardSidebar menuItem tabBox valueBox valueBoxOutput
+#' @importFrom utils packageVersion
+#' @importFrom shiny tags
 #'
 #' @author Aaron Lun \email{alun@@wehi.edu.au}
 #' @author Charlotte Soneson \email{charlotte.soneson@@uzh.ch}

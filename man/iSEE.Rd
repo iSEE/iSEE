@@ -28,5 +28,5 @@ class(allen)
 sce <- as(allen, "SingleCellExperiment")
 sce
 # launch the app itself
-# iSEE(sce)
+if (!interactive()) { iSEE(sce) }
 }

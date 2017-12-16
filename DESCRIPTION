@@ -25,7 +25,8 @@ Imports:
     utils,
     shiny,
     shinydashboard,
-    rintrojs
+    rintrojs, 
+    ggplot2
 Suggests: 
     testthat,
     BiocStyle,

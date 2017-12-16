@@ -4,7 +4,7 @@
 \alias{iSEE}
 \title{iSEE: interactive SingleCell/Summarized Experiment Explorer}
 \usage{
-iSEE(se = NULL)
+iSEE(se)
 }
 \arguments{
 \item{se}{somethingaboutit}
@@ -21,12 +21,17 @@ iSEE does this
 and does that in detail
 }
 \examples{
-library(SingleCellExperiment)
 library(scRNAseq)
 data(allen)
 class(allen)
+
+library(scater)
 sce <- as(allen, "SingleCellExperiment")
+counts(sce) <- assay(sce, "tophat_counts")
+sce <- normalize(sce)
+sce <- runPCA(sce)
 sce
+
 # launch the app itself
 if (interactive()) { iSEE(sce) }
 }

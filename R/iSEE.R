@@ -14,21 +14,30 @@
 #' @export
 #'
 #' @examples
-#' library(SingleCellExperiment)
 #' library(scRNAseq)
 #' data(allen)
 #' class(allen)
+#'
+#' library(scater)
 #' sce <- as(allen, "SingleCellExperiment")
+#' counts(sce) <- assay(sce, "tophat_counts")
+#' sce <- normalize(sce)
+#' sce <- runPCA(sce)
 #' sce
+#'
 #' # launch the app itself
 #' if (interactive()) { iSEE(sce) }
 iSEE <- function(
-  se = NULL
+  se 
 ) {
-
+  
+  cell.data <- colData(se)
+  covariates <- colnames(cell.data)
+  red.dim <- reducedDim(se)
+  plot.data <- data.frame(Dim1=red.dim[,1], Dim2=red.dim[,2])
+  
   # general options:
-
-
+  max_plots <- 5
 
   ########## ui definition ##########
 
@@ -51,7 +60,6 @@ iSEE <- function(
                actionButton("btn", "Click me for a quick tour", icon("info"),
                             style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4")
       )
-
     ), # end of dashboardSidebar
     dashboardBody(
       introjsUI(),
@@ -78,10 +86,11 @@ iSEE <- function(
         width=12,
 
 
-        tabPanel(title = "Welcome!",  icon = icon("home"), value="tab-welcome",
-                 h2("Content!")
-                 # , content will go here!
-                 ),
+        tabPanel(title = "Reduced dimension scatter plots",  icon = icon("home"), value="tab-welcome",
+                uiOutput("redDimPlots"),
+                selectInput("colorBy", label = "Color by", choices=covariates, selected=covariates[1]),
+                sliderInput("n", "Number of plots", value=1, min=1, max=max_plots)
+                ),
 
         tabPanel(title = "t2!",  icon = icon("calendar"), value="tab-t2",
                  h2("Content t2!")
@@ -102,7 +111,6 @@ iSEE <- function(
     ), # end of dashboardBody
   skin = "blue"
   )
-
 
 
   ########## server definition ##########
@@ -141,10 +149,36 @@ iSEE <- function(
       }
     }) # end of output$box_sce_obj
 
+    # Multiple scatterplots colored by covariates,
+    # nicked from https://stackoverflow.com/questions/15875786/dynamically-add-plots-to-web-page-using-shiny.
+    output$redDimPlots <- renderUI({
+        plot_output_list <- lapply(1:input$n, function(i) {
+                                   plotname <- paste0("redDimPlot", i)
+                                   plotOutput(plotname, height = 280, width = 250)
+        })
 
+        # Convert the list to a tagList - this is necessary for the list of items
+        # to display properly.
+        do.call(tagList, plot_output_list)
+    })
 
+    for (i in seq_len(max_plots)) {
+        # Need local so that each item gets its own number. Without it, the value
+        # of i in the renderPlot() will be the same across all instances, because
+        # of when the expression is evaluated.
+        local({
+            my_i <- i
+            plotname <- paste("redDimPlot", my_i, sep="")
+            output[[plotname]] <- renderPlot({
+                plot.data.copy <- data.frame(plot.data, Covariate=cell.data[,input$colorBy])
+                ggplot(plot.data.copy, aes_string(x="Dim1", y="Dim2", color="Covariate")) +
+                    geom_point(size=1.5) +
+                    labs(color=input$colorBy) +
+                    theme_void()
+            })
+        })
+    }
   }
-
 
   ########## launch app ##########
 

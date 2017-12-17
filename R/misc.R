@@ -6,7 +6,9 @@ iSEE_footer <- function(){
       class = "foot-inner",
       list(
         # hr(),
-        "iSEE is a project developed by Aaron Lun, Charlotte Soneson, Federico Marini and
+        "iSEE is a project developed by 
+        Aaron Lun (CRUK Cambridge Institute, University of Cambridge),
+        Charlotte Soneson, Federico Marini and
         Kevin Rue-Albrecht
         in the Bioinformatics division of the ",
         tags$a(href="http://www.unimedizin-mainz.de/imbei","IMBEI"),

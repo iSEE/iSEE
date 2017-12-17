@@ -28,16 +28,27 @@
 #' # launch the app itself
 #' if (interactive()) { iSEE(sce) }
 iSEE <- function(
-  se 
+  se
 ) {
   
   cell.data <- colData(se)
   covariates <- colnames(cell.data)
   red.dim <- reducedDim(se)
   red.dim.names <- reducedDimNames(se)
-  
-  # general options:
+  gene.names <- rownames(se)
+
+  # Setting up initial reduced dim plot parameters.
   max_plots <- 5
+  reddim_plot_param <- data.frame(Active=FALSE,
+                             Type=rep(red.dim.names[1], max_plots),
+                             Dim1=1, Dim2=2,
+                             ColorBy="Column data",
+                             ColData=covariates[1],
+                             GeneExprs=gene.names[1], 
+                             stringsAsFactors=FALSE)
+  reddim_plot_param$Active[1] <- TRUE
+ 
+  # general options:
 
   ########## ui definition ##########
 
@@ -88,7 +99,6 @@ iSEE <- function(
 
         tabPanel(title = "Reduced dimension scatter plots",  icon = icon("home"), value="tab-welcome",
                 uiOutput("redDimPlots"),
-                selectInput("colorBy", label = "Color by", choices=covariates, selected=covariates[1]),
                 actionButton("addRedDimPlot", "New plot")
                 ),
 
@@ -101,9 +111,6 @@ iSEE <- function(
                  h2("Content t3!")
                  # , content will go here!
                  )
-
-
-
       ),
 
       iSEE_footer()
@@ -119,7 +126,8 @@ iSEE <- function(
 
     # storage for all the reactive objects
     rObjects <- reactiveValues(
-        active_plots = 1,                   
+        reddim_active_plots = 1,                               
+        reddim_plot_param = reddim_plot_param,                   
         se = NULL
     )
 
@@ -150,18 +158,29 @@ iSEE <- function(
       }
     }) # end of output$box_sce_obj
 
+#######################################################################
+# Reduced dimension scatter plot section.
+#######################################################################
+
     # Multiple scatterplots colored by covariates,
     # nicked from https://stackoverflow.com/questions/15875786/dynamically-add-plots-to-web-page-using-shiny.
     output$redDimPlots <- renderUI({
-        plot_output_list <- lapply(rObjects$active_plots, function(i) {
+        plot_output_list <- lapply(rObjects$reddim_active_plots, function(i) {
+            param_choices <- rObjects$reddim_plot_param[i,]                                   
             fluidRow(
                 column(6, plotOutput(paste0("redDimPlot", i))),
-                column(4, 
-                    selectInput(paste0("redDimType", i), label="Type", choices=red.dim.names, selected=red.dim.names[1]),
-                    textInput(paste0("redDimChoice", i, "_1"), label="Dimension 1", value=1),
-                    textInput(paste0("redDimChoice", i, "_2"), label="Dimension 2", value=2),
+                column(3, 
+                    selectInput(paste0("redDimType", i), label="Type", choices=red.dim.names, selected=param_choices$Type),
+                    textInput(paste0("redDimChoice", i, "_1"), label="Dimension 1", value=param_choices$Dim1),
+                    textInput(paste0("redDimChoice", i, "_2"), label="Dimension 2", value=param_choices$Dim2),
                     actionButton(paste0("removeRedDimPlot", i), "Remove plot")
-                    )
+                    ),
+                column(3, 
+                    radioButtons(paste0("redDimColorBy", i), label="Color by:", inline=TRUE, 
+                        choices=c("Column data", "Gene expression"), selected=param_choices$ColorBy),
+                    selectInput(paste0("redDimColDataColorBy", i), label = "Column data:", choices=covariates, selected=param_choices$ColData),
+                    textInput(paste0("redDimGeneExprsColorBy", i), label = "Gene expression:", value=param_choices$GeneExprs)
+                    )   
                 )
         })
 
@@ -170,20 +189,71 @@ iSEE <- function(
         do.call(tagList, plot_output_list)
     })
 
+    # Plot addition and removal, as well as parameter setting.
+    observeEvent(input$addRedDimPlot, {
+        first.missing <- setdiff(seq_len(max_plots), rObjects$reddim_active_plots)
+        rObjects$reddim_active_plots <- c(rObjects$reddim_active_plots, first.missing[1])             
+    })
+
+    for (i in seq_len(max_plots)) {
+        local({
+            i0 <- i
+            observeEvent(input[[paste0("removeRedDimPlot", i0)]], {
+                rObjects$reddim_active_plots <- setdiff(rObjects$reddim_active_plots, i0)
+            })
+
+            typename <- paste0("redDimType", i0)
+            observeEvent(input[[typename]], {
+                rObjects$reddim_plot_param$Type[i0] <- input[[typename]]
+            })
+
+            dim1name <- paste0("redDimChoice", i0, "_1")
+            observeEvent(input[[dim1name]], {
+                rObjects$reddim_plot_param$Dim1[i0] <- as.integer(input[[dim1name]])
+            })
+
+            dim2name <- paste0("redDimChoice", i0, "_2")
+            observeEvent(input[[dim2name]], {
+                rObjects$reddim_plot_param$Dim2[i0] <- as.integer(input[[dim2name]])
+            })
+
+            colorbytype <- paste0("redDimColorBy", i0)
+            observeEvent(input[[colorbytype]], {
+                rObjects$reddim_plot_param$ColorBy[i0] <- input[[colorbytype]]
+            })
+
+            colorbycol <- paste0("redDimColDataColorBy", i0)
+            observeEvent(input[[colorbycol]], {
+                rObjects$reddim_plot_param$ColData[i0] <- input[[colorbycol]]
+            })
+
+            colorbygene <- paste0("redDimGeneExprsColorBy", i0)
+            observeEvent(input[[colorbygene]], {
+                rObjects$reddim_plot_param$GeneExprs[i0] <- input[[colorbygene]]
+            })
+        })
+    }
+
     for (i in seq_len(max_plots)) {
         # Need local so that each item gets its own number. Without it, the value
         # of i in the renderPlot() will be the same across all instances, because
         # of when the expression is evaluated.
         local({
-            plotname <- paste0("redDimPlot", i)
-            typename <- paste0("redDimType", i)
-            dim1name <- paste0("redDimChoice", i, "_1")
-            dim2name <- paste0("redDimChoice", i, "_2")
+            i0 <- i
+            plotname <- paste0("redDimPlot", i0)
             output[[plotname]] <- renderPlot({
-                red.dim <- reducedDim(se, input[[typename]])
-                plot.data <- data.frame(Dim1=red.dim[,as.integer(input[[dim1name]])], 
-                                        Dim2=red.dim[,as.integer(input[[dim2name]])], 
-                                        Covariate=cell.data[,input$colorBy])
+                param_choices <- rObjects$reddim_plot_param[i0,]
+                red.dim <- reducedDim(se, param_choices$Type)
+                
+                if (param_choices$ColorBy=="Column data") { 
+                    covariate <- cell.data[,param_choices$ColData]
+                } else {
+                    covariate <- logcounts(se)[param_choices$GeneExprs,]
+                }
+
+                plot.data <- data.frame(Dim1=red.dim[,param_choices$Dim1], 
+                                        Dim2=red.dim[,param_choices$Dim2], 
+                                        Covariate=covariate)
                 ggplot(plot.data, aes_string(x="Dim1", y="Dim2", color="Covariate")) +
                     geom_point(size=1.5) +
                     labs(color=input$colorBy) +
@@ -192,23 +262,11 @@ iSEE <- function(
         })
     }
 
-    # Plot addition and removal.
-    observeEvent(input$addRedDimPlot, {
-        first.missing <- setdiff(seq_len(max_plots), rObjects$active_plots)
-        rObjects$active_plots <- c(rObjects$active_plots, first.missing[1])             
-    })
-
-    for (i in seq_len(max_plots)) {
-        local({
-            my_i <- i
-            observeEvent(input[[paste0("removeRedDimPlot", my_i)]], {
-                rObjects$active_plots <- setdiff(rObjects$active_plots, my_i)
-            })
-        })
-    }
   }
 
-  ########## launch app ##########
+#######################################################################
+# Launching the app.
+#######################################################################
 
   shinyApp(ui = iSEE_ui, server = iSEE_server)
 }

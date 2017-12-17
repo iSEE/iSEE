@@ -28,26 +28,36 @@
 #' # launch the app itself
 #' if (interactive()) { iSEE(sce) }
 iSEE <- function(
-  se 
+  se
 ) {
-  
+
   cell.data <- colData(se)
   covariates <- colnames(cell.data)
   # attempt to find "categorical" covariates useful for e.g. violin plots.
   # Remove covariates with only one value, and those with too many unique
   # values.
-  covariatescat <- 
+  covariates.cat <- 
     colnames(cell.data)[apply(cell.data, 2, 
                               function(w) length(unique(w)) <= 0.5 * length(w) & 
                                 length(unique(w)) > 1)]
   red.dim <- reducedDim(se)
   red.dim.names <- reducedDimNames(se)
-  allassays <- names(assays(se))
-  allgenes <- unique(unlist(lapply(assays(se), function(x) rownames(x))))
-  
-  # general options:
-  max_plots <- 5
+  all.assays <- names(assays(se))
+  gene.names <- rownames(se)
 
+  # Setting up initial reduced dim plot parameters.
+  max_plots <- 5
+  reddim_plot_param <- data.frame(Active=FALSE,
+                                  Type=rep(red.dim.names[1], max_plots),
+                                  Dim1=1, Dim2=2,
+                                  ColorBy="Column data",
+                                  ColData=covariates[1],
+                                  GeneExprs=gene.names[1],
+                                  stringsAsFactors=FALSE)
+  reddim_plot_param$Active[1] <- TRUE
+
+  # general options:
+  
   ########## ui definition ##########
 
   iSEE_ui <- dashboardPage(
@@ -97,23 +107,22 @@ iSEE <- function(
 
         tabPanel(title = "Reduced dimension scatter plots",  icon = icon("home"), value="tab-welcome",
                 uiOutput("redDimPlots"),
-                selectInput("colorBy", label = "Color by", choices=covariates, selected=covariates[1]),
                 actionButton("addRedDimPlot", "New plot")
                 ),
 
         tabPanel(title = "Inidividual gene expression",  icon = icon("flash"), value="tab-violin",
                  fluidRow(
                    column(4, selectInput("violinvalues", label = "Type of values", 
-                                         choices = allassays, 
-                                         selected = ifelse("logcounts" %in% allassays, 
-                                                           "logcounts", allassays[1]))),
+                                         choices = all.assays, 
+                                         selected = ifelse("logcounts" %in% all.assays, 
+                                                           "logcounts", all.assays[1]))),
                    column(4, selectInput("violingenes", label = "Gene",
-                                         choices = allgenes, 
-                                         selected = allgenes[1], multiple = TRUE, 
+                                         choices = gene.names, 
+                                         selected = gene.names[1], multiple = TRUE, 
                                          selectize = TRUE)),
                    column(4, selectInput("violinX", label = "Group by", 
-                                         choices = covariatescat,
-                                         selected = covariatescat[1]))
+                                         choices = covariates.cat,
+                                         selected = covariates.cat[1]))
                  ), # end of fluidRow
                  plotOutput("violinPlot")
                  # , content will go here!
@@ -128,9 +137,6 @@ iSEE <- function(
                  h2("Content t3!")
                  # , content will go here!
                  )
-
-
-
       ),
 
       iSEE_footer()
@@ -146,9 +152,14 @@ iSEE <- function(
 
     # storage for all the reactive objects
     rObjects <- reactiveValues(
-        active_plots = 1,                   
+        reddim_active_plots = 1,
         se = NULL
     )
+
+    # storage for other persistent objects
+    pObjects <- new.env()
+    pObjects$reddim_plot_param <- reddim_plot_param
+
 
     if (!is.null(se)){ rObjects$sce <- as(se, "SingleCellExperiment") }
 
@@ -177,17 +188,28 @@ iSEE <- function(
       }
     }) # end of output$box_sce_obj
 
+#######################################################################
+# Reduced dimension scatter plot section.
+#######################################################################
+
     # Multiple scatterplots colored by covariates,
     # nicked from https://stackoverflow.com/questions/15875786/dynamically-add-plots-to-web-page-using-shiny.
     output$redDimPlots <- renderUI({
-        plot_output_list <- lapply(rObjects$active_plots, function(i) {
+        plot_output_list <- lapply(rObjects$reddim_active_plots, function(i) {
+            param_choices <- pObjects$reddim_plot_param[i,]
             fluidRow(
                 column(6, plotOutput(paste0("redDimPlot", i))),
-                column(4, 
-                    selectInput(paste0("redDimType", i), label="Type", choices=red.dim.names, selected=red.dim.names[1]),
-                    textInput(paste0("redDimChoice", i, "_1"), label="Dimension 1", value=1),
-                    textInput(paste0("redDimChoice", i, "_2"), label="Dimension 2", value=2),
+                column(3,
+                    selectInput(paste0("redDimType", i), label="Type", choices=red.dim.names, selected=param_choices$Type),
+                    textInput(paste0("redDimChoice", i, "_1"), label="Dimension 1", value=param_choices$Dim1),
+                    textInput(paste0("redDimChoice", i, "_2"), label="Dimension 2", value=param_choices$Dim2),
                     actionButton(paste0("removeRedDimPlot", i), "Remove plot")
+                    ),
+                column(3,
+                    radioButtons(paste0("redDimColorBy", i), label="Color by:", inline=TRUE,
+                        choices=c("Column data", "Gene expression"), selected=param_choices$ColorBy),
+                    selectInput(paste0("redDimColDataColorBy", i), label = "Column data:", choices=covariates, selected=param_choices$ColData),
+                    textInput(paste0("redDimGeneExprsColorBy", i), label = "Gene expression:", value=param_choices$GeneExprs)
                     )
                 )
         })
@@ -197,20 +219,55 @@ iSEE <- function(
         do.call(tagList, plot_output_list)
     })
 
+    # Plot addition and removal, as well as parameter setting.
+    observeEvent(input$addRedDimPlot, {
+        first.missing <- setdiff(seq_len(max_plots), rObjects$reddim_active_plots)
+        rObjects$reddim_active_plots <- c(rObjects$reddim_active_plots, first.missing[1])
+    })
+
+    for (i in seq_len(max_plots)) {
+        local({
+            i0 <- i
+            observeEvent(input[[paste0("removeRedDimPlot", i0)]], {
+                rObjects$reddim_active_plots <- setdiff(rObjects$reddim_active_plots, i0)
+            })
+        })
+    }
+
     for (i in seq_len(max_plots)) {
         # Need local so that each item gets its own number. Without it, the value
         # of i in the renderPlot() will be the same across all instances, because
         # of when the expression is evaluated.
         local({
-            plotname <- paste0("redDimPlot", i)
-            typename <- paste0("redDimType", i)
-            dim1name <- paste0("redDimChoice", i, "_1")
-            dim2name <- paste0("redDimChoice", i, "_2")
+            i0 <- i
+            plotname <- paste0("redDimPlot", i0)
+            typename <- paste0("redDimType", i0)
+            dim1name <- paste0("redDimChoice", i0, "_1")
+            dim2name <- paste0("redDimChoice", i0, "_2")
+            colorbytype <- paste0("redDimColorBy", i0)
+            colorbycol <- paste0("redDimColDataColorBy", i0)
+            colorbygene <- paste0("redDimGeneExprsColorBy", i0)
+
             output[[plotname]] <- renderPlot({
-                red.dim <- reducedDim(se, input[[typename]])
-                plot.data <- data.frame(Dim1=red.dim[,as.integer(input[[dim1name]])], 
-                                        Dim2=red.dim[,as.integer(input[[dim2name]])], 
-                                        Covariate=cell.data[,input$colorBy])
+                # Updating parameters.
+                pObjects$reddim_plot_param$Type[i0] <- input[[typename]]
+                pObjects$reddim_plot_param$Dim1[i0] <- as.integer(input[[dim1name]])
+                pObjects$reddim_plot_param$Dim2[i0] <- as.integer(input[[dim2name]])
+                pObjects$reddim_plot_param$ColorBy[i0] <- input[[colorbytype]]
+                pObjects$reddim_plot_param$ColData[i0] <- input[[colorbycol]]
+                pObjects$reddim_plot_param$GeneExprs[i0] <- input[[colorbygene]]
+
+                param_choices <- pObjects$reddim_plot_param[i0,]
+                red.dim <- reducedDim(se, param_choices$Type)
+                if (param_choices$ColorBy=="Column data") {
+                    covariate <- cell.data[,param_choices$ColData]
+                } else {
+                    covariate <- logcounts(se)[param_choices$GeneExprs,]
+                }
+
+                plot.data <- data.frame(Dim1=red.dim[,param_choices$Dim1],
+                                        Dim2=red.dim[,param_choices$Dim2],
+                                        Covariate=covariate)
                 ggplot(plot.data, aes_string(x="Dim1", y="Dim2", color="Covariate")) +
                     geom_point(size=1.5) +
                     labs(color=input$colorBy) +
@@ -250,7 +307,9 @@ iSEE <- function(
     
   } # end of iSEE_server
 
-  ########## launch app ##########
+#######################################################################
+# Launching the app.
+#######################################################################
 
   shinyApp(ui = iSEE_ui, server = iSEE_server)
 }

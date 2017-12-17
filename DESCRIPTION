@@ -15,7 +15,7 @@ Description: Provides functions for creating an interactive
     column-level metadata. Particular attencion is given to 
     single-cell data in a SingleCellExperiment object with 
     visualization of dimensionality reduction results.
-Depends: 
+Depends:
     R (>= 3.5),
     SummarizedExperiment, 
     SingleCellExperiment
@@ -26,8 +26,12 @@ Imports:
     shiny,
     shinydashboard,
     rintrojs, 
-    ggplot2
-Suggests: 
+    ggplot2,
+    tibble,
+    dplyr,
+    tidyr,
+    reshape2
+Suggests:
     testthat,
     BiocStyle,
     knitr,

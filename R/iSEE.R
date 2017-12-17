@@ -33,23 +33,31 @@ iSEE <- function(
 
   cell.data <- colData(se)
   covariates <- colnames(cell.data)
+  # attempt to find "categorical" covariates useful for e.g. violin plots.
+  # Remove covariates with only one value, and those with too many unique
+  # values.
+  covariates.cat <- 
+    colnames(cell.data)[apply(cell.data, 2, 
+                              function(w) length(unique(w)) <= 0.5 * length(w) & 
+                                length(unique(w)) > 1)]
   red.dim <- reducedDim(se)
   red.dim.names <- reducedDimNames(se)
+  all.assays <- names(assays(se))
   gene.names <- rownames(se)
 
   # Setting up initial reduced dim plot parameters.
   max_plots <- 5
   reddim_plot_param <- data.frame(Active=FALSE,
-                             Type=rep(red.dim.names[1], max_plots),
-                             Dim1=1, Dim2=2,
-                             ColorBy="Column data",
-                             ColData=covariates[1],
-                             GeneExprs=gene.names[1],
-                             stringsAsFactors=FALSE)
+                                  Type=rep(red.dim.names[1], max_plots),
+                                  Dim1=1, Dim2=2,
+                                  ColorBy="Column data",
+                                  ColData=covariates[1],
+                                  GeneExprs=gene.names[1],
+                                  stringsAsFactors=FALSE)
   reddim_plot_param$Active[1] <- TRUE
 
   # general options:
-
+  
   ########## ui definition ##########
 
   iSEE_ui <- dashboardPage(
@@ -102,6 +110,24 @@ iSEE <- function(
                 actionButton("addRedDimPlot", "New plot")
                 ),
 
+        tabPanel(title = "Inidividual gene expression",  icon = icon("flash"), value="tab-violin",
+                 fluidRow(
+                   column(4, selectInput("violinvalues", label = "Type of values", 
+                                         choices = all.assays, 
+                                         selected = ifelse("logcounts" %in% all.assays, 
+                                                           "logcounts", all.assays[1]))),
+                   column(4, selectInput("violingenes", label = "Gene",
+                                         choices = gene.names, 
+                                         selected = gene.names[1], multiple = TRUE, 
+                                         selectize = TRUE)),
+                   column(4, selectInput("violinX", label = "Group by", 
+                                         choices = covariates.cat,
+                                         selected = covariates.cat[1]))
+                 ), # end of fluidRow
+                 plotOutput("violinPlot")
+                 # , content will go here!
+        ),
+        
         tabPanel(title = "t2!",  icon = icon("calendar"), value="tab-t2",
                  h2("Content t2!")
                  # , content will go here!
@@ -250,7 +276,36 @@ iSEE <- function(
         })
     }
 
-  }
+    # Plot addition and removal.
+    observeEvent(input$addRedDimPlot, {
+        first.missing <- setdiff(seq_len(max_plots), rObjects$active_plots)
+        rObjects$active_plots <- c(rObjects$active_plots, first.missing[1])             
+    })
+
+    for (i in seq_len(max_plots)) {
+        local({
+            my_i <- i
+            observeEvent(input[[paste0("removeRedDimPlot", my_i)]], {
+                rObjects$active_plots <- setdiff(rObjects$active_plots, my_i)
+            })
+        })
+    }
+    
+    # Violin plot of one or more genes
+    output$violinPlot <- renderPlot({
+      if (!all(input$violingenes == "")) {
+        violin.data <- as.data.frame(assays(se)[[input$violinvalues]][input$violingenes, , 
+                                                                      drop = FALSE]) %>%
+          tibble::rownames_to_column("gene") %>% 
+          reshape2::melt() %>%
+          dplyr::left_join(as.data.frame(cell.data) %>% tibble::rownames_to_column("variable"))
+        ggplot(violin.data, aes_string(x=input$violinX, y="value", fill = input$violinX)) + 
+          geom_violin() + theme_bw() + facet_wrap(~ gene, scales = "free_y") + 
+          ylab(input$violinvalues)
+      }
+    }) # end of output$violinPlot
+    
+  } # end of iSEE_server
 
 #######################################################################
 # Launching the app.

@@ -34,7 +34,7 @@ iSEE <- function(
   cell.data <- colData(se)
   covariates <- colnames(cell.data)
   red.dim <- reducedDim(se)
-  plot.data <- data.frame(Dim1=red.dim[,1], Dim2=red.dim[,2])
+  red.dim.names <- reducedDimNames(se)
   
   # general options:
   max_plots <- 5
@@ -89,7 +89,7 @@ iSEE <- function(
         tabPanel(title = "Reduced dimension scatter plots",  icon = icon("home"), value="tab-welcome",
                 uiOutput("redDimPlots"),
                 selectInput("colorBy", label = "Color by", choices=covariates, selected=covariates[1]),
-                sliderInput("n", "Number of plots", value=1, min=1, max=max_plots)
+                actionButton("addRedDimPlot", "New plot")
                 ),
 
         tabPanel(title = "t2!",  icon = icon("calendar"), value="tab-t2",
@@ -119,6 +119,7 @@ iSEE <- function(
 
     # storage for all the reactive objects
     rObjects <- reactiveValues(
+        active_plots = 1,                   
         se = NULL
     )
 
@@ -152,9 +153,16 @@ iSEE <- function(
     # Multiple scatterplots colored by covariates,
     # nicked from https://stackoverflow.com/questions/15875786/dynamically-add-plots-to-web-page-using-shiny.
     output$redDimPlots <- renderUI({
-        plot_output_list <- lapply(1:input$n, function(i) {
-                                   plotname <- paste0("redDimPlot", i)
-                                   plotOutput(plotname, height = 280, width = 250)
+        plot_output_list <- lapply(rObjects$active_plots, function(i) {
+            fluidRow(
+                column(6, plotOutput(paste0("redDimPlot", i))),
+                column(4, 
+                    selectInput(paste0("redDimType", i), label="Type", choices=red.dim.names, selected=red.dim.names[1]),
+                    textInput(paste0("redDimChoice", i, "_1"), label="Dimension 1", value=1),
+                    textInput(paste0("redDimChoice", i, "_2"), label="Dimension 2", value=2),
+                    actionButton(paste0("removeRedDimPlot", i), "Remove plot")
+                    )
+                )
         })
 
         # Convert the list to a tagList - this is necessary for the list of items
@@ -167,14 +175,35 @@ iSEE <- function(
         # of i in the renderPlot() will be the same across all instances, because
         # of when the expression is evaluated.
         local({
-            my_i <- i
-            plotname <- paste("redDimPlot", my_i, sep="")
+            plotname <- paste0("redDimPlot", i)
+            typename <- paste0("redDimType", i)
+            dim1name <- paste0("redDimChoice", i, "_1")
+            dim2name <- paste0("redDimChoice", i, "_2")
             output[[plotname]] <- renderPlot({
-                plot.data.copy <- data.frame(plot.data, Covariate=cell.data[,input$colorBy])
-                ggplot(plot.data.copy, aes_string(x="Dim1", y="Dim2", color="Covariate")) +
+                red.dim <- reducedDim(se, input[[typename]])
+                plot.data <- data.frame(Dim1=red.dim[,as.integer(input[[dim1name]])], 
+                                        Dim2=red.dim[,as.integer(input[[dim2name]])], 
+                                        Covariate=cell.data[,input$colorBy])
+                ggplot(plot.data, aes_string(x="Dim1", y="Dim2", color="Covariate")) +
                     geom_point(size=1.5) +
                     labs(color=input$colorBy) +
                     theme_void()
+            })
+            outputOptions(output, plotname, priority = -1)
+        })
+    }
+
+    # Plot addition and removal.
+    observeEvent(input$addRedDimPlot, {
+        first.missing <- setdiff(seq_len(max_plots), rObjects$active_plots)
+        rObjects$active_plots <- c(rObjects$active_plots, first.missing[1])             
+    })
+
+    for (i in seq_len(max_plots)) {
+        local({
+            my_i <- i
+            observeEvent(input[[paste0("removeRedDimPlot", my_i)]], {
+                rObjects$active_plots <- setdiff(rObjects$active_plots, my_i)
             })
         })
     }

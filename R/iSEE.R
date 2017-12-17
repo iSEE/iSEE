@@ -189,7 +189,6 @@ iSEE <- function(
                     labs(color=input$colorBy) +
                     theme_void()
             })
-            outputOptions(output, plotname, priority = -1)
         })
     }
 

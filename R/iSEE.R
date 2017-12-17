@@ -33,8 +33,17 @@ iSEE <- function(
   
   cell.data <- colData(se)
   covariates <- colnames(cell.data)
+  # attempt to find "categorical" covariates useful for e.g. violin plots.
+  # Remove covariates with only one value, and those with too many unique
+  # values.
+  covariatescat <- 
+    colnames(cell.data)[apply(cell.data, 2, 
+                              function(w) length(unique(w)) <= 0.5 * length(w) & 
+                                length(unique(w)) > 1)]
   red.dim <- reducedDim(se)
   red.dim.names <- reducedDimNames(se)
+  allassays <- names(assays(se))
+  allgenes <- unique(unlist(lapply(assays(se), function(x) rownames(x))))
   
   # general options:
   max_plots <- 5
@@ -92,6 +101,24 @@ iSEE <- function(
                 actionButton("addRedDimPlot", "New plot")
                 ),
 
+        tabPanel(title = "Inidividual gene expression",  icon = icon("flash"), value="tab-violin",
+                 fluidRow(
+                   column(4, selectInput("violinvalues", label = "Type of values", 
+                                         choices = allassays, 
+                                         selected = ifelse("logcounts" %in% allassays, 
+                                                           "logcounts", allassays[1]))),
+                   column(4, selectInput("violingenes", label = "Gene",
+                                         choices = allgenes, 
+                                         selected = allgenes[1], multiple = TRUE, 
+                                         selectize = TRUE)),
+                   column(4, selectInput("violinX", label = "Group by", 
+                                         choices = covariatescat,
+                                         selected = covariatescat[1]))
+                 ), # end of fluidRow
+                 plotOutput("violinPlot")
+                 # , content will go here!
+        ),
+        
         tabPanel(title = "t2!",  icon = icon("calendar"), value="tab-t2",
                  h2("Content t2!")
                  # , content will go here!
@@ -206,7 +233,22 @@ iSEE <- function(
             })
         })
     }
-  }
+    
+    # Violin plot of one or more genes
+    output$violinPlot <- renderPlot({
+      if (!all(input$violingenes == "")) {
+        violin.data <- as.data.frame(assays(se)[[input$violinvalues]][input$violingenes, , 
+                                                                      drop = FALSE]) %>%
+          tibble::rownames_to_column("gene") %>% 
+          reshape2::melt() %>%
+          dplyr::left_join(as.data.frame(cell.data) %>% tibble::rownames_to_column("variable"))
+        ggplot(violin.data, aes_string(x=input$violinX, y="value", fill = input$violinX)) + 
+          geom_violin() + theme_bw() + facet_wrap(~ gene, scales = "free_y") + 
+          ylab(input$violinvalues)
+      }
+    }) # end of output$violinPlot
+    
+  } # end of iSEE_server
 
   ########## launch app ##########
 

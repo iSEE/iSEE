@@ -12,8 +12,8 @@ author:
   email:
 - name: Charlotte Soneson
   affiliation: 
-  - &id3 Charlotte's full
-  email:
+  - &id3 Institute of Molecular Life Sciences, University of Zurich, and SIB Swiss Institute of Bioinformatics
+  email: charlottesoneson@gmail.com
 - name: Kevin Rue-Albrecht
   affiliation: 
   - &id4 Kev's full

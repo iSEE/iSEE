@@ -1,4 +1,4 @@
-[![Travis build status](https://travis-ci.org/csoneson/SEE.svg?branch=master)](https://travis-ci.org/csoneson/SEE)
+[![Travis build status](https://travis-ci.org/csoneson/iSEE.svg?branch=master)](https://travis-ci.org/csoneson/iSEE)
 
 # iSEE/SummarizedExplorer
 

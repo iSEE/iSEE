@@ -9,14 +9,14 @@
 #' @importFrom rintrojs introjsUI
 #' @importFrom shiny actionButton fluidRow icon reactiveValues renderUI
 #' shinyApp tabPanel HTML br h1 h2 selectInput renderPlot plotOutput 
-#' uiOutput sliderInput tagList textInput column observeEvent radioButtons
+#' uiOutput sliderInput tagList textInput column observeEvent radioButtons tags
 #' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
 #' dashboardSidebar menuItem tabBox valueBox valueBoxOutput
 #' @importFrom scater plotExpression
 #' @importFrom utils packageVersion
-#' @importFrom shiny tags
 #' @importFrom ggplot2 ggplot geom_point labs theme_void aes_string geom_violin
 #'   theme_bw facet_wrap ylab
+#' @importFrom stats setNames
 #'
 #' @author Aaron Lun \email{alun@@wehi.edu.au}
 #' @author Charlotte Soneson \email{charlotte.soneson@@uzh.ch}

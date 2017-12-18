@@ -203,7 +203,7 @@ iSEE <- function(
                     actionButton(paste0("removeRedDimPlot", i), "Remove plot")
                     ),
                 column(3,
-                    radioButtons(paste0("redDimColorBy", i), label="Color by:", inline=TRUE,
+                    radioButtons(paste0("redDimColorBy", i), label="Color by:", inline=FALSE,
                         choices=c("Column data", "Gene expression"), 
                         selected=param_choices$ColorBy),
                     selectInput(paste0("redDimColDataColorBy", i), label = "Column data:", 
@@ -289,7 +289,7 @@ iSEE <- function(
                 column(3,
                     textInput(paste0("geneExprID", i), label = "Gene expression:", 
                               value=param_choices$ID),
-                    radioButtons(paste0("geneExprXAxis", i), label="X-axis:", inline=TRUE,
+                    radioButtons(paste0("geneExprXAxis", i), label="X-axis:", inline=FALSE,
                         choices=c("Column data", "Gene expression"), selected=param_choices$XAxis),
                     selectInput(paste0("geneExprXColData", i), label = "X-axis column data:", 
                                 choices=covariates, selected=param_choices$XColData),
@@ -298,7 +298,7 @@ iSEE <- function(
                     actionButton(paste0("removeGeneExprPlot", i), "Remove plot")
                     ),
                 column(3,
-                    radioButtons(paste0("geneExprColorBy", i), label="Colour by:", inline=TRUE,
+                    radioButtons(paste0("geneExprColorBy", i), label="Colour by:", inline=FALSE,
                         choices=c("Column data", "Gene expression"), 
                         selected=param_choices$ColorBy),
                     selectInput(paste0("geneExprColDataColorBy", i), 

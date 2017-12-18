@@ -27,7 +27,9 @@ Imports:
     shinydashboard,
     rintrojs, 
     ggplot2,
-    scater
+    scater,
+    rentrez,
+    AnnotationDbi
 Suggests:
     testthat,
     BiocStyle,

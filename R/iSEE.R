@@ -145,7 +145,10 @@ iSEE <- function(
         tabPanel(title = "Gene expression plots",  icon = icon("flash"), value="tab-geneexpr",
             uiOutput("geneExprPlots"),
             actionButton("addGeneExprPlot", "New plot"),
-            htmlOutput("rentrez_infobox")
+            fluidRow(
+              column(width = 6,
+                     htmlOutput("rentrez_infobox"))
+            )
             ),
 
         tabPanel(title = "t2!",  icon = icon("calendar"), value="tab-t2",

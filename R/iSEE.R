@@ -36,9 +36,9 @@ iSEE <- function(
   # attempt to find "categorical" covariates useful for e.g. violin plots.
   # Remove covariates with only one value, and those with too many unique
   # values.
-  covariates.cat <- 
-    colnames(cell.data)[apply(cell.data, 2, 
-                              function(w) length(unique(w)) <= 0.5 * length(w) & 
+  covariates.cat <-
+    colnames(cell.data)[apply(cell.data, 2,
+                              function(w) length(unique(w)) <= 0.5 * length(w) &
                                 length(unique(w)) > 1)]
   red.dim <- reducedDim(se)
   red.dim.names <- reducedDimNames(se)
@@ -63,8 +63,27 @@ iSEE <- function(
                                     ColorGeneExprs=gene.names[1],
                                     stringsAsFactors=FALSE)
 
+  # for retrieving the annotation
+  annoSpecies_df <-
+    data.frame(species=c("","Anopheles","Arabidopsis","Bovine","Worm",
+                         "Canine","Fly","Zebrafish","E coli strain K12",
+                         "E coli strain Sakai","Chicken","Human","Mouse",
+                         "Rhesus","Malaria","Chimp","Rat",
+                         "Yeast","Streptomyces coelicolor", "Pig","Toxoplasma gondii",
+                         "Xenopus"),
+               pkg=c("","org.Ag.eg.db", "org.At.tair.db", "org.Bt.eg.db", "org.Ce.eg.db",
+                     "org.Cf.eg.db", "org.Dm.eg.db", "org.Dr.eg.db", "org.EcK12.eg.db",
+                     "org.EcSakai.eg.db", "org.Gg.eg.db", "org.Hs.eg.db", "org.Mm.eg.db",
+                     "org.Mmu.eg.db", "org.Pf.plasmo.db", "org.Pt.eg.db", "org.Rn.eg.db",
+                     "org.Sc.sgd.db", "org.Sco.eg.db", "org.Ss.eg.db", "org.Tgondii.eg.db",
+                     "org.Xl.eg.db"),
+               stringsAsFactors = FALSE)
+  annoSpecies_df <- annoSpecies_df[order(annoSpecies_df$species),]
+  rownames(annoSpecies_df) <- annoSpecies_df$species # easier to access afterwards
+
+
   # general options:
-  
+
   ########## ui definition ##########
 
   iSEE_ui <- dashboardPage(
@@ -76,7 +95,14 @@ iSEE <- function(
     dashboardSidebar(
       width = 280,
       # general app settings
-      menuItem("App settings",icon = icon("cogs")),
+      menuItem("App settings",icon = icon("cogs"),
+               selectInput("speciesSelect",label = "Select the species of your samples",
+                           choices = annoSpecies_df$species,selected=""),
+               verbatimTextOutput("speciespkg"),
+               selectInput("idtype", "select the id type in your data", choices=c("ENSEMBL","ENTREZID","REFSEQ","SYMBOL"),selected = "SYMBOL"),
+               verbatimTextOutput("mydebug")
+
+               ),
       # merely oriented to export the plots - if we want to support that capability
       menuItem("Plot export settings", icon = icon("paint-brush")),
       # quick viewer could display which relevant slots are already populated?
@@ -118,9 +144,10 @@ iSEE <- function(
 
         tabPanel(title = "Gene expression plots",  icon = icon("flash"), value="tab-geneexpr",
             uiOutput("geneExprPlots"),
-            actionButton("addGeneExprPlot", "New plot")
+            actionButton("addGeneExprPlot", "New plot"),
+            htmlOutput("rentrez_infobox")
             ),
-        
+
         tabPanel(title = "t2!",  icon = icon("calendar"), value="tab-t2",
                  h2("Content t2!")
                  # , content will go here!
@@ -181,6 +208,65 @@ iSEE <- function(
         ))
       }
     }) # end of output$box_sce_obj
+
+
+    # for annotation and gene info box
+
+    output$speciespkg <- renderText({
+      shiny::validate(
+        need(input$speciesSelect!="",
+             "Select a species - requires the corresponding annotation package"
+        )
+      )
+
+      annopkg <- annoSpecies_df$pkg[annoSpecies_df$species==input$speciesSelect]
+
+      shiny::validate(
+        need(require(annopkg,character.only=TRUE),
+             paste0("The package ",annopkg, " is not installed/available. Try installing it with biocLite('",annopkg,"')"))
+      )
+
+      retmsg <- paste0(annopkg," - package available and loaded")
+
+      retmsg <- paste0(retmsg," - ",gsub(".eg.db","",gsub("org.","",annopkg)))
+      retmsg
+
+    })
+
+    output$rentrez_infobox <- renderUI({
+      shiny::validate(
+        need(input$speciesSelect!="",
+             "Select a species - requires the corresponding annotation package"
+        )
+      ) # plus a couple more
+      selectedGene <- input$geneExprID1
+      selgene_entrez <- mapIds(get(annoSpecies_df[input$speciesSelect,]$pkg),
+                               selectedGene, "ENTREZID", input$idtype)
+      fullinfo <- entrez_summary("gene", selgene_entrez)
+      link_pubmed <- paste0('<a href="http://www.ncbi.nlm.nih.gov/gene/?term=',
+                            selgene_entrez,
+                            '" target="_blank" >Click here to see more at NCBI</a>')
+      if(fullinfo$summary == "")
+        return(HTML(paste0("<b>",fullinfo$name, "</b><br/><br/>",
+                           fullinfo$description,"<br/><br/>",
+                           link_pubmed
+        )))
+      else
+        return(HTML(paste0("<b>",fullinfo$name, "</b><br/><br/>",
+                           fullinfo$description, "<br/><br/>",
+                           fullinfo$summary, "<br/><br/>",
+                           link_pubmed
+        )))
+    })
+
+    output$mydebug <- renderText({
+      dim(annoSpecies_df)
+      # annoSpecies_df[input$speciesSelect,]$pkg
+      # input$geneExprID1, "ENTREZID", input$idtype)
+      # mapIds(get(annoSpecies_df[input$speciesSelect,]$pkg),
+             # selectedGene, "ENTREZID", input$idtype)
+    })
+
 
 #######################################################################
 # Reduced dimension scatter plot section.
@@ -273,7 +359,7 @@ iSEE <- function(
 #######################################################################
 # Gene expression scatter plot section.
 #######################################################################
- 
+
     # Multiple scatterplots.
     output$geneExprPlots <- renderUI({
         plot_output_list <- lapply(rObjects$geneexpr_active_plots, function(i) {
@@ -293,6 +379,9 @@ iSEE <- function(
                         choices=c("Column data", "Gene expression"), selected=param_choices$ColorBy),
                     selectInput(paste0("geneExprColDataColorBy", i), label = "Colour by column data:", choices=covariates, selected=param_choices$ColorColData),
                     textInput(paste0("geneExprGeneExprsColorBy", i), label = "Colour by gene expression:", value=param_choices$ColorGeneExprs)
+
+                    # ,
+                    # htmlOutput(paste0("rentrez_infobox",i))
                     )
                 )
         })
@@ -348,13 +437,13 @@ iSEE <- function(
                 } else {
                     covariate <- logcounts(se)[param_choices$ColorGeneExprs,]
                 }
-                plotExpression(se, exprs_values="logcounts", 
+                plotExpression(se, exprs_values="logcounts",
                     x=ifelse(param_choices$XAxis=="Column data", param_choices$XColData, param_choices$XGeneExprs),
-                    features=param_choices$ID, 
+                    features=param_choices$ID,
                     colour_by=data.frame(covariate))
             })
         })
-    }  
+    }
   } # end of iSEE_server
 
 #######################################################################

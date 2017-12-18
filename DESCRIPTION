@@ -27,17 +27,13 @@ Imports:
     shinydashboard,
     rintrojs, 
     ggplot2,
-    tibble,
-    dplyr,
-    tidyr,
-    reshape2
+    scater
 Suggests:
     testthat,
     BiocStyle,
     knitr,
     rmarkdown,
-    scRNAseq,
-    scater
+    scRNAseq
 URL: https://github.com/csoneson/SEE
 BugReports: https://github.com/csoneson/SEE/issues
 biocViews: Visualization, GUI, DimensionReduction, 

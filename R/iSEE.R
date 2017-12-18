@@ -236,31 +236,6 @@ iSEE <- function(
 
     })
 
-    output$rentrez_infobox <- renderUI({
-      shiny::validate(
-        need(input$speciesSelect!="",
-             "Select a species - requires the corresponding annotation package"
-        )
-      ) # plus a couple more
-      selectedGene <- input$geneExprID1
-      selgene_entrez <- mapIds(get(annoSpecies_df[input$speciesSelect,]$pkg),
-                               selectedGene, "ENTREZID", input$idtype)
-      fullinfo <- entrez_summary("gene", selgene_entrez)
-      link_pubmed <- paste0('<a href="http://www.ncbi.nlm.nih.gov/gene/?term=',
-                            selgene_entrez,
-                            '" target="_blank" >Click here to see more at NCBI</a>')
-      if(fullinfo$summary == "")
-        return(HTML(paste0("<b>",fullinfo$name, "</b><br/><br/>",
-                           fullinfo$description,"<br/><br/>",
-                           link_pubmed
-        )))
-      else
-        return(HTML(paste0("<b>",fullinfo$name, "</b><br/><br/>",
-                           fullinfo$description, "<br/><br/>",
-                           fullinfo$summary, "<br/><br/>",
-                           link_pubmed
-        )))
-    })
 
     output$mydebug <- renderText({
       dim(annoSpecies_df)
@@ -397,8 +372,8 @@ iSEE <- function(
                               label = "Colour by gene expression:", 
                               value=param_choices$ColorGeneExprs)
 
-                    # ,
-                    # htmlOutput(paste0("rentrez_infobox",i))
+                    ,
+                    htmlOutput(paste0("infobox",i))
                     )
                 ) # end of fluidRow
         }) # end of plot_output_list
@@ -437,6 +412,7 @@ iSEE <- function(
             colorbytype <- paste0("geneExprColorBy", i0)
             colorbycol <- paste0("geneExprColDataColorBy", i0)
             colorbygene <- paste0("geneExprGeneExprsColorBy", i0)
+            infobox <- paste0("infobox",i0)
 
             output[[plotname]] <- renderPlot({
                 # Updating parameters.
@@ -465,8 +441,35 @@ iSEE <- function(
                                  colour_by=setNames(data.frame(covariate), 
                                                     covariate.name))
             }) # end of output[[plotname]]
+
+            output[[infobox]] <- renderUI({
+              shiny::validate(
+                need(input$speciesSelect!="",
+                     "Select a species - requires the corresponding annotation package"
+                )
+              ) # plus a couple more
+              selectedGene <- input[[genename]]
+              selgene_entrez <- mapIds(get(annoSpecies_df[input$speciesSelect,]$pkg),
+                                       selectedGene, "ENTREZID", input$idtype)
+              fullinfo <- entrez_summary("gene", selgene_entrez)
+              link_pubmed <- paste0('<a href="http://www.ncbi.nlm.nih.gov/gene/?term=',
+                                    selgene_entrez,
+                                    '" target="_blank" >Click here to see more at NCBI</a>')
+              if(fullinfo$summary == "")
+                return(HTML(paste0("<b>",fullinfo$name, "</b><br/><br/>",
+                                   fullinfo$description,"<br/><br/>",
+                                   link_pubmed
+                )))
+              else
+                return(HTML(paste0("<b>",fullinfo$name, "</b><br/><br/>",
+                                   fullinfo$description, "<br/><br/>",
+                                   fullinfo$summary, "<br/><br/>",
+                                   link_pubmed
+                )))
+            }) # end of output[[plotname]]
         }) # end of local
-    }  
+    }
+
   } # end of iSEE_server
 
 #######################################################################

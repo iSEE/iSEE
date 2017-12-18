@@ -258,16 +258,22 @@ iSEE <- function(
             fluidRow(
                 column(6, plotOutput(paste0("redDimPlot", i))),
                 column(3,
-                    selectInput(paste0("redDimType", i), label="Type", choices=red.dim.names, selected=param_choices$Type),
-                    textInput(paste0("redDimChoice", i, "_1"), label="Dimension 1", value=param_choices$Dim1),
-                    textInput(paste0("redDimChoice", i, "_2"), label="Dimension 2", value=param_choices$Dim2),
+                    selectInput(paste0("redDimType", i), label="Type", 
+                                choices=red.dim.names, selected=param_choices$Type),
+                    textInput(paste0("redDimChoice", i, "_1"), label="Dimension 1", 
+                              value=param_choices$Dim1),
+                    textInput(paste0("redDimChoice", i, "_2"), label="Dimension 2",
+                              value=param_choices$Dim2),
                     actionButton(paste0("removeRedDimPlot", i), "Remove plot")
                     ),
                 column(3,
-                    radioButtons(paste0("redDimColorBy", i), label="Color by:", inline=TRUE,
-                        choices=c("Column data", "Gene expression"), selected=param_choices$ColorBy),
-                    selectInput(paste0("redDimColDataColorBy", i), label = "Column data:", choices=covariates, selected=param_choices$ColData),
-                    textInput(paste0("redDimGeneExprsColorBy", i), label = "Gene expression:", value=param_choices$GeneExprs)
+                    radioButtons(paste0("redDimColorBy", i), label="Color by:", inline=FALSE,
+                        choices=c("Column data", "Gene expression"), 
+                        selected=param_choices$ColorBy),
+                    selectInput(paste0("redDimColDataColorBy", i), label = "Column data:", 
+                                choices=covariates, selected=param_choices$ColData),
+                    textInput(paste0("redDimGeneExprsColorBy", i), label = "Gene expression:", 
+                              value=param_choices$GeneExprs)
                     )
                 )
         })
@@ -345,29 +351,37 @@ iSEE <- function(
             fluidRow(
                 column(6, plotOutput(paste0("geneExprPlot", i))),
                 column(3,
-                    textInput(paste0("geneExprID", i), label = "Gene expression:", value=param_choices$ID),
-                    radioButtons(paste0("geneExprXAxis", i), label="X-axis:", inline=TRUE,
+                    textInput(paste0("geneExprID", i), label = "Gene expression:", 
+                              value=param_choices$ID),
+                    radioButtons(paste0("geneExprXAxis", i), label="X-axis:", inline=FALSE,
                         choices=c("Column data", "Gene expression"), selected=param_choices$XAxis),
-                    selectInput(paste0("geneExprXColData", i), label = "X-axis column data:", choices=covariates, selected=param_choices$XColData),
-                    textInput(paste0("geneExprXGene", i), label = "X-axis gene expression:", value=param_choices$XGeneExprs),
+                    selectInput(paste0("geneExprXColData", i), label = "X-axis column data:", 
+                                choices=covariates, selected=param_choices$XColData),
+                    textInput(paste0("geneExprXGene", i), label = "X-axis gene expression:", 
+                              value=param_choices$XGeneExprs),
                     actionButton(paste0("removeGeneExprPlot", i), "Remove plot")
                     ),
                 column(3,
-                    radioButtons(paste0("geneExprColorBy", i), label="Colour by:", inline=TRUE,
-                        choices=c("Column data", "Gene expression"), selected=param_choices$ColorBy),
-                    selectInput(paste0("geneExprColDataColorBy", i), label = "Colour by column data:", choices=covariates, selected=param_choices$ColorColData),
-                    textInput(paste0("geneExprGeneExprsColorBy", i), label = "Colour by gene expression:", value=param_choices$ColorGeneExprs)
+                    radioButtons(paste0("geneExprColorBy", i), label="Colour by:", inline=FALSE,
+                        choices=c("Column data", "Gene expression"), 
+                        selected=param_choices$ColorBy),
+                    selectInput(paste0("geneExprColDataColorBy", i), 
+                                label = "Colour by column data:", 
+                                choices=covariates, selected=param_choices$ColorColData),
+                    textInput(paste0("geneExprGeneExprsColorBy", i),
+                              label = "Colour by gene expression:", 
+                              value=param_choices$ColorGeneExprs)
 
                     ,
                     htmlOutput(paste0("infobox",i))
                     )
-                )
-        })
+                ) # end of fluidRow
+        }) # end of plot_output_list
 
         # Convert the list to a tagList - this is necessary for the list of items
         # to display properly.
         do.call(tagList, plot_output_list)
-    })
+    }) # end of output$geneExprPlots
 
     # Plot addition and removal, as well as parameter setting.
     observeEvent(input$addGeneExprPlot, {
@@ -380,8 +394,8 @@ iSEE <- function(
             i0 <- i
             observeEvent(input[[paste0("removeGeneExprPlot", i0)]], {
                 rObjects$geneexpr_active_plots <- setdiff(rObjects$geneexpr_active_plots, i0)
-            })
-        })
+            }) # end of observeEvent
+        }) # end of local
     }
 
     for (i in seq_len(max_plots)) {
@@ -413,14 +427,20 @@ iSEE <- function(
                 param_choices <- pObjects$geneexpr_plot_param[i0,]
                 if (param_choices$ColorBy=="Column data") {
                     covariate <- colData(se)[,param_choices$ColorColData]
+                    covariate.name <- param_choices$ColorColData
                 } else {
                     covariate <- logcounts(se)[param_choices$ColorGeneExprs,]
+                    covariate.name <- param_choices$ColorGeneExprs
                 }
-                plotExpression(se, exprs_values="logcounts",
-                    x=ifelse(param_choices$XAxis=="Column data", param_choices$XColData, param_choices$XGeneExprs),
-                    features=param_choices$ID,
-                    colour_by=data.frame(covariate))
-            })
+                if (param_choices$ID %in% gene.names)
+                  plotExpression(se, exprs_values="logcounts", 
+                                 x=ifelse(param_choices$XAxis=="Column data", 
+                                          param_choices$XColData, 
+                                          param_choices$XGeneExprs),
+                                 features=param_choices$ID, 
+                                 colour_by=setNames(data.frame(covariate), 
+                                                    covariate.name))
+            }) # end of output[[plotname]]
 
             output[[infobox]] <- renderUI({
               shiny::validate(
@@ -446,9 +466,10 @@ iSEE <- function(
                                    fullinfo$summary, "<br/><br/>",
                                    link_pubmed
                 )))
-            })
-        })
+            }) # end of output[[plotname]]
+        }) # end of local
     }
+
   } # end of iSEE_server
 
 #######################################################################

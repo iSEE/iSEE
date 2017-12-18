@@ -8,7 +8,8 @@ iSEE_footer <- function(){
         # hr(),
         "iSEE is a project developed by 
         Aaron Lun (CRUK Cambridge Institute, University of Cambridge),
-        Charlotte Soneson, Federico Marini and
+        Charlotte Soneson (University of Zurich and SIB Swiss Institute of Bioinformatics), 
+        Federico Marini and
         Kevin Rue-Albrecht
         in the Bioinformatics division of the ",
         tags$a(href="http://www.unimedizin-mainz.de/imbei","IMBEI"),

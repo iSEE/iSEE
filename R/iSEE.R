@@ -47,14 +47,21 @@ iSEE <- function(
 
   # Setting up initial reduced dim plot parameters.
   max_plots <- 5
-  reddim_plot_param <- data.frame(Active=FALSE,
-                                  Type=rep(red.dim.names[1], max_plots),
+  reddim_plot_param <- data.frame(Type=rep(red.dim.names[1], max_plots),
                                   Dim1=1, Dim2=2,
                                   ColorBy="Column data",
                                   ColData=covariates[1],
                                   GeneExprs=gene.names[1],
                                   stringsAsFactors=FALSE)
-  reddim_plot_param$Active[1] <- TRUE
+
+  geneexpr_plot_param <- data.frame(ID=rep(gene.names[1], max_plots),
+                                    XAxis="Column data",
+                                    XColData=covariates[1],
+                                    XGeneExprs=gene.names[1],
+                                    ColorBy="Column data",
+                                    ColorColData=covariates[1],
+                                    ColorGeneExprs=gene.names[1],
+                                    stringsAsFactors=FALSE)
 
   # general options:
   
@@ -104,29 +111,15 @@ iSEE <- function(
       tabBox(
         width=12,
 
+        tabPanel(title = "Reduced dimension plots",  icon = icon("home"), value="tab-reddim",
+            uiOutput("redDimPlots"),
+            actionButton("addRedDimPlot", "New plot")
+            ),
 
-        tabPanel(title = "Reduced dimension scatter plots",  icon = icon("home"), value="tab-welcome",
-                uiOutput("redDimPlots"),
-                actionButton("addRedDimPlot", "New plot")
-                ),
-
-        tabPanel(title = "Inidividual gene expression",  icon = icon("flash"), value="tab-violin",
-                 fluidRow(
-                   column(4, selectInput("violinvalues", label = "Type of values", 
-                                         choices = all.assays, 
-                                         selected = ifelse("logcounts" %in% all.assays, 
-                                                           "logcounts", all.assays[1]))),
-                   column(4, selectInput("violingenes", label = "Gene",
-                                         choices = gene.names, 
-                                         selected = gene.names[1], multiple = TRUE, 
-                                         selectize = TRUE)),
-                   column(4, selectInput("violinX", label = "Group by", 
-                                         choices = covariates.cat,
-                                         selected = covariates.cat[1]))
-                 ), # end of fluidRow
-                 plotOutput("violinPlot")
-                 # , content will go here!
-        ),
+        tabPanel(title = "Gene expression plots",  icon = icon("flash"), value="tab-geneexpr",
+            uiOutput("geneExprPlots"),
+            actionButton("addGeneExprPlot", "New plot")
+            ),
         
         tabPanel(title = "t2!",  icon = icon("calendar"), value="tab-t2",
                  h2("Content t2!")
@@ -153,13 +146,14 @@ iSEE <- function(
     # storage for all the reactive objects
     rObjects <- reactiveValues(
         reddim_active_plots = 1,
+        geneexpr_active_plots = 1,
         se = NULL
     )
 
     # storage for other persistent objects
     pObjects <- new.env()
     pObjects$reddim_plot_param <- reddim_plot_param
-
+    pObjects$geneexpr_plot_param <- geneexpr_plot_param
 
     if (!is.null(se)){ rObjects$sce <- as(se, "SingleCellExperiment") }
 
@@ -276,35 +270,91 @@ iSEE <- function(
         })
     }
 
-    # Plot addition and removal.
-    observeEvent(input$addRedDimPlot, {
-        first.missing <- setdiff(seq_len(max_plots), rObjects$active_plots)
-        rObjects$active_plots <- c(rObjects$active_plots, first.missing[1])             
+#######################################################################
+# Gene expression scatter plot section.
+#######################################################################
+ 
+    # Multiple scatterplots.
+    output$geneExprPlots <- renderUI({
+        plot_output_list <- lapply(rObjects$geneexpr_active_plots, function(i) {
+            param_choices <- pObjects$geneexpr_plot_param[i,]
+            fluidRow(
+                column(6, plotOutput(paste0("geneExprPlot", i))),
+                column(3,
+                    textInput(paste0("geneExprID", i), label = "Gene expression:", value=param_choices$ID),
+                    radioButtons(paste0("geneExprXAxis", i), label="X-axis:", inline=TRUE,
+                        choices=c("Column data", "Gene expression"), selected=param_choices$XAxis),
+                    selectInput(paste0("geneExprXColData", i), label = "X-axis column data:", choices=covariates, selected=param_choices$XColData),
+                    textInput(paste0("geneExprXGene", i), label = "X-axis gene expression:", value=param_choices$XGeneExprs),
+                    actionButton(paste0("removeGeneExprPlot", i), "Remove plot")
+                    ),
+                column(3,
+                    radioButtons(paste0("geneExprColorBy", i), label="Colour by:", inline=TRUE,
+                        choices=c("Column data", "Gene expression"), selected=param_choices$ColorBy),
+                    selectInput(paste0("geneExprColDataColorBy", i), label = "Colour by column data:", choices=covariates, selected=param_choices$ColorColData),
+                    textInput(paste0("geneExprGeneExprsColorBy", i), label = "Colour by gene expression:", value=param_choices$ColorGeneExprs)
+                    )
+                )
+        })
+
+        # Convert the list to a tagList - this is necessary for the list of items
+        # to display properly.
+        do.call(tagList, plot_output_list)
+    })
+
+    # Plot addition and removal, as well as parameter setting.
+    observeEvent(input$addGeneExprPlot, {
+        first.missing <- setdiff(seq_len(max_plots), rObjects$geneexpr_active_plots)
+        rObjects$geneexpr_active_plots <- c(rObjects$geneexpr_active_plots, first.missing[1])
     })
 
     for (i in seq_len(max_plots)) {
         local({
-            my_i <- i
-            observeEvent(input[[paste0("removeRedDimPlot", my_i)]], {
-                rObjects$active_plots <- setdiff(rObjects$active_plots, my_i)
+            i0 <- i
+            observeEvent(input[[paste0("removeGeneExprPlot", i0)]], {
+                rObjects$geneexpr_active_plots <- setdiff(rObjects$geneexpr_active_plots, i0)
             })
         })
     }
-    
-    # Violin plot of one or more genes
-    output$violinPlot <- renderPlot({
-      if (!all(input$violingenes == "")) {
-        violin.data <- as.data.frame(assays(se)[[input$violinvalues]][input$violingenes, , 
-                                                                      drop = FALSE]) %>%
-          tibble::rownames_to_column("gene") %>% 
-          reshape2::melt() %>%
-          dplyr::left_join(as.data.frame(cell.data) %>% tibble::rownames_to_column("variable"))
-        ggplot(violin.data, aes_string(x=input$violinX, y="value", fill = input$violinX)) + 
-          geom_violin() + theme_bw() + facet_wrap(~ gene, scales = "free_y") + 
-          ylab(input$violinvalues)
-      }
-    }) # end of output$violinPlot
-    
+
+    for (i in seq_len(max_plots)) {
+        # Need local so that each item gets its own number. Without it, the value
+        # of i in the renderPlot() will be the same across all instances, because
+        # of when the expression is evaluated.
+        local({
+            i0 <- i
+            plotname <- paste0("geneExprPlot", i0)
+            genename <- paste0("geneExprID", i0)
+            xtype <- paste0("geneExprXAxis", i0)
+            xcol <- paste0("geneExprXColData", i0)
+            xgene <- paste0("geneExprXGene", i0)
+            colorbytype <- paste0("geneExprColorBy", i0)
+            colorbycol <- paste0("geneExprColDataColorBy", i0)
+            colorbygene <- paste0("geneExprGeneExprsColorBy", i0)
+
+            output[[plotname]] <- renderPlot({
+                # Updating parameters.
+                pObjects$geneexpr_plot_param$ID[i0] <- input[[genename]]
+                pObjects$geneexpr_plot_param$XAxis[i0] <- input[[xtype]]
+                pObjects$geneexpr_plot_param$XColData[i0] <- input[[xcol]]
+                pObjects$geneexpr_plot_param$XGeneExprs[i0] <- input[[xgene]]
+                pObjects$geneexpr_plot_param$ColorBy[i0] <- input[[colorbytype]]
+                pObjects$geneexpr_plot_param$ColorColData[i0] <- input[[colorbycol]]
+                pObjects$geneexpr_plot_param$ColorGeneExprs[i0] <- input[[colorbygene]]
+
+                param_choices <- pObjects$geneexpr_plot_param[i0,]
+                if (param_choices$ColorBy=="Column data") {
+                    covariate <- colData(se)[,param_choices$ColorColData]
+                } else {
+                    covariate <- logcounts(se)[param_choices$ColorGeneExprs,]
+                }
+                plotExpression(se, exprs_values="logcounts", 
+                    x=ifelse(param_choices$XAxis=="Column data", param_choices$XColData, param_choices$XGeneExprs),
+                    features=param_choices$ID, 
+                    colour_by=data.frame(covariate))
+            })
+        })
+    }  
   } # end of iSEE_server
 
 #######################################################################

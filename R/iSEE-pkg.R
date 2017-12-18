@@ -12,12 +12,11 @@
 #' uiOutput sliderInput tagList textInput column observeEvent radioButtons
 #' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
 #' dashboardSidebar menuItem tabBox valueBox valueBoxOutput
+#' @importFrom scater plotExpression
 #' @importFrom utils packageVersion
 #' @importFrom shiny tags
 #' @importFrom ggplot2 ggplot geom_point labs theme_void aes_string geom_violin
 #'   theme_bw facet_wrap ylab
-#' @importFrom dplyr %>% 
-#' @importFrom reshape2 melt
 #'
 #' @author Aaron Lun \email{alun@@wehi.edu.au}
 #' @author Charlotte Soneson \email{charlotte.soneson@@uzh.ch}

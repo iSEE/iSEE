@@ -359,8 +359,10 @@ iSEE <- function(
                 param_choices <- pObjects$geneexpr_plot_param[i0,]
                 if (param_choices$ColorBy=="Column data") {
                     covariate <- colData(se)[,param_choices$ColorColData]
+                    covariate.name <- param_choices$ColorColData
                 } else {
                     covariate <- logcounts(se)[param_choices$ColorGeneExprs,]
+                    covariate.name <- param_choices$ColorGeneExprs
                 }
                 if (param_choices$ID %in% gene.names)
                   plotExpression(se, exprs_values="logcounts", 
@@ -368,7 +370,8 @@ iSEE <- function(
                                           param_choices$XColData, 
                                           param_choices$XGeneExprs),
                                  features=param_choices$ID, 
-                                 colour_by=data.frame(covariate))
+                                 colour_by=setNames(data.frame(covariate), 
+                                                    covariate.name))
             }) # end of output[[plotname]]
         }) # end of local
     }  

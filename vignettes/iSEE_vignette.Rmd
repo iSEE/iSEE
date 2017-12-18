@@ -8,11 +8,12 @@ author:
   email: marinif@uni-mainz.de
 - name: Aaron Lun
   affiliation: 
-  - &id2 Aaron's full
-  email:
+  - &id2 Cancer Research UK Cambridge Institute, University of Cambridge
+  email: aaron.lun@cruk.cam.ac.uk
 - name: Charlotte Soneson
   affiliation: 
-  - &id3 Institute of Molecular Life Sciences, University of Zurich, and SIB Swiss Institute of Bioinformatics
+  - &id3 Institute of Molecular Life Sciences, University of Zurich
+  - SIB Swiss Institute of Bioinformatics
   email: charlottesoneson@gmail.com
 - name: Kevin Rue-Albrecht
   affiliation: 

@@ -30,7 +30,9 @@ Imports:
     scater,
     rentrez,
     AnnotationDbi,
-    DT
+    DT,
+    shinyBS,
+    stats
 Suggests:
     testthat,
     BiocStyle,

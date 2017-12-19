@@ -42,7 +42,7 @@ iSEE <- function(
 
   gene.data <- as.data.frame(rowData(se))
   rownames(gene.data) <- gene.names
-  if (ncol(gene.data)==0L){ 
+  if (ncol(gene.data)==0L){
         gene.data$Present <- TRUE
   }
 
@@ -133,28 +133,30 @@ iSEE <- function(
 
         tabPanel(title = "Reduced dimension plots",  icon = icon("home"), value="tab-reddim",
             uiOutput("redDimPlots"),
-            actionButton("addRedDimPlot", "New plot")
+            actionButton("addRedDimPlot", "New plot",
+                         class = "btn btn-primary",icon = icon("plus"))
             ),
 
         tabPanel(title = "Gene expression plots",  icon = icon("flash"), value="tab-geneexpr",
             uiOutput("geneExprPlots"),
-            actionButton("addGeneExprPlot", "New plot")
+            actionButton("addGeneExprPlot", "New plot",
+                         class = "btn btn-primary",icon = icon("plus"))
             ),
 
         tabPanel(title = "Gene-level statistics",  icon = icon("calendar"), value="tab-genetab",
             dataTableOutput("geneStatTab"),
             fluidRow(
-                column(6,                      
+                column(6,
                     selectInput("geneStatSpeciesSelect",label = "Select the species of your samples",
                                 choices = annoSpecies_df$species,selected=""),
                     verbatimTextOutput("geneStatSpeciesPkg"),
                     selectInput("geneStatIDType", "select the id type in your data", choices=c("ENSEMBL","ENTREZID","REFSEQ","SYMBOL"),selected = "SYMBOL"),
                     verbatimTextOutput("geneStatIDDebug")
                     ),
-                column(6, 
+                column(6,
                     htmlOutput("geneStatInfoBox")
                     )
-                ) 
+                )
             ),
 
         tabPanel(title = "tab3!",  icon = icon("table"), value="tab-t3",
@@ -222,27 +224,41 @@ iSEE <- function(
     output$redDimPlots <- renderUI({
         plot_output_list <- lapply(rObjects$reddim_active_plots, function(i) {
             param_choices <- pObjects$reddim_plot_param[i,]
+
+
             fluidRow(
-                column(6, plotOutput(paste0("redDimPlot", i))),
-                column(3,
-                    selectInput(paste0("redDimType", i), label="Type", 
-                                choices=red.dim.names, selected=param_choices$Type),
-                    textInput(paste0("redDimChoice", i, "_1"), label="Dimension 1", 
-                              value=param_choices$Dim1),
-                    textInput(paste0("redDimChoice", i, "_2"), label="Dimension 2",
-                              value=param_choices$Dim2),
-                    actionButton(paste0("removeRedDimPlot", i), "Remove plot")
-                    ),
-                column(3,
-                    radioButtons(paste0("redDimColorBy", i), label="Color by:", inline=FALSE,
-                        choices=c("Column data", "Gene expression"), 
-                        selected=param_choices$ColorBy),
-                    selectInput(paste0("redDimColDataColorBy", i), label = "Column data:", 
-                                choices=covariates, selected=param_choices$ColData),
-                    textInput(paste0("redDimGeneExprsColorBy", i), label = "Gene expression:", 
-                              value=param_choices$GeneExprs)
-                    )
-                )
+              column(6, plotOutput(paste0("redDimPlot", i))),
+              column(6,
+                     shinyBS::bsCollapse(
+                       id = "collapse_redDimPlots", multiple = TRUE,
+                       open = "Advanced plot parameters",
+                       shinyBS::bsCollapsePanel(
+                         title = "Advanced plot parameters",
+                         fluidRow(
+                           column(6,
+                                  selectInput(paste0("redDimType", i), label="Type",
+                                              choices=red.dim.names, selected=param_choices$Type),
+                                  textInput(paste0("redDimChoice", i, "_1"), label="Dimension 1",
+                                            value=param_choices$Dim1),
+                                  textInput(paste0("redDimChoice", i, "_2"), label="Dimension 2",
+                                            value=param_choices$Dim2)
+                           ),
+                           column(6,
+                                  radioButtons(paste0("redDimColorBy", i), label="Color by:", inline=FALSE,
+                                               choices=c("Column data", "Gene expression"),
+                                               selected=param_choices$ColorBy),
+                                  selectInput(paste0("redDimColDataColorBy", i), label = "Column data:",
+                                              choices=covariates, selected=param_choices$ColData),
+                                  textInput(paste0("redDimGeneExprsColorBy", i), label = "Gene expression:",
+                                            value=param_choices$GeneExprs),
+                                  actionButton(paste0("removeRedDimPlot", i), "Remove plot",
+                                               icon = icon("trash"),class = "btn btn-warning")
+                           )
+                         )
+                       ) # end of bsCollapsePanel
+                     ) # end of bsCollapse
+              ) # end of column
+            ) # end of fluidRow
         })
 
         # Convert the list to a tagList - this is necessary for the list of items
@@ -315,31 +331,38 @@ iSEE <- function(
     output$geneExprPlots <- renderUI({
         plot_output_list <- lapply(rObjects$geneexpr_active_plots, function(i) {
             param_choices <- pObjects$geneexpr_plot_param[i,]
+
+
             fluidRow(
-                column(6, plotOutput(paste0("geneExprPlot", i))),
-                column(3,
-                    textInput(paste0("geneExprID", i), label = "Gene expression:", 
-                              value=param_choices$ID),
-                    radioButtons(paste0("geneExprXAxis", i), label="X-axis:", inline=FALSE,
-                        choices=c("Column data", "Gene expression"), selected=param_choices$XAxis),
-                    selectInput(paste0("geneExprXColData", i), label = "X-axis column data:", 
-                                choices=covariates, selected=param_choices$XColData),
-                    textInput(paste0("geneExprXGene", i), label = "X-axis gene expression:", 
-                              value=param_choices$XGeneExprs),
-                    actionButton(paste0("removeGeneExprPlot", i), "Remove plot")
-                    ),
-                column(3,
-                    radioButtons(paste0("geneExprColorBy", i), label="Colour by:", inline=FALSE,
-                        choices=c("Column data", "Gene expression"), 
-                        selected=param_choices$ColorBy),
-                    selectInput(paste0("geneExprColDataColorBy", i), 
-                                label = "Colour by column data:", 
-                                choices=covariates, selected=param_choices$ColorColData),
-                    textInput(paste0("geneExprGeneExprsColorBy", i),
-                              label = "Colour by gene expression:", 
-                              value=param_choices$ColorGeneExprs)
-                    )
-                ) # end of fluidRow
+              column(6, plotOutput(paste0("geneExprPlot", i))),
+              column(6,
+                     textInput(paste0("geneExprID", i), label = "Gene expression:",
+                               value=param_choices$ID),
+                shinyBS::bsCollapse(
+                      id = "collapse_geneExprPlots", multiple = TRUE,
+                      open = "Advanced plot parameters",
+                      shinyBS::bsCollapsePanel(
+                        title = "Advanced plot parameters",
+                        fluidRow(
+                          column(6,
+                                 radioButtons(paste0("geneExprXAxis", i), label="X-axis:", inline=FALSE, choices=c("Column data", "Gene expression"), selected=param_choices$XAxis),
+                                 selectInput(paste0("geneExprXColData", i), label = "X-axis column data:", choices=covariates, selected=param_choices$XColData),
+                                 textInput(paste0("geneExprXGene", i), label = "X-axis gene expression:", value=param_choices$XGeneExprs)
+                               ),
+                          column(6,
+                                 radioButtons(paste0("geneExprColorBy", i), label="Colour by:", inline=FALSE, choices=c("Column data", "Gene expression"), selected=param_choices$ColorBy),
+                                 selectInput(paste0("geneExprColDataColorBy", i),
+                                             label = "Colour by column data:",
+                                             choices=covariates, selected=param_choices$ColorColData),
+                                 textInput(paste0("geneExprGeneExprsColorBy", i),
+                                           label = "Colour by gene expression:",
+                                           value=param_choices$ColorGeneExprs))),
+                    actionButton(paste0("removeGeneExprPlot", i), "Remove plot",
+                                 icon = icon("trash"),class = "btn btn-warning")
+                    ) # end of bsCollapsePanel
+                  ) # end of bsCollapse
+                ) # end of column
+              ) # end of fluidRow
         }) # end of plot_output_list
 
         # Convert the list to a tagList - this is necessary for the list of items
@@ -396,12 +419,12 @@ iSEE <- function(
                     covariate.name <- param_choices$ColorGeneExprs
                 }
                 if (param_choices$ID %in% gene.names)
-                  plotExpression(se, exprs_values="logcounts", 
-                                 x=ifelse(param_choices$XAxis=="Column data", 
-                                          param_choices$XColData, 
+                  plotExpression(se, exprs_values="logcounts",
+                                 x=ifelse(param_choices$XAxis=="Column data",
+                                          param_choices$XColData,
                                           param_choices$XGeneExprs),
-                                 features=param_choices$ID, 
-                                 colour_by=setNames(data.frame(covariate), 
+                                 features=param_choices$ID,
+                                 colour_by=setNames(data.frame(covariate),
                                                     covariate.name))
             }) # end of output[[plotname]]
         }) # end of local
@@ -413,7 +436,7 @@ iSEE <- function(
 
     # Load the gene level data
     output$geneStatTab <- renderDataTable({
-        datatable(gene.data, filter="top", rownames=TRUE, 
+        datatable(gene.data, filter="top", rownames=TRUE,
                   selection=list(mode="single", selected=1))
     })
 
@@ -448,13 +471,13 @@ iSEE <- function(
             need(input$geneStatSpeciesSelect!="",
                 "Select a species - requires the corresponding annotation package"
             )
-        ) 
+        )
 
         shiny::validate(
             need(!is.null(input$geneStatTab_rows_selected),
                 "Select a gene from the table"
             )
-        ) 
+        )
         selectedGene <- gene.names[input$geneStatTab_rows_selected]
 
         selgene_entrez <- mapIds(get(annoSpecies_df[input$geneStatSpeciesSelect,]$pkg),

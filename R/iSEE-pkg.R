@@ -21,6 +21,7 @@
 #' @importFrom stats setNames
 #' @importFrom AnnotationDbi mapIds
 #' @importFrom rentrez entrez_summary
+#' @importFrom shinyBS bsCollapsePanel bsCollapse
 #'
 #'
 #' @author Aaron Lun \email{alun@@wehi.edu.au}

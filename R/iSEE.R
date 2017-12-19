@@ -33,17 +33,18 @@ iSEE <- function(
 
   cell.data <- colData(se)
   covariates <- colnames(cell.data)
-  # attempt to find "categorical" covariates useful for e.g. violin plots.
-  # Remove covariates with only one value, and those with too many unique
-  # values.
-  covariates.cat <-
-    colnames(cell.data)[apply(cell.data, 2,
-                              function(w) length(unique(w)) <= 0.5 * length(w) &
-                                length(unique(w)) > 1)]
+
   red.dim <- reducedDim(se)
   red.dim.names <- reducedDimNames(se)
+
   all.assays <- names(assays(se))
   gene.names <- rownames(se)
+
+  gene.data <- as.data.frame(rowData(se))
+  rownames(gene.data) <- gene.names
+  if (ncol(gene.data)==0L){ 
+        gene.data$Present <- TRUE
+  }
 
   # Setting up initial reduced dim plot parameters.
   max_plots <- 5
@@ -95,14 +96,7 @@ iSEE <- function(
     dashboardSidebar(
       width = 280,
       # general app settings
-      menuItem("App settings",icon = icon("cogs"),
-               selectInput("speciesSelect",label = "Select the species of your samples",
-                           choices = annoSpecies_df$species,selected=""),
-               verbatimTextOutput("speciespkg"),
-               selectInput("idtype", "select the id type in your data", choices=c("ENSEMBL","ENTREZID","REFSEQ","SYMBOL"),selected = "SYMBOL"),
-               verbatimTextOutput("mydebug")
-
-               ),
+      menuItem("App settings",icon = icon("cogs")),
       # merely oriented to export the plots - if we want to support that capability
       menuItem("Plot export settings", icon = icon("paint-brush")),
       # quick viewer could display which relevant slots are already populated?
@@ -144,17 +138,24 @@ iSEE <- function(
 
         tabPanel(title = "Gene expression plots",  icon = icon("flash"), value="tab-geneexpr",
             uiOutput("geneExprPlots"),
-            actionButton("addGeneExprPlot", "New plot"),
-            fluidRow(
-              column(width = 6,
-                     htmlOutput("rentrez_infobox"))
-            )
+            actionButton("addGeneExprPlot", "New plot")
             ),
 
-        tabPanel(title = "t2!",  icon = icon("calendar"), value="tab-t2",
-                 h2("Content t2!")
-                 # , content will go here!
-                 ),
+        tabPanel(title = "Gene-level statistics",  icon = icon("calendar"), value="tab-genetab",
+            dataTableOutput("geneStatTab"),
+            fluidRow(
+                column(6,                      
+                    selectInput("geneStatSpeciesSelect",label = "Select the species of your samples",
+                                choices = annoSpecies_df$species,selected=""),
+                    verbatimTextOutput("geneStatSpeciesPkg"),
+                    selectInput("geneStatIDType", "select the id type in your data", choices=c("ENSEMBL","ENTREZID","REFSEQ","SYMBOL"),selected = "SYMBOL"),
+                    verbatimTextOutput("geneStatIDDebug")
+                    ),
+                column(6, 
+                    htmlOutput("geneStatInfoBox")
+                    )
+                ) 
+            ),
 
         tabPanel(title = "tab3!",  icon = icon("table"), value="tab-t3",
                  h2("Content t3!")
@@ -211,40 +212,6 @@ iSEE <- function(
         ))
       }
     }) # end of output$box_sce_obj
-
-
-    # for annotation and gene info box
-
-    output$speciespkg <- renderText({
-      shiny::validate(
-        need(input$speciesSelect!="",
-             "Select a species - requires the corresponding annotation package"
-        )
-      )
-
-      annopkg <- annoSpecies_df$pkg[annoSpecies_df$species==input$speciesSelect]
-
-      shiny::validate(
-        need(require(annopkg,character.only=TRUE),
-             paste0("The package ",annopkg, " is not installed/available. Try installing it with biocLite('",annopkg,"')"))
-      )
-
-      retmsg <- paste0(annopkg," - package available and loaded")
-
-      retmsg <- paste0(retmsg," - ",gsub(".eg.db","",gsub("org.","",annopkg)))
-      retmsg
-
-    })
-
-
-    output$mydebug <- renderText({
-      dim(annoSpecies_df)
-      # annoSpecies_df[input$speciesSelect,]$pkg
-      # input$geneExprID1, "ENTREZID", input$idtype)
-      # mapIds(get(annoSpecies_df[input$speciesSelect,]$pkg),
-             # selectedGene, "ENTREZID", input$idtype)
-    })
-
 
 #######################################################################
 # Reduced dimension scatter plot section.
@@ -371,9 +338,6 @@ iSEE <- function(
                     textInput(paste0("geneExprGeneExprsColorBy", i),
                               label = "Colour by gene expression:", 
                               value=param_choices$ColorGeneExprs)
-
-                    ,
-                    htmlOutput(paste0("infobox",i))
                     )
                 ) # end of fluidRow
         }) # end of plot_output_list
@@ -412,7 +376,6 @@ iSEE <- function(
             colorbytype <- paste0("geneExprColorBy", i0)
             colorbycol <- paste0("geneExprColDataColorBy", i0)
             colorbygene <- paste0("geneExprGeneExprsColorBy", i0)
-            infobox <- paste0("infobox",i0)
 
             output[[plotname]] <- renderPlot({
                 # Updating parameters.
@@ -441,34 +404,78 @@ iSEE <- function(
                                  colour_by=setNames(data.frame(covariate), 
                                                     covariate.name))
             }) # end of output[[plotname]]
-
-            output[[infobox]] <- renderUI({
-              shiny::validate(
-                need(input$speciesSelect!="",
-                     "Select a species - requires the corresponding annotation package"
-                )
-              ) # plus a couple more
-              selectedGene <- input[[genename]]
-              selgene_entrez <- mapIds(get(annoSpecies_df[input$speciesSelect,]$pkg),
-                                       selectedGene, "ENTREZID", input$idtype)
-              fullinfo <- entrez_summary("gene", selgene_entrez)
-              link_pubmed <- paste0('<a href="http://www.ncbi.nlm.nih.gov/gene/?term=',
-                                    selgene_entrez,
-                                    '" target="_blank" >Click here to see more at NCBI</a>')
-              if(fullinfo$summary == "")
-                return(HTML(paste0("<b>",fullinfo$name, "</b><br/><br/>",
-                                   fullinfo$description,"<br/><br/>",
-                                   link_pubmed
-                )))
-              else
-                return(HTML(paste0("<b>",fullinfo$name, "</b><br/><br/>",
-                                   fullinfo$description, "<br/><br/>",
-                                   fullinfo$summary, "<br/><br/>",
-                                   link_pubmed
-                )))
-            }) # end of output[[plotname]]
         }) # end of local
     }
+
+#######################################################################
+# Gene table section.
+#######################################################################
+
+    # Load the gene level data
+    output$geneStatTab <- renderDataTable({
+        datatable(gene.data, filter="top", rownames=TRUE, 
+                  selection=list(mode="single", selected=1))
+    })
+
+    # For annotation and gene info box
+    output$geneStatSpeciesPkg <- renderText({
+        shiny::validate(
+            need(input$geneStatSpeciesSelect!="",
+                "Select a species - requires the corresponding annotation package"
+                )
+        )
+
+        annopkg <- annoSpecies_df$pkg[annoSpecies_df$species==input$geneStatSpeciesSelect]
+        shiny::validate(
+            need(require(annopkg,character.only=TRUE),
+                paste0("The package ",annopkg, " is not installed/available. Try installing it with biocLite('",annopkg,"')"))
+                )
+        retmsg <- paste0(annopkg," - package available and loaded")
+        retmsg <- paste0(retmsg," - ",gsub(".eg.db","",gsub("org.","",annopkg)))
+        retmsg
+    })
+
+    output$geneStatIDDebug <- renderText({
+        dim(annoSpecies_df)
+        # annoSpecies_df[input$geneStatSpeciesSelect,]$pkg
+        # input$geneExprID1, "ENTREZID", input$geneStatIDType)
+        # mapIds(get(annoSpecies_df[input$geneStatSpeciesSelect,]$pkg),
+        # selectedGene, "ENTREZID", input$geneStatIDType)
+    })
+
+    output$geneStatInfoBox <- renderUI({
+        shiny::validate(
+            need(input$geneStatSpeciesSelect!="",
+                "Select a species - requires the corresponding annotation package"
+            )
+        ) 
+
+        shiny::validate(
+            need(!is.null(input$geneStatTab_rows_selected),
+                "Select a gene from the table"
+            )
+        ) 
+        selectedGene <- gene.names[input$geneStatTab_rows_selected]
+
+        selgene_entrez <- mapIds(get(annoSpecies_df[input$geneStatSpeciesSelect,]$pkg),
+                                 selectedGene, "ENTREZID", input$geneStatIDType)
+        fullinfo <- entrez_summary("gene", selgene_entrez)
+        link_pubmed <- paste0('<a href="http://www.ncbi.nlm.nih.gov/gene/?term=',
+                              selgene_entrez,
+                              '" target="_blank" >Click here to see more at NCBI</a>')
+        if(fullinfo$summary == "") {
+            return(HTML(paste0("<b>",fullinfo$name, "</b><br/><br/>",
+                               fullinfo$description,"<br/><br/>",
+                               link_pubmed
+                               )))
+        } else {
+            return(HTML(paste0("<b>",fullinfo$name, "</b><br/><br/>",
+                               fullinfo$description, "<br/><br/>",
+                               fullinfo$summary, "<br/><br/>",
+                               link_pubmed
+                               )))
+        }
+    }) # end of output[[plotname]]
 
   } # end of iSEE_server
 

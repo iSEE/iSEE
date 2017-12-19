@@ -29,7 +29,8 @@ Imports:
     ggplot2,
     scater,
     rentrez,
-    AnnotationDbi
+    AnnotationDbi,
+    DT
 Suggests:
     testthat,
     BiocStyle,

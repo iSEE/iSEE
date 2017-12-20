@@ -11,12 +11,12 @@ iSEE(se, redDim.default = 5, geneExpr.default = 5)
 
 \item{redDim.default}{An integer scalar specifying the maximum number of
 reduced dimension plots in the interface. Alternatively, a DataFrame 
-similar to that produced by \code{\link{redDimPlotDefault}}, specifying 
+similar to that produced by \code{\link{redDimPlotDefaults}}, specifying 
 initial parameters for the plots.}
 
 \item{geneExpr.default}{An integer scalar specifying the maximum number of
 gene expression plots in the interface. Alternatively, a DataFrame 
-similar to that produced by \code{\link{geneExprPlotDefault}}, specifying
+similar to that produced by \code{\link{geneExprPlotDefaults}}, specifying
 initial parameters for the plots.}
 }
 \value{
@@ -30,7 +30,7 @@ Interactive visualization of single-cell data using a Shiny interface.
 \details{
 Users can pass default parameters via DataFrame objects in 
 \code{redDim.default} and \code{geneExpr.default}. Each object can contain 
-some or all of the expected fields (see \code{\link{redDimPlotDefault}}).
+some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
 Any missing fields will be filled in with the defaults.
 
 Users can specify any number of maximum plots, though increasing the 

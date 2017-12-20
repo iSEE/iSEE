@@ -23,6 +23,7 @@ Depends:
 Imports:
     methods,
     BiocGenerics, 
+    S4Vectors,
     utils,
     shiny,
     shinydashboard,

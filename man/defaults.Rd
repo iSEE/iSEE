@@ -4,9 +4,7 @@
 \alias{defaults}
 \alias{redDimPlotDefaults}
 \alias{geneExprPlotDefaults}
-\title{Plot parameter defaults 
-
-Create default settings for various plots in the iSEE interface.}
+\title{Plot parameter defaults}
 \usage{
 redDimPlotDefaults(se, max.plots)
 
@@ -21,6 +19,9 @@ plots of the corresponding type that can be added to the interface.}
 \value{
 A DataFrame containing default settings for various 
 parameters of reduced dimension or gene expression plots.
+}
+\description{
+Create default settings for various plots in the iSEE interface.
 }
 \section{Reduced dimension plot parameters}{
 

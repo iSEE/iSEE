@@ -4,7 +4,7 @@
 #'
 #' @title Plot parameter defaults 
 #'
-#' Create default settings for various plots in the iSEE interface.
+#' @description Create default settings for various plots in the iSEE interface.
 #'
 #' @param se A SingleCellExperiment object.
 #' @param max.plots An integer scalar, specifying the maximum number of 

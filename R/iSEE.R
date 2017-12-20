@@ -6,16 +6,16 @@
 #' @param se A SingleCellExperiment object.
 #' @param redDim.default An integer scalar specifying the maximum number of
 #' reduced dimension plots in the interface. Alternatively, a DataFrame 
-#' similar to that produced by \code{\link{redDimPlotDefault}}, specifying 
+#' similar to that produced by \code{\link{redDimPlotDefaults}}, specifying 
 #' initial parameters for the plots.
 #' @param geneExpr.default An integer scalar specifying the maximum number of
 #' gene expression plots in the interface. Alternatively, a DataFrame 
-#' similar to that produced by \code{\link{geneExprPlotDefault}}, specifying
+#' similar to that produced by \code{\link{geneExprPlotDefaults}}, specifying
 #' initial parameters for the plots.
 #'
 #' @details Users can pass default parameters via DataFrame objects in 
 #' \code{redDim.default} and \code{geneExpr.default}. Each object can contain 
-#' some or all of the expected fields (see \code{\link{redDimPlotDefault}}).
+#' some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
 #' Any missing fields will be filled in with the defaults.
 #'
 #' Users can specify any number of maximum plots, though increasing the 
@@ -69,17 +69,19 @@ iSEE <- function(
     reddim_plot_param <- redDimPlotDefaults(se, redDim.default)
   } else {
     reddim_plot_param <- redDimPlotDefaults(se, nrow(redDim.default)) 
-    reddim_plot_param <- .override_defaults(reddim_plot_default, redDim.default)
+    reddim_plot_param <- .override_defaults(reddim_plot_param, redDim.default)
   }
   reddim_max_plots <- nrow(reddim_plot_param)
+  reddim_active_plots <- which(reddim_max_plots$Active)
                                           
   if (is.numeric(geneExpr.default)) { 
     geneexpr_plot_param <- geneExprPlotDefaults(se, geneExpr.default)
   } else {
     geneexpr_plot_param <- geneExprPlotDefaults(se, nrow(geneExpr.default)) 
-    geneexpr_plot_param <- .override_defaults(geneexpr_plot_default, geneExpr.default)
+    geneexpr_plot_param <- .override_defaults(geneexpr_plot_param, geneExpr.default)
   }
   geneexpr_max_plots <- nrow(geneexpr_plot_param)
+  geneexpr_active_plots <- which(geneexpr_max_plots$Active)
   
   # for retrieving the annotation
   annoSpecies_df <-
@@ -198,9 +200,8 @@ iSEE <- function(
 
     # storage for all the reactive objects
     rObjects <- reactiveValues(
-      reddim_active_plots = 1,
-      geneexpr_active_plots = 1,
-      se = NULL
+      reddim_active_plots = reddim_active_plots,
+      geneexpr_active_plots = geneexpr_active_plots
     )
     
     # storage for other persistent objects

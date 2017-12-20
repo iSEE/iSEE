@@ -4,6 +4,7 @@
 #'
 #' @import SingleCellExperiment
 #' @import SummarizedExperiment
+#' @importFrom S4Vectors DataFrame
 #' @importMethodsFrom BiocGenerics ncol nrow
 #' @importFrom methods as
 #' @importFrom rintrojs introjsUI

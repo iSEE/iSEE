@@ -57,8 +57,9 @@ iSEE <- function(
   reddim_plot_param <- data.frame(Type=rep(red.dim.names[1], max_plots),
                                   Dim1=1, Dim2=2,
                                   ColorBy=.colorByColDataTitle,
-                                  ColData=covariates[1],
-                                  GeneExprs=gene.names[1],
+                                  ColorByColData=covariates[1],
+                                  ColorByGeneExprs=gene.names[1],
+                                  ColorByGeneExprsAssay=all.assays[1],
                                   PlotParamPanel=TRUE,
                                   stringsAsFactors=FALSE)
   
@@ -70,6 +71,7 @@ iSEE <- function(
                                     ColorBy=.colorByColDataTitle,
                                     ColorColData=covariates[1],
                                     ColorGeneExprs=gene.names[1],
+                                    ColorByGeneExprsAssay=all.assays[1],
                                     PlotParamPanel=TRUE,
                                     stringsAsFactors=FALSE)
   
@@ -266,12 +268,15 @@ iSEE <- function(
                                          label="Color by:", inline=FALSE,
                                          choices=c(.colorByColDataTitle, .colorByGeneExprsTitle),
                                          selected=param_choices$ColorBy),
-                            selectInput(.redDimColDataColorBy(i), 
+                            selectInput(.redDimColorByColData(i), 
                                         label = "Column data:",
-                                        choices=covariates, selected=param_choices$ColData),
-                            textInput(.redDimGeneExprsColorBy(i),
+                                        choices=covariates, selected=param_choices$ColorByColData),
+                            textInput(.redDimColorByGeneExprs(i),
                                       label = "Gene expression:",
-                                      value=param_choices$GeneExprs)
+                                      value=param_choices$ColorByGeneExprs),
+                            selectInput(.redDimColorByGeneExprsAssay(i), label=NULL,
+                                        choices=all.assays, selected=param_choices$ColorByGeneExprsAssay)
+
                                                 ) # end of bsCollapsePanel
                        ) # end of bsCollapse
                      ) # end of column
@@ -314,8 +319,9 @@ iSEE <- function(
         dim2name <- .redDimYAxis(i0)
         panelname <- .redDimPlotPanel(i0)
         colorbytype <- .redDimColorBy(i0)
-        colorbycol <- .redDimColDataColorBy(i0)
-        colorbygene <- .redDimGeneExprsColorBy(i0)
+        colorbycol <- .redDimColorByColData(i0)
+        colorbygene <- .redDimColorByGeneExprs(i0)
+        colorbygeneassay <- .redDimColorByGeneExprsAssay(i0)
     
         output[[plotname]] <- renderPlot({
           # Updating parameters.
@@ -323,16 +329,17 @@ iSEE <- function(
           pObjects$reddim_plot_param$Dim1[i0] <- as.integer(input[[dim1name]])
           pObjects$reddim_plot_param$Dim2[i0] <- as.integer(input[[dim2name]])
           pObjects$reddim_plot_param$ColorBy[i0] <- input[[colorbytype]]
-          pObjects$reddim_plot_param$ColData[i0] <- input[[colorbycol]]
-          pObjects$reddim_plot_param$GeneExprs[i0] <- input[[colorbygene]]
+          pObjects$reddim_plot_param$ColorByColData[i0] <- input[[colorbycol]]
+          pObjects$reddim_plot_param$ColorByGeneExprs[i0] <- input[[colorbygene]]
+          pObjects$reddim_plot_param$ColorByGeneExprsAssay[i0] <- input[[colorbygeneassay]]
           pObjects$reddim_plot_param$PlotParamPanel[i0] <- .redDimPlotParamPanelTitle %in% input[[panelname]] 
           
           param_choices <- pObjects$reddim_plot_param[i0,]
           red.dim <- reducedDim(se, param_choices$Type)
           if (param_choices$ColorBy==.colorByColDataTitle) {
-            covariate <- cell.data[,param_choices$ColData]
+            covariate <- cell.data[,param_choices$ColorByColData]
           } else {
-            covariate <- logcounts(se)[param_choices$GeneExprs,]
+            covariate <- assay(se, param_choices$ColorByGeneExprsAssay)[param_choices$ColorByGeneExprs,]
           }
           
           plot.data <- data.frame(Dim1=red.dim[,param_choices$Dim1],
@@ -465,7 +472,7 @@ iSEE <- function(
             covariate <- colData(se)[,param_choices$ColorColData]
             covariate.name <- param_choices$ColorColData
           } else {
-            covariate <- assays(se)[[param_choices$ExprAssay]][param_choices$ColorGeneExprs,]
+            covariate <- assay(se, param_choices$ExprAssay)[param_choices$ColorGeneExprs,]
             covariate.name <- param_choices$ColorGeneExprs
           }
 

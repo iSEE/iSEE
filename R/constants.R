@@ -9,8 +9,9 @@
 .redDimDiscard <- function(i) paste0("redDimDiscard", i)
 .redDimPlotPanel <- function(i) paste0("redDimPlotPanel",i)
 .redDimColorBy <- function(i) paste0("redDimColorBy", i)
-.redDimColDataColorBy <- function(i) paste0("redDimColDataColorBy", i)
-.redDimGeneExprsColorBy <- function(i) paste0("redDimGeneExprsColorBy", i)
+.redDimColorByColData <- function(i) paste0("redDimColorByColData", i)
+.redDimColorByGeneExprs <- function(i) paste0("redDimColorByGeneExprs", i)
+.redDimColorByGeneExprsAssay <- function(i) paste0("redDimColorByGeneExprsAssay", i)
 .redDimPlotParamPanelTitle <- "Advanced plot parameters"
 
 # Gene expression plotting parameters.
@@ -23,12 +24,10 @@
 .geneExprXAxis <- function(i) paste0("geneExprXAxis", i)
 .geneExprXAxisColData <- function(i) paste0("geneExprXAxisColData", i)
 .geneExprXAxisGeneExprs  <- function(i) paste0("geneExprXAxisGeneExprs", i) 
-.geneExprXAxisGeneExprsAssay  <- function(i) paste0("geneExprXAxisGeneExprsAssay", i) 
 .geneExprDiscard <- function(i) paste0("geneExprDiscard", i)
 
 .geneExprColorBy <- function(i) paste0("geneExprColorBy", i)
 .geneExprColorByColData <- function(i) paste0("geneExprColorByColData", i)
 .geneExprColorByGeneExprs <- function(i) paste0("geneExprColorByGeneExprs", i)
-.geneExprColorByGeneExprsAssay <- function(i) paste0("geneExprColorByGeneExprsAssay", i)
 
 .geneExprPlotParamPanelTitle <- "Advanced plot parameters"

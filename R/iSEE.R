@@ -281,12 +281,12 @@ iSEE <- function(
     
     # Plot addition and removal, as well as parameter setting.
     observeEvent(input$addRedDimPlot, {
-      first.missing <- setdiff(seq_len(max_plots), rObjects$reddim_active_plots)
-      rObjects$reddim_active_plots <- c(rObjects$reddim_active_plots, first.missing[1])
-      
-      lapply(1:(length(rObjects$reddim_active_plots)-1), function(arg)
-        updateCollapse(session, paste0("collapse_redDimPlots",arg),
-                       close = "Advanced plot parameters"))
+        first.missing <- setdiff(seq_len(max_plots), rObjects$reddim_active_plots)
+        rObjects$reddim_active_plots <- c(rObjects$reddim_active_plots, first.missing[1])
+
+        lapply(1:(length(rObjects$reddim_active_plots)-1), function(arg)
+               shinyBS::updateCollapse(session, paste0("collapse_redDimPlots",arg),
+                              close = "Advanced plot parameters"))
     })
     
     for (i in seq_len(max_plots)) {

@@ -59,6 +59,7 @@ iSEE <- function(
                                   ColorBy="Column data",
                                   ColData=covariates[1],
                                   GeneExprs=gene.names[1],
+                                  PlotParamPanel=TRUE,
                                   stringsAsFactors=FALSE)
   
   geneexpr_plot_param <- data.frame(ID=rep(gene.names[1], max_plots),
@@ -234,43 +235,42 @@ iSEE <- function(
     output$redDimPlots <- renderUI({
         plot_output_list <- lapply(rObjects$reddim_active_plots, function(i) {
             param_choices <- pObjects$reddim_plot_param[i,]
-
+            chosen.open <- character(0)
+            if (param_choices$PlotParamPanel) {
+                chosen.open <- c(chosen.open, .redDimPlotParamPanelTitle)
+            }
 
             fluidRow(
               column(6, plotOutput(paste0("redDimPlot", i))),
-              column(6,
+              column(3, 
+                     selectInput(paste0("redDimType", i), label="Type",
+                                 choices=red.dim.names, selected=param_choices$Type),
+                     textInput(paste0("redDimChoice", i, "_1"), label="Dimension 1",
+                               value=param_choices$Dim1),
+                     textInput(paste0("redDimChoice", i, "_2"), label="Dimension 2",
+                               value=param_choices$Dim2),
+                     actionButton(paste0("removeRedDimPlot", i), "Remove plot",
+                                  icon = icon("trash"),class = "btn btn-warning")
+                     ),
+              column(3, 
                      shinyBS::bsCollapse(
-                       id = paste0("collapse_redDimPlots",i),
-                       open = "Advanced plot parameters",
+                       id = paste0("redDimPlotPanel",i),
+                       open = chosen.open,
                        shinyBS::bsCollapsePanel(
-                         title = "Advanced plot parameters",
-                         fluidRow(
-                           column(6,
-                                  selectInput(paste0("redDimType", i), label="Type",
-                                              choices=red.dim.names, selected=param_choices$Type),
-                                  textInput(paste0("redDimChoice", i, "_1"), label="Dimension 1",
-                                            value=param_choices$Dim1),
-                                  textInput(paste0("redDimChoice", i, "_2"), label="Dimension 2",
-                                            value=param_choices$Dim2)
-                           ),
-                           column(6,
-                                  radioButtons(paste0("redDimColorBy", i), label="Color by:", 
-                                               inline=FALSE,
-                                               choices=c("Column data", "Gene expression"),
-                                               selected=param_choices$ColorBy),
-                                  selectInput(paste0("redDimColDataColorBy", i), 
-                                              label = "Column data:",
-                                              choices=covariates, selected=param_choices$ColData),
-                                  textInput(paste0("redDimGeneExprsColorBy", i), 
-                                            label = "Gene expression:",
-                                            value=param_choices$GeneExprs),
-                                  actionButton(paste0("removeRedDimPlot", i), "Remove plot",
-                                               icon = icon("trash"),class = "btn btn-warning")
-                           )
-                         )
-                       ) # end of bsCollapsePanel
-                     ) # end of bsCollapse
-              ) # end of column
+                            title = .redDimPlotParamPanelTitle,
+                            radioButtons(paste0("redDimColorBy", i), 
+                                         label="Color by:", inline=FALSE,
+                                         choices=c("Column data", "Gene expression"),
+                                         selected=param_choices$ColorBy),
+                            selectInput(paste0("redDimColDataColorBy", i), 
+                                        label = "Column data:",
+                                        choices=covariates, selected=param_choices$ColData),
+                            textInput(paste0("redDimGeneExprsColorBy", i), 
+                                      label = "Gene expression:",
+                                      value=param_choices$GeneExprs)
+                                                ) # end of bsCollapsePanel
+                       ) # end of bsCollapse
+                     ) # end of column
             ) # end of fluidRow
         })
 
@@ -279,14 +279,10 @@ iSEE <- function(
         do.call(tagList, plot_output_list)
     })
     
-    # Plot addition and removal, as well as parameter setting.
+    # Plot addition and removal.
     observeEvent(input$addRedDimPlot, {
         first.missing <- setdiff(seq_len(max_plots), rObjects$reddim_active_plots)
         rObjects$reddim_active_plots <- c(rObjects$reddim_active_plots, first.missing[1])
-
-        lapply(1:(length(rObjects$reddim_active_plots)-1), function(arg)
-               shinyBS::updateCollapse(session, paste0("collapse_redDimPlots",arg),
-                              close = "Advanced plot parameters"))
     })
     
     for (i in seq_len(max_plots)) {
@@ -297,7 +293,7 @@ iSEE <- function(
         })
       })
     }
-    
+
     for (i in seq_len(max_plots)) {
       # Need local so that each item gets its own number. Without it, the value
       # of i in the renderPlot() will be the same across all instances, because
@@ -308,10 +304,12 @@ iSEE <- function(
         typename <- paste0("redDimType", i0)
         dim1name <- paste0("redDimChoice", i0, "_1")
         dim2name <- paste0("redDimChoice", i0, "_2")
+        openplot <- paste0("redDimPlotPanel", i0)
         colorbytype <- paste0("redDimColorBy", i0)
         colorbycol <- paste0("redDimColDataColorBy", i0)
         colorbygene <- paste0("redDimGeneExprsColorBy", i0)
-        
+        panelname <- paste0("redDimPlotPanel", i0)
+    
         output[[plotname]] <- renderPlot({
           # Updating parameters.
           pObjects$reddim_plot_param$Type[i0] <- input[[typename]]
@@ -320,6 +318,7 @@ iSEE <- function(
           pObjects$reddim_plot_param$ColorBy[i0] <- input[[colorbytype]]
           pObjects$reddim_plot_param$ColData[i0] <- input[[colorbycol]]
           pObjects$reddim_plot_param$GeneExprs[i0] <- input[[colorbygene]]
+          pObjects$reddim_plot_param$PlotParamPanel[i0] <- .redDimPlotParamPanelName %in% input[[panelname]] 
           
           param_choices <- pObjects$reddim_plot_param[i0,]
           red.dim <- reducedDim(se, param_choices$Type)
@@ -548,4 +547,10 @@ iSEE <- function(
   
   shinyApp(ui = iSEE_ui, server = iSEE_server)
 }
+
+#######################################################
+# Various variables, that can go here or elsewhere.
+
+.redDimPlotParamPanelTitle <- "Advanced plot parameters"
+
 

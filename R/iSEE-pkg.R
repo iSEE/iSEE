@@ -20,7 +20,7 @@
 #'   theme_bw facet_wrap ylab
 #' @importFrom DT datatable renderDataTable dataTableOutput
 #' @importFrom stats setNames
-#' @importFrom AnnotationDbi mapIds
+#' @importFrom AnnotationDbi mapIds keytypes
 #' @importFrom rentrez entrez_summary
 #' @importFrom shinyBS bsCollapsePanel bsCollapse updateCollapse
 #'

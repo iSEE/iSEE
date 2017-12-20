@@ -4,20 +4,31 @@
 \alias{iSEE}
 \title{iSEE: interactive SingleCell/Summarized Experiment Explorer}
 \usage{
-iSEE(se, redDim.default = 5, geneExpr.default = 5)
+iSEE(se, redDim.args = 5, geneExpr.args = 5, annot.orgdb = NULL,
+  annot.keytype = "ENTREZID", annot.keyfield = NULL)
 }
 \arguments{
 \item{se}{A SingleCellExperiment object.}
 
-\item{redDim.default}{An integer scalar specifying the maximum number of
+\item{redDim.args}{An integer scalar specifying the maximum number of
 reduced dimension plots in the interface. Alternatively, a DataFrame 
 similar to that produced by \code{\link{redDimPlotDefaults}}, specifying 
 initial parameters for the plots.}
 
-\item{geneExpr.default}{An integer scalar specifying the maximum number of
+\item{geneExpr.args}{An integer scalar specifying the maximum number of
 gene expression plots in the interface. Alternatively, a DataFrame 
 similar to that produced by \code{\link{geneExprPlotDefaults}}, specifying
 initial parameters for the plots.}
+
+\item{annot.orgdb}{An \code{org.*.db} annotation object from which 
+Entrez identifiers can be retrieved.}
+
+\item{annot.keytype}{A string specifying the keytype to use to query
+\code{annot.orgdb}.}
+
+\item{annot.keyfield}{A string specifying the field of \code{rowData(se)}
+containing the keys of type \code{annot.keytype}. If \code{NULL}, the
+row names of \code{se} are used as the keys.}
 }
 \value{
 A Shiny App is launched for interactive data exploration of the
@@ -29,12 +40,16 @@ Interactive visualization of single-cell data using a Shiny interface.
 }
 \details{
 Users can pass default parameters via DataFrame objects in 
-\code{redDim.default} and \code{geneExpr.default}. Each object can contain 
+\code{redDim.args} and \code{geneExpr.args}. Each object can contain 
 some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
 Any missing fields will be filled in with the defaults.
 
 Users can specify any number of maximum plots, though increasing the 
-number will increase the time required to generate any given plot.
+number will increase the time required to generate any given plot. 
+
+If \code{annot.orgdb} is specified, gene information will be retrieved
+upon selection of particular genes in the data table. No retrieval is 
+performed if \code{annot.orgdb=NULL}.
 }
 \examples{
 library(scRNAseq)

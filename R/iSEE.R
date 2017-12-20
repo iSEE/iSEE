@@ -4,22 +4,33 @@
 #' Interactive visualization of single-cell data using a Shiny interface.
 #'
 #' @param se A SingleCellExperiment object.
-#' @param redDim.default An integer scalar specifying the maximum number of
+#' @param redDim.args An integer scalar specifying the maximum number of
 #' reduced dimension plots in the interface. Alternatively, a DataFrame 
 #' similar to that produced by \code{\link{redDimPlotDefaults}}, specifying 
 #' initial parameters for the plots.
-#' @param geneExpr.default An integer scalar specifying the maximum number of
+#' @param geneExpr.args An integer scalar specifying the maximum number of
 #' gene expression plots in the interface. Alternatively, a DataFrame 
 #' similar to that produced by \code{\link{geneExprPlotDefaults}}, specifying
 #' initial parameters for the plots.
+#' @param annot.orgdb An \code{org.*.db} annotation object from which 
+#' Entrez identifiers can be retrieved. 
+#' @param annot.keytype A string specifying the keytype to use to query
+#' \code{annot.orgdb}.
+#' @param annot.keyfield A string specifying the field of \code{rowData(se)}
+#' containing the keys of type \code{annot.keytype}. If \code{NULL}, the
+#' row names of \code{se} are used as the keys.
 #'
 #' @details Users can pass default parameters via DataFrame objects in 
-#' \code{redDim.default} and \code{geneExpr.default}. Each object can contain 
+#' \code{redDim.args} and \code{geneExpr.args}. Each object can contain 
 #' some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
 #' Any missing fields will be filled in with the defaults.
 #'
 #' Users can specify any number of maximum plots, though increasing the 
 #' number will increase the time required to generate any given plot. 
+#'
+#' If \code{annot.orgdb} is specified, gene information will be retrieved
+#' upon selection of particular genes in the data table. No retrieval is 
+#' performed if \code{annot.orgdb=NULL}.
 #' 
 #' @return A Shiny App is launched for interactive data exploration of the
 #' \code{\link{SingleCellExperiment}} / \code{\link{SummarizedExperiment}}
@@ -43,8 +54,11 @@
 #' if (interactive()) { iSEE(sce) }
 iSEE <- function(
   se,
-  redDim.default=5,
-  geneExpr.default=5 
+  redDim.args=5,
+  geneExpr.args=5,
+  annot.orgdb=NULL,
+  annot.keytype="ENTREZID",
+  annot.keyfield=NULL
 ) {
 
   # for correct usage of the pkg, need explicit call
@@ -65,42 +79,30 @@ iSEE <- function(
   }
   
   # Setting up initial reduced dim plot parameters.
-  if (is.numeric(redDim.default)) { 
-    reddim_plot_param <- redDimPlotDefaults(se, redDim.default)
+  if (is.numeric(redDim.args)) { 
+    reddim_plot_param <- redDimPlotDefaults(se, redDim.args)
   } else {
-    reddim_plot_param <- redDimPlotDefaults(se, nrow(redDim.default)) 
-    reddim_plot_param <- .override_defaults(reddim_plot_param, redDim.default)
+    reddim_plot_param <- redDimPlotDefaults(se, nrow(redDim.args)) 
+    reddim_plot_param <- .override_defaults(reddim_plot_param, redDim.args)
   }
   reddim_max_plots <- nrow(reddim_plot_param)
-  reddim_active_plots <- which(reddim_max_plots$Active)
+  reddim_active_plots <- which(reddim_plot_param$Active)
                                           
-  if (is.numeric(geneExpr.default)) { 
-    geneexpr_plot_param <- geneExprPlotDefaults(se, geneExpr.default)
+  if (is.numeric(geneExpr.args)) { 
+    geneexpr_plot_param <- geneExprPlotDefaults(se, geneExpr.args)
   } else {
-    geneexpr_plot_param <- geneExprPlotDefaults(se, nrow(geneExpr.default)) 
-    geneexpr_plot_param <- .override_defaults(geneexpr_plot_param, geneExpr.default)
+    geneexpr_plot_param <- geneExprPlotDefaults(se, nrow(geneExpr.args)) 
+    geneexpr_plot_param <- .override_defaults(geneexpr_plot_param, geneExpr.args)
   }
   geneexpr_max_plots <- nrow(geneexpr_plot_param)
-  geneexpr_active_plots <- which(geneexpr_max_plots$Active)
+  geneexpr_active_plots <- which(geneexpr_plot_param$Active)
   
   # for retrieving the annotation
-  annoSpecies_df <-
-    data.frame(species=c("","Anopheles","Arabidopsis","Bovine","Worm",
-                         "Canine","Fly","Zebrafish","E coli strain K12",
-                         "E coli strain Sakai","Chicken","Human","Mouse",
-                         "Rhesus","Malaria","Chimp","Rat",
-                         "Yeast","Streptomyces coelicolor", "Pig","Toxoplasma gondii",
-                         "Xenopus"),
-               pkg=c("","org.Ag.eg.db", "org.At.tair.db", "org.Bt.eg.db", "org.Ce.eg.db",
-                     "org.Cf.eg.db", "org.Dm.eg.db", "org.Dr.eg.db", "org.EcK12.eg.db",
-                     "org.EcSakai.eg.db", "org.Gg.eg.db", "org.Hs.eg.db", "org.Mm.eg.db",
-                     "org.Mmu.eg.db", "org.Pf.plasmo.db", "org.Pt.eg.db", "org.Rn.eg.db",
-                     "org.Sc.sgd.db", "org.Sco.eg.db", "org.Ss.eg.db", "org.Tgondii.eg.db",
-                     "org.Xl.eg.db"),
-               stringsAsFactors = FALSE)
-  annoSpecies_df <- annoSpecies_df[order(annoSpecies_df$species),]
-  rownames(annoSpecies_df) <- annoSpecies_df$species # easier to access afterwards
-  
+  if (!is.null(annot.orgdb)) { 
+    if (!annot.keytype %in% keytypes(annot.orgdb)) { 
+      stop("specified keytype not in org.*.db object")
+    }
+  }
   
   # general options:
   
@@ -164,21 +166,8 @@ iSEE <- function(
         
         tabPanel(title = "Gene-level statistics",  icon = icon("calendar"), value="tab-genetab",
                  dataTableOutput("geneStatTab"),
-                 fluidRow(
-                   column(6,
-                          selectInput("geneStatSpeciesSelect",
-                                      label = "Select the species of your samples",
-                                      choices = annoSpecies_df$species,selected=""),
-                          verbatimTextOutput("geneStatSpeciesPkg"),
-                          selectInput("geneStatIDType", "select the id type in your data", 
-                                      choices=c("ENSEMBL","ENTREZID","REFSEQ","SYMBOL"),
-                                      selected = "SYMBOL"),
-                          verbatimTextOutput("geneStatIDDebug")
-                   ),
-                   column(6,
-                          htmlOutput("geneStatInfoBox")
-                   )
-                 )
+                 hr(),
+                 htmlOutput("geneStatInfoBox")
         ),
         
         tabPanel(title = "tab3!",  icon = icon("table"), value="tab-t3",
@@ -483,53 +472,35 @@ iSEE <- function(
       datatable(gene.data, filter="top", rownames=TRUE,
                 selection=list(mode="single", selected=1))
     })
-    
-    # For annotation and gene info box
-    output$geneStatSpeciesPkg <- renderText({
-      shiny::validate(
-        need(input$geneStatSpeciesSelect!="",
-             "Select a species - requires the corresponding annotation package"
-        )
-      )
-      
-      annopkg <- annoSpecies_df$pkg[annoSpecies_df$species==input$geneStatSpeciesSelect]
-      shiny::validate(
-        need(require(annopkg,character.only=TRUE),
-             paste0("The package ",annopkg, " is not installed/available. Try installing it with biocLite('",annopkg,"')"))
-      )
-      retmsg <- paste0(annopkg," - package available and loaded")
-      retmsg <- paste0(retmsg," - ",gsub(".eg.db","",gsub("org.","",annopkg)))
-      retmsg
-    })
-    
-    output$geneStatIDDebug <- renderText({
-      dim(annoSpecies_df)
-      # annoSpecies_df[input$geneStatSpeciesSelect,]$pkg
-      # input$geneExprID1, "ENTREZID", input$geneStatIDType)
-      # mapIds(get(annoSpecies_df[input$geneStatSpeciesSelect,]$pkg),
-      # selectedGene, "ENTREZID", input$geneStatIDType)
-    })
-    
+       
     output$geneStatInfoBox <- renderUI({
-      shiny::validate(
-        need(input$geneStatSpeciesSelect!="",
-             "Select a species - requires the corresponding annotation package"
-        )
-      )
-      
+      if (is.null(annot.orgdb)) {
+        return(HTML(""))
+      }
+
       shiny::validate(
         need(!is.null(input$geneStatTab_rows_selected),
              "Select a gene from the table"
         )
       )
-      selectedGene <- gene.names[input$geneStatTab_rows_selected]
+     
+      if (is.null(annot.keyfield)) { 
+        selectedGene <- gene.names[input$geneStatTab_rows_selected]
+      } else {
+        selectedGene <- gene.data[input$geneStatTab_rows_selected,annot.keyfield]
+      }
       
-      selgene_entrez <- mapIds(get(annoSpecies_df[input$geneStatSpeciesSelect,]$pkg),
-                               selectedGene, "ENTREZID", input$geneStatIDType)
+      if (annot.keytype!="ENTREZID") {
+        selgene_entrez <- mapIds(annot.orgdb, selectedGene, "ENTREZID", annot.keytype)
+      } else {
+        selgene_entrez <- selectedGene
+      }
+
       fullinfo <- entrez_summary("gene", selgene_entrez)
       link_pubmed <- paste0('<a href="http://www.ncbi.nlm.nih.gov/gene/?term=',
                             selgene_entrez,
                             '" target="_blank" >Click here to see more at NCBI</a>')
+
       if(fullinfo$summary == "") {
         return(HTML(paste0("<b>",fullinfo$name, "</b><br/><br/>",
                            fullinfo$description,"<br/><br/>",

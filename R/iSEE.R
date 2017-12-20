@@ -31,6 +31,10 @@ iSEE <- function(
   se
 ) {
 
+  # for correct usage of the pkg, need explicit call
+  # https://ebailey78.github.io/shinyBS/install.html#using_shinybs
+  # library(shinyBS)
+
   cell.data <- colData(se)
   covariates <- colnames(cell.data)
 

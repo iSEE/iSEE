@@ -178,7 +178,7 @@ iSEE <- function(
 
   ########## server definition ##########
 
-  iSEE_server <- function(input, output) {
+  iSEE_server <- function(input, output, session) {
 
     # storage for all the reactive objects
     rObjects <- reactiveValues(
@@ -234,7 +234,7 @@ iSEE <- function(
               column(6, plotOutput(paste0("redDimPlot", i))),
               column(6,
                      shinyBS::bsCollapse(
-                       id = "collapse_redDimPlots", multiple = TRUE,
+                       id = paste0("collapse_redDimPlots",i),
                        open = "Advanced plot parameters",
                        shinyBS::bsCollapsePanel(
                          title = "Advanced plot parameters",
@@ -274,6 +274,10 @@ iSEE <- function(
     observeEvent(input$addRedDimPlot, {
         first.missing <- setdiff(seq_len(max_plots), rObjects$reddim_active_plots)
         rObjects$reddim_active_plots <- c(rObjects$reddim_active_plots, first.missing[1])
+
+        lapply(1:(length(rObjects$reddim_active_plots)-1), function(arg)
+               updateCollapse(session, paste0("collapse_redDimPlots",arg),
+                              close = "Advanced plot parameters"))
     })
 
     for (i in seq_len(max_plots)) {
@@ -343,7 +347,7 @@ iSEE <- function(
                      textInput(paste0("geneExprID", i), label = "Gene expression:",
                                value=param_choices$ID),
                 shinyBS::bsCollapse(
-                      id = "collapse_geneExprPlots", multiple = TRUE,
+                      id = paste0("collapse_geneExprPlots", i),
                       open = "Advanced plot parameters",
                       shinyBS::bsCollapsePanel(
                         title = "Advanced plot parameters",
@@ -378,6 +382,10 @@ iSEE <- function(
     observeEvent(input$addGeneExprPlot, {
         first.missing <- setdiff(seq_len(max_plots), rObjects$geneexpr_active_plots)
         rObjects$geneexpr_active_plots <- c(rObjects$geneexpr_active_plots, first.missing[1])
+
+        lapply(1:(length(rObjects$geneexpr_active_plots)-1), function(arg)
+          updateCollapse(session, paste0("collapse_geneExprPlots",arg),
+                         close = "Advanced plot parameters"))
     })
 
     for (i in seq_len(max_plots)) {

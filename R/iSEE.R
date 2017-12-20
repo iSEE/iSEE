@@ -30,7 +30,11 @@
 iSEE <- function(
   se
 ) {
-  
+
+  # for correct usage of the pkg, need explicit call
+  # https://ebailey78.github.io/shinyBS/install.html#using_shinybs
+  # library(shinyBS)
+
   cell.data <- colData(se)
   covariates <- colnames(cell.data)
   
@@ -179,9 +183,9 @@ iSEE <- function(
   
   
   ########## server definition ##########
-  
-  iSEE_server <- function(input, output) {
-    
+
+  iSEE_server <- function(input, output, session) {
+
     # storage for all the reactive objects
     rObjects <- reactiveValues(
       reddim_active_plots = 1,
@@ -228,57 +232,61 @@ iSEE <- function(
     # Multiple scatterplots colored by covariates,
     # nicked from https://stackoverflow.com/questions/15875786/dynamically-add-plots-to-web-page-using-shiny.
     output$redDimPlots <- renderUI({
-      plot_output_list <- lapply(rObjects$reddim_active_plots, function(i) {
-        param_choices <- pObjects$reddim_plot_param[i,]
-        
-        
-        fluidRow(
-          column(6, plotOutput(paste0("redDimPlot", i))),
-          column(6,
-                 shinyBS::bsCollapse(
-                   id = "collapse_redDimPlots", multiple = TRUE,
-                   open = "Advanced plot parameters",
-                   shinyBS::bsCollapsePanel(
-                     title = "Advanced plot parameters",
-                     fluidRow(
-                       column(6,
-                              selectInput(paste0("redDimType", i), label="Type",
-                                          choices=red.dim.names, selected=param_choices$Type),
-                              textInput(paste0("redDimChoice", i, "_1"), label="Dimension 1",
-                                        value=param_choices$Dim1),
-                              textInput(paste0("redDimChoice", i, "_2"), label="Dimension 2",
-                                        value=param_choices$Dim2)
-                       ),
-                       column(6,
-                              radioButtons(paste0("redDimColorBy", i), label="Color by:", 
-                                           inline=FALSE,
-                                           choices=c("Column data", "Gene expression"),
-                                           selected=param_choices$ColorBy),
-                              selectInput(paste0("redDimColDataColorBy", i), 
-                                          label = "Column data:",
-                                          choices=covariates, selected=param_choices$ColData),
-                              textInput(paste0("redDimGeneExprsColorBy", i), 
-                                        label = "Gene expression:",
-                                        value=param_choices$GeneExprs),
-                              actionButton(paste0("removeRedDimPlot", i), "Remove plot",
-                                           icon = icon("trash"),class = "btn btn-warning")
-                       )
-                     )
-                   ) # end of bsCollapsePanel
-                 ) # end of bsCollapse
-          ) # end of column
-        ) # end of fluidRow
-      })
-      
-      # Convert the list to a tagList - this is necessary for the list of items
-      # to display properly.
-      do.call(tagList, plot_output_list)
+        plot_output_list <- lapply(rObjects$reddim_active_plots, function(i) {
+            param_choices <- pObjects$reddim_plot_param[i,]
+
+
+            fluidRow(
+              column(6, plotOutput(paste0("redDimPlot", i))),
+              column(6,
+                     shinyBS::bsCollapse(
+                       id = paste0("collapse_redDimPlots",i),
+                       open = "Advanced plot parameters",
+                       shinyBS::bsCollapsePanel(
+                         title = "Advanced plot parameters",
+                         fluidRow(
+                           column(6,
+                                  selectInput(paste0("redDimType", i), label="Type",
+                                              choices=red.dim.names, selected=param_choices$Type),
+                                  textInput(paste0("redDimChoice", i, "_1"), label="Dimension 1",
+                                            value=param_choices$Dim1),
+                                  textInput(paste0("redDimChoice", i, "_2"), label="Dimension 2",
+                                            value=param_choices$Dim2)
+                           ),
+                           column(6,
+                                  radioButtons(paste0("redDimColorBy", i), label="Color by:", 
+                                               inline=FALSE,
+                                               choices=c("Column data", "Gene expression"),
+                                               selected=param_choices$ColorBy),
+                                  selectInput(paste0("redDimColDataColorBy", i), 
+                                              label = "Column data:",
+                                              choices=covariates, selected=param_choices$ColData),
+                                  textInput(paste0("redDimGeneExprsColorBy", i), 
+                                            label = "Gene expression:",
+                                            value=param_choices$GeneExprs),
+                                  actionButton(paste0("removeRedDimPlot", i), "Remove plot",
+                                               icon = icon("trash"),class = "btn btn-warning")
+                           )
+                         )
+                       ) # end of bsCollapsePanel
+                     ) # end of bsCollapse
+              ) # end of column
+            ) # end of fluidRow
+        })
+
+        # Convert the list to a tagList - this is necessary for the list of items
+        # to display properly.
+        do.call(tagList, plot_output_list)
     })
     
     # Plot addition and removal, as well as parameter setting.
     observeEvent(input$addRedDimPlot, {
       first.missing <- setdiff(seq_len(max_plots), rObjects$reddim_active_plots)
       rObjects$reddim_active_plots <- c(rObjects$reddim_active_plots, first.missing[1])
+      
+      lapply(1:(length(rObjects$reddim_active_plots)-1), function(arg)
+        updateCollapse(session, paste0("collapse_redDimPlots",arg),
+                       close = "Advanced plot parameters"))
     })
     
     for (i in seq_len(max_plots)) {
@@ -338,6 +346,7 @@ iSEE <- function(
     
     # Multiple scatterplots.
     output$geneExprPlots <- renderUI({
+      
       plot_output_list <- lapply(rObjects$geneexpr_active_plots, function(i) {
         param_choices <- pObjects$geneexpr_plot_param[i,]
         
@@ -348,7 +357,7 @@ iSEE <- function(
                  textInput(paste0("geneExprID", i), label = "Gene expression:",
                            value=param_choices$ID),
                  shinyBS::bsCollapse(
-                   id = "collapse_geneExprPlots", multiple = TRUE,
+                   id = paste0("collapse_geneExprPlots", i),
                    open = "Advanced plot parameters",
                    shinyBS::bsCollapsePanel(
                      title = "Advanced plot parameters",
@@ -360,7 +369,7 @@ iSEE <- function(
                                            inline=FALSE, 
                                            choices=c("Column data", "Gene expression"), 
                                            selected=param_choices$XAxis),
-                              selectInput(paste0("geneExprXColData", i),
+                              selectInput(paste0("geneExprXColData", i), 
                                           label = "X-axis column data:", 
                                           choices=covariates, selected=param_choices$XColData),
                               textInput(paste0("geneExprXGene", i), 
@@ -398,6 +407,10 @@ iSEE <- function(
     observeEvent(input$addGeneExprPlot, {
       first.missing <- setdiff(seq_len(max_plots), rObjects$geneexpr_active_plots)
       rObjects$geneexpr_active_plots <- c(rObjects$geneexpr_active_plots, first.missing[1])
+      
+      lapply(1:(length(rObjects$geneexpr_active_plots)-1), function(arg)
+        updateCollapse(session, paste0("collapse_geneExprPlots",arg),
+                       close = "Advanced plot parameters"))
     })
     
     for (i in seq_len(max_plots)) {

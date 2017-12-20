@@ -4,10 +4,20 @@
 \alias{iSEE}
 \title{iSEE: interactive SingleCell/Summarized Experiment Explorer}
 \usage{
-iSEE(se)
+iSEE(se, redDim.default = 5, geneExpr.default = 5)
 }
 \arguments{
-\item{se}{somethingaboutit}
+\item{se}{A SingleCellExperiment object.}
+
+\item{redDim.default}{An integer scalar specifying the maximum number of
+reduced dimension plots in the interface. Alternatively, a DataFrame 
+similar to that produced by \code{\link{redDimPlotDefault}}, specifying 
+initial parameters for the plots.}
+
+\item{geneExpr.default}{An integer scalar specifying the maximum number of
+gene expression plots in the interface. Alternatively, a DataFrame 
+similar to that produced by \code{\link{geneExprPlotDefault}}, specifying
+initial parameters for the plots.}
 }
 \value{
 A Shiny App is launched for interactive data exploration of the
@@ -15,10 +25,16 @@ A Shiny App is launched for interactive data exploration of the
 object
 }
 \description{
-iSEE does this
+Interactive visualization of single-cell data using a Shiny interface.
 }
 \details{
-and does that in detail
+Users can pass default parameters via DataFrame objects in 
+\code{redDim.default} and \code{geneExpr.default}. Each object can contain 
+some or all of the expected fields (see \code{\link{redDimPlotDefault}}).
+Any missing fields will be filled in with the defaults.
+
+Users can specify any number of maximum plots, though increasing the 
+number will increase the time required to generate any given plot.
 }
 \examples{
 library(scRNAseq)

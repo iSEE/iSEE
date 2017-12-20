@@ -234,14 +234,17 @@ iSEE <- function(
     # Multiple scatterplots colored by covariates,
     # nicked from https://stackoverflow.com/questions/15875786/dynamically-add-plots-to-web-page-using-shiny.
     output$redDimPlots <- renderUI({
-        plot_output_list <- lapply(rObjects$reddim_active_plots, function(i) {
+        collected <- vector("list", length(rObjects$reddim_active_plots)*2)
+        counter <- 1L
+
+        for (i in rObjects$reddim_active_plots) { 
             param_choices <- pObjects$reddim_plot_param[i,]
             chosen.open <- character(0)
             if (param_choices$PlotParamPanel) {
                 chosen.open <- c(chosen.open, .redDimPlotParamPanelTitle)
             }
 
-            fluidRow(
+            collected[[counter]] <- fluidRow(
               column(6, plotOutput(paste0("redDimPlot", i))),
               column(3, 
                      selectInput(paste0("redDimType", i), label="Type",
@@ -273,11 +276,15 @@ iSEE <- function(
                        ) # end of bsCollapse
                      ) # end of column
             ) # end of fluidRow
-        })
+
+            counter <- counter + 1L
+            collected[[counter]] <- hr()
+            counter <- counter + 1L
+        }
 
         # Convert the list to a tagList - this is necessary for the list of items
         # to display properly.
-        do.call(tagList, plot_output_list)
+        do.call(tagList, collected)
     })
     
     # Plot addition and removal.
@@ -346,15 +353,17 @@ iSEE <- function(
     
     # Multiple scatterplots.
     output$geneExprPlots <- renderUI({
-      
-      plot_output_list <- lapply(rObjects$geneexpr_active_plots, function(i) {
+      collected <- vector("list", length(rObjects$reddim_active_plots)*2)
+      counter <- 1L
+
+      for (i in rObjects$geneexpr_active_plots) { 
         param_choices <- pObjects$geneexpr_plot_param[i,]
         chosen.open <- character(0)
         if (param_choices$PlotParamPanel) {
             chosen.open <- c(chosen.open, .geneExprPlotParamPanelTitle)
         }
            
-        fluidRow(
+        collected[[counter]] <- fluidRow(
           column(6, plotOutput(paste0("geneExprPlot", i))),
           column(3,
                  textInput(paste0("geneExprID", i), label = "Gene expression (Y-axis):",
@@ -395,11 +404,15 @@ iSEE <- function(
                  ) # end of bsCollapse
           ) # end of column
         ) # end of fluidRow
-      }) # end of plot_output_list
+
+        counter <- counter + 1L
+        collected[[counter]] <- hr()
+        counter <- counter + 1L
+      }
       
       # Convert the list to a tagList - this is necessary for the list of items
       # to display properly.
-      do.call(tagList, plot_output_list)
+      do.call(tagList, collected)
     }) # end of output$geneExprPlots
     
     # Plot addition and removal, as well as parameter setting.

@@ -56,7 +56,7 @@ iSEE <- function(
   max_plots <- 5
   reddim_plot_param <- data.frame(Type=rep(red.dim.names[1], max_plots),
                                   Dim1=1, Dim2=2,
-                                  ColorBy="Column data",
+                                  ColorBy=.colorByColDataTitle,
                                   ColData=covariates[1],
                                   GeneExprs=gene.names[1],
                                   PlotParamPanel=TRUE,
@@ -64,10 +64,10 @@ iSEE <- function(
   
   geneexpr_plot_param <- data.frame(ID=rep(gene.names[1], max_plots),
                                     ExprAssay=all.assays[1],
-                                    XAxis="Column data",
+                                    XAxis=.geneExprXAxisColDataTitle,
                                     XColData=covariates[1],
                                     XGeneExprs=gene.names[1],
-                                    ColorBy="Column data",
+                                    ColorBy=.colorByColDataTitle,
                                     ColorColData=covariates[1],
                                     ColorGeneExprs=gene.names[1],
                                     PlotParamPanel=TRUE,
@@ -245,31 +245,31 @@ iSEE <- function(
             }
 
             collected[[counter]] <- fluidRow(
-              column(6, plotOutput(paste0("redDimPlot", i))),
+              column(6, plotOutput(.redDimPlot(i))),
               column(3, 
-                     selectInput(paste0("redDimType", i), label="Type",
+                     selectInput(.redDimType(i), label="Type",
                                  choices=red.dim.names, selected=param_choices$Type),
-                     textInput(paste0("redDimChoice", i, "_1"), label="Dimension 1",
+                     textInput(.redDimXAxis(i), label="Dimension 1",
                                value=param_choices$Dim1),
-                     textInput(paste0("redDimChoice", i, "_2"), label="Dimension 2",
+                     textInput(.redDimYAxis(i), label="Dimension 2",
                                value=param_choices$Dim2),
-                     actionButton(paste0("removeRedDimPlot", i), "Remove plot",
+                     actionButton(.redDimDiscard(i), "Remove plot",
                                   icon = icon("trash"),class = "btn btn-warning")
                      ),
               column(3, 
                      shinyBS::bsCollapse(
-                       id = paste0("redDimPlotPanel",i),
+                       id = .redDimPlotPanel(i),
                        open = chosen.open,
                        shinyBS::bsCollapsePanel(
                             title = .redDimPlotParamPanelTitle,
-                            radioButtons(paste0("redDimColorBy", i), 
+                            radioButtons(.redDimColorBy(i), 
                                          label="Color by:", inline=FALSE,
-                                         choices=c("Column data", "Gene expression"),
+                                         choices=c(.colorByColDataTitle, .colorByGeneExprsTitle),
                                          selected=param_choices$ColorBy),
-                            selectInput(paste0("redDimColDataColorBy", i), 
+                            selectInput(.redDimColDataColorBy(i), 
                                         label = "Column data:",
                                         choices=covariates, selected=param_choices$ColData),
-                            textInput(paste0("redDimGeneExprsColorBy", i), 
+                            textInput(.redDimGeneExprsColorBy(i),
                                       label = "Gene expression:",
                                       value=param_choices$GeneExprs)
                                                 ) # end of bsCollapsePanel
@@ -296,7 +296,7 @@ iSEE <- function(
     for (i in seq_len(max_plots)) {
       local({
         i0 <- i
-        observeEvent(input[[paste0("removeRedDimPlot", i0)]], {
+        observeEvent(input[[.redDimDiscard(i0)]], {
           rObjects$reddim_active_plots <- setdiff(rObjects$reddim_active_plots, i0)
         })
       })
@@ -308,15 +308,14 @@ iSEE <- function(
       # of when the expression is evaluated.
       local({
         i0 <- i
-        plotname <- paste0("redDimPlot", i0)
-        typename <- paste0("redDimType", i0)
-        dim1name <- paste0("redDimChoice", i0, "_1")
-        dim2name <- paste0("redDimChoice", i0, "_2")
-        openplot <- paste0("redDimPlotPanel", i0)
-        colorbytype <- paste0("redDimColorBy", i0)
-        colorbycol <- paste0("redDimColDataColorBy", i0)
-        colorbygene <- paste0("redDimGeneExprsColorBy", i0)
-        panelname <- paste0("redDimPlotPanel", i0)
+        plotname <- .redDimPlot(i0)
+        typename <- .redDimType(i0)
+        dim1name <- .redDimXAxis(i0)
+        dim2name <- .redDimYAxis(i0)
+        panelname <- .redDimPlotPanel(i0)
+        colorbytype <- .redDimColorBy(i0)
+        colorbycol <- .redDimColDataColorBy(i0)
+        colorbygene <- .redDimGeneExprsColorBy(i0)
     
         output[[plotname]] <- renderPlot({
           # Updating parameters.
@@ -330,7 +329,7 @@ iSEE <- function(
           
           param_choices <- pObjects$reddim_plot_param[i0,]
           red.dim <- reducedDim(se, param_choices$Type)
-          if (param_choices$ColorBy=="Column data") {
+          if (param_choices$ColorBy==.colorByColDataTitle) {
             covariate <- cell.data[,param_choices$ColData]
           } else {
             covariate <- logcounts(se)[param_choices$GeneExprs,]
@@ -364,23 +363,23 @@ iSEE <- function(
         }
            
         collected[[counter]] <- fluidRow(
-          column(6, plotOutput(paste0("geneExprPlot", i))),
+          column(6, plotOutput(.geneExprPlot(i))),
           column(3,
-                 textInput(paste0("geneExprID", i), label = "Gene expression (Y-axis):",
+                 textInput(.geneExprID(i), label = "Gene of interest (Y-axis):",
                            value=param_choices$ID),
-                 selectInput(paste0("geneExprAssay", i), label="Expression values (Y-axis):",
+                 selectInput(.geneExprAssay(i), label=NULL,
                              choices=all.assays, selected=param_choices$ExprAssay),
-                 radioButtons(paste0("geneExprXAxis", i), label="X-axis:", 
+                 radioButtons(.geneExprXAxis(i), label="X-axis:", 
                               inline=FALSE, 
-                              choices=c("Column data", "Gene expression"), 
+                              choices=c(.geneExprXAxisColDataTitle, .geneExprXAxisGeneExprsTitle),
                               selected=param_choices$XAxis),
-                 selectInput(paste0("geneExprXColData", i), 
+                 selectInput(.geneExprXAxisColData(i), 
                              label = "X-axis column data:", 
                              choices=covariates, selected=param_choices$XColData),
-                 textInput(paste0("geneExprXGene", i), 
+                 textInput(.geneExprXAxisGeneExprs(i),
                            label = "X-axis gene expression:", 
                            value=param_choices$XGeneExprs),
-                 actionButton(paste0("removeGeneExprPlot", i), "Remove plot",
+                 actionButton(.geneExprDiscard(i), "Remove plot",
                               icon = icon("trash"),class = "btn btn-warning")
                  ),
           column(3, 
@@ -389,15 +388,15 @@ iSEE <- function(
                    open = chosen.open, 
                    shinyBS::bsCollapsePanel(
                      title = .geneExprPlotParamPanelTitle,
-                     radioButtons(paste0("geneExprColorBy", i), label="Colour by:",
-                                  inline=FALSE, 
-                                  choices=c("Column data", "Gene expression"), 
+                     radioButtons(.geneExprColorBy(i), 
+                                  label="Colour by:", inline=FALSE, 
+                                  choices=c(.colorByColDataTitle, .colorByGeneExprsTitle),
                                   selected=param_choices$ColorBy),
-                    selectInput(paste0("geneExprColDataColorBy", i),
+                    selectInput(.geneExprColorByColData(i),
                                 label = "Colour by column data:",
                                 choices=covariates, 
                                 selected=param_choices$ColorColData),
-                    textInput(paste0("geneExprGeneExprsColorBy", i),
+                    textInput(.geneExprColorByGeneExprs(i),
                               label = "Colour by gene expression:",
                               value=param_choices$ColorGeneExprs)
                    ) # end of bsCollapsePanel
@@ -424,7 +423,7 @@ iSEE <- function(
     for (i in seq_len(max_plots)) {
       local({
         i0 <- i
-        observeEvent(input[[paste0("removeGeneExprPlot", i0)]], {
+        observeEvent(input[[.geneExprDiscard(i0)]], {
           rObjects$geneexpr_active_plots <- setdiff(rObjects$geneexpr_active_plots, i0)
         }) # end of observeEvent
       }) # end of local
@@ -436,16 +435,18 @@ iSEE <- function(
       # of when the expression is evaluated.
       local({
         i0 <- i
-        plotname <- paste0("geneExprPlot", i0)
-        genename <- paste0("geneExprID", i0)
-        xtype <- paste0("geneExprXAxis", i0)
-        xcol <- paste0("geneExprXColData", i0)
-        xgene <- paste0("geneExprXGene", i0)
-        colorbytype <- paste0("geneExprColorBy", i0)
-        colorbycol <- paste0("geneExprColDataColorBy", i0)
-        colorbygene <- paste0("geneExprGeneExprsColorBy", i0)
-        assaytype <- paste0("geneExprAssay", i0)
-        panelname <- paste0("redDimPlotPanel", i0)
+        plotname <- .geneExprPlot(i0)
+        genename <- .geneExprID(i0)
+        assaytype <- .geneExprAssay(i0)
+
+        xtype <- .geneExprXAxis(i0)
+        xcol <- .geneExprXAxisColData(i0)
+        xgene <- .geneExprXAxisGeneExprs(i0)
+
+        colorbytype <- .geneExprColorBy(i0)
+        colorbycol <- .geneExprColorByColData(i0)
+        colorbygene <- .geneExprColorByGeneExprs(i0)
+        panelname <- .redDimPlotPanel(i0)
  
         output[[plotname]] <- renderPlot({
           # Updating parameters.
@@ -460,13 +461,14 @@ iSEE <- function(
           pObjects$geneexpr_plot_param$PlotParamPanel[i0] <- .geneExprPlotParamPanelTitle %in% input[[panelname]] 
  
           param_choices <- pObjects$geneexpr_plot_param[i0,]
-          if (param_choices$ColorBy=="Column data") {
+          if (param_choices$ColorBy==.colorByColDataTitle) {
             covariate <- colData(se)[,param_choices$ColorColData]
             covariate.name <- param_choices$ColorColData
           } else {
             covariate <- assays(se)[[param_choices$ExprAssay]][param_choices$ColorGeneExprs,]
             covariate.name <- param_choices$ColorGeneExprs
           }
+
           if (param_choices$ID %in% gene.names) {
             plotExpression(se, exprs_values=param_choices$ExprAssay,
                            x=ifelse(param_choices$XAxis=="Column data",
@@ -558,10 +560,4 @@ iSEE <- function(
   
   shinyApp(ui = iSEE_ui, server = iSEE_server)
 }
-
-#######################################################
-# Various variables, that can go here or elsewhere.
-
-.redDimPlotParamPanelTitle <- "Advanced plot parameters"
-.geneExprPlotParamPanelTitle <- "Advanced plot parameters"
 

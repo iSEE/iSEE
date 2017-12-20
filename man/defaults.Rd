@@ -4,11 +4,14 @@
 \alias{defaults}
 \alias{redDimPlotDefaults}
 \alias{geneExprPlotDefaults}
+\alias{colDataPlotDefaults}
 \title{Plot parameter defaults}
 \usage{
 redDimPlotDefaults(se, max.plots)
 
 geneExprPlotDefaults(se, max.plots)
+
+colDataPlotDefaults(se, max.plots)
 }
 \arguments{
 \item{se}{A SingleCellExperiment object.}
@@ -37,8 +40,8 @@ Defaults to 2.}
 \item{\code{OpenPlotPanel}:}{Logical, should the plot parameter panel be open upon initialization?
 Defaults to \code{TRUE}.}
 \item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
-Defaults to \code{"none"}.}
-\item{\code{ColorByColData}:}{Character, what field of the column data should be used for colouring if \code{ColorBy="Column data"}? 
+Defaults to \code{"None"}.}
+\item{\code{ColorByColData}:}{Character, what column of \code{colData(se)} should be used for colouring if \code{ColorBy="Column data"}? 
 Defaults to the first entry of \code{colData(se)}.}
 \item{\code{ColorByGeneExprs}:}{Character, which gene's expression should be used for colouring if \code{ColorBy="Gene expression"}? 
 Defaults to the name of the first row in \code{se}.}
@@ -57,19 +60,43 @@ Defaults to the name of the first row in \code{se}.}
 \item{\code{Assay}:}{Character, what expression values should be shown on the y-axis?
 Defaults to the name of the first assay in \code{se}.}
 \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
-Defaults to \code{"none"}.}
-\item{\code{XAxisColData}:}{Character, what field of the column data should be shown on the x-axis if \code{XAxis="Column data"}?
+Defaults to \code{"None"}.}
+\item{\code{XAxisColData}:}{Character, what column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
 Defaults to the first entry of \code{colData(se)}.}
 \item{\code{XAxisGeneExprs}:}{Character, which gene's expression should be shown on the x-axis if \code{XAxis="Gene expression"}? 
 Defaults to the name of the first row in \code{se}, using expression values specified in \code{Assay}.}
 \item{\code{OpenPlotPanel}:}{Logical, should the plot parameter panel be open upon initialization?
 Defaults to \code{TRUE}.}
 \item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
-Defaults to \code{"none"}.}
-\item{\code{ColorByColData}:}{Character, what field of the column data should be used for colouring if \code{ColorBy="Column data"}? 
+Defaults to \code{"None"}.}
+\item{\code{ColorByColData}:}{Character, what column of \code{colData(se)} should be used for colouring if \code{ColorBy="Column data"}? 
 Defaults to the first entry of \code{colData(se)}.}
 \item{\code{ColorByGeneExprs}:}{Character, which gene's expression should be used for colouring if \code{ColorBy="Gene expression"}? 
 Defaults to the name of the first row in \code{se}, using expression values specified in \code{Assay}.}
+}
+}
+
+\section{Column data plot parameters}{
+
+\describe{
+\item{\code{Active}:}{Logical, should this plot be shown upon initialization?
+By default, this is only \code{TRUE} for the first plot.}
+\item{\code{YAxisColData}:}{Character, which column of \code{colData(se)} should be shown on the y-axis?
+Defaults to the first entry of \code{colData(se)}.}
+\item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
+Defaults to \code{"None"}.}
+\item{\code{XAxisColData}:}{Character, which column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
+Defaults to the first entry of \code{colData(se)}.}
+\item{\code{OpenPlotPanel}:}{Logical, should the plot parameter panel be open upon initialization?
+Defaults to \code{TRUE}.}
+\item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
+Defaults to \code{"None"}.}
+\item{\code{ColorByColData}:}{Character, which column of \code{colData(se)} should be used for colouring if \code{ColorBy="Column data"}? 
+Defaults to the first entry of \code{colData(se)}.}
+\item{\code{ColorByGeneExprs}:}{Character, which gene's expression should be used for colouring if \code{ColorBy="Gene expression"}? 
+Defaults to the name of the first row in \code{se}}
+\item{\code{ColorByGeneExprsAssay}:}{Character, what expression values should be used for colouring if \code{ColorBy="Gene expression"}? 
+Defaults to the name of the first assay in \code{se}.}
 }
 }
 
@@ -87,4 +114,5 @@ sce
 
 redDimPlotDefaults(sce, max.plots=5)
 geneExprPlotDefaults(sce, max.plots=5)
+colDataPlotDefaults(sce, max.plots=5)
 }

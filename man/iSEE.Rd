@@ -4,8 +4,8 @@
 \alias{iSEE}
 \title{iSEE: interactive SingleCell/Summarized Experiment Explorer}
 \usage{
-iSEE(se, redDim.args = 5, geneExpr.args = 5, annot.orgdb = NULL,
-  annot.keytype = "ENTREZID", annot.keyfield = NULL)
+iSEE(se, redDim.args = 5, colData.args = 5, geneExpr.args = 5,
+  annot.orgdb = NULL, annot.keytype = "ENTREZID", annot.keyfield = NULL)
 }
 \arguments{
 \item{se}{A SingleCellExperiment object.}
@@ -13,6 +13,11 @@ iSEE(se, redDim.args = 5, geneExpr.args = 5, annot.orgdb = NULL,
 \item{redDim.args}{An integer scalar specifying the maximum number of
 reduced dimension plots in the interface. Alternatively, a DataFrame 
 similar to that produced by \code{\link{redDimPlotDefaults}}, specifying 
+initial parameters for the plots.}
+
+\item{colData.args}{An integer scalar specifying the maximum number of
+column data plots in the interface. Alternatively, a DataFrame 
+similar to that produced by \code{\link{colDataPlotDefaults}}, specifying 
 initial parameters for the plots.}
 
 \item{geneExpr.args}{An integer scalar specifying the maximum number of

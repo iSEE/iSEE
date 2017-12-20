@@ -28,7 +28,9 @@
 #' # launch the app itself
 #' if (interactive()) { iSEE(sce) }
 iSEE <- function(
-  se
+  se,
+  redDim.default=5,
+  geneExpr.default=5 
 ) {
 
   # for correct usage of the pkg, need explicit call
@@ -37,43 +39,33 @@ iSEE <- function(
 
   cell.data <- colData(se)
   covariates <- colnames(cell.data)
-  
   red.dim <- reducedDim(se)
   red.dim.names <- reducedDimNames(se)
-  
   all.assays <- names(assays(se))
-  if ("logcounts" %in% all.assays)
-    all.assays <- c("logcounts", all.assays[all.assays != "logcounts"])
   gene.names <- rownames(se)
   
   gene.data <- as.data.frame(rowData(se))
   rownames(gene.data) <- gene.names
-  if (ncol(gene.data)==0L){
+  if (ncol(gene.data)==0L){ # To give it DT::datatable something to play with.
     gene.data$Present <- TRUE
   }
   
   # Setting up initial reduced dim plot parameters.
-  max_plots <- 5
-  reddim_plot_param <- data.frame(Type=rep(red.dim.names[1], max_plots),
-                                  Dim1=1, Dim2=2,
-                                  ColorBy=.colorByColDataTitle,
-                                  ColorByColData=covariates[1],
-                                  ColorByGeneExprs=gene.names[1],
-                                  ColorByGeneExprsAssay=all.assays[1],
-                                  PlotParamPanel=TRUE,
-                                  stringsAsFactors=FALSE)
-  
-  geneexpr_plot_param <- data.frame(ID=rep(gene.names[1], max_plots),
-                                    ExprAssay=all.assays[1],
-                                    XAxis=.geneExprXAxisColDataTitle,
-                                    XColData=covariates[1],
-                                    XGeneExprs=gene.names[1],
-                                    ColorBy=.colorByColDataTitle,
-                                    ColorColData=covariates[1],
-                                    ColorGeneExprs=gene.names[1],
-                                    ColorByGeneExprsAssay=all.assays[1],
-                                    PlotParamPanel=TRUE,
-                                    stringsAsFactors=FALSE)
+  if (is.numeric(redDim.default)) { 
+    reddim_plot_param <- redDimPlotDefaults(se, redDim.default)
+  } else {
+    reddim_plot_param <- redDimPlotDefaults(se, nrow(redDim.default)) 
+    reddim_plot_param <- .override_defaults(reddim_plot_default, redDim.default)
+  }
+  reddim_max_plots <- nrow(reddim_plot_param)
+                                          
+  if (is.numeric(geneExpr.default)) { 
+    geneexpr_plot_param <- geneExprPlotDefaults(se, geneExpr.default)
+  } else {
+    geneexpr_plot_param <- geneExprPlotDefaults(se, nrow(geneExpr.default)) 
+    geneexpr_plot_param <- .override_defaults(geneexpr_plot_default, geneExpr.default)
+  }
+  geneexpr_max_plots <- nrow(geneexpr_plot_param)
   
   # for retrieving the annotation
   annoSpecies_df <-
@@ -294,11 +286,11 @@ iSEE <- function(
     
     # Plot addition and removal.
     observeEvent(input$addRedDimPlot, {
-        first.missing <- setdiff(seq_len(max_plots), rObjects$reddim_active_plots)
+        first.missing <- setdiff(seq_len(reddim_max_plots), rObjects$reddim_active_plots)
         rObjects$reddim_active_plots <- c(rObjects$reddim_active_plots, first.missing[1])
     })
     
-    for (i in seq_len(max_plots)) {
+    for (i in seq_len(reddim_max_plots)) {
       local({
         i0 <- i
         observeEvent(input[[.redDimDiscard(i0)]], {
@@ -307,7 +299,7 @@ iSEE <- function(
       })
     }
 
-    for (i in seq_len(max_plots)) {
+    for (i in seq_len(reddim_max_plots)) {
       # Need local so that each item gets its own number. Without it, the value
       # of i in the renderPlot() will be the same across all instances, because
       # of when the expression is evaluated.
@@ -423,11 +415,11 @@ iSEE <- function(
     
     # Plot addition and removal, as well as parameter setting.
     observeEvent(input$addGeneExprPlot, {
-      first.missing <- setdiff(seq_len(max_plots), rObjects$geneexpr_active_plots)
+      first.missing <- setdiff(seq_len(geneexpr_max_plots), rObjects$geneexpr_active_plots)
       rObjects$geneexpr_active_plots <- c(rObjects$geneexpr_active_plots, first.missing[1])
     })
     
-    for (i in seq_len(max_plots)) {
+    for (i in seq_len(geneexpr_max_plots)) {
       local({
         i0 <- i
         observeEvent(input[[.geneExprDiscard(i0)]], {
@@ -436,7 +428,7 @@ iSEE <- function(
       }) # end of local
     }
     
-    for (i in seq_len(max_plots)) {
+    for (i in seq_len(geneexpr_max_plots)) {
       # Need local so that each item gets its own number. Without it, the value
       # of i in the renderPlot() will be the same across all instances, because
       # of when the expression is evaluated.

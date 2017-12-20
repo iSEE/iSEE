@@ -27,17 +27,23 @@
 redDimPlotDefaults <- function(se, max.plots) {
     activity <- logical(max.plots)
     activity[1] <- TRUE
-    DataFrame(
-        Active=activity,                        
-        Type=reducedDimNames(se)[1],
-        Dim1=1, 
-        Dim2=2,
-        ColorBy=.colorByColDataTitle,
-        ColorByColData=colnames(colData(se))[1],
-        ColorByGeneExprs=rownames(se)[1],
-        ColorByGeneExprsAssay=assayNames(se)[1],
-        PlotParamPanel=TRUE
-   )
+    out <- DataFrame(Active=activity)
+    all.assays <- assayNames(se)
+    if ("logcounts" %in% all.assays) {
+        def.assay <- "logcounts"
+    } else {
+        def.assay <- all.assays[1]
+    }
+
+    out[[.redDimType]] <- reducedDimNames(se)[1]
+    out[[.redDimXAxis]] <- 1L
+    out[[.redDimYAxis]] <- 2L
+    out[[.redDimPlotPanel]] <- TRUE
+    out[[.redDimColorBy]] <- .colorByColDataTitle
+    out[[.redDimColorByColData]] <- colnames(colData(se))[1]
+    out[[.redDimColorByGeneExprs]] <- rownames(se)[1]
+    out[[.redDimColorByGeneExprsAssay]] <- def.assay
+    return(out)
 }
 
 geneExprPlotDefaults <- function(se, max.plots) {
@@ -52,19 +58,18 @@ geneExprPlotDefaults <- function(se, max.plots) {
     gene.names <- rownames(se)
     covariates <- colnames(colData(se))
 
-    DataFrame(
-        Active=activity,
-        ID=gene.names[1],
-        ExprAssay=def.assay,
-        XAxis=.geneExprXAxisColDataTitle,
-        XColData=covariates[1],
-        XGeneExprs=gene.names[1],
-        ColorBy=.colorByColDataTitle,
-        ColorColData=covariates[1],
-        ColorGeneExprs=gene.names[1],
-        ColorByGeneExprsAssay=def.assay,
-        PlotParamPanel=TRUE
-   )
+    out <- DataFrame(Active=activity)
+    out[[.geneExprID]] <- gene.names[1]
+    out[[.geneExprAssay]] <- def.assay
+    out[[.geneExprXAxis]] <- .geneExprXAxisColDataTitle
+    out[[.geneExprXAxisColData]] <- covariates[1] 
+    out[[.geneExprXAxisGeneExprs]] <- gene.names[1]
+
+    out[[.geneExprColorBy]] <- .colorByColDataTitle
+    out[[.geneExprColorByColData]] <- covariates[1]
+    out[[.geneExprColorByGeneExprs]] <- gene.names[1]
+    out[[.geneExprPlotPanel]] <- TRUE
+    return(out)
 }
 
 .override_defaults <- function(def, usr) {

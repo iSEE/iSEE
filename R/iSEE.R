@@ -276,7 +276,7 @@ iSEE <- function(
         rObjects$reddim_active_plots <- c(rObjects$reddim_active_plots, first.missing[1])
 
         lapply(1:(length(rObjects$reddim_active_plots)-1), function(arg)
-               updateCollapse(session, paste0("collapse_redDimPlots",arg),
+               shinyBS::updateCollapse(session, paste0("collapse_redDimPlots",arg),
                               close = "Advanced plot parameters"))
     })
 

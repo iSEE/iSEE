@@ -91,7 +91,7 @@ redDimPlotDefaults <- function(se, max.plots) {
     out[[.redDimYAxis]] <- 2L
     
     out[[.redDimPlotPanel]] <- TRUE
-    out[[.redDimColorBy]] <- .colorByColDataTitle
+    out[[.redDimColorBy]] <- .colorByNothingTitle
     out[[.redDimColorByColData]] <- colnames(colData(se))[1]
     out[[.redDimColorByGeneExprs]] <- rownames(se)[1]
     out[[.redDimColorByGeneExprsAssay]] <- def.assay
@@ -115,12 +115,12 @@ geneExprPlotDefaults <- function(se, max.plots) {
     out <- DataFrame(Active=activity)
     out[[.geneExprID]] <- gene.names[1]
     out[[.geneExprAssay]] <- def.assay
-    out[[.geneExprXAxis]] <- .geneExprXAxisColDataTitle
+    out[[.geneExprXAxis]] <- .geneExprXAxisNothingTitle
     out[[.geneExprXAxisColData]] <- covariates[1] 
     out[[.geneExprXAxisGeneExprs]] <- gene.names[1]
 
     out[[.geneExprPlotPanel]] <- TRUE
-    out[[.geneExprColorBy]] <- .colorByColDataTitle
+    out[[.geneExprColorBy]] <- .colorByNothingTitle
     out[[.geneExprColorByColData]] <- covariates[1]
     out[[.geneExprColorByGeneExprs]] <- gene.names[1]
     return(out)

@@ -1,3 +1,4 @@
+.colorByNothingTitle <- "None"
 .colorByColDataTitle <- "Column data"
 .colorByGeneExprsTitle <- "Gene expression"
 
@@ -18,6 +19,7 @@
 .redDimPlotParamPanelTitle <- "Advanced plot parameters"
 
 # Gene expression plotting parameters.
+.geneExprXAxisNothingTitle <- "None"
 .geneExprXAxisColDataTitle <- "Column data"
 .geneExprXAxisGeneExprsTitle <- "Gene expression"
 

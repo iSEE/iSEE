@@ -262,7 +262,7 @@ iSEE <- function(
                             title = .redDimPlotParamPanelTitle,
                             radioButtons(.inputRedDim(.redDimColorBy, i), 
                                          label="Color by:", inline=FALSE,
-                                         choices=c(.colorByColDataTitle, .colorByGeneExprsTitle),
+                                         choices=c(.colorByNothingTitle, .colorByColDataTitle, .colorByGeneExprsTitle),
                                          selected=param_choices[[.redDimColorBy]]),
                             selectInput(.inputRedDim(.redDimColorByColData, i), 
                                         label = "Column data:",
@@ -323,20 +323,30 @@ iSEE <- function(
           # Setting up the parameter choices for this plot.
           param_choices <- pObjects$reddim_plot_param[i0,]
           red.dim <- reducedDim(se, param_choices[[.redDimType]])
-          if (param_choices[[.redDimColorBy]]==.colorByColDataTitle) {
-            covariate <- cell.data[,param_choices[[.redDimColorByColData]]]
+
+          color_choice <- param_choices[[.redDimColorBy]]
+          if (color_choice==.colorByColDataTitle) {
+            covariate.name <- param_choices[[.redDimColorByColData]]
+            covariate <- cell.data[,covariate.name]
+            astr <- aes_string(x="Dim1", y="Dim2", color="Covariate")
+          } else if (color_choice==.colorByGeneExprsTitle) {
+            covariate.name <- param_choices[[.redDimColorByGeneExprs]]
+            covariate <- assay(se, param_choices[[.redDimColorByGeneExprsAssay]])[covariate.name,]
+            astr <- aes_string(x="Dim1", y="Dim2", color="Covariate")
           } else {
-            gene.id <- param_choices[[.redDimColorByGeneExprs]]
-            covariate <- assay(se, param_choices[[.redDimColorByGeneExprsAssay]])[gene.id,]
+            covariate.name <- ""
+            covariate <- NULL              
+            astr <- aes_string(x="Dim1", y="Dim2")
           }
+
+          plot.data <- data.frame(Dim1=red.dim[,param_choices[[.redDimXAxis]]],
+                                  Dim2=red.dim[,param_choices[[.redDimYAxis]]])
+          plot.data$Covariate <- covariate
          
           # Creating the plot. 
-          plot.data <- data.frame(Dim1=red.dim[,param_choices[[.redDimXAxis]]],
-                                  Dim2=red.dim[,param_choices[[.redDimYAxis]]],
-                                  Covariate=covariate)
-          ggplot(plot.data, aes_string(x="Dim1", y="Dim2", color="Covariate")) +
+          ggplot(plot.data, astr) +
             geom_point(size=1.5) +
-            labs(color=input$colorBy) +
+            labs(color=covariate.name) +
             theme_void()
         })
       })
@@ -367,7 +377,7 @@ iSEE <- function(
                              choices=all.assays, selected=param_choices[[.geneExprAssay]]),
                  radioButtons(.inputGeneExpr(.geneExprXAxis, i), label="X-axis:", 
                               inline=FALSE, 
-                              choices=c(.geneExprXAxisColDataTitle, .geneExprXAxisGeneExprsTitle),
+                              choices=c(.geneExprXAxisNothingTitle, .geneExprXAxisColDataTitle, .geneExprXAxisGeneExprsTitle),
                               selected=param_choices[[.geneExprXAxis]]),
                  selectInput(.inputGeneExpr(.geneExprXAxisColData, i), 
                              label = "X-axis column data:", 
@@ -386,7 +396,7 @@ iSEE <- function(
                      title = .geneExprPlotParamPanelTitle,
                      radioButtons(.inputGeneExpr(.geneExprColorBy, i), 
                                   label="Colour by:", inline=FALSE, 
-                                  choices=c(.colorByColDataTitle, .colorByGeneExprsTitle),
+                                  choices=c(.colorByNothingTitle, .colorByColDataTitle, .colorByGeneExprsTitle),
                                   selected=param_choices[[.geneExprColorBy]]),
                     selectInput(.inputGeneExpr(.geneExprColorByColData, i),
                                 label = "Colour by column data:",
@@ -441,23 +451,30 @@ iSEE <- function(
 
           # Setting up the parameter choices. 
           param_choices <- pObjects$geneexpr_plot_param[i0,]
-          if (param_choices[[.geneExprColorBy]]==.colorByColDataTitle) {
-            covariate <- colData(se)[,param_choices[[.geneExprColorByColData]]]
-            covariate.name <- param_choices[[.geneExprColorByColData]]
+          xchoice <- param_choices[[.geneExprXAxis]]
+          if (xchoice==.geneExprXAxisColDataTitle) {
+            byx <- param_choices[[.geneExprXAxisColData]]
+          } else if (xchoice==.geneExprXAxisGeneExprsTitle) {
+            byx <- param_choices[[.geneExprXAxisGeneExprs]]
           } else {
+            byx <- NULL
+          }
+
+          color_choice <- param_choices[[.geneExprColorBy]]
+          if (color_choice==.colorByColDataTitle) {
+            covariate.name <- param_choices[[.geneExprColorByColData]]
+          } else if (color_choice==.colorByGeneExprsTitle) {
             covariate.name <- param_choices[[.geneExprColorByGeneExprs]]
-            covariate <- assay(se, param_choices[[.geneExprAssay]])[covariate.name]
+          } else {
+            covariate.name <- NULL
           }
 
           # Creating the plot object.
           if (param_choices[[.geneExprID]] %in% gene.names) {
             plotExpression(se, exprs_values=param_choices[[.geneExprAssay]],
-                           x=ifelse(param_choices[[.geneExprXAxis]]==.geneExprXAxisColDataTitle,
-                                    param_choices[[.geneExprXAxisColData]], 
-                                    param_choices[[.geneExprXAxisGeneExprs]]),
+                           x=byx,
                            features=param_choices[[.geneExprID]],
-                           colour_by=setNames(data.frame(covariate),
-                                              covariate.name))
+                           colour_by=covariate.name)
           }
         }) # end of output[[plotname]]
       }) # end of local

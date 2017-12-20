@@ -23,8 +23,8 @@
 #' \item{\code{OpenPlotPanel}:}{Logical, should the plot parameter panel be open upon initialization?
 #' Defaults to \code{TRUE}.}
 #' \item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
-#' Defaults to \code{"none"}.}
-#' \item{\code{ColorByColData}:}{Character, what field of the column data should be used for colouring if \code{ColorBy="Column data"}? 
+#' Defaults to \code{"None"}.}
+#' \item{\code{ColorByColData}:}{Character, what column of \code{colData(se)} should be used for colouring if \code{ColorBy="Column data"}? 
 #' Defaults to the first entry of \code{colData(se)}.}
 #' \item{\code{ColorByGeneExprs}:}{Character, which gene's expression should be used for colouring if \code{ColorBy="Gene expression"}? 
 #' Defaults to the name of the first row in \code{se}.}
@@ -41,20 +41,43 @@
 #' \item{\code{Assay}:}{Character, what expression values should be shown on the y-axis?
 #' Defaults to the name of the first assay in \code{se}.}
 #' \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
-#' Defaults to \code{"none"}.}
-#' \item{\code{XAxisColData}:}{Character, what field of the column data should be shown on the x-axis if \code{XAxis="Column data"}?
+#' Defaults to \code{"None"}.}
+#' \item{\code{XAxisColData}:}{Character, what column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
 #' Defaults to the first entry of \code{colData(se)}.}
 #' \item{\code{XAxisGeneExprs}:}{Character, which gene's expression should be shown on the x-axis if \code{XAxis="Gene expression"}? 
 #' Defaults to the name of the first row in \code{se}, using expression values specified in \code{Assay}.}
 #' \item{\code{OpenPlotPanel}:}{Logical, should the plot parameter panel be open upon initialization?
 #' Defaults to \code{TRUE}.}
 #' \item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
-#' Defaults to \code{"none"}.}
-#' \item{\code{ColorByColData}:}{Character, what field of the column data should be used for colouring if \code{ColorBy="Column data"}? 
+#' Defaults to \code{"None"}.}
+#' \item{\code{ColorByColData}:}{Character, what column of \code{colData(se)} should be used for colouring if \code{ColorBy="Column data"}? 
 #' Defaults to the first entry of \code{colData(se)}.}
 #' \item{\code{ColorByGeneExprs}:}{Character, which gene's expression should be used for colouring if \code{ColorBy="Gene expression"}? 
 #' Defaults to the name of the first row in \code{se}, using expression values specified in \code{Assay}.}
 #' }
+#'
+#' @section Column data plot parameters:
+#' \describe{
+#' \item{\code{Active}:}{Logical, should this plot be shown upon initialization?
+#' By default, this is only \code{TRUE} for the first plot.}
+#' \item{\code{YAxisColData}:}{Character, which column of \code{colData(se)} should be shown on the y-axis?
+#' Defaults to the first entry of \code{colData(se)}.}
+#' \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
+#' Defaults to \code{"None"}.}
+#' \item{\code{XAxisColData}:}{Character, which column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
+#' Defaults to the first entry of \code{colData(se)}.}
+#' \item{\code{OpenPlotPanel}:}{Logical, should the plot parameter panel be open upon initialization?
+#' Defaults to \code{TRUE}.}
+#' \item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
+#' Defaults to \code{"None"}.}
+#' \item{\code{ColorByColData}:}{Character, which column of \code{colData(se)} should be used for colouring if \code{ColorBy="Column data"}? 
+#' Defaults to the first entry of \code{colData(se)}.}
+#' \item{\code{ColorByGeneExprs}:}{Character, which gene's expression should be used for colouring if \code{ColorBy="Gene expression"}? 
+#' Defaults to the name of the first row in \code{se}}
+#' \item{\code{ColorByGeneExprsAssay}:}{Character, what expression values should be used for colouring if \code{ColorBy="Gene expression"}? 
+#' Defaults to the name of the first assay in \code{se}.}
+#' }
+#'
 #' 
 #' @return A DataFrame containing default settings for various 
 #' parameters of reduced dimension or gene expression plots.
@@ -75,6 +98,7 @@
 #'
 #' redDimPlotDefaults(sce, max.plots=5)
 #' geneExprPlotDefaults(sce, max.plots=5)
+#' colDataPlotDefaults(sce, max.plots=5)
 redDimPlotDefaults <- function(se, max.plots) {
     activity <- logical(max.plots)
     activity[1] <- TRUE
@@ -123,6 +147,33 @@ geneExprPlotDefaults <- function(se, max.plots) {
     out[[.geneExprColorBy]] <- .colorByNothingTitle
     out[[.geneExprColorByColData]] <- covariates[1]
     out[[.geneExprColorByGeneExprs]] <- gene.names[1]
+    return(out)
+}
+
+#' @rdname defaults 
+#' @export
+colDataPlotDefaults <- function(se, max.plots) {
+    activity <- logical(max.plots)
+    activity[1] <- TRUE
+    all.assays <- assayNames(se)
+    if ("logcounts" %in% all.assays) {
+        def.assay <- "logcounts"
+    } else {
+        def.assay <- all.assays[1]
+    }
+    gene.names <- rownames(se)
+    covariates <- colnames(colData(se))
+
+    out <- DataFrame(Active=activity)
+    out[[.phenoDataYAxisColData]] <- covariates[1]
+    out[[.phenoDataXAxis]] <- .phenoDataXAxisNothingTitle
+    out[[.phenoDataXAxisColData]] <- ifelse(length(covariates)==1L, covariates[1], covariates[2])
+
+    out[[.phenoDataPlotPanel]] <- TRUE
+    out[[.phenoDataColorBy]] <- .colorByNothingTitle
+    out[[.phenoDataColorByColData]] <- covariates[1]
+    out[[.phenoDataColorByGeneExprs]] <- gene.names[1]
+    out[[.phenoDataColorByGeneExprsAssay]] <- def.assay
     return(out)
 }
 

@@ -11,7 +11,7 @@
 #' @importFrom shiny actionButton fluidRow icon reactiveValues renderUI
 #' shinyApp tabPanel HTML br h1 h2 selectInput renderPlot plotOutput
 #' uiOutput sliderInput tagList textInput column observeEvent radioButtons
-#' verbatimTextOutput htmlOutput renderText need tags hr
+#' verbatimTextOutput htmlOutput renderText need tags hr validate
 #' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
 #' dashboardSidebar menuItem tabBox valueBox valueBoxOutput
 #' @importFrom scater plotExpression plotPhenoData

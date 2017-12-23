@@ -109,7 +109,7 @@ iSEE <- function(
   phenodata_max_plots <- nrow(phenodata_plot_param)
  
   genestat_max_tab <- 5
-  genestat_tab_param <- DataFrame(Selected=rep(1, genestat_max_tab))
+  genestat_tab_param <- DataFrame(Selected=rep(1, genestat_max_tab), Search="")
 
   # for retrieving the annotation
   if (!is.null(annot.orgdb)) { 
@@ -563,8 +563,9 @@ iSEE <- function(
         output[[paste0("geneStatTable", i0)]] <- renderDataTable({
             (rObjects$active_plots) # to trigger recreation when the number of plots is changed.
             chosen <- pObjects$genestat_tab_param$Selected[i0]
-            print(chosen)
+            search <- pObjects$genestat_tab_param$Search[i0]
             datatable(gene.data, filter="top", rownames=TRUE,
+                      options=list(search=list(search=search)),
                       selection=list(mode="single", selected=chosen))
         })
 
@@ -572,6 +573,10 @@ iSEE <- function(
             chosen <- input[[paste0("geneStatTable", i0, "_rows_selected")]]
             if (length(chosen)) {
                 pObjects$genestat_tab_param$Selected[i0] <- chosen
+            }
+            search <- input[[paste0("geneStatTable", i0, "_search")]]
+            if (length(search)) { 
+                pObjects$genestat_tab_param$Search[i0] <- search
             }
         })
       })

@@ -109,6 +109,7 @@ iSEE <- function(
   phenodata_max_plots <- nrow(phenodata_plot_param)
  
   genestat_max_tab <- 5
+  genestat_tab_param <- DataFrame(Selected=rep(1, genestat_max_tab))
 
   # for retrieving the annotation
   if (!is.null(annot.orgdb)) { 
@@ -191,11 +192,10 @@ iSEE <- function(
     pObjects$reddim_plot_param <- reddim_plot_param
     pObjects$geneexpr_plot_param <- geneexpr_plot_param
     pObjects$phenodata_plot_param <- phenodata_plot_param
-    
-    if (!is.null(se)){ rObjects$sce <- as(se, "SingleCellExperiment") }
+    pObjects$genestat_tab_param <- genestat_tab_param
     
     # info boxes, to keep on top of the page  on the left side?
-    
+   
     output$box_sce_obj <- renderUI({
       if(!is.null(rObjects$sce)){
         return(valueBox(
@@ -232,6 +232,9 @@ iSEE <- function(
         cur.row <- list()
         row.counter <- 1L
 
+        # Defining currently active tables to use in linking.
+        active.tab <- rObjects$active_plots$ID[rObjects$active_plots$Type=="geneStat"]
+
         for (j in seq_len(nrow(rObjects$active_plots))) { 
             mode <- rObjects$active_plots$Type[j]
             i <- rObjects$active_plots$ID[j]
@@ -239,6 +242,7 @@ iSEE <- function(
             if (mode=="redDim") {                               
                 param_choices <- pObjects$reddim_plot_param[i,]
                 stuff <- list(
+                     h4(paste("Reduced dimension plot", i)),                              
                      plotOutput(.redDimPlot(i)),
                      selectInput(.inputRedDim(.redDimType, i), label="Type",
                                  choices=red.dim.names, selected=param_choices[[.redDimType]]),
@@ -250,6 +254,7 @@ iSEE <- function(
             } else if (mode=="phenoData") {
                 param_choices <- pObjects$phenodata_plot_param[i,]
                 stuff <- list(
+                    h4(paste("Column data plot", i)),                              
                      plotOutput(.phenoDataPlot(i)),
                      selectInput(.inputPhenoData(.phenoDataYAxisColData, i), 
                                  label = "Column of interest (Y-axis):",
@@ -265,9 +270,10 @@ iSEE <- function(
             } else if (mode=="geneExpr") {
                 param_choices <- pObjects$geneexpr_plot_param[i,]
                 stuff <- list(
+                    h4(paste("Gene expression plot", i)),                              
                     plotOutput(.geneExprPlot(i)),
-                    textInput(.inputGeneExpr(.geneExprID, i), label = "Gene of interest (Y-axis):",
-                              value=param_choices[[.geneExprID]]),
+                    selectInput(.inputGeneExpr(.geneExprID, i), label = "Linked gene statistics table:",
+                                choices=active.tab, selected=param_choices[[.geneExprID]]),
                      selectInput(.inputGeneExpr(.geneExprAssay, i), label=NULL,
                                  choices=all.assays, selected=param_choices[[.geneExprAssay]]),
                      radioButtons(.inputGeneExpr(.geneExprXAxis, i), label="X-axis:", 
@@ -282,35 +288,42 @@ iSEE <- function(
                                value=param_choices[[.geneExprXAxisGeneExprs]])
                               )
             } else if (mode=="geneStat") {
-                stuff <- list(dataTableOutput(paste0("geneStatTable", i)))
+                stuff <- list(
+                     h4(paste("Gene statistics table", i)),
+                     dataTableOutput(paste0("geneStatTable", i)))
             }
 
-#            chosen.open <- character(0)
-#            if (param_choices[[.redDimPlotPanel]]) {
-#                chosen.open <- c(chosen.open, .redDimPlotParamPanelTitle)
-#            }
-#
-#            colparam <- list(shinyBS::bsCollapse(
-#                id = .inputRedDim(.redDimPlotPanel, i),
-#                open = chosen.open,
-#                shinyBS::bsCollapsePanel(
-#                     title = .redDimPlotParamPanelTitle,
-#                     radioButtons(.inputRedDim(.redDimColorBy, i), 
-#                                  label="Color by:", inline=FALSE,
-#                                  choices=c(.colorByNothingTitle, .colorByColDataTitle, .colorByGeneExprsTitle),
-#                                  selected=param_choices[[.redDimColorBy]]),
-#                     selectInput(.inputRedDim(.redDimColorByColData, i), 
-#                                 label = "Column data:",
-#                                 choices=covariates, selected=param_choices[[.redDimColorByColData]]),
-#                     textInput(.inputRedDim(.redDimColorByGeneExprs, i),
-#                               label = "Gene expression:",
-#                               value=param_choices[[.redDimColorByGeneExprs]]),
-#                     selectInput(.inputRedDim(.redDimColorByGeneExprsAssay, i), label=NULL,
-#                                 choices=all.assays, selected=param_choices[[.redDimColorByGeneExprsAssay]])
-#                                         ) # end of bsCollapsePanel
-#                       ) # end of bsCollapse
-#            )
-
+            # Adding graphical parameters if we're plotting.
+            if (mode!="geneStat") { 
+                chosen.open <- character(0)
+                if (param_choices[[.redDimPlotPanel]]) {
+                    chosen.open <- c(chosen.open, .redDimPlotParamPanelTitle)
+                }
+    
+                param <- list(shinyBS::bsCollapse(
+                    id = paste0(mode, .generalPlotPanel, i),
+                    open = chosen.open,
+                    shinyBS::bsCollapsePanel(
+                        title = .generalPlotParamPanelTitle,
+                        radioButtons(paste0(mode, .generalColorBy, i), 
+                                     label="Color by:", inline=FALSE,
+                                     choices=c(.colorByNothingTitle, .colorByColDataTitle, .colorByGeneExprsTitle),
+                                     selected=param_choices[[.generalColorBy]]),
+                        selectInput(paste0(mode, .generalColorByColData, i), 
+                                    label = "Column data:",
+                                    choices=covariates, selected=param_choices[[.generalColorByColData]]),
+                        selectInput(paste0(mode, .geneExprID, i), label = "Linked gene statistics table:",
+                                    choices=active.tab, selected=param_choices[[.generalColorByGeneExprs]]),  
+                        selectInput(paste0(mode, .generalColorByGeneExprsAssay, i), label=NULL,
+                                    choices=all.assays, selected=param_choices[[.generalColorByGeneExprsAssay]])
+                        ) # end of bsCollapsePanel
+                    ) # end of bsCollapse
+                )
+            } else {
+                param <- list()
+            }
+            stuff <- c(stuff, param)
+            
             # Deciding whether to continue on the current row, or start a new row.
             extra <- cur.width + 4L
             if (extra > 12L) {
@@ -402,29 +415,30 @@ iSEE <- function(
         i0 <- i
         output[[.redDimPlot(i0)]] <- renderPlot({
 
-          # Updating parameters (non-characters need some careful treatment).
-          for (field in c(.redDimType, .redDimColorBy, .redDimColorByColData, 
-                          .redDimColorByGeneExprs, .redDimColorByGeneExprsAssay)) { 
+          # Updating parameters in the memory store (non-characters need some careful treatment).
+          for (field in c(.redDimType, .generalColorBy, .generalColorByColData, 
+                          .generalColorByGeneExprs, .generalColorByGeneExprsAssay)) { 
               if (is.null(input[[.inputRedDim(field, i0)]])) { next } ##### Placeholder, to remove!!!
               pObjects$reddim_plot_param[[field]][i0] <- input[[.inputRedDim(field, i0)]]
           }
           for (field in c(.redDimXAxis, .redDimYAxis)) { 
               pObjects$reddim_plot_param[[field]][i0] <- as.integer(input[[.inputRedDim(field, i0)]])
           }
-          pObjects$reddim_plot_param[[.redDimPlotPanel]][i0] <- .redDimPlotParamPanelTitle %in% input[[.inputRedDim(.redDimPlotPanel, i0)]] 
+          pObjects$reddim_plot_param[[.generalPlotPanel]][i0] <- .generalPlotParamPanelTitle %in% input[[.inputRedDim(.generalPlotPanel, i0)]] 
           
           # Setting up the parameter choices for this plot.
           param_choices <- pObjects$reddim_plot_param[i0,]
           red.dim <- reducedDim(se, param_choices[[.redDimType]])
 
-          color_choice <- param_choices[[.redDimColorBy]]
+          color_choice <- param_choices[[.generalColorBy]]
           if (color_choice==.colorByColDataTitle) {
-            covariate.name <- param_choices[[.redDimColorByColData]]
+            covariate.name <- param_choices[[.generalColorByColData]]
             covariate <- cell.data[,covariate.name]
             astr <- aes_string(x="Dim1", y="Dim2", color="Covariate")
           } else if (color_choice==.colorByGeneExprsTitle) {
-            covariate.name <- param_choices[[.redDimColorByGeneExprs]]
-            covariate <- assay(se, param_choices[[.redDimColorByGeneExprsAssay]])[covariate.name,]
+            linked.tab <- paste0("geneStatTable", param_choices[[.generalColorByGeneExprs]], "_rows_selected")
+            covariate.name <- gene.names[input[[linked.tab]]]
+            covariate <- assay(se, param_choices[[.generalColorByGeneExprsAssay]])[covariate.name,]
             astr <- aes_string(x="Dim1", y="Dim2", color="Covariate")
           } else {
             covariate.name <- ""
@@ -459,12 +473,12 @@ iSEE <- function(
 
           # Updating parameters (non-characters need some careful treatment).
           for (field in c(.phenoDataYAxisColData, .phenoDataXAxis, .phenoDataXAxisColData,
-                          .phenoDataColorBy, .phenoDataColorByColData, 
-                          .phenoDataColorByGeneExprs, .phenoDataColorByGeneExprsAssay)) { 
+                      .generalColorBy, .generalColorByColData, 
+                      .generalColorByGeneExprs, .generalColorByGeneExprsAssay)) { 
               if (is.null(input[[.inputPhenoData(field, i0)]])) { next } ##### Placeholder, to remove!!!
               pObjects$phenodata_plot_param[[field]][i0] <- input[[.inputPhenoData(field, i0)]]
           }
-          pObjects$phenodata_plot_param[[.phenoDataPlotPanel]][i0] <- .phenoDataPlotParamPanelTitle %in% input[[.inputPhenoData(.phenoDataPlotPanel, i0)]] 
+          pObjects$phenodata_plot_param[[.generalPlotPanel]][i0] <- .generalPlotParamPanelTitle %in% input[[.inputPhenoData(.generalPlotPanel, i0)]] 
           
           # Setting up the parameter choices for this plot.
           param_choices <- pObjects$phenodata_plot_param[i0,]
@@ -473,11 +487,11 @@ iSEE <- function(
               aes_args$x <- param_choices[[.phenoDataXAxisColData]]
 #          }
 
-          color_choice <- param_choices[[.phenoDataColorBy]]
+          color_choice <- param_choices[[.generalColorBy]]
           if (color_choice==.colorByColDataTitle) {
-            aes_args$color <- param_choices[[.phenoDataColorByColData]]
+            aes_args$color <- param_choices[[.generalColorByColData]]
           } else if (color_choice==.colorByGeneExprsTitle) {
-            aes_args$color <- param_choices[[.phenoDataColorByGeneExprs]]
+            aes_args$color <- param_choices[[.generalColorByGeneExprs]]
           }
           aes_final <- do.call(aes_string, aes_args)
         
@@ -500,11 +514,12 @@ iSEE <- function(
         output[[.geneExprPlot(i0)]] <- renderPlot({
           # Updating parameters.
           for (field in c(.geneExprID, .geneExprAssay, .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneExprs,
-                          .geneExprColorBy, .geneExprColorByColData, .geneExprColorByGeneExprs)) {
+                          .generalColorBy, .generalColorByColData, .generalColorByGeneExprs, .generalColorByGeneExprs)) {
               if (is.null(input[[.inputGeneExpr(field, i0)]])) { next } ##### Placeholder, to remove!!!
               pObjects$geneexpr_plot_param[[field]][i0] <- input[[.inputGeneExpr(field, i0)]]
           }
           pObjects$geneexpr_plot_param[[.geneExprPlotPanel]][i0] <- .geneExprPlotParamPanelTitle %in% input[[.inputGeneExpr(.geneExprPlotPanel, i0)]] 
+          print(pObjects$genestat_tab_param$Selected)
 
           # Setting up the parameter choices. 
           param_choices <- pObjects$geneexpr_plot_param[i0,]
@@ -517,22 +532,22 @@ iSEE <- function(
             byx <- NULL
           }
 
-#          color_choice <- param_choices[[.geneExprColorBy]]
-#          if (color_choice==.colorByColDataTitle) {
-#            covariate.name <- param_choices[[.geneExprColorByColData]]
-#          } else if (color_choice==.colorByGeneExprsTitle) {
-#            covariate.name <- param_choices[[.geneExprColorByGeneExprs]]
-#          } else {
+          color_choice <- param_choices[[.generalColorBy]]
+          if (color_choice==.colorByColDataTitle) {
+            covariate.name <- param_choices[[.generalColorByColData]]
+          } else if (color_choice==.colorByGeneExprsTitle) {
+            covariate.name <- param_choices[[.generalColorByGeneExprs]]
+          } else {
             covariate.name <- NULL
-#          }
-
-          # Creating the plot object.
-          if (param_choices[[.geneExprID]] %in% gene.names) {
-            plotExpression(se, exprs_values=param_choices[[.geneExprAssay]],
-                           x=byx,
-                           features=param_choices[[.geneExprID]],
-                           colour_by=covariate.name)
           }
+
+          # Getting the gene choice.
+          linked.tab <- paste0("geneStatTable", param_choices[[.geneExprID]], "_rows_selected")
+          cur.gene <- gene.names[input[[linked.tab]]]
+          plotExpression(se, exprs_values=param_choices[[.geneExprAssay]],
+                         x=byx,
+                         features=cur.gene,
+                         colour_by=covariate.name)
         }) # end of output[[plotname]]
       }) # end of local
     }
@@ -546,12 +561,22 @@ iSEE <- function(
       local({
         i0 <- i
         output[[paste0("geneStatTable", i0)]] <- renderDataTable({
+            (rObjects$active_plots) # to trigger recreation when the number of plots is changed.
+            chosen <- pObjects$genestat_tab_param$Selected[i0]
+            print(chosen)
             datatable(gene.data, filter="top", rownames=TRUE,
-                      selection=list(mode="single", selected=1))
+                      selection=list(mode="single", selected=chosen))
+        })
+
+        observe({
+            chosen <- input[[paste0("geneStatTable", i0, "_rows_selected")]]
+            if (length(chosen)) {
+                pObjects$genestat_tab_param$Selected[i0] <- chosen
+            }
         })
       })
     }
-       
+
     output$geneStatInfoBox <- renderUI({
       if (is.null(annot.orgdb)) {
         return(HTML(""))

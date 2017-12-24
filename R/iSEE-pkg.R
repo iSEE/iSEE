@@ -12,7 +12,7 @@
 #' shinyApp tabPanel HTML br h1 h2 selectInput renderPlot plotOutput
 #' uiOutput sliderInput tagList textInput column observeEvent radioButtons
 #' verbatimTextOutput htmlOutput renderText need tags hr brushOpts
-#' brushedPoints observe h4
+#' brushedPoints observe h4 validate
 #' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
 #' dashboardSidebar menuItem tabBox valueBox valueBoxOutput
 #' @importFrom scater plotExpression plotPhenoData

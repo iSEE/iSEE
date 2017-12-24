@@ -1,7 +1,3 @@
-.colorByNothingTitle <- "None"
-.colorByColDataTitle <- "Column data"
-.colorByGeneExprsTitle <- "Gene expression"
-
 # Reduced dimension plotting parameters.
 .redDimType <- "Type"
 .redDimXAxis <- "XAxis"
@@ -9,7 +5,6 @@
 
 .inputRedDim <- function(field, i) paste0("redDim", field, i)
 .redDimPlot <- function(i) paste0("redDimPlot", i)
-.redDimDiscard <- function(i) paste0("redDimDiscard", i)
 
 # Gene expression plotting parameters.
 .geneExprXAxisNothingTitle <- "None"
@@ -24,7 +19,6 @@
 
 .inputGeneExpr <- function(field, i) paste0("geneExpr", field, i)
 .geneExprPlot <- function(i) paste0("geneExprPlot", i)
-.geneExprDiscard <- function(i) paste0("geneExprDiscard", i)
 
 # Gene expression plotting parameters.
 .phenoDataXAxisNothingTitle <- "None"
@@ -36,9 +30,12 @@
 
 .inputPhenoData <- function(field, i) paste0("phenoData", field, i)
 .phenoDataPlot <- function(i) paste0("phenoDataPlot", i)
-.phenoDataDiscard <- function(i) paste0("phenoDataDiscard", i)
 
 # General plot parameters.
+
+.colorByNothingTitle <- "None"
+.colorByColDataTitle <- "Column data"
+.colorByGeneExprsTitle <- "Gene expression"
 
 .generalPlotParamPanelTitle <- "Advanced plot parameters"
 
@@ -48,4 +45,8 @@
 .generalColorByGeneExprsAssay <- "ColorByGeneAssay"
 .generalPlotPanel <- "OpenPlotPanel"
 
-
+.organizationNew <- "MakeNew"
+.organizationUp <- "ShiftUp"
+.organizationDown <- "ShiftDown"
+.organizationDiscard <- "Discard"
+.organizationWidth <- "PanelWidth"

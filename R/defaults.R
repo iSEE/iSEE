@@ -99,11 +99,7 @@ redDimPlotDefaults <- function(se, max.plots) {
     out[[.redDimXAxis]] <- 1L
     out[[.redDimYAxis]] <- 2L
     
-    out[[.generalPlotPanel]] <- FALSE 
-    out[[.generalColorBy]] <- .colorByNothingTitle
-    out[[.generalColorByColData]] <- colnames(colData(se))[1]
-    out[[.generalColorByGeneExprs]] <- 1
-    out[[.generalColorByGeneExprsAssay]] <- def.assay
+    out <- .add_general_parameters(out, colnames(colData(se))[1], def.assay)
     return(out)
 }
 
@@ -128,11 +124,7 @@ geneExprPlotDefaults <- function(se, max.plots) {
     out[[.geneExprXAxisColData]] <- covariates[1] 
     out[[.geneExprXAxisGeneExprs]] <- 1
 
-    out[[.generalPlotPanel]] <- FALSE
-    out[[.generalColorBy]] <- .colorByNothingTitle
-    out[[.generalColorByColData]] <- colnames(colData(se))[1]
-    out[[.generalColorByGeneExprs]] <- 1
-    out[[.generalColorByGeneExprsAssay]] <- def.assay
+    out <- .add_general_parameters(out, covariates[1], def.assay)
     return(out)
 }
 
@@ -155,11 +147,7 @@ colDataPlotDefaults <- function(se, max.plots) {
     out[[.phenoDataXAxis]] <- .phenoDataXAxisNothingTitle
     out[[.phenoDataXAxisColData]] <- ifelse(length(covariates)==1L, covariates[1], covariates[2])
 
-    out[[.generalPlotPanel]] <- FALSE
-    out[[.generalColorBy]] <- .colorByNothingTitle
-    out[[.generalColorByColData]] <- covariates[1]
-    out[[.generalColorByGeneExprs]] <- 1 
-    out[[.generalColorByGeneExprsAssay]] <- def.assay
+    out <- .add_general_parameters(out, covariates[1], def.assay)
     return(out)
 }
 
@@ -175,3 +163,11 @@ colDataPlotDefaults <- function(se, max.plots) {
     return(def)
 }    
 
+.add_general_parameters <- function(incoming, defaultColData, defaultAssay) {
+    incoming[[.generalPlotPanel]] <- FALSE
+    incoming[[.generalColorBy]] <- .colorByNothingTitle
+    incoming[[.generalColorByColData]] <- defaultColData
+    incoming[[.generalColorByGeneExprs]] <- 1L 
+    incoming[[.generalColorByGeneExprsAssay]] <- defaultAssay
+    return(incoming)
+}

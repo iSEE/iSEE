@@ -196,7 +196,8 @@ iSEE <- function(
     # storage for other persistent objects
     pObjects <- new.env()
     pObjects$memory <- memory
-    
+    pObjects$coordinates <- list()
+
     # info boxes, to keep on top of the page  on the left side?
    
     output$box_sce_obj <- renderUI({
@@ -307,21 +308,25 @@ iSEE <- function(
     for (i in seq_len(reddim_max_plots)) {
       local({
         i0 <- i
-        output[[.redDimPlot(i0)]] <- renderPlot({
+        plot.name <- .redDimPlot(i0)
+        output[[plot.name]] <- renderPlot({
 
           # Updating parameters in the memory store (non-characters need some careful treatment).
           for (field in c(.redDimType, .generalColorBy, .generalColorByColData, 
-                          .generalColorByGeneExprs, .generalColorByGeneExprsAssay)) { 
-              if (is.null(input[[.inputRedDim(field, i0)]])) { next } ##### Placeholder, to remove!!!
+                          .generalColorByGeneExprs, .generalColorByGeneExprsAssay,
+                          .brushByPlot)) { 
+              if (is.null(input[[.inputPhenoData(field, i0)]])) { next } ##### Placeholder, to remove!!!
               pObjects$memory$redDim[[field]][i0] <- input[[.inputRedDim(field, i0)]]
           }
           for (field in c(.redDimXAxis, .redDimYAxis)) { 
               pObjects$memory$redDim[[field]][i0] <- as.integer(input[[.inputRedDim(field, i0)]])
           }
           pObjects$memory$redDim[[.generalPlotPanel]][i0] <- .generalPlotParamPanelTitle %in% input[[.inputRedDim(.generalPlotPanel, i0)]] 
-          
-          # Creating the plot.
-          .make_redDimPlot(se, pObjects$memory$redDim[i0,], input) 
+         
+          # Creating the plot, with saved coordinates.
+          p.out <- .make_redDimPlot(se, pObjects$memory$redDim[i0,], input, pObjects$coordinates) 
+          pObjects$coordinates[[plot.name]] <- p.out$xy
+          p.out$plot
         })
       })
     }
@@ -338,7 +343,8 @@ iSEE <- function(
           # Updating parameters (non-characters need some careful treatment).
           for (field in c(.phenoDataYAxisColData, .phenoDataXAxis, .phenoDataXAxisColData,
                       .generalColorBy, .generalColorByColData, 
-                      .generalColorByGeneExprs, .generalColorByGeneExprsAssay)) { 
+                      .generalColorByGeneExprs, .generalColorByGeneExprsAssay,
+                      .brushByPlot)) { 
               if (is.null(input[[.inputPhenoData(field, i0)]])) { next } ##### Placeholder, to remove!!!
               pObjects$memory$phenoData[[field]][i0] <- input[[.inputPhenoData(field, i0)]]
           }
@@ -360,7 +366,8 @@ iSEE <- function(
         output[[.geneExprPlot(i0)]] <- renderPlot({
           # Updating parameters.
           for (field in c(.geneExprID, .geneExprAssay, .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneExprs,
-                          .generalColorBy, .generalColorByColData, .generalColorByGeneExprs, .generalColorByGeneExprs)) {
+                          .generalColorBy, .generalColorByColData, .generalColorByGeneExprs, .generalColorByGeneExprs,
+                          .brushByPlot)) {
               if (is.null(input[[.inputGeneExpr(field, i0)]])) { next } ##### Placeholder, to remove!!!
               pObjects$memory$geneExpr[[field]][i0] <- input[[.inputGeneExpr(field, i0)]]
           }

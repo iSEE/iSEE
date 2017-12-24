@@ -29,16 +29,6 @@
     do.call(tagList, collected)
 }
 
-.panel_name <- function(mode, ID) {
-    ref <- switch(mode, 
-        redDim="Reduced dimension plot",
-        phenoData="Column data plot",
-        geneExpr="Gene expression plot",
-        geneStat="Gene statistics table"
-        )
-    paste(ref, ID)
-}
-
 .panel_generation <- function(active_plots, memory, redDimNames, colDataNames, assayNames) 
 # This function generates the various panels, taking into account their
 # variable widths to dynamically assign them to particular rows. We also
@@ -50,8 +40,10 @@
     cur.row <- list()
     row.counter <- 1L
 
-    # Defining currently active tables to use in linking.
-    active.tab <- active_plots$ID[active_plots$Type=="geneStat"]
+    # Defining currently active tables, scatter plots to use in linking.
+    all.names <- .decode_panel_name(active_plots$Type, active_plots$ID)
+    active.tab <- all.names[active_plots$Type=="geneStat"]
+    brushable <- all.names[active_plots$Type!="geneStat"]
 
     for (i in seq_len(nrow(active_plots))) { 
         mode <- active_plots$Type[i]
@@ -60,7 +52,7 @@
 
         if (mode=="redDim") {                               
             stuff <- list(
-                 plotOutput(.redDimPlot(ID)),
+                 plotOutput(.redDimPlot(ID), brush = brushOpts(paste0(.redDimPlot(ID), .brushField))),
                  selectInput(.inputRedDim(.redDimType, ID), label="Type",
                              choices=redDimNames, selected=param_choices[[.redDimType]]),
                  textInput(.inputRedDim(.redDimXAxis, ID), label="Dimension 1",
@@ -70,7 +62,7 @@
                  )
         } else if (mode=="phenoData") {
             stuff <- list(
-                 plotOutput(.phenoDataPlot(ID)),
+                 plotOutput(.phenoDataPlot(ID), brush = brushOpts(paste0(.phenoDataPlot(ID), .brushField))),
                  selectInput(.inputPhenoData(.phenoDataYAxisColData, ID), 
                              label = "Column of interest (Y-axis):",
                              choices=colDataNames, selected=param_choices[[.phenoDataYAxisColData]]),
@@ -84,8 +76,8 @@
                  )
         } else if (mode=="geneExpr") {
             stuff <- list(
-                plotOutput(.geneExprPlot(ID)),
-                selectInput(.inputGeneExpr(.geneExprID, ID), label = "Linked gene statistics table:",
+                plotOutput(.geneExprPlot(ID), brush = brushOpts(paste0(.geneExprPlot(ID), .brushField))),
+                selectInput(.inputGeneExpr(.geneExprID, ID), label = "Y-axis gene linked to:",
                             choices=active.tab, selected=param_choices[[.geneExprID]]),
                  selectInput(.inputGeneExpr(.geneExprAssay, ID), label=NULL,
                              choices=assayNames, selected=param_choices[[.geneExprAssay]]),
@@ -96,10 +88,10 @@
                  selectInput(.inputGeneExpr(.geneExprXAxisColData, ID), 
                              label = "X-axis column data:", 
                              choices=colDataNames, selected=param_choices[[.geneExprXAxisColData]]),
-                 textInput(.inputGeneExpr(.geneExprXAxisGeneExprs, ID),
-                           label = "X-axis gene expression:", 
-                           value=param_choices[[.geneExprXAxisGeneExprs]])
-                          )
+                 selectInput(.inputGeneExpr(.geneExprXAxisGeneExprs, ID),
+                             label = "X-axis gene linked to:", 
+                             choices=active.tab, selected=param_choices[[.geneExprXAxisGeneExprs]])
+                 )
         } else if (mode=="geneStat") {
             stuff <- list(dataTableOutput(paste0("geneStatTable", ID)))
         } else {
@@ -113,23 +105,34 @@
                 chosen.open <- c(chosen.open, .redDimPlotParamPanelTitle)
             }
 
+            brush.choice <- param_choices[[.brushByPlot]]
+            if (is.na(brush.choice) || ! brush.choice %in% all.names) { 
+                brush.choice <- all.names[i] # brush by yourself, basically.
+            }
+
             param <- list(shinyBS::bsCollapse(
                 id = paste0(mode, .generalPlotPanel, ID),
                 open = chosen.open,
                 shinyBS::bsCollapsePanel(
                     title = .generalPlotParamPanelTitle,
                     radioButtons(paste0(mode, .generalColorBy, ID), 
-                                 label="Color by:", inline=FALSE,
+                                 label="Color by:", inline=TRUE,
                                  choices=c(.colorByNothingTitle, .colorByColDataTitle, .colorByGeneExprsTitle),
                                  selected=param_choices[[.generalColorBy]]),
                     selectInput(paste0(mode, .generalColorByColData, ID), 
                                 label = "Column data:",
                                 choices=colDataNames, selected=param_choices[[.generalColorByColData]]),
-                    selectInput(paste0(mode, .geneExprID, ID), label = "Linked gene statistics table:",
+                    selectInput(paste0(mode, .geneExprID, ID), label = "Gene linked to:",
                                 choices=active.tab, selected=param_choices[[.generalColorByGeneExprs]]),  
                     selectInput(paste0(mode, .generalColorByGeneExprsAssay, ID), label=NULL,
                                 choices=assayNames, selected=param_choices[[.generalColorByGeneExprsAssay]])
-                    ) # end of bsCollapsePanel
+                    ), 
+                shinyBS::bsCollapsePanel(
+                    title = .brushParamPanelTitle,
+                    selectInput(paste0(mode, .brushByPlot, ID), 
+                                label = "Brush by:",
+                                choices=brushable, selected=brush.choice)
+                    )
                 ) # end of bsCollapse
             )
         } else {
@@ -151,7 +154,7 @@
 
         # Aggregating together everything into a column.
         cur.row[[row.counter]] <- do.call(column, c(list(width=panel.width, 
-                                                         h4(.panel_name(mode, ID))), 
+                                                         h4(all.names[i])),
                                                     stuff, param))
         row.counter <- row.counter + 1L
         cumulative.width <- cumulative.width + panel.width

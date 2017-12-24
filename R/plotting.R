@@ -1,4 +1,4 @@
-.make_redDimPlot <- function(se, param_choices, input) 
+.make_redDimPlot <- function(se, param_choices, input, all.coordinates) 
 # Makes the dimension reduction plot.
 { 
     red.dim <- reducedDim(se, param_choices[[.redDimType]])
@@ -9,7 +9,8 @@
       covariate <- colData(se)[,covariate.name]
       astr <- aes_string(x="Dim1", y="Dim2", color="Covariate")
     } else if (color_choice==.colorByGeneExprsTitle) {
-      linked.tab <- paste0("geneStatTable", param_choices[[.generalColorByGeneExprs]], "_rows_selected")
+      tab.id <- .encode_panel_name(param_choices[[.generalColorByGeneExprs]])$ID
+      linked.tab <- paste0("geneStatTable", tab.id, "_rows_selected")
       covariate.name <- rownames(se)[input[[linked.tab]]]
       covariate <- assay(se, param_choices[[.generalColorByGeneExprsAssay]])[covariate.name,]
       astr <- aes_string(x="Dim1", y="Dim2", color="Covariate")
@@ -19,14 +20,27 @@
       astr <- aes_string(x="Dim1", y="Dim2")
     }
 
+    # Figuring out what to do with brushing.
+    print(param_choices[[.brushByPlot]])
+    brush.by <- .encode_panel_name(param_choices[[.brushByPlot]])
+    brush.id <- input[[paste0(brush.by$Type, "Plot", brush.by$ID, .brushField)]]
+    brushed.pts <- brushedPoints(all.coordinates[[paste0(brush.by$Type, "Plot", brush.by$ID)]], brush.id)
+    print(brushed.pts)
+    if (!is.null(brushed.pts) && nrow(brushed.pts)) { 
+        print("YAY, brushing!")
+        print(brushed.pts)
+    } 
+
     plot.data <- data.frame(Dim1=red.dim[,param_choices[[.redDimXAxis]]],
                             Dim2=red.dim[,param_choices[[.redDimYAxis]]])
     plot.data$Covariate <- covariate
-   
-    ggplot(plot.data, astr) +
-      geom_point(size=1.5) +
-      labs(color=covariate.name) +
-      theme_void()
+              
+    out.plot <- ggplot(plot.data, astr) +
+        geom_point(size=1.5) +
+        labs(color=covariate.name) +
+        theme_void()
+
+    list(xy=plot.data, plot=out.plot)
 }
 
 .make_phenoDataPlot <- function(se, param_choices, input) 
@@ -65,14 +79,16 @@
     if (color_choice==.colorByColDataTitle) {
       covariate.name <- param_choices[[.generalColorByColData]]
     } else if (color_choice==.colorByGeneExprsTitle) {
-      linked.tab <- paste0("geneStatTable", param_choices[[.generalColorByGeneExprs]], "_rows_selected")
+      tab.id <- .encode_panel_name(param_choices[[.generalColorByGeneExprs]])$ID
+      linked.tab <- paste0("geneStatTable", tab.id, "_rows_selected")
       covariate.name <- rownames(se)[linked.tab]
     } else {
       covariate.name <- NULL
     }
 
     # Getting the gene choice.
-    linked.tab <- paste0("geneStatTable", param_choices[[.geneExprID]], "_rows_selected")
+    tab.id <- .encode_panel_name(param_choices[[.geneExprID]])$ID
+    linked.tab <- paste0("geneStatTable", tab.id, "_rows_selected")
     cur.gene <- rownames(se)[input[[linked.tab]]]
     plotExpression(se, exprs_values=param_choices[[.geneExprAssay]],
                    x=byx,

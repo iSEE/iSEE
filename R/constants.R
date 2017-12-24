@@ -45,8 +45,34 @@
 .generalColorByGeneExprsAssay <- "ColorByGeneAssay"
 .generalPlotPanel <- "OpenPlotPanel"
 
+.brushParamPanelTitle <- "Brushing parameters"
+
+.brushField <- "Brush"
+.brushByPlot <- "BrushByPlot"
+
 .organizationNew <- "MakeNew"
 .organizationUp <- "ShiftUp"
 .organizationDown <- "ShiftDown"
 .organizationDiscard <- "Discard"
 .organizationWidth <- "PanelWidth"
+
+# Encoding and decoding names for user/shiny
+
+translation <- c(redDim="Reduced dimension plot",
+                 phenoData="Column data plot",
+                 geneExpr="Gene expression plot",
+                 geneStat="Gene statistics table")
+rev.translation <- names(translation)
+names(rev.translation) <- translation
+
+.decode_panel_name <- function(mode, ID) {
+    paste(translation[mode], ID)
+}
+
+.encode_panel_name <- function(names) {
+    ID <- as.integer(gsub(".* ", "", names))
+    raw.str <- rev.translation[gsub(" [0-9]+", "", names)]
+    return(list(Type=raw.str, ID=ID))
+}
+
+

@@ -171,5 +171,7 @@ colDataPlotDefaults <- function(se, max.plots) {
     incoming[[.generalColorByGeneExprsAssay]] <- defaultAssay
 
     incoming[[.organizationWidth]] <- 4L
+
+    incoming[[.brushByPlot]] <- NA_character_
     return(incoming)
 }

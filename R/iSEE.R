@@ -102,12 +102,12 @@ iSEE <- function(
   geneexpr_max_plots <- nrow(memory$geneExpr)
 
   if (is.numeric(colData.args)) { 
-    memory$phenoData <- colDataPlotDefaults(se, colData.args)
+    memory$colData <- colDataPlotDefaults(se, colData.args)
   } else {
-    memory$phenoData <- colDataPlotDefaults(se, nrow(colData.args)) 
-    memory$phenoData <- .override_defaults(memory$phenoData, colData.args)
+    memory$colData <- colDataPlotDefaults(se, nrow(colData.args)) 
+    memory$colData <- .override_defaults(memory$colData, colData.args)
   }
-  phenodata_max_plots <- nrow(memory$phenoData)
+  coldata_max_plots <- nrow(memory$colData)
  
   genestat_max_tab <- 5
   memory$geneStat <- DataFrame(Selected=rep(1, genestat_max_tab), Search="", PanelWidth=4)
@@ -144,7 +144,7 @@ iSEE <- function(
                
       ),
       actionButton(paste0("redDim", .organizationNew), "New reduced dimension plot", class = "btn btn-primary",icon = icon("plus")),
-      actionButton(paste0("phenoData", .organizationNew), "New column data plot", class = "btn btn-primary",icon = icon("plus")),
+      actionButton(paste0("colData", .organizationNew), "New column data plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("geneExpr", .organizationNew), "New gene expression plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("geneStat", .organizationNew), "New gene table", class = "btn btn-primary",icon = icon("plus")),
       uiOutput("panelOrganization")
@@ -184,7 +184,7 @@ iSEE <- function(
   iSEE_server <- function(input, output, session) {
 
     # storage for all the reactive objects
-    active_plots <- data.frame(Type=c("redDim", "phenoData", "geneExpr", "geneStat"),
+    active_plots <- data.frame(Type=c("redDim", "colData", "geneExpr", "geneStat"),
                                ID=1, 
                                stringsAsFactors=FALSE)
 
@@ -240,7 +240,7 @@ iSEE <- function(
         .panel_organization(rObjects$active_plots, pObjects$memory)   
     })
 
-    for (mode in c("redDim", "geneExpr", "phenoData", "geneStat")) { 
+    for (mode in c("redDim", "geneExpr", "colData", "geneStat")) { 
         # Panel addition.
         local({
             mode0 <- mode
@@ -312,46 +312,55 @@ iSEE <- function(
         output[[plot.name]] <- renderPlot({
 
           # Updating parameters in the memory store (non-characters need some careful treatment).
-          for (field in c(.redDimType, .generalColorBy, .generalColorByColData, 
-                          .generalColorByGeneExprs, .generalColorByGeneExprsAssay,
+          for (field in c(.redDimType, 
+                          .colorByField, .colorByColData, .colorByGeneExprs, .colorByGeneExprsAssay,
                           .brushByPlot)) { 
-              if (is.null(input[[.inputPhenoData(field, i0)]])) { next } ##### Placeholder, to remove!!!
+              if (is.null(input[[.inputColData(field, i0)]])) { next } ##### Placeholder, to remove!!!
               pObjects$memory$redDim[[field]][i0] <- input[[.inputRedDim(field, i0)]]
           }
           for (field in c(.redDimXAxis, .redDimYAxis)) { 
               pObjects$memory$redDim[[field]][i0] <- as.integer(input[[.inputRedDim(field, i0)]])
           }
-          pObjects$memory$redDim[[.generalPlotPanel]][i0] <- .generalPlotParamPanelTitle %in% input[[.inputRedDim(.generalPlotPanel, i0)]] 
          
           # Creating the plot, with saved coordinates.
           p.out <- .make_redDimPlot(se, pObjects$memory$redDim[i0,], input, pObjects$coordinates) 
           pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
         })
+
+        observe({
+          opened <- input[[.inputRedDim(.plotParamPanelName, i0)]] 
+          pObjects$memory$redDim[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
+          pObjects$memory$redDim[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
+        })
       })
     }
     
     #######################################################################
-    # Phenodata scatter plot section.
+    # Column data scatter plot section.
     #######################################################################
 
-    for (i in seq_len(phenodata_max_plots)) {
+    for (i in seq_len(coldata_max_plots)) {
       local({
         i0 <- i
-        output[[.phenoDataPlot(i0)]] <- renderPlot({
+        output[[.colDataPlot(i0)]] <- renderPlot({
 
           # Updating parameters (non-characters need some careful treatment).
-          for (field in c(.phenoDataYAxisColData, .phenoDataXAxis, .phenoDataXAxisColData,
-                      .generalColorBy, .generalColorByColData, 
-                      .generalColorByGeneExprs, .generalColorByGeneExprsAssay,
+          for (field in c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData,
+                      .colorByField, .colorByColData, .colorByGeneExprs, .colorByGeneExprsAssay,
                       .brushByPlot)) { 
-              if (is.null(input[[.inputPhenoData(field, i0)]])) { next } ##### Placeholder, to remove!!!
-              pObjects$memory$phenoData[[field]][i0] <- input[[.inputPhenoData(field, i0)]]
+              if (is.null(input[[.inputColData(field, i0)]])) { next } ##### Placeholder, to remove!!!
+              pObjects$memory$colData[[field]][i0] <- input[[.inputColData(field, i0)]]
           }
-          pObjects$memory$phenoData[[.generalPlotPanel]][i0] <- .generalPlotParamPanelTitle %in% input[[.inputPhenoData(.generalPlotPanel, i0)]] 
           
           # Creating the plot.
-          .make_phenoDataPlot(se, pObjects$memory$phenoData[i0,], input)
+          .make_colDataPlot(se, pObjects$memory$colData[i0,], input)
+        })
+
+        observe({
+          opened <- input[[.inputColData(.plotParamPanelName, i0)]] 
+          pObjects$memory$colData[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
+          pObjects$memory$colData[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
         })
       })
     }
@@ -366,17 +375,22 @@ iSEE <- function(
         output[[.geneExprPlot(i0)]] <- renderPlot({
           # Updating parameters.
           for (field in c(.geneExprID, .geneExprAssay, .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneExprs,
-                          .generalColorBy, .generalColorByColData, .generalColorByGeneExprs, .generalColorByGeneExprs,
+                          .colorByField, .colorByColData, .colorByGeneExprs, .colorByGeneExprs,
                           .brushByPlot)) {
               if (is.null(input[[.inputGeneExpr(field, i0)]])) { next } ##### Placeholder, to remove!!!
               pObjects$memory$geneExpr[[field]][i0] <- input[[.inputGeneExpr(field, i0)]]
           }
-          pObjects$memory$geneExpr[[.generalPlotPanel]][i0] <- .generalPlotParamPanelTitle %in% input[[.inputGeneExpr(.generalPlotPanel, i0)]] 
 
           # Creating the plot.
           .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input)
-        }) # end of output[[plotname]]
-      }) # end of local
+        }) 
+
+        observe({
+          opened <- input[[.inputGeneExpr(.plotParamPanelName, i0)]] 
+          pObjects$memory$geneExpr[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
+          pObjects$memory$geneExpr[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
+        })
+      }) 
     }
     
     #######################################################################

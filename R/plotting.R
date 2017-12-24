@@ -3,16 +3,16 @@
 { 
     red.dim <- reducedDim(se, param_choices[[.redDimType]])
 
-    color_choice <- param_choices[[.generalColorBy]]
+    color_choice <- param_choices[[.colorByField]]
     if (color_choice==.colorByColDataTitle) {
-      covariate.name <- param_choices[[.generalColorByColData]]
+      covariate.name <- param_choices[[.colorByColData]]
       covariate <- colData(se)[,covariate.name]
       astr <- aes_string(x="Dim1", y="Dim2", color="Covariate")
     } else if (color_choice==.colorByGeneExprsTitle) {
-      tab.id <- .encode_panel_name(param_choices[[.generalColorByGeneExprs]])$ID
+      tab.id <- .encode_panel_name(param_choices[[.colorByGeneExprs]])$ID
       linked.tab <- paste0("geneStatTable", tab.id, "_rows_selected")
       covariate.name <- rownames(se)[input[[linked.tab]]]
-      covariate <- assay(se, param_choices[[.generalColorByGeneExprsAssay]])[covariate.name,]
+      covariate <- assay(se, param_choices[[.colorByGeneExprsAssay]])[covariate.name,]
       astr <- aes_string(x="Dim1", y="Dim2", color="Covariate")
     } else {
       covariate.name <- ""
@@ -43,19 +43,19 @@
     list(xy=plot.data, plot=out.plot)
 }
 
-.make_phenoDataPlot <- function(se, param_choices, input) 
+.make_colDataPlot <- function(se, param_choices, input) 
 # Makes a plot of column data variables.
 {
-    aes_args <- list(y=param_choices[[.phenoDataYAxisColData]])
-#     if (param_choices[[.phenoDataXAxis]]!=.phenoDataXAxisNothingTitle) { # Currently not-quite-working as plotPhenoData needs 'x'.
-        aes_args$x <- param_choices[[.phenoDataXAxisColData]]
+    aes_args <- list(y=param_choices[[.colDataYAxis]])
+#     if (param_choices[[.colDataXAxis]]!=.colDataXAxisNothingTitle) { # Currently not-quite-working as plotPhenoData needs 'x'.
+        aes_args$x <- param_choices[[.colDataXAxisColData]]
 #     }
 
-    color_choice <- param_choices[[.generalColorBy]]
+    color_choice <- param_choices[[.colorByField]]
     if (color_choice==.colorByColDataTitle) {
-      aes_args$color <- param_choices[[.generalColorByColData]]
+      aes_args$color <- param_choices[[.colorByColData]]
     } else if (color_choice==.colorByGeneExprsTitle) {
-      aes_args$color <- param_choices[[.generalColorByGeneExprs]]
+      aes_args$color <- param_choices[[.colorByGeneExprs]]
     }
     aes_final <- do.call(aes_string, aes_args)
   
@@ -75,11 +75,11 @@
       byx <- NULL
     }
 
-    color_choice <- param_choices[[.generalColorBy]]
+    color_choice <- param_choices[[.colorByField]]
     if (color_choice==.colorByColDataTitle) {
-      covariate.name <- param_choices[[.generalColorByColData]]
+      covariate.name <- param_choices[[.colorByColData]]
     } else if (color_choice==.colorByGeneExprsTitle) {
-      tab.id <- .encode_panel_name(param_choices[[.generalColorByGeneExprs]])$ID
+      tab.id <- .encode_panel_name(param_choices[[.colorByGeneExprs]])$ID
       linked.tab <- paste0("geneStatTable", tab.id, "_rows_selected")
       covariate.name <- rownames(se)[linked.tab]
     } else {

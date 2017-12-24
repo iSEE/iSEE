@@ -12,7 +12,7 @@
         panel.width <- memory[[mode]][[.organizationWidth]][ID]
 
         current <- list(
-            h4(.panel_name(mode, ID)),
+            h4(.decode_panel_name(mode, ID)),
             actionButton(paste0(mode, ID, .organizationUp), "Up"),
             actionButton(paste0(mode, ID, .organizationDown), "Down"),
             actionButton(paste0(mode, ID, .organizationDiscard), "Remove",
@@ -60,19 +60,19 @@
                  textInput(.inputRedDim(.redDimYAxis, ID), label="Dimension 2",
                            value=param_choices[[.redDimYAxis]])
                  )
-        } else if (mode=="phenoData") {
+        } else if (mode=="colData") {
             stuff <- list(
-                 plotOutput(.phenoDataPlot(ID), brush = brushOpts(paste0(.phenoDataPlot(ID), .brushField))),
-                 selectInput(.inputPhenoData(.phenoDataYAxisColData, ID), 
+                 plotOutput(.colDataPlot(ID), brush = brushOpts(paste0(.colDataPlot(ID), .brushField))),
+                 selectInput(.inputColData(.colDataYAxis, ID), 
                              label = "Column of interest (Y-axis):",
-                             choices=colDataNames, selected=param_choices[[.phenoDataYAxisColData]]),
-                 radioButtons(.inputPhenoData(.phenoDataXAxis, ID), label="X-axis:", 
+                             choices=colDataNames, selected=param_choices[[.colDataYAxis]]),
+                 radioButtons(.inputColData(.colDataXAxis, ID), label="X-axis:", 
                               inline=FALSE, 
-                              choices=c(.phenoDataXAxisNothingTitle, .phenoDataXAxisColDataTitle),
-                              selected=param_choices[[.phenoDataXAxis]]),
-                 selectInput(.inputPhenoData(.phenoDataXAxisColData, ID), 
+                              choices=c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle),
+                              selected=param_choices[[.colDataXAxis]]),
+                 selectInput(.inputColData(.colDataXAxisColData, ID), 
                              label = "Column of interest (X-axis):",
-                             choices=colDataNames, selected=param_choices[[.phenoDataXAxisColData]])
+                             choices=colDataNames, selected=param_choices[[.colDataXAxisColData]])
                  )
         } else if (mode=="geneExpr") {
             stuff <- list(
@@ -99,33 +99,39 @@
         }
 
         # Adding graphical parameters if we're plotting.
-        if (mode!="geneStat") { 
+        if (mode!="geneStat") {
+
+            # Figuring out whether the panels should be open.
             chosen.open <- character(0)
-            if (param_choices[[.generalPlotPanel]]) {
-                chosen.open <- c(chosen.open, .redDimPlotParamPanelTitle)
+            if (param_choices[[.colorParamPanelOpen]]) {
+                chosen.open <- c(chosen.open, .colorParamPanelTitle)
+            }
+            if (param_choices[[.brushParamPanelOpen]]) {
+                chosen.open <- c(chosen.open, .brushParamPanelTitle)
             }
 
+            # Choosing the plot to brush by (using self, if not otherwise specified).
             brush.choice <- param_choices[[.brushByPlot]]
             if (is.na(brush.choice) || ! brush.choice %in% all.names) { 
-                brush.choice <- all.names[i] # brush by yourself, basically.
+                brush.choice <- all.names[i] 
             }
 
             param <- list(shinyBS::bsCollapse(
-                id = paste0(mode, .generalPlotPanel, ID),
+                id = paste0(mode, .plotParamPanelName, ID),
                 open = chosen.open,
                 shinyBS::bsCollapsePanel(
-                    title = .generalPlotParamPanelTitle,
-                    radioButtons(paste0(mode, .generalColorBy, ID), 
+                    title = .colorParamPanelTitle,
+                    radioButtons(paste0(mode, .colorByField, ID), 
                                  label="Color by:", inline=TRUE,
                                  choices=c(.colorByNothingTitle, .colorByColDataTitle, .colorByGeneExprsTitle),
-                                 selected=param_choices[[.generalColorBy]]),
-                    selectInput(paste0(mode, .generalColorByColData, ID), 
+                                 selected=param_choices[[.colorByField]]),
+                    selectInput(paste0(mode, .colorByColData, ID), 
                                 label = "Column data:",
-                                choices=colDataNames, selected=param_choices[[.generalColorByColData]]),
+                                choices=colDataNames, selected=param_choices[[.colorByColData]]),
                     selectInput(paste0(mode, .geneExprID, ID), label = "Gene linked to:",
-                                choices=active.tab, selected=param_choices[[.generalColorByGeneExprs]]),  
-                    selectInput(paste0(mode, .generalColorByGeneExprsAssay, ID), label=NULL,
-                                choices=assayNames, selected=param_choices[[.generalColorByGeneExprsAssay]])
+                                choices=active.tab, selected=param_choices[[.colorByGeneExprs]]),  
+                    selectInput(paste0(mode, .colorByGeneExprsAssay, ID), label=NULL,
+                                choices=assayNames, selected=param_choices[[.colorByGeneExprsAssay]])
                     ), 
                 shinyBS::bsCollapsePanel(
                     title = .brushParamPanelTitle,

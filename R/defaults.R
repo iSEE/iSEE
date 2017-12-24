@@ -143,9 +143,9 @@ colDataPlotDefaults <- function(se, max.plots) {
     covariates <- colnames(colData(se))
 
     out <- DataFrame(Active=activity)
-    out[[.phenoDataYAxisColData]] <- covariates[1]
-    out[[.phenoDataXAxis]] <- .phenoDataXAxisNothingTitle
-    out[[.phenoDataXAxisColData]] <- ifelse(length(covariates)==1L, covariates[1], covariates[2])
+    out[[.colDataYAxis]] <- covariates[1]
+    out[[.colDataXAxis]] <- .colDataXAxisNothingTitle
+    out[[.colDataXAxisColData]] <- ifelse(length(covariates)==1L, covariates[1], covariates[2])
 
     out <- .add_general_parameters(out, covariates[1], def.assay)
     return(out)
@@ -164,11 +164,13 @@ colDataPlotDefaults <- function(se, max.plots) {
 }    
 
 .add_general_parameters <- function(incoming, defaultColData, defaultAssay) {
-    incoming[[.generalPlotPanel]] <- FALSE
-    incoming[[.generalColorBy]] <- .colorByNothingTitle
-    incoming[[.generalColorByColData]] <- defaultColData
-    incoming[[.generalColorByGeneExprs]] <- 1L 
-    incoming[[.generalColorByGeneExprsAssay]] <- defaultAssay
+    incoming[[.colorParamPanelOpen]] <- FALSE
+    incoming[[.brushParamPanelOpen]] <- FALSE
+
+    incoming[[.colorByField]] <- .colorByNothingTitle
+    incoming[[.colorByColData]] <- defaultColData
+    incoming[[.colorByGeneExprs]] <- 1L 
+    incoming[[.colorByGeneExprsAssay]] <- defaultAssay
 
     incoming[[.organizationWidth]] <- 4L
 

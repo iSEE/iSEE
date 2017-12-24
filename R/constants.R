@@ -21,35 +21,40 @@
 .geneExprPlot <- function(i) paste0("geneExprPlot", i)
 
 # Gene expression plotting parameters.
-.phenoDataXAxisNothingTitle <- "None"
-.phenoDataXAxisColDataTitle <- "Column data"
+.colDataXAxisNothingTitle <- "None"
+.colDataXAxisColDataTitle <- "Column data"
 
-.phenoDataYAxisColData <- "YAxisColData"
-.phenoDataXAxis <- "XAxis"
-.phenoDataXAxisColData <- "XAxisColData"
+.colDataYAxis <- "YAxis"
+.colDataXAxis <- "XAxis"
+.colDataXAxisColData <- "XAxisColData"
 
-.inputPhenoData <- function(field, i) paste0("phenoData", field, i)
-.phenoDataPlot <- function(i) paste0("phenoDataPlot", i)
+.inputColData <- function(field, i) paste0("colData", field, i)
+.colDataPlot <- function(i) paste0("colDataPlot", i)
 
-# General plot parameters.
-
+# Plot colouring parameters.
 .colorByNothingTitle <- "None"
 .colorByColDataTitle <- "Column data"
 .colorByGeneExprsTitle <- "Gene expression"
 
-.generalPlotParamPanelTitle <- "Advanced plot parameters"
+.colorParamPanelTitle <- "Coloring parameters"
+.colorParamPanelOpen <- "ColorPanelOpen"
 
-.generalColorBy <- "ColorBy"
-.generalColorByColData <- "ColorByColData"
-.generalColorByGeneExprs <- "ColorByGeneTable"
-.generalColorByGeneExprsAssay <- "ColorByGeneAssay"
-.generalPlotPanel <- "OpenPlotPanel"
+.colorByField <- "ColorBy"
+.colorByColData <- "ColorByColData"
+.colorByGeneExprs <- "ColorByGeneTable"
+.colorByGeneExprsAssay <- "ColorByGeneAssay"
 
+# Plot brushing parameters.
 .brushParamPanelTitle <- "Brushing parameters"
+.brushParamPanelOpen <- "BrushPanelOpen"
 
 .brushField <- "Brush"
 .brushByPlot <- "BrushByPlot"
 
+# Other parameter panel things
+.plotParamPanelName <- "ParamPanel"
+
+# Panel organization parameters.
 .organizationNew <- "MakeNew"
 .organizationUp <- "ShiftUp"
 .organizationDown <- "ShiftDown"
@@ -57,9 +62,8 @@
 .organizationWidth <- "PanelWidth"
 
 # Encoding and decoding names for user/shiny
-
 translation <- c(redDim="Reduced dimension plot",
-                 phenoData="Column data plot",
+                 colData="Column data plot",
                  geneExpr="Gene expression plot",
                  geneStat="Gene statistics table")
 rev.translation <- names(translation)

@@ -110,7 +110,7 @@ iSEE <- function(
   phenodata_max_plots <- nrow(memory$phenoData)
  
   genestat_max_tab <- 5
-  memory$geneStat <- DataFrame(Selected=rep(1, genestat_max_tab), Search="")
+  memory$geneStat <- DataFrame(Selected=rep(1, genestat_max_tab), Search="", PanelWidth=4)
 
   # for retrieving the annotation
   if (!is.null(annot.orgdb)) { 
@@ -300,10 +300,11 @@ iSEE <- function(
     # Reduced dimension plot section.
     #######################################################################
 
+    # Note: we need "local" so that each item gets its own number. Without it, the value
+    # of i in the renderPlot() will be the same across all instances, because
+    # of when the expression is evaluated.
+
     for (i in seq_len(reddim_max_plots)) {
-      # Need local so that each item gets its own number. Without it, the value
-      # of i in the renderPlot() will be the same across all instances, because
-      # of when the expression is evaluated.
       local({
         i0 <- i
         output[[.redDimPlot(i0)]] <- renderPlot({
@@ -319,35 +320,8 @@ iSEE <- function(
           }
           pObjects$memory$redDim[[.generalPlotPanel]][i0] <- .generalPlotParamPanelTitle %in% input[[.inputRedDim(.generalPlotPanel, i0)]] 
           
-          # Setting up the parameter choices for this plot.
-          param_choices <- pObjects$memory$redDim[i0,]
-          red.dim <- reducedDim(se, param_choices[[.redDimType]])
-
-          color_choice <- param_choices[[.generalColorBy]]
-          if (color_choice==.colorByColDataTitle) {
-            covariate.name <- param_choices[[.generalColorByColData]]
-            covariate <- cell.data[,covariate.name]
-            astr <- aes_string(x="Dim1", y="Dim2", color="Covariate")
-          } else if (color_choice==.colorByGeneExprsTitle) {
-            linked.tab <- paste0("geneStatTable", param_choices[[.generalColorByGeneExprs]], "_rows_selected")
-            covariate.name <- gene.names[input[[linked.tab]]]
-            covariate <- assay(se, param_choices[[.generalColorByGeneExprsAssay]])[covariate.name,]
-            astr <- aes_string(x="Dim1", y="Dim2", color="Covariate")
-          } else {
-            covariate.name <- ""
-            covariate <- NULL              
-            astr <- aes_string(x="Dim1", y="Dim2")
-          }
-
-          plot.data <- data.frame(Dim1=red.dim[,param_choices[[.redDimXAxis]]],
-                                  Dim2=red.dim[,param_choices[[.redDimYAxis]]])
-          plot.data$Covariate <- covariate
-         
-          # Creating the plot. 
-          ggplot(plot.data, astr) +
-            geom_point(size=1.5) +
-            labs(color=covariate.name) +
-            theme_void()
+          # Creating the plot.
+          .make_redDimPlot(se, pObjects$memory$redDim[i0,], input) 
         })
       })
     }
@@ -357,9 +331,6 @@ iSEE <- function(
     #######################################################################
 
     for (i in seq_len(phenodata_max_plots)) {
-      # Need local so that each item gets its own number. Without it, the value
-      # of i in the renderPlot() will be the same across all instances, because
-      # of when the expression is evaluated.
       local({
         i0 <- i
         output[[.phenoDataPlot(i0)]] <- renderPlot({
@@ -373,23 +344,8 @@ iSEE <- function(
           }
           pObjects$memory$phenoData[[.generalPlotPanel]][i0] <- .generalPlotParamPanelTitle %in% input[[.inputPhenoData(.generalPlotPanel, i0)]] 
           
-          # Setting up the parameter choices for this plot.
-          param_choices <- pObjects$memory$phenoData[i0,]
-          aes_args <- list(y=param_choices[[.phenoDataYAxisColData]])
-#          if (param_choices[[.phenoDataXAxis]]!=.phenoDataXAxisNothingTitle) { # Currently not-quite-working as plotPhenoData needs 'x'.
-              aes_args$x <- param_choices[[.phenoDataXAxisColData]]
-#          }
-
-          color_choice <- param_choices[[.generalColorBy]]
-          if (color_choice==.colorByColDataTitle) {
-            aes_args$color <- param_choices[[.generalColorByColData]]
-          } else if (color_choice==.colorByGeneExprsTitle) {
-            aes_args$color <- param_choices[[.generalColorByGeneExprs]]
-          }
-          aes_final <- do.call(aes_string, aes_args)
-        
-          # Creating the plot. 
-          plotPhenoData(se, aes_final)
+          # Creating the plot.
+          .make_phenoDataPlot(se, pObjects$memory$phenoData[i0,], input)
         })
       })
     }
@@ -399,9 +355,6 @@ iSEE <- function(
     #######################################################################
     
     for (i in seq_len(geneexpr_max_plots)) {
-      # Need local so that each item gets its own number. Without it, the value
-      # of i in the renderPlot() will be the same across all instances, because
-      # of when the expression is evaluated.
       local({
         i0 <- i
         output[[.geneExprPlot(i0)]] <- renderPlot({
@@ -413,33 +366,8 @@ iSEE <- function(
           }
           pObjects$memory$geneExpr[[.generalPlotPanel]][i0] <- .generalPlotParamPanelTitle %in% input[[.inputGeneExpr(.generalPlotPanel, i0)]] 
 
-          # Setting up the parameter choices. 
-          param_choices <- pObjects$memory$geneExpr[i0,]
-          xchoice <- param_choices[[.geneExprXAxis]]
-          if (xchoice==.geneExprXAxisColDataTitle) {
-            byx <- param_choices[[.geneExprXAxisColData]]
-          } else if (xchoice==.geneExprXAxisGeneExprsTitle) {
-            byx <- param_choices[[.geneExprXAxisGeneExprs]]
-          } else {
-            byx <- NULL
-          }
-
-          color_choice <- param_choices[[.generalColorBy]]
-          if (color_choice==.colorByColDataTitle) {
-            covariate.name <- param_choices[[.generalColorByColData]]
-          } else if (color_choice==.colorByGeneExprsTitle) {
-            covariate.name <- param_choices[[.generalColorByGeneExprs]]
-          } else {
-            covariate.name <- NULL
-          }
-
-          # Getting the gene choice.
-          linked.tab <- paste0("geneStatTable", param_choices[[.geneExprID]], "_rows_selected")
-          cur.gene <- gene.names[input[[linked.tab]]]
-          plotExpression(se, exprs_values=param_choices[[.geneExprAssay]],
-                         x=byx,
-                         features=cur.gene,
-                         colour_by=covariate.name)
+          # Creating the plot.
+          .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input)
         }) # end of output[[plotname]]
       }) # end of local
     }

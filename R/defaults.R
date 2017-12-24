@@ -169,5 +169,7 @@ colDataPlotDefaults <- function(se, max.plots) {
     incoming[[.generalColorByColData]] <- defaultColData
     incoming[[.generalColorByGeneExprs]] <- 1L 
     incoming[[.generalColorByGeneExprsAssay]] <- defaultAssay
+
+    incoming[[.organizationWidth]] <- 4L
     return(incoming)
 }

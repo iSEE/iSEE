@@ -185,11 +185,12 @@ iSEE <- function(
 
     # storage for all the reactive objects
     active_plots <- data.frame(Type=c("redDim", "phenoData", "geneExpr", "geneStat"),
-                               ID=1, PanelWidth=4, 
+                               ID=1, 
                                stringsAsFactors=FALSE)
 
     rObjects <- reactiveValues(
-        active_plots = active_plots
+        active_plots = active_plots,
+        resized = 1
     )
     
     # storage for other persistent objects
@@ -223,10 +224,11 @@ iSEE <- function(
 
     #######################################################################
     # Multipanel UI generation section.
+    # This is adapted from https://stackoverflow.com/questions/15875786/dynamically-add-plots-to-web-page-using-shiny.
     #######################################################################
     
-    # This is nicked from https://stackoverflow.com/questions/15875786/dynamically-add-plots-to-web-page-using-shiny.
     output$allPanels <- renderUI({
+        (rObjects$resized) # Trigger re-rendering upon resizing.
         .panel_generation(rObjects$active_plots, pObjects$memory,
                           redDimNames=red.dim.names, 
                           colDataNames=covariates,
@@ -234,7 +236,7 @@ iSEE <- function(
     })
     
     output$panelOrganization <- renderUI({
-        .panel_organization(rObjects$active_plots)        
+        .panel_organization(rObjects$active_plots, pObjects$memory)   
     })
 
     for (mode in c("redDim", "geneExpr", "phenoData", "geneStat")) { 
@@ -264,9 +266,8 @@ iSEE <- function(
 
                 # Panel resizing.
                 observeEvent(input[[paste0(mode0, i0, .organizationWidth)]], {
-                    all.active <- rObjects$active_plots
-                    index <- which(all.active$Type==mode0 & all.active$ID==i0)
-                    rObjects$active_plots[[.organizationWidth]][index] <- input[[paste0(mode0, i0, .organizationWidth)]] 
+                    pObjects$memory[[mode0]][[.organizationWidth]][i0] <- input[[paste0(mode0, i0, .organizationWidth)]] 
+                    rObjects$resized <- rObjects$resized + 1L
                 })
 
                 # Panel shifting, up and down.
@@ -411,7 +412,6 @@ iSEE <- function(
               pObjects$memory$geneExpr[[field]][i0] <- input[[.inputGeneExpr(field, i0)]]
           }
           pObjects$memory$geneExpr[[.generalPlotPanel]][i0] <- .generalPlotParamPanelTitle %in% input[[.inputGeneExpr(.generalPlotPanel, i0)]] 
-          print(pObjects$memory$geneStat$Selected)
 
           # Setting up the parameter choices. 
           param_choices <- pObjects$memory$geneExpr[i0,]

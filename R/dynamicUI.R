@@ -1,4 +1,4 @@
-.panel_organization <- function(active_plots) 
+.panel_organization <- function(active_plots, memory) 
 # This function generates the sidebar that organizes the various panels.
 # It includes options to move plots up, down, and remove/resize them.
 {
@@ -9,7 +9,7 @@
     for (i in seq_len(N)) {
         mode <- active_plots$Type[i]
         ID <- active_plots$ID[i]
-        panel.width <- active_plots$PanelWidth[i]
+        panel.width <- memory[[mode]][[.organizationWidth]][ID]
 
         current <- list(
             h4(.panel_name(mode, ID)),
@@ -53,56 +53,55 @@
     # Defining currently active tables to use in linking.
     active.tab <- active_plots$ID[active_plots$Type=="geneStat"]
 
-    for (x in seq_len(nrow(active_plots))) { 
-        mode <- active_plots$Type[x]
-        i <- active_plots$ID[x]
-        panel.width <- active_plots$PanelWidth[x]
-        param_choices <- memory[[mode]][i,]
+    for (i in seq_len(nrow(active_plots))) { 
+        mode <- active_plots$Type[i]
+        ID <- active_plots$ID[i]
+        param_choices <- memory[[mode]][ID,]
 
         if (mode=="redDim") {                               
             stuff <- list(
-                 plotOutput(.redDimPlot(i)),
-                 selectInput(.inputRedDim(.redDimType, i), label="Type",
+                 plotOutput(.redDimPlot(ID)),
+                 selectInput(.inputRedDim(.redDimType, ID), label="Type",
                              choices=redDimNames, selected=param_choices[[.redDimType]]),
-                 textInput(.inputRedDim(.redDimXAxis, i), label="Dimension 1",
+                 textInput(.inputRedDim(.redDimXAxis, ID), label="Dimension 1",
                            value=param_choices[[.redDimXAxis]]),
-                 textInput(.inputRedDim(.redDimYAxis, i), label="Dimension 2",
+                 textInput(.inputRedDim(.redDimYAxis, ID), label="Dimension 2",
                            value=param_choices[[.redDimYAxis]])
                  )
         } else if (mode=="phenoData") {
             stuff <- list(
-                 plotOutput(.phenoDataPlot(i)),
-                 selectInput(.inputPhenoData(.phenoDataYAxisColData, i), 
+                 plotOutput(.phenoDataPlot(ID)),
+                 selectInput(.inputPhenoData(.phenoDataYAxisColData, ID), 
                              label = "Column of interest (Y-axis):",
                              choices=colDataNames, selected=param_choices[[.phenoDataYAxisColData]]),
-                 radioButtons(.inputPhenoData(.phenoDataXAxis, i), label="X-axis:", 
+                 radioButtons(.inputPhenoData(.phenoDataXAxis, ID), label="X-axis:", 
                               inline=FALSE, 
                               choices=c(.phenoDataXAxisNothingTitle, .phenoDataXAxisColDataTitle),
                               selected=param_choices[[.phenoDataXAxis]]),
-                 selectInput(.inputPhenoData(.phenoDataXAxisColData, i), 
+                 selectInput(.inputPhenoData(.phenoDataXAxisColData, ID), 
                              label = "Column of interest (X-axis):",
                              choices=colDataNames, selected=param_choices[[.phenoDataXAxisColData]])
                  )
         } else if (mode=="geneExpr") {
             stuff <- list(
-                plotOutput(.geneExprPlot(i)),
-                selectInput(.inputGeneExpr(.geneExprID, i), label = "Linked gene statistics table:",
+                plotOutput(.geneExprPlot(ID)),
+                selectInput(.inputGeneExpr(.geneExprID, ID), label = "Linked gene statistics table:",
                             choices=active.tab, selected=param_choices[[.geneExprID]]),
-                 selectInput(.inputGeneExpr(.geneExprAssay, i), label=NULL,
+                 selectInput(.inputGeneExpr(.geneExprAssay, ID), label=NULL,
                              choices=assayNames, selected=param_choices[[.geneExprAssay]]),
-                 radioButtons(.inputGeneExpr(.geneExprXAxis, i), label="X-axis:", 
+                 radioButtons(.inputGeneExpr(.geneExprXAxis, ID), label="X-axis:", 
                               inline=FALSE, 
                               choices=c(.geneExprXAxisNothingTitle, .geneExprXAxisColDataTitle, .geneExprXAxisGeneExprsTitle),
                               selected=param_choices[[.geneExprXAxis]]),
-                 selectInput(.inputGeneExpr(.geneExprXAxisColData, i), 
+                 selectInput(.inputGeneExpr(.geneExprXAxisColData, ID), 
                              label = "X-axis column data:", 
                              choices=colDataNames, selected=param_choices[[.geneExprXAxisColData]]),
-                 textInput(.inputGeneExpr(.geneExprXAxisGeneExprs, i),
+                 textInput(.inputGeneExpr(.geneExprXAxisGeneExprs, ID),
                            label = "X-axis gene expression:", 
                            value=param_choices[[.geneExprXAxisGeneExprs]])
                           )
         } else if (mode=="geneStat") {
-            stuff <- list(dataTableOutput(paste0("geneStatTable", i)))
+            stuff <- list(dataTableOutput(paste0("geneStatTable", ID)))
         } else {
             stop(sprintf("'%s' is not a recognized panel mode"), mode)
         }
@@ -110,26 +109,25 @@
         # Adding graphical parameters if we're plotting.
         if (mode!="geneStat") { 
             chosen.open <- character(0)
-            print(param_choices)
             if (param_choices[[.generalPlotPanel]]) {
                 chosen.open <- c(chosen.open, .redDimPlotParamPanelTitle)
             }
 
             param <- list(shinyBS::bsCollapse(
-                id = paste0(mode, .generalPlotPanel, i),
+                id = paste0(mode, .generalPlotPanel, ID),
                 open = chosen.open,
                 shinyBS::bsCollapsePanel(
                     title = .generalPlotParamPanelTitle,
-                    radioButtons(paste0(mode, .generalColorBy, i), 
+                    radioButtons(paste0(mode, .generalColorBy, ID), 
                                  label="Color by:", inline=FALSE,
                                  choices=c(.colorByNothingTitle, .colorByColDataTitle, .colorByGeneExprsTitle),
                                  selected=param_choices[[.generalColorBy]]),
-                    selectInput(paste0(mode, .generalColorByColData, i), 
+                    selectInput(paste0(mode, .generalColorByColData, ID), 
                                 label = "Column data:",
                                 choices=colDataNames, selected=param_choices[[.generalColorByColData]]),
-                    selectInput(paste0(mode, .geneExprID, i), label = "Linked gene statistics table:",
+                    selectInput(paste0(mode, .geneExprID, ID), label = "Linked gene statistics table:",
                                 choices=active.tab, selected=param_choices[[.generalColorByGeneExprs]]),  
-                    selectInput(paste0(mode, .generalColorByGeneExprsAssay, i), label=NULL,
+                    selectInput(paste0(mode, .generalColorByGeneExprsAssay, ID), label=NULL,
                                 choices=assayNames, selected=param_choices[[.generalColorByGeneExprsAssay]])
                     ) # end of bsCollapsePanel
                 ) # end of bsCollapse
@@ -139,6 +137,7 @@
         }
 
         # Deciding whether to continue on the current row, or start a new row.
+        panel.width <- param_choices[[.organizationWidth]]
         extra <- cumulative.width + panel.width
         if (extra > 12L) {
             collected[[counter]] <- do.call(fluidRow, cur.row)
@@ -152,7 +151,7 @@
 
         # Aggregating together everything into a column.
         cur.row[[row.counter]] <- do.call(column, c(list(width=panel.width, 
-                                                         h4(.panel_name(mode, i))), 
+                                                         h4(.panel_name(mode, ID))), 
                                                     stuff, param))
         row.counter <- row.counter + 1L
         cumulative.width <- cumulative.width + panel.width

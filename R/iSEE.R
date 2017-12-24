@@ -5,37 +5,37 @@
 #'
 #' @param se A SingleCellExperiment object.
 #' @param redDim.args An integer scalar specifying the maximum number of
-#' reduced dimension plots in the interface. Alternatively, a DataFrame
-#' similar to that produced by \code{\link{redDimPlotDefaults}}, specifying
+#' reduced dimension plots in the interface. Alternatively, a DataFrame 
+#' similar to that produced by \code{\link{redDimPlotDefaults}}, specifying 
 #' initial parameters for the plots.
 #' @param colData.args An integer scalar specifying the maximum number of
-#' column data plots in the interface. Alternatively, a DataFrame
-#' similar to that produced by \code{\link{colDataPlotDefaults}}, specifying
+#' column data plots in the interface. Alternatively, a DataFrame 
+#' similar to that produced by \code{\link{colDataPlotDefaults}}, specifying 
 #' initial parameters for the plots.
 #' @param geneExpr.args An integer scalar specifying the maximum number of
-#' gene expression plots in the interface. Alternatively, a DataFrame
+#' gene expression plots in the interface. Alternatively, a DataFrame 
 #' similar to that produced by \code{\link{geneExprPlotDefaults}}, specifying
 #' initial parameters for the plots.
-#' @param annot.orgdb An \code{org.*.db} annotation object from which
-#' Entrez identifiers can be retrieved.
+#' @param annot.orgdb An \code{org.*.db} annotation object from which 
+#' Entrez identifiers can be retrieved. 
 #' @param annot.keytype A string specifying the keytype to use to query
 #' \code{annot.orgdb}.
 #' @param annot.keyfield A string specifying the field of \code{rowData(se)}
 #' containing the keys of type \code{annot.keytype}. If \code{NULL}, the
 #' row names of \code{se} are used as the keys.
 #'
-#' @details Users can pass default parameters via DataFrame objects in
-#' \code{redDim.args} and \code{geneExpr.args}. Each object can contain
+#' @details Users can pass default parameters via DataFrame objects in 
+#' \code{redDim.args} and \code{geneExpr.args}. Each object can contain 
 #' some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
 #' Any missing fields will be filled in with the defaults.
 #'
-#' Users can specify any number of maximum plots, though increasing the
-#' number will increase the time required to generate any given plot.
+#' Users can specify any number of maximum plots, though increasing the 
+#' number will increase the time required to generate any given plot. 
 #'
 #' If \code{annot.orgdb} is specified, gene information will be retrieved
-#' upon selection of particular genes in the data table. No retrieval is
+#' upon selection of particular genes in the data table. No retrieval is 
 #' performed if \code{annot.orgdb=NULL}.
-#'
+#' 
 #' @return A Shiny App is launched for interactive data exploration of the
 #' \code{\link{SingleCellExperiment}} / \code{\link{SummarizedExperiment}}
 #' object
@@ -76,52 +76,53 @@ iSEE <- function(
   red.dim.names <- reducedDimNames(se)
   all.assays <- names(assays(se))
   gene.names <- rownames(se)
-
+  
   gene.data <- as.data.frame(rowData(se))
   rownames(gene.data) <- gene.names
   if (ncol(gene.data)==0L){ # To give it DT::datatable something to play with.
     gene.data$Present <- TRUE
   }
-
+  
   # Setting up initial reduced dim plot parameters.
-  if (is.numeric(redDim.args)) {
-    reddim_plot_param <- redDimPlotDefaults(se, redDim.args)
+  memory <- list()
+  if (is.numeric(redDim.args)) { 
+    memory$redDim <- redDimPlotDefaults(se, redDim.args)
   } else {
-    reddim_plot_param <- redDimPlotDefaults(se, nrow(redDim.args))
-    reddim_plot_param <- .override_defaults(reddim_plot_param, redDim.args)
+    memory$redDim <- redDimPlotDefaults(se, nrow(redDim.args)) 
+    memory$redDim <- .override_defaults(memory$redDim, redDim.args)
   }
-  reddim_max_plots <- nrow(reddim_plot_param)
-  reddim_active_plots <- which(reddim_plot_param$Active)
+  reddim_max_plots <- nrow(memory$redDim)
+                                          
+  if (is.numeric(geneExpr.args)) { 
+    memory$geneExpr <- geneExprPlotDefaults(se, geneExpr.args)
+  } else {
+    memory$geneExpr <- geneExprPlotDefaults(se, nrow(geneExpr.args)) 
+    memory$geneExpr <- .override_defaults(memory$geneExpr, geneExpr.args)
+  }
+  geneexpr_max_plots <- nrow(memory$geneExpr)
 
-  if (is.numeric(geneExpr.args)) {
-    geneexpr_plot_param <- geneExprPlotDefaults(se, geneExpr.args)
+  if (is.numeric(colData.args)) { 
+    memory$colData <- colDataPlotDefaults(se, colData.args)
   } else {
-    geneexpr_plot_param <- geneExprPlotDefaults(se, nrow(geneExpr.args))
-    geneexpr_plot_param <- .override_defaults(geneexpr_plot_param, geneExpr.args)
+    memory$colData <- colDataPlotDefaults(se, nrow(colData.args)) 
+    memory$colData <- .override_defaults(memory$colData, colData.args)
   }
-  geneexpr_max_plots <- nrow(geneexpr_plot_param)
-  geneexpr_active_plots <- which(geneexpr_plot_param$Active)
-
-  if (is.numeric(colData.args)) {
-    phenodata_plot_param <- colDataPlotDefaults(se, colData.args)
-  } else {
-    phenodata_plot_param <- colDataPlotDefaults(se, nrow(colData.args))
-    phenodata_plot_param <- .override_defaults(phenodata_plot_param, colData.args)
-  }
-  phenodata_max_plots <- nrow(phenodata_plot_param)
-  phenodata_active_plots <- which(phenodata_plot_param$Active)
+  coldata_max_plots <- nrow(memory$colData)
+ 
+  genestat_max_tab <- 5
+  memory$geneStat <- DataFrame(Selected=rep(1, genestat_max_tab), Search="", PanelWidth=4)
 
   # for retrieving the annotation
-  if (!is.null(annot.orgdb)) {
-    if (!annot.keytype %in% keytypes(annot.orgdb)) {
+  if (!is.null(annot.orgdb)) { 
+    if (!annot.keytype %in% keytypes(annot.orgdb)) { 
       stop("specified keytype not in org.*.db object")
     }
   }
-
+  
   # general options:
-
+  
   ########## ui definition ##########
-
+  
   iSEE_ui <- dashboardPage(
     dashboardHeader(
       title = paste0("iSEE - interactive SingleCell/Summarized Experiment Explorer v",
@@ -140,12 +141,19 @@ iSEE <- function(
       menuItem("First steps help", icon = icon("question-circle"),
                actionButton("btn", "Click me for a quick tour", icon("info"),
                             style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4")
-      )
+               
+      ),
+      actionButton(paste0("redDim", .organizationNew), "New reduced dimension plot", class = "btn btn-primary",icon = icon("plus")),
+      actionButton(paste0("colData", .organizationNew), "New column data plot", class = "btn btn-primary",icon = icon("plus")),
+      actionButton(paste0("geneExpr", .organizationNew), "New gene expression plot", class = "btn btn-primary",icon = icon("plus")),
+      actionButton(paste0("geneStat", .organizationNew), "New gene table", class = "btn btn-primary",icon = icon("plus")),
+      uiOutput("panelOrganization")
     ), # end of dashboardSidebar
+
     dashboardBody(
       introjsUI(),
       # must be included in UI
-
+      
       # for error message handling
       tags$head(
         tags$style(HTML("
@@ -156,74 +164,42 @@ iSEE <- function(
                         }
                         "))
       ),
-
+      
       # row for the boxes
       fluidRow(
         valueBoxOutput("box_sce_obj")
       ),
 
-      # main tabBox
-      tabBox(
-        width=12,
-
-        tabPanel(title = "Reduced dimension plots",  icon = icon("home"), value="tab-reddim",
-                 uiOutput("redDimPlots"),
-                 actionButton("addRedDimPlot", "New plot",
-                              class = "btn btn-primary",icon = icon("plus"))
-        ),
-
-        tabPanel(title = "Column data plots",  icon = icon("table"), value="tab-phenodata",
-                 uiOutput("phenoDataPlots"),
-                 actionButton("addPhenoDataPlot", "New plot",
-                              class = "btn btn-primary",icon = icon("plus"))
-        ),
-
-        tabPanel(title = "Gene expression plots",  icon = icon("flash"), value="tab-geneexpr",
-                 uiOutput("geneExprPlots"),
-                 actionButton("addGeneExprPlot", "New plot",
-                              class = "btn btn-primary",icon = icon("plus"))
-        ),
-
-        tabPanel(title = "Gene-level statistics",  icon = icon("calendar"), value="tab-genetab",
-                 dataTableOutput("geneStatTab"),
-                 hr(),
-                 htmlOutput("geneStatInfoBox")
-        ),
-
-        tabPanel(title = "tab3!",  icon = icon("table"), value="tab-t3",
-                 h2("Content t3!")
-                 # , content will go here!
-        )
-      ),
-
+      uiOutput("allPanels"),             
+      
       iSEE_footer()
-
+      
     ), # end of dashboardBody
     skin = "blue"
   ) # end of dashboardPage
-
-
+  
+  
   ########## server definition ##########
 
   iSEE_server <- function(input, output, session) {
 
     # storage for all the reactive objects
-    rObjects <- reactiveValues(
-      reddim_active_plots = reddim_active_plots,
-      geneexpr_active_plots = geneexpr_active_plots,
-      phenodata_active_plots = phenodata_active_plots
-    )
+    active_plots <- data.frame(Type=c("redDim", "colData", "geneExpr", "geneStat"),
+                               ID=1, 
+                               stringsAsFactors=FALSE)
 
+    rObjects <- reactiveValues(
+        active_plots = active_plots,
+        resized = 1
+    )
+    
     # storage for other persistent objects
     pObjects <- new.env()
-    pObjects$reddim_plot_param <- reddim_plot_param
-    pObjects$geneexpr_plot_param <- geneexpr_plot_param
-    pObjects$phenodata_plot_param <- phenodata_plot_param
-
-    if (!is.null(se)){ rObjects$sce <- as(se, "SingleCellExperiment") }
+    pObjects$memory <- memory
+    pObjects$coordinates <- list()
 
     # info boxes, to keep on top of the page  on the left side?
-
+   
     output$box_sce_obj <- renderUI({
       if(!is.null(rObjects$sce)){
         return(valueBox(
@@ -248,267 +224,143 @@ iSEE <- function(
     }) # end of output$box_sce_obj
 
     #######################################################################
-    # Reduced dimension scatter plot section.
+    # Multipanel UI generation section.
+    # This is adapted from https://stackoverflow.com/questions/15875786/dynamically-add-plots-to-web-page-using-shiny.
+    #######################################################################
+    
+    output$allPanels <- renderUI({
+        (rObjects$resized) # Trigger re-rendering upon resizing.
+        .panel_generation(rObjects$active_plots, pObjects$memory,
+                          redDimNames=red.dim.names, 
+                          colDataNames=covariates,
+                          assayNames=all.assays)
+    })
+    
+    output$panelOrganization <- renderUI({
+        .panel_organization(rObjects$active_plots, pObjects$memory)   
+    })
+
+    for (mode in c("redDim", "geneExpr", "colData", "geneStat")) { 
+        # Panel addition.
+        local({
+            mode0 <- mode
+            observeEvent(input[[paste0(mode0, .organizationNew)]], {
+                all.active <- rObjects$active_plots
+                all.memory <- pObjects$memory[[mode0]]
+                first.missing <- setdiff(seq_len(nrow(all.memory)), all.active$ID[all.active$Type==mode0])
+                rObjects$active_plots <- rbind(all.active, DataFrame(Type=mode0, ID=first.missing[1]))
+            })
+        })
+        
+        max_plots <- nrow(pObjects$memory[[mode]])
+        for (i in seq_len(max_plots)) {
+            local({
+                mode0 <- mode
+                i0 <- i
+
+                # Panel removal.
+                observeEvent(input[[paste0(mode0, i0, .organizationDiscard)]], {
+                    all.active <- rObjects$active_plots
+                    index <- which(all.active$Type==mode0 & all.active$ID==i0)
+                    rObjects$active_plots <- rObjects$active_plots[-index,]
+               })
+
+                # Panel resizing.
+                observeEvent(input[[paste0(mode0, i0, .organizationWidth)]], {
+                    pObjects$memory[[mode0]][[.organizationWidth]][i0] <- input[[paste0(mode0, i0, .organizationWidth)]] 
+                    rObjects$resized <- rObjects$resized + 1L
+                })
+
+                # Panel shifting, up and down.
+                observeEvent(input[[paste0(mode0, i0, .organizationUp)]], {
+                    all.active <- rObjects$active_plots
+                    index <- which(all.active$Type==mode0 & all.active$ID==i0)
+                    if (index!=1L) { 
+                        reindex <- seq_len(nrow(all.active))
+                        reindex[index] <- reindex[index]-1L
+                        reindex[index-1L] <- reindex[index-1L]+1L
+                        rObjects$active_plots <- all.active[reindex,]
+                    } 
+                })
+
+                observeEvent(input[[paste0(mode0, i0, .organizationDown)]], {
+                    all.active <- rObjects$active_plots
+                    index <- which(all.active$Type==mode0 & all.active$ID==i0)
+                    if (index!=nrow(all.active)) { 
+                        reindex <- seq_len(nrow(all.active))
+                        reindex[index] <- reindex[index]+1L
+                        reindex[index+1L] <- reindex[index+1L]-1L
+                        rObjects$active_plots <- all.active[reindex,]
+                    } 
+                })
+            })
+        }
+    }
+    
+    #######################################################################
+    # Reduced dimension plot section.
     #######################################################################
 
-    # Multiple scatterplots colored by covariates,
-    # nicked from https://stackoverflow.com/questions/15875786/dynamically-add-plots-to-web-page-using-shiny.
-    output$redDimPlots <- renderUI({
-        collected <- vector("list", length(rObjects$reddim_active_plots)*2)
-        counter <- 1L
-
-        for (i in rObjects$reddim_active_plots) {
-            param_choices <- pObjects$reddim_plot_param[i,]
-            chosen.open <- character(0)
-            if (param_choices[[.redDimPlotPanel]]) {
-                chosen.open <- c(chosen.open, .redDimPlotParamPanelTitle)
-            }
-
-            collected[[counter]] <- fluidRow(
-              column(6, plotOutput(.redDimPlot(i))),
-              column(3,
-                     selectInput(.inputRedDim(.redDimType, i), label="Type",
-                                 choices=red.dim.names, selected=param_choices[[.redDimType]]),
-                     textInput(.inputRedDim(.redDimXAxis, i), label="Dimension 1",
-                               value=param_choices[[.redDimXAxis]]),
-                     textInput(.inputRedDim(.redDimYAxis, i), label="Dimension 2",
-                               value=param_choices[[.redDimYAxis]]),
-                     actionButton(.redDimDiscard(i), "Remove plot",
-                                  icon = icon("trash"),class = "btn btn-warning")
-                     ),
-              column(3,
-                     shinyBS::bsCollapse(
-                       id = .inputRedDim(.redDimPlotPanel, i),
-                       open = chosen.open,
-                       shinyBS::bsCollapsePanel(
-                            title = .redDimPlotParamPanelTitle,
-                            radioButtons(.inputRedDim(.redDimColorBy, i),
-                                         label="Color by:", inline=FALSE,
-                                         choices=c(.colorByNothingTitle, .colorByColDataTitle, .colorByGeneExprsTitle),
-                                         selected=param_choices[[.redDimColorBy]]),
-                            selectInput(.inputRedDim(.redDimColorByColData, i),
-                                        label = "Column data:",
-                                        choices=covariates, selected=param_choices[[.redDimColorByColData]]),
-                            textInput(.inputRedDim(.redDimColorByGeneExprs, i),
-                                      label = "Gene expression:",
-                                      value=param_choices[[.redDimColorByGeneExprs]]),
-                            selectInput(.inputRedDim(.redDimColorByGeneExprsAssay, i), label=NULL,
-                                        choices=all.assays, selected=param_choices[[.redDimColorByGeneExprsAssay]])
-                                                ) # end of bsCollapsePanel
-                       ) # end of bsCollapse
-                     ) # end of column
-            ) # end of fluidRow
-
-            counter <- counter + 1L
-            collected[[counter]] <- hr()
-            counter <- counter + 1L
-        }
-
-        # Convert the list to a tagList - this is necessary for the list of items
-        # to display properly.
-        do.call(tagList, collected)
-    })
-
-    # Plot addition and removal.
-    observeEvent(input$addRedDimPlot, {
-        first.missing <- setdiff(seq_len(reddim_max_plots), rObjects$reddim_active_plots)
-        rObjects$reddim_active_plots <- c(rObjects$reddim_active_plots, first.missing[1])
-    })
+    # Note: we need "local" so that each item gets its own number. Without it, the value
+    # of i in the renderPlot() will be the same across all instances, because
+    # of when the expression is evaluated.
 
     for (i in seq_len(reddim_max_plots)) {
       local({
         i0 <- i
-        observeEvent(input[[.redDimDiscard(i0)]], {
-          rObjects$reddim_active_plots <- setdiff(rObjects$reddim_active_plots, i0)
+        plot.name <- .redDimPlot(i0)
+        output[[plot.name]] <- renderPlot({
+
+          # Updating parameters in the memory store (non-characters need some careful treatment).
+          for (field in c(.redDimType, 
+                          .colorByField, .colorByColData, .colorByGeneExprs, .colorByGeneExprsAssay,
+                          .brushByPlot)) { 
+              if (is.null(input[[.inputColData(field, i0)]])) { next } ##### Placeholder, to remove!!!
+              pObjects$memory$redDim[[field]][i0] <- input[[.inputRedDim(field, i0)]]
+          }
+          for (field in c(.redDimXAxis, .redDimYAxis)) { 
+              pObjects$memory$redDim[[field]][i0] <- as.integer(input[[.inputRedDim(field, i0)]])
+          }
+         
+          # Creating the plot, with saved coordinates.
+          p.out <- .make_redDimPlot(se, pObjects$memory$redDim[i0,], input, pObjects$coordinates) 
+          pObjects$coordinates[[plot.name]] <- p.out$xy
+          p.out$plot
+        })
+
+        observe({
+          opened <- input[[.inputRedDim(.plotParamPanelName, i0)]] 
+          pObjects$memory$redDim[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
+          pObjects$memory$redDim[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
         })
       })
     }
-
-    for (i in seq_len(reddim_max_plots)) {
-      # Need local so that each item gets its own number. Without it, the value
-      # of i in the renderPlot() will be the same across all instances, because
-      # of when the expression is evaluated.
-      local({
-        i0 <- i
-        output[[.redDimPlot(i0)]] <- renderPlot({
-
-          # Updating parameters (non-characters need some careful treatment).
-          for (field in c(.redDimType,  .redDimColorBy, .redDimColorByColData,
-                          .redDimColorByGeneExprs, .redDimColorByGeneExprsAssay)) {
-              pObjects$reddim_plot_param[[field]][i0] <- input[[.inputRedDim(field, i0)]]
-          }
-          for (field in c(.redDimXAxis, .redDimYAxis)) {
-              pObjects$reddim_plot_param[[field]][i0] <- as.integer(input[[.inputRedDim(field, i0)]])
-          }
-          pObjects$reddim_plot_param[[.redDimPlotPanel]][i0] <- .redDimPlotParamPanelTitle %in% input[[.inputRedDim(.redDimPlotPanel, i0)]]
-
-          # Setting up the parameter choices for this plot.
-          param_choices <- pObjects$reddim_plot_param[i0,]
-          red.dim <- reducedDim(se, param_choices[[.redDimType]])
-
-          color_choice <- param_choices[[.redDimColorBy]]
-          if (color_choice==.colorByColDataTitle) {
-            covariate.name <- param_choices[[.redDimColorByColData]]
-            covariate <- cell.data[,covariate.name]
-            astr <- aes_string(x="Dim1", y="Dim2", color="Covariate")
-          } else if (color_choice==.colorByGeneExprsTitle) {
-            covariate.name <- param_choices[[.redDimColorByGeneExprs]]
-            # Check if gene identifier is valid; or suggest close matches
-            covariate.idx <- which(rownames(se) == covariate.name)
-            if (length(covariate.idx) == 0){
-                # multiple matches are not possible in rownames
-                # TODO: experiment scanning other selected fields for the gene
-                covariate.similar <- agrep(
-                    pattern = covariate.name,
-                    x = rownames(se),
-                    max.distance = 1, # NOTE: may be relaxed/parameterised
-                    fixed = FALSE, # NOTE: experimental; allows regex match
-                    value = TRUE
-                )
-                shiny::validate(
-                    need(length(covariate.idx) == 1, sprintf(
-                        "Invalid gene identifier: %s\nDid you mean: %s",
-                        covariate.name,
-                        paste(
-                            sprintf("%s", covariate.similar),
-                            collapse = ", "
-                        )
-                    ))
-                )
-            }
-            covariate <- assay(se, param_choices[[.redDimColorByGeneExprsAssay]])[covariate.name,]
-            astr <- aes_string(x="Dim1", y="Dim2", color="Covariate")
-          } else {
-            covariate.name <- ""
-            covariate <- NULL
-            astr <- aes_string(x="Dim1", y="Dim2")
-          }
-
-          plot.data <- data.frame(Dim1=red.dim[,param_choices[[.redDimXAxis]]],
-                                  Dim2=red.dim[,param_choices[[.redDimYAxis]]])
-          plot.data$Covariate <- covariate
-
-          # Creating the plot.
-          ggplot(plot.data, astr) +
-            geom_point(size=1.5) +
-            labs(color=covariate.name) +
-            theme_void()
-        })
-      })
-    }
-
+    
     #######################################################################
-    # Phenodata scatter plot section.
+    # Column data scatter plot section.
     #######################################################################
 
-    output$phenoDataPlots <- renderUI({
-        collected <- vector("list", length(rObjects$phenodata_active_plots)*2)
-        counter <- 1L
-
-        for (i in rObjects$phenodata_active_plots) {
-            param_choices <- pObjects$phenodata_plot_param[i,]
-            chosen.open <- character(0)
-            if (param_choices[[.phenoDataPlotPanel]]) {
-                chosen.open <- c(chosen.open, .phenoDataPlotParamPanelTitle)
-            }
-
-            collected[[counter]] <- fluidRow(
-              column(6, plotOutput(.phenoDataPlot(i))),
-              column(3,
-                     selectInput(.inputPhenoData(.phenoDataYAxisColData, i),
-                                 label = "Column of interest (Y-axis):",
-                                 choices=covariates, selected=param_choices[[.phenoDataYAxisColData]]),
-                     radioButtons(.inputPhenoData(.phenoDataXAxis, i), label="X-axis:",
-                                  inline=FALSE,
-                                  choices=c(.phenoDataXAxisNothingTitle, .phenoDataXAxisColDataTitle),
-                                  selected=param_choices[[.phenoDataXAxis]]),
-                     selectInput(.inputPhenoData(.phenoDataXAxisColData, i),
-                                 label = "Column of interest (X-axis):",
-                                 choices=covariates, selected=param_choices[[.phenoDataXAxisColData]]),
-                     actionButton(.phenoDataDiscard(i), "Remove plot",
-                                  icon = icon("trash"),class = "btn btn-warning")
-                     ),
-              column(3,
-                     shinyBS::bsCollapse(
-                       id = .inputPhenoData(.phenoDataPlotPanel, i),
-                       open = chosen.open,
-                       shinyBS::bsCollapsePanel(
-                            title = .phenoDataPlotParamPanelTitle,
-                            radioButtons(.inputPhenoData(.phenoDataColorBy, i),
-                                         label="Color by:", inline=FALSE,
-                                         choices=c(.colorByNothingTitle, .colorByColDataTitle, .colorByGeneExprsTitle),
-                                         selected=param_choices[[.phenoDataColorBy]]),
-                            selectInput(.inputPhenoData(.phenoDataColorByColData, i),
-                                        label = "Column data:",
-                                        choices=covariates, selected=param_choices[[.phenoDataColorByColData]]),
-                            textInput(.inputPhenoData(.phenoDataColorByGeneExprs, i),
-                                      label = "Gene expression:",
-                                      value=param_choices[[.phenoDataColorByGeneExprs]]),
-                            selectInput(.inputPhenoData(.phenoDataColorByGeneExprsAssay, i), label=NULL,
-                                        choices=all.assays, selected=param_choices[[.phenoDataColorByGeneExprsAssay]])
-                                                ) # end of bsCollapsePanel
-                       ) # end of bsCollapse
-                     ) # end of column
-            ) # end of fluidRow
-
-            counter <- counter + 1L
-            collected[[counter]] <- hr()
-            counter <- counter + 1L
-        }
-
-        # Convert the list to a tagList - this is necessary for the list of items
-        # to display properly.
-        do.call(tagList, collected)
-    })
-
-    # Plot addition and removal.
-    observeEvent(input$addPhenoDataPlot, {
-        first.missing <- setdiff(seq_len(phenodata_max_plots), rObjects$phenodata_active_plots)
-        rObjects$phenodata_active_plots <- c(rObjects$phenodata_active_plots, first.missing[1])
-    })
-
-    for (i in seq_len(phenodata_max_plots)) {
+    for (i in seq_len(coldata_max_plots)) {
       local({
         i0 <- i
-        observeEvent(input[[.phenoDataDiscard(i0)]], {
-          rObjects$phenodata_active_plots <- setdiff(rObjects$phenodata_active_plots, i0)
-        })
-      })
-    }
-
-    for (i in seq_len(phenodata_max_plots)) {
-      # Need local so that each item gets its own number. Without it, the value
-      # of i in the renderPlot() will be the same across all instances, because
-      # of when the expression is evaluated.
-      local({
-        i0 <- i
-        output[[.phenoDataPlot(i0)]] <- renderPlot({
+        output[[.colDataPlot(i0)]] <- renderPlot({
 
           # Updating parameters (non-characters need some careful treatment).
-          for (field in c(.phenoDataYAxisColData, .phenoDataXAxis, .phenoDataXAxisColData,
-                          .phenoDataColorBy, .phenoDataColorByColData,
-                          .phenoDataColorByGeneExprs, .phenoDataColorByGeneExprsAssay)) {
-              pObjects$phenodata_plot_param[[field]][i0] <- input[[.inputPhenoData(field, i0)]]
+          for (field in c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData,
+                      .colorByField, .colorByColData, .colorByGeneExprs, .colorByGeneExprsAssay,
+                      .brushByPlot)) { 
+              if (is.null(input[[.inputColData(field, i0)]])) { next } ##### Placeholder, to remove!!!
+              pObjects$memory$colData[[field]][i0] <- input[[.inputColData(field, i0)]]
           }
-          pObjects$phenodata_plot_param[[.phenoDataPlotPanel]][i0] <- .phenoDataPlotParamPanelTitle %in% input[[.inputPhenoData(.phenoDataPlotPanel, i0)]]
-
-          # Setting up the parameter choices for this plot.
-          param_choices <- pObjects$phenodata_plot_param[i0,]
-          aes_args <- list(y=param_choices[[.phenoDataYAxisColData]])
-#          if (param_choices[[.phenoDataXAxis]]!=.phenoDataXAxisNothingTitle) { # Currently not-quite-working as plotPhenoData needs 'x'.
-              aes_args$x <- param_choices[[.phenoDataXAxisColData]]
-#          }
-
-          color_choice <- param_choices[[.phenoDataColorBy]]
-          if (color_choice==.colorByColDataTitle) {
-            aes_args$color <- param_choices[[.phenoDataColorByColData]]
-          } else if (color_choice==.colorByGeneExprsTitle) {
-            aes_args$color <- param_choices[[.phenoDataColorByGeneExprs]]
-          }
-          aes_final <- do.call(aes_string, aes_args)
-
+          
           # Creating the plot.
-          plotPhenoData(se, aes_final)
+          .make_colDataPlot(se, pObjects$memory$colData[i0,], input)
+        })
+
+        observe({
+          opened <- input[[.inputColData(.plotParamPanelName, i0)]] 
+          pObjects$memory$colData[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
+          pObjects$memory$colData[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
         })
       })
     }
@@ -516,139 +368,60 @@ iSEE <- function(
     #######################################################################
     # Gene expression scatter plot section.
     #######################################################################
-
-    output$geneExprPlots <- renderUI({
-      collected <- vector("list", length(rObjects$geneexpr_active_plots)*2)
-      counter <- 1L
-
-      for (i in rObjects$geneexpr_active_plots) {
-        param_choices <- pObjects$geneexpr_plot_param[i,]
-        chosen.open <- character(0)
-        if (param_choices[[.geneExprPlotPanel]]) {
-            chosen.open <- c(chosen.open, .geneExprPlotParamPanelTitle)
-        }
-
-        collected[[counter]] <- fluidRow(
-          column(6, plotOutput(.geneExprPlot(i))),
-          column(3,
-                 textInput(.inputGeneExpr(.geneExprID, i), label = "Gene of interest (Y-axis):",
-                           value=param_choices[[.geneExprID]]),
-                 selectInput(.inputGeneExpr(.geneExprAssay, i), label=NULL,
-                             choices=all.assays, selected=param_choices[[.geneExprAssay]]),
-                 radioButtons(.inputGeneExpr(.geneExprXAxis, i), label="X-axis:",
-                              inline=FALSE,
-                              choices=c(.geneExprXAxisNothingTitle, .geneExprXAxisColDataTitle, .geneExprXAxisGeneExprsTitle),
-                              selected=param_choices[[.geneExprXAxis]]),
-                 selectInput(.inputGeneExpr(.geneExprXAxisColData, i),
-                             label = "X-axis column data:",
-                             choices=covariates, selected=param_choices[[.geneExprXAxisColData]]),
-                 textInput(.inputGeneExpr(.geneExprXAxisGeneExprs, i),
-                           label = "X-axis gene expression:",
-                           value=param_choices[[.geneExprXAxisGeneExprs]]),
-                 actionButton(.geneExprDiscard(i), "Remove plot",
-                              icon = icon("trash"),class = "btn btn-warning")
-                 ),
-          column(3,
-                 shinyBS::bsCollapse(
-                   id = .inputGeneExpr(.geneExprPlotPanel, i),
-                   open = chosen.open,
-                   shinyBS::bsCollapsePanel(
-                     title = .geneExprPlotParamPanelTitle,
-                     radioButtons(.inputGeneExpr(.geneExprColorBy, i),
-                                  label="Colour by:", inline=FALSE,
-                                  choices=c(.colorByNothingTitle, .colorByColDataTitle, .colorByGeneExprsTitle),
-                                  selected=param_choices[[.geneExprColorBy]]),
-                    selectInput(.inputGeneExpr(.geneExprColorByColData, i),
-                                label = "Colour by column data:",
-                                choices=covariates,
-                                selected=param_choices[[.geneExprColorByColData]]),
-                    textInput(.inputGeneExpr(.geneExprColorByGeneExprs, i),
-                              label = "Colour by gene expression:",
-                              value=param_choices[[.geneExprColorByGeneExprs]])
-                   ) # end of bsCollapsePanel
-                 ) # end of bsCollapse
-          ) # end of column
-        ) # end of fluidRow
-
-        counter <- counter + 1L
-        collected[[counter]] <- hr()
-        counter <- counter + 1L
-      }
-
-      # Convert the list to a tagList - this is necessary for the list of items
-      # to display properly.
-      do.call(tagList, collected)
-    }) # end of output$geneExprPlots
-
-    # Plot addition and removal, as well as parameter setting.
-    observeEvent(input$addGeneExprPlot, {
-      first.missing <- setdiff(seq_len(geneexpr_max_plots), rObjects$geneexpr_active_plots)
-      rObjects$geneexpr_active_plots <- c(rObjects$geneexpr_active_plots, first.missing[1])
-    })
-
+    
     for (i in seq_len(geneexpr_max_plots)) {
-      local({
-        i0 <- i
-        observeEvent(input[[.geneExprDiscard(i0)]], {
-          rObjects$geneexpr_active_plots <- setdiff(rObjects$geneexpr_active_plots, i0)
-        }) # end of observeEvent
-      }) # end of local
-    }
-
-    for (i in seq_len(geneexpr_max_plots)) {
-      # Need local so that each item gets its own number. Without it, the value
-      # of i in the renderPlot() will be the same across all instances, because
-      # of when the expression is evaluated.
       local({
         i0 <- i
         output[[.geneExprPlot(i0)]] <- renderPlot({
           # Updating parameters.
           for (field in c(.geneExprID, .geneExprAssay, .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneExprs,
-                          .geneExprColorBy, .geneExprColorByColData, .geneExprColorByGeneExprs)) {
-              pObjects$geneexpr_plot_param[[field]][i0] <- input[[.inputGeneExpr(field, i0)]]
-          }
-          pObjects$geneexpr_plot_param[[.geneExprPlotPanel]][i0] <- .geneExprPlotParamPanelTitle %in% input[[.inputGeneExpr(.geneExprPlotPanel, i0)]]
-
-          # Setting up the parameter choices.
-          param_choices <- pObjects$geneexpr_plot_param[i0,]
-          xchoice <- param_choices[[.geneExprXAxis]]
-          if (xchoice==.geneExprXAxisColDataTitle) {
-            byx <- param_choices[[.geneExprXAxisColData]]
-          } else if (xchoice==.geneExprXAxisGeneExprsTitle) {
-            byx <- param_choices[[.geneExprXAxisGeneExprs]]
-          } else {
-            byx <- NULL
+                          .colorByField, .colorByColData, .colorByGeneExprs, .colorByGeneExprs,
+                          .brushByPlot)) {
+              if (is.null(input[[.inputGeneExpr(field, i0)]])) { next } ##### Placeholder, to remove!!!
+              pObjects$memory$geneExpr[[field]][i0] <- input[[.inputGeneExpr(field, i0)]]
           }
 
-          color_choice <- param_choices[[.geneExprColorBy]]
-          if (color_choice==.colorByColDataTitle) {
-            covariate.name <- param_choices[[.geneExprColorByColData]]
-          } else if (color_choice==.colorByGeneExprsTitle) {
-            covariate.name <- param_choices[[.geneExprColorByGeneExprs]]
-          } else {
-            covariate.name <- NULL
-          }
+          # Creating the plot.
+          .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input)
+        }) 
 
-          # Creating the plot object.
-          if (param_choices[[.geneExprID]] %in% gene.names) {
-            plotExpression(se, exprs_values=param_choices[[.geneExprAssay]],
-                           x=byx,
-                           features=param_choices[[.geneExprID]],
-                           colour_by=covariate.name)
-          }
-        }) # end of output[[plotname]]
-      }) # end of local
+        observe({
+          opened <- input[[.inputGeneExpr(.plotParamPanelName, i0)]] 
+          pObjects$memory$geneExpr[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
+          pObjects$memory$geneExpr[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
+        })
+      }) 
     }
-
+    
     #######################################################################
     # Gene table section.
     #######################################################################
-
+    
     # Load the gene level data
-    output$geneStatTab <- renderDataTable({
-      datatable(gene.data, filter="top", rownames=TRUE,
-                selection=list(mode="single", selected=1))
-    })
+    for (i in seq_len(genestat_max_tab)) {
+      local({
+        i0 <- i
+        output[[paste0("geneStatTable", i0)]] <- renderDataTable({
+            (rObjects$active_plots) # to trigger recreation when the number of plots is changed.
+            chosen <- pObjects$memory$geneStat$Selected[i0]
+            search <- pObjects$memory$geneStat$Search[i0]
+            datatable(gene.data, filter="top", rownames=TRUE,
+                      options=list(search=list(search=search)),
+                      selection=list(mode="single", selected=chosen))
+        })
+
+        observe({
+            chosen <- input[[paste0("geneStatTable", i0, "_rows_selected")]]
+            if (length(chosen)) {
+                pObjects$memory$geneStat$Selected[i0] <- chosen
+            }
+            search <- input[[paste0("geneStatTable", i0, "_search")]]
+            if (length(search)) { 
+                pObjects$memory$geneStat$Search[i0] <- search
+            }
+        })
+      })
+    }
 
     output$geneStatInfoBox <- renderUI({
       if (is.null(annot.orgdb)) {
@@ -660,13 +433,13 @@ iSEE <- function(
              "Select a gene from the table"
         )
       )
-
-      if (is.null(annot.keyfield)) {
+     
+      if (is.null(annot.keyfield)) { 
         selectedGene <- gene.names[input$geneStatTab_rows_selected]
       } else {
         selectedGene <- gene.data[input$geneStatTab_rows_selected,annot.keyfield]
       }
-
+      
       if (annot.keytype!="ENTREZID") {
         selgene_entrez <- mapIds(annot.orgdb, selectedGene, "ENTREZID", annot.keytype)
       } else {
@@ -691,13 +464,13 @@ iSEE <- function(
         )))
       }
     }) # end of output[[plotname]]
-
+    
   } # end of iSEE_server
-
+  
   #######################################################################
   # Launching the app.
   #######################################################################
-
+  
   shinyApp(ui = iSEE_ui, server = iSEE_server)
 }
 

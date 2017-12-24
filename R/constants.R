@@ -1,22 +1,10 @@
-.colorByNothingTitle <- "None"
-.colorByColDataTitle <- "Column data"
-.colorByGeneExprsTitle <- "Gene expression"
-
 # Reduced dimension plotting parameters.
 .redDimType <- "Type"
 .redDimXAxis <- "XAxis"
 .redDimYAxis <- "YAxis"
-.redDimPlotPanel <- "OpenPlotPanel"
-.redDimColorBy <- "ColorBy"
-.redDimColorByColData <- "ColorByColData"
-.redDimColorByGeneExprs <- "ColorByGeneExprs"
-.redDimColorByGeneExprsAssay <- "ColorByGeneExprsAssay"
 
 .inputRedDim <- function(field, i) paste0("redDim", field, i)
 .redDimPlot <- function(i) paste0("redDimPlot", i)
-.redDimDiscard <- function(i) paste0("redDimDiscard", i)
-
-.redDimPlotParamPanelTitle <- "Advanced plot parameters"
 
 # Gene expression plotting parameters.
 .geneExprXAxisNothingTitle <- "None"
@@ -29,33 +17,66 @@
 .geneExprXAxisColData <- "XAxisColData"
 .geneExprXAxisGeneExprs <- "XAxisGeneExprs"
 
-.geneExprColorBy <- "ColorBy"
-.geneExprColorByColData <- "ColorByColData"
-.geneExprColorByGeneExprs <- "ColorByGeneExprs"
-.geneExprPlotPanel <- "OpenPlotPanel"
-
 .inputGeneExpr <- function(field, i) paste0("geneExpr", field, i)
 .geneExprPlot <- function(i) paste0("geneExprPlot", i)
-.geneExprDiscard <- function(i) paste0("geneExprDiscard", i)
-
-.geneExprPlotParamPanelTitle <- "Advanced plot parameters"
 
 # Gene expression plotting parameters.
-.phenoDataXAxisNothingTitle <- "None"
-.phenoDataXAxisColDataTitle <- "Column data"
+.colDataXAxisNothingTitle <- "None"
+.colDataXAxisColDataTitle <- "Column data"
 
-.phenoDataYAxisColData <- "YAxisColData"
-.phenoDataXAxis <- "XAxis"
-.phenoDataXAxisColData <- "XAxisColData"
+.colDataYAxis <- "YAxis"
+.colDataXAxis <- "XAxis"
+.colDataXAxisColData <- "XAxisColData"
 
-.phenoDataColorBy <- "ColorBy"
-.phenoDataColorByColData <- "ColorByColData"
-.phenoDataColorByGeneExprs <- "ColorByGeneExprs"
-.phenoDataColorByGeneExprsAssay <- "ColorByGeneExprsAssay"
-.phenoDataPlotPanel <- "OpenPlotPanel"
+.inputColData <- function(field, i) paste0("colData", field, i)
+.colDataPlot <- function(i) paste0("colDataPlot", i)
 
-.inputPhenoData <- function(field, i) paste0("phenoData", field, i)
-.phenoDataPlot <- function(i) paste0("phenoDataPlot", i)
-.phenoDataDiscard <- function(i) paste0("phenoDataDiscard", i)
+# Plot colouring parameters.
+.colorByNothingTitle <- "None"
+.colorByColDataTitle <- "Column data"
+.colorByGeneExprsTitle <- "Gene expression"
 
-.phenoDataPlotParamPanelTitle <- "Advanced plot parameters"
+.colorParamPanelTitle <- "Coloring parameters"
+.colorParamPanelOpen <- "ColorPanelOpen"
+
+.colorByField <- "ColorBy"
+.colorByColData <- "ColorByColData"
+.colorByGeneExprs <- "ColorByGeneTable"
+.colorByGeneExprsAssay <- "ColorByGeneAssay"
+
+# Plot brushing parameters.
+.brushParamPanelTitle <- "Brushing parameters"
+.brushParamPanelOpen <- "BrushPanelOpen"
+
+.brushField <- "Brush"
+.brushByPlot <- "BrushByPlot"
+
+# Other parameter panel things
+.plotParamPanelName <- "ParamPanel"
+
+# Panel organization parameters.
+.organizationNew <- "MakeNew"
+.organizationUp <- "ShiftUp"
+.organizationDown <- "ShiftDown"
+.organizationDiscard <- "Discard"
+.organizationWidth <- "PanelWidth"
+
+# Encoding and decoding names for user/shiny
+translation <- c(redDim="Reduced dimension plot",
+                 colData="Column data plot",
+                 geneExpr="Gene expression plot",
+                 geneStat="Gene statistics table")
+rev.translation <- names(translation)
+names(rev.translation) <- translation
+
+.decode_panel_name <- function(mode, ID) {
+    paste(translation[mode], ID)
+}
+
+.encode_panel_name <- function(names) {
+    ID <- as.integer(gsub(".* ", "", names))
+    raw.str <- rev.translation[gsub(" [0-9]+", "", names)]
+    return(list(Type=raw.str, ID=ID))
+}
+
+

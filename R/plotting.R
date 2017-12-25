@@ -9,11 +9,15 @@
       covariate <- colData(se)[,covariate.name]
       astr <- aes_string(x="Dim1", y="Dim2", color="Covariate")
     } else if (color_choice==.colorByGeneExprsTitle) {
-      tab.id <- .encode_panel_name(param_choices[[.colorByGeneExprs]])$ID
-      linked.tab <- paste0("geneStatTable", tab.id, "_rows_selected")
-      covariate.name <- rownames(se)[input[[linked.tab]]]
-      covariate <- assay(se, param_choices[[.colorByGeneExprsAssay]])[covariate.name,]
-      astr <- aes_string(x="Dim1", y="Dim2", color="Covariate")
+      covariate.name <- .find_linked_gene(se, param_choices[[.colorByGeneExprs]], input)
+      if (!is.null(covariate.name)) { 
+        covariate <- assay(se, param_choices[[.colorByGeneExprsAssay]])[covariate.name,]
+        astr <- aes_string(x="Dim1", y="Dim2", color="Covariate")
+      } else {
+        covariate.name <- ""
+        covariate <- NULL              
+        astr <- aes_string(x="Dim1", y="Dim2")
+      }
     } else {
       covariate.name <- ""
       covariate <- NULL              
@@ -80,20 +84,28 @@
     if (color_choice==.colorByColDataTitle) {
       covariate.name <- param_choices[[.colorByColData]]
     } else if (color_choice==.colorByGeneExprsTitle) {
-      tab.id <- .encode_panel_name(param_choices[[.colorByGeneExprs]])$ID
-      linked.tab <- paste0("geneStatTable", tab.id, "_rows_selected")
-      covariate.name <- rownames(se)[linked.tab]
+      covariate.name <- .find_linked_gene(se, param_choices[[.colorByGeneExprs]], input)
     } else {
       covariate.name <- NULL
     }
 
     # Getting the gene choice.
-    tab.id <- .encode_panel_name(param_choices[[.geneExprID]])$ID
-    linked.tab <- paste0("geneStatTable", tab.id, "_rows_selected")
-    cur.gene <- rownames(se)[input[[linked.tab]]]
-    plotExpression(se, exprs_values=param_choices[[.geneExprAssay]],
-                   x=byx,
-                   features=cur.gene,
-                   colour_by=covariate.name)
+    cur.gene <- .find_linked_gene(se, param_choices[[.geneExprID]], input)
+    if (!is.null(cur.gene)) { 
+        plotExpression(se, exprs_values=param_choices[[.geneExprAssay]],
+                       x=byx,
+                       features=cur.gene,
+                       colour_by=covariate.name)
+    }
 }
 
+.find_linked_gene <- function(se, link, input) 
+# Convenience function to identify the selected gene from the linked table.
+{ 
+    if (link=="") { 
+        return(NULL)
+    }
+    tab.id <- .encode_panel_name(link)$ID
+    linked.tab <- paste0("geneStatTable", tab.id, "_rows_selected")
+    rownames(se)[input[[linked.tab]]]
+}

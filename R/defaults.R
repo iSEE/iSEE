@@ -118,7 +118,7 @@ geneExprPlotDefaults <- function(se, max.plots) {
     covariates <- colnames(colData(se))
 
     out <- DataFrame(Active=activity)
-    out[[.geneExprID]] <- 1
+    out[[.geneExprID]] <- ""
     out[[.geneExprAssay]] <- def.assay
     out[[.geneExprXAxis]] <- .geneExprXAxisNothingTitle
     out[[.geneExprXAxisColData]] <- covariates[1] 
@@ -169,7 +169,7 @@ colDataPlotDefaults <- function(se, max.plots) {
 
     incoming[[.colorByField]] <- .colorByNothingTitle
     incoming[[.colorByColData]] <- defaultColData
-    incoming[[.colorByGeneExprs]] <- 1L 
+    incoming[[.colorByGeneExprs]] <- "" 
     incoming[[.colorByGeneExprsAssay]] <- defaultAssay
 
     incoming[[.organizationWidth]] <- 4L

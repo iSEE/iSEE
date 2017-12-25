@@ -40,9 +40,14 @@
     cur.row <- list()
     row.counter <- 1L
 
-    # Defining currently active tables, scatter plots to use in linking.
+    # Defining currently active tables for linking.
     all.names <- .decode_panel_name(active_plots$Type, active_plots$ID)
     active.tab <- all.names[active_plots$Type=="geneStat"]
+    if (length(active.tab)==0L) { 
+        active.tab <- "" 
+    }
+    
+    # Defining brush-transmitting scatter plots to use in linking.
     keep <- logical(nrow(active_plots))
     for (i in which(active_plots$Type!="geneStat")) { 
         keep[i] <- memory[[active_plots$Type[i]]][[.brushActive]][active_plots$ID[i]]
@@ -90,7 +95,8 @@
             stuff <- list(
                 plotOutput(.geneExprPlot(ID), brush = brush.opts),
                 selectInput(.inputGeneExpr(.geneExprID, ID), label = "Y-axis gene linked to:",
-                            choices=active.tab, selected=param_choices[[.geneExprID]]),
+                            choices=active.tab, 
+                            selected=.choose_link(param_choices[[.geneExprID]], active.tab, forceDefault=TRUE)),
                  selectInput(.inputGeneExpr(.geneExprAssay, ID), label=NULL,
                              choices=assayNames, selected=param_choices[[.geneExprAssay]]),
                  radioButtons(.inputGeneExpr(.geneExprXAxis, ID), label="X-axis:", 
@@ -122,12 +128,6 @@
                 chosen.open <- c(chosen.open, .brushParamPanelTitle)
             }
 
-            # Choosing the plot to brush by.
-            brush.choice <- param_choices[[.brushByPlot]]
-            if (is.na(brush.choice) || ! brush.choice %in% brushable) { 
-                brush.choice <- ""
-            }
-
             param <- list(shinyBS::bsCollapse(
                 id = paste0(mode, .plotParamPanelName, ID),
                 open = chosen.open,
@@ -141,7 +141,8 @@
                                 label = "Column data:",
                                 choices=colDataNames, selected=param_choices[[.colorByColData]]),
                     selectInput(paste0(mode, .geneExprID, ID), label = "Gene linked to:",
-                                choices=active.tab, selected=param_choices[[.colorByGeneExprs]]),  
+                                choices=active.tab, 
+                                selected=.choose_link(param_choices[[.colorByGeneExprs]], active.tab, forceDefault=TRUE)),  
                     selectInput(paste0(mode, .colorByGeneExprsAssay, ID), label=NULL,
                                 choices=assayNames, selected=param_choices[[.colorByGeneExprsAssay]])
                     ), 
@@ -151,7 +152,8 @@
                                   value=param_choices[[.brushActive]]), 
                     selectInput(paste0(mode, .brushByPlot, ID), 
                                 label = "Receive brush from:",
-                                choices=brushable, selected=brush.choice)
+                                choices=brushable, 
+                                selected=.choose_link(param_choices[[.brushByPlot]], brushable))
                     )
                 ) # end of bsCollapse
             )
@@ -190,3 +192,17 @@
     # to display properly.
     do.call(tagList, collected)
 }
+
+.choose_link <- function(chosen, available, forceDefault=FALSE) 
+# Convenience function to choose a linked panel from those available.
+# forceDefault=TRUE will pick the first if it is absolutely required.
+{
+    if (!chosen %in% available) {
+        if (forceDefault && length(available)) {
+            return(available[1])
+        } 
+        return("")
+    }
+    return(chosen)
+}
+

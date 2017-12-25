@@ -145,7 +145,7 @@
                     selectInput(paste0(mode, .colorByColData, ID), 
                                 label = "Column data:",
                                 choices=colDataNames, selected=param_choices[[.colorByColData]]),
-                    selectInput(paste0(mode, .geneExprID, ID), label = "Gene linked to:",
+                    selectInput(paste0(mode, .colorByGeneExprs, ID), label = "Gene linked to:",
                                 choices=active.tab, 
                                 selected=.choose_link(param_choices[[.colorByGeneExprs]], active.tab, forceDefault=TRUE)),  
                     selectInput(paste0(mode, .colorByGeneExprsAssay, ID), label=NULL,

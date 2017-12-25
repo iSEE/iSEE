@@ -364,7 +364,6 @@ iSEE <- function(
           for (field in c(.redDimType, 
                           .colorByField, .colorByColData, .colorByGeneExprs, .colorByGeneExprsAssay,
                           .brushByPlot)) { 
-              if (is.null(input[[.inputColData(field, i0)]])) { next } 
               pObjects$memory$redDim[[field]][i0] <- input[[.inputRedDim(field, i0)]]
           }
           for (field in c(.redDimXAxis, .redDimYAxis)) { 
@@ -408,7 +407,6 @@ iSEE <- function(
           for (field in c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData,
                       .colorByField, .colorByColData, .colorByGeneExprs, .colorByGeneExprsAssay,
                       .brushByPlot)) { 
-              if (is.null(input[[.inputColData(field, i0)]])) { next } ##### Placeholder, to remove!!!
               pObjects$memory$colData[[field]][i0] <- input[[.inputColData(field, i0)]]
           }
           
@@ -446,7 +444,6 @@ iSEE <- function(
           for (field in c(.geneExprID, .geneExprAssay, .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneExprs,
                           .colorByField, .colorByColData, .colorByGeneExprs, .colorByGeneExprs,
                           .brushByPlot)) {
-              if (is.null(input[[.inputGeneExpr(field, i0)]])) { next } ##### Placeholder, to remove!!!
               pObjects$memory$geneExpr[[field]][i0] <- input[[.inputGeneExpr(field, i0)]]
           }
 

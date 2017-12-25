@@ -16,6 +16,9 @@
 #' gene expression plots in the interface. Alternatively, a DataFrame 
 #' similar to that produced by \code{\link{geneExprPlotDefaults}}, specifying
 #' initial parameters for the plots.
+#' @param initialPanels A DataFrame specifying which panels should be created
+#' at initialization. This should contain a \code{Name} character field and 
+#' a \code{Width} integer field, see Details.
 #' @param annot.orgdb An \code{org.*.db} annotation object from which 
 #' Entrez identifiers can be retrieved. 
 #' @param annot.keytype A string specifying the keytype to use to query
@@ -29,8 +32,20 @@
 #' some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
 #' Any missing fields will be filled in with the defaults.
 #'
-#' Users can specify any number of maximum plots, though increasing the 
-#' number will increase the time required to generate any given plot. 
+#' The number of maximum plots for each type of plot is implicitly inferred 
+#' from the number of rows of the corresponding DataFrame in \code{*Args},
+#' if an integer scalar was not supplied. Users can specify any number of 
+#' maximum plots, though increasing the number will increase the time 
+#' required to render the interface.
+#' 
+#' The \code{initialPanels} argument specifies the panels to be created 
+#' upon initializing the interface. This should be a DataFrame containing
+#' a \code{Name} field specifying the identity of the panel, e.g., 
+#' \code{"Reduced dimension plot 1"}, \code{"Gene statistics table 2"}.
+#' The trailing number should not be greater than the number of 
+#' maximum plots of that type. The \code{Width} field may also be specified 
+#' describing the width of the panel from 4 to 12 (values will be coerced
+#' inside this range).
 #'
 #' If \code{annot.orgdb} is specified, gene information will be retrieved
 #' upon selection of particular genes in the data table. No retrieval is 
@@ -124,6 +139,8 @@ iSEE <- function(
       }
       if (is.null(initialPanels$Width)) {
           initialPanels$Width <- 4L
+      } else {
+          initialPanels$Width <- pmax(4L, pmin(12L, as.integer(initialPanels$Width)))
       }
 
       encoded <- .encode_panel_name(initialPanels$Name)

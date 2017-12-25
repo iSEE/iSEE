@@ -84,7 +84,7 @@ iSEE <- function(
     gene.data$Present <- TRUE
   }
   
-  # Setting up initial reduced dim plot parameters.
+  # Setting up parameters for each panel.
   memory <- list()
   if (is.numeric(redDimArgs)) { 
     memory$redDim <- redDimPlotDefaults(se, redDimArgs)
@@ -111,13 +111,21 @@ iSEE <- function(
   coldata_max_plots <- nrow(memory$colData)
  
   genestat_max_tab <- 5
-  memory$geneStat <- DataFrame(Selected=rep(1, genestat_max_tab), Search="", PanelWidth=4)
+  memory$geneStat <- DataFrame(Selected=rep(1, genestat_max_tab), Search="")
 
+  # Defining the initial elements to be plotted.
   if (is.null(initialPanels)) { 
       active_plots <- data.frame(Type=c("redDim", "colData", "geneExpr", "geneStat"),
                                  ID=1, Width=4,
                                  stringsAsFactors=FALSE)
   } else {
+      if (is.null(initialPanels$Name)) { 
+          stop("need 'Name' field in 'initialPanels'")
+      }
+      if (is.null(initialPanels$Width)) {
+          initialPanels$Width <- 4L
+      }
+
       encoded <- .encode_panel_name(initialPanels$Name)
       max_each <- unlist(lapply(memory, nrow))
       illegal <- which(max_each[encoded$Type] < encoded$ID) 
@@ -125,6 +133,7 @@ iSEE <- function(
           stop(sprintf("'%s' in 'initialPanels' is not available (maximum ID is %i)", 
                        initialPanels$Name[illegal[1]], max_each[illegal[1]]))
       }
+
       active_plots <- data.frame(Type=encoded$Type, ID=encoded$ID,
                                  Width=initialPanels$Width, 
                                  stringsAsFactors=FALSE)
@@ -204,7 +213,6 @@ iSEE <- function(
     # storage for all the reactive objects
     rObjects <- reactiveValues(
         active_plots = active_plots,
-        resized = 1,
         rebrushed = 1
     )
     
@@ -245,7 +253,6 @@ iSEE <- function(
     
     output$allPanels <- renderUI({
         (rObjects$rebrushed) # Trigger re-rendering if these are selected.
-        (rObjects$resized) 
         .panel_generation(rObjects$active_plots, pObjects$memory,
                           redDimNames=red.dim.names, 
                           colDataNames=covariates,
@@ -287,13 +294,14 @@ iSEE <- function(
 
                 # Panel resizing.
                 observeEvent(input[[paste0(mode0, i0, .organizationWidth)]], {
+                    all.active <- rObjects$active_plots
+                    index <- which(all.active$Type==mode0 & all.active$ID==i0)
+                    cur.width <- all.active$Width[index]
                     new.width <- input[[paste0(mode0, i0, .organizationWidth)]]
-                    cur.width <- pObjects$memory[[mode0]][[.organizationWidth]][i0]
                     if (!isTRUE(all.equal(new.width, cur.width))) { 
-                        pObjects$memory[[mode0]][[.organizationWidth]][i0] <- new.width
-                        rObjects$resized <- rObjects$resized + 1L
+                        rObjects$active_plots$Width[index] <- new.width
                     }
-                })
+                }, ignoreInit=TRUE)
 
                 # Panel shifting, up and down.
                 observeEvent(input[[paste0(mode0, i0, .organizationUp)]], {

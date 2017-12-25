@@ -9,7 +9,7 @@
     for (i in seq_len(N)) {
         mode <- active_plots$Type[i]
         ID <- active_plots$ID[i]
-        panel.width <- memory[[mode]][[.organizationWidth]][ID]
+        panel.width <- active_plots$Width[i]
 
         current <- list(
             h4(.decode_panel_name(mode, ID)),
@@ -57,6 +57,7 @@
     for (i in seq_len(nrow(active_plots))) { 
         mode <- active_plots$Type[i]
         ID <- active_plots$ID[i]
+        panel.width <- active_plots$Width[i]
         param_choices <- memory[[mode]][ID,]
 
         # Checking what to do with brushing.
@@ -163,7 +164,6 @@
         }
 
         # Deciding whether to continue on the current row, or start a new row.
-        panel.width <- param_choices[[.organizationWidth]]
         extra <- cumulative.width + panel.width
         if (extra > 12L) {
             collected[[counter]] <- do.call(fluidRow, cur.row)
@@ -176,9 +176,7 @@
         } 
 
         # Aggregating together everything into a column.
-        cur.row[[row.counter]] <- do.call(column, c(list(width=panel.width, 
-                                                         h4(all.names[i])),
-                                                    stuff, param))
+        cur.row[[row.counter]] <- do.call(column, c(list(width=panel.width, h4(all.names[i])), stuff, param))
         row.counter <- row.counter + 1L
         cumulative.width <- cumulative.width + panel.width
     }

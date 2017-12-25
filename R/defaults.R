@@ -170,8 +170,6 @@ colDataPlotDefaults <- function(se, max.plots) {
     incoming[[.colorByGeneExprs]] <- "" 
     incoming[[.colorByGeneExprsAssay]] <- defaultAssay
 
-    incoming[[.organizationWidth]] <- 4L
-
     incoming[[.brushActive]] <- FALSE
     incoming[[.brushByPlot]] <- ""
     return(incoming)

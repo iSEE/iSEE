@@ -265,12 +265,16 @@ iSEE <- function(
                     all.active <- rObjects$active_plots
                     index <- which(all.active$Type==mode0 & all.active$ID==i0)
                     rObjects$active_plots <- rObjects$active_plots[-index,]
-               })
+               }, ignoreInit=TRUE)
 
                 # Panel resizing.
                 observeEvent(input[[paste0(mode0, i0, .organizationWidth)]], {
-                    pObjects$memory[[mode0]][[.organizationWidth]][i0] <- input[[paste0(mode0, i0, .organizationWidth)]] 
-                    rObjects$resized <- rObjects$resized + 1L
+                    new.width <- input[[paste0(mode0, i0, .organizationWidth)]]
+                    cur.width <- pObjects$memory[[mode0]][[.organizationWidth]][i0]
+                    if (!isTRUE(all.equal(new.width, cur.width))) { 
+                        pObjects$memory[[mode0]][[.organizationWidth]][i0] <- new.width
+                        rObjects$resized <- rObjects$resized + 1L
+                    }
                 })
 
                 # Panel shifting, up and down.
@@ -283,7 +287,7 @@ iSEE <- function(
                         reindex[index-1L] <- reindex[index-1L]+1L
                         rObjects$active_plots <- all.active[reindex,]
                     } 
-                })
+                }, ignoreInit=TRUE)
 
                 observeEvent(input[[paste0(mode0, i0, .organizationDown)]], {
                     all.active <- rObjects$active_plots
@@ -294,7 +298,7 @@ iSEE <- function(
                         reindex[index+1L] <- reindex[index+1L]-1L
                         rObjects$active_plots <- all.active[reindex,]
                     } 
-                })
+                }, ignoreInit=TRUE)
             })
         }
     }
@@ -330,7 +334,7 @@ iSEE <- function(
           p.out$plot
         })
 
-        observe({
+        observeEvent(input[[.inputRedDim(.plotParamPanelName, i0)]], {
           opened <- input[[.inputRedDim(.plotParamPanelName, i0)]] 
           pObjects$memory$redDim[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
           pObjects$memory$redDim[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
@@ -338,11 +342,12 @@ iSEE <- function(
 
         observeEvent(input[[.inputRedDim(.brushActive, i0)]], {
           current <- input[[.inputRedDim(.brushActive, i0)]]
-          rObjects$rebrushed <- rObjects$rebrushed + 1L
-          if (!is.null(current)) { 
-              pObjects$memory$redDim[[.brushActive]][i0] <- current
+          reference <- pObjects$memory$redDim[[.brushActive]][i0]
+          if (!identical(current, reference)) { 
+            rObjects$rebrushed <- rObjects$rebrushed + 1L
+            pObjects$memory$redDim[[.brushActive]][i0] <- current
           }
-        })
+        }, ignoreInit=TRUE)
       })
     }
     
@@ -367,7 +372,7 @@ iSEE <- function(
           .make_colDataPlot(se, pObjects$memory$colData[i0,], input)
         })
 
-        observe({
+        observeEvent(input[[.inputColData(.plotParamPanelName, i0)]], {
           opened <- input[[.inputColData(.plotParamPanelName, i0)]] 
           pObjects$memory$colData[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
           pObjects$memory$colData[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
@@ -375,11 +380,12 @@ iSEE <- function(
 
         observeEvent(input[[.inputColData(.brushActive, i0)]], {
           current <- input[[.inputColData(.brushActive, i0)]] 
-          rObjects$rebrushed <- rObjects$rebrushed + 1L
-          if (!is.null(current)) { 
-              pObjects$memory$colData[[.brushActive]][i0] <- current
+          reference <- pObjects$memory$colData[[.brushActive]][i0]
+          if (!identical(current, reference)) { 
+            pObjects$memory$colData[[.brushActive]][i0] <- current
+            rObjects$rebrushed <- rObjects$rebrushed + 1L
           }
-        })
+        }, ignoreInit=TRUE)
       })
     }
 
@@ -403,7 +409,7 @@ iSEE <- function(
           .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input)
         }) 
 
-        observe({
+        observeEvent(input[[.inputGeneExpr(.plotParamPanelName, i0)]], {
           opened <- input[[.inputGeneExpr(.plotParamPanelName, i0)]] 
           pObjects$memory$geneExpr[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
           pObjects$memory$geneExpr[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
@@ -411,11 +417,12 @@ iSEE <- function(
 
         observeEvent(input[[.inputGeneExpr(.brushActive, i0)]], {
           current <- input[[.inputGeneExpr(.brushActive, i0)]]
-          rObjects$rebrushed <- rObjects$rebrushed + 1L
-          if (!is.null(current)) { 
-              pObjects$memory$geneExpr[[.brushActive]][i0] <- current
+          reference <- pObjects$memory$geneExpr[[.brushActive]][i0]
+          if (!identical(current, reference)) { 
+            pObjects$memory$geneExpr[[.brushActive]][i0] <- current
+            rObjects$rebrushed <- rObjects$rebrushed + 1L
           }
-        })
+        }, ignoreInit=TRUE)
       }) 
     }
     

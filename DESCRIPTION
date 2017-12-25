@@ -19,7 +19,6 @@ Depends:
     R (>= 3.5),
     SummarizedExperiment, 
     SingleCellExperiment,
-    shinyBS
 Imports:
     methods,
     BiocGenerics, 
@@ -33,7 +32,7 @@ Imports:
     rentrez,
     AnnotationDbi,
     DT,
-    stats
+    shinyBS
 Suggests:
     testthat,
     BiocStyle,

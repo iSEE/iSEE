@@ -20,10 +20,9 @@
 #' @importFrom ggplot2 ggplot geom_point labs theme_void aes_string geom_violin
 #'   theme_bw facet_wrap ylab
 #' @importFrom DT datatable renderDataTable dataTableOutput
-#' @importFrom stats setNames
 #' @importFrom AnnotationDbi mapIds keytypes
 #' @importFrom rentrez entrez_summary
-#' @importFrom shinyBS bsCollapsePanel bsCollapse updateCollapse
+#' @importFrom shinyBS bsCollapsePanel bsCollapse 
 #'
 #'
 #' @author Aaron Lun \email{alun@@wehi.edu.au}

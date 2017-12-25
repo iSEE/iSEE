@@ -4,18 +4,21 @@
 #' Interactive visualization of single-cell data using a Shiny interface.
 #'
 #' @param se A SingleCellExperiment object.
-#' @param redDim.args An integer scalar specifying the maximum number of
+#' @param redDimArgs An integer scalar specifying the maximum number of
 #' reduced dimension plots in the interface. Alternatively, a DataFrame 
 #' similar to that produced by \code{\link{redDimPlotDefaults}}, specifying 
 #' initial parameters for the plots.
-#' @param colData.args An integer scalar specifying the maximum number of
+#' @param colDataArgs An integer scalar specifying the maximum number of
 #' column data plots in the interface. Alternatively, a DataFrame 
 #' similar to that produced by \code{\link{colDataPlotDefaults}}, specifying 
 #' initial parameters for the plots.
-#' @param geneExpr.args An integer scalar specifying the maximum number of
+#' @param geneExprArgs An integer scalar specifying the maximum number of
 #' gene expression plots in the interface. Alternatively, a DataFrame 
 #' similar to that produced by \code{\link{geneExprPlotDefaults}}, specifying
 #' initial parameters for the plots.
+#' @param initialPanels A DataFrame specifying which panels should be created
+#' at initialization. This should contain a \code{Name} character field and 
+#' a \code{Width} integer field, see Details.
 #' @param annot.orgdb An \code{org.*.db} annotation object from which 
 #' Entrez identifiers can be retrieved. 
 #' @param annot.keytype A string specifying the keytype to use to query
@@ -29,8 +32,20 @@
 #' some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
 #' Any missing fields will be filled in with the defaults.
 #'
-#' Users can specify any number of maximum plots, though increasing the 
-#' number will increase the time required to generate any given plot. 
+#' The number of maximum plots for each type of plot is implicitly inferred 
+#' from the number of rows of the corresponding DataFrame in \code{*Args},
+#' if an integer scalar was not supplied. Users can specify any number of 
+#' maximum plots, though increasing the number will increase the time 
+#' required to render the interface.
+#' 
+#' The \code{initialPanels} argument specifies the panels to be created 
+#' upon initializing the interface. This should be a DataFrame containing
+#' a \code{Name} field specifying the identity of the panel, e.g., 
+#' \code{"Reduced dimension plot 1"}, \code{"Gene statistics table 2"}.
+#' The trailing number should not be greater than the number of 
+#' maximum plots of that type. The \code{Width} field may also be specified 
+#' describing the width of the panel from 4 to 12 (values will be coerced
+#' inside this range).
 #'
 #' If \code{annot.orgdb} is specified, gene information will be retrieved
 #' upon selection of particular genes in the data table. No retrieval is 
@@ -58,9 +73,10 @@
 #' if (interactive()) { iSEE(sce) }
 iSEE <- function(
   se,
-  redDim.args=5,
-  colData.args=5,
-  geneExpr.args=5,
+  redDimArgs=5,
+  colDataArgs=5,
+  geneExprArgs=5,
+  initialPanels=NULL,
   annot.orgdb=NULL,
   annot.keytype="ENTREZID",
   annot.keyfield=NULL
@@ -83,34 +99,62 @@ iSEE <- function(
     gene.data$Present <- TRUE
   }
   
-  # Setting up initial reduced dim plot parameters.
+  # Setting up parameters for each panel.
   memory <- list()
-  if (is.numeric(redDim.args)) { 
-    memory$redDim <- redDimPlotDefaults(se, redDim.args)
+  if (is.numeric(redDimArgs)) { 
+    memory$redDim <- redDimPlotDefaults(se, redDimArgs)
   } else {
-    memory$redDim <- redDimPlotDefaults(se, nrow(redDim.args)) 
-    memory$redDim <- .override_defaults(memory$redDim, redDim.args)
+    memory$redDim <- redDimPlotDefaults(se, nrow(redDimArgs)) 
+    memory$redDim <- .override_defaults(memory$redDim, redDimArgs)
   }
   reddim_max_plots <- nrow(memory$redDim)
                                           
-  if (is.numeric(geneExpr.args)) { 
-    memory$geneExpr <- geneExprPlotDefaults(se, geneExpr.args)
+  if (is.numeric(geneExprArgs)) { 
+    memory$geneExpr <- geneExprPlotDefaults(se, geneExprArgs)
   } else {
-    memory$geneExpr <- geneExprPlotDefaults(se, nrow(geneExpr.args)) 
-    memory$geneExpr <- .override_defaults(memory$geneExpr, geneExpr.args)
+    memory$geneExpr <- geneExprPlotDefaults(se, nrow(geneExprArgs)) 
+    memory$geneExpr <- .override_defaults(memory$geneExpr, geneExprArgs)
   }
   geneexpr_max_plots <- nrow(memory$geneExpr)
 
-  if (is.numeric(colData.args)) { 
-    memory$colData <- colDataPlotDefaults(se, colData.args)
+  if (is.numeric(colDataArgs)) { 
+    memory$colData <- colDataPlotDefaults(se, colDataArgs)
   } else {
-    memory$colData <- colDataPlotDefaults(se, nrow(colData.args)) 
-    memory$colData <- .override_defaults(memory$colData, colData.args)
+    memory$colData <- colDataPlotDefaults(se, nrow(colDataArgs)) 
+    memory$colData <- .override_defaults(memory$colData, colDataArgs)
   }
   coldata_max_plots <- nrow(memory$colData)
  
   genestat_max_tab <- 5
-  memory$geneStat <- DataFrame(Selected=rep(1, genestat_max_tab), Search="", PanelWidth=4)
+  memory$geneStat <- DataFrame(Selected=rep(1, genestat_max_tab), Search="")
+
+  # Defining the initial elements to be plotted.
+  if (is.null(initialPanels)) { 
+      active_plots <- data.frame(Type=c("redDim", "colData", "geneExpr", "geneStat"),
+                                 ID=1, Width=4,
+                                 stringsAsFactors=FALSE)
+  } else {
+      if (is.null(initialPanels$Name)) { 
+          stop("need 'Name' field in 'initialPanels'")
+      }
+      if (is.null(initialPanels$Width)) {
+          initialPanels$Width <- 4L
+      } else {
+          initialPanels$Width <- pmax(4L, pmin(12L, as.integer(initialPanels$Width)))
+      }
+
+      encoded <- .encode_panel_name(initialPanels$Name)
+      max_each <- unlist(lapply(memory, nrow))
+      illegal <- which(max_each[encoded$Type] < encoded$ID) 
+      if (length(illegal)) {
+          stop(sprintf("'%s' in 'initialPanels' is not available (maximum ID is %i)", 
+                       initialPanels$Name[illegal[1]], max_each[illegal[1]]))
+      }
+
+      active_plots <- data.frame(Type=encoded$Type, ID=encoded$ID,
+                                 Width=initialPanels$Width, 
+                                 stringsAsFactors=FALSE)
+  }
 
   # for retrieving the annotation
   if (!is.null(annot.orgdb)) { 
@@ -184,13 +228,9 @@ iSEE <- function(
   iSEE_server <- function(input, output, session) {
 
     # storage for all the reactive objects
-    active_plots <- data.frame(Type=c("redDim", "colData", "geneExpr", "geneStat"),
-                               ID=1, 
-                               stringsAsFactors=FALSE)
-
     rObjects <- reactiveValues(
         active_plots = active_plots,
-        resized = 1
+        rebrushed = 1
     )
     
     # storage for other persistent objects
@@ -229,7 +269,7 @@ iSEE <- function(
     #######################################################################
     
     output$allPanels <- renderUI({
-        (rObjects$resized) # Trigger re-rendering upon resizing.
+        (rObjects$rebrushed) # Trigger re-rendering if these are selected.
         .panel_generation(rObjects$active_plots, pObjects$memory,
                           redDimNames=red.dim.names, 
                           colDataNames=covariates,
@@ -248,7 +288,11 @@ iSEE <- function(
                 all.active <- rObjects$active_plots
                 all.memory <- pObjects$memory[[mode0]]
                 first.missing <- setdiff(seq_len(nrow(all.memory)), all.active$ID[all.active$Type==mode0])
-                rObjects$active_plots <- rbind(all.active, DataFrame(Type=mode0, ID=first.missing[1]))
+                if (length(first.missing)) { 
+                    rObjects$active_plots <- rbind(all.active, DataFrame(Type=mode0, ID=first.missing[1], Width=4))
+                } else {
+                    warning(sprintf("maximum number of plots reached for mode '%s'", mode0))
+                }
             })
         })
         
@@ -263,13 +307,18 @@ iSEE <- function(
                     all.active <- rObjects$active_plots
                     index <- which(all.active$Type==mode0 & all.active$ID==i0)
                     rObjects$active_plots <- rObjects$active_plots[-index,]
-               })
+               }, ignoreInit=TRUE)
 
                 # Panel resizing.
                 observeEvent(input[[paste0(mode0, i0, .organizationWidth)]], {
-                    pObjects$memory[[mode0]][[.organizationWidth]][i0] <- input[[paste0(mode0, i0, .organizationWidth)]] 
-                    rObjects$resized <- rObjects$resized + 1L
-                })
+                    all.active <- rObjects$active_plots
+                    index <- which(all.active$Type==mode0 & all.active$ID==i0)
+                    cur.width <- all.active$Width[index]
+                    new.width <- input[[paste0(mode0, i0, .organizationWidth)]]
+                    if (!isTRUE(all.equal(new.width, cur.width))) { 
+                        rObjects$active_plots$Width[index] <- new.width
+                    }
+                }, ignoreInit=TRUE)
 
                 # Panel shifting, up and down.
                 observeEvent(input[[paste0(mode0, i0, .organizationUp)]], {
@@ -281,7 +330,7 @@ iSEE <- function(
                         reindex[index-1L] <- reindex[index-1L]+1L
                         rObjects$active_plots <- all.active[reindex,]
                     } 
-                })
+                }, ignoreInit=TRUE)
 
                 observeEvent(input[[paste0(mode0, i0, .organizationDown)]], {
                     all.active <- rObjects$active_plots
@@ -292,7 +341,7 @@ iSEE <- function(
                         reindex[index+1L] <- reindex[index+1L]-1L
                         rObjects$active_plots <- all.active[reindex,]
                     } 
-                })
+                }, ignoreInit=TRUE)
             })
         }
     }
@@ -315,7 +364,6 @@ iSEE <- function(
           for (field in c(.redDimType, 
                           .colorByField, .colorByColData, .colorByGeneExprs, .colorByGeneExprsAssay,
                           .brushByPlot)) { 
-              if (is.null(input[[.inputColData(field, i0)]])) { next } ##### Placeholder, to remove!!!
               pObjects$memory$redDim[[field]][i0] <- input[[.inputRedDim(field, i0)]]
           }
           for (field in c(.redDimXAxis, .redDimYAxis)) { 
@@ -328,11 +376,21 @@ iSEE <- function(
           p.out$plot
         })
 
-        observe({
+        observeEvent(input[[.inputRedDim(.plotParamPanelName, i0)]], {
           opened <- input[[.inputRedDim(.plotParamPanelName, i0)]] 
+          pObjects$memory$redDim[[.plotParamPanelOpen]][i0] <- .plotParamPanelTitle %in% opened
           pObjects$memory$redDim[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
           pObjects$memory$redDim[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
         })
+
+        observeEvent(input[[.inputRedDim(.brushActive, i0)]], {
+          current <- input[[.inputRedDim(.brushActive, i0)]]
+          reference <- pObjects$memory$redDim[[.brushActive]][i0]
+          if (!identical(current, reference)) { 
+            rObjects$rebrushed <- rObjects$rebrushed + 1L
+            pObjects$memory$redDim[[.brushActive]][i0] <- current
+          }
+        }, ignoreInit=TRUE)
       })
     }
     
@@ -349,7 +407,6 @@ iSEE <- function(
           for (field in c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData,
                       .colorByField, .colorByColData, .colorByGeneExprs, .colorByGeneExprsAssay,
                       .brushByPlot)) { 
-              if (is.null(input[[.inputColData(field, i0)]])) { next } ##### Placeholder, to remove!!!
               pObjects$memory$colData[[field]][i0] <- input[[.inputColData(field, i0)]]
           }
           
@@ -357,11 +414,21 @@ iSEE <- function(
           .make_colDataPlot(se, pObjects$memory$colData[i0,], input)
         })
 
-        observe({
+        observeEvent(input[[.inputColData(.plotParamPanelName, i0)]], {
           opened <- input[[.inputColData(.plotParamPanelName, i0)]] 
+          pObjects$memory$colData[[.plotParamPanelOpen]][i0] <- .plotParamPanelTitle %in% opened
           pObjects$memory$colData[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
           pObjects$memory$colData[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
         })
+
+        observeEvent(input[[.inputColData(.brushActive, i0)]], {
+          current <- input[[.inputColData(.brushActive, i0)]] 
+          reference <- pObjects$memory$colData[[.brushActive]][i0]
+          if (!identical(current, reference)) { 
+            pObjects$memory$colData[[.brushActive]][i0] <- current
+            rObjects$rebrushed <- rObjects$rebrushed + 1L
+          }
+        }, ignoreInit=TRUE)
       })
     }
 
@@ -377,7 +444,6 @@ iSEE <- function(
           for (field in c(.geneExprID, .geneExprAssay, .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneExprs,
                           .colorByField, .colorByColData, .colorByGeneExprs, .colorByGeneExprs,
                           .brushByPlot)) {
-              if (is.null(input[[.inputGeneExpr(field, i0)]])) { next } ##### Placeholder, to remove!!!
               pObjects$memory$geneExpr[[field]][i0] <- input[[.inputGeneExpr(field, i0)]]
           }
 
@@ -385,11 +451,21 @@ iSEE <- function(
           .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input)
         }) 
 
-        observe({
+        observeEvent(input[[.inputGeneExpr(.plotParamPanelName, i0)]], {
           opened <- input[[.inputGeneExpr(.plotParamPanelName, i0)]] 
+          pObjects$memory$geneExpr[[.plotParamPanelOpen]][i0] <- .plotParamPanelTitle %in% opened
           pObjects$memory$geneExpr[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
           pObjects$memory$geneExpr[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
         })
+
+        observeEvent(input[[.inputGeneExpr(.brushActive, i0)]], {
+          current <- input[[.inputGeneExpr(.brushActive, i0)]]
+          reference <- pObjects$memory$geneExpr[[.brushActive]][i0]
+          if (!identical(current, reference)) { 
+            pObjects$memory$geneExpr[[.brushActive]][i0] <- current
+            rObjects$rebrushed <- rObjects$rebrushed + 1L
+          }
+        }, ignoreInit=TRUE)
       }) 
     }
     

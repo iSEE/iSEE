@@ -12,7 +12,7 @@
 #' shinyApp tabPanel HTML br h1 h2 selectInput renderPlot plotOutput
 #' uiOutput sliderInput tagList textInput column observeEvent radioButtons
 #' verbatimTextOutput htmlOutput renderText need tags hr brushOpts
-#' brushedPoints observe h4 validate
+#' brushedPoints observe h4 validate checkboxInput
 #' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
 #' dashboardSidebar menuItem tabBox valueBox valueBoxOutput
 #' @importFrom scater plotExpression plotPhenoData
@@ -20,10 +20,9 @@
 #' @importFrom ggplot2 ggplot geom_point labs theme_void aes_string geom_violin
 #'   theme_bw facet_wrap ylab
 #' @importFrom DT datatable renderDataTable dataTableOutput
-#' @importFrom stats setNames
 #' @importFrom AnnotationDbi mapIds keytypes
 #' @importFrom rentrez entrez_summary
-#' @importFrom shinyBS bsCollapsePanel bsCollapse updateCollapse
+#' @importFrom shinyBS bsCollapsePanel bsCollapse 
 #'
 #'
 #' @author Aaron Lun \email{alun@@wehi.edu.au}

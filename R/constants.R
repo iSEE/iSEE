@@ -11,7 +11,7 @@
 .geneExprXAxisColDataTitle <- "Column data"
 .geneExprXAxisGeneExprsTitle <- "Gene expression"
 
-.geneExprID <- "Gene"
+.geneExprID <- "GeneTable"
 .geneExprAssay <- "Assay"
 .geneExprXAxis <- "XAxis"
 .geneExprXAxisColData <- "XAxisColData"
@@ -49,9 +49,12 @@
 .brushParamPanelOpen <- "BrushPanelOpen"
 
 .brushField <- "Brush"
+.brushActive <- "BrushOn"
 .brushByPlot <- "BrushByPlot"
 
-# Other parameter panel things
+# Other parameter panel constants.
+.plotParamPanelTitle <- "Plotting parameters"
+.plotParamPanelOpen <- "PlotPanelOpen"
 .plotParamPanelName <- "ParamPanel"
 
 # Panel organization parameters.
@@ -76,6 +79,10 @@ names(rev.translation) <- translation
 .encode_panel_name <- function(names) {
     ID <- as.integer(gsub(".* ", "", names))
     raw.str <- rev.translation[gsub(" [0-9]+", "", names)]
+    failed <- is.na(raw.str) | is.na(ID) 
+    if (any(failed)) { 
+        stop(sprintf("'%s' is not a legal panel name", names[failed][1]))
+    }
     return(list(Type=raw.str, ID=ID))
 }
 

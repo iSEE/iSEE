@@ -190,7 +190,8 @@ iSEE <- function(
 
     rObjects <- reactiveValues(
         active_plots = active_plots,
-        resized = 1
+        resized = 1,
+        rebrushed = 1
     )
     
     # storage for other persistent objects
@@ -229,7 +230,8 @@ iSEE <- function(
     #######################################################################
     
     output$allPanels <- renderUI({
-        (rObjects$resized) # Trigger re-rendering upon resizing.
+        (rObjects$rebrushed) # Trigger re-rendering if these are selected.
+        (rObjects$resized) 
         .panel_generation(rObjects$active_plots, pObjects$memory,
                           redDimNames=red.dim.names, 
                           colDataNames=covariates,
@@ -315,7 +317,7 @@ iSEE <- function(
           for (field in c(.redDimType, 
                           .colorByField, .colorByColData, .colorByGeneExprs, .colorByGeneExprsAssay,
                           .brushByPlot)) { 
-              if (is.null(input[[.inputColData(field, i0)]])) { next } ##### Placeholder, to remove!!!
+              if (is.null(input[[.inputColData(field, i0)]])) { next } 
               pObjects$memory$redDim[[field]][i0] <- input[[.inputRedDim(field, i0)]]
           }
           for (field in c(.redDimXAxis, .redDimYAxis)) { 
@@ -332,6 +334,14 @@ iSEE <- function(
           opened <- input[[.inputRedDim(.plotParamPanelName, i0)]] 
           pObjects$memory$redDim[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
           pObjects$memory$redDim[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
+        })
+
+        observeEvent(input[[.inputRedDim(.brushActive, i0)]], {
+          current <- input[[.inputRedDim(.brushActive, i0)]]
+          rObjects$rebrushed <- rObjects$rebrushed + 1L
+          if (!is.null(current)) { 
+              pObjects$memory$redDim[[.brushActive]][i0] <- current
+          }
         })
       })
     }
@@ -362,6 +372,14 @@ iSEE <- function(
           pObjects$memory$colData[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
           pObjects$memory$colData[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
         })
+
+        observeEvent(input[[.inputColData(.brushActive, i0)]], {
+          current <- input[[.inputColData(.brushActive, i0)]] 
+          rObjects$rebrushed <- rObjects$rebrushed + 1L
+          if (!is.null(current)) { 
+              pObjects$memory$colData[[.brushActive]][i0] <- current
+          }
+        })
       })
     }
 
@@ -389,6 +407,14 @@ iSEE <- function(
           opened <- input[[.inputGeneExpr(.plotParamPanelName, i0)]] 
           pObjects$memory$geneExpr[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
           pObjects$memory$geneExpr[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
+        })
+
+        observeEvent(input[[.inputGeneExpr(.brushActive, i0)]], {
+          current <- input[[.inputGeneExpr(.brushActive, i0)]]
+          rObjects$rebrushed <- rObjects$rebrushed + 1L
+          if (!is.null(current)) { 
+              pObjects$memory$geneExpr[[.brushActive]][i0] <- current
+          }
         })
       }) 
     }

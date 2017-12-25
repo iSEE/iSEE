@@ -174,6 +174,7 @@ colDataPlotDefaults <- function(se, max.plots) {
 
     incoming[[.organizationWidth]] <- 4L
 
-    incoming[[.brushByPlot]] <- NA_character_
+    incoming[[.brushActive]] <- FALSE
+    incoming[[.brushByPlot]] <- ""
     return(incoming)
 }

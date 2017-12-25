@@ -21,15 +21,16 @@
     }
 
     # Figuring out what to do with brushing.
-    print(param_choices[[.brushByPlot]])
-    brush.by <- .encode_panel_name(param_choices[[.brushByPlot]])
-    brush.id <- input[[paste0(brush.by$Type, "Plot", brush.by$ID, .brushField)]]
-    brushed.pts <- brushedPoints(all.coordinates[[paste0(brush.by$Type, "Plot", brush.by$ID)]], brush.id)
-    print(brushed.pts)
-    if (!is.null(brushed.pts) && nrow(brushed.pts)) { 
-        print("YAY, brushing!")
-        print(brushed.pts)
-    } 
+    brush.in <- param_choices[[.brushByPlot]]
+    if (brush.in!="") {
+        brush.by <- .encode_panel_name(brush.in)
+        brush.id <- input[[paste0(brush.by$Type, .brushField, brush.by$ID)]]
+        brushed.pts <- brushedPoints(all.coordinates[[paste0(brush.by$Type, "Plot", brush.by$ID)]], brush.id)
+        if (!is.null(brushed.pts) && nrow(brushed.pts)) { 
+            print("YAY, brushing!")
+            print(brushed.pts)
+        } 
+    }
 
     plot.data <- data.frame(Dim1=red.dim[,param_choices[[.redDimXAxis]]],
                             Dim2=red.dim[,param_choices[[.redDimYAxis]]])

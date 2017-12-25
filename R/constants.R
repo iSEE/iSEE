@@ -49,6 +49,7 @@
 .brushParamPanelOpen <- "BrushPanelOpen"
 
 .brushField <- "Brush"
+.brushActive <- "BrushOn"
 .brushByPlot <- "BrushByPlot"
 
 # Other parameter panel things

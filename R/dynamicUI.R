@@ -43,16 +43,28 @@
     # Defining currently active tables, scatter plots to use in linking.
     all.names <- .decode_panel_name(active_plots$Type, active_plots$ID)
     active.tab <- all.names[active_plots$Type=="geneStat"]
-    brushable <- all.names[active_plots$Type!="geneStat"]
+    keep <- logical(nrow(active_plots))
+    for (i in which(active_plots$Type!="geneStat")) { 
+        keep[i] <- memory[[active_plots$Type[i]]][[.brushActive]][active_plots$ID[i]]
+    }
+    brushable <- c("", all.names[keep])
 
     for (i in seq_len(nrow(active_plots))) { 
         mode <- active_plots$Type[i]
         ID <- active_plots$ID[i]
         param_choices <- memory[[mode]][ID,]
 
+        # Checking what to do with brushing.
+        if (mode!="geneStat" && param_choices[[.brushActive]]) {
+            brush.opts <- brushOpts(paste0(mode, .brushField, ID))
+        } else {
+            brush.opts <- NULL
+        }
+
+        # Creating the plot fields.
         if (mode=="redDim") {                               
             stuff <- list(
-                 plotOutput(.redDimPlot(ID), brush = brushOpts(paste0(.redDimPlot(ID), .brushField))),
+                 plotOutput(.redDimPlot(ID), brush = brush.opts),
                  selectInput(.inputRedDim(.redDimType, ID), label="Type",
                              choices=redDimNames, selected=param_choices[[.redDimType]]),
                  textInput(.inputRedDim(.redDimXAxis, ID), label="Dimension 1",
@@ -62,7 +74,7 @@
                  )
         } else if (mode=="colData") {
             stuff <- list(
-                 plotOutput(.colDataPlot(ID), brush = brushOpts(paste0(.colDataPlot(ID), .brushField))),
+                 plotOutput(.colDataPlot(ID), brush = brush.opts),
                  selectInput(.inputColData(.colDataYAxis, ID), 
                              label = "Column of interest (Y-axis):",
                              choices=colDataNames, selected=param_choices[[.colDataYAxis]]),
@@ -76,7 +88,7 @@
                  )
         } else if (mode=="geneExpr") {
             stuff <- list(
-                plotOutput(.geneExprPlot(ID), brush = brushOpts(paste0(.geneExprPlot(ID), .brushField))),
+                plotOutput(.geneExprPlot(ID), brush = brush.opts),
                 selectInput(.inputGeneExpr(.geneExprID, ID), label = "Y-axis gene linked to:",
                             choices=active.tab, selected=param_choices[[.geneExprID]]),
                  selectInput(.inputGeneExpr(.geneExprAssay, ID), label=NULL,
@@ -110,10 +122,10 @@
                 chosen.open <- c(chosen.open, .brushParamPanelTitle)
             }
 
-            # Choosing the plot to brush by (using self, if not otherwise specified).
+            # Choosing the plot to brush by.
             brush.choice <- param_choices[[.brushByPlot]]
-            if (is.na(brush.choice) || ! brush.choice %in% all.names) { 
-                brush.choice <- all.names[i] 
+            if (is.na(brush.choice) || ! brush.choice %in% brushable) { 
+                brush.choice <- ""
             }
 
             param <- list(shinyBS::bsCollapse(
@@ -135,12 +147,15 @@
                     ), 
                 shinyBS::bsCollapsePanel(
                     title = .brushParamPanelTitle,
+                    checkboxInput(paste0(mode, .brushActive, ID), label="Transmit brush", 
+                                  value=param_choices[[.brushActive]]), 
                     selectInput(paste0(mode, .brushByPlot, ID), 
-                                label = "Brush by:",
+                                label = "Receive brush from:",
                                 choices=brushable, selected=brush.choice)
                     )
                 ) # end of bsCollapse
             )
+            print(paste0(mode, .brushActive, ID))
         } else {
             param <- list()
         }

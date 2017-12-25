@@ -68,9 +68,9 @@
         }
 
         # Creating the plot fields.
-        if (mode=="redDim") {                               
-            stuff <- list(
-                 plotOutput(.redDimPlot(ID), brush = brush.opts),
+        if (mode=="redDim") {
+            obj <- plotOutput(.redDimPlot(ID), brush = brush.opts)
+            plot.param <-  list(
                  selectInput(.inputRedDim(.redDimType, ID), label="Type",
                              choices=redDimNames, selected=param_choices[[.redDimType]]),
                  textInput(.inputRedDim(.redDimXAxis, ID), label="Dimension 1",
@@ -79,8 +79,8 @@
                            value=param_choices[[.redDimYAxis]])
                  )
         } else if (mode=="colData") {
-            stuff <- list(
-                 plotOutput(.colDataPlot(ID), brush = brush.opts),
+            obj <- plotOutput(.colDataPlot(ID), brush = brush.opts)
+            plot.param <- list(
                  selectInput(.inputColData(.colDataYAxis, ID), 
                              label = "Column of interest (Y-axis):",
                              choices=colDataNames, selected=param_choices[[.colDataYAxis]]),
@@ -93,8 +93,8 @@
                              choices=colDataNames, selected=param_choices[[.colDataXAxisColData]])
                  )
         } else if (mode=="geneExpr") {
-            stuff <- list(
-                plotOutput(.geneExprPlot(ID), brush = brush.opts),
+            obj <- plotOutput(.geneExprPlot(ID), brush = brush.opts)
+            plot.param <- list(
                 selectInput(.inputGeneExpr(.geneExprID, ID), label = "Y-axis gene linked to:",
                             choices=active.tab, 
                             selected=.choose_link(param_choices[[.geneExprID]], active.tab, forceDefault=TRUE)),
@@ -112,7 +112,7 @@
                              choices=active.tab, selected=param_choices[[.geneExprXAxisGeneExprs]])
                  )
         } else if (mode=="geneStat") {
-            stuff <- list(dataTableOutput(paste0("geneStatTable", ID)))
+            obj <- list(dataTableOutput(paste0("geneStatTable", ID)))
         } else {
             stop(sprintf("'%s' is not a recognized panel mode"), mode)
         }
@@ -122,6 +122,9 @@
 
             # Figuring out whether the panels should be open.
             chosen.open <- character(0)
+            if (param_choices[[.plotParamPanelOpen]]) {
+                chosen.open <- c(chosen.open, .plotParamPanelTitle)
+            }
             if (param_choices[[.colorParamPanelOpen]]) {
                 chosen.open <- c(chosen.open, .colorParamPanelTitle)
             }
@@ -132,6 +135,7 @@
             param <- list(shinyBS::bsCollapse(
                 id = paste0(mode, .plotParamPanelName, ID),
                 open = chosen.open,
+                do.call(shinyBS::bsCollapsePanel, c(list(title=.plotParamPanelTitle), plot.param)),
                 shinyBS::bsCollapsePanel(
                     title = .colorParamPanelTitle,
                     radioButtons(paste0(mode, .colorByField, ID), 
@@ -176,7 +180,7 @@
         } 
 
         # Aggregating together everything into a column.
-        cur.row[[row.counter]] <- do.call(column, c(list(width=panel.width, h4(all.names[i])), stuff, param))
+        cur.row[[row.counter]] <- do.call(column, c(list(width=panel.width, h4(all.names[i]), obj), param))
         row.counter <- row.counter + 1L
         cumulative.width <- cumulative.width + panel.width
     }

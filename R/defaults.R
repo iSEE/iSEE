@@ -68,6 +68,12 @@
 #' Defaults to an empty string, which means that no plot is used for point selection.}
 #' }
 #'
+#' @section Other parameters:
+#' \describe{
+#' \item{\code{PlotPanelOpen}:}{Logical, should the plot parameter panel be open upon initialization?
+#' Defaults to \code{FALSE}.}
+#' }
+#'
 #' @return A DataFrame containing default settings for various 
 #' parameters of reduced dimension or gene expression plots.
 #'
@@ -162,6 +168,7 @@ colDataPlotDefaults <- function(se, max.plots) {
 }    
 
 .add_general_parameters <- function(incoming, defaultColData, defaultAssay) {
+    incoming[[.plotParamPanelOpen]] <- FALSE
     incoming[[.colorParamPanelOpen]] <- FALSE
     incoming[[.brushParamPanelOpen]] <- FALSE
 

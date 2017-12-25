@@ -52,7 +52,9 @@
 .brushActive <- "BrushOn"
 .brushByPlot <- "BrushByPlot"
 
-# Other parameter panel things
+# Other parameter panel constants.
+.plotParamPanelTitle <- "Plotting parameters"
+.plotParamPanelOpen <- "PlotPanelOpen"
 .plotParamPanelName <- "ParamPanel"
 
 # Panel organization parameters.

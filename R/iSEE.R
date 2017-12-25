@@ -289,7 +289,7 @@ iSEE <- function(
                 all.memory <- pObjects$memory[[mode0]]
                 first.missing <- setdiff(seq_len(nrow(all.memory)), all.active$ID[all.active$Type==mode0])
                 if (length(first.missing)) { 
-                    rObjects$active_plots <- rbind(all.active, DataFrame(Type=mode0, ID=first.missing[1]))
+                    rObjects$active_plots <- rbind(all.active, DataFrame(Type=mode0, ID=first.missing[1], Width=4))
                 } else {
                     warning(sprintf("maximum number of plots reached for mode '%s'", mode0))
                 }
@@ -379,6 +379,7 @@ iSEE <- function(
 
         observeEvent(input[[.inputRedDim(.plotParamPanelName, i0)]], {
           opened <- input[[.inputRedDim(.plotParamPanelName, i0)]] 
+          pObjects$memory$redDim[[.plotParamPanelOpen]][i0] <- .plotParamPanelTitle %in% opened
           pObjects$memory$redDim[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
           pObjects$memory$redDim[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
         })
@@ -417,6 +418,7 @@ iSEE <- function(
 
         observeEvent(input[[.inputColData(.plotParamPanelName, i0)]], {
           opened <- input[[.inputColData(.plotParamPanelName, i0)]] 
+          pObjects$memory$colData[[.plotParamPanelOpen]][i0] <- .plotParamPanelTitle %in% opened
           pObjects$memory$colData[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
           pObjects$memory$colData[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
         })
@@ -454,6 +456,7 @@ iSEE <- function(
 
         observeEvent(input[[.inputGeneExpr(.plotParamPanelName, i0)]], {
           opened <- input[[.inputGeneExpr(.plotParamPanelName, i0)]] 
+          pObjects$memory$geneExpr[[.plotParamPanelOpen]][i0] <- .plotParamPanelTitle %in% opened
           pObjects$memory$geneExpr[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
           pObjects$memory$geneExpr[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
         })

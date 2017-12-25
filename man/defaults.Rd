@@ -94,6 +94,14 @@ Defaults to an empty string, which means that no plot is used for point selectio
 }
 }
 
+\section{Other parameters}{
+
+\describe{
+\item{\code{PlotPanelOpen}:}{Logical, should the plot parameter panel be open upon initialization?
+Defaults to \code{FALSE}.}
+}
+}
+
 \examples{
 library(scRNAseq)
 data(allen)

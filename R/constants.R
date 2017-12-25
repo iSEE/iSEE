@@ -11,7 +11,7 @@
 .geneExprXAxisColDataTitle <- "Column data"
 .geneExprXAxisGeneExprsTitle <- "Gene expression"
 
-.geneExprID <- "Gene"
+.geneExprID <- "GeneTable"
 .geneExprAssay <- "Assay"
 .geneExprXAxis <- "XAxis"
 .geneExprXAxisColData <- "XAxisColData"
@@ -77,6 +77,10 @@ names(rev.translation) <- translation
 .encode_panel_name <- function(names) {
     ID <- as.integer(gsub(".* ", "", names))
     raw.str <- rev.translation[gsub(" [0-9]+", "", names)]
+    failed <- is.na(raw.str) | is.na(ID) 
+    if (any(failed)) { 
+        stop(sprintf("'%s' is not a legal panel name", names[failed][1]))
+    }
     return(list(Type=raw.str, ID=ID))
 }
 

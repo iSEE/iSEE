@@ -12,8 +12,6 @@
 #'
 #' @section Reduced dimension plot parameters:
 #' \describe{
-#' \item{\code{Active}:}{Logical, should this plot be shown upon initialization?
-#' By default, this is only \code{TRUE} for the first plot.}
 #' \item{\code{Type}:}{Characater, what entry of \code{reducedDims(se)} should be shown?
 #' By default, the first entry is shown.}
 #' \item{\code{XAxis}:}{Integer, which component should be shown on the x-axis?
@@ -24,10 +22,8 @@
 #'
 #' @section Gene expression plot parameters:
 #' \describe{
-#' \item{\code{Active}:}{Logical, should this plot be shown upon initialization?
-#' By default, this is only \code{TRUE} for the first plot.}
-#' \item{\code{Gene}:}{Character, which gene's expression values should be shown on the y-axis?
-#' Defaults to the name of the first row in \code{se}.}
+#' \item{\code{GeneTable}:}{Character, what gene statistic table should be used to choose a gene to display on the y-axis?
+#' Defaults to an empty string, which means that the first available table will be used.}
 #' \item{\code{Assay}:}{Character, what expression values should be shown on the y-axis?
 #' Defaults to the name of the first assay in \code{se}.}
 #' \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
@@ -40,8 +36,6 @@
 #'
 #' @section Column data plot parameters:
 #' \describe{
-#' \item{\code{Active}:}{Logical, should this plot be shown upon initialization?
-#' By default, this is only \code{TRUE} for the first plot.}
 #' \item{\code{YAxisColData}:}{Character, which column of \code{colData(se)} should be shown on the y-axis?
 #' Defaults to the first entry of \code{colData(se)}.}
 #' \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
@@ -50,20 +44,30 @@
 #' Defaults to the first entry of \code{colData(se)}.}
 #' }
 #'
-#' @section General plot parameters:
+#' @section Coloring parameters:
 #' \describe{
-#' \item{\code{OpenPlotPanel}:}{Logical, should the plot parameter panel be open upon initialization?
-#' Defaults to \code{TRUE}.}
+#' \item{\code{ColorPanelOpen}:}{Logical, should the color parameter panel be open upon initialization?
+#' Defaults to \code{FALSE}.}
 #' \item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
 #' Defaults to \code{"None"}.}
 #' \item{\code{ColorByColData}:}{Character, which column of \code{colData(se)} should be used for colouring if \code{ColorBy="Column data"}? 
 #' Defaults to the first entry of \code{colData(se)}.}
-#' \item{\code{ColorByGeneExprs}:}{Character, which gene's expression should be used for colouring if \code{ColorBy="Gene expression"}? 
-#' Defaults to the name of the first row in \code{se}}
+#' \item{\code{ColorByGeneTable}:}{Character, which gene statistic table should be used to choose a gene to color by, if \code{ColorBy="Gene expression"}? 
+#' Defaults to an empty string, which means that the first available table will be used.}
 #' \item{\code{ColorByGeneExprsAssay}:}{Character, what expression values should be used for colouring if \code{ColorBy="Gene expression"}? 
 #' Defaults to the name of the first assay in \code{se}.}
 #' }
-#' 
+#'
+#' @section Brushing parameters:
+#' \describe{
+#' \item{\code{BrushPanelOpen}:}{Logical, should the brushing parameter panel be open upon initialization?
+#' Defaults to \code{FALSE}.}
+#' \item{\code{BrushOn}:}{Logical, should the plot be transmitting its brush for use in other plots?
+#' Defaults to \code{FALSE}.}
+#' \item{\code{BrushByPlot}:}{Character, which other plot should be used for point selection in the current plot? 
+#' Defaults to an empty string, which means that no plot is used for point selection.}
+#' }
+#'
 #' @return A DataFrame containing default settings for various 
 #' parameters of reduced dimension or gene expression plots.
 #'
@@ -85,9 +89,6 @@
 #' geneExprPlotDefaults(sce, max.plots=5)
 #' colDataPlotDefaults(sce, max.plots=5)
 redDimPlotDefaults <- function(se, max.plots) {
-    activity <- logical(max.plots)
-    activity[1] <- TRUE
-    out <- DataFrame(Active=activity)
     all.assays <- assayNames(se)
     if ("logcounts" %in% all.assays) {
         def.assay <- "logcounts"
@@ -95,6 +96,7 @@ redDimPlotDefaults <- function(se, max.plots) {
         def.assay <- all.assays[1]
     }
 
+    out <- DataFrame(matrix(0, max.plots, 0))
     out[[.redDimType]] <- reducedDimNames(se)[1]
     out[[.redDimXAxis]] <- 1L
     out[[.redDimYAxis]] <- 2L
@@ -106,18 +108,15 @@ redDimPlotDefaults <- function(se, max.plots) {
 #' @rdname defaults 
 #' @export
 geneExprPlotDefaults <- function(se, max.plots) {
-    activity <- logical(max.plots)
-    activity[1] <- TRUE
     all.assays <- assayNames(se)
     if ("logcounts" %in% all.assays) {
         def.assay <- "logcounts"
     } else {
         def.assay <- all.assays[1]
     }
-    gene.names <- rownames(se)
     covariates <- colnames(colData(se))
 
-    out <- DataFrame(Active=activity)
+    out <- DataFrame(matrix(0, max.plots, 0))
     out[[.geneExprID]] <- ""
     out[[.geneExprAssay]] <- def.assay
     out[[.geneExprXAxis]] <- .geneExprXAxisNothingTitle
@@ -131,18 +130,15 @@ geneExprPlotDefaults <- function(se, max.plots) {
 #' @rdname defaults 
 #' @export
 colDataPlotDefaults <- function(se, max.plots) {
-    activity <- logical(max.plots)
-    activity[1] <- TRUE
     all.assays <- assayNames(se)
     if ("logcounts" %in% all.assays) {
         def.assay <- "logcounts"
     } else {
         def.assay <- all.assays[1]
     }
-    gene.names <- rownames(se)
     covariates <- colnames(colData(se))
 
-    out <- DataFrame(Active=activity)
+    out <- DataFrame(matrix(0, max.plots, 0))
     out[[.colDataYAxis]] <- covariates[1]
     out[[.colDataXAxis]] <- .colDataXAxisNothingTitle
     out[[.colDataXAxisColData]] <- ifelse(length(covariates)==1L, covariates[1], covariates[2])
@@ -151,11 +147,13 @@ colDataPlotDefaults <- function(se, max.plots) {
     return(out)
 }
 
-.override_defaults <- function(def, usr) {
+.override_defaults <- function(def, usr) 
+# Overriding the defaults with whatever the user has supplied.
+{
     stopifnot(identical(nrow(def), nrow(usr)))
     for (x in colnames(usr)) {
         if (!x %in% colnames(def)) { 
-            warning(sprintf("unknown field '%s' in supplied default DataFrame", x))
+            warning(sprintf("unknown field '%s' in user-specified settings", x))
             next 
         }
         def[[x]] <- usr[[x]]

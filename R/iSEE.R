@@ -211,9 +211,13 @@ iSEE <- function(
       
       # row for the boxes
       fluidRow(
-        valueBoxOutput("box_sce_obj")
+        valueBoxOutput("box_sce_obj"),
+        actionButton("getcode_all","Extract the R code to generate the plots",icon = icon("magic"))
       ),
-
+      
+      verbatimTextOutput("activeplots"),
+      verbatimTextOutput("codetext"),
+      
       uiOutput("allPanels"),             
       
       iSEE_footer()
@@ -230,7 +234,8 @@ iSEE <- function(
     # storage for all the reactive objects
     rObjects <- reactiveValues(
         active_plots = active_plots,
-        rebrushed = 1
+        rebrushed = 1,
+        rcode = NULL
     )
     
     # storage for other persistent objects
@@ -262,6 +267,36 @@ iSEE <- function(
         ))
       }
     }) # end of output$box_sce_obj
+    
+    observeEvent(input$getcode_all, {
+      # write out the code into either a text box, an editor session, or even to the clipboard
+      # rObjects$rcode <- .make_redDimPlot
+      # rObjects$rcode <- c("mystuff", runif(3))
+      # rObjects$rcode <- .make_redDimPlot
+      rObjects$rcode <- c(rObjects$rcode,"something else")
+      rObjects$rcode <- as.data.frame(rObjects$active_plots)
+      
+      # to clipboard
+      clipr::write_clip(rObjects$rcode)
+    })
+    
+    
+    output$activeplots <- renderPrint({
+      for (i in seq_len(nrow(as.data.frame(rObjects$active_plots)))){
+        aobjs <- as.data.frame(rObjects$active_plots)
+        print(x = paste("I will pick the code and the parameters for ",
+                        paste0(aobjs[i,"Type"],aobjs[i,"ID"])))
+      }
+    })
+    
+    output$codetext <- renderPrint({
+      print(
+        rObjects$rcode
+      )
+      
+    })
+    
+    
 
     #######################################################################
     # Multipanel UI generation section.

@@ -13,6 +13,7 @@
 #' uiOutput sliderInput tagList textInput column observeEvent radioButtons
 #' verbatimTextOutput htmlOutput renderText need tags hr brushOpts
 #' brushedPoints observe h4 validate checkboxInput conditionalPanel
+#' renderPrint
 #' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
 #' dashboardSidebar menuItem tabBox valueBox valueBoxOutput
 #' @importFrom scater plotExpression plotPhenoData
@@ -22,7 +23,8 @@
 #' @importFrom DT datatable renderDataTable dataTableOutput
 #' @importFrom AnnotationDbi mapIds keytypes
 #' @importFrom rentrez entrez_summary
-#' @importFrom shinyBS bsCollapsePanel bsCollapse 
+#' @importFrom shinyBS bsCollapsePanel bsCollapse bsModal
+#' @importFrom clipr write_clip
 #'
 #'
 #' @author Aaron Lun \email{alun@@wehi.edu.au}

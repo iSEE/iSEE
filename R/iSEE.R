@@ -191,6 +191,9 @@ iSEE <- function(
       actionButton(paste0("colData", .organizationNew), "New column data plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("geneExpr", .organizationNew), "New gene expression plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("geneStat", .organizationNew), "New gene table", class = "btn btn-primary",icon = icon("plus")),
+      
+      actionButton("getcode_all","Extract the R code!",icon = icon("magic")),
+      
       uiOutput("panelOrganization")
     ), # end of dashboardSidebar
 
@@ -213,7 +216,13 @@ iSEE <- function(
       fluidRow(
         valueBoxOutput("box_sce_obj")
       ),
-
+      
+      verbatimTextOutput("activeplots"),
+      verbatimTextOutput("codetext"),
+      
+      bsModal("codemodal","My code","getcode_all",size = "large",
+                       verbatimTextOutput("codetext_modal")),
+      
       uiOutput("allPanels"),             
       
       iSEE_footer()
@@ -230,7 +239,8 @@ iSEE <- function(
     # storage for all the reactive objects
     rObjects <- reactiveValues(
         active_plots = active_plots,
-        rebrushed = 1
+        rebrushed = 1,
+        rcode = NULL
     )
     
     # storage for other persistent objects
@@ -262,6 +272,54 @@ iSEE <- function(
         ))
       }
     }) # end of output$box_sce_obj
+    
+    observeEvent(input$getcode_all, {
+      # write out the code into either a text box, an editor session, or even to the clipboard
+      # rObjects$rcode <- .make_redDimPlot
+      # rObjects$rcode <- c("mystuff", runif(3))
+      # rObjects$rcode <- .make_redDimPlot
+      
+      # rObjects$rcode <- c(rObjects$rcode,"something else")
+      # rObjects$rcode <- as.data.frame(rObjects$active_plots)
+      
+      # rObjects$rcode <- .track_it_all(input, rObjects, se)
+      
+      
+      
+      # to clipboard
+      # clipr::write_clip(rObjects$rcode)
+    })
+    
+    
+    output$activeplots <- renderPrint({
+      for (i in seq_len(nrow(as.data.frame(rObjects$active_plots)))){
+        aobjs <- as.data.frame(rObjects$active_plots)
+        print(x = paste("I will pick the code and the parameters for ",
+                        paste0(aobjs[i,"Type"],aobjs[i,"ID"])))
+      }
+    })
+    
+    output$codetext <- renderPrint({
+      # print(
+      #   rObjects$rcode
+      # )
+      
+      rObjects$rcode <- .track_it_all(input, rObjects, se)
+      
+      print(
+        rObjects$rcode
+      )
+      
+      # print()
+      
+    })
+    
+    output$codetext_modal <- renderPrint({
+      rObjects$rcode <- .track_it_all(input, rObjects, se)
+      print(rObjects$rcode)
+    })
+    
+    
 
     #######################################################################
     # Multipanel UI generation section.

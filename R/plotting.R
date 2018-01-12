@@ -8,10 +8,20 @@
       covariate.name <- param_choices[[.colorByColData]]
       covariate <- colData(se)[,covariate.name]
       astr <- aes_string(x="Dim1", y="Dim2", color="Covariate")
-    } else if (color_choice==.colorByGeneExprsTitle) {
-      covariate.name <- .find_linked_gene(se, param_choices[[.colorByGeneExprs]], input)
+    } else if (color_choice==.colorByGeneTableTitle || color_choice==.colorByGeneTextTitle) {
+
+      if (color_choice==.colorByGeneTableTitle) {
+        covariate.name <- .find_linked_gene(se, param_choices[[.colorByGeneTable]], input)
+        assay.choice <- param_choices[[.colorByGeneTableAssay]]
+      } else {
+        covariate.name <- param_choices[[.colorByGeneText]]
+        if (!covariate.name %in% rownames(se)) { 
+          covariate.name <- NULL
+        }
+        assay.choice <- param_choices[[.colorByGeneTextAssay]]
+      }
       if (!is.null(covariate.name)) { 
-        covariate <- assay(se, param_choices[[.colorByGeneExprsAssay]])[covariate.name,]
+        covariate <- assay(se, assay.choice)[covariate.name,]
         astr <- aes_string(x="Dim1", y="Dim2", color="Covariate")
       } else {
         covariate.name <- ""
@@ -59,8 +69,10 @@
     color_choice <- param_choices[[.colorByField]]
     if (color_choice==.colorByColDataTitle) {
       aes_args$color <- param_choices[[.colorByColData]]
-    } else if (color_choice==.colorByGeneExprsTitle) {
-      aes_args$color <- param_choices[[.colorByGeneExprs]]
+    } else if (color_choice==.colorByGeneTableTitle) {
+      aes_args$color <- param_choices[[.colorByGeneTable]]
+    } else if (color_choice==.colorByGeneTextTitle) {
+      aes_args$color <- param_choices[[.colorByGeneText]]
     }
     aes_final <- do.call(aes_string, aes_args)
   
@@ -83,8 +95,10 @@
     color_choice <- param_choices[[.colorByField]]
     if (color_choice==.colorByColDataTitle) {
       covariate.name <- param_choices[[.colorByColData]]
-    } else if (color_choice==.colorByGeneExprsTitle) {
-      covariate.name <- .find_linked_gene(se, param_choices[[.colorByGeneExprs]], input)
+    } else if (color_choice==.colorByGeneTableTitle) {
+      covariate.name <- .find_linked_gene(se, param_choices[[.colorByGeneTable]], input)
+    } else if (color_choice==.colorByGeneTextTitle) {
+      covariate.name <- param_choices[[.colorByGeneText]]
     } else {
       covariate.name <- NULL
     }

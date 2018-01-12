@@ -400,9 +400,7 @@ iSEE <- function(
         output[[plot.name]] <- renderPlot({
 
           # Updating parameters in the memory store (non-characters need some careful treatment).
-          for (field in c(.redDimType, 
-                          .colorByField, .colorByColData, .colorByGeneExprs, .colorByGeneExprsAssay,
-                          .brushByPlot)) { 
+          for (field in c(.redDimType, ALLEXTRAS)) { 
               pObjects$memory$redDim[[field]][i0] <- input[[.inputRedDim(field, i0)]]
           }
           for (field in c(.redDimXAxis, .redDimYAxis)) { 
@@ -443,9 +441,7 @@ iSEE <- function(
         output[[.colDataPlot(i0)]] <- renderPlot({
 
           # Updating parameters (non-characters need some careful treatment).
-          for (field in c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData,
-                      .colorByField, .colorByColData, .colorByGeneExprs, .colorByGeneExprsAssay,
-                      .brushByPlot)) { 
+          for (field in c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, ALLEXTRAS)) { 
               pObjects$memory$colData[[field]][i0] <- input[[.inputColData(field, i0)]]
           }
           
@@ -480,9 +476,7 @@ iSEE <- function(
         i0 <- i
         output[[.geneExprPlot(i0)]] <- renderPlot({
           # Updating parameters.
-          for (field in c(.geneExprID, .geneExprAssay, .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneExprs,
-                          .colorByField, .colorByColData, .colorByGeneExprs, .colorByGeneExprs,
-                          .brushByPlot)) {
+          for (field in c(.geneExprID, .geneExprAssay, .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneExprs, ALLEXTRAS)) {
               pObjects$memory$geneExpr[[field]][i0] <- input[[.inputGeneExpr(field, i0)]]
           }
 

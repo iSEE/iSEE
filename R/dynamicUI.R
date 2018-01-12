@@ -16,7 +16,7 @@
             fluidRow(
               column(2,actionButton(paste0(mode, ID, .organizationUp), "",icon = icon("arrow-circle-up"))),
               column(2,actionButton(paste0(mode, ID, .organizationDown), "",icon = icon("arrow-circle-down"))),
-              column(3,actionButton(paste0(mode, ID, .organizationDiscard), "Remove",
+              column(3,actionButton(paste0(mode, ID, .organizationDiscard), "",
                          icon = icon("trash"), class = "btn btn-warning"))
             ),
             sliderInput(paste0(mode, ID, .organizationWidth), "Width",  

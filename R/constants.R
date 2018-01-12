@@ -34,15 +34,18 @@
 # Plot colouring parameters.
 .colorByNothingTitle <- "None"
 .colorByColDataTitle <- "Column data"
-.colorByGeneExprsTitle <- "Gene expression"
+.colorByGeneTableTitle <- "Gene table"
+.colorByGeneTextTitle <- "Gene text"
 
 .colorParamPanelTitle <- "Coloring parameters"
 .colorParamPanelOpen <- "ColorPanelOpen"
 
 .colorByField <- "ColorBy"
 .colorByColData <- "ColorByColData"
-.colorByGeneExprs <- "ColorByGeneTable"
-.colorByGeneExprsAssay <- "ColorByGeneAssay"
+.colorByGeneTable <- "ColorByGeneTable"
+.colorByGeneText <- "ColorByGeneText"
+.colorByGeneTableAssay <- "ColorByGeneTableAssay"
+.colorByGeneTextAssay <- "ColorByGeneTextAssay"
 
 # Plot brushing parameters.
 .brushParamPanelTitle <- "Brushing parameters"
@@ -51,6 +54,8 @@
 .brushField <- "Brush"
 .brushActive <- "BrushOn"
 .brushByPlot <- "BrushByPlot"
+
+ALLEXTRAS <- c(.colorByField, .colorByColData, .colorByGeneTable, .colorByGeneTableAssay, .colorByGeneText, .colorByGeneTextAssay, .brushByPlot)
 
 # Other parameter panel constants.
 .plotParamPanelTitle <- "Plotting parameters"
@@ -85,5 +90,4 @@ names(rev.translation) <- translation
     }
     return(list(Type=raw.str, ID=ID))
 }
-
 

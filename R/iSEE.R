@@ -191,6 +191,9 @@ iSEE <- function(
       actionButton(paste0("colData", .organizationNew), "New column data plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("geneExpr", .organizationNew), "New gene expression plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("geneStat", .organizationNew), "New gene table", class = "btn btn-primary",icon = icon("plus")),
+      
+      actionButton("getcode_all","Extract the R code!",icon = icon("magic")),
+      
       uiOutput("panelOrganization")
     ), # end of dashboardSidebar
 
@@ -211,12 +214,14 @@ iSEE <- function(
       
       # row for the boxes
       fluidRow(
-        valueBoxOutput("box_sce_obj"),
-        actionButton("getcode_all","Extract the R code to generate the plots",icon = icon("magic"))
+        valueBoxOutput("box_sce_obj")
       ),
       
       verbatimTextOutput("activeplots"),
       verbatimTextOutput("codetext"),
+      
+      bsModal("codemodal","My code","getcode_all",size = "large",
+                       verbatimTextOutput("codetext_modal")),
       
       uiOutput("allPanels"),             
       
@@ -273,11 +278,16 @@ iSEE <- function(
       # rObjects$rcode <- .make_redDimPlot
       # rObjects$rcode <- c("mystuff", runif(3))
       # rObjects$rcode <- .make_redDimPlot
-      rObjects$rcode <- c(rObjects$rcode,"something else")
-      rObjects$rcode <- as.data.frame(rObjects$active_plots)
+      
+      # rObjects$rcode <- c(rObjects$rcode,"something else")
+      # rObjects$rcode <- as.data.frame(rObjects$active_plots)
+      
+      # rObjects$rcode <- .track_it_all(input, rObjects, se)
+      
+      
       
       # to clipboard
-      clipr::write_clip(rObjects$rcode)
+      # clipr::write_clip(rObjects$rcode)
     })
     
     
@@ -290,14 +300,23 @@ iSEE <- function(
     })
     
     output$codetext <- renderPrint({
+      # print(
+      #   rObjects$rcode
+      # )
+      
+      rObjects$rcode <- .track_it_all(input, rObjects, se)
+      
       print(
         rObjects$rcode
       )
       
-      .track_it_all(input, rObjects, se)
-      
       # print()
       
+    })
+    
+    output$codetext_modal <- renderPrint({
+      rObjects$rcode <- .track_it_all(input, rObjects, se)
+      print(rObjects$rcode)
     })
     
     

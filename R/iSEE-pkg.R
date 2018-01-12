@@ -23,7 +23,7 @@
 #' @importFrom DT datatable renderDataTable dataTableOutput
 #' @importFrom AnnotationDbi mapIds keytypes
 #' @importFrom rentrez entrez_summary
-#' @importFrom shinyBS bsCollapsePanel bsCollapse 
+#' @importFrom shinyBS bsCollapsePanel bsCollapse bsModal
 #' @importFrom clipr write_clip
 #'
 #'

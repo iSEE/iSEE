@@ -294,6 +294,10 @@ iSEE <- function(
         rObjects$rcode
       )
       
+      .track_it_all(input, rObjects, se)
+      
+      # print()
+      
     })
     
     

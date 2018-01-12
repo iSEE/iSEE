@@ -52,9 +52,13 @@
 #' Defaults to \code{"None"}.}
 #' \item{\code{ColorByColData}:}{Character, which column of \code{colData(se)} should be used for colouring if \code{ColorBy="Column data"}? 
 #' Defaults to the first entry of \code{colData(se)}.}
-#' \item{\code{ColorByGeneTable}:}{Character, which gene statistic table should be used to choose a gene to color by, if \code{ColorBy="Gene expression"}? 
+#' \item{\code{ColorByGeneTable}:}{Character, which gene statistic table should be used to choose a gene to color by, if \code{ColorBy="Gene table"}? 
 #' Defaults to an empty string, which means that the first available table will be used.}
-#' \item{\code{ColorByGeneExprsAssay}:}{Character, what expression values should be used for colouring if \code{ColorBy="Gene expression"}? 
+#' \item{\code{ColorByGeneTableAssay}:}{Character, what expression values should be used for colouring if \code{ColorBy="Gene table"}? 
+#' Defaults to the name of the first assay in \code{se}.}
+#' \item{\code{ColorByGeneText}:}{Character, which gene should be used to choose a gene to color by, if \code{ColorBy="Gene text"}? 
+#' Defaults to an empty string, which means that the first available table will be used.}
+#' \item{\code{ColorByGeneTextAssay}:}{Character, what expression values should be used for colouring if \code{ColorBy="Gene text"}? 
 #' Defaults to the name of the first assay in \code{se}.}
 #' }
 #'
@@ -174,8 +178,10 @@ colDataPlotDefaults <- function(se, max.plots) {
 
     incoming[[.colorByField]] <- .colorByNothingTitle
     incoming[[.colorByColData]] <- defaultColData
-    incoming[[.colorByGeneExprs]] <- "" 
-    incoming[[.colorByGeneExprsAssay]] <- defaultAssay
+    incoming[[.colorByGeneTable]] <- "" 
+    incoming[[.colorByGeneTableAssay]] <- defaultAssay
+    incoming[[.colorByGeneText]] <- "" 
+    incoming[[.colorByGeneTextAssay]] <- defaultAssay
 
     incoming[[.brushActive]] <- FALSE
     incoming[[.brushByPlot]] <- ""

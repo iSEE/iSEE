@@ -132,25 +132,40 @@
                 chosen.open <- c(chosen.open, .brushParamPanelTitle)
             }
 
+            colorby.field <- paste0(mode, .colorByField, ID)
+            colorby.geneassay <- 
             param <- list(shinyBS::bsCollapse(
                 id = paste0(mode, .plotParamPanelName, ID),
                 open = chosen.open,
+                
+                # Panel for fundamental plot parameters. 
                 do.call(shinyBS::bsCollapsePanel, c(list(title=.plotParamPanelTitle), plot.param)),
+
+                # Panel for colours.
                 shinyBS::bsCollapsePanel(
                     title = .colorParamPanelTitle,
-                    radioButtons(paste0(mode, .colorByField, ID), 
-                                 label="Color by:", inline=TRUE,
-                                 choices=c(.colorByNothingTitle, .colorByColDataTitle, .colorByGeneExprsTitle),
+                    radioButtons(colorby.field, label="Color by:", inline=TRUE,
+                                 choices=c(.colorByNothingTitle, .colorByColDataTitle, 
+                                           .colorByGeneTableTitle, .colorByGeneTextTitle),
                                  selected=param_choices[[.colorByField]]),
-                    selectInput(paste0(mode, .colorByColData, ID), 
-                                label = "Column data:",
-                                choices=colDataNames, selected=param_choices[[.colorByColData]]),
-                    selectInput(paste0(mode, .colorByGeneExprs, ID), label = "Gene linked to:",
-                                choices=active.tab, 
-                                selected=.choose_link(param_choices[[.colorByGeneExprs]], active.tab, forceDefault=TRUE)),  
-                    selectInput(paste0(mode, .colorByGeneExprsAssay, ID), label=NULL,
-                                choices=assayNames, selected=param_choices[[.colorByGeneExprsAssay]])
+                    .conditionalColorPanel(colorby.field, .colorByColDataTitle,
+                        selectInput(paste0(mode, .colorByColData, ID), label = NULL,
+                                    choices=colDataNames, selected=param_choices[[.colorByColData]])
+                        ),
+                    .conditionalColorPanel(colorby.field, .colorByGeneTableTitle,
+                        tagList(selectInput(paste0(mode, .colorByGeneTable, ID), label = NULL, choices=active.tab, 
+                                            selected=.choose_link(param_choices[[.colorByGeneTable]], active.tab, forceDefault=TRUE)), 
+                                selectInput(paste0(mode, .colorByGeneTableAssay, ID), label=NULL,
+                                            choices=assayNames, selected=param_choices[[.colorByGeneTableAssay]]))
+                        ),
+                    .conditionalColorPanel(colorby.field, .colorByGeneTextTitle,
+                        tagList(textInput(paste0(mode, .colorByGeneText, ID), label = NULL, value=param_choices[[.colorByGeneText]]),
+                                selectInput(paste0(mode, .colorByGeneTextAssay, ID), label=NULL,
+                                            choices=assayNames, selected=param_choices[[.colorByGeneTextAssay]]))
+                        )
                     ), 
+
+                # Panel for Brushing.                                              
                 shinyBS::bsCollapsePanel(
                     title = .brushParamPanelTitle,
                     checkboxInput(paste0(mode, .brushActive, ID), label="Transmit brush", 
@@ -162,7 +177,7 @@
                     )
                 ) # end of bsCollapse
             )
-            print(paste0(mode, .brushActive, ID))
+        
         } else {
             param <- list()
         }
@@ -208,3 +223,6 @@
     return(chosen)
 }
 
+.conditionalColorPanel <- function(value, title, ...) {
+    conditionalPanel(condition=sprintf("input.%s == '%s'", value, title), ...)
+}

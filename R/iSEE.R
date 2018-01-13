@@ -322,7 +322,7 @@ iSEE <- function(
 
 
     #######################################################################
-    # Multipanel UI generation section.
+    # Multipanel UI generation section. ----
     # This is adapted from https://stackoverflow.com/questions/15875786/dynamically-add-plots-to-web-page-using-shiny.
     #######################################################################
 
@@ -405,7 +405,7 @@ iSEE <- function(
     }
 
     #######################################################################
-    # Reduced dimension plot section.
+    # Reduced dimension plot section. ----
     #######################################################################
 
     # Note: we need "local" so that each item gets its own number. Without it, the value
@@ -451,7 +451,7 @@ iSEE <- function(
     }
 
     #######################################################################
-    # Column data scatter plot section.
+    # Column data scatter plot section. ----
     #######################################################################
 
     for (i in seq_len(coldata_max_plots)) {
@@ -487,7 +487,7 @@ iSEE <- function(
     }
 
     #######################################################################
-    # Gene expression scatter plot section.
+    # Gene expression scatter plot section. ----
     #######################################################################
 
     for (i in seq_len(geneexpr_max_plots)) {
@@ -522,7 +522,7 @@ iSEE <- function(
     }
 
     #######################################################################
-    # Gene table section.
+    # Gene table section. ----
     #######################################################################
 
     # Load the gene level data

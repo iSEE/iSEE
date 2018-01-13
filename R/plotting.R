@@ -85,22 +85,36 @@ ggplot(data = plot.data, %s) + geom_point(size=1.5) + labs(color='%s') + theme_v
     plot.data <- data.frame(
         Y = colData(se)[,param_choices[[.colDataYAxis]]]
     )
+    cmd_y <- sprintf(
+        "plot.data <- data.frame(Y = colData(se)[,'%s']);",
+        param_choices[[.colDataYAxis]]
+    )
 
     # Process X-axis
     if (param_choices[[.colDataXAxis]] == .colDataXAxisNothingTitle) {
         # TODO: allow toggling rank decreasing/increasing, note that factors cannot be negated
         plot.data$X <- rank(plot.data$Y, ties.method = "first")
         x_lab <- NULL
+        cmd_x <- 'plot.data$X <- rank(plot.data$Y, ties.method = "first");'
     } else {
         plot.data$X <- colData(se)[,param_choices[[.colDataXAxisColData]]]
         x_lab <- param_choices[[.colDataXAxisColData]]
+        cmd_x <- sprintf(
+            "plot.data$X <- colData(se)[,'%s'];",
+            param_choices[[.colDataXAxisColData]]
+        )
     }
 
-    aes_specs <- aes(X, Y, color = Covariate) # general case; color aes dropped later if applicable
+    # general case; color aes dropped later if applicable
+    cmd_aes <- "aes(X, Y, color = Covariate)"
+    # process the color choice if any
     color_choice <- param_choices[[.colorByField]]
     if (color_choice == .colorByColDataTitle) {
         covariate.name <- param_choices[[.colorByColData]]
         plot.data$Covariate <- colData(se)[,covariate.name]
+        cmd_color <- sprintf(
+            "plot.data$Covariate <- colData(se)[,'%s'];", covariate.name
+        )
     } else if (color_choice == .colorByGeneTableTitle || color_choice == .colorByGeneTextTitle){
         if (color_choice == .colorByGeneTableTitle) {
             covariate.name <- .find_linked_gene(se, param_choices[[.colorByGeneTable]], input)
@@ -114,17 +128,23 @@ ggplot(data = plot.data, %s) + geom_point(size=1.5) + labs(color='%s') + theme_v
         # Set the color to the selected gene
         if (!is.null(covariate.name)){
             plot.data$Covariate <- assay(se, assay.choice)[covariate.name,]
+            cmd_color <- sprintf(
+                "plot.data$Covariate <- assay(se, '%s')['%s',];",
+                assay.choice, covariate.name
+            )
         } else {
             message("Color mode is gene expression, but none selected.")
-            aes_specs <- aes(X, Y)
+            cmd_aes <- "aes(X, Y)"
         }
     } else {
         covariate.name <- NULL
-        aes_specs <- aes(X, Y)
+        cmd_color <- "# No coloring data"
+        cmd_aes <- "aes(X, Y)"
     }
 
+
     # Creating the plot.
-    gg <- ggplot(plot.data, aes_specs) +
+    gg <- ggplot(plot.data, eval(parse(text = cmd_aes))) +
         geom_point() +
         labs(
             x = x_lab,
@@ -136,6 +156,24 @@ ggplot(data = plot.data, %s) + geom_point(size=1.5) + labs(color='%s') + theme_v
             legend.position = "bottom"
         )
 
+    gg_cmd <- paste(
+        sprintf("ggplot(plot.data, %s) +", cmd_aes),
+        "geom_point() +",
+        sprintf(
+            "labs(y = '%s'%s%s) +",
+            param_choices[[.colDataYAxis]],
+            ifelse(is.null(x_lab), "", sprintf(", x = '%s'", x_lab)),
+            ifelse(is.null(covariate.name), "", sprintf(", color = '%s', ", covariate.name))
+        ),
+        "theme_bw() +",
+        "theme(legend.position = 'bottom')",
+        sep = "\n\t"
+    )
+
+    cmd <- paste(cmd_y, cmd_x, cmd_color, gg_cmd, sep = "\n")
+
+    message(cmd)
+    # return(list(xy = plot.data, cmd = cmd, plot = eval(parse(text = cmd))))
     return(gg)
     # list(xy = plot.data, cmd = cmd, plot = eval(parse(text = cmd)))
 }

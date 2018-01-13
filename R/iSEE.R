@@ -82,16 +82,15 @@ iSEE <- function(
   annot.keyfield=NULL
 ) {
 
-  # for correct usage of the pkg, need explicit call
-  # https://ebailey78.github.io/shinyBS/install.html#using_shinybs
-  # library(shinyBS)
-
+  # Collecting constants for populating the UI.  
   cell.data <- colData(se)
   covariates <- colnames(cell.data)
-  red.dim <- reducedDim(se)
-  red.dim.names <- reducedDimNames(se)
   all.assays <- names(assays(se))
   gene.names <- rownames(se)
+  
+  red.dim.names <- reducedDimNames(se)
+  red.dim.dims <- lapply(red.dim.names, FUN=function(x) ncol(reducedDim(se, x)))
+  names(red.dim.dims) <- red.dim.names
   
   gene.data <- as.data.frame(rowData(se))
   rownames(gene.data) <- gene.names
@@ -330,6 +329,7 @@ iSEE <- function(
         (rObjects$rebrushed) # Trigger re-rendering if these are selected.
         .panel_generation(rObjects$active_plots, pObjects$memory,
                           redDimNames=red.dim.names, 
+                          redDimDims=red.dim.dims,
                           colDataNames=covariates,
                           assayNames=all.assays)
     })

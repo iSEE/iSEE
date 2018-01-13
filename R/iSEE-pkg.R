@@ -25,6 +25,7 @@
 #' @importFrom rentrez entrez_summary
 #' @importFrom shinyBS bsCollapsePanel bsCollapse bsModal
 #' @importFrom clipr write_clip
+#' @importFrom colourpicker colourInput
 #'
 #'
 #' @author Aaron Lun \email{alun@@wehi.edu.au}

@@ -95,6 +95,14 @@ Defaults to \code{FALSE}.}
 Defaults to \code{FALSE}.}
 \item{\code{BrushByPlot}:}{Character, which other plot should be used for point selection in the current plot? 
 Defaults to an empty string, which means that no plot is used for point selection.}
+\item{\code{BrushEffect}:}{Character, what is the effect of receiving a brush input?
+Can be \code{"Restrict"}, where only the brushed points are shown; \code{"Color"}, where the brushed points have a different color; 
+or \code{"Transparent"}, where all points other than the brushed points are made transparent. Defaults to \code{"Transparent"}.}
+\item{\code{BrushColor}:}{Character, what color should be used for the brushed points when \code{BrushEffect="Color"}?
+Defaults to \code{"red"}.}
+\item{\code{BrushAlpha}:}{Numeric, what level of transparency should be used for the unbrushed points whe \code{BrushEffect="Transparent"}?
+This should lie in [0, 1], where 0 is fully transparent and 1 is fully opaque. 
+Defaults to 0.1.}
 }
 }
 

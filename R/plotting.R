@@ -54,14 +54,7 @@
     plot.data <- data.frame(Dim1=red.dim[,param_choices[[.redDimXAxis]]],
                             Dim2=red.dim[,param_choices[[.redDimYAxis]]])
     plot.data$Covariate <- covariate
-              
-    # out.plot <- ggplot(plot.data, astr) +
-    #     geom_point(size=1.5) +
-    #     labs(color=covariate.name) +
-    #     theme_void()
 
-    #list(xy=plot.data, plot=out.plot)
-    
     cmd <- sprintf(
       "red.dim <- reducedDim(se, '%s'); 
 plot.data <- data.frame(Dim1 = red.dim[, %s], 
@@ -105,10 +98,15 @@ ggplot(data = plot.data, %s) + geom_point(size=1.5) + labs(color='%s') + theme_v
     xchoice <- param_choices[[.geneExprXAxis]]
     if (xchoice==.geneExprXAxisColDataTitle) {
       byx <- param_choices[[.geneExprXAxisColData]]
+      xcoord <- se[[byx]]
     } else if (xchoice==.geneExprXAxisGeneExprsTitle) {
       byx <- param_choices[[.geneExprXAxisGeneExprs]]
+      xcoord <- assay(se, i = param_choices[[.geneExprAssay]])[byx,]
+      show_violin <- FALSE
+      show_median <- FALSE
     } else {
       byx <- NULL
+      xcoord <- NULL
     }
 
     color_choice <- param_choices[[.colorByField]]
@@ -125,6 +123,24 @@ ggplot(data = plot.data, %s) + geom_point(size=1.5) + labs(color='%s') + theme_v
     # Getting the gene choice.
     cur.gene <- .find_linked_gene(se, param_choices[[.geneExprID]], input)
     if (!is.null(cur.gene)) { 
+      exprs.mat <- as.matrix(assays(se, param_choices[[.geneExprAssay]]))
+      evals_long <- reshape2::melt(exprs.mat, value.name = "evals")
+      colnames(evals_long) <- c("Feature", "Cell", "evals")
+      samples_long <- data.frame(row.names = colnames(se))
+      if (!is.null(xcoord)) samples_long[[byx]] <- xcoord
+      
+      aesth <- aes()
+      if ( is.null(byx) ) {
+        aesth$x <- as.symbol("Feature")
+        one_facet <- TRUE
+      } else {
+        aesth$x <- as.symbol(x)
+        one_facet <- FALSE
+      }
+      aesth$y <- as.symbol("evals")
+      
+      object <- cbind(evals_long, samples_long)
+      
         plotExpression(se, exprs_values=param_choices[[.geneExprAssay]],
                        x=byx,
                        features=cur.gene,

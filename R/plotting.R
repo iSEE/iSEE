@@ -7,7 +7,8 @@
     if (color_choice==.colorByColDataTitle) {
       covariate.name <- param_choices[[.colorByColData]]
       covariate <- colData(se)[,covariate.name]
-      astr <- aes_string(x="Dim1", y="Dim2", color="Covariate")
+      astr <- "aes(x=Dim1, y=Dim2, color=Covariate)"
+      cov.str <- sprintf(";\nplot.data$Covariate <- colData(se)[,'%s']", covariate.name)
     } else if (color_choice==.colorByGeneTableTitle || color_choice==.colorByGeneTextTitle) {
 
       if (color_choice==.colorByGeneTableTitle) {
@@ -22,16 +23,20 @@
       }
       if (!is.null(covariate.name)) { 
         covariate <- assay(se, assay.choice)[covariate.name,]
-        astr <- aes_string(x="Dim1", y="Dim2", color="Covariate")
+        astr <- "aes(x=Dim1, y=Dim2, color=Covariate)"
+        cov.str <- sprintf(";\nplot.data$Covariate <- assay(se, '%s')['%s',]", 
+                           assay.choice, covariate.name)
       } else {
         covariate.name <- ""
         covariate <- NULL              
-        astr <- aes_string(x="Dim1", y="Dim2")
-      }
+        astr <- "aes(x=Dim1, y=Dim2)"
+        cov.str <- ""
+        }
     } else {
       covariate.name <- ""
       covariate <- NULL              
-      astr <- aes_string(x="Dim1", y="Dim2")
+      astr <- "aes(x=Dim1, y=Dim2)"
+      cov.str <- ""
     }
 
     # Figuring out what to do with brushing.
@@ -50,12 +55,26 @@
                             Dim2=red.dim[,param_choices[[.redDimYAxis]]])
     plot.data$Covariate <- covariate
               
-    out.plot <- ggplot(plot.data, astr) +
-        geom_point(size=1.5) +
-        labs(color=covariate.name) +
-        theme_void()
+    # out.plot <- ggplot(plot.data, astr) +
+    #     geom_point(size=1.5) +
+    #     labs(color=covariate.name) +
+    #     theme_void()
 
-    list(xy=plot.data, plot=out.plot)
+    #list(xy=plot.data, plot=out.plot)
+    
+    cmd <- sprintf(
+      "red.dim <- reducedDim(se, '%s'); 
+plot.data <- data.frame(Dim1 = red.dim[, %s], 
+Dim2 = red.dim[, %s])%s;
+ggplot(data = plot.data, %s) + geom_point(size=1.5) + labs(color='%s') + theme_void()",
+      param_choices[[.redDimType]],
+      param_choices[[.redDimXAxis]],
+      param_choices[[.redDimYAxis]],
+      cov.str,
+      astr,
+      covariate.name)
+    print(cmd)
+    list(xy = plot.data, cmd = cmd, plot = eval(parse(text = cmd)))
 }
 
 .make_colDataPlot <- function(se, param_choices, input) 

@@ -163,7 +163,7 @@ ggplot(data = plot.data, %s) + geom_point(size=1.5) + labs(color='%s') + theme_v
             "labs(y = '%s'%s%s) +",
             param_choices[[.colDataYAxis]],
             ifelse(is.null(x_lab), "", sprintf(", x = '%s'", x_lab)),
-            ifelse(is.null(covariate.name), "", sprintf(", color = '%s', ", covariate.name))
+            ifelse(is.null(covariate.name), "", sprintf(", color = '%s'", covariate.name))
         ),
         "theme_bw() +",
         "theme(legend.position = 'bottom')",
@@ -172,9 +172,9 @@ ggplot(data = plot.data, %s) + geom_point(size=1.5) + labs(color='%s') + theme_v
 
     cmd <- paste(cmd_y, cmd_x, cmd_color, gg_cmd, sep = "\n")
 
-    message(cmd)
-    # return(list(xy = plot.data, cmd = cmd, plot = eval(parse(text = cmd))))
-    return(gg)
+    # message(cmd)
+    return(list(xy = plot.data, cmd = cmd, plot = eval(parse(text = cmd))))
+    # return(gg)
     # list(xy = plot.data, cmd = cmd, plot = eval(parse(text = cmd)))
 }
 

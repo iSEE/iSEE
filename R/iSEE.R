@@ -464,8 +464,12 @@ iSEE <- function(
               pObjects$memory$colData[[field]][i0] <- input[[.inputColData(field, i0)]]
           }
 
-          # Creating the plot.
-          .make_colDataPlot(se, pObjects$memory$colData[i0,], input)
+            # Creating the plot, with saved coordinates.
+            p.out <- .make_colDataPlot(se, pObjects$memory$colData[i0,], input)
+            # pObjects$coordinates[[plot.name]] <- p.out$xy
+            message(p.out$cmd)
+            p.out$plot
+
         })
 
         observeEvent(input[[.inputColData(.plotParamPanelName, i0)]], {

@@ -31,7 +31,7 @@
     do.call(tagList, collected)
 }
 
-.panel_generation <- function(active_plots, memory, redDimNames, colDataNames, assayNames) 
+.panel_generation <- function(active_plots, memory, redDimNames, redDimDims, colDataNames, assayNames) 
 # This function generates the various panels, taking into account their
 # variable widths to dynamically assign them to particular rows. We also
 # need to check the memory to avoid resetting the plot upon re-rendering.
@@ -72,13 +72,15 @@
         # Creating the plot fields.
         if (mode=="redDim") {
             obj <- plotOutput(.redDimPlot(ID), brush = brush.opts)
+            cur_reddim <- param_choices[[.redDimType]]    
+            red_choices <- seq_len(redDimDims[[cur_reddim]])
             plot.param <-  list(
                  selectInput(.inputRedDim(.redDimType, ID), label="Type",
-                             choices=redDimNames, selected=param_choices[[.redDimType]]),
-                 textInput(.inputRedDim(.redDimXAxis, ID), label="Dimension 1",
-                           value=param_choices[[.redDimXAxis]]),
-                 textInput(.inputRedDim(.redDimYAxis, ID), label="Dimension 2",
-                           value=param_choices[[.redDimYAxis]])
+                             choices=redDimNames, selected=cur_reddim),
+                 selectInput(.inputRedDim(.redDimXAxis, ID), label="Dimension 1",
+                             choices=red_choices, selected=param_choices[[.redDimXAxis]]),
+                 selectInput(.inputRedDim(.redDimYAxis, ID), label="Dimension 2",
+                             choices=red_choices, selected=param_choices[[.redDimYAxis]])
                  )
         } else if (mode=="colData") {
             obj <- plotOutput(.colDataPlot(ID), brush = brush.opts)

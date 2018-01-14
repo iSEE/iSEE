@@ -136,12 +136,16 @@
                 chosen.open <- c(chosen.open, .brushParamPanelTitle)
             }
 
-            param <- list(shinyBS::bsCollapse(
-                id = paste0(mode, .plotParamPanelName, ID),
-                open = chosen.open,
-                do.call(shinyBS::bsCollapsePanel, c(list(title=.plotParamPanelTitle), plot.param)), # Panel for fundamental plot parameters. 
-                .createColorPanel(mode, ID, param_choices, active.tab, colDataNames, assayNames),   # Panel for colouring parameters.
-                .createBrushPanel(mode, ID, param_choices, brushable)                               # Panel for brushing parameters.
+            boxID <-  paste0(mode, .plotParamPanelName, ID)
+            param <- list(shinyBS::bsCollapse( id = boxID, open = chosen.open,
+                # Panel for fundamental plot parameters. 
+                do.call(shinyBS::bsCollapsePanel, c(list(title=.plotParamPanelTitle), plot.param)), 
+
+                # Panel for colouring parameters.
+                .createColorPanel(mode, ID, param_choices, active.tab, colDataNames, assayNames),
+                
+                # Panel for brushing parameters.
+                .createBrushPanel(mode, ID, param_choices, brushable)  
                 ) 
             )
         } else {
@@ -189,7 +193,7 @@
     return(chosen)
 }
 
-.createColorPanel <- function(mode, ID, param_choices, active.tab, colDataNames, assayNames) 
+.createColorPanel <- function(mode, ID, param_choices, active.tab, colDataNames, assayNames)
 # Convenience function to create the color parameter panel. This
 # won't be re-used, it just breaks up the huge UI function above.
 { 
@@ -201,27 +205,24 @@
                      choices=c(.colorByNothingTitle, .colorByColDataTitle, 
                                .colorByGeneTableTitle, .colorByGeneTextTitle),
                      selected=param_choices[[.colorByField]]),
-        .conditionalPanelOnRadio(colorby.field, .colorByColDataTitle,
+
+        .conditionalPanelOnRadio(colorby.field, .colorByColDataTitle, 
             selectInput(paste0(mode, .colorByColData, ID), label = NULL,
                         choices=colDataNames, selected=param_choices[[.colorByColData]])
             ),
-        .conditionalPanelOnRadio(colorby.field, .colorByGeneTableTitle,
+        .conditionalPanelOnRadio(colorby.field, .colorByGeneTableTitle, 
             tagList(selectInput(paste0(mode, .colorByGeneTable, ID), label = NULL, choices=active.tab, 
                                 selected=.choose_link(param_choices[[.colorByGeneTable]], active.tab, forceDefault=TRUE)), 
                     selectInput(paste0(mode, .colorByGeneTableAssay, ID), label=NULL,
                                 choices=assayNames, selected=param_choices[[.colorByGeneTableAssay]]))
             ),
-        .conditionalPanelOnRadio(colorby.field, .colorByGeneTextTitle,
+        .conditionalPanelOnRadio(colorby.field, .colorByGeneTextTitle, 
             tagList(textInput(paste0(mode, .colorByGeneText, ID), label = NULL, value=param_choices[[.colorByGeneText]]),
                     selectInput(paste0(mode, .colorByGeneTextAssay, ID), label=NULL,
                                 choices=assayNames, selected=param_choices[[.colorByGeneTextAssay]]))
             )
         )
 } 
-
-.conditionalPanelOnRadio <- function(value, title, ...) {
-    conditionalPanel(condition=sprintf("input.%s == '%s'", value, title), ...)
-}
 
 .createBrushPanel <- function(mode, ID, param_choices, brushable) 
 # Convenience function to create the brushing parameter panel. This
@@ -236,10 +237,12 @@
                     label = "Receive brush from:",
                     choices=brushable, 
                     selected=.choose_link(param_choices[[.brushByPlot]], brushable)),
+
         radioButtons(brush.effect, label="Brush effect:", inline=TRUE,
                      choices=c(.brushRestrictTitle, .brushColorTitle, .brushTransTitle),
                      selected=param_choices[[.brushEffect]]),
-        .conditionalPanelOnRadio(brush.effect, .brushColorTitle,
+
+        .conditionalPanelOnRadio(brush.effect, .brushColorTitle, 
             colourInput(paste0(mode, .brushColor, ID), label=NULL, 
                         value=param_choices[[.brushColor]])
             ),
@@ -250,8 +253,7 @@
         )
 }
 
-.conditionalColorPanel <- function(value, title, ...) {
-    conditionalPanel(condition=sprintf("input.%s == '%s'", value, title), ...)
+.conditionalPanelOnRadio <- function(radio.id, radio.choice, ...) {
+    conditionalPanel(condition=sprintf('(input["%s"] == "%s")', radio.id, radio.choice), ...)
 }
-
 

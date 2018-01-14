@@ -64,16 +64,21 @@
 
     cmd <- sprintf(
       "red.dim <- reducedDim(se, '%s');
-plot.data <- data.frame(Dim1 = red.dim[, %s],
-Dim2 = red.dim[, %s])%s;
-ggplot(data = plot.data, %s) + geom_point(size=1.5) + labs(color='%s') + theme_void()",
+plot.data <- data.frame(
+\tDim1 = red.dim[, %s],
+\tDim2 = red.dim[, %s])%s;
+ggplot(data = plot.data, %s) +
+\tgeom_point(size=1.5) +
+\tlabs(color='%s') +
+\ttheme_void() +
+\ttheme(legend.position = 'bottom')",
       param_choices[[.redDimType]],
       param_choices[[.redDimXAxis]],
       param_choices[[.redDimYAxis]],
       cov.str,
       astr,
       covariate.name)
-    print(cmd)
+    message(cmd)
     list(xy = plot.data, cmd = cmd, plot = eval(parse(text = cmd)))
 }
 

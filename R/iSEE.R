@@ -504,7 +504,9 @@ iSEE <- function(
           }
 
           # Creating the plot.
-          .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input)
+          p.out <- .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input)
+          message(p.out$cmd)
+          p.out$plot
         })
 
         observeEvent(input[[.inputGeneExpr(.plotParamPanelName, i0)]], {

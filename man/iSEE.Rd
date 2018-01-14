@@ -12,25 +12,25 @@ iSEE(se, redDimArgs = 5, colDataArgs = 5, geneExprArgs = 5,
 \item{se}{A SingleCellExperiment object.}
 
 \item{redDimArgs}{An integer scalar specifying the maximum number of
-reduced dimension plots in the interface. Alternatively, a DataFrame 
-similar to that produced by \code{\link{redDimPlotDefaults}}, specifying 
+reduced dimension plots in the interface. Alternatively, a DataFrame
+similar to that produced by \code{\link{redDimPlotDefaults}}, specifying
 initial parameters for the plots.}
 
 \item{colDataArgs}{An integer scalar specifying the maximum number of
-column data plots in the interface. Alternatively, a DataFrame 
-similar to that produced by \code{\link{colDataPlotDefaults}}, specifying 
+column data plots in the interface. Alternatively, a DataFrame
+similar to that produced by \code{\link{colDataPlotDefaults}}, specifying
 initial parameters for the plots.}
 
 \item{geneExprArgs}{An integer scalar specifying the maximum number of
-gene expression plots in the interface. Alternatively, a DataFrame 
+gene expression plots in the interface. Alternatively, a DataFrame
 similar to that produced by \code{\link{geneExprPlotDefaults}}, specifying
 initial parameters for the plots.}
 
 \item{initialPanels}{A DataFrame specifying which panels should be created
-at initialization. This should contain a \code{Name} character field and 
+at initialization. This should contain a \code{Name} character field and
 a \code{Width} integer field, see Details.}
 
-\item{annot.orgdb}{An \code{org.*.db} annotation object from which 
+\item{annot.orgdb}{An \code{org.*.db} annotation object from which
 Entrez identifiers can be retrieved.}
 
 \item{annot.keytype}{A string specifying the keytype to use to query
@@ -49,28 +49,28 @@ object
 Interactive visualization of single-cell data using a Shiny interface.
 }
 \details{
-Users can pass default parameters via DataFrame objects in 
-\code{redDim.args} and \code{geneExpr.args}. Each object can contain 
+Users can pass default parameters via DataFrame objects in
+\code{redDim.args} and \code{geneExpr.args}. Each object can contain
 some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
 Any missing fields will be filled in with the defaults.
 
-The number of maximum plots for each type of plot is implicitly inferred 
+The number of maximum plots for each type of plot is implicitly inferred
 from the number of rows of the corresponding DataFrame in \code{*Args},
-if an integer scalar was not supplied. Users can specify any number of 
-maximum plots, though increasing the number will increase the time 
+if an integer scalar was not supplied. Users can specify any number of
+maximum plots, though increasing the number will increase the time
 required to render the interface.
 
-The \code{initialPanels} argument specifies the panels to be created 
+The \code{initialPanels} argument specifies the panels to be created
 upon initializing the interface. This should be a DataFrame containing
-a \code{Name} field specifying the identity of the panel, e.g., 
+a \code{Name} field specifying the identity of the panel, e.g.,
 \code{"Reduced dimension plot 1"}, \code{"Gene statistics table 2"}.
-The trailing number should not be greater than the number of 
-maximum plots of that type. The \code{Width} field may also be specified 
+The trailing number should not be greater than the number of
+maximum plots of that type. The \code{Width} field may also be specified
 describing the width of the panel from 4 to 12 (values will be coerced
 inside this range).
 
 If \code{annot.orgdb} is specified, gene information will be retrieved
-upon selection of particular genes in the data table. No retrieval is 
+upon selection of particular genes in the data table. No retrieval is
 performed if \code{annot.orgdb=NULL}.
 }
 \examples{

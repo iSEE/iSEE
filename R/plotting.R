@@ -57,16 +57,21 @@
 
     cmd <- sprintf(
       "red.dim <- reducedDim(se, '%s');
-plot.data <- data.frame(Dim1 = red.dim[, %s],
-Dim2 = red.dim[, %s])%s;
-ggplot(data = plot.data, %s) + geom_point(size=1.5) + labs(color='%s') + theme_void()",
+plot.data <- data.frame(
+\tDim1 = red.dim[, %s],
+\tDim2 = red.dim[, %s])%s;
+ggplot(data = plot.data, %s) +
+\tgeom_point(size=1.5) +
+\tlabs(color='%s') +
+\ttheme_void() +
+\ttheme(legend.position = 'bottom')",
       param_choices[[.redDimType]],
       param_choices[[.redDimXAxis]],
       param_choices[[.redDimYAxis]],
       cov.str,
       astr,
       covariate.name)
-    print(cmd)
+    message(cmd)
     list(xy = plot.data, cmd = cmd, plot = eval(parse(text = cmd)))
 }
 
@@ -119,15 +124,18 @@ ggplot(data = plot.data, %s) + geom_point(size=1.5) + labs(color='%s') + theme_v
             stop("Impossible color choice!")
         }
         # Set the color to the selected gene
-        if (!is.null(covariate.name)){
+
+        if (identical(covariate.name, "")){
+            warning("Color mode is gene expression, but none selected.")
+            covariate.name <- NULL
+            cmd_color <- "# No coloring data"
+            cmd_aes <- "aes(X, Y)"
+        } else {
             plot.data$Covariate <- assay(se, assay.choice)[covariate.name,]
             cmd_color <- sprintf(
                 "plot.data$Covariate <- assay(se, '%s')['%s',];",
                 assay.choice, covariate.name
             )
-        } else {
-            message("Color mode is gene expression, but none selected.")
-            cmd_aes <- "aes(X, Y)"
         }
     } else {
         covariate.name <- NULL
@@ -136,32 +144,21 @@ ggplot(data = plot.data, %s) + geom_point(size=1.5) + labs(color='%s') + theme_v
     }
 
 
-    # Creating the plot.
-    gg <- ggplot(plot.data, eval(parse(text = cmd_aes))) +
-        geom_point() +
-        labs(
-            x = x_lab,
-            y = param_choices[[.colDataYAxis]],
-            color = covariate.name
-        ) +
-        theme_bw() +
-        theme(
-            legend.position = "bottom"
-        )
-
+    # Creating the plot command
     gg_cmd <- paste(
         sprintf("ggplot(plot.data, %s) +", cmd_aes),
         "geom_point() +",
         sprintf(
-            "labs(y = '%s'%s%s) +",
+            "labs(x = %s, y = '%s', color = %s) +",
+            ifelse(is.null(x_lab), "NULL", sprintf("'%s'", x_lab)),
             param_choices[[.colDataYAxis]],
-            ifelse(is.null(x_lab), "", sprintf(", x = '%s'", x_lab)),
-            ifelse(is.null(covariate.name), "", sprintf(", color = '%s'", covariate.name))
+            ifelse(is.null(covariate.name), "NULL", sprintf("'%s'", covariate.name))
         ),
         "theme_bw() +",
         "theme(legend.position = 'bottom')",
         sep = "\n\t"
     )
+    # message(gg_cmd)
 
     cmd <- paste(cmd_y, cmd_x, cmd_color, gg_cmd, sep = "\n")
 

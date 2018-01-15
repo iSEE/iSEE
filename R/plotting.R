@@ -80,9 +80,6 @@ ggplot(data = plot.data, %s) +
 {
 
     # Process Y-axis
-    # plot.data <- data.frame(
-    #     Y = colData(se)[,param_choices[[.colDataYAxis]]]
-    # )
     cmd_y <- sprintf(
         "plot.data <- data.frame(Y = colData(se)[,'%s']);",
         param_choices[[.colDataYAxis]]
@@ -90,12 +87,10 @@ ggplot(data = plot.data, %s) +
 
     # Process X-axis
     if (param_choices[[.colDataXAxis]] == .colDataXAxisNothingTitle) {
-        # plot.data$X <- rank(plot.data$Y, ties.method = "first")
         # TODO: allow toggling rank decreasing/increasing, note that factors cannot be negated
         x_lab <- NULL
         cmd_x <- 'plot.data$X <- rank(plot.data$Y, ties.method = "first");'
     } else {
-        # plot.data$X <- colData(se)[,param_choices[[.colDataXAxisColData]]]
         x_lab <- param_choices[[.colDataXAxisColData]]
         cmd_x <- sprintf(
             "plot.data$X <- colData(se)[,'%s'];",
@@ -109,7 +104,6 @@ ggplot(data = plot.data, %s) +
     color_choice <- param_choices[[.colorByField]]
     if (color_choice == .colorByColDataTitle) {
         covariate.name <- param_choices[[.colorByColData]]
-        # plot.data$Covariate <- colData(se)[,covariate.name]
         cmd_color <- sprintf(
             "plot.data$Covariate <- colData(se)[,'%s'];", covariate.name
         )
@@ -127,11 +121,7 @@ ggplot(data = plot.data, %s) +
 
         if (identical(covariate.name, "")){
             warning("Color mode is gene expression, but none selected.")
-            # covariate.name <- NULL
-            # cmd_color <- "# No coloring data"
-            # cmd_aes <- "aes(X, Y)"
         } else {
-            # plot.data$Covariate <- assay(se, assay.choice)[covariate.name,]
             cmd_color <- sprintf(
                 "plot.data$Covariate <- assay(se, '%s')['%s',];",
                 assay.choice, covariate.name
@@ -158,7 +148,6 @@ ggplot(data = plot.data, %s) +
         "theme(legend.position = 'bottom')",
         sep = "\n\t"
     )
-    # message(gg_cmd)
 
     cmd <- paste(cmd_y, cmd_x, cmd_color, gg_cmd, sep = "\n")
     # message(cmd)

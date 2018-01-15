@@ -82,16 +82,16 @@ iSEE <- function(
   annot.keyfield=NULL
 ) {
 
-  # Collecting constants for populating the UI.  
+  # Collecting constants for populating the UI.
   cell.data <- colData(se)
   covariates <- colnames(cell.data)
   all.assays <- names(assays(se))
   gene.names <- rownames(se)
-  
+
   red.dim.names <- reducedDimNames(se)
   red.dim.dims <- lapply(red.dim.names, FUN=function(x) ncol(reducedDim(se, x)))
   names(red.dim.dims) <- red.dim.names
-  
+
   gene.data <- as.data.frame(rowData(se))
   rownames(gene.data) <- gene.names
   if (ncol(gene.data)==0L){ # To give it DT::datatable something to play with.
@@ -218,12 +218,12 @@ iSEE <- function(
 
       verbatimTextOutput("activeplots"),
       verbatimTextOutput("codetext"),
-      
+
 #      bsModal("codemodal","My code","getcode_all",size = "large",
 #                       verbatimTextOutput("codetext_modal")),
-      
-      uiOutput("allPanels"),             
-      
+
+      uiOutput("allPanels"),
+
       iSEE_footer()
 
     ), # end of dashboardBody
@@ -326,7 +326,7 @@ iSEE <- function(
     output$allPanels <- renderUI({
         (rObjects$rebrushed) # Trigger re-rendering if these are selected.
         .panel_generation(rObjects$active_plots, pObjects$memory,
-                          redDimNames=red.dim.names, 
+                          redDimNames=red.dim.names,
                           redDimDims=red.dim.dims,
                           colDataNames=covariates,
                           assayNames=all.assays)
@@ -405,8 +405,8 @@ iSEE <- function(
     #######################################################################
     # Panel and brush observers.
     #######################################################################
-    
-    for (mode in c("redDim", "geneExpr", "colData")) { 
+
+    for (mode in c("redDim", "geneExpr", "colData")) {
       max_plots <- nrow(pObjects$memory[[mode]])
       for (i in seq_len(max_plots)) {
         local({
@@ -417,20 +417,20 @@ iSEE <- function(
           observeEvent(input[[paste0(mode0, .plotParamPanelOpen, i0)]], {
             pObjects$memory[[mode0]][[.plotParamPanelOpen]][i0] <- input[[paste0(mode0, .plotParamPanelOpen, i0)]]
           })
-  
+
           observeEvent(input[[paste0(mode0, .colorParamPanelOpen, i0)]], {
             pObjects$memory[[mode0]][[.colorParamPanelOpen]][i0] <- input[[paste0(mode0, .colorParamPanelOpen, i0)]]
           })
-  
+
           observeEvent(input[[paste0(mode0, .brushParamPanelOpen, i0)]], {
             pObjects$memory[[mode0]][[.brushParamPanelOpen]][i0] <- input[[paste0(mode0, .brushParamPanelOpen, i0)]]
           })
-  
+
           # Brush observers.
           observeEvent(input[[paste0(mode0, .brushActive, i0)]], {
             current <- input[[paste0(mode0, .brushActive, i0)]]
             reference <- pObjects$memory[[mode0]][[.brushActive]][i0]
-            if (!identical(current, reference)) { 
+            if (!identical(current, reference)) {
               rObjects$rebrushed <- rObjects$rebrushed + 1L
               pObjects$memory[[mode0]][[.brushActive]][i0] <- current
             }
@@ -477,14 +477,24 @@ iSEE <- function(
       local({
         i0 <- i
         output[[.colDataPlot(i0)]] <- renderPlot({
-
           # Updating parameters (non-characters need some careful treatment).
-          for (field in c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, ALLEXTRAS)) { 
+          for (field in c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, ALLEXTRAS)) {
               pObjects$memory$colData[[field]][i0] <- input[[.inputColData(field, i0)]]
           }
-          
-          # Creating the plot.
-          .make_colDataPlot(se, pObjects$memory$colData[i0,], input)
+
+          # Do not plot if text field is not a valid rownames(se)
+          if (identical(pObjects$memory$colData[[.colorByField]][i0], .colorByGeneTextTitle)){
+            validate(need(
+              input[[paste0("colData", .colorByGeneText, i0)]] %in% rownames(se),
+              sprintf("Invalid '%s' input", .colorByGeneTextTitle)
+            ))
+          }
+
+          # Creating the plot, with saved coordinates.
+          p.out <- .make_colDataPlot(se, pObjects$memory$colData[i0,], input)
+          # pObjects$coordinates[[plot.name]] <- p.out$xy
+          message(p.out$cmd)
+          p.out$plot
         })
       })
     }
@@ -504,8 +514,8 @@ iSEE <- function(
 
           # Creating the plot.
           .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input)
-        }) 
-      }) 
+        })
+      })
     }
 
     #######################################################################

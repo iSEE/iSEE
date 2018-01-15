@@ -219,7 +219,7 @@
 
   if (!is.null(cur.gene)) {
     # Get expression values and melt
-    ylab <- paste0("Expression (", param_choices[[.geneExprAssay]], ")")
+    ylab <- sprintf("%s (%s)", cur.gene, param_choices[[.geneExprAssay]])
 
     cmd_y <- sprintf("exprs.mat <- as.matrix(assay(se, '%s'))['%s', , drop = FALSE];\nevals.long <- reshape2::melt(exprs.mat, value.name = 'evals');\ncolnames(evals.long) <- c('Feature', 'Cell', 'evals');",
                      param_choices[[.geneExprAssay]], cur.gene)
@@ -237,10 +237,14 @@
       if (is.null(byx)) { # no x axis variable specified
         aesth$x <- "Feature"
         xlab <- NULL
-      } else { # colData column or gene expression on x axis
+      } else if (xchoice==.geneExprXAxisGeneExprsTitle){ # gene expression on x axis
+        aesth$x <- byx
+        xlab <- sprintf("%s (%s)", byx, param_choices[[.geneExprAssay]])
+      } else { # colData column
         aesth$x <- byx
         xlab <- byx
       }
+
       aesth$y <- "evals"
       if (!is.null(covariate)) {
         aesth$color <- covariate.name
@@ -291,6 +295,7 @@
 
       cmd_plot <- paste0(cmd_plot, "+ \n\ttheme_bw() + theme(legend.position = 'bottom')")
       cmd <- paste(cmd_x, cmd_col, cmd_samp, cmd_y, cmd_obj, cmd_plot, sep = "\n")
+
       return(list(xy = object, cmd = cmd, plot = eval(parse(text = cmd_plot))))
     }
   }

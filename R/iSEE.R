@@ -219,8 +219,8 @@ iSEE <- function(
       verbatimTextOutput("activeplots"),
       verbatimTextOutput("codetext"),
       
-      bsModal("codemodal","My code","getcode_all",size = "large",
-                       verbatimTextOutput("codetext_modal")),
+#      bsModal("codemodal","My code","getcode_all",size = "large",
+#                       verbatimTextOutput("codetext_modal")),
       
       uiOutput("allPanels"),             
       
@@ -313,12 +313,10 @@ iSEE <- function(
       
     })
     
-    output$codetext_modal <- renderPrint({
-      rObjects$rcode <- .track_it_all(input, rObjects, se)
-      print(rObjects$rcode)
-    })
-    
-    
+#    output$codetext_modal <- renderPrint({
+#      rObjects$rcode <- .track_it_all(input, rObjects, se)
+#      print(rObjects$rcode)
+#    })
 
     #######################################################################
     # Multipanel UI generation section.

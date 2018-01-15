@@ -483,6 +483,13 @@ iSEE <- function(
           }
 
           # Do not plot if text field is not a valid rownames(se)
+          if (identical(pObjects$memory$colData[[.colorByField]][i0], .colorByGeneTableTitle)){
+              gene_selected <- .find_linked_gene(se, pObjects$memory$colData[i0,][[.colorByGeneTable]], input)
+            validate(need(
+              gene_selected %in% rownames(se),
+              sprintf("Invalid '%s' input", .colorByGeneTextTitle)
+            ))
+          }
           if (identical(pObjects$memory$colData[[.colorByField]][i0], .colorByGeneTextTitle)){
             validate(need(
               input[[paste0("colData", .colorByGeneText, i0)]] %in% rownames(se),

@@ -49,9 +49,9 @@
         }
     }
 
-    cmd_prep <- paste(sprintf("red.dim <- reducedDim(se, '%s');", 
+    cmd_prep <- paste(sprintf("red.dim <- reducedDim(se, '%s');",
                               param_choices[[.redDimType]]),
-                      sprintf("plot.data <- data.frame(Dim1 = red.dim[, %s], Dim2 = red.dim[, %s])%s;", 
+                      sprintf("plot.data <- data.frame(Dim1 = red.dim[, %s], Dim2 = red.dim[, %s])%s;",
                               param_choices[[.redDimXAxis]],
                               param_choices[[.redDimYAxis]],
                               cov.str),
@@ -289,7 +289,7 @@
                            "+ \n\tguides(fill = 'none', color = 'none')")
       }
 
-      cmd_plot <- paste0(cmd_plot, "+ \n\ttheme_bw()")
+      cmd_plot <- paste0(cmd_plot, "+ \n\ttheme_bw() + theme(legend.position = 'bottom')")
       cmd <- paste(cmd_x, cmd_col, cmd_samp, cmd_y, cmd_obj, cmd_plot, sep = "\n")
       return(list(xy = object, cmd = cmd, plot = eval(parse(text = cmd_plot))))
     }

@@ -31,7 +31,7 @@
     do.call(tagList, collected)
 }
 
-.panel_generation <- function(active_plots, memory, redDimNames, colDataNames, assayNames) 
+.panel_generation <- function(active_plots, memory, redDimNames, redDimDims, colDataNames, assayNames) 
 # This function generates the various panels, taking into account their
 # variable widths to dynamically assign them to particular rows. We also
 # need to check the memory to avoid resetting the plot upon re-rendering.
@@ -72,13 +72,15 @@
         # Creating the plot fields.
         if (mode=="redDim") {
             obj <- plotOutput(.redDimPlot(ID), brush = brush.opts)
+            cur_reddim <- param_choices[[.redDimType]]    
+            red_choices <- seq_len(redDimDims[[cur_reddim]])
             plot.param <-  list(
                  selectInput(.inputRedDim(.redDimType, ID), label="Type",
-                             choices=redDimNames, selected=param_choices[[.redDimType]]),
-                 textInput(.inputRedDim(.redDimXAxis, ID), label="Dimension 1",
-                           value=param_choices[[.redDimXAxis]]),
-                 textInput(.inputRedDim(.redDimYAxis, ID), label="Dimension 2",
-                           value=param_choices[[.redDimYAxis]])
+                             choices=redDimNames, selected=cur_reddim),
+                 selectInput(.inputRedDim(.redDimXAxis, ID), label="Dimension 1",
+                             choices=red_choices, selected=param_choices[[.redDimXAxis]]),
+                 selectInput(.inputRedDim(.redDimYAxis, ID), label="Dimension 2",
+                             choices=red_choices, selected=param_choices[[.redDimYAxis]])
                  )
         } else if (mode=="colData") {
             obj <- plotOutput(.colDataPlot(ID), brush = brush.opts)
@@ -134,52 +136,18 @@
                 chosen.open <- c(chosen.open, .brushParamPanelTitle)
             }
 
-            colorby.field <- paste0(mode, .colorByField, ID)
-            colorby.geneassay <- 
-            param <- list(shinyBS::bsCollapse(
-                id = paste0(mode, .plotParamPanelName, ID),
-                open = chosen.open,
-                
+            boxID <-  paste0(mode, .plotParamPanelName, ID)
+            param <- list(shinyBS::bsCollapse( id = boxID, open = chosen.open,
                 # Panel for fundamental plot parameters. 
-                do.call(shinyBS::bsCollapsePanel, c(list(title=.plotParamPanelTitle), plot.param)),
+                do.call(shinyBS::bsCollapsePanel, c(list(title=.plotParamPanelTitle), plot.param)), 
 
-                # Panel for colours.
-                shinyBS::bsCollapsePanel(
-                    title = .colorParamPanelTitle,
-                    radioButtons(colorby.field, label="Color by:", inline=TRUE,
-                                 choices=c(.colorByNothingTitle, .colorByColDataTitle, 
-                                           .colorByGeneTableTitle, .colorByGeneTextTitle),
-                                 selected=param_choices[[.colorByField]]),
-                    .conditionalColorPanel(colorby.field, .colorByColDataTitle,
-                        selectInput(paste0(mode, .colorByColData, ID), label = NULL,
-                                    choices=colDataNames, selected=param_choices[[.colorByColData]])
-                        ),
-                    .conditionalColorPanel(colorby.field, .colorByGeneTableTitle,
-                        tagList(selectInput(paste0(mode, .colorByGeneTable, ID), label = NULL, choices=active.tab, 
-                                            selected=.choose_link(param_choices[[.colorByGeneTable]], active.tab, forceDefault=TRUE)), 
-                                selectInput(paste0(mode, .colorByGeneTableAssay, ID), label=NULL,
-                                            choices=assayNames, selected=param_choices[[.colorByGeneTableAssay]]))
-                        ),
-                    .conditionalColorPanel(colorby.field, .colorByGeneTextTitle,
-                        tagList(textInput(paste0(mode, .colorByGeneText, ID), label = NULL, value=param_choices[[.colorByGeneText]]),
-                                selectInput(paste0(mode, .colorByGeneTextAssay, ID), label=NULL,
-                                            choices=assayNames, selected=param_choices[[.colorByGeneTextAssay]]))
-                        )
-                    ), 
-
-                # Panel for Brushing.                                              
-                shinyBS::bsCollapsePanel(
-                    title = .brushParamPanelTitle,
-                    checkboxInput(paste0(mode, .brushActive, ID), label="Transmit brush", 
-                                  value=param_choices[[.brushActive]]), 
-                    selectInput(paste0(mode, .brushByPlot, ID), 
-                                label = "Receive brush from:",
-                                choices=brushable, 
-                                selected=.choose_link(param_choices[[.brushByPlot]], brushable))
-                    )
-                ) # end of bsCollapse
+                # Panel for colouring parameters.
+                .createColorPanel(mode, ID, param_choices, active.tab, colDataNames, assayNames),
+                
+                # Panel for brushing parameters.
+                .createBrushPanel(mode, ID, param_choices, brushable)  
+                ) 
             )
-        
         } else {
             param <- list()
         }
@@ -225,6 +193,67 @@
     return(chosen)
 }
 
-.conditionalColorPanel <- function(value, title, ...) {
-    conditionalPanel(condition=sprintf("input.%s == '%s'", value, title), ...)
+.createColorPanel <- function(mode, ID, param_choices, active.tab, colDataNames, assayNames)
+# Convenience function to create the color parameter panel. This
+# won't be re-used, it just breaks up the huge UI function above.
+{ 
+    colorby.field <- paste0(mode, .colorByField, ID)
+
+    shinyBS::bsCollapsePanel(
+        title = .colorParamPanelTitle,
+        radioButtons(colorby.field, label="Color by:", inline=TRUE,
+                     choices=c(.colorByNothingTitle, .colorByColDataTitle, 
+                               .colorByGeneTableTitle, .colorByGeneTextTitle),
+                     selected=param_choices[[.colorByField]]),
+
+        .conditionalPanelOnRadio(colorby.field, .colorByColDataTitle, 
+            selectInput(paste0(mode, .colorByColData, ID), label = NULL,
+                        choices=colDataNames, selected=param_choices[[.colorByColData]])
+            ),
+        .conditionalPanelOnRadio(colorby.field, .colorByGeneTableTitle, 
+            tagList(selectInput(paste0(mode, .colorByGeneTable, ID), label = NULL, choices=active.tab, 
+                                selected=.choose_link(param_choices[[.colorByGeneTable]], active.tab, forceDefault=TRUE)), 
+                    selectInput(paste0(mode, .colorByGeneTableAssay, ID), label=NULL,
+                                choices=assayNames, selected=param_choices[[.colorByGeneTableAssay]]))
+            ),
+        .conditionalPanelOnRadio(colorby.field, .colorByGeneTextTitle, 
+            tagList(textInput(paste0(mode, .colorByGeneText, ID), label = NULL, value=param_choices[[.colorByGeneText]]),
+                    selectInput(paste0(mode, .colorByGeneTextAssay, ID), label=NULL,
+                                choices=assayNames, selected=param_choices[[.colorByGeneTextAssay]]))
+            )
+        )
+} 
+
+.createBrushPanel <- function(mode, ID, param_choices, brushable) 
+# Convenience function to create the brushing parameter panel. This
+# won't be re-used, it just breaks up the huge UI function above.
+{ 
+    brush.effect <- paste0(mode, .brushEffect, ID)
+    shinyBS::bsCollapsePanel(
+        title = .brushParamPanelTitle,
+        checkboxInput(paste0(mode, .brushActive, ID), label="Transmit brush", 
+                      value=param_choices[[.brushActive]]), 
+        selectInput(paste0(mode, .brushByPlot, ID), 
+                    label = "Receive brush from:",
+                    choices=brushable, 
+                    selected=.choose_link(param_choices[[.brushByPlot]], brushable)),
+
+        radioButtons(brush.effect, label="Brush effect:", inline=TRUE,
+                     choices=c(.brushRestrictTitle, .brushColorTitle, .brushTransTitle),
+                     selected=param_choices[[.brushEffect]]),
+
+        .conditionalPanelOnRadio(brush.effect, .brushColorTitle, 
+            colourInput(paste0(mode, .brushColor, ID), label=NULL, 
+                        value=param_choices[[.brushColor]])
+            ),
+        .conditionalPanelOnRadio(brush.effect, .brushTransTitle,
+            sliderInput(paste0(mode, .brushTransAlpha, ID), label=NULL, 
+                        min=0, max=1, value=param_choices[[.brushTransAlpha]])
+            )
+        )
 }
+
+.conditionalPanelOnRadio <- function(radio.id, radio.choice, ...) {
+    conditionalPanel(condition=sprintf('(input["%s"] == "%s")', radio.id, radio.choice), ...)
+}
+

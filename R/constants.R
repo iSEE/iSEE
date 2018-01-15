@@ -55,7 +55,16 @@
 .brushActive <- "BrushOn"
 .brushByPlot <- "BrushByPlot"
 
-ALLEXTRAS <- c(.colorByField, .colorByColData, .colorByGeneTable, .colorByGeneTableAssay, .colorByGeneText, .colorByGeneTextAssay, .brushByPlot)
+.brushEffect <- "BrushEffect"
+.brushRestrictTitle <- "Restrict"
+.brushColorTitle <- "Color"
+.brushTransTitle <- "Transparent"
+
+.brushColor <- "BrushColor"
+.brushTransAlpha <- "BrushAlpha"
+
+ALLEXTRAS <- c(.colorByField, .colorByColData, .colorByGeneTable, .colorByGeneTableAssay, .colorByGeneText, .colorByGeneTextAssay, 
+               .brushByPlot, .brushEffect, .brushColor, .brushTransAlpha)
 
 # Other parameter panel constants.
 .plotParamPanelTitle <- "Plotting parameters"

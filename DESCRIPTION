@@ -32,7 +32,6 @@ Imports:
     rentrez,
     AnnotationDbi,
     DT,
-    shinyBS,
     colourpicker,
     clipr
 Suggests:

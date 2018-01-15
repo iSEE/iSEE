@@ -123,23 +123,12 @@
 
         # Adding graphical parameters if we're plotting.
         if (mode!="geneStat") {
-
-            # Figuring out whether the panels should be open.
-            chosen.open <- character(0)
-            if (param_choices[[.plotParamPanelOpen]]) {
-                chosen.open <- c(chosen.open, .plotParamPanelTitle)
-            }
-            if (param_choices[[.colorParamPanelOpen]]) {
-                chosen.open <- c(chosen.open, .colorParamPanelTitle)
-            }
-            if (param_choices[[.brushParamPanelOpen]]) {
-                chosen.open <- c(chosen.open, .brushParamPanelTitle)
-            }
-
-            boxID <-  paste0(mode, .plotParamPanelName, ID)
-            param <- list(shinyBS::bsCollapse( id = boxID, open = chosen.open,
+            param <- list(tags$div(class = "panel-group", role = "tablist",
                 # Panel for fundamental plot parameters. 
-                do.call(shinyBS::bsCollapsePanel, c(list(title=.plotParamPanelTitle), plot.param)), 
+                do.call(collapseBox, c(list(id=paste0(mode, .plotParamPanelOpen, ID), 
+                                            title=.plotParamPanelTitle, 
+                                            open=param_choices[[.plotParamPanelOpen]]),
+                                       plot.param)),
 
                 # Panel for colouring parameters.
                 .createColorPanel(mode, ID, param_choices, active.tab, colDataNames, assayNames),
@@ -199,8 +188,10 @@
 { 
     colorby.field <- paste0(mode, .colorByField, ID)
 
-    shinyBS::bsCollapsePanel(
+    collapseBox(
+        id = paste0(mode, .colorParamPanelOpen, ID),
         title = .colorParamPanelTitle,
+        open = param_choices[[.colorParamPanelOpen]],
         radioButtons(colorby.field, label="Color by:", inline=TRUE,
                      choices=c(.colorByNothingTitle, .colorByColDataTitle, 
                                .colorByGeneTableTitle, .colorByGeneTextTitle),
@@ -229,8 +220,11 @@
 # won't be re-used, it just breaks up the huge UI function above.
 { 
     brush.effect <- paste0(mode, .brushEffect, ID)
-    shinyBS::bsCollapsePanel(
+
+    collapseBox(
+        id=paste0(mode, .brushParamPanelOpen, ID),
         title = .brushParamPanelTitle,
+        open = param_choices[[.brushParamPanelOpen]],
         checkboxInput(paste0(mode, .brushActive, ID), label="Transmit brush", 
                       value=param_choices[[.brushActive]]), 
         selectInput(paste0(mode, .brushByPlot, ID), 

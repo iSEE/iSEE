@@ -1,8 +1,6 @@
 .onLoad <- function(...) {
     # Create link to javascript files.
-    # This really should be done in shinyBS itself, but that package
-    # uses ".onAttach" and the maintainer seems to be dead.
-    shiny::addResourcePath("sbs", system.file("www", package="iSEE"))
+    shiny::addResourcePath("iSEE", system.file("www", package="iSEE"))
 }
 
 iSEE_footer <- function(){

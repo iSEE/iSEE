@@ -218,12 +218,12 @@ iSEE <- function(
 
       verbatimTextOutput("activeplots"),
       verbatimTextOutput("codetext"),
-
-      bsModal("codemodal","My code","getcode_all",size = "large",
-                       verbatimTextOutput("codetext_modal")),
-
-      uiOutput("allPanels"),
-
+      
+#      bsModal("codemodal","My code","getcode_all",size = "large",
+#                       verbatimTextOutput("codetext_modal")),
+      
+      uiOutput("allPanels"),             
+      
       iSEE_footer()
 
     ), # end of dashboardBody
@@ -313,12 +313,10 @@ iSEE <- function(
 
     })
 
-    output$codetext_modal <- renderPrint({
-      rObjects$rcode <- .track_it_all(input, rObjects, se)
-      print(rObjects$rcode)
-    })
-
-
+#    output$codetext_modal <- renderPrint({
+#      rObjects$rcode <- .track_it_all(input, rObjects, se)
+#      print(rObjects$rcode)
+#    })
 
     #######################################################################
     # Multipanel UI generation section. ----
@@ -405,6 +403,43 @@ iSEE <- function(
     }
 
     #######################################################################
+    # Panel and brush observers.
+    #######################################################################
+    
+    for (mode in c("redDim", "geneExpr", "colData")) { 
+      max_plots <- nrow(pObjects$memory[[mode]])
+      for (i in seq_len(max_plots)) {
+        local({
+          mode0 <- mode
+          i0 <- i
+
+          # Panel opening/closing observers.
+          observeEvent(input[[paste0(mode0, .plotParamPanelOpen, i0)]], {
+            pObjects$memory[[mode0]][[.plotParamPanelOpen]][i0] <- input[[paste0(mode0, .plotParamPanelOpen, i0)]]
+          })
+  
+          observeEvent(input[[paste0(mode0, .colorParamPanelOpen, i0)]], {
+            pObjects$memory[[mode0]][[.colorParamPanelOpen]][i0] <- input[[paste0(mode0, .colorParamPanelOpen, i0)]]
+          })
+  
+          observeEvent(input[[paste0(mode0, .brushParamPanelOpen, i0)]], {
+            pObjects$memory[[mode0]][[.brushParamPanelOpen]][i0] <- input[[paste0(mode0, .brushParamPanelOpen, i0)]]
+          })
+  
+          # Brush observers.
+          observeEvent(input[[paste0(mode0, .brushActive, i0)]], {
+            current <- input[[paste0(mode0, .brushActive, i0)]]
+            reference <- pObjects$memory[[mode0]][[.brushActive]][i0]
+            if (!identical(current, reference)) { 
+              rObjects$rebrushed <- rObjects$rebrushed + 1L
+              pObjects$memory[[mode0]][[.brushActive]][i0] <- current
+            }
+          }, ignoreInit=TRUE)
+        })
+      }
+    }
+
+    #######################################################################
     # Reduced dimension plot section. ----
     #######################################################################
 
@@ -431,22 +466,6 @@ iSEE <- function(
           pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
         })
-
-        observeEvent(input[[.inputRedDim(.plotParamPanelName, i0)]], {
-          opened <- input[[.inputRedDim(.plotParamPanelName, i0)]]
-          pObjects$memory$redDim[[.plotParamPanelOpen]][i0] <- .plotParamPanelTitle %in% opened
-          pObjects$memory$redDim[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
-          pObjects$memory$redDim[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
-        })
-
-        observeEvent(input[[.inputRedDim(.brushActive, i0)]], {
-          current <- input[[.inputRedDim(.brushActive, i0)]]
-          reference <- pObjects$memory$redDim[[.brushActive]][i0]
-          if (!identical(current, reference)) {
-            rObjects$rebrushed <- rObjects$rebrushed + 1L
-            pObjects$memory$redDim[[.brushActive]][i0] <- current
-          }
-        }, ignoreInit=TRUE)
       })
     }
 
@@ -456,41 +475,17 @@ iSEE <- function(
 
     for (i in seq_len(coldata_max_plots)) {
       local({
-          i0 <- i
-          output[[.colDataPlot(i0)]] <- renderPlot({
-              # Updating parameters (non-characters need some careful treatment).
-              for (field in c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, ALLEXTRAS)) {
-                  pObjects$memory$colData[[field]][i0] <- input[[.inputColData(field, i0)]]
-              }
-              # Do not plot if text field is not a valid rownames(se)
-              if (identical(pObjects$memory$colData[[.colorByField]][i0], .colorByGeneTextTitle)){
-                  validate(need(
-                      input[[paste0("colData", .colorByGeneText, i0)]] %in% rownames(se),
-                      sprintf("Invalid '%s' input", .colorByGeneTextTitle)
-                  ))
-              }
-              # Creating the plot, with saved coordinates.
-              p.out <- .make_colDataPlot(se, pObjects$memory$colData[i0,], input)
-              # pObjects$coordinates[[plot.name]] <- p.out$xy
-              message(p.out$cmd)
-              p.out$plot
-          })
+        i0 <- i
+        output[[.colDataPlot(i0)]] <- renderPlot({
 
-        observeEvent(input[[.inputColData(.plotParamPanelName, i0)]], {
-          opened <- input[[.inputColData(.plotParamPanelName, i0)]]
-          pObjects$memory$colData[[.plotParamPanelOpen]][i0] <- .plotParamPanelTitle %in% opened
-          pObjects$memory$colData[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
-          pObjects$memory$colData[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
-        })
-
-        observeEvent(input[[.inputColData(.brushActive, i0)]], {
-          current <- input[[.inputColData(.brushActive, i0)]]
-          reference <- pObjects$memory$colData[[.brushActive]][i0]
-          if (!identical(current, reference)) {
-            pObjects$memory$colData[[.brushActive]][i0] <- current
-            rObjects$rebrushed <- rObjects$rebrushed + 1L
+          # Updating parameters (non-characters need some careful treatment).
+          for (field in c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, ALLEXTRAS)) { 
+              pObjects$memory$colData[[field]][i0] <- input[[.inputColData(field, i0)]]
           }
-        }, ignoreInit=TRUE)
+          
+          # Creating the plot.
+          .make_colDataPlot(se, pObjects$memory$colData[i0,], input)
+        })
       })
     }
 
@@ -508,27 +503,9 @@ iSEE <- function(
           }
 
           # Creating the plot.
-          p.out <- .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input)
-          message(p.out$cmd)
-          p.out$plot
-        })
-
-        observeEvent(input[[.inputGeneExpr(.plotParamPanelName, i0)]], {
-          opened <- input[[.inputGeneExpr(.plotParamPanelName, i0)]]
-          pObjects$memory$geneExpr[[.plotParamPanelOpen]][i0] <- .plotParamPanelTitle %in% opened
-          pObjects$memory$geneExpr[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
-          pObjects$memory$geneExpr[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
-        })
-
-        observeEvent(input[[.inputGeneExpr(.brushActive, i0)]], {
-          current <- input[[.inputGeneExpr(.brushActive, i0)]]
-          reference <- pObjects$memory$geneExpr[[.brushActive]][i0]
-          if (!identical(current, reference)) {
-            pObjects$memory$geneExpr[[.brushActive]][i0] <- current
-            rObjects$rebrushed <- rObjects$rebrushed + 1L
-          }
-        }, ignoreInit=TRUE)
-      })
+          .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input)
+        }) 
+      }) 
     }
 
     #######################################################################

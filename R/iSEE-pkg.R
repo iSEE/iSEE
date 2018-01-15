@@ -13,7 +13,7 @@
 #' uiOutput sliderInput tagList textInput column observeEvent radioButtons
 #' verbatimTextOutput htmlOutput renderText need tags hr brushOpts
 #' brushedPoints observe h4 validate checkboxInput conditionalPanel
-#' renderPrint singleton
+#' renderPrint singleton showModal modalDialog
 #' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
 #' dashboardSidebar menuItem tabBox valueBox valueBoxOutput
 #' @importFrom scater plotExpression plotPhenoData

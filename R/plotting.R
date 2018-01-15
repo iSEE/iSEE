@@ -80,9 +80,9 @@ ggplot(data = plot.data, %s) +
 {
 
     # Process Y-axis
-    plot.data <- data.frame(
-        Y = colData(se)[,param_choices[[.colDataYAxis]]]
-    )
+    # plot.data <- data.frame(
+    #     Y = colData(se)[,param_choices[[.colDataYAxis]]]
+    # )
     cmd_y <- sprintf(
         "plot.data <- data.frame(Y = colData(se)[,'%s']);",
         param_choices[[.colDataYAxis]]
@@ -90,12 +90,12 @@ ggplot(data = plot.data, %s) +
 
     # Process X-axis
     if (param_choices[[.colDataXAxis]] == .colDataXAxisNothingTitle) {
+        # plot.data$X <- rank(plot.data$Y, ties.method = "first")
         # TODO: allow toggling rank decreasing/increasing, note that factors cannot be negated
-        plot.data$X <- rank(plot.data$Y, ties.method = "first")
         x_lab <- NULL
         cmd_x <- 'plot.data$X <- rank(plot.data$Y, ties.method = "first");'
     } else {
-        plot.data$X <- colData(se)[,param_choices[[.colDataXAxisColData]]]
+        # plot.data$X <- colData(se)[,param_choices[[.colDataXAxisColData]]]
         x_lab <- param_choices[[.colDataXAxisColData]]
         cmd_x <- sprintf(
             "plot.data$X <- colData(se)[,'%s'];",
@@ -109,7 +109,7 @@ ggplot(data = plot.data, %s) +
     color_choice <- param_choices[[.colorByField]]
     if (color_choice == .colorByColDataTitle) {
         covariate.name <- param_choices[[.colorByColData]]
-        plot.data$Covariate <- colData(se)[,covariate.name]
+        # plot.data$Covariate <- colData(se)[,covariate.name]
         cmd_color <- sprintf(
             "plot.data$Covariate <- colData(se)[,'%s'];", covariate.name
         )
@@ -127,11 +127,11 @@ ggplot(data = plot.data, %s) +
 
         if (identical(covariate.name, "")){
             warning("Color mode is gene expression, but none selected.")
-            covariate.name <- NULL
-            cmd_color <- "# No coloring data"
-            cmd_aes <- "aes(X, Y)"
+            # covariate.name <- NULL
+            # cmd_color <- "# No coloring data"
+            # cmd_aes <- "aes(X, Y)"
         } else {
-            plot.data$Covariate <- assay(se, assay.choice)[covariate.name,]
+            # plot.data$Covariate <- assay(se, assay.choice)[covariate.name,]
             cmd_color <- sprintf(
                 "plot.data$Covariate <- assay(se, '%s')['%s',];",
                 assay.choice, covariate.name
@@ -161,27 +161,25 @@ ggplot(data = plot.data, %s) +
     # message(gg_cmd)
 
     cmd <- paste(cmd_y, cmd_x, cmd_color, gg_cmd, sep = "\n")
-
     # message(cmd)
-    return(list(xy = plot.data, cmd = cmd, plot = eval(parse(text = cmd))))
-    # return(gg)
-    # list(xy = plot.data, cmd = cmd, plot = eval(parse(text = cmd)))
+
+    return(list(cmd = cmd, plot = eval(parse(text = cmd)))) # xy = plot.data,
 }
 
 .make_geneExprPlot <- function(se, param_choices, input)
 # Makes a gene expression plot.
 {
-  # Get x axis 
+  # Get x axis
   xchoice <- param_choices[[.geneExprXAxis]]
   if (xchoice==.geneExprXAxisColDataTitle) { # colData column
     byx <- param_choices[[.geneExprXAxisColData]]
     show_violin <- TRUE
-    cmd_x <- sprintf("xcoord <- se[['%s']];", 
+    cmd_x <- sprintf("xcoord <- se[['%s']];",
                      param_choices[[.geneExprXAxisColData]])
   } else if (xchoice==.geneExprXAxisGeneExprsTitle) { # gene
     byx <- .find_linked_gene(se, param_choices[[.geneExprXAxisGeneExprs]], input)
     show_violin <- FALSE
-    cmd_x <- sprintf("xcoord <- assay(se, '%s')['%s', ];", 
+    cmd_x <- sprintf("xcoord <- assay(se, '%s')['%s', ];",
                      param_choices[[.geneExprAssay]],
                      byx)
   } else { ## no x axis variable specified
@@ -223,21 +221,21 @@ ggplot(data = plot.data, %s) +
   }
   cmd_samp <- "samples.long <- data.frame(row.names = colnames(se));"
   if (!is.null(covariate.name)) {
-    cmd_samp <- paste(cmd_samp, 
+    cmd_samp <- paste(cmd_samp,
                       sprintf("samples.long[['%s']] <- covariate;",
                               covariate.name),
                       sep = "\n")
   }
-  if (!is.null(byx)) { 
-    cmd_samp <- paste(cmd_samp, 
+  if (!is.null(byx)) {
+    cmd_samp <- paste(cmd_samp,
                       sprintf("samples.long[['%s']] <- xcoord;", byx),
                       sep = "\n")
   }
 
   # Getting the gene choice for the y axis
   cur.gene <- .find_linked_gene(se, param_choices[[.geneExprID]], input)
-  
-  if (!is.null(cur.gene)) { 
+
+  if (!is.null(cur.gene)) {
     # Get expression values and melt
     ylab <- paste0("Expression (", param_choices[[.geneExprAssay]], ")")
 
@@ -247,11 +245,11 @@ ggplot(data = plot.data, %s) +
     ## Evaluate data generation part of final command
     cmd_prep <- paste(cmd_x, cmd_col, cmd_samp, cmd_y)
     eval(parse(text = cmd_prep))
-    
+
     if (!is.null(evals.long)) {
       cmd_obj <- sprintf("object <- cbind(evals.long, samples.long);")
       eval(parse(text = cmd_obj))
-      
+
       # Define aesthetics
       aesth <- list()
       if (is.null(byx)) { # no x axis variable specified
@@ -268,7 +266,7 @@ ggplot(data = plot.data, %s) +
       if (is.null(aesth$color) && is.null(byx)) {
         aesth$color <- "Feature"
       }
-      
+
       # Group values if x axis is categorical with at most 5 categories
       group_by_x <- (show_violin &&
                        (!is.numeric(object[[as.character(aesth$x)]]) ||
@@ -279,16 +277,16 @@ ggplot(data = plot.data, %s) +
         aesth$group <- 1
         show_violin <- FALSE
       }
-      
+
       cmd_plot <- sprintf("ggplot(object, aes(x = `%s`, y = `%s`%s, group = %s)) + \n\txlab('%s') + ylab('%s')",
                           aesth$x, aesth$y,
                           ifelse(is.null(aesth$color), "", paste0(", color = \`", aesth$color, "\`")),
                           ifelse(aesth$group==1, 1, paste0("\`", as.character(aesth$group), "\`")),
-                          ifelse(is.null(xlab), "", xlab), 
+                          ifelse(is.null(xlab), "", xlab),
                           ylab)
-      
+
       if (is.numeric(aesth$x)) {
-        cmd_plot <- paste0(cmd_plot, 
+        cmd_plot <- paste0(cmd_plot,
                            sprintf(" + \n\tgeom_point(alpha = 0.6)"))
       } else {
         cmd_plot <- paste0(cmd_plot,
@@ -296,19 +294,19 @@ ggplot(data = plot.data, %s) +
       }
       if (show_violin) {
         if (!is.null(aesth$color) && aesth$color == as.symbol("Feature")) {
-          cmd_plot <- paste0(cmd_plot, 
+          cmd_plot <- paste0(cmd_plot,
                              sprintf(" + \n\tgeom_violin(aes(fill = Feature), color = 'gray60', alpha = 0.2, scale = 'width')"))
         } else {
-          cmd_plot <- paste0(cmd_plot, 
+          cmd_plot <- paste0(cmd_plot,
                              sprintf(" + \n\tgeom_violin(color = 'gray60', alpha = 0.3, fill = 'gray80', scale = 'width')"))
         }
       }
-      
+
       if (is.null(covariate.name)) {
-        cmd_plot <- paste0(cmd_plot, 
+        cmd_plot <- paste0(cmd_plot,
                            "+ \n\tguides(fill = 'none', color = 'none')")
       }
-      
+
       cmd_plot <- paste0(cmd_plot, "+ \n\ttheme_bw()")
       cmd <- paste(cmd_x, cmd_col, cmd_samp, cmd_y, cmd_obj, cmd_plot, sep = "\n")
       return(list(xy = object, cmd = cmd, plot = eval(parse(text = cmd_plot))))

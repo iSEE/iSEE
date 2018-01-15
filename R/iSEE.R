@@ -456,21 +456,25 @@ iSEE <- function(
 
     for (i in seq_len(coldata_max_plots)) {
       local({
-        i0 <- i
-        output[[.colDataPlot(i0)]] <- renderPlot({
-
-          # Updating parameters (non-characters need some careful treatment).
-          for (field in c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, ALLEXTRAS)) {
-              pObjects$memory$colData[[field]][i0] <- input[[.inputColData(field, i0)]]
-          }
-
-            # Creating the plot, with saved coordinates.
-            p.out <- .make_colDataPlot(se, pObjects$memory$colData[i0,], input)
-            # pObjects$coordinates[[plot.name]] <- p.out$xy
-            message(p.out$cmd)
-            p.out$plot
-
-        })
+          i0 <- i
+          output[[.colDataPlot(i0)]] <- renderPlot({
+              # Updating parameters (non-characters need some careful treatment).
+              for (field in c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, ALLEXTRAS)) {
+                  pObjects$memory$colData[[field]][i0] <- input[[.inputColData(field, i0)]]
+              }
+              # Do not plot if text field is not a valid rownames(se)
+              if (identical(pObjects$memory$colData[[.colorByField]][i0], .colorByGeneTextTitle)){
+                  validate(need(
+                      input[[paste0("colData", .colorByGeneText, i0)]] %in% rownames(se),
+                      sprintf("Invalid '%s' input", .colorByGeneTextTitle)
+                  ))
+              }
+              # Creating the plot, with saved coordinates.
+              p.out <- .make_colDataPlot(se, pObjects$memory$colData[i0,], input)
+              # pObjects$coordinates[[plot.name]] <- p.out$xy
+              message(p.out$cmd)
+              p.out$plot
+          })
 
         observeEvent(input[[.inputColData(.plotParamPanelName, i0)]], {
           opened <- input[[.inputColData(.plotParamPanelName, i0)]]

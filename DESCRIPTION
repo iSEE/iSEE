@@ -28,7 +28,6 @@ Imports:
     shinydashboard,
     rintrojs, 
     ggplot2,
-    scater,
     rentrez,
     AnnotationDbi,
     DT,

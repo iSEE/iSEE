@@ -5,52 +5,52 @@
 #'
 #' @param se A SingleCellExperiment object.
 #' @param redDimArgs An integer scalar specifying the maximum number of
-#' reduced dimension plots in the interface. Alternatively, a DataFrame 
-#' similar to that produced by \code{\link{redDimPlotDefaults}}, specifying 
+#' reduced dimension plots in the interface. Alternatively, a DataFrame
+#' similar to that produced by \code{\link{redDimPlotDefaults}}, specifying
 #' initial parameters for the plots.
 #' @param colDataArgs An integer scalar specifying the maximum number of
-#' column data plots in the interface. Alternatively, a DataFrame 
-#' similar to that produced by \code{\link{colDataPlotDefaults}}, specifying 
+#' column data plots in the interface. Alternatively, a DataFrame
+#' similar to that produced by \code{\link{colDataPlotDefaults}}, specifying
 #' initial parameters for the plots.
 #' @param geneExprArgs An integer scalar specifying the maximum number of
-#' gene expression plots in the interface. Alternatively, a DataFrame 
+#' gene expression plots in the interface. Alternatively, a DataFrame
 #' similar to that produced by \code{\link{geneExprPlotDefaults}}, specifying
 #' initial parameters for the plots.
 #' @param initialPanels A DataFrame specifying which panels should be created
-#' at initialization. This should contain a \code{Name} character field and 
+#' at initialization. This should contain a \code{Name} character field and
 #' a \code{Width} integer field, see Details.
-#' @param annot.orgdb An \code{org.*.db} annotation object from which 
-#' Entrez identifiers can be retrieved. 
+#' @param annot.orgdb An \code{org.*.db} annotation object from which
+#' Entrez identifiers can be retrieved.
 #' @param annot.keytype A string specifying the keytype to use to query
 #' \code{annot.orgdb}.
 #' @param annot.keyfield A string specifying the field of \code{rowData(se)}
 #' containing the keys of type \code{annot.keytype}. If \code{NULL}, the
 #' row names of \code{se} are used as the keys.
 #'
-#' @details Users can pass default parameters via DataFrame objects in 
-#' \code{redDim.args} and \code{geneExpr.args}. Each object can contain 
+#' @details Users can pass default parameters via DataFrame objects in
+#' \code{redDim.args} and \code{geneExpr.args}. Each object can contain
 #' some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
 #' Any missing fields will be filled in with the defaults.
 #'
-#' The number of maximum plots for each type of plot is implicitly inferred 
+#' The number of maximum plots for each type of plot is implicitly inferred
 #' from the number of rows of the corresponding DataFrame in \code{*Args},
-#' if an integer scalar was not supplied. Users can specify any number of 
-#' maximum plots, though increasing the number will increase the time 
+#' if an integer scalar was not supplied. Users can specify any number of
+#' maximum plots, though increasing the number will increase the time
 #' required to render the interface.
-#' 
-#' The \code{initialPanels} argument specifies the panels to be created 
+#'
+#' The \code{initialPanels} argument specifies the panels to be created
 #' upon initializing the interface. This should be a DataFrame containing
-#' a \code{Name} field specifying the identity of the panel, e.g., 
+#' a \code{Name} field specifying the identity of the panel, e.g.,
 #' \code{"Reduced dimension plot 1"}, \code{"Gene statistics table 2"}.
-#' The trailing number should not be greater than the number of 
-#' maximum plots of that type. The \code{Width} field may also be specified 
+#' The trailing number should not be greater than the number of
+#' maximum plots of that type. The \code{Width} field may also be specified
 #' describing the width of the panel from 4 to 12 (values will be coerced
 #' inside this range).
 #'
 #' If \code{annot.orgdb} is specified, gene information will be retrieved
-#' upon selection of particular genes in the data table. No retrieval is 
+#' upon selection of particular genes in the data table. No retrieval is
 #' performed if \code{annot.orgdb=NULL}.
-#' 
+#'
 #' @return A Shiny App is launched for interactive data exploration of the
 #' \code{\link{SingleCellExperiment}} / \code{\link{SummarizedExperiment}}
 #' object
@@ -82,58 +82,58 @@ iSEE <- function(
   annot.keyfield=NULL
 ) {
 
-  # Collecting constants for populating the UI.  
+  # Collecting constants for populating the UI.
   cell.data <- colData(se)
   covariates <- colnames(cell.data)
   all.assays <- names(assays(se))
   gene.names <- rownames(se)
-  
+
   red.dim.names <- reducedDimNames(se)
   red.dim.dims <- lapply(red.dim.names, FUN=function(x) ncol(reducedDim(se, x)))
   names(red.dim.dims) <- red.dim.names
-  
+
   gene.data <- as.data.frame(rowData(se))
   rownames(gene.data) <- gene.names
   if (ncol(gene.data)==0L){ # To give it DT::datatable something to play with.
     gene.data$Present <- TRUE
   }
-  
+
   # Setting up parameters for each panel.
   memory <- list()
-  if (is.numeric(redDimArgs)) { 
+  if (is.numeric(redDimArgs)) {
     memory$redDim <- redDimPlotDefaults(se, redDimArgs)
   } else {
-    memory$redDim <- redDimPlotDefaults(se, nrow(redDimArgs)) 
+    memory$redDim <- redDimPlotDefaults(se, nrow(redDimArgs))
     memory$redDim <- .override_defaults(memory$redDim, redDimArgs)
   }
   reddim_max_plots <- nrow(memory$redDim)
-                                          
-  if (is.numeric(geneExprArgs)) { 
+
+  if (is.numeric(geneExprArgs)) {
     memory$geneExpr <- geneExprPlotDefaults(se, geneExprArgs)
   } else {
-    memory$geneExpr <- geneExprPlotDefaults(se, nrow(geneExprArgs)) 
+    memory$geneExpr <- geneExprPlotDefaults(se, nrow(geneExprArgs))
     memory$geneExpr <- .override_defaults(memory$geneExpr, geneExprArgs)
   }
   geneexpr_max_plots <- nrow(memory$geneExpr)
 
-  if (is.numeric(colDataArgs)) { 
+  if (is.numeric(colDataArgs)) {
     memory$colData <- colDataPlotDefaults(se, colDataArgs)
   } else {
-    memory$colData <- colDataPlotDefaults(se, nrow(colDataArgs)) 
+    memory$colData <- colDataPlotDefaults(se, nrow(colDataArgs))
     memory$colData <- .override_defaults(memory$colData, colDataArgs)
   }
   coldata_max_plots <- nrow(memory$colData)
- 
+
   genestat_max_tab <- 5
   memory$geneStat <- DataFrame(Selected=rep(1, genestat_max_tab), Search="")
 
   # Defining the initial elements to be plotted.
-  if (is.null(initialPanels)) { 
+  if (is.null(initialPanels)) {
       active_plots <- data.frame(Type=c("redDim", "colData", "geneExpr", "geneStat"),
                                  ID=1, Width=4,
                                  stringsAsFactors=FALSE)
   } else {
-      if (is.null(initialPanels$Name)) { 
+      if (is.null(initialPanels$Name)) {
           stop("need 'Name' field in 'initialPanels'")
       }
       if (is.null(initialPanels$Width)) {
@@ -144,28 +144,28 @@ iSEE <- function(
 
       encoded <- .encode_panel_name(initialPanels$Name)
       max_each <- unlist(lapply(memory, nrow))
-      illegal <- which(max_each[encoded$Type] < encoded$ID) 
+      illegal <- which(max_each[encoded$Type] < encoded$ID)
       if (length(illegal)) {
-          stop(sprintf("'%s' in 'initialPanels' is not available (maximum ID is %i)", 
+          stop(sprintf("'%s' in 'initialPanels' is not available (maximum ID is %i)",
                        initialPanels$Name[illegal[1]], max_each[illegal[1]]))
       }
 
       active_plots <- data.frame(Type=encoded$Type, ID=encoded$ID,
-                                 Width=initialPanels$Width, 
+                                 Width=initialPanels$Width,
                                  stringsAsFactors=FALSE)
   }
 
   # for retrieving the annotation
-  if (!is.null(annot.orgdb)) { 
-    if (!annot.keytype %in% keytypes(annot.orgdb)) { 
+  if (!is.null(annot.orgdb)) {
+    if (!annot.keytype %in% keytypes(annot.orgdb)) {
       stop("specified keytype not in org.*.db object")
     }
   }
-  
+
   # general options:
-  
+
   ########## ui definition ##########
-  
+
   iSEE_ui <- dashboardPage(
     dashboardHeader(
       title = paste0("iSEE - interactive SingleCell/Summarized Experiment Explorer v",
@@ -184,22 +184,22 @@ iSEE <- function(
       menuItem("First steps help", icon = icon("question-circle"),
                actionButton("btn", "Click me for a quick tour", icon("info"),
                             style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4")
-               
+
       ),
       actionButton(paste0("redDim", .organizationNew), "New reduced dimension plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("colData", .organizationNew), "New column data plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("geneExpr", .organizationNew), "New gene expression plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("geneStat", .organizationNew), "New gene table", class = "btn btn-primary",icon = icon("plus")),
-      
+
       actionButton("getcode_all","Extract the R code!",icon = icon("magic")),
-      
+
       uiOutput("panelOrganization")
     ), # end of dashboardSidebar
 
     dashboardBody(
       introjsUI(),
       # must be included in UI
-      
+
       # for error message handling
       tags$head(
         tags$style(HTML("
@@ -210,24 +210,24 @@ iSEE <- function(
                         }
                         "))
       ),
-      
+
       # row for the boxes
       fluidRow(
         valueBoxOutput("box_sce_obj")
       ),
-      
+
       verbatimTextOutput("activeplots"),
       verbatimTextOutput("codetext"),
-      
-      uiOutput("allPanels"),             
-      
+
+      uiOutput("allPanels"),
+
       iSEE_footer()
-      
+
     ), # end of dashboardBody
     skin = "blue"
   ) # end of dashboardPage
-  
-  
+
+
   ########## server definition ##########
 
   iSEE_server <- function(input, output, session) {
@@ -238,14 +238,14 @@ iSEE <- function(
         rebrushed = 1,
         rcode = NULL
     )
-    
+
     # storage for other persistent objects
     pObjects <- new.env()
     pObjects$memory <- memory
     pObjects$coordinates <- list()
 
     # info boxes, to keep on top of the page  on the left side?
-   
+
     output$box_sce_obj <- renderUI({
       if(!is.null(rObjects$sce)){
         return(valueBox(
@@ -268,30 +268,30 @@ iSEE <- function(
         ))
       }
     }) # end of output$box_sce_obj
-    
+
     observeEvent(input$getcode_all, {
       # write out the code into either a text box, an editor session, or even to the clipboard
       # rObjects$rcode <- .make_redDimPlot
       # rObjects$rcode <- c("mystuff", runif(3))
       # rObjects$rcode <- .make_redDimPlot
-      
+
       # rObjects$rcode <- c(rObjects$rcode,"something else")
       # rObjects$rcode <- as.data.frame(rObjects$active_plots)
-      
+
       # rObjects$rcode <- .track_it_all(input, rObjects, se)
-      
+
       # to clipboard
       # clipr::write_clip(rObjects$rcode)
       # rObjects$rcode <- .track_it_all(input, rObjects, se)
-      
+
       showModal(modalDialog(
         title = "My code", size = "l",fade = TRUE,
         footer = NULL, easyClose = TRUE,
         verbatimTextOutput("codetext_modal")
         ))
     })
-    
-    
+
+
     output$activeplots <- renderPrint({
       for (i in seq_len(nrow(as.data.frame(rObjects$active_plots)))){
         aobjs <- as.data.frame(rObjects$active_plots)
@@ -299,46 +299,46 @@ iSEE <- function(
                         paste0(aobjs[i,"Type"],aobjs[i,"ID"])))
       }
     })
-    
+
     output$codetext <- renderPrint({
       # print(
       #   rObjects$rcode
       # )
-      
+
       rObjects$rcode <- .track_it_all(input, rObjects, se)
-      
+
       print(
         rObjects$rcode
       )
-      
+
       # print()
-      
+
     })
-    
+
     output$codetext_modal <- renderPrint({
       rObjects$rcode <- .track_it_all(input, rObjects, se)
       print(rObjects$rcode)
     })
 
     #######################################################################
-    # Multipanel UI generation section.
+    # Multipanel UI generation section. ----
     # This is adapted from https://stackoverflow.com/questions/15875786/dynamically-add-plots-to-web-page-using-shiny.
     #######################################################################
-    
+
     output$allPanels <- renderUI({
         (rObjects$rebrushed) # Trigger re-rendering if these are selected.
         .panel_generation(rObjects$active_plots, pObjects$memory,
-                          redDimNames=red.dim.names, 
+                          redDimNames=red.dim.names,
                           redDimDims=red.dim.dims,
                           colDataNames=covariates,
                           assayNames=all.assays)
     })
-    
+
     output$panelOrganization <- renderUI({
-        .panel_organization(rObjects$active_plots, pObjects$memory)   
+        .panel_organization(rObjects$active_plots, pObjects$memory)
     })
 
-    for (mode in c("redDim", "geneExpr", "colData", "geneStat")) { 
+    for (mode in c("redDim", "geneExpr", "colData", "geneStat")) {
         # Panel addition.
         local({
             mode0 <- mode
@@ -346,14 +346,14 @@ iSEE <- function(
                 all.active <- rObjects$active_plots
                 all.memory <- pObjects$memory[[mode0]]
                 first.missing <- setdiff(seq_len(nrow(all.memory)), all.active$ID[all.active$Type==mode0])
-                if (length(first.missing)) { 
+                if (length(first.missing)) {
                     rObjects$active_plots <- rbind(all.active, DataFrame(Type=mode0, ID=first.missing[1], Width=4))
                 } else {
                     warning(sprintf("maximum number of plots reached for mode '%s'", mode0))
                 }
             })
         })
-        
+
         max_plots <- nrow(pObjects$memory[[mode]])
         for (i in seq_len(max_plots)) {
             local({
@@ -373,7 +373,7 @@ iSEE <- function(
                     index <- which(all.active$Type==mode0 & all.active$ID==i0)
                     cur.width <- all.active$Width[index]
                     new.width <- input[[paste0(mode0, i0, .organizationWidth)]]
-                    if (!isTRUE(all.equal(new.width, cur.width))) { 
+                    if (!isTRUE(all.equal(new.width, cur.width))) {
                         rObjects$active_plots$Width[index] <- new.width
                     }
                 }, ignoreInit=TRUE)
@@ -382,23 +382,23 @@ iSEE <- function(
                 observeEvent(input[[paste0(mode0, i0, .organizationUp)]], {
                     all.active <- rObjects$active_plots
                     index <- which(all.active$Type==mode0 & all.active$ID==i0)
-                    if (index!=1L) { 
+                    if (index!=1L) {
                         reindex <- seq_len(nrow(all.active))
                         reindex[index] <- reindex[index]-1L
                         reindex[index-1L] <- reindex[index-1L]+1L
                         rObjects$active_plots <- all.active[reindex,]
-                    } 
+                    }
                 }, ignoreInit=TRUE)
 
                 observeEvent(input[[paste0(mode0, i0, .organizationDown)]], {
                     all.active <- rObjects$active_plots
                     index <- which(all.active$Type==mode0 & all.active$ID==i0)
-                    if (index!=nrow(all.active)) { 
+                    if (index!=nrow(all.active)) {
                         reindex <- seq_len(nrow(all.active))
                         reindex[index] <- reindex[index]+1L
                         reindex[index+1L] <- reindex[index+1L]-1L
                         rObjects$active_plots <- all.active[reindex,]
-                    } 
+                    }
                 }, ignoreInit=TRUE)
             })
         }
@@ -407,8 +407,8 @@ iSEE <- function(
     #######################################################################
     # Panel and brush observers.
     #######################################################################
-    
-    for (mode in c("redDim", "geneExpr", "colData")) { 
+
+    for (mode in c("redDim", "geneExpr", "colData")) {
       max_plots <- nrow(pObjects$memory[[mode]])
       for (i in seq_len(max_plots)) {
         local({
@@ -419,20 +419,20 @@ iSEE <- function(
           observeEvent(input[[paste0(mode0, .plotParamPanelOpen, i0)]], {
             pObjects$memory[[mode0]][[.plotParamPanelOpen]][i0] <- input[[paste0(mode0, .plotParamPanelOpen, i0)]]
           })
-  
+
           observeEvent(input[[paste0(mode0, .colorParamPanelOpen, i0)]], {
             pObjects$memory[[mode0]][[.colorParamPanelOpen]][i0] <- input[[paste0(mode0, .colorParamPanelOpen, i0)]]
           })
-  
+
           observeEvent(input[[paste0(mode0, .brushParamPanelOpen, i0)]], {
             pObjects$memory[[mode0]][[.brushParamPanelOpen]][i0] <- input[[paste0(mode0, .brushParamPanelOpen, i0)]]
           })
-  
+
           # Brush observers.
           observeEvent(input[[paste0(mode0, .brushActive, i0)]], {
             current <- input[[paste0(mode0, .brushActive, i0)]]
             reference <- pObjects$memory[[mode0]][[.brushActive]][i0]
-            if (!identical(current, reference)) { 
+            if (!identical(current, reference)) {
               rObjects$rebrushed <- rObjects$rebrushed + 1L
               pObjects$memory[[mode0]][[.brushActive]][i0] <- current
             }
@@ -442,7 +442,7 @@ iSEE <- function(
     }
 
     #######################################################################
-    # Reduced dimension plot section.
+    # Reduced dimension plot section. ----
     #######################################################################
 
     # Note: we need "local" so that each item gets its own number. Without it, the value
@@ -456,45 +456,78 @@ iSEE <- function(
         output[[plot.name]] <- renderPlot({
 
           # Updating parameters in the memory store (non-characters need some careful treatment).
-          for (field in c(.redDimType, ALLEXTRAS)) { 
+          for (field in c(.redDimType, ALLEXTRAS)) {
               pObjects$memory$redDim[[field]][i0] <- input[[.inputRedDim(field, i0)]]
           }
-          for (field in c(.redDimXAxis, .redDimYAxis)) { 
+          for (field in c(.redDimXAxis, .redDimYAxis)) {
               pObjects$memory$redDim[[field]][i0] <- as.integer(input[[.inputRedDim(field, i0)]])
           }
-         
+
+          # Do not plot if gene name input is not a valid rownames(se)
+          if (identical(pObjects$memory$redDim[[.colorByField]][i0], .colorByGeneTableTitle)){
+              gene_selected <- .find_linked_gene(se, pObjects$memory$redDim[i0,][[.colorByGeneTable]], input)
+            validate(need(
+              gene_selected %in% rownames(se),
+              sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTableTitle)
+            ))
+          }
+          if (identical(pObjects$memory$redDim[[.colorByField]][i0], .colorByGeneTextTitle)){
+            validate(need(
+              input[[paste0("redDim", .colorByGeneText, i0)]] %in% rownames(se),
+              sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTextTitle)
+            ))
+          }
+
           # Creating the plot, with saved coordinates.
-          p.out <- .make_redDimPlot(se, pObjects$memory$redDim[i0,], input, pObjects$coordinates) 
+          p.out <- .make_redDimPlot(se, pObjects$memory$redDim[i0,], input, pObjects$coordinates)
           pObjects$coordinates[[plot.name]] <- p.out$xy
+          message(p.out$cmd)
           p.out$plot
         })
       })
     }
-    
+
     #######################################################################
-    # Column data scatter plot section.
+    # Column data scatter plot section. ----
     #######################################################################
 
     for (i in seq_len(coldata_max_plots)) {
       local({
         i0 <- i
         output[[.colDataPlot(i0)]] <- renderPlot({
-
           # Updating parameters (non-characters need some careful treatment).
-          for (field in c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, ALLEXTRAS)) { 
+          for (field in c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, ALLEXTRAS)) {
               pObjects$memory$colData[[field]][i0] <- input[[.inputColData(field, i0)]]
           }
-          
-          # Creating the plot.
-          .make_colDataPlot(se, pObjects$memory$colData[i0,], input)
+
+          # Do not plot if text field is not a valid rownames(se)
+          if (identical(pObjects$memory$colData[[.colorByField]][i0], .colorByGeneTableTitle)){
+              gene_selected <- .find_linked_gene(se, pObjects$memory$colData[i0,][[.colorByGeneTable]], input)
+            validate(need(
+              gene_selected %in% rownames(se),
+              sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTableTitle)
+            ))
+          }
+          if (identical(pObjects$memory$colData[[.colorByField]][i0], .colorByGeneTextTitle)){
+            validate(need(
+              input[[paste0("colData", .colorByGeneText, i0)]] %in% rownames(se),
+              sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTextTitle)
+            ))
+          }
+
+          # Creating the plot, with saved coordinates.
+          p.out <- .make_colDataPlot(se, pObjects$memory$colData[i0,], input)
+          # pObjects$coordinates[[plot.name]] <- p.out$xy
+          message(p.out$cmd)
+          p.out$plot
         })
       })
     }
 
     #######################################################################
-    # Gene expression scatter plot section.
+    # Gene expression scatter plot section. ----
     #######################################################################
-    
+
     for (i in seq_len(geneexpr_max_plots)) {
       local({
         i0 <- i
@@ -504,16 +537,42 @@ iSEE <- function(
               pObjects$memory$geneExpr[[field]][i0] <- input[[.inputGeneExpr(field, i0)]]
           }
 
+          # Do not plot if gene name input is not a valid rownames(se)
+          ## Y-axis (always a gene table)
+          gene_selected <- .find_linked_gene(se, pObjects$memory$geneExpr[i0,][[.geneExprID]], input)
+          validate(need(
+              gene_selected %in% rownames(se),
+              sprintf("Invalid Y-axis '%s' input", .geneExprID)
+          ))
+          # X axis (gene table)
+          if (identical(pObjects$memory$geneExpr[[.geneExprXAxis]][i0], .geneExprXAxisGeneExprsTitle)){
+              gene_selected <- .find_linked_gene(se, pObjects$memory$geneExpr[i0,][[.geneExprXAxisGeneExprs]], input)
+              validate(need(
+                gene_selected %in% rownames(se),
+                sprintf("Invalid '%s' > '%s' input", .geneExprXAxis, .geneExprXAxisGeneExprsTitle)
+              ))
+          }
+          # Colour (gene table)
+          if (identical(pObjects$memory$geneExpr[[.colorByField]][i0], .colorByGeneTableTitle)){
+              gene_selected <- .find_linked_gene(se, pObjects$memory$geneExpr[i0,][[.colorByGeneTable]], input)
+              validate(need(
+                gene_selected %in% rownames(se),
+                sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTableTitle)
+              ))
+          }
+
           # Creating the plot.
-          .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input)
-        }) 
-      }) 
+          p.out <- .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input)
+          message(p.out$cmd)
+          p.out$plot
+        })
+      })
     }
-    
+
     #######################################################################
-    # Gene table section.
+    # Gene table section. ----
     #######################################################################
-    
+
     # Load the gene level data
     for (i in seq_len(genestat_max_tab)) {
       local({
@@ -533,7 +592,7 @@ iSEE <- function(
                 pObjects$memory$geneStat$Selected[i0] <- chosen
             }
             search <- input[[paste0("geneStatTable", i0, "_search")]]
-            if (length(search)) { 
+            if (length(search)) {
                 pObjects$memory$geneStat$Search[i0] <- search
             }
         })
@@ -550,13 +609,13 @@ iSEE <- function(
              "Select a gene from the table"
         )
       )
-     
-      if (is.null(annot.keyfield)) { 
+
+      if (is.null(annot.keyfield)) {
         selectedGene <- gene.names[input$geneStatTab_rows_selected]
       } else {
         selectedGene <- gene.data[input$geneStatTab_rows_selected,annot.keyfield]
       }
-      
+
       if (annot.keytype!="ENTREZID") {
         selgene_entrez <- mapIds(annot.orgdb, selectedGene, "ENTREZID", annot.keytype)
       } else {
@@ -581,13 +640,13 @@ iSEE <- function(
         )))
       }
     }) # end of output[[plotname]]
-    
+
   } # end of iSEE_server
-  
+
   #######################################################################
   # Launching the app.
   #######################################################################
-  
+
   shinyApp(ui = iSEE_ui, server = iSEE_server)
 }
 

@@ -534,32 +534,25 @@ iSEE <- function(
           for (field in c(.geneExprID, .geneExprAssay, .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneExprs, ALLEXTRAS)) {
               pObjects$memory$geneExpr[[field]][i0] <- input[[.inputGeneExpr(field, i0)]]
           }
-          print(pObjects$memory$geneExpr)
 
           # Do not plot if gene name input is not a valid rownames(se)
           ## Y-axis (always a gene table)
-          print(pObjects$memory$geneExpr[[.geneExprID]][i0])
           gene_selected <- .find_linked_gene(se, pObjects$memory$geneExpr[i0,][[.geneExprID]], input)
-          print(gene_selected)
           validate(need(
               gene_selected %in% rownames(se),
               sprintf("Invalid Y-axis '%s' input", .geneExprID)
           ))
           # X axis (gene table)
-          print(pObjects$memory$geneExpr[[.geneExprXAxis]][i0])
           if (identical(pObjects$memory$geneExpr[[.geneExprXAxis]][i0], .geneExprXAxisGeneExprsTitle)){
               gene_selected <- .find_linked_gene(se, pObjects$memory$geneExpr[i0,][[.geneExprXAxisGeneExprs]], input)
-              print(gene_selected)
               validate(need(
                 gene_selected %in% rownames(se),
                 sprintf("Invalid '%s' > '%s' input", .geneExprXAxis, .geneExprXAxisGeneExprsTitle)
               ))
           }
           # Colour (gene table)
-          print(pObjects$memory$geneExpr[[.colorByField]][i0])
           if (identical(pObjects$memory$geneExpr[[.colorByField]][i0], .colorByGeneTableTitle)){
               gene_selected <- .find_linked_gene(se, pObjects$memory$geneExpr[i0,][[.colorByGeneTable]], input)
-              print(gene_selected)
               validate(need(
                 gene_selected %in% rownames(se),
                 sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTableTitle)

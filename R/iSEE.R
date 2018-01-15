@@ -403,7 +403,44 @@ iSEE <- function(
             })
         }
     }
+
+    #######################################################################
+    # Panel and brush observers.
+    #######################################################################
     
+    for (mode in c("redDim", "geneExpr", "colData")) { 
+      max_plots <- nrow(pObjects$memory[[mode]])
+      for (i in seq_len(max_plots)) {
+        local({
+          mode0 <- mode
+          i0 <- i
+
+          # Panel opening/closing observers.
+          observeEvent(input[[paste0(mode0, .plotParamPanelOpen, i0)]], {
+            pObjects$memory[[mode0]][[.plotParamPanelOpen]][i0] <- input[[paste0(mode0, .plotParamPanelOpen, i0)]]
+          })
+  
+          observeEvent(input[[paste0(mode0, .colorParamPanelOpen, i0)]], {
+            pObjects$memory[[mode0]][[.colorParamPanelOpen]][i0] <- input[[paste0(mode0, .colorParamPanelOpen, i0)]]
+          })
+  
+          observeEvent(input[[paste0(mode0, .brushParamPanelOpen, i0)]], {
+            pObjects$memory[[mode0]][[.brushParamPanelOpen]][i0] <- input[[paste0(mode0, .brushParamPanelOpen, i0)]]
+          })
+  
+          # Brush observers.
+          observeEvent(input[[paste0(mode0, .brushActive, i0)]], {
+            current <- input[[paste0(mode0, .brushActive, i0)]]
+            reference <- pObjects$memory[[mode0]][[.brushActive]][i0]
+            if (!identical(current, reference)) { 
+              rObjects$rebrushed <- rObjects$rebrushed + 1L
+              pObjects$memory[[mode0]][[.brushActive]][i0] <- current
+            }
+          }, ignoreInit=TRUE)
+        })
+      }
+    }
+
     #######################################################################
     # Reduced dimension plot section.
     #######################################################################
@@ -431,22 +468,6 @@ iSEE <- function(
           pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
         })
-
-        observeEvent(input[[.inputRedDim(.plotParamPanelName, i0)]], {
-          opened <- input[[.inputRedDim(.plotParamPanelName, i0)]] 
-          pObjects$memory$redDim[[.plotParamPanelOpen]][i0] <- .plotParamPanelTitle %in% opened
-          pObjects$memory$redDim[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
-          pObjects$memory$redDim[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
-        })
-
-        observeEvent(input[[.inputRedDim(.brushActive, i0)]], {
-          current <- input[[.inputRedDim(.brushActive, i0)]]
-          reference <- pObjects$memory$redDim[[.brushActive]][i0]
-          if (!identical(current, reference)) { 
-            rObjects$rebrushed <- rObjects$rebrushed + 1L
-            pObjects$memory$redDim[[.brushActive]][i0] <- current
-          }
-        }, ignoreInit=TRUE)
       })
     }
     
@@ -467,22 +488,6 @@ iSEE <- function(
           # Creating the plot.
           .make_colDataPlot(se, pObjects$memory$colData[i0,], input)
         })
-
-        observeEvent(input[[.inputColData(.plotParamPanelName, i0)]], {
-          opened <- input[[.inputColData(.plotParamPanelName, i0)]] 
-          pObjects$memory$colData[[.plotParamPanelOpen]][i0] <- .plotParamPanelTitle %in% opened
-          pObjects$memory$colData[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
-          pObjects$memory$colData[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
-        })
-
-        observeEvent(input[[.inputColData(.brushActive, i0)]], {
-          current <- input[[.inputColData(.brushActive, i0)]] 
-          reference <- pObjects$memory$colData[[.brushActive]][i0]
-          if (!identical(current, reference)) { 
-            pObjects$memory$colData[[.brushActive]][i0] <- current
-            rObjects$rebrushed <- rObjects$rebrushed + 1L
-          }
-        }, ignoreInit=TRUE)
       })
     }
 
@@ -502,22 +507,6 @@ iSEE <- function(
           # Creating the plot.
           .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input)
         }) 
-
-        observeEvent(input[[.inputGeneExpr(.plotParamPanelName, i0)]], {
-          opened <- input[[.inputGeneExpr(.plotParamPanelName, i0)]] 
-          pObjects$memory$geneExpr[[.plotParamPanelOpen]][i0] <- .plotParamPanelTitle %in% opened
-          pObjects$memory$geneExpr[[.colorParamPanelOpen]][i0] <- .colorParamPanelTitle %in% opened
-          pObjects$memory$geneExpr[[.brushParamPanelOpen]][i0] <- .brushParamPanelTitle %in% opened
-        })
-
-        observeEvent(input[[.inputGeneExpr(.brushActive, i0)]], {
-          current <- input[[.inputGeneExpr(.brushActive, i0)]]
-          reference <- pObjects$memory$geneExpr[[.brushActive]][i0]
-          if (!identical(current, reference)) { 
-            pObjects$memory$geneExpr[[.brushActive]][i0] <- current
-            rObjects$rebrushed <- rObjects$rebrushed + 1L
-          }
-        }, ignoreInit=TRUE)
       }) 
     }
     

@@ -1,8 +1,6 @@
 .make_redDimPlot <- function(se, param_choices, input, all.coordinates)
 # Makes the dimension reduction plot.
 {
-    red.dim <- reducedDim(se, param_choices[[.redDimType]])
-
     color_choice <- param_choices[[.colorByField]]
     if (color_choice==.colorByColDataTitle) {
       covariate.name <- param_choices[[.colorByColData]]
@@ -51,28 +49,23 @@
         }
     }
 
-    plot.data <- data.frame(Dim1=red.dim[,param_choices[[.redDimXAxis]]],
-                            Dim2=red.dim[,param_choices[[.redDimYAxis]]])
-    plot.data$Covariate <- covariate
+    cmd_prep <- paste(sprintf("red.dim <- reducedDim(se, '%s');", 
+                              param_choices[[.redDimType]]),
+                      sprintf("plot.data <- data.frame(Dim1 = red.dim[, %s], Dim2 = red.dim[, %s])%s;", 
+                              param_choices[[.redDimXAxis]],
+                              param_choices[[.redDimYAxis]],
+                              cov.str),
+                      sep = "\n")
+    eval(parse(text = cmd_prep))
 
-    cmd <- sprintf(
-      "red.dim <- reducedDim(se, '%s');
-plot.data <- data.frame(
-\tDim1 = red.dim[, %s],
-\tDim2 = red.dim[, %s])%s;
-ggplot(data = plot.data, %s) +
-\tgeom_point(size=1.5) +
-\tlabs(color='%s') +
-\ttheme_void() +
-\ttheme(legend.position = 'bottom')",
-      param_choices[[.redDimType]],
-      param_choices[[.redDimXAxis]],
-      param_choices[[.redDimYAxis]],
-      cov.str,
-      astr,
-      covariate.name)
-    message(cmd)
-    list(xy = plot.data, cmd = cmd, plot = eval(parse(text = cmd)))
+    cmd_plot <- paste(sprintf("ggplot(data = plot.data, %s) + ", astr),
+                      "geom_point(size = 1.5) + ",
+                      sprintf("labs(color = '%s') + ", covariate.name),
+                      "theme_void() + ",
+                      "theme(legend.position = 'bottom')",
+                      sep = "\n\t")
+    cmd <- paste(cmd_prep, cmd_plot, sep = "\n")
+    list(xy = plot.data, cmd = cmd, plot = eval(parse(text = cmd_plot)))
 }
 
 .make_colDataPlot <- function(se, param_choices, input)

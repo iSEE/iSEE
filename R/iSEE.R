@@ -436,21 +436,6 @@ iSEE <- function(
               pObjects$memory$colData[[field]][i0] <- input[[.inputColData(field, i0)]]
           }
 
-          # Do not plot if text field is not a valid rownames(se)
-          if (identical(pObjects$memory$colData[[.colorByField]][i0], .colorByGeneTableTitle)){
-              gene_selected <- .find_linked_gene(se, pObjects$memory$colData[i0,][[.colorByGeneTable]], input)
-            validate(need(
-              gene_selected %in% rownames(se),
-              sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTableTitle)
-            ))
-          }
-          if (identical(pObjects$memory$colData[[.colorByField]][i0], .colorByGeneTextTitle)){
-            validate(need(
-              input[[paste0("colData", .colorByGeneText, i0)]] %in% rownames(se),
-              sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTextTitle)
-            ))
-          }
-
           # Creating the plot, with saved coordinates.
           p.out <- .make_colDataPlot(se, pObjects$memory$colData[i0,], input)
           # pObjects$coordinates[[plot.name]] <- p.out$xy

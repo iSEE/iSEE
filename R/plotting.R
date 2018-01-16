@@ -86,6 +86,20 @@
 .make_colDataPlot <- function(se, param_choices, input)
 # Makes a plot of column data variables.
 {
+  # Do not plot if text field is not a valid rownames(se)
+  if (identical(param_choices[[.colorByField]], .colorByGeneTableTitle)){
+      gene_selected <- .find_linked_gene(se, param_choices[[.colorByGeneTable]], input)
+    validate(need(
+      gene_selected %in% rownames(se),
+      sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTableTitle)
+    ))
+  }
+  if (identical(param_choices[[.colorByField]], .colorByGeneTextTitle)){
+    validate(need(
+      gene_selected %in% rownames(se),
+      sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTextTitle)
+    ))
+  }
 
     # Process Y-axis
     cmd_y <- sprintf(

@@ -362,7 +362,7 @@
       cmd_plot <- paste0(cmd_plot, "+ \n\ttheme_bw() + theme(legend.position = 'bottom')\n")
       cmd <- paste(cmd_x, cmd_col, cmd_samp, cmd_y, cmd_obj, cmd_plot, sep = "\n")
 
-      return(list(xy = object, cmd = cmd, plot = eval(parse(text = cmd_plot))))
+      return(list(cmd = cmd, plot = eval(parse(text = cmd_plot))))
     }
   }
 }

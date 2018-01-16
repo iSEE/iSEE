@@ -22,7 +22,8 @@
         cov.str <- sprintf(
           ";\nplot.data$Covariate <- assay(se, '%s')['%s',]",
           assay.choice, covariate.name)
-        covariate.name <- sprintf("%s\\n(%s)", covariate.name, assay.choice)
+        covariate.name <- .gene_axis_label(
+          covariate.name, assay.choice, multiline = TRUE)
       } else {
         covariate.name <- NULL
         covariate <- NULL
@@ -118,7 +119,8 @@
                 "plot.data$Covariate <- assay(se, '%s')['%s',];",
                 assay.choice, covariate.name
             )
-            covariate.name <- sprintf("%s\\n(%s)", covariate.name, assay.choice)
+            covariate.name <- .gene_axis_label(
+              covariate.name, assay.choice, multiline = TRUE)
         }
     } else {
         covariate.name <- NULL
@@ -219,7 +221,7 @@
 
   if (!is.null(cur.gene)) {
     # Get expression values and melt
-    ylab <- sprintf("%s (%s)", cur.gene, param_choices[[.geneExprAssay]])
+    ylab <- .gene_axis_label(cur.gene, param_choices[[.geneExprAssay]], multiline = FALSE)
 
     cmd_y <- sprintf("exprs.mat <- as.matrix(assay(se, '%s'))['%s', , drop = FALSE];\nevals.long <- reshape2::melt(exprs.mat, value.name = 'evals');\ncolnames(evals.long) <- c('Feature', 'Cell', 'evals');",
                      param_choices[[.geneExprAssay]], cur.gene)
@@ -294,7 +296,8 @@
         )
       } else {
           if (color_choice==.colorByGeneTableTitle || color_choice==.colorByGeneTextTitle){
-            color_lab <- sprintf("%s\\n(%s)", covariate.name, covariate.assay.choice)
+            color_lab <- .gene_axis_label(
+              covariate.name, covariate.assay.choice, multiline = TRUE)
             cmd_plot <- paste0(
               cmd_plot, sprintf(
                 "+ \n\tlabs(fill = '%s', color = '%s')", # TODO: evaluates OK; prints dirty
@@ -321,4 +324,9 @@
   tab.id <- .encode_panel_name(link)$ID
   linked.tab <- paste0("geneStatTable", tab.id, "_rows_selected")
   rownames(se)[input[[linked.tab]]]
+}
+
+.gene_axis_label <- function(gene_id, assay_name, multiline=FALSE){
+    sep = ifelse(multiline, "\\n", " ")
+    sprintf("%s%s(%s)", gene_id, sep, assay_name)
 }

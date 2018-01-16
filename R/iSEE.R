@@ -235,10 +235,9 @@ iSEE <- function(
     pObjects$memory <- memory
     pObjects$coordinates <- list()
     pObjects$commands <- list(
-        redDim=list(),
-        colData=list(),
-        geneExpr=list(),
-        geneStat=list()
+        redDim=character(nrow(memory$redDim)),
+        colData=character(nrow(memory$colData)),
+        geneExpr=character(nrow(memory$geneExpr))
     )
 
     # info boxes, to keep on top of the page  on the left side?
@@ -423,7 +422,7 @@ iSEE <- function(
           # Creating the plot, with saved coordinates.
           p.out <- .make_redDimPlot(se, pObjects$memory$redDim[i0,], input, pObjects$coordinates)
           message(p.out$cmd)
-          pObjects$commands$redDim[[i0]] <- p.out$cmd
+          pObjects$commands$redDim[i0] <- p.out$cmd
           p.out$plot
         })
       })
@@ -445,7 +444,7 @@ iSEE <- function(
           # Creating the plot, with saved coordinates.
           p.out <- .make_colDataPlot(se, pObjects$memory$colData[i0,], input)
           message(p.out$cmd)
-          pObjects$commands$colData[[i0]] <- p.out$cmd
+          pObjects$commands$colData[i0] <- p.out$cmd
           p.out$plot
         })
       })
@@ -467,7 +466,7 @@ iSEE <- function(
           # Creating the plot.
           p.out <- .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input)
           message(p.out$cmd)
-          pObjects$commands$geneExpr[[i0]] <- p.out$cmd
+          pObjects$commands$geneExpr[i0] <- p.out$cmd
           p.out$plot
         })
       })

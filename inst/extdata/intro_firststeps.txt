@@ -1,0 +1,21 @@
+element;intro
+#Welcome;Welcome to the tour for iSEE!
+#allpanels;Take a look around...
+#redDimPlot1;someTextPlaceholder, this is plot 1 for reduced dimension representations
+#colDataPlot1;someTextPlaceholder, this is plot 1 for column data representations
+#geneExprPlot1;someTextPlaceholder, this is plot 1 for gene expression representations
+#geneStatTable1;someTextPlaceholder, this is table 1 for gene-level information, which can be linked to other plots as well
+#redDimMakeNew;someTextPlaceholder, create a new red dim plot
+#colDataMakeNew;someTextPlaceholder, create a new col data plot
+#geneExprMakeNew;someTextPlaceholder, create a new gene expr plot
+#geneStatMakeNew;someTextPlaceholder, create a new table, also useful for linking to other plots
+#panelOrganization;someTextPlaceholder, here you can reorganize the panel layout
+#redDim1ShiftDown;someTextPlaceholder, you can shift the plot one place down
+#redDim1ShiftUp;someTextPlaceholder, or up
+#redDim1Discard;someTextPlaceholder, or even remove it
+#redDim1PanelWidth;someTextPlaceholder, or change its width (not perfectly linked to the element, strange)
+#redDimPlotPanelOpen1;someTextPlaceholder, you have plenty of options to control the appearance of the plots, here for the plot itself
+#redDimColorPanelOpen1;someTextPlaceholder, here for the coloring options
+#redDimBrushPanelOpen1;someTextPlaceholder, and here for brushing a.k.a. linking two different plots together
+#getcode_all;someTextPlaceholder, while here you can extract the code for reproducing the exact code used to generate the plots
+#Thanks;Thank you for taking the tour!

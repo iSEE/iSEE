@@ -182,7 +182,7 @@ iSEE <- function(
       menuItem("Quick viewer", icon = icon("flash")),
       # this will cover the part for the first tour of the app
       menuItem("First steps help", icon = icon("question-circle"),
-               actionButton("btn", "Click me for a quick tour", icon("info"),
+               actionButton("tour_firststeps", "Click me for a quick tour", icon("info"),
                             style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4")
 
       ),
@@ -268,6 +268,14 @@ iSEE <- function(
         ))
       }
     }) # end of output$box_sce_obj
+    
+    intro_firststeps <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"), sep=";", stringsAsFactors = FALSE)
+    
+    observeEvent(input$tour_firststeps, {
+      introjs(session,
+              options = list(steps= intro_firststeps)
+      )
+    })
 
     observeEvent(input$getcode_all, {
       # write out the code into either a text box, an editor session, or even to the clipboard

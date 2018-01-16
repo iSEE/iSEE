@@ -16,7 +16,6 @@
 #' renderPrint singleton showModal modalDialog
 #' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
 #' dashboardSidebar menuItem tabBox valueBox valueBoxOutput
-#' @importFrom scater plotExpression plotPhenoData
 #' @importFrom utils packageVersion
 #' @importFrom ggplot2 ggplot geom_point labs theme_void aes_string geom_violin
 #'   theme_bw facet_wrap ylab

@@ -25,7 +25,7 @@
         cov.str <- sprintf(";\nplot.data$Covariate <- assay(se, '%s')['%s',]",
                            assay.choice, covariate.name)
       } else {
-        covariate.name <- ""
+        covariate.name <- "" # TODO: NULL
         covariate <- NULL
         astr <- "aes(x=Dim1, y=Dim2)"
         cov.str <- ""
@@ -119,6 +119,7 @@
                 "plot.data$Covariate <- assay(se, '%s')['%s',];",
                 assay.choice, covariate.name
             )
+            covariate.name <- sprintf("%s\\n(%s)", covariate.name, assay.choice)
         }
     } else {
         covariate.name <- NULL

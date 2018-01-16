@@ -138,7 +138,7 @@
             ifelse(is.null(covariate.name), "NULL", sprintf("'%s'", covariate.name))
         ),
         "theme_bw() +",
-        "theme(legend.position = 'bottom')",
+        "theme(legend.position = 'bottom')\n",
         sep = "\n\t"
     )
 
@@ -179,18 +179,18 @@
   } else if (color_choice==.colorByGeneTableTitle || color_choice==.colorByGeneTextTitle) {
     if (color_choice==.colorByGeneTableTitle) {
       covariate.name <- .find_linked_gene(se, param_choices[[.colorByGeneTable]], input)
-      assay.choice <- param_choices[[.colorByGeneTableAssay]]
+      covariate.assay.choice <- param_choices[[.colorByGeneTableAssay]]
     } else {
       covariate.name <- param_choices[[.colorByGeneText]]
       if (!covariate.name %in% rownames(se)) {
         covariate.name <- NULL
       }
-      assay.choice <- param_choices[[.colorByGeneTextAssay]]
+      covariate.assay.choice <- param_choices[[.colorByGeneTextAssay]]
     }
     if (!is.null(covariate.name)) {
-      covariate <- assay(se, assay.choice)[covariate.name,]
+      covariate <- assay(se, covariate.assay.choice)[covariate.name,]
       cmd_col <- sprintf("covariate <- assay(se, '%s')['%s', ];",
-                         assay.choice, covariate.name)
+                         covariate.assay.choice, covariate.name)
     } else {
       covariate.name <- NULL
       covariate <- NULL
@@ -289,8 +289,19 @@
       }
 
       if (is.null(covariate.name)) {
-        cmd_plot <- paste0(cmd_plot,
-                           "+ \n\tguides(fill = 'none', color = 'none')")
+        cmd_plot <- paste0(
+          cmd_plot, "+ \n\tguides(fill = 'none', color = 'none')"
+        )
+      } else {
+          if (color_choice==.colorByGeneTableTitle || color_choice==.colorByGeneTextTitle){
+            color_lab <- sprintf("%s\\n(%s)", covariate.name, covariate.assay.choice)
+            cmd_plot <- paste0(
+              cmd_plot, sprintf(
+                "+ \n\tlabs(fill = '%s', color = '%s')", # TODO: evaluates OK; prints dirty
+                color_lab, color_lab
+              )
+            )
+          }
       }
 
       cmd_plot <- paste0(cmd_plot, "+ \n\ttheme_bw() + theme(legend.position = 'bottom')")

@@ -238,7 +238,7 @@ iSEE <- function(
     # info boxes, to keep on top of the page  on the left side?
 
     intro_firststeps <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"), sep=";", stringsAsFactors = FALSE)
-    
+
     observeEvent(input$tour_firststeps, {
       introjs(session,
               options = list(steps= intro_firststeps)
@@ -412,21 +412,6 @@ iSEE <- function(
           }
           for (field in c(.redDimXAxis, .redDimYAxis)) {
               pObjects$memory$redDim[[field]][i0] <- as.integer(input[[.inputRedDim(field, i0)]])
-          }
-
-          # Do not plot if gene name input is not a valid rownames(se)
-          if (identical(pObjects$memory$redDim[[.colorByField]][i0], .colorByGeneTableTitle)){
-              gene_selected <- .find_linked_gene(se, pObjects$memory$redDim[i0,][[.colorByGeneTable]], input)
-            validate(need(
-              gene_selected %in% rownames(se),
-              sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTableTitle)
-            ))
-          }
-          if (identical(pObjects$memory$redDim[[.colorByField]][i0], .colorByGeneTextTitle)){
-            validate(need(
-              input[[paste0("redDim", .colorByGeneText, i0)]] %in% rownames(se),
-              sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTextTitle)
-            ))
           }
 
           # Creating the plot, with saved coordinates.

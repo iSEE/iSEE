@@ -1,6 +1,21 @@
 .make_redDimPlot <- function(se, param_choices, input, all.coordinates)
 # Makes the dimension reduction plot.
 {
+  # Do not plot if gene name input is not a valid rownames(se)
+  if (identical(param_choices[[.colorByField]], .colorByGeneTableTitle)){
+      gene_selected <- .find_linked_gene(se, param_choices[[.colorByGeneTable]], input)
+    validate(need(
+      gene_selected %in% rownames(se),
+      sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTableTitle)
+    ))
+  }
+  if (identical(param_choices[[.colorByField]], .colorByGeneTextTitle)){
+    validate(need(
+      input[[paste0("redDim", .colorByGeneText, i0)]] %in% rownames(se),
+      sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTextTitle)
+    ))
+  }
+
     color_choice <- param_choices[[.colorByField]]
     if (color_choice==.colorByColDataTitle) {
       covariate.name <- param_choices[[.colorByColData]]

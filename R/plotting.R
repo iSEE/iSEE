@@ -71,7 +71,6 @@
                               param_choices[[.redDimYAxis]],
                               cov.str),
                       sep = "\n")
-    eval(parse(text = cmd_prep))
 
     cmd_plot <- paste(sprintf("ggplot(data = plot.data, %s) + ", astr),
                       "geom_point(size = 1.5) + ",
@@ -80,7 +79,7 @@
                       "theme(legend.position = 'bottom')\n",
                       sep = "\n\t")
     cmd <- paste(cmd_prep, cmd_plot, sep = "\n")
-    list(xy = plot.data, cmd = cmd, plot = eval(parse(text = cmd_plot)))
+    list(cmd = cmd, plot = eval(parse(text = cmd)))
 }
 
 .make_colDataPlot <- function(se, param_choices, input)

@@ -416,7 +416,6 @@ iSEE <- function(
 
           # Creating the plot, with saved coordinates.
           p.out <- .make_redDimPlot(se, pObjects$memory$redDim[i0,], input, pObjects$coordinates)
-          pObjects$coordinates[[plot.name]] <- p.out$xy
           message(p.out$cmd)
           p.out$plot
         })

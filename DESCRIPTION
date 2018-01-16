@@ -32,14 +32,14 @@ Imports:
     AnnotationDbi,
     DT,
     colourpicker,
-    clipr,
-    scater
+    clipr
 Suggests:
     testthat,
     BiocStyle,
     knitr,
     rmarkdown,
-    scRNAseq
+    scRNAseq,
+    scater
 URL: https://github.com/csoneson/SEE
 BugReports: https://github.com/csoneson/SEE/issues
 biocViews: Visualization, GUI, DimensionReduction, 

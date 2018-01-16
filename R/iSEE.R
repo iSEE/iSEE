@@ -458,30 +458,6 @@ iSEE <- function(
               pObjects$memory$geneExpr[[field]][i0] <- input[[.inputGeneExpr(field, i0)]]
           }
 
-          # Do not plot if gene name input is not a valid rownames(se)
-          ## Y-axis (always a gene table)
-          gene_selected <- .find_linked_gene(se, pObjects$memory$geneExpr[i0,][[.geneExprID]], input)
-          validate(need(
-              gene_selected %in% rownames(se),
-              sprintf("Invalid Y-axis '%s' input", .geneExprID)
-          ))
-          # X axis (gene table)
-          if (identical(pObjects$memory$geneExpr[[.geneExprXAxis]][i0], .geneExprXAxisGeneExprsTitle)){
-              gene_selected <- .find_linked_gene(se, pObjects$memory$geneExpr[i0,][[.geneExprXAxisGeneExprs]], input)
-              validate(need(
-                gene_selected %in% rownames(se),
-                sprintf("Invalid '%s' > '%s' input", .geneExprXAxis, .geneExprXAxisGeneExprsTitle)
-              ))
-          }
-          # Colour (gene table)
-          if (identical(pObjects$memory$geneExpr[[.colorByField]][i0], .colorByGeneTableTitle)){
-              gene_selected <- .find_linked_gene(se, pObjects$memory$geneExpr[i0,][[.colorByGeneTable]], input)
-              validate(need(
-                gene_selected %in% rownames(se),
-                sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTableTitle)
-              ))
-          }
-
           # Creating the plot.
           p.out <- .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input)
           message(p.out$cmd)

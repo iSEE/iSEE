@@ -11,7 +11,7 @@
   }
   if (identical(param_choices[[.colorByField]], .colorByGeneTextTitle)){
     validate(need(
-      input[[paste0("redDim", .colorByGeneText, i0)]] %in% rownames(se),
+      gene_selected %in% rownames(se),
       sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTextTitle)
     ))
   }
@@ -182,6 +182,30 @@
 .make_geneExprPlot <- function(se, param_choices, input)
 # Makes a gene expression plot.
 {
+  # Do not plot if gene name input is not a valid rownames(se)
+  ## Y-axis (always a gene table)
+  gene_selected <- .find_linked_gene(se, param_choices[[.geneExprID]], input)
+  validate(need(
+      gene_selected %in% rownames(se),
+      sprintf("Invalid Y-axis '%s' input", .geneExprID)
+  ))
+  # X axis (gene table)
+  if (identical(param_choices[[.geneExprXAxis]], .geneExprXAxisGeneExprsTitle)){
+      gene_selected <- .find_linked_gene(se, param_choices[[.geneExprXAxisGeneExprs]], input)
+      validate(need(
+        gene_selected %in% rownames(se),
+        sprintf("Invalid '%s' > '%s' input", .geneExprXAxis, .geneExprXAxisGeneExprsTitle)
+      ))
+  }
+  # Colour (gene table)
+  if (identical(param_choices[[.colorByField]], .colorByGeneTableTitle)){
+      gene_selected <- .find_linked_gene(se, param_choices[[.colorByGeneTable]], input)
+      validate(need(
+        gene_selected %in% rownames(se),
+        sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTableTitle)
+      ))
+  }
+
   # Get x axis
   xchoice <- param_choices[[.geneExprXAxis]]
   if (xchoice==.geneExprXAxisColDataTitle) { # colData column

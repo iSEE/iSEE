@@ -25,13 +25,13 @@
         covariate.name <- .gene_axis_label(
           covariate.name, assay.choice, multiline = TRUE)
       } else {
-        covariate.name <- NULL
+        covariate.name <- 'NULL'
         covariate <- NULL
         astr <- "aes(x=Dim1, y=Dim2)"
         cov.str <- ""
         }
     } else {
-      covariate.name <- NULL
+      covariate.name <- 'NULL'
       covariate <- NULL
       astr <- "aes(x=Dim1, y=Dim2)"
       cov.str <- ""

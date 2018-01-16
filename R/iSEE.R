@@ -173,7 +173,6 @@ iSEE <- function(
       titleWidth = 900
     ), # end of dashboardHeader
     dashboardSidebar(
-      width = 280,
       # general app settings
       menuItem("App settings",icon = icon("cogs")),
       # merely oriented to export the plots - if we want to support that capability
@@ -211,14 +210,6 @@ iSEE <- function(
                         "))
       ),
 
-      # row for the boxes
-      fluidRow(
-        valueBoxOutput("box_sce_obj")
-      ),
-
-      verbatimTextOutput("activeplots"),
-      verbatimTextOutput("codetext"),
-
       uiOutput("allPanels"),
 
       iSEE_footer()
@@ -246,29 +237,6 @@ iSEE <- function(
 
     # info boxes, to keep on top of the page  on the left side?
 
-    output$box_sce_obj <- renderUI({
-      if(!is.null(rObjects$sce)){
-        return(valueBox(
-          "SCE Object",
-          sprintf(
-            "%i genes - %i samples",
-            nrow(rObjects$sce),
-            ncol(rObjects$sce)
-          ),
-          icon = icon("list"),
-          color = "green",
-          width = NULL
-        ))
-      } else {
-        return(valueBox(
-          "SCE Object",
-          "yet to create",
-          icon = icon("list"),
-          color = "red",width = NULL
-        ))
-      }
-    }) # end of output$box_sce_obj
-    
     intro_firststeps <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"), sep=";", stringsAsFactors = FALSE)
     
     observeEvent(input$tour_firststeps, {
@@ -299,33 +267,8 @@ iSEE <- function(
         ))
     })
 
-
-    output$activeplots <- renderPrint({
-      for (i in seq_len(nrow(as.data.frame(rObjects$active_plots)))){
-        aobjs <- as.data.frame(rObjects$active_plots)
-        print(x = paste("I will pick the code and the parameters for ",
-                        paste0(aobjs[i,"Type"],aobjs[i,"ID"])))
-      }
-    })
-
-    output$codetext <- renderPrint({
-      # print(
-      #   rObjects$rcode
-      # )
-
-      rObjects$rcode <- .track_it_all(input, rObjects, se)
-
-      print(
-        rObjects$rcode
-      )
-
-      # print()
-
-    })
-
     output$codetext_modal <- renderPrint({
-      rObjects$rcode <- .track_it_all(input, rObjects, se)
-      print(rObjects$rcode)
+      print(.track_it_all(input, rObjects, se))
     })
 
     #######################################################################

@@ -14,24 +14,24 @@
         assay.choice <- param_choices[[.colorByGeneTableAssay]]
       } else {
         covariate.name <- param_choices[[.colorByGeneText]]
-        if (!covariate.name %in% rownames(se)) {
-          covariate.name <- NULL
-        }
         assay.choice <- param_choices[[.colorByGeneTextAssay]]
       }
       if (!is.null(covariate.name)) {
         covariate <- assay(se, assay.choice)[covariate.name,]
         astr <- "aes(x=Dim1, y=Dim2, color=Covariate)"
-        cov.str <- sprintf(";\nplot.data$Covariate <- assay(se, '%s')['%s',]",
-                           assay.choice, covariate.name)
+        cov.str <- sprintf(
+          ";\nplot.data$Covariate <- assay(se, '%s')['%s',]",
+          assay.choice, covariate.name)
+        covariate.name <- .gene_axis_label(
+          covariate.name, assay.choice, multiline = TRUE)
       } else {
-        covariate.name <- ""
+        covariate.name <- 'NULL'
         covariate <- NULL
         astr <- "aes(x=Dim1, y=Dim2)"
         cov.str <- ""
         }
     } else {
-      covariate.name <- ""
+      covariate.name <- 'NULL'
       covariate <- NULL
       astr <- "aes(x=Dim1, y=Dim2)"
       cov.str <- ""
@@ -62,7 +62,7 @@
                       "geom_point(size = 1.5) + ",
                       sprintf("labs(color = '%s') + ", covariate.name),
                       "theme_void() + ",
-                      "theme(legend.position = 'bottom')",
+                      "theme(legend.position = 'bottom')\n",
                       sep = "\n\t")
     cmd <- paste(cmd_prep, cmd_plot, sep = "\n")
     list(xy = plot.data, cmd = cmd, plot = eval(parse(text = cmd_plot)))
@@ -119,6 +119,8 @@
                 "plot.data$Covariate <- assay(se, '%s')['%s',];",
                 assay.choice, covariate.name
             )
+            covariate.name <- .gene_axis_label(
+              covariate.name, assay.choice, multiline = TRUE)
         }
     } else {
         covariate.name <- NULL
@@ -138,7 +140,7 @@
             ifelse(is.null(covariate.name), "NULL", sprintf("'%s'", covariate.name))
         ),
         "theme_bw() +",
-        "theme(legend.position = 'bottom')",
+        "theme(legend.position = 'bottom')\n",
         sep = "\n\t"
     )
 
@@ -179,18 +181,18 @@
   } else if (color_choice==.colorByGeneTableTitle || color_choice==.colorByGeneTextTitle) {
     if (color_choice==.colorByGeneTableTitle) {
       covariate.name <- .find_linked_gene(se, param_choices[[.colorByGeneTable]], input)
-      assay.choice <- param_choices[[.colorByGeneTableAssay]]
+      covariate.assay.choice <- param_choices[[.colorByGeneTableAssay]]
     } else {
       covariate.name <- param_choices[[.colorByGeneText]]
       if (!covariate.name %in% rownames(se)) {
         covariate.name <- NULL
       }
-      assay.choice <- param_choices[[.colorByGeneTextAssay]]
+      covariate.assay.choice <- param_choices[[.colorByGeneTextAssay]]
     }
     if (!is.null(covariate.name)) {
-      covariate <- assay(se, assay.choice)[covariate.name,]
+      covariate <- assay(se, covariate.assay.choice)[covariate.name,]
       cmd_col <- sprintf("covariate <- assay(se, '%s')['%s', ];",
-                         assay.choice, covariate.name)
+                         covariate.assay.choice, covariate.name)
     } else {
       covariate.name <- NULL
       covariate <- NULL
@@ -219,7 +221,7 @@
 
   if (!is.null(cur.gene)) {
     # Get expression values and melt
-    ylab <- sprintf("%s (%s)", cur.gene, param_choices[[.geneExprAssay]])
+    ylab <- .gene_axis_label(cur.gene, param_choices[[.geneExprAssay]], multiline = FALSE)
 
     cmd_y <- sprintf("exprs.mat <- as.matrix(assay(se, '%s'))['%s', , drop = FALSE];\nevals.long <- reshape2::melt(exprs.mat, value.name = 'evals');\ncolnames(evals.long) <- c('Feature', 'Cell', 'evals');",
                      param_choices[[.geneExprAssay]], cur.gene)
@@ -289,11 +291,23 @@
       }
 
       if (is.null(covariate.name)) {
-        cmd_plot <- paste0(cmd_plot,
-                           "+ \n\tguides(fill = 'none', color = 'none')")
+        cmd_plot <- paste0(
+          cmd_plot, "+ \n\tguides(fill = 'none', color = 'none')"
+        )
+      } else {
+          if (color_choice==.colorByGeneTableTitle || color_choice==.colorByGeneTextTitle){
+            color_lab <- .gene_axis_label(
+              covariate.name, covariate.assay.choice, multiline = TRUE)
+            cmd_plot <- paste0(
+              cmd_plot, sprintf(
+                "+ \n\tlabs(fill = '%s', color = '%s')", # TODO: evaluates OK; prints dirty
+                color_lab, color_lab
+              )
+            )
+          }
       }
 
-      cmd_plot <- paste0(cmd_plot, "+ \n\ttheme_bw() + theme(legend.position = 'bottom')")
+      cmd_plot <- paste0(cmd_plot, "+ \n\ttheme_bw() + theme(legend.position = 'bottom')\n")
       cmd <- paste(cmd_x, cmd_col, cmd_samp, cmd_y, cmd_obj, cmd_plot, sep = "\n")
 
       return(list(xy = object, cmd = cmd, plot = eval(parse(text = cmd_plot))))
@@ -310,4 +324,9 @@
   tab.id <- .encode_panel_name(link)$ID
   linked.tab <- paste0("geneStatTable", tab.id, "_rows_selected")
   rownames(se)[input[[linked.tab]]]
+}
+
+.gene_axis_label <- function(gene_id, assay_name, multiline=FALSE){
+    sep = ifelse(multiline, "\\n", " ")
+    sprintf("%s%s(%s)", gene_id, sep, assay_name)
 }

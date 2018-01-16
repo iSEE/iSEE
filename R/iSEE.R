@@ -211,6 +211,8 @@ iSEE <- function(
       ),
 
       uiOutput("allPanels"),
+      
+      
 
       iSEE_footer()
 
@@ -250,12 +252,9 @@ iSEE <- function(
       # rObjects$rcode <- .make_redDimPlot
       # rObjects$rcode <- c("mystuff", runif(3))
       # rObjects$rcode <- .make_redDimPlot
-
       # rObjects$rcode <- c(rObjects$rcode,"something else")
       # rObjects$rcode <- as.data.frame(rObjects$active_plots)
-
       # rObjects$rcode <- .track_it_all(input, rObjects, se)
-
       # to clipboard
       # clipr::write_clip(rObjects$rcode)
       # rObjects$rcode <- .track_it_all(input, rObjects, se)
@@ -263,14 +262,20 @@ iSEE <- function(
       showModal(modalDialog(
         title = "My code", size = "l",fade = TRUE,
         footer = NULL, easyClose = TRUE,
-        verbatimTextOutput("codetext_modal")
+        aceEditor("acereport_r", mode="r",theme = "solarized_light",autoComplete = "live",
+                  value = paste0((.track_it_all(input, rObjects, se)),collapse="\n"),
+                  height="600px")
+        # verbatimTextOutput("codetext_modal")
         ))
     })
 
     output$codetext_modal <- renderPrint({
       print(.track_it_all(input, rObjects, se))
     })
-
+    # output$codehitext_modal <- renderUI({
+    #   highlight(file="testfile.R")
+    # })
+    
     #######################################################################
     # Multipanel UI generation section. ----
     # This is adapted from https://stackoverflow.com/questions/15875786/dynamically-add-plots-to-web-page-using-shiny.

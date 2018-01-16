@@ -24,6 +24,7 @@
 #' @importFrom rentrez entrez_summary
 #' @importFrom clipr write_clip
 #' @importFrom colourpicker colourInput
+#' @importFrom shinyAce aceEditor
 #'
 #' @author Aaron Lun \email{alun@@wehi.edu.au}
 #' @author Charlotte Soneson \email{charlotte.soneson@@uzh.ch}

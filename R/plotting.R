@@ -110,8 +110,6 @@
   cmds$plot[["theme_base"]] <- "theme_void() + "
   cmds$plot[["theme_custom"]] <- "theme(legend.position = 'bottom')\n"
 
-  print(cmds)
-
   # Combine all the commands to evaluate
   cmds_eval <- paste(
       paste(cmds$data, collapse = "\n"),

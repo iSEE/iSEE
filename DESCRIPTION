@@ -32,7 +32,8 @@ Imports:
     AnnotationDbi,
     DT,
     colourpicker,
-    clipr
+    clipr,
+    shinyAce
 Suggests:
     testthat,
     BiocStyle,

@@ -234,11 +234,16 @@ iSEE <- function(
     pObjects <- new.env()
     pObjects$memory <- memory
     pObjects$coordinates <- list()
+    pObjects$commands <- list(
+        redDim=character(nrow(memory$redDim)),
+        colData=character(nrow(memory$colData)),
+        geneExpr=character(nrow(memory$geneExpr))
+    )
 
     # info boxes, to keep on top of the page  on the left side?
 
     intro_firststeps <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"), sep=";", stringsAsFactors = FALSE)
-    
+
     observeEvent(input$tour_firststeps, {
       introjs(session,
               options = list(steps= intro_firststeps)
@@ -414,25 +419,10 @@ iSEE <- function(
               pObjects$memory$redDim[[field]][i0] <- as.integer(input[[.inputRedDim(field, i0)]])
           }
 
-          # Do not plot if gene name input is not a valid rownames(se)
-          if (identical(pObjects$memory$redDim[[.colorByField]][i0], .colorByGeneTableTitle)){
-              gene_selected <- .find_linked_gene(se, pObjects$memory$redDim[i0,][[.colorByGeneTable]], input)
-            validate(need(
-              gene_selected %in% rownames(se),
-              sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTableTitle)
-            ))
-          }
-          if (identical(pObjects$memory$redDim[[.colorByField]][i0], .colorByGeneTextTitle)){
-            validate(need(
-              input[[paste0("redDim", .colorByGeneText, i0)]] %in% rownames(se),
-              sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTextTitle)
-            ))
-          }
-
           # Creating the plot, with saved coordinates.
           p.out <- .make_redDimPlot(se, pObjects$memory$redDim[i0,], input, pObjects$coordinates)
-          pObjects$coordinates[[plot.name]] <- p.out$xy
           message(p.out$cmd)
+          pObjects$commands$redDim[i0] <- p.out$cmd
           p.out$plot
         })
       })
@@ -451,25 +441,10 @@ iSEE <- function(
               pObjects$memory$colData[[field]][i0] <- input[[.inputColData(field, i0)]]
           }
 
-          # Do not plot if text field is not a valid rownames(se)
-          if (identical(pObjects$memory$colData[[.colorByField]][i0], .colorByGeneTableTitle)){
-              gene_selected <- .find_linked_gene(se, pObjects$memory$colData[i0,][[.colorByGeneTable]], input)
-            validate(need(
-              gene_selected %in% rownames(se),
-              sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTableTitle)
-            ))
-          }
-          if (identical(pObjects$memory$colData[[.colorByField]][i0], .colorByGeneTextTitle)){
-            validate(need(
-              input[[paste0("colData", .colorByGeneText, i0)]] %in% rownames(se),
-              sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTextTitle)
-            ))
-          }
-
           # Creating the plot, with saved coordinates.
           p.out <- .make_colDataPlot(se, pObjects$memory$colData[i0,], input)
-          # pObjects$coordinates[[plot.name]] <- p.out$xy
           message(p.out$cmd)
+          pObjects$commands$colData[i0] <- p.out$cmd
           p.out$plot
         })
       })
@@ -488,33 +463,10 @@ iSEE <- function(
               pObjects$memory$geneExpr[[field]][i0] <- input[[.inputGeneExpr(field, i0)]]
           }
 
-          # Do not plot if gene name input is not a valid rownames(se)
-          ## Y-axis (always a gene table)
-          gene_selected <- .find_linked_gene(se, pObjects$memory$geneExpr[i0,][[.geneExprID]], input)
-          validate(need(
-              gene_selected %in% rownames(se),
-              sprintf("Invalid Y-axis '%s' input", .geneExprID)
-          ))
-          # X axis (gene table)
-          if (identical(pObjects$memory$geneExpr[[.geneExprXAxis]][i0], .geneExprXAxisGeneExprsTitle)){
-              gene_selected <- .find_linked_gene(se, pObjects$memory$geneExpr[i0,][[.geneExprXAxisGeneExprs]], input)
-              validate(need(
-                gene_selected %in% rownames(se),
-                sprintf("Invalid '%s' > '%s' input", .geneExprXAxis, .geneExprXAxisGeneExprsTitle)
-              ))
-          }
-          # Colour (gene table)
-          if (identical(pObjects$memory$geneExpr[[.colorByField]][i0], .colorByGeneTableTitle)){
-              gene_selected <- .find_linked_gene(se, pObjects$memory$geneExpr[i0,][[.colorByGeneTable]], input)
-              validate(need(
-                gene_selected %in% rownames(se),
-                sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTableTitle)
-              ))
-          }
-
           # Creating the plot.
           p.out <- .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input)
           message(p.out$cmd)
+          pObjects$commands$geneExpr[i0] <- p.out$cmd
           p.out$plot
         })
       })

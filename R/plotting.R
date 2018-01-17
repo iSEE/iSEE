@@ -14,8 +14,9 @@
     ))
   }
   if (identical(param_choices[[.colorByField]], .colorByGeneTextTitle)){
+    gene_selected <- param_choices[[.colorByGeneText]]
     validate(need(
-      gene_selected %in% rownames(se),
+      param_choices[[.colorByGeneText]] %in% rownames(se),
       sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTextTitle)
     ))
   }
@@ -55,7 +56,7 @@
       assay.choice <- param_choices[[.colorByGeneTableAssay]]
     } else {
       # Save the selected gene and assay names to later set the plot label
-      covariate.name <- param_choices[[.colorByGeneText]]
+      covariate.name <- gene_selected
       assay.choice <- param_choices[[.colorByGeneTextAssay]]
     }
     # Set the color to the selected gene
@@ -136,6 +137,7 @@
     ))
   }
   if (identical(param_choices[[.colorByField]], .colorByGeneTextTitle)){
+    gene_selected <- param_choices[[.colorByGeneText]]
     validate(need(
       gene_selected %in% rownames(se),
       sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTextTitle)
@@ -189,7 +191,7 @@
       assay.choice <- param_choices[[.colorByGeneTableAssay]]
     } else if (identical(color_choice, .colorByGeneTextTitle)) {
       # Save the selected gene and assay names to later set the plot label
-      covariate.name <- param_choices[[.colorByGeneText]]
+      covariate.name <- gene_selected
       assay.choice <- param_choices[[.colorByGeneTextAssay]]
     } else {
       stop("Not possible!")

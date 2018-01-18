@@ -290,13 +290,25 @@
   if (xchoice==.geneExprXAxisColDataTitle) { # colData column selected
     # Set X-axis to the selected colData name
     x_lab <- param_choices[[.geneExprXAxisColData]]
-    # Store the command to add X data
-    cmds$data[["x"]] <- sprintf(
-      "plot.data <- data.frame(X = colData(se)[,'%s'], row.names = colnames(se));",
-      x_lab
-    )
     # needed to later decided whether to group data in violins
     covariate_x <- colData(se)[,x_lab]
+    # Store the command to add X data
+    if (is.character(covariate_x)){
+      # turn characters into factors, as ggplot will during plotting
+      cmds$data[["x_factor"]] <- paste(
+        sprintf("## character colData '%s' coerced to factor", x_lab)
+      )
+      cmds$data[["x"]] <- sprintf(
+        "plot.data <- data.frame(X = factor(colData(se)[,'%s']), row.names = colnames(se));",
+        x_lab
+      )
+      covariate_x <- factor(covariate_x)
+    } else {
+      cmds$data[["x"]] <- sprintf(
+        "plot.data <- data.frame(X = colData(se)[,'%s'], row.names = colnames(se));",
+        x_lab
+      )
+    }
   } else if (xchoice==.geneExprXAxisGeneExprsTitle) { # gene selected
     # Store the command to add X data
     cmds$data[["x"]] <- sprintf(
@@ -362,7 +374,6 @@
   }
 
   is_groupable <- .is_groupable(covariate_x, covariate_color)
-  message("is_groupable:", is_groupable)
 
   if (!is_groupable) {
     fill_set <- FALSE
@@ -394,12 +405,9 @@
   cmds$plot[["theme_base"]] <- "theme_bw() +"
   cmds$plot[["theme_custom"]] <- "theme(legend.position = 'bottom')"
 
-  print(cmds)
-
   # Combine all the commands to evaluate
   cmds_eval <- paste(
     paste(cmds$data, collapse = "\n"),
-    "print(head(plot.data));",
     paste(cmds$plot, collapse = "\n\t"),
     sep  = "\n"
   )
@@ -469,38 +477,18 @@
 }
 
 .is_groupable <- function(x, color, max_levels = 12){
-  # TODO: asymmetric:
-  # can be grouped if x is discrete while color continuous
-  # cannot be grouped if x is continuous while color is discrete
   covariates <- list(x = x, color = color)
-  print(lapply(covariates, "head"))
   covariate_types <- vapply(covariates, "class", character(1), USE.NAMES = TRUE)
-  print(covariate_types)
-  covariates_factor <- sapply(covariates, "is.factor")
-  print(covariates_factor)
-  covariates_numeric <- sapply(covariates, "is.numeric")
-  print(covariates_numeric)
 
-  covariates_nlevel <- sapply(covariates, ".nlevels")
-  message("covariates_nlevel: ", covariates_nlevel)
-
-  # TODO: turn character into factors
   # TODO: interaction of factors
-  # TODO: final number of levels < max
+  # TODO: limit the number of levels
+  covariates_nlevel <- sapply(covariates, ".nlevels")
+
   if (is.factor(x)){
     return(TRUE)
   }
-
-  # TODO: deal with interaction of factors: # interaction(ff, ff, drop = TRUE)
-  # factors are grouped if fewer than max_levels levels
-  print(all(covariates_factor))
-  if (all(covariates_factor)){
-    return(all(covariates_nlevel <= max_levels))
-  }
-
-  # numeric values don't get grouped
-  print(any(covariates_numeric))
-  if (any(covariate_types == "numeric")){
+  
+  if (is.numeric(x)){
     return(FALSE)
   }
 

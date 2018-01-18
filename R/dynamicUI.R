@@ -92,9 +92,11 @@
                               inline=FALSE, 
                               choices=c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle),
                               selected=param_choices[[.colDataXAxis]]),
-                 selectInput(.inputColData(.colDataXAxisColData, ID), 
-                             label = "Column of interest (X-axis):",
-                             choices=colDataNames, selected=param_choices[[.colDataXAxisColData]])
+                 .conditionalPanelOnRadio(.inputColData(.colDataXAxis, ID), 
+                                          .colDataXAxisColDataTitle,
+                                          selectInput(.inputColData(.colDataXAxisColData, ID), 
+                                                      label = "Column of interest (X-axis):",
+                                                      choices=colDataNames, selected=param_choices[[.colDataXAxisColData]]))
                  )
         } else if (mode=="geneExpr") {
             obj <- plotOutput(.geneExprPlot(ID), brush = brush.opts)

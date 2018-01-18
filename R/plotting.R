@@ -1,4 +1,16 @@
 ############################################
+# Plotting constants -----
+############################################
+
+.all_aes_names <- c("x", "y", "color", "shape", "fill", "group")
+.all_aes_values <-
+  c("X", "Y", "ColorBy", "ShapeBy", "FillBy", "GroupBy")
+.all_labs_values <- .all_aes_values
+
+names(.all_aes_values) <- .all_aes_names
+names(.all_labs_values) <- .all_aes_names
+
+############################################
 # .make_redDimPlot  ----
 ############################################
 
@@ -23,8 +35,13 @@
 
   # List of commands to evaluate
   cmds <- list(
-      data = character(),
-      plot = character()
+    header = c(
+      strrep("#", 78),
+      "Header section for .make_redDimPlot",
+      strrep("#", 78)
+    ),
+    data = character(),
+    plot = character()
   )
 
 
@@ -110,14 +127,10 @@
     )
   }
   cmds$plot[["theme_base"]] <- "theme_void() + "
-  cmds$plot[["theme_custom"]] <- "theme(legend.position = 'bottom')\n"
+  cmds$plot[["theme_custom"]] <- "theme(legend.position = 'bottom')"
 
   # Combine all the commands to evaluate
-  cmds_eval <- paste(
-      paste(cmds$data, collapse = "\n"),
-      paste(cmds$plot, collapse = "\n\t"),
-      sep  = "\n"
-  )
+  cmds_eval <- .build_cmd_eval(cmds)
 
   return(list(cmd = cmds_eval, plot = eval(parse(text = cmds_eval))))
 }
@@ -147,8 +160,13 @@
 
   # List of commands to evaluate
   cmds <- list(
-      data = character(),
-      plot = character()
+    header = c(
+      strrep("#", 78),
+      "Header section for .make_colDataPlot",
+      strrep("#", 78)
+    ),
+    data = character(),
+    plot = character()
   )
 
   # Store the command to prepare Y-axis data (required)
@@ -228,13 +246,9 @@
   cmds$plot[["theme_custom"]] <- "theme(legend.position = 'bottom')"
 
   # Combine all the commands to evaluate
-  cmds_eval <- paste(
-      paste(cmds$data, collapse = "\n"),
-      paste(cmds$plot, collapse = "\n\t"),
-      sep  = "\n"
-  )
+  cmds_eval <- .build_cmd_eval(cmds)
 
-    return(list(cmd = cmds_eval, plot = eval(parse(text = cmds_eval))))
+  return(list(cmd = cmds_eval, plot = eval(parse(text = cmds_eval))))
 }
 
 ############################################
@@ -299,8 +313,13 @@
 
   # List of commands to evaluate
   cmds <- list(
-      data = character(),
-      plot = character()
+    header = c(
+      strrep("#", 78),
+      "Header section for .make_geneExprPlot",
+      strrep("#", 78)
+    ),
+    data = character(),
+    plot = character()
   )
 
   # Prepare X-axis data and axis label
@@ -438,13 +457,9 @@
   )
   cmds$plot[["theme_base"]] <- "theme_bw() +"
   cmds$plot[["theme_custom"]] <- "theme(legend.position = 'bottom')"
-
+  
   # Combine all the commands to evaluate
-  cmds_eval <- paste(
-    paste(cmds$data, collapse = "\n"),
-    paste(cmds$plot, collapse = "\n\t"),
-    sep  = "\n"
-  )
+  cmds_eval <- .build_cmd_eval(cmds)
 
   return(list(cmd = cmds_eval, plot = eval(parse(text = cmds_eval))))
 
@@ -530,4 +545,17 @@
 
   # fallback
   return(TRUE)
+}
+
+.build_cmd_eval <- function(cmds){
+  cmds$header <- paste("##", cmds$header, sep = " ")
+  
+  final_cmd <- paste(
+    paste(cmds$header, collapse = "\n"),
+    paste(cmds$data, collapse = "\n"),
+    paste(cmds$plot, collapse = "\n\t"),
+    sep  = "\n"
+  )
+  
+  return(final_cmd)
 }

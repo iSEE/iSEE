@@ -147,7 +147,7 @@
             param <- list(tags$div(class = "panel-group", role = "tablist",
                 # Panel for fundamental plot parameters. 
                 do.call(collapseBox, c(list(id=paste0(mode, .plotParamPanelOpen, ID), 
-                                            title=.plotParamPanelTitle, 
+                                            title="Plotting parameters",
                                             open=param_choices[[.plotParamPanelOpen]]),
                                        plot.param)),
 
@@ -211,7 +211,7 @@
 
     collapseBox(
         id = paste0(mode, .colorParamPanelOpen, ID),
-        title = .colorParamPanelTitle,
+        title = "Coloring parameters",
         open = param_choices[[.colorParamPanelOpen]],
         radioButtons(colorby.field, label="Color by:", inline=TRUE,
                      choices=c(.colorByNothingTitle, .colorByColDataTitle, 
@@ -244,7 +244,7 @@
 
     collapseBox(
         id=paste0(mode, .brushParamPanelOpen, ID),
-        title = .brushParamPanelTitle,
+        title = "Brushing parameters",
         open = param_choices[[.brushParamPanelOpen]],
         checkboxInput(paste0(mode, .brushActive, ID), label="Transmit brush", 
                       value=param_choices[[.brushActive]]), 

@@ -44,7 +44,6 @@
 .colorByGeneTableTitle <- "Gene table"
 .colorByGeneTextTitle <- "Gene text"
 
-.colorParamPanelTitle <- "Coloring parameters"
 .colorParamPanelOpen <- "ColorPanelOpen"
 
 .colorByField <- "ColorBy"
@@ -55,7 +54,6 @@
 .colorByGeneTextAssay <- "ColorByGeneTextAssay"
 
 # Plot brushing parameters. ----
-.brushParamPanelTitle <- "Brushing parameters"
 .brushParamPanelOpen <- "BrushPanelOpen"
 
 .brushField <- "Brush"
@@ -74,7 +72,6 @@ ALLEXTRAS <- c(.colorByField, .colorByColData, .colorByGeneTable, .colorByGeneTa
                .brushByPlot, .brushEffect, .brushColor, .brushTransAlpha)
 
 # Other parameter panel constants. ----
-.plotParamPanelTitle <- "Plotting parameters"
 .plotParamPanelOpen <- "PlotPanelOpen"
 .plotParamPanelName <- "ParamPanel"
 
@@ -106,13 +103,3 @@ names(rev.translation) <- translation
     }
     return(list(Type=raw.str, ID=ID))
 }
-
-# Plotting constants -----
-
-.all_aes_names <- c("x", "y", "color", "shape", "fill", "group")
-.all_aes_values <-
-    c("X", "Y", "ColorBy", "ShapeBy", "FillBy", "GroupBy")
-.all_labs_values <- .all_aes_values
-
-names(.all_aes_values) <- .all_aes_names
-names(.all_labs_values) <- .all_aes_names

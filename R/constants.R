@@ -99,13 +99,3 @@ names(rev.translation) <- translation
     }
     return(list(Type=raw.str, ID=ID))
 }
-
-# Plotting constants -----
-
-.all_aes_names <- c("x", "y", "color", "shape", "fill", "group")
-.all_aes_values <-
-    c("X", "Y", "ColorBy", "ShapeBy", "FillBy", "GroupBy")
-.all_labs_values <- .all_aes_values
-
-names(.all_aes_values) <- .all_aes_names
-names(.all_labs_values) <- .all_aes_names

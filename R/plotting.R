@@ -1,4 +1,16 @@
 ############################################
+# Plotting constants -----
+############################################
+
+.all_aes_names <- c("x", "y", "color", "shape", "fill", "group")
+.all_aes_values <-
+  c("X", "Y", "ColorBy", "ShapeBy", "FillBy", "GroupBy")
+.all_labs_values <- .all_aes_values
+
+names(.all_aes_values) <- .all_aes_names
+names(.all_labs_values) <- .all_aes_names
+
+############################################
 # .make_redDimPlot  ----
 ############################################
 
@@ -23,12 +35,19 @@
 
   # List of commands to evaluate
   cmds <- list(
-      data = character(),
-      plot = character()
+    header = c(
+      strrep("#", 78),
+      "Header section for .make_redDimPlot",
+      strrep("#", 78)
+    ),
+    data = character(),
+    plot = character()
   )
+
 
   cmds$data[["reducedDim"]] <- sprintf(
     "red.dim <- reducedDim(se, '%s');", param_choices[[.redDimType]])
+  # Store the command to prepare X and Y axes data (required)
   cmds$data[["xy"]] <- sprintf(
     "plot.data <- data.frame(X = red.dim[, %s], Y = red.dim[, %s]);",
     param_choices[[.redDimXAxis]],
@@ -40,7 +59,6 @@
   # Set a boolean to later build an aes with color
   # Assume that it is the case, unset later if false
   color_set <- TRUE
-
   if (color_choice==.colorByColDataTitle) {
     # Save the selected colData name to later set the plot label
     covariate.name <- param_choices[[.colorByColData]]
@@ -109,14 +127,10 @@
     )
   }
   cmds$plot[["theme_base"]] <- "theme_void() + "
-  cmds$plot[["theme_custom"]] <- "theme(legend.position = 'bottom')\n"
+  cmds$plot[["theme_custom"]] <- "theme(legend.position = 'bottom')"
 
   # Combine all the commands to evaluate
-  cmds_eval <- paste(
-      paste(cmds$data, collapse = "\n"),
-      paste(cmds$plot, collapse = "\n\t"),
-      sep  = "\n"
-  )
+  cmds_eval <- .build_cmd_eval(cmds)
 
   return(list(cmd = cmds_eval, plot = eval(parse(text = cmds_eval))))
 }
@@ -146,8 +160,13 @@
 
   # List of commands to evaluate
   cmds <- list(
-      data = character(),
-      plot = character()
+    header = c(
+      strrep("#", 78),
+      "Header section for .make_colDataPlot",
+      strrep("#", 78)
+    ),
+    data = character(),
+    plot = character()
   )
 
   # Store the command to prepare Y-axis data (required)
@@ -159,17 +178,15 @@
   # Prepare X-axis data (optional; if absent, rank by Y value)
   if (identical(param_choices[[.colDataXAxis]], .colDataXAxisNothingTitle)) {
     # TODO: allow toggling rank decreasing/increasing, note that factors cannot be negated
-    # Store the command to add X data
-    cmds$data[["x"]] <- 'plot.data$X <- rank(plot.data$Y, ties.method = "first");'
     # In that case, do not show any X-axis label (applies below)
     x_lab <- "Rank"
-  } else {
     # Store the command to add X data
-    cmds$data[["x"]] <- sprintf(
-      "plot.data$X <- colData(se)[,'%s'];", param_choices[[.colDataXAxisColData]]
-    )
+    cmds$data[["x"]] <- 'plot.data$X <- rank(plot.data$Y, ties.method = "first");'
+  } else {
     # Set X-axis to the selected colData name
     x_lab <- param_choices[[.colDataXAxisColData]]
+    # Store the command to add X data
+    cmds$data[["x"]] <- sprintf("plot.data$X <- colData(se)[,'%s'];", x_lab)
   }
 
   # Process the color choice (if any)
@@ -229,202 +246,205 @@
   cmds$plot[["theme_custom"]] <- "theme(legend.position = 'bottom')"
 
   # Combine all the commands to evaluate
-  cmds_eval <- paste(
-      paste(cmds$data, collapse = "\n"),
-      paste(cmds$plot, collapse = "\n\t"),
-      sep  = "\n"
-  )
+  cmds_eval <- .build_cmd_eval(cmds)
 
-    return(list(cmd = cmds_eval, plot = eval(parse(text = cmds_eval))))
+  return(list(cmd = cmds_eval, plot = eval(parse(text = cmds_eval))))
 }
+
+############################################
+# .make_geneExprPlot  ----
+############################################
 
 .make_geneExprPlot <- function(se, param_choices, input)
 # Makes a gene expression plot.
 {
   # Do not plot if gene name input is not a valid rownames(se)
   ## Y-axis (always a gene table)
-  gene_selected <- .find_linked_gene(se, param_choices[[.geneExprID]], input)
+  gene_selected_y <- .find_linked_gene(se, param_choices[[.geneExprID]], input)
   validate(need(
-      gene_selected %in% rownames(se),
+      gene_selected_y %in% rownames(se),
       sprintf("Invalid Y-axis '%s' input", .geneExprID)
   ))
-  # X axis (gene table)
+  ## X axis (gene table)
   if (identical(param_choices[[.geneExprXAxis]], .geneExprXAxisGeneExprsTitle)){
-      gene_selected <- .find_linked_gene(se, param_choices[[.geneExprXAxisGeneExprs]], input)
+      gene_selected_x <- .find_linked_gene(se, param_choices[[.geneExprXAxisGeneExprs]], input)
       validate(need(
-        gene_selected %in% rownames(se),
+        gene_selected_x %in% rownames(se),
         sprintf("Invalid '%s' > '%s' input", .geneExprXAxis, .geneExprXAxisGeneExprsTitle)
       ))
   }
-  # Colour (gene table)
+  ## Colour (gene table)
   if (identical(param_choices[[.colorByField]], .colorByGeneTableTitle)){
-      gene_selected <- .find_linked_gene(se, param_choices[[.colorByGeneTable]], input)
+      gene_selected_color <- .find_linked_gene(se, param_choices[[.colorByGeneTable]], input)
       validate(need(
-        gene_selected %in% rownames(se),
+        gene_selected_color %in% rownames(se),
+        sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTableTitle)
+      ))
+  }
+  ## Colour (gene table)
+  if (identical(param_choices[[.colorByField]], .colorByGeneTextTitle)){
+      gene_selected_color <- param_choices[[.colorByGeneText]]
+      validate(need(
+        gene_selected_color %in% rownames(se),
         sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTableTitle)
       ))
   }
 
-  # Get x axis
+  # Shorthand
+  assay.choice <- param_choices[[.geneExprAssay]]
+
+  # List of commands to evaluate
+  cmds <- list(
+    header = c(
+      strrep("#", 78),
+      "Header section for .make_geneExprPlot",
+      strrep("#", 78)
+    ),
+    data = character(),
+    plot = character()
+  )
+
+  # Prepare X-axis data and axis label
   xchoice <- param_choices[[.geneExprXAxis]]
-  if (xchoice==.geneExprXAxisColDataTitle) { # colData column
-    byx <- param_choices[[.geneExprXAxisColData]]
-    show_violin <- TRUE
-    cmd_x <- sprintf("xcoord <- se[['%s']];",
-                     param_choices[[.geneExprXAxisColData]])
-  } else if (xchoice==.geneExprXAxisGeneExprsTitle) { # gene
-    byx <- .find_linked_gene(se, param_choices[[.geneExprXAxisGeneExprs]], input)
-    show_violin <- FALSE
-    cmd_x <- sprintf("xcoord <- assay(se, '%s')['%s', ];",
-                     param_choices[[.geneExprAssay]],
-                     byx)
-  } else { ## no x axis variable specified
-    byx <- NULL
-    show_violin <- TRUE
-    cmd_x <- NULL
+  if (xchoice==.geneExprXAxisColDataTitle) { # colData column selected
+    # Set X-axis to the selected colData name
+    x_lab <- param_choices[[.geneExprXAxisColData]]
+    # needed to later decided whether to group data in violins
+    covariate_x <- colData(se)[,x_lab]
+    # Store the command to add X data
+    if (is.character(covariate_x)){
+      # turn characters into factors, as ggplot will during plotting
+      cmds$data[["x_factor"]] <- paste(
+        sprintf("## character colData '%s' coerced to factor for X value", x_lab)
+      )
+      cmds$data[["x"]] <- sprintf(
+        "plot.data <- data.frame(X = factor(colData(se)[,'%s']), row.names = colnames(se));",
+        x_lab
+      )
+      covariate_x <- factor(covariate_x)
+    } else {
+      cmds$data[["x"]] <- sprintf(
+        "plot.data <- data.frame(X = colData(se)[,'%s'], row.names = colnames(se));",
+        x_lab
+      )
+    }
+  } else if (xchoice==.geneExprXAxisGeneExprsTitle) { # gene selected
+    # Store the command to add X data
+    cmds$data[["x"]] <- sprintf(
+      "plot.data <- data.frame(X = assay(se, '%s')['%s',], row.names = colnames(se));",
+      assay.choice,
+      gene_selected_x
+    )
+    # Set X-axis to the selected gene identified
+    x_lab <- .gene_axis_label(gene_selected_x, assay.choice, multiline = FALSE)
+    # needed to later decided whether to group data in violins
+    covariate_x <- assay(se, assay.choice)[gene_selected_x,]
+  } else { ## no x axis variable specified: show single violin
+    x_lab <- '' # to hide the X axis label
+    cmds$data[["x"]] <- sprintf(
+      "plot.data <- data.frame(X = factor(rep('%s', ncol(se))), row.names = colnames(se));",
+      gene_selected_y
+    )
+    # needed to later decided whether to group data in violins
+    covariate_x <- factor(rep(gene_selected_y, ncol(se)))
   }
 
-  # Get variable to color by
+  # Store the Y-axis label (note that input was previously validated)
+  y_lab <- .gene_axis_label(gene_selected_y, assay.choice, multiline = FALSE)
+  # Store the command to prepare Y-axis data (required)
+  cmds$data[["y"]] <- sprintf(
+    "plot.data$Y <- assay(se, '%s')['%s',];", assay.choice, gene_selected_y
+  )
+
+  # Process the color choice (if any)
   color_choice <- param_choices[[.colorByField]]
-  if (color_choice==.colorByColDataTitle) {
+  # Set a boolean to later build an aes with color
+  # Assume that it is the case, unset later if false
+  color_set <- TRUE; fill_set <- color_set
+  if (identical(color_choice, .colorByColDataTitle)) {
+    # Save the selected colData name to later set the plot label
     covariate.name <- param_choices[[.colorByColData]]
-    covariate <- colData(se)[,covariate.name]
-    cmd_col <- sprintf("covariate <- se[['%s']];", covariate.name)
-  } else if (color_choice==.colorByGeneTableTitle || color_choice==.colorByGeneTextTitle) {
-    if (color_choice==.colorByGeneTableTitle) {
+    # Store the command to add color data
+    covariate_color <- colData(se)[,covariate.name]
+    if (is.character(covariate_color)){
+      # turn characters into factors, as ggplot will during plotting
+      cmds$data[["color_factor"]] <- paste(
+        sprintf("## character colData '%s' coerced to factor for color value", x_lab)
+      )
+      cmds$data[["color"]] <- sprintf(
+        "plot.data$ColorBy <- factor(colData(se)[,'%s']);", covariate.name)
+      cmds$data[["fill"]] <- "plot.data$FillBy <- plot.data$ColorBy;"
+      covariate_color <- factor(covariate_color)
+    } else {
+      cmds$data[["color"]] <- sprintf("plot.data$ColorBy <- colData(se)[,'%s'];", covariate.name)
+      fill_set <- FALSE
+    }
+  } else if (identical(color_choice, .colorByGeneTableTitle) ||
+      identical(color_choice, .colorByGeneTextTitle)) {
+    if (identical(color_choice, .colorByGeneTableTitle)) {
+      # Save the selected gene and assay names to later set the plot label
       covariate.name <- .find_linked_gene(se, param_choices[[.colorByGeneTable]], input)
-      covariate.assay.choice <- param_choices[[.colorByGeneTableAssay]]
+      assay.choice <- param_choices[[.colorByGeneTableAssay]]
     } else {
+       # Save the selected gene and assay names to later set the plot label
       covariate.name <- param_choices[[.colorByGeneText]]
-      if (!covariate.name %in% rownames(se)) {
-        covariate.name <- NULL
-      }
-      covariate.assay.choice <- param_choices[[.colorByGeneTextAssay]]
+      assay.choice <- param_choices[[.colorByGeneTextAssay]]
     }
-    if (!is.null(covariate.name)) {
-      covariate <- assay(se, covariate.assay.choice)[covariate.name,]
-      cmd_col <- sprintf("covariate <- assay(se, '%s')['%s', ];",
-                         covariate.assay.choice, covariate.name)
-    } else {
-      covariate.name <- NULL
-      covariate <- NULL
-      cmd_col <- NULL
-    }
+    cmds$data[["color"]] <- sprintf(
+      "plot.data$ColorBy <- assay(se, '%s')['%s',];",
+      assay.choice, covariate.name)
+    cmds$data[["fill"]] <- "plot.data$FillBy <- plot.data$ColorBy;"
+     # to later decide whether data can be grouped
+    covariate_color <- assay(se, assay.choice)[covariate.name,]
   } else {
-    covariate.name <- NULL
-    covariate <- NULL
-    cmd_col <- NULL
-  }
-  cmd_samp <- "samples.long <- data.frame(row.names = colnames(se));"
-  if (!is.null(covariate.name)) {
-    cmd_samp <- paste(cmd_samp,
-                      sprintf("samples.long[['%s']] <- covariate;",
-                              covariate.name),
-                      sep = "\n")
-  }
-  if (!is.null(byx)) {
-    cmd_samp <- paste(cmd_samp,
-                      sprintf("samples.long[['%s']] <- xcoord;", byx),
-                      sep = "\n")
+    # Color choice is therefore 'None'
+    covariate.name <- NA_character_ # do not plot label
+    covariate_color <- NULL # to later decide whether data can be grouped
+    color_set <- FALSE; fill_set <- color_set # to later build an aes without color
   }
 
-  # Getting the gene choice for the y axis
-  cur.gene <- .find_linked_gene(se, param_choices[[.geneExprID]], input)
+  is_groupable <- .is_groupable(covariate_x, covariate_color)
 
-  if (!is.null(cur.gene)) {
-    # Get expression values and melt
-    ylab <- .gene_axis_label(cur.gene, param_choices[[.geneExprAssay]], multiline = FALSE)
-
-    cmd_y <- sprintf("exprs.mat <- as.matrix(assay(se, '%s'))['%s', , drop = FALSE];\nevals.long <- reshape2::melt(exprs.mat, value.name = 'evals');\ncolnames(evals.long) <- c('Feature', 'Cell', 'evals');",
-                     param_choices[[.geneExprAssay]], cur.gene)
-
-    ## Evaluate data generation part of final command
-    cmd_prep <- paste(cmd_x, cmd_col, cmd_samp, cmd_y)
-    eval(parse(text = cmd_prep))
-
-    if (!is.null(evals.long)) {
-      cmd_obj <- sprintf("object <- cbind(evals.long, samples.long);")
-      eval(parse(text = cmd_obj))
-
-      # Define aesthetics
-      aesth <- list()
-      if (is.null(byx)) { # no x axis variable specified
-        aesth$x <- "Feature"
-        xlab <- NULL
-      } else if (xchoice==.geneExprXAxisGeneExprsTitle){ # gene expression on x axis
-        aesth$x <- byx
-        xlab <- sprintf("%s (%s)", byx, param_choices[[.geneExprAssay]])
-      } else { # colData column
-        aesth$x <- byx
-        xlab <- byx
-      }
-
-      aesth$y <- "evals"
-      if (!is.null(covariate)) {
-        aesth$color <- covariate.name
-      }
-      if (is.null(aesth$color) && is.null(byx)) {
-        aesth$color <- "Feature"
-      }
-
-      # Group values if x axis is categorical with at most 5 categories
-      group_by_x <- (show_violin &&
-                       (!is.numeric(object[[as.character(aesth$x)]]) ||
-                          nlevels(as.factor(object[[as.character(aesth$x)]])) <= 5))
-      if (group_by_x) {
-        aesth$group <- aesth$x
-      } else {
-        aesth$group <- 1
-        show_violin <- FALSE
-      }
-
-      cmd_plot <- sprintf("ggplot(object, aes(x = `%s`, y = `%s`%s, group = %s)) + \n\txlab('%s') + ylab('%s')",
-                          aesth$x, aesth$y,
-                          ifelse(is.null(aesth$color), "", paste0(", color = \`", aesth$color, "\`")),
-                          ifelse(aesth$group==1, 1, paste0("\`", as.character(aesth$group), "\`")),
-                          ifelse(is.null(xlab), "", xlab),
-                          ylab)
-
-      if (is.numeric(aesth$x)) {
-        cmd_plot <- paste0(cmd_plot,
-                           sprintf(" + \n\tgeom_point(alpha = 0.6)"))
-      } else {
-        cmd_plot <- paste0(cmd_plot,
-                           sprintf(" + \n\tgeom_jitter(alpha = 0.6, position = position_jitter(height = 0))"))
-      }
-      if (show_violin) {
-        if (!is.null(aesth$color) && aesth$color == as.symbol("Feature")) {
-          cmd_plot <- paste0(cmd_plot,
-                             sprintf(" + \n\tgeom_violin(aes(fill = Feature), color = 'gray60', alpha = 0.2, scale = 'width')"))
-        } else {
-          cmd_plot <- paste0(cmd_plot,
-                             sprintf(" + \n\tgeom_violin(color = 'gray60', alpha = 0.3, fill = 'gray80', scale = 'width')"))
-        }
-      }
-
-      if (is.null(covariate.name)) {
-        cmd_plot <- paste0(
-          cmd_plot, "+ \n\tguides(fill = 'none', color = 'none')"
-        )
-      } else {
-          if (color_choice==.colorByGeneTableTitle || color_choice==.colorByGeneTextTitle){
-            color_lab <- .gene_axis_label(
-              covariate.name, covariate.assay.choice, multiline = TRUE)
-            cmd_plot <- paste0(
-              cmd_plot, sprintf(
-                "+ \n\tlabs(fill = '%s', color = '%s')", # TODO: evaluates OK; prints dirty
-                color_lab, color_lab
-              )
-            )
-          }
-      }
-
-      cmd_plot <- paste0(cmd_plot, "+ \n\ttheme_bw() + theme(legend.position = 'bottom')\n")
-      cmd <- paste(cmd_x, cmd_col, cmd_samp, cmd_y, cmd_obj, cmd_plot, sep = "\n")
-
-      return(list(cmd = cmd, plot = eval(parse(text = cmd_plot))))
-    }
+  if (!is_groupable) {
+    fill_set <- FALSE
   }
+
+  # Store the ggplot commands
+  cmds$plot[["ggplot"]] <- sprintf(
+    "ggplot(plot.data, %s) +",
+    .build_aes(color = color_set, fill = fill_set)
+  )
+
+  if (is_groupable){
+    cmds$plot[["violin"]] <-
+      "geom_violin(alpha = 0.2, scale = 'width') +"
+  }
+
+  if (is_groupable) {
+    are_factor <- vapply(list(covariate_x, covariate_color), "is.factor", logical(1))
+    if (all(are_factor)){
+      cmds$plot[["point"]] <-
+        "geom_jitter(alpha = 0.6, position = position_jitterdodge(jitter.height = 0, dodge.width = 0.8, jitter.width = 0.2)) +"
+    } else 
+      cmds$plot[["point"]] <-
+        "geom_jitter(alpha = 0.6, position = position_jitter(height = 0)) +"
+  } else {
+    cmds$plot[["point"]] <- "geom_point(alpha = 0.6) +"
+  }
+  cmds$plot[["labs"]] <- .build_labs(
+    x = x_lab,
+    y = y_lab,
+    color = covariate.name,
+    fill = covariate.name
+  )
+  cmds$plot[["theme_base"]] <- "theme_bw() +"
+  cmds$plot[["theme_custom"]] <- "theme(legend.position = 'bottom')"
+  
+  # Combine all the commands to evaluate
+  cmds_eval <- .build_cmd_eval(cmds)
+
+  return(list(cmd = cmds_eval, plot = eval(parse(text = cmds_eval))))
+
 }
 
 .find_linked_gene <- function(se, link, input)
@@ -472,4 +492,52 @@
 
 .make_single_lab <- function(name, value){
     sprintf("%s = '%s'", name, value)
+}
+
+.nlevels <- function(covariate){
+  # numeric covariates are assume to have infinite levels
+  if (is.numeric(covariate)){
+    return(Inf)
+  }
+  # default answer for factors
+  if (is.factor(covariate)){
+    return(nlevels(covariate))
+  }
+  # default answer for character would be NULL
+  return(length(unique(covariate)))
+}
+
+.is_groupable <- function(x, color, max_levels = 24){
+  covariates <- list(x = x, color = color)
+  covariate_types <- vapply(covariates, "class", character(1), USE.NAMES = TRUE)
+  
+  if (is.factor(x)){
+    if (is.factor(color)){
+      total_levels <- nlevels(interaction(x, color, drop = TRUE))
+      return(total_levels <= max_levels)
+    } else {
+      return(nlevels(x) <= max_levels)
+    }
+    
+  }
+  
+  if (is.numeric(x)){
+    return(FALSE)
+  }
+
+  # fallback
+  return(TRUE)
+}
+
+.build_cmd_eval <- function(cmds){
+  cmds$header <- paste("##", cmds$header, sep = " ")
+  
+  final_cmd <- paste(
+    paste(cmds$header, collapse = "\n"),
+    paste(cmds$data, collapse = "\n"),
+    paste(cmds$plot, collapse = "\n\t"),
+    sep  = "\n"
+  )
+  
+  return(final_cmd)
 }

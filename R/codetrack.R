@@ -58,7 +58,7 @@
     # cat(length(reddimfields),"params: ")
     for (field in reddimfields)
       tracked_code_reddims <- c(tracked_code_reddims, paste0(.inputRedDim(field,i)," <- ",
-                                             as.character(input[[.inputRedDim(field,i)]])))
+                                                             as.character(input[[.inputRedDim(field,i)]])))
     
     gene_from_table <- rownames(se)[
       input[[paste0("geneStatTable",
@@ -143,11 +143,10 @@
   # cat("\n")
   # 
   
-  tracked_code_printed <- cat(paste(c(tracked_code_reddims,
-                                      tracked_code_coldata,
-                                      tracked_code_geneexp,
-                                      ""), collapse = "\n"))
+  tracked_code_printed <- paste(c(tracked_code_reddims,
+                                  tracked_code_coldata,
+                                  tracked_code_geneexp,
+                                  ""), collapse = "\n")
   
   return(tracked_code_printed)
-  
 }

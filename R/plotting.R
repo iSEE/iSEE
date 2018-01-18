@@ -385,7 +385,6 @@
   }
 
   is_groupable <- .is_groupable(covariate_x, covariate_color)
-  message(is_groupable)
 
   if (!is_groupable) {
     fill_set <- FALSE
@@ -403,8 +402,13 @@
   }
 
   if (is_groupable) {
-    cmds$plot[["point"]] <-
-      "geom_jitter(alpha = 0.6, position = position_jitter(height = 0)) +"
+    are_factor <- vapply(list(covariate_x, covariate_color), "is.factor", logical(1))
+    if (all(are_factor)){
+      cmds$plot[["point"]] <-
+        "geom_jitter(alpha = 0.6, position = position_jitterdodge(jitter.height = 0, dodge.width = 0.8, jitter.width = 0.2)) +"
+    } else 
+      cmds$plot[["point"]] <-
+        "geom_jitter(alpha = 0.6, position = position_jitter(height = 0)) +"
   } else {
     cmds$plot[["point"]] <- "geom_point(alpha = 0.6) +"
   }
@@ -488,17 +492,13 @@
   return(length(unique(covariate)))
 }
 
-.is_groupable <- function(x, color, max_levels = 12){
+.is_groupable <- function(x, color, max_levels = 24){
   covariates <- list(x = x, color = color)
   covariate_types <- vapply(covariates, "class", character(1), USE.NAMES = TRUE)
-
-  # TODO: interaction of factors
-  # TODO: limit the number of levels
-
+  
   if (is.factor(x)){
     if (is.factor(color)){
       total_levels <- nlevels(interaction(x, color, drop = TRUE))
-      message("total_levels:", total_levels)
       return(total_levels <= max_levels)
     } else {
       return(nlevels(x) <= max_levels)

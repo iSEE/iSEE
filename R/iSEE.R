@@ -464,7 +464,7 @@ iSEE <- function(
         i0 <- i
         output[[.geneExprPlot(i0)]] <- renderPlot({
           # Updating parameters.
-          for (field in c(.geneExprID, .geneExprAssay, .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneExprs, ALLEXTRAS)) {
+          for (field in c(.geneExprAssay, .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneTable, .geneExprXAxisGeneText, .geneExprYAxis, .geneExprYAxisGeneTable, .geneExprYAxisGeneText, ALLEXTRAS)) {
               pObjects$memory$geneExpr[[field]][i0] <- input[[.inputGeneExpr(field, i0)]]
           }
 

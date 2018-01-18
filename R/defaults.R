@@ -12,7 +12,7 @@
 #'
 #' @section Reduced dimension plot parameters:
 #' \describe{
-#' \item{\code{Type}:}{Characater, what entry of \code{reducedDims(se)} should be shown?
+#' \item{\code{Type}:}{Character, what entry of \code{reducedDims(se)} should be shown?
 #' By default, the first entry is shown.}
 #' \item{\code{XAxis}:}{Integer, which component should be shown on the x-axis?
 #' Defaults to 1.}
@@ -30,8 +30,10 @@
 #' Defaults to \code{"None"}.}
 #' \item{\code{XAxisColData}:}{Character, what column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
 #' Defaults to the first entry of \code{colData(se)}.}
-#' \item{\code{XAxisGeneExprs}:}{Character, which gene's expression should be shown on the x-axis if \code{XAxis="Gene expression"}? 
+#' \item{\code{XAxisGeneText}:}{Character, which gene's expression should be shown on the x-axis if \code{XAxis="Gene text"}? 
 #' Defaults to the name of the first row in \code{se}, using expression values specified in \code{Assay}.}
+#' \item{\code{XAxisGeneTable}:}{Character, which gene statistic table should be used to choose a gene to put on the x-axis if \code{XAxis="Gene table"}? 
+#' Defaults to an empty string, which means that the first available table will be used.}
 #' }
 #'
 #' @section Column data plot parameters:
@@ -135,11 +137,14 @@ geneExprPlotDefaults <- function(se, max.plots) {
     covariates <- colnames(colData(se))
 
     out <- DataFrame(matrix(0, max.plots, 0))
-    out[[.geneExprID]] <- ""
     out[[.geneExprAssay]] <- def.assay
     out[[.geneExprXAxis]] <- .geneExprXAxisNothingTitle
     out[[.geneExprXAxisColData]] <- covariates[1] 
-    out[[.geneExprXAxisGeneExprs]] <- 1
+    out[[.geneExprXAxisGeneText]] <- ""
+    out[[.geneExprXAxisGeneTable]] <- ""
+    out[[.geneExprYAxisGeneText]] <- ""
+    out[[.geneExprYAxisGeneTable]] <- ""
+    out[[.geneExprYAxis]] <- .geneExprYAxisGeneTableTitle
 
     out <- .add_general_parameters(out, covariates[1], def.assay)
     return(out)

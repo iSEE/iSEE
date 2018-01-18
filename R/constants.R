@@ -37,7 +37,6 @@
 .colorByGeneTableTitle <- "Gene table"
 .colorByGeneTextTitle <- "Gene text"
 
-.colorParamPanelTitle <- "Coloring parameters"
 .colorParamPanelOpen <- "ColorPanelOpen"
 
 .colorByField <- "ColorBy"
@@ -48,7 +47,6 @@
 .colorByGeneTextAssay <- "ColorByGeneTextAssay"
 
 # Plot brushing parameters.
-.brushParamPanelTitle <- "Brushing parameters"
 .brushParamPanelOpen <- "BrushPanelOpen"
 
 .brushField <- "Brush"
@@ -67,7 +65,6 @@ ALLEXTRAS <- c(.colorByField, .colorByColData, .colorByGeneTable, .colorByGeneTa
                .brushByPlot, .brushEffect, .brushColor, .brushTransAlpha)
 
 # Other parameter panel constants.
-.plotParamPanelTitle <- "Plotting parameters"
 .plotParamPanelOpen <- "PlotPanelOpen"
 .plotParamPanelName <- "ParamPanel"
 

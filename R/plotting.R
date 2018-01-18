@@ -296,7 +296,7 @@
     if (is.character(covariate_x)){
       # turn characters into factors, as ggplot will during plotting
       cmds$data[["x_factor"]] <- paste(
-        sprintf("## character colData '%s' coerced to factor", x_lab)
+        sprintf("## character colData '%s' coerced to factor for X value", x_lab)
       )
       cmds$data[["x"]] <- sprintf(
         "plot.data <- data.frame(X = factor(colData(se)[,'%s']), row.names = colnames(se));",
@@ -346,9 +346,20 @@
     # Save the selected colData name to later set the plot label
     covariate.name <- param_choices[[.colorByColData]]
     # Store the command to add color data
-    cmds$data[["color"]] <- sprintf("plot.data$ColorBy <- colData(se)[,'%s'];", covariate.name)
-    cmds$data[["fill"]] <- "plot.data$FillBy <- plot.data$ColorBy;"
-    covariate_color <-  colData(se)[,covariate.name]
+    covariate_color <- colData(se)[,covariate.name]
+    if (is.character(covariate_color)){
+      # turn characters into factors, as ggplot will during plotting
+      cmds$data[["color_factor"]] <- paste(
+        sprintf("## character colData '%s' coerced to factor for color value", x_lab)
+      )
+      cmds$data[["color"]] <- sprintf(
+        "plot.data$ColorBy <- factor(colData(se)[,'%s']);", covariate.name)
+      cmds$data[["fill"]] <- "plot.data$FillBy <- plot.data$ColorBy;"
+      covariate_color <- factor(covariate_color)
+    } else {
+      cmds$data[["color"]] <- sprintf("plot.data$ColorBy <- colData(se)[,'%s'];", covariate.name)
+      fill_set <- FALSE
+    }
   } else if (identical(color_choice, .colorByGeneTableTitle) ||
       identical(color_choice, .colorByGeneTextTitle)) {
     if (identical(color_choice, .colorByGeneTableTitle)) {
@@ -374,6 +385,7 @@
   }
 
   is_groupable <- .is_groupable(covariate_x, covariate_color)
+  message(is_groupable)
 
   if (!is_groupable) {
     fill_set <- FALSE
@@ -482,10 +494,16 @@
 
   # TODO: interaction of factors
   # TODO: limit the number of levels
-  covariates_nlevel <- sapply(covariates, ".nlevels")
 
   if (is.factor(x)){
-    return(TRUE)
+    if (is.factor(color)){
+      total_levels <- nlevels(interaction(x, color, drop = TRUE))
+      message("total_levels:", total_levels)
+      return(total_levels <= max_levels)
+    } else {
+      return(nlevels(x) <= max_levels)
+    }
+    
   }
   
   if (is.numeric(x)){

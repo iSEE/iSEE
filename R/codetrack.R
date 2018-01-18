@@ -2,8 +2,8 @@
   
   reddimfields <- c(.redDimType, .redDimXAxis, .redDimYAxis, ALLEXTRAS)
   coldatafields <- c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, ALLEXTRAS)
-  geneexprfields <- c(.geneExprID, .geneExprAssay, .geneExprXAxis, .geneExprXAxisColData,
-                      .geneExprXAxisGeneExprs, ALLEXTRAS)
+  geneexprfields <- c(.geneExprAssay, .geneExprXAxis, .geneExprXAxisColData,
+                      .geneExprXAxisGeneTable, .geneExprXAxisGeneText, ALLEXTRAS)
   aobjs <- as.data.frame(rObjects$active_plots)
   rdobjs <- aobjs[aobjs$Type == "redDim",]
   cdobjs <- aobjs[aobjs$Type == "colData",]

@@ -245,19 +245,37 @@
 # Makes a gene expression plot.
 {
   # Do not plot if gene name input is not a valid rownames(se)
-  ## Y-axis (always a gene table)
-  gene_selected_y <- .find_linked_gene(se, param_choices[[.geneExprID]], input)
-  validate(need(
+  ## Y axis (gene table)
+  if (identical(param_choices[[.geneExprYAxis]], .geneExprYAxisGeneTableTitle)){
+    gene_selected_y <- .find_linked_gene(se, param_choices[[.geneExprYAxisGeneTable]], input)
+    validate(need(
       gene_selected_y %in% rownames(se),
-      sprintf("Invalid Y-axis '%s' input", .geneExprID)
-  ))
+      sprintf("Invalid '%s' > '%s' input", .geneExprYAxis, .geneExprYAxisGeneTableTitle)
+    ))
+  }
+  ## Y axis (gene text)
+  if (identical(param_choices[[.geneExprYAxis]], .geneExprYAxisGeneTextTitle)){
+    gene_selected_y <- param_choices[[.geneExprYAxisGeneText]]
+    validate(need(
+      gene_selected_y %in% rownames(se),
+      sprintf("Invalid '%s' > '%s' input", .geneExprYAxis, .geneExprYAxisGeneTextTitle)
+    ))
+  }
   ## X axis (gene table)
-  if (identical(param_choices[[.geneExprXAxis]], .geneExprXAxisGeneExprsTitle)){
-      gene_selected_x <- .find_linked_gene(se, param_choices[[.geneExprXAxisGeneExprs]], input)
+  if (identical(param_choices[[.geneExprXAxis]], .geneExprXAxisGeneTableTitle)){
+      gene_selected_x <- .find_linked_gene(se, param_choices[[.geneExprXAxisGeneTable]], input)
       validate(need(
         gene_selected_x %in% rownames(se),
-        sprintf("Invalid '%s' > '%s' input", .geneExprXAxis, .geneExprXAxisGeneExprsTitle)
+        sprintf("Invalid '%s' > '%s' input", .geneExprXAxis, .geneExprXAxisGeneTableTitle)
       ))
+  }
+  ## X axis (gene text)
+  if (identical(param_choices[[.geneExprXAxis]], .geneExprXAxisGeneTextTitle)){
+    gene_selected_x <- param_choices[[.geneExprXAxisGeneText]]
+    validate(need(
+      gene_selected_x %in% rownames(se),
+      sprintf("Invalid '%s' > '%s' input", .geneExprXAxis, .geneExprXAxisGeneTextTitle)
+    ))
   }
   ## Colour (gene table)
   if (identical(param_choices[[.colorByField]], .colorByGeneTableTitle)){
@@ -267,12 +285,12 @@
         sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTableTitle)
       ))
   }
-  ## Colour (gene table)
+  ## Colour (gene text)
   if (identical(param_choices[[.colorByField]], .colorByGeneTextTitle)){
       gene_selected_color <- param_choices[[.colorByGeneText]]
       validate(need(
         gene_selected_color %in% rownames(se),
-        sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTableTitle)
+        sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTextTitle)
       ))
   }
 
@@ -309,7 +327,7 @@
         x_lab
       )
     }
-  } else if (xchoice==.geneExprXAxisGeneExprsTitle) { # gene selected
+  } else if (xchoice==.geneExprXAxisGeneTableTitle || xchoice==.geneExprXAxisGeneTextTitle) { # gene selected
     # Store the command to add X data
     cmds$data[["x"]] <- sprintf(
       "plot.data <- data.frame(X = assay(se, '%s')['%s',], row.names = colnames(se));",

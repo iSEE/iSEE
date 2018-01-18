@@ -9,18 +9,25 @@
 # Gene expression plotting parameters. ----
 .geneExprXAxisNothingTitle <- "None"
 .geneExprXAxisColDataTitle <- "Column data"
-.geneExprXAxisGeneExprsTitle <- "Gene expression"
+.geneExprXAxisGeneTableTitle <- "Gene table"
+.geneExprXAxisGeneTextTitle <- "Gene text"
 
-.geneExprID <- "GeneTable"
+.geneExprYAxisGeneTableTitle <- "Gene table"
+.geneExprYAxisGeneTextTitle <- "Gene text"
+
 .geneExprAssay <- "Assay"
 .geneExprXAxis <- "XAxis"
 .geneExprXAxisColData <- "XAxisColData"
-.geneExprXAxisGeneExprs <- "XAxisGeneExprs"
+.geneExprXAxisGeneTable <- "XAxisGeneTable"
+.geneExprXAxisGeneText <- "XAxisGeneText"
+.geneExprYAxisGeneTable <- "YAxisGeneTable"
+.geneExprYAxisGeneText <- "YAxisGeneText"
+.geneExprYAxis <- "YAxis"
 
 .inputGeneExpr <- function(field, i) paste0("geneExpr", field, i)
 .geneExprPlot <- function(i) paste0("geneExprPlot", i)
 
-# Gene expression plotting parameters. ----
+# Column data plotting parameters. ----
 .colDataXAxisNothingTitle <- "None"
 .colDataXAxisColDataTitle <- "Column data"
 

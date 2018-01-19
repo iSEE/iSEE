@@ -29,7 +29,7 @@ Create default settings for various plots in the iSEE interface.
 \section{Reduced dimension plot parameters}{
 
 \describe{
-\item{\code{Type}:}{Characater, what entry of \code{reducedDims(se)} should be shown?
+\item{\code{Type}:}{Character, what entry of \code{reducedDims(se)} should be shown?
 By default, the first entry is shown.}
 \item{\code{XAxis}:}{Integer, which component should be shown on the x-axis?
 Defaults to 1.}
@@ -49,8 +49,10 @@ Defaults to the name of the first assay in \code{se}.}
 Defaults to \code{"None"}.}
 \item{\code{XAxisColData}:}{Character, what column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
 Defaults to the first entry of \code{colData(se)}.}
-\item{\code{XAxisGeneExprs}:}{Character, which gene's expression should be shown on the x-axis if \code{XAxis="Gene expression"}? 
+\item{\code{XAxisGeneText}:}{Character, which gene's expression should be shown on the x-axis if \code{XAxis="Gene text"}? 
 Defaults to the name of the first row in \code{se}, using expression values specified in \code{Assay}.}
+\item{\code{XAxisGeneTable}:}{Character, which gene statistic table should be used to choose a gene to put on the x-axis if \code{XAxis="Gene table"}? 
+Defaults to an empty string, which means that the first available table will be used.}
 }
 }
 

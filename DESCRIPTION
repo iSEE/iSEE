@@ -40,7 +40,8 @@ Suggests:
     knitr,
     rmarkdown,
     scRNAseq,
-    scater
+    scater,
+    Rtsne
 URL: https://github.com/csoneson/SEE
 BugReports: https://github.com/csoneson/SEE/issues
 biocViews: Visualization, GUI, DimensionReduction, 

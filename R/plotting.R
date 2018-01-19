@@ -427,12 +427,14 @@ names(.all_labs_values) <- .all_aes_names
 
   if (!is_groupable) {
     fill_set <- FALSE
+  } else {
+    cmds$data[["group"]] <- "plot.data$GroupBy <- plot.data$X;"
   }
 
   # Store the ggplot commands
   cmds$plot[["ggplot"]] <- sprintf(
     "ggplot(plot.data, %s) +",
-    .build_aes(color = color_set, fill = fill_set)
+    .build_aes(color = color_set, fill = fill_set, group = is_groupable)
   )
 
   if (is_groupable){
@@ -532,13 +534,7 @@ names(.all_labs_values) <- .all_aes_names
   covariate_types <- vapply(covariates, "class", character(1), USE.NAMES = TRUE)
   
   if (is.factor(x)){
-    if (is.factor(color)){
-      total_levels <- nlevels(interaction(x, color, drop = TRUE))
-      return(total_levels <= max_levels)
-    } else {
-      return(nlevels(x) <= max_levels)
-    }
-    
+    return(nlevels(x) <= max_levels)
   }
   
   if (is.numeric(x)){

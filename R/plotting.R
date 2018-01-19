@@ -427,12 +427,14 @@ names(.all_labs_values) <- .all_aes_names
 
   if (!is_groupable) {
     fill_set <- FALSE
+  } else {
+    cmds$data[["group"]] <- "plot.data$GroupBy <- plot.data$X;"
   }
 
   # Store the ggplot commands
   cmds$plot[["ggplot"]] <- sprintf(
     "ggplot(plot.data, %s) +",
-    .build_aes(color = color_set, fill = fill_set)
+    .build_aes(color = color_set, fill = fill_set, group = is_groupable)
   )
 
   if (is_groupable){
@@ -442,12 +444,8 @@ names(.all_labs_values) <- .all_aes_names
 
   if (is_groupable) {
     are_factor <- vapply(list(covariate_x, covariate_color), "is.factor", logical(1))
-    if (all(are_factor)){
-      cmds$plot[["point"]] <-
-        "geom_jitter(alpha = 0.6, position = position_jitterdodge(jitter.height = 0, dodge.width = 0.8, jitter.width = 0.2)) +"
-    } else 
-      cmds$plot[["point"]] <-
-        "geom_jitter(alpha = 0.6, position = position_jitter(height = 0)) +"
+    cmds$plot[["point"]] <-
+      "geom_jitter(alpha = 0.6, position = position_jitter(height = 0, width = 0.25)) +"
   } else {
     cmds$plot[["point"]] <- "geom_point(alpha = 0.6) +"
   }
@@ -532,13 +530,7 @@ names(.all_labs_values) <- .all_aes_names
   covariate_types <- vapply(covariates, "class", character(1), USE.NAMES = TRUE)
   
   if (is.factor(x)){
-    if (is.factor(color)){
-      total_levels <- nlevels(interaction(x, color, drop = TRUE))
-      return(total_levels <= max_levels)
-    } else {
-      return(nlevels(x) <= max_levels)
-    }
-    
+    return(nlevels(x) <= max_levels)
   }
   
   if (is.numeric(x)){

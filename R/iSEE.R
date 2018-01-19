@@ -67,6 +67,7 @@
 #' counts(sce) <- assay(sce, "tophat_counts")
 #' sce <- normalize(sce)
 #' sce <- runPCA(sce)
+#' sce <- runTSNE(sce)
 #' sce
 #'
 #' # launch the app itself
@@ -81,6 +82,8 @@ iSEE <- function(
   annot.keytype="ENTREZID",
   annot.keyfield=NULL
 ) {
+  # Collecting the original name of the objecft passed as `se`
+  se_name <- deparse(substitute(se))
 
   # Collecting constants for populating the UI.
   cell.data <- colData(se)
@@ -425,7 +428,7 @@ iSEE <- function(
           }
 
           # Creating the plot, with saved coordinates.
-          p.out <- .make_redDimPlot(se, pObjects$memory$redDim[i0,], input, pObjects$coordinates)
+          p.out <- .make_redDimPlot(se, pObjects$memory$redDim[i0,], input, pObjects$coordinates, se_name)
           message(p.out$cmd)
           pObjects$commands$redDim[i0] <- p.out$cmd
           p.out$plot
@@ -447,7 +450,7 @@ iSEE <- function(
           }
 
           # Creating the plot, with saved coordinates.
-          p.out <- .make_colDataPlot(se, pObjects$memory$colData[i0,], input)
+          p.out <- .make_colDataPlot(se, pObjects$memory$colData[i0,], input, se_name)
           message(p.out$cmd)
           pObjects$commands$colData[i0] <- p.out$cmd
           p.out$plot
@@ -469,7 +472,7 @@ iSEE <- function(
           }
 
           # Creating the plot.
-          p.out <- .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input)
+          p.out <- .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input, se_name)
           message(p.out$cmd)
           pObjects$commands$geneExpr[i0] <- p.out$cmd
           p.out$plot

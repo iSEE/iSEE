@@ -444,12 +444,8 @@ names(.all_labs_values) <- .all_aes_names
 
   if (is_groupable) {
     are_factor <- vapply(list(covariate_x, covariate_color), "is.factor", logical(1))
-    if (all(are_factor)){
-      cmds$plot[["point"]] <-
-        "geom_jitter(alpha = 0.6, position = position_jitterdodge(jitter.height = 0, dodge.width = 0.8, jitter.width = 0.2)) +"
-    } else 
-      cmds$plot[["point"]] <-
-        "geom_jitter(alpha = 0.6, position = position_jitter(height = 0)) +"
+    cmds$plot[["point"]] <-
+      "geom_jitter(alpha = 0.6, position = position_jitter(height = 0, width = 0.25)) +"
   } else {
     cmds$plot[["point"]] <- "geom_point(alpha = 0.6) +"
   }

@@ -18,7 +18,8 @@
 #' dashboardSidebar menuItem tabBox valueBox valueBoxOutput
 #' @importFrom utils packageVersion read.delim
 #' @importFrom ggplot2 ggplot geom_point labs theme_void aes_string geom_violin
-#'   theme_bw facet_wrap ylab
+#'   theme_bw facet_wrap ylab aes theme geom_jitter position_jitter
+#'   position_jitterdodge
 #' @importFrom DT datatable renderDataTable dataTableOutput
 #' @importFrom AnnotationDbi mapIds keytypes
 #' @importFrom rentrez entrez_summary

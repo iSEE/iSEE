@@ -49,9 +49,10 @@ names(.all_labs_values) <- .all_aes_names
     "red.dim <- reducedDim(%s, '%s');", se_name, param_choices[[.redDimType]])
   # Store the command to prepare X and Y axes data (required)
   cmds$data[["xy"]] <- sprintf(
-    "plot.data <- data.frame(X = red.dim[, %s], Y = red.dim[, %s]);",
+    "plot.data <- data.frame(X = red.dim[, %s], Y = red.dim[, %s], row.names=colnames(%s));",
     param_choices[[.redDimXAxis]],
-    param_choices[[.redDimYAxis]]
+    param_choices[[.redDimYAxis]],
+    se_name
   )
 
   # Process the color choice (if any)
@@ -98,15 +99,12 @@ names(.all_labs_values) <- .all_aes_names
     color_set <- FALSE # to later build an aes without color
   }
 
-  # TODO: Figuring out what to do with brushing.
+  # Figuring out what to do with brushing.
   brush.in <- param_choices[[.brushByPlot]]
   if (brush.in!="") {
-    brush.by <- .encode_panel_name(brush.in)
-    brush.id <- input[[paste0(brush.by$Type, .brushField, brush.by$ID)]]
-    brushed.pts <- brushedPoints(all.coordinates[[paste0(brush.by$Type, "Plot", brush.by$ID)]], brush.id)
-    if (!is.null(brushed.pts) && nrow(brushed.pts)) {
-      print("YAY, brushing!")
-      print(brushed.pts)
+    brushed <- .define_brush(brush.in, input)
+    if (!is.null(brushed)) { 
+      cmds$data[["brush"]] <- brushed
     }
   }
 
@@ -132,7 +130,9 @@ names(.all_labs_values) <- .all_aes_names
   # Combine all the commands to evaluate
   cmds_eval <- .build_cmd_eval(cmds)
 
-  return(list(cmd = cmds_eval, plot = eval(parse(text = cmds_eval))))
+  eval.out <- new.env()
+  plot.out <- eval(parse(text = cmds_eval), envir=eval.out)
+  return(list(cmd = cmds_eval, xy = eval.out$plot.data, plot = plot.out))
 }
 
 ############################################
@@ -171,8 +171,8 @@ names(.all_labs_values) <- .all_aes_names
 
   # Store the command to prepare Y-axis data (required)
   cmds$data[["y"]] <- sprintf(
-    "plot.data <- data.frame(Y = colData(%s)[,'%s']);",
-    se_name, param_choices[[.colDataYAxis]]
+    "plot.data <- data.frame(Y = colData(%s)[,'%s'], row.names=colnames(%s));",
+    se_name, param_choices[[.colDataYAxis]], se_name
   )
 
   # Prepare X-axis data (optional; if absent, rank by Y value)
@@ -465,6 +465,10 @@ names(.all_labs_values) <- .all_aes_names
 
 }
 
+############################################
+# Internal functions ----
+############################################
+
 .find_linked_gene <- function(se, link, input)
   # Convenience function to identify the selected gene from the linked table.
 {
@@ -552,4 +556,22 @@ names(.all_labs_values) <- .all_aes_names
   )
   
   return(final_cmd)
+}
+
+.define_brush <- function(brush_in, input) {
+    brush_by <- .encode_panel_name(brush_in)
+    brush_val <- input[[paste0(brush_by$Type, .brushField, brush_by$ID)]]
+    if (!is.null(brush_val)) { 
+        cmd <- sprintf("brushedPts <- shiny::brushedPoints(all.coordinates[['%s']], 
+    list(xmin=%.5g, xmax=%.5g, ymin=%.5g, ymax=%.5g, 
+         direction='%s', mapping=list(x='%s', y='%s')));",
+        paste0(brush_by$Type, "Plot", brush_by$ID), 
+        brush_val$xmin, brush_val$xmax, brush_val$ymin, brush_val$ymax, 
+        brush_val$direction, brush_val$mapping$x, brush_val$mapping$y)
+        cmd <- c(cmd, "plot.data$BrushBy <- rownames(plot.data) %in% rownames(brushedPts);")
+        print(cmd)
+        return(paste(cmd, collapse="\n"))
+    } else {
+        return(NULL)
+    }
 }

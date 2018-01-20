@@ -45,6 +45,7 @@ names(.all_labs_values) <- .all_aes_names
   # Figuring out what to do with brushing.
   brush_out <- .process_brushby_choice(param_choices, input)
   cmds$todo[["brush"]] <- brush_out$cmd
+  brush_set <- !is.null(brush_out$cmd)
 
   # Store the ggplot commands
   cmds$todo[["ggplot"]] <- sprintf("ggplot(plot.data, %s) +", .build_aes(color = color_set))
@@ -65,6 +66,22 @@ names(.all_labs_values) <- .all_aes_names
   }
   cmds$todo[["theme_base"]] <- "theme_void() +"
   cmds$todo[["theme_custom"]] <- "theme(legend.position = 'bottom')"
+
+  # Implementing the brushing effect.
+  if (brush_set) {
+    brush_effect <- param_choices[[.brushEffect]]
+    if (brush_effect==.brushColorTitle) {
+      param_choices[[.brushColor]] # do something with this.
+    } 
+    if (brush_effect==.brushTransTitle) {
+      param_choices[[.brushTransAlpha]] # do something with this.
+    }
+    if (brush_effect==.brushRestrictTitle) {
+      # if brushBy=FALSE, don't show these guys AT ALL.
+      # Whitening them is not good enough, they cannot appear at all on the plot.
+      # However, X and Y coordinates must be preserved.
+    }
+  }
 
   # Combine all the commands to evaluate
   eval_out <- new.env()

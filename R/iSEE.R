@@ -426,10 +426,12 @@ iSEE <- function(
 
           # Creating the plot, with saved coordinates.
           p.out <- .make_redDimPlot(se, pObjects$memory$redDim[i0,], input, pObjects$coordinates)
-          p.out$cmd <- paste0(p.out$cmd, "\n", sprintf("all.coordinates[['%s']] <- plot.data", plot.name))
+          if (input[[.inputRedDim(.brushActive, i0)]]) {
+              p.out$cmd <- paste0(p.out$cmd, "\n", sprintf("all.coordinates[['%s']] <- plot.data", plot.name))
+              pObjects$coordinates[[plot.name]] <- p.out$xy
+          }
           message(p.out$cmd)
           pObjects$commands$redDim[i0] <- p.out$cmd
-          pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
         })
       })
@@ -442,7 +444,9 @@ iSEE <- function(
     for (i in seq_len(coldata_max_plots)) {
       local({
         i0 <- i
-        output[[.colDataPlot(i0)]] <- renderPlot({
+        plot.name <- .colDataPlot(i0)
+        output[[plot.name]] <- renderPlot({
+
           # Updating parameters (non-characters need some careful treatment).
           for (field in c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, ALLEXTRAS)) {
               pObjects$memory$colData[[field]][i0] <- input[[.inputColData(field, i0)]]
@@ -450,6 +454,10 @@ iSEE <- function(
 
           # Creating the plot, with saved coordinates.
           p.out <- .make_colDataPlot(se, pObjects$memory$colData[i0,], input)
+          if (input[[.inputColData(.brushActive, i0)]]) {
+              p.out$cmd <- paste0(p.out$cmd, "\n", sprintf("all.coordinates[['%s']] <- plot.data", plot.name))
+              pObjects$coordinates[[plot.name]] <- p.out$xy
+          }
           message(p.out$cmd)
           pObjects$commands$colData[i0] <- p.out$cmd
           p.out$plot
@@ -464,7 +472,9 @@ iSEE <- function(
     for (i in seq_len(geneexpr_max_plots)) {
       local({
         i0 <- i
-        output[[.geneExprPlot(i0)]] <- renderPlot({
+        plot.name <- .geneExprPlot(i0)
+        output[[plot.name]] <- renderPlot({
+
           # Updating parameters.
           for (field in c(.geneExprAssay, .geneExprYAxis, .geneExprYAxisGeneTable, .geneExprYAxisGeneText, 
                           .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneTable, .geneExprXAxisGeneText, ALLEXTRAS)) {
@@ -473,6 +483,10 @@ iSEE <- function(
 
           # Creating the plot.
           p.out <- .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input)
+          if (input[[.inputGeneExpr(.brushActive, i0)]]) {
+              p.out$cmd <- paste0(p.out$cmd, "\n", sprintf("all.coordinates[['%s']] <- plot.data", plot.name))
+              pObjects$coordinates[[plot.name]] <- p.out$xy
+          }
           message(p.out$cmd)
           pObjects$commands$geneExpr[i0] <- p.out$cmd
           p.out$plot

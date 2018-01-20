@@ -48,14 +48,49 @@ names(.all_labs_values) <- .all_aes_names
   brush_set <- !is.null(brush_out$cmd)
 
   # Store the ggplot commands
-  cmds$todo[["ggplot"]] <- sprintf("ggplot(plot.data, %s) +", .build_aes(color = color_set))
-  cmds$todo[["point"]] <- "geom_point(size = 1.5) +"
+  cmds$todo[["ggplot"]] <- "ggplot() +"
+
+  # Implementing the brushing effect.
+  if (brush_set) {
+    brush_effect <- param_choices[[.brushEffect]]
+    if (brush_effect==.brushColorTitle) {
+      cmds$todo[["brush_color"]] <- sprintf(
+        "geom_point(%s, data = subset(plot.data, BrushBy), color = '%s') +",
+        .build_aes(color = color_set), param_choices[[.brushColor]]
+      )
+      cmds$todo[["brush_other"]] <- sprintf(
+        "geom_point(%s, subset(plot.data, !BrushBy)) +",
+        .build_aes(color = color_set)
+      )
+    }
+    if (brush_effect==.brushTransTitle) {
+      cmds$todo[["brush_alpha"]] <- sprintf(
+        "geom_point(%s, subset(plot.data, BrushBy)) +",
+        .build_aes(color = color_set)
+      )
+      cmds$todo[["brush_other"]] <- sprintf(
+        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %s) +",
+        .build_aes(color = color_set), param_choices[[.brushTransAlpha]]
+      )
+    }
+    if (brush_effect==.brushRestrictTitle) {
+      cmds$todo[["brush_restrict"]] <- sprintf(
+        "geom_point(%s, subset(plot.data, BrushBy)) +",
+        .build_aes(color = color_set)
+      )
+    }
+  } else {
+    cmds$todo[["point"]] <- sprintf(
+      "geom_point(%s, plot.data, size = 1.5) +",
+      .build_aes(color = color_set)
+    )
+  }
 
   # An empty labs() command may be generated if no covariate is selected
   labs_add <- .build_labs(
       x = NA_character_, # or param_choices[[.redDimXAxis]], if shown
       y = NA_character_, # or param_choices[[.redDimYAxis]], if shown
-      color = color_label 
+      color = color_label
     )
   if (!is.null(labs_add)){
     cmds$todo[["labs"]] <- .build_labs(
@@ -64,30 +99,15 @@ names(.all_labs_values) <- .all_aes_names
       color = color_label
     )
   }
-  cmds$todo[["theme_base"]] <- "theme_void() +"
-  cmds$todo[["theme_custom"]] <- "theme(legend.position = 'bottom')"
 
-  # Implementing the brushing effect.
-  if (brush_set) {
-    brush_effect <- param_choices[[.brushEffect]]
-    if (brush_effect==.brushColorTitle) {
-      param_choices[[.brushColor]] # do something with this.
-    } 
-    if (brush_effect==.brushTransTitle) {
-      param_choices[[.brushTransAlpha]] # do something with this.
-    }
-    if (brush_effect==.brushRestrictTitle) {
-      # if brushBy=FALSE, don't show these guys AT ALL.
-      # Whitening them is not good enough, they cannot appear at all on the plot.
-      # However, X and Y coordinates must be preserved.
-    }
-  }
+  cmds$todo[["theme_base"]] <- "theme_bw() +"
+  cmds$todo[["theme_custom"]] <- "theme(legend.position = 'bottom')"
 
   # Combine all the commands to evaluate
   eval_out <- new.env()
   executed <- .evaluate_remainder(cmd_list=cmds, eval_env=eval_out)
   return(list(cmd = .build_cmd_eval(cmds),
-              xy = eval_out$plot.data, 
+              xy = eval_out$plot.data,
               plot = executed$output))
 }
 
@@ -146,7 +166,7 @@ names(.all_labs_values) <- .all_aes_names
   eval_out <- new.env()
   executed <- .evaluate_remainder(cmd_list=cmds, eval_env=eval_out)
   return(list(cmd = .build_cmd_eval(cmds),
-              xy = eval_out$plot.data, 
+              xy = eval_out$plot.data,
               plot = executed$output))
 }
 
@@ -221,11 +241,11 @@ names(.all_labs_values) <- .all_aes_names
     x_lab <- .gene_axis_label(gene_selected_x, assay.choice, multiline = FALSE)
     cmds$todo[["x"]] <- sprintf(
       "plot.data <- data.frame(X = assay(se, '%s')['%s',], row.names = colnames(se));",
-      assay.choice, gene_selected_x 
+      assay.choice, gene_selected_x
     )
 
   } else { ## no x axis variable specified: show single violin
-    x_lab <- '' 
+    x_lab <- ''
     cmds$todo[["x"]] <- sprintf(
       "plot.data <- data.frame(X = factor(rep('%s', ncol(se))), row.names = colnames(se));", gene_selected_y
     )
@@ -247,7 +267,7 @@ names(.all_labs_values) <- .all_aes_names
   color_set <- !is.null(color_out$cmd)
   if (color_set) {
     color_out$cmd <- paste0(color_out$cmd, "\nplot.data$FillBy <- plot.data$ColorBy")
-  }  
+  }
   cmds$todo[["color"]] <- color_out$cmd
   color_label <- color_out$label
 
@@ -257,13 +277,13 @@ names(.all_labs_values) <- .all_aes_names
   cmds <- executed$cmd_list
   covariate_x <- eval_out$plot.data$X
   covariate_color <- eval_out$plot.data$ColorBy
-    
+
   # Determining whether the data are groupable.
   is_groupable <- .is_groupable(covariate_x)
   fill_set <- FALSE
   if (is_groupable) {
     cmds$todo[["group"]] <- "plot.data$GroupBy <- plot.data$X;"
-    if (color_set && .is_groupable(covariate_color)) { 
+    if (color_set && .is_groupable(covariate_color)) {
       fill_set <- TRUE
     }
   }
@@ -290,15 +310,15 @@ names(.all_labs_values) <- .all_aes_names
     x = x_lab,
     y = y_lab,
     color = color_label,
-    fill = color_label 
+    fill = color_label
   )
   cmds$todo[["theme_base"]] <- "theme_bw() +"
   cmds$todo[["theme_custom"]] <- "theme(legend.position = 'bottom')"
-  
+
   # Combine all the commands to evaluate
   executed <- .evaluate_remainder(cmd_list=cmds, eval_env=eval_out)
   return(list(cmd = .build_cmd_eval(cmds),
-              xy = eval_out$plot.data, 
+              xy = eval_out$plot.data,
               plot = executed$output))
 }
 
@@ -340,7 +360,7 @@ names(.all_labs_values) <- .all_aes_names
       # The initial validation code is meant to ensure that this never happens
       warning("Color mode is gene expression, but none selected.")
     } else {
-      output$cmd <- sprintf("plot.data$ColorBy <- assay(se, '%s')['%s',];", assay.choice, covariate.name)   
+      output$cmd <- sprintf("plot.data$ColorBy <- assay(se, '%s')['%s',];", assay.choice, covariate.name)
       output$label <- .gene_axis_label(covariate.name, assay.choice, multiline = TRUE)
     }
   }
@@ -418,17 +438,17 @@ names(.all_labs_values) <- .all_aes_names
     out <- eval(parse(text=unlist(cmd_list$todo)), envir=eval_env)
     cmd_list$done <- c(cmd_list$done, unlist(cmd_list$todo))
     cmd_list$todo <- list()
-    return(list(cmd_list=cmd_list, output=out))   
+    return(list(cmd_list=cmd_list, output=out))
 }
 
 .build_cmd_eval <- function(cmds){
   cmds$header <- paste("##", cmds$header, sep = " ")
-  
+
   all_cmds <- c(cmds$done, unlist(cmds$todo))
   multi_line <- grep("\\+$", all_cmds) + 1 # indenting next line # indenting next line.
   all_cmds[multi_line] <- paste0("    ", all_cmds[multi_line])
-  
-  paste(c(cmds$header, all_cmds), collapse="\n") 
+
+  paste(c(cmds$header, all_cmds), collapse="\n")
 }
 
 .process_brushby_choice <- function(param_choices, input) {
@@ -438,12 +458,12 @@ names(.all_labs_values) <- .all_aes_names
   if (brush_in!="") {
     brush_by <- .encode_panel_name(brush_in)
     brush_val <- input[[paste0(brush_by$Type, .brushField, brush_by$ID)]]
-    if (!is.null(brush_val)) { 
-        cmd <- sprintf("brushedPts <- shiny::brushedPoints(all.coordinates[['%s']], 
-    list(xmin=%.5g, xmax=%.5g, ymin=%.5g, ymax=%.5g, 
+    if (!is.null(brush_val)) {
+        cmd <- sprintf("brushedPts <- shiny::brushedPoints(all.coordinates[['%s']],
+    list(xmin=%.5g, xmax=%.5g, ymin=%.5g, ymax=%.5g,
          direction='%s', mapping=list(x='%s', y='%s')));",
-        paste0(brush_by$Type, "Plot", brush_by$ID), 
-        brush_val$xmin, brush_val$xmax, brush_val$ymin, brush_val$ymax, 
+        paste0(brush_by$Type, "Plot", brush_by$ID),
+        brush_val$xmin, brush_val$xmax, brush_val$ymin, brush_val$ymax,
         brush_val$direction, brush_val$mapping$x, brush_val$mapping$y)
         cmd <- c(cmd, "plot.data$BrushBy <- rownames(plot.data) %in% rownames(brushedPts);")
         output$cmd <- paste(cmd, collapse="\n")

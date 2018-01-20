@@ -278,9 +278,7 @@ iSEE <- function(
 
     observeEvent(input$getcode_all, {
       # write out the code into either a text box, an editor session, or even to the clipboard
-      # rObjects$rcode <- .make_redDimPlot
       # rObjects$rcode <- c("mystuff", runif(3))
-      # rObjects$rcode <- .make_redDimPlot
       # rObjects$rcode <- c(rObjects$rcode,"something else")
       # rObjects$rcode <- as.data.frame(rObjects$active_plots)
       # rObjects$rcode <- .track_it_all(input, rObjects, se)
@@ -292,14 +290,14 @@ iSEE <- function(
         title = "My code", size = "l",fade = TRUE,
         footer = NULL, easyClose = TRUE,
         aceEditor("acereport_r", mode="r",theme = "solarized_light",autoComplete = "live",
-                  value = paste0((.track_it_all(input, rObjects, se)),collapse="\n"),
+                  value = paste0((.track_it_all(rObjects, pObjects)),collapse="\n"),
                   height="600px")
         # verbatimTextOutput("codetext_modal")
         ))
     })
 
     output$codetext_modal <- renderPrint({
-      print(.track_it_all(input, rObjects, se))
+      print(.track_it_all(rObjects, pObjects))
     })
     # output$codehitext_modal <- renderUI({
     #   highlight(file="testfile.R")

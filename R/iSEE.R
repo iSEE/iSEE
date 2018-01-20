@@ -276,7 +276,7 @@ iSEE <- function(
     })
 
     output$codetext_modal <- renderPrint({
-      print(.track_it_all(input, rObjects, se))
+      print(.track_it_all(rObjects, pObjects))
     })
     # output$codehitext_modal <- renderUI({
     #   highlight(file="testfile.R")

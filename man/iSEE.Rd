@@ -4,12 +4,16 @@
 \alias{iSEE}
 \title{iSEE: interactive SingleCell/Summarized Experiment Explorer}
 \usage{
-iSEE(se, redDimArgs = 5, colDataArgs = 5, geneExprArgs = 5,
+iSEE(se, url, redDimArgs = 5, colDataArgs = 5, geneExprArgs = 5,
   initialPanels = NULL, annot.orgdb = NULL, annot.keytype = "ENTREZID",
   annot.keyfield = NULL)
 }
 \arguments{
-\item{se}{A SingleCellExperiment object.}
+\item{se}{A \linkS4class{SingleCellExperiment} object.}
+
+\item{url}{A URL pointing to an RDS file that contains a
+\linkS4class{SingleCellExperiment} may be supplied as an alternative to
+\code{se}.}
 
 \item{redDimArgs}{An integer scalar specifying the maximum number of
 reduced dimension plots in the interface. Alternatively, a DataFrame

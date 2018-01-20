@@ -33,7 +33,8 @@ Imports:
     DT,
     colourpicker,
     clipr,
-    shinyAce
+    shinyAce,
+    curl
 Suggests:
     testthat,
     BiocStyle,

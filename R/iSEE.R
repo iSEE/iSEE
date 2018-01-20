@@ -269,7 +269,7 @@ iSEE <- function(
         title = "My code", size = "l",fade = TRUE,
         footer = NULL, easyClose = TRUE,
         aceEditor("acereport_r", mode="r",theme = "solarized_light",autoComplete = "live",
-                  value = paste0((.track_it_all(input, rObjects, se, pObjects)),collapse="\n"),
+                  value = paste0((.track_it_all(rObjects, pObjects)),collapse="\n"),
                   height="600px")
         # verbatimTextOutput("codetext_modal")
         ))

@@ -3,7 +3,10 @@
 #'
 #' Interactive visualization of single-cell data using a Shiny interface.
 #'
-#' @param se A SingleCellExperiment object.
+#' @param se A \linkS4class{SingleCellExperiment} object.
+#' @param url A URL pointing to an RDS file that contains a
+#' \linkS4class{SingleCellExperiment} may be supplied as an alternative to
+#' \code{se}.
 #' @param redDimArgs An integer scalar specifying the maximum number of
 #' reduced dimension plots in the interface. Alternatively, a DataFrame
 #' similar to that produced by \code{\link{redDimPlotDefaults}}, specifying
@@ -74,6 +77,7 @@
 #' if (interactive()) { iSEE(sce) }
 iSEE <- function(
   se,
+  url,
   redDimArgs=5,
   colDataArgs=5,
   geneExprArgs=5,
@@ -82,6 +86,26 @@ iSEE <- function(
   annot.keytype="ENTREZID",
   annot.keyfield=NULL
 ) {
+  # A URL pointing to an RDS file that contains a SingleCellExperiment
+  # may be supplied as an alternative to an object
+  if (missing(se)){
+    if (missing(url)){
+      stop("An input must be supplied to either `se` or `url`")
+    } else {
+      stopifnot(requireNamespace("curl"))
+      temp_file <- tempfile()
+      message("Downloading URL to temporary location: ", temp_file)
+      temp_file <- curl::curl_download(url = url, destfile = tempfile(), quiet = FALSE)
+      se <- readRDS(temp_file)
+    }
+  } else {
+    if (!missing(url)){
+      stop("Only one of `se` or `url` may be supplied.")
+    }
+  }
+
+  stopifnot(inherits(se, "SingleCellExperiment"))
+
   # Collecting constants for populating the UI.
   cell.data <- colData(se)
   covariates <- colnames(cell.data)
@@ -211,8 +235,8 @@ iSEE <- function(
       ),
 
       uiOutput("allPanels"),
-      
-      
+
+
 
       iSEE_footer()
 
@@ -280,7 +304,7 @@ iSEE <- function(
     # output$codehitext_modal <- renderUI({
     #   highlight(file="testfile.R")
     # })
-    
+
     #######################################################################
     # Multipanel UI generation section. ----
     # This is adapted from https://stackoverflow.com/questions/15875786/dynamically-add-plots-to-web-page-using-shiny.
@@ -476,7 +500,7 @@ iSEE <- function(
         output[[plot.name]] <- renderPlot({
 
           # Updating parameters.
-          for (field in c(.geneExprAssay, .geneExprYAxis, .geneExprYAxisGeneTable, .geneExprYAxisGeneText, 
+          for (field in c(.geneExprAssay, .geneExprYAxis, .geneExprYAxisGeneTable, .geneExprYAxisGeneText,
                           .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneTable, .geneExprXAxisGeneText, ALLEXTRAS)) {
               pObjects$memory$geneExpr[[field]][i0] <- input[[.inputGeneExpr(field, i0)]]
           }

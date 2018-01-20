@@ -54,23 +54,23 @@ names(.all_labs_values) <- .all_aes_names
   if (brush_set) {
     brush_effect <- param_choices[[.brushEffect]]
     if (brush_effect==.brushColorTitle) {
-      cmds$todo[["brush_color"]] <- sprintf(
-        "geom_point(%s, data = subset(plot.data, BrushBy), color = '%s') +",
-        .build_aes(color = color_set), param_choices[[.brushColor]]
-      )
       cmds$todo[["brush_other"]] <- sprintf(
         "geom_point(%s, subset(plot.data, !BrushBy)) +",
         .build_aes(color = color_set)
       )
+      cmds$todo[["brush_color"]] <- sprintf(
+        "geom_point(%s, data = subset(plot.data, BrushBy), color = '%s') +",
+        .build_aes(color = color_set), param_choices[[.brushColor]]
+      )
     }
     if (brush_effect==.brushTransTitle) {
-      cmds$todo[["brush_alpha"]] <- sprintf(
-        "geom_point(%s, subset(plot.data, BrushBy)) +",
-        .build_aes(color = color_set)
-      )
       cmds$todo[["brush_other"]] <- sprintf(
         "geom_point(%s, subset(plot.data, !BrushBy), alpha = %s) +",
         .build_aes(color = color_set), param_choices[[.brushTransAlpha]]
+      )
+      cmds$todo[["brush_alpha"]] <- sprintf(
+        "geom_point(%s, subset(plot.data, BrushBy)) +",
+        .build_aes(color = color_set)
       )
     }
     if (brush_effect==.brushRestrictTitle) {

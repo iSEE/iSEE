@@ -29,10 +29,12 @@ output:
     toc_float: true
 vignette: >
   %\VignetteIndexEntry{iSEE User's Guide}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}  
   %\VignettePackage{iSEE}
   %\VignetteKeywords{GeneExpression, RNASeq, Sequencing, Visualization, QualityControl, GUI}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 <!-- as biocviews: -->
 <!-- Visualization, GUI, DimensionReduction,  -->
@@ -62,12 +64,47 @@ knitr::opts_chunk$set(
 
 <!-- logo? -->
 
-`r Biocpkg("iSEE")` is an R package distributed as part of the [Bioconductor](http://bioconductor.org) project. To install the package, start R and enter:
+`r Biocpkg("iSEE")` is an R package distributed as part of the
+[Bioconductor](http://bioconductor.org) project. To install the package,
+start R and enter:
 
 ```{r installation, eval=FALSE}
 source("http://bioconductor.org/biocLite.R")
 biocLite("iSEE")
 ```
 
+# Sharing data
 
+## Fetch data from online file sharing systems
+
+Active projects may require regular updates to the `SingleCellExperiment`
+object, that must be iteratively re-distributed to collaborators.
+
+One possible choice is to store the up-to-date `SingleCellExperiment` object
+in an file produced by the `saveRDS` command, and to host this file in
+an online file sharing system (*e.g.*, Drobpox).
+
+Users may then download the file and launch the `iSEE` application as follows:
+
+```{r curl_download, eval=FALSE}
+stopifnot(require(curl))
+rdsURL <- "https://my.file.sharing.website.com/URI"
+temp_file <- tempfile(pattern = "iSEE_", fileext = ".rds")
+message("Downloading URL to temporary location: ", temp_file)
+curl_download(url = rdsURL, destfile = temp_file, quiet = FALSE)
+sce <- readRDS(temp_file)
+if (interactive()) { iSEE(sce) }
+```
+
+To save the downloaded file to a persistent location, users may adapt
+the following code chunk:
+
+```{r copy_curl, eval=FALSE}
+newLocation <- "/path/of/your/choice/new_file_name.rds"
+file.copy(from = temp_file, to = newLocation)
+```
+
+# FAQ
+
+*Coming soon.*
 

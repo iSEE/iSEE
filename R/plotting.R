@@ -312,9 +312,7 @@ names(.all_labs_values) <- .all_aes_names
     .build_aes(color = color_set, fill = fill_set, group = TRUE)
   )
   plot_cmds[["violin"]] <- "geom_violin(alpha = 0.2, scale = 'width') +"
-
-  plot_cmds[["point"]] <-
-    "geom_jitter(alpha = 0.6, position = position_jitter(height = 0, width = 0.25)) +"
+  plot_cmds[["point"]] <- "geom_quasirandom(alpha = 0.6, size = 1, groupOnX = TRUE) +"
 
   plot_cmds[["labs"]] <- .build_labs(
     x = x_lab,

@@ -88,16 +88,12 @@ names(.all_labs_values) <- .all_aes_names
 
   # An empty labs() command may be generated if no covariate is selected
   labs_add <- .build_labs(
-      x = NA_character_, # or param_choices[[.redDimXAxis]], if shown
-      y = NA_character_, # or param_choices[[.redDimYAxis]], if shown
+      x = sprintf("Dimension %s", param_choices[[.redDimXAxis]]),
+      y = sprintf("Dimension %s", param_choices[[.redDimYAxis]]),
       color = color_label
     )
   if (!is.null(labs_add)){
-    cmds$todo[["labs"]] <- .build_labs(
-      x = NA_character_, # or param_choices[[.redDimXAxis]], if shown
-      y = NA_character_, # or param_choices[[.redDimYAxis]], if shown
-      color = color_label
-    )
+    cmds$todo[["labs"]] <- labs_add
   }
 
   cmds$todo[["theme_base"]] <- "theme_bw() +"

@@ -448,7 +448,11 @@ names(.all_labs_values) <- .all_aes_names
   brush_in <- param_choices[[.brushByPlot]]
   output <- list(cmd=NULL)
 
-  if (brush_in!="") {
+  if (!isTRUE(param_choices[[.brushActive]])){
+    return(output)
+  }
+
+  if (brush_in != "") {
     brush_by <- .encode_panel_name(brush_in)
     brush_val <- input[[paste0(brush_by$Type, .brushField, brush_by$ID)]]
     if (!is.null(brush_val)) {

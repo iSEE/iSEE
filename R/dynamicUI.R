@@ -63,15 +63,19 @@
         param_choices <- memory[[mode]][ID,]
 
         # Checking what to do with brushing.
-        if (mode!="geneStat" && param_choices[[.brushActive]]) {
-            brush.opts <- brushOpts(paste0(mode, .brushField, ID))
-        } else {
-            brush.opts <- NULL
+        dblclick <- NULL
+        brush.opts <- NULL
+        if (mode!="geneStat" && (param_choices[[.brushActive]] || param_choices[[.zoomActive]])) { 
+            brush.opts <- brushOpts(paste0(mode, .brushField, ID),
+                                    resetOnNew=param_choices[[.zoomActive]])
+            if (param_choices[[.zoomActive]]) { 
+                dblclick <- paste0(mode, .zoomClick, ID)
+            }
         }
 
         # Creating the plot fields.
         if (mode=="redDim") {
-            obj <- plotOutput(.redDimPlot(ID), brush = brush.opts)
+            obj <- plotOutput(.redDimPlot(ID), brush = brush.opts, dblclick=dblclick)
             cur_reddim <- param_choices[[.redDimType]]    
             red_choices <- seq_len(redDimDims[[cur_reddim]])
             plot.param <-  list(
@@ -83,7 +87,7 @@
                              choices=red_choices, selected=param_choices[[.redDimYAxis]])
                  )
         } else if (mode=="colData") {
-            obj <- plotOutput(.colDataPlot(ID), brush = brush.opts)
+            obj <- plotOutput(.colDataPlot(ID), brush = brush.opts, dblclick=dblclick)
             plot.param <- list(
                  selectInput(.inputColData(.colDataYAxis, ID), 
                              label = "Column of interest (Y-axis):",
@@ -99,7 +103,7 @@
                                                       choices=colDataNames, selected=param_choices[[.colDataXAxisColData]]))
                  )
         } else if (mode=="geneExpr") {
-            obj <- plotOutput(.geneExprPlot(ID), brush = brush.opts)
+            obj <- plotOutput(.geneExprPlot(ID), brush = brush.opts, dblclick=dblclick)
             plot.param <- list(
               radioButtons(.inputGeneExpr(.geneExprYAxis, ID), label="Y-axis:",
                            inline = FALSE, choices=c(.geneExprYAxisGeneTableTitle, 
@@ -250,6 +254,8 @@
         open = param_choices[[.brushParamPanelOpen]],
         checkboxInput(paste0(mode, .brushActive, ID), label="Transmit brush", 
                       value=param_choices[[.brushActive]]), 
+        checkboxInput(paste0(mode, .zoomActive, ID), label="Zoom upon brush", 
+                      value=param_choices[[.zoomActive]]), 
         selectInput(paste0(mode, .brushByPlot, ID), 
                     label = "Receive brush from:",
                     choices=brushable, 

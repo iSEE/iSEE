@@ -233,8 +233,7 @@ iSEE <- function(
     # storage for all the reactive objects
     rObjects <- reactiveValues(
         active_plots = active_plots,
-        rebrushed = 1,
-        rcode = NULL
+        rebrushed = 1
     )
 
     # storage for other persistent objects
@@ -371,9 +370,12 @@ iSEE <- function(
     for (mode in c("redDim", "geneExpr", "colData")) {
       max_plots <- nrow(pObjects$memory[[mode]])
       for (i in seq_len(max_plots)) {
+        rObjects[[paste0(mode, .zoomUpdate, i)]] <- 1L
+
         local({
           mode0 <- mode
           i0 <- i
+          plot.name <- paste0(mode0, "Plot", i0)
 
           # Panel opening/closing observers.
           observeEvent(input[[paste0(mode0, .plotParamPanelOpen, i0)]], {
@@ -388,15 +390,27 @@ iSEE <- function(
             pObjects$memory[[mode0]][[.brushParamPanelOpen]][i0] <- input[[paste0(mode0, .brushParamPanelOpen, i0)]]
           })
 
-          # Brush observers.
+          # Brush on/off observers.
           observeEvent(input[[paste0(mode0, .brushActive, i0)]], {
             current <- input[[paste0(mode0, .brushActive, i0)]]
-            reference <- pObjects$memory[[mode0]][[.brushActive]][i0]
+            reference <- pObjects$memory[[mode0]][[.brushActive]][i0] 
             if (!identical(current, reference)) {
               rObjects$rebrushed <- rObjects$rebrushed + 1L
               pObjects$memory[[mode0]][[.brushActive]][i0] <- current
             }
           }, ignoreInit=TRUE)
+
+          # Double-click observers.
+          observeEvent(input[[paste0(mode0, .zoomClick, i0)]], {
+             brush <- input[[paste0(mode0, .brushField, i0)]]
+             if (!is.null(brush)) {
+               new_coords <- c(xmin=brush$xmin, xmax=brush$xmax, ymin=brush$ymin, ymax=brush$ymax)
+             } else {
+               new_coords <- NULL
+             }
+             pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, new_coords)
+             rObjects[[paste0(mode0, .zoomUpdate, i0)]] <- rObjects[[paste0(mode0, .zoomUpdate, i0)]] + 1L 
+          })
         })
       }
     }
@@ -423,6 +437,9 @@ iSEE <- function(
               pObjects$memory$redDim[[field]][i0] <- as.integer(input[[.inputRedDim(field, i0)]])
           }
 
+          # Updating zooming, which requires some more care.
+          force(rObjects[[.inputRedDim(.zoomUpdate, i0)]])
+
           # Creating the plot, with saved coordinates.
           p.out <- .make_redDimPlot(se, pObjects$memory$redDim[i0,], input, pObjects$coordinates)
           pObjects$commands[[plot.name]] <- p.out$cmd
@@ -442,10 +459,13 @@ iSEE <- function(
         plot.name <- .colDataPlot(i0)
         output[[plot.name]] <- renderPlot({
 
-          # Updating parameters (non-characters need some careful treatment).
+          # Updating parameters.
           for (field in c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, ALLEXTRAS)) {
               pObjects$memory$colData[[field]][i0] <- input[[.inputColData(field, i0)]]
           }
+
+          # Updating zooming.
+          force(rObjects[[.inputColData(.zoomUpdate, i0)]])
 
           # Creating the plot, with saved coordinates.
           p.out <- .make_colDataPlot(se, pObjects$memory$colData[i0,], input, pObjects$coordinates)
@@ -471,6 +491,9 @@ iSEE <- function(
                           .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneTable, .geneExprXAxisGeneText, ALLEXTRAS)) {
               pObjects$memory$geneExpr[[field]][i0] <- input[[.inputGeneExpr(field, i0)]]
           }
+
+          # Updating zooming.
+          force(rObjects[[.inputGeneExpr(.zoomUpdate, i0)]])
 
           # Creating the plot.
           p.out <- .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input, pObjects$coordinates)
@@ -561,4 +584,12 @@ iSEE <- function(
 
   shinyApp(ui = iSEE_ui, server = iSEE_server)
 }
+
+.update_list_element <- function(memory, ID, value) {
+    out <- memory[[.zoomData]]
+    out[ID] <- list(value)
+    memory[[.zoomData]] <- out
+    return(memory)
+}
+
 

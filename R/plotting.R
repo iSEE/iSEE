@@ -294,8 +294,15 @@ names(.all_labs_values) <- .all_aes_names
     color = color_label
   )
 
-  plot_cmds[["scale_x"]] <- "scale_x_continuous(limits = range(plot.data$X)) +"
-  plot_cmds[["scale_y"]] <- "scale_y_continuous(limits = range(plot.data$Y)) +"
+  # Defining boundaries if zoomed.
+  bounds <- param_choices[[.zoomData]][[1]]
+  if (param_choices[[.zoomActive]] && !is.null(bounds)) { 
+    plot_cmds[["scale_x"]] <- sprintf("scale_x_continuous(limits = c(%.5g, %.5g)) +", bounds["xmin"],  bounds["xmax"])
+    plot_cmds[["scale_y"]] <- sprintf("scale_y_continuous(limits = c(%.5g, %.5g)) +", bounds["ymin"],  bounds["ymax"])
+  } else {
+    plot_cmds[["scale_x"]] <- "scale_x_continuous(limits = range(plot.data$X)) +"
+    plot_cmds[["scale_y"]] <- "scale_y_continuous(limits = range(plot.data$Y)) +"
+  }
 
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
@@ -528,7 +535,7 @@ names(.all_labs_values) <- .all_aes_names
 }
 
 .find_linked_gene <- function(se, link, input)
-  # Convenience function to identify the selected gene from the linked table.
+# Convenience function to identify the selected gene from the linked table.
 {
   if (link=="") {
     return(NULL)

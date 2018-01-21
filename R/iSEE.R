@@ -426,6 +426,7 @@ iSEE <- function(
           # Creating the plot, with saved coordinates.
           p.out <- .make_redDimPlot(se, pObjects$memory$redDim[i0,], input, pObjects$coordinates)
           pObjects$commands[[plot.name]] <- p.out$cmd
+          pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
         })
       })
@@ -447,8 +448,9 @@ iSEE <- function(
           }
 
           # Creating the plot, with saved coordinates.
-          p.out <- .make_colDataPlot(se, pObjects$memory$colData[i0,], input)
+          p.out <- .make_colDataPlot(se, pObjects$memory$colData[i0,], input, pObjects$coordinates)
           pObjects$commands[[plot.name]] <- p.out$cmd
+          pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
         })
       })
@@ -471,8 +473,9 @@ iSEE <- function(
           }
 
           # Creating the plot.
-          p.out <- .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input)
+          p.out <- .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input, pObjects$coordinates)
           pObjects$commands[[plot.name]] <- p.out$cmd
+          pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
         })
       })

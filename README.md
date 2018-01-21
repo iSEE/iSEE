@@ -34,9 +34,11 @@ dynamic updating of cell-level metadata on hover/click
 
 The interface is proposed to contain the following features in its first iteration:
 
-- :white_check_mark: boxplots of expression values for a single gene, stratified by metadata level
-- heatmaps of multiple genes for groups of cells or for individual ordered cells 
-- integrated brushing in cell-based scatter plots with cell identities in gene-level plots
+:white_check_mark: boxplots of expression values for a single gene, stratified by metadata level
+
+heatmaps of multiple genes for groups of cells or for individual ordered cells 
+
+:white_check_mark: integrated brushing in cell-based scatter plots with cell identities in gene-level plots
 
 ## Miscellaneous
 

@@ -241,11 +241,7 @@ iSEE <- function(
     pObjects <- new.env()
     pObjects$memory <- memory
     pObjects$coordinates <- list()
-    pObjects$commands <- list(
-        redDim=character(nrow(memory$redDim)),
-        colData=character(nrow(memory$colData)),
-        geneExpr=character(nrow(memory$geneExpr))
-    )
+    pObjects$commands <- list()
 
     # info boxes, to keep on top of the page  on the left side?
 
@@ -429,12 +425,7 @@ iSEE <- function(
 
           # Creating the plot, with saved coordinates.
           p.out <- .make_redDimPlot(se, pObjects$memory$redDim[i0,], input, pObjects$coordinates)
-          if (input[[.inputRedDim(.brushActive, i0)]]) {
-              p.out$cmd <- paste0(p.out$cmd, "\n", sprintf("all.coordinates[['%s']] <- plot.data", plot.name))
-              pObjects$coordinates[[plot.name]] <- p.out$xy
-          }
-          message(p.out$cmd)
-          pObjects$commands$redDim[i0] <- p.out$cmd
+          pObjects$commands[[plot.name]] <- p.out$cmd
           p.out$plot
         })
       })
@@ -457,12 +448,7 @@ iSEE <- function(
 
           # Creating the plot, with saved coordinates.
           p.out <- .make_colDataPlot(se, pObjects$memory$colData[i0,], input)
-          if (input[[.inputColData(.brushActive, i0)]]) {
-              p.out$cmd <- paste0(p.out$cmd, "\n", sprintf("all.coordinates[['%s']] <- plot.data", plot.name))
-              pObjects$coordinates[[plot.name]] <- p.out$xy
-          }
-          message(p.out$cmd)
-          pObjects$commands$colData[i0] <- p.out$cmd
+          pObjects$commands[[plot.name]] <- p.out$cmd
           p.out$plot
         })
       })
@@ -486,12 +472,7 @@ iSEE <- function(
 
           # Creating the plot.
           p.out <- .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input)
-          if (input[[.inputGeneExpr(.brushActive, i0)]]) {
-              p.out$cmd <- paste0(p.out$cmd, "\n", sprintf("all.coordinates[['%s']] <- plot.data", plot.name))
-              pObjects$coordinates[[plot.name]] <- p.out$xy
-          }
-          message(p.out$cmd)
-          pObjects$commands$geneExpr[i0] <- p.out$cmd
+          pObjects$commands[[plot.name]] <- p.out$cmd
           p.out$plot
         })
       })

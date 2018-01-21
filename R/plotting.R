@@ -18,11 +18,6 @@ names(.all_labs_values) <- .all_aes_names
 # Makes the dimension reduction plot.
 {
   cmds <- list(
-    header = c(
-      strrep("#", 77),
-      "Header section for .make_redDimPlot",
-      strrep("#", 77)
-    ),
     todo = list(),
     done = character(0)
   )
@@ -112,11 +107,6 @@ names(.all_labs_values) <- .all_aes_names
 # Makes a plot of column data variables.
 {
   cmds <- list(
-    header = c(
-      strrep("#", 77),
-      "Header section for .make_colDataPlot",
-      strrep("#", 77)
-    ),
     todo = list(),
     done = character(0)
   )
@@ -227,11 +217,6 @@ names(.all_labs_values) <- .all_aes_names
 
   # List of commands to evaluate
   cmds <- list(
-    header = c(
-      strrep("#", 77),
-      "Header section for .make_geneExprPlot",
-      strrep("#", 77)
-    ),
     todo = list(),
     done = character(0)
   )
@@ -473,13 +458,12 @@ names(.all_labs_values) <- .all_aes_names
 }
 
 .build_cmd_eval <- function(cmds){
-  cmds$header <- paste("##", cmds$header, sep = " ")
-
   all_cmds <- c(cmds$done, unlist(cmds$todo))
-  multi_line <- grep("\\+$", all_cmds) + 1 # indenting next line # indenting next line.
+
+  multi_line <- grep("\\+$", all_cmds) + 1 # indenting next line 
   all_cmds[multi_line] <- paste0("    ", all_cmds[multi_line])
 
-  paste(c(cmds$header, all_cmds), collapse="\n")
+  paste(all_cmds, collapse="\n")
 }
 
 .process_brushby_choice <- function(param_choices, input) {

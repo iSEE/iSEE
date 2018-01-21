@@ -7,20 +7,28 @@
 
   # storing to a text character vector
   tracked_code <- c(
-    "## Here's the list of commands to generate the plots you created using iSEE",
-    "## Just copy them in a live session of R where your SingleCellExperiment object is",
-    "## ... and if you want to adjust something, just edit the corresponding lines!",
+    "## The following list of commands will generate the plots created using iSEE.",
+    "## Copy them into a script or an R session containing your SingleCellExperiment.",
+    "## All commands below refer to your SingleCellExperiment object as `se`.",
     "",
-    "## All commands below refers to your `SingleCellExperiment` object as `se`:",
     sprintf("se <- %s", se_name),
+    "all.coordinates <- list()",
     "")
+
   for (i in seq_len(nrow(aobjs))) {
+    panel_type <- aobjs$Type[i]
+    panel_id <- aobjs$ID[i]
+    panel_name <- .decode_panel_name(panel_type, panel_id)
     tracked_code <- c(tracked_code,
-                      paste0("## ",paste0(aobjs$Type[i],"_",aobjs$ID[i])),
-                      pObjects$commands[[aobjs$Type[i]]][aobjs$ID[i]],
+                      paste0("## ", panel_name),
+                      pObjects$commands[[paste0(panel_type, "Plot", panel_id)]],
                       ""
                       )
-    # message(paste0(aobjs$Type[i],"_",aobjs$ID[i]))
+
+    # Adding commands to facilitate cross-plot brushing.
+    if (pObjects$memory[[panel_type]][panel_id, .brushActive]) {
+        tracked_code <- c(tracked_code, sprintf("all.coordinates[['%s']] <- plot.data", panel_name))
+    }
   }
 
   tracked_code <- c(tracked_code,

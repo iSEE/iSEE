@@ -318,6 +318,7 @@ names(.all_labs_values) <- .all_aes_names
     "ggplot(plot.data, %s) +",
     .build_aes(color = color_set, fill = fill_set, group = TRUE)
   )
+  plot_cmds[["violin"]] <- "geom_violin(alpha = 0.2, scale = 'width') +"
 
   # Implementing the brushing effect.
   if (brush_set) {

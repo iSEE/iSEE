@@ -35,7 +35,7 @@ Imports:
     colourpicker,
     clipr,
     shinyAce,
-    curl
+    irlba
 Suggests:
     testthat,
     BiocStyle,

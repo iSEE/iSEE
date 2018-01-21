@@ -88,6 +88,8 @@ library(iSEE)
 stopifnot(
   require(ExperimentHub),
   require(SingleCellExperiment),
+  require(irlba),
+  require(Rtsne),
   requireNamespace("scater")
 )
 ehub <- ExperimentHub()
@@ -95,6 +97,9 @@ eh1 <- ehub[["EH1"]] # an ExpressionSet
 se1 <- as(eh1, "SummarizedExperiment")
 sce1 <- as(se1, "SingleCellExperiment")
 sce1 <- scater::runPCA(sce1, exprs_values = "exprs")
+irlba_out <- irlba(sce1@assays@.xData$data$exprs)
+tsne_out <- Rtsneirlba_out$v, pca = FALSE, perplexity = 50, verbose = TRUE)
+reducedDim(sce1, "TSNE") <- tsne_out$Y
 if (interactive()) { iSEE(sce1) }
 ```
 

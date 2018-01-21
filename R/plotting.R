@@ -311,8 +311,43 @@ names(.all_labs_values) <- .all_aes_names
     "ggplot(plot.data, %s) +",
     .build_aes(color = color_set, fill = fill_set, group = TRUE)
   )
-  plot_cmds[["violin"]] <- "geom_violin(alpha = 0.2, scale = 'width') +"
-  plot_cmds[["point"]] <- "geom_quasirandom(alpha = 0.6, size = 1, groupOnX = TRUE) +"
+
+  # Implementing the brushing effect.
+  if (brush_set) {
+    brush_effect <- param_choices[[.brushEffect]]
+    if (brush_effect==.brushColorTitle) {
+      plot_cmds[["brush_other"]] <- sprintf(
+        "geom_quasirandom(%s, subset(plot.data, !BrushBy), groupOnX = TRUE) +",
+        .build_aes(color = color_set)
+      )
+      plot_cmds[["brush_color"]] <- sprintf(
+        "geom_quasirandom(%s, data = subset(plot.data, BrushBy), color = '%s', groupOnX = TRUE) +",
+        .build_aes(color = color_set), param_choices[[.brushColor]]
+      )
+    }
+    if (brush_effect==.brushTransTitle) {
+      plot_cmds[["brush_other"]] <- sprintf(
+        "geom_quasirandom(%s, subset(plot.data, !BrushBy), alpha = %s, groupOnX = TRUE) +",
+        .build_aes(color = color_set), param_choices[[.brushTransAlpha]]
+      )
+      plot_cmds[["brush_alpha"]] <- sprintf(
+        "geom_quasirandom(%s, subset(plot.data, BrushBy), groupOnX = TRUE) +",
+        .build_aes(color = color_set)
+      )
+    }
+    if (brush_effect==.brushRestrictTitle) {
+      plot_cmds[["violin"]] <- "geom_violin(data = subset(plot.data, BrushBy), alpha = 0.2, scale = 'width') +"
+      plot_cmds[["brush_restrict"]] <- sprintf(
+        "geom_quasirandom(%s, subset(plot.data, BrushBy), groupOnX = TRUE) +",
+        .build_aes(color = color_set)
+      )
+    }
+  } else {
+    plot_cmds[["point"]] <- sprintf(
+      "geom_quasirandom(%s, alpha = 0.6, size = 1, groupOnX = TRUE) +",
+      .build_aes(color = color_set)
+    )
+  }
 
   plot_cmds[["labs"]] <- .build_labs(
     x = x_lab,

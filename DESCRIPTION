@@ -43,6 +43,8 @@ Suggests:
     scRNAseq,
     scater,
     Rtsne
+Enhances:
+    ExperimentHub
 URL: https://github.com/csoneson/SEE
 BugReports: https://github.com/csoneson/SEE/issues
 biocViews: Visualization, GUI, DimensionReduction, 

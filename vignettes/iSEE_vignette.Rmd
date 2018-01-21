@@ -73,18 +73,29 @@ source("http://bioconductor.org/biocLite.R")
 biocLite("iSEE")
 ```
 
+To load and attach the package to your current workspace, enter:
+
+```{r library}
+library(iSEE)
+```
+
+
 # Sharing data
 
 ## Using the `ExperimentHub`
 
-```{r ExperimentHub}
-library(ExperimentHub)
+```{r ExperimentHub, eval=FALSE}
+stopifnot(
+  require(ExperimentHub),
+  require(SingleCellExperiment),
+  requireNamespace("scater")
+)
 ehub <- ExperimentHub()
 eh1 <- ehub[["EH1"]] # an ExpressionSet
 se1 <- as(eh1, "SummarizedExperiment")
 sce1 <- as(se1, "SingleCellExperiment")
-sce1 <- runPCA(sce1, exprs_values = "exprs")
-iSEE(sce1)
+sce1 <- scater::runPCA(sce1, exprs_values = "exprs")
+if (interactive()) { iSEE(sce) }
 ```
 
 

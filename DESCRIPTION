@@ -28,6 +28,7 @@ Imports:
     shinydashboard,
     rintrojs, 
     ggplot2,
+    ggbeeswarm,
     rentrez,
     AnnotationDbi,
     DT,

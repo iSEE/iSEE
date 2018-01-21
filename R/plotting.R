@@ -296,7 +296,7 @@ names(.all_labs_values) <- .all_aes_names
 
   # Defining boundaries if zoomed.
   bounds <- param_choices[[.zoomData]][[1]]
-  if (param_choices[[.zoomActive]] && !is.null(bounds)) { 
+  if (param_choices[[.zoomActive]] && !is.null(bounds)) {
     plot_cmds[["scale_x"]] <- sprintf("scale_x_continuous(limits = c(%.5g, %.5g)) +", bounds["xmin"],  bounds["xmax"])
     plot_cmds[["scale_y"]] <- sprintf("scale_y_continuous(limits = c(%.5g, %.5g)) +", bounds["ymin"],  bounds["ymax"])
   } else {
@@ -357,8 +357,8 @@ names(.all_labs_values) <- .all_aes_names
     )
   }
 
-  plot_cmds[["scale_x"]] <- "xlim(with(plot.data, if(is.numeric(X)){range(X, na.rm = TRUE)} else{levels(X)})) +"
-  plot_cmds[["scale_y"]] <- "ylim(with(plot.data, if(is.numeric(Y)){range(Y, na.rm = TRUE)} else{levels(X)})) +"
+  # plot_cmds[["scale_x"]] <- "xlim(with(plot.data, if(is.numeric(X)){range(X, na.rm = TRUE)} else{levels(X)})) +"
+  # plot_cmds[["scale_y"]] <- "ylim(with(plot.data, if(is.numeric(Y)){range(Y, na.rm = TRUE)} else{levels(X)})) +"
 
   plot_cmds[["labs"]] <- .build_labs(
     x = x_lab,

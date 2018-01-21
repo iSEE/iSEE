@@ -300,11 +300,13 @@ names(.all_labs_values) <- .all_aes_names
   # Defining boundaries if zoomed.
   bounds <- param_choices[[.zoomData]][[1]]
   if (param_choices[[.zoomActive]] && !is.null(bounds)) {
-    plot_cmds[["scale_x"]] <- sprintf("scale_x_continuous(limits = c(%.5g, %.5g)) +", bounds["xmin"],  bounds["xmax"])
-    plot_cmds[["scale_y"]] <- sprintf("scale_y_continuous(limits = c(%.5g, %.5g)) +", bounds["ymin"],  bounds["ymax"])
+    plot_cmds[["coord"]] <- sprintf(
+      "coord_cartesian(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = TRUE) +",
+      bounds["xmin"], bounds["xmax"], bounds["ymin"],  bounds["ymax"]
+    )
   } else {
-    plot_cmds[["scale_x"]] <- "scale_x_continuous(limits = range(plot.data$X)) +"
-    plot_cmds[["scale_y"]] <- "scale_y_continuous(limits = range(plot.data$Y)) +"
+    plot_cmds[["coord"]] <-
+      "coord_cartesian(xlim = range(plot.data$X, na.rm = TRUE), ylim = range(plot.data$Y, na.rm = TRUE), expand = TRUE) +"
   }
 
   plot_cmds[["theme_base"]] <- "theme_bw() +"
@@ -362,19 +364,29 @@ names(.all_labs_values) <- .all_aes_names
     )
   }
 
-  if (numeric_axes["x"]){
-    plot_cmds[["scale_x"]] <- "xlim(range(plot.data$X, na.rm = TRUE)) +"
-  }
-  if (numeric_axes["y"]){
-    plot_cmds[["scale_y"]] <- "ylim(range(plot.data$Y, na.rm = TRUE)) +"
-  }
-
   plot_cmds[["labs"]] <- .build_labs(
     x = x_lab,
     y = y_lab,
     color = color_label,
     fill = color_label
   )
+
+  # Defining boundaries if zoomed.
+  bounds <- param_choices[[.zoomData]][[1]]
+  if (param_choices[[.zoomActive]] && !is.null(bounds)) {
+    plot_cmds[["coord"]] <- sprintf(
+      "coord_cartesian(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = TRUE) +",
+      bounds["xmin"], bounds["xmax"], bounds["ymin"],  bounds["ymax"]
+    )
+  } else {
+    xlimits <- ifelse(numeric_axes['x'], "range(plot.data$X, na.rm = TRUE)", "NULL")
+    ylimits <- ifelse(numeric_axes['y'], "range(plot.data$Y, na.rm = TRUE)", "NULL")
+    plot_cmds[["coord"]] <- sprintf(
+      "coord_cartesian(xlim = %s, ylim = %s, expand = TRUE) +",
+      xlimits, ylimits
+    )
+  }
+
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
   return(plot_cmds)

@@ -224,7 +224,10 @@ names(.all_labs_values) <- .all_aes_names
     if (fill_set) {
       cmds$todo[["fill"]] <- "plot.data$FillBy <- plot.data$ColorBy"
     }
-    plot_cmds <- .violin_plot(..., color_set=color_set, fill_set=fill_set)
+    plot_cmds <- .violin_plot(
+      ..., color_set=color_set, fill_set=fill_set,
+      numeric_axes = sapply(list(x=xvals, y=yvals), "is.numeric")
+    )
 
   } else if (!group_X && group_Y) {
     # Need horizontal violin plots (just using this as a placeholder for the time being).
@@ -309,7 +312,9 @@ names(.all_labs_values) <- .all_aes_names
   return(plot_cmds)
 }
 
-.violin_plot <- function(param_choices, x_lab, y_lab, color_set, color_label, fill_set, brush_set)
+.violin_plot <- function(
+  param_choices, x_lab, y_lab, color_set, color_label, fill_set, brush_set,
+  numeric_axes)
 # Generates a vertical violin plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -357,8 +362,12 @@ names(.all_labs_values) <- .all_aes_names
     )
   }
 
-  # plot_cmds[["scale_x"]] <- "xlim(with(plot.data, if(is.numeric(X)){range(X, na.rm = TRUE)} else{levels(X)})) +"
-  # plot_cmds[["scale_y"]] <- "ylim(with(plot.data, if(is.numeric(Y)){range(Y, na.rm = TRUE)} else{levels(X)})) +"
+  if (numeric_axes["x"]){
+    plot_cmds[["scale_x"]] <- "xlim(range(plot.data$X, na.rm = TRUE)) +"
+  }
+  if (numeric_axes["y"]){
+    plot_cmds[["scale_y"]] <- "ylim(range(plot.data$Y, na.rm = TRUE)) +"
+  }
 
   plot_cmds[["labs"]] <- .build_labs(
     x = x_lab,

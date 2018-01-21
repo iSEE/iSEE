@@ -11,7 +11,7 @@
     "## Just copy them in a live session of R where your SingleCellExperiment object is",
     "## ... and if you want to adjust something, just edit the corresponding lines!",
     "",
-    "All commands below refers to your `SingleCellExperiment` object as `se`:",
+    "## All commands below refers to your `SingleCellExperiment` object as `se`:",
     sprintf("se <- %s", se_name),
     "")
   for (i in seq_len(nrow(aobjs))) {

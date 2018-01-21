@@ -491,7 +491,8 @@ iSEE <- function(
             chosen <- pObjects$memory$geneStat$Selected[i0]
             search <- pObjects$memory$geneStat$Search[i0]
             datatable(gene.data, filter="top", rownames=TRUE,
-                      options=list(search=list(search=search)),
+                      options=list(search=list(search=search),
+                                   scrollX=TRUE),
                       selection=list(mode="single", selected=chosen))
         })
 

@@ -22,13 +22,14 @@
     tracked_code <- c(tracked_code,
                       paste0("## ", panel_name),
                       pObjects$commands[[paste0(panel_type, "Plot", panel_id)]],
-                      ""
                       )
 
     # Adding commands to facilitate cross-plot brushing.
     if (pObjects$memory[[panel_type]][panel_id, .brushActive]) {
         tracked_code <- c(tracked_code, sprintf("all.coordinates[['%s']] <- plot.data", panel_name))
     }
+
+    tracked_code <- c(tracked_code, "")
   }
 
   tracked_code <- c(tracked_code,

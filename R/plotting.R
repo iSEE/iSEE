@@ -294,6 +294,9 @@ names(.all_labs_values) <- .all_aes_names
     color = color_label
   )
 
+  plot_cmds[["scale_x"]] <- "scale_x_continuous(limits = range(plot.data$X)) +"
+  plot_cmds[["scale_y"]] <- "scale_y_continuous(limits = range(plot.data$Y)) +"
+
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
   return(plot_cmds)

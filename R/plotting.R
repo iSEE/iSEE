@@ -81,6 +81,9 @@ names(.all_labs_values) <- .all_aes_names
     )
   }
 
+  cmds$todo[["scale_x"]] <- "scale_x_continuous(limits = range(plot.data$X)) +"
+  cmds$todo[["scale_y"]] <- "scale_y_continuous(limits = range(plot.data$Y)) +"
+
   # Add axes labels
   cmds$todo[["labs"]] <- .build_labs(
     x = sprintf("Dimension %s", param_choices[[.redDimXAxis]]),
@@ -460,7 +463,7 @@ names(.all_labs_values) <- .all_aes_names
 .build_cmd_eval <- function(cmds){
   all_cmds <- c(cmds$done, unlist(cmds$todo))
 
-  multi_line <- grep("\\+$", all_cmds) + 1 # indenting next line 
+  multi_line <- grep("\\+$", all_cmds) + 1 # indenting next line
   all_cmds[multi_line] <- paste0("    ", all_cmds[multi_line])
 
   paste(all_cmds, collapse="\n")

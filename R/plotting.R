@@ -124,7 +124,6 @@ names(.all_labs_values) <- .all_aes_names
   # Store the command to prepare Y-axis data (required)
   covariate_y <- colData(se)[, param_choices[[.colDataYAxis]]]
   is_groupable <- .is_groupable(covariate_y)
-  message("is.character: ", is.character(covariate_y))
   if (!is_groupable){
     if (is.character(covariate_y)){
       cmds$todo[["y"]] <- sprintf(
@@ -344,9 +343,29 @@ names(.all_labs_values) <- .all_aes_names
 
   if (color_choice==.colorByColDataTitle) {
     covariate.name <- param_choices[[.colorByColData]]
-    output$cmd <- sprintf("plot.data$ColorBy <- colData(se)[,'%s'];", covariate.name)
+    covariate_color <- colData(se)[, covariate.name]
+    is_groupable <- .is_groupable(covariate_color)
+    if (!is_groupable){
+      if (is.character(covariate_color)){
+        warning("Coloring covariate is discrete with too unique values. Coercing to `numeric`:")
+        output$cmd <-  sprintf(
+          "plot.data$ColorBy <- as.numeric(as.factor(colData(se)[,'%s']));",
+          covariate.name
+        )
+      } else {
+        warning("Coloring covariate is a factor with too many levels. Coercing to `numeric`:")
+        output$cmd <-  sprintf(
+          "plot.data$ColorBy <- as.numeric(colData(se)[,'%s']);",
+          covariate.name
+        )
+      }
+    } else {
+      output$cmd <-  sprintf(
+        "plot.data <- data.frame(Y = colData(se)[,'%s'], row.names=colnames(se));",
+        covariate.name
+      )
+    }
     output$label <- covariate.name
-
   } else if (color_choice==.colorByGeneTableTitle || color_choice==.colorByGeneTextTitle) {
 
     # Set the color to the selected gene

@@ -100,74 +100,61 @@ names(.all_labs_values) <- .all_aes_names
 .make_geneExprPlot <- function(se, param_choices, input, all.coordinates)
 # Makes a gene expression plot.
 {
-  ## Checking y-axis choice:
+  cmds <- list(
+    todo = list(),
+    done = character(0)
+  )
+
+  ## Setting up the y-axis:
   y_choice <- param_choices[[.geneExprYAxis]]
   if (y_choice==.geneExprYAxisGeneTableTitle) {
     gene_selected_y <- .find_linked_gene(se, param_choices[[.geneExprYAxisGeneTable]], input)
   } else if (y_choice==.geneExprYAxisGeneTextTitle) {
     gene_selected_y <- param_choices[[.geneExprYAxisGeneText]]
   }
+
   validate(need(
       gene_selected_y %in% rownames(se),
       sprintf("Invalid '%s' > '%s' input", .geneExprYAxis, y_choice)
     ))
 
-  ## Checking X axis choice:
-  x_choice <- param_choices[[.geneExprXAxis]]
-  if (x_choice==.geneExprXAxisGeneTableTitle) {
-    gene_selected_x <- .find_linked_gene(se, param_choices[[.geneExprXAxisGeneTable]], input)
-  } else if (x_choice==.geneExprXAxisGeneTextTitle) {
-    gene_selected_x <- param_choices[[.geneExprXAxisGeneText]]
-  }
-  if (x_choice==.geneExprXAxisGeneTableTitle || x_choice==.geneExprXAxisGeneTextTitle) {
-    validate(need(
-      gene_selected_x %in% rownames(se),
-      sprintf("Invalid '%s' > '%s' input", .geneExprXAxis, x_choice)
-    ))
-  }
-
-  # List of commands to evaluate
-  cmds <- list(
-    todo = list(),
-    done = character(0)
+  assay.choice <- param_choices[[.geneExprAssay]]
+  y_lab <- .gene_axis_label(gene_selected_y, assay.choice, multiline = FALSE)
+  cmds$todo[["y"]] <- sprintf(
+    "plot.data <- data.frame(Y=assay(se, '%s')['%s',], row.names = colnames(se))",
+    assay.choice, gene_selected_y
   )
 
-  #########################################
-  #### Setting up the X/Y-axis data ----
-  #########################################
-
-  assay.choice <- param_choices[[.geneExprAssay]]
+  ## Checking X axis choice:
+  x_choice <- param_choices[[.geneExprXAxis]]
 
   if (x_choice==.geneExprXAxisColDataTitle) { # colData column selected
     x_lab <- param_choices[[.geneExprXAxisColData]]
     cmds$todo[["x"]] <- sprintf(
-       "plot.data <- data.frame(X = colData(se)[,'%s'], row.names = colnames(se));", x_lab
+       "plot.data$X <- colData(se)[,'%s'];", x_lab
     )
 
   } else if (x_choice==.geneExprXAxisGeneTableTitle || x_choice==.geneExprXAxisGeneTextTitle) { # gene selected
+    if (x_choice==.geneExprXAxisGeneTableTitle) {
+      gene_selected_x <- .find_linked_gene(se, param_choices[[.geneExprXAxisGeneTable]], input)
+    } else if (x_choice==.geneExprXAxisGeneTextTitle) {
+      gene_selected_x <- param_choices[[.geneExprXAxisGeneText]]
+    }
+    validate(need(
+        gene_selected_x %in% rownames(se),
+        sprintf("Invalid '%s' > '%s' input", .geneExprXAxis, x_choice)
+    ))
+
     x_lab <- .gene_axis_label(gene_selected_x, assay.choice, multiline = FALSE)
     cmds$todo[["x"]] <- sprintf(
-      "plot.data <- data.frame(X = assay(se, '%s')['%s',], row.names = colnames(se));",
+      "plot.data$X <- assay(se, '%s')['%s',];",
       assay.choice, gene_selected_x
     )
 
-  } else { ## no x axis variable specified: show single violin
+  } else { # no x axis variable specified: show single violin
     x_lab <- ''
-    cmds$todo[["x"]] <- sprintf(
-      "plot.data <- data.frame(X = factor(rep('%s', ncol(se))), row.names = colnames(se));", gene_selected_y
-    )
+    cmds$todo[["x"]] <- "plot.data$X <- factor(integer(ncol(se)))"
   }
-
-  # Set Y-axis data and axis label.
-  y_lab <- .gene_axis_label(gene_selected_y, assay.choice, multiline = FALSE)
-  cmds$todo[["y"]] <- sprintf(
-    "plot.data$Y <- assay(se, '%s')['%s',];",
-    assay.choice, gene_selected_y
-  )
-
-  #########################################
-  #### Setting up the plot aesthetics ----
-  #########################################
 
   # Adding colour commands.
   color_out <- .process_colorby_choice(param_choices, se, input)

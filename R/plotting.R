@@ -44,8 +44,8 @@ names(.all_labs_values) <- .all_aes_names
   brush_set <- !is.null(brush_out$cmd)
 
   # Generating the plot.
-  .create_plot(cmds, se, all.coordinates, 
-               param_choices=param_choices, 
+  .create_plot(cmds, se, all.coordinates,
+               param_choices=param_choices,
                x_lab=sprintf("Dimension %s", param_choices[[.redDimXAxis]]),
                y_lab=sprintf("Dimension %s", param_choices[[.redDimYAxis]]),
                color_set=color_set, brush_set=brush_set, color_label=color_label)
@@ -88,8 +88,8 @@ names(.all_labs_values) <- .all_aes_names
   brush_set <- !is.null(brush_out$cmd)
 
   # Generating the plot.
-  .create_plot(cmds, se, all.coordinates, 
-               param_choices=param_choices, x_lab=x_lab, y_lab=y_lab, 
+  .create_plot(cmds, se, all.coordinates,
+               param_choices=param_choices, x_lab=x_lab, y_lab=y_lab,
                color_set=color_set, brush_set=brush_set, color_label=color_label)
 }
 
@@ -168,7 +168,7 @@ names(.all_labs_values) <- .all_aes_names
   brush_set <- !is.null(brush_out$cmd)
 
   # Generating the plot.
-  .create_plot(cmds, se, all.coordinates, 
+  .create_plot(cmds, se, all.coordinates,
                param_choices=param_choices, x_lab=x_lab, y_lab=y_lab,
                color_set=color_set, brush_set=brush_set, color_label=color_label)
 }
@@ -177,29 +177,29 @@ names(.all_labs_values) <- .all_aes_names
 # Internal functions: central plotter ----
 ############################################
 
-.create_plot <- function(cmds, se, all.coordinates, ..., color_set) 
-# This function will generate plotting commands appropriate to 
-# each type of X/Y. It does so by evaluating 'plot.data' to 
+.create_plot <- function(cmds, se, all.coordinates, ..., color_set)
+# This function will generate plotting commands appropriate to
+# each type of X/Y. It does so by evaluating 'plot.data' to
 # determine the nature of X/Y, and then choosing the plot to match.
 #
 # Note that we need 'se' and 'all.coordinates' to be passed as arguments
 # for the evaluations to execute in this environment. All evaluations
 # are to take place in this function, not in the calling environment
 # or in child environments. This constrains the scope of 'eval' calls.
-{ 
+{
   eval_out <- new.env()
   executed <- .evaluate_remainder(cmd_list=cmds, eval_env=eval_out)
   cmds <- executed$cmd_list
 
   # Cleaning up the grouping status of various fields.
   coloring <- eval_out$plot.data$ColorBy
-  if (!is.null(coloring)) { 
+  if (!is.null(coloring)) {
     group_color <- .is_groupable(coloring)
     if (!group_color) {
       cmds$todo[["more_color"]] <- .coerce_to_numeric(coloring, "ColorBy")
     }
   }
-  
+
   xvals <- eval_out$plot.data$X
   group_X <- .is_groupable(xvals)
   if (!group_X) {
@@ -208,7 +208,7 @@ names(.all_labs_values) <- .all_aes_names
 
   yvals <- eval_out$plot.data$Y
   group_Y <- .is_groupable(yvals)
-  if (!group_Y) { 
+  if (!group_Y) {
     cmds$todo[["more_Y"]] <- .coerce_to_numeric(yvals, "Y")
   }
 
@@ -224,7 +224,7 @@ names(.all_labs_values) <- .all_aes_names
     if (fill_set) {
       cmds$todo[["fill"]] <- "plot.data$FillBy <- plot.data$ColorBy"
     }
-    plot_cmds <- .violin_plot(..., color_set=color_set, fill_set=fill_set) 
+    plot_cmds <- .violin_plot(..., color_set=color_set, fill_set=fill_set)
 
   } else if (!group_X && group_Y) {
     # Need horizontal violin plots (just using this as a placeholder for the time being).
@@ -244,7 +244,7 @@ names(.all_labs_values) <- .all_aes_names
               plot = executed$output))
 }
 
-.scatter_plot <- function(param_choices, x_lab, y_lab, color_set, color_label, brush_set) 
+.scatter_plot <- function(param_choices, x_lab, y_lab, color_set, color_label, brush_set)
 # Creates a scatter plot of numeric X/Y. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -302,7 +302,7 @@ names(.all_labs_values) <- .all_aes_names
 .violin_plot <- function(param_choices, x_lab, y_lab, color_set, color_label, fill_set, brush_set)
 # Generates a vertical violin plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
-{ 
+{
   plot_cmds <- list()
   plot_cmds[["ggplot"]] <- sprintf(
     "ggplot(plot.data, %s) +",
@@ -452,17 +452,17 @@ names(.all_labs_values) <- .all_aes_names
 }
 
 .coerce_to_numeric <- function(values, field, warn=TRUE) {
-  if (!is.numeric(values)) { 
+  if (!is.numeric(values)) {
     if (warn) {
       warning("coloring covariate has too many unique values, coercing to numeric")
     }
-    if (is.factor(values)) { 
+    if (is.factor(values)) {
       extra_cmd <- sprintf("plot.data$%s <- as.numeric(plot.data$%s)", field, field)
     } else {
       extra_cmd <- sprintf("plot.data$%s <- as.numeric(as.factor(plot.data$%s))", field, field)
     }
-    return(extra_cmd) 
-  } 
+    return(extra_cmd)
+  }
   return(NULL)
 }
 
@@ -480,7 +480,7 @@ names(.all_labs_values) <- .all_aes_names
 .build_cmd_eval <- function(cmds){
   all_cmds <- c(cmds$done, unlist(cmds$todo))
 
-  multi_line <- grep("\\+$", all_cmds) + 1 # indenting next line 
+  multi_line <- grep("\\+$", all_cmds) + 1 # indenting next line
   all_cmds[multi_line] <- paste0("    ", all_cmds[multi_line])
 
   paste(all_cmds, collapse="\n")

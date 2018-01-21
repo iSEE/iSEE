@@ -75,7 +75,20 @@ biocLite("iSEE")
 
 # Sharing data
 
-## Fetch data from online file sharing systems
+## Using the `ExperimentHub`
+
+```{r ExperimentHub}
+library(ExperimentHub)
+ehub <- ExperimentHub()
+eh1 <- ehub[["EH1"]] # an ExpressionSet
+se1 <- as(eh1, "SummarizedExperiment")
+sce1 <- as(se1, "SingleCellExperiment")
+sce1 <- runPCA(sce1, exprs_values = "exprs")
+iSEE(sce1)
+```
+
+
+## Using online file sharing systems
 
 Active projects may require regular updates to the `SingleCellExperiment`
 object, that must be iteratively re-distributed to collaborators.
@@ -87,7 +100,7 @@ an online file sharing system (*e.g.*, Drobpox).
 Users may then download the file and launch the `iSEE` application as follows:
 
 ```{r curl_download, eval=FALSE}
-stopifnot(require(curl))
+library(curl)
 rdsURL <- "https://my.file.sharing.website.com/URI"
 temp_file <- tempfile(pattern = "iSEE_", fileext = ".rds")
 message("Downloading URL to temporary location: ", temp_file)

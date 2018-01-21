@@ -204,6 +204,8 @@ names(.all_labs_values) <- .all_aes_names
   group_X <- .is_groupable(xvals)
   if (!group_X) {
     cmds$todo[["more_X"]] <- .coerce_to_numeric(xvals, "X")
+  } else {
+    cmds$todo[["group_X"]] <- "plot.data$X <- as.factor(plot.data$X);"
   }
 
   yvals <- eval_out$plot.data$Y
@@ -371,7 +373,7 @@ names(.all_labs_values) <- .all_aes_names
   if (param_choices[[.zoomActive]] && !is.null(bounds)) {
     plot_cmds[["coord"]] <- sprintf(
       "coord_cartesian(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = TRUE) +",
-      bounds["xmin"], bounds["xmax"], bounds["ymin"],  bounds["ymax"]
+      bounds["xmin"], bounds["xmax"], bounds["ymin"], bounds["ymax"]
     )
   } else {
     ylimits <- "range(plot.data$Y, na.rm = TRUE)"
@@ -380,6 +382,8 @@ names(.all_labs_values) <- .all_aes_names
       ylimits
     )
   }
+
+  plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) + "
 
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"

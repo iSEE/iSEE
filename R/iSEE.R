@@ -86,6 +86,8 @@ iSEE <- function(
   annot.keytype="ENTREZID",
   annot.keyfield=NULL
 ) {
+  se_name <- deparse(substitute(se))
+
   # A URL pointing to an RDS file that contains a SingleCellExperiment
   # may be supplied as an alternative to an object
   if (missing(se)){
@@ -290,14 +292,14 @@ iSEE <- function(
         title = "My code", size = "l",fade = TRUE,
         footer = NULL, easyClose = TRUE,
         aceEditor("acereport_r", mode="r",theme = "solarized_light",autoComplete = "live",
-                  value = paste0((.track_it_all(rObjects, pObjects)),collapse="\n"),
+                  value = paste0((.track_it_all(rObjects, pObjects, se_name)),collapse="\n"),
                   height="600px")
         # verbatimTextOutput("codetext_modal")
         ))
     })
 
     output$codetext_modal <- renderPrint({
-      print(.track_it_all(rObjects, pObjects))
+      print(.track_it_all(rObjects, pObjects, se_name))
     })
     # output$codehitext_modal <- renderUI({
     #   highlight(file="testfile.R")

@@ -122,9 +122,28 @@ names(.all_labs_values) <- .all_aes_names
   )
 
   # Store the command to prepare Y-axis data (required)
-  cmds$todo[["y"]] <- sprintf(
-      "plot.data <- data.frame(Y = colData(se)[,'%s'], row.names=colnames(se));", param_choices[[.colDataYAxis]]
+  covariate_y <- colData(se)[, param_choices[[.colDataYAxis]]]
+  is_groupable <- .is_groupable(covariate_y)
+  message("is.character: ", is.character(covariate_y))
+  if (!is_groupable){
+    if (is.character(covariate_y)){
+      cmds$todo[["y"]] <- sprintf(
+        "plot.data <- data.frame(Y = as.numeric(as.factor(colData(se)[,'%s'])), row.names=colnames(se));",
+        param_choices[[.colDataYAxis]]
+      )
+    } else {
+      cmds$todo[["y"]] <- sprintf(
+        "plot.data <- data.frame(Y = as.numeric(colData(se)[,'%s']), row.names=colnames(se));",
+        param_choices[[.colDataYAxis]]
+      )
+    }
+
+  } else {
+    cmds$todo[["y"]] <- sprintf(
+      "plot.data <- data.frame(Y = colData(se)[,'%s'], row.names=colnames(se));",
+      param_choices[[.colDataYAxis]]
     )
+  }
 
   # Prepare X-axis data (optional; if absent, rank by Y value)
   if (identical(param_choices[[.colDataXAxis]], .colDataXAxisNothingTitle)) {

@@ -43,7 +43,8 @@ Suggests:
     rmarkdown,
     scRNAseq,
     scater,
-    Rtsne
+    Rtsne,
+    irlba
 Enhances:
     ExperimentHub
 URL: https://github.com/csoneson/SEE

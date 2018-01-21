@@ -86,15 +86,12 @@ names(.all_labs_values) <- .all_aes_names
     )
   }
 
-  # An empty labs() command may be generated if no covariate is selected
-  labs_add <- .build_labs(
-      x = sprintf("Dimension %s", param_choices[[.redDimXAxis]]),
-      y = sprintf("Dimension %s", param_choices[[.redDimYAxis]]),
-      color = color_label
-    )
-  if (!is.null(labs_add)){
-    cmds$todo[["labs"]] <- labs_add
-  }
+  # Add axes labels
+  cmds$todo[["labs"]] <- .build_labs(
+    x = sprintf("Dimension %s", param_choices[[.redDimXAxis]]),
+    y = sprintf("Dimension %s", param_choices[[.redDimYAxis]]),
+    color = color_label
+  )
 
   cmds$todo[["theme_base"]] <- "theme_bw() +"
   cmds$todo[["theme_custom"]] <- "theme(legend.position = 'bottom')"

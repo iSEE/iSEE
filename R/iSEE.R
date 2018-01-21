@@ -4,9 +4,6 @@
 #' Interactive visualization of single-cell data using a Shiny interface.
 #'
 #' @param se A \linkS4class{SingleCellExperiment} object.
-#' @param url A URL pointing to an RDS file that contains a
-#' \linkS4class{SingleCellExperiment} may be supplied as an alternative to
-#' \code{se}.
 #' @param redDimArgs An integer scalar specifying the maximum number of
 #' reduced dimension plots in the interface. Alternatively, a DataFrame
 #' similar to that produced by \code{\link{redDimPlotDefaults}}, specifying
@@ -77,7 +74,6 @@
 #' if (interactive()) { iSEE(sce) }
 iSEE <- function(
   se,
-  url,
   redDimArgs=5,
   colDataArgs=5,
   geneExprArgs=5,
@@ -86,26 +82,9 @@ iSEE <- function(
   annot.keytype="ENTREZID",
   annot.keyfield=NULL
 ) {
+  # Save the original name of the input object for the command to rename it
+  # in the tracker
   se_name <- deparse(substitute(se))
-
-  # A URL pointing to an RDS file that contains a SingleCellExperiment
-  # may be supplied as an alternative to an object
-  if (missing(se)){
-    if (missing(url)){
-      stop("An input must be supplied to either `se` or `url`")
-    } else {
-      stopifnot(requireNamespace("curl"))
-      temp_file <- tempfile()
-      message("Downloading URL to temporary location: ", temp_file)
-      temp_file <- curl::curl_download(url = url, destfile = tempfile(), quiet = FALSE)
-      se <- readRDS(temp_file)
-    }
-  } else {
-    if (!missing(url)){
-      stop("Only one of `se` or `url` may be supplied.")
-    }
-  }
-
   stopifnot(inherits(se, "SingleCellExperiment"))
 
   # Collecting constants for populating the UI.

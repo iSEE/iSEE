@@ -30,7 +30,9 @@
 
     # Adding commands to facilitate cross-plot brushing.
     if (pObjects$memory[[panel_type]][panel_id, .brushActive]) {
-        tracked_code <- c(tracked_code, sprintf("all.coordinates[['%s']] <- plot.data", panel_name))
+        tracked_code <- c(tracked_code, "",
+                          "# Saving for brush transmission",
+                          sprintf("all.coordinates[['%s']] <- plot.data", panel_name))
     }
 
     tracked_code <- c(tracked_code, "")

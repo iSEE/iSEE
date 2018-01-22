@@ -28,14 +28,13 @@ Imports:
     shinydashboard,
     rintrojs, 
     ggplot2,
-    ggbeeswarm,
+    vipor,
     rentrez,
     AnnotationDbi,
     DT,
     colourpicker,
     clipr,
-    shinyAce,
-    irlba
+    shinyAce
 Suggests:
     testthat,
     BiocStyle,

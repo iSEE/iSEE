@@ -300,7 +300,7 @@ names(.all_labs_values) <- .all_aes_names
   bounds <- param_choices[[.zoomData]][[1]]
   if (param_choices[[.zoomActive]] && !is.null(bounds)) {
     plot_cmds[["coord"]] <- sprintf(
-      "coord_cartesian(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = FALSE) +",
+      "coord_cartesian(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = FALSE) +", # FALSE, to get a literal zoom.
       bounds["xmin"], bounds["xmax"], bounds["ymin"],  bounds["ymax"]
     )
   } else {
@@ -324,40 +324,56 @@ names(.all_labs_values) <- .all_aes_names
   )
   plot_cmds[["violin"]] <- "geom_violin(alpha = 0.2, scale = 'width') +"
 
+  # Figuring out the scatter. This is done ahead of time to guarantee the
+  # same results regardless of the subset used for brushing.
+  vipor_cmds <- list()
+  vipor_cmds[["comment"]] <- "# Calculating point scatter within each violin"
+  vipor_cmds[["seed"]] <- "set.seed(100);"
+  vipor_cmds[["baseX"]] <- "Xpos <- as.integer(as.factor(plot.data$X));"
+  vipor_precmd <- "plot.data$jitteredX%s <- vipor::offsetX(plot.data$Y%s, 
+    x=plot.data$X%s, width=0.4, varwidth=FALSE, adjust=0.5, 
+    method='quasirandom', nbins=NULL) + Xpos%s;" 
+  vipor_cmds[['calcX']] <- sprintf(vipor_precmd, "", "", "", "")
+
   # Implementing the brushing effect.
   if (brush_set) {
     brush_effect <- param_choices[[.brushEffect]]
     if (brush_effect==.brushColorTitle) {
       plot_cmds[["brush_other"]] <- sprintf(
-        "geom_quasirandom(%s, subset(plot.data, !BrushBy), groupOnX = TRUE) +",
-        .build_aes(color = color_set)
+        "geom_point(%s, subset(plot.data, !BrushBy)) +",
+        .build_aes(color = color_set, alt=c(x="jitteredX"))
       )
       plot_cmds[["brush_color"]] <- sprintf(
-        "geom_quasirandom(%s, data = subset(plot.data, BrushBy), color = '%s', groupOnX = TRUE) +",
-        .build_aes(color = color_set), param_choices[[.brushColor]]
+        "geom_point(%s, data = subset(plot.data, BrushBy), color = '%s') +",
+        .build_aes(color = color_set, alt=c(x="jitteredX")), param_choices[[.brushColor]]
       )
-    }
-    if (brush_effect==.brushTransTitle) {
+
+    } else  if (brush_effect==.brushTransTitle) {
       plot_cmds[["brush_other"]] <- sprintf(
-        "geom_quasirandom(%s, subset(plot.data, !BrushBy), alpha = %s, groupOnX = TRUE) +",
-        .build_aes(color = color_set), param_choices[[.brushTransAlpha]]
+        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %s) +",
+        .build_aes(color = color_set, alt=c(x="jitteredX")), param_choices[[.brushTransAlpha]]
       )
       plot_cmds[["brush_alpha"]] <- sprintf(
-        "geom_quasirandom(%s, subset(plot.data, BrushBy), groupOnX = TRUE) +",
-        .build_aes(color = color_set)
+        "geom_point(%s, subset(plot.data, BrushBy)) +",
+        .build_aes(color = color_set, alt=c(x="jitteredX"))
       )
-    }
-    if (brush_effect==.brushRestrictTitle) {
+
+    } else if (brush_effect==.brushRestrictTitle) {
+      # This requires more care as the subsetting affects the density calculations.
+      vipor_cmds[["calcX"]] <- NULL
+      vipor_cmds[["prework"]] <- c("keep <- plot.data$BrushBy;\nplot.data$jitteredX <- rep(NA_real_, nrow(plot.data));")
+      vipor_cmds[["calcX"]] <- sprintf(vipor_precmd, "[keep]", "[keep]", "[keep]", "[keep]")
+
       plot_cmds[["violin"]] <- "geom_violin(data = subset(plot.data, BrushBy), alpha = 0.2, scale = 'width') +"
       plot_cmds[["brush_restrict"]] <- sprintf(
-        "geom_quasirandom(%s, subset(plot.data, BrushBy), groupOnX = TRUE) +",
-        .build_aes(color = color_set)
+        "geom_point(%s, subset(plot.data, BrushBy)) +",
+        .build_aes(color = color_set, alt=c(x="jitteredX"))
       )
     }
   } else {
     plot_cmds[["point"]] <- sprintf(
-      "geom_quasirandom(%s, alpha = 0.6, size = 1, groupOnX = TRUE) +",
-      .build_aes(color = color_set)
+      "geom_point(%s, alpha = 0.6, size = 1) +",
+      .build_aes(color = color_set, alt=c(x="jitteredX"))
     )
   }
 
@@ -372,7 +388,7 @@ names(.all_labs_values) <- .all_aes_names
   bounds <- param_choices[[.zoomData]][[1]]
   if (param_choices[[.zoomActive]] && !is.null(bounds)) {
     plot_cmds[["coord"]] <- sprintf(
-      "coord_cartesian(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = FALSE) +",
+      "coord_cartesian(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = FALSE) +", # FALSE, to get a literal zoom.
       bounds["xmin"], bounds["xmax"], bounds["ymin"], bounds["ymax"]
     )
   } else {
@@ -383,11 +399,14 @@ names(.all_labs_values) <- .all_aes_names
     )
   }
 
-  plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) + "
-
+  plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +" # preserving the x-axis range.
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
-  return(plot_cmds)
+
+  vipor_cmds <- unlist(vipor_cmds)
+  vipor_cmds <- paste0("    ", vipor_cmds)
+  vipor_cmds <- gsub("\n", "\n    ", vipor_cmds)
+  return(c("{", vipor_cmds, "}", plot_cmds))
 }
 
 ############################################
@@ -467,8 +486,12 @@ names(.all_labs_values) <- .all_aes_names
     sprintf("%s%s(%s)", gene_id, sep, assay_name)
 }
 
-.build_aes <- function(x = TRUE, y = TRUE, color = FALSE, shape = FALSE, fill = FALSE, group = FALSE){
+.build_aes <- function(x = TRUE, y = TRUE, color = FALSE, shape = FALSE, fill = FALSE, group = FALSE, alt=NULL) {
     active_aes <- .all_aes_values[c(x, y, color, shape, fill, group)]
+    if (!is.null(alt)) {
+        active_aes <- c(active_aes, alt)
+        active_aes <- active_aes[!duplicated(names(active_aes), fromLast=TRUE)]
+    }
     aes_specs <- mapply(FUN = .make_single_aes, names(active_aes), active_aes, USE.NAMES = FALSE)
     aes_specs <- paste(aes_specs, collapse = ", ")
     return(sprintf("aes(%s)", aes_specs))

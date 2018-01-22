@@ -414,54 +414,66 @@ names(.all_labs_values) <- .all_aes_names
 # Generates a grid dot plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
+  setup_cmds  <- list()
+  setup_cmds[["table"]] <- "summary.data <- as.data.frame(with(plot.data, table(X, Y)));"
+  setup_cmds[["proportion"]] <- "summary.data$Proportion <- with(summary.data, Freq / sum(Freq));"
+  setup_cmds[["radius"]] <- "summary.data$Radius <- 0.49*with(summary.data, sqrt(Proportion/max(Proportion)));"
+  setup_cmds[["merged"]] <- "plot.data$Marker <- seq_len(nrow(plot.data));
+combined <- merge(plot.data, summary.data, by=c('X', 'Y'));
+point.radius <- combined$Radius[order(combined$Marker)];
+plot.data$Marker <- NULL;"
+  setup_cmds[["jitter"]] <- "set.seed(100);
+coordsX <- runif(nrow(plot.data), -1, 1);
+coordsY <- runif(nrow(plot.data), -1, 1);
+plot.data$jitteredX <- as.integer(as.factor(plot.data$X)) + point.radius * coordsX;
+plot.data$jitteredY <- as.integer(as.factor(plot.data$Y)) + point.radius * coordsY;"
+  
   plot_cmds <- list()
-  plot_cmds[["table"]] <- "summary.data <- as.data.frame(with(plot.data, table(X, Y)));"
-  plot_cmds[["proportion"]] <- "summary.data$Proportion <- with(summary.data, Freq / sum(Freq));"
-  plot_cmds[["ggplot"]] <- sprintf(
-    "ggplot(plot.data) +"
-  )
+  plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
 
   # Implementing the brushing effect.
+  new_aes <- .build_aes(color = color_set, alt=c(x="jitteredX", y="jitteredY"))
   if (brush_set) {
     brush_effect <- param_choices[[.brushEffect]]
+
     if (brush_effect==.brushColorTitle) {
       plot_cmds[["point"]] <-
         "geom_point(aes(x = X, y = Y, size = Proportion), summary.data, alpha = 0.4) +"
       plot_cmds[["brush_other"]] <- sprintf(
-        "geom_jitter(%s, subset(plot.data, !BrushBy), width = 0.2, height = 0.2) +",
-        .build_aes(color = color_set)
+        "geom_point(%s, subset(plot.data, !BrushBy), width = 0.2, height = 0.2) +",
+        new_aes
       )
       plot_cmds[["brush_color"]] <- sprintf(
-        "geom_jitter(%s, data = subset(plot.data, BrushBy), color = '%s', width = 0.2, height = 0.2) +",
-        .build_aes(color = color_set), param_choices[[.brushColor]]
+        "geom_point(%s, data = subset(plot.data, BrushBy), color = '%s', width = 0.2, height = 0.2) +",
+        new_aes, param_choices[[.brushColor]]
       )
     }
     if (brush_effect==.brushTransTitle) {
       plot_cmds[["point"]] <-
         "geom_point(aes(x = X, y = Y, size = Proportion), summary.data, alpha = 0.4) +"
       plot_cmds[["brush_other"]] <- sprintf(
-        "geom_jitter(%s, subset(plot.data, !BrushBy), alpha = %s, width = 0.2, height = 0.2) +",
-        .build_aes(color = color_set), param_choices[[.brushTransAlpha]]
+        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %s, width = 0.2, height = 0.2) +",
+        new_aes, param_choices[[.brushTransAlpha]]
       )
       plot_cmds[["brush_alpha"]] <- sprintf(
-        "geom_jitter(%s, subset(plot.data, BrushBy)) +",
-        .build_aes(color = color_set)
+        "geom_point(%s, subset(plot.data, BrushBy)) +",
+        new_aes
       )
     }
     if (brush_effect==.brushRestrictTitle) {
       plot_cmds[["point"]] <-
         "geom_point(aes(x = X, y = Y, size = Proportion), summary.data, alpha = 0.4) +"
       plot_cmds[["brush_restrict"]] <- sprintf(
-        "geom_jitter(%s, subset(plot.data, BrushBy), width = 0.2, height = 0.2) +",
-        .build_aes(color = color_set)
+        "geom_point(%s, subset(plot.data, BrushBy), width = 0.2, height = 0.2) +",
+        new_aes
       )
     }
   } else {
     plot_cmds[["point"]] <-
       "geom_point(aes(x = X, y = Y, size = Proportion), summary.data, alpha = 0.4) +"
     plot_cmds[["jitter"]] <- sprintf(
-      "geom_jitter(%s, plot.data, width = 0.2, height = 0.2, alpha = 0.4) +",
-      .build_aes(color = color_set)
+      "geom_point(%s, plot.data, width = 0.2, height = 0.2, alpha = 0.4) +",
+      new_aes
     )
   }
 
@@ -478,7 +490,7 @@ names(.all_labs_values) <- .all_aes_names
   bounds <- param_choices[[.zoomData]][[1]]
   if (param_choices[[.zoomActive]] && !is.null(bounds)) {
     plot_cmds[["coord"]] <- sprintf(
-      "coord_cartesian(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = TRUE) +",
+      "coord_cartesian(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = FALSE) +",
       bounds["xmin"], bounds["xmax"], bounds["ymin"], bounds["ymax"]
     )
   }
@@ -490,7 +502,7 @@ names(.all_labs_values) <- .all_aes_names
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom', legend.box = 'vertical')"
 
-  return(plot_cmds)
+  return(c("# Setting up data points", setup_cmds, "", "# Generating the plot", plot_cmds))
 }
 
 ############################################

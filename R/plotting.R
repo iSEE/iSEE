@@ -205,7 +205,7 @@ names(.all_labs_values) <- .all_aes_names
   if (!group_X) {
     cmds$todo[["more_X"]] <- .coerce_to_numeric(xvals, "X")
   } else {
-    # It is important that they become explicit factors here, which simplifies 
+    # It is important that they become explicit factors here, which simplifies
     # downstream processing (e.g., coercion to integer, no lost levels upon subsetting).
     cmds$todo[["more_X"]] <- "plot.data$X <- as.factor(plot.data$X);"
   }
@@ -319,7 +319,7 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);" # BEFORE any subsetting when brush
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
 
-  return(c("# Defining the plot boundaries", pre_cmds, "", 
+  return(c("# Defining the plot boundaries", pre_cmds, "",
            setup_cmds,
            "# Generating the plot", plot_cmds))
 }
@@ -339,6 +339,7 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);" # BEFORE any subsetting when brush
   # Figuring out the scatter. This is done ahead of time to guarantee the
   # same results regardless of the subset used for brushing.
   setup_cmds <- list()
+  setup_cmds[["na.rm"]] <- "plot.data <- subset(plot.data, !is.na(X) & !is.na(Y));"
   setup_cmds[["seed"]] <- "set.seed(100);"
   setup_cmds[["calcX"]] <- "plot.data$jitteredX <- vipor::offsetX(plot.data$Y,
     x=plot.data$X, width=0.4, varwidth=FALSE, adjust=0.5,
@@ -407,8 +408,8 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);" # BEFORE any subsetting when brush
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
 
-  return(c("# Defining the plot boundaries", pre_cmds, "", 
-           "# Setting up the data points", unlist(setup_cmds), "", 
+  return(c("# Defining the plot boundaries", pre_cmds, "",
+           "# Setting up the data points", unlist(setup_cmds), "",
            "# Generating the plot", plot_cmds))
 }
 
@@ -418,6 +419,7 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);" # BEFORE any subsetting when brush
 {
   setup_cmds  <- list()
   setup_cmds[["table"]] <- "summary.data <- as.data.frame(with(plot.data, table(X, Y)));"
+  setup_cmds[["show"]] <- "plot(head(plot.data));plot(head(summary.data));"
   setup_cmds[["proportion"]] <- "summary.data$Proportion <- with(summary.data, Freq / sum(Freq));"
   setup_cmds[["radius"]] <- "summary.data$Radius <- 0.49*with(summary.data, sqrt(Proportion/max(Proportion)));"
   setup_cmds[["merged"]] <- "plot.data$Marker <- seq_len(nrow(plot.data));
@@ -429,7 +431,7 @@ coordsX <- runif(nrow(plot.data), -1, 1);
 coordsY <- runif(nrow(plot.data), -1, 1);
 plot.data$jitteredX <- as.integer(plot.data$X) + point.radius*coordsX;
 plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
-  
+
   pre_cmds <- list()
   plot_cmds <- list()
   plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
@@ -507,7 +509,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom', legend.box = 'vertical')"
 
-  return(c("# Setting up data points", setup_cmds, "", 
+  return(c("# Setting up data points", setup_cmds, "",
            "# Generating the plot", plot_cmds))
 }
 

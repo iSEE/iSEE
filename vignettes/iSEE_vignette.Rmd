@@ -75,10 +75,9 @@ biocLite("iSEE")
 
 To load and attach the package to your current workspace, enter:
 
-```{r library}
+```{r library, message=FALSE, warning=FALSE}
 library(iSEE)
 ```
-
 
 # Sharing data
 
@@ -135,5 +134,15 @@ file.copy(from = temp_file, to = newLocation)
 
 # FAQ
 
-*Coming soon.*
+**Q: Can you implement a 'Copy to clipboard' button in the code editor?**
+
+A: This is not necessary, as one can click anywhere in the code editor and
+instantly select all the code using a keyboard shortcut that depends on
+your operating systen.
+
+# Session info
+
+```{r sessionInfo}
+sessionInfo()
+```
 

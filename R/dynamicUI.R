@@ -257,7 +257,7 @@
         checkboxInput(paste0(mode, .zoomActive, ID), label="Zoom upon brush", 
                       value=param_choices[[.zoomActive]]), 
         selectInput(paste0(mode, .brushByPlot, ID), 
-                    label = "Receive brush from:",
+                    label = "Receive brush from:", selectize=FALSE,
                     choices=brushable, 
                     selected=.choose_link(param_choices[[.brushByPlot]], brushable)),
 

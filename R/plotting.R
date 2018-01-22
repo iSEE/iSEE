@@ -471,19 +471,19 @@ names(.all_labs_values) <- .all_aes_names
   )
 
   # Defining boundaries if zoomed.
-  # bounds <- param_choices[[.zoomData]][[1]]
-  # if (param_choices[[.zoomActive]] && !is.null(bounds)) {
-  #   plot_cmds[["coord"]] <- sprintf(
-  #     "coord_cartesian(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = TRUE) +",
-  #     bounds["xmin"], bounds["xmax"], bounds["ymin"], bounds["ymax"]
-  #   )
-  # } else {
-  #   ylimits <- "range(plot.data$Y, na.rm = TRUE)"
-  #   plot_cmds[["coord"]] <- sprintf(
-  #     "coord_cartesian(xlim = NULL, ylim = %s, expand = TRUE) +",
-  #     ylimits
-  #   )
-  # }
+  bounds <- param_choices[[.zoomData]][[1]]
+  if (param_choices[[.zoomActive]] && !is.null(bounds)) {
+    plot_cmds[["coord"]] <- sprintf(
+      "coord_cartesian(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = TRUE) +",
+      bounds["xmin"], bounds["xmax"], bounds["ymin"], bounds["ymax"]
+    )
+  } else {
+    # ylimits <- "range(plot.data$Y, na.rm = TRUE)"
+    # plot_cmds[["coord"]] <- sprintf(
+    #   "coord_cartesian(xlim = NULL, ylim = NULL, expand = TRUE) +",
+    #   ylimits
+    # )
+  }
 
   plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +"
   plot_cmds[["scale_y"]] <- "scale_y_discrete(drop = FALSE) +"

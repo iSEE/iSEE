@@ -19,7 +19,7 @@
 #' @importFrom utils packageVersion read.delim
 #' @importFrom ggplot2 ggplot geom_point labs theme_void aes_string geom_violin
 #'   theme_bw facet_wrap ylab aes theme scale_x_continuous scale_y_continuous
-#' @importFrom ggbeeswarm geom_quasirandom
+#' @importFrom vipor offsetX
 #' @importFrom DT datatable renderDataTable dataTableOutput
 #' @importFrom AnnotationDbi mapIds keytypes
 #' @importFrom rentrez entrez_summary

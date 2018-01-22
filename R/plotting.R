@@ -190,7 +190,7 @@ names(.all_labs_values) <- .all_aes_names
   eval_out <- new.env()
   executed <- .evaluate_remainder(cmd_list=cmds, eval_env=eval_out)
   cmds <- executed$cmd_list
-  print(cmds)
+
   # Cleaning up the grouping status of various fields.
   coloring <- eval_out$plot.data$ColorBy
   if (!is.null(coloring)) {
@@ -239,7 +239,7 @@ names(.all_labs_values) <- .all_aes_names
 
   }
   cmds$todo <- c(cmds$todo, plot_cmds)
-  print(cmds$todo)
+
   # Combine all the commands to evaluate
   executed <- .evaluate_remainder(cmd_list=cmds, eval_env=eval_out)
   return(list(cmd = .build_cmd_eval(cmds),
@@ -331,9 +331,9 @@ names(.all_labs_values) <- .all_aes_names
   vipor_cmds[["comment"]] <- "# Calculating point scatter within each violin"
   vipor_cmds[["seed"]] <- "set.seed(100);"
   vipor_cmds[["baseX"]] <- "Xpos <- as.integer(as.factor(plot.data$X));"
-  vipor_precmd <- "plot.data$jitteredX%s <- vipor::offsetX(plot.data$Y%s, 
-    x=plot.data$X%s, width=0.4, varwidth=FALSE, adjust=0.5, 
-    method='quasirandom', nbins=NULL) + Xpos%s;" 
+  vipor_precmd <- "plot.data$jitteredX%s <- vipor::offsetX(plot.data$Y%s,
+    x=plot.data$X%s, width=0.4, varwidth=FALSE, adjust=0.5,
+    method='quasirandom', nbins=NULL) + Xpos%s;"
   vipor_cmds[['calcX']] <- sprintf(vipor_precmd, "", "", "", "")
 
   # Implementing the brushing effect.
@@ -415,7 +415,7 @@ names(.all_labs_values) <- .all_aes_names
 # generate the plotting commands, with no modification of 'cmds'.
 {
   plot_cmds <- list()
-  plot_cmds[["table"]] <- "summary.data <- as.data.frame(table(plot.data));"
+  plot_cmds[["table"]] <- "summary.data <- as.data.frame(with(plot.data, table(X, Y)));"
   plot_cmds[["proportion"]] <- "summary.data$Proportion <- with(summary.data, Freq / sum(Freq));"
   plot_cmds[["ggplot"]] <- sprintf(
     "ggplot(plot.data) +"
@@ -453,11 +453,11 @@ names(.all_labs_values) <- .all_aes_names
     # }
   } else {
     plot_cmds[["point"]] <-
-      "geom_point(aes(x = X, y = Y, size = Proportion), summary.data, alpha = 0.5) +"
+      "geom_point(aes(x = X, y = Y, size = Proportion), summary.data, alpha = 0.4) +"
   }
 
   plot_cmds[["jitter"]] <- sprintf(
-    "geom_jitter(%s, plot.data, width = 0.2, height = 0.2, alpha = 0.2) +",
+    "geom_jitter(%s, plot.data, width = 0.2, height = 0.2, alpha = 0.4) +",
     .build_aes(color = color_set)
   )
 

@@ -1,12 +1,12 @@
 [![Travis build status](https://travis-ci.org/csoneson/iSEE.svg?branch=master)](https://travis-ci.org/csoneson/iSEE)
 
-# iSEE/SummarizedExplorer
+# iSEE/interactiveSummarizedExperimentExplorer
 
 ## Overview
 
-The _SummarizedExplorer_ package aims to provide an interactive user interface for exploring data in `SummarizedExperiment` objects.
+The _iSEE_ package aims to provide an interactive user interface for exploring data in objects derived from the `SummarizedExperiment` class.
 Particular focus will be given to single-cell data in the `SingleCellExperiment` derived class.
-The interface will be implemented in _Shiny_ with a multi-tab setup for ease of navigation.
+The interface will be implemented with [RStudio](https://www.rstudio.com)'s [_Shiny_](https://shiny.rstudio.com), with a multi-tab setup for ease of navigation.
 
 This initiative was proposed at the European Bioconductor Meeting in Cambridge, 2017.
 Current contributors include:
@@ -20,23 +20,28 @@ Current contributors include:
 
 The interface is proposed to contain the following features in its first iteration:
 
-- multiple interactive scatter plots with selectable points
-- colouring of samples by metadata or expression values
-- dynamic updating of cell-level metadata on hover/click
-- zooming in to a particular subregion of the plot, if requested
+:white_check_mark: multiple interactive scatter plots with selectable points
 
-Scatter plots can be generated from reduced dimensionality data, or with biaxial plots of existing metadata columns.
+:white_check_mark: colouring of samples by metadata or expression values
+
+dynamic updating of cell-level metadata on hover/click
+
+:white_check_mark: zooming in to a particular subregion of the plot, if requested
+
+:white_check_mark: scatter plots can be generated from reduced dimensionality data, or with biaxial plots of existing metadata columns.
 
 ## Gene-based visualization
 
 The interface is proposed to contain the following features in its first iteration:
 
-- boxplots of expression values for a single gene, stratified by metadata level
-- heatmaps of multiple genes for groups of cells or for individual ordered cells 
-- integrated brushing in cell-based scatter plots with cell identities in gene-level plots
+:white_check_mark: boxplots of expression values for a single gene, stratified by metadata level
+
+heatmaps of multiple genes for groups of cells or for individual ordered cells 
+
+:white_check_mark: integrated brushing in cell-based scatter plots with cell identities in gene-level plots
 
 ## Miscellaneous
 
-The interface will contain a continually updated R interface that provides the R code corresponding to each user interaction.
+:white_check_mark: The interface will contain a continually updated R interface that provides the R code corresponding to each user interaction.
 This can be copy-pasted into R scripts for batch generation of figures.
 

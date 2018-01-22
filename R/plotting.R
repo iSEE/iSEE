@@ -238,7 +238,7 @@ names(.all_labs_values) <- .all_aes_names
     plot_cmds <- .scatter_plot(..., color_set=color_set)
 
   }
-  cmds$todo <- c(cmds$todo, plot_cmds)
+  cmds$todo <- c(cmds$todo, "", plot_cmds)
 
   # Combine all the commands to evaluate
   executed <- .evaluate_remainder(cmd_list=cmds, eval_env=eval_out)
@@ -328,7 +328,6 @@ names(.all_labs_values) <- .all_aes_names
   # Figuring out the scatter. This is done ahead of time to guarantee the
   # same results regardless of the subset used for brushing.
   vipor_cmds <- list()
-  vipor_cmds[["comment"]] <- "# Calculating point scatter within each violin"
   vipor_cmds[["seed"]] <- "set.seed(100);"
   vipor_precmd <- "plot.data$jitteredX%s <- vipor::offsetX(plot.data$Y%s,
     x=plot.data$X%s, width=0.4, varwidth=FALSE, adjust=0.5,
@@ -402,11 +401,7 @@ names(.all_labs_values) <- .all_aes_names
   plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +" # preserving the x-axis range.
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
-
-  vipor_cmds <- unlist(vipor_cmds)
-  vipor_cmds <- paste0("    ", vipor_cmds)
-  vipor_cmds <- gsub("\n", "\n    ", vipor_cmds)
-  return(c("{", vipor_cmds, "}", plot_cmds))
+  return(c("# Setting up the data points", unlist(vipor_cmds), "", "# Generating the plot", plot_cmds))
 }
 
 .griddotplot <- function(param_choices, x_lab, y_lab, color_set, color_label, fill_set, brush_set)

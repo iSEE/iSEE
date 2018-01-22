@@ -21,7 +21,10 @@
     panel_name <- paste0(panel_type, "Plot", panel_id)
     
     tracked_code <- c(tracked_code,
+                      strrep("#", 80),
                       paste0("## ", .decode_panel_name(panel_type, panel_id)),
+                      strrep("#", 80),
+                      "",
                       pObjects$commands[[panel_name]]
                       )
 

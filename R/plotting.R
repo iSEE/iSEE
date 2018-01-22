@@ -253,6 +253,7 @@ names(.all_labs_values) <- .all_aes_names
 # generate the plotting commands, with no modification of 'cmds'.
 {
   pre_cmds <- list()
+  setup_cmds <- list()
   plot_cmds <- list()
   plot_cmds[["ggplot"]] <- "ggplot() +"
 
@@ -280,7 +281,9 @@ names(.all_labs_values) <- .all_aes_names
       )
     }
     if (brush_effect==.brushRestrictTitle) {
-      pre_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
+      setup_cmds[["comment"]] <- "# Subsetting the data"
+      setup_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
+      setup_cmds[["newline"]] <- ""
       plot_cmds[["brush_restrict"]] <- sprintf(
         "geom_point(%s, plot.data) +",
         .build_aes(color = color_set)
@@ -308,14 +311,17 @@ names(.all_labs_values) <- .all_aes_names
       bounds["xmin"], bounds["xmax"], bounds["ymin"],  bounds["ymax"]
     )
   } else {
-    pre_cmds <- c(limits="xbounds <- range(plot.data$X, na.rm = TRUE);
-ybounds <- range(plot.data$Y, na.rm = TRUE);", pre_cmds) # BEFORE any subsetting when brushing to restrict!
+    pre_cmds[["limits"]] <- "xbounds <- range(plot.data$X, na.rm = TRUE);
+ybounds <- range(plot.data$Y, na.rm = TRUE);" # BEFORE any subsetting when brushing to restrict!
     plot_cmds[["coord"]] <- "coord_cartesian(xlim = xbounds, ylim = ybounds, expand = TRUE) +"
   }
 
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
-  return(c("# Generating the plot", pre_cmds, plot_cmds))
+
+  return(c("# Defining the plot boundaries", pre_cmds, "", 
+           setup_cmds,
+           "# Generating the plot", plot_cmds))
 }
 
 .violin_plot <- function(param_choices, x_lab, y_lab, color_set, color_label, fill_set, brush_set)
@@ -332,12 +338,11 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);", pre_cmds) # BEFORE any subsetting
 
   # Figuring out the scatter. This is done ahead of time to guarantee the
   # same results regardless of the subset used for brushing.
-  vipor_cmds <- list()
-  vipor_cmds[["seed"]] <- "set.seed(100);"
-  vipor_precmd <- "plot.data$jitteredX%s <- vipor::offsetX(plot.data$Y%s,
-    x=plot.data$X%s, width=0.4, varwidth=FALSE, adjust=0.5,
-    method='quasirandom', nbins=NULL) + as.integer(plot.data$X%s);"
-  vipor_cmds[['calcX']] <- sprintf(vipor_precmd, "", "", "", "")
+  setup_cmds <- list()
+  setup_cmds[["seed"]] <- "set.seed(100);"
+  setup_cmds[["calcX"]] <- "plot.data$jitteredX <- vipor::offsetX(plot.data$Y,
+    x=plot.data$X, width=0.4, varwidth=FALSE, adjust=0.5,
+    method='quasirandom', nbins=NULL) + as.integer(plot.data$X);"
 
   # Implementing the brushing effect.
   if (brush_set) {
@@ -363,13 +368,9 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);", pre_cmds) # BEFORE any subsetting
       )
 
     } else if (brush_effect==.brushRestrictTitle) {
-      # This requires more care as the subsetting affects the density calculations.
-      vipor_cmds[["calcX"]] <- NULL
-      vipor_cmds[["prework"]] <- c("keep <- plot.data$BrushBy;\nplot.data$jitteredX <- rep(NA_real_, nrow(plot.data));")
-      vipor_cmds[["calcX"]] <- sprintf(vipor_precmd, "[keep]", "[keep]", "[keep]", "[keep]")
-
-      pre_cmds[["subset"]] <- "plot.data <- plot.data[keep,];"
-
+      # Need to subset explicitly, to adjust the density calculations and ensure
+      # doesntream brushes are correct. Note, subsetting BEFORE vipor calculations.
+      setup_cmds <- c(subset="plot.data <- subset(plot.data, BrushBy);", setup_cmds)
       plot_cmds[["violin"]] <- "geom_violin(data = plot.data, alpha = 0.2, scale = 'width') +"
       plot_cmds[["brush_restrict"]] <- sprintf(
         "geom_point(%s, plot.data) +",
@@ -405,7 +406,10 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);", pre_cmds) # BEFORE any subsetting
   plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +" # preserving the x-axis range.
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
-  return(c("# Setting up the data points", unlist(vipor_cmds), "", "# Generating the plot", pre_cmds, plot_cmds))
+
+  return(c("# Defining the plot boundaries", pre_cmds, "", 
+           "# Setting up the data points", unlist(setup_cmds), "", 
+           "# Generating the plot", plot_cmds))
 }
 
 .griddotplot <- function(param_choices, x_lab, y_lab, color_set, color_label, fill_set, brush_set)
@@ -426,6 +430,7 @@ coordsY <- runif(nrow(plot.data), -1, 1);
 plot.data$jitteredX <- as.integer(plot.data$X) + point.radius*coordsX;
 plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
   
+  pre_cmds <- list()
   plot_cmds <- list()
   plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
 
@@ -436,8 +441,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
 
     if (brush_effect==.brushColorTitle) {
       plot_cmds[["point"]] <-
-        "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, 
-            color = 'black', alpha = 0, size = 0.5) + "
+        "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, color = 'black', alpha = 0, size = 0.5) +"
       plot_cmds[["brush_other"]] <- sprintf(
         "geom_point(%s, subset(plot.data, !BrushBy), width = 0.2, height = 0.2) +",
         new_aes
@@ -449,8 +453,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
     }
     if (brush_effect==.brushTransTitle) {
       plot_cmds[["point"]] <-
-        "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, 
-            color = 'black', alpha = 0, size = 0.5) + "
+        "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, color = 'black', alpha = 0, size = 0.5) +"
       plot_cmds[["brush_other"]] <- sprintf(
         "geom_point(%s, subset(plot.data, !BrushBy), alpha = %s, width = 0.2, height = 0.2) +",
         new_aes, param_choices[[.brushTransAlpha]]
@@ -461,18 +464,18 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
       )
     }
     if (brush_effect==.brushRestrictTitle) {
+      # Note subsetting before all other calculations.
+      setup_cmds <- c(subset="plot.data <- subset(plot.data, BrushBy);", setup_cmds)
       plot_cmds[["point"]] <-
-        "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, 
-            color = 'black', alpha = 0, size = 0.5) + "
+        "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, color = 'black', alpha = 0, size = 0.5) +"
       plot_cmds[["brush_restrict"]] <- sprintf(
-        "geom_point(%s, subset(plot.data, BrushBy), width = 0.2, height = 0.2) +",
+        "geom_point(%s, plot.data, width = 0.2, height = 0.2) +",
         new_aes
       )
     }
   } else {
     plot_cmds[["point"]] <-
-      "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, 
-            color = 'black', alpha = 0, size = 0.5) + "
+      "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, color = 'black', alpha = 0, size = 0.5) +"
     plot_cmds[["jitter"]] <- sprintf(
       "geom_point(%s, plot.data, width = 0.2, height = 0.2, alpha = 0.4) +",
       new_aes
@@ -504,7 +507,8 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom', legend.box = 'vertical')"
 
-  return(c("# Setting up data points", setup_cmds, "", "# Generating the plot", plot_cmds))
+  return(c("# Setting up data points", setup_cmds, "", 
+           "# Generating the plot", plot_cmds))
 }
 
 ############################################

@@ -438,7 +438,6 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
       plot_cmds[["point"]] <-
         "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, 
             color = 'black', alpha = 0, size = 0.5) + "
-#        "geom_point(aes(x = X, y = Y, size = Proportion), summary.data, alpha = 0.4) +"
       plot_cmds[["brush_other"]] <- sprintf(
         "geom_point(%s, subset(plot.data, !BrushBy), width = 0.2, height = 0.2) +",
         new_aes
@@ -452,7 +451,6 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
       plot_cmds[["point"]] <-
         "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, 
             color = 'black', alpha = 0, size = 0.5) + "
-#        "geom_point(aes(x = X, y = Y, size = Proportion), summary.data, alpha = 0.4) +"
       plot_cmds[["brush_other"]] <- sprintf(
         "geom_point(%s, subset(plot.data, !BrushBy), alpha = %s, width = 0.2, height = 0.2) +",
         new_aes, param_choices[[.brushTransAlpha]]
@@ -466,7 +464,6 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
       plot_cmds[["point"]] <-
         "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, 
             color = 'black', alpha = 0, size = 0.5) + "
-#        "geom_point(aes(x = X, y = Y, size = Proportion), summary.data, alpha = 0.4) +"
       plot_cmds[["brush_restrict"]] <- sprintf(
         "geom_point(%s, subset(plot.data, BrushBy), width = 0.2, height = 0.2) +",
         new_aes
@@ -476,7 +473,6 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
     plot_cmds[["point"]] <-
       "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, 
             color = 'black', alpha = 0, size = 0.5) + "
-#      "geom_point(aes(x = X, y = Y, size = Proportion), summary.data, alpha = 0.4) +"
     plot_cmds[["jitter"]] <- sprintf(
       "geom_point(%s, plot.data, width = 0.2, height = 0.2, alpha = 0.4) +",
       new_aes

@@ -67,7 +67,7 @@
         brush.opts <- NULL
         if (mode!="geneStat" && (param_choices[[.brushActive]] || param_choices[[.zoomActive]])) { 
             brush.opts <- brushOpts(paste0(mode, .brushField, ID),
-                                    resetOnNew=param_choices[[.zoomActive]])
+                                    resetOnNew=param_choices[[.zoomActive]] & !param_choices[[.brushActive]])
             if (param_choices[[.zoomActive]]) { 
                 dblclick <- paste0(mode, .zoomClick, ID)
             }

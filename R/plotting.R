@@ -404,22 +404,29 @@ plot.data$Y <- tmp;")
     fill = color_label
   )
 
-  # Defining boundaries if zoomed.
+  # Defining boundaries if zoomed. This requires some finesse to deal 
+  # with horizontal plots, where the brush is computed on the flipped coordinates.
   bounds <- param_choices[[.zoomData]][[1]]
+  if (horizontal) {
+    coord_cmd <- "coord_flip"
+    if (!is.null(bounds)) { 
+      names(bounds) <- c(xmin="ymin", xmax="ymax", ymin="xmin", ymax="xmax")[names(bounds)]
+    }
+  } else {
+    coord_cmd <- "coord_cartesian"
+  } 
+
   if (param_choices[[.zoomActive]] && !is.null(bounds)) {
     plot_cmds[["coord"]] <- sprintf(
-      "coord_cartesian(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = FALSE) +", # FALSE, to get a literal zoom.
-      bounds["xmin"], bounds["xmax"], bounds["ymin"], bounds["ymax"]
+      "%s(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = FALSE) +", # FALSE, to get a literal zoom.
+      coord_cmd, bounds["xmin"], bounds["xmax"], bounds["ymin"], bounds["ymax"]
     )
   } else {
     lim_cmds[["limits"]] <- "ybounds <- range(plot.data$Y, na.rm = TRUE);"
-    plot_cmds[["coord"]] <- "coord_cartesian(xlim = NULL, ylim = ybounds, expand = TRUE) +"
+    plot_cmds[["coord"]] <- sprintf("%s(xlim = NULL, ylim = ybounds, expand = TRUE) +", coord_cmd)
   }
 
   plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +" # preserving the x-axis range.
-  if (horizontal) {
-    plot_cmds[["coord_flip"]] <- "coord_flip() +"
-  }
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
 

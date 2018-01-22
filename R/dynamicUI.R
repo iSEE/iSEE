@@ -67,7 +67,7 @@
         brush.opts <- NULL
         if (mode!="geneStat" && (param_choices[[.brushActive]] || param_choices[[.zoomActive]])) { 
             brush.opts <- brushOpts(paste0(mode, .brushField, ID),
-                                    resetOnNew=param_choices[[.zoomActive]])
+                                    resetOnNew=param_choices[[.zoomActive]] & !param_choices[[.brushActive]])
             if (param_choices[[.zoomActive]]) { 
                 dblclick <- paste0(mode, .zoomClick, ID)
             }
@@ -257,7 +257,7 @@
         checkboxInput(paste0(mode, .zoomActive, ID), label="Zoom upon brush", 
                       value=param_choices[[.zoomActive]]), 
         selectInput(paste0(mode, .brushByPlot, ID), 
-                    label = "Receive brush from:",
+                    label = "Receive brush from:", selectize=FALSE,
                     choices=brushable, 
                     selected=.choose_link(param_choices[[.brushByPlot]], brushable)),
 

@@ -18,10 +18,11 @@
   for (i in seq_len(nrow(aobjs))) {
     panel_type <- aobjs$Type[i]
     panel_id <- aobjs$ID[i]
-    panel_name <- .decode_panel_name(panel_type, panel_id)
+    panel_name <- paste0(panel_type, "Plot", panel_id)
+    
     tracked_code <- c(tracked_code,
-                      paste0("## ", panel_name),
-                      pObjects$commands[[paste0(panel_type, "Plot", panel_id)]]
+                      paste0("## ", .decode_panel_name(panel_type, panel_id)),
+                      pObjects$commands[[panel_name]]
                       )
 
     # Adding commands to facilitate cross-plot brushing.

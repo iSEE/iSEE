@@ -419,7 +419,6 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);" # BEFORE any subsetting when brush
 {
   setup_cmds  <- list()
   setup_cmds[["table"]] <- "summary.data <- as.data.frame(with(plot.data, table(X, Y)));"
-  setup_cmds[["show"]] <- "plot(head(plot.data));plot(head(summary.data));"
   setup_cmds[["proportion"]] <- "summary.data$Proportion <- with(summary.data, Freq / sum(Freq));"
   setup_cmds[["radius"]] <- "summary.data$Radius <- 0.49*with(summary.data, sqrt(Proportion/max(Proportion)));"
   setup_cmds[["merged"]] <- "plot.data$Marker <- seq_len(nrow(plot.data));

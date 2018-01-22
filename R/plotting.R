@@ -477,12 +477,6 @@ names(.all_labs_values) <- .all_aes_names
       "coord_cartesian(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = TRUE) +",
       bounds["xmin"], bounds["xmax"], bounds["ymin"], bounds["ymax"]
     )
-  } else {
-    # ylimits <- "range(plot.data$Y, na.rm = TRUE)"
-    # plot_cmds[["coord"]] <- sprintf(
-    #   "coord_cartesian(xlim = NULL, ylim = NULL, expand = TRUE) +",
-    #   ylimits
-    # )
   }
 
   plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +"

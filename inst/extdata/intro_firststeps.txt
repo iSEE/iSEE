@@ -17,5 +17,11 @@ element;intro
 #redDimPlotPanelOpen1;someTextPlaceholder, you have plenty of options to control the appearance of the plots, here for the plot itself
 #redDimColorPanelOpen1;someTextPlaceholder, here for the coloring options
 #redDimBrushPanelOpen1;someTextPlaceholder, and here for brushing a.k.a. linking two different plots together
+#redDimBrushOn1;someTextPlaceholder
+#redDimZoomOn1;someTextPlaceholder
+#redDimBrushEffect1;someTextPlaceholder
+#colDataBrushPanelOpen1;someTextPlaceholder
+#colDataBrushByPlot1;someTextPlaceholder
 #getcode_all;someTextPlaceholder, while here you can extract the code for reproducing the exact code used to generate the plots
+#acereport_r;someText
 #Thanks;Thank you for taking the tour!

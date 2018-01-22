@@ -205,23 +205,23 @@ names(.all_labs_values) <- .all_aes_names
   if (!group_X) {
     cmds$todo[["more_X"]] <- .coerce_to_numeric(xvals, "X")
   } else {
-    cmds$todo[["group_X"]] <- "plot.data$X <- as.factor(plot.data$X);"
+    # Important that they become explicit factors here, which simplifies downstream processing.
+    cmds$todo[["more_X"]] <- "plot.data$X <- as.factor(plot.data$X);"
   }
 
   yvals <- eval_out$plot.data$Y
   group_Y <- .is_groupable(yvals)
   if (!group_Y) {
     cmds$todo[["more_Y"]] <- .coerce_to_numeric(yvals, "Y")
+  } else {
+    cmds$todo[["more_Y"]] <- "plot.data$Y <- as.factor(plot.data$Y);"
   }
 
   # Dispatch to different plotting commands, depending on whether X/Y are groupable.
   if (group_X && group_Y) {
-    # Something with circles, as discussed
-    # validate(FALSE, "ARGHH!")
-    # cmds$todo[["group"]] <- "plot.data$GroupBy <- with(plot.data, interaction(X, Y));"
     plot_cmds <- .griddotplot(..., color_set=color_set)
+
   } else if (group_X && !group_Y) {
-    # Vertical violin plots.
     cmds$todo[["group"]] <- "plot.data$GroupBy <- plot.data$X;"
     fill_set <- (color_set && group_color)
     if (fill_set) {
@@ -330,10 +330,9 @@ names(.all_labs_values) <- .all_aes_names
   vipor_cmds <- list()
   vipor_cmds[["comment"]] <- "# Calculating point scatter within each violin"
   vipor_cmds[["seed"]] <- "set.seed(100);"
-  vipor_cmds[["baseX"]] <- "Xpos <- as.integer(as.factor(plot.data$X));"
   vipor_precmd <- "plot.data$jitteredX%s <- vipor::offsetX(plot.data$Y%s,
     x=plot.data$X%s, width=0.4, varwidth=FALSE, adjust=0.5,
-    method='quasirandom', nbins=NULL) + Xpos%s;"
+    method='quasirandom', nbins=NULL) + as.integer(plot.data$X%s);"
   vipor_cmds[['calcX']] <- sprintf(vipor_precmd, "", "", "", "")
 
   # Implementing the brushing effect.
@@ -425,8 +424,8 @@ plot.data$Marker <- NULL;"
   setup_cmds[["jitter"]] <- "set.seed(100);
 coordsX <- runif(nrow(plot.data), -1, 1);
 coordsY <- runif(nrow(plot.data), -1, 1);
-plot.data$jitteredX <- as.integer(as.factor(plot.data$X)) + point.radius * coordsX;
-plot.data$jitteredY <- as.integer(as.factor(plot.data$Y)) + point.radius * coordsY;"
+plot.data$jitteredX <- as.integer(plot.data$X) + point.radius*coordsX;
+plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
   
   plot_cmds <- list()
   plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"

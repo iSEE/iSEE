@@ -244,7 +244,7 @@ iSEE <- function(
 
     # info boxes, to keep on top of the page  on the left side?
 
-    intro_firststeps <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"), sep=";", stringsAsFactors = FALSE)
+    intro_firststeps <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"), sep=";", stringsAsFactors = FALSE,row.names = NULL)
 
     observeEvent(input$tour_firststeps, {
       introjs(session,

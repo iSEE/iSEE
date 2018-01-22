@@ -201,5 +201,8 @@ colDataPlotDefaults <- function(se, max.plots) {
     incoming[[.brushEffect]] <- .brushTransTitle
     incoming[[.brushTransAlpha]] <- 0.1
     incoming[[.brushColor]] <- "red"
+
+    incoming[[.zoomActive]] <- TRUE
+    incoming[[.zoomData]] <- rep(list(NULL), nrow(incoming))
     return(incoming)
 }

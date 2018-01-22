@@ -9,7 +9,7 @@ iSEE(se, redDimArgs = 5, colDataArgs = 5, geneExprArgs = 5,
   annot.keyfield = NULL)
 }
 \arguments{
-\item{se}{A SingleCellExperiment object.}
+\item{se}{A \linkS4class{SingleCellExperiment} object.}
 
 \item{redDimArgs}{An integer scalar specifying the maximum number of
 reduced dimension plots in the interface. Alternatively, a DataFrame

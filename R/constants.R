@@ -68,8 +68,14 @@
 .brushColor <- "BrushColor"
 .brushTransAlpha <- "BrushAlpha"
 
+# Zooming parameters
+.zoomActive <- "ZoomOn"
+.zoomData <- "ZoomData"
+.zoomClick <- "ZoomClick"
+.zoomUpdate <- "ZoomUpdate"
+
 ALLEXTRAS <- c(.colorByField, .colorByColData, .colorByGeneTable, .colorByGeneTableAssay, .colorByGeneText, .colorByGeneTextAssay,
-               .brushByPlot, .brushEffect, .brushColor, .brushTransAlpha)
+               .brushByPlot, .brushEffect, .brushColor, .brushTransAlpha, .zoomActive)
 
 # Other parameter panel constants. ----
 .plotParamPanelOpen <- "PlotPanelOpen"
@@ -103,3 +109,4 @@ names(rev.translation) <- translation
     }
     return(list(Type=raw.str, ID=ID))
 }
+

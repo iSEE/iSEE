@@ -418,7 +418,7 @@ names(.all_labs_values) <- .all_aes_names
   setup_cmds[["proportion"]] <- "summary.data$Proportion <- with(summary.data, Freq / sum(Freq));"
   setup_cmds[["radius"]] <- "summary.data$Radius <- 0.49*with(summary.data, sqrt(Proportion/max(Proportion)));"
   setup_cmds[["merged"]] <- "plot.data$Marker <- seq_len(nrow(plot.data));
-combined <- merge(plot.data, summary.data, by=c('X', 'Y'));
+combined <- merge(plot.data, summary.data, by=c('X', 'Y'), all.x=TRUE);
 point.radius <- combined$Radius[order(combined$Marker)];
 plot.data$Marker <- NULL;"
   setup_cmds[["jitter"]] <- "set.seed(100);

@@ -190,7 +190,7 @@ names(.all_labs_values) <- .all_aes_names
   eval_out <- new.env()
   executed <- .evaluate_remainder(cmd_list=cmds, eval_env=eval_out)
   cmds <- executed$cmd_list
-
+  print(cmds)
   # Cleaning up the grouping status of various fields.
   coloring <- eval_out$plot.data$ColorBy
   if (!is.null(coloring)) {
@@ -217,8 +217,9 @@ names(.all_labs_values) <- .all_aes_names
   # Dispatch to different plotting commands, depending on whether X/Y are groupable.
   if (group_X && group_Y) {
     # Something with circles, as discussed
-    validate(FALSE, "ARGHH!")
-
+    # validate(FALSE, "ARGHH!")
+    # cmds$todo[["group"]] <- "plot.data$GroupBy <- with(plot.data, interaction(X, Y));"
+    plot_cmds <- .griddotplot(..., color_set=color_set)
   } else if (group_X && !group_Y) {
     # Vertical violin plots.
     cmds$todo[["group"]] <- "plot.data$GroupBy <- plot.data$X;"
@@ -238,7 +239,7 @@ names(.all_labs_values) <- .all_aes_names
 
   }
   cmds$todo <- c(cmds$todo, plot_cmds)
-
+  print(cmds$todo)
   # Combine all the commands to evaluate
   executed <- .evaluate_remainder(cmd_list=cmds, eval_env=eval_out)
   return(list(cmd = .build_cmd_eval(cmds),
@@ -387,6 +388,91 @@ names(.all_labs_values) <- .all_aes_names
 
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
+  return(plot_cmds)
+}
+
+.griddotplot <- function(param_choices, x_lab, y_lab, color_set, color_label, fill_set, brush_set)
+# Generates a grid dot plot. This function should purely
+# generate the plotting commands, with no modification of 'cmds'.
+{
+  plot_cmds <- list()
+  plot_cmds[["table"]] <- "summary.data <- as.data.frame(table(plot.data));"
+  plot_cmds[["proportion"]] <- "summary.data$Proportion <- with(summary.data, Freq / sum(Freq));"
+  plot_cmds[["ggplot"]] <- sprintf(
+    "ggplot(plot.data) +"
+  )
+
+  # Implementing the brushing effect.
+  if (brush_set) {
+    # brush_effect <- param_choices[[.brushEffect]]
+    # if (brush_effect==.brushColorTitle) {
+    #   plot_cmds[["brush_other"]] <- sprintf(
+    #     "geom_quasirandom(%s, subset(plot.data, !BrushBy), groupOnX = TRUE) +",
+    #     .build_aes(color = color_set)
+    #   )
+    #   plot_cmds[["brush_color"]] <- sprintf(
+    #     "geom_quasirandom(%s, data = subset(plot.data, BrushBy), color = '%s', groupOnX = TRUE) +",
+    #     .build_aes(color = color_set), param_choices[[.brushColor]]
+    #   )
+    # }
+    # if (brush_effect==.brushTransTitle) {
+    #   plot_cmds[["brush_other"]] <- sprintf(
+    #     "geom_quasirandom(%s, subset(plot.data, !BrushBy), alpha = %s, groupOnX = TRUE) +",
+    #     .build_aes(color = color_set), param_choices[[.brushTransAlpha]]
+    #   )
+    #   plot_cmds[["brush_alpha"]] <- sprintf(
+    #     "geom_quasirandom(%s, subset(plot.data, BrushBy), groupOnX = TRUE) +",
+    #     .build_aes(color = color_set)
+    #   )
+    # }
+    # if (brush_effect==.brushRestrictTitle) {
+    #   plot_cmds[["violin"]] <- "geom_violin(data = subset(plot.data, BrushBy), alpha = 0.2, scale = 'width') +"
+    #   plot_cmds[["brush_restrict"]] <- sprintf(
+    #     "geom_quasirandom(%s, subset(plot.data, BrushBy), groupOnX = TRUE) +",
+    #     .build_aes(color = color_set)
+    #   )
+    # }
+  } else {
+    plot_cmds[["point"]] <-
+      "geom_point(aes(x = X, y = Y, size = Proportion), summary.data, alpha = 0.5) +"
+  }
+
+  plot_cmds[["jitter"]] <- sprintf(
+    "geom_jitter(%s, plot.data, width = 0.2, height = 0.2, alpha = 0.2) +",
+    .build_aes(color = color_set)
+  )
+
+  plot_cmds[["scale"]] <- "scale_size_area(limits = c(0, 1), max_size = 30) +"
+
+  plot_cmds[["labs"]] <- .build_labs(
+    x = x_lab,
+    y = y_lab,
+    color = color_label,
+    fill = color_label
+  )
+
+  # Defining boundaries if zoomed.
+  # bounds <- param_choices[[.zoomData]][[1]]
+  # if (param_choices[[.zoomActive]] && !is.null(bounds)) {
+  #   plot_cmds[["coord"]] <- sprintf(
+  #     "coord_cartesian(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = TRUE) +",
+  #     bounds["xmin"], bounds["xmax"], bounds["ymin"], bounds["ymax"]
+  #   )
+  # } else {
+  #   ylimits <- "range(plot.data$Y, na.rm = TRUE)"
+  #   plot_cmds[["coord"]] <- sprintf(
+  #     "coord_cartesian(xlim = NULL, ylim = %s, expand = TRUE) +",
+  #     ylimits
+  #   )
+  # }
+
+  plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +"
+  plot_cmds[["scale_y"]] <- "scale_y_discrete(drop = FALSE) +"
+
+  plot_cmds[["guides"]] <- "guides(size = 'none') +"
+  plot_cmds[["theme_base"]] <- "theme_bw() +"
+  plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom', legend.box = 'vertical')"
+
   return(plot_cmds)
 }
 

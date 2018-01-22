@@ -205,7 +205,8 @@ names(.all_labs_values) <- .all_aes_names
   if (!group_X) {
     cmds$todo[["more_X"]] <- .coerce_to_numeric(xvals, "X")
   } else {
-    # Important that they become explicit factors here, which simplifies downstream processing.
+    # It is important that they become explicit factors here, which simplifies 
+    # downstream processing (e.g., coercion to integer, no lost levels upon subsetting).
     cmds$todo[["more_X"]] <- "plot.data$X <- as.factor(plot.data$X);"
   }
 
@@ -251,6 +252,7 @@ names(.all_labs_values) <- .all_aes_names
 # Creates a scatter plot of numeric X/Y. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
+  pre_cmds <- list()
   plot_cmds <- list()
   plot_cmds[["ggplot"]] <- "ggplot() +"
 
@@ -278,8 +280,9 @@ names(.all_labs_values) <- .all_aes_names
       )
     }
     if (brush_effect==.brushRestrictTitle) {
+      pre_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
       plot_cmds[["brush_restrict"]] <- sprintf(
-        "geom_point(%s, subset(plot.data, BrushBy)) +",
+        "geom_point(%s, plot.data) +",
         .build_aes(color = color_set)
       )
     }
@@ -305,19 +308,21 @@ names(.all_labs_values) <- .all_aes_names
       bounds["xmin"], bounds["xmax"], bounds["ymin"],  bounds["ymax"]
     )
   } else {
-    plot_cmds[["coord"]] <-
-      "coord_cartesian(xlim = range(plot.data$X, na.rm = TRUE), ylim = range(plot.data$Y, na.rm = TRUE), expand = TRUE) +"
+    pre_cmds <- c(limits="xbounds <- range(plot.data$X, na.rm = TRUE);
+ybounds <- range(plot.data$Y, na.rm = TRUE);", pre_cmds) # BEFORE any subsetting when brushing to restrict!
+    plot_cmds[["coord"]] <- "coord_cartesian(xlim = xbounds, ylim = ybounds, expand = TRUE) +"
   }
 
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
-  return(plot_cmds)
+  return(c("# Generating the plot", pre_cmds, plot_cmds))
 }
 
 .violin_plot <- function(param_choices, x_lab, y_lab, color_set, color_label, fill_set, brush_set)
 # Generates a vertical violin plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
+  pre_cmds <- list()
   plot_cmds <- list()
   plot_cmds[["ggplot"]] <- sprintf(
     "ggplot(plot.data, %s) +",
@@ -363,9 +368,11 @@ names(.all_labs_values) <- .all_aes_names
       vipor_cmds[["prework"]] <- c("keep <- plot.data$BrushBy;\nplot.data$jitteredX <- rep(NA_real_, nrow(plot.data));")
       vipor_cmds[["calcX"]] <- sprintf(vipor_precmd, "[keep]", "[keep]", "[keep]", "[keep]")
 
-      plot_cmds[["violin"]] <- "geom_violin(data = subset(plot.data, BrushBy), alpha = 0.2, scale = 'width') +"
+      pre_cmds[["subset"]] <- "plot.data <- plot.data[keep,];"
+
+      plot_cmds[["violin"]] <- "geom_violin(data = plot.data, alpha = 0.2, scale = 'width') +"
       plot_cmds[["brush_restrict"]] <- sprintf(
-        "geom_point(%s, subset(plot.data, BrushBy)) +",
+        "geom_point(%s, plot.data) +",
         .build_aes(color = color_set, alt=c(x="jitteredX"))
       )
     }
@@ -391,17 +398,14 @@ names(.all_labs_values) <- .all_aes_names
       bounds["xmin"], bounds["xmax"], bounds["ymin"], bounds["ymax"]
     )
   } else {
-    ylimits <- "range(plot.data$Y, na.rm = TRUE)"
-    plot_cmds[["coord"]] <- sprintf(
-      "coord_cartesian(xlim = NULL, ylim = %s, expand = TRUE) +",
-      ylimits
-    )
+    pre_cmds <- c(limits="ybounds <- range(plot.data$Y, na.rm = TRUE);", pre_cmds) # BEFORE any subsetting when brushing to restrict!
+    plot_cmds[["coord"]] <- "coord_cartesian(xlim = NULL, ylim = ybounds, expand = TRUE) +"
   }
 
   plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +" # preserving the x-axis range.
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
-  return(c("# Setting up the data points", unlist(vipor_cmds), "", "# Generating the plot", plot_cmds))
+  return(c("# Setting up the data points", unlist(vipor_cmds), "", "# Generating the plot", pre_cmds, plot_cmds))
 }
 
 .griddotplot <- function(param_choices, x_lab, y_lab, color_set, color_label, fill_set, brush_set)

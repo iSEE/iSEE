@@ -291,7 +291,7 @@ names(.all_labs_values) <- .all_aes_names
     }
   } else {
     plot_cmds[["point"]] <- sprintf(
-      "geom_point(%s, plot.data, size = 1.5) +",
+      "geom_point(%s, plot.data) +",
       .build_aes(color = color_set)
     )
   }

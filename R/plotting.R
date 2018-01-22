@@ -301,7 +301,7 @@ names(.all_labs_values) <- .all_aes_names
   bounds <- param_choices[[.zoomData]][[1]]
   if (param_choices[[.zoomActive]] && !is.null(bounds)) {
     plot_cmds[["coord"]] <- sprintf(
-      "coord_cartesian(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = TRUE) +",
+      "coord_cartesian(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = FALSE) +",
       bounds["xmin"], bounds["xmax"], bounds["ymin"],  bounds["ymax"]
     )
   } else {
@@ -373,7 +373,7 @@ names(.all_labs_values) <- .all_aes_names
   bounds <- param_choices[[.zoomData]][[1]]
   if (param_choices[[.zoomActive]] && !is.null(bounds)) {
     plot_cmds[["coord"]] <- sprintf(
-      "coord_cartesian(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = TRUE) +",
+      "coord_cartesian(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = FALSE) +",
       bounds["xmin"], bounds["xmax"], bounds["ymin"], bounds["ymax"]
     )
   } else {

@@ -28,6 +28,7 @@ Imports:
     shinydashboard,
     rintrojs, 
     ggplot2,
+    vipor,
     rentrez,
     AnnotationDbi,
     DT,
@@ -41,7 +42,10 @@ Suggests:
     rmarkdown,
     scRNAseq,
     scater,
-    Rtsne
+    Rtsne,
+    irlba
+Enhances:
+    ExperimentHub
 URL: https://github.com/csoneson/SEE
 BugReports: https://github.com/csoneson/SEE/issues
 biocViews: Visualization, GUI, DimensionReduction, 

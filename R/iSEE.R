@@ -3,7 +3,7 @@
 #'
 #' Interactive visualization of single-cell data using a Shiny interface.
 #'
-#' @param se A SingleCellExperiment object.
+#' @param se A \linkS4class{SingleCellExperiment} object.
 #' @param redDimArgs An integer scalar specifying the maximum number of
 #' reduced dimension plots in the interface. Alternatively, a DataFrame
 #' similar to that produced by \code{\link{redDimPlotDefaults}}, specifying
@@ -82,8 +82,10 @@ iSEE <- function(
   annot.keytype="ENTREZID",
   annot.keyfield=NULL
 ) {
-  # Collecting the original name of the objecft passed as `se`
+  # Save the original name of the input object for the command to rename it
+  # in the tracker
   se_name <- deparse(substitute(se))
+  stopifnot(inherits(se, "SingleCellExperiment"))
 
   # Collecting constants for populating the UI.
   cell.data <- colData(se)
@@ -214,8 +216,8 @@ iSEE <- function(
       ),
 
       uiOutput("allPanels"),
-      
-      
+
+
 
       iSEE_footer()
 
@@ -231,23 +233,18 @@ iSEE <- function(
     # storage for all the reactive objects
     rObjects <- reactiveValues(
         active_plots = active_plots,
-        rebrushed = 1,
-        rcode = NULL
+        rebrushed = 1
     )
 
     # storage for other persistent objects
     pObjects <- new.env()
     pObjects$memory <- memory
     pObjects$coordinates <- list()
-    pObjects$commands <- list(
-        redDim=character(nrow(memory$redDim)),
-        colData=character(nrow(memory$colData)),
-        geneExpr=character(nrow(memory$geneExpr))
-    )
+    pObjects$commands <- list()
 
     # info boxes, to keep on top of the page  on the left side?
 
-    intro_firststeps <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"), sep=";", stringsAsFactors = FALSE)
+    intro_firststeps <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"), sep=";", stringsAsFactors = FALSE,row.names = NULL)
 
     observeEvent(input$tour_firststeps, {
       introjs(session,
@@ -269,19 +266,19 @@ iSEE <- function(
         title = "My code", size = "l",fade = TRUE,
         footer = NULL, easyClose = TRUE,
         aceEditor("acereport_r", mode="r",theme = "solarized_light",autoComplete = "live",
-                  value = paste0((.track_it_all(rObjects, pObjects)),collapse="\n"),
+                  value = paste0((.track_it_all(rObjects, pObjects, se_name)),collapse="\n"),
                   height="600px")
         # verbatimTextOutput("codetext_modal")
         ))
     })
 
     output$codetext_modal <- renderPrint({
-      print(.track_it_all(rObjects, pObjects))
+      print(.track_it_all(rObjects, pObjects, se_name))
     })
     # output$codehitext_modal <- renderUI({
     #   highlight(file="testfile.R")
     # })
-    
+
     #######################################################################
     # Multipanel UI generation section. ----
     # This is adapted from https://stackoverflow.com/questions/15875786/dynamically-add-plots-to-web-page-using-shiny.
@@ -373,9 +370,12 @@ iSEE <- function(
     for (mode in c("redDim", "geneExpr", "colData")) {
       max_plots <- nrow(pObjects$memory[[mode]])
       for (i in seq_len(max_plots)) {
+        rObjects[[paste0(mode, .zoomUpdate, i)]] <- 1L
+
         local({
           mode0 <- mode
           i0 <- i
+          plot.name <- paste0(mode0, "Plot", i0)
 
           # Panel opening/closing observers.
           observeEvent(input[[paste0(mode0, .plotParamPanelOpen, i0)]], {
@@ -390,15 +390,27 @@ iSEE <- function(
             pObjects$memory[[mode0]][[.brushParamPanelOpen]][i0] <- input[[paste0(mode0, .brushParamPanelOpen, i0)]]
           })
 
-          # Brush observers.
+          # Brush on/off observers.
           observeEvent(input[[paste0(mode0, .brushActive, i0)]], {
             current <- input[[paste0(mode0, .brushActive, i0)]]
-            reference <- pObjects$memory[[mode0]][[.brushActive]][i0]
+            reference <- pObjects$memory[[mode0]][[.brushActive]][i0] 
             if (!identical(current, reference)) {
               rObjects$rebrushed <- rObjects$rebrushed + 1L
               pObjects$memory[[mode0]][[.brushActive]][i0] <- current
             }
           }, ignoreInit=TRUE)
+
+          # Double-click observers.
+          observeEvent(input[[paste0(mode0, .zoomClick, i0)]], {
+             brush <- input[[paste0(mode0, .brushField, i0)]]
+             if (!is.null(brush)) {
+               new_coords <- c(xmin=brush$xmin, xmax=brush$xmax, ymin=brush$ymin, ymax=brush$ymax)
+             } else {
+               new_coords <- NULL
+             }
+             pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, new_coords)
+             rObjects[[paste0(mode0, .zoomUpdate, i0)]] <- rObjects[[paste0(mode0, .zoomUpdate, i0)]] + 1L 
+          })
         })
       }
     }
@@ -425,10 +437,13 @@ iSEE <- function(
               pObjects$memory$redDim[[field]][i0] <- as.integer(input[[.inputRedDim(field, i0)]])
           }
 
+          # Updating zooming, which requires some more care.
+          force(rObjects[[.inputRedDim(.zoomUpdate, i0)]])
+
           # Creating the plot, with saved coordinates.
-          p.out <- .make_redDimPlot(se, pObjects$memory$redDim[i0,], input, pObjects$coordinates, se_name)
-          message(p.out$cmd)
-          pObjects$commands$redDim[i0] <- p.out$cmd
+          p.out <- .make_redDimPlot(se, pObjects$memory$redDim[i0,], input, pObjects$coordinates)
+          pObjects$commands[[plot.name]] <- p.out$cmd
+          pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
         })
       })
@@ -441,16 +456,21 @@ iSEE <- function(
     for (i in seq_len(coldata_max_plots)) {
       local({
         i0 <- i
-        output[[.colDataPlot(i0)]] <- renderPlot({
-          # Updating parameters (non-characters need some careful treatment).
+        plot.name <- .colDataPlot(i0)
+        output[[plot.name]] <- renderPlot({
+
+          # Updating parameters.
           for (field in c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, ALLEXTRAS)) {
               pObjects$memory$colData[[field]][i0] <- input[[.inputColData(field, i0)]]
           }
 
+          # Updating zooming.
+          force(rObjects[[.inputColData(.zoomUpdate, i0)]])
+
           # Creating the plot, with saved coordinates.
-          p.out <- .make_colDataPlot(se, pObjects$memory$colData[i0,], input, se_name)
-          message(p.out$cmd)
-          pObjects$commands$colData[i0] <- p.out$cmd
+          p.out <- .make_colDataPlot(se, pObjects$memory$colData[i0,], input, pObjects$coordinates)
+          pObjects$commands[[plot.name]] <- p.out$cmd
+          pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
         })
       })
@@ -463,16 +483,22 @@ iSEE <- function(
     for (i in seq_len(geneexpr_max_plots)) {
       local({
         i0 <- i
-        output[[.geneExprPlot(i0)]] <- renderPlot({
+        plot.name <- .geneExprPlot(i0)
+        output[[plot.name]] <- renderPlot({
+
           # Updating parameters.
-          for (field in c(.geneExprAssay, .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneTable, .geneExprXAxisGeneText, .geneExprYAxis, .geneExprYAxisGeneTable, .geneExprYAxisGeneText, ALLEXTRAS)) {
+          for (field in c(.geneExprAssay, .geneExprYAxis, .geneExprYAxisGeneTable, .geneExprYAxisGeneText,
+                          .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneTable, .geneExprXAxisGeneText, ALLEXTRAS)) {
               pObjects$memory$geneExpr[[field]][i0] <- input[[.inputGeneExpr(field, i0)]]
           }
 
+          # Updating zooming.
+          force(rObjects[[.inputGeneExpr(.zoomUpdate, i0)]])
+
           # Creating the plot.
-          p.out <- .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input, se_name)
-          message(p.out$cmd)
-          pObjects$commands$geneExpr[i0] <- p.out$cmd
+          p.out <- .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input, pObjects$coordinates)
+          pObjects$commands[[plot.name]] <- p.out$cmd
+          pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
         })
       })
@@ -559,4 +585,12 @@ iSEE <- function(
 
   shinyApp(ui = iSEE_ui, server = iSEE_server)
 }
+
+.update_list_element <- function(memory, ID, value) {
+    out <- memory[[.zoomData]]
+    out[ID] <- list(value)
+    memory[[.zoomData]] <- out
+    return(memory)
+}
+
 

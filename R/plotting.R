@@ -255,7 +255,6 @@ names(.all_labs_values) <- .all_aes_names
 # Creates a scatter plot of numeric X/Y. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
-  pre_cmds <- list()
   setup_cmds <- list()
   plot_cmds <- list()
   plot_cmds[["ggplot"]] <- "ggplot() +"
@@ -307,6 +306,7 @@ names(.all_labs_values) <- .all_aes_names
   )
 
   # Defining boundaries if zoomed.
+  lim_cmds <- list()  
   bounds <- param_choices[[.zoomData]][[1]]
   if (param_choices[[.zoomActive]] && !is.null(bounds)) {
     plot_cmds[["coord"]] <- sprintf(
@@ -314,15 +314,16 @@ names(.all_labs_values) <- .all_aes_names
       bounds["xmin"], bounds["xmax"], bounds["ymin"],  bounds["ymax"]
     )
   } else {
-    pre_cmds[["limits"]] <- "xbounds <- range(plot.data$X, na.rm = TRUE);
-ybounds <- range(plot.data$Y, na.rm = TRUE);" # BEFORE any subsetting when brushing to restrict!
+    lim_cmds[["limits"]] <- "xbounds <- range(plot.data$X, na.rm = TRUE);
+ybounds <- range(plot.data$Y, na.rm = TRUE);" 
     plot_cmds[["coord"]] <- "coord_cartesian(xlim = xbounds, ylim = ybounds, expand = TRUE) +"
   }
 
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
 
-  return(c("# Defining the plot boundaries", pre_cmds, "", 
+  # lim_cmds must be executed before setup_cmds when brushing to restrict!
+  return(c("# Defining the plot boundaries", lim_cmds, "", 
            setup_cmds,
            "# Generating the plot", plot_cmds))
 }
@@ -331,7 +332,6 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);" # BEFORE any subsetting when brush
 # Generates a vertical violin plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
-  pre_cmds <- list()
   plot_cmds <- list()
   plot_cmds[["ggplot"]] <- sprintf(
     "ggplot(plot.data, %s) +",
@@ -340,8 +340,11 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);" # BEFORE any subsetting when brush
   plot_cmds[["violin"]] <- "geom_violin(alpha = 0.2, scale = 'width') +"
 
   # Switching X and Y axes if we want a horizontal violin plot.
+  # This is done in lim_cmds to guarantee sensible limits, though
+  # it would technically be more appropriate to put in setup_cmds.
+  lim_cmds <- list()
   if (horizontal) { 
-    pre_cmds[["swap"]] <- c("tmp <- plot.data$X;
+    lim_cmds[["swap"]] <- c("tmp <- plot.data$X;
 plot.data$X <- plot.data$Y;
 plot.data$Y <- tmp;")
   }
@@ -409,7 +412,7 @@ plot.data$Y <- tmp;")
       bounds["xmin"], bounds["xmax"], bounds["ymin"], bounds["ymax"]
     )
   } else {
-    pre_cmds[["limits"]] <- "ybounds <- range(plot.data$Y, na.rm = TRUE);"
+    lim_cmds[["limits"]] <- "ybounds <- range(plot.data$Y, na.rm = TRUE);"
     plot_cmds[["coord"]] <- "coord_cartesian(xlim = NULL, ylim = ybounds, expand = TRUE) +"
   }
 
@@ -420,9 +423,9 @@ plot.data$Y <- tmp;")
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
 
-  # pre_cmds must be executed before setup_cmds, to ensure bounds are correctly defined. 
+  # lim_cmds must be executed before setup_cmds, to ensure bounds are correctly defined. 
   # It is also necessary for swapping x/y boundaries when horizontal=TRUE.
-  return(c("# Defining the plot boundaries", pre_cmds, "", 
+  return(c("# Defining the plot boundaries", lim_cmds, "", 
            "# Setting up the data points", unlist(setup_cmds), "", 
            "# Generating the plot", plot_cmds))
 }
@@ -445,7 +448,6 @@ coordsY <- runif(nrow(plot.data), -1, 1);
 plot.data$jitteredX <- as.integer(plot.data$X) + point.radius*coordsX;
 plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
   
-  pre_cmds <- list()
   plot_cmds <- list()
   plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
 

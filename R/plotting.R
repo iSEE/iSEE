@@ -231,9 +231,12 @@ names(.all_labs_values) <- .all_aes_names
     plot_cmds <- .violin_plot(..., color_set=color_set, fill_set=fill_set)
 
   } else if (!group_X && group_Y) {
-    # Need horizontal violin plots (just using this as a placeholder for the time being).
-    cmds$todo[["more_Y"]] <- .coerce_to_numeric(yvals, "Y")
-    plot_cmds <- .scatter_plot(..., color_set=color_set)
+    cmds$todo[["group"]] <- "plot.data$GroupBy <- plot.data$Y;"
+    fill_set <- (color_set && group_color)
+    if (fill_set) {
+      cmds$todo[["fill"]] <- "plot.data$FillBy <- plot.data$ColorBy"
+    }
+    plot_cmds <- .violin_plot(..., color_set=color_set, fill_set=fill_set, horizontal=TRUE)
 
   } else {
     plot_cmds <- .scatter_plot(..., color_set=color_set)
@@ -324,7 +327,7 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);" # BEFORE any subsetting when brush
            "# Generating the plot", plot_cmds))
 }
 
-.violin_plot <- function(param_choices, x_lab, y_lab, color_set, color_label, fill_set, brush_set)
+.violin_plot <- function(param_choices, x_lab, y_lab, color_set, color_label, fill_set, brush_set, horizontal = FALSE)
 # Generates a vertical violin plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -335,6 +338,13 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);" # BEFORE any subsetting when brush
     .build_aes(color = color_set, fill = fill_set, group = TRUE)
   )
   plot_cmds[["violin"]] <- "geom_violin(alpha = 0.2, scale = 'width') +"
+
+  # Switching X and Y axes if we want a horizontal violin plot.
+  if (horizontal) { 
+    pre_cmds[["swap"]] <- c("tmp <- plot.data$X;
+plot.data$X <- plot.data$Y;
+plot.data$Y <- tmp;")
+  }
 
   # Figuring out the scatter. This is done ahead of time to guarantee the
   # same results regardless of the subset used for brushing.
@@ -399,14 +409,19 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);" # BEFORE any subsetting when brush
       bounds["xmin"], bounds["xmax"], bounds["ymin"], bounds["ymax"]
     )
   } else {
-    pre_cmds <- c(limits="ybounds <- range(plot.data$Y, na.rm = TRUE);", pre_cmds) # BEFORE any subsetting when brushing to restrict!
+    pre_cmds[["limits"]] <- "ybounds <- range(plot.data$Y, na.rm = TRUE);"
     plot_cmds[["coord"]] <- "coord_cartesian(xlim = NULL, ylim = ybounds, expand = TRUE) +"
   }
 
   plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +" # preserving the x-axis range.
+  if (horizontal) {
+    plot_cmds[["coord_flip"]] <- "coord_flip() +"
+  }
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
 
+  # pre_cmds must be executed before setup_cmds, to ensure bounds are correctly defined. 
+  # It is also necessary for swapping x/y boundaries when horizontal=TRUE.
   return(c("# Defining the plot boundaries", pre_cmds, "", 
            "# Setting up the data points", unlist(setup_cmds), "", 
            "# Generating the plot", plot_cmds))

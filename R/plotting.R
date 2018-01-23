@@ -234,7 +234,7 @@ names(.all_labs_values) <- .all_aes_names
   if (group_X && group_Y) {
     plot_cmds <- .griddotplot(
       ..., color_set=color_set, color_map=color_map,
-      color_name=color_name, color_name=color_name
+      color_name=color_name, color_name=color_name, color_discrete=group_color
     )
 
   } else if (group_X && !group_Y) {
@@ -245,7 +245,7 @@ names(.all_labs_values) <- .all_aes_names
     }
     plot_cmds <- .violin_plot(
       ..., color_set=color_set, fill_set=fill_set,
-      color_map=color_map, color_name=color_name
+      color_map=color_map, color_name=color_name, color_discrete=group_color
     )
 
   } else if (!group_X && group_Y) {
@@ -256,12 +256,13 @@ names(.all_labs_values) <- .all_aes_names
     }
     plot_cmds <- .violin_plot(
       ..., color_set=color_set, fill_set=fill_set, horizontal=TRUE,
-      color_map=color_map, color_name=color_name
+      color_map=color_map, color_name=color_name, color_discrete=group_color
     )
 
   } else {
     plot_cmds <- .scatter_plot(
-      ..., color_set=color_set, color_map=color_map, color_name=color_name)
+      ..., color_set=color_set,
+      color_map=color_map, color_name=color_name, color_discrete=group_color)
 
   }
   cmds$todo <- c(cmds$todo, "", plot_cmds)
@@ -274,7 +275,8 @@ names(.all_labs_values) <- .all_aes_names
 }
 
 .scatter_plot <- function(
-  param_choices, x_lab, y_lab, color_set, color_label, brush_set, color_map, color_name)
+  param_choices, x_lab, y_lab, color_set, color_label, brush_set,
+  color_map, color_name, color_discrete)
 # Creates a scatter plot of numeric X/Y. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -343,11 +345,10 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);"
   }
 
   if (color_set){
-    colors_vector <- assayColorMap(color_map, color_name)
-    plot_cmds[["scale_color"]] <- sprintf(
-      "scale_color_gradientn(colours = %s) +",
-      paste(deparse(colors_vector), collapse = "")
-    )
+    cmd <- .process_colormap(param_choices, color_set, color_discrete, color_map, color_name)
+    if (!is.null(cmd)){
+      plot_cmds[["scale_color"]] <- cmd
+    }
   }
 
   plot_cmds[["theme_base"]] <- "theme_bw() +"
@@ -359,7 +360,9 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);"
            "# Generating the plot", plot_cmds))
 }
 
-.violin_plot <- function(param_choices, x_lab, y_lab, color_set, color_label, fill_set, brush_set, horizontal = FALSE, color_map, color_name)
+.violin_plot <- function(
+  param_choices, x_lab, y_lab, color_set, color_label, fill_set, brush_set,
+  horizontal = FALSE, color_map, color_name, color_discrete)
 # Generates a vertical violin plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -458,6 +461,13 @@ plot.data$Y <- tmp;")
     plot_cmds[["coord"]] <- sprintf("%s(xlim = NULL, ylim = ybounds, expand = TRUE) +", coord_cmd)
   }
 
+  if (color_set){
+    cmd <- .process_colormap(param_choices, color_set, color_discrete, color_map, color_name)
+    if (!is.null(cmd)){
+      plot_cmds[["scale_color"]] <- cmd
+    }
+  }
+
   plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +" # preserving the x-axis range.
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
@@ -471,7 +481,7 @@ plot.data$Y <- tmp;")
 
 .griddotplot <- function(
   param_choices, x_lab, y_lab, color_set, color_label, fill_set, brush_set,
-  color_map, color_name)
+  color_map, color_name, color_discrete)
 # Generates a grid dot plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -543,6 +553,13 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
 
   plot_cmds[["scale"]] <- "scale_size_area(limits = c(0, 1), max_size = 30) +"
 
+  if (color_set){
+    cmd <- .process_colormap(param_choices, color_set, color_discrete, color_map, color_name)
+    if (!is.null(cmd)){
+      plot_cmds[["scale_color"]] <- cmd
+    }
+  }
+
   plot_cmds[["labs"]] <- .build_labs(
     x = x_lab,
     y = y_lab,
@@ -611,7 +628,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
     } else {
       output$cmd <- sprintf("plot.data$ColorBy <- assay(se, '%s')['%s',];", assay.choice, covariate.name)
       output$label <- .gene_axis_label(covariate.name, assay.choice, multiline = TRUE)
-      output$original <- covariate.name
+      output$original <- assay.choice
     }
   }
 
@@ -638,6 +655,39 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
   }
 
   return(output)
+}
+
+.process_colormap <- function(
+  param_choices, color_set, color_discrete, color_map, color_name){
+  cmd_out <- NULL # default, if no custo colormap is available
+
+  if(!color_discrete){
+    colors_scale <- assayColorMap(color_map, color_name)
+
+    if (!is.null(colors_scale)){
+      cmd_out <- sprintf(
+        "scale_color_gradientn(colours = %s) +",
+        paste(deparse(colors_scale), collapse = "")
+      )
+
+    }
+  } else {
+    if (identical(param_choices[[.colorByField]], .colorByColDataTitle)){
+      colors_scale <- colDataColorMap(color_map, color_name)
+
+    } else {
+      validate(need(FALSE, "Discrete color scale other than colData?"))
+
+    }
+    if (!is.null(colors_scale)){
+      cmd_out <- sprintf(
+        "scale_colour_manual(values = %s) +",
+        paste(deparse(colors_scale), collapse = "")
+      )
+    }
+  }
+
+  return(cmd_out)
 }
 
 ############################################
@@ -725,10 +775,10 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
 ############################################
 
 .evaluate_remainder <- function(cmd_list, eval_env) {
-    out <- eval(parse(text=unlist(cmd_list$todo)), envir=eval_env)
-    cmd_list$done <- c(cmd_list$done, unlist(cmd_list$todo))
-    cmd_list$todo <- list()
-    return(list(cmd_list=cmd_list, output=out))
+  out <- eval(parse(text=unlist(cmd_list$todo)), envir=eval_env)
+  cmd_list$done <- c(cmd_list$done, unlist(cmd_list$todo))
+  cmd_list$todo <- list()
+  return(list(cmd_list=cmd_list, output=out))
 }
 
 .build_cmd_eval <- function(cmds){

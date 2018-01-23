@@ -89,15 +89,20 @@ sce
 qc_colors <- c("forestgreen", "firebrick1")
 names(qc_colors) <- c("Y", "N")
 
+driver_colors <- RColorBrewer::brewer.pal(3, "Set2")
+names(driver_colors) <- unique(sce$driver_1_s)
+
 ecm <- new("ExperimentColorMap",
    assays = list(
-       counts = viridis::viridis(10)
+       counts = viridis::viridis(10),
+       cufflinks_fpkm = c("black","brown","red","orange","yellow")
    ),
    colData = list(
-       passes_qc_checks_s = qc_colors
+       passes_qc_checks_s = qc_colors,
+       driver_1_s = driver_colors
    )
 )
 
 # launch the app itself
-if (interactive()) { iSEE(sce) }
+if (interactive()) { iSEE(sce, colormap = ecm) }
 }

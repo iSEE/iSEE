@@ -110,7 +110,7 @@ setClass("ExperimentColorMap",
 #'
 ExperimentColorMap <- function(
   assays = list(), colData = list(), rowData = list(), ...){
-  new("ExperimentColorMap", assays, colData, rowData, ...)
+  new("ExperimentColorMap", assays=assays, colData=colData, rowData=rowData, ...)
 }
 
 # .defaultContinuousColorMap ----

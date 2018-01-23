@@ -25,7 +25,6 @@
 #' @importFrom DT datatable renderDataTable dataTableOutput
 #' @importFrom AnnotationDbi mapIds keytypes
 #' @importFrom rentrez entrez_summary
-#' @importFrom clipr write_clip
 #' @importFrom colourpicker colourInput
 #' @importFrom shinyAce aceEditor
 #'

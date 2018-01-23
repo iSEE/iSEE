@@ -5,26 +5,28 @@
 \title{iSEE: interactive SingleCell/Summarized Experiment Explorer}
 \usage{
 iSEE(se, redDimArgs = 5, colDataArgs = 5, geneExprArgs = 5,
-  initialPanels = NULL, annot.orgdb = NULL, annot.keytype = "ENTREZID",
-  annot.keyfield = NULL)
+  geneStatArgs = 5, redDimMax = 5, colDataMax = 5, geneExprMax = 5,
+  geneStatMax = 5, initialPanels = NULL, annot.orgdb = NULL,
+  annot.keytype = "ENTREZID", annot.keyfield = NULL)
 }
 \arguments{
 \item{se}{A \linkS4class{SingleCellExperiment} object.}
 
-\item{redDimArgs}{An integer scalar specifying the maximum number of
-reduced dimension plots in the interface. Alternatively, a DataFrame
-similar to that produced by \code{\link{redDimPlotDefaults}}, specifying
-initial parameters for the plots.}
+\item{redDimArgs}{A DataFrame similar to that produced by \code{\link{redDimPlotDefaults}}, specifying initial parameters for the plots.}
 
-\item{colDataArgs}{An integer scalar specifying the maximum number of
-column data plots in the interface. Alternatively, a DataFrame
-similar to that produced by \code{\link{colDataPlotDefaults}}, specifying
-initial parameters for the plots.}
+\item{colDataArgs}{A DataFrame similar to that produced by \code{\link{colDataPlotDefaults}}, specifying initial parameters for the plots.}
 
-\item{geneExprArgs}{An integer scalar specifying the maximum number of
-gene expression plots in the interface. Alternatively, a DataFrame
-similar to that produced by \code{\link{geneExprPlotDefaults}}, specifying
-initial parameters for the plots.}
+\item{geneExprArgs}{A DataFrame similar to that produced by \code{\link{geneExprPlotDefaults}}, specifying initial parameters for the plots.}
+
+\item{geneStatArgs}{A DataFrame similar to that produced by \code{\link{geneStatTableDefaults}}, specifying initial parameters for the plots.}
+
+\item{redDimMax}{An integer scalar specifying the maximum number of reduced dimension plots in the interface.}
+
+\item{colDataMax}{An integer scalar specifying the maximum number of column data plots in the interface.}
+
+\item{geneExprMax}{An integer scalar specifying the maximum number of gene expression plots in the interface.}
+
+\item{geneStatMax}{An integer scalar specifying the maximum number of gene statistic tables in the interface.}
 
 \item{initialPanels}{A DataFrame specifying which panels should be created
 at initialization. This should contain a \code{Name} character field and
@@ -54,9 +56,8 @@ Users can pass default parameters via DataFrame objects in
 some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
 Any missing fields will be filled in with the defaults.
 
-The number of maximum plots for each type of plot is implicitly inferred
-from the number of rows of the corresponding DataFrame in \code{*Args},
-if an integer scalar was not supplied. Users can specify any number of
+The number of maximum plots for each type of plot is set to the larger
+of \code{*Max} and \code{nrow(*Args)}. Users can specify any number of
 maximum plots, though increasing the number will increase the time
 required to render the interface.
 

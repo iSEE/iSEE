@@ -31,7 +31,7 @@
     do.call(tagList, collected)
 }
 
-.panel_generation <- function(active_plots, memory, redDimNames, redDimDims, colDataNames, assayNames)
+.panel_generation <- function(active_plots, memory, se) 
 # This function generates the various panels, taking into account their
 # variable widths to dynamically assign them to particular rows. We also
 # need to check the memory to avoid resetting the plot upon re-rendering.
@@ -41,6 +41,20 @@
     cumulative.width <- 0L
     cur.row <- list()
     row.counter <- 1L
+
+    # Collecting constants for populating the UI. Note that the assay
+    # and reduced dimension names may not be unique, hence the (%i).
+    covariates <- colnames(colData(se))
+
+    all_assays_raw <- assayNames(se)
+    all_assays <- seq_along(all_assays_raw)
+    names(all_assays) <- sprintf("(%i) %s", all_assays, all_assays_raw)
+
+    red_dim_names_raw <- reducedDimNames(se)
+    red_dim_names <- seq_along(red_dim_names_raw)
+    names(red_dim_names) <- sprintf("(%i) %s", red_dim_names, red_dim_names_raw)
+
+    red_dim_dims <- vapply(red_dim_names, FUN=function(x) ncol(reducedDim(se, x)), FUN.VALUE=0L)
 
     # Defining currently active tables for linking.
     all.names <- .decode_panel_name(active_plots$Type, active_plots$ID)
@@ -77,10 +91,10 @@
         if (mode=="redDim") {
             obj <- plotOutput(.redDimPlot(ID), brush = brush.opts, dblclick=dblclick)
             cur_reddim <- param_choices[[.redDimType]]
-            red_choices <- seq_len(redDimDims[[cur_reddim]])
+            red_choices <- seq_len(red_dim_dims[[cur_reddim]])
             plot.param <-  list(
                  selectInput(.inputRedDim(.redDimType, ID), label="Type",
-                             choices=redDimNames, selected=cur_reddim),
+                             choices=red_dim_names, selected=cur_reddim),
                  selectInput(.inputRedDim(.redDimXAxis, ID), label="Dimension 1",
                              choices=red_choices, selected=param_choices[[.redDimXAxis]]),
                  selectInput(.inputRedDim(.redDimYAxis, ID), label="Dimension 2",
@@ -91,7 +105,7 @@
             plot.param <- list(
                  selectInput(.inputColData(.colDataYAxis, ID),
                              label = "Column of interest (Y-axis):",
-                             choices=colDataNames, selected=param_choices[[.colDataYAxis]]),
+                             choices=covariates, selected=param_choices[[.colDataYAxis]]),
                  radioButtons(.inputColData(.colDataXAxis, ID), label="X-axis:",
                               inline=FALSE,
                               choices=c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle),
@@ -100,7 +114,7 @@
                                           .colDataXAxisColDataTitle,
                                           selectInput(.inputColData(.colDataXAxisColData, ID),
                                                       label = "Column of interest (X-axis):",
-                                                      choices=colDataNames, selected=param_choices[[.colDataXAxisColData]]))
+                                                      choices=covariates, selected=param_choices[[.colDataXAxisColData]]))
                  )
         } else if (mode=="geneExpr") {
             obj <- plotOutput(.geneExprPlot(ID), brush = brush.opts, dblclick=dblclick)
@@ -114,7 +128,7 @@
                                        selectInput(.inputGeneExpr(.geneExprYAxisGeneTable, ID),
                                                    label = "Y-axis gene linked to:",
                                                    choices=active.tab,
-                                                   selected=.choose_link(param_choices[[.geneExprYAxisGeneTable]], active.tab, forceDefault=TRUE))
+                                                   selected=.choose_link(param_choices[[.geneExprYAxisGeneTable]], active.tab, force_default=TRUE))
               ),
               .conditionalPanelOnRadio(.inputGeneExpr(.geneExprYAxis, ID),
                                        .geneExprYAxisGeneTextTitle,
@@ -122,7 +136,7 @@
                                                  label = "Y-axis gene:",
                                                  value=param_choices[[.geneExprYAxisGeneText]])),
               selectInput(.inputGeneExpr(.geneExprAssay, ID), label=NULL,
-                          choices=assayNames, selected=param_choices[[.geneExprAssay]]),
+                          choices=all_assays, selected=param_choices[[.geneExprAssay]]),
               radioButtons(.inputGeneExpr(.geneExprXAxis, ID), label="X-axis:",
                            inline=FALSE,
                            choices=c(.geneExprXAxisNothingTitle, .geneExprXAxisColDataTitle, .geneExprXAxisGeneTableTitle, .geneExprXAxisGeneTextTitle),
@@ -131,7 +145,7 @@
                                        .geneExprXAxisColDataTitle,
                                        selectInput(.inputGeneExpr(.geneExprXAxisColData, ID),
                                                    label = "X-axis column data:",
-                                                   choices=colDataNames, selected=param_choices[[.geneExprXAxisColData]])),
+                                                   choices=covariates, selected=param_choices[[.geneExprXAxisColData]])),
               .conditionalPanelOnRadio(.inputGeneExpr(.geneExprXAxis, ID),
                                        .geneExprXAxisGeneTableTitle,
                                        selectInput(.inputGeneExpr(.geneExprXAxisGeneTable, ID),
@@ -143,7 +157,8 @@
                                                  value=param_choices[[.geneExprXAxisGeneText]]))
                  )
         } else if (mode=="geneStat") {
-            obj <- list(dataTableOutput(paste0("geneStatTable", ID)))
+            obj <- list(dataTableOutput(.geneStatTable(ID)),
+                        uiOutput(.geneStatAnno(ID)))
         } else {
             stop(sprintf("'%s' is not a recognized panel mode"), mode)
         }
@@ -158,7 +173,7 @@
                                        plot.param)),
 
                 # Panel for colouring parameters.
-                .createColorPanel(mode, ID, param_choices, active.tab, colDataNames, assayNames),
+                .createColorPanel(mode, ID, param_choices, active.tab, covariates, all_assays),
 
                 # Panel for brushing parameters.
                 .createBrushPanel(mode, ID, param_choices, brushable)
@@ -196,12 +211,12 @@
     do.call(tagList, collected)
 }
 
-.choose_link <- function(chosen, available, forceDefault=FALSE)
+.choose_link <- function(chosen, available, force_default=FALSE)
 # Convenience function to choose a linked panel from those available.
-# forceDefault=TRUE will pick the first if it is absolutely required.
+# force_default=TRUE will pick the first if it is absolutely required.
 {
     if (!chosen %in% available) {
-        if (forceDefault && length(available)) {
+        if (force_default && length(available)) {
             return(available[1])
         }
         return("")
@@ -209,7 +224,7 @@
     return(chosen)
 }
 
-.createColorPanel <- function(mode, ID, param_choices, active.tab, colDataNames, assayNames)
+.createColorPanel <- function(mode, ID, param_choices, active_tab, covariates, all_assays)
 # Convenience function to create the color parameter panel. This
 # won't be re-used, it just breaks up the huge UI function above.
 {
@@ -226,18 +241,18 @@
 
         .conditionalPanelOnRadio(colorby.field, .colorByColDataTitle,
             selectInput(paste0(mode, .colorByColData, ID), label = NULL,
-                        choices=colDataNames, selected=param_choices[[.colorByColData]])
+                        choices=covariates, selected=param_choices[[.colorByColData]])
             ),
         .conditionalPanelOnRadio(colorby.field, .colorByGeneTableTitle,
-            tagList(selectInput(paste0(mode, .colorByGeneTable, ID), label = NULL, choices=active.tab,
-                                selected=.choose_link(param_choices[[.colorByGeneTable]], active.tab, forceDefault=TRUE)),
+            tagList(selectInput(paste0(mode, .colorByGeneTable, ID), label = NULL, choices=active_tab,
+                                selected=.choose_link(param_choices[[.colorByGeneTable]], active_tab, force_default=TRUE)),
                     selectInput(paste0(mode, .colorByGeneTableAssay, ID), label=NULL,
-                                choices=assayNames, selected=param_choices[[.colorByGeneTableAssay]]))
+                                choices=all_assays, selected=param_choices[[.colorByGeneTableAssay]]))
             ),
         .conditionalPanelOnRadio(colorby.field, .colorByGeneTextTitle,
             tagList(textInput(paste0(mode, .colorByGeneText, ID), label = NULL, value=param_choices[[.colorByGeneText]]),
                     selectInput(paste0(mode, .colorByGeneTextAssay, ID), label=NULL,
-                                choices=assayNames, selected=param_choices[[.colorByGeneTextAssay]]))
+                                choices=all_assays, selected=param_choices[[.colorByGeneTextAssay]]))
             )
         )
 }
@@ -276,7 +291,7 @@
         )
 }
 
-.conditionalPanelOnRadio <- function(radio.id, radio.choice, ...) {
-    conditionalPanel(condition=sprintf('(input["%s"] == "%s")', radio.id, radio.choice), ...)
+.conditionalPanelOnRadio <- function(radio_id, radio_choice, ...) {
+    conditionalPanel(condition=sprintf('(input["%s"] == "%s")', radio_id, radio_choice), ...)
 }
 

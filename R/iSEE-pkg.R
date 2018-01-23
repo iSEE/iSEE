@@ -6,7 +6,7 @@
 #' @import SummarizedExperiment
 #' @importFrom S4Vectors DataFrame
 #' @importMethodsFrom BiocGenerics ncol nrow
-#' @importFrom methods as
+#' @importFrom methods as new
 #' @importFrom rintrojs introjsUI introjs
 #' @importFrom shiny actionButton fluidRow icon reactiveValues renderUI
 #' shinyApp tabPanel HTML br h1 h2 selectInput renderPlot plotOutput
@@ -25,7 +25,6 @@
 #' @importFrom DT datatable renderDataTable dataTableOutput
 #' @importFrom AnnotationDbi mapIds keytypes
 #' @importFrom rentrez entrez_summary
-#' @importFrom clipr write_clip
 #' @importFrom colourpicker colourInput
 #' @importFrom shinyAce aceEditor
 #'

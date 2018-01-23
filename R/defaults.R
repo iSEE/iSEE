@@ -14,8 +14,10 @@
 #'
 #' @section Reduced dimension plot parameters:
 #' \describe{
-#' \item{\code{Type}:}{Character, what entry of \code{reducedDims(se)} should be shown?
-#' By default, the first entry is shown.}
+#' \item{\code{Type}:}{Integer, which entry of \code{reducedDims(se)} should be shown?
+#' Defaults to 1, i.e., the first entry.
+#' We use an index rather than the name, as the latter may not be unique.
+#' }
 #' \item{\code{XAxis}:}{Integer, which component should be shown on the x-axis?
 #' Defaults to 1.}
 #' \item{\code{YAxis}:}{Integer, which component should be shown on the y-axis?
@@ -26,8 +28,9 @@
 #' \describe{
 #' \item{\code{GeneTable}:}{Character, what gene statistic table should be used to choose a gene to display on the y-axis?
 #' Defaults to an empty string, which means that the first available table will be used.}
-#' \item{\code{Assay}:}{Character, what expression values should be shown on the y-axis?
-#' Defaults to the name of the first assay in \code{se}.}
+#' \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
+#' Defaults to 1, i.e., the first assay in \code{se}.
+#' We use an index rather than the name, as the latter may not be unique.}
 #' \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
 #' Defaults to \code{"None"}.}
 #' \item{\code{XAxisColData}:}{Character, what column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
@@ -58,12 +61,12 @@
 #' Defaults to the first entry of \code{colData(se)}.}
 #' \item{\code{ColorByGeneTable}:}{Character, which gene statistic table should be used to choose a gene to color by, if \code{ColorBy="Gene table"}? 
 #' Defaults to an empty string, which means that the first available table will be used.}
-#' \item{\code{ColorByGeneTableAssay}:}{Character, what expression values should be used for colouring if \code{ColorBy="Gene table"}? 
-#' Defaults to the name of the first assay in \code{se}.}
+#' \item{\code{ColorByGeneTableAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Gene table"}? 
+#' Defaults to 1, i.e., the first assay in \code{se}.}
 #' \item{\code{ColorByGeneText}:}{Character, which gene should be used to choose a gene to color by, if \code{ColorBy="Gene text"}? 
 #' Defaults to an empty string, which means that the first available table will be used.}
-#' \item{\code{ColorByGeneTextAssay}:}{Character, what expression values should be used for colouring if \code{ColorBy="Gene text"}? 
-#' Defaults to the name of the first assay in \code{se}.}
+#' \item{\code{ColorByGeneTextAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Gene text"}? 
+#' Defaults to 1, i.e., the first assay in \code{se}.}
 #' }
 #'
 #' @section Brushing parameters:
@@ -124,35 +127,30 @@
 #' colDataPlotDefaults(sce, number=5)
 #' geneStatTableDefaults(sce, number=5)
 redDimPlotDefaults <- function(se, number) {
-    all.assays <- assayNames(se)
-    if ("logcounts" %in% all.assays) {
-        def.assay <- "logcounts"
-    } else {
-        def.assay <- all.assays[1]
-    }
+    waszero <- number==0 # To ensure that we define all the fields with the right types.
+    if (waszero) number <- 1
 
     out <- new("DataFrame", nrows=as.integer(number))
-    out[[.redDimType]] <- reducedDimNames(se)[1]
+    out[[.redDimType]] <- 1L
     out[[.redDimXAxis]] <- 1L
     out[[.redDimYAxis]] <- 2L
     
-    out <- .add_general_parameters(out, colnames(colData(se))[1], def.assay)
+    out <- .add_general_parameters(out, se)
+    if (waszero) out <- out[0,,drop=FALSE]
     return(out)
 }
 
 #' @rdname defaults 
 #' @export
 geneExprPlotDefaults <- function(se, number) {
-    all.assays <- assayNames(se)
-    if ("logcounts" %in% all.assays) {
-        def.assay <- "logcounts"
-    } else {
-        def.assay <- all.assays[1]
-    }
+    waszero <- number==0 
+    if (waszero) number <- 1
+
+    def_assay <- .set_default_assay(se)
     covariates <- colnames(colData(se))
 
     out <- new("DataFrame", nrows=as.integer(number))
-    out[[.geneExprAssay]] <- def.assay
+    out[[.geneExprAssay]] <- def_assay
     out[[.geneExprXAxis]] <- .geneExprXAxisNothingTitle
     out[[.geneExprXAxisColData]] <- covariates[1] 
     out[[.geneExprXAxisGeneText]] <- ""
@@ -161,19 +159,17 @@ geneExprPlotDefaults <- function(se, number) {
     out[[.geneExprYAxisGeneTable]] <- ""
     out[[.geneExprYAxis]] <- .geneExprYAxisGeneTableTitle
 
-    out <- .add_general_parameters(out, covariates[1], def.assay)
+    out <- .add_general_parameters(out, se)
+    if (waszero) out <- out[0,,drop=FALSE]
     return(out)
 }
 
 #' @rdname defaults 
 #' @export
 colDataPlotDefaults <- function(se, number) {
-    all.assays <- assayNames(se)
-    if ("logcounts" %in% all.assays) {
-        def.assay <- "logcounts"
-    } else {
-        def.assay <- all.assays[1]
-    }
+    waszero <- number==0 
+    if (waszero) number <- 1
+
     covariates <- colnames(colData(se))
 
     out <- new("DataFrame", nrows=as.integer(number))
@@ -181,41 +177,60 @@ colDataPlotDefaults <- function(se, number) {
     out[[.colDataXAxis]] <- .colDataXAxisNothingTitle
     out[[.colDataXAxisColData]] <- ifelse(length(covariates)==1L, covariates[1], covariates[2])
 
-    out <- .add_general_parameters(out, covariates[1], def.assay)
+    out <- .add_general_parameters(out, se)
+    if (waszero) out <- out[0,,drop=FALSE]
     return(out)
 }
 
 #' @rdname defaults
 #' @export
 geneStatTableDefaults <- function(se, number) {
-    DataFrame(Selected=rep(1L, number), Search=character(number))
+    waszero <- number==0 
+    if (waszero) number <- 1
+
+    out <- DataFrame(Selected=rep(1L, number), Search=character(number))
+
+    if (waszero) out <- out[0,,drop=FALSE]
+    return(out)
 }
 
 .override_defaults <- function(def, usr) 
 # Overriding the defaults with whatever the user has supplied.
 {
-    stopifnot(identical(nrow(def), nrow(usr)))
+    ndef <- nrow(def)
+    nusr <- nrow(usr)
+    stopifnot(ndef >= nusr) 
+    replacement <- seq_len(nusr)
+
     for (x in colnames(usr)) {
         if (!x %in% colnames(def)) { 
             warning(sprintf("unknown field '%s' in user-specified settings", x))
             next 
         }
-        def[[x]] <- usr[[x]]
+
+        # This method is safer than direct subset assignment, 
+        # as it works properly for lists.
+        tmp <- def[[x]]
+        tmp[replacement] <- usr[[x]]
+        def[[x]] <- tmp 
     }
     return(def)
 }    
 
-.add_general_parameters <- function(incoming, defaultColData, defaultAssay) {
+.add_general_parameters <- function(incoming, se) {
+    def_assay <- .set_default_assay(se)
+    def_cov <- colnames(colData(se))[1]
+
     incoming[[.plotParamPanelOpen]] <- FALSE
     incoming[[.colorParamPanelOpen]] <- FALSE
     incoming[[.brushParamPanelOpen]] <- FALSE
 
     incoming[[.colorByField]] <- .colorByNothingTitle
-    incoming[[.colorByColData]] <- defaultColData
+    incoming[[.colorByColData]] <- def_cov
     incoming[[.colorByGeneTable]] <- "" 
-    incoming[[.colorByGeneTableAssay]] <- defaultAssay
+    incoming[[.colorByGeneTableAssay]] <- def_assay
     incoming[[.colorByGeneText]] <- "" 
-    incoming[[.colorByGeneTextAssay]] <- defaultAssay
+    incoming[[.colorByGeneTextAssay]] <- def_assay
 
     incoming[[.brushActive]] <- FALSE
     incoming[[.brushByPlot]] <- ""
@@ -226,4 +241,13 @@ geneStatTableDefaults <- function(se, number) {
     incoming[[.zoomActive]] <- TRUE
     incoming[[.zoomData]] <- rep(list(NULL), nrow(incoming))
     return(incoming)
+}
+
+.set_default_assay <- function(se) { 
+    def_assay <- which(assayNames(se)=="logcounts")
+    if (length(def_assay)==0L) {
+        return(1L)
+    } else {
+        return(def_assay[1])
+    }
 }

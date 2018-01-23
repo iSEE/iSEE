@@ -17,7 +17,6 @@ names(.all_labs_values) <- .all_aes_names
 .make_redDimPlot <- function(se, param_choices, input, all.coordinates)
 # Makes the dimension reduction plot.
 {
-  force(se)
   cmds <- list(
     todo = list(),
     done = character(0)
@@ -25,7 +24,7 @@ names(.all_labs_values) <- .all_aes_names
 
   # Store the command to prepare X and Y axes data (required)
   cmds$todo[["reducedDim"]] <- sprintf(
-    "red.dim <- reducedDim(se, '%s');", param_choices[[.redDimType]])
+    "red.dim <- reducedDim(se, %i);", param_choices[[.redDimType]])
   cmds$todo[["xy"]] <- sprintf(
     "plot.data <- data.frame(X = red.dim[, %s], Y = red.dim[, %s], row.names=colnames(se));",
     param_choices[[.redDimXAxis]],
@@ -118,11 +117,11 @@ names(.all_labs_values) <- .all_aes_names
       sprintf("Invalid '%s' > '%s' input", .geneExprYAxis, y_choice)
     ))
 
-  assay.choice <- param_choices[[.geneExprAssay]]
-  y_lab <- .gene_axis_label(gene_selected_y, assay.choice, multiline = FALSE)
+  assay_choice <- param_choices[[.geneExprAssay]]
+  y_lab <- .gene_axis_label(gene_selected_y, assayNames(se)[assay_choice], multiline = FALSE)
   cmds$todo[["y"]] <- sprintf(
-    "plot.data <- data.frame(Y=assay(se, '%s')['%s',], row.names = colnames(se))",
-    assay.choice, gene_selected_y
+    "plot.data <- data.frame(Y=assay(se, %i)['%s',], row.names = colnames(se))",
+    assay_choice, gene_selected_y
   )
 
   ## Checking X axis choice:
@@ -145,10 +144,10 @@ names(.all_labs_values) <- .all_aes_names
         sprintf("Invalid '%s' > '%s' input", .geneExprXAxis, x_choice)
     ))
 
-    x_lab <- .gene_axis_label(gene_selected_x, assay.choice, multiline = FALSE)
+    x_lab <- .gene_axis_label(gene_selected_x, assayNames(se)[assay_choice], multiline = FALSE)
     cmds$todo[["x"]] <- sprintf(
-      "plot.data$X <- assay(se, '%s')['%s',];",
-      assay.choice, gene_selected_x
+      "plot.data$X <- assay(se, %i)['%s',];",
+      assay_choice, gene_selected_x
     )
 
   } else { # no x axis variable specified: show single violin
@@ -560,7 +559,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
         covariate.name %in% rownames(se),
         sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTableTitle)
       ))
-      assay.choice <- param_choices[[.colorByGeneTableAssay]]
+      assay_choice <- param_choices[[.colorByGeneTableAssay]]
 
     } else {
       covariate.name <- param_choices[[.colorByGeneText]]
@@ -568,7 +567,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
         covariate.name %in% rownames(se),
         sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTextTitle)
       ))
-      assay.choice <- param_choices[[.colorByGeneTextAssay]]
+      assay_choice <- param_choices[[.colorByGeneTextAssay]]
 
     }
 
@@ -576,8 +575,8 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
       # The initial validation code is meant to ensure that this never happens
       warning("Color mode is gene expression, but none selected.")
     } else {
-      output$cmd <- sprintf("plot.data$ColorBy <- assay(se, '%s')['%s',];", assay.choice, covariate.name)
-      output$label <- .gene_axis_label(covariate.name, assay.choice, multiline = TRUE)
+      output$cmd <- sprintf("plot.data$ColorBy <- assay(se, %i)['%s',];", assay_choice, covariate.name)
+      output$label <- .gene_axis_label(covariate.name, assayNames(se)[assay_choice], multiline = TRUE)
     }
   }
 

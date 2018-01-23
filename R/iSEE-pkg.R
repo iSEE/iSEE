@@ -28,7 +28,7 @@
 #' @importFrom clipr write_clip
 #' @importFrom colourpicker colourInput
 #' @importFrom shinyAce aceEditor
-#'
+#' @importFrom methods new slot
 #' @author Aaron Lun \email{alun@@wehi.edu.au}
 #' @author Charlotte Soneson \email{charlotte.soneson@@uzh.ch}
 #' @author Federico Marini \email{marinif@@uni-mainz.de}

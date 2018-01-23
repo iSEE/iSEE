@@ -16,6 +16,10 @@
 #' gene expression plots in the interface. Alternatively, a DataFrame
 #' similar to that produced by \code{\link{geneExprPlotDefaults}}, specifying
 #' initial parameters for the plots.
+#' @param geneExprArgs An integer scalar specifying the maximum number of
+#' gene statistic tables in the interface. Alternatively, a DataFrame
+#' similar to that produced by \code{\link{geneStatTableDefaults}}, specifying
+#' initial parameters for the plots.
 #' @param initialPanels A DataFrame specifying which panels should be created
 #' at initialization. This should contain a \code{Name} character field and
 #' a \code{Width} integer field, see Details.
@@ -77,6 +81,7 @@ iSEE <- function(
   redDimArgs=5,
   colDataArgs=5,
   geneExprArgs=5,
+  geneStatArgs=5,
   initialPanels=NULL,
   annot.orgdb=NULL,
   annot.keytype="ENTREZID",
@@ -129,8 +134,13 @@ iSEE <- function(
   }
   coldata_max_plots <- nrow(memory$colData)
 
-  genestat_max_tab <- 5
-  memory$geneStat <- DataFrame(Selected=rep(1, genestat_max_tab), Search="")
+  if (is.numeric(geneStatArgs)) {
+     memory$geneStat <- geneStatTableDefaults(se, geneStatArgs)
+  } else {
+     memory$geneStat <- geneStatTableDefaults(se, nrow(geneStatArgs))
+     memory$geneStat <- .override_defaults(memory$geneStat, geneStatArgs)
+  }
+  genestat_max_tab <- nrow(memory$geneStat)
 
   # Defining the initial elements to be plotted.
   if (is.null(initialPanels)) {

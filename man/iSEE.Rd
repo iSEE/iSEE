@@ -5,8 +5,8 @@
 \title{iSEE: interactive SingleCell/Summarized Experiment Explorer}
 \usage{
 iSEE(se, redDimArgs = 5, colDataArgs = 5, geneExprArgs = 5,
-  initialPanels = NULL, annot.orgdb = NULL, annot.keytype = "ENTREZID",
-  annot.keyfield = NULL)
+  geneStatArgs = 5, initialPanels = NULL, annot.orgdb = NULL,
+  annot.keytype = "ENTREZID", annot.keyfield = NULL)
 }
 \arguments{
 \item{se}{A \linkS4class{SingleCellExperiment} object.}
@@ -39,6 +39,11 @@ Entrez identifiers can be retrieved.}
 \item{annot.keyfield}{A string specifying the field of \code{rowData(se)}
 containing the keys of type \code{annot.keytype}. If \code{NULL}, the
 row names of \code{se} are used as the keys.}
+
+\item{geneExprArgs}{An integer scalar specifying the maximum number of
+gene statistic tables in the interface. Alternatively, a DataFrame
+similar to that produced by \code{\link{geneStatTableDefaults}}, specifying
+initial parameters for the plots.}
 }
 \value{
 A Shiny App is launched for interactive data exploration of the

@@ -34,7 +34,8 @@ Imports:
     DT,
     colourpicker,
     clipr,
-    shinyAce
+    shinyAce,
+    RColorBrewer
 Suggests:
     testthat,
     BiocStyle,

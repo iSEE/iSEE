@@ -61,6 +61,7 @@ setClass("ExperimentColorMap",
 #'
 #' \code{assayColorMap(x, "counts")}: Get an assay colormap.
 #'
+#' @export ExperimentColorMap
 #' @exportClass ExperimentColorMap
 #' @export assayColorMap
 #' @exportMethod assayColorMap

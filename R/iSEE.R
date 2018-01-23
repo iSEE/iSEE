@@ -88,7 +88,7 @@ iSEE <- function(
   stopifnot(inherits(se, "SingleCellExperiment"))
 
   # Collecting constants for populating the UI.
-  covariates <- colnames(cell.data)
+  covariates <- colnames(colData(se))
   all.assays <- names(assays(se))
   gene.names <- rownames(se)
 
@@ -515,7 +515,7 @@ iSEE <- function(
     #######################################################################
 
     # Load the gene level data
-    for (i in seq_len(genestat_max_tab)) {
+    for (i in seq_len(genestat_max_tabs)) {
       local({
         i0 <- i
         output[[paste0("geneStatTable", i0)]] <- renderDataTable({

@@ -5,32 +5,36 @@
 \alias{redDimPlotDefaults}
 \alias{geneExprPlotDefaults}
 \alias{colDataPlotDefaults}
-\title{Plot parameter defaults}
+\alias{geneStatTableDefaults}
+\title{Parameter defaults}
 \usage{
-redDimPlotDefaults(se, max.plots)
+redDimPlotDefaults(se, number)
 
-geneExprPlotDefaults(se, max.plots)
+geneExprPlotDefaults(se, number)
 
-colDataPlotDefaults(se, max.plots)
+colDataPlotDefaults(se, number)
+
+geneStatTableDefaults(se, number)
 }
 \arguments{
 \item{se}{A SingleCellExperiment object.}
 
-\item{max.plots}{An integer scalar, specifying the maximum number of 
-plots of the corresponding type that can be added to the interface.}
+\item{number}{An integer scalar, specifying the maximum number of 
+panels of the corresponding type that can be added to the interface.}
 }
 \value{
-A DataFrame containing default settings for various 
-parameters of reduced dimension or gene expression plots.
+A DataFrame containing default settings for various parameters of each panel.
 }
 \description{
-Create default settings for various plots in the iSEE interface.
+Create default settings for various panels in the iSEE interface.
 }
 \section{Reduced dimension plot parameters}{
 
 \describe{
-\item{\code{Type}:}{Character, what entry of \code{reducedDims(se)} should be shown?
-By default, the first entry is shown.}
+\item{\code{Type}:}{Integer, which entry of \code{reducedDims(se)} should be shown?
+Defaults to 1, i.e., the first entry.
+We use an index rather than the name, as the latter may not be unique.
+}
 \item{\code{XAxis}:}{Integer, which component should be shown on the x-axis?
 Defaults to 1.}
 \item{\code{YAxis}:}{Integer, which component should be shown on the y-axis?
@@ -43,8 +47,9 @@ Defaults to 2.}
 \describe{
 \item{\code{GeneTable}:}{Character, what gene statistic table should be used to choose a gene to display on the y-axis?
 Defaults to an empty string, which means that the first available table will be used.}
-\item{\code{Assay}:}{Character, what expression values should be shown on the y-axis?
-Defaults to the name of the first assay in \code{se}.}
+\item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
+Defaults to 1, i.e., the first assay in \code{se}.
+We use an index rather than the name, as the latter may not be unique.}
 \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
 Defaults to \code{"None"}.}
 \item{\code{XAxisColData}:}{Character, what column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
@@ -79,12 +84,12 @@ Defaults to \code{"None"}.}
 Defaults to the first entry of \code{colData(se)}.}
 \item{\code{ColorByGeneTable}:}{Character, which gene statistic table should be used to choose a gene to color by, if \code{ColorBy="Gene table"}? 
 Defaults to an empty string, which means that the first available table will be used.}
-\item{\code{ColorByGeneTableAssay}:}{Character, what expression values should be used for colouring if \code{ColorBy="Gene table"}? 
-Defaults to the name of the first assay in \code{se}.}
+\item{\code{ColorByGeneTableAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Gene table"}? 
+Defaults to 1, i.e., the first assay in \code{se}.}
 \item{\code{ColorByGeneText}:}{Character, which gene should be used to choose a gene to color by, if \code{ColorBy="Gene text"}? 
 Defaults to an empty string, which means that the first available table will be used.}
-\item{\code{ColorByGeneTextAssay}:}{Character, what expression values should be used for colouring if \code{ColorBy="Gene text"}? 
-Defaults to the name of the first assay in \code{se}.}
+\item{\code{ColorByGeneTextAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Gene text"}? 
+Defaults to 1, i.e., the first assay in \code{se}.}
 }
 }
 
@@ -108,11 +113,26 @@ Defaults to 0.1.}
 }
 }
 
-\section{Other parameters}{
+\section{Other plot parameters}{
 
 \describe{
 \item{\code{PlotPanelOpen}:}{Logical, should the plot parameter panel be open upon initialization?
 Defaults to \code{FALSE}.}
+\item{\code{ZoomOn}:}{Logical, should zooming (via brushing and double-clicking) be turned on?
+Defaults to \code{TRUE}.}
+\item{\code{ZoomData}:}{A list containing numeric vectors of length 4, containing values with names \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"}.
+These define the zoom window on the x- and y-axes.
+Each element of the list defaults to \code{NULL}, i.e., no zooming is performed.}
+}
+}
+
+\section{Gene statistic table parameters}{
+
+\describe{
+\item{\code{Selected}:}{Integer, containing the index of the row to be initially selected.
+Defaults to the first row, i.e., 1.}
+\item{\code{Search}:}{Character, containing the initial value of the search field.
+Defaults to an empty string.}
 }
 }
 
@@ -128,7 +148,8 @@ sce <- normalize(sce)
 sce <- runPCA(sce)
 sce
 
-redDimPlotDefaults(sce, max.plots=5)
-geneExprPlotDefaults(sce, max.plots=5)
-colDataPlotDefaults(sce, max.plots=5)
+redDimPlotDefaults(sce, number=5)
+geneExprPlotDefaults(sce, number=5)
+colDataPlotDefaults(sce, number=5)
+geneStatTableDefaults(sce, number=5)
 }

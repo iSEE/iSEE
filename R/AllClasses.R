@@ -70,8 +70,11 @@ setClass("ExperimentColorMap",
 #' @aliases class:ExperimentColorMap ExperimentColorMap-class
 #' assayColorMap colDataColorMap rowDataColorMap
 #' assayColorMap,ExperimentColorMap,character-method
+#' assayColorMap,ExperimentColorMap,integer-method
 #' colDataColorMap,ExperimentColorMap,character-method
+#' colDataColorMap,ExperimentColorMap,integer-method
 #' rowDataColorMap,ExperimentColorMap,character-method
+#' rowDataColorMap,ExperimentColorMap,integer-method
 #'
 #' @examples
 #'
@@ -127,7 +130,17 @@ setGeneric("assayColorMap", function(x, i, ...) standardGeneric("assayColorMap")
 setMethod("assayColorMap", c("ExperimentColorMap", "character"),
     function(x, i, ...)
 {
-    res <- tryCatch({
+    .assayColorMap(x, i, ...)
+})
+
+setMethod("assayColorMap", c("ExperimentColorMap", "integer"),
+    function(x, i, ...)
+{
+    .assayColorMap(x, i, ...)
+})
+
+.assayColorMap <- function(x, i, ...){
+  res <- tryCatch({
         x@assays[[i]]
     }, error=function(err) {
         .defaultContinuousColorMap
@@ -136,7 +149,7 @@ setMethod("assayColorMap", c("ExperimentColorMap", "character"),
       return(.defaultContinuousColorMap)
     }
     return(res)
-})
+}
 
 # colDataColorMap ----
 
@@ -148,11 +161,23 @@ setMethod("colDataColorMap", c("ExperimentColorMap", "character"),
       .nonAssayColorMap(x, "colData", i)
 })
 
+setMethod("colDataColorMap", c("ExperimentColorMap", "integer"),
+    function(x, i, ...)
+{
+      .nonAssayColorMap(x, "colData", i)
+})
+
 # rowDataColorMap ----
 
 setGeneric("rowDataColorMap", function(x, i, ...) standardGeneric("rowDataColorMap"))
 
 setMethod("rowDataColorMap", c("ExperimentColorMap", "character"),
+    function(x, i, ...)
+{
+      .nonAssayColorMap(x, "rowData", i)
+})
+
+setMethod("rowDataColorMap", c("ExperimentColorMap", "integer"),
     function(x, i, ...)
 {
       .nonAssayColorMap(x, "rowData", i)

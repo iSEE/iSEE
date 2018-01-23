@@ -39,6 +39,10 @@ Entrez identifiers can be retrieved.}
 \item{annot.keyfield}{A string specifying the field of \code{rowData(se)}
 containing the keys of type \code{annot.keytype}. If \code{NULL}, the
 row names of \code{se} are used as the keys.}
+
+\item{colormap}{An \linkS4class{ExperimentColorMap} object that defines
+custom color maps to apply to individual \code{assays}, \code{colData},
+and \code{rowData} covariates.}
 }
 \value{
 A Shiny App is launched for interactive data exploration of the

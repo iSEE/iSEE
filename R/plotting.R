@@ -233,8 +233,8 @@ names(.all_labs_values) <- .all_aes_names
   # Dispatch to different plotting commands, depending on whether X/Y are groupable.
   if (group_X && group_Y) {
     plot_cmds <- .griddotplot(
-      ..., color_set=color_set, color_map=color_map,
-      color_name=color_name, color_name=color_name, color_discrete=group_color
+      ..., color_set=color_set,
+      color_map=color_map, color_name=color_name, color_discrete=group_color
     )
 
   } else if (group_X && !group_Y) {

@@ -87,17 +87,11 @@ iSEE <- function(
   se_name <- deparse(substitute(se))
   stopifnot(inherits(se, "SingleCellExperiment"))
 
-  # Collecting constants for populating the UI.
-  covariates <- colnames(colData(se))
-  all.assays <- names(assays(se))
-
-  red.dim.names <- reducedDimNames(se)
-  red.dim.dims <- lapply(red.dim.names, FUN=function(x) ncol(reducedDim(se, x)))
-  names(red.dim.dims) <- red.dim.names
-
+  # Setting up inputs for DT::datatable something to play with.
+  # It must have some columns, so we're just filling it up with _something_.
   gene_data <- as.data.frame(rowData(se))
   rownames(gene_data) <- rownames(se) 
-  if (ncol(gene_data)==0L){ # To give it DT::datatable something to play with.
+  if (ncol(gene_data)==0L){ 
     gene_data$Present <- TRUE
   }
 
@@ -172,9 +166,9 @@ iSEE <- function(
     }
   }
 
-  # general options:
-
-  ########## ui definition ##########
+  #######################################################################
+  ## UI definition. ----
+  #######################################################################
 
   iSEE_ui <- dashboardPage(
     dashboardHeader(
@@ -227,7 +221,9 @@ iSEE <- function(
     skin = "blue"
   ) # end of dashboardPage
 
-  ########## server definition ##########
+  #######################################################################
+  ## Server definition. ----
+  #######################################################################
 
   iSEE_server <- function(input, output, session) {
 
@@ -274,11 +270,7 @@ iSEE <- function(
 
     output$allPanels <- renderUI({
         (rObjects$rebrushed) # Trigger re-rendering if these are selected.
-        .panel_generation(rObjects$active_plots, pObjects$memory,
-                          redDimNames=red.dim.names,
-                          redDimDims=red.dim.dims,
-                          colDataNames=covariates,
-                          assayNames=all.assays)
+        .panel_generation(rObjects$active_plots, pObjects$memory, se)
     })
 
     output$panelOrganization <- renderUI({

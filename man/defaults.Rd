@@ -31,8 +31,10 @@ Create default settings for various panels in the iSEE interface.
 \section{Reduced dimension plot parameters}{
 
 \describe{
-\item{\code{Type}:}{Character, what entry of \code{reducedDims(se)} should be shown?
-By default, the first entry is shown.}
+\item{\code{Type}:}{Integer, which entry of \code{reducedDims(se)} should be shown?
+Defaults to 1, i.e., the first entry.
+We use an index rather than the name, as the latter may not be unique.
+}
 \item{\code{XAxis}:}{Integer, which component should be shown on the x-axis?
 Defaults to 1.}
 \item{\code{YAxis}:}{Integer, which component should be shown on the y-axis?
@@ -45,8 +47,9 @@ Defaults to 2.}
 \describe{
 \item{\code{GeneTable}:}{Character, what gene statistic table should be used to choose a gene to display on the y-axis?
 Defaults to an empty string, which means that the first available table will be used.}
-\item{\code{Assay}:}{Character, what expression values should be shown on the y-axis?
-Defaults to the name of the first assay in \code{se}.}
+\item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
+Defaults to 1, i.e., the first assay in \code{se}.
+We use an index rather than the name, as the latter may not be unique.}
 \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
 Defaults to \code{"None"}.}
 \item{\code{XAxisColData}:}{Character, what column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
@@ -81,12 +84,12 @@ Defaults to \code{"None"}.}
 Defaults to the first entry of \code{colData(se)}.}
 \item{\code{ColorByGeneTable}:}{Character, which gene statistic table should be used to choose a gene to color by, if \code{ColorBy="Gene table"}? 
 Defaults to an empty string, which means that the first available table will be used.}
-\item{\code{ColorByGeneTableAssay}:}{Character, what expression values should be used for colouring if \code{ColorBy="Gene table"}? 
-Defaults to the name of the first assay in \code{se}.}
+\item{\code{ColorByGeneTableAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Gene table"}? 
+Defaults to 1, i.e., the first assay in \code{se}.}
 \item{\code{ColorByGeneText}:}{Character, which gene should be used to choose a gene to color by, if \code{ColorBy="Gene text"}? 
 Defaults to an empty string, which means that the first available table will be used.}
-\item{\code{ColorByGeneTextAssay}:}{Character, what expression values should be used for colouring if \code{ColorBy="Gene text"}? 
-Defaults to the name of the first assay in \code{se}.}
+\item{\code{ColorByGeneTextAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Gene text"}? 
+Defaults to 1, i.e., the first assay in \code{se}.}
 }
 }
 

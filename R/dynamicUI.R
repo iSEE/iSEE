@@ -42,12 +42,19 @@
     cur.row <- list()
     row.counter <- 1L
 
-    # Collecting constants for populating the UI.
+    # Collecting constants for populating the UI. Note that the assay
+    # and reduced dimension names may not be unique, hence the (%i).
     covariates <- colnames(colData(se))
-    all_assays <- assayNames(se)
-    red_dim_names <- reducedDimNames(se)
-    red_dim_dims <- lapply(red_dim_names, FUN=function(x) ncol(reducedDim(se, x)))
-    names(red_dim_dims) <- red_dim_names
+
+    all_assays_raw <- assayNames(se)
+    all_assays <- seq_along(all_assays_raw)
+    names(all_assays) <- sprintf("(%i) %s", all_assays, all_assays_raw)
+
+    red_dim_names_raw <- reducedDimNames(se)
+    red_dim_names <- seq_along(red_dim_names_raw)
+    names(red_dim_names) <- sprintf("(%i) %s", red_dim_names, red_dim_names_raw)
+
+    red_dim_dims <- vapply(red_dim_names, FUN=function(x) ncol(reducedDim(se, x)), FUN.VALUE=0L)
 
     # Defining currently active tables for linking.
     all.names <- .decode_panel_name(active_plots$Type, active_plots$ID)

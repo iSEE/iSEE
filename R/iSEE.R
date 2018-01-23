@@ -410,10 +410,10 @@ iSEE <- function(
         output[[plot.name]] <- renderPlot({
 
           # Updating parameters in the memory store (non-characters need some careful treatment).
-          for (field in c(.redDimType, ALLEXTRAS)) {
+          for (field in c(ALLEXTRAS_DIRECT)) {
               pObjects$memory$redDim[[field]][i0] <- input[[.inputRedDim(field, i0)]]
           }
-          for (field in c(.redDimXAxis, .redDimYAxis)) {
+          for (field in c(.redDimType, .redDimXAxis, .redDimYAxis, ALLEXTRAS_INT)) {
               pObjects$memory$redDim[[field]][i0] <- as.integer(input[[.inputRedDim(field, i0)]])
           }
 
@@ -440,8 +440,11 @@ iSEE <- function(
         output[[plot.name]] <- renderPlot({
 
           # Updating parameters.
-          for (field in c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, ALLEXTRAS)) {
+          for (field in c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, ALLEXTRAS_DIRECT)) {
               pObjects$memory$colData[[field]][i0] <- input[[.inputColData(field, i0)]]
+          }
+          for (field in c(ALLEXTRAS_INT)) {
+              pObjects$memory$colData[[field]][i0] <- as.integer(input[[.inputColData(field, i0)]])
           }
 
           # Updating zooming.
@@ -467,9 +470,12 @@ iSEE <- function(
         output[[plot.name]] <- renderPlot({
 
           # Updating parameters.
-          for (field in c(.geneExprAssay, .geneExprYAxis, .geneExprYAxisGeneTable, .geneExprYAxisGeneText,
-                          .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneTable, .geneExprXAxisGeneText, ALLEXTRAS)) {
+          for (field in c(.geneExprYAxis, .geneExprYAxisGeneTable, .geneExprYAxisGeneText,
+                          .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneTable, .geneExprXAxisGeneText, ALLEXTRAS_DIRECT)) {
               pObjects$memory$geneExpr[[field]][i0] <- input[[.inputGeneExpr(field, i0)]]
+          }
+          for (field in c(.geneExprAssay, ALLEXTRAS_INT)) {
+              pObjects$memory$geneExpr[[field]][i0] <- as.integer(input[[.inputGeneExpr(field, i0)]])
           }
 
           # Updating zooming.

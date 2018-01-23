@@ -196,11 +196,11 @@ iSEE <- function(
     ), # end of dashboardHeader
     dashboardSidebar(
       # general app settings
-      menuItem("App settings",icon = icon("cogs")),
+      # menuItem("App settings",icon = icon("cogs")),
       # merely oriented to export the plots - if we want to support that capability
-      menuItem("Plot export settings", icon = icon("paint-brush")),
+      # menuItem("Plot export settings", icon = icon("paint-brush")),
       # quick viewer could display which relevant slots are already populated?
-      menuItem("Quick viewer", icon = icon("flash")),
+      # menuItem("Quick viewer", icon = icon("flash")),
       # this will cover the part for the first tour of the app
       menuItem("First steps help", icon = icon("question-circle"),
                actionButton("tour_firststeps", "Click me for a quick tour", icon("info"),

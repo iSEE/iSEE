@@ -4,8 +4,8 @@
 \alias{iSEE}
 \title{iSEE: interactive SingleCell/Summarized Experiment Explorer}
 \usage{
-iSEE(se, redDimArgs = 5, colDataArgs = 5, geneExprArgs = 5,
-  geneStatArgs = 5, redDimMax = 5, colDataMax = 5, geneExprMax = 5,
+iSEE(se, redDimArgs = NULL, colDataArgs = NULL, geneExprArgs = NULL,
+  geneStatArgs = NULL, redDimMax = 5, colDataMax = 5, geneExprMax = 5,
   geneStatMax = 5, initialPanels = NULL, annot.orgdb = NULL,
   annot.keytype = "ENTREZID", annot.keyfield = NULL)
 }

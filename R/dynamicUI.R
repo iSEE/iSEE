@@ -14,9 +14,9 @@
         current <- list(
             h4(.decode_panel_name(mode, ID)),
             fluidRow(
-              column(2,actionButton(paste0(mode, ID, .organizationUp), "",icon = icon("arrow-circle-up"))),
-              column(2,actionButton(paste0(mode, ID, .organizationDown), "",icon = icon("arrow-circle-down"))),
-              column(3,actionButton(paste0(mode, ID, .organizationDiscard), "",
+              column(3,actionButton(paste0(mode, ID, .organizationUp),"",icon = icon("arrow-circle-up"))),
+              column(3,actionButton(paste0(mode, ID, .organizationDown),"",icon = icon("arrow-circle-down"))),
+              column(3,actionButton(paste0(mode, ID, .organizationDiscard),"",
                          icon = icon("trash"), class = "btn btn-warning"))
             ),
             sliderInput(paste0(mode, ID, .organizationWidth), "Width",

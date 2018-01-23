@@ -33,7 +33,6 @@ Imports:
     AnnotationDbi,
     DT,
     colourpicker,
-    clipr,
     shinyAce
 Suggests:
     testthat,

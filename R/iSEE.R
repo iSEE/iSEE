@@ -69,10 +69,10 @@
 #' if (interactive()) { iSEE(sce) }
 iSEE <- function(
   se,
-  redDimArgs=5,
-  colDataArgs=5,
-  geneExprArgs=5,
-  geneStatArgs=5,
+  redDimArgs=NULL,
+  colDataArgs=NULL,
+  geneExprArgs=NULL,
+  geneStatArgs=NULL,
   redDimMax=5,
   colDataMax=5,
   geneExprMax=5,
@@ -91,7 +91,7 @@ iSEE <- function(
   # It must have some columns, so we're just filling it up with _something_.
   gene_data <- as.data.frame(rowData(se))
   rownames(gene_data) <- rownames(se) 
-  if (ncol(gene_data)==0L){ 
+  if (ncol(gene_data)==0L && nrow(gene_data)){ 
     gene_data$Present <- TRUE
   }
 
@@ -101,65 +101,83 @@ iSEE <- function(
   geneexpr_max_plots <- max(nrow(geneExprArgs), geneExprMax)
   genestat_max_tabs <- max(nrow(geneStatArgs), geneStatMax)
 
+  if (length(reducedDims(se))==0L || ncol(se)==0L) {
+    reddim_max_plots <- 0L
+    redDimArgs <- NULL
+  } 
+  if (ncol(colData(se))==0L || ncol(se)==0L) {
+    coldata_max_plots <- 0L
+    colDataArgs <- NULL
+  }
+  if (nrow(se)==0L) {
+    genestat_max_tabs <- 0L
+    geneStatArgs <- NULL
+  }
+  if (nrow(se)==0L || ncol(se)==0L) {
+    geneexpr_max_plots <- 0L
+    geneExprArgs <- NULL
+  }
+
   # Setting up parameters for each panel.
   memory <- list()
-  if (is.numeric(redDimArgs)) {
+  if (is.null(redDimArgs)) {
     memory$redDim <- redDimPlotDefaults(se, reddim_max_plots)
   } else {
     memory$redDim <- redDimPlotDefaults(se, reddim_max_plots)
     memory$redDim <- .override_defaults(memory$redDim, redDimArgs)
   }
 
-  if (is.numeric(geneExprArgs)) {
+  if (is.null(geneExprArgs)) {
     memory$geneExpr <- geneExprPlotDefaults(se, geneexpr_max_plots)
   } else {
     memory$geneExpr <- geneExprPlotDefaults(se, geneexpr_max_plots)
     memory$geneExpr <- .override_defaults(memory$geneExpr, geneExprArgs)
   }
 
-  if (is.numeric(colDataArgs)) {
+  if (is.null(colDataArgs)) {
     memory$colData <- colDataPlotDefaults(se, coldata_max_plots)
   } else {
     memory$colData <- colDataPlotDefaults(se, coldata_max_plots)
     memory$colData <- .override_defaults(memory$colData, colDataArgs)
   }
 
-  if (is.numeric(geneStatArgs)) {
-     memory$geneStat <- geneStatTableDefaults(se, genestat_max_tabs)
+  if (is.null(geneStatArgs)) {
+    memory$geneStat <- geneStatTableDefaults(se, genestat_max_tabs)
   } else {
-     memory$geneStat <- geneStatTableDefaults(se, genestat_max_tabs)
-     memory$geneStat <- .override_defaults(memory$geneStat, geneStatArgs)
+    memory$geneStat <- geneStatTableDefaults(se, genestat_max_tabs)
+    memory$geneStat <- .override_defaults(memory$geneStat, geneStatArgs)
   }
 
   # Defining the initial elements to be plotted.
   if (is.null(initialPanels)) {
-      active_plots <- data.frame(Type=c("redDim", "colData", "geneExpr", "geneStat"),
-                                 ID=1, Width=4,
-                                 stringsAsFactors=FALSE)
+    initialPanels <- data.frame(Name=c("Reduced dimension plot 1", "Column data plot 1", 
+                                       "Gene expression plot 1", "Gene statistics table 1"),
+                                Width=4, stringsAsFactors=FALSE)
+  } 
+
+  if (is.null(initialPanels$Name)) {
+    stop("need 'Name' field in 'initialPanels'")
+  }
+  if (is.null(initialPanels$Width)) {
+    initialPanels$Width <- 4L
   } else {
-      if (is.null(initialPanels$Name)) {
-          stop("need 'Name' field in 'initialPanels'")
-      }
-      if (is.null(initialPanels$Width)) {
-          initialPanels$Width <- 4L
-      } else {
-          initialPanels$Width <- pmax(4L, pmin(12L, as.integer(initialPanels$Width)))
-      }
-
-      encoded <- .encode_panel_name(initialPanels$Name)
-      max_each <- unlist(lapply(memory, nrow))
-      illegal <- which(max_each[encoded$Type] < encoded$ID)
-      if (length(illegal)) {
-          stop(sprintf("'%s' in 'initialPanels' is not available (maximum ID is %i)",
-                       initialPanels$Name[illegal[1]], max_each[illegal[1]]))
-      }
-
-      active_plots <- data.frame(Type=encoded$Type, ID=encoded$ID,
-                                 Width=initialPanels$Width,
-                                 stringsAsFactors=FALSE)
+    initialPanels$Width <- pmax(4L, pmin(12L, as.integer(initialPanels$Width)))
   }
 
-  # for retrieving the annotation
+  encoded <- .encode_panel_name(initialPanels$Name)
+  max_each <- unlist(lapply(memory, nrow))
+  illegal <- max_each[encoded$Type] < encoded$ID
+  if (any(illegal)) {
+    badpanel <- which(illegal)[1]
+    message(sprintf("'%s' in 'initialPanels' is not available (maximum ID is %i)",
+                    initialPanels$Name[badpanel], max_each[encoded$Type[badpanel]]))
+  }
+
+  active_plots <- data.frame(Type=encoded$Type, ID=encoded$ID,
+                             Width=initialPanels$Width,
+                             stringsAsFactors=FALSE)[!illegal,,drop=FALSE]
+
+  # For retrieving the annotation
   if (!is.null(annot.orgdb)) {
     if (!annot.keytype %in% keytypes(annot.orgdb)) {
       stop("specified keytype not in org.*.db object")

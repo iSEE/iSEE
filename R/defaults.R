@@ -127,18 +127,25 @@
 #' colDataPlotDefaults(sce, number=5)
 #' geneStatTableDefaults(sce, number=5)
 redDimPlotDefaults <- function(se, number) {
+    waszero <- number==0 # To ensure that we define all the fields with the right types.
+    if (waszero) number <- 1
+
     out <- new("DataFrame", nrows=as.integer(number))
     out[[.redDimType]] <- 1L
     out[[.redDimXAxis]] <- 1L
     out[[.redDimYAxis]] <- 2L
     
     out <- .add_general_parameters(out, se)
+    if (waszero) out <- out[0,,drop=FALSE]
     return(out)
 }
 
 #' @rdname defaults 
 #' @export
 geneExprPlotDefaults <- function(se, number) {
+    waszero <- number==0 
+    if (waszero) number <- 1
+
     def_assay <- .set_default_assay(se)
     covariates <- colnames(colData(se))
 
@@ -153,12 +160,16 @@ geneExprPlotDefaults <- function(se, number) {
     out[[.geneExprYAxis]] <- .geneExprYAxisGeneTableTitle
 
     out <- .add_general_parameters(out, se)
+    if (waszero) out <- out[0,,drop=FALSE]
     return(out)
 }
 
 #' @rdname defaults 
 #' @export
 colDataPlotDefaults <- function(se, number) {
+    waszero <- number==0 
+    if (waszero) number <- 1
+
     covariates <- colnames(colData(se))
 
     out <- new("DataFrame", nrows=as.integer(number))
@@ -167,25 +178,41 @@ colDataPlotDefaults <- function(se, number) {
     out[[.colDataXAxisColData]] <- ifelse(length(covariates)==1L, covariates[1], covariates[2])
 
     out <- .add_general_parameters(out, se)
+    if (waszero) out <- out[0,,drop=FALSE]
     return(out)
 }
 
 #' @rdname defaults
 #' @export
 geneStatTableDefaults <- function(se, number) {
-    DataFrame(Selected=rep(1L, number), Search=character(number))
+    waszero <- number==0 
+    if (waszero) number <- 1
+
+    out <- DataFrame(Selected=rep(1L, number), Search=character(number))
+
+    if (waszero) out <- out[0,,drop=FALSE]
+    return(out)
 }
 
 .override_defaults <- function(def, usr) 
 # Overriding the defaults with whatever the user has supplied.
 {
-    stopifnot(identical(nrow(def), nrow(usr)))
+    ndef <- nrow(def)
+    nusr <- nrow(usr)
+    stopifnot(ndef >= nusr) 
+    replacement <- seq_len(nusr)
+
     for (x in colnames(usr)) {
         if (!x %in% colnames(def)) { 
             warning(sprintf("unknown field '%s' in user-specified settings", x))
             next 
         }
-        def[[x]] <- usr[[x]]
+
+        # This method is safer than direct subset assignment, 
+        # as it works properly for lists.
+        tmp <- def[[x]]
+        tmp[replacement] <- usr[[x]]
+        def[[x]] <- tmp 
     }
     return(def)
 }    

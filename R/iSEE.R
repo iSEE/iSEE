@@ -192,7 +192,16 @@ iSEE <- function(
     dashboardHeader(
       title = paste0("iSEE - interactive SingleCell/Summarized Experiment Explorer v",
                      packageVersion("iSEE")),
-      titleWidth = 900
+      titleWidth = 800,
+      dropdownMenu(type = "tasks",
+                   icon = icon("question-circle"),
+                   badgeStatus = NULL,
+                   headerText = "Want a guided tour?",
+                   notificationItem(
+                     text = actionButton("tour_firststeps", "Click me for a quick tour", icon("info"),
+                                         style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"),
+                     icon = icon(""), # tricking it to not have additional icon
+                     status = "primary"))
     ), # end of dashboardHeader
     dashboardSidebar(
       # general app settings
@@ -202,11 +211,8 @@ iSEE <- function(
       # quick viewer could display which relevant slots are already populated?
       # menuItem("Quick viewer", icon = icon("flash")),
       # this will cover the part for the first tour of the app
-      menuItem("First steps help", icon = icon("question-circle"),
-               actionButton("tour_firststeps", "Click me for a quick tour", icon("info"),
-                            style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4")
-
-      ),
+      # menuItem("First steps help", icon = icon("question-circle")
+      # ),
       actionButton(paste0("redDim", .organizationNew), "New reduced dimension plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("colData", .organizationNew), "New column data plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("geneExpr", .organizationNew), "New gene expression plot", class = "btn btn-primary",icon = icon("plus")),

@@ -70,6 +70,18 @@
 #' sce <- runTSNE(sce)
 #' sce
 #'
+#' qc_colors <- c("forestgreen", "firebrick1")
+#' names(qc_colors) <- c("Y", "N")
+#'
+#' ecm <- new("ExperimentColorMap",
+#'    assays = list(
+#'        counts = viridis::viridis(10)
+#'    ),
+#'    colData = list(
+#'        passes_qc_checks_s = qc_colors
+#'    )
+#')
+#'
 #' # launch the app itself
 #' if (interactive()) { iSEE(sce) }
 iSEE <- function(
@@ -80,7 +92,8 @@ iSEE <- function(
   initialPanels=NULL,
   annot.orgdb=NULL,
   annot.keytype="ENTREZID",
-  annot.keyfield=NULL
+  annot.keyfield=NULL,
+  colormap=ExperimentColorMap()
 ) {
   # Save the original name of the input object for the command to rename it
   # in the tracker
@@ -393,7 +406,7 @@ iSEE <- function(
           # Brush on/off observers.
           observeEvent(input[[paste0(mode0, .brushActive, i0)]], {
             current <- input[[paste0(mode0, .brushActive, i0)]]
-            reference <- pObjects$memory[[mode0]][[.brushActive]][i0] 
+            reference <- pObjects$memory[[mode0]][[.brushActive]][i0]
             if (!identical(current, reference)) {
               rObjects$rebrushed <- rObjects$rebrushed + 1L
               pObjects$memory[[mode0]][[.brushActive]][i0] <- current
@@ -409,7 +422,7 @@ iSEE <- function(
                new_coords <- NULL
              }
              pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, new_coords)
-             rObjects[[paste0(mode0, .zoomUpdate, i0)]] <- rObjects[[paste0(mode0, .zoomUpdate, i0)]] + 1L 
+             rObjects[[paste0(mode0, .zoomUpdate, i0)]] <- rObjects[[paste0(mode0, .zoomUpdate, i0)]] + 1L
           })
         })
       }
@@ -441,7 +454,8 @@ iSEE <- function(
           force(rObjects[[.inputRedDim(.zoomUpdate, i0)]])
 
           # Creating the plot, with saved coordinates.
-          p.out <- .make_redDimPlot(se, pObjects$memory$redDim[i0,], input, pObjects$coordinates)
+          p.out <- .make_redDimPlot(
+            se, pObjects$memory$redDim[i0,], input, pObjects$coordinates, colormap)
           pObjects$commands[[plot.name]] <- p.out$cmd
           pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
@@ -468,7 +482,8 @@ iSEE <- function(
           force(rObjects[[.inputColData(.zoomUpdate, i0)]])
 
           # Creating the plot, with saved coordinates.
-          p.out <- .make_colDataPlot(se, pObjects$memory$colData[i0,], input, pObjects$coordinates)
+          p.out <- .make_colDataPlot(
+            se, pObjects$memory$colData[i0,], input, pObjects$coordinates, colormap)
           pObjects$commands[[plot.name]] <- p.out$cmd
           pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
@@ -496,7 +511,8 @@ iSEE <- function(
           force(rObjects[[.inputGeneExpr(.zoomUpdate, i0)]])
 
           # Creating the plot.
-          p.out <- .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input, pObjects$coordinates)
+          p.out <- .make_geneExprPlot(
+            se, pObjects$memory$geneExpr[i0,], input, pObjects$coordinates, colormap)
           pObjects$commands[[plot.name]] <- p.out$cmd
           pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot

@@ -6,7 +6,7 @@
 \usage{
 iSEE(se, redDimArgs = 5, colDataArgs = 5, geneExprArgs = 5,
   initialPanels = NULL, annot.orgdb = NULL, annot.keytype = "ENTREZID",
-  annot.keyfield = NULL)
+  annot.keyfield = NULL, colormap = ExperimentColorMap())
 }
 \arguments{
 \item{se}{A \linkS4class{SingleCellExperiment} object.}
@@ -85,6 +85,18 @@ sce <- normalize(sce)
 sce <- runPCA(sce)
 sce <- runTSNE(sce)
 sce
+
+qc_colors <- c("forestgreen", "firebrick1")
+names(qc_colors) <- c("Y", "N")
+
+ecm <- new("ExperimentColorMap",
+   assays = list(
+       counts = viridis::viridis(10)
+   ),
+   colData = list(
+       passes_qc_checks_s = qc_colors
+   )
+)
 
 # launch the app itself
 if (interactive()) { iSEE(sce) }

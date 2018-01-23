@@ -138,7 +138,7 @@ file.copy(from = temp_file, to = newLocation)
 
 A: This is not necessary, as one can click anywhere in the code editor and
 instantly select all the code using a keyboard shortcut that depends on
-your operating systen.
+your operating system.
 
 **Q: When brushing with a transparency effect,
 it seems that data points in the receiving plot are not subsetted correctly.**
@@ -147,13 +147,9 @@ A: The subsetting is correct. What you see is an artefact of overplotting:
 in areas excessively dense in points, transparency ceases to be an effective
 visual effect.
 
-**Q: I cannot click the Up/Down arrow buttons in the left sidebar.**
-
-A: Only the left half of those buttons is reactive to clicks.
-
 # Session info
 
-```{r sessionInfo, echo=FALSE}
+```{r sessionInfo}
 sessionInfo()
 ```
 

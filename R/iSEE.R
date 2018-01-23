@@ -22,6 +22,9 @@
 #' @param annot.keyfield A string specifying the field of \code{rowData(se)}
 #' containing the keys of type \code{annot.keytype}. If \code{NULL}, the
 #' row names of \code{se} are used as the keys.
+#' @param colormap An \linkS4class{ExperimentColorMap} object that defines
+#' custom color maps to apply to individual \code{assays}, \code{colData},
+#' and \code{rowData} covariates.
 #'
 #' @details Users can pass default parameters via DataFrame objects in
 #' \code{redDim.args} and \code{geneExpr.args}. Each object can contain
@@ -65,8 +68,25 @@
 #' sce <- runTSNE(sce)
 #' sce
 #'
+#' qc_colors <- c("forestgreen", "firebrick1")
+#' names(qc_colors) <- c("Y", "N")
+#'
+#' driver_colors <- RColorBrewer::brewer.pal(3, "Set2")
+#' names(driver_colors) <- unique(sce$driver_1_s)
+#'
+#' ecm <- new("ExperimentColorMap",
+#'    assays = list(
+#'        counts = viridis::viridis(10),
+#'        cufflinks_fpkm = c("black","brown","red","orange","yellow")
+#'    ),
+#'    colData = list(
+#'        passes_qc_checks_s = qc_colors,
+#'        driver_1_s = driver_colors
+#'    )
+#')
+#'
 #' # launch the app itself
-#' if (interactive()) { iSEE(sce) }
+#' if (interactive()) { iSEE(sce, colormap = ecm) }
 iSEE <- function(
   se,
   redDimArgs=NULL,
@@ -80,7 +100,8 @@ iSEE <- function(
   initialPanels=NULL,
   annot.orgdb=NULL,
   annot.keytype="ENTREZID",
-  annot.keyfield=NULL
+  annot.keyfield=NULL,
+  colormap=ExperimentColorMap()
 ) {
   # Save the original name of the input object for the command to rename it
   # in the tracker
@@ -192,21 +213,27 @@ iSEE <- function(
     dashboardHeader(
       title = paste0("iSEE - interactive SingleCell/Summarized Experiment Explorer v",
                      packageVersion("iSEE")),
-      titleWidth = 900
+      titleWidth = 800,
+      dropdownMenu(type = "tasks",
+                   icon = icon("question-circle"),
+                   badgeStatus = NULL,
+                   headerText = "Want a guided tour?",
+                   notificationItem(
+                     text = actionButton("tour_firststeps", "Click me for a quick tour", icon("info"),
+                                         style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"),
+                     icon = icon(""), # tricking it to not have additional icon
+                     status = "primary"))
     ), # end of dashboardHeader
     dashboardSidebar(
       # general app settings
-      menuItem("App settings",icon = icon("cogs")),
+      # menuItem("App settings",icon = icon("cogs")),
       # merely oriented to export the plots - if we want to support that capability
-      menuItem("Plot export settings", icon = icon("paint-brush")),
+      # menuItem("Plot export settings", icon = icon("paint-brush")),
       # quick viewer could display which relevant slots are already populated?
-      menuItem("Quick viewer", icon = icon("flash")),
+      # menuItem("Quick viewer", icon = icon("flash")),
       # this will cover the part for the first tour of the app
-      menuItem("First steps help", icon = icon("question-circle"),
-               actionButton("tour_firststeps", "Click me for a quick tour", icon("info"),
-                            style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4")
-
-      ),
+      # menuItem("First steps help", icon = icon("question-circle")
+      # ),
       actionButton(paste0("redDim", .organizationNew), "New reduced dimension plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("colData", .organizationNew), "New column data plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("geneExpr", .organizationNew), "New gene expression plot", class = "btn btn-primary",icon = icon("plus")),
@@ -391,7 +418,7 @@ iSEE <- function(
           # Brush on/off observers.
           observeEvent(input[[paste0(mode0, .brushActive, i0)]], {
             current <- input[[paste0(mode0, .brushActive, i0)]]
-            reference <- pObjects$memory[[mode0]][[.brushActive]][i0] 
+            reference <- pObjects$memory[[mode0]][[.brushActive]][i0]
             if (!identical(current, reference)) {
               rObjects$rebrushed <- rObjects$rebrushed + 1L
               pObjects$memory[[mode0]][[.brushActive]][i0] <- current
@@ -407,7 +434,7 @@ iSEE <- function(
                new_coords <- NULL
              }
              pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, new_coords)
-             rObjects[[paste0(mode0, .zoomUpdate, i0)]] <- rObjects[[paste0(mode0, .zoomUpdate, i0)]] + 1L 
+             rObjects[[paste0(mode0, .zoomUpdate, i0)]] <- rObjects[[paste0(mode0, .zoomUpdate, i0)]] + 1L
           })
         })
       }
@@ -439,7 +466,8 @@ iSEE <- function(
           force(rObjects[[.inputRedDim(.zoomUpdate, i0)]])
 
           # Creating the plot, with saved coordinates.
-          p.out <- .make_redDimPlot(se, pObjects$memory$redDim[i0,], input, pObjects$coordinates)
+          p.out <- .make_redDimPlot(
+            se, pObjects$memory$redDim[i0,], input, pObjects$coordinates, colormap)
           pObjects$commands[[plot.name]] <- p.out$cmd
           pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
@@ -469,7 +497,8 @@ iSEE <- function(
           force(rObjects[[.inputColData(.zoomUpdate, i0)]])
 
           # Creating the plot, with saved coordinates.
-          p.out <- .make_colDataPlot(se, pObjects$memory$colData[i0,], input, pObjects$coordinates)
+          p.out <- .make_colDataPlot(
+            se, pObjects$memory$colData[i0,], input, pObjects$coordinates, colormap)
           pObjects$commands[[plot.name]] <- p.out$cmd
           pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
@@ -500,7 +529,8 @@ iSEE <- function(
           force(rObjects[[.inputGeneExpr(.zoomUpdate, i0)]])
 
           # Creating the plot.
-          p.out <- .make_geneExprPlot(se, pObjects$memory$geneExpr[i0,], input, pObjects$coordinates)
+          p.out <- .make_geneExprPlot(
+            se, pObjects$memory$geneExpr[i0,], input, pObjects$coordinates, colormap)
           pObjects$commands[[plot.name]] <- p.out$cmd
           pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot

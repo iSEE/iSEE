@@ -33,7 +33,7 @@ Imports:
     AnnotationDbi,
     DT,
     colourpicker,
-    clipr,
+    RColorBrewer,
     shinyAce
 Suggests:
     testthat,
@@ -43,7 +43,8 @@ Suggests:
     scRNAseq,
     scater,
     Rtsne,
-    irlba
+    irlba,
+    viridis
 Enhances:
     ExperimentHub
 URL: https://github.com/csoneson/SEE

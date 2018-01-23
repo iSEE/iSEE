@@ -4,10 +4,11 @@
 \alias{iSEE}
 \title{iSEE: interactive SingleCell/Summarized Experiment Explorer}
 \usage{
-iSEE(se, redDimArgs = 5, colDataArgs = 5, geneExprArgs = 5,
-  geneStatArgs = 5, redDimMax = 5, colDataMax = 5, geneExprMax = 5,
+iSEE(se, redDimArgs = NULL, colDataArgs = NULL, geneExprArgs = NULL,
+  geneStatArgs = NULL, redDimMax = 5, colDataMax = 5, geneExprMax = 5,
   geneStatMax = 5, initialPanels = NULL, annot.orgdb = NULL,
-  annot.keytype = "ENTREZID", annot.keyfield = NULL)
+  annot.keytype = "ENTREZID", annot.keyfield = NULL,
+  colormap = ExperimentColorMap())
 }
 \arguments{
 \item{se}{A \linkS4class{SingleCellExperiment} object.}
@@ -41,6 +42,10 @@ Entrez identifiers can be retrieved.}
 \item{annot.keyfield}{A string specifying the field of \code{rowData(se)}
 containing the keys of type \code{annot.keytype}. If \code{NULL}, the
 row names of \code{se} are used as the keys.}
+
+\item{colormap}{An \linkS4class{ExperimentColorMap} object that defines
+custom color maps to apply to individual \code{assays}, \code{colData},
+and \code{rowData} covariates.}
 }
 \value{
 A Shiny App is launched for interactive data exploration of the
@@ -87,6 +92,23 @@ sce <- runPCA(sce)
 sce <- runTSNE(sce)
 sce
 
+qc_colors <- c("forestgreen", "firebrick1")
+names(qc_colors) <- c("Y", "N")
+
+driver_colors <- RColorBrewer::brewer.pal(3, "Set2")
+names(driver_colors) <- unique(sce$driver_1_s)
+
+ecm <- new("ExperimentColorMap",
+   assays = list(
+       counts = viridis::viridis(10),
+       cufflinks_fpkm = c("black","brown","red","orange","yellow")
+   ),
+   colData = list(
+       passes_qc_checks_s = qc_colors,
+       driver_1_s = driver_colors
+   )
+)
+
 # launch the app itself
-if (interactive()) { iSEE(sce) }
+if (interactive()) { iSEE(sce, colormap = ecm) }
 }

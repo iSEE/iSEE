@@ -1,5 +1,5 @@
 element;intro
-#Welcome;Welcome to the tour for iSEE - the interactive SummarizedExperiment Explorer. Click on the 'next' button to proceed in your tour
+#Welcome;Welcome to the interactive tour for iSEE - the interactive SummarizedExperiment Explorer. You will be showed around the different components of iSEE and learn the basic usage mechanisms by doing - the highlighted elements will be responding to the user's actions, while the rest of the UI will be shaded. Click on the 'next' button to proceed in your tour
 #allpanels;The iSEE package delivers a Shiny app that allows you to generate a series of plots useful in exploring SummarizedExperiment or SingleCellExperiment objects. These can be conveniently linked to each other by brushing (i.e. clicking and holding the mouse over a plot area), and with a nice touch of reproducibility, you can obtain the full code to re-create the plots at the end of your live session
 #redDimPlot1;For example, you can obtain a reduced dimension plot (e.g. PCA, T-SNE) to efficiently explore the high-dimensional dataset under inspection
 #colDataPlot1;Also, you can have a plot where the variable of interest is one of the experimental covariates (here called a column data plot)
@@ -19,12 +19,15 @@ element;intro
 #redDimBrushPanelOpen1;... or also for defining the behavior when using the brushing to interact and link two different plots together. Some details are provided in the next step, please click first on the header of the collapsible panel
 #redDimBrushOn1;To turn on the brushing, please click on the highlighted checkbox. This will allow you to click and hold the mouse over a plot area to select a number of samples (or cells)
 #redDimZoomOn1;A zooming functionality is possible by first brushing then double-clicking on the brushed area
+#redDimPlot1;You can try it out here: click and hold to select an area, then release. Now, double click inside the marked area to zoom in. To zoom out to the original plot, double-click on the plot. Brushing will be used not only for zooming, but also for linking plots together. Click on 'next' to see more on this
 #redDimBrushPanelOpen1;What happens to the linked plots can controlled by the other parameters in this box. In the next steps we describe a way to check the expression of a gene of interest in a subpopulation of cells
 #redDimPlot1;To try out the brushing, please make sure you did activate 'Transmit brush', and select an area in this plot which contains a subset of cells
 #geneExprBrushPanelOpen1;... and then open the collapsible box for the gene expression plot
 #geneExprBrushByPlot1;Select the corresponding incoming brushing option, 'reduced dimension plot 1' in our case
 #geneExprBrushEffect1;The effect of the brushing can operate in plotting only the subset of cells ('Restrict'), coloring them ('Color'), or applying a transparency effect ('Transparent')
-#geneExprPlot1;You can appreciate how this operation changed the corresponding plot in the main panel
+#geneExprPlot1;You can appreciate how this operation changed the corresponding plot in the main panel. You can link this plot to other ones, if you activate the transmission of the brush...
+#geneExprBrushOn1; ... by clicking on this checkbox
+#geneExprPlot1;Then again, you can click and hold to select the area - nothing will happen yet, because you still did not select which other plot should receive the brush information. One important thing to keep in mind when brushing violin plots is that points will be selected only if the brushed area includes the center of the x-tick a.k.a. the center of the violin plot - the current implementation is robustly defined with this way of selecting points 
 #getcode_all;Once you are done with your iSEE live session, you might want to reproduce exactly the plots you generated. This can be done by clicking on this button
 #acereport_r;... which opens a shinyAce-based text editor, where the code is formatted, editable, and with some nice syntax highlighting. You can copy the code to the clipboard by selecting the text (please include the initial lines and the sessionInfo commands for best tracking of your environment), and store it in your analysis report/script
 #Thanks;Thank you for taking the tour of iSEE!

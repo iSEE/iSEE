@@ -15,7 +15,8 @@
 #' brushedPoints observe h4 validate checkboxInput conditionalPanel
 #' renderPrint singleton showModal modalDialog
 #' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
-#' dashboardSidebar menuItem tabBox valueBox valueBoxOutput
+#' dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu
+#' notificationItem
 #' @importFrom utils packageVersion read.delim
 #' @importFrom ggplot2 ggplot geom_point labs theme_void aes_string geom_violin
 #'   theme_bw facet_wrap ylab aes theme scale_x_continuous scale_y_continuous
@@ -27,7 +28,8 @@
 #' @importFrom rentrez entrez_summary
 #' @importFrom colourpicker colourInput
 #' @importFrom shinyAce aceEditor
-#'
+#' @importFrom methods new slot
+#' @importFrom RColorBrewer brewer.pal
 #' @author Aaron Lun \email{alun@@wehi.edu.au}
 #' @author Charlotte Soneson \email{charlotte.soneson@@uzh.ch}
 #' @author Federico Marini \email{marinif@@uni-mainz.de}

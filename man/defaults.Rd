@@ -20,8 +20,7 @@ colDataPlotDefaults(se, max.plots)
 plots of the corresponding type that can be added to the interface.}
 }
 \value{
-A DataFrame containing default settings for various 
-parameters of reduced dimension or gene expression plots.
+A DataFrame containing default settings for various parameters of reduced dimension or gene expression plots.
 }
 \description{
 Create default settings for various plots in the iSEE interface.
@@ -113,6 +112,9 @@ Defaults to 0.1.}
 \describe{
 \item{\code{PlotPanelOpen}:}{Logical, should the plot parameter panel be open upon initialization?
 Defaults to \code{FALSE}.}
+\item{\code{ZoomOn}:}{Logical, should zooming (via brushing and double-clicking) be turned on?}
+\item{\code{ZoomData}:}{A numeric vector of length 4, containing values with names \cpde{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"}.
+These define the zoom window on the x- and y-axes.}
 }
 }
 

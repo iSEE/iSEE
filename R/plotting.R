@@ -350,12 +350,13 @@ plot.data$Y <- tmp;")
   }
 
   # Figuring out the scatter. This is done ahead of time to guarantee the
-  # same results regardless of the subset used for brushing.
+  # same results regardless of the subset used for brushing. Note adjust=1
+  # for consistency with geom_violin (differs from geom_quasirandom default).
   setup_cmds <- list()
   setup_cmds[["na.rm"]] <- "plot.data <- subset(plot.data, !is.na(X) & !is.na(Y));"
   setup_cmds[["seed"]] <- "set.seed(100);"
   setup_cmds[["calcX"]] <- "plot.data$jitteredX <- vipor::offsetX(plot.data$Y,
-    x=plot.data$X, width=0.4, varwidth=FALSE, adjust=0.5,
+    x=plot.data$X, width=0.4, varwidth=FALSE, adjust=1,
     method='quasirandom', nbins=NULL) + as.integer(plot.data$X);"
 
   # Implementing the brushing effect.

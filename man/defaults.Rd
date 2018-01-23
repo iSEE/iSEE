@@ -5,26 +5,28 @@
 \alias{redDimPlotDefaults}
 \alias{geneExprPlotDefaults}
 \alias{colDataPlotDefaults}
-\title{Plot parameter defaults}
+\alias{geneStatTableDefaults}
+\title{Parameter defaults}
 \usage{
-redDimPlotDefaults(se, max.plots)
+redDimPlotDefaults(se, number)
 
-geneExprPlotDefaults(se, max.plots)
+geneExprPlotDefaults(se, number)
 
-colDataPlotDefaults(se, max.plots)
+colDataPlotDefaults(se, number)
+
+geneStatTableDefaults(se, number)
 }
 \arguments{
 \item{se}{A SingleCellExperiment object.}
 
-\item{max.plots}{An integer scalar, specifying the maximum number of 
-plots of the corresponding type that can be added to the interface.}
+\item{number}{An integer scalar, specifying the maximum number of 
+panels of the corresponding type that can be added to the interface.}
 }
 \value{
-A DataFrame containing default settings for various 
-parameters of reduced dimension or gene expression plots.
+A DataFrame containing default settings for various parameters of each panel.
 }
 \description{
-Create default settings for various plots in the iSEE interface.
+Create default settings for various panels in the iSEE interface.
 }
 \section{Reduced dimension plot parameters}{
 
@@ -108,11 +110,26 @@ Defaults to 0.1.}
 }
 }
 
-\section{Other parameters}{
+\section{Other plot parameters}{
 
 \describe{
 \item{\code{PlotPanelOpen}:}{Logical, should the plot parameter panel be open upon initialization?
 Defaults to \code{FALSE}.}
+\item{\code{ZoomOn}:}{Logical, should zooming (via brushing and double-clicking) be turned on?
+Defaults to \code{TRUE}.}
+\item{\code{ZoomData}:}{A list containing numeric vectors of length 4, containing values with names \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"}.
+These define the zoom window on the x- and y-axes.
+Each element of the list defaults to \code{NULL}, i.e., no zooming is performed.}
+}
+}
+
+\section{Gene statistic table parameters}{
+
+\describe{
+\item{\code{Selected}:}{Integer, containing the index of the row to be initially selected.
+Defaults to the first row, i.e., 1.}
+\item{\code{Search}:}{Character, containing the initial value of the search field.
+Defaults to an empty string.}
 }
 }
 
@@ -128,7 +145,8 @@ sce <- normalize(sce)
 sce <- runPCA(sce)
 sce
 
-redDimPlotDefaults(sce, max.plots=5)
-geneExprPlotDefaults(sce, max.plots=5)
-colDataPlotDefaults(sce, max.plots=5)
+redDimPlotDefaults(sce, number=5)
+geneExprPlotDefaults(sce, number=5)
+colDataPlotDefaults(sce, number=5)
+geneStatTableDefaults(sce, number=5)
 }

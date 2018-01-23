@@ -4,18 +4,14 @@
 #' Interactive visualization of single-cell data using a Shiny interface.
 #'
 #' @param se A \linkS4class{SingleCellExperiment} object.
-#' @param redDimArgs An integer scalar specifying the maximum number of
-#' reduced dimension plots in the interface. Alternatively, a DataFrame
-#' similar to that produced by \code{\link{redDimPlotDefaults}}, specifying
-#' initial parameters for the plots.
-#' @param colDataArgs An integer scalar specifying the maximum number of
-#' column data plots in the interface. Alternatively, a DataFrame
-#' similar to that produced by \code{\link{colDataPlotDefaults}}, specifying
-#' initial parameters for the plots.
-#' @param geneExprArgs An integer scalar specifying the maximum number of
-#' gene expression plots in the interface. Alternatively, a DataFrame
-#' similar to that produced by \code{\link{geneExprPlotDefaults}}, specifying
-#' initial parameters for the plots.
+#' @param redDimArgs A DataFrame similar to that produced by \code{\link{redDimPlotDefaults}}, specifying initial parameters for the plots.
+#' @param colDataArgs A DataFrame similar to that produced by \code{\link{colDataPlotDefaults}}, specifying initial parameters for the plots.
+#' @param geneExprArgs A DataFrame similar to that produced by \code{\link{geneExprPlotDefaults}}, specifying initial parameters for the plots.
+#' @param geneStatArgs A DataFrame similar to that produced by \code{\link{geneStatTableDefaults}}, specifying initial parameters for the plots.
+#' @param redDimMax An integer scalar specifying the maximum number of reduced dimension plots in the interface. 
+#' @param colDataMax An integer scalar specifying the maximum number of column data plots in the interface. 
+#' @param geneExprMax An integer scalar specifying the maximum number of gene expression plots in the interface. 
+#' @param geneStatMax An integer scalar specifying the maximum number of gene statistic tables in the interface. 
 #' @param initialPanels A DataFrame specifying which panels should be created
 #' at initialization. This should contain a \code{Name} character field and
 #' a \code{Width} integer field, see Details.
@@ -32,9 +28,8 @@
 #' some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
 #' Any missing fields will be filled in with the defaults.
 #'
-#' The number of maximum plots for each type of plot is implicitly inferred
-#' from the number of rows of the corresponding DataFrame in \code{*Args},
-#' if an integer scalar was not supplied. Users can specify any number of
+#' The number of maximum plots for each type of plot is set to the larger
+#' of \code{*Max} and \code{nrow(*Args)}. Users can specify any number of
 #' maximum plots, though increasing the number will increase the time
 #' required to render the interface.
 #'
@@ -77,6 +72,11 @@ iSEE <- function(
   redDimArgs=5,
   colDataArgs=5,
   geneExprArgs=5,
+  geneStatArgs=5,
+  redDimMax=5,
+  colDataMax=5,
+  geneExprMax=5,
+  geneStatMax=5,
   initialPanels=NULL,
   annot.orgdb=NULL,
   annot.keytype="ENTREZID",
@@ -88,7 +88,6 @@ iSEE <- function(
   stopifnot(inherits(se, "SingleCellExperiment"))
 
   # Collecting constants for populating the UI.
-  cell.data <- colData(se)
   covariates <- colnames(cell.data)
   all.assays <- names(assays(se))
   gene.names <- rownames(se)
@@ -103,34 +102,41 @@ iSEE <- function(
     gene.data$Present <- TRUE
   }
 
+  # Defining the maximum number of plots.
+  reddim_max_plots <- max(nrow(redDimArgs), redDimMax)
+  coldata_max_plots <- max(nrow(colDataArgs), colDataMax)
+  geneexpr_max_plots <- max(nrow(geneExprArgs), geneExprMax)
+  genestat_max_tabs <- max(nrow(geneStatArgs), geneStatMax)
+
   # Setting up parameters for each panel.
   memory <- list()
   if (is.numeric(redDimArgs)) {
-    memory$redDim <- redDimPlotDefaults(se, redDimArgs)
+    memory$redDim <- redDimPlotDefaults(se, reddim_max_plots)
   } else {
-    memory$redDim <- redDimPlotDefaults(se, nrow(redDimArgs))
+    memory$redDim <- redDimPlotDefaults(se, reddim_max_plots)
     memory$redDim <- .override_defaults(memory$redDim, redDimArgs)
   }
-  reddim_max_plots <- nrow(memory$redDim)
 
   if (is.numeric(geneExprArgs)) {
-    memory$geneExpr <- geneExprPlotDefaults(se, geneExprArgs)
+    memory$geneExpr <- geneExprPlotDefaults(se, geneexpr_max_plots)
   } else {
-    memory$geneExpr <- geneExprPlotDefaults(se, nrow(geneExprArgs))
+    memory$geneExpr <- geneExprPlotDefaults(se, geneexpr_max_plots)
     memory$geneExpr <- .override_defaults(memory$geneExpr, geneExprArgs)
   }
-  geneexpr_max_plots <- nrow(memory$geneExpr)
 
   if (is.numeric(colDataArgs)) {
-    memory$colData <- colDataPlotDefaults(se, colDataArgs)
+    memory$colData <- colDataPlotDefaults(se, coldata_max_plots)
   } else {
-    memory$colData <- colDataPlotDefaults(se, nrow(colDataArgs))
+    memory$colData <- colDataPlotDefaults(se, coldata_max_plots)
     memory$colData <- .override_defaults(memory$colData, colDataArgs)
   }
-  coldata_max_plots <- nrow(memory$colData)
 
-  genestat_max_tab <- 5
-  memory$geneStat <- DataFrame(Selected=rep(1, genestat_max_tab), Search="")
+  if (is.numeric(geneStatArgs)) {
+     memory$geneStat <- geneStatTableDefaults(se, genestat_max_tabs)
+  } else {
+     memory$geneStat <- geneStatTableDefaults(se, genestat_max_tabs)
+     memory$geneStat <- .override_defaults(memory$geneStat, geneStatArgs)
+  }
 
   # Defining the initial elements to be plotted.
   if (is.null(initialPanels)) {

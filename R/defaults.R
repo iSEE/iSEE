@@ -1,14 +1,16 @@
 #' @name defaults 
 #' @aliases redDimPlotDefaults
 #' @aliases geneExprPlotDefaults
+#' @aliases colDataPlotDefaults 
+#' @aliases geneStatTableDefaults
 #'
-#' @title Plot parameter defaults 
+#' @title Parameter defaults 
 #'
-#' @description Create default settings for various plots in the iSEE interface.
+#' @description Create default settings for various panels in the iSEE interface.
 #'
 #' @param se A SingleCellExperiment object.
-#' @param max.plots An integer scalar, specifying the maximum number of 
-#' plots of the corresponding type that can be added to the interface.
+#' @param number An integer scalar, specifying the maximum number of 
+#' panels of the corresponding type that can be added to the interface.
 #'
 #' @section Reduced dimension plot parameters:
 #' \describe{
@@ -81,15 +83,27 @@
 #' This should lie in [0, 1], where 0 is fully transparent and 1 is fully opaque. 
 #' Defaults to 0.1.}
 #' }
-#'
-#' @section Other parameters:
+#' 
+#' @section Other plot parameters:
 #' \describe{
 #' \item{\code{PlotPanelOpen}:}{Logical, should the plot parameter panel be open upon initialization?
 #' Defaults to \code{FALSE}.}
+#' \item{\code{ZoomOn}:}{Logical, should zooming (via brushing and double-clicking) be turned on?
+#' Defaults to \code{TRUE}.}
+#' \item{\code{ZoomData}:}{A list containing numeric vectors of length 4, containing values with names \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"}.
+#' These define the zoom window on the x- and y-axes.
+#' Each element of the list defaults to \code{NULL}, i.e., no zooming is performed.}
+#' }
+#' 
+#' @section Gene statistic table parameters:
+#' \describe{
+#' \item{\code{Selected}:}{Integer, containing the index of the row to be initially selected.
+#' Defaults to the first row, i.e., 1.}
+#' \item{\code{Search}:}{Character, containing the initial value of the search field.
+#' Defaults to an empty string.}
 #' }
 #'
-#' @return A DataFrame containing default settings for various 
-#' parameters of reduced dimension or gene expression plots.
+#' @return A DataFrame containing default settings for various parameters of each panel.
 #'
 #' @export
 #'
@@ -105,10 +119,11 @@
 #' sce <- runPCA(sce)
 #' sce
 #'
-#' redDimPlotDefaults(sce, max.plots=5)
-#' geneExprPlotDefaults(sce, max.plots=5)
-#' colDataPlotDefaults(sce, max.plots=5)
-redDimPlotDefaults <- function(se, max.plots) {
+#' redDimPlotDefaults(sce, number=5)
+#' geneExprPlotDefaults(sce, number=5)
+#' colDataPlotDefaults(sce, number=5)
+#' geneStatTableDefaults(sce, number=5)
+redDimPlotDefaults <- function(se, number) {
     all.assays <- assayNames(se)
     if ("logcounts" %in% all.assays) {
         def.assay <- "logcounts"
@@ -116,7 +131,7 @@ redDimPlotDefaults <- function(se, max.plots) {
         def.assay <- all.assays[1]
     }
 
-    out <- DataFrame(matrix(0, max.plots, 0))
+    out <- new("DataFrame", nrows=as.integer(number))
     out[[.redDimType]] <- reducedDimNames(se)[1]
     out[[.redDimXAxis]] <- 1L
     out[[.redDimYAxis]] <- 2L
@@ -127,7 +142,7 @@ redDimPlotDefaults <- function(se, max.plots) {
 
 #' @rdname defaults 
 #' @export
-geneExprPlotDefaults <- function(se, max.plots) {
+geneExprPlotDefaults <- function(se, number) {
     all.assays <- assayNames(se)
     if ("logcounts" %in% all.assays) {
         def.assay <- "logcounts"
@@ -136,7 +151,7 @@ geneExprPlotDefaults <- function(se, max.plots) {
     }
     covariates <- colnames(colData(se))
 
-    out <- DataFrame(matrix(0, max.plots, 0))
+    out <- new("DataFrame", nrows=as.integer(number))
     out[[.geneExprAssay]] <- def.assay
     out[[.geneExprXAxis]] <- .geneExprXAxisNothingTitle
     out[[.geneExprXAxisColData]] <- covariates[1] 
@@ -152,7 +167,7 @@ geneExprPlotDefaults <- function(se, max.plots) {
 
 #' @rdname defaults 
 #' @export
-colDataPlotDefaults <- function(se, max.plots) {
+colDataPlotDefaults <- function(se, number) {
     all.assays <- assayNames(se)
     if ("logcounts" %in% all.assays) {
         def.assay <- "logcounts"
@@ -161,13 +176,19 @@ colDataPlotDefaults <- function(se, max.plots) {
     }
     covariates <- colnames(colData(se))
 
-    out <- DataFrame(matrix(0, max.plots, 0))
+    out <- new("DataFrame", nrows=as.integer(number))
     out[[.colDataYAxis]] <- covariates[1]
     out[[.colDataXAxis]] <- .colDataXAxisNothingTitle
     out[[.colDataXAxisColData]] <- ifelse(length(covariates)==1L, covariates[1], covariates[2])
 
     out <- .add_general_parameters(out, covariates[1], def.assay)
     return(out)
+}
+
+#' @rdname defaults
+#' @export
+geneStatTableDefaults <- function(se, number) {
+    DataFrame(Selected=rep(1L, number), Search=character(number))
 }
 
 .override_defaults <- function(def, usr) 

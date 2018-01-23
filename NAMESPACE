@@ -2,6 +2,7 @@
 
 export(colDataPlotDefaults)
 export(geneExprPlotDefaults)
+export(geneStatTableDefaults)
 export(iSEE)
 export(redDimPlotDefaults)
 import(SingleCellExperiment)

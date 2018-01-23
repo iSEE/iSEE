@@ -104,7 +104,7 @@ names(.all_labs_values) <- .all_aes_names
 # .make_geneExprPlot  ----
 ############################################
 
-.make_geneExprPlot <- function(se, param_choices, input, all.coordinates, color_map, color_name)
+.make_geneExprPlot <- function(se, param_choices, input, all.coordinates, color_map)
 # Makes a gene expression plot.
 {
   cmds <- list(

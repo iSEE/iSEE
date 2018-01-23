@@ -143,7 +143,8 @@
                                                  value=param_choices[[.geneExprXAxisGeneText]]))
                  )
         } else if (mode=="geneStat") {
-            obj <- list(dataTableOutput(paste0("geneStatTable", ID)))
+            obj <- list(dataTableOutput(.geneStatTable(ID)),
+                        uiOutput(.geneStatAnno(ID)))
         } else {
             stop(sprintf("'%s' is not a recognized panel mode"), mode)
         }

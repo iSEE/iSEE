@@ -90,16 +90,15 @@ iSEE <- function(
   # Collecting constants for populating the UI.
   covariates <- colnames(colData(se))
   all.assays <- names(assays(se))
-  gene.names <- rownames(se)
 
   red.dim.names <- reducedDimNames(se)
   red.dim.dims <- lapply(red.dim.names, FUN=function(x) ncol(reducedDim(se, x)))
   names(red.dim.dims) <- red.dim.names
 
-  gene.data <- as.data.frame(rowData(se))
-  rownames(gene.data) <- gene.names
-  if (ncol(gene.data)==0L){ # To give it DT::datatable something to play with.
-    gene.data$Present <- TRUE
+  gene_data <- as.data.frame(rowData(se))
+  rownames(gene_data) <- rownames(se) 
+  if (ncol(gene_data)==0L){ # To give it DT::datatable something to play with.
+    gene_data$Present <- TRUE
   }
 
   # Defining the maximum number of plots.
@@ -522,66 +521,34 @@ iSEE <- function(
             (rObjects$active_plots) # to trigger recreation when the number of plots is changed.
             chosen <- pObjects$memory$geneStat$Selected[i0]
             search <- pObjects$memory$geneStat$Search[i0]
-            datatable(gene.data, filter="top", rownames=TRUE,
+            datatable(gene_data, filter="top", rownames=TRUE,
                       options=list(search=list(search=search),
                                    scrollX=TRUE),
                       selection=list(mode="single", selected=chosen))
         })
 
+        # Updating memory for new search/selection parameters.
         observe({
             chosen <- input[[paste0("geneStatTable", i0, "_rows_selected")]]
             if (length(chosen)) {
                 pObjects$memory$geneStat$Selected[i0] <- chosen
             }
+        })
+
+        observe({
             search <- input[[paste0("geneStatTable", i0, "_search")]]
             if (length(search)) {
                 pObjects$memory$geneStat$Search[i0] <- search
             }
         })
+
+        # Updating the annotation box.
+        output[[.geneStatAnno(i0)]] <- renderUI({
+            .generate_annotation(annot.orgdb, annot.keytype, annot.keyfield, 
+                                 gene_data, input, i0)
+        }) 
       })
     }
-
-    output$geneStatInfoBox <- renderUI({
-      if (is.null(annot.orgdb)) {
-        return(HTML(""))
-      }
-
-      shiny::validate(
-        need(!is.null(input$geneStatTab_rows_selected),
-             "Select a gene from the table"
-        )
-      )
-
-      if (is.null(annot.keyfield)) {
-        selectedGene <- gene.names[input$geneStatTab_rows_selected]
-      } else {
-        selectedGene <- gene.data[input$geneStatTab_rows_selected,annot.keyfield]
-      }
-
-      if (annot.keytype!="ENTREZID") {
-        selgene_entrez <- mapIds(annot.orgdb, selectedGene, "ENTREZID", annot.keytype)
-      } else {
-        selgene_entrez <- selectedGene
-      }
-
-      fullinfo <- entrez_summary("gene", selgene_entrez)
-      link_pubmed <- paste0('<a href="http://www.ncbi.nlm.nih.gov/gene/?term=',
-                            selgene_entrez,
-                            '" target="_blank" >Click here to see more at NCBI</a>')
-
-      if(fullinfo$summary == "") {
-        return(HTML(paste0("<b>",fullinfo$name, "</b><br/><br/>",
-                           fullinfo$description,"<br/><br/>",
-                           link_pubmed
-        )))
-      } else {
-        return(HTML(paste0("<b>",fullinfo$name, "</b><br/><br/>",
-                           fullinfo$description, "<br/><br/>",
-                           fullinfo$summary, "<br/><br/>",
-                           link_pubmed
-        )))
-      }
-    }) # end of output[[plotname]]
 
   } # end of iSEE_server
 

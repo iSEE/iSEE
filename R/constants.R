@@ -81,6 +81,11 @@ ALLEXTRAS <- c(.colorByField, .colorByColData, .colorByGeneTable, .colorByGeneTa
 .plotParamPanelOpen <- "PlotPanelOpen"
 .plotParamPanelName <- "ParamPanel"
 
+# Gene statistic table parameters. ----
+.geneStatTable <- function(i) paste0("geneStatTable", i)
+.geneStatAnno <- function(i) paste0("geneStatAnno", i)
+.geneStatRows <- function(i) paste0(.geneStatTable(i), "_rows_selected")
+
 # Panel organization parameters. ----
 .organizationNew <- "MakeNew"
 .organizationUp <- "ShiftUp"

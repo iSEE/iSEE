@@ -102,7 +102,7 @@ setClass("ExperimentColorMap",
 #' assayColorMap(ecm, "logcounts") # viridis::magma(10)
 #' assayColorMap(ecm, "undefined") # default: viridis::viridis(10)
 #'
-#' colDataColorMap(ecm, "condition")
+#' colDataColorMap(ecm, "passes_qc_checks_s")
 #' colDataColorMap(ecm, "undefined")
 #'
 #' rowDataColorMap(ecm, "undefined")

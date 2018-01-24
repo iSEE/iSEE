@@ -134,7 +134,7 @@ Once you are done generating the plots, you can export the code that generated t
 
 This section explains more in detail the different parameters you can adjust when launching the `iSEE` app. This set refers to a local instance of `iSEE`.
 
-- `se` is a `SingleCellExperiment` object, the only mandatory parameter for launching `iSEE`
+- `se` is a `SingleCellExperiment` or `SummarizedExperiment` object, the only mandatory parameter for launching `iSEE`
 
 - `redDimArgs` is a `DataFrame` similar to that produced by the `redDimPlotDefaults` function, specifying initial parameters for the reduced dimension plots. Correspondingly, `colDataArgs` (e.g. created via `colDataPlotDefaults`) specifies the initial parameters for the column data plots, and `geneExprArgs` (via `geneExprPlotDefaults`) for the gene expression plots. `geneStatArgs` (a `DataFrame` structured as the output of  `geneStatTableDefaults`) specifies the initial parameters for the gene statistics tables
 - `redDimMax`, `colDataMax`, and `geneExprMax` are integer scalars specifying the maximum number of plots (respectively, reduced dimension, column data, and gene expression) in the main interface. `geneStatMax`, similarly, is an integer scalar specifying the maximum number of gene statistic tables in the interface
@@ -176,7 +176,7 @@ In the dashboard sidebar of `iSEE`, 4 buttons allow the creation of new plot ele
 
 To help the user in organizing the plots, a color coding reminds the plot type being moved/canceled []TODO[]
 
-A fundamental element in the sidebar is the `Extract the R code!` button (with the magic wand icon). By clicking on this, the user opens up a modal popup window, where an instance of a text editor (based on the `ShinyAce` package) contains the code snippet required to reproduce the entire plots, created in the live session. This can be typically used at the end of each exploration, to extract a reproducible snapshot of the commands, which can be furthermore edited, in order to finalize the plots (e.g. to get ready for publication). 
+A fundamental element in the sidebar is the `Extract the R code!` button (with the magic wand icon). By clicking on this, the user opens up a modal popup window, where an instance of a text editor (based on the `ShinyAce` package) contains the code snippet required to reproduce the entire plots, created in the live session. This is typically used at the end of each exploration, to extract a reproducible snapshot of the commands, which can be furthermore edited, in order to finalize the plots (e.g. to get ready for publication). 
 
 
 
@@ -197,7 +197,7 @@ This section contains a description of each plot and table type you can generate
 []screenshot plot + plot params[]
 You can obtain a reduced dimension plot (e.g. PCA, t-SNE) of your expression dataset to efficiently explore the high-dimensional dataset under inspection. The plotting parameters control the `redDim` slot to be displayed, as well as the two dimensions to plot against each other. 
 
-You can color your points (i.e. cells or samples) in different ways. Default is no color scheme (`None` in the radio button), but it is possible to use the value of any `Column data`, be it discrete or continuous. The plotting routine recognizes this, and adapts automatically the scale to use. Another possibility is to plot by expression value of a particular gene, either via the linked `Gene table`, or via the `Gene text` which is input in the text field. The selection via gene table is made possible by clicking on one row in the corresponding `datatable` element. Among the different choices for expression values, it is possible to select one of the `assays` in the provided `SingleCellExperiment`/`SummarizedExperiment`.  
+You can color your points (i.e. cells or samples) in different ways. Default is no color scheme (`None` in the radio button), but it is possible to use the value of any `Column data`, be it discrete or continuous. The plotting routine recognizes this, and adapts automatically the scale to use. Another possibility is to color by expression value of a particular gene, either via the linked `Gene table`, or via the `Gene text` which is input in the text field (this needs to be one of the row names in the `SingleCellExperiment`/`SummarizedExperiment` object). The selection via gene table is made possible by clicking on one row in the corresponding `datatable` element. Among the different choices for expression values, it is possible to select one of the `assays` in the provided `SingleCellExperiment`/`SummarizedExperiment`.  
 
 
 ## Column data plots
@@ -206,7 +206,7 @@ You can color your points (i.e. cells or samples) in different ways. Default is 
 
 You can also have a plot where the variable of interest (on the y-axis) is one of the experimental covariates (here called a column data plot). The x-axis can be chosen as `None` or also specify another experimental covariate. 
 
-According to the combination of variable types, the plot can assume different forms: a violin plot for a continuous covariate, grouped violins if this is split by some categorical factor, or also a scatter plot if both are continuous. A categorical variable is represented as squared-box plots, which can also extend to two dimensions in case of two categorical variables. In the categorical VS continuous case, again we see grouped violin plots (in every case, superimposed jittered points are also present).
+According to the combination of variable types, the plot can assume different forms: a violin plot for a continuous covariate, grouped violins if this is split by some categorical factor, or a scatter plot if both are continuous. A categorical variable is represented as squared-box plots, which can also extend to two dimensions in case of two categorical variables. In the categorical VS continuous case, again we see grouped violin plots (in every case, superimposed jittered points are also present).
 
 Again, the coloring options can be done by no grouping, column data (continuous and categorical), as well as expression values.
 
@@ -226,9 +226,9 @@ As in the other two plot types, the coloring options can be done by no grouping,
 
 []screenshot table?[]
 
-A gene statistics table can contain by default the values of the `rowData` slot for the `SingleCellExperiment`/`SummarizedExperiment` object. If none are specified, a column named `Present` is added and set to `TRUE` for all available genes, in order to guarantee the functionality of a `datatable`.
+A gene statistics table contains by default the values of the `rowData` slot for the `SingleCellExperiment`/`SummarizedExperiment` object. If none are specified, a column named `Present` is added and set to `TRUE` for all available genes, in order to guarantee the functionality of a `datatable`.
 
-Typically, these table can be used to handily connect to other plots, but also to retrieve on the fly (via the `rentrez` package, as well as linking to the NCBI database) some information on the selected gene, provided the `annot.orgdb`, `annot.keytype`, and `annot.keyfield` parameters are specified.
+Typically, these tables can be used to handily connect to other plots, but also to retrieve on the fly (via the `rentrez` package, as well as linking to the NCBI database) some information on the selected gene, provided the `annot.orgdb`, `annot.keytype`, and `annot.keyfield` parameters are specified.
 
 
 ## Brushing plots: linking one plot to another {#brushing}
@@ -256,8 +256,9 @@ The GitHub repository for `r Biocpkg("iSEE")` is https://github.com/csoneson/iSE
 
 # Use cases
 
-## Allen dataset
+## Use case I: Basic exploration of the Allen dataset
 
+In this section, we illustrate how `iSEE` can be used to explore the `allen` single-cell RNA-seq data set, which is available via the `scRNAseq` Bioconductor package and contains expression values for 379 cells from the mouse visual cortex [@Tasic2016]. We start by converting the provided `SummarizedExperiment` object to a `SingleCellExperiment` object and normalize the expression values. 
 
 ```{r allen-dataset,eval=FALSE}
 library(scRNAseq)
@@ -267,9 +268,19 @@ library(scater)
 sce <- as(allen, "SingleCellExperiment")
 counts(sce) <- assay(sce, "tophat_counts")
 sce <- normalize(sce)
+```
+
+Next, we apply Principal Components Analysis (PCA) and t-distributed Stochastic Neighbour Embedding (t-SNE) to generate two reduced dimension representations of the cells. The provided cell annotations for this data set are available in `colData(sce)`. Note that all calculations (dimension reduction, clustering, etc) must be performed *before* passing the object to `iSEE`.
+
+```{r allen-dataset-2,eval=FALSE}
 sce <- runPCA(sce)
 sce <- runTSNE(sce)
-sce
+head(colData(sce))
+```
+
+Finally, we set colour palettes to use in `iSEE` when colouring according to specific cell annotations or expression values. These values are stored in an object of the `ExperimentColorMap` class. 
+
+```{r allen-dataset-3,eval=FALSE}
 qc_colors <- c("forestgreen", "firebrick1")
 names(qc_colors) <- c("Y", "N")
 driver_colors <- RColorBrewer::brewer.pal(3, "Set2")
@@ -283,18 +294,29 @@ ecm <- new("ExperimentColorMap",
        passes_qc_checks_s = qc_colors,
        driver_1_s = driver_colors
    )
-# launch the app itself
-if (interactive()) { iSEE(sce, colormap = ecm) }
+)
 ```
 
+To begin the exploration, we launch the `iSEE` app with the `SingleCellExperiment` object and the colormap generated above.
 
+```{r allen-dataset-4,eval=FALSE}
+iSEE(sce, colormap = ecm)
+```
 
+By default, the app starts with a dashboard containing one reduced dimension plot, one column data plot, one gene expression plot and one gene statistics table (see Use case II for how to change this). By opening the collapsible panels named “Plotting parameters”, “Coloring parameters” and “Brushing parameters” under each plot we can see and change what is being displayed in the respective plots, and also how it is being displayed. 
 
+Let us start by exploring the reduced dimension plot. As can be seen from the “Plotting parameters” panel, this plot shows the first two principal components. Change `Type` to `(2) TSNE` to instead see the two-dimensional t-SNE representation. Next, open the “Coloring parameters” panel. By default, the points (cells) are not colored. By selecting `Column data` and choosing one of the variables in the dropdown menu that shows up, the cells can be colored by any of the provided annotations. Let’s choose `passes_qc_checks_s`, one of the annotations for which we defined a custom color map in the preparations above. Now, all cells that passed QC (`Y`) are colored forestgreen, while the ones that didn’t pass are colored firebrick. 
+
+Now let’s move on to the column data plot. Here, we see the distribution of the number of reads (`NREADS`) across the cells in the data set, as well as the individual values for each cell. Note that the location of the points along the x-axis is generated by the jittering, and does not encode any information (you can see this since `X-axis = None` in the Plotting parameters panel). We can also plot two cell annotation against each other, by setting `X-axis` to be `Column data` and choosing one of the variables in the drop down menu that pops up. For example, we can choose `NALIGNED` (the number of aligned reads), and we see that (as expected), there is a very strong association between the total number of reads and the number of aligned reads. 
+
+Finally, we will look at the gene expression plot. This plot displays the distribution of the expression values for a given gene, which has been specified by selecting the first row in the gene statistics table (this is seen in the “Plotting parameters” tab, since `Y-axis` is `Gene table`, and it is indicated that the `Y-axis gene linked to` is `Gene statistics table 1`. The values shown in the plots are taken from the `logcounts` assay of the provided `SingleCellExperiment`. We can modify this choice to any other assay that was available in the object (here, e.g., to `rsem_tpm`) to display other expression values. Note how the y-axis title keeps track of what is displayed in the plot. Again, note that all assays must be precalculated before the object is passed to `iSEE`. If we would like to show the expression of a particular gene of interest (say, `Znrf1`), we can either find and select it in the gene statistics table (use the search box just above the table), or we can set `Y-axis` to `Gene text`, and type `Znrf1` in the text box that shows up. As for the other plots, we can color in many ways. Let us color the points in the gene expression plot by the expression of another gene (say, `Grp`). To do this, open up the “Coloring parameters” panel, select `Gene text`, and paste `Grp` in the text box that shows up. Note that if you select `Gene table`, 
 
 
 -> link to youtube screencast where we do it?!
 
-## Using the `ExperimentHub`
+## Use case II: Changing the default start configuration
+
+## Use case III: Using the `ExperimentHub`
 
 Here we will use `iSEE` showcasing TCGA dataset
 

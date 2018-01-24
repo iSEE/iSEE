@@ -204,6 +204,10 @@ iSEE <- function(
       stop("specified keytype not in org.*.db object")
     }
   }
+  
+  # location of vignette, locally, as a fallback to no internet connection
+  vinfo <- tools::getVignetteInfo(package = "DESeq2")[1,]
+  vig_loc <- file.path(vinfo["Dir"],"doc","DESeq2.html")
 
   #######################################################################
   ## UI definition. ----
@@ -217,12 +221,31 @@ iSEE <- function(
       dropdownMenu(type = "tasks",
                    icon = icon("question-circle"),
                    badgeStatus = NULL,
-                   headerText = "Want a guided tour?",
+                   headerText = "Want some more info?",
                    notificationItem(
                      text = actionButton("tour_firststeps", "Click me for a quick tour", icon("info"),
                                          style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"),
                      icon = icon(""), # tricking it to not have additional icon
-                     status = "primary"))
+                     status = "primary"),
+                   notificationItem(
+                     text = actionButton('openVignette', label="Open the vignette (web)", 
+                                         icon = icon("book"), 
+                                         style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4",
+                                         onclick ="window.open('http://google.com', '_blank')"), # to be replaced with vignette url
+                     icon = icon(""), status = "primary"
+                   ),
+                   notificationItem(
+                     text = actionButton('browseVignette', label="Open the vignette (local)", 
+                                         icon = icon("life-ring"), 
+                                         style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4",
+                                         onclick = paste0("window.open('",
+                                                          vig_loc,
+                                                          "', '_blank')")
+                                         ),
+                     icon = icon(""), status = "primary"
+                   )
+                   
+      ) # end of dropdownMenu
     ), # end of dashboardHeader
     dashboardSidebar(
       # general app settings
@@ -302,6 +325,10 @@ iSEE <- function(
                   value = paste0((.track_it_all(rObjects, pObjects, se_name)),collapse="\n"),
                   height="600px")
         ))
+    })
+    
+    observeEvent(input$browseVignette, {
+      # browseVignettes("DESeq2") # this does not work, maybe add another open blank to the local location of the vignette?
     })
 
     output$codetext_modal <- renderPrint({

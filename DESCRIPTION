@@ -33,6 +33,7 @@ Imports:
     ggplot2,
     colourpicker,
     RColorBrewer,
+    igraph,
     vipor,
     rentrez,
     AnnotationDbi

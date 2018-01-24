@@ -285,6 +285,7 @@ iSEE <- function(
     pObjects$memory <- memory
     pObjects$coordinates <- list()
     pObjects$commands <- list()
+    pObjects$brush_parent <- list()
 
     # info boxes, to keep on top of the page  on the left side?
 
@@ -488,6 +489,7 @@ iSEE <- function(
           p.out <- .make_redDimPlot(
             se, pObjects$memory$redDim[i0,], input, pObjects$coordinates, colormap)
           pObjects$commands[[plot.name]] <- p.out$cmd
+          pObjects$brush_parent[[plot.name]] <- p.out$brush_parent
           pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
         })
@@ -519,6 +521,7 @@ iSEE <- function(
           p.out <- .make_colDataPlot(
             se, pObjects$memory$colData[i0,], input, pObjects$coordinates, colormap)
           pObjects$commands[[plot.name]] <- p.out$cmd
+          pObjects$brush_parent[[plot.name]] <- p.out$brush_parent
           pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
         })
@@ -551,6 +554,7 @@ iSEE <- function(
           p.out <- .make_geneExprPlot(
             se, pObjects$memory$geneExpr[i0,], input, pObjects$coordinates, colormap)
           pObjects$commands[[plot.name]] <- p.out$cmd
+          pObjects$brush_parent[[plot.name]] <- p.out$brush_parent
           pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
         })

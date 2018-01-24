@@ -1,9 +1,9 @@
-.track_it_all <- function(rObjects, pObjects, se_name) {
-
+.track_it_all <- function(rObjects, pObjects, se_name) 
+{
+  # Commands only reported for plots, not for the tables
   aobjs <- as.data.frame(rObjects$active_plots)
-
-  # cmds are kept only for the plots and not for the tables
   aobjs <- aobjs[aobjs$Type!="geneStat",]
+  aobjs <- aobjs[.get_reporting_order(aobjs, pObjects$brush_parent),]
 
   # storing to a text character vector
   tracked_code <- c(
@@ -45,3 +45,29 @@
 
   return(tracked_code)
 }
+
+.get_reporting_order <- function(active_plots, brush_parent) 
+# Reordering plots by whether or not they exhibited brushing.
+{
+  N <- nrow(active_plots)
+  edges <- isolates <- vector("list", N)
+  node_names <- character(N)
+  
+  for (i in seq_len(N)) { 
+    panel_type <- active_plots$Type[i]
+    panel_id <- active_plots$ID[i]
+    panel_name <- paste0(panel_type, "Plot", panel_id)
+    node_names[i] <- panel_name
+
+    parent <- brush_parent[[panel_name]]
+    if (!is.null(parent)) { 
+        edges[[i]] <- c(parent, panel_name)
+    } 
+  }
+
+  edges <- as.character(unlist(edges))
+  g <- make_graph(edges, isolates=setdiff(node_names, edges), directed=TRUE)
+  ordering <- topo_sort(g, "out")
+  match(names(ordering), node_names)
+}
+

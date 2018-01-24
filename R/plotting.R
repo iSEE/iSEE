@@ -43,13 +43,15 @@ names(.all_labs_values) <- .all_aes_names
   brush_set <- !is.null(brush_out$cmd)
 
   # Generating the plot.
-  .create_plot(
+  plot_out <- .create_plot(
     cmds, se, all.coordinates,
     param_choices=param_choices,
     x_lab=sprintf("Dimension %s", param_choices[[.redDimXAxis]]),
     y_lab=sprintf("Dimension %s", param_choices[[.redDimYAxis]]),
     color_FUN=color_FUN, color_label=color_label, brush_set=brush_set
   )
+  plot_out$brush_parent <- brush_out$parent
+  plot_out
 }
 
 ############################################
@@ -89,11 +91,13 @@ names(.all_labs_values) <- .all_aes_names
   brush_set <- !is.null(brush_out$cmd)
 
   # Generating the plot.
-  .create_plot(
+  plot_out <- .create_plot(
     cmds, se, all.coordinates,
     param_choices=param_choices, x_lab=x_lab, y_lab=y_lab,
     color_FUN=color_FUN, color_label=color_label, brush_set=brush_set
   )
+  plot_out$brush_parent <- brush_out$parent
+  plot_out
 }
 
 ############################################
@@ -171,11 +175,13 @@ names(.all_labs_values) <- .all_aes_names
   brush_set <- !is.null(brush_out$cmd)
 
   # Generating the plot.
-  .create_plot(
+  plot_out <- .create_plot(
     cmds, se, all.coordinates,
     param_choices=param_choices, x_lab=x_lab, y_lab=y_lab,
     color_FUN=color_FUN, color_label=color_label, brush_set=brush_set
   )
+  plot_out$brush_parent <- brush_out$parent
+  plot_out
 }
 
 ############################################
@@ -631,7 +637,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
 
 .process_brushby_choice <- function(param_choices, input) {
   brush_in <- param_choices[[.brushByPlot]]
-  output <- list(cmd=NULL)
+  output <- list(cmd=NULL, parent=NULL)
 
   if (brush_in != "") {
     brush_by <- .encode_panel_name(brush_in)
@@ -643,8 +649,10 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
         paste0(brush_by$Type, "Plot", brush_by$ID),
         brush_val$xmin, brush_val$xmax, brush_val$ymin, brush_val$ymax,
         brush_val$direction, brush_val$mapping$x, brush_val$mapping$y)
+
         cmd <- c(cmd, "plot.data$BrushBy <- rownames(plot.data) %in% rownames(brushedPts);")
         output$cmd <- paste(cmd, collapse="\n")
+        output$parent <- paste0(brush_by$Type, "Plot", brush_by$ID) 
     }
   }
 

@@ -122,21 +122,22 @@ iSEE <- function(
   geneexpr_max_plots <- max(nrow(geneExprArgs), geneExprMax)
   genestat_max_tabs <- max(nrow(geneStatArgs), geneStatMax)
 
-  if (length(reducedDims(se))==0L || ncol(se)==0L) {
+  feasibility <- .check_plot_feasibility(se)
+  if (!feasibility$redDim) { 
     reddim_max_plots <- 0L
     redDimArgs <- NULL
   } 
-  if (ncol(colData(se))==0L || ncol(se)==0L) {
+  if (!feasibility$colData) {
     coldata_max_plots <- 0L
     colDataArgs <- NULL
   }
-  if (nrow(se)==0L) {
-    genestat_max_tabs <- 0L
-    geneStatArgs <- NULL
-  }
-  if (nrow(se)==0L || ncol(se)==0L) {
+  if (!feasibility$geneExpr) {
     geneexpr_max_plots <- 0L
     geneExprArgs <- NULL
+  }
+  if (!feasibility$geneStat) {
+    genestat_max_tabs <- 0L
+    geneStatArgs <- NULL
   }
 
   # Setting up parameters for each panel.
@@ -276,6 +277,7 @@ iSEE <- function(
     ), # end of dashboardSidebar
 
     dashboardBody(
+      useShinyjs(), 
       introjsUI(),
       # must be included in UI
 
@@ -380,16 +382,27 @@ iSEE <- function(
         .panel_organization(rObjects$active_plots, pObjects$memory)
     })
 
+    output$newPlotButtons <- renderUI({
+        .new_plot_buttons(rObjects$active_plots, pObjects$memory)
+    })
+
+
     for (mode in c("redDim", "geneExpr", "colData", "geneStat")) {
         # Panel addition.
         local({
             mode0 <- mode
             observeEvent(input[[paste0(mode0, .organizationNew)]], {
-                all.active <- rObjects$active_plots
+                all_active <- rObjects$active_plots
                 all.memory <- pObjects$memory[[mode0]]
-                first.missing <- setdiff(seq_len(nrow(all.memory)), all.active$ID[all.active$Type==mode0])
+                first.missing <- setdiff(seq_len(nrow(all.memory)), all_active$ID[all_active$Type==mode0])
+
                 if (length(first.missing)) {
-                    rObjects$active_plots <- rbind(all.active, DataFrame(Type=mode0, ID=first.missing[1], Width=4))
+                    rObjects$active_plots <- rbind(all_active, DataFrame(Type=mode0, ID=first.missing[1], Width=4))
+
+                    # Disabling panel addition if we've reached the maximum.
+                    if (length(first.missing)==1L) {
+                      disable(paste0(mode0, .organizationNew))
+                    }
                 } else {
                     warning(sprintf("maximum number of plots reached for mode '%s'", mode0))
                 }
@@ -404,16 +417,22 @@ iSEE <- function(
 
                 # Panel removal.
                 observeEvent(input[[paste0(mode0, i0, .organizationDiscard)]], {
-                    all.active <- rObjects$active_plots
-                    index <- which(all.active$Type==mode0 & all.active$ID==i0)
+                    all_active <- rObjects$active_plots
+                    current_type <- all_active$Type==mode0
+                    index <- which(current_type & all_active$ID==i0)
                     rObjects$active_plots <- rObjects$active_plots[-index,]
+
+                    # Re-enabling panel addition if we're decreasing from the maximum.
+                    if (sum(current_type)==max_plots) {
+                      enable(paste0(mode0, .organizationNew))
+                    }
                }, ignoreInit=TRUE)
 
                 # Panel resizing.
                 observeEvent(input[[paste0(mode0, i0, .organizationWidth)]], {
-                    all.active <- rObjects$active_plots
-                    index <- which(all.active$Type==mode0 & all.active$ID==i0)
-                    cur.width <- all.active$Width[index]
+                    all_active <- rObjects$active_plots
+                    index <- which(all_active$Type==mode0 & all_active$ID==i0)
+                    cur.width <- all_active$Width[index]
                     new.width <- input[[paste0(mode0, i0, .organizationWidth)]]
                     if (!isTRUE(all.equal(new.width, cur.width))) {
                         rObjects$active_plots$Width[index] <- new.width
@@ -422,24 +441,24 @@ iSEE <- function(
 
                 # Panel shifting, up and down.
                 observeEvent(input[[paste0(mode0, i0, .organizationUp)]], {
-                    all.active <- rObjects$active_plots
-                    index <- which(all.active$Type==mode0 & all.active$ID==i0)
+                    all_active <- rObjects$active_plots
+                    index <- which(all_active$Type==mode0 & all_active$ID==i0)
                     if (index!=1L) {
-                        reindex <- seq_len(nrow(all.active))
+                        reindex <- seq_len(nrow(all_active))
                         reindex[index] <- reindex[index]-1L
                         reindex[index-1L] <- reindex[index-1L]+1L
-                        rObjects$active_plots <- all.active[reindex,]
+                        rObjects$active_plots <- all_active[reindex,]
                     }
                 }, ignoreInit=TRUE)
 
                 observeEvent(input[[paste0(mode0, i0, .organizationDown)]], {
-                    all.active <- rObjects$active_plots
-                    index <- which(all.active$Type==mode0 & all.active$ID==i0)
-                    if (index!=nrow(all.active)) {
-                        reindex <- seq_len(nrow(all.active))
+                    all_active <- rObjects$active_plots
+                    index <- which(all_active$Type==mode0 & all_active$ID==i0)
+                    if (index!=nrow(all_active)) {
+                        reindex <- seq_len(nrow(all_active))
                         reindex[index] <- reindex[index]+1L
                         reindex[index+1L] <- reindex[index+1L]-1L
-                        rObjects$active_plots <- all.active[reindex,]
+                        rObjects$active_plots <- all_active[reindex,]
                     }
                 }, ignoreInit=TRUE)
             })
@@ -653,4 +672,11 @@ iSEE <- function(
     return(memory)
 }
 
+.check_plot_feasibility <- function(se) {
+  return(list(redDim=! (length(reducedDims(se))==0L || ncol(se)==0L),
+              colData=! (ncol(colData(se))==0L || ncol(se)==0L),
+              geneExpr=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
+              geneStat=! (nrow(se)==0L)
+  ))
+}
 

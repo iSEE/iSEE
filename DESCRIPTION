@@ -26,15 +26,16 @@ Imports:
     utils,
     shiny,
     shinydashboard,
+    shinyAce,
+    shinyjs,
+    DT,
     rintrojs, 
     ggplot2,
-    vipor,
-    rentrez,
-    AnnotationDbi,
-    DT,
     colourpicker,
     RColorBrewer,
-    shinyAce
+    vipor,
+    rentrez,
+    AnnotationDbi
 Suggests:
     testthat,
     BiocStyle,

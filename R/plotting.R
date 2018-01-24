@@ -17,29 +17,24 @@ names(.all_labs_values) <- .all_aes_names
 .make_redDimPlot <- function(se, param_choices, input, all.coordinates, color_map)
 # Makes the dimension reduction plot.
 {
-  cmds <- list(
-    todo = list(),
-    done = character(0)
-  )
-
-  # Store the command to prepare X and Y axes data (required)
-  cmds$todo[["reducedDim"]] <- sprintf(
+  cmds <- list()
+  cmds[["reducedDim"]] <- sprintf(
     "red.dim <- reducedDim(se, %i);", param_choices[[.redDimType]])
-  cmds$todo[["xy"]] <- sprintf(
+  cmds[["xy"]] <- sprintf(
     "plot.data <- data.frame(X = red.dim[, %s], Y = red.dim[, %s], row.names=colnames(se));",
     param_choices[[.redDimXAxis]],
     param_choices[[.redDimYAxis]]
   )
 
-  # Adding colour commands.
+  # Adding colour data (and commands in color_FUN).
   color_out <- .process_colorby_choice(param_choices, se, input, color_map)
-  cmds$todo[["color"]] <- color_out$cmd
+  cmds[["color"]] <- color_out$cmd
   color_label <- color_out$label
   color_FUN <- color_out$FUN
 
-  # Adding brushing commands.
+  # Adding brushing data (plot-specific commands will be added later).
   brush_out <- .process_brushby_choice(param_choices, input)
-  cmds$todo[["brush"]] <- brush_out$cmd
+  cmds[["brush"]] <- brush_out$cmd
   brush_set <- !is.null(brush_out$cmd)
 
   # Generating the plot.
@@ -61,33 +56,28 @@ names(.all_labs_values) <- .all_aes_names
 .make_colDataPlot <- function(se, param_choices, input, all.coordinates, color_map)
 # Makes a plot of column data variables.
 {
-  cmds <- list(
-    todo = list(),
-    done = character(0)
-  )
-
-  # Store the command to prepare Y-axis data (required)
+  cmds <- list()
   y_lab <- param_choices[[.colDataYAxis]]
-  cmds$todo[["y"]] <- sprintf("plot.data <- data.frame(Y = colData(se)[,'%s'], row.names=colnames(se));", y_lab)
+  cmds[["y"]] <- sprintf("plot.data <- data.frame(Y = colData(se)[,'%s'], row.names=colnames(se));", y_lab)
 
   # Prepare X-axis data.
   if (param_choices[[.colDataXAxis]]==.colDataXAxisNothingTitle) {
     x_lab <- ''
-    cmds$todo[["x"]] <- "plot.data$X <- factor(integer(ncol(se)))"
+    cmds[["x"]] <- "plot.data$X <- factor(integer(ncol(se)))"
   } else {
     x_lab <- param_choices[[.colDataXAxisColData]]
-    cmds$todo[["x"]] <- sprintf("plot.data$X <- colData(se)[,'%s'];", x_lab)
+    cmds[["x"]] <- sprintf("plot.data$X <- colData(se)[,'%s'];", x_lab)
   }
 
   # Adding colour commands.
   color_out <- .process_colorby_choice(param_choices, se, input, color_map)
-  cmds$todo[["color"]] <- color_out$cmd
+  cmds[["color"]] <- color_out$cmd
   color_FUN <- color_out$FUN
   color_label <- color_out$label
 
   # Adding brushing commands.
   brush_out <- .process_brushby_choice(param_choices, input)
-  cmds$todo[["brush"]] <- brush_out$cmd
+  cmds[["brush"]] <- brush_out$cmd
   brush_set <- !is.null(brush_out$cmd)
 
   # Generating the plot.
@@ -107,10 +97,7 @@ names(.all_labs_values) <- .all_aes_names
 .make_geneExprPlot <- function(se, param_choices, input, all.coordinates, color_map)
 # Makes a gene expression plot.
 {
-  cmds <- list(
-    todo = list(),
-    done = character(0)
-  )
+  cmds <- list()
 
   ## Setting up the y-axis:
   y_choice <- param_choices[[.geneExprYAxis]]
@@ -127,7 +114,7 @@ names(.all_labs_values) <- .all_aes_names
 
   assay_choice <- param_choices[[.geneExprAssay]]
   y_lab <- .gene_axis_label(gene_selected_y, assayNames(se)[assay_choice], multiline = FALSE)
-  cmds$todo[["y"]] <- sprintf(
+  cmds[["y"]] <- sprintf(
     "plot.data <- data.frame(Y=assay(se, %i)['%s',], row.names = colnames(se))",
     assay_choice, gene_selected_y
   )
@@ -137,7 +124,7 @@ names(.all_labs_values) <- .all_aes_names
 
   if (x_choice==.geneExprXAxisColDataTitle) { # colData column selected
     x_lab <- param_choices[[.geneExprXAxisColData]]
-    cmds$todo[["x"]] <- sprintf(
+    cmds[["x"]] <- sprintf(
        "plot.data$X <- colData(se)[,'%s'];", x_lab
     )
 
@@ -153,25 +140,25 @@ names(.all_labs_values) <- .all_aes_names
     ))
 
     x_lab <- .gene_axis_label(gene_selected_x, assayNames(se)[assay_choice], multiline = FALSE)
-    cmds$todo[["x"]] <- sprintf(
+    cmds[["x"]] <- sprintf(
       "plot.data$X <- assay(se, %i)['%s',];",
       assay_choice, gene_selected_x
     )
 
   } else { # no x axis variable specified: show single violin
     x_lab <- ''
-    cmds$todo[["x"]] <- "plot.data$X <- factor(integer(ncol(se)))"
+    cmds[["x"]] <- "plot.data$X <- factor(integer(ncol(se)))"
   }
 
   # Adding colour commands.
   color_out <- .process_colorby_choice(param_choices, se, input, color_map)
-  cmds$todo[["color"]] <- color_out$cmd
+  cmds[["color"]] <- color_out$cmd
   color_FUN <- color_out$FUN
   color_label <- color_out$label
 
   # Adding brushing commands.
   brush_out <- .process_brushby_choice(param_choices, input)
-  cmds$todo[["brush"]] <- brush_out$cmd
+  cmds[["brush"]] <- brush_out$cmd
   brush_set <- !is.null(brush_out$cmd)
 
   # Generating the plot.
@@ -198,35 +185,35 @@ names(.all_labs_values) <- .all_aes_names
 # are to take place in this function, not in the calling environment
 # or in child environments. This constrains the scope of 'eval' calls.
 {
-  eval_out <- new.env()
-  executed <- .evaluate_remainder(cmd_list=cmds, eval_env=eval_out)
-  cmds <- executed$cmd_list
+  eval_env <- new.env()
+  eval(parse(text=unlist(cmds)), envir=eval_env)
+  more_cmds <- list() 
 
   # Cleaning up the grouping status of various fields. It is important that 
   # non-numeric X/Y become explicit factors here, which simplifies downstream 
   # processing (e.g., coercion to integer, no lost levels upon subsetting).
-  xvals <- eval_out$plot.data$X
+  xvals <- eval_env$plot.data$X
   group_X <- .is_groupable(xvals)
   if (!group_X) {
-    cmds$todo[["more_X"]] <- .coerce_to_numeric(xvals, "X")
+    more_cmds[["more_X"]] <- .coerce_to_numeric(xvals, "X")
   } else {
-    cmds$todo[["more_X"]] <- "plot.data$X <- as.factor(plot.data$X);"
+    more_cmds[["more_X"]] <- "plot.data$X <- as.factor(plot.data$X);"
   }
 
-  yvals <- eval_out$plot.data$Y
+  yvals <- eval_env$plot.data$Y
   group_Y <- .is_groupable(yvals)
   if (!group_Y) {
-    cmds$todo[["more_Y"]] <- .coerce_to_numeric(yvals, "Y")
+    more_cmds[["more_Y"]] <- .coerce_to_numeric(yvals, "Y")
   } else {
-    cmds$todo[["more_Y"]] <- "plot.data$Y <- as.factor(plot.data$Y);"
+    more_cmds[["more_Y"]] <- "plot.data$Y <- as.factor(plot.data$Y);"
   }
 
-  coloring <- eval_out$plot.data$ColorBy
+  coloring <- eval_env$plot.data$ColorBy
   color_discrete <- FALSE
   if (!is.null(coloring)) {
     color_discrete <- .is_groupable(coloring)
     if (!color_discrete) {
-      cmds$todo[["more_color"]] <- .coerce_to_numeric(coloring, "ColorBy")
+      more_cmds[["more_color"]] <- .coerce_to_numeric(coloring, "ColorBy")
     }
   }
 
@@ -244,13 +231,13 @@ names(.all_labs_values) <- .all_aes_names
     plot_cmds <- .scatter_plot(..., color_discrete=color_discrete)
 
   }
-  cmds$todo <- c(cmds$todo, "", plot_cmds)
+  more_cmds <- c(more_cmds, "", plot_cmds)
 
   # Combine all the commands to evaluate
-  executed <- .evaluate_remainder(cmd_list=cmds, eval_env=eval_out)
-  return(list(cmd = .build_cmd_eval(cmds),
-              xy = eval_out$plot.data,
-              plot = executed$output))
+  plot_out <- eval(parse(text=unlist(more_cmds)), envir=eval_env)
+  return(list(cmd = .build_cmd_eval(c(cmds, more_cmds)),
+              xy = eval_env$plot.data,
+              plot = plot_out))
 }
 
 ############################################
@@ -531,7 +518,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
       )
     }
     if (brush_effect==.brushRestrictTitle) {
-      # Note subsetting before all other calculations.
+      # Note subsetting must occur before all other calculations.
       setup_cmds <- c(subset="plot.data <- subset(plot.data, BrushBy);", setup_cmds)
       plot_cmds[["point"]] <-
         "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, color = 'black', alpha = 0, size = 0.5) +"
@@ -753,19 +740,10 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
 # Internal functions: other ----
 ############################################
 
-.evaluate_remainder <- function(cmd_list, eval_env) {
-  out <- eval(parse(text=unlist(cmd_list$todo)), envir=eval_env)
-  cmd_list$done <- c(cmd_list$done, unlist(cmd_list$todo))
-  cmd_list$todo <- list()
-  return(list(cmd_list=cmd_list, output=out))
-}
-
 .build_cmd_eval <- function(cmds){
-  all_cmds <- c(cmds$done, unlist(cmds$todo))
-
+  all_cmds <- unlist(cmds)
   multi_line <- grep("\\+$", all_cmds) + 1 # indenting next line
   all_cmds[multi_line] <- paste0("    ", all_cmds[multi_line])
-
   paste(all_cmds, collapse="\n")
 }
 

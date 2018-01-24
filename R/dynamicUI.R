@@ -1,3 +1,17 @@
+.new_plot_buttons <- function(active_plots, memory)
+# This function generates buttons to create new panels, depending on
+# whether the maximum number of panels has been exceeded for that type.
+{
+    all_buttons <- list()
+    for (mode in c("redDim", "colData", "geneExpr", "geneStat")) {
+        if (sum(active_plots$Type==mode) < nrow(memory[[mode]])) {
+            all_buttons[[mode]] <- actionButton(paste0(mode, .organizationNew), 
+                paste("New", tolower(translation[mode])), class = "btn btn-primary", icon = icon("plus"))
+        }
+    }
+    do.call(tagList, all_buttons)
+}
+
 .panel_organization <- function(active_plots, memory)
 # This function generates the sidebar that organizes the various panels.
 # It includes options to move plots up, down, and remove/resize them.
@@ -5,6 +19,8 @@
     N <- nrow(active_plots)
     collected <- vector("list", N)
     counter <- 1L
+
+    # Checking 
 
     for (i in seq_len(N)) {
         mode <- active_plots$Type[i]

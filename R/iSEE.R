@@ -234,10 +234,7 @@ iSEE <- function(
       # this will cover the part for the first tour of the app
       # menuItem("First steps help", icon = icon("question-circle")
       # ),
-      actionButton(paste0("redDim", .organizationNew), "New reduced dimension plot", class = "btn btn-primary",icon = icon("plus")),
-      actionButton(paste0("colData", .organizationNew), "New column data plot", class = "btn btn-primary",icon = icon("plus")),
-      actionButton(paste0("geneExpr", .organizationNew), "New gene expression plot", class = "btn btn-primary",icon = icon("plus")),
-      actionButton(paste0("geneStat", .organizationNew), "New gene table", class = "btn btn-primary",icon = icon("plus")),
+      uiOutput("newPlotButtons"),
 
       actionButton("getcode_all","Extract the R code!",icon = icon("magic")),
 
@@ -321,6 +318,11 @@ iSEE <- function(
     output$panelOrganization <- renderUI({
         .panel_organization(rObjects$active_plots, pObjects$memory)
     })
+
+    output$newPlotButtons <- renderUI({
+        .new_plot_buttons(rObjects$active_plots, pObjects$memory)
+    })
+
 
     for (mode in c("redDim", "geneExpr", "colData", "geneStat")) {
         # Panel addition.

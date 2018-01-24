@@ -325,11 +325,6 @@ iSEE <- function(
         .panel_organization(rObjects$active_plots, pObjects$memory)
     })
 
-    output$newPlotButtons <- renderUI({
-        .new_plot_buttons(rObjects$active_plots, pObjects$memory)
-    })
-
-
     for (mode in c("redDim", "geneExpr", "colData", "geneStat")) {
         # Panel addition.
         local({

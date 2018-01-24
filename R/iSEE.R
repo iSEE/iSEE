@@ -219,7 +219,7 @@ iSEE <- function(
                      packageVersion("iSEE")),
       titleWidth = 800,
       dropdownMenu(type = "tasks",
-                   icon = tags$div(HTML('<i class="fa fa-question-circle fa-2x icon-done"></i>')),
+                   icon = icon("question-circle"),
                    badgeStatus = NULL,
                    headerText = "Want some more info?",
                    notificationItem(

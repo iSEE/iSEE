@@ -1,5 +1,6 @@
 ---
-title: "iSEE User's Guide"
+title: >
+  `r Biocpkg("iSEE")` User's Guide
 author:
 - name: Federico Marini
   affiliation: 

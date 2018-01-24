@@ -83,7 +83,7 @@ library("iSEE")
 
 # Introduction
 
-`r Biocpkg("iSEE")`(Interactive SummarizedExperiment Explorer) is an R/Bioconductor package that provides an interactive Shiny-based graphical user interface for exploring data stored in SummarizedExperiment objects, including row- as well as column-level metadata. Particular attention is given to single-cell data in a `SingleCellExperiment` object with visualization of dimensionality reduction results (derived e.g. from Principal Components Analysis, or t-distributed Stochastic Neighbour Embedding []vandermaaten[]). 
+`r Biocpkg("iSEE")` (Interactive SummarizedExperiment Explorer) is an R/Bioconductor package that provides an interactive Shiny-based graphical user interface for exploring data stored in SummarizedExperiment objects, including row- as well as column-level metadata. Particular attention is given to single-cell data in a `SingleCellExperiment` object with visualization of dimensionality reduction results (derived e.g. from Principal Components Analysis, or t-distributed Stochastic Neighbour Embedding []vandermaaten[]). 
 The generated plots can be conveniently linked to each other by brushing (i.e. clicking and holding the mouse over a plot area), and with a nice touch of reproducibility, you can obtain the full code to re-create the plots at the end of your live session. The combination of interactivity and reproducibility follows the proposal in the `pcaExplorer` and `ideal` packages, to deliver an immediate user experience, and guarantee the aspect of technical reproducibility of the generated output.
 
 ## Citation info
@@ -125,14 +125,14 @@ sce
 iSEE(sce)
 ```
 
-- once you have started the app, look in the upper right corner for a question mark icon. Click on that, and be ready to perform an interactive tour of the app, based on the `rintrojs` package. []ganz[] During this tour, you will be taken through the different components of iSEE and learn the basic usage mechanisms by doing: the highlighted elements will be responding to the user's actions, while the rest of the UI will be shaded. You can move forward and backward along the tour by clicking on the `Next`/`Back` buttons, or also using the arrow keys. To exit the tour, either click on `Skip`, or simply click outside of the highlighted UI element.  
+- once you have started the app, look in the upper right corner for a question mark icon. Click on that, and be ready to perform an interactive tour of the app, based on the `rintrojs` package. []ganz[] During this tour, you will be taken through the different components of `r Biocpkg("iSEE")` and learn the basic usage mechanisms by doing: the highlighted elements will be responding to the user's actions, while the rest of the UI will be shaded. You can move forward and backward along the tour by clicking on the `Next`/`Back` buttons, or also using the arrow keys. To exit the tour, either click on `Skip`, or simply click outside of the highlighted UI element.  
 
 Once you are done generating the plots, you can export the code that generated the outputs, by clicking on the sidebar button with the magic wand icon. This will open a modal popup where the code is displayed and automatically highlighted in a `ShinyAce`-based text editor. Select it all, or parts of it, copy it to the clipboard, and paste it into your analysis script/Rmarkdown file.
 
 
 # Using the application
 
-This section explains more in detail the different parameters you can adjust when launching the `iSEE` app. This set refers to a local instance of `iSEE`.
+This section explains more in detail the different parameters you can adjust when launching the `iSEE` app. This set refers to a local instance of `r Biocpkg("iSEE")`.
 
 - `se` is a `SingleCellExperiment` or `SummarizedExperiment` object, the only mandatory parameter for launching `iSEE`
 
@@ -146,11 +146,11 @@ This section explains more in detail the different parameters you can adjust whe
 Upon calling `iSEE`, a Shiny App is launched for interactive data exploration of the `SingleCellExperiment`/`SummarizedExperiment` object.
 
 
-## Using `iSEE` from a demo public instance
+## Using `r Biocpkg("iSEE")` from a demo public instance
 
 []if we want to allow this[]
 
-## Deploying `iSEE` to your Shiny Server
+## Deploying `r Biocpkg("iSEE")` to your Shiny Server
 
 []same here[]
 
@@ -158,21 +158,21 @@ Upon calling `iSEE`, a Shiny App is launched for interactive data exploration of
 
 # Getting to know the user interface and the functionality
 
-Probably the most immediate way to master the user interface of `iSEE` is by taking the guided interactive tour, as this feature provides a pretty exhaustive showcase of the relevant elements and possible user interactions. Nonetheless, a brief description of the UI (based on the `shinydashboard` package) is provided in this section.
+Probably the most immediate way to master the user interface of `r Biocpkg("iSEE")` is by taking the guided interactive tour, as this feature provides a pretty exhaustive showcase of the relevant elements and possible user interactions. Nonetheless, a brief description of the UI (based on the `shinydashboard` package) is provided in this section.
 
-## The `iSEE` header
+## The `r Biocpkg("iSEE")` header
 
-The dashboard header for `iSEE` contains, apart from the title, a dropdown menu, where a number of help elements are available:
+The dashboard header for `r Biocpkg("iSEE")` contains, apart from the title, a dropdown menu, where a number of help elements are available:
 
 - the “Click me for a quick tour” button activates the `rintrojs` based tour. Some more detail on this is included in Section \@ref(quickstart)
-- The “Open the vignette (web)” button opens in a new tab the vignette for `iSEE` from the Bioconductor website (internet connection is required)
-- The “Open the vignette (local)” button is a fallback solution that fetches the HTML vignette of `iSEE` as it is available on the system
-- “About iSEE” displays a modal popup containing information about how to cite `iSEE`, as well as the output from `sessionInfo()`, which should be included in case of reporting a bug/issue
+- The “Open the vignette (web)” button opens in a new tab the vignette for `r Biocpkg("iSEE")` from the Bioconductor website (internet connection is required). Please keep in mind it will be referring to the most current release version (the documentation might differ from the version installed on your system)
+- The “Open the vignette (local)” button is a fallback solution that fetches the HTML vignette of `r Biocpkg("iSEE")` as it is available on the system
+- “About iSEE” displays a modal popup containing information about how to cite `r Biocpkg("iSEE")`, as well as the output from `sessionInfo()`, which should be included in case of reporting a bug/issue
 
 
-## The `iSEE` sidebar
+## The `r Biocpkg("iSEE")` sidebar
 
-In the dashboard sidebar of `iSEE`, 4 buttons allow the creation of new plot elements in the main body of the app. The maximum number of plots per type can be defined when launching the app. Upon clicking either of these buttons, additional plots or tables are inserted, together with placeholders to reorganize the sequence of how they should appear. This can be controlled by means of the up and down arrow buttons, and unnecessary plots can be removed by clicking on the trash button. Also, the width of each panel can be adjusted, in a value ranging from 2 to 12 (12 being the width of a full `fluidRow`).
+In the dashboard sidebar of `r Biocpkg("iSEE")`, 4 buttons allow the creation of new plot elements in the main body of the app. The maximum number of plots per type can be defined when launching the app. Upon clicking either of these buttons, additional plots or tables are inserted, together with placeholders to reorganize the sequence of how they should appear. This can be controlled by means of the up and down arrow buttons, and unnecessary plots can be removed by clicking on the trash button. Also, the width of each panel can be adjusted, in a value ranging from 2 to 12 (12 being the width of a full `fluidRow`).
 
 To help the user in organizing the plots, a color coding reminds the plot type being moved/canceled []TODO[]
 
@@ -180,17 +180,17 @@ A fundamental element in the sidebar is the `Extract the R code!` button (with t
 
 
 
-## The `iSEE` dashboard body
+## The `r Biocpkg("iSEE")` dashboard body
 
-The main element in the body of `iSEE` is the combination of plots and tables, generated (and optionally linked to one another) according to the different actions taken by the user. The main explanation on how the different plots and tables work is presented in Section \@ref(functionality).
+The main element in the body of `r Biocpkg("iSEE")` is the combination of plots and tables, generated (and optionally linked to one another) according to the different actions taken by the user. The main explanation on how the different plots and tables work is presented in Section \@ref(functionality).
 
-At the bottom of the body, a footer including some information on the `iSEE` development team can be found.
+At the bottom of the body, a footer including some information on the `r Biocpkg("iSEE")` development team can be found.
 
 
 
 # Functionality {#functionality}
 
-This section contains a description of each plot and table type you can generate with `iSEE`. For each plot panel, three different sets of parameters will be available in collapsible boxes, namely `Plotting parameters`, `Coloring parameters`, and `Brushing parameters`. While the plotting parameters will be specific to each plot type, the coloring and brushing panels look the same for all types. How the brushing operates is described in additional detail in Section \@ref(brushing).
+This section contains a description of each plot and table type you can generate with `r Biocpkg("iSEE")`. For each plot panel, three different sets of parameters will be available in collapsible boxes, namely `Plotting parameters`, `Coloring parameters`, and `Brushing parameters`. While the plotting parameters will be specific to each plot type, the coloring and brushing panels look the same for all types. How the brushing operates is described in additional detail in Section \@ref(brushing).
 
 ## Reduced dimension plots
 
@@ -258,7 +258,7 @@ The GitHub repository for `r Biocpkg("iSEE")` is https://github.com/csoneson/iSE
 
 ## Use case I: Basic exploration of the Allen dataset
 
-In this section, we illustrate how `iSEE` can be used to explore the `allen` single-cell RNA-seq data set, which is available via the `scRNAseq` Bioconductor package and contains expression values for 379 cells from the mouse visual cortex [@Tasic2016]. We start by converting the provided `SummarizedExperiment` object to a `SingleCellExperiment` object and normalize the expression values. 
+In this section, we illustrate how `r Biocpkg("iSEE")` can be used to explore the `allen` single-cell RNA-seq data set, which is available via the `scRNAseq` Bioconductor package and contains expression values for 379 cells from the mouse visual cortex [@Tasic2016]. We start by converting the provided `SummarizedExperiment` object to a `SingleCellExperiment` object and normalize the expression values. 
 
 ```{r allen-dataset,eval=FALSE}
 library(scRNAseq)
@@ -278,7 +278,7 @@ sce <- runTSNE(sce)
 head(colData(sce))
 ```
 
-Finally, we set colour palettes to use in `iSEE` when colouring according to specific cell annotations or expression values. These values are stored in an object of the `ExperimentColorMap` class. 
+Finally, we set colour palettes to use in `r Biocpkg("iSEE")` when colouring according to specific cell annotations or expression values. These values are stored in an object of the `ExperimentColorMap` class. 
 
 ```{r allen-dataset-3,eval=FALSE}
 qc_colors <- c("forestgreen", "firebrick1")
@@ -318,7 +318,7 @@ Finally, we will look at the gene expression plot. This plot displays the distri
 
 ## Use case III: Using the `ExperimentHub`
 
-Here we will use `iSEE` showcasing TCGA dataset
+Here we will use `r Biocpkg("iSEE")` showcasing TCGA dataset
 
 ```{r ExperimentHub, eval=FALSE}
 stopifnot(

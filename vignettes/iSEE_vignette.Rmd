@@ -35,7 +35,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
   chunk_output_type: console
-bibliography: flowcatchR.bib
+bibliography: iSEE.bib
 ---
 <!-- as biocviews: -->
 <!-- Visualization, GUI, DimensionReduction,  -->

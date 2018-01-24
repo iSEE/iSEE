@@ -6,19 +6,24 @@
     collected <- vector("list", N)
     counter <- 1L
 
-    # Checking 
-
     for (i in seq_len(N)) {
         mode <- active_plots$Type[i]
         ID <- active_plots$ID[i]
         panel.width <- active_plots$Width[i]
 
+        upFUN <- downFUN <- identity
+        if (i==1L) {
+            upFUN <- disabled
+        }
+        if (i==N) {
+            downFUN <- disabled
+        }
 
         current <- list(
             h4(.decode_panel_name(mode, ID)),
             fluidRow(
-              column(3,actionButton(paste0(mode, ID, .organizationUp),"",icon = icon("arrow-circle-up"))),
-              column(3,actionButton(paste0(mode, ID, .organizationDown),"",icon = icon("arrow-circle-down"))),
+              upFUN(column(3,actionButton(paste0(mode, ID, .organizationUp),"",icon = icon("arrow-circle-up")))),
+              downFUN(column(3,actionButton(paste0(mode, ID, .organizationDown),"",icon = icon("arrow-circle-down")))),
               column(3,actionButton(paste0(mode, ID, .organizationDiscard),"",
                          icon = icon("trash"), class = "btn btn-warning"))
             ),

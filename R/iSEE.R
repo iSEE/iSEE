@@ -122,21 +122,22 @@ iSEE <- function(
   geneexpr_max_plots <- max(nrow(geneExprArgs), geneExprMax)
   genestat_max_tabs <- max(nrow(geneStatArgs), geneStatMax)
 
-  if (length(reducedDims(se))==0L || ncol(se)==0L) {
+  feasibility <- .check_plot_feasibility(se)
+  if (!feasibility$redDim) { 
     reddim_max_plots <- 0L
     redDimArgs <- NULL
   } 
-  if (ncol(colData(se))==0L || ncol(se)==0L) {
+  if (!feasibility$colData) {
     coldata_max_plots <- 0L
     colDataArgs <- NULL
   }
-  if (nrow(se)==0L) {
-    genestat_max_tabs <- 0L
-    geneStatArgs <- NULL
-  }
-  if (nrow(se)==0L || ncol(se)==0L) {
+  if (!feasibility$geneExpr) {
     geneexpr_max_plots <- 0L
     geneExprArgs <- NULL
+  }
+  if (!feasibility$geneStat) {
+    genestat_max_tabs <- 0L
+    geneStatArgs <- NULL
   }
 
   # Setting up parameters for each panel.
@@ -613,4 +614,11 @@ iSEE <- function(
     return(memory)
 }
 
+.check_plot_feasibility <- function(se) {
+  return(list(redDim=! (length(reducedDims(se))==0L || ncol(se)==0L),
+              colData=! (ncol(colData(se))==0L || ncol(se)==0L),
+              geneExpr=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
+              geneStat=! (nrow(se)==0L)
+  ))
+}
 

@@ -13,11 +13,11 @@
 #' uiOutput sliderInput tagList textInput column observeEvent radioButtons
 #' verbatimTextOutput htmlOutput renderText need tags hr brushOpts
 #' brushedPoints observe h4 validate checkboxInput conditionalPanel
-#' renderPrint singleton showModal modalDialog
+#' renderPrint singleton showModal modalDialog p
 #' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
 #' dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu
 #' notificationItem
-#' @importFrom utils packageVersion read.delim
+#' @importFrom utils packageVersion read.delim citation sessionInfo
 #' @importFrom ggplot2 ggplot geom_point labs theme_void aes_string geom_violin
 #'   theme_bw facet_wrap ylab aes theme scale_x_continuous scale_y_continuous
 #'   coord_cartesian geom_tile scale_x_discrete scale_y_discrete

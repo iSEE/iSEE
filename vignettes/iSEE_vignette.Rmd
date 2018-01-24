@@ -62,7 +62,7 @@ knitr::opts_chunk$set(
 
 # Getting started
 
-<!-- logo? -->
+<!-- logo? MOS DEF :) -->
 
 `r Biocpkg("iSEE")` is an R package distributed as part of the
 [Bioconductor](http://bioconductor.org) project. To install the package,
@@ -76,10 +76,84 @@ biocLite("iSEE")
 To load and attach the package to your current workspace, enter:
 
 ```{r library, message=FALSE, warning=FALSE}
-library(iSEE)
+library("iSEE")
 ```
 
-# Sharing data
+
+# Introduction
+
+[]what does iSEE do []
+
+## Citation info
+
+If you use `r Biocpkg("iSEE")` for your analysis, please cite it as here below:
+
+```{r citation}
+citation("iSEE")
+```
+
+
+
+# Quick start
+
+[]want to dive deep right away? here's what you need to know[]
+
+i.e. get your SCE object
+load lib and launch app
+follow the tour
+
+.. this one that follows is then more detailed, starting from...
+
+
+
+# Using the application
+
+param descriptions
+ways to change default settings?
+
+
+if applicable:
+- locally
+- public instance to demo
+- deploying to your shiny server
+
+
+# Getting to know the user interface and the functionality
+
+header, sidebar, main panel
+
+## Specifical subsection on the help/tour?
+
+
+# Functionality
+
+aka description of plot types
+
+concept of brushing and linking - here?
+
+this section has for each type of plot a screenshot of plot + plot settings
+
+
+# Bug reporting/Devel Version
+
+
+The GitHub repository for `r Biocpkg("iSEE")` is https://github.com/csoneson/iSEE, where you can find the development version of the package. This is also the place to file an issue, report a bug, or provide a pull request.
+
+
+# Use cases
+
+## Allen dataset
+
+
+
+
+
+## TCGA dataset
+
+
+-> link to youtube screencast where we do it?!
+
+
 
 ## Using the `ExperimentHub`
 
@@ -132,6 +206,15 @@ newLocation <- "/path/of/your/choice/new_file_name.rds"
 file.copy(from = temp_file, to = newLocation)
 ```
 
+
+
+# Further development
+
+Additional functionality for the `r Biocpkg("iSEE")` will be added in the future.
+
+Improvements, suggestions, bugs, issues and feedback of any type can be sent to marinif@uni-mainz.de.
+
+
 # FAQ
 
 **Q: Can you implement a 'Copy to clipboard' button in the code editor?**
@@ -147,9 +230,24 @@ A: The subsetting is correct. What you see is an artefact of overplotting:
 in areas excessively dense in points, transparency ceases to be an effective
 visual effect.
 
-# Session info
 
-```{r sessionInfo}
+
+
+
+# Session Info {.unnumbered}
+
+```{r sessioninfo}
 sessionInfo()
+# devtools::session_info()
 ```
+
+
+# References {.unnumbered}
+ -> if we use them
+
+
+
+
+
+
 

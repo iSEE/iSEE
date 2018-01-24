@@ -79,10 +79,10 @@ To load and attach the package to your current workspace, enter:
 library("iSEE")
 ```
 
-
 # Introduction
 
-[]what does iSEE do []
+`r Biocpkg("iSEE")`(Interactive SummarizedExperiment Explorer) is an R/Bioconductor package that provides an interactive Shiny-based graphical user interface for exploring data stored in SummarizedExperiment objects, including row- as well as column-level metadata. Particular attention is given to single-cell data in a `SingleCellExperiment` object with visualization of dimensionality reduction results (derived e.g. from Principal Components Analysis, or t-Stochastic Neighbour Embedding []vandermaaten[]). 
+The generated plots can be conveniently linked to each other by brushing (i.e. clicking and holding the mouse over a plot area), and with a nice touch of reproducibility, you can obtain the full code to re-create the plots at the end of your live session. The combination of interactivity and reproducibility follows the proposal in the `pcaExplorer` and `ideal` packages, to deliver an immediate user experience, and guarantee the aspect of technical reproducibility of the generated output.
 
 ## Citation info
 
@@ -92,33 +92,71 @@ If you use `r Biocpkg("iSEE")` for your analysis, please cite it as here below:
 citation("iSEE")
 ```
 
-
-
 # Quick start
 
-[]want to dive deep right away? here's what you need to know[]
+Do you want to dive deep in using `r Biocpkg("iSEE")` right away? Here's what you need to do:
 
-i.e. get your SCE object
-load lib and launch app
-follow the tour
+- install and load the `r Biocpkg("iSEE")` package
+```{r qs-load, eval=FALSE}
+source("http://bioconductor.org/biocLite.R")
+biocLite("iSEE")
+library("iSEE")
+```
 
-.. this one that follows is then more detailed, starting from...
+- get a dataset to work with, as for example the `allen` dataset from the `r Biocpkg("scRNAseq")` package, and perform the following operations to transform it into a `SingleCellExperiment` object, where you can store the reduced dimension representations (PCA and t-SNE)
 
+```{r qs-data}
+library(scRNAseq)
+data(allen)
+library(scater)
+sce <- as(allen, "SingleCellExperiment")
+counts(sce) <- assay(sce, "tophat_counts")
+sce <- normalize(sce)
+sce <- runPCA(sce)
+sce <- runTSNE(sce)
+sce
+```
+
+- launch the app itself
+
+```{r qs-launch, eval=FALSE}
+iSEE(sce)
+```
+
+- once you have started the app, look in the upper right corner for a question mark icon. Click on that, and be ready to perform an interactive tour of the app, based on the `rintrojs` package. []ganz[] During this tour, you will be showed around the different components of iSEE and learn the basic usage mechanisms by doing: the highlighted elements will be responding to the user's actions, while the rest of the UI will be shaded. You can move forward and backward along the tour by clicking on the `Next`/`Back` buttons, or also using the arrow keys. To exit the tour, either click on `Skip`, or simply click outside of the highlighted UI element.  
+
+Once you are done generating the plots, do not forget to export the code that generated the outputs, by clicking on the sidebar button with the magic wand icon. This will open a modal popup where the code is displayed and automatically highlighted in a `ShinyAce`-based text editor. Select it all, or parts of it, copy it to the clipboard, and paste it into your analysis script/Rmarkdown file.
 
 
 # Using the application
 
-param descriptions
-ways to change default settings?
+This section explains more in detail the different parameters you can adjust when launching the `iSEE` app. This set refers to a local instance of `iSEE`.
+
+- `se` is a `SingleCellExperiment` object, the only mandatory parameter for launching `iSEE`
+
+- `redDimArgs` is a `DataFrame` similar to that produced by the `redDimPlotDefaults` function, specifying initial parameters for the reduced dimension plots. Correspondingly, `colDataArgs` (e.g. created via `colDataPlotDefaults`) specifies the initial parameters for the column data plots, and `geneExprArgs` (via `geneExprPlotDefaults`) for the gene expression plots. `geneStatArgs` (a `DataFrame` structured as the output of  `geneStatTableDefaults`) specifies the initial parameters for the gene statistics tables
+- `redDimMax`, `colDataMax`, and `geneExprMax` are integer scalars specifying the maximum number of plots (respectively, reduced dimension, column data, and gene expression) in the main interface. `geneStatMax`, similarly, is an integer scalar specifying the maximum number of gene statistic tables in the interface
+- `initialPanels` is a `DataFrame` specifying which panels should be created at the  initialization. This should contain a `Name` character field (specifying the identity of the panel, e.g., “Reduced dimension plot 1”, “Gene statistics table 2”) and a `Width` integer field (ranging from 2 to 12). If not specified, it will generate one plot per type, together with one gene stats table  
+- `annot.orgdb` is an `org.*.eg.db` annotation object from which Entrez identifiers can be retrieved. If this is specified, gene information will be retrieved upon selection of particular genes in the data table.
+- `annot.keytype` is a string specifying the keytype to use to query `annot.orgdb`, while `annot.keyfield` is a string specifying the field of `rowData(se)` containing the keys of type `annot.keytype`. If `NULL`, the row names of `se` are used as the keys.
+- `colormap` is an `ExperimentColorMap` object that defines custom color maps to apply to individual `assays`, `colData`, and `rowData` covariates. For more details on how to create this object, please consult the example of `iSEE`
+
+Upon calling `iSEE`, a Shiny App is launched for interactive data exploration of the `SingleCellExperiment`/`SummarizedExperiment` object.
 
 
-if applicable:
-- locally
-- public instance to demo
-- deploying to your shiny server
+## Using `iSEE` from a demo public instance
+
+[]if we want to allow this[]
+
+## Deploying `iSEE` to your Shiny Server
+
+[]same here[]
+
 
 
 # Getting to know the user interface and the functionality
+
+Probably the most immediate way to master the user interface of `iSEE` is by taking the guided interactive tour, as this feature provides a pretty exhaustive showcase of the relevant elements and possible user interactions. Nonetheless, a brief description of the UI is provided in this section.
 
 header, sidebar, main panel
 
@@ -244,6 +282,7 @@ sessionInfo()
 
 # References {.unnumbered}
  -> if we use them
+
 
 
 

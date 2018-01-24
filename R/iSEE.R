@@ -316,6 +316,7 @@ iSEE <- function(
     pObjects$memory <- memory
     pObjects$coordinates <- list()
     pObjects$commands <- list()
+    pObjects$brush_parent <- list()
 
     # info boxes, to keep on top of the page  on the left side?
 
@@ -381,11 +382,6 @@ iSEE <- function(
     output$panelOrganization <- renderUI({
         .panel_organization(rObjects$active_plots, pObjects$memory)
     })
-
-    output$newPlotButtons <- renderUI({
-        .new_plot_buttons(rObjects$active_plots, pObjects$memory)
-    })
-
 
     for (mode in c("redDim", "geneExpr", "colData", "geneStat")) {
         # Panel addition.
@@ -546,6 +542,7 @@ iSEE <- function(
           p.out <- .make_redDimPlot(
             se, pObjects$memory$redDim[i0,], input, pObjects$coordinates, colormap)
           pObjects$commands[[plot.name]] <- p.out$cmd
+          pObjects$brush_parent[[plot.name]] <- p.out$brush_parent
           pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
         })
@@ -577,6 +574,7 @@ iSEE <- function(
           p.out <- .make_colDataPlot(
             se, pObjects$memory$colData[i0,], input, pObjects$coordinates, colormap)
           pObjects$commands[[plot.name]] <- p.out$cmd
+          pObjects$brush_parent[[plot.name]] <- p.out$brush_parent
           pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
         })
@@ -609,6 +607,7 @@ iSEE <- function(
           p.out <- .make_geneExprPlot(
             se, pObjects$memory$geneExpr[i0,], input, pObjects$coordinates, colormap)
           pObjects$commands[[plot.name]] <- p.out$cmd
+          pObjects$brush_parent[[plot.name]] <- p.out$brush_parent
           pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
         })

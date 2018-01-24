@@ -31,6 +31,7 @@
 #' @importFrom shinyAce aceEditor
 #' @importFrom methods new slot
 #' @importFrom RColorBrewer brewer.pal
+#' @importFrom igraph make_graph topo_sort
 #' @author Aaron Lun \email{alun@@wehi.edu.au}
 #' @author Charlotte Soneson \email{charlotte.soneson@@uzh.ch}
 #' @author Federico Marini \email{marinif@@uni-mainz.de}

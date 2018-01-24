@@ -244,6 +244,14 @@ iSEE <- function(
                                          ),
                      icon = icon(""), status = "primary"
                    )
+                   ,
+                   notificationItem(
+                     text = actionButton('about_popup', label="About iSEE", 
+                                         icon = icon("institution"), 
+                                         style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
+                                         ),
+                     icon = icon(""), status = "primary"
+                   )
                    
       ) # end of dropdownMenu
     ), # end of dashboardHeader
@@ -329,6 +337,29 @@ iSEE <- function(
     
     observeEvent(input$browseVignette, {
       # browseVignettes("DESeq2") # this does not work, maybe add another open blank to the local location of the vignette?
+    })
+    
+    observeEvent(input$about_popup, {
+      showModal(
+        modalDialog(
+          title = "About iSEE", size = "l",fade = TRUE,
+          footer = NULL, easyClose = TRUE,
+          tagList(
+            p("This is the version number of iSEE"),
+            renderPrint({
+              packageVersion("iSEE")
+            }),
+            p("This is the citation info for iSEE"),
+            renderPrint({
+              citation("iSEE")
+            }),
+            p("... and this is a record of sessionInfo()"),
+            renderPrint({
+              sessionInfo()
+            })
+          )
+        )
+      )
     })
 
     output$codetext_modal <- renderPrint({

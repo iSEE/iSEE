@@ -27,7 +27,7 @@
 #' and \code{rowData} covariates.
 #'
 #' @details Users can pass default parameters via DataFrame objects in
-#' \code{redDim.args} and \code{geneExpr.args}. Each object can contain
+#' \code{redDimArgs} and \code{geneExprArgs}. Each object can contain
 #' some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
 #' Any missing fields will be filled in with the defaults.
 #'
@@ -42,7 +42,7 @@
 #' \code{"Reduced dimension plot 1"}, \code{"Gene statistics table 2"}.
 #' The trailing number should not be greater than the number of
 #' maximum plots of that type. The \code{Width} field may also be specified
-#' describing the width of the panel from 4 to 12 (values will be coerced
+#' describing the width of the panel from 2 to 12 (values will be coerced
 #' inside this range).
 #'
 #' If \code{annot.orgdb} is specified, gene information will be retrieved

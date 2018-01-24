@@ -12,7 +12,7 @@ Maintainer: Charlotte Soneson <charlotte.soneson@uzh.ch>
 Description: Provides functions for creating an interactive 
     Shiny-based graphical user interface for exploring data 
     stored in SummarizedExperiment objects, including row- and
-    column-level metadata. Particular attencion is given to 
+    column-level metadata. Particular attention is given to 
     single-cell data in a SingleCellExperiment object with 
     visualization of dimensionality reduction results.
 Depends:

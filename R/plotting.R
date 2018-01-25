@@ -38,15 +38,13 @@ names(.all_labs_values) <- .all_aes_names
   brush_set <- !is.null(brush_out$cmd)
 
   # Generating the plot.
-  plot_out <- .create_plot(
+  .create_plot(
     cmds, se, all.coordinates,
     param_choices=param_choices,
     x_lab=sprintf("Dimension %s", param_choices[[.redDimXAxis]]),
     y_lab=sprintf("Dimension %s", param_choices[[.redDimYAxis]]),
     color_FUN=color_FUN, color_label=color_label, brush_set=brush_set
   )
-  plot_out$brush_parent <- brush_out$parent
-  plot_out
 }
 
 ############################################
@@ -84,13 +82,11 @@ names(.all_labs_values) <- .all_aes_names
   brush_set <- !is.null(brush_out$cmd)
 
   # Generating the plot.
-  plot_out <- .create_plot(
+  .create_plot(
     cmds, se, all.coordinates,
     param_choices=param_choices, x_lab=x_lab, y_lab=y_lab,
     color_FUN=color_FUN, color_label=color_label, brush_set=brush_set
   )
-  plot_out$brush_parent <- brush_out$parent
-  plot_out
 }
 
 ############################################
@@ -176,13 +172,11 @@ names(.all_labs_values) <- .all_aes_names
   brush_set <- !is.null(brush_out$cmd)
 
   # Generating the plot.
-  plot_out <- .create_plot(
+  .create_plot(
     cmds, se, all.coordinates,
     param_choices=param_choices, x_lab=x_lab, y_lab=y_lab,
     color_FUN=color_FUN, color_label=color_label, brush_set=brush_set
   )
-  plot_out$brush_parent <- brush_out$parent
-  plot_out
 }
 
 ############################################
@@ -320,7 +314,7 @@ names(.all_labs_values) <- .all_aes_names
   # Defining boundaries if zoomed.
   lim_cmds <- list()
   bounds <- param_choices[[.zoomData]][[1]]
-  if (param_choices[[.zoomActive]] && !is.null(bounds)) {
+  if (!is.null(bounds)) {
     plot_cmds[["coord"]] <- sprintf(
       "coord_cartesian(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = FALSE) +", # FALSE, to get a literal zoom.
       bounds["xmin"], bounds["xmax"], bounds["ymin"],  bounds["ymax"]
@@ -450,7 +444,7 @@ plot.data$Y <- tmp;")
     coord_cmd <- "coord_cartesian"
   }
 
-  if (param_choices[[.zoomActive]] && !is.null(bounds)) {
+  if (!is.null(bounds)) {
     plot_cmds[["coord"]] <- sprintf(
       "%s(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = FALSE) +", # FALSE, to get a literal zoom.
       coord_cmd, bounds["xmin"], bounds["xmax"], bounds["ymin"], bounds["ymax"]
@@ -568,7 +562,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
 
   # Defining boundaries if zoomed.
   bounds <- param_choices[[.zoomData]][[1]]
-  if (param_choices[[.zoomActive]] && !is.null(bounds)) {
+  if (!is.null(bounds)) {
     plot_cmds[["coord"]] <- sprintf(
       "coord_cartesian(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = FALSE) +",
       bounds["xmin"], bounds["xmax"], bounds["ymin"], bounds["ymax"]
@@ -636,11 +630,12 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
 
 .process_brushby_choice <- function(param_choices, input) {
   brush_in <- param_choices[[.brushByPlot]]
-  output <- list(cmd=NULL, parent=NULL)
+  output <- list(cmd=NULL)
 
   if (brush_in != "") {
     brush_by <- .encode_panel_name(brush_in)
     brush_val <- input[[paste0(brush_by$Type, .brushField, brush_by$ID)]]
+
     if (!is.null(brush_val)) {
         cmd <- sprintf("brushedPts <- shiny::brushedPoints(all.coordinates[['%s']],
     list(xmin=%.5g, xmax=%.5g, ymin=%.5g, ymax=%.5g,
@@ -651,7 +646,6 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
 
         cmd <- c(cmd, "plot.data$BrushBy <- rownames(plot.data) %in% rownames(brushedPts);")
         output$cmd <- paste(cmd, collapse="\n")
-        output$parent <- paste0(brush_by$Type, "Plot", brush_by$ID) 
     }
   }
 

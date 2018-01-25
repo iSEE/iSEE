@@ -31,7 +31,8 @@
 #' @importFrom shinyAce aceEditor
 #' @importFrom methods new slot
 #' @importFrom RColorBrewer brewer.pal
-#' @importFrom igraph make_graph topo_sort
+#' @importFrom igraph make_graph topo_sort are_adjacent incident add_edges
+#' adjacent_vertices
 #' @author Aaron Lun \email{alun@@wehi.edu.au}
 #' @author Charlotte Soneson \email{charlotte.soneson@@uzh.ch}
 #' @author Federico Marini \email{marinif@@uni-mainz.de}

@@ -21,7 +21,7 @@ names(.all_labs_values) <- .all_aes_names
   cmds[["reducedDim"]] <- sprintf(
     "red.dim <- reducedDim(se, %i);", param_choices[[.redDimType]])
   cmds[["xy"]] <- sprintf(
-    "plot.data <- data.frame(X = red.dim[, %s], Y = red.dim[, %s], row.names=colnames(se));",
+    "plot.data <- data.frame(X = red.dim[, %i], Y = red.dim[, %i], row.names=colnames(se));",
     param_choices[[.redDimXAxis]],
     param_choices[[.redDimYAxis]]
   )
@@ -58,15 +58,18 @@ names(.all_labs_values) <- .all_aes_names
 {
   cmds <- list()
   y_lab <- param_choices[[.colDataYAxis]]
-  cmds[["y"]] <- sprintf("plot.data <- data.frame(Y = colData(se)[,'%s'], row.names=colnames(se));", y_lab)
-
+  cmds[["y"]] <- sprintf(
+    "plot.data <- data.frame(Y = colData(se)[,%s], row.names=colnames(se));", 
+    deparse(y_lab) # deparse() automatically adds quotes, AND protects against existing quotes/escapes.
+  )
+  
   # Prepare X-axis data.
   if (param_choices[[.colDataXAxis]]==.colDataXAxisNothingTitle) {
     x_lab <- ''
     cmds[["x"]] <- "plot.data$X <- factor(integer(ncol(se)))"
   } else {
     x_lab <- param_choices[[.colDataXAxisColData]]
-    cmds[["x"]] <- sprintf("plot.data$X <- colData(se)[,'%s'];", x_lab)
+    cmds[["x"]] <- sprintf("plot.data$X <- colData(se)[,%s];", deparse(x_lab))
   }
 
   # Adding colour commands.
@@ -120,7 +123,7 @@ names(.all_labs_values) <- .all_aes_names
   y_lab <- .gene_axis_label(se, gene_selected_y, assay_choice, multiline = FALSE)
   cmds[["y"]] <- sprintf(
     "plot.data <- data.frame(Y=assay(se, %i)[%s,], row.names = colnames(se))",
-    assay_choice, .coerce_to_character(gene_selected_y)
+    assay_choice, deparse(gene_selected_y) # deparse() also handles integer selections correctly.
   )
 
   ## Checking X axis choice:
@@ -129,7 +132,8 @@ names(.all_labs_values) <- .all_aes_names
   if (x_choice==.geneExprXAxisColDataTitle) { # colData column selected
     x_lab <- param_choices[[.geneExprXAxisColData]]
     cmds[["x"]] <- sprintf(
-       "plot.data$X <- colData(se)[,'%s'];", x_lab
+       "plot.data$X <- colData(se)[,%s];", 
+       deparse(x_lab)
     )
 
   } else if (x_choice==.geneExprXAxisGeneTableTitle || x_choice==.geneExprXAxisGeneTextTitle) { # gene selected
@@ -152,7 +156,7 @@ names(.all_labs_values) <- .all_aes_names
     x_lab <- .gene_axis_label(se, gene_selected_x, assay_choice, multiline = FALSE)
     cmds[["x"]] <- sprintf(
       "plot.data$X <- assay(se, %i)[%s,];",
-      assay_choice, .coerce_to_character(gene_selected_x)
+      assay_choice, deparse(gene_selected_x)
     )
 
   } else { # no x axis variable specified: show single violin
@@ -275,13 +279,14 @@ names(.all_labs_values) <- .all_aes_names
         .build_aes(color = color_set)
       )
       plot_cmds[["brush_color"]] <- sprintf(
-        "geom_point(%s, data = subset(plot.data, BrushBy), color = '%s') +",
-        .build_aes(color = color_set), param_choices[[.brushColor]]
+        "geom_point(%s, data = subset(plot.data, BrushBy), color = %s) +",
+        .build_aes(color = color_set), 
+        deparse(param_choices[[.brushColor]])
       )
     }
     if (brush_effect==.brushTransTitle) {
       plot_cmds[["brush_other"]] <- sprintf(
-        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %s) +",
+        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %.2f) +",
         .build_aes(color = color_set), param_choices[[.brushTransAlpha]]
       )
       plot_cmds[["brush_alpha"]] <- sprintf(
@@ -393,14 +398,16 @@ plot.data$Y <- tmp;")
         .build_aes(color = color_set, alt=c(x="jitteredX"))
       )
       plot_cmds[["brush_color"]] <- sprintf(
-        "geom_point(%s, data = subset(plot.data, BrushBy), color = '%s') +",
-        .build_aes(color = color_set, alt=c(x="jitteredX")), param_choices[[.brushColor]]
+        "geom_point(%s, data = subset(plot.data, BrushBy), color = %s) +",
+        .build_aes(color = color_set, alt=c(x="jitteredX")), 
+        deparse(param_choices[[.brushColor]])
       )
 
     } else  if (brush_effect==.brushTransTitle) {
       plot_cmds[["brush_other"]] <- sprintf(
-        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %s) +",
-        .build_aes(color = color_set, alt=c(x="jitteredX")), param_choices[[.brushTransAlpha]]
+        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %.2f) +",
+        .build_aes(color = color_set, alt=c(x="jitteredX")), 
+        param_choices[[.brushTransAlpha]]
       )
       plot_cmds[["brush_alpha"]] <- sprintf(
         "geom_point(%s, subset(plot.data, BrushBy)) +",
@@ -511,15 +518,15 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
         new_aes
       )
       plot_cmds[["brush_color"]] <- sprintf(
-        "geom_point(%s, data = subset(plot.data, BrushBy), color = '%s', width = 0.2, height = 0.2) +",
-        new_aes, param_choices[[.brushColor]]
+        "geom_point(%s, data = subset(plot.data, BrushBy), color = %s, width = 0.2, height = 0.2) +",
+        new_aes, deparse(param_choices[[.brushColor]])
       )
     }
     if (brush_effect==.brushTransTitle) {
       plot_cmds[["point"]] <-
         "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, color = 'black', alpha = 0, size = 0.5) +"
       plot_cmds[["brush_other"]] <- sprintf(
-        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %s, width = 0.2, height = 0.2) +",
+        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %.2f, width = 0.2, height = 0.2) +",
         new_aes, param_choices[[.brushTransAlpha]]
       )
       plot_cmds[["brush_alpha"]] <- sprintf(
@@ -589,7 +596,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
 
   if (color_choice==.colorByColDataTitle) {
     covariate_name <- param_choices[[.colorByColData]]
-    output$cmd <-  sprintf("plot.data$ColorBy <- colData(se)[,'%s'];", covariate_name)
+    output$cmd <-  sprintf("plot.data$ColorBy <- colData(se)[,%s];", deparse(covariate_name))
     output$label <- covariate_name
     output$FUN <- .create_color_function_chooser(colDataColorMap(color_map, covariate_name))
 
@@ -615,7 +622,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
     }
 
     output$cmd <- sprintf("plot.data$ColorBy <- assay(se, %i)[%s,];", 
-                          assay_choice, .coerce_to_character(chosen_gene))
+                          assay_choice, deparse(chosen_gene))
     output$label <- .gene_axis_label(se, chosen_gene, assay_choice, multiline = TRUE)
     output$FUN <- .create_color_function_chooser(assayColorMap(color_map, assay_choice))
 
@@ -679,7 +686,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
       assay_name <- paste("assay", assay_id)
     }
 
-    sep <- ifelse(multiline, "\\n", " ")
+    sep <- ifelse(multiline, "\n", " ")
     sprintf("%s%s(%s)", gene_id, sep, assay_name)
 }
 
@@ -715,7 +722,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
 }
 
 .make_single_lab <- function(name, value){
-    sprintf("%s = '%s'", name, value)
+    sprintf("%s = %s", name, deparse(value))
 }
 
 ############################################
@@ -774,15 +781,5 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
   tab.id <- .encode_panel_name(link)$ID
   linked.tab <- paste0("geneStatTable", tab.id, "_rows_selected")
   input[[linked.tab]]
-}
-
-.coerce_to_character <- function(x) {
-  if (is.character(x)) { 
-    return(sprintf("'%s'", x))
-  } else if (is.integer(x)) {
-    return(as.character(x))
-  } else {
-    stop(sprintf("cannot coerce '%s' to character", typeof(x)))
-  }
 }
 

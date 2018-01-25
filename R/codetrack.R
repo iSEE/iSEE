@@ -3,7 +3,7 @@
   # Commands only reported for plots, not for the tables
   aobjs <- as.data.frame(rObjects$active_plots)
   aobjs <- aobjs[aobjs$Type!="geneStat",]
-  aobjs <- aobjs[.get_reporting_order(aobjs, pObjects$brush$parent),]
+  aobjs <- aobjs[.get_reporting_order(aobjs, pObjects$brush),]
 
   # storing to a text character vector
   tracked_code <- c(
@@ -29,11 +29,9 @@
                       )
 
     # Adding commands to facilitate cross-plot brushing.
-    if (pObjects$memory[[panel_type]][panel_id, .brushActive]) {
-        tracked_code <- c(tracked_code, "",
-                          "# Saving for brush transmission",
-                          sprintf("all.coordinates[['%s']] <- plot.data", panel_name))
-    }
+    tracked_code <- c(tracked_code, "",
+                      "# Saving for brush transmission",
+                      sprintf("all.coordinates[['%s']] <- plot.data", panel_name))
 
     tracked_code <- c(tracked_code, "")
   }
@@ -46,28 +44,12 @@
   return(tracked_code)
 }
 
-.get_reporting_order <- function(active_plots, brush_parent) 
+.get_reporting_order <- function(active_plots, brush_chart) 
 # Reordering plots by whether or not they exhibited brushing.
 {
   N <- nrow(active_plots)
-  edges <- isolates <- vector("list", N)
-  node_names <- character(N)
-  
-  for (i in seq_len(N)) { 
-    panel_type <- active_plots$Type[i]
-    panel_id <- active_plots$ID[i]
-    panel_name <- paste0(panel_type, "Plot", panel_id)
-    node_names[i] <- panel_name
-
-    parent <- brush_parent[[panel_name]]
-    if (!is.null(parent)) { 
-        edges[[i]] <- c(parent, panel_name)
-    } 
-  }
-
-  edges <- as.character(unlist(edges))
-  g <- make_graph(edges, isolates=setdiff(node_names, edges), directed=TRUE)
-  ordering <- topo_sort(g, "out")
-  match(names(ordering), node_names)
+  node_names <- sprintf("%sPlot%i", active_plots$Type, active_plots$ID)
+  ordering <- topo_sort(brush_chart, "out")
+  order(match(node_names, names(ordering)))
 }
 

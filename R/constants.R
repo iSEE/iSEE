@@ -68,11 +68,10 @@
 .brushColor <- "BrushColor"
 .brushTransAlpha <- "BrushAlpha"
 
-# Zooming parameters
+# Zooming parameters. ----
 .zoomActive <- "ZoomOn"
 .zoomData <- "ZoomData"
 .zoomClick <- "ZoomClick"
-.zoomUpdate <- "ZoomUpdate"
 
 # Aggregating these plot-specific parameters,
 # based on whether they can be directly stored in memory (DIRECT) or
@@ -81,7 +80,7 @@ ALLEXTRAS_DIRECT <- c(.colorByField, .colorByColData, .colorByGeneTable, .colorB
                       .brushByPlot, .brushEffect, .brushColor, .brushTransAlpha, .zoomActive)
 ALLEXTRAS_INT <- c(.colorByGeneTableAssay, .colorByGeneTextAssay)
 
-# Other parameter panel constants. ----
+# Plot parameters. ----
 .plotParamPanelOpen <- "PlotPanelOpen"
 .plotParamPanelName <- "ParamPanel"
 

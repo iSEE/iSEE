@@ -9,14 +9,14 @@
 #' @importFrom methods as new
 #' @importFrom rintrojs introjsUI introjs
 #' @importFrom shiny actionButton fluidRow icon reactiveValues renderUI
-#' shinyApp tabPanel HTML br h1 h2 selectInput renderPlot plotOutput
-#' uiOutput sliderInput tagList textInput column observeEvent radioButtons
-#' verbatimTextOutput htmlOutput renderText need tags hr brushOpts
-#' brushedPoints observe h4 validate checkboxInput conditionalPanel
-#' renderPrint singleton showModal modalDialog
+#' shinyApp tabPanel HTML br selectInput renderPlot plotOutput uiOutput 
+#' sliderInput tagList textInput column observeEvent radioButtons
+#' need tags hr brushOpts brushedPoints observe validate checkboxInput 
+#' conditionalPanel renderPrint singleton showModal modalDialog 
+#' updateSelectInput isolate
 #' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
 #' dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu
-#' notificationItem
+#' notificationItem box
 #' @importFrom shinyjs useShinyjs disable enable disabled
 #' @importFrom utils packageVersion read.delim
 #' @importFrom ggplot2 ggplot geom_point labs theme_void aes_string geom_violin

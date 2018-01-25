@@ -20,22 +20,21 @@
             downFUN <- disabled
         }
 
-        current <- list(
-            h4(.decode_panel_name(mode, ID)),
+        current <- box(
             fluidRow(
               upFUN(column(3,actionButton(paste0(mode, ID, .organizationUp),"",icon = icon("arrow-circle-up")))),
               downFUN(column(3,actionButton(paste0(mode, ID, .organizationDown),"",icon = icon("arrow-circle-down")))),
               column(3,actionButton(paste0(mode, ID, .organizationDiscard),"",
                          icon = icon("trash"), class = "btn btn-warning"))
             ),
-            sliderInput(paste0(mode, ID, .organizationWidth), "Width",
-                        min=2, max=12, value=panel.width, step=1)
+            sliderInput(paste0(mode, ID, .organizationWidth), label="Width",
+                        min=2, max=12, value=panel.width, step=1),
+            title=.decode_panel_name(mode, ID), status=box_status[mode], 
+            width=NULL, solidHeader=FALSE, background="black"
             )
 
-        if (i!=1L) {
-            current <- c(list(hr()), current)
-        }
-        collected[[i]] <- current
+        # Reducing the padding above the boxes, except for the first one.
+        collected[[i]] <- fluidRow(column(current, width=12))
     }
     do.call(tagList, collected)
 }
@@ -66,19 +65,13 @@
     names(red_dim_names) <- sprintf("(%i) %s", red_dim_names, red_dim_names_raw)
     red_dim_dims <- vapply(red_dim_names, FUN=function(x) ncol(reducedDim(se, x)), FUN.VALUE=0L)
   
-    # Defining currently active tables for linking.
+    # Defining all transmitting tables and plots for linking.
     all.names <- .decode_panel_name(active_plots$Type, active_plots$ID)
     active.tab <- all.names[active_plots$Type=="geneStat"]
     if (length(active.tab)==0L) {
         active.tab <- ""
     }
-
-    # Defining brush-transmitting scatter plots to use in linking.
-    keep <- logical(nrow(active_plots))
-    for (i in which(active_plots$Type!="geneStat")) {
-        keep[i] <- memory[[active_plots$Type[i]]][[.brushActive]][active_plots$ID[i]]
-    }
-    brushable <- c("", all.names[keep])
+    brushable <- c("", .identify_transmitters(active_plots, memory))
 
     for (i in seq_len(nrow(active_plots))) {
         mode <- active_plots$Type[i]
@@ -209,8 +202,10 @@
             cumulative.width <- 0L
         }
 
-        # Aggregating together everything into a column.
-        cur.row[[row.counter]] <- do.call(column, c(list(width=panel.width, h4(all.names[i]), obj), param))
+        # Aggregating together everything into a box, and then into a column.
+        cur.box <- do.call(box, c(list(obj), param, 
+           list(title=all.names[i], solidHeader=TRUE, width=NULL, status = box_status[mode])))
+        cur.row[[row.counter]] <- column(width=panel.width, cur.box, style='padding:3px;') 
         row.counter <- row.counter + 1L
         cumulative.width <- cumulative.width + panel.width
     }
@@ -313,3 +308,6 @@
 .conditionalPanelOnRadio <- function(radio_id, radio_choice, ...) {
     conditionalPanel(condition=sprintf('(input["%s"] == "%s")', radio_id, radio_choice), ...)
 }
+
+box_status <- c(redDim="primary", geneExpr="success", colData="warning", geneStat="danger")
+

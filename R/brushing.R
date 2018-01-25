@@ -15,10 +15,10 @@
 # in the current panel changes.
 {
   if (old_parent!="" && are_adjacent(graph, old_parent, panel)) {
-      graph[from=old_parent,to=panel]<-0
+    graph[from=old_parent,to=panel] <- 0
   }
   if (new_parent!="" && !are_adjacent(graph, new_parent, panel)) {
-      graph <- add_edges(graph, c(new_parent, panel))
+    graph <- add_edges(graph, c(new_parent, panel))
   }
   return(graph)
 }

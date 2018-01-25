@@ -441,13 +441,14 @@ iSEE <- function(
 
           ###############
 
-          # Brush choice observers.
+          # Brush choice observer. This will fail with an error message
+          # if there are cycles across multiple plots. Otherwise it will
+          # update the brushing chart and trigger replotting.
           observeEvent(input[[paste0(mode0, .brushByPlot, i0)]], {
             tmp <- .choose_new_brush_source(pObjects$brush, plot.name, 
                 .decoded2encoded(input[[paste0(mode0, .brushByPlot, i0)]]),
                 .decoded2encoded(pObjects$memory[[mode0]][i0, .brushByPlot]))
 
-            # Confirming that there are no cycles across multiple plots.
             daggy <- is_dag(simplify(tmp, remove.loops=TRUE)) 
             if (!daggy) {
               showNotification("brushing relationships cannot be cyclic", type="error")
@@ -466,6 +467,12 @@ iSEE <- function(
           observeEvent(input[[paste0(mode0, .brushField, i0)]], {
             pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, 
                 .brushData, input[[paste0(mode0, .brushField, i0)]])
+
+            # If it is rebrushing itself in restrict mode, we need to 
+            # do something to take the intersection of brushed regions.
+            if (pObjects$memory[[mode0]][i0, .brushEffect]==.brushRestrictTitle
+                && plot.name==.decoded2encoded(pObjects$memory[[mode0]][i0, .brushByPlot])) {
+            }
 
             # Trigger replotting of all dependent plots that receive this brush.
             children <- names(adjacent_vertices(pObjects$brush, plot.name, mode="out")[[1]])

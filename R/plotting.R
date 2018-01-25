@@ -763,7 +763,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
   all_cmds <- unlist(cmds)
   multi_line <- grep("\\+$", all_cmds) + 1 # indenting next line
   all_cmds[multi_line] <- paste0("    ", all_cmds[multi_line])
-  paste(all_cmds, collapse="\n")
+  all_cmds
 }
 
 .find_linked_gene <- function(link, input)

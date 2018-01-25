@@ -84,7 +84,7 @@
         dblclick <- NULL
         brush.opts <- NULL
         if (mode!="geneStat") { 
-            brush.opts <- brushOpts(paste0(mode, .brushField, ID), resetOnNew=TRUE)
+            brush.opts <- brushOpts(paste0(mode, .brushField, ID), resetOnNew=FALSE)
             dblclick <- paste0(mode, .zoomClick, ID)
         }
 

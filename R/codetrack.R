@@ -24,20 +24,47 @@
                       strrep("#", 80),
                       paste0("## ", .decode_panel_name(panel_type, panel_id)),
                       strrep("#", 80),
-                      "",
-                      pObjects$commands[[panel_name]]
-                      )
+                      "")
 
-    # Adding commands to facilitate cross-plot brushing.
-    tracked_code <- c(tracked_code, "",
-                      "# Saving for brush transmission",
-                      sprintf("all.coordinates[['%s']] <- plot.data", panel_name))
+    # Adding the plotting commands.
+    mult <- pObjects$brush[panel_name, panel_name]
+    cur_cmds <- pObjects$commands[[panel_name]]
+    save_cmd <- c("# Saving for brush transmission",
+                  sprintf("all.coordinates[['%s']] <- plot.data", panel_name))
+
+    if (mult==0) { 
+      tracked_code <- c(tracked_code, cur_cmds, "", save_cmd)
+
+    } else {
+      # Some special handling required for self-brushing, to generate
+      # the plot.data for calculation of BrushBy.
+      # All non-plotting code goes into a loop.
+      brushby_ix <- grep("^brushedPts <- ", cur_cmds)
+      plot_ix <- which("# Generating the plot"==cur_cmds)
+      plot_cmds <- cur_cmds[plot_ix:length(cur_cmds)]
+      init_cmds <- cur_cmds[seq_len(brushby_ix-1L)]
+      other_cmds <- cur_cmds[brushby_ix:(plot_ix-1L)]
+
+      # Avoiding application of the brush in the first iteration.
+      other_cmds[1] <- paste0("if (ix!=1) {\n", .indent(other_cmds[1]), 
+                              "\n} else {\n    plot.data$BrushBy <- TRUE\n}")
+
+      lim_ix <- grep("^[xy]bounds <- ", other_cmds)
+      other_cmds[lim_ix] <- paste0("if (ix==1) {\n", .indent(other_cmds[lim_ix]), "\n}")
+
+      # Saving the transmitted points.
+      other_cmds <- c(other_cmds, save_cmd)
+
+      tracked_code <- c(tracked_code, init_cmds, "for (ix in seq_len(2)) {",
+                        .indent(other_cmds), "}", "", plot_cmds)
+    }
 
     tracked_code <- c(tracked_code, "")
   }
 
   tracked_code <- c(tracked_code,
-                    "## to guarantee the reproducibility of your code, you should also",
+                    strrep("#", 80),
+                    "## To guarantee the reproducibility of your code, you should also",
                     "## record the output of sessionInfo()",
                     "sessionInfo()")
 
@@ -53,3 +80,8 @@
   order(match(node_names, names(ordering)))
 }
 
+.indent <- function(cmds) {
+  cmds <- paste0("    ", cmds)
+  cmds <- gsub("\n", "\n    ", cmds)
+  return(cmds)
+}

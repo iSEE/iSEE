@@ -241,6 +241,7 @@ iSEE <- function(
       actionButton(paste0("geneStat", .organizationNew), "New gene table", class = "btn btn-primary",icon = icon("plus")),
 
       actionButton("getcode_all","Extract the R code!",icon = icon("magic")),
+      hr(),
 
       uiOutput("panelOrganization")
     ), # end of dashboardSidebar

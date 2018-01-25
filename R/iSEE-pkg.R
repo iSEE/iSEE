@@ -9,11 +9,11 @@
 #' @importFrom methods as new
 #' @importFrom rintrojs introjsUI introjs
 #' @importFrom shiny actionButton fluidRow icon reactiveValues renderUI
-#' shinyApp tabPanel HTML br h1 h2 selectInput renderPlot plotOutput
-#' uiOutput sliderInput tagList textInput column observeEvent radioButtons
-#' verbatimTextOutput htmlOutput renderText need tags hr brushOpts
-#' brushedPoints observe h4 validate checkboxInput conditionalPanel
-#' renderPrint singleton showModal modalDialog p updateSelectInput
+#' shinyApp tabPanel HTML br selectInput renderPlot plotOutput uiOutput 
+#' sliderInput tagList textInput column observeEvent radioButtons
+#' need tags hr brushOpts brushedPoints observe validate checkboxInput 
+#' conditionalPanel renderPrint singleton showModal modalDialog 
+#' updateSelectInput isolate p
 #' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
 #' dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu
 #' notificationItem box

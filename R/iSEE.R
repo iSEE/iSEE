@@ -220,6 +220,18 @@ iSEE <- function(
                      packageVersion("iSEE")),
       titleWidth = 800,
       dropdownMenu(type = "tasks",
+                   icon = icon("chain"),
+                   badgeStatus = NULL,
+                   headerText = "Display the graph for the linked plots",
+                   notificationItem(
+                     text = actionButton('open_linkgraph', label="Click here",
+                                         # icon = icon("life-ring"),
+                                         style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
+                     ),
+                     icon = icon(""), status = "primary"
+                   )
+      ), # end of dropdownMenu
+      dropdownMenu(type = "tasks",
                    icon = icon("question-circle"),
                    badgeStatus = NULL,
                    headerText = "Want some more info?",
@@ -367,6 +379,18 @@ iSEE <- function(
               sessionInfo()
             })
           )
+        )
+      )
+    })
+    
+    observeEvent(input$open_linkgraph, {
+      showModal(
+        modalDialog(
+          title = "This is the graph for the links between the plots", size = "l",
+          fade = TRUE, footer = NULL, easyClose = TRUE,
+          renderPlot({
+            plot(pObjects$brush)
+          })
         )
       )
     })

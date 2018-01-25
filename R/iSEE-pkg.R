@@ -13,7 +13,7 @@
 #' sliderInput tagList textInput column observeEvent radioButtons
 #' need tags hr brushOpts brushedPoints observe validate checkboxInput 
 #' conditionalPanel renderPrint singleton showModal modalDialog 
-#' updateSelectInput isolate p
+#' updateSelectInput isolate showNotification p
 #' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
 #' dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu
 #' notificationItem box
@@ -31,7 +31,8 @@
 #' @importFrom shinyAce aceEditor
 #' @importFrom methods new slot
 #' @importFrom RColorBrewer brewer.pal
-#' @importFrom igraph make_graph topo_sort
+#' @importFrom igraph make_graph topo_sort are_adjacent incident add_edges
+#' adjacent_vertices is_dag simplify
 #' @author Aaron Lun \email{alun@@wehi.edu.au}
 #' @author Charlotte Soneson \email{charlotte.soneson@@uzh.ch}
 #' @author Federico Marini \email{marinif@@uni-mainz.de}

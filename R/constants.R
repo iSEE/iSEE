@@ -57,8 +57,8 @@
 .brushParamPanelOpen <- "BrushPanelOpen"
 
 .brushField <- "Brush"
-.brushActive <- "BrushOn"
 .brushByPlot <- "BrushByPlot"
+.brushData <- "BrushData"
 
 .brushEffect <- "BrushEffect"
 .brushRestrictTitle <- "Restrict"
@@ -69,7 +69,6 @@
 .brushTransAlpha <- "BrushAlpha"
 
 # Zooming parameters. ----
-.zoomActive <- "ZoomOn"
 .zoomData <- "ZoomData"
 .zoomClick <- "ZoomClick"
 
@@ -77,7 +76,7 @@
 # based on whether they can be directly stored in memory (DIRECT) or
 # whether they need to be coerced into a specific format (INT, etc.)
 ALLEXTRAS_DIRECT <- c(.colorByField, .colorByColData, .colorByGeneTable, .colorByGeneText,
-                      .brushByPlot, .brushEffect, .brushColor, .brushTransAlpha, .zoomActive)
+                      .brushEffect, .brushColor, .brushTransAlpha)
 ALLEXTRAS_INT <- c(.colorByGeneTableAssay, .colorByGeneTextAssay)
 
 # Plot parameters. ----
@@ -118,3 +117,9 @@ names(rev.translation) <- translation
     return(list(Type=raw.str, ID=ID))
 }
 
+.decoded2encoded <- function(names) {
+    keep <- names!=""
+    x <- .encode_panel_name(names[keep])
+    names[keep] <- sprintf("%sPlot%i", x$Type, x$ID)
+    names
+}

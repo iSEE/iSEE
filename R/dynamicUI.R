@@ -66,19 +66,13 @@
     names(red_dim_names) <- sprintf("(%i) %s", red_dim_names, red_dim_names_raw)
     red_dim_dims <- vapply(red_dim_names, FUN=function(x) ncol(reducedDim(se, x)), FUN.VALUE=0L)
   
-    # Defining currently active tables for linking.
+    # Defining all transmitting tables and plots for linking.
     all.names <- .decode_panel_name(active_plots$Type, active_plots$ID)
     active.tab <- all.names[active_plots$Type=="geneStat"]
     if (length(active.tab)==0L) {
         active.tab <- ""
     }
-
-    # Defining brush-transmitting scatter plots to use in linking.
-    keep <- logical(nrow(active_plots))
-    for (i in which(active_plots$Type!="geneStat")) {
-        keep[i] <- memory[[active_plots$Type[i]]][[.brushActive]][active_plots$ID[i]]
-    }
-    brushable <- c("", all.names[keep])
+    brushable <- c("", .identify_transmitters(active_plots, memory))
 
     for (i in seq_len(nrow(active_plots))) {
         mode <- active_plots$Type[i]

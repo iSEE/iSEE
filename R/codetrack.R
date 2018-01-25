@@ -3,7 +3,7 @@
   # Commands only reported for plots, not for the tables
   aobjs <- as.data.frame(rObjects$active_plots)
   aobjs <- aobjs[aobjs$Type!="geneStat",]
-  aobjs <- aobjs[.get_reporting_order(aobjs, pObjects$brush_parent),]
+  aobjs <- aobjs[.get_reporting_order(aobjs, pObjects$brush$parent),]
 
   # storing to a text character vector
   tracked_code <- c(

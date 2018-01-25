@@ -13,10 +13,10 @@
 #' uiOutput sliderInput tagList textInput column observeEvent radioButtons
 #' verbatimTextOutput htmlOutput renderText need tags hr brushOpts
 #' brushedPoints observe h4 validate checkboxInput conditionalPanel
-#' renderPrint singleton showModal modalDialog p
+#' renderPrint singleton showModal modalDialog p updateSelectInput
 #' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
 #' dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu
-#' notificationItem
+#' notificationItem box
 #' @importFrom utils packageVersion read.delim citation sessionInfo
 #' @importFrom shinyjs useShinyjs disable enable disabled
 #' @importFrom ggplot2 ggplot geom_point labs theme_void aes_string geom_violin

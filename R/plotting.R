@@ -21,7 +21,7 @@ names(.all_labs_values) <- .all_aes_names
   cmds[["reducedDim"]] <- sprintf(
     "red.dim <- reducedDim(se, %i);", param_choices[[.redDimType]])
   cmds[["xy"]] <- sprintf(
-    "plot.data <- data.frame(X = red.dim[, %s], Y = red.dim[, %s], row.names=colnames(se));",
+    "plot.data <- data.frame(X = red.dim[, %i], Y = red.dim[, %i], row.names=colnames(se));",
     param_choices[[.redDimXAxis]],
     param_choices[[.redDimYAxis]]
   )
@@ -58,15 +58,18 @@ names(.all_labs_values) <- .all_aes_names
 {
   cmds <- list()
   y_lab <- param_choices[[.colDataYAxis]]
-  cmds[["y"]] <- sprintf("plot.data <- data.frame(Y = colData(se)[,'%s'], row.names=colnames(se));", y_lab)
-
+  cmds[["y"]] <- sprintf(
+    "plot.data <- data.frame(Y = colData(se)[,%s], row.names=colnames(se));", 
+    deparse(y_lab) # deparse() automatically adds quotes, AND protects against existing quotes/escapes.
+  )
+  
   # Prepare X-axis data.
   if (param_choices[[.colDataXAxis]]==.colDataXAxisNothingTitle) {
     x_lab <- ''
     cmds[["x"]] <- "plot.data$X <- factor(integer(ncol(se)))"
   } else {
     x_lab <- param_choices[[.colDataXAxisColData]]
-    cmds[["x"]] <- sprintf("plot.data$X <- colData(se)[,'%s'];", x_lab)
+    cmds[["x"]] <- sprintf("plot.data$X <- colData(se)[,%s];", deparse(x_lab))
   }
 
   # Adding colour commands.
@@ -102,21 +105,25 @@ names(.all_labs_values) <- .all_aes_names
   ## Setting up the y-axis:
   y_choice <- param_choices[[.geneExprYAxis]]
   if (y_choice==.geneExprYAxisGeneTableTitle) {
-    gene_selected_y <- .find_linked_gene(se, param_choices[[.geneExprYAxisGeneTable]], input)
-  } else if (y_choice==.geneExprYAxisGeneTextTitle) {
-    gene_selected_y <- param_choices[[.geneExprYAxisGeneText]]
-  }
-
-  validate(need(
-      gene_selected_y %in% rownames(se),
+    gene_selected_y <- .find_linked_gene(param_choices[[.geneExprYAxisGeneTable]], input)
+    validate(need( 
+      length(gene_selected_y)==1L,
       sprintf("Invalid '%s' > '%s' input", .geneExprYAxis, y_choice)
     ))
 
+  } else if (y_choice==.geneExprYAxisGeneTextTitle) {
+    gene_selected_y <- param_choices[[.geneExprYAxisGeneText]]
+    validate(need( 
+      gene_selected_y %in% rownames(se),
+      sprintf("Invalid '%s' > '%s' input", .geneExprYAxis, y_choice)
+    ))
+  }
+
   assay_choice <- param_choices[[.geneExprAssay]]
-  y_lab <- .gene_axis_label(gene_selected_y, assayNames(se)[assay_choice], multiline = FALSE)
+  y_lab <- .gene_axis_label(se, gene_selected_y, assay_choice, multiline = FALSE)
   cmds[["y"]] <- sprintf(
-    "plot.data <- data.frame(Y=assay(se, %i)['%s',], row.names = colnames(se))",
-    assay_choice, gene_selected_y
+    "plot.data <- data.frame(Y=assay(se, %i)[%s,], row.names = colnames(se))",
+    assay_choice, deparse(gene_selected_y) # deparse() also handles integer selections correctly.
   )
 
   ## Checking X axis choice:
@@ -125,24 +132,31 @@ names(.all_labs_values) <- .all_aes_names
   if (x_choice==.geneExprXAxisColDataTitle) { # colData column selected
     x_lab <- param_choices[[.geneExprXAxisColData]]
     cmds[["x"]] <- sprintf(
-       "plot.data$X <- colData(se)[,'%s'];", x_lab
+       "plot.data$X <- colData(se)[,%s];", 
+       deparse(x_lab)
     )
 
   } else if (x_choice==.geneExprXAxisGeneTableTitle || x_choice==.geneExprXAxisGeneTextTitle) { # gene selected
+
     if (x_choice==.geneExprXAxisGeneTableTitle) {
-      gene_selected_x <- .find_linked_gene(se, param_choices[[.geneExprXAxisGeneTable]], input)
+      gene_selected_x <- .find_linked_gene(param_choices[[.geneExprXAxisGeneTable]], input)
+      validate(need( 
+        length(gene_selected_y)==1L,
+        sprintf("Invalid '%s' > '%s' input", .geneExprXAxis, x_choice)
+      ))
+
     } else if (x_choice==.geneExprXAxisGeneTextTitle) {
       gene_selected_x <- param_choices[[.geneExprXAxisGeneText]]
-    }
-    validate(need(
+      validate(need(
         gene_selected_x %in% rownames(se),
         sprintf("Invalid '%s' > '%s' input", .geneExprXAxis, x_choice)
-    ))
+      ))
+    }
 
-    x_lab <- .gene_axis_label(gene_selected_x, assayNames(se)[assay_choice], multiline = FALSE)
+    x_lab <- .gene_axis_label(se, gene_selected_x, assay_choice, multiline = FALSE)
     cmds[["x"]] <- sprintf(
-      "plot.data$X <- assay(se, %i)['%s',];",
-      assay_choice, gene_selected_x
+      "plot.data$X <- assay(se, %i)[%s,];",
+      assay_choice, deparse(gene_selected_x)
     )
 
   } else { # no x axis variable specified: show single violin
@@ -265,13 +279,14 @@ names(.all_labs_values) <- .all_aes_names
         .build_aes(color = color_set)
       )
       plot_cmds[["brush_color"]] <- sprintf(
-        "geom_point(%s, data = subset(plot.data, BrushBy), color = '%s') +",
-        .build_aes(color = color_set), param_choices[[.brushColor]]
+        "geom_point(%s, data = subset(plot.data, BrushBy), color = %s) +",
+        .build_aes(color = color_set), 
+        deparse(param_choices[[.brushColor]])
       )
     }
     if (brush_effect==.brushTransTitle) {
       plot_cmds[["brush_other"]] <- sprintf(
-        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %s) +",
+        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %.2f) +",
         .build_aes(color = color_set), param_choices[[.brushTransAlpha]]
       )
       plot_cmds[["brush_alpha"]] <- sprintf(
@@ -383,14 +398,16 @@ plot.data$Y <- tmp;")
         .build_aes(color = color_set, alt=c(x="jitteredX"))
       )
       plot_cmds[["brush_color"]] <- sprintf(
-        "geom_point(%s, data = subset(plot.data, BrushBy), color = '%s') +",
-        .build_aes(color = color_set, alt=c(x="jitteredX")), param_choices[[.brushColor]]
+        "geom_point(%s, data = subset(plot.data, BrushBy), color = %s) +",
+        .build_aes(color = color_set, alt=c(x="jitteredX")), 
+        deparse(param_choices[[.brushColor]])
       )
 
     } else  if (brush_effect==.brushTransTitle) {
       plot_cmds[["brush_other"]] <- sprintf(
-        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %s) +",
-        .build_aes(color = color_set, alt=c(x="jitteredX")), param_choices[[.brushTransAlpha]]
+        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %.2f) +",
+        .build_aes(color = color_set, alt=c(x="jitteredX")), 
+        param_choices[[.brushTransAlpha]]
       )
       plot_cmds[["brush_alpha"]] <- sprintf(
         "geom_point(%s, subset(plot.data, BrushBy)) +",
@@ -501,15 +518,15 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
         new_aes
       )
       plot_cmds[["brush_color"]] <- sprintf(
-        "geom_point(%s, data = subset(plot.data, BrushBy), color = '%s', width = 0.2, height = 0.2) +",
-        new_aes, param_choices[[.brushColor]]
+        "geom_point(%s, data = subset(plot.data, BrushBy), color = %s, width = 0.2, height = 0.2) +",
+        new_aes, deparse(param_choices[[.brushColor]])
       )
     }
     if (brush_effect==.brushTransTitle) {
       plot_cmds[["point"]] <-
         "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, color = 'black', alpha = 0, size = 0.5) +"
       plot_cmds[["brush_other"]] <- sprintf(
-        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %s, width = 0.2, height = 0.2) +",
+        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %.2f, width = 0.2, height = 0.2) +",
         new_aes, param_choices[[.brushTransAlpha]]
       )
       plot_cmds[["brush_alpha"]] <- sprintf(
@@ -578,45 +595,40 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
   color_choice <- param_choices[[.colorByField]]
 
   if (color_choice==.colorByColDataTitle) {
-    covariate.name <- param_choices[[.colorByColData]]
-    output$cmd <-  sprintf("plot.data$ColorBy <- colData(se)[,'%s'];", covariate.name)
-    output$label <- covariate.name
-    output$FUN <- .create_color_function_chooser(colDataColorMap(color_map, covariate.name))
+    covariate_name <- param_choices[[.colorByColData]]
+    output$cmd <-  sprintf("plot.data$ColorBy <- colData(se)[,%s];", deparse(covariate_name))
+    output$label <- covariate_name
+    output$FUN <- .create_color_function_chooser(colDataColorMap(color_map, covariate_name))
 
   } else if (color_choice==.colorByGeneTableTitle || color_choice==.colorByGeneTextTitle) {
 
     # Set the color to the selected gene
     if (color_choice==.colorByGeneTableTitle) {
-      covariate.name <- .find_linked_gene(se, param_choices[[.colorByGeneTable]], input)
+      chosen_gene <- .find_linked_gene(param_choices[[.colorByGeneTable]], input)
       validate(need(
-        covariate.name %in% rownames(se),
+        length(chosen_gene)==1L,
         sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTableTitle)
       ))
       assay_choice <- param_choices[[.colorByGeneTableAssay]]
 
     } else {
-      covariate.name <- param_choices[[.colorByGeneText]]
+      chosen_gene <- param_choices[[.colorByGeneText]]
       validate(need(
-        covariate.name %in% rownames(se),
+        chosen_gene %in% rownames(se),
         sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTextTitle)
       ))
       assay_choice <- param_choices[[.colorByGeneTextAssay]]
 
     }
 
-    if (identical(covariate.name, "")){
-      # The initial validation code is meant to ensure that this never happens
-      warning("Color mode is gene expression, but none selected.")
-    } else {
-      output$cmd <- sprintf("plot.data$ColorBy <- assay(se, %i)['%s',];", assay_choice, covariate.name)
-      output$label <- .gene_axis_label(covariate.name, assayNames(se)[assay_choice], multiline = TRUE)
-      output$FUN <- .create_color_function_chooser(assayColorMap(color_map, assay_choice))
-      # Can add warning here if choice doesn't match up with name.
-    }
+    output$cmd <- sprintf("plot.data$ColorBy <- assay(se, %i)[%s,];", 
+                          assay_choice, deparse(chosen_gene))
+    output$label <- .gene_axis_label(se, chosen_gene, assay_choice, multiline = TRUE)
+    output$FUN <- .create_color_function_chooser(assayColorMap(color_map, assay_choice))
 
   } else {
-      # No color; function just returns NULL all the time.
-      output$FUN <- function(is_discrete) NULL
+    # No color; function just returns NULL all the time.
+    output$FUN <- function(is_discrete) NULL
   }
 
   return(output)
@@ -660,8 +672,21 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
 # Internal functions: aesthetics ----
 ############################################
 
-.gene_axis_label <- function(gene_id, assay_name, multiline=FALSE){
-    sep = ifelse(multiline, "\\n", " ")
+.gene_axis_label <- function(se, gene_id, assay_id, multiline=FALSE){
+    if (is.integer(gene_id)) {
+      if (is.null(rownames(se))) { 
+        gene_id <- paste("Feature", gene_id)
+      } else {
+        gene_id <- rownames(se)[gene_id]
+      }
+    }
+
+    assay_name <- assayNames(se)[assay_id]
+    if (assay_name=="") {
+      assay_name <- paste("assay", assay_id)
+    }
+
+    sep <- ifelse(multiline, "\n", " ")
     sprintf("%s%s(%s)", gene_id, sep, assay_name)
 }
 
@@ -697,7 +722,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
 }
 
 .make_single_lab <- function(name, value){
-    sprintf("%s = '%s'", name, value)
+    sprintf("%s = %s", name, deparse(value))
 }
 
 ############################################
@@ -747,7 +772,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
   paste(all_cmds, collapse="\n")
 }
 
-.find_linked_gene <- function(se, link, input)
+.find_linked_gene <- function(link, input)
 # Convenience function to identify the selected gene from the linked table.
 {
   if (link=="") {
@@ -755,8 +780,6 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
   }
   tab.id <- .encode_panel_name(link)$ID
   linked.tab <- paste0("geneStatTable", tab.id, "_rows_selected")
-  rownames(se)[input[[linked.tab]]]
+  input[[linked.tab]]
 }
-
-
 

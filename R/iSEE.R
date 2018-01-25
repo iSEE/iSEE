@@ -272,6 +272,7 @@ iSEE <- function(
       actionButton(paste0("geneStat", .organizationNew), "New gene table", class = "btn btn-primary",icon = icon("plus")),
 
       actionButton("getcode_all","Extract the R code!",icon = icon("magic")),
+      hr(),
 
       uiOutput("panelOrganization")
     ), # end of dashboardSidebar
@@ -305,18 +306,23 @@ iSEE <- function(
 
   iSEE_server <- function(input, output, session) {
 
-    # storage for all the reactive objects
-    rObjects <- reactiveValues(
-        active_plots = active_plots,
-        rebrushed = 1
-    )
-
-    # storage for other persistent objects
+    # Storage for other persistent objects
     pObjects <- new.env()
     pObjects$memory <- memory
     pObjects$coordinates <- list()
     pObjects$commands <- list()
-    pObjects$brush_parent <- list()
+    pObjects$brush <- list(parent=list())
+
+    # storage for all the reactive objects
+    rObjects <- reactiveValues(
+        active_plots = active_plots
+    )
+    for (mode in c("redDim", "geneExpr", "colData")) {
+      max_plots <- nrow(pObjects$memory[[mode]])
+      for (i in seq_len(max_plots)) {
+        rObjects[[paste0(mode, "Update", i)]] <- 1L
+      }
+    }
 
     # info boxes, to keep on top of the page  on the left side?
 
@@ -375,7 +381,6 @@ iSEE <- function(
     #######################################################################
 
     output$allPanels <- renderUI({
-        (rObjects$rebrushed) # Trigger re-rendering if these are selected.
         .panel_generation(rObjects$active_plots, pObjects$memory, se)
     })
 
@@ -468,8 +473,6 @@ iSEE <- function(
     for (mode in c("redDim", "geneExpr", "colData")) {
       max_plots <- nrow(pObjects$memory[[mode]])
       for (i in seq_len(max_plots)) {
-        rObjects[[paste0(mode, .zoomUpdate, i)]] <- 1L
-
         local({
           mode0 <- mode
           i0 <- i
@@ -492,9 +495,28 @@ iSEE <- function(
           observeEvent(input[[paste0(mode0, .brushActive, i0)]], {
             current <- input[[paste0(mode0, .brushActive, i0)]]
             reference <- pObjects$memory[[mode0]][[.brushActive]][i0]
+
             if (!identical(current, reference)) {
-              rObjects$rebrushed <- rObjects$rebrushed + 1L
               pObjects$memory[[mode0]][[.brushActive]][i0] <- current
+              active_plots <- isolate(rObjects$active_plots)
+              new_available <- c("", .identify_transmitters(active_plots, pObjects$memory))
+
+              # Updating all brushing choices. This doesn't need to be done when adding
+              # or discarding a plot, as that causes re-rendering of the UI anyway. 
+              for (i in which(active_plots$Type!="geneStat")) {
+                other_mode <- active_plots$Type[i]
+                other_id <- active_plots$ID[i]
+                brush_plot <- pObjects$memory[[other_mode]][other_id,.brushByPlot]
+
+                if (!brush_plot %in% new_available) { 
+                  brush_plot <- ""
+                  pObjects$memory[[other_mode]][other_id,.brushByPlot] <- brush_plot
+                  rObjects[[paste0(other_mode, "Update", i0)]] <- .increment_counter(isolate(rObjects[[paste0(other_mode, "Update", i0)]]))
+                }
+
+                updateSelectInput(session, paste0(other_mode, .brushByPlot, other_id),
+                                  choices=new_available, selected=brush_plot)
+              }
             }
           }, ignoreInit=TRUE)
 
@@ -507,7 +529,7 @@ iSEE <- function(
                new_coords <- NULL
              }
              pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, new_coords)
-             rObjects[[paste0(mode0, .zoomUpdate, i0)]] <- rObjects[[paste0(mode0, .zoomUpdate, i0)]] + 1L
+             rObjects[[paste0(mode0, "Update", i0)]] <- .increment_counter(isolate(rObjects[[paste0(mode0, "Update", i0)]]))
           })
         })
       }
@@ -526,6 +548,7 @@ iSEE <- function(
         i0 <- i
         plot.name <- .redDimPlot(i0)
         output[[plot.name]] <- renderPlot({
+          force(rObjects[[.inputRedDim("Update", i0)]])
 
           # Updating parameters in the memory store (non-characters need some careful treatment).
           for (field in c(ALLEXTRAS_DIRECT)) {
@@ -535,14 +558,11 @@ iSEE <- function(
               pObjects$memory$redDim[[field]][i0] <- as.integer(input[[.inputRedDim(field, i0)]])
           }
 
-          # Updating zooming, which requires some more care.
-          force(rObjects[[.inputRedDim(.zoomUpdate, i0)]])
-
           # Creating the plot, with saved coordinates.
           p.out <- .make_redDimPlot(
             se, pObjects$memory$redDim[i0,], input, pObjects$coordinates, colormap)
           pObjects$commands[[plot.name]] <- p.out$cmd
-          pObjects$brush_parent[[plot.name]] <- p.out$brush_parent
+          pObjects$brush$parent[[plot.name]] <- p.out$brush_parent
           pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
         })
@@ -558,6 +578,7 @@ iSEE <- function(
         i0 <- i
         plot.name <- .colDataPlot(i0)
         output[[plot.name]] <- renderPlot({
+          force(rObjects[[.inputColData("Update", i0)]])
 
           # Updating parameters.
           for (field in c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, ALLEXTRAS_DIRECT)) {
@@ -567,14 +588,11 @@ iSEE <- function(
               pObjects$memory$colData[[field]][i0] <- as.integer(input[[.inputColData(field, i0)]])
           }
 
-          # Updating zooming.
-          force(rObjects[[.inputColData(.zoomUpdate, i0)]])
-
           # Creating the plot, with saved coordinates.
           p.out <- .make_colDataPlot(
             se, pObjects$memory$colData[i0,], input, pObjects$coordinates, colormap)
           pObjects$commands[[plot.name]] <- p.out$cmd
-          pObjects$brush_parent[[plot.name]] <- p.out$brush_parent
+          pObjects$brush$parent[[plot.name]] <- p.out$brush_parent
           pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
         })
@@ -590,6 +608,7 @@ iSEE <- function(
         i0 <- i
         plot.name <- .geneExprPlot(i0)
         output[[plot.name]] <- renderPlot({
+          force(rObjects[[.inputGeneExpr("Update", i0)]])
 
           # Updating parameters.
           for (field in c(.geneExprYAxis, .geneExprYAxisGeneTable, .geneExprYAxisGeneText,
@@ -600,14 +619,11 @@ iSEE <- function(
               pObjects$memory$geneExpr[[field]][i0] <- as.integer(input[[.inputGeneExpr(field, i0)]])
           }
 
-          # Updating zooming.
-          force(rObjects[[.inputGeneExpr(.zoomUpdate, i0)]])
-
           # Creating the plot.
           p.out <- .make_geneExprPlot(
             se, pObjects$memory$geneExpr[i0,], input, pObjects$coordinates, colormap)
           pObjects$commands[[plot.name]] <- p.out$cmd
-          pObjects$brush_parent[[plot.name]] <- p.out$brush_parent
+          pObjects$brush$parent[[plot.name]] <- p.out$brush_parent
           pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
         })
@@ -664,6 +680,11 @@ iSEE <- function(
   shinyApp(ui = iSEE_ui, server = iSEE_server)
 }
 
+
+#######################################################################
+# Internal functions. 
+#######################################################################
+
 .update_list_element <- function(memory, ID, value) {
     out <- memory[[.zoomData]]
     out[ID] <- list(value)
@@ -679,3 +700,18 @@ iSEE <- function(
   ))
 }
 
+.identify_transmitters <- function(active_plots, memory) {
+  keep <- logical(nrow(active_plots))
+  for (i in which(active_plots$Type!="geneStat")) {
+    keep[i] <- memory[[active_plots$Type[i]]][active_plots$ID[i],.brushActive]
+  }
+  return(.decode_panel_name(active_plots$Type[keep], active_plots$ID[keep]))
+}
+
+.increment_counter <- function(counter, max=10000L) {
+  counter <- counter + 1L
+  if (counter >= max) {
+    counter <- 0L
+  }
+  return(counter)
+}

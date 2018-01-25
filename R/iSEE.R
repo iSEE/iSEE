@@ -443,11 +443,20 @@ iSEE <- function(
 
           # Brush choice observers.
           observeEvent(input[[paste0(mode0, .brushByPlot, i0)]], {
-            pObjects$brush <- .choose_new_brush_source(pObjects$brush, plot.name, 
+            tmp <- .choose_new_brush_source(pObjects$brush, plot.name, 
                 .decoded2encoded(input[[paste0(mode0, .brushByPlot, i0)]]),
                 .decoded2encoded(pObjects$memory[[mode0]][i0, .brushByPlot]))
-            
-            pObjects$memory[[mode0]][i0, .brushByPlot] <- input[[paste0(mode0, .brushByPlot, i0)]]
+
+            # Confirming that there are no cycles across multiple plots.
+            daggy <- is_dag(simplify(tmp, remove.loops=TRUE)) 
+            if (!daggy) {
+              showNotification("brushing relationships cannot be cyclic", type="error")
+              pObjects$memory[[mode0]][i0, .brushByPlot] <- ""
+              updateSelectInput(session, paste0(mode0, .brushByPlot, i0), selected="")
+            } else {
+              pObjects$brush <- tmp
+              pObjects$memory[[mode0]][i0, .brushByPlot] <- input[[paste0(mode0, .brushByPlot, i0)]]
+            }
 
             UPDATE <- paste0(mode0, "Plot", i0)
             rObjects[[UPDATE]] <- .increment_counter(isolate(rObjects[[UPDATE]]))

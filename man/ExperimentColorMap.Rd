@@ -8,11 +8,11 @@
 \alias{colDataColorMap}
 \alias{rowDataColorMap}
 \alias{assayColorMap,ExperimentColorMap,character-method}
-\alias{assayColorMap,ExperimentColorMap,integer-method}
+\alias{assayColorMap,ExperimentColorMap,numeric-method}
 \alias{colDataColorMap,ExperimentColorMap,character-method}
-\alias{colDataColorMap,ExperimentColorMap,integer-method}
+\alias{colDataColorMap,ExperimentColorMap,numeric-method}
 \alias{rowDataColorMap,ExperimentColorMap,character-method}
-\alias{rowDataColorMap,ExperimentColorMap,integer-method}
+\alias{rowDataColorMap,ExperimentColorMap,numeric-method}
 \title{\code{ExperimentColorMap} objects}
 \usage{
 ExperimentColorMap(assays = list(), colData = list(), rowData = list(),

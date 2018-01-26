@@ -70,11 +70,11 @@ setClass("ExperimentColorMap",
 #' @aliases class:ExperimentColorMap ExperimentColorMap-class
 #' assayColorMap colDataColorMap rowDataColorMap
 #' assayColorMap,ExperimentColorMap,character-method
-#' assayColorMap,ExperimentColorMap,integer-method
+#' assayColorMap,ExperimentColorMap,numeric-method
 #' colDataColorMap,ExperimentColorMap,character-method
-#' colDataColorMap,ExperimentColorMap,integer-method
+#' colDataColorMap,ExperimentColorMap,numeric-method
 #' rowDataColorMap,ExperimentColorMap,character-method
-#' rowDataColorMap,ExperimentColorMap,integer-method
+#' rowDataColorMap,ExperimentColorMap,numeric-method
 #'
 #' @examples
 #'
@@ -133,7 +133,7 @@ setMethod("assayColorMap", c("ExperimentColorMap", "character"),
     .assayColorMap(x, i, ...)
 })
 
-setMethod("assayColorMap", c("ExperimentColorMap", "integer"),
+setMethod("assayColorMap", c("ExperimentColorMap", "numeric"),
     function(x, i, ...)
 {
     .assayColorMap(x, i, ...)
@@ -161,7 +161,7 @@ setMethod("colDataColorMap", c("ExperimentColorMap", "character"),
       .nonAssayColorMap(x, "colData", i)
 })
 
-setMethod("colDataColorMap", c("ExperimentColorMap", "integer"),
+setMethod("colDataColorMap", c("ExperimentColorMap", "numeric"),
     function(x, i, ...)
 {
       .nonAssayColorMap(x, "colData", i)
@@ -177,7 +177,7 @@ setMethod("rowDataColorMap", c("ExperimentColorMap", "character"),
       .nonAssayColorMap(x, "rowData", i)
 })
 
-setMethod("rowDataColorMap", c("ExperimentColorMap", "integer"),
+setMethod("rowDataColorMap", c("ExperimentColorMap", "numeric"),
     function(x, i, ...)
 {
       .nonAssayColorMap(x, "rowData", i)

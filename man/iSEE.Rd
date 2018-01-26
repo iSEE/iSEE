@@ -8,10 +8,10 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, geneExprArgs = NULL,
   geneStatArgs = NULL, redDimMax = 5, colDataMax = 5, geneExprMax = 5,
   geneStatMax = 5, initialPanels = NULL, annot.orgdb = NULL,
   annot.keytype = "ENTREZID", annot.keyfield = NULL,
-  colormap = ExperimentColorMap())
+  colormap = ExperimentColorMap(), ...)
 }
 \arguments{
-\item{se}{A \linkS4class{SingleCellExperiment} object.}
+\item{se}{An object that coercible to \linkS4class{SingleCellExperiment}.}
 
 \item{redDimArgs}{A DataFrame similar to that produced by \code{\link{redDimPlotDefaults}}, specifying initial parameters for the plots.}
 
@@ -46,6 +46,8 @@ row names of \code{se} are used as the keys.}
 \item{colormap}{An \linkS4class{ExperimentColorMap} object that defines
 custom color maps to apply to individual \code{assays}, \code{colData},
 and \code{rowData} covariates.}
+
+\item{\dots}{Additional options passed to \code{\link{runApp}}.}
 }
 \value{
 A Shiny App is launched for interactive data exploration of the
@@ -57,7 +59,7 @@ Interactive visualization of single-cell data using a Shiny interface.
 }
 \details{
 Users can pass default parameters via DataFrame objects in
-\code{redDim.args} and \code{geneExpr.args}. Each object can contain
+\code{redDimArgs} and \code{geneExprArgs}. Each object can contain
 some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
 Any missing fields will be filled in with the defaults.
 
@@ -72,7 +74,7 @@ a \code{Name} field specifying the identity of the panel, e.g.,
 \code{"Reduced dimension plot 1"}, \code{"Gene statistics table 2"}.
 The trailing number should not be greater than the number of
 maximum plots of that type. The \code{Width} field may also be specified
-describing the width of the panel from 4 to 12 (values will be coerced
+describing the width of the panel from 2 to 12 (values will be coerced
 inside this range).
 
 If \code{annot.orgdb} is specified, gene information will be retrieved

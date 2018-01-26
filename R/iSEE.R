@@ -3,7 +3,7 @@
 #'
 #' Interactive visualization of single-cell data using a Shiny interface.
 #'
-#' @param se A \linkS4class{SingleCellExperiment} object.
+#' @param se An object that coercible to \linkS4class{SingleCellExperiment}.
 #' @param redDimArgs A DataFrame similar to that produced by \code{\link{redDimPlotDefaults}}, specifying initial parameters for the plots.
 #' @param colDataArgs A DataFrame similar to that produced by \code{\link{colDataPlotDefaults}}, specifying initial parameters for the plots.
 #' @param geneExprArgs A DataFrame similar to that produced by \code{\link{geneExprPlotDefaults}}, specifying initial parameters for the plots.
@@ -25,9 +25,10 @@
 #' @param colormap An \linkS4class{ExperimentColorMap} object that defines
 #' custom color maps to apply to individual \code{assays}, \code{colData},
 #' and \code{rowData} covariates.
+#' @param \dots Additional options passed to \code{\link{runApp}}.
 #'
 #' @details Users can pass default parameters via DataFrame objects in
-#' \code{redDim.args} and \code{geneExpr.args}. Each object can contain
+#' \code{redDimArgs} and \code{geneExprArgs}. Each object can contain
 #' some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
 #' Any missing fields will be filled in with the defaults.
 #'
@@ -42,7 +43,7 @@
 #' \code{"Reduced dimension plot 1"}, \code{"Gene statistics table 2"}.
 #' The trailing number should not be greater than the number of
 #' maximum plots of that type. The \code{Width} field may also be specified
-#' describing the width of the panel from 4 to 12 (values will be coerced
+#' describing the width of the panel from 2 to 12 (values will be coerced
 #' inside this range).
 #'
 #' If \code{annot.orgdb} is specified, gene information will be retrieved
@@ -101,12 +102,14 @@ iSEE <- function(
   annot.orgdb=NULL,
   annot.keytype="ENTREZID",
   annot.keyfield=NULL,
-  colormap=ExperimentColorMap()
+  colormap=ExperimentColorMap(),
+  ...
 ) {
   # Save the original name of the input object for the command to rename it
   # in the tracker
   se_name <- deparse(substitute(se))
-  stopifnot(inherits(se, "SingleCellExperiment"))
+  se <- as(se, "SummarizedExperiment") # supports ExpressionSet objects
+  se <- as(se, "SingleCellExperiment")
 
   # Setting up inputs for DT::datatable something to play with.
   # It must have some columns, so we're just filling it up with _something_.
@@ -155,6 +158,10 @@ iSEE <- function(
       stop("specified keytype not in org.*.db object")
     }
   }
+  
+  # location of vignette, locally, as a fallback to no internet connection
+  vinfo <- tools::getVignetteInfo(package = "DESeq2")[1,]
+  vig_loc <- file.path(vinfo["Dir"],"doc","DESeq2.html")
 
   #######################################################################
   ## UI definition. ----
@@ -166,14 +173,53 @@ iSEE <- function(
                      packageVersion("iSEE")),
       titleWidth = 800,
       dropdownMenu(type = "tasks",
+                   icon = icon("chain"),
+                   badgeStatus = NULL,
+                   headerText = "Display the graph for the linked plots",
+                   notificationItem(
+                     text = actionButton('open_linkgraph', label="Click here",
+                                         # icon = icon("life-ring"),
+                                         style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
+                     ),
+                     icon = icon(""), status = "primary"
+                   )
+      ), # end of dropdownMenu
+      dropdownMenu(type = "tasks",
                    icon = icon("question-circle"),
                    badgeStatus = NULL,
-                   headerText = "Want a guided tour?",
+                   headerText = "Want some more info?",
                    notificationItem(
                      text = actionButton("tour_firststeps", "Click me for a quick tour", icon("info"),
                                          style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"),
                      icon = icon(""), # tricking it to not have additional icon
-                     status = "primary"))
+                     status = "primary"),
+                   notificationItem(
+                     text = actionButton('openVignette', label="Open the vignette (web)", 
+                                         icon = icon("book"), 
+                                         style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4",
+                                         onclick ="window.open('http://google.com', '_blank')"), # to be replaced with vignette url
+                     icon = icon(""), status = "primary"
+                   ),
+                   notificationItem(
+                     text = actionButton('browseVignette', label="Open the vignette (local)", 
+                                         icon = icon("life-ring"), 
+                                         style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4",
+                                         onclick = paste0("window.open('",
+                                                          vig_loc,
+                                                          "', '_blank')")
+                                         ),
+                     icon = icon(""), status = "primary"
+                   )
+                   ,
+                   notificationItem(
+                     text = actionButton('about_popup', label="About iSEE", 
+                                         icon = icon("institution"), 
+                                         style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
+                                         ),
+                     icon = icon(""), status = "primary"
+                   )
+                   
+      ) # end of dropdownMenu
     ), # end of dashboardHeader
     dashboardSidebar(
       # general app settings
@@ -261,6 +307,58 @@ iSEE <- function(
                   value = paste0((.track_it_all(rObjects, pObjects, se_name)),collapse="\n"),
                   height="600px")
         ))
+    })
+    
+    observeEvent(input$browseVignette, {
+      # browseVignettes("DESeq2") # this does not work, maybe add another open blank to the local location of the vignette?
+    })
+    
+    observeEvent(input$about_popup, {
+      showModal(
+        modalDialog(
+          title = "About iSEE", size = "l",fade = TRUE,
+          footer = NULL, easyClose = TRUE,
+          tagList(
+            p("This is the version number of iSEE"),
+            renderPrint({
+              packageVersion("iSEE")
+            }),
+            p("This is the citation info for iSEE"),
+            renderPrint({
+              citation("iSEE")
+            }),
+            p("... and this is a record of sessionInfo()"),
+            renderPrint({
+              sessionInfo()
+            })
+          )
+        )
+      )
+    })
+    
+    observeEvent(input$open_linkgraph, {
+      showModal(
+        modalDialog(
+          title = "This is the graph for the links between the plots", size = "l",
+          fade = TRUE, footer = NULL, easyClose = TRUE,
+          renderPlot({
+            cur_plots <- paste0(rObjects$active_plots$Type,"Plot",rObjects$active_plots$ID)
+            not_used <- setdiff(V(pObjects$brush)$name,cur_plots)
+            currgraph_used <- delete.vertices(pObjects$brush,not_used)
+            currgraph_used <- set_vertex_attr(currgraph_used,"plottype",
+                                              value = gsub("Plot[0-9]","",V(currgraph_used)$name))
+            plot(currgraph_used,
+                 edge.arrow.size = .8,
+                 vertex.label.cex = 1.3,
+                 vertex.label.family = "Helvetica",
+                 vertex.label.color = "black",
+                 vertex.label.dist = 2.5,
+                 vertex.color = c(.plothexcode_redDim,.plothexcode_colData,.plothexcode_geneExpr)[
+                   factor(V(currgraph_used)$plottype,
+                          levels = c("redDim","colData","geneExpr"))])
+          })
+        )
+      )
     })
 
     output$codetext_modal <- renderPrint({
@@ -622,5 +720,7 @@ iSEE <- function(
   # Launching the app.
   #######################################################################
 
-  shinyApp(ui = iSEE_ui, server = iSEE_server)
+  app <- shinyApp(ui = iSEE_ui, server = iSEE_server)
+  
+  runApp(app, ...)
 }

@@ -194,7 +194,7 @@ geneStatTableDefaults <- function(se, number) {
     return(out)
 }
 
-.override_defaults <- function(def, usr) 
+.override_defaults <- function(def, usr, can_brush=TRUE)
 # Overriding the defaults with whatever the user has supplied.
 {
     ndef <- nrow(def)
@@ -214,6 +214,7 @@ geneStatTableDefaults <- function(se, number) {
         tmp[replacement] <- usr[[x]]
         def[[x]] <- tmp 
     }
+
     return(def)
 }    
 
@@ -232,13 +233,12 @@ geneStatTableDefaults <- function(se, number) {
     incoming[[.colorByGeneText]] <- "" 
     incoming[[.colorByGeneTextAssay]] <- def_assay
 
-    incoming[[.brushActive]] <- FALSE
     incoming[[.brushByPlot]] <- ""
     incoming[[.brushEffect]] <- .brushTransTitle
     incoming[[.brushTransAlpha]] <- 0.1
     incoming[[.brushColor]] <- "red"
+    incoming[[.brushData]] <- rep(list(NULL), nrow(incoming))
 
-    incoming[[.zoomActive]] <- TRUE
     incoming[[.zoomData]] <- rep(list(NULL), nrow(incoming))
     return(incoming)
 }

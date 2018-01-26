@@ -67,11 +67,12 @@
   
     # Defining all transmitting tables and plots for linking.
     all.names <- .decode_panel_name(active_plots$Type, active_plots$ID)
-    active.tab <- all.names[active_plots$Type=="geneStat"]
+    is_tab <- active_plots$Type=="geneStat"
+    active.tab <- all.names[is_tab]
     if (length(active.tab)==0L) {
         active.tab <- ""
     }
-    brushable <- c("", .identify_transmitters(active_plots, memory))
+    brushable <- c("", all.names[!is_tab])
 
     for (i in seq_len(nrow(active_plots))) {
         mode <- active_plots$Type[i]
@@ -82,12 +83,10 @@
         # Checking what to do with brushing.
         dblclick <- NULL
         brush.opts <- NULL
-        if (mode!="geneStat" && (param_choices[[.brushActive]] || param_choices[[.zoomActive]])) {
-            brush.opts <- brushOpts(paste0(mode, .brushField, ID), resetOnNew=TRUE)
-#                                    resetOnNew=param_choices[[.zoomActive]] & !param_choices[[.brushActive]])
-            if (param_choices[[.zoomActive]]) {
-                dblclick <- paste0(mode, .zoomClick, ID)
-            }
+        if (mode!="geneStat") { 
+            brush.opts <- brushOpts(paste0(mode, .brushField, ID), resetOnNew=FALSE, 
+                                    fill=brush_fill_color[mode], stroke=brush_stroke_color[mode])
+            dblclick <- paste0(mode, .zoomClick, ID)
         }
 
         # Creating the plot fields.
@@ -281,10 +280,6 @@
         id=paste0(mode, .brushParamPanelOpen, ID),
         title = "Brushing parameters",
         open = param_choices[[.brushParamPanelOpen]],
-        checkboxInput(paste0(mode, .brushActive, ID), label="Transmit brush",
-                      value=param_choices[[.brushActive]]),
-        checkboxInput(paste0(mode, .zoomActive, ID), label="Zoom upon brush",
-                      value=param_choices[[.zoomActive]]),
         selectInput(paste0(mode, .brushByPlot, ID),
                     label = "Receive brush from:", selectize=FALSE,
                     choices=brushable,
@@ -310,4 +305,9 @@
 }
 
 box_status <- c(redDim="primary", geneExpr="success", colData="warning", geneStat="danger")
+
+brush_fill_color <- c(redDim="#9cf", geneExpr="#9f6", colData="#ff9")
+
+brush_stroke_color <- c(redDim="#06f", geneExpr="#090", colData="#fc0")
+brush_stroke_color_full <- c(redDim="#0066ff", geneExpr="#009900", colData="#ffcc00")
 

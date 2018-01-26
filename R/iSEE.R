@@ -117,58 +117,12 @@ iSEE <- function(
   }
 
   # Defining the maximum number of plots.
-  reddim_max_plots <- max(nrow(redDimArgs), redDimMax)
-  coldata_max_plots <- max(nrow(colDataArgs), colDataMax)
-  geneexpr_max_plots <- max(nrow(geneExprArgs), geneExprMax)
-  genestat_max_tabs <- max(nrow(geneStatArgs), geneStatMax)
-
-  feasibility <- .check_plot_feasibility(se)
-  if (!feasibility$redDim) { 
-    reddim_max_plots <- 0L
-    redDimArgs <- NULL
-  } 
-  if (!feasibility$colData) {
-    coldata_max_plots <- 0L
-    colDataArgs <- NULL
-  }
-  if (!feasibility$geneExpr) {
-    geneexpr_max_plots <- 0L
-    geneExprArgs <- NULL
-  }
-  if (!feasibility$geneStat) {
-    genestat_max_tabs <- 0L
-    geneStatArgs <- NULL
-  }
-
-  # Setting up parameters for each panel.
-  memory <- list()
-  if (is.null(redDimArgs)) {
-    memory$redDim <- redDimPlotDefaults(se, reddim_max_plots)
-  } else {
-    memory$redDim <- redDimPlotDefaults(se, reddim_max_plots)
-    memory$redDim <- .override_defaults(memory$redDim, redDimArgs)
-  }
-
-  if (is.null(geneExprArgs)) {
-    memory$geneExpr <- geneExprPlotDefaults(se, geneexpr_max_plots)
-  } else {
-    memory$geneExpr <- geneExprPlotDefaults(se, geneexpr_max_plots)
-    memory$geneExpr <- .override_defaults(memory$geneExpr, geneExprArgs)
-  }
-
-  if (is.null(colDataArgs)) {
-    memory$colData <- colDataPlotDefaults(se, coldata_max_plots)
-  } else {
-    memory$colData <- colDataPlotDefaults(se, coldata_max_plots)
-    memory$colData <- .override_defaults(memory$colData, colDataArgs)
-  }
-
-  if (is.null(geneStatArgs)) {
-    memory$geneStat <- geneStatTableDefaults(se, genestat_max_tabs)
-  } else {
-    memory$geneStat <- geneStatTableDefaults(se, genestat_max_tabs)
-    memory$geneStat <- .override_defaults(memory$geneStat, geneStatArgs, can_brush=FALSE)
-  }
+  memory <- .setup_memory(se, redDimArgs, colDataArgs, geneExprArgs, geneStatArgs,
+                          redDimMax, colDataMax, geneExprMax, geneStatMax)
+  reddim_max_plots <- nrow(memory$redDim)
+  coldata_max_plots <- nrow(memory$colData)
+  geneexpr_max_plots <- nrow(memory$geneExpr)
+  genestat_max_tabs <- nrow(memory$geneStat)
 
   # Defining the initial elements to be plotted.
   if (is.null(initialPanels)) {
@@ -474,12 +428,15 @@ iSEE <- function(
                 && plot.name==.decoded2encoded(pObjects$memory[[mode0]][i0, .brushByPlot])) {
             }
 
+            # Trigger replotting of self, to draw a more persistent brushing box.
+            rObjects[[plot.name]] <- .increment_counter(isolate(rObjects[[plot.name]]))
+
             # Trigger replotting of all dependent plots that receive this brush.
             children <- names(adjacent_vertices(pObjects$brush, plot.name, mode="out")[[1]])
             for (child_plot in children) {
               rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
             }
-          }, ignoreInit=TRUE)
+          }, ignoreInit=TRUE, ignoreNULL=FALSE)
 
           ###############
 
@@ -525,7 +482,10 @@ iSEE <- function(
 
           # Creating the plot, with saved coordinates.
           p.out <- .make_redDimPlot(
-            se, pObjects$memory$redDim[i0,], input, pObjects$coordinates, colormap)
+            se, pObjects$memory$redDim[i0,], input, 
+            pObjects$coordinates, 
+            pObjects$memory,
+            colormap)
           pObjects$commands[[plot.name]] <- p.out$cmd
           pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
@@ -554,7 +514,9 @@ iSEE <- function(
 
           # Creating the plot, with saved coordinates.
           p.out <- .make_colDataPlot(
-            se, pObjects$memory$colData[i0,], input, pObjects$coordinates, colormap)
+            se, pObjects$memory$colData[i0,], input, 
+            pObjects$coordinates, pObjects$memory,
+            colormap)
           pObjects$commands[[plot.name]] <- p.out$cmd
           pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
@@ -584,7 +546,9 @@ iSEE <- function(
 
           # Creating the plot.
           p.out <- .make_geneExprPlot(
-            se, pObjects$memory$geneExpr[i0,], input, pObjects$coordinates, colormap)
+            se, pObjects$memory$geneExpr[i0,], input, 
+            pObjects$coordinates, pObjects$memory,
+            colormap)
           pObjects$commands[[plot.name]] <- p.out$cmd
           pObjects$coordinates[[plot.name]] <- p.out$xy
           p.out$plot
@@ -642,30 +606,3 @@ iSEE <- function(
   shinyApp(ui = iSEE_ui, server = iSEE_server)
 }
 
-
-#######################################################################
-# Internal functions. 
-#######################################################################
-
-.update_list_element <- function(memory, ID, field, value) {
-    out <- memory[[field]]
-    out[ID] <- list(value)
-    memory[[field]] <- out
-    return(memory)
-}
-
-.check_plot_feasibility <- function(se) {
-  return(list(redDim=! (length(reducedDims(se))==0L || ncol(se)==0L),
-              colData=! (ncol(colData(se))==0L || ncol(se)==0L),
-              geneExpr=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
-              geneStat=! (nrow(se)==0L)
-  ))
-}
-
-.increment_counter <- function(counter, max=10000L) {
-  counter <- counter + 1L
-  if (counter >= max) {
-    counter <- 0L
-  }
-  return(counter)
-}

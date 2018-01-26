@@ -490,23 +490,23 @@ iSEE <- function(
                                      .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneTable, .geneExprXAxisGeneText))
 
       for (i in seq_len(max_plots)) {
-        # Defining the rendered plot.
         local({
           i0 <- i
           mode0 <- mode
           FUN0 <- FUN
           plot.name <- paste0(mode0, "Plot", i0)
 
+          # Defining the rendered plot.
           output[[plot.name]] <- renderPlot({
             force(rObjects[[plot.name]])
 
             # Updating non-fundamental parameters in the memory store (i.e., these
             # parameters do not change the meaning of the coordinates).
             for (field in ALLEXTRAS_DIRECT) {
-                pObjects$memory$redDim[[field]][i0] <- input[[paste0(mode0, field, i0)]]
+                pObjects$memory[[mode0]][[field]][i0] <- input[[paste0(mode0, field, i0)]]
             }
             for (field in ALLEXTRAS_INT) {
-                pObjects$memory$redDim[[field]][i0] <- as.integer(input[[paste0(mode0, field, i0)]])
+                pObjects$memory[[mode0]][[field]][i0] <- as.integer(input[[paste0(mode0, field, i0)]])
             }
 
              # Creating the plot, with saved coordinates.

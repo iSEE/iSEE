@@ -442,16 +442,23 @@ iSEE <- function(
 
           # Double-click observers.
           observeEvent(input[[paste0(mode0, .zoomClick, i0)]], {
-             brush <- input[[paste0(mode0, .brushField, i0)]]
+             brush_id <- paste0(mode0, .brushField, i0)
+             brush <- input[[brush_id]]
+
              if (!is.null(brush)) {
                new_coords <- c(xmin=brush$xmin, xmax=brush$xmax, ymin=brush$ymin, ymax=brush$ymax)
+               session$resetBrush(brush_id) # This should auto-trigger replotting above.
              } else {
                new_coords <- NULL
+               
+               # Brush is already NULL at this point, so we resetting it wouldn't help; 
+               # we need to manually trigger replotting. We don't move this outside the
+               # "else", to avoid two reactive updates of unknown priorities.
+               UPDATE <- paste0(mode0, "Plot", i0) 
+               rObjects[[UPDATE]] <- .increment_counter(isolate(rObjects[[UPDATE]]))
              }
-             pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .zoomData, new_coords)
 
-             UPDATE <- paste0(mode0, "Plot", i0)
-             rObjects[[UPDATE]] <- .increment_counter(isolate(rObjects[[UPDATE]]))
+             pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .zoomData, new_coords)
           })
         })
       }

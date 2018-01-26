@@ -641,6 +641,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
   brush_in <- param_choices[[.brushByPlot]]
   output <- list(cmd=NULL)
 
+  # Checking what points are brushed from the transmitting plot.
   if (brush_in != "") {
     brush_by <- .encode_panel_name(brush_in)
     brush_val <- all_memory[[brush_by$Type]][,.brushData][[brush_by$ID]]
@@ -658,7 +659,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
     }
   }
 
-  # Adding a box around the current brush coordinates.
+  # Adding a box around the brush coordinates in the _current_ plot (not transmitter).
   current <- param_choices[,.brushData][[1]]
   if (!is.null(current)) {
     output$show <- sprintf("geom_rect(aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), color='dodgerblue', alpha=0, data=data.frame(xmin = %.5g, xmax=%.5g, ymin = %.5g, ymax = %.5g), inherit.aes=FALSE) +",
@@ -666,10 +667,6 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
   }
 
   return(output)
-}
-
-.check_self_brush <- function(param_choices) {
-  
 }
 
 .create_color_function_chooser <- function(colors_scale) {

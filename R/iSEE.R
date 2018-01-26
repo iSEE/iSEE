@@ -419,20 +419,26 @@ iSEE <- function(
 
           # Brush structure observers.
           observeEvent(input[[paste0(mode0, .brushField, i0)]], {
-            pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, 
-                .brushData, input[[paste0(mode0, .brushField, i0)]])
+            cur_brush <- input[[paste0(mode0, .brushField, i0)]]
+            old_brush <- pObjects$memory[[mode0]][,.brushData][[i0]]
 
-            # If it is rebrushing itself in restrict mode, we need to 
-            # do something to take the intersection of brushed regions.
-            if (pObjects$memory[[mode0]][i0, .brushEffect]==.brushRestrictTitle
+            # If it is rebrushing itself in restrict mode, we take the intersection of brushed regions.
+            if (!is.null(cur_brush) 
+                && pObjects$memory[[mode0]][i0, .brushEffect]==.brushRestrictTitle
                 && plot.name==.decoded2encoded(pObjects$memory[[mode0]][i0, .brushByPlot])) {
+                cur_brush$xmin <- max(cur_brush$xmin, old_brush$xmin)
+                cur_brush$xmax <- min(cur_brush$xmax, old_brush$xmax)
+                cur_brush$ymin <- max(cur_brush$ymin, old_brush$ymin)
+                cur_brush$ymax <- min(cur_brush$ymax, old_brush$ymax)
             }
+
+            pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .brushData, cur_brush)
 
             # Trigger replotting of self, to draw a more persistent brushing box.
             rObjects[[plot.name]] <- .increment_counter(isolate(rObjects[[plot.name]]))
 
             # Trigger replotting of all dependent plots that receive this brush.
-            children <- names(adjacent_vertices(pObjects$brush, plot.name, mode="out")[[1]])
+            children <- .get_brush_dependents(pObjects$brush, plot.name, pObjects$memory)
             for (child_plot in children) {
               rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
             }
@@ -451,7 +457,7 @@ iSEE <- function(
              } else {
                new_coords <- NULL
                
-               # Brush is already NULL at this point, so we resetting it wouldn't help; 
+               # Brush is already NULL at this point, so resetting it wouldn't help; 
                # we need to manually trigger replotting. We don't move this outside the
                # "else", to avoid two reactive updates of unknown priorities.
                UPDATE <- paste0(mode0, "Plot", i0) 

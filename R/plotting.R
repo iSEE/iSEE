@@ -647,14 +647,14 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
     brush_val <- all_memory[[brush_by$Type]][,.brushData][[brush_by$ID]]
 
     if (!is.null(brush_val)) {
-        cmd <- sprintf("brushedPts <- shiny::brushedPoints(all.coordinates[['%s']],
+        cmd <- sprintf("brushed_pts <- shiny::brushedPoints(all.coordinates[['%s']],
     list(xmin=%.5g, xmax=%.5g, ymin=%.5g, ymax=%.5g,
          direction='%s', mapping=list(x='%s', y='%s')));",
         paste0(brush_by$Type, "Plot", brush_by$ID),
         brush_val$xmin, brush_val$xmax, brush_val$ymin, brush_val$ymax,
         brush_val$direction, brush_val$mapping$x, brush_val$mapping$y)
 
-        cmd <- c(cmd, "plot.data$BrushBy <- rownames(plot.data) %in% rownames(brushedPts);")
+        cmd <- c(cmd, "plot.data$BrushBy <- rownames(plot.data) %in% rownames(brushed_pts);")
         output$cmd <- paste(cmd, collapse="\n")
     }
   }

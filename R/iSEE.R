@@ -342,13 +342,15 @@ iSEE <- function(
         modalDialog(
           title = "This is the graph for the links between the plots", size = "l",
           fade = TRUE, footer = NULL, easyClose = TRUE,
+          tagList(
           renderPlot({
             cur_plots <- paste0(rObjects$active_plots$Type,"Plot",rObjects$active_plots$ID)
             not_used <- setdiff(V(pObjects$brush)$name,cur_plots)
             currgraph_used <- delete.vertices(pObjects$brush,not_used)
             plots_only <- rObjects$active_plots[rObjects$active_plots$Type != "geneStat",]
             currgraph_used <- set_vertex_attr(currgraph_used,"plottype",
-                                            value = plots_only$Type)
+                                              value = gsub("Plot[0-9]","",V(currgraph_used)$name))
+                                            # plots_only$Type)
             plot(currgraph_used,
                  edge.arrow.size = .8,
                  vertex.label.cex = 1.3,
@@ -358,7 +360,25 @@ iSEE <- function(
                  vertex.color = c(.plothexcode_redDim,.plothexcode_colData,.plothexcode_geneExpr)[
                    factor(V(currgraph_used)$plottype,
                           levels = c("redDim","colData","geneExpr"))])
-          })
+          }),
+          renderPrint({
+            cur_plots <- paste0(rObjects$active_plots$Type,"Plot",rObjects$active_plots$ID)
+            not_used <- setdiff(V(pObjects$brush)$name,cur_plots)
+            currgraph_used <- delete.vertices(pObjects$brush,not_used)
+            plots_only <- rObjects$active_plots[rObjects$active_plots$Type != "geneStat",]
+            
+            c(V(currgraph_used)$name,"____",
+            
+            plots_only$Type)
+            
+            rObjects$active_plots
+            
+            plots_only##
+        
+            plots_only$Type
+            # currgraph_used <- set_vertex_attr(currgraph_used,"plottype",
+                                              # value = plots_only$Type)
+          }))
         )
       )
     })

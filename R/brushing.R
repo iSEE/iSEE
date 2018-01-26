@@ -29,3 +29,30 @@
 {
   graph - incident(graph, panel, mode="all")
 }
+
+.get_brush_dependents <- function(graph, panel, memory)
+# Identifies the children that need to be updated when a panel updates.
+# This includes grandchildren if restrict is TRUE in any of the children
+# as the brushing will change the selected subset of points... and so on,
+# throughout the graph until all leaves terminate (or hit non-restrict nodes).
+{
+    children <- names(adjacent_vertices(graph, panel, mode="out")[[1]])
+    children <- setdiff(children, panel) # self-updates are handled elsewhere.
+    
+    old_children <- children
+    while (length(children)) {
+        types <- sub("Plot[0-9]+$", "", children)
+        ids <- as.integer(sub("^[a-zA-Z]*Plot", "", children))
+
+        new_children <- character(0)
+        for (i in seq_along(children)) {
+            if (memory[[types[i]]][ids[i],.brushEffect]==.brushRestrictTitle) {
+                new_children <- c(new_children, names(adjacent_vertices(graph, children[i], mode="out")[[1]]))
+            }
+        }
+     
+        old_children <- c(old_children, new_children)
+        children <- new_children
+    }
+    return(old_children)
+}

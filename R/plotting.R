@@ -276,7 +276,9 @@ names(.all_labs_values) <- .all_aes_names
   color_set <- !is.null(color_cmd)
 
   # Implementing the brushing effect.
-  all_brush_cmds <- list(init=brush_cmd)
+  all_brush_cmds <- list()
+  all_brush_cmds[["init"]] <- brush_cmd
+
   if (!is.null(brush_cmd)) {
     brush_effect <- param_choices[[.brushEffect]]
     if (brush_effect==.brushColorTitle) {
@@ -394,8 +396,10 @@ plot.data$Y <- tmp;")
     method='quasirandom', nbins=NULL) + as.integer(plot.data$X);"
 
   # Implementing the brushing effect.
+  all_brush_cmds <- list()
+  all_brush_cmds[["init"]] <- brush_cmd
+
   new_aes <- .build_aes(color = color_set, alt=c(x="jitteredX"))
-  all_brush_cmds <- list(init=brush_cmd)
   if (!is.null(brush_cmd)) {
     brush_effect <- param_choices[[.brushEffect]]
     if (brush_effect==.brushColorTitle) {
@@ -494,8 +498,10 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
   color_set <- !is.null(color_cmd)
 
   # Implementing the brushing effect.
+  all_brush_cmds <- list()
+  all_brush_cmds[["init"]] <- brush_cmd
+  
   new_aes <- .build_aes(color = color_set, alt=c(x="jitteredX", y="jitteredY"))
-  all_brush_cmds <- list(init=brush_cmd)
   if (!is.null(brush_cmd)) {
     brush_effect <- param_choices[[.brushEffect]]
 

@@ -510,8 +510,7 @@ iSEE <- function(
             }
 
              # Creating the plot, with saved coordinates.
-            p.out <- FUN0(se, pObjects$memory[[mode0]][i0,], input, pObjects$coordinates, 
-                          pObjects$memory, colormap)
+            p.out <- FUN0(i0, se, input, pObjects$coordinates, pObjects$memory, colormap)
             pObjects$commands[[plot.name]] <- p.out$cmd
             pObjects$coordinates[[plot.name]] <- p.out$xy
             p.out$plot
@@ -625,4 +624,3 @@ iSEE <- function(
 
   shinyApp(ui = iSEE_ui, server = iSEE_server)
 }
-

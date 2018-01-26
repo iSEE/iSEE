@@ -84,7 +84,8 @@
         dblclick <- NULL
         brush.opts <- NULL
         if (mode!="geneStat") { 
-            brush.opts <- brushOpts(paste0(mode, .brushField, ID), resetOnNew=FALSE)
+            brush.opts <- brushOpts(paste0(mode, .brushField, ID), resetOnNew=FALSE, 
+                                    fill=brush_fill_color[mode], stroke=brush_stroke_color[mode])
             dblclick <- paste0(mode, .zoomClick, ID)
         }
 
@@ -304,4 +305,9 @@
 }
 
 box_status <- c(redDim="primary", geneExpr="success", colData="warning", geneStat="danger")
+
+brush_fill_color <- c(redDim="#9cf", geneExpr="#9f6", colData="#ff9")
+
+brush_stroke_color <- c(redDim="#06f", geneExpr="#090", colData="#fc0")
+brush_stroke_color_full <- c(redDim="#0066ff", geneExpr="#009900", colData="#ffcc00")
 

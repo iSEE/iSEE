@@ -33,7 +33,7 @@ names(.all_labs_values) <- .all_aes_names
   color_FUN <- color_out$FUN
 
   # Adding brushing data (plot-specific commands will be added later).
-  brush_out <- .process_brushby_choice(param_choices, input, all_memory)
+  brush_out <- .process_brushby_choice(param_choices, input, all_memory, color=brush_stroke_color_full["redDim"])
   cmds[["brush"]] <- brush_out$cmd
   brush_set <- !is.null(brush_out$cmd)
   brush_show_cmd <- brush_out$show
@@ -79,7 +79,7 @@ names(.all_labs_values) <- .all_aes_names
   color_label <- color_out$label
 
   # Adding brushing commands.
-  brush_out <- .process_brushby_choice(param_choices, input, all_memory)
+  brush_out <- .process_brushby_choice(param_choices, input, all_memory, color=brush_stroke_color_full["colData"])
   cmds[["brush"]] <- brush_out$cmd
   brush_set <- !is.null(brush_out$cmd)
   brush_show_cmd <- brush_out$show
@@ -171,7 +171,7 @@ names(.all_labs_values) <- .all_aes_names
   color_label <- color_out$label
 
   # Adding brushing commands.
-  brush_out <- .process_brushby_choice(param_choices, input, all_memory)
+  brush_out <- .process_brushby_choice(param_choices, input, all_memory, color=brush_stroke_color_full["geneExpr"])
   cmds[["brush"]] <- brush_out$cmd
   brush_set <- !is.null(brush_out$cmd)
   brush_show_cmd <- brush_out$show
@@ -637,7 +637,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
   return(output)
 }
 
-.process_brushby_choice <- function(param_choices, input, all_memory) {
+.process_brushby_choice <- function(param_choices, input, all_memory, color="dodgerblue") {
   brush_in <- param_choices[[.brushByPlot]]
   output <- list(cmd=NULL)
 
@@ -662,8 +662,8 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*coordsY;"
   # Adding a box around the brush coordinates in the _current_ plot (not transmitter).
   current <- param_choices[,.brushData][[1]]
   if (!is.null(current)) {
-    output$show <- sprintf("geom_rect(aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), color='dodgerblue', alpha=0, data=data.frame(xmin = %.5g, xmax=%.5g, ymin = %.5g, ymax = %.5g), inherit.aes=FALSE) +",
-                           current$xmin, current$xmax, current$ymin, current$ymax)
+    output$show <- sprintf("geom_rect(aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), color='%s', alpha=0, data=data.frame(xmin = %.5g, xmax=%.5g, ymin = %.5g, ymax = %.5g), inherit.aes=FALSE) +",
+                           color, current$xmin, current$xmax, current$ymin, current$ymax)
   }
 
   return(output)

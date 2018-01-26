@@ -119,10 +119,6 @@ iSEE <- function(
   # Defining the maximum number of plots.
   memory <- .setup_memory(se, redDimArgs, colDataArgs, geneExprArgs, geneStatArgs,
                           redDimMax, colDataMax, geneExprMax, geneStatMax)
-  reddim_max_plots <- nrow(memory$redDim)
-  coldata_max_plots <- nrow(memory$colData)
-  geneexpr_max_plots <- nrow(memory$geneExpr)
-  genestat_max_tabs <- nrow(memory$geneStat)
 
   # Defining the initial elements to be plotted.
   if (is.null(initialPanels)) {
@@ -284,7 +280,11 @@ iSEE <- function(
         .panel_organization(rObjects$active_plots, pObjects$memory)
     })
 
-    for (mode in c("redDim", "geneExpr", "colData", "geneStat")) {
+    # Note: we need "local" so that each item gets its own number. Without it, the value
+    # of i in the renderPlot() will be the same across all instances, because
+    # of when the expression is evaluated.
+
+   for (mode in c("redDim", "geneExpr", "colData", "geneStat")) {
         # Panel addition.
         local({
             mode0 <- mode
@@ -471,102 +471,79 @@ iSEE <- function(
     }
 
     #######################################################################
-    # Reduced dimension plot section. ----
+    # Plot creation section. ----
     #######################################################################
 
-    # Note: we need "local" so that each item gets its own number. Without it, the value
-    # of i in the renderPlot() will be the same across all instances, because
-    # of when the expression is evaluated.
+    for (mode in c("redDim", "geneExpr", "colData")) {
+      max_plots <- nrow(pObjects$memory[[mode]]) 
 
-    for (i in seq_len(reddim_max_plots)) {
-      local({
-        i0 <- i
-        plot.name <- .redDimPlot(i0)
-        output[[plot.name]] <- renderPlot({
-          force(rObjects[[plot.name]])
+      # Defining mode-specific parameters.
+      FUN <- switch(mode, 
+                    redDim=.make_redDimPlot,
+                    geneExpr=.make_geneExprPlot,
+                    colData=.make_colDataPlot)
 
-          # Updating parameters in the memory store (non-characters need some careful treatment).
-          for (field in c(ALLEXTRAS_DIRECT)) {
-              pObjects$memory$redDim[[field]][i0] <- input[[.inputRedDim(field, i0)]]
-          }
-          for (field in c(.redDimType, .redDimXAxis, .redDimYAxis, ALLEXTRAS_INT)) {
-              pObjects$memory$redDim[[field]][i0] <- as.integer(input[[.inputRedDim(field, i0)]])
-          }
+      protected <- switch(mode,
+                          redDim=c(.redDimType, .redDimXAxis, .redDimYAxis),
+                          colData=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
+                          geneExpr=c(.geneExprYAxis, .geneExprYAxisGeneTable, .geneExprYAxisGeneText,
+                                     .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneTable, .geneExprXAxisGeneText))
 
-          # Creating the plot, with saved coordinates.
-          p.out <- .make_redDimPlot(
-            se, pObjects$memory$redDim[i0,], input, 
-            pObjects$coordinates, 
-            pObjects$memory,
-            colormap)
-          pObjects$commands[[plot.name]] <- p.out$cmd
-          pObjects$coordinates[[plot.name]] <- p.out$xy
-          p.out$plot
+      for (i in seq_len(max_plots)) {
+        # Defining the rendered plot.
+        local({
+          i0 <- i
+          mode0 <- mode
+          FUN0 <- FUN
+          plot.name <- paste0(mode0, "Plot", i0)
+
+          output[[plot.name]] <- renderPlot({
+            force(rObjects[[plot.name]])
+
+            # Updating non-fundamental parameters in the memory store (i.e., these
+            # parameters do not change the meaning of the coordinates).
+            for (field in ALLEXTRAS_DIRECT) {
+                pObjects$memory$redDim[[field]][i0] <- input[[paste0(mode0, field, i0)]]
+            }
+            for (field in ALLEXTRAS_INT) {
+                pObjects$memory$redDim[[field]][i0] <- as.integer(input[[paste0(mode0, field, i0)]])
+            }
+
+             # Creating the plot, with saved coordinates.
+            p.out <- FUN0(se, pObjects$memory[[mode0]][i0,], input, pObjects$coordinates, 
+                          pObjects$memory, colormap)
+            pObjects$commands[[plot.name]] <- p.out$cmd
+            pObjects$coordinates[[plot.name]] <- p.out$xy
+            p.out$plot
+          })
         })
-      })
-    }
 
-    #######################################################################
-    # Column data scatter plot section. ----
-    #######################################################################
+        # Defining observers to respond to fundamental parameters.
+        for (field in protected) {
+          local({
+            i0 <- i
+            mode0 <- mode
+            field0 <- field 
+            in_name <- paste0(mode0, field0, i0)
 
-    for (i in seq_len(coldata_max_plots)) {
-      local({
-        i0 <- i
-        plot.name <- .colDataPlot(i0)
-        output[[plot.name]] <- renderPlot({
-          force(rObjects[[plot.name]])
+            observeEvent(input[[in_name]], {
+              incoming <- input[[in_name]]
+              if (is.numeric(pObjects$memory[[mode0]][[field0]])) {
+                incoming <- as.integer(incoming)
+              }
+              pObjects$memory[[mode0]][[field0]][i0] <- incoming
 
-          # Updating parameters.
-          for (field in c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, ALLEXTRAS_DIRECT)) {
-              pObjects$memory$colData[[field]][i0] <- input[[.inputColData(field, i0)]]
-          }
-          for (field in c(ALLEXTRAS_INT)) {
-              pObjects$memory$colData[[field]][i0] <- as.integer(input[[.inputColData(field, i0)]])
-          }
-
-          # Creating the plot, with saved coordinates.
-          p.out <- .make_colDataPlot(
-            se, pObjects$memory$colData[i0,], input, 
-            pObjects$coordinates, pObjects$memory,
-            colormap)
-          pObjects$commands[[plot.name]] <- p.out$cmd
-          pObjects$coordinates[[plot.name]] <- p.out$xy
-          p.out$plot
-        })
-      })
-    }
-
-    #######################################################################
-    # Gene expression scatter plot section. ----
-    #######################################################################
-
-    for (i in seq_len(geneexpr_max_plots)) {
-      local({
-        i0 <- i
-        plot.name <- .geneExprPlot(i0)
-        output[[plot.name]] <- renderPlot({
-          force(rObjects[[plot.name]])
-
-          # Updating parameters.
-          for (field in c(.geneExprYAxis, .geneExprYAxisGeneTable, .geneExprYAxisGeneText,
-                          .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneTable, .geneExprXAxisGeneText, ALLEXTRAS_DIRECT)) {
-              pObjects$memory$geneExpr[[field]][i0] <- input[[.inputGeneExpr(field, i0)]]
-          }
-          for (field in c(.geneExprAssay, ALLEXTRAS_INT)) {
-              pObjects$memory$geneExpr[[field]][i0] <- as.integer(input[[.inputGeneExpr(field, i0)]])
-          }
-
-          # Creating the plot.
-          p.out <- .make_geneExprPlot(
-            se, pObjects$memory$geneExpr[i0,], input, 
-            pObjects$coordinates, pObjects$memory,
-            colormap)
-          pObjects$commands[[plot.name]] <- p.out$cmd
-          pObjects$coordinates[[plot.name]] <- p.out$xy
-          p.out$plot
-        })
-      })
+              cur_brush <- paste0(mode0, .brushField, i0)
+              if (!is.null(input[[cur_brush]])) {
+                session$resetBrush(cur_brush) # This will trigger replotting.
+              } else {
+                UPDATE <- paste0(mode0, "Plot", i0) # Manually triggering replotting.
+                rObjects[[UPDATE]] <- .increment_counter(isolate(rObjects[[UPDATE]]))
+              }
+            }, ignoreInit=TRUE)
+          })
+        }
+      }
     }
 
     #######################################################################
@@ -574,7 +551,7 @@ iSEE <- function(
     #######################################################################
 
     # Load the gene level data
-    for (i in seq_len(genestat_max_tabs)) {
+    for (i in seq_len(nrow(memory$geneStat))) {
       local({
         i0 <- i
         output[[paste0("geneStatTable", i0)]] <- renderDataTable({

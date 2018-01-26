@@ -36,9 +36,6 @@ names(.all_labs_values) <- .all_aes_names
 
   # Adding brushing data (plot-specific commands will be added later).
   brush_out <- .process_brushby_choice(param_choices, input, all_memory, color=brush_stroke_color_full["redDim"])
-  setup_cmds[["brush"]] <- brush_out$cmd
-  brush_set <- !is.null(brush_out$cmd)
-  brush_show_cmd <- brush_out$show
 
   # Generating the plotting commands.
   .create_plot(
@@ -47,7 +44,7 @@ names(.all_labs_values) <- .all_aes_names
     x_lab=sprintf("Dimension %s", param_choices[[.redDimXAxis]]),
     y_lab=sprintf("Dimension %s", param_choices[[.redDimYAxis]]),
     color_FUN=color_FUN, color_label=color_label, 
-    brush_set=brush_set, brush_show_cmd=brush_show_cmd
+    brush_cmd=brush_out$cmd, brush_show_cmd=brush_out$show
   )
 }
 
@@ -84,16 +81,13 @@ names(.all_labs_values) <- .all_aes_names
 
   # Adding brushing commands.
   brush_out <- .process_brushby_choice(param_choices, input, all_memory, color=brush_stroke_color_full["colData"])
-  setup_cmds[["brush"]] <- brush_out$cmd
-  brush_set <- !is.null(brush_out$cmd)
-  brush_show_cmd <- brush_out$show
 
   # Generating the plot.
   .create_plot(
     data_cmds, setup_cmds, se, all_coordinates,
     param_choices=param_choices, x_lab=x_lab, y_lab=y_lab,
     color_FUN=color_FUN, color_label=color_label, 
-    brush_set=brush_set, brush_show_cmd=brush_show_cmd
+    brush_cmd=brush_out$cmd, brush_show_cmd=brush_out$show
   )
 }
 
@@ -178,16 +172,13 @@ names(.all_labs_values) <- .all_aes_names
 
   # Adding brushing commands.
   brush_out <- .process_brushby_choice(param_choices, input, all_memory, color=brush_stroke_color_full["geneExpr"])
-  setup_cmds[["brush"]] <- brush_out$cmd
-  brush_set <- !is.null(brush_out$cmd)
-  brush_show_cmd <- brush_out$show
 
   # Generating the plot.
   .create_plot(
     data_cmds, setup_cmds, se, all_coordinates,
     param_choices=param_choices, x_lab=x_lab, y_lab=y_lab,
     color_FUN=color_FUN, color_label=color_label, 
-    brush_set=brush_set, brush_show_cmd=brush_show_cmd
+    brush_cmd=brush_out$cmd, brush_show_cmd=brush_out$show
   )
 }
 
@@ -253,15 +244,10 @@ names(.all_labs_values) <- .all_aes_names
   }
   extra_cmds$data <- c(more_data_cmds, extra_cmds$data)
   extra_cmds$setup <- c(setup_cmds, extra_cmds$setup)
-
-  # Handling subsetting a bit better.
-  if (!is.null(extra_cmds$subset)) {
-      extra_cmds$subset[["brush"]] <- extra_cmds$setup[["brush"]] 
-      extra_cmds$setup[["brush"]] <- NULL
-  }
+  print(extra_cmds)
 
   # Evaluating the early commands to get something to store for brushing.
-  to_eval <- unlist(extra_cmds[c("data", "lim", "subset")])
+  to_eval <- unlist(extra_cmds[c("data", "lim", "brush")])
   if (length(to_eval)) {
     eval(parse(text=to_eval), envir=eval_env)
   }
@@ -279,7 +265,7 @@ names(.all_labs_values) <- .all_aes_names
 # Internal functions: scatter plotter ----
 ############################################
 
-.scatter_plot <- function(param_choices, x_lab, y_lab, color_label, color_FUN, color_discrete, brush_set, brush_show_cmd)
+.scatter_plot <- function(param_choices, x_lab, y_lab, color_label, color_FUN, color_discrete, brush_cmd, brush_show_cmd)
 # Creates a scatter plot of numeric X/Y. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -291,8 +277,8 @@ names(.all_labs_values) <- .all_aes_names
   color_set <- !is.null(color_cmd)
 
   # Implementing the brushing effect.
-  subset_cmds <- list()
-  if (brush_set) {
+  all_brush_cmds <- list(init=brush_cmd)
+  if (!is.null(brush_cmd)) {
     brush_effect <- param_choices[[.brushEffect]]
     if (brush_effect==.brushColorTitle) {
       plot_cmds[["brush_other"]] <- sprintf(
@@ -316,7 +302,7 @@ names(.all_labs_values) <- .all_aes_names
       )
     }
     if (brush_effect==.brushRestrictTitle) {
-      subset_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
+      all_brush_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
       plot_cmds[["brush_restrict"]] <- sprintf(
         "geom_point(%s, plot.data) +",
         .build_aes(color = color_set)
@@ -359,14 +345,14 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
 
   # lim_cmds must be executed before setup_cmds when brushing to restrict!
-  return(list(data=list(), lim=lim_cmds, subset=subset_cmds, setup=list(), plot=plot_cmds))
+  return(list(data=list(), lim=lim_cmds, brush=all_brush_cmds, setup=list(), plot=plot_cmds))
 }
 
 ############################################
 # Internal functions: violin plotter ----
 ############################################
 
-.violin_plot <- function(param_choices, x_lab, y_lab, color_label, color_FUN, color_discrete, brush_set, brush_show_cmd, horizontal = FALSE)
+.violin_plot <- function(param_choices, x_lab, y_lab, color_label, color_FUN, color_discrete, brush_cmd, brush_show_cmd, horizontal = FALSE)
 # Generates a vertical violin plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -409,9 +395,9 @@ plot.data$Y <- tmp;")
     method='quasirandom', nbins=NULL) + as.integer(plot.data$X);"
 
   # Implementing the brushing effect.
-  subset_cmds <- list()
   new_aes <- .build_aes(color = color_set, alt=c(x="jitteredX"))
-  if (brush_set) {
+  all_brush_cmds <- list(init=brush_cmd)
+  if (!is.null(brush_cmd)) {
     brush_effect <- param_choices[[.brushEffect]]
     if (brush_effect==.brushColorTitle) {
       plot_cmds[["brush_other"]] <- sprintf("geom_point(%s, subset(plot.data, !BrushBy)) +", new_aes)
@@ -430,7 +416,7 @@ plot.data$Y <- tmp;")
     } else if (brush_effect==.brushRestrictTitle) {
       # Need to subset explicitly, to adjust the density calculations and ensure
       # doesntream brushes are correct. Note, subsetting BEFORE vipor calculations.
-      subset_cmds <- c(subset="plot.data <- subset(plot.data, BrushBy);", setup_cmds)
+      all_brush_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
       plot_cmds[["violin"]] <- "geom_violin(data = plot.data, alpha = 0.2, scale = 'width') +"
       plot_cmds[["brush_restrict"]] <- sprintf("geom_point(%s, plot.data) +", new_aes)
     }
@@ -478,14 +464,14 @@ plot.data$Y <- tmp;")
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
 
   # lim_cmds must be executed before setup_cmds, to ensure bounds are correctly defined.
-  return(list(data=data_cmds, lim=lim_cmds, subset=subset_cmds, setup=setup_cmds, plot=plot_cmds))
+  return(list(data=data_cmds, lim=lim_cmds, brush=all_brush_cmds, setup=setup_cmds, plot=plot_cmds))
 }
 
 ############################################
 # Internal functions: rectangle plotter ----
 ############################################
 
-.griddotplot <- function(param_choices, x_lab, y_lab, color_label, color_FUN, color_discrete, brush_set, brush_show_cmd)
+.griddotplot <- function(param_choices, x_lab, y_lab, color_label, color_FUN, color_discrete, brush_cmd, brush_show_cmd)
 # Generates a grid dot plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -509,9 +495,9 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
   color_set <- !is.null(color_cmd)
 
   # Implementing the brushing effect.
-  subset_cmds <- list()
   new_aes <- .build_aes(color = color_set, alt=c(x="jitteredX", y="jitteredY"))
-  if (brush_set) {
+  all_brush_cmds <- list(init=brush_cmd)
+  if (!is.null(brush_cmd)) {
     brush_effect <- param_choices[[.brushEffect]]
 
     if (brush_effect==.brushColorTitle) {
@@ -540,7 +526,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
     }
     if (brush_effect==.brushRestrictTitle) {
       # Note subsetting must occur before all other calculations.
-      subset_cmds <- c(subset="plot.data <- subset(plot.data, BrushBy);", setup_cmds)
+      all_brush_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
       plot_cmds[["point"]] <-
         "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, color = 'black', alpha = 0, size = 0.5) +"
       plot_cmds[["brush_restrict"]] <- sprintf(
@@ -589,7 +575,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom', legend.box = 'vertical')"
 
-  return(list(data=list(), lim=list(), subset=subset_cmds, setup=setup_cmds, plot=plot_cmds))
+  return(list(data=list(), lim=list(), brush=all_brush_cmds, setup=setup_cmds, plot=plot_cmds))
 }
 
 ############################################
@@ -644,30 +630,37 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
   brush_in <- param_choices[[.brushByPlot]]
   output <- list(cmd=NULL)
 
-  # Checking what points are brushed from the transmitting plot.
-  if (brush_in != "") {
-    brush_by <- .encode_panel_name(brush_in)
-    brush_val <- all_memory[[brush_by$Type]][,.brushData][[brush_by$ID]]
-
-    if (!is.null(brush_val)) {
-        cmd <- sprintf("brushed_pts <- shiny::brushedPoints(all_coordinates[['%s']],
-    list(xmin=%.5g, xmax=%.5g, ymin=%.5g, ymax=%.5g,
-         direction='%s', mapping=list(x='%s', y='%s')));",
-        paste0(brush_by$Type, "Plot", brush_by$ID),
-        brush_val$xmin, brush_val$xmax, brush_val$ymin, brush_val$ymax,
-        brush_val$direction, brush_val$mapping$x, brush_val$mapping$y)
-
-        cmd <- c(cmd, "plot.data$BrushBy <- rownames(plot.data) %in% rownames(brushed_pts);")
-        output$cmd <- paste(cmd, collapse="\n")
-    }
-  }
-
   # Adding a box around the brush coordinates in the _current_ plot (not transmitter).
   current <- param_choices[,.brushData][[1]]
   if (!is.null(current)) {
     output$show <- sprintf("geom_rect(aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), color='%s', alpha=0, 
     data=data.frame(xmin = %.5g, xmax=%.5g, ymin = %.5g, ymax = %.5g), inherit.aes=FALSE) +",
                            color, current$xmin, current$xmax, current$ymin, current$ymax)
+  }
+
+  # Checking what points are brushed from the transmitting plot.
+  if (brush_in != "") {
+    brush_by <- .encode_panel_name(brush_in)
+    brush_val <- all_memory[[brush_by$Type]][,.brushData][[brush_by$ID]]
+
+    if (!is.null(brush_val)) {
+        transmitter <- paste0(brush_by$Type, "Plot", brush_by$ID)
+        if (rownames(param_choices)==transmitter) {
+            source_data <- 'plot.data'
+        } else {
+            source_data <- sprintf("all_coordinates[['%s']]", transmitter)
+        }
+
+        cmd <- sprintf("brushed_pts <- shiny::brushedPoints(%s,
+    list(xmin=%.5g, xmax=%.5g, ymin=%.5g, ymax=%.5g,
+         direction='%s', mapping=list(x='%s', y='%s')));",
+        source_data,
+        brush_val$xmin, brush_val$xmax, brush_val$ymin, brush_val$ymax,
+        brush_val$direction, brush_val$mapping$x, brush_val$mapping$y)
+
+        cmd <- c(cmd, "plot.data$BrushBy <- rownames(plot.data) %in% rownames(brushed_pts);")
+        output$cmd <- paste(cmd, collapse="\n")
+    }
   }
 
   return(output)

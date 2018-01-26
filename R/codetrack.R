@@ -32,12 +32,17 @@
     if (length(cur_cmds$lim)) {
         collated <- c(collated, "# Defining plot limits", cur_cmds$lim, "")
     }
-    if (length(cur_cmds$subset)) {
-        collated <- c(collated, "# Receiving brush data", cur_cmds$subset, "")
+    if (length(cur_cmds$brush)) {
+        collated <- c(collated, "# Receiving brush data", cur_cmds$brush, "")
     }
+
+    # Saving data for transmission after brushes have been processed;
+    # this is the equivalent point in .create_plots() where coordinates are saved.
     collated <- c(collated, "# Saving data for transmission", 
                   sprintf("all_coordinates[['%s']] <- plot.data", panel_name),
                   "")
+
+    # Finishing off the rest of the commands.
     if (length(cur_cmds$setup)) {
         collated <- c(collated, "# Setting up plot aesthetics", cur_cmds$setup, "")        
     }

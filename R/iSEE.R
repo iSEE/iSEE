@@ -108,8 +108,11 @@ iSEE <- function(
   # Save the original name of the input object for the command to rename it
   # in the tracker
   se_name <- deparse(substitute(se))
-  se <- as(se, "SummarizedExperiment") # supports ExpressionSet objects
-  se <- as(se, "SingleCellExperiment")
+  if (!is(se, "SingleCellExperiment")) { 
+    se <- as(se, "SummarizedExperiment") # supports ExpressionSet objects
+    se <- as(se, "SingleCellExperiment")
+    se_name <- sprintf('as(as(%s, "SummarizedExperiment"), "SingleCellExperiment")', se_name)
+  }
 
   # Setting up inputs for DT::datatable something to play with.
   # It must have some columns, so we're just filling it up with _something_.

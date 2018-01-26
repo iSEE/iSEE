@@ -63,6 +63,7 @@
     memory$redDim <- redDimPlotDefaults(se, reddim_max_plots)
     memory$redDim <- .override_defaults(memory$redDim, redDimArgs)
   }
+  rownames(memory$redDim) <- sprintf("redDimPlot%i", seq_len(reddim_max_plots))
 
   if (is.null(geneExprArgs)) {
     memory$geneExpr <- geneExprPlotDefaults(se, geneexpr_max_plots)
@@ -70,6 +71,7 @@
     memory$geneExpr <- geneExprPlotDefaults(se, geneexpr_max_plots)
     memory$geneExpr <- .override_defaults(memory$geneExpr, geneExprArgs)
   }
+  rownames(memory$geneExpr) <- sprintf("geneExprPlot%i", seq_len(geneexpr_max_plots))
 
   if (is.null(colDataArgs)) {
     memory$colData <- colDataPlotDefaults(se, coldata_max_plots)
@@ -77,6 +79,7 @@
     memory$colData <- colDataPlotDefaults(se, coldata_max_plots)
     memory$colData <- .override_defaults(memory$colData, colDataArgs)
   }
+  rownames(memory$colData) <- sprintf("colDataPlot%i", seq_len(coldata_max_plots))
 
   if (is.null(geneStatArgs)) {
     memory$geneStat <- geneStatTableDefaults(se, genestat_max_tabs)
@@ -84,6 +87,7 @@
     memory$geneStat <- geneStatTableDefaults(se, genestat_max_tabs)
     memory$geneStat <- .override_defaults(memory$geneStat, geneStatArgs, can_brush=FALSE)
   }
+  rownames(memory$geneStat) <- sprintf("geneStatTable%i", seq_len(genestat_max_tabs))
 
   return(memory)
 }

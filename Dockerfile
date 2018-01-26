@@ -11,8 +11,11 @@ RUN apt-get update && \
         curl \
         emacs \
         ess \
+        firefox \
+        gdebi-core \
         git \
         libbz2-dev \
+        libcairo2 \
         libcurl4-openssl-dev \
         libgsl-dev \
         libgsl2 \
@@ -27,6 +30,8 @@ RUN apt-get update && \
         make \
         pandoc \
         pandoc-citeproc \
+        r-cran-rjava \
+        systemd \
         wget \
         zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
@@ -36,4 +41,9 @@ RUN mkdir -p  /usr/local/lib/R/site-library
 ADD inst/extdata/install.R /tmp/
 
 RUN R -f /tmp/install.R
+
+RUN wget https://download2.rstudio.org/rstudio-server-1.1.419-amd64.deb
+RUN gdebi rstudio-server-1.1.419-amd64.deb
+RUN wget https://download1.rstudio.org/rstudio-xenial-1.1.419-amd64.deb
+RUN gebi rstudio-xenial-1.1.419-amd64.deb
 

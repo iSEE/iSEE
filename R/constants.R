@@ -123,3 +123,7 @@ names(rev.translation) <- translation
     names[keep] <- sprintf("%sPlot%i", x$Type, x$ID)
     names
 }
+
+.plothexcode_redDim <- "#3C8DBC"
+.plothexcode_colData <- "#F39D12"
+.plothexcode_geneExpr <- "#03A659"

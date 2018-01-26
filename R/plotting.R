@@ -244,7 +244,6 @@ names(.all_labs_values) <- .all_aes_names
   }
   extra_cmds$data <- c(more_data_cmds, extra_cmds$data)
   extra_cmds$setup <- c(setup_cmds, extra_cmds$setup)
-  print(extra_cmds)
 
   # Evaluating the early commands to get something to store for brushing.
   to_eval <- unlist(extra_cmds[c("data", "lim", "brush")])

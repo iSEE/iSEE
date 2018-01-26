@@ -346,7 +346,6 @@ iSEE <- function(
             cur_plots <- paste0(rObjects$active_plots$Type,"Plot",rObjects$active_plots$ID)
             not_used <- setdiff(V(pObjects$brush)$name,cur_plots)
             currgraph_used <- delete.vertices(pObjects$brush,not_used)
-            # plots_only <- rObjects$active_plots[rObjects$active_plots$Type != "geneStat",]
             currgraph_used <- set_vertex_attr(currgraph_used,"plottype",
                                               value = gsub("Plot[0-9]","",V(currgraph_used)$name))
             plot(currgraph_used,

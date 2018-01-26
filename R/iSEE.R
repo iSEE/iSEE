@@ -3,7 +3,7 @@
 #'
 #' Interactive visualization of single-cell data using a Shiny interface.
 #'
-#' @param se A \linkS4class{SingleCellExperiment} object.
+#' @param se An object that coercible to \linkS4class{SingleCellExperiment}.
 #' @param redDimArgs A DataFrame similar to that produced by \code{\link{redDimPlotDefaults}}, specifying initial parameters for the plots.
 #' @param colDataArgs A DataFrame similar to that produced by \code{\link{colDataPlotDefaults}}, specifying initial parameters for the plots.
 #' @param geneExprArgs A DataFrame similar to that produced by \code{\link{geneExprPlotDefaults}}, specifying initial parameters for the plots.
@@ -25,6 +25,7 @@
 #' @param colormap An \linkS4class{ExperimentColorMap} object that defines
 #' custom color maps to apply to individual \code{assays}, \code{colData},
 #' and \code{rowData} covariates.
+#' @param \dots Additional options passed to \code{\link{runApp}}.
 #'
 #' @details Users can pass default parameters via DataFrame objects in
 #' \code{redDimArgs} and \code{geneExprArgs}. Each object can contain
@@ -101,12 +102,14 @@ iSEE <- function(
   annot.orgdb=NULL,
   annot.keytype="ENTREZID",
   annot.keyfield=NULL,
-  colormap=ExperimentColorMap()
+  colormap=ExperimentColorMap(),
+  ...
 ) {
   # Save the original name of the input object for the command to rename it
   # in the tracker
   se_name <- deparse(substitute(se))
-  stopifnot(inherits(se, "SingleCellExperiment"))
+  se <- as(se, "SummarizedExperiment") # supports ExpressionSet objects
+  se <- as(se, "SingleCellExperiment")
 
   # Setting up inputs for DT::datatable something to play with.
   # It must have some columns, so we're just filling it up with _something_.
@@ -711,6 +714,8 @@ iSEE <- function(
   # Launching the app.
   #######################################################################
 
-  shinyApp(ui = iSEE_ui, server = iSEE_server)
+  app <- shinyApp(ui = iSEE_ui, server = iSEE_server)
+  
+  runApp(app, ...)
 }
 

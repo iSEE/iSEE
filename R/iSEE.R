@@ -389,7 +389,10 @@ iSEE <- function(
           title = "This is the graph for the links between the plots", size = "l",
           fade = TRUE, footer = NULL, easyClose = TRUE,
           renderPlot({
-            plot(pObjects$brush)
+            cur_plots <- paste0(rObjects$active_plots$Type,"Plot",rObjects$active_plots$ID)
+            not_used <- setdiff(V(pObjects$brush)$name,cur_plots)
+            currgraph_used <- delete.vertices(pObjects$brush,not_used)
+            plot(currgraph_used) # although it is little... how to say... uglyish
           })
         )
       )

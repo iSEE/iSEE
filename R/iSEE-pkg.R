@@ -32,7 +32,7 @@
 #' @importFrom methods new slot
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom igraph make_graph topo_sort are_adjacent incident add_edges
-#' adjacent_vertices is_dag simplify
+#' adjacent_vertices is_dag simplify V delete.vertices
 #' @importFrom graphics plot
 #' @author Aaron Lun \email{alun@@wehi.edu.au}
 #' @author Charlotte Soneson \email{charlotte.soneson@@uzh.ch}

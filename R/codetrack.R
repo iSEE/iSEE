@@ -12,7 +12,7 @@
     "## All commands below refer to your SingleCellExperiment object as `se`.",
     "",
     sprintf("se <- %s", se_name),
-    "all.coordinates <- list()",
+    "all_coordinates <- list()",
     "")
 
   for (i in seq_len(nrow(aobjs))) {
@@ -27,39 +27,30 @@
                       "")
 
     # Adding the plotting commands.
-    mult <- pObjects$brush[panel_name, panel_name]
     cur_cmds <- pObjects$commands[[panel_name]]
-    save_cmd <- c("# Saving for brush transmission",
-                  sprintf("all.coordinates[['%s']] <- plot.data", panel_name))
-
-    if (mult==0) { 
-      tracked_code <- c(tracked_code, cur_cmds, "", save_cmd)
-
-    } else {
-      # Some special handling required for self-brushing, to generate
-      # the plot.data for calculation of BrushBy.
-      # All non-plotting code goes into a loop.
-      brushby_ix <- grep("^brushedPts <- ", cur_cmds)
-      plot_ix <- which("# Generating the plot"==cur_cmds)
-      plot_cmds <- cur_cmds[plot_ix:length(cur_cmds)]
-      init_cmds <- cur_cmds[seq_len(brushby_ix-1L)]
-      other_cmds <- cur_cmds[brushby_ix:(plot_ix-1L)]
-
-      # Avoiding application of the brush in the first iteration.
-      other_cmds[1] <- paste0("if (ix!=1) {\n", .indent(other_cmds[1]), 
-                              "\n} else {\n    plot.data$BrushBy <- TRUE\n}")
-
-      lim_ix <- grep("^[xy]bounds <- ", other_cmds)
-      other_cmds[lim_ix] <- paste0("if (ix==1) {\n", .indent(other_cmds[lim_ix]), "\n}")
-
-      # Saving the transmitted points.
-      other_cmds <- c(other_cmds, save_cmd)
-
-      tracked_code <- c(tracked_code, init_cmds, "for (ix in seq_len(2)) {",
-                        .indent(other_cmds), "}", "", plot_cmds)
+    collated <- c(cur_cmds$data, "")
+    if (length(cur_cmds$lim)) {
+        collated <- c(collated, "# Defining plot limits", cur_cmds$lim, "")
+    }
+    if (length(cur_cmds$brush)) {
+        collated <- c(collated, "# Receiving brush data", cur_cmds$brush, "")
     }
 
-    tracked_code <- c(tracked_code, "")
+    # Saving data for transmission after brushes have been processed;
+    # this is the equivalent point in .create_plots() where coordinates are saved.
+    collated <- c(collated, "# Saving data for transmission", 
+                  sprintf("all_coordinates[['%s']] <- plot.data", panel_name),
+                  "")
+
+    # Finishing off the rest of the commands.
+    if (length(cur_cmds$setup)) {
+        collated <- c(collated, "# Setting up plot aesthetics", cur_cmds$setup, "")        
+    }
+    if (length(cur_cmds$plot)) {
+        collated <- c(collated, "# Creating the plot", cur_cmds$plot, "")        
+    }
+
+    tracked_code <- c(tracked_code, collated, "")
   }
 
   tracked_code <- c(tracked_code,
@@ -67,6 +58,14 @@
                     "## To guarantee the reproducibility of your code, you should also",
                     "## record the output of sessionInfo()",
                     "sessionInfo()")
+
+  # Restoring indenting for multi-line ggplot code.
+  tracked_code <- unlist(tracked_code)
+  ggplot_ix <- grep("\\+$", tracked_code) + 1L
+  to_mod <- tracked_code[ggplot_ix]
+  to_mod <- paste0("    ", to_mod)
+  to_mod <- sub("\n", "\n    ", to_mod)
+  tracked_code[ggplot_ix] <- to_mod
 
   return(tracked_code)
 }

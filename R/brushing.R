@@ -1,13 +1,32 @@
 .spawn_brush_chart <- function(memory) 
-# Creates a graph containing all of the possible vertices.
-# Edges are only constructed upon actual rendering of the plot. 
+# Creates a graph containing all of the possible vertices, and 
+# sets up the initial relationships between them.    
 {
   node_names <- list()
+  edges <- list()
+
   for (mode in c("redDim", "colData", "geneExpr")) { 
-      node_names[[mode]] <- sprintf("%sPlot%i", mode, seq_len(nrow(memory[[mode]])))
+    N <- nrow(memory[[mode]])
+    cur_panels <- sprintf("%sPlot%i", mode, seq_len(N))
+    node_names[[mode]] <- cur_panels
+
+    cur_edges <- vector("list",N)
+    for (i in seq_len(N)) {
+      cur_parent <- memory[[mode]][i, .brushByPlot]
+      if (cur_parent!="") {
+        cur_edges[[i]] <- c(.decoded2encoded(cur_parent), cur_panels[i])
+      }
+    }
+    edges[[mode]] <- cur_edges
   }
+
+  all_edges <- unlist(edges)
   node_names <- unlist(node_names)  
-  make_graph(character(0), isolates=node_names, directed=TRUE)
+  g <- make_graph(as.character(all_edges), isolates=setdiff(node_names, all_edges), directed=TRUE)
+  if (!is_dag(simplify(g))) {
+    stop("cyclic brushing dependencies in 'initialPanels'")
+  }
+  return(g)
 }
 
 .choose_new_brush_source <- function(graph, panel, new_parent, old_parent) 

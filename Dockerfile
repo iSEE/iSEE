@@ -33,7 +33,7 @@ RUN apt-get update && \
 
 RUN mkdir -p  /usr/local/lib/R/site-library
 
-ADD install.R /tmp/
+ADD inst/extdata/install.R /tmp/
 
 RUN R -f /tmp/install.R
 

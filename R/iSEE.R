@@ -546,6 +546,36 @@ iSEE <- function(
       }
     }
 
+    # Resetting brushes for gene expression plots when the linked gene table changes
+    # (only when it is currently selecting x/y-axes from the table, though).
+    max_plots <- nrow(pObjects$memory$geneExpr)
+    for (i in seq_len(max_plots)) {
+      local({
+        i0 <- i
+        observe({
+          yaxischoice <- input[[.inputGeneExpr(.geneExprYAxis, i0)]]
+          yaxistab <- input[[.inputGeneExpr(.geneExprYAxisGeneTable, i0)]]
+          if (!is.null(yaxischoice) && !is.null(yaxistab)) { 
+            if (yaxischoice==.geneExprYAxisGeneTableTitle) {
+              stuff <- .find_linked_gene(yaxistab, input)
+              session$resetBrush(.inputGeneExpr(.brushField, i0))
+            }
+          }
+        })
+
+        observe({
+          xaxischoice <- input[[.inputGeneExpr(.geneExprXAxis, i0)]]
+          xaxistab <- input[[.inputGeneExpr(.geneExprXAxisGeneTable, i0)]]
+          if (!is.null(xaxischoice) && !is.null(xaxistab)) { 
+            if (xaxischoice==.geneExprXAxisGeneTableTitle) {
+              stuff <- .find_linked_gene(xaxistab, input)
+              session$resetBrush(.inputGeneExpr(.brushField, i0))
+            }
+          }
+        })
+      })
+    }
+
     #######################################################################
     # Gene table section. ----
     #######################################################################

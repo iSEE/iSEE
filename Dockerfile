@@ -5,14 +5,12 @@ LABEL authors="davis@ebi.ac.uk" \
     description="Docker image containing R and packages the iSEE package"
 
 # Install container-wide requrements gcc, pip, zlib, libssl, make, libncurses, fortran77, g++, R
-RUN add-apt-repository ppa:ubuntu-mozilla-daily/firefox-aurora \
-    apt-get update && \
+RUN apt-get update && \
     apt-get -y upgrade && \
     apt-get install -y --no-install-recommends \
         curl \
         emacs \
         ess \
-        firefox \
         gdebi-core \
         git \
         libbz2-dev \
@@ -32,10 +30,15 @@ RUN add-apt-repository ppa:ubuntu-mozilla-daily/firefox-aurora \
         pandoc \
         pandoc-citeproc \
         r-cran-rjava \
+        software-properties-common \
         systemd \
         wget \
         zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
+
+RUN add-apt-repository ppa:ubuntu-mozilla-daily/firefox-aurora  && \
+    apt-get install -y --no-install-recommends \
+    firefox
 
 RUN mkdir -p  /usr/local/lib/R/site-library
 

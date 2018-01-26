@@ -5,7 +5,8 @@ LABEL authors="davis@ebi.ac.uk" \
     description="Docker image containing R and packages the iSEE package"
 
 # Install container-wide requrements gcc, pip, zlib, libssl, make, libncurses, fortran77, g++, R
-RUN apt-get update && \
+RUN add-apt-repository ppa:ubuntu-mozilla-daily/firefox-aurora \
+    apt-get update && \
     apt-get -y upgrade && \
     apt-get install -y --no-install-recommends \
         curl \

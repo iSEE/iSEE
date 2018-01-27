@@ -656,7 +656,7 @@ iSEE <- function(
                 # Defining the rendered plot, and saving the coordinates.
                 output[[plot_name]] <- renderPlot({
                     force(rObjects[[plot_name]])
-                    p.out <- FUN0(i0, se, input, pObjects$coordinates, pObjects$memory, colormap)
+                    p.out <- FUN0(i0, se, pObjects$coordinates, pObjects$memory, colormap)
                     pObjects$commands[[plot_name]] <- p.out$cmd
                     pObjects$coordinates[[plot_name]] <- p.out$xy
                     p.out$plot

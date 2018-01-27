@@ -14,7 +14,7 @@ names(.all_labs_values) <- .all_aes_names
 # .make_redDimPlot  ----
 ############################################
 
-.make_redDimPlot <- function(id, se, input, all_coordinates, all_memory, color_map)
+.make_redDimPlot <- function(id, se, all_coordinates, all_memory, color_map)
 # Makes the dimension reduction plot.
 {
   param_choices <- all_memory$redDim[id,]
@@ -29,13 +29,13 @@ names(.all_labs_values) <- .all_aes_names
 
   # Adding colour data (and commands in color_FUN).
   setup_cmds <- list()
-  color_out <- .process_colorby_choice(param_choices, se, input, color_map)
+  color_out <- .process_colorby_choice(param_choices, se, all_memory, color_map)
   setup_cmds[["color"]] <- color_out$cmd
   color_label <- color_out$label
   color_FUN <- color_out$FUN
 
   # Adding brushing data (plot-specific commands will be added later).
-  brush_out <- .process_brushby_choice(param_choices, input, all_memory, color=brush_stroke_color_full["redDim"])
+  brush_out <- .process_brushby_choice(param_choices, all_memory, color=brush_stroke_color_full["redDim"])
 
   # Generating the plotting commands.
   .create_plot(
@@ -52,7 +52,7 @@ names(.all_labs_values) <- .all_aes_names
 # .make_colDataPlot  ----
 ############################################
 
-.make_colDataPlot <- function(id, se, input, all_coordinates, all_memory, color_map)
+.make_colDataPlot <- function(id, se, all_coordinates, all_memory, color_map)
 # Makes a plot of column data variables.
 {
   param_choices <- all_memory$colData[id,]
@@ -74,13 +74,13 @@ names(.all_labs_values) <- .all_aes_names
 
   # Adding colour commands.
   setup_cmds <- list()
-  color_out <- .process_colorby_choice(param_choices, se, input, color_map)
+  color_out <- .process_colorby_choice(param_choices, se, all_memory, color_map)
   setup_cmds[["color"]] <- color_out$cmd
   color_FUN <- color_out$FUN
   color_label <- color_out$label
 
   # Adding brushing commands.
-  brush_out <- .process_brushby_choice(param_choices, input, all_memory, color=brush_stroke_color_full["colData"])
+  brush_out <- .process_brushby_choice(param_choices, all_memory, color=brush_stroke_color_full["colData"])
 
   # Generating the plot.
   .create_plot(
@@ -95,7 +95,7 @@ names(.all_labs_values) <- .all_aes_names
 # .make_geneExprPlot  ----
 ############################################
 
-.make_geneExprPlot <- function(id, se, input, all_coordinates, all_memory, color_map)
+.make_geneExprPlot <- function(id, se, all_coordinates, all_memory, color_map)
 # Makes a gene expression plot.
 {
   param_choices <- all_memory$geneExpr[id,]
@@ -104,7 +104,8 @@ names(.all_labs_values) <- .all_aes_names
   ## Setting up the y-axis:
   y_choice <- param_choices[[.geneExprYAxis]]
   if (y_choice==.geneExprYAxisGeneTableTitle) {
-    gene_selected_y <- .find_linked_gene(param_choices[[.geneExprYAxisGeneTable]], input)
+    chosen_tab <- .decoded2encoded(param_choices[[.geneExprYAxisGeneTable]])
+    gene_selected_y <- all_memory$geneStat[chosen_tab, "Selected"]
     validate(need( 
       length(gene_selected_y)==1L,
       sprintf("Invalid '%s' > '%s' input", .geneExprYAxis, y_choice)
@@ -138,9 +139,10 @@ names(.all_labs_values) <- .all_aes_names
   } else if (x_choice==.geneExprXAxisGeneTableTitle || x_choice==.geneExprXAxisGeneTextTitle) { # gene selected
 
     if (x_choice==.geneExprXAxisGeneTableTitle) {
-      gene_selected_x <- .find_linked_gene(param_choices[[.geneExprXAxisGeneTable]], input)
+      chosen_tab <- .decoded2encoded(param_choices[[.geneExprXAxisGeneTable]])
+      gene_selected_x <- all_memory$geneStat[chosen_tab, "Selected"]
       validate(need( 
-        length(gene_selected_y)==1L,
+        length(gene_selected_x)==1L,
         sprintf("Invalid '%s' > '%s' input", .geneExprXAxis, x_choice)
       ))
 
@@ -165,13 +167,13 @@ names(.all_labs_values) <- .all_aes_names
 
   # Adding colour commands.
   setup_cmds <- list()
-  color_out <- .process_colorby_choice(param_choices, se, input, color_map)
+  color_out <- .process_colorby_choice(param_choices, se, all_memory, color_map)
   setup_cmds[["color"]] <- color_out$cmd
   color_FUN <- color_out$FUN
   color_label <- color_out$label
 
   # Adding brushing commands.
-  brush_out <- .process_brushby_choice(param_choices, input, all_memory, color=brush_stroke_color_full["geneExpr"])
+  brush_out <- .process_brushby_choice(param_choices, all_memory, color=brush_stroke_color_full["geneExpr"])
 
   # Generating the plot.
   .create_plot(
@@ -587,7 +589,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
 # Internal functions: coloring/brushing ----
 ############################################
 
-.process_colorby_choice <- function(param_choices, se, input, color_map) {
+.process_colorby_choice <- function(param_choices, se, all_memory, color_map) {
   output <- list(cmd=NULL, label=NA_character_, FUN=NULL)
   color_choice <- param_choices[[.colorByField]]
 
@@ -601,7 +603,8 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
 
     # Set the color to the selected gene
     if (color_choice==.colorByGeneTableTitle) {
-      chosen_gene <- .find_linked_gene(param_choices[[.colorByGeneTable]], input)
+      chosen_tab <- .decoded2encoded(param_choices[[.colorByGeneTable]])
+      chosen_gene <- all_memory$geneStat[chosen_tab, "Selected"]
       validate(need(
         length(chosen_gene)==1L,
         sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTableTitle)
@@ -631,7 +634,21 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
   return(output)
 }
 
-.process_brushby_choice <- function(param_choices, input, all_memory, color="dodgerblue") {
+.create_color_function_chooser <- function(colors_scale) {
+    to_use <- paste(deparse(colors_scale), collapse = "")
+    function(is_discrete) {
+        sprintf(ifelse(!is_discrete,
+                       "scale_color_gradientn(colours = %s) +",
+                       "scale_colour_manual(values = %s) +"),
+                to_use)
+    }
+}
+
+############################################
+# Internal functions: brushing ----
+############################################
+
+.process_brushby_choice <- function(param_choices, all_memory, color="dodgerblue") {
   brush_in <- param_choices[[.brushByPlot]]
   output <- list(cmd=NULL)
 
@@ -669,16 +686,6 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
   }
 
   return(output)
-}
-
-.create_color_function_chooser <- function(colors_scale) {
-    to_use <- paste(deparse(colors_scale), collapse = "")
-    function(is_discrete) {
-        sprintf(ifelse(!is_discrete,
-                       "scale_color_gradientn(colours = %s) +",
-                       "scale_colour_manual(values = %s) +"),
-                to_use)
-    }
 }
 
 ############################################

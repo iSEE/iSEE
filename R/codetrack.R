@@ -83,29 +83,20 @@
 
 .find_links_to_table <- function(rObjects, pObjects, graph)
 # finds the links for the tables that are used, and sets the new edges in the graph
+# this updated graph is then returned as output
 {
   tbl_objs <- rObjects$active_panels[rObjects$active_panels$Type=="geneStat",]
   cur_tables <- paste0(tbl_objs$Type,"Table",tbl_objs$ID)
   all_tlinks <- pObjects$table_links
   cur_tlinks <- all_tlinks[cur_tables]
-  message(cur_tlinks)
-  
-  message("class ",class(cur_tlinks))
-  message(length(cur_tlinks))
-  
-  # message(tbl_objs)
-  # message(cur_tables)
   
   # for every table in use
   for (i in seq_len(nrow(tbl_objs))) {
     table_used <- cur_tables[i]
-    message("tableused: ",table_used)
     col_links <- unlist(cur_tlinks[[table_used]]$color)
     x_links <- unlist(cur_tlinks[[table_used]]$xaxis)
     y_links <- unlist(cur_tlinks[[table_used]]$yaxis)
-    message("col:", col_links," --- x:", x_links," --- y:",y_links)
     any_links <- unique(c(col_links,x_links,y_links))
-    message("hey ",any_links)
     
     gr <- graph
     # add the vertex of the table

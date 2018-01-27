@@ -332,11 +332,7 @@ iSEE <- function(
             currgraph_used <- set_vertex_attr(currgraph_used,"plottype",
                                               value = gsub("Plot[0-9]","",V(currgraph_used)$name))
             
-            message(str(pObjects$table_links))
-            
             currgraph_used <- .find_links_to_table(rObjects, pObjects, currgraph_used)
-            
-            
             
             plot(currgraph_used,
                  edge.arrow.size = .8,

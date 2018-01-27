@@ -305,7 +305,10 @@ names(.all_labs_values) <- .all_aes_names
       )
     }
     if (brush_effect==.brushRestrictTitle) {
+      all_brush_cmds[["full"]] <- "plot.data.all <- plot.data;"
       all_brush_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
+      plot_cmds[["brush_blank"]] <- 
+        "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
       plot_cmds[["brush_restrict"]] <- sprintf(
         "geom_point(%s, plot.data) +",
         .build_aes(color = color_set)
@@ -421,7 +424,11 @@ plot.data$Y <- tmp;")
     } else if (brush_effect==.brushRestrictTitle) {
       # Need to subset explicitly, to adjust the density calculations and ensure
       # doesntream brushes are correct. Note, subsetting BEFORE vipor calculations.
+      all_brush_cmds[["full"]] <- "plot.data.all <- plot.data;"
       all_brush_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
+      
+      plot_cmds[["brush_blank"]] <- 
+        "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
       plot_cmds[["violin"]] <- "geom_violin(data = plot.data, alpha = 0.2, scale = 'width') +"
       plot_cmds[["brush_restrict"]] <- sprintf("geom_point(%s, plot.data) +", new_aes)
     }
@@ -533,7 +540,11 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
     }
     if (brush_effect==.brushRestrictTitle) {
       # Note subsetting must occur before all other calculations.
+      all_brush_cmds[["full"]] <- "plot.data.all <- plot.data;"
       all_brush_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
+      
+      plot_cmds[["brush_blank"]] <- 
+        "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
       plot_cmds[["point"]] <-
         "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, color = 'black', alpha = 0, size = 0.5) +"
       plot_cmds[["brush_restrict"]] <- sprintf(

@@ -92,6 +92,38 @@
   return(memory)
 }
 
+.setup_table_observer <- function(mode, i, input, pObjects, by_field, tab_title, tab_field, param='color') {
+    choice <- input[[paste0(mode, by_field, i)]]
+    tab <- input[[paste0(mode, tab_field, i)]]
+    reset <- FALSE
+    print(choice)
+    print(tab)
+
+    if (!is.null(choice) && !is.null(tab)) { 
+        # Editing the table_links, if we're switching to/from the table choice. 
+        old <- pObjects$memory[[mode]][i, tab_field]
+        plot_name <- paste0(mode, "Plot", i)
+        if (choice==tab_title) {
+            pObjects$table_links <- .modify_table_links(pObjects$table_links, plot_name, tab, old, mode=param)
+        } else {
+            pObjects$table_links <- .modify_table_links(pObjects$table_links, plot_name, "", old, mode=param)
+        }
+
+        # Triggering replotting, but only if both of the input values are initialized.
+        # We don't have an 'ignoreInit' that we can rely on here.
+        reset <- TRUE
+    }
+    
+    # Updating stored parameters. These should persist due to environment's pass-by-reference.
+    if (!is.null(choice)) { 
+        pObjects$memory[[mode]][i, by_field] <- choice
+    }
+    if (!is.null(tab)) { 
+        pObjects$memory[[mode]][i, tab_field] <- tab 
+    }
+    return(reset)
+}
+
 #############################################
 # 
 

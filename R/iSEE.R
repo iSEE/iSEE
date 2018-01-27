@@ -280,6 +280,7 @@ iSEE <- function(
     pObjects$coordinates <- list()
     pObjects$commands <- list()
     pObjects$brush <- .spawn_brush_chart(memory) 
+    pObjects$table_links <- .spawn_table_links(memory)
 
     # Storage for all the reactive objects
     rObjects <- reactiveValues(
@@ -412,6 +413,7 @@ iSEE <- function(
             local({
                 mode0 <- mode
                 i0 <- i
+                max_plots0 <- max_plots
 
                 # Panel removal.
                 observeEvent(input[[paste0(mode0, i0, .organizationDiscard)]], {
@@ -421,13 +423,16 @@ iSEE <- function(
                     rObjects$active_plots <- rObjects$active_plots[-index,]
 
                     # Re-enabling panel addition if we're decreasing from the maximum.
-                    if (sum(current_type)==max_plots) {
+                    if (sum(current_type)==max_plots0) {
                       enable(paste0(mode0, .organizationNew))
                     }
 
-                    # Destroying the brush source.
-                    pObjects$brush <- .destroy_brush_source(pObjects$brush,
-                        paste0(mode0, "Plot", i0))                                                            
+                    # Destroying links; either the brush source, or the links from tables.
+                    if (mode0=="geneStat") {
+                        pObjects$table_links <- .destroy_table(pObjects$table_links, paste0(mode0, "Table", i0))
+                    } else {
+                        pObjects$brush <- .destroy_brush_source(pObjects$brush, paste0(mode0, "Plot", i0))
+                    }
                }, ignoreInit=TRUE)
 
                 # Panel resizing.
@@ -576,104 +581,131 @@ iSEE <- function(
     #######################################################################
 
     for (mode in c("redDim", "geneExpr", "colData")) {
-      max_plots <- nrow(pObjects$memory[[mode]]) 
-
-      # Defining mode-specific parameters.
-      FUN <- switch(mode, 
-                    redDim=.make_redDimPlot,
-                    geneExpr=.make_geneExprPlot,
-                    colData=.make_colDataPlot)
-
-      protected <- switch(mode,
-                          redDim=c(.redDimType, .redDimXAxis, .redDimYAxis),
-                          colData=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
-                          geneExpr=c(.geneExprYAxis, .geneExprYAxisGeneTable, .geneExprYAxisGeneText,
-                                     .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneTable, .geneExprXAxisGeneText))
-
-      for (i in seq_len(max_plots)) {
-        local({
-          i0 <- i
-          mode0 <- mode
-          FUN0 <- FUN
-          plot.name <- paste0(mode0, "Plot", i0)
-
-          # Defining the rendered plot.
-          output[[plot.name]] <- renderPlot({
-            force(rObjects[[plot.name]])
-
-            # Updating non-fundamental parameters in the memory store (i.e., these
-            # parameters do not change the meaning of the coordinates).
-            for (field in ALLEXTRAS_DIRECT) {
-                pObjects$memory[[mode0]][[field]][i0] <- input[[paste0(mode0, field, i0)]]
+        max_plots <- nrow(pObjects$memory[[mode]]) 
+  
+        # Defining mode-specific parameters.
+        FUN <- switch(mode, 
+                      redDim=.make_redDimPlot,
+                      geneExpr=.make_geneExprPlot,
+                      colData=.make_colDataPlot)
+  
+        protected <- switch(mode,
+                            redDim=c(.redDimType, .redDimXAxis, .redDimYAxis),
+                            colData=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
+                            geneExpr=c(.geneExprXAxisColData, .geneExprYAxisGeneText, .geneExprXAxisGeneText))
+  
+        for (i in seq_len(max_plots)) {
+            # Observers for the non-fundamental parameter options (.brushByPlot is handled elsewhere).
+            for (field in c(.colorByColData, .colorByGeneText, .colorByGeneTableAssay, .colorByGeneTextAssay,
+                            .brushEffect, .brushColor, .brushTransAlpha)) {
+                local({
+                    i0 <- i
+                    mode0 <- mode
+                    field0 <- field
+                    cur_field <- paste0(mode0, field0, i0)
+                    plot_name <- paste0(mode0, "Plot", i0)
+  
+                    observeEvent(input[[cur_field]], {
+                        matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field]]))
+                        pObjects$memory[[mode0]][[field]][i0] <- matched_input
+                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                    }, ignoreInit=TRUE)
+                })
             }
-            for (field in ALLEXTRAS_INT) {
-                pObjects$memory[[mode0]][[field]][i0] <- as.integer(input[[paste0(mode0, field, i0)]])
+  
+            # Observers for the fundamental plot parameters.
+            for (field in protected) {
+                local({
+                    i0 <- i
+                    mode0 <- mode
+                    field0 <- field 
+                    cur_field <- paste0(mode0, field0, i0)
+                    cur_brush <- paste0(mode0, .brushField, i0)
+                    plot_name <- paste0(mode0, "Plot", i0) 
+    
+                    observeEvent(input[[cur_field]], {
+                        matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field]]))
+                        pObjects$memory[[mode0]][[field]][i0] <- matched_input                
+                        
+                        if (!is.null(isolate(input[[cur_brush]]))) { 
+                            # This will trigger replotting via the brush observer above.
+                            session$resetBrush(cur_brush) 
+                        } else { 
+                            # Manually triggering replotting.
+                            rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                        }
+                     }, ignoreInit=TRUE)
+                })
             }
-
-             # Creating the plot, with saved coordinates.
-            p.out <- FUN0(i0, se, input, pObjects$coordinates, pObjects$memory, colormap)
-            pObjects$commands[[plot.name]] <- p.out$cmd
-            pObjects$coordinates[[plot.name]] <- p.out$xy
-            p.out$plot
-          })
-        })
-
-        # Defining observers to respond to fundamental parameters.
-        for (field in protected) {
-          local({
-            i0 <- i
-            mode0 <- mode
-            field0 <- field 
-            in_name <- paste0(mode0, field0, i0)
-
-            observeEvent(input[[in_name]], {
-              incoming <- input[[in_name]]
-              if (is.numeric(pObjects$memory[[mode0]][[field0]])) {
-                incoming <- as.integer(incoming)
-              }
-              pObjects$memory[[mode0]][[field0]][i0] <- incoming
-
-              cur_brush <- paste0(mode0, .brushField, i0)
-              if (!is.null(input[[cur_brush]])) {
-                session$resetBrush(cur_brush) # This will trigger replotting.
-              } else {
-                UPDATE <- paste0(mode0, "Plot", i0) # Manually triggering replotting.
-                rObjects[[UPDATE]] <- .increment_counter(isolate(rObjects[[UPDATE]]))
-              }
-            }, ignoreInit=TRUE)
-          })
+  
+            local({
+                i0 <- i
+                mode0 <- mode
+                FUN0 <- FUN
+                plot_name <- paste0(mode0, "Plot", i0)
+  
+                # Observers for the linked color, aware of the gene choice.
+                observe({
+                    replot <- .setup_table_observer(mode0, i0, input, pObjects, .colorByField, 
+                        .colorByGeneTableTitle, .colorByGeneTable, param='color') 
+                    if (replot) {
+                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                    }
+                })
+  
+                # Defining the rendered plot, and saving the coordinates.
+                output[[plot_name]] <- renderPlot({
+                    force(rObjects[[plot_name]])
+                    p.out <- FUN0(i0, se, input, pObjects$coordinates, pObjects$memory, colormap)
+                    pObjects$commands[[plot_name]] <- p.out$cmd
+                    pObjects$coordinates[[plot_name]] <- p.out$xy
+                    p.out$plot
+                })
+            })
         }
-      }
     }
 
-    # Resetting brushes for gene expression plots when the linked gene table changes
-    # (only when it is currently selecting x/y-axes from the table, though).
+    # Gene expression plots need some careful handling, as we need to update the
+    # table links and destroy a brush whenever an x/y-axis-specifying parameter changes.
     max_plots <- nrow(pObjects$memory$geneExpr)
     for (i in seq_len(max_plots)) {
-      local({
-        i0 <- i
-        observe({
-          yaxischoice <- input[[.inputGeneExpr(.geneExprYAxis, i0)]]
-          yaxistab <- input[[.inputGeneExpr(.geneExprYAxisGeneTable, i0)]]
-          if (!is.null(yaxischoice) && !is.null(yaxistab)) { 
-            if (yaxischoice==.geneExprYAxisGeneTableTitle) {
-              stuff <- .find_linked_gene(yaxistab, input)
-              session$resetBrush(.inputGeneExpr(.brushField, i0))
-            }
-          }
-        })
+        local({
+            i0 <- i
+            mode0 <- "geneExpr"
+            plot_name <- paste0(mode0, "Plot", i0)
+            brush_id <- paste0(mode0, .brushField, i0)
 
-        observe({
-          xaxischoice <- input[[.inputGeneExpr(.geneExprXAxis, i0)]]
-          xaxistab <- input[[.inputGeneExpr(.geneExprXAxisGeneTable, i0)]]
-          if (!is.null(xaxischoice) && !is.null(xaxistab)) { 
-            if (xaxischoice==.geneExprXAxisGeneTableTitle) {
-              stuff <- .find_linked_gene(xaxistab, input)
-              session$resetBrush(.inputGeneExpr(.brushField, i0))
-            }
-          }
+            # Y-axis observer:
+            observe({
+                replot <- .setup_table_observer(mode0, i0, input, pObjects, .geneExprYAxis, 
+                    .geneExprYAxisGeneTableTitle, .geneExprYAxisGeneTable, param='yaxis') 
+                print(pObjects$table_links)
+                if (replot) {
+                    if (!is.null(isolate(input[[brush_id]]))) { 
+                        # This will trigger replotting. 
+                        session$resetBrush(brush_id)
+                    } else { 
+                        # Manually triggering replotting.
+                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                    }
+                }
+            })
+
+            # X-axis observer:
+            observe({
+                replot <- .setup_table_observer(mode0, i0, input, pObjects, .geneExprXAxis, 
+                    .geneExprXAxisGeneTableTitle, .geneExprXAxisGeneTable, param='xaxis') 
+                if (replot) {
+                    if (!is.null(isolate(input[[brush_id]]))) { 
+                        # This will trigger replotting. 
+                        session$resetBrush(brush_id)
+                    } else {
+                        # Manually triggering replotting.
+                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                    }
+                }
+            })
         })
-      })
     }
 
     #######################################################################
@@ -699,6 +731,12 @@ iSEE <- function(
             chosen <- input[[paste0("geneStatTable", i0, "_rows_selected")]]
             if (length(chosen)) {
                 pObjects$memory$geneStat$Selected[i0] <- chosen
+
+                # Triggering the replotting of all children.
+                all_kids <- unique(unlist(pObjects$table_links[[i0]]))
+                for (kid in all_kids) {
+                    rObjects[[kid]] <- .increment_counter(isolate(rObjects[[kid]]))
+                }
             }
         })
 

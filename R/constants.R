@@ -120,7 +120,8 @@ names(rev.translation) <- translation
 .decoded2encoded <- function(names) {
     keep <- names!=""
     x <- .encode_panel_name(names[keep])
-    names[keep] <- sprintf("%sPlot%i", x$Type, x$ID)
+    Mode <- ifelse(x$Type=="geneStat", "Table", "Plot")
+    names[keep] <- sprintf("%s%s%i", x$Type, Mode, x$ID)
     names
 }
 

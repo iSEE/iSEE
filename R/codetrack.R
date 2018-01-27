@@ -98,13 +98,12 @@
     y_links <- unlist(cur_tlinks[[table_used]]$yaxis)
     any_links <- unique(c(col_links,x_links,y_links))
     
-    gr <- graph
     # add the vertex of the table
-    gr <- add_vertices(gr,nv = 1, name = table_used, plottype = "geneStat")
+    graph <- add_vertices(graph,nv = 1, name = table_used, plottype = "geneStat")
     # add the edges corresponding
     for(j in seq_len(length(any_links))){
-      gr <- add_edges(gr,c(table_used, any_links[j]))
+      graph <- add_edges(graph,c(table_used, any_links[j]))
     }
   }
-  return(gr)
+  return(graph)
 }

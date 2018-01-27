@@ -154,6 +154,7 @@ iSEE <- function(
   active_plots <- data.frame(Type=encoded$Type, ID=encoded$ID,
                              Width=initialPanels$Width,
                              stringsAsFactors=FALSE)[!illegal,,drop=FALSE]
+  memory <- .sanitize_memory(active_plots, memory)
 
   # For retrieving the annotation
   if (!is.null(annot.orgdb)) {
@@ -419,8 +420,6 @@ iSEE <- function(
                 observeEvent(input[[paste0(mode0, i0, .organizationDiscard)]], {
                     all_active <- rObjects$active_plots
                     current_type <- all_active$Type==mode0
-                    index <- which(current_type & all_active$ID==i0)
-                    rObjects$active_plots <- rObjects$active_plots[-index,]
 
                     # Re-enabling panel addition if we're decreasing from the maximum.
                     if (sum(current_type)==max_plots0) {
@@ -429,10 +428,14 @@ iSEE <- function(
 
                     # Destroying links; either the brush source, or the links from tables.
                     if (mode0=="geneStat") {
-                        pObjects$table_links <- .destroy_table(pObjects$table_links, paste0(mode0, "Table", i0))
+                        .destroy_table(pObjects, paste0(mode0, "Table", i0))
                     } else {
-                        pObjects$brush <- .destroy_brush_source(pObjects$brush, paste0(mode0, "Plot", i0))
+                        .destroy_brush_source(pObjects, paste0(mode0, "Plot", i0))
                     }
+                    
+                    # Triggering re-rendering of the UI via change to active_plots.
+                    index <- which(current_type & all_active$ID==i0)
+                    rObjects$active_plots <- rObjects$active_plots[-index,]
                }, ignoreInit=TRUE)
 
                 # Panel resizing.
@@ -606,8 +609,8 @@ iSEE <- function(
                     plot_name <- paste0(mode0, "Plot", i0)
   
                     observeEvent(input[[cur_field]], {
-                        matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field]]))
-                        pObjects$memory[[mode0]][[field]][i0] <- matched_input
+                        matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
+                        pObjects$memory[[mode0]][[field0]][i0] <- matched_input
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     }, ignoreInit=TRUE)
                 })
@@ -624,8 +627,8 @@ iSEE <- function(
                     plot_name <- paste0(mode0, "Plot", i0) 
     
                     observeEvent(input[[cur_field]], {
-                        matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field]]))
-                        pObjects$memory[[mode0]][[field]][i0] <- matched_input                
+                        matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
+                        pObjects$memory[[mode0]][[field0]][i0] <- matched_input                
                         
                         if (!is.null(isolate(input[[cur_brush]]))) { 
                             # This will trigger replotting via the brush observer above.
@@ -679,7 +682,6 @@ iSEE <- function(
             observe({
                 replot <- .setup_table_observer(mode0, i0, input, pObjects, .geneExprYAxis, 
                     .geneExprYAxisGeneTableTitle, .geneExprYAxisGeneTable, param='yaxis') 
-                print(pObjects$table_links)
                 if (replot) {
                     if (!is.null(isolate(input[[brush_id]]))) { 
                         # This will trigger replotting. 

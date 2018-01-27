@@ -47,11 +47,30 @@
   return(.decoded2encoded(cur_tab))
 }
 
-.destroy_table <- function(links, tab) 
-# This destroys the current table and resets all of its links.
+.destroy_table <- function(pObjects, tab) 
+# This resets all links for the current table, and updates
+# the memory of all dependent plots to not have this table.
+# We assume pObjects is an environment for pass-by-reference.
 {
+    links <- pObjects$table_links
+
+    # Updating the memory of all linked plots.
+    cur_kids <- links[[tab]] 
+    for (x in cur_kids$color) {
+        type <- sub("Plot[0-9]+$", "", x)
+        pObjects$memory[[type]][x, .colorByGeneTable] <- ""
+    }
+    for (x in cur_kids$yaxis) {
+        pObjects$memory$geneExpr[x, .geneExprYAxisGeneTable] <- ""
+    }
+    for (x in cur_kids$xaxis) {
+        pObjects$memory$geneExpr[x, .geneExprXAxisGeneTable] <- ""
+    }
+
+    # Erasing the links.
     links[[tab]] <- list(color=list(), yaxis=list(), xaxis=list())
-    return(links)
+    pObjects$table_links <- links
+    return(invisible(NULL))
 }
 
 .modify_table_links <- function(links, dest, newtab, oldtab, mode='color') 

@@ -92,12 +92,45 @@
   return(memory)
 }
 
+.sanitize_memory <- function(active_plots, memory) 
+# This function ensures that the memory is valid
+# with respect to the starting panels, i.e., no brushing
+# or table links to panels that are not active.
+{
+    is_tab <- active_plots$Type=="geneStat"
+    brushable <- active_plots[!is_tab,]
+    brush_names <- .decode_panel_name(brushable$Type, brushable$ID)
+    linkable <- active_plots[is_tab,]
+    link_names <- .decode_panel_name(linkable$Type, linkable$ID)
+
+    for (mode in c("redDim", "colData", "geneExpr")) {
+        bb <- memory[[mode]][,.brushByPlot]
+        bad <- bb %in% brush_names
+        if (any(bad)) { 
+            memory[[mode]][,.brushByPlot][bb] <- ""
+        }
+
+        cb <- memory[[mode]][,.colorByGeneTable]
+        bad <- cb %in% link_names 
+        if (any(bad)) { 
+            memory[[mode]][,.colorByGeneTable][cb] <- ""
+        }
+    }
+
+    for (field in c(.geneExprXAxisGeneTable, .geneExprYAxisGeneTable)) {
+        bb <- memory$geneExpr[,field]
+        bad <- bb %in% link_names 
+        if (any(bad)) { 
+            memory$geneExpr[,field][bb] <- ""
+        }
+    }
+    return(memory)
+}
+
 .setup_table_observer <- function(mode, i, input, pObjects, by_field, tab_title, tab_field, param='color') {
     choice <- input[[paste0(mode, by_field, i)]]
     tab <- input[[paste0(mode, tab_field, i)]]
     reset <- FALSE
-    print(choice)
-    print(tab)
 
     if (!is.null(choice) && !is.null(tab)) { 
         # Editing the table_links, if we're switching to/from the table choice. 

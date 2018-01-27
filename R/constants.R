@@ -93,6 +93,7 @@ ALLEXTRAS_INT <- c(.colorByGeneTableAssay, .colorByGeneTextAssay)
 .organizationUp <- "ShiftUp"
 .organizationDown <- "ShiftDown"
 .organizationDiscard <- "Discard"
+.organizationModify <- "Modify"
 .organizationWidth <- "PanelWidth"
 
 # Encoding and decoding names for user/shiny ----

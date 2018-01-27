@@ -20,23 +20,21 @@
             downFUN <- disabled
         }
 
-        current <- box(
-            fluidRow(
-              upFUN(column(3,actionButton(paste0(mode, ID, .organizationUp),"",icon = icon("arrow-circle-up")))),
-              downFUN(column(3,actionButton(paste0(mode, ID, .organizationDown),"",icon = icon("arrow-circle-down")))),
-              column(3,actionButton(paste0(mode, ID, .organizationDiscard),"",
-                         icon = icon("trash"), class = "btn btn-warning"))
-            ),
-            sliderInput(paste0(mode, ID, .organizationWidth), label="Width",
-                        min=2, max=12, value=panel.width, step=1),
+        collected[[i]] <- box(
+            .custom_actionButton(paste0(mode, .organizationDiscard, ID),"", icon = icon("trash fa-2x")),
+            upFUN(.custom_actionButton(paste0(mode, .organizationUp, ID),"",icon = icon("arrow-circle-up fa-2x"))),
+            downFUN(.custom_actionButton(paste0(mode, .organizationDown, ID),"",icon = icon("arrow-circle-down fa-2x"))),
+            .custom_actionButton(paste0(mode, .organizationModify, ID),"", icon = icon("gear fa-2x")),
             title=.decode_panel_name(mode, ID), status=box_status[mode], 
-            width=NULL, solidHeader=FALSE, background="black"
+            width=NULL, solidHeader=TRUE
             )
 
-        # Reducing the padding above the boxes, except for the first one.
-        collected[[i]] <- fluidRow(column(current, width=12))
     }
     do.call(tagList, collected)
+}
+
+.custom_actionButton <- function(...) { 
+    div(style="display:inline-block", actionLink(...))
 }
 
 .panel_generation <- function(active_plots, memory, se) 
@@ -310,4 +308,3 @@ brush_fill_color <- c(redDim="#9cf", geneExpr="#9f6", colData="#ff9")
 
 brush_stroke_color <- c(redDim="#06f", geneExpr="#090", colData="#fc0")
 brush_stroke_color_full <- c(redDim="#0066ff", geneExpr="#009900", colData="#ffcc00")
-

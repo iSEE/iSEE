@@ -383,11 +383,12 @@ iSEE <- function(
         .panel_organization(rObjects$active_plots, pObjects$memory)
     })
 
+
     # Note: we need "local" so that each item gets its own number. Without it, the value
     # of i in the renderPlot() will be the same across all instances, because
     # of when the expression is evaluated.
 
-   for (mode in c("redDim", "geneExpr", "colData", "geneStat")) {
+    for (mode in c("redDim", "geneExpr", "colData", "geneStat")) {
         # Panel addition.
         local({
             mode0 <- mode
@@ -417,7 +418,7 @@ iSEE <- function(
                 max_plots0 <- max_plots
 
                 # Panel removal.
-                observeEvent(input[[paste0(mode0, i0, .organizationDiscard)]], {
+                observeEvent(input[[paste0(mode0, .organizationDiscard, i0)]], {
                     all_active <- rObjects$active_plots
                     current_type <- all_active$Type==mode0
 
@@ -438,19 +439,8 @@ iSEE <- function(
                     rObjects$active_plots <- rObjects$active_plots[-index,]
                }, ignoreInit=TRUE)
 
-                # Panel resizing.
-                observeEvent(input[[paste0(mode0, i0, .organizationWidth)]], {
-                    all_active <- rObjects$active_plots
-                    index <- which(all_active$Type==mode0 & all_active$ID==i0)
-                    cur.width <- all_active$Width[index]
-                    new.width <- input[[paste0(mode0, i0, .organizationWidth)]]
-                    if (!isTRUE(all.equal(new.width, cur.width))) {
-                        rObjects$active_plots$Width[index] <- new.width
-                    }
-                }, ignoreInit=TRUE)
-
                 # Panel shifting, up and down.
-                observeEvent(input[[paste0(mode0, i0, .organizationUp)]], {
+                observeEvent(input[[paste0(mode0, .organizationUp, i0)]], {
                     all_active <- rObjects$active_plots
                     index <- which(all_active$Type==mode0 & all_active$ID==i0)
                     if (index!=1L) {
@@ -461,7 +451,7 @@ iSEE <- function(
                     }
                 }, ignoreInit=TRUE)
 
-                observeEvent(input[[paste0(mode0, i0, .organizationDown)]], {
+                observeEvent(input[[paste0(mode0, .organizationDown, i0)]], {
                     all_active <- rObjects$active_plots
                     index <- which(all_active$Type==mode0 & all_active$ID==i0)
                     if (index!=nrow(all_active)) {
@@ -469,6 +459,30 @@ iSEE <- function(
                         reindex[index] <- reindex[index]+1L
                         reindex[index+1L] <- reindex[index+1L]-1L
                         rObjects$active_plots <- all_active[reindex,]
+                    }
+                }, ignoreInit=TRUE)
+
+                # Panel modification options.
+                observeEvent(input[[paste0(mode0, .organizationModify, i0)]], {
+                    all_active <- rObjects$active_plots
+                    index <- which(all_active$Type==mode0 & all_active$ID==i0)
+                    cur_width <- all_active$Width[index]
+
+                    showModal(modalDialog(
+                        sliderInput(paste0(mode0, .organizationWidth, i0), label="Width",
+                                    min=2, max=12, value=cur_width, step=1),
+                        title=paste(.decode_panel_name(mode0, i0), "panel parameters"),
+                        easyClose=TRUE, size="m", footer=NULL
+                        )
+                    )  
+                })
+                observeEvent(input[[paste0(mode0, .organizationWidth, i0)]], {
+                    all_active <- rObjects$active_plots
+                    index <- which(all_active$Type==mode0 & all_active$ID==i0)
+                    cur.width <- all_active$Width[index]
+                    new.width <- input[[paste0(mode0, .organizationWidth, i0)]]
+                    if (!isTRUE(all.equal(new.width, cur.width))) {
+                        rObjects$active_plots$Width[index] <- new.width
                     }
                 }, ignoreInit=TRUE)
             })

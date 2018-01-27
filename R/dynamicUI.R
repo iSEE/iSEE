@@ -20,20 +20,16 @@
         }
 
         collected[[i]] <- box(
-            .custom_actionButton(paste0(mode, .organizationDiscard, ID),"", icon = icon("trash fa-2x")),
-            upFUN(.custom_actionButton(paste0(mode, .organizationUp, ID),"",icon = icon("arrow-circle-up fa-2x"))),
-            downFUN(.custom_actionButton(paste0(mode, .organizationDown, ID),"",icon = icon("arrow-circle-down fa-2x"))),
-            .custom_actionButton(paste0(mode, .organizationModify, ID),"", icon = icon("gear fa-2x")),
+            actionButton(paste0(mode, .organizationDiscard, ID),"", icon = icon("trash fa-2x"), style="display:inline-block; margin:0"),
+            upFUN(actionButton(paste0(mode, .organizationUp, ID),"",icon = icon("arrow-circle-up fa-2x"), style="display:inline-block; margin:0")),
+            downFUN(actionButton(paste0(mode, .organizationDown, ID),"",icon = icon("arrow-circle-down fa-2x"), style="display:inline-block; margin:0")),
+            actionButton(paste0(mode, .organizationModify, ID),"", icon = icon("gear fa-2x"), style="display:inline-block; margin:0"),
             title=.decode_panel_name(mode, ID), status=box_status[mode], 
             width=NULL, solidHeader=TRUE
             )
 
     }
     do.call(tagList, collected)
-}
-
-.custom_actionButton <- function(...) { 
-    div(style="display:inline-block", actionLink(...))
 }
 
 .panel_generation <- function(active_panels, memory, se) 

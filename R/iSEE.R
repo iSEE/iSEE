@@ -372,7 +372,7 @@ iSEE <- function(
                 first.missing <- setdiff(seq_len(nrow(all.memory)), all_active$ID[all_active$Type==mode0])
 
                 if (length(first.missing)) {
-                    rObjects$active_panels <- rbind(all_active, DataFrame(Type=mode0, ID=first.missing[1], Width=4))
+                    rObjects$active_panels <- rbind(all_active, DataFrame(Type=mode0, ID=first.missing[1], Width=4L, Height=500L))
 
                     # Disabling panel addition if we've reached the maximum.
                     if (length(first.missing)==1L) {

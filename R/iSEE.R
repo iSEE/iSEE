@@ -127,8 +127,8 @@ iSEE <- function(
                           redDimMax, colDataMax, geneExprMax, geneStatMax)
 
   # Defining the initial elements to be plotted.
-  active_plots <- .setup_initial(initialPanels, memory)
-  memory <- .sanitize_memory(active_plots, memory)
+  active_panels <- .setup_initial(initialPanels, memory)
+  memory <- .sanitize_memory(active_panels, memory)
 
   # For retrieving the annotation
   if (!is.null(annot.orgdb)) {
@@ -254,12 +254,12 @@ iSEE <- function(
     pObjects$memory <- memory
     pObjects$coordinates <- list()
     pObjects$commands <- list()
-    pObjects$brush <- .spawn_brush_chart(memory) 
+    pObjects$brush_links <- .spawn_brush_chart(memory) 
     pObjects$table_links <- .spawn_table_links(memory)
 
     # Storage for all the reactive objects
     rObjects <- reactiveValues(
-        active_plots = active_plots
+        active_panels = active_panels
     )
     for (mode in c("redDim", "geneExpr", "colData")) {
       max_plots <- nrow(pObjects$memory[[mode]])
@@ -321,9 +321,9 @@ iSEE <- function(
           title = "This is the graph for the links between the plots", size = "l",
           fade = TRUE, footer = NULL, easyClose = TRUE,
           renderPlot({
-            cur_plots <- paste0(rObjects$active_plots$Type,"Plot",rObjects$active_plots$ID)
-            not_used <- setdiff(V(pObjects$brush)$name,cur_plots)
-            currgraph_used <- delete.vertices(pObjects$brush,not_used)
+            cur_plots <- paste0(rObjects$active_panels$Type,"Plot",rObjects$active_panels$ID)
+            not_used <- setdiff(V(pObjects$brush_links)$name,cur_plots)
+            currgraph_used <- delete.vertices(pObjects$brush_links,not_used)
             currgraph_used <- set_vertex_attr(currgraph_used,"plottype",
                                               value = gsub("Plot[0-9]","",V(currgraph_used)$name))
             plot(currgraph_used,
@@ -350,11 +350,11 @@ iSEE <- function(
     #######################################################################
 
     output$allPanels <- renderUI({
-        .panel_generation(rObjects$active_plots, pObjects$memory, se)
+        .panel_generation(rObjects$active_panels, pObjects$memory, se)
     })
 
     output$panelOrganization <- renderUI({
-        .panel_organization(rObjects$active_plots, pObjects$memory)
+        .panel_organization(rObjects$active_panels, pObjects$memory)
     })
 
 
@@ -367,12 +367,12 @@ iSEE <- function(
         local({
             mode0 <- mode
             observeEvent(input[[paste0(mode0, .organizationNew)]], {
-                all_active <- rObjects$active_plots
+                all_active <- rObjects$active_panels
                 all.memory <- pObjects$memory[[mode0]]
                 first.missing <- setdiff(seq_len(nrow(all.memory)), all_active$ID[all_active$Type==mode0])
 
                 if (length(first.missing)) {
-                    rObjects$active_plots <- rbind(all_active, DataFrame(Type=mode0, ID=first.missing[1], Width=4))
+                    rObjects$active_panels <- rbind(all_active, DataFrame(Type=mode0, ID=first.missing[1], Width=4))
 
                     # Disabling panel addition if we've reached the maximum.
                     if (length(first.missing)==1L) {
@@ -393,7 +393,7 @@ iSEE <- function(
 
                 # Panel removal.
                 observeEvent(input[[paste0(mode0, .organizationDiscard, i0)]], {
-                    all_active <- rObjects$active_plots
+                    all_active <- rObjects$active_panels
                     current_type <- all_active$Type==mode0
 
                     # Re-enabling panel addition if we're decreasing from the maximum.
@@ -408,37 +408,37 @@ iSEE <- function(
                         .destroy_brush_source(pObjects, paste0(mode0, "Plot", i0))
                     }
                     
-                    # Triggering re-rendering of the UI via change to active_plots.
+                    # Triggering re-rendering of the UI via change to active_panels.
                     index <- which(current_type & all_active$ID==i0)
-                    rObjects$active_plots <- rObjects$active_plots[-index,]
+                    rObjects$active_panels <- rObjects$active_panels[-index,]
                }, ignoreInit=TRUE)
 
                 # Panel shifting, up and down.
                 observeEvent(input[[paste0(mode0, .organizationUp, i0)]], {
-                    all_active <- rObjects$active_plots
+                    all_active <- rObjects$active_panels
                     index <- which(all_active$Type==mode0 & all_active$ID==i0)
                     if (index!=1L) {
                         reindex <- seq_len(nrow(all_active))
                         reindex[index] <- reindex[index]-1L
                         reindex[index-1L] <- reindex[index-1L]+1L
-                        rObjects$active_plots <- all_active[reindex,]
+                        rObjects$active_panels <- all_active[reindex,]
                     }
                 }, ignoreInit=TRUE)
 
                 observeEvent(input[[paste0(mode0, .organizationDown, i0)]], {
-                    all_active <- rObjects$active_plots
+                    all_active <- rObjects$active_panels
                     index <- which(all_active$Type==mode0 & all_active$ID==i0)
                     if (index!=nrow(all_active)) {
                         reindex <- seq_len(nrow(all_active))
                         reindex[index] <- reindex[index]+1L
                         reindex[index+1L] <- reindex[index+1L]-1L
-                        rObjects$active_plots <- all_active[reindex,]
+                        rObjects$active_panels <- all_active[reindex,]
                     }
                 }, ignoreInit=TRUE)
 
                 # Panel modification options.
                 observeEvent(input[[paste0(mode0, .organizationModify, i0)]], {
-                    all_active <- rObjects$active_plots
+                    all_active <- rObjects$active_panels
                     index <- which(all_active$Type==mode0 & all_active$ID==i0)
                     cur_width <- all_active$Width[index]
                     cur_height <- all_active$Height[index]
@@ -455,22 +455,22 @@ iSEE <- function(
                 })
 
                 observeEvent(input[[paste0(mode0, .organizationWidth, i0)]], {
-                    all_active <- rObjects$active_plots
+                    all_active <- rObjects$active_panels
                     index <- which(all_active$Type==mode0 & all_active$ID==i0)
                     cur.width <- all_active$Width[index]
                     new.width <- input[[paste0(mode0, .organizationWidth, i0)]]
                     if (!isTRUE(all.equal(new.width, cur.width))) {
-                        rObjects$active_plots$Width[index] <- new.width
+                        rObjects$active_panels$Width[index] <- new.width
                     }
                 }, ignoreInit=TRUE)
 
                 observeEvent(input[[paste0(mode0, .organizationHeight, i0)]], {
-                    all_active <- rObjects$active_plots
+                    all_active <- rObjects$active_panels
                     index <- which(all_active$Type==mode0 & all_active$ID==i0)
                     cur.height <- all_active$Height[index]
                     new.height <- input[[paste0(mode0, .organizationHeight, i0)]]
                     if (!isTRUE(all.equal(new.height, cur.height))) {
-                        rObjects$active_plots$Height[index] <- new.height
+                        rObjects$active_panels$Height[index] <- new.height
                     }
                 }, ignoreInit=TRUE)
             })
@@ -510,7 +510,7 @@ iSEE <- function(
           # if there are cycles across multiple plots. Otherwise it will
           # update the brushing chart and trigger replotting.
           observeEvent(input[[paste0(mode0, .brushByPlot, i0)]], {
-            tmp <- .choose_new_brush_source(pObjects$brush, plot.name, 
+            tmp <- .choose_new_brush_source(pObjects$brush_links, plot.name, 
                 .decoded2encoded(input[[paste0(mode0, .brushByPlot, i0)]]),
                 .decoded2encoded(pObjects$memory[[mode0]][i0, .brushByPlot]))
 
@@ -520,7 +520,7 @@ iSEE <- function(
               pObjects$memory[[mode0]][i0, .brushByPlot] <- ""
               updateSelectInput(session, paste0(mode0, .brushByPlot, i0), selected="")
             } else {
-              pObjects$brush <- tmp
+              pObjects$brush_links <- tmp
               pObjects$memory[[mode0]][i0, .brushByPlot] <- input[[paste0(mode0, .brushByPlot, i0)]]
             }
 
@@ -549,7 +549,7 @@ iSEE <- function(
             rObjects[[plot.name]] <- .increment_counter(isolate(rObjects[[plot.name]]))
 
             # Trigger replotting of all dependent plots that receive this brush.
-            children <- .get_brush_dependents(pObjects$brush, plot.name, pObjects$memory)
+            children <- .get_brush_dependents(pObjects$brush_links, plot.name, pObjects$memory)
             for (child_plot in children) {
               rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
             }
@@ -721,7 +721,7 @@ iSEE <- function(
       local({
         i0 <- i
         output[[paste0("geneStatTable", i0)]] <- renderDataTable({
-            (rObjects$active_plots) # to trigger recreation when the number of plots is changed.
+            (rObjects$active_panels) # to trigger recreation when the number of plots is changed.
             chosen <- pObjects$memory$geneStat$Selected[i0]
             search <- pObjects$memory$geneStat$Search[i0]
             datatable(gene_data, filter="top", rownames=TRUE,

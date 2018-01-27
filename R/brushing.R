@@ -48,7 +48,7 @@
 # discarded plots as the default choice. Relies on pass-by-reference
 # semantics with 'pObjects' as an environment.
 {
-    graph <- pObjects$brush
+    graph <- pObjects$brush_links
 
     # Resetting memory.
     all_kids <- names(adjacent_vertices(graph, panel, mode="out"))
@@ -58,7 +58,7 @@
     }
 
     # Destroying the edges.
-    pObjects$brush <- graph - incident(graph, panel, mode="all")
+    pObjects$brush_links <- graph - incident(graph, panel, mode="all")
     return(invisible(NULL))
 }
 

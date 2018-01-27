@@ -1,15 +1,14 @@
-.panel_organization <- function(active_plots, memory)
+.panel_organization <- function(active_panels, memory)
 # This function generates the sidebar that organizes the various panels.
 # It includes options to move plots up, down, and remove/resize them.
 {
-    N <- nrow(active_plots)
+    N <- nrow(active_panels)
     collected <- vector("list", N)
     counter <- 1L
 
     for (i in seq_len(N)) {
-        mode <- active_plots$Type[i]
-        ID <- active_plots$ID[i]
-        panel.width <- active_plots$Width[i]
+        mode <- active_panels$Type[i]
+        ID <- active_panels$ID[i]
 
         # Disabling the buttons if we're at the top or bottom.
         upFUN <- downFUN <- identity
@@ -37,7 +36,7 @@
     div(style="display:inline-block", actionLink(...))
 }
 
-.panel_generation <- function(active_plots, memory, se) 
+.panel_generation <- function(active_panels, memory, se) 
 # This function generates the various panels, taking into account their
 # variable widths to dynamically assign them to particular rows. We also
 # need to check the memory to avoid resetting the plot upon re-rendering.
@@ -64,18 +63,18 @@
     red_dim_dims <- vapply(red_dim_names, FUN=function(x) ncol(reducedDim(se, x)), FUN.VALUE=0L)
   
     # Defining all transmitting tables and plots for linking.
-    all.names <- .decode_panel_name(active_plots$Type, active_plots$ID)
-    is_tab <- active_plots$Type=="geneStat"
-    active.tab <- all.names[is_tab]
-    if (length(active.tab)==0L) {
-        active.tab <- ""
+    all.names <- .decode_panel_name(active_panels$Type, active_panels$ID)
+    is_tab <- active_panels$Type=="geneStat"
+    active_tab <- all.names[is_tab]
+    if (length(active_tab)==0L) {
+        active_tab <- ""
     }
     brushable <- c("", all.names[!is_tab])
 
-    for (i in seq_len(nrow(active_plots))) {
-        mode <- active_plots$Type[i]
-        ID <- active_plots$ID[i]
-        panel.width <- active_plots$Width[i]
+    for (i in seq_len(nrow(active_panels))) {
+        mode <- active_panels$Type[i]
+        ID <- active_panels$ID[i]
+        panel.width <- active_panels$Width[i]
         param_choices <- memory[[mode]][ID,]
 
         # Checking what to do with plot-specific parameters (e.g., brushing, clicking, plot height).
@@ -86,7 +85,7 @@
             brush.opts <- brushOpts(paste0(mode, .brushField, ID), resetOnNew=FALSE, 
                                     fill=brush_fill_color[mode], stroke=brush_stroke_color[mode])
             dblclick <- paste0(mode, .zoomClick, ID)
-            panel_height <- paste0(active_plots$Height[i], "px")
+            panel_height <- paste0(active_panels$Height[i], "px")
         }
 
         # Creating the plot fields.
@@ -135,8 +134,8 @@
                                        .geneExprYAxisGeneTableTitle,
                                        selectInput(.inputGeneExpr(.geneExprYAxisGeneTable, ID),
                                                    label = "Y-axis gene linked to:",
-                                                   choices=active.tab,
-                                                   selected=.choose_link(param_choices[[.geneExprYAxisGeneTable]], active.tab, force_default=TRUE))
+                                                   choices=active_tab,
+                                                   selected=.choose_link(param_choices[[.geneExprYAxisGeneTable]], active_tab, force_default=TRUE))
               ),
               .conditionalPanelOnRadio(.inputGeneExpr(.geneExprYAxis, ID),
                                        .geneExprYAxisGeneTextTitle,
@@ -156,7 +155,7 @@
                                        .geneExprXAxisGeneTableTitle,
                                        selectInput(.inputGeneExpr(.geneExprXAxisGeneTable, ID),
                                                    label = "X-axis gene linked to:",
-                                                   choices=active.tab, selected=param_choices[[.geneExprXAxisGeneTable]])),
+                                                   choices=active_tab, selected=param_choices[[.geneExprXAxisGeneTable]])),
               .conditionalPanelOnRadio(.inputGeneExpr(.geneExprXAxis, ID),
                                        .geneExprXAxisGeneTextTitle,
                                        textInput(paste0(mode, .geneExprXAxisGeneText, ID), label = "X-axis gene:",
@@ -179,7 +178,7 @@
                                        plot.param)),
 
                 # Panel for colouring parameters.
-                .createColorPanel(mode, ID, param_choices, active.tab, covariates, all_assays, feasibility),
+                .createColorPanel(mode, ID, param_choices, active_tab, covariates, all_assays, feasibility),
 
                 # Panel for brushing parameters.
                 .createBrushPanel(mode, ID, param_choices, brushable)

@@ -1,9 +1,9 @@
 .track_it_all <- function(rObjects, pObjects, se_name) 
 {
   # Commands only reported for plots, not for the tables
-  aobjs <- as.data.frame(rObjects$active_plots)
+  aobjs <- as.data.frame(rObjects$active_panels)
   aobjs <- aobjs[aobjs$Type!="geneStat",]
-  aobjs <- aobjs[.get_reporting_order(aobjs, pObjects$brush),]
+  aobjs <- aobjs[.get_reporting_order(aobjs, pObjects$brush_links),]
 
   # storing to a text character vector
   tracked_code <- c(

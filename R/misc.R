@@ -138,15 +138,15 @@ height_limits <- c(400L, 1000L)
              stringsAsFactors=FALSE)[!illegal,,drop=FALSE]
 }
 
-.sanitize_memory <- function(active_plots, memory) 
+.sanitize_memory <- function(active_panels, memory) 
 # This function ensures that the memory is valid
 # with respect to the starting panels, i.e., no brushing
 # or table links to panels that are not active.
 {
-    is_tab <- active_plots$Type=="geneStat"
-    brushable <- active_plots[!is_tab,]
+    is_tab <- active_panels$Type=="geneStat"
+    brushable <- active_panels[!is_tab,]
     brush_names <- .decode_panel_name(brushable$Type, brushable$ID)
-    linkable <- active_plots[is_tab,]
+    linkable <- active_panels[is_tab,]
     link_names <- .decode_panel_name(linkable$Type, linkable$ID)
 
     for (mode in c("redDim", "colData", "geneExpr")) {

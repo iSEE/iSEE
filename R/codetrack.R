@@ -79,8 +79,3 @@
   order(match(node_names, names(ordering)))
 }
 
-.indent <- function(cmds) {
-  cmds <- paste0("    ", cmds)
-  cmds <- gsub("\n", "\n    ", cmds)
-  return(cmds)
-}

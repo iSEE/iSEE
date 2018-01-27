@@ -379,7 +379,7 @@ iSEE <- function(
                       disable(paste0(mode0, .organizationNew))
                     }
                 } else {
-                    warning(sprintf("maximum number of plots reached for mode '%s'", mode0))
+                    showNotification(sprintf("maximum number of plots reached for mode '%s'", mode0), type="error")
                 }
             })
         })

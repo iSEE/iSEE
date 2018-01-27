@@ -150,22 +150,31 @@ iSEE <- function(
       title = paste0("iSEE - interactive SingleCell/Summarized Experiment Explorer v",
                      packageVersion("iSEE")),
       titleWidth = 800,
+
       dropdownMenu(type = "tasks",
-                   icon = icon("chain"),
+                   icon = icon("wrench"),
                    badgeStatus = NULL,
-                   headerText = "Display the graph for the linked plots",
+                   headerText = "iSEE diagnostics",
                    notificationItem(
-                     text = actionButton('open_linkgraph', label="Click here",
-                                         # icon = icon("life-ring"),
+                     text = actionButton('open_linkgraph', label="Examine panel chart",
+                                         icon = icon("chain"),
+                                         style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
+                     ),
+                     icon = icon(""), status = "primary"
+                   ),
+                   notificationItem(
+                     text = actionButton('getcode_all', label="Extract the R code",
+                                         icon = icon("magic"),
                                          style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
                      ),
                      icon = icon(""), status = "primary"
                    )
       ), # end of dropdownMenu
+
       dropdownMenu(type = "tasks",
                    icon = icon("question-circle"),
                    badgeStatus = NULL,
-                   headerText = "Want some more info?",
+                   headerText = "Additional information",
                    notificationItem(
                      text = actionButton("tour_firststeps", "Click me for a quick tour", icon("info"),
                                          style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"),
@@ -187,43 +196,36 @@ iSEE <- function(
                                                           "', '_blank')")
                                          ),
                      icon = icon(""), status = "primary"
-                   )
-                   ,
+                   ), 
                    notificationItem(
-                     text = actionButton('about_popup', label="About iSEE", 
-                                         icon = icon("institution"), 
+                     text = actionButton('session_info', label="About this session", 
+                                         icon = icon("window-maximize"), 
+                                         style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
+                                         ),
+                     icon = icon(""), status = "primary"
+                   ),
+                   notificationItem(
+                     text = actionButton('iSEE_info', label="About iSEE", 
+                                         icon = icon("heart"), 
                                          style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
                                          ),
                      icon = icon(""), status = "primary"
                    )
-                   
       ) # end of dropdownMenu
     ), # end of dashboardHeader
+
     dashboardSidebar(
-      # general app settings
-      # menuItem("App settings",icon = icon("cogs")),
-      # merely oriented to export the plots - if we want to support that capability
-      # menuItem("Plot export settings", icon = icon("paint-brush")),
-      # quick viewer could display which relevant slots are already populated?
-      # menuItem("Quick viewer", icon = icon("flash")),
-      # this will cover the part for the first tour of the app
-      # menuItem("First steps help", icon = icon("question-circle")
-      # ),
       actionButton(paste0("redDim", .organizationNew), "New reduced dimension plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("colData", .organizationNew), "New column data plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("geneExpr", .organizationNew), "New gene expression plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("geneStat", .organizationNew), "New gene table", class = "btn btn-primary",icon = icon("plus")),
-
-      actionButton("getcode_all","Extract the R code!",icon = icon("magic")),
       hr(),
-
       uiOutput("panelOrganization")
     ), # end of dashboardSidebar
 
     dashboardBody(
       useShinyjs(), 
-      introjsUI(),
-      # must be included in UI
+      introjsUI(), # must be included in UI
 
       # for error message handling
       tags$head(
@@ -236,9 +238,7 @@ iSEE <- function(
                         "))
       ),
 
-      uiOutput("allPanels"),
-
-      iSEE_footer()
+      uiOutput("allPanels")
     ), # end of dashboardBody
     skin = "blue"
   ) # end of dashboardPage
@@ -268,8 +268,6 @@ iSEE <- function(
       }
     }
 
-    # info boxes, to keep on top of the page  on the left side?
-
     intro_firststeps <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"), sep=";", stringsAsFactors = FALSE,row.names = NULL)
 
     observeEvent(input$tour_firststeps, {
@@ -292,24 +290,31 @@ iSEE <- function(
       # browseVignettes("DESeq2") # this does not work, maybe add another open blank to the local location of the vignette?
     })
     
-    observeEvent(input$about_popup, {
+    observeEvent(input$session_info, {
       showModal(
         modalDialog(
-          title = "About iSEE", size = "l",fade = TRUE,
+          title = "Session information", size = "l",fade = TRUE,
           footer = NULL, easyClose = TRUE,
           tagList(
-            p("This is the version number of iSEE"),
-            renderPrint({
-              packageVersion("iSEE")
-            }),
-            p("This is the citation info for iSEE"),
-            renderPrint({
-              citation("iSEE")
-            }),
-            p("... and this is a record of sessionInfo()"),
             renderPrint({
               sessionInfo()
             })
+          )
+        )
+      )
+    })
+
+    observeEvent(input$iSEE_info, {
+      showModal(
+        modalDialog(
+          title = "About iSEE", size = "m", fade = TRUE,
+          footer = NULL, easyClose = TRUE,
+          tagList(
+             iSEE_info(), br(), br(),
+             HTML("If you use this package, please use the following citation information:"),
+             renderPrint({
+                 citation("iSEE")
+             })
           )
         )
       )
@@ -318,7 +323,7 @@ iSEE <- function(
     observeEvent(input$open_linkgraph, {
       showModal(
         modalDialog(
-          title = "This is the graph for the links between the plots", size = "l",
+          title = "Graph of inter-panel links", size = "l",
           fade = TRUE, footer = NULL, easyClose = TRUE,
           renderPlot({
             cur_plots <- paste0(rObjects$active_panels$Type,"Plot",rObjects$active_panels$ID)

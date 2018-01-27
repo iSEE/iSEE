@@ -13,7 +13,7 @@
 #' sliderInput tagList textInput column observeEvent radioButtons
 #' need tags hr brushOpts brushedPoints observe validate checkboxInput 
 #' conditionalPanel renderPrint singleton showModal modalDialog 
-#' updateSelectInput isolate showNotification p runApp
+#' updateSelectInput isolate showNotification p runApp 
 #' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
 #' dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu
 #' notificationItem box
@@ -29,7 +29,7 @@
 #' @importFrom rentrez entrez_summary
 #' @importFrom colourpicker colourInput
 #' @importFrom shinyAce aceEditor
-#' @importFrom methods new slot
+#' @importFrom methods new slot is
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom igraph make_graph topo_sort are_adjacent incident add_edges
 #' adjacent_vertices is_dag simplify V delete.vertices set_vertex_attr

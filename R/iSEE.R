@@ -127,33 +127,8 @@ iSEE <- function(
                           redDimMax, colDataMax, geneExprMax, geneStatMax)
 
   # Defining the initial elements to be plotted.
-  if (is.null(initialPanels)) {
-    initialPanels <- data.frame(Name=c("Reduced dimension plot 1", "Column data plot 1", 
-                                       "Gene expression plot 1", "Gene statistics table 1"),
-                                Width=4, stringsAsFactors=FALSE)
-  } 
-
-  if (is.null(initialPanels$Name)) {
-    stop("need 'Name' field in 'initialPanels'")
-  }
-  if (is.null(initialPanels$Width)) {
-    initialPanels$Width <- 4L
-  } else {
-    initialPanels$Width <- pmax(4L, pmin(12L, as.integer(initialPanels$Width)))
-  }
-
-  encoded <- .encode_panel_name(initialPanels$Name)
-  max_each <- unlist(lapply(memory, nrow))
-  illegal <- max_each[encoded$Type] < encoded$ID
-  if (any(illegal)) {
-    badpanel <- which(illegal)[1]
-    message(sprintf("'%s' in 'initialPanels' is not available (maximum ID is %i)",
-                    initialPanels$Name[badpanel], max_each[encoded$Type[badpanel]]))
-  }
-
-  active_plots <- data.frame(Type=encoded$Type, ID=encoded$ID,
-                             Width=initialPanels$Width,
-                             stringsAsFactors=FALSE)[!illegal,,drop=FALSE]
+  active_panels <- .setup_initial(initialPanels, memory)
+  memory <- .sanitize_memory(active_panels, memory)
 
   # For retrieving the annotation
   if (!is.null(annot.orgdb)) {
@@ -175,22 +150,31 @@ iSEE <- function(
       title = paste0("iSEE - interactive SingleCell/Summarized Experiment Explorer v",
                      packageVersion("iSEE")),
       titleWidth = 800,
+
       dropdownMenu(type = "tasks",
-                   icon = icon("chain"),
+                   icon = icon("wrench"),
                    badgeStatus = NULL,
-                   headerText = "Display the graph for the linked plots",
+                   headerText = "iSEE diagnostics",
                    notificationItem(
-                     text = actionButton('open_linkgraph', label="Click here",
-                                         # icon = icon("life-ring"),
+                     text = actionButton('open_linkgraph', label="Examine panel chart",
+                                         icon = icon("chain"),
+                                         style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
+                     ),
+                     icon = icon(""), status = "primary"
+                   ),
+                   notificationItem(
+                     text = actionButton('getcode_all', label="Extract the R code",
+                                         icon = icon("magic"),
                                          style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
                      ),
                      icon = icon(""), status = "primary"
                    )
       ), # end of dropdownMenu
+
       dropdownMenu(type = "tasks",
                    icon = icon("question-circle"),
                    badgeStatus = NULL,
-                   headerText = "Want some more info?",
+                   headerText = "Additional information",
                    notificationItem(
                      text = actionButton("tour_firststeps", "Click me for a quick tour", icon("info"),
                                          style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"),
@@ -212,43 +196,36 @@ iSEE <- function(
                                                           "', '_blank')")
                                          ),
                      icon = icon(""), status = "primary"
-                   )
-                   ,
+                   ), 
                    notificationItem(
-                     text = actionButton('about_popup', label="About iSEE", 
-                                         icon = icon("institution"), 
+                     text = actionButton('session_info', label="About this session", 
+                                         icon = icon("window-maximize"), 
+                                         style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
+                                         ),
+                     icon = icon(""), status = "primary"
+                   ),
+                   notificationItem(
+                     text = actionButton('iSEE_info', label="About iSEE", 
+                                         icon = icon("heart"), 
                                          style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
                                          ),
                      icon = icon(""), status = "primary"
                    )
-                   
       ) # end of dropdownMenu
     ), # end of dashboardHeader
+
     dashboardSidebar(
-      # general app settings
-      # menuItem("App settings",icon = icon("cogs")),
-      # merely oriented to export the plots - if we want to support that capability
-      # menuItem("Plot export settings", icon = icon("paint-brush")),
-      # quick viewer could display which relevant slots are already populated?
-      # menuItem("Quick viewer", icon = icon("flash")),
-      # this will cover the part for the first tour of the app
-      # menuItem("First steps help", icon = icon("question-circle")
-      # ),
       actionButton(paste0("redDim", .organizationNew), "New reduced dimension plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("colData", .organizationNew), "New column data plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("geneExpr", .organizationNew), "New gene expression plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("geneStat", .organizationNew), "New gene table", class = "btn btn-primary",icon = icon("plus")),
-
-      actionButton("getcode_all","Extract the R code!",icon = icon("magic")),
       hr(),
-
       uiOutput("panelOrganization")
     ), # end of dashboardSidebar
 
     dashboardBody(
       useShinyjs(), 
-      introjsUI(),
-      # must be included in UI
+      introjsUI(), # must be included in UI
 
       # for error message handling
       tags$head(
@@ -261,9 +238,7 @@ iSEE <- function(
                         "))
       ),
 
-      uiOutput("allPanels"),
-
-      iSEE_footer()
+      uiOutput("allPanels")
     ), # end of dashboardBody
     skin = "blue"
   ) # end of dashboardPage
@@ -279,11 +254,12 @@ iSEE <- function(
     pObjects$memory <- memory
     pObjects$coordinates <- list()
     pObjects$commands <- list()
-    pObjects$brush <- .spawn_brush_chart(memory) 
+    pObjects$brush_links <- .spawn_brush_chart(memory) 
+    pObjects$table_links <- .spawn_table_links(memory)
 
     # Storage for all the reactive objects
     rObjects <- reactiveValues(
-        active_plots = active_plots
+        active_panels = active_panels
     )
     for (mode in c("redDim", "geneExpr", "colData")) {
       max_plots <- nrow(pObjects$memory[[mode]])
@@ -291,8 +267,6 @@ iSEE <- function(
         rObjects[[paste0(mode, "Plot", i)]] <- 1L
       }
     }
-
-    # info boxes, to keep on top of the page  on the left side?
 
     intro_firststeps <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"), sep=";", stringsAsFactors = FALSE,row.names = NULL)
 
@@ -316,24 +290,31 @@ iSEE <- function(
       # browseVignettes("DESeq2") # this does not work, maybe add another open blank to the local location of the vignette?
     })
     
-    observeEvent(input$about_popup, {
+    observeEvent(input$session_info, {
       showModal(
         modalDialog(
-          title = "About iSEE", size = "l",fade = TRUE,
+          title = "Session information", size = "l",fade = TRUE,
           footer = NULL, easyClose = TRUE,
           tagList(
-            p("This is the version number of iSEE"),
-            renderPrint({
-              packageVersion("iSEE")
-            }),
-            p("This is the citation info for iSEE"),
-            renderPrint({
-              citation("iSEE")
-            }),
-            p("... and this is a record of sessionInfo()"),
             renderPrint({
               sessionInfo()
             })
+          )
+        )
+      )
+    })
+
+    observeEvent(input$iSEE_info, {
+      showModal(
+        modalDialog(
+          title = "About iSEE", size = "m", fade = TRUE,
+          footer = NULL, easyClose = TRUE,
+          tagList(
+             iSEE_info(), br(), br(),
+             HTML("If you use this package, please use the following citation information:"),
+             renderPrint({
+                 citation("iSEE")
+             })
           )
         )
       )
@@ -342,12 +323,12 @@ iSEE <- function(
     observeEvent(input$open_linkgraph, {
       showModal(
         modalDialog(
-          title = "This is the graph for the links between the plots", size = "l",
+          title = "Graph of inter-panel links", size = "l",
           fade = TRUE, footer = NULL, easyClose = TRUE,
           renderPlot({
-            cur_plots <- paste0(rObjects$active_plots$Type,"Plot",rObjects$active_plots$ID)
-            not_used <- setdiff(V(pObjects$brush)$name,cur_plots)
-            currgraph_used <- delete.vertices(pObjects$brush,not_used)
+            cur_plots <- paste0(rObjects$active_panels$Type,"Plot",rObjects$active_panels$ID)
+            not_used <- setdiff(V(pObjects$brush_links)$name,cur_plots)
+            currgraph_used <- delete.vertices(pObjects$brush_links,not_used)
             currgraph_used <- set_vertex_attr(currgraph_used,"plottype",
                                               value = gsub("Plot[0-9]","",V(currgraph_used)$name))
             plot(currgraph_used,
@@ -374,35 +355,36 @@ iSEE <- function(
     #######################################################################
 
     output$allPanels <- renderUI({
-        .panel_generation(rObjects$active_plots, pObjects$memory, se)
+        .panel_generation(rObjects$active_panels, pObjects$memory, se)
     })
 
     output$panelOrganization <- renderUI({
-        .panel_organization(rObjects$active_plots, pObjects$memory)
+        .panel_organization(rObjects$active_panels, pObjects$memory)
     })
+
 
     # Note: we need "local" so that each item gets its own number. Without it, the value
     # of i in the renderPlot() will be the same across all instances, because
     # of when the expression is evaluated.
 
-   for (mode in c("redDim", "geneExpr", "colData", "geneStat")) {
+    for (mode in c("redDim", "geneExpr", "colData", "geneStat")) {
         # Panel addition.
         local({
             mode0 <- mode
             observeEvent(input[[paste0(mode0, .organizationNew)]], {
-                all_active <- rObjects$active_plots
+                all_active <- rObjects$active_panels
                 all.memory <- pObjects$memory[[mode0]]
                 first.missing <- setdiff(seq_len(nrow(all.memory)), all_active$ID[all_active$Type==mode0])
 
                 if (length(first.missing)) {
-                    rObjects$active_plots <- rbind(all_active, DataFrame(Type=mode0, ID=first.missing[1], Width=4))
+                    rObjects$active_panels <- rbind(all_active, DataFrame(Type=mode0, ID=first.missing[1], Width=4L, Height=500L))
 
                     # Disabling panel addition if we've reached the maximum.
                     if (length(first.missing)==1L) {
                       disable(paste0(mode0, .organizationNew))
                     }
                 } else {
-                    warning(sprintf("maximum number of plots reached for mode '%s'", mode0))
+                    showNotification(sprintf("maximum number of plots reached for mode '%s'", mode0), type="error")
                 }
             })
         })
@@ -412,55 +394,88 @@ iSEE <- function(
             local({
                 mode0 <- mode
                 i0 <- i
+                max_plots0 <- max_plots
 
                 # Panel removal.
-                observeEvent(input[[paste0(mode0, i0, .organizationDiscard)]], {
-                    all_active <- rObjects$active_plots
+                observeEvent(input[[paste0(mode0, .organizationDiscard, i0)]], {
+                    all_active <- rObjects$active_panels
                     current_type <- all_active$Type==mode0
-                    index <- which(current_type & all_active$ID==i0)
-                    rObjects$active_plots <- rObjects$active_plots[-index,]
 
                     # Re-enabling panel addition if we're decreasing from the maximum.
-                    if (sum(current_type)==max_plots) {
+                    if (sum(current_type)==max_plots0) {
                       enable(paste0(mode0, .organizationNew))
                     }
 
-                    # Destroying the brush source.
-                    pObjects$brush <- .destroy_brush_source(pObjects$brush,
-                        paste0(mode0, "Plot", i0))                                                            
+                    # Destroying links; either the brush source, or the links from tables.
+                    if (mode0=="geneStat") {
+                        .destroy_table(pObjects, paste0(mode0, "Table", i0))
+                    } else {
+                        .destroy_brush_source(pObjects, paste0(mode0, "Plot", i0))
+                    }
+                    
+                    # Triggering re-rendering of the UI via change to active_panels.
+                    index <- which(current_type & all_active$ID==i0)
+                    rObjects$active_panels <- rObjects$active_panels[-index,]
                }, ignoreInit=TRUE)
 
-                # Panel resizing.
-                observeEvent(input[[paste0(mode0, i0, .organizationWidth)]], {
-                    all_active <- rObjects$active_plots
-                    index <- which(all_active$Type==mode0 & all_active$ID==i0)
-                    cur.width <- all_active$Width[index]
-                    new.width <- input[[paste0(mode0, i0, .organizationWidth)]]
-                    if (!isTRUE(all.equal(new.width, cur.width))) {
-                        rObjects$active_plots$Width[index] <- new.width
-                    }
-                }, ignoreInit=TRUE)
-
                 # Panel shifting, up and down.
-                observeEvent(input[[paste0(mode0, i0, .organizationUp)]], {
-                    all_active <- rObjects$active_plots
+                observeEvent(input[[paste0(mode0, .organizationUp, i0)]], {
+                    all_active <- rObjects$active_panels
                     index <- which(all_active$Type==mode0 & all_active$ID==i0)
                     if (index!=1L) {
                         reindex <- seq_len(nrow(all_active))
                         reindex[index] <- reindex[index]-1L
                         reindex[index-1L] <- reindex[index-1L]+1L
-                        rObjects$active_plots <- all_active[reindex,]
+                        rObjects$active_panels <- all_active[reindex,]
                     }
                 }, ignoreInit=TRUE)
 
-                observeEvent(input[[paste0(mode0, i0, .organizationDown)]], {
-                    all_active <- rObjects$active_plots
+                observeEvent(input[[paste0(mode0, .organizationDown, i0)]], {
+                    all_active <- rObjects$active_panels
                     index <- which(all_active$Type==mode0 & all_active$ID==i0)
                     if (index!=nrow(all_active)) {
                         reindex <- seq_len(nrow(all_active))
                         reindex[index] <- reindex[index]+1L
                         reindex[index+1L] <- reindex[index+1L]-1L
-                        rObjects$active_plots <- all_active[reindex,]
+                        rObjects$active_panels <- all_active[reindex,]
+                    }
+                }, ignoreInit=TRUE)
+
+                # Panel modification options.
+                observeEvent(input[[paste0(mode0, .organizationModify, i0)]], {
+                    all_active <- rObjects$active_panels
+                    index <- which(all_active$Type==mode0 & all_active$ID==i0)
+                    cur_width <- all_active$Width[index]
+                    cur_height <- all_active$Height[index]
+
+                    showModal(modalDialog(
+                        sliderInput(paste0(mode0, .organizationWidth, i0), label="Width",
+                                    min=width_limits[1], max=width_limits[2], value=cur_width, step=1),
+                        sliderInput(paste0(mode0, .organizationHeight, i0), label="Height",
+                                    min=height_limits[1], max=height_limits[2], value=cur_height, step=50),
+                        title=paste(.decode_panel_name(mode0, i0), "panel parameters"),
+                        easyClose=TRUE, size="m", footer=NULL
+                        )
+                    )  
+                })
+
+                observeEvent(input[[paste0(mode0, .organizationWidth, i0)]], {
+                    all_active <- rObjects$active_panels
+                    index <- which(all_active$Type==mode0 & all_active$ID==i0)
+                    cur.width <- all_active$Width[index]
+                    new.width <- input[[paste0(mode0, .organizationWidth, i0)]]
+                    if (!isTRUE(all.equal(new.width, cur.width))) {
+                        rObjects$active_panels$Width[index] <- new.width
+                    }
+                }, ignoreInit=TRUE)
+
+                observeEvent(input[[paste0(mode0, .organizationHeight, i0)]], {
+                    all_active <- rObjects$active_panels
+                    index <- which(all_active$Type==mode0 & all_active$ID==i0)
+                    cur.height <- all_active$Height[index]
+                    new.height <- input[[paste0(mode0, .organizationHeight, i0)]]
+                    if (!isTRUE(all.equal(new.height, cur.height))) {
+                        rObjects$active_panels$Height[index] <- new.height
                     }
                 }, ignoreInit=TRUE)
             })
@@ -500,7 +515,7 @@ iSEE <- function(
           # if there are cycles across multiple plots. Otherwise it will
           # update the brushing chart and trigger replotting.
           observeEvent(input[[paste0(mode0, .brushByPlot, i0)]], {
-            tmp <- .choose_new_brush_source(pObjects$brush, plot.name, 
+            tmp <- .choose_new_brush_source(pObjects$brush_links, plot.name, 
                 .decoded2encoded(input[[paste0(mode0, .brushByPlot, i0)]]),
                 .decoded2encoded(pObjects$memory[[mode0]][i0, .brushByPlot]))
 
@@ -510,7 +525,7 @@ iSEE <- function(
               pObjects$memory[[mode0]][i0, .brushByPlot] <- ""
               updateSelectInput(session, paste0(mode0, .brushByPlot, i0), selected="")
             } else {
-              pObjects$brush <- tmp
+              pObjects$brush_links <- tmp
               pObjects$memory[[mode0]][i0, .brushByPlot] <- input[[paste0(mode0, .brushByPlot, i0)]]
             }
 
@@ -539,7 +554,7 @@ iSEE <- function(
             rObjects[[plot.name]] <- .increment_counter(isolate(rObjects[[plot.name]]))
 
             # Trigger replotting of all dependent plots that receive this brush.
-            children <- .get_brush_dependents(pObjects$brush, plot.name, pObjects$memory)
+            children <- .get_brush_dependents(pObjects$brush_links, plot.name, pObjects$memory)
             for (child_plot in children) {
               rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
             }
@@ -576,104 +591,130 @@ iSEE <- function(
     #######################################################################
 
     for (mode in c("redDim", "geneExpr", "colData")) {
-      max_plots <- nrow(pObjects$memory[[mode]]) 
-
-      # Defining mode-specific parameters.
-      FUN <- switch(mode, 
-                    redDim=.make_redDimPlot,
-                    geneExpr=.make_geneExprPlot,
-                    colData=.make_colDataPlot)
-
-      protected <- switch(mode,
-                          redDim=c(.redDimType, .redDimXAxis, .redDimYAxis),
-                          colData=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
-                          geneExpr=c(.geneExprYAxis, .geneExprYAxisGeneTable, .geneExprYAxisGeneText,
-                                     .geneExprXAxis, .geneExprXAxisColData, .geneExprXAxisGeneTable, .geneExprXAxisGeneText))
-
-      for (i in seq_len(max_plots)) {
-        local({
-          i0 <- i
-          mode0 <- mode
-          FUN0 <- FUN
-          plot.name <- paste0(mode0, "Plot", i0)
-
-          # Defining the rendered plot.
-          output[[plot.name]] <- renderPlot({
-            force(rObjects[[plot.name]])
-
-            # Updating non-fundamental parameters in the memory store (i.e., these
-            # parameters do not change the meaning of the coordinates).
-            for (field in ALLEXTRAS_DIRECT) {
-                pObjects$memory[[mode0]][[field]][i0] <- input[[paste0(mode0, field, i0)]]
+        max_plots <- nrow(pObjects$memory[[mode]]) 
+  
+        # Defining mode-specific parameters.
+        FUN <- switch(mode, 
+                      redDim=.make_redDimPlot,
+                      geneExpr=.make_geneExprPlot,
+                      colData=.make_colDataPlot)
+  
+        protected <- switch(mode,
+                            redDim=c(.redDimType, .redDimXAxis, .redDimYAxis),
+                            colData=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
+                            geneExpr=c(.geneExprAssay, .geneExprXAxisColData, .geneExprYAxisGeneText, .geneExprXAxisGeneText))
+  
+        for (i in seq_len(max_plots)) {
+            # Observers for the non-fundamental parameter options (.brushByPlot is handled elsewhere).
+            for (field in c(.colorByColData, .colorByGeneText, .colorByGeneTableAssay, .colorByGeneTextAssay,
+                            .brushEffect, .brushColor, .brushTransAlpha)) {
+                local({
+                    i0 <- i
+                    mode0 <- mode
+                    field0 <- field
+                    cur_field <- paste0(mode0, field0, i0)
+                    plot_name <- paste0(mode0, "Plot", i0)
+  
+                    observeEvent(input[[cur_field]], {
+                        matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
+                        pObjects$memory[[mode0]][[field0]][i0] <- matched_input
+                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                    }, ignoreInit=TRUE)
+                })
             }
-            for (field in ALLEXTRAS_INT) {
-                pObjects$memory[[mode0]][[field]][i0] <- as.integer(input[[paste0(mode0, field, i0)]])
+  
+            # Observers for the fundamental plot parameters.
+            for (field in protected) {
+                local({
+                    i0 <- i
+                    mode0 <- mode
+                    field0 <- field 
+                    cur_field <- paste0(mode0, field0, i0)
+                    cur_brush <- paste0(mode0, .brushField, i0)
+                    plot_name <- paste0(mode0, "Plot", i0) 
+    
+                    observeEvent(input[[cur_field]], {
+                        matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
+                        pObjects$memory[[mode0]][[field0]][i0] <- matched_input                
+                        
+                        if (!is.null(isolate(input[[cur_brush]]))) { 
+                            # This will trigger replotting via the brush observer above.
+                            session$resetBrush(cur_brush) 
+                        } else { 
+                            # Manually triggering replotting.
+                            rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                        }
+                     }, ignoreInit=TRUE)
+                })
             }
-
-             # Creating the plot, with saved coordinates.
-            p.out <- FUN0(i0, se, input, pObjects$coordinates, pObjects$memory, colormap)
-            pObjects$commands[[plot.name]] <- p.out$cmd
-            pObjects$coordinates[[plot.name]] <- p.out$xy
-            p.out$plot
-          })
-        })
-
-        # Defining observers to respond to fundamental parameters.
-        for (field in protected) {
-          local({
-            i0 <- i
-            mode0 <- mode
-            field0 <- field 
-            in_name <- paste0(mode0, field0, i0)
-
-            observeEvent(input[[in_name]], {
-              incoming <- input[[in_name]]
-              if (is.numeric(pObjects$memory[[mode0]][[field0]])) {
-                incoming <- as.integer(incoming)
-              }
-              pObjects$memory[[mode0]][[field0]][i0] <- incoming
-
-              cur_brush <- paste0(mode0, .brushField, i0)
-              if (!is.null(input[[cur_brush]])) {
-                session$resetBrush(cur_brush) # This will trigger replotting.
-              } else {
-                UPDATE <- paste0(mode0, "Plot", i0) # Manually triggering replotting.
-                rObjects[[UPDATE]] <- .increment_counter(isolate(rObjects[[UPDATE]]))
-              }
-            }, ignoreInit=TRUE)
-          })
+  
+            local({
+                i0 <- i
+                mode0 <- mode
+                FUN0 <- FUN
+                plot_name <- paste0(mode0, "Plot", i0)
+  
+                # Observers for the linked color, which updates the table_links information.
+                observe({
+                    replot <- .setup_table_observer(mode0, i0, input, pObjects, .colorByField, 
+                        .colorByGeneTableTitle, .colorByGeneTable, param='color') 
+                    if (replot) {
+                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                    }
+                })
+  
+                # Defining the rendered plot, and saving the coordinates.
+                output[[plot_name]] <- renderPlot({
+                    force(rObjects[[plot_name]])
+                    p.out <- FUN0(i0, se, pObjects$coordinates, pObjects$memory, colormap)
+                    pObjects$commands[[plot_name]] <- p.out$cmd
+                    pObjects$coordinates[[plot_name]] <- p.out$xy
+                    p.out$plot
+                })
+            })
         }
-      }
     }
 
-    # Resetting brushes for gene expression plots when the linked gene table changes
-    # (only when it is currently selecting x/y-axes from the table, though).
+    # Gene expression plots need some careful handling, as we need to update the
+    # table links and destroy a brush whenever an x/y-axis-specifying parameter changes.
     max_plots <- nrow(pObjects$memory$geneExpr)
     for (i in seq_len(max_plots)) {
-      local({
-        i0 <- i
-        observe({
-          yaxischoice <- input[[.inputGeneExpr(.geneExprYAxis, i0)]]
-          yaxistab <- input[[.inputGeneExpr(.geneExprYAxisGeneTable, i0)]]
-          if (!is.null(yaxischoice) && !is.null(yaxistab)) { 
-            if (yaxischoice==.geneExprYAxisGeneTableTitle) {
-              stuff <- .find_linked_gene(yaxistab, input)
-              session$resetBrush(.inputGeneExpr(.brushField, i0))
-            }
-          }
-        })
+        local({
+            i0 <- i
+            mode0 <- "geneExpr"
+            plot_name <- paste0(mode0, "Plot", i0)
+            brush_id <- paste0(mode0, .brushField, i0)
 
-        observe({
-          xaxischoice <- input[[.inputGeneExpr(.geneExprXAxis, i0)]]
-          xaxistab <- input[[.inputGeneExpr(.geneExprXAxisGeneTable, i0)]]
-          if (!is.null(xaxischoice) && !is.null(xaxistab)) { 
-            if (xaxischoice==.geneExprXAxisGeneTableTitle) {
-              stuff <- .find_linked_gene(xaxistab, input)
-              session$resetBrush(.inputGeneExpr(.brushField, i0))
-            }
-          }
+            # Y-axis observer:
+            observe({
+                replot <- .setup_table_observer(mode0, i0, input, pObjects, .geneExprYAxis, 
+                    .geneExprYAxisGeneTableTitle, .geneExprYAxisGeneTable, param='yaxis') 
+                if (replot) {
+                    if (!is.null(isolate(input[[brush_id]]))) { 
+                        # This will trigger replotting. 
+                        session$resetBrush(brush_id)
+                    } else { 
+                        # Manually triggering replotting.
+                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                    }
+                }
+            })
+
+            # X-axis observer:
+            observe({
+                replot <- .setup_table_observer(mode0, i0, input, pObjects, .geneExprXAxis, 
+                    .geneExprXAxisGeneTableTitle, .geneExprXAxisGeneTable, param='xaxis') 
+                if (replot) {
+                    if (!is.null(isolate(input[[brush_id]]))) { 
+                        # This will trigger replotting. 
+                        session$resetBrush(brush_id)
+                    } else {
+                        # Manually triggering replotting.
+                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                    }
+                }
+            })
         })
-      })
     }
 
     #######################################################################
@@ -685,7 +726,7 @@ iSEE <- function(
       local({
         i0 <- i
         output[[paste0("geneStatTable", i0)]] <- renderDataTable({
-            (rObjects$active_plots) # to trigger recreation when the number of plots is changed.
+            (rObjects$active_panels) # to trigger recreation when the number of plots is changed.
             chosen <- pObjects$memory$geneStat$Selected[i0]
             search <- pObjects$memory$geneStat$Search[i0]
             datatable(gene_data, filter="top", rownames=TRUE,
@@ -699,6 +740,24 @@ iSEE <- function(
             chosen <- input[[paste0("geneStatTable", i0, "_rows_selected")]]
             if (length(chosen)) {
                 pObjects$memory$geneStat$Selected[i0] <- chosen
+
+                # Triggering the replotting of all children.
+                all_kids <- unique(unlist(pObjects$table_links[[i0]]))
+                enc <- .split_encoded(all_kids)
+                brush_ids <- sprintf("%s%s%i", enc$Type, .brushField, enc$ID)
+
+                for (i in seq_along(all_kids)) {
+                    kid <- all_kids[i]
+                    brush_id <- brush_ids[i]
+
+                    if (!is.null(isolate(input[[brush_id]]))) { 
+                        # This will trigger replotting. 
+                        session$resetBrush(brush_id)
+                    } else {
+                        # Manually triggering replotting.
+                        rObjects[[kid]] <- .increment_counter(isolate(rObjects[[kid]]))
+                    }
+                }
             }
         })
 

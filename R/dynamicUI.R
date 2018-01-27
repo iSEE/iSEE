@@ -1,15 +1,14 @@
-.panel_organization <- function(active_plots, memory)
+.panel_organization <- function(active_panels, memory)
 # This function generates the sidebar that organizes the various panels.
 # It includes options to move plots up, down, and remove/resize them.
 {
-    N <- nrow(active_plots)
+    N <- nrow(active_panels)
     collected <- vector("list", N)
     counter <- 1L
 
     for (i in seq_len(N)) {
-        mode <- active_plots$Type[i]
-        ID <- active_plots$ID[i]
-        panel.width <- active_plots$Width[i]
+        mode <- active_panels$Type[i]
+        ID <- active_panels$ID[i]
 
         # Disabling the buttons if we're at the top or bottom.
         upFUN <- downFUN <- identity
@@ -20,26 +19,20 @@
             downFUN <- disabled
         }
 
-        current <- box(
-            fluidRow(
-              upFUN(column(3,actionButton(paste0(mode, ID, .organizationUp),"",icon = icon("arrow-circle-up")))),
-              downFUN(column(3,actionButton(paste0(mode, ID, .organizationDown),"",icon = icon("arrow-circle-down")))),
-              column(3,actionButton(paste0(mode, ID, .organizationDiscard),"",
-                         icon = icon("trash"), class = "btn btn-warning"))
-            ),
-            sliderInput(paste0(mode, ID, .organizationWidth), label="Width",
-                        min=2, max=12, value=panel.width, step=1),
+        collected[[i]] <- box(
+            actionButton(paste0(mode, .organizationDiscard, ID),"", icon = icon("trash fa-2x"), style="display:inline-block; margin:0"),
+            upFUN(actionButton(paste0(mode, .organizationUp, ID),"",icon = icon("arrow-circle-up fa-2x"), style="display:inline-block; margin:0")),
+            downFUN(actionButton(paste0(mode, .organizationDown, ID),"",icon = icon("arrow-circle-down fa-2x"), style="display:inline-block; margin:0")),
+            actionButton(paste0(mode, .organizationModify, ID),"", icon = icon("gear fa-2x"), style="display:inline-block; margin:0"),
             title=.decode_panel_name(mode, ID), status=box_status[mode], 
-            width=NULL, solidHeader=FALSE, background="black"
+            width=NULL, solidHeader=TRUE
             )
 
-        # Reducing the padding above the boxes, except for the first one.
-        collected[[i]] <- fluidRow(column(current, width=12))
     }
     do.call(tagList, collected)
 }
 
-.panel_generation <- function(active_plots, memory, se) 
+.panel_generation <- function(active_panels, memory, se) 
 # This function generates the various panels, taking into account their
 # variable widths to dynamically assign them to particular rows. We also
 # need to check the memory to avoid resetting the plot upon re-rendering.
@@ -66,32 +59,34 @@
     red_dim_dims <- vapply(red_dim_names, FUN=function(x) ncol(reducedDim(se, x)), FUN.VALUE=0L)
   
     # Defining all transmitting tables and plots for linking.
-    all.names <- .decode_panel_name(active_plots$Type, active_plots$ID)
-    is_tab <- active_plots$Type=="geneStat"
-    active.tab <- all.names[is_tab]
-    if (length(active.tab)==0L) {
-        active.tab <- ""
+    all.names <- .decode_panel_name(active_panels$Type, active_panels$ID)
+    is_tab <- active_panels$Type=="geneStat"
+    active_tab <- all.names[is_tab]
+    if (length(active_tab)==0L) {
+        active_tab <- ""
     }
     brushable <- c("", all.names[!is_tab])
 
-    for (i in seq_len(nrow(active_plots))) {
-        mode <- active_plots$Type[i]
-        ID <- active_plots$ID[i]
-        panel.width <- active_plots$Width[i]
+    for (i in seq_len(nrow(active_panels))) {
+        mode <- active_panels$Type[i]
+        ID <- active_panels$ID[i]
+        panel.width <- active_panels$Width[i]
         param_choices <- memory[[mode]][ID,]
 
-        # Checking what to do with brushing.
+        # Checking what to do with plot-specific parameters (e.g., brushing, clicking, plot height).
         dblclick <- NULL
         brush.opts <- NULL
+        panel_height <- NULL
         if (mode!="geneStat") { 
             brush.opts <- brushOpts(paste0(mode, .brushField, ID), resetOnNew=FALSE, 
                                     fill=brush_fill_color[mode], stroke=brush_stroke_color[mode])
             dblclick <- paste0(mode, .zoomClick, ID)
+            panel_height <- paste0(active_panels$Height[i], "px")
         }
 
         # Creating the plot fields.
         if (mode=="redDim") {
-            obj <- plotOutput(.redDimPlot(ID), brush = brush.opts, dblclick=dblclick)
+            obj <- plotOutput(.redDimPlot(ID), brush = brush.opts, dblclick=dblclick, height=panel_height)
             cur_reddim <- param_choices[[.redDimType]]
             red_choices <- seq_len(red_dim_dims[[cur_reddim]])
             plot.param <-  list(
@@ -103,7 +98,7 @@
                              choices=red_choices, selected=param_choices[[.redDimYAxis]])
                  )
         } else if (mode=="colData") {
-            obj <- plotOutput(.colDataPlot(ID), brush = brush.opts, dblclick=dblclick)
+            obj <- plotOutput(.colDataPlot(ID), brush = brush.opts, dblclick=dblclick, height=panel_height)
             plot.param <- list(
                  selectInput(.inputColData(.colDataYAxis, ID),
                              label = "Column of interest (Y-axis):",
@@ -118,7 +113,7 @@
                                                       choices=covariates, selected=param_choices[[.colDataXAxisColData]]))
                  )
         } else if (mode=="geneExpr") {
-            obj <- plotOutput(.geneExprPlot(ID), brush = brush.opts, dblclick=dblclick)
+            obj <- plotOutput(.geneExprPlot(ID), brush = brush.opts, dblclick=dblclick, height=panel_height)
             xaxis_choices <- c(.geneExprXAxisNothingTitle)
             if (feasibility$colData) {
                 xaxis_choices <- c(xaxis_choices, .geneExprXAxisColDataTitle)
@@ -135,8 +130,8 @@
                                        .geneExprYAxisGeneTableTitle,
                                        selectInput(.inputGeneExpr(.geneExprYAxisGeneTable, ID),
                                                    label = "Y-axis gene linked to:",
-                                                   choices=active.tab,
-                                                   selected=.choose_link(param_choices[[.geneExprYAxisGeneTable]], active.tab, force_default=TRUE))
+                                                   choices=active_tab,
+                                                   selected=.choose_link(param_choices[[.geneExprYAxisGeneTable]], active_tab, force_default=TRUE))
               ),
               .conditionalPanelOnRadio(.inputGeneExpr(.geneExprYAxis, ID),
                                        .geneExprYAxisGeneTextTitle,
@@ -156,7 +151,7 @@
                                        .geneExprXAxisGeneTableTitle,
                                        selectInput(.inputGeneExpr(.geneExprXAxisGeneTable, ID),
                                                    label = "X-axis gene linked to:",
-                                                   choices=active.tab, selected=param_choices[[.geneExprXAxisGeneTable]])),
+                                                   choices=active_tab, selected=param_choices[[.geneExprXAxisGeneTable]])),
               .conditionalPanelOnRadio(.inputGeneExpr(.geneExprXAxis, ID),
                                        .geneExprXAxisGeneTextTitle,
                                        textInput(paste0(mode, .geneExprXAxisGeneText, ID), label = "X-axis gene:",
@@ -179,7 +174,7 @@
                                        plot.param)),
 
                 # Panel for colouring parameters.
-                .createColorPanel(mode, ID, param_choices, active.tab, covariates, all_assays, feasibility),
+                .createColorPanel(mode, ID, param_choices, active_tab, covariates, all_assays, feasibility),
 
                 # Panel for brushing parameters.
                 .createBrushPanel(mode, ID, param_choices, brushable)
@@ -310,4 +305,3 @@ brush_fill_color <- c(redDim="#9cf", geneExpr="#9f6", colData="#ff9")
 
 brush_stroke_color <- c(redDim="#06f", geneExpr="#090", colData="#fc0")
 brush_stroke_color_full <- c(redDim="#0066ff", geneExpr="#009900", colData="#ffcc00")
-

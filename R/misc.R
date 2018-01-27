@@ -30,7 +30,10 @@
 }
 
 .setup_memory <- function(se, redDimArgs, colDataArgs, geneExprArgs, geneStatArgs,
-                          redDimMax, colDataMax, geneExprMax, geneStatMax) {
+                          redDimMax, colDataMax, geneExprMax, geneStatMax) 
+# This function sets up the memory for the current session, taking in any
+# specifications from the user regarding the defaults and max number of panels.
+{
   # Defining the maximum number of panels.
   reddim_max_plots <- max(nrow(redDimArgs), redDimMax)
   coldata_max_plots <- max(nrow(colDataArgs), colDataMax)
@@ -92,33 +95,131 @@
   return(memory)
 }
 
+width_limits <- c(2L, 12L)
+height_limits <- c(400L, 1000L)
+
+.setup_initial <- function(initialPanels, memory) 
+# This function sets up the initial active panels.
+{
+  if (is.null(initialPanels)) {
+    initialPanels <- data.frame(Name=c("Reduced dimension plot 1", "Column data plot 1", 
+                                       "Gene expression plot 1", "Gene statistics table 1"),
+                                Width=4, Height=500L, stringsAsFactors=FALSE)
+  } 
+
+  if (is.null(initialPanels$Name)) {
+    stop("need 'Name' field in 'initialPanels'")
+  }
+
+  if (is.null(initialPanels$Width)) {
+    initialPanels$Width <- 4L
+  } else {
+    initialPanels$Width <- pmax(width_limits[1], pmin(width_limits[2], as.integer(initialPanels$Width)))
+  }
+
+  if (is.null(initialPanels$Height)) {
+    initialPanels$Height <- 500L
+  } else {
+    initialPanels$Height <- pmax(height_limits[1], pmin(height_limits[2], as.integer(initialPanels$Height)))
+  }
+
+  encoded <- .encode_panel_name(initialPanels$Name)
+  max_each <- unlist(lapply(memory, nrow))
+  illegal <- max_each[encoded$Type] < encoded$ID
+  if (any(illegal)) {
+    badpanel <- which(illegal)[1]
+    message(sprintf("'%s' in 'initialPanels' is not available (maximum ID is %i)",
+                    initialPanels$Name[badpanel], max_each[encoded$Type[badpanel]]))
+  }
+
+  data.frame(Type=encoded$Type, ID=encoded$ID,
+             Width=initialPanels$Width,
+             Height=initialPanels$Height,
+             stringsAsFactors=FALSE)[!illegal,,drop=FALSE]
+}
+
+.sanitize_memory <- function(active_panels, memory) 
+# This function ensures that the memory is valid
+# with respect to the starting panels, i.e., no brushing
+# or table links to panels that are not active.
+{
+    is_tab <- active_panels$Type=="geneStat"
+    brushable <- active_panels[!is_tab,]
+    brush_names <- .decode_panel_name(brushable$Type, brushable$ID)
+    linkable <- active_panels[is_tab,]
+    link_names <- .decode_panel_name(linkable$Type, linkable$ID)
+
+    for (mode in c("redDim", "colData", "geneExpr")) {
+        bb <- memory[[mode]][,.brushByPlot]
+        bad <- bb %in% brush_names
+        if (any(bad)) { 
+            memory[[mode]][,.brushByPlot][bb] <- ""
+        }
+
+        cb <- memory[[mode]][,.colorByGeneTable]
+        bad <- cb %in% link_names 
+        if (any(bad)) { 
+            memory[[mode]][,.colorByGeneTable][cb] <- ""
+        }
+    }
+
+    for (field in c(.geneExprXAxisGeneTable, .geneExprYAxisGeneTable)) {
+        bb <- memory$geneExpr[,field]
+        bad <- bb %in% link_names 
+        if (any(bad)) { 
+            memory$geneExpr[,field][bb] <- ""
+        }
+    }
+    return(memory)
+}
+
+.setup_table_observer <- function(mode, i, input, pObjects, by_field, tab_title, tab_field, param='color') {
+    choice <- input[[paste0(mode, by_field, i)]]
+    tab <- input[[paste0(mode, tab_field, i)]]
+    reset <- FALSE
+
+    if (!is.null(choice) && !is.null(tab)) { 
+        # Editing the table_links, if we're switching to/from the table choice. 
+        old <- pObjects$memory[[mode]][i, tab_field]
+        plot_name <- paste0(mode, "Plot", i)
+        if (choice==tab_title) {
+            pObjects$table_links <- .modify_table_links(pObjects$table_links, plot_name, tab, old, mode=param)
+        } else {
+            pObjects$table_links <- .modify_table_links(pObjects$table_links, plot_name, "", old, mode=param)
+        }
+
+        # Triggering replotting, but only if both of the input values are initialized.
+        # We don't have an 'ignoreInit' that we can rely on here.
+        reset <- TRUE
+    }
+    
+    # Updating stored parameters. These should persist due to environment's pass-by-reference.
+    if (!is.null(choice)) { 
+        pObjects$memory[[mode]][i, by_field] <- choice
+    }
+    if (!is.null(tab)) { 
+        pObjects$memory[[mode]][i, tab_field] <- tab 
+    }
+    return(reset)
+}
+
 #############################################
-# 
+# Information constants.
 
-iSEE_footer <- function(){
-  tags$div(
-    class = "panel-footer",
-    style = "text-align:center",
-    tags$div(
-      class = "foot-inner",
-      list(
-        # hr(),
-        "iSEE is a project developed by
-        Aaron Lun (CRUK Cambridge Institute, University of Cambridge),
-        Charlotte Soneson (University of Zurich and SIB Swiss Institute of Bioinformatics),
-        Kevin Rue-Albrecht (",
-        tags$a(
-            href="https://www.kennedy.ox.ac.uk",
-            "Kennedy Institute of Rheumatology, University of Oxford"
-        ),
-        "), and Federico Marini in the Bioinformatics division of the ",
-        tags$a(href="http://www.unimedizin-mainz.de/imbei","IMBEI"),
-        "- Institute for Medical Biostatistics, Epidemiology and Informatics",br(),
-        "License: ",tags$a(href="https://opensource.org/licenses/MIT","MIT"), br(),
-
-        "Development of the iSEE package is on ",
-        tags$a(href="https://github.com/csoneson/iSEE", "GitHub")
-      )
+iSEE_info <- function() {
+    tagList(
+    HTML(sprintf("iSEE is a project developed by 
+Aaron Lun (%s),
+Charlotte Soneson (%s),
+Kevin Rue-Albrecht (%s),
+and Federico Marini (%s).", 
+a(href="http://www.cambridgecancer.org.uk/", "CRUK Cambridge Institute, University of Cambridge"),
+a(href="https://www.sib.swiss/", "University of Zurich and SIB Swiss Institute of Bioinformatics"),
+a(href="https://www.kennedy.ox.ac.uk", "Kennedy Institute of Rheumatology, University of Oxford"),
+a(href="http://www.unimedizin-mainz.de/imbei","Institute for Medical Biostatistics, Epidemiology and Informatics"))),
+    br(), br(),
+    HTML(sprintf("The iSEE package is being developed on %s under the %s license.",
+         a(href="https://github.com/csoneson/iSEE", "GitHub"),
+         a(href="https://opensource.org/licenses/MIT","MIT")))
     )
-  )
 }

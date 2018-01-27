@@ -42,11 +42,27 @@
   return(graph)
 }
 
-.destroy_brush_source <- function(graph, panel)
+.destroy_brush_source <- function(pObjects, panel)
 # Destroys the all edges to and from the current brushing source
-# upon its removal from the UI.
+# upon its removal from the UI. Also updates the memory to eliminate
+# discarded plots as the default choice. Relies on pass-by-reference
+# semantics with 'pObjects' as an environment.
 {
-  graph - incident(graph, panel, mode="all")
+    graph <- pObjects$brush_links
+
+    # Resetting memory.
+    all_kids <- names(adjacent_vertices(graph, panel, mode="out"))
+    enc <- .split_encoded(all_kids)
+
+    for (i in seq_along(all_kids)) {
+        kid <- all_kids[i]
+        type <- enc$Type[i]
+        pObjects$memory[[type]][kid, .brushByPlot] <- ""
+    }
+
+    # Destroying the edges.
+    pObjects$brush_links <- graph - incident(graph, panel, mode="all")
+    return(invisible(NULL))
 }
 
 .get_brush_dependents <- function(graph, panel, memory)
@@ -60,8 +76,9 @@
     
     old_children <- children
     while (length(children)) {
-        types <- sub("Plot[0-9]+$", "", children)
-        ids <- as.integer(sub("^[a-zA-Z]*Plot", "", children))
+        enc <- .split_encoded(children)
+        types <- enc$Type
+        ids <- enc$ID
 
         new_children <- character(0)
         for (i in seq_along(children)) {

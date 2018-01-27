@@ -326,24 +326,7 @@ iSEE <- function(
           title = "Graph of inter-panel links", size = "l",
           fade = TRUE, footer = NULL, easyClose = TRUE,
           renderPlot({
-            cur_plots <- sprintf("%sPlot%i", rObjects$active_panels$Type, rObjects$active_panels$ID)
-            not_used <- setdiff(V(pObjects$brush_links)$name,cur_plots)
-            currgraph_used <- delete.vertices(pObjects$brush_links,not_used)
-            currgraph_used <- set_vertex_attr(currgraph_used,"plottype",
-                                              value = gsub("Plot[0-9]","",V(currgraph_used)$name))
-            
-            currgraph_used <- .find_links_to_table(rObjects, pObjects, currgraph_used)
-            
-            plot(currgraph_used,
-                 edge.arrow.size = .8,
-                 vertex.label.cex = 1.3,
-                 vertex.label.family = "Helvetica",
-                 vertex.label.color = "black",
-                 vertex.label.dist = 2.5,
-                 vertex.color = c(.plothexcode_redDim,.plothexcode_colData,
-                                  .plothexcode_geneExpr,.plothexcode_geneTable)[
-                   factor(V(currgraph_used)$plottype,
-                          levels = c("redDim","colData","geneExpr","geneStat"))])
+            .snapshot_graph_linkedpanels(rObjects, pObjects)
           })
         )
       )

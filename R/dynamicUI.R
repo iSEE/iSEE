@@ -78,18 +78,20 @@
         panel.width <- active_plots$Width[i]
         param_choices <- memory[[mode]][ID,]
 
-        # Checking what to do with brushing.
+        # Checking what to do with plot-specific parameters (e.g., brushing, clicking, plot height).
         dblclick <- NULL
         brush.opts <- NULL
+        panel_height <- NULL
         if (mode!="geneStat") { 
             brush.opts <- brushOpts(paste0(mode, .brushField, ID), resetOnNew=FALSE, 
                                     fill=brush_fill_color[mode], stroke=brush_stroke_color[mode])
             dblclick <- paste0(mode, .zoomClick, ID)
+            panel_height <- paste0(active_plots$Height[i], "px")
         }
 
         # Creating the plot fields.
         if (mode=="redDim") {
-            obj <- plotOutput(.redDimPlot(ID), brush = brush.opts, dblclick=dblclick)
+            obj <- plotOutput(.redDimPlot(ID), brush = brush.opts, dblclick=dblclick, height=panel_height)
             cur_reddim <- param_choices[[.redDimType]]
             red_choices <- seq_len(red_dim_dims[[cur_reddim]])
             plot.param <-  list(
@@ -101,7 +103,7 @@
                              choices=red_choices, selected=param_choices[[.redDimYAxis]])
                  )
         } else if (mode=="colData") {
-            obj <- plotOutput(.colDataPlot(ID), brush = brush.opts, dblclick=dblclick)
+            obj <- plotOutput(.colDataPlot(ID), brush = brush.opts, dblclick=dblclick, height=panel_height)
             plot.param <- list(
                  selectInput(.inputColData(.colDataYAxis, ID),
                              label = "Column of interest (Y-axis):",
@@ -116,7 +118,7 @@
                                                       choices=covariates, selected=param_choices[[.colDataXAxisColData]]))
                  )
         } else if (mode=="geneExpr") {
-            obj <- plotOutput(.geneExprPlot(ID), brush = brush.opts, dblclick=dblclick)
+            obj <- plotOutput(.geneExprPlot(ID), brush = brush.opts, dblclick=dblclick, height=panel_height)
             xaxis_choices <- c(.geneExprXAxisNothingTitle)
             if (feasibility$colData) {
                 xaxis_choices <- c(xaxis_choices, .geneExprXAxisColDataTitle)

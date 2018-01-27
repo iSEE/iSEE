@@ -95,6 +95,7 @@ ALLEXTRAS_INT <- c(.colorByGeneTableAssay, .colorByGeneTextAssay)
 .organizationDiscard <- "Discard"
 .organizationModify <- "Modify"
 .organizationWidth <- "PanelWidth"
+.organizationHeight <- "PanelHeight"
 
 # Encoding and decoding names for user/shiny ----
 translation <- c(redDim="Reduced dimension plot",

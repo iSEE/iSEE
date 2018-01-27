@@ -30,7 +30,10 @@
 }
 
 .setup_memory <- function(se, redDimArgs, colDataArgs, geneExprArgs, geneStatArgs,
-                          redDimMax, colDataMax, geneExprMax, geneStatMax) {
+                          redDimMax, colDataMax, geneExprMax, geneStatMax) 
+# This function sets up the memory for the current session, taking in any
+# specifications from the user regarding the defaults and max number of panels.
+{
   # Defining the maximum number of panels.
   reddim_max_plots <- max(nrow(redDimArgs), redDimMax)
   coldata_max_plots <- max(nrow(colDataArgs), colDataMax)
@@ -90,6 +93,49 @@
   rownames(memory$geneStat) <- sprintf("geneStatTable%i", seq_len(genestat_max_tabs))
 
   return(memory)
+}
+
+width_limits <- c(2L, 12L)
+height_limits <- c(400L, 1000L)
+
+.setup_initial <- function(initialPanels, memory) 
+# This function sets up the initial active panels.
+{
+  if (is.null(initialPanels)) {
+    initialPanels <- data.frame(Name=c("Reduced dimension plot 1", "Column data plot 1", 
+                                       "Gene expression plot 1", "Gene statistics table 1"),
+                                Width=4, Height=500L, stringsAsFactors=FALSE)
+  } 
+
+  if (is.null(initialPanels$Name)) {
+    stop("need 'Name' field in 'initialPanels'")
+  }
+
+  if (is.null(initialPanels$Width)) {
+    initialPanels$Width <- 4L
+  } else {
+    initialPanels$Width <- pmax(width_limits[1], pmin(width_limits[2], as.integer(initialPanels$Width)))
+  }
+
+  if (is.null(initialPanels$Height)) {
+    initialPanels$Height <- 500L
+  } else {
+    initialPanels$Height <- pmax(height_limits[1], pmin(height_limits[2], as.integer(initialPanels$Height)))
+  }
+
+  encoded <- .encode_panel_name(initialPanels$Name)
+  max_each <- unlist(lapply(memory, nrow))
+  illegal <- max_each[encoded$Type] < encoded$ID
+  if (any(illegal)) {
+    badpanel <- which(illegal)[1]
+    message(sprintf("'%s' in 'initialPanels' is not available (maximum ID is %i)",
+                    initialPanels$Name[badpanel], max_each[encoded$Type[badpanel]]))
+  }
+
+  data.frame(Type=encoded$Type, ID=encoded$ID,
+             Width=initialPanels$Width,
+             Height=initialPanels$Height,
+             stringsAsFactors=FALSE)[!illegal,,drop=FALSE]
 }
 
 .sanitize_memory <- function(active_plots, memory) 

@@ -127,33 +127,7 @@ iSEE <- function(
                           redDimMax, colDataMax, geneExprMax, geneStatMax)
 
   # Defining the initial elements to be plotted.
-  if (is.null(initialPanels)) {
-    initialPanels <- data.frame(Name=c("Reduced dimension plot 1", "Column data plot 1", 
-                                       "Gene expression plot 1", "Gene statistics table 1"),
-                                Width=4, stringsAsFactors=FALSE)
-  } 
-
-  if (is.null(initialPanels$Name)) {
-    stop("need 'Name' field in 'initialPanels'")
-  }
-  if (is.null(initialPanels$Width)) {
-    initialPanels$Width <- 4L
-  } else {
-    initialPanels$Width <- pmax(4L, pmin(12L, as.integer(initialPanels$Width)))
-  }
-
-  encoded <- .encode_panel_name(initialPanels$Name)
-  max_each <- unlist(lapply(memory, nrow))
-  illegal <- max_each[encoded$Type] < encoded$ID
-  if (any(illegal)) {
-    badpanel <- which(illegal)[1]
-    message(sprintf("'%s' in 'initialPanels' is not available (maximum ID is %i)",
-                    initialPanels$Name[badpanel], max_each[encoded$Type[badpanel]]))
-  }
-
-  active_plots <- data.frame(Type=encoded$Type, ID=encoded$ID,
-                             Width=initialPanels$Width,
-                             stringsAsFactors=FALSE)[!illegal,,drop=FALSE]
+  active_plots <- .setup_initial(initialPanels, memory)
   memory <- .sanitize_memory(active_plots, memory)
 
   # For retrieving the annotation
@@ -467,15 +441,19 @@ iSEE <- function(
                     all_active <- rObjects$active_plots
                     index <- which(all_active$Type==mode0 & all_active$ID==i0)
                     cur_width <- all_active$Width[index]
+                    cur_height <- all_active$Height[index]
 
                     showModal(modalDialog(
                         sliderInput(paste0(mode0, .organizationWidth, i0), label="Width",
-                                    min=2, max=12, value=cur_width, step=1),
+                                    min=width_limits[1], max=width_limits[2], value=cur_width, step=1),
+                        sliderInput(paste0(mode0, .organizationHeight, i0), label="Height",
+                                    min=height_limits[1], max=height_limits[2], value=cur_height, step=50),
                         title=paste(.decode_panel_name(mode0, i0), "panel parameters"),
                         easyClose=TRUE, size="m", footer=NULL
                         )
                     )  
                 })
+
                 observeEvent(input[[paste0(mode0, .organizationWidth, i0)]], {
                     all_active <- rObjects$active_plots
                     index <- which(all_active$Type==mode0 & all_active$ID==i0)
@@ -483,6 +461,16 @@ iSEE <- function(
                     new.width <- input[[paste0(mode0, .organizationWidth, i0)]]
                     if (!isTRUE(all.equal(new.width, cur.width))) {
                         rObjects$active_plots$Width[index] <- new.width
+                    }
+                }, ignoreInit=TRUE)
+
+                observeEvent(input[[paste0(mode0, .organizationHeight, i0)]], {
+                    all_active <- rObjects$active_plots
+                    index <- which(all_active$Type==mode0 & all_active$ID==i0)
+                    cur.height <- all_active$Height[index]
+                    new.height <- input[[paste0(mode0, .organizationHeight, i0)]]
+                    if (!isTRUE(all.equal(new.height, cur.height))) {
+                        rObjects$active_plots$Height[index] <- new.height
                     }
                 }, ignoreInit=TRUE)
             })

@@ -326,7 +326,7 @@ iSEE <- function(
           title = "Graph of inter-panel links", size = "l",
           fade = TRUE, footer = NULL, easyClose = TRUE,
           renderPlot({
-            cur_plots <- paste0(rObjects$active_panels$Type,"Plot",rObjects$active_panels$ID)
+            cur_plots <- sprintf("%sPlot%i", rObjects$active_panels$Type, rObjects$active_panels$ID)
             not_used <- setdiff(V(pObjects$brush_links)$name,cur_plots)
             currgraph_used <- delete.vertices(pObjects$brush_links,not_used)
             currgraph_used <- set_vertex_attr(currgraph_used,"plottype",

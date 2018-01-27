@@ -86,7 +86,7 @@
 # this updated graph is then returned as output
 {
   tbl_objs <- rObjects$active_panels[rObjects$active_panels$Type=="geneStat",]
-  cur_tables <- paste0(tbl_objs$Type,"Table",tbl_objs$ID)
+  cur_tables <- sprintf("%sTable%i",tbl_objs$Type,tbl_objs$ID)
   all_tlinks <- pObjects$table_links
   cur_tlinks <- all_tlinks[cur_tables]
   

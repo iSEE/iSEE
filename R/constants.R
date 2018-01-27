@@ -129,3 +129,4 @@ names(rev.translation) <- translation
 .plothexcode_redDim <- "#3C8DBC"
 .plothexcode_colData <- "#F39D12"
 .plothexcode_geneExpr <- "#03A659"
+.plothexcode_geneTable <- "#DD4B39"

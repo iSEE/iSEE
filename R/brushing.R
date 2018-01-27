@@ -52,9 +52,12 @@
 
     # Resetting memory.
     all_kids <- names(adjacent_vertices(graph, panel, mode="out"))
-    for (x in all_kids) {
-        type <- sub("Plot[0-9]+$", "", x)
-        pObjects$memory[[type]][x, .brushByPlot] <- ""
+    enc <- .split_encoded(all_kids)
+
+    for (i in seq_along(all_kids)) {
+        kid <- all_kids[i]
+        type <- enc$Type[i]
+        pObjects$memory[[type]][kid, .brushByPlot] <- ""
     }
 
     # Destroying the edges.
@@ -73,8 +76,9 @@
     
     old_children <- children
     while (length(children)) {
-        types <- sub("Plot[0-9]+$", "", children)
-        ids <- as.integer(sub("^[a-zA-Z]*Plot", "", children))
+        enc <- .split_encoded(children)
+        types <- enc$Type
+        ids <- enc$ID
 
         new_children <- character(0)
         for (i in seq_along(children)) {

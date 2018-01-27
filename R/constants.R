@@ -72,13 +72,6 @@
 .zoomData <- "ZoomData"
 .zoomClick <- "ZoomClick"
 
-# Aggregating these plot-specific parameters,
-# based on whether they can be directly stored in memory (DIRECT) or
-# whether they need to be coerced into a specific format (INT, etc.)
-ALLEXTRAS_DIRECT <- c(.colorByField, .colorByColData, .colorByGeneTable, .colorByGeneText,
-                      .brushEffect, .brushColor, .brushTransAlpha)
-ALLEXTRAS_INT <- c(.colorByGeneTableAssay, .colorByGeneTextAssay)
-
 # Plot parameters. ----
 .plotParamPanelOpen <- "PlotPanelOpen"
 .plotParamPanelName <- "ParamPanel"
@@ -125,6 +118,12 @@ names(rev.translation) <- translation
     Mode <- ifelse(x$Type=="geneStat", "Table", "Plot")
     names[keep] <- sprintf("%s%s%i", x$Type, Mode, x$ID)
     names
+}
+
+.split_encoded <- function(names) {
+    sp <- strsplit(names, "Plot|Table")
+    sp <- do.call(rbind, sp)
+    return(list(Type=sp[,1], ID=as.integer(sp[,2])))
 }
 
 .plothexcode_redDim <- "#3C8DBC"

@@ -597,7 +597,7 @@ iSEE <- function(
         protected <- switch(mode,
                             redDim=c(.redDimType, .redDimXAxis, .redDimYAxis),
                             colData=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
-                            geneExpr=c(.geneExprXAxisColData, .geneExprYAxisGeneText, .geneExprXAxisGeneText))
+                            geneExpr=c(.geneExprAssay, .geneExprXAxisColData, .geneExprYAxisGeneText, .geneExprXAxisGeneText))
   
         for (i in seq_len(max_plots)) {
             # Observers for the non-fundamental parameter options (.brushByPlot is handled elsewhere).
@@ -649,7 +649,7 @@ iSEE <- function(
                 FUN0 <- FUN
                 plot_name <- paste0(mode0, "Plot", i0)
   
-                # Observers for the linked color, aware of the gene choice.
+                # Observers for the linked color, which updates the table_links information.
                 observe({
                     replot <- .setup_table_observer(mode0, i0, input, pObjects, .colorByField, 
                         .colorByGeneTableTitle, .colorByGeneTable, param='color') 
@@ -738,8 +738,20 @@ iSEE <- function(
 
                 # Triggering the replotting of all children.
                 all_kids <- unique(unlist(pObjects$table_links[[i0]]))
-                for (kid in all_kids) {
-                    rObjects[[kid]] <- .increment_counter(isolate(rObjects[[kid]]))
+                enc <- .split_encoded(all_kids)
+                brush_ids <- sprintf("%s%s%i", enc$Type, .brushField, enc$ID)
+
+                for (i in seq_along(all_kids)) {
+                    kid <- all_kids[i]
+                    brush_id <- brush_ids[i]
+
+                    if (!is.null(isolate(input[[brush_id]]))) { 
+                        # This will trigger replotting. 
+                        session$resetBrush(brush_id)
+                    } else {
+                        # Manually triggering replotting.
+                        rObjects[[kid]] <- .increment_counter(isolate(rObjects[[kid]]))
+                    }
                 }
             }
         })

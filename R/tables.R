@@ -53,17 +53,21 @@
 # We assume pObjects is an environment for pass-by-reference.
 {
     links <- pObjects$table_links
+    all_kids <- links[[tab]] 
 
     # Updating the memory of all linked plots.
-    cur_kids <- links[[tab]] 
-    for (x in cur_kids$color) {
-        type <- sub("Plot[0-9]+$", "", x)
-        pObjects$memory[[type]][x, .colorByGeneTable] <- ""
+    col_kids <- all_kids$color
+    enc <- .split_encoded(col_kids)
+    for (i in seq_along(col_kids)) { 
+        kid <- col_kids[i]
+        type <- enc$Type[i]
+        pObjects$memory[[type]][kid, .colorByGeneTable] <- ""
     }
-    for (x in cur_kids$yaxis) {
+
+    for (x in all_kids$yaxis) {
         pObjects$memory$geneExpr[x, .geneExprYAxisGeneTable] <- ""
     }
-    for (x in cur_kids$xaxis) {
+    for (x in all_kids$xaxis) {
         pObjects$memory$geneExpr[x, .geneExprXAxisGeneTable] <- ""
     }
 

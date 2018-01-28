@@ -167,10 +167,6 @@ iSEE <- function(
     }
   }
   
-  # location of vignette, locally, as a fallback to no internet connection
-  vinfo <- tools::getVignetteInfo(package = "DESeq2")[1,]
-  vig_loc <- file.path(vinfo["Dir"],"doc","DESeq2.html")
-
   #######################################################################
   ## UI definition. ----
   #######################################################################
@@ -222,7 +218,7 @@ iSEE <- function(
                                          icon = icon("life-ring"), 
                                          style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4",
                                          onclick = paste0("window.open('",
-                                                          vig_loc,
+                                                          system.file("doc","iSEE_vignette.html", package="iSEE"),
                                                           "', '_blank')")
                                          ),
                      icon = icon(""), status = "primary"

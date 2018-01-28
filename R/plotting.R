@@ -257,7 +257,7 @@ names(.all_labs_values) <- .all_aes_names
   # commands, as well as the creation of plot.data.all in the earlier brushing
   # command list (since the plot.data.all is only used in geom_blank)
   if (nrow(plot_data) > 0 && !is.null(extra_cmds$brush[["full"]])) {
-    rm(plot.data.all, envir=eval_env)
+    rm(list="plot.data.all", envir=eval_env)
     extra_cmds$brush[["full"]] <- NULL
     extra_cmds$plot[["brush_blank"]] <- NULL
   }

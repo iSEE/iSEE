@@ -73,8 +73,6 @@
 #' \describe{
 #' \item{\code{BrushPanelOpen}:}{Logical, should the brushing parameter panel be open upon initialization?
 #' Defaults to \code{FALSE}.}
-#' \item{\code{BrushOn}:}{Logical, should the plot be transmitting its brush for use in other plots?
-#' Defaults to \code{FALSE}.}
 #' \item{\code{BrushByPlot}:}{Character, which other plot should be used for point selection in the current plot? 
 #' Defaults to an empty string, which means that no plot is used for point selection.}
 #' \item{\code{BrushEffect}:}{Character, what is the effect of receiving a brush input?
@@ -91,8 +89,6 @@
 #' \describe{
 #' \item{\code{PlotPanelOpen}:}{Logical, should the plot parameter panel be open upon initialization?
 #' Defaults to \code{FALSE}.}
-#' \item{\code{ZoomOn}:}{Logical, should zooming (via brushing and double-clicking) be turned on?
-#' Defaults to \code{TRUE}.}
 #' \item{\code{ZoomData}:}{A list containing numeric vectors of length 4, containing values with names \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"}.
 #' These define the zoom window on the x- and y-axes.
 #' Each element of the list defaults to \code{NULL}, i.e., no zooming is performed.}

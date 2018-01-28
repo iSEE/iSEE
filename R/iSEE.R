@@ -33,6 +33,9 @@
 #' @param colormap An \linkS4class{ExperimentColorMap} object that defines
 #' custom color maps to apply to individual \code{assays}, \code{colData},
 #' and \code{rowData} covariates.
+#' @param run_local A logical indicating whether the app is to be run
+#' locally or remotely on a server, which determines how documentation 
+#' will be accessed.
 #'
 #' @details Users can pass default parameters via DataFrame objects in
 #' \code{redDimArgs} and \code{geneExprArgs}. Each object can contain
@@ -131,7 +134,8 @@ iSEE <- function(
   annot.orgdb=NULL,
   annot.keytype="ENTREZID",
   annot.keyfield=NULL,
-  colormap=ExperimentColorMap()
+  colormap=ExperimentColorMap(),
+  run_local=TRUE
 ) {
   # Save the original name of the input object for the command to rename it
   # in the tracker
@@ -207,20 +211,10 @@ iSEE <- function(
                      icon = icon(""), # tricking it to not have additional icon
                      status = "primary"),
                    notificationItem(
-                     text = actionButton('openVignette', label="Open the vignette (web)", 
+                     text = actionButton('open_vignette', label="Open the vignette", 
                                          icon = icon("book"), 
                                          style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4",
-                                         onclick ="window.open('http://google.com', '_blank')"), # to be replaced with vignette url
-                     icon = icon(""), status = "primary"
-                   ),
-                   notificationItem(
-                     text = actionButton('browseVignette', label="Open the vignette (local)", 
-                                         icon = icon("life-ring"), 
-                                         style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4",
-                                         onclick = paste0("window.open('",
-                                                          system.file("doc","iSEE_vignette.html", package="iSEE"),
-                                                          "', '_blank')")
-                                         ),
+                                         onclick = ifelse(run_local, "", "window.open('http://google.com', '_blank')")), # to be replaced with vignette url
                      icon = icon(""), status = "primary"
                    )
         ),
@@ -364,9 +358,11 @@ iSEE <- function(
       )
     })
 
-    output$codetext_modal <- renderPrint({
-      print(.track_it_all(rObjects, pObjects, se_name, ecm_name))
-    })
+    if (run_local) { 
+      observeEvent(input$open_vignette, {
+        browseURL(system.file("doc","iSEE_vignette.html", package="iSEE")) 
+      })
+    }
 
     #######################################################################
     # Multipanel UI generation section. ----

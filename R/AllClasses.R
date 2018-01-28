@@ -47,15 +47,29 @@ setClass("ExperimentColorMap",
 #' @param assays List of color maps for \code{assays}.
 #' @param colData List of color maps for \code{colData}.
 #' @param rowData List of color maps for \code{rowData}.
+#' @param all List of color maps for \code{all}.
+#' @param global List of color maps for \code{global}.
 #' @param ... additional arguments passed on to the \code{ExperimentColorMap}
 #' constructor
+#' 
+#' @details 
+#' Color maps must all be functions that take at least one argument: the number
+#' of (named) colours to return as a \code{character} vector.
+#' This argument may be ignored in the body of the color map function
+#' to produce constant color maps. 
 #'
 #' @section Accessors:
 #'
 #' In the following code snippets, \code{x} is an
 #' \code{ExperimentColorMap} object.
-#'
-#' \code{assayColorMap(x, "counts")}: Get an assay colormap.
+#' 
+#' \describe{
+#'   \item{\code{assayColorMap(x, i, ...)}:}{Get an \code{assays} colormap.}
+#'   
+#'   \item{\code{colDataColorMap(x, i, ...)}:}{Get a \code{colData} colormap.}
+#'   
+#'   \item{\code{rowDataColorMap(x, i, ...)}:}{Get a \code{rowData} colormap.}
+#' }
 #'
 #' @export ExperimentColorMap
 #' @exportClass ExperimentColorMap
@@ -115,8 +129,14 @@ setClass("ExperimentColorMap",
 #' rowDataColorMap(ecm, "undefined")
 #'
 ExperimentColorMap <- function(
-  assays = list(), colData = list(), rowData = list(), ...){
-  new("ExperimentColorMap", assays=assays, colData=colData, rowData=rowData, ...)
+  assays = list(), colData = list(), rowData = list(),
+  all = list(assays=NULL, colData=NULL, rowData=NULL),
+  global = NULL, ...){
+  new(
+    "ExperimentColorMap",
+    assays=assays, colData=colData, rowData=rowData,
+    all = all,
+    global = global, ...)
 }
 
 # .default color maps ----

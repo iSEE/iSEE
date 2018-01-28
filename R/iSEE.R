@@ -113,9 +113,8 @@
 #' )
 #'
 #' # launch the app itself ----
-#' 
+#' app <- iSEE(sce, colormap = ecm)
 #' if (interactive()) {
-#'   app <- iSEE(sce, colormap = ecm)
 #'   shiny::runApp(app, port = 1234)
 #' }
 iSEE <- function(

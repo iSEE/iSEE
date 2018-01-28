@@ -129,6 +129,9 @@ Each element of the list defaults to \code{NULL}, i.e., no zooming is performed.
 Defaults to the first row, i.e., 1.}
 \item{\code{Search}:}{Character, containing the initial value of the search field.
 Defaults to an empty string.}
+\item{\code{SearchColumns}:}{A list containing character vectors of length equal to the number of columns in \code{rowData(se)},
+specifying the initial value of the search field for each column.
+All entries default to an empty string.}
 }
 }
 

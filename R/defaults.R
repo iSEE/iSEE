@@ -100,6 +100,9 @@
 #' Defaults to the first row, i.e., 1.}
 #' \item{\code{Search}:}{Character, containing the initial value of the search field.
 #' Defaults to an empty string.}
+#' \item{\code{SearchColumns}:}{A list containing character vectors of length equal to the number of columns in \code{rowData(se)},
+#' specifying the initial value of the search field for each column.
+#' All entries default to an empty string.}
 #' }
 #'
 #' @return A DataFrame containing default settings for various parameters of each panel.
@@ -187,6 +190,10 @@ geneStatTableDefaults <- function(se, number) {
     out <- new("DataFrame", nrows=as.integer(number))
     out[[.geneStatSelected]] <- 1L
     out[[.geneStatSearch]] <- ""
+
+    # Defining an empty search for each column of the rowData.
+    colsearch <- character(ncol(rowData(se)))
+    out[[.geneStatColSearch]] <- rep(list(colsearch), as.integer(number))
 
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)

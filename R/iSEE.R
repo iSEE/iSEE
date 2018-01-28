@@ -751,15 +751,21 @@ iSEE <- function(
         i0 <- i
         output[[paste0("geneStatTable", i0)]] <- renderDataTable({
             (rObjects$active_panels) # to trigger recreation when the number of plots is changed.
+
             chosen <- pObjects$memory$geneStat[i0, .geneStatSelected]
             search <- pObjects$memory$geneStat[i0, .geneStatSearch]
+
+            search_col <- pObjects$memory$geneStat[i0, .geneStatColSearch][[1]]
+            search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
+
             datatable(gene_data, filter="top", rownames=TRUE,
                       options=list(search=list(search=search),
+                                   searchCols=c(list(NULL), search_col), # row names are the first column!
                                    scrollX=TRUE),
                       selection=list(mode="single", selected=chosen))
         })
 
-        # Updating memory for new search/selection parameters.
+        # Updating memory for new selection parameters.
         observe({
             chosen <- input[[paste0("geneStatTable", i0, .int_geneStatSelected)]]
             if (length(chosen)) {
@@ -785,10 +791,19 @@ iSEE <- function(
             }
         })
 
+        # Updating memory for new selection parameters.
         observe({
             search <- input[[paste0("geneStatTable", i0, .int_geneStatSearch)]]
             if (length(search)) {
                 pObjects$memory$geneStat[i0, .geneStatSearch] <- search
+            }
+        })
+
+        observe({
+            search <- input[[paste0("geneStatTable", i0, .int_geneStatColSearch)]]
+            if (length(search)) {
+                pObjects$memory$geneStat <- .update_list_element(
+                    pObjects$memory$geneStat, i0, .geneStatColSearch, search)                         
             }
         })
 

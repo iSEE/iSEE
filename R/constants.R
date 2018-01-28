@@ -70,8 +70,10 @@
 # Gene statistic table parameters. ----
 .geneStatSelected <- "Selected"
 .geneStatSearch <- "Search"
+.geneStatColSearch <- "SearchColumns"
 .int_geneStatSelected <- "_rows_selected"
 .int_geneStatSearch <- "_search"
+.int_geneStatColSearch <- "_search_columns"
 
 # Panel organization parameters. ----
 .organizationNew <- "MakeNew"

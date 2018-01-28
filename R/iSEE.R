@@ -183,7 +183,7 @@ iSEE <- function(
       titleWidth = 800,
 
       dropdownMenu(type = "tasks",
-                   icon = icon("wrench"),
+                   icon = icon("wrench fa-1g"),
                    badgeStatus = NULL,
                    headerText = "iSEE diagnostics",
                    notificationItem(
@@ -203,11 +203,11 @@ iSEE <- function(
       ), # end of dropdownMenu
 
       dropdownMenu(type = "tasks",
-                   icon = icon("question-circle"),
+                   icon = icon("question-circle fa-1g"),
                    badgeStatus = NULL,
-                   headerText = "Additional information",
+                   headerText = "Documentation",
                    notificationItem(
-                     text = actionButton("tour_firststeps", "Click me for a quick tour", icon("info"),
+                     text = actionButton("tour_firststeps", "Click me for a quick tour", icon("hand-o-right"),
                                          style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"),
                      icon = icon(""), # tricking it to not have additional icon
                      status = "primary"),
@@ -227,8 +227,14 @@ iSEE <- function(
                                                           "', '_blank')")
                                          ),
                      icon = icon(""), status = "primary"
-                   ), 
-                   notificationItem(
+                   )
+        ),
+
+        dropdownMenu(type = "tasks",
+                    icon = icon("info fa-1g"),
+                    badgeStatus = NULL,
+                    headerText = "Additional information",
+                    notificationItem(
                      text = actionButton('session_info', label="About this session", 
                                          icon = icon("window-maximize"), 
                                          style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"

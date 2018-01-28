@@ -74,46 +74,45 @@
         param_choices <- memory[[mode]][ID,]
 
         # Checking what to do with plot-specific parameters (e.g., brushing, clicking, plot height).
-        dblclick <- NULL
-        brush.opts <- NULL
-        panel_height <- NULL
         if (mode!="geneStat") { 
             brush.opts <- brushOpts(paste0(mode, .brushField, ID), resetOnNew=FALSE, 
                                     fill=brush_fill_color[mode], stroke=brush_stroke_color[mode])
             dblclick <- paste0(mode, .zoomClick, ID)
             panel_height <- paste0(active_panels$Height[i], "px")
+            panel_name <- paste0(mode, "Plot", ID)
+            .input_FUN <- function(field) { paste0(mode, field, ID) }
         }
 
         # Creating the plot fields.
         if (mode=="redDim") {
-            obj <- plotOutput(.redDimPlot(ID), brush = brush.opts, dblclick=dblclick, height=panel_height)
+            obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, height=panel_height)
             cur_reddim <- param_choices[[.redDimType]]
             red_choices <- seq_len(red_dim_dims[[cur_reddim]])
             plot.param <-  list(
-                 selectInput(.inputRedDim(.redDimType, ID), label="Type",
+                 selectInput(.input_FUN(.redDimType), label="Type",
                              choices=red_dim_names, selected=cur_reddim),
-                 selectInput(.inputRedDim(.redDimXAxis, ID), label="Dimension 1",
+                 selectInput(.input_FUN(.redDimXAxis), label="Dimension 1",
                              choices=red_choices, selected=param_choices[[.redDimXAxis]]),
-                 selectInput(.inputRedDim(.redDimYAxis, ID), label="Dimension 2",
+                 selectInput(.input_FUN(.redDimYAxis), label="Dimension 2",
                              choices=red_choices, selected=param_choices[[.redDimYAxis]])
                  )
         } else if (mode=="colData") {
-            obj <- plotOutput(.colDataPlot(ID), brush = brush.opts, dblclick=dblclick, height=panel_height)
+            obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, height=panel_height)
             plot.param <- list(
-                 selectInput(.inputColData(.colDataYAxis, ID),
+                 selectInput(.input_FUN(.colDataYAxis),
                              label = "Column of interest (Y-axis):",
                              choices=covariates, selected=param_choices[[.colDataYAxis]]),
-                 radioButtons(.inputColData(.colDataXAxis, ID), label="X-axis:", inline=TRUE,
+                 radioButtons(.input_FUN(.colDataXAxis), label="X-axis:", inline=TRUE,
                               choices=c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle),
                               selected=param_choices[[.colDataXAxis]]),
-                 .conditionalPanelOnRadio(.inputColData(.colDataXAxis, ID),
+                 .conditionalPanelOnRadio(.input_FUN(.colDataXAxis),
                                           .colDataXAxisColDataTitle,
-                                          selectInput(.inputColData(.colDataXAxisColData, ID),
+                                          selectInput(.input_FUN(.colDataXAxisColData),
                                                       label = "Column of interest (X-axis):",
                                                       choices=covariates, selected=param_choices[[.colDataXAxisColData]]))
                  )
         } else if (mode=="geneExpr") {
-            obj <- plotOutput(.geneExprPlot(ID), brush = brush.opts, dblclick=dblclick, height=panel_height)
+            obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, height=panel_height)
             xaxis_choices <- c(.geneExprXAxisNothingTitle)
             if (feasibility$colData) {
                 xaxis_choices <- c(xaxis_choices, .geneExprXAxisColDataTitle)
@@ -123,43 +122,43 @@
             }
 
             plot.param <- list(
-              radioButtons(.inputGeneExpr(.geneExprYAxis, ID), label="Y-axis:",
+              radioButtons(.input_FUN(.geneExprYAxis), label="Y-axis:",
                            inline = TRUE, choices=c(.geneExprYAxisGeneTableTitle, .geneExprYAxisGeneTextTitle),
                            selected=param_choices[[.geneExprYAxis]]),
-              .conditionalPanelOnRadio(.inputGeneExpr(.geneExprYAxis, ID),
+              .conditionalPanelOnRadio(.input_FUN(.geneExprYAxis),
                                        .geneExprYAxisGeneTableTitle,
-                                       selectInput(.inputGeneExpr(.geneExprYAxisGeneTable, ID),
+                                       selectInput(.input_FUN(.geneExprYAxisGeneTable),
                                                    label = "Y-axis gene linked to:",
                                                    choices=active_tab,
                                                    selected=.choose_link(param_choices[[.geneExprYAxisGeneTable]], active_tab, force_default=TRUE))
               ),
-              .conditionalPanelOnRadio(.inputGeneExpr(.geneExprYAxis, ID),
+              .conditionalPanelOnRadio(.input_FUN(.geneExprYAxis),
                                        .geneExprYAxisGeneTextTitle,
-                                       textInput(paste0(mode, .geneExprYAxisGeneText, ID),
+                                       textInput(paste0(mode, .geneExprYAxisGeneText),
                                                  label = "Y-axis gene:",
                                                  value=param_choices[[.geneExprYAxisGeneText]])),
-              selectInput(.inputGeneExpr(.geneExprAssay, ID), label=NULL,
+              selectInput(.input_FUN(.geneExprAssay), label=NULL,
                           choices=all_assays, selected=param_choices[[.geneExprAssay]]),
-              radioButtons(.inputGeneExpr(.geneExprXAxis, ID), label="X-axis:", inline=TRUE,
+              radioButtons(.input_FUN(.geneExprXAxis), label="X-axis:", inline=TRUE,
                            choices=xaxis_choices, selected=param_choices[[.geneExprXAxis]]),
-              .conditionalPanelOnRadio(.inputGeneExpr(.geneExprXAxis, ID),
+              .conditionalPanelOnRadio(.input_FUN(.geneExprXAxis),
                                        .geneExprXAxisColDataTitle,
-                                       selectInput(.inputGeneExpr(.geneExprXAxisColData, ID),
+                                       selectInput(.input_FUN(.geneExprXAxisColData),
                                                    label = "X-axis column data:",
                                                    choices=covariates, selected=param_choices[[.geneExprXAxisColData]])),
-              .conditionalPanelOnRadio(.inputGeneExpr(.geneExprXAxis, ID),
+              .conditionalPanelOnRadio(.input_FUN(.geneExprXAxis),
                                        .geneExprXAxisGeneTableTitle,
-                                       selectInput(.inputGeneExpr(.geneExprXAxisGeneTable, ID),
+                                       selectInput(.input_FUN(.geneExprXAxisGeneTable),
                                                    label = "X-axis gene linked to:",
                                                    choices=active_tab, selected=param_choices[[.geneExprXAxisGeneTable]])),
-              .conditionalPanelOnRadio(.inputGeneExpr(.geneExprXAxis, ID),
+              .conditionalPanelOnRadio(.input_FUN(.geneExprXAxis),
                                        .geneExprXAxisGeneTextTitle,
-                                       textInput(paste0(mode, .geneExprXAxisGeneText, ID), label = "X-axis gene:",
+                                       textInput(.input_FUN(.geneExprXAxisGeneText), label = "X-axis gene:",
                                                  value=param_choices[[.geneExprXAxisGeneText]]))
                  )
         } else if (mode=="geneStat") {
-            obj <- list(dataTableOutput(.geneStatTable(ID)),
-                        uiOutput(.geneStatAnno(ID)))
+            obj <- list(dataTableOutput(paste0("geneStatTable", ID)),
+                        uiOutput(paste0("geneStatAnno", ID)))
         } else {
             stop(sprintf("'%s' is not a recognized panel mode"), mode)
         }

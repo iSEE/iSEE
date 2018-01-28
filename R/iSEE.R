@@ -33,6 +33,9 @@
 #' @param colormap An \linkS4class{ExperimentColorMap} object that defines
 #' custom color maps to apply to individual \code{assays}, \code{colData},
 #' and \code{rowData} covariates.
+#' @param run_local A logical indicating whether the app is to be run
+#' locally or remotely on a server, which determines how documentation 
+#' will be accessed.
 #'
 #' @details Users can pass default parameters via DataFrame objects in
 #' \code{redDimArgs} and \code{geneExprArgs}. Each object can contain
@@ -113,9 +116,8 @@
 #' )
 #'
 #' # launch the app itself ----
-#' 
+#' app <- iSEE(sce, colormap = ecm)
 #' if (interactive()) {
-#'   app <- iSEE(sce, colormap = ecm)
 #'   shiny::runApp(app, port = 1234)
 #' }
 iSEE <- function(
@@ -132,7 +134,8 @@ iSEE <- function(
   annot.orgdb=NULL,
   annot.keytype="ENTREZID",
   annot.keyfield=NULL,
-  colormap=ExperimentColorMap()
+  colormap=ExperimentColorMap(),
+  run_local=TRUE
 ) {
   # Save the original name of the input object for the command to rename it
   # in the tracker
@@ -168,10 +171,6 @@ iSEE <- function(
     }
   }
   
-  # location of vignette, locally, as a fallback to no internet connection
-  vinfo <- tools::getVignetteInfo(package = "DESeq2")[1,]
-  vig_loc <- file.path(vinfo["Dir"],"doc","DESeq2.html")
-
   #######################################################################
   ## UI definition. ----
   #######################################################################
@@ -183,7 +182,7 @@ iSEE <- function(
       titleWidth = 800,
 
       dropdownMenu(type = "tasks",
-                   icon = icon("wrench"),
+                   icon = icon("wrench fa-1g"),
                    badgeStatus = NULL,
                    headerText = "iSEE diagnostics",
                    notificationItem(
@@ -203,32 +202,28 @@ iSEE <- function(
       ), # end of dropdownMenu
 
       dropdownMenu(type = "tasks",
-                   icon = icon("question-circle"),
+                   icon = icon("question-circle fa-1g"),
                    badgeStatus = NULL,
-                   headerText = "Additional information",
+                   headerText = "Documentation",
                    notificationItem(
-                     text = actionButton("tour_firststeps", "Click me for a quick tour", icon("info"),
+                     text = actionButton("tour_firststeps", "Click me for a quick tour", icon("hand-o-right"),
                                          style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"),
                      icon = icon(""), # tricking it to not have additional icon
                      status = "primary"),
                    notificationItem(
-                     text = actionButton('openVignette', label="Open the vignette (web)", 
+                     text = actionButton('open_vignette', label="Open the vignette", 
                                          icon = icon("book"), 
                                          style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4",
-                                         onclick ="window.open('http://google.com', '_blank')"), # to be replaced with vignette url
+                                         onclick = ifelse(run_local, "", "window.open('http://google.com', '_blank')")), # to be replaced with vignette url
                      icon = icon(""), status = "primary"
-                   ),
-                   notificationItem(
-                     text = actionButton('browseVignette', label="Open the vignette (local)", 
-                                         icon = icon("life-ring"), 
-                                         style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4",
-                                         onclick = paste0("window.open('",
-                                                          vig_loc,
-                                                          "', '_blank')")
-                                         ),
-                     icon = icon(""), status = "primary"
-                   ), 
-                   notificationItem(
+                   )
+        ),
+
+        dropdownMenu(type = "tasks",
+                    icon = icon("info fa-1g"),
+                    badgeStatus = NULL,
+                    headerText = "Additional information",
+                    notificationItem(
                      text = actionButton('session_info', label="About this session", 
                                          icon = icon("window-maximize"), 
                                          style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
@@ -363,9 +358,11 @@ iSEE <- function(
       )
     })
 
-    output$codetext_modal <- renderPrint({
-      print(.track_it_all(rObjects, pObjects, se_name, ecm_name))
-    })
+    if (run_local) { 
+      observeEvent(input$open_vignette, {
+        browseURL(system.file("doc","iSEE_vignette.html", package="iSEE")) 
+      })
+    }
 
     #######################################################################
     # Multipanel UI generation section. ----
@@ -745,19 +742,25 @@ iSEE <- function(
         i0 <- i
         output[[paste0("geneStatTable", i0)]] <- renderDataTable({
             (rObjects$active_panels) # to trigger recreation when the number of plots is changed.
-            chosen <- pObjects$memory$geneStat$Selected[i0]
-            search <- pObjects$memory$geneStat$Search[i0]
+
+            chosen <- pObjects$memory$geneStat[i0, .geneStatSelected]
+            search <- pObjects$memory$geneStat[i0, .geneStatSearch]
+
+            search_col <- pObjects$memory$geneStat[i0, .geneStatColSearch][[1]]
+            search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
+
             datatable(gene_data, filter="top", rownames=TRUE,
                       options=list(search=list(search=search),
+                                   searchCols=c(list(NULL), search_col), # row names are the first column!
                                    scrollX=TRUE),
                       selection=list(mode="single", selected=chosen))
         })
 
-        # Updating memory for new search/selection parameters.
+        # Updating memory for new selection parameters.
         observe({
-            chosen <- input[[paste0("geneStatTable", i0, "_rows_selected")]]
+            chosen <- input[[paste0("geneStatTable", i0, .int_geneStatSelected)]]
             if (length(chosen)) {
-                pObjects$memory$geneStat$Selected[i0] <- chosen
+                pObjects$memory$geneStat[i0, .geneStatSelected] <- chosen
 
                 # Triggering the replotting of all children.
                 all_kids <- unique(unlist(pObjects$table_links[[i0]]))
@@ -779,17 +782,27 @@ iSEE <- function(
             }
         })
 
+        # Updating memory for new selection parameters.
         observe({
-            search <- input[[paste0("geneStatTable", i0, "_search")]]
+            search <- input[[paste0("geneStatTable", i0, .int_geneStatSearch)]]
             if (length(search)) {
-                pObjects$memory$geneStat$Search[i0] <- search
+                pObjects$memory$geneStat[i0, .geneStatSearch] <- search
+            }
+        })
+
+        observe({
+            search <- input[[paste0("geneStatTable", i0, .int_geneStatColSearch)]]
+            if (length(search)) {
+                pObjects$memory$geneStat <- .update_list_element(
+                    pObjects$memory$geneStat, i0, .geneStatColSearch, search)                         
             }
         })
 
         # Updating the annotation box.
-        output[[.geneStatAnno(i0)]] <- renderUI({
+        output[[paste0("geneStatAnno", i0)]] <- renderUI({
+            chosen <- input[[paste0("geneStatTable", i0, .int_geneStatSelected)]]
             .generate_annotation(annot.orgdb, annot.keytype, annot.keyfield, 
-                                 gene_data, input, i0)
+                                 gene_data, chosen)
         }) 
       })
     }

@@ -3,9 +3,6 @@
 .redDimXAxis <- "XAxis"
 .redDimYAxis <- "YAxis"
 
-.inputRedDim <- function(field, i) paste0("redDim", field, i)
-.redDimPlot <- function(i) paste0("redDimPlot", i)
-
 # Gene expression plotting parameters. ----
 .geneExprXAxisNothingTitle <- "None"
 .geneExprXAxisColDataTitle <- "Column data"
@@ -24,9 +21,6 @@
 .geneExprYAxisGeneText <- "YAxisGeneText"
 .geneExprYAxis <- "YAxis"
 
-.inputGeneExpr <- function(field, i) paste0("geneExpr", field, i)
-.geneExprPlot <- function(i) paste0("geneExprPlot", i)
-
 # Column data plotting parameters. ----
 .colDataXAxisNothingTitle <- "None"
 .colDataXAxisColDataTitle <- "Column data"
@@ -34,9 +28,6 @@
 .colDataYAxis <- "YAxis"
 .colDataXAxis <- "XAxis"
 .colDataXAxisColData <- "XAxisColData"
-
-.inputColData <- function(field, i) paste0("colData", field, i)
-.colDataPlot <- function(i) paste0("colDataPlot", i)
 
 # Plot colouring parameters. ----
 .colorByNothingTitle <- "None"
@@ -77,9 +68,12 @@
 .plotParamPanelName <- "ParamPanel"
 
 # Gene statistic table parameters. ----
-.geneStatTable <- function(i) paste0("geneStatTable", i)
-.geneStatAnno <- function(i) paste0("geneStatAnno", i)
-.geneStatRows <- function(i) paste0(.geneStatTable(i), "_rows_selected")
+.geneStatSelected <- "Selected"
+.geneStatSearch <- "Search"
+.geneStatColSearch <- "SearchColumns"
+.int_geneStatSelected <- "_rows_selected"
+.int_geneStatSearch <- "_search"
+.int_geneStatColSearch <- "_search_columns"
 
 # Panel organization parameters. ----
 .organizationNew <- "MakeNew"

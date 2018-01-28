@@ -8,7 +8,7 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, geneExprArgs = NULL,
   geneStatArgs = NULL, redDimMax = 5, colDataMax = 5, geneExprMax = 5,
   geneStatMax = 5, initialPanels = NULL, annot.orgdb = NULL,
   annot.keytype = "ENTREZID", annot.keyfield = NULL,
-  colormap = ExperimentColorMap())
+  colormap = ExperimentColorMap(), run_local = TRUE)
 }
 \arguments{
 \item{se}{An object that coercible to \linkS4class{SingleCellExperiment}.}
@@ -54,6 +54,10 @@ row names of \code{se} are used as the keys.}
 \item{colormap}{An \linkS4class{ExperimentColorMap} object that defines
 custom color maps to apply to individual \code{assays}, \code{colData},
 and \code{rowData} covariates.}
+
+\item{run_local}{A logical indicating whether the app is to be run
+locally or remotely on a server, which determines how documentation 
+will be accessed.}
 }
 \value{
 A Shiny App is launched for interactive data exploration of the
@@ -137,9 +141,8 @@ ecm <- new("ExperimentColorMap",
 )
 
 # launch the app itself ----
-
+app <- iSEE(sce, colormap = ecm)
 if (interactive()) {
-  app <- iSEE(sce, colormap = ecm)
   shiny::runApp(app, port = 1234)
 }
 }

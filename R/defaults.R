@@ -73,8 +73,6 @@
 #' \describe{
 #' \item{\code{BrushPanelOpen}:}{Logical, should the brushing parameter panel be open upon initialization?
 #' Defaults to \code{FALSE}.}
-#' \item{\code{BrushOn}:}{Logical, should the plot be transmitting its brush for use in other plots?
-#' Defaults to \code{FALSE}.}
 #' \item{\code{BrushByPlot}:}{Character, which other plot should be used for point selection in the current plot? 
 #' Defaults to an empty string, which means that no plot is used for point selection.}
 #' \item{\code{BrushEffect}:}{Character, what is the effect of receiving a brush input?
@@ -91,8 +89,6 @@
 #' \describe{
 #' \item{\code{PlotPanelOpen}:}{Logical, should the plot parameter panel be open upon initialization?
 #' Defaults to \code{FALSE}.}
-#' \item{\code{ZoomOn}:}{Logical, should zooming (via brushing and double-clicking) be turned on?
-#' Defaults to \code{TRUE}.}
 #' \item{\code{ZoomData}:}{A list containing numeric vectors of length 4, containing values with names \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"}.
 #' These define the zoom window on the x- and y-axes.
 #' Each element of the list defaults to \code{NULL}, i.e., no zooming is performed.}
@@ -104,6 +100,9 @@
 #' Defaults to the first row, i.e., 1.}
 #' \item{\code{Search}:}{Character, containing the initial value of the search field.
 #' Defaults to an empty string.}
+#' \item{\code{SearchColumns}:}{A list containing character vectors of length equal to the number of columns in \code{rowData(se)},
+#' specifying the initial value of the search field for each column.
+#' All entries default to an empty string.}
 #' }
 #'
 #' @return A DataFrame containing default settings for various parameters of each panel.
@@ -188,7 +187,13 @@ geneStatTableDefaults <- function(se, number) {
     waszero <- number==0 
     if (waszero) number <- 1
 
-    out <- DataFrame(Selected=rep(1L, number), Search=character(number))
+    out <- new("DataFrame", nrows=as.integer(number))
+    out[[.geneStatSelected]] <- 1L
+    out[[.geneStatSearch]] <- ""
+
+    # Defining an empty search for each column of the rowData.
+    colsearch <- character(ncol(rowData(se)))
+    out[[.geneStatColSearch]] <- rep(list(colsearch), as.integer(number))
 
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)

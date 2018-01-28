@@ -16,6 +16,7 @@
 \title{\code{ExperimentColorMap} objects}
 \usage{
 ExperimentColorMap(assays = list(), colData = list(), rowData = list(),
+  all = list(assays = NULL, colData = NULL, rowData = NULL), global = NULL,
   ...)
 }
 \arguments{
@@ -25,11 +26,21 @@ ExperimentColorMap(assays = list(), colData = list(), rowData = list(),
 
 \item{rowData}{List of color maps for \code{rowData}.}
 
+\item{all}{List of color maps for \code{all}.}
+
+\item{global}{List of color maps for \code{global}.}
+
 \item{...}{additional arguments passed on to the \code{ExperimentColorMap}
 constructor}
 }
 \description{
 \code{ExperimentColorMap} objects
+}
+\details{
+Color maps must all be functions that take at least one argument: the number
+of (named) colours to return as a \code{character} vector.
+This argument may be ignored in the body of the color map function
+to produce constant color maps.
 }
 \section{Accessors}{
 
@@ -37,7 +48,13 @@ constructor}
 In the following code snippets, \code{x} is an
 \code{ExperimentColorMap} object.
 
-\code{assayColorMap(x, "counts")}: Get an assay colormap.
+\describe{
+  \item{\code{assayColorMap(x, i, ...)}:}{Get an \code{assays} colormap.}
+  
+  \item{\code{colDataColorMap(x, i, ...)}:}{Get a \code{colData} colormap.}
+  
+  \item{\code{rowDataColorMap(x, i, ...)}:}{Get a \code{rowData} colormap.}
+}
 }
 
 \examples{

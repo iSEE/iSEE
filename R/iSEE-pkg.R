@@ -13,7 +13,7 @@
 #' sliderInput tagList textInput column observeEvent radioButtons
 #' need tags hr brushOpts brushedPoints observe validate checkboxInput 
 #' conditionalPanel renderPrint singleton showModal modalDialog 
-#' updateSelectInput isolate showNotification p runApp 
+#' updateSelectInput isolate showNotification p a
 #' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
 #' dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu
 #' notificationItem box
@@ -34,6 +34,9 @@
 #' @importFrom igraph make_graph topo_sort are_adjacent incident add_edges
 #' adjacent_vertices is_dag simplify V delete.vertices set_vertex_attr
 #' @importFrom graphics plot
+#' @importFrom grDevices hcl
+#' @importFrom viridis viridis
+#' @importFrom viridisLite viridis
 #' @author Aaron Lun \email{alun@@wehi.edu.au}
 #' @author Charlotte Soneson \email{charlotte.soneson@@uzh.ch}
 #' @author Federico Marini \email{marinif@@uni-mainz.de}

@@ -8,30 +8,38 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, geneExprArgs = NULL,
   geneStatArgs = NULL, redDimMax = 5, colDataMax = 5, geneExprMax = 5,
   geneStatMax = 5, initialPanels = NULL, annot.orgdb = NULL,
   annot.keytype = "ENTREZID", annot.keyfield = NULL,
-  colormap = ExperimentColorMap(), ...)
+  colormap = ExperimentColorMap())
 }
 \arguments{
 \item{se}{An object that coercible to \linkS4class{SingleCellExperiment}.}
 
-\item{redDimArgs}{A DataFrame similar to that produced by \code{\link{redDimPlotDefaults}}, specifying initial parameters for the plots.}
+\item{redDimArgs}{A DataFrame similar to that produced by
+\code{\link{redDimPlotDefaults}}, specifying initial parameters for the plots.}
 
-\item{colDataArgs}{A DataFrame similar to that produced by \code{\link{colDataPlotDefaults}}, specifying initial parameters for the plots.}
+\item{colDataArgs}{A DataFrame similar to that produced by
+\code{\link{colDataPlotDefaults}}, specifying initial parameters for the plots.}
 
-\item{geneExprArgs}{A DataFrame similar to that produced by \code{\link{geneExprPlotDefaults}}, specifying initial parameters for the plots.}
+\item{geneExprArgs}{A DataFrame similar to that produced by
+\code{\link{geneExprPlotDefaults}}, specifying initial parameters for the plots.}
 
-\item{geneStatArgs}{A DataFrame similar to that produced by \code{\link{geneStatTableDefaults}}, specifying initial parameters for the plots.}
+\item{geneStatArgs}{A DataFrame similar to that produced by
+\code{\link{geneStatTableDefaults}}, specifying initial parameters for the plots.}
 
-\item{redDimMax}{An integer scalar specifying the maximum number of reduced dimension plots in the interface.}
+\item{redDimMax}{An integer scalar specifying the maximum number of reduced
+dimension plots in the interface.}
 
-\item{colDataMax}{An integer scalar specifying the maximum number of column data plots in the interface.}
+\item{colDataMax}{An integer scalar specifying the maximum number of column
+data plots in the interface.}
 
-\item{geneExprMax}{An integer scalar specifying the maximum number of gene expression plots in the interface.}
+\item{geneExprMax}{An integer scalar specifying the maximum number of gene
+expression plots in the interface.}
 
-\item{geneStatMax}{An integer scalar specifying the maximum number of gene statistic tables in the interface.}
+\item{geneStatMax}{An integer scalar specifying the maximum number of gene
+statistic tables in the interface.}
 
 \item{initialPanels}{A DataFrame specifying which panels should be created
-at initialization. This should contain a \code{Name} character field and
-a \code{Width} integer field, see Details.}
+at initialization. This should contain a \code{Name} character field and a
+\code{Width} integer field, see Details.}
 
 \item{annot.orgdb}{An \code{org.*.db} annotation object from which
 Entrez identifiers can be retrieved.}
@@ -46,8 +54,6 @@ row names of \code{se} are used as the keys.}
 \item{colormap}{An \linkS4class{ExperimentColorMap} object that defines
 custom color maps to apply to individual \code{assays}, \code{colData},
 and \code{rowData} covariates.}
-
-\item{\dots}{Additional options passed to \code{\link{runApp}}.}
 }
 \value{
 A Shiny App is launched for interactive data exploration of the
@@ -86,6 +92,8 @@ library(scRNAseq)
 data(allen)
 class(allen)
 
+# Example data ----
+
 library(scater)
 sce <- as(allen, "SingleCellExperiment")
 counts(sce) <- assay(sce, "tophat_counts")
@@ -94,23 +102,44 @@ sce <- runPCA(sce)
 sce <- runTSNE(sce)
 sce
 
-qc_colors <- c("forestgreen", "firebrick1")
-names(qc_colors) <- c("Y", "N")
+# Example color maps ----
 
-driver_colors <- RColorBrewer::brewer.pal(3, "Set2")
-names(driver_colors) <- unique(sce$driver_1_s)
+count_colors <- function(n){
+  c("black","brown","red","orange","yellow")
+}
+fpkm_colors <- viridis::inferno
+tpm_colors <- viridis::plasma
+
+qc_color_fun <- function(n){
+  x <- c("forestgreen", "firebrick1")
+  names(x) <- c("Y", "N")
+  return(x)
+}
+
+driver_color_fun <- function(n){
+  x <- RColorBrewer::brewer.pal(3, "Set2")
+  names(x) <- unique(sce$driver_1_s)
+  return(x)
+}
 
 ecm <- new("ExperimentColorMap",
-   assays = list(
-       counts = viridis::viridis(10),
-       cufflinks_fpkm = c("black","brown","red","orange","yellow")
-   ),
-   colData = list(
-       passes_qc_checks_s = qc_colors,
-       driver_1_s = driver_colors
-   )
+    assays = list(
+        counts = count_colors,
+        tophat_counts = count_colors,
+        cufflinks_fpkm = fpkm_colors,
+        cufflinks_fpkm = fpkm_colors,
+        rsem_tpm = tpm_colors
+    ),
+    colData = list(
+        passes_qc_checks_s = qc_color_fun,
+        driver_1_s = driver_color_fun
+    )
 )
 
-# launch the app itself
-if (interactive()) { iSEE(sce, colormap = ecm) }
+# launch the app itself ----
+
+if (interactive()) {
+  app <- iSEE(sce, colormap = ecm)
+  shiny::runApp(app, port = 1234)
+}
 }

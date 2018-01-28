@@ -238,11 +238,11 @@ names(.all_labs_values) <- .all_aes_names
     # 
     accessorNeeded <- accessorMap[param_choices[[.colorByField]]]
     if (identical(param_choices[[.colorByField]], .colorByGeneTextTitle)){
-      accessedItem <- param_choices[[.colorByGeneText]]
+      accessedItem <- sprintf("assayNames(se)[%s]", param_choices[[.colorByGeneTextAssay]])
     } else if (identical(param_choices[[.colorByField]], .colorByGeneTableTitle)){
-      accessedItem <- param_choices[[.colorByGeneTable]]
+      accessedItem <- sprintf("assayNames(se)[%s]", param_choices[[.colorByGeneTableAssay]])
     } else if (identical(param_choices[[.colorByField]], .colorByColDataTitle)){
-      accessedItem <- param_choices[[.colorByColData]]
+      accessedItem <- sprintf("'%s'", param_choices[[.colorByColData]])
     } else {
       stopifnot(identical(param_choices[[.colorByField]], .colorByNothingTitle))
     }
@@ -660,8 +660,8 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
         sprintf(
           ifelse(
             is_discrete,
-            "scale_colour_manual(values = %%s(colormap, '%%s', discrete = TRUE)%%s, na.value = 'grey50') +",
-            "scale_color_gradientn(colours = %%s(colormap, '%%s', discrete = FALSE)(10), na.value = 'grey50') +"
+            "scale_colour_manual(values = %%s(colormap, %%s, discrete = TRUE)%%s, na.value = 'grey50') +",
+            "scale_color_gradientn(colours = %%s(colormap, %%s, discrete = FALSE)(10), na.value = 'grey50') +"
           )
         )
     }

@@ -80,3 +80,57 @@
   order(match(node_names, names(ordering)))
 }
 
+
+
+.snapshot_graph_linkedpanels <- function(rObjects, pObjects) 
+# reads in the stored r/p objects, and creates a graph of the current links among
+# all panels open in the app  
+{
+  cur_plots <- sprintf("%sPlot%i", rObjects$active_panels$Type, rObjects$active_panels$ID)
+  not_used <- setdiff(V(pObjects$brush_links)$name,cur_plots)
+  currgraph_used <- delete.vertices(pObjects$brush_links,not_used)
+  currgraph_used <- set_vertex_attr(currgraph_used,"plottype",
+                                    value = gsub("Plot[0-9]","",V(currgraph_used)$name))
+  
+  currgraph_used <- .find_links_to_table(rObjects, pObjects, currgraph_used)
+  
+  plot(currgraph_used,
+       edge.arrow.size = .8,
+       vertex.label.cex = 1.3,
+       vertex.label.family = "Helvetica",
+       vertex.label.color = "black",
+       vertex.label.dist = 2.5,
+       vertex.color = c(.plothexcode_redDim,.plothexcode_colData,
+                        .plothexcode_geneExpr,.plothexcode_geneTable)[
+                          factor(V(currgraph_used)$plottype,
+                                 levels = c("redDim","colData","geneExpr","geneStat"))])
+}  
+
+
+
+.find_links_to_table <- function(rObjects, pObjects, graph)
+# finds the links for the tables that are used, and sets the new edges in the graph
+# this updated graph is then returned as output
+{
+  tbl_objs <- rObjects$active_panels[rObjects$active_panels$Type=="geneStat",]
+  cur_tables <- sprintf("%sTable%i",tbl_objs$Type,tbl_objs$ID)
+  all_tlinks <- pObjects$table_links
+  cur_tlinks <- all_tlinks[cur_tables]
+  
+  # for every table in use
+  for (i in seq_len(nrow(tbl_objs))) {
+    table_used <- cur_tables[i]
+    col_links <- unlist(cur_tlinks[[table_used]]$color)
+    x_links <- unlist(cur_tlinks[[table_used]]$xaxis)
+    y_links <- unlist(cur_tlinks[[table_used]]$yaxis)
+    any_links <- unique(c(col_links,x_links,y_links))
+    
+    # add the vertex of the table
+    graph <- add_vertices(graph,nv = 1, name = table_used, plottype = "geneStat")
+    # add the edges corresponding
+    for(j in seq_len(length(any_links))){
+      graph <- add_edges(graph,c(table_used, any_links[j]))
+    }
+  }
+  return(graph)
+}

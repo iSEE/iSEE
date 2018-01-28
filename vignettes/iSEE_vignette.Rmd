@@ -430,16 +430,6 @@ newLocation <- "/path/of/your/choice/new_file_name.rds"
 file.copy(from = temp_file, to = newLocation)
 ```
 
-# Further development
-
-Additional functionality for the `r Biocpkg("iSEE")` will be added in the future.
-
-Improvements, suggestions, bugs, issues and feedback of any type can be sent to marinif@uni-mainz.de|whatever other emails|or no email but rather open an issue.
-
-# Bug reporting/Devel Version
-
-The GitHub repository for `r Biocpkg("iSEE")` is https://github.com/csoneson/iSEE, where you can find the development version of the package. This is also the place to file an issue, report a bug, or provide a pull request.
-
 # FAQ
 
 **Q: Can you implement a 'Copy to clipboard' button in the code editor?**
@@ -461,21 +451,23 @@ The same logic applies to the square plots, where only the center of each square
 Subset and violins
 Brushing backwards does not seem to work
 
+# Additional information
 
+Bug reports can be posted on the [Bioconductor support site](https://support.bioconductor.org) or raised as issues in the `r Githubpkg("csoneson/iSEE")` GitHub repository.
+The GitHub repository also contains the development version of the package, where new functionality will be added in the future.
+The authors appreciate well-considered suggestions for improvements or new features, or even better, pull requests.
+
+If you use `r Biocpkg("iSEE")` for your analysis, please cite it as shown below:
+
+```{r citation}
+citation("iSEE")
+```
 
 # Session Info {.unnumbered}
 
 ```{r sessioninfo}
 sessionInfo()
 # devtools::session_info()
-```
-
-## Citation info
-
-If you use `r Biocpkg("iSEE")` for your analysis, please cite it as here below:
-
-```{r citation}
-citation("iSEE")
 ```
 
 # References {.unnumbered}

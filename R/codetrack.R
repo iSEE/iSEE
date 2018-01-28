@@ -1,4 +1,4 @@
-.track_it_all <- function(rObjects, pObjects, se_name) 
+.track_it_all <- function(rObjects, pObjects, se_name, ecm_name) 
 {
   # Commands only reported for plots, not for the tables
   aobjs <- as.data.frame(rObjects$active_panels)
@@ -12,6 +12,7 @@
     "## All commands below refer to your SingleCellExperiment object as `se`.",
     "",
     sprintf("se <- %s", se_name),
+    sprintf("colormap <- %s", ecm_name),
     "all_coordinates <- list()",
     "")
 

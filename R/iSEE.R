@@ -4,17 +4,25 @@
 #' Interactive visualization of single-cell data using a Shiny interface.
 #'
 #' @param se An object that coercible to \linkS4class{SingleCellExperiment}.
-#' @param redDimArgs A DataFrame similar to that produced by \code{\link{redDimPlotDefaults}}, specifying initial parameters for the plots.
-#' @param colDataArgs A DataFrame similar to that produced by \code{\link{colDataPlotDefaults}}, specifying initial parameters for the plots.
-#' @param geneExprArgs A DataFrame similar to that produced by \code{\link{geneExprPlotDefaults}}, specifying initial parameters for the plots.
-#' @param geneStatArgs A DataFrame similar to that produced by \code{\link{geneStatTableDefaults}}, specifying initial parameters for the plots.
-#' @param redDimMax An integer scalar specifying the maximum number of reduced dimension plots in the interface. 
-#' @param colDataMax An integer scalar specifying the maximum number of column data plots in the interface. 
-#' @param geneExprMax An integer scalar specifying the maximum number of gene expression plots in the interface. 
-#' @param geneStatMax An integer scalar specifying the maximum number of gene statistic tables in the interface. 
+#' @param redDimArgs A DataFrame similar to that produced by
+#' \code{\link{redDimPlotDefaults}}, specifying initial parameters for the plots.
+#' @param colDataArgs A DataFrame similar to that produced by
+#' \code{\link{colDataPlotDefaults}}, specifying initial parameters for the plots.
+#' @param geneExprArgs A DataFrame similar to that produced by
+#' \code{\link{geneExprPlotDefaults}}, specifying initial parameters for the plots.
+#' @param geneStatArgs A DataFrame similar to that produced by
+#' \code{\link{geneStatTableDefaults}}, specifying initial parameters for the plots.
+#' @param redDimMax An integer scalar specifying the maximum number of reduced
+#' dimension plots in the interface. 
+#' @param colDataMax An integer scalar specifying the maximum number of column
+#' data plots in the interface. 
+#' @param geneExprMax An integer scalar specifying the maximum number of gene
+#' expression plots in the interface. 
+#' @param geneStatMax An integer scalar specifying the maximum number of gene
+#' statistic tables in the interface. 
 #' @param initialPanels A DataFrame specifying which panels should be created
-#' at initialization. This should contain a \code{Name} character field and
-#' a \code{Width} integer field, see Details.
+#' at initialization. This should contain a \code{Name} character field and a
+#' \code{Width} integer field, see Details.
 #' @param annot.orgdb An \code{org.*.db} annotation object from which
 #' Entrez identifiers can be retrieved.
 #' @param annot.keytype A string specifying the keytype to use to query
@@ -25,7 +33,6 @@
 #' @param colormap An \linkS4class{ExperimentColorMap} object that defines
 #' custom color maps to apply to individual \code{assays}, \code{colData},
 #' and \code{rowData} covariates.
-#' @param \dots Additional options passed to \code{\link{runApp}}.
 #'
 #' @details Users can pass default parameters via DataFrame objects in
 #' \code{redDimArgs} and \code{geneExprArgs}. Each object can contain
@@ -61,6 +68,8 @@
 #' data(allen)
 #' class(allen)
 #'
+#' # Example data ----
+#'
 #' library(scater)
 #' sce <- as(allen, "SingleCellExperiment")
 #' counts(sce) <- assay(sce, "tophat_counts")
@@ -69,25 +78,46 @@
 #' sce <- runTSNE(sce)
 #' sce
 #'
-#' qc_colors <- c("forestgreen", "firebrick1")
-#' names(qc_colors) <- c("Y", "N")
+#' # Example color maps ----
+#' 
+#' count_colors <- function(n){
+#'   c("black","brown","red","orange","yellow")
+#' }
+#' fpkm_colors <- viridis::inferno
+#' tpm_colors <- viridis::plasma
 #'
-#' driver_colors <- RColorBrewer::brewer.pal(3, "Set2")
-#' names(driver_colors) <- unique(sce$driver_1_s)
+#' qc_color_fun <- function(n){
+#'   x <- c("forestgreen", "firebrick1")
+#'   names(x) <- c("Y", "N")
+#'   return(x)
+#' }
+#' 
+#' driver_color_fun <- function(n){
+#'   x <- RColorBrewer::brewer.pal(3, "Set2")
+#'   names(x) <- unique(sce$driver_1_s)
+#'   return(x)
+#' }
 #'
 #' ecm <- new("ExperimentColorMap",
-#'    assays = list(
-#'        counts = viridis::viridis(10),
-#'        cufflinks_fpkm = c("black","brown","red","orange","yellow")
-#'    ),
-#'    colData = list(
-#'        passes_qc_checks_s = qc_colors,
-#'        driver_1_s = driver_colors
-#'    )
-#')
+#'     assays = list(
+#'         counts = count_colors,
+#'         tophat_counts = count_colors,
+#'         cufflinks_fpkm = fpkm_colors,
+#'         cufflinks_fpkm = fpkm_colors,
+#'         rsem_tpm = tpm_colors
+#'     ),
+#'     colData = list(
+#'         passes_qc_checks_s = qc_color_fun,
+#'         driver_1_s = driver_color_fun
+#'     )
+#' )
 #'
-#' # launch the app itself
-#' if (interactive()) { iSEE(sce, colormap = ecm) }
+#' # launch the app itself ----
+#' 
+#' if (interactive()) {
+#'   app <- iSEE(sce, colormap = ecm)
+#'   shiny::runApp(app, port = 1234)
+#' }
 iSEE <- function(
   se,
   redDimArgs=NULL,
@@ -102,12 +132,13 @@ iSEE <- function(
   annot.orgdb=NULL,
   annot.keytype="ENTREZID",
   annot.keyfield=NULL,
-  colormap=ExperimentColorMap(),
-  ...
+  colormap=ExperimentColorMap()
 ) {
   # Save the original name of the input object for the command to rename it
   # in the tracker
   se_name <- deparse(substitute(se))
+  ecm_name <- deparse(substitute(colormap))
+  
   if (!is(se, "SingleCellExperiment")) { 
     se <- as(se, "SummarizedExperiment") # supports ExpressionSet objects
     se <- as(se, "SingleCellExperiment")
@@ -281,7 +312,7 @@ iSEE <- function(
         title = "My code", size = "l",fade = TRUE,
         footer = NULL, easyClose = TRUE,
         aceEditor("acereport_r", mode="r",theme = "solarized_light",autoComplete = "live",
-                  value = paste0((.track_it_all(rObjects, pObjects, se_name)),collapse="\n"),
+                  value = paste0((.track_it_all(rObjects, pObjects, se_name, ecm_name)),collapse="\n"),
                   height="600px")
         ))
     })
@@ -333,7 +364,7 @@ iSEE <- function(
     })
 
     output$codetext_modal <- renderPrint({
-      print(.track_it_all(rObjects, pObjects, se_name))
+      print(.track_it_all(rObjects, pObjects, se_name, ecm_name))
     })
 
     #######################################################################
@@ -769,7 +800,5 @@ iSEE <- function(
   # Launching the app.
   #######################################################################
 
-  app <- shinyApp(ui = iSEE_ui, server = iSEE_server)
-  
-  runApp(app, ...)
+  shinyApp(ui = iSEE_ui, server = iSEE_server)
 }

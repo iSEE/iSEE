@@ -10,18 +10,6 @@
 
   errors <- c()
 
-  if (!all(sapply(object@assays, "typeof") == "character")){
-    errors <- c(errors, "Non-character vectors present in assay colormaps.")
-  }
-
-  if (!all(sapply(object@colData, "typeof") == "character")){
-    errors <- c(errors, "Non-character vectors present in assay colormaps.")
-  }
-
-  if (!all(sapply(object@rowData, "typeof") == "character")){
-    errors <- c(errors, "Non-character vectors present in assay colormaps.")
-  }
-
   if (length(errors > 0)){
     return(errors)
   }
@@ -31,14 +19,22 @@
 
 # ExperimentColorMap definition ----
 
+setClassUnion("function_or_NULL", c("function","NULL"))
+
 setClass("ExperimentColorMap",
     contains="Vector",
     representation(
-      assays="list", # continuous colormaps for assays
-      colData="list", # continuous or discrete colormaps for sample metadata
-      rowData="list" # continuous or discrete colormaps for gene metadata
+      # each slot has a list of closures
+      assays="list",
+      colData="list",
+      rowData="list",
+      all="list",
+      global="function_or_NULL"
     ),
-    prototype(),
+    prototype(
+      all=list(assays=NULL, colData=NULL, rowData=NULL),
+      global=NULL
+    ),
   validity = .valid.Colormap
 )
 
@@ -78,33 +74,40 @@ setClass("ExperimentColorMap",
 #'
 #' @examples
 #'
+#' # Example color maps ----
+#'
+#' count_colors <- function(n){
+#'   c("black","brown","red","orange","yellow")
+#' }
+#' fpkm_colors <- viridis::inferno
+#' tpm_colors <- viridis::plasma
+#'
+#' qc_color_fun <- function(n){
+#'   qc_colors <- c("forestgreen", "firebrick1")
+#'   names(qc_colors) <- c("Y", "N")
+#'   return(qc_colors)
+#' }
+#' 
 #' # Constructor ----
-#'
-#' count_colors <- viridis::viridis(10)
-#' logcounts_colors <- viridis::magma(10)
-#' fpkm_colors <- viridis::inferno(10)
-#' tpm_colors <- viridis::plasma(10)
-#'
-#' qc_colors <- c("forestgreen", "firebrick1")
-#' names(qc_colors) <- c("Y", "N")
 #'
 #' ecm <- new("ExperimentColorMap",
 #'     assays = list(
 #'         counts = count_colors,
 #'         tophat_counts = count_colors,
-#'         cufflinks_fpkm = logcounts_colors,
+#'         cufflinks_fpkm = fpkm_colors,
 #'         cufflinks_fpkm = fpkm_colors,
 #'         rsem_tpm = tpm_colors
 #'     ),
 #'     colData = list(
-#'         passes_qc_checks_s = qc_colors
+#'         passes_qc_checks_s = qc_color_fun
 #'     )
 #' )
 #'
-#' # Accessor ----
+#' # Accessors ----
 #'
-#' assayColorMap(ecm, "logcounts") # viridis::magma(10)
-#' assayColorMap(ecm, "undefined") # default: viridis::viridis(10)
+#' assayColorMap(ecm, "undefined") # viridis::viridis(10) [default]
+#' assayColorMap(ecm, "counts") # viridis::plasma(10)
+#' assayColorMap(ecm, "cufflinks_fpkm") # viridis::inferno(10)
 #'
 #' colDataColorMap(ecm, "passes_qc_checks_s")
 #' colDataColorMap(ecm, "undefined")
@@ -116,10 +119,24 @@ ExperimentColorMap <- function(
   new("ExperimentColorMap", assays=assays, colData=colData, rowData=rowData, ...)
 }
 
-# .defaultContinuousColorMap ----
+# .default color maps ----
 
 # default continuous colormap
-.defaultContinuousColorMap <- viridis::viridis(10)
+.defaultContinuousColorMap <- viridis::viridis # function(n)
+# default discrete colormap
+.defaultDiscreteColorMap <- function(n) {
+  # Credit: https://stackoverflow.com/questions/8197559/emulate-ggplot2-default-color-palette
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+
+.defaultColorMap <- function(discrete){
+  if (discrete){
+    .defaultDiscreteColorMap
+  } else {
+    .defaultContinuousColorMap
+  }
+}
 
 # Accessors ----
 
@@ -140,15 +157,19 @@ setMethod("assayColorMap", c("ExperimentColorMap", "numeric"),
 })
 
 .assayColorMap <- function(x, i, ...){
-  res <- tryCatch({
-        x@assays[[i]]
-    }, error=function(err) {
-        .defaultContinuousColorMap
-    })
-    if (is.null(res)){
-      return(.defaultContinuousColorMap)
-    }
-    return(res)
+  assay_map <- x@assays[[i]]
+  if (is.null(assay_map)){
+    return(.assayAllColorMap(x, ...))
+  }
+  return(assay_map)
+}
+
+.assayAllColorMap <- function(x, ...){
+  all_assays_map <- x@all$assays
+  if (is.null(all_assays_map)){
+    return(.globalColorMap(x, ...))
+  }
+  return(all_assays_map)
 }
 
 # colDataColorMap ----
@@ -158,14 +179,30 @@ setGeneric("colDataColorMap", function(x, i, ...) standardGeneric("colDataColorM
 setMethod("colDataColorMap", c("ExperimentColorMap", "character"),
     function(x, i, ...)
 {
-      .nonAssayColorMap(x, "colData", i)
+      .colDataColorMap(x, i, ...)
 })
 
 setMethod("colDataColorMap", c("ExperimentColorMap", "numeric"),
     function(x, i, ...)
 {
-      .nonAssayColorMap(x, "colData", i)
+      .colDataColorMap(x, i, ...)
 })
+
+.colDataColorMap <- function(x, i, ...){
+  coldata_map <- x@colData[[i]]
+  if (is.null(coldata_map)){
+    return(.colDataAllColorMap(x, ...))
+  }
+  return(coldata_map)
+}
+
+.colDataAllColorMap <- function(x, ...){
+  all_coldata_map <- x@all$colData
+  if (is.null(all_coldata_map)){
+    return(.globalColorMap(x, ...))
+  }
+  return(all_coldata_map)
+}
 
 # rowDataColorMap ----
 
@@ -174,24 +211,39 @@ setGeneric("rowDataColorMap", function(x, i, ...) standardGeneric("rowDataColorM
 setMethod("rowDataColorMap", c("ExperimentColorMap", "character"),
     function(x, i, ...)
 {
-      .nonAssayColorMap(x, "rowData", i)
+      .rowDataColorMap(x, "rowData", i)
 })
 
 setMethod("rowDataColorMap", c("ExperimentColorMap", "numeric"),
     function(x, i, ...)
 {
-      .nonAssayColorMap(x, "rowData", i)
+      .rowDataColorMap(x, "rowData", i)
 })
 
-# As oppose to assays that are always numeric
-# other colormaps may be either numeric or discrete
-.nonAssayColorMap <- function(x, type, i){
-  res <- tryCatch({
-      slot(x, type)[[i]]
-  }, error=function(err) {
-      NULL
-  })
-  return(res)
+.rowDataColorMap <- function(x, i, ...){
+  rowdata_map <- x@rowData[[i]]
+  if (is.null(rowdata_map)){
+    return(.rowDataAllColorMap(x, ...))
+  }
+  return(rowdata_map)
+}
+
+.rowDataAllColorMap <- function(x, ...){
+  all_rowdata_map <- x@all$rowData
+  if (is.null(all_rowdata_map)){
+    return(.globalColorMap(x, ...))
+  }
+  return(all_rowdata_map)
+}
+
+# global color map ----
+
+.globalColorMap <- function(x, ..., discrete = FALSE){
+  global_map <- x@global
+  if (is.null(global_map)){
+    return(.defaultColorMap(discrete))
+  }
+  return(global_map)
 }
 
 # show ----
@@ -209,14 +261,23 @@ setMethod(
 
     cat("Class: ExperimentColorMap\n")
 
-    ## assays()
+    ## assays
     scat("assays(%d): %s\n", names(object@assays))
 
-    ## colData()
+    ## colData
     scat("colData(%d): %s\n", names(object@colData))
 
-    ## rowData()
+    ## rowData
     scat("rowData(%d): %s\n", names(object@rowData))
+    
+    # all
+    all_defined <- !sapply(object@all, is.null)
+    scat("all(%d): %s\n", names(object@all)[all_defined])
+    
+    # global
+    if (!is.null(object@global)){
+      cat("global(1)\n")
+    }
 
     return(NULL)
   }

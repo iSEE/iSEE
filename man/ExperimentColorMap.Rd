@@ -42,33 +42,40 @@ In the following code snippets, \code{x} is an
 
 \examples{
 
+# Example color maps ----
+
+count_colors <- function(n){
+  c("black","brown","red","orange","yellow")
+}
+fpkm_colors <- viridis::inferno
+tpm_colors <- viridis::plasma
+
+qc_color_fun <- function(n){
+  qc_colors <- c("forestgreen", "firebrick1")
+  names(qc_colors) <- c("Y", "N")
+  return(qc_colors)
+}
+
 # Constructor ----
-
-count_colors <- viridis::viridis(10)
-logcounts_colors <- viridis::magma(10)
-fpkm_colors <- viridis::inferno(10)
-tpm_colors <- viridis::plasma(10)
-
-qc_colors <- c("forestgreen", "firebrick1")
-names(qc_colors) <- c("Y", "N")
 
 ecm <- new("ExperimentColorMap",
     assays = list(
         counts = count_colors,
         tophat_counts = count_colors,
-        cufflinks_fpkm = logcounts_colors,
+        cufflinks_fpkm = fpkm_colors,
         cufflinks_fpkm = fpkm_colors,
         rsem_tpm = tpm_colors
     ),
     colData = list(
-        passes_qc_checks_s = qc_colors
+        passes_qc_checks_s = qc_color_fun
     )
 )
 
-# Accessor ----
+# Accessors ----
 
-assayColorMap(ecm, "logcounts") # viridis::magma(10)
-assayColorMap(ecm, "undefined") # default: viridis::viridis(10)
+assayColorMap(ecm, "undefined") # viridis::viridis(10) [default]
+assayColorMap(ecm, "counts") # viridis::plasma(10)
+assayColorMap(ecm, "cufflinks_fpkm") # viridis::inferno(10)
 
 colDataColorMap(ecm, "passes_qc_checks_s")
 colDataColorMap(ecm, "undefined")

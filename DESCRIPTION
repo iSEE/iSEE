@@ -36,7 +36,10 @@ Imports:
     igraph,
     vipor,
     rentrez,
-    AnnotationDbi
+    AnnotationDbi,
+    grDevices,
+    viridis,
+    viridisLite
 Suggests:
     testthat,
     BiocStyle,
@@ -45,8 +48,7 @@ Suggests:
     scRNAseq,
     scater,
     Rtsne,
-    irlba,
-    viridis
+    irlba
 Enhances:
     ExperimentHub
 URL: https://github.com/csoneson/SEE

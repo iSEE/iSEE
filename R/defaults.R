@@ -184,7 +184,9 @@ geneStatTableDefaults <- function(se, number) {
     waszero <- number==0 
     if (waszero) number <- 1
 
-    out <- DataFrame(Selected=rep(1L, number), Search=character(number))
+    out <- new("DataFrame", nrows=as.integer(number))
+    out[[.geneStatSelected]] <- 1L
+    out[[.geneStatSearch]] <- ""
 
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)

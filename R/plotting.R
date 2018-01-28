@@ -103,7 +103,7 @@ names(.all_labs_values) <- .all_aes_names
   y_choice <- param_choices[[.geneExprYAxis]]
   if (y_choice==.geneExprYAxisGeneTableTitle) {
     chosen_tab <- .decoded2encoded(param_choices[[.geneExprYAxisGeneTable]])
-    gene_selected_y <- all_memory$geneStat[chosen_tab, "Selected"]
+    gene_selected_y <- all_memory$geneStat[chosen_tab, .geneStatSelected]
     validate(need( 
       length(gene_selected_y)==1L,
       sprintf("Invalid '%s' > '%s' input", .geneExprYAxis, y_choice)
@@ -138,7 +138,7 @@ names(.all_labs_values) <- .all_aes_names
 
     if (x_choice==.geneExprXAxisGeneTableTitle) {
       chosen_tab <- .decoded2encoded(param_choices[[.geneExprXAxisGeneTable]])
-      gene_selected_x <- all_memory$geneStat[chosen_tab, "Selected"]
+      gene_selected_x <- all_memory$geneStat[chosen_tab, .geneStatSelected]
       validate(need( 
         length(gene_selected_x)==1L,
         sprintf("Invalid '%s' > '%s' input", .geneExprXAxis, x_choice)
@@ -617,7 +617,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
     # Set the color to the selected gene
     if (color_choice==.colorByGeneTableTitle) {
       chosen_tab <- .decoded2encoded(param_choices[[.colorByGeneTable]])
-      chosen_gene <- all_memory$geneStat[chosen_tab, "Selected"]
+      chosen_gene <- all_memory$geneStat[chosen_tab, .geneStatSelected]
       validate(need(
         length(chosen_gene)==1L,
         sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTableTitle)

@@ -745,8 +745,8 @@ iSEE <- function(
         i0 <- i
         output[[paste0("geneStatTable", i0)]] <- renderDataTable({
             (rObjects$active_panels) # to trigger recreation when the number of plots is changed.
-            chosen <- pObjects$memory$geneStat$Selected[i0]
-            search <- pObjects$memory$geneStat$Search[i0]
+            chosen <- pObjects$memory$geneStat[i0, .geneStatSelected]
+            search <- pObjects$memory$geneStat[i0, .geneStatSearch]
             datatable(gene_data, filter="top", rownames=TRUE,
                       options=list(search=list(search=search),
                                    scrollX=TRUE),
@@ -755,9 +755,9 @@ iSEE <- function(
 
         # Updating memory for new search/selection parameters.
         observe({
-            chosen <- input[[paste0("geneStatTable", i0, "_rows_selected")]]
+            chosen <- input[[paste0("geneStatTable", i0, .int_geneStatSelected)]]
             if (length(chosen)) {
-                pObjects$memory$geneStat$Selected[i0] <- chosen
+                pObjects$memory$geneStat[i0, .geneStatSelected] <- chosen
 
                 # Triggering the replotting of all children.
                 all_kids <- unique(unlist(pObjects$table_links[[i0]]))
@@ -780,16 +780,17 @@ iSEE <- function(
         })
 
         observe({
-            search <- input[[paste0("geneStatTable", i0, "_search")]]
+            search <- input[[paste0("geneStatTable", i0, .int_geneStatSearch)]]
             if (length(search)) {
-                pObjects$memory$geneStat$Search[i0] <- search
+                pObjects$memory$geneStat[i0, .geneStatSearch] <- search
             }
         })
 
         # Updating the annotation box.
-        output[[.geneStatAnno(i0)]] <- renderUI({
+        output[[paste0("geneStatAnno", i0)]] <- renderUI({
+            chosen <- input[[paste0("geneStatTable", i0, .int_geneStatSelected)]]
             .generate_annotation(annot.orgdb, annot.keytype, annot.keyfield, 
-                                 gene_data, input, i0)
+                                 gene_data, chosen)
         }) 
       })
     }

@@ -1,20 +1,18 @@
-.generate_annotation <- function(annot.orgdb, annot.keytype, annot.keyfield, 
-                                 gene_data, input, ID)
+.generate_annotation <- function(annot.orgdb, annot.keytype, annot.keyfield, gene_data, chosen_gene)
 #  A function to generate a HTML containing more information about a selected gene.
 {
   if (is.null(annot.orgdb)) {
     return(HTML(""))
   }
 
-  chosen <- input[[.geneStatRows(ID)]]
   shiny::validate(
-    need(!is.null(chosen), "Select a gene from the table")
+    need(!is.null(chosen_gene), "Select a gene from the table")
   )
 
   if (is.null(annot.keyfield)) {
-    selectedGene <- rownames(gene_data)[chosen]
+    selectedGene <- rownames(gene_data)[chosen_gene]
   } else {
-    selectedGene <- gene_data[chosen,annot.keyfield]
+    selectedGene <- gene_data[chosen_gene,annot.keyfield]
   }
 
   if (annot.keytype!="ENTREZID") {

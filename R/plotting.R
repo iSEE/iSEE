@@ -259,9 +259,10 @@ names(.all_labs_values) <- .all_aes_names
   # If the plot_data is not empty, remove the extra geom_blank from the plot
   # commands, as well as the creation of plot.data.all in the earlier brushing
   # command list (since the plot.data.all is only used in geom_blank)
-  if (nrow(plot_data) > 0) {
-    extra_cmds[["brush"]][["full"]] <- NULL
-    extra_cmds[["plot"]][["brush_blank"]] <- NULL
+  if (nrow(plot_data) > 0 && !is.null(extra_cmds$brush[["full"]])) {
+    rm(plot.data.all, envir=eval_env)
+    extra_cmds$brush[["full"]] <- NULL
+    extra_cmds$plot[["brush_blank"]] <- NULL
   }
 
   # Evaluating the remaining commands.
@@ -309,7 +310,9 @@ names(.all_labs_values) <- .all_aes_names
     }
     if (brush_effect==.brushRestrictTitle) {
       # Duplicate plot.data before brushing, to make sure that axes are retained
-      # even in case of an empty brushed subset
+      # even in case of an empty brushed subset. This does _not_ replace coord_cartesian
+      # (necessary for zooming, flipping and avoiding plot expansion due to brushing box),
+      # or scale_*_discrete (necessary to avoid dropping empty levels).
       all_brush_cmds[["full"]] <- "plot.data.all <- plot.data;"
       all_brush_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
       plot_cmds[["brush_blank"]] <- 

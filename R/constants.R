@@ -121,11 +121,15 @@ names(rev.translation) <- translation
 }
 
 .split_encoded <- function(names) {
-    sp <- strsplit(names, "Plot|Table")
-    sp <- do.call(rbind, sp)
-    return(list(Type=sp[,1], ID=as.integer(sp[,2])))
+  if (length(names)==0) {
+    return(list(Type=character(0), ID=integer(0)))
+  }
+  sp <- strsplit(names, "Plot|Table")
+  sp <- do.call(rbind, sp)
+  return(list(Type=sp[,1], ID=as.integer(sp[,2])))
 }
 
 .plothexcode_redDim <- "#3C8DBC"
 .plothexcode_colData <- "#F39D12"
 .plothexcode_geneExpr <- "#03A659"
+.plothexcode_geneTable <- "#DD4B39"

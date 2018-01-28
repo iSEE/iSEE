@@ -14,7 +14,7 @@ names(.all_labs_values) <- .all_aes_names
 # .make_redDimPlot  ----
 ############################################
 
-.make_redDimPlot <- function(id, se, all_coordinates, all_memory, color_map)
+.make_redDimPlot <- function(id, se, all_coordinates, all_memory, colormap)
 # Makes the dimension reduction plot.
 {
   param_choices <- all_memory$redDim[id,]
@@ -29,8 +29,8 @@ names(.all_labs_values) <- .all_aes_names
 
   # Adding colour data (and commands in color_FUN).
   setup_cmds <- list()
-  color_out <- .process_colorby_choice(param_choices, se, all_memory, color_map)
-  setup_cmds[["color"]] <- color_out$cmd
+  color_out <- .process_colorby_choice(param_choices, se, all_memory)
+  data_cmds[["color"]] <- color_out$cmd
   color_label <- color_out$label
   color_FUN <- color_out$FUN
 
@@ -39,7 +39,7 @@ names(.all_labs_values) <- .all_aes_names
 
   # Generating the plotting commands.
   .create_plot(
-    data_cmds, setup_cmds, se, all_coordinates,
+    data_cmds, setup_cmds, se, colormap, all_coordinates,
     param_choices=param_choices,
     x_lab=sprintf("Dimension %s", param_choices[[.redDimXAxis]]),
     y_lab=sprintf("Dimension %s", param_choices[[.redDimYAxis]]),
@@ -52,7 +52,7 @@ names(.all_labs_values) <- .all_aes_names
 # .make_colDataPlot  ----
 ############################################
 
-.make_colDataPlot <- function(id, se, all_coordinates, all_memory, color_map)
+.make_colDataPlot <- function(id, se, all_coordinates, all_memory, colormap)
 # Makes a plot of column data variables.
 {
   param_choices <- all_memory$colData[id,]
@@ -74,8 +74,8 @@ names(.all_labs_values) <- .all_aes_names
 
   # Adding colour commands.
   setup_cmds <- list()
-  color_out <- .process_colorby_choice(param_choices, se, all_memory, color_map)
-  setup_cmds[["color"]] <- color_out$cmd
+  color_out <- .process_colorby_choice(param_choices, se, all_memory)
+  data_cmds[["color"]] <- color_out$cmd
   color_FUN <- color_out$FUN
   color_label <- color_out$label
 
@@ -84,7 +84,7 @@ names(.all_labs_values) <- .all_aes_names
 
   # Generating the plot.
   .create_plot(
-    data_cmds, setup_cmds, se, all_coordinates,
+    data_cmds, setup_cmds, se, colormap, all_coordinates,
     param_choices=param_choices, x_lab=x_lab, y_lab=y_lab,
     color_FUN=color_FUN, color_label=color_label, 
     brush_cmd=brush_out$cmd, brush_show_cmd=brush_out$show
@@ -95,7 +95,7 @@ names(.all_labs_values) <- .all_aes_names
 # .make_geneExprPlot  ----
 ############################################
 
-.make_geneExprPlot <- function(id, se, all_coordinates, all_memory, color_map)
+.make_geneExprPlot <- function(id, se, all_coordinates, all_memory, colormap)
 # Makes a gene expression plot.
 {
   param_choices <- all_memory$geneExpr[id,]
@@ -166,9 +166,9 @@ names(.all_labs_values) <- .all_aes_names
   }
 
   # Adding colour commands.
-  setup_cmds <- list()
-  color_out <- .process_colorby_choice(param_choices, se, all_memory, color_map)
-  setup_cmds[["color"]] <- color_out$cmd
+  setup_cmds <- list() # TODO: remove (other plots too)
+  color_out <- .process_colorby_choice(param_choices, se, all_memory)
+  data_cmds[["color"]] <- color_out$cmd
   color_FUN <- color_out$FUN
   color_label <- color_out$label
 
@@ -177,7 +177,7 @@ names(.all_labs_values) <- .all_aes_names
 
   # Generating the plot.
   .create_plot(
-    data_cmds, setup_cmds, se, all_coordinates,
+    data_cmds, setup_cmds, se, colormap, all_coordinates,
     param_choices=param_choices, x_lab=x_lab, y_lab=y_lab,
     color_FUN=color_FUN, color_label=color_label, 
     brush_cmd=brush_out$cmd, brush_show_cmd=brush_out$show
@@ -188,12 +188,12 @@ names(.all_labs_values) <- .all_aes_names
 # Internal functions: central plotter ----
 ############################################
 
-.create_plot <- function(data_cmds, setup_cmds, se, all_coordinates, ...)
+.create_plot <- function(data_cmds, setup_cmds, se, colormap, all_coordinates, param_choices, color_FUN, ...)
 # This function will generate plotting commands appropriate to
 # each type of X/Y. It does so by evaluating 'plot.data' to
 # determine the nature of X/Y, and then choosing the plot to match.
 #
-# Note that we need 'se' and 'all_coordinates' to be passed as arguments
+# Note that we need 'se', 'colormap', and 'all_coordinates' to be passed as arguments
 # for the evaluations to execute in this environment. All evaluations
 # are to take place in this function, not in the calling environment
 # or in child environments. This constrains the scope of 'eval' calls.
@@ -201,7 +201,6 @@ names(.all_labs_values) <- .all_aes_names
   eval_env <- new.env()
   eval(parse(text=unlist(data_cmds)), envir=eval_env)
   more_data_cmds <- list() 
-
   # Cleaning up the grouping status of various fields. It is important that 
   # non-numeric X/Y become explicit factors here, which simplifies downstream 
   # processing (e.g., coercion to integer, no lost levels upon subsetting).
@@ -229,19 +228,44 @@ names(.all_labs_values) <- .all_aes_names
       setup_cmds[["more_color"]] <- .coerce_to_numeric(coloring, "ColorBy")
     }
   }
-
+  
+  # Determining the colors to use.
+  color_cmd <- color_FUN(color_discrete)
+  if (!is.null(color_cmd)){
+    # Constant
+    accessorMap <- c("assayColorMap","assayColorMap","colDataColorMap")
+    names(accessorMap) <- c(.colorByGeneTableTitle, .colorByGeneTextTitle, .colorByColDataTitle)
+    # 
+    accessorNeeded <- accessorMap[param_choices[[.colorByField]]]
+    if (identical(param_choices[[.colorByField]], .colorByGeneTextTitle)){
+      accessedItem <- sprintf("assayNames(se)[%s]", param_choices[[.colorByGeneTextAssay]])
+    } else if (identical(param_choices[[.colorByField]], .colorByGeneTableTitle)){
+      accessedItem <- sprintf("assayNames(se)[%s]", param_choices[[.colorByGeneTableAssay]])
+    } else if (identical(param_choices[[.colorByField]], .colorByColDataTitle)){
+      accessedItem <- sprintf("'%s'", param_choices[[.colorByColData]])
+    } else {
+      stopifnot(identical(param_choices[[.colorByField]], .colorByNothingTitle))
+    }
+    if (color_discrete){
+      n_levels <- .nlevels(coloring)
+      color_cmd <- sprintf(color_cmd, accessorNeeded, accessedItem, sprintf("(%i)", n_levels))
+    } else {
+      color_cmd <- sprintf(color_cmd, accessorNeeded, accessedItem)
+    }
+  }
+  
   # Dispatch to different plotting commands, depending on whether X/Y are groupable.
   if (group_X && group_Y) {
-    extra_cmds <- .griddotplot(..., color_discrete=color_discrete)
+    extra_cmds <- .griddotplot(..., color_cmd=color_cmd, color_discrete=color_discrete, param_choices)
 
   } else if (group_X && !group_Y) {
-    extra_cmds <- .violin_plot(..., color_discrete=color_discrete)
+    extra_cmds <- .violin_plot(..., color_cmd=color_cmd, color_discrete=color_discrete, param_choices)
 
   } else if (!group_X && group_Y) {
-    extra_cmds <- .violin_plot(..., color_discrete=color_discrete, horizontal=TRUE)
+    extra_cmds <- .violin_plot(..., color_cmd=color_cmd, color_discrete=color_discrete, param_choices, horizontal=TRUE)
 
   } else {
-    extra_cmds <- .scatter_plot(..., color_discrete=color_discrete)
+    extra_cmds <- .scatter_plot(..., color_cmd=color_cmd, param_choices)
 
   }
   extra_cmds$data <- c(more_data_cmds, extra_cmds$data)
@@ -266,15 +290,13 @@ names(.all_labs_values) <- .all_aes_names
 # Internal functions: scatter plotter ----
 ############################################
 
-.scatter_plot <- function(param_choices, x_lab, y_lab, color_label, color_FUN, color_discrete, brush_cmd, brush_show_cmd)
+.scatter_plot <- function(param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, brush_show_cmd)
 # Creates a scatter plot of numeric X/Y. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
   plot_cmds <- list()
   plot_cmds[["ggplot"]] <- "ggplot() +"
   
-  # Determining the colors to use.
-  color_cmd <- color_FUN(color_discrete)
   color_set <- !is.null(color_cmd)
 
   # Implementing the brushing effect.
@@ -358,16 +380,16 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);"
 # Internal functions: violin plotter ----
 ############################################
 
-.violin_plot <- function(param_choices, x_lab, y_lab, color_label, color_FUN, color_discrete, brush_cmd, brush_show_cmd, horizontal = FALSE)
+.violin_plot <- function(param_choices, x_lab, y_lab, color_label, color_discrete, color_cmd, brush_cmd, brush_show_cmd, horizontal = FALSE)
 # Generates a vertical violin plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
+  data_cmds <- list()
   setup_cmds <- list()
-  color_cmd <- color_FUN(color_discrete)
   color_set <- !is.null(color_cmd)
   fill_set <- (color_set && color_discrete)
   if (fill_set) {
-    setup_cmds[["fill"]] <- "plot.data$FillBy <- plot.data$ColorBy;"
+    data_cmds[["fill"]] <- "plot.data$FillBy <- plot.data$ColorBy;"
   }
 
   plot_cmds <- list()
@@ -380,7 +402,6 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);"
   # Switching X and Y axes if we want a horizontal violin plot.
   # This is done in lim_cmds to guarantee sensible limits, though
   # it would technically be more appropriate to put in setup_cmds.
-  data_cmds <- list()
   if (horizontal) {
     data_cmds[["swap"]] <- c("tmp <- plot.data$X;
 plot.data$X <- plot.data$Y;
@@ -483,7 +504,7 @@ plot.data$Y <- tmp;")
 # Internal functions: rectangle plotter ----
 ############################################
 
-.griddotplot <- function(param_choices, x_lab, y_lab, color_label, color_FUN, color_discrete, brush_cmd, brush_show_cmd)
+.griddotplot <- function(param_choices, x_lab, y_lab, color_label, color_discrete, color_cmd, brush_cmd, brush_show_cmd)
 # Generates a grid dot plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -503,7 +524,6 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
   plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
 
   # Determining the colors to use.
-  color_cmd <- color_FUN(color_discrete)
   color_set <- !is.null(color_cmd)
 
   # Implementing the brushing effect.
@@ -600,7 +620,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
 # Internal functions: coloring/brushing ----
 ############################################
 
-.process_colorby_choice <- function(param_choices, se, all_memory, color_map) {
+.process_colorby_choice <- function(param_choices, se, all_memory) {
   output <- list(cmd=NULL, label=NA_character_, FUN=NULL)
   color_choice <- param_choices[[.colorByField]]
 
@@ -608,7 +628,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
     covariate_name <- param_choices[[.colorByColData]]
     output$cmd <-  sprintf("plot.data$ColorBy <- colData(se)[,%s];", deparse(covariate_name))
     output$label <- covariate_name
-    output$FUN <- .create_color_function_chooser(colDataColorMap(color_map, covariate_name))
+    output$FUN <- .create_color_function_chooser()
 
   } else if (color_choice==.colorByGeneTableTitle || color_choice==.colorByGeneTextTitle) {
 
@@ -635,23 +655,26 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
     output$cmd <- sprintf("plot.data$ColorBy <- assay(se, %i)[%s,];", 
                           assay_choice, deparse(chosen_gene))
     output$label <- .gene_axis_label(se, chosen_gene, assay_choice, multiline = TRUE)
-    output$FUN <- .create_color_function_chooser(assayColorMap(color_map, assay_choice))
+    output$FUN <- .create_color_function_chooser()
 
   } else {
     # No color; function just returns NULL all the time.
     output$FUN <- function(is_discrete) NULL
   }
-
+  
   return(output)
 }
 
-.create_color_function_chooser <- function(colors_scale) {
-    to_use <- paste(deparse(colors_scale), collapse = "")
+.create_color_function_chooser <- function() {
+    # to_use <- paste(deparse(colors_scale), collapse = "")
     function(is_discrete) {
-        sprintf(ifelse(!is_discrete,
-                       "scale_color_gradientn(colours = %s) +",
-                       "scale_colour_manual(values = %s) +"),
-                to_use)
+        sprintf(
+          ifelse(
+            is_discrete,
+            "scale_colour_manual(values = %%s(colormap, %%s, discrete = TRUE)%%s, na.value = 'grey50') +",
+            "scale_color_gradientn(colours = %%s(colormap, %%s, discrete = FALSE)(10), na.value = 'grey50') +"
+          )
+        )
     }
 }
 

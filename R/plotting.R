@@ -277,6 +277,14 @@ names(.all_labs_values) <- .all_aes_names
     eval(parse(text=to_eval), envir=eval_env)
   }
   plot_data <- eval_env$plot.data 
+  
+  # If the plot_data is not empty, remove the extra geom_blank from the plot
+  # commands, as well as the creation of plot.data.all in the earlier brushing
+  # command list (since the plot.data.all is only used in geom_blank)
+  if (nrow(plot_data) > 0) {
+    extra_cmds[["brush"]][["full"]] <- NULL
+    extra_cmds[["plot"]][["brush_blank"]] <- NULL
+  }
 
   # Evaluating the remaining commands.
   to_eval <- unlist(extra_cmds[c("setup", "plot")])
@@ -327,6 +335,8 @@ names(.all_labs_values) <- .all_aes_names
       )
     }
     if (brush_effect==.brushRestrictTitle) {
+      # Duplicate plot.data before brushing, to make sure that axes are retained
+      # even in case of an empty brushed subset
       all_brush_cmds[["full"]] <- "plot.data.all <- plot.data;"
       all_brush_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
       plot_cmds[["brush_blank"]] <- 
@@ -443,9 +453,12 @@ plot.data$Y <- tmp;")
       plot_cmds[["brush_alpha"]] <- sprintf("geom_point(%s, subset(plot.data, BrushBy)) +", new_aes)
 
     } else if (brush_effect==.brushRestrictTitle) {
-      # Need to subset explicitly, to adjust the density calculations and ensure
-      # doesntream brushes are correct. Note, subsetting BEFORE vipor calculations.
+      # Duplicate plot.data before brushing, to make sure that axes are retained
+      # even in case of an empty brushed subset
       all_brush_cmds[["full"]] <- "plot.data.all <- plot.data;"
+      
+      # Need to subset explicitly, to adjust the density calculations and ensure
+      # downstream brushes are correct. Note, subsetting BEFORE vipor calculations.
       all_brush_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
       
       plot_cmds[["brush_blank"]] <- 
@@ -559,8 +572,11 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
       )
     }
     if (brush_effect==.brushRestrictTitle) {
-      # Note subsetting must occur before all other calculations.
+      # Duplicate plot.data before brushing, to make sure that axes are retained
+      # even in case of an empty brushed subset
       all_brush_cmds[["full"]] <- "plot.data.all <- plot.data;"
+      
+      # Note subsetting must occur before all other calculations.
       all_brush_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
       
       plot_cmds[["brush_blank"]] <- 

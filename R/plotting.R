@@ -28,7 +28,6 @@ names(.all_labs_values) <- .all_aes_names
   )
 
   # Adding colour data (and commands in color_FUN).
-  setup_cmds <- list()
   color_out <- .process_colorby_choice(param_choices, se, all_memory)
   data_cmds[["color"]] <- color_out$cmd
   color_label <- color_out$label
@@ -39,7 +38,7 @@ names(.all_labs_values) <- .all_aes_names
 
   # Generating the plotting commands.
   .create_plot(
-    data_cmds, setup_cmds, se, colormap, all_coordinates,
+    data_cmds, se, colormap, all_coordinates,
     param_choices=param_choices,
     x_lab=sprintf("Dimension %s", param_choices[[.redDimXAxis]]),
     y_lab=sprintf("Dimension %s", param_choices[[.redDimYAxis]]),
@@ -73,7 +72,6 @@ names(.all_labs_values) <- .all_aes_names
   }
 
   # Adding colour commands.
-  setup_cmds <- list()
   color_out <- .process_colorby_choice(param_choices, se, all_memory)
   data_cmds[["color"]] <- color_out$cmd
   color_FUN <- color_out$FUN
@@ -84,7 +82,7 @@ names(.all_labs_values) <- .all_aes_names
 
   # Generating the plot.
   .create_plot(
-    data_cmds, setup_cmds, se, colormap, all_coordinates,
+    data_cmds, se, colormap, all_coordinates,
     param_choices=param_choices, x_lab=x_lab, y_lab=y_lab,
     color_FUN=color_FUN, color_label=color_label, 
     brush_cmd=brush_out$cmd, brush_show_cmd=brush_out$show
@@ -166,7 +164,6 @@ names(.all_labs_values) <- .all_aes_names
   }
 
   # Adding colour commands.
-  setup_cmds <- list() # TODO: remove (other plots too)
   color_out <- .process_colorby_choice(param_choices, se, all_memory)
   data_cmds[["color"]] <- color_out$cmd
   color_FUN <- color_out$FUN
@@ -177,7 +174,7 @@ names(.all_labs_values) <- .all_aes_names
 
   # Generating the plot.
   .create_plot(
-    data_cmds, setup_cmds, se, colormap, all_coordinates,
+    data_cmds, se, colormap, all_coordinates,
     param_choices=param_choices, x_lab=x_lab, y_lab=y_lab,
     color_FUN=color_FUN, color_label=color_label, 
     brush_cmd=brush_out$cmd, brush_show_cmd=brush_out$show
@@ -188,7 +185,7 @@ names(.all_labs_values) <- .all_aes_names
 # Internal functions: central plotter ----
 ############################################
 
-.create_plot <- function(data_cmds, setup_cmds, se, colormap, all_coordinates, ...)
+.create_plot <- function(data_cmds, se, colormap, all_coordinates, ...)
 # This function will generate plotting commands appropriate to
 # each type of X/Y. It does so by evaluating 'plot.data' to
 # determine the nature of X/Y, and then choosing the plot to match.
@@ -201,6 +198,7 @@ names(.all_labs_values) <- .all_aes_names
   eval_env <- new.env()
   eval(parse(text=unlist(data_cmds)), envir=eval_env)
   more_data_cmds <- list() 
+
   # Cleaning up the grouping status of various fields. It is important that 
   # non-numeric X/Y become explicit factors here, which simplifies downstream 
   # processing (e.g., coercion to integer, no lost levels upon subsetting).
@@ -247,7 +245,6 @@ names(.all_labs_values) <- .all_aes_names
 
   }
   extra_cmds$data <- c(more_data_cmds, extra_cmds$data)
-  extra_cmds$setup <- c(setup_cmds, extra_cmds$setup)
 
   # Evaluating the early commands to get something to store for brushing.
   to_eval <- unlist(extra_cmds[c("data", "lim", "brush")])
@@ -268,7 +265,8 @@ names(.all_labs_values) <- .all_aes_names
   # Evaluating the remaining commands.
   to_eval <- unlist(extra_cmds[c("setup", "plot")])
   plot_out <- eval(parse(text=to_eval), envir=eval_env)
-  
+
+  # Adding back the originally executed commands and returning the lot.  
   extra_cmds$data <- c(data_cmds, extra_cmds$data)
   return(list(cmd = extra_cmds, xy = plot_data, plot = plot_out))
 }

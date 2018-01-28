@@ -65,7 +65,7 @@ names(.all_labs_values) <- .all_aes_names
   # Prepare X-axis data.
   if (param_choices[[.colDataXAxis]]==.colDataXAxisNothingTitle) {
     x_lab <- ''
-    data_cmds[["x"]] <- "plot.data$X <- factor(integer(ncol(se)))"
+    data_cmds[["x"]] <- "plot.data$X <- factor(character(ncol(se)))"
   } else {
     x_lab <- param_choices[[.colDataXAxisColData]]
     data_cmds[["x"]] <- sprintf("plot.data$X <- colData(se)[,%s];", deparse(x_lab))
@@ -160,7 +160,7 @@ names(.all_labs_values) <- .all_aes_names
 
   } else { # no x axis variable specified: show single violin
     x_lab <- ''
-    data_cmds[["x"]] <- "plot.data$X <- factor(integer(ncol(se)))"
+    data_cmds[["x"]] <- "plot.data$X <- factor(character(ncol(se)))"
   }
 
   # Adding colour commands.

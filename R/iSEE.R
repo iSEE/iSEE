@@ -528,7 +528,7 @@ iSEE <- function(
 
           # Brush choice observer. This will fail with an error message
           # if there are cycles across multiple plots. Otherwise it will
-          # update the brushing chart and trigger replotting.
+          # update the brushing chart and trigger replotting of self.
           observeEvent(input[[paste0(mode0, .brushByPlot, i0)]], {
             tmp <- .choose_new_brush_source(pObjects$brush_links, plot.name, 
                 .decoded2encoded(input[[paste0(mode0, .brushByPlot, i0)]]),
@@ -544,9 +544,35 @@ iSEE <- function(
               pObjects$memory[[mode0]][i0, .brushByPlot] <- input[[paste0(mode0, .brushByPlot, i0)]]
             }
 
-            UPDATE <- paste0(mode0, "Plot", i0)
-            rObjects[[UPDATE]] <- .increment_counter(isolate(rObjects[[UPDATE]]))
-          })
+            # Triggering self update.
+            rObjects[[plot.name]] <- .increment_counter(isolate(rObjects[[plot.name]]))
+
+            # Triggering replotting of children, if we are set to restrict.
+            if (pObjects$memory[[mode0]][i0, .brushEffect]==.brushRestrictTitle) {
+              children <- .get_brush_dependents(pObjects$brush_links, plot.name, pObjects$memory)
+              for (child_plot in children) {
+                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+              }
+            }
+          }, ignoreInit=TRUE)
+
+          # Brush effect observer.
+          observeEvent(input[[paste0(mode0, .brushEffect, i0)]], {
+            cur_effect <- input[[paste0(mode0, .brushEffect, i0)]]
+            old_effect <- pObjects$memory[[mode0]][i0, .brushEffect] 
+            pObjects$memory[[mode0]][i0, .brushEffect] <- cur_effect
+
+            # Triggering self update.
+            rObjects[[plot.name]] <- .increment_counter(isolate(rObjects[[plot.name]]))
+
+            # Triggering replotting of children, if we are set to or from restrict.
+            if (cur_effect==.brushRestrictTitle || old_effect==.brushRestrictTitle) {
+              children <- .get_brush_dependents(pObjects$brush_links, plot.name, pObjects$memory)
+              for (child_plot in children) {
+                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+              }
+            }
+          }, ignoreInit=TRUE)
 
           # Brush structure observers.
           observeEvent(input[[paste0(mode0, .brushField, i0)]], {
@@ -622,7 +648,7 @@ iSEE <- function(
         for (i in seq_len(max_plots)) {
             # Observers for the non-fundamental parameter options (.brushByPlot is handled elsewhere).
             for (field in c(.colorByColData, .colorByGeneText, .colorByGeneTableAssay, .colorByGeneTextAssay,
-                            .brushEffect, .brushColor, .brushTransAlpha)) {
+                            .brushColor, .brushTransAlpha)) {
                 local({
                     i0 <- i
                     mode0 <- mode

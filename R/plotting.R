@@ -34,7 +34,7 @@ names(.all_labs_values) <- .all_aes_names
   color_FUN <- color_out$FUN
 
   # Adding brushing data (plot-specific commands will be added later).
-  brush_out <- .process_brushby_choice(param_choices, all_memory, color=brush_stroke_color_full["redDim"])
+  brush_out <- .process_brushby_choice(param_choices, all_memory)
 
   # Generating the plotting commands.
   .create_plot(
@@ -43,7 +43,7 @@ names(.all_labs_values) <- .all_aes_names
     x_lab=sprintf("Dimension %s", param_choices[[.redDimXAxis]]),
     y_lab=sprintf("Dimension %s", param_choices[[.redDimYAxis]]),
     color_FUN=color_FUN, color_label=color_label, 
-    brush_cmd=brush_out$cmd, brush_show_cmd=brush_out$show
+    brush_cmd=brush_out$cmd, brush_color=brush_stroke_color_full["redDim"]
   )
 }
 
@@ -78,14 +78,14 @@ names(.all_labs_values) <- .all_aes_names
   color_label <- color_out$label
 
   # Adding brushing commands.
-  brush_out <- .process_brushby_choice(param_choices, all_memory, color=brush_stroke_color_full["colData"])
+  brush_out <- .process_brushby_choice(param_choices, all_memory)
 
   # Generating the plot.
   .create_plot(
     data_cmds, se, colormap, all_coordinates,
     param_choices=param_choices, x_lab=x_lab, y_lab=y_lab,
     color_FUN=color_FUN, color_label=color_label, 
-    brush_cmd=brush_out$cmd, brush_show_cmd=brush_out$show
+    brush_cmd=brush_out$cmd, brush_color=brush_stroke_color_full["colData"]
   )
 }
 
@@ -170,14 +170,14 @@ names(.all_labs_values) <- .all_aes_names
   color_label <- color_out$label
 
   # Adding brushing commands.
-  brush_out <- .process_brushby_choice(param_choices, all_memory, color=brush_stroke_color_full["geneExpr"])
+  brush_out <- .process_brushby_choice(param_choices, all_memory)
 
   # Generating the plot.
   .create_plot(
     data_cmds, se, colormap, all_coordinates,
     param_choices=param_choices, x_lab=x_lab, y_lab=y_lab,
     color_FUN=color_FUN, color_label=color_label, 
-    brush_cmd=brush_out$cmd, brush_show_cmd=brush_out$show
+    brush_cmd=brush_out$cmd, brush_color=brush_stroke_color_full["geneExpr"]
   )
 }
 
@@ -275,7 +275,7 @@ names(.all_labs_values) <- .all_aes_names
 # Internal functions: scatter plotter ----
 ############################################
 
-.scatter_plot <- function(param_choices, x_lab, y_lab, color_label, color_FUN, n_colors, brush_cmd, brush_show_cmd)
+.scatter_plot <- function(param_choices, x_lab, y_lab, color_label, color_FUN, n_colors, brush_cmd, brush_color)
 # Creates a scatter plot of numeric X/Y. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -344,7 +344,7 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);"
 
   # Both of these are NULL if not defined.
   plot_cmds[["scale_color"]] <- color_cmd
-  plot_cmds[["brush_tile"]] <- brush_show_cmd
+  plot_cmds[["brush_tile"]] <- .self_brush_box(param_choices, color=brush_color)
 
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
@@ -357,7 +357,7 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);"
 # Internal functions: violin plotter ----
 ############################################
 
-.violin_plot <- function(param_choices, x_lab, y_lab, color_label, color_FUN, n_colors, brush_cmd, brush_show_cmd, horizontal = FALSE)
+.violin_plot <- function(param_choices, x_lab, y_lab, color_label, color_FUN, n_colors, brush_cmd, brush_color, horizontal = FALSE)
 # Generates a vertical violin plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -469,7 +469,7 @@ plot.data$Y <- tmp;")
 
   # Both of these are just NULL if no color/brush is defined.
   plot_cmds[["scale_color"]] <- color_cmd
-  plot_cmds[["brush_tile"]] <- brush_show_cmd
+  plot_cmds[["brush_tile"]] <- .self_brush_box(param_choices, color=brush_color, flip=horizontal)
 
   plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +" # preserving the x-axis range.
   plot_cmds[["theme_base"]] <- "theme_bw() +"
@@ -483,7 +483,7 @@ plot.data$Y <- tmp;")
 # Internal functions: rectangle plotter ----
 ############################################
 
-.griddotplot <- function(param_choices, x_lab, y_lab, color_label, color_FUN, n_colors, brush_cmd, brush_show_cmd)
+.griddotplot <- function(param_choices, x_lab, y_lab, color_label, color_FUN, n_colors, brush_cmd, brush_color)
 # Generates a grid dot plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -567,7 +567,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
 
   # Adding the commands to color the points and the brushing box (NULL if undefined).
   plot_cmds[["scale_color"]] <- color_cmd
-  plot_cmds[["brush_tile"]] <- brush_show_cmd
+  plot_cmds[["brush_tile"]] <- .self_brush_box(param_choices, color=brush_color)
 
   # Creating labels.
   plot_cmds[["labs"]] <- .build_labs(
@@ -674,17 +674,9 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
 # Internal functions: brushing ----
 ############################################
 
-.process_brushby_choice <- function(param_choices, all_memory, color="dodgerblue") {
+.process_brushby_choice <- function(param_choices, all_memory) {
   brush_in <- param_choices[[.brushByPlot]]
   output <- list(cmd=NULL)
-
-  # Adding a box around the brush coordinates in the _current_ plot (not transmitter).
-  current <- param_choices[,.brushData][[1]]
-  if (!is.null(current)) {
-    output$show <- sprintf("geom_rect(aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), color='%s', alpha=0, 
-    data=data.frame(xmin = %.5g, xmax=%.5g, ymin = %.5g, ymax = %.5g), inherit.aes=FALSE) +",
-                           color, current$xmin, current$xmax, current$ymin, current$ymax)
-  }
 
   # Checking what points are brushed from the transmitting plot.
   if (brush_in != "") {
@@ -712,6 +704,30 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
   }
 
   return(output)
+}
+
+.self_brush_box <- function(param_choices, color, flip=FALSE) { 
+  current <- param_choices[,.brushData][[1]]
+  if (!is.null(current)) {
+    if (flip) {
+      xmin <- 'ymin'
+      xmax <- 'ymax'
+      ymin <- 'xmin'
+      ymax <- 'xmax'
+    } else {
+      xmin <- 'xmin'
+      xmax <- 'xmax'
+      ymin <- 'ymin'
+      ymax <- 'ymax'
+    }
+
+    return(sprintf("geom_rect(aes(xmin = %s, xmax = %s, ymin = %s, ymax = %s), color='%s', alpha=0, 
+    data=data.frame(xmin = %.5g, xmax=%.5g, ymin = %.5g, ymax = %.5g), inherit.aes=FALSE) +",
+        xmin, xmax, ymin, ymax, color, 
+        current$xmin, current$xmax, current$ymin, current$ymax))
+  } else {
+     return(NULL)
+  }
 }
 
 ############################################

@@ -315,18 +315,28 @@ head(colData(sce))
 Finally, we set colour palettes to use in `r Biocpkg("iSEE")` when colouring according to specific cell annotations or expression values. These values are stored in an object of the `ExperimentColorMap` class. 
 
 ```{r allen-dataset-3,eval=FALSE}
-qc_colors <- c("forestgreen", "firebrick1")
-names(qc_colors) <- c("Y", "N")
-driver_colors <- RColorBrewer::brewer.pal(3, "Set2")
-names(driver_colors) <- unique(sce$driver_1_s)
+qc_color_fun <- function(n){
+  qc_colors <- c("forestgreen", "firebrick1")
+  names(qc_colors) <- c("Y", "N")
+  return(qc_colors)
+}
+driver_color_fun <- function(n){
+  x <- RColorBrewer::brewer.pal(3, "Set2")
+  names(x) <- unique(sce$driver_1_s)
+  return(x)
+}
+fpkm_color_fun <- function(n){
+  x <- c("black","brown","red","orange","yellow")
+  return(x)
+}
 ecm <- new("ExperimentColorMap",
    assays = list(
-       counts = viridis::viridis(10),
-       cufflinks_fpkm = c("black","brown","red","orange","yellow")
+       counts = viridis::viridis,
+       cufflinks_fpkm = fpkm_color_fun
    ),
    colData = list(
-       passes_qc_checks_s = qc_colors,
-       driver_1_s = driver_colors
+       passes_qc_checks_s = qc_color_fun,
+       driver_1_s = driver_color_fun
    )
 )
 ```
@@ -379,7 +389,12 @@ The flexibility of the `iSEE` interface means that it can be used to explore a v
 
 ## Use case IV: Using the `ExperimentHub`
 
-Here we will use `r Biocpkg("iSEE")` showcasing TCGA dataset
+Here we will use `r Biocpkg("iSEE")` to showcase a TCGA RNA-seq data set of
+`r Biocpkg("Rsubread")`-summarized raw count data for 7,706 tumor samples,
+represented as an `ExpressionSet`.
+The R data representation was derived from GEO accession GSE62944.
+It is here retrieved from the Bioconductor `r Biocpkg("ExperimentHub")`,
+immediately ready for post-processing and visualisation.
 
 ```{r ExperimentHub, eval=FALSE}
 stopifnot(
@@ -434,18 +449,26 @@ file.copy(from = temp_file, to = newLocation)
 
 **Q: Can you implement a 'Copy to clipboard' button in the code editor?**
 
-A: This is not necessary, as one can click anywhere in the code editor and instantly select all the code using a keyboard shortcut that depends on your operating system.
+A: This is not necessary, as one can click anywhere in the code editor and
+instantly select all the code using a keyboard shortcut that depends on your
+operating system.
 
-**Q: When brushing with a transparency effect, it seems that data points in the receiving plot are not subsetted correctly.**
+**Q: When brushing with a transparency effect, it seems that data points in the
+receiving plot are not subsetted correctly.**
 
-A: The subsetting is correct. What you see is an artefact of overplotting: in areas excessively dense in points, transparency ceases to be an effective visual effect.
+A: The subsetting is correct. What you see is an artefact of overplotting:
+in areas excessively dense in points, transparency ceases to be an effective
+visual effect.
 
 **Q: Brushing on violin or square plots doesn't seem to select anything.**
 
-For violin plots, points will be selected only if the brushed area includes the center of the x-tick, i.e., the center of the violin plot.
-This is intentional as it allows easy selection of all points in complex grouped violin plots.
+A: For violin plots, points will be selected only if the brushed area includes
+the center of the x-tick, i.e., the center of the violin plot.
+This is intentional as it allows easy selection of all points in complex grouped
+violin plots.
 Indeed, the location of a specific point on the x-axis has no meaning.
-The same logic applies to the square plots, where only the center of each square needs to be selected to obtain all the points in the square.
+The same logic applies to the square plots, where only the center of each square
+needs to be selected to obtain all the points in the square.
 
 -> to mention:
 Subset and violins
@@ -453,9 +476,13 @@ Brushing backwards does not seem to work
 
 # Additional information
 
-Bug reports can be posted on the [Bioconductor support site](https://support.bioconductor.org) or raised as issues in the `r Githubpkg("csoneson/iSEE")` GitHub repository.
-The GitHub repository also contains the development version of the package, where new functionality will be added in the future.
-The authors appreciate well-considered suggestions for improvements or new features, or even better, pull requests.
+Bug reports can be posted on the
+[Bioconductor support site](https://support.bioconductor.org) or raised as
+issues in the `r Githubpkg("csoneson/iSEE")` GitHub repository.
+The GitHub repository also contains the development version of the package,
+where new functionality will be added in the future.
+The authors appreciate well-considered suggestions for improvements or new
+features, or even better, pull requests.
 
 If you use `r Biocpkg("iSEE")` for your analysis, please cite it as shown below:
 

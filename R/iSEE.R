@@ -628,6 +628,11 @@ iSEE <- function(
 
             pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .brushData, cur_brush)
 
+            # If the brushes have the same coordinates, we don't bother replotting.
+            if (.identical_brushes(cur_brush, old_brush)) {
+                return(NULL)
+            }
+
             # Trigger replotting of self, to draw a more persistent brushing box.
             rObjects[[plot.name]] <- .increment_counter(isolate(rObjects[[plot.name]]))
 
@@ -743,7 +748,6 @@ iSEE <- function(
   
                 # Defining the rendered plot, and saving the coordinates.
                 output[[plot_name]] <- renderPlot({
-                    print(plot_name)
                     force(rObjects[[plot_name]])
                     p.out <- FUN0(i0, se, pObjects$coordinates, pObjects$memory, colormap)
                     pObjects$commands[[plot_name]] <- p.out$cmd

@@ -564,7 +564,6 @@ iSEE <- function(
             
             # Not replotting if there were no brushes in either the new or old transmitters.
             if (!old_brush && !new_brush){
-              print("Skipping plot!")
               return(NULL)
             }
 

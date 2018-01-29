@@ -179,7 +179,7 @@ iSEE <- function(
     dashboardHeader(
       title = paste0("iSEE - interactive SingleCell/Summarized Experiment Explorer v",
                      packageVersion("iSEE")),
-      titleWidth = 800,
+      titleWidth = 750,
 
       dropdownMenu(type = "tasks",
                    icon = icon("wrench fa-1g"),

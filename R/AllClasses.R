@@ -360,6 +360,7 @@ setMethod("rowDataColorMap", c("ExperimentColorMap", "character"),
 .testColormap <- function(x){
   # Return TRUE if the color map does not return NULL for an arbitrary
   # number of colors
+  stopifnot(is.function(x))
   return(!is.null(x(21L)))
 }
 

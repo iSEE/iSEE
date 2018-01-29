@@ -96,7 +96,7 @@ test_that("colDataColorMap returns appropriate values",{
   # specific > (continuous) all > global
   expect_equal(
     assayColorMap(ecm, "undefined", discrete = FALSE),
-    count_colors
+    assay_continuous_colours
   )
 
 })

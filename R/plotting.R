@@ -373,11 +373,9 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);"
   }
 
   plot_cmds <- list()
-  plot_cmds[["ggplot"]] <- sprintf(
-    "ggplot(plot.data, %s) +",
-    .build_aes(color = color_set, fill = fill_set, group = TRUE)
-  )
-  plot_cmds[["violin"]] <- "geom_violin(alpha = 0.2, scale = 'width') +"
+  plot_cmds[["ggplot"]] <- "ggplot(plot.data) +" # do NOT put aes here, it does not play nice with shiny brushes.
+  viol_aes <- .build_aes(color = color_set, fill = FALSE, group = TRUE)
+  plot_cmds[["violin"]] <- sprintf("geom_violin(%s, alpha = 0.2, data=plot.data, scale = 'width') +", viol_aes)
 
   # Switching X and Y axes if we want a horizontal violin plot.
   # This is done in lim_cmds to guarantee sensible limits, though
@@ -433,7 +431,7 @@ plot.data$Y <- tmp;")
       
       plot_cmds[["brush_blank"]] <- 
         "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
-      plot_cmds[["violin"]] <- "geom_violin(data = plot.data, alpha = 0.2, scale = 'width') +"
+      plot_cmds[["violin"]] <- sprintf("geom_violin(data = plot.data, %s, alpha = 0.2, scale = 'width') +", viol_aes)
       plot_cmds[["brush_restrict"]] <- sprintf("geom_point(%s, plot.data) +", new_aes)
     }
   } else {
@@ -665,10 +663,12 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
     function(nlevels) {
         if (is.finite(nlevels)) {
             cm_command <- sprintf(command, "TRUE", nlevels)
-            return(sprintf("scale_color_manual(values=%s, na.value='grey50') +", cm_command))
+            return(list(sprintf("scale_color_manual(values=%s, na.value='grey50') +", cm_command),
+                        sprintf("scale_fill_manual(values=%s, na.value='grey50') +", cm_command)))
         } else {
             cm_command <- sprintf(command, "FALSE", 21L)
-            return(sprintf("scale_color_gradientn(colors=%s, na.value='grey50') +", cm_command))
+            return(list(sprintf("scale_color_gradientn(colors=%s, na.value='grey50') +", cm_command),
+                        sprintf("scale_fill_gradientn(colors=%s, na.value='grey50') +", cm_command)))
         }
     }
 }

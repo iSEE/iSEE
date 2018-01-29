@@ -628,6 +628,11 @@ iSEE <- function(
 
             pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .brushData, cur_brush)
 
+            # If the brushes have the same coordinates, we don't bother replotting.
+            if (.identical_brushes(cur_brush, old_brush)) {
+                return(NULL)
+            }
+
             # Trigger replotting of self, to draw a more persistent brushing box.
             rObjects[[plot.name]] <- .increment_counter(isolate(rObjects[[plot.name]]))
 
@@ -825,20 +830,28 @@ iSEE <- function(
             if (length(chosen)) {
                 pObjects$memory$geneStat[i0, .geneStatSelected] <- chosen
 
-                # Triggering the replotting of all children.
-                all_kids <- unique(unlist(pObjects$table_links[[i0]]))
-                enc <- .split_encoded(all_kids)
+                col_kids <- unique(unlist(pObjects$table_links[[i0]][c("color")]))
+                xy_kids <- unique(unlist(pObjects$table_links[[i0]][c("xaxis", "yaxis")]))
+                col_kids <- setdiff(col_kids, xy_kids)
+
+                # Triggering the replotting of all color children that are NOT xy children.
+                enc <- .split_encoded(col_kids)
                 brush_ids <- sprintf("%s%s%i", enc$Type, .brushField, enc$ID)
-
-                for (i in seq_along(all_kids)) {
-                    kid <- all_kids[i]
+                for (i in seq_along(col_kids)) {
+                    kid <- col_kids[i]
                     brush_id <- brush_ids[i]
-
-                    if (!is.null(isolate(input[[brush_id]]))) { 
-                        # This will trigger replotting. 
+                    rObjects[[kid]] <- .increment_counter(isolate(rObjects[[kid]]))
+                }
+                
+                # Triggering the replotting and brush clearing of all x/y-axis children.
+                enc <- .split_encoded(xy_kids)
+                brush_ids <- sprintf("%s%s%i", enc$Type, .brushField, enc$ID)
+                for (i in seq_along(xy_kids)) {
+                    brush_id <- brush_ids[i]
+                    if (!is.null(isolate(input[[brush_id]]))) { # This will trigger replotting. 
                         session$resetBrush(brush_id)
-                    } else {
-                        # Manually triggering replotting.
+                    } else { # Manually triggering replotting.
+                        kid <- xy_kids[i]
                         rObjects[[kid]] <- .increment_counter(isolate(rObjects[[kid]]))
                     }
                 }

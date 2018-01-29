@@ -526,14 +526,32 @@ iSEE <- function(
 
           ###############
 
-          # Brush choice observer. This will fail with an error message
-          # if there are cycles across multiple plots. Otherwise it will
-          # update the brushing chart and trigger replotting.
+          # Brush choice observer. This will fail with an error message if there are cycles
+          # across multiple plots. Otherwise it will update the brushing chart.
           observeEvent(input[[paste0(mode0, .brushByPlot, i0)]], {
-            tmp <- .choose_new_brush_source(pObjects$brush_links, plot.name, 
-                .decoded2encoded(input[[paste0(mode0, .brushByPlot, i0)]]),
-                .decoded2encoded(pObjects$memory[[mode0]][i0, .brushByPlot]))
+            old_transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
+            new_transmitter <- input[[paste0(mode0, .brushByPlot, i0)]]
 
+            # Determining whether the new and old transmitting plot have brushes.
+            old_brush <- new_brush <- FALSE 
+            old_encoded <- new_encoded <- ""    
+            if (old_transmitter!="") {
+              old_enc <- .encode_panel_name(old_transmitter)
+              old_encoded <- paste0(old_enc$Type, "Plot", old_enc$ID)
+              if (!is.null(pObjects$memory[[old_enc$Type]][old_enc$ID, .brushData][[1]])) {
+                old_brush <- TRUE
+              }
+            }
+            if (new_transmitter!="") {
+              new_enc <- .encode_panel_name(new_transmitter)
+              new_encoded <- paste0(new_enc$Type, "Plot", new_enc$ID)
+              if (!is.null(pObjects$memory[[new_enc$Type]][new_enc$ID, .brushData][[1]])) {
+                new_brush <- TRUE
+              }
+            }
+
+            # Updating the graph, but breaking if it's not a DAG.
+            tmp <- .choose_new_brush_source(pObjects$brush_links, plot.name, new_encoded, old_encoded)
             daggy <- is_dag(simplify(tmp, remove.loops=TRUE)) 
             if (!daggy) {
               showNotification("brushing relationships cannot be cyclic", type="error")
@@ -543,10 +561,55 @@ iSEE <- function(
               pObjects$brush_links <- tmp
               pObjects$memory[[mode0]][i0, .brushByPlot] <- input[[paste0(mode0, .brushByPlot, i0)]]
             }
+            
+            # Not replotting if there were no brushes in either the new or old transmitters.
+            if (!old_brush && !new_brush){
+              return(NULL)
+            }
 
-            UPDATE <- paste0(mode0, "Plot", i0)
-            rObjects[[UPDATE]] <- .increment_counter(isolate(rObjects[[UPDATE]]))
-          })
+            # Triggering self update of the plot.
+            rObjects[[plot.name]] <- .increment_counter(isolate(rObjects[[plot.name]]))
+
+            # Triggering replotting of children, if the current panel is set to restrict;
+            # and we have a brush, so that there was already some brushing in the children.
+            if (pObjects$memory[[mode0]][i0, .brushEffect]==.brushRestrictTitle
+                && !is.null(pObjects$memory[[mode0]][i0, .brushData][[1]])) {
+              children <- .get_brush_dependents(pObjects$brush_links, plot.name, pObjects$memory)
+              for (child_plot in children) {
+                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+              }
+            }
+          }, ignoreInit=TRUE)
+
+          # Brush effect observer.
+          observeEvent(input[[paste0(mode0, .brushEffect, i0)]], {
+            cur_effect <- input[[paste0(mode0, .brushEffect, i0)]]
+            old_effect <- pObjects$memory[[mode0]][i0, .brushEffect] 
+            pObjects$memory[[mode0]][i0, .brushEffect] <- cur_effect
+            
+            # Avoiding replotting if there was no transmitting brush.
+            transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
+            if (transmitter=="") {
+              return(NULL)
+            }
+            enc <- .encode_panel_name(transmitter)
+            if (is.null(pObjects$memory[[enc$Type]][enc$ID, .brushData][[1]])) {
+              return(NULL)
+            }
+
+            # Triggering self update.
+            rObjects[[plot.name]] <- .increment_counter(isolate(rObjects[[plot.name]]))
+
+            # Triggering replotting of children, if we are set to or from restrict;
+            # and we have a brush, so there was already some brushing in the children.
+            if ((cur_effect==.brushRestrictTitle || old_effect==.brushRestrictTitle) 
+                && !is.null(pObjects$memory[[mode0]][i0, .brushData][[1]])) {
+              children <- .get_brush_dependents(pObjects$brush_links, plot.name, pObjects$memory)
+              for (child_plot in children) {
+                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+              }
+            }
+          }, ignoreInit=TRUE)
 
           # Brush structure observers.
           observeEvent(input[[paste0(mode0, .brushField, i0)]], {
@@ -622,7 +685,7 @@ iSEE <- function(
         for (i in seq_len(max_plots)) {
             # Observers for the non-fundamental parameter options (.brushByPlot is handled elsewhere).
             for (field in c(.colorByColData, .colorByGeneText, .colorByGeneTableAssay, .colorByGeneTextAssay,
-                            .brushEffect, .brushColor, .brushTransAlpha)) {
+                            .brushColor, .brushTransAlpha)) {
                 local({
                     i0 <- i
                     mode0 <- mode

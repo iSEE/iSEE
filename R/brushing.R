@@ -66,7 +66,7 @@
 }
 
 .get_brush_dependents <- function(graph, panel, memory)
-# Identifies the children that need to be updated when a panel updates.
+# Identifies the children that need to be updated when 'panel' updates its brush.
 # This includes grandchildren if restrict is TRUE in any of the children
 # as the brushing will change the selected subset of points... and so on,
 # throughout the graph until all leaves terminate (or hit non-restrict nodes).

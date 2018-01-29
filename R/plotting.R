@@ -633,11 +633,18 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
       assay_choice <- param_choices[[.colorByGeneTextAssay]]
 
     }
-  
+
+    assay_name <- assayNames(se)[assay_choice]
+    assay_access <- ifelse(
+      identical(assay_name, ""),
+      assay_choice,
+      sprintf("'%s'",assay_name )
+    )
+    
     output$cmd <- sprintf("plot.data$ColorBy <- assay(se, %i)[%s,];", 
                           assay_choice, deparse(chosen_gene))
     output$label <- .gene_axis_label(se, chosen_gene, assay_choice, multiline = TRUE)
-    colormap_cmd <- sprintf("assayColorMap(colormap, %i, discrete=%%s)(%%i)", assay_choice)
+    colormap_cmd <- sprintf("assayColorMap(colormap, %s, discrete=%%s)(%%i)", assay_access)
 
   }
 

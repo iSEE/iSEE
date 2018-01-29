@@ -19,7 +19,9 @@
 
 # ExperimentColorMap definition ----
 
-setClassUnion("function_or_NULL", c("function","NULL"))
+.nullColorMap <- function(n){
+  return(NULL)
+}
 
 setClass("ExperimentColorMap",
     contains="Vector",
@@ -28,12 +30,27 @@ setClass("ExperimentColorMap",
       assays="list",
       colData="list",
       rowData="list",
-      all="list",
-      global="function_or_NULL"
+      all_discrete="list",
+      all_continuous="list",
+      global_discrete="function",
+      global_continuous="function"
     ),
     prototype(
-      all=list(assays=NULL, colData=NULL, rowData=NULL),
-      global=NULL
+      assays=list(),
+      colData=list(),
+      rowData=list(),
+      all_discrete=list(
+        assays=.nullColorMap,
+        colData=.nullColorMap,
+        rowData=.nullColorMap
+      ),
+      all_continuous=list(
+        assays=.nullColorMap,
+        colData=.nullColorMap,
+        rowData=.nullColorMap
+      ),
+      global_discrete=.nullColorMap,
+      global_continuous=.nullColorMap
     ),
   validity = .valid.Colormap
 )
@@ -47,8 +64,14 @@ setClass("ExperimentColorMap",
 #' @param assays List of color maps for \code{assays}.
 #' @param colData List of color maps for \code{colData}.
 #' @param rowData List of color maps for \code{rowData}.
-#' @param all List of color maps for \code{all}.
-#' @param global List of color maps for \code{global}.
+#' @param all_discrete Discrete color maps applied to all undefined
+#' \code{assays}, \code{colData}, and \code{rowData}, respectively.
+#' @param all_continuous Continuous color maps applied to all undefined
+#' \code{assays}, \code{colData}, and \code{rowData}, respectively.
+#' @param global_discrete Discrete color maps applied to all undefined discrete
+#' covariates.
+#' @param global_continuous Continuous color maps applied to all undefined
+#' discrete covariates.
 #' @param ... additional arguments passed on to the \code{ExperimentColorMap}
 #' constructor
 #' 
@@ -61,14 +84,20 @@ setClass("ExperimentColorMap",
 #' @section Accessors:
 #'
 #' In the following code snippets, \code{x} is an
-#' \code{ExperimentColorMap} object.
+#' \code{ExperimentColorMap} object. If the color map can not immediately
+#' be found in the appropriate slot, \code{discrete} is a \code{logical(1)}
+#' that indicates whether the default color map returned should be discrete
+#' \code{TRUE} or continuous (\code{FALSE}, default).
 #' 
 #' \describe{
-#'   \item{\code{assayColorMap(x, i, ...)}:}{Get an \code{assays} colormap.}
+#'   \item{\code{assayColorMap(x, i, ..., discrete=FALSE)}:}{
+#'   Get an \code{assays} colormap.}
 #'   
-#'   \item{\code{colDataColorMap(x, i, ...)}:}{Get a \code{colData} colormap.}
+#'   \item{\code{colDataColorMap(x, i, ..., discrete=FALSE)}:}{
+#'   Get a \code{colData} colormap.}
 #'   
-#'   \item{\code{rowDataColorMap(x, i, ...)}:}{Get a \code{rowData} colormap.}
+#'   \item{\code{rowDataColorMap(x, i, ..., discrete=FALSE)}:}{
+#'   Get a \code{rowData} colormap.}
 #' }
 #'
 #' @export ExperimentColorMap
@@ -82,9 +111,7 @@ setClass("ExperimentColorMap",
 #' assayColorMap,ExperimentColorMap,character-method
 #' assayColorMap,ExperimentColorMap,numeric-method
 #' colDataColorMap,ExperimentColorMap,character-method
-#' colDataColorMap,ExperimentColorMap,numeric-method
 #' rowDataColorMap,ExperimentColorMap,character-method
-#' rowDataColorMap,ExperimentColorMap,numeric-method
 #'
 #' @examples
 #'
@@ -119,9 +146,9 @@ setClass("ExperimentColorMap",
 #'
 #' # Accessors ----
 #'
-#' assayColorMap(ecm, "undefined") # viridis::viridis(10) [default]
-#' assayColorMap(ecm, "counts") # viridis::plasma(10)
-#' assayColorMap(ecm, "cufflinks_fpkm") # viridis::inferno(10)
+#' assayColorMap(ecm, "logcounts") # [undefined --> default]
+#' assayColorMap(ecm, "counts")
+#' assayColorMap(ecm, "cufflinks_fpkm")
 #'
 #' colDataColorMap(ecm, "passes_qc_checks_s")
 #' colDataColorMap(ecm, "undefined")
@@ -130,13 +157,27 @@ setClass("ExperimentColorMap",
 #'
 ExperimentColorMap <- function(
   assays = list(), colData = list(), rowData = list(),
-  all = list(assays=NULL, colData=NULL, rowData=NULL),
-  global = NULL, ...){
+  all_discrete = list(assays=NULL, colData=NULL, rowData=NULL),
+  all_continuous = list(assays=NULL, colData=NULL, rowData=NULL),
+  global_discrete = NULL, global_continuous = NULL,
+  ...){
+  
+  # replace NULL values by the .nullColorMap
+  .substituteNullColorMap <- function(x){ifelse(
+    is.null(x),
+    .nullColorMap,
+    x
+  )}
+  all_discrete <- sapply(all_discrete, .substituteNullColorMap)
+  all_continuous <- sapply(all_discrete, .substituteNullColorMap)
+  
   new(
     "ExperimentColorMap",
     assays=assays, colData=colData, rowData=rowData,
-    all = all,
-    global = global, ...)
+    all_discrete = all_discrete, all_continuous = all_continuous,
+    global_discrete = ifelse(is.null(global_discrete), .nullColorMap, global_discrete),
+    global_continuous = ifelse(is.null(global_continuous), .nullColorMap, global_continuous),
+    ...)
 }
 
 # .default color maps ----
@@ -151,6 +192,7 @@ ExperimentColorMap <- function(
 }
 
 .defaultColorMap <- function(discrete){
+  # message(".defaultColorMap")
   if (discrete){
     .defaultDiscreteColorMap
   } else {
@@ -162,111 +204,164 @@ ExperimentColorMap <- function(
 
 # assayColorMap ----
 
-setGeneric("assayColorMap", function(x, i, ...) standardGeneric("assayColorMap"))
+setGeneric(
+  "assayColorMap",
+  function(x, i, ..., discrete = FALSE) standardGeneric("assayColorMap")
+)
 
 setMethod("assayColorMap", c("ExperimentColorMap", "character"),
-    function(x, i, ...)
+    function(x, i, ..., discrete = FALSE)
 {
-    .assayColorMap(x, i, ...)
+    .assayColorMap(x, i, ..., discrete = discrete)
 })
 
 setMethod("assayColorMap", c("ExperimentColorMap", "numeric"),
-    function(x, i, ...)
+    function(x, i, ..., discrete = FALSE)
 {
-    .assayColorMap(x, i, ...)
+    .assayColorMap(x, i, ..., discrete = discrete)
 })
 
-.assayColorMap <- function(x, i, ...){
-  assay_map <- x@assays[[i]]
+.assayColorMap <- function(x, i, ..., discrete){
+  # message(".assayColorMap")
+  # print(discrete)
+  assay_map <- tryCatch({
+        x@assays[[i]]
+    }, error=function(err) {
+        .nullColorMap
+    })
   if (is.null(assay_map)){
-    return(.assayAllColorMap(x, ...))
+    assay_map <- .nullColorMap
   }
-  return(assay_map)
+  if (.testColormap(assay_map)){
+    return(assay_map)
+  }
+  return(.assayAllColorMap(x, discrete))
 }
 
-.assayAllColorMap <- function(x, ...){
-  all_assays_map <- x@all$assays
-  if (is.null(all_assays_map)){
-    return(.globalColorMap(x, ...))
+.assayAllColorMap <- function(x, discrete){
+  # message(".assayAllColorMap")
+  # print(discrete)
+  if (discrete){
+    all_assays_map <- x@all_discrete$assays
+  } else {
+    all_assays_map <- x@all_continuous$assays
   }
-  return(all_assays_map)
+  if (is.null(all_assays_map)){
+    all_assays_map <- .nullColorMap
+  }
+  if (.testColormap(all_assays_map)){
+    return(all_assays_map)
+  }
+  return(.globalColorMap(x, discrete))
 }
 
 # colDataColorMap ----
 
-setGeneric("colDataColorMap", function(x, i, ...) standardGeneric("colDataColorMap"))
+setGeneric(
+  "colDataColorMap",
+  function(x, i, ..., discrete = FALSE) standardGeneric("colDataColorMap"))
 
 setMethod("colDataColorMap", c("ExperimentColorMap", "character"),
-    function(x, i, ...)
+    function(x, i, ..., discrete = FALSE)
 {
-      .colDataColorMap(x, i, ...)
+      .colDataColorMap(x, i, ..., discrete = discrete)
 })
 
-setMethod("colDataColorMap", c("ExperimentColorMap", "numeric"),
-    function(x, i, ...)
-{
-      .colDataColorMap(x, i, ...)
-})
-
-.colDataColorMap <- function(x, i, ...){
+.colDataColorMap <- function(x, i, ..., discrete){
+  # message(".colDataColorMap")
+  # print(discrete)
   coldata_map <- x@colData[[i]]
   if (is.null(coldata_map)){
-    return(.colDataAllColorMap(x, ...))
+    coldata_map <- .nullColorMap
   }
-  return(coldata_map)
+  if (.testColormap(coldata_map)){
+    return(coldata_map)
+  }
+  return(.colDataAllColorMap(x, discrete))
 }
 
-.colDataAllColorMap <- function(x, ...){
-  all_coldata_map <- x@all$colData
-  if (is.null(all_coldata_map)){
-    return(.globalColorMap(x, ...))
+.colDataAllColorMap <- function(x, discrete){
+  # message(".colDataAllColorMap")
+  # print(discrete)
+  if (discrete){
+    all_coldata_map <- x@all_discrete$colData
+  } else {
+    all_coldata_map <- x@all_continuous$colData
   }
-  return(all_coldata_map)
+  if (is.null(all_coldata_map)){
+    all_coldata_map <- .nullColorMap
+  }
+  if (.testColormap(all_coldata_map)){
+    return(all_coldata_map)
+  }
+  return(.globalColorMap(x, discrete))
 }
 
 # rowDataColorMap ----
 
-setGeneric("rowDataColorMap", function(x, i, ...) standardGeneric("rowDataColorMap"))
+setGeneric(
+  "rowDataColorMap",
+  function(x, i, ..., discrete = FALSE) standardGeneric("rowDataColorMap"))
 
 setMethod("rowDataColorMap", c("ExperimentColorMap", "character"),
-    function(x, i, ...)
+    function(x, i, ..., discrete = FALSE)
 {
-      .rowDataColorMap(x, "rowData", i)
+      .rowDataColorMap(x, i, ..., discrete = discrete)
 })
 
-setMethod("rowDataColorMap", c("ExperimentColorMap", "numeric"),
-    function(x, i, ...)
-{
-      .rowDataColorMap(x, "rowData", i)
-})
-
-.rowDataColorMap <- function(x, i, ...){
+.rowDataColorMap <- function(x, i, ..., discrete){
+  # message(".rowDataColorMap")
+  # print(discrete)
   rowdata_map <- x@rowData[[i]]
   if (is.null(rowdata_map)){
-    return(.rowDataAllColorMap(x, ...))
+    rowdata_map <- .nullColorMap
   }
-  return(rowdata_map)
+  if (.testColormap(rowdata_map)){
+    return(rowdata_map)
+  }
+  return(.rowDataAllColorMap(x, discrete))
 }
 
-.rowDataAllColorMap <- function(x, ...){
-  all_rowdata_map <- x@all$rowData
-  if (is.null(all_rowdata_map)){
-    return(.globalColorMap(x, ...))
+.rowDataAllColorMap <- function(x, discrete){
+  # message(".rowDataAllColorMap")
+  # print(discrete)
+  if (discrete){
+    all_rowdata_map <- x@all_discrete$rowData
+  } else {
+    all_rowdata_map <- x@all_continuous$rowData
   }
-  return(all_rowdata_map)
+  if (is.null(all_rowdata_map)){
+    all_rowdata_map <- .nullColorMap
+  }
+  if (.testColormap(all_rowdata_map)){
+    return(all_rowdata_map)
+  }
+  return(.globalColorMap(x, discrete))
 }
 
 # global color map ----
 
-.globalColorMap <- function(x, ..., discrete = FALSE){
-  global_map <- x@global
-  if (is.null(global_map)){
-    return(.defaultColorMap(discrete))
+.globalColorMap <- function(x, discrete){
+  # message(".globalColorMap")
+  # print(discrete)
+  if (discrete){
+    global_map <- x@global_discrete
+  } else {
+    global_map <- x@global_continuous
   }
-  return(global_map)
+  if (.testColormap(global_map)){
+    return(global_map)
+  }
+  return(.defaultColorMap(discrete))
 }
 
 # show ----
+
+.testColormap <- function(x){
+  # Return TRUE if the color map does not return NULL for an arbitrary
+  # number of colors
+  return(!is.null(x(21L)))
+}
 
 setMethod(
   "show", "ExperimentColorMap",
@@ -290,13 +385,22 @@ setMethod(
     ## rowData
     scat("rowData(%d): %s\n", names(object@rowData))
     
-    # all
-    all_defined <- !sapply(object@all, is.null)
-    scat("all(%d): %s\n", names(object@all)[all_defined])
+    ## all_discrete
+    which_valid <- sapply(object@all_discrete, .testColormap)
+    scat("all_discrete(%d): %s\n", names(object@all_discrete)[which_valid])
     
-    # global
-    if (!is.null(object@global)){
-      cat("global(1)\n")
+    ## all_continuous
+    which_valid <- sapply(object@all_continuous, .testColormap)
+    scat("all_continuous(%d): %s\n", names(object@all_continuous)[which_valid])
+    
+    ## global_discrete
+    if (.testColormap(object@global_discrete)){
+      cat("global_discrete(1)\n")
+    }
+    
+    ## global_continuous
+    if (.testColormap(object@global_continuous)){
+      cat("global_continuous(1)\n")
     }
 
     return(NULL)

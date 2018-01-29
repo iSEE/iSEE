@@ -10,14 +10,13 @@
 \alias{assayColorMap,ExperimentColorMap,character-method}
 \alias{assayColorMap,ExperimentColorMap,numeric-method}
 \alias{colDataColorMap,ExperimentColorMap,character-method}
-\alias{colDataColorMap,ExperimentColorMap,numeric-method}
 \alias{rowDataColorMap,ExperimentColorMap,character-method}
-\alias{rowDataColorMap,ExperimentColorMap,numeric-method}
 \title{\code{ExperimentColorMap} objects}
 \usage{
 ExperimentColorMap(assays = list(), colData = list(), rowData = list(),
-  all = list(assays = NULL, colData = NULL, rowData = NULL), global = NULL,
-  ...)
+  all_discrete = list(assays = NULL, colData = NULL, rowData = NULL),
+  all_continuous = list(assays = NULL, colData = NULL, rowData = NULL),
+  global_discrete = NULL, global_continuous = NULL, ...)
 }
 \arguments{
 \item{assays}{List of color maps for \code{assays}.}
@@ -26,9 +25,17 @@ ExperimentColorMap(assays = list(), colData = list(), rowData = list(),
 
 \item{rowData}{List of color maps for \code{rowData}.}
 
-\item{all}{List of color maps for \code{all}.}
+\item{all_discrete}{Discrete color maps applied to all undefined
+\code{assays}, \code{colData}, and \code{rowData}, respectively.}
 
-\item{global}{List of color maps for \code{global}.}
+\item{all_continuous}{Continuous color maps applied to all undefined
+\code{assays}, \code{colData}, and \code{rowData}, respectively.}
+
+\item{global_discrete}{Discrete color maps applied to all undefined discrete
+covariates.}
+
+\item{global_continuous}{Continuous color maps applied to all undefined
+discrete covariates.}
 
 \item{...}{additional arguments passed on to the \code{ExperimentColorMap}
 constructor}
@@ -46,14 +53,20 @@ to produce constant color maps.
 
 
 In the following code snippets, \code{x} is an
-\code{ExperimentColorMap} object.
+\code{ExperimentColorMap} object. If the color map can not immediately
+be found in the appropriate slot, \code{discrete} is a \code{logical(1)}
+that indicates whether the default color map returned should be discrete
+\code{TRUE} or continuous (\code{FALSE}, default).
 
 \describe{
-  \item{\code{assayColorMap(x, i, ...)}:}{Get an \code{assays} colormap.}
+  \item{\code{assayColorMap(x, i, ..., discrete=FALSE)}:}{
+  Get an \code{assays} colormap.}
   
-  \item{\code{colDataColorMap(x, i, ...)}:}{Get a \code{colData} colormap.}
+  \item{\code{colDataColorMap(x, i, ..., discrete=FALSE)}:}{
+  Get a \code{colData} colormap.}
   
-  \item{\code{rowDataColorMap(x, i, ...)}:}{Get a \code{rowData} colormap.}
+  \item{\code{rowDataColorMap(x, i, ..., discrete=FALSE)}:}{
+  Get a \code{rowData} colormap.}
 }
 }
 
@@ -90,9 +103,9 @@ ecm <- new("ExperimentColorMap",
 
 # Accessors ----
 
-assayColorMap(ecm, "undefined") # viridis::viridis(10) [default]
-assayColorMap(ecm, "counts") # viridis::plasma(10)
-assayColorMap(ecm, "cufflinks_fpkm") # viridis::inferno(10)
+assayColorMap(ecm, "logcounts") # [undefined --> default]
+assayColorMap(ecm, "counts")
+assayColorMap(ecm, "cufflinks_fpkm")
 
 colDataColorMap(ecm, "passes_qc_checks_s")
 colDataColorMap(ecm, "undefined")

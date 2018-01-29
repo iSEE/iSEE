@@ -134,7 +134,7 @@
               ),
               .conditionalPanelOnRadio(.input_FUN(.geneExprYAxis),
                                        .geneExprYAxisGeneTextTitle,
-                                       textInput(paste0(mode, .geneExprYAxisGeneText),
+                                       textInput(.input_FUN(.geneExprYAxisGeneText),
                                                  label = "Y-axis gene:",
                                                  value=param_choices[[.geneExprYAxisGeneText]])),
               selectInput(.input_FUN(.geneExprAssay), label=NULL,
@@ -153,7 +153,8 @@
                                                    choices=active_tab, selected=param_choices[[.geneExprXAxisGeneTable]])),
               .conditionalPanelOnRadio(.input_FUN(.geneExprXAxis),
                                        .geneExprXAxisGeneTextTitle,
-                                       textInput(.input_FUN(.geneExprXAxisGeneText), label = "X-axis gene:",
+                                       textInput(.input_FUN(.geneExprXAxisGeneText), 
+                                                 label = "X-axis gene:",
                                                  value=param_choices[[.geneExprXAxisGeneText]]))
                  )
         } else if (mode=="geneStat") {

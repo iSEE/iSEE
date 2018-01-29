@@ -24,7 +24,7 @@
 #'   theme_bw facet_wrap ylab aes theme scale_x_continuous scale_y_continuous
 #'   coord_cartesian geom_tile scale_x_discrete scale_y_discrete
 #'   scale_size_area guides scale_color_manual scale_color_gradientn
-#'   scale_fill_manual scale_fill_gradientn
+#'   scale_fill_manual scale_fill_gradientn geom_rect
 #' @importFrom vipor offsetX
 #' @importFrom DT datatable renderDataTable dataTableOutput
 #' @importFrom AnnotationDbi mapIds keytypes

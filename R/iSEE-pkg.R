@@ -23,7 +23,7 @@
 #' @importFrom ggplot2 ggplot geom_point labs theme_void aes_string geom_violin
 #'   theme_bw facet_wrap ylab aes theme scale_x_continuous scale_y_continuous
 #'   coord_cartesian geom_tile scale_x_discrete scale_y_discrete
-#'   scale_size_area guides
+#'   scale_size_area guides scale_color_manual scale_color_gradientn
 #' @importFrom vipor offsetX
 #' @importFrom DT datatable renderDataTable dataTableOutput
 #' @importFrom AnnotationDbi mapIds keytypes

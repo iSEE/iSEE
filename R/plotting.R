@@ -387,6 +387,9 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);"
     data_cmds[["swap"]] <- c("tmp <- plot.data$X;
 plot.data$X <- plot.data$Y;
 plot.data$Y <- tmp;")
+    tmp <- y_lab
+    y_lab <- x_lab
+    x_lab <- tmp
   }
   data_cmds[["na.rm"]] <- "plot.data <- subset(plot.data, !is.na(X) & !is.na(Y));"
 

@@ -1,33 +1,37 @@
 element;intro
-#Welcome;Welcome to the interactive tour for iSEE - the interactive SummarizedExperiment Explorer. You will be showed around the different components of iSEE and learn the basic usage mechanisms by doing - the highlighted elements will be responding to the user's actions, while the rest of the UI will be shaded. Click on the 'next' button to proceed in your tour
-#allpanels;The iSEE package delivers a Shiny app that allows you to generate a series of plots useful in exploring SummarizedExperiment or SingleCellExperiment objects. These can be conveniently linked to each other by brushing (i.e. clicking and holding the mouse over a plot area), and with a nice touch of reproducibility, you can obtain the full code to re-create the plots at the end of your live session
-#redDimPlot1;For example, you can obtain a reduced dimension plot (e.g. PCA, T-SNE) to efficiently explore the high-dimensional dataset under inspection
-#colDataPlot1;Also, you can have a plot where the variable of interest is one of the experimental covariates (here called a column data plot)
-#geneExprPlot1;Last but not least, a gene expression plot represents the expression values for the samples at hand in different stratifications (if selecting an experimental factor for the x-axis) or as a scatter plot (if you chose another continuous variable, e.g. the expression values of another gene)
-#geneStatTable1;Interactive tables are also useful in many contexts, to display the rowData slot of your input object, and also to efficiently select genes for the other plots
-#redDimMakeNew;The app starts with default values of one plot per type, but you can have more. You can click here to create a new reduced dimension plot
-#colDataMakeNew;... here to create a new column data plot ...
+#Welcome;Welcome to the interactive tour for iSEE - the interactive SummarizedExperiment/SingleCellExperiment Explorer. You will be showed around the different components of iSEE and learn the basic usage mechanisms by doing - the highlighted elements will be responding to the user's actions, while the rest of the UI will be shaded. Click on the 'next' button to proceed in your tour.
+#allpanels;The iSEE package delivers a Shiny app that allows you to generate a series of plots useful in exploring SummarizedExperiment or SingleCellExperiment objects. These can be conveniently linked to each other by brushing (i.e. clicking and holding the mouse over a plot area), and with a nice touch of reproducibility, you can obtain the full code to re-create the plots at the end of your live session, together with a graph representing the links between plots and tables. You can generate four different panel types in iSEE.
+#redDimPlot1;For example, you can obtain a reduced dimension plot (e.g. PCA, T-SNE) to efficiently explore the high-dimensional dataset under inspection.
+#colDataPlot1;Also, you can have a plot where the variable of interest is one of the experimental covariates (here called a column data plot).
+#geneExprPlot1;Last but not least, a gene expression plot represents the expression values for the samples at hand in different stratifications (if selecting an experimental factor for the x-axis) or as a scatter plot (if you chose another continuous variable, e.g. the expression values of another gene).
+#geneStatTable1;Interactive tables are also useful in many contexts, to display the rowData slot of your input object, and also to efficiently select genes for the other plots.
+#redDimMakeNew;The app starts with default values of one plot per type, but you can have more of each type. You can click here to create a new reduced dimension plot...
+#colDataMakeNew;... here to create a new column data plot...
 #geneExprMakeNew;... and here for a new gene expression plot.
-#geneStatMakeNew;You can also have more than one table to quickly select genes
-#panelOrganization;You can re-organize the plots and tables you created with the help of this sidebar panel
-#redDim1ShiftDown; Clicking on this button, you can shift down the plot/table by one position ...
-#redDim1ShiftUp;... or one position up
-#redDim1Discard;You can even remove a plot by clicking on the trash icon of the corresponding element
-#redDim1PanelWidth;Another possibility is to change the width of the plot/table element (keep in mind that the organization is based on a width per row of 12)
-#redDimPlotPanelOpen1;Regarding the plots, you have plenty of options to control their appearance. The parameters are located in each of these collapsible panels, which collectively contain parameters, related to the plot type itself (as in the Plotting parameters) ...
-#redDimColorPanelOpen1;... or in general to choose the Coloring parameters ...
-#redDimBrushPanelOpen1;... or also for defining the behavior when using the brushing to interact and link two different plots together. Some details are provided in the next step, please click first on the header of the collapsible panel
-#redDimBrushOn1;To turn on the brushing, please click on the highlighted checkbox. This will allow you to click and hold the mouse over a plot area to select a number of samples (or cells)
-#redDimZoomOn1;A zooming functionality is possible by first brushing then double-clicking on the brushed area
-#redDimPlot1;You can try it out here: click and hold to select an area, then release. Now, double click inside the marked area to zoom in. To zoom out to the original plot, double-click on the plot. Brushing will be used not only for zooming, but also for linking plots together. Click on 'next' to see more on this
-#redDimBrushPanelOpen1;What happens to the linked plots can controlled by the other parameters in this box. In the next steps we describe a way to check the expression of a gene of interest in a subpopulation of cells
-#redDimPlot1;To try out the brushing, please make sure you did activate 'Transmit brush', and select an area in this plot which contains a subset of cells
-#geneExprBrushPanelOpen1;... and then open the collapsible box for the gene expression plot
-#geneExprBrushByPlot1;Select the corresponding incoming brushing option, 'reduced dimension plot 1' in our case
-#geneExprBrushEffect1;The effect of the brushing can operate in plotting only the subset of cells ('Restrict'), coloring them ('Color'), or applying a transparency effect ('Transparent')
-#geneExprPlot1;You can appreciate how this operation changed the corresponding plot in the main panel. You can link this plot to other ones, if you activate the transmission of the brush...
-#geneExprBrushOn1; ... by clicking on this checkbox
-#geneExprPlot1;Then again, you can click and hold to select the area - nothing will happen yet, because you still did not select which other plot should receive the brush information. One important thing to keep in mind when brushing violin plots is that points will be selected only if the brushed area includes the center of the x-tick a.k.a. the center of the violin plot - the current implementation is robustly defined with this way of selecting points 
-#getcode_all;Once you are done with your iSEE live session, you might want to reproduce exactly the plots you generated. This can be done by clicking on this button
-#acereport_r;... which opens a shinyAce-based text editor, where the code is formatted, editable, and with some nice syntax highlighting. You can copy the code to the clipboard by selecting the text (please include the initial lines and the sessionInfo commands for best tracking of your environment), and store it in your analysis report/script
+#geneStatMakeNew;You can also have more than one table to quickly select genes - this works by selecting one row just with a simple click on it.
+#panelOrganization;You can re-organize the plots and tables you created with the help of this sidebar panel.
+#redDimShiftDown1; Clicking on this button, you can shift down the plot/table by one position...
+#redDimShiftUp1;... or one position up.
+#redDimDiscard1;You can even remove a plot by clicking on the trash icon of the corresponding element.
+#redDimModify1;Another possibility is to change the width of the plot/table element (keep in mind that the organization is based on a width per row of 12), as well as the height of the plot (to be specified in pixels).
+#redDimPlotPanelOpen1;Regarding the plots, you have plenty of options to control their appearance. The parameters are located in each of these collapsible panels, which collectively contain parameters, related to the plot type itself (as in the Plotting parameters)...
+#redDimColorPanelOpen1;... or in general to choose the Coloring parameters...
+#redDimBrushPanelOpen1;... or also for defining the behavior when using the brushing to interact and link two different plots together. Some details are provided in the next step, please click first on the header of the collapsible panel. The brushing is automatically turned on, and serves for two purposes, based on the action of clicking and holding the mouse over a plot area to select a number of samples (or cells).
+#redDimPlot1;A zooming functionality is possible by first brushing then double-clicking on the brushed area. You can try it out here: click and hold to select an area, then release. Now, double click inside the marked area to zoom in. To zoom out to the original plot, double-click on the plot. As we said in the previous step, brushing will be used not only for zooming, but also for linking plots together. Click on 'next' to learn more on this by trying this out yourself.
+#redDimBrushPanelOpen1;What happens to the linked plots can be controlled by the other parameters in this box. In the next steps we describe a way to check the expression of a gene of interest in a subpopulation of cells. We will do this by selecting a subset in the reduced dimension plot, and then activating this brush on the destination plot (the gene expression plot).
+#redDimPlot1;To try out the brushing, select an area in this plot which contains a subset of cells in the source plot...
+#geneExprBrushPanelOpen1;... and then open the collapsible box for the gene expression plot (the destination plot).
+#geneExprBrushByPlot1;Select the corresponding incoming brushing option, 'reduced dimension plot 1' in our case.
+#geneExprBrushEffect1;The effect of the brushing can operate in plotting only the subset of cells ('Restrict'), coloring them ('Color'), or applying a transparency effect ('Transparent').
+#geneExprPlot1;You can appreciate how this operation changed the corresponding plot in the main panel. You can link this plot to other ones, following a similar fashion to the one we just tried out: select an area on the source plot, then select which other plot should receive the brush information. One important thing to keep in mind when brushing violin plots is that points will be selected only if the brushed area includes the center of the x-tick a.k.a. the center of the violin plot - the current implementation is robustly defined with this way of selecting points.
+#dropdown-wrench;A couple of useful elements can be found in the dropdown menu labelled with the wrench icon, controlling some of the iSEE diagnostics.
+#ddopen_linkgraph;Clicking on the item marked with the chain icon, you can obtain a graph representation of the existing links and brushes among your open plot and table panels. This can be very useful once you open a multitude of panels.
+#ddgetcode_all;Once you are done with your iSEE live session, you might want to reproduce exactly the plots you generated. This can be done by clicking on the button 'Extract the R code!', marked with the magic wand icon, also in the iSEE diagnostics dropdown menu.
+#acereport_r;... which opens a modal popup window, with shinyAce-based text editor, where the code is formatted and displayed with some nice syntax highlighting. You can copy the code to the clipboard by selecting the text (please include the initial lines and the sessionInfo commands for best tracking of your environment), and store it in your analysis report/script. Your code can then be further edited to finalize the plots (e.g., for publication). 
+#dropdown-help;Another dropdown menu is the Documentation, accessible by clicking on the question mark. 
+#ddtour_firststeps;This contains the button to start the introjs-based tour, which you are taking as you read this...
+#ddopen_vignette;... as well as a link to the vignette for the iSEE package, in case you want to consult it while running the app.
+#dropdown-info;Clicking on the info icon you can display some additional information:
+#ddsession_info;either on the session information from which you are running iSEE (which you should report in case of issues or bugs to ensure others are aware on the packages you loaded, and their versions)...
+#ddiSEE_info;... or also a couple of information on the development team that got together to create the iSEE package, plus the item to insert in your citations if you used iSEE. You can follow the development version of the package by checking the GitHub repository linked here. New functionality will be added in the future. The authors appreciate well-considered suggestions for improvements or new features, or even better, pull requests.
 #Thanks;Thank you for taking the tour of iSEE!

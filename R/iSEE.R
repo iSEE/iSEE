@@ -330,7 +330,12 @@ iSEE <- function(
 
     if (run_local) { 
       observeEvent(input$open_vignette, {
-        browseURL(system.file("doc","iSEE_vignette.html", package="iSEE")) 
+        path <- system.file("doc","iSEE_vignette.html", package="iSEE")
+        if (path=="") {
+          showNotification("vignette has not been built on this system", type="error")
+        } else {
+          browseURL(system.file("doc","iSEE_vignette.html", package="iSEE")) 
+        }
       })
     }
 

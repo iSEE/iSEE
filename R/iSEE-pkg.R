@@ -32,13 +32,11 @@
 #' @importFrom colourpicker colourInput
 #' @importFrom shinyAce aceEditor
 #' @importFrom methods new slot is
-#' @importFrom RColorBrewer brewer.pal
 #' @importFrom igraph make_graph topo_sort are_adjacent incident add_edges
 #' adjacent_vertices is_dag simplify V delete.vertices set_vertex_attr
 #' add_vertices
 #' @importFrom graphics plot
 #' @importFrom grDevices hcl
-#' @importFrom viridis viridis
 #' @importFrom viridisLite viridis
 #' @author Aaron Lun \email{alun@@wehi.edu.au}
 #' @author Charlotte Soneson \email{charlotte.soneson@@uzh.ch}

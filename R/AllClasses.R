@@ -9,6 +9,62 @@
   # of the parent that do not have a defined colormap.
 
   errors <- c()
+  
+  # Different types of checks
+  free_lists <- c("assays")
+  named_lists <- c("colData","rowData")
+  controlled_lists <- c("all_discrete","all_continuous")
+  function_slots <- c("global_discrete","global_continuous")
+  
+  controlled_names <- c("assays","colData","rowData")
+  
+  # Check that all color maps are functions
+  # and that they return non-empty vectors (character or color)
+  for (slotname in c(free_lists, named_lists, controlled_lists)){
+    slotmaps <- slot(object, slotname)
+    check_function <- vapply(slotmaps, "is.function", logical(1))
+    if (!all(check_function)){
+      errors <- c(errors, sprintf(
+        "Color map `%s` in slot `%s` is not a function",
+        names(slotmaps)[!check_function],
+        slotname
+      ))
+      return(errors)
+    }
+  }
+  ## No need to test those ##
+  ## they are picked up by the automatic slot type-checking
+  # if (!is.function(object@global_discrete)){
+  #   errors <- c(errors, "Color map `global_discrete` is not a function")
+  # }
+  # if (!is.function(object@global_continuous)){
+  #   errors <- c(errors, "Color map `global_continuous` is not a function")
+  # }
+  
+  for (slotname in named_lists){
+    slotmaps <- slot(object, slotname)
+    # Check that all color maps are named
+    check_named <- names(slotmaps) != ""
+    if (!all(check_named)){
+      errors <- c(errors, sprintf(
+        "Color map #%s in slot `%s` must be named",
+        which(!check_named),
+        slotname
+      ))
+    }
+  }
+  
+  for (slotname in controlled_lists){
+    slotmaps <- slot(object, slotname)
+    # Check that all color maps have the appropriate names
+    if (!identical(names(slotmaps), controlled_names)){
+      errors <- c(errors, sprintf(
+        "Color map in slot `%s` must be named %s",
+        slotname,
+        paste(deparse(controlled_names), collapse = "")
+      ))
+    }
+  }
 
   if (length(errors > 0)){
     return(errors)
@@ -161,23 +217,49 @@ ExperimentColorMap <- function(
   all_continuous = list(assays=NULL, colData=NULL, rowData=NULL),
   global_discrete = NULL, global_continuous = NULL,
   ...){
+
+  if (is.null(names(all_discrete))){
+    stop("`all_discrete` must be a named list")
+  }
+  if (is.null(names(all_continuous))){
+    stop("`all_continuous` must be a named list")
+  }
   
-  # replace NULL values by the .nullColorMap
-  .substituteNullColorMap <- function(x){ifelse(
-    is.null(x),
-    .nullColorMap,
-    x
-  )}
-  all_discrete <- sapply(all_discrete, .substituteNullColorMap)
-  all_continuous <- sapply(all_discrete, .substituteNullColorMap)
+  all_discrete <- .sanitize_controlled_colormaps(usr = all_discrete)
+  all_continuous <- .sanitize_controlled_colormaps(usr = all_continuous)
   
-  new(
+  return(new(
     "ExperimentColorMap",
     assays=assays, colData=colData, rowData=rowData,
     all_discrete = all_discrete, all_continuous = all_continuous,
     global_discrete = ifelse(is.null(global_discrete), .nullColorMap, global_discrete),
     global_continuous = ifelse(is.null(global_continuous), .nullColorMap, global_continuous),
-    ...)
+    ...))
+}
+
+# replace NULL values by the .nullColorMap
+.substituteNullColorMap <- function(x){ifelse(
+  is.null(x),
+  .nullColorMap,
+  x
+)}
+
+# set missing names to .nullColorMap 
+.sanitize_controlled_colormaps <- function(
+  usr,
+  def = list(
+    assays = .nullColorMap,
+    colData = .nullColorMap,
+    rowData = .nullColorMap)
+  ){
+  if (is.null(names(usr))){
+    stop("User-defined color map must be a named list")
+  }
+  usr <- sapply(usr, .substituteNullColorMap)
+  # set the color maps given by the user
+  # note that invalid ones will be picked up by the class validity check later
+  def[names(usr)] <- usr
+  return(def)
 }
 
 # .default color maps ----
@@ -232,7 +314,7 @@ setMethod("assayColorMap", c("ExperimentColorMap", "numeric"),
   if (is.null(assay_map)){
     assay_map <- .nullColorMap
   }
-  if (.testColormap(assay_map)){
+  if (.activeColormap(assay_map)){
     return(assay_map)
   }
   return(.assayAllColorMap(x, discrete))
@@ -249,7 +331,7 @@ setMethod("assayColorMap", c("ExperimentColorMap", "numeric"),
   if (is.null(all_assays_map)){
     all_assays_map <- .nullColorMap
   }
-  if (.testColormap(all_assays_map)){
+  if (.activeColormap(all_assays_map)){
     return(all_assays_map)
   }
   return(.globalColorMap(x, discrete))
@@ -274,7 +356,7 @@ setMethod("colDataColorMap", c("ExperimentColorMap", "character"),
   if (is.null(coldata_map)){
     coldata_map <- .nullColorMap
   }
-  if (.testColormap(coldata_map)){
+  if (.activeColormap(coldata_map)){
     return(coldata_map)
   }
   return(.colDataAllColorMap(x, discrete))
@@ -291,7 +373,7 @@ setMethod("colDataColorMap", c("ExperimentColorMap", "character"),
   if (is.null(all_coldata_map)){
     all_coldata_map <- .nullColorMap
   }
-  if (.testColormap(all_coldata_map)){
+  if (.activeColormap(all_coldata_map)){
     return(all_coldata_map)
   }
   return(.globalColorMap(x, discrete))
@@ -316,7 +398,7 @@ setMethod("rowDataColorMap", c("ExperimentColorMap", "character"),
   if (is.null(rowdata_map)){
     rowdata_map <- .nullColorMap
   }
-  if (.testColormap(rowdata_map)){
+  if (.activeColormap(rowdata_map)){
     return(rowdata_map)
   }
   return(.rowDataAllColorMap(x, discrete))
@@ -333,7 +415,7 @@ setMethod("rowDataColorMap", c("ExperimentColorMap", "character"),
   if (is.null(all_rowdata_map)){
     all_rowdata_map <- .nullColorMap
   }
-  if (.testColormap(all_rowdata_map)){
+  if (.activeColormap(all_rowdata_map)){
     return(all_rowdata_map)
   }
   return(.globalColorMap(x, discrete))
@@ -349,7 +431,7 @@ setMethod("rowDataColorMap", c("ExperimentColorMap", "character"),
   } else {
     global_map <- x@global_continuous
   }
-  if (.testColormap(global_map)){
+  if (.activeColormap(global_map)){
     return(global_map)
   }
   return(.defaultColorMap(discrete))
@@ -357,7 +439,7 @@ setMethod("rowDataColorMap", c("ExperimentColorMap", "character"),
 
 # show ----
 
-.testColormap <- function(x){
+.activeColormap <- function(x){
   # Return TRUE if the color map does not return NULL for an arbitrary
   # number of colors
   stopifnot(is.function(x))
@@ -387,20 +469,20 @@ setMethod(
     scat("rowData(%d): %s\n", names(object@rowData))
     
     ## all_discrete
-    which_valid <- sapply(object@all_discrete, .testColormap)
+    which_valid <- sapply(object@all_discrete, .activeColormap)
     scat("all_discrete(%d): %s\n", names(object@all_discrete)[which_valid])
     
     ## all_continuous
-    which_valid <- sapply(object@all_continuous, .testColormap)
+    which_valid <- sapply(object@all_continuous, .activeColormap)
     scat("all_continuous(%d): %s\n", names(object@all_continuous)[which_valid])
     
     ## global_discrete
-    if (.testColormap(object@global_discrete)){
+    if (.activeColormap(object@global_discrete)){
       cat("global_discrete(1)\n")
     }
     
     ## global_continuous
-    if (.testColormap(object@global_continuous)){
+    if (.activeColormap(object@global_continuous)){
       cat("global_continuous(1)\n")
     }
 

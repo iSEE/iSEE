@@ -631,8 +631,8 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
     function(nlevels) {
         if (is.finite(nlevels)) {
             cm_command <- sprintf(command, "TRUE", nlevels)
-            return(list(sprintf("scale_color_manual(values=%s, na.value='grey50') +", cm_command),
-                        sprintf("scale_fill_manual(values=%s, na.value='grey50') +", cm_command)))
+            return(list(sprintf("scale_color_manual(values=%s, na.value='grey50', drop=FALSE) +", cm_command),
+                        sprintf("scale_fill_manual(values=%s, na.value='grey50', drop=FALSE) +", cm_command)))
         } else {
             cm_command <- sprintf(command, "FALSE", 21L)
             return(list(sprintf("scale_color_gradientn(colors=%s, na.value='grey50') +", cm_command),

@@ -265,7 +265,7 @@ ExperimentColorMap <- function(
 # .default color maps ----
 
 # default continuous colormap
-.defaultContinuousColorMap <- viridis::viridis # function(n)
+.defaultContinuousColorMap <- viridis # function(n)
 # default discrete colormap
 .defaultDiscreteColorMap <- function(n) {
   # Credit: https://stackoverflow.com/questions/8197559/emulate-ggplot2-default-color-palette

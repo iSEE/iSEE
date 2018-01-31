@@ -124,7 +124,7 @@ You can move forward and backward along the tour by clicking on the `Next`/`Back
 To exit the tour, either click on `Skip`, or simply click outside of the highlighted UI element.
 
 - Once you are done generating the plots, click on the **wrench** icon in the upper right corner, and click on the button for exporting the R code. 
-This will open a modal popup where the R code used to generate the plot is displayed in a `r CRANpkg("ShinyAce")`-based text editor. 
+This will open a modal popup where the R code used to generate the plot is displayed in a `r CRANpkg("shinyAce")`-based text editor. 
 Select parts/all of it to copy-and-paste it into your analysis script/Rmarkdown file.
 
 <!--

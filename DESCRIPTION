@@ -32,13 +32,12 @@ Imports:
     rintrojs, 
     ggplot2,
     colourpicker,
-    RColorBrewer,
     igraph,
     vipor,
     rentrez,
     AnnotationDbi,
+    graphics,
     grDevices,
-    viridis,
     viridisLite
 Suggests:
     testthat,
@@ -48,7 +47,9 @@ Suggests:
     scRNAseq,
     scater,
     Rtsne,
-    irlba
+    irlba,
+    RColorBrewer,
+    viridis
 Enhances:
     ExperimentHub
 URL: https://github.com/csoneson/SEE

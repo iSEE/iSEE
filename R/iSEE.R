@@ -1,9 +1,9 @@
-
+## Not run:
 #' iSEE: interactive SingleCell/Summarized Experiment Explorer
 #'
 #' Interactive visualization of single-cell data using a Shiny interface.
 #'
-#' @param se An object that coercible to \linkS4class{SingleCellExperiment}.
+#' @param se An object that coercible to \code{\linkS4class{SingleCellExperiment}}.
 #' @param redDimArgs A DataFrame similar to that produced by
 #' \code{\link{redDimPlotDefaults}}, specifying initial parameters for the plots.
 #' @param colDataArgs A DataFrame similar to that produced by
@@ -147,6 +147,9 @@ iSEE <- function(
     se <- as(se, "SingleCellExperiment")
     se_name <- sprintf('as(as(%s, "SummarizedExperiment"), "SingleCellExperiment")', se_name)
   }
+  
+  # Throw an error if the colormap supplied is not compatible with the object
+  isColorMapCompatible(colormap, se, error = TRUE)
 
   # Setting up inputs for DT::datatable something to play with.
   # It must have some columns, so we're just filling it up with _something_.
@@ -891,3 +894,4 @@ iSEE <- function(
 
   shinyApp(ui = iSEE_ui, server = iSEE_server)
 }
+## End(Not run)

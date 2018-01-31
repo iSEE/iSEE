@@ -2,3 +2,4 @@
 ^\.Rproj\.user$
 ^.gitignore$
 ^.travis.yml$
+^codecov\.yml$

@@ -292,9 +292,13 @@ To zoom out to the original plot, double-click outside of any brushed area.
 
 ## Use case I: Basic exploration of the Allen dataset
 
-In this section, we illustrate how `r Biocpkg("iSEE")` can be used to explore the `allen` single-cell RNA-seq data set, which is available via the `r Biocpkg("scRNAseq")` Bioconductor package and contains expression values for 379 cells from the mouse visual cortex [@Tasic2016]. We start by converting the provided `SummarizedExperiment` object to a `SingleCellExperiment` object and normalize the expression values. 
+### Loading the data 
 
-```{r allen-dataset,eval=FALSE}
+In this section, we illustrate how `r Biocpkg("iSEE")` can be used to explore the `allen` single-cell RNA-seq data set from  the `r Biocpkg("scRNAseq")` package.
+It contains expression values for 379 cells from the mouse visual cortex [@tasic2016adult]. 
+We start by converting the provided `SummarizedExperiment` object to a `SingleCellExperiment` object and normalize the expression values. 
+
+```{r allen-dataset}
 library(scRNAseq)
 data(allen)
 class(allen)
@@ -304,50 +308,100 @@ counts(sce) <- assay(sce, "tophat_counts")
 sce <- normalize(sce)
 ```
 
-Next, we apply Principal Components Analysis (PCA) and t-distributed Stochastic Neighbour Embedding (t-SNE) to generate two reduced dimension representations of the cells. The provided cell annotations for this data set are available in `colData(sce)`. Note that all calculations (dimension reduction, clustering, etc) must be performed *before* passing the object to `iSEE`.
+Next, we apply Principal Components Analysis (PCA) and t-distributed Stochastic Neighbour Embedding (t-SNE) to generate two reduced dimension representations of the cells. 
+Note that all calculations (dimension reduction, clustering, etc) must be performed *before* passing the object to `iSEE`.
 
-```{r allen-dataset-2,eval=FALSE}
+```{r allen-dataset-2}
 sce <- runPCA(sce)
 sce <- runTSNE(sce)
 head(colData(sce))
 ```
 
-Finally, we set colour palettes to use in `r Biocpkg("iSEE")` when colouring according to specific cell annotations or expression values. These values are stored in an object of the `ExperimentColorMap` class. 
+The provided cell annotations for this data set are available in `colData(sce)`. 
 
-```{r allen-dataset-3,eval=FALSE}
+### Generating color maps
+
+We define color palettes to use in `r Biocpkg("iSEE")` when coloring according to specific cell annotations or expression values. 
+Each palette should be a function that accepts a number and returns a vector of colors of length equal to the input number.
+
+For categorical variables, the function should accept the number of levels and return a color per level.
+This is illustrated below with a function that generates colors for the `driver_1_s` factor.
+
+```{r allen-dataset-3}
+driver_color_fun <- function(n){
+  return(RColorBrewer::brewer.pal(n, "Set2"))
+}
+```
+
+Alternatively, functions can just return a named vector of colors if users want to specify the color for each level explicitly.
+In such cases, the function can ignore its argument, though it is the user's responsibility to ensure that all levels are accounted for:
+
+```{r}
 qc_color_fun <- function(n){
   qc_colors <- c("forestgreen", "firebrick1")
   names(qc_colors) <- c("Y", "N")
   return(qc_colors)
 }
-driver_color_fun <- function(n){
-  x <- RColorBrewer::brewer.pal(3, "Set2")
-  names(x) <- unique(sce$driver_1_s)
-  return(x)
-}
+```
+
+For continuous variables, the function will be asked to generate a number of colors (21 by default).
+Interpolation will then be performed internally to generate a color gradient.
+Users can use existing color scales like `viridis::viridis`, or make their own interpolation points with a function that simply ignores the input number:
+
+```{r}
 fpkm_color_fun <- function(n){
   x <- c("black","brown","red","orange","yellow")
   return(x)
 }
-ecm <- new("ExperimentColorMap",
-   assays = list(
-       counts = viridis::viridis,
-       cufflinks_fpkm = fpkm_color_fun
-   ),
-   colData = list(
-       passes_qc_checks_s = qc_color_fun,
-       driver_1_s = driver_color_fun
-   )
+```
+
+These values are stored in an object of the `ExperimentColorMap` class. 
+Named functions passed to `assays` or `colData` will be used for coloring those specific assays or column data.
+
+```{r}
+ecm <- ExperimentColorMap(
+  assays = list(
+      counts = viridis::viridis,
+      cufflinks_fpkm = fpkm_color_fun
+  ),
+  colData = list(
+      passes_qc_checks_s = qc_color_fun,
+      driver_1_s = driver_color_fun
+  )
+)
+ecm
+```
+
+Users can change the defaults for assays or column data without explicit color mappings. 
+Defaults for all variables can also be altered.
+The example shown below alters the defaults for continuous variables, but the same applies for categorical factors as well. 
+
+```{r}
+ExperimentColorMap(
+  all_continuous=list(
+    assays=viridis::plasma,
+    colData=viridis::inferno
+  ),
+  global_continuous=viridis::magma  
 )
 ```
 
-To begin the exploration, we launch the `iSEE` app with the `SingleCellExperiment` object and the colormap generated above.
+### Exploring the dataset
 
-```{r allen-dataset-4,eval=FALSE}
-iSEE(sce, colormap = ecm)
+To begin the exploration, we create an `iSEE` app with the `SingleCellExperiment` object and the colormap generated above.
+
+```{r allen-dataset-4}
+app <- iSEE(sce, colormap = ecm)
 ```
 
-By default, the app starts with a dashboard containing one reduced dimension plot, one column data plot, one gene expression plot and one gene statistics table (see Use case II for how to change this). By opening the collapsible panels named “Plotting parameters", “Coloring parameters" and “Brushing parameters" under each plot we can see and change what is being displayed in the respective plots, and also how it is being displayed. 
+We run this using `runApp` to open the app on our browser.
+
+```{r, eval=FALSE}
+shiny::runApp(app)
+```
+
+By default, the app starts with a dashboard containing one reduced dimension plot, one column data plot, one gene expression plot and one gene statistics table (see Use case II for how to change this). 
+By opening the collapsible panels named “Plotting parameters", “Coloring parameters" and “Brushing parameters" under each plot, we can see and change what is being displayed in the respective plots, and also how it is being displayed. 
 
 Let us start by exploring the reduced dimension plot. As can be seen from the “Plotting parameters" panel, this plot shows the first two principal components. Change `Type` to `(2) TSNE` to instead see the two-dimensional t-SNE representation. Next, open the “Coloring parameters" panel. By default, the points (cells) are not colored. By selecting `Column data` and choosing one of the variables in the dropdown menu that shows up, the cells can be colored by any of the provided annotations. Let’s choose `passes_qc_checks_s`, one of the annotations for which we defined a custom color map in the preparations above. Now, all cells that passed QC (`Y`) are colored forestgreen, while the ones that didn’t pass are colored firebrick. 
 

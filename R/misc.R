@@ -153,13 +153,13 @@ height_limits <- c(400L, 1000L)
         bb <- memory[[mode]][,.brushByPlot]
         bad <- bb %in% brush_names
         if (any(bad)) { 
-            memory[[mode]][,.brushByPlot][bb] <- ""
+            memory[[mode]][,.brushByPlot][bad] <- ""
         }
 
         cb <- memory[[mode]][,.colorByGeneTable]
         bad <- cb %in% link_names 
         if (any(bad)) { 
-            memory[[mode]][,.colorByGeneTable][cb] <- ""
+            memory[[mode]][,.colorByGeneTable][bad] <- ""
         }
     }
 
@@ -167,7 +167,7 @@ height_limits <- c(400L, 1000L)
         bb <- memory$geneExpr[,field]
         bad <- bb %in% link_names 
         if (any(bad)) { 
-            memory$geneExpr[,field][bb] <- ""
+            memory$geneExpr[,field][bad] <- ""
         }
     }
     return(memory)

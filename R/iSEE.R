@@ -334,7 +334,7 @@ iSEE <- function(
         if (path=="") {
           showNotification("vignette has not been built on this system", type="error")
         } else {
-          browseURL(system.file("doc","iSEE_vignette.html", package="iSEE")) 
+          browseURL(path)
         }
       })
     }

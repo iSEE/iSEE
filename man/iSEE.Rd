@@ -106,42 +106,9 @@ sce <- runPCA(sce)
 sce <- runTSNE(sce)
 sce
 
-# Example color maps ----
-
-count_colors <- function(n){
-  c("black","brown","red","orange","yellow")
-}
-fpkm_colors <- viridis::inferno
-tpm_colors <- viridis::plasma
-
-qc_color_fun <- function(n){
-  x <- c("forestgreen", "firebrick1")
-  names(x) <- c("Y", "N")
-  return(x)
-}
-
-driver_color_fun <- function(n){
-  x <- RColorBrewer::brewer.pal(3, "Set2")
-  names(x) <- unique(sce$driver_1_s)
-  return(x)
-}
-
-ecm <- new("ExperimentColorMap",
-    assays = list(
-        counts = count_colors,
-        tophat_counts = count_colors,
-        cufflinks_fpkm = fpkm_colors,
-        cufflinks_fpkm = fpkm_colors,
-        rsem_tpm = tpm_colors
-    ),
-    colData = list(
-        passes_qc_checks_s = qc_color_fun,
-        driver_1_s = driver_color_fun
-    )
-)
-
 # launch the app itself ----
-app <- iSEE(sce, colormap = ecm)
+
+app <- iSEE(sce)
 if (interactive()) {
   shiny::runApp(app, port = 1234)
 }

@@ -14,7 +14,7 @@ names(.all_labs_values) <- .all_aes_names
 # .make_redDimPlot  ----
 ############################################
 
-.make_redDimPlot <- function(id, se, all_coordinates, all_memory, colormap)
+.make_redDimPlot <- function(id, all_memory, all_coordinates, se, colormap)
 # Makes the dimension reduction plot.
 {
   param_choices <- all_memory$redDim[id,]
@@ -27,23 +27,11 @@ names(.all_labs_values) <- .all_aes_names
     param_choices[[.redDimYAxis]]
   )
 
-  # Adding colour data (and commands in color_FUN).
-  color_out <- .process_colorby_choice(param_choices, se, all_memory)
-  data_cmds[["color"]] <- color_out$cmd
-  color_label <- color_out$label
-  color_FUN <- color_out$FUN
-
-  # Adding brushing data (plot-specific commands will be added later).
-  brush_out <- .process_brushby_choice(param_choices, all_memory)
-
   # Generating the plotting commands.
-  .create_plot(
-    data_cmds, se, colormap, all_coordinates,
-    param_choices=param_choices,
+  .create_plot(data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
     x_lab=sprintf("Dimension %s", param_choices[[.redDimXAxis]]),
     y_lab=sprintf("Dimension %s", param_choices[[.redDimYAxis]]),
-    color_FUN=color_FUN, color_label=color_label, 
-    brush_cmd=brush_out$cmd, brush_color=brush_stroke_color_full["redDim"]
+    brush_color=brush_stroke_color_full["redDim"]
   )
 }
 
@@ -51,7 +39,7 @@ names(.all_labs_values) <- .all_aes_names
 # .make_colDataPlot  ----
 ############################################
 
-.make_colDataPlot <- function(id, se, all_coordinates, all_memory, colormap)
+.make_colDataPlot <- function(id, all_memory, all_coordinates, se, colormap)
 # Makes a plot of column data variables.
 {
   param_choices <- all_memory$colData[id,]
@@ -71,21 +59,10 @@ names(.all_labs_values) <- .all_aes_names
     data_cmds[["x"]] <- sprintf("plot.data$X <- colData(se)[,%s];", deparse(x_lab))
   }
 
-  # Adding colour commands.
-  color_out <- .process_colorby_choice(param_choices, se, all_memory)
-  data_cmds[["color"]] <- color_out$cmd
-  color_FUN <- color_out$FUN
-  color_label <- color_out$label
-
-  # Adding brushing commands.
-  brush_out <- .process_brushby_choice(param_choices, all_memory)
-
   # Generating the plot.
-  .create_plot(
-    data_cmds, se, colormap, all_coordinates,
-    param_choices=param_choices, x_lab=x_lab, y_lab=y_lab,
-    color_FUN=color_FUN, color_label=color_label, 
-    brush_cmd=brush_out$cmd, brush_color=brush_stroke_color_full["colData"]
+  .create_plot(data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
+    x_lab=x_lab, y_lab=y_lab,
+    brush_color=brush_stroke_color_full["colData"]
   )
 }
 
@@ -93,7 +70,7 @@ names(.all_labs_values) <- .all_aes_names
 # .make_geneExprPlot  ----
 ############################################
 
-.make_geneExprPlot <- function(id, se, all_coordinates, all_memory, colormap)
+.make_geneExprPlot <- function(id, all_memory, all_coordinates, se, colormap)
 # Makes a gene expression plot.
 {
   param_choices <- all_memory$geneExpr[id,]
@@ -163,21 +140,10 @@ names(.all_labs_values) <- .all_aes_names
     data_cmds[["x"]] <- "plot.data$X <- factor(character(ncol(se)))"
   }
 
-  # Adding colour commands.
-  color_out <- .process_colorby_choice(param_choices, se, all_memory)
-  data_cmds[["color"]] <- color_out$cmd
-  color_FUN <- color_out$FUN
-  color_label <- color_out$label
-
-  # Adding brushing commands.
-  brush_out <- .process_brushby_choice(param_choices, all_memory)
-
   # Generating the plot.
-  .create_plot(
-    data_cmds, se, colormap, all_coordinates,
-    param_choices=param_choices, x_lab=x_lab, y_lab=y_lab,
-    color_FUN=color_FUN, color_label=color_label, 
-    brush_cmd=brush_out$cmd, brush_color=brush_stroke_color_full["geneExpr"]
+  .create_plot(data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
+    x_lab=x_lab, y_lab=y_lab,
+    brush_color=brush_stroke_color_full["geneExpr"]
   )
 }
 
@@ -185,23 +151,28 @@ names(.all_labs_values) <- .all_aes_names
 # Internal functions: central plotter ----
 ############################################
 
-.create_plot <- function(data_cmds, se, colormap, all_coordinates, ...)
+.create_plot <- function(data_cmds, param_choices, all_memory, all_coordinates, se, colormap, ...)
 # This function will generate plotting commands appropriate to
 # each type of X/Y. It does so by evaluating 'plot.data' to
 # determine the nature of X/Y, and then choosing the plot to match.
 #
-# Note that we need 'se', 'colormap', and 'all_coordinates' to be passed as arguments
+# Note that we need 'all_coordinates' to be passed as an argument
 # for the evaluations to execute in this environment. All evaluations
 # are to take place in this function, not in the calling environment
 # or in child environments. This constrains the scope of 'eval' calls.
 {
+  # Adding colour commands.
+  color_out <- .process_colorby_choice(param_choices, all_memory, se, colormap)
+  data_cmds[["color"]] <- color_out$cmd
+  color_label <- color_out$label
+
+  # Evaluating to check the grouping status of various fields. It is important that 
+  # non-numeric X/Y become explicit factors here, which simplifies downstream 
+  # processing (e.g., coercion to integer, no lost levels upon subsetting).
   eval_env <- new.env()
   eval(parse(text=unlist(data_cmds)), envir=eval_env)
   more_data_cmds <- list() 
 
-  # Cleaning up the grouping status of various fields. It is important that 
-  # non-numeric X/Y become explicit factors here, which simplifies downstream 
-  # processing (e.g., coercion to integer, no lost levels upon subsetting).
   xvals <- eval_env$plot.data$X
   group_X <- .is_groupable(xvals)
   if (!group_X) {
@@ -218,30 +189,39 @@ names(.all_labs_values) <- .all_aes_names
     more_data_cmds[["more_Y"]] <- "plot.data$Y <- as.factor(plot.data$Y);"
   }
 
+  # Choosing a color scale based on the nature of ColorBy.
   coloring <- eval_env$plot.data$ColorBy
-  n_colors <- NULL
+  color_cmd <- NULL
   if (!is.null(coloring)) {
     if (!.is_groupable(coloring)) {
       more_data_cmds[["more_color"]] <- .coerce_to_numeric(coloring, "ColorBy")
-      n_colors <- NA_integer_
+      color_cmd <- color_out$FUN(NA_integer_)
     } else {
       more_data_cmds[["more_color"]] <- "plot.data$ColorBy <- as.factor(plot.data$ColorBy);"
-      n_colors <- .nlevels(coloring)
+      color_cmd <- color_out$FUN(.nlevels(coloring))
     }
   }
-  
+
+  # Creating the command to define BrushBy.
+  brush_cmd <- .process_brushby_choice(param_choices, all_memory)
+
   # Dispatch to different plotting commands, depending on whether X/Y are groupable.
   if (group_X && group_Y) {
-    extra_cmds <- .griddotplot(..., n_colors=n_colors)
+    extra_cmds <- .griddotplot(param_choices=param_choices, ..., 
+        color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd)
 
   } else if (group_X && !group_Y) {
-    extra_cmds <- .violin_plot(..., n_colors=n_colors)
+    extra_cmds <- .violin_plot(param_choices=param_choices, ..., 
+        color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd)
 
   } else if (!group_X && group_Y) {
-    extra_cmds <- .violin_plot(..., n_colors=n_colors, horizontal=TRUE)
+    extra_cmds <- .violin_plot(param_choices=param_choices, ..., 
+        color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd,
+        horizontal=TRUE)
 
   } else {
-    extra_cmds <- .scatter_plot(..., n_colors=n_colors)
+    extra_cmds <- .scatter_plot(param_choices=param_choices, ..., 
+        color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd)
 
   }
   extra_cmds$data <- c(more_data_cmds, extra_cmds$data)
@@ -275,7 +255,7 @@ names(.all_labs_values) <- .all_aes_names
 # Internal functions: scatter plotter ----
 ############################################
 
-.scatter_plot <- function(param_choices, x_lab, y_lab, color_label, color_FUN, n_colors, brush_cmd, brush_color)
+.scatter_plot <- function(param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, brush_color)
 # Creates a scatter plot of numeric X/Y. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -283,12 +263,11 @@ names(.all_labs_values) <- .all_aes_names
   plot_cmds[["ggplot"]] <- "ggplot() +"
 
   # Setting up the colors.
-  color_cmd <- color_FUN(n_colors)
   new_aes <- .build_aes(color = !is.null(color_cmd))
  
   # Implementing the brushing effect.
-  all_brush_cmds <- list()
-  all_brush_cmds[["init"]] <- brush_cmd
+  brush_cmds <- list()
+  brush_cmds[["init"]] <- brush_cmd
 
   if (!is.null(brush_cmd)) {
     brush_effect <- param_choices[[.brushEffect]]
@@ -311,8 +290,8 @@ names(.all_labs_values) <- .all_aes_names
       # even in case of an empty brushed subset. This does _not_ replace coord_cartesian
       # (necessary for zooming, flipping and avoiding plot expansion due to brushing box),
       # or scale_*_discrete (necessary to avoid dropping empty levels).
-      all_brush_cmds[["full"]] <- "plot.data.all <- plot.data;"
-      all_brush_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
+      brush_cmds[["full"]] <- "plot.data.all <- plot.data;"
+      brush_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
       plot_cmds[["brush_blank"]] <- 
         "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
       plot_cmds[["brush_restrict"]] <- sprintf("geom_point(%s, plot.data) +", new_aes)
@@ -350,32 +329,27 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
 
   # lim_cmds must be executed before setup_cmds when brushing to restrict!
-  return(list(data=list(), lim=lim_cmds, brush=all_brush_cmds, setup=list(), plot=plot_cmds))
+  return(list(data=list(), lim=lim_cmds, brush=brush_cmds, setup=list(), plot=plot_cmds))
 }
 
 ############################################
 # Internal functions: violin plotter ----
 ############################################
 
-.violin_plot <- function(param_choices, x_lab, y_lab, color_label, color_FUN, n_colors, brush_cmd, brush_color, horizontal = FALSE)
+.violin_plot <- function(param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, brush_color, horizontal = FALSE)
 # Generates a vertical violin plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
-  color_cmd <- color_FUN(n_colors)
-  color_set <- !is.null(color_cmd)
-
-  # Setting up the violin structures.
-  setup_cmds <- list()
-  setup_cmds[["group"]] <- "plot.data$GroupBy <- plot.data$X;"
-  fill_set <- (color_set && !is.finite(n_colors))
-  if (fill_set) {
-    setup_cmds[["fill"]] <- "plot.data$FillBy <- plot.data$ColorBy;"
-  }
-
   plot_cmds <- list()
   plot_cmds[["ggplot"]] <- "ggplot(plot.data) +" # do NOT put aes here, it does not play nice with shiny brushes.
-  viol_aes <- .build_aes(color = color_set, fill = FALSE, group = TRUE)
-  plot_cmds[["violin"]] <- sprintf("geom_violin(%s, alpha = 0.2, data=plot.data, scale = 'width') +", viol_aes)
+  color_set <- !is.null(color_cmd)
+  
+  setup_cmds <- list()
+  setup_cmds[["group"]] <- "plot.data$GroupBy <- plot.data$X;"
+  plot_cmds[["violin"]] <- sprintf(
+    "geom_violin(%s, alpha = 0.2, data=plot.data, scale = 'width') +", 
+    .build_aes(color = FALSE, group = TRUE)
+  )
 
   # Switching X and Y axes if we want a horizontal violin plot.
   # This is done in lim_cmds to guarantee sensible limits, though
@@ -400,8 +374,8 @@ plot.data$Y <- tmp;")
     method='quasirandom', nbins=NULL) + as.integer(plot.data$X);"
 
   # Implementing the brushing effect.
-  all_brush_cmds <- list()
-  all_brush_cmds[["init"]] <- brush_cmd
+  brush_cmds <- list()
+  brush_cmds[["init"]] <- brush_cmd
 
   new_aes <- .build_aes(color = color_set, alt=c(x="jitteredX"))
   if (!is.null(brush_cmd)) {
@@ -423,26 +397,24 @@ plot.data$Y <- tmp;")
     } else if (brush_effect==.brushRestrictTitle) {
       # Duplicate plot.data before brushing, to make sure that axes are retained
       # even in case of an empty brushed subset
-      all_brush_cmds[["full"]] <- "plot.data.all <- plot.data;"
+      brush_cmds[["full"]] <- "plot.data.all <- plot.data;"
       
       # Need to subset explicitly, to adjust the density calculations and ensure
       # downstream brushes are correct. Note, subsetting BEFORE vipor calculations.
-      all_brush_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
+      brush_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
       
       plot_cmds[["brush_blank"]] <- 
         "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
-      plot_cmds[["violin"]] <- sprintf("geom_violin(data = plot.data, %s, alpha = 0.2, scale = 'width') +", viol_aes)
       plot_cmds[["brush_restrict"]] <- sprintf("geom_point(%s, plot.data) +", new_aes)
     }
   } else {
-    plot_cmds[["point"]] <- sprintf("geom_point(%s, alpha = 0.6, size = 1) +", new_aes)
+    plot_cmds[["point"]] <- sprintf("geom_point(%s) +", new_aes)
   }
 
   plot_cmds[["labs"]] <- .build_labs(
     x = x_lab,
     y = y_lab,
-    color = color_label,
-    fill = color_label
+    color = color_label
   )
 
   # Defining boundaries if zoomed. This requires some finesse to deal
@@ -477,14 +449,14 @@ plot.data$Y <- tmp;")
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
 
   # lim_cmds must be executed before setup_cmds, to ensure bounds are correctly defined.
-  return(list(data=data_cmds, lim=lim_cmds, brush=all_brush_cmds, setup=setup_cmds, plot=plot_cmds))
+  return(list(data=data_cmds, lim=lim_cmds, brush=brush_cmds, setup=setup_cmds, plot=plot_cmds))
 }
 
 ############################################
 # Internal functions: rectangle plotter ----
 ############################################
 
-.griddotplot <- function(param_choices, x_lab, y_lab, color_label, color_FUN, n_colors, brush_cmd, brush_color)
+.griddotplot <- function(param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, brush_color)
 # Generates a grid dot plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -502,15 +474,12 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
 
   plot_cmds <- list()
   plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
-
-  # Determining the colors to use.
-  color_cmd <- color_FUN(n_colors)
   new_aes <- .build_aes(color = !is.null(color_cmd), alt=c(x="jitteredX", y="jitteredY"))
 
+  brush_cmds <- list()
+  brush_cmds[["init"]] <- brush_cmd
+
   # Implementing the brushing effect.
-  all_brush_cmds <- list()
-  all_brush_cmds[["init"]] <- brush_cmd
-  
   if (!is.null(brush_cmd)) {
     brush_effect <- param_choices[[.brushEffect]]
 
@@ -541,10 +510,10 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
     if (brush_effect==.brushRestrictTitle) {
       # Duplicate plot.data before brushing, to make sure that axes are retained
       # even in case of an empty brushed subset
-      all_brush_cmds[["full"]] <- "plot.data.all <- plot.data;"
+      brush_cmds[["full"]] <- "plot.data.all <- plot.data;"
       
       # Note subsetting must occur before all other calculations.
-      all_brush_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
+      brush_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
       
       plot_cmds[["brush_blank"]] <- 
         "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
@@ -574,8 +543,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
   plot_cmds[["labs"]] <- .build_labs(
     x = x_lab,
     y = y_lab,
-    color = color_label,
-    fill = color_label
+    color = color_label
   )
 
   # Defining boundaries if zoomed.
@@ -594,14 +562,14 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom', legend.box = 'vertical')"
 
-  return(list(data=list(), lim=list(), brush=all_brush_cmds, setup=setup_cmds, plot=plot_cmds))
+  return(list(data=list(), lim=list(), brush=brush_cmds, setup=setup_cmds, plot=plot_cmds))
 }
 
 ############################################
-# Internal functions: coloring/brushing ----
+# Internal functions: coloring ----
 ############################################
 
-.process_colorby_choice <- function(param_choices, se, all_memory, colormap) {
+.process_colorby_choice <- function(param_choices, all_memory, se, colormap) {
   output <- list(cmd=NULL, label=NA_character_, FUN=NULL)
   color_choice <- param_choices[[.colorByField]]
   colormap_cmd <- NULL
@@ -663,8 +631,8 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
     function(nlevels) {
         if (is.finite(nlevels)) {
             cm_command <- sprintf(command, "TRUE", nlevels)
-            return(list(sprintf("scale_color_manual(values=%s, na.value='grey50') +", cm_command),
-                        sprintf("scale_fill_manual(values=%s, na.value='grey50') +", cm_command)))
+            return(list(sprintf("scale_color_manual(values=%s, na.value='grey50', drop=FALSE) +", cm_command),
+                        sprintf("scale_fill_manual(values=%s, na.value='grey50', drop=FALSE) +", cm_command)))
         } else {
             cm_command <- sprintf(command, "FALSE", 21L)
             return(list(sprintf("scale_color_gradientn(colors=%s, na.value='grey50') +", cm_command),
@@ -679,7 +647,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
 
 .process_brushby_choice <- function(param_choices, all_memory) {
   brush_in <- param_choices[[.brushByPlot]]
-  output <- list(cmd=NULL)
+  cmd <- NULL
 
   # Checking what points are brushed from the transmitting plot.
   if (brush_in != "") {
@@ -702,11 +670,11 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
         brush_val$direction, brush_val$mapping$x, brush_val$mapping$y)
 
         cmd <- c(cmd, "plot.data$BrushBy <- rownames(plot.data) %in% rownames(brushed_pts);")
-        output$cmd <- paste(cmd, collapse="\n")
+        cmd <- paste(cmd, collapse="\n")
     }
   }
 
-  return(output)
+  return(cmd)
 }
 
 .self_brush_box <- function(param_choices, color, flip=FALSE) { 

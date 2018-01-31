@@ -151,13 +151,13 @@ height_limits <- c(400L, 1000L)
 
     for (mode in c("redDim", "colData", "geneExpr")) {
         bb <- memory[[mode]][,.brushByPlot]
-        bad <- bb %in% brush_names
+        bad <- !bb %in% brush_names
         if (any(bad)) { 
             memory[[mode]][,.brushByPlot][bad] <- ""
         }
 
         cb <- memory[[mode]][,.colorByGeneTable]
-        bad <- cb %in% link_names 
+        bad <- !cb %in% link_names 
         if (any(bad)) { 
             memory[[mode]][,.colorByGeneTable][bad] <- ""
         }
@@ -165,7 +165,7 @@ height_limits <- c(400L, 1000L)
 
     for (field in c(.geneExprXAxisGeneTable, .geneExprYAxisGeneTable)) {
         bb <- memory$geneExpr[,field]
-        bad <- bb %in% link_names 
+        bad <- !bb %in% link_names 
         if (any(bad)) { 
             memory$geneExpr[,field][bad] <- ""
         }

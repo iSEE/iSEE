@@ -58,7 +58,10 @@ bibliography: iSEE.bib
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  error=FALSE,
+  warning=FALSE,
+  message=FALSE
 )
 ```
 
@@ -78,7 +81,7 @@ biocLite("iSEE")
 
 To load and attach the package to your current workspace, enter:
 
-```{r library, message=FALSE, warning=FALSE}
+```{r library}
 library("iSEE")
 ```
 
@@ -90,7 +93,7 @@ Here's what you need to do:
 - Get a dataset to work with, such as the `allen` dataset from the `r Biocpkg("scRNAseq")` package.
 Transform it into a `SingleCellExperiment` object, where you can store the reduced dimension representations (here, PCA and _t_-SNE):
 
-```{r qs-data, message=FALSE}
+```{r qs-data}
 library(scRNAseq)
 data(allen)
 library(scater)

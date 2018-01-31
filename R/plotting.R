@@ -14,7 +14,7 @@ names(.all_labs_values) <- .all_aes_names
 # .make_redDimPlot  ----
 ############################################
 
-.make_redDimPlot <- function(id, se, all_coordinates, all_memory, colormap)
+.make_redDimPlot <- function(id, all_memory, all_coordinates, se, colormap)
 # Makes the dimension reduction plot.
 {
   param_choices <- all_memory$redDim[id,]
@@ -28,9 +28,7 @@ names(.all_labs_values) <- .all_aes_names
   )
 
   # Generating the plotting commands.
-  .create_plot(
-    data_cmds, se, colormap, all_coordinates, all_memory,
-    param_choices=param_choices,
+  .create_plot(data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
     x_lab=sprintf("Dimension %s", param_choices[[.redDimXAxis]]),
     y_lab=sprintf("Dimension %s", param_choices[[.redDimYAxis]]),
     brush_color=brush_stroke_color_full["redDim"]
@@ -41,7 +39,7 @@ names(.all_labs_values) <- .all_aes_names
 # .make_colDataPlot  ----
 ############################################
 
-.make_colDataPlot <- function(id, se, all_coordinates, all_memory, colormap)
+.make_colDataPlot <- function(id, all_memory, all_coordinates, se, colormap)
 # Makes a plot of column data variables.
 {
   param_choices <- all_memory$colData[id,]
@@ -62,9 +60,8 @@ names(.all_labs_values) <- .all_aes_names
   }
 
   # Generating the plot.
-  .create_plot(
-    data_cmds, se, colormap, all_coordinates, all_memory,
-    param_choices=param_choices, x_lab=x_lab, y_lab=y_lab,
+  .create_plot(data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
+    x_lab=x_lab, y_lab=y_lab,
     brush_color=brush_stroke_color_full["colData"]
   )
 }
@@ -73,7 +70,7 @@ names(.all_labs_values) <- .all_aes_names
 # .make_geneExprPlot  ----
 ############################################
 
-.make_geneExprPlot <- function(id, se, all_coordinates, all_memory, colormap)
+.make_geneExprPlot <- function(id, all_memory, all_coordinates, se, colormap)
 # Makes a gene expression plot.
 {
   param_choices <- all_memory$geneExpr[id,]
@@ -144,9 +141,8 @@ names(.all_labs_values) <- .all_aes_names
   }
 
   # Generating the plot.
-  .create_plot(
-    data_cmds, se, colormap, all_coordinates, all_memory,
-    param_choices=param_choices, x_lab=x_lab, y_lab=y_lab,
+  .create_plot(data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
+    x_lab=x_lab, y_lab=y_lab,
     brush_color=brush_stroke_color_full["geneExpr"]
   )
 }
@@ -155,18 +151,18 @@ names(.all_labs_values) <- .all_aes_names
 # Internal functions: central plotter ----
 ############################################
 
-.create_plot <- function(data_cmds, se, colormap, all_coordinates, all_memory, param_choices, ...)
+.create_plot <- function(data_cmds, param_choices, all_memory, all_coordinates, se, colormap, ...)
 # This function will generate plotting commands appropriate to
 # each type of X/Y. It does so by evaluating 'plot.data' to
 # determine the nature of X/Y, and then choosing the plot to match.
 #
-# Note that we need 'se' and 'all_coordinates' to be passed as arguments
+# Note that we need 'all_coordinates' to be passed as an argument
 # for the evaluations to execute in this environment. All evaluations
 # are to take place in this function, not in the calling environment
 # or in child environments. This constrains the scope of 'eval' calls.
 {
   # Adding colour commands.
-  color_out <- .process_colorby_choice(param_choices, se, all_memory, colormap)
+  color_out <- .process_colorby_choice(param_choices, all_memory, se, colormap)
   data_cmds[["color"]] <- color_out$cmd
   color_label <- color_out$label
 
@@ -573,7 +569,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
 # Internal functions: coloring ----
 ############################################
 
-.process_colorby_choice <- function(param_choices, se, all_memory, colormap) {
+.process_colorby_choice <- function(param_choices, all_memory, se, colormap) {
   output <- list(cmd=NULL, label=NA_character_, FUN=NULL)
   color_choice <- param_choices[[.colorByField]]
   colormap_cmd <- NULL

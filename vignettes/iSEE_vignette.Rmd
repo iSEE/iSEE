@@ -67,7 +67,7 @@ knitr::opts_chunk$set(
 <!-- logo? MOS DEF :) -->
 
 `r Biocpkg("iSEE")` is a [Bioconductor](http://bioconductor.org) package that provides an interactive Shiny-based graphical user interface for exploring data stored in `SummarizedExperiment` objects, including row- and column-level metadata. 
-Particular attention is given to single-cell data in a `SingleCellExperiment` object with visualization of dimensionality reduction results, e.g., from principal components analysis or _t_-distributed stochastic neighbour embedding [@van2008visualizing].
+Particular attention is given to single-cell data in a `SingleCellExperiment` object with visualization of dimensionality reduction results, e.g., from principal components analysis (PCA) or _t_-distributed stochastic neighbour embedding (_t_-SNE, [@van2008visualizing]).
 
 To install the package, start R and enter:
 
@@ -185,7 +185,7 @@ A very useful element is the "Extract the R code!" button marked with the **magi
 By clicking on this, the user opens up a modal popup window, where an instance of a text editor (based on the `r CRANpkg("ShinyAce")` package) contains the code snippet required to reproduce the plots created in the live session. 
 This is typically used at the end of each exploration to extract a reproducible snapshot of the commands, which can be further edited to finalize the plots (e.g., for publication). 
 
-<!-- NEED TO ADD A DESCRIPTION OF THE GRAPH -->
+Another functionality in the `iSEE diagnostics` dropdown, a button clickable marked with the chain icon, allows you to obtain a graph representation of the existing links and brushes among your open plot and table panels (coded with the same colors as in the app). This can be very useful once you open a multitude of panels, so that you can easily get an overview of their structure.
 
 ## The `r Biocpkg("iSEE")` sidebar
 

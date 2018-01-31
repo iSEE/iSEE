@@ -11,7 +11,7 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, geneExprArgs = NULL,
   colormap = ExperimentColorMap(), run_local = TRUE)
 }
 \arguments{
-\item{se}{An object that coercible to \linkS4class{SingleCellExperiment}.}
+\item{se}{An object that coercible to \code{\linkS4class{SingleCellExperiment}}.}
 
 \item{redDimArgs}{A DataFrame similar to that produced by
 \code{\link{redDimPlotDefaults}}, specifying initial parameters for the plots.}

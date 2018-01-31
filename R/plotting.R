@@ -272,9 +272,9 @@ names(.all_labs_values) <- .all_aes_names
   if (!is.null(brush_cmd)) {
     brush_effect <- param_choices[[.brushEffect]]
     if (brush_effect==.brushColorTitle) {
-      plot_cmds[["brush_other"]] <- sprintf("geom_point(%s, subset(plot.data, !BrushBy)) +", new_aes)
+      plot_cmds[["brush_other"]] <- sprintf("geom_point(%s, alpha = 0.6, data = subset(plot.data, !BrushBy)) +", new_aes)
       plot_cmds[["brush_color"]] <- sprintf(
-        "geom_point(%s, data = subset(plot.data, BrushBy), color = %s) +",
+        "geom_point(%s, alpha = 0.6, data = subset(plot.data, BrushBy), color = %s) +",
         new_aes, deparse(param_choices[[.brushColor]])
       )
     }
@@ -294,10 +294,10 @@ names(.all_labs_values) <- .all_aes_names
       brush_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
       plot_cmds[["brush_blank"]] <- 
         "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
-      plot_cmds[["brush_restrict"]] <- sprintf("geom_point(%s, plot.data) +", new_aes)
+      plot_cmds[["brush_restrict"]] <- sprintf("geom_point(%s, alpha = 0.6, plot.data) +", new_aes)
     }
   } else {
-    plot_cmds[["point"]] <- sprintf("geom_point(%s, plot.data) +", new_aes)
+    plot_cmds[["point"]] <- sprintf("geom_point(%s, alpha = 0.6, plot.data) +", new_aes)
   }
 
   # Add axes labels
@@ -381,9 +381,9 @@ plot.data$Y <- tmp;")
   if (!is.null(brush_cmd)) {
     brush_effect <- param_choices[[.brushEffect]]
     if (brush_effect==.brushColorTitle) {
-      plot_cmds[["brush_other"]] <- sprintf("geom_point(%s, subset(plot.data, !BrushBy)) +", new_aes)
+      plot_cmds[["brush_other"]] <- sprintf("geom_point(%s, alpha = 0.6, data = subset(plot.data, !BrushBy)) +", new_aes)
       plot_cmds[["brush_color"]] <- sprintf(
-        "geom_point(%s, data = subset(plot.data, BrushBy), color = %s) +",
+        "geom_point(%s, alpha = 0.6, data = subset(plot.data, BrushBy), color = %s) +",
         new_aes, deparse(param_choices[[.brushColor]])
       )
 
@@ -405,10 +405,10 @@ plot.data$Y <- tmp;")
       
       plot_cmds[["brush_blank"]] <- 
         "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
-      plot_cmds[["brush_restrict"]] <- sprintf("geom_point(%s, plot.data) +", new_aes)
+      plot_cmds[["brush_restrict"]] <- sprintf("geom_point(%s, alpha = 0.6, data = plot.data) +", new_aes)
     }
   } else {
-    plot_cmds[["point"]] <- sprintf("geom_point(%s) +", new_aes)
+    plot_cmds[["point"]] <- sprintf("geom_point(%s, alpha = 0.6) +", new_aes)
   }
 
   plot_cmds[["labs"]] <- .build_labs(
@@ -487,11 +487,11 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
       plot_cmds[["point"]] <-
         "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, color = 'black', alpha = 0, size = 0.5) +"
       plot_cmds[["brush_other"]] <- sprintf(
-        "geom_point(%s, subset(plot.data, !BrushBy), width = 0.2, height = 0.2) +",
+        "geom_point(%s, alpha = 0.6, data = subset(plot.data, !BrushBy), width = 0.2, height = 0.2) +",
         new_aes
       )
       plot_cmds[["brush_color"]] <- sprintf(
-        "geom_point(%s, data = subset(plot.data, BrushBy), color = %s, width = 0.2, height = 0.2) +",
+        "geom_point(%s, alpha = 0.6, data = subset(plot.data, BrushBy), color = %s, width = 0.2, height = 0.2) +",
         new_aes, deparse(param_choices[[.brushColor]])
       )
     }
@@ -520,7 +520,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
       plot_cmds[["point"]] <-
         "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, color = 'black', alpha = 0, size = 0.5) +"
       plot_cmds[["brush_restrict"]] <- sprintf(
-        "geom_point(%s, plot.data, width = 0.2, height = 0.2) +",
+        "geom_point(%s, alpha = 0.6, data = plot.data, width = 0.2, height = 0.2) +",
         new_aes
       )
     }
@@ -528,7 +528,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
     plot_cmds[["point"]] <-
       "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, color = 'black', alpha = 0, size = 0.5) +"
     plot_cmds[["jitter"]] <- sprintf(
-      "geom_point(%s, plot.data, width = 0.2, height = 0.2, alpha = 0.4) +",
+      "geom_point(%s, plot.data, width = 0.2, height = 0.2, alpha = 0.6) +",
       new_aes
     )
   }

@@ -187,7 +187,7 @@ setClass("ExperimentColorMap",
 #' 
 #' # Constructor ----
 #'
-#' ecm <- new("ExperimentColorMap",
+#' ecm <- ExperimentColorMap(
 #'     assays = list(
 #'         counts = count_colors,
 #'         tophat_counts = count_colors,

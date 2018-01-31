@@ -385,7 +385,32 @@ This will open the app with two gene expression plots, showing the selected gene
 
 ## Use case III: Exploring mass cytometry data
 
-The flexibility of the `iSEE` interface means that it can be used to explore a variety of data types that can be represented in tabular format. Here we show how it can be used to analyze a mass cytometry (CyTOF) data set. This data set contains 
+The flexibility of the `iSEE` interface means that it can be used to explore a variety of data types that can be represented in tabular format. 
+Here we show how it can be used to analyze a mass cytometry (CyTOF) data set, by defining a start configuration mimicking the familiar gating setup, consisting of multiple two-dimensional scatter plots.
+The example data set was prepared as described by [@Nowicka2017], and the code to generate a SummarizedExperiment object is available from [](). 
+Here we use a subset of the original data, consisting of 5,000 randomly selected cells, for which 35 markers are measured. 
+
+The traditional way of analyzing cytometry experiments and identify known cell populations is to construct a collection of two-dimensional scatter plots, each visualizing all the cells in the space of two of the measured markers. 
+By successively selecting subsets of cells with specific patterns of marker abundance, experienced users can assign cells to known populations. 
+To mimic part of the original gating strategy from [@Bodenmiller], we define a starting configuration with four gene expression plots, each showing two of the markers. 
+We also include a reduced dimension plot, in which the cells are colored by the automatic cluster assignment by FlowSOM as described in [@Nowicka2017]. 
+
+```{r}
+cytof <- readRDS("../../cytof_example_5000.rds")
+initialPanels = DataFrame(Name = c(paste("Gene expression plot", 1:4), 
+                                   "Reduced dimension plot 1"),
+                               Width = 3)
+gexArg <- DataFrame(XAxis = "Gene text", YAxis = "Gene text",
+                    XAxisGeneText = c("Cell_length", "CD3", "CD7", "CD3"), 
+                    YAxisGeneText = c("CD45", "CD20", "CD45", "CD33"),
+                    BrushByPlot = c("", paste("Gene expression plot", 1:3)),
+                    BrushEffect = "Restrict")
+redArg <- DataFrame(ColorBy = "Column data")
+iSEE(cytof, initialPanels = initialPanels, geneExprArgs = gexArg, redDimArgs = redArg)
+
+```
+
+
 
 ## Use case IV: Using the `ExperimentHub`
 

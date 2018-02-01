@@ -262,43 +262,11 @@ names(.all_labs_values) <- .all_aes_names
   plot_cmds <- list()
   plot_cmds[["ggplot"]] <- "ggplot() +"
 
-  # Setting up the colors.
+  # Adding points to the plot (with/without colors).
   new_aes <- .build_aes(color = !is.null(color_cmd))
- 
-  # Implementing the brushing effect.
-  brush_cmds <- list()
-  brush_cmds[["init"]] <- brush_cmd
-
-  if (!is.null(brush_cmd)) {
-    brush_effect <- param_choices[[.brushEffect]]
-    if (brush_effect==.brushColorTitle) {
-      plot_cmds[["brush_other"]] <- sprintf("geom_point(%s, alpha = 0.6, data = subset(plot.data, !BrushBy)) +", new_aes)
-      plot_cmds[["brush_color"]] <- sprintf(
-        "geom_point(%s, alpha = 0.6, data = subset(plot.data, BrushBy), color = %s) +",
-        new_aes, deparse(param_choices[[.brushColor]])
-      )
-    }
-    if (brush_effect==.brushTransTitle) {
-      plot_cmds[["brush_other"]] <- sprintf(
-        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %.2f) +",
-        new_aes, param_choices[[.brushTransAlpha]]
-      )
-      plot_cmds[["brush_alpha"]] <- sprintf("geom_point(%s, subset(plot.data, BrushBy)) +", new_aes)
-    }
-    if (brush_effect==.brushRestrictTitle) {
-      # Duplicate plot.data before brushing, to make sure that axes are retained
-      # even in case of an empty brushed subset. This does _not_ replace coord_cartesian
-      # (necessary for zooming, flipping and avoiding plot expansion due to brushing box),
-      # or scale_*_discrete (necessary to avoid dropping empty levels).
-      brush_cmds[["full"]] <- "plot.data.all <- plot.data;"
-      brush_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
-      plot_cmds[["brush_blank"]] <- 
-        "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
-      plot_cmds[["brush_restrict"]] <- sprintf("geom_point(%s, alpha = 0.6, plot.data) +", new_aes)
-    }
-  } else {
-    plot_cmds[["point"]] <- sprintf("geom_point(%s, alpha = 0.6, plot.data) +", new_aes)
-  }
+  point_out <- .create_points(param_choices, brush_cmd, new_aes)
+  brush_cmds <- point_out$brush  
+  plot_cmds <- c(plot_cmds, point_out$plot)
 
   # Add axes labels
   plot_cmds[["labs"]] <- .build_labs(
@@ -341,7 +309,7 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);"
 # generate the plotting commands, with no modification of 'cmds'.
 {
   plot_cmds <- list()
-  plot_cmds[["ggplot"]] <- "ggplot(plot.data) +" # do NOT put aes here, it does not play nice with shiny brushes.
+  plot_cmds[["ggplot"]] <- "ggplot() +" # do NOT put aes here, it does not play nice with shiny brushes.
   color_set <- !is.null(color_cmd)
   
   setup_cmds <- list()
@@ -373,43 +341,11 @@ plot.data$Y <- tmp;")
     x=plot.data$X, width=0.4, varwidth=FALSE, adjust=1,
     method='quasirandom', nbins=NULL) + as.integer(plot.data$X);"
 
-  # Implementing the brushing effect.
-  brush_cmds <- list()
-  brush_cmds[["init"]] <- brush_cmd
-
+  # Adding the points to the plot (with/without brushing).
   new_aes <- .build_aes(color = color_set, alt=c(x="jitteredX"))
-  if (!is.null(brush_cmd)) {
-    brush_effect <- param_choices[[.brushEffect]]
-    if (brush_effect==.brushColorTitle) {
-      plot_cmds[["brush_other"]] <- sprintf("geom_point(%s, alpha = 0.6, data = subset(plot.data, !BrushBy)) +", new_aes)
-      plot_cmds[["brush_color"]] <- sprintf(
-        "geom_point(%s, alpha = 0.6, data = subset(plot.data, BrushBy), color = %s) +",
-        new_aes, deparse(param_choices[[.brushColor]])
-      )
-
-    } else  if (brush_effect==.brushTransTitle) {
-      plot_cmds[["brush_other"]] <- sprintf(
-        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %.2f) +",
-        new_aes, param_choices[[.brushTransAlpha]]
-      )
-      plot_cmds[["brush_alpha"]] <- sprintf("geom_point(%s, subset(plot.data, BrushBy)) +", new_aes)
-
-    } else if (brush_effect==.brushRestrictTitle) {
-      # Duplicate plot.data before brushing, to make sure that axes are retained
-      # even in case of an empty brushed subset
-      brush_cmds[["full"]] <- "plot.data.all <- plot.data;"
-      
-      # Need to subset explicitly, to adjust the density calculations and ensure
-      # downstream brushes are correct. Note, subsetting BEFORE vipor calculations.
-      brush_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
-      
-      plot_cmds[["brush_blank"]] <- 
-        "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
-      plot_cmds[["brush_restrict"]] <- sprintf("geom_point(%s, alpha = 0.6, data = plot.data) +", new_aes)
-    }
-  } else {
-    plot_cmds[["point"]] <- sprintf("geom_point(%s, alpha = 0.6) +", new_aes)
-  }
+  point_out <- .create_points(param_choices, brush_cmd, new_aes)
+  brush_cmds <- point_out$brush  
+  plot_cmds <- c(plot_cmds, point_out$plot)
 
   plot_cmds[["labs"]] <- .build_labs(
     x = x_lab,
@@ -474,64 +410,14 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
 
   plot_cmds <- list()
   plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
+  plot_cmds[["tile"]] <- "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius),
+    summary.data, color = 'black', alpha = 0, size = 0.5) +"
+
+  # Adding the points to the plot (with/without brushing).
   new_aes <- .build_aes(color = !is.null(color_cmd), alt=c(x="jitteredX", y="jitteredY"))
-
-  brush_cmds <- list()
-  brush_cmds[["init"]] <- brush_cmd
-
-  # Implementing the brushing effect.
-  if (!is.null(brush_cmd)) {
-    brush_effect <- param_choices[[.brushEffect]]
-
-    if (brush_effect==.brushColorTitle) {
-      plot_cmds[["point"]] <-
-        "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, color = 'black', alpha = 0, size = 0.5) +"
-      plot_cmds[["brush_other"]] <- sprintf(
-        "geom_point(%s, alpha = 0.6, data = subset(plot.data, !BrushBy), width = 0.2, height = 0.2) +",
-        new_aes
-      )
-      plot_cmds[["brush_color"]] <- sprintf(
-        "geom_point(%s, alpha = 0.6, data = subset(plot.data, BrushBy), color = %s, width = 0.2, height = 0.2) +",
-        new_aes, deparse(param_choices[[.brushColor]])
-      )
-    }
-    if (brush_effect==.brushTransTitle) {
-      plot_cmds[["point"]] <-
-        "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, color = 'black', alpha = 0, size = 0.5) +"
-      plot_cmds[["brush_other"]] <- sprintf(
-        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %.2f, width = 0.2, height = 0.2) +",
-        new_aes, param_choices[[.brushTransAlpha]]
-      )
-      plot_cmds[["brush_alpha"]] <- sprintf(
-        "geom_point(%s, subset(plot.data, BrushBy)) +",
-        new_aes
-      )
-    }
-    if (brush_effect==.brushRestrictTitle) {
-      # Duplicate plot.data before brushing, to make sure that axes are retained
-      # even in case of an empty brushed subset
-      brush_cmds[["full"]] <- "plot.data.all <- plot.data;"
-      
-      # Note subsetting must occur before all other calculations.
-      brush_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
-      
-      plot_cmds[["brush_blank"]] <- 
-        "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
-      plot_cmds[["point"]] <-
-        "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, color = 'black', alpha = 0, size = 0.5) +"
-      plot_cmds[["brush_restrict"]] <- sprintf(
-        "geom_point(%s, alpha = 0.6, data = plot.data, width = 0.2, height = 0.2) +",
-        new_aes
-      )
-    }
-  } else {
-    plot_cmds[["point"]] <-
-      "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius), summary.data, color = 'black', alpha = 0, size = 0.5) +"
-    plot_cmds[["jitter"]] <- sprintf(
-      "geom_point(%s, plot.data, width = 0.2, height = 0.2, alpha = 0.6) +",
-      new_aes
-    )
-  }
+  point_out <- .create_points(param_choices, brush_cmd, new_aes)
+  brush_cmds <- point_out$brush  
+  plot_cmds <- c(plot_cmds, point_out$plot)
 
   plot_cmds[["scale"]] <- "scale_size_area(limits = c(0, 1), max_size = 30) +"
 
@@ -675,6 +561,58 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
   }
 
   return(cmd)
+}
+
+.create_points <- function(param_choices, brush_cmd, aes) 
+# Implementing the brushing effect.
+{
+  brush_cmds <- list()
+  brush_cmds[["init"]] <- brush_cmd
+  plot_cmds <- list()
+
+  if (!is.null(brush_cmd)) {
+    brush_effect <- param_choices[[.brushEffect]]
+    if (brush_effect==.brushColorTitle) {
+      plot_cmds[["brush_other"]] <- sprintf(
+        "geom_point(%s, alpha = 0.6, data = subset(plot.data, !BrushBy)) +", 
+        aes
+      )
+      plot_cmds[["brush_color"]] <- sprintf(
+        "geom_point(%s, alpha = 0.6, data = subset(plot.data, BrushBy), color = %s) +",
+        aes, deparse(param_choices[[.brushColor]])
+      )
+    }
+    if (brush_effect==.brushTransTitle) {
+      plot_cmds[["brush_other"]] <- sprintf(
+        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %.2f) +",
+        aes, param_choices[[.brushTransAlpha]]
+      )
+      plot_cmds[["brush_alpha"]] <- sprintf(
+        "geom_point(%s, subset(plot.data, BrushBy)) +", 
+        aes
+      )
+    }
+    if (brush_effect==.brushRestrictTitle) {
+      # Duplicate plot.data before brushing, to make sure that axes are retained
+      # even in case of an empty brushed subset. This does _not_ replace coord_cartesian
+      # (necessary for zooming, flipping and avoiding plot expansion due to brushing box),
+      # or scale_*_discrete (necessary to avoid dropping empty levels).
+      brush_cmds[["full"]] <- "plot.data.all <- plot.data;"
+      brush_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
+      plot_cmds[["brush_blank"]] <- "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
+      plot_cmds[["brush_restrict"]] <- sprintf(
+        "geom_point(%s, alpha = 0.6, plot.data) +", 
+        aes
+      )
+    }
+  } else {
+    plot_cmds[["point"]] <- sprintf(
+      "geom_point(%s, alpha = 0.6, plot.data) +", 
+      aes
+    )
+  }
+  
+  return(list(brush=brush_cmds, plot=plot_cmds))
 }
 
 .self_brush_box <- function(param_choices, color, flip=FALSE) { 

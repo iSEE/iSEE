@@ -315,7 +315,7 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);"
   setup_cmds <- list()
   setup_cmds[["group"]] <- "plot.data$GroupBy <- plot.data$X;"
   plot_cmds[["violin"]] <- sprintf(
-    "geom_violin(%s, alpha = 0.2, data=plot.data, scale = 'width') +", 
+    "geom_violin(%s, alpha = 0.2, data=plot.data, scale = 'width', width = 0.9) +", 
     .build_aes(color = FALSE, group = TRUE)
   )
 

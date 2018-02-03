@@ -124,26 +124,50 @@ test_that("Discrepancies between ECM and SE objects are detected", {
     iSEE:::isColorMapCompatible(ecm_manyAssays, sce, error = TRUE),
     "More assays in color map"
   )
-  
-  expect_error(
-    iSEE:::isColorMapCompatible(nullECM, sce, error = TRUE),
-    "assay `.*` in color map missing in experiment"
+  expect_identical(
+    iSEE:::isColorMapCompatible(ecm_manyAssays, sce, error = FALSE),
+    FALSE
   )
   
   expect_error(
     iSEE:::isColorMapCompatible(nullECM, sce, error = TRUE),
     "assay `.*` in color map missing in experiment"
+  )
+  expect_identical(
+    iSEE:::isColorMapCompatible(nullECM, sce, error = FALSE),
+    FALSE
+  )
+  
+  expect_error(
+    iSEE:::isColorMapCompatible(nullECM, sce, error = TRUE),
+    "assay `.*` in color map missing in experiment"
+  )
+  expect_identical(
+    iSEE:::isColorMapCompatible(nullECM, sce, error = FALSE),
+    FALSE
   )
   
   expect_error(
     iSEE:::isColorMapCompatible(missingColData, sce, error = TRUE),
     "colData `.*` in color map missing in experiment"
   )
+  expect_identical(
+    iSEE:::isColorMapCompatible(missingColData, sce, error = FALSE),
+    FALSE
+  )
   
   expect_error(
     iSEE:::isColorMapCompatible(missingRowData, sce, error = TRUE),
     "rowData `.*` in color map missing in experiment"
   )
+  expect_identical(
+    iSEE:::isColorMapCompatible(missingRowData, sce, error = FALSE),
+    FALSE
+  )
   
+  expect_identical(
+    iSEE:::isColorMapCompatible(ecm, sce, error = FALSE),
+    TRUE
+  )
   
 })

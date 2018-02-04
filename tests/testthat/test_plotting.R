@@ -205,3 +205,65 @@ test_that(".make_geneExprPlot works for XAxis set to Column data", {
   )
   
 })
+
+test_that(".make_geneExprPlot works for XAxis set to Gene table", {
+  # change the value locally for the specific test
+  all_memory$geneExpr[1,iSEE:::.geneExprXAxis] <- iSEE:::.geneExprXAxisGeneTableTitle
+  all_memory$geneExpr[1,iSEE:::.geneExprXAxisGeneTable] <- "Gene statistics table 1" # dynamic value?
+  
+  p.out <- iSEE:::.make_geneExprPlot(id = 1, all_memory, all_coordinates, sce, ecm)
+  
+  expect_match(
+    p.out$cmd$data$x,
+    "plot\\.data\\$X <- assay"
+  )
+  
+})
+
+test_that(".make_geneExprPlot works for XAxis set to Gene text", {
+  selected_gene <- "0610009B22Rik"
+  
+  # change the value locally for the specific test
+  all_memory$geneExpr[1,iSEE:::.geneExprXAxis] <- iSEE:::.geneExprXAxisGeneTextTitle
+  all_memory$geneExpr[1,iSEE:::.geneExprXAxisGeneText] <- selected_gene
+  
+  p.out <- iSEE:::.make_geneExprPlot(id = 1, all_memory, all_coordinates, sce, ecm)
+  
+  expect_match(
+    p.out$cmd$data$x,
+    selected_gene
+  )
+  
+})
+
+
+test_that(".make_geneExprPlot works for groupable colour covariate", {
+  selected_coldata <- "dissection_s"
+  
+  # change the value locally for the specific test
+  all_memory$geneExpr[1,iSEE:::.colorByField] <- iSEE:::.colorByColDataTitle
+  all_memory$geneExpr[1,iSEE:::.colorByColData] <- selected_coldata
+  
+  p.out <- iSEE:::.make_geneExprPlot(id = 1, all_memory, all_coordinates, sce, ecm)
+  
+  expect_match(
+    p.out$cmd$data$color,
+    selected_coldata
+  )
+  
+  expect_match(
+    p.out$cmd$data$more_color,
+    "as\\.factor"
+  )
+  
+  expect_match(
+    p.out$cmd$plot$scale_color[[1]],
+    paste("scale_color_manual", selected_coldata, sep = ".*")
+  )
+  
+  expect_match(
+    p.out$cmd$plot$scale_color[[2]],
+    paste("scale_fill_manual", selected_coldata, sep = ".*")
+  )
+  
+})

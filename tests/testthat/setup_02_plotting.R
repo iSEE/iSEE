@@ -50,6 +50,10 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);
 # Saving data for transmission
 all_coordinates[['redDimPlot1']] <- plot.data
 
+zoom_range <- c(range(head(plot.data$X, 10)), range(head(plot.data$Y, 10)))
+names(zoom_range) <- c("xmin","xmax","ymin","ymax")
+all_memory$redDim[[iSEE:::.zoomData]][[1]] <- zoom_range
+
 ################################################################################
 ## Column data plot 1 ----
 ################################################################################
@@ -72,6 +76,10 @@ plot.data$jitteredX <- vipor::offsetX(plot.data$Y,
     x=plot.data$X, width=0.4, varwidth=FALSE, adjust=1,
     method='quasirandom', nbins=NULL) + as.integer(plot.data$X);
 
+zoom_range <- c(range(head(as.numeric(plot.data$X), 10)), range(head(plot.data$Y, 10)))
+names(zoom_range) <- c("xmin","xmax","ymin","ymax")
+all_memory$colData[[iSEE:::.zoomData]][[1]] <- zoom_range
+
 ################################################################################
 ## Gene expression plot 1 ----
 ################################################################################
@@ -93,6 +101,10 @@ set.seed(100);
 plot.data$jitteredX <- vipor::offsetX(plot.data$Y,
     x=plot.data$X, width=0.4, varwidth=FALSE, adjust=1,
     method='quasirandom', nbins=NULL) + as.integer(plot.data$X)
+
+zoom_range <- c(range(head(as.numeric(plot.data$X), 10)), range(head(plot.data$Y, 10)))
+names(zoom_range) <- c("xmin","xmax","ymin","ymax")
+all_memory$geneExpr[[iSEE:::.zoomData]][[1]] <- zoom_range
 
 # Add a non-standard setting to the plotting arguments ----
 

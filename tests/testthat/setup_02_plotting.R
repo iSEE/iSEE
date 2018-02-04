@@ -81,6 +81,25 @@ names(zoom_range) <- c("xmin","xmax","ymin","ymax")
 all_memory$colData[[iSEE:::.zoomData]][[1]] <- zoom_range
 
 ################################################################################
+## Column data plot 2 ----
+################################################################################
+
+plot.data <- data.frame(Y = colData(sce)[,"passes_qc_checks_s"], row.names=colnames(sce));
+plot.data$X <- colData(sce)[,"driver_1_s"];
+plot.data$X <- as.factor(plot.data$X);
+plot.data$Y <- as.factor(plot.data$Y);
+
+# Saving data for transmission
+all_coordinates[['colDataPlot2']] <- plot.data
+
+zoom_range <- c(
+  range(head(as.numeric(plot.data$X), 10)),
+  range(head(as.numeric(plot.data$Y), 10))
+)
+names(zoom_range) <- c("xmin","xmax","ymin","ymax")
+all_memory$colData[[iSEE:::.zoomData]][[2]] <- zoom_range
+
+################################################################################
 ## Gene expression plot 1 ----
 ################################################################################
 

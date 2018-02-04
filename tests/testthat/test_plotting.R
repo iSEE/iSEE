@@ -321,46 +321,38 @@ test_that(".make_colDataPlot/.create_plot can produce horizontal violins", {
 
 # scatter plot without zoom ----
 
-test_that(".make_redDimPlot/.scatter_plot produce a valid list",{
+test_that(".scatter_plot works without zoom",{
   
   all_memory$redDim[[iSEE:::.zoomData]][1] <- list(NULL)
   
   p.out <- iSEE:::.make_redDimPlot(id = 1, all_memory, all_coordinates, sce, ecm)
   
-  # return value is a named list
-  expect_type(
-    p.out,
-    "list"
-  )
-  expect_named(
-    p.out,
-    c("cmd", "xy", "plot")
+  params <- all_memory$redDim[1,]
+  expected_xy <- data.frame(
+    X = reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
+    Y = reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
+    ColorBy = colData(sce)[,params[[iSEE:::.colorByColData]]],
+    row.names = colnames(sce)
   )
   
-  # cmd value is a named list
-  expect_type(
-    p.out$cmd,
-    "list"
-  )
-  expect_named(
-    p.out$cmd,
-    c("data","lim","brush","setup","plot")
+  expect_identical(p.out$xy, expected_xy)
+
+})
+
+test_that(".scatter_plot works without zoom",{
+  
+  all_memory$colData[[iSEE:::.zoomData]][1] <- list(NULL)
+  
+  p.out <- iSEE:::.make_colDataPlot(id = 1, all_memory, all_coordinates, sce, ecm)
+  
+  params <- all_memory$colData[1,]
+  expected_xy <- data.frame(
+    Y = colData(sce)[,params[[iSEE:::.colDataYAxis]]],
+    X = factor(rep("", ncol(sce))),
+    ColorBy = colData(sce)[,params[[iSEE:::.colorByColData]]],
+    row.names = colnames(sce)
   )
   
-  # xy value is a data frame
-  expect_s3_class(
-    p.out$xy,
-    "data.frame"
-  )
-  expect_named(
-    p.out$xy,
-    c("X","Y","ColorBy")
-  )
-  
-  #plot
-  expect_s3_class(
-    p.out$plot,
-    c("gg", "ggplot")
-  )
+  expect_identical(p.out$xy, expected_xy)
 
 })

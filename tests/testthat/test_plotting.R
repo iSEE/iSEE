@@ -318,3 +318,49 @@ test_that(".make_colDataPlot/.create_plot can produce horizontal violins", {
   )
   
 })
+
+# scatter plot without zoom ----
+
+test_that(".make_redDimPlot/.scatter_plot produce a valid list",{
+  
+  all_memory$redDim[[iSEE:::.zoomData]][1] <- list(NULL)
+  
+  p.out <- iSEE:::.make_redDimPlot(id = 1, all_memory, all_coordinates, sce, ecm)
+  
+  # return value is a named list
+  expect_type(
+    p.out,
+    "list"
+  )
+  expect_named(
+    p.out,
+    c("cmd", "xy", "plot")
+  )
+  
+  # cmd value is a named list
+  expect_type(
+    p.out$cmd,
+    "list"
+  )
+  expect_named(
+    p.out$cmd,
+    c("data","lim","brush","setup","plot")
+  )
+  
+  # xy value is a data frame
+  expect_s3_class(
+    p.out$xy,
+    "data.frame"
+  )
+  expect_named(
+    p.out$xy,
+    c("X","Y","ColorBy")
+  )
+  
+  #plot
+  expect_s3_class(
+    p.out$plot,
+    c("gg", "ggplot")
+  )
+
+})

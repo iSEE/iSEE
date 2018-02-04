@@ -12,14 +12,19 @@ geneStatMax <- 1
 
 # Change a few default settings ----
 
-redDimArgs[1,"ColorBy"] <- iSEE:::.colorByColDataTitle
+redDimArgs[1,iSEE:::.colorByField] <- iSEE:::.colorByColDataTitle
 
-colDataArgs[1,"ColorBy"] <- iSEE:::.colorByColDataTitle
+colDataArgs[1,iSEE:::.colorByField] <- iSEE:::.colorByColDataTitle
 
-colDataArgs[2,"XAxis"] <- iSEE:::.colDataXAxisColData
-colDataArgs[2,"XAxisColData"] <- "driver_1_s"
-colDataArgs[2,"YAxis"] <- "passes_qc_checks_s"
-colDataArgs[2,"ColorBy"] <- iSEE:::.colorByColDataTitle
+colDataArgs[2,iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
+colDataArgs[2,iSEE:::.colDataXAxisColData] <- "driver_1_s" # dynamic value?
+colDataArgs[2,iSEE:::.colDataYAxis] <- "passes_qc_checks_s" # dynamic value?
+colDataArgs[2,iSEE:::.colorByField] <- iSEE:::.colorByColDataTitle
+
+geneExprArgs[1,iSEE:::.geneExprYAxisGeneTable] <- "Gene statistics table 1" # dynamic value?
+geneExprArgs[1,iSEE:::.geneExprYAxisGeneTable] <- "Gene statistics table 1" # dynamic value?
+geneExprArgs[1,iSEE:::.colorByField] <- iSEE:::.colorByGeneTableTitle
+geneExprArgs[1,iSEE:::.colorByGeneTable] <- "Gene statistics table 1" # dynamic value?
 
 # Set up memory ----
 

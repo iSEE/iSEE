@@ -267,3 +267,36 @@ test_that(".make_geneExprPlot works for groupable colour covariate", {
   )
   
 })
+
+# .make_colDataPlot/.create_plot horizontal violin plots ----
+
+test_that(".make_colDataPlot/.create_plot can produce horizontal violins", {
+  selected_coldataX <- "NREADS"
+  selected_coldataY <- "driver_1_s"
+  
+  # change the value locally for the specific test
+  all_memory$colData[1,iSEE:::.colDataXAxis] <- iSEE:::.colorByColDataTitle
+  all_memory$colData[1,iSEE:::.colDataXAxisColData] <- selected_coldataX
+  
+  all_memory$colData[1,iSEE:::.colDataYAxis] <- selected_coldataY
+  
+  all_memory$colData[1,iSEE:::.colorByField] <- iSEE:::.colDataXAxisNothingTitle
+  
+  p.out <- iSEE:::.make_colDataPlot(id = 1, all_memory, all_coordinates, sce, ecm)
+  
+  expect_match(
+    p.out$cmd$data$y,
+    selected_coldataY
+  )
+  
+  expect_match(
+    p.out$cmd$data$x,
+    selected_coldataX
+  )
+  
+  expect_named(
+    p.out$xy,
+    c("Y","X")
+  )
+  
+})

@@ -175,3 +175,13 @@ test_that(".make_geneExprPlot/.scatter_plot produce a valid list",{
   )
 
 })
+
+test_that(".make_geneExprPlot works for YAxis set to Gene text", {
+  # change the value locally for the specific test
+  all_memory$geneExpr[1,iSEE:::.geneExprYAxis] <- iSEE:::.geneExprYAxisGeneTextTitle
+  set.seed(42)
+  all_memory$geneExpr[1,iSEE:::.geneExprYAxisGeneText] <- sample(rownames(sce), 1)
+  
+  p.out <- iSEE:::.make_geneExprPlot(id = 1, all_memory, all_coordinates, sce, ecm)
+  
+})

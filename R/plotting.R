@@ -644,21 +644,21 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
 ############################################
 
 .gene_axis_label <- function(se, gene_id, assay_id, multiline=FALSE){
-    if (is.integer(gene_id)) {
-      if (is.null(rownames(se))) { 
-        gene_id <- paste("Feature", gene_id)
-      } else {
-        gene_id <- rownames(se)[gene_id]
-      }
+  if (is.integer(gene_id)) {
+    if (is.null(rownames(se))) { 
+      gene_id <- paste("Feature", gene_id)
+    } else {
+      gene_id <- rownames(se)[gene_id]
     }
+  }
 
-    assay_name <- assayNames(se)[assay_id]
-    if (assay_name=="") {
-      assay_name <- paste("assay", assay_id)
-    }
+  assay_name <- assayNames(se)[assay_id]
+  if (is.null(assay_name) | identical(assay_name, "")) {
+    assay_name <- paste("assay", assay_id)
+  }
 
-    sep <- ifelse(multiline, "\n", " ")
-    sprintf("%s%s(%s)", gene_id, sep, assay_name)
+  sep <- ifelse(multiline, "\n", " ")
+  sprintf("%s%s(%s)", gene_id, sep, assay_name)
 }
 
 .build_aes <- function(x = TRUE, y = TRUE, color = FALSE, shape = FALSE, fill = FALSE, group = FALSE, alt=NULL) {

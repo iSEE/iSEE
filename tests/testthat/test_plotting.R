@@ -392,15 +392,17 @@ expect_that(".process_colorby_choice handles gene text input", {
 # .gene_axis_label handles NULL rownames ----
 
 # expect_that(".gene_axis_label handles NULL rownames", {
+#   
 #   selected_gene_int <- 1L
 #   selected_assay <- 1L
-# 
-#   sce_nullnames <- sce
-#   rownames(sce_nullnames) <- NULL
-#   assayNames(sce_nullnames) <- rep("", length(assays(sce_nullnames)))
+#   
+#   nrows <- 20; ncols <- 6
+#   counts <- matrix(runif(nrows * ncols, 1, 1e4), nrows)
+#   se_nullnames <- SummarizedExperiment(assays=SimpleList(counts))
 # 
 #   lab_out <- iSEE:::.gene_axis_label(
-#     sce_nullnames, selected_gene_int, selected_assay, multiline=FALSE)
+#     se_nullnames, selected_gene_int, selected_assay, multiline=FALSE
+#   )
 # 
 #   expect_match(
 #     lab_out,
@@ -415,27 +417,23 @@ expect_that(".process_colorby_choice handles gene text input", {
 # 
 # })
 
-# .process_colorby_choice handles gene text input ----
+# .coerce_to_numeric handles gene text input ----
 
-# expect_that(".process_colorby_choice handles gene text input", {
-#   selected_gene_int <- 1L
-#   selected_assay <- 1L
+# expect_that(".coerce_to_numeric handles gene text input", {
+#   
+#   input_values <- letters
+#   input_field <- "field_name"
 # 
-#   sce_nullnames <- sce
-#   rownames(sce_nullrownames) <- NULL
-#   assayNames(sce_nullnames) <- rep("", length(assays(sce_nullnames)))
-# 
-#   lab_out <- iSEE:::.coerce_to_numeric(values, field, warn=TRUE)
-# 
-#   expect_match(
-#     lab_out,
-#     "^Feature"
+#   expect_warning(
+#     lab_out <- iSEE:::.coerce_to_numeric(input_values, input_field, warn=TRUE),
+#     "coloring covariate has too many unique values, coercing to numeric"
 #   )
-# 
-#   expect_match(
-#     lab_out,
-#     "(assay 1)",
-#     fixed = TRUE
+#   
+#   lab_out <- iSEE:::.coerce_to_numeric(input_values, input_field, warn=TRUE)
+#   
+#   expect_type(
+#     extra_cmd,
+#     "character"
 #   )
 # 
 # })

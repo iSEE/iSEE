@@ -726,7 +726,7 @@ iSEE <- function(
                     force(rObjects[[plot_name]])
                     p.out <- FUN0(i0, pObjects$memory, pObjects$coordinates, se, colormap)
                     pObjects$commands[[plot_name]] <- p.out$cmd
-                    pObjects$coordinates[[plot_name]] <- p.out$xy
+                    pObjects$coordinates[[plot_name]] <- p.out$xy[,c("X", "Y")]
                     p.out$plot
                 })
             })

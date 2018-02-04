@@ -2,7 +2,7 @@
 # Set up plotting arguments ----
 
 redDimArgs <- redDimPlotDefaults(sce, 1)
-colDataArgs <- colDataPlotDefaults(sce, 1)
+colDataArgs <- colDataPlotDefaults(sce, 2)
 geneExprArgs <- geneExprPlotDefaults(sce, 1)
 geneStatArgs <- geneStatTableDefaults(sce, 1)
 redDimMax <- 1 
@@ -13,6 +13,13 @@ geneStatMax <- 1
 # Change a few default settings ----
 
 redDimArgs[1,"ColorBy"] <- iSEE:::.colorByColDataTitle
+
+colDataArgs[1,"ColorBy"] <- iSEE:::.colorByColDataTitle
+
+colDataArgs[2,"XAxis"] <- iSEE:::.colDataXAxisColData
+colDataArgs[2,"XAxisColData"] <- "driver_1_s"
+colDataArgs[2,"YAxis"] <- "passes_qc_checks_s"
+colDataArgs[2,"ColorBy"] <- iSEE:::.colorByColDataTitle
 
 # Set up memory ----
 

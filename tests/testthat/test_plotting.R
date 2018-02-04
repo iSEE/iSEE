@@ -187,7 +187,8 @@ test_that(".make_geneExprPlot works for YAxis set to Gene text", {
   
   expect_match(
     p.out$cmd$data$y,
-    selected_gene
+    selected_gene,
+    fixed = TRUE
   )
   
 })
@@ -201,7 +202,8 @@ test_that(".make_geneExprPlot works for XAxis set to Column data", {
   
   expect_match(
     p.out$cmd$data$x,
-    "dissection_s"
+    "dissection_s",
+    fixed = TRUE
   )
   
 })
@@ -215,7 +217,8 @@ test_that(".make_geneExprPlot works for XAxis set to Gene table", {
   
   expect_match(
     p.out$cmd$data$x,
-    "plot\\.data\\$X <- assay"
+    "plot.data$X <- assay",
+    fixed = TRUE
   )
   
 })
@@ -231,7 +234,8 @@ test_that(".make_geneExprPlot works for XAxis set to Gene text", {
   
   expect_match(
     p.out$cmd$data$x,
-    selected_gene
+    selected_gene,
+    fixed = TRUE
   )
   
 })
@@ -248,22 +252,34 @@ test_that(".make_geneExprPlot works for groupable colour covariate", {
   
   expect_match(
     p.out$cmd$data$color,
-    selected_coldata
+    selected_coldata,
+    fixed = TRUE
   )
   
   expect_match(
     p.out$cmd$data$more_color,
-    "as\\.factor"
+    "as.factor",
+    fixed = TRUE
   )
   
   expect_match(
     p.out$cmd$plot$scale_color[[1]],
-    paste("scale_color_manual", selected_coldata, sep = ".*")
+    "^scale_color_manual"
+  )
+  expect_match(
+    p.out$cmd$plot$scale_color[[1]],
+    selected_coldata,
+    fixed = TRUE
   )
   
   expect_match(
     p.out$cmd$plot$scale_color[[2]],
-    paste("scale_fill_manual", selected_coldata, sep = ".*")
+    "^scale_fill_manual"
+  )
+  expect_match(
+    p.out$cmd$plot$scale_color[[2]],
+    selected_coldata,
+    fixed = TRUE
   )
   
 })
@@ -286,12 +302,14 @@ test_that(".make_colDataPlot/.create_plot can produce horizontal violins", {
   
   expect_match(
     p.out$cmd$data$y,
-    selected_coldataY
+    selected_coldataY,
+    fixed = TRUE
   )
   
   expect_match(
     p.out$cmd$data$x,
-    selected_coldataX
+    selected_coldataX,
+    fixed = TRUE
   )
   
   expect_named(

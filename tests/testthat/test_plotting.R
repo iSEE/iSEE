@@ -388,3 +388,54 @@ expect_that(".process_colorby_choice handles gene text input", {
   
 })
 
+
+# .gene_axis_label handles NULL rownames ----
+
+# expect_that(".gene_axis_label handles NULL rownames", {
+#   selected_gene_int <- 1L
+#   selected_assay <- 1L
+# 
+#   sce_nullnames <- sce
+#   rownames(sce_nullnames) <- NULL
+#   assayNames(sce_nullnames) <- rep("", length(assays(sce_nullnames)))
+# 
+#   lab_out <- iSEE:::.gene_axis_label(
+#     sce_nullnames, selected_gene_int, selected_assay, multiline=FALSE)
+# 
+#   expect_match(
+#     lab_out,
+#     "^Feature"
+#   )
+# 
+#   expect_match(
+#     lab_out,
+#     "(assay 1)",
+#     fixed = TRUE
+#   )
+# 
+# })
+
+# .process_colorby_choice handles gene text input ----
+
+# expect_that(".process_colorby_choice handles gene text input", {
+#   selected_gene_int <- 1L
+#   selected_assay <- 1L
+# 
+#   sce_nullnames <- sce
+#   rownames(sce_nullrownames) <- NULL
+#   assayNames(sce_nullnames) <- rep("", length(assays(sce_nullnames)))
+# 
+#   lab_out <- iSEE:::.coerce_to_numeric(values, field, warn=TRUE)
+# 
+#   expect_match(
+#     lab_out,
+#     "^Feature"
+#   )
+# 
+#   expect_match(
+#     lab_out,
+#     "(assay 1)",
+#     fixed = TRUE
+#   )
+# 
+# })

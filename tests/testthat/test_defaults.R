@@ -1,14 +1,17 @@
 
 # .set_default_assay ----
 
-test_that(".set_default_assay returns 1L there is no logcounts assay", 
+test_that(".set_default_assay returns 1L there is no logcounts assay", {
+  
+  sce_noLogCount <- sce
+  assays(sce_noLogCount) <- assays(sce_noLogCount)["counts"]
   
   expect_identical(
     iSEE:::.set_default_assay(sce_noLogCount),
     1L
   )
   
-)
+})
 
 # .override_defaults ----
 

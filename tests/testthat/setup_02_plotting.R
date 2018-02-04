@@ -32,10 +32,12 @@ all_memory <- iSEE:::.setup_memory(sce, redDimArgs, colDataArgs, geneExprArgs, g
                           redDimMax, colDataMax, geneExprMax, geneStatMax)
 
 
+# Fill in all_coordinates form a copy-paste of an allen demo session ----
+
 all_coordinates <- list()
 
 ################################################################################
-## Reduced dimension plot 1
+## Reduced dimension plot 1 ----
 ################################################################################
 
 red.dim <- reducedDim(sce, 1);
@@ -49,7 +51,7 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);
 all_coordinates[['redDimPlot1']] <- plot.data
 
 ################################################################################
-## Column data plot 1
+## Column data plot 1 ----
 ################################################################################
 
 plot.data <- data.frame(Y = colData(sce)[,"NREADS"], row.names=colnames(sce));
@@ -71,7 +73,7 @@ plot.data$jitteredX <- vipor::offsetX(plot.data$Y,
     method='quasirandom', nbins=NULL) + as.integer(plot.data$X);
 
 ################################################################################
-## Gene expression plot 1
+## Gene expression plot 1 ----
 ################################################################################
 
 plot.data <- data.frame(Y=assay(sce, 6)[1L,], row.names = colnames(sce))
@@ -91,3 +93,8 @@ set.seed(100);
 plot.data$jitteredX <- vipor::offsetX(plot.data$Y,
     x=plot.data$X, width=0.4, varwidth=FALSE, adjust=1,
     method='quasirandom', nbins=NULL) + as.integer(plot.data$X)
+
+# Add a non-standard setting to the plotting arguments ----
+
+redDimArgsExtraField <- redDimArgs
+redDimArgsExtraField$DummyExtraField <- NA_character_

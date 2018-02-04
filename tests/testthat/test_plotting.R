@@ -319,7 +319,7 @@ test_that(".make_colDataPlot/.create_plot can produce horizontal violins", {
   
 })
 
-# scatter plot without zoom ----
+# .scatter_plot plot without zoom ----
 
 test_that(".scatter_plot works without zoom",{
   
@@ -356,3 +356,35 @@ test_that(".scatter_plot works without zoom",{
   expect_identical(p.out$xy, expected_xy)
 
 })
+
+# .process_colorby_choice handles gene text input ----
+
+expect_that(".process_colorby_choice handles gene text input", {
+  params <- all_memory$redDim[1,]
+  params[[iSEE:::.colorByField]] <- iSEE:::.colorByGeneTextTitle
+  params[[iSEE:::.colorByGeneText]] <- rownames(sce)[1]
+  
+  color_out <- iSEE:::.process_colorby_choice(params, all_memory, sce, ecm)
+  
+  expect_named(
+    color_out,
+    c("cmd","label","FUN")
+  )
+   
+  expect_match(
+    color_out$cmd,
+    rownames(sce)[1]
+  )
+  
+  expect_match(
+    color_out$label,
+    rownames(sce)[1]
+  )
+  
+  expect_type(
+     color_out$FUN,
+    "closure"
+  )
+  
+})
+

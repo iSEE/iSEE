@@ -2,45 +2,38 @@
 # Constructors ----
 
 test_that("Constructor produce a valid object",{
+  
+  ecm <- ExperimentColorMap(
+    assays = list(
+      counts = count_colors,
+      tophat_counts = count_colors,
+      cufflinks_fpkm = fpkm_colors,
+      cufflinks_fpkm = fpkm_colors,
+      rsem_tpm = tpm_colors
+    ),
+    colData = list(
+      passes_qc_checks_s = qc_color_fun
+    ),
+    global_continuous = assay_continuous_colours
+  )
 
   expect_s4_class(
-    ExperimentColorMap(
-      assays = list(
-        counts = count_colors,
-        tophat_counts = count_colors,
-        cufflinks_fpkm = fpkm_colors,
-        cufflinks_fpkm = fpkm_colors,
-        rsem_tpm = tpm_colors
-      ),
-      colData = list(
-        passes_qc_checks_s = qc_color_fun
-      ),
-      global_continuous = assay_continuous_colours
-    ),
+    ecm,
     "ExperimentColorMap"
   )
 
 })
 
-# Accessor ----
+# assayColorMap ----
 
-test_that("colDataColorMap returns appropriate values",{
-
-  # specific > (discrete) all > global > .defaultDiscreteColorMap
-  expect_identical(
-    colDataColorMap(ecm, "test", discrete = TRUE)(21L),
-    .defaultDiscreteColorMap(21L)
-  )
+test_that("assayColorMap returns appropriate values",{
   
-  # specific > (continuous) all > global
-  expect_identical(
-      colDataColorMap(ecm, "test", discrete = FALSE)(21L),
-      assay_continuous_colours(21L)
-    )
-
-})
-
-test_that("colDataColorMap returns appropriate values",{
+  ecm <- ExperimentColorMap(
+    assays = list(
+      counts = count_colors
+    ),
+    global_continuous = assay_continuous_colours
+  )
 
   # specific
   expect_equal(
@@ -53,6 +46,31 @@ test_that("colDataColorMap returns appropriate values",{
     assayColorMap(ecm, "undefined", discrete = FALSE)(21L),
     assay_continuous_colours(21L)
   )
+
+})
+
+# colDataColorMap ----
+
+test_that("colDataColorMap returns appropriate values",{
+  
+  ecm <- ExperimentColorMap(
+    assays = list(
+      counts = count_colors
+    ),
+    global_continuous = assay_continuous_colours
+  )
+ 
+  # specific > (discrete) all > global > .defaultDiscreteColorMap
+  expect_identical(
+    colDataColorMap(ecm, "test", discrete = TRUE)(21L),
+    .defaultDiscreteColorMap(21L)
+  )
+  
+  # specific > (continuous) all > global
+  expect_identical(
+      colDataColorMap(ecm, "test", discrete = FALSE)(21L),
+      assay_continuous_colours(21L)
+    )
 
 })
 
@@ -116,9 +134,23 @@ test_that("Invalid objects are not allowed to be created", {
   
 })
 
-# isColorMapCompatible ----
+# isColorMapCompatible (many assays) ----
 
-test_that("Discrepancies between ECM and SE objects are detected", {
+test_that("isColorMapCompatible catches too many assays color maps", {
+  
+  ecm_manyAssays <- ExperimentColorMap(
+    assays = list(
+      counts = count_colors,
+      tophat_counts = count_colors,
+      cufflinks_fpkm = fpkm_colors,
+      cufflinks_fpkm = fpkm_colors,
+      rsem_tpm = tpm_colors,
+      another = tpm_colors,
+      yet_another = tpm_colors,
+      last_one_i_promise = tpm_colors,
+      oh_well = tpm_colors
+    )
+  )
   
   expect_error(
     iSEE:::isColorMapCompatible(ecm_manyAssays, sce, error = TRUE),
@@ -129,13 +161,16 @@ test_that("Discrepancies between ECM and SE objects are detected", {
     FALSE
   )
   
-  expect_error(
-    iSEE:::isColorMapCompatible(nullECM, sce, error = TRUE),
-    "assay `.*` in color map missing in experiment"
-  )
-  expect_identical(
-    iSEE:::isColorMapCompatible(nullECM, sce, error = FALSE),
-    FALSE
+})
+
+# isColorMapCompatible (superfluous assays) ----
+
+test_that("isColorMapCompatible catches superfluous assays color map", {
+  
+  nullECM <- ExperimentColorMap(
+    assays = list(
+      dummy1 = function(x){NULL}
+    )
   )
   
   expect_error(
@@ -146,6 +181,18 @@ test_that("Discrepancies between ECM and SE objects are detected", {
     iSEE:::isColorMapCompatible(nullECM, sce, error = FALSE),
     FALSE
   )
+  
+})
+
+# isColorMapCompatible (superfluous colData) ----
+
+test_that("isColorMapCompatible catches superfluous colData color map", {
+  
+  missingColData <- ExperimentColorMap(
+  colData = list(
+    dummy2 = function(x){NULL}
+  )
+)
   
   expect_error(
     iSEE:::isColorMapCompatible(missingColData, sce, error = TRUE),
@@ -154,6 +201,19 @@ test_that("Discrepancies between ECM and SE objects are detected", {
   expect_identical(
     iSEE:::isColorMapCompatible(missingColData, sce, error = FALSE),
     FALSE
+  )
+  
+})
+
+# isColorMapCompatible (superfluous rowData) ----
+
+
+test_that("isColorMapCompatible catches superfluous rowData color map", {
+  
+  missingRowData <- ExperimentColorMap(
+    rowData = list(
+      dummy2 = function(x){NULL}
+    )
   )
   
   expect_error(
@@ -165,9 +225,23 @@ test_that("Discrepancies between ECM and SE objects are detected", {
     FALSE
   )
   
+})
+
+# isColorMapCompatible (valid) ----
+
+test_that("isColorMapCompatible accepts compatible color map", {
+  
+  ecm <- ExperimentColorMap(
+    assays = list(
+      counts = count_colors
+    ),
+    global_continuous = assay_continuous_colours
+  )
+  
   expect_identical(
     iSEE:::isColorMapCompatible(ecm, sce, error = FALSE),
     TRUE
   )
   
 })
+

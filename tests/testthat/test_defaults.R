@@ -15,7 +15,10 @@ test_that(".set_default_assay returns 1L there is no logcounts assay", {
 
 # .override_defaults ----
 
-test_that(".override_defaults warns about unexpected settings", 
+test_that(".override_defaults warns about unexpected settings", {
+  
+  redDimArgsExtraField <- redDimPlotDefaults(sce, 1)
+  redDimArgsExtraField$DummyExtraField <- NA_character_
 
   expect_warning(
     iSEE:::.override_defaults(
@@ -25,4 +28,4 @@ test_that(".override_defaults warns about unexpected settings",
     "unknown field .* in user-specified settings"
   )
   
-)
+})

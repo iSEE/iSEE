@@ -60,6 +60,13 @@
         pObjects$memory[[type]][ID, .brushByPlot] <- ""
     }
 
+    # Destroying self memory of any transmitting brush, as there
+    # is no guarantee that the transmitter will be alive when this
+    # plot is added back to the UI. This ensures memory is valid,
+    # in line with '.sanitize_memory()' in misc.R.
+    self <- .split_encoded(panel)
+    pObjects$memory[[self$Type]][self$ID, .brushByPlot] <- ""
+
     # Destroying the edges.
     pObjects$brush_links <- graph - incident(graph, panel, mode="all")
     return(invisible(NULL))

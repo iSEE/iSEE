@@ -359,7 +359,7 @@ test_that(".scatter_plot works without zoom",{
 
 # .process_colorby_choice handles gene text input ----
 
-expect_that(".process_colorby_choice handles gene text input", {
+test_that(".process_colorby_choice handles gene text input", {
   params <- all_memory$redDim[1,]
   params[[iSEE:::.colorByField]] <- iSEE:::.colorByGeneTextTitle
   params[[iSEE:::.colorByGeneText]] <- rownames(sce)[1]
@@ -391,49 +391,49 @@ expect_that(".process_colorby_choice handles gene text input", {
 
 # .gene_axis_label handles NULL rownames ----
 
-# expect_that(".gene_axis_label handles NULL rownames", {
-#   
-#   selected_gene_int <- 1L
-#   selected_assay <- 1L
-#   
-#   nrows <- 20; ncols <- 6
-#   counts <- matrix(runif(nrows * ncols, 1, 1e4), nrows)
-#   se_nullnames <- SummarizedExperiment(assays=SimpleList(counts))
-# 
-#   lab_out <- iSEE:::.gene_axis_label(
-#     se_nullnames, selected_gene_int, selected_assay, multiline=FALSE
-#   )
-# 
-#   expect_match(
-#     lab_out,
-#     "^Feature"
-#   )
-# 
-#   expect_match(
-#     lab_out,
-#     "(assay 1)",
-#     fixed = TRUE
-#   )
-# 
-# })
+test_that(".gene_axis_label handles NULL rownames", {
+
+  selected_gene_int <- 1L
+  selected_assay <- 1L
+
+  nrows <- 20; ncols <- 6
+  counts <- matrix(runif(nrows * ncols, 1, 1e4), nrows)
+  se_nullnames <- SummarizedExperiment(assays=SimpleList(counts))
+
+  lab_out <- iSEE:::.gene_axis_label(
+    se_nullnames, selected_gene_int, selected_assay, multiline=FALSE
+  )
+
+  expect_match(
+    lab_out,
+    "^Feature"
+  )
+
+  expect_match(
+    lab_out,
+    "(assay 1)",
+    fixed = TRUE
+  )
+
+})
 
 # .coerce_to_numeric handles gene text input ----
 
-# expect_that(".coerce_to_numeric handles gene text input", {
-#   
-#   input_values <- letters
-#   input_field <- "field_name"
-# 
-#   expect_warning(
-#     lab_out <- iSEE:::.coerce_to_numeric(input_values, input_field, warn=TRUE),
-#     "coloring covariate has too many unique values, coercing to numeric"
-#   )
-#   
-#   lab_out <- iSEE:::.coerce_to_numeric(input_values, input_field, warn=TRUE)
-#   
-#   expect_type(
-#     extra_cmd,
-#     "character"
-#   )
-# 
-# })
+test_that(".coerce_to_numeric handles gene text input", {
+
+  input_values <- letters
+  input_field <- "field_name"
+
+  expect_warning(
+    lab_out <- iSEE:::.coerce_to_numeric(input_values, input_field, warn=TRUE),
+    "coloring covariate has too many unique values, coercing to numeric"
+  )
+
+  lab_out <- iSEE:::.coerce_to_numeric(input_values, input_field, warn=TRUE)
+
+  expect_type(
+    lab_out,
+    "character"
+  )
+
+})

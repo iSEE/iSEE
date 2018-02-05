@@ -51,13 +51,13 @@
     graph <- pObjects$brush_links
 
     # Resetting memory.
-    all_kids <- names(adjacent_vertices(graph, panel, mode="out"))
+    all_kids <- names(adjacent_vertices(graph, panel, mode="out")[[1]])
     enc <- .split_encoded(all_kids)
 
     for (i in seq_along(all_kids)) {
-        kid <- all_kids[i]
         type <- enc$Type[i]
-        pObjects$memory[[type]][kid, .brushByPlot] <- ""
+        ID <- enc$ID[i]
+        pObjects$memory[[type]][ID, .brushByPlot] <- ""
     }
 
     # Destroying the edges.

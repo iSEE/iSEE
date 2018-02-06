@@ -10,6 +10,8 @@ all_memory <- iSEE:::.setup_memory(
   sce, redDimArgs, colDataArgs, geneExprArgs, geneStatArgs,
   redDimMax = 1, colDataMax = 1, geneExprMax = 1, geneStatMax = 1)
 
+all_coordinates <- list()
+
 ####################
 # Tests start here #
 ####################
@@ -567,12 +569,14 @@ test_that(".process_colorby_choice handles gene text input", {
    
   expect_match(
     color_out$cmd,
-    rownames(sce)[1]
+    rownames(sce)[1],
+    fixed = TRUE
   )
   
   expect_match(
     color_out$label,
-    rownames(sce)[1]
+    rownames(sce)[1],
+    fixed = TRUE
   )
   
   expect_type(
@@ -651,7 +655,7 @@ test_that(".process_brushby_choice works when sender is another plot", {
     10)
   all_memory$redDim[[iSEE:::.brushData]][1] <- list(list(
     xmin=min(x_10), xmax=max(x_10), ymin=min(y_10), ymax=max(y_10),
-    direction = "xy", mapping = list(x="x", y="y"),
+    direction = "xy", mapping = list(x="X", y="Y"),
     brushId = "dummy_brush", outputId = "dummy_plot"
   ))
   
@@ -695,7 +699,7 @@ test_that(".process_brushby_choice works when sender is self plot", {
     10)
   all_memory$redDim[[iSEE:::.brushData]][1] <- list(list(
     xmin=min(x_10), xmax=max(x_10), ymin=min(y_10), ymax=max(y_10),
-    direction = "xy", mapping = list(x="x", y="y"),
+    direction = "xy", mapping = list(x="X", y="Y"),
     brushId = "dummy_brush", outputId = "dummy_plot"
   ))
   
@@ -713,5 +717,125 @@ test_that(".process_brushby_choice works when sender is self plot", {
     "plot.data$BrushBy",
     fixed = TRUE
   )
+  
+})
+
+# .create_points handles transparency brush ----
+
+test_that(".create_points handles transparency brush", {
+  
+  # Implement a self-brush, for convenience
+  sourcePlotName <- "Reduced dimension plot 1"
+  sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
+  
+  # Set up the brush link: redDim1 --> geneExpr1
+  all_memory$redDim[1,iSEE:::.brushByPlot] <- sourcePlotName
+  # Set up the brush data (in redDim1)
+  params <- all_memory$redDim[1,]
+  x_10 <- head(
+    reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
+    10)
+  y_10 <- head(
+    reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
+    10)
+  all_memory$redDim[[iSEE:::.brushData]][1] <- list(list(
+    xmin=min(x_10), xmax=max(x_10), ymin=min(y_10), ymax=max(y_10),
+    direction = "xy", mapping = list(x="X", y="Y"),
+    brushId = "dummy_brush", outputId = "dummy_plot"
+  ))
+  all_memory$redDim[[iSEE:::.brushEffect]][1] <- iSEE:::.brushTransTitle
+  
+  p.out <- iSEE:::.make_redDimPlot(
+    id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
+  
+  expect_named(
+    p.out$cmd$brush,
+    "init"
+  )
+  # TODO: better tests
+  
+})
+
+# .create_points handles colour brush ----
+
+test_that(".create_points handles colour brush", {
+  
+  # Implement a self-brush, for convenience
+  sourcePlotName <- "Reduced dimension plot 1"
+  sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
+  
+  # Set up the brush link: redDim1 --> geneExpr1
+  all_memory$redDim[1,iSEE:::.brushByPlot] <- sourcePlotName
+  # Set up the brush data (in redDim1)
+  params <- all_memory$redDim[1,]
+  x_10 <- head(
+    reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
+    10)
+  y_10 <- head(
+    reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
+    10)
+  all_memory$redDim[[iSEE:::.brushData]][1] <- list(list(
+    xmin=min(x_10), xmax=max(x_10), ymin=min(y_10), ymax=max(y_10),
+    direction = "xy", mapping = list(x="X", y="Y"),
+    brushId = "dummy_brush", outputId = "dummy_plot"
+  ))
+  # Set up the brush type
+  all_memory$redDim[1,iSEE:::.brushEffect] <- iSEE:::.brushColorTitle
+  
+  p.out <- iSEE:::.make_redDimPlot(
+    id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
+  
+  expect_named(
+    p.out$cmd$brush,
+    "init"
+  )
+  expect_match(
+    p.out$cmd$plot$brush_color,
+    all_memory$redDim[1,iSEE:::.brushColor],
+    fixed = TRUE
+  )
+  # TODO: better tests
+  
+})
+
+# .create_points handles restrict brush ----
+
+test_that(".create_points handles restrict brush", {
+  
+  # Implement a self-brush, for convenience
+  sourcePlotName <- "Reduced dimension plot 1"
+  sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
+  
+  # Set up the brush link: redDim1 --> geneExpr1
+  all_memory$redDim[1,iSEE:::.brushByPlot] <- sourcePlotName
+  # Set up the brush data (in redDim1)
+  params <- all_memory$redDim[1,]
+  x_10 <- head(
+    reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
+    10)
+  y_10 <- head(
+    reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
+    10)
+  all_memory$redDim[[iSEE:::.brushData]][1] <- list(list(
+    xmin=min(x_10), xmax=max(x_10), ymin=min(y_10), ymax=max(y_10),
+    direction = "xy", mapping = list(x="X", y="Y"),
+    brushId = "dummy_brush", outputId = "dummy_plot"
+  ))
+  # Set up the brush type
+  all_memory$redDim[1,iSEE:::.brushEffect] <- iSEE:::.brushRestrictTitle
+  
+  p.out <- iSEE:::.make_redDimPlot(
+    id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
+  
+  expect_named(
+    p.out$cmd$brush,
+    c("init","subset")
+  )
+  expect_match(
+    p.out$cmd$plot$brush_restrict,
+    "plot.data",
+    fixed = TRUE
+  )
+  # TODO: better tests
   
 })

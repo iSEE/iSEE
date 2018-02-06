@@ -631,3 +631,87 @@ test_that(".coerce_to_numeric handles gene text input", {
   )
 
 })
+
+# .process_brushby_choice ----
+
+test_that(".process_brushby_choice works when sender is another plot", {
+  
+  sourcePlotName <- "Reduced dimension plot 1"
+  sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
+  
+  # Set up the brush link: redDim1 --> geneExpr1
+  all_memory$geneExpr[1,iSEE:::.brushByPlot] <- sourcePlotName
+  # Set up the brush data (in redDim1)
+  params <- all_memory$redDim[1,]
+  x_10 <- head(
+    reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
+    10)
+  y_10 <- head(
+    reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
+    10)
+  all_memory$redDim[[iSEE:::.brushData]][1] <- list(list(
+    xmin=min(x_10), xmax=max(x_10), ymin=min(y_10), ymax=max(y_10),
+    direction = "xy", mapping = list(x="x", y="y"),
+    brushId = "dummy_brush", outputId = "dummy_plot"
+  ))
+  
+  brush_cmd <- iSEE:::.process_brushby_choice(all_memory$geneExpr, all_memory)
+  
+  # check the source of the brushed data
+  expect_match(
+    brush_cmd,
+    "shiny::brushedPoints(all_coordinates",
+    fixed = TRUE
+  )
+  # check the source plot type
+  expect_match(
+    brush_cmd,
+    sourcePlotType,
+    fixed = TRUE
+  )
+  # check that the second (hard-coded) command is present
+  expect_match(
+    brush_cmd,
+    "plot.data$BrushBy",
+    fixed = TRUE
+  )
+  
+})
+
+test_that(".process_brushby_choice works when sender is self plot", {
+  
+  sourcePlotName <- "Reduced dimension plot 1"
+  sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
+  
+  # Set up the brush link: redDim1 --> geneExpr1
+  all_memory$redDim[1,iSEE:::.brushByPlot] <- sourcePlotName
+  # Set up the brush data (in redDim1)
+  params <- all_memory$redDim[1,]
+  x_10 <- head(
+    reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
+    10)
+  y_10 <- head(
+    reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
+    10)
+  all_memory$redDim[[iSEE:::.brushData]][1] <- list(list(
+    xmin=min(x_10), xmax=max(x_10), ymin=min(y_10), ymax=max(y_10),
+    direction = "xy", mapping = list(x="x", y="y"),
+    brushId = "dummy_brush", outputId = "dummy_plot"
+  ))
+  
+  brush_cmd <- iSEE:::.process_brushby_choice(all_memory$redDim, all_memory)
+  
+  # check the source of the brushed data
+  expect_match(
+    brush_cmd,
+    "shiny::brushedPoints(plot.data",
+    fixed = TRUE
+  )
+  # check that the second (hard-coded) command is present
+  expect_match(
+    brush_cmd,
+    "plot.data$BrushBy",
+    fixed = TRUE
+  )
+  
+})

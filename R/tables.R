@@ -134,14 +134,14 @@
   tmp_mem <- pObjects$memory[[mode]]
   plot_name <- paste0(mode, "Plot", i)
 
-  for (param in list(c(.colorByField, .colorByGeneTableTitle, .colorByGeneTableTitle),
-                     c(.geneExprXAxis, .geneExprXAxisGeneTableTitle, .geneExprXAxisGeneTableTitle),
-                     c(.geneExprYAxis, .geneExprYAxisGeneTableTitle, .geneExprYAxisGeneTableTitle))) {
+  for (param in list(c(.colorByField, .colorByGeneTableTitle, .colorByGeneTable, "color"),
+                     c(.geneExprXAxis, .geneExprXAxisGeneTableTitle, .geneExprXAxisGeneTable, "xaxis"),
+                     c(.geneExprYAxis, .geneExprYAxisGeneTableTitle, .geneExprYAxisGeneTable, "yaxis"))) {
 
     if (tmp_mem[i, param[1]]==param[2]) {
       oldtab <- tmp_mem[i, param[3]]
       if (oldtab!="") {
-        tmp_link <- .modify_table_links(tmp_link, plot_name, "", oldtab, mode = "color")
+        tmp_link <- .modify_table_links(tmp_link, plot_name, "", oldtab, mode = param[4])
         tmp_mem[i, param[3]] <- ""
       }
     }

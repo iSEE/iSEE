@@ -149,3 +149,52 @@ test_that("table modification works correctly", {
     tab2 <- iSEE:::.modify_table_links(tabs, "geneExprPlot2", "Gene statistics table 1", "", mode = "yaxis")
     expect_identical(tab2, tabs)
 })
+
+test_that("table observers work correctly", {
+    pObjects <- new.env()
+    pObjects$table_links <- tabs
+    pObjects$memory <- memory
+
+    # Changing the table.
+    out <- iSEE:::.setup_table_observer("redDim", 1, input=list(redDimColorBy1=iSEE:::.colorByGeneTableTitle, redDimColorByGeneTable1="Gene statistics table 2"),
+        pObjects, iSEE:::.colorByField, iSEE:::.colorByGeneTableTitle, iSEE:::.colorByGeneTable, param = "color")
+    expect_true(out)
+    expect_false("redDimPlot1" %in% pObjects$table_links$geneStatTable1)
+    expect_true("redDimPlot1" %in% pObjects$table_links$geneStatTable2)
+    expect_identical(iSEE:::.colorByGeneTableTitle, pObjects$memory$redDim[1, iSEE:::.colorByField])
+    expect_identical("Gene statistics table 2", pObjects$memory$redDim[1, iSEE:::.colorByGeneTable])
+
+    # Changing the colour source.
+    out <- iSEE:::.setup_table_observer("redDim", 1, input=list(redDimColorBy1=iSEE:::.colorByNothingTitle, redDimColorByGeneTable1="Gene statistics table 1"),
+        pObjects, iSEE:::.colorByField, iSEE:::.colorByGeneTableTitle, iSEE:::.colorByGeneTable, param = "color")
+    expect_true(out)
+    expect_false("redDimPlot1" %in% pObjects$table_links$geneStatTable2)
+    expect_false("redDimPlot1" %in% pObjects$table_links$geneStatTable1) # does NOT update.
+    expect_identical(iSEE:::.colorByNothingTitle, pObjects$memory$redDim[1, iSEE:::.colorByField])
+    expect_identical("Gene statistics table 1", pObjects$memory$redDim[1, iSEE:::.colorByGeneTable])
+})
+
+test_that("deleting table links is done correctly", {
+    pObjects <- new.env()
+    pObjects$table_links <- tabs
+    pObjects$memory <- memory
+
+    # Deleting something with colours.
+    expect_true("redDimPlot1" %in% tabs$geneStatTable1$color)
+
+    iSEE:::.delete_table_links("redDim", 1, pObjects)
+
+    expect_false("redDimPlot1" %in% pObjects$table_links$geneStatTable1$color)
+    expect_identical(pObjects$memory$redDim[1, iSEE:::.colorByGeneTable], "") 
+
+    # Deleting something with x- and y-axis links.
+    expect_true("geneExprPlot3" %in% tabs$geneStatTable1$xaxis)
+    expect_true("geneExprPlot3" %in% tabs$geneStatTable2$yaxis)
+
+    iSEE:::.delete_table_links("geneExpr", 3, pObjects)
+
+    expect_false("geneExprPlot3" %in% pObjects$table_links$geneStatTable1$xaxis)
+    expect_false("geneExprPlot3" %in% pObjects$table_links$geneStatTable2$yaxis)
+    expect_identical(pObjects$memory$geneExpr[3, iSEE:::.geneExprXAxisGeneTable], "")
+    expect_identical(pObjects$memory$geneExpr[3, iSEE:::.geneExprYAxisGeneTable], "")
+})

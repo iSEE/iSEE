@@ -403,9 +403,22 @@ test_that(".make_colDataPlot/.create_plot can produce horizontal violins", {
 
 test_that(".scatter_plot works with zoom",{
   
-  all_memory$redDim[[iSEE:::.zoomData]][1] <- list(NULL) # TODO
+  # Identify range of data
+  params <- all_memory$redDim[1,]
+  x_range <- range(head(
+    reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]]
+  ), 10)
+  y_range <- range(head(
+    reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]]
+  ), 10)
+  # Set zoom min/max to the first two distinct values in X/Y direction
+  zoom_range <- c(x_range, y_range)
+  names(zoom_range) <- c("xmin","xmax","ymin","ymax")
+  # Set the zoom
+  all_memory$redDim[[iSEE:::.zoomData]][1] <- list(zoom_range)
   
-  p.out <- iSEE:::.make_redDimPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
+  p.out <- iSEE:::.make_redDimPlot(
+    id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   params <- all_memory$redDim[1,]
   expected_xy <- data.frame(

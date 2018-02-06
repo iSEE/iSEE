@@ -469,6 +469,47 @@ test_that(".make_colDataPlot/.violin_plot works with zoom",{
 
 })
 
+# .make_colDataPlot/.violin_plot works with horizontal zoom ----
+
+test_that(".make_colDataPlot/.violin_plot works with zoom",{
+  
+  all_memory$colData[1,iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
+  all_memory$colData[1,iSEE:::.colDataXAxisColData] <- "NREADS"
+  all_memory$colData[1,iSEE:::.colDataYAxis] <- "driver_1_s"
+  
+  # Identify valid values
+  x_range <- range(head(colData(sce)[,
+    all_memory$colData[1,iSEE:::.colDataXAxisColData]
+  ]), 10)
+  y_unique <- unique(as.numeric(as.factor(colData(sce)[,
+    all_memory$colData[1,iSEE:::.colDataYAxis]
+  ])))
+  # Set zoom min/max to the first two distinct values in X/Y direction
+  zoom_range <- c(
+    x_range,
+    sort(head(y_unique, 2))
+  )
+  # Extend the zoom to perfectly include the min/max boxes
+  zoom_range <- zoom_range + c(0, 0, -0.5, 0.5)
+  names(zoom_range) <- c("xmin","xmax","ymin","ymax")
+  # Set the zoom
+  all_memory$colData[[iSEE:::.zoomData]][1] <- list(zoom_range)
+  
+  p.out <- iSEE:::.make_colDataPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
+  
+  params <- all_memory$colData[1,]
+  # This requires some finesse to deal with horizontal plots
+  # where the X and Y coordinates are flipped to draw the violins
+  expected_xy <- data.frame(
+    Y = colData(sce)[,params[[iSEE:::.colDataXAxisColData]]], # Y/X switch
+    X = colData(sce)[,params[[iSEE:::.colDataYAxis]]], # X/Y switch
+    row.names = colnames(sce)
+  )
+  
+  expect_identical(p.out$xy, expected_xy)
+
+})
+
 # .make_colDataPlot/.griddotplot works with zoom ----
 
 test_that(".make_colDataPlot/.griddotplot works with zoom",{

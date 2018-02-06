@@ -401,6 +401,7 @@ iSEE <- function(
                         .destroy_table(pObjects, paste0(mode0, "Table", i0))
                     } else {
                         .destroy_brush_source(pObjects, paste0(mode0, "Plot", i0))
+                        .delete_table_links(mode0, i0, pObjects)
                     }
                     
                     # Triggering re-rendering of the UI via change to active_panels.

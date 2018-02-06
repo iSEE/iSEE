@@ -2,7 +2,7 @@
 # Creates links between tables and dependent plots.
 {
   Ntabs <- nrow(memory$geneStat)
-  table_links <- rep(list(list(color=list(), xaxis=list(), yaxis=list())), Ntabs)
+  table_links <- rep(list(list(color=character(0), xaxis=character(0), yaxis=character(0))), Ntabs)
   names(table_links) <- sprintf("geneStatTable%i", seq_len(Ntabs))
 
   # Adding the links for the colors.
@@ -24,12 +24,12 @@
   for (i in seq_len(N)) {
     tab_name <- .check_for_tab(i, memory$geneExpr, .geneExprXAxis, .geneExprXAxisGeneTableTitle, .geneExprXAxisGeneTable)
     if (!is.null(tab_name)) {
-      table_links[[tab_name]]$color <- c(table_links[[tab_name]]$xaxis, cur_panels[i])
+      table_links[[tab_name]]$xaxis <- c(table_links[[tab_name]]$xaxis, cur_panels[i])
     }
 
     tab_name <- .check_for_tab(i, memory$geneExpr, .geneExprYAxis, .geneExprYAxisGeneTableTitle, .geneExprYAxisGeneTable)
     if (!is.null(tab_name)) {
-      table_links[[tab_name]]$color <- c(table_links[[tab_name]]$yaxis, cur_panels[i])
+      table_links[[tab_name]]$yaxis <- c(table_links[[tab_name]]$yaxis, cur_panels[i])
     }
   }
 
@@ -72,7 +72,7 @@
     }
 
     # Erasing the links.
-    links[[tab]] <- list(color=list(), yaxis=list(), xaxis=list())
+    links[[tab]] <- list(color=character(0), xaxis=character(0), yaxis=character(0))
     pObjects$table_links <- links
     return(invisible(NULL))
 }

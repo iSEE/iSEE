@@ -159,8 +159,8 @@ test_that("table observers work correctly", {
     out <- iSEE:::.setup_table_observer("redDim", 1, input=list(redDimColorBy1=iSEE:::.colorByGeneTableTitle, redDimColorByGeneTable1="Gene statistics table 2"),
         pObjects, iSEE:::.colorByField, iSEE:::.colorByGeneTableTitle, iSEE:::.colorByGeneTable, param = "color")
     expect_true(out)
-    expect_false("redDimPlot1" %in% pObjects$table_links$geneStatTable1)
-    expect_true("redDimPlot1" %in% pObjects$table_links$geneStatTable2)
+    expect_false("redDimPlot1" %in% pObjects$table_links$geneStatTable1$color)
+    expect_true("redDimPlot1" %in% pObjects$table_links$geneStatTable2$color)
     expect_identical(iSEE:::.colorByGeneTableTitle, pObjects$memory$redDim[1, iSEE:::.colorByField])
     expect_identical("Gene statistics table 2", pObjects$memory$redDim[1, iSEE:::.colorByGeneTable])
 
@@ -168,10 +168,23 @@ test_that("table observers work correctly", {
     out <- iSEE:::.setup_table_observer("redDim", 1, input=list(redDimColorBy1=iSEE:::.colorByNothingTitle, redDimColorByGeneTable1="Gene statistics table 1"),
         pObjects, iSEE:::.colorByField, iSEE:::.colorByGeneTableTitle, iSEE:::.colorByGeneTable, param = "color")
     expect_true(out)
-    expect_false("redDimPlot1" %in% pObjects$table_links$geneStatTable2)
-    expect_false("redDimPlot1" %in% pObjects$table_links$geneStatTable1) # does NOT update.
+    expect_false("redDimPlot1" %in% pObjects$table_links$geneStatTable2$color) # old link to gene table 2 is removed.
+    expect_false("redDimPlot1" %in% pObjects$table_links$geneStatTable1$color) # does NOT update; gene table spec should be ignored for table link purposes.
     expect_identical(iSEE:::.colorByNothingTitle, pObjects$memory$redDim[1, iSEE:::.colorByField])
     expect_identical("Gene statistics table 1", pObjects$memory$redDim[1, iSEE:::.colorByGeneTable])
+
+    # Changing it back to gene table colouring.
+    out <- iSEE:::.setup_table_observer("redDim", 1, input=list(redDimColorBy1=iSEE:::.colorByGeneTableTitle, redDimColorByGeneTable1="Gene statistics table 1"),
+        pObjects, iSEE:::.colorByField, iSEE:::.colorByGeneTableTitle, iSEE:::.colorByGeneTable, param = "color")
+    expect_true(out)
+    expect_true("redDimPlot1" %in% pObjects$table_links$geneStatTable1$color) # triggers the update.
+    expect_identical(iSEE:::.colorByGeneTableTitle, pObjects$memory$redDim[1, iSEE:::.colorByField])
+    expect_identical("Gene statistics table 1", pObjects$memory$redDim[1, iSEE:::.colorByGeneTable])
+})
+
+test_that("identification of linked genes is done correctly", {
+    expect_identical(iSEE:::.find_linked_gene("Gene statistics table 1", list(geneStatTable1_rows_selected=1L)), 1L)
+    expect_identical(iSEE:::.find_linked_gene("Gene statistics table 1", list(geneStatTable2_rows_selected=1L)), NULL)
 })
 
 test_that("deleting table links is done correctly", {

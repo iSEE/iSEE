@@ -51,14 +51,21 @@
     graph <- pObjects$brush_links
 
     # Resetting memory.
-    all_kids <- names(adjacent_vertices(graph, panel, mode="out"))
+    all_kids <- names(adjacent_vertices(graph, panel, mode="out")[[1]])
     enc <- .split_encoded(all_kids)
 
     for (i in seq_along(all_kids)) {
-        kid <- all_kids[i]
         type <- enc$Type[i]
-        pObjects$memory[[type]][kid, .brushByPlot] <- ""
+        ID <- enc$ID[i]
+        pObjects$memory[[type]][ID, .brushByPlot] <- ""
     }
+
+    # Destroying self memory of any transmitting brush, as there
+    # is no guarantee that the transmitter will be alive when this
+    # plot is added back to the UI. This ensures memory is valid,
+    # in line with '.sanitize_memory()' in misc.R.
+    self <- .split_encoded(panel)
+    pObjects$memory[[self$Type]][self$ID, .brushByPlot] <- ""
 
     # Destroying the edges.
     pObjects$brush_links <- graph - incident(graph, panel, mode="all")

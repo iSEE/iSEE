@@ -16,7 +16,7 @@ Description: Provides functions for creating an interactive
     single-cell data in a SingleCellExperiment object with 
     visualization of dimensionality reduction results.
 Depends:
-    R (>= 3.5),
+    R (>= 3.4),
     SummarizedExperiment, 
     SingleCellExperiment,
 Imports:

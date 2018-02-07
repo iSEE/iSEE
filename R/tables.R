@@ -126,6 +126,17 @@
     return(reset)
 }
 
+.find_linked_gene <- function(link, input)
+# Convenience function to identify the selected gene from the linked table.
+{
+  if (link=="") {
+    return(NULL)
+  }
+  tab.id <- .encode_panel_name(link)$ID
+  linked.tab <- paste0("geneStatTable", tab.id, "_rows_selected")
+  input[[linked.tab]]
+}
+
 .delete_table_links <- function(mode, i, pObjects) 
 # Destroys the table links when a PLOT is being deleted,
 # and updates its memory to clear out all table references.

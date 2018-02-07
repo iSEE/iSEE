@@ -731,18 +731,3 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
   }
   return(NULL)
 }
-
-############################################
-# Internal functions: other ----
-############################################
-
-.find_linked_gene <- function(link, input)
-# Convenience function to identify the selected gene from the linked table.
-{
-  if (link=="") {
-    return(NULL)
-  }
-  tab.id <- .encode_panel_name(link)$ID
-  linked.tab <- paste0("geneStatTable", tab.id, "_rows_selected")
-  input[[linked.tab]]
-}

@@ -1,8 +1,8 @@
 #' @name defaults 
 #' @aliases redDimPlotDefaults
-#' @aliases geneExprPlotDefaults
+#' @aliases featExprPlotDefaults
 #' @aliases colDataPlotDefaults 
-#' @aliases geneStatTableDefaults
+#' @aliases rowStatTableDefaults
 #'
 #' @title Parameter defaults 
 #'
@@ -122,9 +122,9 @@
 #' sce
 #'
 #' redDimPlotDefaults(sce, number=5)
-#' geneExprPlotDefaults(sce, number=5)
+#' featExprPlotDefaults(sce, number=5)
 #' colDataPlotDefaults(sce, number=5)
-#' geneStatTableDefaults(sce, number=5)
+#' rowStatTableDefaults(sce, number=5)
 redDimPlotDefaults <- function(se, number) {
     waszero <- number==0 # To ensure that we define all the fields with the right types.
     if (waszero) number <- 1
@@ -141,7 +141,7 @@ redDimPlotDefaults <- function(se, number) {
 
 #' @rdname defaults 
 #' @export
-geneExprPlotDefaults <- function(se, number) {
+featExprPlotDefaults <- function(se, number) {
     waszero <- number==0 
     if (waszero) number <- 1
 
@@ -149,14 +149,14 @@ geneExprPlotDefaults <- function(se, number) {
     covariates <- colnames(colData(se))
 
     out <- new("DataFrame", nrows=as.integer(number))
-    out[[.geneExprAssay]] <- def_assay
-    out[[.geneExprXAxis]] <- .geneExprXAxisNothingTitle
-    out[[.geneExprXAxisColData]] <- covariates[1] 
-    out[[.geneExprXAxisGeneText]] <- ""
-    out[[.geneExprXAxisGeneTable]] <- ""
-    out[[.geneExprYAxisGeneText]] <- ""
-    out[[.geneExprYAxisGeneTable]] <- ""
-    out[[.geneExprYAxis]] <- .geneExprYAxisGeneTableTitle
+    out[[.featExprAssay]] <- def_assay
+    out[[.featExprXAxis]] <- .featExprXAxisNothingTitle
+    out[[.featExprXAxisColData]] <- covariates[1] 
+    out[[.featExprXAxisGeneText]] <- ""
+    out[[.featExprXAxisGeneTable]] <- ""
+    out[[.featExprYAxisGeneText]] <- ""
+    out[[.featExprYAxisGeneTable]] <- ""
+    out[[.featExprYAxis]] <- .featExprYAxisGeneTableTitle
 
     out <- .add_general_parameters(out, se)
     if (waszero) out <- out[0,,drop=FALSE]
@@ -183,17 +183,17 @@ colDataPlotDefaults <- function(se, number) {
 
 #' @rdname defaults
 #' @export
-geneStatTableDefaults <- function(se, number) {
+rowStatTableDefaults <- function(se, number) {
     waszero <- number==0 
     if (waszero) number <- 1
 
     out <- new("DataFrame", nrows=as.integer(number))
-    out[[.geneStatSelected]] <- 1L
-    out[[.geneStatSearch]] <- ""
+    out[[.rowStatSelected]] <- 1L
+    out[[.rowStatSearch]] <- ""
 
     # Defining an empty search for each column of the rowData.
     colsearch <- character(ncol(rowData(se)))
-    out[[.geneStatColSearch]] <- rep(list(colsearch), as.integer(number))
+    out[[.rowStatColSearch]] <- rep(list(colsearch), as.integer(number))
 
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)

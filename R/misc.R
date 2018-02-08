@@ -14,10 +14,10 @@
 }
 
 .check_plot_feasibility <- function(se) {
-  return(list(redDim=! (length(reducedDims(se))==0L || ncol(se)==0L),
-              colData=! (ncol(colData(se))==0L || ncol(se)==0L),
-              geneExpr=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
-              geneStat=! (nrow(se)==0L)
+  return(list(redDimPlot=! (length(reducedDims(se))==0L || ncol(se)==0L),
+              colDataPlot=! (ncol(colData(se))==0L || ncol(se)==0L),
+              featExprPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
+              rowStatTable=! (nrow(se)==0L)
   ))
 }
 
@@ -29,68 +29,68 @@
   return(counter)
 }
 
-.setup_memory <- function(se, redDimArgs, colDataArgs, geneExprArgs, geneStatArgs,
-                          redDimMax, colDataMax, geneExprMax, geneStatMax) 
+.setup_memory <- function(se, redDimArgs, colDataArgs, featExprArgs, rowStatArgs,
+                          redDimMax, colDataMax, featExprMax, rowStatMax) 
 # This function sets up the memory for the current session, taking in any
 # specifications from the user regarding the defaults and max number of panels.
 {
   # Defining the maximum number of panels.
   reddim_max_plots <- max(nrow(redDimArgs), redDimMax)
   coldata_max_plots <- max(nrow(colDataArgs), colDataMax)
-  geneexpr_max_plots <- max(nrow(geneExprArgs), geneExprMax)
-  genestat_max_tabs <- max(nrow(geneStatArgs), geneStatMax)
+  geneexpr_max_plots <- max(nrow(featExprArgs), featExprMax)
+  genestat_max_tabs <- max(nrow(rowStatArgs), rowStatMax)
 
   feasibility <- .check_plot_feasibility(se)
-  if (!feasibility$redDim) { 
+  if (!feasibility$redDimPlot) { 
     reddim_max_plots <- 0L
     redDimArgs <- NULL
   } 
-  if (!feasibility$colData) {
+  if (!feasibility$colDataPlot) {
     coldata_max_plots <- 0L
     colDataArgs <- NULL
   }
-  if (!feasibility$geneExpr) {
+  if (!feasibility$featExprPlot) {
     geneexpr_max_plots <- 0L
-    geneExprArgs <- NULL
+    featExprArgs <- NULL
   }
-  if (!feasibility$geneStat) {
+  if (!feasibility$rowStatTable) {
     genestat_max_tabs <- 0L
-    geneStatArgs <- NULL
+    rowStatArgs <- NULL
   }
 
   # Setting up parameters for each panel.
   memory <- list()
   if (is.null(redDimArgs)) {
-    memory$redDim <- redDimPlotDefaults(se, reddim_max_plots)
+    memory$redDimPlot <- redDimPlotDefaults(se, reddim_max_plots)
   } else {
-    memory$redDim <- redDimPlotDefaults(se, reddim_max_plots)
-    memory$redDim <- .override_defaults(memory$redDim, redDimArgs)
+    memory$redDimPlot <- redDimPlotDefaults(se, reddim_max_plots)
+    memory$redDimPlot <- .override_defaults(memory$redDimPlot, redDimArgs)
   }
-  rownames(memory$redDim) <- sprintf("redDimPlot%i", seq_len(reddim_max_plots))
+  rownames(memory$redDimPlot) <- sprintf("redDimPlot%i", seq_len(reddim_max_plots))
 
-  if (is.null(geneExprArgs)) {
-    memory$geneExpr <- geneExprPlotDefaults(se, geneexpr_max_plots)
+  if (is.null(featExprArgs)) {
+    memory$featExprPlot <- featExprPlotDefaults(se, geneexpr_max_plots)
   } else {
-    memory$geneExpr <- geneExprPlotDefaults(se, geneexpr_max_plots)
-    memory$geneExpr <- .override_defaults(memory$geneExpr, geneExprArgs)
+    memory$featExprPlot <- featExprPlotDefaults(se, geneexpr_max_plots)
+    memory$featExprPlot <- .override_defaults(memory$featExprPlot, featExprArgs)
   }
-  rownames(memory$geneExpr) <- sprintf("geneExprPlot%i", seq_len(geneexpr_max_plots))
+  rownames(memory$featExprPlot) <- sprintf("featExprPlot%i", seq_len(geneexpr_max_plots))
 
   if (is.null(colDataArgs)) {
-    memory$colData <- colDataPlotDefaults(se, coldata_max_plots)
+    memory$colDataPlot <- colDataPlotDefaults(se, coldata_max_plots)
   } else {
-    memory$colData <- colDataPlotDefaults(se, coldata_max_plots)
-    memory$colData <- .override_defaults(memory$colData, colDataArgs)
+    memory$colDataPlot <- colDataPlotDefaults(se, coldata_max_plots)
+    memory$colDataPlot <- .override_defaults(memory$colDataPlot, colDataArgs)
   }
-  rownames(memory$colData) <- sprintf("colDataPlot%i", seq_len(coldata_max_plots))
+  rownames(memory$colDataPlot) <- sprintf("colDataPlot%i", seq_len(coldata_max_plots))
 
-  if (is.null(geneStatArgs)) {
-    memory$geneStat <- geneStatTableDefaults(se, genestat_max_tabs)
+  if (is.null(rowStatArgs)) {
+    memory$rowStatTable <- rowStatTableDefaults(se, genestat_max_tabs)
   } else {
-    memory$geneStat <- geneStatTableDefaults(se, genestat_max_tabs)
-    memory$geneStat <- .override_defaults(memory$geneStat, geneStatArgs, can_brush=FALSE)
+    memory$rowStatTable <- rowStatTableDefaults(se, genestat_max_tabs)
+    memory$rowStatTable <- .override_defaults(memory$rowStatTable, rowStatArgs, can_brush=FALSE)
   }
-  rownames(memory$geneStat) <- sprintf("geneStatTable%i", seq_len(genestat_max_tabs))
+  rownames(memory$rowStatTable) <- sprintf("rowStatTable%i", seq_len(genestat_max_tabs))
 
   return(memory)
 }
@@ -103,7 +103,7 @@ height_limits <- c(400L, 1000L)
 {
   if (is.null(initialPanels)) {
     initialPanels <- data.frame(Name=c("Reduced dimension plot 1", "Column data plot 1", 
-                                       "Gene expression plot 1", "Gene statistics table 1"),
+                                       "Feature expression plot 1", "Row statistics table 1"),
                                 Width=4, Height=500L, stringsAsFactors=FALSE)
   } 
 
@@ -143,13 +143,13 @@ height_limits <- c(400L, 1000L)
 # with respect to the starting panels, i.e., no brushing
 # or table links to panels that are not active.
 {
-    is_tab <- active_panels$Type=="geneStat"
+    is_tab <- active_panels$Type=="rowStatTable"
     brushable <- active_panels[!is_tab,]
     brush_names <- .decode_panel_name(brushable$Type, brushable$ID)
     linkable <- active_panels[is_tab,]
     link_names <- .decode_panel_name(linkable$Type, linkable$ID)
 
-    for (mode in c("redDim", "colData", "geneExpr")) {
+    for (mode in c("redDimPlot", "colDataPlot", "featExprPlot")) {
         bb <- memory[[mode]][,.brushByPlot]
         bad <- !bb %in% brush_names
         if (any(bad)) { 
@@ -163,11 +163,11 @@ height_limits <- c(400L, 1000L)
         }
     }
 
-    for (field in c(.geneExprXAxisGeneTable, .geneExprYAxisGeneTable)) {
-        bb <- memory$geneExpr[,field]
+    for (field in c(.featExprXAxisGeneTable, .featExprYAxisGeneTable)) {
+        bb <- memory$featExprPlot[,field]
         bad <- !bb %in% link_names 
         if (any(bad)) { 
-            memory$geneExpr[,field][bad] <- ""
+            memory$featExprPlot[,field][bad] <- ""
         }
     }
     return(memory)

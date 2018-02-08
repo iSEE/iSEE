@@ -2,14 +2,14 @@
 # Creates links between tables and dependent plots, based on the colour
 # of all plots or x/y-axis choices for the gene expression plots.
 {
-  Ntabs <- nrow(memory$geneStat)
+  Ntabs <- nrow(memory$rowStatTable)
   table_links <- rep(list(list(color=character(0), xaxis=character(0), yaxis=character(0))), Ntabs)
-  names(table_links) <- sprintf("geneStatTable%i", seq_len(Ntabs))
+  names(table_links) <- sprintf("rowStatTable%i", seq_len(Ntabs))
 
   # Adding the links for the colors.
-  for (mode in c("redDim", "colData", "geneExpr")) { 
+  for (mode in c("redDimPlot", "colDataPlot", "featExprPlot")) { 
     N <- nrow(memory[[mode]])
-    cur_panels <- sprintf("%sPlot%i", mode, seq_len(N))
+    cur_panels <- sprintf("%s%i", mode, seq_len(N))
 
     for (i in seq_len(N)) {
       tab_name <- .check_for_tab(i, memory[[mode]], .colorByField, .colorByGeneTableTitle, .colorByGeneTable)
@@ -20,15 +20,15 @@
   }
 
   # Adding links for x- and y-axes.
-  N <- nrow(memory$geneExpr)
-  cur_panels <- sprintf("geneExprPlot%i", seq_len(N))
+  N <- nrow(memory$featExprPlot)
+  cur_panels <- sprintf("featExprPlot%i", seq_len(N))
   for (i in seq_len(N)) {
-    tab_name <- .check_for_tab(i, memory$geneExpr, .geneExprXAxis, .geneExprXAxisGeneTableTitle, .geneExprXAxisGeneTable)
+    tab_name <- .check_for_tab(i, memory$featExprPlot, .featExprXAxis, .featExprXAxisGeneTableTitle, .featExprXAxisGeneTable)
     if (!is.null(tab_name)) {
       table_links[[tab_name]]$xaxis <- c(table_links[[tab_name]]$xaxis, cur_panels[i])
     }
 
-    tab_name <- .check_for_tab(i, memory$geneExpr, .geneExprYAxis, .geneExprYAxisGeneTableTitle, .geneExprYAxisGeneTable)
+    tab_name <- .check_for_tab(i, memory$featExprPlot, .featExprYAxis, .featExprYAxisGeneTableTitle, .featExprYAxisGeneTable)
     if (!is.null(tab_name)) {
       table_links[[tab_name]]$yaxis <- c(table_links[[tab_name]]$yaxis, cur_panels[i])
     }
@@ -66,10 +66,10 @@
     }
 
     for (x in all_kids$yaxis) {
-        pObjects$memory$geneExpr[x, .geneExprYAxisGeneTable] <- ""
+        pObjects$memory$featExprPlot[x, .featExprYAxisGeneTable] <- ""
     }
     for (x in all_kids$xaxis) {
-        pObjects$memory$geneExpr[x, .geneExprXAxisGeneTable] <- ""
+        pObjects$memory$featExprPlot[x, .featExprXAxisGeneTable] <- ""
     }
 
     # Erasing the links.
@@ -97,14 +97,14 @@
 # Convenience function to update table links and memory when 'input' changes.
 # This can be for colours or for x/y-axis settings.
 {
-    choice <- input[[paste0(mode, by_field, i)]]
-    tab <- input[[paste0(mode, tab_field, i)]]
+    choice <- input[[paste0(mode, i, "_", by_field)]]
+    tab <- input[[paste0(mode, i, "_", tab_field)]]
     reset <- FALSE
 
     if (!is.null(choice) && !is.null(tab)) {
         # Editing the table_links, if we're switching to/from the table choice. 
         old <- pObjects$memory[[mode]][i, tab_field]
-        plot_name <- paste0(mode, "Plot", i)
+        plot_name <- paste0(mode, i)
         if (choice==tab_title) {
             pObjects$table_links <- .modify_table_links(pObjects$table_links, plot_name, tab, old, mode=param)
         } else {
@@ -133,7 +133,7 @@
     return(NULL)
   }
   tab.id <- .encode_panel_name(link)$ID
-  linked.tab <- paste0("geneStatTable", tab.id, "_rows_selected")
+  linked.tab <- paste0("rowStatTable", tab.id, .int_rowStatSelected)
   input[[linked.tab]]
 }
 
@@ -143,11 +143,11 @@
 {
   tmp_link <- pObjects$table_links 
   tmp_mem <- pObjects$memory[[mode]]
-  plot_name <- paste0(mode, "Plot", i)
+  plot_name <- paste0(mode, i)
 
   for (param in list(c(.colorByField, .colorByGeneTableTitle, .colorByGeneTable, "color"),
-                     c(.geneExprXAxis, .geneExprXAxisGeneTableTitle, .geneExprXAxisGeneTable, "xaxis"),
-                     c(.geneExprYAxis, .geneExprYAxisGeneTableTitle, .geneExprYAxisGeneTable, "yaxis"))) {
+                     c(.featExprXAxis, .featExprXAxisGeneTableTitle, .featExprXAxisGeneTable, "xaxis"),
+                     c(.featExprYAxis, .featExprYAxisGeneTableTitle, .featExprYAxisGeneTable, "yaxis"))) {
 
     if (tmp_mem[i, param[1]]==param[2]) {
       oldtab <- tmp_mem[i, param[3]]
@@ -157,7 +157,7 @@
       }
     }
 
-    if (mode!="geneExpr") {
+    if (mode!="featExprPlot") {
       break
     }
   }

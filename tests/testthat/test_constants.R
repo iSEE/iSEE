@@ -53,3 +53,32 @@ test_that(".encode_panel_name catches invalid inputs", {
   )
   
 })
+
+test_that(".decode_panel_name works as expected", {
+    expect_identical(iSEE:::.decode_panel_name("geneExpr", 1), "Gene expression plot 1")
+    expect_identical(iSEE:::.decode_panel_name("redDim", 2), "Reduced dimension plot 2")
+    expect_identical(iSEE:::.decode_panel_name("colData", 3), "Column data plot 3")
+    expect_identical(iSEE:::.decode_panel_name("geneStat", 4), "Gene statistics table 4")
+
+    # Works on vectors.
+    expect_identical(iSEE:::.decode_panel_name(c("geneExpr", "redDim"), 1:2), 
+                     c("Gene expression plot 1", "Reduced dimension plot 2"))
+    expect_identical(iSEE:::.decode_panel_name(character(0), integer(0)), character(0))
+})
+
+test_that(".decoded2encoded works as expected", {
+    expect_identical(iSEE:::.decoded2encoded("Gene expression plot 1"), "geneExprPlot1")
+    expect_identical(iSEE:::.decoded2encoded(c("Gene expression plot 1", "Reduced dimension plot 1")), 
+                                             c("geneExprPlot1", "redDimPlot1"))
+    expect_identical(iSEE:::.decoded2encoded(character(0)), character(0))
+    expect_identical(iSEE:::.decoded2encoded(c("Gene expression plot 1", "")), 
+                                             c("geneExprPlot1", ""))
+})
+
+test_that(".split_encoded works as expected", {
+    expect_identical(iSEE:::.split_encoded("geneExprPlot1"), list(Type="geneExpr", ID=1L))
+    expect_identical(iSEE:::.split_encoded(c("geneExprPlot1", "redDimPlot1")),
+                     list(Type=c("geneExpr", "redDim"), ID=c(1L, 1L)))
+    expect_identical(iSEE:::.split_encoded(character(0)), list(Type=character(0), ID=integer(0)))
+})
+

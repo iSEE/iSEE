@@ -357,7 +357,7 @@ iSEE <- function(
     # of i in the renderPlot() will be the same across all instances, because
     # of when the expression is evaluated.
 
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowStatPlot")) {
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowStatTable")) {
         # Panel addition.
         local({
             mode0 <- mode
@@ -523,14 +523,14 @@ iSEE <- function(
             old_encoded <- new_encoded <- ""    
             if (old_transmitter!="") {
               old_enc <- .encode_panel_name(old_transmitter)
-              old_encoded <- paste0(old_enc$Type, "Plot", old_enc$ID)
+              old_encoded <- paste0(old_enc$Type, old_enc$ID)
               if (!is.null(pObjects$memory[[old_enc$Type]][old_enc$ID, .brushData][[1]])) {
                 old_brush <- TRUE
               }
             }
             if (new_transmitter!="") {
               new_enc <- .encode_panel_name(new_transmitter)
-              new_encoded <- paste0(new_enc$Type, "Plot", new_enc$ID)
+              new_encoded <- paste0(new_enc$Type, new_enc$ID)
               if (!is.null(pObjects$memory[[new_enc$Type]][new_enc$ID, .brushData][[1]])) {
                 new_brush <- TRUE
               }
@@ -554,7 +554,7 @@ iSEE <- function(
             }
 
             # Triggering self update of the plot.
-            rObjects[[plot.name]] <- .increment_counter(isolate(rObjects[[plot.name]]))
+            rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
 
             # Triggering replotting of children, if the current panel is set to restrict;
             # and we have a brush, so that there was already some brushing in the children.
@@ -585,13 +585,13 @@ iSEE <- function(
             }
 
             # Triggering self update.
-            rObjects[[plot.name]] <- .increment_counter(isolate(rObjects[[plot.name]]))
+            rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
 
             # Triggering replotting of children, if we are set to or from restrict;
             # and we have a brush, so there was already some brushing in the children.
             if ((cur_effect==.brushRestrictTitle || old_effect==.brushRestrictTitle) 
                 && !is.null(pObjects$memory[[mode0]][i0, .brushData][[1]])) {
-              children <- .get_brush_dependents(pObjects$brush_links, plot.name, pObjects$memory)
+              children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
               for (child_plot in children) {
                 rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
               }
@@ -607,7 +607,7 @@ iSEE <- function(
             # If it is rebrushing itself in restrict mode, we take the intersection of brushed regions.
             if (!is.null(cur_brush) 
                 && pObjects$memory[[mode0]][i0, .brushEffect]==.brushRestrictTitle
-                && plot.name==.decoded2encoded(pObjects$memory[[mode0]][i0, .brushByPlot])) {
+                && plot_name==.decoded2encoded(pObjects$memory[[mode0]][i0, .brushByPlot])) {
                 cur_brush$xmin <- max(cur_brush$xmin, old_brush$xmin)
                 cur_brush$xmax <- min(cur_brush$xmax, old_brush$xmax)
                 cur_brush$ymin <- max(cur_brush$ymin, old_brush$ymin)
@@ -622,10 +622,10 @@ iSEE <- function(
             }
 
             # Trigger replotting of self, to draw a more persistent brushing box.
-            rObjects[[plot.name]] <- .increment_counter(isolate(rObjects[[plot.name]]))
+            rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
 
             # Trigger replotting of all dependent plots that receive this brush.
-            children <- .get_brush_dependents(pObjects$brush_links, plot.name, pObjects$memory)
+            children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
             for (child_plot in children) {
               rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
             }
@@ -665,14 +665,14 @@ iSEE <- function(
   
         # Defining mode-specific parameters.
         FUN <- switch(mode, 
-                      redDim=.make_redDimPlot,
-                      featExpr=.make_featExprPlot,
-                      colData=.make_colDataPlot)
+                      redDimPlot=.make_redDimPlot,
+                      featExprPlot=.make_featExprPlot,
+                      colDataPlot=.make_colDataPlot)
   
         protected <- switch(mode,
-                            redDim=c(.redDimType, .redDimXAxis, .redDimYAxis),
-                            colData=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
-                            featExpr=c(.featExprAssay, .featExprXAxisColData, .featExprYAxisGeneText, .featExprXAxisGeneText))
+                            redDimPlot=c(.redDimType, .redDimXAxis, .redDimYAxis),
+                            colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
+                            featExprPlot=c(.featExprAssay, .featExprXAxisColData, .featExprYAxisGeneText, .featExprXAxisGeneText))
   
         for (i in seq_len(max_plots)) {
             # Observers for the non-fundamental parameter options (.brushByPlot is handled elsewhere).
@@ -815,7 +815,7 @@ iSEE <- function(
 
         # Updating memory for new selection parameters (no need for underscore
         # in 'select_field' definition, as this is already in the '.int' constant).
-        select_field <- paste0("rowStatTable", i0, , .int_rowStatSelected)
+        select_field <- paste0("rowStatTable", i0, .int_rowStatSelected)
         observe({
             chosen <- input[[select_field]]
             if (length(chosen)) {

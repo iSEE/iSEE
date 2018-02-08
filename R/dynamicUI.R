@@ -72,15 +72,15 @@
         ID <- active_panels$ID[i]
         panel.width <- active_panels$Width[i]
         param_choices <- memory[[mode]][ID,]
+        .input_FUN <- function(field) { paste0(mode, ID, "_", field) }
 
         # Checking what to do with plot-specific parameters (e.g., brushing, clicking, plot height).
         if (mode!="rowStatTable") { 
-            brush.opts <- brushOpts(paste0(mode, .brushField, ID), resetOnNew=FALSE, 
+            brush.opts <- brushOpts(.input_FUN(.brushField), resetOnNew=FALSE, 
                                     fill=brush_fill_color[mode], stroke=brush_stroke_color[mode])
-            dblclick <- paste0(mode, .zoomClick, ID)
+            dblclick <- .input_FUN(.zoomClick)
             panel_height <- paste0(active_panels$Height[i], "px")
             panel_name <- paste0(mode, ID)
-            .input_FUN <- function(field) { paste0(mode, ID, "_", field) }
         }
 
         # Creating the plot fields.
@@ -159,7 +159,7 @@
                  )
         } else if (mode=="rowStatTable") {
             obj <- list(dataTableOutput(paste0(mode, ID)),
-                        uiOutput(paste0(mode, ID, "_annotation")))
+                        uiOutput(.input_FUN("annotation")))
         } else {
             stop(sprintf("'%s' is not a recognized panel mode"), mode)
         }

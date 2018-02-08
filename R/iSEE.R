@@ -396,7 +396,7 @@ iSEE <- function(
 
                     # Re-enabling panel addition if we're decreasing from the maximum.
                     if (sum(current_type)==max_plots0) {
-                      enable(paste0(mode0, .organizationNew))
+                      enable(paste0(mode0, "_", .organizationNew))
                     }
 
                     # Destroying links; either the brush source, or the links from tables.

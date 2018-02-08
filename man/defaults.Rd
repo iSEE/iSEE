@@ -3,18 +3,18 @@
 \name{defaults}
 \alias{defaults}
 \alias{redDimPlotDefaults}
-\alias{geneExprPlotDefaults}
+\alias{featExprPlotDefaults}
 \alias{colDataPlotDefaults}
-\alias{geneStatTableDefaults}
+\alias{rowStatTableDefaults}
 \title{Parameter defaults}
 \usage{
 redDimPlotDefaults(se, number)
 
-geneExprPlotDefaults(se, number)
+featExprPlotDefaults(se, number)
 
 colDataPlotDefaults(se, number)
 
-geneStatTableDefaults(se, number)
+rowStatTableDefaults(se, number)
 }
 \arguments{
 \item{se}{A SingleCellExperiment object.}
@@ -148,7 +148,7 @@ sce <- runPCA(sce)
 sce
 
 redDimPlotDefaults(sce, number=5)
-geneExprPlotDefaults(sce, number=5)
+featExprPlotDefaults(sce, number=5)
 colDataPlotDefaults(sce, number=5)
-geneStatTableDefaults(sce, number=5)
+rowStatTableDefaults(sce, number=5)
 }

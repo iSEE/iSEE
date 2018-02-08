@@ -4,9 +4,9 @@
 \alias{iSEE}
 \title{iSEE: interactive SingleCell/Summarized Experiment Explorer}
 \usage{
-iSEE(se, redDimArgs = NULL, colDataArgs = NULL, geneExprArgs = NULL,
-  geneStatArgs = NULL, redDimMax = 5, colDataMax = 5, geneExprMax = 5,
-  geneStatMax = 5, initialPanels = NULL, annot.orgdb = NULL,
+iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featExprArgs = NULL,
+  rowStatArgs = NULL, redDimMax = 5, colDataMax = 5, featExprMax = 5,
+  rowStatMax = 5, initialPanels = NULL, annot.orgdb = NULL,
   annot.keytype = "ENTREZID", annot.keyfield = NULL,
   colormap = ExperimentColorMap(), run_local = TRUE)
 }
@@ -19,11 +19,11 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, geneExprArgs = NULL,
 \item{colDataArgs}{A DataFrame similar to that produced by
 \code{\link{colDataPlotDefaults}}, specifying initial parameters for the plots.}
 
-\item{geneExprArgs}{A DataFrame similar to that produced by
-\code{\link{geneExprPlotDefaults}}, specifying initial parameters for the plots.}
+\item{featExprArgs}{A DataFrame similar to that produced by
+\code{\link{featExprPlotDefaults}}, specifying initial parameters for the plots.}
 
-\item{geneStatArgs}{A DataFrame similar to that produced by
-\code{\link{geneStatTableDefaults}}, specifying initial parameters for the plots.}
+\item{rowStatArgs}{A DataFrame similar to that produced by
+\code{\link{rowStatTableDefaults}}, specifying initial parameters for the plots.}
 
 \item{redDimMax}{An integer scalar specifying the maximum number of reduced
 dimension plots in the interface.}
@@ -31,10 +31,10 @@ dimension plots in the interface.}
 \item{colDataMax}{An integer scalar specifying the maximum number of column
 data plots in the interface.}
 
-\item{geneExprMax}{An integer scalar specifying the maximum number of gene
+\item{featExprMax}{An integer scalar specifying the maximum number of gene
 expression plots in the interface.}
 
-\item{geneStatMax}{An integer scalar specifying the maximum number of gene
+\item{rowStatMax}{An integer scalar specifying the maximum number of gene
 statistic tables in the interface.}
 
 \item{initialPanels}{A DataFrame specifying which panels should be created
@@ -69,7 +69,7 @@ Interactive visualization of single-cell data using a Shiny interface.
 }
 \details{
 Users can pass default parameters via DataFrame objects in
-\code{redDimArgs} and \code{geneExprArgs}. Each object can contain
+\code{redDimArgs} and \code{featExprArgs}. Each object can contain
 some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
 Any missing fields will be filled in with the defaults.
 

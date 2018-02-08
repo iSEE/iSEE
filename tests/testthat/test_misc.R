@@ -23,42 +23,42 @@ test_that("list updater function works correctly", {
 
 test_that("plot feasibility checks work correctly", {
     out <- iSEE:::.check_plot_feasibility(sce)
-    expect_true(out$redDim)
-    expect_true(out$geneExpr)
-    expect_true(out$colData)
-    expect_true(out$geneStat)
+    expect_true(out$redDimPlot)
+    expect_true(out$featExprPlot)
+    expect_true(out$colDataPlot)
+    expect_true(out$rowStatTable)
 
     # No genes.
     out <- iSEE:::.check_plot_feasibility(sce[0,])
-    expect_true(out$redDim)
-    expect_false(out$geneExpr)
-    expect_true(out$colData)
-    expect_false(out$geneStat)
+    expect_true(out$redDimPlot)
+    expect_false(out$featExprPlot)
+    expect_true(out$colDataPlot)
+    expect_false(out$rowStatTable)
 
     # No samples.
     out <- iSEE:::.check_plot_feasibility(sce[,0])
-    expect_false(out$redDim)
-    expect_false(out$geneExpr)
-    expect_false(out$colData)
-    expect_true(out$geneStat)
+    expect_false(out$redDimPlot)
+    expect_false(out$featExprPlot)
+    expect_false(out$colDataPlot)
+    expect_true(out$rowStatTable)
 
-    # No colData.
+    # No colDataPlot.
     sceX <- sce
     colData(sceX) <- colData(sceX)[,0]
     out <- iSEE:::.check_plot_feasibility(sceX)
-    expect_true(out$redDim)
-    expect_true(out$geneExpr)
-    expect_false(out$colData)
-    expect_true(out$geneStat)
+    expect_true(out$redDimPlot)
+    expect_true(out$featExprPlot)
+    expect_false(out$colDataPlot)
+    expect_true(out$rowStatTable)
 
     # No reduced dimensions.
     sceX <- sce
     reducedDims(sceX) <- SimpleList()
     out <- iSEE:::.check_plot_feasibility(sceX)
-    expect_false(out$redDim)
-    expect_true(out$geneExpr)
-    expect_true(out$colData)
-    expect_true(out$geneStat)
+    expect_false(out$redDimPlot)
+    expect_true(out$featExprPlot)
+    expect_true(out$colDataPlot)
+    expect_true(out$rowStatTable)
 
     # No assays.
     sceX <- sce
@@ -66,10 +66,10 @@ test_that("plot feasibility checks work correctly", {
         assay(sceX, field) <- NULL
     }
     out <- iSEE:::.check_plot_feasibility(sceX)
-    expect_true(out$redDim)
-    expect_false(out$geneExpr)
-    expect_true(out$colData)
-    expect_true(out$geneStat)
+    expect_true(out$redDimPlot)
+    expect_false(out$featExprPlot)
+    expect_true(out$colDataPlot)
+    expect_true(out$rowStatTable)
 })
 
 test_that("count incrementer works correctly", {

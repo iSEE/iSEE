@@ -206,6 +206,10 @@ rowStatTableDefaults <- function(se, number) {
     colsearch <- character(ncol(rowData(se)))
     out[[.rowStatColSearch]] <- rep(list(colsearch), as.integer(number))
 
+    # Defining the rowDataPlot brush to receive.
+    out[[.brushParamPanelOpen]] <- FALSE
+    out[[.brushByPlot]] <- ""
+
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)
 }

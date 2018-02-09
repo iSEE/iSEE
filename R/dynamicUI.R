@@ -179,7 +179,17 @@
 
         # Adding graphical parameters if we're plotting.
         if (mode=="rowStatTable") {
-            param <- list()
+            param <- list(hr(), tags$div(class = "panel-group", role = "tablist",
+                collapseBox(.input_FUN(.brushParamPanelOpen),
+                            title = "Brushing parameters",
+                            open = param_choices[[.brushParamPanelOpen]],
+                            selectInput(.input_FUN(.brushByPlot),
+                                        label = "Receive brush from:", selectize=FALSE,
+                                        choices=row_brushable,
+                                        selected=.choose_link(param_choices[[.brushByPlot]], row_brushable))
+                            )
+                )
+            )
         } else if (mode=="rowDataPlot") {
             # Slightly different handling of the row data.
             param <- list(tags$div(class = "panel-group", role = "tablist",

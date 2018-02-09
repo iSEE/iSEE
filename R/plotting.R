@@ -582,11 +582,14 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
       col_choice <- param_choices[[.colorByFeatNameColor]]
 
     }
-    output$cmd <- sprintf("plot.data$ColorBy <- FALSE;\nplot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))
+
+    output$cmd <- sprintf("plot.data$ColorBy <- FALSE;
+plot.data[%s, 'ColorBy'] <- TRUE;
+plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To ensure it is plotted last.
     output$label <- .gene_axis_label(se, chosen_gene, assay_id=NULL)
     output$FUN <- function(nlevels) {
        # Argument is ignored, as we should know the number of levels beforehand.
-       sprintf("scale_color_manual(values=c(FALSE='black', TRUE=%s), drop=FALSE) +", deparse(col_choice))
+       sprintf("scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +", deparse(col_choice))
     }
   }
   return(output)

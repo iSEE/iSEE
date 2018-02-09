@@ -199,8 +199,8 @@ test_that(".make_colDataPlot/.griddotplot produce a valid xy with color", {
 
 test_that(".make_featExprPlot/.scatter_plot produce a valid list",{
   
-  all_memory$featExprPlot[1,iSEE:::.featExprYAxisGeneTable] <- "Row statistics table 1"
-  all_memory$featExprPlot[1,iSEE:::.featExprYAxisGeneTable] <- "Row statistics table 1"
+  all_memory$featExprPlot[1,iSEE:::.featExprYAxisRowTable] <- "Row statistics table 1"
+  all_memory$featExprPlot[1,iSEE:::.featExprYAxisRowTable] <- "Row statistics table 1"
   
   p.out <- iSEE:::.make_featExprPlot(
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
@@ -245,10 +245,10 @@ test_that(".make_featExprPlot/.scatter_plot produce a valid list",{
 
 test_that(".make_featExprPlot/.scatter_plot produce a valid xy with color", {
  
-  all_memory$featExprPlot[1,iSEE:::.featExprYAxisGeneTable] <- "Row statistics table 1"
-  all_memory$featExprPlot[1,iSEE:::.featExprYAxisGeneTable] <- "Row statistics table 1"
-  all_memory$featExprPlot[1,iSEE:::.colorByGeneTable] <- "Row statistics table 1"
-  all_memory$featExprPlot[1,iSEE:::.colorByField] <- iSEE:::.colorByGeneTableTitle
+  all_memory$featExprPlot[1,iSEE:::.featExprYAxisRowTable] <- "Row statistics table 1"
+  all_memory$featExprPlot[1,iSEE:::.featExprYAxisRowTable] <- "Row statistics table 1"
+  all_memory$featExprPlot[1,iSEE:::.colorByRowTable] <- "Row statistics table 1"
+  all_memory$featExprPlot[1,iSEE:::.colorByField] <- iSEE:::.colorByRowTableTitle
   
   p.out <- iSEE:::.make_featExprPlot(
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
@@ -259,12 +259,12 @@ test_that(".make_featExprPlot/.scatter_plot produce a valid xy with color", {
   
 })
 
-test_that(".make_featExprPlot works for YAxis set to Gene text", {
+test_that(".make_featExprPlot works for YAxis set to Feature name", {
   # change the value locally for the specific test
   selected_gene <- "0610009B22Rik"
   
-  all_memory$featExprPlot[1,iSEE:::.featExprYAxis] <- iSEE:::.featExprYAxisGeneTextTitle
-  all_memory$featExprPlot[1,iSEE:::.featExprYAxisGeneText] <- selected_gene
+  all_memory$featExprPlot[1,iSEE:::.featExprYAxis] <- iSEE:::.featExprYAxisFeatNameTitle
+  all_memory$featExprPlot[1,iSEE:::.featExprYAxisFeatName] <- selected_gene
   
   p.out <- iSEE:::.make_featExprPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
@@ -291,10 +291,10 @@ test_that(".make_featExprPlot works for XAxis set to Column data", {
   
 })
 
-test_that(".make_featExprPlot works for XAxis set to Gene table", {
+test_that(".make_featExprPlot works for XAxis set to Row table", {
   # change the value locally for the specific test
-  all_memory$featExprPlot[1,iSEE:::.featExprXAxis] <- iSEE:::.featExprXAxisGeneTableTitle
-  all_memory$featExprPlot[1,iSEE:::.featExprXAxisGeneTable] <- "Row statistics table 1"
+  all_memory$featExprPlot[1,iSEE:::.featExprXAxis] <- iSEE:::.featExprXAxisRowTableTitle
+  all_memory$featExprPlot[1,iSEE:::.featExprXAxisRowTable] <- "Row statistics table 1"
   
   p.out <- iSEE:::.make_featExprPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
@@ -306,12 +306,12 @@ test_that(".make_featExprPlot works for XAxis set to Gene table", {
   
 })
 
-test_that(".make_featExprPlot works for XAxis set to Gene text", {
+test_that(".make_featExprPlot works for XAxis set to Feature name", {
   selected_gene <- "0610009B22Rik"
   
   # change the value locally for the specific test
-  all_memory$featExprPlot[1,iSEE:::.featExprXAxis] <- iSEE:::.featExprXAxisGeneTextTitle
-  all_memory$featExprPlot[1,iSEE:::.featExprXAxisGeneText] <- selected_gene
+  all_memory$featExprPlot[1,iSEE:::.featExprXAxis] <- iSEE:::.featExprXAxisFeatNameTitle
+  all_memory$featExprPlot[1,iSEE:::.featExprXAxisFeatName] <- selected_gene
   
   p.out <- iSEE:::.make_featExprPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
@@ -556,8 +556,8 @@ test_that(".make_colDataPlot/.griddotplot works with zoom",{
 
 test_that(".process_colorby_choice handles gene text input", {
   params <- all_memory$redDimPlot[1,]
-  params[[iSEE:::.colorByField]] <- iSEE:::.colorByGeneTextTitle
-  params[[iSEE:::.colorByGeneText]] <- rownames(sce)[1]
+  params[[iSEE:::.colorByField]] <- iSEE:::.colorByFeatNameTitle
+  params[[iSEE:::.colorByFeatName]] <- rownames(sce)[1]
   
   color_out <- iSEE:::.process_colorby_choice(
     params, all_memory, sce, ExperimentColorMap())

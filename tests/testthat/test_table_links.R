@@ -6,23 +6,23 @@ featExprArgs <- featExprPlotDefaults(sce, 3)
 rowStatArgs <- rowStatTableDefaults(sce, 3)
 
 # Creating test links
-redDimArgs[1,iSEE:::.colorByGeneTable] <- "Row statistics table 1"
-colDataArgs[2,iSEE:::.colorByGeneTable] <- "Row statistics table 1"
-colDataArgs[1,iSEE:::.colorByGeneTable] <- "Row statistics table 3"
+redDimArgs[1,iSEE:::.colorByRowTable] <- "Row statistics table 1"
+colDataArgs[2,iSEE:::.colorByRowTable] <- "Row statistics table 1"
+colDataArgs[1,iSEE:::.colorByRowTable] <- "Row statistics table 3"
 
 redDimArgs[1,iSEE:::.colorByField] <- 
     colDataArgs[1,iSEE:::.colorByField] <- 
     colDataArgs[2,iSEE:::.colorByField] <- 
-    iSEE:::.colorByGeneTableTitle
+    iSEE:::.colorByRowTableTitle
 
-featExprArgs[1,iSEE:::.featExprXAxisGeneTable] <- "Row statistics table 2"
-featExprArgs[2,iSEE:::.featExprYAxisGeneTable] <- "Row statistics table 1"
-featExprArgs[3,iSEE:::.featExprXAxisGeneTable] <- "Row statistics table 1"
-featExprArgs[3,iSEE:::.featExprYAxisGeneTable] <- "Row statistics table 2"
+featExprArgs[1,iSEE:::.featExprXAxisRowTable] <- "Row statistics table 2"
+featExprArgs[2,iSEE:::.featExprYAxisRowTable] <- "Row statistics table 1"
+featExprArgs[3,iSEE:::.featExprXAxisRowTable] <- "Row statistics table 1"
+featExprArgs[3,iSEE:::.featExprYAxisRowTable] <- "Row statistics table 2"
 
 featExprArgs[1,iSEE:::.featExprXAxis] <-
     featExprArgs[3,iSEE:::.featExprXAxis] <-
-    iSEE:::.featExprXAxisGeneTableTitle
+    iSEE:::.featExprXAxisRowTableTitle
 
 memory <- iSEE:::.setup_memory(sce, redDimArgs, colDataArgs, featExprArgs, rowStatArgs,
         nrow(redDimArgs), nrow(colDataArgs), nrow(featExprArgs), nrow(rowStatArgs))
@@ -54,7 +54,7 @@ test_that("table link creation works correctly", {
 
     # Checking what happens when xaxis choices are disabled.
     featExprArgs2 <- featExprArgs
-    featExprArgs2[2,iSEE:::.featExprYAxis] <- featExprArgs2[3,iSEE:::.featExprYAxis] <- iSEE:::.featExprYAxisGeneTextTitle
+    featExprArgs2[2,iSEE:::.featExprYAxis] <- featExprArgs2[3,iSEE:::.featExprYAxis] <- iSEE:::.featExprYAxisFeatNameTitle
     memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs2, colDataPlot=colDataArgs, rowStatTable=rowStatArgs)
     tab2 <- iSEE:::.spawn_table_links(memory)
 
@@ -87,10 +87,10 @@ test_that("table destruction works correctly", {
         list(color=character(0), xaxis=character(0), yaxis=character(0)))
 
     comp <- memory
-    comp$redDimPlot[1,iSEE:::.colorByGeneTable] <- ""
-    comp$colDataPlot[2,iSEE:::.colorByGeneTable] <- ""
-    comp$featExprPlot[2,iSEE:::.featExprYAxisGeneTable] <- ""
-    comp$featExprPlot[3,iSEE:::.featExprXAxisGeneTable] <- ""
+    comp$redDimPlot[1,iSEE:::.colorByRowTable] <- ""
+    comp$colDataPlot[2,iSEE:::.colorByRowTable] <- ""
+    comp$featExprPlot[2,iSEE:::.featExprYAxisRowTable] <- ""
+    comp$featExprPlot[3,iSEE:::.featExprXAxisRowTable] <- ""
     expect_identical(comp, pObjects$memory)
 
     # Destroying a simpler table.
@@ -98,7 +98,7 @@ test_that("table destruction works correctly", {
     expect_identical(pObjects$table_links$rowStatTable1, 
         list(color=character(0), xaxis=character(0), yaxis=character(0)))
 
-    comp$colDataPlot[1,iSEE:::.colorByGeneTable] <- ""
+    comp$colDataPlot[1,iSEE:::.colorByRowTable] <- ""
     expect_identical(comp, pObjects$memory)
 })
 
@@ -156,33 +156,33 @@ test_that("table observers work correctly", {
     pObjects$memory <- memory
 
     # Changing the table.
-    out <- iSEE:::.setup_table_observer("redDimPlot", 1, input=list(redDimPlot1_ColorBy=iSEE:::.colorByGeneTableTitle, 
-                                                                    redDimPlot1_ColorByGeneTable="Row statistics table 2"),
-                                        pObjects, iSEE:::.colorByField, iSEE:::.colorByGeneTableTitle, iSEE:::.colorByGeneTable, param = "color")
+    out <- iSEE:::.setup_table_observer("redDimPlot", 1, input=list(redDimPlot1_ColorBy=iSEE:::.colorByRowTableTitle, 
+                                                                    redDimPlot1_ColorByRowTable="Row statistics table 2"),
+                                        pObjects, iSEE:::.colorByField, iSEE:::.colorByRowTableTitle, iSEE:::.colorByRowTable, param = "color")
     expect_true(out)
     expect_false("redDimPlot1" %in% pObjects$table_links$rowStatTable1$color)
     expect_true("redDimPlot1" %in% pObjects$table_links$rowStatTable2$color)
-    expect_identical(iSEE:::.colorByGeneTableTitle, pObjects$memory$redDimPlot[1, iSEE:::.colorByField])
-    expect_identical("Row statistics table 2", pObjects$memory$redDimPlot[1, iSEE:::.colorByGeneTable])
+    expect_identical(iSEE:::.colorByRowTableTitle, pObjects$memory$redDimPlot[1, iSEE:::.colorByField])
+    expect_identical("Row statistics table 2", pObjects$memory$redDimPlot[1, iSEE:::.colorByRowTable])
 
     # Changing the colour source.
     out <- iSEE:::.setup_table_observer("redDimPlot", 1, input=list(redDimPlot1_ColorBy=iSEE:::.colorByNothingTitle, 
-                                                                    redDimPlot1_ColorByGeneTable="Row statistics table 1"),
-                                        pObjects, iSEE:::.colorByField, iSEE:::.colorByGeneTableTitle, iSEE:::.colorByGeneTable, param = "color")
+                                                                    redDimPlot1_ColorByRowTable="Row statistics table 1"),
+                                        pObjects, iSEE:::.colorByField, iSEE:::.colorByRowTableTitle, iSEE:::.colorByRowTable, param = "color")
     expect_true(out)
     expect_false("redDimPlot1" %in% pObjects$table_links$rowStatTable2$color) # old link to gene table 2 is removed.
     expect_false("redDimPlot1" %in% pObjects$table_links$rowStatTable1$color) # does NOT update; gene table spec should be ignored for table link purposes.
     expect_identical(iSEE:::.colorByNothingTitle, pObjects$memory$redDimPlot[1, iSEE:::.colorByField])
-    expect_identical("Row statistics table 1", pObjects$memory$redDimPlot[1, iSEE:::.colorByGeneTable])
+    expect_identical("Row statistics table 1", pObjects$memory$redDimPlot[1, iSEE:::.colorByRowTable])
 
     # Changing it back to gene table colouring.
-    out <- iSEE:::.setup_table_observer("redDimPlot", 1, input=list(redDimPlot1_ColorBy=iSEE:::.colorByGeneTableTitle, 
-                                                                    redDimPlot1_ColorByGeneTable="Row statistics table 1"),
-                                        pObjects, iSEE:::.colorByField, iSEE:::.colorByGeneTableTitle, iSEE:::.colorByGeneTable, param = "color")
+    out <- iSEE:::.setup_table_observer("redDimPlot", 1, input=list(redDimPlot1_ColorBy=iSEE:::.colorByRowTableTitle, 
+                                                                    redDimPlot1_ColorByRowTable="Row statistics table 1"),
+                                        pObjects, iSEE:::.colorByField, iSEE:::.colorByRowTableTitle, iSEE:::.colorByRowTable, param = "color")
     expect_true(out)
     expect_true("redDimPlot1" %in% pObjects$table_links$rowStatTable1$color) # triggers the update.
-    expect_identical(iSEE:::.colorByGeneTableTitle, pObjects$memory$redDimPlot[1, iSEE:::.colorByField])
-    expect_identical("Row statistics table 1", pObjects$memory$redDimPlot[1, iSEE:::.colorByGeneTable])
+    expect_identical(iSEE:::.colorByRowTableTitle, pObjects$memory$redDimPlot[1, iSEE:::.colorByField])
+    expect_identical("Row statistics table 1", pObjects$memory$redDimPlot[1, iSEE:::.colorByRowTable])
 })
 
 test_that("identification of linked genes is done correctly", {
@@ -201,7 +201,7 @@ test_that("deleting table links is done correctly", {
     iSEE:::.delete_table_links("redDimPlot", 1, pObjects)
 
     expect_false("redDimPlot1" %in% pObjects$table_links$rowStatTable1$color)
-    expect_identical(pObjects$memory$redDimPlot[1, iSEE:::.colorByGeneTable], "") 
+    expect_identical(pObjects$memory$redDimPlot[1, iSEE:::.colorByRowTable], "") 
 
     # Deleting something with x- and y-axis links.
     expect_true("featExprPlot3" %in% tabs$rowStatTable1$xaxis)
@@ -211,6 +211,6 @@ test_that("deleting table links is done correctly", {
 
     expect_false("featExprPlot3" %in% pObjects$table_links$rowStatTable1$xaxis)
     expect_false("featExprPlot3" %in% pObjects$table_links$rowStatTable2$yaxis)
-    expect_identical(pObjects$memory$featExprPlot[3, iSEE:::.featExprXAxisGeneTable], "")
-    expect_identical(pObjects$memory$featExprPlot[3, iSEE:::.featExprYAxisGeneTable], "")
+    expect_identical(pObjects$memory$featExprPlot[3, iSEE:::.featExprXAxisRowTable], "")
+    expect_identical(pObjects$memory$featExprPlot[3, iSEE:::.featExprYAxisRowTable], "")
 })

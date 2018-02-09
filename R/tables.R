@@ -12,7 +12,7 @@
     cur_panels <- sprintf("%s%i", mode, seq_len(N))
 
     for (i in seq_len(N)) {
-      tab_name <- .check_for_tab(i, memory[[mode]], .colorByField, .colorByGeneTableTitle, .colorByGeneTable)
+      tab_name <- .check_for_tab(i, memory[[mode]], .colorByField, .colorByRowTableTitle, .colorByRowTable)
       if (!is.null(tab_name)) {
         table_links[[tab_name]]$color <- c(table_links[[tab_name]]$color, cur_panels[i])
       }
@@ -23,12 +23,12 @@
   N <- nrow(memory$featExprPlot)
   cur_panels <- sprintf("featExprPlot%i", seq_len(N))
   for (i in seq_len(N)) {
-    tab_name <- .check_for_tab(i, memory$featExprPlot, .featExprXAxis, .featExprXAxisGeneTableTitle, .featExprXAxisGeneTable)
+    tab_name <- .check_for_tab(i, memory$featExprPlot, .featExprXAxis, .featExprXAxisRowTableTitle, .featExprXAxisRowTable)
     if (!is.null(tab_name)) {
       table_links[[tab_name]]$xaxis <- c(table_links[[tab_name]]$xaxis, cur_panels[i])
     }
 
-    tab_name <- .check_for_tab(i, memory$featExprPlot, .featExprYAxis, .featExprYAxisGeneTableTitle, .featExprYAxisGeneTable)
+    tab_name <- .check_for_tab(i, memory$featExprPlot, .featExprYAxis, .featExprYAxisRowTableTitle, .featExprYAxisRowTable)
     if (!is.null(tab_name)) {
       table_links[[tab_name]]$yaxis <- c(table_links[[tab_name]]$yaxis, cur_panels[i])
     }
@@ -62,14 +62,14 @@
     for (i in seq_along(col_kids)) { 
         kid <- col_kids[i]
         type <- enc$Type[i]
-        pObjects$memory[[type]][kid, .colorByGeneTable] <- ""
+        pObjects$memory[[type]][kid, .colorByRowTable] <- ""
     }
 
     for (x in all_kids$yaxis) {
-        pObjects$memory$featExprPlot[x, .featExprYAxisGeneTable] <- ""
+        pObjects$memory$featExprPlot[x, .featExprYAxisRowTable] <- ""
     }
     for (x in all_kids$xaxis) {
-        pObjects$memory$featExprPlot[x, .featExprXAxisGeneTable] <- ""
+        pObjects$memory$featExprPlot[x, .featExprXAxisRowTable] <- ""
     }
 
     # Erasing the links.
@@ -145,9 +145,9 @@
   tmp_mem <- pObjects$memory[[mode]]
   plot_name <- paste0(mode, i)
 
-  for (param in list(c(.colorByField, .colorByGeneTableTitle, .colorByGeneTable, "color"),
-                     c(.featExprXAxis, .featExprXAxisGeneTableTitle, .featExprXAxisGeneTable, "xaxis"),
-                     c(.featExprYAxis, .featExprYAxisGeneTableTitle, .featExprYAxisGeneTable, "yaxis"))) {
+  for (param in list(c(.colorByField, .colorByRowTableTitle, .colorByRowTable, "color"),
+                     c(.featExprXAxis, .featExprXAxisRowTableTitle, .featExprXAxisRowTable, "xaxis"),
+                     c(.featExprYAxis, .featExprYAxisRowTableTitle, .featExprYAxisRowTable, "yaxis"))) {
 
     if (tmp_mem[i, param[1]]==param[2]) {
       oldtab <- tmp_mem[i, param[3]]

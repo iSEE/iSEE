@@ -50,7 +50,7 @@
 #' The \code{initialPanels} argument specifies the panels to be created
 #' upon initializing the interface. This should be a DataFrame containing
 #' a \code{Name} field specifying the identity of the panel, e.g.,
-#' \code{"Reduced dimension plot 1"}, \code{"Gene statistics table 2"}.
+#' \code{"Reduced dimension plot 1"}, \code{"Row statistics table 2"}.
 #' The trailing number should not be greater than the number of
 #' maximum plots of that type. The \code{Width} field may also be specified
 #' describing the width of the panel from 2 to 12 (values will be coerced
@@ -672,11 +672,11 @@ iSEE <- function(
         protected <- switch(mode,
                             redDimPlot=c(.redDimType, .redDimXAxis, .redDimYAxis),
                             colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
-                            featExprPlot=c(.featExprAssay, .featExprXAxisColData, .featExprYAxisGeneText, .featExprXAxisGeneText))
+                            featExprPlot=c(.featExprAssay, .featExprXAxisColData, .featExprYAxisFeatName, .featExprXAxisFeatName))
   
         for (i in seq_len(max_plots)) {
             # Observers for the non-fundamental parameter options (.brushByPlot is handled elsewhere).
-            for (field in c(.colorByColData, .colorByGeneText, .colorByGeneTableAssay, .colorByGeneTextAssay,
+            for (field in c(.colorByColData, .colorByFeatName, .colorByRowTableAssay, .colorByFeatNameAssay,
                             .brushColor, .brushTransAlpha)) {
                 local({
                     i0 <- i
@@ -727,7 +727,7 @@ iSEE <- function(
                 # Observers for the linked color, which updates the table_links information.
                 observe({
                     replot <- .setup_table_observer(mode0, i0, input, pObjects, .colorByField, 
-                        .colorByGeneTableTitle, .colorByGeneTable, param='color') 
+                        .colorByRowTableTitle, .colorByRowTable, param='color') 
                     if (replot) {
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     }
@@ -745,7 +745,7 @@ iSEE <- function(
         }
     }
 
-    # Gene expression plots need some careful handling, as we need to update the
+    # Feature expression plots need some careful handling, as we need to update the
     # table links and destroy a brush whenever an x/y-axis-specifying parameter changes.
     max_plots <- nrow(pObjects$memory$featExprPlot)
     for (i in seq_len(max_plots)) {
@@ -758,7 +758,7 @@ iSEE <- function(
             # Y-axis observer:
             observe({
                 replot <- .setup_table_observer(mode0, i0, input, pObjects, .featExprYAxis, 
-                    .featExprYAxisGeneTableTitle, .featExprYAxisGeneTable, param='yaxis') 
+                    .featExprYAxisRowTableTitle, .featExprYAxisRowTable, param='yaxis') 
                 if (replot) {
                     if (!is.null(isolate(input[[brush_id]]))) { 
                         # This will trigger replotting. 
@@ -773,7 +773,7 @@ iSEE <- function(
             # X-axis observer:
             observe({
                 replot <- .setup_table_observer(mode0, i0, input, pObjects, .featExprXAxis, 
-                    .featExprXAxisGeneTableTitle, .featExprXAxisGeneTable, param='xaxis') 
+                    .featExprXAxisRowTableTitle, .featExprXAxisRowTable, param='xaxis') 
                 if (replot) {
                     if (!is.null(isolate(input[[brush_id]]))) { 
                         # This will trigger replotting. 
@@ -788,7 +788,7 @@ iSEE <- function(
     }
 
     #######################################################################
-    # Gene table section. ----
+    # Row table section. ----
     #######################################################################
 
     # Load the gene level data

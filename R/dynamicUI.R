@@ -118,25 +118,25 @@
                 xaxis_choices <- c(xaxis_choices, .featExprXAxisColDataTitle)
             }
             if (feasibility$featExprPlot) {
-                xaxis_choices <- c(xaxis_choices, .featExprXAxisGeneTableTitle, .featExprXAxisGeneTextTitle)
+                xaxis_choices <- c(xaxis_choices, .featExprXAxisRowTableTitle, .featExprXAxisFeatNameTitle)
             }
 
             plot.param <- list(
               radioButtons(.input_FUN(.featExprYAxis), label="Y-axis:",
-                           inline = TRUE, choices=c(.featExprYAxisGeneTableTitle, .featExprYAxisGeneTextTitle),
+                           inline = TRUE, choices=c(.featExprYAxisRowTableTitle, .featExprYAxisFeatNameTitle),
                            selected=param_choices[[.featExprYAxis]]),
               .conditionalPanelOnRadio(.input_FUN(.featExprYAxis),
-                                       .featExprYAxisGeneTableTitle,
-                                       selectInput(.input_FUN(.featExprYAxisGeneTable),
+                                       .featExprYAxisRowTableTitle,
+                                       selectInput(.input_FUN(.featExprYAxisRowTable),
                                                    label = "Y-axis gene linked to:",
                                                    choices=active_tab,
-                                                   selected=.choose_link(param_choices[[.featExprYAxisGeneTable]], active_tab, force_default=TRUE))
+                                                   selected=.choose_link(param_choices[[.featExprYAxisRowTable]], active_tab, force_default=TRUE))
               ),
               .conditionalPanelOnRadio(.input_FUN(.featExprYAxis),
-                                       .featExprYAxisGeneTextTitle,
-                                       textInput(.input_FUN(.featExprYAxisGeneText),
+                                       .featExprYAxisFeatNameTitle,
+                                       textInput(.input_FUN(.featExprYAxisFeatName),
                                                  label = "Y-axis gene:",
-                                                 value=param_choices[[.featExprYAxisGeneText]])),
+                                                 value=param_choices[[.featExprYAxisFeatName]])),
               selectInput(.input_FUN(.featExprAssay), label=NULL,
                           choices=all_assays, selected=param_choices[[.featExprAssay]]),
               radioButtons(.input_FUN(.featExprXAxis), label="X-axis:", inline=TRUE,
@@ -147,15 +147,15 @@
                                                    label = "X-axis column data:",
                                                    choices=covariates, selected=param_choices[[.featExprXAxisColData]])),
               .conditionalPanelOnRadio(.input_FUN(.featExprXAxis),
-                                       .featExprXAxisGeneTableTitle,
-                                       selectInput(.input_FUN(.featExprXAxisGeneTable),
+                                       .featExprXAxisRowTableTitle,
+                                       selectInput(.input_FUN(.featExprXAxisRowTable),
                                                    label = "X-axis gene linked to:",
-                                                   choices=active_tab, selected=param_choices[[.featExprXAxisGeneTable]])),
+                                                   choices=active_tab, selected=param_choices[[.featExprXAxisRowTable]])),
               .conditionalPanelOnRadio(.input_FUN(.featExprXAxis),
-                                       .featExprXAxisGeneTextTitle,
-                                       textInput(.input_FUN(.featExprXAxisGeneText), 
+                                       .featExprXAxisFeatNameTitle,
+                                       textInput(.input_FUN(.featExprXAxisFeatName), 
                                                  label = "X-axis gene:",
-                                                 value=param_choices[[.featExprXAxisGeneText]]))
+                                                 value=param_choices[[.featExprXAxisFeatName]]))
                  )
         } else if (mode=="rowStatTable") {
             obj <- list(dataTableOutput(paste0(mode, ID)),
@@ -237,7 +237,7 @@
         color_choices <- c(color_choices, .colorByColDataTitle)
     }
     if (feasibility$featExprPlot) {
-        color_choices <- c(color_choices, .colorByGeneTableTitle, .colorByGeneTextTitle)
+        color_choices <- c(color_choices, .colorByRowTableTitle, .colorByFeatNameTitle)
     }
 
     collapseBox(
@@ -251,16 +251,16 @@
             selectInput(paste0(mode, ID, "_", .colorByColData), label = NULL,
                         choices=covariates, selected=param_choices[[.colorByColData]])
             ),
-        .conditionalPanelOnRadio(colorby_field, .colorByGeneTableTitle,
-            tagList(selectInput(paste0(mode, ID, "_", .colorByGeneTable), label = NULL, choices=active_tab,
-                                selected=.choose_link(param_choices[[.colorByGeneTable]], active_tab, force_default=TRUE)),
-                    selectInput(paste0(mode, ID, "_", .colorByGeneTableAssay), label=NULL,
-                                choices=all_assays, selected=param_choices[[.colorByGeneTableAssay]]))
+        .conditionalPanelOnRadio(colorby_field, .colorByRowTableTitle,
+            tagList(selectInput(paste0(mode, ID, "_", .colorByRowTable), label = NULL, choices=active_tab,
+                                selected=.choose_link(param_choices[[.colorByRowTable]], active_tab, force_default=TRUE)),
+                    selectInput(paste0(mode, ID, "_", .colorByRowTableAssay), label=NULL,
+                                choices=all_assays, selected=param_choices[[.colorByRowTableAssay]]))
             ),
-        .conditionalPanelOnRadio(colorby_field, .colorByGeneTextTitle,
-            tagList(textInput(paste0(mode, ID, "_", .colorByGeneText), label = NULL, value=param_choices[[.colorByGeneText]]),
-                    selectInput(paste0(mode, ID, "_", .colorByGeneTextAssay), label=NULL,
-                                choices=all_assays, selected=param_choices[[.colorByGeneTextAssay]]))
+        .conditionalPanelOnRadio(colorby_field, .colorByFeatNameTitle,
+            tagList(textInput(paste0(mode, ID, "_", .colorByFeatName), label = NULL, value=param_choices[[.colorByFeatName]]),
+                    selectInput(paste0(mode, ID, "_", .colorByFeatNameAssay), label=NULL,
+                                choices=all_assays, selected=param_choices[[.colorByFeatNameAssay]]))
             )
         )
 }

@@ -3,22 +3,22 @@
 .redDimXAxis <- "XAxis"
 .redDimYAxis <- "YAxis"
 
-# Gene expression plotting parameters. ----
+# Feature expression plotting parameters. ----
 .featExprXAxisNothingTitle <- "None"
 .featExprXAxisColDataTitle <- "Column data"
-.featExprXAxisGeneTableTitle <- "Gene table"
-.featExprXAxisGeneTextTitle <- "Gene text"
+.featExprXAxisRowTableTitle <- "Row table"
+.featExprXAxisFeatNameTitle <- "Feature name"
 
-.featExprYAxisGeneTableTitle <- "Gene table"
-.featExprYAxisGeneTextTitle <- "Gene text"
+.featExprYAxisRowTableTitle <- "Row table"
+.featExprYAxisFeatNameTitle <- "Feature name"
 
 .featExprAssay <- "Assay"
 .featExprXAxis <- "XAxis"
 .featExprXAxisColData <- "XAxisColData"
-.featExprXAxisGeneTable <- "XAxisGeneTable"
-.featExprXAxisGeneText <- "XAxisGeneText"
-.featExprYAxisGeneTable <- "YAxisGeneTable"
-.featExprYAxisGeneText <- "YAxisGeneText"
+.featExprXAxisRowTable <- "XAxisRowTable"
+.featExprXAxisFeatName <- "XAxisFeatName"
+.featExprYAxisRowTable <- "YAxisRowTable"
+.featExprYAxisFeatName <- "YAxisFeatName"
 .featExprYAxis <- "YAxis"
 
 # Column data plotting parameters. ----
@@ -32,17 +32,17 @@
 # Plot colouring parameters. ----
 .colorByNothingTitle <- "None"
 .colorByColDataTitle <- "Column data"
-.colorByGeneTableTitle <- "Gene table"
-.colorByGeneTextTitle <- "Gene text"
+.colorByRowTableTitle <- "Row table"
+.colorByFeatNameTitle <- "Feature name"
 
 .colorParamPanelOpen <- "ColorPanelOpen"
 
 .colorByField <- "ColorBy"
 .colorByColData <- "ColorByColData"
-.colorByGeneTable <- "ColorByGeneTable"
-.colorByGeneText <- "ColorByGeneText"
-.colorByGeneTableAssay <- "ColorByGeneTableAssay"
-.colorByGeneTextAssay <- "ColorByGeneTextAssay"
+.colorByRowTable <- "ColorByRowTable"
+.colorByFeatName <- "ColorByFeatName"
+.colorByRowTableAssay <- "ColorByRowTableAssay"
+.colorByFeatNameAssay <- "ColorByFeatNameAssay"
 
 # Plot brushing parameters. ----
 .brushParamPanelOpen <- "BrushPanelOpen"
@@ -67,7 +67,7 @@
 .plotParamPanelOpen <- "PlotPanelOpen"
 .plotParamPanelName <- "ParamPanel"
 
-# Gene statistic table parameters. ----
+# Row statistic table parameters. ----
 .rowStatSelected <- "Selected"
 .rowStatSearch <- "Search"
 .rowStatColSearch <- "SearchColumns"

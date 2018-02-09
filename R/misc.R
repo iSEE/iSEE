@@ -156,14 +156,14 @@ height_limits <- c(400L, 1000L)
             memory[[mode]][,.brushByPlot][bad] <- ""
         }
 
-        cb <- memory[[mode]][,.colorByGeneTable]
+        cb <- memory[[mode]][,.colorByRowTable]
         bad <- !cb %in% link_names 
         if (any(bad)) { 
-            memory[[mode]][,.colorByGeneTable][bad] <- ""
+            memory[[mode]][,.colorByRowTable][bad] <- ""
         }
     }
 
-    for (field in c(.featExprXAxisGeneTable, .featExprYAxisGeneTable)) {
+    for (field in c(.featExprXAxisRowTable, .featExprYAxisRowTable)) {
         bb <- memory$featExprPlot[,field]
         bad <- !bb %in% link_names 
         if (any(bad)) { 

@@ -93,10 +93,12 @@ iSEE <- function(
   colDataArgs=NULL,
   featExprArgs=NULL,
   rowStatArgs=NULL,
+  rowDataArgs=NULL,
   redDimMax=5,
   colDataMax=5,
   featExprMax=5,
   rowStatMax=5,
+  rowDataMax=5,
   initialPanels=NULL,
   annot.orgdb=NULL,
   annot.keytype="ENTREZID",
@@ -127,8 +129,8 @@ iSEE <- function(
   }
 
   # Defining the maximum number of plots.
-  memory <- .setup_memory(se, redDimArgs, colDataArgs, featExprArgs, rowStatArgs,
-                          redDimMax, colDataMax, featExprMax, rowStatMax)
+  memory <- .setup_memory(se, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs,
+                          redDimMax, colDataMax, featExprMax, rowStatMax, rowDataMax)
 
   # Defining the initial elements to be plotted.
   active_panels <- .setup_initial(initialPanels, memory)
@@ -215,6 +217,7 @@ iSEE <- function(
       actionButton(paste0("colDataPlot_", .organizationNew), "New column data plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("featExprPlot_", .organizationNew), "New feature expression plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("rowStatTable_", .organizationNew), "New row statistics table", class = "btn btn-primary",icon = icon("plus")),
+      actionButton(paste0("rowDataPlot_", .organizationNew), "New row data plot", class = "btn btn-primary",icon = icon("plus")),
       hr(),
       uiOutput("panelOrganization")
     ), # end of dashboardSidebar
@@ -257,7 +260,7 @@ iSEE <- function(
     rObjects <- reactiveValues(
         active_panels = active_panels
     )
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot")) {
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
       max_plots <- nrow(pObjects$memory[[mode]])
       for (i in seq_len(max_plots)) {
         rObjects[[paste0(mode, i)]] <- 1L
@@ -357,7 +360,7 @@ iSEE <- function(
     # of i in the renderPlot() will be the same across all instances, because
     # of when the expression is evaluated.
 
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowStatTable")) {
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowStatTable", "rowDataPlot")) {
         # Panel addition.
         local({
             mode0 <- mode
@@ -482,7 +485,7 @@ iSEE <- function(
     # Panel and brush observers.
     #######################################################################
 
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot")) {
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
       max_plots <- nrow(pObjects$memory[[mode]])
       for (i in seq_len(max_plots)) {
         local({
@@ -660,24 +663,34 @@ iSEE <- function(
     # Plot creation section. ----
     #######################################################################
 
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot")) {
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]]) 
   
-        # Defining mode-specific parameters.
+        # Defining mode-specific plotting functions.
         FUN <- switch(mode, 
                       redDimPlot=.make_redDimPlot,
                       featExprPlot=.make_featExprPlot,
-                      colDataPlot=.make_colDataPlot)
-  
+                      colDataPlot=.make_colDataPlot,
+                      rowDataPlot=.make_rowDataPlot)
+ 
+        # Defining fundamental parameters that destroy brushes upon being changed. 
         protected <- switch(mode,
                             redDimPlot=c(.redDimType, .redDimXAxis, .redDimYAxis),
                             colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
-                            featExprPlot=c(.featExprAssay, .featExprXAxisColData, .featExprYAxisFeatName, .featExprXAxisFeatName))
-  
+                            featExprPlot=c(.featExprAssay, .featExprXAxisColData, .featExprYAxisFeatName, .featExprXAxisFeatName),
+                            rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisColData))
+            
+        # Defining non-fundamental parameters that do not destroy brushes.
+        if (mode=="rowDataPlot") {
+            nonfundamental <- .colorByRowData
+        } else {
+            nonfundamental <- c(.colorByColData, .colorByRowTableAssay, .colorByFeatNameAssay)
+        }
+        nonfundamental <- c(nonfundamental, .colorByFeatName, .brushColor, .brushTransAlpha)
+
         for (i in seq_len(max_plots)) {
-            # Observers for the non-fundamental parameter options (.brushByPlot is handled elsewhere).
-            for (field in c(.colorByColData, .colorByFeatName, .colorByRowTableAssay, .colorByFeatNameAssay,
-                            .brushColor, .brushTransAlpha)) {
+            # Observers for the non-fundamental parameter options.
+            for (field in nonfundamental) {
                 local({
                     i0 <- i
                     mode0 <- mode

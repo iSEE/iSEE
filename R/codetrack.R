@@ -101,9 +101,11 @@
        vertex.label.color = "black",
        vertex.label.dist = 2.5,
        vertex.color = c(.plothexcode_redDim,.plothexcode_colData,
-                        .plothexcode_featExpr,.plothexcode_geneTable)[
+                        .plothexcode_featExpr,.plothexcode_geneTable,
+                        .plothexcode_rowData)[
                           factor(V(currgraph_used)$plottype,
-                                 levels = c("redDimPlot","colDataPlot","featExprPlot","rowStatTable"))])
+                                 levels = c("redDimPlot","colDataPlot","featExprPlot",
+                                            "rowStatTable","rowDataPlot"))])
 }  
 
 
@@ -125,8 +127,6 @@
     y_links <- unlist(cur_tlinks[[table_used]]$yaxis)
     any_links <- unique(c(col_links,x_links,y_links))
     
-    # add the vertex of the table
-    graph <- add_vertices(graph,nv = 1, name = table_used, plottype = "rowStatTable")
     # add the edges corresponding
     for(j in seq_len(length(any_links))){
       graph <- add_edges(graph,c(table_used, any_links[j]))

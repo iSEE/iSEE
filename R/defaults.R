@@ -199,7 +199,7 @@ rowStatTableDefaults <- function(se, number) {
     return(out)
 }
 
-.override_defaults <- function(def, usr, can_brush=TRUE)
+.override_defaults <- function(def, usr)
 # Overriding the defaults with whatever the user has supplied.
 {
     ndef <- nrow(def)

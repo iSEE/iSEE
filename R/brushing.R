@@ -5,9 +5,9 @@
   node_names <- list()
   edges <- list()
 
-  for (mode in c("redDim", "colData", "geneExpr")) { 
+  for (mode in c("redDimPlot", "colDataPlot", "featExprPlot")) { 
     N <- nrow(memory[[mode]])
-    cur_panels <- sprintf("%sPlot%i", mode, seq_len(N))
+    cur_panels <- sprintf("%s%i", mode, seq_len(N))
     node_names[[mode]] <- cur_panels
 
     cur_edges <- vector("list",N)

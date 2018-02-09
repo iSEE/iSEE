@@ -2,13 +2,13 @@
 # Set up plotting parameters
 redDimArgs <- redDimPlotDefaults(sce, 1)
 colDataArgs <- colDataPlotDefaults(sce, 1)
-geneExprArgs <- geneExprPlotDefaults(sce, 1)
-geneStatArgs <- geneStatTableDefaults(sce, 1)
+featExprArgs <- featExprPlotDefaults(sce, 1)
+rowStatArgs <- rowStatTableDefaults(sce, 1)
 
 # Set up memory
 all_memory <- iSEE:::.setup_memory(
-  sce, redDimArgs, colDataArgs, geneExprArgs, geneStatArgs,
-  redDimMax = 1, colDataMax = 1, geneExprMax = 1, geneStatMax = 1)
+  sce, redDimArgs, colDataArgs, featExprArgs, rowStatArgs,
+  redDimMax = 1, colDataMax = 1, featExprMax = 1, rowStatMax = 1)
 
 all_coordinates <- list()
 
@@ -63,7 +63,7 @@ test_that(".make_redDimPlot/.scatter_plot produce a valid list",{
 
 test_that(".make_redDimPlot/.scatter_plot produce a valid xy with color", {
  
-  all_memory$redDim[1,iSEE:::.colorByField] <- iSEE:::.colorByColDataTitle
+  all_memory$redDimPlot[1,iSEE:::.colorByField] <- iSEE:::.colorByColDataTitle
   p.out <- iSEE:::.make_redDimPlot(
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   expect_named(
@@ -120,7 +120,7 @@ test_that(".make_colDataPlot/.violin_plot produce a valid list",{
 
 test_that(".make_colDataPlot/.violin_plot produce a valid xy with color", {
  
-  all_memory$colData[1,iSEE:::.colorByField] <- iSEE:::.colorByColDataTitle
+  all_memory$colDataPlot[1,iSEE:::.colorByField] <- iSEE:::.colorByColDataTitle
   p.out <- iSEE:::.make_colDataPlot(
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   expect_named(
@@ -134,9 +134,9 @@ test_that(".make_colDataPlot/.violin_plot produce a valid xy with color", {
 
 test_that(".make_colDataPlot/.griddotplot produce a valid list",{
   
-  all_memory$colData[1,iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
-  all_memory$colData[1,iSEE:::.colDataXAxisColData] <- "driver_1_s"
-  all_memory$colData[1,iSEE:::.colDataYAxis] <- "passes_qc_checks_s"
+  all_memory$colDataPlot[1,iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
+  all_memory$colDataPlot[1,iSEE:::.colDataXAxisColData] <- "driver_1_s"
+  all_memory$colDataPlot[1,iSEE:::.colDataYAxis] <- "passes_qc_checks_s"
   
   p.out <- iSEE:::.make_colDataPlot(
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
@@ -181,10 +181,10 @@ test_that(".make_colDataPlot/.griddotplot produce a valid list",{
 
 test_that(".make_colDataPlot/.griddotplot produce a valid xy with color", {
  
-  all_memory$colData[1,iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
-  all_memory$colData[1,iSEE:::.colDataXAxisColData] <- "driver_1_s"
-  all_memory$colData[1,iSEE:::.colDataYAxis] <- "passes_qc_checks_s"
-  all_memory$colData[1,iSEE:::.colorByField] <- iSEE:::.colorByColDataTitle
+  all_memory$colDataPlot[1,iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
+  all_memory$colDataPlot[1,iSEE:::.colDataXAxisColData] <- "driver_1_s"
+  all_memory$colDataPlot[1,iSEE:::.colDataYAxis] <- "passes_qc_checks_s"
+  all_memory$colDataPlot[1,iSEE:::.colorByField] <- iSEE:::.colorByColDataTitle
   
   p.out <- iSEE:::.make_colDataPlot(
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
@@ -195,14 +195,14 @@ test_that(".make_colDataPlot/.griddotplot produce a valid xy with color", {
   
 })
 
-# .make_geneExprPlot/.scatter_plot ----
+# .make_featExprPlot/.scatter_plot ----
 
-test_that(".make_geneExprPlot/.scatter_plot produce a valid list",{
+test_that(".make_featExprPlot/.scatter_plot produce a valid list",{
   
-  all_memory$geneExpr[1,iSEE:::.geneExprYAxisGeneTable] <- "Gene statistics table 1"
-  all_memory$geneExpr[1,iSEE:::.geneExprYAxisGeneTable] <- "Gene statistics table 1"
+  all_memory$featExprPlot[1,iSEE:::.featExprYAxisRowTable] <- "Row statistics table 1"
+  all_memory$featExprPlot[1,iSEE:::.featExprYAxisRowTable] <- "Row statistics table 1"
   
-  p.out <- iSEE:::.make_geneExprPlot(
+  p.out <- iSEE:::.make_featExprPlot(
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   # return value is a named list
@@ -243,14 +243,14 @@ test_that(".make_geneExprPlot/.scatter_plot produce a valid list",{
   
 })
 
-test_that(".make_geneExprPlot/.scatter_plot produce a valid xy with color", {
+test_that(".make_featExprPlot/.scatter_plot produce a valid xy with color", {
  
-  all_memory$geneExpr[1,iSEE:::.geneExprYAxisGeneTable] <- "Gene statistics table 1"
-  all_memory$geneExpr[1,iSEE:::.geneExprYAxisGeneTable] <- "Gene statistics table 1"
-  all_memory$geneExpr[1,iSEE:::.colorByGeneTable] <- "Gene statistics table 1"
-  all_memory$geneExpr[1,iSEE:::.colorByField] <- iSEE:::.colorByGeneTableTitle
+  all_memory$featExprPlot[1,iSEE:::.featExprYAxisRowTable] <- "Row statistics table 1"
+  all_memory$featExprPlot[1,iSEE:::.featExprYAxisRowTable] <- "Row statistics table 1"
+  all_memory$featExprPlot[1,iSEE:::.colorByRowTable] <- "Row statistics table 1"
+  all_memory$featExprPlot[1,iSEE:::.colorByField] <- iSEE:::.colorByRowTableTitle
   
-  p.out <- iSEE:::.make_geneExprPlot(
+  p.out <- iSEE:::.make_featExprPlot(
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   expect_named(
     p.out$xy,
@@ -259,14 +259,14 @@ test_that(".make_geneExprPlot/.scatter_plot produce a valid xy with color", {
   
 })
 
-test_that(".make_geneExprPlot works for YAxis set to Gene text", {
+test_that(".make_featExprPlot works for YAxis set to Feature name", {
   # change the value locally for the specific test
   selected_gene <- "0610009B22Rik"
   
-  all_memory$geneExpr[1,iSEE:::.geneExprYAxis] <- iSEE:::.geneExprYAxisGeneTextTitle
-  all_memory$geneExpr[1,iSEE:::.geneExprYAxisGeneText] <- selected_gene
+  all_memory$featExprPlot[1,iSEE:::.featExprYAxis] <- iSEE:::.featExprYAxisFeatNameTitle
+  all_memory$featExprPlot[1,iSEE:::.featExprYAxisFeatName] <- selected_gene
   
-  p.out <- iSEE:::.make_geneExprPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
+  p.out <- iSEE:::.make_featExprPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_match(
     p.out$cmd$data$y,
@@ -276,12 +276,12 @@ test_that(".make_geneExprPlot works for YAxis set to Gene text", {
   
 })
 
-test_that(".make_geneExprPlot works for XAxis set to Column data", {
+test_that(".make_featExprPlot works for XAxis set to Column data", {
   # change the value locally for the specific test
-  all_memory$geneExpr[1,iSEE:::.geneExprXAxis] <- iSEE:::.geneExprXAxisColDataTitle
-  all_memory$geneExpr[1,iSEE:::.geneExprXAxisColData] <- "dissection_s"
+  all_memory$featExprPlot[1,iSEE:::.featExprXAxis] <- iSEE:::.featExprXAxisColDataTitle
+  all_memory$featExprPlot[1,iSEE:::.featExprXAxisColData] <- "dissection_s"
   
-  p.out <- iSEE:::.make_geneExprPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
+  p.out <- iSEE:::.make_featExprPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_match(
     p.out$cmd$data$x,
@@ -291,12 +291,12 @@ test_that(".make_geneExprPlot works for XAxis set to Column data", {
   
 })
 
-test_that(".make_geneExprPlot works for XAxis set to Gene table", {
+test_that(".make_featExprPlot works for XAxis set to Row table", {
   # change the value locally for the specific test
-  all_memory$geneExpr[1,iSEE:::.geneExprXAxis] <- iSEE:::.geneExprXAxisGeneTableTitle
-  all_memory$geneExpr[1,iSEE:::.geneExprXAxisGeneTable] <- "Gene statistics table 1"
+  all_memory$featExprPlot[1,iSEE:::.featExprXAxis] <- iSEE:::.featExprXAxisRowTableTitle
+  all_memory$featExprPlot[1,iSEE:::.featExprXAxisRowTable] <- "Row statistics table 1"
   
-  p.out <- iSEE:::.make_geneExprPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
+  p.out <- iSEE:::.make_featExprPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_match(
     p.out$cmd$data$x,
@@ -306,14 +306,14 @@ test_that(".make_geneExprPlot works for XAxis set to Gene table", {
   
 })
 
-test_that(".make_geneExprPlot works for XAxis set to Gene text", {
+test_that(".make_featExprPlot works for XAxis set to Feature name", {
   selected_gene <- "0610009B22Rik"
   
   # change the value locally for the specific test
-  all_memory$geneExpr[1,iSEE:::.geneExprXAxis] <- iSEE:::.geneExprXAxisGeneTextTitle
-  all_memory$geneExpr[1,iSEE:::.geneExprXAxisGeneText] <- selected_gene
+  all_memory$featExprPlot[1,iSEE:::.featExprXAxis] <- iSEE:::.featExprXAxisFeatNameTitle
+  all_memory$featExprPlot[1,iSEE:::.featExprXAxisFeatName] <- selected_gene
   
-  p.out <- iSEE:::.make_geneExprPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
+  p.out <- iSEE:::.make_featExprPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_match(
     p.out$cmd$data$x,
@@ -323,14 +323,14 @@ test_that(".make_geneExprPlot works for XAxis set to Gene text", {
   
 })
 
-test_that(".make_geneExprPlot works for groupable colour covariate", {
+test_that(".make_featExprPlot works for groupable colour covariate", {
   selected_coldata <- "dissection_s"
   
   # change the value locally for the specific test
-  all_memory$geneExpr[1,iSEE:::.colorByField] <- iSEE:::.colorByColDataTitle
-  all_memory$geneExpr[1,iSEE:::.colorByColData] <- selected_coldata
+  all_memory$featExprPlot[1,iSEE:::.colorByField] <- iSEE:::.colorByColDataTitle
+  all_memory$featExprPlot[1,iSEE:::.colorByColData] <- selected_coldata
   
-  p.out <- iSEE:::.make_geneExprPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
+  p.out <- iSEE:::.make_featExprPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_match(
     p.out$cmd$data$color,
@@ -373,12 +373,12 @@ test_that(".make_colDataPlot/.create_plot can produce horizontal violins", {
   selected_coldataY <- "driver_1_s"
   
   # change the value locally for the specific test
-  all_memory$colData[1,iSEE:::.colDataXAxis] <- iSEE:::.colorByColDataTitle
-  all_memory$colData[1,iSEE:::.colDataXAxisColData] <- selected_coldataX
+  all_memory$colDataPlot[1,iSEE:::.colDataXAxis] <- iSEE:::.colorByColDataTitle
+  all_memory$colDataPlot[1,iSEE:::.colDataXAxisColData] <- selected_coldataX
   
-  all_memory$colData[1,iSEE:::.colDataYAxis] <- selected_coldataY
+  all_memory$colDataPlot[1,iSEE:::.colDataYAxis] <- selected_coldataY
   
-  all_memory$colData[1,iSEE:::.colorByField] <- iSEE:::.colDataXAxisNothingTitle
+  all_memory$colDataPlot[1,iSEE:::.colorByField] <- iSEE:::.colDataXAxisNothingTitle
   
   p.out <- iSEE:::.make_colDataPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
@@ -406,7 +406,7 @@ test_that(".make_colDataPlot/.create_plot can produce horizontal violins", {
 test_that(".scatter_plot works with zoom",{
   
   # Identify range of data
-  params <- all_memory$redDim[1,]
+  params <- all_memory$redDimPlot[1,]
   x_range <- range(head(
     reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]]
   ), 10)
@@ -417,12 +417,12 @@ test_that(".scatter_plot works with zoom",{
   zoom_range <- c(x_range, y_range)
   names(zoom_range) <- c("xmin","xmax","ymin","ymax")
   # Set the zoom
-  all_memory$redDim[[iSEE:::.zoomData]][1] <- list(zoom_range)
+  all_memory$redDimPlot[[iSEE:::.zoomData]][1] <- list(zoom_range)
   
   p.out <- iSEE:::.make_redDimPlot(
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
-  params <- all_memory$redDim[1,]
+  params <- all_memory$redDimPlot[1,]
   expected_xy <- data.frame(
     X = reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
     Y = reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
@@ -437,15 +437,15 @@ test_that(".scatter_plot works with zoom",{
 
 test_that(".make_colDataPlot/.violin_plot works with zoom",{
   
-  all_memory$colData[1,iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
-  all_memory$colData[1,iSEE:::.colDataXAxisColData] <- "driver_1_s"
+  all_memory$colDataPlot[1,iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
+  all_memory$colDataPlot[1,iSEE:::.colDataXAxisColData] <- "driver_1_s"
   
   # Identify valid values
   x_unique <- unique(as.numeric(as.factor(colData(sce)[,
-    all_memory$colData[1,iSEE:::.colDataXAxisColData]
+    all_memory$colDataPlot[1,iSEE:::.colDataXAxisColData]
   ])))
   y_range <- range(head(colData(sce)[,
-    all_memory$colData[1,iSEE:::.colDataYAxis]
+    all_memory$colDataPlot[1,iSEE:::.colDataYAxis]
   ]), 10)
   # Set zoom min/max to the first two distinct values in X/Y direction
   zoom_range <- c(
@@ -456,11 +456,11 @@ test_that(".make_colDataPlot/.violin_plot works with zoom",{
   zoom_range <- zoom_range + c(-0.5, 0.5, 0, 0)
   names(zoom_range) <- c("xmin","xmax","ymin","ymax")
   # Set the zoom
-  all_memory$colData[[iSEE:::.zoomData]][1] <- list(zoom_range)
+  all_memory$colDataPlot[[iSEE:::.zoomData]][1] <- list(zoom_range)
   
   p.out <- iSEE:::.make_colDataPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
-  params <- all_memory$colData[1,]
+  params <- all_memory$colDataPlot[1,]
   expected_xy <- data.frame(
     Y = colData(sce)[,params[[iSEE:::.colDataYAxis]]],
     X = colData(sce)[,params[[iSEE:::.colDataXAxisColData]]],
@@ -475,16 +475,16 @@ test_that(".make_colDataPlot/.violin_plot works with zoom",{
 
 test_that(".make_colDataPlot/.violin_plot works with zoom",{
   
-  all_memory$colData[1,iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
-  all_memory$colData[1,iSEE:::.colDataXAxisColData] <- "NREADS"
-  all_memory$colData[1,iSEE:::.colDataYAxis] <- "driver_1_s"
+  all_memory$colDataPlot[1,iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
+  all_memory$colDataPlot[1,iSEE:::.colDataXAxisColData] <- "NREADS"
+  all_memory$colDataPlot[1,iSEE:::.colDataYAxis] <- "driver_1_s"
   
   # Identify valid values
   x_range <- range(head(colData(sce)[,
-    all_memory$colData[1,iSEE:::.colDataXAxisColData]
+    all_memory$colDataPlot[1,iSEE:::.colDataXAxisColData]
   ]), 10)
   y_unique <- unique(as.numeric(as.factor(colData(sce)[,
-    all_memory$colData[1,iSEE:::.colDataYAxis]
+    all_memory$colDataPlot[1,iSEE:::.colDataYAxis]
   ])))
   # Set zoom min/max to the first two distinct values in X/Y direction
   zoom_range <- c(
@@ -495,11 +495,11 @@ test_that(".make_colDataPlot/.violin_plot works with zoom",{
   zoom_range <- zoom_range + c(0, 0, -0.5, 0.5)
   names(zoom_range) <- c("xmin","xmax","ymin","ymax")
   # Set the zoom
-  all_memory$colData[[iSEE:::.zoomData]][1] <- list(zoom_range)
+  all_memory$colDataPlot[[iSEE:::.zoomData]][1] <- list(zoom_range)
   
   p.out <- iSEE:::.make_colDataPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
-  params <- all_memory$colData[1,]
+  params <- all_memory$colDataPlot[1,]
   # This requires some finesse to deal with horizontal plots
   # where the X and Y coordinates are flipped to draw the violins
   expected_xy <- data.frame(
@@ -516,16 +516,16 @@ test_that(".make_colDataPlot/.violin_plot works with zoom",{
 
 test_that(".make_colDataPlot/.griddotplot works with zoom",{
   
-  all_memory$colData[1,iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
-  all_memory$colData[1,iSEE:::.colDataXAxisColData] <- "driver_1_s"
-  all_memory$colData[1,iSEE:::.colDataYAxis] <- "passes_qc_checks_s"
+  all_memory$colDataPlot[1,iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
+  all_memory$colDataPlot[1,iSEE:::.colDataXAxisColData] <- "driver_1_s"
+  all_memory$colDataPlot[1,iSEE:::.colDataYAxis] <- "passes_qc_checks_s"
   
   # Identify valid values
   x_unique <- unique(as.numeric(as.factor(colData(sce)[,
-    all_memory$colData[1,iSEE:::.colDataXAxisColData]
+    all_memory$colDataPlot[1,iSEE:::.colDataXAxisColData]
   ])))
   y_unique <- unique(as.numeric(as.factor(colData(sce)[,
-    all_memory$colData[1,iSEE:::.colDataYAxis]
+    all_memory$colDataPlot[1,iSEE:::.colDataYAxis]
   ])))
   # Set zoom min/max to the first two distinct values in X/Y direction
   zoom_range <- c(
@@ -536,12 +536,12 @@ test_that(".make_colDataPlot/.griddotplot works with zoom",{
   zoom_range <- zoom_range + rep(c(-0.5, 0.5), times = 2)
   names(zoom_range) <- c("xmin","xmax","ymin","ymax")
   # Set the zoom
-  all_memory$colData[[iSEE:::.zoomData]][1] <- list(zoom_range)
+  all_memory$colDataPlot[[iSEE:::.zoomData]][1] <- list(zoom_range)
   
   p.out <- iSEE:::.make_colDataPlot(
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
-  params <- all_memory$colData[1,]
+  params <- all_memory$colDataPlot[1,]
   expected_xy <- data.frame(
     Y = colData(sce)[,params[[iSEE:::.colDataYAxis]]],
     X = colData(sce)[,params[[iSEE:::.colDataXAxisColData]]],
@@ -555,9 +555,9 @@ test_that(".make_colDataPlot/.griddotplot works with zoom",{
 # .process_colorby_choice handles gene text input ----
 
 test_that(".process_colorby_choice handles gene text input", {
-  params <- all_memory$redDim[1,]
-  params[[iSEE:::.colorByField]] <- iSEE:::.colorByGeneTextTitle
-  params[[iSEE:::.colorByGeneText]] <- rownames(sce)[1]
+  params <- all_memory$redDimPlot[1,]
+  params[[iSEE:::.colorByField]] <- iSEE:::.colorByFeatNameTitle
+  params[[iSEE:::.colorByFeatName]] <- rownames(sce)[1]
   
   color_out <- iSEE:::.process_colorby_choice(
     params, all_memory, sce, ExperimentColorMap())
@@ -643,23 +643,23 @@ test_that(".process_brushby_choice works when sender is another plot", {
   sourcePlotName <- "Reduced dimension plot 1"
   sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
   
-  # Set up the brush link: redDim1 --> geneExpr1
-  all_memory$geneExpr[1,iSEE:::.brushByPlot] <- sourcePlotName
+  # Set up the brush link: redDim1 --> featExpr1
+  all_memory$featExprPlot[1,iSEE:::.brushByPlot] <- sourcePlotName
   # Set up the brush data (in redDim1)
-  params <- all_memory$redDim[1,]
+  params <- all_memory$redDimPlot[1,]
   x_10 <- head(
     reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
     10)
   y_10 <- head(
     reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
     10)
-  all_memory$redDim[[iSEE:::.brushData]][1] <- list(list(
+  all_memory$redDimPlot[[iSEE:::.brushData]][1] <- list(list(
     xmin=min(x_10), xmax=max(x_10), ymin=min(y_10), ymax=max(y_10),
     direction = "xy", mapping = list(x="X", y="Y"),
     brushId = "dummy_brush", outputId = "dummy_plot"
   ))
   
-  brush_cmd <- iSEE:::.process_brushby_choice(all_memory$geneExpr, all_memory)
+  brush_cmd <- iSEE:::.process_brushby_choice(all_memory$featExprPlot, all_memory)
   
   # check the source of the brushed data
   expect_match(
@@ -687,23 +687,23 @@ test_that(".process_brushby_choice works when sender is self plot", {
   sourcePlotName <- "Reduced dimension plot 1"
   sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
   
-  # Set up the brush link: redDim1 --> geneExpr1
-  all_memory$redDim[1,iSEE:::.brushByPlot] <- sourcePlotName
+  # Set up the brush link: redDim1 --> featExpr1
+  all_memory$redDimPlot[1,iSEE:::.brushByPlot] <- sourcePlotName
   # Set up the brush data (in redDim1)
-  params <- all_memory$redDim[1,]
+  params <- all_memory$redDimPlot[1,]
   x_10 <- head(
     reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
     10)
   y_10 <- head(
     reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
     10)
-  all_memory$redDim[[iSEE:::.brushData]][1] <- list(list(
+  all_memory$redDimPlot[[iSEE:::.brushData]][1] <- list(list(
     xmin=min(x_10), xmax=max(x_10), ymin=min(y_10), ymax=max(y_10),
     direction = "xy", mapping = list(x="X", y="Y"),
     brushId = "dummy_brush", outputId = "dummy_plot"
   ))
   
-  brush_cmd <- iSEE:::.process_brushby_choice(all_memory$redDim, all_memory)
+  brush_cmd <- iSEE:::.process_brushby_choice(all_memory$redDimPlot, all_memory)
   
   # check the source of the brushed data
   expect_match(
@@ -728,22 +728,22 @@ test_that(".create_points handles transparency brush", {
   sourcePlotName <- "Reduced dimension plot 1"
   sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
   
-  # Set up the brush link: redDim1 --> geneExpr1
-  all_memory$redDim[1,iSEE:::.brushByPlot] <- sourcePlotName
+  # Set up the brush link: redDim1 --> featExpr1
+  all_memory$redDimPlot[1,iSEE:::.brushByPlot] <- sourcePlotName
   # Set up the brush data (in redDim1)
-  params <- all_memory$redDim[1,]
+  params <- all_memory$redDimPlot[1,]
   x_10 <- head(
     reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
     10)
   y_10 <- head(
     reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
     10)
-  all_memory$redDim[[iSEE:::.brushData]][1] <- list(list(
+  all_memory$redDimPlot[[iSEE:::.brushData]][1] <- list(list(
     xmin=min(x_10), xmax=max(x_10), ymin=min(y_10), ymax=max(y_10),
     direction = "xy", mapping = list(x="X", y="Y"),
     brushId = "dummy_brush", outputId = "dummy_plot"
   ))
-  all_memory$redDim[[iSEE:::.brushEffect]][1] <- iSEE:::.brushTransTitle
+  all_memory$redDimPlot[[iSEE:::.brushEffect]][1] <- iSEE:::.brushTransTitle
   
   p.out <- iSEE:::.make_redDimPlot(
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
@@ -764,23 +764,23 @@ test_that(".create_points handles colour brush", {
   sourcePlotName <- "Reduced dimension plot 1"
   sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
   
-  # Set up the brush link: redDim1 --> geneExpr1
-  all_memory$redDim[1,iSEE:::.brushByPlot] <- sourcePlotName
+  # Set up the brush link: redDim1 --> featExpr1
+  all_memory$redDimPlot[1,iSEE:::.brushByPlot] <- sourcePlotName
   # Set up the brush data (in redDim1)
-  params <- all_memory$redDim[1,]
+  params <- all_memory$redDimPlot[1,]
   x_10 <- head(
     reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
     10)
   y_10 <- head(
     reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
     10)
-  all_memory$redDim[[iSEE:::.brushData]][1] <- list(list(
+  all_memory$redDimPlot[[iSEE:::.brushData]][1] <- list(list(
     xmin=min(x_10), xmax=max(x_10), ymin=min(y_10), ymax=max(y_10),
     direction = "xy", mapping = list(x="X", y="Y"),
     brushId = "dummy_brush", outputId = "dummy_plot"
   ))
   # Set up the brush type
-  all_memory$redDim[1,iSEE:::.brushEffect] <- iSEE:::.brushColorTitle
+  all_memory$redDimPlot[1,iSEE:::.brushEffect] <- iSEE:::.brushColorTitle
   
   p.out <- iSEE:::.make_redDimPlot(
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
@@ -791,7 +791,7 @@ test_that(".create_points handles colour brush", {
   )
   expect_match(
     p.out$cmd$plot$brush_color,
-    all_memory$redDim[1,iSEE:::.brushColor],
+    all_memory$redDimPlot[1,iSEE:::.brushColor],
     fixed = TRUE
   )
   # TODO: better tests
@@ -806,23 +806,23 @@ test_that(".create_points handles restrict brush", {
   sourcePlotName <- "Reduced dimension plot 1"
   sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
   
-  # Set up the brush link: redDim1 --> geneExpr1
-  all_memory$redDim[1,iSEE:::.brushByPlot] <- sourcePlotName
+  # Set up the brush link: redDim1 --> featExpr1
+  all_memory$redDimPlot[1,iSEE:::.brushByPlot] <- sourcePlotName
   # Set up the brush data (in redDim1)
-  params <- all_memory$redDim[1,]
+  params <- all_memory$redDimPlot[1,]
   x_10 <- head(
     reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
     10)
   y_10 <- head(
     reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
     10)
-  all_memory$redDim[[iSEE:::.brushData]][1] <- list(list(
+  all_memory$redDimPlot[[iSEE:::.brushData]][1] <- list(list(
     xmin=min(x_10), xmax=max(x_10), ymin=min(y_10), ymax=max(y_10),
     direction = "xy", mapping = list(x="X", y="Y"),
     brushId = "dummy_brush", outputId = "dummy_plot"
   ))
   # Set up the brush type
-  all_memory$redDim[1,iSEE:::.brushEffect] <- iSEE:::.brushRestrictTitle
+  all_memory$redDimPlot[1,iSEE:::.brushEffect] <- iSEE:::.brushRestrictTitle
   
   p.out <- iSEE:::.make_redDimPlot(
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())

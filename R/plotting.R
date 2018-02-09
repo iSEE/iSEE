@@ -17,7 +17,7 @@ names(.all_labs_values) <- .all_aes_names
 .make_redDimPlot <- function(id, all_memory, all_coordinates, se, colormap)
 # Makes the dimension reduction plot.
 {
-  param_choices <- all_memory$redDim[id,]
+  param_choices <- all_memory$redDimPlot[id,]
   data_cmds <- list()
   data_cmds[["reducedDim"]] <- sprintf(
     "red.dim <- reducedDim(se, %i);", param_choices[[.redDimType]])
@@ -31,7 +31,7 @@ names(.all_labs_values) <- .all_aes_names
   .create_plot(data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
     x_lab=sprintf("Dimension %s", param_choices[[.redDimXAxis]]),
     y_lab=sprintf("Dimension %s", param_choices[[.redDimYAxis]]),
-    brush_color=brush_stroke_color_full["redDim"]
+    brush_color=brush_stroke_color_full["redDimPlot"]
   )
 }
 
@@ -42,7 +42,7 @@ names(.all_labs_values) <- .all_aes_names
 .make_colDataPlot <- function(id, all_memory, all_coordinates, se, colormap)
 # Makes a plot of column data variables.
 {
-  param_choices <- all_memory$colData[id,]
+  param_choices <- all_memory$colDataPlot[id,]
   data_cmds <- list()
   y_lab <- param_choices[[.colDataYAxis]]
   data_cmds[["y"]] <- sprintf(
@@ -62,39 +62,39 @@ names(.all_labs_values) <- .all_aes_names
   # Generating the plot.
   .create_plot(data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
     x_lab=x_lab, y_lab=y_lab,
-    brush_color=brush_stroke_color_full["colData"]
+    brush_color=brush_stroke_color_full["colDataPlot"]
   )
 }
 
 ############################################
-# .make_geneExprPlot  ----
+# .make_featExprPlot  ----
 ############################################
 
-.make_geneExprPlot <- function(id, all_memory, all_coordinates, se, colormap)
+.make_featExprPlot <- function(id, all_memory, all_coordinates, se, colormap)
 # Makes a gene expression plot.
 {
-  param_choices <- all_memory$geneExpr[id,]
+  param_choices <- all_memory$featExprPlot[id,]
   data_cmds <- list()
 
   ## Setting up the y-axis:
-  y_choice <- param_choices[[.geneExprYAxis]]
-  if (y_choice==.geneExprYAxisGeneTableTitle) {
-    chosen_tab <- .decoded2encoded(param_choices[[.geneExprYAxisGeneTable]])
-    gene_selected_y <- all_memory$geneStat[chosen_tab, .geneStatSelected]
+  y_choice <- param_choices[[.featExprYAxis]]
+  if (y_choice==.featExprYAxisRowTableTitle) {
+    chosen_tab <- .decoded2encoded(param_choices[[.featExprYAxisRowTable]])
+    gene_selected_y <- all_memory$rowStatTable[chosen_tab, .rowStatSelected]
     validate(need( 
       length(gene_selected_y)==1L,
-      sprintf("Invalid '%s' > '%s' input", .geneExprYAxis, y_choice)
+      sprintf("Invalid '%s' > '%s' input", .featExprYAxis, y_choice)
     ))
 
-  } else if (y_choice==.geneExprYAxisGeneTextTitle) {
-    gene_selected_y <- param_choices[[.geneExprYAxisGeneText]]
+  } else if (y_choice==.featExprYAxisFeatNameTitle) {
+    gene_selected_y <- param_choices[[.featExprYAxisFeatName]]
     validate(need( 
       gene_selected_y %in% rownames(se),
-      sprintf("Invalid '%s' > '%s' input", .geneExprYAxis, y_choice)
+      sprintf("Invalid '%s' > '%s' input", .featExprYAxis, y_choice)
     ))
   }
 
-  assay_choice <- param_choices[[.geneExprAssay]]
+  assay_choice <- param_choices[[.featExprAssay]]
   y_lab <- .gene_axis_label(se, gene_selected_y, assay_choice, multiline = FALSE)
   data_cmds[["y"]] <- sprintf(
     "plot.data <- data.frame(Y=assay(se, %i)[%s,], row.names = colnames(se))",
@@ -102,30 +102,30 @@ names(.all_labs_values) <- .all_aes_names
   )
 
   ## Checking X axis choice:
-  x_choice <- param_choices[[.geneExprXAxis]]
+  x_choice <- param_choices[[.featExprXAxis]]
 
-  if (x_choice==.geneExprXAxisColDataTitle) { # colData column selected
-    x_lab <- param_choices[[.geneExprXAxisColData]]
+  if (x_choice==.featExprXAxisColDataTitle) { # colData column selected
+    x_lab <- param_choices[[.featExprXAxisColData]]
     data_cmds[["x"]] <- sprintf(
        "plot.data$X <- colData(se)[,%s];", 
        deparse(x_lab)
     )
 
-  } else if (x_choice==.geneExprXAxisGeneTableTitle || x_choice==.geneExprXAxisGeneTextTitle) { # gene selected
+  } else if (x_choice==.featExprXAxisRowTableTitle || x_choice==.featExprXAxisFeatNameTitle) { # gene selected
 
-    if (x_choice==.geneExprXAxisGeneTableTitle) {
-      chosen_tab <- .decoded2encoded(param_choices[[.geneExprXAxisGeneTable]])
-      gene_selected_x <- all_memory$geneStat[chosen_tab, .geneStatSelected]
+    if (x_choice==.featExprXAxisRowTableTitle) {
+      chosen_tab <- .decoded2encoded(param_choices[[.featExprXAxisRowTable]])
+      gene_selected_x <- all_memory$rowStatTable[chosen_tab, .rowStatSelected]
       validate(need( 
         length(gene_selected_x)==1L,
-        sprintf("Invalid '%s' > '%s' input", .geneExprXAxis, x_choice)
+        sprintf("Invalid '%s' > '%s' input", .featExprXAxis, x_choice)
       ))
 
-    } else if (x_choice==.geneExprXAxisGeneTextTitle) {
-      gene_selected_x <- param_choices[[.geneExprXAxisGeneText]]
+    } else if (x_choice==.featExprXAxisFeatNameTitle) {
+      gene_selected_x <- param_choices[[.featExprXAxisFeatName]]
       validate(need(
         gene_selected_x %in% rownames(se),
-        sprintf("Invalid '%s' > '%s' input", .geneExprXAxis, x_choice)
+        sprintf("Invalid '%s' > '%s' input", .featExprXAxis, x_choice)
       ))
     }
 
@@ -143,7 +143,7 @@ names(.all_labs_values) <- .all_aes_names
   # Generating the plot.
   .create_plot(data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
     x_lab=x_lab, y_lab=y_lab,
-    brush_color=brush_stroke_color_full["geneExpr"]
+    brush_color=brush_stroke_color_full["featExprPlot"]
   )
 }
 
@@ -467,25 +467,25 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
     output$label <- covariate_name
     colormap_cmd <- sprintf("colDataColorMap(colormap, %s, discrete=%%s)(%%i)", covariate_as_string)
 
-  } else if (color_choice==.colorByGeneTableTitle || color_choice==.colorByGeneTextTitle) {
+  } else if (color_choice==.colorByRowTableTitle || color_choice==.colorByFeatNameTitle) {
 
     # Set the color to the selected gene
-    if (color_choice==.colorByGeneTableTitle) {
-      chosen_tab <- .decoded2encoded(param_choices[[.colorByGeneTable]])
-      chosen_gene <- all_memory$geneStat[chosen_tab, .geneStatSelected]
+    if (color_choice==.colorByRowTableTitle) {
+      chosen_tab <- .decoded2encoded(param_choices[[.colorByRowTable]])
+      chosen_gene <- all_memory$rowStatTable[chosen_tab, .rowStatSelected]
       validate(need(
         length(chosen_gene)==1L,
-        sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTableTitle)
+        sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByRowTableTitle)
       ))
-      assay_choice <- param_choices[[.colorByGeneTableAssay]]
+      assay_choice <- param_choices[[.colorByRowTableAssay]]
 
     } else {
-      chosen_gene <- param_choices[[.colorByGeneText]]
+      chosen_gene <- param_choices[[.colorByFeatName]]
       validate(need(
         chosen_gene %in% rownames(se),
-        sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByGeneTextTitle)
+        sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByFeatNameTitle)
       ))
-      assay_choice <- param_choices[[.colorByGeneTextAssay]]
+      assay_choice <- param_choices[[.colorByFeatNameAssay]]
 
     }
 
@@ -541,7 +541,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
     brush_val <- all_memory[[brush_by$Type]][,.brushData][[brush_by$ID]]
 
     if (!is.null(brush_val)) {
-        transmitter <- paste0(brush_by$Type, "Plot", brush_by$ID)
+        transmitter <- paste0(brush_by$Type, brush_by$ID)
         if (rownames(param_choices)==transmitter) {
             source_data <- 'plot.data'
         } else {

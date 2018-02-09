@@ -6,20 +6,15 @@
 #' @param se An object that coercible to \code{\linkS4class{SingleCellExperiment}}.
 #' @param redDimArgs A DataFrame similar to that produced by
 #' \code{\link{redDimPlotDefaults}}, specifying initial parameters for the plots.
-#' @param colDataArgs A DataFrame similar to that produced by
-#' \code{\link{colDataPlotDefaults}}, specifying initial parameters for the plots.
-#' @param featExprArgs A DataFrame similar to that produced by
-#' \code{\link{featExprPlotDefaults}}, specifying initial parameters for the plots.
-#' @param rowStatArgs A DataFrame similar to that produced by
-#' \code{\link{rowStatTableDefaults}}, specifying initial parameters for the plots.
-#' @param redDimMax An integer scalar specifying the maximum number of reduced
-#' dimension plots in the interface. 
-#' @param colDataMax An integer scalar specifying the maximum number of column
-#' data plots in the interface. 
-#' @param featExprMax An integer scalar specifying the maximum number of gene
-#' expression plots in the interface. 
-#' @param rowStatMax An integer scalar specifying the maximum number of gene
-#' statistic tables in the interface. 
+#' @param colDataArgs A DataFrame similar to that produced by \code{\link{colDataPlotDefaults}}, specifying initial parameters for the plots.
+#' @param featExprArgs A DataFrame similar to that produced by \code{\link{featExprPlotDefaults}}, specifying initial parameters for the plots.
+#' @param rowStatArgs A DataFrame similar to that produced by \code{\link{rowStatTableDefaults}}, specifying initial parameters for the plots.
+#' @param rowDataArgs A DataFrame similar to that produced by \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the plots.
+#' @param redDimMax An integer scalar specifying the maximum number of reduced dimension plots in the interface. 
+#' @param colDataMax An integer scalar specifying the maximum number of column data plots in the interface. 
+#' @param featExprMax An integer scalar specifying the maximum number of feature expression plots in the interface. 
+#' @param rowStatMax An integer scalar specifying the maximum number of row statistics tables in the interface. 
+#' @param rowDataMax An integer scalar specifying the maximum number of row data plots in the interface. 
 #' @param initialPanels A DataFrame specifying which panels should be created
 #' at initialization. This should contain a \code{Name} character field and a
 #' \code{Width} integer field, see Details.

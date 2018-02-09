@@ -79,7 +79,7 @@ Defaults to the first entry of \code{colData(se)}.}
 \section{Row data plot parameters}{
 
 \describe{
-\item{\code{YAxis}:}{Character, which column of \code{colData(se)} should be shown on the y-axis?
+\item{\code{YAxis}:}{Character, which column of \code{rowData(se)} should be shown on the y-axis?
 Defaults to the first entry of \code{colData(se)}.}
 \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
 Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Row data"} or \code{"Feature name"}.}

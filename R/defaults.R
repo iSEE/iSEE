@@ -31,8 +31,8 @@
 #' \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
 #' Defaults to 1, i.e., the first assay in \code{se}.
 #' We use an index rather than the name, as the latter may not be unique.}
-#' \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
-#' Defaults to \code{"None"}.}
+#' \item{\code{XAxis}:}{Character, what type of variable should be shown on the x-axis?
+#' Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Column data"} or \code{"Feature name"}.}
 #' \item{\code{XAxisColData}:}{Character, what column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
 #' Defaults to the first entry of \code{colData(se)}.}
 #' \item{\code{XAxisFeatName}:}{Character, which feature's expression should be shown on the x-axis if \code{XAxis="Feature name"}? 
@@ -43,12 +43,22 @@
 #'
 #' @section Column data plot parameters:
 #' \describe{
-#' \item{\code{YAxisColData}:}{Character, which column of \code{colData(se)} should be shown on the y-axis?
+#' \item{\code{YAxis}:}{Character, which column of \code{colData(se)} should be shown on the y-axis?
 #' Defaults to the first entry of \code{colData(se)}.}
-#' \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
-#' Defaults to \code{"None"}.}
+#' \item{\code{XAxis}:}{Character, what type of variable should be shown on the x-axis?
+#' Defaults to \code{"None"}, but can also be \code{"Column data"}.}
 #' \item{\code{XAxisColData}:}{Character, which column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
 #' Defaults to the first entry of \code{colData(se)}.}
+#' }
+#'
+#' @section Row data plot parameters:
+#' \describe{
+#' \item{\code{YAxis}:}{Character, which column of \code{rowData(se)} should be shown on the y-axis?
+#' Defaults to the first entry of \code{colData(se)}.}
+#' \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
+#' Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Row data"} or \code{"Feature name"}.}
+#' \item{\code{XAxisRowData}:}{Character, which column of \code{rowData(se)} should be shown on the x-axis if \code{XAxis="Row data"}?
+#' Defaults to the first entry of \code{rowData(se)}.}
 #' }
 #'
 #' @section Coloring parameters:
@@ -56,7 +66,8 @@
 #' \item{\code{ColorPanelOpen}:}{Logical, should the color parameter panel be open upon initialization?
 #' Defaults to \code{FALSE}.}
 #' \item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
-#' Defaults to \code{"None"}.}
+#' Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Feature name"} or \code{"Column data"}.
+#' For row data plots, \code{"Row data"} replaces \code{"Column data"}.}
 #' \item{\code{ColorByColData}:}{Character, which column of \code{colData(se)} should be used for colouring if \code{ColorBy="Column data"}? 
 #' Defaults to the first entry of \code{colData(se)}.}
 #' \item{\code{ColorByRowTable}:}{Character, which row statistic table should be used to choose a feature to color by, if \code{ColorBy="Row table"}? 
@@ -199,6 +210,24 @@ rowStatTableDefaults <- function(se, number) {
     return(out)
 }
 
+#' @rdname defaults 
+#' @export
+rowDataPlotDefaults <- function(se, number) {
+    waszero <- number==0 
+    if (waszero) number <- 1
+
+    covariates <- colnames(rowData(se))
+
+    out <- new("DataFrame", nrows=as.integer(number))
+    out[[.rowDataYAxis]] <- covariates[1]
+    out[[.rowDataXAxis]] <- .rowDataXAxisNothingTitle
+    out[[.rowDataXAxisRowData]] <- ifelse(length(covariates)==1L, covariates[1], covariates[2])
+
+    out <- .add_general_parameters(out, se, by_row=TRUE)
+    if (waszero) out <- out[0,,drop=FALSE]
+    return(out)
+}
+
 .override_defaults <- function(def, usr)
 # Overriding the defaults with whatever the user has supplied.
 {
@@ -223,7 +252,7 @@ rowStatTableDefaults <- function(se, number) {
     return(def)
 }    
 
-.add_general_parameters <- function(incoming, se) {
+.add_general_parameters <- function(incoming, se, by_row=FALSE) {
     def_assay <- .set_default_assay(se)
     def_cov <- colnames(colData(se))[1]
 
@@ -232,7 +261,12 @@ rowStatTableDefaults <- function(se, number) {
     incoming[[.brushParamPanelOpen]] <- FALSE
 
     incoming[[.colorByField]] <- .colorByNothingTitle
-    incoming[[.colorByColData]] <- def_cov
+    if (by_row) {
+        incoming[[.colorByRowData]] <- def_cov
+    } else {
+        incoming[[.colorByColData]] <- def_cov
+    }
+
     incoming[[.colorByRowTable]] <- "" 
     incoming[[.colorByRowTableAssay]] <- def_assay
     incoming[[.colorByFeatName]] <- "" 

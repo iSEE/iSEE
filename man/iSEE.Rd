@@ -81,7 +81,7 @@ required to render the interface.
 The \code{initialPanels} argument specifies the panels to be created
 upon initializing the interface. This should be a DataFrame containing
 a \code{Name} field specifying the identity of the panel, e.g.,
-\code{"Reduced dimension plot 1"}, \code{"Gene statistics table 2"}.
+\code{"Reduced dimension plot 1"}, \code{"Row statistics table 2"}.
 The trailing number should not be greater than the number of
 maximum plots of that type. The \code{Width} field may also be specified
 describing the width of the panel from 2 to 12 (values will be coerced

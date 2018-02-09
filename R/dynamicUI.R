@@ -60,13 +60,10 @@
     red_dim_dims <- vapply(red_dim_names, FUN=function(x) ncol(reducedDim(se, x)), FUN.VALUE=0L)
   
     # Defining all transmitting tables and plots for linking.
-    all.names <- .decode_panel_name(active_panels$Type, active_panels$ID)
-    is_tab <- active_panels$Type=="rowStatTable"
-    active_tab <- all.names[is_tab]
-    if (length(active_tab)==0L) {
-        active_tab <- ""
-    }
-    brushable <- c("", all.names[!is_tab])
+    link_sources <- .define_link_sources(active_panels)
+    active_tab <- link_sources$tab
+    row_brushable <- c("", link_sources$row)
+    col_brushable <- c("", link_sources$col)
 
     for (i in seq_len(nrow(active_panels))) {
         mode <- active_panels$Type[i]
@@ -181,7 +178,20 @@
         }
 
         # Adding graphical parameters if we're plotting.
-        if (mode!="rowStatTable" && mode!="rowDataPlot") {
+        if (mode=="rowStatTable") {
+            param <- list()
+        } else if (mode=="rowDataPlot") {
+            # Slightly different handling of the row data.
+            param <- list(tags$div(class = "panel-group", role = "tablist",
+                do.call(collapseBox, c(list(id=.input_FUN(.plotParamPanelOpen),
+                                            title="Plotting parameters",
+                                            open=param_choices[[.plotParamPanelOpen]]),
+                                       plot.param)),
+                .createColorPanelForRowPlots(mode, ID, param_choices, active_tab, row_covariates),
+                .createBrushPanel(mode, ID, param_choices, row_brushable)
+                )
+            )
+        } else {
             param <- list(tags$div(class = "panel-group", role = "tablist",
                 # Panel for fundamental plot parameters.
                 do.call(collapseBox, c(list(id=.input_FUN(.plotParamPanelOpen),
@@ -193,22 +203,9 @@
                 .createColorPanelForColumnPlots(mode, ID, param_choices, active_tab, column_covariates, all_assays, feasibility),
 
                 # Panel for brushing parameters.
-                .createBrushPanel(mode, ID, param_choices, brushable)
+                .createBrushPanel(mode, ID, param_choices, col_brushable)
                 )
             )
-        } else if (mode=="rowDataPlot") {
-            # Slightly different handling of the row data.
-            param <- list(tags$div(class = "panel-group", role = "tablist",
-                do.call(collapseBox, c(list(id=.input_FUN(.plotParamPanelOpen),
-                                            title="Plotting parameters",
-                                            open=param_choices[[.plotParamPanelOpen]]),
-                                       plot.param)),
-                .createColorPanelForRowPlots(mode, ID, param_choices, active_tab, row_covariates),
-                .createBrushPanel(mode, ID, param_choices, brushable)
-                )
-            )
-        } else {
-            param <- list()
         }
 
         # Deciding whether to continue on the current row, or start a new row.
@@ -225,7 +222,7 @@
 
         # Aggregating together everything into a box, and then into a column.
         cur.box <- do.call(box, c(list(obj), param, 
-           list(title=all.names[i], solidHeader=TRUE, width=NULL, status = box_status[mode])))
+           list(title=.decode_panel_name(mode, ID), solidHeader=TRUE, width=NULL, status = box_status[mode])))
         cur.row[[row.counter]] <- column(width=panel.width, cur.box, style='padding:3px;') 
         row.counter <- row.counter + 1L
         cumulative.width <- cumulative.width + panel.width
@@ -239,6 +236,22 @@
     # Convert the list to a tagList - this is necessary for the list of items
     # to display properly.
     do.call(tagList, collected)
+}
+
+.define_link_sources <- function(active_panels) {
+    all_names <- .decode_panel_name(active_panels$Type, active_panels$ID)
+
+    is_tab <- active_panels$Type=="rowStatTable"
+    active_tab <- all_names[is_tab]
+    if (length(active_tab)==0L) {
+        active_tab <- ""
+    }
+
+    is_row <- active_panels$Type=="rowDataPlot"
+    row_brushable <- all_names[is_row]
+    col_brushable <- all_names[!is_tab & !is_row]
+
+    return(list(tab=active_tab, row=row_brushable, col=col_brushable))
 }
 
 .choose_link <- function(chosen, available, force_default=FALSE)

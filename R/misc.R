@@ -149,35 +149,52 @@ height_limits <- c(400L, 1000L)
 # with respect to the starting panels, i.e., no brushing
 # or table links to panels that are not active.
 {
-    is_tab <- active_panels$Type=="rowStatTable"
-    brushable <- active_panels[!is_tab,]
-    brush_names <- .decode_panel_name(brushable$Type, brushable$ID)
-    linkable <- active_panels[is_tab,]
-    link_names <- .decode_panel_name(linkable$Type, linkable$ID)
+    link_sources <- .define_link_sources(active_panels)
+    active_tab <- link_sources$tab
+    row_brushable <- link_sources$row
+    col_brushable <-  link_sources$col
     all_active <- paste0(active_panels$Type, active_panels$ID)
 
+    # Checking for brushing/linking of column-based plots.
     for (mode in c("redDimPlot", "colDataPlot", "featExprPlot")) {
         cur_memory <- memory[[mode]]
         self_active <- rownames(cur_memory)
 
         bb <- cur_memory[,.brushByPlot]
-        bad <- !bb %in% brush_names | !self_active %in% all_active
+        bad <- !bb %in% col_brushable | !self_active %in% all_active
         if (any(bad)) { 
             memory[[mode]][,.brushByPlot][bad] <- ""
         }
 
         cb <- cur_memory[,.colorByRowTable]
-        bad <- !cb %in% link_names | !self_active %in% all_active
+        bad <- !cb %in% active_tab | !self_active %in% all_active
         if (any(bad)) { 
             memory[[mode]][,.colorByRowTable][bad] <- ""
         }
     }
 
+    # Checking for brushing/linking of row data plots.
+    cur_memory <- memory$rowDataPlot
+    self_active <- rownames(cur_memory)
+
+    bb <- cur_memory[,.brushByPlot]
+    bad <- !bb %in% row_brushable | !self_active %in% all_active
+    if (any(bad)) { 
+        memory$rowDataPlot[,.brushByPlot][bad] <- ""
+    }
+
+    cb <- cur_memory[,.colorByRowTable]
+    bad <- !cb %in% active_tab | !self_active %in% all_active
+    if (any(bad)) { 
+        memory$rowDataPlot[,.colorByRowTable][bad] <- ""
+    }
+
+    # Checking for linking of x/y-axes of feature expression plots.
     feat_active <- rownames(memory$featExprPlot)
     for (field in c(.featExprXAxisRowTable, .featExprYAxisRowTable)) {
         bb <- memory$featExprPlot[,field]
 
-        bad <- !bb %in% link_names | !feat_active %in% all_active
+        bad <- !bb %in% active_tab | !feat_active %in% all_active
         if (any(bad)) { 
             memory$featExprPlot[,field][bad] <- ""
         }

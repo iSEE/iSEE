@@ -165,7 +165,7 @@ names(.all_labs_values) <- .all_aes_names
   # Prepare X-axis data.
   if (param_choices[[.rowDataXAxis]]==.rowDataXAxisNothingTitle) {
     x_lab <- ''
-    data_cmds[["x"]] <- "plot.data$X <- factor(character(ncol(se)))"
+    data_cmds[["x"]] <- "plot.data$X <- factor(character(nrow(se)))"
   } else {
     x_lab <- param_choices[[.rowDataXAxisRowData]]
     data_cmds[["x"]] <- sprintf("plot.data$X <- rowData(se)[,%s];", deparse(x_lab))
@@ -490,7 +490,10 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
 # Internal functions: coloring ----
 ############################################
 
-.process_colorby_choice_for_column_plots <- function(param_choices, all_memory, se, colormap) {
+.process_colorby_choice_for_column_plots <- function(param_choices, all_memory, se, colormap) 
+# This function defines the colour-by choices for column plots,
+# i.e., where each point represents a sample.
+{
   output <- list(cmd=NULL, label=NA_character_, FUN=NULL)
   color_choice <- param_choices[[.colorByField]]
   colormap_cmd <- NULL
@@ -542,7 +545,10 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
   return(output)
 }
 
-.process_colorby_choice_for_row_plots <- function(param_choices, all_memory, se, colormap) {
+.process_colorby_choice_for_row_plots <- function(param_choices, all_memory, se, colormap) 
+# This function defines the colour-by choices for row-based plots,
+# i.e., where each point represents a feature.
+{
   output <- list(cmd=NULL, label=NA_character_, FUN=NULL)
   color_choice <- param_choices[[.colorByField]]
   colormap_cmd <- NULL
@@ -576,11 +582,11 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
       col_choice <- param_choices[[.colorByFeatNameColor]]
 
     }
-    output$cmd <- sprintf("plot.data$ColorBy <- FALSE;\nplot.data[%i, 'ColorBy'] <- TRUE;", deparse(chosen_gene))
+    output$cmd <- sprintf("plot.data$ColorBy <- FALSE;\nplot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))
     output$label <- .gene_axis_label(se, chosen_gene, assay_id=NULL)
     output$FUN <- function(nlevels) {
        # Argument is ignored, as we should know the number of levels beforehand.
-       sprintf("scale_color_manual(values=c(FALSE='black', TRUE=%s, drop=FALSE) +", deparse(col_choice))
+       sprintf("scale_color_manual(values=c(FALSE='black', TRUE=%s), drop=FALSE) +", deparse(col_choice))
     }
   }
   return(output)

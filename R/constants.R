@@ -31,7 +31,7 @@
 
 # Row data plotting parameters. ----
 .rowDataXAxisNothingTitle <- "None"
-.rowDataXAxisColDataTitle <- "Row data"
+.rowDataXAxisRowDataTitle <- "Row data"
 
 .rowDataYAxis <- "YAxis"
 .rowDataXAxis <- "XAxis"

@@ -168,13 +168,13 @@
                              label = "Column of interest (Y-axis):",
                              choices=row_covariates, selected=param_choices[[.rowDataYAxis]]),
                  radioButtons(.input_FUN(.rowDataXAxis), label="X-axis:", inline=TRUE,
-                              choices=c(.rowDataXAxisNothingTitle, .rowDataXAxisColDataTitle),
+                              choices=c(.rowDataXAxisNothingTitle, .rowDataXAxisRowDataTitle),
                               selected=param_choices[[.rowDataXAxis]]),
                  .conditionalPanelOnRadio(.input_FUN(.rowDataXAxis),
-                                          .rowDataXAxisColDataTitle,
-                                          selectInput(.input_FUN(.rowDataXAxisColData),
+                                          .rowDataXAxisRowDataTitle,
+                                          selectInput(.input_FUN(.rowDataXAxisRowData),
                                                       label = "Column of interest (X-axis):",
-                                                      choices=row_covariates, selected=param_choices[[.rowDataXAxisColData]]))
+                                                      choices=row_covariates, selected=param_choices[[.rowDataXAxisRowData]]))
                  )
         } else {
             stop(sprintf("'%s' is not a recognized panel mode"), mode)
@@ -297,7 +297,7 @@
 # won't be re-used, it just breaks up the huge UI function above.
 {
     colorby_field <- paste0(mode, ID, "_", .colorByField)
-    color_choices <- c(.colorByNothingTitle)
+    color_choices <- c(.colorByNothingTitle, .colorByRowDataTitle, .colorByRowTableTitle, .colorByFeatNameTitle)
 
     collapseBox(
         id = paste0(mode, ID, "_", .colorParamPanelOpen),
@@ -319,8 +319,8 @@
             ),
         .conditionalPanelOnRadio(colorby_field, .colorByFeatNameTitle,
             tagList(textInput(paste0(mode, ID, "_", .colorByFeatName), label = NULL, value=param_choices[[.colorByFeatName]]),
-                    colourInput(paste0(mode, ID, "_", .colorByRowTableColor), label=NULL,
-                                value=param_choices[[.colorByRowTableColor]]))
+                    colourInput(paste0(mode, ID, "_", .colorByFeatNameColor), label=NULL,
+                                value=param_choices[[.colorByFeatNameColor]]))
             )
         )
 }

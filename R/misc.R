@@ -60,7 +60,7 @@
     rowStatArgs <- NULL
   }
   if (!feasibility$rowDataPlot) {
-    rowdata_max_tabs <- 0L
+    rowdata_max_plots <- 0L
     rowDataArgs <- NULL
   }
 
@@ -91,11 +91,11 @@
   }
   rownames(memory$rowStatTable) <- sprintf("rowStatTable%i", seq_len(genestat_max_tabs))
 
-  memory$rowDataPlot <- rowDataPlotDefaults(se, coldata_max_plots)
+  memory$rowDataPlot <- rowDataPlotDefaults(se, rowdata_max_plots)
   if (!is.null(rowDataArgs)) {
     memory$rowDataPlot <- .override_defaults(memory$rowDataPlot, rowDataArgs)
   }
-  rownames(memory$rowDataPlot) <- sprintf("rowDataPlot%i", seq_len(coldata_max_plots))
+  rownames(memory$rowDataPlot) <- sprintf("rowDataPlot%i", seq_len(rowdata_max_plots))
 
   return(memory)
 }

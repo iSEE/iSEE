@@ -678,11 +678,11 @@ iSEE <- function(
                             redDimPlot=c(.redDimType, .redDimXAxis, .redDimYAxis),
                             colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
                             featExprPlot=c(.featExprAssay, .featExprXAxisColData, .featExprYAxisFeatName, .featExprXAxisFeatName),
-                            rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisColData))
+                            rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData))
             
         # Defining non-fundamental parameters that do not destroy brushes.
         if (mode=="rowDataPlot") {
-            nonfundamental <- .colorByRowData
+            nonfundamental <- c(.colorByRowData, .colorByRowTableColor, .colorByFeatNameColor)
         } else {
             nonfundamental <- c(.colorByColData, .colorByRowTableAssay, .colorByFeatNameAssay)
         }
@@ -805,7 +805,7 @@ iSEE <- function(
     #######################################################################
 
     # Load the gene level data
-    for (i in seq_len(nrow(memory$rowStat))) {
+    for (i in seq_len(nrow(memory$rowStatTable))) {
       local({
         i0 <- i
         panel_name <- paste0("rowStatTable", i0)
@@ -828,7 +828,7 @@ iSEE <- function(
 
         # Updating memory for new selection parameters (no need for underscore
         # in 'select_field' definition, as this is already in the '.int' constant).
-        select_field <- paste0("rowStatTable", i0, .int_rowStatSelected)
+        select_field <- paste0(panel_name, .int_rowStatSelected)
         observe({
             chosen <- input[[select_field]]
             if (length(chosen)) {
@@ -863,7 +863,7 @@ iSEE <- function(
         })
 
         # Updating memory for new selection parameters.
-        search_field <- paste0("rowStatTable", i0, .int_rowStatSearch)
+        search_field <- paste0(panel_name, .int_rowStatSearch)
         observe({
             search <- input[[search_field]]
             if (length(search)) {
@@ -871,7 +871,7 @@ iSEE <- function(
             }
         })
 
-        colsearch_field <- paste0("rowStatTable", i0, .int_rowStatColSearch)
+        colsearch_field <- paste0(panel_name, .int_rowStatColSearch)
         observe({
             search <- input[[colsearch_field]]
             if (length(search)) {
@@ -881,7 +881,7 @@ iSEE <- function(
         })
 
         # Updating the annotation box.
-        anno_field <- paste0("rowStatTable", i0, "_annotation")
+        anno_field <- paste0(panel_name, "_annotation")
         output[[anno_field]] <- renderUI({
             chosen <- input[[select_field]]
             .generate_annotation(annot.orgdb, annot.keytype, annot.keyfield, 

@@ -5,7 +5,7 @@
   node_names <- list()
   edges <- list()
 
-  for (mode in c("redDimPlot", "colDataPlot", "featExprPlot")) { 
+  for (mode in c("redDimPlot", "colDataPlot", "featExprPlot", "rowDataPlot")) { 
     N <- nrow(memory[[mode]])
     cur_panels <- sprintf("%s%i", mode, seq_len(N))
     node_names[[mode]] <- cur_panels

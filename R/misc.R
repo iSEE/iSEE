@@ -60,34 +60,27 @@
 
   # Setting up parameters for each panel.
   memory <- list()
-  if (is.null(redDimArgs)) {
-    memory$redDimPlot <- redDimPlotDefaults(se, reddim_max_plots)
-  } else {
-    memory$redDimPlot <- redDimPlotDefaults(se, reddim_max_plots)
+  
+  memory$redDimPlot <- redDimPlotDefaults(se, reddim_max_plots)
+  if (!is.null(redDimArgs)) {
     memory$redDimPlot <- .override_defaults(memory$redDimPlot, redDimArgs)
   }
   rownames(memory$redDimPlot) <- sprintf("redDimPlot%i", seq_len(reddim_max_plots))
 
-  if (is.null(featExprArgs)) {
-    memory$featExprPlot <- featExprPlotDefaults(se, geneexpr_max_plots)
-  } else {
-    memory$featExprPlot <- featExprPlotDefaults(se, geneexpr_max_plots)
+  memory$featExprPlot <- featExprPlotDefaults(se, geneexpr_max_plots)
+  if (!is.null(featExprArgs)) {
     memory$featExprPlot <- .override_defaults(memory$featExprPlot, featExprArgs)
   }
   rownames(memory$featExprPlot) <- sprintf("featExprPlot%i", seq_len(geneexpr_max_plots))
 
-  if (is.null(colDataArgs)) {
-    memory$colDataPlot <- colDataPlotDefaults(se, coldata_max_plots)
-  } else {
-    memory$colDataPlot <- colDataPlotDefaults(se, coldata_max_plots)
+  memory$colDataPlot <- colDataPlotDefaults(se, coldata_max_plots)
+  if (!is.null(colDataArgs)) {
     memory$colDataPlot <- .override_defaults(memory$colDataPlot, colDataArgs)
   }
   rownames(memory$colDataPlot) <- sprintf("colDataPlot%i", seq_len(coldata_max_plots))
 
-  if (is.null(rowStatArgs)) {
-    memory$rowStatTable <- rowStatTableDefaults(se, genestat_max_tabs)
-  } else {
-    memory$rowStatTable <- rowStatTableDefaults(se, genestat_max_tabs)
+  memory$rowStatTable <- rowStatTableDefaults(se, genestat_max_tabs)
+  if (!is.null(rowStatArgs)) {
     memory$rowStatTable <- .override_defaults(memory$rowStatTable, rowStatArgs, can_brush=FALSE)
   }
   rownames(memory$rowStatTable) <- sprintf("rowStatTable%i", seq_len(genestat_max_tabs))
@@ -148,24 +141,30 @@ height_limits <- c(400L, 1000L)
     brush_names <- .decode_panel_name(brushable$Type, brushable$ID)
     linkable <- active_panels[is_tab,]
     link_names <- .decode_panel_name(linkable$Type, linkable$ID)
+    all_active <- paste0(active_panels$Type, active_panels$ID)
 
     for (mode in c("redDimPlot", "colDataPlot", "featExprPlot")) {
-        bb <- memory[[mode]][,.brushByPlot]
-        bad <- !bb %in% brush_names
+        cur_memory <- memory[[mode]]
+        self_active <- rownames(cur_memory)
+
+        bb <- cur_memory[,.brushByPlot]
+        bad <- !bb %in% brush_names | !self_active %in% all_active
         if (any(bad)) { 
             memory[[mode]][,.brushByPlot][bad] <- ""
         }
 
-        cb <- memory[[mode]][,.colorByRowTable]
-        bad <- !cb %in% link_names 
+        cb <- cur_memory[,.colorByRowTable]
+        bad <- !cb %in% link_names | !self_active %in% all_active
         if (any(bad)) { 
             memory[[mode]][,.colorByRowTable][bad] <- ""
         }
     }
 
+    feat_active <- rownames(memory$featExprPlot)
     for (field in c(.featExprXAxisRowTable, .featExprYAxisRowTable)) {
         bb <- memory$featExprPlot[,field]
-        bad <- !bb %in% link_names 
+
+        bad <- !bb %in% link_names | !feat_active %in% all_active
         if (any(bad)) { 
             memory$featExprPlot[,field][bad] <- ""
         }

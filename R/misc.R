@@ -81,7 +81,7 @@
 
   memory$rowStatTable <- rowStatTableDefaults(se, genestat_max_tabs)
   if (!is.null(rowStatArgs)) {
-    memory$rowStatTable <- .override_defaults(memory$rowStatTable, rowStatArgs, can_brush=FALSE)
+    memory$rowStatTable <- .override_defaults(memory$rowStatTable, rowStatArgs)
   }
   rownames(memory$rowStatTable) <- sprintf("rowStatTable%i", seq_len(genestat_max_tabs))
 

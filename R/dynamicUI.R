@@ -47,7 +47,8 @@
     # and reduced dimension names may not be unique, hence the (%i).
     feasibility <- .check_plot_feasibility(se)
 
-    covariates <- colnames(colData(se))
+    column_covariates <- colnames(colData(se))
+    row_covariates <- colnames(rowData(se))
 
     all_assays_raw <- assayNames(se)
     all_assays <- seq_along(all_assays_raw)
@@ -101,7 +102,7 @@
             plot.param <- list(
                  selectInput(.input_FUN(.colDataYAxis),
                              label = "Column of interest (Y-axis):",
-                             choices=covariates, selected=param_choices[[.colDataYAxis]]),
+                             choices=column_covariates, selected=param_choices[[.colDataYAxis]]),
                  radioButtons(.input_FUN(.colDataXAxis), label="X-axis:", inline=TRUE,
                               choices=c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle),
                               selected=param_choices[[.colDataXAxis]]),
@@ -109,7 +110,7 @@
                                           .colDataXAxisColDataTitle,
                                           selectInput(.input_FUN(.colDataXAxisColData),
                                                       label = "Column of interest (X-axis):",
-                                                      choices=covariates, selected=param_choices[[.colDataXAxisColData]]))
+                                                      choices=column_covariates, selected=param_choices[[.colDataXAxisColData]]))
                  )
         } else if (mode=="featExprPlot") {
             obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, height=panel_height)
@@ -145,7 +146,7 @@
                                        .featExprXAxisColDataTitle,
                                        selectInput(.input_FUN(.featExprXAxisColData),
                                                    label = "X-axis column data:",
-                                                   choices=covariates, selected=param_choices[[.featExprXAxisColData]])),
+                                                   choices=column_covariates, selected=param_choices[[.featExprXAxisColData]])),
               .conditionalPanelOnRadio(.input_FUN(.featExprXAxis),
                                        .featExprXAxisRowTableTitle,
                                        selectInput(.input_FUN(.featExprXAxisRowTable),
@@ -160,12 +161,27 @@
         } else if (mode=="rowStatTable") {
             obj <- list(dataTableOutput(paste0(mode, ID)),
                         uiOutput(.input_FUN("annotation")))
+        } else if (mode=="rowDataPlot") {
+            obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, height=panel_height)
+            plot.param <- list(
+                 selectInput(.input_FUN(.rowDataYAxis),
+                             label = "Column of interest (Y-axis):",
+                             choices=row_covariates, selected=param_choices[[.rowDataYAxis]]),
+                 radioButtons(.input_FUN(.rowDataXAxis), label="X-axis:", inline=TRUE,
+                              choices=c(.rowDataXAxisNothingTitle, .rowDataXAxisColDataTitle),
+                              selected=param_choices[[.rowDataXAxis]]),
+                 .conditionalPanelOnRadio(.input_FUN(.rowDataXAxis),
+                                          .rowDataXAxisColDataTitle,
+                                          selectInput(.input_FUN(.rowDataXAxisColData),
+                                                      label = "Column of interest (X-axis):",
+                                                      choices=row_covariates, selected=param_choices[[.rowDataXAxisColData]]))
+                 )
         } else {
             stop(sprintf("'%s' is not a recognized panel mode"), mode)
         }
 
         # Adding graphical parameters if we're plotting.
-        if (mode!="rowStatTable") {
+        if (mode!="rowStatTable" && mode!="rowDataPlot") {
             param <- list(tags$div(class = "panel-group", role = "tablist",
                 # Panel for fundamental plot parameters.
                 do.call(collapseBox, c(list(id=.input_FUN(.plotParamPanelOpen),
@@ -174,9 +190,20 @@
                                        plot.param)),
 
                 # Panel for colouring parameters.
-                .createColorPanel(mode, ID, param_choices, active_tab, covariates, all_assays, feasibility),
+                .createColorPanelForColumnPlots(mode, ID, param_choices, active_tab, column_covariates, all_assays, feasibility),
 
                 # Panel for brushing parameters.
+                .createBrushPanel(mode, ID, param_choices, brushable)
+                )
+            )
+        } else if (mode=="rowDataPlot") {
+            # Slightly different handling of the row data.
+            param <- list(tags$div(class = "panel-group", role = "tablist",
+                do.call(collapseBox, c(list(id=.input_FUN(.plotParamPanelOpen),
+                                            title="Plotting parameters",
+                                            open=param_choices[[.plotParamPanelOpen]]),
+                                       plot.param)),
+                .createColorPanelForRowPlots(mode, ID, param_choices, active_tab, row_covariates),
                 .createBrushPanel(mode, ID, param_choices, brushable)
                 )
             )
@@ -227,7 +254,7 @@
     return(chosen)
 }
 
-.createColorPanel <- function(mode, ID, param_choices, active_tab, covariates, all_assays, feasibility)
+.createColorPanelForColumnPlots <- function(mode, ID, param_choices, active_tab, covariates, all_assays, feasibility)
 # Convenience function to create the color parameter panel. This
 # won't be re-used, it just breaks up the huge UI function above.
 {
@@ -261,6 +288,39 @@
             tagList(textInput(paste0(mode, ID, "_", .colorByFeatName), label = NULL, value=param_choices[[.colorByFeatName]]),
                     selectInput(paste0(mode, ID, "_", .colorByFeatNameAssay), label=NULL,
                                 choices=all_assays, selected=param_choices[[.colorByFeatNameAssay]]))
+            )
+        )
+}
+
+.createColorPanelForRowPlots <- function(mode, ID, param_choices, active_tab, covariates)
+# Convenience function to create the color parameter panel. This
+# won't be re-used, it just breaks up the huge UI function above.
+{
+    colorby_field <- paste0(mode, ID, "_", .colorByField)
+    color_choices <- c(.colorByNothingTitle)
+
+    collapseBox(
+        id = paste0(mode, ID, "_", .colorParamPanelOpen),
+        title = "Coloring parameters",
+        open = param_choices[[.colorParamPanelOpen]],
+        radioButtons(colorby_field, label="Color by:", inline=TRUE,
+                     choices=color_choices, selected=param_choices[[.colorByField]]
+            ),
+
+        .conditionalPanelOnRadio(colorby_field, .colorByRowDataTitle,
+            selectInput(paste0(mode, ID, "_", .colorByRowData), label = NULL,
+                        choices=covariates, selected=param_choices[[.colorByRowData]])
+            ),
+        .conditionalPanelOnRadio(colorby_field, .colorByRowTableTitle,
+            tagList(selectInput(paste0(mode, ID, "_", .colorByRowTable), label = NULL, choices=active_tab,
+                                selected=.choose_link(param_choices[[.colorByRowTable]], active_tab, force_default=TRUE)),
+                    colourInput(paste0(mode, ID, "_", .colorByRowTableColor), label=NULL,
+                                value=param_choices[[.colorByRowTableColor]]))
+            ),
+        .conditionalPanelOnRadio(colorby_field, .colorByFeatNameTitle,
+            tagList(textInput(paste0(mode, ID, "_", .colorByFeatName), label = NULL, value=param_choices[[.colorByFeatName]]),
+                    colourInput(paste0(mode, ID, "_", .colorByRowTableColor), label=NULL,
+                                value=param_choices[[.colorByRowTableColor]]))
             )
         )
 }
@@ -300,7 +360,7 @@
 }
 
 # Colours for shinydashboard::box.
-box_status <- c(redDimPlot="primary", featExprPlot="success", colDataPlot="warning", rowStatTable="danger")
-brush_fill_color <- c(redDimPlot="#9cf", featExprPlot="#9f6", colDataPlot="#ff9")
-brush_stroke_color <- c(redDimPlot="#06f", featExprPlot="#090", colDataPlot="#fc0")
-brush_stroke_color_full <- c(redDimPlot="#0066ff", featExprPlot="#009900", colDataPlot="#ffcc00")
+box_status <- c(redDimPlot="primary", featExprPlot="success", colDataPlot="warning", rowStatTable="danger", rowDataPlot="info")
+brush_fill_color <- c(redDimPlot="#9cf", featExprPlot="#9f6", colDataPlot="#ff9", rowDataPlot="#9cf")
+brush_stroke_color <- c(redDimPlot="#06f", featExprPlot="#090", colDataPlot="#fc0", rowDataPlot="#06f")
+brush_stroke_color_full <- c(redDimPlot="#0066ff", featExprPlot="#009900", colDataPlot="#ffcc00", rowDataPlot="#0066ff")

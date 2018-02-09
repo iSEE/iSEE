@@ -49,10 +49,14 @@
 .colorByField <- "ColorBy"
 .colorByColData <- "ColorByColData"
 .colorByRowData <- "ColorByRowData"
+
 .colorByRowTable <- "ColorByRowTable"
-.colorByFeatName <- "ColorByFeatName"
 .colorByRowTableAssay <- "ColorByRowTableAssay"
+.colorByRowTableColor <- "ColorByRowTableColor"
+
+.colorByFeatName <- "ColorByFeatName"
 .colorByFeatNameAssay <- "ColorByFeatNameAssay"
+.colorByFeatNameColor <- "ColorByFeatNameColor"
 
 # Plot brushing parameters. ----
 .brushParamPanelOpen <- "BrushPanelOpen"

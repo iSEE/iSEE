@@ -145,7 +145,7 @@ redDimPlotDefaults <- function(se, number) {
     out[[.redDimXAxis]] <- 1L
     out[[.redDimYAxis]] <- 2L
     
-    out <- .add_general_parameters(out, se)
+    out <- .add_general_parameters_for_column_plots(out, se)
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)
 }
@@ -169,7 +169,7 @@ featExprPlotDefaults <- function(se, number) {
     out[[.featExprYAxisRowTable]] <- ""
     out[[.featExprYAxis]] <- .featExprYAxisRowTableTitle
 
-    out <- .add_general_parameters(out, se)
+    out <- .add_general_parameters_for_column_plots(out, se)
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)
 }
@@ -187,7 +187,7 @@ colDataPlotDefaults <- function(se, number) {
     out[[.colDataXAxis]] <- .colDataXAxisNothingTitle
     out[[.colDataXAxisColData]] <- ifelse(length(covariates)==1L, covariates[1], covariates[2])
 
-    out <- .add_general_parameters(out, se)
+    out <- .add_general_parameters_for_column_plots(out, se)
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)
 }
@@ -223,7 +223,7 @@ rowDataPlotDefaults <- function(se, number) {
     out[[.rowDataXAxis]] <- .rowDataXAxisNothingTitle
     out[[.rowDataXAxisRowData]] <- ifelse(length(covariates)==1L, covariates[1], covariates[2])
 
-    out <- .add_general_parameters(out, se, by_row=TRUE)
+    out <- .add_general_parameters_for_row_plots(out, se)
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)
 }
@@ -252,25 +252,10 @@ rowDataPlotDefaults <- function(se, number) {
     return(def)
 }    
 
-.add_general_parameters <- function(incoming, se, by_row=FALSE) {
-    def_assay <- .set_default_assay(se)
-    def_cov <- colnames(colData(se))[1]
-
+.add_general_parameters <- function(incoming) {
     incoming[[.plotParamPanelOpen]] <- FALSE
     incoming[[.colorParamPanelOpen]] <- FALSE
     incoming[[.brushParamPanelOpen]] <- FALSE
-
-    incoming[[.colorByField]] <- .colorByNothingTitle
-    if (by_row) {
-        incoming[[.colorByRowData]] <- def_cov
-    } else {
-        incoming[[.colorByColData]] <- def_cov
-    }
-
-    incoming[[.colorByRowTable]] <- "" 
-    incoming[[.colorByRowTableAssay]] <- def_assay
-    incoming[[.colorByFeatName]] <- "" 
-    incoming[[.colorByFeatNameAssay]] <- def_assay
 
     incoming[[.brushByPlot]] <- ""
     incoming[[.brushEffect]] <- .brushTransTitle
@@ -279,6 +264,37 @@ rowDataPlotDefaults <- function(se, number) {
     incoming[[.brushData]] <- rep(list(NULL), nrow(incoming))
 
     incoming[[.zoomData]] <- rep(list(NULL), nrow(incoming))
+    return(incoming)
+}
+
+.add_general_parameters_for_column_plots <- function(incoming, se) {
+    incoming <- .add_general_parameters(incoming)
+
+    # Adding coloring parameters specifically for column plots.
+    def_assay <- .set_default_assay(se)
+    def_cov <- colnames(colData(se))[1]
+    incoming[[.colorByField]] <- .colorByNothingTitle
+    incoming[[.colorByColData]] <- def_cov
+    incoming[[.colorByRowTable]] <- "" 
+    incoming[[.colorByRowTableAssay]] <- def_assay
+    incoming[[.colorByFeatName]] <- "" 
+    incoming[[.colorByFeatNameAssay]] <- def_assay
+
+    return(incoming)
+}
+
+.add_general_parameters_for_row_plots <- function(incoming, se) {
+    incoming <- .add_general_parameters(incoming)
+
+    # Adding coloring parameters specifically for row plots.
+    def_cov <- colnames(rowData(se))[1]
+    incoming[[.colorByField]] <- .colorByNothingTitle
+    incoming[[.colorByRowData]] <- def_cov
+    incoming[[.colorByRowTable]] <- "" 
+    incoming[[.colorByRowTableColor]] <- "red"
+    incoming[[.colorByFeatName]] <- "" 
+    incoming[[.colorByFeatNameColor]] <- "red"
+
     return(incoming)
 }
 

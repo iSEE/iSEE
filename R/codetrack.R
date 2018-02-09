@@ -101,9 +101,11 @@
        vertex.label.color = "black",
        vertex.label.dist = 2.5,
        vertex.color = c(.plothexcode_redDim,.plothexcode_colData,
-                        .plothexcode_featExpr,.plothexcode_geneTable)[
+                        .plothexcode_featExpr,.plothexcode_geneTable,
+                        .plothexcode_rowData)[
                           factor(V(currgraph_used)$plottype,
-                                 levels = c("redDimPlot","colDataPlot","featExprPlot","rowStatTable"))])
+                                 levels = c("redDimPlot","colDataPlot","featExprPlot",
+                                            "rowStatTable","rowDataPlot"))])
 }  
 
 

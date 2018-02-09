@@ -138,3 +138,6 @@ names(rev.translation) <- translation
 .plothexcode_colData <- "#F39D12"
 .plothexcode_featExpr <- "#03A659"
 .plothexcode_geneTable <- "#DD4B39"
+.plothexcode_rowData <- "#00C0EF"
+
+.actionbutton_biocstyle <- "color: #ffffff; background-color: #0092AC; border-color: #2e6da4"

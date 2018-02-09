@@ -222,3 +222,23 @@ test_that("sanitation of memory works correctly", {
     expect_identical(sanitized, memory)
 })
 
+test_that("brush identity function works properly", {
+    expect_true(iSEE:::.identical_brushes(list(xmin=1, xmax=2, ymin=10, ymax=20),
+                                          list(xmin=1, xmax=2, ymin=10, ymax=20)))
+
+    # Confirming correct failure.
+    expect_false(iSEE:::.identical_brushes(list(xmin=1, xmax=2, ymin=10, ymax=20),
+                                           list(xmin=1, xmax=2, ymin=11, ymax=20)))
+    expect_false(iSEE:::.identical_brushes(list(xmin=1, xmax=2, ymin=10, ymax=20),
+                                           list(xmin=1, xmax=2, ymin=10, ymax=21)))
+    expect_false(iSEE:::.identical_brushes(list(xmin=1, xmax=2, ymin=10, ymax=20),
+                                           list(xmin=0, xmax=2, ymin=10, ymax=20)))
+    expect_false(iSEE:::.identical_brushes(list(xmin=1, xmax=2, ymin=10, ymax=20),
+                                           list(xmin=1, xmax=3, ymin=10, ymax=20)))
+
+    # Avoid indicating that it's different when the error is very small. 
+    expect_true(iSEE:::.identical_brushes(list(xmin=1, xmax=2, ymin=10, ymax=20),
+                                          list(xmin=1, xmax=2.0000001, ymin=10, ymax=20)))
+    expect_false(iSEE:::.identical_brushes(list(xmin=1, xmax=2, ymin=10, ymax=20),
+                                          list(xmin=1, xmax=2.0001, ymin=10, ymax=20)))
+})

@@ -3,19 +3,23 @@
 redDimArgs <- redDimPlotDefaults(sce, 1)
 colDataArgs <- colDataPlotDefaults(sce, 2)
 featExprArgs <- featExprPlotDefaults(sce, 3)
+rowStatArgs <- rowStatTableDefaults(sce, 3)
+rowDataArgs <- rowDataPlotDefaults(sce, 1)
 
 # Creating a test graph:
 redDimArgs[1,iSEE:::.brushByPlot] <- "Feature expression plot 1"
 featExprArgs[1,iSEE:::.brushByPlot] <- "Feature expression plot 1"
 colDataArgs[2,iSEE:::.brushByPlot] <- "Reduced dimension plot 1"
-memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs) 
+memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs, rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs) 
 g <- iSEE:::.spawn_brush_chart(memory)
 
 test_that("brush link creation works correctly", {
     m <- g[]
     expect_identical(sort(rownames(m)), sort(c(sprintf("redDimPlot%i", seq_len(nrow(redDimArgs))),
                                                sprintf("featExprPlot%i", seq_len(nrow(featExprArgs))),
-                                               sprintf("colDataPlot%i", seq_len(nrow(colDataArgs))))))
+                                               sprintf("colDataPlot%i", seq_len(nrow(colDataArgs))),
+                                               sprintf("rowStatTable%i", seq_len(nrow(rowStatArgs))),
+                                               sprintf("rowDataPlot%i", seq_len(nrow(rowDataArgs))))))
     expect_identical(sum(m), 3)
 
     expect_true(igraph::are_adjacent(g, "featExprPlot1", "redDimPlot1"))
@@ -32,12 +36,14 @@ test_that("brush link creation works correctly", {
     featExprArgs[1,iSEE:::.brushByPlot] <- "Column data plot 2"
     colDataArgs[2,iSEE:::.brushByPlot] <- "Reduced dimension plot 1"
 
-    expect_error(iSEE:::.spawn_brush_chart(list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs)),
+    expect_error(iSEE:::.spawn_brush_chart(list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs, 
+                                                rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs)),
                  "cyclic brushing dependencies")
 
     # Checking that it throws up upon being given some garbage.
     redDimArgs[1,iSEE:::.brushByPlot] <- "whee!"
-    expect_error(iSEE:::.spawn_brush_chart(list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs)),
+    expect_error(iSEE:::.spawn_brush_chart(list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs,
+                                                rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs)),
                  "not a legal panel name")
 })
 
@@ -142,28 +148,32 @@ test_that("brush dependent identification works correctly", {
     featExprArgs[3,iSEE:::.brushByPlot] <- "Column data plot 1"
 
     # No restriction in the children.
-    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs) 
+    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs,
+                   rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs)
     g <- iSEE:::.spawn_brush_chart(memory)
     expect_identical(iSEE:::.get_brush_dependents(g, "redDimPlot1", memory),
                      c("featExprPlot1", "featExprPlot2"))
     
     # Restriction in one of the children, and not the other.
     featExprArgs[1,iSEE:::.brushEffect] <- iSEE:::.brushRestrictTitle
-    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs) 
+    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs,
+                   rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs)
     g <- iSEE:::.spawn_brush_chart(memory)
     expect_identical(iSEE:::.get_brush_dependents(g, "redDimPlot1", memory),
                      c("featExprPlot1", "featExprPlot2", "colDataPlot1"))
 
     # Restriction in the grandchildren.
     colDataArgs[1,iSEE:::.brushEffect] <- iSEE:::.brushRestrictTitle
-    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs) 
+    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs,
+                   rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs)
     g <- iSEE:::.spawn_brush_chart(memory)
     expect_identical(iSEE:::.get_brush_dependents(g, "redDimPlot1", memory),
                      c("featExprPlot1", "featExprPlot2", "colDataPlot1", "featExprPlot3"))
 
     # Breaking the chain if we turn off restriction in the child.
     featExprArgs[1,iSEE:::.brushEffect] <- iSEE:::.brushColorTitle
-    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs) 
+    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs, 
+                   rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs)
     g <- iSEE:::.spawn_brush_chart(memory)
     expect_identical(iSEE:::.get_brush_dependents(g, "redDimPlot1", memory),
                      c("featExprPlot1", "featExprPlot2"))

@@ -6,20 +6,15 @@
 #' @param se An object that coercible to \code{\linkS4class{SingleCellExperiment}}.
 #' @param redDimArgs A DataFrame similar to that produced by
 #' \code{\link{redDimPlotDefaults}}, specifying initial parameters for the plots.
-#' @param colDataArgs A DataFrame similar to that produced by
-#' \code{\link{colDataPlotDefaults}}, specifying initial parameters for the plots.
-#' @param featExprArgs A DataFrame similar to that produced by
-#' \code{\link{featExprPlotDefaults}}, specifying initial parameters for the plots.
-#' @param rowStatArgs A DataFrame similar to that produced by
-#' \code{\link{rowStatTableDefaults}}, specifying initial parameters for the plots.
-#' @param redDimMax An integer scalar specifying the maximum number of reduced
-#' dimension plots in the interface. 
-#' @param colDataMax An integer scalar specifying the maximum number of column
-#' data plots in the interface. 
-#' @param featExprMax An integer scalar specifying the maximum number of gene
-#' expression plots in the interface. 
-#' @param rowStatMax An integer scalar specifying the maximum number of gene
-#' statistic tables in the interface. 
+#' @param colDataArgs A DataFrame similar to that produced by \code{\link{colDataPlotDefaults}}, specifying initial parameters for the plots.
+#' @param featExprArgs A DataFrame similar to that produced by \code{\link{featExprPlotDefaults}}, specifying initial parameters for the plots.
+#' @param rowStatArgs A DataFrame similar to that produced by \code{\link{rowStatTableDefaults}}, specifying initial parameters for the plots.
+#' @param rowDataArgs A DataFrame similar to that produced by \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the plots.
+#' @param redDimMax An integer scalar specifying the maximum number of reduced dimension plots in the interface. 
+#' @param colDataMax An integer scalar specifying the maximum number of column data plots in the interface. 
+#' @param featExprMax An integer scalar specifying the maximum number of feature expression plots in the interface. 
+#' @param rowStatMax An integer scalar specifying the maximum number of row statistics tables in the interface. 
+#' @param rowDataMax An integer scalar specifying the maximum number of row data plots in the interface. 
 #' @param initialPanels A DataFrame specifying which panels should be created
 #' at initialization. This should contain a \code{Name} character field and a
 #' \code{Width} integer field, see Details.
@@ -93,10 +88,12 @@ iSEE <- function(
   colDataArgs=NULL,
   featExprArgs=NULL,
   rowStatArgs=NULL,
+  rowDataArgs=NULL,
   redDimMax=5,
   colDataMax=5,
   featExprMax=5,
   rowStatMax=5,
+  rowDataMax=5,
   initialPanels=NULL,
   annot.orgdb=NULL,
   annot.keytype="ENTREZID",
@@ -127,8 +124,8 @@ iSEE <- function(
   }
 
   # Defining the maximum number of plots.
-  memory <- .setup_memory(se, redDimArgs, colDataArgs, featExprArgs, rowStatArgs,
-                          redDimMax, colDataMax, featExprMax, rowStatMax)
+  memory <- .setup_memory(se, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs,
+                          redDimMax, colDataMax, featExprMax, rowStatMax, rowDataMax)
 
   # Defining the initial elements to be plotted.
   active_panels <- .setup_initial(initialPanels, memory)
@@ -215,6 +212,7 @@ iSEE <- function(
       actionButton(paste0("colDataPlot_", .organizationNew), "New column data plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("featExprPlot_", .organizationNew), "New feature expression plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("rowStatTable_", .organizationNew), "New row statistics table", class = "btn btn-primary",icon = icon("plus")),
+      actionButton(paste0("rowDataPlot_", .organizationNew), "New row data plot", class = "btn btn-primary",icon = icon("plus")),
       hr(),
       uiOutput("panelOrganization")
     ), # end of dashboardSidebar
@@ -257,7 +255,7 @@ iSEE <- function(
     rObjects <- reactiveValues(
         active_panels = active_panels
     )
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot")) {
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot", "rowStatTable")) {
       max_plots <- nrow(pObjects$memory[[mode]])
       for (i in seq_len(max_plots)) {
         rObjects[[paste0(mode, i)]] <- 1L
@@ -357,7 +355,7 @@ iSEE <- function(
     # of i in the renderPlot() will be the same across all instances, because
     # of when the expression is evaluated.
 
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowStatTable")) {
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowStatTable", "rowDataPlot")) {
         # Panel addition.
         local({
             mode0 <- mode
@@ -482,7 +480,7 @@ iSEE <- function(
     # Panel and brush observers.
     #######################################################################
 
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot")) {
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
       max_plots <- nrow(pObjects$memory[[mode]])
       for (i in seq_len(max_plots)) {
         local({
@@ -567,6 +565,8 @@ iSEE <- function(
             }
           }, ignoreInit=TRUE)
 
+          ###############
+
           # Brush effect observer.
           brush_effect_field <- paste0(prefix, .brushEffect) 
           observeEvent(input[[brush_effect_field]], {
@@ -597,6 +597,8 @@ iSEE <- function(
               }
             }
           }, ignoreInit=TRUE)
+
+          ###############
 
           # Brush structure observers.
           brush_id <- paste0(prefix, .brushField)
@@ -656,28 +658,90 @@ iSEE <- function(
       }
     }
 
+    # Brush choice observers for the tables.
+    max_tabs <- nrow(pObjects$memory$rowStatTable)
+    for (i in seq_len(max_tabs)) {
+      local({
+        mode0 <- "rowStatTable"
+        i0 <- i
+        tab_name <- paste0(mode0, i0)
+        prefix <- paste0(tab_name, "_")
+        
+        brush_open_field <- paste0(prefix, .brushParamPanelOpen)
+        observeEvent(input[[brush_open_field]], {
+          pObjects$memory[[mode0]][[.brushParamPanelOpen]][i0] <- input[[brush_open_field]]
+        })
+ 
+        brush_plot_field <- paste0(prefix, .brushByPlot) 
+        observeEvent(input[[brush_plot_field]], {
+          old_transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
+          new_transmitter <- input[[brush_plot_field]]
+
+          # Determining whether the new and old transmitting plot have brushes.
+          old_brush <- new_brush <- FALSE 
+          old_encoded <- new_encoded <- ""    
+          if (old_transmitter!="") {
+            old_enc <- .encode_panel_name(old_transmitter)
+            old_encoded <- paste0(old_enc$Type, old_enc$ID)
+            if (!is.null(pObjects$memory[[old_enc$Type]][old_enc$ID, .brushData][[1]])) {
+              old_brush <- TRUE
+            }
+          }
+          if (new_transmitter!="") {
+            new_enc <- .encode_panel_name(new_transmitter)
+            new_encoded <- paste0(new_enc$Type, new_enc$ID)
+            if (!is.null(pObjects$memory[[new_enc$Type]][new_enc$ID, .brushData][[1]])) {
+              new_brush <- TRUE
+            }
+          }
+
+          # Updating the graph (no need for DAG protection here, as tables do not transmit brushes).
+          pObjects$brush_links <- .choose_new_brush_source(pObjects$brush_links, tab_name, new_encoded, old_encoded)
+          pObjects$memory[[mode0]][i0, .brushByPlot] <- new_transmitter
+  
+          # Not re-rendering if there were no brushes in either the new or old transmitters.
+          if (!old_brush && !new_brush){
+            return(NULL)
+          }
+
+          # Triggering update of the table.
+          rObjects[[tab_name]] <- .increment_counter(isolate(rObjects[[tab_name]]))
+        }, ignoreInit=TRUE)
+      })
+    }
+
     #######################################################################
     # Plot creation section. ----
     #######################################################################
 
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot")) {
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]]) 
   
-        # Defining mode-specific parameters.
+        # Defining mode-specific plotting functions.
         FUN <- switch(mode, 
                       redDimPlot=.make_redDimPlot,
                       featExprPlot=.make_featExprPlot,
-                      colDataPlot=.make_colDataPlot)
-  
+                      colDataPlot=.make_colDataPlot,
+                      rowDataPlot=.make_rowDataPlot)
+ 
+        # Defining fundamental parameters that destroy brushes upon being changed. 
         protected <- switch(mode,
                             redDimPlot=c(.redDimType, .redDimXAxis, .redDimYAxis),
                             colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
-                            featExprPlot=c(.featExprAssay, .featExprXAxisColData, .featExprYAxisFeatName, .featExprXAxisFeatName))
-  
+                            featExprPlot=c(.featExprAssay, .featExprXAxisColData, .featExprYAxisFeatName, .featExprXAxisFeatName),
+                            rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData))
+            
+        # Defining non-fundamental parameters that do not destroy brushes.
+        if (mode=="rowDataPlot") {
+            nonfundamental <- c(.colorByRowData, .colorByRowTableColor, .colorByFeatNameColor)
+        } else {
+            nonfundamental <- c(.colorByColData, .colorByRowTableAssay, .colorByFeatNameAssay)
+        }
+        nonfundamental <- c(nonfundamental, .colorByFeatName, .brushColor, .brushTransAlpha)
+
         for (i in seq_len(max_plots)) {
-            # Observers for the non-fundamental parameter options (.brushByPlot is handled elsewhere).
-            for (field in c(.colorByColData, .colorByFeatName, .colorByRowTableAssay, .colorByFeatNameAssay,
-                            .brushColor, .brushTransAlpha)) {
+            # Observers for the non-fundamental parameter options.
+            for (field in nonfundamental) {
                 local({
                     i0 <- i
                     mode0 <- mode
@@ -792,22 +856,23 @@ iSEE <- function(
     #######################################################################
 
     # Load the gene level data
-    for (i in seq_len(nrow(memory$rowStat))) {
+    for (i in seq_len(nrow(memory$rowStatTable))) {
       local({
         i0 <- i
         panel_name <- paste0("rowStatTable", i0)
 
         output[[panel_name]] <- renderDataTable({
-            (rObjects$active_panels) # to trigger recreation when the number of plots is changed.
+            force(rObjects$active_panels) # to trigger recreation when the number of plots is changed.
+            force(rObjects[[panel_name]])
 
-            chosen <- pObjects$memory$rowStat[i0, .rowStatSelected]
-            search <- pObjects$memory$rowStat[i0, .rowStatSearch]
+            chosen <- pObjects$memory$rowStatTable[i0, .rowStatSelected]
+            search <- pObjects$memory$rowStatTable[i0, .rowStatSearch]
 
-            search_col <- pObjects$memory$rowStat[i0, .rowStatColSearch][[1]]
+            search_col <- .execute_brushed_table(i0, pObjects$memory, se, pObjects$coordinates) 
             search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
 
             datatable(gene_data, filter="top", rownames=TRUE,
-                      options=list(search=list(search=search),
+                      options=list(search=list(search=search, regex=TRUE),
                                    searchCols=c(list(NULL), search_col), # row names are the first column!
                                    scrollX=TRUE),
                       selection=list(mode="single", selected=chosen))
@@ -815,28 +880,23 @@ iSEE <- function(
 
         # Updating memory for new selection parameters (no need for underscore
         # in 'select_field' definition, as this is already in the '.int' constant).
-        select_field <- paste0("rowStatTable", i0, .int_rowStatSelected)
+        select_field <- paste0(panel_name, .int_rowStatSelected)
         observe({
             chosen <- input[[select_field]]
             if (length(chosen)) {
-                pObjects$memory$rowStat[i0, .rowStatSelected] <- chosen
+                pObjects$memory$rowStatTable[i0, .rowStatSelected] <- chosen
 
                 col_kids <- unique(unlist(pObjects$table_links[[i0]][c("color")]))
                 xy_kids <- unique(unlist(pObjects$table_links[[i0]][c("xaxis", "yaxis")]))
                 col_kids <- setdiff(col_kids, xy_kids)
 
                 # Triggering the replotting of all color children that are NOT xy children.
-                enc <- .split_encoded(col_kids)
-                brush_ids <- sprintf("%s%i_%s", enc$Type, enc$ID, .brushField)
-                for (i in seq_along(col_kids)) {
-                    kid <- col_kids[i]
-                    brush_id <- brush_ids[i]
+                for (kid in col_kids) {
                     rObjects[[kid]] <- .increment_counter(isolate(rObjects[[kid]]))
                 }
                 
                 # Triggering the replotting and brush clearing of all x/y-axis children.
-                enc <- .split_encoded(xy_kids)
-                brush_ids <- sprintf("%s%i_%s", enc$Type, enc$ID, .brushField)
+                brush_ids <- sprintf("%s_%s", xy_kids, .brushField)
                 for (i in seq_along(xy_kids)) {
                     brush_id <- brush_ids[i]
                     if (!is.null(isolate(input[[brush_id]]))) { # This will trigger replotting. 
@@ -850,25 +910,25 @@ iSEE <- function(
         })
 
         # Updating memory for new selection parameters.
-        search_field <- paste0("rowStatTable", i0, .int_rowStatSearch)
+        search_field <- paste0(panel_name, .int_rowStatSearch)
         observe({
             search <- input[[search_field]]
             if (length(search)) {
-                pObjects$memory$rowStat[i0, .rowStatSearch] <- search
+                pObjects$memory$rowStatTable[i0, .rowStatSearch] <- search
             }
         })
 
-        colsearch_field <- paste0("rowStatTable", i0, .int_rowStatColSearch)
+        colsearch_field <- paste0(panel_name, .int_rowStatColSearch)
         observe({
             search <- input[[colsearch_field]]
             if (length(search)) {
-                pObjects$memory$rowStat <- .update_list_element(
-                    pObjects$memory$rowStat, i0, .rowStatColSearch, search)                         
+                pObjects$memory$rowStatTable <- .update_list_element(
+                    pObjects$memory$rowStatTable, i0, .rowStatColSearch, search)                         
             }
         })
 
         # Updating the annotation box.
-        anno_field <- paste0("rowStatTable", i0, "_annotation")
+        anno_field <- paste0(panel_name, "_annotation")
         output[[anno_field]] <- renderUI({
             chosen <- input[[select_field]]
             .generate_annotation(annot.orgdb, annot.keytype, annot.keyfield, 

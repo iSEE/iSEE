@@ -148,10 +148,42 @@ names(.all_labs_values) <- .all_aes_names
 }
 
 ############################################
+# .make_rowDataPlot  ----
+############################################
+
+.make_rowDataPlot <- function(id, all_memory, all_coordinates, se, colormap)
+# Makes a plot of column data variables.
+{
+  param_choices <- all_memory$rowDataPlot[id,]
+  data_cmds <- list()
+  y_lab <- param_choices[[.rowDataYAxis]]
+  data_cmds[["y"]] <- sprintf(
+    "plot.data <- data.frame(Y = rowData(se)[,%s], row.names=rownames(se));", 
+    deparse(y_lab) # deparse() automatically adds quotes, AND protects against existing quotes/escapes.
+  )
+  
+  # Prepare X-axis data.
+  if (param_choices[[.rowDataXAxis]]==.rowDataXAxisNothingTitle) {
+    x_lab <- ''
+    data_cmds[["x"]] <- "plot.data$X <- factor(character(nrow(se)))"
+  } else {
+    x_lab <- param_choices[[.rowDataXAxisRowData]]
+    data_cmds[["x"]] <- sprintf("plot.data$X <- rowData(se)[,%s];", deparse(x_lab))
+  }
+
+  # Generating the plot.
+  .create_plot(data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
+    x_lab=x_lab, y_lab=y_lab,
+    brush_color=brush_stroke_color_full["rowDataPlot"],
+    by_row=TRUE
+  )
+}
+
+############################################
 # Internal functions: central plotter ----
 ############################################
 
-.create_plot <- function(data_cmds, param_choices, all_memory, all_coordinates, se, colormap, ...)
+.create_plot <- function(data_cmds, param_choices, all_memory, all_coordinates, se, colormap, ..., by_row=FALSE)
 # This function will generate plotting commands appropriate to
 # each type of X/Y. It does so by evaluating 'plot.data' to
 # determine the nature of X/Y, and then choosing the plot to match.
@@ -161,8 +193,11 @@ names(.all_labs_values) <- .all_aes_names
 # are to take place in this function, not in the calling environment
 # or in child environments. This constrains the scope of 'eval' calls.
 {
-  # Adding colour commands.
-  color_out <- .process_colorby_choice(param_choices, all_memory, se, colormap)
+  if (by_row) {
+    color_out <- .process_colorby_choice_for_row_plots(param_choices, all_memory, se, colormap)
+  } else {
+    color_out <- .process_colorby_choice_for_column_plots(param_choices, all_memory, se, colormap)
+  }
   data_cmds[["color"]] <- color_out$cmd
   color_label <- color_out$label
 
@@ -455,7 +490,10 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
 # Internal functions: coloring ----
 ############################################
 
-.process_colorby_choice <- function(param_choices, all_memory, se, colormap) {
+.process_colorby_choice_for_column_plots <- function(param_choices, all_memory, se, colormap) 
+# This function defines the colour-by choices for column plots,
+# i.e., where each point represents a sample.
+{
   output <- list(cmd=NULL, label=NA_character_, FUN=NULL)
   color_choice <- param_choices[[.colorByField]]
   colormap_cmd <- NULL
@@ -504,6 +542,56 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
   }
 
   output$FUN <- .create_color_function_chooser(colormap_cmd)
+  return(output)
+}
+
+.process_colorby_choice_for_row_plots <- function(param_choices, all_memory, se, colormap) 
+# This function defines the colour-by choices for row-based plots,
+# i.e., where each point represents a feature.
+{
+  output <- list(cmd=NULL, label=NA_character_, FUN=NULL)
+  color_choice <- param_choices[[.colorByField]]
+  colormap_cmd <- NULL
+
+  if (color_choice==.colorByRowDataTitle) {
+    covariate_name <- param_choices[[.colorByRowData]]
+    covariate_as_string <- deparse(covariate_name)
+    output$cmd <-  sprintf("plot.data$ColorBy <- rowData(se)[,%s];", covariate_as_string)
+    output$label <- covariate_name
+    colormap_cmd <- sprintf("rowDataColorMap(colormap, %s, discrete=%%s)(%%i)", covariate_as_string)
+    output$FUN <- .create_color_function_chooser(colormap_cmd)
+
+  } else if (color_choice==.colorByRowTableTitle || color_choice==.colorByFeatNameTitle) {
+
+    # Set the color to the selected gene
+    if (color_choice==.colorByRowTableTitle) {
+      chosen_tab <- .decoded2encoded(param_choices[[.colorByRowTable]])
+      chosen_gene <- all_memory$rowStatTable[chosen_tab, .rowStatSelected]
+      validate(need(
+        length(chosen_gene)==1L,
+        sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByRowTableTitle)
+      ))
+      col_choice <- param_choices[[.colorByRowTableColor]]
+
+    } else {
+      chosen_gene <- param_choices[[.colorByFeatName]]
+      validate(need(
+        chosen_gene %in% rownames(se),
+        sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByFeatNameTitle)
+      ))
+      col_choice <- param_choices[[.colorByFeatNameColor]]
+
+    }
+
+    output$cmd <- sprintf("plot.data$ColorBy <- FALSE;
+plot.data[%s, 'ColorBy'] <- TRUE;
+plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To ensure it is plotted last.
+    output$label <- .gene_axis_label(se, chosen_gene, assay_id=NULL)
+    output$FUN <- function(nlevels) {
+       # Argument is ignored, as we should know the number of levels beforehand.
+       sprintf("scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +", deparse(col_choice))
+    }
+  }
   return(output)
 }
 
@@ -650,6 +738,10 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
     } else {
       gene_id <- rownames(se)[gene_id]
     }
+  }
+
+  if (is.null(assay_id)) { 
+    return(gene_id)
   }
 
   assay_name <- assayNames(se)[assay_id]

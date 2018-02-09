@@ -4,6 +4,7 @@ redDimArgs <- redDimPlotDefaults(sce, 1)
 colDataArgs <- colDataPlotDefaults(sce, 2)
 featExprArgs <- featExprPlotDefaults(sce, 3)
 rowStatArgs <- rowStatTableDefaults(sce, 3)
+rowDataArgs <- rowDataPlotDefaults(sce, 1)
 
 # Creating test links
 redDimArgs[1,iSEE:::.colorByRowTable] <- "Row statistics table 1"
@@ -24,8 +25,8 @@ featExprArgs[1,iSEE:::.featExprXAxis] <-
     featExprArgs[3,iSEE:::.featExprXAxis] <-
     iSEE:::.featExprXAxisRowTableTitle
 
-memory <- iSEE:::.setup_memory(sce, redDimArgs, colDataArgs, featExprArgs, rowStatArgs,
-        nrow(redDimArgs), nrow(colDataArgs), nrow(featExprArgs), nrow(rowStatArgs))
+memory <- iSEE:::.setup_memory(sce, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs,
+        nrow(redDimArgs), nrow(colDataArgs), nrow(featExprArgs), nrow(rowStatArgs), nrow(rowDataArgs))
 tabs <- iSEE:::.spawn_table_links(memory)
 
 test_that("table link creation works correctly", {
@@ -44,7 +45,7 @@ test_that("table link creation works correctly", {
     # Checking what happens when xaxis choices are disabled.
     featExprArgs2 <- featExprArgs
     featExprArgs2[1,iSEE:::.featExprXAxis] <- featExprArgs2[3,iSEE:::.featExprXAxis] <- iSEE:::.featExprXAxisNothingTitle
-    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs2, colDataPlot=colDataArgs, rowStatTable=rowStatArgs)
+    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs2, colDataPlot=colDataArgs, rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs)
     tab2 <- iSEE:::.spawn_table_links(memory)
 
     tabX <- tabs
@@ -55,7 +56,7 @@ test_that("table link creation works correctly", {
     # Checking what happens when xaxis choices are disabled.
     featExprArgs2 <- featExprArgs
     featExprArgs2[2,iSEE:::.featExprYAxis] <- featExprArgs2[3,iSEE:::.featExprYAxis] <- iSEE:::.featExprYAxisFeatNameTitle
-    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs2, colDataPlot=colDataArgs, rowStatTable=rowStatArgs)
+    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs2, colDataPlot=colDataArgs, rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs)
     tab2 <- iSEE:::.spawn_table_links(memory)
 
     tabX <- tabs
@@ -68,7 +69,7 @@ test_that("table link creation works correctly", {
         colDataArgs[2,iSEE:::.colorByField] <-
         redDimArgs[1,iSEE:::.colorByField] <- 
         iSEE:::.colorByNothingTitle
-    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs, rowStatTable=rowStatArgs)
+    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs, rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs)
     tab2 <- iSEE:::.spawn_table_links(memory)
 
     tabX <- tabs

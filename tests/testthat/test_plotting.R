@@ -4,11 +4,12 @@ redDimArgs <- redDimPlotDefaults(sce, 1)
 colDataArgs <- colDataPlotDefaults(sce, 1)
 featExprArgs <- featExprPlotDefaults(sce, 1)
 rowStatArgs <- rowStatTableDefaults(sce, 1)
+rowDataArgs <- rowDataPlotDefaults(sce, 1)
 
 # Set up memory
 all_memory <- iSEE:::.setup_memory(
-  sce, redDimArgs, colDataArgs, featExprArgs, rowStatArgs,
-  redDimMax = 1, colDataMax = 1, featExprMax = 1, rowStatMax = 1)
+  sce, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs,
+  redDimMax = 1, colDataMax = 1, featExprMax = 1, rowStatMax = 1, rowDataMax = 1)
 
 all_coordinates <- list()
 
@@ -554,12 +555,12 @@ test_that(".make_colDataPlot/.griddotplot works with zoom",{
 
 # .process_colorby_choice handles gene text input ----
 
-test_that(".process_colorby_choice handles gene text input", {
+test_that(".process_colorby_choice_for_column_plots handles gene text input", {
   params <- all_memory$redDimPlot[1,]
   params[[iSEE:::.colorByField]] <- iSEE:::.colorByFeatNameTitle
   params[[iSEE:::.colorByFeatName]] <- rownames(sce)[1]
   
-  color_out <- iSEE:::.process_colorby_choice(
+  color_out <- iSEE:::.process_colorby_choice_for_column_plots(
     params, all_memory, sce, ExperimentColorMap())
   
   expect_named(

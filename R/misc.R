@@ -17,7 +17,8 @@
   return(list(redDimPlot=! (length(reducedDims(se))==0L || ncol(se)==0L),
               colDataPlot=! (ncol(colData(se))==0L || ncol(se)==0L),
               featExprPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
-              rowStatTable=! (nrow(se)==0L)
+              rowStatTable=! (nrow(se)==0L),
+              rowDataPlot=! (ncol(rowData(se))==0L || nrow(se)==0L)
   ))
 }
 
@@ -29,8 +30,8 @@
   return(counter)
 }
 
-.setup_memory <- function(se, redDimArgs, colDataArgs, featExprArgs, rowStatArgs,
-                          redDimMax, colDataMax, featExprMax, rowStatMax) 
+.setup_memory <- function(se, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs,
+                          redDimMax, colDataMax, featExprMax, rowStatMax, rowDataMax) 
 # This function sets up the memory for the current session, taking in any
 # specifications from the user regarding the defaults and max number of panels.
 {
@@ -39,6 +40,7 @@
   coldata_max_plots <- max(nrow(colDataArgs), colDataMax)
   geneexpr_max_plots <- max(nrow(featExprArgs), featExprMax)
   genestat_max_tabs <- max(nrow(rowStatArgs), rowStatMax)
+  rowdata_max_plots <- max(nrow(rowDataArgs), rowDataMax)
 
   feasibility <- .check_plot_feasibility(se)
   if (!feasibility$redDimPlot) { 
@@ -56,6 +58,10 @@
   if (!feasibility$rowStatTable) {
     genestat_max_tabs <- 0L
     rowStatArgs <- NULL
+  }
+  if (!feasibility$rowDataPlot) {
+    rowdata_max_plots <- 0L
+    rowDataArgs <- NULL
   }
 
   # Setting up parameters for each panel.
@@ -85,6 +91,12 @@
   }
   rownames(memory$rowStatTable) <- sprintf("rowStatTable%i", seq_len(genestat_max_tabs))
 
+  memory$rowDataPlot <- rowDataPlotDefaults(se, rowdata_max_plots)
+  if (!is.null(rowDataArgs)) {
+    memory$rowDataPlot <- .override_defaults(memory$rowDataPlot, rowDataArgs)
+  }
+  rownames(memory$rowDataPlot) <- sprintf("rowDataPlot%i", seq_len(rowdata_max_plots))
+
   return(memory)
 }
 
@@ -96,7 +108,8 @@ height_limits <- c(400L, 1000L)
 {
   if (is.null(initialPanels)) {
     initialPanels <- data.frame(Name=c("Reduced dimension plot 1", "Column data plot 1", 
-                                       "Feature expression plot 1", "Row statistics table 1"),
+                                       "Feature expression plot 1", "Row statistics table 1",
+                                       "Row data plot 1"),
                                 Width=4, Height=500L, stringsAsFactors=FALSE)
   } 
 
@@ -136,35 +149,52 @@ height_limits <- c(400L, 1000L)
 # with respect to the starting panels, i.e., no brushing
 # or table links to panels that are not active.
 {
-    is_tab <- active_panels$Type=="rowStatTable"
-    brushable <- active_panels[!is_tab,]
-    brush_names <- .decode_panel_name(brushable$Type, brushable$ID)
-    linkable <- active_panels[is_tab,]
-    link_names <- .decode_panel_name(linkable$Type, linkable$ID)
+    link_sources <- .define_link_sources(active_panels)
+    active_tab <- link_sources$tab
+    row_brushable <- link_sources$row
+    col_brushable <-  link_sources$col
     all_active <- paste0(active_panels$Type, active_panels$ID)
 
+    # Checking for brushing/linking of column-based plots.
     for (mode in c("redDimPlot", "colDataPlot", "featExprPlot")) {
         cur_memory <- memory[[mode]]
         self_active <- rownames(cur_memory)
 
         bb <- cur_memory[,.brushByPlot]
-        bad <- !bb %in% brush_names | !self_active %in% all_active
+        bad <- !bb %in% col_brushable | !self_active %in% all_active
         if (any(bad)) { 
             memory[[mode]][,.brushByPlot][bad] <- ""
         }
 
         cb <- cur_memory[,.colorByRowTable]
-        bad <- !cb %in% link_names | !self_active %in% all_active
+        bad <- !cb %in% active_tab | !self_active %in% all_active
         if (any(bad)) { 
             memory[[mode]][,.colorByRowTable][bad] <- ""
         }
     }
 
+    # Checking for brushing/linking of row data plots.
+    cur_memory <- memory$rowDataPlot
+    self_active <- rownames(cur_memory)
+
+    bb <- cur_memory[,.brushByPlot]
+    bad <- !bb %in% row_brushable | !self_active %in% all_active
+    if (any(bad)) { 
+        memory$rowDataPlot[,.brushByPlot][bad] <- ""
+    }
+
+    cb <- cur_memory[,.colorByRowTable]
+    bad <- !cb %in% active_tab | !self_active %in% all_active
+    if (any(bad)) { 
+        memory$rowDataPlot[,.colorByRowTable][bad] <- ""
+    }
+
+    # Checking for linking of x/y-axes of feature expression plots.
     feat_active <- rownames(memory$featExprPlot)
     for (field in c(.featExprXAxisRowTable, .featExprYAxisRowTable)) {
         bb <- memory$featExprPlot[,field]
 
-        bad <- !bb %in% link_names | !feat_active %in% all_active
+        bad <- !bb %in% active_tab | !feat_active %in% all_active
         if (any(bad)) { 
             memory$featExprPlot[,field][bad] <- ""
         }

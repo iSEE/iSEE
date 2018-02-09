@@ -6,6 +6,7 @@
 \alias{featExprPlotDefaults}
 \alias{colDataPlotDefaults}
 \alias{rowStatTableDefaults}
+\alias{rowDataPlotDefaults}
 \title{Parameter defaults}
 \usage{
 redDimPlotDefaults(se, number)
@@ -15,6 +16,8 @@ featExprPlotDefaults(se, number)
 colDataPlotDefaults(se, number)
 
 rowStatTableDefaults(se, number)
+
+rowDataPlotDefaults(se, number)
 }
 \arguments{
 \item{se}{A SingleCellExperiment object.}
@@ -50,8 +53,8 @@ Defaults to an empty string, which means that the first available table will be 
 \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
 Defaults to 1, i.e., the first assay in \code{se}.
 We use an index rather than the name, as the latter may not be unique.}
-\item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
-Defaults to \code{"None"}.}
+\item{\code{XAxis}:}{Character, what type of variable should be shown on the x-axis?
+Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Column data"} or \code{"Feature name"}.}
 \item{\code{XAxisColData}:}{Character, what column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
 Defaults to the first entry of \code{colData(se)}.}
 \item{\code{XAxisFeatName}:}{Character, which feature's expression should be shown on the x-axis if \code{XAxis="Feature name"}? 
@@ -64,12 +67,24 @@ Defaults to an empty string, which means that the first available table will be 
 \section{Column data plot parameters}{
 
 \describe{
-\item{\code{YAxisColData}:}{Character, which column of \code{colData(se)} should be shown on the y-axis?
+\item{\code{YAxis}:}{Character, which column of \code{colData(se)} should be shown on the y-axis?
 Defaults to the first entry of \code{colData(se)}.}
-\item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
-Defaults to \code{"None"}.}
+\item{\code{XAxis}:}{Character, what type of variable should be shown on the x-axis?
+Defaults to \code{"None"}, but can also be \code{"Column data"}.}
 \item{\code{XAxisColData}:}{Character, which column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
 Defaults to the first entry of \code{colData(se)}.}
+}
+}
+
+\section{Row data plot parameters}{
+
+\describe{
+\item{\code{YAxis}:}{Character, which column of \code{rowData(se)} should be shown on the y-axis?
+Defaults to the first entry of \code{colData(se)}.}
+\item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
+Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Row data"} or \code{"Feature name"}.}
+\item{\code{XAxisRowData}:}{Character, which column of \code{rowData(se)} should be shown on the x-axis if \code{XAxis="Row data"}?
+Defaults to the first entry of \code{rowData(se)}.}
 }
 }
 
@@ -79,7 +94,8 @@ Defaults to the first entry of \code{colData(se)}.}
 \item{\code{ColorPanelOpen}:}{Logical, should the color parameter panel be open upon initialization?
 Defaults to \code{FALSE}.}
 \item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
-Defaults to \code{"None"}.}
+Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Feature name"} or \code{"Column data"}.
+For row data plots, \code{"Row data"} replaces \code{"Column data"}.}
 \item{\code{ColorByColData}:}{Character, which column of \code{colData(se)} should be used for colouring if \code{ColorBy="Column data"}? 
 Defaults to the first entry of \code{colData(se)}.}
 \item{\code{ColorByRowTable}:}{Character, which row statistic table should be used to choose a feature to color by, if \code{ColorBy="Row table"}? 

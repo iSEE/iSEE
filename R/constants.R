@@ -29,9 +29,18 @@
 .colDataXAxis <- "XAxis"
 .colDataXAxisColData <- "XAxisColData"
 
+# Row data plotting parameters. ----
+.rowDataXAxisNothingTitle <- "None"
+.rowDataXAxisRowDataTitle <- "Row data"
+
+.rowDataYAxis <- "YAxis"
+.rowDataXAxis <- "XAxis"
+.rowDataXAxisRowData <- "XAxisRowData"
+
 # Plot colouring parameters. ----
 .colorByNothingTitle <- "None"
 .colorByColDataTitle <- "Column data"
+.colorByRowDataTitle <- "Row data"
 .colorByRowTableTitle <- "Row table"
 .colorByFeatNameTitle <- "Feature name"
 
@@ -39,10 +48,15 @@
 
 .colorByField <- "ColorBy"
 .colorByColData <- "ColorByColData"
+.colorByRowData <- "ColorByRowData"
+
 .colorByRowTable <- "ColorByRowTable"
-.colorByFeatName <- "ColorByFeatName"
 .colorByRowTableAssay <- "ColorByRowTableAssay"
+.colorByRowTableColor <- "ColorByRowTableColor"
+
+.colorByFeatName <- "ColorByFeatName"
 .colorByFeatNameAssay <- "ColorByFeatNameAssay"
+.colorByFeatNameColor <- "ColorByFeatNameColor"
 
 # Plot brushing parameters. ----
 .brushParamPanelOpen <- "BrushPanelOpen"
@@ -88,7 +102,8 @@
 translation <- c(redDimPlot="Reduced dimension plot",
                  colDataPlot="Column data plot",
                  featExprPlot="Feature expression plot",
-                 rowStatTable="Row statistics table")
+                 rowStatTable="Row statistics table",
+                 rowDataPlot="Row data plot")
 rev.translation <- names(translation)
 names(rev.translation) <- translation
 

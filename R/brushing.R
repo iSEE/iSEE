@@ -5,7 +5,7 @@
   node_names <- list()
   edges <- list()
 
-  for (mode in c("redDimPlot", "colDataPlot", "featExprPlot")) { 
+  for (mode in c("redDimPlot", "colDataPlot", "featExprPlot", "rowDataPlot", "rowStatTable")) { 
     N <- nrow(memory[[mode]])
     cur_panels <- sprintf("%s%i", mode, seq_len(N))
     node_names[[mode]] <- cur_panels
@@ -88,7 +88,7 @@
         ids <- enc$ID
 
         new_children <- character(0)
-        for (i in seq_along(children)) {
+        for (i in which(types!="rowStatTable")) { # as tables don't have a brush effect, or even transmit.
             if (memory[[types[i]]][ids[i],.brushEffect]==.brushRestrictTitle) {
                 new_children <- c(new_children, names(adjacent_vertices(graph, children[i], mode="out")[[1]]))
             }
@@ -99,3 +99,54 @@
     }
     return(old_children)
 }
+
+.execute_brushed_table <- function(i, memory, se, all_coordinates) 
+# This function implements the effect of brushing from a transmitting
+# rowDataPlot to a receiving rowStatTable.
+{
+    col_searches <- memory$rowStatTable[i, .rowStatColSearch][[1]]
+    transmitter <- memory$rowStatTable[i, .brushByPlot]
+    if (transmitter=="") {
+        return(col_searches)      
+    }
+
+    # Resetting all of the column searches is the only safe approach, 
+    # as there's no guarantee that brushes from other plots are cleared.
+    enc <- .encode_panel_name(transmitter)
+    transmit_param <- memory[[enc$Type]][enc$ID,]
+    brush_data <- transmit_param[, .brushData][[1]]
+    col_searches <- character(length(col_searches))    
+    if (is.null(brush_data)) {
+        return(col_searches)
+    }
+
+    # Modifying the y-axis search column field. 
+    transmit_y <- transmit_param[, .rowDataYAxis]
+    y_dex <- match(transmit_y, colnames(rowData(se)))
+    transmit_enc <- paste0(enc$Type, enc$ID)
+    col_searches[[y_dex]] <- .compress_brush(brush_data$ymin, brush_data$ymax, all_coordinates[[transmit_enc]]$Y)
+
+    # Modifying the x-axis search column field.
+    if (transmit_param[, .rowDataXAxis] == .rowDataXAxisRowDataTitle) {
+        transmit_x <- transmit_param[, .rowDataXAxisRowData]
+        x_dex <- match(transmit_x, colnames(rowData(se)))
+        col_searches[[x_dex]] <- .compress_brush(brush_data$xmin, brush_data$xmax, all_coordinates[[transmit_enc]]$X)
+    }
+    return(col_searches)
+}
+
+.compress_brush <- function(lower, upper, coordinates) {
+    if (is.numeric(coordinates)) {
+        return(paste(lower, "...", upper))
+    } else {
+        lower <- max(1, ceiling(lower))
+        upper <- min(floor(upper), nlevels(coordinates))
+        if (upper < lower) {
+            return("$x") # this can never match.
+        } else {
+            return(paste(levels(coordinates)[lower:upper], collapse="|"))
+        }
+    }
+}
+
+

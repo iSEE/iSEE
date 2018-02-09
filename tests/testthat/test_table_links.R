@@ -4,6 +4,7 @@ redDimArgs <- redDimPlotDefaults(sce, 1)
 colDataArgs <- colDataPlotDefaults(sce, 2)
 featExprArgs <- featExprPlotDefaults(sce, 3)
 rowStatArgs <- rowStatTableDefaults(sce, 3)
+rowDataArgs <- rowStatTableDefaults(sce, 1)
 
 # Creating test links
 redDimArgs[1,iSEE:::.colorByRowTable] <- "Row statistics table 1"
@@ -24,8 +25,8 @@ featExprArgs[1,iSEE:::.featExprXAxis] <-
     featExprArgs[3,iSEE:::.featExprXAxis] <-
     iSEE:::.featExprXAxisRowTableTitle
 
-memory <- iSEE:::.setup_memory(sce, redDimArgs, colDataArgs, featExprArgs, rowStatArgs,
-        nrow(redDimArgs), nrow(colDataArgs), nrow(featExprArgs), nrow(rowStatArgs))
+memory <- iSEE:::.setup_memory(sce, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs,
+        nrow(redDimArgs), nrow(colDataArgs), nrow(featExprArgs), nrow(rowStatArgs), nrow(rowDataArgs))
 tabs <- iSEE:::.spawn_table_links(memory)
 
 test_that("table link creation works correctly", {

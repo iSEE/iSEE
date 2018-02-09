@@ -813,10 +813,10 @@ iSEE <- function(
         output[[panel_name]] <- renderDataTable({
             (rObjects$active_panels) # to trigger recreation when the number of plots is changed.
 
-            chosen <- pObjects$memory$rowStat[i0, .rowStatSelected]
-            search <- pObjects$memory$rowStat[i0, .rowStatSearch]
+            chosen <- pObjects$memory$rowStatTable[i0, .rowStatSelected]
+            search <- pObjects$memory$rowStatTable[i0, .rowStatSearch]
 
-            search_col <- pObjects$memory$rowStat[i0, .rowStatColSearch][[1]]
+            search_col <- pObjects$memory$rowStatTable[i0, .rowStatColSearch][[1]]
             search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
 
             datatable(gene_data, filter="top", rownames=TRUE,
@@ -832,24 +832,19 @@ iSEE <- function(
         observe({
             chosen <- input[[select_field]]
             if (length(chosen)) {
-                pObjects$memory$rowStat[i0, .rowStatSelected] <- chosen
+                pObjects$memory$rowStatTable[i0, .rowStatSelected] <- chosen
 
                 col_kids <- unique(unlist(pObjects$table_links[[i0]][c("color")]))
                 xy_kids <- unique(unlist(pObjects$table_links[[i0]][c("xaxis", "yaxis")]))
                 col_kids <- setdiff(col_kids, xy_kids)
 
                 # Triggering the replotting of all color children that are NOT xy children.
-                enc <- .split_encoded(col_kids)
-                brush_ids <- sprintf("%s%i_%s", enc$Type, enc$ID, .brushField)
-                for (i in seq_along(col_kids)) {
-                    kid <- col_kids[i]
-                    brush_id <- brush_ids[i]
+                for (kid in col_kids) {
                     rObjects[[kid]] <- .increment_counter(isolate(rObjects[[kid]]))
                 }
                 
                 # Triggering the replotting and brush clearing of all x/y-axis children.
-                enc <- .split_encoded(xy_kids)
-                brush_ids <- sprintf("%s%i_%s", enc$Type, enc$ID, .brushField)
+                brush_ids <- sprintf("%s_%s", xy_kids, .brushField)
                 for (i in seq_along(xy_kids)) {
                     brush_id <- brush_ids[i]
                     if (!is.null(isolate(input[[brush_id]]))) { # This will trigger replotting. 
@@ -867,7 +862,7 @@ iSEE <- function(
         observe({
             search <- input[[search_field]]
             if (length(search)) {
-                pObjects$memory$rowStat[i0, .rowStatSearch] <- search
+                pObjects$memory$rowStatTable[i0, .rowStatSearch] <- search
             }
         })
 
@@ -875,8 +870,8 @@ iSEE <- function(
         observe({
             search <- input[[colsearch_field]]
             if (length(search)) {
-                pObjects$memory$rowStat <- .update_list_element(
-                    pObjects$memory$rowStat, i0, .rowStatColSearch, search)                         
+                pObjects$memory$rowStatTable <- .update_list_element(
+                    pObjects$memory$rowStatTable, i0, .rowStatColSearch, search)                         
             }
         })
 

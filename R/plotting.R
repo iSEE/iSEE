@@ -29,8 +29,14 @@ names(.all_labs_values) <- .all_aes_names
 
   # Generating the plotting commands.
   .create_plot(data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
-    x_lab=sprintf("Dimension %s", param_choices[[.redDimXAxis]]),
-    y_lab=sprintf("Dimension %s", param_choices[[.redDimYAxis]]),
+    x_lab = sprintf(
+      "%s %s",
+      reducedDimNames(se)[param_choices[[.redDimType]]],
+      param_choices[[.redDimXAxis]]),
+    y_lab = sprintf(
+      "%s %s",
+      reducedDimNames(se)[param_choices[[.redDimType]]],
+      param_choices[[.redDimYAxis]]),
     brush_color=brush_stroke_color_full["redDimPlot"]
   )
 }

@@ -5,7 +5,7 @@
   node_names <- list()
   edges <- list()
 
-  for (mode in c("redDimPlot", "colDataPlot", "featExprPlot", "rowDataPlot")) { 
+  for (mode in c("redDimPlot", "colDataPlot", "featExprPlot", "rowDataPlot", "rowStatTable")) { 
     N <- nrow(memory[[mode]])
     cur_panels <- sprintf("%s%i", mode, seq_len(N))
     node_names[[mode]] <- cur_panels
@@ -88,7 +88,7 @@
         ids <- enc$ID
 
         new_children <- character(0)
-        for (i in seq_along(children)) {
+        for (i in which(types!="rowStatTable")) { # as tables don't have a brush effect, or even transmit.
             if (memory[[types[i]]][ids[i],.brushEffect]==.brushRestrictTitle) {
                 new_children <- c(new_children, names(adjacent_vertices(graph, children[i], mode="out")[[1]]))
             }

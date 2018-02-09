@@ -260,7 +260,7 @@ iSEE <- function(
     rObjects <- reactiveValues(
         active_panels = active_panels
     )
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot", "rowStatTable")) {
       max_plots <- nrow(pObjects$memory[[mode]])
       for (i in seq_len(max_plots)) {
         rObjects[[paste0(mode, i)]] <- 1L
@@ -570,6 +570,8 @@ iSEE <- function(
             }
           }, ignoreInit=TRUE)
 
+          ###############
+
           # Brush effect observer.
           brush_effect_field <- paste0(prefix, .brushEffect) 
           observeEvent(input[[brush_effect_field]], {
@@ -600,6 +602,8 @@ iSEE <- function(
               }
             }
           }, ignoreInit=TRUE)
+
+          ###############
 
           # Brush structure observers.
           brush_id <- paste0(prefix, .brushField)
@@ -657,6 +661,57 @@ iSEE <- function(
           })
         })
       }
+    }
+
+    # Brush choice observers for the tables.
+    max_tabs <- nrow(pObjects$memory$rowStatTable)
+    for (i in seq_len(max_tabs)) {
+      local({
+        mode0 <- "rowStatTable"
+        i0 <- i
+        tab_name <- paste0(mode0, i0)
+        prefix <- paste0(tab_name, "_")
+        
+        brush_open_field <- paste0(prefix, .brushParamPanelOpen)
+        observeEvent(input[[brush_open_field]], {
+          pObjects$memory[[mode0]][[.brushParamPanelOpen]][i0] <- input[[brush_open_field]]
+        })
+ 
+        brush_plot_field <- paste0(prefix, .brushByPlot) 
+        observeEvent(input[[brush_plot_field]], {
+          old_transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
+          new_transmitter <- input[[brush_plot_field]]
+
+          # Determining whether the new and old transmitting plot have brushes.
+          old_brush <- new_brush <- FALSE 
+          old_encoded <- new_encoded <- ""    
+          if (old_transmitter!="") {
+            old_enc <- .encode_panel_name(old_transmitter)
+            old_encoded <- paste0(old_enc$Type, old_enc$ID)
+            if (!is.null(pObjects$memory[[old_enc$Type]][old_enc$ID, .brushData][[1]])) {
+              old_brush <- TRUE
+            }
+          }
+          if (new_transmitter!="") {
+            new_enc <- .encode_panel_name(new_transmitter)
+            new_encoded <- paste0(new_enc$Type, new_enc$ID)
+            if (!is.null(pObjects$memory[[new_enc$Type]][new_enc$ID, .brushData][[1]])) {
+              new_brush <- TRUE
+            }
+          }
+
+          # Updating the graph (no need for DAG protection here, as tables do not transmit brushes).
+          pObjects$brush_links <- .choose_new_brush_source(pObjects$brush_links, tab_name, new_encoded, old_encoded)
+          
+          # Not re-rendering if there were no brushes in either the new or old transmitters.
+          if (!old_brush && !new_brush){
+            return(NULL)
+          }
+
+          # Triggering update of the table.
+          rObjects[[tab_name]] <- .increment_counter(isolate(rObjects[[tab_name]]))
+        }, ignoreInit=TRUE)
+      })
     }
 
     #######################################################################
@@ -811,7 +866,13 @@ iSEE <- function(
         panel_name <- paste0("rowStatTable", i0)
 
         output[[panel_name]] <- renderDataTable({
-            (rObjects$active_panels) # to trigger recreation when the number of plots is changed.
+            force(rObjects$active_panels) # to trigger recreation when the number of plots is changed.
+            force(rObjects[[panel_name]])
+
+            transmitter <- pObjects$memory$rowStatTable[i0, .brushByPlot]
+            if (transmitter!="") {
+                
+            }
 
             chosen <- pObjects$memory$rowStatTable[i0, .rowStatSelected]
             search <- pObjects$memory$rowStatTable[i0, .rowStatSearch]

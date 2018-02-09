@@ -702,7 +702,8 @@ iSEE <- function(
 
           # Updating the graph (no need for DAG protection here, as tables do not transmit brushes).
           pObjects$brush_links <- .choose_new_brush_source(pObjects$brush_links, tab_name, new_encoded, old_encoded)
-          
+          pObjects$memory[[mode0]][i0, .brushByPlot] <- new_transmitter
+  
           # Not re-rendering if there were no brushes in either the new or old transmitters.
           if (!old_brush && !new_brush){
             return(NULL)
@@ -869,19 +870,14 @@ iSEE <- function(
             force(rObjects$active_panels) # to trigger recreation when the number of plots is changed.
             force(rObjects[[panel_name]])
 
-            transmitter <- pObjects$memory$rowStatTable[i0, .brushByPlot]
-            if (transmitter!="") {
-                
-            }
-
             chosen <- pObjects$memory$rowStatTable[i0, .rowStatSelected]
             search <- pObjects$memory$rowStatTable[i0, .rowStatSearch]
 
-            search_col <- pObjects$memory$rowStatTable[i0, .rowStatColSearch][[1]]
+            search_col <- .execute_brushed_table(i0, pObjects$memory, se, pObjects$coordinates) 
             search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
 
             datatable(gene_data, filter="top", rownames=TRUE,
-                      options=list(search=list(search=search),
+                      options=list(search=list(search=search, regex=TRUE),
                                    searchCols=c(list(NULL), search_col), # row names are the first column!
                                    scrollX=TRUE),
                       selection=list(mode="single", selected=chosen))

@@ -871,7 +871,7 @@ iSEE <- function(
             search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
 
             datatable(gene_data, filter="top", rownames=TRUE,
-                      options=list(search=list(search=search, regex=TRUE),
+                      options=list(search=list(search=search, smart=FALSE, regex=TRUE, caseInsensitive=FALSE),
                                    searchCols=c(list(NULL), search_col), # row names are the first column!
                                    scrollX=TRUE),
                       selection=list(mode="single", selected=chosen))

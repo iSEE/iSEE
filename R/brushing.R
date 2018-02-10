@@ -189,7 +189,7 @@
         if (upper < lower) {
             return("$x") # this can never match.
         } else {
-            return(paste(levels(coordinates)[lower:upper], collapse="|"))
+            return(paste0("^(", paste(levels(coordinates)[lower:upper], collapse="|"), ")$"))
         }
     }
 }

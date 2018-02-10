@@ -37,6 +37,15 @@
 .rowDataXAxis <- "XAxis"
 .rowDataXAxisRowData <- "XAxisRowData"
 
+# Heatmap plotting parameters. ----
+.heatAssay <- "Assay"
+.heatYAxis <- "YAxis"
+.heatYAxisRowPlotTitle <- "Row plot"
+.heatYAxisFeatNameTitle <- "Feature name"
+
+.heatYAxisRowPlot <- "YAxisRowPlot"
+.heatYAxisFeatName <- "YAxisFeatName"
+
 # Plot colouring parameters. ----
 .colorByNothingTitle <- "None"
 .colorByColDataTitle <- "Column data"
@@ -103,7 +112,8 @@ translation <- c(redDimPlot="Reduced dimension plot",
                  colDataPlot="Column data plot",
                  featExprPlot="Feature expression plot",
                  rowStatTable="Row statistics table",
-                 rowDataPlot="Row data plot")
+                 rowDataPlot="Row data plot",
+                 heatPlot="Heatmap")
 rev.translation <- names(translation)
 names(rev.translation) <- translation
 
@@ -139,5 +149,6 @@ names(rev.translation) <- translation
 .plothexcode_featExpr <- "#03A659"
 .plothexcode_geneTable <- "#DD4B39"
 .plothexcode_rowData <- "#00C0EF"
+.plothexcode_heat <- "#42F4D9"
 
 .actionbutton_biocstyle <- "color: #ffffff; background-color: #0092AC; border-color: #2e6da4"

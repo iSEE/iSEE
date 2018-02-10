@@ -49,6 +49,7 @@
 
     column_covariates <- colnames(colData(se))
     row_covariates <- colnames(rowData(se))
+    features <- rownames(se)
 
     all_assays_raw <- assayNames(se)
     all_assays <- seq_along(all_assays_raw)
@@ -173,6 +174,21 @@
                                                       label = "Column of interest (X-axis):",
                                                       choices=row_covariates, selected=param_choices[[.rowDataXAxisRowData]]))
                  )
+        } else if (mode=="heatPlot") {
+          obj <- plotOutput(panel_name, brush=brush.opts, dblclick=dblclick, height=panel_height)
+          plot.param <- list(
+            radioButtons(.input_FUN(.heatYAxis), label="Y-axis:",
+                         inline = TRUE, choices=c(.heatYAxisFeatNameTitle),
+                         selected=param_choices[[.heatYAxis]]),
+            .conditionalPanelOnRadio(.input_FUN(.heatYAxis),
+                                     .heatYAxisFeatNameTitle,
+                                     selectInput(.input_FUN(.heatYAxisFeatName),
+                                                 label="Features:",
+                                                 choices=features,
+                                                 selected=param_choices[[.heatYAxisFeatName]][[1]],
+                                                 selectize=TRUE, multiple=TRUE)
+            )
+          )
         } else {
             stop(sprintf("'%s' is not a recognized panel mode"), mode)
         }
@@ -201,6 +217,13 @@
                 .createBrushPanel(mode, ID, param_choices, row_brushable)
                 )
             )
+        } else if (mode=="heatPlot") {
+          param <- list(tags$div(class = "panel-group", role = "tablist",
+                                 do.call(collapseBox, c(list(id=.input_FUN(.plotParamPanelOpen),
+                                                             title="Plotting parameters",
+                                                             open=param_choices[[.plotParamPanelOpen]]),
+                                                        plot.param))),
+                        .createColorPanelForHeatmaps(mode, ID, param_choices, active_tab, column_covariates, all_assays, feasibility))
         } else {
             param <- list(tags$div(class = "panel-group", role = "tablist",
                 # Panel for fundamental plot parameters.
@@ -258,8 +281,9 @@
     }
 
     is_row <- active_panels$Type=="rowDataPlot"
-    row_brushable <- all_names[is_row]
-    col_brushable <- all_names[!is_tab & !is_row]
+    is_heat <- active_panels$Type=="heatPlot"
+    row_brushable <- all_names[is_row & !is_heat]
+    col_brushable <- all_names[!is_tab & !is_row & !is_heat]
 
     return(list(tab=active_tab, row=row_brushable, col=col_brushable))
 }
@@ -348,6 +372,31 @@
         )
 }
 
+.createColorPanelForHeatmaps <- function(mode, ID, param_choices, active_tab, covariates, all_assays, feasibility)
+  # Convenience function to create the color parameter panel. This
+  # won't be re-used, it just breaks up the huge UI function above.
+{
+  colorby_field <- paste0(mode, ID, "_", .colorByField)
+  color_choices <- c(.colorByNothingTitle)
+  if (feasibility$heatPlot) { 
+    color_choices <- c(color_choices, .colorByColDataTitle)
+  }
+
+  collapseBox(
+    id = paste0(mode, ID, "_", .colorParamPanelOpen),
+    title = "Coloring parameters",
+    open = param_choices[[.colorParamPanelOpen]],
+    radioButtons(colorby_field, label="Color by:", inline=TRUE,
+                 choices=color_choices, selected=param_choices[[.colorByField]]
+    ),
+    .conditionalPanelOnRadio(colorby_field, .colorByColDataTitle,
+                             selectInput(paste0(mode, ID, "_", .colorByColData), label = NULL,
+                                         choices=covariates, selected=param_choices[[.colorByColData]])
+    )
+  )
+}
+
+
 .createBrushPanel <- function(mode, ID, param_choices, brushable)
 # Convenience function to create the brushing parameter panel. This
 # won't be re-used, it just breaks up the huge UI function above.
@@ -383,7 +432,7 @@
 }
 
 # Colours for shinydashboard::box.
-box_status <- c(redDimPlot="primary", featExprPlot="success", colDataPlot="warning", rowStatTable="danger", rowDataPlot="info")
-brush_fill_color <- c(redDimPlot="#9cf", featExprPlot="#9f6", colDataPlot="#ff9", rowDataPlot="#9cf")
-brush_stroke_color <- c(redDimPlot="#06f", featExprPlot="#090", colDataPlot="#fc0", rowDataPlot="#06f")
-brush_stroke_color_full <- c(redDimPlot="#0066ff", featExprPlot="#009900", colDataPlot="#ffcc00", rowDataPlot="#0066ff")
+box_status <- c(redDimPlot="primary", featExprPlot="success", colDataPlot="warning", rowStatTable="danger", rowDataPlot="info", heatPlot="primary")
+brush_fill_color <- c(redDimPlot="#9cf", featExprPlot="#9f6", colDataPlot="#ff9", rowDataPlot="#9cf", heatPlot="#9cf")
+brush_stroke_color <- c(redDimPlot="#06f", featExprPlot="#090", colDataPlot="#fc0", rowDataPlot="#06f", heatPlot="#9cf")
+brush_stroke_color_full <- c(redDimPlot="#0066ff", featExprPlot="#009900", colDataPlot="#ffcc00", rowDataPlot="#0066ff", heatPlot="#0066ff")

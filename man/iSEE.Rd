@@ -5,9 +5,10 @@
 \title{iSEE: interactive SingleCell/Summarized Experiment Explorer}
 \usage{
 iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featExprArgs = NULL,
-  rowStatArgs = NULL, rowDataArgs = NULL, redDimMax = 5, colDataMax = 5,
-  featExprMax = 5, rowStatMax = 5, rowDataMax = 5, initialPanels = NULL,
-  annot.orgdb = NULL, annot.keytype = "ENTREZID", annot.keyfield = NULL,
+  rowStatArgs = NULL, rowDataArgs = NULL, heatArgs = NULL,
+  redDimMax = 5, colDataMax = 5, featExprMax = 5, rowStatMax = 5,
+  rowDataMax = 5, heatMax = 5, initialPanels = NULL, annot.orgdb = NULL,
+  annot.keytype = "ENTREZID", annot.keyfield = NULL,
   colormap = ExperimentColorMap(), run_local = TRUE)
 }
 \arguments{
@@ -24,6 +25,8 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featExprArgs = NULL,
 
 \item{rowDataArgs}{A DataFrame similar to that produced by \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the plots.}
 
+\item{heatArgs}{A DataFrame similar to that produced by \code{\link{heatPlotDefaults}}, specifying initial parameters for the plots.}
+
 \item{redDimMax}{An integer scalar specifying the maximum number of reduced dimension plots in the interface.}
 
 \item{colDataMax}{An integer scalar specifying the maximum number of column data plots in the interface.}
@@ -33,6 +36,8 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featExprArgs = NULL,
 \item{rowStatMax}{An integer scalar specifying the maximum number of row statistics tables in the interface.}
 
 \item{rowDataMax}{An integer scalar specifying the maximum number of row data plots in the interface.}
+
+\item{heatMax}{An integer scalar specifying the maximum number of heatmaps in the interface.}
 
 \item{initialPanels}{A DataFrame specifying which panels should be created
 at initialization. This should contain a \code{Name} character field and a

@@ -3,6 +3,8 @@
 #' @aliases featExprPlotDefaults
 #' @aliases colDataPlotDefaults 
 #' @aliases rowStatTableDefaults
+#' @aliases rowDataPlotDefaults
+#' @aliases heatPlotDefaults
 #'
 #' @title Parameter defaults 
 #'
@@ -136,6 +138,8 @@
 #' featExprPlotDefaults(sce, number=5)
 #' colDataPlotDefaults(sce, number=5)
 #' rowStatTableDefaults(sce, number=5)
+#' rowDataPlotDefaults(sce, number=5)
+#' heatPlotDefaults(sce, number=5)
 redDimPlotDefaults <- function(se, number) {
     waszero <- number==0 # To ensure that we define all the fields with the right types.
     if (waszero) number <- 1
@@ -232,6 +236,26 @@ rowDataPlotDefaults <- function(se, number) {
     return(out)
 }
 
+#' @rdname defaults 
+#' @export
+heatPlotDefaults <- function(se, number) {
+  waszero <- number==0 # To ensure that we define all the fields with the right types.
+  if (waszero) number <- 1
+  
+  def_assay <- .set_default_assay(se)
+  all_features <- rownames(se)
+  
+  out <- new("DataFrame", nrows=as.integer(number))
+  out[[.heatAssay]] <- def_assay
+  out[[.heatYAxis]] <- .heatYAxisFeatNameTitle
+  
+  out[[.heatYAxisFeatName]] <- list(all_features[1:2])
+
+  out <- .add_general_parameters_for_heatmaps(out, se)
+  if (waszero) out <- out[0,,drop=FALSE]
+  return(out)
+}
+
 .override_defaults <- function(def, usr)
 # Overriding the defaults with whatever the user has supplied.
 {
@@ -300,6 +324,18 @@ rowDataPlotDefaults <- function(se, number) {
     incoming[[.colorByFeatNameColor]] <- "red"
 
     return(incoming)
+}
+
+.add_general_parameters_for_heatmaps <- function(incoming, se) {
+  incoming <- .add_general_parameters(incoming)
+  
+  # Adding coloring parameters specifically for column plots.
+  def_assay <- .set_default_assay(se)
+  def_cov <- colnames(colData(se))[1]
+  incoming[[.colorByField]] <- .colorByColDataTitle
+  incoming[[.colorByColData]] <- def_cov
+
+  return(incoming)
 }
 
 .set_default_assay <- function(se) { 

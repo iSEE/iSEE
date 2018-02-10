@@ -10,11 +10,14 @@
 #' @param featExprArgs A DataFrame similar to that produced by \code{\link{featExprPlotDefaults}}, specifying initial parameters for the plots.
 #' @param rowStatArgs A DataFrame similar to that produced by \code{\link{rowStatTableDefaults}}, specifying initial parameters for the plots.
 #' @param rowDataArgs A DataFrame similar to that produced by \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the plots.
+#' @param heatArgs A DataFrame similar to that produced by \code{\link{heatPlotDefaults}}, specifying initial parameters for the plots.
 #' @param redDimMax An integer scalar specifying the maximum number of reduced dimension plots in the interface. 
 #' @param colDataMax An integer scalar specifying the maximum number of column data plots in the interface. 
 #' @param featExprMax An integer scalar specifying the maximum number of feature expression plots in the interface. 
 #' @param rowStatMax An integer scalar specifying the maximum number of row statistics tables in the interface. 
-#' @param rowDataMax An integer scalar specifying the maximum number of row data plots in the interface. 
+#' @param rowDataMax An integer scalar specifying the maximum number of row data plots in the interface.
+#' @param heatMax An integer scalar specifying the maximum number of heatmaps in the interface.
+#'  
 #' @param initialPanels A DataFrame specifying which panels should be created
 #' at initialization. This should contain a \code{Name} character field and a
 #' \code{Width} integer field, see Details.
@@ -89,11 +92,13 @@ iSEE <- function(
   featExprArgs=NULL,
   rowStatArgs=NULL,
   rowDataArgs=NULL,
+  heatArgs=NULL,
   redDimMax=5,
   colDataMax=5,
   featExprMax=5,
   rowStatMax=5,
   rowDataMax=5,
+  heatMax=5,
   initialPanels=NULL,
   annot.orgdb=NULL,
   annot.keytype="ENTREZID",
@@ -124,8 +129,8 @@ iSEE <- function(
   }
 
   # Defining the maximum number of plots.
-  memory <- .setup_memory(se, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs,
-                          redDimMax, colDataMax, featExprMax, rowStatMax, rowDataMax)
+  memory <- .setup_memory(se, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs, heatArgs,
+                          redDimMax, colDataMax, featExprMax, rowStatMax, rowDataMax, heatMax)
 
   # Defining the initial elements to be plotted.
   active_panels <- .setup_initial(initialPanels, memory)
@@ -213,6 +218,7 @@ iSEE <- function(
       actionButton(paste0("featExprPlot_", .organizationNew), "New feature expression plot", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("rowStatTable_", .organizationNew), "New row statistics table", class = "btn btn-primary",icon = icon("plus")),
       actionButton(paste0("rowDataPlot_", .organizationNew), "New row data plot", class = "btn btn-primary",icon = icon("plus")),
+      actionButton(paste0("heatPlot_", .organizationNew), "New heatmap", class = "btn btn-primary",icon = icon("plus")),
       hr(),
       uiOutput("panelOrganization")
     ), # end of dashboardSidebar
@@ -255,7 +261,7 @@ iSEE <- function(
     rObjects <- reactiveValues(
         active_panels = active_panels
     )
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot", "rowStatTable")) {
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot", "rowStatTable", "heatPlot")) {
       max_plots <- nrow(pObjects$memory[[mode]])
       for (i in seq_len(max_plots)) {
         rObjects[[paste0(mode, i)]] <- 1L
@@ -355,7 +361,7 @@ iSEE <- function(
     # of i in the renderPlot() will be the same across all instances, because
     # of when the expression is evaluated.
 
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowStatTable", "rowDataPlot")) {
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowStatTable", "rowDataPlot", "heatPlot")) {
         # Panel addition.
         local({
             mode0 <- mode
@@ -714,7 +720,7 @@ iSEE <- function(
     # Plot creation section. ----
     #######################################################################
 
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot", "heatPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]]) 
   
         # Defining mode-specific plotting functions.
@@ -722,14 +728,16 @@ iSEE <- function(
                       redDimPlot=.make_redDimPlot,
                       featExprPlot=.make_featExprPlot,
                       colDataPlot=.make_colDataPlot,
-                      rowDataPlot=.make_rowDataPlot)
+                      rowDataPlot=.make_rowDataPlot,
+                      heatPlot=.make_heatPlot)
  
         # Defining fundamental parameters that destroy brushes upon being changed. 
         protected <- switch(mode,
                             redDimPlot=c(.redDimType, .redDimXAxis, .redDimYAxis),
                             colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
                             featExprPlot=c(.featExprAssay, .featExprXAxisColData, .featExprYAxisFeatName, .featExprXAxisFeatName),
-                            rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData))
+                            rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData),
+                            heatPlot=c(.heatYAxis, .heatYAxisFeatName))
             
         # Defining non-fundamental parameters that do not destroy brushes.
         if (mode=="rowDataPlot") {
@@ -769,8 +777,11 @@ iSEE <- function(
     
                     observeEvent(input[[cur_field]], {
                         matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
-                        pObjects$memory[[mode0]][[field0]][i0] <- matched_input                
-                        
+                        if (class(matched_input) == "list") {
+                          matched_input <- list(unlist(matched_input))
+                        }
+                        pObjects$memory[[mode0]][[field0]][i0] <- matched_input  
+
                         if (!is.null(isolate(input[[brush_id]]))) { 
                             # This will trigger replotting via the brush observer above.
                             session$resetBrush(brush_id) 

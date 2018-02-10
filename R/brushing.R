@@ -126,6 +126,22 @@
     return(TRUE)
 }
 
+.transmitted_brush <- function(transmitter, memory) 
+# Encodes the transmitter name, and checks whether a brush
+# currently exists in the memory of the transmitting plot.
+{ 
+    brush <- FALSE
+    encoded <- ""
+    if (transmitter!="") {
+        enc <- .encode_panel_name(transmitter)
+        encoded <- paste0(enc$Type, enc$ID)
+        if (!is.null(memory[[enc$Type]][enc$ID, .brushData][[1]])) {
+            brush <- TRUE
+        }
+    }
+    return(list(brush=brush, encoded=encoded))
+}
+
 .execute_brushed_table <- function(i, memory, se, all_coordinates) 
 # This function implements the effect of brushing from a transmitting
 # rowDataPlot to a receiving rowStatTable.

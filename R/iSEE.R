@@ -509,30 +509,19 @@ iSEE <- function(
 
           ###############
 
-          # Brush choice observer. This will fail with an error message if there are cycles
-          # across multiple plots. Otherwise it will update the brushing chart.
+          # Brush choice observer. 
           brush_plot_field <- paste0(prefix, .brushByPlot) 
           observeEvent(input[[brush_plot_field]], {
             old_transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
             new_transmitter <- input[[brush_plot_field]]
 
             # Determining whether the new and old transmitting plot have brushes.
-            old_brush <- new_brush <- FALSE 
-            old_encoded <- new_encoded <- ""    
-            if (old_transmitter!="") {
-              old_enc <- .encode_panel_name(old_transmitter)
-              old_encoded <- paste0(old_enc$Type, old_enc$ID)
-              if (!is.null(pObjects$memory[[old_enc$Type]][old_enc$ID, .brushData][[1]])) {
-                old_brush <- TRUE
-              }
-            }
-            if (new_transmitter!="") {
-              new_enc <- .encode_panel_name(new_transmitter)
-              new_encoded <- paste0(new_enc$Type, new_enc$ID)
-              if (!is.null(pObjects$memory[[new_enc$Type]][new_enc$ID, .brushData][[1]])) {
-                new_brush <- TRUE
-              }
-            }
+            old_out <- .transmitted_brush(old_transmitter, pObjects$memory)
+            old_brush <- old_out$brush
+            old_encoded <- old_out$encoded
+            new_out <- .transmitted_brush(new_transmitter, pObjects$memory)
+            new_brush <- new_out$brush
+            new_encoded <- new_out$encoded
 
             # Updating the graph, but breaking if it's not a DAG.
             tmp <- .choose_new_brush_source(pObjects$brush_links, plot_name, new_encoded, old_encoded)
@@ -678,22 +667,12 @@ iSEE <- function(
           new_transmitter <- input[[brush_plot_field]]
 
           # Determining whether the new and old transmitting plot have brushes.
-          old_brush <- new_brush <- FALSE 
-          old_encoded <- new_encoded <- ""    
-          if (old_transmitter!="") {
-            old_enc <- .encode_panel_name(old_transmitter)
-            old_encoded <- paste0(old_enc$Type, old_enc$ID)
-            if (!is.null(pObjects$memory[[old_enc$Type]][old_enc$ID, .brushData][[1]])) {
-              old_brush <- TRUE
-            }
-          }
-          if (new_transmitter!="") {
-            new_enc <- .encode_panel_name(new_transmitter)
-            new_encoded <- paste0(new_enc$Type, new_enc$ID)
-            if (!is.null(pObjects$memory[[new_enc$Type]][new_enc$ID, .brushData][[1]])) {
-              new_brush <- TRUE
-            }
-          }
+          old_out <- .transmitted_brush(old_transmitter, pObjects$memory)
+          old_brush <- old_out$brush
+          old_encoded <- old_out$encoded
+          new_out <- .transmitted_brush(new_transmitter, pObjects$memory)
+          new_brush <- new_out$brush
+          new_encoded <- new_out$encoded
 
           # Updating the graph (no need for DAG protection here, as tables do not transmit brushes).
           pObjects$brush_links <- .choose_new_brush_source(pObjects$brush_links, tab_name, new_encoded, old_encoded)
@@ -704,6 +683,12 @@ iSEE <- function(
             return(NULL)
           }
 
+          # Destroying existing search fields, potentially from old brushes.
+          # New brushes will be added during table re-rendering.
+          col_searches <- pObjects$memory[[mode0]][i0, .rowStatColSearch][[1]]
+          pObjects$memory$rowStatTable <- .update_list_element(
+            pObjects$memory$rowStatTable, i0, .rowStatColSearch, character(length(col_searches)))
+          
           # Triggering update of the table.
           rObjects[[tab_name]] <- .increment_counter(isolate(rObjects[[tab_name]]))
         }, ignoreInit=TRUE)

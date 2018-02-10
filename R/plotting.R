@@ -5,10 +5,9 @@
 .all_aes_names <- c("x", "y", "color", "shape", "fill", "group")
 .all_aes_values <-
   c("X", "Y", "ColorBy", "ShapeBy", "FillBy", "GroupBy")
-.all_labs_values <- .all_aes_values
+.all_labs_names <- c(.all_aes_names, "title", "subtitle")
 
 names(.all_aes_values) <- .all_aes_names
-names(.all_labs_values) <- .all_aes_names
 
 ############################################
 # .make_redDimPlot  ----
@@ -28,15 +27,15 @@ names(.all_labs_values) <- .all_aes_names
   )
 
   # Generating the plotting commands.
-  .create_plot(data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
+  .create_plot(
+    data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
     x_lab = sprintf(
-      "%s %s",
-      reducedDimNames(se)[param_choices[[.redDimType]]],
+      "Dimension %s",
       param_choices[[.redDimXAxis]]),
     y_lab = sprintf(
-      "%s %s",
-      reducedDimNames(se)[param_choices[[.redDimType]]],
+      "Dimension %s",
       param_choices[[.redDimYAxis]]),
+    title = reducedDimNames(se)[param_choices[[.redDimType]]],
     brush_color=brush_stroke_color_full["redDimPlot"]
   )
 }
@@ -296,7 +295,8 @@ names(.all_labs_values) <- .all_aes_names
 # Internal functions: scatter plotter ----
 ############################################
 
-.scatter_plot <- function(param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, brush_color)
+.scatter_plot <- function( # TODO: no default for title: delegate to each plot type
+  param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, brush_color, title = "")
 # Creates a scatter plot of numeric X/Y. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -313,7 +313,8 @@ names(.all_labs_values) <- .all_aes_names
   plot_cmds[["labs"]] <- .build_labs(
     x = x_lab,
     y = y_lab,
-    color = color_label
+    color = color_label,
+    title = title
   )
 
   # Defining boundaries if zoomed.
@@ -775,12 +776,13 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 }
 
 .build_labs <- function(
-    x = NA_character_, y = NA_character_,
-    color = NA_character_, shape = NA_character_,
-    fill = NA_character_, group = NA_character_
+  x = NA_character_, y = NA_character_,
+  color = NA_character_, shape = NA_character_,
+  fill = NA_character_, group = NA_character_,
+  title = NA_character_, subtitle = NA_character_
 ){
-    labs_specs <- c(x, y, color, shape, fill, group)
-    names(labs_specs) <- .all_aes_names
+    labs_specs <- c(x, y, color, shape, fill, group, title, subtitle)
+    names(labs_specs) <- .all_labs_names
     labs_specs <- labs_specs[!is.na(labs_specs)]
     if (identical(length(labs_specs), 0L)){
       return(NULL)

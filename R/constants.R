@@ -3,23 +3,23 @@
 .redDimXAxis <- "XAxis"
 .redDimYAxis <- "YAxis"
 
-# Gene expression plotting parameters. ----
-.geneExprXAxisNothingTitle <- "None"
-.geneExprXAxisColDataTitle <- "Column data"
-.geneExprXAxisGeneTableTitle <- "Gene table"
-.geneExprXAxisGeneTextTitle <- "Gene text"
+# Feature expression plotting parameters. ----
+.featExprXAxisNothingTitle <- "None"
+.featExprXAxisColDataTitle <- "Column data"
+.featExprXAxisRowTableTitle <- "Row table"
+.featExprXAxisFeatNameTitle <- "Feature name"
 
-.geneExprYAxisGeneTableTitle <- "Gene table"
-.geneExprYAxisGeneTextTitle <- "Gene text"
+.featExprYAxisRowTableTitle <- "Row table"
+.featExprYAxisFeatNameTitle <- "Feature name"
 
-.geneExprAssay <- "Assay"
-.geneExprXAxis <- "XAxis"
-.geneExprXAxisColData <- "XAxisColData"
-.geneExprXAxisGeneTable <- "XAxisGeneTable"
-.geneExprXAxisGeneText <- "XAxisGeneText"
-.geneExprYAxisGeneTable <- "YAxisGeneTable"
-.geneExprYAxisGeneText <- "YAxisGeneText"
-.geneExprYAxis <- "YAxis"
+.featExprAssay <- "Assay"
+.featExprXAxis <- "XAxis"
+.featExprXAxisColData <- "XAxisColData"
+.featExprXAxisRowTable <- "XAxisRowTable"
+.featExprXAxisFeatName <- "XAxisFeatName"
+.featExprYAxisRowTable <- "YAxisRowTable"
+.featExprYAxisFeatName <- "YAxisFeatName"
+.featExprYAxis <- "YAxis"
 
 # Column data plotting parameters. ----
 .colDataXAxisNothingTitle <- "None"
@@ -29,20 +29,34 @@
 .colDataXAxis <- "XAxis"
 .colDataXAxisColData <- "XAxisColData"
 
+# Row data plotting parameters. ----
+.rowDataXAxisNothingTitle <- "None"
+.rowDataXAxisRowDataTitle <- "Row data"
+
+.rowDataYAxis <- "YAxis"
+.rowDataXAxis <- "XAxis"
+.rowDataXAxisRowData <- "XAxisRowData"
+
 # Plot colouring parameters. ----
 .colorByNothingTitle <- "None"
 .colorByColDataTitle <- "Column data"
-.colorByGeneTableTitle <- "Gene table"
-.colorByGeneTextTitle <- "Gene text"
+.colorByRowDataTitle <- "Row data"
+.colorByRowTableTitle <- "Row table"
+.colorByFeatNameTitle <- "Feature name"
 
 .colorParamPanelOpen <- "ColorPanelOpen"
 
 .colorByField <- "ColorBy"
 .colorByColData <- "ColorByColData"
-.colorByGeneTable <- "ColorByGeneTable"
-.colorByGeneText <- "ColorByGeneText"
-.colorByGeneTableAssay <- "ColorByGeneTableAssay"
-.colorByGeneTextAssay <- "ColorByGeneTextAssay"
+.colorByRowData <- "ColorByRowData"
+
+.colorByRowTable <- "ColorByRowTable"
+.colorByRowTableAssay <- "ColorByRowTableAssay"
+.colorByRowTableColor <- "ColorByRowTableColor"
+
+.colorByFeatName <- "ColorByFeatName"
+.colorByFeatNameAssay <- "ColorByFeatNameAssay"
+.colorByFeatNameColor <- "ColorByFeatNameColor"
 
 # Plot brushing parameters. ----
 .brushParamPanelOpen <- "BrushPanelOpen"
@@ -67,13 +81,13 @@
 .plotParamPanelOpen <- "PlotPanelOpen"
 .plotParamPanelName <- "ParamPanel"
 
-# Gene statistic table parameters. ----
-.geneStatSelected <- "Selected"
-.geneStatSearch <- "Search"
-.geneStatColSearch <- "SearchColumns"
-.int_geneStatSelected <- "_rows_selected"
-.int_geneStatSearch <- "_search"
-.int_geneStatColSearch <- "_search_columns"
+# Row statistic table parameters. ----
+.rowStatSelected <- "Selected"
+.rowStatSearch <- "Search"
+.rowStatColSearch <- "SearchColumns"
+.int_rowStatSelected <- "_rows_selected"
+.int_rowStatSearch <- "_search"
+.int_rowStatColSearch <- "_search_columns"
 
 # Panel organization parameters. ----
 .organizationNew <- "MakeNew"
@@ -85,10 +99,11 @@
 .organizationHeight <- "PanelHeight"
 
 # Encoding and decoding names for user/shiny ----
-translation <- c(redDim="Reduced dimension plot",
-                 colData="Column data plot",
-                 geneExpr="Gene expression plot",
-                 geneStat="Gene statistics table")
+translation <- c(redDimPlot="Reduced dimension plot",
+                 colDataPlot="Column data plot",
+                 featExprPlot="Feature expression plot",
+                 rowStatTable="Row statistics table",
+                 rowDataPlot="Row data plot")
 rev.translation <- names(translation)
 names(rev.translation) <- translation
 
@@ -97,8 +112,8 @@ names(rev.translation) <- translation
 }
 
 .encode_panel_name <- function(names) {
-    ID <- as.integer(gsub(".* ", "", names))
-    raw.str <- rev.translation[gsub(" [0-9]+", "", names)]
+    ID <- as.integer(gsub(".* ([0-9]+)$", "\\1", names))
+    raw.str <- rev.translation[gsub(" [0-9]+$", "", names)]
     failed <- is.na(raw.str) | is.na(ID)
     if (any(failed)) {
         stop(sprintf("'%s' is not a legal panel name", names[failed][1]))
@@ -109,21 +124,20 @@ names(rev.translation) <- translation
 .decoded2encoded <- function(names) {
     keep <- names!=""
     x <- .encode_panel_name(names[keep])
-    Mode <- ifelse(x$Type=="geneStat", "Table", "Plot")
-    names[keep] <- sprintf("%s%s%i", x$Type, Mode, x$ID)
+    names[keep] <- sprintf("%s%i", x$Type, x$ID)
     names
 }
 
 .split_encoded <- function(names) {
-  if (length(names)==0) {
-    return(list(Type=character(0), ID=integer(0)))
-  }
-  sp <- strsplit(names, "Plot|Table")
-  sp <- do.call(rbind, sp)
-  return(list(Type=sp[,1], ID=as.integer(sp[,2])))
+  ID <- as.integer(gsub(".*([0-9]+)$", "\\1", names))
+  Type <- gsub("[0-9]+$", "", names)
+  return(list(Type=Type, ID=ID))
 }
 
 .plothexcode_redDim <- "#3C8DBC"
 .plothexcode_colData <- "#F39D12"
-.plothexcode_geneExpr <- "#03A659"
+.plothexcode_featExpr <- "#03A659"
 .plothexcode_geneTable <- "#DD4B39"
+.plothexcode_rowData <- "#00C0EF"
+
+.actionbutton_biocstyle <- "color: #ffffff; background-color: #0092AC; border-color: #2e6da4"

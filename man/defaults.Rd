@@ -3,18 +3,21 @@
 \name{defaults}
 \alias{defaults}
 \alias{redDimPlotDefaults}
-\alias{geneExprPlotDefaults}
+\alias{featExprPlotDefaults}
 \alias{colDataPlotDefaults}
-\alias{geneStatTableDefaults}
+\alias{rowStatTableDefaults}
+\alias{rowDataPlotDefaults}
 \title{Parameter defaults}
 \usage{
 redDimPlotDefaults(se, number)
 
-geneExprPlotDefaults(se, number)
+featExprPlotDefaults(se, number)
 
 colDataPlotDefaults(se, number)
 
-geneStatTableDefaults(se, number)
+rowStatTableDefaults(se, number)
+
+rowDataPlotDefaults(se, number)
 }
 \arguments{
 \item{se}{A SingleCellExperiment object.}
@@ -42,21 +45,21 @@ Defaults to 2.}
 }
 }
 
-\section{Gene expression plot parameters}{
+\section{Feature expression plot parameters}{
 
 \describe{
-\item{\code{GeneTable}:}{Character, what gene statistic table should be used to choose a gene to display on the y-axis?
+\item{\code{RowTable}:}{Character, what row statistic table should be used to choose a feature to display on the y-axis?
 Defaults to an empty string, which means that the first available table will be used.}
 \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
 Defaults to 1, i.e., the first assay in \code{se}.
 We use an index rather than the name, as the latter may not be unique.}
-\item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
-Defaults to \code{"None"}.}
+\item{\code{XAxis}:}{Character, what type of variable should be shown on the x-axis?
+Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Column data"} or \code{"Feature name"}.}
 \item{\code{XAxisColData}:}{Character, what column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
 Defaults to the first entry of \code{colData(se)}.}
-\item{\code{XAxisGeneText}:}{Character, which gene's expression should be shown on the x-axis if \code{XAxis="Gene text"}? 
+\item{\code{XAxisFeatName}:}{Character, which feature's expression should be shown on the x-axis if \code{XAxis="Feature name"}? 
 Defaults to the name of the first row in \code{se}, using expression values specified in \code{Assay}.}
-\item{\code{XAxisGeneTable}:}{Character, which gene statistic table should be used to choose a gene to put on the x-axis if \code{XAxis="Gene table"}? 
+\item{\code{XAxisRowTable}:}{Character, which row statistic table should be used to choose a feature to put on the x-axis if \code{XAxis="Row table"}? 
 Defaults to an empty string, which means that the first available table will be used.}
 }
 }
@@ -64,12 +67,24 @@ Defaults to an empty string, which means that the first available table will be 
 \section{Column data plot parameters}{
 
 \describe{
-\item{\code{YAxisColData}:}{Character, which column of \code{colData(se)} should be shown on the y-axis?
+\item{\code{YAxis}:}{Character, which column of \code{colData(se)} should be shown on the y-axis?
 Defaults to the first entry of \code{colData(se)}.}
-\item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
-Defaults to \code{"None"}.}
+\item{\code{XAxis}:}{Character, what type of variable should be shown on the x-axis?
+Defaults to \code{"None"}, but can also be \code{"Column data"}.}
 \item{\code{XAxisColData}:}{Character, which column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
 Defaults to the first entry of \code{colData(se)}.}
+}
+}
+
+\section{Row data plot parameters}{
+
+\describe{
+\item{\code{YAxis}:}{Character, which column of \code{rowData(se)} should be shown on the y-axis?
+Defaults to the first entry of \code{colData(se)}.}
+\item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
+Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Row data"} or \code{"Feature name"}.}
+\item{\code{XAxisRowData}:}{Character, which column of \code{rowData(se)} should be shown on the x-axis if \code{XAxis="Row data"}?
+Defaults to the first entry of \code{rowData(se)}.}
 }
 }
 
@@ -79,16 +94,17 @@ Defaults to the first entry of \code{colData(se)}.}
 \item{\code{ColorPanelOpen}:}{Logical, should the color parameter panel be open upon initialization?
 Defaults to \code{FALSE}.}
 \item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
-Defaults to \code{"None"}.}
+Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Feature name"} or \code{"Column data"}.
+For row data plots, \code{"Row data"} replaces \code{"Column data"}.}
 \item{\code{ColorByColData}:}{Character, which column of \code{colData(se)} should be used for colouring if \code{ColorBy="Column data"}? 
 Defaults to the first entry of \code{colData(se)}.}
-\item{\code{ColorByGeneTable}:}{Character, which gene statistic table should be used to choose a gene to color by, if \code{ColorBy="Gene table"}? 
+\item{\code{ColorByRowTable}:}{Character, which row statistic table should be used to choose a feature to color by, if \code{ColorBy="Row table"}? 
 Defaults to an empty string, which means that the first available table will be used.}
-\item{\code{ColorByGeneTableAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Gene table"}? 
+\item{\code{ColorByRowTableAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Row table"}? 
 Defaults to 1, i.e., the first assay in \code{se}.}
-\item{\code{ColorByGeneText}:}{Character, which gene should be used to choose a gene to color by, if \code{ColorBy="Gene text"}? 
+\item{\code{ColorByFeatName}:}{Character, which feature's expression should be used for colouring, if \code{ColorBy="Feature name"}? 
 Defaults to an empty string, which means that the first available table will be used.}
-\item{\code{ColorByGeneTextAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Gene text"}? 
+\item{\code{ColorByFeatNameAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Feature name"}? 
 Defaults to 1, i.e., the first assay in \code{se}.}
 }
 }
@@ -122,7 +138,7 @@ Each element of the list defaults to \code{NULL}, i.e., no zooming is performed.
 }
 }
 
-\section{Gene statistic table parameters}{
+\section{Row statistics table parameters}{
 
 \describe{
 \item{\code{Selected}:}{Integer, containing the index of the row to be initially selected.
@@ -148,7 +164,7 @@ sce <- runPCA(sce)
 sce
 
 redDimPlotDefaults(sce, number=5)
-geneExprPlotDefaults(sce, number=5)
+featExprPlotDefaults(sce, number=5)
 colDataPlotDefaults(sce, number=5)
-geneStatTableDefaults(sce, number=5)
+rowStatTableDefaults(sce, number=5)
 }

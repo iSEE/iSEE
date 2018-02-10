@@ -1,8 +1,8 @@
 #' @name defaults 
 #' @aliases redDimPlotDefaults
-#' @aliases geneExprPlotDefaults
+#' @aliases featExprPlotDefaults
 #' @aliases colDataPlotDefaults 
-#' @aliases geneStatTableDefaults
+#' @aliases rowStatTableDefaults
 #'
 #' @title Parameter defaults 
 #'
@@ -24,31 +24,41 @@
 #' Defaults to 2.}
 #' }
 #'
-#' @section Gene expression plot parameters:
+#' @section Feature expression plot parameters:
 #' \describe{
-#' \item{\code{GeneTable}:}{Character, what gene statistic table should be used to choose a gene to display on the y-axis?
+#' \item{\code{RowTable}:}{Character, what row statistic table should be used to choose a feature to display on the y-axis?
 #' Defaults to an empty string, which means that the first available table will be used.}
 #' \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
 #' Defaults to 1, i.e., the first assay in \code{se}.
 #' We use an index rather than the name, as the latter may not be unique.}
-#' \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
-#' Defaults to \code{"None"}.}
+#' \item{\code{XAxis}:}{Character, what type of variable should be shown on the x-axis?
+#' Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Column data"} or \code{"Feature name"}.}
 #' \item{\code{XAxisColData}:}{Character, what column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
 #' Defaults to the first entry of \code{colData(se)}.}
-#' \item{\code{XAxisGeneText}:}{Character, which gene's expression should be shown on the x-axis if \code{XAxis="Gene text"}? 
+#' \item{\code{XAxisFeatName}:}{Character, which feature's expression should be shown on the x-axis if \code{XAxis="Feature name"}? 
 #' Defaults to the name of the first row in \code{se}, using expression values specified in \code{Assay}.}
-#' \item{\code{XAxisGeneTable}:}{Character, which gene statistic table should be used to choose a gene to put on the x-axis if \code{XAxis="Gene table"}? 
+#' \item{\code{XAxisRowTable}:}{Character, which row statistic table should be used to choose a feature to put on the x-axis if \code{XAxis="Row table"}? 
 #' Defaults to an empty string, which means that the first available table will be used.}
 #' }
 #'
 #' @section Column data plot parameters:
 #' \describe{
-#' \item{\code{YAxisColData}:}{Character, which column of \code{colData(se)} should be shown on the y-axis?
+#' \item{\code{YAxis}:}{Character, which column of \code{colData(se)} should be shown on the y-axis?
 #' Defaults to the first entry of \code{colData(se)}.}
-#' \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
-#' Defaults to \code{"None"}.}
+#' \item{\code{XAxis}:}{Character, what type of variable should be shown on the x-axis?
+#' Defaults to \code{"None"}, but can also be \code{"Column data"}.}
 #' \item{\code{XAxisColData}:}{Character, which column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
 #' Defaults to the first entry of \code{colData(se)}.}
+#' }
+#'
+#' @section Row data plot parameters:
+#' \describe{
+#' \item{\code{YAxis}:}{Character, which column of \code{rowData(se)} should be shown on the y-axis?
+#' Defaults to the first entry of \code{colData(se)}.}
+#' \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
+#' Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Row data"} or \code{"Feature name"}.}
+#' \item{\code{XAxisRowData}:}{Character, which column of \code{rowData(se)} should be shown on the x-axis if \code{XAxis="Row data"}?
+#' Defaults to the first entry of \code{rowData(se)}.}
 #' }
 #'
 #' @section Coloring parameters:
@@ -56,16 +66,17 @@
 #' \item{\code{ColorPanelOpen}:}{Logical, should the color parameter panel be open upon initialization?
 #' Defaults to \code{FALSE}.}
 #' \item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
-#' Defaults to \code{"None"}.}
+#' Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Feature name"} or \code{"Column data"}.
+#' For row data plots, \code{"Row data"} replaces \code{"Column data"}.}
 #' \item{\code{ColorByColData}:}{Character, which column of \code{colData(se)} should be used for colouring if \code{ColorBy="Column data"}? 
 #' Defaults to the first entry of \code{colData(se)}.}
-#' \item{\code{ColorByGeneTable}:}{Character, which gene statistic table should be used to choose a gene to color by, if \code{ColorBy="Gene table"}? 
+#' \item{\code{ColorByRowTable}:}{Character, which row statistic table should be used to choose a feature to color by, if \code{ColorBy="Row table"}? 
 #' Defaults to an empty string, which means that the first available table will be used.}
-#' \item{\code{ColorByGeneTableAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Gene table"}? 
+#' \item{\code{ColorByRowTableAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Row table"}? 
 #' Defaults to 1, i.e., the first assay in \code{se}.}
-#' \item{\code{ColorByGeneText}:}{Character, which gene should be used to choose a gene to color by, if \code{ColorBy="Gene text"}? 
+#' \item{\code{ColorByFeatName}:}{Character, which feature's expression should be used for colouring, if \code{ColorBy="Feature name"}? 
 #' Defaults to an empty string, which means that the first available table will be used.}
-#' \item{\code{ColorByGeneTextAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Gene text"}? 
+#' \item{\code{ColorByFeatNameAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Feature name"}? 
 #' Defaults to 1, i.e., the first assay in \code{se}.}
 #' }
 #'
@@ -94,7 +105,7 @@
 #' Each element of the list defaults to \code{NULL}, i.e., no zooming is performed.}
 #' }
 #' 
-#' @section Gene statistic table parameters:
+#' @section Row statistics table parameters:
 #' \describe{
 #' \item{\code{Selected}:}{Integer, containing the index of the row to be initially selected.
 #' Defaults to the first row, i.e., 1.}
@@ -122,9 +133,9 @@
 #' sce
 #'
 #' redDimPlotDefaults(sce, number=5)
-#' geneExprPlotDefaults(sce, number=5)
+#' featExprPlotDefaults(sce, number=5)
 #' colDataPlotDefaults(sce, number=5)
-#' geneStatTableDefaults(sce, number=5)
+#' rowStatTableDefaults(sce, number=5)
 redDimPlotDefaults <- function(se, number) {
     waszero <- number==0 # To ensure that we define all the fields with the right types.
     if (waszero) number <- 1
@@ -134,14 +145,14 @@ redDimPlotDefaults <- function(se, number) {
     out[[.redDimXAxis]] <- 1L
     out[[.redDimYAxis]] <- 2L
     
-    out <- .add_general_parameters(out, se)
+    out <- .add_general_parameters_for_column_plots(out, se)
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)
 }
 
 #' @rdname defaults 
 #' @export
-geneExprPlotDefaults <- function(se, number) {
+featExprPlotDefaults <- function(se, number) {
     waszero <- number==0 
     if (waszero) number <- 1
 
@@ -149,16 +160,16 @@ geneExprPlotDefaults <- function(se, number) {
     covariates <- colnames(colData(se))
 
     out <- new("DataFrame", nrows=as.integer(number))
-    out[[.geneExprAssay]] <- def_assay
-    out[[.geneExprXAxis]] <- .geneExprXAxisNothingTitle
-    out[[.geneExprXAxisColData]] <- covariates[1] 
-    out[[.geneExprXAxisGeneText]] <- ""
-    out[[.geneExprXAxisGeneTable]] <- ""
-    out[[.geneExprYAxisGeneText]] <- ""
-    out[[.geneExprYAxisGeneTable]] <- ""
-    out[[.geneExprYAxis]] <- .geneExprYAxisGeneTableTitle
+    out[[.featExprAssay]] <- def_assay
+    out[[.featExprXAxis]] <- .featExprXAxisNothingTitle
+    out[[.featExprXAxisColData]] <- covariates[1] 
+    out[[.featExprXAxisFeatName]] <- ""
+    out[[.featExprXAxisRowTable]] <- ""
+    out[[.featExprYAxisFeatName]] <- ""
+    out[[.featExprYAxisRowTable]] <- ""
+    out[[.featExprYAxis]] <- .featExprYAxisRowTableTitle
 
-    out <- .add_general_parameters(out, se)
+    out <- .add_general_parameters_for_column_plots(out, se)
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)
 }
@@ -176,30 +187,52 @@ colDataPlotDefaults <- function(se, number) {
     out[[.colDataXAxis]] <- .colDataXAxisNothingTitle
     out[[.colDataXAxisColData]] <- ifelse(length(covariates)==1L, covariates[1], covariates[2])
 
-    out <- .add_general_parameters(out, se)
+    out <- .add_general_parameters_for_column_plots(out, se)
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)
 }
 
 #' @rdname defaults
 #' @export
-geneStatTableDefaults <- function(se, number) {
+rowStatTableDefaults <- function(se, number) {
     waszero <- number==0 
     if (waszero) number <- 1
 
     out <- new("DataFrame", nrows=as.integer(number))
-    out[[.geneStatSelected]] <- 1L
-    out[[.geneStatSearch]] <- ""
+    out[[.rowStatSelected]] <- 1L
+    out[[.rowStatSearch]] <- ""
 
     # Defining an empty search for each column of the rowData.
     colsearch <- character(ncol(rowData(se)))
-    out[[.geneStatColSearch]] <- rep(list(colsearch), as.integer(number))
+    out[[.rowStatColSearch]] <- rep(list(colsearch), as.integer(number))
+
+    # Defining the rowDataPlot brush to receive.
+    out[[.brushParamPanelOpen]] <- FALSE
+    out[[.brushByPlot]] <- ""
 
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)
 }
 
-.override_defaults <- function(def, usr, can_brush=TRUE)
+#' @rdname defaults 
+#' @export
+rowDataPlotDefaults <- function(se, number) {
+    waszero <- number==0 
+    if (waszero) number <- 1
+
+    covariates <- colnames(rowData(se))
+
+    out <- new("DataFrame", nrows=as.integer(number))
+    out[[.rowDataYAxis]] <- covariates[1]
+    out[[.rowDataXAxis]] <- .rowDataXAxisNothingTitle
+    out[[.rowDataXAxisRowData]] <- ifelse(length(covariates)==1L, covariates[1], covariates[2])
+
+    out <- .add_general_parameters_for_row_plots(out, se)
+    if (waszero) out <- out[0,,drop=FALSE]
+    return(out)
+}
+
+.override_defaults <- function(def, usr)
 # Overriding the defaults with whatever the user has supplied.
 {
     ndef <- nrow(def)
@@ -223,20 +256,10 @@ geneStatTableDefaults <- function(se, number) {
     return(def)
 }    
 
-.add_general_parameters <- function(incoming, se) {
-    def_assay <- .set_default_assay(se)
-    def_cov <- colnames(colData(se))[1]
-
+.add_general_parameters <- function(incoming) {
     incoming[[.plotParamPanelOpen]] <- FALSE
     incoming[[.colorParamPanelOpen]] <- FALSE
     incoming[[.brushParamPanelOpen]] <- FALSE
-
-    incoming[[.colorByField]] <- .colorByNothingTitle
-    incoming[[.colorByColData]] <- def_cov
-    incoming[[.colorByGeneTable]] <- "" 
-    incoming[[.colorByGeneTableAssay]] <- def_assay
-    incoming[[.colorByGeneText]] <- "" 
-    incoming[[.colorByGeneTextAssay]] <- def_assay
 
     incoming[[.brushByPlot]] <- ""
     incoming[[.brushEffect]] <- .brushTransTitle
@@ -245,6 +268,37 @@ geneStatTableDefaults <- function(se, number) {
     incoming[[.brushData]] <- rep(list(NULL), nrow(incoming))
 
     incoming[[.zoomData]] <- rep(list(NULL), nrow(incoming))
+    return(incoming)
+}
+
+.add_general_parameters_for_column_plots <- function(incoming, se) {
+    incoming <- .add_general_parameters(incoming)
+
+    # Adding coloring parameters specifically for column plots.
+    def_assay <- .set_default_assay(se)
+    def_cov <- colnames(colData(se))[1]
+    incoming[[.colorByField]] <- .colorByNothingTitle
+    incoming[[.colorByColData]] <- def_cov
+    incoming[[.colorByRowTable]] <- "" 
+    incoming[[.colorByRowTableAssay]] <- def_assay
+    incoming[[.colorByFeatName]] <- "" 
+    incoming[[.colorByFeatNameAssay]] <- def_assay
+
+    return(incoming)
+}
+
+.add_general_parameters_for_row_plots <- function(incoming, se) {
+    incoming <- .add_general_parameters(incoming)
+
+    # Adding coloring parameters specifically for row plots.
+    def_cov <- colnames(rowData(se))[1]
+    incoming[[.colorByField]] <- .colorByNothingTitle
+    incoming[[.colorByRowData]] <- def_cov
+    incoming[[.colorByRowTable]] <- "" 
+    incoming[[.colorByRowTableColor]] <- "red"
+    incoming[[.colorByFeatName]] <- "" 
+    incoming[[.colorByFeatNameColor]] <- "red"
+
     return(incoming)
 }
 

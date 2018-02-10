@@ -4,10 +4,10 @@
 \alias{iSEE}
 \title{iSEE: interactive SingleCell/Summarized Experiment Explorer}
 \usage{
-iSEE(se, redDimArgs = NULL, colDataArgs = NULL, geneExprArgs = NULL,
-  geneStatArgs = NULL, redDimMax = 5, colDataMax = 5, geneExprMax = 5,
-  geneStatMax = 5, initialPanels = NULL, annot.orgdb = NULL,
-  annot.keytype = "ENTREZID", annot.keyfield = NULL,
+iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featExprArgs = NULL,
+  rowStatArgs = NULL, rowDataArgs = NULL, redDimMax = 5, colDataMax = 5,
+  featExprMax = 5, rowStatMax = 5, rowDataMax = 5, initialPanels = NULL,
+  annot.orgdb = NULL, annot.keytype = "ENTREZID", annot.keyfield = NULL,
   colormap = ExperimentColorMap(), run_local = TRUE)
 }
 \arguments{
@@ -16,26 +16,23 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, geneExprArgs = NULL,
 \item{redDimArgs}{A DataFrame similar to that produced by
 \code{\link{redDimPlotDefaults}}, specifying initial parameters for the plots.}
 
-\item{colDataArgs}{A DataFrame similar to that produced by
-\code{\link{colDataPlotDefaults}}, specifying initial parameters for the plots.}
+\item{colDataArgs}{A DataFrame similar to that produced by \code{\link{colDataPlotDefaults}}, specifying initial parameters for the plots.}
 
-\item{geneExprArgs}{A DataFrame similar to that produced by
-\code{\link{geneExprPlotDefaults}}, specifying initial parameters for the plots.}
+\item{featExprArgs}{A DataFrame similar to that produced by \code{\link{featExprPlotDefaults}}, specifying initial parameters for the plots.}
 
-\item{geneStatArgs}{A DataFrame similar to that produced by
-\code{\link{geneStatTableDefaults}}, specifying initial parameters for the plots.}
+\item{rowStatArgs}{A DataFrame similar to that produced by \code{\link{rowStatTableDefaults}}, specifying initial parameters for the plots.}
 
-\item{redDimMax}{An integer scalar specifying the maximum number of reduced
-dimension plots in the interface.}
+\item{rowDataArgs}{A DataFrame similar to that produced by \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the plots.}
 
-\item{colDataMax}{An integer scalar specifying the maximum number of column
-data plots in the interface.}
+\item{redDimMax}{An integer scalar specifying the maximum number of reduced dimension plots in the interface.}
 
-\item{geneExprMax}{An integer scalar specifying the maximum number of gene
-expression plots in the interface.}
+\item{colDataMax}{An integer scalar specifying the maximum number of column data plots in the interface.}
 
-\item{geneStatMax}{An integer scalar specifying the maximum number of gene
-statistic tables in the interface.}
+\item{featExprMax}{An integer scalar specifying the maximum number of feature expression plots in the interface.}
+
+\item{rowStatMax}{An integer scalar specifying the maximum number of row statistics tables in the interface.}
+
+\item{rowDataMax}{An integer scalar specifying the maximum number of row data plots in the interface.}
 
 \item{initialPanels}{A DataFrame specifying which panels should be created
 at initialization. This should contain a \code{Name} character field and a
@@ -69,7 +66,7 @@ Interactive visualization of single-cell data using a Shiny interface.
 }
 \details{
 Users can pass default parameters via DataFrame objects in
-\code{redDimArgs} and \code{geneExprArgs}. Each object can contain
+\code{redDimArgs} and \code{featExprArgs}. Each object can contain
 some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
 Any missing fields will be filled in with the defaults.
 
@@ -81,7 +78,7 @@ required to render the interface.
 The \code{initialPanels} argument specifies the panels to be created
 upon initializing the interface. This should be a DataFrame containing
 a \code{Name} field specifying the identity of the panel, e.g.,
-\code{"Reduced dimension plot 1"}, \code{"Gene statistics table 2"}.
+\code{"Reduced dimension plot 1"}, \code{"Row statistics table 2"}.
 The trailing number should not be greater than the number of
 maximum plots of that type. The \code{Width} field may also be specified
 describing the width of the panel from 2 to 12 (values will be coerced

@@ -2,7 +2,7 @@
 {
   # Commands only reported for plots, not for the tables
   aobjs <- as.data.frame(rObjects$active_panels)
-  aobjs <- aobjs[aobjs$Type!="geneStat",]
+  aobjs <- aobjs[aobjs$Type!="rowStatTable",]
   aobjs <- aobjs[.get_reporting_order(aobjs, pObjects$brush_links),]
 
   # storing to a text character vector
@@ -19,7 +19,7 @@
   for (i in seq_len(nrow(aobjs))) {
     panel_type <- aobjs$Type[i]
     panel_id <- aobjs$ID[i]
-    panel_name <- paste0(panel_type, "Plot", panel_id)
+    panel_name <- paste0(panel_type, panel_id)
     
     tracked_code <- c(tracked_code,
                       strrep("#", 80),
@@ -75,7 +75,7 @@
 # Reordering plots by whether or not they exhibited brushing.
 {
   N <- nrow(active_plots)
-  node_names <- sprintf("%sPlot%i", active_plots$Type, active_plots$ID)
+  node_names <- sprintf("%s%i", active_plots$Type, active_plots$ID)
   ordering <- topo_sort(brush_chart, "out")
   order(match(node_names, names(ordering)))
 }
@@ -86,11 +86,11 @@
 # reads in the stored r/p objects, and creates a graph of the current links among
 # all panels open in the app  
 {
-  cur_plots <- sprintf("%sPlot%i", rObjects$active_panels$Type, rObjects$active_panels$ID)
+  cur_plots <- sprintf("%s%i", rObjects$active_panels$Type, rObjects$active_panels$ID)
   not_used <- setdiff(V(pObjects$brush_links)$name,cur_plots)
   currgraph_used <- delete.vertices(pObjects$brush_links,not_used)
   currgraph_used <- set_vertex_attr(currgraph_used,"plottype",
-                                    value = gsub("Plot[0-9]","",V(currgraph_used)$name))
+                                    value = sub("[0-9]+$","",V(currgraph_used)$name))
   
   currgraph_used <- .find_links_to_table(rObjects, pObjects, currgraph_used)
   
@@ -101,9 +101,11 @@
        vertex.label.color = "black",
        vertex.label.dist = 2.5,
        vertex.color = c(.plothexcode_redDim,.plothexcode_colData,
-                        .plothexcode_geneExpr,.plothexcode_geneTable)[
+                        .plothexcode_featExpr,.plothexcode_geneTable,
+                        .plothexcode_rowData)[
                           factor(V(currgraph_used)$plottype,
-                                 levels = c("redDim","colData","geneExpr","geneStat"))])
+                                 levels = c("redDimPlot","colDataPlot","featExprPlot",
+                                            "rowStatTable","rowDataPlot"))])
 }  
 
 
@@ -112,8 +114,8 @@
 # finds the links for the tables that are used, and sets the new edges in the graph
 # this updated graph is then returned as output
 {
-  tbl_objs <- rObjects$active_panels[rObjects$active_panels$Type=="geneStat",]
-  cur_tables <- sprintf("%sTable%i",tbl_objs$Type,tbl_objs$ID)
+  tbl_objs <- rObjects$active_panels[rObjects$active_panels$Type=="rowStatTable",]
+  cur_tables <- sprintf("%s%i",tbl_objs$Type,tbl_objs$ID)
   all_tlinks <- pObjects$table_links
   cur_tlinks <- all_tlinks[cur_tables]
   
@@ -125,8 +127,6 @@
     y_links <- unlist(cur_tlinks[[table_used]]$yaxis)
     any_links <- unique(c(col_links,x_links,y_links))
     
-    # add the vertex of the table
-    graph <- add_vertices(graph,nv = 1, name = table_used, plottype = "geneStat")
     # add the edges corresponding
     for(j in seq_len(length(any_links))){
       graph <- add_edges(graph,c(table_used, any_links[j]))

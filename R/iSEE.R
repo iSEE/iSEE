@@ -253,7 +253,8 @@ iSEE <- function(
 
     # Storage for all the reactive objects
     rObjects <- reactiveValues(
-        active_panels = active_panels
+        active_panels = active_panels,
+        relinked = 1L
     )
     for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot", "rowStatTable")) {
       max_plots <- nrow(pObjects$memory[[mode]])
@@ -534,6 +535,9 @@ iSEE <- function(
               pObjects$brush_links <- tmp
               pObjects$memory[[mode0]][i0, .brushByPlot] <- new_transmitter
             }
+
+            # Update the elements reporting the links between plots.
+            rObjects$relinked <- .increment_counter(isolate(rObjects$relinked))
             
             # Not replotting if there were no brushes in either the new or old transmitters.
             if (!old_brush && !new_brush){
@@ -677,14 +681,15 @@ iSEE <- function(
           # Updating the graph (no need for DAG protection here, as tables do not transmit brushes).
           pObjects$brush_links <- .choose_new_brush_source(pObjects$brush_links, tab_name, new_encoded, old_encoded)
           pObjects$memory[[mode0]][i0, .brushByPlot] <- new_transmitter
-  
+          rObjects$relinked <- .increment_counter(isolate(rObjects$relinked))
+ 
           # Not re-rendering if there were no brushes in either the new or old transmitters.
           if (!old_brush && !new_brush){
             return(NULL)
           }
 
-          # Destroying existing search fields, potentially from old brushes.
-          # New brushes will be added during table re-rendering.
+          # Destroying existing search fields, potentially from brushes in the old transmitter.
+          # Brushes for the new transmitter will be added during table re-rendering.
           col_searches <- pObjects$memory[[mode0]][i0, .rowStatColSearch][[1]]
           pObjects$memory$rowStatTable <- .update_list_element(
             pObjects$memory$rowStatTable, i0, .rowStatColSearch, character(length(col_searches)))
@@ -780,6 +785,7 @@ iSEE <- function(
                     if (replot) {
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     }
+                    rObjects$relinked <- .increment_counter(isolate(rObjects$relinked)) # updating link description.
                 })
   
                 # Defining the rendered plot, and saving the coordinates.
@@ -789,6 +795,12 @@ iSEE <- function(
                     pObjects$commands[[plot_name]] <- p.out$cmd
                     pObjects$coordinates[[plot_name]] <- p.out$xy[,c("X", "Y")]
                     p.out$plot
+                })
+
+                # Describing the links between panels.
+                output[[paste0(plot_name, "_", .panelLinkInfo)]] <- renderUI({
+                    (rObjects$relinked)
+                    .define_plot_links(plot_name, pObjects$memory, pObjects$brush_links)
                 })
             })
         }
@@ -817,6 +829,7 @@ iSEE <- function(
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     }
                 }
+                rObjects$relinked <- .increment_counter(isolate(rObjects$relinked)) # updating link description.
             })
 
             # X-axis observer:
@@ -832,6 +845,7 @@ iSEE <- function(
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     }
                 }
+                rObjects$relinked <- .increment_counter(isolate(rObjects$relinked)) # updating link description.
             })
         })
     }
@@ -919,6 +933,12 @@ iSEE <- function(
             .generate_annotation(annot.orgdb, annot.keytype, annot.keyfield, 
                                  gene_data, chosen)
         }) 
+
+        # Describing the links between panels.
+        output[[paste0(panel_name, "_", .panelLinkInfo)]] <- renderUI({
+            (rObjects$relinked)
+            .define_table_links(panel_name, pObjects$memory, pObjects$table_links)
+        })
       })
     }
 

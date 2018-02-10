@@ -202,6 +202,78 @@ height_limits <- c(400L, 1000L)
     return(memory)
 }
 
+.define_plot_links <- function(panel, memory, graph) 
+# This creates a description of all of the incoming/outgoing
+# relationships between a plot panel and the other plots/tables.
+{
+    enc <- .split_encoded(panel)
+    param_choices <- memory[[enc$Type]][enc$ID,]
+    output <- list()
+
+    # Checking brush status.
+    brush_in <- param_choices[[.brushByPlot]]
+    if (brush_in!="") {
+        output <- c(output, list("Receiving brush from", em(strong(brush_in)), br()))
+    }
+
+    # Checking colour status.
+    if (param_choices[[.colorByField]]==.colorByRowTableTitle) {
+        output <- c(output, list("Receiving color from", em(strong(param_choices[[.colorByRowTable]])), br()))
+    }
+
+    # Checking input/output for feature expression plots.
+    if (enc$Type=="featExprPlot") {
+        if (param_choices[[.featExprYAxis]]==.featExprYAxisRowTableTitle) {
+            output <- c(output, list("Receiving y-axis from", em(strong(param_choices[[.featExprYAxisRowTable]])), br()))
+        }
+        if (param_choices[[.featExprXAxis]]==.featExprXAxisRowTableTitle) {
+            output <- c(output, list("Receiving x-axis from", em(strong(param_choices[[.featExprXAxisRowTable]])), br()))
+        }
+    }
+
+    # Defining immediate children.
+    children <- names(adjacent_vertices(graph, panel)[[1]])
+    child_enc <- .split_encoded(children)
+    child_names <- .decode_panel_name(child_enc$Type, child_enc$ID)
+    for (child in child_names) {
+        output <- c(output, list("Transmitting brush to", em(strong(child)), br()))
+    }
+
+    do.call(tagList, output)
+}
+
+.define_table_links <- function(panel, memory, table_links) 
+# This creates a description of all of the incoming/outgoing
+# relationships between a table panel and the other plots/tables.
+{
+    enc <- .split_encoded(panel)
+    param_choices <- memory[[enc$Type]][enc$ID,]
+    output <- list()
+
+    # Checking brush status.
+    brush_in <- param_choices[[.brushByPlot]]
+    if (brush_in!="") {
+        output <- c(output, list("Receiving brush from", em(strong(brush_in)), br()))
+    }
+
+    # Checking where it broadcasts to plots. 
+    current <- table_links[[panel]]
+    for (trans in list(c("yaxis", "y-axis"),
+                       c("xaxis", "x-axis"),
+                       c("color", "color"))) {
+
+        children <- current[[trans[1]]]
+        child_enc <- .split_encoded(children)
+        child_names <- .decode_panel_name(child_enc$Type, child_enc$ID)
+
+        for (child in child_names) {
+            output <- c(output, list(paste("Transmitting", trans[2], "to"), em(strong(child)), br()))
+        }
+    }  
+
+    do.call(tagList, output)
+}
+
 #############################################
 # Information constants.
 

@@ -98,6 +98,8 @@
 .organizationWidth <- "PanelWidth"
 .organizationHeight <- "PanelHeight"
 
+.panelLinkInfo <- "PanelLinkInfo"
+
 # Encoding and decoding names for user/shiny ----
 translation <- c(redDimPlot="Reduced dimension plot",
                  colDataPlot="Column data plot",

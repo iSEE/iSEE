@@ -155,14 +155,14 @@ iSEE <- function(
                    notificationItem(
                      text = actionButton('open_linkgraph', label="Examine panel chart",
                                          icon = icon("chain"),
-                                         style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
+                                         style=.actionbutton_biocstyle
                      ),
                      icon = icon(""), status = "primary"
                    ),
                    notificationItem(
                      text = actionButton('getcode_all', label="Extract the R code",
                                          icon = icon("magic"),
-                                         style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
+                                         style=.actionbutton_biocstyle
                      ),
                      icon = icon(""), status = "primary"
                    )
@@ -174,13 +174,13 @@ iSEE <- function(
                    headerText = "Documentation",
                    notificationItem(
                      text = actionButton("tour_firststeps", "Click me for a quick tour", icon("hand-o-right"),
-                                         style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"),
+                                         style=.actionbutton_biocstyle),
                      icon = icon(""), # tricking it to not have additional icon
                      status = "primary"),
                    notificationItem(
                      text = actionButton('open_vignette', label="Open the vignette", 
                                          icon = icon("book"), 
-                                         style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4",
+                                         style=.actionbutton_biocstyle,
                                          onclick = ifelse(run_local, "", "window.open('http://google.com', '_blank')")), # to be replaced with vignette url
                      icon = icon(""), status = "primary"
                    )
@@ -193,14 +193,14 @@ iSEE <- function(
                     notificationItem(
                      text = actionButton('session_info', label="About this session", 
                                          icon = icon("window-maximize"), 
-                                         style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
-                                         ),
+                                         style=.actionbutton_biocstyle
+                     ),
                      icon = icon(""), status = "primary"
                    ),
                    notificationItem(
                      text = actionButton('iSEE_info', label="About iSEE", 
                                          icon = icon("heart"), 
-                                         style="color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
+                                         style=.actionbutton_biocstyle
                                          ),
                      icon = icon(""), status = "primary"
                    )

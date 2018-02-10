@@ -202,32 +202,6 @@ height_limits <- c(400L, 1000L)
     return(memory)
 }
 
-.identical_brushes <- function(old_brush, new_brush)
-# Check whether the brush coordinates have actually changed. 
-{
-    old_null <- is.null(old_brush) 
-    new_null <- is.null(new_brush)
-    if (old_null || new_null) {
-        return(old_null==new_null)
-    }
-
-    xspan <- old_brush$xmax - old_brush$xmin
-    tol <- xspan * 1e-6
-    if (abs(old_brush$xmin - new_brush$xmin) > tol 
-        || abs(old_brush$xmax - new_brush$xmax) > tol) {
-      return(FALSE)        
-    }
-
-    yspan <- old_brush$ymax - old_brush$ymin
-    tol <- yspan * 1e-6
-    if (abs(old_brush$ymin - new_brush$ymin) > tol 
-        || abs(old_brush$ymax - new_brush$ymax) > tol) {
-      return(FALSE)        
-    }
-
-    return(TRUE)
-}
-
 #############################################
 # Information constants.
 

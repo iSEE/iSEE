@@ -100,6 +100,48 @@
     return(old_children)
 }
 
+.identical_brushes <- function(old_brush, new_brush)
+# Check whether the brush coordinates have actually changed. 
+{
+    old_null <- is.null(old_brush) 
+    new_null <- is.null(new_brush)
+    if (old_null || new_null) {
+        return(old_null==new_null)
+    }
+
+    xspan <- old_brush$xmax - old_brush$xmin
+    tol <- xspan * 1e-6
+    if (abs(old_brush$xmin - new_brush$xmin) > tol 
+        || abs(old_brush$xmax - new_brush$xmax) > tol) {
+      return(FALSE)        
+    }
+
+    yspan <- old_brush$ymax - old_brush$ymin
+    tol <- yspan * 1e-6
+    if (abs(old_brush$ymin - new_brush$ymin) > tol 
+        || abs(old_brush$ymax - new_brush$ymax) > tol) {
+      return(FALSE)        
+    }
+
+    return(TRUE)
+}
+
+.transmitted_brush <- function(transmitter, memory) 
+# Encodes the transmitter name, and checks whether a brush
+# currently exists in the memory of the transmitting plot.
+{ 
+    brush <- FALSE
+    encoded <- ""
+    if (transmitter!="") {
+        enc <- .encode_panel_name(transmitter)
+        encoded <- paste0(enc$Type, enc$ID)
+        if (!is.null(memory[[enc$Type]][enc$ID, .brushData][[1]])) {
+            brush <- TRUE
+        }
+    }
+    return(list(brush=brush, encoded=encoded))
+}
+
 .execute_brushed_table <- function(i, memory, se, all_coordinates) 
 # This function implements the effect of brushing from a transmitting
 # rowDataPlot to a receiving rowStatTable.
@@ -135,7 +177,10 @@
     return(col_searches)
 }
 
-.compress_brush <- function(lower, upper, coordinates) {
+.compress_brush <- function(lower, upper, coordinates) 
+# Compressing the brush into something that can fit into a 
+# DT::DataTable search field.
+{
     if (is.numeric(coordinates)) {
         return(paste(lower, "...", upper))
     } else {
@@ -144,9 +189,7 @@
         if (upper < lower) {
             return("$x") # this can never match.
         } else {
-            return(paste(levels(coordinates)[lower:upper], collapse="|"))
+            return(paste0("^(", paste(levels(coordinates)[lower:upper], collapse="|"), ")$"))
         }
     }
 }
-
-

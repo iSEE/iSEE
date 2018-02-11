@@ -975,12 +975,20 @@ iSEE <- function(
             i0 <- i
             plot_name <- paste0(mode0, i0)
  
-            # Server-side initialization of options.
-            prefield <- paste0(plot_name, "_", .heatMapYAxisFeatName)
+            # Server-side initialization of feature name selection requires some care.
+            cur_field <- paste0(plot_name, "_", .heatMapYAxisFeatName)
             observe({
-                if (is.null(input[[prefield]])) { 
+                if (is.null(input[[cur_field]])) { 
                     updateSelectizeInput(session, paste0(mode0, i0, "_", .heatMapYAxisFeatName), choices = rownames(se), 
-                                         server = TRUE, selected = pObjects$memory[[mode0]][i, .heatMapYAxisFeatName][[1]])
+                                         server = TRUE, selected = pObjects$memory[[mode0]][i0, .heatMapYAxisFeatName][[1]])
+                } else if (identical(input[[cur_field]], pObjects$memory[[mode0]][i0, .heatMapYAxisFeatName][[1]])) {
+                    # Avoid replotting if the values in input are the same as those in memory.
+                    # Normally this shouldn't happen as having the same 'input' would never trigger this observer. 
+                    # However, it can happen upon UI re-rendering, where input is replaced with NULL until updateSelectizeInput triggers.
+                    return(NULL)
+                } else {
+                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .heatMapYAxisFeatName, input[[cur_field]])
+                    rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                 }
             })
                     
@@ -995,7 +1003,7 @@ iSEE <- function(
         })
 
         # Saving list-based coordinates.
-        for (field in c(.heatMapXAxisColData, .heatMapYAxisFeatName)) {
+        for (field in c(.heatMapXAxisColData)) {
             local({
                 i0 <- i
                 mode0 <- "heatMapPlot"

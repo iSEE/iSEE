@@ -38,7 +38,7 @@
 #' \item{\code{XAxisColData}:}{Character, what column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
 #' Defaults to the first entry of \code{colData(se)}.}
 #' \item{\code{XAxisFeatName}:}{Character, which feature's expression should be shown on the x-axis if \code{XAxis="Feature name"}? 
-#' Defaults to the name of the first row in \code{se}, using expression values specified in \code{Assay}.}
+#' Defaults to an empty string.}
 #' \item{\code{XAxisRowTable}:}{Character, which row statistic table should be used to choose a feature to put on the x-axis if \code{XAxis="Row table"}? 
 #' Defaults to an empty string, which means that the first available table will be used.}
 #' }
@@ -64,12 +64,12 @@
 #' }
 #'
 #' @section Coloring parameters:
+#' For the plots where each point represents a sample (i.e., all plots except for row data plots), the following options apply:
 #' \describe{
 #' \item{\code{ColorPanelOpen}:}{Logical, should the color parameter panel be open upon initialization?
 #' Defaults to \code{FALSE}.}
 #' \item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
-#' Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Feature name"} or \code{"Column data"}.
-#' For row data plots, \code{"Row data"} replaces \code{"Column data"}.}
+#' Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Feature name"} or \code{"Column data"}.}
 #' \item{\code{ColorByColData}:}{Character, which column of \code{colData(se)} should be used for colouring if \code{ColorBy="Column data"}? 
 #' Defaults to the first entry of \code{colData(se)}.}
 #' \item{\code{ColorByRowTable}:}{Character, which row statistic table should be used to choose a feature to color by, if \code{ColorBy="Row table"}? 
@@ -77,12 +77,30 @@
 #' \item{\code{ColorByRowTableAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Row table"}? 
 #' Defaults to 1, i.e., the first assay in \code{se}.}
 #' \item{\code{ColorByFeatName}:}{Character, which feature's expression should be used for colouring, if \code{ColorBy="Feature name"}? 
-#' Defaults to an empty string, which means that the first available table will be used.}
+#' Defaults to an empty string.}
 #' \item{\code{ColorByFeatNameAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Feature name"}? 
 #' Defaults to 1, i.e., the first assay in \code{se}.}
 #' }
+#' For row data plots, the following options apply:
+#' \describe{
+#' \item{\code{ColorPanelOpen}:}{Logical, should the color parameter panel be open upon initialization?
+#' Defaults to \code{FALSE}.}
+#' \item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
+#' Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Feature name"} or \code{"Row data"}.}
+#' \item{\code{ColorByRowData}:}{Character, which column of \code{rowData(se)} should be used for colouring if \code{ColorBy="Row data"}? 
+#' Defaults to the first entry of \code{rowData(se)}.}
+#' \item{\code{ColorByRowTable}:}{Character, which row statistic table should be used to choose a feature to color by, if \code{ColorBy="Row table"}? 
+#' Defaults to an empty string, which means that the first available table will be used.}
+#' \item{\code{ColorByRowTableColor}:}{String specifying the colour to be used to highlight the selected feature from the row table.
+#' Defaults to \code{"red"}.}
+#' \item{\code{ColorByFeatName}:}{Character, which feature's expression should be used for colouring, if \code{ColorBy="Feature name"}? 
+#' Defaults to an empty string.}
+#' \item{\code{ColorByFeatNameColor}:}{String specifying the colour to be used to highlight the selected feature from the text.
+#' Defaults to \code{"red"}.}
+#' }
 #'
 #' @section Brushing parameters:
+#' For the plots, the following options apply:
 #' \describe{
 #' \item{\code{BrushPanelOpen}:}{Logical, should the brushing parameter panel be open upon initialization?
 #' Defaults to \code{FALSE}.}
@@ -97,6 +115,18 @@
 #' This should lie in [0, 1], where 0 is fully transparent and 1 is fully opaque. 
 #' Defaults to 0.1.}
 #' }
+#'
+#' Note that brushing cannot occur between row data plots and the other plot types.
+#' This is because each point in a row data plot is a feature, while each point represents a sample in the other plots.
+#'
+#' For the row statistics tables, the following options apply:
+#' \describe{
+#' \item{\code{BrushPanelOpen}:}{Logical, should the brushing parameter panel be open upon initialization?
+#' Defaults to \code{FALSE}.}
+#' \item{\code{BrushByPlot}:}{Character, which other plot should be used for point selection in the current plot? 
+#' Defaults to an empty string, which means that no plot is used for point selection.}
+#' }
+#' Only row data plots can be used for brushing of tables.
 #' 
 #' @section Other plot parameters:
 #' \describe{

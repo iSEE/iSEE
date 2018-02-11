@@ -259,7 +259,8 @@ iSEE <- function(
 
     # Storage for all the reactive objects
     rObjects <- reactiveValues(
-        active_panels = active_panels
+        active_panels = active_panels,
+        relinked = 1L
     )
     for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot", "rowStatTable", "heatPlot")) {
       max_plots <- nrow(pObjects$memory[[mode]])
@@ -515,30 +516,19 @@ iSEE <- function(
 
           ###############
 
-          # Brush choice observer. This will fail with an error message if there are cycles
-          # across multiple plots. Otherwise it will update the brushing chart.
+          # Brush choice observer. 
           brush_plot_field <- paste0(prefix, .brushByPlot) 
           observeEvent(input[[brush_plot_field]], {
             old_transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
             new_transmitter <- input[[brush_plot_field]]
 
             # Determining whether the new and old transmitting plot have brushes.
-            old_brush <- new_brush <- FALSE 
-            old_encoded <- new_encoded <- ""    
-            if (old_transmitter!="") {
-              old_enc <- .encode_panel_name(old_transmitter)
-              old_encoded <- paste0(old_enc$Type, old_enc$ID)
-              if (!is.null(pObjects$memory[[old_enc$Type]][old_enc$ID, .brushData][[1]])) {
-                old_brush <- TRUE
-              }
-            }
-            if (new_transmitter!="") {
-              new_enc <- .encode_panel_name(new_transmitter)
-              new_encoded <- paste0(new_enc$Type, new_enc$ID)
-              if (!is.null(pObjects$memory[[new_enc$Type]][new_enc$ID, .brushData][[1]])) {
-                new_brush <- TRUE
-              }
-            }
+            old_out <- .transmitted_brush(old_transmitter, pObjects$memory)
+            old_brush <- old_out$brush
+            old_encoded <- old_out$encoded
+            new_out <- .transmitted_brush(new_transmitter, pObjects$memory)
+            new_brush <- new_out$brush
+            new_encoded <- new_out$encoded
 
             # Updating the graph, but breaking if it's not a DAG.
             tmp <- .choose_new_brush_source(pObjects$brush_links, plot_name, new_encoded, old_encoded)
@@ -551,6 +541,9 @@ iSEE <- function(
               pObjects$brush_links <- tmp
               pObjects$memory[[mode0]][i0, .brushByPlot] <- new_transmitter
             }
+
+            # Update the elements reporting the links between plots.
+            rObjects$relinked <- .increment_counter(isolate(rObjects$relinked))
             
             # Not replotting if there were no brushes in either the new or old transmitters.
             if (!old_brush && !new_brush){
@@ -684,32 +677,29 @@ iSEE <- function(
           new_transmitter <- input[[brush_plot_field]]
 
           # Determining whether the new and old transmitting plot have brushes.
-          old_brush <- new_brush <- FALSE 
-          old_encoded <- new_encoded <- ""    
-          if (old_transmitter!="") {
-            old_enc <- .encode_panel_name(old_transmitter)
-            old_encoded <- paste0(old_enc$Type, old_enc$ID)
-            if (!is.null(pObjects$memory[[old_enc$Type]][old_enc$ID, .brushData][[1]])) {
-              old_brush <- TRUE
-            }
-          }
-          if (new_transmitter!="") {
-            new_enc <- .encode_panel_name(new_transmitter)
-            new_encoded <- paste0(new_enc$Type, new_enc$ID)
-            if (!is.null(pObjects$memory[[new_enc$Type]][new_enc$ID, .brushData][[1]])) {
-              new_brush <- TRUE
-            }
-          }
+          old_out <- .transmitted_brush(old_transmitter, pObjects$memory)
+          old_brush <- old_out$brush
+          old_encoded <- old_out$encoded
+          new_out <- .transmitted_brush(new_transmitter, pObjects$memory)
+          new_brush <- new_out$brush
+          new_encoded <- new_out$encoded
 
           # Updating the graph (no need for DAG protection here, as tables do not transmit brushes).
           pObjects$brush_links <- .choose_new_brush_source(pObjects$brush_links, tab_name, new_encoded, old_encoded)
           pObjects$memory[[mode0]][i0, .brushByPlot] <- new_transmitter
-  
+          rObjects$relinked <- .increment_counter(isolate(rObjects$relinked))
+ 
           # Not re-rendering if there were no brushes in either the new or old transmitters.
           if (!old_brush && !new_brush){
             return(NULL)
           }
 
+          # Destroying existing search fields, potentially from brushes in the old transmitter.
+          # Brushes for the new transmitter will be added during table re-rendering.
+          col_searches <- pObjects$memory[[mode0]][i0, .rowStatColSearch][[1]]
+          pObjects$memory$rowStatTable <- .update_list_element(
+            pObjects$memory$rowStatTable, i0, .rowStatColSearch, character(length(col_searches)))
+          
           # Triggering update of the table.
           rObjects[[tab_name]] <- .increment_counter(isolate(rObjects[[tab_name]]))
         }, ignoreInit=TRUE)
@@ -806,6 +796,7 @@ iSEE <- function(
                     if (replot) {
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     }
+                    rObjects$relinked <- .increment_counter(isolate(rObjects$relinked)) # updating link description.
                 })
   
                 # Defining the rendered plot, and saving the coordinates.
@@ -815,6 +806,12 @@ iSEE <- function(
                     pObjects$commands[[plot_name]] <- p.out$cmd
                     pObjects$coordinates[[plot_name]] <- p.out$xy[,c("X", "Y")]
                     p.out$plot
+                })
+
+                # Describing the links between panels.
+                output[[paste0(plot_name, "_", .panelLinkInfo)]] <- renderUI({
+                    (rObjects$relinked)
+                    .define_plot_links(plot_name, pObjects$memory, pObjects$brush_links)
                 })
             })
         }
@@ -843,6 +840,7 @@ iSEE <- function(
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     }
                 }
+                rObjects$relinked <- .increment_counter(isolate(rObjects$relinked)) # updating link description.
             })
 
             # X-axis observer:
@@ -858,6 +856,7 @@ iSEE <- function(
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     }
                 }
+                rObjects$relinked <- .increment_counter(isolate(rObjects$relinked)) # updating link description.
             })
         })
     }
@@ -883,7 +882,7 @@ iSEE <- function(
             search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
 
             datatable(gene_data, filter="top", rownames=TRUE,
-                      options=list(search=list(search=search, regex=TRUE),
+                      options=list(search=list(search=search, smart=FALSE, regex=TRUE, caseInsensitive=FALSE),
                                    searchCols=c(list(NULL), search_col), # row names are the first column!
                                    scrollX=TRUE),
                       selection=list(mode="single", selected=chosen))
@@ -945,6 +944,12 @@ iSEE <- function(
             .generate_annotation(annot.orgdb, annot.keytype, annot.keyfield, 
                                  gene_data, chosen)
         }) 
+
+        # Describing the links between panels.
+        output[[paste0(panel_name, "_", .panelLinkInfo)]] <- renderUI({
+            (rObjects$relinked)
+            .define_table_links(panel_name, pObjects$memory, pObjects$table_links)
+        })
       })
     }
 

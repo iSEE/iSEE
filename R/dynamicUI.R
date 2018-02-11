@@ -254,7 +254,7 @@
         }
 
         # Aggregating together everything into a box, and then into a column.
-        cur.box <- do.call(box, c(list(obj), param, 
+        cur.box <- do.call(box, c(list(obj), param, list(uiOutput(.input_FUN(.panelLinkInfo))),
            list(title=.decode_panel_name(mode, ID), solidHeader=TRUE, width=NULL, status = box_status[mode])))
         cur.row[[row.counter]] <- column(width=panel.width, cur.box, style='padding:3px;') 
         row.counter <- row.counter + 1L

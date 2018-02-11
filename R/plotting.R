@@ -5,10 +5,9 @@
 .all_aes_names <- c("x", "y", "color", "shape", "fill", "group")
 .all_aes_values <-
   c("X", "Y", "ColorBy", "ShapeBy", "FillBy", "GroupBy")
-.all_labs_values <- .all_aes_values
+.all_labs_names <- c(.all_aes_names, "title", "subtitle")
 
 names(.all_aes_values) <- .all_aes_names
-names(.all_labs_values) <- .all_aes_names
 
 ############################################
 # .make_redDimPlot  ----
@@ -26,12 +25,21 @@ names(.all_labs_values) <- .all_aes_names
     param_choices[[.redDimXAxis]],
     param_choices[[.redDimYAxis]]
   )
+  
+  reddim_names <- names(.sanitize_red_dim_names(reducedDimNames(se)))
+  plot_title <- reddim_names[param_choices[[.redDimType]]]
 
   # Generating the plotting commands.
-  .create_plot(data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
-    x_lab=sprintf("Dimension %s", param_choices[[.redDimXAxis]]),
-    y_lab=sprintf("Dimension %s", param_choices[[.redDimYAxis]]),
-    brush_color=brush_stroke_color_full["redDimPlot"]
+  .create_plot(
+    data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
+    x_lab = sprintf(
+      "Dimension %s",
+      param_choices[[.redDimXAxis]]),
+    y_lab = sprintf(
+      "Dimension %s",
+      param_choices[[.redDimYAxis]]),
+    brush_color=brush_stroke_color_full["redDimPlot"],
+    title = plot_title
   )
 }
 
@@ -58,11 +66,16 @@ names(.all_labs_values) <- .all_aes_names
     x_lab <- param_choices[[.colDataXAxisColData]]
     data_cmds[["x"]] <- sprintf("plot.data$X <- colData(se)[,%s];", deparse(x_lab))
   }
+  
+  x_title <- ifelse(x_lab == '', x_lab, sprintf("vs %s", x_lab))
+  plot_title <- sprintf("%s %s", y_lab, x_title)
 
   # Generating the plot.
-  .create_plot(data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
+  .create_plot(
+    data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
     x_lab=x_lab, y_lab=y_lab,
-    brush_color=brush_stroke_color_full["colDataPlot"]
+    brush_color=brush_stroke_color_full["colDataPlot"],
+    title=plot_title
   )
 }
 
@@ -95,6 +108,7 @@ names(.all_labs_values) <- .all_aes_names
   }
 
   assay_choice <- param_choices[[.featExprAssay]]
+  y_title <- rownames(se)[gene_selected_y]
   y_lab <- .gene_axis_label(se, gene_selected_y, assay_choice, multiline = FALSE)
   data_cmds[["y"]] <- sprintf(
     "plot.data <- data.frame(Y=assay(se, %i)[%s,], row.names = colnames(se))",
@@ -105,7 +119,7 @@ names(.all_labs_values) <- .all_aes_names
   x_choice <- param_choices[[.featExprXAxis]]
 
   if (x_choice==.featExprXAxisColDataTitle) { # colData column selected
-    x_lab <- param_choices[[.featExprXAxisColData]]
+    x_lab <- x_title <- param_choices[[.featExprXAxisColData]]
     data_cmds[["x"]] <- sprintf(
        "plot.data$X <- colData(se)[,%s];", 
        deparse(x_lab)
@@ -128,7 +142,8 @@ names(.all_labs_values) <- .all_aes_names
         sprintf("Invalid '%s' > '%s' input", .featExprXAxis, x_choice)
       ))
     }
-
+    
+    x_title <- rownames(se)[gene_selected_x]
     x_lab <- .gene_axis_label(se, gene_selected_x, assay_choice, multiline = FALSE)
     data_cmds[["x"]] <- sprintf(
       "plot.data$X <- assay(se, %i)[%s,];",
@@ -136,14 +151,18 @@ names(.all_labs_values) <- .all_aes_names
     )
 
   } else { # no x axis variable specified: show single violin
-    x_lab <- ''
+    x_lab <- x_title <- ''
     data_cmds[["x"]] <- "plot.data$X <- factor(character(ncol(se)))"
   }
+  
+  x_title <- ifelse(x_title == '', x_title, sprintf("vs %s", x_title))
+  plot_title <- sprintf("%s %s", y_title, x_title)
 
   # Generating the plot.
   .create_plot(data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
     x_lab=x_lab, y_lab=y_lab,
-    brush_color=brush_stroke_color_full["featExprPlot"]
+    brush_color=brush_stroke_color_full["featExprPlot"],
+    title = plot_title
   )
 }
 
@@ -290,7 +309,9 @@ names(.all_labs_values) <- .all_aes_names
 # Internal functions: scatter plotter ----
 ############################################
 
-.scatter_plot <- function(param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, brush_color)
+.scatter_plot <- function(
+  param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, brush_color,
+  title)
 # Creates a scatter plot of numeric X/Y. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -307,7 +328,8 @@ names(.all_labs_values) <- .all_aes_names
   plot_cmds[["labs"]] <- .build_labs(
     x = x_lab,
     y = y_lab,
-    color = color_label
+    color = color_label,
+    title = title
   )
 
   # Defining boundaries if zoomed.
@@ -339,7 +361,9 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);"
 # Internal functions: violin plotter ----
 ############################################
 
-.violin_plot <- function(param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, brush_color, horizontal = FALSE)
+.violin_plot <- function(
+  param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, brush_color,
+  horizontal = FALSE, title)
 # Generates a vertical violin plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -385,7 +409,8 @@ plot.data$Y <- tmp;")
   plot_cmds[["labs"]] <- .build_labs(
     x = x_lab,
     y = y_lab,
-    color = color_label
+    color = color_label,
+    title = title
   )
 
   # Defining boundaries if zoomed. This requires some finesse to deal
@@ -427,7 +452,9 @@ plot.data$Y <- tmp;")
 # Internal functions: rectangle plotter ----
 ############################################
 
-.griddotplot <- function(param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, brush_color)
+.griddotplot <- function(
+  param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, brush_color,
+  title)
 # Generates a grid dot plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -464,7 +491,8 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
   plot_cmds[["labs"]] <- .build_labs(
     x = x_lab,
     y = y_lab,
-    color = color_label
+    color = color_label,
+    title = title
   )
 
   # Defining boundaries if zoomed.
@@ -769,12 +797,13 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 }
 
 .build_labs <- function(
-    x = NA_character_, y = NA_character_,
-    color = NA_character_, shape = NA_character_,
-    fill = NA_character_, group = NA_character_
+  x = NA_character_, y = NA_character_,
+  color = NA_character_, shape = NA_character_,
+  fill = NA_character_, group = NA_character_,
+  title = NA_character_, subtitle = NA_character_
 ){
-    labs_specs <- c(x, y, color, shape, fill, group)
-    names(labs_specs) <- .all_aes_names
+    labs_specs <- c(x, y, color, shape, fill, group, title, subtitle)
+    names(labs_specs) <- .all_labs_names
     labs_specs <- labs_specs[!is.na(labs_specs)]
     if (identical(length(labs_specs), 0L)){
       return(NULL)

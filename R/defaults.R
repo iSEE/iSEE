@@ -280,7 +280,6 @@ heatMapPlotDefaults <- function(se, number) {
   out[[.heatMapYAxisFeatName]] <- rep(list(all_features[1:2]), nrow(out))
   out[[.heatMapXAxisColData]] <- rep(list(colnames(colData(se))[1]), nrow(out))
 
-  out <- .add_general_parameters_for_heatmaps(out, se)
   if (waszero) out <- out[0,,drop=FALSE]
   return(out)
 }
@@ -353,18 +352,6 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.colorByFeatNameColor]] <- "red"
 
     return(incoming)
-}
-
-.add_general_parameters_for_heatmaps <- function(incoming, se) {
-  incoming <- .add_general_parameters(incoming)
-  
-  # Adding coloring parameters specifically for column plots.
-  def_assay <- .set_default_assay(se)
-  def_cov <- colnames(colData(se))[1]
-  incoming[[.colorByField]] <- .colorByColDataTitle
-  incoming[[.colorByColData]] <- def_cov
-
-  return(incoming)
 }
 
 .set_default_assay <- function(se) { 

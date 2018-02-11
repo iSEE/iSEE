@@ -5,12 +5,12 @@ colDataArgs <- colDataPlotDefaults(sce, 1)
 featExprArgs <- featExprPlotDefaults(sce, 1)
 rowStatArgs <- rowStatTableDefaults(sce, 1)
 rowDataArgs <- rowDataPlotDefaults(sce, 1)
-heatArgs <- heatPlotDefaults(sce, 1)
+heatMapArgs <- heatMapPlotDefaults(sce, 1)
 
 # Set up memory
 all_memory <- iSEE:::.setup_memory(
-  sce, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs, heatArgs,
-  redDimMax = 1, colDataMax = 1, featExprMax = 1, rowStatMax = 1, rowDataMax = 1, heatMax = 1)
+  sce, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs, heatMapArgs,
+  redDimMax = 1, colDataMax = 1, featExprMax = 1, rowStatMax = 1, rowDataMax = 1, heatMapMax = 1)
 
 all_coordinates <- list()
 

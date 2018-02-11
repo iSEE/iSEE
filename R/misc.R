@@ -19,7 +19,7 @@
               featExprPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
               rowStatTable=! (nrow(se)==0L),
               rowDataPlot=! (ncol(rowData(se))==0L || nrow(se)==0L),
-              heatPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L)
+              heatMapPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L)
   ))
 }
 
@@ -31,8 +31,8 @@
   return(counter)
 }
 
-.setup_memory <- function(se, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs, heatArgs,
-                          redDimMax, colDataMax, featExprMax, rowStatMax, rowDataMax, heatMax) 
+.setup_memory <- function(se, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs, heatMapArgs,
+                          redDimMax, colDataMax, featExprMax, rowStatMax, rowDataMax, heatMapMax) 
 # This function sets up the memory for the current session, taking in any
 # specifications from the user regarding the defaults and max number of panels.
 {
@@ -42,7 +42,7 @@
   geneexpr_max_plots <- max(nrow(featExprArgs), featExprMax)
   genestat_max_tabs <- max(nrow(rowStatArgs), rowStatMax)
   rowdata_max_plots <- max(nrow(rowDataArgs), rowDataMax)
-  heat_max_plots <- max(nrow(heatArgs), heatMax)
+  heatmap_max_plots <- max(nrow(heatMapArgs), heatMapMax)
 
   feasibility <- .check_plot_feasibility(se)
   if (!feasibility$redDimPlot) { 
@@ -65,9 +65,9 @@
     rowdata_max_plots <- 0L
     rowDataArgs <- NULL
   }
-  if (!feasibility$heatPlot) {
-    heat_max_plots <- 0L
-    heatArgs <- NULL
+  if (!feasibility$heatMapPlot) {
+    heatmap_max_plots <- 0L
+    heatMapArgs <- NULL
   }
 
   # Setting up parameters for each panel.
@@ -103,11 +103,11 @@
   }
   rownames(memory$rowDataPlot) <- sprintf("rowDataPlot%i", seq_len(rowdata_max_plots))
 
-  memory$heatPlot <- heatPlotDefaults(se, heat_max_plots)
-  if (!is.null(heatArgs)) {
-    memory$heatPlot <- .override_defaults(memory$heatPlot, heatArgs)
+  memory$heatMapPlot <- heatMapPlotDefaults(se, heatmap_max_plots)
+  if (!is.null(heatMapArgs)) {
+    memory$heatMapPlot <- .override_defaults(memory$heatMapPlot, heatMapArgs)
   }
-  rownames(memory$heatPlot) <- sprintf("heatPlot%i", seq_len(heat_max_plots))
+  rownames(memory$heatMapPlot) <- sprintf("heatMapPlot%i", seq_len(heatmap_max_plots))
   
   return(memory)
 }
@@ -121,7 +121,7 @@ height_limits <- c(400L, 1000L)
   if (is.null(initialPanels)) {
     initialPanels <- data.frame(Name=c("Reduced dimension plot 1", "Column data plot 1", 
                                        "Feature expression plot 1", "Row statistics table 1",
-                                       "Row data plot 1", "Heatmap 1"),
+                                       "Row data plot 1", "Heat map 1"),
                                 Width=4, Height=500L, stringsAsFactors=FALSE)
   } 
 

@@ -1,20 +1,16 @@
-.make_heatPlot <- function(id, all_memory, all_coordinates, se, colormap)
+.make_heatMapPlot <- function(id, all_memory, all_coordinates, se, colormap)
   # Makes a heatmap.
 {
-  param_choices <- all_memory$heatPlot[id,]
+  param_choices <- all_memory$heatMapPlot[id,]
   data_cmds <- list()
   
-  y_choice <- param_choices[[.heatYAxis]]
-  if (y_choice == .heatYAxisRowPlotTitle) {
-  } else if (y_choice == .heatYAxisFeatNameTitle) {
-    genes_selected_y <- param_choices[[.heatYAxisFeatName]][[1]]
-    validate(need( 
-      all(genes_selected_y %in% rownames(se)),
-      sprintf("Invalid '%s' > '%s' input", .heatYAxis, y_choice)
-    ))
-  }
+  genes_selected_y <- param_choices[[.heatMapYAxisFeatName]][[1]]
+  validate(need( 
+    all(genes_selected_y %in% rownames(se)),
+    sprintf("Invalid genes for heat map input") # NEED BETTER ERROR MESSAGE HERE?
+  ))
   
-  assay_choice <- param_choices[[.heatAssay]]
+  assay_choice <- param_choices[[.heatMapAssay]]
   
   data_cmds[["y"]] <- list(
     sprintf("plot.data <- as.matrix(assay(se, %i)[%s, , drop=FALSE]);", 

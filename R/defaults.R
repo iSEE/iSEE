@@ -4,7 +4,7 @@
 #' @aliases colDataPlotDefaults 
 #' @aliases rowStatTableDefaults
 #' @aliases rowDataPlotDefaults
-#' @aliases heatPlotDefaults
+#' @aliases heatMapPlotDefaults
 #'
 #' @title Parameter defaults 
 #'
@@ -169,7 +169,7 @@
 #' colDataPlotDefaults(sce, number=5)
 #' rowStatTableDefaults(sce, number=5)
 #' rowDataPlotDefaults(sce, number=5)
-#' heatPlotDefaults(sce, number=5)
+#' heatMapPlotDefaults(sce, number=5)
 redDimPlotDefaults <- function(se, number) {
     waszero <- number==0 # To ensure that we define all the fields with the right types.
     if (waszero) number <- 1
@@ -268,7 +268,7 @@ rowDataPlotDefaults <- function(se, number) {
 
 #' @rdname defaults 
 #' @export
-heatPlotDefaults <- function(se, number) {
+heatMapPlotDefaults <- function(se, number) {
   waszero <- number==0 # To ensure that we define all the fields with the right types.
   if (waszero) number <- 1
   
@@ -276,10 +276,9 @@ heatPlotDefaults <- function(se, number) {
   all_features <- rownames(se)
   
   out <- new("DataFrame", nrows=as.integer(number))
-  out[[.heatAssay]] <- def_assay
-  out[[.heatYAxis]] <- .heatYAxisFeatNameTitle
-  
-  out[[.heatYAxisFeatName]] <- list(all_features[1:2])
+  out[[.heatMapAssay]] <- def_assay
+  out[[.heatMapYAxisFeatName]] <- rep(list(all_features[1:2]), nrow(out))
+  out[[.heatMapXAxisColData]] <- colnames(colData(se))[1]
 
   out <- .add_general_parameters_for_heatmaps(out, se)
   if (waszero) out <- out[0,,drop=FALSE]

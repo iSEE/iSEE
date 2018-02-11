@@ -38,13 +38,9 @@
 .rowDataXAxisRowData <- "XAxisRowData"
 
 # Heatmap plotting parameters. ----
-.heatAssay <- "Assay"
-.heatYAxis <- "YAxis"
-.heatYAxisRowPlotTitle <- "Row plot"
-.heatYAxisFeatNameTitle <- "Feature name"
-
-.heatYAxisRowPlot <- "YAxisRowPlot"
-.heatYAxisFeatName <- "YAxisFeatName"
+.heatMapAssay <- "Assay"
+.heatMapYAxisFeatName <- "YAxisFeatName"
+.heatMapXAxisColData <- "XAxisColData"
 
 # Plot colouring parameters. ----
 .colorByNothingTitle <- "None"
@@ -115,7 +111,7 @@ translation <- c(redDimPlot="Reduced dimension plot",
                  featExprPlot="Feature expression plot",
                  rowStatTable="Row statistics table",
                  rowDataPlot="Row data plot",
-                 heatPlot="Heatmap")
+                 heatMapPlot="Heat map")
 rev.translation <- names(translation)
 names(rev.translation) <- translation
 

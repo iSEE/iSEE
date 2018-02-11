@@ -32,6 +32,12 @@
     do.call(tagList, collected)
 }
 
+.sanitize_red_dim_names <- function(raw_names){
+  red_dim_names <- seq_along(raw_names)
+  names(red_dim_names) <- sprintf("(%i) %s", red_dim_names, raw_names)
+  return(red_dim_names)
+}
+
 .panel_generation <- function(active_panels, memory, se) 
 # This function generates the various panels, taking into account their
 # variable widths to dynamically assign them to particular rows. We also
@@ -54,9 +60,7 @@
     all_assays <- seq_along(all_assays_raw)
     names(all_assays) <- sprintf("(%i) %s", all_assays, all_assays_raw)
 
-    red_dim_names_raw <- reducedDimNames(se)
-    red_dim_names <- seq_along(red_dim_names_raw)
-    names(red_dim_names) <- sprintf("(%i) %s", red_dim_names, red_dim_names_raw)
+    red_dim_names <- .sanitize_red_dim_names(reducedDimNames(se))
     red_dim_dims <- vapply(red_dim_names, FUN=function(x) ncol(reducedDim(se, x)), FUN.VALUE=0L)
   
     # Defining all transmitting tables and plots for linking.

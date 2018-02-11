@@ -185,10 +185,12 @@
                                options = list(plugins = list('remove_button', 'drag_drop'), maxOptions=20)),
                 selectInput(.input_FUN(.heatMapAssay), label=NULL,
                             choices=all_assays, selected=param_choices[[.heatMapAssay]]),
-                selectInput(.input_FUN(.heatMapXAxisColData),
-                            label="Column data",
-                            choices=column_covariates,
-                            selected=param_choices[[.heatMapXAxisColData]][[1]])
+                selectizeInput(.input_FUN(.heatMapXAxisColData),
+                               label="Column data:",
+                               choices=column_covariates,
+                               multiple = TRUE, 
+                               selected=param_choices[[.heatMapXAxisColData]][[1]],
+                               options = list(plugins = list('remove_button', 'drag_drop')))
           )
         } else {
             stop(sprintf("'%s' is not a recognized panel mode"), mode)
@@ -223,8 +225,7 @@
                 do.call(collapseBox, c(list(id=.input_FUN(.plotParamPanelOpen),
                                             title="Plotting parameters",
                                             open=param_choices[[.plotParamPanelOpen]]),
-                                       plot.param)),
-                .createColorPanelForHeatmaps(mode, ID, param_choices, active_tab, column_covariates, all_assays, feasibility)
+                                       plot.param))
                 )
             )
         } else {
@@ -374,31 +375,6 @@
             )
         )
 }
-
-.createColorPanelForHeatmaps <- function(mode, ID, param_choices, active_tab, covariates, all_assays, feasibility)
-  # Convenience function to create the color parameter panel. This
-  # won't be re-used, it just breaks up the huge UI function above.
-{
-  colorby_field <- paste0(mode, ID, "_", .colorByField)
-  color_choices <- c(.colorByNothingTitle)
-  if (feasibility$heatMapPlot) { 
-    color_choices <- c(color_choices, .colorByColDataTitle)
-  }
-
-  collapseBox(
-    id = paste0(mode, ID, "_", .colorParamPanelOpen),
-    title = "Coloring parameters",
-    open = param_choices[[.colorParamPanelOpen]],
-    radioButtons(colorby_field, label="Color by:", inline=TRUE,
-                 choices=color_choices, selected=param_choices[[.colorByField]]
-    ),
-    .conditionalPanelOnRadio(colorby_field, .colorByColDataTitle,
-                             selectInput(paste0(mode, ID, "_", .colorByColData), label = NULL,
-                                         choices=covariates, selected=param_choices[[.colorByColData]])
-    )
-  )
-}
-
 
 .createBrushPanel <- function(mode, ID, param_choices, brushable)
 # Convenience function to create the brushing parameter panel. This

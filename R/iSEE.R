@@ -705,6 +705,19 @@ iSEE <- function(
         }, ignoreInit=TRUE)
       })
     }
+        
+    # Panel opening/closing observers for heat map plots.
+    max_plots <- nrow(pObjects$memory$heatMapPlot)
+    for (i in seq_len(max_plots)) {
+      local({
+        mode0 <- "heatMapPlot"
+        i0 <- i
+        plot_open_field <- paste0(mode0, i0, "_", .plotParamPanelOpen)
+        observeEvent(input[[plot_open_field]], {
+            pObjects$memory[[mode0]][[.plotParamPanelOpen]][i0] <- input[[plot_open_field]]
+        })
+      })
+    }
 
     #######################################################################
     # Dot-related plot creation section. ----
@@ -958,13 +971,14 @@ iSEE <- function(
     max_plots <- nrow(pObjects$memory$heatMapPlot)
     for (i in seq_len(max_plots)) {
         # Server-side initialization of options.
-        updateSelectizeInput(session, paste0("heatMapPlot", i, "_", .heatMapYAxisFeatName), choices = rownames(se), server = TRUE)
+        updateSelectizeInput(session, paste0("heatMapPlot", i, "_", .heatMapYAxisFeatName), choices = rownames(se), 
+                             server = TRUE, selected = pObjects$memory$heatMapPlot[i, .heatMapYAxisFeatName][[1]])
 
         local({
             mode0 <- "heatMapPlot"
             i0 <- i
             plot_name <- paste0(mode0, i0)
-            
+                    
             # Defining the rendered plot, and saving the coordinates.
             output[[plot_name]] <- renderPlot({
                 force(rObjects[[plot_name]])
@@ -974,10 +988,40 @@ iSEE <- function(
                 p.out$plot
             })
         })
+
+        # Saving list-based coordinates.
+        for (field in c(.heatMapXAxisColData, .heatMapYAxisFeatName)) {
+            local({
+                i0 <- i
+                mode0 <- "heatMapPlot"
+                field0 <- field
+                plot_name <- paste0(mode0, i0)
+                cur_field <- paste0(plot_name, "_", field0)
+
+                observeEvent(input[[cur_field]], {
+                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, field0, input[[cur_field]])
+                    rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                }, ignoreInit=TRUE)
+            })
+        }
+
+        # Saving other bits and pieces.
+        for (field in c(.heatMapAssay)) { 
+            local({
+                i0 <- i
+                mode0 <- "heatMapPlot"
+                field0 <- field
+                plot_name <- paste0(mode0, i0)
+                cur_field <- paste0(plot_name, "_", field0)
+
+                observeEvent(input[[cur_field]], {
+                    matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
+                    pObjects$memory[[mode0]][[field0]][i0] <- matched_input
+                    rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                }, ignoreInit=TRUE)
+            })
+        }
     }
-
-
-
   } # end of iSEE_server
 
   #######################################################################

@@ -278,7 +278,7 @@ heatMapPlotDefaults <- function(se, number) {
   out <- new("DataFrame", nrows=as.integer(number))
   out[[.heatMapAssay]] <- def_assay
   out[[.heatMapYAxisFeatName]] <- rep(list(all_features[1:2]), nrow(out))
-  out[[.heatMapXAxisColData]] <- colnames(colData(se))[1]
+  out[[.heatMapXAxisColData]] <- rep(list(colnames(colData(se))[1]), nrow(out))
 
   out <- .add_general_parameters_for_heatmaps(out, se)
   if (waszero) out <- out[0,,drop=FALSE]

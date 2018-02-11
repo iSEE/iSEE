@@ -7,7 +7,7 @@
 \alias{colDataPlotDefaults}
 \alias{rowStatTableDefaults}
 \alias{rowDataPlotDefaults}
-\alias{heatPlotDefaults}
+\alias{heatMapPlotDefaults}
 \title{Parameter defaults}
 \usage{
 redDimPlotDefaults(se, number)
@@ -20,7 +20,7 @@ rowStatTableDefaults(se, number)
 
 rowDataPlotDefaults(se, number)
 
-heatPlotDefaults(se, number)
+heatMapPlotDefaults(se, number)
 }
 \arguments{
 \item{se}{A SingleCellExperiment object.}
@@ -201,5 +201,5 @@ featExprPlotDefaults(sce, number=5)
 colDataPlotDefaults(sce, number=5)
 rowStatTableDefaults(sce, number=5)
 rowDataPlotDefaults(sce, number=5)
-heatPlotDefaults(sce, number=5)
+heatMapPlotDefaults(sce, number=5)
 }

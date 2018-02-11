@@ -14,6 +14,7 @@
 #' need tags hr brushOpts brushedPoints observe validate checkboxInput 
 #' conditionalPanel renderPrint singleton showModal modalDialog 
 #' updateSelectInput isolate showNotification p runApp a em strong
+#' selectizeInput updateSelectizeInput
 #' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
 #' dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu
 #' notificationItem box

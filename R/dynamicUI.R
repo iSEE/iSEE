@@ -180,7 +180,7 @@
                 selectizeInput(.input_FUN(.heatMapYAxisFeatName),
                                label="Features:",
                                choices=NULL,
-                               selected=param_choices[[.heatMapYAxisFeatName]][[1]],
+                               selected=NULL,
                                multiple=TRUE,
                                options = list(plugins = list('remove_button', 'drag_drop'), maxOptions=20)),
                 selectInput(.input_FUN(.heatMapAssay), label=NULL,

@@ -970,14 +970,19 @@ iSEE <- function(
 
     max_plots <- nrow(pObjects$memory$heatMapPlot)
     for (i in seq_len(max_plots)) {
-        # Server-side initialization of options.
-        updateSelectizeInput(session, paste0("heatMapPlot", i, "_", .heatMapYAxisFeatName), choices = rownames(se), 
-                             server = TRUE, selected = pObjects$memory$heatMapPlot[i, .heatMapYAxisFeatName][[1]])
-
         local({
             mode0 <- "heatMapPlot"
             i0 <- i
             plot_name <- paste0(mode0, i0)
+ 
+            # Server-side initialization of options.
+            prefield <- paste0(plot_name, "_", .heatMapYAxisFeatName)
+            observe({
+                if (is.null(input[[prefield]])) { 
+                    updateSelectizeInput(session, paste0(mode0, i0, "_", .heatMapYAxisFeatName), choices = rownames(se), 
+                                         server = TRUE, selected = pObjects$memory[[mode0]][i, .heatMapYAxisFeatName][[1]])
+                }
+            })
                     
             # Defining the rendered plot, and saving the coordinates.
             output[[plot_name]] <- renderPlot({

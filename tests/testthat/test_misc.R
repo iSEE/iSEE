@@ -113,7 +113,7 @@ test_that("memory setup works correctly", {
                                    featExprArgs=DataFrame(XAxis="Row table"),
                                    rowStatArgs=DataFrame(Selected=10L), 
                                    rowDataArgs=DataFrame(XAxis="Row data"),
-                                   heatMapArgs=DataFrame(YAxis="Feature name"),
+                                   heatMapArgs=DataFrame(Assay=1L),
                                    redDimMax=5, colDataMax=3, featExprMax=1, rowStatMax=2, rowDataMax=3, heatMapMax=2)
     expect_identical(nrow(memory$redDimPlot), 5L)
     expect_identical(nrow(memory$colDataPlot), 3L)
@@ -127,7 +127,7 @@ test_that("memory setup works correctly", {
     expect_identical(memory$featExprPlot$XAxis, "Row table")
     expect_identical(memory$rowStatTable$Selected, c(10L, 1L))
     expect_identical(memory$rowDataPlot$XAxis, rep(c("Row data", "None"), c(1,2)))
-    expect_identical(memory$heatMapPlot$YAxis, rep("Feature name", 2))
+    expect_identical(memory$heatMapPlot$Assay, c(1L, 6L))
 
     # Works correctly when the number of arguments is greater than MAx.
     memory <- iSEE:::.setup_memory(sce, 
@@ -136,7 +136,7 @@ test_that("memory setup works correctly", {
                                    featExprArgs=DataFrame(XAxis="Row table"),
                                    rowStatArgs=DataFrame(Selected=10L), 
                                    rowDataArgs=DataFrame(XAxis="Row data"),
-                                   heatMapArgs=DataFrame(YAxis="Feature name"),
+                                   heatMapArgs=DataFrame(Assay=1L),
                                    redDimMax=0, colDataMax=0, featExprMax=0, rowStatMax=0, rowDataMax=0, heatMapMax=0)
     expect_identical(nrow(memory$redDimPlot), 1L)
     expect_identical(nrow(memory$colDataPlot), 1L)
@@ -150,7 +150,7 @@ test_that("memory setup works correctly", {
     expect_identical(memory$featExprPlot$XAxis, "Row table")
     expect_identical(memory$rowStatTable$Selected, 10L)
     expect_identical(memory$rowDataPlot$XAxis, "Row data")
-    expect_identical(memory$heatMapPlot$YAxis, "Feature name")
+    expect_identical(memory$heatMapPlot$Assay, 1L)
 
     # Works correctly when nothing is feasible.
     sceX <- sce[0,0]

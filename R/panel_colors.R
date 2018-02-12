@@ -1,7 +1,6 @@
-# Colours for shinydashboard::box.
-
+# Colours for shinydashboard::box statuses.
 panel_colors <- c(redDimPlot="#3c8dbc",
-                  rowStatTable="#00c0ef",
+                  rowStatTable="#6b6d77",
                   rowDataPlot="#dd4b39",
                   colDataPlot="#f39c12",
                   featExprPlot="#00a65a",
@@ -29,20 +28,11 @@ tolower(names(panel_colors)), panel_colors, panel_colors,
 tolower(names(panel_colors)), tolower(names(panel_colors))
 ), collapse="\n")
 
-brush_fill_color <- c(redDimPlot="#9cf", 
-                      featExprPlot="#9f6", 
-                      colDataPlot="#ff9", 
-                      rowDataPlot="#9cf", 
-                      heatMapPlot="#9cf")
 
-brush_stroke_color <- c(redDimPlot="#06f", 
-                        featExprPlot="#090", 
-                        colDataPlot="#fc0", 
-                        rowDataPlot="#06f", 
-                        heatMapPlot="#9cf")
+# Colours for brushing (fill needs to be lighter than the stroke).
+brush_stroke_color <- panel_colors
 
-brush_stroke_color_full <- c(redDimPlot="#0066ff", 
-                             featExprPlot="#009900", 
-                             colDataPlot="#ffcc00", 
-                             rowDataPlot="#0066ff", 
-                             heatMapPlot="#0066ff")
+new_colors <- 255 - ((255 - col2rgb(panel_colors))/5)
+brush_fill_color <- rgb(new_colors[1,], new_colors[2,], new_colors[3,], maxColorValue=255)
+names(brush_fill_color) <- names(panel_colors)
+

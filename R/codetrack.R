@@ -100,7 +100,7 @@
        vertex.label.family = "Helvetica",
        vertex.label.color = "black",
        vertex.label.dist = 2.5,
-       vertex.color = brush_stroke_color_full[V(currgraph_used)$plottype])
+       vertex.color = panel_colors[V(currgraph_used)$plottype])
 }  
 
 .find_links_to_table <- function(rObjects, pObjects, graph)

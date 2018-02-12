@@ -11,13 +11,13 @@
 #' @param rowStatArgs A DataFrame similar to that produced by \code{\link{rowStatTableDefaults}}, specifying initial parameters for the plots.
 #' @param rowDataArgs A DataFrame similar to that produced by \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the plots.
 #' @param heatMapArgs A DataFrame similar to that produced by \code{\link{heatMapPlotDefaults}}, specifying initial parameters for the plots.
-#' @param redDimMax An integer scalar specifying the maximum number of reduced dimension plots in the interface. 
-#' @param colDataMax An integer scalar specifying the maximum number of column data plots in the interface. 
-#' @param featExprMax An integer scalar specifying the maximum number of feature expression plots in the interface. 
-#' @param rowStatMax An integer scalar specifying the maximum number of row statistics tables in the interface. 
+#' @param redDimMax An integer scalar specifying the maximum number of reduced dimension plots in the interface.
+#' @param colDataMax An integer scalar specifying the maximum number of column data plots in the interface.
+#' @param featExprMax An integer scalar specifying the maximum number of feature expression plots in the interface.
+#' @param rowStatMax An integer scalar specifying the maximum number of row statistics tables in the interface.
 #' @param rowDataMax An integer scalar specifying the maximum number of row data plots in the interface.
 #' @param heatMapMax An integer scalar specifying the maximum number of heatmaps in the interface.
-#'  
+#'
 #' @param initialPanels A DataFrame specifying which panels should be created
 #' at initialization. This should contain a \code{Name} character field and a
 #' \code{Width} integer field, see Details.
@@ -32,7 +32,7 @@
 #' custom color maps to apply to individual \code{assays}, \code{colData},
 #' and \code{rowData} covariates.
 #' @param run_local A logical indicating whether the app is to be run
-#' locally or remotely on a server, which determines how documentation 
+#' locally or remotely on a server, which determines how documentation
 #' will be accessed.
 #'
 #' @details Users can pass default parameters via DataFrame objects in
@@ -110,21 +110,21 @@ iSEE <- function(
   # in the tracker
   se_name <- deparse(substitute(se))
   ecm_name <- deparse(substitute(colormap))
-  
-  if (!is(se, "SingleCellExperiment")) { 
+
+  if (!is(se, "SingleCellExperiment")) {
     se <- as(se, "SummarizedExperiment") # supports ExpressionSet objects
     se <- as(se, "SingleCellExperiment")
     se_name <- sprintf('as(as(%s, "SummarizedExperiment"), "SingleCellExperiment")', se_name)
   }
-  
+
   # Throw an error if the colormap supplied is not compatible with the object
   isColorMapCompatible(colormap, se, error = TRUE)
 
   # Setting up inputs for DT::datatable something to play with.
   # It must have some columns, so we're just filling it up with _something_.
   gene_data <- as.data.frame(rowData(se))
-  rownames(gene_data) <- rownames(se) 
-  if (ncol(gene_data)==0L && nrow(gene_data)){ 
+  rownames(gene_data) <- rownames(se)
+  if (ncol(gene_data)==0L && nrow(gene_data)){
     gene_data$Present <- TRUE
   }
 
@@ -142,7 +142,7 @@ iSEE <- function(
       stop("specified keytype not in org.*.db object")
     }
   }
-  
+
   #######################################################################
   ## UI definition. ----
   #######################################################################
@@ -183,8 +183,8 @@ iSEE <- function(
                      icon = icon(""), # tricking it to not have additional icon
                      status = "primary"),
                    notificationItem(
-                     text = actionButton('open_vignette', label="Open the vignette", 
-                                         icon = icon("book"), 
+                     text = actionButton('open_vignette', label="Open the vignette",
+                                         icon = icon("book"),
                                          style=.actionbutton_biocstyle,
                                          onclick = ifelse(run_local, "", "window.open('http://google.com', '_blank')")), # to be replaced with vignette url
                      icon = icon(""), status = "primary"
@@ -196,15 +196,15 @@ iSEE <- function(
                     badgeStatus = NULL,
                     headerText = "Additional information",
                     notificationItem(
-                     text = actionButton('session_info', label="About this session", 
-                                         icon = icon("window-maximize"), 
+                     text = actionButton('session_info', label="About this session",
+                                         icon = icon("window-maximize"),
                                          style=.actionbutton_biocstyle
                      ),
                      icon = icon(""), status = "primary"
                    ),
                    notificationItem(
-                     text = actionButton('iSEE_info', label="About iSEE", 
-                                         icon = icon("heart"), 
+                     text = actionButton('iSEE_info', label="About iSEE",
+                                         icon = icon("heart"),
                                          style=.actionbutton_biocstyle
                                          ),
                      icon = icon(""), status = "primary"
@@ -224,7 +224,7 @@ iSEE <- function(
     ), # end of dashboardSidebar
 
     dashboardBody(
-      useShinyjs(), 
+      useShinyjs(),
       introjsUI(), # must be included in UI
 
       # for error message handling
@@ -254,7 +254,7 @@ iSEE <- function(
     pObjects$memory <- memory
     pObjects$coordinates <- list()
     pObjects$commands <- list()
-    pObjects$brush_links <- .spawn_brush_chart(memory) 
+    pObjects$brush_links <- .spawn_brush_chart(memory)
     pObjects$table_links <- .spawn_table_links(memory)
 
     # Storage for all the reactive objects
@@ -286,11 +286,11 @@ iSEE <- function(
                   height="600px")
         ))
     })
-    
+
     observeEvent(input$browseVignette, {
       # browseVignettes("DESeq2") # this does not work, maybe add another open blank to the local location of the vignette?
     })
-    
+
     observeEvent(input$session_info, {
       showModal(
         modalDialog(
@@ -320,7 +320,7 @@ iSEE <- function(
         )
       )
     })
-    
+
     observeEvent(input$open_linkgraph, {
       showModal(
         modalDialog(
@@ -333,7 +333,7 @@ iSEE <- function(
       )
     })
 
-    if (run_local) { 
+    if (run_local) {
       observeEvent(input$open_vignette, {
         path <- system.file("doc","iSEE_vignette.html", package="iSEE")
         if (path=="") {
@@ -411,7 +411,7 @@ iSEE <- function(
                         .destroy_brush_source(pObjects, paste0(mode0, i0))
                         .delete_table_links(mode0, i0, pObjects)
                     }
-                    
+
                     # Triggering re-rendering of the UI via change to active_panels.
                     index <- which(current_type & all_active$ID==i0)
                     rObjects$active_panels <- rObjects$active_panels[-index,]
@@ -455,7 +455,7 @@ iSEE <- function(
                         title=paste(.decode_panel_name(mode0, i0), "panel parameters"),
                         easyClose=TRUE, size="m", footer=NULL
                         )
-                    )  
+                    )
                 })
 
                 width_name <- paste0(prefix, .organizationWidth)
@@ -484,239 +484,281 @@ iSEE <- function(
     }
 
     #######################################################################
-    # Panel and brush observers.
+    # Panel observers.
     #######################################################################
 
     for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
-      max_plots <- nrow(pObjects$memory[[mode]])
-      for (i in seq_len(max_plots)) {
+        max_plots <- nrow(pObjects$memory[[mode]])
+        for (i in seq_len(max_plots)) {
+            local({
+                mode0 <- mode
+                i0 <- i
+                plot_name <- paste0(mode0, i0)
+                prefix <- paste0(plot_name, "_")
+
+                plot_open_field <- paste0(prefix, .plotParamPanelOpen)
+                observeEvent(input[[plot_open_field]], {
+                    pObjects$memory[[mode0]][[.plotParamPanelOpen]][i0] <- input[[plot_open_field]]
+                })
+
+                col_open_field <- paste0(prefix, .colorParamPanelOpen)
+                observeEvent(input[[col_open_field]], {
+                    pObjects$memory[[mode0]][[.colorParamPanelOpen]][i0] <- input[[col_open_field]]
+                })
+
+                brush_open_field <- paste0(prefix, .brushParamPanelOpen)
+                observeEvent(input[[brush_open_field]], {
+                    pObjects$memory[[mode0]][[.brushParamPanelOpen]][i0] <- input[[brush_open_field]]
+                })
+            })
+        }
+    }
+
+    # Panel opening/closing observers for heat map plots.
+    max_plots <- nrow(pObjects$memory$heatMapPlot)
+    for (i in seq_len(max_plots)) {
         local({
-          mode0 <- mode
-          i0 <- i
-          plot_name <- paste0(mode0, i0)
-          prefix <- paste0(plot_name, "_")
-
-          ###############
-
-          # Panel opening/closing observers.
-          plot_open_field <- paste0(prefix, .plotParamPanelOpen)
-          observeEvent(input[[plot_open_field]], {
-            pObjects$memory[[mode0]][[.plotParamPanelOpen]][i0] <- input[[plot_open_field]]
-          })
-
-          col_open_field <- paste0(prefix, .colorParamPanelOpen)
-          observeEvent(input[[col_open_field]], {
-            pObjects$memory[[mode0]][[.colorParamPanelOpen]][i0] <- input[[col_open_field]]
-          })
-
-          brush_open_field <- paste0(prefix, .brushParamPanelOpen)
-          observeEvent(input[[brush_open_field]], {
-            pObjects$memory[[mode0]][[.brushParamPanelOpen]][i0] <- input[[brush_open_field]]
-          })
-
-          ###############
-
-          # Brush choice observer. 
-          brush_plot_field <- paste0(prefix, .brushByPlot) 
-          observeEvent(input[[brush_plot_field]], {
-            old_transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
-            new_transmitter <- input[[brush_plot_field]]
-
-            # Determining whether the new and old transmitting plot have brushes.
-            old_out <- .transmitted_brush(old_transmitter, pObjects$memory)
-            old_brush <- old_out$brush
-            old_encoded <- old_out$encoded
-            new_out <- .transmitted_brush(new_transmitter, pObjects$memory)
-            new_brush <- new_out$brush
-            new_encoded <- new_out$encoded
-
-            # Updating the graph, but breaking if it's not a DAG.
-            tmp <- .choose_new_brush_source(pObjects$brush_links, plot_name, new_encoded, old_encoded)
-            daggy <- is_dag(simplify(tmp, remove.loops=TRUE)) 
-            if (!daggy) {
-              showNotification("brushing relationships cannot be cyclic", type="error")
-              pObjects$memory[[mode0]][i0, .brushByPlot] <- ""
-              updateSelectInput(session, brush_plot_field, selected="")
-            } else {
-              pObjects$brush_links <- tmp
-              pObjects$memory[[mode0]][i0, .brushByPlot] <- new_transmitter
-            }
-
-            # Update the elements reporting the links between plots.
-            rObjects$relinked <- .increment_counter(isolate(rObjects$relinked))
-            
-            # Not replotting if there were no brushes in either the new or old transmitters.
-            if (!old_brush && !new_brush){
-              return(NULL)
-            }
-
-            # Triggering self update of the plot.
-            rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-
-            # Triggering replotting of children, if the current panel is set to restrict;
-            # and we have a brush, so that there was already some brushing in the children.
-            if (pObjects$memory[[mode0]][i0, .brushEffect]==.brushRestrictTitle
-                && !is.null(pObjects$memory[[mode0]][i0, .brushData][[1]])) {
-              children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
-              for (child_plot in children) {
-                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
-              }
-            }
-          }, ignoreInit=TRUE)
-
-          ###############
-
-          # Brush effect observer.
-          brush_effect_field <- paste0(prefix, .brushEffect) 
-          observeEvent(input[[brush_effect_field]], {
-            cur_effect <- input[[brush_effect_field]]
-            old_effect <- pObjects$memory[[mode0]][i0, .brushEffect] 
-            pObjects$memory[[mode0]][i0, .brushEffect] <- cur_effect
-            
-            # Avoiding replotting if there was no transmitting brush.
-            transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
-            if (transmitter=="") {
-              return(NULL)
-            }
-            enc <- .encode_panel_name(transmitter)
-            if (is.null(pObjects$memory[[enc$Type]][enc$ID, .brushData][[1]])) {
-              return(NULL)
-            }
-
-            # Triggering self update.
-            rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-
-            # Triggering replotting of children, if we are set to or from restrict;
-            # and we have a brush, so there was already some brushing in the children.
-            if ((cur_effect==.brushRestrictTitle || old_effect==.brushRestrictTitle) 
-                && !is.null(pObjects$memory[[mode0]][i0, .brushData][[1]])) {
-              children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
-              for (child_plot in children) {
-                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
-              }
-            }
-          }, ignoreInit=TRUE)
-
-          ###############
-
-          # Brush structure observers.
-          brush_id <- paste0(prefix, .brushField)
-          observeEvent(input[[brush_id]], {
-            cur_brush <- input[[brush_id]]
-            old_brush <- pObjects$memory[[mode0]][,.brushData][[i0]]
-
-            # If it is rebrushing itself in restrict mode, we take the intersection of brushed regions.
-            if (!is.null(cur_brush) 
-                && pObjects$memory[[mode0]][i0, .brushEffect]==.brushRestrictTitle
-                && plot_name==.decoded2encoded(pObjects$memory[[mode0]][i0, .brushByPlot])) {
-                cur_brush$xmin <- max(cur_brush$xmin, old_brush$xmin)
-                cur_brush$xmax <- min(cur_brush$xmax, old_brush$xmax)
-                cur_brush$ymin <- max(cur_brush$ymin, old_brush$ymin)
-                cur_brush$ymax <- min(cur_brush$ymax, old_brush$ymax)
-            }
-
-            pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .brushData, cur_brush)
-
-            # If the brushes have the same coordinates, we don't bother replotting.
-            if (.identical_brushes(cur_brush, old_brush)) {
-                return(NULL)
-            }
-
-            # Trigger replotting of self, to draw a more persistent brushing box.
-            rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-
-            # Trigger replotting of all dependent plots that receive this brush.
-            children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
-            for (child_plot in children) {
-              rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
-            }
-          }, ignoreInit=TRUE, ignoreNULL=FALSE)
-
-          ###############
-
-          # Double-click observers.
-          zoom_click_field <- paste0(mode0, i0, "_", .zoomClick)
-          observeEvent(input[[zoom_click_field]], {
-             brush <- input[[brush_id]]
-
-             if (!is.null(brush)) {
-               new_coords <- c(xmin=brush$xmin, xmax=brush$xmax, ymin=brush$ymin, ymax=brush$ymax)
-               session$resetBrush(brush_id) # This should auto-trigger replotting above.
-             } else {
-               new_coords <- NULL
-               
-               # Brush is already NULL at this point, so resetting it wouldn't help; 
-               # we need to manually trigger replotting. We don't move this outside the
-               # "else", to avoid two reactive updates of unknown priorities.
-               rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-             }
-
-             pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .zoomData, new_coords)
-          })
+            mode0 <- "heatMapPlot"
+            i0 <- i
+            plot_open_field <- paste0(mode0, i0, "_", .plotParamPanelOpen)
+            observeEvent(input[[plot_open_field]], {
+                pObjects$memory[[mode0]][[.plotParamPanelOpen]][i0] <- input[[plot_open_field]]
+            })
         })
-      }
+    }
+
+    # Same for the tables.
+    max_tabs <- nrow(pObjects$memory$rowStatTable)
+    for (i in seq_len(max_tabs)) {
+        local({
+            mode0 <- "rowStatTable"
+            i0 <- i
+            tab_name <- paste0(mode0, i0)
+            prefix <- paste0(tab_name, "_")
+
+            brush_open_field <- paste0(prefix, .brushParamPanelOpen)
+            observeEvent(input[[brush_open_field]], {
+                pObjects$memory[[mode0]][[.brushParamPanelOpen]][i0] <- input[[brush_open_field]]
+            })
+        })
+    }
+
+    #######################################################################
+    # Brush observers.
+    #######################################################################
+
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
+        max_plots <- nrow(pObjects$memory[[mode]])
+        for (i in seq_len(max_plots)) {
+            local({
+                mode0 <- mode
+                i0 <- i
+                plot_name <- paste0(mode0, i0)
+                prefix <- paste0(plot_name, "_")
+
+                ###############
+
+                # Brush choice observer.
+                brush_plot_field <- paste0(prefix, .brushByPlot)
+                observeEvent(input[[brush_plot_field]], {
+                    old_transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
+                    new_transmitter <- input[[brush_plot_field]]
+
+                    # Determining whether the new and old transmitting plot have brushes.
+                    old_out <- .transmitted_brush(old_transmitter, pObjects$memory)
+                    old_brush <- old_out$brush
+                    old_encoded <- old_out$encoded
+                    new_out <- .transmitted_brush(new_transmitter, pObjects$memory)
+                    new_brush <- new_out$brush
+                    new_encoded <- new_out$encoded
+
+                    # Updating the graph, but breaking if it's not a DAG.
+                    tmp <- .choose_new_brush_source(pObjects$brush_links, plot_name, new_encoded, old_encoded)
+                    daggy <- is_dag(simplify(tmp, remove.loops=TRUE))
+                    if (!daggy) {
+                        showNotification("brushing relationships cannot be cyclic", type="error")
+                        pObjects$memory[[mode0]][i0, .brushByPlot] <- ""
+                        updateSelectInput(session, brush_plot_field, selected="")
+                    } else {
+                        pObjects$brush_links <- tmp
+                        pObjects$memory[[mode0]][i0, .brushByPlot] <- new_transmitter
+                    }
+
+                    # Update the elements reporting the links between plots.
+                    rObjects$relinked <- .increment_counter(isolate(rObjects$relinked))
+
+                    # Not replotting if there were no brushes in either the new or old transmitters.
+                    if (!old_brush && !new_brush){
+                        return(NULL)
+                    }
+
+                    # Triggering self update of the plot.
+                    rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+
+                    # Triggering replotting of children, if the current panel is set to restrict;
+                    # and we have a brush, so that there was already some brushing in the children.
+                    if (pObjects$memory[[mode0]][i0, .brushEffect]==.brushRestrictTitle
+                        && !is.null(pObjects$memory[[mode0]][i0, .brushData][[1]])) {
+                        children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
+                        for (child_plot in children) {
+                            rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+                        }
+                    }
+                }, ignoreInit=TRUE)
+
+                ###############
+
+                # Brush effect observer.
+                brush_effect_field <- paste0(prefix, .brushEffect)
+                observeEvent(input[[brush_effect_field]], {
+                    cur_effect <- input[[brush_effect_field]]
+                    old_effect <- pObjects$memory[[mode0]][i0, .brushEffect]
+                    pObjects$memory[[mode0]][i0, .brushEffect] <- cur_effect
+
+                    # Avoiding replotting if there was no transmitting brush.
+                    transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
+                    if (transmitter=="") {
+                        return(NULL)
+                    }
+                    enc <- .encode_panel_name(transmitter)
+                    if (is.null(pObjects$memory[[enc$Type]][enc$ID, .brushData][[1]])) {
+                        return(NULL)
+                    }
+
+                    # Triggering self update.
+                    rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+
+                    # Triggering replotting of children, if we are set to or from restrict;
+                    # and we have a brush, so there was already some brushing in the children.
+                    if ((cur_effect==.brushRestrictTitle || old_effect==.brushRestrictTitle)
+                        && !is.null(pObjects$memory[[mode0]][i0, .brushData][[1]])) {
+                        children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
+                        for (child_plot in children) {
+                            rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+                        }
+                    }
+                }, ignoreInit=TRUE)
+
+                ###############
+
+                # Brush structure observers.
+                brush_id <- paste0(prefix, .brushField)
+                observeEvent(input[[brush_id]], {
+                    cur_brush <- input[[brush_id]]
+                    old_brush <- pObjects$memory[[mode0]][,.brushData][[i0]]
+
+                    # If it is rebrushing itself in restrict mode, we take the intersection of brushed regions.
+                    if (!is.null(cur_brush)
+                        && pObjects$memory[[mode0]][i0, .brushEffect]==.brushRestrictTitle
+                        && plot_name==.decoded2encoded(pObjects$memory[[mode0]][i0, .brushByPlot])) {
+                        cur_brush$xmin <- max(cur_brush$xmin, old_brush$xmin)
+                        cur_brush$xmax <- min(cur_brush$xmax, old_brush$xmax)
+                        cur_brush$ymin <- max(cur_brush$ymin, old_brush$ymin)
+                        cur_brush$ymax <- min(cur_brush$ymax, old_brush$ymax)
+                    }
+
+                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .brushData, cur_brush)
+
+                    # If the brushes have the same coordinates, we don't bother replotting.
+                    if (.identical_brushes(cur_brush, old_brush)) {
+                        return(NULL)
+                    }
+
+                    # Trigger replotting of self, to draw a more persistent brushing box.
+                    rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+
+                    # Trigger replotting of all dependent plots that receive this brush.
+                    children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
+                    for (child_plot in children) {
+                        rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+                    }
+                }, ignoreInit=TRUE, ignoreNULL=FALSE)
+            })
+        }
     }
 
     # Brush choice observers for the tables.
     max_tabs <- nrow(pObjects$memory$rowStatTable)
     for (i in seq_len(max_tabs)) {
-      local({
-        mode0 <- "rowStatTable"
-        i0 <- i
-        tab_name <- paste0(mode0, i0)
-        prefix <- paste0(tab_name, "_")
-        
-        brush_open_field <- paste0(prefix, .brushParamPanelOpen)
-        observeEvent(input[[brush_open_field]], {
-          pObjects$memory[[mode0]][[.brushParamPanelOpen]][i0] <- input[[brush_open_field]]
+        local({
+            mode0 <- "rowStatTable"
+            i0 <- i
+            tab_name <- paste0(mode0, i0)
+            prefix <- paste0(tab_name, "_")
+
+            brush_open_field <- paste0(prefix, .brushParamPanelOpen)
+            observeEvent(input[[brush_open_field]], {
+                pObjects$memory[[mode0]][[.brushParamPanelOpen]][i0] <- input[[brush_open_field]]
+            })
+
+            brush_plot_field <- paste0(prefix, .brushByPlot)
+            observeEvent(input[[brush_plot_field]], {
+                old_transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
+                new_transmitter <- input[[brush_plot_field]]
+
+                # Determining whether the new and old transmitting plot have brushes.
+                old_out <- .transmitted_brush(old_transmitter, pObjects$memory)
+                old_brush <- old_out$brush
+                old_encoded <- old_out$encoded
+                new_out <- .transmitted_brush(new_transmitter, pObjects$memory)
+                new_brush <- new_out$brush
+                new_encoded <- new_out$encoded
+
+                # Updating the graph (no need for DAG protection here, as tables do not transmit brushes).
+                pObjects$brush_links <- .choose_new_brush_source(pObjects$brush_links, tab_name, new_encoded, old_encoded)
+                pObjects$memory[[mode0]][i0, .brushByPlot] <- new_transmitter
+                rObjects$relinked <- .increment_counter(isolate(rObjects$relinked))
+
+                # Not re-rendering if there were no brushes in either the new or old transmitters.
+                if (!old_brush && !new_brush){
+                    return(NULL)
+                }
+
+                # Destroying existing search fields, potentially from brushes in the old transmitter.
+                # Brushes for the new transmitter will be added during table re-rendering.
+                col_searches <- pObjects$memory[[mode0]][i0, .rowStatColSearch][[1]]
+                pObjects$memory$rowStatTable <- .update_list_element(
+                    pObjects$memory$rowStatTable, i0, .rowStatColSearch, character(length(col_searches)))
+
+                # Triggering update of the table.
+                rObjects[[tab_name]] <- .increment_counter(isolate(rObjects[[tab_name]]))
+            }, ignoreInit=TRUE)
         })
- 
-        brush_plot_field <- paste0(prefix, .brushByPlot) 
-        observeEvent(input[[brush_plot_field]], {
-          old_transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
-          new_transmitter <- input[[brush_plot_field]]
-
-          # Determining whether the new and old transmitting plot have brushes.
-          old_out <- .transmitted_brush(old_transmitter, pObjects$memory)
-          old_brush <- old_out$brush
-          old_encoded <- old_out$encoded
-          new_out <- .transmitted_brush(new_transmitter, pObjects$memory)
-          new_brush <- new_out$brush
-          new_encoded <- new_out$encoded
-
-          # Updating the graph (no need for DAG protection here, as tables do not transmit brushes).
-          pObjects$brush_links <- .choose_new_brush_source(pObjects$brush_links, tab_name, new_encoded, old_encoded)
-          pObjects$memory[[mode0]][i0, .brushByPlot] <- new_transmitter
-          rObjects$relinked <- .increment_counter(isolate(rObjects$relinked))
- 
-          # Not re-rendering if there were no brushes in either the new or old transmitters.
-          if (!old_brush && !new_brush){
-            return(NULL)
-          }
-
-          # Destroying existing search fields, potentially from brushes in the old transmitter.
-          # Brushes for the new transmitter will be added during table re-rendering.
-          col_searches <- pObjects$memory[[mode0]][i0, .rowStatColSearch][[1]]
-          pObjects$memory$rowStatTable <- .update_list_element(
-            pObjects$memory$rowStatTable, i0, .rowStatColSearch, character(length(col_searches)))
-          
-          # Triggering update of the table.
-          rObjects[[tab_name]] <- .increment_counter(isolate(rObjects[[tab_name]]))
-        }, ignoreInit=TRUE)
-      })
     }
-        
-    # Panel opening/closing observers for heat map plots.
-    max_plots <- nrow(pObjects$memory$heatMapPlot)
-    for (i in seq_len(max_plots)) {
-      local({
-        mode0 <- "heatMapPlot"
-        i0 <- i
-        plot_open_field <- paste0(mode0, i0, "_", .plotParamPanelOpen)
-        observeEvent(input[[plot_open_field]], {
-            pObjects$memory[[mode0]][[.plotParamPanelOpen]][i0] <- input[[plot_open_field]]
-        })
-      })
+
+    #######################################################################
+    # Zoom observers.
+    #######################################################################
+
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
+        max_plots <- nrow(pObjects$memory[[mode]])
+        for (i in seq_len(max_plots)) {
+            local({
+                mode0 <- mode
+                i0 <- i
+                plot_name <- paste0(mode0, i0)
+                prefix <- paste0(plot_name, "_")
+                brush_id <- paste0(prefix, .brushField)
+
+                zoom_click_field <- paste0(mode0, i0, "_", .zoomClick)
+                observeEvent(input[[zoom_click_field]], {
+                    brush <- input[[brush_id]]
+                    if (!is.null(brush)) {
+                        new_coords <- c(xmin=brush$xmin, xmax=brush$xmax, ymin=brush$ymin, ymax=brush$ymax)
+                        session$resetBrush(brush_id) # This should auto-trigger replotting above.
+                    } else {
+                        new_coords <- NULL
+
+                        # Brush is already NULL at this point, so resetting it wouldn't help;
+                        # we need to manually trigger replotting. We don't move this outside the
+                        # "else", to avoid two reactive updates of unknown priorities.
+                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                    }
+
+                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .zoomData, new_coords)
+                })
+            })
+        }
     }
 
     #######################################################################
@@ -724,22 +766,22 @@ iSEE <- function(
     #######################################################################
 
     for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
-        max_plots <- nrow(pObjects$memory[[mode]]) 
-  
+        max_plots <- nrow(pObjects$memory[[mode]])
+
         # Defining mode-specific plotting functions.
-        FUN <- switch(mode, 
+        FUN <- switch(mode,
                       redDimPlot=.make_redDimPlot,
                       featExprPlot=.make_featExprPlot,
                       colDataPlot=.make_colDataPlot,
                       rowDataPlot=.make_rowDataPlot)
- 
-        # Defining fundamental parameters that destroy brushes upon being changed. 
+
+        # Defining fundamental parameters that destroy brushes upon being changed.
         protected <- switch(mode,
                             redDimPlot=c(.redDimType, .redDimXAxis, .redDimYAxis),
                             colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
                             featExprPlot=c(.featExprAssay, .featExprXAxisColData, .featExprYAxisFeatName, .featExprXAxisFeatName),
                             rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData))
-            
+
         # Defining non-fundamental parameters that do not destroy brushes.
         if (mode=="rowDataPlot") {
             nonfundamental <- c(.colorByRowData, .colorByRowTableColor, .colorByFeatNameColor)
@@ -757,7 +799,7 @@ iSEE <- function(
                     field0 <- field
                     plot_name <- paste0(mode0, i0)
                     cur_field <- paste0(plot_name, "_", field0)
-  
+
                     observeEvent(input[[cur_field]], {
                         matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
                         pObjects$memory[[mode0]][[field0]][i0] <- matched_input
@@ -765,51 +807,51 @@ iSEE <- function(
                     }, ignoreInit=TRUE)
                 })
             }
-  
+
             # Observers for the fundamental plot parameters.
             for (field in protected) {
                 local({
                     i0 <- i
                     mode0 <- mode
-                    field0 <- field 
-                    plot_name <- paste0(mode0, i0) 
+                    field0 <- field
+                    plot_name <- paste0(mode0, i0)
                     cur_field <- paste0(plot_name, "_", field0)
                     brush_id <- paste0(plot_name, "_", .brushField)
-    
+
                     observeEvent(input[[cur_field]], {
                         matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
                         if (class(matched_input) == "list") {
                           matched_input <- list(unlist(matched_input))
                         }
-                        pObjects$memory[[mode0]][[field0]][i0] <- matched_input  
+                        pObjects$memory[[mode0]][[field0]][i0] <- matched_input
 
-                        if (!is.null(isolate(input[[brush_id]]))) { 
+                        if (!is.null(isolate(input[[brush_id]]))) {
                             # This will trigger replotting via the brush observer above.
-                            session$resetBrush(brush_id) 
-                        } else { 
+                            session$resetBrush(brush_id)
+                        } else {
                             # Manually triggering replotting.
                             rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                         }
                      }, ignoreInit=TRUE)
                 })
             }
-  
+
             local({
                 i0 <- i
                 mode0 <- mode
                 FUN0 <- FUN
                 plot_name <- paste0(mode0, i0)
-  
+
                 # Observers for the linked color, which updates the table_links information.
                 observe({
-                    replot <- .setup_table_observer(mode0, i0, input, pObjects, .colorByField, 
-                        .colorByRowTableTitle, .colorByRowTable, param='color') 
+                    replot <- .setup_table_observer(mode0, i0, input, pObjects, .colorByField,
+                        .colorByRowTableTitle, .colorByRowTable, param='color')
                     if (replot) {
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     }
                     rObjects$relinked <- .increment_counter(isolate(rObjects$relinked)) # updating link description.
                 })
-  
+
                 # Defining the rendered plot, and saving the coordinates.
                 output[[plot_name]] <- renderPlot({
                     force(rObjects[[plot_name]])
@@ -840,13 +882,13 @@ iSEE <- function(
 
             # Y-axis observer:
             observe({
-                replot <- .setup_table_observer(mode0, i0, input, pObjects, .featExprYAxis, 
-                    .featExprYAxisRowTableTitle, .featExprYAxisRowTable, param='yaxis') 
+                replot <- .setup_table_observer(mode0, i0, input, pObjects, .featExprYAxis,
+                    .featExprYAxisRowTableTitle, .featExprYAxisRowTable, param='yaxis')
                 if (replot) {
-                    if (!is.null(isolate(input[[brush_id]]))) { 
-                        # This will trigger replotting. 
+                    if (!is.null(isolate(input[[brush_id]]))) {
+                        # This will trigger replotting.
                         session$resetBrush(brush_id)
-                    } else { 
+                    } else {
                         # Manually triggering replotting.
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     }
@@ -856,11 +898,11 @@ iSEE <- function(
 
             # X-axis observer:
             observe({
-                replot <- .setup_table_observer(mode0, i0, input, pObjects, .featExprXAxis, 
-                    .featExprXAxisRowTableTitle, .featExprXAxisRowTable, param='xaxis') 
+                replot <- .setup_table_observer(mode0, i0, input, pObjects, .featExprXAxis,
+                    .featExprXAxisRowTableTitle, .featExprXAxisRowTable, param='xaxis')
                 if (replot) {
-                    if (!is.null(isolate(input[[brush_id]]))) { 
-                        # This will trigger replotting. 
+                    if (!is.null(isolate(input[[brush_id]]))) {
+                        # This will trigger replotting.
                         session$resetBrush(brush_id)
                     } else {
                         # Manually triggering replotting.
@@ -889,7 +931,7 @@ iSEE <- function(
             chosen <- pObjects$memory$rowStatTable[i0, .rowStatSelected]
             search <- pObjects$memory$rowStatTable[i0, .rowStatSearch]
 
-            search_col <- .execute_brushed_table(i0, pObjects$memory, se, pObjects$coordinates) 
+            search_col <- .execute_brushed_table(i0, pObjects$memory, se, pObjects$coordinates)
             search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
 
             datatable(gene_data, filter="top", rownames=TRUE,
@@ -915,12 +957,12 @@ iSEE <- function(
                 for (kid in col_kids) {
                     rObjects[[kid]] <- .increment_counter(isolate(rObjects[[kid]]))
                 }
-                
+
                 # Triggering the replotting and brush clearing of all x/y-axis children.
                 brush_ids <- sprintf("%s_%s", xy_kids, .brushField)
                 for (i in seq_along(xy_kids)) {
                     brush_id <- brush_ids[i]
-                    if (!is.null(isolate(input[[brush_id]]))) { # This will trigger replotting. 
+                    if (!is.null(isolate(input[[brush_id]]))) { # This will trigger replotting.
                         session$resetBrush(brush_id)
                     } else { # Manually triggering replotting.
                         kid <- xy_kids[i]
@@ -944,7 +986,7 @@ iSEE <- function(
             search <- input[[colsearch_field]]
             if (length(search)) {
                 pObjects$memory$rowStatTable <- .update_list_element(
-                    pObjects$memory$rowStatTable, i0, .rowStatColSearch, search)                         
+                    pObjects$memory$rowStatTable, i0, .rowStatColSearch, search)
             }
         })
 
@@ -952,9 +994,9 @@ iSEE <- function(
         anno_field <- paste0(panel_name, "_annotation")
         output[[anno_field]] <- renderUI({
             chosen <- input[[select_field]]
-            .generate_annotation(annot.orgdb, annot.keytype, annot.keyfield, 
+            .generate_annotation(annot.orgdb, annot.keytype, annot.keyfield,
                                  gene_data, chosen)
-        }) 
+        })
 
         # Describing the links between panels.
         output[[paste0(panel_name, "_", .panelLinkInfo)]] <- renderUI({
@@ -974,16 +1016,16 @@ iSEE <- function(
             mode0 <- "heatMapPlot"
             i0 <- i
             plot_name <- paste0(mode0, i0)
- 
+
             # Server-side initialization of feature name selection requires some care.
             cur_field <- paste0(plot_name, "_", .heatMapYAxisFeatName)
             observe({
-                if (is.null(input[[cur_field]])) { 
-                    updateSelectizeInput(session, paste0(mode0, i0, "_", .heatMapYAxisFeatName), choices = rownames(se), 
+                if (is.null(input[[cur_field]])) {
+                    updateSelectizeInput(session, paste0(mode0, i0, "_", .heatMapYAxisFeatName), choices = rownames(se),
                                          server = TRUE, selected = pObjects$memory[[mode0]][i0, .heatMapYAxisFeatName][[1]])
                 } else if (identical(input[[cur_field]], pObjects$memory[[mode0]][i0, .heatMapYAxisFeatName][[1]])) {
                     # Avoid replotting if the values in input are the same as those in memory.
-                    # Normally this shouldn't happen as having the same 'input' would never trigger this observer. 
+                    # Normally this shouldn't happen as having the same 'input' would never trigger this observer.
                     # However, it can happen upon UI re-rendering, where input is replaced with NULL until updateSelectizeInput triggers.
                     return(NULL)
                 } else {
@@ -991,7 +1033,7 @@ iSEE <- function(
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                 }
             })
-                    
+
             # Defining the rendered plot, and saving the coordinates.
             output[[plot_name]] <- renderPlot({
                 force(rObjects[[plot_name]])
@@ -1019,7 +1061,7 @@ iSEE <- function(
         }
 
         # Saving other bits and pieces.
-        for (field in c(.heatMapAssay)) { 
+        for (field in c(.heatMapAssay)) {
             local({
                 i0 <- i
                 mode0 <- "heatMapPlot"

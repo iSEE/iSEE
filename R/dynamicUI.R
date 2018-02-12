@@ -137,9 +137,8 @@
               ),
               .conditionalPanelOnRadio(.input_FUN(.featExprYAxis),
                                        .featExprYAxisFeatNameTitle,
-                                       textInput(.input_FUN(.featExprYAxisFeatName),
-                                                 label = "Y-axis gene:",
-                                                 value=param_choices[[.featExprYAxisFeatName]])),
+                                       selectizeInput(.input_FUN(.featExprYAxisFeatName),
+                                                      label = "Y-axis gene:", choices = NULL, selected = NULL, multiple=FALSE)),
               selectInput(.input_FUN(.featExprAssay), label=NULL,
                           choices=all_assays, selected=param_choices[[.featExprAssay]]),
               radioButtons(.input_FUN(.featExprXAxis), label="X-axis:", inline=TRUE,
@@ -156,9 +155,8 @@
                                                    choices=active_tab, selected=param_choices[[.featExprXAxisRowTable]])),
               .conditionalPanelOnRadio(.input_FUN(.featExprXAxis),
                                        .featExprXAxisFeatNameTitle,
-                                       textInput(.input_FUN(.featExprXAxisFeatName), 
-                                                 label = "X-axis gene:",
-                                                 value=param_choices[[.featExprXAxisFeatName]]))
+                                       selectizeInput(.input_FUN(.featExprXAxisFeatName), 
+                                                      label = "X-axis gene:", choices = NULL, selected = NULL, multiple = FALSE))
                  )
         } else if (mode=="rowStatTable") {
             obj <- list(dataTableOutput(paste0(mode, ID)),
@@ -340,7 +338,7 @@
                                 choices=all_assays, selected=param_choices[[.colorByRowTableAssay]]))
             ),
         .conditionalPanelOnRadio(colorby_field, .colorByFeatNameTitle,
-            tagList(textInput(paste0(mode, ID, "_", .colorByFeatName), label = NULL, value=param_choices[[.colorByFeatName]]),
+            tagList(selectizeInput(paste0(mode, ID, "_", .colorByFeatName), label = NULL, choices = NULL, selected = NULL, multiple = FALSE),
                     selectInput(paste0(mode, ID, "_", .colorByFeatNameAssay), label=NULL,
                                 choices=all_assays, selected=param_choices[[.colorByFeatNameAssay]]))
             )
@@ -373,7 +371,7 @@
                                 value=param_choices[[.colorByRowTableColor]]))
             ),
         .conditionalPanelOnRadio(colorby_field, .colorByFeatNameTitle,
-            tagList(textInput(paste0(mode, ID, "_", .colorByFeatName), label = NULL, value=param_choices[[.colorByFeatName]]),
+            tagList(selectizeInput(paste0(mode, ID, "_", .colorByFeatName), label = NULL, selected = NULL, choices = NULL, multiple = FALSE),
                     colourInput(paste0(mode, ID, "_", .colorByFeatNameColor), label=NULL,
                                 value=param_choices[[.colorByFeatNameColor]]))
             )

@@ -260,6 +260,7 @@ iSEE <- function(
     # Storage for all the reactive objects
     rObjects <- reactiveValues(
         active_panels = active_panels,
+        rerendered = 1L,
         relinked = 1L
     )
     for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot", "rowStatTable", "heatMapPlot")) {
@@ -354,6 +355,7 @@ iSEE <- function(
     })
 
     output$panelOrganization <- renderUI({
+        rObjects$rerendered <- .increment_counter(isolate(rObjects$rerendered))
         .panel_organization(rObjects$active_panels, pObjects$memory)
     })
 
@@ -484,7 +486,7 @@ iSEE <- function(
     }
 
     #######################################################################
-    # Panel observers.
+    # Parameter panel observers.
     #######################################################################
 
     for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
@@ -762,6 +764,52 @@ iSEE <- function(
     }
 
     #######################################################################
+    # Selectize updators. ----
+    #######################################################################
+
+    max_plots <- nrow(pObjects$memory$featExprPlot)
+    for (i in seq_len(max_plots)) {
+        for (axis in c("xaxis", "yaxis")) {
+            if (axis=="xaxis") {
+                axis_name_choice <- .featExprYAxisFeatName
+            } else {
+                axis_name_choice <- .featExprXAxisFeatName
+            }
+
+            local({
+                i0 <- i
+                mode0 <- "featExprPlot"
+                field0 <- axis_name_choice
+                cur_field <- paste0(mode0, i0, "_", field0)
+
+                observe({
+                    force(rObjects$rerendered)
+                    updateSelectizeInput(session, cur_field, label = NULL, choices = rownames(se), server = TRUE,
+                                         selected = pObjects$memory[[mode0]][i0, field0][[1]])
+                }, priority=-1) # Lower priority so that it executes AFTER the UI rerender.
+            })
+        }
+    }
+
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
+        max_plots <- nrow(pObjects$memory[[mode]])
+        for (i in seq_len(max_plots)) {
+            local({
+                i0 <- i
+                mode0 <- mode
+                field0 <- .colorByFeatName
+                cur_field <- paste0(mode0, i0, "_", field0)
+
+                observe({
+                    force(rObjects$rerendered)
+                    updateSelectizeInput(session, cur_field, label = NULL, choices = rownames(se), server = TRUE,
+                                         selected = pObjects$memory[[mode0]][i0, field0][[1]])
+                }, priority=-1) # Lower priority so that it executes AFTER the UI rerender.
+            })
+        }
+    }
+
+    #######################################################################
     # Dot-related plot creation section. ----
     #######################################################################
 
@@ -820,9 +868,6 @@ iSEE <- function(
 
                     observeEvent(input[[cur_field]], {
                         matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
-                        if (class(matched_input) == "list") {
-                          matched_input <- list(unlist(matched_input))
-                        }
                         pObjects$memory[[mode0]][[field0]][i0] <- matched_input
 
                         if (!is.null(isolate(input[[brush_id]]))) {
@@ -832,7 +877,7 @@ iSEE <- function(
                             # Manually triggering replotting.
                             rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                         }
-                     }, ignoreInit=TRUE)
+                     }, ignoreInit=TRUE, priority=-2) # executs AFTER the update selectize.
                 })
             }
 
@@ -874,44 +919,44 @@ iSEE <- function(
     # table links and destroy a brush whenever an x/y-axis-specifying parameter changes.
     max_plots <- nrow(pObjects$memory$featExprPlot)
     for (i in seq_len(max_plots)) {
-        local({
-            i0 <- i
-            mode0 <- "featExprPlot"
-            plot_name <- paste0(mode0, i0)
-            brush_id <- paste0(plot_name, "_", .brushField)
+        for (axis in c("xaxis", "yaxis")) {
+            if (axis=="xaxis") {
+                axis_choice <- .featExprYAxis
+                axis_tab_title <- .featExprYAxisRowTableTitle
+                axis_tab_choice <- .featExprYAxisRowTable
+            } else {
+                axis_choice <- .featExprXAxis
+                axis_tab_title <- .featExprXAxisRowTableTitle
+                axis_tab_choice <- .featExprXAxisRowTable
+            }
 
-            # Y-axis observer:
-            observe({
-                replot <- .setup_table_observer(mode0, i0, input, pObjects, .featExprYAxis,
-                    .featExprYAxisRowTableTitle, .featExprYAxisRowTable, param='yaxis')
-                if (replot) {
-                    if (!is.null(isolate(input[[brush_id]]))) {
-                        # This will trigger replotting.
-                        session$resetBrush(brush_id)
-                    } else {
-                        # Manually triggering replotting.
-                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                    }
-                }
-                rObjects$relinked <- .increment_counter(isolate(rObjects$relinked)) # updating link description.
-            })
+            local({
+                i0 <- i
+                mode0 <- "featExprPlot"
+                plot_name <- paste0(mode0, i0)
+                brush_id <- paste0(plot_name, "_", .brushField)
 
-            # X-axis observer:
-            observe({
-                replot <- .setup_table_observer(mode0, i0, input, pObjects, .featExprXAxis,
-                    .featExprXAxisRowTableTitle, .featExprXAxisRowTable, param='xaxis')
-                if (replot) {
-                    if (!is.null(isolate(input[[brush_id]]))) {
-                        # This will trigger replotting.
-                        session$resetBrush(brush_id)
-                    } else {
-                        # Manually triggering replotting.
-                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                axis0 <- axis
+                axis_choice0 <- axis_choice
+                axis_tab_title0 <- axis_tab_title
+                axis_tab_choice0 <- axis_tab_choice
+
+                observe({
+                    ## Deciding whether to replot based on the table.
+                    replot <- .setup_table_observer(mode0, i0, input, pObjects, axis_choice0, axis_tab_title0, axis_tab_choice0, param=axis0)
+                    if (replot) {
+                        if (!is.null(isolate(input[[brush_id]]))) {
+                            # This will trigger replotting.
+                            session$resetBrush(brush_id)
+                        } else {
+                            # Manually triggering replotting.
+                            rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                        }
                     }
-                }
-                rObjects$relinked <- .increment_counter(isolate(rObjects$relinked)) # updating link description.
+                    rObjects$relinked <- .increment_counter(isolate(rObjects$relinked)) # updating link description.
+                })
             })
-        })
+        }
     }
 
     #######################################################################

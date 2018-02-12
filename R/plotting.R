@@ -189,12 +189,16 @@ names(.all_aes_values) <- .all_aes_names
     x_lab <- param_choices[[.rowDataXAxisRowData]]
     data_cmds[["x"]] <- sprintf("plot.data$X <- rowData(se)[,%s];", deparse(x_lab))
   }
+  
+  x_title <- ifelse(x_lab == '', x_lab, sprintf("vs %s", x_lab))
+  plot_title <- sprintf("%s %s", y_lab, x_title)
 
   # Generating the plot.
   .create_plot(data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
     x_lab=x_lab, y_lab=y_lab,
     brush_color=brush_stroke_color_full["rowDataPlot"],
-    by_row=TRUE
+    by_row=TRUE,
+    title=plot_title
   )
 }
 

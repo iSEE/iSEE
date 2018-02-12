@@ -19,15 +19,16 @@
             downFUN <- disabled
         }
 
-        collected[[i]] <- box(
+        ctrl_panel <- box(
             actionButton(paste0(mode, ID, "_", .organizationDiscard),"", icon = icon("trash fa-2x"), style="display:inline-block; margin:0"),
             upFUN(actionButton(paste0(mode, ID, "_", .organizationUp),"",icon = icon("arrow-circle-up fa-2x"), style="display:inline-block; margin:0")),
             downFUN(actionButton(paste0(mode, ID, "_", .organizationDown),"",icon = icon("arrow-circle-down fa-2x"), style="display:inline-block; margin:0")),
             actionButton(paste0(mode, ID, "_", .organizationModify),"", icon = icon("gear fa-2x"), style="display:inline-block; margin:0"),
-            title=.decode_panel_name(mode, ID), status=box_status[mode], 
-            width=NULL, solidHeader=TRUE
+            title=.decode_panel_name(mode, ID), status="danger", width=NULL, solidHeader=TRUE
             )
 
+        # Coercing to a different box status ('danger' is a placeholder, above).
+        collected[[i]] <- .coerce_box_status(ctrl_panel, mode)
     }
     do.call(tagList, collected)
 }
@@ -260,9 +261,10 @@
         }
 
         # Aggregating together everything into a box, and then into a column.
-        cur.box <- do.call(box, c(list(obj), param, list(uiOutput(.input_FUN(.panelLinkInfo))),
-           list(title=.decode_panel_name(mode, ID), solidHeader=TRUE, width=NULL, status = box_status[mode])))
-        cur.row[[row.counter]] <- column(width=panel.width, cur.box, style='padding:3px;') 
+        cur_box <- do.call(box, c(list(obj), param, list(uiOutput(.input_FUN(.panelLinkInfo))),
+           list(title=.decode_panel_name(mode, ID), solidHeader=TRUE, width=NULL, status = "danger")))
+        cur_box <- .coerce_box_status(cur_box, mode)
+        cur.row[[row.counter]] <- column(width=panel.width, cur_box, style='padding:3px;') 
         row.counter <- row.counter + 1L
         cumulative.width <- cumulative.width + panel.width
     }
@@ -410,6 +412,13 @@
 
 .conditionalPanelOnRadio <- function(radio_id, radio_choice, ...) {
     conditionalPanel(condition=sprintf('(input["%s"] == "%s")', radio_id, radio_choice), ...)
+}
+
+.coerce_box_status <- function(in_box, mode, old_status="danger") {
+    in_box$children[[1]]$attribs$class <- sub(paste0("box-", old_status),
+                                              paste0("box-", tolower(mode)), 
+                                              in_box$children[[1]]$attribs$class)
+    return(in_box)
 }
 
 .actionbutton_biocstyle <- "color: #ffffff; background-color: #0092AC; border-color: #2e6da4"

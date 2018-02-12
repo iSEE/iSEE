@@ -1,10 +1,33 @@
 # Colours for shinydashboard::box.
-box_color <- list(redDimPlot="blue",
-                  featExprPlot="green",
-                  colDataPlot="yellow",
-                  rowStatTable=NULL, # DataTable text does not show up properly.
-                  rowDataPlot="red",
-                  heatMapPlot="fuchsia")
+
+panel_colors <- c(redDimPlot="#3c8dbc",
+                  rowStatTable="#00c0ef",
+                  rowDataPlot="#dd4b39",
+                  colDataPlot="#f39c12",
+                  featExprPlot="#00a65a",
+                  heatMapPlot="#bc4ddd")
+
+.define_box_statuses <- paste(sprintf(".box.box-%s {
+        border-top-color: %s;
+}
+.box.box-solid.box-%s {
+        border: 1px solid %s;
+}
+.box.box-solid.box-%s > .box-header {
+        color: #ffffff;
+        background: %s;
+        background-color: %s;
+}
+.box.box-solid.box-%s > .box-header a,
+.box.box-solid.box-%s > .box-header .btn {
+      color: #ffffff;
+}
+",
+tolower(names(panel_colors)), panel_colors,
+tolower(names(panel_colors)), panel_colors,
+tolower(names(panel_colors)), panel_colors, panel_colors,
+tolower(names(panel_colors)), tolower(names(panel_colors))
+), collapse="\n")
 
 brush_fill_color <- c(redDimPlot="#9cf", 
                       featExprPlot="#9f6", 

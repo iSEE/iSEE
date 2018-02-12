@@ -229,13 +229,14 @@ iSEE <- function(
 
       # for error message handling
       tags$head(
-        tags$style(HTML("
-                        .shiny-output-error-validation {
-                        font-size: 15px;
-                        color: forestgreen;
-                        text-align: center;
-                        }
-                        "))
+        tags$style(HTML(paste("
+.shiny-output-error-validation {
+        font-size: 15px;
+        color: forestgreen;
+        text-align: center;
+}
+", .define_box_statuses))
+                )
       ),
 
       uiOutput("allPanels")

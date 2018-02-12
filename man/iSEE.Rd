@@ -58,7 +58,7 @@ custom color maps to apply to individual \code{assays}, \code{colData},
 and \code{rowData} covariates.}
 
 \item{run_local}{A logical indicating whether the app is to be run
-locally or remotely on a server, which determines how documentation 
+locally or remotely on a server, which determines how documentation
 will be accessed.}
 }
 \value{

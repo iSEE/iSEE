@@ -37,7 +37,7 @@
 #' adjacent_vertices is_dag simplify V delete.vertices set_vertex_attr
 #' add_vertices
 #' @importFrom graphics plot
-#' @importFrom grDevices hcl
+#' @importFrom grDevices hcl col2rgb rgb
 #' @importFrom viridisLite viridis
 #' @author Aaron Lun \email{alun@@wehi.edu.au}
 #' @author Charlotte Soneson \email{charlotte.soneson@@uzh.ch}

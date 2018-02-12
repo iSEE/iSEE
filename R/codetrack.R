@@ -100,15 +100,8 @@
        vertex.label.family = "Helvetica",
        vertex.label.color = "black",
        vertex.label.dist = 2.5,
-       vertex.color = c(.plothexcode_redDim,.plothexcode_colData,
-                        .plothexcode_featExpr,.plothexcode_geneTable,
-                        .plothexcode_rowData)[
-                          factor(V(currgraph_used)$plottype,
-                                 levels = c("redDimPlot","colDataPlot","featExprPlot",
-                                            "rowStatTable","rowDataPlot"))])
+       vertex.color = brush_stroke_color_full[V(currgraph_used)$plottype])
 }  
-
-
 
 .find_links_to_table <- function(rObjects, pObjects, graph)
 # finds the links for the tables that are used, and sets the new edges in the graph

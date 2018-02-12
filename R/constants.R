@@ -142,11 +142,3 @@ names(rev.translation) <- translation
   return(list(Type=Type, ID=ID))
 }
 
-.plothexcode_redDim <- "#3C8DBC"
-.plothexcode_colData <- "#F39D12"
-.plothexcode_featExpr <- "#03A659"
-.plothexcode_geneTable <- "#DD4B39"
-.plothexcode_rowData <- "#00C0EF"
-.plothexcode_heat <- "#42F4D9"
-
-.actionbutton_biocstyle <- "color: #ffffff; background-color: #0092AC; border-color: #2e6da4"

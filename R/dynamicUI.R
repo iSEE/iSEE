@@ -412,8 +412,4 @@
     conditionalPanel(condition=sprintf('(input["%s"] == "%s")', radio_id, radio_choice), ...)
 }
 
-# Colours for shinydashboard::box.
-box_status <- c(redDimPlot="primary", featExprPlot="success", colDataPlot="warning", rowStatTable="danger", rowDataPlot="info", heatMapPlot="primary")
-brush_fill_color <- c(redDimPlot="#9cf", featExprPlot="#9f6", colDataPlot="#ff9", rowDataPlot="#9cf", heatMapPlot="#9cf")
-brush_stroke_color <- c(redDimPlot="#06f", featExprPlot="#090", colDataPlot="#fc0", rowDataPlot="#06f", heatMapPlot="#9cf")
-brush_stroke_color_full <- c(redDimPlot="#0066ff", featExprPlot="#009900", colDataPlot="#ffcc00", rowDataPlot="#0066ff", heatMapPlot="#0066ff")
+.actionbutton_biocstyle <- "color: #ffffff; background-color: #0092AC; border-color: #2e6da4"

@@ -33,7 +33,8 @@
     sprintf("geom_raster(aes(fill = value)) +"),
     sprintf("geom_segment(aes(x=as.integer(Var2)-0.5, xend=as.integer(Var2)+0.5, y=nrow(plot.data)+0.7, yend=nrow(plot.data)+1.3, color=%s)) +", param_choices[["ColorByColData"]]),
     sprintf("labs(x='', y='') +"),
-    sprintf("theme(axis.text.x = element_blank(), axis.ticks.x = element_blank());")
+    sprintf("theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) +"),
+    "theme(legend.position = 'bottom')"
   )
 
   plot_out <- eval(parse(text=unlist(c(data_cmds, extra_cmds))), envir=eval_env)

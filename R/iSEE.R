@@ -523,9 +523,15 @@ iSEE <- function(
         local({
             mode0 <- "heatMapPlot"
             i0 <- i
-            plot_open_field <- paste0(mode0, i0, "_", .plotParamPanelOpen)
-            observeEvent(input[[plot_open_field]], {
-                pObjects$memory[[mode0]][[.plotParamPanelOpen]][i0] <- input[[plot_open_field]]
+
+            feat_open_field <- paste0(mode0, i0, "_", .heatMapFeatNamePanelOpen)
+            observeEvent(input[[feat_open_field]], {
+                pObjects$memory[[mode0]][[.heatMapFeatNamePanelOpen]][i0] <- input[[feat_open_field]]
+            })
+
+            coldata_open_field <- paste0(mode0, i0, "_", .heatMapColDataPanelOpen)
+            observeEvent(input[[coldata_open_field]], {
+                pObjects$memory[[mode0]][[.heatMapColDataPanelOpen]][i0] <- input[[coldata_open_field]]
             })
         })
     }
@@ -810,6 +816,20 @@ iSEE <- function(
         }
     }
 
+    max_plots <- nrow(pObjects$memory$heatMapPlot)
+    for (i in seq_len(max_plots)) {
+        local({
+            i0 <- i
+            mode0 <- "heatMapPlot"
+    
+            observe({
+                force(rObjects$rerendered)
+                updateSelectizeInput(session, paste0(mode0, i0, "_", .heatMapFeatName), choices = rownames(se),
+                                     server = TRUE, selected = pObjects$memory[[mode0]][i0, .heatMapFeatName][[1]])
+            }, priority=-1) # Lower priority so that it executes AFTER the UI rerender.
+        })
+    }
+
     #######################################################################
     # Dot-related plot creation section. ----
     #######################################################################
@@ -1063,23 +1083,6 @@ iSEE <- function(
             i0 <- i
             plot_name <- paste0(mode0, i0)
 
-            # Server-side initialization of feature name selection requires some care.
-            cur_field <- paste0(plot_name, "_", .heatMapYAxisFeatName)
-            observe({
-                if (is.null(input[[cur_field]])) {
-                    updateSelectizeInput(session, paste0(mode0, i0, "_", .heatMapYAxisFeatName), choices = rownames(se),
-                                         server = TRUE, selected = pObjects$memory[[mode0]][i0, .heatMapYAxisFeatName][[1]])
-                } else if (identical(input[[cur_field]], pObjects$memory[[mode0]][i0, .heatMapYAxisFeatName][[1]])) {
-                    # Avoid replotting if the values in input are the same as those in memory.
-                    # Normally this shouldn't happen as having the same 'input' would never trigger this observer.
-                    # However, it can happen upon UI re-rendering, where input is replaced with NULL until updateSelectizeInput triggers.
-                    return(NULL)
-                } else {
-                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .heatMapYAxisFeatName, input[[cur_field]])
-                    rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                }
-            })
-
             # Defining the rendered plot, and saving the coordinates.
             output[[plot_name]] <- renderPlot({
                 force(rObjects[[plot_name]])
@@ -1091,7 +1094,7 @@ iSEE <- function(
         })
 
         # Saving list-based coordinates.
-        for (field in c(.heatMapXAxisColData)) {
+        for (field in c(.heatMapColData, .heatMapFeatName)) {
             local({
                 i0 <- i
                 mode0 <- "heatMapPlot"
@@ -1100,6 +1103,9 @@ iSEE <- function(
                 cur_field <- paste0(plot_name, "_", field0)
 
                 observeEvent(input[[cur_field]], {
+                    if (identical(input[[cur_field]], pObjects$memory[[mode0]][i0, field0][[1]])) {
+                        return(NULL)
+                    }
                     pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, field0, input[[cur_field]])
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                 }, ignoreInit=TRUE)

@@ -4,7 +4,7 @@
   param_choices <- all_memory$heatMapPlot[id,]
   data_cmds <- list()
   
-  genes_selected_y <- param_choices[[.heatMapYAxisFeatName]][[1]]
+  genes_selected_y <- param_choices[[.heatMapFeatName]][[1]]
   validate(need( 
     all(genes_selected_y %in% rownames(se)),
     sprintf("Invalid genes for heat map input") # NEED BETTER ERROR MESSAGE HERE?
@@ -17,7 +17,7 @@
             assay_choice, paste0('c("', paste(genes_selected_y, collapse = '","'), '")')),
     sprintf("d <- reshape2::melt(plot.data);"),
     sprintf("d <- as.data.frame(merge(d, colData(se), by.x = 'Var2', by.y = 'row.names'));"),
-    # sprintf("d <- dplyr::arrange(d, %s);", param_choices[.heatXAxisColData]),
+    # sprintf("d <- dplyr::arrange(d, %s);", param_choices[.heatColData]),
     sprintf("d$Var2 <- factor(d$Var2, levels = unique(d$Var2));")
   )
   

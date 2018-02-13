@@ -39,8 +39,12 @@
 
 # Heatmap plotting parameters. ----
 .heatMapAssay <- "Assay"
-.heatMapYAxisFeatName <- "YAxisFeatName"
-.heatMapXAxisColData <- "XAxisColData"
+.heatMapFeatName <- "FeatName"
+.heatMapFeatNamePanelOpen <- "FeatNamePanelOpen"
+.heatMapColData <- "ColData"
+.heatMapColDataPanelOpen <- "ColDataPanelOpen"
+.heatMapImport <- "Import"
+.heatMapImportSource <- "FeatNameSource"
 
 # Plot colouring parameters. ----
 .colorByNothingTitle <- "None"

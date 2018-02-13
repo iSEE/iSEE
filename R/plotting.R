@@ -94,18 +94,14 @@ names(.all_aes_values) <- .all_aes_names
   if (y_choice==.featExprYAxisRowTableTitle) {
     chosen_tab <- .decoded2encoded(param_choices[[.featExprYAxisRowTable]])
     gene_selected_y <- all_memory$rowStatTable[chosen_tab, .rowStatSelected]
-    validate(need( 
-      length(gene_selected_y)==1L,
-      sprintf("Invalid '%s' > '%s' input", .featExprYAxis, y_choice)
-    ))
-
   } else if (y_choice==.featExprYAxisFeatNameTitle) {
     gene_selected_y <- param_choices[[.featExprYAxisFeatName]]
-    validate(need( 
-      gene_selected_y %in% rownames(se),
-      sprintf("Invalid '%s' > '%s' input", .featExprYAxis, y_choice)
-    ))
   }
+
+  validate(need( 
+    length(gene_selected_y)==1L,
+    sprintf("Invalid '%s' > '%s' input", .featExprYAxis, y_choice)
+  ))
 
   assay_choice <- param_choices[[.featExprAssay]]
   y_title <- rownames(se)[gene_selected_y]
@@ -130,18 +126,14 @@ names(.all_aes_values) <- .all_aes_names
     if (x_choice==.featExprXAxisRowTableTitle) {
       chosen_tab <- .decoded2encoded(param_choices[[.featExprXAxisRowTable]])
       gene_selected_x <- all_memory$rowStatTable[chosen_tab, .rowStatSelected]
-      validate(need( 
-        length(gene_selected_x)==1L,
-        sprintf("Invalid '%s' > '%s' input", .featExprXAxis, x_choice)
-      ))
-
     } else if (x_choice==.featExprXAxisFeatNameTitle) {
       gene_selected_x <- param_choices[[.featExprXAxisFeatName]]
-      validate(need(
-        gene_selected_x %in% rownames(se),
-        sprintf("Invalid '%s' > '%s' input", .featExprXAxis, x_choice)
-      ))
     }
+
+    validate(need(
+      gene_selected_x %in% rownames(se),
+      sprintf("Invalid '%s' > '%s' input", .featExprXAxis, x_choice)
+    ))
     
     x_title <- rownames(se)[gene_selected_x]
     x_lab <- .gene_axis_label(se, gene_selected_x, assay_choice, multiline = FALSE)

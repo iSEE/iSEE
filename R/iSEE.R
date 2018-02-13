@@ -570,6 +570,8 @@ iSEE <- function(
                 # Brush choice observer.
                 brush_plot_field <- paste0(prefix, .brushByPlot)
                 observeEvent(input[[brush_plot_field]], {
+                             print(brush_plot_field)
+                             print(input[[brush_plot_field]])
                     old_transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
                     new_transmitter <- input[[brush_plot_field]]
 
@@ -586,8 +588,8 @@ iSEE <- function(
                     daggy <- is_dag(simplify(tmp, remove.loops=TRUE))
                     if (!daggy) {
                         showNotification("brushing relationships cannot be cyclic", type="error")
-                        pObjects$memory[[mode0]][i0, .brushByPlot] <- ""
-                        updateSelectInput(session, brush_plot_field, selected="")
+                        pObjects$memory[[mode0]][i0, .brushByPlot] <- .noSelection
+                        updateSelectInput(session, brush_plot_field, selected=.noSelection)
                     } else {
                         pObjects$brush_links <- tmp
                         pObjects$memory[[mode0]][i0, .brushByPlot] <- new_transmitter
@@ -626,7 +628,7 @@ iSEE <- function(
 
                     # Avoiding replotting if there was no transmitting brush.
                     transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
-                    if (transmitter=="") {
+                    if (transmitter==.noSelection) {
                         return(NULL)
                     }
                     enc <- .encode_panel_name(transmitter)
@@ -774,6 +776,9 @@ iSEE <- function(
     # Selectize updators. ----
     #######################################################################
 
+    feature_choices <- seq_len(nrow(se))
+    names(feature_choices) <- rownames(se)
+
     max_plots <- nrow(pObjects$memory$featExprPlot)
     for (i in seq_len(max_plots)) {
         for (axis in c("xaxis", "yaxis")) {
@@ -791,7 +796,8 @@ iSEE <- function(
 
                 observe({
                     force(rObjects$rerendered)
-                    updateSelectizeInput(session, cur_field, label = NULL, choices = rownames(se), server = TRUE,
+
+                    updateSelectizeInput(session, cur_field, label = NULL, choices = feature_choices, server = TRUE,
                                          selected = pObjects$memory[[mode0]][i0, field0][[1]])
                 }, priority=-1) # Lower priority so that it executes AFTER the UI rerender.
             })
@@ -809,7 +815,7 @@ iSEE <- function(
 
                 observe({
                     force(rObjects$rerendered)
-                    updateSelectizeInput(session, cur_field, label = NULL, choices = rownames(se), server = TRUE,
+                    updateSelectizeInput(session, cur_field, label = NULL, choices = feature_choices, server = TRUE,
                                          selected = pObjects$memory[[mode0]][i0, field0][[1]])
                 }, priority=-1) # Lower priority so that it executes AFTER the UI rerender.
             })
@@ -824,7 +830,7 @@ iSEE <- function(
     
             observe({
                 force(rObjects$rerendered)
-                updateSelectizeInput(session, paste0(mode0, i0, "_", .heatMapFeatName), choices = rownames(se),
+                updateSelectizeInput(session, paste0(mode0, i0, "_", .heatMapFeatName), choices = feature_choices,
                                      server = TRUE, selected = pObjects$memory[[mode0]][i0, .heatMapFeatName][[1]])
             }, priority=-1) # Lower priority so that it executes AFTER the UI rerender.
         })
@@ -870,6 +876,7 @@ iSEE <- function(
                     cur_field <- paste0(plot_name, "_", field0)
 
                     observeEvent(input[[cur_field]], {
+                        req(input[[cur_field]])
                         matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
                         pObjects$memory[[mode0]][[field0]][i0] <- matched_input
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
@@ -888,6 +895,7 @@ iSEE <- function(
                     brush_id <- paste0(plot_name, "_", .brushField)
 
                     observeEvent(input[[cur_field]], {
+                        req(input[[cur_field]])
                         matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
                         pObjects$memory[[mode0]][[field0]][i0] <- matched_input
 

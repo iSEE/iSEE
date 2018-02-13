@@ -656,7 +656,7 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
   cmd <- NULL
 
   # Checking what points are brushed from the transmitting plot.
-  if (brush_in != "") {
+  if (brush_in != .noSelection) {
     brush_by <- .encode_panel_name(brush_in)
     brush_val <- all_memory[[brush_by$Type]][,.brushData][[brush_by$ID]]
 

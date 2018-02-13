@@ -197,9 +197,9 @@ featExprPlotDefaults <- function(se, number) {
     out[[.featExprAssay]] <- def_assay
     out[[.featExprXAxis]] <- .featExprXAxisNothingTitle
     out[[.featExprXAxisColData]] <- covariates[1] 
-    out[[.featExprXAxisFeatName]] <- ""
+    out[[.featExprXAxisFeatName]] <- 1L
     out[[.featExprXAxisRowTable]] <- ""
-    out[[.featExprYAxisFeatName]] <- ""
+    out[[.featExprYAxisFeatName]] <- 1L
     out[[.featExprYAxisRowTable]] <- ""
     out[[.featExprYAxis]] <- .featExprYAxisRowTableTitle
 
@@ -242,7 +242,7 @@ rowStatTableDefaults <- function(se, number) {
 
     # Defining the rowDataPlot brush to receive.
     out[[.brushParamPanelOpen]] <- FALSE
-    out[[.brushByPlot]] <- ""
+    out[[.brushByPlot]] <- .noSelection
 
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)
@@ -281,7 +281,7 @@ heatMapPlotDefaults <- function(se, number) {
   out[[.heatMapFeatName]] <- rep(list(all_features[1:2]), nrow(out))
   out[[.heatMapColDataPanelOpen]] <- FALSE
   out[[.heatMapColData]] <- rep(list(colnames(colData(se))[1]), nrow(out))
-  out[[.heatMapImportSource]] <- ""
+  out[[.heatMapImportSource]] <- .noSelection
 
   if (waszero) out <- out[0,,drop=FALSE]
   return(out)
@@ -316,7 +316,7 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.colorParamPanelOpen]] <- FALSE
     incoming[[.brushParamPanelOpen]] <- FALSE
 
-    incoming[[.brushByPlot]] <- ""
+    incoming[[.brushByPlot]] <- .noSelection
     incoming[[.brushEffect]] <- .brushTransTitle
     incoming[[.brushTransAlpha]] <- 0.1
     incoming[[.brushColor]] <- "red"
@@ -336,7 +336,7 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.colorByColData]] <- def_cov
     incoming[[.colorByRowTable]] <- "" 
     incoming[[.colorByRowTableAssay]] <- def_assay
-    incoming[[.colorByFeatName]] <- "" 
+    incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameAssay]] <- def_assay
 
     return(incoming)
@@ -351,7 +351,7 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.colorByRowData]] <- def_cov
     incoming[[.colorByRowTable]] <- "" 
     incoming[[.colorByRowTableColor]] <- "red"
-    incoming[[.colorByFeatName]] <- "" 
+    incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameColor]] <- "red"
 
     return(incoming)

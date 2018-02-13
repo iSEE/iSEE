@@ -68,8 +68,8 @@
     # Defining all transmitting tables and plots for linking.
     link_sources <- .define_link_sources(active_panels)
     active_tab <- link_sources$tab
-    row_brushable <- c("", link_sources$row)
-    col_brushable <- c("", link_sources$col)
+    row_brushable <- c(.noSelection, link_sources$row)
+    col_brushable <- c(.noSelection, link_sources$col)
     heatmap_sources <- c(link_sources$row, active_tab)
 
     for (i in seq_len(nrow(active_panels))) {
@@ -216,7 +216,7 @@
                             title = "Brushing parameters",
                             open = param_choices[[.brushParamPanelOpen]],
                             selectInput(.input_FUN(.brushByPlot),
-                                        label = "Receive brush from:", selectize=FALSE,
+                                        label = "Receive brush from:", 
                                         choices=row_brushable,
                                         selected=.choose_link(param_choices[[.brushByPlot]], row_brushable))
                             )
@@ -395,7 +395,7 @@
         title = "Brushing parameters",
         open = param_choices[[.brushParamPanelOpen]],
         selectInput(paste0(mode, ID, "_", .brushByPlot),
-                    label = "Receive brush from:", selectize=FALSE,
+                    label = "Receive brush from:", 
                     choices=brushable,
                     selected=.choose_link(param_choices[[.brushByPlot]], brushable)),
 

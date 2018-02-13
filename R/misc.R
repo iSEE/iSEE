@@ -175,7 +175,7 @@ height_limits <- c(400L, 1000L)
         bb <- cur_memory[,.brushByPlot]
         bad <- !bb %in% col_brushable | !self_active %in% all_active
         if (any(bad)) { 
-            memory[[mode]][,.brushByPlot][bad] <- ""
+            memory[[mode]][,.brushByPlot][bad] <- .noSelection
         }
 
         cb <- cur_memory[,.colorByRowTable]
@@ -192,7 +192,7 @@ height_limits <- c(400L, 1000L)
     bb <- cur_memory[,.brushByPlot]
     bad <- !bb %in% row_brushable | !self_active %in% all_active
     if (any(bad)) { 
-        memory$rowDataPlot[,.brushByPlot][bad] <- ""
+        memory$rowDataPlot[,.brushByPlot][bad] <- .noSelection
     }
 
     cb <- cur_memory[,.colorByRowTable]
@@ -224,7 +224,7 @@ height_limits <- c(400L, 1000L)
 
     # Checking brush status.
     brush_in <- param_choices[[.brushByPlot]]
-    if (brush_in!="") {
+    if (brush_in!=.noSelection) {
         output <- c(output, list("Receiving brush from", em(strong(brush_in)), br()))
     }
 
@@ -264,7 +264,7 @@ height_limits <- c(400L, 1000L)
 
     # Checking brush status.
     brush_in <- param_choices[[.brushByPlot]]
-    if (brush_in!="") {
+    if (brush_in!=.noSelection) {
         output <- c(output, list("Receiving brush from", em(strong(brush_in)), br()))
     }
 

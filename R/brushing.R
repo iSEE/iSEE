@@ -13,7 +13,7 @@
     cur_edges <- vector("list",N)
     for (i in seq_len(N)) {
       cur_parent <- memory[[mode]][i, .brushByPlot]
-      if (cur_parent!="") {
+      if (cur_parent!=.noSelection) {
         cur_edges[[i]] <- c(.decoded2encoded(cur_parent), cur_panels[i])
       }
     }
@@ -33,10 +33,10 @@
 # Replaces the edge in the plot, if the choice of plot to receive from
 # in the current panel changes.
 {
-  if (old_parent!="" && are_adjacent(graph, old_parent, panel)) {
+  if (old_parent!=.noSelection && are_adjacent(graph, old_parent, panel)) {
     graph[from=old_parent,to=panel] <- 0
   }
-  if (new_parent!="" && !are_adjacent(graph, new_parent, panel)) {
+  if (new_parent!=.noSelection && !are_adjacent(graph, new_parent, panel)) {
     graph <- add_edges(graph, c(new_parent, panel))
   }
   return(graph)
@@ -57,7 +57,7 @@
     for (i in seq_along(all_kids)) {
         type <- enc$Type[i]
         ID <- enc$ID[i]
-        pObjects$memory[[type]][ID, .brushByPlot] <- ""
+        pObjects$memory[[type]][ID, .brushByPlot] <- .noSelection
     }
 
     # Destroying self memory of any transmitting brush, as there
@@ -65,7 +65,7 @@
     # plot is added back to the UI. This ensures memory is valid,
     # in line with '.sanitize_memory()' in misc.R.
     self <- .split_encoded(panel)
-    pObjects$memory[[self$Type]][self$ID, .brushByPlot] <- ""
+    pObjects$memory[[self$Type]][self$ID, .brushByPlot] <- .noSelection
 
     # Destroying the edges.
     pObjects$brush_links <- graph - incident(graph, panel, mode="all")
@@ -131,8 +131,8 @@
 # currently exists in the memory of the transmitting plot.
 { 
     brush <- FALSE
-    encoded <- ""
-    if (transmitter!="") {
+    encoded <- .noSelection
+    if (transmitter!=.noSelection) {
         enc <- .encode_panel_name(transmitter)
         encoded <- paste0(enc$Type, enc$ID)
         if (!is.null(memory[[enc$Type]][enc$ID, .brushData][[1]])) {
@@ -148,7 +148,7 @@
 {
     col_searches <- memory$rowStatTable[i, .rowStatColSearch][[1]]
     transmitter <- memory$rowStatTable[i, .brushByPlot]
-    if (transmitter=="") {
+    if (transmitter==.noSelection) {
         return(col_searches)      
     }
 

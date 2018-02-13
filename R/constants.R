@@ -82,6 +82,8 @@
 .brushColor <- "BrushColor"
 .brushTransAlpha <- "BrushAlpha"
 
+.noSelection <- "---"
+
 # Zooming parameters. ----
 .zoomData <- "ZoomData"
 .zoomClick <- "ZoomClick"

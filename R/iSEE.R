@@ -570,8 +570,6 @@ iSEE <- function(
                 # Brush choice observer.
                 brush_plot_field <- paste0(prefix, .brushByPlot)
                 observeEvent(input[[brush_plot_field]], {
-                             print(brush_plot_field)
-                             print(input[[brush_plot_field]])
                     old_transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
                     new_transmitter <- input[[brush_plot_field]]
 
@@ -878,6 +876,9 @@ iSEE <- function(
                     observeEvent(input[[cur_field]], {
                         req(input[[cur_field]])
                         matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
+                        if (identical(matched_input, pObjects$memory[[mode0]][[field0]][i0])) { 
+                            return(NULL)
+                        }
                         pObjects$memory[[mode0]][[field0]][i0] <- matched_input
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     }, ignoreInit=TRUE)
@@ -897,6 +898,9 @@ iSEE <- function(
                     observeEvent(input[[cur_field]], {
                         req(input[[cur_field]])
                         matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
+                        if (identical(matched_input, pObjects$memory[[mode0]][[field0]][i0])) { 
+                            return(NULL)
+                        }
                         pObjects$memory[[mode0]][[field0]][i0] <- matched_input
 
                         if (!is.null(isolate(input[[brush_id]]))) {
@@ -906,7 +910,7 @@ iSEE <- function(
                             # Manually triggering replotting.
                             rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                         }
-                     }, ignoreInit=TRUE, priority=-2) # executs AFTER the update selectize.
+                     }, ignoreInit=TRUE, priority=-2) # executes AFTER the update selectize.
                 })
             }
 
@@ -1111,6 +1115,7 @@ iSEE <- function(
                 cur_field <- paste0(plot_name, "_", field0)
 
                 observeEvent(input[[cur_field]], {
+                    req(input[[cur_field]])
                     if (identical(input[[cur_field]], pObjects$memory[[mode0]][i0, field0][[1]])) {
                         return(NULL)
                     }
@@ -1130,7 +1135,11 @@ iSEE <- function(
                 cur_field <- paste0(plot_name, "_", field0)
 
                 observeEvent(input[[cur_field]], {
+                    req(input[[cur_field]])
                     matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
+                    if (identical(input[[cur_field]], pObjects$memory[[mode0]][i0, field0])) {
+                        return(NULL)
+                    }
                     pObjects$memory[[mode0]][[field0]][i0] <- matched_input
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                 }, ignoreInit=TRUE)

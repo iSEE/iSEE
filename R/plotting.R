@@ -151,7 +151,8 @@ names(.all_aes_values) <- .all_aes_names
   plot_title <- sprintf("%s %s", y_title, x_title)
 
   # Generating the plot.
-  .create_plot(data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
+  .create_plot(
+    data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
     x_lab=x_lab, y_lab=y_lab,
     brush_color=brush_stroke_color["featExprPlot"],
     title = plot_title
@@ -186,7 +187,8 @@ names(.all_aes_values) <- .all_aes_names
   plot_title <- sprintf("%s %s", y_lab, x_title)
 
   # Generating the plot.
-  .create_plot(data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
+  .create_plot(
+    data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
     x_lab=x_lab, y_lab=y_lab,
     brush_color=brush_stroke_color["rowDataPlot"],
     by_row=TRUE,
@@ -198,7 +200,9 @@ names(.all_aes_values) <- .all_aes_names
 # Internal functions: central plotter ----
 ############################################
 
-.create_plot <- function(data_cmds, param_choices, all_memory, all_coordinates, se, colormap, ..., by_row=FALSE)
+.create_plot <- function(
+  data_cmds, param_choices, all_memory, all_coordinates, se, colormap, ...,
+  by_row=FALSE)
 # This function will generate plotting commands appropriate to
 # each type of X/Y. It does so by evaluating 'plot.data' to
 # determine the nature of X/Y, and then choosing the plot to match.
@@ -254,28 +258,44 @@ names(.all_aes_values) <- .all_aes_names
 
   # Creating the command to define BrushBy.
   brush_cmd <- .process_brushby_choice(param_choices, all_memory)
+  
+  # Displaying brush information, if applicable
+  plot_info <- .split_encoded(rownames(param_choices))
+  brush_val <- all_memory[[plot_info$Type]][,.brushData][[plot_info$ID]]
+  if (!is.null(brush_val)){
+    n_brushed <- nrow(brushedPoints(eval_env$plot.data, brush_val))
+    n_total <- nrow(eval_env$plot.data)
+    subtitle <- sprintf(
+      "%i of %i points brushed (%.1f%%)",
+      n_brushed, n_total, 100*n_brushed/n_total)
+  } else {
+    subtitle <- NA_character_
+  }
 
   # Dispatch to different plotting commands, depending on whether X/Y are groupable.
   if (group_X && group_Y) {
     extra_cmds <- .griddotplot(param_choices=param_choices, ..., 
-        color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd)
+      color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd,
+      subtitle = subtitle)
 
   } else if (group_X && !group_Y) {
     extra_cmds <- .violin_plot(param_choices=param_choices, ..., 
-        color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd)
+      color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd,
+      subtitle = subtitle)
 
   } else if (!group_X && group_Y) {
     extra_cmds <- .violin_plot(param_choices=param_choices, ..., 
-        color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd,
-        horizontal=TRUE)
+      color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd,
+      horizontal=TRUE, subtitle = subtitle)
 
   } else {
     extra_cmds <- .scatter_plot(param_choices=param_choices, ..., 
-        color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd)
+      color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd,
+      subtitle = subtitle)
 
   }
   extra_cmds$data <- c(more_data_cmds, extra_cmds$data)
-
+  
   # Evaluating the early commands to get something to store for brushing.
   to_eval <- unlist(extra_cmds[c("data", "lim", "brush")])
   if (length(to_eval)) {
@@ -307,7 +327,7 @@ names(.all_aes_values) <- .all_aes_names
 
 .scatter_plot <- function(
   param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, brush_color,
-  title)
+  title, subtitle)
 # Creates a scatter plot of numeric X/Y. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -325,7 +345,7 @@ names(.all_aes_values) <- .all_aes_names
     x = x_lab,
     y = y_lab,
     color = color_label,
-    title = title
+    title = title, subtitle = subtitle
   )
 
   # Defining boundaries if zoomed.
@@ -359,7 +379,7 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);"
 
 .violin_plot <- function(
   param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, brush_color,
-  horizontal = FALSE, title)
+  horizontal = FALSE, title, subtitle)
 # Generates a vertical violin plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -406,7 +426,7 @@ plot.data$Y <- tmp;")
     x = x_lab,
     y = y_lab,
     color = color_label,
-    title = title
+    title = title, subtitle = subtitle
   )
 
   # Defining boundaries if zoomed. This requires some finesse to deal
@@ -450,7 +470,7 @@ plot.data$Y <- tmp;")
 
 .griddotplot <- function(
   param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, brush_color,
-  title)
+  title, subtitle)
 # Generates a grid dot plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -488,7 +508,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
     x = x_lab,
     y = y_lab,
     color = color_label,
-    title = title
+    title = title, subtitle = subtitle
   )
 
   # Defining boundaries if zoomed.
@@ -648,13 +668,12 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
   cmd <- NULL
 
   # Checking what points are brushed from the transmitting plot.
-  if (brush_in != .noSelection) {
+  if (!identical(brush_in, .noSelection)) {
     brush_by <- .encode_panel_name(brush_in)
     brush_val <- all_memory[[brush_by$Type]][,.brushData][[brush_by$ID]]
-
     if (!is.null(brush_val)) {
         transmitter <- paste0(brush_by$Type, brush_by$ID)
-        if (rownames(param_choices)==transmitter) {
+        if (identical(rownames(param_choices), transmitter)) {
             source_data <- 'plot.data'
         } else {
             source_data <- sprintf("all_coordinates[['%s']]", transmitter)

@@ -408,7 +408,9 @@ iSEE <- function(
                     }
 
                     # Destroying links; either the brush source, or the links from tables.
-                    if (mode0=="rowStatTable") {
+                    if (mode0=="heatMapPlot") { 
+                        # do nothing, there are no links.
+                    } else if (mode0=="rowStatTable") {
                         .destroy_table(pObjects, paste0(mode0, i0))
                     } else {
                         .destroy_brush_source(pObjects, paste0(mode0, i0))

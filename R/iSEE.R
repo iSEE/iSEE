@@ -1095,9 +1095,48 @@ iSEE <- function(
             i0 <- i
             plot_name <- paste0(mode0, i0)
 
+            # Triggering an update of the selected elements.
+            button_name <- paste0(plot_name, "_", .heatMapImport)
+            observeEvent(input[[button_name]], {
+                origin <- pObjects$memory[[mode0]][i0, .heatMapImportSource] 
+                enc <- .encode_panel_name(origin)
+
+                incoming <- NULL
+                if (enc$Type=="rowStatTable") {
+                    incoming <- input[[paste0(enc$Type, enc$ID, "_rows_all")]]
+                } else {
+                    brush <- pObjects$memory[[enc$Type]][enc$ID, .brushData][[1]]
+                    if (!is.null(brush)) { 
+                        incoming <- brushedPoints(pObjects$coordinates[[paste0(enc$Type, enc$ID)]], brush)
+                        incoming <- match(rownames(incoming), rownames(se))
+                    } 
+                }
+
+                limit <- 100
+                if (length(incoming) > limit) {
+                    showNotification(sprintf("only the first %i features used", limit), type="warning")
+                    incoming <- head(incoming, limit)                        
+                }
+
+                combined <- union(pObjects$memory[[mode0]][i0, .heatMapFeatName][[1]], incoming)                
+                updateSelectizeInput(session, paste0(mode0, i0, "_", .heatMapFeatName), choices = feature_choices,
+                                     server = TRUE, selected = combined)
+            }, ignoreInit=TRUE)
+            
+            # Updating the import source, but this does NOT trigger replotting, as we need to press the button.
+            field0 <- .heatMapImportSource
+            cur_field <- paste0(plot_name, "_", field0)
+            observeEvent(input[[cur_field]], {
+                req(input[[cur_field]])
+                matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
+                if (identical(input[[cur_field]], pObjects$memory[[mode0]][i0, field0])) {
+                    return(NULL)
+                }
+                pObjects$memory[[mode0]][[field0]][i0] <- matched_input
+            }, ignoreInit=TRUE)
+
             # Defining the rendered plot, and saving the coordinates.
             output[[plot_name]] <- renderPlot({
-                print(plot_name)
                 force(rObjects[[plot_name]])
                 p.out <- .make_heatMapPlot(i0, pObjects$memory, pObjects$coordinates, se, colormap)
                 pObjects$commands[[plot_name]] <- p.out$cmd

@@ -186,7 +186,7 @@
                     selectizeInput(.input_FUN(.heatMapFeatName),
                                    label="Features:",
                                    choices=NULL, selected=NULL, multiple=TRUE,
-                                   options = list(plugins = list('remove_button', 'drag_drop'), maxOptions=20)),
+                                   options = list(plugins = list('remove_button', 'drag_drop'))),
                     selectInput(.input_FUN(.heatMapAssay), label=NULL,
                                 choices=all_assays, selected=param_choices[[.heatMapAssay]]),
                     selectInput(.input_FUN(.heatMapImportSource), label="Import from", choices=heatmap_sources,

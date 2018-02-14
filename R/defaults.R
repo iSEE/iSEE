@@ -38,7 +38,7 @@
 #' Defaults to 1, i.e., the first feature in \code{se}.
 #' Alternatively, a string can be supplied containing the name of the feature, i.e., the row name.}
 #' \item{\code{YAxisRowTable}:}{Character, which row statistic table should be used to choose a feature to put on the y-axis if \code{YAxis="Row table"}? 
-#' Defaults to \code{"auto"}, which means that the first available table will be used.}
+#' Defaults to an empty string, which means that the first available table will be used.}
 #' \item{\code{XAxis}:}{Character, what type of variable should be shown on the x-axis?
 #' Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Column data"} or \code{"Feature name"}.}
 #' \item{\code{XAxisColData}:}{Character, what column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
@@ -47,7 +47,7 @@
 #' Defaults to 1, i.e., the first feature in \code{se}.
 #' Alternatively, a string can be supplied containing the name of the feature.}
 #' \item{\code{XAxisRowTable}:}{Character, which row statistic table should be used to choose a feature to put on the x-axis if \code{XAxis="Row table"}? 
-#' Defaults to \code{"auto"}, which means that the first available table will be used.}
+#' Defaults to an empty string, which means that the first available table will be used.}
 #' }
 #'
 #' @section Column data plot parameters:
@@ -80,7 +80,7 @@
 #' \item{\code{ColorByColData}:}{Character, which column of \code{colData(se)} should be used for colouring if \code{ColorBy="Column data"}? 
 #' Defaults to the first entry of \code{colData(se)}.}
 #' \item{\code{ColorByRowTable}:}{Character, which row statistic table should be used to choose a feature to color by, if \code{ColorBy="Row table"}? 
-#' Defaults to \code{"auto"}, which means that the first available table will be used.}
+#' Defaults to an empty string, which means that the first available table will be used.}
 #' \item{\code{ColorByRowTableAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Row table"}? 
 #' Defaults to 1, i.e., the first assay in \code{se}.
 #' Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
@@ -100,7 +100,7 @@
 #' \item{\code{ColorByRowData}:}{Character, which column of \code{rowData(se)} should be used for colouring if \code{ColorBy="Row data"}? 
 #' Defaults to the first entry of \code{rowData(se)}.}
 #' \item{\code{ColorByRowTable}:}{Character, which row statistic table should be used to choose a feature to color by, if \code{ColorBy="Row table"}? 
-#' Defaults to \code{"auto"}, which means that the first available table will be used.}
+#' Defaults to an empty string, which means that the first available table will be used.}
 #' \item{\code{ColorByRowTableColor}:}{String specifying the colour to be used to highlight the selected feature from the row table.
 #' Defaults to \code{"red"}.}
 #' \item{\code{ColorByFeatName}:}{Integer, the index of the feature to use for colouring based on expression, if \code{ColorBy="Feature name"}? 
@@ -210,9 +210,9 @@ featExprPlotDefaults <- function(se, number) {
     out[[.featExprXAxis]] <- .featExprXAxisNothingTitle
     out[[.featExprXAxisColData]] <- covariates[1] 
     out[[.featExprXAxisFeatName]] <- 1L
-    out[[.featExprXAxisRowTable]] <- "auto"
+    out[[.featExprXAxisRowTable]] <- ""
     out[[.featExprYAxisFeatName]] <- 1L
-    out[[.featExprYAxisRowTable]] <- "auto"
+    out[[.featExprYAxisRowTable]] <- ""
     out[[.featExprYAxis]] <- .featExprYAxisRowTableTitle
 
     out <- .add_general_parameters_for_column_plots(out, se)
@@ -345,7 +345,7 @@ heatMapPlotDefaults <- function(se, number) {
     def_cov <- colnames(colData(se))[1]
     incoming[[.colorByField]] <- .colorByNothingTitle
     incoming[[.colorByColData]] <- def_cov
-    incoming[[.colorByRowTable]] <- "auto" 
+    incoming[[.colorByRowTable]] <- "" 
     incoming[[.colorByRowTableAssay]] <- def_assay
     incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameAssay]] <- def_assay
@@ -360,7 +360,7 @@ heatMapPlotDefaults <- function(se, number) {
     def_cov <- colnames(rowData(se))[1]
     incoming[[.colorByField]] <- .colorByNothingTitle
     incoming[[.colorByRowData]] <- def_cov
-    incoming[[.colorByRowTable]] <- "auto" 
+    incoming[[.colorByRowTable]] <- "" 
     incoming[[.colorByRowTableColor]] <- "red"
     incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameColor]] <- "red"

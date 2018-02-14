@@ -161,7 +161,6 @@ height_limits <- c(400L, 1000L)
 {
     link_sources <- .define_link_sources(active_panels)
     active_tab <- link_sources$tab
-    default_tab <- ifelse(length(active_tab) > 0L, active_tab[1], "")
     row_brushable <- link_sources$row
     col_brushable <-  link_sources$col
     all_active <- paste0(active_panels$Type, active_panels$ID)
@@ -180,7 +179,7 @@ height_limits <- c(400L, 1000L)
         cb <- cur_memory[,.colorByRowTable]
         bad <- !cb %in% active_tab | !self_active %in% all_active
         if (any(bad)) { 
-            memory[[mode]][,.colorByRowTable][bad] <- default_tab
+            memory[[mode]][,.colorByRowTable][bad] <- ""
         }
     }
 
@@ -197,7 +196,7 @@ height_limits <- c(400L, 1000L)
     cb <- cur_memory[,.colorByRowTable]
     bad <- !cb %in% active_tab | !self_active %in% all_active
     if (any(bad)) { 
-        memory$rowDataPlot[,.colorByRowTable][bad] <- default_tab
+        memory$rowDataPlot[,.colorByRowTable][bad] <- ""
     }
 
     # Checking for linking of x/y-axes of feature expression plots.
@@ -207,7 +206,7 @@ height_limits <- c(400L, 1000L)
 
         bad <- !bb %in% active_tab | !feat_active %in% all_active
         if (any(bad)) { 
-            memory$featExprPlot[,field][bad] <- default_tab
+            memory$featExprPlot[,field][bad] <- "" 
         }
     }
     return(memory)

@@ -70,17 +70,20 @@
     heatMapArgs <- NULL
   }
 
-  # Setting up parameters for each panel.
+  # Setting up parameters for each panel. Also coercing string arguments that should be integers.
   memory <- list()
   
   memory$redDimPlot <- redDimPlotDefaults(se, reddim_max_plots)
   if (!is.null(redDimArgs)) {
+    memory$redDimPlot <- .name2index(memory$redDimPlot, .redDimType, reducedDimNames(se))
     memory$redDimPlot <- .override_defaults(memory$redDimPlot, redDimArgs)
   }
   rownames(memory$redDimPlot) <- sprintf("redDimPlot%i", seq_len(reddim_max_plots))
 
   memory$featExprPlot <- featExprPlotDefaults(se, geneexpr_max_plots)
   if (!is.null(featExprArgs)) {
+    memory$featExprPlot <- .name2index(memory$featExprPlot, c(.featExprXAxisFeatName, .featExprYAxisFeatName), rownames(se))
+    memory$featExprPlot <- .name2index(memory$featExprPlot, .featExprAssay, assayNames(se))
     memory$featExprPlot <- .override_defaults(memory$featExprPlot, featExprArgs)
   }
   rownames(memory$featExprPlot) <- sprintf("featExprPlot%i", seq_len(geneexpr_max_plots))
@@ -93,6 +96,7 @@
 
   memory$rowStatTable <- rowStatTableDefaults(se, genestat_max_tabs)
   if (!is.null(rowStatArgs)) {
+    memory$rowStatTable <- .name2index(memory$rowStatTable, .rowStatSelected, rownames(se))
     memory$rowStatTable <- .override_defaults(memory$rowStatTable, rowStatArgs)
   }
   rownames(memory$rowStatTable) <- sprintf("rowStatTable%i", seq_len(genestat_max_tabs))
@@ -105,11 +109,39 @@
 
   memory$heatMapPlot <- heatMapPlotDefaults(se, heatmap_max_plots)
   if (!is.null(heatMapArgs)) {
+    memory$heatMapPlot <- .name2index(memory$heatMapPlot, .heatMapFeatName, rownames(se))
+    memory$heatMapPlot <- .name2index(memory$heatMapPlot, .heatMapAssay, assayNames(se))
     memory$heatMapPlot <- .override_defaults(memory$heatMapPlot, heatMapArgs)
   }
   rownames(memory$heatMapPlot) <- sprintf("heatMapPlot%i", seq_len(heatmap_max_plots))
-  
+
+  # Further coercion of common aesthetic parameters to integer indices. 
+  for (mode in c("redDimPlot", "featExprPlot", "colDataPlot")) {
+    memory[[mode]] <- .name2index(memory[[mode]], .colorByFeatName, rownames(se))  
+    memory[[mode]] <- .name2index(memory[[mode]], .colorByFeatNameAssay, assayNames(se))  
+    memory[[mode]] <- .name2index(memory[[mode]], .colorByRowTableAssay, assayNames(se))  
+  }
+  memory$rowDataPlot <- .name2index(memory$rowDataPlot, .colorByFeatName, rownames(se))  
+
   return(memory)
+}
+
+.name2index <- function(df, field, choices) 
+# This converts default arguments specified as strings into the relevant integer indices.
+# The idea is to allow users to flexibly specify the input choices; while integers are
+# safer when names are not unique or absent, strings are easier to work with.
+{
+    for (f in field) {
+        vals <- df[,field]
+        if (is.character(vals)) { 
+            m <- match(vals, choices)
+            m[is.na(m)] <- 1L
+            df[,field] <- m 
+        } else if (!is.integer(vals)) {
+            df[,field] <- as.integer(vals) 
+        }
+    }
+    return(df)
 }
 
 width_limits <- c(2L, 12L)
@@ -163,6 +195,7 @@ height_limits <- c(400L, 1000L)
 {
     link_sources <- .define_link_sources(active_panels)
     active_tab <- link_sources$tab
+    default_tab <- ifelse(length(active_tab) > 0L, active_tab[1], "")
     row_brushable <- link_sources$row
     col_brushable <-  link_sources$col
     all_active <- paste0(active_panels$Type, active_panels$ID)
@@ -181,7 +214,7 @@ height_limits <- c(400L, 1000L)
         cb <- cur_memory[,.colorByRowTable]
         bad <- !cb %in% active_tab | !self_active %in% all_active
         if (any(bad)) { 
-            memory[[mode]][,.colorByRowTable][bad] <- ""
+            memory[[mode]][,.colorByRowTable][bad] <- default_tab
         }
     }
 
@@ -198,7 +231,7 @@ height_limits <- c(400L, 1000L)
     cb <- cur_memory[,.colorByRowTable]
     bad <- !cb %in% active_tab | !self_active %in% all_active
     if (any(bad)) { 
-        memory$rowDataPlot[,.colorByRowTable][bad] <- ""
+        memory$rowDataPlot[,.colorByRowTable][bad] <- default_tab
     }
 
     # Checking for linking of x/y-axes of feature expression plots.
@@ -208,7 +241,7 @@ height_limits <- c(400L, 1000L)
 
         bad <- !bb %in% active_tab | !feat_active %in% all_active
         if (any(bad)) { 
-            memory$featExprPlot[,field][bad] <- ""
+            memory$featExprPlot[,field][bad] <- default_tab
         }
     }
     return(memory)

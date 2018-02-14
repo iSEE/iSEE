@@ -38,7 +38,7 @@ names(.all_aes_values) <- .all_aes_names
     y_lab = sprintf(
       "Dimension %s",
       param_choices[[.redDimYAxis]]),
-    brush_color=panel_colors["redDimPlot"],
+    brush_color=brush_stroke_color["redDimPlot"],
     title = plot_title
   )
 }
@@ -74,7 +74,7 @@ names(.all_aes_values) <- .all_aes_names
   .create_plot(
     data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
     x_lab=x_lab, y_lab=y_lab,
-    brush_color=panel_colors["colDataPlot"],
+    brush_color=brush_stroke_color["colDataPlot"],
     title=plot_title
   )
 }
@@ -153,7 +153,7 @@ names(.all_aes_values) <- .all_aes_names
   # Generating the plot.
   .create_plot(data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
     x_lab=x_lab, y_lab=y_lab,
-    brush_color=panel_colors["featExprPlot"],
+    brush_color=brush_stroke_color["featExprPlot"],
     title = plot_title
   )
 }
@@ -188,7 +188,7 @@ names(.all_aes_values) <- .all_aes_names
   # Generating the plot.
   .create_plot(data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
     x_lab=x_lab, y_lab=y_lab,
-    brush_color=brush_stroke_color_full["rowDataPlot"],
+    brush_color=brush_stroke_color["rowDataPlot"],
     by_row=TRUE,
     title=plot_title
   )

@@ -273,12 +273,11 @@ heatMapPlotDefaults <- function(se, number) {
   if (waszero) number <- 1
   
   def_assay <- .set_default_assay(se)
-  all_features <- rownames(se)
   
   out <- new("DataFrame", nrows=as.integer(number))
   out[[.heatMapAssay]] <- def_assay
   out[[.heatMapFeatNamePanelOpen]] <- FALSE
-  out[[.heatMapFeatName]] <- rep(list(all_features[1:2]), nrow(out))
+  out[[.heatMapFeatName]] <- rep(list(1L), nrow(out))
   out[[.heatMapColDataPanelOpen]] <- FALSE
   out[[.heatMapColData]] <- rep(list(colnames(colData(se))[1]), nrow(out))
   out[[.heatMapImportSource]] <- .noSelection

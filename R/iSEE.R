@@ -1097,6 +1097,7 @@ iSEE <- function(
 
             # Defining the rendered plot, and saving the coordinates.
             output[[plot_name]] <- renderPlot({
+                print(plot_name)
                 force(rObjects[[plot_name]])
                 p.out <- .make_heatMapPlot(i0, pObjects$memory, pObjects$coordinates, se, colormap)
                 pObjects$commands[[plot_name]] <- p.out$cmd
@@ -1116,7 +1117,7 @@ iSEE <- function(
 
                 observeEvent(input[[cur_field]], {
                     req(input[[cur_field]])
-                    if (identical(input[[cur_field]], pObjects$memory[[mode0]][i0, field0][[1]])) {
+                    if (identical(input[[cur_field]], as.character(pObjects$memory[[mode0]][i0, field0][[1]]))) {
                         return(NULL)
                     }
                     pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, field0, input[[cur_field]])

@@ -934,11 +934,40 @@ iSEE <- function(
 
                 # Defining the rendered plot, and saving the coordinates.
                 output[[plot_name]] <- renderPlot({
-                    force(rObjects[[plot_name]])
-                    p.out <- FUN0(i0, pObjects$memory, pObjects$coordinates, se, colormap)
-                    pObjects$commands[[plot_name]] <- p.out$cmd
-                    pObjects$coordinates[[plot_name]] <- p.out$xy[,c("X", "Y")]
-                    p.out$plot
+                  withProgress(
+                    min = 0,
+                    max = 5,
+                    value = 0,
+                    message = sprintf("Processing panel %s", plot_name),
+                    detail = "Initialising ...", session = session,
+                    expr = {
+                      force(rObjects[[plot_name]])
+                      incProgress(
+                        amount = 1,
+                        message = sprintf("Processing panel %s", plot_name),
+                        detail = "processing ...", session = session)
+                      
+                      p.out <- FUN0(i0, pObjects$memory, pObjects$coordinates, se, colormap)
+                      incProgress(
+                        amount = 1,
+                        message = sprintf("Processing panel %s", plot_name),
+                        detail = "storing command ...", session = session)
+                      
+                      pObjects$commands[[plot_name]] <- p.out$cmd
+                      incProgress(
+                        amount = 1,
+                        message = sprintf("Processing panel %s", plot_name),
+                        detail = "storing coordinates ...", session = session)
+                      
+                      pObjects$coordinates[[plot_name]] <- p.out$xy[,c("X", "Y")]
+                      incProgress(
+                        amount = 1,
+                        message = sprintf("Processing panel %s", plot_name),
+                        detail = "rendering ...", session = session)
+                      
+                      p.out$plot
+                    }
+                  )
                 })
 
                 # Describing the links between panels.

@@ -822,6 +822,12 @@ iSEE <- function(
     # Zoom observers.
     #######################################################################
 
+    # The interpretation of the double-click is somewhat complicated.
+    # - If you double-click on a brush, you zoom it while wiping the brush.
+    # - If you double-click outside a brush, you wipe the brush (this is done automatically).
+    #   If an open lasso is present, it is deleted.
+    #   If there was no open lasso, you zoom out.
+
     for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (i in seq_len(max_plots)) {
@@ -835,17 +841,31 @@ iSEE <- function(
                 zoom_click_field <- paste0(mode0, i0, "_", .zoomClick)
                 observeEvent(input[[zoom_click_field]], {
                     brush <- input[[brush_id]]
+
                     if (!is.null(brush)) {
                         new_coords <- c(xmin=brush$xmin, xmax=brush$xmax, ymin=brush$ymin, ymax=brush$ymax)
                         session$resetBrush(brush_id) # This should auto-trigger replotting above.
                         pObjects$force_rerender[plot_name] <- TRUE
                     } else {
-                        new_coords <- NULL
-
-                        # Brush is already NULL at this point, so resetting it wouldn't help;
-                        # we need to manually trigger replotting. We don't move this outside the
+                        # Brush is already NULL at this point, so there is no need to reset it.
+                        # However, we do need to manually trigger replotting. We don't move this outside the
                         # "else", to avoid two reactive updates of unknown priorities.
-                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                        new_coords <- pObjects$memory[[mode0]][,.zoomData][[i0]]
+
+                        lasso_data <- pObjects$memory[[mode0]][,.lassoData][[i0]]
+                        if (!is.null(lasso_data)) {
+                            # We wipe out any lasso waypoints if they are present, and trigger replotting with the same scope.
+                            pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .lassoData, NULL)
+                            pObjects$no_rerender[plot_name] <- TRUE
+                            rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+
+                        } else {
+                            if (!is.null(new_coords)) {
+                                # If there are already no lasso waypoints, we zoom out.
+                                new_coords <- NULL
+                                rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                            }
+                        }
                     }
 
                     pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .zoomData, new_coords)

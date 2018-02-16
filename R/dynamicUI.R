@@ -84,13 +84,14 @@
             brush.opts <- brushOpts(.input_FUN(.brushField), resetOnNew=FALSE, 
                                     fill=brush_fill_color[mode], stroke=brush_stroke_color[mode])
             dblclick <- .input_FUN(.zoomClick)
+            clickopt <- .input_FUN(.lassoClick)
             panel_height <- paste0(active_panels$Height[i], "px")
             panel_name <- paste0(mode, ID)
         }
 
         # Creating the plot fields.
         if (mode=="redDimPlot") {
-            obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, height=panel_height)
+            obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
             cur_reddim <- param_choices[[.redDimType]]
             red_choices <- seq_len(red_dim_dims[[cur_reddim]])
             plot.param <-  list(

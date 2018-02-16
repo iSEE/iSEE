@@ -739,30 +739,6 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
   return(list(brush=brush_cmds, plot=plot_cmds))
 }
 
-.self_brush_box <- function(mode, i, memory, flip=FALSE) { 
-  current <- memory[[mode]][i, .brushData][[1]]
-  if (!is.null(current)) {
-    if (flip) {
-      xmin <- 'ymin'
-      xmax <- 'ymax'
-      ymin <- 'xmin'
-      ymax <- 'xmax'
-    } else {
-      xmin <- 'xmin'
-      xmax <- 'xmax'
-      ymin <- 'ymin'
-      ymax <- 'ymax'
-    }
-
-    return(sprintf("geom_rect(aes(xmin = %s, xmax = %s, ymin = %s, ymax = %s), color='%s', alpha=0, 
-    data=data.frame(xmin = %.5g, xmax=%.5g, ymin = %.5g, ymax = %.5g), inherit.aes=FALSE)",
-        xmin, xmax, ymin, ymax, panel_colors[mode], 
-        current$xmin, current$xmax, current$ymin, current$ymax))
-  } else {
-     return(NULL)
-  }
-}
-
 ############################################
 # Internal functions: aesthetics ----
 ############################################
@@ -859,4 +835,53 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
     return(extra_cmd)
   }
   return(NULL)
+}
+
+############################################
+# Plot update functions ----
+############################################
+
+.self_brush_box <- function(mode, i, memory, flip=FALSE) { 
+  current <- memory[[mode]][i, .brushData][[1]]
+  if (!is.null(current)) {
+    if (flip) {
+      xmin <- 'ymin'
+      xmax <- 'ymax'
+      ymin <- 'xmin'
+      ymax <- 'xmax'
+    } else {
+      xmin <- 'xmin'
+      xmax <- 'xmax'
+      ymin <- 'ymin'
+      ymax <- 'ymax'
+    }
+
+    return(sprintf("geom_rect(aes(xmin = %s, xmax = %s, ymin = %s, ymax = %s), color='%s', alpha=0, 
+    data=data.frame(xmin = %.5g, xmax=%.5g, ymin = %.5g, ymax = %.5g), inherit.aes=FALSE)",
+        xmin, xmax, ymin, ymax, panel_colors[mode], 
+        current$xmin, current$xmax, current$ymin, current$ymax))
+  } else {
+     return(NULL)
+  }
+}
+
+.self_lasso_path <- function(mode, i, memory, flip=FALSE) {
+  current <- memory[[mode]][i, .lassoData][[1]]
+  if (is.null(current) || nrow(current) < 2L) {
+    return(NULL)
+  }
+  if (flip) {
+    x <- "y"
+    y <- "x"
+  } else {
+    x <- "x"
+    y <- "y"
+  } 
+  return(sprintf("geom_path(aes(x = %s, y = %s), data=data.frame(
+    x = %s,
+    y = %s
+    ), inherit.aes=FALSE, alpha=1, color='%s')", x, y, 
+        paste0(deparse(current[,1]), collapse="\n    "),
+        paste0(deparse(current[,2]), collapse="\n    "),
+        panel_colors[mode]))
 }

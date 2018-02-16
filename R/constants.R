@@ -88,6 +88,10 @@
 .zoomData <- "ZoomData"
 .zoomClick <- "ZoomClick"
 
+# Lasso parameters. ----
+.lassoClick <- "LassoClick"
+.lassoData <- "LassoData"
+
 # Plot parameters. ----
 .plotParamPanelOpen <- "PlotPanelOpen"
 .plotParamPanelName <- "ParamPanel"

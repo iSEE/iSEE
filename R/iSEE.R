@@ -755,6 +755,33 @@ iSEE <- function(
     }
 
     #######################################################################
+    # Click observers.
+    #######################################################################
+
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
+        max_plots <- nrow(pObjects$memory[[mode]])
+        for (i in seq_len(max_plots)) {
+            local({
+                mode0 <- mode
+                i0 <- i
+                plot_name <- paste0(mode0, i0)
+                prefix <- paste0(plot_name, "_")
+
+                click_field <- paste0(prefix, .lassoClick)
+                observeEvent(input[[click_field]], {
+                    cur_click <- input[[click_field]]
+                    previous <- pObjects$memory[[mode0]][i0, .lassoData][[1]]
+                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .lassoData, rbind(previous, c(cur_click$x, cur_click$y)))
+    
+                    # Trigger replotting of self, to draw the lasso waypoints.
+                    rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                    pObjects$no_rerender[plot_name] <- TRUE
+                })
+            })
+        }
+    }
+
+    #######################################################################
     # Zoom observers.
     #######################################################################
 
@@ -965,15 +992,15 @@ iSEE <- function(
                     }
 
                     extra_cmds <- list()
-
-                    # Adding a brush.
-                    cmd <- .self_brush_box(mode0, i0, pObjects$memory, 
-                                           flip=is(gg$coordinates, "CoordFlip")) # Add a test for this!
-                    if (!is.null(cmd)) { 
+                    to_flip <- is(gg$coordinates, "CoordFlip") # Add a test for this!
+                    extra_cmds[["brush_box"]] <- .self_brush_box(mode0, i0, pObjects$memory, flip=to_flip) # Adding a brush.
+                    extra_cmds[["lasso_path"]] <- .self_lasso_path(mode0, i0, pObjects$memory, flip=to_flip) # Adding the lasso path.
+                    if (length(extra_cmds) > 0L) {
                         cur.env <- new.env()
-                        gg <- gg + eval(parse(text=cmd), envir=cur.env)
-                        extra_cmds[["brush_box"]] <- cmd 
-                    } 
+                        for (cmd in extra_cmds) { 
+                            gg <- gg + eval(parse(text=cmd), envir=cur.env)
+                        }
+                    }
                     pObjects$extra_plot_cmds[[plot_name]] <- extra_cmds
 
                     return(gg)

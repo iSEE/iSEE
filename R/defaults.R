@@ -334,6 +334,7 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.brushData]] <- rep(list(NULL), nrow(incoming))
 
     incoming[[.zoomData]] <- rep(list(NULL), nrow(incoming))
+    incoming[[.lassoData]] <- rep(list(NULL), nrow(incoming))
     return(incoming)
 }
 

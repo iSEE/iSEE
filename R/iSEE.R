@@ -268,9 +268,10 @@ iSEE <- function(
     pObjects$brush_links <- .spawn_brush_chart(memory)
     pObjects$table_links <- .spawn_table_links(memory)
 
-    norender <- logical(length(all_names))
-    names(norender) <- all_names
-    pObjects$no_rerender <-  norender
+    renderer <- logical(length(all_names))
+    names(renderer) <- all_names
+    pObjects$no_rerender <-  renderer
+    pObjects$force_rerender <-  renderer
     pObjects$extra_plot_cmds <- empty_list
     pObjects$cached_plots <- empty_list
 
@@ -801,6 +802,7 @@ iSEE <- function(
                     if (!is.null(brush)) {
                         new_coords <- c(xmin=brush$xmin, xmax=brush$xmax, ymin=brush$ymin, ymax=brush$ymax)
                         session$resetBrush(brush_id) # This should auto-trigger replotting above.
+                        pObjects$force_rerender[plot_name] <- TRUE
                     } else {
                         new_coords <- NULL
 
@@ -952,6 +954,7 @@ iSEE <- function(
                         if (!is.null(isolate(input[[brush_id]]))) {
                             # This will trigger replotting via the brush observer above.
                             session$resetBrush(brush_id)
+                            pObjects$force_rerender[plot_name] <- TRUE
                         } else {
                             # Manually triggering replotting.
                             rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
@@ -980,7 +983,9 @@ iSEE <- function(
                 output[[plot_name]] <- renderPlot({
                     force(rObjects[[plot_name]])
 
-                    if (!pObjects$no_rerender[plot_name]) {
+                    if (!pObjects$no_rerender[plot_name] || pObjects$force_rerender[plot_name]) {
+                        pObjects$force_rerender[plot_name] <- FALSE
+
                         p.out <- FUN0(i0, pObjects$memory, pObjects$coordinates, se, colormap)
                         gg <- p.out$plot
                         pObjects$cached_plots[[plot_name]] <- gg
@@ -1078,6 +1083,7 @@ iSEE <- function(
                         if (!is.null(isolate(input[[brush_id]]))) {
                             # This will trigger replotting.
                             session$resetBrush(brush_id)
+                            pObjects$force_rerender[plot_name] <- TRUE
                         } else {
                             # Manually triggering replotting.
                             rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
@@ -1139,6 +1145,7 @@ iSEE <- function(
                     brush_id <- brush_ids[i]
                     if (!is.null(isolate(input[[brush_id]]))) { # This will trigger replotting.
                         session$resetBrush(brush_id)
+                        pObjects$force_rerender[plot_name] <- TRUE
                     } else { # Manually triggering replotting.
                         kid <- xy_kids[i]
                         rObjects[[kid]] <- .increment_counter(isolate(rObjects[[kid]]))

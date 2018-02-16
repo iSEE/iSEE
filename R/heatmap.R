@@ -56,11 +56,11 @@
     sprintf("geom_raster(aes(fill = value)) +")
   ),
   lapply(seq_len(length(orderBy)), function(i) {
-    sprintf("geom_segment(aes(x=as.integer(X)-0.5, xend=as.integer(X)+0.5, y=nrow(value.mat)+(%s), yend=nrow(value.mat)+(%s), color=%s)) +", 1+nrow(eval_env$value.mat)/10+(length(orderBy)-i)*nrow(eval_env$value.mat)/(4*length(orderBy)), 1+nrow(eval_env$value.mat)/10+(length(orderBy)-i+1)*nrow(eval_env$value.mat)/(4*length(orderBy)), paste0("ColorBy", i))
+    sprintf("geom_rect(aes(xmin=as.integer(X)-0.5, xmax=as.integer(X)+0.5, ymin=nrow(value.mat)+(%s), ymax=nrow(value.mat)+(%s), color=%s)) +", 1+nrow(eval_env$value.mat)/10+(length(orderBy)-i)*nrow(eval_env$value.mat)/(4*length(orderBy)), 1+nrow(eval_env$value.mat)/10+(length(orderBy)-i+1)*nrow(eval_env$value.mat)/(4*length(orderBy)), paste0("ColorBy", i))
   }),
   list(sprintf("labs(x='', y='') +"),
        sprintf("scale_color_identity() +"),
-       sprintf("theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) +"),
+       sprintf("theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.line=element_blank()) +"),
        "theme(legend.position = 'bottom')"
   ))
 

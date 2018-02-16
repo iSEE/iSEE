@@ -38,7 +38,6 @@ names(.all_aes_values) <- .all_aes_names
     y_lab = sprintf(
       "Dimension %s",
       param_choices[[.redDimYAxis]]),
-    brush_color=brush_stroke_color["redDimPlot"],
     title = plot_title
   )
 }
@@ -74,7 +73,6 @@ names(.all_aes_values) <- .all_aes_names
   .create_plot(
     data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
     x_lab=x_lab, y_lab=y_lab,
-    brush_color=brush_stroke_color["colDataPlot"],
     title=plot_title
   )
 }
@@ -154,7 +152,6 @@ names(.all_aes_values) <- .all_aes_names
   .create_plot(
     data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
     x_lab=x_lab, y_lab=y_lab,
-    brush_color=brush_stroke_color["featExprPlot"],
     title = plot_title
   )
 }
@@ -190,7 +187,6 @@ names(.all_aes_values) <- .all_aes_names
   .create_plot(
     data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
     x_lab=x_lab, y_lab=y_lab,
-    brush_color=brush_stroke_color["rowDataPlot"],
     by_row=TRUE,
     title=plot_title
   )
@@ -326,7 +322,7 @@ names(.all_aes_values) <- .all_aes_names
 ############################################
 
 .scatter_plot <- function(
-  param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, brush_color,
+  param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, 
   title, subtitle)
 # Creates a scatter plot of numeric X/Y. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
@@ -364,7 +360,6 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);"
 
   # Both of these are NULL if not defined.
   plot_cmds[["scale_color"]] <- color_cmd
-  plot_cmds[["brush_tile"]] <- .self_brush_box(param_choices, color=brush_color)
 
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
@@ -378,7 +373,7 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);"
 ############################################
 
 .violin_plot <- function(
-  param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, brush_color,
+  param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, 
   horizontal = FALSE, title, subtitle)
 # Generates a vertical violin plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
@@ -454,7 +449,6 @@ plot.data$Y <- tmp;")
 
   # Both of these are just NULL if no color/brush is defined.
   plot_cmds[["scale_color"]] <- color_cmd
-  plot_cmds[["brush_tile"]] <- .self_brush_box(param_choices, color=brush_color, flip=horizontal)
 
   plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +" # preserving the x-axis range.
   plot_cmds[["theme_base"]] <- "theme_bw() +"
@@ -469,7 +463,7 @@ plot.data$Y <- tmp;")
 ############################################
 
 .griddotplot <- function(
-  param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, brush_color,
+  param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, 
   title, subtitle)
 # Generates a grid dot plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
@@ -501,7 +495,6 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
 
   # Adding the commands to color the points and the brushing box (NULL if undefined).
   plot_cmds[["scale_color"]] <- color_cmd
-  plot_cmds[["brush_tile"]] <- .self_brush_box(param_choices, color=brush_color)
 
   # Creating labels.
   plot_cmds[["labs"]] <- .build_labs(
@@ -746,8 +739,8 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
   return(list(brush=brush_cmds, plot=plot_cmds))
 }
 
-.self_brush_box <- function(param_choices, color, flip=FALSE) { 
-  current <- param_choices[,.brushData][[1]]
+.self_brush_box <- function(mode, i, memory, flip=FALSE) { 
+  current <- memory[[mode]][i, .brushData][[1]]
   if (!is.null(current)) {
     if (flip) {
       xmin <- 'ymin'
@@ -762,8 +755,8 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
     }
 
     return(sprintf("geom_rect(aes(xmin = %s, xmax = %s, ymin = %s, ymax = %s), color='%s', alpha=0, 
-    data=data.frame(xmin = %.5g, xmax=%.5g, ymin = %.5g, ymax = %.5g), inherit.aes=FALSE) +",
-        xmin, xmax, ymin, ymax, color, 
+    data=data.frame(xmin = %.5g, xmax=%.5g, ymin = %.5g, ymax = %.5g), inherit.aes=FALSE)",
+        xmin, xmax, ymin, ymax, panel_colors[mode], 
         current$xmin, current$xmax, current$ymin, current$ymax))
   } else {
      return(NULL)

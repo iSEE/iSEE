@@ -249,14 +249,30 @@ iSEE <- function(
   #######################################################################
 
   iSEE_server <- function(input, output, session) {
+    all_names <- list()
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot", "rowStatTable", "heatMapPlot")) {
+      max_plots <- nrow(memory[[mode]])
+      all_names[[mode]] <- sprintf("%s%i", mode, seq_len(max_plots))
+    }
+    all_names <- unlist(all_names)
+    empty_list <- vector("list", length(all_names))
+    names(empty_list) <- all_names
 
     # Storage for other persistent objects
     pObjects <- new.env()
     pObjects$memory <- memory
-    pObjects$coordinates <- list()
-    pObjects$commands <- list()
+
+    pObjects$coordinates <- empty_list
+    pObjects$commands <- empty_list
+
     pObjects$brush_links <- .spawn_brush_chart(memory)
     pObjects$table_links <- .spawn_table_links(memory)
+
+    norender <- logical(length(all_names))
+    names(norender) <- all_names
+    pObjects$no_rerender <-  norender
+    pObjects$extra_plot_cmds <- empty_list
+    pObjects$cached_plots <- empty_list
 
     # Storage for all the reactive objects
     rObjects <- reactiveValues(
@@ -677,6 +693,7 @@ iSEE <- function(
 
                     # Trigger replotting of self, to draw a more persistent brushing box.
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                    pObjects$no_rerender[plot_name] <- TRUE
 
                     # Trigger replotting of all dependent plots that receive this brush.
                     children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
@@ -934,6 +951,33 @@ iSEE <- function(
 
                 # Defining the rendered plot, and saving the coordinates.
                 output[[plot_name]] <- renderPlot({
+                    force(rObjects[[plot_name]])
+
+                    if (!pObjects$no_rerender[plot_name]) {
+                        p.out <- FUN0(i0, pObjects$memory, pObjects$coordinates, se, colormap)
+                        gg <- p.out$plot
+                        pObjects$cached_plots[[plot_name]] <- gg
+                        pObjects$commands[[plot_name]] <- p.out$cmd
+                        pObjects$coordinates[[plot_name]] <- p.out$xy[,c("X", "Y")]
+                    } else {
+                        pObjects$no_rerender[plot_name] <- FALSE
+                        gg <- pObjects$cached_plots[[plot_name]]
+                    }
+
+                    extra_cmds <- list()
+
+                    # Adding a brush.
+                    cmd <- .self_brush_box(mode0, i0, pObjects$memory, 
+                                           flip=is(gg$coordinates, "CoordFlip")) # Add a test for this!
+                    if (!is.null(cmd)) { 
+                        cur.env <- new.env()
+                        gg <- gg + eval(parse(text=cmd), envir=cur.env)
+                        extra_cmds[["brush_box"]] <- cmd 
+                    } 
+                    pObjects$extra_plot_cmds[[plot_name]] <- extra_cmds
+
+                    return(gg)
+                            
                   withProgress(
                     min = 0,
                     max = 5,
@@ -941,31 +985,26 @@ iSEE <- function(
                     message = sprintf("Processing panel %s", plot_name),
                     detail = "Initialising ...", session = session,
                     expr = {
-                      force(rObjects[[plot_name]])
                       incProgress(
                         amount = 1,
                         message = sprintf("Processing panel %s", plot_name),
                         detail = "processing ...", session = session)
                       
-                      p.out <- FUN0(i0, pObjects$memory, pObjects$coordinates, se, colormap)
                       incProgress(
                         amount = 1,
                         message = sprintf("Processing panel %s", plot_name),
                         detail = "storing command ...", session = session)
                       
-                      pObjects$commands[[plot_name]] <- p.out$cmd
                       incProgress(
                         amount = 1,
                         message = sprintf("Processing panel %s", plot_name),
                         detail = "storing coordinates ...", session = session)
                       
-                      pObjects$coordinates[[plot_name]] <- p.out$xy[,c("X", "Y")]
                       incProgress(
                         amount = 1,
                         message = sprintf("Processing panel %s", plot_name),
                         detail = "rendering ...", session = session)
                       
-                      p.out$plot
                     }
                   )
                 })

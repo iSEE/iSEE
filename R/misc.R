@@ -47,7 +47,7 @@
             all_args[x] <- list(NULL)
             all_maxes[[x]] <- 0L
         } else {
-            all_maxes[[x]] <- max(all_maxes[[x]], all_args[[x]])
+            all_maxes[[x]] <- max(all_maxes[[x]], nrow(all_args[[x]]))
         }
     }
   

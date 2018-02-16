@@ -884,22 +884,55 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 }
 
 .self_lasso_path <- function(mode, i, memory, flip=FALSE) {
-  current <- memory[[mode]][i, .lassoData][[1]]
+  current <- as.data.frame(memory[[mode]][i, .lassoData][[1]])
   if (is.null(current) || nrow(current) < 2L) {
     return(NULL)
   }
+  # print(current)
+  current$first <- seq_len(nrow(current)) == 1
+  # print(current)
   if (flip) {
     x <- "y"
     y <- "x"
   } else {
     x <- "x"
     y <- "y"
-  } 
-  return(sprintf("geom_path(aes(x = %s, y = %s), data=data.frame(
+  }
+  path_cmd <- sprintf("geom_path(aes(x = %s, y = %s), data=data.frame(
     x = %s,
     y = %s
     ), inherit.aes=FALSE, alpha=1, color='%s')", x, y, 
-        paste0(deparse(current[,1]), collapse="\n    "),
-        paste0(deparse(current[,2]), collapse="\n    "),
-        panel_colors[mode]))
+        paste0(deparse(current[,1]), collapse="\n    "), # data from column 1
+        paste0(deparse(current[,2]), collapse="\n    "), # data from column 2
+        panel_colors[mode]
+    ) # mode color (e.g. dimRed = blue)
+  # message(path_cmd)
+  point_cmd <- sprintf(
+    "geom_point(aes(x = %s, y = %s, size = First, fill = First), data=data.frame(
+    x = %s,
+    y = %s,
+    First = %s
+    ), inherit.aes=FALSE, alpha=1, stroke = 1, shape = 21, color = '%s')",
+    x,
+    y,
+    paste0(deparse(current[,1]), collapse="\n    "), # data from column 1
+    paste0(deparse(current[,2]), collapse="\n    "), # data from column 2
+    paste0(deparse(current$first), collapse="\n    "), # data from column 3
+    panel_colors[mode]
+  )
+  # message(point_cmd)
+  scale_fill_cmd <- sprintf(
+    "scale_fill_manual(values = c('TRUE'='%s', 'FALSE'='%s'))",
+    panel_colors[mode], brush_fill_color[mode]
+  )
+  scale_size_cmd <- "scale_size_manual(values = c('TRUE' = 1.5, 'FALSE' = 0.5))"
+  # message(scale_fill_cmd)
+  guides_cmd <- "guides(fill = 'none')"
+  full_cmd_list <- list(
+    path_cmd,
+    point_cmd,
+    scale_fill_cmd,
+    scale_size_cmd,
+    guides_cmd)
+  return(full_cmd_list)
 }

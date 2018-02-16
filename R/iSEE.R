@@ -1038,8 +1038,11 @@ iSEE <- function(
                     extra_cmds[["lasso_path"]] <- .self_lasso_path(mode0, i0, pObjects$memory, flip=to_flip) # Adding the lasso path.
                     if (length(extra_cmds) > 0L) {
                         cur.env <- new.env()
-                        for (cmd in extra_cmds) { 
+                        for (cmds in unlist(extra_cmds)) { 
+                          for(cmd in cmds){
+                            # message(cmd)
                             gg <- gg + eval(parse(text=cmd), envir=cur.env)
+                          }
                         }
                     }
                     pObjects$extra_plot_cmds[[plot_name]] <- extra_cmds

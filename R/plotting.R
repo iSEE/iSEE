@@ -901,7 +901,7 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
   path_cmd <- sprintf("geom_path(aes(x = %s, y = %s), data=data.frame(
     x = %s,
     y = %s
-    ), inherit.aes=FALSE, alpha=1, color='%s', linetype = 'dashed')", x, y, 
+    ), inherit.aes=FALSE, alpha=1, color='%s', linetype = 'longdash')", x, y, 
         paste0(deparse(current[,1]), collapse="\n    "), # data from column 1
         paste0(deparse(current[,2]), collapse="\n    "), # data from column 2
         panel_colors[mode]

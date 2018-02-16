@@ -1073,27 +1073,27 @@ iSEE <- function(
                     min = 0,
                     max = 5,
                     value = 0,
-                    message = sprintf("Processing panel %s", plot_name),
+                    message = plot_name,
                     detail = "Initialising ...", session = session,
                     expr = {
                       incProgress(
                         amount = 1,
-                        message = sprintf("Processing panel %s", plot_name),
+                        message = plot_name,
                         detail = "processing ...", session = session)
                       
                       incProgress(
                         amount = 1,
-                        message = sprintf("Processing panel %s", plot_name),
+                        message = plot_name,
                         detail = "storing command ...", session = session)
                       
                       incProgress(
                         amount = 1,
-                        message = sprintf("Processing panel %s", plot_name),
+                        message = plot_name,
                         detail = "storing coordinates ...", session = session)
                       
                       incProgress(
                         amount = 1,
-                        message = sprintf("Processing panel %s", plot_name),
+                        message = plot_name,
                         detail = "rendering ...", session = session)
                       
                     }

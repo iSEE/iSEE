@@ -884,10 +884,13 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 }
 
 .self_lasso_path <- function(mode, i, memory, flip=FALSE) {
-  current <- as.data.frame(memory[[mode]][i, .lassoData][[1]])
+  current <- memory[[mode]][i, .lassoData][[1]]
+  # print(str(current))
+  is_closed <- attr(current, "closed")
   if (is.null(current) || nrow(current) < 2L) {
     return(NULL)
   }
+  current <- as.data.frame(current)
   # print(current)
   current$first <- seq_len(nrow(current)) == 1
   # print(current)
@@ -898,41 +901,64 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
     x <- "x"
     y <- "y"
   }
-  path_cmd <- sprintf("geom_path(aes(x = %s, y = %s), data=data.frame(
-    x = %s,
-    y = %s
-    ), inherit.aes=FALSE, alpha=1, color='%s', linetype = 'longdash')", x, y, 
-        paste0(deparse(current[,1]), collapse="\n    "), # data from column 1
-        paste0(deparse(current[,2]), collapse="\n    "), # data from column 2
-        panel_colors[mode]
-    ) # mode color (e.g. dimRed = blue)
-  # message(path_cmd)
-  point_cmd <- sprintf(
-    "geom_point(aes(x = %s, y = %s, size = First, shape = First), data=data.frame(
-    x = %s,
-    y = %s,
-    First = %s
-    ), inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s')",
-    x,
-    y,
-    paste0(deparse(current[,1]), collapse="\n    "), # data from column 1
-    paste0(deparse(current[,2]), collapse="\n    "), # data from column 2
-    paste0(deparse(current$first), collapse="\n    "), # data from column 3
-    panel_colors[mode]
-  )
-  # message(point_cmd)
-  scale_fill_cmd <- sprintf(
-    "scale_shape_manual(values = c('TRUE' = 22, 'FALSE' = 21))",
-    panel_colors[mode], brush_fill_color[mode]
-  )
-  scale_size_cmd <- "scale_size_manual(values = c('TRUE' = 1.5, 'FALSE' = 0.5))"
-  # message(scale_fill_cmd)
-  guides_cmd <- "guides(shape = 'none')"
-  full_cmd_list <- list(
-    path_cmd,
-    point_cmd,
-    scale_fill_cmd,
-    scale_size_cmd,
-    guides_cmd)
+  if (!is.null(is_closed) && is_closed){ # lasso is closed
+    polygon_cmd <- sprintf("geom_polygon(aes(x = %s, y = %s), data=data.frame(
+      x = %s,
+      y = %s
+      ), inherit.aes=FALSE, alpha=0.2, color='%s', fill = '%s')", x, y, 
+          paste0(deparse(current[,1]), collapse="\n    "), # data from column 1
+          paste0(deparse(current[,2]), collapse="\n    "), # data from column 2
+          panel_colors[mode],
+          brush_fill_color[mode]
+      )
+    # message(polygon_cmd)
+    scale_fill_cmd <- sprintf(
+      "scale_fill_manual(values = c('TRUE' = '%s', 'FALSE' = '%s'))",
+      panel_colors[mode], brush_fill_color[mode]
+    )
+    # message(scale_fill_cmd)
+    guides_cmd <- "guides(shape = 'none')"
+    full_cmd_list <- list(
+      polygon_cmd,
+      scale_fill_cmd,
+      guides_cmd)
+  } else { # lasso is still open
+    path_cmd <- sprintf("geom_path(aes(x = %s, y = %s), data=data.frame(
+      x = %s,
+      y = %s
+      ), inherit.aes=FALSE, alpha=1, color='%s', linetype = 'longdash')", x, y, 
+          paste0(deparse(current[,1]), collapse="\n    "), # data from column 1
+          paste0(deparse(current[,2]), collapse="\n    "), # data from column 2
+          panel_colors[mode]
+      ) # mode color (e.g. dimRed = blue)
+    # message(path_cmd)
+    point_cmd <- sprintf(
+      "geom_point(aes(x = %s, y = %s, size = First, shape = First), data=data.frame(
+      x = %s,
+      y = %s,
+      First = %s
+      ), inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s')",
+      x,
+      y,
+      paste0(deparse(current[,1]), collapse="\n    "), # data from column 1
+      paste0(deparse(current[,2]), collapse="\n    "), # data from column 2
+      paste0(deparse(current$first), collapse="\n    "), # data from column 3
+      panel_colors[mode]
+    )
+    # message(point_cmd)
+    scale_shape_cmd <- sprintf(
+      "scale_shape_manual(values = c('TRUE' = 22, 'FALSE' = 21))",
+      panel_colors[mode], brush_fill_color[mode]
+    )
+    # message(scale_shape_cmd)
+    scale_size_cmd <- "scale_size_manual(values = c('TRUE' = 1.5, 'FALSE' = 0.5))"
+    guides_cmd <- "guides(shape = 'none')"
+    full_cmd_list <- list(
+      path_cmd,
+      point_cmd,
+      scale_shape_cmd,
+      scale_size_cmd,
+      guides_cmd)
+  }
   return(full_cmd_list)
 }

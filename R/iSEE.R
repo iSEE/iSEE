@@ -688,7 +688,13 @@ iSEE <- function(
                     pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .brushData, cur_brush)
 
                     # If the brushes have the same coordinates, we don't bother replotting.
-                    if (.identical_brushes(cur_brush, old_brush)) {
+                    replot <- !.identical_brushes(cur_brush, old_brush)
+
+                    # Destroying lasso points upon brush (replotting if existing lasso was not NULL).
+                    replot <- replot || !is.null(pObjects$memory[[mode0]][i0, .lassoData])
+                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .lassoData, NULL)
+
+                    if (!replot) {
                         return(NULL)
                     }
 
@@ -772,7 +778,25 @@ iSEE <- function(
                 observeEvent(input[[click_field]], {
                     cur_click <- input[[click_field]]
                     previous <- pObjects$memory[[mode0]][i0, .lassoData][[1]]
-                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .lassoData, rbind(previous, c(cur_click$x, cur_click$y)))
+
+                    # Closing the loop if you click close to the starting point.
+                    xrange <- cur_click$domain$right - cur_click$domain$left
+                    yrange <- cur_click$domain$top - cur_click$domain$bottom
+                    if (!is.null(previous)
+                        && abs(cur_click$x - previous[1,1]) < xrange/100 
+                        && abs(cur_click$y - previous[1,2]) < yrange/100) {
+                        updated <- rbind(previous, previous[1,])
+                        attr(updated, "closed") <- TRUE
+                    } else {
+                        is_closed <- attr(previous, "closed")
+                        if (!is.null(is_closed) && is_closed) {
+                            updated <- NULL
+                        } else {
+                            updated <- rbind(previous, c(cur_click$x, cur_click$y))
+                        }
+                    }
+
+                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .lassoData, updated)
     
                     # Trigger replotting of self, to draw the lasso waypoints.
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))

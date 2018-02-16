@@ -901,18 +901,18 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
   path_cmd <- sprintf("geom_path(aes(x = %s, y = %s), data=data.frame(
     x = %s,
     y = %s
-    ), inherit.aes=FALSE, alpha=1, color='%s')", x, y, 
+    ), inherit.aes=FALSE, alpha=1, color='%s', linetype = 'dashed')", x, y, 
         paste0(deparse(current[,1]), collapse="\n    "), # data from column 1
         paste0(deparse(current[,2]), collapse="\n    "), # data from column 2
         panel_colors[mode]
     ) # mode color (e.g. dimRed = blue)
   # message(path_cmd)
   point_cmd <- sprintf(
-    "geom_point(aes(x = %s, y = %s, size = First, fill = First), data=data.frame(
+    "geom_point(aes(x = %s, y = %s, size = First, shape = First), data=data.frame(
     x = %s,
     y = %s,
     First = %s
-    ), inherit.aes=FALSE, alpha=1, stroke = 1, shape = 21, color = '%s')",
+    ), inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s')",
     x,
     y,
     paste0(deparse(current[,1]), collapse="\n    "), # data from column 1
@@ -922,12 +922,12 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
   )
   # message(point_cmd)
   scale_fill_cmd <- sprintf(
-    "scale_fill_manual(values = c('TRUE'='%s', 'FALSE'='%s'))",
+    "scale_shape_manual(values = c('TRUE' = 22, 'FALSE' = 21))",
     panel_colors[mode], brush_fill_color[mode]
   )
   scale_size_cmd <- "scale_size_manual(values = c('TRUE' = 1.5, 'FALSE' = 0.5))"
   # message(scale_fill_cmd)
-  guides_cmd <- "guides(fill = 'none')"
+  guides_cmd <- "guides(shape = 'none')"
   full_cmd_list <- list(
     path_cmd,
     point_cmd,

@@ -253,7 +253,13 @@ names(.all_aes_values) <- .all_aes_names
   }
 
   # Creating the command to define BrushBy.
-  brush_cmd <- .process_brushby_choice(param_choices, all_memory)
+  # Note that 'all_brushes' or 'all_lassos' is needed for the ultimate eval() to obtain BrushBy.
+  # This approach relatively easy to deparse() in the code tracker, rather than
+  # having to construct the brush object or lasso waypoints manually.
+  brush_out <- .process_brushby_choice(param_choices, all_memory)
+  brush_cmd <- brush_out$cmd
+  all_brushes <- brush_out$data
+  all_lassos <- brush_out$data
   
   # Displaying brush information, if applicable
   plot_info <- .split_encoded(rownames(param_choices))
@@ -659,32 +665,44 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 .process_brushby_choice <- function(param_choices, all_memory) {
   brush_in <- param_choices[[.brushByPlot]]
   cmd <- NULL
+  brush_obj <- list()
 
   # Checking what points are brushed from the transmitting plot.
   if (!identical(brush_in, .noSelection)) {
     brush_by <- .encode_panel_name(brush_in)
+    transmitter <- paste0(brush_by$Type, brush_by$ID)
+
+    if (identical(rownames(param_choices), transmitter)) {
+        source_data <- 'plot.data'
+    } else {
+        source_data <- sprintf("all_coordinates[['%s']]", transmitter)
+    }
+
     brush_val <- all_memory[[brush_by$Type]][,.brushData][[brush_by$ID]]
+
     if (!is.null(brush_val)) {
-        transmitter <- paste0(brush_by$Type, brush_by$ID)
-        if (identical(rownames(param_choices), transmitter)) {
-            source_data <- 'plot.data'
-        } else {
-            source_data <- sprintf("all_coordinates[['%s']]", transmitter)
-        }
-
-        cmd <- sprintf("brushed_pts <- shiny::brushedPoints(%s,
-    list(xmin=%.5g, xmax=%.5g, ymin=%.5g, ymax=%.5g,
-         direction='%s', mapping=list(x='%s', y='%s')));",
-        source_data,
-        brush_val$xmin, brush_val$xmax, brush_val$ymin, brush_val$ymax,
-        brush_val$direction, brush_val$mapping$x, brush_val$mapping$y)
-
+        brush_obj[[transmitter]] <- brush_val
+        cmd <- sprintf("brushed_pts <- shiny::brushedPoints(%s, all_brushes[['%s']])",
+                       source_data, transmitter)
         cmd <- c(cmd, "plot.data$BrushBy <- rownames(plot.data) %in% rownames(brushed_pts);")
         cmd <- paste(cmd, collapse="\n")
+
+    } else {
+        lasso_val <- all_memory[[brush_by$Type]][,.lassoData][[brush_by$ID]]
+        closed <- attr(lasso_val, "closed")
+        
+        if (!is.null(closed) && closed) { 
+            brush_obj[[transmitter]] <- lasso_val
+            cmd <- sprintf("brushed_pts <- mgcv::in.out(all_lassos[['%s']], as.matrix(%s))",
+                           transmitter, source_data)
+            cmd <- c(cmd, sprintf("plot.data$BrushBy <- rownames(plot.data) %%in%% rownames(%s)[brushed_pts]",
+                                  source_data))            
+            cmd <- paste(cmd, collapse="\n")
+        }
     }
   }
 
-  return(cmd)
+  return(list(cmd=cmd, data=brush_obj))
 }
 
 .create_points <- function(param_choices, brush_cmd, aes) 

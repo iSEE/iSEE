@@ -626,7 +626,7 @@ iSEE <- function(
                     # Triggering replotting of children, if the current panel is set to restrict;
                     # and we have a brush, so that there was already some brushing in the children.
                     if (pObjects$memory[[mode0]][i0, .brushEffect]==.brushRestrictTitle
-                        && !is.null(pObjects$memory[[mode0]][i0, .brushData][[1]])) {
+                        && .any_selection(mode0, i0, pObjects$memory)) {
                         children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
                         for (child_plot in children) {
                             rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
@@ -649,7 +649,7 @@ iSEE <- function(
                         return(NULL)
                     }
                     enc <- .encode_panel_name(transmitter)
-                    if (is.null(pObjects$memory[[enc$Type]][enc$ID, .brushData][[1]])) {
+                    if (!.any_selection(enc$Type, enc$ID, pObjects$memory)) {
                         return(NULL)
                     }
 
@@ -659,7 +659,7 @@ iSEE <- function(
                     # Triggering replotting of children, if we are set to or from restrict;
                     # and we have a brush, so there was already some brushing in the children.
                     if ((cur_effect==.brushRestrictTitle || old_effect==.brushRestrictTitle)
-                        && !is.null(pObjects$memory[[mode0]][i0, .brushData][[1]])) {
+                        && .any_selection(mode0, i0, pObjects$memory)) { 
                         children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
                         for (child_plot in children) {
                             rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
@@ -778,6 +778,7 @@ iSEE <- function(
                 observeEvent(input[[click_field]], {
                     cur_click <- input[[click_field]]
                     previous <- pObjects$memory[[mode0]][i0, .lassoData][[1]]
+                    bump_children <- FALSE
 
                     # Closing the loop if you click close to the starting point.
                     xrange <- cur_click$domain$right - cur_click$domain$left
@@ -787,10 +788,13 @@ iSEE <- function(
                         && abs(cur_click$y - previous[1,2]) < yrange/100) {
                         updated <- rbind(previous, previous[1,])
                         attr(updated, "closed") <- TRUE
+                        bump_children <- TRUE
+                        
                     } else {
                         is_closed <- attr(previous, "closed")
                         if (!is.null(is_closed) && is_closed) {
                             updated <- NULL
+                            bump_children <- TRUE
                         } else {
                             updated <- rbind(previous, c(cur_click$x, cur_click$y))
                         }
@@ -801,6 +805,14 @@ iSEE <- function(
                     # Trigger replotting of self, to draw the lasso waypoints.
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     pObjects$no_rerender[plot_name] <- TRUE
+
+                    # Trigger replotting of children.
+                    if (bump_children) {
+                        children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
+                        for (child_plot in children) {
+                            rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+                        }
+                    }
                 })
             })
         }

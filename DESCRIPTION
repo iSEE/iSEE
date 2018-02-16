@@ -38,7 +38,8 @@ Imports:
     AnnotationDbi,
     graphics,
     grDevices,
-    viridisLite
+    viridisLite,
+    cowplot
 Suggests:
     testthat,
     BiocStyle,

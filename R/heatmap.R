@@ -35,36 +35,43 @@
   eval_env <- new.env()
   eval(parse(text=unlist(data_cmds[c("y", "order")])), envir=eval_env)
 
-  # Define explicit colors for each ordering column
-  data_cmds[["colmaps"]] <- list()
-  for (i in seq_along(orderBy)) {
-    data_cmds[["colmaps"]] <- 
-      c(data_cmds[["colmaps"]],
-        list(sprintf("plot.data[['ColorBy%i']] <- colDataColorMap(colormap, '%s', discrete=%s)(%i)[as.numeric(factor(plot.data[['OrderBy%i']]))];", 
-                     i, orderBy[i], 
-                     ifelse(is.numeric(eval_env$plot.data[[paste0("OrderBy", i)]]), FALSE, TRUE), 
-                     length(unique(eval_env$plot.data[[paste0("OrderBy", i)]])),
-                     i),
-             sprintf("plot.data[['ColorBy%i']][is.na(plot.data[['ColorBy%i']])] <- 'grey50'", i, i)
-             )
-    )
-  }
-
   # Define plotting commands
-  extra_cmds <- c(list(
-    sprintf("ggplot(plot.data, aes(x = X, y = Y)) +"),
-    sprintf("geom_raster(aes(fill = value)) +")
-  ),
-  lapply(seq_len(length(orderBy)), function(i) {
-    sprintf("geom_rect(aes(xmin=as.integer(X)-0.5, xmax=as.integer(X)+0.5, ymin=nrow(value.mat)+(%s), ymax=nrow(value.mat)+(%s), color=%s)) +", 1+nrow(eval_env$value.mat)/10+(length(orderBy)-i)*nrow(eval_env$value.mat)/(4*length(orderBy)), 1+nrow(eval_env$value.mat)/10+(length(orderBy)-i+1)*nrow(eval_env$value.mat)/(4*length(orderBy)), paste0("ColorBy", i))
-  }),
-  list(sprintf("labs(x='', y='') +"),
-       sprintf("scale_color_identity() +"),
-       sprintf("theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.line=element_blank()) +"),
-       "theme(legend.position = 'bottom')"
-  ))
-
-  to_eval <- unlist(c(data_cmds["colmaps"], extra_cmds))
+  extra_cmds <- list()
+  # Heatmap
+  extra_cmds[["heatmap"]] <- list(
+    sprintf("p0 <- ggplot(plot.data, aes(x = X, y = Y)) +"),
+    sprintf("geom_raster(aes(fill = value)) +"),
+    sprintf("labs(x='', y='') +"),
+    sprintf("theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.line=element_blank()) +"),
+    sprintf("theme(legend.position='bottom');")
+  )
+  
+  # Annotations
+  extra_cmds[["annotations"]] <- lapply(seq_along(orderBy), function(i) {
+    if (is.numeric(eval_env$plot.data[[paste0("OrderBy", i)]])) {
+      color_cmd <- sprintf("scale_fill_gradientn(colors=colDataColorMap(colormap, '%s', discrete=FALSE)(21L), na.value='grey50', name='%s') +", orderBy[i], orderBy[i])
+    } else {
+      color_cmd <- sprintf("scale_fill_manual(values=colDataColorMap(colormap, '%s', discrete=TRUE)(%i), na.value='grey50', drop=FALSE, name='%s') +", orderBy[i], .nlevels(factor(eval_env$plot.data[[paste0("OrderBy", i)]])), orderBy[i])
+    }
+    
+    list(
+      sprintf("p%i <- ggplot(plot.data, aes(x = X, y = 1)) +", i) ,
+      sprintf("geom_raster(aes(fill = OrderBy%i)) +", i), 
+      sprintf("labs(x='', y='') +"), 
+      sprintf("scale_y_continuous(breaks=1, labels='%s') +", orderBy[i]), 
+      color_cmd,
+      sprintf("theme(axis.text.x=element_blank(), axis.ticks=element_blank(), axis.title.x=element_blank(), rect=element_blank(), line=element_blank(), axis.title.y=element_blank(), plot.margin = unit(c(0,0,-0.5,0), 'lines')) +"),
+      sprintf("theme(legend.position='none');")
+    )
+  })
+  
+  extra_cmds[["grid"]] <- list(
+    sprintf("cowplot::plot_grid(%s, ncol=1, align='v', rel_heights=c(%s))", 
+            paste0("p", c(seq_along(orderBy), 0), collapse = ","),
+            paste(c(rep(0.1, length(orderBy)), 1), collapse = ","))
+  )
+  
+  to_eval <- unlist(extra_cmds)
   plot_out <- eval(parse(text=to_eval), envir=eval_env)
 
   return(list(cmd = c(data_cmds, extra_cmds), xy = NULL, plot = plot_out))

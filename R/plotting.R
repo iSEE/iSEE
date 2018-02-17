@@ -874,7 +874,7 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 .self_lasso_path <- function(mode, i, memory, flip=FALSE) {
     current <- memory[[mode]][,.lassoData][[i]]
     is_closed <- attr(current, "closed")
-    if (is.null(current) || nrow(current) < 2L) {
+    if (is.null(current)) {
         return(NULL)
     }
   
@@ -887,7 +887,14 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
     }
   
     plot_name <- paste0(mode, i)
-    if (!is.null(is_closed) && is_closed){ # lasso is closed
+    
+    if (identical(nrow(current), 1L)) { # lasso has only a start point
+      point_cmd <- sprintf("geom_point(aes(x = %s, y = %s), 
+    data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2]),
+    inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s', size = 1.5, shape = 22)",
+        x, y, plot_name, plot_name, panel_colors[mode])
+      full_cmd_list <- list(point_cmd)
+    } else if (!is.null(is_closed) && is_closed){ # lasso is closed
         polygon_cmd <- sprintf("geom_polygon(aes(x = %s, y = %s), alpha=%s, color='%s', 
     data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2]), 
     inherit.aes=FALSE, fill = '%s')", 

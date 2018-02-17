@@ -891,7 +891,7 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
     if (identical(nrow(current), 1L)) { # lasso has only a start point
       point_cmd <- sprintf("geom_point(aes(x = %s, y = %s), 
     data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2]),
-    inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s', size = %i, shape = %i)",
+    inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s', size = %s, shape = %s)",
         x, y, plot_name, plot_name, panel_colors[mode],
         .lassoStartSize, .lassoStartShape)
       full_cmd_list <- list(point_cmd)
@@ -924,11 +924,11 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
         x, y, plot_name, plot_name, plot_name, panel_colors[mode])
 
         scale_shape_cmd <- sprintf(
-          "scale_shape_manual(values = c('TRUE' = %i, 'FALSE' = %i))",
+          "scale_shape_manual(values = c('TRUE' = %s, 'FALSE' = %s))",
           .lassoStartShape, .lassoWaypointShape
         )
         scale_size_cmd <- sprintf(
-          "scale_size_manual(values = c('TRUE' = %i, 'FALSE' = %i))",
+          "scale_size_manual(values = c('TRUE' = %s, 'FALSE' = %s))",
           .lassoStartSize, .lassoWaypointSize
         )
         guides_cmd <- "guides(shape = 'none', size = 'none')"

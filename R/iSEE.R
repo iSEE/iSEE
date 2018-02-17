@@ -809,6 +809,12 @@ iSEE <- function(
                     previous <- pObjects$memory[[mode0]][,.lassoData][[i0]]
                     bump_children <- FALSE
 
+                    # Don't add to waypoints if a brush exists in memory (as they are mutually exclusive).
+                    if (!is.null(pObjects$memory[[mode0]][,.brushData][[i0]]) ||
+                        !is.null(input[[paste0(prefix, .brushField)]])) {
+                        return(NULL)
+                    }
+
                     # Closing the loop if you click close to the starting point.
                     xrange <- cur_click$domain$right - cur_click$domain$left
                     yrange <- cur_click$domain$top - cur_click$domain$bottom
@@ -822,11 +828,10 @@ iSEE <- function(
                     } else {
                         is_closed <- attr(previous, "closed")
                         if (!is.null(is_closed) && is_closed) {
-                            updated <- NULL
+                            previous <- NULL
                             bump_children <- TRUE
-                        } else {
-                            updated <- rbind(previous, c(cur_click$x, cur_click$y))
                         }
+                        updated <- rbind(previous, c(cur_click$x, cur_click$y))
                     }
 
                     pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .lassoData, updated)

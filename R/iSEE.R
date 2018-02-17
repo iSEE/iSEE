@@ -435,7 +435,7 @@ iSEE <- function(
                     }
 
                     # Destroying links; either the brush source, or the links from tables.
-                    if (mode0=="heatMapPlot") { 
+                    if (mode0=="heatMapPlot") {
                         # do nothing, there are no links.
                     } else if (mode0=="rowStatTable") {
                         .destroy_table(pObjects, paste0(mode0, i0))
@@ -616,14 +616,14 @@ iSEE <- function(
                     tmp <- .choose_new_brush_source(pObjects$brush_links, plot_name, new_encoded, old_encoded)
 
                     daggy <- is_dag(simplify(tmp, remove.loops=TRUE))
-                    self_restrict <- new_encoded==plot_name && 
-                        new_encoded!=.noSelection && 
+                    self_restrict <- new_encoded==plot_name &&
+                        new_encoded!=.noSelection &&
                         pObjects$memory[[mode0]][i0, .brushEffect]==.brushRestrictTitle
 
                     if (!daggy || self_restrict) {
                         if (!daggy) {
                             showNotification("brushing relationships cannot be cyclic", type="error")
-                        } else if (self_restrict){ 
+                        } else if (self_restrict){
                             showNotification("brushing to self is not compatible with 'Restrict'", type="error")
                         }
                         pObjects$memory[[mode0]][i0, .brushByPlot] <- old_transmitter
@@ -670,7 +670,7 @@ iSEE <- function(
 
                     # Storing the new choice into memory, unless self-brushing to restrict.
                     # In which case, we trigger an error and reset to the previous choice.
-                    if (cur_effect == .brushRestrictTitle 
+                    if (cur_effect == .brushRestrictTitle
                         && pObjects$memory[[mode0]][i0, .brushByPlot]==.decode_panel_name(mode0, i0)) {
                         showNotification("brushing to self is not compatible with 'Restrict'", type="error")
                         updateRadioButtons(session, brush_effect_field, selected=old_effect)
@@ -694,7 +694,7 @@ iSEE <- function(
                     # Triggering replotting of children, if we are set to or from restrict;
                     # and we have a brush, so there was already some brushing in the children.
                     if ((cur_effect==.brushRestrictTitle || old_effect==.brushRestrictTitle)
-                        && .any_point_selection(mode0, i0, pObjects$memory)) { 
+                        && .any_point_selection(mode0, i0, pObjects$memory)) {
                         children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
                         for (child_plot in children) {
                             rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
@@ -813,12 +813,12 @@ iSEE <- function(
                     xrange <- cur_click$domain$right - cur_click$domain$left
                     yrange <- cur_click$domain$top - cur_click$domain$bottom
                     if (!is.null(previous)
-                        && abs(cur_click$x - previous[1,1]) < xrange/100 
+                        && abs(cur_click$x - previous[1,1]) < xrange/100
                         && abs(cur_click$y - previous[1,2]) < yrange/100) {
                         updated <- rbind(previous, previous[1,])
                         attr(updated, "closed") <- TRUE
                         bump_children <- TRUE
-                        
+
                     } else {
                         is_closed <- attr(previous, "closed")
                         if (!is.null(is_closed) && is_closed) {
@@ -830,7 +830,7 @@ iSEE <- function(
                     }
 
                     pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .lassoData, updated)
-    
+
                     # Trigger replotting of self, to draw the lasso waypoints.
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     pObjects$no_rerender[plot_name] <- TRUE
@@ -958,7 +958,7 @@ iSEE <- function(
         local({
             i0 <- i
             mode0 <- "heatMapPlot"
-    
+
             observe({
                 force(rObjects$rerendered)
                 updateSelectizeInput(session, paste0(mode0, i0, "_", .heatMapFeatName), choices = feature_choices,
@@ -1009,7 +1009,7 @@ iSEE <- function(
                     observeEvent(input[[cur_field]], {
                         req(input[[cur_field]])
                         matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
-                        if (identical(matched_input, pObjects$memory[[mode0]][[field0]][i0])) { 
+                        if (identical(matched_input, pObjects$memory[[mode0]][[field0]][i0])) {
                             return(NULL)
                         }
                         pObjects$memory[[mode0]][[field0]][i0] <- matched_input
@@ -1031,7 +1031,7 @@ iSEE <- function(
                     observeEvent(input[[cur_field]], {
                         req(input[[cur_field]])
                         matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
-                        if (identical(matched_input, pObjects$memory[[mode0]][[field0]][i0])) { 
+                        if (identical(matched_input, pObjects$memory[[mode0]][[field0]][i0])) {
                             return(NULL)
                         }
                         pObjects$memory[[mode0]][[field0]][i0] <- matched_input
@@ -1063,10 +1063,10 @@ iSEE <- function(
                     if (replot) {
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     }
-    
+
                     # Update the elements reporting the links between tables and plots.
                     new_tab <- pObjects$memory[[mode0]][i0, .colorByRowTable]
-                    for (relinked in c(plot_name, .decoded2encoded(c(new_tab, old_tab)))) { 
+                    for (relinked in c(plot_name, .decoded2encoded(c(new_tab, old_tab)))) {
                         if (relinked=="") { next }
                         relink_field <- paste0(relinked, "_", .panelLinkInfo)
                         rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
@@ -1080,18 +1080,20 @@ iSEE <- function(
                     force(rObjects[[plot_name]])
                     rObjects[[gen_field]] <- .increment_counter(isolate(rObjects[[gen_field]]))
 
+                    # Deciding whether to do a full re-render, or to add to the cached object.
                     if (!pObjects$no_rerender[plot_name] || pObjects$force_rerender[plot_name]) {
-                        pObjects$force_rerender[plot_name] <- FALSE
-
                         p.out <- FUN0(i0, pObjects$memory, pObjects$coordinates, se, colormap)
                         gg <- p.out$plot
                         pObjects$cached_plots[[plot_name]] <- gg
                         pObjects$commands[[plot_name]] <- p.out$cmd
                         pObjects$coordinates[[plot_name]] <- p.out$xy[,c("X", "Y")]
                     } else {
-                        pObjects$no_rerender[plot_name] <- FALSE
                         gg <- pObjects$cached_plots[[plot_name]]
                     }
+
+                    # Resetting flags.
+                    pObjects$force_rerender[plot_name] <- FALSE
+                    pObjects$no_rerender[plot_name] <- FALSE
 
                     extra_cmds <- list()
                     to_flip <- is(gg$coordinates, "CoordFlip") # Add a test for this!
@@ -1106,13 +1108,13 @@ iSEE <- function(
                         cur.env$all_brushes <- brush_out$data
                         cur.env$all_lassos <- lasso_out$data
 
-                        for (cmd in extra_cmds) { 
+                        for (cmd in extra_cmds) {
                             gg <- gg + eval(parse(text=cmd), envir=cur.env)
                         }
                     }
                     pObjects$extra_plot_cmds[[plot_name]] <- extra_cmds
                     return(gg)
-                            
+
                   withProgress(
                     min = 0,
                     max = 5,
@@ -1124,22 +1126,22 @@ iSEE <- function(
                         amount = 1,
                         message = plot_name,
                         detail = "processing ...", session = session)
-                      
+
                       incProgress(
                         amount = 1,
                         message = plot_name,
                         detail = "storing command ...", session = session)
-                      
+
                       incProgress(
                         amount = 1,
                         message = plot_name,
                         detail = "storing coordinates ...", session = session)
-                      
+
                       incProgress(
                         amount = 1,
                         message = plot_name,
                         detail = "rendering ...", session = session)
-                      
+
                     }
                   )
                 })
@@ -1150,7 +1152,7 @@ iSEE <- function(
                     brush_vals <- pObjects$memory[[mode0]][,.brushData][[i0]]
                     if (is.null(brush_vals)) {
                         return(NULL)
-                    } 
+                    }
                     brushed <- brushedPoints(pObjects$coordinates[[plot_name]], brush_vals)
                     n_brushed <- nrow(brushed)
                     n_total <- nrow(pObjects$coordinates[[plot_name]])
@@ -1212,11 +1214,11 @@ iSEE <- function(
 
                     # Update the links reporting between tables and plots.
                     new_tab <- pObjects$memory[[mode0]][i0, axis_tab_choice0]
-                    for (relinked in c(plot_name, .decoded2encoded(c(old_tab, new_tab)))) { 
-                        if (relinked=="") { next } 
+                    for (relinked in c(plot_name, .decoded2encoded(c(old_tab, new_tab)))) {
+                        if (relinked=="") { next }
                         relink_field <- paste0(relinked, "_", .panelLinkInfo)
                         rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
-                    } 
+                    }
                 })
             })
         }
@@ -1308,7 +1310,7 @@ iSEE <- function(
         })
 
         # Describing the links between panels.
-        link_field <- paste0(panel_name, "_", .panelLinkInfo) 
+        link_field <- paste0(panel_name, "_", .panelLinkInfo)
         output[[link_field]] <- renderUI({
             force(rObjects[[link_field]])
             .define_table_links(panel_name, pObjects$memory, pObjects$table_links)
@@ -1330,7 +1332,7 @@ iSEE <- function(
             # Triggering an update of the selected elements.
             button_name <- paste0(plot_name, "_", .heatMapImport)
             observeEvent(input[[button_name]], {
-                origin <- pObjects$memory[[mode0]][i0, .heatMapImportSource] 
+                origin <- pObjects$memory[[mode0]][i0, .heatMapImportSource]
                 enc <- .encode_panel_name(origin)
 
                 incoming <- NULL
@@ -1338,23 +1340,23 @@ iSEE <- function(
                     incoming <- input[[paste0(enc$Type, enc$ID, "_rows_all")]]
                 } else {
                     brush <- pObjects$memory[[enc$Type]][,.brushData][[enc$ID]]
-                    if (!is.null(brush)) { 
+                    if (!is.null(brush)) {
                         incoming <- brushedPoints(pObjects$coordinates[[paste0(enc$Type, enc$ID)]], brush)
                         incoming <- match(rownames(incoming), rownames(se))
-                    } 
+                    }
                 }
 
                 limit <- 100
                 if (length(incoming) > limit) {
                     showNotification(sprintf("only the first %i features used", limit), type="warning")
-                    incoming <- head(incoming, limit)                        
+                    incoming <- head(incoming, limit)
                 }
 
-                combined <- union(pObjects$memory[[mode0]][i0, .heatMapFeatName][[1]], incoming)                
+                combined <- union(pObjects$memory[[mode0]][i0, .heatMapFeatName][[1]], incoming)
                 updateSelectizeInput(session, paste0(mode0, i0, "_", .heatMapFeatName), choices = feature_choices,
                                      server = TRUE, selected = combined)
             }, ignoreInit=TRUE)
-            
+
             # Updating the import source, but this does NOT trigger replotting, as we need to press the button.
             field0 <- .heatMapImportSource
             cur_field <- paste0(plot_name, "_", field0)
@@ -1373,7 +1375,7 @@ iSEE <- function(
             output[[plot_name]] <- renderPlot({
                 force(rObjects[[plot_name]])
                 rObjects[[legend_field]] <- .increment_counter(isolate(rObjects[[legend_field]]))
-                
+
                 p.out <- .make_heatMapPlot(i0, pObjects$memory, pObjects$coordinates, se, colormap)
                 pObjects$commands[[plot_name]] <- p.out$cmd
                 pObjects$coordinates[[plot_name]] <- p.out$xy[,c("X", "Y")]
@@ -1385,7 +1387,7 @@ iSEE <- function(
             output[[legend_field]] <- renderPlot({
                 force(rObjects[[legend_field]])
                 gg <- pObjects$cached_plots[[plot_name]]
-                
+
                 # Charlotte: add your legend here.
                 showNotification("I AM LEGEND", type="message")
             })

@@ -1054,15 +1054,18 @@ iSEE <- function(
 
                     extra_cmds <- list()
                     to_flip <- is(gg$coordinates, "CoordFlip") # Add a test for this!
-                    extra_cmds[["brush_box"]] <- .self_brush_box(mode0, i0, pObjects$memory, flip=to_flip) # Adding a brush.
-                    extra_cmds[["lasso_path"]] <- .self_lasso_path(mode0, i0, pObjects$memory, flip=to_flip) # Adding the lasso path.
+                    brush_out <- .self_brush_box(mode0, i0, pObjects$memory, flip=to_flip) # Adding a brush.
+                    extra_cmds[["brush_box"]] <- brush_out$cmd
+                    lasso_out <- .self_lasso_path(mode0, i0, pObjects$memory, flip=to_flip) # Adding the lasso path.
+                    extra_cmds[["lasso_path"]] <- lasso_out$cmd
+
                     if (length(extra_cmds) > 0L) {
                         cur.env <- new.env()
-                        for (cmds in unlist(extra_cmds)) { 
-                          for(cmd in cmds){
-                            # message(cmd)
+                        cur.env$all_brushes <- brush_out$data
+                        cur.env$all_lassos <- lasso_out$data
+
+                        for (cmd in unlist(extra_cmds)) { 
                             gg <- gg + eval(parse(text=cmd), envir=cur.env)
-                          }
                         }
                     }
                     pObjects$extra_plot_cmds[[plot_name]] <- extra_cmds

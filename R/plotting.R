@@ -258,8 +258,8 @@ names(.all_aes_values) <- .all_aes_names
   # having to construct the brush object or lasso waypoints manually.
   brush_out <- .process_brushby_choice(param_choices, all_memory)
   brush_cmd <- brush_out$cmd
-  all_brushes <- brush_out$data
-  all_lassos <- brush_out$data
+  eval_env$all_brushes <- brush_out$data
+  eval_env$all_lassos <- brush_out$data
   
   # Displaying brush information, if applicable
   plot_info <- .split_encoded(rownames(param_choices))
@@ -860,106 +860,79 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 ############################################
 
 .self_brush_box <- function(mode, i, memory, flip=FALSE) { 
-  current <- memory[[mode]][i, .brushData][[1]]
-  if (!is.null(current)) {
-    if (flip) {
-      xmin <- 'ymin'
-      xmax <- 'ymax'
-      ymin <- 'xmin'
-      ymax <- 'xmax'
-    } else {
-      xmin <- 'xmin'
-      xmax <- 'xmax'
-      ymin <- 'ymin'
-      ymax <- 'ymax'
+    current <- memory[[mode]][,.brushData][[i]]
+    if (is.null(current)) {
+        return(NULL)
     }
 
-    return(sprintf("geom_rect(aes(xmin = %s, xmax = %s, ymin = %s, ymax = %s), color='%s', alpha=0, 
-    data=data.frame(xmin = %.5g, xmax=%.5g, ymin = %.5g, ymax = %.5g), inherit.aes=FALSE)",
-        xmin, xmax, ymin, ymax, panel_colors[mode], 
-        current$xmin, current$xmax, current$ymin, current$ymax))
-  } else {
-     return(NULL)
-  }
+    if (flip) {
+        xmin <- 'ymin'
+        xmax <- 'ymax'
+        ymin <- 'xmin'
+        ymax <- 'xmax'
+    } else {
+        xmin <- 'xmin'
+        xmax <- 'xmax'
+        ymin <- 'ymin'
+        ymax <- 'ymax'
+    }
+    
+    plot_name <- paste0(mode, i)
+    cmd <- sprintf("geom_rect(aes(xmin = %s, xmax = %s, ymin = %s, ymax = %s), color='%s', alpha=0, 
+    data=do.call(data.frame, all_brushes[['%s']][c('xmin', 'xmax', 'ymin', 'ymax')]), inherit.aes=FALSE)",
+                                         xmin, xmax, ymin, ymax, panel_colors[mode], plot_name)
+    
+    data <- list()
+    data[[plot_name]] <- current
+    return(list(cmd=cmd, data=data))
 }
 
 .self_lasso_path <- function(mode, i, memory, flip=FALSE) {
-  current <- memory[[mode]][i, .lassoData][[1]]
-  # print(str(current))
-  is_closed <- attr(current, "closed")
-  if (is.null(current) || nrow(current) < 2L) {
-    return(NULL)
-  }
-  current <- as.data.frame(current)
-  # print(current)
-  current$first <- seq_len(nrow(current)) == 1
-  # print(current)
-  if (flip) {
-    x <- "y"
-    y <- "x"
-  } else {
-    x <- "x"
-    y <- "y"
-  }
-  if (!is.null(is_closed) && is_closed){ # lasso is closed
-    polygon_cmd <- sprintf("geom_polygon(aes(x = %s, y = %s), data=data.frame(
-      x = %s,
-      y = %s
-      ), inherit.aes=FALSE, alpha=%s, color='%s', fill = '%s')", x, y, 
-          paste0(deparse(current[,1]), collapse="\n    "), # data from column 1
-          paste0(deparse(current[,2]), collapse="\n    "), # data from column 2
-          .brushFillOpacity,
-          panel_colors[mode],
-          brush_fill_color[mode]
-      )
-    # message(polygon_cmd)
-    scale_fill_cmd <- sprintf(
-      "scale_fill_manual(values = c('TRUE' = '%s', 'FALSE' = '%s'))",
-      panel_colors[mode], brush_fill_color[mode]
-    )
-    # message(scale_fill_cmd)
-    guides_cmd <- "guides(shape = 'none')"
-    full_cmd_list <- list(
-      polygon_cmd,
-      scale_fill_cmd,
-      guides_cmd)
-  } else { # lasso is still open
-    path_cmd <- sprintf("geom_path(aes(x = %s, y = %s), data=data.frame(
-      x = %s,
-      y = %s
-      ), inherit.aes=FALSE, alpha=1, color='%s', linetype = 'longdash')", x, y, 
-          paste0(deparse(current[,1]), collapse="\n    "), # data from column 1
-          paste0(deparse(current[,2]), collapse="\n    "), # data from column 2
-          panel_colors[mode]
-      ) # mode color (e.g. dimRed = blue)
-    # message(path_cmd)
-    point_cmd <- sprintf(
-      "geom_point(aes(x = %s, y = %s, size = First, shape = First), data=data.frame(
-      x = %s,
-      y = %s,
-      First = %s
-      ), inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s')",
-      x,
-      y,
-      paste0(deparse(current[,1]), collapse="\n    "), # data from column 1
-      paste0(deparse(current[,2]), collapse="\n    "), # data from column 2
-      paste0(deparse(current$first), collapse="\n    "), # data from column 3
-      panel_colors[mode]
-    )
-    # message(point_cmd)
-    scale_shape_cmd <- sprintf(
-      "scale_shape_manual(values = c('TRUE' = 22, 'FALSE' = 21))",
-      panel_colors[mode], brush_fill_color[mode]
-    )
-    # message(scale_shape_cmd)
-    scale_size_cmd <- "scale_size_manual(values = c('TRUE' = 1.5, 'FALSE' = 0.5))"
-    guides_cmd <- "guides(shape = 'none')"
-    full_cmd_list <- list(
-      path_cmd,
-      point_cmd,
-      scale_shape_cmd,
-      scale_size_cmd,
-      guides_cmd)
-  }
-  return(full_cmd_list)
+    current <- memory[[mode]][,.lassoData][[i]]
+    is_closed <- attr(current, "closed")
+    if (is.null(current) || nrow(current) < 2L) {
+        return(NULL)
+    }
+  
+    if (flip) {
+        x <- "y"
+        y <- "x"
+    } else {
+        x <- "x"
+        y <- "y"
+    }
+  
+    plot_name <- paste0(mode, i)
+    if (!is.null(is_closed) && is_closed){ # lasso is closed
+        polygon_cmd <- sprintf("geom_polygon(aes(x = %s, y = %s), alpha=%s, color='%s', 
+    data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2]), inherit.aes=FALSE, fill = '%s')", 
+          x, y , .brushFillOpacity, panel_colors[mode], plot_name, plot_name, brush_fill_color[mode])
+    
+        scale_fill_cmd <- sprintf("scale_fill_manual(values = c('TRUE' = '%s', 'FALSE' = '%s'))",
+                                 panel_colors[mode], brush_fill_color[mode])
+
+        guides_cmd <- "guides(shape = 'none')"
+        full_cmd_list <- list(polygon_cmd, scale_fill_cmd, guides_cmd)
+
+    } else { # lasso is still open
+        path_cmd <- sprintf("geom_path(aes(x = %s, y = %s), 
+    data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2]),
+    inherit.aes=FALSE, alpha=1, color='%s', linetype = 'longdash')", 
+        x, y, plot_name, plot_name, panel_colors[mode])
+    
+        point_cmd <- sprintf("geom_point(aes(x = %s, y = %s, size = First, shape = First), 
+    data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2], 
+                    First = seq_len(nrow(all_lassos[['%s']]))==1L),
+    inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s')",
+        x, y, plot_name, plot_name, plot_name, panel_colors[mode])
+
+        scale_shape_cmd <- "scale_shape_manual(values = c('TRUE' = 22, 'FALSE' = 21))"
+        scale_size_cmd <- "scale_size_manual(values = c('TRUE' = 1.5, 'FALSE' = 0.5))"
+        guides_cmd <- "guides(shape = 'none', size = 'none')"
+        full_cmd_list <- list(path_cmd, point_cmd, scale_shape_cmd, scale_size_cmd, guides_cmd)
+    }
+   
+    data <- list()
+    data[[plot_name]] <- current
+    return(list(cmd=full_cmd_list, data=data))
 }

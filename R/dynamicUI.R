@@ -82,15 +82,16 @@
         # Checking what to do with plot-specific parameters (e.g., brushing, clicking, plot height).
         if (mode!="rowStatTable") { 
             brush.opts <- brushOpts(.input_FUN(.brushField), resetOnNew=FALSE, 
-                                    fill=brush_fill_color[mode], stroke=brush_stroke_color[mode])
+                                    fill=brush_fill_color[mode], stroke=brush_stroke_color[mode], opacity = .brushFillOpacity)
             dblclick <- .input_FUN(.zoomClick)
+            clickopt <- .input_FUN(.lassoClick)
             panel_height <- paste0(active_panels$Height[i], "px")
             panel_name <- paste0(mode, ID)
         }
 
         # Creating the plot fields.
         if (mode=="redDimPlot") {
-            obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, height=panel_height)
+            obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
             cur_reddim <- param_choices[[.redDimType]]
             red_choices <- seq_len(red_dim_dims[[cur_reddim]])
             plot.param <-  list(
@@ -180,29 +181,30 @@
         } else if (mode=="heatMapPlot") {
             obj <- plotOutput(panel_name, brush=brush.opts, dblclick=dblclick, height=panel_height)
             plot.param <- list(tags$div(class = "panel-group", role = "tablist",
-                collapseBox(id=.input_FUN(.heatMapFeatNamePanelOpen),
-                            title="Feature parameters",
-                            open=param_choices[[.heatMapFeatNamePanelOpen]],
-                    selectizeInput(.input_FUN(.heatMapFeatName),
-                                   label="Features:",
-                                   choices=NULL, selected=NULL, multiple=TRUE,
-                                   options = list(plugins = list('remove_button', 'drag_drop'))),
-                    selectInput(.input_FUN(.heatMapAssay), label=NULL,
-                                choices=all_assays, selected=param_choices[[.heatMapAssay]]),
-                    selectInput(.input_FUN(.heatMapImportSource), label="Import from", choices=heatmap_sources,
-                                selected=.choose_link(param_choices[[.heatMapImportSource]], heatmap_sources, force_default=TRUE)),
-                    actionButton(.input_FUN(.heatMapImport), "Import features")
-                ),
-                collapseBox(id=.input_FUN(.heatMapColDataPanelOpen),
-                            title="Column data parameters",
-                            open=param_choices[[.heatMapColDataPanelOpen]],
-                    selectizeInput(.input_FUN(.heatMapColData),
-                                   label="Column data:",
-                                   choices=column_covariates,
-                                   multiple = TRUE, 
-                                   selected=param_choices[[.heatMapColData]][[1]],
-                                   options = list(plugins = list('remove_button', 'drag_drop')))
-                    )
+                    collapseBox(id=.input_FUN(.heatMapFeatNamePanelOpen),
+                                title="Feature parameters",
+                                open=param_choices[[.heatMapFeatNamePanelOpen]],
+                        selectizeInput(.input_FUN(.heatMapFeatName),
+                                       label="Features:",
+                                       choices=NULL, selected=NULL, multiple=TRUE,
+                                       options = list(plugins = list('remove_button', 'drag_drop'))),
+                        selectInput(.input_FUN(.heatMapAssay), label=NULL,
+                                    choices=all_assays, selected=param_choices[[.heatMapAssay]]),
+                        selectInput(.input_FUN(.heatMapImportSource), label="Import from", choices=heatmap_sources,
+                                    selected=.choose_link(param_choices[[.heatMapImportSource]], heatmap_sources, force_default=TRUE)),
+                        actionButton(.input_FUN(.heatMapImport), "Import features")
+                    ),
+                    collapseBox(id=.input_FUN(.heatMapColDataPanelOpen),
+                                title="Column data parameters",
+                                open=param_choices[[.heatMapColDataPanelOpen]],
+                        selectizeInput(.input_FUN(.heatMapColData),
+                                       label="Column data:",
+                                       choices=column_covariates,
+                                       multiple = TRUE, 
+                                       selected=param_choices[[.heatMapColData]][[1]],
+                                       options = list(plugins = list('remove_button', 'drag_drop'))),
+                        plotOutput(.input_FUN(.heatMapLegend))
+                    )   
                 )
             )
         } else {
@@ -265,8 +267,9 @@
         }
 
         # Aggregating together everything into a box, and then into a column.
-        cur_box <- do.call(box, c(list(obj), param, list(uiOutput(.input_FUN(.panelLinkInfo))),
-           list(title=.decode_panel_name(mode, ID), solidHeader=TRUE, width=NULL, status = "danger")))
+        cur_box <- do.call(box, c(list(obj), param, 
+            list(uiOutput(.input_FUN(.panelGeneralInfo)), uiOutput(.input_FUN(.panelLinkInfo))),
+            list(title=.decode_panel_name(mode, ID), solidHeader=TRUE, width=NULL, status = "danger")))
         cur_box <- .coerce_box_status(cur_box, mode)
         cur.row[[row.counter]] <- column(width=panel.width, cur_box, style='padding:3px;') 
         row.counter <- row.counter + 1L

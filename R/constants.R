@@ -45,6 +45,7 @@
 .heatMapColDataPanelOpen <- "ColDataPanelOpen"
 .heatMapImport <- "Import"
 .heatMapImportSource <- "FeatNameSource"
+.heatMapLegend <- "Legend"
 
 # Plot colouring parameters. ----
 .colorByNothingTitle <- "None"
@@ -88,6 +89,10 @@
 .zoomData <- "ZoomData"
 .zoomClick <- "ZoomClick"
 
+# Lasso parameters. ----
+.lassoClick <- "LassoClick"
+.lassoData <- "LassoData"
+
 # Plot parameters. ----
 .plotParamPanelOpen <- "PlotPanelOpen"
 .plotParamPanelName <- "ParamPanel"
@@ -109,6 +114,7 @@
 .organizationWidth <- "PanelWidth"
 .organizationHeight <- "PanelHeight"
 
+.panelGeneralInfo <- "PanelGeneralInfo"
 .panelLinkInfo <- "PanelLinkInfo"
 
 # Encoding and decoding names for user/shiny ----

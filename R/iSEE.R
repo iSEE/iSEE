@@ -1074,8 +1074,11 @@ iSEE <- function(
                 })
 
                 # Defining the rendered plot, and saving the coordinates.
+                gen_field <- paste0(plot_name, "_", .panelGeneralInfo)
+
                 output[[plot_name]] <- renderPlot({
                     force(rObjects[[plot_name]])
+                    rObjects[[gen_field]] <- .increment_counter(isolate(rObjects[[gen_field]]))
 
                     if (!pObjects$no_rerender[plot_name] || pObjects$force_rerender[plot_name]) {
                         pObjects$force_rerender[plot_name] <- FALSE
@@ -1142,8 +1145,9 @@ iSEE <- function(
                 })
 
                 # Describing some general panel information.
-                output[[paste0(plot_name, "_", .panelGeneralInfo)]] <- renderUI({
-                    brush_vals <- input[[paste0(plot_name, "_", .brushField)]]
+                output[[gen_field]] <- renderUI({
+                    force(rObjects[[gen_field]])
+                    brush_vals <- pObjects$memory[[mode0]][,.brushData][[i0]]
                     if (is.null(brush_vals)) {
                         return(NULL)
                     } 

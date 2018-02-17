@@ -874,7 +874,7 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 .self_lasso_path <- function(mode, i, memory, flip=FALSE) {
     current <- memory[[mode]][,.lassoData][[i]]
     is_closed <- attr(current, "closed")
-    if (is.null(current)) {
+    if (is.null(current) || !is.null(memory[[mode]][,.brushData][[i]])) {
         return(NULL)
     }
   

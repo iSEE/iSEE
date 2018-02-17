@@ -256,7 +256,7 @@ names(.all_aes_values) <- .all_aes_names
   # Note that 'all_brushes' or 'all_lassos' is needed for the ultimate eval() to obtain BrushBy.
   # This approach relatively easy to deparse() in the code tracker, rather than
   # having to construct the brush object or lasso waypoints manually.
-  brush_out <- .process_brushby_choice(param_choices, all_memory)
+  brush_out <- .process_brushby_choice(param_choices, all_memory, group_X, group_Y)
   brush_cmd <- brush_out$cmd
   eval_env$all_brushes <- brush_out$data
   eval_env$all_lassos <- brush_out$data
@@ -646,7 +646,7 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 # Internal functions: brushing ----
 ############################################
 
-.process_brushby_choice <- function(param_choices, all_memory) {
+.process_brushby_choice <- function(param_choices, all_memory, groupX, groupY) {
   brush_in <- param_choices[[.brushByPlot]]
   cmd <- NULL
   brush_obj <- list()
@@ -677,8 +677,10 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
         
         if (!is.null(closed) && closed) { 
             brush_obj[[transmitter]] <- lasso_val
-            cmd <- sprintf("brushed_pts <- mgcv::in.out(all_lassos[['%s']], as.matrix(%s))",
-                           transmitter, source_data)
+            cmdX <- sprintf(ifelse(groupX, "as.numeric(%s[,1])", "%s[,1]"), source_data)
+            cmdY <- sprintf(ifelse(groupX, "as.numeric(%s[,2])", "%s[,2]"), source_data)
+            cmd <- sprintf("brushed_pts <- mgcv::in.out(all_lassos[['%s']], as.matrix(cbind(%s, %s)))",
+                           transmitter, cmdX, cmdY)
             cmd <- c(cmd, sprintf("plot.data$BrushBy <- rownames(plot.data) %%in%% rownames(%s)[brushed_pts]",
                                   source_data))            
             cmd <- paste(cmd, collapse="\n")

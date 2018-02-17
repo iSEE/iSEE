@@ -1079,7 +1079,6 @@ iSEE <- function(
                         }
                     }
                     pObjects$extra_plot_cmds[[plot_name]] <- extra_cmds
-
                     return(gg)
                             
                   withProgress(
@@ -1111,6 +1110,19 @@ iSEE <- function(
                       
                     }
                   )
+                })
+
+                # Describing some general panel information.
+                output[[paste0(plot_name, "_", .panelGeneralInfo)]] <- renderUI({
+                    brush_vals <- input[[paste0(plot_name, "_", .brushField)]]
+                    if (is.null(brush_vals)) {
+                        return(NULL)
+                    } 
+                    brushed <- brushedPoints(pObjects$coordinates[[plot_name]], brush_vals)
+                    n_brushed <- nrow(brushed)
+                    n_total <- nrow(pObjects$coordinates[[plot_name]])
+                    HTML(sprintf("%i of %i points brushed (%.1f%%)",
+                                 n_brushed, n_total, 100*n_brushed/n_total))
                 })
 
                 # Describing the links between panels.

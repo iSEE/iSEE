@@ -113,6 +113,7 @@
 .organizationWidth <- "PanelWidth"
 .organizationHeight <- "PanelHeight"
 
+.panelGeneralInfo <- "PanelGeneralInfo"
 .panelLinkInfo <- "PanelLinkInfo"
 
 # Encoding and decoding names for user/shiny ----

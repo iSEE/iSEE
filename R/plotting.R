@@ -5,7 +5,7 @@
 .all_aes_names <- c("x", "y", "color", "shape", "fill", "group")
 .all_aes_values <-
   c("X", "Y", "ColorBy", "ShapeBy", "FillBy", "GroupBy")
-.all_labs_names <- c(.all_aes_names, "title", "subtitle")
+.all_labs_names <- c(.all_aes_names, "title")
 
 names(.all_aes_values) <- .all_aes_names
 
@@ -261,39 +261,23 @@ names(.all_aes_values) <- .all_aes_names
   eval_env$all_brushes <- brush_out$data
   eval_env$all_lassos <- brush_out$data
   
-  # Displaying brush information, if applicable
-  plot_info <- .split_encoded(rownames(param_choices))
-  brush_val <- all_memory[[plot_info$Type]][,.brushData][[plot_info$ID]]
-  if (!is.null(brush_val)){
-    n_brushed <- nrow(brushedPoints(eval_env$plot.data, brush_val))
-    n_total <- nrow(eval_env$plot.data)
-    subtitle <- sprintf(
-      "%i of %i points brushed (%.1f%%)",
-      n_brushed, n_total, 100*n_brushed/n_total)
-  } else {
-    subtitle <- NA_character_
-  }
-
   # Dispatch to different plotting commands, depending on whether X/Y are groupable.
   if (group_X && group_Y) {
     extra_cmds <- .griddotplot(param_choices=param_choices, ..., 
-      color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd,
-      subtitle = subtitle)
+      color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd)
 
   } else if (group_X && !group_Y) {
     extra_cmds <- .violin_plot(param_choices=param_choices, ..., 
-      color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd,
-      subtitle = subtitle)
+      color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd)
 
   } else if (!group_X && group_Y) {
     extra_cmds <- .violin_plot(param_choices=param_choices, ..., 
       color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd,
-      horizontal=TRUE, subtitle = subtitle)
+      horizontal=TRUE)
 
   } else {
     extra_cmds <- .scatter_plot(param_choices=param_choices, ..., 
-      color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd,
-      subtitle = subtitle)
+      color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd)
 
   }
   extra_cmds$data <- c(more_data_cmds, extra_cmds$data)
@@ -329,7 +313,7 @@ names(.all_aes_values) <- .all_aes_names
 
 .scatter_plot <- function(
   param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, 
-  title, subtitle)
+  title)
 # Creates a scatter plot of numeric X/Y. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -347,7 +331,7 @@ names(.all_aes_values) <- .all_aes_names
     x = x_lab,
     y = y_lab,
     color = color_label,
-    title = title, subtitle = subtitle
+    title = title
   )
 
   # Defining boundaries if zoomed.
@@ -380,7 +364,7 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);"
 
 .violin_plot <- function(
   param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, 
-  horizontal = FALSE, title, subtitle)
+  horizontal = FALSE, title)
 # Generates a vertical violin plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -427,7 +411,7 @@ plot.data$Y <- tmp;")
     x = x_lab,
     y = y_lab,
     color = color_label,
-    title = title, subtitle = subtitle
+    title = title
   )
 
   # Defining boundaries if zoomed. This requires some finesse to deal
@@ -470,7 +454,7 @@ plot.data$Y <- tmp;")
 
 .griddotplot <- function(
   param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, 
-  title, subtitle)
+  title)
 # Generates a grid dot plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
 {
@@ -507,7 +491,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
     x = x_lab,
     y = y_lab,
     color = color_label,
-    title = title, subtitle = subtitle
+    title = title
   )
 
   # Defining boundaries if zoomed.
@@ -802,9 +786,9 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
   x = NA_character_, y = NA_character_,
   color = NA_character_, shape = NA_character_,
   fill = NA_character_, group = NA_character_,
-  title = NA_character_, subtitle = NA_character_
+  title = NA_character_
 ){
-    labs_specs <- c(x, y, color, shape, fill, group, title, subtitle)
+    labs_specs <- c(x, y, color, shape, fill, group, title)
     names(labs_specs) <- .all_labs_names
     labs_specs <- labs_specs[!is.na(labs_specs)]
     if (identical(length(labs_specs), 0L)){

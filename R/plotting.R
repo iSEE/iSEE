@@ -905,9 +905,10 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
     polygon_cmd <- sprintf("geom_polygon(aes(x = %s, y = %s), data=data.frame(
       x = %s,
       y = %s
-      ), inherit.aes=FALSE, alpha=0.2, color='%s', fill = '%s')", x, y, 
+      ), inherit.aes=FALSE, alpha=%s, color='%s', fill = '%s')", x, y, 
           paste0(deparse(current[,1]), collapse="\n    "), # data from column 1
           paste0(deparse(current[,2]), collapse="\n    "), # data from column 2
+          .brushFillOpacity,
           panel_colors[mode],
           brush_fill_color[mode]
       )

@@ -82,7 +82,7 @@
         # Checking what to do with plot-specific parameters (e.g., brushing, clicking, plot height).
         if (mode!="rowStatTable") { 
             brush.opts <- brushOpts(.input_FUN(.brushField), resetOnNew=FALSE, 
-                                    fill=brush_fill_color[mode], stroke=brush_stroke_color[mode])
+                                    fill=brush_fill_color[mode], stroke=brush_stroke_color[mode], opacity = .brushFillOpacity)
             dblclick <- .input_FUN(.zoomClick)
             clickopt <- .input_FUN(.lassoClick)
             panel_height <- paste0(active_panels$Height[i], "px")

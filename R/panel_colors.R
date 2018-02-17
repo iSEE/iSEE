@@ -36,3 +36,4 @@ new_colors <- 255 - ((255 - col2rgb(panel_colors))/5)
 brush_fill_color <- rgb(new_colors[1,], new_colors[2,], new_colors[3,], maxColorValue=255)
 names(brush_fill_color) <- names(panel_colors)
 
+.brushFillOpacity <- 0.25

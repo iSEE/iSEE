@@ -258,7 +258,7 @@ iSEE <- function(
     empty_list <- vector("list", length(all_names))
     names(empty_list) <- all_names
 
-    # Storage for other persistent objects
+    # Storage for persistent non-reactive objects.
     pObjects <- new.env()
     pObjects$memory <- memory
 
@@ -268,10 +268,10 @@ iSEE <- function(
     pObjects$brush_links <- .spawn_brush_chart(memory)
     pObjects$table_links <- .spawn_table_links(memory)
 
-    renderer <- logical(length(all_names))
-    names(renderer) <- all_names
-    pObjects$no_rerender <-  renderer
-    pObjects$force_rerender <-  renderer
+    namedbools <- logical(length(all_names))
+    names(namedbools) <- all_names
+    pObjects$no_rerender <-  namedbools
+    pObjects$force_rerender <-  namedbools
     pObjects$extra_plot_cmds <- empty_list
     pObjects$cached_plots <- empty_list
 
@@ -281,13 +281,17 @@ iSEE <- function(
         rerendered = 1L,
         relinked = 1L
     )
+
     for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot", "rowStatTable", "heatMapPlot")) {
       max_plots <- nrow(pObjects$memory[[mode]])
       for (i in seq_len(max_plots)) {
         rObjects[[paste0(mode, i)]] <- 1L
+        rObjects[[paste0(mode, i, "_", .panelLinkInfo)]] <- 1L
+        rObjects[[paste0(mode, i, "_", .panelGeneralInfo)]] <- 1L
       }
     }
 
+    # Help and documentation-related observers.
     intro_firststeps <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"), sep=";", stringsAsFactors = FALSE,row.names = NULL)
 
     observeEvent(input$tour_firststeps, {
@@ -625,7 +629,11 @@ iSEE <- function(
                     pObjects$memory[[mode0]][i0, .brushByPlot] <- new_transmitter
 
                     # Update the elements reporting the links between plots.
-                    rObjects$relinked <- .increment_counter(isolate(rObjects$relinked))
+                    for (relinked in c(old_encoded, new_encoded, plot_name)) {
+                        if (relinked==.noSelection) { next }
+                        relink_field <- paste0(relinked, "_", .panelLinkInfo)
+                        rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
+                    }
 
                     # Not replotting if there were no brushes in either the new or old transmitters.
                     if (!old_brush && !new_brush){
@@ -751,7 +759,13 @@ iSEE <- function(
                 # Updating the graph (no need for DAG protection here, as tables do not transmit brushes).
                 pObjects$brush_links <- .choose_new_brush_source(pObjects$brush_links, tab_name, new_encoded, old_encoded)
                 pObjects$memory[[mode0]][i0, .brushByPlot] <- new_transmitter
-                rObjects$relinked <- .increment_counter(isolate(rObjects$relinked))
+
+                # Update the elements reporting the links between plots.
+                for (relinked in c(old_encoded, new_encoded, tab_name)) {
+                    if (relinked==.noSelection) { next }
+                    relink_field <- paste0(relinked, "_", .panelLinkInfo)
+                    rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
+                }
 
                 # Not re-rendering if there were no brushes in either the new or old transmitters.
                 if (!old_brush && !new_brush){
@@ -1036,12 +1050,21 @@ iSEE <- function(
 
                 # Observers for the linked color, which updates the table_links information.
                 observe({
+                    old_tab <- pObjects$memory[[mode0]][i0, .colorByRowTable]
+
                     replot <- .setup_table_observer(mode0, i0, input, pObjects, .colorByField,
                         .colorByRowTableTitle, .colorByRowTable, param='color')
                     if (replot) {
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     }
-                    rObjects$relinked <- .increment_counter(isolate(rObjects$relinked)) # updating link description.
+    
+                    # Update the elements reporting the links between tables and plots.
+                    new_tab <- pObjects$memory[[mode0]][i0, .colorByRowTable]
+                    for (relinked in c(plot_name, .decoded2encoded(c(new_tab, old_tab)))) { 
+                        if (relinked=="") { next }
+                        relink_field <- paste0(relinked, "_", .panelLinkInfo)
+                        rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
+                    }
                 })
 
                 # Defining the rendered plot, and saving the coordinates.
@@ -1126,8 +1149,9 @@ iSEE <- function(
                 })
 
                 # Describing the links between panels.
-                output[[paste0(plot_name, "_", .panelLinkInfo)]] <- renderUI({
-                    (rObjects$relinked)
+                link_field <- paste0(plot_name, "_", .panelLinkInfo)
+                output[[link_field]] <- renderUI({
+                    force(rObjects[[link_field]])
                     .define_plot_links(plot_name, pObjects$memory, pObjects$brush_links)
                 })
             })
@@ -1161,6 +1185,8 @@ iSEE <- function(
                 axis_tab_choice0 <- axis_tab_choice
 
                 observe({
+                    old_tab <- pObjects$memory[[mode0]][i0, axis_tab_choice0]
+
                     ## Deciding whether to replot based on the table.
                     replot <- .setup_table_observer(mode0, i0, input, pObjects, axis_choice0, axis_tab_title0, axis_tab_choice0, param=axis0)
                     if (replot) {
@@ -1173,7 +1199,14 @@ iSEE <- function(
                             rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                         }
                     }
-                    rObjects$relinked <- .increment_counter(isolate(rObjects$relinked)) # updating link description.
+
+                    # Update the links reporting between tables and plots.
+                    new_tab <- pObjects$memory[[mode0]][i0, axis_tab_choice0]
+                    for (relinked in c(plot_name, .decoded2encoded(c(old_tab, new_tab)))) { 
+                        if (relinked=="") { next } 
+                        relink_field <- paste0(relinked, "_", .panelLinkInfo)
+                        rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
+                    } 
                 })
             })
         }
@@ -1265,8 +1298,9 @@ iSEE <- function(
         })
 
         # Describing the links between panels.
-        output[[paste0(panel_name, "_", .panelLinkInfo)]] <- renderUI({
-            (rObjects$relinked)
+        link_field <- paste0(panel_name, "_", .panelLinkInfo) 
+        output[[link_field]] <- renderUI({
+            force(rObjects[[link_field]])
             .define_table_links(panel_name, pObjects$memory, pObjects$table_links)
         })
       })

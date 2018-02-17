@@ -181,29 +181,30 @@
         } else if (mode=="heatMapPlot") {
             obj <- plotOutput(panel_name, brush=brush.opts, dblclick=dblclick, height=panel_height)
             plot.param <- list(tags$div(class = "panel-group", role = "tablist",
-                collapseBox(id=.input_FUN(.heatMapFeatNamePanelOpen),
-                            title="Feature parameters",
-                            open=param_choices[[.heatMapFeatNamePanelOpen]],
-                    selectizeInput(.input_FUN(.heatMapFeatName),
-                                   label="Features:",
-                                   choices=NULL, selected=NULL, multiple=TRUE,
-                                   options = list(plugins = list('remove_button', 'drag_drop'))),
-                    selectInput(.input_FUN(.heatMapAssay), label=NULL,
-                                choices=all_assays, selected=param_choices[[.heatMapAssay]]),
-                    selectInput(.input_FUN(.heatMapImportSource), label="Import from", choices=heatmap_sources,
-                                selected=.choose_link(param_choices[[.heatMapImportSource]], heatmap_sources, force_default=TRUE)),
-                    actionButton(.input_FUN(.heatMapImport), "Import features")
-                ),
-                collapseBox(id=.input_FUN(.heatMapColDataPanelOpen),
-                            title="Column data parameters",
-                            open=param_choices[[.heatMapColDataPanelOpen]],
-                    selectizeInput(.input_FUN(.heatMapColData),
-                                   label="Column data:",
-                                   choices=column_covariates,
-                                   multiple = TRUE, 
-                                   selected=param_choices[[.heatMapColData]][[1]],
-                                   options = list(plugins = list('remove_button', 'drag_drop')))
-                    )
+                    collapseBox(id=.input_FUN(.heatMapFeatNamePanelOpen),
+                                title="Feature parameters",
+                                open=param_choices[[.heatMapFeatNamePanelOpen]],
+                        selectizeInput(.input_FUN(.heatMapFeatName),
+                                       label="Features:",
+                                       choices=NULL, selected=NULL, multiple=TRUE,
+                                       options = list(plugins = list('remove_button', 'drag_drop'))),
+                        selectInput(.input_FUN(.heatMapAssay), label=NULL,
+                                    choices=all_assays, selected=param_choices[[.heatMapAssay]]),
+                        selectInput(.input_FUN(.heatMapImportSource), label="Import from", choices=heatmap_sources,
+                                    selected=.choose_link(param_choices[[.heatMapImportSource]], heatmap_sources, force_default=TRUE)),
+                        actionButton(.input_FUN(.heatMapImport), "Import features")
+                    ),
+                    collapseBox(id=.input_FUN(.heatMapColDataPanelOpen),
+                                title="Column data parameters",
+                                open=param_choices[[.heatMapColDataPanelOpen]],
+                        selectizeInput(.input_FUN(.heatMapColData),
+                                       label="Column data:",
+                                       choices=column_covariates,
+                                       multiple = TRUE, 
+                                       selected=param_choices[[.heatMapColData]][[1]],
+                                       options = list(plugins = list('remove_button', 'drag_drop'))),
+                        plotOutput(.input_FUN(.heatMapLegend))
+                    )   
                 )
             )
         } else {

@@ -291,6 +291,12 @@ iSEE <- function(
       }
     }
 
+    mode <- "heatMapPlot"
+    max_plots <- nrow(pObjects$memory[[mode]])
+    for (i in seq_len(max_plots)) {
+        rObjects[[paste0(mode, i, "_", .heatMapLegend)]] <- 1L
+    }
+
     # Help and documentation-related observers.
     intro_firststeps <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"), sep=";", stringsAsFactors = FALSE,row.names = NULL)
 
@@ -1358,12 +1364,26 @@ iSEE <- function(
             }, ignoreInit=TRUE)
 
             # Defining the rendered plot, and saving the coordinates.
+            # Also triggering an update to the accompanying legend plot.
+            legend_field <- paste0(plot_name, "_", .heatMapLegend)
             output[[plot_name]] <- renderPlot({
                 force(rObjects[[plot_name]])
+                rObjects[[legend_field]] <- .increment_counter(isolate(rObjects[[legend_field]]))
+                
                 p.out <- .make_heatMapPlot(i0, pObjects$memory, pObjects$coordinates, se, colormap)
                 pObjects$commands[[plot_name]] <- p.out$cmd
                 pObjects$coordinates[[plot_name]] <- p.out$xy[,c("X", "Y")]
+                pObjects$cached_plots[[plot_name]] <- gg
                 p.out$plot
+            })
+
+            # Defining the legend.
+            output[[legend_field]] <- renderPlot({
+                force(rObjects[[legend_field]])
+                gg <- pObjects$cached_plots[[plot_name]]
+                
+                # Charlotte: add your legend here.
+                showNotification("I AM LEGEND", type="message")
             })
         })
 

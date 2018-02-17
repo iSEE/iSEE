@@ -45,6 +45,7 @@
 .heatMapColDataPanelOpen <- "ColDataPanelOpen"
 .heatMapImport <- "Import"
 .heatMapImportSource <- "FeatNameSource"
+.heatMapLegend <- "Legend"
 
 # Plot colouring parameters. ----
 .colorByNothingTitle <- "None"

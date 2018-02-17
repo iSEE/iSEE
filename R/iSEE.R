@@ -1058,13 +1058,14 @@ iSEE <- function(
                     extra_cmds[["brush_box"]] <- brush_out$cmd
                     lasso_out <- .self_lasso_path(mode0, i0, pObjects$memory, flip=to_flip) # Adding the lasso path.
                     extra_cmds[["lasso_path"]] <- lasso_out$cmd
+                    extra_cmds <- unlist(extra_cmds)
 
                     if (length(extra_cmds) > 0L) {
                         cur.env <- new.env()
                         cur.env$all_brushes <- brush_out$data
                         cur.env$all_lassos <- lasso_out$data
 
-                        for (cmd in unlist(extra_cmds)) { 
+                        for (cmd in extra_cmds) { 
                             gg <- gg + eval(parse(text=cmd), envir=cur.env)
                         }
                     }

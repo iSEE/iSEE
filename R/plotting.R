@@ -905,7 +905,8 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
     plot_name <- paste0(mode, i)
     if (!is.null(is_closed) && is_closed){ # lasso is closed
         polygon_cmd <- sprintf("geom_polygon(aes(x = %s, y = %s), alpha=%s, color='%s', 
-    data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2]), inherit.aes=FALSE, fill = '%s')", 
+    data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2]), 
+    inherit.aes=FALSE, fill = '%s')", 
           x, y , .brushFillOpacity, panel_colors[mode], plot_name, plot_name, brush_fill_color[mode])
     
         scale_fill_cmd <- sprintf("scale_fill_manual(values = c('TRUE' = '%s', 'FALSE' = '%s'))",

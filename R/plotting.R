@@ -891,23 +891,28 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
     if (identical(nrow(current), 1L)) { # lasso has only a start point
       point_cmd <- sprintf("geom_point(aes(x = %s, y = %s), 
     data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2]),
-    inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s', size = 1.5, shape = 22)",
-        x, y, plot_name, plot_name, panel_colors[mode])
+    inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s', size = %i, shape = %i)",
+        x, y, plot_name, plot_name, panel_colors[mode],
+        .lassoStartSize, .lassoStartShape)
       full_cmd_list <- list(point_cmd)
+      
     } else if (!is.null(is_closed) && is_closed){ # lasso is closed
-        polygon_cmd <- sprintf("geom_polygon(aes(x = %s, y = %s), alpha=%s, color='%s', 
+      polygon_cmd <- sprintf("geom_polygon(aes(x = %s, y = %s), alpha=%s, color='%s', 
     data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2]), 
     inherit.aes=FALSE, fill = '%s')", 
-          x, y , .brushFillOpacity, panel_colors[mode], plot_name, plot_name, brush_fill_color[mode])
+          x, y ,
+          .brushFillOpacity, panel_colors[mode],
+          plot_name, plot_name, brush_fill_color[mode])
     
-        scale_fill_cmd <- sprintf("scale_fill_manual(values = c('TRUE' = '%s', 'FALSE' = '%s'))",
-                                 panel_colors[mode], brush_fill_color[mode])
+        scale_fill_cmd <- sprintf(
+          "scale_fill_manual(values = c('TRUE' = '%s', 'FALSE' = '%s'))",
+          panel_colors[mode], brush_fill_color[mode])
 
         guides_cmd <- "guides(shape = 'none')"
         full_cmd_list <- list(polygon_cmd, scale_fill_cmd, guides_cmd)
 
     } else { # lasso is still open
-        path_cmd <- sprintf("geom_path(aes(x = %s, y = %s), 
+      path_cmd <- sprintf("geom_path(aes(x = %s, y = %s), 
     data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2]),
     inherit.aes=FALSE, alpha=1, color='%s', linetype = 'longdash')", 
         x, y, plot_name, plot_name, panel_colors[mode])
@@ -918,13 +923,27 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
     inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s')",
         x, y, plot_name, plot_name, plot_name, panel_colors[mode])
 
-        scale_shape_cmd <- "scale_shape_manual(values = c('TRUE' = 22, 'FALSE' = 21))"
-        scale_size_cmd <- "scale_size_manual(values = c('TRUE' = 1.5, 'FALSE' = 0.5))"
+        scale_shape_cmd <- sprintf(
+          "scale_shape_manual(values = c('TRUE' = %i, 'FALSE' = %i))",
+          .lassoStartShape, .lassoWaypointShape
+        )
+        scale_size_cmd <- sprintf(
+          "scale_size_manual(values = c('TRUE' = %i, 'FALSE' = %i))",
+          .lassoStartSize, .lassoWaypointSize
+        )
         guides_cmd <- "guides(shape = 'none', size = 'none')"
-        full_cmd_list <- list(path_cmd, point_cmd, scale_shape_cmd, scale_size_cmd, guides_cmd)
+        full_cmd_list <- list(
+          path_cmd, point_cmd, scale_shape_cmd, scale_size_cmd, guides_cmd)
+        
     }
    
     data <- list()
     data[[plot_name]] <- current
     return(list(cmd=full_cmd_list, data=data))
 }
+
+# Lasso constants
+.lassoStartShape <- 22
+.lassoWaypointShape <- 21
+.lassoStartSize <- 1.5
+.lassoWaypointSize <- 0.5

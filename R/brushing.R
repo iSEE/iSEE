@@ -135,17 +135,16 @@
     if (transmitter!=.noSelection) {
         enc <- .encode_panel_name(transmitter)
         encoded <- paste0(enc$Type, enc$ID)
-        if (.any_selection(enc$Type, enc$ID, memory)) { 
+        if (.any_point_selection(enc$Type, enc$ID, memory)) { 
             brush <- TRUE
         }
     }
     return(list(brush=brush, encoded=encoded))
 }
 
-.any_selection <- function(mode, i, memory) {
+.any_point_selection <- function(mode, i, memory) {
     !is.null(memory[[mode]][,.brushData][[i]]) || !is.null(memory[[mode]][,.lassoData][[i]])
 }
-
 
 .execute_brushed_table <- function(i, memory, se, all_coordinates) 
 # This function implements the effect of brushing from a transmitting

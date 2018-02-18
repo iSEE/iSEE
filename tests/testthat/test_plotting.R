@@ -665,19 +665,19 @@ test_that(".process_brushby_choice works when sender is another plot", {
   
   # check the source of the brushed data
   expect_match(
-    brush_cmd,
+    brush_cmd$cmd,
     "shiny::brushedPoints(all_coordinates",
     fixed = TRUE
   )
   # check the source plot type
   expect_match(
-    brush_cmd,
+    brush_cmd$cmd,
     sourcePlotType,
     fixed = TRUE
   )
   # check that the second (hard-coded) command is present
   expect_match(
-    brush_cmd,
+    brush_cmd$cmd,
     "plot.data$BrushBy",
     fixed = TRUE
   )
@@ -709,13 +709,13 @@ test_that(".process_brushby_choice works when sender is self plot", {
   
   # check the source of the brushed data
   expect_match(
-    brush_cmd,
+    brush_cmd$cmd,
     "shiny::brushedPoints(plot.data",
     fixed = TRUE
   )
   # check that the second (hard-coded) command is present
   expect_match(
-    brush_cmd,
+    brush_cmd$cmd,
     "plot.data$BrushBy",
     fixed = TRUE
   )

@@ -16,6 +16,11 @@
   data_cmds[["y"]] <- list(
     sprintf("value.mat <- as.matrix(assay(se, %i)[%s, , drop=FALSE]);", 
             assay_choice, paste0('c(', paste(genes_selected_y, collapse = ','), ')')),
+    sprintf("value.mat <- t(scale(t(value.mat), center = %s, scale = %s));", 
+            ifelse(param_choices[[.heatMapCentering]] == .heatMapYesTitle, 
+                   "TRUE", "FALSE"),
+            ifelse(param_choices[[.heatMapScaling]] == .heatMapYesTitle, 
+                   "TRUE", "FALSE")),
     sprintf("plot.data <- reshape2::melt(value.mat, varnames = c('Y', 'X'));")
   )
   

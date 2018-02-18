@@ -39,13 +39,26 @@
 
 # Heatmap plotting parameters. ----
 .heatMapAssay <- "Assay"
+
 .heatMapFeatName <- "FeatName"
 .heatMapFeatNamePanelOpen <- "FeatNamePanelOpen"
-.heatMapColData <- "ColData"
-.heatMapColDataPanelOpen <- "ColDataPanelOpen"
 .heatMapImport <- "Import"
 .heatMapImportSource <- "FeatNameSource"
+.heatMapCluster <- "Clustered"
+
+.heatMapColData <- "ColData"
+.heatMapColDataPanelOpen <- "ColDataPanelOpen"
 .heatMapLegend <- "Legend"
+
+.heatMapColorPanelOpen <- "ColorPanelOpen"
+.heatMapCentering <- "Centering"
+.heatMapScaling <- "Scaling"
+.heatMapYesTitle <- "On"
+.heatMapNoTitle <- "Off"
+
+.heatMapLower <- "Lower"
+.heatMapUpper <- "Upper"
+.heatMapCenteredColors <- "ColorScale"
 
 # Plot colouring parameters. ----
 .colorByNothingTitle <- "None"

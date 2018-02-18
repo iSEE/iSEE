@@ -192,7 +192,8 @@
                                     choices=all_assays, selected=param_choices[[.heatMapAssay]]),
                         selectInput(.input_FUN(.heatMapImportSource), label="Import from", choices=heatmap_sources,
                                     selected=.choose_link(param_choices[[.heatMapImportSource]], heatmap_sources, force_default=TRUE)),
-                        actionButton(.input_FUN(.heatMapImport), "Import features")
+                        actionButton(.input_FUN(.heatMapImport), "Import features"),
+                        actionButton(.input_FUN(.heatMapCluster), "Suggest feature order")
                     ),
                     collapseBox(id=.input_FUN(.heatMapColDataPanelOpen),
                                 title="Column data parameters",
@@ -204,7 +205,26 @@
                                        selected=param_choices[[.heatMapColData]][[1]],
                                        options = list(plugins = list('remove_button', 'drag_drop'))),
                         plotOutput(.input_FUN(.heatMapLegend))
-                    )   
+                    ),
+                    collapseBox(id=.input_FUN(.heatMapColorPanelOpen),
+                                title="Coloring parameters",
+                                open=param_choices[[.heatMapColorPanelOpen]],
+                        radioButtons(.input_FUN(.heatMapCentering), label="Centering:", inline=TRUE,
+                                     choices = c(.heatMapYesTitle, .heatMapNoTitle), 
+                                     selected = param_choices[[.heatMapCentering]]),
+                        radioButtons(.input_FUN(.heatMapScaling), label="Scaling:", inline=TRUE,
+                                     choices = c(.heatMapYesTitle, .heatMapNoTitle), 
+                                     selected = param_choices[[.heatMapScaling]]),
+                        .conditionalPanelOnRadio(.input_FUN(.heatMapScaling), .heatMapNoTitle,
+                                                 textInput(.input_FUN(.heatMapLower), label="Lower bound:",
+                                                           value = param_choices[[.heatMapLower]]), 
+                                                 textInput(.input_FUN(.heatMapUpper), label="Upper bound:",
+                                                           value = param_choices[[.heatMapUpper]])), 
+                        .conditionalPanelOnRadio(.input_FUN(.heatMapCentering), .heatMapYesTitle,
+                                                 selectInput(.input_FUN(.heatMapCenteredColors), label="Color scale:",
+                                                             choices = c("purple-black-yellow", "blue-white-orange"),
+                                                             selected = param_choices[[.heatMapCenteredColors]]))
+                    )
                 )
             )
         } else {

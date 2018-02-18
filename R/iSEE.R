@@ -1400,7 +1400,7 @@ iSEE <- function(
         }
 
         # Saving other bits and pieces.
-        for (field in c(.heatMapAssay)) {
+        for (field in c(.heatMapAssay, .heatMapCentering, .heatMapScaling, .heatMapLower, .heatMapUpper, .heatMapCenteredColors)) {
             local({
                 i0 <- i
                 mode0 <- "heatMapPlot"

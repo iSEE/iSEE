@@ -290,9 +290,17 @@ heatMapPlotDefaults <- function(se, number) {
   out[[.heatMapAssay]] <- def_assay
   out[[.heatMapFeatNamePanelOpen]] <- FALSE
   out[[.heatMapFeatName]] <- rep(list(1L), nrow(out))
+
   out[[.heatMapColDataPanelOpen]] <- FALSE
   out[[.heatMapColData]] <- rep(list(colnames(colData(se))[1]), nrow(out))
   out[[.heatMapImportSource]] <- .noSelection
+
+  out[[.heatMapColorPanelOpen]] <- FALSE
+  out[[.heatMapCentering]] <- .heatMapYesTitle
+  out[[.heatMapScaling]] <- .heatMapNoTitle
+  out[[.heatMapLower]] <- -5
+  out[[.heatMapUpper]] <- 5
+  out[[.heatMapCenteredColors]] <- "purple-black-yellow"
 
   if (waszero) out <- out[0,,drop=FALSE]
   return(out)

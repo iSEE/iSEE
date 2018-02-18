@@ -121,11 +121,11 @@ iSEE <- function(
   isColorMapCompatible(colormap, se, error = TRUE)
 
   # Setting up inputs for DT::datatable something to play with.
-  # It must have some columns, so we're just filling it up with _something_.
   gene_data <- as.data.frame(rowData(se))
   rownames(gene_data) <- rownames(se)
-  if (ncol(gene_data)==0L && nrow(gene_data)){
-    gene_data$Present <- TRUE
+  tab_brush_col <- "Selected"
+  while (tab_brush_col %in% colnames(gene_data)) {
+    tab_brush_col <- paste0("_", tab_brush_col)
   }
 
   # Defining the maximum number of plots.
@@ -1221,11 +1221,33 @@ iSEE <- function(
 
             chosen <- pObjects$memory$rowStatTable[i0, .rowStatSelected]
             search <- pObjects$memory$rowStatTable[i0, .rowStatSearch]
-
-            search_col <- .execute_brushed_table(i0, pObjects$memory, se, pObjects$coordinates)
+            search_col <- pObjects$memory$rowStatTable[,.rowStatColSearch][[i0]]
             search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
 
-            datatable(gene_data, filter="top", rownames=TRUE,
+            # Adding a "Selected" field to the plotting data, which responds to brushing input.
+            # Note that this AUTOMATICALLY updates search_col upon re-rendering via the observer below.
+            # The code below keeps search_col valid for the number of columns (i.e., with or wo selection).
+            selected <- .process_brushby_choice(pObjects$memory$rowStatTable[i0,], pObjects$memory)
+            tmp_gene_data <- gene_data
+            if (!is.null(selected$cmd)) { 
+                chosen.env <- new.env()
+                chosen.env$plot.data <- gene_data 
+                chosen.env$all_coordinates <- pObjects$coordinates
+                chosen.env$all_brushes <- selected$data
+                chosen.env$all_lassos <- selected$data
+                eval(parse(text=selected$cmd), envir=chosen.env)
+
+                tmp_gene_data[[tab_brush_col]] <- chosen.env$plot.data$BrushBy
+                if (length(search_col)!=ncol(tmp_gene_data)) {
+                    search_col <- c(search_col, list(list(search="true")))
+                } else {
+                    search_col[[ncol(tmp_gene_data)]]$search <- "true"
+                }
+            } else {
+                search_col <- search_col[seq_len(ncol(tmp_gene_data))]
+            }
+
+            datatable(tmp_gene_data, filter="top", rownames=TRUE,
                       options=list(search=list(search=search, smart=FALSE, regex=TRUE, caseInsensitive=FALSE),
                                    searchCols=c(list(NULL), search_col), # row names are the first column!
                                    scrollX=TRUE),

@@ -522,47 +522,36 @@ iSEE <- function(
     for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (i in seq_len(max_plots)) {
-            local({
-                mode0 <- mode
-                i0 <- i
-                plot_name <- paste0(mode0, i0)
-                prefix <- paste0(plot_name, "_")
+            for (panel in c(.plotParamPanelOpen, .colorParamPanelOpen, .brushParamPanelOpen)) {
+                local({
+                    mode0 <- mode
+                    i0 <- i
+                    panel0 <- panel
 
-                plot_open_field <- paste0(prefix, .plotParamPanelOpen)
-                observeEvent(input[[plot_open_field]], {
-                    pObjects$memory[[mode0]][[.plotParamPanelOpen]][i0] <- input[[plot_open_field]]
+                    open_field <- paste0(mode0, i0, "_", panel0)
+                    observeEvent(input[[open_field]], {
+                        pObjects$memory[[mode0]][[panel0]][i0] <- input[[open_field]]
+                    })
                 })
-
-                col_open_field <- paste0(prefix, .colorParamPanelOpen)
-                observeEvent(input[[col_open_field]], {
-                    pObjects$memory[[mode0]][[.colorParamPanelOpen]][i0] <- input[[col_open_field]]
-                })
-
-                brush_open_field <- paste0(prefix, .brushParamPanelOpen)
-                observeEvent(input[[brush_open_field]], {
-                    pObjects$memory[[mode0]][[.brushParamPanelOpen]][i0] <- input[[brush_open_field]]
-                })
-            })
+            }
         }
     }
 
     # Panel opening/closing observers for heat map plots.
     max_plots <- nrow(pObjects$memory$heatMapPlot)
     for (i in seq_len(max_plots)) {
-        local({
-            mode0 <- "heatMapPlot"
-            i0 <- i
+        for (panel in c(.heatMapFeatNamePanelOpen, .heatMapColDataPanelOpen, .heatMapColorPanelOpen)) {
+            local({
+                mode0 <- "heatMapPlot"
+                i0 <- i
+                panel0 <- panel
 
-            feat_open_field <- paste0(mode0, i0, "_", .heatMapFeatNamePanelOpen)
-            observeEvent(input[[feat_open_field]], {
-                pObjects$memory[[mode0]][[.heatMapFeatNamePanelOpen]][i0] <- input[[feat_open_field]]
+                open_field <- paste0(mode0, i0, "_", panel0)
+                observeEvent(input[[open_field]], {
+                    pObjects$memory[[mode0]][[panel0]][i0] <- input[[open_field]]
+                })
             })
-
-            coldata_open_field <- paste0(mode0, i0, "_", .heatMapColDataPanelOpen)
-            observeEvent(input[[coldata_open_field]], {
-                pObjects$memory[[mode0]][[.heatMapColDataPanelOpen]][i0] <- input[[coldata_open_field]]
-            })
-        })
+        }
     }
 
     # Same for the tables.

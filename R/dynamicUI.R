@@ -164,7 +164,7 @@
         } else if (mode=="rowStatTable") {
             obj <- tagList(dataTableOutput(paste0(mode, ID)), uiOutput(.input_FUN("annotation")))
         } else if (mode=="rowDataPlot") {
-            obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, height=panel_height)
+            obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
             plot.param <- list(
                  selectInput(.input_FUN(.rowDataYAxis),
                              label = "Column of interest (Y-axis):",

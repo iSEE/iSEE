@@ -675,16 +675,22 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
         lasso_val <- all_memory[[brush_by$Type]][,.lassoData][[brush_by$ID]]
         closed <- attr(lasso_val, "closed")
         
-        if (!is.null(closed) && closed) { 
+        if (closed) { 
+            flipped <- attr(lasso_val, "flipped")
+            if (flipped) {
+                v1 <- "Y"
+                v2 <- "X"
+            } else {
+                v1 <- "X"
+                v2 <- "Y"
+            }
+
             brush_obj[[transmitter]] <- lasso_val
-            dataX <- sprintf(ifelse(TRUE, "as.numeric(%s[,1])", "%s[,1]"), source_data)
-            dataY <- sprintf(ifelse(TRUE, "as.numeric(%s[,2])", "%s[,2]"), source_data)
-            cmd <- sprintf(
-              "brushed_pts <- mgcv::in.out(all_lassos[['%s']], as.matrix(data.frame(x=%s, y=%s)))",
-              transmitter, dataX, dataY)
-            cmd <- c(cmd, sprintf(
-              "plot.data$BrushBy <- rownames(plot.data) %%in%% rownames(%s)[brushed_pts]",
-              source_data))            
+            cmd <- sprintf("brushed_pts <- mgcv::in.out(all_lassos[['%s']], 
+    cbind(as.numeric(%s$%s), as.numeric(%s$%s)))",
+                    transmitter, source_data, v1, source_data, v2)
+            cmd <- c(cmd, sprintf("plot.data$BrushBy <- rownames(plot.data) %%in%% rownames(%s)[brushed_pts]",
+                                  source_data))            
             cmd <- paste(cmd, collapse="\n")
         }
     }
@@ -877,10 +883,10 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 
 .self_lasso_path <- function(mode, i, memory, flip=FALSE) {
     current <- memory[[mode]][,.lassoData][[i]]
-    is_closed <- attr(current, "closed")
     if (is.null(current) || !is.null(memory[[mode]][,.brushData][[i]])) {
         return(NULL)
     }
+    is_closed <- attr(current, "closed")
   
     if (flip) {
         x <- "y"
@@ -900,7 +906,7 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
         .lassoStartSize, .lassoStartShape)
       full_cmd_list <- list(point_cmd)
       
-    } else if (!is.null(is_closed) && is_closed){ # lasso is closed
+    } else if (is_closed){ # lasso is closed
       polygon_cmd <- sprintf("geom_polygon(aes(x = %s, y = %s), alpha=%s, color='%s', 
     data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2]), 
     inherit.aes=FALSE, fill = '%s')", 

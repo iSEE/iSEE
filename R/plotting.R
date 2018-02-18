@@ -127,9 +127,9 @@ names(.all_aes_values) <- .all_aes_names
     } else if (x_choice==.featExprXAxisFeatNameTitle) {
       gene_selected_x <- param_choices[[.featExprXAxisFeatName]]
     }
-
+    
     validate(need(
-      gene_selected_x %in% rownames(se),
+      length(gene_selected_x)==1L,
       sprintf("Invalid '%s' > '%s' input", .featExprXAxis, x_choice)
     ))
     

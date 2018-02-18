@@ -1365,7 +1365,7 @@ iSEE <- function(
                 p.out <- .make_heatMapPlot(i0, pObjects$memory, pObjects$coordinates, se, colormap)
                 pObjects$commands[[plot_name]] <- p.out$cmd
                 pObjects$coordinates[[plot_name]] <- p.out$xy[,c("X", "Y")]
-                pObjects$cached_plots[[plot_name]] <- gg
+                pObjects$cached_plots[[plot_name]] <- p.out$plot
                 p.out$plot
             })
 

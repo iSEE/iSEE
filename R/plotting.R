@@ -675,7 +675,7 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
         lasso_val <- all_memory[[brush_by$Type]][,.lassoData][[brush_by$ID]]
         closed <- attr(lasso_val, "closed")
         
-        if (closed) { 
+        if (!is.null(lasso_val) && closed) { 
             flipped <- attr(lasso_val, "flipped")
             if (flipped) {
                 v1 <- "Y"
@@ -686,11 +686,11 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
             }
 
             brush_obj[[transmitter]] <- lasso_val
-            cmd <- sprintf("brushed_pts <- mgcv::in.out(all_lassos[['%s']], 
-    cbind(as.numeric(%s$%s), as.numeric(%s$%s)))",
-                    transmitter, source_data, v1, source_data, v2)
-            cmd <- c(cmd, sprintf("plot.data$BrushBy <- rownames(plot.data) %%in%% rownames(%s)[brushed_pts]",
-                                  source_data))            
+            cmd <- sprintf("to_check <- subset(%s, !is.na(X) & !is.na(Y))", source_data)
+            cmd <- c(cmd,
+                    sprintf("brushed_pts <- mgcv::in.out(all_lassos[['%s']], cbind(as.numeric(to_check$%s), as.numeric(to_check$%s)))",
+                            transmitter, v1, v2))
+            cmd <- c(cmd, "plot.data$BrushBy <- rownames(plot.data) %in% rownames(to_check)[brushed_pts]")
             cmd <- paste(cmd, collapse="\n")
         }
     }

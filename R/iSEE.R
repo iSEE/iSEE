@@ -1035,7 +1035,6 @@ iSEE <- function(
                     field0 <- field
                     plot_name <- paste0(mode0, i0)
                     cur_field <- paste0(plot_name, "_", field0)
-                    brush_id <- paste0(plot_name, "_", .brushField)
 
                     observeEvent(input[[cur_field]], {
                         req(input[[cur_field]])
@@ -1044,15 +1043,7 @@ iSEE <- function(
                             return(NULL)
                         }
                         pObjects$memory[[mode0]][[field0]][i0] <- matched_input
-
-                        if (!is.null(isolate(input[[brush_id]]))) {
-                            # This will trigger replotting via the brush observer above.
-                            session$resetBrush(brush_id)
-                            pObjects$force_rerender[plot_name] <- TRUE
-                        } else {
-                            # Manually triggering replotting.
-                            rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                        }
+                        .regenerate_unselected_plot(mode0, i0, pObjects, rObjects, session, input)
                      }, ignoreInit=TRUE, priority=-2) # executes AFTER the update selectize.
                 })
             }
@@ -1198,7 +1189,6 @@ iSEE <- function(
                 i0 <- i
                 mode0 <- "featExprPlot"
                 plot_name <- paste0(mode0, i0)
-                brush_id <- paste0(plot_name, "_", .brushField)
 
                 axis0 <- axis
                 axis_choice0 <- axis_choice
@@ -1211,14 +1201,7 @@ iSEE <- function(
                     ## Deciding whether to replot based on the table.
                     replot <- .setup_table_observer(mode0, i0, input, pObjects, axis_choice0, axis_tab_title0, axis_tab_choice0, param=axis0)
                     if (replot) {
-                        if (!is.null(isolate(input[[brush_id]]))) {
-                            # This will trigger replotting.
-                            session$resetBrush(brush_id)
-                            pObjects$force_rerender[plot_name] <- TRUE
-                        } else {
-                            # Manually triggering replotting.
-                            rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                        }
+                        .regenerate_unselected_plot(mode0, i0, pObjects, rObjects, session, input)
                     }
 
                     # Update the links reporting between tables and plots.
@@ -1265,30 +1248,24 @@ iSEE <- function(
         select_field <- paste0(panel_name, .int_rowStatSelected)
         observe({
             chosen <- input[[select_field]]
-            if (length(chosen)) {
-                pObjects$memory$rowStatTable[i0, .rowStatSelected] <- chosen
+            if (length(chosen)==0L) {
+                return(NULL)
+            }
+            pObjects$memory$rowStatTable[i0, .rowStatSelected] <- chosen
 
-                col_kids <- unique(unlist(pObjects$table_links[[i0]][c("color")]))
-                xy_kids <- unique(unlist(pObjects$table_links[[i0]][c("xaxis", "yaxis")]))
-                col_kids <- setdiff(col_kids, xy_kids)
+            col_kids <- unique(unlist(pObjects$table_links[[i0]][c("color")]))
+            xy_kids <- unique(unlist(pObjects$table_links[[i0]][c("xaxis", "yaxis")]))
 
-                # Triggering the replotting of all color children that are NOT xy children.
-                for (kid in col_kids) {
-                    rObjects[[kid]] <- .increment_counter(isolate(rObjects[[kid]]))
-                }
+            # Triggering the replotting of all color children that are NOT xy children.
+            col_kids <- setdiff(col_kids, xy_kids)
+            for (kid in col_kids) {
+                rObjects[[kid]] <- .increment_counter(isolate(rObjects[[kid]]))
+            }
 
-                # Triggering the replotting and brush clearing of all x/y-axis children.
-                brush_ids <- sprintf("%s_%s", xy_kids, .brushField)
-                for (i in seq_along(xy_kids)) {
-                    brush_id <- brush_ids[i]
-                    if (!is.null(isolate(input[[brush_id]]))) { # This will trigger replotting.
-                        session$resetBrush(brush_id)
-                        pObjects$force_rerender[plot_name] <- TRUE
-                    } else { # Manually triggering replotting.
-                        kid <- xy_kids[i]
-                        rObjects[[kid]] <- .increment_counter(isolate(rObjects[[kid]]))
-                    }
-                }
+            # Triggering the replotting and brush clearing of all x/y-axis children.
+            enc <- .split_encoded(xy_kids)
+            for (i in seq_along(xy_kids)) {
+                .regenerate_unselected_plot(enc$Type[i], enc$ID[i], pObjects, rObjects, session, input)
             }
         })
 

@@ -212,6 +212,29 @@ height_limits <- c(400L, 1000L)
     return(memory)
 }
 
+.regenerate_unselected_plot <- function(mode, i, pObjects, rObjects, input, session) 
+# This is a convenience function whenever a plot needs to be regenerated
+# without any selections (i.e., cleared brush and lasso waypoints). It 
+# relies on the fact that pObjects, rObjects and session are passed by reference.
+{
+    plot_name <- paste0(mode, i)
+    brush_id <- paste0(plot_name, "_", .brushField)
+
+    if (!is.null(isolate(input[[brush_id]]))) {
+        # This will trigger replotting via the brush observer above.
+        # It will also implicitly wipe the lasso data, so there's no need to do that manually.
+        session$resetBrush(brush_id)
+        pObjects$force_rerender[plot_name] <- TRUE
+    } else {
+        # Manually triggering replotting.
+        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+
+        # Destroying any lasso waypoints as well.
+        pObjects$memory[[mode]] <- .update_list_element(pObjects$memory[[mode]], i, .lassoData, NULL)
+    }
+    return(NULL)
+}
+
 .define_plot_links <- function(panel, memory, graph) 
 # This creates a description of all of the incoming/outgoing
 # relationships between a plot panel and the other plots/tables.

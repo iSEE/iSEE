@@ -46,7 +46,7 @@
     fill_cmd <- sprintf("scale_fill_gradient2(low='%s',mid='%s',high='%s') +", colors.to.use[1],
                         colors.to.use[2], colors.to.use[3])
   } else {
-    fill_cmd <- NULL
+    fill_cmd <- sprintf("scale_fill_gradientn(colors=assayColorMap(colormap, '%s', discrete=FALSE)(21L), na.value='grey50', name='value') +", assay_choice)
   }
   
   # Define plotting commands

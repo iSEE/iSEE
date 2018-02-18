@@ -103,7 +103,7 @@
                              choices=red_choices, selected=param_choices[[.redDimYAxis]])
                  )
         } else if (mode=="colDataPlot") {
-            obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, height=panel_height)
+            obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
             plot.param <- list(
                  selectInput(.input_FUN(.colDataYAxis),
                              label = "Column of interest (Y-axis):",
@@ -118,7 +118,7 @@
                                                       choices=column_covariates, selected=param_choices[[.colDataXAxisColData]]))
                  )
         } else if (mode=="featExprPlot") {
-            obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, height=panel_height)
+            obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
             xaxis_choices <- c(.featExprXAxisNothingTitle)
             if (feasibility$colDataPlot) {
                 xaxis_choices <- c(xaxis_choices, .featExprXAxisColDataTitle)
@@ -164,7 +164,7 @@
         } else if (mode=="rowStatTable") {
             obj <- tagList(dataTableOutput(paste0(mode, ID)), uiOutput(.input_FUN("annotation")))
         } else if (mode=="rowDataPlot") {
-            obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, height=panel_height)
+            obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
             plot.param <- list(
                  selectInput(.input_FUN(.rowDataYAxis),
                              label = "Column of interest (Y-axis):",

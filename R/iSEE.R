@@ -825,6 +825,9 @@ iSEE <- function(
                         attr(updated, "closed") <- TRUE
                         bump_children <- TRUE
 
+                        # Checking out whether it's flipped.
+                        attr(updated, "flipped") <- (cur_click$mapping$x=="Y" && cur_click$mapping$y=="X")
+
                     } else {
                         is_closed <- attr(previous, "closed")
                         if (!is.null(is_closed) && is_closed) {
@@ -832,6 +835,7 @@ iSEE <- function(
                             bump_children <- TRUE
                         }
                         updated <- rbind(previous, c(cur_click$x, cur_click$y))
+                        attr(updated, "closed") <- FALSE
                     }
 
                     pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .lassoData, updated)

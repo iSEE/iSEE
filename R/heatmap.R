@@ -40,15 +40,14 @@
   eval_env <- new.env()
   eval(parse(text=unlist(data_cmds[c("y", "order")])), envir=eval_env)
 
-  ## Get low, mid and high values for filling
   if (param_choices[[.heatMapCentering]] == .heatMapYesTitle) {
     colors.to.use <- strsplit(param_choices[[.heatMapCenteredColors]], "-")[[1]]
-    fill_cmd <- sprintf("scale_fill_gradient2(low='%s',mid='%s',high='%s') +", colors.to.use[1],
-                        colors.to.use[2], colors.to.use[3])
+    fill_cmd <- sprintf("scale_fill_gradient2(low='%s', mid='%s', high='%s', na.value='grey50') +",
+                        colors.to.use[1], colors.to.use[2], colors.to.use[3])
   } else {
-    fill_cmd <- sprintf("scale_fill_gradientn(colors=assayColorMap(colormap, '%s', discrete=FALSE)(21L), na.value='grey50', name='value') +", assay_choice)
+    fill_cmd <- sprintf("scale_fill_gradientn(colors=assayColorMap(colormap, '%s', discrete=FALSE)(21L), na.value='grey50') +", assay_choice)
   }
-  
+    
   # Define plotting commands
   extra_cmds <- list()
   # Heatmap
@@ -75,20 +74,31 @@
       sprintf("labs(x='', y='') +"), 
       sprintf("scale_y_continuous(breaks=1, labels='%s') +", orderBy[i]), 
       color_cmd,
-      sprintf("theme(axis.text.x=element_blank(), axis.ticks=element_blank(), axis.title.x=element_blank(), rect=element_blank(), line=element_blank(), axis.title.y=element_blank(), plot.margin = unit(c(0,0,-0.5,0), 'lines')) +"),
-      sprintf("theme(legend.position='none');")
+      sprintf("theme(axis.text.x=element_blank(), axis.ticks=element_blank(), axis.title.x=element_blank(), rect=element_blank(), line=element_blank(), axis.title.y=element_blank(), plot.margin = unit(c(0,0,-0.5,0), 'lines'));"),
+      sprintf("legend%i <- cowplot::get_legend(p%i)", i, i)
     )
   })
   
+  extra_cmds[["legends"]] <- list(
+    sprintf("legends <- list(%s);", paste0("legend", seq_len(length(orderBy)), collapse=","))
+  )
+  
+  # Evaluate to get the individual legends
+  to_eval <- unlist(extra_cmds)
+  plot_part <- eval(parse(text=to_eval), envir=eval_env)
+  
+  legends <- eval_env$legends
+
   extra_cmds[["grid"]] <- list(
     sprintf("cowplot::plot_grid(%s, ncol=1, align='v', rel_heights=c(%s))", 
-            paste0("p", c(seq_along(orderBy), 0), collapse = ","),
+            paste0("p", c(seq_along(orderBy), 0), 
+                   c(rep("+theme(legend.position='none')", length(orderBy)), ""), collapse = ","),
             paste(c(rep(0.1, length(orderBy)), 1), collapse = ","))
   )
   
-  to_eval <- unlist(extra_cmds)
+  to_eval <- extra_cmds[["grid"]]
   plot_out <- eval(parse(text=to_eval), envir=eval_env)
 
-  return(list(cmd = c(data_cmds, extra_cmds), xy = NULL, plot = plot_out))
+  return(list(cmd=c(data_cmds, extra_cmds), xy=NULL, plot=plot_out, legends=legends))
 }
 

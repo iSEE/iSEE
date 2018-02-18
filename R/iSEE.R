@@ -1354,14 +1354,16 @@ iSEE <- function(
                 p.out <- .make_heatMapPlot(i0, pObjects$memory, pObjects$coordinates, se, colormap)
                 pObjects$commands[[plot_name]] <- p.out$cmd
                 pObjects$coordinates[[plot_name]] <- p.out$xy[,c("X", "Y")]
-                pObjects$cached_plots[[plot_name]] <- p.out$plot
+                pObjects$cached_plots[[plot_name]] <- list(plot = p.out$plot,
+                                                           legends = p.out$legends)
                 p.out$plot
             })
 
             # Defining the legend.
             output[[legend_field]] <- renderPlot({
                 force(rObjects[[legend_field]])
-                gg <- pObjects$cached_plots[[plot_name]]
+                gg <- pObjects$cached_plots[[plot_name]]$legends
+                print(cowplot::plot_grid(plotlist = gg))
 
                 # Charlotte: add your legend here.
                 showNotification("I AM LEGEND", type="message")

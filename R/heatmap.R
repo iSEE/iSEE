@@ -40,6 +40,15 @@
   eval_env <- new.env()
   eval(parse(text=unlist(data_cmds[c("y", "order")])), envir=eval_env)
 
+  ## Get low, mid and high values for filling
+  if (param_choices[[.heatMapCentering]] == .heatMapYesTitle) {
+    colors.to.use <- strsplit(param_choices[[.heatMapCenteredColors]], "-")[[1]]
+    fill_cmd <- sprintf("scale_fill_gradient2(low='%s',mid='%s',high='%s') +", colors.to.use[1],
+                        colors.to.use[2], colors.to.use[3])
+  } else {
+    fill_cmd <- NULL
+  }
+  
   # Define plotting commands
   extra_cmds <- list()
   # Heatmap
@@ -47,6 +56,7 @@
     sprintf("p0 <- ggplot(plot.data, aes(x = X, y = Y)) +"),
     sprintf("geom_raster(aes(fill = value)) +"),
     sprintf("labs(x='', y='') +"),
+    fill_cmd, 
     sprintf("theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.line=element_blank()) +"),
     sprintf("theme(legend.position='bottom');")
   )

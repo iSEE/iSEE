@@ -17,23 +17,14 @@
 #' @param rowStatMax An integer scalar specifying the maximum number of row statistics tables in the interface.
 #' @param rowDataMax An integer scalar specifying the maximum number of row data plots in the interface.
 #' @param heatMapMax An integer scalar specifying the maximum number of heatmaps in the interface.
-#'
-#' @param initialPanels A DataFrame specifying which panels should be created
-#' at initialization. This should contain a \code{Name} character field and a
-#' \code{Width} integer field, see Details.
-#' @param annot.orgdb An \code{org.*.db} annotation object from which
-#' Entrez identifiers can be retrieved.
-#' @param annot.keytype A string specifying the keytype to use to query
-#' \code{annot.orgdb}.
-#' @param annot.keyfield A string specifying the field of \code{rowData(se)}
-#' containing the keys of type \code{annot.keytype}. If \code{NULL}, the
-#' row names of \code{se} are used as the keys.
-#' @param colormap An \linkS4class{ExperimentColorMap} object that defines
-#' custom color maps to apply to individual \code{assays}, \code{colData},
-#' and \code{rowData} covariates.
-#' @param run_local A logical indicating whether the app is to be run
-#' locally or remotely on a server, which determines how documentation
-#' will be accessed.
+#' @param initialPanels A DataFrame specifying which panels should be created at initialization. 
+#' This should contain a \code{Name} character field and a \code{Width} integer field, see Details.
+#' @param annot.orgdb An \code{org.*.db} annotation object from which Entrez identifiers can be retrieved.
+#' @param annot.keytype A string specifying the keytype to use to query \code{annot.orgdb}.
+#' @param annot.keyfield A string specifying the field of \code{rowData(se)} containing the keys of type \code{annot.keytype}. 
+#' If \code{NULL}, the row names of \code{se} are used as the keys.
+#' @param colormap An \linkS4class{ExperimentColorMap} object that defines custom color maps to apply to individual \code{assays}, \code{colData}, and \code{rowData} covariates.
+#' @param run_local A logical indicating whether the app is to be run locally or remotely on a server, which determines how documentation will be accessed.
 #'
 #' @details Users can pass default parameters via DataFrame objects in
 #' \code{redDimArgs} and \code{featExprArgs}. Each object can contain
@@ -766,12 +757,6 @@ iSEE <- function(
                 if (!old_brush && !new_brush){
                     return(NULL)
                 }
-
-                # Destroying existing search fields, potentially from brushes in the old transmitter.
-                # Brushes for the new transmitter will be added during table re-rendering.
-                col_searches <- pObjects$memory[[mode0]][i0, .rowStatColSearch][[1]]
-                pObjects$memory$rowStatTable <- .update_list_element(
-                    pObjects$memory$rowStatTable, i0, .rowStatColSearch, character(length(col_searches)))
 
                 # Triggering update of the table.
                 rObjects[[tab_name]] <- .increment_counter(isolate(rObjects[[tab_name]]))

@@ -1088,36 +1088,6 @@ iSEE <- function(
                     }
                     pObjects$extra_plot_cmds[[plot_name]] <- extra_cmds
                     return(gg)
-
-                  withProgress(
-                    min = 0,
-                    max = 5,
-                    value = 0,
-                    message = plot_name,
-                    detail = "Initialising ...", session = session,
-                    expr = {
-                      incProgress(
-                        amount = 1,
-                        message = plot_name,
-                        detail = "processing ...", session = session)
-
-                      incProgress(
-                        amount = 1,
-                        message = plot_name,
-                        detail = "storing command ...", session = session)
-
-                      incProgress(
-                        amount = 1,
-                        message = plot_name,
-                        detail = "storing coordinates ...", session = session)
-
-                      incProgress(
-                        amount = 1,
-                        message = plot_name,
-                        detail = "rendering ...", session = session)
-
-                    }
-                  )
                 })
 
                 # Describing some general panel information.

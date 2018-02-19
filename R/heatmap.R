@@ -1,5 +1,5 @@
 .make_heatMapPlot <- function(id, all_memory, all_coordinates, se, colormap)
-  # Makes a heatmap.
+# Makes a heatmap.
 {
   param_choices <- all_memory$heatMapPlot[id,]
   data_cmds <- list()
@@ -7,7 +7,7 @@
   genes_selected_y <- param_choices[[.heatMapFeatName]][[1]]
   validate(need( 
     length(genes_selected_y) > 0L,
-    sprintf("Invalid genes for heat map input") # NEED BETTER ERROR MESSAGE HERE?
+    sprintf("need at least one feature for heat map") 
   ))
   
   assay_choice <- param_choices[[.heatMapAssay]]
@@ -15,7 +15,7 @@
   # Extract genes to be included and melt the matrix to long format
   data_cmds[["y"]] <- list(
     sprintf("value.mat <- as.matrix(assay(se, %i)[%s, , drop=FALSE]);", 
-            assay_choice, paste0('c(', paste(genes_selected_y, collapse = ','), ')')),
+            assay_choice, paste(deparse(genes_selected_y), collapse="\n")),
     sprintf("value.mat <- t(scale(t(value.mat), center = %s, scale = %s));", 
             ifelse(param_choices[[.heatMapCentering]] == .heatMapYesTitle, 
                    "TRUE", "FALSE"),
@@ -110,19 +110,28 @@
   # Evaluate to get the individual legends
   to_eval <- unlist(extra_cmds)
   plot_part <- eval(parse(text=to_eval), envir=eval_env)
-  
   legends <- eval_env$legends
 
   extra_cmds[["grid"]] <- list(
     sprintf("cowplot::plot_grid(%s, ncol=1, align='v', rel_heights=c(%s))", 
             paste0("p", c(seq_along(orderBy), 0), 
-                   c(rep("+theme(legend.position='none')", length(orderBy)), ""), collapse = ","),
+                   c(rep("+ theme(legend.position='none')", length(orderBy)), ""), collapse = ","),
             paste(c(rep(0.1, length(orderBy)), 1), collapse = ","))
   )
   
   to_eval <- extra_cmds[["grid"]]
   plot_out <- eval(parse(text=to_eval), envir=eval_env)
 
-  return(list(cmd=c(data_cmds, extra_cmds), xy=NULL, plot=plot_out, legends=legends))
+  return(list(cmd=c(data_cmds, extra_cmds), xy=eval_env$value.mat, plot=plot_out, legends=legends))
 }
 
+.cluster_genes <- function(X) {
+   if (is.null(dim(X)) || nrow(X) < 2L) {
+       showNotification("must have at least 2 features for clustering", type="error")
+       req(FALSE)
+   }
+   D <- dist(X)
+   hc <- hclust(D)
+   d <- as.dendrogram(hc)
+   rownames(X)[order.dendrogram(d)]
+}

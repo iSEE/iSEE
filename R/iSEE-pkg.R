@@ -28,6 +28,7 @@
 #'   scale_fill_manual scale_fill_gradientn geom_rect
 #' @importFrom mgcv in.out
 #' @importFrom vipor offsetX
+#' @importFrom reshape2 melt
 #' @importFrom DT datatable renderDataTable dataTableOutput
 #' @importFrom AnnotationDbi mapIds keytypes
 #' @importFrom rentrez entrez_summary

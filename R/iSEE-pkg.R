@@ -35,9 +35,8 @@
 #' @importFrom colourpicker colourInput
 #' @importFrom shinyAce aceEditor
 #' @importFrom methods new slot is
-#' @importFrom igraph make_graph topo_sort are_adjacent incident add_edges
-#' adjacent_vertices is_dag simplify V delete.vertices set_vertex_attr
-#' add_vertices
+#' @importFrom igraph topo_sort V delete.vertices 
+#' set_vertex_attr add_vertices
 #' @importFrom graphics plot
 #' @importFrom grDevices hcl col2rgb rgb
 #' @importFrom viridisLite viridis

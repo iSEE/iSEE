@@ -1,35 +1,51 @@
-.spawn_brush_chart <- function(memory) 
-# Creates a graph containing all of the possible vertices, and 
-# sets up the initial relationships between them.    
-{
-  node_names <- list()
-  edges <- list()
+#' Creates the initial brush chart
+#'
+#' Creates a graph containing all of the possible vertices, and sets up the initial relationships between them.
+#'
+#' @param memory A list of DataFrames, where each DataFrame corresponds to a panel type and contains the initial settings for each individual panel of that type.
+#'
+#' @return A graph object from the \pkg{igraph} package,
+#' where each vertex represents a panel and directed edges indicate brush transmission from one panel to another.
+#'
+#' @details
+#' This function will construct a directed acyclic graph involving all relevant panels in \code{memory}.
+#' Each vertex corresponds to one individual panel, named using the internal encoding, e.g., \code{"redDimPlot1"} rather than \code{"Reduced dimension plot 1"}.
+#' Each edge is directed and represents the transfer of brush information from one panel (the transmitter) to another (the receiver).
+#'
+#' @author Aaron Lun
+#' @rdname spawn_brush_chart
+#' @seealso
+#' See \code{\link{.choose_new_brush_source}} for changes in the transmitting plot.
+#' See \code{\link{.destroy_brush_source}}  for destruction of a transmitting plot.
+.spawn_brush_chart <- function(memory) {
+    node_names <- list()
+    edges <- list()
 
-  for (mode in c("redDimPlot", "colDataPlot", "featExprPlot", "rowDataPlot", "rowStatTable")) { 
-    N <- nrow(memory[[mode]])
-    cur_panels <- sprintf("%s%i", mode, seq_len(N))
-    node_names[[mode]] <- cur_panels
+    for (mode in c("redDimPlot", "colDataPlot", "featExprPlot", "rowDataPlot", "rowStatTable")) {
+        N <- nrow(memory[[mode]])
+        cur_panels <- sprintf("%s%i", mode, seq_len(N))
+        node_names[[mode]] <- cur_panels
 
-    cur_edges <- vector("list",N)
-    for (i in seq_len(N)) {
-      cur_parent <- memory[[mode]][i, .brushByPlot]
-      if (cur_parent!=.noSelection) {
-        cur_edges[[i]] <- c(.decoded2encoded(cur_parent), cur_panels[i])
-      }
+        cur_edges <- vector("list",N)
+        for (i in seq_len(N)) {
+            cur_parent <- memory[[mode]][i, .brushByPlot]
+            if (cur_parent!=.noSelection) {
+                cur_edges[[i]] <- c(.decoded2encoded(cur_parent), cur_panels[i])
+            }
+        }
+        edges[[mode]] <- cur_edges
     }
-    edges[[mode]] <- cur_edges
-  }
 
-  all_edges <- unlist(edges)
-  node_names <- unlist(node_names)  
-  g <- make_graph(as.character(all_edges), isolates=setdiff(node_names, all_edges), directed=TRUE)
-  if (!is_dag(simplify(g))) {
-    stop("cyclic brushing dependencies in 'initialPanels'")
-  }
-  return(g)
+    all_edges <- unlist(edges)
+    node_names <- unlist(node_names)
+    g <- make_graph(as.character(all_edges), isolates=setdiff(node_names, all_edges), directed=TRUE)
+    if (!is_dag(simplify(g))) {
+        stop("cyclic brushing dependencies in 'initialPanels'")
+    }
+    return(g)
 }
 
-.choose_new_brush_source <- function(graph, panel, new_parent, old_parent) 
+.choose_new_brush_source <- function(graph, panel, new_parent, old_parent)
 # Replaces the edge in the plot, if the choice of plot to receive from
 # in the current panel changes.
 {
@@ -80,7 +96,7 @@
 {
     children <- names(adjacent_vertices(graph, panel, mode="out")[[1]])
     children <- setdiff(children, panel) # self-updates are handled elsewhere.
-    
+
     old_children <- children
     while (length(children)) {
         enc <- .split_encoded(children)
@@ -93,7 +109,7 @@
                 new_children <- c(new_children, names(adjacent_vertices(graph, children[i], mode="out")[[1]]))
             }
         }
-     
+
         old_children <- c(old_children, new_children)
         children <- new_children
     }
@@ -101,9 +117,9 @@
 }
 
 .identical_brushes <- function(old_brush, new_brush)
-# Check whether the brush coordinates have actually changed. 
+# Check whether the brush coordinates have actually changed.
 {
-    old_null <- is.null(old_brush) 
+    old_null <- is.null(old_brush)
     new_null <- is.null(new_brush)
     if (old_null || new_null) {
         return(old_null==new_null)
@@ -111,31 +127,31 @@
 
     xspan <- old_brush$xmax - old_brush$xmin
     tol <- xspan * 1e-6
-    if (abs(old_brush$xmin - new_brush$xmin) > tol 
+    if (abs(old_brush$xmin - new_brush$xmin) > tol
         || abs(old_brush$xmax - new_brush$xmax) > tol) {
-      return(FALSE)        
+      return(FALSE)
     }
 
     yspan <- old_brush$ymax - old_brush$ymin
     tol <- yspan * 1e-6
-    if (abs(old_brush$ymin - new_brush$ymin) > tol 
+    if (abs(old_brush$ymin - new_brush$ymin) > tol
         || abs(old_brush$ymax - new_brush$ymax) > tol) {
-      return(FALSE)        
+      return(FALSE)
     }
 
     return(TRUE)
 }
 
-.transmitted_brush <- function(transmitter, memory) 
+.transmitted_brush <- function(transmitter, memory)
 # Encodes the transmitter name, and checks whether a brush
 # currently exists in the memory of the transmitting plot.
-{ 
+{
     brush <- FALSE
     encoded <- .noSelection
     if (transmitter!=.noSelection) {
         enc <- .encode_panel_name(transmitter)
         encoded <- paste0(enc$Type, enc$ID)
-        if (.any_point_selection(enc$Type, enc$ID, memory)) { 
+        if (.any_point_selection(enc$Type, enc$ID, memory)) {
             brush <- TRUE
         }
     }

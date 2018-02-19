@@ -5,11 +5,12 @@ colDataArgs <- colDataPlotDefaults(sce, 1)
 featExprArgs <- featExprPlotDefaults(sce, 1)
 rowStatArgs <- rowStatTableDefaults(sce, 1)
 rowDataArgs <- rowDataPlotDefaults(sce, 1)
+heatMapArgs <- heatMapPlotDefaults(sce, 1)
 
 # Set up memory
 all_memory <- iSEE:::.setup_memory(
-  sce, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs,
-  redDimMax = 1, colDataMax = 1, featExprMax = 1, rowStatMax = 1, rowDataMax = 1)
+  sce, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs, heatMapArgs,
+  redDimMax = 1, colDataMax = 1, featExprMax = 1, rowStatMax = 1, rowDataMax = 1, heatMapMax = 1)
 
 all_coordinates <- list()
 
@@ -664,19 +665,19 @@ test_that(".process_brushby_choice works when sender is another plot", {
   
   # check the source of the brushed data
   expect_match(
-    brush_cmd,
+    brush_cmd$cmd,
     "shiny::brushedPoints(all_coordinates",
     fixed = TRUE
   )
   # check the source plot type
   expect_match(
-    brush_cmd,
+    brush_cmd$cmd,
     sourcePlotType,
     fixed = TRUE
   )
   # check that the second (hard-coded) command is present
   expect_match(
-    brush_cmd,
+    brush_cmd$cmd,
     "plot.data$BrushBy",
     fixed = TRUE
   )
@@ -708,13 +709,13 @@ test_that(".process_brushby_choice works when sender is self plot", {
   
   # check the source of the brushed data
   expect_match(
-    brush_cmd,
+    brush_cmd$cmd,
     "shiny::brushedPoints(plot.data",
     fixed = TRUE
   )
   # check that the second (hard-coded) command is present
   expect_match(
-    brush_cmd,
+    brush_cmd$cmd,
     "plot.data$BrushBy",
     fixed = TRUE
   )

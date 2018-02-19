@@ -3,6 +3,8 @@
 #' @aliases featExprPlotDefaults
 #' @aliases colDataPlotDefaults 
 #' @aliases rowStatTableDefaults
+#' @aliases rowDataPlotDefaults
+#' @aliases heatMapPlotDefaults
 #'
 #' @title Parameter defaults 
 #'
@@ -16,8 +18,7 @@
 #' \describe{
 #' \item{\code{Type}:}{Integer, which entry of \code{reducedDims(se)} should be shown?
 #' Defaults to 1, i.e., the first entry.
-#' We use an index rather than the name, as the latter may not be unique.
-#' }
+#' Alternatively, a string can be supplied containing the name of the reduced dimension field, if \code{reducedDims(se)} has names.}
 #' \item{\code{XAxis}:}{Integer, which component should be shown on the x-axis?
 #' Defaults to 1.}
 #' \item{\code{YAxis}:}{Integer, which component should be shown on the y-axis?
@@ -27,16 +28,24 @@
 #' @section Feature expression plot parameters:
 #' \describe{
 #' \item{\code{RowTable}:}{Character, what row statistic table should be used to choose a feature to display on the y-axis?
-#' Defaults to an empty string, which means that the first available table will be used.}
+#' Defaults to \code{"---"}, which means that the first available table will be used.}
 #' \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
 #' Defaults to 1, i.e., the first assay in \code{se}.
-#' We use an index rather than the name, as the latter may not be unique.}
+#' Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
+#' \item{\code{YAxis}:}{Character, what type of variable should be shown on the x-axis?
+#' Defaults to \code{"Row table"}, but can also be \code{"Feature name"}.}
+#' \item{\code{YAxisFeatName}:}{Integer, the index of the feature for which to show the expression on the y-axis if \code{YAxis="Feature name"}. 
+#' Defaults to 1, i.e., the first feature in \code{se}.
+#' Alternatively, a string can be supplied containing the name of the feature, i.e., the row name.}
+#' \item{\code{YAxisRowTable}:}{Character, which row statistic table should be used to choose a feature to put on the y-axis if \code{YAxis="Row table"}? 
+#' Defaults to an empty string, which means that the first available table will be used.}
 #' \item{\code{XAxis}:}{Character, what type of variable should be shown on the x-axis?
 #' Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Column data"} or \code{"Feature name"}.}
 #' \item{\code{XAxisColData}:}{Character, what column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
 #' Defaults to the first entry of \code{colData(se)}.}
-#' \item{\code{XAxisFeatName}:}{Character, which feature's expression should be shown on the x-axis if \code{XAxis="Feature name"}? 
-#' Defaults to an empty string.}
+#' \item{\code{XAxisFeatName}:}{Integer, the index of the feature for which to show the expression on the x-axis if \code{XAxis="Feature name"}. 
+#' Defaults to 1, i.e., the first feature in \code{se}.
+#' Alternatively, a string can be supplied containing the name of the feature.}
 #' \item{\code{XAxisRowTable}:}{Character, which row statistic table should be used to choose a feature to put on the x-axis if \code{XAxis="Row table"}? 
 #' Defaults to an empty string, which means that the first available table will be used.}
 #' }
@@ -73,11 +82,14 @@
 #' \item{\code{ColorByRowTable}:}{Character, which row statistic table should be used to choose a feature to color by, if \code{ColorBy="Row table"}? 
 #' Defaults to an empty string, which means that the first available table will be used.}
 #' \item{\code{ColorByRowTableAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Row table"}? 
-#' Defaults to 1, i.e., the first assay in \code{se}.}
-#' \item{\code{ColorByFeatName}:}{Character, which feature's expression should be used for colouring, if \code{ColorBy="Feature name"}? 
-#' Defaults to an empty string.}
+#' Defaults to 1, i.e., the first assay in \code{se}.
+#' Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
+#' \item{\code{ColorByFeatName}:}{Integer, the index of the feature to use for colouring based on expression, if \code{ColorBy="Feature name"}? 
+#' Defaults to 1, i.e., the first feature in \code{se}.
+#' Alternatively, a string can be supplied containing the name of the feature.}
 #' \item{\code{ColorByFeatNameAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Feature name"}? 
-#' Defaults to 1, i.e., the first assay in \code{se}.}
+#' Defaults to 1, i.e., the first assay in \code{se}.
+#' Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
 #' }
 #' For row data plots, the following options apply:
 #' \describe{
@@ -91,8 +103,9 @@
 #' Defaults to an empty string, which means that the first available table will be used.}
 #' \item{\code{ColorByRowTableColor}:}{String specifying the colour to be used to highlight the selected feature from the row table.
 #' Defaults to \code{"red"}.}
-#' \item{\code{ColorByFeatName}:}{Character, which feature's expression should be used for colouring, if \code{ColorBy="Feature name"}? 
-#' Defaults to an empty string.}
+#' \item{\code{ColorByFeatName}:}{Integer, the index of the feature to use for colouring based on expression, if \code{ColorBy="Feature name"}? 
+#' Defaults to 1, i.e., the first feature in \code{se}.
+#' Alternatively, a string can be supplied containing the name of the feature.}
 #' \item{\code{ColorByFeatNameColor}:}{String specifying the colour to be used to highlight the selected feature from the text.
 #' Defaults to \code{"red"}.}
 #' }
@@ -103,7 +116,7 @@
 #' \item{\code{BrushPanelOpen}:}{Logical, should the brushing parameter panel be open upon initialization?
 #' Defaults to \code{FALSE}.}
 #' \item{\code{BrushByPlot}:}{Character, which other plot should be used for point selection in the current plot? 
-#' Defaults to an empty string, which means that no plot is used for point selection.}
+#' Defaults to \code{"---"}, which means that no plot is used for point selection.}
 #' \item{\code{BrushEffect}:}{Character, what is the effect of receiving a brush input?
 #' Can be \code{"Restrict"}, where only the brushed points are shown; \code{"Color"}, where the brushed points have a different color; 
 #' or \code{"Transparent"}, where all points other than the brushed points are made transparent. Defaults to \code{"Transparent"}.}
@@ -121,8 +134,8 @@
 #' \describe{
 #' \item{\code{BrushPanelOpen}:}{Logical, should the brushing parameter panel be open upon initialization?
 #' Defaults to \code{FALSE}.}
-#' \item{\code{BrushByPlot}:}{Character, which other plot should be used for point selection in the current plot? 
-#' Defaults to an empty string, which means that no plot is used for point selection.}
+#' \item{\code{BrushByPlot}:}{Character, which other plot should be used to select features in the current table? 
+#' Defaults to \code{"---"}, which means that no plot is used for point selection.}
 #' }
 #' Only row data plots can be used for brushing of tables.
 #' 
@@ -138,7 +151,8 @@
 #' @section Row statistics table parameters:
 #' \describe{
 #' \item{\code{Selected}:}{Integer, containing the index of the row to be initially selected.
-#' Defaults to the first row, i.e., 1.}
+#' Defaults to the first row, i.e., 1.
+#' Alternatively, a string can be supplied containing the row name.}
 #' \item{\code{Search}:}{Character, containing the initial value of the search field.
 #' Defaults to an empty string.}
 #' \item{\code{SearchColumns}:}{A list containing character vectors of length equal to the number of columns in \code{rowData(se)},
@@ -166,6 +180,8 @@
 #' featExprPlotDefaults(sce, number=5)
 #' colDataPlotDefaults(sce, number=5)
 #' rowStatTableDefaults(sce, number=5)
+#' rowDataPlotDefaults(sce, number=5)
+#' heatMapPlotDefaults(sce, number=5)
 redDimPlotDefaults <- function(se, number) {
     waszero <- number==0 # To ensure that we define all the fields with the right types.
     if (waszero) number <- 1
@@ -193,9 +209,9 @@ featExprPlotDefaults <- function(se, number) {
     out[[.featExprAssay]] <- def_assay
     out[[.featExprXAxis]] <- .featExprXAxisNothingTitle
     out[[.featExprXAxisColData]] <- covariates[1] 
-    out[[.featExprXAxisFeatName]] <- ""
+    out[[.featExprXAxisFeatName]] <- 1L
     out[[.featExprXAxisRowTable]] <- ""
-    out[[.featExprYAxisFeatName]] <- ""
+    out[[.featExprYAxisFeatName]] <- 1L
     out[[.featExprYAxisRowTable]] <- ""
     out[[.featExprYAxis]] <- .featExprYAxisRowTableTitle
 
@@ -238,7 +254,7 @@ rowStatTableDefaults <- function(se, number) {
 
     # Defining the rowDataPlot brush to receive.
     out[[.brushParamPanelOpen]] <- FALSE
-    out[[.brushByPlot]] <- ""
+    out[[.brushByPlot]] <- .noSelection
 
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)
@@ -260,6 +276,34 @@ rowDataPlotDefaults <- function(se, number) {
     out <- .add_general_parameters_for_row_plots(out, se)
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)
+}
+
+#' @rdname defaults 
+#' @export
+heatMapPlotDefaults <- function(se, number) {
+  waszero <- number==0 # To ensure that we define all the fields with the right types.
+  if (waszero) number <- 1
+  
+  def_assay <- .set_default_assay(se)
+  
+  out <- new("DataFrame", nrows=as.integer(number))
+  out[[.heatMapAssay]] <- def_assay
+  out[[.heatMapFeatNamePanelOpen]] <- FALSE
+  out[[.heatMapFeatName]] <- rep(list(1L), nrow(out))
+
+  out[[.heatMapColDataPanelOpen]] <- FALSE
+  out[[.heatMapColData]] <- rep(list(colnames(colData(se))[1]), nrow(out))
+  out[[.heatMapImportSource]] <- .noSelection
+
+  out[[.heatMapColorPanelOpen]] <- FALSE
+  out[[.heatMapCentering]] <- .heatMapYesTitle
+  out[[.heatMapScaling]] <- .heatMapNoTitle
+  out[[.heatMapLower]] <- -5
+  out[[.heatMapUpper]] <- 5
+  out[[.heatMapCenteredColors]] <- "purple-black-yellow"
+
+  if (waszero) out <- out[0,,drop=FALSE]
+  return(out)
 }
 
 .override_defaults <- function(def, usr)
@@ -291,13 +335,14 @@ rowDataPlotDefaults <- function(se, number) {
     incoming[[.colorParamPanelOpen]] <- FALSE
     incoming[[.brushParamPanelOpen]] <- FALSE
 
-    incoming[[.brushByPlot]] <- ""
+    incoming[[.brushByPlot]] <- .noSelection
     incoming[[.brushEffect]] <- .brushTransTitle
     incoming[[.brushTransAlpha]] <- 0.1
     incoming[[.brushColor]] <- "red"
     incoming[[.brushData]] <- rep(list(NULL), nrow(incoming))
 
     incoming[[.zoomData]] <- rep(list(NULL), nrow(incoming))
+    incoming[[.lassoData]] <- rep(list(NULL), nrow(incoming))
     return(incoming)
 }
 
@@ -311,7 +356,7 @@ rowDataPlotDefaults <- function(se, number) {
     incoming[[.colorByColData]] <- def_cov
     incoming[[.colorByRowTable]] <- "" 
     incoming[[.colorByRowTableAssay]] <- def_assay
-    incoming[[.colorByFeatName]] <- "" 
+    incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameAssay]] <- def_assay
 
     return(incoming)
@@ -326,7 +371,7 @@ rowDataPlotDefaults <- function(se, number) {
     incoming[[.colorByRowData]] <- def_cov
     incoming[[.colorByRowTable]] <- "" 
     incoming[[.colorByRowTableColor]] <- "red"
-    incoming[[.colorByFeatName]] <- "" 
+    incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameColor]] <- "red"
 
     return(incoming)

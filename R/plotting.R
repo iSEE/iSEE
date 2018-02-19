@@ -5,7 +5,7 @@
 .all_aes_names <- c("x", "y", "color", "shape", "fill", "group")
 .all_aes_values <-
   c("X", "Y", "ColorBy", "ShapeBy", "FillBy", "GroupBy")
-.all_labs_names <- c(.all_aes_names, "title", "subtitle")
+.all_labs_names <- c(.all_aes_names, "title")
 
 names(.all_aes_values) <- .all_aes_names
 
@@ -38,7 +38,6 @@ names(.all_aes_values) <- .all_aes_names
     y_lab = sprintf(
       "Dimension %s",
       param_choices[[.redDimYAxis]]),
-    brush_color=brush_stroke_color_full["redDimPlot"],
     title = plot_title
   )
 }
@@ -74,7 +73,6 @@ names(.all_aes_values) <- .all_aes_names
   .create_plot(
     data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
     x_lab=x_lab, y_lab=y_lab,
-    brush_color=brush_stroke_color_full["colDataPlot"],
     title=plot_title
   )
 }
@@ -94,18 +92,14 @@ names(.all_aes_values) <- .all_aes_names
   if (y_choice==.featExprYAxisRowTableTitle) {
     chosen_tab <- .decoded2encoded(param_choices[[.featExprYAxisRowTable]])
     gene_selected_y <- all_memory$rowStatTable[chosen_tab, .rowStatSelected]
-    validate(need( 
-      length(gene_selected_y)==1L,
-      sprintf("Invalid '%s' > '%s' input", .featExprYAxis, y_choice)
-    ))
-
   } else if (y_choice==.featExprYAxisFeatNameTitle) {
     gene_selected_y <- param_choices[[.featExprYAxisFeatName]]
-    validate(need( 
-      gene_selected_y %in% rownames(se),
-      sprintf("Invalid '%s' > '%s' input", .featExprYAxis, y_choice)
-    ))
   }
+
+  validate(need( 
+    length(gene_selected_y)==1L,
+    sprintf("Invalid '%s' > '%s' input", .featExprYAxis, y_choice)
+  ))
 
   assay_choice <- param_choices[[.featExprAssay]]
   y_title <- rownames(se)[gene_selected_y]
@@ -130,18 +124,14 @@ names(.all_aes_values) <- .all_aes_names
     if (x_choice==.featExprXAxisRowTableTitle) {
       chosen_tab <- .decoded2encoded(param_choices[[.featExprXAxisRowTable]])
       gene_selected_x <- all_memory$rowStatTable[chosen_tab, .rowStatSelected]
-      validate(need( 
-        length(gene_selected_x)==1L,
-        sprintf("Invalid '%s' > '%s' input", .featExprXAxis, x_choice)
-      ))
-
     } else if (x_choice==.featExprXAxisFeatNameTitle) {
       gene_selected_x <- param_choices[[.featExprXAxisFeatName]]
-      validate(need(
-        gene_selected_x %in% rownames(se),
-        sprintf("Invalid '%s' > '%s' input", .featExprXAxis, x_choice)
-      ))
     }
+    
+    validate(need(
+      length(gene_selected_x)==1L,
+      sprintf("Invalid '%s' > '%s' input", .featExprXAxis, x_choice)
+    ))
     
     x_title <- rownames(se)[gene_selected_x]
     x_lab <- .gene_axis_label(se, gene_selected_x, assay_choice, multiline = FALSE)
@@ -159,9 +149,9 @@ names(.all_aes_values) <- .all_aes_names
   plot_title <- sprintf("%s %s", y_title, x_title)
 
   # Generating the plot.
-  .create_plot(data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
+  .create_plot(
+    data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
     x_lab=x_lab, y_lab=y_lab,
-    brush_color=brush_stroke_color_full["featExprPlot"],
     title = plot_title
   )
 }
@@ -189,12 +179,16 @@ names(.all_aes_values) <- .all_aes_names
     x_lab <- param_choices[[.rowDataXAxisRowData]]
     data_cmds[["x"]] <- sprintf("plot.data$X <- rowData(se)[,%s];", deparse(x_lab))
   }
+  
+  x_title <- ifelse(x_lab == '', x_lab, sprintf("vs %s", x_lab))
+  plot_title <- sprintf("%s %s", y_lab, x_title)
 
   # Generating the plot.
-  .create_plot(data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
+  .create_plot(
+    data_cmds, param_choices, all_memory, all_coordinates, se, colormap,
     x_lab=x_lab, y_lab=y_lab,
-    brush_color=brush_stroke_color_full["rowDataPlot"],
-    by_row=TRUE
+    by_row=TRUE,
+    title=plot_title
   )
 }
 
@@ -202,7 +196,9 @@ names(.all_aes_values) <- .all_aes_names
 # Internal functions: central plotter ----
 ############################################
 
-.create_plot <- function(data_cmds, param_choices, all_memory, all_coordinates, se, colormap, ..., by_row=FALSE)
+.create_plot <- function(
+  data_cmds, param_choices, all_memory, all_coordinates, se, colormap, ...,
+  by_row=FALSE)
 # This function will generate plotting commands appropriate to
 # each type of X/Y. It does so by evaluating 'plot.data' to
 # determine the nature of X/Y, and then choosing the plot to match.
@@ -257,29 +253,35 @@ names(.all_aes_values) <- .all_aes_names
   }
 
   # Creating the command to define BrushBy.
-  brush_cmd <- .process_brushby_choice(param_choices, all_memory)
-
+  # Note that 'all_brushes' or 'all_lassos' is needed for the ultimate eval() to obtain BrushBy.
+  # This approach relatively easy to deparse() in the code tracker, rather than
+  # having to construct the brush object or lasso waypoints manually.
+  brush_out <- .process_brushby_choice(param_choices, all_memory)
+  brush_cmd <- brush_out$cmd
+  eval_env$all_brushes <- brush_out$data
+  eval_env$all_lassos <- brush_out$data
+  
   # Dispatch to different plotting commands, depending on whether X/Y are groupable.
   if (group_X && group_Y) {
     extra_cmds <- .griddotplot(param_choices=param_choices, ..., 
-        color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd)
+      color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd)
 
   } else if (group_X && !group_Y) {
     extra_cmds <- .violin_plot(param_choices=param_choices, ..., 
-        color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd)
+      color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd)
 
   } else if (!group_X && group_Y) {
     extra_cmds <- .violin_plot(param_choices=param_choices, ..., 
-        color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd,
-        horizontal=TRUE)
+      color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd,
+      horizontal=TRUE)
 
   } else {
     extra_cmds <- .scatter_plot(param_choices=param_choices, ..., 
-        color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd)
+      color_label=color_label, color_cmd=color_cmd, brush_cmd=brush_cmd)
 
   }
   extra_cmds$data <- c(more_data_cmds, extra_cmds$data)
-
+  
   # Evaluating the early commands to get something to store for brushing.
   to_eval <- unlist(extra_cmds[c("data", "lim", "brush")])
   if (length(to_eval)) {
@@ -310,7 +312,7 @@ names(.all_aes_values) <- .all_aes_names
 ############################################
 
 .scatter_plot <- function(
-  param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, brush_color,
+  param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, 
   title)
 # Creates a scatter plot of numeric X/Y. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
@@ -348,7 +350,6 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);"
 
   # Both of these are NULL if not defined.
   plot_cmds[["scale_color"]] <- color_cmd
-  plot_cmds[["brush_tile"]] <- .self_brush_box(param_choices, color=brush_color)
 
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
@@ -362,7 +363,7 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);"
 ############################################
 
 .violin_plot <- function(
-  param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, brush_color,
+  param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, 
   horizontal = FALSE, title)
 # Generates a vertical violin plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
@@ -438,7 +439,6 @@ plot.data$Y <- tmp;")
 
   # Both of these are just NULL if no color/brush is defined.
   plot_cmds[["scale_color"]] <- color_cmd
-  plot_cmds[["brush_tile"]] <- .self_brush_box(param_choices, color=brush_color, flip=horizontal)
 
   plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +" # preserving the x-axis range.
   plot_cmds[["theme_base"]] <- "theme_bw() +"
@@ -453,7 +453,7 @@ plot.data$Y <- tmp;")
 ############################################
 
 .griddotplot <- function(
-  param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, brush_color,
+  param_choices, x_lab, y_lab, color_label, color_cmd, brush_cmd, 
   title)
 # Generates a grid dot plot. This function should purely
 # generate the plotting commands, with no modification of 'cmds'.
@@ -485,7 +485,6 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
 
   # Adding the commands to color the points and the brushing box (NULL if undefined).
   plot_cmds[["scale_color"]] <- color_cmd
-  plot_cmds[["brush_tile"]] <- .self_brush_box(param_choices, color=brush_color)
 
   # Creating labels.
   plot_cmds[["labs"]] <- .build_labs(
@@ -650,33 +649,54 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 .process_brushby_choice <- function(param_choices, all_memory) {
   brush_in <- param_choices[[.brushByPlot]]
   cmd <- NULL
+  brush_obj <- list()
 
   # Checking what points are brushed from the transmitting plot.
-  if (brush_in != "") {
+  if (!identical(brush_in, .noSelection)) {
     brush_by <- .encode_panel_name(brush_in)
+    transmitter <- paste0(brush_by$Type, brush_by$ID)
+
+    if (identical(rownames(param_choices), transmitter)) {
+        source_data <- 'plot.data'
+    } else {
+        source_data <- sprintf("all_coordinates[['%s']]", transmitter)
+    }
+
     brush_val <- all_memory[[brush_by$Type]][,.brushData][[brush_by$ID]]
 
     if (!is.null(brush_val)) {
-        transmitter <- paste0(brush_by$Type, brush_by$ID)
-        if (rownames(param_choices)==transmitter) {
-            source_data <- 'plot.data'
-        } else {
-            source_data <- sprintf("all_coordinates[['%s']]", transmitter)
-        }
-
-        cmd <- sprintf("brushed_pts <- shiny::brushedPoints(%s,
-    list(xmin=%.5g, xmax=%.5g, ymin=%.5g, ymax=%.5g,
-         direction='%s', mapping=list(x='%s', y='%s')));",
-        source_data,
-        brush_val$xmin, brush_val$xmax, brush_val$ymin, brush_val$ymax,
-        brush_val$direction, brush_val$mapping$x, brush_val$mapping$y)
-
+        brush_obj[[transmitter]] <- brush_val
+        cmd <- sprintf("brushed_pts <- shiny::brushedPoints(%s, all_brushes[['%s']])",
+                       source_data, transmitter)
         cmd <- c(cmd, "plot.data$BrushBy <- rownames(plot.data) %in% rownames(brushed_pts);")
         cmd <- paste(cmd, collapse="\n")
+
+    } else {
+        lasso_val <- all_memory[[brush_by$Type]][,.lassoData][[brush_by$ID]]
+        closed <- attr(lasso_val, "closed")
+        
+        if (!is.null(lasso_val) && closed) { 
+            flipped <- attr(lasso_val, "flipped")
+            if (flipped) {
+                v1 <- "Y"
+                v2 <- "X"
+            } else {
+                v1 <- "X"
+                v2 <- "Y"
+            }
+
+            brush_obj[[transmitter]] <- lasso_val
+            cmd <- sprintf("to_check <- subset(%s, !is.na(X) & !is.na(Y))", source_data)
+            cmd <- c(cmd,
+                    sprintf("brushed_pts <- mgcv::in.out(all_lassos[['%s']], cbind(as.numeric(to_check$%s), as.numeric(to_check$%s)))",
+                            transmitter, v1, v2))
+            cmd <- c(cmd, "plot.data$BrushBy <- rownames(plot.data) %in% rownames(to_check)[brushed_pts]")
+            cmd <- paste(cmd, collapse="\n")
+        }
     }
   }
 
-  return(cmd)
+  return(list(cmd=cmd, data=brush_obj))
 }
 
 .create_points <- function(param_choices, brush_cmd, aes) 
@@ -731,30 +751,6 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
   return(list(brush=brush_cmds, plot=plot_cmds))
 }
 
-.self_brush_box <- function(param_choices, color, flip=FALSE) { 
-  current <- param_choices[,.brushData][[1]]
-  if (!is.null(current)) {
-    if (flip) {
-      xmin <- 'ymin'
-      xmax <- 'ymax'
-      ymin <- 'xmin'
-      ymax <- 'xmax'
-    } else {
-      xmin <- 'xmin'
-      xmax <- 'xmax'
-      ymin <- 'ymin'
-      ymax <- 'ymax'
-    }
-
-    return(sprintf("geom_rect(aes(xmin = %s, xmax = %s, ymin = %s, ymax = %s), color='%s', alpha=0, 
-    data=data.frame(xmin = %.5g, xmax=%.5g, ymin = %.5g, ymax = %.5g), inherit.aes=FALSE) +",
-        xmin, xmax, ymin, ymax, color, 
-        current$xmin, current$xmax, current$ymin, current$ymax))
-  } else {
-     return(NULL)
-  }
-}
-
 ############################################
 # Internal functions: aesthetics ----
 ############################################
@@ -800,9 +796,9 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
   x = NA_character_, y = NA_character_,
   color = NA_character_, shape = NA_character_,
   fill = NA_character_, group = NA_character_,
-  title = NA_character_, subtitle = NA_character_
+  title = NA_character_
 ){
-    labs_specs <- c(x, y, color, shape, fill, group, title, subtitle)
+    labs_specs <- c(x, y, color, shape, fill, group, title)
     names(labs_specs) <- .all_labs_names
     labs_specs <- labs_specs[!is.na(labs_specs)]
     if (identical(length(labs_specs), 0L)){
@@ -852,3 +848,112 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
   }
   return(NULL)
 }
+
+############################################
+# Plot update functions ----
+############################################
+
+.self_brush_box <- function(mode, i, memory, flip=FALSE) { 
+    current <- memory[[mode]][,.brushData][[i]]
+    if (is.null(current)) {
+        return(NULL)
+    }
+
+    if (flip) {
+        xmin <- 'ymin'
+        xmax <- 'ymax'
+        ymin <- 'xmin'
+        ymax <- 'xmax'
+    } else {
+        xmin <- 'xmin'
+        xmax <- 'xmax'
+        ymin <- 'ymin'
+        ymax <- 'ymax'
+    }
+    
+    plot_name <- paste0(mode, i)
+    cmd <- sprintf("geom_rect(aes(xmin = %s, xmax = %s, ymin = %s, ymax = %s), color='%s', alpha=0, 
+    data=do.call(data.frame, all_brushes[['%s']][c('xmin', 'xmax', 'ymin', 'ymax')]), inherit.aes=FALSE)",
+                                         xmin, xmax, ymin, ymax, panel_colors[mode], plot_name)
+    
+    data <- list()
+    data[[plot_name]] <- current
+    return(list(cmd=cmd, data=data))
+}
+
+.self_lasso_path <- function(mode, i, memory, flip=FALSE) {
+    current <- memory[[mode]][,.lassoData][[i]]
+    if (is.null(current) || !is.null(memory[[mode]][,.brushData][[i]])) {
+        return(NULL)
+    }
+    is_closed <- attr(current, "closed")
+  
+    if (flip) {
+        x <- "y"
+        y <- "x"
+    } else {
+        x <- "x"
+        y <- "y"
+    }
+  
+    plot_name <- paste0(mode, i)
+    
+    if (identical(nrow(current), 1L)) { # lasso has only a start point
+      point_cmd <- sprintf("geom_point(aes(x = %s, y = %s), 
+    data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2]),
+    inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s', size = %s, shape = %s)",
+        x, y, plot_name, plot_name, panel_colors[mode],
+        .lassoStartSize, .lassoStartShape)
+      full_cmd_list <- list(point_cmd)
+      
+    } else if (is_closed){ # lasso is closed
+      polygon_cmd <- sprintf("geom_polygon(aes(x = %s, y = %s), alpha=%s, color='%s', 
+    data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2]), 
+    inherit.aes=FALSE, fill = '%s')", 
+          x, y ,
+          .brushFillOpacity, panel_colors[mode],
+          plot_name, plot_name, brush_fill_color[mode])
+    
+        scale_fill_cmd <- sprintf(
+          "scale_fill_manual(values = c('TRUE' = '%s', 'FALSE' = '%s'))",
+          panel_colors[mode], brush_fill_color[mode])
+
+        guides_cmd <- "guides(shape = 'none')"
+        full_cmd_list <- list(polygon_cmd, scale_fill_cmd, guides_cmd)
+
+    } else { # lasso is still open
+      path_cmd <- sprintf("geom_path(aes(x = %s, y = %s), 
+    data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2]),
+    inherit.aes=FALSE, alpha=1, color='%s', linetype = 'longdash')", 
+        x, y, plot_name, plot_name, panel_colors[mode])
+    
+        point_cmd <- sprintf("geom_point(aes(x = %s, y = %s, size = First, shape = First), 
+    data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2], 
+                    First = seq_len(nrow(all_lassos[['%s']]))==1L),
+    inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s')",
+        x, y, plot_name, plot_name, plot_name, panel_colors[mode])
+
+        scale_shape_cmd <- sprintf(
+          "scale_shape_manual(values = c('TRUE' = %s, 'FALSE' = %s))",
+          .lassoStartShape, .lassoWaypointShape
+        )
+        scale_size_cmd <- sprintf(
+          "scale_size_manual(values = c('TRUE' = %s, 'FALSE' = %s))",
+          .lassoStartSize, .lassoWaypointSize
+        )
+        guides_cmd <- "guides(shape = 'none', size = 'none')"
+        full_cmd_list <- list(
+          path_cmd, point_cmd, scale_shape_cmd, scale_size_cmd, guides_cmd)
+        
+    }
+   
+    data <- list()
+    data[[plot_name]] <- current
+    return(list(cmd=full_cmd_list, data=data))
+}
+
+# Lasso constants
+.lassoStartShape <- 22
+.lassoWaypointShape <- 21
+.lassoStartSize <- 1.5
+.lassoWaypointSize <- 0.5

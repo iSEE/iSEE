@@ -37,6 +37,29 @@
 .rowDataXAxis <- "XAxis"
 .rowDataXAxisRowData <- "XAxisRowData"
 
+# Heatmap plotting parameters. ----
+.heatMapAssay <- "Assay"
+
+.heatMapFeatName <- "FeatName"
+.heatMapFeatNamePanelOpen <- "FeatNamePanelOpen"
+.heatMapImport <- "Import"
+.heatMapImportSource <- "FeatNameSource"
+.heatMapCluster <- "Clustered"
+
+.heatMapColData <- "ColData"
+.heatMapColDataPanelOpen <- "ColDataPanelOpen"
+.heatMapLegend <- "Legend"
+
+.heatMapColorPanelOpen <- "ColorPanelOpen"
+.heatMapCentering <- "Centering"
+.heatMapScaling <- "Scaling"
+.heatMapYesTitle <- "On"
+.heatMapNoTitle <- "Off"
+
+.heatMapLower <- "Lower"
+.heatMapUpper <- "Upper"
+.heatMapCenteredColors <- "ColorScale"
+
 # Plot colouring parameters. ----
 .colorByNothingTitle <- "None"
 .colorByColDataTitle <- "Column data"
@@ -73,9 +96,15 @@
 .brushColor <- "BrushColor"
 .brushTransAlpha <- "BrushAlpha"
 
+.noSelection <- "---"
+
 # Zooming parameters. ----
 .zoomData <- "ZoomData"
 .zoomClick <- "ZoomClick"
+
+# Lasso parameters. ----
+.lassoClick <- "LassoClick"
+.lassoData <- "LassoData"
 
 # Plot parameters. ----
 .plotParamPanelOpen <- "PlotPanelOpen"
@@ -98,6 +127,7 @@
 .organizationWidth <- "PanelWidth"
 .organizationHeight <- "PanelHeight"
 
+.panelGeneralInfo <- "PanelGeneralInfo"
 .panelLinkInfo <- "PanelLinkInfo"
 
 # Encoding and decoding names for user/shiny ----
@@ -105,7 +135,8 @@ translation <- c(redDimPlot="Reduced dimension plot",
                  colDataPlot="Column data plot",
                  featExprPlot="Feature expression plot",
                  rowStatTable="Row statistics table",
-                 rowDataPlot="Row data plot")
+                 rowDataPlot="Row data plot",
+                 heatMapPlot="Heat map")
 rev.translation <- names(translation)
 names(rev.translation) <- translation
 
@@ -136,10 +167,3 @@ names(rev.translation) <- translation
   return(list(Type=Type, ID=ID))
 }
 
-.plothexcode_redDim <- "#3C8DBC"
-.plothexcode_colData <- "#F39D12"
-.plothexcode_featExpr <- "#03A659"
-.plothexcode_geneTable <- "#DD4B39"
-.plothexcode_rowData <- "#00C0EF"
-
-.actionbutton_biocstyle <- "color: #ffffff; background-color: #0092AC; border-color: #2e6da4"

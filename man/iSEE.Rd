@@ -5,8 +5,9 @@
 \title{iSEE: interactive SingleCell/Summarized Experiment Explorer}
 \usage{
 iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featExprArgs = NULL,
-  rowStatArgs = NULL, rowDataArgs = NULL, redDimMax = 5, colDataMax = 5,
-  featExprMax = 5, rowStatMax = 5, rowDataMax = 5, initialPanels = NULL,
+  rowStatArgs = NULL, rowDataArgs = NULL, heatMapArgs = NULL,
+  redDimMax = 5, colDataMax = 5, featExprMax = 5, rowStatMax = 5,
+  rowDataMax = 5, heatMapMax = 5, initialPanels = NULL,
   annot.orgdb = NULL, annot.keytype = "ENTREZID", annot.keyfield = NULL,
   colormap = ExperimentColorMap(), run_local = TRUE)
 }
@@ -24,6 +25,8 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featExprArgs = NULL,
 
 \item{rowDataArgs}{A DataFrame similar to that produced by \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the plots.}
 
+\item{heatMapArgs}{A DataFrame similar to that produced by \code{\link{heatMapPlotDefaults}}, specifying initial parameters for the plots.}
+
 \item{redDimMax}{An integer scalar specifying the maximum number of reduced dimension plots in the interface.}
 
 \item{colDataMax}{An integer scalar specifying the maximum number of column data plots in the interface.}
@@ -34,27 +37,21 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featExprArgs = NULL,
 
 \item{rowDataMax}{An integer scalar specifying the maximum number of row data plots in the interface.}
 
-\item{initialPanels}{A DataFrame specifying which panels should be created
-at initialization. This should contain a \code{Name} character field and a
-\code{Width} integer field, see Details.}
+\item{heatMapMax}{An integer scalar specifying the maximum number of heatmaps in the interface.}
 
-\item{annot.orgdb}{An \code{org.*.db} annotation object from which
-Entrez identifiers can be retrieved.}
+\item{initialPanels}{A DataFrame specifying which panels should be created at initialization. 
+This should contain a \code{Name} character field and a \code{Width} integer field, see Details.}
 
-\item{annot.keytype}{A string specifying the keytype to use to query
-\code{annot.orgdb}.}
+\item{annot.orgdb}{An \code{org.*.db} annotation object from which Entrez identifiers can be retrieved.}
 
-\item{annot.keyfield}{A string specifying the field of \code{rowData(se)}
-containing the keys of type \code{annot.keytype}. If \code{NULL}, the
-row names of \code{se} are used as the keys.}
+\item{annot.keytype}{A string specifying the keytype to use to query \code{annot.orgdb}.}
 
-\item{colormap}{An \linkS4class{ExperimentColorMap} object that defines
-custom color maps to apply to individual \code{assays}, \code{colData},
-and \code{rowData} covariates.}
+\item{annot.keyfield}{A string specifying the field of \code{rowData(se)} containing the keys of type \code{annot.keytype}. 
+If \code{NULL}, the row names of \code{se} are used as the keys.}
 
-\item{run_local}{A logical indicating whether the app is to be run
-locally or remotely on a server, which determines how documentation 
-will be accessed.}
+\item{colormap}{An \linkS4class{ExperimentColorMap} object that defines custom color maps to apply to individual \code{assays}, \code{colData}, and \code{rowData} covariates.}
+
+\item{run_local}{A logical indicating whether the app is to be run locally or remotely on a server, which determines how documentation will be accessed.}
 }
 \value{
 A Shiny App is launched for interactive data exploration of the

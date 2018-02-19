@@ -18,7 +18,8 @@
               colDataPlot=! (ncol(colData(se))==0L || ncol(se)==0L),
               featExprPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
               rowStatTable=! (nrow(se)==0L),
-              rowDataPlot=! (ncol(rowData(se))==0L || nrow(se)==0L)
+              rowDataPlot=! (ncol(rowData(se))==0L || nrow(se)==0L),
+              heatMapPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L)
   ))
 }
 
@@ -30,74 +31,83 @@
   return(counter)
 }
 
-.setup_memory <- function(se, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs,
-                          redDimMax, colDataMax, featExprMax, rowStatMax, rowDataMax) 
+.setup_memory <- function(se, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs, heatMapArgs,
+                          redDimMax, colDataMax, featExprMax, rowStatMax, rowDataMax, heatMapMax) 
 # This function sets up the memory for the current session, taking in any
 # specifications from the user regarding the defaults and max number of panels.
 {
-  # Defining the maximum number of panels.
-  reddim_max_plots <- max(nrow(redDimArgs), redDimMax)
-  coldata_max_plots <- max(nrow(colDataArgs), colDataMax)
-  geneexpr_max_plots <- max(nrow(featExprArgs), featExprMax)
-  genestat_max_tabs <- max(nrow(rowStatArgs), rowStatMax)
-  rowdata_max_plots <- max(nrow(rowDataArgs), rowDataMax)
+    all_args <- list(redDimPlot=redDimArgs, colDataPlot=colDataArgs, featExprPlot=featExprArgs,
+                     rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs, heatMapPlot=heatMapArgs)
+    all_maxes <- list(redDimPlot=redDimMax, colDataPlot=colDataMax, featExprPlot=featExprMax,
+                      rowStatTable=rowStatMax, rowDataPlot=rowDataMax, heatMapPlot=heatMapMax)
+    feasibility <- .check_plot_feasibility(se)
 
-  feasibility <- .check_plot_feasibility(se)
-  if (!feasibility$redDimPlot) { 
-    reddim_max_plots <- 0L
-    redDimArgs <- NULL
-  } 
-  if (!feasibility$colDataPlot) {
-    coldata_max_plots <- 0L
-    colDataArgs <- NULL
-  }
-  if (!feasibility$featExprPlot) {
-    geneexpr_max_plots <- 0L
-    featExprArgs <- NULL
-  }
-  if (!feasibility$rowStatTable) {
-    genestat_max_tabs <- 0L
-    rowStatArgs <- NULL
-  }
-  if (!feasibility$rowDataPlot) {
-    rowdata_max_plots <- 0L
-    rowDataArgs <- NULL
-  }
-
-  # Setting up parameters for each panel.
-  memory <- list()
+    for (x in names(all_args)) { 
+        if (!feasibility[[x]]) {
+            all_args[x] <- list(NULL)
+            all_maxes[[x]] <- 0L
+        } else {
+            all_maxes[[x]] <- max(all_maxes[[x]], nrow(all_args[[x]]))
+        }
+    }
   
-  memory$redDimPlot <- redDimPlotDefaults(se, reddim_max_plots)
-  if (!is.null(redDimArgs)) {
-    memory$redDimPlot <- .override_defaults(memory$redDimPlot, redDimArgs)
-  }
-  rownames(memory$redDimPlot) <- sprintf("redDimPlot%i", seq_len(reddim_max_plots))
+    # Coercing string arguments that should be integers.
+    all_args$redDimPlot <- .name2index(all_args$redDimPlot, .redDimType, reducedDimNames(se))
+    
+    all_args$featExprPlot <- .name2index(all_args$featExprPlot, c(.featExprXAxisFeatName, .featExprYAxisFeatName), rownames(se))
+    all_args$featExprPlot <- .name2index(all_args$featExprPlot, .featExprAssay, assayNames(se))
+    
+    all_args$rowStatTable <- .name2index(all_args$rowStatTable, .rowStatSelected, rownames(se))
+    
+    all_args$heatMapPlot <- .name2index(all_args$heatMapPlot, .heatMapFeatName, rownames(se))
+    all_args$heatMapPlot <- .name2index(all_args$heatMapPlot, .heatMapAssay, assayNames(se))
 
-  memory$featExprPlot <- featExprPlotDefaults(se, geneexpr_max_plots)
-  if (!is.null(featExprArgs)) {
-    memory$featExprPlot <- .override_defaults(memory$featExprPlot, featExprArgs)
-  }
-  rownames(memory$featExprPlot) <- sprintf("featExprPlot%i", seq_len(geneexpr_max_plots))
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot")) {
+        all_args[[mode]] <- .name2index(all_args[[mode]], .colorByFeatName, rownames(se))  
+        all_args[[mode]] <- .name2index(all_args[[mode]], c(.colorByFeatNameAssay, .colorByRowTableAssay), assayNames(se))  
+    }
+    all_args$rowDataPlot <- .name2index(all_args$rowDataPlot, .colorByFeatName, rownames(se))  
 
-  memory$colDataPlot <- colDataPlotDefaults(se, coldata_max_plots)
-  if (!is.null(colDataArgs)) {
-    memory$colDataPlot <- .override_defaults(memory$colDataPlot, colDataArgs)
-  }
-  rownames(memory$colDataPlot) <- sprintf("colDataPlot%i", seq_len(coldata_max_plots))
+    # Setting up parameters for each panel. 
+    memory <- list()
+    for (mode in names(all_maxes)) { 
+        DEFFUN <- switch(mode,
+                         redDimPlot=redDimPlotDefaults,
+                         featExprPlot=featExprPlotDefaults,
+                         colDataPlot=colDataPlotDefaults,
+                         rowDataPlot=rowDataPlotDefaults,
+                         rowStatTable=rowStatTableDefaults,
+                         heatMapPlot=heatMapPlotDefaults)
 
-  memory$rowStatTable <- rowStatTableDefaults(se, genestat_max_tabs)
-  if (!is.null(rowStatArgs)) {
-    memory$rowStatTable <- .override_defaults(memory$rowStatTable, rowStatArgs)
-  }
-  rownames(memory$rowStatTable) <- sprintf("rowStatTable%i", seq_len(genestat_max_tabs))
+        cur_max <- all_maxes[[mode]]
+        cur_args <- all_args[[mode]]
+        tmp <- DEFFUN(se, cur_max)
+        if (!is.null(cur_args)) {
+            tmp <- .override_defaults(tmp, cur_args)
+        }
+        rownames(tmp) <- sprintf("%s%i", mode, seq_len(cur_max))
+        memory[[mode]] <- tmp
+    }
 
-  memory$rowDataPlot <- rowDataPlotDefaults(se, rowdata_max_plots)
-  if (!is.null(rowDataArgs)) {
-    memory$rowDataPlot <- .override_defaults(memory$rowDataPlot, rowDataArgs)
-  }
-  rownames(memory$rowDataPlot) <- sprintf("rowDataPlot%i", seq_len(rowdata_max_plots))
+    return(memory)
+}
 
-  return(memory)
+.name2index <- function(df, fields, choices) 
+# This converts default arguments specified as strings into the relevant integer indices.
+# The idea is to allow users to flexibly specify the input choices; while integers are
+# safer when names are not unique or absent, strings are easier to work with.
+{
+    for (f in intersect(fields, colnames(df))) {
+        vals <- df[,f]
+        if (is.character(vals)) { 
+            m <- match(vals, choices)
+            m[is.na(m)] <- 1L
+            df[,f] <- m 
+        } else if (!is.integer(vals)) {
+            df[,f] <- as.integer(vals) 
+        }
+    }
+    return(df)
 }
 
 width_limits <- c(2L, 12L)
@@ -109,7 +119,7 @@ height_limits <- c(400L, 1000L)
   if (is.null(initialPanels)) {
     initialPanels <- data.frame(Name=c("Reduced dimension plot 1", "Column data plot 1", 
                                        "Feature expression plot 1", "Row statistics table 1",
-                                       "Row data plot 1"),
+                                       "Row data plot 1", "Heat map 1"),
                                 Width=4, Height=500L, stringsAsFactors=FALSE)
   } 
 
@@ -163,7 +173,7 @@ height_limits <- c(400L, 1000L)
         bb <- cur_memory[,.brushByPlot]
         bad <- !bb %in% col_brushable | !self_active %in% all_active
         if (any(bad)) { 
-            memory[[mode]][,.brushByPlot][bad] <- ""
+            memory[[mode]][,.brushByPlot][bad] <- .noSelection
         }
 
         cb <- cur_memory[,.colorByRowTable]
@@ -180,7 +190,7 @@ height_limits <- c(400L, 1000L)
     bb <- cur_memory[,.brushByPlot]
     bad <- !bb %in% row_brushable | !self_active %in% all_active
     if (any(bad)) { 
-        memory$rowDataPlot[,.brushByPlot][bad] <- ""
+        memory$rowDataPlot[,.brushByPlot][bad] <- .noSelection
     }
 
     cb <- cur_memory[,.colorByRowTable]
@@ -196,10 +206,33 @@ height_limits <- c(400L, 1000L)
 
         bad <- !bb %in% active_tab | !feat_active %in% all_active
         if (any(bad)) { 
-            memory$featExprPlot[,field][bad] <- ""
+            memory$featExprPlot[,field][bad] <- "" 
         }
     }
     return(memory)
+}
+
+.regenerate_unselected_plot <- function(mode, i, pObjects, rObjects, input, session) 
+# This is a convenience function whenever a plot needs to be regenerated
+# without any selections (i.e., cleared brush and lasso waypoints). It 
+# relies on the fact that pObjects, rObjects and session are passed by reference.
+{
+    plot_name <- paste0(mode, i)
+    brush_id <- paste0(plot_name, "_", .brushField)
+
+    if (!is.null(isolate(input[[brush_id]]))) {
+        # This will trigger replotting via the brush observer above.
+        # It will also implicitly wipe the lasso data, so there's no need to do that manually.
+        session$resetBrush(brush_id)
+        pObjects$force_rerender[plot_name] <- TRUE
+    } else {
+        # Manually triggering replotting.
+        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+
+        # Destroying any lasso waypoints as well.
+        pObjects$memory[[mode]] <- .update_list_element(pObjects$memory[[mode]], i, .lassoData, NULL)
+    }
+    return(NULL)
 }
 
 .define_plot_links <- function(panel, memory, graph) 
@@ -212,7 +245,7 @@ height_limits <- c(400L, 1000L)
 
     # Checking brush status.
     brush_in <- param_choices[[.brushByPlot]]
-    if (brush_in!="") {
+    if (brush_in!=.noSelection) {
         output <- c(output, list("Receiving brush from", em(strong(brush_in)), br()))
     }
 
@@ -252,7 +285,7 @@ height_limits <- c(400L, 1000L)
 
     # Checking brush status.
     brush_in <- param_choices[[.brushByPlot]]
-    if (brush_in!="") {
+    if (brush_in!=.noSelection) {
         output <- c(output, list("Receiving brush from", em(strong(brush_in)), br()))
     }
 

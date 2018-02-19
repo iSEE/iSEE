@@ -4,20 +4,18 @@
 \alias{mode_gating}
 \title{App pre-configured to link multiple feature expression plots}
 \usage{
-mode_gating(se, featExprMax = 3, features = data.frame(x =
-  sample(rownames(se), size = featExprMax, replace = TRUE), y =
-  sample(rownames(se), size = featExprMax, replace = TRUE)), ...,
+mode_gating(se, features, featExprMax = max(2, nrow(features)), ...,
   plot_width = 4)
 }
 \arguments{
 \item{se}{An object that coercible to
 \code{\linkS4class{SingleCellExperiment}}.}
 
-\item{featExprMax}{Maximal number of feature expression plots in the app.}
-
 \item{features}{\code{data.frame} with columns named \code{x} and \code{y}
 that define the features on the axes of the linked plots.
 Plots are serially linked from the first row to the last.}
+
+\item{featExprMax}{Maximal number of feature expression plots in the app.}
 
 \item{...}{Additional arguments passed to \code{\link{iSEE}}.}
 
@@ -44,13 +42,24 @@ library(scater)
 sce <- as(allen, "SingleCellExperiment")
 counts(sce) <- assay(sce, "tophat_counts")
 sce <- normalize(sce)
-sce <- runPCA(sce)
-sce <- runTSNE(sce)
-sce
+
+
+# Select top variable genes ----
+
+plot_count <- 6
+rv <- rowVars(logcounts(sce))
+top_var <- head(order(rv, decreasing = TRUE), plot_count*2)
+top_var_genes <- rownames(sce)[top_var]
+
+plot_features <- data.frame(
+    x = head(top_var_genes, plot_count),
+    y = tail(top_var_genes, plot_count),
+    stringsAsFactors = FALSE
+ )
 
 # launch the app itself ----
 
-app <- mode_gating(sce, featExprMax = 6)
+app <- mode_gating(sce, features = plot_features, featExprMax = 6)
 if (interactive()) {
   shiny::runApp(app, port = 1234)
 }

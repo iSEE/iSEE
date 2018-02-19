@@ -26,6 +26,7 @@
 #'   coord_cartesian geom_tile scale_x_discrete scale_y_discrete
 #'   scale_size_area guides scale_color_manual scale_color_gradientn
 #'   scale_fill_manual scale_fill_gradientn geom_rect
+#' @importFrom mgcv in.out
 #' @importFrom vipor offsetX
 #' @importFrom DT datatable renderDataTable dataTableOutput
 #' @importFrom AnnotationDbi mapIds keytypes
@@ -39,6 +40,7 @@
 #' @importFrom graphics plot
 #' @importFrom grDevices hcl col2rgb rgb
 #' @importFrom viridisLite viridis
+#' @importFrom cowplot plot_grid
 #' @author Aaron Lun \email{alun@@wehi.edu.au}
 #' @author Charlotte Soneson \email{charlotte.soneson@@uzh.ch}
 #' @author Federico Marini \email{marinif@@uni-mainz.de}

@@ -114,6 +114,9 @@ iSEE <- function(
   # Setting up inputs for DT::datatable something to play with.
   gene_data <- as.data.frame(rowData(se))
   rownames(gene_data) <- rownames(se)
+  if (ncol(gene_data)==0L) {
+    gene_data$Present <- !logical(nrow(gene_data))
+  }
   tab_brush_col <- "Selected"
   while (tab_brush_col %in% colnames(gene_data)) {
     tab_brush_col <- paste0("_", tab_brush_col)
@@ -1340,10 +1343,7 @@ iSEE <- function(
             output[[legend_field]] <- renderPlot({
                 force(rObjects[[legend_field]])
                 gg <- pObjects$cached_plots[[plot_name]]$legends
-                print(cowplot::plot_grid(plotlist = gg))
-
-                # Charlotte: add your legend here.
-                showNotification("I AM LEGEND", type="message")
+                cowplot::plot_grid(plotlist = gg)
             })
         })
 

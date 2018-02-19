@@ -298,8 +298,8 @@ heatMapPlotDefaults <- function(se, number) {
   out[[.heatMapColorPanelOpen]] <- FALSE
   out[[.heatMapCentering]] <- .heatMapYesTitle
   out[[.heatMapScaling]] <- .heatMapNoTitle
-  out[[.heatMapLower]] <- -5
-  out[[.heatMapUpper]] <- 5
+  out[[.heatMapLower]] <- -Inf
+  out[[.heatMapUpper]] <- Inf
   out[[.heatMapCenteredColors]] <- "purple-black-yellow"
 
   if (waszero) out <- out[0,,drop=FALSE]

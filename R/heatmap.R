@@ -40,10 +40,34 @@
   eval_env <- new.env()
   eval(parse(text=unlist(data_cmds[c("y", "order")])), envir=eval_env)
 
+  # Define fill values for heatmap
+  # Get min/max values in heatmap
+  min.obs <- min(eval_env$plot.data$value, na.rm=TRUE)
+  max.obs <- max(eval_env$plot.data$value, na.rm=TRUE)
+  # Set limits of color bar
+  limits <- range(min.obs, param_choices[[.heatMapLower]], 
+                  max.obs, param_choices[[.heatMapUpper]], finite=TRUE, na.rm=TRUE)
   if (param_choices[[.heatMapCentering]] == .heatMapYesTitle) {
+    # Centered values - use selected color scale
     colors.to.use <- strsplit(param_choices[[.heatMapCenteredColors]], "-")[[1]]
-    fill_cmd <- sprintf("scale_fill_gradient2(low='%s', mid='%s', high='%s', na.value='grey50') +",
-                        colors.to.use[1], colors.to.use[2], colors.to.use[3])
+    break.vec <- c(param_choices[[.heatMapLower]], 0, param_choices[[.heatMapUpper]])
+    if (param_choices[[.heatMapLower]] > min.obs || !is.finite(param_choices[[.heatMapLower]])) {
+      break.vec <- c(break.vec, min.obs)
+    }
+    if (param_choices[[.heatMapUpper]] < max.obs || !is.finite(param_choices[[.heatMapUpper]])) {
+      break.vec <- c(break.vec, max.obs)
+    }
+    break.vec <- sort(break.vec)
+    break.vec <- break.vec[is.finite(break.vec)]
+    col.vec <- rep(NA, length(break.vec))
+    col.vec[break.vec < 0] <- colors.to.use[1]
+    col.vec[break.vec == 0] <- colors.to.use[2]
+    col.vec[break.vec > 0] <- colors.to.use[3]
+    break.vec <- scales::rescale(break.vec, to=c(0, 1), from=limits)
+    fill_cmd <- sprintf("scale_fill_gradientn(colors=c('%s'), values=c(%s), limits=c(%s), na.value='grey50') +", 
+                        paste0(col.vec, collapse="','"),
+                        paste0(break.vec, collapse=","),
+                        paste0(limits, collapse=","))
   } else {
     fill_cmd <- sprintf("scale_fill_gradientn(colors=assayColorMap(colormap, '%s', discrete=FALSE)(21L), na.value='grey50') +", assay_choice)
   }

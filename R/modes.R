@@ -1,11 +1,11 @@
 
 mode_CyTOF <- function(
   se, n_linked = 3,
-  featExprMax = max(5, n_featExprPlot),
+  featExprMax = max(5, n_linked),
   features = sample(rownames(se), size=featExprMax*2, replace=TRUE),
   ..., plot_width = 4){
   # This mode is meaningless with fewer than two featExprPlot
-  stopifnot(n_featExprPlot > 1)
+  stopifnot(n_linked > 1)
   
   featExprArgs <- featExprPlotDefaults(se, featExprMax)
   # prepare featExprArgs
@@ -17,22 +17,22 @@ mode_CyTOF <- function(
   featExprArgs[[iSEE:::.featExprYAxisFeatName]] <- features[seq(1,nrow(featExprArgs)*2,2)]
   featExprArgs[[iSEE:::.brushByPlot]] <- c(
     "",
-    sprintf("Feature expression plot %i", seq(1,n_featExprPlot-1,1)),
-    rep("", nrow(featExprArgs) - n_featExprPlot)
+    sprintf("Feature expression plot %i", seq(1,n_linked-1,1)),
+    rep("", nrow(featExprArgs) - n_linked)
   )
   featExprArgs[[iSEE:::.brushEffect]] <- c(
     "",
-    rep("Restrict", n_featExprPlot - 2),
+    rep("Restrict", n_linked - 2),
     "Color",
-    rep("", nrow(featExprArgs) - n_featExprPlot)
+    rep("", nrow(featExprArgs) - n_linked)
   )
   # Show only the active 
   initialPanels = DataFrame(
     Name = c(
-      sprintf("Feature expression plot %i", seq(1, n_featExprPlot, 1))
+      sprintf("Feature expression plot %i", seq(1, n_linked, 1))
     ),
     Width = c(
-      rep(plot_width, n_featExprPlot)
+      rep(plot_width, n_linked)
     )
   )
   # Preconfigure an app

@@ -51,24 +51,24 @@ test_that("brush link updates work correctly", {
     # Deleting edges that are there.
     expect_true(igraph::are_adjacent(g, "featExprPlot1", "redDimPlot1"))
     expect_equal(sum(g[]), 3)
-    g2 <- iSEE:::.choose_new_brush_source(g, "redDimPlot1", "", "featExprPlot1")
+    g2 <- iSEE:::.choose_new_brush_source(g, "redDimPlot1", "---", "featExprPlot1")
     expect_false(igraph::are_adjacent(g2, "featExprPlot1", "redDimPlot1"))
     expect_equal(sum(g2[]), 2)
 
     # Deleting edges that are not there makes no difference.
     expect_false(igraph::are_adjacent(g, "colDataPlot1", "redDimPlot1"))
-    g2 <- iSEE:::.choose_new_brush_source(g, "redDimPlot1", "", "colDataPlot1")
+    g2 <- iSEE:::.choose_new_brush_source(g, "redDimPlot1", "---", "colDataPlot1")
     expect_equal(g[], g2[])
 
     # Adding edges without anything being there previously. 
     expect_identical(character(0), names(igraph::adjacent_vertices(g, "colDataPlot1", mode = "in")[[1]])) # no parents.
     expect_equal(sum(g[]), 3)
-    g2 <- iSEE:::.choose_new_brush_source(g, "colDataPlot1", "featExprPlot3", "")
+    g2 <- iSEE:::.choose_new_brush_source(g, "colDataPlot1", "featExprPlot3", "---")
     expect_false(igraph::are_adjacent(g2, "featExprPlot1", "colDataPlot2"))
     expect_equal(sum(g2[]), 4)
 
     # Adding links that are already there do nothing.    
-    g2 <- iSEE:::.choose_new_brush_source(g, "redDimPlot1", "featExprPlot1", "")
+    g2 <- iSEE:::.choose_new_brush_source(g, "redDimPlot1", "featExprPlot1", "---")
     expect_equal(g[], g2[])
 
     # Updating edges from what previously existed.
@@ -102,8 +102,8 @@ test_that("brush source destruction works correctly", {
     expect_false(igraph::are_adjacent(pObjects$brush_links, "featExprPlot1", "redDimPlot1"))
     expect_false(igraph::are_adjacent(pObjects$brush_links, "featExprPlot1", "featExprPlot1"))
     expect_equal(sum(pObjects$brush_links[]), 1)
-    expect_identical("", pObjects$memory$redDimPlot[1,iSEE:::.brushByPlot])
-    expect_identical("", pObjects$memory$featExprPlot[1,iSEE:::.brushByPlot])
+    expect_identical("---", pObjects$memory$redDimPlot[1,iSEE:::.brushByPlot])
+    expect_identical("---", pObjects$memory$featExprPlot[1,iSEE:::.brushByPlot])
 
     # Destroying a transmitter/receiver
     pObjects <- new.env()
@@ -121,8 +121,8 @@ test_that("brush source destruction works correctly", {
     expect_false(igraph::are_adjacent(pObjects$brush_links, "featExprPlot1", "redDimPlot1"))
     expect_false(igraph::are_adjacent(pObjects$brush_links, "redDimPlot1", "colDataPlot2"))
     expect_equal(sum(pObjects$brush_links[]), 1)
-    expect_identical("", pObjects$memory$redDimPlot[1,iSEE:::.brushByPlot]) 
-    expect_identical("", pObjects$memory$colDataPlot[2,iSEE:::.brushByPlot])
+    expect_identical("---", pObjects$memory$redDimPlot[1,iSEE:::.brushByPlot]) 
+    expect_identical("---", pObjects$memory$colDataPlot[2,iSEE:::.brushByPlot])
 
     # Destroying a receiver.
     pObjects <- new.env()
@@ -135,12 +135,12 @@ test_that("brush source destruction works correctly", {
 
     expect_false(igraph::are_adjacent(pObjects$brush_links, "redDimPlot1", "colDataPlot2"))
     expect_equal(sum(pObjects$brush_links[]), 2)
-    expect_identical("", pObjects$memory$colDataPlot[2,iSEE:::.brushByPlot])
+    expect_identical("---", pObjects$memory$colDataPlot[2,iSEE:::.brushByPlot])
 })
 
 test_that("brush dependent identification works correctly", {
     # Setting up a hierarchy.          
-    redDimArgs[1,iSEE:::.brushByPlot] <- ""
+    redDimArgs[1,iSEE:::.brushByPlot] <- "---"
     featExprArgs[1,iSEE:::.brushByPlot] <- "Reduced dimension plot 1"
     featExprArgs[2,iSEE:::.brushByPlot] <- "Reduced dimension plot 1"
     colDataArgs[1,iSEE:::.brushByPlot] <- "Feature expression plot 1"

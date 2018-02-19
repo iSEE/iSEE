@@ -64,7 +64,8 @@
     col.vec[break.vec == 0] <- colors.to.use[2]
     col.vec[break.vec > 0] <- colors.to.use[3]
     break.vec <- scales::rescale(break.vec, to=c(0, 1), from=limits)
-    fill_cmd <- sprintf("scale_fill_gradientn(colors=c('%s'), values=c(%s), limits=c(%s), na.value='grey50') +", 
+    fill_cmd <- sprintf("scale_fill_gradientn(colors=c('%s'), values=c(%s), 
+    limits=c(%s), na.value='grey50') +", 
                         paste0(col.vec, collapse="','"),
                         paste0(break.vec, collapse=","),
                         paste0(limits, collapse=","))
@@ -98,13 +99,15 @@
       sprintf("labs(x='', y='') +"), 
       sprintf("scale_y_continuous(breaks=1, labels='%s') +", orderBy[i]), 
       color_cmd,
-      sprintf("theme(axis.text.x=element_blank(), axis.ticks=element_blank(), axis.title.x=element_blank(), rect=element_blank(), line=element_blank(), axis.title.y=element_blank(), plot.margin = unit(c(0,0,-0.5,0), 'lines'));"),
-      sprintf("legend%i <- cowplot::get_legend(p%i)", i, i)
+      "theme(axis.text.x=element_blank(), axis.ticks=element_blank(), axis.title.x=element_blank(), 
+    rect=element_blank(), line=element_blank(), axis.title.y=element_blank(), 
+    plot.margin = unit(c(0,0,-0.5,0), 'lines'));",
+      sprintf("legend%i <- cowplot::get_legend(p%i + theme(legend.position='bottom', plot.margin = unit(c(0,0,0,0), 'lines')))", i, i)
     )
   })
   
   extra_cmds[["legends"]] <- list(
-    sprintf("legends <- list(%s);", paste0("legend", seq_len(length(orderBy)), collapse=","))
+    sprintf("legends <- list(%s);", paste0("legend", seq_len(length(orderBy)), collapse=", "))
   )
   
   # Evaluate to get the individual legends
@@ -115,8 +118,8 @@
   extra_cmds[["grid"]] <- list(
     sprintf("cowplot::plot_grid(%s, ncol=1, align='v', rel_heights=c(%s))", 
             paste0("p", c(seq_along(orderBy), 0), 
-                   c(rep("+ theme(legend.position='none')", length(orderBy)), ""), collapse = ","),
-            paste(c(rep(0.1, length(orderBy)), 1), collapse = ","))
+                   c(rep(" + theme(legend.position='none')", length(orderBy)), ""), collapse = ", "),
+            paste(c(rep(0.1, length(orderBy)), 1), collapse = ", "))
   )
   
   to_eval <- extra_cmds[["grid"]]

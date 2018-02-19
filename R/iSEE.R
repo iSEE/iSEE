@@ -1342,7 +1342,7 @@ iSEE <- function(
             output[[legend_field]] <- renderPlot({
                 force(rObjects[[legend_field]])
                 gg <- pObjects$cached_plots[[plot_name]]
-                cowplot::plot_grid(plotlist = gg)
+                cowplot::plot_grid(plotlist = gg, ncol=1)
             })
 
             # Triggering an update of the selected order.

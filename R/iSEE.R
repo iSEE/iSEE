@@ -1301,7 +1301,7 @@ iSEE <- function(
                 limit <- 100
                 if (length(incoming) > limit) {
                     showNotification(sprintf("only the first %i features used", limit), type="warning")
-                    incoming <- head(incoming, limit)
+                    incoming <- utils::head(incoming, limit)
                 }
 
                 combined <- union(pObjects$memory[[mode0]][i0, .heatMapFeatName][[1]], incoming)

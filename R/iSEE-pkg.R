@@ -19,7 +19,7 @@
 #' dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu
 #' notificationItem box
 #' @importFrom utils packageVersion read.delim citation sessionInfo
-#' browseURL
+#' browseURL head
 #' @importFrom shinyjs useShinyjs disable enable disabled
 #' @importFrom ggplot2 ggplot geom_point labs theme_void aes_string geom_violin
 #'   theme_bw facet_wrap ylab aes theme scale_x_continuous scale_y_continuous

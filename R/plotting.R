@@ -897,9 +897,9 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
     if (identical(nrow(current), 1L)) { # lasso has only a start point
       point_cmd <- sprintf("geom_point(aes(x = %s, y = %s), 
     data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2]),
-    inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s', size = %s, shape = %s)",
+    inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s', shape = %s)",
         x, y, plot_name, plot_name, panel_colors[mode],
-        .lassoStartSize, .lassoStartShape)
+        .lassoStartShape)
       full_cmd_list <- list(point_cmd)
       
     } else if (is_closed){ # lasso is closed
@@ -923,7 +923,7 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
     inherit.aes=FALSE, alpha=1, color='%s', linetype = 'longdash')", 
         x, y, plot_name, plot_name, panel_colors[mode])
     
-        point_cmd <- sprintf("geom_point(aes(x = %s, y = %s, size = First, shape = First), 
+        point_cmd <- sprintf("geom_point(aes(x = %s, y = %s, shape = First), 
     data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2], 
                     First = seq_len(nrow(all_lassos[['%s']]))==1L),
     inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s')",
@@ -933,13 +933,10 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
           "scale_shape_manual(values = c('TRUE' = %s, 'FALSE' = %s))",
           .lassoStartShape, .lassoWaypointShape
         )
-        scale_size_cmd <- sprintf(
-          "scale_size_manual(values = c('TRUE' = %s, 'FALSE' = %s))",
-          .lassoStartSize, .lassoWaypointSize
-        )
-        guides_cmd <- "guides(shape = 'none', size = 'none')"
+        
+        guides_cmd <- "guides(shape = 'none')"
         full_cmd_list <- list(
-          path_cmd, point_cmd, scale_shape_cmd, scale_size_cmd, guides_cmd)
+          path_cmd, point_cmd, scale_shape_cmd, guides_cmd)
         
     }
    
@@ -950,6 +947,4 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 
 # Lasso constants
 .lassoStartShape <- 22
-.lassoWaypointShape <- 21
-.lassoStartSize <- 1.5
-.lassoWaypointSize <- 0.5
+.lassoWaypointShape <- 20

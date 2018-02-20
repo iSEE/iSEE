@@ -792,7 +792,7 @@ iSEE <- function(
                         return(NULL)
                     }
 
-                    # Closing the loop if you click close to the starting point.
+                    # Closing the lasso if you click close to the starting point.
                     xrange <- cur_click$domain$right - cur_click$domain$left
                     yrange <- cur_click$domain$top - cur_click$domain$bottom
                     if (!is.null(previous)

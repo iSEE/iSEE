@@ -48,6 +48,14 @@
   limits <- range(min.obs, param_choices[[.heatMapLower]], 
                   max.obs, param_choices[[.heatMapUpper]], finite=TRUE, na.rm=TRUE)
   if (param_choices[[.heatMapCentering]] == .heatMapYesTitle) {
+    validate(need( 
+      param_choices[[.heatMapLower]] < 0L,
+      sprintf("Lower bound must be negative") 
+    ))
+    validate(need( 
+      param_choices[[.heatMapUpper]] > 0L,
+      sprintf("Upper bound must be positive") 
+    ))
     # Centered values - use selected color scale
     colors.to.use <- strsplit(param_choices[[.heatMapCenteredColors]], "-")[[1]]
     break.vec <- c(param_choices[[.heatMapLower]], 0, param_choices[[.heatMapUpper]])

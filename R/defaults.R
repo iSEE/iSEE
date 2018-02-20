@@ -326,7 +326,7 @@ heatMapPlotDefaults <- function(se, number) {
 #' @rdname INTERNAL_override_defaults
 #' @seealso
 #' \code{?\link{defaults}},
-#' \code{\ilnk{.setup_memory}}
+#' \code{\link{.setup_memory}}
 .override_defaults <- function(def, usr)
 {
     ndef <- nrow(def)

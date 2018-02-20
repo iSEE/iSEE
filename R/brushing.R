@@ -58,7 +58,7 @@
     return(g)
 }
 
-#' Changes the brushing source
+#' Change the brushing source
 #'
 #' Replaces the edge in the graph if the choice of plot to receive the brush from changes in the current panel.
 #'

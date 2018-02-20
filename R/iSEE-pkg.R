@@ -12,7 +12,7 @@
 #' shinyApp tabPanel HTML br selectInput renderPlot plotOutput uiOutput 
 #' sliderInput tagList textInput column observeEvent radioButtons
 #' need tags hr brushOpts brushedPoints observe validate checkboxInput 
-#' conditionalPanel renderPrint singleton showModal modalDialog 
+#' conditionalPanel renderPrint showModal modalDialog 
 #' updateSelectInput isolate showNotification p runApp a em strong
 #' selectizeInput updateSelectizeInput updateRadioButtons req
 #' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage

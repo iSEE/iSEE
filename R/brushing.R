@@ -19,6 +19,9 @@
 #' Note that this function will not determine if edges are valid, i.e., between two active panels.
 #' This is the responsibility of other functions, namely \code{\link{.sanitize_memory}}.
 #'
+#' It is also worth mentioning here that the concept of a \dQuote{brush} includes selection via both the standard Shiny brush as well as our custom lasso method.
+#' Unless we explicitly refer to a Shiny brush, any mentions of brushing are assumed to refer to both lasso and Shiny brushing.
+#'
 #' @author Aaron Lun
 #' @rdname INTERNAL_spawn_brush_chart
 #' @seealso
@@ -188,15 +191,15 @@
     return(old_children)
 }
 
-#' Test if brushes are identical
+#' Test if Shiny brushes are identical
 #' 
-#' Check whether the brush coordinates have actually changed.
+#' Check whether brush coordinates have actually changed between two Shiny brush objects.
 #'
 #' @param old_brush A Shiny brush object with the elements \code{xmin}, \code{xmax}, \code{ymin} and \code{ymax}.
 #' @param new_brush Another  Shiny brush object for the same plot.
 #'
 #' @details
-#' This function checks whether there are any significant differences in the rectangular regions defined by two brushes.
+#' This function checks whether there are any significant differences in the rectangular regions defined by two Shiny brushes.
 #' If there is no change, there is no need to waste time updating the plot.
 #'
 #' The tolerance is defined as one millionth of the x- and y-axis range for \code{xmin}/\code{xmax} and \code{ymin}/\code{ymax}, respectively.
@@ -232,9 +235,9 @@
     return(TRUE)
 }
 
-#' Checks if a transmitting panel has a brush or lasso
+#' Checks if a transmitting panel has a Shiny brush or lasso
 #' 
-#' A convenience function that encodes the transmitter name, and checks whether a brush or lasso currently exists in the memory of the transmitting plot.
+#' A convenience function that encodes the transmitter name, and checks whether a Shiny brush or lasso currently exists in the memory of the transmitting plot.
 #'
 #' @param transmitter String containing the decoded name of a transmitting panel.
 #' @param memory A list of DataFrames containing parameters for each panel of each type.

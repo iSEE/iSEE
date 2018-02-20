@@ -12,7 +12,7 @@
 #' shinyApp tabPanel HTML br selectInput renderPlot plotOutput uiOutput 
 #' sliderInput tagList textInput column observeEvent radioButtons
 #' need tags hr brushOpts brushedPoints observe validate checkboxInput 
-#' conditionalPanel renderPrint singleton showModal modalDialog 
+#' conditionalPanel renderPrint showModal modalDialog 
 #' updateSelectInput isolate showNotification p runApp a em strong
 #' selectizeInput updateSelectizeInput updateRadioButtons req
 #' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
@@ -26,19 +26,21 @@
 #'   coord_cartesian geom_tile scale_x_discrete scale_y_discrete
 #'   scale_size_area guides scale_color_manual scale_color_gradientn
 #'   scale_fill_manual scale_fill_gradientn geom_rect
+#' @importFrom mgcv in.out
 #' @importFrom vipor offsetX
+#' @importFrom reshape2 melt
 #' @importFrom DT datatable renderDataTable dataTableOutput
 #' @importFrom AnnotationDbi mapIds keytypes
 #' @importFrom rentrez entrez_summary
 #' @importFrom colourpicker colourInput
 #' @importFrom shinyAce aceEditor
 #' @importFrom methods new slot is
-#' @importFrom igraph make_graph topo_sort are_adjacent incident add_edges
-#' adjacent_vertices is_dag simplify V delete.vertices set_vertex_attr
-#' add_vertices
+#' @importFrom igraph topo_sort V delete.vertices 
+#' set_vertex_attr add_vertices
 #' @importFrom graphics plot
 #' @importFrom grDevices hcl col2rgb rgb
 #' @importFrom viridisLite viridis
+#' @importFrom cowplot plot_grid
 #' @author Aaron Lun \email{alun@@wehi.edu.au}
 #' @author Charlotte Soneson \email{charlotte.soneson@@uzh.ch}
 #' @author Federico Marini \email{marinif@@uni-mainz.de}

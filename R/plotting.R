@@ -538,21 +538,16 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
     if (color_choice==.colorByRowTableTitle) {
       chosen_tab <- .decoded2encoded(param_choices[[.colorByRowTable]])
       chosen_gene <- all_memory$rowStatTable[chosen_tab, .rowStatSelected]
-      validate(need(
-        length(chosen_gene)==1L,
-        sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByRowTableTitle)
-      ))
       assay_choice <- param_choices[[.colorByRowTableAssay]]
-
     } else {
       chosen_gene <- param_choices[[.colorByFeatName]]
-      validate(need(
-        chosen_gene %in% rownames(se),
-        sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByFeatNameTitle)
-      ))
       assay_choice <- param_choices[[.colorByFeatNameAssay]]
-
     }
+
+    validate(need(
+      length(chosen_gene)==1L,
+      sprintf("Invalid '%s' > '%s' input", .colorByField, color_choice)
+    ))
 
     assay_name <- assayNames(se)[assay_choice]
     assay_access <- ifelse(
@@ -565,7 +560,6 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
                           assay_choice, deparse(chosen_gene))
     output$label <- .gene_axis_label(se, chosen_gene, assay_choice, multiline = TRUE)
     colormap_cmd <- sprintf("assayColorMap(colormap, %s, discrete=%%s)(%%i)", assay_access)
-
   }
 
   output$FUN <- .create_color_function_chooser(colormap_cmd)
@@ -594,21 +588,16 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
     if (color_choice==.colorByRowTableTitle) {
       chosen_tab <- .decoded2encoded(param_choices[[.colorByRowTable]])
       chosen_gene <- all_memory$rowStatTable[chosen_tab, .rowStatSelected]
-      validate(need(
-        length(chosen_gene)==1L,
-        sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByRowTableTitle)
-      ))
       col_choice <- param_choices[[.colorByRowTableColor]]
-
     } else {
       chosen_gene <- param_choices[[.colorByFeatName]]
-      validate(need(
-        chosen_gene %in% rownames(se),
-        sprintf("Invalid '%s' > '%s' input", .colorByField, .colorByFeatNameTitle)
-      ))
       col_choice <- param_choices[[.colorByFeatNameColor]]
-
     }
+
+    validate(need(
+        length(chosen_gene)==1L,
+        sprintf("Invalid '%s' > '%s' input", .colorByField, color_choice)
+    ))
 
     output$cmd <- sprintf("plot.data$ColorBy <- FALSE;
 plot.data[%s, 'ColorBy'] <- TRUE;

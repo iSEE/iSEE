@@ -101,6 +101,29 @@
     tracked_code <- c(tracked_code, collated, "")
   }
 
+  # Adding the heatmap code.
+  tracked_heat <- character(0)
+  hobjs <- as.data.frame(rObjects$active_panels)
+  hobjs <- hobjs[hobjs$Type=="heatMapPlot",]
+  heat_names <- paste0(hobjs$Type, hobjs$ID)
+
+  for (i in seq_along(heat_names)) {
+    cur_cmds <- pObjects$commands[[heat_names[i]]]
+
+    tracked_heat <- c(tracked_heat,
+                      strrep("#", 80),
+                      paste0("## ", .decode_panel_name("heatMapPlot", hobjs$ID[i])),
+                      strrep("#", 80), "",
+                      cur_cmds[["y"]], cur_cmds[["order"]], "")
+
+    tracked_heat <- c(tracked_heat, "# Constructing heat map", cur_cmds[["heatmap"]], "",
+                      "# Adding annotations", cur_cmds[["annotations"]], "", 
+                      "# Generating legends", cur_cmds[["legends"]], "",
+                      "# Laying out the grid", cur_cmds[["grid"]], "")
+  }
+  tracked_code <- c(tracked_code, tracked_heat)
+
+  # Adding session information.
   tracked_code <- c(tracked_code,
                     strrep("#", 80),
                     "## To guarantee the reproducibility of your code, you should also",
@@ -126,8 +149,6 @@
   ordering <- topo_sort(brush_chart, "out")
   order(match(node_names, names(ordering)))
 }
-
-
 
 .snapshot_graph_linkedpanels <- function(rObjects, pObjects) 
 # reads in the stored r/p objects, and creates a graph of the current links among

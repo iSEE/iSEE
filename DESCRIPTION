@@ -24,6 +24,7 @@ Imports:
     BiocGenerics, 
     S4Vectors,
     utils,
+    stats,
     shiny,
     shinydashboard,
     shinyAce,

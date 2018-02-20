@@ -114,6 +114,9 @@ iSEE <- function(
   # Setting up inputs for DT::datatable something to play with.
   gene_data <- as.data.frame(rowData(se))
   rownames(gene_data) <- rownames(se)
+  if (ncol(gene_data)==0L) {
+    gene_data$Present <- !logical(nrow(gene_data))
+  }
   tab_brush_col <- "Selected"
   while (tab_brush_col %in% colnames(gene_data)) {
     tab_brush_col <- paste0("_", tab_brush_col)
@@ -1282,8 +1285,8 @@ iSEE <- function(
             plot_name <- paste0(mode0, i0)
 
             # Triggering an update of the selected elements.
-            button_name <- paste0(plot_name, "_", .heatMapImport)
-            observeEvent(input[[button_name]], {
+            import_button <- paste0(plot_name, "_", .heatMapImport)
+            observeEvent(input[[import_button]], {
                 origin <- pObjects$memory[[mode0]][i0, .heatMapImportSource]
                 enc <- .encode_panel_name(origin)
 
@@ -1305,7 +1308,7 @@ iSEE <- function(
                 }
 
                 combined <- union(pObjects$memory[[mode0]][i0, .heatMapFeatName][[1]], incoming)
-                updateSelectizeInput(session, paste0(mode0, i0, "_", .heatMapFeatName), choices = feature_choices,
+                updateSelectizeInput(session, paste0(plot_name, "_", .heatMapFeatName), choices = feature_choices,
                                      server = TRUE, selected = combined)
             }, ignoreInit=TRUE)
 
@@ -1330,20 +1333,25 @@ iSEE <- function(
 
                 p.out <- .make_heatMapPlot(i0, pObjects$memory, pObjects$coordinates, se, colormap)
                 pObjects$commands[[plot_name]] <- p.out$cmd
-                pObjects$coordinates[[plot_name]] <- p.out$xy[,c("X", "Y")]
-                pObjects$cached_plots[[plot_name]] <- list(plot = p.out$plot,
-                                                           legends = p.out$legends)
+                pObjects$coordinates[[plot_name]] <- p.out$xy # Caching the expression matrix.
+                pObjects$cached_plots[[plot_name]] <- p.out$legends # Caching the legend plot for downstream use.
                 p.out$plot
             })
 
             # Defining the legend.
             output[[legend_field]] <- renderPlot({
                 force(rObjects[[legend_field]])
-                gg <- pObjects$cached_plots[[plot_name]]$legends
-                print(cowplot::plot_grid(plotlist = gg))
+                gg <- pObjects$cached_plots[[plot_name]]
+                cowplot::plot_grid(plotlist = gg, ncol=1)
+            })
 
-                # Charlotte: add your legend here.
-                showNotification("I AM LEGEND", type="message")
+            # Triggering an update of the selected order.
+            cluster_button <- paste0(plot_name, "_", .heatMapCluster)
+            observeEvent(input[[cluster_button]], {
+                emat <- pObjects$coordinates[[plot_name]]
+                new_order <- match(.cluster_genes(emat), names(feature_choices))
+                updateSelectizeInput(session, paste0(plot_name, "_", .heatMapFeatName), choices = feature_choices,
+                                     server = TRUE, selected = new_order)
             })
         })
 
@@ -1358,10 +1366,12 @@ iSEE <- function(
 
                 observeEvent(input[[cur_field]], {
                     req(input[[cur_field]])
-                    if (identical(input[[cur_field]], as.character(pObjects$memory[[mode0]][i0, field0][[1]]))) {
+                    existing <- pObjects$memory[[mode0]][,field0][[i0]]
+                    incoming <- as(input[[cur_field]], typeof(existing))
+                    if (identical(incoming, existing)) {
                         return(NULL)
                     }
-                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, field0, input[[cur_field]])
+                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, field0, incoming)
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                 }, ignoreInit=TRUE)
             })

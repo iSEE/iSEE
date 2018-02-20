@@ -281,33 +281,53 @@ rowDataPlotDefaults <- function(se, number) {
 #' @rdname defaults 
 #' @export
 heatMapPlotDefaults <- function(se, number) {
-  waszero <- number==0 # To ensure that we define all the fields with the right types.
-  if (waszero) number <- 1
+    waszero <- number==0 # To ensure that we define all the fields with the right types.
+    if (waszero) number <- 1
+    
+    def_assay <- .set_default_assay(se)
+    
+    out <- new("DataFrame", nrows=as.integer(number))
+    out[[.heatMapAssay]] <- def_assay
+    out[[.heatMapFeatNamePanelOpen]] <- FALSE
+    out[[.heatMapFeatName]] <- rep(list(1L), nrow(out))
   
-  def_assay <- .set_default_assay(se)
+    out[[.heatMapColDataPanelOpen]] <- FALSE
+    out[[.heatMapColData]] <- rep(list(colnames(colData(se))[1]), nrow(out))
+    out[[.heatMapImportSource]] <- .noSelection
   
-  out <- new("DataFrame", nrows=as.integer(number))
-  out[[.heatMapAssay]] <- def_assay
-  out[[.heatMapFeatNamePanelOpen]] <- FALSE
-  out[[.heatMapFeatName]] <- rep(list(1L), nrow(out))
-
-  out[[.heatMapColDataPanelOpen]] <- FALSE
-  out[[.heatMapColData]] <- rep(list(colnames(colData(se))[1]), nrow(out))
-  out[[.heatMapImportSource]] <- .noSelection
-
-  out[[.heatMapColorPanelOpen]] <- FALSE
-  out[[.heatMapCentering]] <- .heatMapYesTitle
-  out[[.heatMapScaling]] <- .heatMapNoTitle
-  out[[.heatMapLower]] <- -5
-  out[[.heatMapUpper]] <- 5
-  out[[.heatMapCenteredColors]] <- "purple-black-yellow"
-
-  if (waszero) out <- out[0,,drop=FALSE]
-  return(out)
+    out[[.heatMapColorPanelOpen]] <- FALSE
+    out[[.heatMapCentering]] <- .heatMapYesTitle
+    out[[.heatMapScaling]] <- .heatMapNoTitle
+    out[[.heatMapLower]] <- -Inf
+    out[[.heatMapUpper]] <- Inf
+    out[[.heatMapCenteredColors]] <- "purple-black-yellow"
+  
+    if (waszero) out <- out[0,,drop=FALSE]
+    return(out)
 }
 
+#' Override default parameters
+#'
+#' Override the default settings of various parameters with whatever the user has supplied.
+#'
+#' @param def A DataFrame of default values, generated using \code{\link{redDimPlotDefaults}} or similar functions.
+#' @param usr A DataFrame or data.frame of user-specified values, to use to replace the defaults.
+#' 
+#' @return A DataFrame with the default parameter settings replaced by user-specified values, where appropriate.
+#'
+#' @details
+#' Not all arguments in \code{def} need to be specified in \code{usr}.
+#' Parameters will only be overridden for the specified arguments.
+#'
+#' This function expects that \code{nrow(def)} is greater than or equal to \code{nrow(usr)}.
+#' Parameters in \code{def} will only be overwritten for the first \code{nrow(usr)} panels.
+#' 
+#' @author Aaron Lun
+#' @rdname INTERNAL_override_defaults
+#' @seealso
+#' \code{?\link{defaults}},
+#' \code{\link{.setup_memory}}
 .override_defaults <- function(def, usr)
-# Overriding the defaults with whatever the user has supplied.
 {
     ndef <- nrow(def)
     nusr <- nrow(usr)
@@ -330,6 +350,26 @@ heatMapPlotDefaults <- function(se, number) {
     return(def)
 }    
 
+#' Add general plot defaults 
+#'
+#' Add defautl values for general plot parameters, including row and column-based plots.
+#'
+#' @param incoming A DataFrame with non-zero number of rows, containing default parameters that have already been filled for specific panel types.
+#' 
+#' @return A DataFrame with additional fields for general plot parameters, filled with default values.
+#' 
+#' @details
+#' The \code{.add_general_parameters} function adds general parameters such as parameter box opening flags, brush specifications, and zoom and lasso data fields.
+#' All parameters are initialized at their default values.
+#'
+#' The \code{.add_general_parameters_for_column_plots} function adds general parameters for column-based plots,
+#' while the \code{.add_general_parameters_for_row_plots} function adds them for row-based plots.
+#' These mainly differ in how colouring is performed.
+#' 
+#' @author Aaron Lun
+#' @rdname INTERNAL_add_general_parameters
+#' @seealso
+#' \code{?\link{defaults}}
 .add_general_parameters <- function(incoming) {
     incoming[[.plotParamPanelOpen]] <- FALSE
     incoming[[.colorParamPanelOpen]] <- FALSE
@@ -346,6 +386,7 @@ heatMapPlotDefaults <- function(se, number) {
     return(incoming)
 }
 
+#' @rdname INTERNAL_add_general_parameters
 .add_general_parameters_for_column_plots <- function(incoming, se) {
     incoming <- .add_general_parameters(incoming)
 
@@ -362,6 +403,7 @@ heatMapPlotDefaults <- function(se, number) {
     return(incoming)
 }
 
+#' @rdname INTERNAL_add_general_parameters
 .add_general_parameters_for_row_plots <- function(incoming, se) {
     incoming <- .add_general_parameters(incoming)
 
@@ -377,6 +419,23 @@ heatMapPlotDefaults <- function(se, number) {
     return(incoming)
 }
 
+#' Set the default assay
+#'
+#' Identifies the index of the assay containing the log-count matrix.
+#'
+#' @param se A SummarizedExperiment object.
+#' 
+#' @return An integer scalar containing the index of the \code{"logcounts"} assay, if available; otherwise 1L.
+#'
+#' @details
+#' It usually makes most sense to perform visualization (colouring, examination of expression) on the log-expression values,
+#' as this provides good dynamic range and easy interpretability.
+#' This function conveniently identifies the index of the assay named \code{"logcounts"} for use as the default when it is available.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_set_default_assay
+#' @seealso
+#' \code{?\link{defaults}}
 .set_default_assay <- function(se) { 
     def_assay <- which(assayNames(se)=="logcounts")
     if (length(def_assay)==0L) {

@@ -81,10 +81,10 @@
 #' @seealso
 #' \code{\link{.spawn_table_links}}
 .check_for_tab <- function(mode, i, memory, by_field, ref.title, table_field) {
-    if (mode_memory[i, by_field]!=ref.title) {
+    if (memory[[mode]][i, by_field]!=ref.title) {
         return(NULL)
     }
-    cur_tab <- mode_memory[i, table_field]
+    cur_tab <- memory[[mode]][i, table_field]
     if (cur_tab=="") {
         return(NULL) 
     }

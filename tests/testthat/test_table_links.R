@@ -187,11 +187,6 @@ test_that("table observers work correctly", {
     expect_identical("Row statistics table 1", pObjects$memory$redDimPlot[1, iSEE:::.colorByRowTable])
 })
 
-test_that("identification of linked genes is done correctly", {
-    expect_identical(iSEE:::.find_linked_gene("Row statistics table 1", list(rowStatTable1_rows_selected=1L)), 1L)
-    expect_identical(iSEE:::.find_linked_gene("Row statistics table 1", list(rowStatTable2_rows_selected=1L)), NULL)
-})
-
 test_that("deleting table links is done correctly", {
     pObjects <- new.env()
     pObjects$table_links <- tabs

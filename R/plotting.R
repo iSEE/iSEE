@@ -442,7 +442,11 @@ plot.data$Y <- tmp;")
 
   plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +" # preserving the x-axis range.
   plot_cmds[["theme_base"]] <- "theme_bw() +"
-  plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
+  plot_cmds[["theme_custom"]] <- "theme(
+  legend.position = 'bottom',
+  legend.box = 'vertical',
+  axis.text.x = element_text(angle = 90)
+  )"
 
   # lim_cmds must be executed before setup_cmds, to ensure bounds are correctly defined.
   return(list(data=data_cmds, lim=lim_cmds, brush=brush_cmds, setup=setup_cmds, plot=plot_cmds))
@@ -508,8 +512,11 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
 
   plot_cmds[["guides"]] <- "guides(size = 'none') +"
   plot_cmds[["theme_base"]] <- "theme_bw() +"
-  plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom', legend.box = 'vertical')"
-
+  plot_cmds[["theme_custom"]] <- "theme(
+  legend.position = 'bottom',
+  legend.box = 'vertical',
+  axis.text.x = element_text(angle = 90)
+  )"
   return(list(data=list(), lim=list(), brush=brush_cmds, setup=setup_cmds, plot=plot_cmds))
 }
 

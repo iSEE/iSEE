@@ -34,6 +34,8 @@ Imports:
     colourpicker,
     igraph,
     vipor,
+    mgcv,
+    reshape2,
     rentrez,
     AnnotationDbi,
     graphics,

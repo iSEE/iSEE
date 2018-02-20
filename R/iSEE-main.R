@@ -334,7 +334,7 @@ iSEE <- function(
           title = "About iSEE", size = "m", fade = TRUE,
           footer = NULL, easyClose = TRUE,
           tagList(
-             iSEE_info(), br(), br(),
+             iSEE_info, br(), br(),
              HTML("If you use this package, please use the following citation information:"),
              renderPrint({
                  citation("iSEE")

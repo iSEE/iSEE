@@ -136,13 +136,15 @@
   return(list(cmd=c(data_cmds, extra_cmds), xy=eval_env$value.mat, plot=plot_out, legends=legends))
 }
 
+#' @importFrom shiny showNotification req
+#' @importFrom stats dist hclust as.dendrogram order.dendrogram
 .cluster_genes <- function(X) {
-   if (is.null(dim(X)) || nrow(X) < 2L) {
-       showNotification("must have at least 2 features for clustering", type="error")
-       req(FALSE)
-   }
-   D <- dist(X)
-   hc <- hclust(D)
-   d <- as.dendrogram(hc)
-   rownames(X)[order.dendrogram(d)]
+     if (is.null(dim(X)) || nrow(X) < 2L) {
+         showNotification("must have at least 2 features for clustering", type="error")
+         req(FALSE)
+     }
+     D <- dist(X)
+     hc <- hclust(D)
+     d <- as.dendrogram(hc)
+     rownames(X)[order.dendrogram(d)]
 }

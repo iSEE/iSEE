@@ -17,23 +17,14 @@
 #' @param rowStatMax An integer scalar specifying the maximum number of row statistics tables in the interface.
 #' @param rowDataMax An integer scalar specifying the maximum number of row data plots in the interface.
 #' @param heatMapMax An integer scalar specifying the maximum number of heatmaps in the interface.
-#'
-#' @param initialPanels A DataFrame specifying which panels should be created
-#' at initialization. This should contain a \code{Name} character field and a
-#' \code{Width} integer field, see Details.
-#' @param annot.orgdb An \code{org.*.db} annotation object from which
-#' Entrez identifiers can be retrieved.
-#' @param annot.keytype A string specifying the keytype to use to query
-#' \code{annot.orgdb}.
-#' @param annot.keyfield A string specifying the field of \code{rowData(se)}
-#' containing the keys of type \code{annot.keytype}. If \code{NULL}, the
-#' row names of \code{se} are used as the keys.
-#' @param colormap An \linkS4class{ExperimentColorMap} object that defines
-#' custom color maps to apply to individual \code{assays}, \code{colData},
-#' and \code{rowData} covariates.
-#' @param run_local A logical indicating whether the app is to be run
-#' locally or remotely on a server, which determines how documentation
-#' will be accessed.
+#' @param initialPanels A DataFrame specifying which panels should be created at initialization. 
+#' This should contain a \code{Name} character field and a \code{Width} integer field, see Details.
+#' @param annot.orgdb An \code{org.*.db} annotation object from which Entrez identifiers can be retrieved.
+#' @param annot.keytype A string specifying the keytype to use to query \code{annot.orgdb}.
+#' @param annot.keyfield A string specifying the field of \code{rowData(se)} containing the keys of type \code{annot.keytype}. 
+#' If \code{NULL}, the row names of \code{se} are used as the keys.
+#' @param colormap An \linkS4class{ExperimentColorMap} object that defines custom color maps to apply to individual \code{assays}, \code{colData}, and \code{rowData} covariates.
+#' @param run_local A logical indicating whether the app is to be run locally or remotely on a server, which determines how documentation will be accessed.
 #'
 #' @details Users can pass default parameters via DataFrame objects in
 #' \code{redDimArgs} and \code{featExprArgs}. Each object can contain
@@ -123,6 +114,9 @@ iSEE <- function(
   # Setting up inputs for DT::datatable something to play with.
   gene_data <- as.data.frame(rowData(se))
   rownames(gene_data) <- rownames(se)
+  if (ncol(gene_data)==0L) {
+    gene_data$Present <- !logical(nrow(gene_data))
+  }
   tab_brush_col <- "Selected"
   while (tab_brush_col %in% colnames(gene_data)) {
     tab_brush_col <- paste0("_", tab_brush_col)
@@ -340,7 +334,7 @@ iSEE <- function(
           title = "About iSEE", size = "m", fade = TRUE,
           footer = NULL, easyClose = TRUE,
           tagList(
-             iSEE_info(), br(), br(),
+             iSEE_info, br(), br(),
              HTML("If you use this package, please use the following citation information:"),
              renderPrint({
                  citation("iSEE")
@@ -767,12 +761,6 @@ iSEE <- function(
                     return(NULL)
                 }
 
-                # Destroying existing search fields, potentially from brushes in the old transmitter.
-                # Brushes for the new transmitter will be added during table re-rendering.
-                col_searches <- pObjects$memory[[mode0]][i0, .rowStatColSearch][[1]]
-                pObjects$memory$rowStatTable <- .update_list_element(
-                    pObjects$memory$rowStatTable, i0, .rowStatColSearch, character(length(col_searches)))
-
                 # Triggering update of the table.
                 rObjects[[tab_name]] <- .increment_counter(isolate(rObjects[[tab_name]]))
             }, ignoreInit=TRUE)
@@ -1103,36 +1091,6 @@ iSEE <- function(
                     }
                     pObjects$extra_plot_cmds[[plot_name]] <- extra_cmds
                     return(gg)
-
-                  withProgress(
-                    min = 0,
-                    max = 5,
-                    value = 0,
-                    message = plot_name,
-                    detail = "Initialising ...", session = session,
-                    expr = {
-                      incProgress(
-                        amount = 1,
-                        message = plot_name,
-                        detail = "processing ...", session = session)
-
-                      incProgress(
-                        amount = 1,
-                        message = plot_name,
-                        detail = "storing command ...", session = session)
-
-                      incProgress(
-                        amount = 1,
-                        message = plot_name,
-                        detail = "storing coordinates ...", session = session)
-
-                      incProgress(
-                        amount = 1,
-                        message = plot_name,
-                        detail = "rendering ...", session = session)
-
-                    }
-                  )
                 })
 
                 # Describing some general panel information.
@@ -1327,8 +1285,8 @@ iSEE <- function(
             plot_name <- paste0(mode0, i0)
 
             # Triggering an update of the selected elements.
-            button_name <- paste0(plot_name, "_", .heatMapImport)
-            observeEvent(input[[button_name]], {
+            import_button <- paste0(plot_name, "_", .heatMapImport)
+            observeEvent(input[[import_button]], {
                 origin <- pObjects$memory[[mode0]][i0, .heatMapImportSource]
                 enc <- .encode_panel_name(origin)
 
@@ -1346,11 +1304,11 @@ iSEE <- function(
                 limit <- 100
                 if (length(incoming) > limit) {
                     showNotification(sprintf("only the first %i features used", limit), type="warning")
-                    incoming <- head(incoming, limit)
+                    incoming <- utils::head(incoming, limit)
                 }
 
                 combined <- union(pObjects$memory[[mode0]][i0, .heatMapFeatName][[1]], incoming)
-                updateSelectizeInput(session, paste0(mode0, i0, "_", .heatMapFeatName), choices = feature_choices,
+                updateSelectizeInput(session, paste0(plot_name, "_", .heatMapFeatName), choices = feature_choices,
                                      server = TRUE, selected = combined)
             }, ignoreInit=TRUE)
 
@@ -1375,20 +1333,25 @@ iSEE <- function(
 
                 p.out <- .make_heatMapPlot(i0, pObjects$memory, pObjects$coordinates, se, colormap)
                 pObjects$commands[[plot_name]] <- p.out$cmd
-                pObjects$coordinates[[plot_name]] <- p.out$xy[,c("X", "Y")]
-                pObjects$cached_plots[[plot_name]] <- list(plot = p.out$plot,
-                                                           legends = p.out$legends)
+                pObjects$coordinates[[plot_name]] <- p.out$xy # Caching the expression matrix.
+                pObjects$cached_plots[[plot_name]] <- p.out$legends # Caching the legend plot for downstream use.
                 p.out$plot
             })
 
             # Defining the legend.
             output[[legend_field]] <- renderPlot({
                 force(rObjects[[legend_field]])
-                gg <- pObjects$cached_plots[[plot_name]]$legends
-                print(cowplot::plot_grid(plotlist = gg))
+                gg <- pObjects$cached_plots[[plot_name]]
+                cowplot::plot_grid(plotlist = gg, ncol=1)
+            })
 
-                # Charlotte: add your legend here.
-                showNotification("I AM LEGEND", type="message")
+            # Triggering an update of the selected order.
+            cluster_button <- paste0(plot_name, "_", .heatMapCluster)
+            observeEvent(input[[cluster_button]], {
+                emat <- pObjects$coordinates[[plot_name]]
+                new_order <- match(.cluster_genes(emat), names(feature_choices))
+                updateSelectizeInput(session, paste0(plot_name, "_", .heatMapFeatName), choices = feature_choices,
+                                     server = TRUE, selected = new_order)
             })
         })
 
@@ -1403,10 +1366,12 @@ iSEE <- function(
 
                 observeEvent(input[[cur_field]], {
                     req(input[[cur_field]])
-                    if (identical(input[[cur_field]], as.character(pObjects$memory[[mode0]][i0, field0][[1]]))) {
+                    existing <- pObjects$memory[[mode0]][,field0][[i0]]
+                    incoming <- as(input[[cur_field]], typeof(existing))
+                    if (identical(incoming, existing)) {
                         return(NULL)
                     }
-                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, field0, input[[cur_field]])
+                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, field0, incoming)
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                 }, ignoreInit=TRUE)
             })

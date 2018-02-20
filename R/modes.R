@@ -46,12 +46,12 @@
 #'
 #' # launch the app itself ----
 #'
-#' app <- mode_gating(sce, features = plot_features, featExprMax = 6)
+#' app <- modeGating(sce, features = plot_features, featExprMax = 6)
 #' if (interactive()) {
 #'   shiny::runApp(app, port = 1234)
 #' }
 
-mode_gating <- function(
+modeGating <- function(
   se, features,
   featExprMax = max(2, nrow(features)),
   ..., plot_width = 4){

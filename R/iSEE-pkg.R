@@ -41,6 +41,7 @@
 #' @importFrom grDevices hcl col2rgb rgb
 #' @importFrom viridisLite viridis
 #' @importFrom cowplot plot_grid
+#' @importFrom scales rescale
 #' @author Aaron Lun \email{alun@@wehi.edu.au}
 #' @author Charlotte Soneson \email{charlotte.soneson@@uzh.ch}
 #' @author Federico Marini \email{marinif@@uni-mainz.de}

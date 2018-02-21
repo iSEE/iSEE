@@ -42,7 +42,8 @@ Imports:
     graphics,
     grDevices,
     viridisLite,
-    cowplot
+    cowplot,
+    scales
 Suggests:
     testthat,
     BiocStyle,

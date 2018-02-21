@@ -1201,7 +1201,7 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 #' @param multiline A logical value that indicates whether feature and
 #' assay names should appear on separate lines.
 #'
-#' @return A \code{character} value to use as axis label.
+#' @return A character value to use as axis label.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_process_brushby_choice

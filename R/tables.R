@@ -80,8 +80,8 @@
 #' @rdname INTERNAL_check_for_tab
 #' @seealso
 #' \code{\link{.spawn_table_links}}
-.check_for_tab <- function(mode, id, memory, by_field, ref.title, table_field) {
-    if (memory[[mode]][id, by_field]!=ref.title) {
+.check_for_tab <- function(mode, i, memory, by_field, ref_title, table_field) {
+    if (memory[[mode]][i, by_field]!=ref_title) {
         return(NULL)
     }
     cur_tab <- memory[[mode]][id, table_field]

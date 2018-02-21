@@ -1,3 +1,23 @@
+#' Track code for the plots
+#' 
+#' Fetches all the code that was used to generate the plots during the live
+#' session of \code{iSEE}
+#' 
+#' @param rObjects A reactive list containing information for all panels (
+#' \code{rObjects$active_panels})
+#' @param pObjects An environment containing \code{memory}, a list of DataFrames
+#' containing parameters for each panel of each type; \code{brush_links}; 
+#' \code{commands} ; \code{extra_plot_cmds}. All of these will be normally 
+#' contained in the environment in use when running \code{iSEE} 
+#' @param se_name The name of the \code{SummarizedExperiment}/\code{SingleCellExperiment}
+#' object
+#' @param ecm_name The name of the \code{ExperimentColorMap} in use
+#'
+#' @return A vector containing the whole code, which can be further passed to 
+#' the instance of the \code{shinyAce} editor in the modal popup of the app
+#' 
+#' @author Federico Marini
+#' @rdname INTERNAL_track_it_all
 .track_it_all <- function(rObjects, pObjects, se_name, ecm_name) 
 {
   # Commands only reported for plots, not for the tables
@@ -141,8 +161,21 @@
   return(tracked_code)
 }
 
+
+#' Get the reporting order
+#'
+#' Reordering plots by whether or not they exhibited brushing.
+#' 
+#' @param active_plots The active plots, obtained for example after calling
+#' \code{as.data.frame(rObjects$active_panels)}
+#' @param brush_chart The links between brushed objects (e.g. via 
+#' \code{pObjects$brush_links})
+#'
+#' @return Indices for the plots, sorted upon active usage of brushing or not
+#' @author Federico Marini
+#' @rdname INTERNAL_get_reporting_order
+#' @importFrom igraph topo_sort
 .get_reporting_order <- function(active_plots, brush_chart) 
-# Reordering plots by whether or not they exhibited brushing.
 {
   N <- nrow(active_plots)
   node_names <- sprintf("%s%i", active_plots$Type, active_plots$ID)
@@ -150,9 +183,20 @@
   order(match(node_names, names(ordering)))
 }
 
+
+#' Plot a snapshot of the links among panels
+#'
+#' Reads in the stored reactive (\code{rObjects}) and the \code{pObjects}
+#' environment, and creates a graph of the current links among all panels 
+#' open in the app 
+#' @param rObjects A reactive list containing incrementable counters for all panels
+#' @param pObjects An environment containing \code{pObjects$brush_links}
+#'
+#' @return Plots the graph representing the snapshot of links among plots/panels
+#' @author Federico Marini
+#' @rdname INTERNAL_snapshot_graph_linkedpanels
+#' @importFrom igraph delete.vertices set_vertex_attr V
 .snapshot_graph_linkedpanels <- function(rObjects, pObjects) 
-# reads in the stored r/p objects, and creates a graph of the current links among
-# all panels open in the app  
 {
   cur_plots <- sprintf("%s%i", rObjects$active_panels$Type, rObjects$active_panels$ID)
   not_used <- setdiff(V(pObjects$brush_links)$name,cur_plots)
@@ -171,9 +215,22 @@
        vertex.color = panel_colors[V(currgraph_used)$plottype])
 }  
 
+
+#' Find links in the table used
+#' 
+#' Finds the links for the tables that are used, and sets the new edges in the graph
+#' this updated graph is then returned as output
+#'
+#' @param rObjects A reactive list containing info on the active panels
+#' @param pObjects An environment containing \code{table_links}, a list of DataFrames containing parameters for each table
+#' @param graph The graph object, generated for example with \code{pObjects$brush_links}, 
+#' after pruning of the unused vertices
+#'
+#' @return The updated graph
+#' @author Federico Marini
+#' @rdname INTERNAL_find_links_to_table
+#' @importFrom igraph add_edges
 .find_links_to_table <- function(rObjects, pObjects, graph)
-# finds the links for the tables that are used, and sets the new edges in the graph
-# this updated graph is then returned as output
 {
   tbl_objs <- rObjects$active_panels[rObjects$active_panels$Type=="rowStatTable",]
   cur_tables <- sprintf("%s%i",tbl_objs$Type,tbl_objs$ID)

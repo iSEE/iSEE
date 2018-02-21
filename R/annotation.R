@@ -16,6 +16,9 @@
 #' @return HTML content with more information about a selected gene
 #' @author Federico Marini
 #' @rdname INTERNAL_generate_annotation
+#' @importFrom AnnotationDbi mapIds
+#' @importFrom rentrez entrez_summary
+#' @importFrom shiny HTML
 .generate_annotation <- function(annot.orgdb, annot.keytype, annot.keyfield, gene_data, chosen_gene)
 {
   if (is.null(annot.orgdb)) {

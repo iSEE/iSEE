@@ -273,7 +273,7 @@
 #' Checks if any points are selected via a brush or closed lasso in a transmitting plot.
 #'
 #' @param mode String specifying the (encoded) panel type.
-#' @param i Integer specifying the ID of the panel of the specified type.
+#' @param id Integer scalar specifying the ID of the panel of the specified type.
 #' @param memory A list of DataFrames containing parameters for each panel of each type.
 #'
 #' @return A logical scalar specifying whether the specified panel contains a brush or a closed lasso.
@@ -282,11 +282,11 @@
 #' @seealso
 #' \code{\link{.transmitted_brush}},
 #' \code{\link{iSEE}}
-.any_point_selection <- function(mode, i, memory) {
-    if (!is.null(memory[[mode]][,.brushData][[i]])) {
+.any_point_selection <- function(mode, id, memory) {
+    if (!is.null(memory[[mode]][,.brushData][[id]])) {
         return(TRUE)       
     } 
-    lasso <- memory[[mode]][,.lassoData][[i]]
+    lasso <- memory[[mode]][,.lassoData][[id]]
     if (!is.null(lasso) && attr(lasso, "closed")) {
         return(TRUE)
     }

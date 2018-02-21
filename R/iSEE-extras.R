@@ -3,7 +3,7 @@
 #' Update an entry of a list field in a DataFrame with a new value.
 #'
 #' @param df A DataFrame, usually containing parameters for every panel of a given type.
-#' @param i An integer row index specifying a panel of interest.
+#' @param id An integer row index specifying a panel of interest.
 #' @param field String specifying the field of \code{df} that is a list.
 #' @param value Value to replace \code{df[,field][[i]]}.
 #'
@@ -17,9 +17,9 @@
 #' @rdname INTERNAL_update_list_element
 #' @seealso
 #' \code{\link{iSEE}}
-.update_list_element <- function(df, i, field, value) {
+.update_list_element <- function(df, id, field, value) {
     out <- df[[field]]
-    out[i] <- list(value)
+    out[id] <- list(value)
     df[[field]] <- out
     return(df)
 }
@@ -384,7 +384,7 @@ height_limits <- c(400L, 1000L)
 #' Trigger regeneration of a particular plot, clearing all selections from Shiny brushes or lasso waypoints.
 #' 
 #' @param mode String specifying the (encoded) panel type of the panel to be replotted.
-#' @param i Integer specifying the ID of the panel of the specified type.
+#' @param id Integer scalar specifying the ID of the panel of the specified type.
 #' @param pObjects An environment containing \code{memory}, a list of DataFrames containing parameters for each panel of each type.
 #' It should also contain a \code{force_rerender} logical vector.
 #' @param rObjects A reactive list containing incrementable counters for all panels,
@@ -406,8 +406,8 @@ height_limits <- c(400L, 1000L)
 #' @rdname INTERNAL_regenerate_unselected_plot
 #' @seealso 
 #' \code{\link{iSEE}}
-.regenerate_unselected_plot <- function(mode, i, pObjects, rObjects, input, session) {
-    plot_name <- paste0(mode, i)
+.regenerate_unselected_plot <- function(mode, id, pObjects, rObjects, input, session) {
+    plot_name <- paste0(mode, id)
     brush_id <- paste0(plot_name, "_", .brushField)
 
     if (!is.null(isolate(input[[brush_id]]))) {
@@ -420,7 +420,7 @@ height_limits <- c(400L, 1000L)
         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
 
         # Destroying any lasso waypoints as well.
-        pObjects$memory[[mode]] <- .update_list_element(pObjects$memory[[mode]], i, .lassoData, NULL)
+        pObjects$memory[[mode]] <- .update_list_element(pObjects$memory[[mode]], id, .lassoData, NULL)
     }
     return(invisible(NULL))
 }

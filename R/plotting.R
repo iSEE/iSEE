@@ -1434,7 +1434,7 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 #' Generate ggplot instruction to draw a rectangle brush
 #'
 #' @param mode String specifying the encoded panel type of the receiving plot.
-#' @param i Integer scalar specifying the index of a panel of the specified type,
+#' @param id Integer scalar specifying the index of a panel of the specified type,
 #' for the receiving plot.
 #' @param memory A list of DataFrames containing parameters for each panel of each type.
 #' @param flip A \code{logical} value that indicates whether \code{\link{coord_flip}}
@@ -1451,8 +1451,8 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 #' @rdname INTERNAL_self_brush_box
 #' @seealso 
 #' \code{\link{iSEE}}.
-.self_brush_box <- function(mode, i, memory, flip=FALSE) { 
-    current <- memory[[mode]][,.brushData][[i]]
+.self_brush_box <- function(mode, id, memory, flip=FALSE) { 
+    current <- memory[[mode]][,.brushData][[id]]
     if (is.null(current)) {
         return(NULL)
     }
@@ -1469,7 +1469,7 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
         ymax <- 'ymax'
     }
     
-    plot_name <- paste0(mode, i)
+    plot_name <- paste0(mode, id)
     cmd <- sprintf(
 "geom_rect(aes(xmin = %s, xmax = %s, ymin = %s, ymax = %s), color='%s', alpha=0, 
     data=do.call(data.frame, all_brushes[['%s']][c('xmin', 'xmax', 'ymin', 'ymax')]), inherit.aes=FALSE)",
@@ -1483,7 +1483,7 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 #' Generate ggplot instruction to draw a lasso brush
 #'
 #' @param mode String specifying the encoded panel type of the receiving plot.
-#' @param i Integer scalar specifying the index of a panel of the specified type,
+#' @param id Integer scalar specifying the index of a panel of the specified type,
 #' for the receiving plot.
 #' @param memory A list of DataFrames containing parameters for each panel of each type.
 #' @param flip A \code{logical} value that indicates whether \code{\link{coord_flip}}
@@ -1501,9 +1501,9 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 #' @rdname INTERNAL_self_brush_box
 #' @seealso 
 #' \code{\link{iSEE}}.
-.self_lasso_path <- function(mode, i, memory, flip=FALSE) {
-    current <- memory[[mode]][,.lassoData][[i]]
-    if (is.null(current) || !is.null(memory[[mode]][,.brushData][[i]])) {
+.self_lasso_path <- function(mode, id, memory, flip=FALSE) {
+    current <- memory[[mode]][,.lassoData][[id]]
+    if (is.null(current) || !is.null(memory[[mode]][,.brushData][[id]])) {
         return(NULL)
     }
     is_closed <- attr(current, "closed")
@@ -1516,7 +1516,7 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
         y <- "y"
     }
   
-    plot_name <- paste0(mode, i)
+    plot_name <- paste0(mode, id)
     
     if (identical(nrow(current), 1L)) { # lasso has only a start point
       point_cmd <- sprintf("geom_point(aes(x = %s, y = %s), 

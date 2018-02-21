@@ -70,7 +70,7 @@
     active_tab <- link_sources$tab
     row_brushable <- c(.noSelection, link_sources$row)
     col_brushable <- c(.noSelection, link_sources$col)
-    heatmap_sources <- c(link_sources$row, active_tab)
+    heatmap_sources <- c(.noSelection, link_sources$row, active_tab)
 
     for (i in seq_len(nrow(active_panels))) {
         mode <- active_panels$Type[i]

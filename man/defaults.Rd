@@ -98,6 +98,38 @@ Defaults to the first entry of \code{rowData(se)}.}
 }
 }
 
+\section{Heatmap parameters}{
+
+\describe{
+\item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
+Defaults to 1, i.e., the first assay in \code{se}.
+Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
+\item{\code{FeatNamePanelOpen}:}{Logical, should the feature selection panel be open upon initialization?
+Defaults to \code{FALSE}.}
+\item{\code{FeatName}:}{Integer list, the index of the feature(s) for which to show the expression in the heatmap. 
+Defaults to 1, i.e., the first feature in \code{se}.
+Alternatively, a string can be supplied containing the name of the feature.}
+\item{\code{ColDataPanelOpen}:}{Logical, should the column data selection panel be open upon initialization?
+Defaults to \code{FALSE}.}
+\item{\code{ColData}:}{Character list, which column(s) of \code{colData(se)} should be used to order the columns in the heatmap (and appear as annotation bars)? 
+Defaults to the first entry of \code{colData(se)}.}
+\item{\code{FeatNameSource}:}{Character, which other panel should be used to choose the features to show in the heatmap?
+ Defaults to \code{"---"}, which means that no panel is used for feature selection.}
+\item{\code{ColorPanelOpen}:}{Logical, should the color selection panel for the heatmap be open upon initialization?
+Defaults to \code{FALSE}.}
+\item{\code{Centering}:}{Character, should the rows of the matrix be mean-centered in the heatmap? 
+Defaults to \code{On}.}
+\item{\code{Scaling}:}{Character, should the rows of the matrix be scaled to unit variance in the heatmap? 
+Defaults to \code{Off}.}
+\item{\code{Lower}:}{Numeric, what should be the lower bound of the color scale for the values in the heatmap? All values below this threshold will be shown in the same color.}
+Defaults to -Inf, meaning that the lowest value in the data matrix will be used.
+\item{\code{Upper}:}{Numeric, what should be the upper bound of the color scale for the values in the heatmap? All values above this threshold will be shown in the same color.}
+Defaults to Inf, meaning that the highest value in the data matrix will be used.
+\item{\code{ColorScale}:}{Character, what color scale (in the form low-mid-high) should be used to color the heatmap when values are centered?
+Defaults to \code{purple-black-yellow}.}
+}
+}
+
 \section{Coloring parameters}{
 
 For the plots where each point represents a sample (i.e., all plots except for row data plots), the following options apply:

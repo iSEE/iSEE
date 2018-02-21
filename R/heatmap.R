@@ -1,3 +1,40 @@
+#' Makes a heatmap
+#' 
+#' Make a heatmap with features on the Y axis and samples on the X axis.
+#'
+#' @param id Integer vector specifying the index of the heatmap plot panel
+#' @param all_memory A \code{list} of \code{\linkS4class{DataFrame}}s, where each
+#' \code{\linkS4class{DataFrame}} corresponds to a panel type and contains the
+#' initial settings for each individual panel of that type.
+#' @param all_coordinates A \code{list} of \code{data.frame}s that contain
+#' the coordinates and covariates of data points visible in each of the plots;
+#' in particular data points excluded by "restrict" brushes are not included in
+#' the corresponding \code{data.frame}.
+#' @param se A \code{\linkS4class{SingleCellExperiment}} object.
+#' @param colormap An \code{\linkS4class{ExperimentColorMap}} object that defines
+#' custom color maps to apply to individual \code{assays}, \code{colData},
+#' and \code{rowData} covariates.
+#'
+#' @return A \code{list} that includes the following elements:
+#' \describe{
+#'   \item{cmd}{A \code{list} of \code{list} of commands
+#'   as \code{character} vectors to parse and evaluate to produce the final plot.
+#'   Each list element groups functionally related commands with a common purpose
+#'   that should be evaluated together, yet separately from other groups
+#'   for certains tasks).
+#'   }
+#'   \item{xy}{A \code{data.frame} that includes coordinates and covariates of
+#'   the plot.}
+#'   \item{plot}{A \code{\link{ggplot}} object that results of the evaluation
+#'   of \code{cmd} items.}
+#'   \item{legends}{A list of \code{\link{ggplot}} objects that contains color
+#'   legends for the column data annotations.}
+#' }
+#' 
+#' @author Charlotte Soneson, Aaron Lun, Kevin Rue-Albrecht 
+#' @rdname INTERNAL_make_heatMapPlot
+#' 
+#' @importFrom cowplot get_legend plot_grid
 .make_heatMapPlot <- function(id, all_memory, all_coordinates, se, colormap)
 # Makes a heatmap.
 {
@@ -133,7 +170,7 @@
   to_eval <- extra_cmds[["grid"]]
   plot_out <- eval(parse(text=to_eval), envir=eval_env)
 
-  return(list(cmd=c(data_cmds, extra_cmds), xy=eval_env$value.mat, plot=plot_out, legends=legends))
+  return(list(cmd=c(data_cmds, extra_cmds), xy=eval_env$plot.data, plot=plot_out, legends=legends))
 }
 
 #' @importFrom shiny showNotification req

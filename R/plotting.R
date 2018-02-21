@@ -1445,7 +1445,7 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 #'   \item{cmd}{A command, as \code{character} value, that overlay a rectangle
 #'   on the plot to indicate the position of an active brush.
 #'   }
-#'   \item{data}{The data from a brush, such as \code{input$plot_brush.}
+#'   \item{data}{The data from a brush, such as \code{input$plot_brush.}}
 #' }
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_self_brush_box

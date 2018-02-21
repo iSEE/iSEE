@@ -174,6 +174,7 @@
 #' @return Indices for the plots, sorted upon active usage of brushing or not
 #' @author Federico Marini
 #' @rdname INTERNAL_get_reporting_order
+#' @importFrom igraph topo_sort
 .get_reporting_order <- function(active_plots, brush_chart) 
 {
   N <- nrow(active_plots)
@@ -194,6 +195,7 @@
 #' @return Plots the graph representing the snapshot of links among plots/panels
 #' @author Federico Marini
 #' @rdname INTERNAL_snapshot_graph_linkedpanels
+#' @importFrom igraph delete.vertices set_vertex_attr V
 .snapshot_graph_linkedpanels <- function(rObjects, pObjects) 
 {
   cur_plots <- sprintf("%s%i", rObjects$active_panels$Type, rObjects$active_panels$ID)
@@ -227,6 +229,7 @@
 #' @return The updated graph
 #' @author Federico Marini
 #' @rdname INTERNAL_find_links_to_table
+#' @importFrom igraph add_edges
 .find_links_to_table <- function(rObjects, pObjects, graph)
 {
   tbl_objs <- rObjects$active_panels[rObjects$active_panels$Type=="rowStatTable",]

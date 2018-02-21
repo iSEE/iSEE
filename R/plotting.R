@@ -28,7 +28,7 @@ names(.all_aes_values) <- .all_aes_names
 #' 
 #' Make a plot in reduced dimensions embeddings on X/Y axes.
 #'
-#' @param id Integer vector specifying the index of the reduced dimension panel
+#' @param id Integer scalar specifying the index of the reduced dimension panel.
 #' @param all_memory A \code{list} of \code{\linkS4class{DataFrame}}s, where each
 #' \code{\linkS4class{DataFrame}} corresponds to a panel type and contains the
 #' initial settings for each individual panel of that type.
@@ -98,7 +98,7 @@ names(.all_aes_values) <- .all_aes_names
 #' 
 #' Make a plot of sample metadata on Y axis.
 #'
-#' @param id Integer vector specifying the index of the column data plot panel
+#' @param id Integer scalar specifying the index of the column data plot panel.
 #' @param all_memory A \code{list} of \code{\linkS4class{DataFrame}}s, where each
 #' \code{\linkS4class{DataFrame}} corresponds to a panel type and contains the
 #' initial settings for each individual panel of that type.
@@ -172,7 +172,7 @@ names(.all_aes_values) <- .all_aes_names
 #' 
 #' Make a plot of feature expression data on Y axis.
 #'
-#' @param id Integer vector specifying the index of the feature expression plot panel
+#' @param id Integer scalar specifying the index of the feature expression plot panel.
 #' @param all_memory A \code{list} of \code{\linkS4class{DataFrame}}s, where each
 #' \code{\linkS4class{DataFrame}} corresponds to a panel type and contains the
 #' initial settings for each individual panel of that type.
@@ -289,7 +289,7 @@ names(.all_aes_values) <- .all_aes_names
 #' 
 #' Make a plot of feature expression data on Y axis.
 #'
-#' @param id Integer vector specifying the index of the feature expression plot panel
+#' @param id Integer scalar specifying the index of the row data plot panel.
 #' @param all_memory A \code{list} of \code{\linkS4class{DataFrame}}s, where each
 #' \code{\linkS4class{DataFrame}} corresponds to a panel type and contains the
 #' initial settings for each individual panel of that type.

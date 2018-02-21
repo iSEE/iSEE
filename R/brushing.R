@@ -98,7 +98,7 @@
 #' Destroys all edges to and from the current brushing source upon its removal from the UI. 
 #' Also updates the memory to eliminate discarded plots as the default choice. 
 #' 
-#' @param pObjects An environment containing \code{brush_links}, a graph produced by \code{.\link{spawn_brush_links}};
+#' @param pObjects An environment containing \code{brush_links}, a graph produced by \code{\link{.spawn_brush_chart}};
 #' and \code{memory}, a list of DataFrames containing parameters for each panel of each type.
 #' @param panel A string containing the encoded name of the panel to be deleted.
 #'

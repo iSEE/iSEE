@@ -2,7 +2,7 @@
 #' 
 #' Make a heatmap with features on the Y axis and samples on the X axis.
 #'
-#' @param id Integer vector specifying the index of the heatmap plot panel
+#' @param id Integer specifying the index of the heatmap plot panel
 #' @param all_memory A \code{list} of \code{\linkS4class{DataFrame}}s, where each
 #' \code{\linkS4class{DataFrame}} corresponds to a panel type and contains the
 #' initial settings for each individual panel of that type.
@@ -35,6 +35,7 @@
 #' @rdname INTERNAL_make_heatMapPlot
 #' 
 #' @importFrom cowplot get_legend plot_grid
+#' @importFrom scales rescale
 .make_heatMapPlot <- function(id, all_memory, all_coordinates, se, colormap)
 # Makes a heatmap.
 {

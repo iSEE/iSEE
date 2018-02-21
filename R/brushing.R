@@ -272,8 +272,8 @@
 #'
 #' Checks if any points are selected via a brush or closed lasso in a transmitting plot.
 #'
-#' @param mode String specifying the (encoded) panel type.
-#' @param id Integer scalar specifying the ID of the panel of the specified type.
+#' @param mode String specifying the (encoded) panel type for the current (transmitting) panel.
+#' @param id Integer scalar specifying the ID of the current panel of the specified type.
 #' @param memory A list of DataFrames containing parameters for each panel of each type.
 #'
 #' @return A logical scalar specifying whether the specified panel contains a brush or a closed lasso.

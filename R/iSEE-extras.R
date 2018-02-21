@@ -3,7 +3,7 @@
 #' Update an entry of a list field in a DataFrame with a new value.
 #'
 #' @param df A DataFrame, usually containing parameters for every panel of a given type.
-#' @param id An integer row index specifying a panel of interest.
+#' @param id An integer row index specifying the current panel of interest.
 #' @param field String specifying the field of \code{df} that is a list.
 #' @param value Value to replace \code{df[,field][[i]]}.
 #'
@@ -383,8 +383,8 @@ height_limits <- c(400L, 1000L)
 #'
 #' Trigger regeneration of a particular plot, clearing all selections from Shiny brushes or lasso waypoints.
 #' 
-#' @param mode String specifying the (encoded) panel type of the panel to be replotted.
-#' @param id Integer scalar specifying the ID of the panel of the specified type.
+#' @param mode String specifying the (encoded) panel type of the current panel to be replotted.
+#' @param id Integer scalar specifying the ID of the current panel of the specified type.
 #' @param pObjects An environment containing \code{memory}, a list of DataFrames containing parameters for each panel of each type.
 #' It should also contain a \code{force_rerender} logical vector.
 #' @param rObjects A reactive list containing incrementable counters for all panels,

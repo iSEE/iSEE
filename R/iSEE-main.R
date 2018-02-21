@@ -6,11 +6,16 @@
 #' @param se An object that coercible to \code{\linkS4class{SingleCellExperiment}}.
 #' @param redDimArgs A DataFrame similar to that produced by
 #' \code{\link{redDimPlotDefaults}}, specifying initial parameters for the plots.
-#' @param colDataArgs A DataFrame similar to that produced by \code{\link{colDataPlotDefaults}}, specifying initial parameters for the plots.
-#' @param featExprArgs A DataFrame similar to that produced by \code{\link{featExprPlotDefaults}}, specifying initial parameters for the plots.
-#' @param rowStatArgs A DataFrame similar to that produced by \code{\link{rowStatTableDefaults}}, specifying initial parameters for the plots.
-#' @param rowDataArgs A DataFrame similar to that produced by \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the plots.
-#' @param heatMapArgs A DataFrame similar to that produced by \code{\link{heatMapPlotDefaults}}, specifying initial parameters for the plots.
+#' @param colDataArgs A DataFrame similar to that produced by
+#' \code{\link{colDataPlotDefaults}}, specifying initial parameters for the plots.
+#' @param featExprArgs A DataFrame similar to that produced by
+#' \code{\link{featExprPlotDefaults}}, specifying initial parameters for the plots.
+#' @param rowStatArgs A DataFrame similar to that produced by
+#' \code{\link{rowStatTableDefaults}}, specifying initial parameters for the plots.
+#' @param rowDataArgs A DataFrame similar to that produced by
+#' \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the plots.
+#' @param heatMapArgs A DataFrame similar to that produced by
+#' \code{\link{heatMapPlotDefaults}}, specifying initial parameters for the plots.
 #' @param redDimMax An integer scalar specifying the maximum number of reduced dimension plots in the interface.
 #' @param colDataMax An integer scalar specifying the maximum number of column data plots in the interface.
 #' @param featExprMax An integer scalar specifying the maximum number of feature expression plots in the interface.
@@ -21,10 +26,14 @@
 #' This should contain a \code{Name} character field and a \code{Width} integer field, see Details.
 #' @param annot.orgdb An \code{org.*.db} annotation object from which Entrez identifiers can be retrieved.
 #' @param annot.keytype A string specifying the keytype to use to query \code{annot.orgdb}.
-#' @param annot.keyfield A string specifying the field of \code{rowData(se)} containing the keys of type \code{annot.keytype}. 
+#' @param annot.keyfield A string specifying the field of \code{rowData(se)}
+#' containing the keys of type \code{annot.keytype}. 
 #' If \code{NULL}, the row names of \code{se} are used as the keys.
-#' @param colormap An \linkS4class{ExperimentColorMap} object that defines custom color maps to apply to individual \code{assays}, \code{colData}, and \code{rowData} covariates.
-#' @param run_local A logical indicating whether the app is to be run locally or remotely on a server, which determines how documentation will be accessed.
+#' @param colormap An \code{\linkS4class{ExperimentColorMap}} object that defines
+#' custom color maps to apply to individual \code{assays}, \code{colData},
+#' and \code{rowData} covariates.
+#' @param run_local A logical indicating whether the app is to be run locally or
+#' remotely on a server, which determines how documentation will be accessed.
 #'
 #' @details Users can pass default parameters via DataFrame objects in
 #' \code{redDimArgs} and \code{featExprArgs}. Each object can contain
@@ -792,7 +801,7 @@ iSEE <- function(
                         return(NULL)
                     }
 
-                    # Closing the loop if you click close to the starting point.
+                    # Closing the lasso if you click close to the starting point.
                     xrange <- cur_click$domain$right - cur_click$domain$left
                     yrange <- cur_click$domain$top - cur_click$domain$bottom
                     if (!is.null(previous)

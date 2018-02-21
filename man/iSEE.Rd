@@ -17,15 +17,20 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featExprArgs = NULL,
 \item{redDimArgs}{A DataFrame similar to that produced by
 \code{\link{redDimPlotDefaults}}, specifying initial parameters for the plots.}
 
-\item{colDataArgs}{A DataFrame similar to that produced by \code{\link{colDataPlotDefaults}}, specifying initial parameters for the plots.}
+\item{colDataArgs}{A DataFrame similar to that produced by
+\code{\link{colDataPlotDefaults}}, specifying initial parameters for the plots.}
 
-\item{featExprArgs}{A DataFrame similar to that produced by \code{\link{featExprPlotDefaults}}, specifying initial parameters for the plots.}
+\item{featExprArgs}{A DataFrame similar to that produced by
+\code{\link{featExprPlotDefaults}}, specifying initial parameters for the plots.}
 
-\item{rowStatArgs}{A DataFrame similar to that produced by \code{\link{rowStatTableDefaults}}, specifying initial parameters for the plots.}
+\item{rowStatArgs}{A DataFrame similar to that produced by
+\code{\link{rowStatTableDefaults}}, specifying initial parameters for the plots.}
 
-\item{rowDataArgs}{A DataFrame similar to that produced by \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the plots.}
+\item{rowDataArgs}{A DataFrame similar to that produced by
+\code{\link{rowDataPlotDefaults}}, specifying initial parameters for the plots.}
 
-\item{heatMapArgs}{A DataFrame similar to that produced by \code{\link{heatMapPlotDefaults}}, specifying initial parameters for the plots.}
+\item{heatMapArgs}{A DataFrame similar to that produced by
+\code{\link{heatMapPlotDefaults}}, specifying initial parameters for the plots.}
 
 \item{redDimMax}{An integer scalar specifying the maximum number of reduced dimension plots in the interface.}
 
@@ -46,12 +51,16 @@ This should contain a \code{Name} character field and a \code{Width} integer fie
 
 \item{annot.keytype}{A string specifying the keytype to use to query \code{annot.orgdb}.}
 
-\item{annot.keyfield}{A string specifying the field of \code{rowData(se)} containing the keys of type \code{annot.keytype}. 
+\item{annot.keyfield}{A string specifying the field of \code{rowData(se)}
+containing the keys of type \code{annot.keytype}. 
 If \code{NULL}, the row names of \code{se} are used as the keys.}
 
-\item{colormap}{An \linkS4class{ExperimentColorMap} object that defines custom color maps to apply to individual \code{assays}, \code{colData}, and \code{rowData} covariates.}
+\item{colormap}{An \code{\linkS4class{ExperimentColorMap}} object that defines
+custom color maps to apply to individual \code{assays}, \code{colData},
+and \code{rowData} covariates.}
 
-\item{run_local}{A logical indicating whether the app is to be run locally or remotely on a server, which determines how documentation will be accessed.}
+\item{run_local}{A logical indicating whether the app is to be run locally or
+remotely on a server, which determines how documentation will be accessed.}
 }
 \value{
 A Shiny App is launched for interactive data exploration of the

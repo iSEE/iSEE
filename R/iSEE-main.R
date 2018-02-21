@@ -387,9 +387,8 @@ iSEE <- function(
 
     output$panelOrganization <- renderUI({
         rObjects$rerendered <- .increment_counter(isolate(rObjects$rerendered))
-        .panel_organization(rObjects$active_panels, pObjects$memory)
+        .panel_organization(rObjects$active_panels)
     })
-
 
     # Note: we need "local" so that each item gets its own number. Without it, the value
     # of i in the renderPlot() will be the same across all instances, because

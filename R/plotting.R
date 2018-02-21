@@ -74,7 +74,7 @@ names(.all_aes_values) <- .all_aes_names
     param_choices[[.redDimYAxis]]
   )
   
-  reddim_names <- names(.sanitize_red_dim_names(reducedDimNames(se)))
+  reddim_names <- names(.sanitize_names(reducedDimNames(se)))
   plot_title <- reddim_names[param_choices[[.redDimType]]]
 
   # Generating the plotting commands.

@@ -61,18 +61,18 @@ modeGating <- function(
   
   featExprArgs <- featExprPlotDefaults(se, featExprMax)
   # prepare featExprArgs
-  featExprArgs[[iSEE:::.featExprXAxis]] <- iSEE:::.featExprXAxisFeatNameTitle
-  featExprArgs[[iSEE:::.featExprYAxis]] <- iSEE:::.featExprYAxisFeatNameTitle
+  featExprArgs[[.featExprXAxis]] <- .featExprXAxisFeatNameTitle
+  featExprArgs[[.featExprYAxis]] <- .featExprYAxisFeatNameTitle
   # Y axes take all the odd-numbered feature names
-  featExprArgs[[iSEE:::.featExprXAxisFeatName]] <- features[,"x"]
+  featExprArgs[[.featExprXAxisFeatName]] <- features[,"x"]
   # X axes take all the even-numbered feature names
-  featExprArgs[[iSEE:::.featExprYAxisFeatName]] <- features[,"y"]
-  featExprArgs[[iSEE:::.brushByPlot]] <- c(
+  featExprArgs[[.featExprYAxisFeatName]] <- features[,"y"]
+  featExprArgs[[.brushByPlot]] <- c(
     "",
     sprintf("Feature expression plot %i", seq(1, nrow(features) - 1, 1)),
     rep("", nrow(featExprArgs) - nrow(features))
   )
-  featExprArgs[[iSEE:::.brushEffect]] <- c(
+  featExprArgs[[.brushEffect]] <- c(
     "",
     rep("Restrict", nrow(features) - 2),
     "Color",

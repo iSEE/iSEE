@@ -1446,7 +1446,8 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 #'   on the plot to indicate the position of an active brush.
 #'   }
 #'   \item{data}{The data from a brush, such as \code{input$plot_brush.}
-#' }
+#'   }
+#'  }
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_self_brush_box
 #' @seealso 

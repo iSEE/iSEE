@@ -1,7 +1,7 @@
 [![Travis CI build status](https://travis-ci.org/csoneson/iSEE.svg?branch=master)](https://travis-ci.org/csoneson/iSEE)
 [![Codecov.io coverage status](https://codecov.io/github/csoneson/iSEE/coverage.svg?branch=master)](https://codecov.io/github/csoneson/iSEE)
 
-# iSEE/interactiveSummarizedExperimentExplorer
+# iSEE - interactive SummarizedExperiment Explorer
 
 ## Overview
 

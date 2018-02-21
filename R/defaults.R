@@ -10,7 +10,7 @@
 #'
 #' @description Create default settings for various panels in the iSEE interface.
 #'
-#' @param se A SingleCellExperiment object.
+#' @param se A SummarizedExperiment object.
 #' @param number An integer scalar, specifying the maximum number of 
 #' panels of the corresponding type that can be added to the interface.
 #'
@@ -386,6 +386,7 @@ heatMapPlotDefaults <- function(se, number) {
     return(incoming)
 }
 
+#' @param se A SummarizedExperiment object.
 #' @rdname INTERNAL_add_general_parameters
 .add_general_parameters_for_column_plots <- function(incoming, se) {
     incoming <- .add_general_parameters(incoming)

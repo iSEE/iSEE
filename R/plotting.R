@@ -28,7 +28,7 @@ names(.all_aes_values) <- .all_aes_names
 #' 
 #' Make a plot in reduced dimensions embeddings on X/Y axes.
 #'
-#' @param id Integer vector specifying the index of the reduced dimension panel
+#' @param id Integer scalar specifying the index of the reduced dimension panel
 #' @param all_memory A \code{list} of \code{\linkS4class{DataFrame}}s, where each
 #' \code{\linkS4class{DataFrame}} corresponds to a panel type and contains the
 #' initial settings for each individual panel of that type.
@@ -98,7 +98,7 @@ names(.all_aes_values) <- .all_aes_names
 #' 
 #' Make a plot of sample metadata on Y axis.
 #'
-#' @param id Integer vector specifying the index of the column data plot panel
+#' @param id Integer scalar specifying the index of the column data plot panel
 #' @param all_memory A \code{list} of \code{\linkS4class{DataFrame}}s, where each
 #' \code{\linkS4class{DataFrame}} corresponds to a panel type and contains the
 #' initial settings for each individual panel of that type.
@@ -172,7 +172,7 @@ names(.all_aes_values) <- .all_aes_names
 #' 
 #' Make a plot of feature expression data on Y axis.
 #'
-#' @param id Integer vector specifying the index of the feature expression plot panel
+#' @param id Integer scalar specifying the index of the feature expression plot panel
 #' @param all_memory A \code{list} of \code{\linkS4class{DataFrame}}s, where each
 #' \code{\linkS4class{DataFrame}} corresponds to a panel type and contains the
 #' initial settings for each individual panel of that type.
@@ -289,7 +289,7 @@ names(.all_aes_values) <- .all_aes_names
 #' 
 #' Make a plot of feature expression data on Y axis.
 #'
-#' @param id Integer vector specifying the index of the feature expression plot panel
+#' @param id Integer scalar specifying the index of the feature expression plot panel
 #' @param all_memory A \code{list} of \code{\linkS4class{DataFrame}}s, where each
 #' \code{\linkS4class{DataFrame}} corresponds to a panel type and contains the
 #' initial settings for each individual panel of that type.
@@ -1194,11 +1194,11 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 #' Generate axis label for gene expression data
 #'
 #' @param se A \code{\linkS4class{SingleCellExperiment}} object.
-#' @param gene_id A \code{character} feature name or \code{integer} index
+#' @param gene_id A feature name or integer index
 #' of the feature in \code{rownames(se)}.
-#' @param assay_id An \code{integer} index of the assay name in
+#' @param assay_id An integer index of the assay name in
 #' \code{assayNames(se)}.
-#' @param multiline A \code{logical} value that indicates whether feature and
+#' @param multiline A logical value that indicates whether feature and
 #' assay names should appear on separate lines.
 #'
 #' @return A \code{character} value to use as axis label.

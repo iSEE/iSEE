@@ -404,7 +404,6 @@ heatMapPlotDefaults <- function(se, number) {
     return(incoming)
 }
 
-#' @param se A SummarizedExperiment object.
 #' @rdname INTERNAL_add_general_parameters
 .add_general_parameters_for_row_plots <- function(incoming, se) {
     incoming <- .add_general_parameters(incoming)

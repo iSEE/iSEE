@@ -23,7 +23,7 @@ rowDataPlotDefaults(se, number)
 heatMapPlotDefaults(se, number)
 }
 \arguments{
-\item{se}{A SingleCellExperiment object.}
+\item{se}{A SummarizedExperiment object.}
 
 \item{number}{An integer scalar, specifying the maximum number of 
 panels of the corresponding type that can be added to the interface.}

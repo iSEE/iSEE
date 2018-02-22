@@ -80,8 +80,8 @@
 #' @rdname INTERNAL_check_for_tab
 #' @seealso
 #' \code{\link{.spawn_table_links}}
-.check_for_tab <- function(mode, i, memory, by_field, ref_title, table_field) {
-    if (memory[[mode]][i, by_field]!=ref_title) {
+.check_for_tab <- function(mode, id, memory, by_field, ref_title, table_field) {
+    if (memory[[mode]][id, by_field]!=ref_title) {
         return(NULL)
     }
     cur_tab <- memory[[mode]][id, table_field]
@@ -183,21 +183,21 @@
 #' @param pObjects An environment containing \code{table_links}, a graph produced by \code{\link{.spawn_table_links}};
 #' and \code{memory}, a list of DataFrames containing parameters for each panel of each type.
 #' @param by_field String specifying the field to check for whether the input is using a row table input of any kind.
-#' @param ref_title String specifying the title of a row table input, to match to the value of \code{by_field} in \code{memory} for this plot.
-#' @param table_field String specifying the field to check for the identify of the row table input.
+#' @param tab_title String specifying the title of a row table input, to match to the value of \code{by_field} in \code{memory} for this plot.
+#' @param tab_field String specifying the field to check for the identify of the row table input.
 #' @param param String specifying the type of table link to the current plot, i.e., color or x/y-axis.
 #'
 #' @return A logical scalar indicating whether the current (receiving) plot needs to be regenerated.
 #'
 #' @details
 #' This function relies on the pass-by-reference behaviour of \code{pObjects} to update \code{pObjects$memory} for the current receiving plot.
-#' New values of the fields \code{by_field} and \code{table_field} in \code{in[it} will be used to overwrite those in memory, provided they are not \code{NULL}.
+#' New values of the fields \code{by_field} and \code{tab_field} in \code{input} will be used to overwrite those in memory, provided they are not \code{NULL}.
 #'
 #' It will also modify \code{table_links} if \code{input[[by_field]]} is equal to \code{tab_title} (i.e., a linked table is being used)
 #' to update the identity of the linked table based on the new table in \code{input[[tab_field]]}.
 #' On ther other hand, if \code{input[[by_field]]} is not equal to \code{tab_title}, any linked table in the memory of the receiving plot is destroyed.
 #'
-#' The flag to replot the receiving plot is set if both \code{by_field} and \code{table_field} fields in \code{input} are non-\code{NULL}.
+#' The flag to replot the receiving plot is set if both \code{by_field} and \code{tab_field} fields in \code{input} are non-\code{NULL}.
 #' This reflects the assumption that this function is only called if either of these fields change.
 #'
 #' @author Aaron Lun
@@ -241,7 +241,7 @@
 #'
 #' @param mode String specifying the encoded panel type of the current (receiving) panel to be destroyed.
 #' @param id Integer scalar specifying the index of the current panel of the specified type.
-#' @param pObjects An environment containing \code{table_links}, a graph produced by \code{.\link{spawn_table_links}};
+#' @param pObjects An environment containing \code{table_links}, a graph produced by \code{\link{.spawn_table_links}};
 #' and \code{memory}, a list of DataFrames containing parameters for each panel of each type.
 #'
 #' @return \code{NULL}, invisibly.

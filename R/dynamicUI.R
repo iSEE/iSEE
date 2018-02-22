@@ -337,7 +337,7 @@
                                        plot.param)),
 
                 # Panel for colouring parameters.
-                .createColorPanelForColumnPlots(mode, ID, param_choices, active_tab, column_covariates, all_assays, feasibility),
+                .createColorPanelForColumnPlots(mode, ID, param_choices, active_tab, column_covariates, all_assays, no_rows=nrow(se)==0),
 
                 # Panel for brushing parameters.
                 .createBrushPanel(mode, ID, param_choices, col_brushable)

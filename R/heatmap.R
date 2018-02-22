@@ -85,6 +85,12 @@
   # Set limits of color bar
   limits <- range(min.obs, param_choices[[.heatMapLower]], 
                   max.obs, param_choices[[.heatMapUpper]], finite=TRUE, na.rm=TRUE)
+  # Get values to define range of colors
+  break.vec <- .get_colorscale_limits(min.value=min.obs, max.value=max.obs, 
+                                      lower.bound=param_choices[[.heatMapLower]], 
+                                      upper.bound=param_choices[[.heatMapUpper]],
+                                      include.zero=param_choices[[.heatMapCentering]]==.heatMapYesTitle)
+
   if (param_choices[[.heatMapCentering]] == .heatMapYesTitle) {
     validate(need( 
       param_choices[[.heatMapLower]] < 0L,
@@ -95,30 +101,58 @@
       sprintf("Upper bound must be positive") 
     ))
     # Centered values - use selected color scale
-    colors.to.use <- strsplit(param_choices[[.heatMapCenteredColors]], "-")[[1]]
-    break.vec <- c(param_choices[[.heatMapLower]], 0, param_choices[[.heatMapUpper]])
-    if (param_choices[[.heatMapLower]] > min.obs || !is.finite(param_choices[[.heatMapLower]])) {
-      break.vec <- c(break.vec, min.obs)
+    col.vec <- strsplit(param_choices[[.heatMapCenteredColors]], "-")[[1]]
+    if (param_choices[[.heatMapLower]] > min.obs && is.finite(param_choices[[.heatMapLower]])) {
+      break.vec <- c(min.obs, break.vec)
+      col.vec <- c(col.vec[1], col.vec)
     }
-    if (param_choices[[.heatMapUpper]] < max.obs || !is.finite(param_choices[[.heatMapUpper]])) {
+    if (param_choices[[.heatMapUpper]] < max.obs && is.finite(param_choices[[.heatMapUpper]])) {
       break.vec <- c(break.vec, max.obs)
+      col.vec <- c(col.vec, col.vec[length(col.vec)])
     }
-    break.vec <- sort(break.vec)
-    break.vec <- break.vec[is.finite(break.vec)]
-    col.vec <- rep(NA, length(break.vec))
-    col.vec[break.vec < 0] <- colors.to.use[1]
-    col.vec[break.vec == 0] <- colors.to.use[2]
-    col.vec[break.vec > 0] <- colors.to.use[3]
     break.vec <- scales::rescale(break.vec, to=c(0, 1), from=limits)
-    fill_cmd <- sprintf("scale_fill_gradientn(colors=c('%s'), values=c(%s), 
+    fill_cmd <- sprintf("scale_fill_gradientn(colors=c('%s'), 
+    values=c(%s), 
     limits=c(%s), na.value='grey50') +", 
                         paste0(col.vec, collapse="','"),
                         paste0(break.vec, collapse=","),
                         paste0(limits, collapse=","))
   } else {
-    fill_cmd <- sprintf("scale_fill_gradientn(colors=assayColorMap(colormap, '%s', discrete=FALSE)(21L), na.value='grey50') +", assay_choice)
-  }
+    validate(need( 
+      param_choices[[.heatMapLower]] < max.obs,
+      sprintf("Lower bound must be lower than largest value in matrix") 
+    ))
+    validate(need( 
+      param_choices[[.heatMapUpper]] > min.obs,
+      sprintf("Upper bound must be higher than smallest value in matrix") 
+    ))
+    col.vec <- assayColorMap(colormap, assay_choice, discrete=FALSE)(21L)
+    col.add.before <- col.add.after <- break.add.before <- break.add.after <- ""
+    if (param_choices[[.heatMapLower]] > min.obs && is.finite(param_choices[[.heatMapLower]])) {
+      col.add.before <- sprintf("c('%s',", col.vec[1])
+      break.add.before <- sprintf("c(%s,", min.obs)
+    }
+    if (param_choices[[.heatMapUpper]] < max.obs && is.finite(param_choices[[.heatMapUpper]])) {
+      col.add.after <- sprintf(",'%s')", col.vec[length(col.vec)])
+      break.add.after <- sprintf(",%s)", max.obs)
+    }
+    if (col.add.before=="" && col.add.after != "") col.add.before <- "c("
+    if (break.add.before=="" && break.add.after != "") break.add.before <- "c("
+    if (col.add.after=="" && col.add.before != "") col.add.after <- ")"
+    if (break.add.after=="" && break.add.before != "") break.add.after <- ")"
     
+    fill_cmd <- sprintf("scale_fill_gradientn(colors=%sassayColorMap(colormap, '%s', discrete=FALSE)(21L)%s, 
+    values=%s, 
+    limits=c(%s), na.value='grey50') +",
+                        col.add.before,
+                        assay_choice,
+                        col.add.after,
+                        paste0("scales::rescale(", break.add.before,
+                               "seq(", min(break.vec), ",", max(break.vec), ",length.out=21L)",
+                               break.add.after, ", to=c(0,1), from=c(", paste0(limits, collapse=","), "))"),
+                        paste0(limits, collapse=","))
+  }
+
   # Define plotting commands
   extra_cmds <- list()
   # Heatmap
@@ -172,6 +206,15 @@
   plot_out <- eval(parse(text=to_eval), envir=eval_env)
 
   return(list(cmd=c(data_cmds, extra_cmds), xy=eval_env$plot.data, plot=plot_out, legends=legends))
+}
+
+.get_colorscale_limits <- function(min.value, max.value, lower.bound, upper.bound, include.zero) {
+  if (is.finite(lower.bound)) v1 <- lower.bound
+  else v1 <- min.value
+  if (is.finite(upper.bound)) v2 <- upper.bound
+  else v2 <- max.value
+  if (include.zero) sort(c(v1, v2, 0))
+  else c(v1, v2)
 }
 
 #' @importFrom shiny showNotification req

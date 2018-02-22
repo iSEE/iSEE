@@ -40,6 +40,9 @@ discrete covariates.}
 \item{...}{additional arguments passed on to the \code{ExperimentColorMap}
 constructor}
 }
+\value{
+An object of class \code{ExperimentColorMap}
+}
 \description{
 \code{ExperimentColorMap} objects
 }

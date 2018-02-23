@@ -145,8 +145,6 @@ annotateEnsembl <- function(
 }
 
 
-
-
 # for retrieving the annotation & linking to ensembl? + linking to UCSC afterwards?
 annoSpecies_df <- data.frame(species=c("","Anopheles","Arabidopsis","Bovine","Worm",
                                        "Canine","Fly","Zebrafish","E coli strain K12",
@@ -167,15 +165,4 @@ annoSpecies_df$ensembl_db <- c("","","","Bos_taurus","Canis_familiaris","Gallus_
                                "Sus_scrofa","Rattus_norvegicus","Macaca_mulatta","","","Caenorhabditis_elegans",
                                "Xenopus_tropicalis","Saccharomyces_cerevisiae","Danio_rerio")
 rownames(annoSpecies_df) <- annoSpecies_df$species # easier to access afterwards
-
-
-
-
-
-
-
-
-
-
-
 

@@ -61,6 +61,17 @@
 }
 
 
+#' Title
+#'
+#' @param se 
+#' @param species 
+#' @param keytype 
+#' @param rowdata_col 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 annotateEntrez <- function(
   se,
   species,
@@ -85,7 +96,9 @@ annotateEntrez <- function(
     }
     
     if (keytype!="ENTREZID") {
-      selgene_entrez <- mapIds(eval(parse(text=annopkg)), selectedGene, "ENTREZID", keytype)
+      e <- try(selgene_entrez <- mapIds(eval(parse(text=annopkg)), selectedGene, "ENTREZID", keytype),silent = TRUE)
+      if(class(e) == "try-error")
+        return(HTML("Sorry, could not convert this gene to ENTREZ id"))
     } else {
       selgene_entrez <- selectedGene
     }
@@ -103,6 +116,17 @@ annotateEntrez <- function(
   }
 }
 
+#' Title
+#'
+#' @param se 
+#' @param species 
+#' @param keytype 
+#' @param rowdata_col 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 annotateEnsembl <- function(
   se,
   species,
@@ -127,7 +151,9 @@ annotateEnsembl <- function(
     }
     
     if (keytype!="ENSEMBL") {
-      selgene_ensembl <- mapIds(eval(parse(text=annopkg)), selectedGene, "ENSEMBL", keytype)
+      e <- try(selgene_ensembl <- mapIds(eval(parse(text=annopkg)), selectedGene, "ENSEMBL", keytype),silent = TRUE)
+      if(class(e) == "try-error")
+        return(HTML("Sorry, could not convert this gene to ENSEMBL id"))
     } else {
       selgene_ensembl <- selectedGene
     }
@@ -136,8 +162,8 @@ annotateEnsembl <- function(
                            '" target="_blank"> ',
                            'Click here to browse more about this gene in the ENSEMBL database</a>')
     
-    mycontent <- paste0("<b>",selectedGene, "</b><br/><br/>ENSEMBL id:",
-                        selgene_ensembl,"<br/><br/>",
+    mycontent <- paste0("<b>",selectedGene, "</b><br/><br/>ENSEMBL id: <b>",
+                        selgene_ensembl,"</b><br/><br/>",
                         link_ensembl)
     
     return(HTML(mycontent))

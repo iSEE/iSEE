@@ -271,18 +271,13 @@ iSEE <- function(
     pObjects$brush_links <- .spawn_brush_chart(memory)
     pObjects$table_links <- .spawn_table_links(memory)
 
-    namedbools <- logical(length(all_names))
-    names(namedbools) <- all_names
-    pObjects$no_rerender <-  namedbools
-    pObjects$force_rerender <-  namedbools
     pObjects$extra_plot_cmds <- empty_list
     pObjects$cached_plots <- empty_list
 
     # Storage for all the reactive objects
     rObjects <- reactiveValues(
         active_panels = active_panels,
-        rerendered = 1L,
-        relinked = 1L
+        rerendered = 1L
     )
 
     for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot", "rowStatTable", "heatMapPlot")) {
@@ -714,7 +709,6 @@ iSEE <- function(
 
                     # Trigger replotting of self, to draw a more persistent brushing box.
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                    pObjects$no_rerender[plot_name] <- TRUE
 
                     # Trigger replotting of all dependent plots that receive this brush.
                     children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
@@ -827,7 +821,6 @@ iSEE <- function(
 
                     # Trigger replotting of self, to draw the lasso waypoints.
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                    pObjects$no_rerender[plot_name] <- TRUE
 
                     # Trigger replotting of children.
                     if (bump_children) {
@@ -868,7 +861,6 @@ iSEE <- function(
                     if (!is.null(brush)) {
                         new_coords <- c(xmin=brush$xmin, xmax=brush$xmax, ymin=brush$ymin, ymax=brush$ymax)
                         session$resetBrush(brush_id) # This should auto-trigger replotting above.
-                        pObjects$force_rerender[plot_name] <- TRUE
                     } else {
                         # Brush is already NULL at this point, so there is no need to reset it.
                         # However, we do need to manually trigger replotting. We don't move this outside the
@@ -879,7 +871,6 @@ iSEE <- function(
                         if (!is.null(lasso_data)) {
                             # We wipe out any lasso waypoints if they are present, and trigger replotting with the same scope.
                             pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .lassoData, NULL)
-                            pObjects$no_rerender[plot_name] <- TRUE
                             rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
 
                         } else {
@@ -1065,20 +1056,11 @@ iSEE <- function(
                     force(rObjects[[plot_name]])
                     rObjects[[gen_field]] <- .increment_counter(isolate(rObjects[[gen_field]]))
 
-                    # Deciding whether to do a full re-render, or to add to the cached object.
-                    if (!pObjects$no_rerender[plot_name] || pObjects$force_rerender[plot_name]) {
-                        p.out <- FUN0(i0, pObjects$memory, pObjects$coordinates, se, colormap)
-                        gg <- p.out$plot
-                        pObjects$cached_plots[[plot_name]] <- gg
-                        pObjects$commands[[plot_name]] <- p.out$cmd
-                        pObjects$coordinates[[plot_name]] <- p.out$xy[,c("X", "Y")]
-                    } else {
-                        gg <- pObjects$cached_plots[[plot_name]]
-                    }
-
-                    # Resetting flags.
-                    pObjects$force_rerender[plot_name] <- FALSE
-                    pObjects$no_rerender[plot_name] <- FALSE
+                    # Fully re-rendering the plots.
+                    p.out <- FUN0(i0, pObjects$memory, pObjects$coordinates, se, colormap)
+                     gg <- p.out$plot
+                    pObjects$commands[[plot_name]] <- p.out$cmd
+                    pObjects$coordinates[[plot_name]] <- p.out$xy[,c("X", "Y")]
 
                     extra_cmds <- list()
                     to_flip <- is(gg$coordinates, "CoordFlip") # Add a test for this!

@@ -136,6 +136,8 @@ setClass("ExperimentColorMap",
 #' of (named) colours to return as a \code{character} vector.
 #' This argument may be ignored in the body of the color map function
 #' to produce constant color maps. 
+#' 
+#' @return An object of class \code{ExperimentColorMap}
 #'
 #' @section Accessors:
 #'

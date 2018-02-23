@@ -28,29 +28,30 @@ names(.all_aes_values) <- .all_aes_names
 #' 
 #' Make a plot in reduced dimensions embeddings on X/Y axes.
 #'
-#' @param id Integer scalar specifying the index of the reduced dimension panel.
-#' @param all_memory A \code{list} of \code{\linkS4class{DataFrame}}s, where each
-#' \code{\linkS4class{DataFrame}} corresponds to a panel type and contains the
-#' initial settings for each individual panel of that type.
-#' @param all_coordinates A \code{list} of \code{data.frame}s that contain
+#' @param id Integer scalar specifying the index of the current
+#' reduced dimension plot
+#' @param all_memory list of DataFrames, where each DataFrame corresponds to a
+#' panel type and contains the settings for each individual panel of that
+#' type.
+#' @param all_coordinates A list of data.frames that contain
 #' the coordinates and covariates of data points visible in each of the plots;
 #' in particular data points excluded by "restrict" brushes are not included in
-#' the corresponding \code{data.frame}.
+#' the corresponding data.frame.
 #' @param se A \code{\linkS4class{SingleCellExperiment}} object.
-#' @param colormap An \code{\linkS4class{ExperimentColorMap}} object that defines
-#' custom color maps to apply to individual \code{assays}, \code{colData},
-#' and \code{rowData} covariates.
+#' @param colormap An \code{\linkS4class{ExperimentColorMap}} object that
+#' defines custom color maps to apply to individual
+#' \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
-#' @return A \code{list} that includes the following elements:
+#' @return A list that includes the following elements:
 #' \describe{
-#'   \item{cmd}{A \code{list} of \code{list} of commands
-#'   as \code{character} vectors to parse and evaluate to produce the final plot.
-#'   Each list element groups functionally related commands with a common purpose
-#'   that should be evaluated together, yet separately from other groups
-#'   for certains tasks (\emph{e.g.}, \code{"data"}, \code{"lim"},
+#'   \item{cmd}{A list of list of commands
+#'   as character vectors to parse and evaluate to produce the final plot.
+#'   Each list element groups functionally related commands with a common
+#'   purpose that should be evaluated together, yet separately from other
+#'   groups for certains tasks (\emph{e.g.}, \code{"data"}, \code{"lim"},
 #'   \code{"brush"},\code{"setup"}, \code{"plot"}).
 #'   }
-#'   \item{xy}{A \code{data.frame} that includes coordinates and covariates of
+#'   \item{xy}{A data.frame that includes coordinates and covariates of
 #'   the plot.}
 #'   \item{plot}{A \code{\link{ggplot}} object that results of the evaluation
 #'   of \code{cmd} items \code{c("data", "setup", "plot")}
@@ -98,29 +99,30 @@ names(.all_aes_values) <- .all_aes_names
 #' 
 #' Make a plot of sample metadata on Y axis.
 #'
-#' @param id Integer scalar specifying the index of the column data plot panel.
-#' @param all_memory A \code{list} of \code{\linkS4class{DataFrame}}s, where each
-#' \code{\linkS4class{DataFrame}} corresponds to a panel type and contains the
-#' initial settings for each individual panel of that type.
-#' @param all_coordinates A \code{list} of \code{data.frame}s that contain
+#' @param id Integer scalar specifying the index of the current
+#' column data plot
+#' @param all_memory A list of DataFrames, where
+#' each DataFrame corresponds to a panel type and
+#' contains the settings for each individual panel of that type.
+#' @param all_coordinates A list of data.frames that contain
 #' the coordinates and covariates of data points visible in each of the plots;
 #' in particular data points excluded by "restrict" brushes are not included in
-#' the corresponding \code{data.frame}.
+#' the corresponding data.frame.
 #' @param se A \code{\linkS4class{SingleCellExperiment}} object.
-#' @param colormap An \code{\linkS4class{ExperimentColorMap}} object that defines
-#' custom color maps to apply to individual \code{assays}, \code{colData},
-#' and \code{rowData} covariates.
+#' @param colormap An \code{\linkS4class{ExperimentColorMap}} object that
+#' defines custom color maps to apply to individual
+#' \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
-#' @return A \code{list} that includes the following elements:
+#' @return A list that includes the following elements:
 #' \describe{
-#'   \item{cmd}{A \code{list} of \code{list} of commands
-#'   as \code{character} vectors to parse and evaluate to produce the final plot.
-#'   Each list element groups functionally related commands with a common purpose
-#'   that should be evaluated together, yet separately from other groups
-#'   for certains tasks (\emph{e.g.}, \code{"data"}, \code{"lim"},
+#'   \item{cmd}{A list of list of commands
+#'   as character vectors to parse and evaluate to produce the final plot.
+#'   Each list element groups functionally related commands with a common
+#'   purpose that should be evaluated together, yet separately from other
+#'   groups for certains tasks (\emph{e.g.}, \code{"data"}, \code{"lim"},
 #'   \code{"brush"},\code{"setup"}, \code{"plot"}).
 #'   }
-#'   \item{xy}{A \code{data.frame} that includes coordinates and covariates of
+#'   \item{xy}{A data.frame that includes coordinates and covariates of
 #'   the plot.}
 #'   \item{plot}{A \code{\link{ggplot}} object that results of the evaluation
 #'   of \code{cmd} items \code{c("data", "setup", "plot")}
@@ -150,7 +152,10 @@ names(.all_aes_values) <- .all_aes_names
     data_cmds[["x"]] <- "plot.data$X <- factor(character(ncol(se)))"
   } else {
     x_lab <- param_choices[[.colDataXAxisColData]]
-    data_cmds[["x"]] <- sprintf("plot.data$X <- colData(se)[,%s];", deparse(x_lab))
+    data_cmds[["x"]] <- sprintf(
+      "plot.data$X <- colData(se)[,%s];",
+      deparse(x_lab)
+    )
   }
   
   x_title <- ifelse(x_lab == '', x_lab, sprintf("vs %s", x_lab))
@@ -172,29 +177,31 @@ names(.all_aes_values) <- .all_aes_names
 #' 
 #' Make a plot of feature expression data on Y axis.
 #'
-#' @param id Integer scalar specifying the index of the feature expression plot panel.
-#' @param all_memory A \code{list} of \code{\linkS4class{DataFrame}}s, where each
-#' \code{\linkS4class{DataFrame}} corresponds to a panel type and contains the
-#' initial settings for each individual panel of that type.
-#' @param all_coordinates A \code{list} of \code{data.frame}s that contain
+#' @param id Integer scalar specifying the index of the current
+#' feature expression plot
+#' @param all_memory A list of DataFrames, where
+#' each DataFrame corresponds to a panel type and contains
+#' the settings for each individual panel of that type.
+#' @param all_coordinates A list of data.frames that contain
 #' the coordinates and covariates of data points visible in each of the plots;
 #' in particular data points excluded by "restrict" brushes are not included in
-#' the corresponding \code{data.frame}.
+#' the corresponding data.frame.
 #' @param se A \code{\linkS4class{SingleCellExperiment}} object.
-#' @param colormap An \code{\linkS4class{ExperimentColorMap}} object that defines
-#' custom color maps to apply to individual \code{assays}, \code{colData},
-#' and \code{rowData} covariates.
+#' @param colormap An \code{\linkS4class{ExperimentColorMap}} object that
+#' defines custom color maps to apply to individual
+#' \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
-#' @return A \code{list} that includes the following elements:
+#' @return A list that includes the following elements:
 #' \describe{
-#'   \item{cmd}{A \code{list} of \code{list} of commands
-#'   as \code{character} vectors to parse and evaluate to produce the final plot.
-#'   Each list element groups functionally related commands with a common purpose
-#'   that should be evaluated together, yet separately from other groups
-#'   for certains tasks (\emph{e.g.}, \code{"data"}, \code{"lim"},
+#'   \item{cmd}{A list of list of commands
+#'   as character vectors to parse and evaluate to produce the final
+#'   plot.
+#'   Each list element groups functionally related commands with a common
+#'   purpose that should be evaluated together, yet separately from other
+#'   groups for certains tasks (\emph{e.g.}, \code{"data"}, \code{"lim"},
 #'   \code{"brush"},\code{"setup"}, \code{"plot"}).
 #'   }
-#'   \item{xy}{A \code{data.frame} that includes coordinates and covariates of
+#'   \item{xy}{A data.frame that includes coordinates and covariates of
 #'   the plot.}
 #'   \item{plot}{A \code{\link{ggplot}} object that results of the evaluation
 #'   of \code{cmd} items \code{c("data", "setup", "plot")}
@@ -228,7 +235,8 @@ names(.all_aes_values) <- .all_aes_names
 
   assay_choice <- param_choices[[.featExprAssay]]
   y_title <- rownames(se)[gene_selected_y]
-  y_lab <- .gene_axis_label(se, gene_selected_y, assay_choice, multiline = FALSE)
+  y_lab <- 
+    .gene_axis_label(se, gene_selected_y, assay_choice, multiline = FALSE)
   data_cmds[["y"]] <- sprintf(
     "plot.data <- data.frame(Y=assay(se, %i)[%s,], row.names = colnames(se))",
     assay_choice, deparse(gene_selected_y) # deparse() also handles integer selections correctly.
@@ -244,7 +252,9 @@ names(.all_aes_values) <- .all_aes_names
        deparse(x_lab)
     )
 
-  } else if (x_choice==.featExprXAxisRowTableTitle || x_choice==.featExprXAxisFeatNameTitle) { # gene selected
+  } else if (
+    x_choice==.featExprXAxisRowTableTitle ||
+      x_choice==.featExprXAxisFeatNameTitle) { # gene selected
 
     if (x_choice==.featExprXAxisRowTableTitle) {
       chosen_tab <- .decoded2encoded(param_choices[[.featExprXAxisRowTable]])
@@ -259,7 +269,8 @@ names(.all_aes_values) <- .all_aes_names
     ))
     
     x_title <- rownames(se)[gene_selected_x]
-    x_lab <- .gene_axis_label(se, gene_selected_x, assay_choice, multiline = FALSE)
+    x_lab <-
+      .gene_axis_label(se, gene_selected_x, assay_choice, multiline = FALSE)
     data_cmds[["x"]] <- sprintf(
       "plot.data$X <- assay(se, %i)[%s,];",
       assay_choice, deparse(gene_selected_x)
@@ -289,29 +300,30 @@ names(.all_aes_values) <- .all_aes_names
 #' 
 #' Make a plot of feature expression data on Y axis.
 #'
-#' @param id Integer scalar specifying the index of the row data plot panel.
-#' @param all_memory A \code{list} of \code{\linkS4class{DataFrame}}s, where each
-#' \code{\linkS4class{DataFrame}} corresponds to a panel type and contains the
-#' initial settings for each individual panel of that type.
-#' @param all_coordinates A \code{list} of \code{data.frame}s that contain
+#' @param id Integer scalar specifying the index of the current
+#' row data plot
+#' @param all_memory A list of DataFrames, where each
+#' DataFrame corresponds to a panel type and contains the
+#' settings for each individual panel of that type.
+#' @param all_coordinates A list of data.frames that contain
 #' the coordinates and covariates of data points visible in each of the plots;
 #' in particular data points excluded by "restrict" brushes are not included in
-#' the corresponding \code{data.frame}.
+#' the corresponding data.frame.
 #' @param se A \code{\linkS4class{SingleCellExperiment}} object.
-#' @param colormap An \code{\linkS4class{ExperimentColorMap}} object that defines
-#' custom color maps to apply to individual \code{assays}, \code{colData},
-#' and \code{rowData} covariates.
+#' @param colormap An \code{\linkS4class{ExperimentColorMap}} object that
+#' defines custom color maps to apply to individual
+#' \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
-#' @return A \code{list} that includes the following elements:
+#' @return A list that includes the following elements:
 #' \describe{
-#'   \item{cmd}{A \code{list} of \code{list} of commands
-#'   as \code{character} vectors to parse and evaluate to produce the final plot.
-#'   Each list element groups functionally related commands with a common purpose
-#'   that should be evaluated together, yet separately from other groups
-#'   for certains tasks (\emph{e.g.}, \code{"data"}, \code{"lim"},
+#'   \item{cmd}{A list of list of commands as character vectors
+#'   to parse and evaluate to produce the final plot.
+#'   Each list element groups functionally related commands with a common
+#'   purpose that should be evaluated together, yet separately from other
+#'   groups for certains tasks (\emph{e.g.}, \code{"data"}, \code{"lim"},
 #'   \code{"brush"},\code{"setup"}, \code{"plot"}).
 #'   }
-#'   \item{xy}{A \code{data.frame} that includes coordinates and covariates of
+#'   \item{xy}{A data.frame that includes coordinates and covariates for
 #'   the plot.}
 #'   \item{plot}{A \code{\link{ggplot}} object that results of the evaluation
 #'   of \code{cmd} items \code{c("data", "setup", "plot")}
@@ -341,7 +353,8 @@ names(.all_aes_values) <- .all_aes_names
     data_cmds[["x"]] <- "plot.data$X <- factor(character(nrow(se)))"
   } else {
     x_lab <- param_choices[[.rowDataXAxisRowData]]
-    data_cmds[["x"]] <- sprintf("plot.data$X <- rowData(se)[,%s];", deparse(x_lab))
+    data_cmds[["x"]] <-
+      sprintf("plot.data$X <- rowData(se)[,%s];", deparse(x_lab))
   }
   
   x_title <- ifelse(x_lab == '', x_lab, sprintf("vs %s", x_lab))
@@ -363,44 +376,46 @@ names(.all_aes_values) <- .all_aes_names
 #' Central plotting function
 #' 
 #' This function will generate plotting commands appropriate to
-#' each type of X/Y. It does so by evaluating 'plot.data' to
-#' determine the nature of X/Y, and then choosing the plot to match.
+#' each combination of X/Y covariate types.
+#' It does so by evaluating \code{data_cmds}
+#' to determine the nature of X/Y, and then choose the matching plot type.
 #' 
+#' @details
 #' Note that we need \code{all_coordinates} to be passed as an argument
 #' for the evaluations to execute in this environment. All evaluations
-#' are to take place in this function, not in the calling environment
-#' or in child environments. This constrains the scope of 'eval' calls.
+#' are to take place in this function, \emph{not} in the calling environment
+#' or in child environments. This constrains the scope of \code{eval} calls.
 #'
-#' @param data_cmds A \code{list} of data munging commands specific to the
-#' calling specialised plotting
-#' @param param_choices A single-row \code{\linkS4class{DataFrame}} that
-#' contains all the input parameters for the plot.
-#' @param all_memory A \code{list} of \code{\linkS4class{DataFrame}}s, where each
-#' \code{\linkS4class{DataFrame}} corresponds to a panel type and contains the
-#' initial settings for each individual panel of that type.
-#' @param all_coordinates A \code{list} of \code{data.frame}s that contain
+#' @param data_cmds A list of data munging commands specific to the
+#' calling (\emph{i.e.}, upstream) specialised plotting function.
+#' @param param_choices A single-row DataFrame that
+#' contains all the input settings for the current panel.
+#' @param all_memory A list of DataFrames, where each
+#' DataFrame corresponds to a panel type and contains the
+#' settings for each individual panel of that type.
+#' @param all_coordinates A list of data.frames that contain
 #' the coordinates and covariates of data points visible in each of the plots;
 #' in particular data points excluded by "restrict" brushes are not included in
-#' the corresponding \code{data.frame}.
+#' the corresponding data.frame.
 #' @param se A \code{\linkS4class{SingleCellExperiment}} object.
-#' @param colormap An \code{\linkS4class{ExperimentColorMap}} object that defines
-#' custom color maps to apply to individual \code{assays}, \code{colData},
-#' and \code{rowData} covariates.
+#' @param colormap An \code{\linkS4class{ExperimentColorMap}} object that
+#' defines custom color maps to apply to individual
+#' \code{assays}, \code{colData}, and \code{rowData} covariates.
 #' @param ... Further arguments passed to or from other methods.
-#' @param by_row \code{logical} value that declares whether the plot deals with
+#' @param by_row logical value that declares whether the plot deals with
 #' \code{\link{rowData}} (\code{TRUE}) or \code{\link{colData}}
 #' (\code{TRUE}, the default).
 #'
-#' @return A \code{list} that includes the following elements:
+#' @return A list that includes the following elements:
 #' \describe{
-#'   \item{cmd}{A \code{list} of \code{list} of commands
-#'   as \code{character} vectors to parse and evaluate to produce the final plot.
+#'   \item{cmd}{A list of list of commands as character vectors
+#'   to parse and evaluate to produce the final plot.
 #'   Each list element groups functionally related commands with a common purpose
 #'   that should be evaluated together, yet separately from other groups
 #'   for certains tasks (\emph{e.g.}, \code{"data"}, \code{"lim"},
 #'   \code{"brush"},\code{"setup"}, \code{"plot"}).
 #'   }
-#'   \item{xy}{A \code{data.frame} that includes coordinates and covariates of
+#'   \item{xy}{A data.frame that includes coordinates and covariates of
 #'   the plot.}
 #'   \item{plot}{A \code{\link{ggplot}} object that results of the evaluation
 #'   of \code{cmd} items \code{c("data", "setup", "plot")}
@@ -531,26 +546,26 @@ names(.all_aes_values) <- .all_aes_names
 #' Creates a scatter plot of numeric X/Y. This function should purely
 #' generate the plotting commands, with no modification of \code{cmds}.
 #'
-#' @param param_choices A single-row \code{\linkS4class{DataFrame}} that
-#' contains all the input parameters for the plot.
-#' @param x_lab \code{character} label for the X axis.
+#' @param param_choices A single-row DataFrame that
+#' contains all the input settings for the current panel.
+#' @param x_lab A character label for the X axis.
 #' Set to \code{NA_character_} to produce a \code{NULL} element
-#' @param y_lab \code{character} label for the Y axis.
+#' @param y_lab A character label for the Y axis.
 #' Set to \code{NA_character_} to produce a \code{NULL} element.
-#' @param color_label \code{character} title of the color scale legend.
+#' @param color_label A character title for the color scale legend.
 #' Set to \code{NA_character_} to produce a \code{NULL} element.
-#' @param color_scale_cmd Color scale instruction for \code{ggplot}
+#' @param color_scale_cmd Color scale command for \code{ggplot}
 #' (generated by \code{\link{.create_plot}}).
-#' @param brush_cmd \code{character} vector of commands that control the
+#' @param brush_cmd A character vector of commands that control the
 #' subsetting or appearance of brushed data points.
-#' @param title \code{character} title of the plot.
+#' @param title A character title for the plot.
 #' Set to \code{NA_character_} to produce a \code{NULL} element.
 #'
-#' @return A \code{list} of \code{list} of commands
-#'   as \code{character} vectors to parse and evaluate to produce the final plot.
-#'   Each list element groups functionally related commands with a common purpose
-#'   that should be evaluated together, yet separately from other groups
-#'   for certains tasks (\emph{e.g.}, \code{"data"}, \code{"lim"},
+#' @return A list of list of commands as character vectors to parse and
+#'   evaluate to produce the final plot.
+#'   Each list element groups functionally related commands with a common
+#'   purpose that should be evaluated together, yet separately from other
+#'   groups for certains tasks (\emph{e.g.}, \code{"data"}, \code{"lim"},
 #'   \code{"brush"},\code{"setup"}, \code{"plot"}).
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
@@ -604,7 +619,13 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);"
   plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
 
   # lim_cmds must be executed before setup_cmds when brushing to restrict!
-  return(list(data=list(), lim=lim_cmds, brush=brush_cmds, setup=list(), plot=plot_cmds))
+  return(list(
+    data = list(),
+    lim = lim_cmds,
+    brush = brush_cmds,
+    setup = list(),
+    plot = plot_cmds)
+  )
 }
 
 ############################################
@@ -613,29 +634,29 @@ ybounds <- range(plot.data$Y, na.rm = TRUE);"
 
 #' Generate ggplot commands to produce a violin plot
 #' 
-#' Generates a vertical violin plot. This function should purely
-#' generate the plotting commands, with no modification of \code{cmds}.
+#' Generates a \emph{vertical} violin plot. This function should purely
+#' generate the plotting commands, with no modification of input commands.
 #'
-#' @param param_choices A single-row \code{\linkS4class{DataFrame}} that
-#' contains all the input parameters for the plot.
-#' @param x_lab \code{character} label for the X axis.
+#' @param param_choices A single-row DataFrame that
+#' contains all the input settings for the current panel.
+#' @param x_lab A character label for the X axis.
 #' Set to \code{NA_character_} to produce a \code{NULL} element
-#' @param y_lab \code{character} label for the Y axis.
+#' @param y_lab A character label for the Y axis.
 #' Set to \code{NA_character_} to produce a \code{NULL} element.
-#' @param color_label \code{character} title of the color scale legend.
+#' @param color_label A character title for the color scale legend.
 #' Set to \code{NA_character_} to produce a \code{NULL} element.
-#' @param color_scale_cmd Color scale instruction for \code{ggplot}
+#' @param color_scale_cmd Color scale command for \code{ggplot}
 #' (generated by \code{\link{.create_plot}}).
-#' @param brush_cmd \code{character} vector of commands that control the
+#' @param brush_cmd A character vector of commands that control the
 #' subsetting or appearance of brushed data points.
-#' @param horizontal A \code{logical} value that indicates whether violins
-#' should be drawn horizontally
+#' @param horizontal A logical value that indicates whether violins
+#' should be drawn horizontally.
 #' (\emph{i.e.}, Y axis categorical and X axis continuous)
-#' @param title \code{character} title of the plot.
+#' @param title A character title for the plot.
 #' Set to \code{NA_character_} to produce a \code{NULL} element.
 #'
-#' @return A \code{list} of \code{list} of commands
-#'   as \code{character} vectors to parse and evaluate to produce the final plot.
+#' @return A list of list of commands
+#'   as character vectors to parse and evaluate to produce the final plot.
 #'   Each list element groups functionally related commands with a common purpose
 #'   that should be evaluated together, yet separately from other groups
 #'   for certains tasks (\emph{e.g.}, \code{"data"}, \code{"lim"},
@@ -719,13 +740,15 @@ plot.data$Y <- tmp;")
     )
   } else {
     lim_cmds[["limits"]] <- "ybounds <- range(plot.data$Y, na.rm = TRUE);"
-    plot_cmds[["coord"]] <- sprintf("%s(xlim = NULL, ylim = ybounds, expand = TRUE) +", coord_cmd)
+    plot_cmds[["coord"]] <-
+      sprintf("%s(xlim = NULL, ylim = ybounds, expand = TRUE) +", coord_cmd)
   }
 
   # Both of these are just NULL if no color/brush is defined.
   plot_cmds[["scale_color"]] <- color_scale_cmd
 
-  plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +" # preserving the x-axis range.
+  plot_cmds[["scale_x"]] <-
+    "scale_x_discrete(drop = FALSE) +" # preserving the x-axis range.
   plot_cmds[["theme_base"]] <- "theme_bw() +"
   plot_cmds[["theme_custom"]] <- "theme(
   legend.position = 'bottom',
@@ -733,36 +756,43 @@ plot.data$Y <- tmp;")
   axis.text.x = element_text(angle = 90)
   )"
 
-  # lim_cmds must be executed before setup_cmds, to ensure bounds are correctly defined.
-  return(list(data=data_cmds, lim=lim_cmds, brush=brush_cmds, setup=setup_cmds, plot=plot_cmds))
+  # lim_cmds must be executed before setup_cmds,
+  # to ensure bounds are correctly defined.
+  return(list(
+    data=data_cmds,
+    lim=lim_cmds,
+    brush=brush_cmds,
+    setup=setup_cmds,
+    plot=plot_cmds)
+  )
 }
 
 ############################################
 # Internal functions: rectangle plotter ----
 ############################################
 
-#' Generate ggplot commands to produce a grid layout of jittered dots
+#' Generate ggplot commands to produce jittered dots in a discrete grid layout
 #' 
 #' Generates a grid dot plot. This function should purely
-#' generate the plotting commands, with no modification of \code{cmds}.
+#' generate the plotting commands, with no modification of input commands.
 #'
-#' @param param_choices A single-row \code{\linkS4class{DataFrame}} that
-#' contains all the input parameters for the plot.
-#' @param x_lab \code{character} label for the X axis.
+#' @param param_choices A single-row DataFrame that
+#' contains all the input settings for the current panel.
+#' @param x_lab A character label for the X axis.
 #' Set to \code{NA_character_} to produce a \code{NULL} element
-#' @param y_lab \code{character} label for the Y axis.
+#' @param y_lab A character label for the Y axis.
 #' Set to \code{NA_character_} to produce a \code{NULL} element.
-#' @param color_label \code{character} title of the color scale legend.
+#' @param color_label A character title for the color scale legend.
 #' Set to \code{NA_character_} to produce a \code{NULL} element.
 #' @param color_scale_cmd Color scale instruction for \code{ggplot}
 #' (generated by \code{\link{.create_plot}}).
-#' @param brush_cmd \code{character} vector of commands that control the
+#' @param brush_cmd A character vector of commands that control the
 #' subsetting or appearance of brushed data points.
-#' @param title \code{character} title of the plot.
+#' @param title A character title for the plot.
 #' Set to \code{NA_character_} to produce a \code{NULL} element.
 #'
-#' @return A \code{list} of \code{list} of commands
-#'   as \code{character} vectors to parse and evaluate to produce the final plot.
+#' @return A list of list of commands
+#'   as character vectors to parse and evaluate to produce the final plot.
 #'   Each list element groups functionally related commands with a common purpose
 #'   that should be evaluated together, yet separately from other groups
 #'   for certains tasks (\emph{e.g.}, \code{"data"}, \code{"lim"},
@@ -861,32 +891,32 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
 #'     (practical for continuous scales).
 #'   }
 #'   \item{
-#'     Returns a named, fixed, \code{character} vector of colors
+#'     Returns a named, fixed, character vector of colors
 #'     (practical for assigning colors to specific levels in discrete scales).
 #'   }
 #' }
 #'
-#' @param param_choices A single-row \code{\linkS4class{DataFrame}} that
-#' contains all the input parameters for the plot.
-#' @param all_memory A \code{list} of \code{\linkS4class{DataFrame}}s, where each
-#' \code{\linkS4class{DataFrame}} corresponds to a panel type and contains the
-#' initial settings for each individual panel of that type.
+#' @param param_choices A single-row DataFrame that
+#' contains all the input settings for the current panel
+#' @param all_memory A list of DataFrames, where each
+#' DataFrame corresponds to a panel type and contains the
+#' settings for each individual panel of that type.
 #' @param se A \code{\linkS4class{SingleCellExperiment}} object.
-#' @param colormap An \code{\linkS4class{ExperimentColorMap}} object that defines
-#' custom color maps to apply to individual \code{assays}, \code{colData},
-#' and \code{rowData} covariates.
+#' @param colormap An \code{\linkS4class{ExperimentColorMap}} object that
+#' defines custom color maps to apply to individual
+#' \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
-#' @return A \code{list} that includes the following elements:
+#' @return A list that includes the following elements:
 #' \describe{
-#'   \item{cmd}{A command as \code{character} vector that populates
-#'   the coloring covariate in the \code{data.frame} underlying the plot;
+#'   \item{cmd}{A command as character vector that populates
+#'   the coloring covariate column in the data.frame underlying the plot;
 #'   or \code{NULL} if no coloring should be applied.
 #'   }
-#'   \item{label}{\code{character} title of the color scale legend.
+#'   \item{label}{A character title for the color scale legend.
 #'   Set to \code{NA_character_} to produce a \code{NULL} element.
 #'   }
-#'   \item{FUN}{A color scale \code{function} that takes a single
-#'   \code{numeric} argument and returns a \code{character} vector of colors.
+#'   \item{FUN}{A color scale generator function that takes a single
+#'   \code{numeric} argument and returns a character vector of colors.
 #'   }
 #' }
 #'
@@ -906,11 +936,17 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
   if (color_choice==.colorByColDataTitle) {
     covariate_name <- param_choices[[.colorByColData]]
     covariate_as_string <- deparse(covariate_name)
-    output$cmd <-  sprintf("plot.data$ColorBy <- colData(se)[,%s];", covariate_as_string)
+    output$cmd <-
+      sprintf("plot.data$ColorBy <- colData(se)[,%s];", covariate_as_string)
     output$label <- covariate_name
-    colormap_cmd <- sprintf("colDataColorMap(colormap, %s, discrete=%%s)(%%i)", covariate_as_string)
+    colormap_cmd <- sprintf(
+      "colDataColorMap(colormap, %s, discrete=%%s)(%%i)",
+      covariate_as_string
+    )
 
-  } else if (color_choice==.colorByRowTableTitle || color_choice==.colorByFeatNameTitle) {
+  } else if (
+    color_choice==.colorByRowTableTitle ||
+      color_choice==.colorByFeatNameTitle) {
 
     # Set the color to the selected gene
     if (color_choice==.colorByRowTableTitle) {
@@ -934,10 +970,13 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
       sprintf("'%s'",assay_name )
     )
     
-    output$cmd <- sprintf("plot.data$ColorBy <- assay(se, %i)[%s,];", 
-                          assay_choice, deparse(chosen_gene))
-    output$label <- .gene_axis_label(se, chosen_gene, assay_choice, multiline = TRUE)
-    colormap_cmd <- sprintf("assayColorMap(colormap, %s, discrete=%%s)(%%i)", assay_access)
+    output$cmd <- sprintf(
+      "plot.data$ColorBy <- assay(se, %i)[%s,];",
+      assay_choice, deparse(chosen_gene))
+    output$label <-
+      .gene_axis_label(se, chosen_gene, assay_choice, multiline = TRUE)
+    colormap_cmd <-
+      sprintf("assayColorMap(colormap, %s, discrete=%%s)(%%i)", assay_access)
   }
 
   output$FUN <- .create_color_function_chooser(colormap_cmd)
@@ -945,7 +984,8 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
 }
 
 #' @rdname INTERNAL_process_colorby_choice_for_column_plots
-.process_colorby_choice_for_row_plots <- function(param_choices, all_memory, se, colormap) 
+.process_colorby_choice_for_row_plots <- function(
+  param_choices, all_memory, se, colormap) 
 {
   output <- list(cmd=NULL, label=NA_character_, FUN=NULL)
   color_choice <- param_choices[[.colorByField]]
@@ -954,12 +994,18 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
   if (color_choice==.colorByRowDataTitle) {
     covariate_name <- param_choices[[.colorByRowData]]
     covariate_as_string <- deparse(covariate_name)
-    output$cmd <-  sprintf("plot.data$ColorBy <- rowData(se)[,%s];", covariate_as_string)
+    output$cmd <-
+      sprintf("plot.data$ColorBy <- rowData(se)[,%s];", covariate_as_string)
     output$label <- covariate_name
-    colormap_cmd <- sprintf("rowDataColorMap(colormap, %s, discrete=%%s)(%%i)", covariate_as_string)
+    colormap_cmd <- sprintf(
+      "rowDataColorMap(colormap, %s, discrete=%%s)(%%i)",
+      covariate_as_string
+    )
     output$FUN <- .create_color_function_chooser(colormap_cmd)
 
-  } else if (color_choice==.colorByRowTableTitle || color_choice==.colorByFeatNameTitle) {
+  } else if (
+    color_choice==.colorByRowTableTitle ||
+      color_choice==.colorByFeatNameTitle) {
 
     # Set the color to the selected gene
     if (color_choice==.colorByRowTableTitle) {
@@ -976,34 +1022,41 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
         sprintf("Invalid '%s' > '%s' input", .colorByField, color_choice)
     ))
 
-    output$cmd <- sprintf("plot.data$ColorBy <- FALSE;
+    output$cmd <- sprintf(
+"plot.data$ColorBy <- FALSE;
 plot.data[%s, 'ColorBy'] <- TRUE;
-plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To ensure it is plotted last.
+plot.data <- plot.data[order(plot.data$ColorBy),]",
+      deparse(chosen_gene)) # To ensure it is plotted last.
     output$label <- .gene_axis_label(se, chosen_gene, assay_id=NULL)
     output$FUN <- function(nlevels) {
        # Argument is ignored, as we should know the number of levels beforehand.
-       sprintf("scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +", deparse(col_choice))
+       sprintf(
+         "scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +",
+         deparse(col_choice)
+       )
     }
   }
   return(output)
 }
 
-#' Create a bifurcation between discrete and continuous color scales
+#' Bifurcation between discrete and continuous color scales
 #' 
-#' Generates a \code{function} that returns a ggplot coloring function 
-#' depending on the number of levels, specified later, in
-#' \code{\link{.create_plot}}.
+#' Generates a function that returns a ggplot \code{color_scale} command
+#' depending on the number of levels, specified later (in
+#' \code{\link{.create_plot}}).
 #'
-#' @param command A template command to an \code{\linkS4class{ExperimentColorMap}}
-#' accessor.
+#' @param command A template command to an
+#' \code{\linkS4class{ExperimentColorMap}} accessor.
 #' 
 #' @details
-#' This function returns a \code{function} that is called later, in
-#' \code{\link{.create_plot}}, with the number of requested colors
-#' for only argument. At that point, the function chooses to return either
-#' a discrete or a continuous color scale with the appropriate number of colors.
+#' This function returns a function that is called later (in
+#' \code{\link{.create_plot}}) with the number of requested colors
+#' for only argument. At that point, the function will return either a discrete
+#' or a continuous color scale with the appropriate number of colors
+#' (possibly independent of the input argument, for details
+#' see \code{\linkS4class{ExperimentColorMap}}).
 #' 
-#' @return A \code{function} that takes a single \code{numeric} argument, and
+#' @return A function that takes a single numeric argument, and
 #' bifurcates accordingly between a discrete and a continuous color scale.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson.
@@ -1019,12 +1072,23 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
     function(nlevels) {
         if (is.finite(nlevels)) {
             cm_command <- sprintf(command, "TRUE", nlevels)
-            return(list(sprintf("scale_color_manual(values=%s, na.value='grey50', drop=FALSE) +", cm_command),
-                        sprintf("scale_fill_manual(values=%s, na.value='grey50', drop=FALSE) +", cm_command)))
+            return(list(
+              sprintf(
+                "scale_color_manual(values=%s, na.value='grey50', drop=FALSE) +",
+                cm_command),
+              sprintf(
+                "scale_fill_manual(values=%s, na.value='grey50', drop=FALSE) +",
+                cm_command)
+            ))
         } else {
             cm_command <- sprintf(command, "FALSE", 21L)
-            return(list(sprintf("scale_color_gradientn(colors=%s, na.value='grey50') +", cm_command),
-                        sprintf("scale_fill_gradientn(colors=%s, na.value='grey50') +", cm_command)))
+            return(list(
+              sprintf("scale_color_gradientn(colors=%s, na.value='grey50') +",
+                cm_command),
+              sprintf(
+                "scale_fill_gradientn(colors=%s, na.value='grey50') +",
+                cm_command)
+            ))
         }
     }
 }
@@ -1035,20 +1099,21 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 
 #' Process brushing choice
 #'
-#' @param param_choices A single-row \code{\linkS4class{DataFrame}} that
-#' contains all the input parameters for the plot.
-#' @param all_memory A \code{list} of \code{\linkS4class{DataFrame}}s, where each
-#' \code{\linkS4class{DataFrame}} corresponds to a panel type and contains the
-#' initial settings for each individual panel of that type.
+#' @param param_choices A single-row DataFrame that
+#' contains all the input settings for the current panel
+#' @param all_memory A list of DataFrames, where each
+#' DataFrame corresponds to a panel type and contains the
+#' settings for each individual panel of that type.
 #'
-#' @return A \code{list} that includes the following elements:
+#' @return A list that includes the following elements:
 #' \describe{
-#'   \item{cmd}{A \code{character} vector of commands that results in the
-#'   addition of a \code{BrushBy} covariate in the \code{data.frame} underlying
+#'   \item{cmd}{A character vector of commands that results in the
+#'   addition of a \code{BrushBy} covariate column in the data.frame underlying
 #'   the plot, or \code{NULL} if no brush should be applied.
 #'   }
-#'   \item{data}{A \code{list} that describes the brush applied
-#'   (either \code{input$plot_brush} or a \code{matrix} of lasso waypoints.).
+#'   \item{data}{A list that describes the brush applied
+#'   (either \code{input$plot_brush} for the standard Shiny brush,
+#'   or a \code{matrix} of waypoint coordinates for our custom lasso method.).
 #'   }
 #' }
 #'
@@ -1057,6 +1122,8 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 #' @seealso
 #' \code{\link{brushedPoints}},
 #' \code{\link{in.out}}.
+#' See also \code{\link{.spawn_brush_chart.}} for further details on brushing
+#' relationships between panels.
 .process_brushby_choice <- function(param_choices, all_memory) {
   brush_in <- param_choices[[.brushByPlot]]
   cmd <- NULL
@@ -1077,9 +1144,13 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 
     if (!is.null(brush_val)) {
         brush_obj[[transmitter]] <- brush_val
-        cmd <- sprintf("brushed_pts <- shiny::brushedPoints(%s, all_brushes[['%s']])",
-                       source_data, transmitter)
-        cmd <- c(cmd, "plot.data$BrushBy <- rownames(plot.data) %in% rownames(brushed_pts);")
+        cmd <- sprintf(
+          "brushed_pts <- shiny::brushedPoints(%s, all_brushes[['%s']])",
+          source_data, transmitter)
+        cmd <- c(
+          cmd,
+          "plot.data$BrushBy <- rownames(plot.data) %in% rownames(brushed_pts);"
+          )
         cmd <- paste(cmd, collapse="\n")
 
     } else {
@@ -1098,10 +1169,13 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 
             brush_obj[[transmitter]] <- lasso_val
             cmd <- sprintf("to_check <- subset(%s, !is.na(X) & !is.na(Y))", source_data)
-            cmd <- c(cmd,
-                    sprintf("brushed_pts <- mgcv::in.out(all_lassos[['%s']], cbind(as.numeric(to_check$%s), as.numeric(to_check$%s)))",
-                            transmitter, v1, v2))
-            cmd <- c(cmd, "plot.data$BrushBy <- rownames(plot.data) %in% rownames(to_check)[brushed_pts]")
+            cmd <- c(cmd, sprintf(
+              "brushed_pts <- mgcv::in.out(all_lassos[['%s']], cbind(as.numeric(to_check$%s), as.numeric(to_check$%s)))",
+              transmitter, v1, v2))
+            cmd <- c(
+              cmd,
+              "plot.data$BrushBy <- rownames(plot.data) %in% rownames(to_check)[brushed_pts]"
+              )
             cmd <- paste(cmd, collapse="\n")
         }
     }
@@ -1110,22 +1184,24 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
   return(list(cmd=cmd, data=brush_obj))
 }
 
-#' Generate ggplot commands to control brush and appearance of data points
+#' Implementing the brushing effect on data points
 #' 
-#' Implementing the brushing effect.
+#' Generate ggplot commands to control the appearance of data points while
+#' accounting for a brushing effect, if active.
 #'
-#' @param param_choices A single-row \code{\linkS4class{DataFrame}} that
-#' contains all the input parameters for the plot.
-#' @param brush_cmd \code{character} vector of commands that control the
-#' subsetting or appearance of brushed data points.
-#' @param aes The ggplot aesthetic instructions as a \code{character} vector.
+#' @param param_choices A single-row DataFrame that
+#' contains all the input settings for the current panel.
+#' @param brush_cmd A character vector of commands that control the
+#' subsetting or appearance of brushed data points, or \code{NULL} in the
+#' absence of any brushing.
+#' @param aes The ggplot aesthetic instructions as a character vector.
 #'
-#' @return A \code{list} that includes the following elements:
+#' @return A list that includes the following elements:
 #' \describe{
-#'   \item{brush}{A \code{list} of commands as \code{character} vectors to
-#'   produce the restriction brushing effect on the final plot.
+#'   \item{brush}{A list of commands as character vectors to
+#'   produce the 'restrict' brushing effect on the final plot.
 #'   }
-#'   \item{plot}{A \code{list} of commands as \code{character} vectors to
+#'   \item{plot}{A list of commands as character vectors to
 #'   produce the color or transprency brushing effect on the final plot.
 #'   }
 #' }
@@ -1171,7 +1247,8 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
       # or scale_*_discrete (necessary to avoid dropping empty levels).
       brush_cmds[["full"]] <- "plot.data.all <- plot.data;"
       brush_cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
-      plot_cmds[["brush_blank"]] <- "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
+      plot_cmds[["brush_blank"]] <-
+        "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
       plot_cmds[["brush_restrict"]] <- sprintf(
         "geom_point(%s, alpha = 0.6, plot.data) +", 
         aes
@@ -1191,17 +1268,17 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 # Internal functions: aesthetics ----
 ############################################
 
-#' Generate axis label for gene expression data
+#' Generate an axis label for gene expression data
 #'
 #' @param se A \code{\linkS4class{SingleCellExperiment}} object.
-#' @param gene_id A \code{character} feature name or \code{integer} index
+#' @param gene_id A feature name or integer index
 #' of the feature in \code{rownames(se)}.
-#' @param assay_id An \code{integer} index of the assay name in
+#' @param assay_id The integer index of an assay in
 #' \code{assayNames(se)}.
-#' @param multiline A \code{logical} value that indicates whether feature and
+#' @param multiline A logical value that indicates whether feature and
 #' assay names should appear on separate lines.
 #'
-#' @return A \code{character} value to use as axis label.
+#' @return A character value to use as axis label.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_process_brushby_choice
@@ -1232,21 +1309,22 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 
 #' Generate ggplot aesthetic instructions
 #'
-#' @param x A \code{logical} that indicates whether to add \code{x=X} to the
+#' @param x A \code{logical} that indicates whether to enable \code{x} in the
 #' aesthetic instructions (default: \code{TRUE}). 
-#' @param y A \code{logical} that indicates whether to add \code{y=Y} to the
+#' @param y A \code{logical} that indicates whether to enable \code{y} in the
 #' aesthetic instructions (default: \code{TRUE}). 
-#' @param color A \code{logical} that indicates whether to add
-#' \code{color=ColorBy} to the aesthetic instructions (default: \code{FALSE}). 
-#' @param shape A \code{logical} that indicates whether to add
-#' \code{shape=ShapeBy} to the aesthetic instructions (default: \code{FALSE}). 
-#' @param fill A \code{logical} that indicates whether to add
-#' \code{fill=FillBy} to the aesthetic instructions (default: \code{FALSE}). 
-#' @param group A \code{logical} that indicates whether to add
-#' \code{group=GroupBy} to the aesthetic instructions (default: \code{FALSE}). 
-#' @param alt Alternative aesthetics, supplied as a named \code{character} vector.
+#' @param color A \code{logical} that indicates whether to enable
+#' \code{color} in the aesthetic instructions (default: \code{FALSE}). 
+#' @param shape A \code{logical} that indicates whether to enable
+#' \code{shape} in the aesthetic instructions (default: \code{FALSE}). 
+#' @param fill A \code{logical} that indicates whether to enable
+#' \code{fill} in the aesthetic instructions (default: \code{FALSE}). 
+#' @param group A \code{logical} that indicates whether to enable
+#' \code{group} in the aesthetic instructions (default: \code{FALSE}). 
+#' @param alt Alternative aesthetics, supplied as a named character vector.
 #'
-#' @return Aesthetic instructions for ggplot as a \code{character} value.
+#' @return Aesthetic instructions for \code{\link{ggplot}} as a character
+#' value.
 #'
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_build_aes
@@ -1274,7 +1352,7 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 #' @param value The name of a column in the plot data that will be mapped to
 #' the aesthetic declared in \code{name}.
 #'
-#' @return A \code{character} value of the form \code{name = value}.
+#' @return A character value of the form \code{name = value}.
 #'
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_make_single_aes
@@ -1286,24 +1364,25 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 
 #' Generate ggplot title and label instructions
 #'
-#' @param x The \code{character} label for the horizontal axis.
+#' @param x The character label for the horizontal axis.
 #' Set to \code{NA_character_} to produce a \code{NULL} element
-#' @param y x The \code{character} label for the vertical axis.
+#' @param y x The character label for the vertical axis.
 #' Set to \code{NA_character_} to produce a \code{NULL} element
-#' @param color The \code{character} title for the color scale legend.
+#' @param color The character title for the color scale legend.
 #' Set to \code{NA_character_} to produce a \code{NULL} element
-#' @param shape The \code{character} title for the point shape legend.
+#' @param shape The character title for the point shape legend.
 #' Set to \code{NA_character_} to produce a \code{NULL} element
-#' @param fill The \code{character} title for the color fill legend.
+#' @param fill The character title for the color fill legend.
 #' Set to \code{NA_character_} to produce a \code{NULL} element
-#' @param group The \code{character} title for the group legend.
+#' @param group The character title for the group legend.
 #' Set to \code{NA_character_} to produce a \code{NULL} element
-#' @param title The \code{character} title for the plot title.
+#' @param title The character title for the plot title.
 #' Set to \code{NA_character_} to produce a \code{NULL} element
-#' @param subtitle The \code{character} title for the plot subtitle
+#' @param subtitle The character title for the plot subtitle
 #' Set to \code{NA_character_} to produce a \code{NULL} element
 #'
-#' @return Title and label instructions for ggplot as a \code{character} value.
+#' @return Title and label instructions for \code{\link{ggplot}} as a character
+#' value.
 #'
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_build_labs
@@ -1332,9 +1411,10 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 #' Generate a single title or label instruction for ggplot
 #'
 #' @param name The name of a ggplot label.
-#' @param value A \code{character} value for the title or label declared in \code{name}.
+#' @param value A character value for the title or label declared in
+#' \code{name}.
 #'
-#' @return A \code{character} value of the form \code{name = value}.
+#' @return A character value of the form \code{name = value}.
 #'
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_make_single_lab
@@ -1348,7 +1428,7 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 # Internal functions: grouping ----
 ############################################
 
-#' The Number of Levels of any data type
+#' Number of levels for any data type
 #'
 #' @param x A \code{vector} of any R internal type.
 #'
@@ -1374,6 +1454,10 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 }
 
 #' Determine whether a vector is discrete
+#' 
+#' This function requires a threshold on the count of unique values
+#' beyond which the vector is declared as continuous and coerced to numeric
+#' values.
 #'
 #' @param x A \code{vector} of any R internal type.
 #' @param max_levels Maximul count of levels or unique values beyond which
@@ -1392,20 +1476,22 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 
 #' Coerce numerous levels to numeric type
 #'
-#' This function ensures that a specific column of the \code{data.frame}
+#' This function ensures that a specific column of the data.frame
 #' underlying a plot is of \code{numeric} type.
-#' Otherwise, it returns a command (as a \code{character} value) that coerces
-#' the input vector forma any type (typically a factor with numerous levels
-#' or a \code{character} vector with numerous unique values) to the
-#' \code{numeric} R internal type, for more efficient plotting.
+#' If that is not the case,
+#' it returns a command (as a character value) that coerces
+#' the column from any type (typically a factor with numerous levels
+#' or a character vector with numerous unique values) to the
+#' \code{numeric} R internal type, to avoid grouping by \code{\link{ggplot}},
+#' for efficient plotting.
 #'
 #' @param values Input vector that must be coerced to \code{numeric}.
-#' @param field Column name in the plot \code{data.frame} that contain the
-#' values to coerce to \code{numeric}.
+#' @param field Column name in the plot data.frame that contain
+#' \code{values}.
 #' @param warn A \code{logical} that indicates whether a warning should be
-#' raised if \code{values} is not of type \code{numeric}.
+#' raised if \code{values} is not already of type \code{numeric}.
 #'
-#' @return A command that coerces the \code{data.frame} column to
+#' @return A command that coerces the plot data.frame column to
 #' \code{numeric} type, or \code{NULL} if no coercion is required.
 #'
 #' @author Kevin Rue-Albrecht
@@ -1418,9 +1504,14 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
       warning("coloring covariate has too many unique values, coercing to numeric")
     }
     if (is.factor(values)) {
-      extra_cmd <- sprintf("plot.data$%s <- as.numeric(plot.data$%s)", field, field)
+      extra_cmd <- sprintf(
+        "plot.data$%s <- as.numeric(plot.data$%s)",
+        field, field)
     } else {
-      extra_cmd <- sprintf("plot.data$%s <- as.numeric(as.factor(plot.data$%s))", field, field)
+      extra_cmd <- sprintf(
+        "plot.data$%s <- as.numeric(as.factor(plot.data$%s))",
+        field, field
+        )
     }
     return(extra_cmd)
   }
@@ -1440,13 +1531,13 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 #' @param flip A \code{logical} value that indicates whether \code{\link{coord_flip}}
 #' was applied to the plot.
 #'
-#' @return A \code{list} that includes the following elements:
+#' @return A list that includes the following elements:
 #' \describe{
-#'   \item{cmd}{A command, as \code{character} value, that overlay a rectangle
-#'   on the plot to indicate the position of an active brush.
+#'   \item{cmd}{A command, as character value, that overlay a rectangle
+#'   on the plot to indicate the position of an active Shiny brush.
 #'   }
-#'   \item{data}{The data from a brush, such as \code{input$plot_brush.}}
-#' }
+#'   \item{data}{The data describing the Shiny brush}
+#'  }
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_self_brush_box
 #' @seealso 
@@ -1489,10 +1580,10 @@ plot.data <- plot.data[order(plot.data$ColorBy),]", deparse(chosen_gene)) # To e
 #' @param flip A \code{logical} value that indicates whether \code{\link{coord_flip}}
 #' was applied to the plot.
 #'
-#' @return A \code{list} that includes the following elements:
+#' @return A list that includes the following elements:
 #' \describe{
-#'   \item{cmd}{A command, as \code{character} value, that overlay a rectangle
-#'   on the plot to indicate the position of an active brush.
+#'   \item{cmd}{A command, as character value, that overlay a rectangle
+#'   on the plot to indicate the position of an active lasso brush.
 #'   }
 #'   \item{data}{The data from a lasso brush, as a two-column \code{matrix}
 #'   that stores X and Y coordinats of each lasso waypoint.}

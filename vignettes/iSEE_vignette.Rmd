@@ -224,7 +224,7 @@ The only requirement is that the observations can be stored as a matrix in the `
 A row statistics table contains the values of the `rowData` slot for the `SingleCellExperiment`/`SummarizedExperiment` object. 
 If none are specified, a column named `Present` is added and set to `TRUE` for all available genes, to avoid crashing `DT::datatable`.
 Typically, these tables are used to link to other plots to determine the genes to use for plotting (or coloring).
-However, they can also retrieve gene-specific annotation on the fly via the `r CRANpkg("rentrez")` package, provided the `annot.orgdb`, `annot.keytype`, and `annot.keyfield` parameters are specified.
+However, they can also retrieve gene-specific annotation on the fly by specifying the `annotFun` parameter, e.g. by using the `annotateEntrez` or `annotateEnsembl` functions, provided in the package. Alternatively, users can create a customized annotation function; for more details on this, please consult the manual pages of `annotateEntrez` or `annotateEnsembl`.
 
 ## Coloring plots by sample attributes 
 

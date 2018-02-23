@@ -9,7 +9,7 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featExprArgs = NULL,
   redDimMax = 5, colDataMax = 5, featExprMax = 5, rowStatMax = 5,
   rowDataMax = 5, heatMapMax = 5, initialPanels = NULL,
   annot.orgdb = NULL, annot.keytype = "ENTREZID", annot.keyfield = NULL,
-  colormap = ExperimentColorMap(), run_local = TRUE)
+  annotFun = NULL, colormap = ExperimentColorMap(), run_local = TRUE)
 }
 \arguments{
 \item{se}{An object that coercible to \code{\linkS4class{SingleCellExperiment}}.}

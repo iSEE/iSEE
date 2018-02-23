@@ -103,6 +103,7 @@ iSEE <- function(
   annot.orgdb=NULL,
   annot.keytype="ENTREZID",
   annot.keyfield=NULL,
+  annotFun = NULL,
   colormap=ExperimentColorMap(),
   run_local=TRUE
 ) {
@@ -1269,8 +1270,8 @@ iSEE <- function(
         anno_field <- paste0(panel_name, "_annotation")
         output[[anno_field]] <- renderUI({
             chosen <- input[[select_field]]
-            .generate_annotation(annot.orgdb, annot.keytype, annot.keyfield,
-                                 gene_data, chosen)
+            annotFun(se,chosen)
+            
         })
 
         # Describing the links between panels.

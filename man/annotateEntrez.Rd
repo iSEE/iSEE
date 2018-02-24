@@ -45,8 +45,8 @@ annotateEntrez(sce,"Mouse","SYMBOL")
 
 # to be used when launching the app itself ----
 
-app <- iSEE(sce)
+app <- iSEE(sce, annotFun = annotateEntrez(sce,"Mouse","SYMBOL"))
 if (interactive()) {
-  shiny::runApp(app, port = 1234, annotFun = annotateEntrez(sce,"Mouse","SYMBOL"))
+  shiny::runApp(app, port = 1234)
 }
 }

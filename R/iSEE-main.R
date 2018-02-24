@@ -1256,9 +1256,10 @@ iSEE <- function(
         # Updating the annotation box.
         anno_field <- paste0(panel_name, "_annotation")
         output[[anno_field]] <- renderUI({
-            chosen <- input[[select_field]]
-            annotFun(se,chosen)
-            
+          if(is.null(annotFun)) return()
+          chosen <- input[[select_field]]
+          annotFun(se,chosen)
+          
         })
 
         # Describing the links between panels.

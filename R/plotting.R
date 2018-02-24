@@ -371,20 +371,26 @@ names(.all_aes_values) <- .all_aes_names
 #' \item \code{specific}, a list of strings containing commands to generate plot-type-specific commands, e.g., scatter for violin plots.
 #' }
 #' 
-#' The top-level list also contains \code{envir}, an environment that contains:
+#' The top-level list also contains \code{envir}, an environment that is guaranteed to hold:
 #' \itemize{
-#' \item \code{current}, the fully constructed data.frame containing all plotting information required to generate the plots.
+#' \item \code{plot.data}, the fully constructed data.frame containing all plotting information required to generate the plots.
 #' If brushing to restrict, any subsetting will already have been applied.
-#' \item \code{all}, a data.frame equivalent to \code{plot.data} but without any \code{BrushBy} information or subsetting by \code{BrushBy}. 
+#' \item \code{plot.data.all}, a data.frame equivalent to \code{plot.data} but without any \code{BrushBy} information or subsetting by \code{BrushBy}. 
 #' This is useful for determining the plotting boundaries of the entire data set, even after subsetting of \code{plot.data}.
 #' }
 #' All and only the commands in \code{cmds} are necessary to generate \code{plot.data} and \code{plot.data.all}.
 #' 
 #' @details
 #' The output \code{envir$plot.data} is guaranteed to contain \code{X} and \code{Y} for the x- and y-coordinates, respectively.
-#' It may also contain \code{ColorBy}, a field specifying how to colour each point;
-#' and \code{BrushBy}, a field specifying whether the points were selected by a brush in a transmitting plot.
-#' All categorical variables in the output \code{data} are guaranteed to be factors.
+#' It may also contain \code{ColorBy}, a field specifying how to colour each point.
+#' All categorical variables in the output \code{data} are guaranteed to be factors, and everything else must be numeric.
+#'
+#' The nature of the plot to be generated will determine whether any additional fields are present in \code{plot.data}.
+#' Violin plots will contain \code{GroupBy} fields as well as \code{jitteredX}.
+#' In horizontal violin plots, \code{X} and \code{Y} will be swapped.
+#' Square plots will have \code{jitteredX} and \code{jitteredY}.
+#'
+#' The \code{plot.data} may also contain \code{BrushBy}, a logical field specifying whether the points were selected by a brush in a transmitting plot.
 #' 
 #' @author Aaron Lun
 #' @rdname INTERNAL_complete_plotting_data

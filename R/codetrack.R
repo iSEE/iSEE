@@ -88,9 +88,6 @@
     # Adding the plotting commands.
     cur_cmds <- pObjects$commands[[panel_name]]
     collated <- c(cur_cmds$data, "")
-    if (length(cur_cmds$lim)) {
-        collated <- c(collated, "# Defining plot limits", cur_cmds$lim, "")
-    }
     if (length(cur_cmds$brush)) {
         collated <- c(collated, "# Receiving brush data", cur_cmds$brush, "")
     }
@@ -103,7 +100,7 @@
 
     # Finishing off the rest of the commands.
     if (length(cur_cmds$setup)) {
-        collated <- c(collated, "# Setting up plot aesthetics", cur_cmds$setup, "")        
+        collated <- c(collated, "# Setting up plot coordinates", cur_cmds$setup, "")        
     }
     if (length(cur_cmds$plot)) {
         collated <- c(collated, "# Creating the plot", cur_cmds$plot)

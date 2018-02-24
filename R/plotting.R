@@ -80,7 +80,7 @@ names(.all_aes_values) <- .all_aes_names
     setup_out <- .complete_plotting_data(data_cmds, param_choices, all_memory, se, all_coordinates, by_row = FALSE)
     plot_out <- .create_plot(envir = setup_out$envir, param_choices = param_choices, colormap = colormap,
                              x_lab = x_lab, y_lab = y_lab, title = plot_title, by_row = FALSE)
-    return(list(cmds = c(setup_out$cmds, plot_out$cmds), xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
+    return(list(cmds = c(setup_out$cmds, list(plot=plot_out$cmds)), xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
 }
 
 ############################################
@@ -157,7 +157,7 @@ names(.all_aes_values) <- .all_aes_names
     setup_out <- .complete_plotting_data(data_cmds, param_choices, all_memory, se, all_coordinates, by_row = FALSE)
     plot_out <- .create_plot(envir = setup_out$envir, param_choices = param_choices, colormap = colormap,
                              x_lab = x_lab, y_lab = y_lab, title = plot_title, by_row = FALSE)
-    return(list(cmds = c(setup_out$cmds, plot=plot_out$cmds), xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
+    return(list(cmds = c(setup_out$cmds, list(plot=plot_out$cmds)), xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
 }
 
 ############################################
@@ -271,7 +271,7 @@ names(.all_aes_values) <- .all_aes_names
     setup_out <- .complete_plotting_data(data_cmds, param_choices, all_memory, se, all_coordinates, by_row = FALSE)
     plot_out <- .create_plot(envir = setup_out$envir, param_choices = param_choices, colormap = colormap,
                              x_lab = x_lab, y_lab = y_lab, title = plot_title, by_row = FALSE)
-    return(list(cmds = c(setup_out$cmds, plot_out$cmds), xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
+    return(list(cmds = c(setup_out$cmds, list(plot=plot_out$cmds)), xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
 }
 
 ############################################
@@ -344,7 +344,7 @@ names(.all_aes_values) <- .all_aes_names
     setup_out <- .complete_plotting_data(data_cmds, param_choices, all_memory, se, all_coordinates, by_row = TRUE)
     plot_out <- .create_plot(envir = setup_out$envir, param_choices = param_choices, colormap = colormap,
                              x_lab = x_lab, y_lab = y_lab, title = plot_title, by_row = TRUE)
-    return(list(cmds = c(setup_out$cmds, plot_out$cmds), xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
+    return(list(cmds = c(setup_out$cmds, list(plot=plot_out$cmds)), xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
 }
 
 ############################################
@@ -578,11 +578,13 @@ names(.all_aes_values) <- .all_aes_names
     if (length(select_cmds)) {
         N <- length(extra_cmds)
         extra_cmds[[N]] <- paste(extra_cmds[[N]], "+")
-        
+
         intermediate <- seq_len(length(select_cmds)-1L)
         select_cmds[intermediate] <- paste(select_cmds[intermediate], "+")
-
         extra_cmds <- c(extra_cmds, select_cmds)
+
+        # We overwrite any existing 'all_brushes' or 'all_lassos', 
+        # as they have served their purpose in defining plot_data.
         envir$all_brushes <- brush_out$data
         envir$all_lassos <- lasso_out$data
     }

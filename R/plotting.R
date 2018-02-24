@@ -565,7 +565,28 @@ names(.all_aes_values) <- .all_aes_names
     } else {
         extra_cmds <- .scatter_plot(plot_data=plot_data, param_choices=param_choices, ..., by_row=by_row)
     }
-  
+
+    # Adding self-brushing boxes, if they exist.
+    select_cmds <- list()
+    to_flip <- !group_X && group_Y
+    brush_out <- .self_brush_box(param_choices, flip=to_flip) # Adding a brush.
+    select_cmds[["brush_box"]] <- brush_out$cmd
+    lasso_out <- .self_lasso_path(param_choices, flip=to_flip) # Adding the lasso path.
+    select_cmds[["lasso_path"]] <- lasso_out$cmd
+    select_cmds <- unlist(select_cmds)
+
+    if (length(select_cmds)) {
+        N <- length(extra_cmds)
+        extra_cmds[[N]] <- paste(extra_cmds[[N]], "+")
+        
+        intermediate <- seq_len(length(select_cmds)-1L)
+        select_cmds[intermediate] <- paste(select_cmds[intermediate], "+")
+
+        extra_cmds <- c(extra_cmds, select_cmds)
+        envir$all_brushes <- brush_out$data
+        envir$all_lassos <- lasso_out$data
+    }
+
     # Evaluating the plotting commands.
     plot_out <- eval(parse(text=unlist(extra_cmds)), envir=envir)
     return(list(cmds = extra_cmds, plot = plot_out))
@@ -1529,8 +1550,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #' @rdname INTERNAL_self_brush_box
 #' @seealso 
 #' \code{\link{iSEE}}.
-.self_brush_box <- function(mode, id, memory, flip=FALSE) { 
-    current <- memory[[mode]][,.brushData][[id]]
+.self_brush_box <- function(param_choices, flip=FALSE) { 
+    current <- param_choices[,.brushData][[1]]
     if (is.null(current)) {
         return(NULL)
     }
@@ -1547,11 +1568,12 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
         ymax <- 'ymax'
     }
     
-    plot_name <- paste0(mode, id)
+    plot_name <- rownames(param_choices)
+    enc <- .split_encoded(plot_name)
     cmd <- sprintf(
 "geom_rect(aes(xmin = %s, xmax = %s, ymin = %s, ymax = %s), color='%s', alpha=0, 
     data=do.call(data.frame, all_brushes[['%s']][c('xmin', 'xmax', 'ymin', 'ymax')]), inherit.aes=FALSE)",
-      xmin, xmax, ymin, ymax, panel_colors[mode], plot_name)
+      xmin, xmax, ymin, ymax, panel_colors[enc$Type], plot_name)
     
     data <- list()
     data[[plot_name]] <- current
@@ -1579,9 +1601,9 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #' @rdname INTERNAL_self_brush_box
 #' @seealso 
 #' \code{\link{iSEE}}.
-.self_lasso_path <- function(mode, id, memory, flip=FALSE) {
-    current <- memory[[mode]][,.lassoData][[id]]
-    if (is.null(current) || !is.null(memory[[mode]][,.brushData][[id]])) {
+.self_lasso_path <- function(param_choices, flip=FALSE) { 
+    current <- param_choices[,.lassoData][[1]]
+    if (is.null(current) || !is.null(param_choices[,.brushData][[1]])) {
         return(NULL)
     }
     is_closed <- attr(current, "closed")
@@ -1594,13 +1616,16 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
         y <- "y"
     }
   
-    plot_name <- paste0(mode, id)
-    
+    plot_name <- rownames(param_choices)
+    enc <- .split_encoded(plot_name)
+    stroke_color <- panel_colors[enc$Type]
+    fill_color <- brush_fill_color[enc$Type]
+ 
     if (identical(nrow(current), 1L)) { # lasso has only a start point
       point_cmd <- sprintf("geom_point(aes(x = %s, y = %s), 
     data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2]),
     inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s', shape = %s)",
-        x, y, plot_name, plot_name, panel_colors[mode],
+        x, y, plot_name, plot_name, stroke_color,
         .lassoStartShape)
       full_cmd_list <- list(point_cmd)
       
@@ -1609,12 +1634,12 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
     data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2]), 
     inherit.aes=FALSE, fill = '%s')", 
           x, y ,
-          .brushFillOpacity, panel_colors[mode],
-          plot_name, plot_name, brush_fill_color[mode])
+          .brushFillOpacity, stroke_color,
+          plot_name, plot_name, fill_color)
     
         scale_fill_cmd <- sprintf(
           "scale_fill_manual(values = c('TRUE' = '%s', 'FALSE' = '%s'))",
-          panel_colors[mode], brush_fill_color[mode])
+          stroke_color, fill_color)
 
         guides_cmd <- "guides(shape = 'none')"
         full_cmd_list <- list(polygon_cmd, scale_fill_cmd, guides_cmd)
@@ -1623,13 +1648,13 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
       path_cmd <- sprintf("geom_path(aes(x = %s, y = %s), 
     data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2]),
     inherit.aes=FALSE, alpha=1, color='%s', linetype = 'longdash')", 
-        x, y, plot_name, plot_name, panel_colors[mode])
+        x, y, plot_name, plot_name, stroke_color)
     
         point_cmd <- sprintf("geom_point(aes(x = %s, y = %s, shape = First), 
     data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2], 
                     First = seq_len(nrow(all_lassos[['%s']]))==1L),
     inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s')",
-        x, y, plot_name, plot_name, plot_name, panel_colors[mode])
+        x, y, plot_name, plot_name, plot_name, stroke_color)
 
         scale_shape_cmd <- sprintf(
           "scale_shape_manual(values = c('TRUE' = %s, 'FALSE' = %s))",

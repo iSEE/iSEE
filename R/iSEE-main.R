@@ -271,7 +271,6 @@ iSEE <- function(
     pObjects$brush_links <- .spawn_brush_chart(memory)
     pObjects$table_links <- .spawn_table_links(memory)
 
-    pObjects$extra_plot_cmds <- empty_list
     pObjects$cached_plots <- empty_list
 
     # Storage for all the reactive objects
@@ -1051,36 +1050,13 @@ iSEE <- function(
 
                 # Defining the rendered plot, and saving the coordinates.
                 gen_field <- paste0(plot_name, "_", .panelGeneralInfo)
-
                 output[[plot_name]] <- renderPlot({
                     force(rObjects[[plot_name]])
                     rObjects[[gen_field]] <- .increment_counter(isolate(rObjects[[gen_field]]))
-
-                    # Fully re-rendering the plots.
                     p.out <- FUN0(i0, pObjects$memory, pObjects$coordinates, se, colormap)
-                     gg <- p.out$plot
                     pObjects$commands[[plot_name]] <- p.out$cmd
                     pObjects$coordinates[[plot_name]] <- p.out$xy[,c("X", "Y")]
-
-                    extra_cmds <- list()
-                    to_flip <- is(gg$coordinates, "CoordFlip") # Add a test for this!
-                    brush_out <- .self_brush_box(mode0, i0, pObjects$memory, flip=to_flip) # Adding a brush.
-                    extra_cmds[["brush_box"]] <- brush_out$cmd
-                    lasso_out <- .self_lasso_path(mode0, i0, pObjects$memory, flip=to_flip) # Adding the lasso path.
-                    extra_cmds[["lasso_path"]] <- lasso_out$cmd
-                    extra_cmds <- unlist(extra_cmds)
-
-                    if (length(extra_cmds) > 0L) {
-                        cur.env <- new.env()
-                        cur.env$all_brushes <- brush_out$data
-                        cur.env$all_lassos <- lasso_out$data
-
-                        for (cmd in extra_cmds) {
-                            gg <- gg + eval(parse(text=cmd), envir=cur.env)
-                        }
-                    }
-                    pObjects$extra_plot_cmds[[plot_name]] <- extra_cmds
-                    return(gg)
+                    p.out$plot
                 })
 
                 # Describing some general panel information.

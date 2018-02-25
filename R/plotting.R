@@ -554,6 +554,8 @@ names(.all_aes_values) <- .all_aes_names
 #' @rdname INTERNAL_scatter_plot
 #' @seealso
 #' \code{\link{.create_plot}}
+#'
+#' @importFrom ggplot2 ggplot coord_cartesian theme_bw theme
 .scatter_plot <- function(plot_data, param_choices, se, x_lab, y_lab, title, by_row = FALSE, range_all = FALSE) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +"
@@ -634,7 +636,7 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.complete_plotting_data}},
 #' \code{\link{.create_plot}}
 #'
-#' @importFrom vipor offsetX
+#' @importFrom ggplot2 ggplot geom_violin coord_cartesian theme_bw theme coord_flip scale_x_discrete
 .violin_plot <- function(plot_data, param_choices, se, x_lab, y_lab, title, horizontal = FALSE, by_row = FALSE, range_all = FALSE) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +" # do NOT put aes here, it does not play nice with shiny brushes.
@@ -643,8 +645,7 @@ names(.all_aes_values) <- .all_aes_names
 
     # Adding the points to the plot (with/without brushing).
     new_aes <- .build_aes(color = !is.null(plot_data$ColorBy), alt=c(x="jitteredX"))
-    point_out <- .create_points(param_choices, !is.null(plot_data$BrushBy), new_aes)
-    plot_cmds[["points"]] <- unlist(point_out)
+    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$BrushBy), new_aes)
 
     # Defining the color commands.
     if (by_row) { 
@@ -703,6 +704,7 @@ names(.all_aes_values) <- .all_aes_names
 }
 
 #' @rdname INTERNAL_violin_plot
+#' @importFrom vipor offsetX
 .violin_setup <- function(horizontal=FALSE) { 
     setup_cmds <- list()
 
@@ -763,6 +765,8 @@ plot.data$Y <- tmp;")
 #' @seealso
 #' \code{\link{.complete_plotting_data}},
 #' \code{\link{.create_plot}}
+#'
+#' @importFrom ggplot2 ggplot geom_tile coord_cartesian theme_bw theme scale_size_area scale_x_discrete scale_y_discrete guides
 .square_plot <- function(plot_data, param_choices, se, x_lab, y_lab, title, by_row = FALSE) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
@@ -771,8 +775,7 @@ plot.data$Y <- tmp;")
 
     # Adding the points to the plot (with/without brushing).
     new_aes <- .build_aes(color = !is.null(plot_data$ColorBy), alt=c(x="jitteredX", y="jitteredY"))
-    point_out <- .create_points(param_choices, !is.null(plot_data$BrushBy), new_aes)
-    plot_cmds[["points"]] <- unlist(point_out)
+    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$BrushBy), new_aes)
     plot_cmds[["scale"]] <- "scale_size_area(limits = c(0, 1), max_size = 30) +"
 
     # Defining the color commands.
@@ -809,6 +812,7 @@ plot.data$Y <- tmp;")
 }
 
 #' @rdname INTERNAL_square_plot
+#' @importFrom stats runif
 .square_setup <- function() {
     setup_cmds  <- list()
     setup_cmds[["table"]] <- "summary.data <- as.data.frame(with(plot.data, table(X, Y)));"
@@ -975,6 +979,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 }
 
 #' @rdname INTERNAL_add_color_scale
+#' @importFrom ggplot2 scale_color_manual
 .add_color_to_row_plot <- function(param_choices, se, colorby) {
     output <- list(label=NA_character_, cmd=NULL)
     if (is.null(colorby)) { 
@@ -1138,7 +1143,9 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #' @seealso 
 #' \code{\link{.scatter_plot}},
 #' \code{\link{.violin_plot}},
-#' \code{\link{.square_plot}}.
+#' \code{\link{.square_plot}}
+#'
+#' @importFrom ggplot2 geom_point geom_blank
 .create_points <- function(param_choices, brushed, aes) {
   plot_cmds <- list()
 
@@ -1246,6 +1253,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #' \code{\link{.scatter_plot}},
 #' \code{\link{.violin_plot}},
 #' \code{\link{.square_plot}}
+#'
+#' @importFrom ggplot2 aes
 .build_aes <- function(
   x = TRUE, y = TRUE, color = FALSE, shape = FALSE, fill = FALSE,
   group = FALSE, alt=NULL) {
@@ -1304,6 +1313,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #' \code{\link{.scatter_plot}},
 #' \code{\link{.violin_plot}},
 #' \code{\link{.square_plot}}
+#'
+#' @importFrom ggplot2 labs
 .build_labs <- function(
   x = NA_character_, y = NA_character_,
   color = NA_character_, shape = NA_character_,
@@ -1456,7 +1467,9 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_self_brush_box
 #' @seealso 
-#' \code{\link{iSEE}}.
+#' \code{\link{.create_plot}}
+#'
+#' @importFrom ggplot2 geom_rect
 .self_brush_box <- function(param_choices, flip=FALSE) { 
     current <- param_choices[,.brushData][[1]]
     if (is.null(current)) {
@@ -1507,9 +1520,11 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #' In particular, the command expects that \code{data} is assigned to a variable named \code{all_lassos} in the evaluation environment.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
-#' @rdname INTERNAL_self_brush_box
+#' @rdname INTERNAL_self_lasso_path
 #' @seealso 
-#' \code{\link{iSEE}}.
+#' \code{\link{.create_plot}}
+#'
+#' @importFrom ggplot2 geom_point geom_polygon geom_path scale_shape_manual scale_fill_manual guides
 .self_lasso_path <- function(param_choices, flip=FALSE) { 
     current <- param_choices[,.lassoData][[1]]
     if (is.null(current) || !is.null(param_choices[,.brushData][[1]])) {

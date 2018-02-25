@@ -482,6 +482,7 @@
 #' \code{\link{.create_visual_box_for_row_plots}}
 #'
 #' @importFrom shiny radioButtons tagList selectInput selectizeInput
+#' @importFrom colourpicker colourInput
 .create_visual_box_for_column_plots <- function(mode, ID, param_choices, active_tab, covariates, all_assays, no_rows=FALSE) {
     colorby_field <- paste0(mode, ID, "_", .colorByField)
     color_choices <- c(.colorByNothingTitle)
@@ -498,6 +499,10 @@
         open = param_choices[[.visualParamBoxOpen]],
         radioButtons(colorby_field, label="Color by:", inline=TRUE,
                      choices=color_choices, selected=param_choices[[.colorByField]]
+            ),
+        .conditional_on_radio(colorby_field, .colorByNothingTitle,
+            colourInput(paste0(mode, ID, "_", .colorByDefaultColor), label=NULL,
+                        value=param_choices[[.colorByDefaultColor]])
             ),
         .conditional_on_radio(colorby_field, .colorByColDataTitle,
             selectInput(paste0(mode, ID, "_", .colorByColData), label = NULL,
@@ -556,7 +561,10 @@
         radioButtons(colorby_field, label="Color by:", inline=TRUE,
                      choices=color_choices, selected=param_choices[[.colorByField]]
             ),
-
+        .conditional_on_radio(colorby_field, .colorByNothingTitle,
+            colourInput(paste0(mode, ID, "_", .colorByDefaultColor), label=NULL,
+                        value=param_choices[[.colorByDefaultColor]])
+            ),
         .conditional_on_radio(colorby_field, .colorByRowDataTitle,
             selectInput(paste0(mode, ID, "_", .colorByRowData), label = NULL,
                         choices=covariates, selected=param_choices[[.colorByRowData]])
@@ -716,7 +724,7 @@
 #' @seealso
 #' \code{\link{.panel_organization}},
 #' \code{\link{.panel_generation}}
- .coerce_box_status <- function(in_box, mode, old_status="danger") {
+.coerce_box_status <- function(in_box, mode, old_status="danger") {
     in_box$children[[1]]$attribs$class <- sub(paste0("box-", old_status),
                                               paste0("box-", tolower(mode)), 
                                               in_box$children[[1]]$attribs$class)

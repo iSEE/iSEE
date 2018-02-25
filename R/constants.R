@@ -68,6 +68,7 @@
 .colorByFeatNameTitle <- "Feature name"
 
 .colorByField <- "ColorBy"
+.colorByDefaultColor <- "ColorByDefaultColor"
 .colorByColData <- "ColorByColData"
 .colorByRowData <- "ColorByRowData"
 

@@ -708,6 +708,9 @@
 #' As a result, we generate the box using the \code{"danger"} status, and replace it afterwards with our custom status.
 #' This gives us full control over the box colours, necessary for proper colour-coding of each panel type.
 #'
+#' Note that the boxes from \pkg{shinydashboard} are used to enclose each plot/table panel in the \code{iSEE} app.
+#' They do \emph{not} represent the parameter boxes, which are instead enclosed in Bootstrap panels (see \code{\link{collapseBox}}).
+#'
 #' @author Aaron Lun
 #' @rdname INTERNAL_coerce_box_status
 #' @seealso

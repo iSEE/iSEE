@@ -979,7 +979,7 @@ iSEE <- function(
             nonfundamental <- c(.colorByColData, .colorByRowTableAssay, .colorByFeatNameAssay)
         }
         nonfundamental <- c(nonfundamental, .colorByFeatName, .brushColor, .brushTransAlpha, .plotPointSize,
-                            .plotPointTransparency, .plotFontSize, .plotLegendPosition)
+                            .plotPointAlpha, .plotFontSize, .plotLegendPosition)
 
         for (i in seq_len(max_plots)) {
             # Observers for the non-fundamental parameter options.

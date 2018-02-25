@@ -108,7 +108,7 @@
 .dataParamBoxOpen <- "DataBoxOpen"
 .visualParamBoxOpen <- "VisualBoxOpen"
 .plotPointSize <- "PointSize"
-.plotPointTransparency <- "PointTransparency"
+.plotPointAlpha <- "PointAlpha"
 .plotFontSize <- "FontSize"
 .plotLegendPosition <- "LegendPosition"
 .plotLegendRightTitle <- "Right"

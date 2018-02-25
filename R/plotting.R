@@ -873,7 +873,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
             sprintf("Invalid '%s' > '%s' input", .colorByField, color_choice)
         ))
 
-        return(sprintf("plot.data$ColorBy <- assay(se, %i)[%s,];"))
+        return(sprintf("plot.data$ColorBy <- assay(se, %i)[%i,];", assay_choice, chosen_gene))
     } else {
         return(NULL)
     }

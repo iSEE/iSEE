@@ -75,18 +75,18 @@
 #' \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
 #' Defaults to 1, i.e., the first assay in \code{se}.
 #' Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
-#' \item{\code{FeatNamePanelOpen}:}{Logical, should the feature selection panel be open upon initialization?
+#' \item{\code{FeatNameBoxOpen}:}{Logical, should the feature selection box be open upon initialization?
 #' Defaults to \code{FALSE}.}
 #' \item{\code{FeatName}:}{Integer list, the index of the feature(s) for which to show the expression in the heatmap. 
 #' Defaults to 1, i.e., the first feature in \code{se}.
 #' Alternatively, a string can be supplied containing the name of the feature.}
-#' \item{\code{ColDataPanelOpen}:}{Logical, should the column data selection panel be open upon initialization?
+#' \item{\code{ColDataBoxOpen}:}{Logical, should the column data selection box be open upon initialization?
 #' Defaults to \code{FALSE}.}
 #' \item{\code{ColData}:}{Character list, which column(s) of \code{colData(se)} should be used to order the columns in the heatmap (and appear as annotation bars)? 
 #' Defaults to the first entry of \code{colData(se)}.}
 #' \item{\code{FeatNameSource}:}{Character, which other panel should be used to choose the features to show in the heatmap?
 #'  Defaults to \code{"---"}, which means that no panel is used for feature selection.}
-#' \item{\code{ColorPanelOpen}:}{Logical, should the color selection panel for the heatmap be open upon initialization?
+#' \item{\code{ColorBoxOpen}:}{Logical, should the color selection panel for the heatmap be open upon initialization?
 #' Defaults to \code{FALSE}.}
 #' \item{\code{Centering}:}{Character, should the rows of the matrix be mean-centered in the heatmap? 
 #' Defaults to \code{On}.}
@@ -103,7 +103,7 @@
 #' @section Coloring parameters:
 #' For the plots where each point represents a sample (i.e., all plots except for row data plots), the following options apply:
 #' \describe{
-#' \item{\code{ColorPanelOpen}:}{Logical, should the color parameter panel be open upon initialization?
+#' \item{\code{ColorBoxOpen}:}{Logical, should the color parameter box be open upon initialization?
 #' Defaults to \code{FALSE}.}
 #' \item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
 #' Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Feature name"} or \code{"Column data"}.}
@@ -123,7 +123,7 @@
 #' }
 #' For row data plots, the following options apply:
 #' \describe{
-#' \item{\code{ColorPanelOpen}:}{Logical, should the color parameter panel be open upon initialization?
+#' \item{\code{ColorBoxOpen}:}{Logical, should the color parameter box be open upon initialization?
 #' Defaults to \code{FALSE}.}
 #' \item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
 #' Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Feature name"} or \code{"Row data"}.}
@@ -143,7 +143,7 @@
 #' @section Brushing parameters:
 #' For the plots, the following options apply:
 #' \describe{
-#' \item{\code{BrushPanelOpen}:}{Logical, should the brushing parameter panel be open upon initialization?
+#' \item{\code{BrushBoxOpen}:}{Logical, should the brushing parameter box be open upon initialization?
 #' Defaults to \code{FALSE}.}
 #' \item{\code{BrushByPlot}:}{Character, which other plot should be used for point selection in the current plot? 
 #' Defaults to \code{"---"}, which means that no plot is used for point selection.}
@@ -162,7 +162,7 @@
 #'
 #' For the row statistics tables, the following options apply:
 #' \describe{
-#' \item{\code{BrushPanelOpen}:}{Logical, should the brushing parameter panel be open upon initialization?
+#' \item{\code{BrushBoxOpen}:}{Logical, should the brushing parameter box be open upon initialization?
 #' Defaults to \code{FALSE}.}
 #' \item{\code{BrushByPlot}:}{Character, which other plot should be used to select features in the current table? 
 #' Defaults to \code{"---"}, which means that no plot is used for point selection.}
@@ -171,7 +171,7 @@
 #' 
 #' @section Other plot parameters:
 #' \describe{
-#' \item{\code{PlotPanelOpen}:}{Logical, should the plot parameter panel be open upon initialization?
+#' \item{\code{PlotBoxOpen}:}{Logical, should the plot parameter box be open upon initialization?
 #' Defaults to \code{FALSE}.}
 #' \item{\code{ZoomData}:}{A list containing numeric vectors of length 4, containing values with names \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"}.
 #' These define the zoom window on the x- and y-axes.
@@ -283,7 +283,7 @@ rowStatTableDefaults <- function(se, number) {
     out[[.rowStatColSearch]] <- rep(list(colsearch), as.integer(number))
 
     # Defining the rowDataPlot brush to receive.
-    out[[.brushParamPanelOpen]] <- FALSE
+    out[[.brushParamBoxOpen]] <- FALSE
     out[[.brushByPlot]] <- .noSelection
 
     if (waszero) out <- out[0,,drop=FALSE]
@@ -318,14 +318,14 @@ heatMapPlotDefaults <- function(se, number) {
     
     out <- new("DataFrame", nrows=as.integer(number))
     out[[.heatMapAssay]] <- def_assay
-    out[[.heatMapFeatNamePanelOpen]] <- FALSE
+    out[[.heatMapFeatNameBoxOpen]] <- FALSE
     out[[.heatMapFeatName]] <- rep(list(1L), nrow(out))
   
-    out[[.heatMapColDataPanelOpen]] <- FALSE
+    out[[.heatMapColDataBoxOpen]] <- FALSE
     out[[.heatMapColData]] <- rep(list(colnames(colData(se))[1]), nrow(out))
     out[[.heatMapImportSource]] <- .noSelection
   
-    out[[.heatMapColorPanelOpen]] <- FALSE
+    out[[.heatMapColorBoxOpen]] <- FALSE
     out[[.heatMapCentering]] <- .heatMapYesTitle
     out[[.heatMapScaling]] <- .heatMapNoTitle
     out[[.heatMapLower]] <- -Inf
@@ -402,9 +402,9 @@ heatMapPlotDefaults <- function(se, number) {
 #' @seealso
 #' \code{\link{defaults}}
 .add_general_parameters <- function(incoming) {
-    incoming[[.plotParamPanelOpen]] <- FALSE
-    incoming[[.colorParamPanelOpen]] <- FALSE
-    incoming[[.brushParamPanelOpen]] <- FALSE
+    incoming[[.dataParamBoxOpen]] <- FALSE
+    incoming[[.visualParamBoxOpen]] <- FALSE
+    incoming[[.brushParamBoxOpen]] <- FALSE
 
     incoming[[.brushByPlot]] <- .noSelection
     incoming[[.brushEffect]] <- .brushTransTitle

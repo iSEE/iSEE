@@ -253,9 +253,9 @@
         } else if (mode=="heatMapPlot") {
             obj <- plotOutput(panel_name, brush=brush.opts, dblclick=dblclick, height=panel_height)
             plot.param <- list(tags$div(class = "panel-group", role = "tablist",
-                    collapseBox(id=.input_FUN(.heatMapFeatNamePanelOpen),
+                    collapseBox(id=.input_FUN(.heatMapFeatNameBoxOpen),
                                 title="Feature parameters",
-                                open=param_choices[[.heatMapFeatNamePanelOpen]],
+                                open=param_choices[[.heatMapFeatNameBoxOpen]],
                         selectizeInput(.input_FUN(.heatMapFeatName),
                                        label="Features:",
                                        choices=NULL, selected=NULL, multiple=TRUE,
@@ -267,9 +267,9 @@
                         actionButton(.input_FUN(.heatMapImport), "Import features"),
                         actionButton(.input_FUN(.heatMapCluster), "Suggest feature order")
                     ),
-                    collapseBox(id=.input_FUN(.heatMapColDataPanelOpen),
+                    collapseBox(id=.input_FUN(.heatMapColDataBoxOpen),
                                 title="Column data parameters",
-                                open=param_choices[[.heatMapColDataPanelOpen]],
+                                open=param_choices[[.heatMapColDataBoxOpen]],
                         selectizeInput(.input_FUN(.heatMapColData),
                                        label="Column data:",
                                        choices=column_covariates,
@@ -278,9 +278,9 @@
                                        options = list(plugins = list('remove_button', 'drag_drop'))),
                         plotOutput(.input_FUN(.heatMapLegend))
                     ),
-                    collapseBox(id=.input_FUN(.heatMapColorPanelOpen),
+                    collapseBox(id=.input_FUN(.heatMapColorBoxOpen),
                                 title="Coloring parameters",
-                                open=param_choices[[.heatMapColorPanelOpen]],
+                                open=param_choices[[.heatMapColorBoxOpen]],
                         radioButtons(.input_FUN(.heatMapCentering), label="Centering:", inline=TRUE,
                                      choices = c(.heatMapYesTitle, .heatMapNoTitle), 
                                      selected = param_choices[[.heatMapCentering]]),
@@ -305,9 +305,9 @@
         # Adding graphical parameters if we're plotting.
         if (mode=="rowStatTable") {
             param <- list(hr(), tags$div(class = "panel-group", role = "tablist",
-                collapseBox(.input_FUN(.brushParamPanelOpen),
+                collapseBox(.input_FUN(.brushParamBoxOpen),
                             title = "Brushing parameters",
-                            open = param_choices[[.brushParamPanelOpen]],
+                            open = param_choices[[.brushParamBoxOpen]],
                             selectInput(.input_FUN(.brushByPlot),
                                         label = "Receive brush from:", 
                                         choices=row_brushable,
@@ -318,9 +318,9 @@
         } else if (mode=="rowDataPlot") {
             # Slightly different handling of the row data.
             param <- list(tags$div(class = "panel-group", role = "tablist",
-                do.call(collapseBox, c(list(id=.input_FUN(.plotParamPanelOpen),
+                do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
                                             title="Data parameters",
-                                            open=param_choices[[.plotParamPanelOpen]]),
+                                            open=param_choices[[.dataParamBoxOpen]]),
                                        plot.param)),
                 .create_visual_box_for_row_plots(mode, ID, param_choices, active_tab, row_covariates),
                 .createBrushPanel(mode, ID, param_choices, row_brushable)
@@ -331,9 +331,9 @@
         } else {
             param <- list(tags$div(class = "panel-group", role = "tablist",
                 # Panel for fundamental plot parameters.
-                do.call(collapseBox, c(list(id=.input_FUN(.plotParamPanelOpen),
+                do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
                                             title="Data parameters",
-                                            open=param_choices[[.plotParamPanelOpen]]),
+                                            open=param_choices[[.dataParamBoxOpen]]),
                                        plot.param)),
 
                 # Panel for colouring parameters.
@@ -493,9 +493,9 @@
     }
 
     collapseBox(
-        id = paste0(mode, ID, "_", .colorParamPanelOpen),
+        id = paste0(mode, ID, "_", .visualParamBoxOpen),
         title = "Visual parameters",
-        open = param_choices[[.colorParamPanelOpen]],
+        open = param_choices[[.visualParamBoxOpen]],
         radioButtons(colorby_field, label="Color by:", inline=TRUE,
                      choices=color_choices, selected=param_choices[[.colorByField]]
             ),
@@ -550,9 +550,9 @@
     color_choices <- c(.colorByNothingTitle, .colorByRowDataTitle, .colorByRowTableTitle, .colorByFeatNameTitle)
 
     collapseBox(
-        id = paste0(mode, ID, "_", .colorParamPanelOpen),
+        id = paste0(mode, ID, "_", .visualParamBoxOpen),
         title = "Visual parameters",
-        open = param_choices[[.colorParamPanelOpen]],
+        open = param_choices[[.visualParamBoxOpen]],
         radioButtons(colorby_field, label="Color by:", inline=TRUE,
                      choices=color_choices, selected=param_choices[[.colorByField]]
             ),
@@ -642,9 +642,9 @@
     brush_effect <- paste0(mode, ID, "_", .brushEffect)
 
     collapseBox(
-        id=paste0(mode, ID, "_", .brushParamPanelOpen),
+        id=paste0(mode, ID, "_", .brushParamBoxOpen),
         title = "Brushing parameters",
-        open = param_choices[[.brushParamPanelOpen]],
+        open = param_choices[[.brushParamBoxOpen]],
         selectInput(paste0(mode, ID, "_", .brushByPlot),
                     label = "Receive brush from:", 
                     choices=brushable,

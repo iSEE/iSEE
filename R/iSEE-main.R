@@ -518,7 +518,7 @@ iSEE <- function(
     for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (i in seq_len(max_plots)) {
-            for (panel in c(.plotParamPanelOpen, .colorParamPanelOpen, .brushParamPanelOpen)) {
+            for (panel in c(.dataParamBoxOpen, .visualParamBoxOpen, .brushParamBoxOpen)) {
                 local({
                     mode0 <- mode
                     i0 <- i
@@ -536,7 +536,7 @@ iSEE <- function(
     # Panel opening/closing observers for heat map plots.
     max_plots <- nrow(pObjects$memory$heatMapPlot)
     for (i in seq_len(max_plots)) {
-        for (panel in c(.heatMapFeatNamePanelOpen, .heatMapColDataPanelOpen, .heatMapColorPanelOpen)) {
+        for (panel in c(.heatMapFeatNameBoxOpen, .heatMapColDataBoxOpen, .heatMapColorBoxOpen)) {
             local({
                 mode0 <- "heatMapPlot"
                 i0 <- i
@@ -559,9 +559,9 @@ iSEE <- function(
             tab_name <- paste0(mode0, i0)
             prefix <- paste0(tab_name, "_")
 
-            brush_open_field <- paste0(prefix, .brushParamPanelOpen)
+            brush_open_field <- paste0(prefix, .brushParamBoxOpen)
             observeEvent(input[[brush_open_field]], {
-                pObjects$memory[[mode0]][[.brushParamPanelOpen]][i0] <- input[[brush_open_field]]
+                pObjects$memory[[mode0]][[.brushParamBoxOpen]][i0] <- input[[brush_open_field]]
             })
         })
     }
@@ -728,9 +728,9 @@ iSEE <- function(
             tab_name <- paste0(mode0, i0)
             prefix <- paste0(tab_name, "_")
 
-            brush_open_field <- paste0(prefix, .brushParamPanelOpen)
+            brush_open_field <- paste0(prefix, .brushParamBoxOpen)
             observeEvent(input[[brush_open_field]], {
-                pObjects$memory[[mode0]][[.brushParamPanelOpen]][i0] <- input[[brush_open_field]]
+                pObjects$memory[[mode0]][[.brushParamBoxOpen]][i0] <- input[[brush_open_field]]
             })
 
             brush_plot_field <- paste0(prefix, .brushByPlot)
@@ -978,7 +978,8 @@ iSEE <- function(
         } else {
             nonfundamental <- c(.colorByColData, .colorByRowTableAssay, .colorByFeatNameAssay)
         }
-        nonfundamental <- c(nonfundamental, .colorByFeatName, .brushColor, .brushTransAlpha)
+        nonfundamental <- c(nonfundamental, .colorByFeatName, .brushColor, .brushTransAlpha, .plotPointSize,
+                            .plotPointTransparency, .plotFontSize, .plotLegendPosition)
 
         for (i in seq_len(max_plots)) {
             # Observers for the non-fundamental parameter options.

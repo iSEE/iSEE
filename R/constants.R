@@ -67,8 +67,6 @@
 .colorByRowTableTitle <- "Row table"
 .colorByFeatNameTitle <- "Feature name"
 
-.colorParamBoxOpen <- "ColorBoxOpen"
-
 .colorByField <- "ColorBy"
 .colorByColData <- "ColorByColData"
 .colorByRowData <- "ColorByRowData"
@@ -106,8 +104,9 @@
 .lassoClick <- "LassoClick"
 .lassoData <- "LassoData"
 
-# Plot parameters. ----
-.plotParamBoxOpen <- "PlotBoxOpen"
+# Other plot parameters. ----
+.dataParamBoxOpen <- "DataBoxOpen"
+.visualParamBoxOpen <- "VisualBoxOpen"
 .plotPointSize <- "PointSize"
 .plotPointTransparency <- "PointTransparency"
 .plotFontSize <- "FontSize"

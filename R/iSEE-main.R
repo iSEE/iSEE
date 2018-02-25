@@ -1018,7 +1018,7 @@ iSEE <- function(
                             return(NULL)
                         }
                         pObjects$memory[[mode0]][[field0]][i0] <- matched_input
-                        .regenerate_unselected_plot(mode0, i0, pObjects, rObjects, session, input)
+                        .regenerate_unselected_plot(mode0, i0, pObjects, rObjects, input, session)
                      }, ignoreInit=TRUE, priority=-2) # executes AFTER the update selectize.
                 })
             }
@@ -1054,7 +1054,7 @@ iSEE <- function(
                     force(rObjects[[plot_name]])
                     rObjects[[gen_field]] <- .increment_counter(isolate(rObjects[[gen_field]]))
                     p.out <- FUN0(i0, pObjects$memory, pObjects$coordinates, se, colormap)
-                    pObjects$commands[[plot_name]] <- p.out$cmd
+                    pObjects$commands[[plot_name]] <- p.out$cmd_list
                     pObjects$coordinates[[plot_name]] <- p.out$xy[,c("X", "Y")]
                     p.out$plot
                 })
@@ -1114,7 +1114,7 @@ iSEE <- function(
                     ## Deciding whether to replot based on the table.
                     replot <- .setup_table_observer(mode0, i0, input, pObjects, axis_choice0, axis_tab_title0, axis_tab_choice0, param=axis0)
                     if (replot) {
-                        .regenerate_unselected_plot(mode0, i0, pObjects, rObjects, session, input)
+                        .regenerate_unselected_plot(mode0, i0, pObjects, rObjects, input, session)
                     }
 
                     # Update the links reporting between tables and plots.
@@ -1200,7 +1200,7 @@ iSEE <- function(
             # Triggering the replotting and brush clearing of all x/y-axis children.
             enc <- .split_encoded(xy_kids)
             for (i in seq_along(xy_kids)) {
-                .regenerate_unselected_plot(enc$Type[i], enc$ID[i], pObjects, rObjects, session, input)
+                .regenerate_unselected_plot(enc$Type[i], enc$ID[i], pObjects, rObjects, input, session)
             }
         })
 

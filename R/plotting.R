@@ -414,7 +414,7 @@ names(.all_aes_values) <- .all_aes_names
     if (length(brush_cmds)) { 
         eval_env$all_brushes <- brush_out$data
         eval_env$all_lassos <- brush_out$data
-        eval(parse(text=unlist(brush_cmds)), envir=eval_env)
+        eval(parse(text=brush_cmds), envir=eval_env)
     }
     
     # Adding more plot-specific information, depending on the type of plot to be created.
@@ -1100,13 +1100,14 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
             }
         }
 
-        if (param_choices[[.brushEffect]]==.brushRestrictTitle) {
+        if (length(brush_obj) && param_choices[[.brushEffect]]==.brushRestrictTitle) {
             # Duplicate plot.data before brushing, to make sure that axes are retained
             # even in case of an empty brushed subset. 
             cmds[["full"]] <- "plot.data.all <- plot.data;"
             cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
         }
     }
+
     return(list(cmds=unlist(cmds), data=brush_obj))
 }
 

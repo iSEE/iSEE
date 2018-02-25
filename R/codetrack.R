@@ -104,15 +104,6 @@
     }
     if (length(cur_cmds$plot)) {
         collated <- c(collated, "# Creating the plot", cur_cmds$plot)
-
-        # Adding extra commands.
-        extras <- pObjects$extra_plot_cmds[[panel_name]]
-        if (!is.null(extras)) {
-            collated[length(collated)] <- paste(collated[length(collated)], "+")
-            all_but_last <- seq_len(length(extras)-1L)
-            extras[all_but_last] <- paste(extras[all_but_last], "+")
-            collated <- c(collated, extras)
-        } 
     }
 
     tracked_code <- c(tracked_code, collated, "")

@@ -98,116 +98,55 @@ Defaults to the first entry of \code{rowData(se)}.}
 }
 }
 
-\section{Heatmap parameters}{
+\section{Coloring parameters (for points)}{
 
 \describe{
-\item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
-Defaults to 1, i.e., the first assay in \code{se}.
-Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
-\item{\code{FeatNamePanelOpen}:}{Logical, should the feature selection panel be open upon initialization?
-Defaults to \code{FALSE}.}
-\item{\code{FeatName}:}{Integer list, the index of the feature(s) for which to show the expression in the heatmap. 
-Defaults to 1, i.e., the first feature in \code{se}.
-Alternatively, a string can be supplied containing the name of the feature.}
-\item{\code{ColDataPanelOpen}:}{Logical, should the column data selection panel be open upon initialization?
-Defaults to \code{FALSE}.}
-\item{\code{ColData}:}{Character list, which column(s) of \code{colData(se)} should be used to order the columns in the heatmap (and appear as annotation bars)? 
-Defaults to the first entry of \code{colData(se)}.}
-\item{\code{FeatNameSource}:}{Character, which other panel should be used to choose the features to show in the heatmap?
- Defaults to \code{"---"}, which means that no panel is used for feature selection.}
-\item{\code{ColorPanelOpen}:}{Logical, should the color selection panel for the heatmap be open upon initialization?
-Defaults to \code{FALSE}.}
-\item{\code{Centering}:}{Character, should the rows of the matrix be mean-centered in the heatmap? 
-Defaults to \code{On}.}
-\item{\code{Scaling}:}{Character, should the rows of the matrix be scaled to unit variance in the heatmap? 
-Defaults to \code{Off}.}
-\item{\code{Lower}:}{Numeric, what should be the lower bound of the color scale for the values in the heatmap? All values below this threshold will be shown in the same color.}
-Defaults to -Inf, meaning that the lowest value in the data matrix will be used.
-\item{\code{Upper}:}{Numeric, what should be the upper bound of the color scale for the values in the heatmap? All values above this threshold will be shown in the same color.}
-Defaults to Inf, meaning that the highest value in the data matrix will be used.
-\item{\code{ColorScale}:}{Character, what color scale (in the form low-mid-high) should be used to color the heatmap when values are centered?
-Defaults to \code{purple-black-yellow}.}
-}
-}
-
-\section{Coloring parameters}{
-
-For the plots where each point represents a sample (i.e., all plots except for row data plots), the following options apply:
-\describe{
-\item{\code{ColorPanelOpen}:}{Logical, should the color parameter panel be open upon initialization?
-Defaults to \code{FALSE}.}
 \item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
 Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Feature name"} or \code{"Column data"}.}
 \item{\code{ColorByColData}:}{Character, which column of \code{colData(se)} should be used for colouring if \code{ColorBy="Column data"}? 
 Defaults to the first entry of \code{colData(se)}.}
 \item{\code{ColorByRowTable}:}{Character, which row statistic table should be used to choose a feature to color by, if \code{ColorBy="Row table"}? 
 Defaults to an empty string, which means that the first available table will be used.}
-\item{\code{ColorByRowTableAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Row table"}? 
-Defaults to 1, i.e., the first assay in \code{se}.
-Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
 \item{\code{ColorByFeatName}:}{Integer, the index of the feature to use for colouring based on expression, if \code{ColorBy="Feature name"}? 
 Defaults to 1, i.e., the first feature in \code{se}.
 Alternatively, a string can be supplied containing the name of the feature.}
+}
+
+For the plots where each point represents a sample (i.e., all plots except for heatmaps and row data plots), the following additional options apply:
+\describe{
+\item{\code{ColorByRowTableAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Row table"}? 
+Defaults to 1, i.e., the first assay in \code{se}.
+Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
 \item{\code{ColorByFeatNameAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Feature name"}? 
 Defaults to 1, i.e., the first assay in \code{se}.
 Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
 }
-For row data plots, the following options apply:
+
+For plots where each point represents a feature (i.e., row data plots), the following additional options apply:
 \describe{
-\item{\code{ColorPanelOpen}:}{Logical, should the color parameter panel be open upon initialization?
-Defaults to \code{FALSE}.}
-\item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
-Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Feature name"} or \code{"Row data"}.}
-\item{\code{ColorByRowData}:}{Character, which column of \code{rowData(se)} should be used for colouring if \code{ColorBy="Row data"}? 
-Defaults to the first entry of \code{rowData(se)}.}
-\item{\code{ColorByRowTable}:}{Character, which row statistic table should be used to choose a feature to color by, if \code{ColorBy="Row table"}? 
-Defaults to an empty string, which means that the first available table will be used.}
 \item{\code{ColorByRowTableColor}:}{String specifying the colour to be used to highlight the selected feature from the row table.
 Defaults to \code{"red"}.}
-\item{\code{ColorByFeatName}:}{Integer, the index of the feature to use for colouring based on expression, if \code{ColorBy="Feature name"}? 
-Defaults to 1, i.e., the first feature in \code{se}.
-Alternatively, a string can be supplied containing the name of the feature.}
 \item{\code{ColorByFeatNameColor}:}{String specifying the colour to be used to highlight the selected feature from the text.
 Defaults to \code{"red"}.}
 }
 }
 
-\section{Brushing parameters}{
-
-For the plots, the following options apply:
-\describe{
-\item{\code{BrushPanelOpen}:}{Logical, should the brushing parameter panel be open upon initialization?
-Defaults to \code{FALSE}.}
-\item{\code{BrushByPlot}:}{Character, which other plot should be used for point selection in the current plot? 
-Defaults to \code{"---"}, which means that no plot is used for point selection.}
-\item{\code{BrushEffect}:}{Character, what is the effect of receiving a brush input?
-Can be \code{"Restrict"}, where only the brushed points are shown; \code{"Color"}, where the brushed points have a different color; 
-or \code{"Transparent"}, where all points other than the brushed points are made transparent. Defaults to \code{"Transparent"}.}
-\item{\code{BrushColor}:}{Character, what color should be used for the brushed points when \code{BrushEffect="Color"}?
-Defaults to \code{"red"}.}
-\item{\code{BrushAlpha}:}{Numeric, what level of transparency should be used for the unbrushed points whe \code{BrushEffect="Transparent"}?
-This should lie in [0, 1], where 0 is fully transparent and 1 is fully opaque. 
-Defaults to 0.1.}
-}
-
-Note that brushing cannot occur between row data plots and the other plot types.
-This is because each point in a row data plot is a feature, while each point represents a sample in the other plots.
-
-For the row statistics tables, the following options apply:
-\describe{
-\item{\code{BrushPanelOpen}:}{Logical, should the brushing parameter panel be open upon initialization?
-Defaults to \code{FALSE}.}
-\item{\code{BrushByPlot}:}{Character, which other plot should be used to select features in the current table? 
-Defaults to \code{"---"}, which means that no plot is used for point selection.}
-}
-Only row data plots can be used for brushing of tables.
-}
-
-\section{Other plot parameters}{
+\section{Other plot parameters (for point-based plots)}{
 
 \describe{
-\item{\code{PlotPanelOpen}:}{Logical, should the plot parameter panel be open upon initialization?
+\item{\code{DataBoxOpen}:}{Logical, should the data parameter box be open upon initialization?
 Defaults to \code{FALSE}.}
+\item{\code{VisualBoxOpen}:}{Logical, should the visual parameter box be open upon initialization?
+Defaults to \code{FALSE}.}
+\item{\code{PointSize}:}{Numeric, the size of the points.
+Defaults to 1.}
+\item{\code{PointAlpha}:}{Numeric, what level of transparency should be used for the points?
+Ignored when \code{BrushEffect="Transparent"} and the transmitting plot has a non-\code{NULL} selection of points.
+Defaults to 1.}
+\item{\code{FontSize}:}{Numeric, size of the font.
+Defaults to 1.}
+\item{\code{LegendPosition}:}{String specifying the legend position.
+Defaults to \code{"Bottom"} but can also be \code{"Right"}.}
 \item{\code{ZoomData}:}{A list containing numeric vectors of length 4, containing values with names \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"}.
 These define the zoom window on the x- and y-axes.
 Each element of the list defaults to \code{NULL}, i.e., no zooming is performed.}
@@ -226,6 +165,70 @@ Defaults to an empty string.}
 specifying the initial value of the search field for each column.
 All entries default to an empty string.}
 }
+}
+
+\section{Heatmap parameters}{
+
+\describe{
+\item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
+Defaults to 1, i.e., the first assay in \code{se}.
+Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
+\item{\code{FeatNameBoxOpen}:}{Logical, should the feature selection box be open upon initialization?
+Defaults to \code{FALSE}.}
+\item{\code{FeatName}:}{Integer list, the index of the feature(s) for which to show the expression in the heatmap. 
+Defaults to 1, i.e., the first feature in \code{se}.
+Alternatively, a string can be supplied containing the name of the feature.}
+\item{\code{ColDataBoxOpen}:}{Logical, should the column data selection box be open upon initialization?
+Defaults to \code{FALSE}.}
+\item{\code{ColData}:}{Character list, which column(s) of \code{colData(se)} should be used to order the columns in the heatmap (and appear as annotation bars)? 
+Defaults to the first entry of \code{colData(se)}.}
+\item{\code{FeatNameSource}:}{Character, which other panel should be used to choose the features to show in the heatmap?
+ Defaults to \code{"---"}, which means that no panel is used for feature selection.}
+\item{\code{ColorBoxOpen}:}{Logical, should the color selection panel for the heatmap be open upon initialization?
+Defaults to \code{FALSE}.}
+\item{\code{Centering}:}{Character, should the rows of the matrix be mean-centered in the heatmap? 
+Defaults to \code{On}.}
+\item{\code{Scaling}:}{Character, should the rows of the matrix be scaled to unit variance in the heatmap? 
+Defaults to \code{Off}.}
+\item{\code{Lower}:}{Numeric, what should be the lower bound of the color scale for the values in the heatmap? All values below this threshold will be shown in the same color.}
+Defaults to -Inf, meaning that the lowest value in the data matrix will be used.
+\item{\code{Upper}:}{Numeric, what should be the upper bound of the color scale for the values in the heatmap? All values above this threshold will be shown in the same color.}
+Defaults to Inf, meaning that the highest value in the data matrix will be used.
+\item{\code{ColorScale}:}{Character, what color scale (in the form low-mid-high) should be used to color the heatmap when values are centered?
+Defaults to \code{purple-black-yellow}.}
+}
+}
+
+\section{Brushing parameters}{
+
+For the point-based plots, the following options apply:
+\describe{
+\item{\code{BrushBoxOpen}:}{Logical, should the brushing parameter box be open upon initialization?
+Defaults to \code{FALSE}.}
+\item{\code{BrushByPlot}:}{Character, which other plot should be used for point selection in the current plot? 
+Defaults to \code{"---"}, which means that no plot is used for point selection.}
+\item{\code{BrushEffect}:}{Character, what is the effect of receiving a brush input?
+Can be \code{"Restrict"}, where only the brushed points are shown; \code{"Color"}, where the brushed points have a different color; 
+or \code{"Transparent"}, where all points other than the brushed points are made transparent. Defaults to \code{"Transparent"}.}
+\item{\code{BrushColor}:}{Character, what color should be used for the brushed points when \code{BrushEffect="Color"}?
+Defaults to \code{"red"}.}
+\item{\code{BrushAlpha}:}{Numeric, what level of transparency should be used for the unbrushed points when \code{BrushEffect="Transparent"}?
+This should lie in [0, 1], where 0 is fully transparent and 1 is fully opaque. 
+Defaults to 0.1.}
+}
+
+Note that brushing cannot occur between row data plots and the other plot types.
+This is because each point in a row data plot is a feature, while each point represents a sample in the other plots.
+Brushing can only occur between plots of the same point type.
+
+For the row statistics tables, the following options apply:
+\describe{
+\item{\code{BrushBoxOpen}:}{Logical, should the brushing parameter box be open upon initialization?
+Defaults to \code{FALSE}.}
+\item{\code{BrushByPlot}:}{Character, which other plot should be used to select features in the current table? 
+Defaults to \code{"---"}, which means that no plot is used for point selection.}
+}
+Only row data plots can be used for brushing of tables.
 }
 
 \examples{

@@ -41,16 +41,16 @@
 .heatMapAssay <- "Assay"
 
 .heatMapFeatName <- "FeatName"
-.heatMapFeatNamePanelOpen <- "FeatNamePanelOpen"
+.heatMapFeatNameBoxOpen <- "FeatNameBoxOpen"
 .heatMapImport <- "Import"
 .heatMapImportSource <- "FeatNameSource"
 .heatMapCluster <- "Clustered"
 
 .heatMapColData <- "ColData"
-.heatMapColDataPanelOpen <- "ColDataPanelOpen"
+.heatMapColDataBoxOpen <- "ColDataBoxOpen"
 .heatMapLegend <- "Legend"
 
-.heatMapColorPanelOpen <- "ColorPanelOpen"
+.heatMapColorBoxOpen <- "ColorBoxOpen"
 .heatMapCentering <- "Centering"
 .heatMapScaling <- "Scaling"
 .heatMapYesTitle <- "On"
@@ -67,7 +67,7 @@
 .colorByRowTableTitle <- "Row table"
 .colorByFeatNameTitle <- "Feature name"
 
-.colorParamPanelOpen <- "ColorPanelOpen"
+.colorParamBoxOpen <- "ColorBoxOpen"
 
 .colorByField <- "ColorBy"
 .colorByColData <- "ColorByColData"
@@ -82,7 +82,7 @@
 .colorByFeatNameColor <- "ColorByFeatNameColor"
 
 # Plot brushing parameters. ----
-.brushParamPanelOpen <- "BrushPanelOpen"
+.brushParamBoxOpen <- "BrushBoxOpen"
 
 .brushField <- "Brush"
 .brushByPlot <- "BrushByPlot"
@@ -107,8 +107,13 @@
 .lassoData <- "LassoData"
 
 # Plot parameters. ----
-.plotParamPanelOpen <- "PlotPanelOpen"
-.plotParamPanelName <- "ParamPanel"
+.plotParamBoxOpen <- "PlotBoxOpen"
+.plotPointSize <- "PointSize"
+.plotPointTransparency <- "PointTransparency"
+.plotFontSize <- "FontSize"
+.plotLegendPosition <- "LegendPosition"
+.plotLegendRightTitle <- "Right"
+.plotLegendBottomTitle <- "Bottom"
 
 # Row statistic table parameters. ----
 .rowStatSelected <- "Selected"

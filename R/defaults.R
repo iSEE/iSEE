@@ -412,6 +412,11 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.brushColor]] <- "red"
     incoming[[.brushData]] <- rep(list(NULL), nrow(incoming))
 
+    incoming[[.plotPointSize]] <- 1 
+    incoming[[.plotPointTransparency]] <- 1
+    incoming[[.plotFontSize]] <- 1
+    incoming[[.plotLegendPosition]] <- .plotLegendBottomTitle
+
     incoming[[.zoomData]] <- rep(list(NULL), nrow(incoming))
     incoming[[.lassoData]] <- rep(list(NULL), nrow(incoming))
     return(incoming)

@@ -319,7 +319,7 @@
             # Slightly different handling of the row data.
             param <- list(tags$div(class = "panel-group", role = "tablist",
                 do.call(collapseBox, c(list(id=.input_FUN(.plotParamPanelOpen),
-                                            title="Plotting parameters",
+                                            title="Data parameters",
                                             open=param_choices[[.plotParamPanelOpen]]),
                                        plot.param)),
                 .createColorPanelForRowPlots(mode, ID, param_choices, active_tab, row_covariates),
@@ -332,7 +332,7 @@
             param <- list(tags$div(class = "panel-group", role = "tablist",
                 # Panel for fundamental plot parameters.
                 do.call(collapseBox, c(list(id=.input_FUN(.plotParamPanelOpen),
-                                            title="Plotting parameters",
+                                            title="Data parameters",
                                             open=param_choices[[.plotParamPanelOpen]]),
                                        plot.param)),
 
@@ -494,7 +494,7 @@
 
     collapseBox(
         id = paste0(mode, ID, "_", .colorParamPanelOpen),
-        title = "Coloring parameters",
+        title = "Visual parameters",
         open = param_choices[[.colorParamPanelOpen]],
         radioButtons(colorby_field, label="Color by:", inline=TRUE,
                      choices=color_choices, selected=param_choices[[.colorByField]]
@@ -513,7 +513,8 @@
             tagList(selectizeInput(paste0(mode, ID, "_", .colorByFeatName), label = NULL, choices = NULL, selected = NULL, multiple = FALSE),
                     selectInput(paste0(mode, ID, "_", .colorByFeatNameAssay), label=NULL,
                                 choices=all_assays, selected=param_choices[[.colorByFeatNameAssay]]))
-            )
+            ),
+        .add_general_aesthetic_UI(mode, ID, param_choices)
         )
 }
 
@@ -570,7 +571,24 @@
             tagList(selectizeInput(paste0(mode, ID, "_", .colorByFeatName), label = NULL, selected = NULL, choices = NULL, multiple = FALSE),
                     colourInput(paste0(mode, ID, "_", .colorByFeatNameColor), label=NULL,
                                 value=param_choices[[.colorByFeatNameColor]]))
-            )
+            ),
+        .add_general_aesthetic_UI(mode, ID, param_choices)
+        )
+}
+
+.add_general_aesthetic_UI <- function(mode, ID, param_choices) {
+    tagList(
+        hr(),
+        sliderInput(paste0(mode, ID, "_", .plotPointSize), label = "Point size:", 
+                    min=0.5, max=2, value=param_choices[,.plotFontSize]),
+        sliderInput(paste0(mode, ID, "_", .plotPointTransparency), label = "Point opacity", 
+                    min=0.1, max=1, value=param_choices[,.plotPointTransparency]),
+        hr(),
+        sliderInput(paste0(mode, ID, "_", .plotFontSize), label = "Font size:", 
+                    min=0.5, max=2, value=param_choices[,.plotFontSize]),
+        radioButtons(paste0(mode, ID, "_", .plotLegendPosition), label = "Legend position:", inline=TRUE,
+                     choices=c(.plotLegendBottomTitle, .plotLegendRightTitle), 
+                     selected=param_choices[,.plotLegendPosition])
         )
 }
 

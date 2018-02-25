@@ -514,7 +514,7 @@
                     selectInput(paste0(mode, ID, "_", .colorByFeatNameAssay), label=NULL,
                                 choices=all_assays, selected=param_choices[[.colorByFeatNameAssay]]))
             ),
-        .add_general_visual_UI_element(mode, ID, param_choices)
+        .add_general_visual_UI_elements(mode, ID, param_choices)
         )
 }
 
@@ -601,7 +601,7 @@
     tagList(
         hr(),
         sliderInput(paste0(mode, ID, "_", .plotPointSize), label = "Point size:", 
-                    min=0.5, max=2, value=param_choices[,.plotFontSize]),
+                    min=0.5, max=2, value=param_choices[,.plotPointSize]),
         sliderInput(paste0(mode, ID, "_", .plotPointAlpha), label = "Point opacity", 
                     min=0.1, max=1, value=param_choices[,.plotPointAlpha]),
         hr(),

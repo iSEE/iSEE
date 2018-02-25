@@ -632,7 +632,7 @@
 #' For example, choosing to colour on brush will open up a choice of colour to use.
 #'
 #' @author Aaron Lun
-#' @rdname INTERNAL.create_brush_param_box
+#' @rdname INTERNAL_create_brush_param_box
 #' @seealso 
 #' \code{\link{.panel_generation}}
 #' 

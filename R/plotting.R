@@ -1017,7 +1017,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #' @details
 #' The appropriate ggplot coloring command will depend on whether \code{colorby} is categorical or not.
 #' If it is, \code{\link{scale_color_manual}} is used with the appropriate number of levels.
-#' Otherwise, \code{\link{scale_color_gradientn}}} is used.
+#' Otherwise, \code{\link{scale_color_gradientn}} is used.
 #' The \code{discrete=} argument of the accessor in \code{command} will also be set appropriately.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson.

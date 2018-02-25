@@ -945,20 +945,13 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
     }
     color_choice <- param_choices[[.colorByField]]
 
-    # Figuring out whether 'colorby' is categorical or not.
-    discrete_color <- is.factor(colorby)
-    if (discrete_color) {
-        ncolors <- nlevels(colorby)
-    } else {
-        ncolors <- 21L
-    }
-
+    # This slightly duplicates the work in .define_colorby_for_row_plot(), but this is necessary to separate
+    # the function of data acquisition and plot generation.
     if (color_choice==.colorByColDataTitle) {
         covariate_name <- param_choices[[.colorByColData]]
         covariate_as_string <- deparse(covariate_name)
         output$label <- covariate_name
-        output$cmd <- sprintf("colDataColorMap(colormap, %s, discrete=%s)(%i)", 
-                              covariate_as_string, discrete_color, ncolors)
+        output$cmd <- .create_color_scale("colDataColorMap", covariate_as_string, colorby)
   
     } else if (color_choice==.colorByRowTableTitle || color_choice==.colorByFeatNameTitle) {
         if (color_choice==.colorByRowTableTitle) {
@@ -969,10 +962,9 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
     
         assay_name <- assayNames(se)[assay_choice]
         assay_access <- ifelse(assay_name=="", assay_choice, sprintf("'%s'",assay_name))
-    
+ 
         output$label <- .gene_axis_label(se, chosen_gene, assay_choice, multiline = TRUE)
-        output$cmd <- sprintf("assayColorMap(colormap, %s, discrete=%s)(%i)", 
-                              assay_access, discrete_color, ncolors)
+        output$cmd <- .create_color_scale("assayColorMap", assay_access, colorby)
     }
     
     return(output)
@@ -987,25 +979,15 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
     }
     color_choice <- param_choices[[.colorByField]]
 
-    # Figuring out whether 'colorby' is categorical or not.
-    discrete_color <- is.factor(colorby)
-    if (discrete_color) {
-        ncolors <- nlevels(colorby)
-    } else {
-        ncolors <- 21L
-    }
-
+    # This slightly duplicates the work in .define_colorby_for_row_plot(), but this is necessary to separate
+    # the function of data acquisition and plot generation.
     if (color_choice==.colorByRowDataTitle) {
         covariate_name <- param_choices[[.colorByRowData]]
         covariate_as_string <- deparse(covariate_name)
         output$label <- covariate_name
-        output$cmd <- sprintf("rowDataColorMap(colormap, %s, discrete=%s)(%i)", 
-                              covariate_as_string, discrete_color, ncolors)
+        output$cmd <- .create_color_scale("rowDataColorMap", covariate_as_string, colorby)
 
     } else if (color_choice==.colorByRowTableTitle || color_choice==.colorByFeatNameTitle) {
-        # Set the colour to the selected gene. This slightly duplicates the work 
-        # in .define_colorby_for_row_plot(), but this is necessary to separate
-        # the function of data acquisition and plot generation.
         if (color_choice==.colorByRowTableTitle) {
             chosen_tab <- .decoded2encoded(param_choices[[.colorByRowTable]])
             chosen_gene <- all_memory$rowStatTable[chosen_tab, .rowStatSelected]
@@ -1019,6 +1001,48 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
                               deparse(col_choice))
     }
     return(output)
+}
+
+
+#' Choose between discrete and continuous color scales
+#' 
+#' Generates a ggplot \code{color_scale} command depending on the number of levels in the coloring variable.
+#'
+#' @param command A string containing an ExperimentColorMap accessor.
+#' @param choice An argument to pass to the accessor in \code{command} to specify the colormap to use.
+#' @param colorby A vector of values to color points by, taken from \code{plot.data$ColorBy} in upstream functions.
+#' 
+#' @return A string containing an appropriate ggplot \code{color_scale} command.
+#'
+#' @details
+#' The appropriate ggplot coloring command will depend on whether \code{colorby} is categorical or not.
+#' If it is, \code{\link{scale_color_manual}} is used with the appropriate number of levels.
+#' Otherwise, \code{\link{scale_color_gradientn}}} is used.
+#' The \code{discrete=} argument of the accessor in \code{command} will also be set appropriately.
+#'
+#' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson.
+#' @rdname INTERNAL_create_color_scale
+#' @seealso
+#' \code{\link{.add_color_to_row_plot}},
+#' \code{\link{.add_color_to_column_plot}}
+#'
+#' @importFrom ggplot2 scale_color_manual scale_fill_manual scale_color_gradientn scale_fill_gradientn
+.create_color_scale <- function(command, choice, colorby) {
+    discrete_color <- is.factor(colorby)
+    if (discrete_color) {
+        ncolors <- nlevels(colorby)
+    } else {
+        ncolors <- 21L
+    }
+        
+    cm_command <- sprintf("%s(colormap, %s, discrete=%s)(%i)", command, choice, discrete_color, ncolors)
+    if (discrete){
+        return(c(sprintf("scale_color_manual(values=%s, na.value='grey50', drop=FALSE) +", cmd),
+                 sprintf("scale_fill_manual(values=%s, na.value='grey50', drop=FALSE) +", cmd)))
+    } else {
+        return(c(sprintf("scale_color_gradientn(colors=%s, na.value='grey50') +", cmd),
+                 sprintf("scale_fill_gradientn(colors=%s, na.value='grey50') +", cmd)))
+    }
 }
 
 ############################################

@@ -323,24 +323,24 @@
                                             open=param_choices[[.dataParamBoxOpen]]),
                                        plot.param)),
                 .create_visual_box_for_row_plots(mode, ID, param_choices, active_tab, row_covariates),
-                .createBrushPanel(mode, ID, param_choices, row_brushable)
+                .create_brush_param_box(mode, ID, param_choices, row_brushable)
                 )
             )
         } else if (mode=="heatMapPlot") {
             param <- plot.param
         } else {
             param <- list(tags$div(class = "panel-group", role = "tablist",
-                # Panel for fundamental plot parameters.
+                # Options for fundamental plot parameters.
                 do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
                                             title="Data parameters",
                                             open=param_choices[[.dataParamBoxOpen]]),
                                        plot.param)),
 
-                # Panel for colouring parameters.
+                # Options for visual parameters.
                 .create_visual_box_for_column_plots(mode, ID, param_choices, active_tab, column_covariates, all_assays, no_rows=nrow(se)==0),
 
-                # Panel for brushing parameters.
-                .createBrushPanel(mode, ID, param_choices, col_brushable)
+                # Options for brushing parameters.
+                .create_brush_param_box(mode, ID, param_choices, col_brushable)
                 )
             )
         }
@@ -632,13 +632,13 @@
 #' For example, choosing to colour on brush will open up a choice of colour to use.
 #'
 #' @author Aaron Lun
-#' @rdname INTERNAL_createBrushPanel
+#' @rdname INTERNAL.create_brush_param_box
 #' @seealso 
 #' \code{\link{.panel_generation}}
 #' 
 #' @importFrom shiny sliderInput radioButtons selectInput
 #' @importFrom colourpicker colourInput
-.createBrushPanel <- function(mode, ID, param_choices, brushable) {
+.create_brush_param_box <- function(mode, ID, param_choices, brushable) {
     brush_effect <- paste0(mode, ID, "_", .brushEffect)
 
     collapseBox(
@@ -684,7 +684,7 @@
 #' @rdname INTERNAL_conditional_on_radio
 #' @seealso
 #' \code{\link{.panel_generation}},
-#' \code{\link{.createBrushPanel}},
+#' \code{\link{.create_brush_param_box}},
 #' \code{\link{.create_visual_box_for_row_plots}},
 #' \code{\link{.create_visual_box_for_column_plots}}
 #'

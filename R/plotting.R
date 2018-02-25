@@ -66,9 +66,10 @@ names(.all_aes_values) <- .all_aes_names
     x_lab <- sprintf("Dimension %s", param_choices[[.redDimXAxis]])
     y_lab <- sprintf("Dimension %s", param_choices[[.redDimYAxis]])
 
-    setup_out <- .complete_plotting_data(data_cmds, param_choices, all_memory, se, all_coordinates, by_row = FALSE)
-    plot_out <- .create_plot(envir = setup_out$envir, param_choices = param_choices, colormap = colormap,
-                             se = se, x_lab = x_lab, y_lab = y_lab, title = plot_title, by_row = FALSE)
+    setup_out <- .complete_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row = FALSE)
+    plot_out <- .create_plot(setup_out$envir, param_choices, colormap,
+                             x_lab = x_lab, y_lab = y_lab, title = plot_title, by_row = FALSE,
+                             se = se, all_memory = all_memory)
     return(list(cmd_list = c(setup_out$cmd_list, list(plot=plot_out$cmds)), xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
 }
 
@@ -130,9 +131,10 @@ names(.all_aes_values) <- .all_aes_names
     x_title <- ifelse(x_lab == '', x_lab, sprintf("vs %s", x_lab))
     plot_title <- sprintf("%s %s", y_lab, x_title)
 
-    setup_out <- .complete_plotting_data(data_cmds, param_choices, all_memory, se, all_coordinates, by_row = FALSE)
-    plot_out <- .create_plot(envir = setup_out$envir, param_choices = param_choices, colormap = colormap,
-                             se = se, x_lab = x_lab, y_lab = y_lab, title = plot_title, by_row = FALSE)
+    setup_out <- .complete_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row = FALSE)
+    plot_out <- .create_plot(setup_out$envir, param_choices, colormap,
+                             x_lab = x_lab, y_lab = y_lab, title = plot_title, by_row = FALSE,
+                             se = se, all_memory = all_memory)
     return(list(cmd_list = c(setup_out$cmd_list, list(plot=plot_out$cmds)), xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
 }
 
@@ -230,10 +232,11 @@ names(.all_aes_values) <- .all_aes_names
     
     x_title <- ifelse(x_title == '', x_title, sprintf("vs %s", x_title))
     plot_title <- sprintf("%s %s", y_title, x_title)
-  
-    setup_out <- .complete_plotting_data(data_cmds, param_choices, all_memory, se, all_coordinates, by_row = FALSE)
-    plot_out <- .create_plot(envir = setup_out$envir, param_choices = param_choices, colormap = colormap,
-                             se = se, x_lab = x_lab, y_lab = y_lab, title = plot_title, by_row = FALSE)
+
+    setup_out <- .complete_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row = FALSE)
+    plot_out <- .create_plot(setup_out$envir, param_choices, colormap,
+                             x_lab = x_lab, y_lab = y_lab, title = plot_title, by_row = FALSE,
+                             se = se, all_memory = all_memory)
     return(list(cmd_list = c(setup_out$cmd_list, list(plot=plot_out$cmds)), xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
 }
 
@@ -290,10 +293,11 @@ names(.all_aes_values) <- .all_aes_names
     
     x_title <- ifelse(x_lab == '', x_lab, sprintf("vs %s", x_lab))
     plot_title <- sprintf("%s %s", y_lab, x_title)
-  
-    setup_out <- .complete_plotting_data(data_cmds, param_choices, all_memory, se, all_coordinates, by_row = TRUE)
-    plot_out <- .create_plot(envir = setup_out$envir, param_choices = param_choices, colormap = colormap,
-                             se = se, x_lab = x_lab, y_lab = y_lab, title = plot_title, by_row = TRUE)
+
+    setup_out <- .complete_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row = TRUE)
+    plot_out <- .create_plot(setup_out$envir, param_choices, colormap,
+                             x_lab = x_lab, y_lab = y_lab, title = plot_title, by_row = TRUE,
+                             se = se, all_memory = all_memory)
     return(list(cmd_list = c(setup_out$cmd_list, list(plot=plot_out$cmds)), xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
 }
 
@@ -309,8 +313,8 @@ names(.all_aes_values) <- .all_aes_names
 #' @param data_cmds A list of character vectors containing commands to initialize the plotting data.frame.
 #' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
 #' @param all_memory A list of DataFrames, where each DataFrame corresponds to a panel type and contains the settings for each individual panel of that type.
-#' @param se A SingleCellExperiment object.
 #' @param all_coordinates A list of data.frames, where each data.frame contains the x/y coordinates of data points on a specific plot (named by the encoded panel name).
+#' @param se A SingleCellExperiment object.
 #' @param by_row A logical vector indicating whether this data.frame is for a row-based plot.
 #'
 #' @return
@@ -347,7 +351,7 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.define_color_for_column_plot}},
 #' \code{\link{.define_color_for_row_plot}},
 #' \code{\link{.process_brushby_choice}}
-.complete_plotting_data <- function(data_cmds, param_choices, all_memory, se, all_coordinates, by_row=FALSE) {
+.complete_plotting_data <- function(data_cmds, param_choices, all_memory, all_coordinates, se, by_row=FALSE) {
     # Evaluating to check the grouping status of various fields. It is important that 
     # non-numeric X/Y become explicit factors here, which simplifies downstream 
     # processing (e.g., coercion to integer, no lost levels upon subsetting).
@@ -389,7 +393,7 @@ names(.all_aes_values) <- .all_aes_names
         more_data_cmds <- list() 
     }
 
-    # Choosing a color scale based on the nature of ColorBy.
+    # Ensuring that colors are either factor or numeric. 
     coloring <- eval_env$plot.data$ColorBy
     if (!is.null(coloring)) {
         if (!.is_groupable(coloring)) {
@@ -542,6 +546,7 @@ names(.all_aes_values) <- .all_aes_names
 #' Set to \code{NA_character_} to produce a \code{NULL} element.
 #' @param by_row A logical scalar specifying whether the plot deals with row-level metadata.
 #' @param range_all A logical scalar specifying whether the control of the x/y-axis ranges should use \code{plot.data.all} instead of \code{plot.data}. 
+#' @param ... Further arguments to pass to \code{\link{.add_color_to_column_plot}} or \code{\link{.add_color_to_row_plot}}.
 #'
 #' @return A character vector of commands to be parsed and evaluated by \code{\link{.create_plot}} to produce the scatter plot.
 #'
@@ -551,7 +556,7 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.create_plot}}
 #'
 #' @importFrom ggplot2 ggplot coord_cartesian theme_bw theme
-.scatter_plot <- function(plot_data, param_choices, se, x_lab, y_lab, title, by_row = FALSE, range_all = FALSE) {
+.scatter_plot <- function(plot_data, param_choices, x_lab, y_lab, title, by_row = FALSE, range_all = FALSE, ...) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +"
 
@@ -561,9 +566,9 @@ names(.all_aes_values) <- .all_aes_names
 
     # Defining the color commands.
     if (by_row) { 
-        color_out <- .add_color_to_row_plot(param_choices, se, plot_data$ColorBy)
+        color_out <- .add_color_to_row_plot(plot_data$ColorBy, param_choices, ...)
     } else {
-        color_out <- .add_color_to_column_plot(param_choices, se, plot_data$ColorBy)
+        color_out <- .add_color_to_column_plot(plot_data$ColorBy, param_choices, ...)
     }
     color_label <- color_out$label
     color_scale_cmd <- unlist(color_out$cmds)
@@ -612,6 +617,7 @@ names(.all_aes_values) <- .all_aes_names
 #' (i.e., Y axis categorical and X axis continuous).
 #' @param by_row A logical scalar specifying whether the plot deals with row-level metadata.
 #' @param range_all A logical scalar specifying whether the control of the x/y-axis ranges should use \code{plot.data.all} instead of \code{plot.data}. 
+#' @param ... Further arguments to pass to \code{\link{.add_color_to_column_plot}} or \code{\link{.add_color_to_row_plot}}.
 #'
 #' @return 
 #' For \code{\link{.violin_setup}}, a character vector of commands to be parsed and evaluated by \code{\link{.complete_plotting_data}} to set up the required fields.
@@ -632,7 +638,7 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.create_plot}}
 #'
 #' @importFrom ggplot2 ggplot geom_violin coord_cartesian theme_bw theme coord_flip scale_x_discrete
-.violin_plot <- function(plot_data, param_choices, se, x_lab, y_lab, title, horizontal = FALSE, by_row = FALSE, range_all = FALSE) {
+.violin_plot <- function(plot_data, param_choices, x_lab, y_lab, title, horizontal = FALSE, by_row = FALSE, range_all = FALSE, ...) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +" # do NOT put aes here, it does not play nice with shiny brushes.
     plot_cmds[["violin"]] <- sprintf("geom_violin(%s, alpha = 0.2, data=plot.data, scale = 'width', width = 0.9) +", 
@@ -644,9 +650,9 @@ names(.all_aes_values) <- .all_aes_names
 
     # Defining the color commands.
     if (by_row) { 
-        color_out <- .add_color_to_row_plot(param_choices, se, plot_data$ColorBy)
+        color_out <- .add_color_to_row_plot(plot_data$ColorBy, param_choices, ...)
     } else {
-        color_out <- .add_color_to_column_plot(param_choices, se, plot_data$ColorBy)
+        color_out <- .add_color_to_column_plot(plot_data$ColorBy, param_choices, ...)
     }
     color_label <- color_out$label
     color_scale_cmd <- unlist(color_out$cmds)
@@ -743,6 +749,7 @@ plot.data$Y <- tmp;")
 #' @param title A character title for the plot.
 #' Set to \code{NA_character_} to produce a \code{NULL} element.
 #' @param by_row A logical scalar specifying whether the plot deals with row-level metadata.
+#' @param ... Further arguments to pass to \code{\link{.add_color_to_column_plot}} or \code{\link{.add_color_to_row_plot}}.
 #'
 #' @return 
 #' For \code{\link{.square_setup}}, a character vector of commands to be parsed and evaluated by \code{\link{.complete_plotting_data}} to set up the required fields.
@@ -762,7 +769,7 @@ plot.data$Y <- tmp;")
 #' \code{\link{.create_plot}}
 #'
 #' @importFrom ggplot2 ggplot geom_tile coord_cartesian theme_bw theme scale_size_area scale_x_discrete scale_y_discrete guides
-.square_plot <- function(plot_data, param_choices, se, x_lab, y_lab, title, by_row = FALSE) {
+.square_plot <- function(plot_data, param_choices, se, x_lab, y_lab, title, by_row = FALSE, ...) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
     plot_cmds[["tile"]] <- "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius),
@@ -775,9 +782,9 @@ plot.data$Y <- tmp;")
 
     # Defining the color commands.
     if (by_row) { 
-        color_out <- .add_color_to_row_plot(param_choices, se, plot_data$ColorBy)
+        color_out <- .add_color_to_row_plot(plot_data$ColorBy, param_choices, ...)
     } else {
-        color_out <- .add_color_to_column_plot(param_choices, se, plot_data$ColorBy)
+        color_out <- .add_color_to_column_plot(plot_data$ColorBy, param_choices, ...)
     }
     color_label <- color_out$label
     color_scale_cmd <- unlist(color_out$cmds)
@@ -911,9 +918,10 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #' 
 #' Generates commands to add a color scale to the ggplot object, based on the specification in the ExperimentColorMap.
 #' 
-#' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
-#' @param se A SingleCellExperiment object.
 #' @param colorby A vector of values to color points by, taken from \code{plot.data$ColorBy} in upstream functions.
+#' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
+#' @param all_memory A list of DataFrames, where each DataFrame corresponds to a panel type and contains the settings for each individual panel of that type.
+#' @param se A SingleCellExperiment object.
 #'
 #' @return 
 #' A list containing \code{cmds}, a character vector containing commands to add a color scale to an existing ggplot object;
@@ -935,7 +943,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #' \code{\link{.square_plot}},
 #' \code{\link{.define_colorby_for_row_plot}},
 #' \code{\link{.define_colorby_for_column_plot}}
-.add_color_to_column_plot <- function(param_choices, se, colorby) {
+.add_color_to_column_plot <- function(colorby, param_choices, all_memory, se) {
     output <- list(label=NA_character_, cmds=NULL)
     if (is.null(colorby)) { 
         return(output)
@@ -952,6 +960,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
   
     } else if (color_choice==.colorByRowTableTitle || color_choice==.colorByFeatNameTitle) {
         if (color_choice==.colorByRowTableTitle) {
+            chosen_tab <- .decoded2encoded(param_choices[[.colorByRowTable]])
             chosen_gene <- all_memory$rowStatTable[chosen_tab, .rowStatSelected]
             assay_choice <- param_choices[[.colorByRowTableAssay]]
         } else {
@@ -971,7 +980,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 
 #' @rdname INTERNAL_add_color_scale
 #' @importFrom ggplot2 scale_color_manual
-.add_color_to_row_plot <- function(param_choices, se, colorby) {
+.add_color_to_row_plot <- function(colorby, param_choices, all_memory, se) {
     output <- list(label=NA_character_, cmds=NULL)
     if (is.null(colorby)) { 
         return(output)

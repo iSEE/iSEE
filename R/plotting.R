@@ -1005,8 +1005,10 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
             col_choice <- param_choices[[.colorByFeatNameColor]]
         }
         output$label <- .gene_axis_label(se, chosen_gene, assay_id=NULL)
-        output$cmds <- sprintf("scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +", 
-                              deparse(col_choice))
+        output$cmds <- c(sprintf("scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +", 
+                                 deparse(col_choice)),
+                         sprintf("geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy=='TRUE'), col = %s, size = 2) +",
+                                 deparse(col_choice)))
     }
     return(output)
 }

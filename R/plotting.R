@@ -685,7 +685,7 @@ names(.all_aes_values) <- .all_aes_names
   
     if (!is.null(bounds)) {
         plot_cmds[["coord"]] <- sprintf(
-            "%s(xlim = c(%.5g, %.5g), ylim = c(%.5g, %.5g), expand = FALSE) +", # FALSE, to get a literal zoom.
+            "%s(xlim = c(%s, %s), ylim = c(%s, %s), expand = FALSE) +", # FALSE, to get a literal zoom.
             coord_cmd, deparse(bounds["xmin"]), deparse(bounds["xmax"]), 
             deparse(bounds["ymin"]), deparse(bounds["ymax"])
         )

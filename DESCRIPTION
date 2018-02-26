@@ -54,7 +54,8 @@ Suggests:
     Rtsne,
     irlba,
     RColorBrewer,
-    viridis
+    viridis,
+    org.Mm.eg.db
 Enhances:
     ExperimentHub
 URL: https://github.com/csoneson/iSEE

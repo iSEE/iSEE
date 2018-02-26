@@ -47,12 +47,6 @@ annotateEntrez <- function(
     if (is.null(orgdb)) {
       return(HTML(""))
     }
-    # if (species %in% annoSpecies_df$species)
-    #   stop("Please pro")
-    # annopkg <- annoSpecies_df$pkg[annoSpecies_df$species==species]
-    # if(!require(annopkg,character.only=TRUE))
-    #   stop(paste0("The package ",annopkg, " is not installed/available. ",
-    #               "Try installing it with biocLite('",annopkg,"')"))
     
     # if no column provided, implicitly assume the names are in the rownames of the object itself
     if (is.null(rowdata_col)) {
@@ -133,10 +127,6 @@ annotateEnsembl <- function(
     if (is.null(species)) {
       return(HTML(""))
     }
-    # annopkg <- annoSpecies_df$pkg[annoSpecies_df$species==species]
-    # if(!require(annopkg,character.only=TRUE))
-    #   stop(paste0("The package ",annopkg, " is not installed/available. ",
-    #               "Try installing it with biocLite('",annopkg,"')"))
     
     # if no column provided, implicitly assume the names are in the rownames of the object itself
     if (is.null(rowdata_col)) {
@@ -164,26 +154,4 @@ annotateEnsembl <- function(
     return(HTML(mycontent))
   }
 }
-
-
-# for retrieving the annotation & linking to ensembl? + linking to UCSC afterwards?
-annoSpecies_df <- data.frame(species=c("","Anopheles","Arabidopsis","Bovine","Worm",
-                                       "Canine","Fly","Zebrafish","E coli strain K12",
-                                       "E coli strain Sakai","Chicken","Human","Mouse",
-                                       "Rhesus","Malaria","Chimp","Rat",
-                                       "Yeast","Streptomyces coelicolor", "Pig","Toxoplasma gondii",
-                                       "Xenopus"),
-                             pkg=c("","org.Ag.eg.db", "org.At.tair.db", "org.Bt.eg.db", "org.Ce.eg.db",
-                                   "org.Cf.eg.db", "org.Dm.eg.db", "org.Dr.eg.db", "org.EcK12.eg.db",
-                                   "org.EcSakai.eg.db", "org.Gg.eg.db", "org.Hs.eg.db", "org.Mm.eg.db",
-                                   "org.Mmu.eg.db", "org.Pf.plasmo.db", "org.Pt.eg.db", "org.Rn.eg.db",
-                                   "org.Sc.sgd.db", "org.Sco.eg.db", "org.Ss.eg.db", "org.Tgondii.eg.db",
-                                   "org.Xl.eg.db"),
-                             stringsAsFactors = FALSE)
-annoSpecies_df <- annoSpecies_df[order(annoSpecies_df$species),]
-annoSpecies_df$ensembl_db <- c("","","","Bos_taurus","Canis_familiaris","Gallus_gallus","Pan_troglodytes",
-                               "","","Drosophila_melanogaster","Homo_sapiens","","Mus_musculus",
-                               "Sus_scrofa","Rattus_norvegicus","Macaca_mulatta","","","Caenorhabditis_elegans",
-                               "Xenopus_tropicalis","Saccharomyces_cerevisiae","Danio_rerio")
-rownames(annoSpecies_df) <- annoSpecies_df$species # easier to access afterwards
 

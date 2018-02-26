@@ -57,8 +57,8 @@ annotateEntrez <- function(
     
     if (keytype!="ENTREZID") {
       e <- try(selgene_entrez <- mapIds(orgdb, selectedGene, "ENTREZID", keytype),silent = TRUE)
-      if(class(e) == "try-error")
-        return(HTML("Sorry, could not convert this gene to ENTREZ id"))
+      validate(need(class(e) != "try-error",
+               "Sorry, could not convert this gene to ENTREZ id"))
     } else {
       selgene_entrez <- selectedGene
     }
@@ -138,8 +138,8 @@ annotateEnsembl <- function(
     
     if (keytype!="ENSEMBL") {
       e <- try(selgene_ensembl <- mapIds(orgdb, selectedGene, "ENSEMBL", keytype),silent = TRUE)
-      if(class(e) == "try-error")
-        return(HTML("Sorry, could not convert this gene to ENSEMBL id"))
+      validate(need(class(e) != "try-error",
+               "Sorry, could not convert this gene to ENSEMBL id"))
     } else {
       selgene_ensembl <- selectedGene
     }

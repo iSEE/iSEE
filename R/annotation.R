@@ -121,7 +121,7 @@ annotateEnsembl <- function(
   orgdb,
   keytype, 
   rowdata_col = NULL,
-  ens_species = gsub(" ","_", species(org.Mm.eg.db))) {
+  ens_species = gsub(" ","_", species(orgdb))) {
   
   function(se, row_index) {
     # no species provided -> nothing

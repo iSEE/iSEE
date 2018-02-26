@@ -96,11 +96,15 @@ annotateEntrez <- function(
 #' @param rowdata_col A character string, corresponding to one of the columns (if present) in
 #' \code{rowData(se)}. Defaults to NULL, which corresponds to having the ids of the features
 #' as row names of the \code{se} object itself. 
+#' @param ens_species Character string containing the species name, coded as in the ENSEMBL 
+#' database and browser. This is for example "Homo_sapiens" for human, and "Mus_musculus" 
+#' for mouse. Defaults to \code{species(orgdb)}, with the whitespace replaced by underscore
 #' 
 #' @return A function to be used as the value of the \code{annotFun} parameter of \code{iSEE}. 
 #' This function itself returns a \code{HTML} tag object with the content extracted from the call,
 #' with parameteres the \code{se} object, and the \code{row_index} corresponding to the feature
 #' of interest.
+#' @importFrom AnnotationDbi species
 #' 
 #' @export
 #'
@@ -108,7 +112,7 @@ annotateEntrez <- function(
 #' library(scRNAseq)
 #' data(allen)
 #' sce <- as(allen, "SingleCellExperiment")
-#' myfun <- annotateEntrez(sce,org.Mm.eg.db,"SYMBOL")
+#' myfun <- annotateEnsembl(sce,org.Mm.eg.db,"SYMBOL")
 #' myfun(sce, 4242)
 #' 
 #' # to be used when launching the app itself ----
@@ -119,19 +123,20 @@ annotateEntrez <- function(
 #' }
 annotateEnsembl <- function(
   se,
-  species,
-  keytype, # will be converted to be/become ENSEMBL
-  rowdata_col = NULL) {
+  orgdb,
+  keytype, 
+  rowdata_col = NULL,
+  ens_species = gsub(" ","_", species(org.Mm.eg.db))) {
   
   function(se, row_index) {
     # no species provided -> nothing
     if (is.null(species)) {
       return(HTML(""))
     }
-    annopkg <- annoSpecies_df$pkg[annoSpecies_df$species==species]
-    if(!require(annopkg,character.only=TRUE))
-      stop(paste0("The package ",annopkg, " is not installed/available. ",
-                  "Try installing it with biocLite('",annopkg,"')"))
+    # annopkg <- annoSpecies_df$pkg[annoSpecies_df$species==species]
+    # if(!require(annopkg,character.only=TRUE))
+    #   stop(paste0("The package ",annopkg, " is not installed/available. ",
+    #               "Try installing it with biocLite('",annopkg,"')"))
     
     # if no column provided, implicitly assume the names are in the rownames of the object itself
     if (is.null(rowdata_col)) {
@@ -141,14 +146,14 @@ annotateEnsembl <- function(
     }
     
     if (keytype!="ENSEMBL") {
-      e <- try(selgene_ensembl <- mapIds(eval(parse(text=annopkg)), selectedGene, "ENSEMBL", keytype),silent = TRUE)
+      e <- try(selgene_ensembl <- mapIds(orgdb, selectedGene, "ENSEMBL", keytype),silent = TRUE)
       if(class(e) == "try-error")
         return(HTML("Sorry, could not convert this gene to ENSEMBL id"))
     } else {
       selgene_ensembl <- selectedGene
     }
     
-    link_ensembl <- paste0('<a href="http://www.ensembl.org/',species,'/Gene/Summary?g=',selgene_ensembl,
+    link_ensembl <- paste0('<a href="http://www.ensembl.org/',ens_species,'/Gene/Summary?g=',selgene_ensembl,
                            '" target="_blank"> ',
                            'Click here to browse more about this gene in the ENSEMBL database</a>')
     

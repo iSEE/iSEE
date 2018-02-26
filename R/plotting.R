@@ -641,7 +641,7 @@ names(.all_aes_values) <- .all_aes_names
 .violin_plot <- function(plot_data, param_choices, x_lab, y_lab, title, horizontal = FALSE, by_row = FALSE, range_all = FALSE, ...) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +" # do NOT put aes here, it does not play nice with shiny brushes.
-    plot_cmds[["violin"]] <- sprintf("geom_violin(%s, alpha = 0.2, data=plot.data, scale = 'width', width = 0.9) +", 
+    plot_cmds[["violin"]] <- sprintf("geom_violin(%s, alpha = 0.2, data=plot.data, scale = 'width', width = 0.8) +", 
                                      .build_aes(color = FALSE, group = TRUE))
 
     # Adding the points to the plot (with/without brushing).

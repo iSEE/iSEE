@@ -4,13 +4,15 @@
 \alias{annotateEnsembl}
 \title{Annotation via ENSEMBL database}
 \usage{
-annotateEnsembl(se, species, keytype, rowdata_col = NULL)
+annotateEnsembl(se, orgdb, keytype, rowdata_col = NULL,
+  ens_species = gsub(" ", "_", species(org.Mm.eg.db)))
 }
 \arguments{
 \item{se}{An object that is coercible to \code{\linkS4class{SingleCellExperiment}}.}
 
-\item{species}{A character string, indicating which species the samples are stemming from. See 
-details for the format expected, and the possible values}
+\item{orgdb}{An OrgDb object, as a basis for the annotation. Typical values can be
+\code{org.Hs.eg.db} for human, \code{org.Mm.eg.db} for mouse, and so on. The 
+corresponding package has to be available and loaded before calling this function}
 
 \item{keytype}{The keytype that matches the IDs used in the \code{se} object. Can be one of 
 the values of \code{keytypes(org.XX.eg.db)}, typically being "SYMBOL", "ENSEMBL", or "ENTREZID"}
@@ -18,6 +20,10 @@ the values of \code{keytypes(org.XX.eg.db)}, typically being "SYMBOL", "ENSEMBL"
 \item{rowdata_col}{A character string, corresponding to one of the columns (if present) in
 \code{rowData(se)}. Defaults to NULL, which corresponds to having the ids of the features
 as row names of the \code{se} object itself.}
+
+\item{ens_species}{Character string containing the species name, coded as in the ENSEMBL 
+database and browser. This is for example "Homo_sapiens" for human, and "Mus_musculus" 
+for mouse. Defaults to \code{species(orgdb)}, with the whitespace replaced by underscore}
 }
 \value{
 A function to be used as the value of the \code{annotFun} parameter of \code{iSEE}. 
@@ -29,23 +35,16 @@ of interest.
 Annotation facility for displaying additional information on selected genes, based on
 the data retrieved from the ENSEMBL database
 }
-\details{
-The \code{species} parameter has to be one of the following: Anopheles, Arabidopsis,
-Bovine, Canine, Chicken, Chimp, E coli strain K12, E coli strain Sakai, Fly, Human, Malaria,                
-Mouse, Pig, Rat, Rhesus, Streptomyces coelicolor, Toxoplasma gondii, Worm, Xenopus, Yeast, Zebrafish.
-             
-Since the functionality depends on the corresponding org.XX.eg.db packages, these
-are expected to be installed, and get loaded when running the function
-}
 \examples{
 library(scRNAseq)
 data(allen)
 sce <- as(allen, "SingleCellExperiment")
-annotateEnsembl(sce,"Mouse","SYMBOL")
+myfun <- annotateEnsembl(sce,org.Mm.eg.db,"SYMBOL")
+myfun(sce, 4242)
 
 # to be used when launching the app itself ----
 
-app <- iSEE(sce, annotFun = annotateEnsembl(sce,"Mouse","SYMBOL"))
+app <- iSEE(sce, annotFun = annotateEnsembl(sce,org.Mm.eg.db,"SYMBOL"))
 if (interactive()) {
   shiny::runApp(app, port = 1234)
 }

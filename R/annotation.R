@@ -5,21 +5,15 @@
 #' the data retrieved from the ENTREZ database 
 #' 
 #' @param se An object that is coercible to \code{\linkS4class{SingleCellExperiment}}.
-#' @param species A character string, indicating which species the samples are stemming from. See 
-#' details for the format expected, and the possible values 
+#' @param orgdb An OrgDb object, as a basis for the annotation. Typical values can be
+#' \code{org.Hs.eg.db} for human, \code{org.Mm.eg.db} for mouse, and so on. The 
+#' corresponding package has to be available and loaded before calling this function.
 #' @param keytype The keytype that matches the IDs used in the \code{se} object. Can be one of 
 #' the values of \code{keytypes(org.XX.eg.db)}, typically being "SYMBOL", "ENSEMBL", or "ENTREZID" 
 #' @param rowdata_col A character string, corresponding to one of the columns (if present) in
 #' \code{rowData(se)}. Defaults to NULL, which corresponds to having the ids of the features
 #' as row names of the \code{se} object itself. 
 #' 
-#' @details The \code{species} parameter has to be one of the following: Anopheles, Arabidopsis,
-#' Bovine, Canine, Chicken, Chimp, E coli strain K12, E coli strain Sakai, Fly, Human, Malaria,                
-#' Mouse, Pig, Rat, Rhesus, Streptomyces coelicolor, Toxoplasma gondii, Worm, Xenopus, Yeast, Zebrafish.
-#'              
-#' Since the functionality depends on the corresponding org.XX.eg.db packages, these
-#' are expected to be installed, and get loaded when running the function  
-#'
 #' @return A function to be used as the value of the \code{annotFun} parameter of \code{iSEE}. 
 #' This function itself returns a \code{HTML} tag object with the content extracted from the call,
 #' with parameteres the \code{se} object, and the \code{row_index} corresponding to the feature
@@ -31,31 +25,34 @@
 #' library(scRNAseq)
 #' data(allen)
 #' sce <- as(allen, "SingleCellExperiment")
-#' annotateEntrez(sce,"Mouse","SYMBOL")
+#' library(org.Mm.eg.db)
+#' annotateEntrez(sce,org.Mm.eg.db,"SYMBOL")
+#' myfun <- annotateEntrez(sce,org.Mm.eg.db,"SYMBOL")
+#' myfun(sce, 4242)
 #' 
 #' # to be used when launching the app itself ----
 #'
-#' app <- iSEE(sce, annotFun = annotateEntrez(sce,"Mouse","SYMBOL"))
+#' app <- iSEE(sce, annotFun = annotateEntrez(sce,org.Mm.eg.db,"SYMBOL"))
 #' if (interactive()) {
 #'   shiny::runApp(app, port = 1234)
 #' }
 annotateEntrez <- function(
   se,
-  species,
+  orgdb,
   keytype,
   rowdata_col = NULL) {
   
   function(se, row_index) {
-    # no species provided -> nothing
-    if (is.null(species)) {
+    # no orgdb provided -> nothing
+    if (is.null(orgdb)) {
       return(HTML(""))
     }
-    if (species %in% annoSpecies_df$species)
-      stop("Please pro")
-    annopkg <- annoSpecies_df$pkg[annoSpecies_df$species==species]
-    if(!require(annopkg,character.only=TRUE))
-      stop(paste0("The package ",annopkg, " is not installed/available. ",
-                  "Try installing it with biocLite('",annopkg,"')"))
+    # if (species %in% annoSpecies_df$species)
+    #   stop("Please pro")
+    # annopkg <- annoSpecies_df$pkg[annoSpecies_df$species==species]
+    # if(!require(annopkg,character.only=TRUE))
+    #   stop(paste0("The package ",annopkg, " is not installed/available. ",
+    #               "Try installing it with biocLite('",annopkg,"')"))
     
     # if no column provided, implicitly assume the names are in the rownames of the object itself
     if (is.null(rowdata_col)) {
@@ -65,7 +62,7 @@ annotateEntrez <- function(
     }
     
     if (keytype!="ENTREZID") {
-      e <- try(selgene_entrez <- mapIds(eval(parse(text=annopkg)), selectedGene, "ENTREZID", keytype),silent = TRUE)
+      e <- try(selgene_entrez <- mapIds(orgdb, selectedGene, "ENTREZID", keytype),silent = TRUE)
       if(class(e) == "try-error")
         return(HTML("Sorry, could not convert this gene to ENTREZ id"))
     } else {
@@ -91,20 +88,14 @@ annotateEntrez <- function(
 #' the data retrieved from the ENSEMBL database 
 #' 
 #' @param se An object that is coercible to \code{\linkS4class{SingleCellExperiment}}.
-#' @param species A character string, indicating which species the samples are stemming from. See 
-#' details for the format expected, and the possible values 
+#' @param orgdb An OrgDb object, as a basis for the annotation. Typical values can be
+#' \code{org.Hs.eg.db} for human, \code{org.Mm.eg.db} for mouse, and so on. The 
+#' corresponding package has to be available and loaded before calling this function 
 #' @param keytype The keytype that matches the IDs used in the \code{se} object. Can be one of 
 #' the values of \code{keytypes(org.XX.eg.db)}, typically being "SYMBOL", "ENSEMBL", or "ENTREZID" 
 #' @param rowdata_col A character string, corresponding to one of the columns (if present) in
 #' \code{rowData(se)}. Defaults to NULL, which corresponds to having the ids of the features
 #' as row names of the \code{se} object itself. 
-#' 
-#' @details The \code{species} parameter has to be one of the following: Anopheles, Arabidopsis,
-#' Bovine, Canine, Chicken, Chimp, E coli strain K12, E coli strain Sakai, Fly, Human, Malaria,                
-#' Mouse, Pig, Rat, Rhesus, Streptomyces coelicolor, Toxoplasma gondii, Worm, Xenopus, Yeast, Zebrafish.
-#'              
-#' Since the functionality depends on the corresponding org.XX.eg.db packages, these
-#' are expected to be installed, and get loaded when running the function  
 #' 
 #' @return A function to be used as the value of the \code{annotFun} parameter of \code{iSEE}. 
 #' This function itself returns a \code{HTML} tag object with the content extracted from the call,
@@ -117,11 +108,12 @@ annotateEntrez <- function(
 #' library(scRNAseq)
 #' data(allen)
 #' sce <- as(allen, "SingleCellExperiment")
-#' annotateEnsembl(sce,"Mouse","SYMBOL")
+#' myfun <- annotateEntrez(sce,org.Mm.eg.db,"SYMBOL")
+#' myfun(sce, 4242)
 #' 
 #' # to be used when launching the app itself ----
 #'
-#' app <- iSEE(sce, annotFun = annotateEnsembl(sce,"Mouse","SYMBOL"))
+#' app <- iSEE(sce, annotFun = annotateEnsembl(sce,org.Mm.eg.db,"SYMBOL"))
 #' if (interactive()) {
 #'   shiny::runApp(app, port = 1234)
 #' }

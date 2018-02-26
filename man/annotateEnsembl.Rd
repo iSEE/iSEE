@@ -39,6 +39,7 @@ the data retrieved from the ENSEMBL database
 library(scRNAseq)
 data(allen)
 sce <- as(allen, "SingleCellExperiment")
+library(org.Mm.eg.db)
 myfun <- annotateEnsembl(sce,org.Mm.eg.db,"SYMBOL")
 myfun(sce, 4242)
 

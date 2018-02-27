@@ -95,7 +95,6 @@ modeGating <- function(
     featExprMax = featExprMax, # possibly larger
     rowStatMax = 0, rowDataMax = 0, heatMapMax = 0,
     initialPanels = initialPanels,
-    annot.orgdb = NULL, annot.keytype = "ENTREZID", annot.keyfield = NULL,
     ...
   )
   

@@ -3,7 +3,7 @@
 #'
 #' Interactive visualization of single-cell data using a Shiny interface.
 #'
-#' @param se An object that coercible to \code{\linkS4class{SingleCellExperiment}}.
+#' @param se An object that is coercible to \code{\linkS4class{SingleCellExperiment}}.
 #' @param redDimArgs A DataFrame similar to that produced by
 #' \code{\link{redDimPlotDefaults}}, specifying initial parameters for the plots.
 #' @param colDataArgs A DataFrame similar to that produced by
@@ -24,11 +24,11 @@
 #' @param heatMapMax An integer scalar specifying the maximum number of heatmaps in the interface.
 #' @param initialPanels A DataFrame specifying which panels should be created at initialization. 
 #' This should contain a \code{Name} character field and a \code{Width} integer field, see Details.
-#' @param annot.orgdb An \code{org.*.db} annotation object from which Entrez identifiers can be retrieved.
-#' @param annot.keytype A string specifying the keytype to use to query \code{annot.orgdb}.
-#' @param annot.keyfield A string specifying the field of \code{rowData(se)}
-#' containing the keys of type \code{annot.keytype}. 
-#' If \code{NULL}, the row names of \code{se} are used as the keys.
+#' @param annotFun A function, constructed in the form of \code{\link{annotateEntrez}} 
+#' or \code{\link{annotateEnsembl}}. This function is built in a way to generate itself 
+#' a function supposed to accept two parameters, \code{se} and \code{row_index}, to have
+#' a unified yet flexible interface to generate additional information to display for 
+#' the selected genes of interest. 
 #' @param colormap An \code{\linkS4class{ExperimentColorMap}} object that defines
 #' custom color maps to apply to individual \code{assays}, \code{colData},
 #' and \code{rowData} covariates.
@@ -53,10 +53,6 @@
 #' maximum plots of that type. The \code{Width} field may also be specified
 #' describing the width of the panel from 2 to 12 (values will be coerced
 #' inside this range).
-#'
-#' If \code{annot.orgdb} is specified, gene information will be retrieved
-#' upon selection of particular genes in the data table. No retrieval is
-#' performed if \code{annot.orgdb=NULL}.
 #'
 #' @return A Shiny App is launched for interactive data exploration of the
 #' \code{\link{SingleCellExperiment}} / \code{\link{SummarizedExperiment}}
@@ -100,9 +96,7 @@ iSEE <- function(
   rowDataMax=5,
   heatMapMax=5,
   initialPanels=NULL,
-  annot.orgdb=NULL,
-  annot.keytype="ENTREZID",
-  annot.keyfield=NULL,
+  annotFun = NULL,
   colormap=ExperimentColorMap(),
   run_local=TRUE
 ) {
@@ -139,13 +133,7 @@ iSEE <- function(
   active_panels <- .setup_initial(initialPanels, memory)
   memory <- .sanitize_memory(active_panels, memory)
 
-  # For retrieving the annotation
-  if (!is.null(annot.orgdb)) {
-    if (!annot.keytype %in% keytypes(annot.orgdb)) {
-      stop("specified keytype not in org.*.db object")
-    }
-  }
-
+  
   #######################################################################
   ## UI definition. ----
   #######################################################################
@@ -1268,9 +1256,10 @@ iSEE <- function(
         # Updating the annotation box.
         anno_field <- paste0(panel_name, "_annotation")
         output[[anno_field]] <- renderUI({
-            chosen <- input[[select_field]]
-            .generate_annotation(annot.orgdb, annot.keytype, annot.keyfield,
-                                 gene_data, chosen)
+          if(is.null(annotFun)) return()
+          chosen <- input[[select_field]]
+          annotFun(se,chosen)
+          
         })
 
         # Describing the links between panels.

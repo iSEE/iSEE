@@ -155,15 +155,34 @@
 
   # Define plotting commands
   extra_cmds <- list()
+  
+  bounds <- param_choices[[.zoomData]][[1]]
+  print(param_choices)
+  print(bounds)
+  if (!is.null(bounds)) {
+      zoom_cmd_heat <- sprintf(
+          "coord_cartesian(ylim = c(%.5g, %.5g), expand = FALSE) +",
+          max(0.5, .transform_global_to_local_y(yg=bounds["ymin"], n.genes=length(genes_selected_y), n.annot=length(orderBy), rtype="lower")$value), 
+          min(length(genes_selected_y)+0.5, .transform_global_to_local_y(bounds["ymax"], n.genes=length(genes_selected_y), n.annot=length(orderBy), rtype="upper")$value)
+      )
+  } else {
+      zoom_cmd_heat <- NULL
+  }
+  
+  print(zoom_cmd_heat)
+  
   # Heatmap
   extra_cmds[["heatmap"]] <- list(
     sprintf("p0 <- ggplot(plot.data, aes(x = X, y = Y)) +"),
     sprintf("geom_raster(aes(fill = value)) +"),
     sprintf("labs(x='', y='') +"),
     fill_cmd, 
-    sprintf("theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.line=element_blank()) +"),
-    sprintf("theme(legend.position='bottom');")
+    zoom_cmd_heat, 
+    sprintf("theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.line=element_blank());"),
+    sprintf("heatlegend <- cowplot::get_legend(p0 + theme(legend.position='bottom'));")
   )
+  
+  print(unlist(extra_cmds[["heatmap"]]))
   
   # Annotations
   extra_cmds[["annotations"]] <- lapply(seq_along(orderBy), function(i) {
@@ -196,13 +215,23 @@
   legends <- eval_env$legends
 
   extra_cmds[["grid"]] <- list(
-    sprintf("cowplot::plot_grid(%s, ncol=1, align='v', rel_heights=c(%s))", 
-            paste0("p", c(seq_along(orderBy), 0), 
-                   c(rep(" + theme(legend.position='none')", length(orderBy)), ""), collapse = ", "),
-            paste(c(rep(0.1, length(orderBy)), 1), collapse = ", "))
+      sprintf("cowplot::plot_grid(
+              cowplot::plot_grid(%s, ncol=1, align='v', rel_heights=c(%s)), heatlegend, ncol=1, rel_heights=c(0.9, 0.1))", 
+              paste0("p", c(seq_along(orderBy), 0), 
+                     c(rep(" + theme(legend.position='none')", length(orderBy)), 
+                       " + theme(legend.position='none')"), collapse = ", "),
+              paste(c(rep(0.1, length(orderBy)), 1), collapse = ", "))
   )
+  brush_out <- .self_brush_box(param_choices, flip=FALSE) # Adding a brush
+  brush_cmd <- brush_out$cmd
+  eval_env$all_brushes <- brush_out$data
   
-  to_eval <- extra_cmds[["grid"]]
+  if (!is.null(brush_cmd)) {
+      extra_cmds[["grid"]] <- paste0(extra_cmds[["grid"]], " +", brush_cmd)
+  }
+
+  to_eval <- unlist(extra_cmds[c("grid")])
+  print(to_eval)
   plot_out <- eval(parse(text=to_eval), envir=eval_env)
 
   return(list(cmd=c(data_cmds, extra_cmds), xy=eval_env$plot.data, plot=plot_out, legends=legends))
@@ -228,4 +257,17 @@
      hc <- hclust(D)
      d <- as.dendrogram(hc)
      rownames(X)[order.dendrogram(d)]
+}
+
+.transform_global_to_local_y <- function(yg, n.annot, n.genes, rtype) {
+    k <- n.genes*(10+n.annot)/9
+    m <- 0.5-0.1*k
+    if (is.numeric(yg)) {
+        v <- k*yg+m
+        if (rtype=="lower") v <- round(v)-0.5
+        else if (rtype=="upper") v <- round(v)+0.5
+    } else {
+        v <- NULL
+    }
+    list(value=v, cmd=paste0("round(", round(k, 3), "*", yg, ifelse(m>0, "+", ""), round(m, 3), ")", ifelse(rtype=="lower", "-", "+"), 0.5))
 }

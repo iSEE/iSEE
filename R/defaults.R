@@ -338,6 +338,9 @@ heatMapPlotDefaults <- function(se, number) {
     out[[.heatMapLower]] <- -Inf
     out[[.heatMapUpper]] <- Inf
     out[[.heatMapCenteredColors]] <- "purple-black-yellow"
+    
+    out[[.zoomData]] <- rep(list(NULL), nrow(out))
+    out[[.brushData]] <- rep(list(NULL), nrow(out))
   
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)

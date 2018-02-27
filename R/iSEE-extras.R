@@ -535,6 +535,48 @@ height_limits <- c(400L, 1000L)
     do.call(tagList, output)
 }
 
+#' Define the brushed points
+#' 
+#' Evaluate the brushing commands to obtain the selected set of points, usually features.
+#'
+#' @param names A character vector containing the names of all points.
+#' @param transmitter String containing the decoded name of the transmitting panel.
+#' @param all_memory A list of DataFrames containing parameters for each panel of each type.
+#' @param all_coordinates A list of data.frames that contain the coordinates and covariates of data points visible in each of the plots.
+#'
+#' @return 
+#' A logical vector of length equal to \code{names}, specifying which points were selected in the \code{transmitter}.
+#'
+#' @details
+#' This function obtains the commands to select brushed points from \code{\link{.process_brushby_choice}}, and evaluates them to identify the selected points.
+#' Such a procedure is necessary in \code{\link{iSEE}} to obtain the actual feature names to show to the user in the interface.
+#' Some work is thus required to trick \code{\link{.process_brushby_choice}} into thinking it is operating on the parameteres for a point-based receiving panel.
+#'
+#' @author Aaron Lun
+#' @seealso 
+#' \code{\link{.process_brushby_choice}},
+#' \code{\link{iSEE}}
+#'
+#' @importFrom S4Vectors DataFrame 
+.get_brush_selection <- function(names, transmitter, all_memory, all_coordinates) {
+    dummy <- DataFrame(transmitter, .brushColorTitle) 
+    rownames(dummy) <- paste0("__", transmitter) # can never match transmitter.
+    colnames(dummy) <- c(.brushByPlot, .brushEffect)
+
+    selected <- .process_brushby_choice(dummy, all_memory)
+    tmp_data <- data.frame(row.names=names)
+    if (!is.null(selected$cmd)) { 
+        chosen.env <- new.env()
+        chosen.env$plot.data <- tmp_data 
+        chosen.env$all_coordinates <- all_coordinates
+        chosen.env$all_brushes <- selected$data
+        chosen.env$all_lassos <- selected$data
+        eval(parse(text=selected$cmd), envir=chosen.env)
+        return(chosen.env$plot.data$BrushBy)
+    } 
+    return(NULL)
+}
+
 #' @importFrom shiny tagList HTML a br
 iSEE_info <- tagList(
     HTML(sprintf("iSEE is a project developed by

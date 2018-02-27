@@ -1180,18 +1180,12 @@ iSEE <- function(
 
             # Adding a "Selected" field to the plotting data, which responds to brushing input.
             # Note that this AUTOMATICALLY updates search_col upon re-rendering via the observer below.
-            # The code below keeps search_col valid for the number of columns (i.e., with or wo selection).
-            selected <- .process_brushby_choice(pObjects$memory$rowStatTable[i0,], pObjects$memory)
+            # The code below keeps search_col valid for the number of columns (i.e., with or without selection).
+            selected <- .get_brush_selection(rownames(gene_data), pObjects$memory$rowStatTable[i0,.brushByPlot], 
+                                             pObjects$memory, pObjects$coordinates)
             tmp_gene_data <- gene_data
-            if (!is.null(selected$cmd)) { 
-                chosen.env <- new.env()
-                chosen.env$plot.data <- gene_data 
-                chosen.env$all_coordinates <- pObjects$coordinates
-                chosen.env$all_brushes <- selected$data
-                chosen.env$all_lassos <- selected$data
-                eval(parse(text=selected$cmd), envir=chosen.env)
-
-                tmp_gene_data[[tab_brush_col]] <- chosen.env$plot.data$BrushBy
+            if (!is.null(selected)) { 
+                tmp_gene_data[[tab_brush_col]] <- selected
                 if (length(search_col)!=ncol(tmp_gene_data)) {
                     search_col <- c(search_col, list(list(search="true")))
                 } else {
@@ -1293,11 +1287,7 @@ iSEE <- function(
                 if (enc$Type=="rowStatTable") {
                     incoming <- input[[paste0(enc$Type, enc$ID, "_rows_all")]]
                 } else {
-                    brush <- pObjects$memory[[enc$Type]][,.brushData][[enc$ID]]
-                    if (!is.null(brush)) {
-                        incoming <- brushedPoints(pObjects$coordinates[[paste0(enc$Type, enc$ID)]], brush)
-                        incoming <- match(rownames(incoming), rownames(se))
-                    }
+                    incoming <- which(.get_brush_selection(rownames(gene_data), origin, pObjects$memory, pObjects$coordinates))
                 }
 
                 limit <- 100

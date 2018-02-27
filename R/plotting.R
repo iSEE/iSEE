@@ -333,17 +333,17 @@ names(.all_aes_values) <- .all_aes_names
 #' The output \code{envir$plot.data} is guaranteed to contain the fields \code{X} and \code{Y} for the x- and y-coordinates, respectively.
 #' It may also contain \code{ColorBy}, a field specifying how to colour each point from the \code{.define_color_for_*_plots} functions.
 #' All categorical variables in the output \code{data} are guaranteed to be factors, and everything else must be numeric.
+#' The \code{plot.data} may also contain \code{BrushBy}, a logical field specifying whether the points were selected by a brush in a transmitting plot.
 #'
 #' The nature of the plot to be generated will determine whether any additional fields are present in \code{plot.data}.
 #' Violin plots will contain \code{GroupBy} fields as well as \code{jitteredX}.
 #' In horizontal violin plots, \code{X} and \code{Y} will be swapped.
 #' Square plots will have \code{jitteredX} and \code{jitteredY}.
+#' The \code{envir$plot.type} variable will specify the type of plot for correct dispatch in \code{\link{.create_plot}}.
 #'
 #' The environment may also contain \code{plot.data.all}, a data.frame equivalent to \code{plot.data} but without any \code{BrushBy} information or subsetting by \code{BrushBy}. 
 #' (See \code{\link{.process_brushby_choice}} for the origin of this data.frame.)
 #' This is useful for determining the plotting boundaries of the entire data set, even after subsetting of \code{plot.data}.
-#' 
-#' The \code{plot.data} may also contain \code{BrushBy}, a logical field specifying whether the points were selected by a brush in a transmitting plot.
 #' 
 #' @author Aaron Lun
 #' @rdname INTERNAL_complete_plotting_data
@@ -423,17 +423,22 @@ names(.all_aes_values) <- .all_aes_names
     
     # Adding more plot-specific information, depending on the type of plot to be created.
     if (!group_Y && !group_X) {
+        mode <- "scatter"
         specific <- list()
     } else if (!group_Y) {
+        mode <- "violin"
         specific <- .violin_setup(FALSE) 
     } else if (!group_X) {
+        mode <- "violin_horizontal"
         specific <- .violin_setup(TRUE) 
     } else {
+        mode <- "square"
         specific <- .square_setup()
     }
     if (length(specific)) { 
         eval(parse(text=unlist(specific)), envir=eval_env)
     }
+    eval_env$plot.type <- mode
 
     return(list(cmd_list=list(data=data_cmds, brush=brush_cmds, setup=specific), envir=eval_env))
 }
@@ -487,23 +492,15 @@ names(.all_aes_values) <- .all_aes_names
     range_all <- exists("plot.data.all", envir)
     
     # Dispatch to different plotting commands, depending on whether X/Y are groupable.
-    group_X <- is.factor(plot_data$X)
-    group_Y <- is.factor(plot_data$Y)
-    if (group_X && group_Y) {
-        extra_cmds <- .square_plot(plot_data=plot_data, param_choices=param_choices, ..., range_all = range_all) 
-        
-    } else if (group_X && !group_Y) {
-        extra_cmds <- .violin_plot(plot_data=plot_data, param_choices=param_choices, ..., range_all = range_all)
-
-    } else if (!group_X && group_Y) {
-        extra_cmds <- .violin_plot(plot_data=plot_data, param_choices=param_choices, ..., range_all = range_all, horizontal=TRUE)
-  
-    } else {
-        extra_cmds <- .scatter_plot(plot_data=plot_data, param_choices=param_choices, ...)
-    }
+    mode <- envir$plot.type
+    extra_cmds <- switch(envir$plot.type,
+            square = .square_plot(plot_data=plot_data, param_choices=param_choices, ...),
+            violin = .violin_plot(plot_data=plot_data, param_choices=param_choices, ..., range_all = range_all),
+            violin_horizontal = .violin_plot(plot_data=plot_data, param_choices=param_choices, ..., range_all = range_all, horizontal=TRUE),
+            scatter = .scatter_plot(plot_data=plot_data, param_choices=param_choices, ..., range_all = range_all))
 
     # Adding self-brushing boxes, if they exist.
-    to_flip <- !group_X && group_Y
+    to_flip <- mode == "violin_horizontal"
     brush_out <- .self_brush_box(param_choices, flip=to_flip) # Adding a brush.
     lasso_out <- .self_lasso_path(param_choices, flip=to_flip) # Adding the lasso path.
     select_cmds <- c(brush_out$cmds, lasso_out$cmds)

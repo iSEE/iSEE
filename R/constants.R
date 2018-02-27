@@ -60,6 +60,10 @@
 .heatMapUpper <- "Upper"
 .heatMapCenteredColors <- "ColorScale"
 
+.heatMapRelHeightColorBar <- 0.1
+.heatMapRelHeightHeatmap <- 1
+.heatMapRelHeightAnnot <- 0.1
+
 # Plot colouring parameters. ----
 .colorByNothingTitle <- "None"
 .colorByColDataTitle <- "Column data"

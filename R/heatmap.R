@@ -36,6 +36,8 @@
 #' 
 #' @importFrom cowplot get_legend plot_grid
 #' @importFrom scales rescale
+#' @importFrom reshape2 melt
+#' @importFrom dplyr arrange
 .make_heatMapPlot <- function(id, all_memory, all_coordinates, se, colormap)
 # Makes a heatmap.
 {
@@ -75,103 +77,36 @@
       sprintf("plot.data$X <- factor(plot.data$X, levels = unique(plot.data$X));")
     )
 
+  # Evaluate to have plot.data
   eval_env <- new.env()
   eval(parse(text=unlist(data_cmds[c("y", "order")])), envir=eval_env)
 
-  # Define fill values for heatmap
-  # Get min/max values in heatmap
+  # Define fill command and color range for heatmap
   min.obs <- min(eval_env$plot.data$value, na.rm=TRUE)
   max.obs <- max(eval_env$plot.data$value, na.rm=TRUE)
-  # Set limits of color bar
-  limits <- range(min.obs, param_choices[[.heatMapLower]], 
-                  max.obs, param_choices[[.heatMapUpper]], finite=TRUE, na.rm=TRUE)
-  # Get values to define range of colors
-  break.vec <- .get_colorscale_limits(min.value=min.obs, max.value=max.obs, 
-                                      lower.bound=param_choices[[.heatMapLower]], 
-                                      upper.bound=param_choices[[.heatMapUpper]],
-                                      include.zero=param_choices[[.heatMapCentering]]==.heatMapYesTitle)
-
-  if (param_choices[[.heatMapCentering]] == .heatMapYesTitle) {
-    validate(need( 
-      param_choices[[.heatMapLower]] < 0L,
-      sprintf("Lower bound must be negative") 
-    ))
-    validate(need( 
-      param_choices[[.heatMapUpper]] > 0L,
-      sprintf("Upper bound must be positive") 
-    ))
-    # Centered values - use selected color scale
-    col.vec <- strsplit(param_choices[[.heatMapCenteredColors]], "-")[[1]]
-    if (param_choices[[.heatMapLower]] > min.obs && is.finite(param_choices[[.heatMapLower]])) {
-      break.vec <- c(min.obs, break.vec)
-      col.vec <- c(col.vec[1], col.vec)
-    }
-    if (param_choices[[.heatMapUpper]] < max.obs && is.finite(param_choices[[.heatMapUpper]])) {
-      break.vec <- c(break.vec, max.obs)
-      col.vec <- c(col.vec, col.vec[length(col.vec)])
-    }
-    break.vec <- scales::rescale(break.vec, to=c(0, 1), from=limits)
-    fill_cmd <- sprintf("scale_fill_gradientn(colors=c('%s'), 
-    values=c(%s), 
-    limits=c(%s), na.value='grey50') +", 
-                        paste0(col.vec, collapse="','"),
-                        paste0(break.vec, collapse=","),
-                        paste0(limits, collapse=","))
-  } else {
-    validate(need( 
-      param_choices[[.heatMapLower]] < max.obs,
-      sprintf("Lower bound must be lower than largest value in matrix") 
-    ))
-    validate(need( 
-      param_choices[[.heatMapUpper]] > min.obs,
-      sprintf("Upper bound must be higher than smallest value in matrix") 
-    ))
-    col.vec <- assayColorMap(colormap, assay_choice, discrete=FALSE)(21L)
-    col.add.before <- col.add.after <- break.add.before <- break.add.after <- ""
-    if (param_choices[[.heatMapLower]] > min.obs && is.finite(param_choices[[.heatMapLower]])) {
-      col.add.before <- sprintf("c('%s',", col.vec[1])
-      break.add.before <- sprintf("c(%s,", min.obs)
-    }
-    if (param_choices[[.heatMapUpper]] < max.obs && is.finite(param_choices[[.heatMapUpper]])) {
-      col.add.after <- sprintf(",'%s')", col.vec[length(col.vec)])
-      break.add.after <- sprintf(",%s)", max.obs)
-    }
-    if (col.add.before=="" && col.add.after != "") col.add.before <- "c("
-    if (break.add.before=="" && break.add.after != "") break.add.before <- "c("
-    if (col.add.after=="" && col.add.before != "") col.add.after <- ")"
-    if (break.add.after=="" && break.add.before != "") break.add.after <- ")"
-    
-    fill_cmd <- sprintf("scale_fill_gradientn(colors=%sassayColorMap(colormap, '%s', discrete=FALSE)(21L)%s, 
-    values=%s, 
-    limits=c(%s), na.value='grey50') +",
-                        col.add.before,
-                        assay_choice,
-                        col.add.after,
-                        paste0("scales::rescale(", break.add.before,
-                               "seq(", min(break.vec), ",", max(break.vec), ",length.out=21L)",
-                               break.add.after, ", to=c(0,1), from=c(", paste0(limits, collapse=","), "))"),
-                        paste0(limits, collapse=","))
-  }
+  fill_cmd <- .get_heatmap_fill_cmd(param_choices, colormap, min.obs, max.obs) 
 
   # Define plotting commands
   extra_cmds <- list()
   
+  # Define zoom command. Transform the ranges given by zoomData to the actual
+  # coordinates in the heatmap
   bounds <- param_choices[[.zoomData]][[1]]
-  print(param_choices)
-  print(bounds)
   if (!is.null(bounds)) {
       zoom_cmd_heat <- sprintf(
-          "coord_cartesian(ylim = c(%.5g, %.5g), expand = FALSE) +",
-          max(0.5, .transform_global_to_local_y(yg=bounds["ymin"], n.genes=length(genes_selected_y), n.annot=length(orderBy), rtype="lower")$value), 
-          min(length(genes_selected_y)+0.5, .transform_global_to_local_y(bounds["ymax"], n.genes=length(genes_selected_y), n.annot=length(orderBy), rtype="upper")$value)
+          "coord_cartesian(ylim = c(%.5g, %.5g), expand=FALSE) +",
+          max(0.5, .transform_global_to_local_y(yg=bounds["ymin"], n.genes=length(genes_selected_y), 
+                                                n.annot=length(orderBy), rtype="lower")), 
+          min(length(genes_selected_y)+0.5, 
+              .transform_global_to_local_y(bounds["ymax"], n.genes=length(genes_selected_y),
+                                           n.annot=length(orderBy), rtype="upper"))
       )
   } else {
       zoom_cmd_heat <- NULL
   }
-  
-  print(zoom_cmd_heat)
-  
-  # Heatmap
+
+  # Heatmap. Get the colorbar separately to make it easier to guess the real
+  # heatmap coordinates from a brush on the final combined plot
   extra_cmds[["heatmap"]] <- list(
     sprintf("p0 <- ggplot(plot.data, aes(x = X, y = Y)) +"),
     sprintf("geom_raster(aes(fill = value)) +"),
@@ -181,8 +116,6 @@
     sprintf("theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.line=element_blank());"),
     sprintf("heatlegend <- cowplot::get_legend(p0 + theme(legend.position='bottom'));")
   )
-  
-  print(unlist(extra_cmds[["heatmap"]]))
   
   # Annotations
   extra_cmds[["annotations"]] <- lapply(seq_along(orderBy), function(i) {
@@ -214,24 +147,30 @@
   plot_part <- eval(parse(text=to_eval), envir=eval_env)
   legends <- eval_env$legends
 
+  # Put heatmap and annotations together
   extra_cmds[["grid"]] <- list(
       sprintf("cowplot::plot_grid(
-              cowplot::plot_grid(%s, ncol=1, align='v', rel_heights=c(%s)), heatlegend, ncol=1, rel_heights=c(0.9, 0.1))", 
+              cowplot::plot_grid(%s, ncol=1, align='v', rel_heights=c(%s)), 
+              heatlegend, ncol=1, rel_heights=c(%s, %s))", 
               paste0("p", c(seq_along(orderBy), 0), 
                      c(rep(" + theme(legend.position='none')", length(orderBy)), 
                        " + theme(legend.position='none')"), collapse = ", "),
-              paste(c(rep(0.1, length(orderBy)), 1), collapse = ", "))
+              paste(c(rep(.heatMapRelHeightAnnot, length(orderBy)), .heatMapRelHeightHeatmap), 
+                    collapse = ", "),
+              1-.heatMapRelHeightColorBar, .heatMapRelHeightColorBar)
   )
+  
+  # Add brush
   brush_out <- .self_brush_box(param_choices, flip=FALSE) # Adding a brush
   brush_cmd <- brush_out$cmd
   eval_env$all_brushes <- brush_out$data
   
   if (!is.null(brush_cmd)) {
-      extra_cmds[["grid"]] <- paste0(extra_cmds[["grid"]], " +", brush_cmd)
+      extra_cmds[["grid"]] <- paste0(extra_cmds[["grid"]], " +")
+      extra_cmds[["brush"]] <- brush_cmd
   }
 
-  to_eval <- unlist(extra_cmds[c("grid")])
-  print(to_eval)
+  to_eval <- unlist(extra_cmds[c("grid", "brush")])
   plot_out <- eval(parse(text=to_eval), envir=eval_env)
 
   return(list(cmd=c(data_cmds, extra_cmds), xy=eval_env$plot.data, plot=plot_out, legends=legends))
@@ -260,14 +199,84 @@
 }
 
 .transform_global_to_local_y <- function(yg, n.annot, n.genes, rtype) {
-    k <- n.genes*(10+n.annot)/9
-    m <- 0.5-0.1*k
-    if (is.numeric(yg)) {
-        v <- k*yg+m
-        if (rtype=="lower") v <- round(v)-0.5
-        else if (rtype=="upper") v <- round(v)+0.5
+    k <- n.genes*(.heatMapRelHeightAnnot*n.annot+.heatMapRelHeightHeatmap)/(1-.heatMapRelHeightColorBar)
+    m <- 0.5-.heatMapRelHeightColorBar*k
+    v <- k*yg+m
+    if (rtype=="lower") round(v)-0.5
+    else if (rtype=="upper") round(v)+0.5
+}
+
+#' @importFrom scales rescale
+.get_heatmap_fill_cmd <- function(param_choices, colormap, min.obs, max.obs) {
+    # Set limits of color bar
+    limits <- range(min.obs, param_choices[[.heatMapLower]], 
+                    max.obs, param_choices[[.heatMapUpper]], finite=TRUE, na.rm=TRUE)
+    # Get values to define range of colors
+    break.vec <- .get_colorscale_limits(min.value=min.obs, max.value=max.obs, 
+                                        lower.bound=param_choices[[.heatMapLower]], 
+                                        upper.bound=param_choices[[.heatMapUpper]],
+                                        include.zero=param_choices[[.heatMapCentering]]==.heatMapYesTitle)
+    
+    if (param_choices[[.heatMapCentering]] == .heatMapYesTitle) {
+        validate(need( 
+            param_choices[[.heatMapLower]] < 0L,
+            sprintf("Lower bound must be negative") 
+        ))
+        validate(need( 
+            param_choices[[.heatMapUpper]] > 0L,
+            sprintf("Upper bound must be positive") 
+        ))
+        # Centered values - use selected color scale
+        col.vec <- strsplit(param_choices[[.heatMapCenteredColors]], "-")[[1]]
+        if (param_choices[[.heatMapLower]] > min.obs && is.finite(param_choices[[.heatMapLower]])) {
+            break.vec <- c(min.obs, break.vec)
+            col.vec <- c(col.vec[1], col.vec)
+        }
+        if (param_choices[[.heatMapUpper]] < max.obs && is.finite(param_choices[[.heatMapUpper]])) {
+            break.vec <- c(break.vec, max.obs)
+            col.vec <- c(col.vec, col.vec[length(col.vec)])
+        }
+        break.vec <- scales::rescale(break.vec, to=c(0, 1), from=limits)
+        fill_cmd <- sprintf("scale_fill_gradientn(colors=c('%s'), 
+                            values=c(%s), 
+                            limits=c(%s), na.value='grey50') +", 
+                            paste0(col.vec, collapse="','"),
+                            paste0(break.vec, collapse=","),
+                            paste0(limits, collapse=","))
     } else {
-        v <- NULL
+        validate(need( 
+            param_choices[[.heatMapLower]] < max.obs,
+            sprintf("Lower bound must be lower than largest value in matrix") 
+        ))
+        validate(need( 
+            param_choices[[.heatMapUpper]] > min.obs,
+            sprintf("Upper bound must be higher than smallest value in matrix") 
+        ))
+        col.vec <- assayColorMap(colormap, param_choices[[.heatMapAssay]], discrete=FALSE)(21L)
+        col.add.before <- col.add.after <- break.add.before <- break.add.after <- ""
+        if (param_choices[[.heatMapLower]] > min.obs && is.finite(param_choices[[.heatMapLower]])) {
+            col.add.before <- sprintf("c('%s',", col.vec[1])
+            break.add.before <- sprintf("c(%s,", min.obs)
+        }
+        if (param_choices[[.heatMapUpper]] < max.obs && is.finite(param_choices[[.heatMapUpper]])) {
+            col.add.after <- sprintf(",'%s')", col.vec[length(col.vec)])
+            break.add.after <- sprintf(",%s)", max.obs)
+        }
+        if (col.add.before=="" && col.add.after != "") col.add.before <- "c("
+        if (break.add.before=="" && break.add.after != "") break.add.before <- "c("
+        if (col.add.after=="" && col.add.before != "") col.add.after <- ")"
+        if (break.add.after=="" && break.add.before != "") break.add.after <- ")"
+        
+        fill_cmd <- sprintf("scale_fill_gradientn(colors=%sassayColorMap(colormap, '%s', discrete=FALSE)(21L)%s, 
+                            values=%s, 
+                            limits=c(%s), na.value='grey50') +",
+                            col.add.before,
+                            param_choices[[.heatMapAssay]],
+                            col.add.after,
+                            paste0("scales::rescale(", break.add.before,
+                                   "seq(", min(break.vec), ",", max(break.vec), ",length.out=21L)",
+                                   break.add.after, ", to=c(0,1), from=c(", paste0(limits, collapse=","), "))"),
+                            paste0(limits, collapse=","))
     }
-    list(value=v, cmd=paste0("round(", round(k, 3), "*", yg, ifelse(m>0, "+", ""), round(m, 3), ")", ifelse(rtype=="lower", "-", "+"), 0.5))
+    fill_cmd
 }

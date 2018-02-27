@@ -583,7 +583,11 @@ iSEE <- function(
 
                 # Brush choice observer.
                 brush_plot_field <- paste0(prefix, .brushByPlot)
-                if (mode != "heatMapPlot") {
+                if (mode0 == "heatMapPlot") {
+                    observeEvent(input[[brush_plot_field]], {
+                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                    }, ignoreInit=TRUE)
+                } else {
                     observeEvent(input[[brush_plot_field]], {
                         old_transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
                         new_transmitter <- input[[brush_plot_field]]
@@ -645,16 +649,12 @@ iSEE <- function(
                             }
                         }
                     }, ignoreInit=TRUE)
-                } else {
-                    observeEvent(input[[brush_plot_field]], {
-                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                    }, ignoreInit=TRUE)
                 }
 
                 ###############
 
                 # Brush effect observer.
-                if (mode != "heatMapPlot") {
+                if (mode0 != "heatMapPlot") {
                     brush_effect_field <- paste0(prefix, .brushEffect)
                     observeEvent(input[[brush_effect_field]], {
                         cur_effect <- input[[brush_effect_field]]
@@ -699,45 +699,35 @@ iSEE <- function(
 
                 # Brush structure observers.
                 brush_id <- paste0(prefix, .brushField)
-                if (mode != "heatMapPlot") {
-                    observeEvent(input[[brush_id]], {
-                        cur_brush <- input[[brush_id]]
-                        old_brush <- pObjects$memory[[mode0]][,.brushData][[i0]]
-                        pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .brushData, cur_brush)
-                        
-                        # If the brushes have the same coordinates, we don't bother replotting.
-                        replot <- !.identical_brushes(cur_brush, old_brush)
-                        
+                observeEvent(input[[brush_id]], {
+                    cur_brush <- input[[brush_id]]
+                    old_brush <- pObjects$memory[[mode0]][,.brushData][[i0]]
+                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .brushData, cur_brush)
+                    
+                    # If the brushes have the same coordinates, we don't bother replotting.
+                    replot <- !.identical_brushes(cur_brush, old_brush)
+                    
+                    if (mode0 != "heatMapPlot") {
                         # Destroying lasso points upon brush (replotting if existing lasso was not NULL).
                         replot <- replot || !is.null(pObjects$memory[[mode0]][,.lassoData][[i0]])
                         pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .lassoData, NULL)
-                        if (!replot) {
-                            return(NULL)
-                        }
-                        
-                        # Trigger replotting of self, to draw a more persistent brushing box.
-                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                        
+                    }
+                    
+                    if (!replot) {
+                        return(NULL)
+                    }
+                    
+                    # Trigger replotting of self, to draw a more persistent brushing box.
+                    rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                    
+                    if (mode0 != "heatMapPlot") {
                         # Trigger replotting of all dependent plots that receive this brush.
                         children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
                         for (child_plot in children) {
                             rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
                         }
-                    }, ignoreInit=TRUE, ignoreNULL=FALSE)
-                } else {
-                    observeEvent(input[[brush_id]], {
-                        cur_brush <- input[[brush_id]]
-                        old_brush <- pObjects$memory[[mode0]][,.brushData][[i0]]
-                        pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .brushData, cur_brush)
-                        # If the brushes have the same coordinates, we don't bother replotting.
-                        replot <- !.identical_brushes(cur_brush, old_brush)
-                        if (!replot) {
-                            return(NULL)
-                        }
-                        # Trigger replotting of self, to draw a more persistent brushing box.
-                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                    }, ignoreInit=TRUE, ignoreNULL=FALSE)
-                }
+                    }
+                }, ignoreInit=TRUE, ignoreNULL=FALSE)
             })
         }
     }
@@ -889,7 +879,13 @@ iSEE <- function(
                         # "else", to avoid two reactive updates of unknown priorities.
                         new_coords <- pObjects$memory[[mode0]][,.zoomData][[i0]]
 
-                        if (mode0 != "heatMapPlot") {
+                        if (mode0 == "heatMapPlot") {
+                            if (!is.null(new_coords)) {
+                                # Zoom out.
+                                new_coords <- NULL
+                                rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                            }
+                        } else {
                             lasso_data <- pObjects$memory[[mode0]][,.lassoData][[i0]]
                             if (!is.null(lasso_data)) {
                                 # We wipe out any lasso waypoints if they are present, and trigger replotting with the same scope.
@@ -903,13 +899,7 @@ iSEE <- function(
                                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                                 }
                             }
-                        } else {
-                            if (!is.null(new_coords)) {
-                                # Zoom out.
-                                new_coords <- NULL
-                                rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                            }
-                        }
+                        } 
                     }
 
                     pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .zoomData, new_coords)

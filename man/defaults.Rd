@@ -103,8 +103,8 @@ Defaults to the first entry of \code{rowData(se)}.}
 \describe{
 \item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
 Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Feature name"} or \code{"Column data"}.}
-\item{\code{ColorByColData}:}{Character, which column of \code{colData(se)} should be used for colouring if \code{ColorBy="Column data"}? 
-Defaults to the first entry of \code{colData(se)}.}
+\item{\code{ColorByDefaultColor}:}{String specifying the default point colour when \code{ColorBy="None"}.
+Defaults to \code{"black"}.}
 \item{\code{ColorByRowTable}:}{Character, which row statistic table should be used to choose a feature to color by, if \code{ColorBy="Row table"}? 
 Defaults to an empty string, which means that the first available table will be used.}
 \item{\code{ColorByFeatName}:}{Integer, the index of the feature to use for colouring based on expression, if \code{ColorBy="Feature name"}? 
@@ -114,6 +114,8 @@ Alternatively, a string can be supplied containing the name of the feature.}
 
 For the plots where each point represents a sample (i.e., all plots except for heatmaps and row data plots), the following additional options apply:
 \describe{
+\item{\code{ColorByColData}:}{Character, which column of \code{colData(se)} should be used for colouring if \code{ColorBy="Column data"}? 
+Defaults to the first entry of \code{colData(se)}.}
 \item{\code{ColorByRowTableAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Row table"}? 
 Defaults to 1, i.e., the first assay in \code{se}.
 Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
@@ -124,6 +126,8 @@ Alternatively, a string can also be supplied containing the name of the assay, i
 
 For plots where each point represents a feature (i.e., row data plots), the following additional options apply:
 \describe{
+\item{\code{ColorByRowData}:}{Character, which column of \code{rowData(se)} should be used for colouring if \code{ColorBy="Row data"}? 
+Defaults to the first entry of \code{rowData(se)}.}
 \item{\code{ColorByRowTableColor}:}{String specifying the colour to be used to highlight the selected feature from the row table.
 Defaults to \code{"red"}.}
 \item{\code{ColorByFeatNameColor}:}{String specifying the colour to be used to highlight the selected feature from the text.

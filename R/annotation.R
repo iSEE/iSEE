@@ -1,61 +1,158 @@
-#' Retrieve info on a gene
+
+#' Annotation via Entrez database
 #' 
-#' Generate HTML content with more information about a selected gene.
-#'
-#' @param annot.orgdb The OrgDb object
-#' @param annot.keytype The keytype that matches the keys used
-#' @param annot.keyfield The field to use as column from the \code{gene_data}
-#' @param gene_data The data frame containing info on the genes/features of interest,
-#' such as the one generated via \code{as.data.frame(rowData(se))}
-#' @param chosen_gene The selected gene
+#' Annotation facility for displaying additional information on selected genes, based on
+#' the data retrieved from the ENTREZ database 
 #' 
-#' @details This function relies on the code{entrez_summary} function, which 
-#' requires internet access to retrieve updated information. Conversion of the 
-#' ids is handled via OrgDb packages
+#' @param se An object that is coercible to \code{\linkS4class{SingleCellExperiment}}.
+#' @param orgdb An OrgDb object, as a basis for the annotation. Typical values can be
+#' \code{org.Hs.eg.db} for human, \code{org.Mm.eg.db} for mouse, and so on. The 
+#' corresponding package has to be available and loaded before calling this function.
+#' @param keytype The keytype that matches the IDs used in the \code{se} object. Can be one of 
+#' the values of \code{keytypes(org.XX.eg.db)}, typically being "SYMBOL", "ENSEMBL", or "ENTREZID" 
+#' @param rowdata_col A character string, corresponding to one of the columns (if present) in
+#' \code{rowData(se)}. Defaults to NULL, which corresponds to having the ids of the features
+#' as row names of the \code{se} object itself. 
+#' 
+#' @return A function to be used as the value of the \code{annotFun} parameter of \code{iSEE}. 
+#' This function itself returns a \code{HTML} tag object with the content extracted from the call,
+#' with parameteres the \code{se} object, and the \code{row_index} corresponding to the feature
+#' of interest.
+#' 
+#' @export
 #'
-#' @return HTML content with more information about a selected gene
-#' @author Federico Marini
-#' @rdname INTERNAL_generate_annotation
-#' @importFrom AnnotationDbi mapIds
-#' @importFrom rentrez entrez_summary
-#' @importFrom shiny HTML
-.generate_annotation <- function(annot.orgdb, annot.keytype, annot.keyfield, gene_data, chosen_gene)
-{
-  if (is.null(annot.orgdb)) {
-    return(HTML(""))
-  }
+#' @examples
+#' library(scRNAseq)
+#' data(allen)
+#' sce <- as(allen, "SingleCellExperiment")
+#' library(org.Mm.eg.db)
+#' annotateEntrez(sce,org.Mm.eg.db,"SYMBOL")
+#' myfun <- annotateEntrez(sce,org.Mm.eg.db,"SYMBOL")
+#' myfun(sce, 4242)
+#' 
+#' # to be used when launching the app itself ----
+#'
+#' app <- iSEE(sce, annotFun = annotateEntrez(sce,org.Mm.eg.db,"SYMBOL"))
+#' if (interactive()) {
+#'   shiny::runApp(app, port = 1234)
+#' }
+annotateEntrez <- function(
+  se,
+  orgdb,
+  keytype,
+  rowdata_col = NULL) {
+  
+  function(se, row_index) {
+    # no orgdb provided -> nothing
+    if (is.null(orgdb)) {
+      return(HTML(""))
+    }
+    
+    # if no column provided, implicitly assume the names are in the rownames of the object itself
+    if (is.null(rowdata_col)) {
+      selectedGene <- rownames(se)[row_index]
+    } else {
+      selectedGene <- rowData(se)[row_index,rowdata_col]
+    }
+    
+    if (keytype!="ENTREZID") {
+      e <- try(selgene_entrez <- mapIds(orgdb, selectedGene, "ENTREZID", keytype),silent = TRUE)
+      validate(need(!is(e, "try-error"),
+               "Sorry, could not convert this gene to ENTREZ id"))
+    } else {
+      selgene_entrez <- selectedGene
+    }
+    
+    fullinfo <- entrez_summary("gene", selgene_entrez)
+    link_pubmed <- paste0('<a href="http://www.ncbi.nlm.nih.gov/gene/?term=',
+                          selgene_entrez,
+                          '" target="_blank">Click here to see more at the NCBI database</a>')
 
-  shiny::validate(
-    need(!is.null(chosen_gene), "Select a gene from the table")
-  )
-
-  if (is.null(annot.keyfield)) {
-    selectedGene <- rownames(gene_data)[chosen_gene]
-  } else {
-    selectedGene <- gene_data[chosen_gene,annot.keyfield]
-  }
-
-  if (annot.keytype!="ENTREZID") {
-    selgene_entrez <- mapIds(annot.orgdb, selectedGene, "ENTREZID", annot.keytype)
-  } else {
-    selgene_entrez <- selectedGene
-  }
-
-  fullinfo <- entrez_summary("gene", selgene_entrez)
-  link_pubmed <- paste0('<a href="http://www.ncbi.nlm.nih.gov/gene/?term=',
-                        selgene_entrez,
-                        '" target="_blank" >Click here to see more at NCBI</a>')
-
-  if(fullinfo$summary == "") {
-    return(HTML(paste0("<b>",fullinfo$name, "</b><br/><br/>",
-                       fullinfo$description,"<br/><br/>",
-                       link_pubmed
-    )))
-  } else {
-    return(HTML(paste0("<b>",fullinfo$name, "</b><br/><br/>",
-                       fullinfo$description, "<br/><br/>",
-                       fullinfo$summary, "<br/><br/>",
-                       link_pubmed
-    )))
+    mycontent <- paste0("<b>",fullinfo$name, "</b><br/><br/>",
+                        fullinfo$description,"<br/><br/>",
+                        ifelse(fullinfo$summary == "","",paste0(fullinfo$summary, "<br/><br/>")),
+                        link_pubmed)
+    return(HTML(mycontent))
   }
 }
+
+#' Annotation via ENSEMBL database
+#' 
+#' Annotation facility for displaying additional information on selected genes, based on
+#' the data retrieved from the ENSEMBL database 
+#' 
+#' @param se An object that is coercible to \code{\linkS4class{SingleCellExperiment}}.
+#' @param orgdb An OrgDb object, as a basis for the annotation. Typical values can be
+#' \code{org.Hs.eg.db} for human, \code{org.Mm.eg.db} for mouse, and so on. The 
+#' corresponding package has to be available and loaded before calling this function 
+#' @param keytype The keytype that matches the IDs used in the \code{se} object. Can be one of 
+#' the values of \code{keytypes(org.XX.eg.db)}, typically being "SYMBOL", "ENSEMBL", or "ENTREZID" 
+#' @param rowdata_col A character string, corresponding to one of the columns (if present) in
+#' \code{rowData(se)}. Defaults to NULL, which corresponds to having the ids of the features
+#' as row names of the \code{se} object itself. 
+#' @param ens_species Character string containing the species name, coded as in the ENSEMBL 
+#' database and browser. This is for example "Homo_sapiens" for human, and "Mus_musculus" 
+#' for mouse. Defaults to \code{species(orgdb)}, with the whitespace replaced by underscore
+#' 
+#' @return A function to be used as the value of the \code{annotFun} parameter of \code{iSEE}. 
+#' This function itself returns a \code{HTML} tag object with the content extracted from the call,
+#' with parameteres the \code{se} object, and the \code{row_index} corresponding to the feature
+#' of interest.
+#' @importFrom AnnotationDbi species
+#' 
+#' @export
+#'
+#' @examples
+#' library(scRNAseq)
+#' data(allen)
+#' sce <- as(allen, "SingleCellExperiment")
+#' library(org.Mm.eg.db)
+#' myfun <- annotateEnsembl(sce,org.Mm.eg.db,"SYMBOL")
+#' myfun(sce, 4242)
+#' 
+#' # to be used when launching the app itself ----
+#'
+#' app <- iSEE(sce, annotFun = annotateEnsembl(sce,org.Mm.eg.db,"SYMBOL"))
+#' if (interactive()) {
+#'   shiny::runApp(app, port = 1234)
+#' }
+annotateEnsembl <- function(
+  se,
+  orgdb,
+  keytype, 
+  rowdata_col = NULL,
+  ens_species = gsub(" ","_", species(orgdb))) {
+  
+  function(se, row_index) {
+    # no species provided -> nothing
+    if (is.null(species)) {
+      return(HTML(""))
+    }
+    
+    # if no column provided, implicitly assume the names are in the rownames of the object itself
+    if (is.null(rowdata_col)) {
+      selectedGene <- rownames(se)[row_index]
+    } else {
+      selectedGene <- rowData(se)[row_index,rowdata_col]
+    }
+    
+    if (keytype!="ENSEMBL") {
+      e <- try(selgene_ensembl <- mapIds(orgdb, selectedGene, "ENSEMBL", keytype),silent = TRUE)
+      validate(need(!is(e, "try-error"),
+               "Sorry, could not convert this gene to ENSEMBL id"))
+    } else {
+      selgene_ensembl <- selectedGene
+    }
+    
+    link_ensembl <- paste0('<a href="http://www.ensembl.org/',ens_species,'/Gene/Summary?g=',selgene_ensembl,
+                           '" target="_blank"> ',
+                           'Click here to browse more about this gene in the ENSEMBL database</a>')
+    
+    mycontent <- paste0("<b>",selectedGene, "</b><br/><br/>ENSEMBL id: <b>",
+                        selgene_ensembl,"</b><br/><br/>",
+                        link_ensembl)
+    
+    return(HTML(mycontent))
+  }
+}
+

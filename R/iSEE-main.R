@@ -570,7 +570,7 @@ iSEE <- function(
     # Brush observers.
     #######################################################################
 
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot", "heatMapPlot")) {
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (i in seq_len(max_plots)) {
             local({
@@ -583,117 +583,109 @@ iSEE <- function(
 
                 # Brush choice observer.
                 brush_plot_field <- paste0(prefix, .brushByPlot)
-                if (mode0 == "heatMapPlot") {
-                    observeEvent(input[[brush_plot_field]], {
-                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                    }, ignoreInit=TRUE)
-                } else {
-                    observeEvent(input[[brush_plot_field]], {
-                        old_transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
-                        new_transmitter <- input[[brush_plot_field]]
-                        
-                        # Determining whether the new and old transmitting plot have brushes.
-                        old_out <- .transmitted_brush(old_transmitter, pObjects$memory)
-                        old_brush <- old_out$brush
-                        old_encoded <- old_out$encoded
-                        new_out <- .transmitted_brush(new_transmitter, pObjects$memory)
-                        new_brush <- new_out$brush
-                        new_encoded <- new_out$encoded
-                        
-                        # Trying to update the graph, but breaking if it's not a DAG.
-                        # We also break if users try to self-brush in restrict mode.
-                        # In both cases, we just reset back to the choice they had before.
-                        tmp <- .choose_new_brush_source(pObjects$brush_links, plot_name, new_encoded, old_encoded)
-                        
-                        daggy <- is_dag(simplify(tmp, remove.loops=TRUE))
-                        self_restrict <- new_encoded==plot_name &&
-                            new_encoded!=.noSelection &&
-                            pObjects$memory[[mode0]][i0, .brushEffect]==.brushRestrictTitle
-                        
-                        if (!daggy || self_restrict) {
-                            if (!daggy) {
-                                showNotification("brushing relationships cannot be cyclic", type="error")
-                            } else if (self_restrict){
-                                showNotification("brushing to self is not compatible with 'Restrict'", type="error")
-                            }
-                            pObjects$memory[[mode0]][i0, .brushByPlot] <- old_transmitter
-                            updateSelectInput(session, brush_plot_field, selected=old_transmitter)
-                            return(NULL)
+                observeEvent(input[[brush_plot_field]], {
+                    old_transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
+                    new_transmitter <- input[[brush_plot_field]]
+                    
+                    # Determining whether the new and old transmitting plot have brushes.
+                    old_out <- .transmitted_brush(old_transmitter, pObjects$memory)
+                    old_brush <- old_out$brush
+                    old_encoded <- old_out$encoded
+                    new_out <- .transmitted_brush(new_transmitter, pObjects$memory)
+                    new_brush <- new_out$brush
+                    new_encoded <- new_out$encoded
+                    
+                    # Trying to update the graph, but breaking if it's not a DAG.
+                    # We also break if users try to self-brush in restrict mode.
+                    # In both cases, we just reset back to the choice they had before.
+                    tmp <- .choose_new_brush_source(pObjects$brush_links, plot_name, new_encoded, old_encoded)
+                    
+                    daggy <- is_dag(simplify(tmp, remove.loops=TRUE))
+                    self_restrict <- new_encoded==plot_name &&
+                        new_encoded!=.noSelection &&
+                        pObjects$memory[[mode0]][i0, .brushEffect]==.brushRestrictTitle
+                    
+                    if (!daggy || self_restrict) {
+                        if (!daggy) {
+                            showNotification("brushing relationships cannot be cyclic", type="error")
+                        } else if (self_restrict){
+                            showNotification("brushing to self is not compatible with 'Restrict'", type="error")
                         }
-                        
-                        pObjects$brush_links <- tmp
-                        pObjects$memory[[mode0]][i0, .brushByPlot] <- new_transmitter
-                        
-                        # Update the elements reporting the links between plots.
-                        for (relinked in c(old_encoded, new_encoded, plot_name)) {
-                            if (relinked==.noSelection) { next }
-                            relink_field <- paste0(relinked, "_", .panelLinkInfo)
-                            rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
+                        pObjects$memory[[mode0]][i0, .brushByPlot] <- old_transmitter
+                        updateSelectInput(session, brush_plot_field, selected=old_transmitter)
+                        return(NULL)
+                    }
+                    
+                    pObjects$brush_links <- tmp
+                    pObjects$memory[[mode0]][i0, .brushByPlot] <- new_transmitter
+                    
+                    # Update the elements reporting the links between plots.
+                    for (relinked in c(old_encoded, new_encoded, plot_name)) {
+                        if (relinked==.noSelection) { next }
+                        relink_field <- paste0(relinked, "_", .panelLinkInfo)
+                        rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
+                    }
+                    
+                    # Not replotting if there were no brushes in either the new or old transmitters.
+                    if (!old_brush && !new_brush){
+                        return(NULL)
+                    }
+                    
+                    # Triggering self update of the plot.
+                    rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                    
+                    # Triggering replotting of children, if the current panel is set to restrict;
+                    # and we have a brush, so that there was already some brushing in the children.
+                    if (pObjects$memory[[mode0]][i0, .brushEffect]==.brushRestrictTitle
+                        && .any_point_selection(mode0, i0, pObjects$memory)) {
+                        children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
+                        for (child_plot in children) {
+                            rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
                         }
-                        
-                        # Not replotting if there were no brushes in either the new or old transmitters.
-                        if (!old_brush && !new_brush){
-                            return(NULL)
-                        }
-                        
-                        # Triggering self update of the plot.
-                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                        
-                        # Triggering replotting of children, if the current panel is set to restrict;
-                        # and we have a brush, so that there was already some brushing in the children.
-                        if (pObjects$memory[[mode0]][i0, .brushEffect]==.brushRestrictTitle
-                            && .any_point_selection(mode0, i0, pObjects$memory)) {
-                            children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
-                            for (child_plot in children) {
-                                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
-                            }
-                        }
-                    }, ignoreInit=TRUE)
-                }
+                    }
+                }, ignoreInit=TRUE)
 
                 ###############
 
                 # Brush effect observer.
-                if (mode0 != "heatMapPlot") {
-                    brush_effect_field <- paste0(prefix, .brushEffect)
-                    observeEvent(input[[brush_effect_field]], {
-                        cur_effect <- input[[brush_effect_field]]
-                        old_effect <- pObjects$memory[[mode0]][i0, .brushEffect]
-                        
-                        # Storing the new choice into memory, unless self-brushing to restrict.
-                        # In which case, we trigger an error and reset to the previous choice.
-                        if (cur_effect == .brushRestrictTitle
-                            && pObjects$memory[[mode0]][i0, .brushByPlot]==.decode_panel_name(mode0, i0)) {
-                            showNotification("brushing to self is not compatible with 'Restrict'", type="error")
-                            updateRadioButtons(session, brush_effect_field, selected=old_effect)
-                            return(NULL)
+                brush_effect_field <- paste0(prefix, .brushEffect)
+                observeEvent(input[[brush_effect_field]], {
+                    cur_effect <- input[[brush_effect_field]]
+                    old_effect <- pObjects$memory[[mode0]][i0, .brushEffect]
+                    
+                    # Storing the new choice into memory, unless self-brushing to restrict.
+                    # In which case, we trigger an error and reset to the previous choice.
+                    if (cur_effect == .brushRestrictTitle
+                        && pObjects$memory[[mode0]][i0, .brushByPlot]==.decode_panel_name(mode0, i0)) {
+                        showNotification("brushing to self is not compatible with 'Restrict'", type="error")
+                        updateRadioButtons(session, brush_effect_field, selected=old_effect)
+                        return(NULL)
+                    }
+                    pObjects$memory[[mode0]][i0, .brushEffect] <- cur_effect
+                    
+                    # Avoiding replotting if there was no transmitting brush.
+                    transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
+                    if (transmitter==.noSelection) {
+                        return(NULL)
+                    }
+                    enc <- .encode_panel_name(transmitter)
+                    if (!.any_point_selection(enc$Type, enc$ID, pObjects$memory)) {
+                        return(NULL)
+                    }
+                    
+                    # Triggering self update.
+                    rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                    
+                    # Triggering replotting of children, if we are set to or from restrict;
+                    # and we have a brush, so there was already some brushing in the children.
+                    if ((cur_effect==.brushRestrictTitle || old_effect==.brushRestrictTitle)
+                        && .any_point_selection(mode0, i0, pObjects$memory)) {
+                        children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
+                        for (child_plot in children) {
+                            rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
                         }
-                        pObjects$memory[[mode0]][i0, .brushEffect] <- cur_effect
-                        
-                        # Avoiding replotting if there was no transmitting brush.
-                        transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
-                        if (transmitter==.noSelection) {
-                            return(NULL)
-                        }
-                        enc <- .encode_panel_name(transmitter)
-                        if (!.any_point_selection(enc$Type, enc$ID, pObjects$memory)) {
-                            return(NULL)
-                        }
-                        
-                        # Triggering self update.
-                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                        
-                        # Triggering replotting of children, if we are set to or from restrict;
-                        # and we have a brush, so there was already some brushing in the children.
-                        if ((cur_effect==.brushRestrictTitle || old_effect==.brushRestrictTitle)
-                            && .any_point_selection(mode0, i0, pObjects$memory)) {
-                            children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
-                            for (child_plot in children) {
-                                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
-                            }
-                        }
-                    }, ignoreInit=TRUE)
-                }
+                    }
+                }, ignoreInit=TRUE)
                 
                 ###############
 
@@ -707,12 +699,9 @@ iSEE <- function(
                     # If the brushes have the same coordinates, we don't bother replotting.
                     replot <- !.identical_brushes(cur_brush, old_brush)
                     
-                    if (mode0 != "heatMapPlot") {
-                        # Destroying lasso points upon brush (replotting if existing lasso was not NULL).
-                        replot <- replot || !is.null(pObjects$memory[[mode0]][,.lassoData][[i0]])
-                        pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .lassoData, NULL)
-                    }
-                    
+                    # Destroying lasso points upon brush (replotting if existing lasso was not NULL).
+                    replot <- replot || !is.null(pObjects$memory[[mode0]][,.lassoData][[i0]])
+                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .lassoData, NULL)
                     if (!replot) {
                         return(NULL)
                     }
@@ -720,12 +709,10 @@ iSEE <- function(
                     # Trigger replotting of self, to draw a more persistent brushing box.
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     
-                    if (mode0 != "heatMapPlot") {
-                        # Trigger replotting of all dependent plots that receive this brush.
-                        children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
-                        for (child_plot in children) {
-                            rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
-                        }
+                    # Trigger replotting of all dependent plots that receive this brush.
+                    children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
+                    for (child_plot in children) {
+                        rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
                     }
                 }, ignoreInit=TRUE, ignoreNULL=FALSE)
             })
@@ -856,7 +843,7 @@ iSEE <- function(
     #   If an open lasso is present, it is deleted.
     #   If there was no open lasso, you zoom out.
 
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot", "heatMapPlot")) {
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (i in seq_len(max_plots)) {
             local({
@@ -864,9 +851,10 @@ iSEE <- function(
                 i0 <- i
                 plot_name <- paste0(mode0, i0)
                 prefix <- paste0(plot_name, "_")
-                brush_id <- paste0(prefix, .brushField)
 
-                zoom_click_field <- paste0(mode0, i0, "_", .zoomClick)
+                brush_id <- paste0(prefix, .brushField)
+                zoom_click_field <- paste0(prefix, .zoomClick)
+
                 observeEvent(input[[zoom_click_field]], {
                     brush <- input[[brush_id]]
 
@@ -879,33 +867,53 @@ iSEE <- function(
                         # "else", to avoid two reactive updates of unknown priorities.
                         new_coords <- pObjects$memory[[mode0]][,.zoomData][[i0]]
 
-                        if (mode0 == "heatMapPlot") {
+                        lasso_data <- pObjects$memory[[mode0]][,.lassoData][[i0]]
+                        if (!is.null(lasso_data)) {
+                            # We wipe out any lasso waypoints if they are present, and trigger replotting with the same scope.
+                            pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .lassoData, NULL)
+                            rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                            
+                        } else {
                             if (!is.null(new_coords)) {
-                                # Zoom out.
+                                # If there are already no lasso waypoints, we zoom out.
                                 new_coords <- NULL
                                 rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                             }
-                        } else {
-                            lasso_data <- pObjects$memory[[mode0]][,.lassoData][[i0]]
-                            if (!is.null(lasso_data)) {
-                                # We wipe out any lasso waypoints if they are present, and trigger replotting with the same scope.
-                                pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .lassoData, NULL)
-                                rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                                
-                            } else {
-                                if (!is.null(new_coords)) {
-                                    # If there are already no lasso waypoints, we zoom out.
-                                    new_coords <- NULL
-                                    rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                                }
-                            }
-                        } 
+                        }
                     }
 
                     pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .zoomData, new_coords)
                 })
             })
         }
+    }
+
+    # Brush structure observers for the heatmaps.
+    max_plots <- nrow(pObjects$memory$heatMapPlot)
+    for (i in seq_len(max_plots)) {
+        local({
+            mode0 <- "heatMapPlot"
+            i0 <- i
+            plot_name <- paste0(mode0, i0)
+            prefix <- paste0(plot_name, "_")
+
+            brush_id <- paste0(prefix, .brushField)
+            zoom_click_field <- paste0(prefix, .zoomClick)
+
+            observeEvent(input[[zoom_click_field]], {
+                brush <- input[[brush_id]]
+                if (!is.null(brush)) {
+                    new_coords <- c(xmin=brush$xmin, xmax=brush$xmax, ymin=brush$ymin, ymax=brush$ymax)
+                    session$resetBrush(brush_id) # This does NOT trigger replotting, as there is no brush observer for the heatmap.
+                } else {
+                    new_coords <- NULL # Zoom out.
+                }
+
+                # Update data and force replotting.
+                pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .zoomData, new_coords)
+                rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+            }, ignoreInit=TRUE)
+        })
     }
 
     #######################################################################
@@ -1276,6 +1284,9 @@ iSEE <- function(
             import_button <- paste0(plot_name, "_", .heatMapImport)
             observeEvent(input[[import_button]], {
                 origin <- pObjects$memory[[mode0]][i0, .heatMapImportSource]
+                if (origin==.noSelection) { 
+                    return(NULL)
+                }
                 enc <- .encode_panel_name(origin)
 
                 incoming <- NULL

@@ -592,6 +592,10 @@ height_limits <- c(400L, 1000L)
 #' This is also the case for subtypes of \code{\link{sizeFactors}} or \code{\link{isSpike}}.
 #' Name clashes are resolved by adding \code{_} to the start of the newer name.
 #'
+#' Note that non-atomic fields are removed from \code{object} only, to ensure that they don't show up in the UI options.
+#' Removal of these fields is not captured in \code{cmds}, as this is not strictly necessary for code reproducibility (names are already unique anyway).
+#' users will have to consider their ExperimentColorMap choices, though.
+#'
 #' @author Aaron Lun
 #' @rdname INTERNAL_sanitize_SE_input
 #' @seealso
@@ -677,7 +681,21 @@ height_limits <- c(400L, 1000L)
         done <- c(done, commands)
         commands <- list()
     }
-    
+
+    # Destroy all non-atomic fields (only internal, no need to hold commands).
+    for (f in colnames(rowData(tmp_se))) {
+        cur_field <- rowData(tmp_se)[[f]]
+        if (!is.numeric(cur_field) || !is.factor(cur_field) || !is.character(cur_field)) {
+            rowData(tmp_se)[[f]] <- NULL
+        }
+    }
+    for (f in colnames(colData(tmp_se))) {
+        cur_field <- colData(tmp_se)[[f]]
+        if (!is.numeric(cur_field) || !is.factor(cur_field) || !is.character(cur_field)) {
+            colData(tmp_se)[[f]] <- NULL
+        }
+    }
+     
     return(list(cmds=unlist(done), object=tmp_se))
 }
 

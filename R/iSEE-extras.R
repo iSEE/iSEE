@@ -577,6 +577,106 @@ height_limits <- c(400L, 1000L)
     return(NULL)
 }
 
+.sanitize_SE_input <- function(se) {
+    done <- commands <- list()
+    eval_env <- new.env()
+    eval_env$se <- se
+
+    # Coercing to a SingleCellExperiment object.
+    if (!is(se, "SummarizedExperiment")) {
+        commands[["convert_se"]] <- 'se <- as(se, "SummarizedExperiment")'
+    }
+    if (!is(se, "SingleCellExperiment")) { 
+        commands[["convert_sce"]] <- 'se <- as(se, "SingleCellExperiment")'
+    }
+    eval(parse(text=commands), envir=eval_env)
+    done <- c(done, commands)
+    commands <- list()
+
+    # Filling in with any sizeFactors.
+    tmp_se <- eval_env$se
+    if (!is.null(sizeFactors(tmp_se))) {
+        new_name <- .safe_field_name("size_factors", colnames(colData(tmp_se)))
+        commands[["sf"]] <- sprintf('colData(se)[,%s] <- sizeFactors(se)', deparse(new_name))
+        eval(parse(text=commands), envir=eval_env)
+        done <- c(done, commands)
+        commands <- list()
+    }
+    for (x in sizeFactorNames(tmp_se)) {
+        tmp_se <- eval_env$se
+        new_name <- .safe_field_name(paste0("size_factors:", x), colnames(colData(tmp_se)))
+        commands[["sf"]] <- sprintf('colData(se)[,%s] <- sizeFactors(se, %s)', deparse(new_name), deparse(x))
+        eval(parse(text=commands), envir=eval_env)
+        done <- c(done, commands)
+        commands <- list()
+    }
+    
+    # Filling in with spike-ins.
+    tmp_se <- eval_env$se
+    if (!is.null(isSpike(tmp_se))) {
+        new_name <- .safe_field_name("is_spike", colnames(rowData(tmp_se)))
+        commands[["sf"]] <- sprintf('rowData(se)[,%s] <- isSpike(se)', deparse(new_name))
+        eval(parse(text=commands), envir=eval_env)
+        done <- c(done, commands)
+        commands <- list()
+    }
+    for (x in spikeNames(tmp_se)) {
+        tmp_se <- eval_env$se
+        new_name <- .safe_field_name(paste0("is_spike:", x), colnames(rowData(tmp_se)))
+        commands[["sf"]] <- sprintf('rowData(se)[,%s] <- isSpike(se, %s)', deparse(new_name), deparse(x))
+        eval(parse(text=commands), envir=eval_env)
+        done <- c(done, commands)
+        commands <- list()
+    }
+
+    # Decomposing nested DataFrames and discarding non-atomic types.
+    tmp_se <- eval_env$se
+    new_rows <- .extra_nested_DF(rowData(tmp_se))
+    for (f in seq_along(new_rows$getter)) {
+        tmp_se <- eval_env$se
+        new_name <- .safe_field_name(new_rows$setter[f], colnames(rowData(tmp_se)))
+        commands[["nnr"]] <- sprintf("rowData(se)[,%s] <- rowData(se)%s", deparse(new_name), new_rows$getter[f])
+        eval(parse(text=commands), envir=eval_env)
+        done <- c(done, commands)
+        commands <- list()
+    }
+    tmp_se <- eval_env$se
+    new_cols <- .extra_nested_DF(colData(tmp_se))
+    for (f in seq_along(new_cols$getter)) {
+        tmp_se <- eval_env$se
+        new_name <- .safe_field_name(new_cols$setter[f], colnames(colData(tmp_se)))
+        commands[["nnc"]] <- sprintf("colData(se)[,%s] <- colData(se)%s", deparse(new_name), new_cols$getter[f])
+        eval(parse(text=commands), envir=eval_env)
+        done <- c(done, commands)
+        commands <- list()
+    }
+    
+    return(list(cmds=unlist(done), object=tmp_se))
+}
+
+.safe_field_name <- function(candidate, existing) {
+    while (candidate %in% existing) {
+        candidate <- paste0("_", candidate)
+    }
+    return(candidate)
+}
+
+.extract_nested_DF <- function(DF) {
+    collected <- renamed <- vector("list", ncol(DF))
+    cnames <- colnames(DF)
+
+    for (f in seq_along(collected)) {
+        fdata <- DF[[f]]
+        if (is(fdata, "DataFrame")) {
+            nextlevel <- .extract_nested_DF(fdata)
+            collected[[f]] <- sprintf("[[%s]]%s", deparse(cnames[f]), deparse(nextlevel$getter))
+            renamed[[f]] <- sprintf("%s:%s", cnames[f], nextlevel$setter)
+        }
+    }
+    return(list(getter=unlist(collected), setter=unlist(renamed)))
+}
+
+
 #' @importFrom shiny tagList HTML a br
 iSEE_info <- tagList(
     HTML(sprintf("iSEE is a project developed by

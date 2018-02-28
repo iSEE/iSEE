@@ -104,12 +104,9 @@ iSEE <- function(
   # in the tracker
   se_name <- deparse(substitute(se))
   ecm_name <- deparse(substitute(colormap))
-
-  if (!is(se, "SingleCellExperiment")) {
-    se <- as(se, "SummarizedExperiment") # supports ExpressionSet objects
-    se <- as(se, "SingleCellExperiment")
-    se_name <- sprintf('as(as(%s, "SummarizedExperiment"), "SingleCellExperiment")', se_name)
-  }
+  se_out <- .sanitize_SE_input(se)
+  se <- se_out$object
+  se_cmds <- se_out$cmds
 
   # Throw an error if the colormap supplied is not compatible with the object
   isColorMapCompatible(colormap, se, error = TRUE)
@@ -120,10 +117,7 @@ iSEE <- function(
   if (ncol(gene_data)==0L) {
     gene_data$Present <- !logical(nrow(gene_data))
   }
-  tab_brush_col <- "Selected"
-  while (tab_brush_col %in% colnames(gene_data)) {
-    tab_brush_col <- paste0("_", tab_brush_col)
-  }
+  tab_brush_col <- .safe_field_name("Selected", colnames(gene_data))
 
   # Defining the maximum number of plots.
   memory <- .setup_memory(se, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs, heatMapArgs,
@@ -132,7 +126,6 @@ iSEE <- function(
   # Defining the initial elements to be plotted.
   active_panels <- .setup_initial(initialPanels, memory)
   memory <- .sanitize_memory(active_panels, memory)
-
   
   #######################################################################
   ## UI definition. ----

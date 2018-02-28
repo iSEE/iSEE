@@ -122,7 +122,7 @@
                       strrep("#", 80),
                       paste0("## ", .decode_panel_name("heatMapPlot", hobjs$ID[i])),
                       strrep("#", 80), "",
-                      cur_cmds[["y"]], cur_cmds[["order"]], "")
+                      cur_cmds[["y"]], cur_cmds[["order"]], cur_cmds[["subset"]], "")
 
     tracked_heat <- c(tracked_heat, "# Constructing heat map", cur_cmds[["heatmap"]], "",
                       "# Adding annotations", cur_cmds[["annotations"]], "", 

@@ -93,16 +93,14 @@
   # coordinates in the heatmap
   bounds <- param_choices[[.zoomData]][[1]]
   if (!is.null(bounds)) {
-      zoom_cmd_heat <- sprintf(
-          "coord_cartesian(ylim = c(%.5g, %.5g), expand=FALSE) +",
-          max(0.5, .transform_global_to_local_y(yg=bounds["ymin"], n.genes=length(genes_selected_y), 
-                                                n.annot=length(orderBy), rtype="lower")), 
-          min(length(genes_selected_y)+0.5, 
+      data_cmds[["subset"]] <- sprintf(
+          "plot.data <- subset(plot.data, Y %%in%% rownames(value.mat)[%s:%s])",
+          max(1, .transform_global_to_local_y(yg=bounds["ymin"], n.genes=length(genes_selected_y),
+                                              n.annot=length(orderBy))),
+          min(length(genes_selected_y),
               .transform_global_to_local_y(bounds["ymax"], n.genes=length(genes_selected_y),
-                                           n.annot=length(orderBy), rtype="upper"))
+                                           n.annot=length(orderBy)))
       )
-  } else {
-      zoom_cmd_heat <- NULL
   }
 
   # Heatmap. Get the colorbar separately to make it easier to guess the real
@@ -112,7 +110,7 @@
     sprintf("geom_raster(aes(fill = value)) +"),
     sprintf("labs(x='', y='') +"),
     fill_cmd, 
-    zoom_cmd_heat, 
+    "scale_y_discrete(expand=c(0, 0)) +", 
     sprintf("theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.line=element_blank());"),
     sprintf("heatlegend <- cowplot::get_legend(p0 + theme(legend.position='bottom'));")
   )
@@ -143,7 +141,7 @@
   )
   
   # Evaluate to get the individual legends
-  to_eval <- unlist(extra_cmds)
+  to_eval <- unlist(c(data_cmds["subset"], extra_cmds))
   plot_part <- eval(parse(text=to_eval), envir=eval_env)
   legends <- eval_env$legends
 
@@ -198,12 +196,10 @@
      rownames(X)[order.dendrogram(d)]
 }
 
-.transform_global_to_local_y <- function(yg, n.annot, n.genes, rtype) {
+.transform_global_to_local_y <- function(yg, n.annot, n.genes) {
     k <- n.genes*(.heatMapRelHeightAnnot*n.annot+.heatMapRelHeightHeatmap)/(1-.heatMapRelHeightColorBar)
     m <- 0.5-.heatMapRelHeightColorBar*k
-    v <- k*yg+m
-    if (rtype=="lower") round(v)-0.5
-    else if (rtype=="upper") round(v)+0.5
+    v <- round(k*yg+m)
 }
 
 #' @importFrom scales rescale

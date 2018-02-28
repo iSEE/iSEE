@@ -579,12 +579,12 @@ height_limits <- c(400L, 1000L)
 
 #' Sanitize a SummarizedExperiment 
 #'
-#' Coerce inputs to SummarizedExperiment, flatten nested DataFrames and remove other non-atomic fields.
+#' Coerce inputs to SummarizedExperiment, flatten nested DataFrames, add row and column names, and remove other non-atomic fields.
 #' Also sanitize a SingleCellExperiment by moving internal fields into the column- or row-level metadata.
 #'
 #' @param se A SingleCellExperiment or anything that be coerced to a SummarizedExperiment.
 #'
-#' @return A list containing \code{cmds}, a character vector of commands to obtain a sanitized SingleCellExperiment;
+#' @return A list containing \code{cmds}, a character vector of commands required to obtain a sanitized SingleCellExperiment;
 #' and \code{object}, a sanitized SingleCellExperiment object derived from \code{se}.
 #' 
 #' @details
@@ -593,8 +593,10 @@ height_limits <- c(400L, 1000L)
 #' Name clashes are resolved by adding \code{_} to the start of the newer name.
 #'
 #' Note that non-atomic fields are removed from \code{object} only, to ensure that they don't show up in the UI options.
-#' Removal of these fields is not captured in \code{cmds}, as this is not strictly necessary for code reproducibility (names are already unique anyway).
-#' users will have to consider their ExperimentColorMap choices, though.
+#' Removal is not captured in \code{cmds}, as this is not strictly necessary for code reproducibility (names are already unique anyway).
+#'
+#' Automated renaming requires users to carefully consider their choices when constructing ExperimentColorMap objects for \code{colData} or \code{rowData}.
+#' Existing names are always prioritized where possible, so users can guarantee the use of particular colormaps by manually renaming them before \code{\link{iSEE}}.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_sanitize_SE_input
@@ -619,6 +621,18 @@ height_limits <- c(400L, 1000L)
     }
     if (!is(se, "SingleCellExperiment")) { 
         commands[["convert_sce"]] <- 'se <- as(se, "SingleCellExperiment")'
+    }
+    eval(parse(text=commands), envir=eval_env)
+    done <- c(done, commands)
+    commands <- list()
+
+    # Adding row and column names if necessary.
+    tmp_se <- eval_env$se
+    if (!is.null(colnames(tmp_se))) {
+        commands[["add_colnames"]] <- 'colnames(se) <- sprintf("SAMPLE_%i", seq_len(ncol(se)))'
+    }
+    if (!is.null(rownames(tmp_se))) {
+        commands[["add_rownames"]] <- 'rownames(se) <- sprintf("FEATURE_%i", seq_len(nrow(se)))'
     }
     eval(parse(text=commands), envir=eval_env)
     done <- c(done, commands)

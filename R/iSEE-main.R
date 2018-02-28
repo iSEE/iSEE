@@ -289,13 +289,9 @@ iSEE <- function(
         title = "My code", size = "l",fade = TRUE,
         footer = NULL, easyClose = TRUE,
         aceEditor("acereport_r", mode="r",theme = "solarized_light",autoComplete = "live",
-                  value = paste0((.track_it_all(rObjects, pObjects, se_name, ecm_name)),collapse="\n"),
+                  value = paste0((.track_it_all(rObjects, pObjects, se_name, ecm_name,se_cmds)),collapse="\n"),
                   height="600px")
         ))
-    })
-
-    observeEvent(input$browseVignette, {
-      # browseVignettes("DESeq2") # this does not work, maybe add another open blank to the local location of the vignette?
     })
 
     observeEvent(input$session_info, {

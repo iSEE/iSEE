@@ -628,10 +628,10 @@ height_limits <- c(400L, 1000L)
 
     # Adding row and column names if necessary.
     tmp_se <- eval_env$se
-    if (!is.null(colnames(tmp_se))) {
+    if (is.null(colnames(tmp_se))) {
         commands[["add_colnames"]] <- 'colnames(se) <- sprintf("SAMPLE_%i", seq_len(ncol(se)))'
     }
-    if (!is.null(rownames(tmp_se))) {
+    if (is.null(rownames(tmp_se))) {
         commands[["add_rownames"]] <- 'rownames(se) <- sprintf("FEATURE_%i", seq_len(nrow(se)))'
     }
     eval(parse(text=commands), envir=eval_env)
@@ -668,7 +668,7 @@ height_limits <- c(400L, 1000L)
     for (x in spikeNames(tmp_se)) {
         tmp_se <- eval_env$se
         new_name <- .safe_field_name(paste0("is_spike:", x), colnames(rowData(tmp_se)))
-        commands[["sf"]] <- sprintf('rowData(se)[,%s] <- isSpike(se, %s)', deparse(new_name), deparse(x))
+        commands[["sf"]] <- sprintf('rowData(se)[,%s] <- isSpike(se, %s)', deparse(new_name), deparse(x))
         eval(parse(text=commands), envir=eval_env)
         done <- c(done, commands)
         commands <- list()
@@ -676,7 +676,7 @@ height_limits <- c(400L, 1000L)
 
     # Decomposing nested DataFrames and discarding non-atomic types.
     tmp_se <- eval_env$se
-    new_rows <- .extra_nested_DF(rowData(tmp_se))
+    new_rows <- .extract_nested_DF(rowData(tmp_se))
     for (f in seq_along(new_rows$getter)) {
         tmp_se <- eval_env$se
         new_name <- .safe_field_name(new_rows$setter[f], colnames(rowData(tmp_se)))
@@ -686,7 +686,7 @@ height_limits <- c(400L, 1000L)
         commands <- list()
     }
     tmp_se <- eval_env$se
-    new_cols <- .extra_nested_DF(colData(tmp_se))
+    new_cols <- .extract_nested_DF(colData(tmp_se))
     for (f in seq_along(new_cols$getter)) {
         tmp_se <- eval_env$se
         new_name <- .safe_field_name(new_cols$setter[f], colnames(colData(tmp_se)))
@@ -699,17 +699,18 @@ height_limits <- c(400L, 1000L)
     # Destroy all non-atomic fields (only internal, no need to hold commands).
     for (f in colnames(rowData(tmp_se))) {
         cur_field <- rowData(tmp_se)[[f]]
-        if (!is.numeric(cur_field) || !is.factor(cur_field) || !is.character(cur_field)) {
+        if (!is.numeric(cur_field) && !is.factor(cur_field) && !is.character(cur_field)) {
             rowData(tmp_se)[[f]] <- NULL
         }
     }
     for (f in colnames(colData(tmp_se))) {
         cur_field <- colData(tmp_se)[[f]]
-        if (!is.numeric(cur_field) || !is.factor(cur_field) || !is.character(cur_field)) {
+        if (!is.numeric(cur_field) && !is.factor(cur_field) && !is.character(cur_field)) {
             colData(tmp_se)[[f]] <- NULL
         }
     }
-     
+    
+    print(done)
     return(list(cmds=unlist(done), object=tmp_se))
 }
 
@@ -740,6 +741,7 @@ height_limits <- c(400L, 1000L)
 #' Extract information from nested DataFrames, for use in creating a flattened DataFrame.
 #' 
 #' @param DF A DataFrame, possibly containing nested DataFrames.
+#' @param top A logical scalar indicating whether \code{DF} is the top-level DataFrame, required for sensible behaviour during recursion.
 #' 
 #' @return
 #' A list containing \code{getter}, a character vector of commands to be suffixed to \code{colData} or \code{rowData} calls to obtain nested fields;
@@ -752,16 +754,19 @@ height_limits <- c(400L, 1000L)
 #'
 #' @importFrom S4Vectors DataFrame
 #' @importFrom methods is
-.extract_nested_DF <- function(DF) {
+.extract_nested_DF <- function(DF, top=TRUE) {
     collected <- renamed <- vector("list", ncol(DF))
     cnames <- colnames(DF)
 
     for (f in seq_along(collected)) {
         fdata <- DF[[f]]
         if (is(fdata, "DataFrame")) {
-            nextlevel <- .extract_nested_DF(fdata)
-            collected[[f]] <- sprintf("[[%s]]%s", deparse(cnames[f]), deparse(nextlevel$getter))
+            nextlevel <- .extract_nested_DF(fdata, top=FALSE)
+            collected[[f]] <- sprintf("[[%s]]%s", deparse(cnames[f]), nextlevel$getter)
             renamed[[f]] <- sprintf("%s:%s", cnames[f], nextlevel$setter)
+        } else if (!top) { 
+            collected[[f]] <- sprintf("[[%s]]", deparse(cnames[f]))
+            renamed[[f]] <- cnames[f]
         }
     }
     return(list(getter=unlist(collected), setter=unlist(renamed)))

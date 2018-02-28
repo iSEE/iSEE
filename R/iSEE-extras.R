@@ -641,7 +641,7 @@ height_limits <- c(400L, 1000L)
     # Filling in with any sizeFactors.
     tmp_se <- eval_env$se
     if (!is.null(sizeFactors(tmp_se))) {
-        new_name <- .safe_field_name("size_factors", colnames(colData(tmp_se)))
+        new_name <- .safe_field_name("sizeFactors(se)", colnames(colData(tmp_se)))
         commands[["sf"]] <- sprintf('colData(se)[,%s] <- sizeFactors(se)', deparse(new_name))
         eval(parse(text=commands), envir=eval_env)
         done <- c(done, commands)
@@ -649,8 +649,9 @@ height_limits <- c(400L, 1000L)
     }
     for (x in sizeFactorNames(tmp_se)) {
         tmp_se <- eval_env$se
-        new_name <- .safe_field_name(paste0("size_factors:", x), colnames(colData(tmp_se)))
-        commands[["sf"]] <- sprintf('colData(se)[,%s] <- sizeFactors(se, %s)', deparse(new_name), deparse(x))
+        get_cmd <- sprintf("sizeFactors(se, %s)", x)
+        new_name <- .safe_field_name(get_cmd, colnames(colData(tmp_se)))
+        commands[["sf"]] <- sprintf('colData(se)[,%s] <- %s', deparse(new_name), get_cmd)
         eval(parse(text=commands), envir=eval_env)
         done <- c(done, commands)
         commands <- list()
@@ -659,16 +660,18 @@ height_limits <- c(400L, 1000L)
     # Filling in with spike-ins.
     tmp_se <- eval_env$se
     if (!is.null(isSpike(tmp_se))) {
-        new_name <- .safe_field_name("is_spike", colnames(rowData(tmp_se)))
+        new_name <- .safe_field_name("isSpike(se)", colnames(rowData(tmp_se)))
         commands[["sf"]] <- sprintf('rowData(se)[,%s] <- isSpike(se)', deparse(new_name))
         eval(parse(text=commands), envir=eval_env)
         done <- c(done, commands)
         commands <- list()
+        print(colnames(rowData(eval_env$se)))
     }
     for (x in spikeNames(tmp_se)) {
         tmp_se <- eval_env$se
-        new_name <- .safe_field_name(paste0("is_spike:", x), colnames(rowData(tmp_se)))
-        commands[["sf"]] <- sprintf('rowData(se)[,%s] <- isSpike(se, %s)', deparse(new_name), deparse(x))
+        get_cmd <- sprintf("isSpike(se, %s)", deparse(x))
+        new_name <- .safe_field_name(get_cmd, colnames(rowData(tmp_se)))
+        commands[["sf"]] <- sprintf('rowData(se)[,%s] <- %s', deparse(new_name), get_cmd)
         eval(parse(text=commands), envir=eval_env)
         done <- c(done, commands)
         commands <- list()
@@ -699,18 +702,21 @@ height_limits <- c(400L, 1000L)
     # Destroy all non-atomic fields (only internal, no need to hold commands).
     for (f in colnames(rowData(tmp_se))) {
         cur_field <- rowData(tmp_se)[[f]]
-        if (!is.numeric(cur_field) && !is.factor(cur_field) && !is.character(cur_field)) {
+        if (!is.numeric(cur_field) && !is.factor(cur_field) 
+            && !is.character(cur_field) && !is.logical(cur_field)) {
             rowData(tmp_se)[[f]] <- NULL
         }
     }
     for (f in colnames(colData(tmp_se))) {
         cur_field <- colData(tmp_se)[[f]]
-        if (!is.numeric(cur_field) && !is.factor(cur_field) && !is.character(cur_field)) {
+        if (!is.numeric(cur_field) && !is.factor(cur_field) 
+            && !is.character(cur_field) && !is.logical(cur_field)) {
             colData(tmp_se)[[f]] <- NULL
         }
     }
     
     print(done)
+    print(colnames(rowData(tmp_se)))
     return(list(cmds=unlist(done), object=tmp_se))
 }
 

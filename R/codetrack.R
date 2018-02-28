@@ -12,13 +12,16 @@
 #' @param se_name The name of the \code{SummarizedExperiment}/\code{SingleCellExperiment}
 #' object
 #' @param ecm_name The name of the \code{ExperimentColorMap} in use
+#' @param sanitize_cmds The character vector containing the commands resulting 
+#' from sanitizing the \code{se} object. This is obtained by extracting \code{cmds}
+#' from the returned output of \code{.sanitize_SE_input}.
 #'
 #' @return A vector containing the whole code, which can be further passed to 
 #' the instance of the \code{shinyAce} editor in the modal popup of the app
 #' 
 #' @author Federico Marini
 #' @rdname INTERNAL_track_it_all
-.track_it_all <- function(rObjects, pObjects, se_name, ecm_name) 
+.track_it_all <- function(rObjects, pObjects, se_name, ecm_name, sanitize_cmds) 
 {
   # Commands only reported for plots, not for the tables
   aobjs <- as.data.frame(rObjects$active_panels)
@@ -32,6 +35,7 @@
     "## All commands below refer to your SingleCellExperiment object as `se`.",
     "",
     sprintf("se <- %s", se_name),
+    sprintf(sanitize_cmds),
     sprintf("colormap <- %s", ecm_name),
     "all_coordinates <- list()",
     "")

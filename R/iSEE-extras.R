@@ -577,6 +577,33 @@ height_limits <- c(400L, 1000L)
     return(NULL)
 }
 
+#' Sanitize a SummarizedExperiment 
+#'
+#' Coerce inputs to SummarizedExperiment, flatten nested DataFrames and remove other non-atomic fields.
+#' Also sanitize a SingleCellExperiment by moving internal fields into the column- or row-level metadata.
+#'
+#' @param se A SingleCellExperiment or anything that be coerced to a SummarizedExperiment.
+#'
+#' @return A list containing \code{cmds}, a character vector of commands to obtain a sanitized SingleCellExperiment;
+#' and \code{object}, a sanitized SingleCellExperiment object derived from \code{se}.
+#' 
+#' @details
+#' Nested fields are renamed by using \code{:} as separators in the flattened DataFrame.
+#' This is also the case for subtypes of \code{\link{sizeFactors}} or \code{\link{isSpike}}.
+#' Name clashes are resolved by adding \code{_} to the start of the newer name.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_sanitize_SE_input
+#' @seealso
+#' \code{\link{iSEE}},
+#' \code{\link{.safe_field_name}},
+#' \code{\link{.extract_nested_DF}}
+#'
+#' @importFrom BiocGenerics sizeFactors
+#' @importFrom SingleCellExperiment isSpike
+#' @importFrom S4Vectors DataFrame
+#' @importFrom methods as
+#' @importFrom SummarizedExperiment colData rowData
 .sanitize_SE_input <- function(se) {
     done <- commands <- list()
     eval_env <- new.env()
@@ -623,7 +650,7 @@ height_limits <- c(400L, 1000L)
     for (x in spikeNames(tmp_se)) {
         tmp_se <- eval_env$se
         new_name <- .safe_field_name(paste0("is_spike:", x), colnames(rowData(tmp_se)))
-        commands[["sf"]] <- sprintf('rowData(se)[,%s] <- isSpike(se, %s)', deparse(new_name), deparse(x))
+        commands[["sf"]] <- sprintf('rowData(se)[,%s] <- isSpike(se, %s)', deparse(new_name), deparse(x))
         eval(parse(text=commands), envir=eval_env)
         done <- c(done, commands)
         commands <- list()
@@ -654,6 +681,21 @@ height_limits <- c(400L, 1000L)
     return(list(cmds=unlist(done), object=tmp_se))
 }
 
+#' Make a safe field name
+#'
+#' Append underscores to the start of a name for a new field, until it does not clash with any existing field names.
+#'
+#' @param candidate String, specifying the name of the new field.
+#' @param existing Character vector containing the names of existing fields.
+#' 
+#' @return A string with a suffix of \code{candidate} and varying numbers of underscores prefixed to the start.
+#' This is guaranteed to not lie in \code{existing}.
+#' 
+#' @author Aaron Lun
+#' @rdname INTERNAL_safe_field_name
+#' @seealso
+#' \code{\link{iSEE}},
+#' \code{\link{.sanitize_SE_input}}
 .safe_field_name <- function(candidate, existing) {
     while (candidate %in% existing) {
         candidate <- paste0("_", candidate)
@@ -661,6 +703,23 @@ height_limits <- c(400L, 1000L)
     return(candidate)
 }
 
+#' Extract nested DataFrames
+#' 
+#' Extract information from nested DataFrames, for use in creating a flattened DataFrame.
+#' 
+#' @param DF A DataFrame, possibly containing nested DataFrames.
+#' 
+#' @return
+#' A list containing \code{getter}, a character vector of commands to be suffixed to \code{colData} or \code{rowData} calls to obtain nested fields;
+#' and \code{setter}, a character vector of names for each field to be used in the flattened DataFrame.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_extract_nested_DF
+#' @seealso
+#' \code{\link{.sanitize_SE_input}}
+#'
+#' @importFrom S4Vectors DataFrame
+#' @importFrom methods is
 .extract_nested_DF <- function(DF) {
     collected <- renamed <- vector("list", ncol(DF))
     cnames <- colnames(DF)
@@ -675,7 +734,6 @@ height_limits <- c(400L, 1000L)
     }
     return(list(getter=unlist(collected), setter=unlist(renamed)))
 }
-
 
 #' @importFrom shiny tagList HTML a br
 iSEE_info <- tagList(

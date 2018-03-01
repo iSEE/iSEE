@@ -513,7 +513,7 @@ iSEE <- function(
     # Panel opening/closing observers for heat map plots.
     max_plots <- nrow(pObjects$memory$heatMapPlot)
     for (i in seq_len(max_plots)) {
-        for (panel in c(.heatMapFeatNameBoxOpen, .heatMapColDataBoxOpen, .heatMapColorBoxOpen)) {
+        for (panel in c(.heatMapFeatNameBoxOpen, .heatMapColDataBoxOpen, .brushParamBoxOpen)) {
             local({
                 mode0 <- "heatMapPlot"
                 i0 <- i
@@ -705,11 +705,6 @@ iSEE <- function(
             tab_name <- paste0(mode0, i0)
             prefix <- paste0(tab_name, "_")
 
-            brush_open_field <- paste0(prefix, .brushParamBoxOpen)
-            observeEvent(input[[brush_open_field]], {
-                pObjects$memory[[mode0]][[.brushParamBoxOpen]][i0] <- input[[brush_open_field]]
-            })
-
             brush_plot_field <- paste0(prefix, .brushByPlot)
             observeEvent(input[[brush_plot_field]], {
                 old_transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
@@ -741,6 +736,77 @@ iSEE <- function(
 
                 # Triggering update of the table.
                 rObjects[[tab_name]] <- .increment_counter(isolate(rObjects[[tab_name]]))
+            }, ignoreInit=TRUE)
+        })
+    }
+
+    # Brush choice observers for the heatmaps.
+    max_tabs <- nrow(pObjects$memory$heatMapPlot)
+    for (i in seq_len(max_tabs)) {
+        local({
+            mode0 <- "heatMapPlot"
+            i0 <- i
+            plot_name <- paste0(mode0, i0)
+            prefix <- paste0(plot_name, "_")
+ 
+            # Brush choice observer.
+            brush_plot_field <- paste0(prefix, .brushByPlot)
+            observeEvent(input[[brush_plot_field]], {
+                old_transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
+                new_transmitter <- input[[brush_plot_field]]
+                
+                # Determining whether the new and old transmitting plot have brushes.
+                old_out <- .transmitted_brush(old_transmitter, pObjects$memory)
+                old_brush <- old_out$brush
+                old_encoded <- old_out$encoded
+                new_out <- .transmitted_brush(new_transmitter, pObjects$memory)
+                new_brush <- new_out$brush
+                new_encoded <- new_out$encoded
+                
+                # Trying to update the graph, but breaking if it's not a DAG.
+                # We also break if users try to self-brush in restrict mode.
+                # In both cases, we just reset back to the choice they had before.
+                tmp <- .choose_new_brush_source(pObjects$brush_links, plot_name, new_encoded, old_encoded)
+                pObjects$brush_links <- tmp
+                pObjects$memory[[mode0]][i0, .brushByPlot] <- new_transmitter
+                
+                # Update the elements reporting the links between plots.
+                for (relinked in c(old_encoded, new_encoded, plot_name)) {
+                    if (relinked==.noSelection) { next }
+                    relink_field <- paste0(relinked, "_", .panelLinkInfo)
+                    rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
+                }
+                
+                # Not replotting if there were no brushes in either the new or old transmitters.
+                if (!old_brush && !new_brush){
+                    return(NULL)
+                }
+                
+                # Triggering self update of the plot.
+                rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+            }, ignoreInit=TRUE)
+
+            ###############
+
+            # Brush effect observer.
+            brush_effect_field <- paste0(prefix, .brushEffect)
+            observeEvent(input[[brush_effect_field]], {
+                cur_effect <- input[[brush_effect_field]]
+                old_effect <- pObjects$memory[[mode0]][i0, .brushEffect]
+                pObjects$memory[[mode0]][i0, .brushEffect] <- cur_effect
+
+                # Avoiding replotting if there was no transmitting brush.
+                transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
+                if (transmitter==.noSelection) {
+                    return(NULL)
+                }
+                enc <- .encode_panel_name(transmitter)
+                if (!.any_point_selection(enc$Type, enc$ID, pObjects$memory)) {
+                    return(NULL)
+                }
+
+                # Triggering self update.
+                rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
             }, ignoreInit=TRUE)
         })
     }

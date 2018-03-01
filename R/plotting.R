@@ -589,7 +589,7 @@ names(.all_aes_values) <- .all_aes_names
     # Adding further aesthetic elements.
     plot_cmds[["scale_color"]] <- color_scale_cmd
     plot_cmds[["theme_base"]] <- "theme_bw() +"
-    plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom')"
+    plot_cmds[["theme_custom"]] <- sprintf("theme(legend.position = '%s')", tolower(param_choices[[.plotLegendPosition]]))
     return(unlist(plot_cmds))
 }
 
@@ -695,8 +695,8 @@ names(.all_aes_values) <- .all_aes_names
     plot_cmds[["scale_x"]] <-
       "scale_x_discrete(drop = FALSE) +" # preserving the x-axis range.
     plot_cmds[["theme_base"]] <- "theme_bw() +"
-    plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom', legend.box = 'vertical',
-    axis.text.x = element_text(angle = 90))"
+    plot_cmds[["theme_custom"]] <- sprintf("theme(legend.position = '%s', legend.box = 'vertical',
+    axis.text.x = element_text(angle = 90))", tolower(param_choices[[.plotLegendPosition]]))
 
     return(unlist(plot_cmds))
 }
@@ -806,7 +806,7 @@ plot.data$Y <- tmp;")
   
     plot_cmds[["guides"]] <- "guides(size = 'none') +"
     plot_cmds[["theme_base"]] <- "theme_bw() +"
-    plot_cmds[["theme_custom"]] <- "theme(legend.position = 'bottom', legend.box = 'vertical', axis.text.x = element_text(angle = 90))"
+    plot_cmds[["theme_custom"]] <- sprintf("theme(legend.position = '%s', legend.box = 'vertical', axis.text.x = element_text(angle = 90))", tolower(param_choices[[.plotLegendPosition]]))
     return(unlist(plot_cmds))
 }
 
@@ -1004,9 +1004,11 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
         output$label <- .gene_axis_label(se, chosen_gene, assay_id=NULL)
         output$cmds <- c(sprintf("scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +", 
                                  deparse(col_choice)),
-                         sprintf("geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy=='TRUE'), col = %s, size = 2) +",
-                                 deparse(col_choice)))
-    }
+                         sprintf("geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy=='TRUE'), col=%s, size=%s, alpha=%s) +",
+                                 deparse(col_choice), 
+                                 param_choices[[.plotPointSize]],
+                                 param_choices[[.plotPointAlpha]]))
+    } 
     return(output)
 }
 
@@ -1184,32 +1186,35 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
     brush_effect <- param_choices[[.brushEffect]]
     if (brush_effect==.brushColorTitle) {
       plot_cmds[["brush_other"]] <- sprintf(
-        "geom_point(%s, alpha = 0.6, data = subset(plot.data, !BrushBy)) +", 
-        aes
+        "geom_point(%s, alpha=%s, data=subset(plot.data, !BrushBy), size=%s) +", 
+        aes, param_choices[[.plotPointAlpha]], param_choices[[.plotPointSize]]
       )
       plot_cmds[["brush_color"]] <- sprintf(
-        "geom_point(%s, alpha = 0.6, data = subset(plot.data, BrushBy), color = %s) +",
-        aes, deparse(param_choices[[.brushColor]])
+        "geom_point(%s, alpha=%s, data=subset(plot.data, BrushBy), color = %s, size=%s) +",
+        aes, param_choices[[.plotPointAlpha]], 
+        deparse(param_choices[[.brushColor]]), param_choices[[.plotPointSize]]
       )
     }
     if (brush_effect==.brushTransTitle) {
       plot_cmds[["brush_other"]] <- sprintf(
-        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %.2f) +",
-        aes, param_choices[[.brushTransAlpha]]
+        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %.2f, size=%s) +",
+        aes, param_choices[[.brushTransAlpha]], param_choices[[.plotPointSize]]
       )
       plot_cmds[["brush_alpha"]] <- sprintf(
-        "geom_point(%s, subset(plot.data, BrushBy)) +", 
-        aes
+        "geom_point(%s, subset(plot.data, BrushBy), size=%s) +", 
+        aes, param_choices[[.plotPointSize]]
       )
     }
     if (brush_effect==.brushRestrictTitle) {
       plot_cmds[["brush_blank"]] <- "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
-      plot_cmds[["brush_restrict"]] <- sprintf("geom_point(%s, alpha = 0.6, plot.data) +", aes)
+      plot_cmds[["brush_restrict"]] <- sprintf("geom_point(%s, alpha = %s, plot.data, size=%s) +",
+                                               aes, param_choices[[.plotPointAlpha]], 
+                                               param_choices[[.plotPointSize]])
     }
   } else {
     plot_cmds[["point"]] <- sprintf(
-      "geom_point(%s, alpha = 0.6, plot.data) +", 
-      aes
+      "geom_point(%s, alpha = %s, plot.data, size=%s) +", 
+      aes, param_choices[[.plotPointAlpha]], param_choices[[.plotPointSize]]
     )
   }
   

@@ -1440,7 +1440,7 @@ iSEE <- function(
                     }
                     pObjects$memory[[mode0]][[field0]][i0] <- matched_input
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                }, ignoreInit=TRUE, ignoreNULL=FALSE)
+                }, ignoreInit=TRUE, ignoreNULL=TRUE)
             })
         }
     }

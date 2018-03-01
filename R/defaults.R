@@ -120,8 +120,8 @@
 #' Defaults to 1.}
 #' \item{\code{LegendPosition}:}{String specifying the legend position.
 #' Defaults to \code{"Bottom"} but can also be \code{"Right"}.}
-#' \item{\code{ZoomData}:}{A list containing numeric vectors of length 4, containing values with names \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"}.
-#' These define the zoom window on the x- and y-axes.
+#' \item{\code{ZoomData}:}{For all plot types except heatmaps, a list containing numeric vectors of length 4, containing values with names \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"}.
+#' These define the zoom window on the x- and y-axes. For heatmaps, a numeric vector indicating the indices of the selected rows in the full heatmap. 
 #' Each element of the list defaults to \code{NULL}, i.e., no zooming is performed.}
 #' }
 #' 
@@ -155,10 +155,10 @@
 #'  Defaults to \code{"---"}, which means that no panel is used for feature selection.}
 #' \item{\code{ColorBoxOpen}:}{Logical, should the color selection panel for the heatmap be open upon initialization?
 #' Defaults to \code{FALSE}.}
-#' \item{\code{Centering}:}{Character, should the rows of the matrix be mean-centered in the heatmap? 
-#' Defaults to \code{On}.}
-#' \item{\code{Scaling}:}{Character, should the rows of the matrix be scaled to unit variance in the heatmap? 
-#' Defaults to \code{Off}.}
+#' \item{\code{Centering}:}{Logical, should the rows of the matrix be mean-centered in the heatmap? 
+#' Defaults to \code{TRUE}.}
+#' \item{\code{Scaling}:}{Logical, should the rows of the matrix be scaled to unit variance in the heatmap? 
+#' Defaults to \code{FALSE}.}
 #' \item{\code{Lower}:}{Numeric, what should be the lower bound of the color scale for the values in the heatmap? All values below this threshold will be shown in the same color.}
 #' Defaults to -Inf, meaning that the lowest value in the data matrix will be used.
 #' \item{\code{Upper}:}{Numeric, what should be the upper bound of the color scale for the values in the heatmap? All values above this threshold will be shown in the same color.}

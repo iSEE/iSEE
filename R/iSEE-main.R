@@ -882,12 +882,21 @@ iSEE <- function(
                 if (!is.null(brush)) {
                     new_coords <- c(xmin=brush$xmin, xmax=brush$xmax, ymin=brush$ymin, ymax=brush$ymax)
                     session$resetBrush(brush_id) # This does NOT trigger replotting, as there is no brush observer for the heatmap.
+                    if (is.null(pObjects$memory$heatMapPlot[i0,][[.zoomData]][[1]])) { # if we haven't already zoomed in
+                        inp_rows <- seq_along(pObjects$memory$heatMapPlot[i0,][[.heatMapFeatName]][[1]])
+                    } else {
+                        inp_rows <- pObjects$memory$heatMapPlot[i0,][[.zoomData]][[1]]
+                    }
+                    # Update data and force replotting.
+                    (ymin <- .transform_global_to_local_y(new_coords["ymin"], n.genes=length(inp_rows), n.annot=length(unlist(pObjects$memory$heatMapPlot[i0,][[.heatMapColData]]))))
+                    (ymax <- .transform_global_to_local_y(new_coords["ymax"], n.genes=length(inp_rows), n.annot=length(unlist(pObjects$memory$heatMapPlot[i0,][[.heatMapColData]]))))
+                    new_rows <- inp_rows[ymin:ymax]
+                    
                 } else {
-                    new_coords <- NULL # Zoom out.
+                    new_rows <- NULL # Zoom out.
                 }
 
-                # Update data and force replotting.
-                pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .zoomData, new_coords)
+                pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .zoomData, new_rows)
                 rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
             }, ignoreInit=TRUE)
         })

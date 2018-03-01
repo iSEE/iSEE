@@ -43,7 +43,7 @@
 {
   param_choices <- all_memory$heatMapPlot[id,]
   data_cmds <- list()
-  
+
   genes_selected_y <- param_choices[[.heatMapFeatName]][[1]]
   validate(need( 
     length(genes_selected_y) > 0L,
@@ -94,12 +94,8 @@
   bounds <- param_choices[[.zoomData]][[1]]
   if (!is.null(bounds)) {
       data_cmds[["subset"]] <- sprintf(
-          "plot.data <- subset(plot.data, Y %%in%% rownames(value.mat)[%s:%s])",
-          max(1, .transform_global_to_local_y(yg=bounds["ymin"], n.genes=length(genes_selected_y),
-                                              n.annot=length(orderBy))),
-          min(length(genes_selected_y),
-              .transform_global_to_local_y(bounds["ymax"], n.genes=length(genes_selected_y),
-                                           n.annot=length(orderBy)))
+          "plot.data <- subset(plot.data, Y %%in%% rownames(value.mat)[c(%s)]);",
+          paste0(bounds, collapse = ",")
       )
   }
 
@@ -159,16 +155,17 @@
   )
   
   # Add brush
-  brush_out <- .self_brush_box(param_choices, flip=FALSE) # Adding a brush
-  brush_cmd <- brush_out$cmd
-  eval_env$all_brushes <- brush_out$data
-  
-  if (!is.null(brush_cmd)) {
-      extra_cmds[["grid"]] <- paste0(extra_cmds[["grid"]], " +")
-      extra_cmds[["brush"]] <- brush_cmd
-  }
-
-  to_eval <- unlist(extra_cmds[c("grid", "brush")])
+  # brush_out <- .self_brush_box(param_choices, flip=FALSE) # Adding a brush
+  # brush_cmd <- brush_out$cmd
+  # eval_env$all_brushes <- brush_out$data
+  # 
+  # if (!is.null(brush_cmd)) {
+  #     extra_cmds[["grid"]] <- paste0(extra_cmds[["grid"]], " +")
+  #     extra_cmds[["brush"]] <- brush_cmd
+  # }
+  # 
+  # to_eval <- unlist(extra_cmds[c("grid", "brush")])
+  to_eval <- unlist(extra_cmds["grid"])
   plot_out <- eval(parse(text=to_eval), envir=eval_env)
 
   return(list(cmd=c(data_cmds, extra_cmds), xy=eval_env$plot.data, plot=plot_out, legends=legends))
@@ -200,6 +197,10 @@
     k <- n.genes*(.heatMapRelHeightAnnot*n.annot+.heatMapRelHeightHeatmap)/(1-.heatMapRelHeightColorBar)
     m <- 0.5-.heatMapRelHeightColorBar*k
     v <- round(k*yg+m)
+    # Has to be between 1 and n.genes
+    v <- min(v, n.genes)
+    v <- max(1, v)
+    v
 }
 
 #' @importFrom scales rescale

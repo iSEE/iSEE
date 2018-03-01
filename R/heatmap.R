@@ -154,17 +154,6 @@
               1-.heatMapRelHeightColorBar, .heatMapRelHeightColorBar)
   )
   
-  # Add brush
-  # brush_out <- .self_brush_box(param_choices, flip=FALSE) # Adding a brush
-  # brush_cmd <- brush_out$cmd
-  # eval_env$all_brushes <- brush_out$data
-  # 
-  # if (!is.null(brush_cmd)) {
-  #     extra_cmds[["grid"]] <- paste0(extra_cmds[["grid"]], " +")
-  #     extra_cmds[["brush"]] <- brush_cmd
-  # }
-  # 
-  # to_eval <- unlist(extra_cmds[c("grid", "brush")])
   to_eval <- unlist(extra_cmds["grid"])
   plot_out <- eval(parse(text=to_eval), envir=eval_env)
 

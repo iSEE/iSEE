@@ -57,10 +57,8 @@
     sprintf("value.mat <- as.matrix(assay(se, %i)[%s, , drop=FALSE]);", 
             assay_choice, paste(deparse(genes_selected_y), collapse="\n")),
     sprintf("value.mat <- t(scale(t(value.mat), center = %s, scale = %s));", 
-            ifelse(param_choices[[.heatMapCentering]] == .heatMapYesTitle, 
-                   "TRUE", "FALSE"),
-            ifelse(param_choices[[.heatMapScaling]] == .heatMapYesTitle, 
-                   "TRUE", "FALSE")),
+            param_choices[[.heatMapCentering]],
+            param_choices[[.heatMapScaling]]),
     sprintf("plot.data <- reshape2::melt(value.mat, varnames = c('Y', 'X'));")
   )
   
@@ -201,9 +199,9 @@
     break.vec <- .get_colorscale_limits(min.value=min.obs, max.value=max.obs, 
                                         lower.bound=param_choices[[.heatMapLower]], 
                                         upper.bound=param_choices[[.heatMapUpper]],
-                                        include.zero=param_choices[[.heatMapCentering]]==.heatMapYesTitle)
+                                        include.zero=param_choices[[.heatMapCentering]])
     
-    if (param_choices[[.heatMapCentering]] == .heatMapYesTitle) {
+    if (param_choices[[.heatMapCentering]]) {
         validate(need( 
             param_choices[[.heatMapLower]] < 0L,
             sprintf("Lower bound must be negative") 

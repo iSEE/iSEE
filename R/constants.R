@@ -53,8 +53,6 @@
 .heatMapColorBoxOpen <- "ColorBoxOpen"
 .heatMapCentering <- "Centering"
 .heatMapScaling <- "Scaling"
-.heatMapYesTitle <- "On"
-.heatMapNoTitle <- "Off"
 
 .heatMapLower <- "Lower"
 .heatMapUpper <- "Upper"

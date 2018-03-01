@@ -1429,14 +1429,18 @@ iSEE <- function(
                 cur_field <- paste0(plot_name, "_", field0)
 
                 observeEvent(input[[cur_field]], {
-                    req(input[[cur_field]])
+                    if (!(field0 %in% c(.heatMapCentering, .heatMapScaling))) {
+                        # If this is required for logical variables, it will not
+                        # trigger updates when these are FALSE.
+                        req(input[[cur_field]])
+                    }
                     matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
                     if (identical(input[[cur_field]], pObjects$memory[[mode0]][i0, field0])) {
                         return(NULL)
                     }
                     pObjects$memory[[mode0]][[field0]][i0] <- matched_input
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                }, ignoreInit=TRUE)
+                }, ignoreInit=TRUE, ignoreNULL=FALSE)
             })
         }
     }

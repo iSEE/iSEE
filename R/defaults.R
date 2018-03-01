@@ -332,8 +332,8 @@ heatMapPlotDefaults <- function(se, number) {
     out[[.heatMapColData]] <- rep(list(colnames(colData(se))[1]), nrow(out))
     out[[.heatMapImportSource]] <- .noSelection
   
-    out[[.heatMapCentering]] <- .heatMapYesTitle
-    out[[.heatMapScaling]] <- .heatMapNoTitle
+    out[[.heatMapCentering]] <- TRUE
+    out[[.heatMapScaling]] <- FALSE
     out[[.heatMapLower]] <- -Inf
     out[[.heatMapUpper]] <- Inf
     out[[.heatMapCenteredColors]] <- "purple-black-yellow"

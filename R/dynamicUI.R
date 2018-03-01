@@ -269,20 +269,16 @@
                         actionButton(.input_FUN(.heatMapImport), "Import features"),
                         actionButton(.input_FUN(.heatMapCluster), "Suggest feature order"),
                         hr(),
-                        radioButtons(.input_FUN(.heatMapCentering), label="Centering:", inline=TRUE,
-                                     choices = c(.heatMapYesTitle, .heatMapNoTitle), 
-                                     selected = param_choices[[.heatMapCentering]]),
-                        radioButtons(.input_FUN(.heatMapScaling), label="Scaling:", inline=TRUE,
-                                     choices = c(.heatMapYesTitle, .heatMapNoTitle), 
-                                     selected = param_choices[[.heatMapScaling]]),
+                        checkboxInput(.input_FUN(.heatMapCentering), label="Centering", value= param_choices[[.heatMapCentering]]),
+                        checkboxInput(.input_FUN(.heatMapScaling), label="Scaling", value= param_choices[[.heatMapScaling]]),
                         textInput(.input_FUN(.heatMapLower), label="Lower bound:",
                                   value = param_choices[[.heatMapLower]]), 
                         textInput(.input_FUN(.heatMapUpper), label="Upper bound:",
                                   value = param_choices[[.heatMapUpper]]), 
-                        .conditional_on_radio(.input_FUN(.heatMapCentering), .heatMapYesTitle,
-                                                 selectInput(.input_FUN(.heatMapCenteredColors), label="Color scale:",
-                                                             choices = c("purple-black-yellow", "blue-white-orange"),
-                                                             selected = param_choices[[.heatMapCenteredColors]]))
+                        .conditional_on_check(.input_FUN(.heatMapCentering), 
+                                              checked=list(selectInput(.input_FUN(.heatMapCenteredColors), label="Color scale:",
+                                                                       choices = c("purple-black-yellow", "blue-white-orange"),
+                                                                       selected = param_choices[[.heatMapCenteredColors]])))
                     ),
                     collapseBox(id=.input_FUN(.heatMapColDataBoxOpen),
                                 title="Column data parameters",
@@ -703,6 +699,18 @@
 .conditional_on_radio <- function(radio_id, radio_choice, ...) {
     conditionalPanel(condition=sprintf('(input["%s"] == "%s")', radio_id, radio_choice), ...)
 }
+
+.conditional_on_check <- function(check_id, checked, unchecked=NULL) {
+    output <- list()
+    if (!is.null(checked)) {
+        output[["true"]] <- do.call(conditionalPanel, c(list(condition=sprintf('(input["%s"] == true)', check_id)), checked))
+    } 
+    if (!is.null(unchecked)) {
+        output[["false"]] <- do.call(conditionalPanel, c(list(condition=sprintf('(input["%s"] == false)', check_id)), checked))
+    }
+    return(do.call(tagList, output))
+}
+
 
 #' Coerce box status to custom classes
 #'

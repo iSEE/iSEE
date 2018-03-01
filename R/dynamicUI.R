@@ -254,7 +254,7 @@
                  )
         } else if (mode=="heatMapPlot") {
             obj <- plotOutput(panel_name, brush=brush.opts, dblclick=dblclick, height=panel_height)
-            plot.param <- list(tags$div(class = "panel-group", role = "tablist",
+            plot.param <- list(
                     collapseBox(id=.input_FUN(.heatMapFeatNameBoxOpen),
                                 title="Feature parameters",
                                 open=param_choices[[.heatMapFeatNameBoxOpen]],
@@ -267,22 +267,8 @@
                         selectInput(.input_FUN(.heatMapImportSource), label="Import from", choices=heatmap_sources,
                                     selected=.choose_link(param_choices[[.heatMapImportSource]], heatmap_sources, force_default=TRUE)),
                         actionButton(.input_FUN(.heatMapImport), "Import features"),
-                        actionButton(.input_FUN(.heatMapCluster), "Suggest feature order")
-                    ),
-                    collapseBox(id=.input_FUN(.heatMapColDataBoxOpen),
-                                title="Column data parameters",
-                                open=param_choices[[.heatMapColDataBoxOpen]],
-                        selectizeInput(.input_FUN(.heatMapColData),
-                                       label="Column data:",
-                                       choices=column_covariates,
-                                       multiple = TRUE, 
-                                       selected=param_choices[[.heatMapColData]][[1]],
-                                       options = list(plugins = list('remove_button', 'drag_drop'))),
-                        plotOutput(.input_FUN(.heatMapLegend))
-                    ),
-                    collapseBox(id=.input_FUN(.heatMapColorBoxOpen),
-                                title="Coloring parameters",
-                                open=param_choices[[.heatMapColorBoxOpen]],
+                        actionButton(.input_FUN(.heatMapCluster), "Suggest feature order"),
+                        hr(),
                         radioButtons(.input_FUN(.heatMapCentering), label="Centering:", inline=TRUE,
                                      choices = c(.heatMapYesTitle, .heatMapNoTitle), 
                                      selected = param_choices[[.heatMapCentering]]),
@@ -297,9 +283,19 @@
                                                  selectInput(.input_FUN(.heatMapCenteredColors), label="Color scale:",
                                                              choices = c("purple-black-yellow", "blue-white-orange"),
                                                              selected = param_choices[[.heatMapCenteredColors]]))
+                    ),
+                    collapseBox(id=.input_FUN(.heatMapColDataBoxOpen),
+                                title="Column data parameters",
+                                open=param_choices[[.heatMapColDataBoxOpen]],
+                        selectizeInput(.input_FUN(.heatMapColData),
+                                       label="Column data:",
+                                       choices=column_covariates,
+                                       multiple = TRUE, 
+                                       selected=param_choices[[.heatMapColData]][[1]],
+                                       options = list(plugins = list('remove_button', 'drag_drop'))),
+                        plotOutput(.input_FUN(.heatMapLegend))
                     )
                 )
-            )
         } else {
             stop(sprintf("'%s' is not a recognized panel mode"), mode)
         }
@@ -329,7 +325,12 @@
                 )
             )
         } else if (mode=="heatMapPlot") {
-            param <- plot.param
+            param <- list(do.call(tags$div, c(list(class = "panel-group", role = "tablist"),
+                    plot.param,
+                    .create_brush_param_box(mode, ID, param_choices, col_brushable)
+                    )
+                )  
+            )
         } else {
             param <- list(tags$div(class = "panel-group", role = "tablist",
                 # Options for fundamental plot parameters.

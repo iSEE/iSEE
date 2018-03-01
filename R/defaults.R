@@ -332,7 +332,6 @@ heatMapPlotDefaults <- function(se, number) {
     out[[.heatMapColData]] <- rep(list(colnames(colData(se))[1]), nrow(out))
     out[[.heatMapImportSource]] <- .noSelection
   
-    out[[.heatMapColorBoxOpen]] <- FALSE
     out[[.heatMapCentering]] <- .heatMapYesTitle
     out[[.heatMapScaling]] <- .heatMapNoTitle
     out[[.heatMapLower]] <- -Inf
@@ -340,7 +339,12 @@ heatMapPlotDefaults <- function(se, number) {
     out[[.heatMapCenteredColors]] <- "purple-black-yellow"
     
     out[[.zoomData]] <- rep(list(NULL), nrow(out))
-    out[[.brushData]] <- rep(list(NULL), nrow(out))
+
+    out[[.brushParamBoxOpen]] <- FALSE
+    out[[.brushByPlot]] <- .noSelection
+    out[[.brushEffect]] <- .brushTransTitle
+    out[[.brushTransAlpha]] <- 0.1
+    out[[.brushColor]] <- "red"
   
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)

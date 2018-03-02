@@ -117,7 +117,7 @@
 #' @importFrom SummarizedExperiment colData rowData assayNames
 #' @importFrom BiocGenerics rownames
 #' @importFrom SingleCellExperiment reducedDimNames reducedDim
-#' @importFrom shiny actionButton fluidRow selectInput plotOutput uiOutput sliderInput tagList textInput column radioButtons tags hr brushOpts selectizeInput 
+#' @importFrom shiny actionButton fluidRow selectInput plotOutput uiOutput sliderInput tagList numericInput column radioButtons tags hr brushOpts selectizeInput 
 .panel_generation <- function(active_panels, memory, se) {
     collected <- list()
     counter <- 1L
@@ -258,10 +258,10 @@
                         hr(),
                         checkboxInput(.input_FUN(.heatMapCentering), label="Centering", value= param_choices[[.heatMapCentering]]),
                         checkboxInput(.input_FUN(.heatMapScaling), label="Scaling", value= param_choices[[.heatMapScaling]]),
-                        textInput(.input_FUN(.heatMapLower), label="Lower bound:",
-                                  value = param_choices[[.heatMapLower]]), 
-                        textInput(.input_FUN(.heatMapUpper), label="Upper bound:",
-                                  value = param_choices[[.heatMapUpper]]), 
+                        numericInput(.input_FUN(.heatMapLower), label="Lower bound:",
+                                     value = param_choices[[.heatMapLower]]), 
+                        numericInput(.input_FUN(.heatMapUpper), label="Upper bound:",
+                                     value = param_choices[[.heatMapUpper]]), 
                         .conditional_on_check(.input_FUN(.heatMapCentering), 
                                               checked=list(selectInput(.input_FUN(.heatMapCenteredColors), label="Color scale:",
                                                                        choices = c("purple-black-yellow", "blue-white-orange"),
@@ -582,15 +582,15 @@
 #' \code{\link{.panel_generation}},
 #' \code{\link{.create_visual_box_for_column_plots}}
 #'
-#' @importFrom shiny radioButtons tagList radioButtons hr textInput sliderInput
+#' @importFrom shiny radioButtons tagList radioButtons hr numericInput sliderInput
 .add_general_visual_UI_elements <- function(mode, ID, param_choices) {
     tagList(
         hr(),
-        textInput(paste0(mode, ID, "_", .plotPointSize), label = "Point size:", value=param_choices[,.plotPointSize]),
+        numericInput(paste0(mode, ID, "_", .plotPointSize), label = "Point size:", value=param_choices[,.plotPointSize]),
         sliderInput(paste0(mode, ID, "_", .plotPointAlpha), label = "Point opacity", 
                     min=0.1, max=1, value=param_choices[,.plotPointAlpha]),
         hr(),
-        textInput(paste0(mode, ID, "_", .plotFontSize), label = "Font size:", value=param_choices[,.plotFontSize]),
+        numericInput(paste0(mode, ID, "_", .plotFontSize), label = "Font size:", value=param_choices[,.plotFontSize]),
         radioButtons(paste0(mode, ID, "_", .plotLegendPosition), label = "Legend position:", inline=TRUE,
                      choices=c(.plotLegendBottomTitle, .plotLegendRightTitle), 
                      selected=param_choices[,.plotLegendPosition])

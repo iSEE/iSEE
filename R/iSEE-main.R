@@ -197,12 +197,8 @@ iSEE <- function(
     ), # end of dashboardHeader
 
     dashboardSidebar(
-      actionButton(paste0("redDimPlot_", .organizationNew), "New reduced dimension plot", class = "btn btn-primary",icon = icon("plus")),
-      actionButton(paste0("colDataPlot_", .organizationNew), "New column data plot", class = "btn btn-primary",icon = icon("plus")),
-      actionButton(paste0("featExprPlot_", .organizationNew), "New feature expression plot", class = "btn btn-primary",icon = icon("plus")),
-      actionButton(paste0("rowStatTable_", .organizationNew), "New row statistics table", class = "btn btn-primary",icon = icon("plus")),
-      actionButton(paste0("rowDataPlot_", .organizationNew), "New row data plot", class = "btn btn-primary",icon = icon("plus")),
-      actionButton(paste0("heatMapPlot_", .organizationNew), "New heatmap", class = "btn btn-primary",icon = icon("plus")),
+      selectInput("newPanelChoice", label="Choose panel type:", selected=rev.translation[1], choices=rev.translation),
+      actionButton("newPanelAdd", "Add new panel"), 
       hr(),
       uiOutput("panelOrganization")
     ), # end of dashboardSidebar
@@ -361,34 +357,25 @@ iSEE <- function(
         .panel_organization(rObjects$active_panels)
     })
 
+    # Panel addition.
+    observeEvent(input$newPanelAdd, {
+        mode <- input$newPanelChoice                 
+        all_active <- rObjects$active_panels
+        all.memory <- pObjects$memory[[mode]]
+        first.missing <- setdiff(seq_len(nrow(all.memory)), all_active$ID[all_active$Type==mode])
+
+        if (length(first.missing)) {
+            rObjects$active_panels <- rbind(all_active, DataFrame(Type=mode, ID=first.missing[1], Width=4L, Height=500L))
+        } else {
+            showNotification(sprintf("maximum number of plots reached for mode '%s'", mode), type="error")
+        }
+    })
+
     # Note: we need "local" so that each item gets its own number. Without it, the value
     # of i in the renderPlot() will be the same across all instances, because
     # of when the expression is evaluated.
 
     for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowStatTable", "rowDataPlot", "heatMapPlot")) {
-        # Panel addition.
-        local({
-            mode0 <- mode
-            cur_field <- paste0(mode0, "_", .organizationNew)
-
-            observeEvent(input[[cur_field]], {
-                all_active <- rObjects$active_panels
-                all.memory <- pObjects$memory[[mode0]]
-                first.missing <- setdiff(seq_len(nrow(all.memory)), all_active$ID[all_active$Type==mode0])
-
-                if (length(first.missing)) {
-                    rObjects$active_panels <- rbind(all_active, DataFrame(Type=mode0, ID=first.missing[1], Width=4L, Height=500L))
-
-                    # Disabling panel addition if we've reached the maximum.
-                    if (length(first.missing)==1L) {
-                      disable(cur_field)
-                    }
-                } else {
-                    showNotification(sprintf("maximum number of plots reached for mode '%s'", mode0), type="error")
-                }
-            })
-        })
-
         max_plots <- nrow(pObjects$memory[[mode]])
         for (i in seq_len(max_plots)) {
             local({
@@ -401,11 +388,6 @@ iSEE <- function(
                 observeEvent(input[[paste0(prefix, .organizationDiscard)]], {
                     all_active <- rObjects$active_panels
                     current_type <- all_active$Type==mode0
-
-                    # Re-enabling panel addition if we're decreasing from the maximum.
-                    if (sum(current_type)==max_plots0) {
-                      enable(paste0(mode0, "_", .organizationNew))
-                    }
 
                     # Destroying links; either the brush source, or the links from tables.
                     if (mode0=="heatMapPlot") {
@@ -1133,7 +1115,6 @@ iSEE <- function(
                 gen_field <- paste0(plot_name, "_", .panelGeneralInfo)
                 output[[plot_name]] <- renderPlot({
                     force(rObjects[[plot_name]])
-                    print(plot_name)
                     rObjects[[gen_field]] <- .increment_counter(isolate(rObjects[[gen_field]]))
                     p.out <- FUN0(i0, pObjects$memory, pObjects$coordinates, se, colormap)
                     pObjects$commands[[plot_name]] <- p.out$cmd_list

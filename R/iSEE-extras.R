@@ -163,7 +163,7 @@
 
     for (mode in c("redDimPlot", "featExprPlot", "colDataPlot")) {
         all_args[[mode]] <- .name2index(all_args[[mode]], .colorByFeatName, rownames(se))
-        all_args[[mode]] <- .name2index(all_args[[mode]], c(.colorByFeatNameAssay, .colorByRowTableAssay), assayNames(se))
+        all_args[[mode]] <- .name2index(all_args[[mode]], .colorByFeatNameAssay, assayNames(se))
     }
     all_args$rowDataPlot <- .name2index(all_args$rowDataPlot, .colorByFeatName, rownames(se))
 
@@ -346,7 +346,7 @@ height_limits <- c(400L, 1000L)
         cb <- cur_memory[,.colorByRowTable]
         bad <- !cb %in% active_tab | !self_active %in% all_active
         if (any(bad)) {
-            memory[[mode]][,.colorByRowTable][bad] <- ""
+            memory[[mode]][,.colorByRowTable][bad] <- .noSelection
         }
     }
 
@@ -363,7 +363,7 @@ height_limits <- c(400L, 1000L)
     cb <- cur_memory[,.colorByRowTable]
     bad <- !cb %in% active_tab | !self_active %in% all_active
     if (any(bad)) {
-        memory$rowDataPlot[,.colorByRowTable][bad] <- ""
+        memory$rowDataPlot[,.colorByRowTable][bad] <- .noSelection
     }
 
     # Checking for linking of x/y-axes of feature expression plots.
@@ -373,7 +373,7 @@ height_limits <- c(400L, 1000L)
 
         bad <- !bb %in% active_tab | !feat_active %in% all_active
         if (any(bad)) {
-            memory$featExprPlot[,field][bad] <- ""
+            memory$featExprPlot[,field][bad] <- .noSelection
         }
     }
     return(memory)
@@ -456,16 +456,18 @@ height_limits <- c(400L, 1000L)
     }
 
     # Checking colour status.
-    if (param_choices[[.colorByField]]==.colorByRowTableTitle) {
+    if (param_choices[[.colorByField]]==.colorByFeatNameTitle
+        && param_choices[[.colorByRowTable]]!=.noSelection) {
         output <- c(output, list("Receiving color from", em(strong(param_choices[[.colorByRowTable]])), br()))
     }
 
     # Checking input/output for feature expression plots.
     if (enc$Type=="featExprPlot") {
-        if (param_choices[[.featExprYAxis]]==.featExprYAxisRowTableTitle) {
+        if (param_choices[[.featExprYAxisRowTable]]!=.noSelection) {
             output <- c(output, list("Receiving y-axis from", em(strong(param_choices[[.featExprYAxisRowTable]])), br()))
         }
-        if (param_choices[[.featExprXAxis]]==.featExprXAxisRowTableTitle) {
+        if (param_choices[[.featExprXAxis]]==.featExprXAxisFeatNameTitle
+            && param_choices[[.featExprXAxisRowTable]]!=.noSelection) {
             output <- c(output, list("Receiving x-axis from", em(strong(param_choices[[.featExprXAxisRowTable]])), br()))
         }
     }

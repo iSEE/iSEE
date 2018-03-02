@@ -597,8 +597,7 @@ iSEE <- function(
                     pObjects$memory[[mode0]][i0, .brushByPlot] <- new_transmitter
                     
                     # Update the elements reporting the links between plots.
-                    for (relinked in c(old_encoded, new_encoded, plot_name)) {
-                        if (relinked==.noSelection) { next }
+                    for (relinked in setdiff(c(old_encoded, new_encoded, plot_name), .noSelection)) {
                         relink_field <- paste0(relinked, "_", .panelLinkInfo)
                         rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
                     }
@@ -1055,11 +1054,11 @@ iSEE <- function(
 
         # Defining non-fundamental parameters that do not destroy brushes.
         if (mode=="rowDataPlot") {
-            nonfundamental <- c(.colorByRowData, .colorByRowTableColor, .colorByFeatNameColor)
+            nonfundamental <- c(.colorByRowData, .colorByFeatNameColor)
         } else {
-            nonfundamental <- c(.colorByColData, .colorByRowTableAssay, .colorByFeatNameAssay)
+            nonfundamental <- c(.colorByColData, .colorByFeatNameAssay)
         }
-        nonfundamental <- c(nonfundamental, .colorByFeatName, .brushColor, .brushTransAlpha, .plotPointSize,
+        nonfundamental <- c(nonfundamental, .brushColor, .brushTransAlpha, .plotPointSize,
                             .plotPointAlpha, .plotFontSize, .plotLegendPosition, .colorByDefaultColor)
 
         for (i in seq_len(max_plots)) {
@@ -1111,20 +1110,20 @@ iSEE <- function(
                 FUN0 <- FUN
                 plot_name <- paste0(mode0, i0)
 
-                # Observers for the linked color, which updates the table_links information.
+                # Observers for the linked color by feature name. This also updates the table_links information.
                 observe({
                     old_tab <- pObjects$memory[[mode0]][i0, .colorByRowTable]
 
-                    replot <- .setup_table_observer(mode0, i0, input, pObjects, .colorByField,
-                        .colorByRowTableTitle, .colorByRowTable, param='color')
+                    replot <- .setup_table_observer(mode0, i0, input, pObjects, .colorByField, .colorByFeatNameTitle, 
+                                                    .colorByFeatName, .colorByRowTable, param='color')
                     if (replot) {
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     }
 
                     # Update the elements reporting the links between tables and plots.
                     new_tab <- pObjects$memory[[mode0]][i0, .colorByRowTable]
-                    for (relinked in c(plot_name, .decoded2encoded(c(new_tab, old_tab)))) {
-                        if (relinked=="") { next }
+                    tab_names <- .decoded2encoded(setdiff(c(old_tab, new_tab), .noSelection))
+                    for (relinked in c(plot_name, tab_names)) {
                         relink_field <- paste0(relinked, "_", .panelLinkInfo)
                         rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
                     }
@@ -1134,6 +1133,7 @@ iSEE <- function(
                 gen_field <- paste0(plot_name, "_", .panelGeneralInfo)
                 output[[plot_name]] <- renderPlot({
                     force(rObjects[[plot_name]])
+                    print(plot_name)
                     rObjects[[gen_field]] <- .increment_counter(isolate(rObjects[[gen_field]]))
                     p.out <- FUN0(i0, pObjects$memory, pObjects$coordinates, se, colormap)
                     pObjects$commands[[plot_name]] <- p.out$cmd_list
@@ -1170,14 +1170,16 @@ iSEE <- function(
     max_plots <- nrow(pObjects$memory$featExprPlot)
     for (i in seq_len(max_plots)) {
         for (axis in c("xaxis", "yaxis")) {
-            if (axis=="xaxis") {
-                axis_choice <- .featExprYAxis
-                axis_tab_title <- .featExprYAxisRowTableTitle
+            if (axis=="yaxis") {
+                axis_choice <- NA
+                axis_tab_title <- NA
                 axis_tab_choice <- .featExprYAxisRowTable
+                axis_feat <- .featExprYAxisFeatName
             } else {
                 axis_choice <- .featExprXAxis
-                axis_tab_title <- .featExprXAxisRowTableTitle
+                axis_tab_title <- .featExprXAxisFeatNameTitle
                 axis_tab_choice <- .featExprXAxisRowTable
+                axis_feat <- .featExprXAxisFeatName
             }
 
             local({
@@ -1189,20 +1191,21 @@ iSEE <- function(
                 axis_choice0 <- axis_choice
                 axis_tab_title0 <- axis_tab_title
                 axis_tab_choice0 <- axis_tab_choice
+                axis_feat0 <- axis_feat
 
                 observe({
                     old_tab <- pObjects$memory[[mode0]][i0, axis_tab_choice0]
 
                     ## Deciding whether to replot based on the table.
-                    replot <- .setup_table_observer(mode0, i0, input, pObjects, axis_choice0, axis_tab_title0, axis_tab_choice0, param=axis0)
+                    replot <- .setup_table_observer(mode0, i0, input, pObjects, axis_choice0, axis_tab_title0, axis_feat0, axis_tab_choice0, param=axis0)
                     if (replot) {
                         .regenerate_unselected_plot(mode0, i0, pObjects, rObjects, input, session)
                     }
 
                     # Update the links reporting between tables and plots.
                     new_tab <- pObjects$memory[[mode0]][i0, axis_tab_choice0]
-                    for (relinked in c(plot_name, .decoded2encoded(c(old_tab, new_tab)))) {
-                        if (relinked=="") { next }
+                    tab_names <- .decoded2encoded(setdiff(c(old_tab, new_tab), .noSelection))
+                    for (relinked in c(plot_name, tab_names)) {
                         relink_field <- paste0(relinked, "_", .panelLinkInfo)
                         rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
                     }
@@ -1264,19 +1267,27 @@ iSEE <- function(
             }
             pObjects$memory$rowStatTable[i0, .rowStatSelected] <- chosen
 
-            col_kids <- unique(unlist(pObjects$table_links[[i0]][c("color")]))
-            xy_kids <- unique(unlist(pObjects$table_links[[i0]][c("xaxis", "yaxis")]))
+            col_kids <- pObjects$table_links[[i0]][["color"]]
+            x_kids <- pObjects$table_links[[i0]][["xaxis"]]
+            y_kids <- pObjects$table_links[[i0]][["yaxis"]]
 
             # Triggering the replotting of all color children that are NOT xy children.
-            col_kids <- setdiff(col_kids, xy_kids)
+            # This is done indirectly, by triggering the observer for the color parameters upon updateSelectizeInput.
+            col_kids <- sprintf("%s_%s", setdiff(col_kids, c(x_kids, y_kids)), .colorByFeatName)
             for (kid in col_kids) {
-                rObjects[[kid]] <- .increment_counter(isolate(rObjects[[kid]]))
+                updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=feature_choices)
             }
 
             # Triggering the replotting and brush clearing of all x/y-axis children.
-            enc <- .split_encoded(xy_kids)
-            for (i in seq_along(xy_kids)) {
-                .regenerate_unselected_plot(enc$Type[i], enc$ID[i], pObjects, rObjects, input, session)
+            # There is a possibility that this would cause double-rendering as they trigger different observers.
+            # But this would imply that you're plotting the same gene against itself, which would be stupid.
+            x_kids <- sprintf("%s_%s", x_kids, .featExprXAxisFeatName)
+            for (kid in x_kids) {
+                updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=feature_choices)
+            }
+            y_kids <- sprintf("%s_%s", y_kids, .featExprYAxisFeatName)
+            for (kid in y_kids) {
+                updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=feature_choices)
             }
         })
 

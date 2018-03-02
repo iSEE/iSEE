@@ -43,13 +43,13 @@
     N <- nrow(memory$featExprPlot)
     cur_panels <- sprintf("featExprPlot%i", seq_len(N))
     for (i in seq_len(N)) {
-        tab_name <- .check_for_tab("featExprPlot", i, memory, .featExprXAxis, .featExprXAxisRowTableTitle, .featExprXAxisRowTable)
+        tab_name <- .check_for_tab("featExprPlot", i, memory, .featExprXAxis, .featExprXAxisRowTable)
         if (!is.null(tab_name)) {
             table_links[[tab_name]]$xaxis <- c(table_links[[tab_name]]$xaxis, cur_panels[i])
         }
         
-        tab_name <- .check_for_tab("featExprPlot", i, memory, .featExprYAxis, .featExprYAxisRowTableTitle, .featExprYAxisRowTable)
-        if (!is.null(tab_name)) {
+        tab_name <- memory[["featExprPlot"]][i, .featExprYAxisRowTable]
+        if (tab_name!=.noSelection) {
             table_links[[tab_name]]$yaxis <- c(table_links[[tab_name]]$yaxis, cur_panels[i])
         }
     }
@@ -85,7 +85,7 @@
         return(NULL)
     }
     cur_tab <- memory[[mode]][id, table_field]
-    if (cur_tab=="") {
+    if (cur_tab==.noSelection) {
         return(NULL) 
     }
     return(.decoded2encoded(cur_tab))
@@ -123,14 +123,14 @@
     for (i in seq_along(col_kids)) { 
         kid <- col_kids[i]
         type <- enc$Type[i]
-        pObjects$memory[[type]][kid, .colorByRowTable] <- ""
+        pObjects$memory[[type]][kid, .colorByRowTable] <- .noSelection
     }
 
     for (x in all_kids$yaxis) {
-        pObjects$memory$featExprPlot[x, .featExprYAxisRowTable] <- ""
+        pObjects$memory$featExprPlot[x, .featExprYAxisRowTable] <- .noSelection
     }
     for (x in all_kids$xaxis) {
-        pObjects$memory$featExprPlot[x, .featExprXAxisRowTable] <- ""
+        pObjects$memory$featExprPlot[x, .featExprXAxisRowTable] <- .noSelection
     }
 
     # Erasing the links.
@@ -162,11 +162,11 @@
 #' \code{\link{.spawn_table_links}},
 #' \code{\link{.setup_table_observer}}
 .modify_table_links <- function(links, dest, newtab, oldtab, mode='color') {
-    if (oldtab!="") {
+    if (oldtab!=.noSelection) {
         oldtab <- .decoded2encoded(oldtab)
         links[[oldtab]][[mode]] <- setdiff(links[[oldtab]][[mode]], dest)
     }
-    if (newtab!="") {
+    if (newtab!=.noSelection) {
         newtab <- .decoded2encoded(newtab)
         links[[newtab]][[mode]] <- union(links[[newtab]][[mode]], dest)
     }
@@ -205,33 +205,46 @@
 #' @seealso
 #' \code{\link{.modify_table_links}},
 #' \code{\link{iSEE}}
-.setup_table_observer <- function(mode, id, input, pObjects, by_field, tab_title, tab_field, param='color') {
-    choice <- input[[paste0(mode, id, "_", by_field)]]
+.setup_table_observer <- function(mode, id, input, pObjects, by_field, title, feat_field, tab_field, param='color') {
+    if (param!='yaxis') { 
+        choice <- input[[paste0(mode, id, "_", by_field)]]
+    } else {
+        choice <- title <- ""
+    }
+    feature <- input[[paste0(mode, id, "_", feat_field)]]
     tab <- input[[paste0(mode, id, "_", tab_field)]]
-    reset <- FALSE
+    if (is.null(choice) || is.null(tab) || is.null(feature) || feature=="") {
+        return(FALSE)
+    }
 
-    if (!is.null(choice) && !is.null(tab)) {
-        # Editing the table_links, if we're switching to/from the table choice. 
-        old <- pObjects$memory[[mode]][id, tab_field]
-        plot_name <- paste0(mode, id)
-        if (choice==tab_title) {
-            pObjects$table_links <- .modify_table_links(pObjects$table_links, plot_name, tab, old, mode=param)
-        } else {
-            pObjects$table_links <- .modify_table_links(pObjects$table_links, plot_name, "", old, mode=param)
-        }
+    # Not replotting if none of the variables have changed.
+    # Note that the identical-ness of 'tab' doesn't matter, as long as 'feature' is the same.
+    if (param!='yaxis') { 
+        old_choice <- pObjects$memory[[mode]][id, by_field]
+    } else {
+        old_choice <- ""
+    }
+    old_feature <- pObjects$memory[[mode]][id, feat_field]
+    old_tab <- pObjects$memory[[mode]][id, tab_field]
+    choice <- as(choice, typeof(old_choice))
+    feature <- as(feature, typeof(old_feature))
+    tab <- as(tab, typeof(old_tab))
+    reset <- !identical(old_choice, choice) || !identical(old_feature, feature)
 
-        # Triggering replotting, but only if both of the input values are initialized.
-        # We don't have an 'ignoreInit' that we can rely on here.
-        reset <- TRUE
+    # Editing the table_links, if we're switching to/from the table choice. 
+    plot_name <- paste0(mode, id)
+    if (choice==title) {
+        pObjects$table_links <- .modify_table_links(pObjects$table_links, plot_name, tab, old_tab, mode=param)
+    } else {
+        pObjects$table_links <- .modify_table_links(pObjects$table_links, plot_name, .noSelection, old_tab, mode=param)
     }
 
     # Updating stored parameters. These should persist due to environment's pass-by-reference.
-    if (!is.null(choice)) {
+    if (param!='yaxis') { 
         pObjects$memory[[mode]][id, by_field] <- choice
     }
-    if (!is.null(tab)) {
-        pObjects$memory[[mode]][id, tab_field] <- tab
-    }
+    pObjects$memory[[mode]][id, feat_field] <- feature
+    pObjects$memory[[mode]][id, tab_field] <- tab
     return(reset)
 }
 
@@ -265,14 +278,14 @@
     plot_name <- paste0(mode, id)
   
     for (param in list(c(.colorByField, .colorByRowTableTitle, .colorByRowTable, "color"),
-                       c(.featExprXAxis, .featExprXAxisRowTableTitle, .featExprXAxisRowTable, "xaxis"),
-                       c(.featExprYAxis, .featExprYAxisRowTableTitle, .featExprYAxisRowTable, "yaxis"))) {
+                       c(.featExprXAxis, .featExprXAxisFeatNameTitle, .featExprXAxisRowTable, "xaxis"),
+                       c(NA, NA, .featExprYAxisRowTable, "yaxis"))) {
   
-        if (tmp_mem[id, param[1]]==param[2]) {
+        if (param[4]=='yaxis' || tmp_mem[id, param[1]]==param[2]) {
             oldtab <- tmp_mem[id, param[3]]
-            if (oldtab!="") {
-                tmp_link <- .modify_table_links(tmp_link, plot_name, "", oldtab, mode = param[4])
-                tmp_mem[id, param[3]] <- ""
+            if (oldtab!=.noSelection) {
+                tmp_link <- .modify_table_links(tmp_link, plot_name, .noSelection, oldtab, mode = param[4])
+                tmp_mem[id, param[3]] <- .noSelection
             }
         }
     

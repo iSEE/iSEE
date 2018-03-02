@@ -247,10 +247,9 @@ featExprPlotDefaults <- function(se, number) {
     out[[.featExprXAxis]] <- .featExprXAxisNothingTitle
     out[[.featExprXAxisColData]] <- covariates[1] 
     out[[.featExprXAxisFeatName]] <- 1L
-    out[[.featExprXAxisRowTable]] <- ""
+    out[[.featExprXAxisRowTable]] <- .noSelection
     out[[.featExprYAxisFeatName]] <- 1L
-    out[[.featExprYAxisRowTable]] <- ""
-    out[[.featExprYAxis]] <- .featExprYAxisRowTableTitle
+    out[[.featExprYAxisRowTable]] <- .noSelection
 
     out <- .add_general_parameters_for_column_plots(out, se)
     if (waszero) out <- out[0,,drop=FALSE]
@@ -447,8 +446,7 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.colorByField]] <- .colorByNothingTitle
     incoming[[.colorByDefaultColor]] <- "black"
     incoming[[.colorByColData]] <- def_cov
-    incoming[[.colorByRowTable]] <- "" 
-    incoming[[.colorByRowTableAssay]] <- def_assay
+    incoming[[.colorByRowTable]] <- .noSelection 
     incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameAssay]] <- def_assay
 
@@ -464,8 +462,7 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.colorByField]] <- .colorByNothingTitle
     incoming[[.colorByDefaultColor]] <- "black"
     incoming[[.colorByRowData]] <- def_cov
-    incoming[[.colorByRowTable]] <- "" 
-    incoming[[.colorByRowTableColor]] <- "red"
+    incoming[[.colorByRowTable]] <- .noSelection 
     incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameColor]] <- "red"
 

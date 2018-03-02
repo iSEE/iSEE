@@ -139,10 +139,10 @@
   
     # Defining all transmitting tables and plots for linking.
     link_sources <- .define_link_sources(active_panels)
-    active_tab <- link_sources$tab
+    active_tab <- c(.noSelection, link_sources$tab)
     row_brushable <- c(.noSelection, link_sources$row)
     col_brushable <- c(.noSelection, link_sources$col)
-    heatmap_sources <- c(.noSelection, link_sources$row, active_tab)
+    heatmap_sources <- c(.noSelection, link_sources$row, link_sources$tab)
 
     for (i in seq_len(nrow(active_panels))) {
         mode <- active_panels$Type[i]
@@ -198,43 +198,30 @@
                 xaxis_choices <- c(xaxis_choices, .featExprXAxisColDataTitle)
             }
             if (feasibility$featExprPlot) {
-                xaxis_choices <- c(xaxis_choices, .featExprXAxisRowTableTitle, .featExprXAxisFeatNameTitle)
+                xaxis_choices <- c(xaxis_choices, .featExprXAxisFeatNameTitle)
             }
 
             plot.param <- list(
-              radioButtons(.input_FUN(.featExprYAxis), label="Y-axis:",
-                           inline = TRUE, choices=c(.featExprYAxisRowTableTitle, .featExprYAxisFeatNameTitle),
-                           selected=param_choices[[.featExprYAxis]]),
-              .conditional_on_radio(.input_FUN(.featExprYAxis),
-                                       .featExprYAxisRowTableTitle,
-                                       selectInput(.input_FUN(.featExprYAxisRowTable),
-                                                   label = "Y-axis gene linked to:",
-                                                   choices=active_tab,
-                                                   selected=.choose_link(param_choices[[.featExprYAxisRowTable]], active_tab, force_default=TRUE))
-              ),
-              .conditional_on_radio(.input_FUN(.featExprYAxis),
-                                       .featExprYAxisFeatNameTitle,
-                                       selectizeInput(.input_FUN(.featExprYAxisFeatName),
-                                                      label = "Y-axis gene:", choices = NULL, selected = NULL, multiple=FALSE)),
-              selectInput(.input_FUN(.featExprAssay), label=NULL,
-                          choices=all_assays, selected=param_choices[[.featExprAssay]]),
-              radioButtons(.input_FUN(.featExprXAxis), label="X-axis:", inline=TRUE,
-                           choices=xaxis_choices, selected=param_choices[[.featExprXAxis]]),
-              .conditional_on_radio(.input_FUN(.featExprXAxis),
-                                       .featExprXAxisColDataTitle,
-                                       selectInput(.input_FUN(.featExprXAxisColData),
-                                                   label = "X-axis column data:",
-                                                   choices=column_covariates, selected=param_choices[[.featExprXAxisColData]])),
-              .conditional_on_radio(.input_FUN(.featExprXAxis),
-                                       .featExprXAxisRowTableTitle,
-                                       selectInput(.input_FUN(.featExprXAxisRowTable),
-                                                   label = "X-axis gene linked to:",
-                                                   choices=active_tab, selected=param_choices[[.featExprXAxisRowTable]])),
-              .conditional_on_radio(.input_FUN(.featExprXAxis),
-                                       .featExprXAxisFeatNameTitle,
-                                       selectizeInput(.input_FUN(.featExprXAxisFeatName), 
-                                                      label = "X-axis gene:", choices = NULL, selected = NULL, multiple = FALSE))
-                 )
+                selectizeInput(.input_FUN(.featExprYAxisFeatName),
+                               label = "Y-axis gene:", choices = NULL, selected = NULL, multiple=FALSE),
+                selectInput(.input_FUN(.featExprYAxisRowTable), label=NULL, choices=active_tab,
+                            selected=.choose_link(param_choices[[.featExprYAxisRowTable]], active_tab, force_default=TRUE)),
+                selectInput(.input_FUN(.featExprAssay), label=NULL,
+                            choices=all_assays, selected=param_choices[[.featExprAssay]]),
+                radioButtons(.input_FUN(.featExprXAxis), label="X-axis:", inline=TRUE,
+                             choices=xaxis_choices, selected=param_choices[[.featExprXAxis]]),
+                .conditional_on_radio(.input_FUN(.featExprXAxis),
+                                         .featExprXAxisColDataTitle,
+                                         selectInput(.input_FUN(.featExprXAxisColData),
+                                                     label = "X-axis column data:",
+                                                     choices=column_covariates, selected=param_choices[[.featExprXAxisColData]])),
+                .conditional_on_radio(.input_FUN(.featExprXAxis),
+                                         .featExprXAxisFeatNameTitle,
+                                         selectizeInput(.input_FUN(.featExprXAxisFeatName), 
+                                                        label = "X-axis gene:", choices = NULL, selected = NULL, multiple = FALSE),
+                                         selectInput(.input_FUN(.featExprXAxisRowTable), label=NULL,
+                                                     choices=active_tab, selected=param_choices[[.featExprXAxisRowTable]]))
+                )
         } else if (mode=="rowStatTable") {
             obj <- tagList(dataTableOutput(paste0(mode, ID)), uiOutput(.input_FUN("annotation")))
         } else if (mode=="rowDataPlot") {
@@ -489,7 +476,7 @@
         color_choices <- c(color_choices, .colorByColDataTitle)
     }
     if (!no_rows) {
-        color_choices <- c(color_choices, .colorByRowTableTitle, .colorByFeatNameTitle)
+        color_choices <- c(color_choices, .colorByFeatNameTitle)
     }
 
     collapseBox(
@@ -507,16 +494,12 @@
             selectInput(paste0(mode, ID, "_", .colorByColData), label = NULL,
                         choices=covariates, selected=param_choices[[.colorByColData]])
             ),
-        .conditional_on_radio(colorby_field, .colorByRowTableTitle,
-            tagList(selectInput(paste0(mode, ID, "_", .colorByRowTable), label = NULL, choices=active_tab,
-                                selected=.choose_link(param_choices[[.colorByRowTable]], active_tab, force_default=TRUE)),
-                    selectInput(paste0(mode, ID, "_", .colorByRowTableAssay), label=NULL,
-                                choices=all_assays, selected=param_choices[[.colorByRowTableAssay]]))
-            ),
         .conditional_on_radio(colorby_field, .colorByFeatNameTitle,
             tagList(selectizeInput(paste0(mode, ID, "_", .colorByFeatName), label = NULL, choices = NULL, selected = NULL, multiple = FALSE),
                     selectInput(paste0(mode, ID, "_", .colorByFeatNameAssay), label=NULL,
-                                choices=all_assays, selected=param_choices[[.colorByFeatNameAssay]]))
+                                choices=all_assays, selected=param_choices[[.colorByFeatNameAssay]])),
+                    selectInput(paste0(mode, ID, "_", .colorByRowTable), label = NULL, choices=active_tab,
+                                selected=.choose_link(param_choices[[.colorByRowTable]], active_tab, force_default=TRUE))
             ),
         .add_general_visual_UI_elements(mode, ID, param_choices)
         )
@@ -568,14 +551,10 @@
             selectInput(paste0(mode, ID, "_", .colorByRowData), label = NULL,
                         choices=covariates, selected=param_choices[[.colorByRowData]])
             ),
-        .conditional_on_radio(colorby_field, .colorByRowTableTitle,
-            tagList(selectInput(paste0(mode, ID, "_", .colorByRowTable), label = NULL, choices=active_tab,
-                                selected=.choose_link(param_choices[[.colorByRowTable]], active_tab, force_default=TRUE)),
-                    colourInput(paste0(mode, ID, "_", .colorByRowTableColor), label=NULL,
-                                value=param_choices[[.colorByRowTableColor]]))
-            ),
         .conditional_on_radio(colorby_field, .colorByFeatNameTitle,
             tagList(selectizeInput(paste0(mode, ID, "_", .colorByFeatName), label = NULL, selected = NULL, choices = NULL, multiple = FALSE),
+                    selectInput(paste0(mode, ID, "_", .colorByRowTable), label = NULL, choices=active_tab,
+                                selected=.choose_link(param_choices[[.colorByRowTable]], active_tab, force_default=TRUE)),
                     colourInput(paste0(mode, ID, "_", .colorByFeatNameColor), label=NULL,
                                 value=param_choices[[.colorByFeatNameColor]]))
             ),

@@ -6,11 +6,7 @@
 # Feature expression plotting parameters. ----
 .featExprXAxisNothingTitle <- "None"
 .featExprXAxisColDataTitle <- "Column data"
-.featExprXAxisRowTableTitle <- "Row table"
 .featExprXAxisFeatNameTitle <- "Feature name"
-
-.featExprYAxisRowTableTitle <- "Row table"
-.featExprYAxisFeatNameTitle <- "Feature name"
 
 .featExprAssay <- "Assay"
 .featExprXAxis <- "XAxis"
@@ -19,7 +15,6 @@
 .featExprXAxisFeatName <- "XAxisFeatName"
 .featExprYAxisRowTable <- "YAxisRowTable"
 .featExprYAxisFeatName <- "YAxisFeatName"
-.featExprYAxis <- "YAxis"
 
 # Column data plotting parameters. ----
 .colDataXAxisNothingTitle <- "None"
@@ -74,11 +69,8 @@
 .colorByColData <- "ColorByColData"
 .colorByRowData <- "ColorByRowData"
 
-.colorByRowTable <- "ColorByRowTable"
-.colorByRowTableAssay <- "ColorByRowTableAssay"
-.colorByRowTableColor <- "ColorByRowTableColor"
-
 .colorByFeatName <- "ColorByFeatName"
+.colorByRowTable <- "ColorByRowTable"
 .colorByFeatNameAssay <- "ColorByFeatNameAssay"
 .colorByFeatNameColor <- "ColorByFeatNameColor"
 
@@ -191,8 +183,6 @@ names(rev.translation) <- translation
 #' Invalid types or IDs will raise an error.
 #'
 #' The \code{.decoded2encoded} function goes one step further and concatenates the type and ID to yield the full encoded name \code{"redDimPlot1"}.
-#' This will \emph{not} raise errors upon encountering an empty string, which are simply returned without modification.
-#' Such behaviour is useful when dealing with empty selections for table choices.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_encode_panel_name
@@ -210,10 +200,8 @@ names(rev.translation) <- translation
 
 #' @rdname INTERNAL_encode_panel_name
 .decoded2encoded <- function(names) {
-    keep <- names!=""
-    x <- .encode_panel_name(names[keep])
-    names[keep] <- sprintf("%s%i", x$Type, x$ID)
-    names
+    x <- .encode_panel_name(names)
+    sprintf("%s%i", x$Type, x$ID)
 }
 
 #' Split an encoded name

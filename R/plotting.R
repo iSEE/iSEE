@@ -176,17 +176,10 @@ names(.all_aes_values) <- .all_aes_names
     data_cmds <- list()
   
     ## Setting up the y-axis:
-    y_choice <- param_choices[[.featExprYAxis]]
-    if (y_choice==.featExprYAxisRowTableTitle) {
-        chosen_tab <- .decoded2encoded(param_choices[[.featExprYAxisRowTable]])
-        gene_selected_y <- all_memory$rowStatTable[chosen_tab, .rowStatSelected]
-    } else if (y_choice==.featExprYAxisFeatNameTitle) {
-        gene_selected_y <- param_choices[[.featExprYAxisFeatName]]
-    }
-  
+    gene_selected_y <- param_choices[[.featExprYAxisFeatName]]
     validate(need( 
         length(gene_selected_y)==1L,
-        sprintf("Invalid '%s' > '%s' input", .featExprYAxis, y_choice)
+        "Invalid y-axis input"
     ))
   
     assay_choice <- param_choices[[.featExprAssay]]
@@ -204,14 +197,8 @@ names(.all_aes_values) <- .all_aes_names
         x_lab <- x_title <- param_choices[[.featExprXAxisColData]]
         data_cmds[["x"]] <- sprintf("plot.data$X <- colData(se)[,%s];", deparse(x_lab))
   
-    } else if (x_choice==.featExprXAxisRowTableTitle || x_choice==.featExprXAxisFeatNameTitle) { # gene selected
-        if (x_choice==.featExprXAxisRowTableTitle) {
-            chosen_tab <- .decoded2encoded(param_choices[[.featExprXAxisRowTable]])
-            gene_selected_x <- all_memory$rowStatTable[chosen_tab, .rowStatSelected]
-        } else if (x_choice==.featExprXAxisFeatNameTitle) {
-            gene_selected_x <- param_choices[[.featExprXAxisFeatName]]
-        }
-      
+    } else if (x_choice==.featExprXAxisFeatNameTitle) { # gene selected
+        gene_selected_x <- param_choices[[.featExprXAxisFeatName]]
         validate(need(
             length(gene_selected_x)==1L,
             sprintf("Invalid '%s' > '%s' input", .featExprXAxis, x_choice)
@@ -867,17 +854,10 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
         covariate_name <- param_choices[[.colorByColData]]
         return(sprintf("plot.data$ColorBy <- colData(se)[,%s];", deparse(covariate_name)))
   
-    } else if (color_choice==.colorByRowTableTitle || color_choice==.colorByFeatNameTitle) {
+    } else if (color_choice==.colorByFeatNameTitle) {
         # Set the color to the selected gene
-        if (color_choice==.colorByRowTableTitle) {
-            chosen_tab <- .decoded2encoded(param_choices[[.colorByRowTable]])
-            chosen_gene <- all_memory$rowStatTable[chosen_tab, .rowStatSelected]
-            assay_choice <- param_choices[[.colorByRowTableAssay]]
-        } else {
-            chosen_gene <- param_choices[[.colorByFeatName]]
-            assay_choice <- param_choices[[.colorByFeatNameAssay]]
-        }
-        
+        chosen_gene <- param_choices[[.colorByFeatName]]
+        assay_choice <- param_choices[[.colorByFeatNameAssay]]
         validate(need(
             length(chosen_gene)==1L,
             sprintf("Invalid '%s' > '%s' input", .colorByField, color_choice)
@@ -896,15 +876,8 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
         covariate_name <- param_choices[[.colorByRowData]]
         return(sprintf("plot.data$ColorBy <- rowData(se)[,%s];", deparse(covariate_name)))
   
-    } else if (color_choice==.colorByRowTableTitle || color_choice==.colorByFeatNameTitle) {
-        # Set the color to the selected gene
-        if (color_choice==.colorByRowTableTitle) {
-            chosen_tab <- .decoded2encoded(param_choices[[.colorByRowTable]])
-            chosen_gene <- all_memory$rowStatTable[chosen_tab, .rowStatSelected]
-        } else {
-            chosen_gene <- param_choices[[.colorByFeatName]]
-        }
-
+    } else if (color_choice==.colorByFeatNameTitle) {
+        chosen_gene <- param_choices[[.colorByFeatName]]
         validate(need(
             length(chosen_gene)==1L,
             sprintf("Invalid '%s' > '%s' input", .colorByField, color_choice)
@@ -961,16 +934,10 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
         output$label <- covariate_name
         output$cmds <- .create_color_scale("colDataColorMap", covariate_as_string, colorby)
   
-    } else if (color_choice==.colorByRowTableTitle || color_choice==.colorByFeatNameTitle) {
-        if (color_choice==.colorByRowTableTitle) {
-            chosen_tab <- .decoded2encoded(param_choices[[.colorByRowTable]])
-            chosen_gene <- all_memory$rowStatTable[chosen_tab, .rowStatSelected]
-            assay_choice <- param_choices[[.colorByRowTableAssay]]
-        } else {
-            chosen_gene <- param_choices[[.colorByFeatName]]
-            assay_choice <- param_choices[[.colorByFeatNameAssay]]
-        }
-    
+    } else if (color_choice==.colorByFeatNameTitle) {
+        chosen_gene <- param_choices[[.colorByFeatName]]
+        assay_choice <- param_choices[[.colorByFeatNameAssay]]
+ 
         assay_name <- assayNames(se)[assay_choice]
         assay_access <- ifelse(assay_name=="", assay_choice, sprintf("'%s'",assay_name))
  
@@ -998,15 +965,9 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
         output$label <- covariate_name
         output$cmds <- .create_color_scale("rowDataColorMap", covariate_as_string, colorby)
 
-    } else if (color_choice==.colorByRowTableTitle || color_choice==.colorByFeatNameTitle) {
-        if (color_choice==.colorByRowTableTitle) {
-            chosen_tab <- .decoded2encoded(param_choices[[.colorByRowTable]])
-            chosen_gene <- all_memory$rowStatTable[chosen_tab, .rowStatSelected]
-            col_choice <- param_choices[[.colorByRowTableColor]]
-        } else {
-            chosen_gene <- param_choices[[.colorByFeatName]]
-            col_choice <- param_choices[[.colorByFeatNameColor]]
-        }
+    } else if (color_choice==.colorByFeatNameTitle) {
+        chosen_gene <- param_choices[[.colorByFeatName]]
+        col_choice <- param_choices[[.colorByFeatNameColor]]
         output$label <- .gene_axis_label(se, chosen_gene, assay_id=NULL)
         output$cmds <- c(sprintf("scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +", 
                                  deparse(col_choice)),

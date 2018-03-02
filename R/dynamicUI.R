@@ -582,17 +582,15 @@
 #' \code{\link{.panel_generation}},
 #' \code{\link{.create_visual_box_for_column_plots}}
 #'
-#' @importFrom shiny radioButtons tagList radioButtons hr
+#' @importFrom shiny radioButtons tagList radioButtons hr textInput sliderInput
 .add_general_visual_UI_elements <- function(mode, ID, param_choices) {
     tagList(
         hr(),
-        sliderInput(paste0(mode, ID, "_", .plotPointSize), label = "Point size:", 
-                    min=0.5, max=2, value=param_choices[,.plotPointSize]),
+        textInput(paste0(mode, ID, "_", .plotPointSize), label = "Point size:", value=param_choices[,.plotPointSize]),
         sliderInput(paste0(mode, ID, "_", .plotPointAlpha), label = "Point opacity", 
                     min=0.1, max=1, value=param_choices[,.plotPointAlpha]),
         hr(),
-        sliderInput(paste0(mode, ID, "_", .plotFontSize), label = "Font size:", 
-                    min=0.5, max=2, value=param_choices[,.plotFontSize]),
+        textInput(paste0(mode, ID, "_", .plotFontSize), label = "Font size:", value=param_choices[,.plotFontSize]),
         radioButtons(paste0(mode, ID, "_", .plotLegendPosition), label = "Legend position:", inline=TRUE,
                      choices=c(.plotLegendBottomTitle, .plotLegendRightTitle), 
                      selected=param_choices[,.plotLegendPosition])

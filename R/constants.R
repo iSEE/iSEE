@@ -117,6 +117,9 @@
 .plotLegendRightTitle <- "Right"
 .plotLegendBottomTitle <- "Bottom"
 
+.plotFontSizeAxisTextDefault <- 10
+.plotFontSizeAxisTitleDefault <- 12
+
 # Row statistic table parameters. ----
 .rowStatSelected <- "Selected"
 .rowStatSearch <- "Search"

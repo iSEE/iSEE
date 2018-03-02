@@ -589,7 +589,7 @@ names(.all_aes_values) <- .all_aes_names
     # Adding further aesthetic elements.
     plot_cmds[["scale_color"]] <- color_scale_cmd
     plot_cmds[["theme_base"]] <- "theme_bw() +"
-    plot_cmds[["theme_custom"]] <- sprintf("theme(legend.position = '%s')", tolower(param_choices[[.plotLegendPosition]]))
+    plot_cmds[["theme_custom"]] <- sprintf("theme(legend.position = '%s', axis.text=element_text(size=%s), axis.title=element_text(size=%s))", tolower(param_choices[[.plotLegendPosition]]), param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault, param_choices[[.plotFontSize]]*.plotFontSizeAxisTitleDefault)
     return(unlist(plot_cmds))
 }
 
@@ -696,7 +696,7 @@ names(.all_aes_values) <- .all_aes_names
       "scale_x_discrete(drop = FALSE) +" # preserving the x-axis range.
     plot_cmds[["theme_base"]] <- "theme_bw() +"
     plot_cmds[["theme_custom"]] <- sprintf("theme(legend.position = '%s', legend.box = 'vertical',
-    axis.text.x = element_text(angle = 90))", tolower(param_choices[[.plotLegendPosition]]))
+    axis.text.x = element_text(angle = 90, size=%s), axis.text.y=element_text(size=%s), axis.title=element_text(size=%s))", tolower(param_choices[[.plotLegendPosition]]), param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault, param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault, param_choices[[.plotFontSize]]*.plotFontSizeAxisTitleDefault)
 
     return(unlist(plot_cmds))
 }
@@ -806,7 +806,7 @@ plot.data$Y <- tmp;")
   
     plot_cmds[["guides"]] <- "guides(size = 'none') +"
     plot_cmds[["theme_base"]] <- "theme_bw() +"
-    plot_cmds[["theme_custom"]] <- sprintf("theme(legend.position = '%s', legend.box = 'vertical', axis.text.x = element_text(angle = 90))", tolower(param_choices[[.plotLegendPosition]]))
+    plot_cmds[["theme_custom"]] <- sprintf("theme(legend.position = '%s', legend.box = 'vertical', axis.text.x = element_text(angle = 90, size=%s), axis.text.y = element_text(size=%s), axis.title=element_text(size=%s))", tolower(param_choices[[.plotLegendPosition]]), param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault, param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault, param_choices[[.plotFontSize]]*.plotFontSizeAxisTitleDefault)
     return(unlist(plot_cmds))
 }
 

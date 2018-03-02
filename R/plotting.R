@@ -555,6 +555,8 @@ names(.all_aes_values) <- .all_aes_names
 #' @importFrom ggplot2 ggplot coord_cartesian theme_bw theme
 .scatter_plot <- function(plot_data, param_choices, x_lab, y_lab, title, by_row = FALSE, range_all = FALSE, ...) {
     plot_cmds <- list()
+    plot_cmds[["defaultcolor"]] <- sprintf("update_geom_defaults('point', list(colour = '%s'));",
+                                           param_choices[[.colorByDefaultColor]])
     plot_cmds[["ggplot"]] <- "ggplot() +"
 
     # Adding points to the plot.
@@ -637,6 +639,8 @@ names(.all_aes_values) <- .all_aes_names
 #' @importFrom ggplot2 ggplot geom_violin coord_cartesian theme_bw theme coord_flip scale_x_discrete
 .violin_plot <- function(plot_data, param_choices, x_lab, y_lab, title, horizontal = FALSE, by_row = FALSE, range_all = FALSE, ...) {
     plot_cmds <- list()
+    plot_cmds[["defaultcolor"]] <- sprintf("update_geom_defaults('point', list(colour = '%s'));",
+                                           param_choices[[.colorByDefaultColor]])
     plot_cmds[["ggplot"]] <- "ggplot() +" # do NOT put aes here, it does not play nice with shiny brushes.
     plot_cmds[["violin"]] <- sprintf("geom_violin(%s, alpha = 0.2, data=plot.data, scale = 'width', width = 0.8) +", 
                                      .build_aes(color = FALSE, group = TRUE))
@@ -768,6 +772,8 @@ plot.data$Y <- tmp;")
 #' @importFrom ggplot2 ggplot geom_tile coord_cartesian theme_bw theme scale_size_area scale_x_discrete scale_y_discrete guides
 .square_plot <- function(plot_data, param_choices, se, x_lab, y_lab, title, by_row = FALSE, ...) {
     plot_cmds <- list()
+    plot_cmds[["defaultcolor"]] <- sprintf("update_geom_defaults('point', list(colour = '%s'));",
+                                           param_choices[[.colorByDefaultColor]])
     plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
     plot_cmds[["tile"]] <- "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius),
     summary.data, color = 'black', alpha = 0, size = 0.5) +"

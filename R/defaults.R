@@ -407,7 +407,6 @@ heatMapPlotDefaults <- function(se, number) {
 #' Add default values for general plot parameters, including row and column-based plots.
 #'
 #' @param incoming A DataFrame with non-zero number of rows, containing default parameters that have already been filled for specific panel types.
-#' @param se A \code{\linkS4class{SingleCellExperiment}} object.
 #' 
 #' @return A DataFrame with additional fields for general plot parameters, filled with default values.
 #' 

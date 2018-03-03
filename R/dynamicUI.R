@@ -577,10 +577,11 @@
 #' This creates UI elements to choose the font size, point size and opacity, and legend placement.
 #'
 #' @author Aaron Lun
-#' @rdname INTERNAL_create_visual_box_for_row_plots
+#' @rdname INTERNAL_add_general_visual_UI_elements
 #' @seealso
 #' \code{\link{.panel_generation}},
-#' \code{\link{.create_visual_box_for_column_plots}}
+#' \code{\link{.create_visual_box_for_column_plots}},
+#' \code{\link{.create_visual_box_for_row_plots}}
 #'
 #' @importFrom shiny radioButtons tagList radioButtons hr numericInput sliderInput
 .add_general_visual_UI_elements <- function(mode, ID, param_choices) {

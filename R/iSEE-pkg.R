@@ -26,8 +26,6 @@
 #'   coord_cartesian geom_tile scale_x_discrete scale_y_discrete
 #'   scale_size_area guides scale_color_manual scale_color_gradientn
 #'   scale_fill_manual scale_fill_gradientn geom_rect
-#' @importFrom mgcv in.out
-#' @importFrom vipor offsetX
 #' @importFrom reshape2 melt
 #' @importFrom DT datatable renderDataTable dataTableOutput
 #' @importFrom AnnotationDbi mapIds keytypes

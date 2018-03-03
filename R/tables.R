@@ -183,7 +183,8 @@
 #' @param pObjects An environment containing \code{table_links}, a graph produced by \code{\link{.spawn_table_links}};
 #' and \code{memory}, a list of DataFrames containing parameters for each panel of each type.
 #' @param by_field String specifying the field to check for whether the input is using a row table input of any kind.
-#' @param tab_title String specifying the title of a row table input, to match to the value of \code{by_field} in \code{memory} for this plot.
+#' @param title String specifying the title of a row table input, to match to the value of \code{by_field} in \code{memory} for this plot.
+#' @param feat_field String specifying the field to check for the feature to examine. 
 #' @param tab_field String specifying the field to check for the identify of the row table input.
 #' @param param String specifying the type of table link to the current plot, i.e., color or x/y-axis.
 #'

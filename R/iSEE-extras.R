@@ -499,7 +499,7 @@ height_limits <- c(400L, 1000L)
 #' Information transmission should take the form of selection of features for use in color or x/y-axis specification in other plots.
 #'
 #' @author Aaron Lun
-#' @rdname INTERNAL_define_plot_links
+#' @rdname INTERNAL_define_table_links
 #' @seealso
 #' \code{\link{iSEE}}
 #'

@@ -69,7 +69,7 @@ names(.all_aes_values) <- .all_aes_names
     setup_out <- .complete_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row = FALSE)
     plot_out <- .create_plot(setup_out$envir, param_choices, colormap,
                              x_lab = x_lab, y_lab = y_lab, title = plot_title, by_row = FALSE,
-                             se = se, all_memory = all_memory)
+                             se = se)
     return(list(cmd_list = c(setup_out$cmd_list, list(plot=plot_out$cmds)), xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
 }
 
@@ -134,7 +134,7 @@ names(.all_aes_values) <- .all_aes_names
     setup_out <- .complete_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row = FALSE)
     plot_out <- .create_plot(setup_out$envir, param_choices, colormap,
                              x_lab = x_lab, y_lab = y_lab, title = plot_title, by_row = FALSE,
-                             se = se, all_memory = all_memory)
+                             se = se)
     return(list(cmd_list = c(setup_out$cmd_list, list(plot=plot_out$cmds)), xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
 }
 
@@ -223,7 +223,7 @@ names(.all_aes_values) <- .all_aes_names
     setup_out <- .complete_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row = FALSE)
     plot_out <- .create_plot(setup_out$envir, param_choices, colormap,
                              x_lab = x_lab, y_lab = y_lab, title = plot_title, by_row = FALSE,
-                             se = se, all_memory = all_memory)
+                             se = se)
     return(list(cmd_list = c(setup_out$cmd_list, list(plot=plot_out$cmds)), xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
 }
 
@@ -284,7 +284,7 @@ names(.all_aes_values) <- .all_aes_names
     setup_out <- .complete_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row = TRUE)
     plot_out <- .create_plot(setup_out$envir, param_choices, colormap,
                              x_lab = x_lab, y_lab = y_lab, title = plot_title, by_row = TRUE,
-                             se = se, all_memory = all_memory)
+                             se = se)
     return(list(cmd_list = c(setup_out$cmd_list, list(plot=plot_out$cmds)), xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
 }
 
@@ -335,8 +335,8 @@ names(.all_aes_values) <- .all_aes_names
 #' @author Aaron Lun
 #' @rdname INTERNAL_complete_plotting_data
 #' @seealso
-#' \code{\link{.define_color_for_column_plot}},
-#' \code{\link{.define_color_for_row_plot}},
+#' \code{\link{.define_colorby_for_column_plot}},
+#' \code{\link{.define_colorby_for_row_plot}},
 #' \code{\link{.process_brushby_choice}}
 .complete_plotting_data <- function(data_cmds, param_choices, all_memory, all_coordinates, se, by_row=FALSE) {
     # Evaluating to check the grouping status of various fields. It is important that 
@@ -521,7 +521,6 @@ names(.all_aes_values) <- .all_aes_names
 #'
 #' @param plot_data A data.frame containing all of the plotting information, returned by \code{\link{.complete_plotting_data}} in \code{envir$plot.data}.
 #' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
-#' @param se A SingleCellExperiment object.
 #' @param x_lab A character label for the X axis.
 #' Set to \code{NA_character_} to produce a \code{NULL} element
 #' @param y_lab A character label for the Y axis.
@@ -592,7 +591,6 @@ names(.all_aes_values) <- .all_aes_names
 #'
 #' @param plot_data A data.frame containing all of the plotting information, returned by \code{\link{.complete_plotting_data}} in \code{envir$plot.data}.
 #' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
-#' @param se A SingleCellExperiment object.
 #' @param x_lab A character label for the X axis.
 #' Set to \code{NA_character_} to produce a \code{NULL} element
 #' @param y_lab A character label for the Y axis.
@@ -1206,7 +1204,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #' @rdname INTERNAL_gene_axis_label
 #' @seealso 
 #' \code{\link{.make_featExprPlot}},
-#' \code{\link{.process_colorby_choice}}
+#' \code{\link{.add_color_to_column_plot}},
+#' \code{\link{.add_color_to_row_plot}}
 .gene_axis_label <- function(se, gene_id, assay_id, multiline=FALSE){
   if (is.integer(gene_id)) {
     if (is.null(rownames(se))) { 

@@ -34,7 +34,7 @@
     node_names <- list()
     edges <- list()
 
-    for (mode in c("redDimPlot", "colDataPlot", "featExprPlot", "rowDataPlot", "rowStatTable")) {
+    for (mode in c("redDimPlot", "colDataPlot", "featExprPlot", "rowDataPlot", "heatMapPlot", "rowStatTable")) {
         N <- nrow(memory[[mode]])
         cur_panels <- sprintf("%s%i", mode, seq_len(N))
         node_names[[mode]] <- cur_panels
@@ -98,7 +98,7 @@
 #' Destroys all edges to and from the current brushing source upon its removal from the UI. 
 #' Also updates the memory to eliminate discarded plots as the default choice. 
 #' 
-#' @param pObjects An environment containing \code{brush_links}, a graph produced by \code{.\link{spawn_brush_links}};
+#' @param pObjects An environment containing \code{brush_links}, a graph produced by \code{\link{.spawn_brush_chart}};
 #' and \code{memory}, a list of DataFrames containing parameters for each panel of each type.
 #' @param panel A string containing the encoded name of the panel to be deleted.
 #'
@@ -272,8 +272,8 @@
 #'
 #' Checks if any points are selected via a brush or closed lasso in a transmitting plot.
 #'
-#' @param mode String specifying the (encoded) panel type.
-#' @param i Integer specifying the ID of the panel of the specified type.
+#' @param mode String specifying the (encoded) panel type for the current (transmitting) panel.
+#' @param id Integer scalar specifying the ID of the current panel of the specified type.
 #' @param memory A list of DataFrames containing parameters for each panel of each type.
 #'
 #' @return A logical scalar specifying whether the specified panel contains a brush or a closed lasso.
@@ -282,11 +282,11 @@
 #' @seealso
 #' \code{\link{.transmitted_brush}},
 #' \code{\link{iSEE}}
-.any_point_selection <- function(mode, i, memory) {
-    if (!is.null(memory[[mode]][,.brushData][[i]])) {
+.any_point_selection <- function(mode, id, memory) {
+    if (!is.null(memory[[mode]][,.brushData][[id]])) {
         return(TRUE)       
     } 
-    lasso <- memory[[mode]][,.lassoData][[i]]
+    lasso <- memory[[mode]][,.lassoData][[id]]
     if (!is.null(lasso) && attr(lasso, "closed")) {
         return(TRUE)
     }

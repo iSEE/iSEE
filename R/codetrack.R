@@ -12,13 +12,16 @@
 #' @param se_name The name of the \code{SummarizedExperiment}/\code{SingleCellExperiment}
 #' object
 #' @param ecm_name The name of the \code{ExperimentColorMap} in use
+#' @param sanitize_cmds The character vector containing the commands resulting 
+#' from sanitizing the \code{se} object. This is obtained by extracting \code{cmds}
+#' from the returned output of \code{.sanitize_SE_input}.
 #'
 #' @return A vector containing the whole code, which can be further passed to 
 #' the instance of the \code{shinyAce} editor in the modal popup of the app
 #' 
 #' @author Federico Marini
 #' @rdname INTERNAL_track_it_all
-.track_it_all <- function(rObjects, pObjects, se_name, ecm_name) 
+.track_it_all <- function(rObjects, pObjects, se_name, ecm_name, sanitize_cmds) 
 {
   # Commands only reported for plots, not for the tables
   aobjs <- as.data.frame(rObjects$active_panels)
@@ -32,6 +35,7 @@
     "## All commands below refer to your SingleCellExperiment object as `se`.",
     "",
     sprintf("se <- %s", se_name),
+    sprintf(sanitize_cmds),
     sprintf("colormap <- %s", ecm_name),
     "all_coordinates <- list()",
     "")
@@ -88,9 +92,6 @@
     # Adding the plotting commands.
     cur_cmds <- pObjects$commands[[panel_name]]
     collated <- c(cur_cmds$data, "")
-    if (length(cur_cmds$lim)) {
-        collated <- c(collated, "# Defining plot limits", cur_cmds$lim, "")
-    }
     if (length(cur_cmds$brush)) {
         collated <- c(collated, "# Receiving brush data", cur_cmds$brush, "")
     }
@@ -103,19 +104,10 @@
 
     # Finishing off the rest of the commands.
     if (length(cur_cmds$setup)) {
-        collated <- c(collated, "# Setting up plot aesthetics", cur_cmds$setup, "")        
+        collated <- c(collated, "# Setting up plot coordinates", cur_cmds$setup, "")        
     }
     if (length(cur_cmds$plot)) {
         collated <- c(collated, "# Creating the plot", cur_cmds$plot)
-
-        # Adding extra commands.
-        extras <- pObjects$extra_plot_cmds[[panel_name]]
-        if (!is.null(extras)) {
-            collated[length(collated)] <- paste(collated[length(collated)], "+")
-            all_but_last <- seq_len(length(extras)-1L)
-            extras[all_but_last] <- paste(extras[all_but_last], "+")
-            collated <- c(collated, extras)
-        } 
     }
 
     tracked_code <- c(tracked_code, collated, "")
@@ -134,7 +126,7 @@
                       strrep("#", 80),
                       paste0("## ", .decode_panel_name("heatMapPlot", hobjs$ID[i])),
                       strrep("#", 80), "",
-                      cur_cmds[["y"]], cur_cmds[["order"]], "")
+                      cur_cmds[["y"]], cur_cmds[["order"]], cur_cmds[["subset"]], "")
 
     tracked_heat <- c(tracked_heat, "# Constructing heat map", cur_cmds[["heatmap"]], "",
                       "# Adding annotations", cur_cmds[["annotations"]], "", 

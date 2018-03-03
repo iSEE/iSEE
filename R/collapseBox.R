@@ -11,6 +11,10 @@
 #' @return A HTML tag object containing a collapsible box.
 #'
 #' @details
+#' Collapsible boxes are used to hold parameters, in the \dQuote{parameter boxes} described in \code{\link{.panel_generation}}.
+#' Do not confuse them with the \code{shinydashboard::box}es, which are used to hold the plot and table panels.
+#' Adding to the confusion is the fact that the collapsible boxes are implemented in Javascript using the Bootstrap panel classes! 
+#'
 #' We would have preferred to use \code{bsCollapse} from \pkg{shinyBS}.
 #' However, that package does not seem to be under active maintenance, and there are several aspects that make it difficult to use.
 #' Specifically, it does not seem to behave well with conditional elements inside the box,

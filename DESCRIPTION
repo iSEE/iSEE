@@ -43,7 +43,8 @@ Imports:
     grDevices,
     viridisLite,
     cowplot,
-    scales
+    scales,
+    dplyr
 Suggests:
     testthat,
     BiocStyle,

@@ -32,7 +32,7 @@
         cur_panels <- sprintf("%s%i", mode, seq_len(N))
     
         for (i in seq_len(N)) {
-            tab_name <- .check_for_tab(mode, i, memory, .colorByField, .colorByRowTableTitle, .colorByRowTable)
+            tab_name <- .check_for_tab(mode, i, memory, .colorByField, .colorByFeatNameTitle, .colorByRowTable)
             if (!is.null(tab_name)) {
                 table_links[[tab_name]]$color <- c(table_links[[tab_name]]$color, cur_panels[i])
             }
@@ -43,13 +43,14 @@
     N <- nrow(memory$featExprPlot)
     cur_panels <- sprintf("featExprPlot%i", seq_len(N))
     for (i in seq_len(N)) {
-        tab_name <- .check_for_tab("featExprPlot", i, memory, .featExprXAxis, .featExprXAxisRowTableTitle, .featExprXAxisRowTable)
+        tab_name <- .check_for_tab("featExprPlot", i, memory, .featExprXAxis, .featExprXAxisFeatNameTitle, .featExprXAxisRowTable)
         if (!is.null(tab_name)) {
             table_links[[tab_name]]$xaxis <- c(table_links[[tab_name]]$xaxis, cur_panels[i])
         }
         
-        tab_name <- .check_for_tab("featExprPlot", i, memory, .featExprYAxis, .featExprYAxisRowTableTitle, .featExprYAxisRowTable)
-        if (!is.null(tab_name)) {
+        dec_tab_name <- memory[["featExprPlot"]][i, .featExprYAxisRowTable]
+        if (dec_tab_name!=.noSelection) {
+            tab_name <- .decoded2encoded(dec_tab_name)            
             table_links[[tab_name]]$yaxis <- c(table_links[[tab_name]]$yaxis, cur_panels[i])
         }
     }
@@ -60,10 +61,10 @@
 
 #' Does a linked table exist?
 #'
-#' Checks whether a linked row statistics table exists for a particular field in a receiving plot.
+#' Checks whether a linked row statistics table exists for a particular parameter field of a receiving plot.
 #'
-#' @param mode String specifying the encoded panel type of the receiving plot.
-#' @param i Integer scalar specifying the index of a panel of the specified type, for the receiving plot.
+#' @param mode String specifying the encoded panel type of the current (receiving) plot.
+#' @param id Integer scalar specifying the index of the current panel of the specified type.
 #' @param memory A list of DataFrames containing parameters for each panel of each type.
 #' @param by_field String specifying the field to check for whether the input is using a row table input of any kind.
 #' @param ref_title String specifying the title of a row table input, to match to the value of \code{by_field} in \code{memory} for this plot.
@@ -80,12 +81,12 @@
 #' @rdname INTERNAL_check_for_tab
 #' @seealso
 #' \code{\link{.spawn_table_links}}
-.check_for_tab <- function(mode, i, memory, by_field, ref_title, table_field) {
-    if (memory[[mode]][i, by_field]!=ref_title) {
+.check_for_tab <- function(mode, id, memory, by_field, ref_title, table_field) {
+    if (memory[[mode]][id, by_field]!=ref_title) {
         return(NULL)
     }
-    cur_tab <- memory[[mode]][i, table_field]
-    if (cur_tab=="") {
+    cur_tab <- memory[[mode]][id, table_field]
+    if (cur_tab==.noSelection) {
         return(NULL) 
     }
     return(.decoded2encoded(cur_tab))
@@ -95,7 +96,7 @@
 #'
 #' Clear all links to a row statistics table that has been destroyed.
 #' 
-#' @param pObjects An environment containing \code{table_links}, a graph produced by \code{.\link{spawn_table_links}};
+#' @param pObjects An environment containing \code{table_links}, a graph produced by \code{\link{.spawn_table_links}};
 #' and \code{memory}, a list of DataFrames containing parameters for each panel of each type.
 #' @param tab String containing the encoded name of the row statistics table to be destroyed.
 #' 
@@ -123,14 +124,14 @@
     for (i in seq_along(col_kids)) { 
         kid <- col_kids[i]
         type <- enc$Type[i]
-        pObjects$memory[[type]][kid, .colorByRowTable] <- ""
+        pObjects$memory[[type]][kid, .colorByRowTable] <- .noSelection
     }
 
     for (x in all_kids$yaxis) {
-        pObjects$memory$featExprPlot[x, .featExprYAxisRowTable] <- ""
+        pObjects$memory$featExprPlot[x, .featExprYAxisRowTable] <- .noSelection
     }
     for (x in all_kids$xaxis) {
-        pObjects$memory$featExprPlot[x, .featExprXAxisRowTable] <- ""
+        pObjects$memory$featExprPlot[x, .featExprXAxisRowTable] <- .noSelection
     }
 
     # Erasing the links.
@@ -162,11 +163,11 @@
 #' \code{\link{.spawn_table_links}},
 #' \code{\link{.setup_table_observer}}
 .modify_table_links <- function(links, dest, newtab, oldtab, mode='color') {
-    if (oldtab!="") {
+    if (oldtab!=.noSelection) {
         oldtab <- .decoded2encoded(oldtab)
         links[[oldtab]][[mode]] <- setdiff(links[[oldtab]][[mode]], dest)
     }
-    if (newtab!="") {
+    if (newtab!=.noSelection) {
         newtab <- .decoded2encoded(newtab)
         links[[newtab]][[mode]] <- union(links[[newtab]][[mode]], dest)
     }
@@ -178,60 +179,74 @@
 #' Set up the actions for an observer for a parameter choice in a plot panel that may involve a linked table.
 #'
 #' @param mode String specifying the encoded panel type of the current (receiving) plot.
-#' @param i Integer scalar specifying the index of a panel of the specified type, for the receiving plot.
+#' @param id Integer scalar specifying the index of the current panel of the specified type.
 #' @param input A Shiny list of inputs, generated by the server.
-#' @param pObjects An environment containing \code{table_links}, a graph produced by \code{.\link{spawn_table_links}};
+#' @param pObjects An environment containing \code{table_links}, a graph produced by \code{\link{.spawn_table_links}};
 #' and \code{memory}, a list of DataFrames containing parameters for each panel of each type.
 #' @param by_field String specifying the field to check for whether the input is using a row table input of any kind.
-#' @param ref_title String specifying the title of a row table input, to match to the value of \code{by_field} in \code{memory} for this plot.
-#' @param table_field String specifying the field to check for the identify of the row table input.
+#' @param title String specifying the title of a row table input, to match to the value of \code{by_field} in \code{memory} for this plot.
+#' @param feat_field String specifying the field to check for the feature to examine. 
+#' @param tab_field String specifying the field to check for the identify of the row table input.
 #' @param param String specifying the type of table link to the current plot, i.e., color or x/y-axis.
 #'
 #' @return A logical scalar indicating whether the current (receiving) plot needs to be regenerated.
 #'
 #' @details
 #' This function relies on the pass-by-reference behaviour of \code{pObjects} to update \code{pObjects$memory} for the current receiving plot.
-#' New values of the fields \code{by_field} and \code{table_field} in \code{in[it} will be used to overwrite those in memory, provided they are not \code{NULL}.
+#' New values of the fields \code{by_field} and \code{tab_field} in \code{input} will be used to overwrite those in memory, provided they are not \code{NULL}.
 #'
 #' It will also modify \code{table_links} if \code{input[[by_field]]} is equal to \code{tab_title} (i.e., a linked table is being used)
 #' to update the identity of the linked table based on the new table in \code{input[[tab_field]]}.
 #' On ther other hand, if \code{input[[by_field]]} is not equal to \code{tab_title}, any linked table in the memory of the receiving plot is destroyed.
 #'
-#' The flag to replot the receiving plot is set if both \code{by_field} and \code{table_field} fields in \code{input} are non-\code{NULL}.
+#' The flag to replot the receiving plot is set if both \code{by_field} and \code{tab_field} fields in \code{input} are non-\code{NULL}.
 #' This reflects the assumption that this function is only called if either of these fields change.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_setup_table_observer
 #' @seealso
-#' \code{\link{modify_table_links}},
+#' \code{\link{.modify_table_links}},
 #' \code{\link{iSEE}}
-.setup_table_observer <- function(mode, i, input, pObjects, by_field, tab_title, tab_field, param='color') {
-    choice <- input[[paste0(mode, i, "_", by_field)]]
-    tab <- input[[paste0(mode, i, "_", tab_field)]]
-    reset <- FALSE
+.setup_table_observer <- function(mode, id, input, pObjects, by_field, title, feat_field, tab_field, param='color') {
+    if (param!='yaxis') { 
+        choice <- input[[paste0(mode, id, "_", by_field)]]
+    } else {
+        choice <- title <- ""
+    }
+    feature <- input[[paste0(mode, id, "_", feat_field)]]
+    tab <- input[[paste0(mode, id, "_", tab_field)]]
+    if (is.null(choice) || is.null(tab) || is.null(feature) || feature=="") {
+        return(FALSE)
+    }
 
-    if (!is.null(choice) && !is.null(tab)) {
-        # Editing the table_links, if we're switching to/from the table choice. 
-        old <- pObjects$memory[[mode]][i, tab_field]
-        plot_name <- paste0(mode, i)
-        if (choice==tab_title) {
-            pObjects$table_links <- .modify_table_links(pObjects$table_links, plot_name, tab, old, mode=param)
-        } else {
-            pObjects$table_links <- .modify_table_links(pObjects$table_links, plot_name, "", old, mode=param)
-        }
+    # Not replotting if none of the variables have changed.
+    # Note that the identical-ness of 'tab' doesn't matter, as long as 'feature' is the same.
+    if (param!='yaxis') { 
+        old_choice <- pObjects$memory[[mode]][id, by_field]
+    } else {
+        old_choice <- ""
+    }
+    old_feature <- pObjects$memory[[mode]][id, feat_field]
+    old_tab <- pObjects$memory[[mode]][id, tab_field]
+    choice <- as(choice, typeof(old_choice))
+    feature <- as(feature, typeof(old_feature))
+    tab <- as(tab, typeof(old_tab))
+    reset <- !identical(old_choice, choice) || !identical(old_feature, feature)
 
-        # Triggering replotting, but only if both of the input values are initialized.
-        # We don't have an 'ignoreInit' that we can rely on here.
-        reset <- TRUE
+    # Editing the table_links, if we're switching to/from the table choice. 
+    plot_name <- paste0(mode, id)
+    if (choice==title) {
+        pObjects$table_links <- .modify_table_links(pObjects$table_links, plot_name, tab, old_tab, mode=param)
+    } else {
+        pObjects$table_links <- .modify_table_links(pObjects$table_links, plot_name, .noSelection, old_tab, mode=param)
     }
 
     # Updating stored parameters. These should persist due to environment's pass-by-reference.
-    if (!is.null(choice)) {
-        pObjects$memory[[mode]][i, by_field] <- choice
+    if (param!='yaxis') { 
+        pObjects$memory[[mode]][id, by_field] <- choice
     }
-    if (!is.null(tab)) {
-        pObjects$memory[[mode]][i, tab_field] <- tab
-    }
+    pObjects$memory[[mode]][id, feat_field] <- feature
+    pObjects$memory[[mode]][id, tab_field] <- tab
     return(reset)
 }
 
@@ -240,8 +255,8 @@
 #' Delete all references to any linked row statistics tables when a receiving panel is destroyed.
 #'
 #' @param mode String specifying the encoded panel type of the current (receiving) panel to be destroyed.
-#' @param i Integer scalar specifying the index of a panel of the specified type, for the receiving panel. 
-#' @param pObjects An environment containing \code{table_links}, a graph produced by \code{.\link{spawn_table_links}};
+#' @param id Integer scalar specifying the index of the current panel of the specified type.
+#' @param pObjects An environment containing \code{table_links}, a graph produced by \code{\link{.spawn_table_links}};
 #' and \code{memory}, a list of DataFrames containing parameters for each panel of each type.
 #'
 #' @return \code{NULL}, invisibly.
@@ -259,20 +274,20 @@
 #' @seealso 
 #' \code{\link{.modify_table_links}},
 #' \code{\link{iSEE}}
-.delete_table_links <- function(mode, i, pObjects) {
+.delete_table_links <- function(mode, id, pObjects) {
     tmp_link <- pObjects$table_links 
     tmp_mem <- pObjects$memory[[mode]]
-    plot_name <- paste0(mode, i)
+    plot_name <- paste0(mode, id)
   
-    for (param in list(c(.colorByField, .colorByRowTableTitle, .colorByRowTable, "color"),
-                       c(.featExprXAxis, .featExprXAxisRowTableTitle, .featExprXAxisRowTable, "xaxis"),
-                       c(.featExprYAxis, .featExprYAxisRowTableTitle, .featExprYAxisRowTable, "yaxis"))) {
+    for (param in list(c(.colorByField, .colorByFeatNameTitle, .colorByRowTable, "color"),
+                       c(.featExprXAxis, .featExprXAxisFeatNameTitle, .featExprXAxisRowTable, "xaxis"),
+                       c(NA, NA, .featExprYAxisRowTable, "yaxis"))) {
   
-        if (tmp_mem[i, param[1]]==param[2]) {
-            oldtab <- tmp_mem[i, param[3]]
-            if (oldtab!="") {
-                tmp_link <- .modify_table_links(tmp_link, plot_name, "", oldtab, mode = param[4])
-                tmp_mem[i, param[3]] <- ""
+        if (param[4]=='yaxis' || tmp_mem[id, param[1]]==param[2]) {
+            oldtab <- tmp_mem[id, param[3]]
+            if (oldtab!=.noSelection) {
+                tmp_link <- .modify_table_links(tmp_link, plot_name, .noSelection, oldtab, mode = param[4])
+                tmp_mem[id, param[3]] <- .noSelection
             }
         }
     

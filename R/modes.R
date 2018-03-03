@@ -62,7 +62,7 @@ modeGating <- function(
   featExprArgs <- featExprPlotDefaults(se, featExprMax)
   # prepare featExprArgs
   featExprArgs[[.featExprXAxis]] <- .featExprXAxisFeatNameTitle
-  featExprArgs[[.featExprYAxis]] <- .featExprYAxisFeatNameTitle
+  # featExprArgs[[.featExprYAxis]] <- .featExprYAxisFeatNameTitle
   # Y axes take all the odd-numbered feature names
   featExprArgs[[.featExprXAxisFeatName]] <- features[,"x"]
   # X axes take all the even-numbered feature names

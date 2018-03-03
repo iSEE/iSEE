@@ -256,7 +256,7 @@ test_that(".make_featExprPlot/.scatter_plot produce a valid xy with color", {
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   expect_named(
     p.out$xy,
-    c("Y","X","GroupBy","jitteredX")
+    c("Y","X","ColorBy","GroupBy","jitteredX")
   )
   
 })

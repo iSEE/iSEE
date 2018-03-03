@@ -27,18 +27,15 @@
 #'
 #' @section Feature expression plot parameters:
 #' \describe{
-#' \item{\code{RowTable}:}{Character, what row statistic table should be used to choose a feature to display on the y-axis?
-#' Defaults to \code{"---"}, which means that the first available table will be used.}
-#' \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
-#' Defaults to 1, i.e., the first assay in \code{se}.
-#' Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
-#' \item{\code{YAxis}:}{Character, what type of variable should be shown on the x-axis?
-#' Defaults to \code{"Row table"}, but can also be \code{"Feature name"}.}
 #' \item{\code{YAxisFeatName}:}{Integer, the index of the feature for which to show the expression on the y-axis if \code{YAxis="Feature name"}. 
 #' Defaults to 1, i.e., the first feature in \code{se}.
 #' Alternatively, a string can be supplied containing the name of the feature, i.e., the row name.}
-#' \item{\code{YAxisRowTable}:}{Character, which row statistic table should be used to choose a feature to put on the y-axis if \code{YAxis="Row table"}? 
-#' Defaults to an empty string, which means that the first available table will be used.}
+#' \item{\code{YAxisRowTable}:}{Character, what row statistic table should be used to choose a feature to display on the y-axis?
+#' Any setting will override \code{YAxisFeatName} upon initialization of the app.
+#' Defaults to \code{"---"}, which means that no table will be used.}
+#' \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
+#' Defaults to 1, i.e., the first assay in \code{se}.
+#' Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
 #' \item{\code{XAxis}:}{Character, what type of variable should be shown on the x-axis?
 #' Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Column data"} or \code{"Feature name"}.}
 #' \item{\code{XAxisColData}:}{Character, what column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
@@ -47,7 +44,8 @@
 #' Defaults to 1, i.e., the first feature in \code{se}.
 #' Alternatively, a string can be supplied containing the name of the feature.}
 #' \item{\code{XAxisRowTable}:}{Character, which row statistic table should be used to choose a feature to put on the x-axis if \code{XAxis="Row table"}? 
-#' Defaults to an empty string, which means that the first available table will be used.}
+#' Any setting will override \code{XAxisFeatName} upon initialization of the app.
+#' Defaults to \code{"---"}, which means that no table will be used.}
 #' }
 #'
 #' @section Column data plot parameters:
@@ -76,20 +74,18 @@
 #' Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Feature name"} or \code{"Column data"}.}
 #' \item{\code{ColorByDefaultColor}:}{String specifying the default point colour when \code{ColorBy="None"}.
 #' Defaults to \code{"black"}.}
-#' \item{\code{ColorByRowTable}:}{Character, which row statistic table should be used to choose a feature to color by, if \code{ColorBy="Row table"}? 
-#' Defaults to an empty string, which means that the first available table will be used.}
 #' \item{\code{ColorByFeatName}:}{Integer, the index of the feature to use for colouring based on expression, if \code{ColorBy="Feature name"}? 
 #' Defaults to 1, i.e., the first feature in \code{se}.
 #' Alternatively, a string can be supplied containing the name of the feature.}
+#' \item{\code{ColorByRowTable}:}{Character, which row statistic table should be used to choose a feature to color by, if \code{ColorBy="Feature name"}? 
+#' Any setting will override \code{ColorByFeatName} upon initialization of the app.
+#' Defaults to \code{"---"}, which means that no table will be used.}
 #' }
 #'
 #' For the plots where each point represents a sample (i.e., all plots except for heatmaps and row data plots), the following additional options apply:
 #' \describe{
 #' \item{\code{ColorByColData}:}{Character, which column of \code{colData(se)} should be used for colouring if \code{ColorBy="Column data"}? 
 #' Defaults to the first entry of \code{colData(se)}.}
-#' \item{\code{ColorByRowTableAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Row table"}? 
-#' Defaults to 1, i.e., the first assay in \code{se}.
-#' Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
 #' \item{\code{ColorByFeatNameAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Feature name"}? 
 #' Defaults to 1, i.e., the first assay in \code{se}.
 #' Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
@@ -99,9 +95,7 @@
 #' \describe{
 #' \item{\code{ColorByRowData}:}{Character, which column of \code{rowData(se)} should be used for colouring if \code{ColorBy="Row data"}? 
 #' Defaults to the first entry of \code{rowData(se)}.}
-#' \item{\code{ColorByRowTableColor}:}{String specifying the colour to be used to highlight the selected feature from the row table.
-#' Defaults to \code{"red"}.}
-#' \item{\code{ColorByFeatNameColor}:}{String specifying the colour to be used to highlight the selected feature from the text.
+#' \item{\code{ColorByFeatNameColor}:}{String specifying the colour to be used to highlight the selected feature from the text if \code{ColorBy="Feature name"}.
 #' Defaults to \code{"red"}.}
 #' }
 #'
@@ -120,8 +114,8 @@
 #' Defaults to 1.}
 #' \item{\code{LegendPosition}:}{String specifying the legend position.
 #' Defaults to \code{"Bottom"} but can also be \code{"Right"}.}
-#' \item{\code{ZoomData}:}{For all plot types except heatmaps, a list containing numeric vectors of length 4, containing values with names \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"}.
-#' These define the zoom window on the x- and y-axes. For heatmaps, a numeric vector indicating the indices of the selected rows in the full heatmap. 
+#' \item{\code{ZoomData}:}{A list containing numeric vectors of length 4, containing values with names \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"}.
+#' These define the zoom window on the x- and y-axes. 
 #' Each element of the list defaults to \code{NULL}, i.e., no zooming is performed.}
 #' }
 #' 
@@ -138,21 +132,32 @@
 #' }
 #'
 #' @section Heatmap parameters:
+#' The features/rows to be used in the construction of the heatmap are specified with:
 #' \describe{
+#' \item{\code{FeatName}:}{Integer list of length 1, containing an integer vector with the indices of the feature(s) for which to show the expression in the heatmap. 
+#' Defaults to \code{list(1L)} for each panel, i.e., the first feature in \code{se}.
+#' Alternatively, a character vector can be supplied containing the names of the features.}
 #' \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
 #' Defaults to 1, i.e., the first assay in \code{se}.
 #' Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
-#' \item{\code{FeatNameBoxOpen}:}{Logical, should the feature selection box be open upon initialization?
-#' Defaults to \code{FALSE}.}
-#' \item{\code{FeatName}:}{Integer list, the index of the feature(s) for which to show the expression in the heatmap. 
-#' Defaults to 1, i.e., the first feature in \code{se}.
-#' Alternatively, a string can be supplied containing the name of the feature.}
-#' \item{\code{ColDataBoxOpen}:}{Logical, should the column data selection box be open upon initialization?
-#' Defaults to \code{FALSE}.}
-#' \item{\code{ColData}:}{Character list, which column(s) of \code{colData(se)} should be used to order the columns in the heatmap (and appear as annotation bars)? 
-#' Defaults to the first entry of \code{colData(se)}.}
 #' \item{\code{FeatNameSource}:}{Character, which other panel should be used to choose the features to show in the heatmap?
 #'  Defaults to \code{"---"}, which means that no panel is used for feature selection.}
+#' \item{\code{FeatNameBoxOpen}:}{Logical, should the feature selection box be open upon initialization?
+#' Defaults to \code{FALSE}.}
+#' }
+#'
+#' The column metadata variables control the ordering of the samples in the heatmap. 
+#' They can be controlled with:
+#' \describe{
+#' \item{\code{ColData}:}{Character list, which column(s) of \code{colData(se)} should be used to order the columns in the heatmap (and appear as annotation bars)? 
+#' Defaults to the first entry of \code{colData(se)}.}
+#' \item{\code{ColDataBoxOpen}:}{Logical, should the column data selection box be open upon initialization?
+#' Defaults to \code{FALSE}.}
+#' }
+#'
+#' A variety of parameters are available to control the color scale of the heatmap.
+#' They can be specified with:
+#' \describe{ 
 #' \item{\code{ColorBoxOpen}:}{Logical, should the color selection panel for the heatmap be open upon initialization?
 #' Defaults to \code{FALSE}.}
 #' \item{\code{Centering}:}{Logical, should the rows of the matrix be mean-centered in the heatmap? 
@@ -166,6 +171,10 @@
 #' \item{\code{ColorScale}:}{Character, what color scale (in the form low-mid-high) should be used to color the heatmap when values are centered?
 #' Defaults to \code{purple-black-yellow}.}
 #' }
+#'
+#' Finally, the \code{ZoomData} field for heatmaps should contain an integer vector of consecutive indices to zoom into from the full heatmap. 
+#' This vector will subset the entries in \code{FeatName} for a given panel. 
+#' This defaults to \code{NULL}, i.e., all specified features in \code{FeatName} are shown.
 #'
 #' @section Brushing parameters:
 #' For the point-based plots, the following options apply:

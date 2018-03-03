@@ -366,9 +366,9 @@ names(.all_aes_values) <- .all_aes_names
 
     # Adding coloring information as well.    
     if (by_row) {
-        color_out <- .define_colorby_for_row_plot(param_choices, all_memory)
+        color_out <- .define_colorby_for_row_plot(param_choices)
     } else {
-        color_out <- .define_colorby_for_column_plot(param_choices, all_memory)
+        color_out <- .define_colorby_for_column_plot(param_choices)
     }
     more_data_cmds[["color"]] <- color_out
 
@@ -829,7 +829,6 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
 #' Generates the commands necessary to define the variables to color by in the data.frame to be supplied to ggplot.
 #'
 #' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
-#' @param all_memory A list of DataFrames, where each DataFrame corresponds to a panel type and contains the settings for each individual panel of that type.
 #' 
 #' @details
 #' These functions generate commands to extract the variable to use for coloring individual points in row- or column-based plots,
@@ -848,7 +847,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
 #' \code{\link{.complete_plotting_data}},
 #' \code{\link{.add_color_to_row_plot}},
 #' \code{\link{.add_color_to_column_plot}}
-.define_colorby_for_column_plot <- function(param_choices, all_memory) {
+.define_colorby_for_column_plot <- function(param_choices) {
     color_choice <- param_choices[[.colorByField]]
     if (color_choice==.colorByColDataTitle) {
         covariate_name <- param_choices[[.colorByColData]]
@@ -870,7 +869,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
 }
 
 #' @rdname INTERNAL_define_color_variables
-.define_colorby_for_row_plot <- function(param_choices, all_memory) {
+.define_colorby_for_row_plot <- function(param_choices) {
     color_choice <- param_choices[[.colorByField]]
     if (color_choice==.colorByRowDataTitle) {
         covariate_name <- param_choices[[.colorByRowData]]
@@ -896,7 +895,6 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #' 
 #' @param colorby A vector of values to color points by, taken from \code{plot.data$ColorBy} in upstream functions.
 #' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
-#' @param all_memory A list of DataFrames, where each DataFrame corresponds to a panel type and contains the settings for each individual panel of that type.
 #' @param se A SingleCellExperiment object.
 #'
 #' @return 
@@ -919,7 +917,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #' \code{\link{.square_plot}},
 #' \code{\link{.define_colorby_for_row_plot}},
 #' \code{\link{.define_colorby_for_column_plot}}
-.add_color_to_column_plot <- function(colorby, param_choices, all_memory, se) {
+.add_color_to_column_plot <- function(colorby, param_choices, se) {
     output <- list(label=NA_character_, cmds=NULL)
     if (is.null(colorby)) { 
         return(output)
@@ -950,7 +948,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 
 #' @rdname INTERNAL_add_color_scale
 #' @importFrom ggplot2 scale_color_manual
-.add_color_to_row_plot <- function(colorby, param_choices, all_memory, se) {
+.add_color_to_row_plot <- function(colorby, param_choices, se) {
     output <- list(label=NA_character_, cmds=NULL)
     if (is.null(colorby)) { 
         return(output)

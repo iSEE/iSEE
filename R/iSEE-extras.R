@@ -313,7 +313,7 @@ height_limits <- c(400L, 1000L)
 #' @details
 #' This function ensures that the links in memory are valid with respect to the starting panels.
 #' Active panels should not receive brushes from inactive panels or have links to inactive row statistics tables.
-#' Similarly, inactive panels should not receive brushes from any panels (set to \code{"---"}) or link to any tables (set to an empty string).
+#' Similarly, inactive panels should not receive brushes from any panels or link to an empty string (transmitters set to \code{"---"} in both cases).
 #' 
 #' This behaviour ensures that the graph in \code{\link{.spawn_brush_chart}} or the links in \code{\link{.spawn_table_links}} are valid.
 #' Specifically, there are never any inactive entities in either of these two constructs.
@@ -555,6 +555,7 @@ height_limits <- c(400L, 1000L)
 #' Some work is thus required to trick \code{\link{.process_brushby_choice}} into thinking it is operating on the parameteres for a point-based receiving panel.
 #'
 #' @author Aaron Lun
+#' @rdname INTERNAL_get_brush_selection
 #' @seealso 
 #' \code{\link{.process_brushby_choice}},
 #' \code{\link{iSEE}}

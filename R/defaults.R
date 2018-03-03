@@ -164,12 +164,12 @@
 #' Defaults to \code{TRUE}.}
 #' \item{\code{Scaling}:}{Logical, should the rows of the matrix be scaled to unit variance in the heatmap? 
 #' Defaults to \code{FALSE}.}
-#' \item{\code{Lower}:}{Numeric, what should be the lower bound of the color scale for the values in the heatmap? All values below this threshold will be shown in the same color.}
-#' Defaults to -Inf, meaning that the lowest value in the data matrix will be used.
-#' \item{\code{Upper}:}{Numeric, what should be the upper bound of the color scale for the values in the heatmap? All values above this threshold will be shown in the same color.}
-#' Defaults to Inf, meaning that the highest value in the data matrix will be used.
+#' \item{\code{Lower}:}{Numeric, what should be the lower bound of the color scale for the values in the heatmap? All values below this threshold will be shown in the same color.
+#' Defaults to -Inf, meaning that the lowest value in the data matrix will be used.}
+#' \item{\code{Upper}:}{Numeric, what should be the upper bound of the color scale for the values in the heatmap? All values above this threshold will be shown in the same color.
+#' Defaults to Inf, meaning that the highest value in the data matrix will be used.}
 #' \item{\code{ColorScale}:}{Character, what color scale (in the form low-mid-high) should be used to color the heatmap when values are centered?
-#' Defaults to \code{purple-black-yellow}.}
+#' Defaults to \code{"purple-black-yellow"}.}
 #' }
 #'
 #' Finally, the \code{ZoomData} field for heatmaps should contain an integer vector of consecutive indices to zoom into from the full heatmap. 

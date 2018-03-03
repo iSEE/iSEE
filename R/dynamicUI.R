@@ -534,7 +534,7 @@
 #' @importFrom colourpicker colourInput
 .create_visual_box_for_row_plots <- function(mode, ID, param_choices, active_tab, covariates) {
     colorby_field <- paste0(mode, ID, "_", .colorByField)
-    color_choices <- c(.colorByNothingTitle, .colorByRowDataTitle, .colorByRowTableTitle, .colorByFeatNameTitle)
+    color_choices <- c(.colorByNothingTitle, .colorByRowDataTitle, .colorByFeatNameTitle)
 
     collapseBox(
         id = paste0(mode, ID, "_", .visualParamBoxOpen),

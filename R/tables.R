@@ -32,7 +32,7 @@
         cur_panels <- sprintf("%s%i", mode, seq_len(N))
     
         for (i in seq_len(N)) {
-            tab_name <- .check_for_tab(mode, i, memory, .colorByField, .colorByRowTableTitle, .colorByRowTable)
+            tab_name <- .check_for_tab(mode, i, memory, .colorByField, .colorByFeatNameTitle, .colorByRowTable)
             if (!is.null(tab_name)) {
                 table_links[[tab_name]]$color <- c(table_links[[tab_name]]$color, cur_panels[i])
             }
@@ -43,13 +43,14 @@
     N <- nrow(memory$featExprPlot)
     cur_panels <- sprintf("featExprPlot%i", seq_len(N))
     for (i in seq_len(N)) {
-        tab_name <- .check_for_tab("featExprPlot", i, memory, .featExprXAxis, .featExprXAxisRowTable)
+        tab_name <- .check_for_tab("featExprPlot", i, memory, .featExprXAxis, .featExprXAxisFeatNameTitle, .featExprXAxisRowTable)
         if (!is.null(tab_name)) {
             table_links[[tab_name]]$xaxis <- c(table_links[[tab_name]]$xaxis, cur_panels[i])
         }
         
-        tab_name <- memory[["featExprPlot"]][i, .featExprYAxisRowTable]
-        if (tab_name!=.noSelection) {
+        dec_tab_name <- memory[["featExprPlot"]][i, .featExprYAxisRowTable]
+        if (dec_tab_name!=.noSelection) {
+            tab_name <- .decoded2encoded(dec_tab_name)            
             table_links[[tab_name]]$yaxis <- c(table_links[[tab_name]]$yaxis, cur_panels[i])
         }
     }
@@ -278,7 +279,7 @@
     tmp_mem <- pObjects$memory[[mode]]
     plot_name <- paste0(mode, id)
   
-    for (param in list(c(.colorByField, .colorByRowTableTitle, .colorByRowTable, "color"),
+    for (param in list(c(.colorByField, .colorByFeatNameTitle, .colorByRowTable, "color"),
                        c(.featExprXAxis, .featExprXAxisFeatNameTitle, .featExprXAxisRowTable, "xaxis"),
                        c(NA, NA, .featExprYAxisRowTable, "yaxis"))) {
   

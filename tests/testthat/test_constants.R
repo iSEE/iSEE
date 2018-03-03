@@ -71,8 +71,10 @@ test_that(".decoded2encoded works as expected", {
     expect_identical(iSEE:::.decoded2encoded(c("Feature expression plot 1", "Reduced dimension plot 1")), 
                                              c("featExprPlot1", "redDimPlot1"))
     expect_identical(iSEE:::.decoded2encoded(character(0)), character(0))
-    expect_identical(iSEE:::.decoded2encoded(c("Feature expression plot 1", "")), 
-                                             c("featExprPlot1", ""))
+    expect_error(iSEE:::.decoded2encoded(c("Feature expression plot 1", "")),
+                 "'' is not a legal panel name")
+    # expect_identical(iSEE:::.decoded2encoded(c("Feature expression plot 1", "")), 
+    #                                          c("featExprPlot1", ""))
 })
 
 test_that(".split_encoded works as expected", {

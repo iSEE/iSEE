@@ -64,6 +64,10 @@
   
   # Arrange cells according to the selected colData columns
   orderBy <- unlist(param_choices[[.heatMapColData]])
+  validate(need( 
+      length(orderBy) > 0L,
+      sprintf("need at least one column annotation for heat map") 
+  ))
   data_cmds[["order"]] <- 
     c(
       lapply(seq_along(orderBy), function(i) {

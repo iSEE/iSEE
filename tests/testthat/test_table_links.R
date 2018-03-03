@@ -24,7 +24,7 @@ featExprArgs[3,iSEE:::.featExprYAxisRowTable] <- "Row statistics table 2"
 
 featExprArgs[1,iSEE:::.featExprXAxis] <-
     featExprArgs[3,iSEE:::.featExprXAxis] <-
-    iSEE:::.featExprXAxisRowTableTitle
+    iSEE:::.featExprXAxisRowTable
 
 memory <- iSEE:::.setup_memory(sce, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs, heatMapArgs, 
         nrow(redDimArgs), nrow(colDataArgs), nrow(featExprArgs), nrow(rowStatArgs), nrow(rowDataArgs), nrow(heatMapArgs))

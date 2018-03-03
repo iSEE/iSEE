@@ -32,17 +32,17 @@ test_that(".make_redDimPlot/.scatter_plot produce a valid list",{
   )
   expect_named(
     p.out,
-    c("cmd", "xy", "plot")
+    c("cmd_list", "xy", "plot")
   )
   
   # cmd value is a named list
   expect_type(
-    p.out$cmd,
+    p.out$cmd_list,
     "list"
   )
   expect_named(
-    p.out$cmd,
-    c("data","lim","brush","setup","plot")
+    p.out$cmd_list,
+    c("data","brush","setup","plot")
   )
   
   # xy value is a data frame
@@ -89,17 +89,17 @@ test_that(".make_colDataPlot/.violin_plot produce a valid list",{
   )
   expect_named(
     p.out,
-    c("cmd", "xy", "plot")
+    c("cmd_list", "xy", "plot")
   )
   
   # cmd value is a named list
   expect_type(
-    p.out$cmd,
+    p.out$cmd_list,
     "list"
   )
   expect_named(
-    p.out$cmd,
-    c("data","lim","brush","setup","plot")
+    p.out$cmd_list,
+    c("data","brush","setup","plot")
   )
   
   # xy value is a data frame
@@ -109,7 +109,7 @@ test_that(".make_colDataPlot/.violin_plot produce a valid list",{
   )
   expect_named(
     p.out$xy,
-    c("Y","X")
+    c("Y","X","GroupBy","jitteredX")
   )
   
   #plot
@@ -127,7 +127,7 @@ test_that(".make_colDataPlot/.violin_plot produce a valid xy with color", {
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   expect_named(
     p.out$xy,
-    c("Y","X","ColorBy")
+    c("Y","X","ColorBy","GroupBy","jitteredX")
   )
   
 })
@@ -150,17 +150,17 @@ test_that(".make_colDataPlot/.griddotplot produce a valid list",{
   )
   expect_named(
     p.out,
-    c("cmd", "xy", "plot")
+    c("cmd_list", "xy", "plot")
   )
   
   # cmd value is a named list
   expect_type(
-    p.out$cmd,
+    p.out$cmd_list,
     "list"
   )
   expect_named(
-    p.out$cmd,
-    c("data","lim","brush","setup","plot")
+    p.out$cmd_list,
+    c("data","brush","setup","plot")
   )
   
   # xy value is a data frame
@@ -170,7 +170,7 @@ test_that(".make_colDataPlot/.griddotplot produce a valid list",{
   )
   expect_named(
     p.out$xy,
-    c("Y","X")
+    c("Y","X","ColorBy","jitteredX","jitteredY")
   )
   
   #plot
@@ -192,7 +192,7 @@ test_that(".make_colDataPlot/.griddotplot produce a valid xy with color", {
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   expect_named(
     p.out$xy,
-    c("Y","X","ColorBy")
+    c("Y","X","ColorBy","jitteredX","jitteredY")
   )
   
 })
@@ -214,17 +214,17 @@ test_that(".make_featExprPlot/.scatter_plot produce a valid list",{
   )
   expect_named(
     p.out,
-    c("cmd", "xy", "plot")
+    c("cmd_list", "xy", "plot")
   )
   
   # cmd value is a named list
   expect_type(
-    p.out$cmd,
+    p.out$cmd_list,
     "list"
   )
   expect_named(
-    p.out$cmd,
-    c("data","lim","brush","setup","plot")
+    p.out$cmd_list,
+    c("data","brush","setup","plot")
   )
   
   # xy value is a data frame
@@ -234,7 +234,7 @@ test_that(".make_featExprPlot/.scatter_plot produce a valid list",{
   )
   expect_named(
     p.out$xy,
-    c("Y","X")
+    c("Y","X","GroupBy","jitteredX")
   )
   
   #plot
@@ -256,7 +256,7 @@ test_that(".make_featExprPlot/.scatter_plot produce a valid xy with color", {
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   expect_named(
     p.out$xy,
-    c("Y","X","ColorBy")
+    c("Y","X","GroupBy","jitteredX")
   )
   
 })
@@ -265,13 +265,13 @@ test_that(".make_featExprPlot works for YAxis set to Feature name", {
   # change the value locally for the specific test
   selected_gene <- "0610009B22Rik"
   
-  all_memory$featExprPlot[1,iSEE:::.featExprYAxis] <- iSEE:::.featExprYAxisFeatNameTitle
+  # all_memory$featExprPlot[1,iSEE:::.featExprYAxis] <- iSEE:::.featExprYAxisFeatNameTitle
   all_memory$featExprPlot[1,iSEE:::.featExprYAxisFeatName] <- selected_gene
   
   p.out <- iSEE:::.make_featExprPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_match(
-    p.out$cmd$data$y,
+    p.out$cmd_list$data$y,
     selected_gene,
     fixed = TRUE
   )
@@ -286,7 +286,7 @@ test_that(".make_featExprPlot works for XAxis set to Column data", {
   p.out <- iSEE:::.make_featExprPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_match(
-    p.out$cmd$data$x,
+    p.out$cmd_list$data$x,
     "dissection_s",
     fixed = TRUE
   )
@@ -301,7 +301,7 @@ test_that(".make_featExprPlot works for XAxis set to Row table", {
   p.out <- iSEE:::.make_featExprPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_match(
-    p.out$cmd$data$x,
+    p.out$cmd_list$data$x,
     "plot.data$X <- assay",
     fixed = TRUE
   )
@@ -318,7 +318,7 @@ test_that(".make_featExprPlot works for XAxis set to Feature name", {
   p.out <- iSEE:::.make_featExprPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_match(
-    p.out$cmd$data$x,
+    p.out$cmd_list$data$x,
     selected_gene,
     fixed = TRUE
   )
@@ -335,33 +335,33 @@ test_that(".make_featExprPlot works for groupable colour covariate", {
   p.out <- iSEE:::.make_featExprPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_match(
-    p.out$cmd$data$color,
+    p.out$cmd_list$data$color,
     selected_coldata,
     fixed = TRUE
   )
   
   expect_match(
-    p.out$cmd$data$more_color,
+    p.out$cmd_list$data$more_color,
     "as.factor",
     fixed = TRUE
   )
   
   expect_match(
-    p.out$cmd$plot$scale_color[[1]],
+    p.out$cmd_list$plot["scale_color1"],
     "^scale_color_manual"
   )
   expect_match(
-    p.out$cmd$plot$scale_color[[1]],
+    p.out$cmd_list$plot["scale_color1"],
     selected_coldata,
     fixed = TRUE
   )
   
   expect_match(
-    p.out$cmd$plot$scale_color[[2]],
+    p.out$cmd_list$plot["scale_color2"],
     "^scale_fill_manual"
   )
   expect_match(
-    p.out$cmd$plot$scale_color[[2]],
+    p.out$cmd_list$plot["scale_color2"],
     selected_coldata,
     fixed = TRUE
   )
@@ -385,20 +385,20 @@ test_that(".make_colDataPlot/.create_plot can produce horizontal violins", {
   p.out <- iSEE:::.make_colDataPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_match(
-    p.out$cmd$data$y,
+    p.out$cmd_list$data$y,
     selected_coldataY,
     fixed = TRUE
   )
   
   expect_match(
-    p.out$cmd$data$x,
+    p.out$cmd_list$data$x,
     selected_coldataX,
     fixed = TRUE
   )
   
   expect_named(
     p.out$xy,
-    c("Y","X")
+    c("Y","X","GroupBy","jitteredX")
   )
   
 })
@@ -510,7 +510,7 @@ test_that(".make_colDataPlot/.violin_plot works with zoom",{
     row.names = colnames(sce)
   )
   
-  expect_identical(p.out$xy, expected_xy)
+  expect_identical(p.out$xy[, c("Y","X")], expected_xy)
 
 })
 
@@ -550,7 +550,7 @@ test_that(".make_colDataPlot/.griddotplot works with zoom",{
     row.names = colnames(sce)
   )
   
-  expect_identical(p.out$xy, expected_xy)
+  expect_identical(p.out$xy[, c("Y","X")], expected_xy)
 
 })
 
@@ -671,13 +671,13 @@ test_that(".process_brushby_choice works when sender is another plot", {
   )
   # check the source plot type
   expect_match(
-    brush_cmd$cmd,
+    brush_cmd$cmds,
     sourcePlotType,
     fixed = TRUE
   )
   # check that the second (hard-coded) command is present
   expect_match(
-    brush_cmd$cmd,
+    brush_cmd$cmds,
     "plot.data$BrushBy",
     fixed = TRUE
   )
@@ -709,13 +709,13 @@ test_that(".process_brushby_choice works when sender is self plot", {
   
   # check the source of the brushed data
   expect_match(
-    brush_cmd$cmd,
+    brush_cmd$cmds,
     "shiny::brushedPoints(plot.data",
     fixed = TRUE
   )
   # check that the second (hard-coded) command is present
   expect_match(
-    brush_cmd$cmd,
+    brush_cmd$cmds,
     "plot.data$BrushBy",
     fixed = TRUE
   )
@@ -752,7 +752,7 @@ test_that(".create_points handles transparency brush", {
   
   expect_named(
     p.out$cmd$brush,
-    "init"
+    c("brush", "select")
   )
   # TODO: better tests
   
@@ -789,10 +789,10 @@ test_that(".create_points handles colour brush", {
   
   expect_named(
     p.out$cmd$brush,
-    "init"
+    c("brush", "select")
   )
   expect_match(
-    p.out$cmd$plot$brush_color,
+    p.out$cmd$plot["points.brush_color"],
     all_memory$redDimPlot[1,iSEE:::.brushColor],
     fixed = TRUE
   )
@@ -831,10 +831,10 @@ test_that(".create_points handles restrict brush", {
   
   expect_named(
     p.out$cmd$brush,
-    c("init","subset")
+    c("brush","select","full","subset")
   )
   expect_match(
-    p.out$cmd$plot$brush_restrict,
+    p.out$cmd$plot["points.brush_restrict"],
     "plot.data",
     fixed = TRUE
   )

@@ -61,7 +61,6 @@
 .colorByNothingTitle <- "None"
 .colorByColDataTitle <- "Column data"
 .colorByRowDataTitle <- "Row data"
-.colorByRowTableTitle <- "Row table"
 .colorByFeatNameTitle <- "Feature name"
 
 .colorByField <- "ColorBy"

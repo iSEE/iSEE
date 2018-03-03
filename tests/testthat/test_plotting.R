@@ -250,7 +250,7 @@ test_that(".make_featExprPlot/.scatter_plot produce a valid xy with color", {
   all_memory$featExprPlot[1,iSEE:::.featExprYAxisRowTable] <- "Row statistics table 1"
   all_memory$featExprPlot[1,iSEE:::.featExprYAxisRowTable] <- "Row statistics table 1"
   all_memory$featExprPlot[1,iSEE:::.colorByRowTable] <- "Row statistics table 1"
-  all_memory$featExprPlot[1,iSEE:::.colorByField] <- iSEE:::.colorByRowTableTitle
+  all_memory$featExprPlot[1,iSEE:::.colorByField] <- iSEE:::.colorByFeatNameTitle
   
   p.out <- iSEE:::.make_featExprPlot(
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())

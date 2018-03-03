@@ -159,7 +159,7 @@
   to_eval <- unlist(extra_cmds["grid"])
   plot_out <- eval(parse(text=to_eval), envir=eval_env)
 
-  return(list(cmd=c(data_cmds, extra_cmds), xy=eval_env$plot.data, plot=plot_out, legends=legends))
+  return(list(cmd=c(data_cmds, extra_cmds), xy=eval_env$value.mat, plot=plot_out, legends=legends))
 }
 
 .get_colorscale_limits <- function(min.value, max.value, lower.bound, upper.bound, include.zero) {

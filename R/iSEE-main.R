@@ -1366,7 +1366,7 @@ iSEE <- function(
                 rObjects[[legend_field]] <- .increment_counter(isolate(rObjects[[legend_field]]))
 
                 p.out <- .make_heatMapPlot(i0, pObjects$memory, pObjects$coordinates, se, colormap)
-                pObjects$commands[[plot_name]] <- p.out$cmd
+                pObjects$commands[[plot_name]] <- p.out$cmd_list
                 pObjects$coordinates[[plot_name]] <- p.out$xy # Caching the expression matrix.
                 pObjects$cached_plots[[plot_name]] <- p.out$legends # Caching the legend plot for downstream use.
                 p.out$plot

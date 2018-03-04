@@ -38,154 +38,135 @@
 #' @importFrom scales rescale
 #' @importFrom reshape2 melt
 #' @importFrom dplyr arrange
-.make_heatMapPlot <- function(id, all_memory, all_coordinates, se, colormap)
-# Makes a heatmap.
-{
+.make_heatMapPlot <- function(id, all_memory, all_coordinates, se, colormap) {
   param_choices <- all_memory$heatMapPlot[id,]
-  data_cmds <- list()
-
-  cells_selected <- colnames(se)[.get_brush_selection(colnames(se), 
-                                                      all_memory$heatMapPlot[id,.brushByPlot],
-                                                      all_memory, all_coordinates)]
+  eval_env <- new.env()
 
   genes_selected_y <- param_choices[[.heatMapFeatName]][[1]]
   validate(need( 
     length(genes_selected_y) > 0L,
     sprintf("need at least one feature for heat map") 
   ))
-  
   assay_choice <- param_choices[[.heatMapAssay]]
   
   # Extract genes to be included and melt the matrix to long format
-  data_cmds[["y"]] <- list(
+  data_cmds <- c(
     sprintf("value.mat <- as.matrix(assay(se, %i)[%s, , drop=FALSE]);", 
             assay_choice, paste(deparse(genes_selected_y), collapse="\n")),
     sprintf("value.mat <- t(scale(t(value.mat), center = %s, scale = %s));", 
             param_choices[[.heatMapCentering]],
             param_choices[[.heatMapScaling]]),
-    sprintf("plot.data <- reshape2::melt(value.mat, varnames = c('Y', 'X'));")
+    "plot.data <- reshape2::melt(value.mat, varnames = c('Y', 'X'));"
   )
-  
-  if (length(cells_selected) > 0) {
-      data_cmds[["brush"]] <- list(
-          sprintf("plot.data$BrushBy <- plot.data$X %%in%% %s;",
-                  paste(deparse(cells_selected), collapse="\n"))
-      )
-      if (param_choices[[.brushEffect]]==.brushRestrictTitle) {
-          data_cmds[["brush"]] <- c(data_cmds[["brush"]], 
-                                    list("plot.data <- subset(plot.data, BrushBy);"))
-      }
+
+  # Processing the brushing choice.
+  # Note that the cell names are not in the rownames(plot.data), but in plot.data$X, hence the sub().
+  alpha_cmd <- ""
+  alpha_legend_cmd <- NULL
+  brush_out <- .process_brushby_choice(param_choices, all_memory)
+  brush_cmds <- brush_out$cmds
+
+  if (length(brush_cmds)) { 
+      brush_cmds[["select"]] <- sub("rownames(plot.data)", "plot.data$X", brush_cmds[["select"]], fixed=TRUE)
+      eval_env$all_brushes <- brush_out$data
+      eval_env$all_lassos <- brush_out$data
+
       if (param_choices[[.brushEffect]]==.brushTransTitle) {
           alpha_cmd <- ", alpha=BrushBy"
           alpha_legend_cmd <- "guides(alpha=FALSE) +"
-      } else {
-          alpha_cmd <- ""
-          alpha_legend_cmd <- NULL
       }
-  } else {
-      alpha_cmd <- ""
-      alpha_legend_cmd <- NULL
   }
   
   # Arrange cells according to the selected colData columns
-  orderBy <- unlist(param_choices[[.heatMapColData]])
+  orderBy <- param_choices[[.heatMapColData]][[1]]
   validate(need( 
       length(orderBy) > 0L,
       sprintf("need at least one column annotation for heat map") 
   ))
-  data_cmds[["order"]] <- 
-    c(
-      lapply(seq_along(orderBy), function(i) {
+  setup_cmds <- c(
+      vapply(seq_along(orderBy), FUN=function(i) {
         sprintf("plot.data[['OrderBy%i']] <- colData(se)[['%s']][match(plot.data$X, rownames(colData(se)))];",
                 i, orderBy[i])
-      }),
+      }, FUN.VALUE=character(1)),
       sprintf("plot.data <- dplyr::arrange(plot.data, %s);", 
               paste0("OrderBy", seq_along(orderBy), collapse = ",")),
       sprintf("plot.data$X <- factor(plot.data$X, levels = unique(plot.data$X));")
     )
 
+  # Define zoom command. Transform the ranges given by zoomData to the actual coordinates in the heatmap
+  bounds <- param_choices[[.zoomData]][[1]]
+  if (!is.null(bounds)) {
+      setup_cmds <- c(setup_cmds, 
+                      sprintf("plot.data <- subset(plot.data, Y %%in%% rownames(value.mat)[c(%s)]); # zooming in", 
+                              paste0(bounds, collapse = ",")))
+  }
+
   # Evaluate to have plot.data
-  eval_env <- new.env()
-  eval(parse(text=unlist(data_cmds[c("y", "brush", "order")])), envir=eval_env)
+  eval(parse(text=c(data_cmds, brush_cmds, setup_cmds)), envir=eval_env)
 
   # Define fill command and color range for heatmap
   min.obs <- min(eval_env$plot.data$value, na.rm=TRUE)
   max.obs <- max(eval_env$plot.data$value, na.rm=TRUE)
   fill_cmd <- .get_heatmap_fill_cmd(param_choices, colormap, min.obs, max.obs) 
 
-  # Define plotting commands
-  extra_cmds <- list()
-  
-  # Define zoom command. Transform the ranges given by zoomData to the actual
-  # coordinates in the heatmap
-  bounds <- param_choices[[.zoomData]][[1]]
-  if (!is.null(bounds)) {
-      data_cmds[["subset"]] <- sprintf(
-          "plot.data <- subset(plot.data, Y %%in%% rownames(value.mat)[c(%s)]);",
-          paste0(bounds, collapse = ",")
-      )
-  }
-
   # Heatmap. Get the colorbar separately to make it easier to guess the real
   # heatmap coordinates from a brush on the final combined plot
-  extra_cmds[["heatmap"]] <- list(
-    sprintf("p0 <- ggplot(plot.data, aes(x = X, y = Y)) +"),
+  plot_cmds <- c(
+    "p0 <- ggplot(plot.data, aes(x = X, y = Y)) +",
     sprintf("geom_raster(aes(fill = value%s)) +", alpha_cmd),
-    sprintf("labs(x='', y='') +"),
+    "labs(x='', y='') +",
     alpha_legend_cmd,
     fill_cmd, 
     "scale_y_discrete(expand=c(0, 0)) +", 
-    sprintf("theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.line=element_blank());"),
-    sprintf("heatlegend <- cowplot::get_legend(p0 + theme(legend.position='bottom'));")
+    "theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.line=element_blank());",
+    "heatlegend <- cowplot::get_legend(p0 + theme(legend.position='bottom'));"
   )
   
   # Annotations
-  extra_cmds[["annotations"]] <- lapply(seq_along(orderBy), function(i) {
+  annot_cmds <- "legends <- list()"
+  annot_cmds0 <- lapply(seq_along(orderBy), function(i) {
     if (is.numeric(eval_env$plot.data[[paste0("OrderBy", i)]])) {
-      color_cmd <- sprintf("scale_fill_gradientn(colors=colDataColorMap(colormap, '%s', discrete=FALSE)(21L), na.value='grey50', name='%s') +", orderBy[i], orderBy[i])
+      color_cmd <- sprintf("scale_fill_gradientn(colors=colDataColorMap(colormap, '%s', discrete=FALSE)(21L), na.value='grey50', name='%s') +", 
+                           orderBy[i], orderBy[i])
     } else {
-      color_cmd <- sprintf("scale_fill_manual(values=colDataColorMap(colormap, '%s', discrete=TRUE)(%i), na.value='grey50', drop=FALSE, name='%s') +", orderBy[i], .nlevels(factor(eval_env$plot.data[[paste0("OrderBy", i)]])), orderBy[i])
+      color_cmd <- sprintf("scale_fill_manual(values=colDataColorMap(colormap, '%s', discrete=TRUE)(%i), na.value='grey50', drop=FALSE, name='%s') +", 
+                           orderBy[i], .nlevels(factor(eval_env$plot.data[[paste0("OrderBy", i)]])), orderBy[i])
     }
     
-    list(
+    c("",
       sprintf("p%i <- ggplot(plot.data, aes(x = X, y = 1)) +", i) ,
       sprintf("geom_raster(aes(fill = OrderBy%i)) +", i), 
-      sprintf("labs(x='', y='') +"), 
+      "labs(x='', y='') +", 
       sprintf("scale_y_continuous(breaks=1, labels='%s') +", orderBy[i]), 
       color_cmd,
       "theme(axis.text.x=element_blank(), axis.ticks=element_blank(), axis.title.x=element_blank(), 
     rect=element_blank(), line=element_blank(), axis.title.y=element_blank(), 
     plot.margin = unit(c(0,0,-0.5,0), 'lines'));",
-      sprintf("legend%i <- cowplot::get_legend(p%i + theme(legend.position='bottom', plot.margin = unit(c(0,0,0,0), 'lines')))", i, i)
+      sprintf("legends[[%i]] <- cowplot::get_legend(p%i + theme(legend.position='bottom', plot.margin = unit(c(0,0,0,0), 'lines')))", i, i)
     )
   })
-  
-  extra_cmds[["legends"]] <- list(
-    sprintf("legends <- list(%s);", paste0("legend", seq_len(length(orderBy)), collapse=", "))
-  )
+  annot_cmds <- c(annot_cmds, unlist(annot_cmds0)) 
   
   # Evaluate to get the individual legends
-  to_eval <- unlist(c(data_cmds["subset"], extra_cmds))
-  plot_part <- eval(parse(text=to_eval), envir=eval_env)
+  plot_part <- eval(parse(text=c(plot_cmds, annot_cmds)), envir=eval_env)
   legends <- eval_env$legends
 
   # Put heatmap and annotations together
-  extra_cmds[["grid"]] <- list(
-      sprintf("cowplot::plot_grid(
-              cowplot::plot_grid(%s, ncol=1, align='v', rel_heights=c(%s)), 
-              heatlegend, ncol=1, rel_heights=c(%s, %s))", 
-              paste0("p", c(seq_along(orderBy), 0), 
-                     c(rep(" + theme(legend.position='none')", length(orderBy)), 
-                       " + theme(legend.position='none')"), collapse = ", "),
-              paste(c(rep(.heatMapRelHeightAnnot, length(orderBy)), .heatMapRelHeightHeatmap), 
-                    collapse = ", "),
-              1-.heatMapRelHeightColorBar, .heatMapRelHeightColorBar)
+  grid_cmds <- c(
+        sprintf("cowplot::plot_grid(
+    cowplot::plot_grid(%s, ncol=1, align='v', rel_heights=c(%s)), 
+    heatlegend, ncol=1, rel_heights=c(%s, %s))", 
+            paste0("p", c(seq_along(orderBy), 0), 
+                   c(rep(" + theme(legend.position='none')", length(orderBy)), 
+                     " + theme(legend.position='none')"), collapse = ", "),
+            paste(c(rep(.heatMapRelHeightAnnot, length(orderBy)), .heatMapRelHeightHeatmap), 
+                  collapse = ", "),
+            1-.heatMapRelHeightColorBar, .heatMapRelHeightColorBar)
   )
   
-  to_eval <- unlist(extra_cmds["grid"])
-  plot_out <- eval(parse(text=to_eval), envir=eval_env)
-
-  return(list(cmd=c(data_cmds, extra_cmds), xy=eval_env$value.mat, plot=plot_out, legends=legends))
+  plot_out <- eval(parse(text=grid_cmds), envir=eval_env)
+  return(list(cmd_list=c(data=data_cmds, brush=brush_cmds, setup=setup_cmds, plot=plot_cmds, annot=annot_cmds, 
+                         grid=grid_cmds), xy=eval_env$value.mat, plot=plot_out, legends=legends))
 }
 
 .get_colorscale_limits <- function(min.value, max.value, lower.bound, upper.bound, include.zero) {

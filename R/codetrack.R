@@ -125,13 +125,28 @@
     tracked_heat <- c(tracked_heat,
                       strrep("#", 80),
                       paste0("## ", .decode_panel_name("heatMapPlot", hobjs$ID[i])),
-                      strrep("#", 80), "",
-                      cur_cmds[["y"]], cur_cmds[["order"]], cur_cmds[["subset"]], "")
+                      strrep("#", 80), "")
 
-    tracked_heat <- c(tracked_heat, "# Constructing heat map", cur_cmds[["heatmap"]], "",
-                      "# Adding annotations", cur_cmds[["annotations"]], "", 
-                      "# Generating legends", cur_cmds[["legends"]], "",
-                      "# Laying out the grid", cur_cmds[["grid"]], "")
+    # Adding the data setup.
+    collated <- c(cur_cmds$data, "")
+    if (length(cur_cmds$brush)) { 
+        collated <- c(collated, "# Receiving brush data", cur_cmds$brush, "")
+    }
+
+    # Finishing off the rest of the commands.
+    if (length(cur_cmds$setup)) {
+        collated <- c(collated, "# Setting up map coordinates", cur_cmds$setup, "")        
+    }
+    if (length(cur_cmds$plot)) {
+        collated <- c(collated, "# Creating the heat map", cur_cmds$plot, "")
+    }
+    if (length(cur_cmds$annot)) {
+        collated <- c(collated, "# Adding annotations", cur_cmds$annot, "")
+    }
+    if (length(cur_cmds$grid)) {
+        collated <- c(collated, "# Laying out the grid", cur_cmds$grid, "")
+    }
+    tracked_heat <- c(tracked_heat, collated)
   }
   tracked_code <- c(tracked_code, tracked_heat)
 

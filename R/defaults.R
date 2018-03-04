@@ -340,8 +340,7 @@ heatMapPlotDefaults <- function(se, number) {
     out[[.heatMapColData]] <- rep(list(colnames(colData(se))[1]), nrow(out))
     out[[.heatMapImportSource]] <- .noSelection
   
-    out[[.heatMapCentering]] <- TRUE
-    out[[.heatMapScaling]] <- FALSE
+    out[[.heatMapCenterScale]] <- rep(list(.heatMapCenterTitle), nrow(out))
     out[[.heatMapLower]] <- -Inf
     out[[.heatMapUpper]] <- Inf
     out[[.heatMapCenteredColors]] <- "purple-black-yellow"
@@ -433,6 +432,7 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.brushColor]] <- "red"
     incoming[[.brushData]] <- rep(list(NULL), nrow(incoming))
 
+    incoming[[.visualParamChoice]] <- rep(list(.visualParamChoiceColorTitle), nrow(incoming))
     incoming[[.plotPointSize]] <- 1 
     incoming[[.plotPointAlpha]] <- 1
     incoming[[.plotFontSize]] <- 1

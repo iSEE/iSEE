@@ -46,8 +46,9 @@
 .heatMapLegend <- "Legend"
 
 .heatMapColorBoxOpen <- "ColorBoxOpen"
-.heatMapCentering <- "Centering"
-.heatMapScaling <- "Scaling"
+.heatMapCenterScale <- "CenterScale"
+.heatMapCenterTitle <- "Centered"
+.heatMapScaleTitle <- "Scaled"
 
 .heatMapLower <- "Lower"
 .heatMapUpper <- "Upper"
@@ -101,6 +102,12 @@
 # Other plot parameters. ----
 .dataParamBoxOpen <- "DataBoxOpen"
 .visualParamBoxOpen <- "VisualBoxOpen"
+.visualParamChoice <- "VisualChoices"
+
+.visualParamChoiceColorTitle <- "Color"
+.visualParamChoicePointTitle <- "Points"
+.visualParamChoiceOtherTitle <- "Other"
+
 .plotPointSize <- "PointSize"
 .plotPointAlpha <- "PointAlpha"
 .plotFontSize <- "FontSize"

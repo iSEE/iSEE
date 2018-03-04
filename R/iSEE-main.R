@@ -1031,7 +1031,7 @@ iSEE <- function(
         protected <- switch(mode,
                             redDimPlot=c(.redDimType, .redDimXAxis, .redDimYAxis),
                             colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
-                            featExprPlot=c(.featExprAssay, .featExprXAxisColData, .featExprYAxisFeatName, .featExprXAxisFeatName),
+                            featExprPlot=c(.featExprAssay, .featExprXAxisColData),
                             rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData))
 
         # Defining non-fundamental parameters that do not destroy brushes.
@@ -1054,12 +1054,32 @@ iSEE <- function(
                     cur_field <- paste0(plot_name, "_", field0)
 
                     observeEvent(input[[cur_field]], {
-                        req(input[[cur_field]])
                         matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
                         if (identical(matched_input, pObjects$memory[[mode0]][[field0]][i0])) {
                             return(NULL)
                         }
                         pObjects$memory[[mode0]][[field0]][i0] <- matched_input
+                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                    }, ignoreInit=TRUE)
+                })
+            }
+
+            # Observers for non-fundamental list parameters.
+            for (field in c(.visualParamChoice)) {
+                local({
+                    i0 <- i
+                    mode0 <- mode
+                    field0 <- field
+                    plot_name <- paste0(mode0, i0)
+                    cur_field <- paste0(plot_name, "_", field0)
+
+                    observeEvent(input[[cur_field]], {
+                        existing <- pObjects$memory[[mode0]][,field0][[i0]]
+                        incoming <- as(input[[cur_field]], typeof(existing))
+                        if (identical(incoming, existing)) {
+                            return(NULL)
+                        }
+                        pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, field0, incoming)
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     }, ignoreInit=TRUE)
                 })
@@ -1075,7 +1095,6 @@ iSEE <- function(
                     cur_field <- paste0(plot_name, "_", field0)
 
                     observeEvent(input[[cur_field]], {
-                        req(input[[cur_field]])
                         matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
                         if (identical(matched_input, pObjects$memory[[mode0]][[field0]][i0])) {
                             return(NULL)
@@ -1350,7 +1369,6 @@ iSEE <- function(
             field0 <- .heatMapImportSource
             cur_field <- paste0(plot_name, "_", field0)
             observeEvent(input[[cur_field]], {
-                req(input[[cur_field]])
                 matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
                 if (identical(input[[cur_field]], pObjects$memory[[mode0]][i0, field0])) {
                     return(NULL)
@@ -1400,8 +1418,8 @@ iSEE <- function(
             })
         })
 
-        # Saving list-based coordinates.
-        for (field in c(.heatMapColData, .heatMapFeatName)) {
+        # Saving list-based values.
+        for (field in c(.heatMapColData, .heatMapFeatName, .heatMapCenterScale)) {
             local({
                 i0 <- i
                 mode0 <- "heatMapPlot"
@@ -1410,7 +1428,6 @@ iSEE <- function(
                 cur_field <- paste0(plot_name, "_", field0)
 
                 observeEvent(input[[cur_field]], {
-                    req(input[[cur_field]])
                     existing <- pObjects$memory[[mode0]][,field0][[i0]]
                     incoming <- as(input[[cur_field]], typeof(existing))
                     if (identical(incoming, existing)) {
@@ -1418,12 +1435,12 @@ iSEE <- function(
                     }
                     pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, field0, incoming)
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                }, ignoreInit=TRUE)
+                }, ignoreInit=TRUE, ignoreNULL=FALSE)
             })
         }
 
         # Saving other bits and pieces.
-        for (field in c(.heatMapAssay, .heatMapCentering, .heatMapScaling, .heatMapLower, .heatMapUpper, .heatMapCenteredColors)) {
+        for (field in c(.heatMapAssay, .heatMapLower, .heatMapUpper, .heatMapCenteredColors)) {
             local({
                 i0 <- i
                 mode0 <- "heatMapPlot"
@@ -1432,18 +1449,13 @@ iSEE <- function(
                 cur_field <- paste0(plot_name, "_", field0)
 
                 observeEvent(input[[cur_field]], {
-                    if (!(field0 %in% c(.heatMapCentering, .heatMapScaling))) {
-                        # If this is required for logical variables, it will not
-                        # trigger updates when these are FALSE.
-                        req(input[[cur_field]])
-                    }
                     matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
                     if (identical(input[[cur_field]], pObjects$memory[[mode0]][i0, field0])) {
                         return(NULL)
                     }
                     pObjects$memory[[mode0]][[field0]][i0] <- matched_input
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                }, ignoreInit=TRUE, ignoreNULL=TRUE)
+                }, ignoreInit=TRUE)
             })
         }
     }

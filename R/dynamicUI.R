@@ -256,16 +256,17 @@
                         actionButton(.input_FUN(.heatMapImport), "Import features"),
                         actionButton(.input_FUN(.heatMapCluster), "Suggest feature order"),
                         hr(),
-                        checkboxInput(.input_FUN(.heatMapCentering), label="Centering", value= param_choices[[.heatMapCentering]]),
-                        checkboxInput(.input_FUN(.heatMapScaling), label="Scaling", value= param_choices[[.heatMapScaling]]),
+                        checkboxGroupInput(.input_FUN(.heatMapCenterScale), label="Expression values are:", 
+                                           selected=param_choices[[.heatMapCenterScale]][[1]],
+                                           choices=c(.heatMapCenterTitle, .heatMapScaleTitle), inline=TRUE),
                         numericInput(.input_FUN(.heatMapLower), label="Lower bound:",
                                      value = param_choices[[.heatMapLower]]), 
                         numericInput(.input_FUN(.heatMapUpper), label="Upper bound:",
                                      value = param_choices[[.heatMapUpper]]), 
-                        .conditional_on_check(.input_FUN(.heatMapCentering), 
-                                              checked=list(selectInput(.input_FUN(.heatMapCenteredColors), label="Color scale:",
-                                                                       choices = c("purple-black-yellow", "blue-white-orange"),
-                                                                       selected = param_choices[[.heatMapCenteredColors]])))
+                        .conditional_on_check(.input_FUN(.heatMapCenterScale), .heatMapCenterTitle,
+                                              selectInput(.input_FUN(.heatMapCenteredColors), label="Color scale:",
+                                                          choices = c("purple-black-yellow", "blue-white-orange"),
+                                                          selected = param_choices[[.heatMapCenteredColors]]))
                     ),
                     collapseBox(id=.input_FUN(.heatMapColDataBoxOpen),
                                 title="Column data parameters",
@@ -479,29 +480,38 @@
         color_choices <- c(color_choices, .colorByFeatNameTitle)
     }
 
+    pchoice_field <- paste0(mode, ID, "_", .visualParamChoice)
     collapseBox(
         id = paste0(mode, ID, "_", .visualParamBoxOpen),
         title = "Visual parameters",
         open = param_choices[[.visualParamBoxOpen]],
-        radioButtons(colorby_field, label="Color by:", inline=TRUE,
-                     choices=color_choices, selected=param_choices[[.colorByField]]
+        checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE, selected=param_choices[[.visualParamChoice]][[1]],
+                           choices=c(.visualParamChoiceColorTitle, .visualParamChoicePointTitle, .visualParamChoiceOtherTitle)),
+        .conditional_on_check(pchoice_field, .visualParamChoiceColorTitle,
+            hr(),
+            radioButtons(colorby_field, label="Color by:", inline=TRUE,
+                         choices=color_choices, selected=param_choices[[.colorByField]]
+                ),
+            .conditional_on_radio(colorby_field, .colorByNothingTitle,
+                colourInput(paste0(mode, ID, "_", .colorByDefaultColor), label=NULL,
+                            value=param_choices[[.colorByDefaultColor]])
+                ),
+            .conditional_on_radio(colorby_field, .colorByColDataTitle,
+                selectInput(paste0(mode, ID, "_", .colorByColData), label = NULL,
+                            choices=covariates, selected=param_choices[[.colorByColData]])
+                ),
+            .conditional_on_radio(colorby_field, .colorByFeatNameTitle,
+                tagList(selectizeInput(paste0(mode, ID, "_", .colorByFeatName), label = NULL, choices = NULL, selected = NULL, multiple = FALSE),
+                        selectInput(paste0(mode, ID, "_", .colorByFeatNameAssay), label=NULL,
+                                    choices=all_assays, selected=param_choices[[.colorByFeatNameAssay]])),
+                        selectInput(paste0(mode, ID, "_", .colorByRowTable), label = NULL, choices=active_tab,
+                                    selected=.choose_link(param_choices[[.colorByRowTable]], active_tab, force_default=TRUE))
+                )
             ),
-        .conditional_on_radio(colorby_field, .colorByNothingTitle,
-            colourInput(paste0(mode, ID, "_", .colorByDefaultColor), label=NULL,
-                        value=param_choices[[.colorByDefaultColor]])
-            ),
-        .conditional_on_radio(colorby_field, .colorByColDataTitle,
-            selectInput(paste0(mode, ID, "_", .colorByColData), label = NULL,
-                        choices=covariates, selected=param_choices[[.colorByColData]])
-            ),
-        .conditional_on_radio(colorby_field, .colorByFeatNameTitle,
-            tagList(selectizeInput(paste0(mode, ID, "_", .colorByFeatName), label = NULL, choices = NULL, selected = NULL, multiple = FALSE),
-                    selectInput(paste0(mode, ID, "_", .colorByFeatNameAssay), label=NULL,
-                                choices=all_assays, selected=param_choices[[.colorByFeatNameAssay]])),
-                    selectInput(paste0(mode, ID, "_", .colorByRowTable), label = NULL, choices=active_tab,
-                                selected=.choose_link(param_choices[[.colorByRowTable]], active_tab, force_default=TRUE))
-            ),
-        .add_general_visual_UI_elements(mode, ID, param_choices)
+        .conditional_on_check(pchoice_field, .visualParamChoicePointTitle,
+            hr(), .add_point_UI_elements(mode, ID, param_choices)),
+        .conditional_on_check(pchoice_field, .visualParamChoiceOtherTitle,
+            hr(), .add_other_UI_elements(mode, ID, param_choices))
         )
 }
 
@@ -540,25 +550,32 @@
         id = paste0(mode, ID, "_", .visualParamBoxOpen),
         title = "Visual parameters",
         open = param_choices[[.visualParamBoxOpen]],
-        radioButtons(colorby_field, label="Color by:", inline=TRUE,
-                     choices=color_choices, selected=param_choices[[.colorByField]]
+        checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE, selected=param_choices[[.visualParamChoice]][[1]],
+                           choices=c(.visualParamChoiceColorTitle, .visualParamChoicePointTitle, .visualParamChoiceOtherTitle)),
+        .conditional_on_check(pchoice_field, .visualParamChoiceColorTitle,
+            radioButtons(colorby_field, label="Color by:", inline=TRUE,
+                         choices=color_choices, selected=param_choices[[.colorByField]]
+                ),
+            .conditional_on_radio(colorby_field, .colorByNothingTitle,
+                colourInput(paste0(mode, ID, "_", .colorByDefaultColor), label=NULL,
+                            value=param_choices[[.colorByDefaultColor]])
+                ),
+            .conditional_on_radio(colorby_field, .colorByRowDataTitle,
+                selectInput(paste0(mode, ID, "_", .colorByRowData), label = NULL,
+                            choices=covariates, selected=param_choices[[.colorByRowData]])
+                ),
+            .conditional_on_radio(colorby_field, .colorByFeatNameTitle,
+                tagList(selectizeInput(paste0(mode, ID, "_", .colorByFeatName), label = NULL, selected = NULL, choices = NULL, multiple = FALSE),
+                        selectInput(paste0(mode, ID, "_", .colorByRowTable), label = NULL, choices=active_tab,
+                                    selected=.choose_link(param_choices[[.colorByRowTable]], active_tab, force_default=TRUE)),
+                        colourInput(paste0(mode, ID, "_", .colorByFeatNameColor), label=NULL,
+                                    value=param_choices[[.colorByFeatNameColor]]))
+                )
             ),
-        .conditional_on_radio(colorby_field, .colorByNothingTitle,
-            colourInput(paste0(mode, ID, "_", .colorByDefaultColor), label=NULL,
-                        value=param_choices[[.colorByDefaultColor]])
-            ),
-        .conditional_on_radio(colorby_field, .colorByRowDataTitle,
-            selectInput(paste0(mode, ID, "_", .colorByRowData), label = NULL,
-                        choices=covariates, selected=param_choices[[.colorByRowData]])
-            ),
-        .conditional_on_radio(colorby_field, .colorByFeatNameTitle,
-            tagList(selectizeInput(paste0(mode, ID, "_", .colorByFeatName), label = NULL, selected = NULL, choices = NULL, multiple = FALSE),
-                    selectInput(paste0(mode, ID, "_", .colorByRowTable), label = NULL, choices=active_tab,
-                                selected=.choose_link(param_choices[[.colorByRowTable]], active_tab, force_default=TRUE)),
-                    colourInput(paste0(mode, ID, "_", .colorByFeatNameColor), label=NULL,
-                                value=param_choices[[.colorByFeatNameColor]]))
-            ),
-        .add_general_visual_UI_elements(mode, ID, param_choices)
+        .conditional_on_check(pchoice_field, .visualParamChoicePointTitle,
+            hr(), .add_point_UI_elements(mode, ID, param_choices)),
+        .conditional_on_check(pchoice_field, .visualParamChoiceOtherTitle,
+            hr(), .add_other_UI_elements(mode, ID, param_choices))
         )
 }
 
@@ -577,25 +594,30 @@
 #' This creates UI elements to choose the font size, point size and opacity, and legend placement.
 #'
 #' @author Aaron Lun
-#' @rdname INTERNAL_add_general_visual_UI_elements
+#' @rdname INTERNAL_add_visual_UI_elements
 #' @seealso
 #' \code{\link{.panel_generation}},
 #' \code{\link{.create_visual_box_for_column_plots}},
 #' \code{\link{.create_visual_box_for_row_plots}}
 #'
-#' @importFrom shiny radioButtons tagList radioButtons hr numericInput sliderInput
-.add_general_visual_UI_elements <- function(mode, ID, param_choices) {
+#' @importFrom shiny tagList numericInput sliderInput
+.add_point_UI_elements <- function(mode, ID, param_choices) {
     tagList(
-        hr(),
         numericInput(paste0(mode, ID, "_", .plotPointSize), label = "Point size:", value=param_choices[,.plotPointSize]),
         sliderInput(paste0(mode, ID, "_", .plotPointAlpha), label = "Point opacity", 
-                    min=0.1, max=1, value=param_choices[,.plotPointAlpha]),
-        hr(),
+                    min=0.1, max=1, value=param_choices[,.plotPointAlpha])
+    )
+}
+
+#' @rdname INTERNAL_add_visual_UI_elements 
+#' @importFrom shiny tagList radioButtons numericInput
+.add_other_UI_elements <- function(mode, ID, param_choices) { 
+    tagList(    
         numericInput(paste0(mode, ID, "_", .plotFontSize), label = "Font size:", value=param_choices[,.plotFontSize]),
         radioButtons(paste0(mode, ID, "_", .plotLegendPosition), label = "Legend position:", inline=TRUE,
                      choices=c(.plotLegendBottomTitle, .plotLegendRightTitle), 
                      selected=param_choices[,.plotLegendPosition])
-        )
+    )
 }
 
 #' Brush parameter box 
@@ -650,23 +672,23 @@
         )
 }
 
-#' Conditional elements on radio choice
+#' Conditional elements on radio or checkbox selection 
 #'
-#' Creates a conditional UI element that appears upon a certain choice in a radio button selection.
+#' Creates a conditional UI element that appears upon a certain choice in a radio button or checkbox group selection.
 #'
-#' @param radio_id String containing the ID of the UI element for the radio buttons.
-#' @param radio_choice String containing the choice on which to show the conditional elements.
+#' @param id String containing the ID of the UI element for the radio buttons or checkbox group.
+#' @param choice String containing the choice on which to show the conditional elements.
 #' @param ... UI elements to show conditionally.
 #'
 #' @return
-#' A HTML object containing elements that only appear when \code{radio_choice} is selected in the UI element for \code{radio_id}.
+#' A HTML object containing elements that only appear when \code{choice} is selected in the UI element for \code{id}.
 #' 
 #' @details
-#' This function is useful for hiding options that are irrelevant when a different radio choice is performed.
+#' This function is useful for hiding options that are irrelevant when a different radio button is selected, or when the corresponding checkbox element is unselected.
 #' In this manner, we can avoid cluttering the UI.
 #'
 #' @author Aaron Lun
-#' @rdname INTERNAL_conditional_on_radio
+#' @rdname INTERNAL_conditional_elements
 #' @seealso
 #' \code{\link{.panel_generation}},
 #' \code{\link{.create_brush_param_box}},
@@ -678,17 +700,11 @@
     conditionalPanel(condition=sprintf('(input["%s"] == "%s")', radio_id, radio_choice), ...)
 }
 
-.conditional_on_check <- function(check_id, checked, unchecked=NULL) {
-    output <- list()
-    if (!is.null(checked)) {
-        output[["true"]] <- do.call(conditionalPanel, c(list(condition=sprintf('(input["%s"] == true)', check_id)), checked))
-    } 
-    if (!is.null(unchecked)) {
-        output[["false"]] <- do.call(conditionalPanel, c(list(condition=sprintf('(input["%s"] == false)', check_id)), checked))
-    }
-    return(do.call(tagList, output))
-}
-
+#' @rdname INTERNAL_conditional_elements
+#' @importFrom shiny conditionalPanel
+.conditional_on_check <- function(check_id, check_choice, ...) {
+    conditionalPanel(condition=sprintf('(input["%s"].includes("%s"))', check_id, check_choice), ...)
+} 
 
 #' Coerce box status to custom classes
 #'

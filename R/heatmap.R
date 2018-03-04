@@ -59,6 +59,27 @@
     "plot.data <- reshape2::melt(value.mat, varnames = c('Y', 'X'));"
   )
 
+  # Arrange cells according to the selected colData columns
+  orderBy <- param_choices[[.heatMapColData]][[1]]
+  validate(need( 
+      length(orderBy) > 0L,
+      sprintf("need at least one column annotation for heat map") 
+  ))
+  setup_cmds <- c(
+      vapply(seq_along(orderBy), FUN=function(i) {
+          if (.is_groupable(colData(se)[[orderBy[i]]])) {
+              sprintf("plot.data[['OrderBy%i']] <- factor(colData(se)[['%s']][match(plot.data$X, rownames(colData(se)))]);",
+                      i, orderBy[i])
+          } else {
+              sprintf("plot.data[['OrderBy%i']] <- colData(se)[['%s']][match(plot.data$X, rownames(colData(se)))];",
+                      i, orderBy[i])
+          }
+      }, FUN.VALUE=character(1)),
+      sprintf("plot.data <- dplyr::arrange(plot.data, %s);", 
+              paste0("OrderBy", seq_along(orderBy), collapse = ",")),
+      sprintf("plot.data$X <- factor(plot.data$X, levels = unique(plot.data$X));")
+  )
+  
   # Processing the brushing choice.
   # Note that the cell names are not in the rownames(plot.data), but in plot.data$X, hence the sub().
   alpha_cmd <- ""
@@ -77,22 +98,6 @@
       }
   }
   
-  # Arrange cells according to the selected colData columns
-  orderBy <- param_choices[[.heatMapColData]][[1]]
-  validate(need( 
-      length(orderBy) > 0L,
-      sprintf("need at least one column annotation for heat map") 
-  ))
-  setup_cmds <- c(
-      vapply(seq_along(orderBy), FUN=function(i) {
-        sprintf("plot.data[['OrderBy%i']] <- colData(se)[['%s']][match(plot.data$X, rownames(colData(se)))];",
-                i, orderBy[i])
-      }, FUN.VALUE=character(1)),
-      sprintf("plot.data <- dplyr::arrange(plot.data, %s);", 
-              paste0("OrderBy", seq_along(orderBy), collapse = ",")),
-      sprintf("plot.data$X <- factor(plot.data$X, levels = unique(plot.data$X));")
-    )
-
   # Define zoom command. Transform the ranges given by zoomData to the actual coordinates in the heatmap
   bounds <- param_choices[[.zoomData]][[1]]
   if (!is.null(bounds)) {
@@ -102,7 +107,7 @@
   }
 
   # Evaluate to have plot.data
-  eval(parse(text=c(data_cmds, brush_cmds, setup_cmds)), envir=eval_env)
+  eval(parse(text=c(data_cmds, setup_cmds)), envir=eval_env)
 
   # Define fill command and color range for heatmap
   min.obs <- min(eval_env$plot.data$value, na.rm=TRUE)
@@ -113,9 +118,8 @@
   # heatmap coordinates from a brush on the final combined plot
   plot_cmds <- c(
     "p0 <- ggplot(plot.data, aes(x = X, y = Y)) +",
-    sprintf("geom_raster(aes(fill = value%s)) +", alpha_cmd),
+    "geom_raster(aes(fill = value)) +",
     "labs(x='', y='') +",
-    alpha_legend_cmd,
     fill_cmd, 
     "scale_y_discrete(expand=c(0, 0)) +", 
     "theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.line=element_blank());",
@@ -135,8 +139,9 @@
     
     c("",
       sprintf("p%i <- ggplot(plot.data, aes(x = X, y = 1)) +", i) ,
-      sprintf("geom_raster(aes(fill = OrderBy%i)) +", i), 
+      sprintf("geom_raster(aes(fill = OrderBy%i%s)) +", i, alpha_cmd), 
       "labs(x='', y='') +", 
+      alpha_legend_cmd,
       sprintf("scale_y_continuous(breaks=1, labels='%s') +", orderBy[i]), 
       color_cmd,
       "theme(axis.text.x=element_blank(), axis.ticks=element_blank(), axis.title.x=element_blank(), 
@@ -148,7 +153,7 @@
   annot_cmds <- c(annot_cmds, unlist(annot_cmds0)) 
   
   # Evaluate to get the individual legends
-  plot_part <- eval(parse(text=c(plot_cmds, annot_cmds)), envir=eval_env)
+  plot_part <- eval(parse(text=c(brush_cmds, plot_cmds, annot_cmds)), envir=eval_env)
   legends <- eval_env$legends
 
   # Put heatmap and annotations together

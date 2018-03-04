@@ -1081,7 +1081,7 @@ iSEE <- function(
                         }
                         pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, field0, incoming)
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                    }, ignoreInit=TRUE)
+                    }, ignoreInit=TRUE, ignoreNULL=FALSE)
                 })
             }
 

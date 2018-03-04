@@ -195,12 +195,15 @@
 #' This function relies on the pass-by-reference behaviour of \code{pObjects} to update \code{pObjects$memory} for the current receiving plot.
 #' New values of the fields \code{by_field} and \code{tab_field} in \code{input} will be used to overwrite those in memory, provided they are not \code{NULL}.
 #'
-#' It will also modify \code{table_links} if \code{input[[by_field]]} is equal to \code{tab_title} (i.e., a linked table is being used)
+#' It will also modify \code{table_links} if \code{input[[by_field]]} is equal to \code{title} (i.e., a linked table is being used for feature names)
 #' to update the identity of the linked table based on the new table in \code{input[[tab_field]]}.
-#' On ther other hand, if \code{input[[by_field]]} is not equal to \code{tab_title}, any linked table in the memory of the receiving plot is destroyed.
+#' On ther other hand, if \code{input[[by_field]]} is not equal to \code{title}, any linked table in the memory of the receiving plot is destroyed.
 #'
-#' The flag to replot the receiving plot is set if both \code{by_field} and \code{tab_field} fields in \code{input} are non-\code{NULL}.
-#' This reflects the assumption that this function is only called if either of these fields change.
+#' The flag to regenerate the current plot is set if the \code{by_field} and \code{tab_field} fields in \code{input} are non-\code{NULL};
+#' the \code{feat_field} entry is neither \code{NULL} nor an empty string; 
+#' and the \code{by_field} and \code{feat_field} entries differ from the parameters currently stored in memory.
+#'
+#' Note that \code{by_field} and \code{title} are ignored if \code{param="yaxis"}, as the y-axis of feature expression plots have no other choice of variable.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_setup_table_observer

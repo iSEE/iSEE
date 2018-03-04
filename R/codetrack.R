@@ -35,7 +35,7 @@
     "## All commands below refer to your SingleCellExperiment object as `se`.",
     "",
     sprintf("se <- %s", se_name),
-    sprintf(sanitize_cmds),
+    sanitize_cmds,
     sprintf("colormap <- %s", ecm_name),
     "all_coordinates <- list()",
     "")

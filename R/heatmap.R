@@ -154,19 +154,21 @@
   # Put heatmap and annotations together
   grid_cmds <- c(
         sprintf("cowplot::plot_grid(
-    cowplot::plot_grid(%s, ncol=1, align='v', rel_heights=c(%s)), 
+    cowplot::plot_grid(
+        %s,
+        ncol=1, align='v', rel_heights=c(%s)), 
     heatlegend, ncol=1, rel_heights=c(%s, %s))", 
             paste0("p", c(seq_along(orderBy), 0), 
                    c(rep(" + theme(legend.position='none')", length(orderBy)), 
-                     " + theme(legend.position='none')"), collapse = ", "),
+                     " + theme(legend.position='none')"), collapse = ",\n        "),
             paste(c(rep(.heatMapRelHeightAnnot, length(orderBy)), .heatMapRelHeightHeatmap), 
                   collapse = ", "),
             1-.heatMapRelHeightColorBar, .heatMapRelHeightColorBar)
   )
   
   plot_out <- eval(parse(text=grid_cmds), envir=eval_env)
-  return(list(cmd_list=c(data=data_cmds, brush=brush_cmds, setup=setup_cmds, plot=plot_cmds, annot=annot_cmds, 
-                         grid=grid_cmds), xy=eval_env$value.mat, plot=plot_out, legends=legends))
+  return(list(cmd_list=list(data=data_cmds, brush=brush_cmds, setup=setup_cmds, plot=plot_cmds, annot=annot_cmds, grid=grid_cmds), 
+              xy=eval_env$value.mat, plot=plot_out, legends=legends))
 }
 
 .get_colorscale_limits <- function(min.value, max.value, lower.bound, upper.bound, include.zero) {

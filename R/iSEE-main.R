@@ -1435,7 +1435,10 @@ iSEE <- function(
                     }
                     pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, field0, incoming)
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                }, ignoreInit=TRUE, ignoreNULL=FALSE)
+                }, ignoreInit=TRUE, ignoreNULL=(field0==.heatMapFeatName))
+
+                # ignoreNULL necessary for FeatName where updateSelectize generates a temporary NULL;
+                # this would trigger re-rendering of the plot upon re-rendering of the UI.
             })
         }
 

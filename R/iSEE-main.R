@@ -1379,6 +1379,17 @@ iSEE <- function(
                 cowplot::plot_grid(plotlist = gg, ncol=1)
             })
 
+            # Defining link information.
+            link_field <- paste0(plot_name, "_", .panelLinkInfo)
+            output[[link_field]] <- renderUI({
+                force(rObjects[[link_field]])
+                brush_in <- pObjects$memory$heatMapPlot[[i0, .brushByPlot]]
+                if (brush_in==.noSelection) {
+                    return(NULL)
+                } 
+                tagList("Receiving brush from", em(strong(brush_in)), br())
+            })
+
             # Triggering an update of the selected order.
             cluster_button <- paste0(plot_name, "_", .heatMapCluster)
             observeEvent(input[[cluster_button]], {

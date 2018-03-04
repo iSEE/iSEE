@@ -105,6 +105,8 @@
 #' Defaults to \code{FALSE}.}
 #' \item{\code{VisualBoxOpen}:}{Logical, should the visual parameter box be open upon initialization?
 #' Defaults to \code{FALSE}.}
+#' \item{\code{VisualChoices}:}{A list containing one character vector, specifying the visual box parameters to be shown upon initialization.
+#' This defaults to \code{list("Color")} to show only the coloring parameters, but the internal vector can also contain \code{"Points"} and \code{"Other"}.}
 #' \item{\code{PointSize}:}{Numeric, the size of the points.
 #' Defaults to 1.}
 #' \item{\code{PointAlpha}:}{Numeric, what level of transparency should be used for the points?
@@ -134,7 +136,7 @@
 #' @section Heatmap parameters:
 #' The features/rows to be used in the construction of the heatmap are specified with:
 #' \describe{
-#' \item{\code{FeatName}:}{Integer list of length 1, containing an integer vector with the indices of the feature(s) for which to show the expression in the heatmap. 
+#' \item{\code{FeatName}:}{List of length 1, containing an integer vector with the indices of the feature(s) for which to show the expression in the heatmap. 
 #' Defaults to \code{list(1L)} for each panel, i.e., the first feature in \code{se}.
 #' Alternatively, a character vector can be supplied containing the names of the features.}
 #' \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
@@ -160,10 +162,8 @@
 #' \describe{ 
 #' \item{\code{ColorBoxOpen}:}{Logical, should the color selection panel for the heatmap be open upon initialization?
 #' Defaults to \code{FALSE}.}
-#' \item{\code{Centering}:}{Logical, should the rows of the matrix be mean-centered in the heatmap? 
-#' Defaults to \code{TRUE}.}
-#' \item{\code{Scaling}:}{Logical, should the rows of the matrix be scaled to unit variance in the heatmap? 
-#' Defaults to \code{FALSE}.}
+#' \item{\code{CenterScale}:}{List of length 1, containing a character vector specifying whether each row of expression values should be mean-centered and/or scaled to unit variance.
+#' Defaults to \code{list("Centered")}, but the internal vector can also include \code{"Scaled"}.}
 #' \item{\code{Lower}:}{Numeric, what should be the lower bound of the color scale for the values in the heatmap? All values below this threshold will be shown in the same color.
 #' Defaults to -Inf, meaning that the lowest value in the data matrix will be used.}
 #' \item{\code{Upper}:}{Numeric, what should be the upper bound of the color scale for the values in the heatmap? All values above this threshold will be shown in the same color.

@@ -44,6 +44,10 @@
   param_choices <- all_memory$heatMapPlot[id,]
   data_cmds <- list()
 
+  cells_selected <- colnames(se)[.get_brush_selection(colnames(se), 
+                                                      all_memory$heatMapPlot[id,.brushByPlot],
+                                                      all_memory, all_coordinates)]
+
   genes_selected_y <- param_choices[[.heatMapFeatName]][[1]]
   validate(need( 
     length(genes_selected_y) > 0L,
@@ -61,6 +65,27 @@
             param_choices[[.heatMapScaling]]),
     sprintf("plot.data <- reshape2::melt(value.mat, varnames = c('Y', 'X'));")
   )
+  
+  if (length(cells_selected) > 0) {
+      data_cmds[["brush"]] <- list(
+          sprintf("plot.data$BrushBy <- plot.data$X %%in%% %s;",
+                  paste(deparse(cells_selected), collapse="\n"))
+      )
+      if (param_choices[[.brushEffect]]==.brushRestrictTitle) {
+          data_cmds[["brush"]] <- c(data_cmds[["brush"]], 
+                                    list("plot.data <- subset(plot.data, BrushBy);"))
+      }
+      if (param_choices[[.brushEffect]]==.brushTransTitle) {
+          alpha_cmd <- ", alpha=BrushBy"
+          alpha_legend_cmd <- "guides(alpha=FALSE) +"
+      } else {
+          alpha_cmd <- ""
+          alpha_legend_cmd <- NULL
+      }
+  } else {
+      alpha_cmd <- ""
+      alpha_legend_cmd <- NULL
+  }
   
   # Arrange cells according to the selected colData columns
   orderBy <- unlist(param_choices[[.heatMapColData]])
@@ -81,7 +106,7 @@
 
   # Evaluate to have plot.data
   eval_env <- new.env()
-  eval(parse(text=unlist(data_cmds[c("y", "order")])), envir=eval_env)
+  eval(parse(text=unlist(data_cmds[c("y", "brush", "order")])), envir=eval_env)
 
   # Define fill command and color range for heatmap
   min.obs <- min(eval_env$plot.data$value, na.rm=TRUE)
@@ -105,8 +130,9 @@
   # heatmap coordinates from a brush on the final combined plot
   extra_cmds[["heatmap"]] <- list(
     sprintf("p0 <- ggplot(plot.data, aes(x = X, y = Y)) +"),
-    sprintf("geom_raster(aes(fill = value)) +"),
+    sprintf("geom_raster(aes(fill = value%s)) +", alpha_cmd),
     sprintf("labs(x='', y='') +"),
+    alpha_legend_cmd,
     fill_cmd, 
     "scale_y_discrete(expand=c(0, 0)) +", 
     sprintf("theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.line=element_blank());"),

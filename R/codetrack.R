@@ -129,13 +129,13 @@
 
     # Adding the data setup.
     collated <- c(cur_cmds$data, "")
+
+    # Finishing off the rest of the commands.
     if (length(cur_cmds$brush)) { 
         collated <- c(collated, "# Receiving brush data", cur_cmds$brush, "")
     }
-
-    # Finishing off the rest of the commands.
-    if (length(cur_cmds$setup)) {
-        collated <- c(collated, "# Setting up map coordinates", cur_cmds$setup, "")        
+    if (length(cur_cmds$zoom)) { 
+        collated <- c(collated, "# Zooming in", cur_cmds$zoom, "")
     }
     if (length(cur_cmds$plot)) {
         collated <- c(collated, "# Creating the heat map", cur_cmds$plot, "")

@@ -54,8 +54,8 @@
     sprintf("value.mat <- as.matrix(assay(se, %i)[%s, , drop=FALSE]);", 
             assay_choice, paste(deparse(genes_selected_y), collapse="\n")),
     sprintf("value.mat <- t(scale(t(value.mat), center = %s, scale = %s));", 
-            param_choices[[.heatMapCentering]],
-            param_choices[[.heatMapScaling]]),
+            .heatMapCenterTitle %in% param_choices[[.heatMapCenterScale]],
+            .heatMapScaleTitle %in% param_choices[[.heatMapCenterScale]]),
     "plot.data <- reshape2::melt(value.mat, varnames = c('Y', 'X'));"
   )
 
@@ -79,7 +79,13 @@
               paste0("OrderBy", seq_along(orderBy), collapse = ",")),
       sprintf("plot.data$X <- factor(plot.data$X, levels = unique(plot.data$X));")
   )
-  
+  data_cmds <- c(data_cmds, "", setup_cmds)
+
+  # Evaluate to create plot.data, and determining the colour range of the full data.
+  eval(parse(text=data_cmds), envir=eval_env)
+  min.obs <- min(eval_env$plot.data$value, na.rm=TRUE)
+  max.obs <- max(eval_env$plot.data$value, na.rm=TRUE)
+
   # Processing the brushing choice.
   # Note that the cell names are not in the rownames(plot.data), but in plot.data$X, hence the sub().
   alpha_cmd <- ""
@@ -91,28 +97,23 @@
       brush_cmds[["select"]] <- sub("rownames(plot.data)", "plot.data$X", brush_cmds[["select"]], fixed=TRUE)
       eval_env$all_brushes <- brush_out$data
       eval_env$all_lassos <- brush_out$data
+      eval(parse(text=brush_cmds), envir=eval_env)
 
       if (param_choices[[.brushEffect]]==.brushTransTitle) {
           alpha_cmd <- ", alpha=BrushBy"
           alpha_legend_cmd <- "guides(alpha=FALSE) +"
       }
   }
-  
+
   # Define zoom command. Transform the ranges given by zoomData to the actual coordinates in the heatmap
   bounds <- param_choices[[.zoomData]][[1]]
   if (!is.null(bounds)) {
-      setup_cmds <- c(setup_cmds, 
-                      sprintf("plot.data <- subset(plot.data, Y %%in%% rownames(value.mat)[c(%s)]); # zooming in", 
-                              paste0(bounds, collapse = ",")))
+      zoom_cmds <- sprintf("plot.data <- subset(plot.data, Y %%in%% rownames(value.mat)[c(%s)]); # zooming in", 
+                           paste0(bounds, collapse = ","))
+      eval(parse(text=zoom_cmds), envir=eval_env)
+  } else {
+      zoom_cmds <- NULL
   }
-
-  # Evaluate to have plot.data
-  eval(parse(text=c(data_cmds, setup_cmds)), envir=eval_env)
-
-  # Define fill command and color range for heatmap
-  min.obs <- min(eval_env$plot.data$value, na.rm=TRUE)
-  max.obs <- max(eval_env$plot.data$value, na.rm=TRUE)
-  fill_cmd <- .get_heatmap_fill_cmd(param_choices, colormap, min.obs, max.obs) 
 
   # Heatmap. Get the colorbar separately to make it easier to guess the real
   # heatmap coordinates from a brush on the final combined plot
@@ -120,7 +121,7 @@
     "p0 <- ggplot(plot.data, aes(x = X, y = Y)) +",
     "geom_raster(aes(fill = value)) +",
     "labs(x='', y='') +",
-    fill_cmd, 
+    .get_heatmap_fill_cmd(param_choices, colormap, min.obs, max.obs),
     "scale_y_discrete(expand=c(0, 0)) +", 
     "theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.line=element_blank());",
     "heatlegend <- cowplot::get_legend(p0 + theme(legend.position='bottom'));"
@@ -153,7 +154,7 @@
   annot_cmds <- c(annot_cmds, unlist(annot_cmds0)) 
   
   # Evaluate to get the individual legends
-  plot_part <- eval(parse(text=c(brush_cmds, plot_cmds, annot_cmds)), envir=eval_env)
+  plot_part <- eval(parse(text=c(plot_cmds, annot_cmds)), envir=eval_env)
   legends <- eval_env$legends
 
   # Put heatmap and annotations together
@@ -172,7 +173,7 @@
   )
   
   plot_out <- eval(parse(text=grid_cmds), envir=eval_env)
-  return(list(cmd_list=list(data=data_cmds, brush=brush_cmds, setup=setup_cmds, plot=plot_cmds, annot=annot_cmds, grid=grid_cmds), 
+  return(list(cmd_list=list(data=data_cmds, brush=brush_cmds, zoom=zoom_cmds, plot=plot_cmds, annot=annot_cmds, grid=grid_cmds), 
               xy=eval_env$value.mat, plot=plot_out, legends=legends))
 }
 
@@ -213,21 +214,24 @@
     # Set limits of color bar
     limits <- range(min.obs, param_choices[[.heatMapLower]], 
                     max.obs, param_choices[[.heatMapUpper]], finite=TRUE, na.rm=TRUE)
+
     # Get values to define range of colors
+    centered <- .heatMapCenterTitle %in% param_choices[[.heatMapCenterScale]][[1]]
     break.vec <- .get_colorscale_limits(min.value=min.obs, max.value=max.obs, 
                                         lower.bound=param_choices[[.heatMapLower]], 
                                         upper.bound=param_choices[[.heatMapUpper]],
-                                        include.zero=param_choices[[.heatMapCentering]])
+                                        include.zero=centered)
     
-    if (param_choices[[.heatMapCentering]]) {
+    if (centered) {
         validate(need( 
-            param_choices[[.heatMapLower]] < 0L,
+            is.na(param_choices[[.heatMapLower]]) || param_choices[[.heatMapLower]] < 0L,
             sprintf("Lower bound must be negative") 
         ))
         validate(need( 
-            param_choices[[.heatMapUpper]] > 0L,
+            is.na(param_choices[[.heatMapUpper]]) || param_choices[[.heatMapUpper]] > 0L,
             sprintf("Upper bound must be positive") 
         ))
+
         # Centered values - use selected color scale
         col.vec <- strsplit(param_choices[[.heatMapCenteredColors]], "-")[[1]]
         if (param_choices[[.heatMapLower]] > min.obs && is.finite(param_choices[[.heatMapLower]])) {

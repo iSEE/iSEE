@@ -546,6 +546,7 @@
     colorby_field <- paste0(mode, ID, "_", .colorByField)
     color_choices <- c(.colorByNothingTitle, .colorByRowDataTitle, .colorByFeatNameTitle)
 
+    pchoice_field <- paste0(mode, ID, "_", .visualParamChoice)
     collapseBox(
         id = paste0(mode, ID, "_", .visualParamBoxOpen),
         title = "Visual parameters",

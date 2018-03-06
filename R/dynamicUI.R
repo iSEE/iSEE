@@ -697,14 +697,14 @@
 #' \code{\link{.create_visual_box_for_column_plots}}
 #'
 #' @importFrom shiny conditionalPanel
-.conditional_on_radio <- function(radio_id, radio_choice, ...) {
-    conditionalPanel(condition=sprintf('(input["%s"] == "%s")', radio_id, radio_choice), ...)
+.conditional_on_radio <- function(id, choice, ...) {
+    conditionalPanel(condition=sprintf('(input["%s"] == "%s")', id, choice), ...)
 }
 
 #' @rdname INTERNAL_conditional_elements
 #' @importFrom shiny conditionalPanel
-.conditional_on_check <- function(check_id, check_choice, ...) {
-    conditionalPanel(condition=sprintf('(input["%s"].includes("%s"))', check_id, check_choice), ...)
+.conditional_on_check <- function(id, choice, ...) {
+    conditionalPanel(condition=sprintf('(input["%s"].includes("%s"))', id, choice), ...)
 } 
 
 #' Coerce box status to custom classes

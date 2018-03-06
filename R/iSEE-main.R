@@ -936,7 +936,9 @@ iSEE <- function(
                     }
                     # Update data and force replotting.
                     # Is the heatmap receiving a color brush (in that case the number of annotations should be increased by 1)
-                    is_receiving_color_brush <- as.numeric(pObjects$memory$heatMapPlot[i0,][[.brushByPlot]]!=.noSelection && pObjects$memory$heatMapPlot[i0,][[.brushEffect]]==.brushColorTitle)
+                    is_receiving_color_brush <- as.numeric(
+                        .transmitted_brush(pObjects$memory$heatMapPlot[i0, .brushByPlot], pObjects$memory)$brush
+                    )
                     (ymin <- .transform_global_to_local_y(new_coords["ymin"], n.genes=length(inp_rows), n.annot=length(unlist(pObjects$memory$heatMapPlot[i0,][[.heatMapColData]]))+is_receiving_color_brush))
                     (ymax <- .transform_global_to_local_y(new_coords["ymax"], n.genes=length(inp_rows), n.annot=length(unlist(pObjects$memory$heatMapPlot[i0,][[.heatMapColData]]))+is_receiving_color_brush))
                     new_rows <- inp_rows[ymin:ymax]

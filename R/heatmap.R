@@ -97,11 +97,12 @@
       brush_cmds[["select"]] <- sub("rownames(plot.data)", "plot.data$X", brush_cmds[["select"]], fixed=TRUE)
       eval_env$all_brushes <- brush_out$data
       eval_env$all_lassos <- brush_out$data
-      eval(parse(text=brush_cmds), envir=eval_env)
-
       if (param_choices[[.brushEffect]]==.brushTransTitle) {
           alpha_cmd <- ", alpha=BrushBy"
           alpha_legend_cmd <- "guides(alpha=FALSE) +"
+      } else if (param_choices[[.brushEffect]]==.brushColorTitle) {
+          ## Add annotation bar
+          orderBy <- c(orderBy,"BrushBy")
       }
   }
 
@@ -110,7 +111,6 @@
   if (!is.null(bounds)) {
       zoom_cmds <- sprintf("plot.data <- subset(plot.data, Y %%in%% rownames(value.mat)[c(%s)]); # zooming in", 
                            paste0(bounds, collapse = ","))
-      eval(parse(text=zoom_cmds), envir=eval_env)
   } else {
       zoom_cmds <- NULL
   }
@@ -130,31 +130,43 @@
   # Annotations
   annot_cmds <- "legends <- list()"
   annot_cmds0 <- lapply(seq_along(orderBy), function(i) {
-    if (is.numeric(eval_env$plot.data[[paste0("OrderBy", i)]])) {
-      color_cmd <- sprintf("scale_fill_gradientn(colors=colDataColorMap(colormap, '%s', discrete=FALSE)(21L), na.value='grey50', name='%s') +", 
-                           orderBy[i], orderBy[i])
-    } else {
-      color_cmd <- sprintf("scale_fill_manual(values=colDataColorMap(colormap, '%s', discrete=TRUE)(%i), na.value='grey50', drop=FALSE, name='%s') +", 
-                           orderBy[i], .nlevels(factor(eval_env$plot.data[[paste0("OrderBy", i)]])), orderBy[i])
-    }
-    
-    c("",
-      sprintf("p%i <- ggplot(plot.data, aes(x = X, y = 1)) +", i) ,
-      sprintf("geom_raster(aes(fill = OrderBy%i%s)) +", i, alpha_cmd), 
-      "labs(x='', y='') +", 
-      alpha_legend_cmd,
-      sprintf("scale_y_continuous(breaks=1, labels='%s') +", orderBy[i]), 
-      color_cmd,
-      "theme(axis.text.x=element_blank(), axis.ticks=element_blank(), axis.title.x=element_blank(), 
+      if (orderBy[i] != "BrushBy") {
+          if (is.numeric(eval_env$plot.data[[paste0("OrderBy", i)]])) {
+              color_cmd <- sprintf("scale_fill_gradientn(colors=colDataColorMap(colormap, '%s', discrete=FALSE)(21L), na.value='grey50', name='%s') +", 
+                                   orderBy[i], orderBy[i])
+          } else {
+              color_cmd <- sprintf("scale_fill_manual(values=colDataColorMap(colormap, '%s', discrete=TRUE)(%i), na.value='grey50', drop=FALSE, name='%s') +", 
+                                   orderBy[i], .nlevels(factor(eval_env$plot.data[[paste0("OrderBy", i)]])), orderBy[i])
+          }
+          
+          c("",
+            sprintf("p%i <- ggplot(plot.data, aes(x = X, y = 1)) +", i) ,
+            sprintf("geom_raster(aes(fill = OrderBy%i%s)) +", i, alpha_cmd), 
+            "labs(x='', y='') +", 
+            alpha_legend_cmd,
+            sprintf("scale_y_continuous(breaks=1, labels='%s') +", orderBy[i]), 
+            color_cmd,
+            "theme(axis.text.x=element_blank(), axis.ticks=element_blank(), axis.title.x=element_blank(), 
     rect=element_blank(), line=element_blank(), axis.title.y=element_blank(), 
     plot.margin = unit(c(0,0,-0.5,0), 'lines'));",
-      sprintf("legends[[%i]] <- cowplot::get_legend(p%i + theme(legend.position='bottom', plot.margin = unit(c(0,0,0,0), 'lines')))", i, i)
-    )
+            sprintf("legends[[%i]] <- cowplot::get_legend(p%i + theme(legend.position='bottom', plot.margin = unit(c(0,0,0,0), 'lines')))", i, i)
+          )
+      } else {
+          c("",
+            sprintf("p%i <- ggplot(plot.data, aes(x = X, y = 1)) +", i),
+            "geom_raster(aes(fill = BrushBy)) +",
+            "labs(x='', y='') +",
+            "scale_y_continuous(breaks=1, labels='Brushed points') +",
+            sprintf("scale_fill_manual(values=c(`TRUE`='%s', `FALSE`='white')) +",param_choices[[.brushColor]]),
+            "theme(axis.text.x=element_blank(), axis.ticks=element_blank(), axis.title.x=element_blank(), 
+    rect=element_blank(), line=element_blank(), axis.title.y=element_blank(), 
+            plot.margin = unit(c(0,0,-0.5,0), 'lines'));")
+      }
   })
   annot_cmds <- c(annot_cmds, unlist(annot_cmds0)) 
   
   # Evaluate to get the individual legends
-  plot_part <- eval(parse(text=c(plot_cmds, annot_cmds)), envir=eval_env)
+  plot_part <- eval(parse(text=c(brush_cmds, zoom_cmds, plot_cmds, annot_cmds)), envir=eval_env)
   legends <- eval_env$legends
 
   # Put heatmap and annotations together

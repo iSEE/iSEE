@@ -7,25 +7,21 @@ element;intro
 #rowStatTable1;Interactive tables are also useful in many contexts, to display the rowData slot of your input object, and also to efficiently select genes for the other plots.
 #rowDataPlot1;The data in the rowData slot of the input object might also be explored in a graphical way with a row data plot
 #heatMapPlot1;Last but not least, you can produce heatmaps of the data at hand, as a compact and immediate view of your features*samples expression matrix
-#redDimPlot_MakeNew;The app starts with default values of one plot per type, but you can have more of each type. You can click here to create a new reduced dimension plot...
-#colDataPlot_MakeNew;... here to create a new column data plot...
-#featExprPlot_MakeNew;... and here for a new feature expression plot.
-#rowStatTable_MakeNew;You can also have more than one row statistic table to quickly select genes - this works by selecting one row just with a simple click on it.
-#rowDataPlot_MakeNew;As for the other types, here's a button to create a new row data plot.
-#heatMapPlot_MakeNew;An additional heatmap will be created by clicking on this button.
+#newPanelChoice;The app starts with default values of one plot per type, but you can have more of each type. You can select which type the new panel will be in this dropdown menu. 
+#newPanelAdd;Once selected, the new panel will be created by clicking on this button. The new panel will be placed after the currently open ones.
 #panelOrganization;You can re-organize the plots and tables you created with the help of this sidebar panel.
 #redDimPlot1_ShiftDown; Clicking on this button, you can shift down the plot/table by one position...
 #redDimPlot1_ShiftUp;... or one position up.
 #redDimPlot1_Discard;You can even remove a plot by clicking on the trash icon of the corresponding element.
 #redDimPlot1_Modify;Another possibility is to change the width of the plot/table element (keep in mind that the organization is based on a width per row of 12), as well as the height of the plot (to be specified in pixels).
-#redDimPlot1_PlotPanelOpen;Regarding the plots, you have plenty of options to control their appearance. The parameters are located in each of these collapsible panels, which collectively contain parameters, related to the plot type itself (as in the Plotting parameters)...
-#redDimPlot1_ColorPanelOpen;... or in general to choose the Coloring parameters...
-#redDimPlot1_BrushPanelOpen;... or also for defining the behavior when using the brushing to interact and link two different plots together. Some details are provided in the next step, please click first on the header of the collapsible panel. The brushing is automatically turned on, and serves for two purposes, based on the action of clicking and holding the mouse over a plot area to select a number of samples (or cells).
+#redDimPlot1_DataBoxOpen;Regarding the plots, you have plenty of options to control their appearance. The parameters are located in each of these collapsible panels, which collectively contain parameters, related to the plot type itself (as in the Data parameters)...
+#redDimPlot1_VisualBoxOpen;... or in general to choose the Visual parameters (which can be related to color properties, point properties, or other features as well)...
+#redDimPlot1_BrushBoxOpen;... or also for defining the behavior when using the brushing to interact and link two different plots together. Some details are provided in the next step, please click first on the header of the collapsible panel. The brushing is automatically turned on, and serves for two purposes, based on the action of clicking and holding the mouse over a plot area to select a number of samples (or cells).
 #redDimPlot1;A zooming functionality is possible by first brushing then double-clicking on the brushed area. You can try it out here: click and hold to select an area, then release. Now, double click inside the marked area to zoom in. To zoom out to the original plot, double-click on the plot. As we said in the previous step, brushing will be used not only for zooming, but also for linking plots together. Click on 'next' to learn more on this by trying this out yourself.
-#redDimPlot1_BrushPanelOpen;What happens to the linked plots can be controlled by the other parameters in this box. In the next steps we describe a way to check the expression of a gene of interest in a subpopulation of cells. We will do this by selecting a subset in the reduced dimension plot, and then activating this brush on the destination plot (the gene expression plot).
+#redDimPlot1_BrushBoxOpen;What happens to the linked plots can be controlled by the other parameters in this box. In the next steps we describe a way to check the expression of a gene of interest in a subpopulation of cells. We will do this by selecting a subset in the reduced dimension plot, and then activating this brush on the destination plot (the gene expression plot).
 #redDimPlot1;Two types of selection are available in iSEE: the classical square area, by clicking, holding, and dragging the mouse pointer. And a new modality we implemented in iSEE, resembling a polygon-lasso. To try out the brushing, select an area in this plot which contains a subset of cells in the source plot...
 #redDimPlot1_PanelGeneralInfo;Some info on the selected points is displayed in this element.
-#featExprPlot1_BrushPanelOpen;To affect other plots with the selection you just did, please go and then open the collapsible box for the feature expression plot (the destination plot).
+#featExprPlot1_BrushBoxOpen;To affect other plots with the selection you just did, please go and then open the collapsible box for the feature expression plot (the destination plot).
 #featExprPlot1_BrushByPlot;Select the corresponding incoming brushing option, 'reduced dimension plot 1' in our case.
 #redDimPlot1_PanelLinkInfo;You can notice from these elements on the bottom of the panels which links exist. For example, that this plot transmits the brush to...
 #featExprPlot1_PanelLinkInfo;... this other panel.

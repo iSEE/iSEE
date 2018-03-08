@@ -284,6 +284,9 @@ iSEE <- function(
       showModal(modalDialog(
         title = "My code", size = "l",fade = TRUE,
         footer = NULL, easyClose = TRUE,
+        p("You can click anywhere in the code editor and select all the code using",
+          "a keyboard shortcut that depends on your operating system (e.g. Ctrl/Cmd + A).",
+          "This will copy the selected parts to the clipboard."),
         aceEditor("acereport_r", mode="r",theme = "solarized_light",autoComplete = "live",
                   value = paste0((.track_it_all(rObjects, pObjects, se_name, ecm_name,se_cmds)),collapse="\n"),
                   height="600px")

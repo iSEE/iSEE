@@ -197,7 +197,7 @@ iSEE <- function(
     ), # end of dashboardHeader
 
     dashboardSidebar(
-      selectInput("newPanelChoice", label="Choose panel type:", selected=rev.translation[1], choices=rev.translation),
+      selectizeInput("newPanelChoice", label="Choose panel type:", selected=rev.translation[1], choices=rev.translation),
       actionButton("newPanelAdd", "Add new panel"), 
       hr(),
       uiOutput("panelOrganization")

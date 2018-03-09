@@ -7,7 +7,7 @@ element;intro
 #rowStatTable1;Interactive tables are also useful in many contexts, to display the rowData slot of your input object, and also to efficiently select genes for the other plots.
 #rowDataPlot1;The data in the rowData slot of the input object might also be explored in a graphical way with a row data plot
 #heatMapPlot1;Last but not least, you can produce heatmaps of the data at hand, as a compact and immediate view of your features*samples expression matrix
-#newPanelChoice;The app starts with default values of one plot per type, but you can have more of each type. You can select which type the new panel will be in this dropdown menu. 
+#newPanelChoice + .selectize-control;The app starts with default values of one plot per type, but you can have more of each type. You can select which type the new panel will be in this dropdown menu. 
 #newPanelAdd;Once selected, the new panel will be created by clicking on this button. The new panel will be placed after the currently open ones.
 #panelOrganization;You can re-organize the plots and tables you created with the help of this sidebar panel.
 #redDimPlot1_ShiftDown; Clicking on this button, you can shift down the plot/table by one position...

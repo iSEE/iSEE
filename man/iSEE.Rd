@@ -2,7 +2,7 @@
 % Please edit documentation in R/iSEE-main.R
 \name{iSEE}
 \alias{iSEE}
-\title{iSEE: interactive SingleCell/Summarized Experiment Explorer}
+\title{iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer}
 \usage{
 iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featExprArgs = NULL,
   rowStatArgs = NULL, rowDataArgs = NULL, heatMapArgs = NULL,
@@ -61,11 +61,12 @@ remotely on a server, which determines how documentation will be accessed.}
 }
 \value{
 A Shiny App is launched for interactive data exploration of the
-\code{\link{SingleCellExperiment}} / \code{\link{SummarizedExperiment}}
+\code{\link{SummarizedExperiment}}/\code{\link{SingleCellExperiment}} 
 object
 }
 \description{
-Interactive visualization of single-cell data using a Shiny interface.
+Interactive and reproducible visualization of data contained in a
+SummarizedExperiment/SingleCellExperiment, using a Shiny interface.
 }
 \details{
 Users can pass default parameters via DataFrame objects in

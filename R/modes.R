@@ -11,7 +11,7 @@
 #' @param plot_width The grid width of linked plots (numeric vector of
 #' length either 1 or equal to \code{nrow(features)}
 #' 
-#' @return A Shiny App preconfigure with multiple chain-linked feature
+#' @return A Shiny App preconfigured with multiple chain-linked feature
 #' expression plots is launched for interactive data exploration of the
 #' \code{\link{SingleCellExperiment}} / \code{\link{SummarizedExperiment}}
 #' object

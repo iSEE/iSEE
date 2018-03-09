@@ -36,14 +36,14 @@ element;intro
 #heatMapPlot1_ColDataPanelOpen;You might also want to annotate the heatmap, and to do so you just have to select the relevant column data (multiple selection is possible).
 #heatMapPlot1;And again, you can see how the information displayed on top reflect your selections.
 #heatMapPlot1_ColorPanelOpen;More general coloring parameters can be found in this box, as well as the options to center and perform row scaling on the expression values. 
-#dropdown-wrench;A couple of useful elements can be found in the dropdown menu labelled with the wrench icon, controlling some of the iSEE diagnostics.
-#ddopen_linkgraph;Clicking on the item marked with the chain icon, you can obtain a graph representation of the existing links and brushes among your open plot and table panels. This can be very useful once you open a multitude of panels.
-#ddgetcode_all;Once you are done with your iSEE live session, you might want to reproduce exactly the plots you generated. This can be done by clicking on the button 'Extract the R code!', marked with the magic wand icon, also in the iSEE diagnostics dropdown menu.
+.navbar-static-top;A couple of useful additional elements can be found in the dashboard header.For example, in the dropdown menu labelled with the wrench icon, you can access some of the iSEE diagnostics.
+#open_linkgraph;Clicking on the item marked with the chain icon, you can obtain a graph representation of the existing links and brushes among your open plot and table panels. This can be very useful once you open a multitude of panels.
+#getcode_all;Once you are done with your iSEE live session, you might want to reproduce exactly the plots you generated. This can be done by clicking on the button 'Extract the R code!', marked with the magic wand icon, also in the iSEE diagnostics dropdown menu.
 #acereport_r;... which opens a modal popup window, with a shinyAce-based text editor, where the code is formatted and displayed with some nice syntax highlighting. You can copy the code to the clipboard by selecting the text (please include the initial lines and the sessionInfo commands for best tracking of your environment), and store it in your analysis report/script. Your code can then be further edited to finalize the plots (e.g., for publication). 
-#dropdown-help;Another dropdown menu is the Documentation, accessible by clicking on the question mark. 
-#ddtour_firststeps;This contains the button to start the introjs-based tour, which you are taking as you read this...
-#ddopen_vignette;... as well as a link to the vignette for the iSEE package, in case you want to consult it while running the app.
-#dropdown-info;Clicking on the info icon you can display some additional information:
-#ddsession_info;either on the session information from which you are running iSEE (which you should report in case of issues or bugs to ensure others are aware on the packages you loaded, and their versions)...
-#ddiSEE_info;... or also a couple of information on the development team that got together to create the iSEE package, plus the item to insert in your citations if you used iSEE. You can follow the development version of the package by checking the GitHub repository linked here. New functionality will be added in the future. The authors appreciate well-considered suggestions for improvements or new features, or even better, pull requests.
+.navbar-static-top;Another dropdown menu is the Documentation, accessible by clicking on the question mark. 
+#tour_firststeps;This contains the button to start the introjs-based tour, which you are taking as you read this...
+#open_vignette;... as well as a link to the vignette for the iSEE package, in case you want to consult it while running the app.
+.navbar-static-top;Clicking on the info icon you can display some additional information:
+#session_info;either on the session information from which you are running iSEE (which you should report in case of issues or bugs to ensure others are aware on the packages you loaded, and their versions)...
+#iSEE_info;... or also a couple of information on the development team that got together to create the iSEE package, plus the item to insert in your citations if you used iSEE. You can follow the development version of the package by checking the GitHub repository linked here. New functionality will be added in the future. The authors appreciate well-considered suggestions for improvements or new features, or even better, pull requests.
 #Thanks;Thank you for taking the tour of iSEE!

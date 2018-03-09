@@ -1,8 +1,59 @@
+#' Check compatibility between ExperimentColorMap and SummarizedExperiment
+#'
+#' @param colormap A \linkS4class{ExperimentColorMap}.
+#' @param se An object that is coercible to \linkS4class{SingleCellExperiment}.
+#' @param error A logical value that indicates whether an informative error
+#' should be thrown, describing why the two objects are not compatible.
+#'
+#' @return A logical value that indicates whether a given pair of
+#' ExperimentColorMap and SummarizedExperiment objects are compatible.
+#' If \code{error=TRUE}, an informative error is thrown,
+#' rather than returing \code{FALSE}.
+#' 
+#' @export 
+#'
+#' @examples
+#' 
+#' # Example color maps ----
+#'
+#' count_colors <- function(n){
+#'   c("black","brown","red","orange","yellow")
+#' }
+#'
+#' qc_color_fun <- function(n){
+#'   qc_colors <- c("forestgreen", "firebrick1")
+#'   names(qc_colors) <- c("Y", "N")
+#'   return(qc_colors)
+#' }
+#'
+#' ecm <- ExperimentColorMap(
+#'     assays = list(
+#'         tophat_counts = count_colors
+#'     ),
+#'     colData = list(
+#'         passes_qc_checks_s = qc_color_fun
+#'     )
+#' )
+#'
+#' # Example SingleCellExperiment ----
+#' 
+#' library(scRNAseq)
+#' data(allen)
+#' library(scater)
+#' sce <- as(allen, "SingleCellExperiment")
+#' 
+#' # Test for compatibility ----
+#' 
+#' isColorMapCompatible(ecm, sce)
+#' 
 isColorMapCompatible <- function(colormap, se, error = FALSE){
   
-  # type-checking; is this worth a generic method?
-  stopifnot(is(colormap, "ExperimentColorMap"))
-  stopifnot(inherits(se, "SummarizedExperiment"))
+  if (!is(se, "SummarizedExperiment")) {
+    se <- as(se, "SummarizedExperiment")
+  }
+  if (!is(se, "SingleCellExperiment")) { 
+    se <- as(se, "SingleCellExperiment")
+  }
   
   # The count of color maps cannot exceed the count of assays
   num_assay_maps <- length(colormap@assays)

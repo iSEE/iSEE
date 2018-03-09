@@ -23,8 +23,6 @@ author:
   email: kevin.rue-albrecht@kennedy.ox.ac.uk
 date: "`r BiocStyle::doc_date()`"
 package: "`r BiocStyle::pkg_ver('iSEE')`"
-abstract: >
-  Abstract for iSEE - TODO or TOLEAVEOUT?
 output: 
   BiocStyle::html_document:
     toc_float: true

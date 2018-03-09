@@ -1,7 +1,7 @@
-## Not run:
-#' iSEE: interactive SingleCell/Summarized Experiment Explorer
+#' iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer
 #'
-#' Interactive visualization of single-cell data using a Shiny interface.
+#' Interactive and reproducible visualization of data contained in a
+#' SummarizedExperiment/SingleCellExperiment, using a Shiny interface.
 #'
 #' @param se An object that is coercible to \code{\linkS4class{SingleCellExperiment}}.
 #' @param redDimArgs A DataFrame similar to that produced by
@@ -55,7 +55,7 @@
 #' inside this range).
 #'
 #' @return A Shiny App is launched for interactive data exploration of the
-#' \code{\link{SingleCellExperiment}} / \code{\link{SummarizedExperiment}}
+#' \code{\link{SummarizedExperiment}}/\code{\link{SingleCellExperiment}} 
 #' object
 #'
 #' @export

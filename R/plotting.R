@@ -53,6 +53,8 @@ names(.all_aes_values) <- .all_aes_names
 #' @seealso
 #' \code{\link{.complete_plotting_data}},
 #' \code{\link{.create_plot}}
+#' 
+#' @importFrom SingleCellExperiment reducedDim
 .make_redDimPlot <- function(id, all_memory, all_coordinates, se, colormap) {
     param_choices <- all_memory$redDimPlot[id,]
     data_cmds <- list()
@@ -106,6 +108,8 @@ names(.all_aes_values) <- .all_aes_names
 #' @seealso
 #' \code{\link{.create_plot}},
 #' \code{\link{.complete_plotting_data}}
+#' 
+#' @importFrom SummarizedExperiment colData
 .make_colDataPlot <- function(id, all_memory, all_coordinates, se, colormap)
 {
     param_choices <- all_memory$colDataPlot[id,]
@@ -171,6 +175,9 @@ names(.all_aes_values) <- .all_aes_names
 #' @seealso
 #' \code{\link{.create_plot}},
 #' \code{\link{.complete_plotting_data}}
+#' 
+#' @importFrom shiny validate need
+#' @importFrom SummarizedExperiment assay colData
 .make_featExprPlot <- function(id, all_memory, all_coordinates, se, colormap) {
     param_choices <- all_memory$featExprPlot[id,]
     data_cmds <- list()
@@ -260,6 +267,8 @@ names(.all_aes_values) <- .all_aes_names
 #' @seealso
 #' \code{\link{.create_plot}},
 #' \code{\link{.complete_plotting_data}}
+#' 
+#' @importFrom SummarizedExperiment rowData
 .make_rowDataPlot <- function(id, all_memory, all_coordinates, se, colormap) {
     param_choices <- all_memory$rowDataPlot[id,]
     data_cmds <- list()
@@ -538,7 +547,7 @@ names(.all_aes_values) <- .all_aes_names
 #' @seealso
 #' \code{\link{.create_plot}}
 #'
-#' @importFrom ggplot2 ggplot coord_cartesian theme_bw theme
+#' @importFrom ggplot2 ggplot coord_cartesian theme_bw theme element_text
 .scatter_plot <- function(plot_data, param_choices, x_lab, y_lab, title, by_row = FALSE, range_all = FALSE, ...) {
     plot_cmds <- list()
     plot_cmds[["defaultcolor"]] <- sprintf("update_geom_defaults('point', list(colour = '%s'));",
@@ -621,7 +630,8 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.complete_plotting_data}},
 #' \code{\link{.create_plot}}
 #'
-#' @importFrom ggplot2 ggplot geom_violin coord_cartesian theme_bw theme coord_flip scale_x_discrete
+#' @importFrom ggplot2 ggplot geom_violin coord_cartesian theme_bw theme
+#' coord_flip scale_x_discrete
 .violin_plot <- function(plot_data, param_choices, x_lab, y_lab, title, horizontal = FALSE, by_row = FALSE, range_all = FALSE, ...) {
     plot_cmds <- list()
     plot_cmds[["defaultcolor"]] <- sprintf("update_geom_defaults('point', list(colour = '%s'));",
@@ -754,7 +764,8 @@ plot.data$Y <- tmp;")
 #' \code{\link{.complete_plotting_data}},
 #' \code{\link{.create_plot}}
 #'
-#' @importFrom ggplot2 ggplot geom_tile coord_cartesian theme_bw theme scale_size_area scale_x_discrete scale_y_discrete guides
+#' @importFrom ggplot2 ggplot geom_tile coord_cartesian theme_bw theme
+#' scale_size_area scale_x_discrete scale_y_discrete guides
 .square_plot <- function(plot_data, param_choices, se, x_lab, y_lab, title, by_row = FALSE, ...) {
     plot_cmds <- list()
     plot_cmds[["defaultcolor"]] <- sprintf("update_geom_defaults('point', list(colour = '%s'));",
@@ -845,6 +856,8 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
 #' \code{\link{.complete_plotting_data}},
 #' \code{\link{.add_color_to_row_plot}},
 #' \code{\link{.add_color_to_column_plot}}
+#' 
+#' @importFrom SummarizedExperiment assay
 .define_colorby_for_column_plot <- function(param_choices) {
     color_choice <- param_choices[[.colorByField]]
     if (color_choice==.colorByColDataTitle) {
@@ -945,7 +958,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 }
 
 #' @rdname INTERNAL_add_color_scale
-#' @importFrom ggplot2 scale_color_manual
+#' @importFrom ggplot2 scale_color_manual geom_point
 .add_color_to_row_plot <- function(colorby, param_choices, se) {
     output <- list(label=NA_character_, cmds=NULL)
     if (is.null(colorby)) { 
@@ -997,7 +1010,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #' \code{\link{.add_color_to_row_plot}},
 #' \code{\link{.add_color_to_column_plot}}
 #'
-#' @importFrom ggplot2 scale_color_manual scale_fill_manual scale_color_gradientn scale_fill_gradientn
+#' @importFrom ggplot2 scale_color_manual scale_fill_manual
+#' scale_color_gradientn scale_fill_gradientn
 .create_color_scale <- function(command, choice, colorby) {
     discrete_color <- is.factor(colorby)
     if (discrete_color) {
@@ -1524,7 +1538,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #' @seealso 
 #' \code{\link{.create_plot}}
 #'
-#' @importFrom ggplot2 geom_point geom_polygon geom_path scale_shape_manual scale_fill_manual guides
+#' @importFrom ggplot2 geom_point geom_polygon geom_path scale_shape_manual
+#' scale_fill_manual guides
 .self_lasso_path <- function(param_choices, flip=FALSE) { 
     current <- param_choices[,.lassoData][[1]]
     if (is.null(current) || !is.null(param_choices[,.brushData][[1]])) {

@@ -8,6 +8,8 @@
 \alias{colDataColorMap}
 \alias{rowDataColorMap}
 \alias{assayColorMap<-}
+\alias{colDataColorMap<-}
+\alias{rowDataColorMap<-}
 \alias{assays,ExperimentColorMap-method}
 \alias{assays<-,ExperimentColorMap,list-method}
 \alias{assayNames,ExperimentColorMap-method}
@@ -103,6 +105,9 @@ In the following code snippets, \code{x} is an
   
   \item{\code{rowDataColorMap(x, i, ...) <- value}:}{
   Set a \code{rowData} colormap.}
+  
+  \item{\code{assay(x, i, ...) <- value}:}{
+  Alias. Set an \code{assays} colormap.}
 }
 }
 

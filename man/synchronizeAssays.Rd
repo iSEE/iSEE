@@ -2,7 +2,7 @@
 % Please edit documentation in R/ExperimentColorMap.R
 \name{synchronizeAssays}
 \alias{synchronizeAssays}
-\title{Synchronise assay color maps to match those in a SummarizedExperiment}
+\title{Synchronize assay colormaps to match those in a SummarizedExperiment}
 \usage{
 synchronizeAssays(ecm, se)
 }
@@ -13,11 +13,52 @@ synchronizeAssays(ecm, se)
 }
 \value{
 An \linkS4class{ExperimentColorMap} with color maps in the
-\code{assay} slot synchronised to match the position of the corresponding
+\code{assay} slot synchronized to match the position of the corresponding
 assay in the \linkS4class{SingleCellExperiment}.
 }
 \description{
-Synchronise assay color maps to match those in a SummarizedExperiment
+This function returns an updated \linkS4class{ExperimentColorMap}
+in which colormaps in the \code{assays} slot
+are ordered to match the position of their corresponding
+assay in the \linkS4class{SingleCellExperiment} object.
+Assays in the SingleCellExperiment that do not have a match
+in the ExperimentColorMap are assigned the appropriate default colormap.
+}
+\details{
+It is highly recommended to name \emph{all} assays in both
+ExperimentColorMap and SummarizedExperiment prior to calling this function,
+as this will facilitate the identification of matching assays
+between the two objects. In most cases, unnamed colormaps will be dropped
+from the new ExperimentColorMap object.
+
+The function supports three main situations:
+
+\itemize{
+
+\item If \emph{all} assays in the SingleCellExperiment are named,
+this function
+will populate the \code{assays} slot of the new ExperimentColorMap
+with the name-matched colormap from the input ExperimentColorMap,
+if available.
+Assays in the SingleCellExperiment that do not have a colormap defined
+in the ExperimentColorMap are assigned the appropriate default colormap.
+
+\item If \emph{all} assays in the SingleCellExperiment are unnamed, this function
+requires that the ExperimentColorMap supplies a number of assay colormaps
+\emph{identical} to the number of assays in the SingleCellExperiment object.
+In that case, the ExperimentColorMap object will be returned \emph{as is}.
+
+\item If only a subset of assays in the SingleCellExperiment are named,
+this function will ignore unnamed colormaps in the ExperimentColorMap;
+It will populate the \code{assays} slot of the new ExperimentColorMap
+with the name-matched colormap from the input ExperimentColorMap,
+if available.
+Assays in the SingleCellExperiment that are unnamed, or that
+do not have a colormap defined
+in the ExperimentColorMap are assigned the appropriate default colormap.
+
+
+}
 }
 \examples{
 

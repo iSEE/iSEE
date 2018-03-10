@@ -37,6 +37,7 @@
     sprintf("se <- %s", se_name),
     sanitize_cmds,
     sprintf("colormap <- %s", ecm_name),
+    sprintf("colormap <- synchronizeAssays(colormap, se)"),
     "all_coordinates <- list()",
     "")
 

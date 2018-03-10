@@ -129,13 +129,56 @@ isColorMapCompatible <- function(ecm, se, error = FALSE){
 }
 
 
-#' Synchronise assay color maps to match those in a SummarizedExperiment
-#'
+#' Synchronize assay colormaps to match those in a SummarizedExperiment
+#' 
+#' This function returns an updated \linkS4class{ExperimentColorMap}
+#' in which colormaps in the \code{assays} slot
+#' are ordered to match the position of their corresponding
+#' assay in the \linkS4class{SingleCellExperiment} object.
+#' Assays in the SingleCellExperiment that do not have a match
+#' in the ExperimentColorMap are assigned the appropriate default colormap.
+#' 
+#' @details 
+#' It is highly recommended to name \emph{all} assays in both
+#' ExperimentColorMap and SummarizedExperiment prior to calling this function,
+#' as this will facilitate the identification of matching assays
+#' between the two objects. In most cases, unnamed colormaps will be dropped
+#' from the new ExperimentColorMap object.
+#' 
+#' The function supports three main situations:
+#' 
+#' \itemize{
+#' 
+#' \item If \emph{all} assays in the SingleCellExperiment are named,
+#' this function
+#' will populate the \code{assays} slot of the new ExperimentColorMap
+#' with the name-matched colormap from the input ExperimentColorMap,
+#' if available.
+#' Assays in the SingleCellExperiment that do not have a colormap defined
+#' in the ExperimentColorMap are assigned the appropriate default colormap.
+#' 
+#' \item If \emph{all} assays in the SingleCellExperiment are unnamed, this function
+#' requires that the ExperimentColorMap supplies a number of assay colormaps
+#' \emph{identical} to the number of assays in the SingleCellExperiment object.
+#' In that case, the ExperimentColorMap object will be returned \emph{as is}.
+#' 
+#' \item If only a subset of assays in the SingleCellExperiment are named,
+#' this function will ignore unnamed colormaps in the ExperimentColorMap;
+#' It will populate the \code{assays} slot of the new ExperimentColorMap
+#' with the name-matched colormap from the input ExperimentColorMap,
+#' if available.
+#' Assays in the SingleCellExperiment that are unnamed, or that
+#' do not have a colormap defined
+#' in the ExperimentColorMap are assigned the appropriate default colormap.
+#' 
+#' 
+#' }
+#' 
 #' @param ecm An \linkS4class{ExperimentColorMap}.
 #' @param se A \linkS4class{SingleCellExperiment}.
 #'
 #' @return An \linkS4class{ExperimentColorMap} with color maps in the
-#' \code{assay} slot synchronised to match the position of the corresponding
+#' \code{assay} slot synchronized to match the position of the corresponding
 #' assay in the \linkS4class{SingleCellExperiment}.
 #' 
 #' @export
@@ -195,7 +238,7 @@ synchronizeAssays <- function(ecm, se){
   orphan_ecm <- setdiff(ecm_assay_names, se_assay_names)
   orphan_ecm <- setdiff(orphan_ecm, "")
   orphan_warning <- ifelse(
-    length(unnamed_ecm) == 0,
+    length(orphan_ecm) == 0,
     "",
     sprintf("named [%s]", paste(orphan_ecm, collapse = ","))
   )
@@ -203,16 +246,59 @@ synchronizeAssays <- function(ecm, se){
   ecm_warning <- paste(unnamed_warning, orphan_warning, sep = ", ")
   
   if (all(se_assay_names != "")){
-      # Drop assays from ECM that are absent in se
-      if (length(orphan_ecm) > 0){
-        warning(
-              "Unused assays dropped from ecm: ",
-              ecm_warning)
-      }
+    # If all of the SCE assays are named
+    
+    # Drop assays from ECM that are absent in se
+    if (length(orphan_ecm) + length(unnamed_ecm) > 0){
+      warning(
+        "Unused assays dropped from ecm: ",
+        ecm_warning)
+    }
+    # Fetch named-matched assay colormaps
     new_ecm_assays <- sapply(
-        se_assay_names,
-        function(x){assayColorMap(ecm, x)})
+      se_assay_names,
+      function(x){assayColorMap(ecm, x)}
+    )
+  
+  } else if (all(se_assay_names == "")){
+    # If none of the SCE assays are named
+    
+    # Require that the number of assay colormaps in ECM is identical
+    # if so, return the ECM as is
+    if (length(ecm_assay_names) == length(se_assay_names)){
+      new_ecm_assays <- assays(ecm)
+      # NOTE: uncomment below to strip assayNames from the colormaps,
+      # thereby matching the assayNames of the SCE
+      # names(new_ecm_assays) <- rep("", length(new_ecm_assays))
+    } else {
+      stop(paste(
+        "Cannot synchronize assays.",
+        sprintf(
+          "Length of unnamed assays must match: se [%i], ecm [%i]",
+          length(se_assay_names),
+          length(ecm_assay_names)
+        )
+      ))
+    }
+    
+  } else {
+    # If a subset of the SCE assays are named
+    
+    if (length(orphan_ecm) + length(unnamed_ecm) > 0){
+      warning(
+        "Unused assays dropped from ecm: ",
+        ecm_warning)
+    }
+    # Exclude unnamed assay colormaps in the ExperimentColorMap
+    assays(ecm) <- assays(ecm)[assayNames(ecm) != ""]
+    # Fetch named-matched assay colormaps
+    new_ecm_assays <- sapply(
+      se_assay_names,
+      function(x){assayColorMap(ecm, x)}
+    )
+    
   }
+  
   assays(ecm) <- new_ecm_assays
   return(ecm)
 }

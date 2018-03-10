@@ -273,6 +273,10 @@ ExperimentColorMap <- function(
   all_continuous = list(assays=NULL, colData=NULL, rowData=NULL),
   global_discrete = NULL, global_continuous = NULL,
   ...){
+  
+  if (is.null(names(assays))){
+    names(assays) <- rep("", length(assays))
+  }
 
   if (is.null(names(all_discrete))){
     stop("`all_discrete` must be a named list")

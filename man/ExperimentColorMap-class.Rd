@@ -24,6 +24,8 @@
 \alias{rowDataColorMap,ExperimentColorMap,character-method}
 \alias{assayColorMap<-,ExperimentColorMap,character-method}
 \alias{assayColorMap<-,ExperimentColorMap,numeric-method}
+\alias{colDataColorMap<-,ExperimentColorMap,character-method}
+\alias{rowDataColorMap<-,ExperimentColorMap,character-method}
 \title{ExperimentColorMap class}
 \usage{
 ExperimentColorMap(assays = list(), colData = list(), rowData = list(),
@@ -126,7 +128,6 @@ ecm <- ExperimentColorMap(
     assays = list(
         counts = count_colors,
         tophat_counts = count_colors,
-        cufflinks_fpkm = fpkm_colors,
         cufflinks_fpkm = fpkm_colors,
         rsem_tpm = tpm_colors
     ),

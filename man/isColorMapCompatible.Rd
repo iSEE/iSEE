@@ -5,10 +5,10 @@
 \title{Check compatibility between ExperimentColorMap and SummarizedExperiment
 objects}
 \usage{
-isColorMapCompatible(colormap, se, error = FALSE)
+isColorMapCompatible(ecm, se, error = FALSE)
 }
 \arguments{
-\item{colormap}{A \linkS4class{ExperimentColorMap}.}
+\item{ecm}{An \linkS4class{ExperimentColorMap}.}
 
 \item{se}{A \linkS4class{SingleCellExperiment}.}
 

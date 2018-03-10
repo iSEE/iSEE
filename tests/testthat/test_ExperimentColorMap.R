@@ -530,3 +530,44 @@ test_that("isColorMapCompatible accepts compatible color map", {
   
 })
 
+# synchronizeAssays ----
+
+test_that("synchronizeAssays works for fully named assays", {
+  
+  ecm <- ExperimentColorMap(
+    assays = list(
+      counts = count_colors,
+      tophat_counts = count_colors,
+      cufflinks_fpkm = fpkm_colors,
+      rsem_tpm = fpkm_colors,
+      orphan = count_colors,
+      orphan2 = count_colors,
+      count_colors,
+      tpm_colors
+    )
+  )
+  
+  ecm_expected <- ExperimentColorMap(
+    assays = list(
+      tophat_counts = count_colors,
+      cufflinks_fpkm = fpkm_colors,
+      rsem_counts = iSEE:::.defaultContinuousColorMap,
+      rsem_tpm = fpkm_colors,
+      counts = count_colors,
+      logcounts = iSEE:::.defaultContinuousColorMap
+    )
+  )
+  
+  expect_warning(
+    synchronizeAssays(ecm, sce),
+    "Unused assays dropped from ecm"
+  )
+  
+  ecm_sync <- synchronizeAssays(ecm, sce)
+  
+  expect_identical(
+    ecm_sync,
+    ecm_expected
+  )
+  
+})

@@ -229,7 +229,6 @@ setClass("ExperimentColorMap",
 #'         counts = count_colors,
 #'         tophat_counts = count_colors,
 #'         cufflinks_fpkm = fpkm_colors,
-#'         cufflinks_fpkm = fpkm_colors,
 #'         rsem_tpm = tpm_colors
 #'     ),
 #'     colData = list(

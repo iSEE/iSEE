@@ -158,7 +158,7 @@ isColorMapCompatible <- function(ecm, se, error = FALSE){
 #'         orphan = count_colors,
 #'         orphan2 = count_colors,
 #'         count_colors,
-#'         tpm_colors
+#'         fpkm_colors
 #'     )
 #' )
 #' 

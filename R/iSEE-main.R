@@ -1,7 +1,7 @@
-## Not run:
-#' iSEE: interactive SingleCell/Summarized Experiment Explorer
+#' iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer
 #'
-#' Interactive visualization of single-cell data using a Shiny interface.
+#' Interactive and reproducible visualization of data contained in a
+#' SummarizedExperiment/SingleCellExperiment, using a Shiny interface.
 #'
 #' @param se An object that is coercible to \code{\linkS4class{SingleCellExperiment}}.
 #' @param redDimArgs A DataFrame similar to that produced by
@@ -55,7 +55,7 @@
 #' inside this range).
 #'
 #' @return A Shiny App is launched for interactive data exploration of the
-#' \code{\link{SingleCellExperiment}} / \code{\link{SummarizedExperiment}}
+#' \code{\link{SummarizedExperiment}}/\code{\link{SingleCellExperiment}} 
 #' object
 #'
 #' @export
@@ -197,7 +197,7 @@ iSEE <- function(
     ), # end of dashboardHeader
 
     dashboardSidebar(
-      selectInput("newPanelChoice", label="Choose panel type:", selected=rev.translation[1], choices=rev.translation),
+      selectizeInput("newPanelChoice", label="Choose panel type:", selected=rev.translation[1], choices=rev.translation),
       actionButton("newPanelAdd", "Add new panel"), 
       hr(),
       uiOutput("panelOrganization")
@@ -284,6 +284,10 @@ iSEE <- function(
       showModal(modalDialog(
         title = "My code", size = "l",fade = TRUE,
         footer = NULL, easyClose = TRUE,
+        p("You can click anywhere in the code editor and select all the code using",
+          "a keyboard shortcut that depends on your operating system (e.g. Ctrl/Cmd + A",
+          "followed by Ctrl/Cmd + C).",
+          "This will copy the selected parts to the clipboard."),
         aceEditor("acereport_r", mode="r",theme = "solarized_light",autoComplete = "live",
                   value = paste0((.track_it_all(rObjects, pObjects, se_name, ecm_name,se_cmds)),collapse="\n"),
                   height="600px")

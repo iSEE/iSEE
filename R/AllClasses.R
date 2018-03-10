@@ -180,7 +180,9 @@ setClass("ExperimentColorMap",
 #' @export assayColorMap
 #' @export assayColorMap<-
 #' @export colDataColorMap
+#' @export colDataColorMap<-
 #' @export rowDataColorMap
+#' @export rowDataColorMap<-
 #' @aliases class:ExperimentColorMap ExperimentColorMap-class
 #' ExperimentColorMap
 #' assayColorMap colDataColorMap rowDataColorMap
@@ -201,6 +203,8 @@ setClass("ExperimentColorMap",
 #' rowDataColorMap,ExperimentColorMap,character-method
 #' assayColorMap<-,ExperimentColorMap,character-method
 #' assayColorMap<-,ExperimentColorMap,numeric-method
+#' colDataColorMap<-,ExperimentColorMap,character-method
+#' rowDataColorMap<-,ExperimentColorMap,character-method
 #' 
 #' @examples
 #'

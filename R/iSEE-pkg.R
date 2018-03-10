@@ -16,7 +16,7 @@
 #' @importFrom shiny actionButton fluidRow icon reactiveValues renderUI
 #' shinyApp tabPanel HTML br selectInput renderPlot plotOutput uiOutput 
 #' sliderInput tagList textInput column observeEvent radioButtons
-#' need tags hr brushOpts brushedPoints observe validate checkboxInput 
+#' tags hr brushOpts brushedPoints observe checkboxInput 
 #' conditionalPanel renderPrint showModal modalDialog 
 #' updateSelectInput isolate showNotification p runApp a em strong
 #' selectizeInput updateSelectizeInput updateRadioButtons req
@@ -26,11 +26,6 @@
 #' @importFrom utils packageVersion read.delim citation sessionInfo
 #' browseURL head
 #' @importFrom shinyjs useShinyjs disable enable
-#' @importFrom ggplot2 ggplot geom_point labs theme_void aes_string geom_violin
-#'   theme_bw facet_wrap ylab aes theme scale_x_continuous scale_y_continuous
-#'   coord_cartesian geom_tile scale_x_discrete scale_y_discrete
-#'   scale_size_area guides scale_color_manual scale_color_gradientn
-#'   scale_fill_manual scale_fill_gradientn geom_rect
 #' @importFrom reshape2 melt
 #' @importFrom DT datatable renderDataTable dataTableOutput
 #' @importFrom AnnotationDbi mapIds keytypes

@@ -228,6 +228,7 @@ iSEE <- function(
   ## Server definition. ----
   #######################################################################
 
+  #nocov start
   iSEE_server <- function(input, output, session) {
     all_names <- list()
     for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot", "rowStatTable", "heatMapPlot")) {
@@ -1472,6 +1473,7 @@ iSEE <- function(
         }
     }
   } # end of iSEE_server
+  #nocov end
 
   #######################################################################
   # Launching the app.

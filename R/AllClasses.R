@@ -113,9 +113,9 @@ setClass("ExperimentColorMap",
 
 # Constructor ----
 
-#' \code{ExperimentColorMap} objects
+#' ExperimentColorMap class
 #'
-#' @name ExperimentColorMap
+#' @name ExperimentColorMap-class
 #'
 #' @param assays List of color maps for \code{assays}.
 #' @param colData List of color maps for \code{colData}.
@@ -157,20 +157,58 @@ setClass("ExperimentColorMap",
 #'   \item{\code{rowDataColorMap(x, i, ..., discrete=FALSE)}:}{
 #'   Get a \code{rowData} colormap.}
 #' }
+#' 
+#' @section Setters:
 #'
+#' In the following code snippets, \code{x} is an
+#' \code{ExperimentColorMap} object, and \code{}. 
+#' 
+#' \describe{
+#'   \item{\code{assayColorMap(x, i, ...) <- value}:}{
+#'   Set an \code{assays} colormap.}
+#'   
+#'   \item{\code{colDataColorMap(x, i, ...) <- value}:}{
+#'   Set a \code{colData} colormap.}
+#'   
+#'   \item{\code{rowDataColorMap(x, i, ...) <- value}:}{
+#'   Set a \code{rowData} colormap.}
+#'   
+#'   \item{\code{assay(x, i, ...) <- value}:}{
+#'   Alias. Set an \code{assays} colormap.}
+#' }
+#'
+#' @importMethodsFrom SummarizedExperiment assays assayNames
 #' @export ExperimentColorMap
 #' @exportClass ExperimentColorMap
 #' @export assayColorMap
-#' @exportMethod assayColorMap
+#' @export assayColorMap<-
 #' @export colDataColorMap
+#' @export colDataColorMap<-
 #' @export rowDataColorMap
+#' @export rowDataColorMap<-
 #' @aliases class:ExperimentColorMap ExperimentColorMap-class
+#' ExperimentColorMap
 #' assayColorMap colDataColorMap rowDataColorMap
+#' assayColorMap<- colDataColorMap<- rowDataColorMap<-
+#' assays,ExperimentColorMap-method
+#' assays<-,ExperimentColorMap,list-method
+#' assayNames,ExperimentColorMap-method
+#' assayNames<-,ExperimentColorMap,ANY-method
+#' colData,ExperimentColorMap-method
+#' colData<-,ExperimentColorMap,ANY-method
+#' rowData,ExperimentColorMap-method
+#' rowData<-,ExperimentColorMap,ANY-method
 #' assayColorMap,ExperimentColorMap,character-method
 #' assayColorMap,ExperimentColorMap,numeric-method
+#' assay,ExperimentColorMap,character-method
+#' assay,ExperimentColorMap,numeric-method
 #' colDataColorMap,ExperimentColorMap,character-method
 #' rowDataColorMap,ExperimentColorMap,character-method
-#'
+#' assayColorMap<-,ExperimentColorMap,character-method
+#' assayColorMap<-,ExperimentColorMap,numeric-method
+#' colDataColorMap<-,ExperimentColorMap,character-method
+#' rowDataColorMap<-,ExperimentColorMap,character-method
+#' 
 #' @examples
 #'
 #' # Example color maps ----
@@ -194,7 +232,6 @@ setClass("ExperimentColorMap",
 #'         counts = count_colors,
 #'         tophat_counts = count_colors,
 #'         cufflinks_fpkm = fpkm_colors,
-#'         cufflinks_fpkm = fpkm_colors,
 #'         rsem_tpm = tpm_colors
 #'     ),
 #'     colData = list(
@@ -204,14 +241,31 @@ setClass("ExperimentColorMap",
 #'
 #' # Accessors ----
 #'
+#' # assay color maps
 #' assayColorMap(ecm, "logcounts") # [undefined --> default]
 #' assayColorMap(ecm, "counts")
 #' assayColorMap(ecm, "cufflinks_fpkm")
+#' assay(ecm, "cufflinks_fpkm") # alias
 #'
+#' # colData color maps
 #' colDataColorMap(ecm, "passes_qc_checks_s")
 #' colDataColorMap(ecm, "undefined")
 #'
+#' # rowData color maps
 #' rowDataColorMap(ecm, "undefined")
+#' 
+#' # generic accessors
+#' assays(ecm)
+#' assayNames(ecm)
+#' 
+#' # Setters ----
+#' 
+#' assayColorMap(ecm, "counts") <- function(n){c("blue","white","red")}
+#' assay(ecm, 1) <- function(n){c("blue","white","red")}
+#' 
+#' colDataColorMap(ecm, "passes_qc_checks_s") <- function(n){NULL}
+#' rowDataColorMap(ecm, "undefined") <- function(n){NULL}
+#' 
 #'
 ExperimentColorMap <- function(
   assays = list(), colData = list(), rowData = list(),
@@ -286,6 +340,92 @@ ExperimentColorMap <- function(
 
 # Accessors ----
 
+# assays ----
+
+setMethod("assays", c("ExperimentColorMap"),
+    function(x)
+{
+    x@assays
+})
+
+setReplaceMethod(
+    "assays", signature(x="ExperimentColorMap",value="list"),
+    function(x, value) {
+        x@assays <- value
+        x
+})
+
+# assayNames ----
+
+setMethod("assayNames", c("ExperimentColorMap"),
+    function(x)
+{
+    names(x@assays)
+})
+
+setReplaceMethod("assayNames", "ExperimentColorMap", function(x, value) {
+    names(x@assays) <- value
+    x
+})
+
+# colData ----
+
+setMethod("colData", c("ExperimentColorMap"),
+    function(x)
+{
+    x@colData
+})
+
+setReplaceMethod(
+    "colData", signature(x="ExperimentColorMap",value="list"),
+    function(x, value) {
+        x@colData <- value
+        x
+})
+
+# rowData ----
+
+setMethod("rowData", c("ExperimentColorMap"),
+    function(x)
+{
+    x@rowData
+})
+
+setReplaceMethod(
+    "rowData", signature(x="ExperimentColorMap",value="list"),
+    function(x, value) {
+        x@rowData <- value
+        x
+})
+
+# assay ----
+
+setMethod("assay", c("ExperimentColorMap", "character"),
+    function(x, i, ..., discrete = FALSE)
+{
+    # Alias
+    assayColorMap(x, i, ..., discrete = discrete)
+})
+
+setMethod("assay", c("ExperimentColorMap", "numeric"),
+    function(x, i, ..., discrete = FALSE)
+{
+    # Alias
+    assayColorMap(x, i, ..., discrete = discrete)
+})
+
+setReplaceMethod(
+    "assay", signature(x="ExperimentColorMap",i="character"),
+    function(x, i, ..., value) {
+        .replaceAssayColorMap(x, i, ..., value = value)
+})
+
+setReplaceMethod(
+    "assay", signature(x="ExperimentColorMap",i="numeric"),
+    function(x, i, ..., value) {
+        .replaceAssayColorMap(x, i, ..., value = value)
+})
+
 # assayColorMap ----
 
 setGeneric(
@@ -311,6 +451,8 @@ setMethod("assayColorMap", c("ExperimentColorMap", "numeric"),
   assay_map <- tryCatch({
         x@assays[[i]]
     }, error=function(err) {
+        # WARNG: out-of-bound index does not throw an error!
+        # instead it returns the default color map
         .nullColorMap
     })
   if (is.null(assay_map)){
@@ -337,6 +479,28 @@ setMethod("assayColorMap", c("ExperimentColorMap", "numeric"),
     return(all_assays_map)
   }
   return(.globalColorMap(x, discrete))
+}
+
+setGeneric("assayColorMap<-", signature=c("x", "i"),
+    function(x, i, ..., value) standardGeneric("assayColorMap<-"))
+
+setReplaceMethod(
+    "assayColorMap", signature(x="ExperimentColorMap",i="character"),
+    function(x, i, ..., value) {
+        .replaceAssayColorMap(x, i, ..., value = value)
+})
+
+setReplaceMethod(
+    "assayColorMap", signature(x="ExperimentColorMap",i="numeric"),
+    function(x, i, ..., value) {
+        .replaceAssayColorMap(x, i, ..., value = value)
+})
+
+.replaceAssayColorMap <- function(x, i, ..., value){
+    new_assays <- assays(x)
+    new_assays[[i]] <- value
+    assays(x) <- new_assays
+    x
 }
 
 # colDataColorMap ----
@@ -379,6 +543,22 @@ setMethod("colDataColorMap", c("ExperimentColorMap", "character"),
     return(all_coldata_map)
   }
   return(.globalColorMap(x, discrete))
+}
+
+setGeneric("colDataColorMap<-", signature=c("x", "i"),
+    function(x, i, ..., value) standardGeneric("colDataColorMap<-"))
+
+setReplaceMethod(
+    "colDataColorMap", signature(x="ExperimentColorMap",i="character"),
+    function(x, i, ..., value) {
+        .replaceColDataColorMap(x, i, ..., value = value)
+})
+
+.replaceColDataColorMap <- function(x, i, ..., value){
+    new_coldata <- colData(x)
+    new_coldata[[i]] <- value
+    colData(x) <- new_coldata
+    x
 }
 
 # rowDataColorMap ----
@@ -437,6 +617,22 @@ setMethod("rowDataColorMap", c("ExperimentColorMap", "character"),
     return(global_map)
   }
   return(.defaultColorMap(discrete))
+}
+
+setGeneric("rowDataColorMap<-", signature=c("x", "i"),
+    function(x, i, ..., value) standardGeneric("rowDataColorMap<-"))
+
+setReplaceMethod(
+    "rowDataColorMap", signature(x="ExperimentColorMap",i="character"),
+    function(x, i, ..., value) {
+        .replaceRowDataColorMap(x, i, ..., value = value)
+})
+
+.replaceRowDataColorMap <- function(x, i, ..., value){
+    new_rowdata <- rowData(x)
+    new_rowdata[[i]] <- value
+    rowData(x) <- new_rowdata
+    x
 }
 
 # show ----

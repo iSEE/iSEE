@@ -34,6 +34,7 @@
 #' @author Charlotte Soneson, Aaron Lun, Kevin Rue-Albrecht 
 #' @rdname INTERNAL_make_heatMapPlot
 #' 
+#' @importFrom ggplot2 scale_y_continuous
 #' @importFrom cowplot get_legend plot_grid
 #' @importFrom scales rescale
 #' @importFrom reshape2 melt

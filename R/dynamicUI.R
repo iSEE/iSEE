@@ -117,7 +117,9 @@
 #' @importFrom SummarizedExperiment colData rowData assayNames
 #' @importFrom BiocGenerics rownames
 #' @importFrom SingleCellExperiment reducedDimNames reducedDim
-#' @importFrom shiny actionButton fluidRow selectInput plotOutput uiOutput sliderInput tagList numericInput column radioButtons tags hr brushOpts selectizeInput 
+#' @importFrom shiny actionButton fluidRow selectInput plotOutput uiOutput
+#' sliderInput tagList numericInput column radioButtons tags hr brushOpts
+#' selectizeInput checkboxGroupInput
 .panel_generation <- function(active_panels, memory, se) {
     collected <- list()
     counter <- 1L
@@ -469,6 +471,7 @@
 #' \code{\link{.create_visual_box_for_row_plots}}
 #'
 #' @importFrom shiny radioButtons tagList selectInput selectizeInput
+#' checkboxGroupInput
 #' @importFrom colourpicker colourInput
 .create_visual_box_for_column_plots <- function(mode, ID, param_choices, active_tab, covariates, all_assays, no_rows=FALSE) {
     colorby_field <- paste0(mode, ID, "_", .colorByField)
@@ -541,6 +544,7 @@
 #' \code{\link{.create_visual_box_for_column_plots}}
 #'
 #' @importFrom shiny radioButtons tagList selectInput selectizeInput
+#' checkboxGroupInput
 #' @importFrom colourpicker colourInput
 .create_visual_box_for_row_plots <- function(mode, ID, param_choices, active_tab, covariates) {
     colorby_field <- paste0(mode, ID, "_", .colorByField)

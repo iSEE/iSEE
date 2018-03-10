@@ -23,7 +23,7 @@ Plots are serially linked from the first row to the last.}
 length either 1 or equal to \code{nrow(features)}}
 }
 \value{
-A Shiny App preconfigure with multiple chain-linked feature
+A Shiny App preconfigured with multiple chain-linked feature
 expression plots is launched for interactive data exploration of the
 \code{\link{SingleCellExperiment}} / \code{\link{SummarizedExperiment}}
 object

@@ -186,7 +186,7 @@ setClass("ExperimentColorMap",
 #' @aliases class:ExperimentColorMap ExperimentColorMap-class
 #' ExperimentColorMap
 #' assayColorMap colDataColorMap rowDataColorMap
-#' assayColorMap<-
+#' assayColorMap<- colDataColorMap<- rowDataColorMap<-
 #' assays,ExperimentColorMap-method
 #' assays<-,ExperimentColorMap,list-method
 #' assayNames,ExperimentColorMap-method

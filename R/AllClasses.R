@@ -172,6 +172,9 @@ setClass("ExperimentColorMap",
 #'   
 #'   \item{\code{rowDataColorMap(x, i, ...) <- value}:}{
 #'   Set a \code{rowData} colormap.}
+#'   
+#'   \item{\code{assay(x, i, ...) <- value}:}{
+#'   Alias. Set an \code{assays} colormap.}
 #' }
 #'
 #' @importMethodsFrom SummarizedExperiment assays assayNames

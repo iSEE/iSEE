@@ -1,7 +1,13 @@
 #' Check compatibility between ExperimentColorMap and SummarizedExperiment
+#' objects
+#' 
+#' This function compares a pair of \linkS4class{ExperimentColorMap} and
+#' \linkS4class{SingleCellExperiment} objects, and examines whether
+#' all of the \code{assays}, \code{colData}, and \code{rowData} defined
+#' in the ExperimentColorMap object exist in the SingleCellExperiment object.
 #'
 #' @param colormap A \linkS4class{ExperimentColorMap}.
-#' @param se An object that is coercible to \linkS4class{SingleCellExperiment}.
+#' @param se A \linkS4class{SingleCellExperiment}.
 #' @param error A logical value that indicates whether an informative error
 #' should be thrown, describing why the two objects are not compatible.
 #'
@@ -47,13 +53,6 @@
 #' isColorMapCompatible(ecm, sce)
 #' 
 isColorMapCompatible <- function(colormap, se, error = FALSE){
-  
-  if (!is(se, "SummarizedExperiment")) {
-    se <- as(se, "SummarizedExperiment")
-  }
-  if (!is(se, "SingleCellExperiment")) { 
-    se <- as(se, "SingleCellExperiment")
-  }
   
   # The count of color maps cannot exceed the count of assays
   num_assay_maps <- length(colormap@assays)
@@ -128,3 +127,5 @@ isColorMapCompatible <- function(colormap, se, error = FALSE){
   
   return(TRUE)
 }
+
+

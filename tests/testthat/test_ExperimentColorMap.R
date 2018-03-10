@@ -24,6 +24,188 @@ test_that("Constructor produce a valid object",{
 
 })
 
+# assays ----
+
+test_that("assays returns appropriate values",{
+  
+  ecm <- ExperimentColorMap(
+    assays = list(
+      counts = count_colors
+    ),
+    global_continuous = assay_continuous_colours
+  )
+  
+  expect_identical(
+    assays(ecm),
+    ecm@assays
+  )
+  
+})
+
+test_that("assays<- sets appropriate values",{
+  
+  ecm <- ExperimentColorMap(
+    assays = list(
+      counts = count_colors
+    ),
+    global_continuous = assay_continuous_colours
+  )
+  
+  new_value <- list()
+  assays(ecm) <- new_value
+  
+  expect_identical(
+    assays(ecm),
+    new_value
+  )
+  
+})
+
+# colData ----
+
+test_that("colData returns appropriate values",{
+  
+  ecm <- ExperimentColorMap(
+    colData = list(
+        passes_qc_checks_s = qc_color_fun
+    )
+  )
+  
+  expect_identical(
+    colData(ecm),
+    ecm@colData
+  )
+  
+})
+
+test_that("colData<- sets appropriate values",{
+  
+  ecm <- ExperimentColorMap(
+    colData = list(
+        passes_qc_checks_s = qc_color_fun
+    )
+  )
+  
+  new_value <- list(
+    new_coldata <- function(n){return("blue")}
+  )
+  colData(ecm) <- new_value
+  
+  expect_identical(
+    colData(ecm),
+    new_value
+  )
+  
+})
+
+# rowData ----
+
+test_that("rowData returns appropriate values",{
+  
+  ecm <- ExperimentColorMap(
+    rowData = list(
+        passes_qc_checks_s = qc_color_fun
+    )
+  )
+  
+  expect_identical(
+    rowData(ecm),
+    ecm@rowData
+  )
+  
+})
+
+test_that("rowData<- sets appropriate values",{
+  
+  logical_colormap <- function(n){
+      logical_colors <- c("forestgreen", "firebrick1")
+      names(logical_colors) <- c("TRUE", "FALSE")
+      return(logical_colors)
+  }
+  
+  ecm <- ExperimentColorMap(
+    rowData = list(
+        is_MT = logical_colormap
+    )
+  )
+  
+  new_value <- list(
+    new_rowData = function(n){return("blue")}
+  )
+  rowData(ecm) <- new_value
+  
+  expect_identical(
+    rowData(ecm),
+    new_value
+  )
+  
+})
+
+# assay ----
+
+test_that("assay returns appropriate values",{
+  
+  ecm <- ExperimentColorMap(
+    assays = list(
+      counts = count_colors
+    ),
+    global_continuous = assay_continuous_colours
+  )
+  
+  # character
+  expect_identical(
+    assay(ecm, "counts"),
+    ecm@assays$counts
+  )
+  
+  # numeric
+  expect_identical(
+    assay(ecm, 1),
+    ecm@assays[[1]]
+  )
+  
+})
+
+test_that("assay<- sets appropriate values with character indexing",{
+  
+  ecm <- ExperimentColorMap(
+    assays = list(
+      counts = count_colors
+    ),
+    global_continuous = assay_continuous_colours
+  )
+  
+  new_value <- function(n){return("red")}
+  assay(ecm, "counts") <- new_value
+  
+  # character
+  expect_identical(
+    assay(ecm, "counts"),
+    new_value
+  )
+  
+})
+
+test_that("assay<- sets appropriate values with numeric indexing",{
+  
+  ecm <- ExperimentColorMap(
+    assays = list(
+      counts = count_colors
+    ),
+    global_continuous = assay_continuous_colours
+  )
+  
+  new_value <- function(n){return("red")}
+  assay(ecm, 1) <- new_value
+  
+  # character
+  expect_identical(
+    assay(ecm, 1),
+    new_value
+  )
+  
+})
+
 # assayColorMap ----
 
 test_that("assayColorMap returns appropriate values",{
@@ -49,6 +231,46 @@ test_that("assayColorMap returns appropriate values",{
 
 })
 
+test_that("assay<- sets appropriate values with character indexing",{
+  
+  ecm <- ExperimentColorMap(
+    assays = list(
+      counts = count_colors
+    ),
+    global_continuous = assay_continuous_colours
+  )
+  
+  new_value <- function(n){return("red")}
+  assay(ecm, "counts") <- new_value
+  
+  # character
+  expect_identical(
+    assay(ecm, "counts"),
+    new_value
+  )
+  
+})
+
+test_that("assay<- sets appropriate values with numeric indexing",{
+  
+  ecm <- ExperimentColorMap(
+    assays = list(
+      counts = count_colors
+    ),
+    global_continuous = assay_continuous_colours
+  )
+  
+  new_value <- function(n){return("red")}
+  assay(ecm, 1) <- new_value
+  
+  # character
+  expect_identical(
+    assay(ecm, 1),
+    new_value
+  )
+  
+})
+
 # colDataColorMap ----
 
 test_that("colDataColorMap returns appropriate values",{
@@ -72,6 +294,69 @@ test_that("colDataColorMap returns appropriate values",{
       assay_continuous_colours(21L)
     )
 
+})
+
+test_that("colDataColorMap<- sets appropriate values with character indexing",{
+  
+  ecm <- ExperimentColorMap(
+    colData = list(
+      passes_qc_checks_s = qc_color_fun
+    )
+  )
+  
+  new_value <- function(n){return("red")}
+  colDataColorMap(ecm, "passes_qc_checks_s") <- new_value
+  
+  # character
+  expect_identical(
+    colDataColorMap(ecm, "passes_qc_checks_s"),
+    new_value
+  )
+  
+})
+
+# rowDataColorMap ----
+
+test_that("rowDataColorMap returns appropriate values",{
+  
+  ecm <- ExperimentColorMap(
+    assays = list(
+      counts = count_colors
+    ),
+    global_continuous = assay_continuous_colours
+  )
+ 
+  # specific > (discrete) all > global > .defaultDiscreteColorMap
+  expect_identical(
+    rowDataColorMap(ecm, "test", discrete = TRUE)(21L),
+    .defaultDiscreteColorMap(21L)
+  )
+  
+  # specific > (continuous) all > global
+  expect_identical(
+      rowDataColorMap(ecm, "test", discrete = FALSE)(21L),
+      assay_continuous_colours(21L)
+    )
+
+})
+
+test_that("rowDataColorMap<- sets appropriate values with character indexing",{
+  
+  ecm <- ExperimentColorMap(
+    rowData = list(
+      passes_qc_checks_s = qc_color_fun
+    )
+  )
+  
+  new_value <- function(n){return("red")}
+  rowDataColorMap(ecm, "passes_qc_checks_s") <- new_value
+  
+  # character
+  expect_identical(
+    rowDataColorMap(ecm, "passes_qc_checks_s"),
+    new_value
+  )
+  
 })
 
 # Validity method ----

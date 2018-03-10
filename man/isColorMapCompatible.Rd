@@ -2,14 +2,15 @@
 % Please edit documentation in R/ExperimentColorMap.R
 \name{isColorMapCompatible}
 \alias{isColorMapCompatible}
-\title{Check compatibility between ExperimentColorMap and SummarizedExperiment}
+\title{Check compatibility between ExperimentColorMap and SummarizedExperiment
+objects}
 \usage{
 isColorMapCompatible(colormap, se, error = FALSE)
 }
 \arguments{
 \item{colormap}{A \linkS4class{ExperimentColorMap}.}
 
-\item{se}{An object that is coercible to \linkS4class{SingleCellExperiment}.}
+\item{se}{A \linkS4class{SingleCellExperiment}.}
 
 \item{error}{A logical value that indicates whether an informative error
 should be thrown, describing why the two objects are not compatible.}
@@ -21,7 +22,10 @@ If \code{error=TRUE}, an informative error is thrown,
 rather than returing \code{FALSE}.
 }
 \description{
-Check compatibility between ExperimentColorMap and SummarizedExperiment
+This function compares a pair of \linkS4class{ExperimentColorMap} and
+\linkS4class{SingleCellExperiment} objects, and examines whether
+all of the \code{assays}, \code{colData}, and \code{rowData} defined
+in the ExperimentColorMap object exist in the SingleCellExperiment object.
 }
 \examples{
 

@@ -24,6 +24,8 @@
 \alias{rowDataColorMap,ExperimentColorMap,character-method}
 \alias{assayColorMap<-,ExperimentColorMap,character-method}
 \alias{assayColorMap<-,ExperimentColorMap,numeric-method}
+\alias{colDataColorMap<-,ExperimentColorMap,character-method}
+\alias{rowDataColorMap<-,ExperimentColorMap,character-method}
 \title{ExperimentColorMap class}
 \usage{
 ExperimentColorMap(assays = list(), colData = list(), rowData = list(),

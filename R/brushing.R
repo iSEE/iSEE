@@ -244,7 +244,7 @@
 #' @param transmitter String containing the decoded name of a transmitting panel.
 #' @param memory A list of DataFrames containing parameters for each panel of each type.
 #' 
-#' @return A list of of two elements - \code{brush}, a logical scalar indicating whether a brush/lasso exists in \code{transmitter};
+#' @return A list of of two elements - \code{selected}, a logical scalar indicating whether a brush/lasso exists in \code{transmitter};
 #' and \code{encoded}, the encoded name of \code{transmitter}.
 #'
 #' @details 
@@ -267,7 +267,7 @@
             selection <- TRUE
         }
     }
-    return(list(selection=selection, encoded=encoded))
+    return(list(selected=selection, encoded=encoded))
 }
 
 #' Checks if any points are selected

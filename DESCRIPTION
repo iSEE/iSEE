@@ -56,7 +56,8 @@ Suggests:
     irlba,
     RColorBrewer,
     viridis,
-    org.Mm.eg.db
+    org.Mm.eg.db,
+    htmltools
 Enhances:
     ExperimentHub
 URL: https://github.com/csoneson/iSEE

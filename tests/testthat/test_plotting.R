@@ -197,6 +197,103 @@ test_that(".make_colDataPlot/.square_plot produce a valid xy with color", {
   
 })
 
+# .make_rowDataPlot/.violin_plot ----
+
+test_that(".make_colDataPlot/.violin_plot produce a valid list",{
+  
+  p.out <- iSEE:::.make_rowDataPlot(
+    id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
+  
+  # return value is a named list
+  expect_type(
+    p.out,
+    "list"
+  )
+  expect_named(
+    p.out,
+    c("cmd_list", "xy", "plot")
+  )
+  
+  # cmd value is a named list
+  expect_type(
+    p.out$cmd_list,
+    "list"
+  )
+  expect_named(
+    p.out$cmd_list,
+    c("data","brush","setup","plot")
+  )
+  
+  # xy value is a data frame
+  expect_s3_class(
+    p.out$xy,
+    "data.frame"
+  )
+  expect_named(
+    p.out$xy,
+    c("Y","X","GroupBy","jitteredX")
+  )
+  
+  #plot
+  expect_s3_class(
+    p.out$plot,
+    c("gg", "ggplot")
+  )
+
+})
+
+# .make_rowDataPlot/.square_plot ----
+
+test_that(".make_rowDataPlot/.square_plot produce a valid list",{
+  
+  rowData(sce)[,"letters"] <- sample(letters[1:5], nrow(sce), replace = TRUE)
+  rowData(sce)[,"LETTERS"] <- sample(LETTERS[1:3], nrow(sce), replace = TRUE)
+  
+  all_memory$rowDataPlot[1,iSEE:::.rowDataXAxis] <- iSEE:::.rowDataXAxisRowData
+  all_memory$rowDataPlot[1,iSEE:::.rowDataXAxisRowData] <- "letters"
+  all_memory$rowDataPlot[1,iSEE:::.rowDataYAxis] <- "LETTERS"
+  
+  p.out <- iSEE:::.make_rowDataPlot(
+    id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
+  
+  # return value is a named list
+  expect_type(
+    p.out,
+    "list"
+  )
+  expect_named(
+    p.out,
+    c("cmd_list", "xy", "plot")
+  )
+  
+  # cmd value is a named list
+  expect_type(
+    p.out$cmd_list,
+    "list"
+  )
+  expect_named(
+    p.out$cmd_list,
+    c("data","brush","setup","plot")
+  )
+  
+  # xy value is a data frame
+  expect_s3_class(
+    p.out$xy,
+    "data.frame"
+  )
+  expect_named(
+    p.out$xy,
+    c("Y","X","jitteredX","jitteredY")
+  )
+  
+  #plot
+  expect_s3_class(
+    p.out$plot,
+    c("gg", "ggplot")
+  )
+  
+})
+
 # .make_featExprPlot/.scatter_plot ----
 
 test_that(".make_featExprPlot/.scatter_plot produce a valid list",{

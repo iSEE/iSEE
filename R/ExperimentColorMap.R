@@ -18,6 +18,7 @@
 #' 
 #' @export 
 #'
+#' @author Kevin Rue-Albrecht
 #' @examples
 #' 
 #' # Example color maps ----
@@ -183,6 +184,7 @@ isColorMapCompatible <- function(ecm, se, error = FALSE){
 #' 
 #' @export
 #'
+#' @author Kevin Rue-Albrecht
 #' @examples
 #' 
 #' # Example ExperimentColorMap ----

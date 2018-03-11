@@ -66,12 +66,12 @@ modeGating <- function(
   featExprArgs[[.featExprXAxisFeatName]] <- features[,"x"]
   # X axes take all the even-numbered feature names
   featExprArgs[[.featExprYAxisFeatName]] <- features[,"y"]
-  featExprArgs[[.brushByPlot]] <- c(
+  featExprArgs[[.selectByPlot]] <- c(
     "",
     sprintf("Feature expression plot %i", seq(1, nrow(features) - 1, 1)),
     rep("", nrow(featExprArgs) - nrow(features))
   )
-  featExprArgs[[.brushEffect]] <- c(
+  featExprArgs[[.selectEffect]] <- c(
     "",
     rep("Restrict", nrow(features) - 2),
     "Color",

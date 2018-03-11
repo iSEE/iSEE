@@ -43,7 +43,7 @@ names(.all_aes_values) <- .all_aes_names
 #'   \item{cmd_list}{A list of character vectors, where each vector contains
 #'     commands to parse and evaluate to produce the final plot.
 #'     Each list element groups functionally related commands - namely,
-#'     \code{"data"}, \code{"brush"}, \code{"setup"}, \code{"plot"}).
+#'     \code{"data"}, \code{"select"}, \code{"setup"}, \code{"plot"}).
 #'   }
 #'   \item{xy}{A data.frame that includes coordinates and covariates of the
 #'     plot.}
@@ -115,7 +115,7 @@ names(.all_aes_values) <- .all_aes_names
 #'   \item{cmd_list}{A list of character vectors, where each vector contains
 #'     commands to parse and evaluate to produce the final plot.
 #'     Each list element groups functionally related commands - namely,
-#'     \code{"data"}, \code{"brush"}, \code{"setup"}, \code{"plot"}).
+#'     \code{"data"}, \code{"select"}, \code{"setup"}, \code{"plot"}).
 #'   }
 #'   \item{xy}{A data.frame that includes coordinates and covariates of the
 #'     plot.}
@@ -199,7 +199,7 @@ names(.all_aes_values) <- .all_aes_names
 #'   \item{cmd_list}{A list of character vectors, where each vector contains
 #'     commands to parse and evaluate to produce the final plot.
 #'     Each list element groups functionally related commands - namely,
-#'     \code{"data"}, \code{"brush"}, \code{"setup"}, \code{"plot"}).
+#'     \code{"data"}, \code{"select"}, \code{"setup"}, \code{"plot"}).
 #'   }
 #'   \item{xy}{A data.frame that includes coordinates and covariates of the
 #'     plot.}
@@ -310,7 +310,7 @@ names(.all_aes_values) <- .all_aes_names
 #'   \item{cmd_list}{A list of character vectors, where each vector contains
 #'     commands to parse and evaluate to produce the final plot.
 #'     Each list element groups functionally related commands - namely,
-#'     \code{"data"}, \code{"brush"}, \code{"setup"}, \code{"plot"}).
+#'     \code{"data"}, \code{"select"}, \code{"setup"}, \code{"plot"}).
 #'   }
 #'   \item{xy}{A data.frame that includes coordinates and covariates of the
 #'     plot.}
@@ -395,7 +395,7 @@ names(.all_aes_values) <- .all_aes_names
 #' \itemize{
 #' \item \code{data}, a list of strings containing commands to generate the
 #' plotting data.frame.
-#' \item \code{brush}, a list of strings containing commands to add
+#' \item \code{select}, a list of strings containing commands to add
 #' \code{BrushBy} information to the plotting data.frame.
 #' \item \code{specific}, a list of strings containing commands to generate
 #' plot-type-specific commands, e.g., scatter for violin plots.
@@ -430,7 +430,7 @@ names(.all_aes_values) <- .all_aes_names
 #' The environment may also contain \code{plot.data.all}, a data.frame
 #' equivalent to \code{plot.data} but without any \code{BrushBy} information
 #' or subsetting by \code{BrushBy}. 
-#' (See \code{\link{.process_brushby_choice}} for the origin of this
+#' (See \code{\link{.process_selectby_choice}} for the origin of this
 #' data.frame.)
 #' This is useful for determining the plotting boundaries of the entire
 #' data set, even after subsetting of \code{plot.data}.
@@ -440,7 +440,7 @@ names(.all_aes_values) <- .all_aes_names
 #' @seealso
 #' \code{\link{.define_colorby_for_column_plot}},
 #' \code{\link{.define_colorby_for_row_plot}},
-#' \code{\link{.process_brushby_choice}}
+#' \code{\link{.process_selectby_choice}}
 .complete_plotting_data <- function(
   data_cmds, param_choices, all_memory, all_coordinates, se, by_row=FALSE) {
     # Evaluating to check the grouping status of various fields.
@@ -504,17 +504,14 @@ names(.all_aes_values) <- .all_aes_names
     }
   
     # Creating the command to define BrushBy.
-    # Note that 'all_brushes' or 'all_lassos' is needed for the eval() to
-    # obtain BrushBy.
-    # This approach relatively easy to deparse() in the code tracker,
-    # rather than
-    # having to construct the Shiny brush object or lasso waypoints manually.
-    brush_out <- .process_brushby_choice(param_choices, all_memory)
-    brush_cmds <- brush_out$cmds
-    if (length(brush_cmds)) { 
-        eval_env$all_brushes <- brush_out$data
-        eval_env$all_lassos <- brush_out$data
-        eval(parse(text=brush_cmds), envir=eval_env)
+    # Note that 'all_brushes' or 'all_lassos' is needed for the eval() to obtain BrushBy.
+    # This approach relatively easy to deparse() in the code tracker, rather than having to construct the Shiny select object or lasso waypoints manually.
+    select_out <- .process_selectby_choice(param_choices, all_memory)
+    select_cmds <- select_out$cmds
+    if (length(select_cmds)) { 
+        eval_env$all_brushes <- select_out$data
+        eval_env$all_lassos <- select_out$data
+        eval(parse(text=select_cmds), envir=eval_env)
     }
     
     # Adding more plot-specific information, depending on the type of plot
@@ -537,11 +534,7 @@ names(.all_aes_values) <- .all_aes_names
     }
     eval_env$plot.type <- mode
 
-    return(list(
-      cmd_list=list(
-        data=data_cmds, brush=brush_cmds, setup=specific),
-      envir=eval_env
-    ))
+    return(list(cmd_list=list( data=data_cmds, select=select_cmds, setup=specific), envir=eval_env))
 }
 
 ############################################
@@ -589,7 +582,7 @@ names(.all_aes_values) <- .all_aes_names
 #' boundaries.
 #' This may be necesssary to ensure consistent plot boundaries when
 #' selecting points to restrict - see
-#' \code{\link{.process_brushby_choice}} for details.
+#' \code{\link{.process_selectby_choice}} for details.
 #'
 #' This function will also add a box representing the Shiny brush coordinates,
 #' if one is available - see \code{?\link{.self_brush_box}}.
@@ -610,19 +603,12 @@ names(.all_aes_values) <- .all_aes_names
     
     # Dispatch to different plotting commands, depending on X/Y being groupable
     mode <- envir$plot.type
-    extra_cmds <- switch(
-      envir$plot.type,
-      square = .square_plot(
-        plot_data=plot_data, param_choices=param_choices, ...),
-      violin = .violin_plot(
-        plot_data=plot_data, param_choices=param_choices, ...,
-        range_all = range_all),
-      violin_horizontal = .violin_plot(
-        plot_data=plot_data, param_choices=param_choices, ...,
-        range_all = range_all, horizontal=TRUE),
-      scatter = .scatter_plot(
-        plot_data=plot_data, param_choices=param_choices, ...,
-        range_all = range_all))
+    extra_cmds <- switch(envir$plot.type,
+        square = .square_plot(plot_data=plot_data, param_choices=param_choices, ...),
+        violin = .violin_plot(plot_data=plot_data, param_choices=param_choices, ..., range_all = range_all),
+        violin_horizontal = .violin_plot(plot_data=plot_data, param_choices=param_choices, ..., range_all = range_all, horizontal=TRUE),
+        scatter = .scatter_plot(plot_data=plot_data, param_choices=param_choices, ..., range_all = range_all)
+    )
 
     # Adding self-brushing boxes, if they exist.
     to_flip <- mode == "violin_horizontal"
@@ -1316,7 +1302,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #' \describe{
 #'   \item{cmds}{A character vector of commands that results in the addition
 #'     of a \code{BrushBy} covariate column in the \code{plot.data} data.frame.
-#'     \code{NULL} if no brush should be applied.
+#'     \code{NULL} if no selection should be applied.
 #'   }
 #'   \item{data}{A list containing a Shiny brush object or a matrix of closed
 #'     lasso waypoint coordinates.
@@ -1333,7 +1319,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #' This requires extraction of the Shiny brush or lasso waypoints in the
 #' transmitter, which are used during evaluation to define the selection.
 #'
-#' Note that if brushing to restrict, an extra \code{plot.data.all}
+#' Note that if selecting to restrict, an extra \code{plot.data.all}
 #' variable will be generated in the evaluation environment
 #' (see \code{\link{.complete_plotting_data}}).
 #' This will be used in \code{\link{.scatter_plot}} and
@@ -1343,7 +1329,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #' only a subset of the data are used to generate the ggplot object.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
-#' @rdname INTERNAL_process_brushby_choice
+#' @rdname INTERNAL_process_selectby_choice
 #' @seealso
 #' \code{\link{.complete_plotting_data}}, 
 #' \code{\link{brushedPoints}},
@@ -1351,33 +1337,33 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #'
 #' @importFrom mgcv in.out
 #' @importFrom shiny brushedPoints
-.process_brushby_choice <- function(param_choices, all_memory) {
-    brush_in <- param_choices[[.brushByPlot]]
-    brush_obj <- list()
+.process_selectby_choice <- function(param_choices, all_memory) {
+    select_in <- param_choices[[.selectByPlot]]
+    select_obj <- list()
     cmds <- list()
 
     # Checking which points are selected in the transmitting plot.
-    if (!identical(brush_in, .noSelection)) {
+    if (!identical(select_in, .noSelection)) {
 
-        brush_by <- .encode_panel_name(brush_in)
-        transmitter <- paste0(brush_by$Type, brush_by$ID)
+        select_by <- .encode_panel_name(select_in)
+        transmitter <- paste0(select_by$Type, select_by$ID)
         if (identical(rownames(param_choices), transmitter)) {
             source_data <- 'plot.data'
         } else {
             source_data <- sprintf("all_coordinates[['%s']]", transmitter)
         }
         
-        brush_val <- all_memory[[brush_by$Type]][,.brushData][[brush_by$ID]]
+        brush_val <- all_memory[[select_by$Type]][,.brushData][[select_by$ID]]
         if (!is.null(brush_val)) {
-            brush_obj[[transmitter]] <- brush_val
+            select_obj[[transmitter]] <- brush_val
             cmds[["brush"]] <- sprintf(
-                "brushed_pts <- shiny::brushedPoints(%s, all_brushes[['%s']])",
+                "selected_pts <- shiny::brushedPoints(%s, all_brushes[['%s']])",
                 source_data, transmitter)
             cmds[["select"]] <-
-              "plot.data$BrushBy <- rownames(plot.data) %in% rownames(brushed_pts);"
+              "plot.data$BrushBy <- rownames(plot.data) %in% rownames(selected_pts);"
     
         } else {
-            lasso_val <- all_memory[[brush_by$Type]][,.lassoData][[brush_by$ID]]
+            lasso_val <- all_memory[[select_by$Type]][,.lassoData][[select_by$ID]]
             closed <- attr(lasso_val, "closed")
         
             if (!is.null(lasso_val) && closed) { 
@@ -1390,28 +1376,28 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
                     v2 <- "Y"
                 }
                 
-                brush_obj[[transmitter]] <- lasso_val
+                select_obj[[transmitter]] <- lasso_val
                 cmds[["na.rm"]] <- sprintf(
                   "to_check <- subset(%s, !is.na(X) & !is.na(Y))",
                   source_data)
                 cmds[["lasso"]] <- sprintf(
-                    "brushed_pts <- mgcv::in.out(all_lassos[['%s']], cbind(as.numeric(to_check$%s), as.numeric(to_check$%s)))",
+                    "selected_pts <- mgcv::in.out(all_lassos[['%s']], cbind(as.numeric(to_check$%s), as.numeric(to_check$%s)))",
                     transmitter, v1, v2)
                 cmds[["select"]] <-
-                  "plot.data$BrushBy <- rownames(plot.data) %in% rownames(to_check)[brushed_pts]"
+                  "plot.data$BrushBy <- rownames(plot.data) %in% rownames(to_check)[selected_pts]"
             }
         }
 
-        if (length(brush_obj) && param_choices[[.brushEffect]]==.brushRestrictTitle) {
+        if (length(select_obj) && param_choices[[.selectEffect]]==.selectRestrictTitle) {
           # Duplicate plot.data before selecting points,
           # to make sure that axes are retained
-          # even in case of an empty brushed subset.
+          # even in case of an empty selected subset.
           cmds[["full"]] <- "plot.data.all <- plot.data;"
           cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
         }
     }
 
-    return(list(cmds=unlist(cmds), data=brush_obj))
+    return(list(cmds=unlist(cmds), data=select_obj))
 }
 
 #' Add points to plot
@@ -1421,7 +1407,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #'
 #' @param param_choices A single-row DataFrame that contains all the
 #' input settings for the current panel.
-#' @param brushed A logical scalar indicating whether any points were
+#' @param selected A logical scalar indicating whether any points were
 #' selected on the transmitting plot, via a Shiny brush or lasso path.
 #' @param aes A string containing the ggplot aesthetic instructions.
 #'
@@ -1437,15 +1423,15 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #' When selecting points to restrict,
 #' this function relies on the availability of a
 #' \code{plot.data.all} variable in the evaluation environment.
-#' See \code{?\link{.process_brushby_choice}} for more details.
+#' See \code{?\link{.process_selectby_choice}} for more details.
 #' 
-#' A separate \code{brushed} argument is necessary here, despite the fact
+#' A separate \code{selected} argument is necessary here, despite the fact
 #' that most point selection information can be retrieved from
 #' \code{param_choices}, 
 #' This is because \code{param_choices} does not contain any information on
 #' whether the transmitter actually contains a selection of points.
-#' If no Shiny brush or closed lasso path is defined in the transmitter,
-#' \code{brushed=FALSE} and the default appearance of the points is used.
+#' If no Shiny select or closed lasso path is defined in the transmitter,
+#' \code{selected=FALSE} and the default appearance of the points is used.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_create_points
@@ -1455,36 +1441,36 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #' \code{\link{.square_plot}}
 #'
 #' @importFrom ggplot2 geom_point geom_blank
-.create_points <- function(param_choices, brushed, aes) {
+.create_points <- function(param_choices, selected, aes) {
   plot_cmds <- list()
 
-  if (brushed) {
-    brush_effect <- param_choices[[.brushEffect]]
-    if (brush_effect==.brushColorTitle) {
-      plot_cmds[["brush_other"]] <- sprintf(
+  if (selected) {
+    select_effect <- param_choices[[.selectEffect]]
+    if (select_effect==.selectColorTitle) {
+      plot_cmds[["select_other"]] <- sprintf(
         "geom_point(%s, alpha=%s, data=subset(plot.data, !BrushBy), size=%s) +", 
         aes, param_choices[[.plotPointAlpha]], param_choices[[.plotPointSize]]
       )
-      plot_cmds[["brush_color"]] <- sprintf(
+      plot_cmds[["select_color"]] <- sprintf(
         "geom_point(%s, alpha=%s, data=subset(plot.data, BrushBy), color = %s, size=%s) +",
         aes, param_choices[[.plotPointAlpha]], 
-        deparse(param_choices[[.brushColor]]), param_choices[[.plotPointSize]]
+        deparse(param_choices[[.selectColor]]), param_choices[[.plotPointSize]]
       )
     }
-    if (brush_effect==.brushTransTitle) {
-      plot_cmds[["brush_other"]] <- sprintf(
+    if (select_effect==.selectTransTitle) {
+      plot_cmds[["select_other"]] <- sprintf(
         "geom_point(%s, subset(plot.data, !BrushBy), alpha = %.2f, size=%s) +",
-        aes, param_choices[[.brushTransAlpha]], param_choices[[.plotPointSize]]
+        aes, param_choices[[.selectTransAlpha]], param_choices[[.plotPointSize]]
       )
-      plot_cmds[["brush_alpha"]] <- sprintf(
+      plot_cmds[["select_alpha"]] <- sprintf(
         "geom_point(%s, subset(plot.data, BrushBy), size=%s) +", 
         aes, param_choices[[.plotPointSize]]
       )
     }
-    if (brush_effect==.brushRestrictTitle) {
-      plot_cmds[["brush_blank"]] <-
+    if (select_effect==.selectRestrictTitle) {
+      plot_cmds[["select_blank"]] <-
         "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
-      plot_cmds[["brush_restrict"]] <- sprintf(
+      plot_cmds[["select_restrict"]] <- sprintf(
         "geom_point(%s, alpha = %s, plot.data, size=%s) +",
         aes, param_choices[[.plotPointAlpha]],
         param_choices[[.plotPointSize]])

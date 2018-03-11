@@ -3,37 +3,54 @@
 #' Interactive and reproducible visualization of data contained in a
 #' SummarizedExperiment/SingleCellExperiment, using a Shiny interface.
 #'
-#' @param se An object that is coercible to \code{\linkS4class{SingleCellExperiment}}.
+#' @param se An object that is coercible to \linkS4class{SingleCellExperiment}.
 #' @param redDimArgs A DataFrame similar to that produced by
-#' \code{\link{redDimPlotDefaults}}, specifying initial parameters for the plots.
+#' \code{\link{redDimPlotDefaults}}, specifying initial parameters
+#' for the plots.
 #' @param colDataArgs A DataFrame similar to that produced by
-#' \code{\link{colDataPlotDefaults}}, specifying initial parameters for the plots.
+#' \code{\link{colDataPlotDefaults}}, specifying initial parameters
+#' for the plots.
 #' @param featExprArgs A DataFrame similar to that produced by
-#' \code{\link{featExprPlotDefaults}}, specifying initial parameters for the plots.
+#' \code{\link{featExprPlotDefaults}}, specifying initial parameters
+#' for the plots.
 #' @param rowStatArgs A DataFrame similar to that produced by
-#' \code{\link{rowStatTableDefaults}}, specifying initial parameters for the plots.
+#' \code{\link{rowStatTableDefaults}}, specifying initial parameters
+#' for the plots.
 #' @param rowDataArgs A DataFrame similar to that produced by
-#' \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the plots.
+#' \code{\link{rowDataPlotDefaults}}, specifying initial parameters
+#' for the plots.
 #' @param heatMapArgs A DataFrame similar to that produced by
-#' \code{\link{heatMapPlotDefaults}}, specifying initial parameters for the plots.
-#' @param redDimMax An integer scalar specifying the maximum number of reduced dimension plots in the interface.
-#' @param colDataMax An integer scalar specifying the maximum number of column data plots in the interface.
-#' @param featExprMax An integer scalar specifying the maximum number of feature expression plots in the interface.
-#' @param rowStatMax An integer scalar specifying the maximum number of row statistics tables in the interface.
-#' @param rowDataMax An integer scalar specifying the maximum number of row data plots in the interface.
-#' @param heatMapMax An integer scalar specifying the maximum number of heatmaps in the interface.
-#' @param initialPanels A DataFrame specifying which panels should be created at initialization. 
-#' This should contain a \code{Name} character field and a \code{Width} integer field, see Details.
-#' @param annotFun A function, constructed in the form of \code{\link{annotateEntrez}} 
-#' or \code{\link{annotateEnsembl}}. This function is built in a way to generate itself 
-#' a function supposed to accept two parameters, \code{se} and \code{row_index}, to have
-#' a unified yet flexible interface to generate additional information to display for 
-#' the selected genes of interest. 
-#' @param colormap An \code{\linkS4class{ExperimentColorMap}} object that defines
+#' \code{\link{heatMapPlotDefaults}}, specifying initial parameters
+#' for the plots.
+#' @param redDimMax An integer scalar specifying the maximum number of
+#' reduced dimension plots in the interface.
+#' @param colDataMax An integer scalar specifying the maximum number of
+#' column data plots in the interface.
+#' @param featExprMax An integer scalar specifying the maximum number of
+#' feature expression plots in the interface.
+#' @param rowStatMax An integer scalar specifying the maximum number of
+#' row statistics tables in the interface.
+#' @param rowDataMax An integer scalar specifying the maximum number of
+#' row data plots in the interface.
+#' @param heatMapMax An integer scalar specifying the maximum number of
+#' heatmaps in the interface.
+#' @param initialPanels A DataFrame specifying which panels should be
+#' created at initialization. 
+#' This should contain a \code{Name} character field and a \code{Width}
+#' integer field, see Details.
+#' @param annotFun A function, constructed in the form of
+#' \code{\link{annotateEntrez}} or \code{\link{annotateEnsembl}}.
+#' This function is built in a way to generate itself 
+#' a function supposed to accept two parameters,
+#' \code{se} and \code{row_index},
+#' to have a unified yet flexible interface to generate additional information
+#' to display for the selected genes of interest. 
+#' @param colormap An \linkS4class{ExperimentColorMap} object that defines
 #' custom color maps to apply to individual \code{assays}, \code{colData},
 #' and \code{rowData} covariates.
-#' @param run_local A logical indicating whether the app is to be run locally or
-#' remotely on a server, which determines how documentation will be accessed.
+#' @param run_local A logical indicating whether the app is to be run locally
+#' or remotely on a server, which determines how documentation will be
+#' accessed.
 #'
 #' @details Users can pass default parameters via DataFrame objects in
 #' \code{redDimArgs} and \code{featExprArgs}. Each object can contain
@@ -117,11 +134,13 @@ iSEE <- function(
   if (ncol(gene_data)==0L) {
     gene_data$Present <- !logical(nrow(gene_data))
   }
-  tab_brush_col <- .safe_field_name("Selected", colnames(gene_data))
+  tab_select_col <- .safe_field_name("Selected", colnames(gene_data))
 
   # Defining the maximum number of plots.
-  memory <- .setup_memory(se, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs, heatMapArgs,
-                          redDimMax, colDataMax, featExprMax, rowStatMax, rowDataMax, heatMapMax)
+  memory <- .setup_memory(
+    se,
+    redDimArgs,colDataArgs,featExprArgs,rowStatArgs,rowDataArgs,heatMapArgs,
+    redDimMax, colDataMax, featExprMax, rowStatMax, rowDataMax, heatMapMax)
 
   # Defining the initial elements to be plotted.
   active_panels <- .setup_initial(initialPanels, memory)
@@ -133,8 +152,9 @@ iSEE <- function(
 
   iSEE_ui <- dashboardPage(
     dashboardHeader(
-      title = paste0("iSEE - interactive SingleCell/Summarized Experiment Explorer v",
-                     packageVersion("iSEE")),
+      title = paste0(
+        "iSEE - interactive SingleCell/Summarized Experiment Explorer v",
+        packageVersion("iSEE")),
       titleWidth = 750,
 
       dropdownMenu(type = "tasks",
@@ -142,16 +162,18 @@ iSEE <- function(
                    badgeStatus = NULL,
                    headerText = "iSEE diagnostics",
                    notificationItem(
-                     text = actionButton('open_linkgraph', label="Examine panel chart",
-                                         icon = icon("chain"),
-                                         style=.actionbutton_biocstyle
+                     text = actionButton(
+                       'open_linkgraph', label="Examine panel chart",
+                       icon = icon("chain"),
+                       style=.actionbutton_biocstyle
                      ),
                      icon = icon(""), status = "primary"
                    ),
                    notificationItem(
-                     text = actionButton('getcode_all', label="Extract the R code",
-                                         icon = icon("magic"),
-                                         style=.actionbutton_biocstyle
+                     text = actionButton(
+                       'getcode_all', label="Extract the R code",
+                       icon = icon("magic"),
+                       style=.actionbutton_biocstyle
                      ),
                      icon = icon(""), status = "primary"
                    )
@@ -162,15 +184,20 @@ iSEE <- function(
                    badgeStatus = NULL,
                    headerText = "Documentation",
                    notificationItem(
-                     text = actionButton("tour_firststeps", "Click me for a quick tour", icon("hand-o-right"),
-                                         style=.actionbutton_biocstyle),
+                     text = actionButton(
+                       "tour_firststeps", "Click me for a quick tour",
+                       icon("hand-o-right"),
+                       style=.actionbutton_biocstyle),
                      icon = icon(""), # tricking it to not have additional icon
                      status = "primary"),
                    notificationItem(
-                     text = actionButton('open_vignette', label="Open the vignette",
-                                         icon = icon("book"),
-                                         style=.actionbutton_biocstyle,
-                                         onclick = ifelse(run_local, "", "window.open('http://google.com', '_blank')")), # to be replaced with vignette url
+                     text = actionButton(
+                       'open_vignette', label="Open the vignette",
+                       icon = icon("book"),
+                       style=.actionbutton_biocstyle,
+                       onclick = ifelse(
+                         run_local, "",
+                         "window.open('http://google.com', '_blank')")), # to be replaced with vignette url
                      icon = icon(""), status = "primary"
                    )
         ),
@@ -180,9 +207,10 @@ iSEE <- function(
                     badgeStatus = NULL,
                     headerText = "Additional information",
                     notificationItem(
-                     text = actionButton('session_info', label="About this session",
-                                         icon = icon("window-maximize"),
-                                         style=.actionbutton_biocstyle
+                     text = actionButton(
+                       'session_info', label="About this session",
+                       icon = icon("window-maximize"),
+                       style=.actionbutton_biocstyle
                      ),
                      icon = icon(""), status = "primary"
                    ),
@@ -197,7 +225,9 @@ iSEE <- function(
     ), # end of dashboardHeader
 
     dashboardSidebar(
-      selectizeInput("newPanelChoice", label="Choose panel type:", selected=rev.translation[1], choices=rev.translation),
+      selectizeInput(
+        "newPanelChoice", label="Choose panel type:",
+        selected=rev.translation[1], choices=rev.translation),
       actionButton("newPanelAdd", "Add new panel"), 
       hr(),
       uiOutput("panelOrganization")
@@ -228,9 +258,12 @@ iSEE <- function(
   ## Server definition. ----
   #######################################################################
 
+  #nocov start
   iSEE_server <- function(input, output, session) {
     all_names <- list()
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot", "rowStatTable", "heatMapPlot")) {
+    for (mode in c(
+      "redDimPlot", "featExprPlot", "colDataPlot",
+      "rowDataPlot", "rowStatTable", "heatMapPlot")) {
       max_plots <- nrow(memory[[mode]])
       all_names[[mode]] <- sprintf("%s%i", mode, seq_len(max_plots))
     }
@@ -245,7 +278,7 @@ iSEE <- function(
     pObjects$coordinates <- empty_list
     pObjects$commands <- empty_list
 
-    pObjects$brush_links <- .spawn_brush_chart(memory)
+    pObjects$selection_links <- .spawn_selection_chart(memory)
     pObjects$table_links <- .spawn_table_links(memory)
 
     pObjects$cached_plots <- empty_list
@@ -256,7 +289,9 @@ iSEE <- function(
         rerendered = 1L
     )
 
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot", "rowStatTable", "heatMapPlot")) {
+    for (mode in c(
+      "redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot",
+      "rowStatTable", "heatMapPlot")) {
       max_plots <- nrow(pObjects$memory[[mode]])
       for (i in seq_len(max_plots)) {
         rObjects[[paste0(mode, i)]] <- 1L
@@ -272,7 +307,9 @@ iSEE <- function(
     }
 
     # Help and documentation-related observers.
-    intro_firststeps <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"), sep=";", stringsAsFactors = FALSE,row.names = NULL)
+    intro_firststeps <- read.delim(
+      system.file("extdata", "intro_firststeps.txt",package = "iSEE"),
+      sep=";", stringsAsFactors = FALSE,row.names = NULL)
 
     observeEvent(input$tour_firststeps, {
       introjs(session,
@@ -289,7 +326,7 @@ iSEE <- function(
           "followed by Ctrl/Cmd + C).",
           "This will copy the selected parts to the clipboard."),
         aceEditor("acereport_r", mode="r",theme = "solarized_light",autoComplete = "live",
-                  value = paste0((.track_it_all(rObjects, pObjects, se_name, ecm_name,se_cmds)),collapse="\n"),
+                  value = paste0(.track_it_all(rObjects$active_panels, pObjects, se_name, ecm_name,se_cmds), collapse="\n"),
                   height="600px")
         ))
     })
@@ -386,6 +423,7 @@ iSEE <- function(
                 mode0 <- mode
                 i0 <- i
                 prefix <- paste0(mode0, i0, "_")
+                panel_name <- paste0(mode0, i0)
                 max_plots0 <- max_plots
 
                 # Panel removal.
@@ -393,13 +431,13 @@ iSEE <- function(
                     all_active <- rObjects$active_panels
                     current_type <- all_active$Type==mode0
 
-                    # Destroying links; either the brush source, or the links from tables.
+                    # Destroying links for point selection or tables.
                     if (mode0=="heatMapPlot") {
-                        # do nothing, there are no links.
+                        .destroy_selection_panel(pObjects, panel_name)
                     } else if (mode0=="rowStatTable") {
-                        .destroy_table(pObjects, paste0(mode0, i0))
+                        .destroy_table(pObjects, panel_name)
                     } else {
-                        .destroy_brush_source(pObjects, paste0(mode0, i0))
+                        .destroy_selection_panel(pObjects, panel_name)
                         .delete_table_links(mode0, i0, pObjects)
                     }
 
@@ -481,7 +519,7 @@ iSEE <- function(
     for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (i in seq_len(max_plots)) {
-            for (panel in c(.dataParamBoxOpen, .visualParamBoxOpen, .brushParamBoxOpen)) {
+            for (panel in c(.dataParamBoxOpen, .visualParamBoxOpen, .selectParamBoxOpen)) {
                 local({
                     mode0 <- mode
                     i0 <- i
@@ -499,7 +537,7 @@ iSEE <- function(
     # Panel opening/closing observers for heat map plots.
     max_plots <- nrow(pObjects$memory$heatMapPlot)
     for (i in seq_len(max_plots)) {
-        for (panel in c(.heatMapFeatNameBoxOpen, .heatMapColDataBoxOpen, .brushParamBoxOpen)) {
+        for (panel in c(.heatMapFeatNameBoxOpen, .heatMapColDataBoxOpen, .selectParamBoxOpen)) {
             local({
                 mode0 <- "heatMapPlot"
                 i0 <- i
@@ -522,15 +560,15 @@ iSEE <- function(
             tab_name <- paste0(mode0, i0)
             prefix <- paste0(tab_name, "_")
 
-            brush_open_field <- paste0(prefix, .brushParamBoxOpen)
-            observeEvent(input[[brush_open_field]], {
-                pObjects$memory[[mode0]][[.brushParamBoxOpen]][i0] <- input[[brush_open_field]]
+            select_open_field <- paste0(prefix, .selectParamBoxOpen)
+            observeEvent(input[[select_open_field]], {
+                pObjects$memory[[mode0]][[.selectParamBoxOpen]][i0] <- input[[select_open_field]]
             })
         })
     }
 
     #######################################################################
-    # Brush observers.
+    # Point selection observers.
     #######################################################################
 
     for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
@@ -545,42 +583,42 @@ iSEE <- function(
                 ###############
 
                 # Brush choice observer.
-                brush_plot_field <- paste0(prefix, .brushByPlot)
-                observeEvent(input[[brush_plot_field]], {
-                    old_transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
-                    new_transmitter <- input[[brush_plot_field]]
+                select_plot_field <- paste0(prefix, .selectByPlot)
+                observeEvent(input[[select_plot_field]], {
+                    old_transmitter <- pObjects$memory[[mode0]][i0, .selectByPlot]
+                    new_transmitter <- input[[select_plot_field]]
                     
-                    # Determining whether the new and old transmitting plot have brushes.
-                    old_out <- .transmitted_brush(old_transmitter, pObjects$memory)
-                    old_brush <- old_out$brush
+                    # Determining whether the new and old transmitting plot have selections.
+                    old_out <- .transmitted_selection(old_transmitter, pObjects$memory)
+                    old_select <- old_out$selected
                     old_encoded <- old_out$encoded
-                    new_out <- .transmitted_brush(new_transmitter, pObjects$memory)
-                    new_brush <- new_out$brush
+                    new_out <- .transmitted_selection(new_transmitter, pObjects$memory)
+                    new_select <- new_out$selected
                     new_encoded <- new_out$encoded
                     
                     # Trying to update the graph, but breaking if it's not a DAG.
-                    # We also break if users try to self-brush in restrict mode.
+                    # We also break if users try to self-select in restrict mode.
                     # In both cases, we just reset back to the choice they had before.
-                    tmp <- .choose_new_brush_source(pObjects$brush_links, plot_name, new_encoded, old_encoded)
+                    tmp <- .choose_new_selection_source(pObjects$selection_links, plot_name, new_encoded, old_encoded)
                     
                     daggy <- is_dag(simplify(tmp, remove.loops=TRUE))
                     self_restrict <- new_encoded==plot_name &&
                         new_encoded!=.noSelection &&
-                        pObjects$memory[[mode0]][i0, .brushEffect]==.brushRestrictTitle
+                        pObjects$memory[[mode0]][i0, .selectEffect]==.selectRestrictTitle
                     
                     if (!daggy || self_restrict) {
                         if (!daggy) {
-                            showNotification("brushing relationships cannot be cyclic", type="error")
+                            showNotification("point selection relationships cannot be cyclic", type="error")
                         } else if (self_restrict){
-                            showNotification("brushing to self is not compatible with 'Restrict'", type="error")
+                            showNotification("selecting to self is not compatible with 'Restrict'", type="error")
                         }
-                        pObjects$memory[[mode0]][i0, .brushByPlot] <- old_transmitter
-                        updateSelectInput(session, brush_plot_field, selected=old_transmitter)
+                        pObjects$memory[[mode0]][i0, .selectByPlot] <- old_transmitter
+                        updateSelectInput(session, select_plot_field, selected=old_transmitter)
                         return(NULL)
                     }
                     
-                    pObjects$brush_links <- tmp
-                    pObjects$memory[[mode0]][i0, .brushByPlot] <- new_transmitter
+                    pObjects$selection_links <- tmp
+                    pObjects$memory[[mode0]][i0, .selectByPlot] <- new_transmitter
                     
                     # Update the elements reporting the links between plots.
                     for (relinked in setdiff(c(old_encoded, new_encoded, plot_name), .noSelection)) {
@@ -588,8 +626,8 @@ iSEE <- function(
                         rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
                     }
                     
-                    # Not replotting if there were no brushes in either the new or old transmitters.
-                    if (!old_brush && !new_brush){
+                    # Not replotting if there were no selection in either the new or old transmitters.
+                    if (!old_select && !new_select){
                         return(NULL)
                     }
                     
@@ -597,10 +635,10 @@ iSEE <- function(
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     
                     # Triggering replotting of children, if the current panel is set to restrict;
-                    # and we have a brush, so that there was already some brushing in the children.
-                    if (pObjects$memory[[mode0]][i0, .brushEffect]==.brushRestrictTitle
+                    # and we have a selection, so that there was already some selection in the children.
+                    if (pObjects$memory[[mode0]][i0, .selectEffect]==.selectRestrictTitle
                         && .any_point_selection(mode0, i0, pObjects$memory)) {
-                        children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
+                        children <- .get_selection_dependents(pObjects$select_links, plot_name, pObjects$memory)
                         for (child_plot in children) {
                             rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
                         }
@@ -610,23 +648,23 @@ iSEE <- function(
                 ###############
 
                 # Brush effect observer.
-                brush_effect_field <- paste0(prefix, .brushEffect)
-                observeEvent(input[[brush_effect_field]], {
-                    cur_effect <- input[[brush_effect_field]]
-                    old_effect <- pObjects$memory[[mode0]][i0, .brushEffect]
+                select_effect_field <- paste0(prefix, .selectEffect)
+                observeEvent(input[[select_effect_field]], {
+                    cur_effect <- input[[select_effect_field]]
+                    old_effect <- pObjects$memory[[mode0]][i0, .selectEffect]
                     
-                    # Storing the new choice into memory, unless self-brushing to restrict.
+                    # Storing the new choice into memory, unless self-selecting to restrict.
                     # In which case, we trigger an error and reset to the previous choice.
-                    if (cur_effect == .brushRestrictTitle
-                        && pObjects$memory[[mode0]][i0, .brushByPlot]==.decode_panel_name(mode0, i0)) {
-                        showNotification("brushing to self is not compatible with 'Restrict'", type="error")
-                        updateRadioButtons(session, brush_effect_field, selected=old_effect)
+                    if (cur_effect == .selectRestrictTitle
+                        && pObjects$memory[[mode0]][i0, .selectByPlot]==.decode_panel_name(mode0, i0)) {
+                        showNotification("selecting to self is not compatible with 'Restrict'", type="error")
+                        updateRadioButtons(session, select_effect_field, selected=old_effect)
                         return(NULL)
                     }
-                    pObjects$memory[[mode0]][i0, .brushEffect] <- cur_effect
+                    pObjects$memory[[mode0]][i0, .selectEffect] <- cur_effect
                     
-                    # Avoiding replotting if there was no transmitting brush.
-                    transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
+                    # Avoiding replotting if there was no transmitting selection.
+                    transmitter <- pObjects$memory[[mode0]][i0, .selectByPlot]
                     if (transmitter==.noSelection) {
                         return(NULL)
                     }
@@ -639,10 +677,10 @@ iSEE <- function(
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     
                     # Triggering replotting of children, if we are set to or from restrict;
-                    # and we have a brush, so there was already some brushing in the children.
-                    if ((cur_effect==.brushRestrictTitle || old_effect==.brushRestrictTitle)
+                    # and we have a selection, so there was already some selecting in the children.
+                    if ((cur_effect==.selectRestrictTitle || old_effect==.selectRestrictTitle)
                         && .any_point_selection(mode0, i0, pObjects$memory)) {
-                        children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
+                        children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
                         for (child_plot in children) {
                             rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
                         }
@@ -672,7 +710,7 @@ iSEE <- function(
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     
                     # Trigger replotting of all dependent plots that receive this brush.
-                    children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
+                    children <- .get_selection_dependents(pObjects$brush_links, plot_name, pObjects$memory)
                     for (child_plot in children) {
                         rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
                     }
@@ -690,22 +728,22 @@ iSEE <- function(
             tab_name <- paste0(mode0, i0)
             prefix <- paste0(tab_name, "_")
 
-            brush_plot_field <- paste0(prefix, .brushByPlot)
-            observeEvent(input[[brush_plot_field]], {
-                old_transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
-                new_transmitter <- input[[brush_plot_field]]
+            select_plot_field <- paste0(prefix, .selectByPlot)
+            observeEvent(input[[select_plot_field]], {
+                old_transmitter <- pObjects$memory[[mode0]][i0, .selectByPlot]
+                new_transmitter <- input[[select_plot_field]]
 
-                # Determining whether the new and old transmitting plot have brushes.
-                old_out <- .transmitted_brush(old_transmitter, pObjects$memory)
-                old_brush <- old_out$brush
+                # Determining whether the new and old transmitting plot have selections. 
+                old_out <- .transmitted_selection(old_transmitter, pObjects$memory)
+                old_select <- old_out$selected
                 old_encoded <- old_out$encoded
-                new_out <- .transmitted_brush(new_transmitter, pObjects$memory)
-                new_brush <- new_out$brush
+                new_out <- .transmitted_selection(new_transmitter, pObjects$memory)
+                new_select <- new_out$selected
                 new_encoded <- new_out$encoded
 
-                # Updating the graph (no need for DAG protection here, as tables do not transmit brushes).
-                pObjects$brush_links <- .choose_new_brush_source(pObjects$brush_links, tab_name, new_encoded, old_encoded)
-                pObjects$memory[[mode0]][i0, .brushByPlot] <- new_transmitter
+                # Updating the graph (no need for DAG protection here, as tables do not transmit selections).
+                pObjects$selection_links <- .choose_new_selection_source(pObjects$selection_links, tab_name, new_encoded, old_encoded)
+                pObjects$memory[[mode0]][i0, .selectByPlot] <- new_transmitter
 
                 # Update the elements reporting the links between plots.
                 for (relinked in c(old_encoded, new_encoded, tab_name)) {
@@ -714,8 +752,8 @@ iSEE <- function(
                     rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
                 }
 
-                # Not re-rendering if there were no brushes in either the new or old transmitters.
-                if (!old_brush && !new_brush){
+                # Not re-rendering if there were no selections in either the new or old transmitters.
+                if (!old_select && !new_select){
                     return(NULL)
                 }
 
@@ -735,25 +773,22 @@ iSEE <- function(
             prefix <- paste0(plot_name, "_")
  
             # Brush choice observer.
-            brush_plot_field <- paste0(prefix, .brushByPlot)
-            observeEvent(input[[brush_plot_field]], {
-                old_transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
-                new_transmitter <- input[[brush_plot_field]]
+            select_plot_field <- paste0(prefix, .selectByPlot)
+            observeEvent(input[[select_plot_field]], {
+                old_transmitter <- pObjects$memory[[mode0]][i0, .selectByPlot]
+                new_transmitter <- input[[select_plot_field]]
                 
-                # Determining whether the new and old transmitting plot have brushes.
-                old_out <- .transmitted_brush(old_transmitter, pObjects$memory)
-                old_brush <- old_out$brush
+                # Determining whether the new and old transmitting plot have selections. 
+                old_out <- .transmitted_selection(old_transmitter, pObjects$memory)
+                old_select <- old_out$selected
                 old_encoded <- old_out$encoded
-                new_out <- .transmitted_brush(new_transmitter, pObjects$memory)
-                new_brush <- new_out$brush
+                new_out <- .transmitted_selection(new_transmitter, pObjects$memory)
+                new_select <- new_out$selected
                 new_encoded <- new_out$encoded
                 
-                # Trying to update the graph, but breaking if it's not a DAG.
-                # We also break if users try to self-brush in restrict mode.
-                # In both cases, we just reset back to the choice they had before.
-                tmp <- .choose_new_brush_source(pObjects$brush_links, plot_name, new_encoded, old_encoded)
-                pObjects$brush_links <- tmp
-                pObjects$memory[[mode0]][i0, .brushByPlot] <- new_transmitter
+                # Updating the graph (no need to wrorry about DAGs here, as heatmaps do not transmit).
+                pObjects$selection_links <- .choose_new_selection_source(pObjects$selection_links, plot_name, new_encoded, old_encoded)
+                pObjects$memory[[mode0]][i0, .selectByPlot] <- new_transmitter
                 
                 # Update the elements reporting the links between plots.
                 for (relinked in c(old_encoded, new_encoded, plot_name)) {
@@ -762,8 +797,8 @@ iSEE <- function(
                     rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
                 }
                 
-                # Not replotting if there were no brushes in either the new or old transmitters.
-                if (!old_brush && !new_brush){
+                # Not replotting if there were no selections in either the new or old transmitters.
+                if (!old_select && !new_select){
                     return(NULL)
                 }
                 
@@ -774,14 +809,14 @@ iSEE <- function(
             ###############
 
             # Brush effect observer.
-            brush_effect_field <- paste0(prefix, .brushEffect)
-            observeEvent(input[[brush_effect_field]], {
-                cur_effect <- input[[brush_effect_field]]
-                old_effect <- pObjects$memory[[mode0]][i0, .brushEffect]
-                pObjects$memory[[mode0]][i0, .brushEffect] <- cur_effect
+            select_effect_field <- paste0(prefix, .selectEffect)
+            observeEvent(input[[select_effect_field]], {
+                cur_effect <- input[[select_effect_field]]
+                old_effect <- pObjects$memory[[mode0]][i0, .selectEffect]
+                pObjects$memory[[mode0]][i0, .selectEffect] <- cur_effect
 
-                # Avoiding replotting if there was no transmitting brush.
-                transmitter <- pObjects$memory[[mode0]][i0, .brushByPlot]
+                # Avoiding replotting if there was no transmitting selection.
+                transmitter <- pObjects$memory[[mode0]][i0, .selectByPlot]
                 if (transmitter==.noSelection) {
                     return(NULL)
                 }
@@ -849,9 +884,9 @@ iSEE <- function(
                     # Trigger replotting of self, to draw the lasso waypoints.
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
 
-                    # Trigger replotting of children.
+                    # Trigger replotting of child panels that receive point selection information.
                     if (bump_children) {
-                        children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
+                        children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
                         for (child_plot in children) {
                             rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
                         }
@@ -938,12 +973,14 @@ iSEE <- function(
                     } else {
                         inp_rows <- pObjects$memory$heatMapPlot[i0,][[.zoomData]][[1]]
                     }
+
                     # Update data and force replotting.
                     # Is the heatmap receiving a color brush (in that case the number of annotations should be increased by 1)
-                    is_receiving_color_brush <- pObjects$memory$heatMapPlot[i0,][[.brushByPlot]]!=.noSelection && 
-                        pObjects$memory$heatMapPlot[i0,][[.brushEffect]]==.brushColorTitle && 
-                        .transmitted_brush(pObjects$memory$heatMapPlot[i0, .brushByPlot], pObjects$memory)$brush
-                    n.annot <- length(pObjects$memory$heatMapPlot[,.heatMapColData][[i0]]) + is_receiving_color_brush
+                    is_receiving_color_selection <- pObjects$memory$heatMapPlot[i0,][[.selectByPlot]]!=.noSelection && 
+                        pObjects$memory$heatMapPlot[i0,][[.selectEffect]]==.selectColorTitle && 
+                        .transmitted_selection(pObjects$memory$heatMapPlot[i0, .selectByPlot], pObjects$memory)$select
+
+                    n.annot <- length(pObjects$memory$heatMapPlot[,.heatMapColData][[i0]]) + is_receiving_color_selection
                     ymin <- .transform_global_to_local_y(new_coords["ymin"], n.genes=length(inp_rows), n.annot=n.annot)
                     ymax <- .transform_global_to_local_y(new_coords["ymax"], n.genes=length(inp_rows), n.annot=n.annot)
                     new_rows <- inp_rows[ymin:ymax]
@@ -1036,20 +1073,20 @@ iSEE <- function(
                       colDataPlot=.make_colDataPlot,
                       rowDataPlot=.make_rowDataPlot)
 
-        # Defining fundamental parameters that destroy brushes upon being changed.
+        # Defining fundamental parameters that destroy brushes/lassos upon being changed.
         protected <- switch(mode,
                             redDimPlot=c(.redDimType, .redDimXAxis, .redDimYAxis),
                             colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
                             featExprPlot=c(.featExprAssay, .featExprXAxisColData),
                             rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData))
 
-        # Defining non-fundamental parameters that do not destroy brushes.
+        # Defining non-fundamental parameters that do not destroy brushes/lassos.
         if (mode=="rowDataPlot") {
             nonfundamental <- c(.colorByRowData, .colorByFeatNameColor)
         } else {
             nonfundamental <- c(.colorByColData, .colorByFeatNameAssay)
         }
-        nonfundamental <- c(nonfundamental, .brushColor, .brushTransAlpha, .plotPointSize,
+        nonfundamental <- c(nonfundamental, .selectColor, .selectTransAlpha, .plotPointSize,
                             .plotPointAlpha, .plotFontSize, .plotLegendPosition, .colorByDefaultColor)
 
         for (i in seq_len(max_plots)) {
@@ -1151,31 +1188,29 @@ iSEE <- function(
                 })
 
                 # Describing some general panel information.
+                dec_name <- .decode_panel_name(mode0, i0)
                 output[[gen_field]] <- renderUI({
                     force(rObjects[[gen_field]])
-                    brush_vals <- pObjects$memory[[mode0]][,.brushData][[i0]]
-                    if (is.null(brush_vals)) {
-                        return(NULL)
-                    }
-                    brushed <- brushedPoints(pObjects$coordinates[[plot_name]], brush_vals)
-                    n_brushed <- nrow(brushed)
-                    n_total <- nrow(pObjects$coordinates[[plot_name]])
-                    HTML(sprintf("%i of %i points brushed (%.1f%%)",
-                                 n_brushed, n_total, 100*n_brushed/n_total))
+                    selected <- .get_selected_points(rownames(pObjects$coordinates[[plot_name]]), dec_name, 
+                                                     pObjects$memory, pObjects$coordinates)
+                    n_selected <- sum(selected)
+                    n_total <- length(selected)
+                    HTML(sprintf("%i of %i points selected (%.1f%%)",
+                                 n_selected, n_total, 100*n_selected/n_total))
                 })
 
                 # Describing the links between panels.
                 link_field <- paste0(plot_name, "_", .panelLinkInfo)
                 output[[link_field]] <- renderUI({
                     force(rObjects[[link_field]])
-                    .define_plot_links(plot_name, pObjects$memory, pObjects$brush_links)
+                    .define_plot_links(plot_name, pObjects$memory, pObjects$selection_links)
                 })
             })
         }
     }
 
     # Feature expression plots need some careful handling, as we need to update the
-    # table links and destroy a brush whenever an x/y-axis-specifying parameter changes.
+    # table links and destroy a brush/lasso whenever an x/y-axis-specifying parameter changes.
     max_plots <- nrow(pObjects$memory$featExprPlot)
     for (i in seq_len(max_plots)) {
         for (axis in c("xaxis", "yaxis")) {
@@ -1242,14 +1277,14 @@ iSEE <- function(
             search_col <- pObjects$memory$rowStatTable[,.rowStatColSearch][[i0]]
             search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
 
-            # Adding a "Selected" field to the plotting data, which responds to brushing input.
+            # Adding a "Selected" field to the plotting data, which responds to point selection input.
             # Note that this AUTOMATICALLY updates search_col upon re-rendering via the observer below.
             # The code below keeps search_col valid for the number of columns (i.e., with or without selection).
-            selected <- .get_brush_selection(rownames(gene_data), pObjects$memory$rowStatTable[i0,.brushByPlot], 
+            selected <- .get_selected_points(rownames(gene_data), pObjects$memory$rowStatTable[i0,.selectByPlot], 
                                              pObjects$memory, pObjects$coordinates)
             tmp_gene_data <- gene_data
             if (!is.null(selected)) { 
-                tmp_gene_data[[tab_brush_col]] <- selected
+                tmp_gene_data[[tab_select_col]] <- selected
                 if (length(search_col)!=ncol(tmp_gene_data)) {
                     search_col <- c(search_col, list(list(search="true")))
                 } else {
@@ -1287,7 +1322,7 @@ iSEE <- function(
                 updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=feature_choices)
             }
 
-            # Triggering the replotting and brush clearing of all x/y-axis children.
+            # Triggering the replotting and brush/lasso clearing of all x/y-axis children.
             # There is a possibility that this would cause double-rendering as they trigger different observers.
             # But this would imply that you're plotting the same gene against itself, which would be stupid.
             x_kids <- sprintf("%s_%s", x_kids, .featExprXAxisFeatName)
@@ -1360,7 +1395,7 @@ iSEE <- function(
                 if (enc$Type=="rowStatTable") {
                     incoming <- input[[paste0(enc$Type, enc$ID, "_rows_all")]]
                 } else {
-                    incoming <- which(.get_brush_selection(rownames(gene_data), origin, pObjects$memory, pObjects$coordinates))
+                    incoming <- which(.get_selected_points(rownames(gene_data), origin, pObjects$memory, pObjects$coordinates))
                 }
 
                 limit <- 100
@@ -1410,11 +1445,11 @@ iSEE <- function(
             link_field <- paste0(plot_name, "_", .panelLinkInfo)
             output[[link_field]] <- renderUI({
                 force(rObjects[[link_field]])
-                brush_in <- pObjects$memory$heatMapPlot[[i0, .brushByPlot]]
-                if (brush_in==.noSelection) {
+                select_in <- pObjects$memory$heatMapPlot[[i0, .selectByPlot]]
+                if (select_in==.noSelection) {
                     return(NULL)
                 } 
-                tagList("Receiving brush from", em(strong(brush_in)), br())
+                tagList("Receiving selection from", em(strong(select_in)), br())
             })
 
             # Triggering an update of the selected order.
@@ -1472,6 +1507,7 @@ iSEE <- function(
         }
     }
   } # end of iSEE_server
+  #nocov end
 
   #######################################################################
   # Launching the app.

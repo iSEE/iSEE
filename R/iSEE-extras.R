@@ -308,39 +308,40 @@ height_limits <- c(400L, 1000L)
 #' @param active_panels A data.frame produced by \code{\link{.setup_initial}}.
 #' @param memory A list of DataFrames containing parameters for each panel of each type.
 #'
-#' @return A modified \code{memory} where links to inactive panels (due to brushing or row tables) are removed.
+#' @return A modified \code{memory} where links to inactive panels (due to point selection or feature selection via row tables) are removed.
 #'
 #' @details
 #' This function ensures that the links in memory are valid with respect to the starting panels.
-#' Active panels should not receive brushes from inactive panels or have links to inactive row statistics tables.
-#' Similarly, inactive panels should not receive brushes from any panels or link to an empty string (transmitters set to \code{"---"} in both cases).
+#' Active panels should not receive point selection information from inactive panels or have links to inactive row statistics tables.
+#' Similarly, inactive panels should not receive point selection information from \emph{any} panels.
+#' In both cases, transmitters in memory are set to \code{"---"}.
 #' 
-#' This behaviour ensures that the graph in \code{\link{.spawn_brush_chart}} or the links in \code{\link{.spawn_table_links}} are valid.
+#' This behaviour ensures that the graph in \code{\link{.spawn_selection_chart}} or the links in \code{\link{.spawn_table_links}} are valid.
 #' Specifically, there are never any inactive entities in either of these two constructs.
 #' This ensures that only active dependent panels are updated throughout the course of the app, avoiding unnecessary work and improving efficiency.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_sanitize_memory
 #' @seealso
-#' \code{\link{.spawn_brush_chart}},
+#' \code{\link{.spawn_selection_chart}},
 #' \code{\link{.spawn_table_links}},
 #' \code{\link{.setup_initial}}
 .sanitize_memory <- function(active_panels, memory) {
     link_sources <- .define_link_sources(active_panels)
     active_tab <- link_sources$tab
-    row_brushable <- link_sources$row
-    col_brushable <-  link_sources$col
+    row_selectable <- link_sources$row
+    col_selectable <-  link_sources$col
     all_active <- paste0(active_panels$Type, active_panels$ID)
 
-    # Checking for brushing/linking of column-based plots.
+    # Checking for selecting/linking of column-based plots.
     for (mode in c("redDimPlot", "colDataPlot", "featExprPlot")) {
         cur_memory <- memory[[mode]]
         self_active <- rownames(cur_memory)
 
-        bb <- cur_memory[,.brushByPlot]
-        bad <- !bb %in% col_brushable | !self_active %in% all_active
+        bb <- cur_memory[,.selectByPlot]
+        bad <- !bb %in% col_selectable | !self_active %in% all_active
         if (any(bad)) {
-            memory[[mode]][,.brushByPlot][bad] <- .noSelection
+            memory[[mode]][,.selectByPlot][bad] <- .noSelection
         }
 
         cb <- cur_memory[,.colorByRowTable]
@@ -350,14 +351,14 @@ height_limits <- c(400L, 1000L)
         }
     }
 
-    # Checking for brushing/linking of row data plots.
+    # Checking for selecting/linking of row data plots.
     cur_memory <- memory$rowDataPlot
     self_active <- rownames(cur_memory)
 
-    bb <- cur_memory[,.brushByPlot]
-    bad <- !bb %in% row_brushable | !self_active %in% all_active
+    bb <- cur_memory[,.selectByPlot]
+    bad <- !bb %in% row_selectable | !self_active %in% all_active
     if (any(bad)) {
-        memory$rowDataPlot[,.brushByPlot][bad] <- .noSelection
+        memory$rowDataPlot[,.selectByPlot][bad] <- .noSelection
     }
 
     cb <- cur_memory[,.colorByRowTable]
@@ -426,15 +427,15 @@ height_limits <- c(400L, 1000L)
 #'
 #' @param panel String containing the encoded name for the current plotting panel.
 #' @param memory A list of DataFrames containing parameters for each panel of each type.
-#' @param graph A graph object produced by \code{\link{.spawn_brush_chart}}, specifying the brushing links between panels.
+#' @param graph A graph object produced by \code{\link{.spawn_selection_chart}}, specifying the point selection links between panels.
 #'
 #' @return A HTML object containing a description of the panel from which \code{panel} receives information,
 #' and a description of all the other panels to which \code{panel} transmits information. 
 #'
 #' @details
-#' Information reception includes the receipt of a brush from a transmitting plot,
+#' Information reception includes the receipt of point selection information from a transmitting plot,
 #' or the receipt of a feature selection information from a row statistics table (for color or x/y-axis specification).
-#' Information transmission should take the form of brush transmission to other panels.
+#' Transmission should involve transferring point selection information from \code{panel} to other receiving panels.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_define_plot_links
@@ -449,10 +450,10 @@ height_limits <- c(400L, 1000L)
     param_choices <- memory[[enc$Type]][enc$ID,]
     output <- list()
 
-    # Checking brush status.
-    brush_in <- param_choices[[.brushByPlot]]
-    if (brush_in!=.noSelection) {
-        output <- c(output, list("Receiving brush from", em(strong(brush_in)), br()))
+    # Checking select status.
+    select_in <- param_choices[[.selectByPlot]]
+    if (select_in!=.noSelection) {
+        output <- c(output, list("Receiving selection from", em(strong(select_in)), br()))
     }
 
     # Checking colour status.
@@ -477,7 +478,7 @@ height_limits <- c(400L, 1000L)
     child_enc <- .split_encoded(children)
     child_names <- .decode_panel_name(child_enc$Type, child_enc$ID)
     for (child in child_names) {
-        output <- c(output, list("Transmitting brush to", em(strong(child)), br()))
+        output <- c(output, list("Transmitting selection to", em(strong(child)), br()))
     }
 
     do.call(tagList, output)
@@ -489,13 +490,13 @@ height_limits <- c(400L, 1000L)
 #'
 #' @param panel String containing the encoded name for the current row statistics table.
 #' @param memory A list of DataFrames containing parameters for each panel of each type.
-#' @param table_links A list of lists produced by \code{\link{.spawn_table_links}}, specifying the brushing links between tables and dependent plots. 
+#' @param table_links A list of lists produced by \code{\link{.spawn_table_links}}, specifying the links between tables and dependent plots. 
 #'
 #' @return A HTML object containing a description of the panel from which \code{panel} receives information,
 #' and a description of all the other panels to which \code{panel} transmits information. 
 #'
 #' @details
-#' Information reception includes the receipt of a brush from a transmitting plot.
+#' Information reception includes the receipt of point selections from a transmitting plot.
 #' Information transmission should take the form of selection of features for use in color or x/y-axis specification in other plots.
 #'
 #' @author Aaron Lun
@@ -513,10 +514,10 @@ height_limits <- c(400L, 1000L)
     param_choices <- memory[[enc$Type]][enc$ID,]
     output <- list()
 
-    # Checking brush status.
-    brush_in <- param_choices[[.brushByPlot]]
-    if (brush_in!=.noSelection) {
-        output <- c(output, list("Receiving brush from", em(strong(brush_in)), br()))
+    # Checking select status.
+    select_in <- param_choices[[.selectByPlot]]
+    if (select_in!=.noSelection) {
+        output <- c(output, list("Receiving selection from", em(strong(select_in)), br()))
     }
 
     # Checking where it broadcasts to plots.
@@ -537,9 +538,9 @@ height_limits <- c(400L, 1000L)
     do.call(tagList, output)
 }
 
-#' Define the brushed points
+#' Define the selected points
 #' 
-#' Evaluate the brushing commands to obtain the selected set of points, usually features.
+#' Evaluate the point selection commands to obtain the selected set of points, usually features.
 #'
 #' @param names A character vector containing the names of all points.
 #' @param transmitter String containing the decoded name of the transmitting panel.
@@ -550,23 +551,23 @@ height_limits <- c(400L, 1000L)
 #' A logical vector of length equal to \code{names}, specifying which points were selected in the \code{transmitter}.
 #'
 #' @details
-#' This function obtains the commands to select brushed points from \code{\link{.process_brushby_choice}}, and evaluates them to identify the selected points.
+#' This function obtains the commands to select points from \code{\link{.process_selectby_choice}}, and evaluates them to identify the selected points.
 #' Such a procedure is necessary in \code{\link{iSEE}} to obtain the actual feature names to show to the user in the interface.
-#' Some work is thus required to trick \code{\link{.process_brushby_choice}} into thinking it is operating on the parameteres for a point-based receiving panel.
+#' Some work is thus required to trick \code{\link{.process_selectby_choice}} into thinking it is operating on the parameteres for a point-based receiving panel.
 #'
 #' @author Aaron Lun
-#' @rdname INTERNAL_get_brush_selection
+#' @rdname INTERNAL_get_selected_points
 #' @seealso 
-#' \code{\link{.process_brushby_choice}},
+#' \code{\link{.process_selectby_choice}},
 #' \code{\link{iSEE}}
 #'
 #' @importFrom S4Vectors DataFrame 
-.get_brush_selection <- function(names, transmitter, all_memory, all_coordinates) {
-    dummy <- DataFrame(transmitter, .brushColorTitle) 
-    rownames(dummy) <- paste0("__", transmitter) # can never match transmitter.
-    colnames(dummy) <- c(.brushByPlot, .brushEffect)
+.get_selected_points <- function(names, transmitter, all_memory, all_coordinates) {
+    dummy <- DataFrame(transmitter, .selectColorTitle) 
+    rownames(dummy) <- paste0("__", transmitter) # can never match transmitter; avoids using "plot.data" in .process_selectby_choice().
+    colnames(dummy) <- c(.selectByPlot, .selectEffect)
 
-    selected <- .process_brushby_choice(dummy, all_memory)
+    selected <- .process_selectby_choice(dummy, all_memory)
     tmp_data <- data.frame(row.names=names)
     if (!is.null(selected$cmd)) { 
         chosen.env <- new.env()

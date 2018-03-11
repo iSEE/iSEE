@@ -1,6 +1,6 @@
 Package: iSEE
 Title: Interactive SummarizedExperiment Explorer
-Version: 0.98.3
+Version: 0.98.4
 Date: 2018-02-20
 Authors@R: c(person("Charlotte", "Soneson", role=c("aut", "cre"),
     email="charlottesoneson@gmail.com"), person("Aaron", "Lun", 
@@ -56,7 +56,8 @@ Suggests:
     irlba,
     RColorBrewer,
     viridis,
-    org.Mm.eg.db
+    org.Mm.eg.db,
+    htmltools
 Enhances:
     ExperimentHub
 URL: https://github.com/csoneson/iSEE

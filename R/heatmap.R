@@ -3,15 +3,12 @@
 #' Make a heatmap with features on the Y axis and samples on the X axis.
 #'
 #' @param id Integer specifying the index of the heatmap plot panel
-#' @param all_memory A \code{list} of \code{\linkS4class{DataFrame}}s, where each
-#' \code{\linkS4class{DataFrame}} corresponds to a panel type and contains the
+#' @param all_memory A \code{list} of \linkS4class{DataFrame}s, where each
+#' \linkS4class{DataFrame} corresponds to a panel type and contains the
 #' initial settings for each individual panel of that type.
-#' @param all_coordinates A \code{list} of \code{data.frame}s that contain
-#' the coordinates and covariates of data points visible in each of the plots;
-#' in particular data points excluded by "restrict" brushes are not included in
-#' the corresponding \code{data.frame}.
-#' @param se A \code{\linkS4class{SingleCellExperiment}} object.
-#' @param colormap An \code{\linkS4class{ExperimentColorMap}} object that defines
+#' @param all_coordinates A \code{list} of \code{data.frame}s that contain the coordinates and covariates of data points visible in each of the plots.
+#' @param se A \linkS4class{SingleCellExperiment} object.
+#' @param colormap An \linkS4class{ExperimentColorMap} object that defines
 #' custom color maps to apply to individual \code{assays}, \code{colData},
 #' and \code{rowData} covariates.
 #'
@@ -34,6 +31,7 @@
 #' @author Charlotte Soneson, Aaron Lun, Kevin Rue-Albrecht 
 #' @rdname INTERNAL_make_heatMapPlot
 #' 
+#' @importFrom ggplot2 scale_y_continuous
 #' @importFrom cowplot get_legend plot_grid
 #' @importFrom scales rescale
 #' @importFrom reshape2 melt
@@ -86,21 +84,21 @@
   min.obs <- min(eval_env$plot.data$value, na.rm=TRUE)
   max.obs <- max(eval_env$plot.data$value, na.rm=TRUE)
 
-  # Processing the brushing choice.
+  # Processing the selection choice.
   # Note that the cell names are not in the rownames(plot.data), but in plot.data$X, hence the sub().
   alpha_cmd <- ""
   alpha_legend_cmd <- NULL
-  brush_out <- .process_brushby_choice(param_choices, all_memory)
-  brush_cmds <- brush_out$cmds
+  select_out <- .process_selectby_choice(param_choices, all_memory)
+  select_cmds <- select_out$cmds
 
-  if (length(brush_cmds)) { 
-      brush_cmds[["select"]] <- sub("rownames(plot.data)", "plot.data$X", brush_cmds[["select"]], fixed=TRUE)
-      eval_env$all_brushes <- brush_out$data
-      eval_env$all_lassos <- brush_out$data
-      if (param_choices[[.brushEffect]]==.brushTransTitle) {
+  if (length(select_cmds)) { 
+      select_cmds[["select"]] <- sub("rownames(plot.data)", "plot.data$X", select_cmds[["select"]], fixed=TRUE)
+      eval_env$all_brushes <- select_out$data
+      eval_env$all_lassos <- select_out$data
+      if (param_choices[[.selectEffect]]==.selectTransTitle) {
           alpha_cmd <- ", alpha=BrushBy"
           alpha_legend_cmd <- "guides(alpha=FALSE) +"
-      } else if (param_choices[[.brushEffect]]==.brushColorTitle) {
+      } else if (param_choices[[.selectEffect]]==.selectColorTitle) {
           ## Add annotation bar
           orderBy <- c(orderBy,"BrushBy")
       }
@@ -157,7 +155,7 @@
             "geom_raster(aes(fill = BrushBy)) +",
             "labs(x='', y='') +",
             "scale_y_continuous(breaks=1, labels='Brushed points') +",
-            sprintf("scale_fill_manual(values=c(`TRUE`='%s', `FALSE`='white')) +",param_choices[[.brushColor]]),
+            sprintf("scale_fill_manual(values=c(`TRUE`='%s', `FALSE`='white')) +",param_choices[[.selectColor]]),
             "theme(axis.text.x=element_blank(), axis.ticks=element_blank(), axis.title.x=element_blank(), 
     rect=element_blank(), line=element_blank(), axis.title.y=element_blank(), 
             plot.margin = unit(c(0,0,-0.5,0), 'lines'));")
@@ -166,7 +164,7 @@
   annot_cmds <- c(annot_cmds, unlist(annot_cmds0)) 
   
   # Evaluate to get the individual legends
-  plot_part <- eval(parse(text=c(brush_cmds, zoom_cmds, plot_cmds, annot_cmds)), envir=eval_env)
+  plot_part <- eval(parse(text=c(select_cmds, zoom_cmds, plot_cmds, annot_cmds)), envir=eval_env)
   legends <- eval_env$legends
 
   # Put heatmap and annotations together
@@ -185,7 +183,7 @@
   )
   
   plot_out <- eval(parse(text=grid_cmds), envir=eval_env)
-  return(list(cmd_list=list(data=data_cmds, brush=brush_cmds, zoom=zoom_cmds, plot=plot_cmds, annot=annot_cmds, grid=grid_cmds), 
+  return(list(cmd_list=list(data=data_cmds, select=select_cmds, zoom=zoom_cmds, plot=plot_cmds, annot=annot_cmds, grid=grid_cmds), 
               xy=eval_env$value.mat, plot=plot_out, legends=legends))
 }
 

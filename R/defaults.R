@@ -176,35 +176,36 @@
 #' This vector will subset the entries in \code{FeatName} for a given panel. 
 #' This defaults to \code{NULL}, i.e., all specified features in \code{FeatName} are shown.
 #'
-#' @section Brushing parameters:
+#' @section Point selection parameters:
 #' For the point-based plots, the following options apply:
 #' \describe{
-#' \item{\code{BrushBoxOpen}:}{Logical, should the brushing parameter box be open upon initialization?
+#' \item{\code{SelectBoxOpen}:}{Logical, should the point selection parameter box be open upon initialization?
 #' Defaults to \code{FALSE}.}
-#' \item{\code{BrushByPlot}:}{Character, which other plot should be used for point selection in the current plot? 
+#' \item{\code{SelectByPlot}:}{Character, which other plot should be used for point selection in the current plot? 
 #' Defaults to \code{"---"}, which means that no plot is used for point selection.}
-#' \item{\code{BrushEffect}:}{Character, what is the effect of receiving a brush input?
-#' Can be \code{"Restrict"}, where only the brushed points are shown; \code{"Color"}, where the brushed points have a different color; 
-#' or \code{"Transparent"}, where all points other than the brushed points are made transparent. Defaults to \code{"Transparent"}.}
-#' \item{\code{BrushColor}:}{Character, what color should be used for the brushed points when \code{BrushEffect="Color"}?
+#' \item{\code{SelectEffect}:}{Character, what is the effect of receiving point selection information?
+#' Can be \code{"Restrict"}, where only the selected points are shown; \code{"Color"}, where the selected points have a different color; 
+#' or \code{"Transparent"}, where all points other than those selected are made transparent. 
+#' Defaults to \code{"Transparent"}.}
+#' \item{\code{SelectColor}:}{Character, what color should be used for the selected points when \code{SelectEffect="Color"}?
 #' Defaults to \code{"red"}.}
-#' \item{\code{BrushAlpha}:}{Numeric, what level of transparency should be used for the unbrushed points when \code{BrushEffect="Transparent"}?
+#' \item{\code{SelectAlpha}:}{Numeric, what level of transparency should be used for the unselected points when \code{SelectEffect="Transparent"}?
 #' This should lie in [0, 1], where 0 is fully transparent and 1 is fully opaque. 
 #' Defaults to 0.1.}
 #' }
 #'
-#' Note that brushing cannot occur between row data plots and the other plot types.
+#' Note that point selection cannot occur between row data plots and the other plot types.
 #' This is because each point in a row data plot is a feature, while each point represents a sample in the other plots.
-#' Brushing can only occur between plots of the same point type.
+#' Point selection can only occur between plots of the same point type.
 #'
 #' For the row statistics tables, the following options apply:
 #' \describe{
-#' \item{\code{BrushBoxOpen}:}{Logical, should the brushing parameter box be open upon initialization?
+#' \item{\code{SelectBoxOpen}:}{Logical, should the point selection parameter box be open upon initialization?
 #' Defaults to \code{FALSE}.}
-#' \item{\code{BrushByPlot}:}{Character, which other plot should be used to select features in the current table? 
+#' \item{\code{SelectByPlot}:}{Character, which other plot should be used to select features in the current table? 
 #' Defaults to \code{"---"}, which means that no plot is used for point selection.}
 #' }
-#' Only row data plots can be used for brushing of tables.
+#' Only row data plots can be used for selecting points to supply to tables.
 #' 
 #' @return A DataFrame containing default settings for various parameters of each panel.
 #'
@@ -297,9 +298,9 @@ rowStatTableDefaults <- function(se, number) {
     colsearch <- character(ncol(rowData(se)))
     out[[.rowStatColSearch]] <- rep(list(colsearch), as.integer(number))
 
-    # Defining the rowDataPlot brush to receive.
-    out[[.brushParamBoxOpen]] <- FALSE
-    out[[.brushByPlot]] <- .noSelection
+    # Defining the rowDataPlot from which point selections are received.
+    out[[.selectParamBoxOpen]] <- FALSE
+    out[[.selectByPlot]] <- .noSelection
 
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)
@@ -347,11 +348,11 @@ heatMapPlotDefaults <- function(se, number) {
     
     out[[.zoomData]] <- rep(list(NULL), nrow(out))
 
-    out[[.brushParamBoxOpen]] <- FALSE
-    out[[.brushByPlot]] <- .noSelection
-    out[[.brushEffect]] <- .brushTransTitle
-    out[[.brushTransAlpha]] <- 0.1
-    out[[.brushColor]] <- "red"
+    out[[.selectParamBoxOpen]] <- FALSE
+    out[[.selectByPlot]] <- .noSelection
+    out[[.selectEffect]] <- .selectTransTitle
+    out[[.selectTransAlpha]] <- 0.1
+    out[[.selectColor]] <- "red"
   
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)
@@ -410,7 +411,8 @@ heatMapPlotDefaults <- function(se, number) {
 #' @return A DataFrame with additional fields for general plot parameters, filled with default values.
 #' 
 #' @details
-#' The \code{.add_general_parameters} function adds general parameters such as parameter box opening flags, brush specifications, and zoom and lasso data fields.
+#' The \code{.add_general_parameters} function adds general parameters such as parameter box opening flags, 
+#' point selection specifications, and zoom, brush and lasso data fields.
 #' All parameters are initialized at their default values.
 #'
 #' The \code{.add_general_parameters_for_column_plots} function adds general parameters for column-based plots,
@@ -424,12 +426,12 @@ heatMapPlotDefaults <- function(se, number) {
 .add_general_parameters <- function(incoming) {
     incoming[[.dataParamBoxOpen]] <- FALSE
     incoming[[.visualParamBoxOpen]] <- FALSE
-    incoming[[.brushParamBoxOpen]] <- FALSE
+    incoming[[.selectParamBoxOpen]] <- FALSE
 
-    incoming[[.brushByPlot]] <- .noSelection
-    incoming[[.brushEffect]] <- .brushTransTitle
-    incoming[[.brushTransAlpha]] <- 0.1
-    incoming[[.brushColor]] <- "red"
+    incoming[[.selectByPlot]] <- .noSelection
+    incoming[[.selectEffect]] <- .selectTransTitle
+    incoming[[.selectTransAlpha]] <- 0.1
+    incoming[[.selectColor]] <- "red"
     incoming[[.brushData]] <- rep(list(NULL), nrow(incoming))
 
     incoming[[.visualParamChoice]] <- rep(list(.visualParamChoiceColorTitle), nrow(incoming))

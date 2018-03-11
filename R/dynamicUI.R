@@ -117,7 +117,9 @@
 #' @importFrom SummarizedExperiment colData rowData assayNames
 #' @importFrom BiocGenerics rownames
 #' @importFrom SingleCellExperiment reducedDimNames reducedDim
-#' @importFrom shiny actionButton fluidRow selectInput plotOutput uiOutput sliderInput tagList numericInput column radioButtons tags hr brushOpts selectizeInput 
+#' @importFrom shiny actionButton fluidRow selectInput plotOutput uiOutput
+#' sliderInput tagList numericInput column radioButtons tags hr brushOpts
+#' selectizeInput checkboxGroupInput
 .panel_generation <- function(active_panels, memory, se) {
     collected <- list()
     counter <- 1L
@@ -140,8 +142,8 @@
     # Defining all transmitting tables and plots for linking.
     link_sources <- .define_link_sources(active_panels)
     active_tab <- c(.noSelection, link_sources$tab)
-    row_brushable <- c(.noSelection, link_sources$row)
-    col_brushable <- c(.noSelection, link_sources$col)
+    row_selectable <- c(.noSelection, link_sources$row)
+    col_selectable <- c(.noSelection, link_sources$col)
     heatmap_sources <- c(.noSelection, link_sources$row, link_sources$tab)
 
     for (i in seq_len(nrow(active_panels))) {
@@ -287,13 +289,13 @@
         # Adding graphical parameters if we're plotting.
         if (mode=="rowStatTable") {
             param <- list(hr(), tags$div(class = "panel-group", role = "tablist",
-                collapseBox(.input_FUN(.brushParamBoxOpen),
-                            title = "Brushing parameters",
-                            open = param_choices[[.brushParamBoxOpen]],
-                            selectInput(.input_FUN(.brushByPlot),
-                                        label = "Receive brush from:", 
-                                        choices=row_brushable,
-                                        selected=.choose_link(param_choices[[.brushByPlot]], row_brushable))
+                collapseBox(.input_FUN(.selectParamBoxOpen),
+                            title = "Point selection parameters",
+                            open = param_choices[[.selectParamBoxOpen]],
+                            selectInput(.input_FUN(.selectByPlot),
+                                        label = "Receive selection from:", 
+                                        choices=row_selectable,
+                                        selected=.choose_link(param_choices[[.selectByPlot]], row_selectable))
                             )
                 )
             )
@@ -305,13 +307,13 @@
                                             open=param_choices[[.dataParamBoxOpen]]),
                                        plot.param)),
                 .create_visual_box_for_row_plots(mode, ID, param_choices, active_tab, row_covariates),
-                .create_brush_param_box(mode, ID, param_choices, row_brushable)
+                .create_selection_param_box(mode, ID, param_choices, row_selectable)
                 )
             )
         } else if (mode=="heatMapPlot") {
             param <- list(do.call(tags$div, c(list(class = "panel-group", role = "tablist"),
                     plot.param,
-                    .create_brush_param_box(mode, ID, param_choices, col_brushable)
+                    .create_selection_param_box(mode, ID, param_choices, col_selectable)
                     )
                 )  
             )
@@ -326,8 +328,8 @@
                 # Options for visual parameters.
                 .create_visual_box_for_column_plots(mode, ID, param_choices, active_tab, column_covariates, all_assays, no_rows=nrow(se)==0),
 
-                # Options for brushing parameters.
-                .create_brush_param_box(mode, ID, param_choices, col_brushable)
+                # Options for point selection parameters.
+                .create_selection_param_box(mode, ID, param_choices, col_selectable)
                 )
             )
         }
@@ -365,7 +367,7 @@
 
 #' Define link sources
 #' 
-#' Define all possible sources of links between active panels, i.e., feature selections from row statistics tables or brushing from plots.
+#' Define all possible sources of links between active panels, i.e., feature selections from row statistics tables or point selections from plots.
 #'
 #' @param active_panels A data.frame specifying the currently active panels, see the output of \code{\link{.setup_initial}}.
 #'
@@ -396,10 +398,10 @@
 
     is_row <- active_panels$Type=="rowDataPlot"
     is_heat <- active_panels$Type=="heatMapPlot"
-    row_brushable <- all_names[is_row & !is_heat]
-    col_brushable <- all_names[!is_tab & !is_row & !is_heat]
+    row_selectable <- all_names[is_row & !is_heat]
+    col_selectable <- all_names[!is_tab & !is_row & !is_heat]
 
-    return(list(tab=active_tab, row=row_brushable, col=col_brushable))
+    return(list(tab=active_tab, row=row_selectable, col=col_selectable))
 }
 
 #' Choose a linked panel
@@ -418,7 +420,7 @@
 #' Otherwise, an empty string is returned.
 #'
 #' Setting \code{force_default=TRUE} is required for panels linking to row statistics tables, where an empty choice would result in an invalid plot.
-#' However, a default choice is not necessary for brush transmission, where no selection is perfectly valid.
+#' However, a default choice is not necessary for point selection transmission, where no selection is perfectly valid.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_choose_link
@@ -469,6 +471,7 @@
 #' \code{\link{.create_visual_box_for_row_plots}}
 #'
 #' @importFrom shiny radioButtons tagList selectInput selectizeInput
+#' checkboxGroupInput
 #' @importFrom colourpicker colourInput
 .create_visual_box_for_column_plots <- function(mode, ID, param_choices, active_tab, covariates, all_assays, no_rows=FALSE) {
     colorby_field <- paste0(mode, ID, "_", .colorByField)
@@ -541,6 +544,7 @@
 #' \code{\link{.create_visual_box_for_column_plots}}
 #'
 #' @importFrom shiny radioButtons tagList selectInput selectizeInput
+#' checkboxGroupInput
 #' @importFrom colourpicker colourInput
 .create_visual_box_for_row_plots <- function(mode, ID, param_choices, active_tab, covariates) {
     colorby_field <- paste0(mode, ID, "_", .colorByField)
@@ -621,54 +625,54 @@
     )
 }
 
-#' Brush parameter box 
+#' Point selection parameter box 
 #'
-#' Create a brush parameter box for all point-based plots.
+#' Create a point selection parameter box for all point-based plots.
 #'
 #' @param mode String specifying the encoded panel type of the current plot.
 #' @param ID Integer scalar specifying the index of a panel of the specified type, for the current plot.
 #' @param param_choices A DataFrame with one row, containing the parameter choices for the current plot.
-#' @param brushable A character vector of decoded names for available brush transmitting panels.
+#' @param selectable A character vector of decoded names for available transmitting panels.
 #'
 #' @return
-#' A HTML tag object containing a \code{\link{collapseBox}} with brushing parameters.
+#' A HTML tag object containing a \code{\link{collapseBox}} with UI elements for changing point selection parameters.
 #'
 #' @details
-#' This function creates a collapsible box that contains brushing options, initialized with the choices in \code{memory}.
-#' Options include the choice of transmitting plot and the type of brushing effect.
+#' This function creates a collapsible box that contains point selection options, initialized with the choices in \code{memory}.
+#' Options include the choice of transmitting plot and the type of selection effect.
 #' Each effect option, once selected, may yield a further subset of nested options.
-#' For example, choosing to colour on brush will open up a choice of colour to use.
+#' For example, choosing to colour on the selected points will open up a choice of colour to use.
 #'
 #' @author Aaron Lun
-#' @rdname INTERNAL_create_brush_param_box
+#' @rdname INTERNAL_create_selection_param_box
 #' @seealso 
 #' \code{\link{.panel_generation}}
 #' 
 #' @importFrom shiny sliderInput radioButtons selectInput
 #' @importFrom colourpicker colourInput
-.create_brush_param_box <- function(mode, ID, param_choices, brushable) {
-    brush_effect <- paste0(mode, ID, "_", .brushEffect)
+.create_selection_param_box <- function(mode, ID, param_choices, selectable) {
+    select_effect <- paste0(mode, ID, "_", .selectEffect)
 
     collapseBox(
-        id=paste0(mode, ID, "_", .brushParamBoxOpen),
+        id=paste0(mode, ID, "_", .selectParamBoxOpen),
         title = "Brushing parameters",
-        open = param_choices[[.brushParamBoxOpen]],
-        selectInput(paste0(mode, ID, "_", .brushByPlot),
-                    label = "Receive brush from:", 
-                    choices=brushable,
-                    selected=.choose_link(param_choices[[.brushByPlot]], brushable)),
+        open = param_choices[[.selectParamBoxOpen]],
+        selectInput(paste0(mode, ID, "_", .selectByPlot),
+                    label = "Receive select from:", 
+                    choices=selectable,
+                    selected=.choose_link(param_choices[[.selectByPlot]], selectable)),
 
-        radioButtons(brush_effect, label="Brush effect:", inline=TRUE,
-                     choices=c(.brushRestrictTitle, .brushColorTitle, .brushTransTitle),
-                     selected=param_choices[[.brushEffect]]),
+        radioButtons(select_effect, label="Brush effect:", inline=TRUE,
+                     choices=c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle),
+                     selected=param_choices[[.selectEffect]]),
 
-        .conditional_on_radio(brush_effect, .brushColorTitle,
-            colourInput(paste0(mode, ID, "_", .brushColor), label=NULL,
-                        value=param_choices[[.brushColor]])
+        .conditional_on_radio(select_effect, .selectColorTitle,
+            colourInput(paste0(mode, ID, "_", .selectColor), label=NULL,
+                        value=param_choices[[.selectColor]])
             ),
-        .conditional_on_radio(brush_effect, .brushTransTitle,
-            sliderInput(paste0(mode, ID, "_", .brushTransAlpha), label=NULL,
-                        min=0, max=1, value=param_choices[[.brushTransAlpha]])
+        .conditional_on_radio(select_effect, .selectTransTitle,
+            sliderInput(paste0(mode, ID, "_", .selectTransAlpha), label=NULL,
+                        min=0, max=1, value=param_choices[[.selectTransAlpha]])
             )
         )
 }
@@ -692,7 +696,7 @@
 #' @rdname INTERNAL_conditional_elements
 #' @seealso
 #' \code{\link{.panel_generation}},
-#' \code{\link{.create_brush_param_box}},
+#' \code{\link{.create_selection_param_box}},
 #' \code{\link{.create_visual_box_for_row_plots}},
 #' \code{\link{.create_visual_box_for_column_plots}}
 #'

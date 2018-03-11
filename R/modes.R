@@ -1,8 +1,7 @@
 
 #' App pre-configured to link multiple feature expression plots
 #'
-#' @param se An object that coercible to
-#'\code{\linkS4class{SingleCellExperiment}}.
+#' @param se An object that coercible to \linkS4class{SingleCellExperiment}
 #' @param features \code{data.frame} with columns named \code{x} and \code{y}
 #' that define the features on the axes of the linked plots.
 #' Plots are serially linked from the first row to the last.
@@ -11,7 +10,7 @@
 #' @param plot_width The grid width of linked plots (numeric vector of
 #' length either 1 or equal to \code{nrow(features)}
 #' 
-#' @return A Shiny App preconfigure with multiple chain-linked feature
+#' @return A Shiny App preconfigured with multiple chain-linked feature
 #' expression plots is launched for interactive data exploration of the
 #' \code{\link{SingleCellExperiment}} / \code{\link{SummarizedExperiment}}
 #' object
@@ -67,12 +66,12 @@ modeGating <- function(
   featExprArgs[[.featExprXAxisFeatName]] <- features[,"x"]
   # X axes take all the even-numbered feature names
   featExprArgs[[.featExprYAxisFeatName]] <- features[,"y"]
-  featExprArgs[[.brushByPlot]] <- c(
+  featExprArgs[[.selectByPlot]] <- c(
     "",
     sprintf("Feature expression plot %i", seq(1, nrow(features) - 1, 1)),
     rep("", nrow(featExprArgs) - nrow(features))
   )
-  featExprArgs[[.brushEffect]] <- c(
+  featExprArgs[[.selectEffect]] <- c(
     "",
     rep("Restrict", nrow(features) - 2),
     "Color",

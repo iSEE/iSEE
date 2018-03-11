@@ -215,23 +215,23 @@ test_that("sanitation of memory works correctly", {
     sanitized <- iSEE:::.sanitize_memory(init_panels, memory)
     expect_identical(sanitized, memory)
 
-    # Does NOT remove valid brushing or table links in active plots.
+    # Does NOT remove valid selecting or table links in active plots.
     memory2 <- memory
-    memory2$redDimPlot[1, iSEE:::.brushByPlot] <- "Column data plot 1"
+    memory2$redDimPlot[1, iSEE:::.selectByPlot] <- "Column data plot 1"
     memory2$colDataPlot[1, iSEE:::.colorByRowTable] <- "Row statistics table 1"
     sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory2)
 
-    # Correctly removes valid brushing or table links in inactive plots.
+    # Correctly removes valid selecting or table links in inactive plots.
     memory2 <- memory
-    memory2$redDimPlot[2, iSEE:::.brushByPlot] <- "Column data plot 1"
+    memory2$redDimPlot[2, iSEE:::.selectByPlot] <- "Column data plot 1"
     memory2$colDataPlot[2, iSEE:::.colorByRowTable] <- "Row statistics table 1"
     sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory)
 
-    # Correctly removes invalid brushing or table links.
+    # Correctly removes invalid selecting or table links.
     memory2 <- memory
-    memory2$redDimPlot[1, iSEE:::.brushByPlot] <- "Column data plot 2"
+    memory2$redDimPlot[1, iSEE:::.selectByPlot] <- "Column data plot 2"
     memory2$colDataPlot[1, iSEE:::.colorByRowTable] <- "Row statistics table 2"
     sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory)

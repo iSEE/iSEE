@@ -25,7 +25,7 @@
 #' @rdname INTERNAL_spawn_selection_chart
 #' @seealso
 #' \code{\link{.choose_new_selection_source}},
-#' \code{\link{.destroy_selection_source}},
+#' \code{\link{.destroy_selection_panel}},
 #' \code{\link{iSEE}}
 #'
 #' @importFrom igraph make_graph simplify is_dag
@@ -244,7 +244,7 @@
 #' @param transmitter String containing the decoded name of a transmitting panel.
 #' @param memory A list of DataFrames containing parameters for each panel of each type.
 #' 
-#' @return A list of of two elements - \code{brush}, a logical scalar indicating whether a brush/lasso exists in \code{transmitter};
+#' @return A list of of two elements - \code{selected}, a logical scalar indicating whether a brush/lasso exists in \code{transmitter};
 #' and \code{encoded}, the encoded name of \code{transmitter}.
 #'
 #' @details 
@@ -252,7 +252,7 @@
 #' Protection against non-selections for \code{transmitter} are particularly inconvenient.
 #'
 #' @author Aaron Lun
-#' @rdname INTERNAL_transmitted_brush
+#' @rdname INTERNAL_transmitted_selection
 #' @seealso
 #' \code{\link{.any_point_selection}},
 #' \code{\link{iSEE}}
@@ -267,7 +267,7 @@
             selection <- TRUE
         }
     }
-    return(list(selection=selection, encoded=encoded))
+    return(list(selected=selection, encoded=encoded))
 }
 
 #' Checks if any points are selected
@@ -282,7 +282,7 @@
 #' @author Aaron Lun
 #' @rdname INTERNAL_any_point_selection
 #' @seealso
-#' \code{\link{.transmitted_brush}},
+#' \code{\link{.transmitted_selection}},
 #' \code{\link{iSEE}}
 .any_point_selection <- function(mode, id, memory) {
     if (!is.null(memory[[mode]][,.brushData][[id]])) {

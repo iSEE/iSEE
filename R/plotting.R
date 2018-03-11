@@ -956,7 +956,7 @@ plot.data$Y <- tmp;")
       param_choices[[.colorByDefaultColor]])
     plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
     plot_cmds[["tile"]] <-
-"geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius),
+"geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius, group = interaction(X, Y)),
     summary.data, color = 'black', alpha = 0, size = 0.5) +"
 
     # Adding the points to the plot (with/without point selection).
@@ -971,10 +971,10 @@ plot.data$Y <- tmp;")
     # Defining the color commands.
     if (by_row) { 
         color_out <-
-          .add_color_to_row_plot(plot_data$ColorBy, param_choices, ...)
+          .add_color_to_row_plot(plot_data$ColorBy, param_choices, se)
     } else {
         color_out <-
-          .add_color_to_column_plot(plot_data$ColorBy, param_choices, ...)
+          .add_color_to_column_plot(plot_data$ColorBy, param_choices, se)
     }
     color_label <- color_out$label
     color_scale_cmd <- unlist(color_out$cmds)

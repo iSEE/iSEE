@@ -325,6 +325,12 @@ test_that(".make_rowDataPlot/.violin_plot produce a valid xy with color", {
     c('Y', 'X', 'ColorBy')
   )
   
+  # Color by feature name
+  all_memory$rowDataPlot[1,iSEE:::.colorByField] <- iSEE:::.colorByFeatNameTitle
+  
+  p.out <- iSEE:::.make_rowDataPlot(
+    id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
+  
 })
 
 # .make_rowDataPlot/.violin_plot ----
@@ -381,6 +387,12 @@ test_that(".make_rowDataPlot/.violin_plot produce a valid xy with color", {
     p.out$xy,
     c("Y","X","ColorBy","GroupBy","jitteredX")
   )
+  
+  # Color by feature name
+  all_memory$rowDataPlot[1,iSEE:::.colorByField] <- iSEE:::.colorByFeatNameTitle
+  
+  p.out <- iSEE:::.make_rowDataPlot(
+    id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
 })
 
@@ -485,6 +497,12 @@ test_that(".make_rowDataPlot/.square_plot produce a valid xy with color",{
     p.out$plot,
     c("gg", "ggplot")
   )
+  
+  # Color by feature name
+  all_memory$rowDataPlot[1,iSEE:::.colorByField] <- iSEE:::.colorByFeatNameTitle
+  
+  p.out <- iSEE:::.make_rowDataPlot(
+    id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
 })
 

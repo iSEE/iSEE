@@ -985,10 +985,10 @@ plot.data$Y <- tmp;")
     # Defining the color commands.
     if (by_row) { 
         color_out <-
-          .add_color_to_row_plot(plot_data$ColorBy, param_choices, ...)
+          .add_color_to_row_plot(plot_data$ColorBy, param_choices, se)
     } else {
         color_out <-
-          .add_color_to_column_plot(plot_data$ColorBy, param_choices, ...)
+          .add_color_to_column_plot(plot_data$ColorBy, param_choices, se)
     }
     color_label <- color_out$label
     color_scale_cmd <- unlist(color_out$cmds)

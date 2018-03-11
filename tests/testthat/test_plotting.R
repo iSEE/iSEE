@@ -1021,6 +1021,62 @@ test_that(".process_brushby_choice works when sender is self plot", {
   
 })
 
+test_that(".process_brushby_choice works with closed lasso selection", {
+  
+  sourcePlotName <- "Reduced dimension plot 1"
+  sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
+  
+  # Set up the brush link: redDim1 --> featExpr1
+  all_memory$featExprPlot[1,iSEE:::.brushByPlot] <- sourcePlotName
+  # Set up the brush data (in redDim1)
+  params <- all_memory$redDimPlot[1,]
+  x_10 <- head(
+    reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
+    10)
+  y_10 <- head(
+    reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
+    10)
+  
+  lasso_val <- matrix(
+    data = c(
+      min(x_10), min(y_10),
+      min(x_10), max(y_10),
+      max(x_10), max(y_10),
+      max(x_10), min(y_10)
+    ),
+    ncol = 2,
+    byrow = TRUE
+  )
+  attr(lasso_val, "closed") <- TRUE
+  attr(lasso_val, "flipped") <- FALSE
+  
+  all_memory$redDimPlot[[iSEE:::.lassoData]][1] <- list(lasso_val)
+  
+  brush_cmd <- iSEE:::.process_brushby_choice(all_memory$featExprPlot, all_memory)
+  
+  # check the source of the brushed data
+  expect_match(
+    brush_cmd$cmds[1],
+    "to_check <- subset",
+    fixed = TRUE
+  )
+
+  # check the source plot type
+  expect_match(
+    brush_cmd$cmds[1],
+    sourcePlotType,
+    fixed = TRUE
+  )
+
+  # check that the second (hard-coded) command is present
+  expect_match(
+    brush_cmd$cmds[2],
+    "all_lassos",
+    fixed = TRUE
+  )
+  
+})
+
 # .create_points handles transparency brush ----
 
 test_that(".create_points handles transparency brush", {

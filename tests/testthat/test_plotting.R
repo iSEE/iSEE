@@ -197,9 +197,9 @@ test_that(".make_colDataPlot/.square_plot produce a valid xy with color", {
   
 })
 
-# .make_colDataPlot/.scatter_plot ----
+# .make_rowDataPlot/.scatter_plot ----
 
-test_that(".make_colDataPlot/.scatter_plot produce a valid list",{
+test_that(".make_rowDataPlot/.scatter_plot produce a valid list",{
   
   all_memory$rowDataPlot[1,iSEE:::.rowDataXAxis] <- iSEE:::.rowDataXAxisRowData
   all_memory$rowDataPlot[1,iSEE:::.rowDataXAxisRowData] <- "num_cells"

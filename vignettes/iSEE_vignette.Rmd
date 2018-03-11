@@ -511,36 +511,36 @@ cytof <- readRDS(gzcon(url(
 The traditional way to analyze cytometry experiments and identify known cell populations is to construct a collection of two-dimensional scatter plots, each visualizing the cells in the space of two of the measured markers. 
 By successively selecting subsets of cells with specific patterns of marker abundance ("gating"),
 experienced users can assign cells to known populations. 
-To mimic part of the original gating strategy from [@bodenmiller2012cytof], we define a starting configuration for `iSEE` with five gene expression plots, each showing two of the markers. 
+To mimic part of the original gating strategy from [@bodenmiller2012cytof], we define a starting configuration for `iSEE` with five *Feature expression plots*, each showing two of the markers. 
 Each plot is linked to the previous one, with the brushing effect set to "Restrict", meaning that only the cells selected by point selection in the previous plot are shown in each plot.
 We also include a *Reduced dimension plot*, in which the cells are colored by the automatic cluster assignment. 
-The *Reduced dimension plot* receives a restricting brush from the last *Gene expression plot*, which means that only the points that are selected by brushing in the latter will be shown in the *Reduced dimension plot*.
+The *Reduced dimension plot* receives a restricting brush from the last *Feature expression plot*, which means that only the points that are selected by brushing in the latter will be shown in the *Reduced dimension plot*.
 
 The code below sets up the initial panel configuration and brushing relationships. 
 
 ```{r initialPanels_cytof, eval=FALSE}
-initialPanels = DataFrame(Name = c(paste("Gene expression plot", 1:5), 
+initialPanels = DataFrame(Name = c(paste("Feature expression plot", 1:5), 
                                    "Reduced dimension plot 1"),
                           Width = c(rep(3, 5), 5))
-gexArg <- DataFrame(XAxis = "Gene text", YAxis = "Gene text",
+fexArg <- DataFrame(XAxis = "Gene text", YAxis = "Gene text",
                     XAxisGeneText = c("Cell_length", "CD3", "CD7", "CD3", "CD4"), 
                     YAxisGeneText = c("CD45", "CD20", "CD45", "CD33", "CD45"),
-                    BrushByPlot = c("", paste("Gene expression plot", 1:4)),
+                    BrushByPlot = c("", paste("Feature expression plot", 1:4)),
                     BrushEffect = "Restrict")
 redArg <- DataFrame(ColorBy = "Column data", 
                     ColorByColData = "population", 
-                    BrushByPlot = "Gene expression plot 5",
+                    BrushByPlot = "Feature expression plot 5",
                     BrushEffect = "Restrict")
 ```
 
 ```{r iSEE_cytof, eval=FALSE}
-iSEE(cytof, initialPanels = initialPanels, geneExprArgs = gexArg, redDimArgs = redArg)
+iSEE(cytof, initialPanels = initialPanels, featExprArgs = fexArg, redDimArgs = redArg)
 ```
 
-Once we have started `iSEE` in this configuration, we can start brushing from the first gene expression plot to successively refine a cell subpopulation. 
-Roughly following the gating strategy in [@bodenmiller2012cytof], we select cells with high CD45 expression in *Gene expression plot 1*, followed by cells with low CD20 expression in *Gene expression plot 2*. 
-Next, we select cells with high CD7 expression in *Gene expression plot 3*, and subsequently cells with high CD3 and low CD33 expression in *Gene expression plot 4*. 
-Finally, by selecting either cells with high CD4 expression or those with low CD4 expression in *Gene expression plot 5*, and reviewing the resulting cells shown in the *Reduced dimension plot 1*, we can see that these are indeed the cells that were automatically classified as CD4^+^ (or CD8^+^) T-cells by the `r Biocpkg("FlowSOM")` clustering. 
+Once we have started `iSEE` in this configuration, we can start brushing from the first Feature expression plot to successively refine a cell subpopulation. 
+Roughly following the gating strategy in [@bodenmiller2012cytof], we select cells with high CD45 expression in *Feature expression plot 1*, followed by cells with low CD20 expression in *Feature expression plot 2*. 
+Next, we select cells with high CD7 expression in *Feature expression plot 3*, and subsequently cells with high CD3 and low CD33 expression in *Feature expression plot 4*. 
+Finally, by selecting either cells with high CD4 expression or those with low CD4 expression in *Feature expression plot 5*, and reviewing the resulting cells shown in the *Reduced dimension plot 1*, we can see that these are indeed the cells that were automatically classified as CD4^+^ (or CD8^+^) T-cells by the `r Biocpkg("FlowSOM")` clustering. 
 
 At this point, we can export all the code needed to reproduce the six panels by clicking on the **wrench** (<i class="fa fa-wrench"></i>) icon in the top right corner and selecting "Extract the R code". 
 

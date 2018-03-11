@@ -98,3 +98,6 @@ sce <- runTSNE(sce)
 ecm_sync <- synchronizeAssays(ecm, sce)
 
 }
+\author{
+Kevin Rue-Albrecht
+}

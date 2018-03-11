@@ -58,7 +58,7 @@
 .heatMapRelHeightHeatmap <- 1
 .heatMapRelHeightAnnot <- 0.1
 
-# Plot colouring parameters. ----
+# Point colouring parameters. ----
 .colorByNothingTitle <- "None"
 .colorByColDataTitle <- "Column data"
 .colorByRowDataTitle <- "Row data"
@@ -74,20 +74,17 @@
 .colorByFeatNameAssay <- "ColorByFeatNameAssay"
 .colorByFeatNameColor <- "ColorByFeatNameColor"
 
-# Plot brushing parameters. ----
-.brushParamBoxOpen <- "BrushBoxOpen"
+# Point selection parameters. ----
+.selectParamBoxOpen <- "SelectBoxOpen"
 
-.brushField <- "Brush"
-.brushByPlot <- "BrushByPlot"
-.brushData <- "BrushData"
+.selectByPlot <- "SelectByPlot"
+.selectEffect <- "SelectEffect"
+.selectRestrictTitle <- "Restrict"
+.selectColorTitle <- "Color"
+.selectTransTitle <- "Transparent"
 
-.brushEffect <- "BrushEffect"
-.brushRestrictTitle <- "Restrict"
-.brushColorTitle <- "Color"
-.brushTransTitle <- "Transparent"
-
-.brushColor <- "BrushColor"
-.brushTransAlpha <- "BrushAlpha"
+.selectColor <- "SelectColor"
+.selectTransAlpha <- "SelectAlpha"
 
 .noSelection <- "---"
 
@@ -98,6 +95,11 @@
 # Lasso parameters. ----
 .lassoClick <- "LassoClick"
 .lassoData <- "LassoData"
+
+# Brush parameters. ----
+.brushField <- "Brush"
+.brushData <- "BrushData"
+
 
 # Other plot parameters. ----
 .dataParamBoxOpen <- "DataBoxOpen"

@@ -62,3 +62,6 @@ sce <- as(allen, "SingleCellExperiment")
 isColorMapCompatible(ecm, sce)
 
 }
+\author{
+Kevin Rue-Albrecht
+}

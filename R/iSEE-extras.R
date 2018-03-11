@@ -611,8 +611,10 @@ height_limits <- c(400L, 1000L)
 #' @importFrom BiocGenerics sizeFactors
 #' @importFrom SingleCellExperiment isSpike
 #' @importFrom S4Vectors DataFrame
-#' @importFrom methods as
+#' @importFrom methods is as
 #' @importFrom SummarizedExperiment colData rowData
+#' @importClassesFrom SummarizedExperiment SummarizedExperiment
+#' @importClassesFrom SingleCellExperiment SingleCellExperiment
 .sanitize_SE_input <- function(se) {
     done <- commands <- list()
     eval_env <- new.env()
@@ -761,7 +763,7 @@ height_limits <- c(400L, 1000L)
 #' @seealso
 #' \code{\link{.sanitize_SE_input}}
 #'
-#' @importFrom S4Vectors DataFrame
+#' @importClassesFrom S4Vectors DataFrame
 #' @importFrom methods is
 .extract_nested_DF <- function(DF, top=TRUE) {
     collected <- renamed <- vector("list", ncol(DF))

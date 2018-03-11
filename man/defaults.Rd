@@ -212,36 +212,37 @@ This vector will subset the entries in \code{FeatName} for a given panel.
 This defaults to \code{NULL}, i.e., all specified features in \code{FeatName} are shown.
 }
 
-\section{Brushing parameters}{
+\section{Point selection parameters}{
 
 For the point-based plots, the following options apply:
 \describe{
-\item{\code{BrushBoxOpen}:}{Logical, should the brushing parameter box be open upon initialization?
+\item{\code{SelectBoxOpen}:}{Logical, should the point selection parameter box be open upon initialization?
 Defaults to \code{FALSE}.}
-\item{\code{BrushByPlot}:}{Character, which other plot should be used for point selection in the current plot? 
+\item{\code{SelectByPlot}:}{Character, which other plot should be used for point selection in the current plot? 
 Defaults to \code{"---"}, which means that no plot is used for point selection.}
-\item{\code{BrushEffect}:}{Character, what is the effect of receiving a brush input?
-Can be \code{"Restrict"}, where only the brushed points are shown; \code{"Color"}, where the brushed points have a different color; 
-or \code{"Transparent"}, where all points other than the brushed points are made transparent. Defaults to \code{"Transparent"}.}
-\item{\code{BrushColor}:}{Character, what color should be used for the brushed points when \code{BrushEffect="Color"}?
+\item{\code{SelectEffect}:}{Character, what is the effect of receiving point selection information?
+Can be \code{"Restrict"}, where only the selected points are shown; \code{"Color"}, where the selected points have a different color; 
+or \code{"Transparent"}, where all points other than those selected are made transparent. 
+Defaults to \code{"Transparent"}.}
+\item{\code{SelectColor}:}{Character, what color should be used for the selected points when \code{SelectEffect="Color"}?
 Defaults to \code{"red"}.}
-\item{\code{BrushAlpha}:}{Numeric, what level of transparency should be used for the unbrushed points when \code{BrushEffect="Transparent"}?
+\item{\code{SelectAlpha}:}{Numeric, what level of transparency should be used for the unselected points when \code{SelectEffect="Transparent"}?
 This should lie in [0, 1], where 0 is fully transparent and 1 is fully opaque. 
 Defaults to 0.1.}
 }
 
-Note that brushing cannot occur between row data plots and the other plot types.
+Note that point selection cannot occur between row data plots and the other plot types.
 This is because each point in a row data plot is a feature, while each point represents a sample in the other plots.
-Brushing can only occur between plots of the same point type.
+Point selection can only occur between plots of the same point type.
 
 For the row statistics tables, the following options apply:
 \describe{
-\item{\code{BrushBoxOpen}:}{Logical, should the brushing parameter box be open upon initialization?
+\item{\code{SelectBoxOpen}:}{Logical, should the point selection parameter box be open upon initialization?
 Defaults to \code{FALSE}.}
-\item{\code{BrushByPlot}:}{Character, which other plot should be used to select features in the current table? 
+\item{\code{SelectByPlot}:}{Character, which other plot should be used to select features in the current table? 
 Defaults to \code{"---"}, which means that no plot is used for point selection.}
 }
-Only row data plots can be used for brushing of tables.
+Only row data plots can be used for selecting points to supply to tables.
 }
 
 \examples{

@@ -51,6 +51,8 @@ knitr::opts_chunk$set(
   warning = FALSE,
   message = FALSE
 )
+stopifnot(requireNamespace("htmltools"))
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 ```
 
 # Introduction 
@@ -58,8 +60,15 @@ knitr::opts_chunk$set(
 <!-- logo? MOS DEF :) --> 
 <!-- I'd say TODO -->
 
-`r Biocpkg("iSEE")` is a [Bioconductor](http://bioconductor.org) package that provides an interactive Shiny-based graphical user interface for exploring data stored in `SummarizedExperiment` objects, including row- and column-level metadata. 
-Particular attention is given to single-cell data in a `SingleCellExperiment` object with visualization of dimensionality reduction results, e.g., from principal components analysis (PCA) or _t_-distributed stochastic neighbour embedding (_t_-SNE, [@van2008visualizing]).
+`r Biocpkg("iSEE")` is a [Bioconductor](http://bioconductor.org) package that
+provides an interactive Shiny-based graphical user interface for exploring data
+stored in `SummarizedExperiment` objects,
+including row- and column-level metadata. 
+Particular attention is given to single-cell data in a `SingleCellExperiment`
+object with visualization of dimensionality reduction results,
+*e.g.*, from principal components analysis (PCA)
+or _t_-distributed stochastic neighbour embedding
+(_t_-SNE, [@van2008visualizing]).
 
 To install the package, start R and enter:
 
@@ -77,11 +86,16 @@ library("iSEE")
 # Quick start {#quickstart}
 
 Do you want to dive deep in using `r Biocpkg("iSEE")` right away? 
-Here's what you need to do:
+Here's how to get up and running in no time:
 
-- Get a dataset to work with, such as the `allen` dataset from the `r Biocpkg("scRNAseq")` package.
-This dataset contains 379 cells from the mouse visual cortex, and is a subset of the data presented in [@tasic2016adult].
-Transform it into a `SingleCellExperiment` object, where you can store the reduced dimension representations (here, PCA and _t_-SNE):
+- Get a dataset to work with,
+  such as the `allen` data set from the `r Biocpkg("scRNAseq")` package.
+  This dataset contains 379 cells from the mouse visual cortex,
+  and is a subset of the data presented in [@tasic2016adult].
+  The `allen` data set is packaged as a `SummarizedExperiment` object;
+  convert it into a `SingleCellExperiment` object,
+  where you can store the reduced dimension representations
+  (*e.g.*, PCA, _t_-SNE):
 
 ```{r qs-data}
 library(scRNAseq)
@@ -95,9 +109,10 @@ sce <- runTSNE(sce)
 sce
 ```
 
-- Create the Shiny app by running the `iSEE` function. 
-See `?iSEE` for how to tweak the initial settings of the interface.
-By default, the function will generate one panel of every type - see below for details on the different panel types. 
+- Create the Shiny app using the `iSEE` function. 
+  See `?iSEE` for how to configure the start-up settings of the interface.
+  By default, the function will generate one panel of every
+  type -- see below for details on the different panel types.
 
 ```{r qs-create}
 app <- iSEE(sce)
@@ -109,53 +124,88 @@ app <- iSEE(sce)
 shiny::runApp(app)
 ```
 
-- Once you have started the app, look in the upper right corner for a **question mark** icon, and click on the button for an introductory tour.
-This will perform an interactive tour of the app, based on the `r CRANpkg("rintrojs")` package [@ganz2016rintrojs].
-During this tour, you will be taken through the different components of `r Biocpkg("iSEE")` and learn the basic usage mechanisms by doing: 
-the highlighted elements will be responding to the user's actions, while the rest of the UI will be shaded. 
-You can move forward and backward along the tour by clicking on the `Next`/`Back` buttons, or also using the arrow keys. 
-To exit the tour, either click on `Skip`, or simply click outside of the highlighted UI element.
+- Once you have started the app, look in the upper right corner for
+  a **question mark** icon (<i class="fa fa-question-circle"></i>),
+  and click on the button for an introductory tour.
+  This will perform an interactive tour of the app,
+  based on the `r CRANpkg("rintrojs")` package [@ganz2016rintrojs].
+  During this tour, you will be taken through the different components of
+  the `r Biocpkg("iSEE")` user interface
+  and learn the basic usage mechanisms by doing: 
+  the highlighted elements will be responding to the user's actions,
+  while the rest of the UI will be shaded. 
+  You can move forward and backward along the tour
+  by clicking on the `Next`/`Back` buttons, or also using the arrow keys.
+  You can even jump to a particular step by clicking on its circle.
+  To exit the tour, either click on `Skip`,
+  or simply click outside of the highlighted UI element.
 
-- Once you are done generating the plots, click on the **wrench** icon in the upper right corner, and click on the button for exporting the R code. 
-This will open a modal popup where the R code used to generate the plot is displayed in a `r CRANpkg("shinyAce")`-based text editor. 
-Select parts/all of it to copy-and-paste it into your analysis script/Rmarkdown file.
+- Once you are done generating plots,
+  click on the **wrench** icon (<i class="fa fa-wrench"></i>)
+  in the upper right corner,
+  and click on the button to display R code that you can export and
+  directly re-use in your R session.
+  This will open a modal popup where the R code used to generate the plots
+  is displayed in a `r CRANpkg("shinyAce")`-based text editor. 
+  Select parts or all of it to copy-and-paste it into your analysis
+  script/Rmarkdown file.
 
 # Description of the user interface 
 
 ## Header
 
-The layout of the `r Biocpkg("iSEE")` user interface is based mostly on the the `r CRANpkg("shinydashboard")` package.
-The dashboard header contains three dropdown menus, where a number of extra elements are available:
+The layout of the `r Biocpkg("iSEE")` user interface is based mostly on the
+`r CRANpkg("shinydashboard")` package.
+The dashboard header contains three dropdown menus, where a number of extra
+elements are available:
 
-- The `r Biocpkg("iSEE")` diagnostics menu, labelled with the **wrench** icon, containing
-    - the "Examine panel chart" functionality (**chain** icon). Clicking on this button, 
-    you can obtain a graph representation of the existing links and brushes among your 
-    open plot and table panels (coded with the same colors as in the app). This can be very useful
-    once you open a multitude of panels, so that you can easily get an overview of their structure.
-    - the "Extract the R code", functionality, marked with the **magic wand** icon. Once you are
-    done with your live session, you might want to reproduce exactly the plots you generated.
-    Clicking on the button opens a modal popup window, with a `r CRANpkg("shinyAce")`-based text 
-    editor, where the code is formatted and displayed with some nice syntax highlighting. You can
-    copy the code to the clipboard by selecting the text (please include the initial lines and the 
-    `sessionInfo()` commands for best tracking of your environment), and store it in your analysis
-    report/script. Your code can then be further edited to finalize the plots (e.g., for
-    publication). 
-- The Documentation menu (**question mark** icon), which contains
-    - the button to start the Quick Tour (**pointing finger** icon) of `r Biocpkg("iSEE")`, 
-    which allows users to learn the basic usage mechanisms by doing. The highlighted elements
-    will be responding to the user's actions, while the rest of the UI will be shaded.
-    - the button to "Open the vignette" (**book** icon), which will display the `r Biocpkg("iSEE")`
-    vignette, either available locally or accessing the current webpage of the package on
-    the Bioconductor project site (internet connection is required, please keep in mind it
-    will be referring to the most current release version, which may differ from the version
-    installed on your system)
-- The Additional information (**info** icon), with
-    - the "About this session" button, which reports the output of the `sessionInfo()`
-    function in a modal popup window (**window** icon). This is particularly useful for
-    reproducing or reporting the environment, especially in the case of errors or unexpected
-    behaviors.
-    - the "About iSEE" button (**heart** icon) will show up the information on the development
-    team, licensing and citation information for the `r Biocpkg("iSEE")` package. You can follow 
+- The `r Biocpkg("iSEE")` diagnostics menu (<i class="fa fa-wrench"></i>),
+    containing:
+    - the "Examine panel chart" functionality, identified by a **chain** icon
+      (<i class="fa fa-chain"></i>).
+      Click on this button to obtain a graph representation of the existing
+      links and point selection among your open plot and table panels
+      (coded with the same colors as in the app).
+      This can be very useful in sessions that include a large number of
+      panels, to visualise the relationship structure between the various
+      panels that send and receive selections of data points.
+    - the "Extract the R code", functionality (<i class="fa fa-magic"></i>).
+      Once you are done with your live session,
+      you might want to reproduce exactly the plots you generated.
+      Clicking on this button opens a modal popup window,
+      with a `r CRANpkg("shinyAce")`-based text editor,
+      where the code is formatted and displayed with syntax highlighting.
+      You can copy the code to the clipboard by selecting the text
+      (please do include the initial lines
+      and the `sessionInfo()` commands for best tracking of your environment),
+      and store it in your analysis report/script.
+      Your code can then be further edited to finalize the plots
+      (*e.g.*, for publication). 
+- The Documentation menu is accessible through the **question mark** icon
+    (<i class="fa fa-question-circle"></i>),
+    which contains:
+    - the button to start the Quick Tour
+      (<i class="fa fa-hand-o-right"></i>) of `r Biocpkg("iSEE")`, 
+      which allows users to learn the basic usage mechanisms by doing.
+      The highlighted elements will be responding to the user's actions,
+      while the rest of the UI will be shaded.
+    - the button to "Open the vignette" (<i class="fa fa-book"></i>),
+      which will display the `r Biocpkg("iSEE")` vignette,
+      either available locally or accessing the current webpage
+      of the package on the Bioconductor project site
+      (internet connection is required,
+      please keep in mind it will be referring to the most current release
+      version, which may differ from the version installed on your system)
+- The Additional information icon (<i class="fa fa-info"></i>), with
+    - the "About this session" button,
+      which reports the output of the `sessionInfo()` function in a modal
+      popup window (<i class="fa fa-window-maximize"></i>).
+      This is particularly useful for reproducing or reporting the environment,
+      especially in the case of errors or unexpected behaviors.
+    - the "About iSEE" button (<i class="fa fa-heart"></i>)
+      will show up the information on the development team,
+      licensing and citation information for the `r Biocpkg("iSEE")` package.
+      You can follow 
     the development of the package by checking the GitHub repository 
     (https://github.com/csoneson/iSEE), where new functionality will be added, also based on 
     well-considered suggestions in the form of issues and/or pull requests.
@@ -163,23 +213,38 @@ The dashboard header contains three dropdown menus, where a number of extra elem
 
 ## Sidebar
 
-The dashboard sidebar of `r Biocpkg("iSEE")` contains a dropdown menu and the button for creating new plots or tables (referred to as "panels") in the interface.
-The maximum number of panels of each type are defined when launching the app. 
-Upon clicking these buttons, additional panels of the corresponding type are inserted into the main body of the app.
-Color-coded tabs in the sidebar contain buttons to change the panel order (**up** or **down** icons) or to remove panels entirely (**trash** icon).
-The width and height of each panel can also be adjusted by clicking on the **gear** icon.
+The dashboard sidebar of `r Biocpkg("iSEE")` contains a dropdown menu
+and a button for creating new plots or tables (referred to as "panels")
+in the interface.
+The maximum number of panels of each type are defined in the `iSEE` function
+call that launches the app.
+Upon clicking these buttons,
+additional panels of the corresponding type are inserted
+into the main body of the app.
+Color-coded tabs in the sidebar contain buttons to change the panel order
+(<i class="fa fa-arrow-circle-up"></i>
+and <i class="fa fa-arrow-circle-down"></i>)
+or to remove panels entirely (<i class="fa fa-trash"></i>).
+The width and height of each panel can also be adjusted using
+<i class="fa fa-gear"></i>.
 
 ## Body
 
-The main element in the body of `r Biocpkg("iSEE")` is the combination of panels, generated (and optionally linked to one another) according to the user's actions.
-The number and identity of the panels and their inter-relationships can also be specified at initialization by passing appropriate arguments to `iSEE`.
-The main explanation on how the different plots and tables work is presented in Section \@ref(functionality).
+The main element in the body of `r Biocpkg("iSEE")`
+is the combination of panels,
+generated (and optionally linked to one another) according to your actions.
+The number and identity of the panels and their inter-relationships
+can also be specified at initialization by passing appropriate arguments to
+`iSEE`.
+The main explanation on how the different plots and tables work is presented
+in Section \@ref(functionality).
 
 # Description of `r Biocpkg("iSEE")` functionality {#functionality}
 
 ## Overview
 
-There are currently six different panel types that can be generated with `r Biocpkg("iSEE")`:
+There are currently six different panel types that can be generated with
+`r Biocpkg("iSEE")`:
 
 - Reduced dimension plots
 - Column data plots
@@ -188,102 +253,166 @@ There are currently six different panel types that can be generated with `r Bioc
 - Row data plots
 - Heat maps
 
-For each plot panel, three different sets of parameters will be available in collapsible boxes:
+For each plot panel,
+three different sets of parameters will be available in collapsible boxes:
 
-- Data parameters, controlling parameters specific to each type of plot. 
-- Visual parameters, specifying which parameters will determine the aspect of the plot, in terms of coloring, point features, and other additional ones (such as legend placement, font size, ...)
-- Brushing parameters, controlling the brushing relationship to other plots. 
+- *Data parameters*, to control parameters specific to each type of plot. 
+- *Visual parameters*, to specify parameters that will determine the aspect
+  of the plot, in terms of coloring, point features, and more
+  (*e.g.* legend placement, font size)
+- *Brushing parameters* to control the point selection and link relationships
+  to other plots. 
 
 ## Reduced dimension plots
 
-If a `SingleCellExperiment` object is supplied to `iSEE`, any reduced dimension results (e.g., from PCA or _t_-SNE) will be extracted from the `reducedDim` slot.
-These results will be used to construct a two-dimensional reduced dimension plot where each point is a sample, to facilitate efficient exploration of high-dimensional datasets. 
-The Data parameters control the `reducedDim` slot to be displayed, as well as the two dimensions to plot against each other. 
-Note that `iSEE` does not calculate the reduced dimension representations, so they must be present in the provided object.
+If a `SingleCellExperiment` object is supplied to `iSEE`,
+any reduced dimension results (*e.g.*,  PCA, _t_-SNE) is extracted
+from the `reducedDim` slot.
+These results are used to construct two-dimensional *reduced dimension plots*
+where each point is a sample,
+to facilitate efficient exploration of high-dimensional datasets. 
+The *Data parameters* control the `reducedDim` slot to be displayed,
+as well as the two dimensions to plot against each other. 
+Note that `iSEE` does not computed reduced dimension embeddings;
+they must be precomputed and available in the object to the `iSEE` function.
 
 ## Column data plots {#coldataplot}
 
-A column data plot involves visualizing sample metadata stored in the `SummarizedExperiment` object.
-Different fields can be used for the x- and y-axis by selecting appropriate values in the plotting parameters.
-This plot can assume various forms, depending on the nature of the data on the x- and y-axes: 
+A *column data plot* involves visualizing sample metadata stored in the
+`SummarizedExperiment` object.
+Different fields can be used for the X and Y axes
+by selecting appropriate values in the plotting parameters.
+This plot can assume various forms,
+depending on the nature of the data on the x- and y-axes:
 
-- If the y-axis is continuous and the x-axis is categorical, violin plots are generated (grouped by the x-axis factor).
-- If the y-axis is categorical and the x-axis is continuous, horizontal violin plots are generated (grouped by the y-axis factor).
+- If the Y axis is continuous and the X axis is categorical,
+  violin plots are generated (grouped by the X axis factor).
+- If the Y axis is categorical and the X axis is continuous,
+  horizontal violin plots are generated (grouped by the Y axis factor).
 - If both are continuous, a scatter plot is generated.
-- If both are categorical, a plot of squares is generated where the area of each square is proportional to the number of samples with a particular combination of levels.
+- If both are categorical,
+  a plot of squares is generated
+  where the area of each square is proportional to the number of samples
+  within each combination of factor levels.
 
-An x-axis setting of "None" is considered to be categorical.
+An X axis setting of "None" is considered to be categorical
+with a single level.
 
 ## Feature expression plots
 
-A feature expression plot visualizes the expression values for a particular feature across the samples on the y-axis.
-This usually results in a (grouped) violin plot, if the x-axis is set to "None" or a categorical variable; 
-or a scatter plot, if the x-axis is another continuous variable.
-(That said, if there are categorical values for the expression values, these will be handled as described in the column data plots.)
+A *feature expression plot* visualizes the expression values
+for a particular feature across the samples on the y-axis.
+This usually results in a (grouped) violin plot,
+if the X axis is set to `"None"` or a categorical variable;
+or a scatter plot, if the X axis is another continuous variable.
 
-Gene selection for the y-axis is achieved by using a _linked row statistics table_ in another panel.
-Clicking on a row in the table will automatically change the expression values plotted on the y-axis.
-Alternatively, the row name can be directly entered as text, corresponding to an entry of `rownames(se)`.
-Note that this will not be effective if `se` contains no row names.
+**Note:** That said, if there are categorical values for the expression values,
+these will be handled as described in the column data plots.
 
-The x-axis covariate can also be selected from the plotting parameters.
-This can be "None", column data, or the expression values of another feature (also identified using a linked table or via text).
-The measurement units are selected as one of the `assays(se)`, which will apply to both the x- and y-axes.
+Gene selection for the y-axis is achieved by using a
+_linked row statistics table_ in another panel.
+Clicking on a row in the table will automatically change the expression values
+plotted on the Y axis.
+Alternatively, the row name can be directly entered as text that corresponds
+to an entry of `rownames(se)`.
 
-Obviously, any other assayed value for any feature can be visualized in this manner, not just expression of genes.
-The only requirement is that the observations can be stored as a matrix in the `SummarizedExperiment` object.
+**Note:** this is not effective if `se` does not contain row names.
+
+The X axis covariate can also be selected from the plotting parameters.
+This can be `"None"`, column data,
+or the expression values of another feature
+(also identified using a linked table or via text).
+The measurement units are selected as one of the `assays(se)`,
+which is applied to both the X and Y axes.
+
+Obviously, any other assayed value for any feature can be visualized
+in this manner, not limited to the expression of genes.
+The only requirement for this type of panel is that
+the observations can be stored as a matrix in the `SummarizedExperiment` object.
 
 ## Row statistics tables
 
-A row statistics table contains the values of the `rowData` slot for the `SingleCellExperiment`/`SummarizedExperiment` object. 
-If none are specified, a column named `Present` is added and set to `TRUE` for all available genes, to avoid crashing `DT::datatable`.
-Typically, these tables are used to link to other plots to determine the genes to use for plotting (or coloring).
-However, they can also retrieve gene-specific annotation on the fly by specifying the `annotFun` parameter, e.g. by using the `annotateEntrez` or `annotateEnsembl` functions, provided in the package. 
-Alternatively, users can create a customized annotation function; for more details on this, please consult the manual pages of `annotateEntrez` or `annotateEnsembl`.
+A *row statistics table* contains the values of the `rowData` slot for the `SingleCellExperiment`/`SummarizedExperiment` object. 
+If none are available, a column named `Present` is added and set to `TRUE`
+for all available genes, to avoid issues with `DT::datatable` and an empty
+`DataFrame`.
+Typically, these tables are used to link to other plots
+to determine the genes to use for plotting (or coloring).
+However, they can also be used to retrieve gene-specific annotation on the fly
+by specifying the `annotFun` parameter, *e.g.* using the
+`annotateEntrez` or `annotateEnsembl` functions, provided in
+`r Biocpkg("iSEE")`. 
+Alternatively, users can create a customized annotation function;
+for more details on this, please consult the manual pages `?annotateEntrez` and `?annotateEnsembl`.
 
 ## Row data plots
 
-A row data plot allows the visualization of information stored in the `rowData` slot of a `SummarizedExperiment` object. 
-Its behavior mirrors the implementation for the Column data plot, and correspondingly this plot can assume various forms.
+A *row data plot* allows the visualization of information stored
+in the `rowData` slot of a `SummarizedExperiment` object. 
+Its behavior mirrors the implementation for the *column data plot*,
+and correspondingly this plot can assume various forms.
 Please refer to Section \@ref(coldataplot) for more details.
 
 ## Heat maps
 
-Heat maps can display compact overviews of the data at hand, in the form of color-coded expression matrices (corresponding to the `assays` stored in the `SummarizedExperiment` object), where features such as genes are the rows, and samples are the columns.
+Heat maps can display compact overviews of the data at hand,
+in the form of color-coded expression matrices
+(corresponding to the `assays` stored in the `SummarizedExperiment` object),
+where features such as genes are the rows, and samples are the columns.
 
-The user can select the features (rows) to display from the selectize widget (supporting autocompletion), or also via other panels, like row data plots or row statistics tables. 
-The 'Suggest feature order' button will cluster the rows, and will also rearrange the elements in the selectize according to the clustering.
-It is also possible to choose which assay type will be displayed (logcounts being a reasonable default choice). 
-The heat map can also be annotated, by simply selecting the relevant column data.
+User can select features (rows) to display from the selectize widget
+(which supports autocompletion), or also via other panels,
+like row data plots or row statistics tables. 
+The 'Suggest feature order' button clusters the rows,
+and also rearranges the elements in the selectize according to the clustering.
+It is also possible to choose which assay type is displayed
+(logcounts being a reasonable default choice). 
+The heat map can also be annotated,
+simply by selecting relevant column data.
 
-A zooming functionality is also available, restricted to the y-axis (i.e. allowing closer inspection on the individual features included).
+A zooming functionality is also available,
+restricted to the Y axis
+(*i.e.*, allowing closer inspection on the individual features included).
 
 
 ## Coloring plots by sample attributes 
 
-Coloring of points (i.e., samples) on each plot can be achieved in different ways.
+Coloring of points (*i.e.*, samples) on each plot
+can be achieved in different ways.
 
-- The default is no color scheme ("None" in the radio button).
-This results in black points.
+- The default is no color scheme (`"None"` in the radio button).
+  This results in black data points.
 - Any column of `colData(se)` can be used.
-The plotting routine will automatically adjust the scale to use based on whether the chosen column is continuous or categorical.
+  The plotting routine automatically adjusts the scale to use based on
+  whether the chosen column is continuous or categorical.
 - The expression value of a particular feature in each sample can be used.
-The feature can be chosen either via a linked row table or text input (as described for feature expression plots).
-Users can also specify the `assays` from which expression values are extracted.
+  The feature can be chosen either via a linked row table or text input
+  (as described for *feature expression plots*).
+  Users can also specify the `assays` from which expression values are
+  extracted.
 
 ## Linking plots with brushing {#brushing}
 
-To link one plot to another, users can instruct a plotting panel to receive a brush from another (transmitting) plot, using the appropriate field in the brushing parameters box.
-Once this is done, brushing on the transmitting plot will affect the receiving plot in a variety of ways:
+To link one plot to another, users can instruct a plotting panel
+to receive a selection of data point from another (transmitting) plot,
+using the appropriate field in the brushing parameters box.
+Once this is done, data point selection on the transmitting plot
+affects the receiving plot in a variety of ways:
 
-- If the brushing effect is set to "Restrict", only the subset of points selected in the transmitter will be plotted in the receiver.
-- If set to "Color", the selected subset of points will be plotted in the receiver with a color that can be selected via the `r CRANpkg("colourpicker")` package. 
-- If set to "Transparent", the selected subset will be drawn with no transparency, while all non-selected points will be plotted with the specified alpha value.
+- If the point selection effect is set to `"Restrict"`,
+  only the subset of points selected in the transmitter are visible
+  in the receiver.
+- If set to `"Color"`,
+  the selected subset of points is plotted in the receiver
+  with a color that can be selected via the `r CRANpkg("colourpicker")` widget 
+- If set to `"Transparent"`,
+  the selected subset will be drawn with no transparency,
+  while all non-selected points will be plotted with the specified alpha value.
 
 ## Zooming in and out
 
-This is possible by first brushing to select a region of interest.
-Double-clicking on the brushed area will zoom into the selected area.
+This is possible by first selecting a region of interest in a plot.
+Then, double-clicking on the brushed area zooms into the selected area.
 To zoom out to the original plot, double-click outside of any brushed area.
 
 ## Using an `ExperimentColorMap`

@@ -179,7 +179,7 @@ isColorMapCompatible <- function(ecm, se, error = FALSE){
 #'
 #' @return An \linkS4class{ExperimentColorMap} with color maps in the
 #' \code{assay} slot synchronized to match the position of the corresponding
-#' assay in the \linkS4class{SingleCellExperiment}.
+#' assay in the SingleCellExperiment.
 #' 
 #' @export
 #'

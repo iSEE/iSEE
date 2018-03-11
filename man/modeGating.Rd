@@ -8,8 +8,7 @@ modeGating(se, features, featExprMax = max(2, nrow(features)), ...,
   plot_width = 4)
 }
 \arguments{
-\item{se}{An object that coercible to
-\code{\linkS4class{SingleCellExperiment}}.}
+\item{se}{An object that coercible to \linkS4class{SingleCellExperiment}}
 
 \item{features}{\code{data.frame} with columns named \code{x} and \code{y}
 that define the features on the axes of the linked plots.

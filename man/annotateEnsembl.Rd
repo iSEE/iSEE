@@ -8,7 +8,7 @@ annotateEnsembl(se, orgdb, keytype, rowdata_col = NULL,
   ens_species = gsub(" ", "_", species(orgdb)))
 }
 \arguments{
-\item{se}{An object that is coercible to \code{\linkS4class{SingleCellExperiment}}.}
+\item{se}{An object that is coercible to \linkS4class{SingleCellExperiment}.}
 
 \item{orgdb}{An OrgDb object, as a basis for the annotation. Typical values can be
 \code{org.Hs.eg.db} for human, \code{org.Mm.eg.db} for mouse, and so on. The 

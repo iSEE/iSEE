@@ -42,7 +42,7 @@ test_that(".make_redDimPlot/.scatter_plot produce a valid list",{
   )
   expect_named(
     p.out$cmd_list,
-    c("data","brush","setup","plot")
+    c('data', 'select', 'setup', 'plot')
   )
   
   # xy value is a data frame
@@ -103,7 +103,7 @@ test_that(".make_colDataPlot/.scatter_plot produce a valid list",{
   )
   expect_named(
     p.out$cmd_list,
-    c("data","brush","setup","plot")
+    c('data', 'select', 'setup', 'plot')
   )
   
   # xy value is a data frame
@@ -164,7 +164,7 @@ test_that(".make_colDataPlot/.violin_plot produce a valid list",{
   )
   expect_named(
     p.out$cmd_list,
-    c("data","brush","setup","plot")
+    c("data","select","setup","plot")
   )
   
   # xy value is a data frame
@@ -225,7 +225,7 @@ test_that(".make_colDataPlot/.square_plot produce a valid list",{
   )
   expect_named(
     p.out$cmd_list,
-    c("data","brush","setup","plot")
+    c("data","select","setup","plot")
   )
   
   # xy value is a data frame
@@ -290,7 +290,7 @@ test_that(".make_rowDataPlot/.scatter_plot produce a valid list",{
   )
   expect_named(
     p.out$cmd_list,
-    c("data","brush","setup","plot")
+    c("data","select","setup","plot")
   )
   
   # xy value is a data frame
@@ -357,7 +357,7 @@ test_that(".make_rowDataPlot/.violin_plot produce a valid list",{
   )
   expect_named(
     p.out$cmd_list,
-    c("data","brush","setup","plot")
+    c("data","select","setup","plot")
   )
   
   # xy value is a data frame
@@ -427,7 +427,7 @@ test_that(".make_rowDataPlot/.square_plot produce a valid list",{
   )
   expect_named(
     p.out$cmd_list,
-    c("data","brush","setup","plot")
+    c("data","select","setup","plot")
   )
   
   # xy value is a data frame
@@ -479,7 +479,7 @@ test_that(".make_rowDataPlot/.square_plot produce a valid xy with color",{
   )
   expect_named(
     p.out$cmd_list,
-    c("data","brush","setup","plot")
+    c("data","select","setup","plot")
   )
   
   # xy value is a data frame
@@ -533,7 +533,7 @@ test_that(".make_featExprPlot/.scatter_plot produce a valid list",{
   )
   expect_named(
     p.out$cmd_list,
-    c("data","brush","setup","plot")
+    c("data","select","setup","plot")
   )
   
   # xy value is a data frame
@@ -885,7 +885,6 @@ test_that(".process_colorby_choice_for_column_plots handles gene text input", {
   )
 })
 
-
 # .gene_axis_label handles NULL rownames ----
 
 test_that(".gene_axis_label handles NULL rownames", {
@@ -935,16 +934,16 @@ test_that(".coerce_to_numeric handles gene text input", {
 
 })
 
-# .process_brushby_choice ----
+# .process_selectby_choice ----
 
-test_that(".process_brushby_choice works when sender is another plot", {
+test_that(".process_selectby_choice works when sender is another plot", {
   
   sourcePlotName <- "Reduced dimension plot 1"
   sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
   
-  # Set up the brush link: redDim1 --> featExpr1
-  all_memory$featExprPlot[1,iSEE:::.brushByPlot] <- sourcePlotName
-  # Set up the brush data (in redDim1)
+  # Set up the point selection link: redDim1 --> featExpr1
+  all_memory$featExprPlot[1,iSEE:::.selectByPlot] <- sourcePlotName
+  # Set up the selected data (in redDim1)
   params <- all_memory$redDimPlot[1,]
   x_10 <- head(
     reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
@@ -958,39 +957,39 @@ test_that(".process_brushby_choice works when sender is another plot", {
     brushId = "dummy_brush", outputId = "dummy_plot"
   ))
   
-  brush_cmd <- iSEE:::.process_brushby_choice(all_memory$featExprPlot, all_memory)
+  select_cmd <- iSEE:::.process_selectby_choice(all_memory$featExprPlot, all_memory)
   
-  # check the source of the brushed data
+  # check the source of the selected data
   expect_match(
-    brush_cmd$cmds[1],
+    select_cmd$cmds[1],
     "shiny::brushedPoints(all_coordinates",
     fixed = TRUE
   )
 
   # check the source plot type
   expect_match(
-    brush_cmd$cmds[1],
+    select_cmd$cmds[1],
     sourcePlotType,
     fixed = TRUE
   )
 
   # check that the second (hard-coded) command is present
   expect_match(
-    brush_cmd$cmds[2],
+    select_cmd$cmds[2],
     "plot.data$BrushBy",
     fixed = TRUE
   )
   
 })
 
-test_that(".process_brushby_choice works when sender is self plot", {
+test_that(".process_selectby_choice works when sender is self plot", {
   
   sourcePlotName <- "Reduced dimension plot 1"
   sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
   
-  # Set up the brush link: redDim1 --> featExpr1
-  all_memory$redDimPlot[1,iSEE:::.brushByPlot] <- sourcePlotName
-  # Set up the brush data (in redDim1)
+  # Set up the point selection link: redDim1 --> featExpr1
+  all_memory$redDimPlot[1,iSEE:::.selectByPlot] <- sourcePlotName
+  # Set up the selected data (in redDim1)
   params <- all_memory$redDimPlot[1,]
   x_10 <- head(
     reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
@@ -1004,31 +1003,31 @@ test_that(".process_brushby_choice works when sender is self plot", {
     brushId = "dummy_brush", outputId = "dummy_plot"
   ))
   
-  brush_cmd <- iSEE:::.process_brushby_choice(all_memory$redDimPlot, all_memory)
+  select_cmd <- iSEE:::.process_selectby_choice(all_memory$redDimPlot, all_memory)
   
-  # check the source of the brushed data
+  # check the source of the selected data
   expect_match(
-    brush_cmd$cmds[1],
+    select_cmd$cmds[1],
     "shiny::brushedPoints(plot.data",
     fixed = TRUE
   )
   # check that the second (hard-coded) command is present
   expect_match(
-    brush_cmd$cmds[2],
+    select_cmd$cmds[2],
     "plot.data$BrushBy",
     fixed = TRUE
   )
   
 })
 
-test_that(".process_brushby_choice works with closed lasso selection", {
+test_that(".process_selectby_choice works with closed lasso selection", {
   
   sourcePlotName <- "Reduced dimension plot 1"
   sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
   
-  # Set up the brush link: redDim1 --> featExpr1
-  all_memory$featExprPlot[1,iSEE:::.brushByPlot] <- sourcePlotName
-  # Set up the brush data (in redDim1)
+  # Set up the point selection link: redDim1 --> featExpr1
+  all_memory$featExprPlot[1,iSEE:::.selectByPlot] <- sourcePlotName
+  # Set up the selected data (in redDim1)
   params <- all_memory$redDimPlot[1,]
   x_10 <- head(
     reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
@@ -1052,42 +1051,42 @@ test_that(".process_brushby_choice works with closed lasso selection", {
   
   all_memory$redDimPlot[[iSEE:::.lassoData]][1] <- list(lasso_val)
   
-  brush_cmd <- iSEE:::.process_brushby_choice(all_memory$featExprPlot, all_memory)
+  select_cmd <- iSEE:::.process_selectby_choice(all_memory$featExprPlot, all_memory)
   
-  # check the source of the brushed data
+  # check the source of the selected data
   expect_match(
-    brush_cmd$cmds[1],
+    select_cmd$cmds[1],
     "to_check <- subset",
     fixed = TRUE
   )
 
   # check the source plot type
   expect_match(
-    brush_cmd$cmds[1],
+    select_cmd$cmds[1],
     sourcePlotType,
     fixed = TRUE
   )
 
   # check that the second (hard-coded) command is present
   expect_match(
-    brush_cmd$cmds[2],
+    select_cmd$cmds[2],
     "all_lassos",
     fixed = TRUE
   )
   
 })
 
-# .create_points handles transparency brush ----
+# .create_points handles transparency selection effect ----
 
-test_that(".create_points handles transparency brush", {
+test_that(".create_points handles transparency selection effect", {
   
-  # Implement a self-brush, for convenience
+  # Implement a self-selection, for convenience
   sourcePlotName <- "Reduced dimension plot 1"
   sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
   
-  # Set up the brush link: redDim1 --> featExpr1
-  all_memory$redDimPlot[1,iSEE:::.brushByPlot] <- sourcePlotName
-  # Set up the brush data (in redDim1)
+  # Set up the point selection link: redDim1 --> featExpr1
+  all_memory$redDimPlot[1,iSEE:::.selectByPlot] <- sourcePlotName
+  # Set up the selected data (in redDim1)
   params <- all_memory$redDimPlot[1,]
   x_10 <- head(
     reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
@@ -1100,30 +1099,31 @@ test_that(".create_points handles transparency brush", {
     direction = "xy", mapping = list(x="X", y="Y"),
     brushId = "dummy_brush", outputId = "dummy_plot"
   ))
-  all_memory$redDimPlot[[iSEE:::.brushEffect]][1] <- iSEE:::.brushTransTitle
+  # Set up the selection effect type
+  all_memory$redDimPlot[[iSEE:::.selectEffect]][1] <- iSEE:::.selectTransTitle
   
   p.out <- iSEE:::.make_redDimPlot(
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_named(
-    p.out$cmd_list$brush,
+    p.out$cmd_list$select,
     c("brush", "select")
   )
   # TODO: better tests
   
 })
 
-# .create_points handles colour brush ----
+# .create_points handles coloured selection effect ----
 
-test_that(".create_points handles colour brush", {
+test_that(".create_points handles coloured selection effect", {
   
-  # Implement a self-brush, for convenience
+  # Implement a self-selection, for convenience
   sourcePlotName <- "Reduced dimension plot 1"
   sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
   
-  # Set up the brush link: redDim1 --> featExpr1
-  all_memory$redDimPlot[1,iSEE:::.brushByPlot] <- sourcePlotName
-  # Set up the brush data (in redDim1)
+  # Set up the point selection link: redDim1 --> featExpr1
+  all_memory$redDimPlot[1,iSEE:::.selectByPlot] <- sourcePlotName
+  # Set up the selected data (in redDim1)
   params <- all_memory$redDimPlot[1,]
   x_10 <- head(
     reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
@@ -1136,36 +1136,36 @@ test_that(".create_points handles colour brush", {
     direction = "xy", mapping = list(x="X", y="Y"),
     brushId = "dummy_brush", outputId = "dummy_plot"
   ))
-  # Set up the brush type
-  all_memory$redDimPlot[1,iSEE:::.brushEffect] <- iSEE:::.brushColorTitle
+  # Set up the selection effect type
+  all_memory$redDimPlot[1,iSEE:::.selectEffect] <- iSEE:::.selectColorTitle
   
   p.out <- iSEE:::.make_redDimPlot(
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_named(
-    p.out$cmd_list$brush,
+    p.out$cmd_list$select,
     c("brush", "select")
   )
   expect_match(
-    p.out$cmd$plot["points.brush_color"],
-    all_memory$redDimPlot[1,iSEE:::.brushColor],
+    p.out$cmd$plot["points.select_color"],
+    all_memory$redDimPlot[1,iSEE:::.selectColor],
     fixed = TRUE
   )
   # TODO: better tests
   
 })
 
-# .create_points handles restrict brush ----
+# .create_points handles restrict selection effect ----
 
-test_that(".create_points handles restrict brush", {
+test_that(".create_points handles restrict selection effect", {
   
-  # Implement a self-brush, for convenience
+  # Implement a self-selection, for convenience
   sourcePlotName <- "Reduced dimension plot 1"
   sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
   
-  # Set up the brush link: redDim1 --> featExpr1
-  all_memory$redDimPlot[1,iSEE:::.brushByPlot] <- sourcePlotName
-  # Set up the brush data (in redDim1)
+  # Set up the point selection link: redDim1 --> featExpr1
+  all_memory$redDimPlot[1,iSEE:::.selectByPlot] <- sourcePlotName
+  # Set up the selected data (in redDim1)
   params <- all_memory$redDimPlot[1,]
   x_10 <- head(
     reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
@@ -1178,18 +1178,18 @@ test_that(".create_points handles restrict brush", {
     direction = "xy", mapping = list(x="X", y="Y"),
     brushId = "dummy_brush", outputId = "dummy_plot"
   ))
-  # Set up the brush type
-  all_memory$redDimPlot[1,iSEE:::.brushEffect] <- iSEE:::.brushRestrictTitle
+  # Set up the selection effect type
+  all_memory$redDimPlot[1,iSEE:::.selectEffect] <- iSEE:::.selectRestrictTitle
   
   p.out <- iSEE:::.make_redDimPlot(
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_named(
-    p.out$cmd_list$brush,
+    p.out$cmd_list$select,
     c("brush","select","full","subset")
   )
   expect_match(
-    p.out$cmd_list$plot["points.brush_restrict"],
+    p.out$cmd_list$plot["points.select_restrict"],
     "plot.data",
     fixed = TRUE
   )

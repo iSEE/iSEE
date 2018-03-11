@@ -197,6 +197,66 @@ test_that(".make_colDataPlot/.square_plot produce a valid xy with color", {
   
 })
 
+# .make_colDataPlot/.scatter_plot ----
+
+test_that(".make_colDataPlot/.scatter_plot produce a valid list",{
+  
+  all_memory$rowDataPlot[1,iSEE:::.rowDataXAxis] <- iSEE:::.rowDataXAxisRowData
+  all_memory$rowDataPlot[1,iSEE:::.rowDataXAxisRowData] <- "num_cells"
+  all_memory$rowDataPlot[1,iSEE:::.rowDataYAxis] <- "mean_count"
+  
+  p.out <- iSEE:::.make_rowDataPlot(
+    id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
+  
+  # return value is a named list
+  expect_type(
+    p.out,
+    "list"
+  )
+  expect_named(
+    p.out,
+    c("cmd_list", "xy", "plot")
+  )
+  
+  # cmd value is a named list
+  expect_type(
+    p.out$cmd_list,
+    "list"
+  )
+  expect_named(
+    p.out$cmd_list,
+    c("data","brush","setup","plot")
+  )
+  
+  # xy value is a data frame
+  expect_s3_class(
+    p.out$xy,
+    "data.frame"
+  )
+  expect_named(
+    p.out$xy,
+    c("Y","X")
+  )
+  
+  #plot
+  expect_s3_class(
+    p.out$plot,
+    c("gg", "ggplot")
+  )
+
+})
+
+test_that(".make_colDataPlot/.violin_plot produce a valid xy with color", {
+ 
+  all_memory$colDataPlot[1,iSEE:::.colorByField] <- iSEE:::.colorByColDataTitle
+  p.out <- iSEE:::.make_colDataPlot(
+    id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
+  expect_named(
+    p.out$xy,
+    c("Y","X","ColorBy","GroupBy","jitteredX")
+  )
+  
+})
 # .make_rowDataPlot/.violin_plot ----
 
 test_that(".make_colDataPlot/.violin_plot produce a valid list",{

@@ -582,7 +582,7 @@ names(.all_aes_values) <- .all_aes_names
 #' boundaries.
 #' This may be necesssary to ensure consistent plot boundaries when
 #' selecting points to restrict - see
-#' \code{\link{.process_brushby_choice}} for details.
+#' \code{\link{.process_selectby_choice}} for details.
 #'
 #' This function will also add a box representing the Shiny brush coordinates,
 #' if one is available - see \code{?\link{.self_brush_box}}.

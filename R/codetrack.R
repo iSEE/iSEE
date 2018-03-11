@@ -3,7 +3,7 @@
 #' Fetches all the code that was used to generate the plots during the live
 #' session of \code{iSEE}
 #' 
-#' @param active_plots A data.frame containing information about the currently active panels, of the same form as that produced by \code{\link{.setup_initial}}.
+#' @param active_panels A data.frame containing information about the currently active panels, of the same form as that produced by \code{\link{.setup_initial}}.
 #' @param pObjects An environment containing \code{memory}, a list of DataFrames containing parameters for each panel of each type;
 #' \code{selection_links}, a graph object containing point selection links between panels;
 #' \code{commands}, a list of commands required to generated each plot. 
@@ -17,11 +17,9 @@
 #' 
 #' @author Federico Marini
 #' @rdname INTERNAL_track_it_all
-.track_it_all <- function(rObjects, pObjects, se_name, ecm_name, sanitize_cmds) 
-{
+.track_it_all <- function(active_panels, pObjects, se_name, ecm_name, sanitize_cmds) {
   # Commands only reported for plots, not for the tables
-  aobjs <- as.data.frame(rObjects$active_panels)
-  aobjs <- aobjs[aobjs$Type!="rowStatTable" & aobjs$Type!="heatMapPlot",]
+  aobjs <- active_panels[active_panels$Type!="rowStatTable" & active_panels$Type!="heatMapPlot",]
   aobjs <- aobjs[.get_reporting_order(aobjs, pObjects$selection_links),]
 
   # storing to a text character vector
@@ -112,8 +110,7 @@
 
   # Adding the heatmap code.
   tracked_heat <- character(0)
-  hobjs <- as.data.frame(rObjects$active_panels)
-  hobjs <- hobjs[hobjs$Type=="heatMapPlot",]
+  hobjs <- active_panels[active_panels$Type=="heatMapPlot",]
   heat_names <- paste0(hobjs$Type, hobjs$ID)
 
   for (i in seq_along(heat_names)) {
@@ -170,7 +167,7 @@
 #'
 #' Reordering plots by whether or not they transmit point selection information.
 #' 
-#' @param active_plots A data.frame containing information about the currently active panels, of the same form as that produced by \code{\link{.setup_initial}}.
+#' @param active_panels A data.frame containing information about the currently active panels, of the same form as that produced by \code{\link{.setup_initial}}.
 #' @param select_chart A graph object containing information about how point selection information is transferred between panels.
 #'
 #' @details
@@ -180,10 +177,10 @@
 #' @author Aaron Lun
 #' @rdname INTERNAL_get_reporting_order
 #' @importFrom igraph topo_sort
-.get_reporting_order <- function(active_plots, select_chart) 
+.get_reporting_order <- function(active_panels, select_chart) 
 {
-  N <- nrow(active_plots)
-  node_names <- sprintf("%s%i", active_plots$Type, active_plots$ID)
+  N <- nrow(active_panels)
+  node_names <- sprintf("%s%i", active_panels$Type, active_panels$ID)
   ordering <- topo_sort(select_chart, "out")
   order(match(node_names, names(ordering)))
 }
@@ -191,24 +188,23 @@
 
 #' Plot a snapshot of the links among panels
 #'
-#' Reads in the stored reactive (\code{rObjects}) and the \code{pObjects} environment, and creates a graph of the current links among all panels open in the app.
+#' Creates a graph of the current links among all currently active panels, and plots it.
 #'
-#' @param active_plots A data.frame containing information about the currently active plots.
-#' @param rObjects A reactive list containing incrementable counters for all panels.
+#' @param active_panels A data.frame containing information about the currently active panels. 
 #' @param pObjects An environment containing \code{pObjects$selection_links}.
 #'
 #' @return Plots the graph representing the snapshot of links among plots/panels
 #' @author Federico Marini
 #' @rdname INTERNAL_snapshot_graph_linkedpanels
 #' @importFrom igraph delete.vertices set_vertex_attr V add_edges
-.snapshot_graph_linkedpanels <- function(rObjects, pObjects) {
-  cur_plots <- sprintf("%s%i", rObjects$active_panels$Type, rObjects$active_panels$ID)
+.snapshot_graph_linkedpanels <- function(active_panels, pObjects) {
+  cur_plots <- sprintf("%s%i", active_panels$Type, active_panels$ID)
   not_used <- setdiff(V(pObjects$selection_links)$name,cur_plots)
   currgraph <- delete.vertices(pObjects$selection_links, not_used)
   currgraph <- set_vertex_attr(currgraph,"plottype", value = sub("[0-9]+$","",V(currgraph)$name))
   
   # Incorporating table links as well.
-  tbl_objs <- rObjects$active_panels[rObjects$active_panels$Type=="rowStatTable",]
+  tbl_objs <- active_panels[active_panels$Type=="rowStatTable",]
   cur_tables <- sprintf("%s%i",tbl_objs$Type,tbl_objs$ID)
   all_tlinks <- pObjects$table_links
   cur_tlinks <- all_tlinks[cur_tables]
@@ -226,12 +222,12 @@
   }
  
   # Creating the plot. 
-  plot(currgraph_used,
+  plot(currgraph,
        edge.arrow.size = .8,
        vertex.label.cex = 1.3,
        vertex.label.family = "Helvetica",
        vertex.label.color = "black",
        vertex.label.dist = 2.5,
-       vertex.color = panel_colors[V(currgraph_used)$plottype])
+       vertex.color = panel_colors[V(currgraph)$plottype])
 }  
 

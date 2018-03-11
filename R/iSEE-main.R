@@ -326,7 +326,7 @@ iSEE <- function(
           "followed by Ctrl/Cmd + C).",
           "This will copy the selected parts to the clipboard."),
         aceEditor("acereport_r", mode="r",theme = "solarized_light",autoComplete = "live",
-                  value = paste0((.track_it_all(rObjects, pObjects, se_name, ecm_name,se_cmds)),collapse="\n"),
+                  value = paste0(.track_it_all(rObjects$active_panels, pObjects, se_name, ecm_name,se_cmds), collapse="\n"),
                   height="600px")
         ))
     })
@@ -423,7 +423,7 @@ iSEE <- function(
                 mode0 <- mode
                 i0 <- i
                 prefix <- paste0(mode0, i0, "_")
-                plot_name <- paste0(mode0, i0)
+                panel_name <- paste0(mode0, i0)
                 max_plots0 <- max_plots
 
                 # Panel removal.
@@ -710,7 +710,7 @@ iSEE <- function(
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     
                     # Trigger replotting of all dependent plots that receive this brush.
-                    children <- .get_brush_dependents(pObjects$brush_links, plot_name, pObjects$memory)
+                    children <- .get_selection_dependents(pObjects$brush_links, plot_name, pObjects$memory)
                     for (child_plot in children) {
                         rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
                     }
@@ -973,12 +973,14 @@ iSEE <- function(
                     } else {
                         inp_rows <- pObjects$memory$heatMapPlot[i0,][[.zoomData]][[1]]
                     }
+
                     # Update data and force replotting.
                     # Is the heatmap receiving a color brush (in that case the number of annotations should be increased by 1)
-                    is_receiving_color_brush <- pObjects$memory$heatMapPlot[i0,][[.brushByPlot]]!=.noSelection && 
-                        pObjects$memory$heatMapPlot[i0,][[.brushEffect]]==.brushColorTitle && 
-                        .transmitted_brush(pObjects$memory$heatMapPlot[i0, .brushByPlot], pObjects$memory)$brush
-                    n.annot <- length(pObjects$memory$heatMapPlot[,.heatMapColData][[i0]]) + is_receiving_color_brush
+                    is_receiving_color_selection <- pObjects$memory$heatMapPlot[i0,][[.selectByPlot]]!=.noSelection && 
+                        pObjects$memory$heatMapPlot[i0,][[.selectEffect]]==.selectColorTitle && 
+                        .transmitted_selection(pObjects$memory$heatMapPlot[i0, .selectByPlot], pObjects$memory)$select
+
+                    n.annot <- length(pObjects$memory$heatMapPlot[,.heatMapColData][[i0]]) + is_receiving_color_selection
                     ymin <- .transform_global_to_local_y(new_coords["ymin"], n.genes=length(inp_rows), n.annot=n.annot)
                     ymax <- .transform_global_to_local_y(new_coords["ymax"], n.genes=length(inp_rows), n.annot=n.annot)
                     new_rows <- inp_rows[ymin:ymax]

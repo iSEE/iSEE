@@ -155,7 +155,7 @@
             "geom_raster(aes(fill = BrushBy)) +",
             "labs(x='', y='') +",
             "scale_y_continuous(breaks=1, labels='Brushed points') +",
-            sprintf("scale_fill_manual(values=c(`TRUE`='%s', `FALSE`='white')) +",param_choices[[.brushColor]]),
+            sprintf("scale_fill_manual(values=c(`TRUE`='%s', `FALSE`='white')) +",param_choices[[.selectColor]]),
             "theme(axis.text.x=element_blank(), axis.ticks=element_blank(), axis.title.x=element_blank(), 
     rect=element_blank(), line=element_blank(), axis.title.y=element_blank(), 
             plot.margin = unit(c(0,0,-0.5,0), 'lines'));")

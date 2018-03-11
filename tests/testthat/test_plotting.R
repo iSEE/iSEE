@@ -1196,3 +1196,150 @@ test_that(".create_points handles restrict selection effect", {
   # TODO: better tests
   
 })
+
+# .self_lasso_path work with single point, open, and closed paths ----
+
+test_that(".self_lasso_path work with a single point", {
+  
+  # Set up the selected data (in redDim1)
+  params <- all_memory$redDimPlot[1,]
+  x_10 <- head(
+    reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
+    10)
+  y_10 <- head(
+    reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
+    10)
+  
+  lasso_val <- matrix(
+    data = c(
+      min(x_10), min(y_10)
+    ),
+    ncol = 2,
+    byrow = TRUE
+  )
+  
+  all_memory$redDimPlot[[iSEE:::.lassoData]][1] <- list(lasso_val)
+  
+  lasso_cmd <- .self_lasso_path(all_memory$redDimPlot, flip=FALSE)
+  
+  expect_match(
+    lasso_cmd$cmds,
+    "geom_point",
+    fixed = TRUE
+  )
+  
+  expect_identical(
+    lasso_cmd$data[[1]],
+    lasso_val
+  )
+  
+  expect_identical(
+    nrow(lasso_cmd$data[[1]]),
+    1L
+  )
+  
+})
+
+test_that(".self_lasso_path work with an open path", {
+  
+  # Set up the selected data (in redDim1)
+  params <- all_memory$redDimPlot[1,]
+  x_10 <- head(
+    reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
+    10)
+  y_10 <- head(
+    reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
+    10)
+  
+  lasso_val <- matrix(
+    data = c(
+      min(x_10), min(y_10),
+      max(x_10), min(y_10),
+      max(x_10), max(y_10)
+    ),
+    ncol = 2,
+    byrow = TRUE
+  )
+  attr(lasso_val, "closed") <- FALSE
+  
+  
+  all_memory$redDimPlot[[iSEE:::.lassoData]][1] <- list(lasso_val)
+  
+  lasso_cmd <- .self_lasso_path(all_memory$redDimPlot, flip=FALSE)
+  
+  expect_match(
+    lasso_cmd$cmds[1],
+    "geom_path",
+    fixed = TRUE
+  )
+  expect_match(
+    lasso_cmd$cmds[2],
+    "geom_point",
+    fixed = TRUE
+  )
+  expect_identical(
+    lasso_cmd$cmds[3],
+    "scale_shape_manual(values = c('TRUE' = 22, 'FALSE' = 20))"
+  )
+  expect_identical(
+    lasso_cmd$cmds[4],
+    "guides(shape = 'none')"
+  )
+  
+  expect_identical(
+    lasso_cmd$data[[1]],
+    lasso_val
+  )
+  
+})
+
+test_that(".self_lasso_path work with a closed and flipped path", {
+  
+  # Set up the selected data (in redDim1)
+  params <- all_memory$redDimPlot[1,]
+  x_10 <- head(
+    reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
+    10)
+  y_10 <- head(
+    reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
+    10)
+  
+  lasso_val <- matrix(
+    data = c(
+      min(x_10), min(y_10),
+      max(x_10), min(y_10),
+      max(x_10), max(y_10),
+      min(x_10), max(y_10),
+      min(x_10), min(y_10)
+    ),
+    ncol = 2,
+    byrow = TRUE
+  )
+  attr(lasso_val, "closed") <- TRUE
+  attr(lasso_val, "flipped") <- TRUE
+  
+  all_memory$redDimPlot[[iSEE:::.lassoData]][1] <- list(lasso_val)
+  
+  lasso_cmd <- .self_lasso_path(all_memory$redDimPlot, flip=FALSE)
+  
+  expect_match(
+    lasso_cmd$cmds[1],
+    "geom_polygon",
+    fixed = TRUE
+  )
+  expect_match(
+    lasso_cmd$cmds[2],
+    "scale_fill_manual",
+    fixed = TRUE
+  )
+  expect_identical(
+    lasso_cmd$cmds[3],
+    "guides(shape = 'none')"
+  )
+  
+  expect_identical(
+    lasso_cmd$data[[1]],
+    lasso_val
+  )
+  
+})

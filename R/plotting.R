@@ -1014,6 +1014,7 @@ plot.data$Y <- tmp;")
     plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +"
     plot_cmds[["scale_y"]] <- "scale_y_discrete(drop = FALSE) +"
   
+    # Do not display the size legend (saves plot space, as well)
     plot_cmds[["guides"]] <- "guides(size = 'none') +"
     plot_cmds[["theme_base"]] <- "theme_bw() +"
     plot_cmds[["theme_custom"]] <- sprintf(

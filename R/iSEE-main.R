@@ -3,37 +3,54 @@
 #' Interactive and reproducible visualization of data contained in a
 #' SummarizedExperiment/SingleCellExperiment, using a Shiny interface.
 #'
-#' @param se An object that is coercible to \code{\linkS4class{SingleCellExperiment}}.
+#' @param se An object that is coercible to \linkS4class{SingleCellExperiment}.
 #' @param redDimArgs A DataFrame similar to that produced by
-#' \code{\link{redDimPlotDefaults}}, specifying initial parameters for the plots.
+#' \code{\link{redDimPlotDefaults}}, specifying initial parameters
+#' for the plots.
 #' @param colDataArgs A DataFrame similar to that produced by
-#' \code{\link{colDataPlotDefaults}}, specifying initial parameters for the plots.
+#' \code{\link{colDataPlotDefaults}}, specifying initial parameters
+#' for the plots.
 #' @param featExprArgs A DataFrame similar to that produced by
-#' \code{\link{featExprPlotDefaults}}, specifying initial parameters for the plots.
+#' \code{\link{featExprPlotDefaults}}, specifying initial parameters
+#' for the plots.
 #' @param rowStatArgs A DataFrame similar to that produced by
-#' \code{\link{rowStatTableDefaults}}, specifying initial parameters for the plots.
+#' \code{\link{rowStatTableDefaults}}, specifying initial parameters
+#' for the plots.
 #' @param rowDataArgs A DataFrame similar to that produced by
-#' \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the plots.
+#' \code{\link{rowDataPlotDefaults}}, specifying initial parameters
+#' for the plots.
 #' @param heatMapArgs A DataFrame similar to that produced by
-#' \code{\link{heatMapPlotDefaults}}, specifying initial parameters for the plots.
-#' @param redDimMax An integer scalar specifying the maximum number of reduced dimension plots in the interface.
-#' @param colDataMax An integer scalar specifying the maximum number of column data plots in the interface.
-#' @param featExprMax An integer scalar specifying the maximum number of feature expression plots in the interface.
-#' @param rowStatMax An integer scalar specifying the maximum number of row statistics tables in the interface.
-#' @param rowDataMax An integer scalar specifying the maximum number of row data plots in the interface.
-#' @param heatMapMax An integer scalar specifying the maximum number of heatmaps in the interface.
-#' @param initialPanels A DataFrame specifying which panels should be created at initialization. 
-#' This should contain a \code{Name} character field and a \code{Width} integer field, see Details.
-#' @param annotFun A function, constructed in the form of \code{\link{annotateEntrez}} 
-#' or \code{\link{annotateEnsembl}}. This function is built in a way to generate itself 
-#' a function supposed to accept two parameters, \code{se} and \code{row_index}, to have
-#' a unified yet flexible interface to generate additional information to display for 
-#' the selected genes of interest. 
-#' @param colormap An \code{\linkS4class{ExperimentColorMap}} object that defines
+#' \code{\link{heatMapPlotDefaults}}, specifying initial parameters
+#' for the plots.
+#' @param redDimMax An integer scalar specifying the maximum number of
+#' reduced dimension plots in the interface.
+#' @param colDataMax An integer scalar specifying the maximum number of
+#' column data plots in the interface.
+#' @param featExprMax An integer scalar specifying the maximum number of
+#' feature expression plots in the interface.
+#' @param rowStatMax An integer scalar specifying the maximum number of
+#' row statistics tables in the interface.
+#' @param rowDataMax An integer scalar specifying the maximum number of
+#' row data plots in the interface.
+#' @param heatMapMax An integer scalar specifying the maximum number of
+#' heatmaps in the interface.
+#' @param initialPanels A DataFrame specifying which panels should be
+#' created at initialization. 
+#' This should contain a \code{Name} character field and a \code{Width}
+#' integer field, see Details.
+#' @param annotFun A function, constructed in the form of
+#' \code{\link{annotateEntrez}} or \code{\link{annotateEnsembl}}.
+#' This function is built in a way to generate itself 
+#' a function supposed to accept two parameters,
+#' \code{se} and \code{row_index},
+#' to have a unified yet flexible interface to generate additional information
+#' to display for the selected genes of interest. 
+#' @param colormap An \linkS4class{ExperimentColorMap} object that defines
 #' custom color maps to apply to individual \code{assays}, \code{colData},
 #' and \code{rowData} covariates.
-#' @param run_local A logical indicating whether the app is to be run locally or
-#' remotely on a server, which determines how documentation will be accessed.
+#' @param run_local A logical indicating whether the app is to be run locally
+#' or remotely on a server, which determines how documentation will be
+#' accessed.
 #'
 #' @details Users can pass default parameters via DataFrame objects in
 #' \code{redDimArgs} and \code{featExprArgs}. Each object can contain
@@ -120,8 +137,10 @@ iSEE <- function(
   tab_brush_col <- .safe_field_name("Selected", colnames(gene_data))
 
   # Defining the maximum number of plots.
-  memory <- .setup_memory(se, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs, heatMapArgs,
-                          redDimMax, colDataMax, featExprMax, rowStatMax, rowDataMax, heatMapMax)
+  memory <- .setup_memory(
+    se,
+    redDimArgs,colDataArgs,featExprArgs,rowStatArgs,rowDataArgs,heatMapArgs,
+    redDimMax, colDataMax, featExprMax, rowStatMax, rowDataMax, heatMapMax)
 
   # Defining the initial elements to be plotted.
   active_panels <- .setup_initial(initialPanels, memory)
@@ -133,8 +152,9 @@ iSEE <- function(
 
   iSEE_ui <- dashboardPage(
     dashboardHeader(
-      title = paste0("iSEE - interactive SingleCell/Summarized Experiment Explorer v",
-                     packageVersion("iSEE")),
+      title = paste0(
+        "iSEE - interactive SingleCell/Summarized Experiment Explorer v",
+        packageVersion("iSEE")),
       titleWidth = 750,
 
       dropdownMenu(type = "tasks",
@@ -142,16 +162,18 @@ iSEE <- function(
                    badgeStatus = NULL,
                    headerText = "iSEE diagnostics",
                    notificationItem(
-                     text = actionButton('open_linkgraph', label="Examine panel chart",
-                                         icon = icon("chain"),
-                                         style=.actionbutton_biocstyle
+                     text = actionButton(
+                       'open_linkgraph', label="Examine panel chart",
+                       icon = icon("chain"),
+                       style=.actionbutton_biocstyle
                      ),
                      icon = icon(""), status = "primary"
                    ),
                    notificationItem(
-                     text = actionButton('getcode_all', label="Extract the R code",
-                                         icon = icon("magic"),
-                                         style=.actionbutton_biocstyle
+                     text = actionButton(
+                       'getcode_all', label="Extract the R code",
+                       icon = icon("magic"),
+                       style=.actionbutton_biocstyle
                      ),
                      icon = icon(""), status = "primary"
                    )
@@ -162,15 +184,20 @@ iSEE <- function(
                    badgeStatus = NULL,
                    headerText = "Documentation",
                    notificationItem(
-                     text = actionButton("tour_firststeps", "Click me for a quick tour", icon("hand-o-right"),
-                                         style=.actionbutton_biocstyle),
+                     text = actionButton(
+                       "tour_firststeps", "Click me for a quick tour",
+                       icon("hand-o-right"),
+                       style=.actionbutton_biocstyle),
                      icon = icon(""), # tricking it to not have additional icon
                      status = "primary"),
                    notificationItem(
-                     text = actionButton('open_vignette', label="Open the vignette",
-                                         icon = icon("book"),
-                                         style=.actionbutton_biocstyle,
-                                         onclick = ifelse(run_local, "", "window.open('http://google.com', '_blank')")), # to be replaced with vignette url
+                     text = actionButton(
+                       'open_vignette', label="Open the vignette",
+                       icon = icon("book"),
+                       style=.actionbutton_biocstyle,
+                       onclick = ifelse(
+                         run_local, "",
+                         "window.open('http://google.com', '_blank')")), # to be replaced with vignette url
                      icon = icon(""), status = "primary"
                    )
         ),
@@ -180,9 +207,10 @@ iSEE <- function(
                     badgeStatus = NULL,
                     headerText = "Additional information",
                     notificationItem(
-                     text = actionButton('session_info', label="About this session",
-                                         icon = icon("window-maximize"),
-                                         style=.actionbutton_biocstyle
+                     text = actionButton(
+                       'session_info', label="About this session",
+                       icon = icon("window-maximize"),
+                       style=.actionbutton_biocstyle
                      ),
                      icon = icon(""), status = "primary"
                    ),
@@ -197,7 +225,9 @@ iSEE <- function(
     ), # end of dashboardHeader
 
     dashboardSidebar(
-      selectizeInput("newPanelChoice", label="Choose panel type:", selected=rev.translation[1], choices=rev.translation),
+      selectizeInput(
+        "newPanelChoice", label="Choose panel type:",
+        selected=rev.translation[1], choices=rev.translation),
       actionButton("newPanelAdd", "Add new panel"), 
       hr(),
       uiOutput("panelOrganization")
@@ -231,7 +261,9 @@ iSEE <- function(
   #nocov start
   iSEE_server <- function(input, output, session) {
     all_names <- list()
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot", "rowStatTable", "heatMapPlot")) {
+    for (mode in c(
+      "redDimPlot", "featExprPlot", "colDataPlot",
+      "rowDataPlot", "rowStatTable", "heatMapPlot")) {
       max_plots <- nrow(memory[[mode]])
       all_names[[mode]] <- sprintf("%s%i", mode, seq_len(max_plots))
     }
@@ -257,7 +289,9 @@ iSEE <- function(
         rerendered = 1L
     )
 
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot", "rowStatTable", "heatMapPlot")) {
+    for (mode in c(
+      "redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot",
+      "rowStatTable", "heatMapPlot")) {
       max_plots <- nrow(pObjects$memory[[mode]])
       for (i in seq_len(max_plots)) {
         rObjects[[paste0(mode, i)]] <- 1L
@@ -273,7 +307,9 @@ iSEE <- function(
     }
 
     # Help and documentation-related observers.
-    intro_firststeps <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"), sep=";", stringsAsFactors = FALSE,row.names = NULL)
+    intro_firststeps <- read.delim(
+      system.file("extdata", "intro_firststeps.txt",package = "iSEE"),
+      sep=";", stringsAsFactors = FALSE,row.names = NULL)
 
     observeEvent(input$tour_firststeps, {
       introjs(session,

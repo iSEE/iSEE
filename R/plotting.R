@@ -1204,7 +1204,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 
 #' Generate an axis label for gene expression data
 #'
-#' @param se A \code{\linkS4class{SingleCellExperiment}} object.
+#' @param se A \linkS4class{SingleCellExperiment} object.
 #' @param gene_id A feature name or integer index
 #' of the feature in \code{rownames(se)}.
 #' @param assay_id The integer index of an assay in

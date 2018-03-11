@@ -11,53 +11,70 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featExprArgs = NULL,
   colormap = ExperimentColorMap(), run_local = TRUE)
 }
 \arguments{
-\item{se}{An object that is coercible to \code{\linkS4class{SingleCellExperiment}}.}
+\item{se}{An object that is coercible to \linkS4class{SingleCellExperiment}.}
 
 \item{redDimArgs}{A DataFrame similar to that produced by
-\code{\link{redDimPlotDefaults}}, specifying initial parameters for the plots.}
+\code{\link{redDimPlotDefaults}}, specifying initial parameters
+for the plots.}
 
 \item{colDataArgs}{A DataFrame similar to that produced by
-\code{\link{colDataPlotDefaults}}, specifying initial parameters for the plots.}
+\code{\link{colDataPlotDefaults}}, specifying initial parameters
+for the plots.}
 
 \item{featExprArgs}{A DataFrame similar to that produced by
-\code{\link{featExprPlotDefaults}}, specifying initial parameters for the plots.}
+\code{\link{featExprPlotDefaults}}, specifying initial parameters
+for the plots.}
 
 \item{rowStatArgs}{A DataFrame similar to that produced by
-\code{\link{rowStatTableDefaults}}, specifying initial parameters for the plots.}
+\code{\link{rowStatTableDefaults}}, specifying initial parameters
+for the plots.}
 
 \item{rowDataArgs}{A DataFrame similar to that produced by
-\code{\link{rowDataPlotDefaults}}, specifying initial parameters for the plots.}
+\code{\link{rowDataPlotDefaults}}, specifying initial parameters
+for the plots.}
 
 \item{heatMapArgs}{A DataFrame similar to that produced by
-\code{\link{heatMapPlotDefaults}}, specifying initial parameters for the plots.}
+\code{\link{heatMapPlotDefaults}}, specifying initial parameters
+for the plots.}
 
-\item{redDimMax}{An integer scalar specifying the maximum number of reduced dimension plots in the interface.}
+\item{redDimMax}{An integer scalar specifying the maximum number of
+reduced dimension plots in the interface.}
 
-\item{colDataMax}{An integer scalar specifying the maximum number of column data plots in the interface.}
+\item{colDataMax}{An integer scalar specifying the maximum number of
+column data plots in the interface.}
 
-\item{featExprMax}{An integer scalar specifying the maximum number of feature expression plots in the interface.}
+\item{featExprMax}{An integer scalar specifying the maximum number of
+feature expression plots in the interface.}
 
-\item{rowStatMax}{An integer scalar specifying the maximum number of row statistics tables in the interface.}
+\item{rowStatMax}{An integer scalar specifying the maximum number of
+row statistics tables in the interface.}
 
-\item{rowDataMax}{An integer scalar specifying the maximum number of row data plots in the interface.}
+\item{rowDataMax}{An integer scalar specifying the maximum number of
+row data plots in the interface.}
 
-\item{heatMapMax}{An integer scalar specifying the maximum number of heatmaps in the interface.}
+\item{heatMapMax}{An integer scalar specifying the maximum number of
+heatmaps in the interface.}
 
-\item{initialPanels}{A DataFrame specifying which panels should be created at initialization. 
-This should contain a \code{Name} character field and a \code{Width} integer field, see Details.}
+\item{initialPanels}{A DataFrame specifying which panels should be
+created at initialization. 
+This should contain a \code{Name} character field and a \code{Width}
+integer field, see Details.}
 
-\item{annotFun}{A function, constructed in the form of \code{\link{annotateEntrez}} 
-or \code{\link{annotateEnsembl}}. This function is built in a way to generate itself 
-a function supposed to accept two parameters, \code{se} and \code{row_index}, to have
-a unified yet flexible interface to generate additional information to display for 
-the selected genes of interest.}
+\item{annotFun}{A function, constructed in the form of
+\code{\link{annotateEntrez}} or \code{\link{annotateEnsembl}}.
+This function is built in a way to generate itself 
+a function supposed to accept two parameters,
+\code{se} and \code{row_index},
+to have a unified yet flexible interface to generate additional information
+to display for the selected genes of interest.}
 
-\item{colormap}{An \code{\linkS4class{ExperimentColorMap}} object that defines
+\item{colormap}{An \linkS4class{ExperimentColorMap} object that defines
 custom color maps to apply to individual \code{assays}, \code{colData},
 and \code{rowData} covariates.}
 
-\item{run_local}{A logical indicating whether the app is to be run locally or
-remotely on a server, which determines how documentation will be accessed.}
+\item{run_local}{A logical indicating whether the app is to be run locally
+or remotely on a server, which determines how documentation will be
+accessed.}
 }
 \value{
 A Shiny App is launched for interactive data exploration of the

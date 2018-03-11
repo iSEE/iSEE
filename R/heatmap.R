@@ -3,15 +3,15 @@
 #' Make a heatmap with features on the Y axis and samples on the X axis.
 #'
 #' @param id Integer specifying the index of the heatmap plot panel
-#' @param all_memory A \code{list} of \code{\linkS4class{DataFrame}}s, where each
-#' \code{\linkS4class{DataFrame}} corresponds to a panel type and contains the
+#' @param all_memory A \code{list} of \linkS4class{DataFrame}s, where each
+#' \linkS4class{DataFrame} corresponds to a panel type and contains the
 #' initial settings for each individual panel of that type.
 #' @param all_coordinates A \code{list} of \code{data.frame}s that contain
 #' the coordinates and covariates of data points visible in each of the plots;
 #' in particular data points excluded by "restrict" brushes are not included in
 #' the corresponding \code{data.frame}.
-#' @param se A \code{\linkS4class{SingleCellExperiment}} object.
-#' @param colormap An \code{\linkS4class{ExperimentColorMap}} object that defines
+#' @param se A \linkS4class{SingleCellExperiment} object.
+#' @param colormap An \linkS4class{ExperimentColorMap} object that defines
 #' custom color maps to apply to individual \code{assays}, \code{colData},
 #' and \code{rowData} covariates.
 #'

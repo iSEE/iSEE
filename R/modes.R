@@ -1,8 +1,7 @@
 
 #' App pre-configured to link multiple feature expression plots
 #'
-#' @param se An object that coercible to
-#'\code{\linkS4class{SingleCellExperiment}}.
+#' @param se An object that coercible to \linkS4class{SingleCellExperiment}
 #' @param features \code{data.frame} with columns named \code{x} and \code{y}
 #' that define the features on the axes of the linked plots.
 #' Plots are serially linked from the first row to the last.

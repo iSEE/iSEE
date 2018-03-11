@@ -4,7 +4,7 @@
 #' Annotation facility for displaying additional information on selected genes, based on
 #' the data retrieved from the ENTREZ database 
 #' 
-#' @param se An object that is coercible to \code{\linkS4class{SingleCellExperiment}}.
+#' @param se An object that is coercible to \linkS4class{SingleCellExperiment}.
 #' @param orgdb An OrgDb object, as a basis for the annotation. Typical values can be
 #' \code{org.Hs.eg.db} for human, \code{org.Mm.eg.db} for mouse, and so on. The 
 #' corresponding package has to be available and loaded before calling this function.
@@ -81,7 +81,7 @@ annotateEntrez <- function(
 #' Annotation facility for displaying additional information on selected genes, based on
 #' the data retrieved from the ENSEMBL database 
 #' 
-#' @param se An object that is coercible to \code{\linkS4class{SingleCellExperiment}}.
+#' @param se An object that is coercible to \linkS4class{SingleCellExperiment}.
 #' @param orgdb An OrgDb object, as a basis for the annotation. Typical values can be
 #' \code{org.Hs.eg.db} for human, \code{org.Mm.eg.db} for mouse, and so on. The 
 #' corresponding package has to be available and loaded before calling this function 

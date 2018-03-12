@@ -1038,7 +1038,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
     if (color_choice==.colorByRowDataTitle) {
         covariate_name <- param_choices[[.colorByRowData]]
         return(list(label=covariate_name, 
-                    cmds=sprintf("plot.data$ColorBy <- colData(se)[,%s];", deparse(covariate_name))))
+                    cmds=sprintf("plot.data$ColorBy <- rowData(se)[,%s];", deparse(covariate_name))))
   
     } else if (color_choice==.colorByFeatNameTitle) {
         chosen_gene <- param_choices[[.colorByFeatName]]
@@ -1046,7 +1046,7 @@ plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.da
             length(chosen_gene)==1L,
             sprintf("Invalid '%s' > '%s' input", .colorByField, color_choice)
         ))
-        return(list(label=gene_axis_label(se, chosen_gene, assay_id=NULL),
+        return(list(label=.gene_axis_label(se, chosen_gene, assay_id=NULL),
                     cmds=sprintf("plot.data$ColorBy <- FALSE;
 plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 
@@ -1444,7 +1444,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
   }
 
   assay_name <- assayNames(se)[assay_id]
-  if (is.null(assay_name) | identical(assay_name, "")) {
+  if (is.null(assay_name) || identical(assay_name, "")) {
     assay_name <- paste("assay", assay_id)
   }
 

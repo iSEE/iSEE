@@ -576,7 +576,7 @@ height_limits <- c(400L, 1000L)
         chosen.env$all_brushes <- selected$data
         chosen.env$all_lassos <- selected$data
         eval(parse(text=selected$cmd), envir=chosen.env)
-        return(chosen.env$plot.data$BrushBy)
+        return(chosen.env$plot.data$SelectBy)
     } 
     return(NULL)
 }

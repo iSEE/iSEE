@@ -855,54 +855,65 @@ test_that(".process_colorby_choice_for_column_plots handles gene text input", {
   params[[iSEE:::.colorByField]] <- iSEE:::.colorByFeatNameTitle
   params[[iSEE:::.colorByFeatName]] <- 1L
   
-  color_out <- iSEE:::.define_colorby_for_column_plot(params)
-  expect_match(color_out, "assay(se, 6)[1,]", fixed=TRUE)
-
-  color_add <- iSEE:::.add_color_to_column_plot(assay(sce)[1,], params, sce)
+  color_out <- iSEE:::.define_colorby_for_column_plot(params, sce)
+  expect_match(color_out$cmds, "assay(se, 6)[1,]", fixed=TRUE)
 
   expect_match(
-    color_add$cmds[1],
-    "scale_color_gradientn",
-    fixed = TRUE
-  )
-
-  expect_match(
-    color_add$cmds[2],
-    "scale_fill_gradientn",
-    fixed = TRUE
-  )
-  
-  expect_match(
-    color_add$label,
+    color_out$label,
     rownames(sce)[1],
     fixed = TRUE
   )
 
   expect_match(
-    color_add$label,
+    color_out$label,
     assayNames(sce)[params[[iSEE:::.colorByFeatNameAssay]]],
     fixed = TRUE
   )
+
+  color_add <- iSEE:::.add_color_to_column_plot(assay(sce)[1,], params)
+
+  expect_match(
+    color_add[1],
+    "scale_color_gradientn",
+    fixed = TRUE
+  )
+
+  expect_match(
+    color_add[2],
+    "scale_fill_gradientn",
+    fixed = TRUE
+  )
+  
 })
 
 # .gene_axis_label handles NULL rownames ----
 
-test_that(".gene_axis_label handles NULL rownames", {
+test_that(".gene_axis_label produces a valid axis label", {
 
   selected_gene_int <- 1L
   selected_assay <- 1L
 
-  nrows <- 20; ncols <- 6
-  counts <- matrix(runif(nrows * ncols, 1, 1e4), nrows)
-  se_nullnames <- SummarizedExperiment(assays=SimpleList(counts))
-
   lab_out <- iSEE:::.gene_axis_label(
-    se_nullnames, selected_gene_int, selected_assay, multiline=FALSE
+    sce, selected_gene_int, selected_assay, multiline=FALSE
   )
 
   expect_match(
     lab_out,
-    "^Feature"
+    rownames(sce)[1],
+    fixed=TRUE
+  )
+
+  expect_match(
+    lab_out,
+    "(tophat_counts)",
+    fixed = TRUE
+  )
+
+  # Handling unnamed assays.
+  assayNames(sce)[] <-""
+
+  lab_out <- iSEE:::.gene_axis_label(
+    sce, selected_gene_int, selected_assay, multiline=FALSE
   )
 
   expect_match(
@@ -910,7 +921,6 @@ test_that(".gene_axis_label handles NULL rownames", {
     "(assay 1)",
     fixed = TRUE
   )
-
 })
 
 # .coerce_to_numeric handles gene text input ----
@@ -1220,7 +1230,7 @@ test_that(".self_lasso_path work with a single point", {
   
   all_memory$redDimPlot[[iSEE:::.lassoData]][1] <- list(lasso_val)
   
-  lasso_cmd <- .self_lasso_path(all_memory$redDimPlot, flip=FALSE)
+  lasso_cmd <- iSEE:::.self_lasso_path(all_memory$redDimPlot, flip=FALSE)
   
   expect_match(
     lasso_cmd$cmds,
@@ -1265,7 +1275,7 @@ test_that(".self_lasso_path work with an open path", {
   
   all_memory$redDimPlot[[iSEE:::.lassoData]][1] <- list(lasso_val)
   
-  lasso_cmd <- .self_lasso_path(all_memory$redDimPlot, flip=FALSE)
+  lasso_cmd <- iSEE:::.self_lasso_path(all_memory$redDimPlot, flip=FALSE)
   
   expect_match(
     lasso_cmd$cmds[1],
@@ -1320,7 +1330,7 @@ test_that(".self_lasso_path work with a closed and flipped path", {
   
   all_memory$redDimPlot[[iSEE:::.lassoData]][1] <- list(lasso_val)
   
-  lasso_cmd <- .self_lasso_path(all_memory$redDimPlot, flip=FALSE)
+  lasso_cmd <- iSEE:::.self_lasso_path(all_memory$redDimPlot, flip=FALSE)
   
   expect_match(
     lasso_cmd$cmds[1],

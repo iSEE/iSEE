@@ -381,7 +381,7 @@ names(.all_aes_values) <- .all_aes_names
 #' \item \code{data}, a list of strings containing commands to generate the
 #' plotting data.frame.
 #' \item \code{select}, a list of strings containing commands to add
-#' \code{BrushBy} information to the plotting data.frame.
+#' \code{SelectBy} information to the plotting data.frame.
 #' \item \code{specific}, a list of strings containing commands to generate
 #' plot-type-specific commands, e.g., scatter for violin plots.
 #' }
@@ -399,7 +399,7 @@ names(.all_aes_values) <- .all_aes_names
 #' All categorical variables are guaranteed to be factors, and everything else must be numeric.
 #' \item \code{ColorBy}, specifying how to colour each point from the \code{.define_color_for_*_plots} functions.
 #' As above, this is either a factor or numeric.
-#' \item \code{BrushBy}, a logical field specifying whether the points were selected by a point selection in a transmitting plot.
+#' \item \code{SelectBy}, a logical field specifying whether the points were selected by a point selection in a transmitting plot.
 #' If selecting points to restrict, any subsetting will already have been applied.
 #' } 
 #'
@@ -409,7 +409,7 @@ names(.all_aes_values) <- .all_aes_names
 #' Square plots will have \code{jitteredX} and \code{jitteredY}.
 #' The \code{envir$plot.type} variable will specify the type of plot for correct dispatch in \code{\link{.create_plot}}.
 #'
-#' The environment may also contain \code{plot.data.all}, a data.frame equivalent to \code{plot.data} but without any \code{BrushBy} information or subsetting to restrict.
+#' The environment may also contain \code{plot.data.all}, a data.frame equivalent to \code{plot.data} but without any \code{SelectBy} information or subsetting to restrict.
 #' (See \code{\link{.process_selectby_choice}} for the origin of this data.frame.)
 #' This is useful for determining the plotting boundaries of the entire data set, even after subsetting of \code{plot.data}.
 #' 
@@ -482,8 +482,8 @@ names(.all_aes_values) <- .all_aes_names
         more_data_cmds <- list() 
     }
   
-    # Creating the command to define BrushBy.
-    # Note that 'all_brushes' or 'all_lassos' is needed for the eval() to obtain BrushBy.
+    # Creating the command to define SelectBy.
+    # Note that 'all_brushes' or 'all_lassos' is needed for the eval() to obtain SelectBy.
     # This approach relatively easy to deparse() in the code tracker, rather than having to construct the Shiny select object or lasso waypoints manually.
     select_out <- .process_selectby_choice(param_choices, all_memory)
     select_cmds <- select_out$cmds
@@ -659,7 +659,7 @@ names(.all_aes_values) <- .all_aes_names
     # Adding points to the plot.
     color_set <- !is.null(plot_data$ColorBy)
     new_aes <- .build_aes(color = color_set)
-    plot_cmds[["points"]] <- unlist(.create_points(param_choices, !is.null(plot_data$BrushBy), new_aes, color_set))
+    plot_cmds[["points"]] <- unlist(.create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set))
 
     # Defining the color commands.
     if (by_row) { 
@@ -763,7 +763,7 @@ names(.all_aes_values) <- .all_aes_names
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)
     new_aes <- .build_aes(color = color_set, alt=c(x="jitteredX"))
-    plot_cmds[["points"]] <- unlist(.create_points(param_choices, !is.null(plot_data$BrushBy), new_aes, color_set))
+    plot_cmds[["points"]] <- unlist(.create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set))
 
     # Defining the color commands.
     if (by_row) { 
@@ -909,7 +909,7 @@ plot.data$Y <- tmp;")
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)
     new_aes <- .build_aes(color = color_set, alt=c(x="jitteredX", y="jitteredY"))
-    plot_cmds[["points"]] <- unlist(.create_points(param_choices, !is.null(plot_data$BrushBy), new_aes, color_set))
+    plot_cmds[["points"]] <- unlist(.create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set))
     plot_cmds[["scale"]] <- "scale_size_area(limits = c(0, 1), max_size = 30) +"
 
     # Defining the color commands.
@@ -1218,7 +1218,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' @return A list that includes the following elements:
 #' \describe{
 #'   \item{cmds}{A character vector of commands that results in the addition
-#'     of a \code{BrushBy} covariate column in the \code{plot.data} data.frame.
+#'     of a \code{SelectBy} covariate column in the \code{plot.data} data.frame.
 #'     \code{NULL} if no selection should be applied.
 #'   }
 #'   \item{data}{A list containing a Shiny brush object or a matrix of closed
@@ -1232,7 +1232,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' \emph{i.e.}, from which the current panel is receiving a selection of
 #' data points.
 #' It then generates the commands necessary to identify the points selected
-#' in the transmitter, to add as \code{BrushBy} in the current panel.
+#' in the transmitter, to add as \code{SelectBy} in the current panel.
 #' This requires extraction of the Shiny brush or lasso waypoints in the
 #' transmitter, which are used during evaluation to define the selection.
 #'
@@ -1277,7 +1277,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 "selected_pts <- shiny::brushedPoints(%s, all_brushes[['%s']])",
                 source_data, transmitter)
             cmds[["select"]] <-
-              "plot.data$BrushBy <- rownames(plot.data) %in% rownames(selected_pts);"
+              "plot.data$SelectBy <- rownames(plot.data) %in% rownames(selected_pts);"
     
         } else {
             lasso_val <- all_memory[[select_by$Type]][,.lassoData][[select_by$ID]]
@@ -1301,7 +1301,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                     "selected_pts <- mgcv::in.out(all_lassos[['%s']], cbind(as.numeric(to_check$%s), as.numeric(to_check$%s)))",
                     transmitter, v1, v2)
                 cmds[["select"]] <-
-                  "plot.data$BrushBy <- rownames(plot.data) %in% rownames(to_check)[selected_pts]"
+                  "plot.data$SelectBy <- rownames(plot.data) %in% rownames(to_check)[selected_pts]"
             }
         }
 
@@ -1310,7 +1310,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
           # to make sure that axes are retained
           # even in case of an empty selected subset.
           cmds[["full"]] <- "plot.data.all <- plot.data;"
-          cmds[["subset"]] <- "plot.data <- subset(plot.data, BrushBy);"
+          cmds[["subset"]] <- "plot.data <- subset(plot.data, SelectBy);"
         }
     }
 
@@ -1376,24 +1376,24 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     select_effect <- param_choices[[.selectEffect]]
     if (select_effect==.selectColorTitle) {
       plot_cmds[["select_other"]] <- sprintf(
-        "geom_point(%s, alpha=%s, data=subset(plot.data, !BrushBy), %ssize=%s) +", 
+        "geom_point(%s, alpha=%s, data=subset(plot.data, !SelectBy), %ssize=%s) +", 
         aes, param_choices[[.plotPointAlpha]], default_color,
         param_choices[[.plotPointSize]]
       )
       plot_cmds[["select_color"]] <- sprintf(
-        "geom_point(%s, alpha=%s, data=subset(plot.data, BrushBy), color=%s, size=%s) +",
+        "geom_point(%s, alpha=%s, data=subset(plot.data, SelectBy), color=%s, size=%s) +",
         aes, param_choices[[.plotPointAlpha]], 
         deparse(param_choices[[.selectColor]]), param_choices[[.plotPointSize]]
       )
     }
     if (select_effect==.selectTransTitle) {
       plot_cmds[["select_other"]] <- sprintf(
-        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %.2f, %ssize=%s) +",
+        "geom_point(%s, subset(plot.data, !SelectBy), alpha = %.2f, %ssize=%s) +",
         aes, param_choices[[.selectTransAlpha]], default_color, 
         param_choices[[.plotPointSize]]
       )
       plot_cmds[["select_alpha"]] <- sprintf(
-        "geom_point(%s, subset(plot.data, BrushBy), %ssize=%s) +", 
+        "geom_point(%s, subset(plot.data, SelectBy), %ssize=%s) +", 
         aes, default_color, param_choices[[.plotPointSize]]
       )
     }

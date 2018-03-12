@@ -96,11 +96,11 @@
       eval_env$all_brushes <- select_out$data
       eval_env$all_lassos <- select_out$data
       if (param_choices[[.selectEffect]]==.selectTransTitle) {
-          alpha_cmd <- ", alpha=BrushBy"
+          alpha_cmd <- ", alpha=SelectBy"
           alpha_legend_cmd <- "guides(alpha=FALSE) +"
       } else if (param_choices[[.selectEffect]]==.selectColorTitle) {
           ## Add annotation bar
-          orderBy <- c(orderBy,"BrushBy")
+          orderBy <- c(orderBy,"SelectBy")
       }
   }
 
@@ -128,7 +128,7 @@
   # Annotations
   annot_cmds <- "legends <- list()"
   annot_cmds0 <- lapply(seq_along(orderBy), function(i) {
-      if (orderBy[i] != "BrushBy") {
+      if (orderBy[i] != "SelectBy") {
           if (is.numeric(eval_env$plot.data[[paste0("OrderBy", i)]])) {
               color_cmd <- sprintf("scale_fill_gradientn(colors=colDataColorMap(colormap, '%s', discrete=FALSE)(21L), na.value='grey50', name='%s') +", 
                                    orderBy[i], orderBy[i])
@@ -152,7 +152,7 @@
       } else {
           c("",
             sprintf("p%i <- ggplot(plot.data, aes(x = X, y = 1)) +", i),
-            "geom_raster(aes(fill = BrushBy)) +",
+            "geom_raster(aes(fill = SelectBy)) +",
             "labs(x='', y='') +",
             "scale_y_continuous(breaks=1, labels='Brushed points') +",
             sprintf("scale_fill_manual(values=c(`TRUE`='%s', `FALSE`='white')) +",param_choices[[.selectColor]]),

@@ -986,7 +986,7 @@ test_that(".process_selectby_choice works when sender is another plot", {
   # check that the second (hard-coded) command is present
   expect_match(
     select_cmd$cmds[2],
-    "plot.data$BrushBy",
+    "plot.data$SelectBy",
     fixed = TRUE
   )
   
@@ -1024,7 +1024,7 @@ test_that(".process_selectby_choice works when sender is self plot", {
   # check that the second (hard-coded) command is present
   expect_match(
     select_cmd$cmds[2],
-    "plot.data$BrushBy",
+    "plot.data$SelectBy",
     fixed = TRUE
   )
   

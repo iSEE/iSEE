@@ -677,15 +677,13 @@ names(.all_aes_values) <- .all_aes_names
   plot_data, param_choices, x_lab, y_lab, title, by_row = FALSE,
   range_all = FALSE, ...) {
     plot_cmds <- list()
-    plot_cmds[["defaultcolor"]] <- sprintf(
-      "update_geom_defaults('point', list(colour = '%s'));",
-      param_choices[[.colorByDefaultColor]])
     plot_cmds[["ggplot"]] <- "ggplot() +"
 
     # Adding points to the plot.
     new_aes <- .build_aes(color = !is.null(plot_data$ColorBy))
     plot_cmds[["points"]] <- unlist(
-      .create_points(param_choices, !is.null(plot_data$BrushBy), new_aes))
+      .create_points(param_choices, !is.null(plot_data$BrushBy), new_aes,
+                     !is.null(plot_data$ColorBy)))
 
     # Defining the color commands.
     if (by_row) { 
@@ -789,9 +787,6 @@ names(.all_aes_values) <- .all_aes_names
   plot_data, param_choices, x_lab, y_lab, title, horizontal = FALSE,
   by_row = FALSE, range_all = FALSE, ...) {
     plot_cmds <- list()
-    plot_cmds[["defaultcolor"]] <- sprintf(
-      "update_geom_defaults('point', list(colour = '%s'));",
-      param_choices[[.colorByDefaultColor]])
     plot_cmds[["ggplot"]] <- "ggplot() +" # do NOT put aes here, it does not play nice with shiny brushes.
     plot_cmds[["violin"]] <- sprintf(
       "geom_violin(%s, alpha = 0.2, data=plot.data, scale = 'width', width = 0.8) +", 
@@ -801,7 +796,8 @@ names(.all_aes_values) <- .all_aes_names
     new_aes <-
       .build_aes(color = !is.null(plot_data$ColorBy), alt=c(x="jitteredX"))
     plot_cmds[["points"]] <-
-      .create_points(param_choices, !is.null(plot_data$BrushBy), new_aes)
+      .create_points(param_choices, !is.null(plot_data$BrushBy), new_aes,
+                     !is.null(plot_data$ColorBy))
 
     # Defining the color commands.
     if (by_row) { 
@@ -951,9 +947,6 @@ plot.data$Y <- tmp;")
 .square_plot <- function(
   plot_data, param_choices, se, x_lab, y_lab, title, by_row = FALSE, ...) {
     plot_cmds <- list()
-    plot_cmds[["defaultcolor"]] <- sprintf(
-      "update_geom_defaults('point', list(colour = '%s'));",
-      param_choices[[.colorByDefaultColor]])
     plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
     plot_cmds[["tile"]] <-
 "geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius, group = interaction(X, Y)),
@@ -964,7 +957,7 @@ plot.data$Y <- tmp;")
       color = !is.null(plot_data$ColorBy),
       alt=c(x="jitteredX", y="jitteredY"))
     plot_cmds[["points"]] <- .create_points(
-      param_choices, !is.null(plot_data$BrushBy), new_aes)
+      param_choices, !is.null(plot_data$BrushBy), new_aes, !is.null(plot_data$ColorBy))
     plot_cmds[["scale"]] <-
       "scale_size_area(limits = c(0, 1), max_size = 30) +"
 
@@ -1410,6 +1403,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #' @param selected A logical scalar indicating whether any points were
 #' selected on the transmitting plot, via a Shiny brush or lasso path.
 #' @param aes A string containing the ggplot aesthetic instructions.
+#' @param color A logical scalar indicating whether coloring information is
+#'   already included in the \code{aes}.
 #'
 #' @return A character vector containing ggplot commands to add points
 #' to the plot.
@@ -1441,44 +1436,56 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene)))
 #' \code{\link{.square_plot}}
 #'
 #' @importFrom ggplot2 geom_point geom_blank
-.create_points <- function(param_choices, selected, aes) {
+.create_points <- function(param_choices, selected, aes, color) {
   plot_cmds <- list()
 
+  # If there is already coloring information available in the aes, don't add an
+  # additional color= statement to the geom_point() command, since this will
+  # overrule the one given in aes().
+  if (color) {
+      default_color <- ""
+  } else {
+      default_color <- sprintf("color='%s', ", param_choices[[.colorByDefaultColor]])
+  }
+  
   if (selected) {
     select_effect <- param_choices[[.selectEffect]]
     if (select_effect==.selectColorTitle) {
       plot_cmds[["select_other"]] <- sprintf(
-        "geom_point(%s, alpha=%s, data=subset(plot.data, !BrushBy), size=%s) +", 
-        aes, param_choices[[.plotPointAlpha]], param_choices[[.plotPointSize]]
+        "geom_point(%s, alpha=%s, data=subset(plot.data, !BrushBy), %ssize=%s) +", 
+        aes, param_choices[[.plotPointAlpha]], default_color,
+        param_choices[[.plotPointSize]]
       )
       plot_cmds[["select_color"]] <- sprintf(
-        "geom_point(%s, alpha=%s, data=subset(plot.data, BrushBy), color = %s, size=%s) +",
+        "geom_point(%s, alpha=%s, data=subset(plot.data, BrushBy), color=%s, size=%s) +",
         aes, param_choices[[.plotPointAlpha]], 
         deparse(param_choices[[.selectColor]]), param_choices[[.plotPointSize]]
       )
     }
     if (select_effect==.selectTransTitle) {
       plot_cmds[["select_other"]] <- sprintf(
-        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %.2f, size=%s) +",
-        aes, param_choices[[.selectTransAlpha]], param_choices[[.plotPointSize]]
+        "geom_point(%s, subset(plot.data, !BrushBy), alpha = %.2f, %ssize=%s) +",
+        aes, param_choices[[.selectTransAlpha]], default_color, 
+        param_choices[[.plotPointSize]]
       )
       plot_cmds[["select_alpha"]] <- sprintf(
-        "geom_point(%s, subset(plot.data, BrushBy), size=%s) +", 
-        aes, param_choices[[.plotPointSize]]
+        "geom_point(%s, subset(plot.data, BrushBy), %ssize=%s) +", 
+        aes, default_color, param_choices[[.plotPointSize]]
       )
     }
     if (select_effect==.selectRestrictTitle) {
       plot_cmds[["select_blank"]] <-
         "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
       plot_cmds[["select_restrict"]] <- sprintf(
-        "geom_point(%s, alpha = %s, plot.data, size=%s) +",
-        aes, param_choices[[.plotPointAlpha]],
+        "geom_point(%s, alpha = %s, plot.data, %ssize=%s) +",
+        aes, param_choices[[.plotPointAlpha]], default_color, 
         param_choices[[.plotPointSize]])
     }
   } else {
     plot_cmds[["point"]] <- sprintf(
-      "geom_point(%s, alpha = %s, plot.data, size=%s) +",
-      aes, param_choices[[.plotPointAlpha]], param_choices[[.plotPointSize]]
+      "geom_point(%s, alpha = %s, plot.data, %ssize=%s) +",
+      aes, param_choices[[.plotPointAlpha]], default_color,
+      param_choices[[.plotPointSize]]
     )
   }
   

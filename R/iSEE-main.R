@@ -638,7 +638,7 @@ iSEE <- function(
                     # and we have a selection, so that there was already some selection in the children.
                     if (pObjects$memory[[mode0]][i0, .selectEffect]==.selectRestrictTitle
                         && .any_point_selection(mode0, i0, pObjects$memory)) {
-                        children <- .get_selection_dependents(pObjects$select_links, plot_name, pObjects$memory)
+                        children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
                         for (child_plot in children) {
                             rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
                         }
@@ -710,7 +710,7 @@ iSEE <- function(
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     
                     # Trigger replotting of all dependent plots that receive this brush.
-                    children <- .get_selection_dependents(pObjects$brush_links, plot_name, pObjects$memory)
+                    children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
                     for (child_plot in children) {
                         rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
                     }
@@ -1193,6 +1193,9 @@ iSEE <- function(
                     force(rObjects[[gen_field]])
                     selected <- .get_selected_points(rownames(pObjects$coordinates[[plot_name]]), dec_name, 
                                                      pObjects$memory, pObjects$coordinates)
+                    if (is.null(selected)) { 
+                        return(NULL)
+                    }
                     n_selected <- sum(selected)
                     n_total <- length(selected)
                     HTML(sprintf("%i of %i points selected (%.1f%%)",

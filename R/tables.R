@@ -48,7 +48,7 @@
             table_links[[tab_name]]$xaxis <- c(table_links[[tab_name]]$xaxis, cur_panels[id])
         }
         
-        dec_tab_name <- memory[["featExprPlot"]][i, .featExprYAxisRowTable]
+        dec_tab_name <- memory[["featExprPlot"]][id, .featExprYAxisRowTable]
         if (dec_tab_name!=.noSelection) {
             tab_name <- .decoded2encoded(dec_tab_name)            
             table_links[[tab_name]]$yaxis <- c(table_links[[tab_name]]$yaxis, cur_panels[id])

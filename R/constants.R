@@ -155,7 +155,7 @@ names(rev.translation) <- translation
 #' Translate a panel name from the internal encoding to a user-visible encoding.
 #' 
 #' @param mode Character vector specifying the types of panel, using the internal encoding.
-#' @param ID Integer vector specifying the panel IDs of the given type.
+#' @param id Integer vector specifying the panel IDs of the given type.
 #'
 #' @return A character vector of decoded panel names.
 #' 
@@ -169,8 +169,8 @@ names(rev.translation) <- translation
 #' @seealso
 #' \code{\link{.encode_panel_name}},
 #' \code{\link{.split_encoded}}
-.decode_panel_name <- function(mode, ID) {
-    paste(translation[mode], ID)
+.decode_panel_name <- function(mode, id) {
+    paste(translation[mode], id)
 }
 
 #' Encode the panel name
@@ -197,13 +197,13 @@ names(rev.translation) <- translation
 #' @seealso
 #' \code{\link{.decode_panel_name}}
 .encode_panel_name <- function(names) {
-    ID <- as.integer(gsub(".* ([0-9]+)$", "\\1", names))
+    id <- as.integer(gsub(".* ([0-9]+)$", "\\1", names))
     raw.str <- rev.translation[gsub(" [0-9]+$", "", names)]
-    failed <- is.na(raw.str) | is.na(ID)
+    failed <- is.na(raw.str) | is.na(id)
     if (any(failed)) {
         stop(sprintf("'%s' is not a legal panel name", names[failed][1]))
     }
-    return(list(Type=raw.str, ID=ID))
+    return(list(Type=raw.str, ID=id))
 }
 
 #' @rdname INTERNAL_encode_panel_name
@@ -231,8 +231,8 @@ names(rev.translation) <- translation
 #' \code{\link{.encode_panel_name}},
 #' \code{\link{.decode_panel_name}}
 .split_encoded <- function(names) {
-  ID <- as.integer(gsub(".*([0-9]+)$", "\\1", names))
-  Type <- gsub("[0-9]+$", "", names)
-  return(list(Type=Type, ID=ID))
+    id <- as.integer(gsub(".*([0-9]+)$", "\\1", names))
+    Type <- gsub("[0-9]+$", "", names)
+    return(list(Type=Type, ID=id))
 }
 

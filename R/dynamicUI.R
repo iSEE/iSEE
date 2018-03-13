@@ -33,7 +33,7 @@
 
     for (i in seq_len(N)) {
         mode <- active_panels$Type[i]
-        ID <- active_panels$ID[i]
+        id <- active_panels$ID[i]
 
         # Disabling the buttons if we're at the top or bottom.
         upFUN <- downFUN <- identity
@@ -45,11 +45,11 @@
         }
 
         ctrl_panel <- box(
-            actionButton(paste0(mode, ID, "_", .organizationDiscard),"", icon = icon("trash fa-2x"), style="display:inline-block; margin:0"),
-            upFUN(actionButton(paste0(mode, ID, "_", .organizationUp),"",icon = icon("arrow-circle-up fa-2x"), style="display:inline-block; margin:0")),
-            downFUN(actionButton(paste0(mode, ID, "_", .organizationDown),"",icon = icon("arrow-circle-down fa-2x"), style="display:inline-block; margin:0")),
-            actionButton(paste0(mode, ID, "_", .organizationModify),"", icon = icon("gear fa-2x"), style="display:inline-block; margin:0"),
-            title=.decode_panel_name(mode, ID), status="danger", width=NULL, solidHeader=TRUE
+            actionButton(paste0(mode, id, "_", .organizationDiscard),"", icon = icon("trash fa-2x"), style="display:inline-block; margin:0"),
+            upFUN(actionButton(paste0(mode, id, "_", .organizationUp),"",icon = icon("arrow-circle-up fa-2x"), style="display:inline-block; margin:0")),
+            downFUN(actionButton(paste0(mode, id, "_", .organizationDown),"",icon = icon("arrow-circle-down fa-2x"), style="display:inline-block; margin:0")),
+            actionButton(paste0(mode, id, "_", .organizationModify),"", icon = icon("gear fa-2x"), style="display:inline-block; margin:0"),
+            title=.decode_panel_name(mode, id), status="danger", width=NULL, solidHeader=TRUE
             )
 
         # Coercing to a different box status ('danger' is a placeholder, above).
@@ -148,10 +148,10 @@
 
     for (i in seq_len(nrow(active_panels))) {
         mode <- active_panels$Type[i]
-        ID <- active_panels$ID[i]
+        id <- active_panels$ID[i]
         panel.width <- active_panels$Width[i]
-        param_choices <- memory[[mode]][ID,]
-        .input_FUN <- function(field) { paste0(mode, ID, "_", field) }
+        param_choices <- memory[[mode]][id,]
+        .input_FUN <- function(field) { paste0(mode, id, "_", field) }
 
         # Checking what to do with plot-specific parameters (e.g., brushing, clicking, plot height).
         if (mode!="rowStatTable") { 
@@ -162,7 +162,7 @@
             dblclick <- .input_FUN(.zoomClick)
             clickopt <- .input_FUN(.lassoClick)
             panel_height <- paste0(active_panels$Height[i], "px")
-            panel_name <- paste0(mode, ID)
+            panel_name <- paste0(mode, id)
         }
 
         # Creating the plot fields.
@@ -225,7 +225,7 @@
                                                      choices=active_tab, selected=param_choices[[.featExprXAxisRowTable]]))
                 )
         } else if (mode=="rowStatTable") {
-            obj <- tagList(dataTableOutput(paste0(mode, ID)), uiOutput(.input_FUN("annotation")))
+            obj <- tagList(dataTableOutput(paste0(mode, id)), uiOutput(.input_FUN("annotation")))
         } else if (mode=="rowDataPlot") {
             obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
             plot.param <- list(
@@ -306,14 +306,14 @@
                                             title="Data parameters",
                                             open=param_choices[[.dataParamBoxOpen]]),
                                        plot.param)),
-                .create_visual_box_for_row_plots(mode, ID, param_choices, active_tab, row_covariates),
-                .create_selection_param_box(mode, ID, param_choices, row_selectable)
+                .create_visual_box_for_row_plots(mode, id, param_choices, active_tab, row_covariates),
+                .create_selection_param_box(mode, id, param_choices, row_selectable)
                 )
             )
         } else if (mode=="heatMapPlot") {
             param <- list(do.call(tags$div, c(list(class = "panel-group", role = "tablist"),
                     plot.param,
-                    .create_selection_param_box(mode, ID, param_choices, col_selectable)
+                    .create_selection_param_box(mode, id, param_choices, col_selectable)
                     )
                 )  
             )
@@ -326,10 +326,10 @@
                                        plot.param)),
 
                 # Options for visual parameters.
-                .create_visual_box_for_column_plots(mode, ID, param_choices, active_tab, column_covariates, all_assays, no_rows=nrow(se)==0),
+                .create_visual_box_for_column_plots(mode, id, param_choices, active_tab, column_covariates, all_assays, no_rows=nrow(se)==0),
 
                 # Options for point selection parameters.
-                .create_selection_param_box(mode, ID, param_choices, col_selectable)
+                .create_selection_param_box(mode, id, param_choices, col_selectable)
                 )
             )
         }
@@ -349,7 +349,7 @@
         # Aggregating together everything into a box, and then into a column.
         cur_box <- do.call(box, c(list(obj), param, 
             list(uiOutput(.input_FUN(.panelGeneralInfo)), uiOutput(.input_FUN(.panelLinkInfo))),
-            list(title=.decode_panel_name(mode, ID), solidHeader=TRUE, width=NULL, status = "danger")))
+            list(title=.decode_panel_name(mode, id), solidHeader=TRUE, width=NULL, status = "danger")))
         cur_box <- .coerce_box_status(cur_box, mode)
         cur.row[[row.counter]] <- column(width=panel.width, cur_box, style='padding:3px;') 
         row.counter <- row.counter + 1L
@@ -441,7 +441,7 @@
 #' Create a visual parameter box for column-based plots, i.e., where each sample is a point.
 #'
 #' @param mode String specifying the encoded panel type of the current plot.
-#' @param ID Integer scalar specifying the index of a panel of the specified type, for the current plot.
+#' @param id Integer scalar specifying the index of a panel of the specified type, for the current plot.
 #' @param param_choices A DataFrame with one row, containing the parameter choices for the current plot.
 #' @param active_tab A character vector of decoded names for available row statistics tables.
 #' @param covariates A character vector of column metadata fields.
@@ -473,8 +473,8 @@
 #' @importFrom shiny radioButtons tagList selectInput selectizeInput
 #' checkboxGroupInput
 #' @importFrom colourpicker colourInput
-.create_visual_box_for_column_plots <- function(mode, ID, param_choices, active_tab, covariates, all_assays, no_rows=FALSE) {
-    colorby_field <- paste0(mode, ID, "_", .colorByField)
+.create_visual_box_for_column_plots <- function(mode, id, param_choices, active_tab, covariates, all_assays, no_rows=FALSE) {
+    colorby_field <- paste0(mode, id, "_", .colorByField)
     color_choices <- c(.colorByNothingTitle)
     if (length(covariates)) {
         color_choices <- c(color_choices, .colorByColDataTitle)
@@ -483,9 +483,9 @@
         color_choices <- c(color_choices, .colorByFeatNameTitle)
     }
 
-    pchoice_field <- paste0(mode, ID, "_", .visualParamChoice)
+    pchoice_field <- paste0(mode, id, "_", .visualParamChoice)
     collapseBox(
-        id = paste0(mode, ID, "_", .visualParamBoxOpen),
+        id = paste0(mode, id, "_", .visualParamBoxOpen),
         title = "Visual parameters",
         open = param_choices[[.visualParamBoxOpen]],
         checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE, selected=param_choices[[.visualParamChoice]][[1]],
@@ -496,25 +496,25 @@
                          choices=color_choices, selected=param_choices[[.colorByField]]
                 ),
             .conditional_on_radio(colorby_field, .colorByNothingTitle,
-                colourInput(paste0(mode, ID, "_", .colorByDefaultColor), label=NULL,
+                colourInput(paste0(mode, id, "_", .colorByDefaultColor), label=NULL,
                             value=param_choices[[.colorByDefaultColor]])
                 ),
             .conditional_on_radio(colorby_field, .colorByColDataTitle,
-                selectInput(paste0(mode, ID, "_", .colorByColData), label = NULL,
+                selectInput(paste0(mode, id, "_", .colorByColData), label = NULL,
                             choices=covariates, selected=param_choices[[.colorByColData]])
                 ),
             .conditional_on_radio(colorby_field, .colorByFeatNameTitle,
-                tagList(selectizeInput(paste0(mode, ID, "_", .colorByFeatName), label = NULL, choices = NULL, selected = NULL, multiple = FALSE),
-                        selectInput(paste0(mode, ID, "_", .colorByFeatNameAssay), label=NULL,
+                tagList(selectizeInput(paste0(mode, id, "_", .colorByFeatName), label = NULL, choices = NULL, selected = NULL, multiple = FALSE),
+                        selectInput(paste0(mode, id, "_", .colorByFeatNameAssay), label=NULL,
                                     choices=all_assays, selected=param_choices[[.colorByFeatNameAssay]])),
-                        selectInput(paste0(mode, ID, "_", .colorByRowTable), label = NULL, choices=active_tab,
+                        selectInput(paste0(mode, id, "_", .colorByRowTable), label = NULL, choices=active_tab,
                                     selected=.choose_link(param_choices[[.colorByRowTable]], active_tab, force_default=TRUE))
                 )
             ),
         .conditional_on_check(pchoice_field, .visualParamChoicePointTitle,
-            hr(), .add_point_UI_elements(mode, ID, param_choices)),
+            hr(), .add_point_UI_elements(mode, id, param_choices)),
         .conditional_on_check(pchoice_field, .visualParamChoiceOtherTitle,
-            hr(), .add_other_UI_elements(mode, ID, param_choices))
+            hr(), .add_other_UI_elements(mode, id, param_choices))
         )
 }
 
@@ -523,7 +523,7 @@
 #' Create a visual parameter box for row-based plots, i.e., where each feature is a point.
 #'
 #' @param mode String specifying the encoded panel type of the current plot.
-#' @param ID Integer scalar specifying the index of a panel of the specified type, for the current plot.
+#' @param id Integer scalar specifying the index of a panel of the specified type, for the current plot.
 #' @param param_choices A DataFrame with one row, containing the parameter choices for the current plot.
 #' @param active_tab A character vector of decoded names for available row statistics tables.
 #' @param covariates A character vector of row metadata fields.
@@ -546,13 +546,13 @@
 #' @importFrom shiny radioButtons tagList selectInput selectizeInput
 #' checkboxGroupInput
 #' @importFrom colourpicker colourInput
-.create_visual_box_for_row_plots <- function(mode, ID, param_choices, active_tab, covariates) {
-    colorby_field <- paste0(mode, ID, "_", .colorByField)
+.create_visual_box_for_row_plots <- function(mode, id, param_choices, active_tab, covariates) {
+    colorby_field <- paste0(mode, id, "_", .colorByField)
     color_choices <- c(.colorByNothingTitle, .colorByRowDataTitle, .colorByFeatNameTitle)
 
-    pchoice_field <- paste0(mode, ID, "_", .visualParamChoice)
+    pchoice_field <- paste0(mode, id, "_", .visualParamChoice)
     collapseBox(
-        id = paste0(mode, ID, "_", .visualParamBoxOpen),
+        id = paste0(mode, id, "_", .visualParamBoxOpen),
         title = "Visual parameters",
         open = param_choices[[.visualParamBoxOpen]],
         checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE, selected=param_choices[[.visualParamChoice]][[1]],
@@ -562,25 +562,25 @@
                          choices=color_choices, selected=param_choices[[.colorByField]]
                 ),
             .conditional_on_radio(colorby_field, .colorByNothingTitle,
-                colourInput(paste0(mode, ID, "_", .colorByDefaultColor), label=NULL,
+                colourInput(paste0(mode, id, "_", .colorByDefaultColor), label=NULL,
                             value=param_choices[[.colorByDefaultColor]])
                 ),
             .conditional_on_radio(colorby_field, .colorByRowDataTitle,
-                selectInput(paste0(mode, ID, "_", .colorByRowData), label = NULL,
+                selectInput(paste0(mode, id, "_", .colorByRowData), label = NULL,
                             choices=covariates, selected=param_choices[[.colorByRowData]])
                 ),
             .conditional_on_radio(colorby_field, .colorByFeatNameTitle,
-                tagList(selectizeInput(paste0(mode, ID, "_", .colorByFeatName), label = NULL, selected = NULL, choices = NULL, multiple = FALSE),
-                        selectInput(paste0(mode, ID, "_", .colorByRowTable), label = NULL, choices=active_tab,
+                tagList(selectizeInput(paste0(mode, id, "_", .colorByFeatName), label = NULL, selected = NULL, choices = NULL, multiple = FALSE),
+                        selectInput(paste0(mode, id, "_", .colorByRowTable), label = NULL, choices=active_tab,
                                     selected=.choose_link(param_choices[[.colorByRowTable]], active_tab, force_default=TRUE)),
-                        colourInput(paste0(mode, ID, "_", .colorByFeatNameColor), label=NULL,
+                        colourInput(paste0(mode, id, "_", .colorByFeatNameColor), label=NULL,
                                     value=param_choices[[.colorByFeatNameColor]]))
                 )
             ),
         .conditional_on_check(pchoice_field, .visualParamChoicePointTitle,
-            hr(), .add_point_UI_elements(mode, ID, param_choices)),
+            hr(), .add_point_UI_elements(mode, id, param_choices)),
         .conditional_on_check(pchoice_field, .visualParamChoiceOtherTitle,
-            hr(), .add_other_UI_elements(mode, ID, param_choices))
+            hr(), .add_other_UI_elements(mode, id, param_choices))
         )
 }
 
@@ -589,7 +589,7 @@
 #' Create UI elements for selection of general visual parameters.
 #'
 #' @param mode String specifying the encoded panel type of the current plot.
-#' @param ID Integer scalar specifying the index of a panel of the specified type, for the current plot.
+#' @param id Integer scalar specifying the index of a panel of the specified type, for the current plot.
 #' @param param_choices A DataFrame with one row, containing the parameter choices for the current plot.
 #'
 #' @return
@@ -606,20 +606,20 @@
 #' \code{\link{.create_visual_box_for_row_plots}}
 #'
 #' @importFrom shiny tagList numericInput sliderInput
-.add_point_UI_elements <- function(mode, ID, param_choices) {
+.add_point_UI_elements <- function(mode, id, param_choices) {
     tagList(
-        numericInput(paste0(mode, ID, "_", .plotPointSize), label = "Point size:", value=param_choices[,.plotPointSize]),
-        sliderInput(paste0(mode, ID, "_", .plotPointAlpha), label = "Point opacity", 
+        numericInput(paste0(mode, id, "_", .plotPointSize), label = "Point size:", value=param_choices[,.plotPointSize]),
+        sliderInput(paste0(mode, id, "_", .plotPointAlpha), label = "Point opacity", 
                     min=0.1, max=1, value=param_choices[,.plotPointAlpha])
     )
 }
 
 #' @rdname INTERNAL_add_visual_UI_elements 
 #' @importFrom shiny tagList radioButtons numericInput
-.add_other_UI_elements <- function(mode, ID, param_choices) { 
+.add_other_UI_elements <- function(mode, id, param_choices) { 
     tagList(    
-        numericInput(paste0(mode, ID, "_", .plotFontSize), label = "Font size:", value=param_choices[,.plotFontSize]),
-        radioButtons(paste0(mode, ID, "_", .plotLegendPosition), label = "Legend position:", inline=TRUE,
+        numericInput(paste0(mode, id, "_", .plotFontSize), label = "Font size:", value=param_choices[,.plotFontSize]),
+        radioButtons(paste0(mode, id, "_", .plotLegendPosition), label = "Legend position:", inline=TRUE,
                      choices=c(.plotLegendBottomTitle, .plotLegendRightTitle), 
                      selected=param_choices[,.plotLegendPosition])
     )
@@ -630,7 +630,7 @@
 #' Create a point selection parameter box for all point-based plots.
 #'
 #' @param mode String specifying the encoded panel type of the current plot.
-#' @param ID Integer scalar specifying the index of a panel of the specified type, for the current plot.
+#' @param id Integer scalar specifying the index of a panel of the specified type, for the current plot.
 #' @param param_choices A DataFrame with one row, containing the parameter choices for the current plot.
 #' @param selectable A character vector of decoded names for available transmitting panels.
 #'
@@ -650,14 +650,14 @@
 #' 
 #' @importFrom shiny sliderInput radioButtons selectInput
 #' @importFrom colourpicker colourInput
-.create_selection_param_box <- function(mode, ID, param_choices, selectable) {
-    select_effect <- paste0(mode, ID, "_", .selectEffect)
+.create_selection_param_box <- function(mode, id, param_choices, selectable) {
+    select_effect <- paste0(mode, id, "_", .selectEffect)
 
     collapseBox(
-        id=paste0(mode, ID, "_", .selectParamBoxOpen),
+        id=paste0(mode, id, "_", .selectParamBoxOpen),
         title = "Brushing parameters",
         open = param_choices[[.selectParamBoxOpen]],
-        selectInput(paste0(mode, ID, "_", .selectByPlot),
+        selectInput(paste0(mode, id, "_", .selectByPlot),
                     label = "Receive select from:", 
                     choices=selectable,
                     selected=.choose_link(param_choices[[.selectByPlot]], selectable)),
@@ -667,11 +667,11 @@
                      selected=param_choices[[.selectEffect]]),
 
         .conditional_on_radio(select_effect, .selectColorTitle,
-            colourInput(paste0(mode, ID, "_", .selectColor), label=NULL,
+            colourInput(paste0(mode, id, "_", .selectColor), label=NULL,
                         value=param_choices[[.selectColor]])
             ),
         .conditional_on_radio(select_effect, .selectTransTitle,
-            sliderInput(paste0(mode, ID, "_", .selectTransAlpha), label=NULL,
+            sliderInput(paste0(mode, id, "_", .selectTransAlpha), label=NULL,
                         min=0, max=1, value=param_choices[[.selectTransAlpha]])
             )
         )
@@ -681,7 +681,7 @@
 #'
 #' Creates a conditional UI element that appears upon a certain choice in a radio button or checkbox group selection.
 #'
-#' @param id String containing the ID of the UI element for the radio buttons or checkbox group.
+#' @param id String containing the id of the UI element for the radio buttons or checkbox group.
 #' @param choice String containing the choice on which to show the conditional elements.
 #' @param ... UI elements to show conditionally.
 #'

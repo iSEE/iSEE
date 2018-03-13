@@ -131,8 +131,8 @@
 
     for (i in seq_along(all_kids)) {
         type <- enc$Type[i]
-        ID <- enc$ID[i]
-        pObjects$memory[[type]][ID, .selectByPlot] <- .noSelection
+        id <- enc$ID[i]
+        pObjects$memory[[type]][id, .selectByPlot] <- .noSelection
     }
 
     # Destroying self memory of any transmitting panel.

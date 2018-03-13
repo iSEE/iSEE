@@ -39,10 +39,10 @@
         node_names[[mode]] <- cur_panels
 
         cur_edges <- vector("list",N)
-        for (i in seq_len(N)) {
-            cur_parent <- memory[[mode]][i, .selectByPlot]
+        for (id in seq_len(N)) {
+            cur_parent <- memory[[mode]][id, .selectByPlot]
             if (cur_parent!=.noSelection) {
-                cur_edges[[i]] <- c(.decoded2encoded(cur_parent), cur_panels[i])
+                cur_edges[[id]] <- c(.decoded2encoded(cur_parent), cur_panels[id])
             }
         }
         edges[[mode]] <- cur_edges

@@ -39,10 +39,10 @@
         node_names[[mode]] <- cur_panels
 
         cur_edges <- vector("list",N)
-        for (i in seq_len(N)) {
-            cur_parent <- memory[[mode]][i, .selectByPlot]
+        for (id in seq_len(N)) {
+            cur_parent <- memory[[mode]][id, .selectByPlot]
             if (cur_parent!=.noSelection) {
-                cur_edges[[i]] <- c(.decoded2encoded(cur_parent), cur_panels[i])
+                cur_edges[[id]] <- c(.decoded2encoded(cur_parent), cur_panels[id])
             }
         }
         edges[[mode]] <- cur_edges
@@ -131,8 +131,8 @@
 
     for (i in seq_along(all_kids)) {
         type <- enc$Type[i]
-        ID <- enc$ID[i]
-        pObjects$memory[[type]][ID, .selectByPlot] <- .noSelection
+        id <- enc$ID[i]
+        pObjects$memory[[type]][id, .selectByPlot] <- .noSelection
     }
 
     # Destroying self memory of any transmitting panel.

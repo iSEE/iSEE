@@ -31,10 +31,10 @@
         N <- nrow(memory[[mode]])
         cur_panels <- sprintf("%s%i", mode, seq_len(N))
     
-        for (i in seq_len(N)) {
-            tab_name <- .check_for_tab(mode, i, memory, .colorByField, .colorByFeatNameTitle, .colorByRowTable)
+        for (id in seq_len(N)) {
+            tab_name <- .check_for_tab(mode, id, memory, .colorByField, .colorByFeatNameTitle, .colorByRowTable)
             if (!is.null(tab_name)) {
-                table_links[[tab_name]]$color <- c(table_links[[tab_name]]$color, cur_panels[i])
+                table_links[[tab_name]]$color <- c(table_links[[tab_name]]$color, cur_panels[id])
             }
         }
     }
@@ -42,16 +42,16 @@
     # Adding links for x- and y-axes.
     N <- nrow(memory$featExprPlot)
     cur_panels <- sprintf("featExprPlot%i", seq_len(N))
-    for (i in seq_len(N)) {
-        tab_name <- .check_for_tab("featExprPlot", i, memory, .featExprXAxis, .featExprXAxisFeatNameTitle, .featExprXAxisRowTable)
+    for (id in seq_len(N)) {
+        tab_name <- .check_for_tab("featExprPlot", id, memory, .featExprXAxis, .featExprXAxisFeatNameTitle, .featExprXAxisRowTable)
         if (!is.null(tab_name)) {
-            table_links[[tab_name]]$xaxis <- c(table_links[[tab_name]]$xaxis, cur_panels[i])
+            table_links[[tab_name]]$xaxis <- c(table_links[[tab_name]]$xaxis, cur_panels[id])
         }
         
-        dec_tab_name <- memory[["featExprPlot"]][i, .featExprYAxisRowTable]
+        dec_tab_name <- memory[["featExprPlot"]][id, .featExprYAxisRowTable]
         if (dec_tab_name!=.noSelection) {
             tab_name <- .decoded2encoded(dec_tab_name)            
-            table_links[[tab_name]]$yaxis <- c(table_links[[tab_name]]$yaxis, cur_panels[i])
+            table_links[[tab_name]]$yaxis <- c(table_links[[tab_name]]$yaxis, cur_panels[id])
         }
     }
   

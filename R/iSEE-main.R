@@ -137,10 +137,9 @@ iSEE <- function(
   tab_select_col <- .safe_field_name("Selected", colnames(gene_data))
 
   # Defining the maximum number of plots.
-  memory <- .setup_memory(
-    se,
-    redDimArgs,colDataArgs,featExprArgs,rowStatArgs,rowDataArgs,heatMapArgs,
-    redDimMax, colDataMax, featExprMax, rowStatMax, rowDataMax, heatMapMax)
+  memory <- .setup_memory(se,
+        redDimArgs,colDataArgs,featExprArgs,rowStatArgs,rowDataArgs,heatMapArgs,
+        redDimMax, colDataMax, featExprMax, rowStatMax, rowDataMax, heatMapMax)
 
   # Defining the initial elements to be plotted.
   active_panels <- .setup_initial(initialPanels, memory)
@@ -261,11 +260,9 @@ iSEE <- function(
   #nocov start
   iSEE_server <- function(input, output, session) {
     all_names <- list()
-    for (mode in c(
-      "redDimPlot", "featExprPlot", "colDataPlot",
-      "rowDataPlot", "rowStatTable", "heatMapPlot")) {
-      max_plots <- nrow(memory[[mode]])
-      all_names[[mode]] <- sprintf("%s%i", mode, seq_len(max_plots))
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot", "rowStatTable", "heatMapPlot")) {
+        max_plots <- nrow(memory[[mode]])
+        all_names[[mode]] <- sprintf("%s%i", mode, seq_len(max_plots))
     }
     all_names <- unlist(all_names)
     empty_list <- vector("list", length(all_names))
@@ -289,21 +286,19 @@ iSEE <- function(
         rerendered = 1L
     )
 
-    for (mode in c(
-      "redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot",
-      "rowStatTable", "heatMapPlot")) {
-      max_plots <- nrow(pObjects$memory[[mode]])
-      for (i in seq_len(max_plots)) {
-        rObjects[[paste0(mode, i)]] <- 1L
-        rObjects[[paste0(mode, i, "_", .panelLinkInfo)]] <- 1L
-        rObjects[[paste0(mode, i, "_", .panelGeneralInfo)]] <- 1L
-      }
+    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot", "rowStatTable", "heatMapPlot")) {
+        max_plots <- nrow(pObjects$memory[[mode]])
+        for (id in seq_len(max_plots)) {
+            rObjects[[paste0(mode, id)]] <- 1L
+            rObjects[[paste0(mode, id, "_", .panelLinkInfo)]] <- 1L
+            rObjects[[paste0(mode, id, "_", .panelGeneralInfo)]] <- 1L
+        }
     }
 
     mode <- "heatMapPlot"
     max_plots <- nrow(pObjects$memory[[mode]])
-    for (i in seq_len(max_plots)) {
-        rObjects[[paste0(mode, i, "_", .heatMapLegend)]] <- 1L
+    for (id in seq_len(max_plots)) {
+        rObjects[[paste0(mode, id, "_", .heatMapLegend)]] <- 1L
     }
 
     # Help and documentation-related observers.
@@ -413,17 +408,17 @@ iSEE <- function(
     })
 
     # Note: we need "local" so that each item gets its own number. Without it, the value
-    # of i in the renderPlot() will be the same across all instances, because
+    # of 'id' in the renderPlot() will be the same across all instances, because
     # of when the expression is evaluated.
 
     for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowStatTable", "rowDataPlot", "heatMapPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
-        for (i in seq_len(max_plots)) {
+        for (id in seq_len(max_plots)) {
             local({
                 mode0 <- mode
-                i0 <- i
-                prefix <- paste0(mode0, i0, "_")
-                panel_name <- paste0(mode0, i0)
+                id0 <- id
+                prefix <- paste0(mode0, id0, "_")
+                panel_name <- paste0(mode0, id0)
                 max_plots0 <- max_plots
 
                 # Panel removal.
@@ -438,18 +433,18 @@ iSEE <- function(
                         .destroy_table(pObjects, panel_name)
                     } else {
                         .destroy_selection_panel(pObjects, panel_name)
-                        .delete_table_links(mode0, i0, pObjects)
+                        .delete_table_links(mode0, id0, pObjects)
                     }
 
                     # Triggering re-rendering of the UI via change to active_panels.
-                    index <- which(current_type & all_active$ID==i0)
+                    index <- which(current_type & all_active$ID==id0)
                     rObjects$active_panels <- rObjects$active_panels[-index,]
                }, ignoreInit=TRUE)
 
                 # Panel shifting, up and down.
                 observeEvent(input[[paste0(prefix, .organizationUp)]], {
                     all_active <- rObjects$active_panels
-                    index <- which(all_active$Type==mode0 & all_active$ID==i0)
+                    index <- which(all_active$Type==mode0 & all_active$ID==id0)
                     if (index!=1L) {
                         reindex <- seq_len(nrow(all_active))
                         reindex[index] <- reindex[index]-1L
@@ -460,7 +455,7 @@ iSEE <- function(
 
                 observeEvent(input[[paste0(prefix, .organizationDown)]], {
                     all_active <- rObjects$active_panels
-                    index <- which(all_active$Type==mode0 & all_active$ID==i0)
+                    index <- which(all_active$Type==mode0 & all_active$ID==id0)
                     if (index!=nrow(all_active)) {
                         reindex <- seq_len(nrow(all_active))
                         reindex[index] <- reindex[index]+1L
@@ -472,7 +467,7 @@ iSEE <- function(
                 # Panel modification options.
                 observeEvent(input[[paste0(prefix, .organizationModify)]], {
                     all_active <- rObjects$active_panels
-                    index <- which(all_active$Type==mode0 & all_active$ID==i0)
+                    index <- which(all_active$Type==mode0 & all_active$ID==id0)
                     cur_width <- all_active$Width[index]
                     cur_height <- all_active$Height[index]
 
@@ -481,7 +476,7 @@ iSEE <- function(
                                     min=width_limits[1], max=width_limits[2], value=cur_width, step=1),
                         sliderInput(paste0(prefix, .organizationHeight), label="Height",
                                     min=height_limits[1], max=height_limits[2], value=cur_height, step=50),
-                        title=paste(.decode_panel_name(mode0, i0), "panel parameters"),
+                        title=paste(.decode_panel_name(mode0, id0), "panel parameters"),
                         easyClose=TRUE, size="m", footer=NULL
                         )
                     )
@@ -490,7 +485,7 @@ iSEE <- function(
                 width_name <- paste0(prefix, .organizationWidth)
                 observeEvent(input[[width_name]], {
                     all_active <- rObjects$active_panels
-                    index <- which(all_active$Type==mode0 & all_active$ID==i0)
+                    index <- which(all_active$Type==mode0 & all_active$ID==id0)
                     cur.width <- all_active$Width[index]
                     new.width <- input[[width_name]]
                     if (!isTRUE(all.equal(new.width, cur.width))) {
@@ -501,7 +496,7 @@ iSEE <- function(
                 height_name <- paste0(prefix, .organizationHeight)
                 observeEvent(input[[height_name]], {
                     all_active <- rObjects$active_panels
-                    index <- which(all_active$Type==mode0 & all_active$ID==i0)
+                    index <- which(all_active$Type==mode0 & all_active$ID==id0)
                     cur.height <- all_active$Height[index]
                     new.height <- input[[height_name]]
                     if (!isTRUE(all.equal(new.height, cur.height))) {
@@ -518,16 +513,16 @@ iSEE <- function(
 
     for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
-        for (i in seq_len(max_plots)) {
+        for (id in seq_len(max_plots)) {
             for (panel in c(.dataParamBoxOpen, .visualParamBoxOpen, .selectParamBoxOpen)) {
                 local({
                     mode0 <- mode
-                    i0 <- i
+                    id0 <- id
                     panel0 <- panel
 
-                    open_field <- paste0(mode0, i0, "_", panel0)
+                    open_field <- paste0(mode0, id0, "_", panel0)
                     observeEvent(input[[open_field]], {
-                        pObjects$memory[[mode0]][[panel0]][i0] <- input[[open_field]]
+                        pObjects$memory[[mode0]][[panel0]][id0] <- input[[open_field]]
                     })
                 })
             }
@@ -536,16 +531,16 @@ iSEE <- function(
 
     # Panel opening/closing observers for heat map plots.
     max_plots <- nrow(pObjects$memory$heatMapPlot)
-    for (i in seq_len(max_plots)) {
+    for (id in seq_len(max_plots)) {
         for (panel in c(.heatMapFeatNameBoxOpen, .heatMapColDataBoxOpen, .selectParamBoxOpen)) {
             local({
                 mode0 <- "heatMapPlot"
-                i0 <- i
+                id0 <- id
                 panel0 <- panel
 
-                open_field <- paste0(mode0, i0, "_", panel0)
+                open_field <- paste0(mode0, id0, "_", panel0)
                 observeEvent(input[[open_field]], {
-                    pObjects$memory[[mode0]][[panel0]][i0] <- input[[open_field]]
+                    pObjects$memory[[mode0]][[panel0]][id0] <- input[[open_field]]
                 })
             })
         }
@@ -553,16 +548,16 @@ iSEE <- function(
 
     # Same for the tables.
     max_tabs <- nrow(pObjects$memory$rowStatTable)
-    for (i in seq_len(max_tabs)) {
+    for (id in seq_len(max_tabs)) {
         local({
             mode0 <- "rowStatTable"
-            i0 <- i
-            tab_name <- paste0(mode0, i0)
+            id0 <- id
+            tab_name <- paste0(mode0, id0)
             prefix <- paste0(tab_name, "_")
 
             select_open_field <- paste0(prefix, .selectParamBoxOpen)
             observeEvent(input[[select_open_field]], {
-                pObjects$memory[[mode0]][[.selectParamBoxOpen]][i0] <- input[[select_open_field]]
+                pObjects$memory[[mode0]][[.selectParamBoxOpen]][id0] <- input[[select_open_field]]
             })
         })
     }
@@ -573,11 +568,11 @@ iSEE <- function(
 
     for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
-        for (i in seq_len(max_plots)) {
+        for (id in seq_len(max_plots)) {
             local({
                 mode0 <- mode
-                i0 <- i
-                plot_name <- paste0(mode0, i0)
+                id0 <- id
+                plot_name <- paste0(mode0, id0)
                 prefix <- paste0(plot_name, "_")
 
                 ###############
@@ -585,7 +580,7 @@ iSEE <- function(
                 # Brush choice observer.
                 select_plot_field <- paste0(prefix, .selectByPlot)
                 observeEvent(input[[select_plot_field]], {
-                    old_transmitter <- pObjects$memory[[mode0]][i0, .selectByPlot]
+                    old_transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
                     new_transmitter <- input[[select_plot_field]]
                     
                     # Determining whether the new and old transmitting plot have selections.
@@ -604,7 +599,7 @@ iSEE <- function(
                     daggy <- is_dag(simplify(tmp, remove.loops=TRUE))
                     self_restrict <- new_encoded==plot_name &&
                         new_encoded!=.noSelection &&
-                        pObjects$memory[[mode0]][i0, .selectEffect]==.selectRestrictTitle
+                        pObjects$memory[[mode0]][id0, .selectEffect]==.selectRestrictTitle
                     
                     if (!daggy || self_restrict) {
                         if (!daggy) {
@@ -612,13 +607,13 @@ iSEE <- function(
                         } else if (self_restrict){
                             showNotification("selecting to self is not compatible with 'Restrict'", type="error")
                         }
-                        pObjects$memory[[mode0]][i0, .selectByPlot] <- old_transmitter
+                        pObjects$memory[[mode0]][id0, .selectByPlot] <- old_transmitter
                         updateSelectInput(session, select_plot_field, selected=old_transmitter)
                         return(NULL)
                     }
                     
                     pObjects$selection_links <- tmp
-                    pObjects$memory[[mode0]][i0, .selectByPlot] <- new_transmitter
+                    pObjects$memory[[mode0]][id0, .selectByPlot] <- new_transmitter
                     
                     # Update the elements reporting the links between plots.
                     for (relinked in setdiff(c(old_encoded, new_encoded, plot_name), .noSelection)) {
@@ -636,8 +631,8 @@ iSEE <- function(
                     
                     # Triggering replotting of children, if the current panel is set to restrict;
                     # and we have a selection, so that there was already some selection in the children.
-                    if (pObjects$memory[[mode0]][i0, .selectEffect]==.selectRestrictTitle
-                        && .any_point_selection(mode0, i0, pObjects$memory)) {
+                    if (pObjects$memory[[mode0]][id0, .selectEffect]==.selectRestrictTitle
+                        && .any_point_selection(mode0, id0, pObjects$memory)) {
                         children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
                         for (child_plot in children) {
                             rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
@@ -651,20 +646,20 @@ iSEE <- function(
                 select_effect_field <- paste0(prefix, .selectEffect)
                 observeEvent(input[[select_effect_field]], {
                     cur_effect <- input[[select_effect_field]]
-                    old_effect <- pObjects$memory[[mode0]][i0, .selectEffect]
+                    old_effect <- pObjects$memory[[mode0]][id0, .selectEffect]
                     
                     # Storing the new choice into memory, unless self-selecting to restrict.
                     # In which case, we trigger an error and reset to the previous choice.
                     if (cur_effect == .selectRestrictTitle
-                        && pObjects$memory[[mode0]][i0, .selectByPlot]==.decode_panel_name(mode0, i0)) {
+                        && pObjects$memory[[mode0]][id0, .selectByPlot]==.decode_panel_name(mode0, id0)) {
                         showNotification("selecting to self is not compatible with 'Restrict'", type="error")
                         updateRadioButtons(session, select_effect_field, selected=old_effect)
                         return(NULL)
                     }
-                    pObjects$memory[[mode0]][i0, .selectEffect] <- cur_effect
+                    pObjects$memory[[mode0]][id0, .selectEffect] <- cur_effect
                     
                     # Avoiding replotting if there was no transmitting selection.
-                    transmitter <- pObjects$memory[[mode0]][i0, .selectByPlot]
+                    transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
                     if (transmitter==.noSelection) {
                         return(NULL)
                     }
@@ -679,7 +674,7 @@ iSEE <- function(
                     # Triggering replotting of children, if we are set to or from restrict;
                     # and we have a selection, so there was already some selecting in the children.
                     if ((cur_effect==.selectRestrictTitle || old_effect==.selectRestrictTitle)
-                        && .any_point_selection(mode0, i0, pObjects$memory)) {
+                        && .any_point_selection(mode0, id0, pObjects$memory)) {
                         children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
                         for (child_plot in children) {
                             rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
@@ -693,15 +688,15 @@ iSEE <- function(
                 brush_id <- paste0(prefix, .brushField)
                 observeEvent(input[[brush_id]], {
                     cur_brush <- input[[brush_id]]
-                    old_brush <- pObjects$memory[[mode0]][,.brushData][[i0]]
-                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .brushData, cur_brush)
+                    old_brush <- pObjects$memory[[mode0]][,.brushData][[id0]]
+                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .brushData, cur_brush)
                     
                     # If the brushes have the same coordinates, we don't bother replotting.
                     replot <- !.identical_brushes(cur_brush, old_brush)
                     
                     # Destroying lasso points upon brush (replotting if existing lasso was not NULL).
-                    replot <- replot || !is.null(pObjects$memory[[mode0]][,.lassoData][[i0]])
-                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .lassoData, NULL)
+                    replot <- replot || !is.null(pObjects$memory[[mode0]][,.lassoData][[id0]])
+                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .lassoData, NULL)
                     if (!replot) {
                         return(NULL)
                     }
@@ -721,16 +716,16 @@ iSEE <- function(
 
     # Brush choice observers for the tables.
     max_tabs <- nrow(pObjects$memory$rowStatTable)
-    for (i in seq_len(max_tabs)) {
+    for (id in seq_len(max_tabs)) {
         local({
             mode0 <- "rowStatTable"
-            i0 <- i
-            tab_name <- paste0(mode0, i0)
+            id0 <- id
+            tab_name <- paste0(mode0, id0)
             prefix <- paste0(tab_name, "_")
 
             select_plot_field <- paste0(prefix, .selectByPlot)
             observeEvent(input[[select_plot_field]], {
-                old_transmitter <- pObjects$memory[[mode0]][i0, .selectByPlot]
+                old_transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
                 new_transmitter <- input[[select_plot_field]]
 
                 # Determining whether the new and old transmitting plot have selections. 
@@ -743,7 +738,7 @@ iSEE <- function(
 
                 # Updating the graph (no need for DAG protection here, as tables do not transmit selections).
                 pObjects$selection_links <- .choose_new_selection_source(pObjects$selection_links, tab_name, new_encoded, old_encoded)
-                pObjects$memory[[mode0]][i0, .selectByPlot] <- new_transmitter
+                pObjects$memory[[mode0]][id0, .selectByPlot] <- new_transmitter
 
                 # Update the elements reporting the links between plots.
                 for (relinked in c(old_encoded, new_encoded, tab_name)) {
@@ -765,17 +760,17 @@ iSEE <- function(
 
     # Brush choice observers for the heatmaps.
     max_tabs <- nrow(pObjects$memory$heatMapPlot)
-    for (i in seq_len(max_tabs)) {
+    for (id in seq_len(max_tabs)) {
         local({
             mode0 <- "heatMapPlot"
-            i0 <- i
-            plot_name <- paste0(mode0, i0)
+            id0 <- id
+            plot_name <- paste0(mode0, id0)
             prefix <- paste0(plot_name, "_")
  
             # Brush choice observer.
             select_plot_field <- paste0(prefix, .selectByPlot)
             observeEvent(input[[select_plot_field]], {
-                old_transmitter <- pObjects$memory[[mode0]][i0, .selectByPlot]
+                old_transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
                 new_transmitter <- input[[select_plot_field]]
                 
                 # Determining whether the new and old transmitting plot have selections. 
@@ -788,7 +783,7 @@ iSEE <- function(
                 
                 # Updating the graph (no need to wrorry about DAGs here, as heatmaps do not transmit).
                 pObjects$selection_links <- .choose_new_selection_source(pObjects$selection_links, plot_name, new_encoded, old_encoded)
-                pObjects$memory[[mode0]][i0, .selectByPlot] <- new_transmitter
+                pObjects$memory[[mode0]][id0, .selectByPlot] <- new_transmitter
                 
                 # Update the elements reporting the links between plots.
                 for (relinked in c(old_encoded, new_encoded, plot_name)) {
@@ -812,11 +807,11 @@ iSEE <- function(
             select_effect_field <- paste0(prefix, .selectEffect)
             observeEvent(input[[select_effect_field]], {
                 cur_effect <- input[[select_effect_field]]
-                old_effect <- pObjects$memory[[mode0]][i0, .selectEffect]
-                pObjects$memory[[mode0]][i0, .selectEffect] <- cur_effect
+                old_effect <- pObjects$memory[[mode0]][id0, .selectEffect]
+                pObjects$memory[[mode0]][id0, .selectEffect] <- cur_effect
 
                 # Avoiding replotting if there was no transmitting selection.
-                transmitter <- pObjects$memory[[mode0]][i0, .selectByPlot]
+                transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
                 if (transmitter==.noSelection) {
                     return(NULL)
                 }
@@ -837,21 +832,21 @@ iSEE <- function(
 
     for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
-        for (i in seq_len(max_plots)) {
+        for (id in seq_len(max_plots)) {
             local({
                 mode0 <- mode
-                i0 <- i
-                plot_name <- paste0(mode0, i0)
+                id0 <- id
+                plot_name <- paste0(mode0, id0)
                 prefix <- paste0(plot_name, "_")
 
                 click_field <- paste0(prefix, .lassoClick)
                 observeEvent(input[[click_field]], {
                     cur_click <- input[[click_field]]
-                    previous <- pObjects$memory[[mode0]][,.lassoData][[i0]]
+                    previous <- pObjects$memory[[mode0]][,.lassoData][[id0]]
                     bump_children <- FALSE
 
                     # Don't add to waypoints if a brush exists in memory (as they are mutually exclusive).
-                    if (!is.null(pObjects$memory[[mode0]][,.brushData][[i0]]) ||
+                    if (!is.null(pObjects$memory[[mode0]][,.brushData][[id0]]) ||
                         !is.null(input[[paste0(prefix, .brushField)]])) {
                         return(NULL)
                     }
@@ -879,7 +874,7 @@ iSEE <- function(
                         attr(updated, "closed") <- FALSE
                     }
 
-                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .lassoData, updated)
+                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .lassoData, updated)
 
                     # Trigger replotting of self, to draw the lasso waypoints.
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
@@ -908,11 +903,11 @@ iSEE <- function(
 
     for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
-        for (i in seq_len(max_plots)) {
+        for (id in seq_len(max_plots)) {
             local({
                 mode0 <- mode
-                i0 <- i
-                plot_name <- paste0(mode0, i0)
+                id0 <- id
+                plot_name <- paste0(mode0, id0)
                 prefix <- paste0(plot_name, "_")
 
                 brush_id <- paste0(prefix, .brushField)
@@ -928,12 +923,12 @@ iSEE <- function(
                         # Brush is already NULL at this point, so there is no need to reset it.
                         # However, we do need to manually trigger replotting. We don't move this outside the
                         # "else", to avoid two reactive updates of unknown priorities.
-                        new_coords <- pObjects$memory[[mode0]][,.zoomData][[i0]]
+                        new_coords <- pObjects$memory[[mode0]][,.zoomData][[id0]]
 
-                        lasso_data <- pObjects$memory[[mode0]][,.lassoData][[i0]]
+                        lasso_data <- pObjects$memory[[mode0]][,.lassoData][[id0]]
                         if (!is.null(lasso_data)) {
                             # We wipe out any lasso waypoints if they are present, and trigger replotting with the same scope.
-                            pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .lassoData, NULL)
+                            pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .lassoData, NULL)
                             rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                             
                         } else {
@@ -945,7 +940,7 @@ iSEE <- function(
                         }
                     }
 
-                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .zoomData, new_coords)
+                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .zoomData, new_coords)
                 })
             })
         }
@@ -953,11 +948,11 @@ iSEE <- function(
 
     # Brush structure observers for the heatmaps.
     max_plots <- nrow(pObjects$memory$heatMapPlot)
-    for (i in seq_len(max_plots)) {
+    for (id in seq_len(max_plots)) {
         local({
             mode0 <- "heatMapPlot"
-            i0 <- i
-            plot_name <- paste0(mode0, i0)
+            id0 <- id
+            plot_name <- paste0(mode0, id0)
             prefix <- paste0(plot_name, "_")
 
             brush_id <- paste0(prefix, .brushField)
@@ -968,19 +963,19 @@ iSEE <- function(
                 if (!is.null(brush)) {
                     new_coords <- c(xmin=brush$xmin, xmax=brush$xmax, ymin=brush$ymin, ymax=brush$ymax)
                     session$resetBrush(brush_id) # This does NOT trigger replotting, as there is no brush observer for the heatmap.
-                    if (is.null(pObjects$memory$heatMapPlot[i0,][[.zoomData]][[1]])) { # if we haven't already zoomed in
-                        inp_rows <- seq_along(pObjects$memory$heatMapPlot[i0,][[.heatMapFeatName]][[1]])
+                    if (is.null(pObjects$memory$heatMapPlot[id0,][[.zoomData]][[1]])) { # if we haven't already zoomed in
+                        inp_rows <- seq_along(pObjects$memory$heatMapPlot[id0,][[.heatMapFeatName]][[1]])
                     } else {
-                        inp_rows <- pObjects$memory$heatMapPlot[i0,][[.zoomData]][[1]]
+                        inp_rows <- pObjects$memory$heatMapPlot[id0,][[.zoomData]][[1]]
                     }
 
                     # Update data and force replotting.
                     # Is the heatmap receiving a color brush (in that case the number of annotations should be increased by 1)
-                    is_receiving_color_selection <- pObjects$memory$heatMapPlot[i0,][[.selectByPlot]]!=.noSelection && 
-                        pObjects$memory$heatMapPlot[i0,][[.selectEffect]]==.selectColorTitle && 
-                        .transmitted_selection(pObjects$memory$heatMapPlot[i0, .selectByPlot], pObjects$memory)$select
+                    is_receiving_color_selection <- pObjects$memory$heatMapPlot[id0,][[.selectByPlot]]!=.noSelection && 
+                        pObjects$memory$heatMapPlot[id0,][[.selectEffect]]==.selectColorTitle && 
+                        .transmitted_selection(pObjects$memory$heatMapPlot[id0, .selectByPlot], pObjects$memory)$select
 
-                    n.annot <- length(pObjects$memory$heatMapPlot[,.heatMapColData][[i0]]) + is_receiving_color_selection
+                    n.annot <- length(pObjects$memory$heatMapPlot[,.heatMapColData][[id0]]) + is_receiving_color_selection
                     ymin <- .transform_global_to_local_y(new_coords["ymin"], n.genes=length(inp_rows), n.annot=n.annot)
                     ymax <- .transform_global_to_local_y(new_coords["ymax"], n.genes=length(inp_rows), n.annot=n.annot)
                     new_rows <- inp_rows[ymin:ymax]
@@ -989,7 +984,7 @@ iSEE <- function(
                     new_rows <- NULL # Zoom out.
                 }
 
-                pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, .zoomData, new_rows)
+                pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .zoomData, new_rows)
                 rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
             }, ignoreInit=TRUE)
         })
@@ -1003,7 +998,7 @@ iSEE <- function(
     names(feature_choices) <- rownames(se)
 
     max_plots <- nrow(pObjects$memory$featExprPlot)
-    for (i in seq_len(max_plots)) {
+    for (id in seq_len(max_plots)) {
         for (axis in c("xaxis", "yaxis")) {
             if (axis=="xaxis") {
                 axis_name_choice <- .featExprYAxisFeatName
@@ -1012,16 +1007,16 @@ iSEE <- function(
             }
 
             local({
-                i0 <- i
+                id0 <- id
                 mode0 <- "featExprPlot"
                 field0 <- axis_name_choice
-                cur_field <- paste0(mode0, i0, "_", field0)
+                cur_field <- paste0(mode0, id0, "_", field0)
 
                 observe({
                     force(rObjects$rerendered)
 
                     updateSelectizeInput(session, cur_field, label = NULL, choices = feature_choices, server = TRUE,
-                                         selected = pObjects$memory[[mode0]][i0, field0][[1]])
+                                         selected = pObjects$memory[[mode0]][id0, field0][[1]])
                 }, priority=-1) # Lower priority so that it executes AFTER the UI rerender.
             })
         }
@@ -1029,32 +1024,32 @@ iSEE <- function(
 
     for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
-        for (i in seq_len(max_plots)) {
+        for (id in seq_len(max_plots)) {
             local({
-                i0 <- i
+                id0 <- id
                 mode0 <- mode
                 field0 <- .colorByFeatName
-                cur_field <- paste0(mode0, i0, "_", field0)
+                cur_field <- paste0(mode0, id0, "_", field0)
 
                 observe({
                     force(rObjects$rerendered)
                     updateSelectizeInput(session, cur_field, label = NULL, choices = feature_choices, server = TRUE,
-                                         selected = pObjects$memory[[mode0]][i0, field0][[1]])
+                                         selected = pObjects$memory[[mode0]][id0, field0][[1]])
                 }, priority=-1) # Lower priority so that it executes AFTER the UI rerender.
             })
         }
     }
 
     max_plots <- nrow(pObjects$memory$heatMapPlot)
-    for (i in seq_len(max_plots)) {
+    for (id in seq_len(max_plots)) {
         local({
-            i0 <- i
+            id0 <- id
             mode0 <- "heatMapPlot"
 
             observe({
                 force(rObjects$rerendered)
-                updateSelectizeInput(session, paste0(mode0, i0, "_", .heatMapFeatName), choices = feature_choices,
-                                     server = TRUE, selected = pObjects$memory[[mode0]][i0, .heatMapFeatName][[1]])
+                updateSelectizeInput(session, paste0(mode0, id0, "_", .heatMapFeatName), choices = feature_choices,
+                                     server = TRUE, selected = pObjects$memory[[mode0]][id0, .heatMapFeatName][[1]])
             }, priority=-1) # Lower priority so that it executes AFTER the UI rerender.
         })
     }
@@ -1089,22 +1084,22 @@ iSEE <- function(
         nonfundamental <- c(nonfundamental, .selectColor, .selectTransAlpha, .plotPointSize,
                             .plotPointAlpha, .plotFontSize, .plotLegendPosition, .colorByDefaultColor)
 
-        for (i in seq_len(max_plots)) {
+        for (id in seq_len(max_plots)) {
             # Observers for the non-fundamental parameter options.
             for (field in nonfundamental) {
                 local({
-                    i0 <- i
+                    id0 <- id
                     mode0 <- mode
                     field0 <- field
-                    plot_name <- paste0(mode0, i0)
+                    plot_name <- paste0(mode0, id0)
                     cur_field <- paste0(plot_name, "_", field0)
 
                     observeEvent(input[[cur_field]], {
                         matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
-                        if (identical(matched_input, pObjects$memory[[mode0]][[field0]][i0])) {
+                        if (identical(matched_input, pObjects$memory[[mode0]][[field0]][id0])) {
                             return(NULL)
                         }
-                        pObjects$memory[[mode0]][[field0]][i0] <- matched_input
+                        pObjects$memory[[mode0]][[field0]][id0] <- matched_input
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     }, ignoreInit=TRUE)
                 })
@@ -1113,19 +1108,19 @@ iSEE <- function(
             # Observers for non-fundamental list parameters.
             for (field in c(.visualParamChoice)) {
                 local({
-                    i0 <- i
+                    id0 <- id
                     mode0 <- mode
                     field0 <- field
-                    plot_name <- paste0(mode0, i0)
+                    plot_name <- paste0(mode0, id0)
                     cur_field <- paste0(plot_name, "_", field0)
 
                     observeEvent(input[[cur_field]], {
-                        existing <- pObjects$memory[[mode0]][,field0][[i0]]
+                        existing <- pObjects$memory[[mode0]][,field0][[id0]]
                         incoming <- as(input[[cur_field]], typeof(existing))
                         if (identical(incoming, existing)) {
                             return(NULL)
                         }
-                        pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, field0, incoming)
+                        pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, field0, incoming)
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     }, ignoreInit=TRUE, ignoreNULL=FALSE)
                 })
@@ -1134,41 +1129,41 @@ iSEE <- function(
             # Observers for the fundamental plot parameters.
             for (field in protected) {
                 local({
-                    i0 <- i
+                    id0 <- id
                     mode0 <- mode
                     field0 <- field
-                    plot_name <- paste0(mode0, i0)
+                    plot_name <- paste0(mode0, id0)
                     cur_field <- paste0(plot_name, "_", field0)
 
                     observeEvent(input[[cur_field]], {
                         matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
-                        if (identical(matched_input, pObjects$memory[[mode0]][[field0]][i0])) {
+                        if (identical(matched_input, pObjects$memory[[mode0]][[field0]][id0])) {
                             return(NULL)
                         }
-                        pObjects$memory[[mode0]][[field0]][i0] <- matched_input
-                        .regenerate_unselected_plot(mode0, i0, pObjects, rObjects, input, session)
+                        pObjects$memory[[mode0]][[field0]][id0] <- matched_input
+                        .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
                      }, ignoreInit=TRUE, priority=-2) # executes AFTER the update selectize.
                 })
             }
 
             local({
-                i0 <- i
+                id0 <- id
                 mode0 <- mode
                 FUN0 <- FUN
-                plot_name <- paste0(mode0, i0)
+                plot_name <- paste0(mode0, id0)
 
                 # Observers for the linked color by feature name. This also updates the table_links information.
                 observe({
-                    old_tab <- pObjects$memory[[mode0]][i0, .colorByRowTable]
+                    old_tab <- pObjects$memory[[mode0]][id0, .colorByRowTable]
 
-                    replot <- .setup_table_observer(mode0, i0, input, pObjects, .colorByField, .colorByFeatNameTitle, 
+                    replot <- .setup_table_observer(mode0, id0, input, pObjects, .colorByField, .colorByFeatNameTitle, 
                                                     .colorByFeatName, .colorByRowTable, param='color')
                     if (replot) {
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     }
 
                     # Update the elements reporting the links between tables and plots.
-                    new_tab <- pObjects$memory[[mode0]][i0, .colorByRowTable]
+                    new_tab <- pObjects$memory[[mode0]][id0, .colorByRowTable]
                     tab_names <- .decoded2encoded(setdiff(c(old_tab, new_tab), .noSelection))
                     for (relinked in c(plot_name, tab_names)) {
                         relink_field <- paste0(relinked, "_", .panelLinkInfo)
@@ -1181,14 +1176,14 @@ iSEE <- function(
                 output[[plot_name]] <- renderPlot({
                     force(rObjects[[plot_name]])
                     rObjects[[gen_field]] <- .increment_counter(isolate(rObjects[[gen_field]]))
-                    p.out <- FUN0(i0, pObjects$memory, pObjects$coordinates, se, colormap)
+                    p.out <- FUN0(id0, pObjects$memory, pObjects$coordinates, se, colormap)
                     pObjects$commands[[plot_name]] <- p.out$cmd_list
                     pObjects$coordinates[[plot_name]] <- p.out$xy[,c("X", "Y")]
                     p.out$plot
                 })
 
                 # Describing some general panel information.
-                dec_name <- .decode_panel_name(mode0, i0)
+                dec_name <- .decode_panel_name(mode0, id0)
                 output[[gen_field]] <- renderUI({
                     force(rObjects[[gen_field]])
                     selected <- .get_selected_points(rownames(pObjects$coordinates[[plot_name]]), dec_name, 
@@ -1215,7 +1210,7 @@ iSEE <- function(
     # Feature expression plots need some careful handling, as we need to update the
     # table links and destroy a brush/lasso whenever an x/y-axis-specifying parameter changes.
     max_plots <- nrow(pObjects$memory$featExprPlot)
-    for (i in seq_len(max_plots)) {
+    for (id in seq_len(max_plots)) {
         for (axis in c("xaxis", "yaxis")) {
             if (axis=="yaxis") {
                 axis_choice <- NA
@@ -1230,9 +1225,9 @@ iSEE <- function(
             }
 
             local({
-                i0 <- i
+                id0 <- id
                 mode0 <- "featExprPlot"
-                plot_name <- paste0(mode0, i0)
+                plot_name <- paste0(mode0, id0)
 
                 axis0 <- axis
                 axis_choice0 <- axis_choice
@@ -1241,16 +1236,16 @@ iSEE <- function(
                 axis_feat0 <- axis_feat
 
                 observe({
-                    old_tab <- pObjects$memory[[mode0]][i0, axis_tab_choice0]
+                    old_tab <- pObjects$memory[[mode0]][id0, axis_tab_choice0]
 
                     ## Deciding whether to replot based on the table.
-                    replot <- .setup_table_observer(mode0, i0, input, pObjects, axis_choice0, axis_tab_title0, axis_feat0, axis_tab_choice0, param=axis0)
+                    replot <- .setup_table_observer(mode0, id0, input, pObjects, axis_choice0, axis_tab_title0, axis_feat0, axis_tab_choice0, param=axis0)
                     if (replot) {
-                        .regenerate_unselected_plot(mode0, i0, pObjects, rObjects, input, session)
+                        .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
                     }
 
                     # Update the links reporting between tables and plots.
-                    new_tab <- pObjects$memory[[mode0]][i0, axis_tab_choice0]
+                    new_tab <- pObjects$memory[[mode0]][id0, axis_tab_choice0]
                     tab_names <- .decoded2encoded(setdiff(c(old_tab, new_tab), .noSelection))
                     for (relinked in c(plot_name, tab_names)) {
                         relink_field <- paste0(relinked, "_", .panelLinkInfo)
@@ -1266,24 +1261,24 @@ iSEE <- function(
     #######################################################################
 
     # Load the gene level data
-    for (i in seq_len(nrow(memory$rowStatTable))) {
+    for (id in seq_len(nrow(memory$rowStatTable))) {
       local({
-        i0 <- i
-        panel_name <- paste0("rowStatTable", i0)
+        id0 <- id
+        panel_name <- paste0("rowStatTable", id0)
 
         output[[panel_name]] <- renderDataTable({
             force(rObjects$active_panels) # to trigger recreation when the number of plots is changed.
             force(rObjects[[panel_name]])
 
-            chosen <- pObjects$memory$rowStatTable[i0, .rowStatSelected]
-            search <- pObjects$memory$rowStatTable[i0, .rowStatSearch]
-            search_col <- pObjects$memory$rowStatTable[,.rowStatColSearch][[i0]]
+            chosen <- pObjects$memory$rowStatTable[id0, .rowStatSelected]
+            search <- pObjects$memory$rowStatTable[id0, .rowStatSearch]
+            search_col <- pObjects$memory$rowStatTable[,.rowStatColSearch][[id0]]
             search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
 
             # Adding a "Selected" field to the plotting data, which responds to point selection input.
             # Note that this AUTOMATICALLY updates search_col upon re-rendering via the observer below.
             # The code below keeps search_col valid for the number of columns (i.e., with or without selection).
-            selected <- .get_selected_points(rownames(gene_data), pObjects$memory$rowStatTable[i0,.selectByPlot], 
+            selected <- .get_selected_points(rownames(gene_data), pObjects$memory$rowStatTable[id0,.selectByPlot], 
                                              pObjects$memory, pObjects$coordinates)
             tmp_gene_data <- gene_data
             if (!is.null(selected)) { 
@@ -1312,11 +1307,11 @@ iSEE <- function(
             if (length(chosen)==0L) {
                 return(NULL)
             }
-            pObjects$memory$rowStatTable[i0, .rowStatSelected] <- chosen
+            pObjects$memory$rowStatTable[id0, .rowStatSelected] <- chosen
 
-            col_kids <- pObjects$table_links[[i0]][["color"]]
-            x_kids <- pObjects$table_links[[i0]][["xaxis"]]
-            y_kids <- pObjects$table_links[[i0]][["yaxis"]]
+            col_kids <- pObjects$table_links[[id0]][["color"]]
+            x_kids <- pObjects$table_links[[id0]][["xaxis"]]
+            y_kids <- pObjects$table_links[[id0]][["yaxis"]]
 
             # Triggering the replotting of all color children that are NOT xy children.
             # This is done indirectly, by triggering the observer for the color parameters upon updateSelectizeInput.
@@ -1343,7 +1338,7 @@ iSEE <- function(
         observe({
             search <- input[[search_field]]
             if (length(search)) {
-                pObjects$memory$rowStatTable[i0, .rowStatSearch] <- search
+                pObjects$memory$rowStatTable[id0, .rowStatSearch] <- search
             }
         })
 
@@ -1352,7 +1347,7 @@ iSEE <- function(
             search <- input[[colsearch_field]]
             if (length(search)) {
                 pObjects$memory$rowStatTable <- .update_list_element(
-                    pObjects$memory$rowStatTable, i0, .rowStatColSearch, search)
+                    pObjects$memory$rowStatTable, id0, .rowStatColSearch, search)
             }
         })
 
@@ -1379,16 +1374,16 @@ iSEE <- function(
     #######################################################################
 
     max_plots <- nrow(pObjects$memory$heatMapPlot)
-    for (i in seq_len(max_plots)) {
+    for (id in seq_len(max_plots)) {
         local({
             mode0 <- "heatMapPlot"
-            i0 <- i
-            plot_name <- paste0(mode0, i0)
+            id0 <- id
+            plot_name <- paste0(mode0, id0)
 
             # Triggering an update of the selected elements.
             import_button <- paste0(plot_name, "_", .heatMapImport)
             observeEvent(input[[import_button]], {
-                origin <- pObjects$memory[[mode0]][i0, .heatMapImportSource]
+                origin <- pObjects$memory[[mode0]][id0, .heatMapImportSource]
                 if (origin==.noSelection) { 
                     return(NULL)
                 }
@@ -1407,7 +1402,7 @@ iSEE <- function(
                     incoming <- utils::head(incoming, limit)
                 }
 
-                combined <- union(pObjects$memory[[mode0]][i0, .heatMapFeatName][[1]], incoming)
+                combined <- union(pObjects$memory[[mode0]][id0, .heatMapFeatName][[1]], incoming)
                 updateSelectizeInput(session, paste0(plot_name, "_", .heatMapFeatName), choices = feature_choices,
                                      server = TRUE, selected = combined)
             }, ignoreInit=TRUE)
@@ -1417,10 +1412,10 @@ iSEE <- function(
             cur_field <- paste0(plot_name, "_", field0)
             observeEvent(input[[cur_field]], {
                 matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
-                if (identical(input[[cur_field]], pObjects$memory[[mode0]][i0, field0])) {
+                if (identical(input[[cur_field]], pObjects$memory[[mode0]][id0, field0])) {
                     return(NULL)
                 }
-                pObjects$memory[[mode0]][[field0]][i0] <- matched_input
+                pObjects$memory[[mode0]][[field0]][id0] <- matched_input
             }, ignoreInit=TRUE)
 
             # Defining the rendered plot, and saving the coordinates.
@@ -1430,7 +1425,7 @@ iSEE <- function(
                 force(rObjects[[plot_name]])
                 rObjects[[legend_field]] <- .increment_counter(isolate(rObjects[[legend_field]]))
 
-                p.out <- .make_heatMapPlot(i0, pObjects$memory, pObjects$coordinates, se, colormap)
+                p.out <- .make_heatMapPlot(id0, pObjects$memory, pObjects$coordinates, se, colormap)
                 pObjects$commands[[plot_name]] <- p.out$cmd_list
                 pObjects$coordinates[[plot_name]] <- p.out$xy # Caching the expression matrix.
                 pObjects$cached_plots[[plot_name]] <- p.out$legends # Caching the legend plot for downstream use.
@@ -1448,7 +1443,7 @@ iSEE <- function(
             link_field <- paste0(plot_name, "_", .panelLinkInfo)
             output[[link_field]] <- renderUI({
                 force(rObjects[[link_field]])
-                select_in <- pObjects$memory$heatMapPlot[[i0, .selectByPlot]]
+                select_in <- pObjects$memory$heatMapPlot[[id0, .selectByPlot]]
                 if (select_in==.noSelection) {
                     return(NULL)
                 } 
@@ -1468,19 +1463,19 @@ iSEE <- function(
         # Saving list-based values.
         for (field in c(.heatMapColData, .heatMapFeatName, .heatMapCenterScale)) {
             local({
-                i0 <- i
+                id0 <- id
                 mode0 <- "heatMapPlot"
                 field0 <- field
-                plot_name <- paste0(mode0, i0)
+                plot_name <- paste0(mode0, id0)
                 cur_field <- paste0(plot_name, "_", field0)
 
                 observeEvent(input[[cur_field]], {
-                    existing <- pObjects$memory[[mode0]][,field0][[i0]]
+                    existing <- pObjects$memory[[mode0]][,field0][[id0]]
                     incoming <- as(input[[cur_field]], typeof(existing))
                     if (identical(incoming, existing)) {
                         return(NULL)
                     }
-                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], i0, field0, incoming)
+                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, field0, incoming)
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                 }, ignoreInit=TRUE, ignoreNULL=(field0==.heatMapFeatName))
 
@@ -1492,18 +1487,18 @@ iSEE <- function(
         # Saving other bits and pieces.
         for (field in c(.heatMapAssay, .heatMapLower, .heatMapUpper, .heatMapCenteredColors)) {
             local({
-                i0 <- i
+                id0 <- id
                 mode0 <- "heatMapPlot"
                 field0 <- field
-                plot_name <- paste0(mode0, i0)
+                plot_name <- paste0(mode0, id0)
                 cur_field <- paste0(plot_name, "_", field0)
 
                 observeEvent(input[[cur_field]], {
                     matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
-                    if (identical(input[[cur_field]], pObjects$memory[[mode0]][i0, field0])) {
+                    if (identical(input[[cur_field]], pObjects$memory[[mode0]][id0, field0])) {
                         return(NULL)
                     }
-                    pObjects$memory[[mode0]][[field0]][i0] <- matched_input
+                    pObjects$memory[[mode0]][[field0]][id0] <- matched_input
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                 }, ignoreInit=TRUE)
             })

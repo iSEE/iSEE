@@ -580,8 +580,21 @@ sce1 <- scater::runPCA(sce1, exprs_values = "exprs")
 irlba_out <- irlba(assay(sce1, "exprs"))
 tsne_out <- Rtsne(irlba_out$v, pca = FALSE, perplexity = 50, verbose = TRUE)
 reducedDim(sce1, "TSNE") <- tsne_out$Y
+```
+
+To demonstrate a fully featured app, that also enables row data plot panels, let us add gene-level metadata.
+For instance, the mean log[2]-expression of each gene, the count of samples in which each gene was detected, and the proportion of samples in which each gene was detected :
+
+```{r rowData_sce1, eval=FALSE}
+num_detected <- rowSums(assay(sce1, "exprs") > 0)
+rowData(sce1) <- DataFrame(
+  mean_log_exprs = rowMeans(log2(assay(sce1, "exprs") + 1)),
+  num_detected = num_detected,
+  percent_detected = num_detected * 100 / ncol(sce1)
+)
 if (interactive()) { iSEE(sce1) }
 ```
+
 
 ## Using online file sharing systems
 

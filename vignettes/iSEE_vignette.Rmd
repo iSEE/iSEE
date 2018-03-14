@@ -276,7 +276,7 @@ In the absence of any user-defined colormap, the application falls back to a set
 
 Colormaps are defined functions that take one argument: the number of colors that the colormap should return.
 This is particularly important for continuous variables, where the number of colors defines the number of breaks evenly placed across the range of values represented by the color scale, and thereby the resolution between individual colors.
-Conversely, discrete colormap functions may ignore their argument, as the number of factor levels is known in advance, and impose a fixed number of corresponding colors.
+Conversely, discrete colormap functions may ignore their argument, as the number of factor levels is typically known in advance, and impose a fixed number of corresponding colors.
 Furthermore, discrete colormaps may typically return a named vector of colors, with the name declaring which factor level each color is assigned to.
 
 ### Specific and shared colormaps
@@ -563,7 +563,7 @@ eh1 <- ehub[["EH1"]] # an ExpressionSet
 se1 <- as(eh1, "SummarizedExperiment")
 sce1 <- as(se1, "SingleCellExperiment")
 sce1 <- scater::runPCA(sce1, exprs_values = "exprs")
-irlba_out <- irlba(exprs(sce1))
+irlba_out <- irlba(assay(sce1, "exprs"))
 tsne_out <- Rtsne(irlba_out$v, pca = FALSE, perplexity = 50, verbose = TRUE)
 reducedDim(sce1, "TSNE") <- tsne_out$Y
 if (interactive()) { iSEE(sce1) }

@@ -493,10 +493,9 @@ The genes to show on the y-axis in the two plots can be specified via the `geneE
 In this case, we want to modify the `YAxis` and `YAxisFeatName` defaults for the two plots:
 
 ```{r fexArg}
-fexArg <- DataFrame(
-  YAxis = "Gene text", 
-  YAxisFeatName = c("0610009L18Rik", "0610009B22Rik")
-)
+fexArg <- featExprPlotDefaults(sce, 2)
+fexArg$YAxis <- "Gene text"
+fexArg$YAxisFeatName <- c("0610009L18Rik", "0610009B22Rik")
 app <- iSEE(sce, initialPanels = init, featExprArgs = fexArg)
 ```
 

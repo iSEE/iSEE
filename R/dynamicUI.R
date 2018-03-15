@@ -655,14 +655,14 @@
 
     collapseBox(
         id=paste0(mode, id, "_", .selectParamBoxOpen),
-        title = "Brushing parameters",
+        title = "Selection parameters",
         open = param_choices[[.selectParamBoxOpen]],
         selectInput(paste0(mode, id, "_", .selectByPlot),
-                    label = "Receive select from:", 
+                    label = "Receive selection from:", 
                     choices=selectable,
                     selected=.choose_link(param_choices[[.selectByPlot]], selectable)),
 
-        radioButtons(select_effect, label="Brush effect:", inline=TRUE,
+        radioButtons(select_effect, label="Selection effect:", inline=TRUE,
                      choices=c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle),
                      selected=param_choices[[.selectEffect]]),
 

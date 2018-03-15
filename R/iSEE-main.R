@@ -362,7 +362,7 @@ iSEE <- function(
           title = "Graph of inter-panel links", size = "l",
           fade = TRUE, footer = NULL, easyClose = TRUE,
           renderPlot({
-            .snapshot_graph_linkedpanels(rObjects, pObjects)
+            .snapshot_graph_linkedpanels(rObjects$active_panels, pObjects)
           })
         )
       )
@@ -577,7 +577,7 @@ iSEE <- function(
 
                 ###############
 
-                # Brush choice observer.
+                # Selection choice observer.
                 select_plot_field <- paste0(prefix, .selectByPlot)
                 observeEvent(input[[select_plot_field]], {
                     old_transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
@@ -642,7 +642,7 @@ iSEE <- function(
 
                 ###############
 
-                # Brush effect observer.
+                # Selection effect observer.
                 select_effect_field <- paste0(prefix, .selectEffect)
                 observeEvent(input[[select_effect_field]], {
                     cur_effect <- input[[select_effect_field]]
@@ -684,27 +684,27 @@ iSEE <- function(
                 
                 ###############
 
-                # Brush structure observers.
+                # Linked selection structure observers.
                 brush_id <- paste0(prefix, .brushField)
                 observeEvent(input[[brush_id]], {
                     cur_brush <- input[[brush_id]]
                     old_brush <- pObjects$memory[[mode0]][,.brushData][[id0]]
                     pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .brushData, cur_brush)
                     
-                    # If the brushes have the same coordinates, we don't bother replotting.
+                    # If the selections have the same coordinates, we don't bother replotting.
                     replot <- !.identical_brushes(cur_brush, old_brush)
                     
-                    # Destroying lasso points upon brush (replotting if existing lasso was not NULL).
+                    # Destroying lasso points upon Shiny brush (replotting if existing lasso was not NULL).
                     replot <- replot || !is.null(pObjects$memory[[mode0]][,.lassoData][[id0]])
                     pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .lassoData, NULL)
                     if (!replot) {
                         return(NULL)
                     }
                     
-                    # Trigger replotting of self, to draw a more persistent brushing box.
+                    # Trigger replotting of self, to draw a more persistent selection shape.
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     
-                    # Trigger replotting of all dependent plots that receive this brush.
+                    # Trigger replotting of all dependent plots that receive this selection
                     children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
                     for (child_plot in children) {
                         rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
@@ -714,7 +714,7 @@ iSEE <- function(
         }
     }
 
-    # Brush choice observers for the tables.
+    # Linked selection choice observers for the tables.
     max_tabs <- nrow(pObjects$memory$rowStatTable)
     for (id in seq_len(max_tabs)) {
         local({
@@ -758,7 +758,7 @@ iSEE <- function(
         })
     }
 
-    # Brush choice observers for the heatmaps.
+    # Linked selection choice observers for the heatmaps.
     max_tabs <- nrow(pObjects$memory$heatMapPlot)
     for (id in seq_len(max_tabs)) {
         local({
@@ -767,7 +767,7 @@ iSEE <- function(
             plot_name <- paste0(mode0, id0)
             prefix <- paste0(plot_name, "_")
  
-            # Brush choice observer.
+            # Selection choice observer.
             select_plot_field <- paste0(prefix, .selectByPlot)
             observeEvent(input[[select_plot_field]], {
                 old_transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
@@ -803,7 +803,7 @@ iSEE <- function(
 
             ###############
 
-            # Brush effect observer.
+            # Selection effect observer.
             select_effect_field <- paste0(prefix, .selectEffect)
             observeEvent(input[[select_effect_field]], {
                 cur_effect <- input[[select_effect_field]]
@@ -845,7 +845,7 @@ iSEE <- function(
                     previous <- pObjects$memory[[mode0]][,.lassoData][[id0]]
                     bump_children <- FALSE
 
-                    # Don't add to waypoints if a brush exists in memory (as they are mutually exclusive).
+                    # Don't add to waypoints if a Shiny brush exists in memory (as they are mutually exclusive).
                     if (!is.null(pObjects$memory[[mode0]][,.brushData][[id0]]) ||
                         !is.null(input[[paste0(prefix, .brushField)]])) {
                         return(NULL)
@@ -861,7 +861,7 @@ iSEE <- function(
                         attr(updated, "closed") <- TRUE
                         bump_children <- TRUE
 
-                        # Checking out whether it's flipped.
+                        # Checking out whether coordinates are flipped.
                         attr(updated, "flipped") <- (cur_click$mapping$x=="Y" && cur_click$mapping$y=="X")
 
                     } else {
@@ -896,7 +896,7 @@ iSEE <- function(
     #######################################################################
 
     # The interpretation of the double-click is somewhat complicated.
-    # - If you double-click on a brush, you zoom it while wiping the brush.
+    # - If you double-click on a Shiny brush, you zoom it while wiping the (Shiny) brush.
     # - If you double-click outside a brush, you wipe the brush (this is done automatically).
     #   If an open lasso is present, it is deleted.
     #   If there was no open lasso, you zoom out.
@@ -920,7 +920,7 @@ iSEE <- function(
                         new_coords <- c(xmin=brush$xmin, xmax=brush$xmax, ymin=brush$ymin, ymax=brush$ymax)
                         session$resetBrush(brush_id) # This should auto-trigger replotting above.
                     } else {
-                        # Brush is already NULL at this point, so there is no need to reset it.
+                        # brush is already NULL at this point, so there is no need to reset it.
                         # However, we do need to manually trigger replotting. We don't move this outside the
                         # "else", to avoid two reactive updates of unknown priorities.
                         new_coords <- pObjects$memory[[mode0]][,.zoomData][[id0]]
@@ -946,7 +946,7 @@ iSEE <- function(
         }
     }
 
-    # Brush structure observers for the heatmaps.
+    # Linked selection structure observers for the heatmaps.
     max_plots <- nrow(pObjects$memory$heatMapPlot)
     for (id in seq_len(max_plots)) {
         local({

@@ -494,7 +494,6 @@ In this case, we want to modify the `YAxis` and `YAxisFeatName` defaults for the
 
 ```{r fexArg}
 fexArg <- featExprPlotDefaults(sce, 2)
-fexArg$YAxis <- "Gene text"
 fexArg$YAxisFeatName <- c("0610009L18Rik", "0610009B22Rik")
 app <- iSEE(sce, initialPanels = init, featExprArgs = fexArg)
 ```

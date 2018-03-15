@@ -141,7 +141,7 @@ This defaults to \code{list("Color")} to show only the coloring parameters, but 
 \item{\code{PointSize}:}{Numeric, the size of the points.
 Defaults to 1.}
 \item{\code{PointAlpha}:}{Numeric, what level of transparency should be used for the points?
-Ignored when \code{BrushEffect="Transparent"} and the transmitting plot has a non-\code{NULL} selection of points.
+Ignored when \code{SelectEffect="Transparent"} and the transmitting plot has a non-\code{NULL} selection of points.
 Defaults to 1.}
 \item{\code{FontSize}:}{Numeric, size of the font.
 Defaults to 1.}

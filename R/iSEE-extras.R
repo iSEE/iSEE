@@ -671,7 +671,6 @@ height_limits <- c(400L, 1000L)
         eval(parse(text=commands), envir=eval_env)
         done <- c(done, commands)
         commands <- list()
-        print(colnames(rowData(eval_env$se)))
     }
     for (x in spikeNames(tmp_se)) {
         tmp_se <- eval_env$se
@@ -721,8 +720,6 @@ height_limits <- c(400L, 1000L)
         }
     }
     
-    print(done)
-    print(colnames(rowData(tmp_se)))
     return(list(cmds=unlist(done), object=tmp_se))
 }
 

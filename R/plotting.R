@@ -898,7 +898,7 @@ plot.data$Y <- tmp;")
 #' \code{\link{.create_plot}}
 #'
 #' @importFrom ggplot2 ggplot geom_tile coord_cartesian theme_bw theme
-#' scale_size_area scale_x_discrete scale_y_discrete guides
+#' scale_x_discrete scale_y_discrete guides
 .square_plot <- function(plot_data, param_choices, se, x_lab, y_lab, color_lab, title, by_row = FALSE) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
@@ -910,7 +910,6 @@ plot.data$Y <- tmp;")
     color_set <- !is.null(plot_data$ColorBy)
     new_aes <- .build_aes(color = color_set, alt=c(x="jitteredX", y="jitteredY"))
     plot_cmds[["points"]] <- unlist(.create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set))
-    plot_cmds[["scale"]] <- "scale_size_area(limits = c(0, 1), max_size = 30) +"
 
     # Defining the color commands.
     if (by_row) { 
@@ -940,7 +939,6 @@ plot.data$Y <- tmp;")
     plot_cmds[["scale_y"]] <- "scale_y_discrete(drop = FALSE) +"
   
     # Do not display the size legend (saves plot space, as well)
-    plot_cmds[["guides"]] <- "guides(size = 'none') +"
     plot_cmds[["theme_base"]] <- "theme_bw() +"
     plot_cmds[["theme_custom"]] <- sprintf("theme(legend.position = '%s', legend.box = 'vertical', 
     axis.text.x = element_text(angle = 90, size=%s), 

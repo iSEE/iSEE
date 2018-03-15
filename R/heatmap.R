@@ -154,7 +154,7 @@
             sprintf("p%i <- ggplot(plot.data, aes(x = X, y = 1)) +", i),
             "geom_raster(aes(fill = SelectBy)) +",
             "labs(x='', y='') +",
-            "scale_y_continuous(breaks=1, labels='Brushed points') +",
+            "scale_y_continuous(breaks=1, labels='Selected points') +",
             sprintf("scale_fill_manual(values=c(`TRUE`='%s', `FALSE`='white')) +",param_choices[[.selectColor]]),
             "theme(axis.text.x=element_blank(), axis.ticks=element_blank(), axis.title.x=element_blank(), 
     rect=element_blank(), line=element_blank(), axis.title.y=element_blank(), 

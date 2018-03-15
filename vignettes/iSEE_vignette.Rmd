@@ -581,7 +581,7 @@ reducedDim(sce1, "TSNE") <- tsne_out$Y
 ```
 
 To demonstrate a fully featured app, that also enables row data plot panels, let us add gene-level metadata.
-For instance, the mean log[2]-expression of each gene, the count of samples in which each gene was detected, and the proportion of samples in which each gene was detected :
+For instance, the mean log~2~-transformed expression of each gene, the count of samples in which each gene was detected, and the proportion of samples in which each gene was detected :
 
 ```{r rowData_sce1, eval=FALSE}
 num_detected <- rowSums(assay(sce1, "exprs") > 0)

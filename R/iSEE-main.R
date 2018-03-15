@@ -362,7 +362,7 @@ iSEE <- function(
           title = "Graph of inter-panel links", size = "l",
           fade = TRUE, footer = NULL, easyClose = TRUE,
           renderPlot({
-            .snapshot_graph_linkedpanels(rObjects, pObjects)
+            .snapshot_graph_linkedpanels(rObjects$active_panels, pObjects)
           })
         )
       )

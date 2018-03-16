@@ -752,7 +752,7 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.create_plot}}
 #'
 #' @importFrom ggplot2 ggplot geom_violin coord_cartesian theme_bw theme
-#' coord_flip scale_x_discrete
+#' coord_flip scale_x_discrete scale_y_discrete
 .violin_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, title, horizontal = FALSE, by_row = FALSE, range_all = FALSE) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +" # do NOT put aes here, it does not play nice with shiny brushes.

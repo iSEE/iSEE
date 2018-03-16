@@ -684,14 +684,14 @@ iSEE <- function(
                 
                 ###############
 
-                # Linked selection structure observers.
+                # Shiny brush structure observers. ----
                 brush_id <- paste0(prefix, .brushField)
                 observeEvent(input[[brush_id]], {
                     cur_brush <- input[[brush_id]]
                     old_brush <- pObjects$memory[[mode0]][,.brushData][[id0]]
                     pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .brushData, cur_brush)
                     
-                    # If the selections have the same coordinates, we don't bother replotting.
+                    # If the Shiny brushes have the same coordinates, we don't bother replotting.
                     replot <- !.identical_brushes(cur_brush, old_brush)
                     
                     # Destroying lasso points upon Shiny brush (replotting if existing lasso was not NULL).
@@ -701,10 +701,10 @@ iSEE <- function(
                         return(NULL)
                     }
                     
-                    # Trigger replotting of self, to draw a more persistent selection shape.
+                    # Trigger replotting of self, to draw a more persistent selection Shiny brush visual
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     
-                    # Trigger replotting of all dependent plots that receive this selection
+                    # Trigger replotting of all dependent plots that receive this Shiny brush
                     children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
                     for (child_plot in children) {
                         rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
@@ -714,7 +714,7 @@ iSEE <- function(
         }
     }
 
-    # Linked selection choice observers for the tables.
+    # Linked selection choice observers for the tables. ----
     max_tabs <- nrow(pObjects$memory$rowStatTable)
     for (id in seq_len(max_tabs)) {
         local({
@@ -896,7 +896,7 @@ iSEE <- function(
     #######################################################################
 
     # The interpretation of the double-click is somewhat complicated.
-    # - If you double-click on a Shiny brush, you zoom it while wiping the (Shiny) brush.
+    # - If you double-click on a Shiny brush, you zoom it while wiping the brush.
     # - If you double-click outside a brush, you wipe the brush (this is done automatically).
     #   If an open lasso is present, it is deleted.
     #   If there was no open lasso, you zoom out.
@@ -946,7 +946,7 @@ iSEE <- function(
         }
     }
 
-    # Linked selection structure observers for the heatmaps.
+    # Brush structure observers for the heatmaps.
     max_plots <- nrow(pObjects$memory$heatMapPlot)
     for (id in seq_len(max_plots)) {
         local({

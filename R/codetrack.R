@@ -200,8 +200,8 @@
 .snapshot_graph_linkedpanels <- function(active_panels, pObjects) {
   cur_plots <- sprintf("%s%i", active_panels$Type, active_panels$ID)
   not_used <- setdiff(V(pObjects$selection_links)$name,cur_plots)
-  currgraph <- delete.vertices(pObjects$selection_links, not_used)
-  currgraph <- set_vertex_attr(currgraph,"plottype", value = sub("[0-9]+$","",V(currgraph)$name))
+  curgraph <- delete.vertices(pObjects$selection_links, not_used)
+  curgraph <- set_vertex_attr(curgraph,"plottype", value = sub("[0-9]+$","",V(curgraph)$name))
   
   # Incorporating table links as well.
   tbl_objs <- active_panels[active_panels$Type=="rowStatTable",]
@@ -222,12 +222,12 @@
   }
  
   # Creating the plot. 
-  plot(currgraph,
+  plot(curgraph,
        edge.arrow.size = .8,
        vertex.label.cex = 1.3,
        vertex.label.family = "Helvetica",
        vertex.label.color = "black",
        vertex.label.dist = 2.5,
-       vertex.color = panel_colors[V(currgraph)$plottype])
+       vertex.color = panel_colors[V(curgraph)$plottype])
 }  
 

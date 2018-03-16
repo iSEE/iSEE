@@ -803,13 +803,17 @@ names(.all_aes_values) <- .all_aes_names
     } else {
         pd <- ifelse(range_all, "plot.data.all", "plot.data")
         plot_cmds[["coord"]] <- sprintf(
-          "%s(xlim = NULL, ylim = range(%s$Y, na.rm=TRUE), expand = TRUE) +",
+          "%s(ylim = range(%s$Y, na.rm=TRUE), expand = TRUE) +",
           coord_cmd, pd)
     }
   
     plot_cmds[["scale_color"]] <- color_scale_cmd
-    plot_cmds[["scale_x"]] <-
-      "scale_x_discrete(drop = FALSE) +" # preserving the x-axis range.
+    if (horizontal) { 
+        plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +" # preserving the x-axis range.
+    } else {
+        plot_cmds[["scale_y"]] <- "scale_y_discrete(drop = FALSE) +" # preserving the y-axis range.
+    }
+
     plot_cmds[["theme_base"]] <- "theme_bw() +"
     plot_cmds[["theme_custom"]] <- sprintf(
 "theme(legend.position = '%s', legend.box = 'vertical',

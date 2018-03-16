@@ -808,7 +808,7 @@ names(.all_aes_values) <- .all_aes_names
     }
   
     plot_cmds[["scale_color"]] <- color_scale_cmd
-    if (horizontal) { 
+    if (!horizontal) { 
         plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +" # preserving the x-axis range.
     } else {
         plot_cmds[["scale_y"]] <- "scale_y_discrete(drop = FALSE) +" # preserving the y-axis range.

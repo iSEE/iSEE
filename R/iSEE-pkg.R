@@ -44,7 +44,7 @@
 #' @author Federico Marini \email{marinif@@uni-mainz.de}
 #' @author Kevin Rue-Albrecht \email{kevin.rue-albrecht@@kennedy.ox.ac.uk}
 #'
-#' Maintainer: John or Jane Doe \email{tobeclarified@@who.does.it}
+#' Maintainer: Charlotte Soneson \email{charlotte.soneson@@uzh.ch}
 #' @name iSEE-pkg
 #' @docType package
 NULL

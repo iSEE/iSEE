@@ -946,7 +946,7 @@ iSEE <- function(
         }
     }
 
-    # Brush structure observers for the heatmaps.
+    # Zoom observers for the heatmaps.
     max_plots <- nrow(pObjects$memory$heatMapPlot)
     for (id in seq_len(max_plots)) {
         local({

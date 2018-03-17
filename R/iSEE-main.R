@@ -1157,22 +1157,12 @@ iSEE <- function(
 
                 # Observers for the linked color by feature name. This also updates the table_links information.
                 observe({
-                    old_tab <- pObjects$memory[[mode0]][id0, .colorByRowTable]
-
-                    replot <- .setup_table_observer(mode0, id0, input, pObjects, .colorByField, .colorByFeatNameTitle, 
-                                                    .colorByFeatName, .colorByRowTable, param='color')
+                    replot <- .setup_table_observer(mode0, id0, pObjects, rObjects, input, session, 
+                                                    by_field = .colorByField, title = .colorByFeatNameTitle, 
+                                                    feat_field = .colorByFeatName, tab_field = .colorByRowTable, 
+                                                    feat_choices = feature_choices, param='color')
                     if (replot) {
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                    }
-
-                    # Update the elements reporting the links between tables and plots.
-                    new_tab <- pObjects$memory[[mode0]][id0, .colorByRowTable]
-                    if (old_tab!=new_tab) {
-                        tab_names <- .decoded2encoded(setdiff(c(old_tab, new_tab), .noSelection))
-                        for (relinked in c(plot_name, tab_names)) {
-                            relink_field <- paste0(relinked, "_", .panelLinkInfo)
-                            rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
-                        }
                     }
                 })
 
@@ -1241,22 +1231,12 @@ iSEE <- function(
                 axis_feat0 <- axis_feat
 
                 observe({
-                    old_tab <- pObjects$memory[[mode0]][id0, axis_tab_choice0]
-
-                    ## Deciding whether to replot based on the table.
-                    replot <- .setup_table_observer(mode0, id0, input, pObjects, axis_choice0, axis_tab_title0, axis_feat0, axis_tab_choice0, param=axis0)
+                    replot <- .setup_table_observer(mode0, id0, pObjects, rObjects, input, session, 
+                                                    by_field = axis_choice0, title = axis_tab_title0, 
+                                                    feat_field = axis_feat0, tab_field = axis_tab_choice0, 
+                                                    feat_choices = feature_choices, param=axis0)
                     if (replot) {
                         .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
-                    }
-
-                    # Update the links reporting between tables and plots.
-                    new_tab <- pObjects$memory[[mode0]][id0, axis_tab_choice0]
-                    if (old_tab!=new_tab) { 
-                        tab_names <- .decoded2encoded(setdiff(c(old_tab, new_tab), .noSelection))
-                        for (relinked in c(plot_name, tab_names)) {
-                            relink_field <- paste0(relinked, "_", .panelLinkInfo)
-                            rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
-                        }
                     }
                 })
             })

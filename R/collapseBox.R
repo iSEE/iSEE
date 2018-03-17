@@ -20,7 +20,7 @@
 #' Specifically, it does not seem to behave well with conditional elements inside the box,
 #' and it also does needs a \code{Depends:} relationship with \pkg{shinyBS}.
 #'
-#' For these reasons, we created our own collapsible box, taking code from \code{shinyBS} where appropraite.
+#' For these reasons, we created our own collapsible box, taking code from \code{shinyBS} where appropriate.
 #' The underlying Javascript code for this object is present in \code{inst/www} and is attached to the search path for Shiny resources upon loading \pkg{iSEE}.
 #'
 #' @author Aaron Lun

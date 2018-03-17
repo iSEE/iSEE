@@ -752,7 +752,7 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.create_plot}}
 #'
 #' @importFrom ggplot2 ggplot geom_violin coord_cartesian theme_bw theme
-#' coord_flip scale_x_discrete
+#' coord_flip scale_x_discrete scale_y_discrete
 .violin_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, title, horizontal = FALSE, by_row = FALSE, range_all = FALSE) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +" # do NOT put aes here, it does not play nice with shiny brushes.
@@ -803,13 +803,17 @@ names(.all_aes_values) <- .all_aes_names
     } else {
         pd <- ifelse(range_all, "plot.data.all", "plot.data")
         plot_cmds[["coord"]] <- sprintf(
-          "%s(xlim = NULL, ylim = range(%s$Y, na.rm=TRUE), expand = TRUE) +",
+          "%s(ylim = range(%s$Y, na.rm=TRUE), expand = TRUE) +",
           coord_cmd, pd)
     }
   
     plot_cmds[["scale_color"]] <- color_scale_cmd
-    plot_cmds[["scale_x"]] <-
-      "scale_x_discrete(drop = FALSE) +" # preserving the x-axis range.
+    if (!horizontal) { 
+        plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +" # preserving the x-axis range.
+    } else {
+        plot_cmds[["scale_y"]] <- "scale_y_discrete(drop = FALSE) +" # preserving the y-axis range.
+    }
+
     plot_cmds[["theme_base"]] <- "theme_bw() +"
     plot_cmds[["theme_custom"]] <- sprintf(
 "theme(legend.position = '%s', legend.box = 'vertical',

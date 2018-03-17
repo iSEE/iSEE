@@ -239,8 +239,7 @@
         return(FALSE)
     }
 
-    # Not replotting if none of the variables have changed.
-    # Note that the identical-ness of 'tab' doesn't matter, as long as 'feature' is the same.
+    # Obtaining the old parameter choices and enforcing type.
     if (param!='yaxis') { 
         old_choice <- pObjects$memory[[mode]][id, by_field]
     } else {
@@ -278,11 +277,16 @@
         # Updating the selection, based on the currently selected row.
         if (tab!=.noSelection) { 
             enc_id <- .encode_panel_name(tab)$ID
-            updateSelectizeInput(session, paste0(prefix, feat_field), label = NULL, choices = feat_choices, server = TRUE,
-                                 selected = pObjects$memory$rowStatTable[enc_id,.rowStatSelected])
+            tab_chosen <- pObjects$memory$rowStatTable[enc_id,.rowStatSelected]
+            if (tab_chosen!=feature && !is.null(session)) { # NULL for testing purposes.
+                updateSelectizeInput(session, paste0(prefix, feat_field), label = NULL, 
+                                     choices = feat_choices, server = TRUE, selected = tab_chosen)
+            }
         }
     }
- 
+
+    # Not replotting if none of the variables have changed.
+    # Note that the identical-ness of 'tab' doesn't matter, as long as 'feature' is the same.
     reset <- !identical(old_choice, choice) || !identical(old_feature, feature)
     return(reset)
 }

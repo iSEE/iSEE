@@ -1167,10 +1167,12 @@ iSEE <- function(
 
                     # Update the elements reporting the links between tables and plots.
                     new_tab <- pObjects$memory[[mode0]][id0, .colorByRowTable]
-                    tab_names <- .decoded2encoded(setdiff(c(old_tab, new_tab), .noSelection))
-                    for (relinked in c(plot_name, tab_names)) {
-                        relink_field <- paste0(relinked, "_", .panelLinkInfo)
-                        rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
+                    if (old_tab!=new_tab) {
+                        tab_names <- .decoded2encoded(setdiff(c(old_tab, new_tab), .noSelection))
+                        for (relinked in c(plot_name, tab_names)) {
+                            relink_field <- paste0(relinked, "_", .panelLinkInfo)
+                            rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
+                        }
                     }
                 })
 
@@ -1249,10 +1251,12 @@ iSEE <- function(
 
                     # Update the links reporting between tables and plots.
                     new_tab <- pObjects$memory[[mode0]][id0, axis_tab_choice0]
-                    tab_names <- .decoded2encoded(setdiff(c(old_tab, new_tab), .noSelection))
-                    for (relinked in c(plot_name, tab_names)) {
-                        relink_field <- paste0(relinked, "_", .panelLinkInfo)
-                        rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
+                    if (old_tab!=new_tab) { 
+                        tab_names <- .decoded2encoded(setdiff(c(old_tab, new_tab), .noSelection))
+                        for (relinked in c(plot_name, tab_names)) {
+                            relink_field <- paste0(relinked, "_", .panelLinkInfo)
+                            rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
+                        }
                     }
                 })
             })

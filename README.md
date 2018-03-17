@@ -27,8 +27,6 @@ The interface is proposed to contain the following features in its first iterati
 
 :white_check_mark: colouring of samples by metadata or expression values
 
-dynamic updating of cell-level metadata on hover/click
-
 :white_check_mark: zooming in to a particular subregion of the plot, if requested
 
 :white_check_mark: scatter plots can be generated from reduced dimensionality data, or with biaxial plots of existing metadata columns.
@@ -39,7 +37,7 @@ The interface is proposed to contain the following features in its first iterati
 
 :white_check_mark: boxplots of expression values for a single gene, stratified by metadata level
 
-heatmaps of multiple genes for groups of cells or for individual ordered cells 
+:white_check_mark: heatmaps of multiple genes for groups of cells or for individual ordered cells 
 
 :white_check_mark: integrated brushing in cell-based scatter plots with cell identities in gene-level plots
 

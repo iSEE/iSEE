@@ -522,16 +522,25 @@ height_limits <- c(400L, 1000L)
 
     # Checking where it broadcasts to plots.
     current <- table_links[[panel]]
-    for (trans in list(c("yaxis", "y-axis"),
-                       c("xaxis", "x-axis"),
-                       c("color", "color"))) {
+    for (trans in list(c("yaxis", "y-axis", NA, NA),
+                       c("xaxis", "x-axis", .featExprXAxis, .featExprXAxisFeatNameTitle),
+                       c("color", "color", .colorByField, .colorByFeatNameTitle))
+        ) {
 
         children <- current[[trans[1]]]
         child_enc <- .split_encoded(children)
         child_names <- .decode_panel_name(child_enc$Type, child_enc$ID)
 
-        for (child in child_names) {
-            output <- c(output, list(paste("Transmitting", trans[2], "to"), em(strong(child)), br()))
+        out_str <- paste("Transmitting", trans[2], "to")
+        by_field <- trans[3]
+        ref_title <- trans[4]
+
+        # Only writing a broadcast label if the plot actually receives the information via the
+        # appropriate parameter choices. Y-axis for feature plots is NA, as there are no choices there.
+        for (i in seq_along(child_names)) {
+            if (is.na(by_field) || memory[[child_enc$Type[i]]][child_enc$ID[i], by_field]==ref_title) {
+                output <- c(output, list(out_str, em(strong(child_names[i])), br()))
+            }
         }
     }
 

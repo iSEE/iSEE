@@ -496,8 +496,8 @@ height_limits <- c(400L, 1000L)
 #' and a description of all the other panels to which \code{panel} transmits information. 
 #'
 #' @details
-#' Information reception includes the receipt of point selections from a transmitting plot.
-#' Information transmission should take the form of selection of features for use in color or x/y-axis specification in other plots.
+#' Information transmission from a row statistics table involves selection of features for use in color or x/y-axis specification in other plots.
+#' Information reception is less common and involves the receipt of point selections from a transmitting plot.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_define_table_links
@@ -506,10 +506,7 @@ height_limits <- c(400L, 1000L)
 #'
 #' @importFrom shiny em strong br tagList 
 #' @importFrom igraph adjacent_vertices
-.define_table_links <- function(panel, memory, table_links)
-# This creates a description of all of the incoming/outgoing
-# relationships between a table panel and the other plots/tables.
-{
+.define_table_links <- function(panel, memory, table_links) {
     enc <- .split_encoded(panel)
     param_choices <- memory[[enc$Type]][enc$ID,]
     output <- list()

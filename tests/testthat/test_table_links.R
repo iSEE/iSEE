@@ -215,7 +215,7 @@ test_that("table observers work correctly", {
     # Changing the feat name while the colour source is not feat name.
     old_table_links <- pObjects$table_links
     old_param <- pObjects$memory$redDimPlot[1,]
-    old_param[,iSEE:::.colorByFeatName] <- input$redDimPlot1_ColorByFeatName <- input$redDimPlot1_ColorByFeatName + 1L
+    input$redDimPlot1_ColorByFeatName <- input$redDimPlot1_ColorByFeatName + 1L
 
     out <- iSEE:::.setup_table_observer("redDimPlot", 1, pObjects, rObjects, input=input, session=NULL, 
                                         iSEE:::.colorByField, iSEE:::.colorByFeatNameTitle, 

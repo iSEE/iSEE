@@ -1017,10 +1017,9 @@ iSEE <- function(
 
                 observe({
                     force(rObjects$rerendered)
-
                     updateSelectizeInput(session, cur_field, label = NULL, choices = feature_choices, server = TRUE,
                                          selected = pObjects$memory[[mode0]][id0, field0][[1]])
-                }, priority=-1) # Lower priority so that it executes AFTER the UI rerender.
+                })
             })
         }
     }
@@ -1038,7 +1037,7 @@ iSEE <- function(
                     force(rObjects$rerendered)
                     updateSelectizeInput(session, cur_field, label = NULL, choices = feature_choices, server = TRUE,
                                          selected = pObjects$memory[[mode0]][id0, field0][[1]])
-                }, priority=-1) # Lower priority so that it executes AFTER the UI rerender.
+                })
             })
         }
     }
@@ -1053,7 +1052,7 @@ iSEE <- function(
                 force(rObjects$rerendered)
                 updateSelectizeInput(session, paste0(mode0, id0, "_", .heatMapFeatName), choices = feature_choices,
                                      server = TRUE, selected = pObjects$memory[[mode0]][id0, .heatMapFeatName][[1]])
-            }, priority=-1) # Lower priority so that it executes AFTER the UI rerender.
+            })
         })
     }
 
@@ -1075,7 +1074,7 @@ iSEE <- function(
         protected <- switch(mode,
                             redDimPlot=c(.redDimType, .redDimXAxis, .redDimYAxis),
                             colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
-                            featExprPlot=c(.featExprAssay, .featExprXAxisColData),
+                            featExprPlot=c(.featExprAssay, .featExprXAxisColData, .featExprXAxisFeatName, .featExprYAxisFeatName),
                             rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData))
 
         # Defining non-fundamental parameters that do not destroy brushes/lassos.
@@ -1084,8 +1083,8 @@ iSEE <- function(
         } else {
             nonfundamental <- c(.colorByColData, .colorByFeatNameAssay)
         }
-        nonfundamental <- c(nonfundamental, .selectColor, .selectTransAlpha, .plotPointSize,
-                            .plotPointAlpha, .plotFontSize, .plotLegendPosition, .colorByDefaultColor)
+        nonfundamental <- c(nonfundamental, .selectColor, .selectTransAlpha, .plotPointSize, .plotPointAlpha, 
+                            .plotFontSize, .plotLegendPosition, .colorByFeatName, .colorByDefaultColor)
 
         for (id in seq_len(max_plots)) {
             # Observers for the non-fundamental parameter options.
@@ -1098,6 +1097,7 @@ iSEE <- function(
                     cur_field <- paste0(plot_name, "_", field0)
 
                     observeEvent(input[[cur_field]], {
+                        req(input[[cur_field]]) # Required for empty strings in colorByFeatName, prior to updateSelectize upon re-render.
                         matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
                         if (identical(matched_input, pObjects$memory[[mode0]][[field0]][id0])) {
                             return(NULL)
@@ -1139,13 +1139,14 @@ iSEE <- function(
                     cur_field <- paste0(plot_name, "_", field0)
 
                     observeEvent(input[[cur_field]], {
+                        req(input[[cur_field]]) # Required for empty strings in XAxisFeatName, YAxisFeatName prior to updateSelectize upon re-render.
                         matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
                         if (identical(matched_input, pObjects$memory[[mode0]][[field0]][id0])) {
                             return(NULL)
                         }
                         pObjects$memory[[mode0]][[field0]][id0] <- matched_input
                         .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
-                     }, ignoreInit=TRUE, priority=-2) # executes AFTER the update selectize.
+                     }, ignoreInit=TRUE)
                 })
             }
 
@@ -1300,16 +1301,13 @@ iSEE <- function(
             x_kids <- pObjects$table_links[[id0]][["xaxis"]]
             y_kids <- pObjects$table_links[[id0]][["yaxis"]]
 
-            # Triggering the replotting of all color children that are NOT xy children.
-            # This is done indirectly, by triggering the observer for the color parameters upon updateSelectizeInput.
-            col_kids <- sprintf("%s_%s", setdiff(col_kids, c(x_kids, y_kids)), .colorByFeatName)
+            # Updating the selectize for the color choice.
+            col_kids <- sprintf("%s_%s", col_kids, .colorByFeatName)
             for (kid in col_kids) {
                 updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=feature_choices)
             }
 
-            # Triggering the replotting and brush/lasso clearing of all x/y-axis children.
-            # There is a possibility that this would cause double-rendering as they trigger different observers.
-            # But this would imply that you're plotting the same gene against itself, which would be stupid.
+            # Updating the selectize for the x-/y-axis choices.
             x_kids <- sprintf("%s_%s", x_kids, .featExprXAxisFeatName)
             for (kid in x_kids) {
                 updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=feature_choices)
@@ -1318,6 +1316,9 @@ iSEE <- function(
             for (kid in y_kids) {
                 updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=feature_choices)
             }
+
+            # There is a possibility that this would cause triple-rendering as they trigger different observers.
+            # But this would imply that you're plotting/colouring the same gene against itself, which would be stupid.
         })
 
         # Updating memory for new selection parameters.

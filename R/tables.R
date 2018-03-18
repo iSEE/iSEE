@@ -167,7 +167,7 @@
 #' @details
 #' This function has a number of side-effects, relying on the pass-by-reference behaviour of \code{pObjects}, \code{rObjects} and \code{session} to perform its role.
 #' \itemize{
-#' \item New values of the fields \code{by_field}, \code{tab_field} and \code{feat_field} in \code{input} overwrite values in \code{pObjects$memory} for the current panel.
+#' \item New values of the fields \code{by_field} and \code{tab_field} in \code{input} overwrite values in \code{pObjects$memory} for the current panel.
 #' \item \code{pObjects$table_links} is modified for the new linked table in \code{input[[tab_field]]}.
 #' Note that table links are \emph{not} destroyed if \code{input[[by_field]]} is different to \code{title},
 #' as this could result in failure to clear the memory of the current panel in \code{\link{.delete_table_links}}.
@@ -179,9 +179,7 @@
 #' }
 #'
 #' The flag to regenerate the current plot is set if the \code{by_field} and \code{tab_field} fields in \code{input} are non-\code{NULL};
-#' the \code{feat_field} entry is neither \code{NULL} nor an empty string; 
-#' and the \code{by_field} entry differs from the parameter currently stored in memory,
-#' or the value of \code{by_field} is equal to \code{title} \emph{and} the input and memory values of \code{feat_field} are different.
+#' and the \code{by_field} entry differs from the parameter currently stored in memory.
 #'
 #' Note that \code{by_field} and \code{title} are ignored if \code{param="yaxis"}, as the y-axis of feature expression plots have no other choice of variable.
 #'
@@ -205,29 +203,22 @@
     } else {
         choice <- title <- ""
     }
-    feature <- input[[paste0(prefix, feat_field)]]
     tab <- input[[paste0(prefix, tab_field)]]
-    if (is.null(choice) || is.null(tab) || is.null(feature) || feature=="") {
+    if (is.null(choice) || is.null(tab)) {
         return(FALSE)
     }
 
-    # Obtaining the old parameter choices and enforcing type.
+    # Obtaining the old parameter choices, enforcing type and updating memory.
+    # The new values should persist due to environment's pass-by-reference.
     if (param!='yaxis') { 
         old_choice <- pObjects$memory[[mode]][id, by_field]
-    } else {
-        old_choice <- ""
-    }
-    old_feature <- pObjects$memory[[mode]][id, feat_field]
-    old_tab <- pObjects$memory[[mode]][id, tab_field]
-    choice <- as(choice, typeof(old_choice))
-    feature <- as(feature, typeof(old_feature))
-    tab <- as(tab, typeof(old_tab))
-
-    # Updating stored parameters. These should persist due to environment's pass-by-reference.
-    if (param!='yaxis') { 
+        choice <- as(choice, typeof(old_choice))
         pObjects$memory[[mode]][id, by_field] <- choice
+    } else {
+        old_choice <- choice
     }
-    pObjects$memory[[mode]][id, feat_field] <- feature
+    old_tab <- pObjects$memory[[mode]][id, tab_field]
+    tab <- as(tab, typeof(old_tab))
     pObjects$memory[[mode]][id, tab_field] <- tab
 
     if (old_tab!=tab) {
@@ -238,6 +229,7 @@
         if (tab!=.noSelection) { 
             enc_id <- .encode_panel_name(tab)$ID
             tab_chosen <- pObjects$memory$rowStatTable[enc_id,.rowStatSelected]
+            feature <- pObjects$memory[[mode]][id, feat_field]
             if (tab_chosen!=feature && !is.null(session)) { # session=NULL used for testing the rest of the function.
                 updateSelectizeInput(session, paste0(prefix, feat_field), label = NULL, 
                                      choices = feat_choices, server = TRUE, selected = tab_chosen)
@@ -254,11 +246,10 @@
         }
     }
 
-    # Not replotting if none of the variables have changed.
-    # Note that the identical-ness of 'tab' doesn't matter, as long as 'feature' is the same.
-    # Of course, feature only has an effect when choice==title.
-    reset <- !identical(old_choice, choice) || (choice==title && !identical(old_feature, feature))
-    return(reset)
+    # Not replotting if none of the variables have changed. Note that the identical-ness of 'tab' 
+    # doesn't matter here, as the feature name determines the plot (and if changing tab changes 
+    # the feature name, this is caught by a differnt observer).
+    return(!identical(old_choice, choice))
 }
 
 #' Delete table links for a destroyed panel

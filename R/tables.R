@@ -34,7 +34,7 @@
         for (id in seq_len(N)) {
             cur_tab <- memory[[mode]][id, .colorByRowTable]
             if (cur_tab!=.noSelection) {
-                tab_name <- decoded2encoded(cur_tab)
+                tab_name <- .decoded2encoded(cur_tab)
                 table_links[[tab_name]]$color <- c(table_links[[tab_name]]$color, cur_panels[id])
             }
         }
@@ -48,7 +48,7 @@
 
         X_tab <- param_choices[[.featExprXAxisRowTable]]
         if (X_tab!=.noSelection) {
-            tab_name <- decoded2encoded(X_tab)
+            tab_name <- .decoded2encoded(X_tab)
             table_links[[tab_name]]$xaxis <- c(table_links[[tab_name]]$xaxis, cur_panels[id])
         }
         
@@ -171,7 +171,7 @@
 #' \item \code{pObjects$table_links} is modified for the new linked table in \code{input[[tab_field]]}.
 #' Note that table links are \emph{not} destroyed if \code{input[[by_field]]} is different to \code{title},
 #' as this could result in failure to clear the memory of the current panel in \code{\link{.delete_table_links}}.
-#' \item Link panel counters in \code{rObjects} are incremented if the new linked table differs from the old link table, 
+#' \item Link panel counters in \code{rObjects} are incremented if the new linked table differs from the old link table and \code{input[[by_field]]==title}; 
 #' or if \code{input[[by_field]]} differs from that in memory and either of them is equal to \code{title}.
 #' Counters are only updated for the current panel as well as the old/new tables, and only when 
 #' \item The selectize UI element corresponding to \code{feat_field} is updated with the current selection in the linked table, if a new linked table was chosen.
@@ -246,7 +246,7 @@
     }
 
     # Updating the link UI elements, but only if there was a change to table identities or linking.
-    if ((choice==title)!=(old_choice==title) || tab!=old_tab) {
+    if ((choice==title)!=(old_choice==title) || (choice==title && tab!=old_tab)) {
         tab_names <- .decoded2encoded(setdiff(union(old_tab, tab), .noSelection))
         for (relinked in c(plot_name, tab_names)) {
             relink_field <- paste0(relinked, "_", .panelLinkInfo)

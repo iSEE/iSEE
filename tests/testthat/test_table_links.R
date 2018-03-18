@@ -43,18 +43,23 @@ test_that("table link creation works correctly", {
     expect_identical(tabs$rowStatTable3$yaxis, character(0))
     expect_identical(tabs$rowStatTable3$color, "colDataPlot1")
 
-    # Checking what happens when xaxis choices are disabled.
+    # Disabling of xaxis choices should have no effect.
     featExprArgs2 <- featExprArgs
     featExprArgs2[1,iSEE:::.featExprXAxis] <- featExprArgs2[3,iSEE:::.featExprXAxis] <- iSEE:::.featExprXAxisNothingTitle
     memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs2, colDataPlot=colDataArgs, rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs)
     tab2 <- iSEE:::.spawn_table_links(memory)
+    expect_identical(tabs, tab2)
 
-    tabX <- tabs
-    tabX$rowStatTable1$xaxis <- character(0)
-    tabX$rowStatTable2$xaxis <- character(0)
-    expect_identical(tabX, tab2)
+    # Disabling of color choices should have no effect.
+    colDataArgs[1,iSEE:::.colorByField] <-
+        colDataArgs[2,iSEE:::.colorByField] <-
+        redDimArgs[1,iSEE:::.colorByField] <- 
+        iSEE:::.colorByNothingTitle
+    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs, rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs)
+    tab2 <- iSEE:::.spawn_table_links(memory)
+    expect_identical(tabs, tab2)
 
-    # Checking what happens when yaxis choices are disabled.
+    # yaxis has no choices to disable, so we'll just change the selection.
     featExprArgs2 <- featExprArgs
     featExprArgs2[2:3,iSEE:::.featExprYAxisRowTable] <- iSEE:::.noSelection
     memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs2, colDataPlot=colDataArgs, rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs)
@@ -63,19 +68,6 @@ test_that("table link creation works correctly", {
     tabX <- tabs
     tabX$rowStatTable1$yaxis <- character(0)
     tabX$rowStatTable2$yaxis <- character(0)
-    expect_identical(tabX, tab2)
-
-    # Checking what happens when y-axis choices are disabled.
-    colDataArgs[1,iSEE:::.colorByField] <-
-        colDataArgs[2,iSEE:::.colorByField] <-
-        redDimArgs[1,iSEE:::.colorByField] <- 
-        iSEE:::.colorByNothingTitle
-    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs, rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs)
-    tab2 <- iSEE:::.spawn_table_links(memory)
-
-    tabX <- tabs
-    tabX$rowStatTable1$color <- character(0)
-    tabX$rowStatTable3$color <- character(0)
     expect_identical(tabX, tab2)
 })
 
@@ -162,12 +154,12 @@ test_that("table observers work correctly", {
     rObjects$rowStatTable1_PanelLinkInfo <- 1L
     rObjects$rowStatTable2_PanelLinkInfo <- 1L
 
+    input <- list(redDimPlot1_ColorBy=iSEE:::.colorByFeatNameTitle, 
+                  redDimPlot1_ColorByRowTable="Row statistics table 2",
+                  redDimPlot1_ColorByFeatName=pObjects$memory$redDimPlot[1,"ColorByFeatName"])
+
     # Changing the table.
-    out <- iSEE:::.setup_table_observer("redDimPlot", 1, pObjects, rObjects,
-                                        input=list(redDimPlot1_ColorBy=iSEE:::.colorByFeatNameTitle, 
-                                                   redDimPlot1_ColorByRowTable="Row statistics table 2",
-                                                   redDimPlot1_ColorByFeatName=pObjects$memory$redDimPlot[1,"ColorByFeatName"]),
-                                        session = NULL, 
+    out <- iSEE:::.setup_table_observer("redDimPlot", 1, pObjects, rObjects, input=input, session = NULL, 
                                         iSEE:::.colorByField, iSEE:::.colorByFeatNameTitle, 
                                         iSEE:::.colorByFeatName, iSEE:::.colorByRowTable, 
                                         feat_choices = NULL, param = "color")
@@ -184,32 +176,64 @@ test_that("table observers work correctly", {
     expect_identical(rObjects$rowStatTable1_PanelLinkInfo, 2L)
 
     # Changing the colour source.
-    out <- iSEE:::.setup_table_observer("redDimPlot", 1, pObjects, rObjects, 
-                                        input=list(redDimPlot1_ColorBy=iSEE:::.colorByNothingTitle, 
-                                                   redDimPlot1_ColorByRowTable="Row statistics table 1", 
-                                                   redDimPlot1_ColorByFeatName=pObjects$memory$redDimPlot[1,"ColorByFeatName"]),
-                                        session=NULL, 
+    old_table_links <- pObjects$table_links
+    old_param <- pObjects$memory$redDimPlot[1,]
+    old_param[,iSEE:::.colorByField] <- input$redDimPlot1_ColorBy <- iSEE:::.colorByNothingTitle
+
+    out <- iSEE:::.setup_table_observer("redDimPlot", 1, pObjects, rObjects, input=input,  session=NULL, 
                                         iSEE:::.colorByField, iSEE:::.colorByFeatNameTitle, 
                                         iSEE:::.colorByFeatName, iSEE:::.colorByRowTable, 
                                         feat_choices = NULL, param = "color")
 
     expect_true(out)
+    expect_identical(old_table_links, pObjects$table_links)
+    expect_identical(old_param, pObjects$memory$redDimPlot[1,])
+
+    expect_identical(rObjects$redDimPlot1_PanelLinkInfo, 3L) # Should trigger updates.
+    expect_identical(rObjects$rowStatTable2_PanelLinkInfo, 3L)
+    expect_identical(rObjects$rowStatTable1_PanelLinkInfo, 2L)
+
+    # Changing the table while the colour source is not feat name.
+    input$redDimPlot1_ColorByRowTable <- "Row statistics table 1"
+
+    out <- iSEE:::.setup_table_observer("redDimPlot", 1, pObjects, rObjects, input=input, session=NULL, 
+                                        iSEE:::.colorByField, iSEE:::.colorByFeatNameTitle, 
+                                        iSEE:::.colorByFeatName, iSEE:::.colorByRowTable, 
+                                        feat_choices = NULL, param = "color")
+
+    expect_false(out) # plotting should NOT be re-triggered.
     expect_false("redDimPlot1" %in% pObjects$table_links$rowStatTable2$color) # old link to gene table 2 is removed.
-    expect_false("redDimPlot1" %in% pObjects$table_links$rowStatTable1$color) # does NOT update; gene table spec should be ignored for table link purposes.
+    expect_true("redDimPlot1" %in% pObjects$table_links$rowStatTable1$color) 
 
     expect_identical(iSEE:::.colorByNothingTitle, pObjects$memory$redDimPlot[1, iSEE:::.colorByField])
     expect_identical("Row statistics table 1", pObjects$memory$redDimPlot[1, iSEE:::.colorByRowTable])
 
-    expect_identical(rObjects$redDimPlot1_PanelLinkInfo, 3L)
+    expect_identical(rObjects$redDimPlot1_PanelLinkInfo, 3L) # Should NOT trigger updates.
     expect_identical(rObjects$rowStatTable2_PanelLinkInfo, 3L)
-    expect_identical(rObjects$rowStatTable1_PanelLinkInfo, 3L)
+    expect_identical(rObjects$rowStatTable1_PanelLinkInfo, 2L)
+
+    # Changing the feat name while the colour source is not feat name.
+    old_table_links <- pObjects$table_links
+    old_param <- pObjects$memory$redDimPlot[1,]
+    old_param[,iSEE:::.colorByFeatName] <- input$redDimPlot1_ColorByFeatName <- input$redDimPlot1_ColorByFeatName + 1L
+
+    out <- iSEE:::.setup_table_observer("redDimPlot", 1, pObjects, rObjects, input=input, session=NULL, 
+                                        iSEE:::.colorByField, iSEE:::.colorByFeatNameTitle, 
+                                        iSEE:::.colorByFeatName, iSEE:::.colorByRowTable, 
+                                        feat_choices = NULL, param = "color")
+
+    expect_false(out) # plotting should NOT be re-triggered.
+    expect_identical(pObjects$table_links, old_table_links)
+    expect_identical(old_param, pObjects$memory$redDimPlot[1,])
+
+    expect_identical(rObjects$redDimPlot1_PanelLinkInfo, 3L) # Should NOT trigger updates.
+    expect_identical(rObjects$rowStatTable2_PanelLinkInfo, 3L)
+    expect_identical(rObjects$rowStatTable1_PanelLinkInfo, 2L)
 
     # Changing it back to gene table colouring.
-    out <- iSEE:::.setup_table_observer("redDimPlot", 1, pObjects, rObjects,
-                                        input=list(redDimPlot1_ColorBy=iSEE:::.colorByFeatNameTitle, 
-                                                   redDimPlot1_ColorByRowTable="Row statistics table 1",
-                                                   redDimPlot1_ColorByFeatName=pObjects$memory$redDimPlot[1,"ColorByFeatName"]),
-                                        session = NULL, 
+    input$redDimPlot1_ColorBy <- iSEE:::.colorByFeatNameTitle
+
+    out <- iSEE:::.setup_table_observer("redDimPlot", 1, pObjects, rObjects,input=input, session = NULL, 
                                         iSEE:::.colorByField, iSEE:::.colorByFeatNameTitle, 
                                         iSEE:::.colorByFeatName, iSEE:::.colorByRowTable,
                                         feat_choices = NULL, param = "color")
@@ -220,16 +244,14 @@ test_that("table observers work correctly", {
     expect_identical(iSEE:::.colorByFeatNameTitle, pObjects$memory$redDimPlot[1, iSEE:::.colorByField])
     expect_identical("Row statistics table 1", pObjects$memory$redDimPlot[1, iSEE:::.colorByRowTable])
 
-    expect_identical(rObjects$redDimPlot1_PanelLinkInfo, 3L)
+    expect_identical(rObjects$redDimPlot1_PanelLinkInfo, 4L)
     expect_identical(rObjects$rowStatTable2_PanelLinkInfo, 3L)
     expect_identical(rObjects$rowStatTable1_PanelLinkInfo, 3L)
 
     # Turning off gene table colouring.
-    out <- iSEE:::.setup_table_observer("redDimPlot", 1, pObjects, rObjects,
-                                        input=list(redDimPlot1_ColorBy=iSEE:::.colorByFeatNameTitle, 
-                                                   redDimPlot1_ColorByRowTable=iSEE:::.noSelection,
-                                                   redDimPlot1_ColorByFeatName=pObjects$memory$redDimPlot[1,"ColorByFeatName"]),
-                                        session = NULL, 
+    input$redDimPlot1_ColorByRowTable <- iSEE:::.noSelection
+
+    out <- iSEE:::.setup_table_observer("redDimPlot", 1, pObjects, rObjects, input=input, session = NULL, 
                                         iSEE:::.colorByField, iSEE:::.colorByFeatNameTitle, 
                                         iSEE:::.colorByFeatName, iSEE:::.colorByRowTable,
                                         feat_choices = NULL, param = "color")
@@ -240,7 +262,7 @@ test_that("table observers work correctly", {
     expect_identical(iSEE:::.colorByFeatNameTitle, pObjects$memory$redDimPlot[1, iSEE:::.colorByField])
     expect_identical(iSEE:::.noSelection, pObjects$memory$redDimPlot[1, iSEE:::.colorByRowTable])
 
-    expect_identical(rObjects$redDimPlot1_PanelLinkInfo, 4L)
+    expect_identical(rObjects$redDimPlot1_PanelLinkInfo, 5L)
     expect_identical(rObjects$rowStatTable2_PanelLinkInfo, 3L)
     expect_identical(rObjects$rowStatTable1_PanelLinkInfo, 4L)
 })

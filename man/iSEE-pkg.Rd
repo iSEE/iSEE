@@ -22,5 +22,5 @@ Federico Marini \email{marinif@uni-mainz.de}
 
 Kevin Rue-Albrecht \email{kevin.rue-albrecht@kennedy.ox.ac.uk}
 
-Maintainer: John or Jane Doe \email{tobeclarified@who.does.it}
+Maintainer: Charlotte Soneson \email{charlotte.soneson@uzh.ch}
 }

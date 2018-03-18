@@ -216,16 +216,16 @@
   for (i in seq_len(nrow(tbl_objs))) {
     table_used <- cur_tables[i]
     current <- cur_tlinks[[table_used]]
-    for (trans in list(c("yaxis", "y-axis", NA, NA),
-                       c("xaxis", "x-axis", .featExprXAxis, .featExprXAxisFeatNameTitle),
-                       c("color", "color", .colorByField, .colorByFeatNameTitle))
+    for (trans in list(c("yaxis", NA, NA),
+                       c("xaxis", .featExprXAxis, .featExprXAxisFeatNameTitle),
+                       c("color", .colorByField, .colorByFeatNameTitle))
     ) {
       children <- current[[trans[1]]]
       child_enc <- .split_encoded(children)
       child_names <- .decode_panel_name(child_enc$Type, child_enc$ID)
       
-      by_field <- trans[3]
-      ref_title <- trans[4]
+      by_field <- trans[2]
+      ref_title <- trans[3]
       
       # Only adding the edge if the plot actually receives the information via the
       # appropriate parameter choices. Y-axis for feature plots is NA, as there are no choices there.

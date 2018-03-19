@@ -1414,12 +1414,12 @@ iSEE <- function(
                 if (enc$Type=="rowStatTable") {
                     incoming <- input[[paste0(enc$Type, enc$ID, "_rows_all")]]
                 } else {
-                  selected <- .get_selected_points(rownames(gene_data), origin, pObjects$memory, pObjects$coordinates)
-                  if (is.null(selected)) {
-                    showNotification("Invalid: empty selection", type="warning")
-                    return(NULL) # avoid corner case: which(NULL)
-                  }
-                  incoming <- which(selected)
+                    selected <- .get_selected_points(rownames(gene_data), origin, pObjects$memory, pObjects$coordinates)
+                    if (is.null(selected)) {
+                        showNotification("Invalid: empty selection", type="warning")
+                        return(NULL) # avoid corner case: which(NULL)
+                    }
+                    incoming <- which(selected)
                   
                 }
 

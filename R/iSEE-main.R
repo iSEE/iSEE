@@ -1419,6 +1419,7 @@ iSEE <- function(
                     showNotification("Invalid: empty selection", type="warning")
                     return(NULL) # avoid corner case: which(NULL)
                   }
+                  incoming <- which(selected)
                   
                 }
 

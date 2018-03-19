@@ -290,7 +290,7 @@
         if (mode=="rowStatTable") {
             param <- list(hr(), tags$div(class = "panel-group", role = "tablist",
                 collapseBox(.input_FUN(.selectParamBoxOpen),
-                            title = "Point selection parameters",
+                            title = "Selection parameters",
                             open = param_choices[[.selectParamBoxOpen]],
                             selectInput(.input_FUN(.selectByPlot),
                                         label = "Receive selection from:", 

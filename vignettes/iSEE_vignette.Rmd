@@ -636,11 +636,9 @@ This is intentional as it allows easy selection of all points in complex grouped
 Indeed, the location of a specific point on the x-axis has no meaning.
 The same logic applies to the square plots, where only the center of each square needs to be selected to obtain all the points in the square.
 
--> to mention:
-Subset and violins
-Brushing backwards does not seem to work
+**Q: I'd like to try `r Biocpkg("iSEE")` but I can't install it/I just want a quick peek. Is there something you can do?**
 
-TODO: shall we mention the demo website for the package @the imbei shiny server?
+A: We set up an instance of iSEE running on the `allen` dataset at this address: http://shiny.imbei.uni-mainz.de:3838/iSEE. Please keep in mind this is only for trial purposes, yet it can show a quick way of how you or your system administrator can setup `r Biocpkg("iSEE")` for analyzing your `SummarizedExperiment`/`SingleCellExperiment` precomputed object.
 
 # Additional information
 

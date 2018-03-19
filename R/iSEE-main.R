@@ -88,8 +88,11 @@
 #' sce <- as(allen, "SingleCellExperiment")
 #' counts(sce) <- assay(sce, "tophat_counts")
 #' sce <- normalize(sce)
+#'
 #' sce <- runPCA(sce)
 #' sce <- runTSNE(sce)
+#' rowData(sce)$ave_count <- rowMeans(counts(sce))
+#' rowData(sce)$n_cells <- rowSums(counts(sce)>0)
 #' sce
 #'
 #' # launch the app itself ----
@@ -1014,10 +1017,9 @@ iSEE <- function(
 
                 observe({
                     force(rObjects$rerendered)
-
                     updateSelectizeInput(session, cur_field, label = NULL, choices = feature_choices, server = TRUE,
                                          selected = pObjects$memory[[mode0]][id0, field0][[1]])
-                }, priority=-1) # Lower priority so that it executes AFTER the UI rerender.
+                })
             })
         }
     }
@@ -1035,7 +1037,7 @@ iSEE <- function(
                     force(rObjects$rerendered)
                     updateSelectizeInput(session, cur_field, label = NULL, choices = feature_choices, server = TRUE,
                                          selected = pObjects$memory[[mode0]][id0, field0][[1]])
-                }, priority=-1) # Lower priority so that it executes AFTER the UI rerender.
+                })
             })
         }
     }
@@ -1050,7 +1052,7 @@ iSEE <- function(
                 force(rObjects$rerendered)
                 updateSelectizeInput(session, paste0(mode0, id0, "_", .heatMapFeatName), choices = feature_choices,
                                      server = TRUE, selected = pObjects$memory[[mode0]][id0, .heatMapFeatName][[1]])
-            }, priority=-1) # Lower priority so that it executes AFTER the UI rerender.
+            })
         })
     }
 
@@ -1081,8 +1083,8 @@ iSEE <- function(
         } else {
             nonfundamental <- c(.colorByColData, .colorByFeatNameAssay)
         }
-        nonfundamental <- c(nonfundamental, .selectColor, .selectTransAlpha, .plotPointSize,
-                            .plotPointAlpha, .plotFontSize, .plotLegendPosition, .colorByDefaultColor)
+        nonfundamental <- c(nonfundamental, .colorByDefaultColor, .selectColor, .selectTransAlpha, 
+                            .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition)
 
         for (id in seq_len(max_plots)) {
             # Observers for the non-fundamental parameter options.
@@ -1142,7 +1144,7 @@ iSEE <- function(
                         }
                         pObjects$memory[[mode0]][[field0]][id0] <- matched_input
                         .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
-                     }, ignoreInit=TRUE, priority=-2) # executes AFTER the update selectize.
+                     }, ignoreInit=TRUE)
                 })
             }
 
@@ -1152,22 +1154,30 @@ iSEE <- function(
                 FUN0 <- FUN
                 plot_name <- paste0(mode0, id0)
 
-                # Observers for the linked color by feature name. This also updates the table_links information.
-                observe({
-                    old_tab <- pObjects$memory[[mode0]][id0, .colorByRowTable]
-
-                    replot <- .setup_table_observer(mode0, id0, input, pObjects, .colorByField, .colorByFeatNameTitle, 
-                                                    .colorByFeatName, .colorByRowTable, param='color')
-                    if (replot) {
+                # Observer for the feature name. This is handled differently from the other observers,
+                # due to the fact that the selectizeInput can be updated and because the feature name
+                # can change (due to the linked table) without directly affecting the plot.
+                feat_field <- paste0(plot_name, "_", .colorByFeatName)
+                observeEvent(input[[feat_field]], {
+                    req(input[[feat_field]]) # Required for empty strings before updateSelectizeInput runs upon re-render.
+                    matched_input <- as(input[[feat_field]], typeof(pObjects$memory[[mode0]][[.colorByFeatName]]))
+                    if (identical(matched_input, pObjects$memory[[mode0]][[.colorByFeatName]][id0])) {
+                        return(NULL)
+                    }
+                    pObjects$memory[[mode0]][[.colorByFeatName]][id0] <- matched_input
+                    if (pObjects$memory[[mode0]][id0,.colorByField]==.colorByFeatNameTitle) { # Only regenerating if featName is used for coloring.
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     }
+                }, ignoreInit=TRUE)
 
-                    # Update the elements reporting the links between tables and plots.
-                    new_tab <- pObjects$memory[[mode0]][id0, .colorByRowTable]
-                    tab_names <- .decoded2encoded(setdiff(c(old_tab, new_tab), .noSelection))
-                    for (relinked in c(plot_name, tab_names)) {
-                        relink_field <- paste0(relinked, "_", .panelLinkInfo)
-                        rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
+                # Observers for the linked color by feature name. This also updates the table_links information.
+                observe({
+                    replot <- .setup_table_observer(mode0, id0, pObjects, rObjects, input, session, 
+                                                    by_field = .colorByField, title = .colorByFeatNameTitle, 
+                                                    feat_field = .colorByFeatName, tab_field = .colorByRowTable, 
+                                                    feat_choices = feature_choices, param='color')
+                    if (replot) {
+                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     }
                 })
 
@@ -1211,49 +1221,60 @@ iSEE <- function(
     # table links and destroy a brush/lasso whenever an x/y-axis-specifying parameter changes.
     max_plots <- nrow(pObjects$memory$featExprPlot)
     for (id in seq_len(max_plots)) {
-        for (axis in c("xaxis", "yaxis")) {
-            if (axis=="yaxis") {
-                axis_choice <- NA
-                axis_tab_title <- NA
-                axis_tab_choice <- .featExprYAxisRowTable
-                axis_feat <- .featExprYAxisFeatName
-            } else {
-                axis_choice <- .featExprXAxis
-                axis_tab_title <- .featExprXAxisFeatNameTitle
-                axis_tab_choice <- .featExprXAxisRowTable
-                axis_feat <- .featExprXAxisFeatName
-            }
+        local({
+            id0 <- id
+            mode0 <- "featExprPlot"
+            plot_name <- paste0(mode0, id0)
 
-            local({
-                id0 <- id
-                mode0 <- "featExprPlot"
-                plot_name <- paste0(mode0, id0)
-
-                axis0 <- axis
-                axis_choice0 <- axis_choice
-                axis_tab_title0 <- axis_tab_title
-                axis_tab_choice0 <- axis_tab_choice
-                axis_feat0 <- axis_feat
-
-                observe({
-                    old_tab <- pObjects$memory[[mode0]][id0, axis_tab_choice0]
-
-                    ## Deciding whether to replot based on the table.
-                    replot <- .setup_table_observer(mode0, id0, input, pObjects, axis_choice0, axis_tab_title0, axis_feat0, axis_tab_choice0, param=axis0)
-                    if (replot) {
-                        .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
-                    }
-
-                    # Update the links reporting between tables and plots.
-                    new_tab <- pObjects$memory[[mode0]][id0, axis_tab_choice0]
-                    tab_names <- .decoded2encoded(setdiff(c(old_tab, new_tab), .noSelection))
-                    for (relinked in c(plot_name, tab_names)) {
-                        relink_field <- paste0(relinked, "_", .panelLinkInfo)
-                        rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
-                    }
-                })
+            # X-axis table observer.
+            observe({
+                replot <- .setup_table_observer(mode0, id0, pObjects, rObjects, input, session, 
+                                                by_field = .featExprXAxis, title = .featExprXAxisFeatNameTitle,
+                                                feat_field = .featExprXAxisFeatName, tab_field = .featExprXAxisRowTable,
+                                                feat_choices = feature_choices, param = "xaxis")
+                if (replot) {
+                    .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
+                }
             })
-        }
+
+            # X-axis feature name observer (see the explanation above for the colorByFeatName observer).
+            x_field <- paste0(plot_name, "_", .featExprXAxisFeatName)
+            observeEvent(input[[x_field]], {
+                req(input[[x_field]]) # Required for empty strings in XAxisFeatName prior to updateSelectize upon re-render.
+                matched_input <- as(input[[x_field]], typeof(pObjects$memory[[mode0]][[.featExprXAxisFeatName]]))
+                if (identical(matched_input, pObjects$memory[[mode0]][[.featExprXAxisFeatName]][id0])) {
+                    return(NULL)
+                }
+                pObjects$memory[[mode0]][[.featExprXAxisFeatName]][id0] <- matched_input
+                if (pObjects$memory[[mode0]][id0, .featExprXAxis]==.featExprXAxisFeatNameTitle) { # Only regenerating if featName is being used for plotting.
+                    .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
+                }
+            }, ignoreInit=TRUE)
+
+            # Y-axis table observer.
+            observe({
+                replot <- .setup_table_observer(mode0, id0, pObjects, rObjects, input, session, 
+                                                by_field = NA, title = NA,
+                                                feat_field = .featExprYAxisFeatName, tab_field = .featExprYAxisRowTable,
+                                                feat_choices = feature_choices, param = 'yaxis')
+                if (replot) {
+                    .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
+                }
+            })
+
+            # Y-axis feature name observer. Unlike the X-axis observer, there is no choice for the Y-Axis,
+            # i.e., the feature name is always being used for plotting. 
+            y_field <- paste0(plot_name, "_", .featExprYAxisFeatName)
+            observeEvent(input[[y_field]], {
+                req(input[[y_field]]) # Required for empty strings in YAxisFeatName prior to updateSelectize upon re-render.
+                matched_input <- as(input[[y_field]], typeof(pObjects$memory[[mode0]][[.featExprYAxisFeatName]]))
+                if (identical(matched_input, pObjects$memory[[mode0]][[.featExprYAxisFeatName]][id0])) {
+                    return(NULL)
+                }
+                pObjects$memory[[mode0]][[.featExprYAxisFeatName]][id0] <- matched_input
+                .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
+            }, ignoreInit=TRUE)
+        })
     }
 
     #######################################################################
@@ -1313,16 +1334,13 @@ iSEE <- function(
             x_kids <- pObjects$table_links[[id0]][["xaxis"]]
             y_kids <- pObjects$table_links[[id0]][["yaxis"]]
 
-            # Triggering the replotting of all color children that are NOT xy children.
-            # This is done indirectly, by triggering the observer for the color parameters upon updateSelectizeInput.
-            col_kids <- sprintf("%s_%s", setdiff(col_kids, c(x_kids, y_kids)), .colorByFeatName)
+            # Updating the selectize for the color choice.
+            col_kids <- sprintf("%s_%s", col_kids, .colorByFeatName)
             for (kid in col_kids) {
                 updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=feature_choices)
             }
 
-            # Triggering the replotting and brush/lasso clearing of all x/y-axis children.
-            # There is a possibility that this would cause double-rendering as they trigger different observers.
-            # But this would imply that you're plotting the same gene against itself, which would be stupid.
+            # Updating the selectize for the x-/y-axis choices.
             x_kids <- sprintf("%s_%s", x_kids, .featExprXAxisFeatName)
             for (kid in x_kids) {
                 updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=feature_choices)
@@ -1331,6 +1349,9 @@ iSEE <- function(
             for (kid in y_kids) {
                 updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=feature_choices)
             }
+
+            # There is a possibility that this would cause triple-rendering as they trigger different observers.
+            # But this would imply that you're plotting/colouring the same gene against itself, which would be stupid.
         })
 
         # Updating memory for new selection parameters.
@@ -1393,7 +1414,13 @@ iSEE <- function(
                 if (enc$Type=="rowStatTable") {
                     incoming <- input[[paste0(enc$Type, enc$ID, "_rows_all")]]
                 } else {
-                    incoming <- which(.get_selected_points(rownames(gene_data), origin, pObjects$memory, pObjects$coordinates))
+                    selected <- .get_selected_points(rownames(gene_data), origin, pObjects$memory, pObjects$coordinates)
+                    if (is.null(selected)) {
+                        showNotification("Invalid: empty selection", type="warning")
+                        return(NULL) # avoid corner case: which(NULL)
+                    }
+                    incoming <- which(selected)
+                  
                 }
 
                 limit <- 100

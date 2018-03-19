@@ -496,8 +496,8 @@ height_limits <- c(400L, 1000L)
 #' and a description of all the other panels to which \code{panel} transmits information. 
 #'
 #' @details
-#' Information reception includes the receipt of point selections from a transmitting plot.
-#' Information transmission should take the form of selection of features for use in color or x/y-axis specification in other plots.
+#' Information transmission from a row statistics table involves selection of features for use in color or x/y-axis specification in other plots.
+#' Information reception is less common and involves the receipt of point selections from a transmitting plot.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_define_table_links
@@ -506,10 +506,7 @@ height_limits <- c(400L, 1000L)
 #'
 #' @importFrom shiny em strong br tagList 
 #' @importFrom igraph adjacent_vertices
-.define_table_links <- function(panel, memory, table_links)
-# This creates a description of all of the incoming/outgoing
-# relationships between a table panel and the other plots/tables.
-{
+.define_table_links <- function(panel, memory, table_links) {
     enc <- .split_encoded(panel)
     param_choices <- memory[[enc$Type]][enc$ID,]
     output <- list()
@@ -522,16 +519,25 @@ height_limits <- c(400L, 1000L)
 
     # Checking where it broadcasts to plots.
     current <- table_links[[panel]]
-    for (trans in list(c("yaxis", "y-axis"),
-                       c("xaxis", "x-axis"),
-                       c("color", "color"))) {
+    for (trans in list(c("yaxis", "y-axis", NA, NA),
+                       c("xaxis", "x-axis", .featExprXAxis, .featExprXAxisFeatNameTitle),
+                       c("color", "color", .colorByField, .colorByFeatNameTitle))
+        ) {
 
         children <- current[[trans[1]]]
         child_enc <- .split_encoded(children)
         child_names <- .decode_panel_name(child_enc$Type, child_enc$ID)
 
-        for (child in child_names) {
-            output <- c(output, list(paste("Transmitting", trans[2], "to"), em(strong(child)), br()))
+        out_str <- paste("Transmitting", trans[2], "to")
+        by_field <- trans[3]
+        ref_title <- trans[4]
+
+        # Only writing a broadcast label if the plot actually receives the information via the
+        # appropriate parameter choices. Y-axis for feature plots is NA, as there are no choices there.
+        for (i in seq_along(child_names)) {
+            if (is.na(by_field) || memory[[child_enc$Type[i]]][child_enc$ID[i], by_field]==ref_title) {
+                output <- c(output, list(out_str, em(strong(child_names[i])), br()))
+            }
         }
     }
 

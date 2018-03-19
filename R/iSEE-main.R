@@ -1434,36 +1434,12 @@ iSEE <- function(
                                      server = TRUE, selected = combined)
             }, ignoreInit=TRUE)
             
-            # Triggering an update of the selected elements : set features
-            set_button <- paste0(plot_name, "_", .heatMapSetFeatures)
-            observeEvent(input[[set_button]], {
-                origin <- pObjects$memory[[mode0]][id0, .heatMapImportSource]
-                if (origin==.noSelection) { 
-                    return(NULL)
-                }
-                enc <- .encode_panel_name(origin)
-
-                incoming <- NULL
-                if (enc$Type=="rowStatTable") {
-                    incoming <- input[[paste0(enc$Type, enc$ID, "_rows_all")]]
-                } else {
-                    selected <- .get_selected_points(rownames(gene_data), origin, pObjects$memory, pObjects$coordinates)
-                    if (is.null(selected)) {
-                        showNotification("Invalid: empty selection", type="warning")
-                        return(NULL) # avoid corner case: which(NULL)
-                    }
-                    incoming <- which(selected)
-                  
-                }
-
-                limit <- 100
-                if (length(incoming) > limit) {
-                    showNotification(sprintf("only the first %i features used", limit), type="warning")
-                    incoming <- utils::head(incoming, limit)
-                }
-
+            # Triggering an update of the selected elements : clear features
+            clear_button <- paste0(plot_name, "_", .heatMapClearFeatures)
+            observeEvent(input[[clear_button]], {
+                pObjects$memory[[mode0]][[.heatMapFeatName]][[id0]] <- integer()
                 updateSelectizeInput(session, paste0(plot_name, "_", .heatMapFeatName), choices = feature_choices,
-                                     server = TRUE, selected = incoming)
+                                     server = TRUE, selected = integer())
             }, ignoreInit=TRUE)
 
             # Updating the import source, but this does NOT trigger replotting, as we need to press the button.

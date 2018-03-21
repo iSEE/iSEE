@@ -605,12 +605,18 @@
 #' \code{\link{.create_visual_box_for_column_plots}},
 #' \code{\link{.create_visual_box_for_row_plots}}
 #'
-#' @importFrom shiny tagList numericInput sliderInput
+#' @importFrom shiny tagList numericInput sliderInput hr check
 .add_point_UI_elements <- function(mode, id, param_choices) {
     tagList(
-        numericInput(paste0(mode, id, "_", .plotPointSize), label = "Point size:", value=param_choices[,.plotPointSize]),
+        numericInput(paste0(mode, id, "_", .plotPointSize), label = "Point size:", 
+                     min=0, value=param_choices[,.plotPointSize]),
         sliderInput(paste0(mode, id, "_", .plotPointAlpha), label = "Point opacity", 
-                    min=0.1, max=1, value=param_choices[,.plotPointAlpha])
+                    min=0.1, max=1, value=param_choices[,.plotPointAlpha]),
+        hr(),
+        checkboxInput(paste0(mode, id, "_", .plotPointDownsample), label="Downsample points for speed", 
+                      value=param_choices[,.plotPointDownsample]),
+        numericInput(paste0(mode, id, "_", .plotPointSampleRes), label = "Sampling resolution:", 
+                     min=1, value=param_choices[,.plotPointSampleRes])
     )
 }
 
@@ -618,7 +624,8 @@
 #' @importFrom shiny tagList radioButtons numericInput
 .add_other_UI_elements <- function(mode, id, param_choices) { 
     tagList(    
-        numericInput(paste0(mode, id, "_", .plotFontSize), label = "Font size:", value=param_choices[,.plotFontSize]),
+        numericInput(paste0(mode, id, "_", .plotFontSize), label = "Font size:", 
+                     min=0, value=param_choices[,.plotFontSize]),
         radioButtons(paste0(mode, id, "_", .plotLegendPosition), label = "Legend position:", inline=TRUE,
                      choices=c(.plotLegendBottomTitle, .plotLegendRightTitle), 
                      selected=param_choices[,.plotLegendPosition])

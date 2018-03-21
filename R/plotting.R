@@ -558,9 +558,8 @@ names(.all_aes_values) <- .all_aes_names
         } else if (plot_type=="violin" || plot_type=="violin_horizontal") {
             xtype <- "jitteredX"
         }
-        extra_cmds <- c(extra_cmds, 
-            "plot.data <- with(plot.data, subsetPointsByGrid(%s, %s, resolution=%i));",
-            xtype, ytype, param_choices[[.plotPointSampleRes]])
+        extra_cmds <- c(extra_cmds, sprintf("plot.data <- subset(plot.data, subsetPointsByGrid(%s, %s, resolution=%i));",
+                                            xtype, ytype, param_choices[[.plotPointSampleRes]]))
     }
     
     # Dispatch to different plotting commands, depending on X/Y being groupable

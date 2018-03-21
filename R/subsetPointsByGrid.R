@@ -21,6 +21,16 @@
 #' 
 #' @return A logical vector indicating which points should be retained.
 #' 
+#' @examples
+#' X <- rnorm(100000)
+#' Y <- X + rnorm(100000)
+#'
+#' summary(subsetPointsByGrid(X, Y, resolution=100))
+#'
+#' summary(subsetPointsByGrid(X, Y, resolution=200))
+#'
+#' summary(subsetPointsByGrid(X, Y, resolution=1000))
+#'
 #' @author Aaron Lun
 #' @export 
 subsetPointsByGrid <- function(X, Y, resolution=200) {

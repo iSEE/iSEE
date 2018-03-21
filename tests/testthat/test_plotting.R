@@ -633,13 +633,9 @@ test_that(".make_featExprPlot works for groupable colour covariate", {
     selected_coldata,
     fixed = TRUE
   )
-  
-  expect_match(
-    p.out$cmd_list$data$more_color,
-    "as.factor",
-    fixed = TRUE
-  )
-  
+
+  expect_identical(p.out$cmd_list$data$more_color, "plot.data$ColorBy <- factor(plot.data$ColorBy);")
+ 
   expect_match(
     p.out$cmd_list$plot["scale_color1"],
     "^scale_color_manual"
@@ -1072,13 +1068,6 @@ test_that(".process_selectby_choice works with closed lasso selection", {
   
   select_cmd <- iSEE:::.process_selectby_choice(all_memory$featExprPlot, all_memory)
   
-  # check the source of the selected data
-  expect_match(
-    select_cmd$cmds[1],
-    "to_check <- subset",
-    fixed = TRUE
-  )
-
   # check the source plot type
   expect_match(
     select_cmd$cmds[1],
@@ -1088,7 +1077,7 @@ test_that(".process_selectby_choice works with closed lasso selection", {
 
   # check that the second (hard-coded) command is present
   expect_match(
-    select_cmd$cmds[2],
+    select_cmd$cmds[1],
     "all_lassos",
     fixed = TRUE
   )

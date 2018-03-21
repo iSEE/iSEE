@@ -760,8 +760,7 @@ names(.all_aes_values) <- .all_aes_names
    
     plot_cmds[["labs"]] <- .build_labs(x = x_lab, y = y_lab, color = color_lab, title = title)
 
-    # Defining boundaries if zoomed. This requires some finesse to deal
-    # with horizontal plots,
+    # Defining boundaries if zoomed. This requires some finesse to deal with horizontal plots,
     # where the point selection is computed on the flipped coordinates.
     bounds <- param_choices[[.zoomData]][[1]]
     if (horizontal) {
@@ -780,15 +779,15 @@ names(.all_aes_values) <- .all_aes_names
             deparse(bounds["ymin"]), deparse(bounds["ymax"])
         )
     } else {
-        plot_cmds[["coord"]] <- sprintf("%s(ylim = range(plot.data$Y, na.rm=TRUE), expand = TRUE) +", coord_cmd)
+        plot_cmds[["coord"]] <- sprintf("%s(ylim = range(plot.data.all$%s, na.rm=TRUE), expand = TRUE) +", 
+                                        coord_cmd, ifelse(horizontal, "X", "Y"))
     }
   
     plot_cmds[["scale_color"]] <- color_scale_cmd
-    if (!horizontal) { 
-        plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +" # preserving the x-axis range.
-    } else {
-        plot_cmds[["scale_y"]] <- "scale_y_discrete(drop = FALSE) +" # preserving the y-axis range.
-    }
+    
+    # Preserving the x-axis range. This applies even for horizontal violin plots,
+    # as this command is executed internally before coord_flip().
+    plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +" 
 
     plot_cmds[["theme_base"]] <- "theme_bw() +"
     plot_cmds[["theme_custom"]] <- sprintf(

@@ -390,9 +390,9 @@ names(.all_aes_values) <- .all_aes_names
 #' Square plots will have \code{jitteredX} and \code{jitteredY}.
 #' The \code{envir$plot.type} variable will specify the type of plot for correct dispatch in \code{\link{.create_plot}}.
 #'
-#' The environment may also contain \code{plot.data.all}, a data.frame equivalent to \code{plot.data} but without any \code{SelectBy} information or subsetting to restrict.
-#' (See \code{\link{.process_selectby_choice}} for the origin of this data.frame.)
-#' This is useful for determining the plotting boundaries of the entire data set, even after subsetting of \code{plot.data}.
+#' The environment will also contain \code{plot.data.all}, a data.frame equivalent to \code{plot.data} but without any \code{SelectBy} information or subsetting to restrict.
+#' This is useful for determining the plotting boundaries of the entire data set, even after subsetting of \code{plot.data} during selection, 
+#' or after downsampling points in \code{\link{.create_plot}}.
 #' 
 #' @author Aaron Lun
 #' @rdname INTERNAL_extract_plotting_data
@@ -457,11 +457,11 @@ names(.all_aes_values) <- .all_aes_names
         }
     }
 
-    if (length(more_data_cmds)) { 
-        eval(parse(text=unlist(more_data_cmds)), envir=eval_env)
-        data_cmds <- c(data_cmds, more_data_cmds)
-        more_data_cmds <- list() 
-    }
+    # Defining the full set of data (for use in setting plot boundaries later), and evaluating.
+    more_data_cmds[["full"]] <- "plot.data.all <- plot.data;"
+    eval(parse(text=unlist(more_data_cmds)), envir=eval_env)
+    data_cmds <- c(data_cmds, more_data_cmds)
+    more_data_cmds <- list() 
   
     # Creating the command to define SelectBy.
     # Note that 'all_brushes' or 'all_lassos' is needed for the eval() to obtain SelectBy.
@@ -524,31 +524,16 @@ names(.all_aes_values) <- .all_aes_names
 #' }
 #'
 #' @details
-#' This function should \emph{only} add commands related to the generation of
-#' the ggplot object.
-#' Any commands involving persistent manipulation of \code{plot.data} should
-#' be placed in \code{\link{.extract_plotting_data}} instead.
+#' This function should \emph{only} add commands related to the generation of the ggplot object.
+#' Any commands involving persistent manipulation of \code{plot.data} should be placed in \code{\link{.extract_plotting_data}} instead.
 #'
-#' This function will generate a scatter plot if both X and Y are numeric;
-#' a violin plot if only Y is numeric;
-#' a horizontal violin plot if only X is numeric;
-#' and a square plot, if neither are numeric.
-#' Refer to the documentation of the individual plotting functions for more
-#' details.
+#' This function will generate a scatter plot if both X and Y are numeric; a violin plot if only Y is numeric;
+#' a horizontal violin plot if only X is numeric; and a square plot, if neither are numeric.
+#' Refer to the documentation of the individual plotting functions for more details.
 #'
-#' Plotting commands will be executed in the evaluation environment
-#' (\emph{i.e.}, \code{envir}) to produce the output \code{plot} object.
-#' If \code{plot.data.all} exists in \code{envir},
-#' it will be used in the downstream plotting functions to define the plot
-#' boundaries.
-#' This may be necesssary to ensure consistent plot boundaries when
-#' selecting points to restrict - see
-#' \code{\link{.process_selectby_choice}} for details.
-#'
-#' This function will also add a box representing the Shiny brush coordinates,
-#' if one is available - see \code{?\link{.self_brush_box}}.
-#' Alternatively, if lasso waypoints are present, it will add them to the
-#' plot - see \code{?\link{.self_lasso_path}}.
+#' Plotting commands will be executed in the evaluation environment (i.e., \code{envir}) to produce the output \code{plot} object.
+#' This function will also add a box representing the Shiny brush coordinates, if one is available - see \code{?\link{.self_brush_box}}.
+#' Alternatively, if lasso waypoints are present, it will add them to the plot - see \code{?\link{.self_lasso_path}}.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson
 #' @rdname INTERNAL_create_plot
@@ -560,22 +545,35 @@ names(.all_aes_values) <- .all_aes_names
 .create_plot <- function(envir, param_choices, colormap, ...) {
     envir$colormap <- colormap
     plot_data <- envir$plot.data
-    range_all <- exists("plot.data.all", envir)
+    extra_cmds <- character(0)
+    plot_type <- envir$plot.type
+
+    # Deciding whether we should downsample.
+    if (param_choices[[.plotPointDownsample]]) {
+        xtype <- "X"
+        ytype <- "Y"
+        if (plot_type=="square") {
+            xtype <- "jitteredX"
+            ytype <- "jitteredY"
+        } else if (plot_type=="violin" || plot_type=="violin_horizontal") {
+            xtype <- "jitteredX"
+        }
+        extra_cmds <- c(extra_cmds, 
+            "plot.data <- with(plot.data, subsetPointsByGrid(%s, %s, resolution=%i));",
+            xtype, ytype, param_choices[[.plotPointSampleRes]])
+    }
     
     # Dispatch to different plotting commands, depending on X/Y being groupable
-    mode <- envir$plot.type
-    extra_cmds <- switch(envir$plot.type,
+    extra_cmds <- c(extra_cmds, switch(plot_type,
         square = .square_plot(plot_data=plot_data, param_choices=param_choices, ...),
-        violin = .violin_plot(plot_data=plot_data, param_choices=param_choices, ..., range_all = range_all),
-        violin_horizontal = .violin_plot(plot_data=plot_data, param_choices=param_choices, ..., range_all = range_all, horizontal=TRUE),
-        scatter = .scatter_plot(plot_data=plot_data, param_choices=param_choices, ..., range_all = range_all)
-    )
+        violin = .violin_plot(plot_data=plot_data, param_choices=param_choices, ...),
+        violin_horizontal = .violin_plot(plot_data=plot_data, param_choices=param_choices, ..., horizontal=TRUE),
+        scatter = .scatter_plot(plot_data=plot_data, param_choices=param_choices, ...)
+    ))
 
     # Adding self-brushing boxes, if they exist.
-    to_flip <- mode == "violin_horizontal"
-    # Adding a Shiny brush.
+    to_flip <- plot_type == "violin_horizontal"
     brush_out <- .self_brush_box(param_choices, flip=to_flip)
-    # Adding the lasso path.
     lasso_out <- .self_lasso_path(param_choices, flip=to_flip)
     select_cmds <- c(brush_out$cmds, lasso_out$cmds)
 
@@ -621,11 +619,16 @@ names(.all_aes_values) <- .all_aes_names
 #' Set to \code{NULL} to have no title. 
 #' @param by_row A logical scalar specifying whether the plot deals with
 #' row-level metadata.
-#' @param range_all A logical scalar specifying whether the control of the
-#' x/y-axis ranges should use \code{plot.data.all} instead of \code{plot.data}. 
 #'
 #' @return A character vector of commands to be parsed and evaluated by
 #' \code{\link{.create_plot}} to produce the scatter plot.
+#'
+#' @details
+#' As described in \code{?\link{.create_plot}}, the \code{\link{.scatter_plot}} function should only contain commands to generate the final ggplot object.
+#'
+#' \code{envir$plot.data.all} will be used to define the plot boundaries.
+#' This ensures consistent plot boundaries when selecting points to restrict (see \code{?\link{.process_selectby_choice}})
+#' or when downsampling for speed (see \code{?\link{.create_plot}}.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_scatter_plot
@@ -633,7 +636,7 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.create_plot}}
 #'
 #' @importFrom ggplot2 ggplot coord_cartesian theme_bw theme element_text
-.scatter_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, title, by_row = FALSE, range_all = FALSE) {
+.scatter_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, title, by_row = FALSE) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +"
 
@@ -661,11 +664,8 @@ names(.all_aes_values) <- .all_aes_names
           deparse(bounds["ymin"]),  deparse(bounds["ymax"])
         )
     } else {
-        pd <- ifelse(range_all, "plot.data.all", "plot.data")
-        plot_cmds[["coord"]] <- sprintf(
-"coord_cartesian(xlim = range(%s$X, na.rm = TRUE),
-    ylim = range(%s$Y, na.rm = TRUE), expand = TRUE) +",
-          pd, pd)
+        plot_cmds[["coord"]] <- "coord_cartesian(xlim = range(plot.data.all$X, na.rm = TRUE),
+    ylim = range(plot.data.all$Y, na.rm = TRUE), expand = TRUE) +"
     }
 
     # Adding further aesthetic elements.
@@ -705,8 +705,6 @@ names(.all_aes_values) <- .all_aes_names
 #' (i.e., Y axis categorical and X axis continuous).
 #' @param by_row A logical scalar specifying whether the plot deals with
 #' row-level metadata.
-#' @param range_all A logical scalar specifying whether the control of the
-#' x/y-axis ranges should use \code{plot.data.all} instead of \code{plot.data}. 
 #'
 #' @return 
 #' For \code{\link{.violin_setup}}, a character vector of commands to be parsed
@@ -717,14 +715,15 @@ names(.all_aes_values) <- .all_aes_names
 #' and evaluated by \code{\link{.create_plot}} to produce the violin plot.
 #'
 #' @details
-#' Any commands to modify \code{plot.data} in preparation for creating a
-#' violin plot should be placed in \code{\link{.violin_setup}},
+#' Any commands to modify \code{plot.data} in preparation for creating a' violin plot should be placed in \code{\link{.violin_setup}},
 #' to be called by \code{\link{.extract_plotting_data}}.
-#' This includes swapping of X and Y variables when \code{horizontal=TRUE},
-#' and adding of horizontal/vertical jitter to points.
+#' This includes swapping of X and Y variables when \code{horizontal=TRUE}, and adding of horizontal/vertical jitter to points.
 #'
-#' As described in \code{?\link{.create_plot}}, the \code{\link{.violin_plot}}
-#' function should only contain commands to generate the final ggplot object.
+#' As described in \code{?\link{.create_plot}}, the \code{\link{.violin_plot}} function should only contain commands to generate the final ggplot object.
+#'
+#' \code{envir$plot.data.all} will be used to define the y-axis boundaries (or x-axis boundaries when \code{horizontal=TRUE}).
+#' This ensures consistent plot boundaries when selecting points to restrict (see \code{?\link{.process_selectby_choice}})
+#' or when downsampling for speed (see \code{?\link{.create_plot}}.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson.
 #' @rdname INTERNAL_violin_plot
@@ -734,7 +733,7 @@ names(.all_aes_values) <- .all_aes_names
 #'
 #' @importFrom ggplot2 ggplot geom_violin coord_cartesian theme_bw theme
 #' coord_flip scale_x_discrete scale_y_discrete
-.violin_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, title, horizontal = FALSE, by_row = FALSE, range_all = FALSE) {
+.violin_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, title, horizontal = FALSE, by_row = FALSE) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +" # do NOT put aes here, it does not play nice with shiny brushes.
     plot_cmds[["violin"]] <- sprintf(
@@ -782,10 +781,7 @@ names(.all_aes_values) <- .all_aes_names
             deparse(bounds["ymin"]), deparse(bounds["ymax"])
         )
     } else {
-        pd <- ifelse(range_all, "plot.data.all", "plot.data")
-        plot_cmds[["coord"]] <- sprintf(
-          "%s(ylim = range(%s$Y, na.rm=TRUE), expand = TRUE) +",
-          coord_cmd, pd)
+        plot_cmds[["coord"]] <- sprintf("%s(ylim = range(plot.data$Y, na.rm=TRUE), expand = TRUE) +", coord_cmd)
     }
   
     plot_cmds[["scale_color"]] <- color_scale_cmd
@@ -861,20 +857,15 @@ plot.data$Y <- tmp;")
 #' @param by_row A logical scalar specifying whether the plot deals with row-level metadata.
 #'
 #' @return 
-#' For \code{\link{.square_setup}}, a character vector of commands to be parsed
-#'  and evaluated by \code{\link{.extract_plotting_data}} to set up the required fields.
+#' For \code{\link{.square_setup}}, a character vector of commands to be parsed and evaluated by \code{\link{.extract_plotting_data}} to set up the required fields.
 #'
-#' For \code{\link{.square_plot}}, a character vector of commands to be parsed
-#'  and evaluated by \code{\link{.create_plot}} to produce the square plot.
+#' For \code{\link{.square_plot}}, a character vector of commands to be parsed and evaluated by \code{\link{.create_plot}} to produce the square plot.
 #'
 #' @details
-#' Any commands to modify \code{plot.data} in preparation for creating a
-#'  square plot should be placed in \code{\link{.square_setup}}.
-#' This function will subsequently be called by
-#' \code{\link{.extract_plotting_data}}.
+#' Any commands to modify \code{plot.data} in preparation for creating a square plot should be placed in \code{\link{.square_setup}}.
+#' This function will subsequently be called by \code{\link{.extract_plotting_data}}.
 #'
-#' As described in \code{?\link{.create_plot}}, the \code{\link{.square_plot}}
-#' function should only contain commands to generate the final ggplot object.
+#' As described in \code{?\link{.create_plot}}, the \code{\link{.square_plot}} function should only contain commands to generate the final ggplot object.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson.
 #' @rdname INTERNAL_square_plot
@@ -1292,7 +1283,6 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
           # Duplicate plot.data before selecting points,
           # to make sure that axes are retained
           # even in case of an empty selected subset.
-          cmds[["full"]] <- "plot.data.all <- plot.data;"
           cmds[["subset"]] <- "plot.data <- subset(plot.data, SelectBy);"
         }
     }

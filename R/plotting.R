@@ -457,11 +457,14 @@ names(.all_aes_values) <- .all_aes_names
         }
     }
 
-    # Defining the full set of data (for use in setting plot boundaries later), and evaluating.
+    # Removing NAs, and defining the full set of valid data (for use in setting plot boundaries later).
+    # We do this here so NAs don't affect the boundaries derived from plot.data.all.
+    more_data_cmds[["na.rm"]] <- "plot.data <- subset(plot.data, !is.na(X) & !is.na(Y));"
     more_data_cmds[["full"]] <- "plot.data.all <- plot.data;"
+
+    # Evaluating and clearing the commands..
     eval(parse(text=unlist(more_data_cmds)), envir=eval_env)
     data_cmds <- c(data_cmds, more_data_cmds)
-    more_data_cmds <- list() 
   
     # Creating the command to define SelectBy.
     # Note that 'all_brushes' or 'all_lassos' is needed for the eval() to obtain SelectBy.
@@ -814,8 +817,6 @@ names(.all_aes_values) <- .all_aes_names
 plot.data$X <- plot.data$Y;
 plot.data$Y <- tmp;")
     }
-    setup_cmds[["na.rm"]] <-
-      "plot.data <- subset(plot.data, !is.na(X) & !is.na(Y));"
     setup_cmds[["group"]] <- "plot.data$GroupBy <- plot.data$X;"
 
     # Figuring out the scatter. This is done ahead of time to guarantee the
@@ -1266,14 +1267,9 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 }
                 
                 select_obj[[transmitter]] <- lasso_val
-                cmds[["na.rm"]] <- sprintf(
-                  "to_check <- subset(%s, !is.na(X) & !is.na(Y))",
-                  source_data)
-                cmds[["lasso"]] <- sprintf(
-                    "selected_pts <- mgcv::in.out(all_lassos[['%s']], cbind(as.numeric(to_check$%s), as.numeric(to_check$%s)))",
-                    transmitter, v1, v2)
-                cmds[["select"]] <-
-                  "plot.data$SelectBy <- rownames(plot.data) %in% rownames(to_check)[selected_pts]"
+                cmds[["lasso"]] <- sprintf("selected_pts <- mgcv::in.out(all_lassos[['%s']], cbind(as.numeric(%s$%s), as.numeric(%s$%s)))",
+                                           transmitter, source_data, v1, source_data, v2)
+                cmds[["select"]] <- sprintf("plot.data$SelectBy <- rownames(plot.data) %%in%% rownames(%s)[selected_pts]", source_data)
             }
         }
 

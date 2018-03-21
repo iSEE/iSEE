@@ -1196,7 +1196,7 @@ test_that(".create_points handles restrict selection effect", {
   
   expect_named(
     p.out$cmd_list$select,
-    c("brush","select","full","subset")
+    c("brush","select","subset")
   )
   expect_match(
     p.out$cmd_list$plot["points.select_restrict"],

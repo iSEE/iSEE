@@ -1084,7 +1084,8 @@ iSEE <- function(
             nonfundamental <- c(.colorByColData, .colorByFeatNameAssay)
         }
         nonfundamental <- c(nonfundamental, .colorByDefaultColor, .selectColor, .selectTransAlpha, 
-                            .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition)
+                            .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition,
+                            .plotPointDownsample, .plotPointSampleRes)
 
         for (id in seq_len(max_plots)) {
             # Observers for the non-fundamental parameter options.

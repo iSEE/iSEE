@@ -414,19 +414,11 @@ names(.all_aes_values) <- .all_aes_names
   
     xvals <- eval_env$plot.data$X
     group_X <- .is_groupable(xvals)
-    if (!group_X) {
-        more_data_cmds[["more_X"]] <- .coerce_to_numeric(xvals, "X")
-    } else {
-        more_data_cmds[["more_X"]] <- "plot.data$X <- as.factor(plot.data$X);"
-    }
+    more_data_cmds[["more_X"]] <- .coerce_type(xvals, "X", as_numeric=!group_X)
     
     yvals <- eval_env$plot.data$Y
     group_Y <- .is_groupable(yvals)
-    if (!group_Y) { 
-        more_data_cmds[["more_Y"]] <- .coerce_to_numeric(yvals, "Y")
-    } else {
-        more_data_cmds[["more_Y"]] <- "plot.data$Y <- as.factor(plot.data$Y);"
-    }
+    more_data_cmds[["more_Y"]] <- .coerce_type(yvals, "Y", as_numeric=!group_Y)
 
     # Adding coloring information as well.    
     if (by_row) {
@@ -448,13 +440,7 @@ names(.all_aes_values) <- .all_aes_names
     # Ensuring that colors are either factor or numeric. 
     coloring <- eval_env$plot.data$ColorBy
     if (!is.null(coloring)) {
-        if (!.is_groupable(coloring)) {
-            more_data_cmds[["more_color"]] <-
-              .coerce_to_numeric(coloring, "ColorBy")
-        } else {
-            more_data_cmds[["more_color"]] <-
-              "plot.data$ColorBy <- as.factor(plot.data$ColorBy);"
-        }
+        more_data_cmds[["more_color"]] <- .coerce_type(coloring, "ColorBy", as_numeric=!.is_groupable(coloring))
     }
 
     # Removing NAs, and defining the full set of valid data (for use in setting plot boundaries later).
@@ -1578,49 +1564,37 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
   return(.nlevels(x) <= max_levels)
 }
 
-#' Coerce numerous levels to numeric type
+#' Coerce data to a specific type
 #'
-#' This function ensures that a specific column of the data.frame
-#' underlying a plot is of \code{numeric} type.
-#' If that is not the case,
-#' it returns a command (as a character value) that coerces
-#' the column from any type (typically a factor with numerous levels
-#' or a character vector with numerous unique values) to the
-#' \code{numeric} R internal type, to avoid grouping by \code{\link{ggplot}},
-#' for efficient plotting.
+#' This function ensures that a specific column of the \code{plot.data} data.frame is either a numeric or factor.
+#' If that is not the case, it returns a command (as a string) that coerces the column into the desired type.
 #'
 #' @param values Input vector that must be coerced to \code{numeric}.
-#' @param field Column name in the plot data.frame that contain
-#' \code{values}.
-#' @param warn A \code{logical} that indicates whether a warning should be
-#' raised if \code{values} is not already of type \code{numeric}.
+#' @param field Column name in the \code{plot.data} data.frame that contains \code{values}.
+#' @param as_numeric A logical scalar indicating whether the column should be coerced to numeric (if \code{TRUE}) or factor (otherwise).
 #'
-#' @return A command that coerces the plot data.frame column to
-#' \code{numeric} type, or \code{NULL} if no coercion is required.
+#' @return A command that coerces the plot data.frame column to the specified type, or \code{NULL} if no coercion is required.
 #'
 #' @author Kevin Rue-Albrecht
-#' @rdname INTERNAL_coerce_to_numeric
+#' @rdname INTERNAL_coerce_type
 #' @seealso 
 #' \code{\link{.create_plot}}.
-.coerce_to_numeric <- function(values, field, warn=TRUE) {
-  if (!is.numeric(values)) {
-    if (warn) {
-      warning(
-        "coloring covariate has too many unique values, coercing to numeric")
-    }
-    if (is.factor(values)) {
-      extra_cmd <- sprintf(
-        "plot.data$%s <- as.numeric(plot.data$%s)",
-        field, field)
+.coerce_type <- function(values, field, as_numeric=TRUE) {
+    if (as_numeric) { 
+        if (!is.numeric(values)) {
+            warning("coloring covariate has too many unique values, coercing to numeric")
+            col_var <- sprintf("plot.data$%s", field)
+            if (!is.factor(values)) {
+                col_var <- sprintf("as.factor(%s)", col_var)
+            }
+            return(sprintf("plot.data$%s <- as.numeric(%s);", field, col_var))
+        }
     } else {
-      extra_cmd <- sprintf(
-        "plot.data$%s <- as.numeric(as.factor(plot.data$%s))",
-        field, field
-        )
+        if (!is.factor(values)) {
+            return(sprintf("plot.data$%s <- factor(plot.data$%s);", field, field))
+        }
     }
-    return(extra_cmd)
-  }
-  return(NULL)
+    return(NULL)
 }
 
 ############################################

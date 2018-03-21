@@ -923,25 +923,34 @@ test_that(".gene_axis_label produces a valid axis label", {
   )
 })
 
-# .coerce_to_numeric handles gene text input ----
+# .coerce_type handles things ----
 
-test_that(".coerce_to_numeric handles gene text input", {
+test_that(".coerce_type handles various inputs correctly", {
 
-  input_values <- letters
-  input_field <- "field_name"
-
+  input_field <- "XYZ"
   expect_warning(
-    lab_out <- iSEE:::.coerce_to_numeric(input_values, input_field, warn=TRUE),
+    lab_out <- iSEE:::.coerce_type(letters, input_field, as_numeric=TRUE),
     "coloring covariate has too many unique values, coercing to numeric"
   )
+  expect_identical(lab_out, "plot.data$XYZ <- as.numeric(as.factor(plot.data$XYZ));")
 
-  lab_out <- iSEE:::.coerce_to_numeric(input_values, input_field, warn=TRUE)
-
-  expect_type(
-    lab_out,
-    "character"
+  expect_warning(
+    lab_out <- iSEE:::.coerce_type(factor(letters), input_field, as_numeric=TRUE),
+    "coloring covariate has too many unique values, coercing to numeric"
   )
+  expect_identical(lab_out, "plot.data$XYZ <- as.numeric(plot.data$XYZ);")
 
+  lab_out <- iSEE:::.coerce_type(1:10, input_field, as_numeric=TRUE)
+  expect_identical(lab_out, NULL)
+
+  lab_out <- iSEE:::.coerce_type(letters, input_field, as_numeric=FALSE)
+  expect_identical(lab_out, "plot.data$XYZ <- factor(plot.data$XYZ);")
+
+  lab_out <- iSEE:::.coerce_type(factor(letters), input_field, as_numeric=FALSE)
+  expect_identical(lab_out, NULL)
+
+  lab_out <- iSEE:::.coerce_type(1:10, input_field, as_numeric=FALSE)
+  expect_identical(lab_out, "plot.data$XYZ <- factor(plot.data$XYZ);")
 })
 
 # .process_selectby_choice ----

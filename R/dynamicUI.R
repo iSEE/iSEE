@@ -605,7 +605,7 @@
 #' \code{\link{.create_visual_box_for_column_plots}},
 #' \code{\link{.create_visual_box_for_row_plots}}
 #'
-#' @importFrom shiny tagList numericInput sliderInput hr check
+#' @importFrom shiny tagList numericInput sliderInput hr checkboxInput
 .add_point_UI_elements <- function(mode, id, param_choices) {
     tagList(
         numericInput(paste0(mode, id, "_", .plotPointSize), label = "Point size:", 

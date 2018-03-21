@@ -38,25 +38,11 @@ names(.all_aes_values) <- .all_aes_names
 #' @param colormap An ExperimentColorMap object that defines custom color maps
 #' for individual \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
-#' @return A list that includes the following elements:
-#' \describe{
-#'   \item{cmd_list}{A list of character vectors, where each vector contains
-#'     commands to parse and evaluate to produce the final plot.
-#'     Each list element groups functionally related commands - namely,
-#'     \code{"data"}, \code{"select"}, \code{"setup"}, \code{"plot"}).
-#'   }
-#'   \item{xy}{A data.frame that includes coordinates and covariates of the
-#'     plot.}
-#'   \item{plot}{A ggplot object that results of the evaluation of
-#'     \code{cmds} items.}
-#' }
+#' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}; see \code{?\link{.plot_wrapper}} for more details.
 #' 
 #' @details
-#' This function extracts out the data from \code{se} required to produce the
-#' reduced dimension plot.
-#' It then calls \code{\link{.extract_plotting_data}} to add the aesthetic
-#' parameters such as coloring and point selection,
-#' followed by \code{\link{.create_plot}} to generate the ggplot object itself.
+#' This function extracts out the data from \code{se} required to produce a reduced dimension plot.
+#' It then calls \code{\link{.plot_wrapper}} to complete the plotting data (\code{xy} in output) and to generate the ggplot object (\code{plot} in output).
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson
 #' @rdname INTERNAL_make_redDimPlot
@@ -80,12 +66,9 @@ names(.all_aes_values) <- .all_aes_names
     x_lab <- sprintf("Dimension %s", param_choices[[.redDimXAxis]])
     y_lab <- sprintf("Dimension %s", param_choices[[.redDimYAxis]])
 
-    setup_out <- .extract_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row = FALSE)
-    plot_out <- .create_plot(setup_out$envir, param_choices, colormap,
-                             x_lab = x_lab, y_lab = y_lab, color_lab = setup_out$color_lab, 
-                             title = plot_title, by_row = FALSE)
-    return(list(cmd_list = c(setup_out$cmd_list, list(plot=plot_out$cmds)),
-                xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
+    .plot_wrapper(data_cmds, param_choices = param_choices, all_memory = all_memory, 
+                  all_coordinates = all_coordinates, se = se, by_row = FALSE, 
+                  colormap = colormap, x_lab = x_lab, y_lab = y_lab, title = plot_title)
 }
 
 ############################################
@@ -106,25 +89,11 @@ names(.all_aes_values) <- .all_aes_names
 #' @param colormap An ExperimentColorMap object that defines custom color maps
 #' for individual \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
-#' @return A list that includes the following elements:
-#' \describe{
-#'   \item{cmd_list}{A list of character vectors, where each vector contains
-#'     commands to parse and evaluate to produce the final plot.
-#'     Each list element groups functionally related commands - namely,
-#'     \code{"data"}, \code{"select"}, \code{"setup"}, \code{"plot"}).
-#'   }
-#'   \item{xy}{A data.frame that includes coordinates and covariates of the
-#'     plot.}
-#'   \item{plot}{A ggplot object that results of the evaluation of
-#'     \code{cmds} items.}
-#' }
+#' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}; see \code{?\link{.plot_wrapper}} for more details.
 #' 
 #' @details
-#' This function extracts out the data from \code{se} required to produce
-#' the reduced dimension plot.
-#' It then calls \code{\link{.extract_plotting_data}} to add the aesthetic
-#' parameters such as coloring and point selection,
-#' followed by \code{\link{.create_plot}} to generate the ggplot object itself.
+#' This function extracts out the data from \code{se} required to produce a column data plot.
+#' It then calls \code{\link{.plot_wrapper}} to complete the plotting data (\code{xy} in output) and to generate the ggplot object (\code{plot} in output).
 #' 
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson
 #' @rdname INTERNAL_make_colDataPlot
@@ -159,12 +128,9 @@ names(.all_aes_values) <- .all_aes_names
     x_title <- ifelse(x_lab == '', x_lab, sprintf("vs %s", x_lab))
     plot_title <- sprintf("%s %s", y_lab, x_title)
 
-    setup_out <- .extract_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row = FALSE)
-    plot_out <- .create_plot(setup_out$envir, param_choices, colormap,
-                             x_lab = x_lab, y_lab = y_lab, color_lab = setup_out$color_lab, 
-                             title = plot_title, by_row = FALSE)
-    return(list(cmd_list = c(setup_out$cmd_list, list(plot=plot_out$cmds)),
-                xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
+    .plot_wrapper(data_cmds, param_choices = param_choices, all_memory = all_memory, 
+                  all_coordinates = all_coordinates, se = se, by_row = FALSE, 
+                  colormap = colormap, x_lab = x_lab, y_lab = y_lab, title = plot_title)
 }
 
 ############################################
@@ -186,25 +152,11 @@ names(.all_aes_values) <- .all_aes_names
 #' @param colormap An ExperimentColorMap object that defines custom color maps
 #' for individual \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
-#' @return A list that includes the following elements:
-#' \describe{
-#'   \item{cmd_list}{A list of character vectors, where each vector contains
-#'     commands to parse and evaluate to produce the final plot.
-#'     Each list element groups functionally related commands - namely,
-#'     \code{"data"}, \code{"select"}, \code{"setup"}, \code{"plot"}).
-#'   }
-#'   \item{xy}{A data.frame that includes coordinates and covariates of the
-#'     plot.}
-#'   \item{plot}{A ggplot object that results of the evaluation of
-#'     \code{cmds} items.}
-#' }
+#' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}; see \code{?\link{.plot_wrapper}} for more details.
 #' 
 #' @details
-#' This function extracts out the data from \code{se} required to produce the
-#' reduced dimension plot.
-#' It then calls \code{\link{.extract_plotting_data}} to add the aesthetic
-#' parameters such as coloring and point selection,
-#' followed by \code{\link{.create_plot}} to generate the ggplot object itself.
+#' This function extracts out the data from \code{se} required to produce a feature expression plot.
+#' It then calls \code{\link{.plot_wrapper}} to complete the plotting data (\code{xy} in output) and to generate the ggplot object (\code{plot} in output).
 #' 
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson
 #' @rdname INTERNAL_make_featExprPlot
@@ -266,12 +218,9 @@ names(.all_aes_values) <- .all_aes_names
     x_title <- ifelse(x_title == '', x_title, sprintf("vs %s", x_title))
     plot_title <- sprintf("%s %s", y_title, x_title)
 
-    setup_out <- .extract_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row = FALSE)
-    plot_out <- .create_plot(setup_out$envir, param_choices, colormap,
-                             x_lab = x_lab, y_lab = y_lab, color_lab = setup_out$color_lab, 
-                             title = plot_title, by_row = FALSE)
-    return(list(cmd_list = c(setup_out$cmd_list, list(plot=plot_out$cmds)),
-                xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
+    .plot_wrapper(data_cmds, param_choices = param_choices, all_memory = all_memory, 
+                  all_coordinates = all_coordinates, se = se, by_row = FALSE, 
+                  colormap = colormap, x_lab = x_lab, y_lab = y_lab, title = plot_title)
 }
 
 ############################################
@@ -293,25 +242,11 @@ names(.all_aes_values) <- .all_aes_names
 #' @param colormap An ExperimentColorMap object that defines custom color maps
 #' for individual \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
-#' @return A list that includes the following elements:
-#' \describe{
-#'   \item{cmd_list}{A list of character vectors, where each vector contains
-#'     commands to parse and evaluate to produce the final plot.
-#'     Each list element groups functionally related commands - namely,
-#'     \code{"data"}, \code{"select"}, \code{"setup"}, \code{"plot"}).
-#'   }
-#'   \item{xy}{A data.frame that includes coordinates and covariates of the
-#'     plot.}
-#'   \item{plot}{A ggplot object that results of the evaluation of
-#'     \code{cmds} items.}
-#' }
+#' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}; see \code{?\link{.plot_wrapper}} for more details.
 #' 
 #' @details
-#' This function extracts out the data from \code{se} required to produce the
-#' reduced dimension plot.
-#' It then calls \code{\link{.extract_plotting_data}} to add the aesthetic
-#' parameters such as coloring and point selection,
-#' followed by \code{\link{.create_plot}} to generate the ggplot object itself.
+#' This function extracts the data from \code{se} required to produce a row data plot.
+#' It then calls \code{\link{.plot_wrapper}} to complete the plotting data (\code{xy} in output) and to generate the ggplot object (\code{plot} in output).
 #' 
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson
 #' @rdname INTERNAL_make_rowDataPlot
@@ -343,12 +278,58 @@ names(.all_aes_values) <- .all_aes_names
     x_title <- ifelse(x_lab == '', x_lab, sprintf("vs %s", x_lab))
     plot_title <- sprintf("%s %s", y_lab, x_title)
 
-    setup_out <- .extract_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row = TRUE)
-    plot_out <- .create_plot(setup_out$envir, param_choices, colormap, 
-                             x_lab = x_lab, y_lab = y_lab, color_lab = setup_out$color_lab,
-                             title = plot_title, by_row = TRUE)
-    return(list(cmd_list = c(setup_out$cmd_list, list(plot=plot_out$cmds)),
-                xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
+    .plot_wrapper(data_cmds, param_choices = param_choices, all_memory = all_memory, 
+                  all_coordinates = all_coordinates, se = se, by_row = TRUE, 
+                  colormap = colormap, x_lab = x_lab, y_lab = y_lab, title = plot_title)
+}
+
+############################################
+# Internal functions: plot wrapper ----
+############################################
+
+#' Plot creation wrapper
+#' 
+#' Wraps the commands to complete the data.frame containing the plot data,
+#' and to create the ggplot object to return to the Shiny server function.
+#'
+#' @param data_cmds A list of character vectors containing commands to initialize the plotting data.frame.
+#' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
+#' @param all_memory A list of DataFrames, where each DataFrame corresponds to a panel type and contains the settings for each individual panel of that type.
+#' @param all_coordinates A list of data.frames, where each data.frame contains the x/y coordinates of data points on a specific plot (named by the encoded panel name).
+#' @param se A SingleCellExperiment object.
+#' @param by_row A logical vector indicating whether this data.frame is for a row-based plot.
+#' @param ... Further arguments to pass to \code{\link{.create_plot}}.
+#' 
+#' @details
+#' This function is a convenience wrapper for the combination of \code{\link{.extract_plotting_data}} and \code{\link{.create_plot}}.
+#' The former adds the aesthetic parameters such as coloring and point selection, while the latter will generate the ggplot object itself.
+#' This wrapper is to be used across the individual top-level functions for each plot type.
+#' 
+#' Note that \code{xy} needs to be defined \emph{prior} to running \code{\link{.create_plot}}.
+#' This is because the plotting commands may involve further subsetting of the data.frame if downsampling is performed.
+#' It would not be correct to save the subsetted data.frame for use in point selection in the Shiny server function.
+#'
+#' @return A list that includes the following elements:
+#' \describe{
+#'   \item{cmd_list}{A list of character vectors, where each vector contains commands to parse and evaluate to produce the final plot.
+#'     Each list element groups functionally related commands - namely, \code{"data"}, \code{"select"}, \code{"setup"}, \code{"plot"}).
+#'   }
+#'   \item{xy}{A data.frame that includes coordinates and covariates of the plot.
+#'     This is the result of running all commands in \code{cmd_list} prior to \code{"plot"}.
+#'   }
+#'   \item{plot}{A ggplot object that results from the evaluation of \code{"plot"} commands.}
+#' }
+#' 
+#' @author Aaron Lun
+#' @rdname INTERNAL_plot_wrapper
+#' @seealso
+#' \code{\link{.extract_plotting_data}},
+#' \code{\link{.create_plot}}
+.plot_wrapper <- function(data_cmds, param_choices, all_memory, all_coordinates, se, by_row, ...) {
+    setup_out <- .extract_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row = by_row)
+    xy <- setup_out$envir$plot.data # DO NOT MOVE!
+    plot_out <- .create_plot(setup_out$envir, param_choices, ..., color_lab = setup_out$color_lab, by_row = by_row)
+    return(list(cmd_list = c(setup_out$cmd_list, list(plot=plot_out$cmds)), xy = xy, plot = plot_out$plot)) 
 }
 
 ############################################
@@ -370,7 +351,7 @@ names(.all_aes_values) <- .all_aes_names
 #' type.
 #' @param all_coordinates A list of data.frames, where each data.frame contains
 #' the x/y coordinates of data points on a specific plot
-#' (named by the encodedpanel name).
+#' (named by the encoded panel name).
 #' @param se A SingleCellExperiment object.
 #' @param by_row A logical vector indicating whether this data.frame is for a
 #' row-based plot.

@@ -118,6 +118,9 @@ iSEE <- function(
   initialPanels=NULL,
   annotFun = NULL,
   colormap=ExperimentColorMap(),
+  intro_firststeps = read.delim(
+    system.file("extdata", "intro_firststeps.txt",package = "iSEE"),
+    sep=";", stringsAsFactors = FALSE,row.names = NULL),
   run_local=TRUE
 ) {
   # Save the original name of the input object for the command to rename it
@@ -305,9 +308,9 @@ iSEE <- function(
     }
 
     # Help and documentation-related observers.
-    intro_firststeps <- read.delim(
-      system.file("extdata", "intro_firststeps.txt",package = "iSEE"),
-      sep=";", stringsAsFactors = FALSE,row.names = NULL)
+    # intro_firststeps <- read.delim(
+    #   system.file("extdata", "intro_firststeps.txt",package = "iSEE"),
+    #   sep=";", stringsAsFactors = FALSE,row.names = NULL)
 
     observeEvent(input$tour_firststeps, {
       introjs(session,

@@ -118,9 +118,7 @@ iSEE <- function(
   initialPanels=NULL,
   annotFun = NULL,
   colormap=ExperimentColorMap(),
-  intro_firststeps = read.delim(
-    system.file("extdata", "intro_firststeps.txt",package = "iSEE"),
-    sep=";", stringsAsFactors = FALSE,row.names = NULL),
+  tour = NULL,
   run_local=TRUE
 ) {
   # Save the original name of the input object for the command to rename it
@@ -307,16 +305,16 @@ iSEE <- function(
         rObjects[[paste0(mode, id, "_", .heatMapLegend)]] <- 1L
     }
 
-    # Help and documentation-related observers.
-    # intro_firststeps <- read.delim(
-    #   system.file("extdata", "intro_firststeps.txt",package = "iSEE"),
-    #   sep=";", stringsAsFactors = FALSE,row.names = NULL)
-
     observeEvent(input$tour_firststeps, {
-      introjs(session,
-              options = list(steps= intro_firststeps)
-      )
+        intro_firststeps <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"),
+                                       sep=";", stringsAsFactors = FALSE,row.names = NULL)
+        introjs(session, options = list(steps= intro_firststeps))
     })
+
+    if (!is.null(tour)) {
+        # Only triggers _after_ panels are fully setup, so observers are properly ID'd.
+        session$onFlushed(function() { introjs(session, options = list(steps = tour)) })
+    }
 
     observeEvent(input$getcode_all, {
       showModal(modalDialog(

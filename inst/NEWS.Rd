@@ -3,8 +3,10 @@
 
 \section{iSEE VERSION 0.99.1}{
   \itemize{
+    \item Added grid-based visual point downsampling for faster plotting,
+    including control of resolution.
     \item Added button "Clear features" for heat maps.
-    \item Minor reorganization of buttons in heat map panels.
+    \item Reorganized buttons in heat map panels.
     \item Maintainer badge transferred to Federico
   }
 }

@@ -1,5 +1,5 @@
 
-# `iSEE` - interactive SummarizedExperiment/SingleCellExperiment Explorer
+# `iSEE` - interactive SummarizedExperiment Explorer
 
 <!-- TODO logo here too :) --> 
 

@@ -247,16 +247,17 @@
                     collapseBox(id=.input_FUN(.heatMapFeatNameBoxOpen),
                                 title="Feature parameters",
                                 open=param_choices[[.heatMapFeatNameBoxOpen]],
+                        selectInput(.input_FUN(.heatMapImportSource), label="Import from", choices=heatmap_sources,
+                                    selected=.choose_link(param_choices[[.heatMapImportSource]], heatmap_sources, force_default=TRUE)),
+                        actionButton(.input_FUN(.heatMapImportFeatures), "Import features"),
+                        actionButton(.input_FUN(.heatMapCluster), "Cluster features"),
+                        actionButton(.input_FUN(.heatMapClearFeatures), "Clear features"),
                         selectizeInput(.input_FUN(.heatMapFeatName),
                                        label="Features:",
                                        choices=NULL, selected=NULL, multiple=TRUE,
                                        options = list(plugins = list('remove_button', 'drag_drop'))),
                         selectInput(.input_FUN(.heatMapAssay), label=NULL,
                                     choices=all_assays, selected=param_choices[[.heatMapAssay]]),
-                        selectInput(.input_FUN(.heatMapImportSource), label="Import from", choices=heatmap_sources,
-                                    selected=.choose_link(param_choices[[.heatMapImportSource]], heatmap_sources, force_default=TRUE)),
-                        actionButton(.input_FUN(.heatMapImport), "Import features"),
-                        actionButton(.input_FUN(.heatMapCluster), "Suggest feature order"),
                         hr(),
                         checkboxGroupInput(.input_FUN(.heatMapCenterScale), label="Expression values are:", 
                                            selected=param_choices[[.heatMapCenterScale]][[1]],
@@ -265,7 +266,7 @@
                                      value = param_choices[[.heatMapLower]]), 
                         numericInput(.input_FUN(.heatMapUpper), label="Upper bound:",
                                      value = param_choices[[.heatMapUpper]]), 
-                        .conditional_on_check(.input_FUN(.heatMapCenterScale), .heatMapCenterTitle,
+                        .conditional_on_check_group(.input_FUN(.heatMapCenterScale), .heatMapCenterTitle,
                                               selectInput(.input_FUN(.heatMapCenteredColors), label="Color scale:",
                                                           choices = c("purple-black-yellow", "blue-white-orange"),
                                                           selected = param_choices[[.heatMapCenteredColors]]))
@@ -490,7 +491,7 @@
         open = param_choices[[.visualParamBoxOpen]],
         checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE, selected=param_choices[[.visualParamChoice]][[1]],
                            choices=c(.visualParamChoiceColorTitle, .visualParamChoicePointTitle, .visualParamChoiceOtherTitle)),
-        .conditional_on_check(pchoice_field, .visualParamChoiceColorTitle,
+        .conditional_on_check_group(pchoice_field, .visualParamChoiceColorTitle,
             hr(),
             radioButtons(colorby_field, label="Color by:", inline=TRUE,
                          choices=color_choices, selected=param_choices[[.colorByField]]
@@ -511,9 +512,9 @@
                                     selected=.choose_link(param_choices[[.colorByRowTable]], active_tab, force_default=TRUE))
                 )
             ),
-        .conditional_on_check(pchoice_field, .visualParamChoicePointTitle,
+        .conditional_on_check_group(pchoice_field, .visualParamChoicePointTitle,
             hr(), .add_point_UI_elements(mode, id, param_choices)),
-        .conditional_on_check(pchoice_field, .visualParamChoiceOtherTitle,
+        .conditional_on_check_group(pchoice_field, .visualParamChoiceOtherTitle,
             hr(), .add_other_UI_elements(mode, id, param_choices))
         )
 }
@@ -557,7 +558,7 @@
         open = param_choices[[.visualParamBoxOpen]],
         checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE, selected=param_choices[[.visualParamChoice]][[1]],
                            choices=c(.visualParamChoiceColorTitle, .visualParamChoicePointTitle, .visualParamChoiceOtherTitle)),
-        .conditional_on_check(pchoice_field, .visualParamChoiceColorTitle,
+        .conditional_on_check_group(pchoice_field, .visualParamChoiceColorTitle,
             radioButtons(colorby_field, label="Color by:", inline=TRUE,
                          choices=color_choices, selected=param_choices[[.colorByField]]
                 ),
@@ -577,9 +578,9 @@
                                     value=param_choices[[.colorByFeatNameColor]]))
                 )
             ),
-        .conditional_on_check(pchoice_field, .visualParamChoicePointTitle,
+        .conditional_on_check_group(pchoice_field, .visualParamChoicePointTitle,
             hr(), .add_point_UI_elements(mode, id, param_choices)),
-        .conditional_on_check(pchoice_field, .visualParamChoiceOtherTitle,
+        .conditional_on_check_group(pchoice_field, .visualParamChoiceOtherTitle,
             hr(), .add_other_UI_elements(mode, id, param_choices))
         )
 }
@@ -605,12 +606,21 @@
 #' \code{\link{.create_visual_box_for_column_plots}},
 #' \code{\link{.create_visual_box_for_row_plots}}
 #'
-#' @importFrom shiny tagList numericInput sliderInput
+#' @importFrom shiny tagList numericInput sliderInput hr checkboxInput
 .add_point_UI_elements <- function(mode, id, param_choices) {
+    ds_id <- paste0(mode, id, "_", .plotPointDownsample)
     tagList(
-        numericInput(paste0(mode, id, "_", .plotPointSize), label = "Point size:", value=param_choices[,.plotPointSize]),
+        numericInput(paste0(mode, id, "_", .plotPointSize), label = "Point size:", 
+                     min=0, value=param_choices[,.plotPointSize]),
         sliderInput(paste0(mode, id, "_", .plotPointAlpha), label = "Point opacity", 
-                    min=0.1, max=1, value=param_choices[,.plotPointAlpha])
+                    min=0.1, max=1, value=param_choices[,.plotPointAlpha]),
+        hr(),
+        checkboxInput(ds_id, label="Downsample points for speed", 
+                      value=param_choices[,.plotPointDownsample]),
+        .conditional_on_check_solo(ds_id, on_select=TRUE, 
+            numericInput(paste0(mode, id, "_", .plotPointSampleRes), label = "Sampling resolution:", 
+                         min=1, value=param_choices[,.plotPointSampleRes])
+        )
     )
 }
 
@@ -618,7 +628,8 @@
 #' @importFrom shiny tagList radioButtons numericInput
 .add_other_UI_elements <- function(mode, id, param_choices) { 
     tagList(    
-        numericInput(paste0(mode, id, "_", .plotFontSize), label = "Font size:", value=param_choices[,.plotFontSize]),
+        numericInput(paste0(mode, id, "_", .plotFontSize), label = "Font size:", 
+                     min=0, value=param_choices[,.plotFontSize]),
         radioButtons(paste0(mode, id, "_", .plotLegendPosition), label = "Legend position:", inline=TRUE,
                      choices=c(.plotLegendBottomTitle, .plotLegendRightTitle), 
                      selected=param_choices[,.plotLegendPosition])
@@ -683,6 +694,7 @@
 #'
 #' @param id String containing the id of the UI element for the radio buttons or checkbox group.
 #' @param choice String containing the choice on which to show the conditional elements.
+#' @param on_select Logical scalar specifying whether the conditional element should be shown upon selection in a check box, or upon de-selection (if \code{FALSE}).
 #' @param ... UI elements to show conditionally.
 #'
 #' @return
@@ -707,7 +719,14 @@
 
 #' @rdname INTERNAL_conditional_elements
 #' @importFrom shiny conditionalPanel
-.conditional_on_check <- function(id, choice, ...) {
+.conditional_on_check_solo <- function(id, on_select=TRUE, ...) {
+    choice <- ifelse(on_select, 'true', 'false')
+    conditionalPanel(condition=sprintf('(input["%s"] == %s)', id, choice), ...)
+} 
+
+#' @rdname INTERNAL_conditional_elements
+#' @importFrom shiny conditionalPanel
+.conditional_on_check_group <- function(id, choice, ...) {
     conditionalPanel(condition=sprintf('(input["%s"].includes("%s"))', id, choice), ...)
 } 
 

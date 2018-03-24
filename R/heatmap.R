@@ -31,7 +31,7 @@
 #' @author Charlotte Soneson, Aaron Lun, Kevin Rue-Albrecht 
 #' @rdname INTERNAL_make_heatMapPlot
 #' 
-#' @importFrom ggplot2 scale_y_continuous geom_raster
+#' @importFrom ggplot2 scale_y_continuous geom_raster element_blank unit
 #' @importFrom cowplot get_legend plot_grid
 #' @importFrom scales rescale
 #' @importFrom reshape2 melt
@@ -43,7 +43,7 @@
   genes_selected_y <- param_choices[[.heatMapFeatName]][[1]]
   validate(need( 
     length(genes_selected_y) > 0L,
-    sprintf("need at least one feature for heat map") 
+    sprintf("At least one feature needed for heat map") 
   ))
   assay_choice <- param_choices[[.heatMapAssay]]
   
@@ -61,7 +61,7 @@
   orderBy <- param_choices[[.heatMapColData]][[1]]
   validate(need( 
       length(orderBy) > 0L,
-      sprintf("need at least one column annotation for heat map") 
+      sprintf("At least one column annotation needed for heat map") 
   ))
   setup_cmds <- c(
       vapply(seq_along(orderBy), FUN=function(i) {

@@ -1402,8 +1402,8 @@ iSEE <- function(
             id0 <- id
             plot_name <- paste0(mode0, id0)
 
-            # Triggering an update of the selected elements.
-            import_button <- paste0(plot_name, "_", .heatMapImport)
+            # Triggering an update of the selected elements : import features
+            import_button <- paste0(plot_name, "_", .heatMapImportFeatures)
             observeEvent(input[[import_button]], {
                 origin <- pObjects$memory[[mode0]][id0, .heatMapImportSource]
                 if (origin==.noSelection) { 
@@ -1433,6 +1433,15 @@ iSEE <- function(
                 combined <- union(pObjects$memory[[mode0]][id0, .heatMapFeatName][[1]], incoming)
                 updateSelectizeInput(session, paste0(plot_name, "_", .heatMapFeatName), choices = feature_choices,
                                      server = TRUE, selected = combined)
+            }, ignoreInit=TRUE)
+            
+            # Triggering an update of the selected elements : clear features, trigger replotting (caught by validate)
+            clear_button <- paste0(plot_name, "_", .heatMapClearFeatures)
+            observeEvent(input[[clear_button]], {
+                pObjects$memory[[mode0]][[.heatMapFeatName]][[id0]] <- integer()
+                updateSelectizeInput(session, paste0(plot_name, "_", .heatMapFeatName), choices = feature_choices,
+                                     server = TRUE, selected = integer())
+                rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
             }, ignoreInit=TRUE)
 
             # Updating the import source, but this does NOT trigger replotting, as we need to press the button.

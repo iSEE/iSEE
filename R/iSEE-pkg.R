@@ -43,8 +43,6 @@
 #' @author Charlotte Soneson \email{charlotte.soneson@@uzh.ch}
 #' @author Federico Marini \email{marinif@@uni-mainz.de}
 #' @author Kevin Rue-Albrecht \email{kevin.rue-albrecht@@kennedy.ox.ac.uk}
-#'
-#' Maintainer: Charlotte Soneson \email{charlotte.soneson@@uzh.ch}
 #' @name iSEE-pkg
 #' @docType package
 NULL

@@ -37,7 +37,8 @@
 
 .heatMapFeatName <- "FeatName"
 .heatMapFeatNameBoxOpen <- "FeatNameBoxOpen"
-.heatMapImport <- "Import"
+.heatMapImportFeatures <- "Import"
+.heatMapClearFeatures <- "Clear"
 .heatMapImportSource <- "FeatNameSource"
 .heatMapCluster <- "Clustered"
 

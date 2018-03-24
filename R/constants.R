@@ -113,6 +113,9 @@
 
 .plotPointSize <- "PointSize"
 .plotPointAlpha <- "PointAlpha"
+.plotPointDownsample <- "Downsample"
+.plotPointSampleRes <- "SampleRes"
+
 .plotFontSize <- "FontSize"
 .plotLegendPosition <- "LegendPosition"
 .plotLegendRightTitle <- "Right"

@@ -435,8 +435,12 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.brushData]] <- rep(list(NULL), nrow(incoming))
 
     incoming[[.visualParamChoice]] <- rep(list(.visualParamChoiceColorTitle), nrow(incoming))
+   
     incoming[[.plotPointSize]] <- 1 
     incoming[[.plotPointAlpha]] <- 1
+    incoming[[.plotPointDownsample]] <- FALSE
+    incoming[[.plotPointSampleRes]] <- 200
+    
     incoming[[.plotFontSize]] <- 1
     incoming[[.plotLegendPosition]] <- .plotLegendBottomTitle
 

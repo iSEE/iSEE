@@ -38,25 +38,11 @@ names(.all_aes_values) <- .all_aes_names
 #' @param colormap An ExperimentColorMap object that defines custom color maps
 #' for individual \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
-#' @return A list that includes the following elements:
-#' \describe{
-#'   \item{cmd_list}{A list of character vectors, where each vector contains
-#'     commands to parse and evaluate to produce the final plot.
-#'     Each list element groups functionally related commands - namely,
-#'     \code{"data"}, \code{"select"}, \code{"setup"}, \code{"plot"}).
-#'   }
-#'   \item{xy}{A data.frame that includes coordinates and covariates of the
-#'     plot.}
-#'   \item{plot}{A ggplot object that results of the evaluation of
-#'     \code{cmds} items.}
-#' }
+#' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}; see \code{?\link{.plot_wrapper}} for more details.
 #' 
 #' @details
-#' This function extracts out the data from \code{se} required to produce the
-#' reduced dimension plot.
-#' It then calls \code{\link{.extract_plotting_data}} to add the aesthetic
-#' parameters such as coloring and point selection,
-#' followed by \code{\link{.create_plot}} to generate the ggplot object itself.
+#' This function extracts out the data from \code{se} required to produce a reduced dimension plot.
+#' It then calls \code{\link{.plot_wrapper}} to complete the plotting data (\code{xy} in output) and to generate the ggplot object (\code{plot} in output).
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson
 #' @rdname INTERNAL_make_redDimPlot
@@ -80,12 +66,9 @@ names(.all_aes_values) <- .all_aes_names
     x_lab <- sprintf("Dimension %s", param_choices[[.redDimXAxis]])
     y_lab <- sprintf("Dimension %s", param_choices[[.redDimYAxis]])
 
-    setup_out <- .extract_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row = FALSE)
-    plot_out <- .create_plot(setup_out$envir, param_choices, colormap,
-                             x_lab = x_lab, y_lab = y_lab, color_lab = setup_out$color_lab, 
-                             title = plot_title, by_row = FALSE)
-    return(list(cmd_list = c(setup_out$cmd_list, list(plot=plot_out$cmds)),
-                xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
+    .plot_wrapper(data_cmds, param_choices = param_choices, all_memory = all_memory, 
+                  all_coordinates = all_coordinates, se = se, by_row = FALSE, 
+                  colormap = colormap, x_lab = x_lab, y_lab = y_lab, title = plot_title)
 }
 
 ############################################
@@ -106,25 +89,11 @@ names(.all_aes_values) <- .all_aes_names
 #' @param colormap An ExperimentColorMap object that defines custom color maps
 #' for individual \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
-#' @return A list that includes the following elements:
-#' \describe{
-#'   \item{cmd_list}{A list of character vectors, where each vector contains
-#'     commands to parse and evaluate to produce the final plot.
-#'     Each list element groups functionally related commands - namely,
-#'     \code{"data"}, \code{"select"}, \code{"setup"}, \code{"plot"}).
-#'   }
-#'   \item{xy}{A data.frame that includes coordinates and covariates of the
-#'     plot.}
-#'   \item{plot}{A ggplot object that results of the evaluation of
-#'     \code{cmds} items.}
-#' }
+#' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}; see \code{?\link{.plot_wrapper}} for more details.
 #' 
 #' @details
-#' This function extracts out the data from \code{se} required to produce
-#' the reduced dimension plot.
-#' It then calls \code{\link{.extract_plotting_data}} to add the aesthetic
-#' parameters such as coloring and point selection,
-#' followed by \code{\link{.create_plot}} to generate the ggplot object itself.
+#' This function extracts out the data from \code{se} required to produce a column data plot.
+#' It then calls \code{\link{.plot_wrapper}} to complete the plotting data (\code{xy} in output) and to generate the ggplot object (\code{plot} in output).
 #' 
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson
 #' @rdname INTERNAL_make_colDataPlot
@@ -159,12 +128,9 @@ names(.all_aes_values) <- .all_aes_names
     x_title <- ifelse(x_lab == '', x_lab, sprintf("vs %s", x_lab))
     plot_title <- sprintf("%s %s", y_lab, x_title)
 
-    setup_out <- .extract_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row = FALSE)
-    plot_out <- .create_plot(setup_out$envir, param_choices, colormap,
-                             x_lab = x_lab, y_lab = y_lab, color_lab = setup_out$color_lab, 
-                             title = plot_title, by_row = FALSE)
-    return(list(cmd_list = c(setup_out$cmd_list, list(plot=plot_out$cmds)),
-                xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
+    .plot_wrapper(data_cmds, param_choices = param_choices, all_memory = all_memory, 
+                  all_coordinates = all_coordinates, se = se, by_row = FALSE, 
+                  colormap = colormap, x_lab = x_lab, y_lab = y_lab, title = plot_title)
 }
 
 ############################################
@@ -186,25 +152,11 @@ names(.all_aes_values) <- .all_aes_names
 #' @param colormap An ExperimentColorMap object that defines custom color maps
 #' for individual \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
-#' @return A list that includes the following elements:
-#' \describe{
-#'   \item{cmd_list}{A list of character vectors, where each vector contains
-#'     commands to parse and evaluate to produce the final plot.
-#'     Each list element groups functionally related commands - namely,
-#'     \code{"data"}, \code{"select"}, \code{"setup"}, \code{"plot"}).
-#'   }
-#'   \item{xy}{A data.frame that includes coordinates and covariates of the
-#'     plot.}
-#'   \item{plot}{A ggplot object that results of the evaluation of
-#'     \code{cmds} items.}
-#' }
+#' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}; see \code{?\link{.plot_wrapper}} for more details.
 #' 
 #' @details
-#' This function extracts out the data from \code{se} required to produce the
-#' reduced dimension plot.
-#' It then calls \code{\link{.extract_plotting_data}} to add the aesthetic
-#' parameters such as coloring and point selection,
-#' followed by \code{\link{.create_plot}} to generate the ggplot object itself.
+#' This function extracts out the data from \code{se} required to produce a feature expression plot.
+#' It then calls \code{\link{.plot_wrapper}} to complete the plotting data (\code{xy} in output) and to generate the ggplot object (\code{plot} in output).
 #' 
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson
 #' @rdname INTERNAL_make_featExprPlot
@@ -266,12 +218,9 @@ names(.all_aes_values) <- .all_aes_names
     x_title <- ifelse(x_title == '', x_title, sprintf("vs %s", x_title))
     plot_title <- sprintf("%s %s", y_title, x_title)
 
-    setup_out <- .extract_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row = FALSE)
-    plot_out <- .create_plot(setup_out$envir, param_choices, colormap,
-                             x_lab = x_lab, y_lab = y_lab, color_lab = setup_out$color_lab, 
-                             title = plot_title, by_row = FALSE)
-    return(list(cmd_list = c(setup_out$cmd_list, list(plot=plot_out$cmds)),
-                xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
+    .plot_wrapper(data_cmds, param_choices = param_choices, all_memory = all_memory, 
+                  all_coordinates = all_coordinates, se = se, by_row = FALSE, 
+                  colormap = colormap, x_lab = x_lab, y_lab = y_lab, title = plot_title)
 }
 
 ############################################
@@ -293,25 +242,11 @@ names(.all_aes_values) <- .all_aes_names
 #' @param colormap An ExperimentColorMap object that defines custom color maps
 #' for individual \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
-#' @return A list that includes the following elements:
-#' \describe{
-#'   \item{cmd_list}{A list of character vectors, where each vector contains
-#'     commands to parse and evaluate to produce the final plot.
-#'     Each list element groups functionally related commands - namely,
-#'     \code{"data"}, \code{"select"}, \code{"setup"}, \code{"plot"}).
-#'   }
-#'   \item{xy}{A data.frame that includes coordinates and covariates of the
-#'     plot.}
-#'   \item{plot}{A ggplot object that results of the evaluation of
-#'     \code{cmds} items.}
-#' }
+#' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}; see \code{?\link{.plot_wrapper}} for more details.
 #' 
 #' @details
-#' This function extracts out the data from \code{se} required to produce the
-#' reduced dimension plot.
-#' It then calls \code{\link{.extract_plotting_data}} to add the aesthetic
-#' parameters such as coloring and point selection,
-#' followed by \code{\link{.create_plot}} to generate the ggplot object itself.
+#' This function extracts the data from \code{se} required to produce a row data plot.
+#' It then calls \code{\link{.plot_wrapper}} to complete the plotting data (\code{xy} in output) and to generate the ggplot object (\code{plot} in output).
 #' 
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson
 #' @rdname INTERNAL_make_rowDataPlot
@@ -343,12 +278,58 @@ names(.all_aes_values) <- .all_aes_names
     x_title <- ifelse(x_lab == '', x_lab, sprintf("vs %s", x_lab))
     plot_title <- sprintf("%s %s", y_lab, x_title)
 
-    setup_out <- .extract_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row = TRUE)
-    plot_out <- .create_plot(setup_out$envir, param_choices, colormap, 
-                             x_lab = x_lab, y_lab = y_lab, color_lab = setup_out$color_lab,
-                             title = plot_title, by_row = TRUE)
-    return(list(cmd_list = c(setup_out$cmd_list, list(plot=plot_out$cmds)),
-                xy = setup_out$envir$plot.data, plot = plot_out$plot)) 
+    .plot_wrapper(data_cmds, param_choices = param_choices, all_memory = all_memory, 
+                  all_coordinates = all_coordinates, se = se, by_row = TRUE, 
+                  colormap = colormap, x_lab = x_lab, y_lab = y_lab, title = plot_title)
+}
+
+############################################
+# Internal functions: plot wrapper ----
+############################################
+
+#' Plot creation wrapper
+#' 
+#' Wraps the commands to complete the data.frame containing the plot data,
+#' and to create the ggplot object to return to the Shiny server function.
+#'
+#' @param data_cmds A list of character vectors containing commands to initialize the plotting data.frame.
+#' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
+#' @param all_memory A list of DataFrames, where each DataFrame corresponds to a panel type and contains the settings for each individual panel of that type.
+#' @param all_coordinates A list of data.frames, where each data.frame contains the x/y coordinates of data points on a specific plot (named by the encoded panel name).
+#' @param se A SingleCellExperiment object.
+#' @param by_row A logical vector indicating whether this data.frame is for a row-based plot.
+#' @param ... Further arguments to pass to \code{\link{.create_plot}}.
+#' 
+#' @details
+#' This function is a convenience wrapper for the combination of \code{\link{.extract_plotting_data}} and \code{\link{.create_plot}}.
+#' The former adds the aesthetic parameters such as coloring and point selection, while the latter will generate the ggplot object itself.
+#' This wrapper is to be used across the individual top-level functions for each plot type.
+#' 
+#' Note that \code{xy} needs to be defined \emph{prior} to running \code{\link{.create_plot}}.
+#' This is because the plotting commands may involve further subsetting of the data.frame if downsampling is performed.
+#' It would not be correct to save the subsetted data.frame for use in point selection in the Shiny server function.
+#'
+#' @return A list that includes the following elements:
+#' \describe{
+#'   \item{cmd_list}{A list of character vectors, where each vector contains commands to parse and evaluate to produce the final plot.
+#'     Each list element groups functionally related commands - namely, \code{"data"}, \code{"select"}, \code{"setup"}, \code{"plot"}).
+#'   }
+#'   \item{xy}{A data.frame that includes coordinates and covariates of the plot.
+#'     This is the result of running all commands in \code{cmd_list} prior to \code{"plot"}.
+#'   }
+#'   \item{plot}{A ggplot object that results from the evaluation of \code{"plot"} commands.}
+#' }
+#' 
+#' @author Aaron Lun
+#' @rdname INTERNAL_plot_wrapper
+#' @seealso
+#' \code{\link{.extract_plotting_data}},
+#' \code{\link{.create_plot}}
+.plot_wrapper <- function(data_cmds, param_choices, all_memory, all_coordinates, se, by_row, ...) {
+    setup_out <- .extract_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row = by_row)
+    xy <- setup_out$envir$plot.data # DO NOT MOVE!
+    plot_out <- .create_plot(setup_out$envir, param_choices, ..., color_lab = setup_out$color_lab, by_row = by_row)
+    return(list(cmd_list = c(setup_out$cmd_list, list(plot=plot_out$cmds)), xy = xy, plot = plot_out$plot)) 
 }
 
 ############################################
@@ -370,7 +351,7 @@ names(.all_aes_values) <- .all_aes_names
 #' type.
 #' @param all_coordinates A list of data.frames, where each data.frame contains
 #' the x/y coordinates of data points on a specific plot
-#' (named by the encodedpanel name).
+#' (named by the encoded panel name).
 #' @param se A SingleCellExperiment object.
 #' @param by_row A logical vector indicating whether this data.frame is for a
 #' row-based plot.
@@ -409,9 +390,9 @@ names(.all_aes_values) <- .all_aes_names
 #' Square plots will have \code{jitteredX} and \code{jitteredY}.
 #' The \code{envir$plot.type} variable will specify the type of plot for correct dispatch in \code{\link{.create_plot}}.
 #'
-#' The environment may also contain \code{plot.data.all}, a data.frame equivalent to \code{plot.data} but without any \code{SelectBy} information or subsetting to restrict.
-#' (See \code{\link{.process_selectby_choice}} for the origin of this data.frame.)
-#' This is useful for determining the plotting boundaries of the entire data set, even after subsetting of \code{plot.data}.
+#' The environment will also contain \code{plot.data.all}, a data.frame equivalent to \code{plot.data} but without any \code{SelectBy} information or subsetting to restrict.
+#' This is useful for determining the plotting boundaries of the entire data set, even after subsetting of \code{plot.data} during selection, 
+#' or after downsampling points in \code{\link{.create_plot}}.
 #' 
 #' @author Aaron Lun
 #' @rdname INTERNAL_extract_plotting_data
@@ -433,19 +414,11 @@ names(.all_aes_values) <- .all_aes_names
   
     xvals <- eval_env$plot.data$X
     group_X <- .is_groupable(xvals)
-    if (!group_X) {
-        more_data_cmds[["more_X"]] <- .coerce_to_numeric(xvals, "X")
-    } else {
-        more_data_cmds[["more_X"]] <- "plot.data$X <- as.factor(plot.data$X);"
-    }
+    more_data_cmds[["more_X"]] <- .coerce_type(xvals, "X", as_numeric=!group_X)
     
     yvals <- eval_env$plot.data$Y
     group_Y <- .is_groupable(yvals)
-    if (!group_Y) { 
-        more_data_cmds[["more_Y"]] <- .coerce_to_numeric(yvals, "Y")
-    } else {
-        more_data_cmds[["more_Y"]] <- "plot.data$Y <- as.factor(plot.data$Y);"
-    }
+    more_data_cmds[["more_Y"]] <- .coerce_type(yvals, "Y", as_numeric=!group_Y)
 
     # Adding coloring information as well.    
     if (by_row) {
@@ -467,20 +440,17 @@ names(.all_aes_values) <- .all_aes_names
     # Ensuring that colors are either factor or numeric. 
     coloring <- eval_env$plot.data$ColorBy
     if (!is.null(coloring)) {
-        if (!.is_groupable(coloring)) {
-            more_data_cmds[["more_color"]] <-
-              .coerce_to_numeric(coloring, "ColorBy")
-        } else {
-            more_data_cmds[["more_color"]] <-
-              "plot.data$ColorBy <- as.factor(plot.data$ColorBy);"
-        }
+        more_data_cmds[["more_color"]] <- .coerce_type(coloring, "ColorBy", as_numeric=!.is_groupable(coloring))
     }
 
-    if (length(more_data_cmds)) { 
-        eval(parse(text=unlist(more_data_cmds)), envir=eval_env)
-        data_cmds <- c(data_cmds, more_data_cmds)
-        more_data_cmds <- list() 
-    }
+    # Removing NAs, and defining the full set of valid data (for use in setting plot boundaries later).
+    # We do this here so NAs don't affect the boundaries derived from plot.data.all.
+    more_data_cmds[["na.rm"]] <- "plot.data <- subset(plot.data, !is.na(X) & !is.na(Y));"
+    more_data_cmds[["full"]] <- "plot.data.all <- plot.data;"
+
+    # Evaluating and clearing the commands..
+    eval(parse(text=unlist(more_data_cmds)), envir=eval_env)
+    data_cmds <- c(data_cmds, more_data_cmds)
   
     # Creating the command to define SelectBy.
     # Note that 'all_brushes' or 'all_lassos' is needed for the eval() to obtain SelectBy.
@@ -543,31 +513,16 @@ names(.all_aes_values) <- .all_aes_names
 #' }
 #'
 #' @details
-#' This function should \emph{only} add commands related to the generation of
-#' the ggplot object.
-#' Any commands involving persistent manipulation of \code{plot.data} should
-#' be placed in \code{\link{.extract_plotting_data}} instead.
+#' This function should \emph{only} add commands related to the generation of the ggplot object.
+#' Any commands involving persistent manipulation of \code{plot.data} should be placed in \code{\link{.extract_plotting_data}} instead.
 #'
-#' This function will generate a scatter plot if both X and Y are numeric;
-#' a violin plot if only Y is numeric;
-#' a horizontal violin plot if only X is numeric;
-#' and a square plot, if neither are numeric.
-#' Refer to the documentation of the individual plotting functions for more
-#' details.
+#' This function will generate a scatter plot if both X and Y are numeric; a violin plot if only Y is numeric;
+#' a horizontal violin plot if only X is numeric; and a square plot, if neither are numeric.
+#' Refer to the documentation of the individual plotting functions for more details.
 #'
-#' Plotting commands will be executed in the evaluation environment
-#' (\emph{i.e.}, \code{envir}) to produce the output \code{plot} object.
-#' If \code{plot.data.all} exists in \code{envir},
-#' it will be used in the downstream plotting functions to define the plot
-#' boundaries.
-#' This may be necesssary to ensure consistent plot boundaries when
-#' selecting points to restrict - see
-#' \code{\link{.process_selectby_choice}} for details.
-#'
-#' This function will also add a box representing the Shiny brush coordinates,
-#' if one is available - see \code{?\link{.self_brush_box}}.
-#' Alternatively, if lasso waypoints are present, it will add them to the
-#' plot - see \code{?\link{.self_lasso_path}}.
+#' Plotting commands will be executed in the evaluation environment (i.e., \code{envir}) to produce the output \code{plot} object.
+#' This function will also add a box representing the Shiny brush coordinates, if one is available - see \code{?\link{.self_brush_box}}.
+#' Alternatively, if lasso waypoints are present, it will add them to the plot - see \code{?\link{.self_lasso_path}}.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson
 #' @rdname INTERNAL_create_plot
@@ -579,22 +534,34 @@ names(.all_aes_values) <- .all_aes_names
 .create_plot <- function(envir, param_choices, colormap, ...) {
     envir$colormap <- colormap
     plot_data <- envir$plot.data
-    range_all <- exists("plot.data.all", envir)
+    extra_cmds <- character(0)
+    plot_type <- envir$plot.type
+
+    # Deciding whether we should downsample.
+    if (param_choices[[.plotPointDownsample]]) {
+        xtype <- "X"
+        ytype <- "Y"
+        if (plot_type=="square") {
+            xtype <- "jitteredX"
+            ytype <- "jitteredY"
+        } else if (plot_type=="violin" || plot_type=="violin_horizontal") {
+            xtype <- "jitteredX"
+        }
+        extra_cmds <- c(extra_cmds, sprintf("plot.data <- subset(plot.data, subsetPointsByGrid(%s, %s, resolution=%i));",
+                                            xtype, ytype, param_choices[[.plotPointSampleRes]]))
+    }
     
     # Dispatch to different plotting commands, depending on X/Y being groupable
-    mode <- envir$plot.type
-    extra_cmds <- switch(envir$plot.type,
+    extra_cmds <- c(extra_cmds, switch(plot_type,
         square = .square_plot(plot_data=plot_data, param_choices=param_choices, ...),
-        violin = .violin_plot(plot_data=plot_data, param_choices=param_choices, ..., range_all = range_all),
-        violin_horizontal = .violin_plot(plot_data=plot_data, param_choices=param_choices, ..., range_all = range_all, horizontal=TRUE),
-        scatter = .scatter_plot(plot_data=plot_data, param_choices=param_choices, ..., range_all = range_all)
-    )
+        violin = .violin_plot(plot_data=plot_data, param_choices=param_choices, ...),
+        violin_horizontal = .violin_plot(plot_data=plot_data, param_choices=param_choices, ..., horizontal=TRUE),
+        scatter = .scatter_plot(plot_data=plot_data, param_choices=param_choices, ...)
+    ))
 
     # Adding self-brushing boxes, if they exist.
-    to_flip <- mode == "violin_horizontal"
-    # Adding a Shiny brush.
+    to_flip <- plot_type == "violin_horizontal"
     brush_out <- .self_brush_box(param_choices, flip=to_flip)
-    # Adding the lasso path.
     lasso_out <- .self_lasso_path(param_choices, flip=to_flip)
     select_cmds <- c(brush_out$cmds, lasso_out$cmds)
 
@@ -640,11 +607,16 @@ names(.all_aes_values) <- .all_aes_names
 #' Set to \code{NULL} to have no title. 
 #' @param by_row A logical scalar specifying whether the plot deals with
 #' row-level metadata.
-#' @param range_all A logical scalar specifying whether the control of the
-#' x/y-axis ranges should use \code{plot.data.all} instead of \code{plot.data}. 
 #'
 #' @return A character vector of commands to be parsed and evaluated by
 #' \code{\link{.create_plot}} to produce the scatter plot.
+#'
+#' @details
+#' As described in \code{?\link{.create_plot}}, the \code{\link{.scatter_plot}} function should only contain commands to generate the final ggplot object.
+#'
+#' \code{envir$plot.data.all} will be used to define the plot boundaries.
+#' This ensures consistent plot boundaries when selecting points to restrict (see \code{?\link{.process_selectby_choice}})
+#' or when downsampling for speed (see \code{?\link{.create_plot}}.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_scatter_plot
@@ -652,7 +624,7 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.create_plot}}
 #'
 #' @importFrom ggplot2 ggplot coord_cartesian theme_bw theme element_text
-.scatter_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, title, by_row = FALSE, range_all = FALSE) {
+.scatter_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, title, by_row = FALSE) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +"
 
@@ -680,11 +652,8 @@ names(.all_aes_values) <- .all_aes_names
           deparse(bounds["ymin"]),  deparse(bounds["ymax"])
         )
     } else {
-        pd <- ifelse(range_all, "plot.data.all", "plot.data")
-        plot_cmds[["coord"]] <- sprintf(
-"coord_cartesian(xlim = range(%s$X, na.rm = TRUE),
-    ylim = range(%s$Y, na.rm = TRUE), expand = TRUE) +",
-          pd, pd)
+        plot_cmds[["coord"]] <- "coord_cartesian(xlim = range(plot.data.all$X, na.rm = TRUE),
+    ylim = range(plot.data.all$Y, na.rm = TRUE), expand = TRUE) +"
     }
 
     # Adding further aesthetic elements.
@@ -724,8 +693,6 @@ names(.all_aes_values) <- .all_aes_names
 #' (i.e., Y axis categorical and X axis continuous).
 #' @param by_row A logical scalar specifying whether the plot deals with
 #' row-level metadata.
-#' @param range_all A logical scalar specifying whether the control of the
-#' x/y-axis ranges should use \code{plot.data.all} instead of \code{plot.data}. 
 #'
 #' @return 
 #' For \code{\link{.violin_setup}}, a character vector of commands to be parsed
@@ -736,14 +703,15 @@ names(.all_aes_values) <- .all_aes_names
 #' and evaluated by \code{\link{.create_plot}} to produce the violin plot.
 #'
 #' @details
-#' Any commands to modify \code{plot.data} in preparation for creating a
-#' violin plot should be placed in \code{\link{.violin_setup}},
+#' Any commands to modify \code{plot.data} in preparation for creating a' violin plot should be placed in \code{\link{.violin_setup}},
 #' to be called by \code{\link{.extract_plotting_data}}.
-#' This includes swapping of X and Y variables when \code{horizontal=TRUE},
-#' and adding of horizontal/vertical jitter to points.
+#' This includes swapping of X and Y variables when \code{horizontal=TRUE}, and adding of horizontal/vertical jitter to points.
 #'
-#' As described in \code{?\link{.create_plot}}, the \code{\link{.violin_plot}}
-#' function should only contain commands to generate the final ggplot object.
+#' As described in \code{?\link{.create_plot}}, the \code{\link{.violin_plot}} function should only contain commands to generate the final ggplot object.
+#'
+#' \code{envir$plot.data.all} will be used to define the y-axis boundaries (or x-axis boundaries when \code{horizontal=TRUE}).
+#' This ensures consistent plot boundaries when selecting points to restrict (see \code{?\link{.process_selectby_choice}})
+#' or when downsampling for speed (see \code{?\link{.create_plot}}.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson.
 #' @rdname INTERNAL_violin_plot
@@ -753,7 +721,7 @@ names(.all_aes_values) <- .all_aes_names
 #'
 #' @importFrom ggplot2 ggplot geom_violin coord_cartesian theme_bw theme
 #' coord_flip scale_x_discrete scale_y_discrete
-.violin_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, title, horizontal = FALSE, by_row = FALSE, range_all = FALSE) {
+.violin_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, title, horizontal = FALSE, by_row = FALSE) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +" # do NOT put aes here, it does not play nice with shiny brushes.
     plot_cmds[["violin"]] <- sprintf(
@@ -781,8 +749,7 @@ names(.all_aes_values) <- .all_aes_names
    
     plot_cmds[["labs"]] <- .build_labs(x = x_lab, y = y_lab, color = color_lab, title = title)
 
-    # Defining boundaries if zoomed. This requires some finesse to deal
-    # with horizontal plots,
+    # Defining boundaries if zoomed. This requires some finesse to deal with horizontal plots,
     # where the point selection is computed on the flipped coordinates.
     bounds <- param_choices[[.zoomData]][[1]]
     if (horizontal) {
@@ -801,18 +768,15 @@ names(.all_aes_values) <- .all_aes_names
             deparse(bounds["ymin"]), deparse(bounds["ymax"])
         )
     } else {
-        pd <- ifelse(range_all, "plot.data.all", "plot.data")
-        plot_cmds[["coord"]] <- sprintf(
-          "%s(ylim = range(%s$Y, na.rm=TRUE), expand = TRUE) +",
-          coord_cmd, pd)
+        plot_cmds[["coord"]] <- sprintf("%s(ylim = range(plot.data.all$%s, na.rm=TRUE), expand = TRUE) +", 
+                                        coord_cmd, ifelse(horizontal, "X", "Y"))
     }
   
     plot_cmds[["scale_color"]] <- color_scale_cmd
-    if (!horizontal) { 
-        plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +" # preserving the x-axis range.
-    } else {
-        plot_cmds[["scale_y"]] <- "scale_y_discrete(drop = FALSE) +" # preserving the y-axis range.
-    }
+    
+    # Preserving the x-axis range. This applies even for horizontal violin plots,
+    # as this command is executed internally before coord_flip().
+    plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +" 
 
     plot_cmds[["theme_base"]] <- "theme_bw() +"
     plot_cmds[["theme_custom"]] <- sprintf(
@@ -839,8 +803,6 @@ names(.all_aes_values) <- .all_aes_names
 plot.data$X <- plot.data$Y;
 plot.data$Y <- tmp;")
     }
-    setup_cmds[["na.rm"]] <-
-      "plot.data <- subset(plot.data, !is.na(X) & !is.na(Y));"
     setup_cmds[["group"]] <- "plot.data$GroupBy <- plot.data$X;"
 
     # Figuring out the scatter. This is done ahead of time to guarantee the
@@ -880,20 +842,15 @@ plot.data$Y <- tmp;")
 #' @param by_row A logical scalar specifying whether the plot deals with row-level metadata.
 #'
 #' @return 
-#' For \code{\link{.square_setup}}, a character vector of commands to be parsed
-#'  and evaluated by \code{\link{.extract_plotting_data}} to set up the required fields.
+#' For \code{\link{.square_setup}}, a character vector of commands to be parsed and evaluated by \code{\link{.extract_plotting_data}} to set up the required fields.
 #'
-#' For \code{\link{.square_plot}}, a character vector of commands to be parsed
-#'  and evaluated by \code{\link{.create_plot}} to produce the square plot.
+#' For \code{\link{.square_plot}}, a character vector of commands to be parsed and evaluated by \code{\link{.create_plot}} to produce the square plot.
 #'
 #' @details
-#' Any commands to modify \code{plot.data} in preparation for creating a
-#'  square plot should be placed in \code{\link{.square_setup}}.
-#' This function will subsequently be called by
-#' \code{\link{.extract_plotting_data}}.
+#' Any commands to modify \code{plot.data} in preparation for creating a square plot should be placed in \code{\link{.square_setup}}.
+#' This function will subsequently be called by \code{\link{.extract_plotting_data}}.
 #'
-#' As described in \code{?\link{.create_plot}}, the \code{\link{.square_plot}}
-#' function should only contain commands to generate the final ggplot object.
+#' As described in \code{?\link{.create_plot}}, the \code{\link{.square_plot}} function should only contain commands to generate the final ggplot object.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson.
 #' @rdname INTERNAL_square_plot
@@ -1296,14 +1253,9 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 }
                 
                 select_obj[[transmitter]] <- lasso_val
-                cmds[["na.rm"]] <- sprintf(
-                  "to_check <- subset(%s, !is.na(X) & !is.na(Y))",
-                  source_data)
-                cmds[["lasso"]] <- sprintf(
-                    "selected_pts <- mgcv::in.out(all_lassos[['%s']], cbind(as.numeric(to_check$%s), as.numeric(to_check$%s)))",
-                    transmitter, v1, v2)
-                cmds[["select"]] <-
-                  "plot.data$SelectBy <- rownames(plot.data) %in% rownames(to_check)[selected_pts]"
+                cmds[["lasso"]] <- sprintf("selected_pts <- mgcv::in.out(all_lassos[['%s']], cbind(as.numeric(%s$%s), as.numeric(%s$%s)))",
+                                           transmitter, source_data, v1, source_data, v2)
+                cmds[["select"]] <- sprintf("plot.data$SelectBy <- rownames(plot.data) %%in%% rownames(%s)[selected_pts]", source_data)
             }
         }
 
@@ -1311,7 +1263,6 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
           # Duplicate plot.data before selecting points,
           # to make sure that axes are retained
           # even in case of an empty selected subset.
-          cmds[["full"]] <- "plot.data.all <- plot.data;"
           cmds[["subset"]] <- "plot.data <- subset(plot.data, SelectBy);"
         }
     }
@@ -1613,49 +1564,37 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
   return(.nlevels(x) <= max_levels)
 }
 
-#' Coerce numerous levels to numeric type
+#' Coerce data to a specific type
 #'
-#' This function ensures that a specific column of the data.frame
-#' underlying a plot is of \code{numeric} type.
-#' If that is not the case,
-#' it returns a command (as a character value) that coerces
-#' the column from any type (typically a factor with numerous levels
-#' or a character vector with numerous unique values) to the
-#' \code{numeric} R internal type, to avoid grouping by \code{\link{ggplot}},
-#' for efficient plotting.
+#' This function ensures that a specific column of the \code{plot.data} data.frame is either a numeric or factor.
+#' If that is not the case, it returns a command (as a string) that coerces the column into the desired type.
 #'
 #' @param values Input vector that must be coerced to \code{numeric}.
-#' @param field Column name in the plot data.frame that contain
-#' \code{values}.
-#' @param warn A \code{logical} that indicates whether a warning should be
-#' raised if \code{values} is not already of type \code{numeric}.
+#' @param field Column name in the \code{plot.data} data.frame that contains \code{values}.
+#' @param as_numeric A logical scalar indicating whether the column should be coerced to numeric (if \code{TRUE}) or factor (otherwise).
 #'
-#' @return A command that coerces the plot data.frame column to
-#' \code{numeric} type, or \code{NULL} if no coercion is required.
+#' @return A command that coerces the plot data.frame column to the specified type, or \code{NULL} if no coercion is required.
 #'
 #' @author Kevin Rue-Albrecht
-#' @rdname INTERNAL_coerce_to_numeric
+#' @rdname INTERNAL_coerce_type
 #' @seealso 
 #' \code{\link{.create_plot}}.
-.coerce_to_numeric <- function(values, field, warn=TRUE) {
-  if (!is.numeric(values)) {
-    if (warn) {
-      warning(
-        "coloring covariate has too many unique values, coercing to numeric")
-    }
-    if (is.factor(values)) {
-      extra_cmd <- sprintf(
-        "plot.data$%s <- as.numeric(plot.data$%s)",
-        field, field)
+.coerce_type <- function(values, field, as_numeric=TRUE) {
+    if (as_numeric) { 
+        if (!is.numeric(values)) {
+            warning("coloring covariate has too many unique values, coercing to numeric")
+            col_var <- sprintf("plot.data$%s", field)
+            if (!is.factor(values)) {
+                col_var <- sprintf("as.factor(%s)", col_var)
+            }
+            return(sprintf("plot.data$%s <- as.numeric(%s);", field, col_var))
+        }
     } else {
-      extra_cmd <- sprintf(
-        "plot.data$%s <- as.numeric(as.factor(plot.data$%s))",
-        field, field
-        )
+        if (!is.factor(values)) {
+            return(sprintf("plot.data$%s <- factor(plot.data$%s);", field, field))
+        }
     }
-    return(extra_cmd)
-  }
-  return(NULL)
+    return(NULL)
 }
 
 ############################################

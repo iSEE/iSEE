@@ -48,6 +48,9 @@
 #' @param colormap An \linkS4class{ExperimentColorMap} object that defines
 #' custom color maps to apply to individual \code{assays}, \code{colData},
 #' and \code{rowData} covariates.
+#' @param tour A data.frame with the content of the interactive tour to be 
+#' displayed after starting up the app. Defaults to \code{NULL}. More 
+#' information is provided in the details.
 #' @param run_local A logical indicating whether the app is to be run locally
 #' or remotely on a server, which determines how documentation will be
 #' accessed.
@@ -70,6 +73,12 @@
 #' maximum plots of that type. The \code{Width} field may also be specified
 #' describing the width of the panel from 2 to 12 (values will be coerced
 #' inside this range).
+#' 
+#' The \code{tour} argument needs to be provided in a form compatible with the
+#' format expected by the \code{rintrojs} package, where the variables 
+#' \code{element} and \code{intro} have to be present. See more information at
+#' \url{https://github.com/carlganz/rintrojs#usage} regarding the values that 
+#' the \code{element} can assume for proper displaying.
 #'
 #' @return A Shiny App is launched for interactive data exploration of the
 #' \code{\link{SummarizedExperiment}}/\code{\link{SingleCellExperiment}} 
@@ -118,6 +127,7 @@ iSEE <- function(
   initialPanels=NULL,
   annotFun = NULL,
   colormap=ExperimentColorMap(),
+  tour = NULL,
   run_local=TRUE
 ) {
   # Save the original name of the input object for the command to rename it
@@ -304,16 +314,16 @@ iSEE <- function(
         rObjects[[paste0(mode, id, "_", .heatMapLegend)]] <- 1L
     }
 
-    # Help and documentation-related observers.
-    intro_firststeps <- read.delim(
-      system.file("extdata", "intro_firststeps.txt",package = "iSEE"),
-      sep=";", stringsAsFactors = FALSE,row.names = NULL)
-
     observeEvent(input$tour_firststeps, {
-      introjs(session,
-              options = list(steps= intro_firststeps)
-      )
+        intro_firststeps <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"),
+                                       sep=";", stringsAsFactors = FALSE,row.names = NULL)
+        introjs(session, options = list(steps= intro_firststeps))
     })
+
+    if (!is.null(tour)) {
+        # Only triggers _after_ panels are fully setup, so observers are properly ID'd.
+        session$onFlushed(function() { introjs(session, options = list(steps = tour)) })
+    }
 
     observeEvent(input$getcode_all, {
       showModal(modalDialog(

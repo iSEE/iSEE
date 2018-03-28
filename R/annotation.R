@@ -28,7 +28,10 @@
 #' library(org.Mm.eg.db)
 #' annotateEntrez(sce,org.Mm.eg.db,"SYMBOL")
 #' myfun <- annotateEntrez(sce,org.Mm.eg.db,"SYMBOL")
+#' \dontrun{
+#' # Requires a working internet connection
 #' myfun(sce, 4242)
+#' }
 #' 
 #' # to be used when launching the app itself ----
 #'

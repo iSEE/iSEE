@@ -8,7 +8,7 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featExprArgs = NULL,
   rowStatArgs = NULL, rowDataArgs = NULL, heatMapArgs = NULL,
   redDimMax = 5, colDataMax = 5, featExprMax = 5, rowStatMax = 5,
   rowDataMax = 5, heatMapMax = 5, initialPanels = NULL, annotFun = NULL,
-  colormap = ExperimentColorMap(), tour = NULL, run_local = TRUE)
+  colormap = ExperimentColorMap(), tour = NULL, runLocal = TRUE)
 }
 \arguments{
 \item{se}{An object that is coercible to \linkS4class{SingleCellExperiment}.}
@@ -55,10 +55,8 @@ row data plots in the interface.}
 \item{heatMapMax}{An integer scalar specifying the maximum number of
 heatmaps in the interface.}
 
-\item{initialPanels}{A DataFrame specifying which panels should be
-created at initialization. 
-This should contain a \code{Name} character field and a \code{Width}
-integer field, see Details.}
+\item{initialPanels}{A DataFrame specifying which panels should be created at initialization. 
+This should contain a \code{Name} character field and may have optional \code{Width} and \code{Height} integer fields, see Details.}
 
 \item{annotFun}{A function, constructed in the form of
 \code{\link{annotateEntrez}} or \code{\link{annotateEnsembl}}.
@@ -76,7 +74,7 @@ and \code{rowData} covariates.}
 displayed after starting up the app. Defaults to \code{NULL}. More 
 information is provided in the details.}
 
-\item{run_local}{A logical indicating whether the app is to be run locally
+\item{runLocal}{A logical indicating whether the app is to be run locally
 or remotely on a server, which determines how documentation will be
 accessed.}
 }
@@ -100,14 +98,12 @@ of \code{*Max} and \code{nrow(*Args)}. Users can specify any number of
 maximum plots, though increasing the number will increase the time
 required to render the interface.
 
-The \code{initialPanels} argument specifies the panels to be created
-upon initializing the interface. This should be a DataFrame containing
-a \code{Name} field specifying the identity of the panel, e.g.,
-\code{"Reduced dimension plot 1"}, \code{"Row statistics table 2"}.
-The trailing number should not be greater than the number of
-maximum plots of that type. The \code{Width} field may also be specified
-describing the width of the panel from 2 to 12 (values will be coerced
-inside this range).
+The \code{initialPanels} argument specifies the panels to be created upon initializing the interface. 
+This should be a DataFrame containing a \code{Name} field specifying the identity of the panel, e.g., \code{"Reduced dimension plot 1"}, \code{"Row statistics table 2"}.
+The trailing number should not be greater than the number of maximum plots of that type. 
+Users can also define the \code{Width} field, specifying the width of each panel from 2 to 12 (values will be coerced inside this range);
+and the \code{Height} field, specifying the height of each panel from 400 to 1000 pixels. 
+By default, one panel of each type (where possible) will be generated, with height of 500 and width of 4.
 
 The \code{tour} argument needs to be provided in a form compatible with the
 format expected by the \code{rintrojs} package, where the variables 

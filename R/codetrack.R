@@ -209,18 +209,35 @@
   all_tlinks <- pObjects$table_links
   cur_tlinks <- all_tlinks[cur_tables]
   
+  # instead of taking the links as such, check whether they are really used to link
+  # following the implementation of .define_table_links...
+  memory <- pObjects$memory
+  
   for (i in seq_len(nrow(tbl_objs))) {
     table_used <- cur_tables[i]
-    col_links <- unlist(cur_tlinks[[table_used]]$color)
-    x_links <- unlist(cur_tlinks[[table_used]]$xaxis)
-    y_links <- unlist(cur_tlinks[[table_used]]$yaxis)
-    any_links <- unique(c(col_links,x_links,y_links))
-    
-    for(j in seq_len(length(any_links))){
-      curgraph <- add_edges(curgraph, c(table_used, any_links[j]))
+    current <- cur_tlinks[[table_used]]
+    for (trans in list(c("yaxis", NA, NA),
+                       c("xaxis", .featExprXAxis, .featExprXAxisFeatNameTitle),
+                       c("color", .colorByField, .colorByFeatNameTitle))
+    ) {
+      children <- current[[trans[1]]]
+      child_enc <- .split_encoded(children)
+      child_names <- .decode_panel_name(child_enc$Type, child_enc$ID)
+      
+      by_field <- trans[2]
+      ref_title <- trans[3]
+      
+      # Only adding the edge if the plot actually receives the information via the
+      # appropriate parameter choices. Y-axis for feature plots is NA, as there are no choices there.
+      for (i in seq_along(child_names)) {
+        if (is.na(by_field) || memory[[child_enc$Type[i]]][child_enc$ID[i], by_field]==ref_title) {
+          curgraph <- add_edges(curgraph, c(table_used, children[i]))
+        }
+      }
     }
   }
- 
+  
+  
   # Creating the plot. 
   plot(curgraph,
        edge.arrow.size = .8,

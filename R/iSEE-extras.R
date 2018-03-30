@@ -202,28 +202,43 @@
 #' @return A DataFrame where all strings in the specified \code{fields} are converted to integer indices.
 #'
 #' @details
+#' This function was developed because users may find it easier to specify strings for particular parameter settings, e.g., gene or assay names.
+#' However, integer indices are safer to work with (as duplicates cannot occur) and are expected in the internal \pkg{iSEE} functions.
+#' Hence the need for this conversion.
+#' 
 #' If the field contains strings, the function will \code{match} them to the choices in \code{choices} to identify their indices.
 #' Any missing matches are set to indices of 1.
-#' If the field already contains integer values, this function does nothing.
+#' If the field contains some other atomic value, the function will try to coerce it into an integer, setting 1 for any failures.
+#' If the field contains a list, each element of the list will be coerced to an integer vector.
 #'
-#' The reason for this function is that users may find it easier to specify strings for particular parameter settings, e.g., gene or assay names.
-#' However, integer indices are safer to work with and are expected in the internal \pkg{iSEE} functions.
-#' Hence the need for this conversion.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_name2index
 #' @seealso
 #' \code{\link{.setup_memory}}
+#' @importFrom methods is
+#' @importClassesFrom S4Vectors SimpleList
 .name2index <- function(df, fields, choices) {
+    # Defining an internal function to do the heavy lifting.
+    internal_fun <- function(vals) {
+        if (is.character(vals)) {
+            vals <- match(vals, choices)
+        } else {
+            vals <- as.integer(vals)
+        }
+        vals[is.na(vals)] <- 1L
+        return(vals)
+    }
+
+    # Looping over and handling lists with special behaviour.
     for (f in intersect(fields, colnames(df))) {
         vals <- df[,f]
-        if (is.character(vals)) {
-            m <- match(vals, choices)
-            m[is.na(m)] <- 1L
-            df[,f] <- m
-        } else if (!is.integer(vals)) {
-            df[,f] <- as.integer(vals)
+        if (is.list(vals) || is(vals, "SimpleList")) {
+            vals <- lapply(vals, internal_fun)
+        } else {
+            vals <- internal_fun(vals)
         }
+        df[[f]] <- vals # need double brackets otherwise list assigment doesn't work.
     }
     return(df)
 }

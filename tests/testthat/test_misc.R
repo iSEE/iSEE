@@ -171,6 +171,44 @@ test_that("memory setup works correctly", {
     expect_identical(nrow(memory$heatMapPlot), 0L)
 })
 
+test_that("name to index coercion works correctly", {
+    set.seed(0)
+    ix <- sample(length(LETTERS), 15)
+    
+    df <- DataFrame(WHEE=ix)
+    out <- iSEE:::.name2index(df, "WHEE", LETTERS)
+    expect_identical(df, out)
+
+    df <- DataFrame(WHEE=LETTERS[ix])
+    out <- iSEE:::.name2index(df, "WHEE", LETTERS)
+    expect_identical(ix, out$WHEE)
+
+    # Behaves sensibly in response to missing values.
+    df <- DataFrame(WHEE=LETTERS[ix])
+    chosen <- sample(nrow(df), 5)
+    df$WHEE[chosen] <- tolower(df$WHEE[chosen])
+    out <- iSEE:::.name2index(df, "WHEE", LETTERS)
+
+    ref <- ix
+    ref[chosen] <- 1L
+    expect_identical(ref, out$WHEE)
+    
+    # Handles lists correctly.
+    input <- lapply(1:5*4, function(x) { sample(length(LETTERS), x) })
+    df <- DataFrame(YAY=I(input))
+    out <- iSEE:::.name2index(df, "YAY", LETTERS)
+    expect_identical(out, df)
+
+    input2 <- lapply(input, function(x) { LETTERS[x] })
+    df2 <- DataFrame(YAY=I(input2))
+    out <- iSEE:::.name2index(df2, "YAY", LETTERS)
+    expect_identical(out, df)
+
+    df2$YAY <- SimpleList(df2$YAY)
+    out <- iSEE:::.name2index(df2, "YAY", LETTERS)
+    expect_identical(out, df)
+})
+
 test_that("initialization of active panels works correctly", {
     memory <- iSEE:::.setup_memory(sce, redDimArgs=NULL, colDataArgs=NULL, featExprArgs=NULL, rowStatArgs=NULL, rowDataArgs=NULL, heatMapArgs=NULL,
                                    redDimMax=5, colDataMax=3, featExprMax=1, rowStatMax=2, rowDataMax=3, heatMapMax=2)

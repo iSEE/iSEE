@@ -112,6 +112,11 @@
 #' \item{\code{PointAlpha}:}{Numeric, what level of transparency should be used for the points?
 #' Ignored when \code{SelectEffect="Transparent"} and the transmitting plot has a non-\code{NULL} selection of points.
 #' Defaults to 1.}
+#' \item{\code{Downsample}:}{Logical, indicating whether downsampling of overlapping points should be performed.
+#' Defaults to \code{FALSE}.}
+#' \item{\code{SampleRes}:}{Numeric, specifying the downsampling resolution, i.e., the granularity at which points are considered to overlap.
+#' Higher values result in a more stringent definition of overlaps, and thus less downsampling.
+#' Defaults to 200.}
 #' \item{\code{FontSize}:}{Numeric, size of the font.
 #' Defaults to 1.}
 #' \item{\code{LegendPosition}:}{String specifying the legend position.
@@ -136,8 +141,9 @@
 #' @section Heatmap parameters:
 #' The features/rows to be used in the construction of the heatmap are specified with:
 #' \describe{
-#' \item{\code{FeatName}:}{List of length 1, containing an integer vector with the indices of the feature(s) for which to show the expression in the heatmap. 
-#' Defaults to \code{list(1L)} for each panel, i.e., the first feature in \code{se}.
+#' \item{\code{FeatName}:}{List of length equal to the number of panels.
+#' Each list entry corresponds to a panel and should be an integer vector with the indices of the feature(s) for which to show the expression in the heatmap. 
+#' Defaults to \code{1L} for each panel, i.e., the first feature in \code{se}.
 #' Alternatively, a character vector can be supplied containing the names of the features.}
 #' \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
 #' Defaults to 1, i.e., the first assay in \code{se}.
@@ -151,8 +157,10 @@
 #' The column metadata variables control the ordering of the samples in the heatmap. 
 #' They can be controlled with:
 #' \describe{
-#' \item{\code{ColData}:}{Character list, which column(s) of \code{colData(se)} should be used to order the columns in the heatmap (and appear as annotation bars)? 
-#' Defaults to the first entry of \code{colData(se)}.}
+#' \item{\code{ColData}:}{List of length equal to the number of panels.
+#' Each list entry corresponds to a panel and should contain a character vector specifying the field(s) of \code{colData(se)} that should be used to order the samples in the heatmap.
+#' Note that these fields will also appear as annotation bars.
+#' Each character vector defaults to the first entry of \code{colData(se)}.}
 #' \item{\code{ColDataBoxOpen}:}{Logical, should the column data selection box be open upon initialization?
 #' Defaults to \code{FALSE}.}
 #' }
@@ -162,8 +170,10 @@
 #' \describe{ 
 #' \item{\code{ColorBoxOpen}:}{Logical, should the color selection panel for the heatmap be open upon initialization?
 #' Defaults to \code{FALSE}.}
-#' \item{\code{CenterScale}:}{List of length 1, containing a character vector specifying whether each row of expression values should be mean-centered and/or scaled to unit variance.
-#' Defaults to \code{list("Centered")}, but the internal vector can also include \code{"Scaled"}.}
+#' \item{\code{CenterScale}:}{List of length equal to the number of panels.
+#' Each list entry corresponds to a panel and contains a character vector specifying whether each row of expression values should be mean-centered and/or scaled to unit variance.
+#' Defaults to \code{"Centered"}. 
+#' Users can set it to \code{c("Centered", "Scaled")} to obtain mean-centered and unit-scaled rows.}
 #' \item{\code{Lower}:}{Numeric, what should be the lower bound of the color scale for the values in the heatmap? All values below this threshold will be shown in the same color.
 #' Defaults to -Inf, meaning that the lowest value in the data matrix will be used.}
 #' \item{\code{Upper}:}{Numeric, what should be the upper bound of the color scale for the values in the heatmap? All values above this threshold will be shown in the same color.

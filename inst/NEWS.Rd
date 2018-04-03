@@ -1,6 +1,14 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 0.99.3}{
+  \itemize{
+    \item Custom tours can be restarted via the dropdown menu button, overwriting
+    the default tour
+    \item Added functionality to provide a custom title to be displayed in the app
+  }
+}
+
 \section{iSEE VERSION 0.99.2}{
   \itemize{
     \item Added functionality for providing additional custom tours, to be 

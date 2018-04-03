@@ -49,6 +49,10 @@
 #' @param tour A data.frame with the content of the interactive tour to be 
 #' displayed after starting up the app. Defaults to \code{NULL}. More 
 #' information is provided in the details.
+#' @param appTitle A string indicating the title to be displayed in the app. If 
+#' not provided, the app displays the version info of \code{\link{iSEE}}. Users
+#' can specify this to provide a compact description of the dataset, or the 
+#' PubMedID for the input data. 
 #' @param runLocal A logical indicating whether the app is to be run locally
 #' or remotely on a server, which determines how documentation will be
 #' accessed.
@@ -124,6 +128,7 @@ iSEE <- function(
   annotFun = NULL,
   colormap=ExperimentColorMap(),
   tour = NULL,
+  appTitle = NULL,
   runLocal=TRUE
 ) {
   # Save the original name of the input object for the command to rename it
@@ -160,9 +165,11 @@ iSEE <- function(
 
   iSEE_ui <- dashboardPage(
     dashboardHeader(
-      title = paste0(
-        "iSEE - interactive SingleCell/Summarized Experiment Explorer v",
-        packageVersion("iSEE")),
+      title = ifelse(is.null(appTitle),
+                     paste0(
+                       "iSEE - interactive SingleCell/Summarized Experiment Explorer v",
+                       packageVersion("iSEE")),
+                     appTitle),
       titleWidth = 750,
 
       dropdownMenu(type = "tasks",

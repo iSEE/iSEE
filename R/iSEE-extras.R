@@ -576,7 +576,7 @@ height_limits <- c(400L, 1000L)
 #' It is not necessary to evaluate receiving-only panels, and in fact will result in errors for heatmaps and row statistics tables,
 #' as these do not even have coordinates to save.
 #' 
-#' @value A character vector containing encoded names for transmitting panels in their evaluation order.
+#' @return A character vector containing encoded names for transmitting panels in their evaluation order.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_establish_eval_order

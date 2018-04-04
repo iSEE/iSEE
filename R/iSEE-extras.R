@@ -572,7 +572,7 @@ height_limits <- c(400L, 1000L)
 #' The idea is to \dQuote{evaluate} the plots at the start of the app, to obtain the coordinates for transmitting to other panels.
 #' Otherwise, errors will be encountered whereby a panel tries to select from a set of coordinates that do not yet exist.
 #'
-#' Note that only transmitting panels are ever reported.
+#' Unlike its relative \code{\link{.get_reporting_order}}, only transmitting panels are ever reported by this function.
 #' It is not necessary to evaluate receiving-only panels, and in fact will result in errors for heatmaps and row statistics tables,
 #' as these do not even have coordinates to save.
 #' 

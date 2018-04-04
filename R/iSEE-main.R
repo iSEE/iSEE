@@ -319,12 +319,10 @@ iSEE <- function(
 
     observeEvent(input$tour_firststeps, {
         if(is.null(tour)) {
-          intro_firststeps <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"),
+          tour <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"),
                                          sep=";", stringsAsFactors = FALSE,row.names = NULL)
-          introjs(session, options = list(steps = intro_firststeps))
-        } else {
-          introjs(session, options = list(steps = tour))
         }
+        introjs(session, options = list(steps = tour))
     })
 
     if (!is.null(tour)) {

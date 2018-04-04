@@ -280,14 +280,26 @@ iSEE <- function(
     # Storage for persistent non-reactive objects.
     pObjects <- new.env()
     pObjects$memory <- memory
-
-    pObjects$coordinates <- empty_list
     pObjects$commands <- empty_list
 
     pObjects$selection_links <- .spawn_selection_chart(memory)
     pObjects$table_links <- .spawn_table_links(memory)
-
     pObjects$cached_plots <- empty_list
+
+    # Evaluating certain plots to fill the coordinate list, if there are any selections.
+	# This is done in topological order so that all dependencies are satisfied.
+    pObjects$coordinates <- empty_list
+    eval_order <- .establish_eval_order(pObjects$selection_links)
+    for (panelname in eval_order) {
+        enc <- .split_encoded(panelname)
+        FUN <- switch(enc$Type,
+                      redDimPlot=.make_redDimPlot,
+                      featExprPlot=.make_featExprPlot,
+                      colDataPlot=.make_colDataPlot,
+                      rowDataPlot=.make_rowDataPlot)
+		p.out <- FUN(enc$ID, pObjects$memory, pObjects$coordinates, se, colormap)
+		pObjects$coordinates[[panelname]] <- p.out$xy[,c("X", "Y")]
+    }
 
     # Storage for all the reactive objects
     rObjects <- reactiveValues(

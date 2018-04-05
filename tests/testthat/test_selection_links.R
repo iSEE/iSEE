@@ -8,10 +8,17 @@ rowDataArgs <- rowDataPlotDefaults(sce, 1)
 heatMapArgs <- heatMapPlotDefaults(sce, 2)
 
 # Creating a test graph:
+# featExprPlot1 -> redDimPlot1 -> colDataPlot2
+# featExprPlot1 -> featExprPlot1
+
 redDimArgs[1,iSEE:::.selectByPlot] <- "Feature expression plot 1"
 featExprArgs[1,iSEE:::.selectByPlot] <- "Feature expression plot 1"
 colDataArgs[2,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
-memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs, rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs, heatMapPlot=heatMapArgs) 
+
+memory <- list(
+  redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs,
+  rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs, heatMapPlot=heatMapArgs
+  )
 g <- iSEE:::.spawn_selection_chart(memory)
 
 test_that("selection link creation works correctly", {
@@ -202,4 +209,78 @@ test_that("brush identity function works properly", {
                                           list(xmin=1, xmax=2.0000001, ymin=10, ymax=20)))
     expect_false(iSEE:::.identical_brushes(list(xmin=1, xmax=2, ymin=10, ymax=20),
                                           list(xmin=1, xmax=2.0001, ymin=10, ymax=20)))
+})
+
+test_that("evaluation order works properly", {
+  # Recall that only transmitting panels are ever reported by this function
+  eval_order <- iSEE:::.establish_eval_order(g)
+  expect_identical(eval_order, c("featExprPlot1", "redDimPlot1"))
+
+  # Testing again with added links from separate chains.
+  g <- igraph::add_edges(g, c("featExprPlot2", "featExprPlot3"))
+  g <- igraph::add_edges(g, c("featExprPlot3", "colDataPlot1"))
+
+  eval_order <- iSEE:::.establish_eval_order(g)
+  expect_true("featExprPlot2" %in% eval_order)
+  expect_true(which(eval_order=="featExprPlot1") < which(eval_order=="redDimPlot1"))
+  expect_true(which(eval_order=="featExprPlot2") < which(eval_order=="featExprPlot3"))
+})
+
+test_that("reporting order is correctly reported", {
+  
+  # Setting up a chain 
+  redDimArgs[1,iSEE:::.selectByPlot] <- "---"
+  colDataArgs[1,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
+  colDataArgs[2,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
+  featExprArgs[2,iSEE:::.selectByPlot] <- "Column data plot 1"
+  # fork: second from the same plot
+  heatMapArgs[1,iSEE:::.selectByPlot] <- "Column data plot 1"
+  # self
+  featExprArgs[1,iSEE:::.selectByPlot] <- "Feature expression plot 1" # self
+  
+  memory <- list(
+    redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs,
+    rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs, heatMapPlot=heatMapArgs
+    )
+  g <- iSEE:::.spawn_selection_chart(memory)
+  # plot(g)
+  
+  # Visible panels (in order)
+  initial_panels <- DataFrame(Name = c(
+    "Reduced dimension plot 1",   # 1
+    "Column data plot 1",         # 2
+    "Column data plot 2",         # 3
+    "Feature expression plot 1",  # 4
+    "Feature expression plot 2",  # 5
+    "Heat map 1"                  # 6
+  ))
+  active_panels <- iSEE:::.setup_initial(initial_panels, memory)
+  
+  report_order <- iSEE:::.get_reporting_order(active_panels, g)
+  # active_panels[report_order,]
+  report_names <- iSEE:::.decode_panel_name(active_panels$Type, active_panels$ID)
+  
+  # chain is:
+  # redDimPlot (1) -> colDataPlot1 (2) -> featExprPlot2 (5)
+  #                                    -> heatMapPlot1  (6)
+  # redDimPlot (1) -> colDataPlot2 (3)
+  # featExprPlot1 (4) -> self (4)
+  expect_true(
+    match("Reduced dimension plot 1", report_names) < match("Column data plot 1", report_names)
+  )
+  
+  expect_true(
+    match("Column data plot 1", report_names) < match("Feature expression plot 2", report_names)
+  )
+  
+  expect_true(
+    match("Column data plot 1", report_names) < match("Heat map 1", report_names)
+  )
+  
+  expect_true(
+    match("Reduced dimension plot 1", report_names) < match("Column data plot 2", report_names)
+  )
+  
+  expect_identical(nrow(active_panels), length(report_order))
+  
 })

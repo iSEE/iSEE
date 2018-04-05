@@ -212,7 +212,7 @@ iSEE <- function(
                        style=.actionbutton_biocstyle,
                        onclick = ifelse(
                          runLocal, "",
-                         "window.open('http://google.com', '_blank')")), # to be replaced with vignette url
+                         "window.open('http://bioconductor.org/packages/devel/bioc/vignettes/iSEE/inst/doc/iSEE_vignette.html', '_blank')")), 
                      icon = icon(""), status = "primary"
                    )
         ),

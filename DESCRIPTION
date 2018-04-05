@@ -1,7 +1,7 @@
 Package: iSEE
 Title: Interactive SummarizedExperiment Explorer
-Version: 0.99.2
-Date: 2018-03-26
+Version: 0.99.3
+Date: 2018-04-03
 Authors@R: c(person("Charlotte", "Soneson", role=c("aut", "cre"),
     email="charlottesoneson@gmail.com"), person("Aaron", "Lun", 
     role="aut", email="alun@wehi.edu.au"), person("Federico",

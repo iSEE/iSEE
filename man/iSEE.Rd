@@ -8,7 +8,8 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featExprArgs = NULL,
   rowStatArgs = NULL, rowDataArgs = NULL, heatMapArgs = NULL,
   redDimMax = 5, colDataMax = 5, featExprMax = 5, rowStatMax = 5,
   rowDataMax = 5, heatMapMax = 5, initialPanels = NULL, annotFun = NULL,
-  colormap = ExperimentColorMap(), tour = NULL, runLocal = TRUE)
+  colormap = ExperimentColorMap(), tour = NULL, appTitle = NULL,
+  runLocal = TRUE)
 }
 \arguments{
 \item{se}{An object that is coercible to \linkS4class{SingleCellExperiment}.}
@@ -73,6 +74,11 @@ and \code{rowData} covariates.}
 \item{tour}{A data.frame with the content of the interactive tour to be 
 displayed after starting up the app. Defaults to \code{NULL}. More 
 information is provided in the details.}
+
+\item{appTitle}{A string indicating the title to be displayed in the app. If 
+not provided, the app displays the version info of \code{\link{iSEE}}. Users
+can specify this to provide a compact description of the dataset, or the 
+PubMedID for the input data.}
 
 \item{runLocal}{A logical indicating whether the app is to be run locally
 or remotely on a server, which determines how documentation will be

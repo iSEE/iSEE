@@ -8,9 +8,13 @@ rowDataArgs <- rowDataPlotDefaults(sce, 1)
 heatMapArgs <- heatMapPlotDefaults(sce, 2)
 
 # Creating a test graph:
+# featExprPlot1 -> redDimPlot1 -> colDataPlot2
+# featExprPlot1 -> featExprPlot1
+
 redDimArgs[1,iSEE:::.selectByPlot] <- "Feature expression plot 1"
 featExprArgs[1,iSEE:::.selectByPlot] <- "Feature expression plot 1"
 colDataArgs[2,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
+
 memory <- list(
   redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs,
   rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs, heatMapPlot=heatMapArgs
@@ -208,27 +212,18 @@ test_that("brush identity function works properly", {
 })
 
 test_that("evaluation order works properly", {
-  
+  # Recall that only transmitting panels are ever reported by this function
   eval_order <- iSEE:::.establish_eval_order(g)
-  
-  # chain is:
-  # featExprPlot1 -> redDimPlot1 -> colDataPlot2
-  # featExprPlot1 -> featExprPlot1
-  
-  # only transmitting panels are ever reported by this function
   expect_identical(eval_order, c("featExprPlot1", "redDimPlot1"))
-})
 
-test_that("evaluation order is correctly reported", {
-  
+  # Testing again with added links from separate chains.
+  g <- igraph::add_edges(g, c("featExprPlot2", "featExprPlot3"))
+  g <- igraph::add_edges(g, c("featExprPlot3", "colDataPlot1"))
+
   eval_order <- iSEE:::.establish_eval_order(g)
-  
-  # chain is:
-  # featExprPlot1 -> redDimPlot1 -> colDataPlot2
-  # featExprPlot1 -> featExprPlot1
-  
-  # only transmitting panels are ever reported by this function
-  expect_identical(eval_order, c("featExprPlot1", "redDimPlot1"))
+  expect_true("featExprPlot2" %in% eval_order)
+  expect_true(which(eval_order=="featExprPlot1") < which(eval_order=="redDimPlot1"))
+  expect_true(which(eval_order=="featExprPlot2") < which(eval_order=="featExprPlot3"))
 })
 
 test_that("reporting order is correctly reported", {

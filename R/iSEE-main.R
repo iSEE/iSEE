@@ -86,6 +86,7 @@
 #'
 #' @export
 #'
+#' @importFrom utils packageVersion
 #' @examples
 #' library(scRNAseq)
 #' data(allen)
@@ -210,9 +211,13 @@ iSEE <- function(
                        'open_vignette', label="Open the vignette",
                        icon = icon("book"),
                        style=.actionbutton_biocstyle,
-                       onclick = ifelse(
-                         runLocal, "",
-                         "window.open('http://bioconductor.org/packages/devel/bioc/vignettes/iSEE/inst/doc/iSEE_vignette.html', '_blank')")), 
+                       onclick = ifelse(runLocal, "",
+                         # Use web vignette, with varying paths depending on whether we're release or devel.
+                         sprintf("window.open('http://bioconductor.org/packages/%s/bioc/vignettes/iSEE/inst/doc/iSEE_vignette.html', '_blank')",
+                           ifelse(unlist(packageVersion("iSEE"))[2] %% 2L==0L, "release", "devel")
+                         )
+                       )
+                     ),
                      icon = icon(""), status = "primary"
                    )
         ),

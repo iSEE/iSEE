@@ -167,7 +167,7 @@ iSEE <- function(
     dashboardHeader(
       title = ifelse(is.null(appTitle),
                      paste0(
-                       "iSEE - interactive SingleCell/Summarized Experiment Explorer v",
+                       "iSEE - interactive SummarizedExperiment Explorer v",
                        packageVersion("iSEE")),
                      appTitle),
       titleWidth = 750,

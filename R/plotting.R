@@ -786,7 +786,8 @@ names(.all_aes_values) <- .all_aes_names
     plot_cmds[["theme_custom"]] <- sprintf(
     "theme(legend.position = '%s', legend.text=element_text(size=%s), 
     legend.title=element_text(size=%s), legend.box = 'vertical',
-    axis.text.x = element_text(angle = 90, size=%s), axis.text.y=element_text(size=%s), 
+    axis.text.x = element_text(angle=90, size=%s, hjust=1, vjust=0.5), 
+    axis.text.y=element_text(size=%s), 
     axis.title=element_text(size=%s), title=element_text(size=%s))",
     tolower(param_choices[[.plotLegendPosition]]),
     param_choices[[.plotFontSize]]*.plotFontSizeLegendTextDefault, 
@@ -912,7 +913,7 @@ plot.data$Y <- tmp;")
     plot_cmds[["theme_base"]] <- "theme_bw() +"
     plot_cmds[["theme_custom"]] <- sprintf("theme(legend.position = '%s', legend.text=element_text(size=%s),
     legend.title=element_text(size=%s), legend.box = 'vertical', 
-    axis.text.x = element_text(angle = 90, size=%s), 
+    axis.text.x = element_text(angle=90, size=%s, hjust=1, vjust=0.5), 
     axis.text.y = element_text(size=%s), 
     axis.title=element_text(size=%s), title=element_text(size=%s))",
       tolower(param_choices[[.plotLegendPosition]]),

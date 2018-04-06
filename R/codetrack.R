@@ -34,7 +34,8 @@
     sprintf("colormap <- synchronizeAssays(colormap, se)"),
     "all_coordinates <- list()",
     "")
-
+  
+  #####
   # Deparsing the brushes and lasso waypoints.
   brush_code <- lasso_code <- character(0)
 
@@ -58,6 +59,7 @@
 
   if (length(brush_code)) { 
       tracked_code <- c(tracked_code, 
+                        strrep("#", 80),
                         "# Defining brushes",
                         strrep("#", 80), "",
                         "all_brushes <- list()", 
@@ -72,6 +74,7 @@
                         lasso_code, "")
   }
 
+  #####
   # Defining the code to create each plot.
   for (i in seq_len(nrow(aobjs))) {
     panel_type <- aobjs$Type[i]
@@ -108,6 +111,7 @@
     tracked_code <- c(tracked_code, collated, "")
   }
 
+  #####
   # Adding the heatmap code.
   tracked_heat <- character(0)
   hobjs <- active_panels[active_panels$Type=="heatMapPlot",]
@@ -238,8 +242,7 @@
       }
     }
   }
-  
-  
+ 
   # Creating the plot. 
   plot(curgraph,
        edge.arrow.size = .8,
@@ -250,3 +253,48 @@
        vertex.color = panel_colors[V(curgraph)$plottype])
 }  
 
+
+.report_memory <- function(active_panels, memory) {
+    # First, reporting all of the individual panel types.
+    collected <- list()
+    for (mode in names(memory)) {
+        current <- memory[[mode]]
+        arg_obj <- paste0(mode, "Args")
+        Npanels <- nrow(current)
+        curcode <- list(strrep("#", 80),
+                sprintf("# Settings for %ss", tolower(translation[[mode]])),
+                strrep("#", 80), "", 
+                sprintf("%s <- new('DataFrame', nrow=%i)", arg_obj, Npanels))
+
+        for (field in colnames(current)) {
+            curvals <- current[[field]]
+            if (!is.list(curvals)) {
+                curcode[[field]] <- sprintf("%s[[%s]] <- %s", arg_obj, field, 
+                    paste(deparse(curvals), collapse="    \n")) 
+            } else {
+                list_init <- sprintf("tmp <- vector('list', %i)", Npanels)
+                list_others <- vector("list", Npanels)
+                for (id in seq_len(Npanels)) {
+                    list_others[[id]] <- sprintf("tmp[[%i]] <- %s", id,
+                        paste(deparse(curvals[[id]]), sep="    \n"))
+                }
+                curcode[[field]] <- paste(c("", list_init, unlist(list_others),
+                    sprintf("%s[[%s]] <- tmp", arg_obj, field)), collapse="\n")
+            }
+        }
+
+        collected[[mode]] <- c(curcode, "")
+    }
+
+    # Secondly reporting on the active panels.
+    initials <- list(strrep("#", 80), 
+            sprintf("# Settings for %ss", tolower(translation[[mode]])),
+            strrep("#", 80), "", 
+            sprintf("initialPanels <- new('DataFrame', nrow=%i)", nrow(active_panels)))
+    for (col in colnames(active_panels)) {
+        initials[[col]] <- sprintf("initialPanels[[%s]] <- %s", col, 
+            paste(deparse(active_panels[[col]], 80), collapse="\n    "))
+    }
+
+    return(unlist(c(collected, "", initials)))
+}

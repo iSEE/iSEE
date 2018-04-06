@@ -363,7 +363,7 @@ iSEE <- function(
           "a keyboard shortcut that depends on your operating system (e.g. Ctrl/Cmd + A",
           "followed by Ctrl/Cmd + C).",
           "This will copy the selected parts to the clipboard."),
-        aceEditor("acereport_r", mode="r",theme = "solarized_light",autoComplete = "live",
+        aceEditor("acereport_r", mode="r",theme = "solarized_light", autoComplete = "live",
                   value = paste0(.track_it_all(rObjects$active_panels, pObjects, se_name, ecm_name,se_cmds), collapse="\n"),
                   height="600px")
         ))
@@ -374,10 +374,9 @@ iSEE <- function(
         showModal(modalDialog(
             title = "Panel settings", size = "l",fade = TRUE,
             footer = NULL, easyClose = TRUE,
-            p("Here there will be something")#,
-            # aceEditor("acereport_r", mode="r",theme = "solarized_light",autoComplete = "live",
-            #           value = paste0(.track_it_all(rObjects$active_panels, pObjects, se_name, ecm_name,se_cmds), collapse="\n"),
-            #           height="600px")
+            aceEditor("acereport_r", mode="r", theme = "solarized_light", autoComplete = "live",
+                value = paste0(.report_memory(rObjects$active_panels, pObjects$memory), collapse="\n"),
+                height="600px")
         ))
     })
 

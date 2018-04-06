@@ -660,10 +660,14 @@ names(.all_aes_values) <- .all_aes_names
     plot_cmds[["scale_color"]] <- color_scale_cmd
     plot_cmds[["theme_base"]] <- "theme_bw() +"
     plot_cmds[["theme_custom"]] <- sprintf(
-      "theme(legend.position = '%s', axis.text=element_text(size=%s), axis.title=element_text(size=%s))",
+      "theme(legend.position = '%s', legend.text=element_text(size=%s), legend.title=element_text(size=%s),
+      axis.text=element_text(size=%s), axis.title=element_text(size=%s), title=element_text(size=%s))",
       tolower(param_choices[[.plotLegendPosition]]),
+      param_choices[[.plotFontSize]]*.plotFontSizeLegendTextDefault,
+      param_choices[[.plotFontSize]]*.plotFontSizeLegendTitleDefault,
       param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault,
-      param_choices[[.plotFontSize]]*.plotFontSizeAxisTitleDefault)
+      param_choices[[.plotFontSize]]*.plotFontSizeAxisTitleDefault,
+      param_choices[[.plotFontSize]]*.plotFontSizeTitleDefault)
     return(unlist(plot_cmds))
 }
 
@@ -780,12 +784,17 @@ names(.all_aes_values) <- .all_aes_names
 
     plot_cmds[["theme_base"]] <- "theme_bw() +"
     plot_cmds[["theme_custom"]] <- sprintf(
-"theme(legend.position = '%s', legend.box = 'vertical',
-    axis.text.x = element_text(angle = 90, size=%s), axis.text.y=element_text(size=%s), axis.title=element_text(size=%s))",
-      tolower(param_choices[[.plotLegendPosition]]),
-      param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault,
-      param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault,
-      param_choices[[.plotFontSize]]*.plotFontSizeAxisTitleDefault)
+    "theme(legend.position = '%s', legend.text=element_text(size=%s), 
+    legend.title=element_text(size=%s), legend.box = 'vertical',
+    axis.text.x = element_text(angle = 90, size=%s), axis.text.y=element_text(size=%s), 
+    axis.title=element_text(size=%s), title=element_text(size=%s))",
+    tolower(param_choices[[.plotLegendPosition]]),
+    param_choices[[.plotFontSize]]*.plotFontSizeLegendTextDefault, 
+    param_choices[[.plotFontSize]]*.plotFontSizeLegendTitleDefault,
+    param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault,
+    param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault,
+    param_choices[[.plotFontSize]]*.plotFontSizeAxisTitleDefault,
+    param_choices[[.plotFontSize]]*.plotFontSizeTitleDefault)
 
     return(unlist(plot_cmds))
 }
@@ -901,14 +910,18 @@ plot.data$Y <- tmp;")
   
     # Do not display the size legend (saves plot space, as well)
     plot_cmds[["theme_base"]] <- "theme_bw() +"
-    plot_cmds[["theme_custom"]] <- sprintf("theme(legend.position = '%s', legend.box = 'vertical', 
+    plot_cmds[["theme_custom"]] <- sprintf("theme(legend.position = '%s', legend.text=element_text(size=%s),
+    legend.title=element_text(size=%s), legend.box = 'vertical', 
     axis.text.x = element_text(angle = 90, size=%s), 
     axis.text.y = element_text(size=%s), 
-    axis.title=element_text(size=%s))",
+    axis.title=element_text(size=%s), title=element_text(size=%s))",
       tolower(param_choices[[.plotLegendPosition]]),
+      param_choices[[.plotFontSize]]*.plotFontSizeLegendTextDefault,
+      param_choices[[.plotFontSize]]*.plotFontSizeLegendTitleDefault,
       param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault,
       param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault,
-      param_choices[[.plotFontSize]]*.plotFontSizeAxisTitleDefault)
+      param_choices[[.plotFontSize]]*.plotFontSizeAxisTitleDefault,
+      param_choices[[.plotFontSize]]*.plotFontSizeTitleDefault)
     return(unlist(plot_cmds))
 }
 

@@ -46,14 +46,14 @@
 
     brush_struct <- pObjects$memory[[panel_type]][,.brushData][[panel_id]]
     if (!is.null(brush_struct)) { 
-        brush_struct <- deparse(brush_struct, width.cutoff=80)
-        brush_code <- c(brush_code, sprintf("all_brushes[['%s']] <- %s", panel_name, paste(brush_struct, collapse="\n")))
+        brush_struct <- .deparse_for_viewing(brush_struct, indent=0) # deparsed list() auto-indents.
+        brush_code <- c(brush_code, sprintf("all_brushes[['%s']] <- %s", panel_name, brush_struct))
     }
 
     lasso_struct <- pObjects$memory[[panel_type]][,.lassoData][[panel_id]]
     if (!is.null(lasso_struct)) {
-        lasso_struct <- deparse(lasso_struct, width.cutoff=80)
-        lasso_code <- c(lasso_code, sprintf("all_lassos[['%s']] <- %s", panel_name, paste(lasso_struct, collapse="\n")))
+        lasso_struct <- .deparse_for_viewing(lasso_struct)
+        lasso_code <- c(lasso_code, sprintf("all_lassos[['%s']] <- %s", panel_name, lasso_struct))
     }
   }
 
@@ -192,6 +192,26 @@
 }
 
 
+#' Deparse R expressions for viewing
+#' 
+#' Generate the command required to produce an R object, in a multi-line string with appropriate indenting.
+#'
+#' @param exprs An R expression to be deparsed.
+#' @param indent An integer scalar specifying the indent level.
+#'
+#' @return A string containing the R command to produce \code{exprs}.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_deparse_for_viewing
+#' @seealso 
+#' \code{\link{.track_it_all}}
+#' \code{\link{.report_memory}}
+.deparse_for_viewing <- function(exprs, indent=1) {
+    paste(deparse(exprs, width.cutoff=80), 
+        collapse=paste0("\n", strrep(" ", indent*4)))
+}
+
+
 #' Plot a snapshot of the links among panels
 #'
 #' Creates a graph of the current links among all currently active panels, and plots it.
@@ -254,6 +274,21 @@
 }  
 
 
+#' Report current memory state
+#' 
+#' Report the R commands necessary to reproduce the memory state of the interface, 
+#' through parameters passed via the \code{*Args} arguments in \code{\link{iSEE}}.
+#'
+#' @param active_panels A data.frame containing information about the currently active panels. 
+#' @param memory A list of DataFrames, where each DataFrame corresponds to a panel type and contains the current settings for each individual panel of that type.
+#'
+#' @return A character vector of commands necessary to produce \code{memory} and \code{active_panels}.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_report_memory
+#' @seealso
+#' \code{\link{iSEE}}
+#' @importClassesFrom S4Vectors DataFrame
 .report_memory <- function(active_panels, memory) {
     # First, reporting all of the individual panel types.
     collected <- list()
@@ -270,13 +305,13 @@
             curvals <- current[[field]]
             if (!is.list(curvals)) {
                 curcode[[field]] <- sprintf("%s[[%s]] <- %s", arg_obj, field, 
-                    paste(deparse(curvals), collapse="    \n")) 
+                    .deparse_for_viewing(curvals))
             } else {
                 list_init <- sprintf("tmp <- vector('list', %i)", Npanels)
                 list_others <- vector("list", Npanels)
                 for (id in seq_len(Npanels)) {
                     list_others[[id]] <- sprintf("tmp[[%i]] <- %s", id,
-                        paste(deparse(curvals[[id]]), sep="    \n"))
+                        .deparse_for_viewing(curvals[[id]]))
                 }
                 curcode[[field]] <- paste(c("", list_init, unlist(list_others),
                     sprintf("%s[[%s]] <- tmp", arg_obj, field)), collapse="\n")
@@ -293,7 +328,7 @@
             sprintf("initialPanels <- new('DataFrame', nrow=%i)", nrow(active_panels)))
     for (col in colnames(active_panels)) {
         initials[[col]] <- sprintf("initialPanels[[%s]] <- %s", col, 
-            paste(deparse(active_panels[[col]], 80), collapse="\n    "))
+            .deparse_for_viewing(active_panels[[col]]))
     }
 
     return(unlist(c(collected, "", initials)))

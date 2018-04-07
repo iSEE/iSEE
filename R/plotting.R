@@ -850,6 +850,10 @@ plot.data$Y <- tmp;")
 #' Any commands to modify \code{plot.data} in preparation for creating a square plot should be placed in \code{\link{.square_setup}}.
 #' This function will subsequently be called by \code{\link{.extract_plotting_data}}.
 #'
+#' The square plot is set up so that the widths on the x-axis are constant when there is only one y-axis level.
+#' This means that the dimensions of the squares on the y-axis are directly comparable, without any need to compare areas.
+#' Similarly, the widths on the y-axis default are constant when there is only one x-axis level.
+#'
 #' As described in \code{?\link{.create_plot}}, the \code{\link{.square_plot}} function should only contain commands to generate the final ggplot object.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson.
@@ -864,7 +868,7 @@ plot.data$Y <- tmp;")
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
     plot_cmds[["tile"]] <-
-"geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius, group = interaction(X, Y)),
+"geom_tile(aes(x = X, y = Y, height = 2*YWidth, width = 2*XWidth, group = interaction(X, Y)),
     summary.data, color = 'black', alpha = 0, size = 0.5) +"
 
     # Adding the points to the plot (with/without point selection).
@@ -916,21 +920,30 @@ plot.data$Y <- tmp;")
 #' @importFrom stats runif
 .square_setup <- function() {
     setup_cmds  <- list()
-    setup_cmds[["table"]] <-
-      "summary.data <- as.data.frame(with(plot.data, table(X, Y)));"
-    setup_cmds[["proportion"]] <-
-      "summary.data$Proportion <- with(summary.data, Freq / sum(Freq));"
-    setup_cmds[["radius"]] <-
-      "summary.data$Radius <- 0.49*with(summary.data, sqrt(Proportion/max(Proportion)));"
+    setup_cmds[["table"]] <- "summary.data <- as.data.frame(with(plot.data, table(X, Y)));"
+    
+    # Yes, the ylev for xpower is intentional, and vice versa.
+    setup_cmds[["powering"]] <- "xpower <- ypower <- 0.5;
+xmax <- ymax <- 0.49;
+if (nlevels(plot.data$Y)==1L) { xpower <- 0; ypower <- 1; xmax <- 0.4; }
+if (nlevels(plot.data$X)==1L) { xpower <- 1; ypower <- 0; ymax <- 0.4; }"
+
+    setup_cmds[["radius"]] <- "summary.data$XWidth <- summary.data$Freq^xpower;
+summary.data$YWidth <- summary.data$Freq^ypower;
+summary.data$XWidth <- xmax * with(summary.data, XWidth / max(XWidth));
+summary.data$YWidth <- ymax * with(summary.data, YWidth / max(YWidth));"
+
     setup_cmds[["merged"]] <-
 "plot.data$Marker <- seq_len(nrow(plot.data));
 combined <- merge(plot.data, summary.data, by=c('X', 'Y'), all.x=TRUE);
-point.radius <- combined$Radius[order(combined$Marker)];
+o <- order(combined$Marker)
+width.x <- combined$XWidth[o];
+width.y <- combined$YWidth[o];
 plot.data$Marker <- NULL;"
     setup_cmds[["jitter"]] <-
 "set.seed(100);
-plot.data$jitteredX <- as.integer(plot.data$X) + point.radius*runif(nrow(plot.data), -1, 1);
-plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.data), -1, 1);"
+plot.data$jitteredX <- as.integer(plot.data$X) + width.x*runif(nrow(plot.data), -1, 1);
+plot.data$jitteredY <- as.integer(plot.data$Y) + width.y*runif(nrow(plot.data), -1, 1);"
     return(unlist(setup_cmds))
 }
 

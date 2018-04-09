@@ -5,7 +5,7 @@
 \alias{tourTCGA}
 \title{Tour of The Cancer Genome Atlas RNA-sequencing data set}
 \usage{
-tourTCGA_preprocess(irlba.maxit = 1000)
+tourTCGA_preprocess()
 
 tourTCGA(sce)
 }
@@ -20,9 +20,9 @@ An instance of Shiny app that runs the tour.
 Tour of The Cancer Genome Atlas RNA-sequencing data set
 }
 \examples{
-sce_tour <- tourTCGA_preprocess()
-app <- tourTCGA(sce_tour)
 if (interactive()) {
+  sce_tour <- tourTCGA_preprocess()
+  app <- tourTCGA(sce_tour)
   shiny::runApp(app, port = 1234)
 }
 }

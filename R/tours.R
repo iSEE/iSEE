@@ -1,16 +1,13 @@
+#nocov start
 #' @rdname tourTCGA 
 #' @export
 tourTCGA_preprocess <- function(){
-  stopifnot(
-    require(ExperimentHub),
-    require(SingleCellExperiment),
-    requireNamespace("irlba"),
-    requireNamespace("Rtsne"),
-    requireNamespace("scater"),
-    require(shiny)
-  )
+  stopifnot(requireNamespace("ExperimentHub"))
+  stopifnot(requireNamespace("scater"))
+  stopifnot(requireNamespace("irlba"))
+  stopifnot(requireNamespace("Rtsne"))
   # Vignette demo
-  ehub <- ExperimentHub()
+  ehub <- ExperimentHub::ExperimentHub()
   eh1 <- ehub[["EH1"]] # an ExpressionSet
   se1 <- as(eh1, "SummarizedExperiment")
   sce <- as(se1, "SingleCellExperiment")
@@ -25,7 +22,9 @@ tourTCGA_preprocess <- function(){
     log2(1 + t(t(assay(sce, "exprs")) / colData(sce)[,"lib_size"]))
   return(sce)
 }
+# nocov end
 
+# nocov start
 #' Tour of The Cancer Genome Atlas RNA-sequencing data set
 #'
 #' @name tourTCGA
@@ -36,15 +35,12 @@ tourTCGA_preprocess <- function(){
 #' @export
 #'
 #' @examples
-#' sce_tour <- tourTCGA_preprocess()
-#' app <- tourTCGA(sce_tour)
 #' if (interactive()) {
+#'   sce_tour <- tourTCGA_preprocess()
+#'   app <- tourTCGA(sce_tour)
 #'   shiny::runApp(app, port = 1234)
 #' }
 tourTCGA <- function(sce){
-  stopifnot(
-    require(shiny)
-  )
   # Panel 1: colData (phenotype selection)
   # Y = CancerType
   # X = Gender
@@ -152,3 +148,4 @@ tourTCGA <- function(sce){
   
   return(app)
 }
+#nocov end

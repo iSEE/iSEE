@@ -34,10 +34,8 @@
 #' row data plots in the interface.
 #' @param heatMapMax An integer scalar specifying the maximum number of
 #' heatmaps in the interface.
-#' @param initialPanels A DataFrame specifying which panels should be
-#' created at initialization. 
-#' This should contain a \code{Name} character field and a \code{Width}
-#' integer field, see Details.
+#' @param initialPanels A DataFrame specifying which panels should be created at initialization. 
+#' This should contain a \code{Name} character field and may have optional \code{Width} and \code{Height} integer fields, see Details.
 #' @param annotFun A function, constructed in the form of
 #' \code{\link{annotateEntrez}} or \code{\link{annotateEnsembl}}.
 #' This function is built in a way to generate itself 
@@ -51,7 +49,11 @@
 #' @param tour A data.frame with the content of the interactive tour to be 
 #' displayed after starting up the app. Defaults to \code{NULL}. More 
 #' information is provided in the details.
-#' @param run_local A logical indicating whether the app is to be run locally
+#' @param appTitle A string indicating the title to be displayed in the app. If 
+#' not provided, the app displays the version info of \code{\link{iSEE}}. Users
+#' can specify this to provide a compact description of the dataset, or the 
+#' PubMedID for the input data. 
+#' @param runLocal A logical indicating whether the app is to be run locally
 #' or remotely on a server, which determines how documentation will be
 #' accessed.
 #'
@@ -65,14 +67,12 @@
 #' maximum plots, though increasing the number will increase the time
 #' required to render the interface.
 #'
-#' The \code{initialPanels} argument specifies the panels to be created
-#' upon initializing the interface. This should be a DataFrame containing
-#' a \code{Name} field specifying the identity of the panel, e.g.,
-#' \code{"Reduced dimension plot 1"}, \code{"Row statistics table 2"}.
-#' The trailing number should not be greater than the number of
-#' maximum plots of that type. The \code{Width} field may also be specified
-#' describing the width of the panel from 2 to 12 (values will be coerced
-#' inside this range).
+#' The \code{initialPanels} argument specifies the panels to be created upon initializing the interface. 
+#' This should be a DataFrame containing a \code{Name} field specifying the identity of the panel, e.g., \code{"Reduced dimension plot 1"}, \code{"Row statistics table 2"}.
+#' The trailing number should not be greater than the number of maximum plots of that type. 
+#' Users can also define the \code{Width} field, specifying the width of each panel from 2 to 12 (values will be coerced inside this range);
+#' and the \code{Height} field, specifying the height of each panel from 400 to 1000 pixels. 
+#' By default, one panel of each type (where possible) will be generated, with height of 500 and width of 4.
 #' 
 #' The \code{tour} argument needs to be provided in a form compatible with the
 #' format expected by the \code{rintrojs} package, where the variables 
@@ -86,6 +86,7 @@
 #'
 #' @export
 #'
+#' @importFrom utils packageVersion
 #' @examples
 #' library(scRNAseq)
 #' data(allen)
@@ -128,7 +129,8 @@ iSEE <- function(
   annotFun = NULL,
   colormap=ExperimentColorMap(),
   tour = NULL,
-  run_local=TRUE
+  appTitle = NULL,
+  runLocal=TRUE
 ) {
   # Save the original name of the input object for the command to rename it
   # in the tracker
@@ -164,9 +166,11 @@ iSEE <- function(
 
   iSEE_ui <- dashboardPage(
     dashboardHeader(
-      title = paste0(
-        "iSEE - interactive SingleCell/Summarized Experiment Explorer v",
-        packageVersion("iSEE")),
+      title = ifelse(is.null(appTitle),
+                     paste0(
+                       "iSEE - interactive SummarizedExperiment Explorer v",
+                       packageVersion("iSEE")),
+                     appTitle),
       titleWidth = 750,
 
       dropdownMenu(type = "tasks",
@@ -207,9 +211,13 @@ iSEE <- function(
                        'open_vignette', label="Open the vignette",
                        icon = icon("book"),
                        style=.actionbutton_biocstyle,
-                       onclick = ifelse(
-                         run_local, "",
-                         "window.open('http://google.com', '_blank')")), # to be replaced with vignette url
+                       onclick = ifelse(runLocal, "",
+                         # Use web vignette, with varying paths depending on whether we're release or devel.
+                         sprintf("window.open('http://bioconductor.org/packages/%s/bioc/vignettes/iSEE/inst/doc/iSEE_vignette.html', '_blank')",
+                           ifelse(unlist(packageVersion("iSEE"))[2] %% 2L==0L, "release", "devel")
+                         )
+                       )
+                     ),
                      icon = icon(""), status = "primary"
                    )
         ),
@@ -284,14 +292,26 @@ iSEE <- function(
     # Storage for persistent non-reactive objects.
     pObjects <- new.env()
     pObjects$memory <- memory
-
-    pObjects$coordinates <- empty_list
     pObjects$commands <- empty_list
 
     pObjects$selection_links <- .spawn_selection_chart(memory)
     pObjects$table_links <- .spawn_table_links(memory)
-
     pObjects$cached_plots <- empty_list
+
+    # Evaluating certain plots to fill the coordinate list, if there are any selections.
+	# This is done in topological order so that all dependencies are satisfied.
+    pObjects$coordinates <- empty_list
+    eval_order <- .establish_eval_order(pObjects$selection_links)
+    for (panelname in eval_order) {
+        enc <- .split_encoded(panelname)
+        FUN <- switch(enc$Type,
+                      redDimPlot=.make_redDimPlot,
+                      featExprPlot=.make_featExprPlot,
+                      colDataPlot=.make_colDataPlot,
+                      rowDataPlot=.make_rowDataPlot)
+		p.out <- FUN(enc$ID, pObjects$memory, pObjects$coordinates, se, colormap)
+		pObjects$coordinates[[panelname]] <- p.out$xy[,c("X", "Y")]
+    }
 
     # Storage for all the reactive objects
     rObjects <- reactiveValues(
@@ -315,9 +335,11 @@ iSEE <- function(
     }
 
     observeEvent(input$tour_firststeps, {
-        intro_firststeps <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"),
-                                       sep=";", stringsAsFactors = FALSE,row.names = NULL)
-        introjs(session, options = list(steps= intro_firststeps))
+        if(is.null(tour)) {
+          tour <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"),
+                                         sep=";", stringsAsFactors = FALSE,row.names = NULL)
+        }
+        introjs(session, options = list(steps = tour))
     })
 
     if (!is.null(tour)) {
@@ -381,7 +403,7 @@ iSEE <- function(
       )
     })
 
-    if (run_local) {
+    if (runLocal) {
       observeEvent(input$open_vignette, {
         path <- system.file("doc","iSEE_vignette.html", package="iSEE")
         if (path=="") {

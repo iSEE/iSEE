@@ -172,17 +172,19 @@
 #'
 #' @details
 #' This function is necessary to ensure that coordinates in transmitting plots are generated before point selection is performed in receiving plots.
-#'
+#' 
 #' @return An integer vector specifying the order of the panels for reporting code.
 #' @author Aaron Lun
 #' @rdname INTERNAL_get_reporting_order
+#' @seealso
+#' \code{\link{.establish_eval_order}}
 #' @importFrom igraph topo_sort
 .get_reporting_order <- function(active_panels, select_chart) 
 {
-  N <- nrow(active_panels)
-  node_names <- sprintf("%s%i", active_panels$Type, active_panels$ID)
-  ordering <- topo_sort(select_chart, "out")
-  order(match(node_names, names(ordering)))
+    node_names <- sprintf("%s%i", active_panels$Type, active_panels$ID)
+    ordering <- names(topo_sort(select_chart, "out"))
+    ordering <- ordering[ordering %in% node_names]
+    match(ordering, node_names)
 }
 
 

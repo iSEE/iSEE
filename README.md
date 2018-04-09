@@ -13,7 +13,7 @@
 ## Overview
 
 The _iSEE_ package aims to provide an interactive user interface for exploring data in objects derived from the `SummarizedExperiment` class.
-Particular focus will be given to single-cell data in the `SingleCellExperiment` derived class.
+Particular focus is given to single-cell data in the `SingleCellExperiment` derived class.
 The interface is implemented with [RStudio](https://www.rstudio.com)'s [_Shiny_](https://shiny.rstudio.com), with a multi-panel setup for ease of navigation.
 
 This initiative was proposed at the European Bioconductor Meeting in Cambridge, 2017.
@@ -24,7 +24,7 @@ Current contributors include:
 - Federico Marini
 - Kevin Rue-Albrecht
 
-## Cell-based visualizations 
+## Sample-based visualizations 
 
 The interface is proposed to contain the following features in its first iteration:
 
@@ -34,9 +34,9 @@ The interface is proposed to contain the following features in its first iterati
 
 :white_check_mark: zooming in to a particular subregion of the plot, if requested
 
-:white_check_mark: scatter plots can be generated from reduced dimensionality data, or with biaxial plots of existing metadata columns.
+:white_check_mark: scatter plots generated from reduced dimensionality data, or with biaxial plots of existing metadata columns.
 
-## Gene-based visualization
+## Feature-based visualization
 
 The interface is proposed to contain the following features in its first iteration:
 
@@ -44,16 +44,14 @@ The interface is proposed to contain the following features in its first iterati
 
 :white_check_mark: heatmaps of multiple genes for groups of cells or for individual ordered cells 
 
-:white_check_mark: integrated brushing in cell-based scatter plots with cell identities in gene-level plots
+:white_check_mark: integrated selection of data points in sample-based scatter plots with cell identities in gene-level plots
 
 ## Miscellaneous
 
-:white_check_mark: The interface will contain a continually updated R interface that provides the R code corresponding to each user interaction.
-This can be copy-pasted into R scripts for batch generation of figures.
+:white_check_mark: The interface will contain a continually updated code tracking interface that provides the R source code corresponding to each user interaction.
+The result will be available to copy-paste into R scripts for batch generation of figures.
 
 ## Want to try `iSEE`?
 
 We set up an instance of iSEE running on the `allen` dataset at this address: http://shiny.imbei.uni-mainz.de:3838/iSEE. 
-Please keep in mind this is only for trial purposes, yet it can show a quick way of how you or your system administrator can setup `r Biocpkg("iSEE")` for analyzing your `SummarizedExperiment`/`SingleCellExperiment` precomputed object.
-
-
+Please keep in mind this is only for trial purposes, yet it readily demonstrates how you or your system administrator can setup `iSEE` for analyzing your `SummarizedExperiment` precomputed object.

@@ -764,10 +764,8 @@ names(.all_aes_values) <- .all_aes_names
     if (!is.null(bounds)) {
       
         # Ensure zoom preserves the data points and width ratio of visible groups
-        print(bounds)
         bounds["xmin"] <- ceiling(bounds["xmin"]) - 0.5
         bounds["xmax"] <- floor(bounds["xmax"]) + 0.5
-        print(bounds)
       
         plot_cmds[["coord"]] <- sprintf(
             "%s(xlim = c(%s, %s), ylim = c(%s, %s), expand = FALSE) +", # FALSE, to get a literal zoom.

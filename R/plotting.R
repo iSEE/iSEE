@@ -476,7 +476,7 @@ names(.all_aes_values) <- .all_aes_names
         specific <- .violin_setup(TRUE) 
     } else {
         mode <- "square"
-        specific <- .square_setup()
+        specific <- .square_setup(eval_env$plot.data)
     }
     if (length(specific)) { 
         eval(parse(text=unlist(specific)), envir=eval_env)
@@ -801,8 +801,6 @@ names(.all_aes_values) <- .all_aes_names
     setup_cmds <- list()
 
     # Switching X and Y axes if we want a horizontal violin plot.
-    # This is done in lim_cmds to guarantee sensible limits, though
-    # it would technically be more appropriate to put in setup_cmds.
     if (horizontal) {
         setup_cmds[["swap"]] <- c("tmp <- plot.data$X;
 plot.data$X <- plot.data$Y;
@@ -811,8 +809,7 @@ plot.data$Y <- tmp;")
     setup_cmds[["group"]] <- "plot.data$GroupBy <- plot.data$X;"
 
     # Figuring out the scatter. This is done ahead of time to guarantee the
-    # same results regardless of the subset used for point selection.
-    # Note adjust=1
+    # same results regardless of the subset used for point selection. Note adjust=1
     # for consistency with geom_violin (differs from geom_quasirandom default).
     setup_cmds[["seed"]] <- "set.seed(100);"
     setup_cmds[["calcX"]] <-
@@ -930,20 +927,22 @@ plot.data$Y <- tmp;")
 
 #' @rdname INTERNAL_square_plot
 #' @importFrom stats runif
-.square_setup <- function() {
+.square_setup <- function(plot_data) {
     setup_cmds  <- list()
     setup_cmds[["table"]] <- "summary.data <- as.data.frame(with(plot.data, table(X, Y)));"
-    
-    # Yes, the ylev for xpower is intentional, and vice versa.
-    setup_cmds[["powering"]] <- "xpower <- ypower <- 0.5;
-xmax <- ymax <- 0.49;
-if (nlevels(plot.data$Y)==1L) { xpower <- 0; ypower <- 1; xmax <- 0.4; }
-if (nlevels(plot.data$X)==1L) { xpower <- 1; ypower <- 0; ymax <- 0.4; }"
 
-    setup_cmds[["radius"]] <- "summary.data$XWidth <- summary.data$Freq^xpower;
-summary.data$YWidth <- summary.data$Freq^ypower;
-summary.data$XWidth <- xmax * with(summary.data, XWidth / max(XWidth));
-summary.data$YWidth <- ymax * with(summary.data, YWidth / max(YWidth));"
+    norm_freq <- "with(summary.data, Freq / max(Freq))"
+    if (nlevels(plot_data$Y)==1L && nlevels(plot_data$X)!=1L) {
+        width_cmd <- sprintf("summary.data$XWidth <- 0.4;
+summary.data$YWidth <- 0.49 * %s;", norm_freq)
+    } else if (nlevels(plot_data$Y)!=1L && nlevels(plot_data$X)==1L) {
+        width_cmd <- sprintf("summary.data$XWidth <- 0.49 * %s;
+summary.data$YWidth <- 0.4;", norm_freq)
+        ymax <- "0.4"
+    } else {
+        width_cmd <- sprintf("summary.data$XWidth <- summary.data$YWidth <- 0.49 * sqrt(%s);", norm_freq)
+    }
+    setup_cmds[["radius"]] <- width_cmd
 
     setup_cmds[["merged"]] <-
 "plot.data$Marker <- seq_len(nrow(plot.data));

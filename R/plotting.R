@@ -762,6 +762,16 @@ names(.all_aes_values) <- .all_aes_names
     }
   
     if (!is.null(bounds)) {
+      
+        # Ensure zoom preserves the data points and width ratio of visible groups
+        if (horizontal) {
+            bounds["ymin"] <- ceiling(bounds["ymin"]) - 0.5
+            bounds["ymax"] <- floor(bounds["ymax"]) + 0.5
+        } else {
+            bounds["xmin"] <- ceiling(bounds["xmin"]) - 0.5
+            bounds["xmax"] <- floor(bounds["xmax"]) + 0.5
+        }
+      
         plot_cmds[["coord"]] <- sprintf(
             "%s(xlim = c(%s, %s), ylim = c(%s, %s), expand = FALSE) +", # FALSE, to get a literal zoom.
             coord_cmd, deparse(bounds["xmin"]), deparse(bounds["xmax"]), 
@@ -893,6 +903,13 @@ plot.data$Y <- tmp;")
     # Defining boundaries if zoomed.
     bounds <- param_choices[[.zoomData]][[1]]
     if (!is.null(bounds)) {
+        
+        # Ensure zoom preserves the data points and width ratio of visible groups
+        bounds["xmin"] <- ceiling(bounds["xmin"]) - 0.5
+        bounds["xmax"] <- floor(bounds["xmax"]) + 0.5
+        bounds["ymin"] <- ceiling(bounds["ymin"]) - 0.5
+        bounds["ymax"] <- floor(bounds["ymax"]) + 0.5
+        
         plot_cmds[["coord"]] <- sprintf(
           "coord_cartesian(xlim = c(%s, %s), ylim = c(%s, %s), expand = FALSE) +",
           deparse(bounds["xmin"]), deparse(bounds["xmax"]),

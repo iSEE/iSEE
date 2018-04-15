@@ -6,6 +6,7 @@
     \item Custom tours can be restarted via the dropdown menu button, overwriting
     the default tour
     \item Added functionality to provide a custom title to be displayed in the app
+    \item Preserve data points and width ratio upon zoom on discrete variables
   }
 }
 

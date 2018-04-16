@@ -476,7 +476,7 @@ names(.all_aes_values) <- .all_aes_names
         specific <- .violin_setup(TRUE) 
     } else {
         mode <- "square"
-        specific <- .square_setup()
+        specific <- .square_setup(eval_env$plot.data)
     }
     if (length(specific)) { 
         eval(parse(text=unlist(specific)), envir=eval_env)
@@ -766,6 +766,11 @@ names(.all_aes_values) <- .all_aes_names
     }
   
     if (!is.null(bounds)) {
+      
+        # Ensure zoom preserves the data points and width ratio of visible groups
+        bounds["xmin"] <- ceiling(bounds["xmin"]) - 0.5
+        bounds["xmax"] <- floor(bounds["xmax"]) + 0.5
+      
         plot_cmds[["coord"]] <- sprintf(
             "%s(xlim = c(%s, %s), ylim = c(%s, %s), expand = FALSE) +", # FALSE, to get a literal zoom.
             coord_cmd, deparse(bounds["xmin"]), deparse(bounds["xmax"]), 
@@ -806,8 +811,6 @@ names(.all_aes_values) <- .all_aes_names
     setup_cmds <- list()
 
     # Switching X and Y axes if we want a horizontal violin plot.
-    # This is done in lim_cmds to guarantee sensible limits, though
-    # it would technically be more appropriate to put in setup_cmds.
     if (horizontal) {
         setup_cmds[["swap"]] <- c("tmp <- plot.data$X;
 plot.data$X <- plot.data$Y;
@@ -816,8 +819,7 @@ plot.data$Y <- tmp;")
     setup_cmds[["group"]] <- "plot.data$GroupBy <- plot.data$X;"
 
     # Figuring out the scatter. This is done ahead of time to guarantee the
-    # same results regardless of the subset used for point selection.
-    # Note adjust=1
+    # same results regardless of the subset used for point selection. Note adjust=1
     # for consistency with geom_violin (differs from geom_quasirandom default).
     setup_cmds[["seed"]] <- "set.seed(100);"
     setup_cmds[["calcX"]] <-
@@ -860,6 +862,10 @@ plot.data$Y <- tmp;")
 #' Any commands to modify \code{plot.data} in preparation for creating a square plot should be placed in \code{\link{.square_setup}}.
 #' This function will subsequently be called by \code{\link{.extract_plotting_data}}.
 #'
+#' The square plot is set up so that the widths on the x-axis are constant when there is only one y-axis level.
+#' This means that the dimensions of the squares on the y-axis are directly comparable, without any need to compare areas.
+#' Similarly, the widths on the y-axis default are constant when there is only one x-axis level.
+#'
 #' As described in \code{?\link{.create_plot}}, the \code{\link{.square_plot}} function should only contain commands to generate the final ggplot object.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson.
@@ -874,7 +880,7 @@ plot.data$Y <- tmp;")
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
     plot_cmds[["tile"]] <-
-"geom_tile(aes(x = X, y = Y, height = 2*Radius, width = 2*Radius, group = interaction(X, Y)),
+"geom_tile(aes(x = X, y = Y, height = 2*YWidth, width = 2*XWidth, group = interaction(X, Y)),
     summary.data, color = 'black', alpha = 0, size = 0.5) +"
 
     # Adding the points to the plot (with/without point selection).
@@ -899,6 +905,13 @@ plot.data$Y <- tmp;")
     # Defining boundaries if zoomed.
     bounds <- param_choices[[.zoomData]][[1]]
     if (!is.null(bounds)) {
+        
+        # Ensure zoom preserves the data points and width ratio of visible groups
+        bounds["xmin"] <- ceiling(bounds["xmin"]) - 0.5
+        bounds["xmax"] <- floor(bounds["xmax"]) + 0.5
+        bounds["ymin"] <- ceiling(bounds["ymin"]) - 0.5
+        bounds["ymax"] <- floor(bounds["ymax"]) + 0.5
+        
         plot_cmds[["coord"]] <- sprintf(
           "coord_cartesian(xlim = c(%s, %s), ylim = c(%s, %s), expand = FALSE) +",
           deparse(bounds["xmin"]), deparse(bounds["xmax"]),
@@ -928,23 +941,34 @@ plot.data$Y <- tmp;")
 
 #' @rdname INTERNAL_square_plot
 #' @importFrom stats runif
-.square_setup <- function() {
+.square_setup <- function(plot_data) {
     setup_cmds  <- list()
-    setup_cmds[["table"]] <-
-      "summary.data <- as.data.frame(with(plot.data, table(X, Y)));"
-    setup_cmds[["proportion"]] <-
-      "summary.data$Proportion <- with(summary.data, Freq / sum(Freq));"
-    setup_cmds[["radius"]] <-
-      "summary.data$Radius <- 0.49*with(summary.data, sqrt(Proportion/max(Proportion)));"
+    setup_cmds[["table"]] <- "summary.data <- as.data.frame(with(plot.data, table(X, Y)));"
+
+    norm_freq <- "with(summary.data, Freq / max(Freq))"
+    if (nlevels(plot_data$Y)==1L && nlevels(plot_data$X)!=1L) {
+        width_cmd <- sprintf("summary.data$XWidth <- 0.4;
+summary.data$YWidth <- 0.49 * %s;", norm_freq)
+    } else if (nlevels(plot_data$Y)!=1L && nlevels(plot_data$X)==1L) {
+        width_cmd <- sprintf("summary.data$XWidth <- 0.49 * %s;
+summary.data$YWidth <- 0.4;", norm_freq)
+        ymax <- "0.4"
+    } else {
+        width_cmd <- sprintf("summary.data$XWidth <- summary.data$YWidth <- 0.49 * sqrt(%s);", norm_freq)
+    }
+    setup_cmds[["radius"]] <- width_cmd
+
     setup_cmds[["merged"]] <-
 "plot.data$Marker <- seq_len(nrow(plot.data));
 combined <- merge(plot.data, summary.data, by=c('X', 'Y'), all.x=TRUE);
-point.radius <- combined$Radius[order(combined$Marker)];
+o <- order(combined$Marker)
+width.x <- combined$XWidth[o];
+width.y <- combined$YWidth[o];
 plot.data$Marker <- NULL;"
     setup_cmds[["jitter"]] <-
 "set.seed(100);
-plot.data$jitteredX <- as.integer(plot.data$X) + point.radius*runif(nrow(plot.data), -1, 1);
-plot.data$jitteredY <- as.integer(plot.data$Y) + point.radius*runif(nrow(plot.data), -1, 1);"
+plot.data$jitteredX <- as.integer(plot.data$X) + width.x*runif(nrow(plot.data), -1, 1);
+plot.data$jitteredY <- as.integer(plot.data$Y) + width.y*runif(nrow(plot.data), -1, 1);"
     return(unlist(setup_cmds))
 }
 

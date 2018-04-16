@@ -299,22 +299,26 @@
         curcode <- list(strrep("#", 80),
                 sprintf("# Settings for %ss", tolower(translation[[mode]])),
                 strrep("#", 80), "", 
-                sprintf("%s <- new('DataFrame', nrow=%i)", arg_obj, Npanels))
+                sprintf("%s <- new('DataFrame', nrows=%iL, rownames=paste0('%s', seq_len(%i)))", arg_obj, Npanels, mode, Npanels))
 
         for (field in colnames(current)) {
             curvals <- current[[field]]
             if (!is.list(curvals)) {
-                curcode[[field]] <- sprintf("%s[[%s]] <- %s", arg_obj, field, 
+                curcode[[field]] <- sprintf("%s[['%s']] <- %s", arg_obj, field, 
                     .deparse_for_viewing(curvals))
             } else {
                 list_init <- sprintf("tmp <- vector('list', %i)", Npanels)
                 list_others <- vector("list", Npanels)
                 for (id in seq_len(Npanels)) {
-                    list_others[[id]] <- sprintf("tmp[[%i]] <- %s", id,
-                        .deparse_for_viewing(curvals[[id]]))
+                    # Need !is.null here, otherwise the list will be shortened 
+                    # if the last element is NULL
+                    if (!is.null(curvals[[id]])) {
+                        list_others[[id]] <- sprintf("tmp[[%i]] <- %s", id,
+                                                     .deparse_for_viewing(curvals[[id]]))
+                    }
                 }
                 curcode[[field]] <- paste(c("", list_init, unlist(list_others),
-                    sprintf("%s[[%s]] <- tmp", arg_obj, field)), collapse="\n")
+                    sprintf("%s[['%s']] <- tmp", arg_obj, field)), collapse="\n")
             }
         }
 
@@ -325,9 +329,9 @@
     initials <- list(strrep("#", 80), 
             sprintf("# Settings for %ss", tolower(translation[[mode]])),
             strrep("#", 80), "", 
-            sprintf("initialPanels <- new('DataFrame', nrow=%i)", nrow(active_panels)))
+            sprintf("initialPanels <- new('DataFrame', nrows=%iL)", nrow(active_panels)))
     for (col in colnames(active_panels)) {
-        initials[[col]] <- sprintf("initialPanels[[%s]] <- %s", col, 
+        initials[[col]] <- sprintf("initialPanels[['%s']] <- %s", col, 
             .deparse_for_viewing(active_panels[[col]]))
     }
 

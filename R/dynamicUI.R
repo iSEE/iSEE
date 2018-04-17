@@ -205,7 +205,7 @@
 
             plot.param <- list(
                 selectizeInput(.input_FUN(.featExprYAxisFeatName),
-                               label = "Y-axis gene:", choices = NULL, selected = NULL, multiple=FALSE),
+                               label = "Y-axis feature:", choices = NULL, selected = NULL, multiple=FALSE),
                 selectInput(.input_FUN(.featExprYAxisRowTable), label=NULL, choices=active_tab,
                             selected=.choose_link(param_choices[[.featExprYAxisRowTable]], active_tab, force_default=TRUE)),
                 selectInput(.input_FUN(.featExprAssay), label=NULL,
@@ -220,7 +220,7 @@
                 .conditional_on_radio(.input_FUN(.featExprXAxis),
                                          .featExprXAxisFeatNameTitle,
                                          selectizeInput(.input_FUN(.featExprXAxisFeatName), 
-                                                        label = "X-axis gene:", choices = NULL, selected = NULL, multiple = FALSE),
+                                                        label = "X-axis feature:", choices = NULL, selected = NULL, multiple = FALSE),
                                          selectInput(.input_FUN(.featExprXAxisRowTable), label=NULL,
                                                      choices=active_tab, selected=param_choices[[.featExprXAxisRowTable]]))
                 )

@@ -192,6 +192,14 @@ iSEE <- function(
                        style=.actionbutton_biocstyle
                      ),
                      icon = icon(""), status = "primary"
+                   ),
+                   notificationItem(
+                       text = actionButton(
+                           'get_panel_settings', label="Display panel settings",
+                           icon = icon("clipboard"),
+                           style=.actionbutton_biocstyle
+                       ),
+                       icon = icon(""), status = "primary"
                    )
       ), # end of dropdownMenu
 
@@ -355,9 +363,20 @@ iSEE <- function(
           "a keyboard shortcut that depends on your operating system (e.g. Ctrl/Cmd + A",
           "followed by Ctrl/Cmd + C).",
           "This will copy the selected parts to the clipboard."),
-        aceEditor("acereport_r", mode="r",theme = "solarized_light",autoComplete = "live",
+        aceEditor("acereport_r", mode="r",theme = "solarized_light", autoComplete = "live",
                   value = paste0(.track_it_all(rObjects$active_panels, pObjects, se_name, ecm_name,se_cmds), collapse="\n"),
                   height="600px")
+        ))
+    })
+    
+    ## Modal to display current panel settings
+    observeEvent(input$get_panel_settings, {
+        showModal(modalDialog(
+            title = "Panel settings", size = "l",fade = TRUE,
+            footer = NULL, easyClose = TRUE,
+            aceEditor("acereport_r", mode="r", theme = "solarized_light", autoComplete = "live",
+                value = paste0(.report_memory(rObjects$active_panels, pObjects$memory), collapse="\n"),
+                height="600px")
         ))
     })
 

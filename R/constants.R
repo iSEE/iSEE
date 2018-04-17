@@ -123,6 +123,9 @@
 
 .plotFontSizeAxisTextDefault <- 10
 .plotFontSizeAxisTitleDefault <- 12
+.plotFontSizeLegendTextDefault <- 9
+.plotFontSizeLegendTitleDefault <- 11
+.plotFontSizeTitleDefault <- 12
 
 # Row statistic table parameters. ----
 .rowStatSelected <- "Selected"

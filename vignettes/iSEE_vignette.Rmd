@@ -175,7 +175,7 @@ For each plot panel, three different sets of parameters will be available in col
 
 - *Data parameters*, to control parameters specific to each type of plot. 
 - *Visual parameters*, to specify parameters that will determine the aspect of the plot, in terms of coloring, point features, and more (*e.g.* legend placement, font size)
-- *Brushing parameters* to control the point selection and link relationships to other plots. 
+- *Selection parameters* to control the point selection and link relationships to other plots. 
 
 ## Reduced dimension plots
 
@@ -252,7 +252,7 @@ Users can also specify the `assays` from which expression values are extracted.
 
 ## Selecting data points and linking panels {#select-and-link}
 
-To link one plot to another, users can instruct a plotting panel to receive a selection of data points from another (transmitting) plot, using the appropriate field in the brushing parameters box.
+To link one plot to another, users can instruct a plotting panel to receive a selection of data points from another (transmitting) plot, using the appropriate field in the selection parameters box.
 Once this is done, data point selection on the transmitting plot affects the receiving plot in a variety of ways:
 
 - If the point selection effect is set to `"Restrict"`, only the subset of points selected in the transmitter are visible in the receiver.
@@ -433,7 +433,7 @@ shiny::runApp(app)
 #### Overview
 
 By default, the app starts with a dashboard that contains one reduced dimension plot, one column data plot, one feature expression plot, one row statistics table, one row data plot (if data is available), and one heat map (see Use case II for how to change this).
-By opening the collapsible panels named "Data parameters", "Visual parameters", and "Brushing parameters" under each plot, we can examine and control the content and appearance of the respective plots.
+By opening the collapsible panels named "Data parameters", "Visual parameters", and "Selection parameters" under each plot, we can examine and control the content and appearance of the respective plots.
 
 #### The reduced dimension panel
 
@@ -467,7 +467,7 @@ To do this, open up the "Visual parameters" panel, select `Gene text`, and paste
 
 After exploring the individual plots, let us now see how they can be linked together using the point selection functionality.
 To this end, let us say that we are interested in seeing the expression of a certain gene in a particular cluster of cells apparent in the reduced dimension plot.
-First, open the "Brushing parameters" panel under the *Feature expression plot*,and choose `Receive brush from:` to be `Reduced dimension plot 1` and set the `Brush effect` to `Transparent`.
+First, open the "Selection parameters" panel under the *Feature expression plot*,and choose `Receive brush from:` to be `Reduced dimension plot 1` and set the `Brush effect` to `Transparent`.
 Then, drag the mouse to draw a rectangle around the cluster of interest in *Reduced dimension plot 1*.
 You will see that the points in `Feature expression plot 1` that are not within the rectangle in the `Reduced dimension plot 1` are appearing now more transparent, allowing you to see the distribution of expression values for the chosen gene in the cluster of interest.
 By changing the `Brush effect`, you can also restrict the receiving plot to only show the selected points (`Restrict`) or color the selected points (be mindful of the color choice if you have already colored the points according to another covariate via the "Coloring parameters" panel). 

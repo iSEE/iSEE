@@ -524,6 +524,9 @@ names(.all_aes_values) <- .all_aes_names
 #' This function will also add a box representing the Shiny brush coordinates, if one is available - see \code{?\link{.self_brush_box}}.
 #' Alternatively, if lasso waypoints are present, it will add them to the plot - see \code{?\link{.self_lasso_path}}.
 #'
+#' Density-dependent downsampling for speed is implemented in this function, based on \code{\link{subsetPointsByGrid}}.
+#' A \code{plot.data.pre} data.frame is added to \code{envir} to keep the pre-subsetted information, e.g., for use in \code{\link{.violin_plot}}.
+#'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson
 #' @rdname INTERNAL_create_plot
 #' @seealso
@@ -538,6 +541,7 @@ names(.all_aes_values) <- .all_aes_names
     plot_type <- envir$plot.type
 
     # Deciding whether we should downsample.
+    extra_cmds <- c("plot.data.pre <- plot.data;", extra_cmds)
     if (param_choices[[.plotPointDownsample]]) {
         xtype <- "X"
         ytype <- "Y"
@@ -548,7 +552,7 @@ names(.all_aes_values) <- .all_aes_names
             xtype <- "jitteredX"
         }
         extra_cmds <- c(extra_cmds, sprintf("plot.data <- subset(plot.data, subsetPointsByGrid(%s, %s, resolution=%i));",
-                                            xtype, ytype, param_choices[[.plotPointSampleRes]]))
+                                            xtype, ytype, param_choices[[.plotPointSampleRes]]), "")
     }
     
     # Dispatch to different plotting commands, depending on X/Y being groupable
@@ -707,7 +711,7 @@ names(.all_aes_values) <- .all_aes_names
 #' and evaluated by \code{\link{.create_plot}} to produce the violin plot.
 #'
 #' @details
-#' Any commands to modify \code{plot.data} in preparation for creating a' violin plot should be placed in \code{\link{.violin_setup}},
+#' Any commands to modify \code{plot.data} in preparation for creating a violin plot should be placed in \code{\link{.violin_setup}},
 #' to be called by \code{\link{.extract_plotting_data}}.
 #' This includes swapping of X and Y variables when \code{horizontal=TRUE}, and adding of horizontal/vertical jitter to points.
 #'
@@ -716,6 +720,9 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{envir$plot.data.all} will be used to define the y-axis boundaries (or x-axis boundaries when \code{horizontal=TRUE}).
 #' This ensures consistent plot boundaries when selecting points to restrict (see \code{?\link{.process_selectby_choice}})
 #' or when downsampling for speed (see \code{?\link{.create_plot}}.
+#'
+#' Similarly, \code{envir$plot.data.pre} will be used to create the violins (see \code{\link{.create_plot}}).
+#' This ensures consistent violins when downsampling for speed - otherwise the violins will be computed from the downsampled set of points.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson.
 #' @rdname INTERNAL_violin_plot
@@ -729,7 +736,7 @@ names(.all_aes_values) <- .all_aes_names
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +" # do NOT put aes here, it does not play nice with shiny brushes.
     plot_cmds[["violin"]] <- sprintf(
-      "geom_violin(%s, alpha = 0.2, data=plot.data, scale = 'width', width = 0.8) +", 
+      "geom_violin(%s, alpha = 0.2, data=plot.data.pre, scale = 'width', width = 0.8) +", 
       .build_aes(color = FALSE, group = TRUE))
 
     # Adding the points to the plot (with/without point selection).

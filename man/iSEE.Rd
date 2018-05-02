@@ -4,9 +4,9 @@
 \alias{iSEE}
 \title{iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer}
 \usage{
-iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featExprArgs = NULL,
+iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featAssayArgs = NULL,
   rowStatArgs = NULL, rowDataArgs = NULL, heatMapArgs = NULL,
-  redDimMax = 5, colDataMax = 5, featExprMax = 5, rowStatMax = 5,
+  redDimMax = 5, colDataMax = 5, featAssayMax = 5, rowStatMax = 5,
   rowDataMax = 5, heatMapMax = 5, initialPanels = NULL, annotFun = NULL,
   colormap = ExperimentColorMap(), tour = NULL, appTitle = NULL,
   runLocal = TRUE)
@@ -22,8 +22,8 @@ for the plots.}
 \code{\link{colDataPlotDefaults}}, specifying initial parameters
 for the plots.}
 
-\item{featExprArgs}{A DataFrame similar to that produced by
-\code{\link{featExprPlotDefaults}}, specifying initial parameters
+\item{featAssayArgs}{A DataFrame similar to that produced by
+\code{\link{featAssayPlotDefaults}}, specifying initial parameters
 for the plots.}
 
 \item{rowStatArgs}{A DataFrame similar to that produced by
@@ -44,8 +44,8 @@ reduced dimension plots in the interface.}
 \item{colDataMax}{An integer scalar specifying the maximum number of
 column data plots in the interface.}
 
-\item{featExprMax}{An integer scalar specifying the maximum number of
-feature expression plots in the interface.}
+\item{featAssayMax}{An integer scalar specifying the maximum number of
+feature assay plots in the interface.}
 
 \item{rowStatMax}{An integer scalar specifying the maximum number of
 row statistics tables in the interface.}
@@ -95,7 +95,7 @@ SummarizedExperiment/SingleCellExperiment, using a Shiny interface.
 }
 \details{
 Users can pass default parameters via DataFrame objects in
-\code{redDimArgs} and \code{featExprArgs}. Each object can contain
+\code{redDimArgs} and \code{featAssayArgs}. Each object can contain
 some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
 Any missing fields will be filled in with the defaults.
 

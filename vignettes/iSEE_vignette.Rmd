@@ -166,7 +166,7 @@ There are currently six different panel types that can be generated with `r Bioc
 
 - Reduced dimension plots
 - Column data plots
-- Feature expression plots
+- Feature assay plots
 - Row statistics tables
 - Row data plots
 - Heat maps
@@ -197,20 +197,20 @@ This plot can assume various forms, depending on the nature of the data on the x
 
 An X axis setting of "None" is considered to be categorical with a single level.
 
-## Feature expression plots
+## Feature assay plots
 
-A *feature expression plot* visualizes the expression values for a particular feature across the samples on the y-axis.
+A *feature assay plot* visualizes the assayed values (e.g., gene expression) for a particular feature (e.g., gene) across the samples on the y-axis.
 This usually results in a (grouped) violin plot, if the X axis is set to `"None"` or a categorical variable; or a scatter plot, if the X axis is another continuous variable.
 
-**Note:** That said, if there are categorical values for the expression values, these will be handled as described in the column data plots.
+**Note:** That said, if there are categorical values for the assayed values, these will be handled as described in the column data plots.
 
 Gene selection for the y-axis is achieved by using a _linked row statistics table_ in another panel.
-Clicking on a row in the table will automatically change the expression values plotted on the Y axis.
+Clicking on a row in the table will automatically change the assayed values plotted on the Y axis.
 Alternatively, the row name can be directly entered as text that corresponds to an entry of `rownames(se)`.
 
 **Note:** this is not effective if `se` does not contain row names.
 
-The X axis covariate can also be selected from the plotting parameters. This can be `"None"`, column data, or the expression values of another feature (also identified using a linked table or via text).
+The X axis covariate can also be selected from the plotting parameters. This can be `"None"`, column data, or the assayed values of another feature (also identified using a linked table or via text).
 The measurement units are selected as one of the `assays(se)`, which is applied to both the X and Y axes.
 
 Obviously, any other assayed value for any feature can be visualized in this manner, not limited to the expression of genes.
@@ -232,7 +232,8 @@ Please refer to Section \@ref(coldataplot) for more details.
 
 ## Heat maps
 
-Heat maps can display compact overviews of the data at hand, in the form of color-coded expression matrices (corresponding to the `assays` stored in the `SummarizedExperiment` object), where features such as genes are the rows, and samples are the columns.
+Heat maps can display compact overviews of the data at hand in the form of color-coded matrices.
+These correspond to the `assays` stored in the `SummarizedExperiment` object, where features (e.g., genes) are the rows and samples are the columns.
 
 User can select features (rows) to display from the selectize widget (which supports autocompletion), or also via other panels, like row data plots or row statistics tables. 
 The 'Suggest feature order' button clusters the rows, and also rearranges the elements in the selectize according to the clustering.
@@ -245,10 +246,13 @@ A zooming functionality is also available, restricted to the Y axis (*i.e.*, all
 
 Coloring of points (*i.e.*, samples) on each plot can be achieved in different ways.
 
-- The default is no color scheme (`"None"` in the radio button). This results in black data points.
-- Any column of `colData(se)` can be used. The plotting routine automatically adjusts the scale to use based on whether the chosen column is continuous or categorical.
-- The expression value of a particular feature in each sample can be used. The feature can be chosen either via a linked row table or text input (as described for *feature expression plots*).
-Users can also specify the `assays` from which expression values are extracted.
+- The default is no color scheme (`"None"` in the radio button). 
+This results in black data points.
+- Any column of `colData(se)` can be used. 
+The plot automatically adjusts the scale to use based on whether the chosen column is continuous or categorical.
+- The assay values of a particular feature in each sample can be used. 
+The feature can be chosen either via a linked row table or text input (as described for *feature assay plots*).
+Users can also specify the `assays` from which values are extracted.
 
 ## Selecting data points and linking panels {#select-and-link}
 
@@ -266,7 +270,7 @@ This is possible by first selecting a region of interest in a plot. Then, double
 ## Using an ExperimentColorMap
 
 `r Biocpkg("iSEE")` coordinates the coloring of every assay, column data, and row data via the `ExperimentColorMap` class.
-In particular, this allows users to override the appearance of specific expression or covariates scales, while leaving the other undefined data scales used default colormaps.
+In particular, this allows users to override the appearance of specific assay or covariates scale, while leaving the other undefined data scales to use the default colormaps.
 
 ### Default colormaps
 
@@ -432,7 +436,7 @@ shiny::runApp(app)
 
 #### Overview
 
-By default, the app starts with a dashboard that contains one reduced dimension plot, one column data plot, one feature expression plot, one row statistics table, one row data plot (if data is available), and one heat map (see Use case II for how to change this).
+By default, the app starts with a dashboard that contains one reduced dimension plot, one column data plot, one feature assay plot, one row statistics table, one row data plot (if data is available), and one heat map (see Use case II for how to change this).
 By opening the collapsible panels named "Data parameters", "Visual parameters", and "Selection parameters" under each plot, we can examine and control the content and appearance of the respective plots.
 
 #### The reduced dimension panel
@@ -452,24 +456,24 @@ We can also plot two cell annotation against each other, by setting `X-axis` to 
 For example, we can choose `NALIGNED` (the number of aligned reads), and we see that (as expected), there is a very strong association between the total number of reads and the number of aligned reads.
 Again, we can color the cell by whether or not they passed the QC, by selecting `Column data` in the "Visual parameters" panel and choosing `passes_qc_checks_s` in the dropdown menu. 
 
-#### The feature expression panel
+#### The feature assay panel
 
-Finally, let us look at the feature expression panel.
+Finally, let us look at the feature assay panel.
 This plot displays the distribution of the expression values for a given gene, which has been specified by selecting the first row in the row statistics table (this is seen in the "Data parameters" tab, as `Y-axis` is `Gene table`, and it is indicated that `Y-axis gene linked to` is `Row statistics table 1`).
 The values shown in the plots are taken from the `logcounts` assay of the provided `SingleCellExperiment`.
 We can modify this choice to any other assay that was available in the object (*e.g.*, `rsem_tpm`) to display other expression values.
 Note how the Y axis title keeps track of what is displayed in the plot. Again, note that all assays must be precalculated before the object is passed to the `iSEE` function.
 If we would like to show the expression of a particular gene of interest (*e.g.*, `Znrf1`), we can either find and select it in the row statistics table (use the search box just above the table), or we can set `Y-axis` to `Gene text`, and type `Znrf1` in the text box that shows up.
-As for the other plots, we can color in many ways. Let us color the points in the feature expression plot by the expression of another gene (*e.g.*, `Grp`).
+As for the other plots, we can color in many ways. Let us color the points in the feature assay plot by the expression of another gene (*e.g.*, `Grp`).
 To do this, open up the "Visual parameters" panel, select `Gene text`, and paste `Grp` in the text box that shows up. 
 
 #### Linking panels
 
 After exploring the individual plots, let us now see how they can be linked together using the point selection functionality.
 To this end, let us say that we are interested in seeing the expression of a certain gene in a particular cluster of cells apparent in the reduced dimension plot.
-First, open the "Selection parameters" panel under the *Feature expression plot*,and choose `Receive brush from:` to be `Reduced dimension plot 1` and set the `Brush effect` to `Transparent`.
+First, open the "Selection parameters" panel under the *Feature assay plot*,and choose `Receive brush from:` to be `Reduced dimension plot 1` and set the `Brush effect` to `Transparent`.
 Then, drag the mouse to draw a rectangle around the cluster of interest in *Reduced dimension plot 1*.
-You will see that the points in `Feature expression plot 1` that are not within the rectangle in the `Reduced dimension plot 1` are appearing now more transparent, allowing you to see the distribution of expression values for the chosen gene in the cluster of interest.
+You will see that the points in `Feature assay plot 1` that are not within the rectangle in the `Reduced dimension plot 1` are appearing now more transparent, allowing you to see the distribution of expression values for the chosen gene in the cluster of interest.
 By changing the `Brush effect`, you can also restrict the receiving plot to only show the selected points (`Restrict`) or color the selected points (be mindful of the color choice if you have already colored the points according to another covariate via the "Coloring parameters" panel). 
 
 ## Use case II: Changing the default start configuration
@@ -477,13 +481,13 @@ By changing the `Brush effect`, you can also restrict the receiving plot to only
 The default start configuration with one plot of each type is not optimal for all use cases.
 `iSEE` allows the user to programmatically modify the initial settings, avoiding the need to click through the choices to obtain the desired panel setup.
 
-To demonstrate this feature, let's assume that we are only interested in feature expression plots.
+To demonstrate this feature, let's assume that we are only interested in feature assay plots.
 The default set of panels can be changed via the `initialPanels` argument of the `iSEE` function call. 
-Given a `SingleCellExperiment`/`SummarizedExperiment` named `sce`, the following code opens an app with two adjacent feature expression plots. 
+Given a `SingleCellExperiment`/`SummarizedExperiment` named `sce`, the following code opens an app with two adjacent feature assay plots. 
 
 ```{r init}
 init <- DataFrame(
-  Name = c("Feature expression plot 1", "Feature expression plot 2"),
+  Name = c("Feature assay plot 1", "Feature assay plot 2"),
   Width = c(6, 6)
 )
 app <- iSEE(sce, initialPanels = init)
@@ -493,12 +497,12 @@ The genes to show on the y-axis in the two plots can be specified via the `geneE
 In this case, we want to modify the `YAxis` and `YAxisFeatName` defaults for the two plots:
 
 ```{r fexArg}
-fexArg <- featExprPlotDefaults(sce, 2)
+fexArg <- featAssayPlotDefaults(sce, 2)
 fexArg$YAxisFeatName <- c("0610009L18Rik", "0610009B22Rik")
-app <- iSEE(sce, initialPanels = init, featExprArgs = fexArg)
+app <- iSEE(sce, initialPanels = init, featAssayArgs = fexArg)
 ```
 
-This will open the app with two feature expression plots, showing the selected genes. 
+This will open the app with two feature assay plots, showing the selected genes. 
 Of course, from this starting point, all the interactive functionality is still available, and new panels can be added, modified and linked via brushing. 
 Users should refer to `?defaults` for the full list of values that can be specified in `iSEE`.
 
@@ -519,40 +523,40 @@ cytof <- readRDS(gzcon(url(
 The traditional way to analyze cytometry experiments and identify known cell populations is to construct a collection of two-dimensional scatter plots, each visualizing the cells in the space of two of the measured markers. 
 By successively selecting subsets of cells with specific patterns of marker abundance ("gating"),
 experienced users can assign cells to known populations. 
-To mimic part of the original gating strategy from [@bodenmiller2012cytof], we define a starting configuration for `iSEE` with five *Feature expression plots*, each showing two of the markers. 
+To mimic part of the original gating strategy from [@bodenmiller2012cytof], we define a starting configuration for `iSEE` with five *Feature assay plots*, each showing two of the markers. 
 Each plot is linked to the previous one, with the brushing effect set to "Restrict", meaning that only the cells selected by point selection in the previous plot are shown in each plot.
 We also include a *Reduced dimension plot*, in which the cells are colored by the automatic cluster assignment. 
-The *Reduced dimension plot* receives a restricting brush from the last *Feature expression plot*, which means that only the points that are selected by brushing in the latter will be shown in the *Reduced dimension plot*.
+The *Reduced dimension plot* receives a restricting brush from the last *Feature assay plot*, which means that only the points that are selected by brushing in the latter will be shown in the *Reduced dimension plot*.
 
 The code below sets up the initial panel configuration and brushing relationships. 
 
 ```{r initialPanels_cytof, eval=FALSE}
 initialPanels = DataFrame(
-  Name = c(paste("Feature expression plot", 1:5), "Reduced dimension plot 1"),
+  Name = c(paste("Feature assay plot", 1:5), "Reduced dimension plot 1"),
   Width = c(rep(3, 5), 5))
-# Feature expression plots
-fexArg <- featExprPlotDefaults(cytof, 5)
+# Feature assay plots
+fexArg <- featAssayPlotDefaults(cytof, 5)
 fexArg$XAxis <- "Feature name"
 fexArg$XAxisFeatName <- c("Cell_length", "CD3", "CD7", "CD3", "CD4")
 fexArg$YAxisFeatName <- c("CD45", "CD20", "CD45", "CD33", "CD45")
-fexArg$SelectByPlot <- c("", paste("Feature expression plot", 1:4))
+fexArg$SelectByPlot <- c("", paste("Feature assay plot", 1:4))
 fexArg$SelectEffect <- "Restrict"
 # Reduced dimension plot
 redArg <- redDimPlotDefaults(cytof, 1)
 redArg$ColorBy <- "Column data"
 redArg$ColorByColData <- "population"
-redArg$SelectByPlot <- "Feature expression plot 5"
+redArg$SelectByPlot <- "Feature assay plot 5"
 redArg$SelectEffect <- "Restrict"
 ```
 
 ```{r iSEE_cytof, eval=FALSE}
-iSEE(cytof, initialPanels = initialPanels, featExprArgs = fexArg, redDimArgs = redArg)
+iSEE(cytof, initialPanels = initialPanels, featAssayArgs = fexArg, redDimArgs = redArg)
 ```
 
-Once we have started `iSEE` in this configuration, we can start brushing from the first Feature expression plot to successively refine a cell subpopulation. 
-Roughly following the gating strategy in [@bodenmiller2012cytof], we select cells with high CD45 expression in *Feature expression plot 1*, followed by cells with low CD20 expression in *Feature expression plot 2*. 
-Next, we select cells with high CD7 expression in *Feature expression plot 3*, and subsequently cells with high CD3 and low CD33 expression in *Feature expression plot 4*. 
-Finally, by selecting either cells with high CD4 expression or those with low CD4 expression in *Feature expression plot 5*, and reviewing the resulting cells shown in the *Reduced dimension plot 1*, we can see that these are indeed the cells that were automatically classified as CD4^+^ (or CD8^+^) T-cells by the `r Biocpkg("FlowSOM")` clustering. 
+Once we have started `iSEE` in this configuration, we can start brushing from the first Feature assay plot to successively refine a cell subpopulation. 
+Roughly following the gating strategy in [@bodenmiller2012cytof], we select cells with high CD45 expression in *Feature assay plot 1*, followed by cells with low CD20 expression in *Feature assay plot 2*. 
+Next, we select cells with high CD7 expression in *Feature assay plot 3*, and subsequently cells with high CD3 and low CD33 expression in *Feature assay plot 4*. 
+Finally, by selecting either cells with high CD4 expression or those with low CD4 expression in *Feature assay plot 5*, and reviewing the resulting cells shown in the *Reduced dimension plot 1*, we can see that these are indeed the cells that were automatically classified as CD4^+^ (or CD8^+^) T-cells by the `r Biocpkg("FlowSOM")` clustering. 
 
 At this point, we can export all the code needed to reproduce the six panels by clicking on the **wrench** (<i class="fa fa-wrench"></i>) icon in the top right corner and selecting "Extract the R code". 
 

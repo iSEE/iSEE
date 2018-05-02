@@ -3,18 +3,18 @@
 .redDimXAxis <- "XAxis"
 .redDimYAxis <- "YAxis"
 
-# Feature expression plotting parameters. ----
-.featExprXAxisNothingTitle <- "None"
-.featExprXAxisColDataTitle <- "Column data"
-.featExprXAxisFeatNameTitle <- "Feature name"
+# Feature assay plotting parameters. ----
+.featAssayXAxisNothingTitle <- "None"
+.featAssayXAxisColDataTitle <- "Column data"
+.featAssayXAxisFeatNameTitle <- "Feature name"
 
-.featExprAssay <- "Assay"
-.featExprXAxis <- "XAxis"
-.featExprXAxisColData <- "XAxisColData"
-.featExprXAxisRowTable <- "XAxisRowTable"
-.featExprXAxisFeatName <- "XAxisFeatName"
-.featExprYAxisRowTable <- "YAxisRowTable"
-.featExprYAxisFeatName <- "YAxisFeatName"
+.featAssayAssay <- "Assay"
+.featAssayXAxis <- "XAxis"
+.featAssayXAxisColData <- "XAxisColData"
+.featAssayXAxisRowTable <- "XAxisRowTable"
+.featAssayXAxisFeatName <- "XAxisFeatName"
+.featAssayYAxisRowTable <- "YAxisRowTable"
+.featAssayYAxisFeatName <- "YAxisFeatName"
 
 # Column data plotting parameters. ----
 .colDataXAxisNothingTitle <- "None"
@@ -150,7 +150,7 @@
 # Encoding and decoding names for user/shiny ----
 translation <- c(redDimPlot="Reduced dimension plot",
                  colDataPlot="Column data plot",
-                 featExprPlot="Feature expression plot",
+                 featAssayPlot="Feature assay plot",
                  rowStatTable="Row statistics table",
                  rowDataPlot="Row data plot",
                  heatMapPlot="Heat map")

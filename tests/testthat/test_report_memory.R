@@ -1,7 +1,7 @@
 # Do NOT move to setup; re-defined here to keep tests self-contained.
 redDimArgs <- redDimPlotDefaults(sce, 2)
 colDataArgs <- colDataPlotDefaults(sce, 2)
-featExprArgs <- featExprPlotDefaults(sce, 3)
+featAssayArgs <- featAssayPlotDefaults(sce, 3)
 rowStatArgs <- rowStatTableDefaults(sce, 3)
 rowDataArgs <- rowDataPlotDefaults(sce, 1)
 heatMapArgs <- heatMapPlotDefaults(sce, 2)
@@ -30,15 +30,15 @@ redDimArgs[["ZoomData"]][[2]] <-
 
 all_memory <- iSEE:::.setup_memory(
     se=sce, redDimArgs=redDimArgs, colDataArgs=colDataArgs, 
-    featExprArgs=featExprArgs, rowStatArgs=rowStatArgs, 
+    featAssayArgs=featAssayArgs, rowStatArgs=rowStatArgs, 
     rowDataArgs=rowDataArgs, heatMapArgs=heatMapArgs,
-    redDimMax=3, colDataMax=3, featExprMax=4, rowStatMax=4, 
+    redDimMax=3, colDataMax=3, featAssayMax=4, rowStatMax=4, 
     rowDataMax=2, heatMapMax=3)
 
 inp <- DataFrame(Name = c(
     paste0("Reduced dimension plot ", 1:3),
     paste0("Column data plot ", 1:3),
-    paste0("Feature expression plot ", 1:4),
+    paste0("Feature assay plot ", 1:4),
     paste0("Row statistics table ", 1:4),
     paste0("Row data plot ", 1:2),
     paste0("Heat map ", 1:3)), 
@@ -53,7 +53,7 @@ test_that(".report_memory generates code that evaluates to the provided object",
     
     expect_identical(eval_env$redDimPlotArgs, all_memory$redDimPlot)
     expect_identical(eval_env$colDataPlotArgs, all_memory$colDataPlot)
-    expect_identical(eval_env$featExprPlotArgs, all_memory$featExprPlot)
+    expect_identical(eval_env$featAssayPlotArgs, all_memory$featAssayPlot)
     expect_identical(eval_env$rowStatTableArgs, all_memory$rowStatTable)
     expect_identical(eval_env$rowDataPlotArgs, all_memory$rowDataPlot)
     expect_identical(eval_env$heatMapPlotArgs, all_memory$heatMapPlot)

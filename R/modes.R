@@ -1,11 +1,11 @@
 
-#' App pre-configured to link multiple feature expression plots
+#' App pre-configured to link multiple feature assay plots
 #'
 #' @param se An object that coercible to \linkS4class{SingleCellExperiment}
 #' @param features \code{data.frame} with columns named \code{x} and \code{y}
 #' that define the features on the axes of the linked plots.
 #' Plots are serially linked from the first row to the last.
-#' @param featExprMax Maximal number of feature expression plots in the app.
+#' @param featAssayMax Maximal number of feature assay plots in the app.
 #' @param ... Additional arguments passed to \code{\link{iSEE}}.
 #' @param plot_width The grid width of linked plots (numeric vector of
 #' length either 1 or equal to \code{nrow(features)}
@@ -45,42 +45,42 @@
 #'
 #' # launch the app itself ----
 #'
-#' app <- modeGating(sce, features = plot_features, featExprMax = 6)
+#' app <- modeGating(sce, features = plot_features, featAssayMax = 6)
 #' if (interactive()) {
 #'   shiny::runApp(app, port = 1234)
 #' }
 
 modeGating <- function(
   se, features,
-  featExprMax = max(2, nrow(features)),
+  featAssayMax = max(2, nrow(features)),
   ..., plot_width = 4){
-  # This mode is meaningless with fewer than two featExprPlot
+  # This mode is meaningless with fewer than two featAssayPlot
   stopifnot(nrow(features) > 1)
   stopifnot(all(c("x","y") %in% colnames(features)))
   
-  featExprArgs <- featExprPlotDefaults(se, featExprMax)
-  # prepare featExprArgs
-  featExprArgs[[.featExprXAxis]] <- .featExprXAxisFeatNameTitle
-  # featExprArgs[[.featExprYAxis]] <- .featExprYAxisFeatNameTitle
+  featAssayArgs <- featAssayPlotDefaults(se, featAssayMax)
+  # prepare featAssayArgs
+  featAssayArgs[[.featAssayXAxis]] <- .featAssayXAxisFeatNameTitle
+  # featAssayArgs[[.featAssayYAxis]] <- .featAssayYAxisFeatNameTitle
   # Y axes take all the odd-numbered feature names
-  featExprArgs[[.featExprXAxisFeatName]] <- features[,"x"]
+  featAssayArgs[[.featAssayXAxisFeatName]] <- features[,"x"]
   # X axes take all the even-numbered feature names
-  featExprArgs[[.featExprYAxisFeatName]] <- features[,"y"]
-  featExprArgs[[.selectByPlot]] <- c(
+  featAssayArgs[[.featAssayYAxisFeatName]] <- features[,"y"]
+  featAssayArgs[[.selectByPlot]] <- c(
     "",
-    sprintf("Feature expression plot %i", seq(1, nrow(features) - 1, 1)),
-    rep("", nrow(featExprArgs) - nrow(features))
+    sprintf("Feature assay plot %i", seq(1, nrow(features) - 1, 1)),
+    rep("", nrow(featAssayArgs) - nrow(features))
   )
-  featExprArgs[[.selectEffect]] <- c(
+  featAssayArgs[[.selectEffect]] <- c(
     "",
     rep("Restrict", nrow(features) - 2),
     "Color",
-    rep("", nrow(featExprArgs) - nrow(features))
+    rep("", nrow(featAssayArgs) - nrow(features))
   )
   # Show only the active 
   initialPanels = DataFrame(
     Name = c(
-      sprintf("Feature expression plot %i", seq(1, nrow(features), 1))
+      sprintf("Feature assay plot %i", seq(1, nrow(features), 1))
     ),
     Width = plot_width
   )
@@ -88,10 +88,10 @@ modeGating <- function(
   app <- iSEE(
     se,
     redDimArgs = NULL, colDataArgs = NULL,
-    featExprArgs = featExprArgs,
+    featAssayArgs = featAssayArgs,
     rowStatArgs = NULL, rowDataArgs = NULL, heatMapArgs = NULL,
     redDimMax = 0, colDataMax = 0,
-    featExprMax = featExprMax, # possibly larger
+    featAssayMax = featAssayMax, # possibly larger
     rowStatMax = 0, rowDataMax = 0, heatMapMax = 0,
     initialPanels = initialPanels,
     ...

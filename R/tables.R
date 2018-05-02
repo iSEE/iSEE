@@ -7,8 +7,8 @@
 #' @return A list where each entry is itself a list, named with the encoded name of a row statistics table.
 #' Each table-specific list contains:
 #' \itemize{
-#' \item \code{"xaxis"}, a character vector containing encoded names of (feature expression) plots that receive input from this table for x-axis specification.
-#' \item \code{"yaxis"}, a character vector containing encoded names of (feature expression) plots that receive input from this table for y-axis specification.
+#' \item \code{"xaxis"}, a character vector containing encoded names of (feature assay) plots that receive input from this table for x-axis specification.
+#' \item \code{"yaxis"}, a character vector containing encoded names of (feature assay) plots that receive input from this table for y-axis specification.
 #' \item \code{"color"}, a character vector containing encoded names of various plots that receive input from this table for colour specification.
 #' }
 #'
@@ -27,7 +27,7 @@
     names(table_links) <- sprintf("rowStatTable%i", seq_len(Ntabs))
   
     # Adding the links for the colors.
-    for (mode in c("redDimPlot", "colDataPlot", "featExprPlot", "rowDataPlot")) { 
+    for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot", "rowDataPlot")) { 
         N <- nrow(memory[[mode]])
         cur_panels <- sprintf("%s%i", mode, seq_len(N))
     
@@ -41,18 +41,18 @@
     }
   
     # Adding links for x- and y-axes.
-    N <- nrow(memory$featExprPlot)
-    cur_panels <- sprintf("featExprPlot%i", seq_len(N))
+    N <- nrow(memory$featAssayPlot)
+    cur_panels <- sprintf("featAssayPlot%i", seq_len(N))
     for (id in seq_len(N)) {
-        param_choices <- memory[["featExprPlot"]][id,]
+        param_choices <- memory[["featAssayPlot"]][id,]
 
-        X_tab <- param_choices[[.featExprXAxisRowTable]]
+        X_tab <- param_choices[[.featAssayXAxisRowTable]]
         if (X_tab!=.noSelection) {
             tab_name <- .decoded2encoded(X_tab)
             table_links[[tab_name]]$xaxis <- c(table_links[[tab_name]]$xaxis, cur_panels[id])
         }
         
-        Y_tab <- param_choices[[.featExprYAxisRowTable]]
+        Y_tab <- param_choices[[.featAssayYAxisRowTable]]
         if (Y_tab!=.noSelection) {
             tab_name <- .decoded2encoded(Y_tab)            
             table_links[[tab_name]]$yaxis <- c(table_links[[tab_name]]$yaxis, cur_panels[id])
@@ -98,10 +98,10 @@
     }
 
     for (x in all_kids$yaxis) {
-        pObjects$memory$featExprPlot[x, .featExprYAxisRowTable] <- .noSelection
+        pObjects$memory$featAssayPlot[x, .featAssayYAxisRowTable] <- .noSelection
     }
     for (x in all_kids$xaxis) {
-        pObjects$memory$featExprPlot[x, .featExprXAxisRowTable] <- .noSelection
+        pObjects$memory$featAssayPlot[x, .featAssayXAxisRowTable] <- .noSelection
     }
 
     # Erasing the links.
@@ -181,7 +181,7 @@
 #' The flag to regenerate the current plot is set if the \code{by_field} and \code{tab_field} fields in \code{input} are non-\code{NULL};
 #' and the \code{by_field} entry differs from the parameter currently stored in memory.
 #'
-#' Note that \code{by_field} and \code{title} are ignored if \code{param="yaxis"}, as the y-axis of feature expression plots have no other choice of variable.
+#' Note that \code{by_field} and \code{title} are ignored if \code{param="yaxis"}, as the y-axis of feature assay plots have no other choice of variable.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_setup_table_observer
@@ -282,8 +282,8 @@
     plot_name <- paste0(mode, id)
   
     for (param in list(c(.colorByRowTable, "color"),
-                       c(.featExprXAxisRowTable, "xaxis"),
-                       c(.featExprYAxisRowTable, "yaxis"))) {
+                       c(.featAssayXAxisRowTable, "xaxis"),
+                       c(.featAssayYAxisRowTable, "yaxis"))) {
   
         oldtab <- tmp_mem[id, param[1]]
         if (oldtab!=.noSelection) {
@@ -291,7 +291,7 @@
             tmp_mem[id, param[1]] <- .noSelection
         }
     
-        if (mode!="featExprPlot") {
+        if (mode!="featAssayPlot") {
             break
         }
     }

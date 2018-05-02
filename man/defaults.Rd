@@ -3,7 +3,7 @@
 \name{defaults}
 \alias{defaults}
 \alias{redDimPlotDefaults}
-\alias{featExprPlotDefaults}
+\alias{featAssayPlotDefaults}
 \alias{colDataPlotDefaults}
 \alias{rowStatTableDefaults}
 \alias{rowDataPlotDefaults}
@@ -12,7 +12,7 @@
 \usage{
 redDimPlotDefaults(se, number)
 
-featExprPlotDefaults(se, number)
+featAssayPlotDefaults(se, number)
 
 colDataPlotDefaults(se, number)
 
@@ -47,7 +47,7 @@ Defaults to 2.}
 }
 }
 
-\section{Feature expression plot parameters}{
+\section{Feature assay plot parameters}{
 
 \describe{
 \item{\code{YAxisFeatName}:}{Integer, the index of the feature for which to show the expression on the y-axis if \code{YAxis="Feature name"}. 
@@ -268,7 +268,7 @@ sce <- runPCA(sce)
 sce
 
 redDimPlotDefaults(sce, number=5)
-featExprPlotDefaults(sce, number=5)
+featAssayPlotDefaults(sce, number=5)
 colDataPlotDefaults(sce, number=5)
 rowStatTableDefaults(sce, number=5)
 rowDataPlotDefaults(sce, number=5)

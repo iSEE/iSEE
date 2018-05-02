@@ -243,7 +243,7 @@
     table_used <- cur_tables[i]
     current <- cur_tlinks[[table_used]]
     for (trans in list(c("yaxis", NA, NA),
-                       c("xaxis", .featExprXAxis, .featExprXAxisFeatNameTitle),
+                       c("xaxis", .featAssayXAxis, .featAssayXAxisFeatNameTitle),
                        c("color", .colorByField, .colorByFeatNameTitle))
     ) {
       children <- current[[trans[1]]]

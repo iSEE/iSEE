@@ -38,7 +38,7 @@
 #' \itemize{
 #' \item Reduced dimension plots will not be generated if there are no results in \code{reducedDims(se)}, or no samples.
 #' \item Column data plots will not be generated if there are no column metadata in \code{colData(se)}, or no samples.
-#' \item Feature expression plots will not be generated if there are no samples, no features or no assays.
+#' \item Feature assay plots will not be generated if there are no samples, no features or no assays.
 #' \item Row statistics tables will not be generated if there are no features.
 #' \item Row data plots will not be generated if there are no row metdata in \code{rowData(se)} or no features.
 #' \item Heatmaps will not be generated if there are no samples, no features or no assays.
@@ -55,7 +55,7 @@
 .check_plot_feasibility <- function(se) {
     return(list(redDimPlot=! (length(reducedDims(se))==0L || ncol(se)==0L),
                 colDataPlot=! (ncol(colData(se))==0L || ncol(se)==0L),
-                featExprPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
+                featAssayPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
                 rowStatTable=! (nrow(se)==0L),
                 rowDataPlot=! (ncol(rowData(se))==0L || nrow(se)==0L),
                 heatMapPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L)
@@ -98,13 +98,13 @@
 #' @param se A SingleCellExperiment object.
 #' @param redDimArgs A DataFrame or data.frame of user-specified arguments for reduced dimension plots.
 #' @param colDataArgs A DataFrame or data.frame of user-specified arguments for column data plots.
-#' @param featExprArgs A DataFrame or data.frame of user-specified arguments for feature expression plots.
+#' @param featAssayArgs A DataFrame or data.frame of user-specified arguments for feature assay plots.
 #' @param rowStatArgs A DataFrame or data.frame of user-specified arguments for row statistics tables.
 #' @param rowDataArgs A DataFrame or data.frame of user-specified arguments for row data plots.
 #' @param heatMapArgs A DataFrame or data.frame of user-specified arguments for heat maps.
 #' @param redDimMax Integer scalar specifying the maximum number of reduced dimension plots.
 #' @param colDataMax Integer scalar specifying the maximum number of column data plots.
-#' @param featExprMax Integer scalar specifying the maximum number of feature expression plots.
+#' @param featAssayMax Integer scalar specifying the maximum number of feature assay plots.
 #' @param rowStatMax Integer scalar specifying the maximum number of row statistics tables.
 #' @param rowDataMax Integer scalar specifying the maximum number of row data plots.
 #' @param heatMapMax Integer scalar specifying the maximum number of heat maps.
@@ -133,11 +133,11 @@
 #' \code{\link{iSEE}},
 #' \code{\link{.name2index}},
 #' \code{\link{.check_plot_feasibility}}
-.setup_memory <- function(se, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs, heatMapArgs,
-                          redDimMax, colDataMax, featExprMax, rowStatMax, rowDataMax, heatMapMax) {
-    all_args <- list(redDimPlot=redDimArgs, colDataPlot=colDataArgs, featExprPlot=featExprArgs,
+.setup_memory <- function(se, redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs, heatMapArgs,
+                          redDimMax, colDataMax, featAssayMax, rowStatMax, rowDataMax, heatMapMax) {
+    all_args <- list(redDimPlot=redDimArgs, colDataPlot=colDataArgs, featAssayPlot=featAssayArgs,
                      rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs, heatMapPlot=heatMapArgs)
-    all_maxes <- list(redDimPlot=redDimMax, colDataPlot=colDataMax, featExprPlot=featExprMax,
+    all_maxes <- list(redDimPlot=redDimMax, colDataPlot=colDataMax, featAssayPlot=featAssayMax,
                       rowStatTable=rowStatMax, rowDataPlot=rowDataMax, heatMapPlot=heatMapMax)
     feasibility <- .check_plot_feasibility(se)
 
@@ -153,15 +153,15 @@
     # Coercing string arguments that should be integers.
     all_args$redDimPlot <- .name2index(all_args$redDimPlot, .redDimType, reducedDimNames(se))
 
-    all_args$featExprPlot <- .name2index(all_args$featExprPlot, c(.featExprXAxisFeatName, .featExprYAxisFeatName), rownames(se))
-    all_args$featExprPlot <- .name2index(all_args$featExprPlot, .featExprAssay, assayNames(se))
+    all_args$featAssayPlot <- .name2index(all_args$featAssayPlot, c(.featAssayXAxisFeatName, .featAssayYAxisFeatName), rownames(se))
+    all_args$featAssayPlot <- .name2index(all_args$featAssayPlot, .featAssayAssay, assayNames(se))
 
     all_args$rowStatTable <- .name2index(all_args$rowStatTable, .rowStatSelected, rownames(se))
 
     all_args$heatMapPlot <- .name2index(all_args$heatMapPlot, .heatMapFeatName, rownames(se))
     all_args$heatMapPlot <- .name2index(all_args$heatMapPlot, .heatMapAssay, assayNames(se))
 
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot")) {
         all_args[[mode]] <- .name2index(all_args[[mode]], .colorByFeatName, rownames(se))
         all_args[[mode]] <- .name2index(all_args[[mode]], .colorByFeatNameAssay, assayNames(se))
     }
@@ -172,7 +172,7 @@
     for (mode in names(all_maxes)) {
         DEFFUN <- switch(mode,
                          redDimPlot=redDimPlotDefaults,
-                         featExprPlot=featExprPlotDefaults,
+                         featAssayPlot=featAssayPlotDefaults,
                          colDataPlot=colDataPlotDefaults,
                          rowDataPlot=rowDataPlotDefaults,
                          rowStatTable=rowStatTableDefaults,
@@ -277,7 +277,7 @@
 .setup_initial <- function(initialPanels, memory) {
     if (is.null(initialPanels)) {
         initialPanels <- data.frame(Name=c("Reduced dimension plot 1", "Column data plot 1",
-                                           "Feature expression plot 1", "Row statistics table 1",
+                                           "Feature assay plot 1", "Row statistics table 1",
                                            "Row data plot 1", "Heat map 1"),
                                     Width=4, Height=500L, stringsAsFactors=FALSE)
     }
@@ -349,7 +349,7 @@ height_limits <- c(400L, 1000L)
     all_active <- paste0(active_panels$Type, active_panels$ID)
 
     # Checking for selecting/linking of column-based plots.
-    for (mode in c("redDimPlot", "colDataPlot", "featExprPlot")) {
+    for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot")) {
         cur_memory <- memory[[mode]]
         self_active <- rownames(cur_memory)
 
@@ -382,14 +382,14 @@ height_limits <- c(400L, 1000L)
         memory$rowDataPlot[,.colorByRowTable][bad] <- .noSelection
     }
 
-    # Checking for linking of x/y-axes of feature expression plots.
-    feat_active <- rownames(memory$featExprPlot)
-    for (field in c(.featExprXAxisRowTable, .featExprYAxisRowTable)) {
-        bb <- memory$featExprPlot[,field]
+    # Checking for linking of x/y-axes of feature assay plots.
+    feat_active <- rownames(memory$featAssayPlot)
+    for (field in c(.featAssayXAxisRowTable, .featAssayYAxisRowTable)) {
+        bb <- memory$featAssayPlot[,field]
 
         bad <- !bb %in% active_tab | !feat_active %in% all_active
         if (any(bad)) {
-            memory$featExprPlot[,field][bad] <- .noSelection
+            memory$featAssayPlot[,field][bad] <- .noSelection
         }
     }
     return(memory)
@@ -477,14 +477,14 @@ height_limits <- c(400L, 1000L)
         output <- c(output, list("Receiving color from", em(strong(param_choices[[.colorByRowTable]])), br()))
     }
 
-    # Checking input/output for feature expression plots.
-    if (enc$Type=="featExprPlot") {
-        if (param_choices[[.featExprYAxisRowTable]]!=.noSelection) {
-            output <- c(output, list("Receiving y-axis from", em(strong(param_choices[[.featExprYAxisRowTable]])), br()))
+    # Checking input/output for feature assay plots.
+    if (enc$Type=="featAssayPlot") {
+        if (param_choices[[.featAssayYAxisRowTable]]!=.noSelection) {
+            output <- c(output, list("Receiving y-axis from", em(strong(param_choices[[.featAssayYAxisRowTable]])), br()))
         }
-        if (param_choices[[.featExprXAxis]]==.featExprXAxisFeatNameTitle
-            && param_choices[[.featExprXAxisRowTable]]!=.noSelection) {
-            output <- c(output, list("Receiving x-axis from", em(strong(param_choices[[.featExprXAxisRowTable]])), br()))
+        if (param_choices[[.featAssayXAxis]]==.featAssayXAxisFeatNameTitle
+            && param_choices[[.featAssayXAxisRowTable]]!=.noSelection) {
+            output <- c(output, list("Receiving x-axis from", em(strong(param_choices[[.featAssayXAxisRowTable]])), br()))
         }
     }
 
@@ -535,7 +535,7 @@ height_limits <- c(400L, 1000L)
     # Checking where it broadcasts to plots.
     current <- table_links[[panel]]
     for (trans in list(c("yaxis", "y-axis", NA, NA),
-                       c("xaxis", "x-axis", .featExprXAxis, .featExprXAxisFeatNameTitle),
+                       c("xaxis", "x-axis", .featAssayXAxis, .featAssayXAxisFeatNameTitle),
                        c("color", "color", .colorByField, .colorByFeatNameTitle))
         ) {
 

@@ -2,15 +2,15 @@
 # Set up plotting parameters
 redDimArgs <- redDimPlotDefaults(sce, 1)
 colDataArgs <- colDataPlotDefaults(sce, 1)
-featExprArgs <- featExprPlotDefaults(sce, 1)
+featAssayArgs <- featAssayPlotDefaults(sce, 1)
 rowStatArgs <- rowStatTableDefaults(sce, 1)
 rowDataArgs <- rowDataPlotDefaults(sce, 1)
 heatMapArgs <- heatMapPlotDefaults(sce, 1)
 
 # Set up memory
 all_memory <- iSEE:::.setup_memory(
-  sce, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs, heatMapArgs,
-  redDimMax = 1, colDataMax = 1, featExprMax = 1, rowStatMax = 1, rowDataMax = 1, heatMapMax = 1)
+  sce, redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs, heatMapArgs,
+  redDimMax = 1, colDataMax = 1, featAssayMax = 1, rowStatMax = 1, rowDataMax = 1, heatMapMax = 1)
 
 all_coordinates <- list()
 
@@ -506,14 +506,14 @@ test_that(".make_rowDataPlot/.square_plot produce a valid xy with color",{
   
 })
 
-# .make_featExprPlot/.scatter_plot ----
+# .make_featAssayPlot/.scatter_plot ----
 
-test_that(".make_featExprPlot/.scatter_plot produce a valid list",{
+test_that(".make_featAssayPlot/.scatter_plot produce a valid list",{
   
-  all_memory$featExprPlot[1,iSEE:::.featExprYAxisRowTable] <- "Row statistics table 1"
-  all_memory$featExprPlot[1,iSEE:::.featExprYAxisRowTable] <- "Row statistics table 1"
+  all_memory$featAssayPlot[1,iSEE:::.featAssayYAxisRowTable] <- "Row statistics table 1"
+  all_memory$featAssayPlot[1,iSEE:::.featAssayYAxisRowTable] <- "Row statistics table 1"
   
-  p.out <- iSEE:::.make_featExprPlot(
+  p.out <- iSEE:::.make_featAssayPlot(
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   # return value is a named list
@@ -554,14 +554,14 @@ test_that(".make_featExprPlot/.scatter_plot produce a valid list",{
   
 })
 
-test_that(".make_featExprPlot/.scatter_plot produce a valid xy with color", {
+test_that(".make_featAssayPlot/.scatter_plot produce a valid xy with color", {
  
-  all_memory$featExprPlot[1,iSEE:::.featExprYAxisRowTable] <- "Row statistics table 1"
-  all_memory$featExprPlot[1,iSEE:::.featExprYAxisRowTable] <- "Row statistics table 1"
-  all_memory$featExprPlot[1,iSEE:::.colorByRowTable] <- "Row statistics table 1"
-  all_memory$featExprPlot[1,iSEE:::.colorByField] <- iSEE:::.colorByFeatNameTitle
+  all_memory$featAssayPlot[1,iSEE:::.featAssayYAxisRowTable] <- "Row statistics table 1"
+  all_memory$featAssayPlot[1,iSEE:::.featAssayYAxisRowTable] <- "Row statistics table 1"
+  all_memory$featAssayPlot[1,iSEE:::.colorByRowTable] <- "Row statistics table 1"
+  all_memory$featAssayPlot[1,iSEE:::.colorByField] <- iSEE:::.colorByFeatNameTitle
   
-  p.out <- iSEE:::.make_featExprPlot(
+  p.out <- iSEE:::.make_featAssayPlot(
     id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   expect_named(
     p.out$xy,
@@ -570,14 +570,14 @@ test_that(".make_featExprPlot/.scatter_plot produce a valid xy with color", {
   
 })
 
-test_that(".make_featExprPlot works for YAxis set to Feature name", {
+test_that(".make_featAssayPlot works for YAxis set to Feature name", {
   # change the value locally for the specific test
   selected_gene <- "0610009B22Rik"
   
-  # all_memory$featExprPlot[1,iSEE:::.featExprYAxis] <- iSEE:::.featExprYAxisFeatNameTitle
-  all_memory$featExprPlot[1,iSEE:::.featExprYAxisFeatName] <- selected_gene
+  # all_memory$featAssayPlot[1,iSEE:::.featAssayYAxis] <- iSEE:::.featAssayYAxisFeatNameTitle
+  all_memory$featAssayPlot[1,iSEE:::.featAssayYAxisFeatName] <- selected_gene
   
-  p.out <- iSEE:::.make_featExprPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
+  p.out <- iSEE:::.make_featAssayPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_match(
     p.out$cmd_list$data$y,
@@ -587,12 +587,12 @@ test_that(".make_featExprPlot works for YAxis set to Feature name", {
   
 })
 
-test_that(".make_featExprPlot works for XAxis set to Column data", {
+test_that(".make_featAssayPlot works for XAxis set to Column data", {
   # change the value locally for the specific test
-  all_memory$featExprPlot[1,iSEE:::.featExprXAxis] <- iSEE:::.featExprXAxisColDataTitle
-  all_memory$featExprPlot[1,iSEE:::.featExprXAxisColData] <- "dissection_s"
+  all_memory$featAssayPlot[1,iSEE:::.featAssayXAxis] <- iSEE:::.featAssayXAxisColDataTitle
+  all_memory$featAssayPlot[1,iSEE:::.featAssayXAxisColData] <- "dissection_s"
   
-  p.out <- iSEE:::.make_featExprPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
+  p.out <- iSEE:::.make_featAssayPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_match(
     p.out$cmd_list$data$x,
@@ -602,14 +602,14 @@ test_that(".make_featExprPlot works for XAxis set to Column data", {
   
 })
 
-test_that(".make_featExprPlot works for XAxis set to Feature name", {
+test_that(".make_featAssayPlot works for XAxis set to Feature name", {
   selected_gene <- "0610009B22Rik"
   
   # change the value locally for the specific test
-  all_memory$featExprPlot[1,iSEE:::.featExprXAxis] <- iSEE:::.featExprXAxisFeatNameTitle
-  all_memory$featExprPlot[1,iSEE:::.featExprXAxisFeatName] <- selected_gene
+  all_memory$featAssayPlot[1,iSEE:::.featAssayXAxis] <- iSEE:::.featAssayXAxisFeatNameTitle
+  all_memory$featAssayPlot[1,iSEE:::.featAssayXAxisFeatName] <- selected_gene
   
-  p.out <- iSEE:::.make_featExprPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
+  p.out <- iSEE:::.make_featAssayPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_match(
     p.out$cmd_list$data$x,
@@ -619,14 +619,14 @@ test_that(".make_featExprPlot works for XAxis set to Feature name", {
   
 })
 
-test_that(".make_featExprPlot works for groupable colour covariate", {
+test_that(".make_featAssayPlot works for groupable colour covariate", {
   selected_coldata <- "dissection_s"
   
   # change the value locally for the specific test
-  all_memory$featExprPlot[1,iSEE:::.colorByField] <- iSEE:::.colorByColDataTitle
-  all_memory$featExprPlot[1,iSEE:::.colorByColData] <- selected_coldata
+  all_memory$featAssayPlot[1,iSEE:::.colorByField] <- iSEE:::.colorByColDataTitle
+  all_memory$featAssayPlot[1,iSEE:::.colorByColData] <- selected_coldata
   
-  p.out <- iSEE:::.make_featExprPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
+  p.out <- iSEE:::.make_featAssayPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_match(
     p.out$cmd_list$data$color,
@@ -956,8 +956,8 @@ test_that(".process_selectby_choice works when sender is another plot", {
   sourcePlotName <- "Reduced dimension plot 1"
   sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
   
-  # Set up the point selection link: redDim1 --> featExpr1
-  all_memory$featExprPlot[1,iSEE:::.selectByPlot] <- sourcePlotName
+  # Set up the point selection link: redDim1 --> featAssay1
+  all_memory$featAssayPlot[1,iSEE:::.selectByPlot] <- sourcePlotName
   # Set up the selected data (in redDim1)
   params <- all_memory$redDimPlot[1,]
   x_10 <- head(
@@ -972,7 +972,7 @@ test_that(".process_selectby_choice works when sender is another plot", {
     brushId = "dummy_brush", outputId = "dummy_plot"
   ))
   
-  select_cmd <- iSEE:::.process_selectby_choice(all_memory$featExprPlot, all_memory)
+  select_cmd <- iSEE:::.process_selectby_choice(all_memory$featAssayPlot, all_memory)
   
   # check the source of the selected data
   expect_match(
@@ -1002,7 +1002,7 @@ test_that(".process_selectby_choice works when sender is self plot", {
   sourcePlotName <- "Reduced dimension plot 1"
   sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
   
-  # Set up the point selection link: redDim1 --> featExpr1
+  # Set up the point selection link: redDim1 --> featAssay1
   all_memory$redDimPlot[1,iSEE:::.selectByPlot] <- sourcePlotName
   # Set up the selected data (in redDim1)
   params <- all_memory$redDimPlot[1,]
@@ -1040,8 +1040,8 @@ test_that(".process_selectby_choice works with closed lasso selection", {
   sourcePlotName <- "Reduced dimension plot 1"
   sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
   
-  # Set up the point selection link: redDim1 --> featExpr1
-  all_memory$featExprPlot[1,iSEE:::.selectByPlot] <- sourcePlotName
+  # Set up the point selection link: redDim1 --> featAssay1
+  all_memory$featAssayPlot[1,iSEE:::.selectByPlot] <- sourcePlotName
   # Set up the selected data (in redDim1)
   params <- all_memory$redDimPlot[1,]
   x_10 <- head(
@@ -1066,7 +1066,7 @@ test_that(".process_selectby_choice works with closed lasso selection", {
   
   all_memory$redDimPlot[[iSEE:::.lassoData]][1] <- list(lasso_val)
   
-  select_cmd <- iSEE:::.process_selectby_choice(all_memory$featExprPlot, all_memory)
+  select_cmd <- iSEE:::.process_selectby_choice(all_memory$featAssayPlot, all_memory)
   
   # check the source plot type
   expect_match(
@@ -1092,7 +1092,7 @@ test_that(".create_points handles transparency selection effect", {
   sourcePlotName <- "Reduced dimension plot 1"
   sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
   
-  # Set up the point selection link: redDim1 --> featExpr1
+  # Set up the point selection link: redDim1 --> featAssay1
   all_memory$redDimPlot[1,iSEE:::.selectByPlot] <- sourcePlotName
   # Set up the selected data (in redDim1)
   params <- all_memory$redDimPlot[1,]
@@ -1129,7 +1129,7 @@ test_that(".create_points handles coloured selection effect", {
   sourcePlotName <- "Reduced dimension plot 1"
   sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
   
-  # Set up the point selection link: redDim1 --> featExpr1
+  # Set up the point selection link: redDim1 --> featAssay1
   all_memory$redDimPlot[1,iSEE:::.selectByPlot] <- sourcePlotName
   # Set up the selected data (in redDim1)
   params <- all_memory$redDimPlot[1,]
@@ -1171,7 +1171,7 @@ test_that(".create_points handles restrict selection effect", {
   sourcePlotName <- "Reduced dimension plot 1"
   sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
   
-  # Set up the point selection link: redDim1 --> featExpr1
+  # Set up the point selection link: redDim1 --> featAssay1
   all_memory$redDimPlot[1,iSEE:::.selectByPlot] <- sourcePlotName
   # Set up the selected data (in redDim1)
   params <- all_memory$redDimPlot[1,]

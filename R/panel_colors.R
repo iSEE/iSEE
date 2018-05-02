@@ -3,7 +3,7 @@ panel_colors <- c(redDimPlot="#3c8dbc",
                   rowStatTable="#6b6d77",
                   rowDataPlot="#dd4b39",
                   colDataPlot="#f39c12",
-                  featExprPlot="#00a65a",
+                  featAssayPlot="#00a65a",
                   heatMapPlot="#bc4ddd")
 
 .define_box_statuses <- paste(sprintf(".box.box-%s {

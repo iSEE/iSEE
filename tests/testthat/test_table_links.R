@@ -2,7 +2,7 @@
 # Do NOT move to setup; re-defined here to keep tests self-contained.
 redDimArgs <- redDimPlotDefaults(sce, 1)
 colDataArgs <- colDataPlotDefaults(sce, 2)
-featExprArgs <- featExprPlotDefaults(sce, 3)
+featAssayArgs <- featAssayPlotDefaults(sce, 3)
 rowStatArgs <- rowStatTableDefaults(sce, 3)
 rowDataArgs <- rowDataPlotDefaults(sce, 1)
 heatMapArgs <- heatMapPlotDefaults(sce, 1)
@@ -17,26 +17,26 @@ redDimArgs[1,iSEE:::.colorByField] <-
     colDataArgs[2,iSEE:::.colorByField] <- 
     iSEE:::.colorByFeatNameTitle
 
-featExprArgs[1,iSEE:::.featExprXAxisRowTable] <- "Row statistics table 2"
-featExprArgs[2,iSEE:::.featExprYAxisRowTable] <- "Row statistics table 1"
-featExprArgs[3,iSEE:::.featExprXAxisRowTable] <- "Row statistics table 1"
-featExprArgs[3,iSEE:::.featExprYAxisRowTable] <- "Row statistics table 2"
+featAssayArgs[1,iSEE:::.featAssayXAxisRowTable] <- "Row statistics table 2"
+featAssayArgs[2,iSEE:::.featAssayYAxisRowTable] <- "Row statistics table 1"
+featAssayArgs[3,iSEE:::.featAssayXAxisRowTable] <- "Row statistics table 1"
+featAssayArgs[3,iSEE:::.featAssayYAxisRowTable] <- "Row statistics table 2"
 
-featExprArgs[1,iSEE:::.featExprXAxis] <-
-    featExprArgs[3,iSEE:::.featExprXAxis] <-
-    iSEE:::.featExprXAxisFeatNameTitle
+featAssayArgs[1,iSEE:::.featAssayXAxis] <-
+    featAssayArgs[3,iSEE:::.featAssayXAxis] <-
+    iSEE:::.featAssayXAxisFeatNameTitle
 
-memory <- iSEE:::.setup_memory(sce, redDimArgs, colDataArgs, featExprArgs, rowStatArgs, rowDataArgs, heatMapArgs, 
-        nrow(redDimArgs), nrow(colDataArgs), nrow(featExprArgs), nrow(rowStatArgs), nrow(rowDataArgs), nrow(heatMapArgs))
+memory <- iSEE:::.setup_memory(sce, redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs, heatMapArgs, 
+        nrow(redDimArgs), nrow(colDataArgs), nrow(featAssayArgs), nrow(rowStatArgs), nrow(rowDataArgs), nrow(heatMapArgs))
 tabs <- iSEE:::.spawn_table_links(memory)
 
 test_that("table link creation works correctly", {
-    expect_identical(tabs$rowStatTable1$xaxis, "featExprPlot3")
-    expect_identical(tabs$rowStatTable1$yaxis, "featExprPlot2")
+    expect_identical(tabs$rowStatTable1$xaxis, "featAssayPlot3")
+    expect_identical(tabs$rowStatTable1$yaxis, "featAssayPlot2")
     expect_identical(tabs$rowStatTable1$color, c("redDimPlot1", "colDataPlot2"))
 
-    expect_identical(tabs$rowStatTable2$xaxis, "featExprPlot1")
-    expect_identical(tabs$rowStatTable2$yaxis, "featExprPlot3")
+    expect_identical(tabs$rowStatTable2$xaxis, "featAssayPlot1")
+    expect_identical(tabs$rowStatTable2$yaxis, "featAssayPlot3")
     expect_identical(tabs$rowStatTable2$color, character(0))
 
     expect_identical(tabs$rowStatTable3$xaxis, character(0))
@@ -44,9 +44,9 @@ test_that("table link creation works correctly", {
     expect_identical(tabs$rowStatTable3$color, "colDataPlot1")
 
     # Disabling of xaxis choices should have no effect.
-    featExprArgs2 <- featExprArgs
-    featExprArgs2[1,iSEE:::.featExprXAxis] <- featExprArgs2[3,iSEE:::.featExprXAxis] <- iSEE:::.featExprXAxisNothingTitle
-    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs2, colDataPlot=colDataArgs, rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs)
+    featAssayArgs2 <- featAssayArgs
+    featAssayArgs2[1,iSEE:::.featAssayXAxis] <- featAssayArgs2[3,iSEE:::.featAssayXAxis] <- iSEE:::.featAssayXAxisNothingTitle
+    memory <- list(redDimPlot=redDimArgs, featAssayPlot=featAssayArgs2, colDataPlot=colDataArgs, rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs)
     tab2 <- iSEE:::.spawn_table_links(memory)
     expect_identical(tabs, tab2)
 
@@ -55,14 +55,14 @@ test_that("table link creation works correctly", {
         colDataArgs[2,iSEE:::.colorByField] <-
         redDimArgs[1,iSEE:::.colorByField] <- 
         iSEE:::.colorByNothingTitle
-    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs, rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs)
+    memory <- list(redDimPlot=redDimArgs, featAssayPlot=featAssayArgs, colDataPlot=colDataArgs, rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs)
     tab2 <- iSEE:::.spawn_table_links(memory)
     expect_identical(tabs, tab2)
 
     # yaxis has no choices to disable, so we'll just change the selection.
-    featExprArgs2 <- featExprArgs
-    featExprArgs2[2:3,iSEE:::.featExprYAxisRowTable] <- iSEE:::.noSelection
-    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs2, colDataPlot=colDataArgs, rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs)
+    featAssayArgs2 <- featAssayArgs
+    featAssayArgs2[2:3,iSEE:::.featAssayYAxisRowTable] <- iSEE:::.noSelection
+    memory <- list(redDimPlot=redDimArgs, featAssayPlot=featAssayArgs2, colDataPlot=colDataArgs, rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs)
     tab2 <- iSEE:::.spawn_table_links(memory)
 
     tabX <- tabs
@@ -83,8 +83,8 @@ test_that("table destruction works correctly", {
     comp <- memory
     comp$redDimPlot[1,iSEE:::.colorByRowTable] <- iSEE:::.noSelection
     comp$colDataPlot[2,iSEE:::.colorByRowTable] <- iSEE:::.noSelection
-    comp$featExprPlot[2,iSEE:::.featExprYAxisRowTable] <- iSEE:::.noSelection
-    comp$featExprPlot[3,iSEE:::.featExprXAxisRowTable] <- iSEE:::.noSelection
+    comp$featAssayPlot[2,iSEE:::.featAssayYAxisRowTable] <- iSEE:::.noSelection
+    comp$featAssayPlot[3,iSEE:::.featAssayXAxisRowTable] <- iSEE:::.noSelection
     expect_identical(comp, pObjects$memory)
 
     # Destroying a simpler table.
@@ -105,42 +105,42 @@ test_that("table modification works correctly", {
     expect_identical(tab2$rowStatTable2$color, union(tabs$rowStatTable2$color, "redDimPlot1"))
     
     # Changing x-axis.
-    expect_true("featExprPlot3" %in% tabs$rowStatTable1$xaxis)
-    expect_false("featExprPlot3" %in% tabs$rowStatTable2$xaxis)
-    tab2 <- iSEE:::.modify_table_links(tabs, "featExprPlot3", "Row statistics table 2", "Row statistics table 1", mode = "xaxis")
-    expect_identical(tab2$rowStatTable1$xaxis, setdiff(tab2$rowStatTable1$xaxis, "featExprPlot3"))
-    expect_identical(tab2$rowStatTable2$xaxis, union(tab2$rowStatTable2$xaxis, "featExprPlot3"))
+    expect_true("featAssayPlot3" %in% tabs$rowStatTable1$xaxis)
+    expect_false("featAssayPlot3" %in% tabs$rowStatTable2$xaxis)
+    tab2 <- iSEE:::.modify_table_links(tabs, "featAssayPlot3", "Row statistics table 2", "Row statistics table 1", mode = "xaxis")
+    expect_identical(tab2$rowStatTable1$xaxis, setdiff(tab2$rowStatTable1$xaxis, "featAssayPlot3"))
+    expect_identical(tab2$rowStatTable2$xaxis, union(tab2$rowStatTable2$xaxis, "featAssayPlot3"))
 
     # Changing y-axis.
-    expect_true("featExprPlot2" %in% tabs$rowStatTable1$yaxis)
-    expect_false("featExprPlot2" %in% tabs$rowStatTable2$yaxis)
-    tab2 <- iSEE:::.modify_table_links(tabs, "featExprPlot2", "Row statistics table 2", "Row statistics table 1", mode = "yaxis")
-    expect_identical(tab2$rowStatTable1$yaxis, setdiff(tab2$rowStatTable1$yaxis, "featExprPlot2"))
-    expect_identical(tab2$rowStatTable2$yaxis, union(tab2$rowStatTable2$yaxis, "featExprPlot2"))
+    expect_true("featAssayPlot2" %in% tabs$rowStatTable1$yaxis)
+    expect_false("featAssayPlot2" %in% tabs$rowStatTable2$yaxis)
+    tab2 <- iSEE:::.modify_table_links(tabs, "featAssayPlot2", "Row statistics table 2", "Row statistics table 1", mode = "yaxis")
+    expect_identical(tab2$rowStatTable1$yaxis, setdiff(tab2$rowStatTable1$yaxis, "featAssayPlot2"))
+    expect_identical(tab2$rowStatTable2$yaxis, union(tab2$rowStatTable2$yaxis, "featAssayPlot2"))
 
     # Destroying links.
     tab2 <- iSEE:::.modify_table_links(tabs, "redDimPlot1", iSEE:::.noSelection, "Row statistics table 1", mode = "color")
     expect_identical(tab2$rowStatTable1$color, "colDataPlot2")
 
-    tab2 <- iSEE:::.modify_table_links(tabs, "featExprPlot3", iSEE:::.noSelection, "Row statistics table 1", mode = "xaxis")
+    tab2 <- iSEE:::.modify_table_links(tabs, "featAssayPlot3", iSEE:::.noSelection, "Row statistics table 1", mode = "xaxis")
     expect_identical(tab2$rowStatTable1$xaxis, character(0))
 
-    tab2 <- iSEE:::.modify_table_links(tabs, "featExprPlot2", iSEE:::.noSelection, "Row statistics table 1", mode = "yaxis")
+    tab2 <- iSEE:::.modify_table_links(tabs, "featAssayPlot2", iSEE:::.noSelection, "Row statistics table 1", mode = "yaxis")
     expect_identical(tab2$rowStatTable1$yaxis, character(0))
 
     # Destroying links that were never there has no effect.
-    expect_false("featExprPlot2" %in% tabs$rowStatTable3$color)
-    tab2 <- iSEE:::.modify_table_links(tabs, "featExprPlot2", iSEE:::.noSelection, "Row statistics table 3", mode = "color")
+    expect_false("featAssayPlot2" %in% tabs$rowStatTable3$color)
+    tab2 <- iSEE:::.modify_table_links(tabs, "featAssayPlot2", iSEE:::.noSelection, "Row statistics table 3", mode = "color")
     expect_identical(tab2, tabs)
 
     # Adding links.
-    expect_false("featExprPlot2" %in% tabs$rowStatTable3$color)
-    tab2 <- iSEE:::.modify_table_links(tabs, "featExprPlot2", "Row statistics table 3", iSEE:::.noSelection, mode = "color")
-    expect_identical(tab2$rowStatTable3$color, union(tab2$rowStatTable3$color, "featExprPlot2"))
+    expect_false("featAssayPlot2" %in% tabs$rowStatTable3$color)
+    tab2 <- iSEE:::.modify_table_links(tabs, "featAssayPlot2", "Row statistics table 3", iSEE:::.noSelection, mode = "color")
+    expect_identical(tab2$rowStatTable3$color, union(tab2$rowStatTable3$color, "featAssayPlot2"))
 
     # Adding links already there has no effect.
-    expect_true("featExprPlot2" %in% tabs$rowStatTable1$yaxis)
-    tab2 <- iSEE:::.modify_table_links(tabs, "featExprPlot2", "Row statistics table 1", iSEE:::.noSelection, mode = "yaxis")
+    expect_true("featAssayPlot2" %in% tabs$rowStatTable1$yaxis)
+    tab2 <- iSEE:::.modify_table_links(tabs, "featAssayPlot2", "Row statistics table 1", iSEE:::.noSelection, mode = "yaxis")
     expect_identical(tab2, tabs)
 })
 
@@ -281,13 +281,13 @@ test_that("deleting table links is done correctly", {
     expect_identical(pObjects$memory$redDimPlot[1, iSEE:::.colorByRowTable], iSEE:::.noSelection) 
 
     # Deleting something with x- and y-axis links.
-    expect_true("featExprPlot3" %in% tabs$rowStatTable1$xaxis)
-    expect_true("featExprPlot3" %in% tabs$rowStatTable2$yaxis)
+    expect_true("featAssayPlot3" %in% tabs$rowStatTable1$xaxis)
+    expect_true("featAssayPlot3" %in% tabs$rowStatTable2$yaxis)
 
-    iSEE:::.delete_table_links("featExprPlot", 3, pObjects)
+    iSEE:::.delete_table_links("featAssayPlot", 3, pObjects)
 
-    expect_false("featExprPlot3" %in% pObjects$table_links$rowStatTable1$xaxis)
-    expect_false("featExprPlot3" %in% pObjects$table_links$rowStatTable2$yaxis)
-    expect_identical(pObjects$memory$featExprPlot[3, iSEE:::.featExprXAxisRowTable], iSEE:::.noSelection)
-    expect_identical(pObjects$memory$featExprPlot[3, iSEE:::.featExprYAxisRowTable], iSEE:::.noSelection)
+    expect_false("featAssayPlot3" %in% pObjects$table_links$rowStatTable1$xaxis)
+    expect_false("featAssayPlot3" %in% pObjects$table_links$rowStatTable2$yaxis)
+    expect_identical(pObjects$memory$featAssayPlot[3, iSEE:::.featAssayXAxisRowTable], iSEE:::.noSelection)
+    expect_identical(pObjects$memory$featAssayPlot[3, iSEE:::.featAssayYAxisRowTable], iSEE:::.noSelection)
 })

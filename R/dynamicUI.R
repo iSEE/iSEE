@@ -193,36 +193,36 @@
                                                       label = "Column of interest (X-axis):",
                                                       choices=column_covariates, selected=param_choices[[.colDataXAxisColData]]))
                  )
-        } else if (mode=="featExprPlot") {
+        } else if (mode=="featAssayPlot") {
             obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
-            xaxis_choices <- c(.featExprXAxisNothingTitle)
+            xaxis_choices <- c(.featAssayXAxisNothingTitle)
             if (feasibility$colDataPlot) {
-                xaxis_choices <- c(xaxis_choices, .featExprXAxisColDataTitle)
+                xaxis_choices <- c(xaxis_choices, .featAssayXAxisColDataTitle)
             }
-            if (feasibility$featExprPlot) {
-                xaxis_choices <- c(xaxis_choices, .featExprXAxisFeatNameTitle)
+            if (feasibility$featAssayPlot) {
+                xaxis_choices <- c(xaxis_choices, .featAssayXAxisFeatNameTitle)
             }
 
             plot.param <- list(
-                selectizeInput(.input_FUN(.featExprYAxisFeatName),
+                selectizeInput(.input_FUN(.featAssayYAxisFeatName),
                                label = "Y-axis feature:", choices = NULL, selected = NULL, multiple=FALSE),
-                selectInput(.input_FUN(.featExprYAxisRowTable), label=NULL, choices=active_tab,
-                            selected=.choose_link(param_choices[[.featExprYAxisRowTable]], active_tab, force_default=TRUE)),
-                selectInput(.input_FUN(.featExprAssay), label=NULL,
-                            choices=all_assays, selected=param_choices[[.featExprAssay]]),
-                radioButtons(.input_FUN(.featExprXAxis), label="X-axis:", inline=TRUE,
-                             choices=xaxis_choices, selected=param_choices[[.featExprXAxis]]),
-                .conditional_on_radio(.input_FUN(.featExprXAxis),
-                                         .featExprXAxisColDataTitle,
-                                         selectInput(.input_FUN(.featExprXAxisColData),
+                selectInput(.input_FUN(.featAssayYAxisRowTable), label=NULL, choices=active_tab,
+                            selected=.choose_link(param_choices[[.featAssayYAxisRowTable]], active_tab, force_default=TRUE)),
+                selectInput(.input_FUN(.featAssayAssay), label=NULL,
+                            choices=all_assays, selected=param_choices[[.featAssayAssay]]),
+                radioButtons(.input_FUN(.featAssayXAxis), label="X-axis:", inline=TRUE,
+                             choices=xaxis_choices, selected=param_choices[[.featAssayXAxis]]),
+                .conditional_on_radio(.input_FUN(.featAssayXAxis),
+                                         .featAssayXAxisColDataTitle,
+                                         selectInput(.input_FUN(.featAssayXAxisColData),
                                                      label = "X-axis column data:",
-                                                     choices=column_covariates, selected=param_choices[[.featExprXAxisColData]])),
-                .conditional_on_radio(.input_FUN(.featExprXAxis),
-                                         .featExprXAxisFeatNameTitle,
-                                         selectizeInput(.input_FUN(.featExprXAxisFeatName), 
+                                                     choices=column_covariates, selected=param_choices[[.featAssayXAxisColData]])),
+                .conditional_on_radio(.input_FUN(.featAssayXAxis),
+                                         .featAssayXAxisFeatNameTitle,
+                                         selectizeInput(.input_FUN(.featAssayXAxisFeatName), 
                                                         label = "X-axis feature:", choices = NULL, selected = NULL, multiple = FALSE),
-                                         selectInput(.input_FUN(.featExprXAxisRowTable), label=NULL,
-                                                     choices=active_tab, selected=param_choices[[.featExprXAxisRowTable]]))
+                                         selectInput(.input_FUN(.featAssayXAxisRowTable), label=NULL,
+                                                     choices=active_tab, selected=param_choices[[.featAssayXAxisRowTable]]))
                 )
         } else if (mode=="rowStatTable") {
             obj <- tagList(dataTableOutput(paste0(mode, id)), uiOutput(.input_FUN("annotation")))

@@ -1,6 +1,6 @@
 #' @name defaults 
 #' @aliases redDimPlotDefaults
-#' @aliases featExprPlotDefaults
+#' @aliases featAssayPlotDefaults
 #' @aliases colDataPlotDefaults 
 #' @aliases rowStatTableDefaults
 #' @aliases rowDataPlotDefaults
@@ -25,7 +25,7 @@
 #' Defaults to 2.}
 #' }
 #'
-#' @section Feature expression plot parameters:
+#' @section Feature assay plot parameters:
 #' \describe{
 #' \item{\code{YAxisFeatName}:}{Integer, the index of the feature for which to show the expression on the y-axis if \code{YAxis="Feature name"}. 
 #' Defaults to 1, i.e., the first feature in \code{se}.
@@ -234,7 +234,7 @@
 #' sce
 #'
 #' redDimPlotDefaults(sce, number=5)
-#' featExprPlotDefaults(sce, number=5)
+#' featAssayPlotDefaults(sce, number=5)
 #' colDataPlotDefaults(sce, number=5)
 #' rowStatTableDefaults(sce, number=5)
 #' rowDataPlotDefaults(sce, number=5)
@@ -255,7 +255,7 @@ redDimPlotDefaults <- function(se, number) {
 
 #' @rdname defaults 
 #' @export
-featExprPlotDefaults <- function(se, number) {
+featAssayPlotDefaults <- function(se, number) {
     waszero <- number==0 
     if (waszero) number <- 1
 
@@ -263,13 +263,13 @@ featExprPlotDefaults <- function(se, number) {
     covariates <- colnames(colData(se))
 
     out <- new("DataFrame", nrows=as.integer(number))
-    out[[.featExprAssay]] <- def_assay
-    out[[.featExprXAxis]] <- .featExprXAxisNothingTitle
-    out[[.featExprXAxisColData]] <- covariates[1] 
-    out[[.featExprXAxisFeatName]] <- 1L
-    out[[.featExprXAxisRowTable]] <- .noSelection
-    out[[.featExprYAxisFeatName]] <- 1L
-    out[[.featExprYAxisRowTable]] <- .noSelection
+    out[[.featAssayAssay]] <- def_assay
+    out[[.featAssayXAxis]] <- .featAssayXAxisNothingTitle
+    out[[.featAssayXAxisColData]] <- covariates[1] 
+    out[[.featAssayXAxisFeatName]] <- 1L
+    out[[.featAssayXAxisRowTable]] <- .noSelection
+    out[[.featAssayYAxisFeatName]] <- 1L
+    out[[.featAssayYAxisRowTable]] <- .noSelection
 
     out <- .add_general_parameters_for_column_plots(out, se)
     if (waszero) out <- out[0,,drop=FALSE]

@@ -134,13 +134,13 @@ names(.all_aes_values) <- .all_aes_names
 }
 
 ############################################
-# .make_featExprPlot  ----
+# .make_featAssayPlot  ----
 ############################################
 
 #' Makes a gene expression plot
 #' 
-#' Make a plot of feature expression data on Y axis, with column data or other
-#' feature expression on the X axis.
+#' Make a plot of feature assay data on Y axis, with column data or other
+#' feature assay on the X axis.
 #'
 #' @param id Integer scalar specifying the index of the current feature
 #' expression plot.
@@ -155,29 +155,29 @@ names(.all_aes_values) <- .all_aes_names
 #' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}; see \code{?\link{.plot_wrapper}} for more details.
 #' 
 #' @details
-#' This function extracts out the data from \code{se} required to produce a feature expression plot.
+#' This function extracts out the data from \code{se} required to produce a feature assay plot.
 #' It then calls \code{\link{.plot_wrapper}} to complete the plotting data (\code{xy} in output) and to generate the ggplot object (\code{plot} in output).
 #' 
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson
-#' @rdname INTERNAL_make_featExprPlot
+#' @rdname INTERNAL_make_featAssayPlot
 #' @seealso
 #' \code{\link{.create_plot}},
 #' \code{\link{.extract_plotting_data}}
 #' 
 #' @importFrom shiny validate need
 #' @importFrom SummarizedExperiment assay colData
-.make_featExprPlot <- function(id, all_memory, all_coordinates, se, colormap) {
-    param_choices <- all_memory$featExprPlot[id,]
+.make_featAssayPlot <- function(id, all_memory, all_coordinates, se, colormap) {
+    param_choices <- all_memory$featAssayPlot[id,]
     data_cmds <- list()
   
     ## Setting up the y-axis:
-    gene_selected_y <- param_choices[[.featExprYAxisFeatName]]
+    gene_selected_y <- param_choices[[.featAssayYAxisFeatName]]
     validate(need( 
         length(gene_selected_y)==1L,
         "Invalid y-axis input"
     ))
   
-    assay_choice <- param_choices[[.featExprAssay]]
+    assay_choice <- param_choices[[.featAssayAssay]]
     y_title <- rownames(se)[gene_selected_y]
     y_lab <-
       .gene_axis_label(se, gene_selected_y, assay_choice, multiline = FALSE)
@@ -188,18 +188,18 @@ names(.all_aes_values) <- .all_aes_names
     )
   
     ## Checking X axis choice:
-    x_choice <- param_choices[[.featExprXAxis]]
+    x_choice <- param_choices[[.featAssayXAxis]]
   
-    if (x_choice==.featExprXAxisColDataTitle) { # colData column selected
-        x_lab <- x_title <- param_choices[[.featExprXAxisColData]]
+    if (x_choice==.featAssayXAxisColDataTitle) { # colData column selected
+        x_lab <- x_title <- param_choices[[.featAssayXAxisColData]]
         data_cmds[["x"]] <-
           sprintf("plot.data$X <- colData(se)[,%s];", deparse(x_lab))
   
-    } else if (x_choice==.featExprXAxisFeatNameTitle) { # gene selected
-        gene_selected_x <- param_choices[[.featExprXAxisFeatName]]
+    } else if (x_choice==.featAssayXAxisFeatNameTitle) { # gene selected
+        gene_selected_x <- param_choices[[.featAssayXAxisFeatName]]
         validate(need(
             length(gene_selected_x)==1L,
-            sprintf("Invalid '%s' > '%s' input", .featExprXAxis, x_choice)
+            sprintf("Invalid '%s' > '%s' input", .featAssayXAxis, x_choice)
         ))
       
         x_title <- rownames(se)[gene_selected_x]
@@ -1425,7 +1425,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_gene_axis_label
 #' @seealso 
-#' \code{\link{.make_featExprPlot}},
+#' \code{\link{.make_featAssayPlot}},
 #' \code{\link{.add_color_to_column_plot}},
 #' \code{\link{.add_color_to_row_plot}}
 .gene_axis_label <- function(se, gene_id, assay_id, multiline=FALSE){

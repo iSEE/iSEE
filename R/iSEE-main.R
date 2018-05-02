@@ -10,8 +10,8 @@
 #' @param colDataArgs A DataFrame similar to that produced by
 #' \code{\link{colDataPlotDefaults}}, specifying initial parameters
 #' for the plots.
-#' @param featExprArgs A DataFrame similar to that produced by
-#' \code{\link{featExprPlotDefaults}}, specifying initial parameters
+#' @param featAssayArgs A DataFrame similar to that produced by
+#' \code{\link{featAssayPlotDefaults}}, specifying initial parameters
 #' for the plots.
 #' @param rowStatArgs A DataFrame similar to that produced by
 #' \code{\link{rowStatTableDefaults}}, specifying initial parameters
@@ -26,8 +26,8 @@
 #' reduced dimension plots in the interface.
 #' @param colDataMax An integer scalar specifying the maximum number of
 #' column data plots in the interface.
-#' @param featExprMax An integer scalar specifying the maximum number of
-#' feature expression plots in the interface.
+#' @param featAssayMax An integer scalar specifying the maximum number of
+#' feature assay plots in the interface.
 #' @param rowStatMax An integer scalar specifying the maximum number of
 #' row statistics tables in the interface.
 #' @param rowDataMax An integer scalar specifying the maximum number of
@@ -58,7 +58,7 @@
 #' accessed.
 #'
 #' @details Users can pass default parameters via DataFrame objects in
-#' \code{redDimArgs} and \code{featExprArgs}. Each object can contain
+#' \code{redDimArgs} and \code{featAssayArgs}. Each object can contain
 #' some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
 #' Any missing fields will be filled in with the defaults.
 #'
@@ -115,13 +115,13 @@ iSEE <- function(
   se,
   redDimArgs=NULL,
   colDataArgs=NULL,
-  featExprArgs=NULL,
+  featAssayArgs=NULL,
   rowStatArgs=NULL,
   rowDataArgs=NULL,
   heatMapArgs=NULL,
   redDimMax=5,
   colDataMax=5,
-  featExprMax=5,
+  featAssayMax=5,
   rowStatMax=5,
   rowDataMax=5,
   heatMapMax=5,
@@ -153,8 +153,8 @@ iSEE <- function(
 
   # Defining the maximum number of plots.
   memory <- .setup_memory(se,
-        redDimArgs,colDataArgs,featExprArgs,rowStatArgs,rowDataArgs,heatMapArgs,
-        redDimMax, colDataMax, featExprMax, rowStatMax, rowDataMax, heatMapMax)
+        redDimArgs,colDataArgs,featAssayArgs,rowStatArgs,rowDataArgs,heatMapArgs,
+        redDimMax, colDataMax, featAssayMax, rowStatMax, rowDataMax, heatMapMax)
 
   # Defining the initial elements to be plotted.
   active_panels <- .setup_initial(initialPanels, memory)
@@ -289,7 +289,7 @@ iSEE <- function(
   #nocov start
   iSEE_server <- function(input, output, session) {
     all_names <- list()
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot", "rowStatTable", "heatMapPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "rowStatTable", "heatMapPlot")) {
         max_plots <- nrow(memory[[mode]])
         all_names[[mode]] <- sprintf("%s%i", mode, seq_len(max_plots))
     }
@@ -314,7 +314,7 @@ iSEE <- function(
         enc <- .split_encoded(panelname)
         FUN <- switch(enc$Type,
                       redDimPlot=.make_redDimPlot,
-                      featExprPlot=.make_featExprPlot,
+                      featAssayPlot=.make_featAssayPlot,
                       colDataPlot=.make_colDataPlot,
                       rowDataPlot=.make_rowDataPlot)
 		p.out <- FUN(enc$ID, pObjects$memory, pObjects$coordinates, se, colormap)
@@ -327,7 +327,7 @@ iSEE <- function(
         rerendered = 1L
     )
 
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot", "rowStatTable", "heatMapPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "rowStatTable", "heatMapPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (id in seq_len(max_plots)) {
             rObjects[[paste0(mode, id)]] <- 1L
@@ -465,7 +465,7 @@ iSEE <- function(
     # of 'id' in the renderPlot() will be the same across all instances, because
     # of when the expression is evaluated.
 
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowStatTable", "rowDataPlot", "heatMapPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowStatTable", "rowDataPlot", "heatMapPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (id in seq_len(max_plots)) {
             local({
@@ -565,7 +565,7 @@ iSEE <- function(
     # Parameter panel observers.
     #######################################################################
 
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (id in seq_len(max_plots)) {
             for (panel in c(.dataParamBoxOpen, .visualParamBoxOpen, .selectParamBoxOpen)) {
@@ -620,7 +620,7 @@ iSEE <- function(
     # Point selection observers.
     #######################################################################
 
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (id in seq_len(max_plots)) {
             local({
@@ -884,7 +884,7 @@ iSEE <- function(
     # Click observers.
     #######################################################################
 
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (id in seq_len(max_plots)) {
             local({
@@ -955,7 +955,7 @@ iSEE <- function(
     #   If an open lasso is present, it is deleted.
     #   If there was no open lasso, you zoom out.
 
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (id in seq_len(max_plots)) {
             local({
@@ -1051,18 +1051,18 @@ iSEE <- function(
     feature_choices <- seq_len(nrow(se))
     names(feature_choices) <- rownames(se)
 
-    max_plots <- nrow(pObjects$memory$featExprPlot)
+    max_plots <- nrow(pObjects$memory$featAssayPlot)
     for (id in seq_len(max_plots)) {
         for (axis in c("xaxis", "yaxis")) {
             if (axis=="xaxis") {
-                axis_name_choice <- .featExprYAxisFeatName
+                axis_name_choice <- .featAssayYAxisFeatName
             } else {
-                axis_name_choice <- .featExprXAxisFeatName
+                axis_name_choice <- .featAssayXAxisFeatName
             }
 
             local({
                 id0 <- id
-                mode0 <- "featExprPlot"
+                mode0 <- "featAssayPlot"
                 field0 <- axis_name_choice
                 cur_field <- paste0(mode0, id0, "_", field0)
 
@@ -1075,7 +1075,7 @@ iSEE <- function(
         }
     }
 
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (id in seq_len(max_plots)) {
             local({
@@ -1111,13 +1111,13 @@ iSEE <- function(
     # Dot-related plot creation section. ----
     #######################################################################
 
-    for (mode in c("redDimPlot", "featExprPlot", "colDataPlot", "rowDataPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
 
         # Defining mode-specific plotting functions.
         FUN <- switch(mode,
                       redDimPlot=.make_redDimPlot,
-                      featExprPlot=.make_featExprPlot,
+                      featAssayPlot=.make_featAssayPlot,
                       colDataPlot=.make_colDataPlot,
                       rowDataPlot=.make_rowDataPlot)
 
@@ -1125,7 +1125,7 @@ iSEE <- function(
         protected <- switch(mode,
                             redDimPlot=c(.redDimType, .redDimXAxis, .redDimYAxis),
                             colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
-                            featExprPlot=c(.featExprAssay, .featExprXAxisColData),
+                            featAssayPlot=c(.featAssayAssay, .featAssayXAxisColData),
                             rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData))
 
         # Defining non-fundamental parameters that do not destroy brushes/lassos.
@@ -1268,20 +1268,20 @@ iSEE <- function(
         }
     }
 
-    # Feature expression plots need some careful handling, as we need to update the
+    # Feature assay plots need some careful handling, as we need to update the
     # table links and destroy a brush/lasso whenever an x/y-axis-specifying parameter changes.
-    max_plots <- nrow(pObjects$memory$featExprPlot)
+    max_plots <- nrow(pObjects$memory$featAssayPlot)
     for (id in seq_len(max_plots)) {
         local({
             id0 <- id
-            mode0 <- "featExprPlot"
+            mode0 <- "featAssayPlot"
             plot_name <- paste0(mode0, id0)
 
             # X-axis table observer.
             observe({
                 replot <- .setup_table_observer(mode0, id0, pObjects, rObjects, input, session, 
-                                                by_field = .featExprXAxis, title = .featExprXAxisFeatNameTitle,
-                                                feat_field = .featExprXAxisFeatName, tab_field = .featExprXAxisRowTable,
+                                                by_field = .featAssayXAxis, title = .featAssayXAxisFeatNameTitle,
+                                                feat_field = .featAssayXAxisFeatName, tab_field = .featAssayXAxisRowTable,
                                                 feat_choices = feature_choices, param = "xaxis")
                 if (replot) {
                     .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
@@ -1289,15 +1289,15 @@ iSEE <- function(
             })
 
             # X-axis feature name observer (see the explanation above for the colorByFeatName observer).
-            x_field <- paste0(plot_name, "_", .featExprXAxisFeatName)
+            x_field <- paste0(plot_name, "_", .featAssayXAxisFeatName)
             observeEvent(input[[x_field]], {
                 req(input[[x_field]]) # Required for empty strings in XAxisFeatName prior to updateSelectize upon re-render.
-                matched_input <- as(input[[x_field]], typeof(pObjects$memory[[mode0]][[.featExprXAxisFeatName]]))
-                if (identical(matched_input, pObjects$memory[[mode0]][[.featExprXAxisFeatName]][id0])) {
+                matched_input <- as(input[[x_field]], typeof(pObjects$memory[[mode0]][[.featAssayXAxisFeatName]]))
+                if (identical(matched_input, pObjects$memory[[mode0]][[.featAssayXAxisFeatName]][id0])) {
                     return(NULL)
                 }
-                pObjects$memory[[mode0]][[.featExprXAxisFeatName]][id0] <- matched_input
-                if (pObjects$memory[[mode0]][id0, .featExprXAxis]==.featExprXAxisFeatNameTitle) { # Only regenerating if featName is being used for plotting.
+                pObjects$memory[[mode0]][[.featAssayXAxisFeatName]][id0] <- matched_input
+                if (pObjects$memory[[mode0]][id0, .featAssayXAxis]==.featAssayXAxisFeatNameTitle) { # Only regenerating if featName is being used for plotting.
                     .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
                 }
             }, ignoreInit=TRUE)
@@ -1306,7 +1306,7 @@ iSEE <- function(
             observe({
                 replot <- .setup_table_observer(mode0, id0, pObjects, rObjects, input, session, 
                                                 by_field = NA, title = NA,
-                                                feat_field = .featExprYAxisFeatName, tab_field = .featExprYAxisRowTable,
+                                                feat_field = .featAssayYAxisFeatName, tab_field = .featAssayYAxisRowTable,
                                                 feat_choices = feature_choices, param = 'yaxis')
                 if (replot) {
                     .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
@@ -1315,14 +1315,14 @@ iSEE <- function(
 
             # Y-axis feature name observer. Unlike the X-axis observer, there is no choice for the Y-Axis,
             # i.e., the feature name is always being used for plotting. 
-            y_field <- paste0(plot_name, "_", .featExprYAxisFeatName)
+            y_field <- paste0(plot_name, "_", .featAssayYAxisFeatName)
             observeEvent(input[[y_field]], {
                 req(input[[y_field]]) # Required for empty strings in YAxisFeatName prior to updateSelectize upon re-render.
-                matched_input <- as(input[[y_field]], typeof(pObjects$memory[[mode0]][[.featExprYAxisFeatName]]))
-                if (identical(matched_input, pObjects$memory[[mode0]][[.featExprYAxisFeatName]][id0])) {
+                matched_input <- as(input[[y_field]], typeof(pObjects$memory[[mode0]][[.featAssayYAxisFeatName]]))
+                if (identical(matched_input, pObjects$memory[[mode0]][[.featAssayYAxisFeatName]][id0])) {
                     return(NULL)
                 }
-                pObjects$memory[[mode0]][[.featExprYAxisFeatName]][id0] <- matched_input
+                pObjects$memory[[mode0]][[.featAssayYAxisFeatName]][id0] <- matched_input
                 .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
             }, ignoreInit=TRUE)
         })
@@ -1392,11 +1392,11 @@ iSEE <- function(
             }
 
             # Updating the selectize for the x-/y-axis choices.
-            x_kids <- sprintf("%s_%s", x_kids, .featExprXAxisFeatName)
+            x_kids <- sprintf("%s_%s", x_kids, .featAssayXAxisFeatName)
             for (kid in x_kids) {
                 updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=feature_choices)
             }
-            y_kids <- sprintf("%s_%s", y_kids, .featExprYAxisFeatName)
+            y_kids <- sprintf("%s_%s", y_kids, .featAssayYAxisFeatName)
             for (kid in y_kids) {
                 updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=feature_choices)
             }

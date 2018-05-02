@@ -2,9 +2,9 @@
 % Please edit documentation in R/modes.R
 \name{modeGating}
 \alias{modeGating}
-\title{App pre-configured to link multiple feature expression plots}
+\title{App pre-configured to link multiple feature assay plots}
 \usage{
-modeGating(se, features, featExprMax = max(2, nrow(features)), ...,
+modeGating(se, features, featAssayMax = max(2, nrow(features)), ...,
   plot_width = 4)
 }
 \arguments{
@@ -14,7 +14,7 @@ modeGating(se, features, featExprMax = max(2, nrow(features)), ...,
 that define the features on the axes of the linked plots.
 Plots are serially linked from the first row to the last.}
 
-\item{featExprMax}{Maximal number of feature expression plots in the app.}
+\item{featAssayMax}{Maximal number of feature assay plots in the app.}
 
 \item{...}{Additional arguments passed to \code{\link{iSEE}}.}
 
@@ -28,7 +28,7 @@ expression plots is launched for interactive data exploration of the
 object
 }
 \description{
-App pre-configured to link multiple feature expression plots
+App pre-configured to link multiple feature assay plots
 }
 \examples{
 library(scRNAseq)
@@ -58,7 +58,7 @@ plot_features <- data.frame(
 
 # launch the app itself ----
 
-app <- modeGating(sce, features = plot_features, featExprMax = 6)
+app <- modeGating(sce, features = plot_features, featAssayMax = 6)
 if (interactive()) {
   shiny::runApp(app, port = 1234)
 }

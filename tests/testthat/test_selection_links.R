@@ -2,21 +2,21 @@
 # Do NOT move to setup; re-defined here to keep tests self-contained.
 redDimArgs <- redDimPlotDefaults(sce, 1)
 colDataArgs <- colDataPlotDefaults(sce, 2)
-featExprArgs <- featExprPlotDefaults(sce, 3)
+featAssayArgs <- featAssayPlotDefaults(sce, 3)
 rowStatArgs <- rowStatTableDefaults(sce, 3)
 rowDataArgs <- rowDataPlotDefaults(sce, 1)
 heatMapArgs <- heatMapPlotDefaults(sce, 2)
 
 # Creating a test graph:
-# featExprPlot1 -> redDimPlot1 -> colDataPlot2
-# featExprPlot1 -> featExprPlot1
+# featAssayPlot1 -> redDimPlot1 -> colDataPlot2
+# featAssayPlot1 -> featAssayPlot1
 
-redDimArgs[1,iSEE:::.selectByPlot] <- "Feature expression plot 1"
-featExprArgs[1,iSEE:::.selectByPlot] <- "Feature expression plot 1"
+redDimArgs[1,iSEE:::.selectByPlot] <- "Feature assay plot 1"
+featAssayArgs[1,iSEE:::.selectByPlot] <- "Feature assay plot 1"
 colDataArgs[2,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
 
 memory <- list(
-  redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs,
+  redDimPlot=redDimArgs, featAssayPlot=featAssayArgs, colDataPlot=colDataArgs,
   rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs, heatMapPlot=heatMapArgs
   )
 g <- iSEE:::.spawn_selection_chart(memory)
@@ -24,35 +24,35 @@ g <- iSEE:::.spawn_selection_chart(memory)
 test_that("selection link creation works correctly", {
     m <- g[]
     expect_identical(sort(rownames(m)), sort(c(sprintf("redDimPlot%i", seq_len(nrow(redDimArgs))),
-                                               sprintf("featExprPlot%i", seq_len(nrow(featExprArgs))),
+                                               sprintf("featAssayPlot%i", seq_len(nrow(featAssayArgs))),
                                                sprintf("colDataPlot%i", seq_len(nrow(colDataArgs))),
                                                sprintf("rowStatTable%i", seq_len(nrow(rowStatArgs))),
                                                sprintf("rowDataPlot%i", seq_len(nrow(rowDataArgs))),
                                                sprintf("heatMapPlot%i", seq_len(nrow(heatMapArgs))))))
     expect_identical(sum(m), 3)
 
-    expect_true(igraph::are_adjacent(g, "featExprPlot1", "redDimPlot1"))
-    expect_false(igraph::are_adjacent(g, "redDimPlot1", "featExprPlot1")) # doesn't go the other way!
+    expect_true(igraph::are_adjacent(g, "featAssayPlot1", "redDimPlot1"))
+    expect_false(igraph::are_adjacent(g, "redDimPlot1", "featAssayPlot1")) # doesn't go the other way!
 
-    expect_true(igraph::are_adjacent(g, "featExprPlot1", "featExprPlot1"))
+    expect_true(igraph::are_adjacent(g, "featAssayPlot1", "featAssayPlot1"))
     expect_false(igraph::are_adjacent(g, "redDimPlot1", "redDimPlot1")) # not true of self-loops in general.
 
     expect_true(igraph::are_adjacent(g, "redDimPlot1", "colDataPlot2"))
     expect_false(igraph::are_adjacent(g, "colDataPlot2", "redDimPlot1")) # doesn't go the other way!
 
     # Checking that we correctly fail upon cycles.
-    redDimArgs[1,iSEE:::.selectByPlot] <- "Feature expression plot 1"
-    featExprArgs[1,iSEE:::.selectByPlot] <- "Column data plot 2"
+    redDimArgs[1,iSEE:::.selectByPlot] <- "Feature assay plot 1"
+    featAssayArgs[1,iSEE:::.selectByPlot] <- "Column data plot 2"
     colDataArgs[2,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
 
-    expect_error(iSEE:::.spawn_selection_chart(list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs, 
+    expect_error(iSEE:::.spawn_selection_chart(list(redDimPlot=redDimArgs, featAssayPlot=featAssayArgs, colDataPlot=colDataArgs, 
                                                 rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs,
                                                 heatMapPlot=heatMapArgs)),
                  "cyclic point selection dependencies")
 
     # Checking that it throws up upon being given some garbage.
     redDimArgs[1,iSEE:::.selectByPlot] <- "whee!"
-    expect_error(iSEE:::.spawn_selection_chart(list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs,
+    expect_error(iSEE:::.spawn_selection_chart(list(redDimPlot=redDimArgs, featAssayPlot=featAssayArgs, colDataPlot=colDataArgs,
                                                 rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs,
                                                 heatMapPlot=heatMapArgs)),
                  "not a legal panel name")
@@ -60,10 +60,10 @@ test_that("selection link creation works correctly", {
 
 test_that("selection link updates work correctly", {
     # Deleting edges that are there.
-    expect_true(igraph::are_adjacent(g, "featExprPlot1", "redDimPlot1"))
+    expect_true(igraph::are_adjacent(g, "featAssayPlot1", "redDimPlot1"))
     expect_equal(sum(g[]), 3)
-    g2 <- iSEE:::.choose_new_selection_source(g, "redDimPlot1", "---", "featExprPlot1")
-    expect_false(igraph::are_adjacent(g2, "featExprPlot1", "redDimPlot1"))
+    g2 <- iSEE:::.choose_new_selection_source(g, "redDimPlot1", "---", "featAssayPlot1")
+    expect_false(igraph::are_adjacent(g2, "featAssayPlot1", "redDimPlot1"))
     expect_equal(sum(g2[]), 2)
 
     # Deleting edges that are not there makes no difference.
@@ -74,25 +74,25 @@ test_that("selection link updates work correctly", {
     # Adding edges without anything being there previously. 
     expect_identical(character(0), names(igraph::adjacent_vertices(g, "colDataPlot1", mode = "in")[[1]])) # no parents.
     expect_equal(sum(g[]), 3)
-    g2 <- iSEE:::.choose_new_selection_source(g, "colDataPlot1", "featExprPlot3", "---")
-    expect_false(igraph::are_adjacent(g2, "featExprPlot1", "colDataPlot2"))
+    g2 <- iSEE:::.choose_new_selection_source(g, "colDataPlot1", "featAssayPlot3", "---")
+    expect_false(igraph::are_adjacent(g2, "featAssayPlot1", "colDataPlot2"))
     expect_equal(sum(g2[]), 4)
 
     # Adding links that are already there do nothing.    
-    g2 <- iSEE:::.choose_new_selection_source(g, "redDimPlot1", "featExprPlot1", "---")
+    g2 <- iSEE:::.choose_new_selection_source(g, "redDimPlot1", "featAssayPlot1", "---")
     expect_equal(g[], g2[])
 
     # Updating edges from what previously existed.
     expect_true(igraph::are_adjacent(g, "redDimPlot1", "colDataPlot2"))
-    expect_false(igraph::are_adjacent(g, "featExprPlot2", "colDataPlot2"))
+    expect_false(igraph::are_adjacent(g, "featAssayPlot2", "colDataPlot2"))
     expect_equal(sum(g[]), 3)
-    g2 <- iSEE:::.choose_new_selection_source(g, "colDataPlot2", "featExprPlot2", "redDimPlot1")
+    g2 <- iSEE:::.choose_new_selection_source(g, "colDataPlot2", "featAssayPlot2", "redDimPlot1")
     expect_false(igraph::are_adjacent(g2, "redDimPlot1", "colDataPlot2"))
-    expect_true(igraph::are_adjacent(g2, "featExprPlot2", "colDataPlot2"))
+    expect_true(igraph::are_adjacent(g2, "featAssayPlot2", "colDataPlot2"))
     expect_equal(sum(g2[]), 3)
 
     # Updates to existing edges do nothing.
-    g2 <- iSEE:::.choose_new_selection_source(g, "redDimPlot1", "featExprPlot1", "featExprPlot1")
+    g2 <- iSEE:::.choose_new_selection_source(g, "redDimPlot1", "featAssayPlot1", "featAssayPlot1")
     expect_equal(g[], g2[])
 })
 
@@ -102,34 +102,34 @@ test_that("selection source destruction works correctly", {
     pObjects$selection_links <- g
     pObjects$memory <- memory
 
-    expect_true(igraph::are_adjacent(pObjects$selection_links, "featExprPlot1", "redDimPlot1"))
-    expect_true(igraph::are_adjacent(pObjects$selection_links, "featExprPlot1", "featExprPlot1"))
+    expect_true(igraph::are_adjacent(pObjects$selection_links, "featAssayPlot1", "redDimPlot1"))
+    expect_true(igraph::are_adjacent(pObjects$selection_links, "featAssayPlot1", "featAssayPlot1"))
     expect_equal(sum(pObjects$selection_links[]), 3)
-    expect_identical("Feature expression plot 1", pObjects$memory$redDimPlot[1,iSEE:::.selectByPlot])
-    expect_identical("Feature expression plot 1", pObjects$memory$featExprPlot[1,iSEE:::.selectByPlot])
+    expect_identical("Feature assay plot 1", pObjects$memory$redDimPlot[1,iSEE:::.selectByPlot])
+    expect_identical("Feature assay plot 1", pObjects$memory$featAssayPlot[1,iSEE:::.selectByPlot])
 
-    iSEE:::.destroy_selection_panel(pObjects, "featExprPlot1")
+    iSEE:::.destroy_selection_panel(pObjects, "featAssayPlot1")
 
-    expect_false(igraph::are_adjacent(pObjects$selection_links, "featExprPlot1", "redDimPlot1"))
-    expect_false(igraph::are_adjacent(pObjects$selection_links, "featExprPlot1", "featExprPlot1"))
+    expect_false(igraph::are_adjacent(pObjects$selection_links, "featAssayPlot1", "redDimPlot1"))
+    expect_false(igraph::are_adjacent(pObjects$selection_links, "featAssayPlot1", "featAssayPlot1"))
     expect_equal(sum(pObjects$selection_links[]), 1)
     expect_identical("---", pObjects$memory$redDimPlot[1,iSEE:::.selectByPlot])
-    expect_identical("---", pObjects$memory$featExprPlot[1,iSEE:::.selectByPlot])
+    expect_identical("---", pObjects$memory$featAssayPlot[1,iSEE:::.selectByPlot])
 
     # Destroying a transmitter/receiver
     pObjects <- new.env()
     pObjects$selection_links <- g
     pObjects$memory <- memory
 
-    expect_true(igraph::are_adjacent(pObjects$selection_links, "featExprPlot1", "redDimPlot1"))
+    expect_true(igraph::are_adjacent(pObjects$selection_links, "featAssayPlot1", "redDimPlot1"))
     expect_true(igraph::are_adjacent(pObjects$selection_links, "redDimPlot1", "colDataPlot2"))
     expect_equal(sum(pObjects$selection_links[]), 3)
-    expect_identical("Feature expression plot 1", pObjects$memory$redDimPlot[1,iSEE:::.selectByPlot])
+    expect_identical("Feature assay plot 1", pObjects$memory$redDimPlot[1,iSEE:::.selectByPlot])
     expect_identical("Reduced dimension plot 1", pObjects$memory$colDataPlot[2,iSEE:::.selectByPlot])
 
     iSEE:::.destroy_selection_panel(pObjects, "redDimPlot1")
 
-    expect_false(igraph::are_adjacent(pObjects$selection_links, "featExprPlot1", "redDimPlot1"))
+    expect_false(igraph::are_adjacent(pObjects$selection_links, "featAssayPlot1", "redDimPlot1"))
     expect_false(igraph::are_adjacent(pObjects$selection_links, "redDimPlot1", "colDataPlot2"))
     expect_equal(sum(pObjects$selection_links[]), 1)
     expect_identical("---", pObjects$memory$redDimPlot[1,iSEE:::.selectByPlot]) 
@@ -152,42 +152,42 @@ test_that("selection source destruction works correctly", {
 test_that("select dependent identification works correctly", {
     # Setting up a hierarchy.          
     redDimArgs[1,iSEE:::.selectByPlot] <- "---"
-    featExprArgs[1,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
-    featExprArgs[2,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
-    colDataArgs[1,iSEE:::.selectByPlot] <- "Feature expression plot 1"
-    colDataArgs[2,iSEE:::.selectByPlot] <- "Feature expression plot 2"
-    featExprArgs[3,iSEE:::.selectByPlot] <- "Column data plot 1"
+    featAssayArgs[1,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
+    featAssayArgs[2,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
+    colDataArgs[1,iSEE:::.selectByPlot] <- "Feature assay plot 1"
+    colDataArgs[2,iSEE:::.selectByPlot] <- "Feature assay plot 2"
+    featAssayArgs[3,iSEE:::.selectByPlot] <- "Column data plot 1"
 
     # No restriction in the children.
-    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs,
+    memory <- list(redDimPlot=redDimArgs, featAssayPlot=featAssayArgs, colDataPlot=colDataArgs,
                    rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs, heatMapPlot=heatMapArgs)
     g <- iSEE:::.spawn_selection_chart(memory)
     expect_identical(iSEE:::.get_selection_dependents(g, "redDimPlot1", memory),
-                     c("featExprPlot1", "featExprPlot2"))
+                     c("featAssayPlot1", "featAssayPlot2"))
     
     # Restriction in one of the children, and not the other.
-    featExprArgs[1,iSEE:::.selectEffect] <- iSEE:::.selectRestrictTitle
-    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs,
+    featAssayArgs[1,iSEE:::.selectEffect] <- iSEE:::.selectRestrictTitle
+    memory <- list(redDimPlot=redDimArgs, featAssayPlot=featAssayArgs, colDataPlot=colDataArgs,
                    rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs, heatMapPlot=heatMapArgs)
     g <- iSEE:::.spawn_selection_chart(memory)
     expect_identical(iSEE:::.get_selection_dependents(g, "redDimPlot1", memory),
-                     c("featExprPlot1", "featExprPlot2", "colDataPlot1"))
+                     c("featAssayPlot1", "featAssayPlot2", "colDataPlot1"))
 
     # Restriction in the grandchildren.
     colDataArgs[1,iSEE:::.selectEffect] <- iSEE:::.selectRestrictTitle
-    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs,
+    memory <- list(redDimPlot=redDimArgs, featAssayPlot=featAssayArgs, colDataPlot=colDataArgs,
                    rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs, heatMapPlot=heatMapArgs)
     g <- iSEE:::.spawn_selection_chart(memory)
     expect_identical(iSEE:::.get_selection_dependents(g, "redDimPlot1", memory),
-                     c("featExprPlot1", "featExprPlot2", "colDataPlot1", "featExprPlot3"))
+                     c("featAssayPlot1", "featAssayPlot2", "colDataPlot1", "featAssayPlot3"))
 
     # Breaking the chain if we turn off restriction in the child.
-    featExprArgs[1,iSEE:::.selectEffect] <- iSEE:::.selectColorTitle
-    memory <- list(redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs, 
+    featAssayArgs[1,iSEE:::.selectEffect] <- iSEE:::.selectColorTitle
+    memory <- list(redDimPlot=redDimArgs, featAssayPlot=featAssayArgs, colDataPlot=colDataArgs, 
                    rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs, heatMapPlot=heatMapArgs)
     g <- iSEE:::.spawn_selection_chart(memory)
     expect_identical(iSEE:::.get_selection_dependents(g, "redDimPlot1", memory),
-                     c("featExprPlot1", "featExprPlot2"))
+                     c("featAssayPlot1", "featAssayPlot2"))
 })
 
 test_that("brush identity function works properly", {
@@ -214,16 +214,16 @@ test_that("brush identity function works properly", {
 test_that("evaluation order works properly", {
   # Recall that only transmitting panels are ever reported by this function
   eval_order <- iSEE:::.establish_eval_order(g)
-  expect_identical(eval_order, c("featExprPlot1", "redDimPlot1"))
+  expect_identical(eval_order, c("featAssayPlot1", "redDimPlot1"))
 
   # Testing again with added links from separate chains.
-  g <- igraph::add_edges(g, c("featExprPlot2", "featExprPlot3"))
-  g <- igraph::add_edges(g, c("featExprPlot3", "colDataPlot1"))
+  g <- igraph::add_edges(g, c("featAssayPlot2", "featAssayPlot3"))
+  g <- igraph::add_edges(g, c("featAssayPlot3", "colDataPlot1"))
 
   eval_order <- iSEE:::.establish_eval_order(g)
-  expect_true("featExprPlot2" %in% eval_order)
-  expect_true(which(eval_order=="featExprPlot1") < which(eval_order=="redDimPlot1"))
-  expect_true(which(eval_order=="featExprPlot2") < which(eval_order=="featExprPlot3"))
+  expect_true("featAssayPlot2" %in% eval_order)
+  expect_true(which(eval_order=="featAssayPlot1") < which(eval_order=="redDimPlot1"))
+  expect_true(which(eval_order=="featAssayPlot2") < which(eval_order=="featAssayPlot3"))
 })
 
 test_that("reporting order is correctly reported", {
@@ -232,14 +232,14 @@ test_that("reporting order is correctly reported", {
   redDimArgs[1,iSEE:::.selectByPlot] <- "---"
   colDataArgs[1,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
   colDataArgs[2,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
-  featExprArgs[2,iSEE:::.selectByPlot] <- "Column data plot 1"
+  featAssayArgs[2,iSEE:::.selectByPlot] <- "Column data plot 1"
   # fork: second from the same plot
   heatMapArgs[1,iSEE:::.selectByPlot] <- "Column data plot 1"
   # self
-  featExprArgs[1,iSEE:::.selectByPlot] <- "Feature expression plot 1" # self
+  featAssayArgs[1,iSEE:::.selectByPlot] <- "Feature assay plot 1" # self
   
   memory <- list(
-    redDimPlot=redDimArgs, featExprPlot=featExprArgs, colDataPlot=colDataArgs,
+    redDimPlot=redDimArgs, featAssayPlot=featAssayArgs, colDataPlot=colDataArgs,
     rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs, heatMapPlot=heatMapArgs
     )
   g <- iSEE:::.spawn_selection_chart(memory)
@@ -250,8 +250,8 @@ test_that("reporting order is correctly reported", {
     "Reduced dimension plot 1",   # 1
     "Column data plot 1",         # 2
     "Column data plot 2",         # 3
-    "Feature expression plot 1",  # 4
-    "Feature expression plot 2",  # 5
+    "Feature assay plot 1",  # 4
+    "Feature assay plot 2",  # 5
     "Heat map 1"                  # 6
   ))
   active_panels <- iSEE:::.setup_initial(initial_panels, memory)
@@ -261,16 +261,16 @@ test_that("reporting order is correctly reported", {
   report_names <- iSEE:::.decode_panel_name(active_panels$Type, active_panels$ID)
   
   # chain is:
-  # redDimPlot (1) -> colDataPlot1 (2) -> featExprPlot2 (5)
+  # redDimPlot (1) -> colDataPlot1 (2) -> featAssayPlot2 (5)
   #                                    -> heatMapPlot1  (6)
   # redDimPlot (1) -> colDataPlot2 (3)
-  # featExprPlot1 (4) -> self (4)
+  # featAssayPlot1 (4) -> self (4)
   expect_true(
     match("Reduced dimension plot 1", report_names) < match("Column data plot 1", report_names)
   )
   
   expect_true(
-    match("Column data plot 1", report_names) < match("Feature expression plot 2", report_names)
+    match("Column data plot 1", report_names) < match("Feature assay plot 2", report_names)
   )
   
   expect_true(

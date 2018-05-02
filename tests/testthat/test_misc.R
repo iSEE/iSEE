@@ -24,7 +24,7 @@ test_that("list updater function works correctly", {
 test_that("plot feasibility checks work correctly", {
     out <- iSEE:::.check_plot_feasibility(sce)
     expect_true(out$redDimPlot)
-    expect_true(out$featExprPlot)
+    expect_true(out$featAssayPlot)
     expect_true(out$colDataPlot)
     expect_true(out$rowStatTable)
     expect_true(out$rowDataPlot)
@@ -32,7 +32,7 @@ test_that("plot feasibility checks work correctly", {
     # No genes.
     out <- iSEE:::.check_plot_feasibility(sce[0,])
     expect_true(out$redDimPlot)
-    expect_false(out$featExprPlot)
+    expect_false(out$featAssayPlot)
     expect_true(out$colDataPlot)
     expect_false(out$rowStatTable)
     expect_false(out$rowDataPlot)
@@ -40,7 +40,7 @@ test_that("plot feasibility checks work correctly", {
     # No samples.
     out <- iSEE:::.check_plot_feasibility(sce[,0])
     expect_false(out$redDimPlot)
-    expect_false(out$featExprPlot)
+    expect_false(out$featAssayPlot)
     expect_false(out$colDataPlot)
     expect_true(out$rowStatTable)
     expect_true(out$rowDataPlot)
@@ -50,7 +50,7 @@ test_that("plot feasibility checks work correctly", {
     colData(sceX) <- colData(sceX)[,0]
     out <- iSEE:::.check_plot_feasibility(sceX)
     expect_true(out$redDimPlot)
-    expect_true(out$featExprPlot)
+    expect_true(out$featAssayPlot)
     expect_false(out$colDataPlot)
     expect_true(out$rowStatTable)
     expect_true(out$rowDataPlot)
@@ -60,7 +60,7 @@ test_that("plot feasibility checks work correctly", {
     reducedDims(sceX) <- SimpleList()
     out <- iSEE:::.check_plot_feasibility(sceX)
     expect_false(out$redDimPlot)
-    expect_true(out$featExprPlot)
+    expect_true(out$featAssayPlot)
     expect_true(out$colDataPlot)
     expect_true(out$rowStatTable)
     expect_true(out$rowDataPlot)
@@ -72,7 +72,7 @@ test_that("plot feasibility checks work correctly", {
     }
     out <- iSEE:::.check_plot_feasibility(sceX)
     expect_true(out$redDimPlot)
-    expect_false(out$featExprPlot)
+    expect_false(out$featAssayPlot)
     expect_true(out$colDataPlot)
     expect_true(out$rowStatTable)
     expect_true(out$rowDataPlot)
@@ -82,7 +82,7 @@ test_that("plot feasibility checks work correctly", {
     rowData(sceX) <- rowData(sceX)[,0]
     out <- iSEE:::.check_plot_feasibility(sceX)
     expect_true(out$redDimPlot)
-    expect_true(out$featExprPlot)
+    expect_true(out$featAssayPlot)
     expect_true(out$colDataPlot)
     expect_true(out$rowStatTable)
     expect_false(out$rowDataPlot)
@@ -97,11 +97,11 @@ test_that("memory setup works correctly", {
     rowData(sce)$whee <- 1       
 
     # Works correctly in the vanilla setting.
-    memory <- iSEE:::.setup_memory(sce, redDimArgs=NULL, colDataArgs=NULL, featExprArgs=NULL, rowStatArgs=NULL, rowDataArgs=NULL, heatMapArgs=NULL,
-                                   redDimMax=5, colDataMax=3, featExprMax=1, rowStatMax=2, rowDataMax=3, heatMapMax=2)
+    memory <- iSEE:::.setup_memory(sce, redDimArgs=NULL, colDataArgs=NULL, featAssayArgs=NULL, rowStatArgs=NULL, rowDataArgs=NULL, heatMapArgs=NULL,
+                                   redDimMax=5, colDataMax=3, featAssayMax=1, rowStatMax=2, rowDataMax=3, heatMapMax=2)
     expect_identical(nrow(memory$redDimPlot), 5L)
     expect_identical(nrow(memory$colDataPlot), 3L)
-    expect_identical(nrow(memory$featExprPlot), 1L)
+    expect_identical(nrow(memory$featAssayPlot), 1L)
     expect_identical(nrow(memory$rowStatTable), 2L)
     expect_identical(nrow(memory$rowDataPlot), 3L)
     expect_identical(nrow(memory$heatMapPlot), 2L)
@@ -110,21 +110,21 @@ test_that("memory setup works correctly", {
     memory <- iSEE:::.setup_memory(sce, 
                                    redDimArgs=DataFrame(Type=2L), 
                                    colDataArgs=DataFrame(XAxis="Column data"),
-                                   featExprArgs=DataFrame(XAxis="Row table"),
+                                   featAssayArgs=DataFrame(XAxis="Row table"),
                                    rowStatArgs=DataFrame(Selected=10L), 
                                    rowDataArgs=DataFrame(XAxis="Row data"),
                                    heatMapArgs=DataFrame(Assay=1L),
-                                   redDimMax=5, colDataMax=3, featExprMax=1, rowStatMax=2, rowDataMax=3, heatMapMax=2)
+                                   redDimMax=5, colDataMax=3, featAssayMax=1, rowStatMax=2, rowDataMax=3, heatMapMax=2)
     expect_identical(nrow(memory$redDimPlot), 5L)
     expect_identical(nrow(memory$colDataPlot), 3L)
-    expect_identical(nrow(memory$featExprPlot), 1L)
+    expect_identical(nrow(memory$featAssayPlot), 1L)
     expect_identical(nrow(memory$rowStatTable), 2L)
     expect_identical(nrow(memory$rowDataPlot), 3L)
     expect_identical(nrow(memory$heatMapPlot), 2L)
 
     expect_identical(memory$redDimPlot$Type, rep(2:1, c(1,4))) # Checking arguments were actually replaced.
     expect_identical(memory$colDataPlot$XAxis, rep(c("Column data", "None"), c(1,2)))
-    expect_identical(memory$featExprPlot$XAxis, "Row table")
+    expect_identical(memory$featAssayPlot$XAxis, "Row table")
     expect_identical(memory$rowStatTable$Selected, c(10L, 1L))
     expect_identical(memory$rowDataPlot$XAxis, rep(c("Row data", "None"), c(1,2)))
     expect_identical(memory$heatMapPlot$Assay, c(1L, 6L))
@@ -133,21 +133,21 @@ test_that("memory setup works correctly", {
     memory <- iSEE:::.setup_memory(sce, 
                                    redDimArgs=DataFrame(Type=2L), 
                                    colDataArgs=DataFrame(XAxis="Column data"),
-                                   featExprArgs=DataFrame(XAxis="Row table"),
+                                   featAssayArgs=DataFrame(XAxis="Row table"),
                                    rowStatArgs=DataFrame(Selected=10L), 
                                    rowDataArgs=DataFrame(XAxis="Row data"),
                                    heatMapArgs=DataFrame(Assay=1L),
-                                   redDimMax=0, colDataMax=0, featExprMax=0, rowStatMax=0, rowDataMax=0, heatMapMax=0)
+                                   redDimMax=0, colDataMax=0, featAssayMax=0, rowStatMax=0, rowDataMax=0, heatMapMax=0)
     expect_identical(nrow(memory$redDimPlot), 1L)
     expect_identical(nrow(memory$colDataPlot), 1L)
-    expect_identical(nrow(memory$featExprPlot), 1L)
+    expect_identical(nrow(memory$featAssayPlot), 1L)
     expect_identical(nrow(memory$rowStatTable), 1L)
     expect_identical(nrow(memory$rowDataPlot), 1L)
     expect_identical(nrow(memory$heatMapPlot), 1L)
 
     expect_identical(memory$redDimPlot$Type, 2L) # Checking arguments were actually replaced.
     expect_identical(memory$colDataPlot$XAxis, "Column data")
-    expect_identical(memory$featExprPlot$XAxis, "Row table")
+    expect_identical(memory$featAssayPlot$XAxis, "Row table")
     expect_identical(memory$rowStatTable$Selected, 10L)
     expect_identical(memory$rowDataPlot$XAxis, "Row data")
     expect_identical(memory$heatMapPlot$Assay, 1L)
@@ -161,11 +161,11 @@ test_that("memory setup works correctly", {
     }
     rowData(sceX) <- rowData(sceX)[,0]
 
-    memory <- iSEE:::.setup_memory(sceX, redDimArgs=NULL, colDataArgs=NULL, featExprArgs=NULL, rowStatArgs=NULL, rowDataArgs=NULL, heatMapArgs=NULL,
-                                   redDimMax=5, colDataMax=3, featExprMax=1, rowStatMax=2, rowDataMax=3, heatMapMax=2)
+    memory <- iSEE:::.setup_memory(sceX, redDimArgs=NULL, colDataArgs=NULL, featAssayArgs=NULL, rowStatArgs=NULL, rowDataArgs=NULL, heatMapArgs=NULL,
+                                   redDimMax=5, colDataMax=3, featAssayMax=1, rowStatMax=2, rowDataMax=3, heatMapMax=2)
     expect_identical(nrow(memory$redDimPlot), 0L)
     expect_identical(nrow(memory$colDataPlot), 0L)
-    expect_identical(nrow(memory$featExprPlot), 0L)
+    expect_identical(nrow(memory$featAssayPlot), 0L)
     expect_identical(nrow(memory$rowStatTable), 0L)
     expect_identical(nrow(memory$rowDataPlot), 0L)
     expect_identical(nrow(memory$heatMapPlot), 0L)
@@ -210,14 +210,14 @@ test_that("name to index coercion works correctly", {
 })
 
 test_that("initialization of active panels works correctly", {
-    memory <- iSEE:::.setup_memory(sce, redDimArgs=NULL, colDataArgs=NULL, featExprArgs=NULL, rowStatArgs=NULL, rowDataArgs=NULL, heatMapArgs=NULL,
-                                   redDimMax=5, colDataMax=3, featExprMax=1, rowStatMax=2, rowDataMax=3, heatMapMax=2)
+    memory <- iSEE:::.setup_memory(sce, redDimArgs=NULL, colDataArgs=NULL, featAssayArgs=NULL, rowStatArgs=NULL, rowDataArgs=NULL, heatMapArgs=NULL,
+                                   redDimMax=5, colDataMax=3, featAssayMax=1, rowStatMax=2, rowDataMax=3, heatMapMax=2)
     out <- iSEE:::.setup_initial(NULL, memory)
     expect_identical(nrow(out), 6L)
 
     # Trying with actual specifications.
-    out <- iSEE:::.setup_initial(DataFrame(Name=c("Feature expression plot 1", "Reduced dimension plot 2")), memory)
-    expect_identical(out$Type, c("featExprPlot", "redDimPlot"))
+    out <- iSEE:::.setup_initial(DataFrame(Name=c("Feature assay plot 1", "Reduced dimension plot 2")), memory)
+    expect_identical(out$Type, c("featAssayPlot", "redDimPlot"))
     expect_identical(out$ID, 1:2)
     expect_identical(out$Width, rep(4L, 2))
     expect_identical(out$Height, rep(500L, 2))
@@ -238,15 +238,15 @@ test_that("initialization of active panels works correctly", {
     expect_identical(out$Height, iSEE:::height_limits[2])
 
     # Throws a message if you request an impossible feature.
-    expect_message(out <- iSEE:::.setup_initial(DataFrame(Name=c("Reduced dimension plot 1", "Column data plot 3", "Feature expression plot 2")), memory),
+    expect_message(out <- iSEE:::.setup_initial(DataFrame(Name=c("Reduced dimension plot 1", "Column data plot 3", "Feature assay plot 2")), memory),
                    "not available")
     expect_identical(out$Type, c("redDimPlot", "colDataPlot"))
     expect_identical(out$ID, c(1L, 3L))
 })
 
 test_that("sanitation of memory works correctly", {
-    memory <- iSEE:::.setup_memory(sce, redDimArgs=NULL, colDataArgs=NULL, featExprArgs=NULL, rowStatArgs=NULL, rowDataArgs=NULL, heatMapArgs=NULL,
-                                   redDimMax=5, colDataMax=3, featExprMax=2, rowStatMax=2, rowDataMax=3, heatMapMax=2)
+    memory <- iSEE:::.setup_memory(sce, redDimArgs=NULL, colDataArgs=NULL, featAssayArgs=NULL, rowStatArgs=NULL, rowDataArgs=NULL, heatMapArgs=NULL,
+                                   redDimMax=5, colDataMax=3, featAssayMax=2, rowStatMax=2, rowDataMax=3, heatMapMax=2)
     init_panels <- iSEE:::.setup_initial(NULL, memory)
 
     # No effect when there are no links.
@@ -274,24 +274,24 @@ test_that("sanitation of memory works correctly", {
     sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory)
 
-    # Repeating for the feature expression plots: retains valid table links in active plots.
+    # Repeating for the feature assay plots: retains valid table links in active plots.
     memory2 <- memory
-    memory2$featExprPlot[1, iSEE:::.featExprXAxisRowTable] <- "Row statistics table 1"
-    memory2$featExprPlot[1, iSEE:::.featExprYAxisRowTable] <- "Row statistics table 1"
+    memory2$featAssayPlot[1, iSEE:::.featAssayXAxisRowTable] <- "Row statistics table 1"
+    memory2$featAssayPlot[1, iSEE:::.featAssayYAxisRowTable] <- "Row statistics table 1"
     sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory2)
 
     # Removes valid table links in inactive plots.
     memory2 <- memory
-    memory2$featExprPlot[2, iSEE:::.featExprXAxisRowTable] <- "Row statistics table 1"
-    memory2$featExprPlot[2, iSEE:::.featExprYAxisRowTable] <- "Row statistics table 1"
+    memory2$featAssayPlot[2, iSEE:::.featAssayXAxisRowTable] <- "Row statistics table 1"
+    memory2$featAssayPlot[2, iSEE:::.featAssayYAxisRowTable] <- "Row statistics table 1"
     sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory)
 
     # Removes inactive table links.
     memory2 <- memory
-    memory2$featExprPlot[1, iSEE:::.featExprXAxisRowTable] <- "Row statistics table 2"
-    memory2$featExprPlot[1, iSEE:::.featExprYAxisRowTable] <- "Row statistics table 2"
+    memory2$featAssayPlot[1, iSEE:::.featAssayXAxisRowTable] <- "Row statistics table 2"
+    memory2$featAssayPlot[1, iSEE:::.featAssayYAxisRowTable] <- "Row statistics table 2"
     sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory)
 })

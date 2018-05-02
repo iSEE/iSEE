@@ -20,7 +20,7 @@ test_that(".make_redDimPlot/.scatter_plot produce a valid list",{
   
   # launch the app itself ----
   
-  app <- modeGating(sce, features = plot_features, featExprMax = 12)
+  app <- modeGating(sce, features = plot_features, featAssayMax = 12)
     
   # return value is a named list
   expect_s3_class(

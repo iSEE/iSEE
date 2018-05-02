@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.0.1}{
+  \itemize{
+    \item Renamed feature expression plots to feature assay plots, for generality.
+  }
+}
+
 \section{iSEE VERSION 0.99.3}{
   \itemize{
     \item Custom tours can be restarted via the dropdown menu button, overwriting

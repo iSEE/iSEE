@@ -332,6 +332,8 @@ names(.all_aes_values) <- .all_aes_names
     if (param_choices[[.plotPointDownsample]]) {
         xtype <- "X"
         ytype <- "Y"
+    
+        plot_type <- setup_out$envir$plot_type
         if (plot_type=="square") {
             xtype <- "jitteredX"
             ytype <- "jitteredY"
@@ -562,7 +564,8 @@ names(.all_aes_values) <- .all_aes_names
 
     # Dispatch to different plotting commands, depending on X/Y being groupable
     extra_cmds <- c(extra_cmds, switch(plot_type,
-        square = .square_plot(plot_data=plot_data, param_choices=param_choices, ...), 
+        square = .square_plot(plot_data=plot_data, param_choices=param_choices, 
+            is_subsetted=is_subsetted, ...), 
         violin = .violin_plot(plot_data=plot_data, param_choices=param_choices, 
             is_subsetted=is_subsetted, is_downsampled=is_downsampled, ...),
         violin_horizontal = .violin_plot(plot_data=plot_data, param_choices=param_choices, 
@@ -877,6 +880,7 @@ plot.data$Y <- tmp;")
 #' @param title A character title for the plot.
 #' Set to \code{NULL} to have no title. 
 #' @param by_row A logical scalar specifying whether the plot deals with row-level metadata.
+#' @param is_subsetted A logical scalar specifying whether \code{plot_data} was subsetted during \code{\link{.process_selectby_choice}}.
 #'
 #' @return 
 #' For \code{\link{.square_setup}}, a character vector of commands to be parsed and evaluated by \code{\link{.extract_plotting_data}} to set up the required fields.
@@ -901,7 +905,7 @@ plot.data$Y <- tmp;")
 #'
 #' @importFrom ggplot2 ggplot geom_tile coord_cartesian theme_bw theme
 #' scale_x_discrete scale_y_discrete guides
-.square_plot <- function(plot_data, param_choices, se, x_lab, y_lab, color_lab, title, by_row = FALSE) {
+.square_plot <- function(plot_data, param_choices, se, x_lab, y_lab, color_lab, title, by_row = FALSE, is_subsetted = FALSE) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
     plot_cmds[["tile"]] <-
@@ -1319,8 +1323,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
         }
 
         if (length(select_obj) && param_choices[[.selectEffect]]==.selectRestrictTitle) {
-          # Duplicate plot.data before selecting points,
-          # to make sure that axes are retained
+          # Duplicate plot.data before selecting points, to make sure that axes are retained
           # even in case of an empty selected subset.
           cmds[["saved"]] <- "plot.data.all <- plot.data;"
           cmds[["subset"]] <- "plot.data <- subset(plot.data, SelectBy);"

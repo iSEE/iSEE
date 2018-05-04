@@ -478,8 +478,7 @@ names(.all_aes_values) <- .all_aes_names
         eval(parse(text=select_cmds), envir=eval_env)
     }
     
-    # Adding more plot-specific information, depending on the type of plot
-    # to be created.
+    # Adding more plot-specific information, depending on the type of plot to be created.
     if (!group_Y && !group_X) {
         mode <- "scatter"
         specific <- list()
@@ -489,6 +488,12 @@ names(.all_aes_values) <- .all_aes_names
     } else if (!group_X) {
         mode <- "violin_horizontal"
         specific <- .violin_setup(TRUE) 
+        if (exists("plot.data.all", eval_env)) { # for simplicity, otherwise it becomes choatic in .violin_plot().
+            specific <- c(specific, 
+                "tmp <- plot.data.all$X;
+                plot.data.all$X <- plot.data.all$Y;
+                plot.data.all$Y <- tmp;")
+        }
     } else {
         mode <- "square"
         specific <- .square_setup(eval_env$plot.data)
@@ -791,10 +796,8 @@ names(.all_aes_values) <- .all_aes_names
             deparse(bounds["ymin"]), deparse(bounds["ymax"])
         )
     } else {
-        plot_cmds[["coord"]] <- sprintf("%s(ylim = range(%s$%s, na.rm=TRUE), expand = TRUE) +", 
-            coord_cmd, 
-            ifelse(is_subsetted, "plot.data.all", ifelse(is_downsampled, "plot.data.pre", "plot.data")),
-            ifelse(is_subsetted, ifelse(horizontal, "X", "Y"), "Y") # as 'all' is before X/Y switch in violin_setup.
+        plot_cmds[["coord"]] <- sprintf("%s(ylim = range(%s$Y, na.rm=TRUE), expand = TRUE) +", 
+            coord_cmd, ifelse(is_subsetted, "plot.data.all", ifelse(is_downsampled, "plot.data.pre", "plot.data"))
         )
     }
   
@@ -802,10 +805,7 @@ names(.all_aes_values) <- .all_aes_names
     
     # Retain axes when no points are generated.
     if (nrow(plot_data)==0 && is_subsetted) {
-        plot_cmds[["select_blank"]] <- sprintf(
-            "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(%s)) +",
-            ifelse(horizontal, "x = Y, y = X", "x = X, y = Y")
-        )
+        plot_cmds[["select_blank"]] <- "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
     }
 
     # Preserving the x-axis range. This applies even for horizontal violin plots,

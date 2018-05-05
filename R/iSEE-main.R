@@ -274,7 +274,7 @@ iSEE <- function(se,
   #nocov start
   iSEE_server <- function(input, output, session) {
     all_names <- list()
-    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "rowStatTable", "heatMapPlot")) {
+    for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot", "rowStatTable", "rowDataPlot", "customColPlot", "heatMapPlot")) {
         max_plots <- nrow(memory[[mode]])
         all_names[[mode]] <- sprintf("%s%i", mode, seq_len(max_plots))
     }
@@ -312,7 +312,7 @@ iSEE <- function(se,
         rerendered = 1L
     )
 
-    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "rowStatTable", "heatMapPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowStatTable", "rowDataPlot", "customColPlot", "heatMapPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (id in seq_len(max_plots)) {
             rObjects[[paste0(mode, id)]] <- 1L
@@ -327,6 +327,7 @@ iSEE <- function(se,
         rObjects[[paste0(mode, id, "_", .heatMapLegend)]] <- 1L
     }
 
+    # Tour-related observers.
     observeEvent(input$tour_firststeps, {
         if(is.null(tour)) {
           tour <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"),
@@ -340,6 +341,7 @@ iSEE <- function(se,
         session$onFlushed(function() { introjs(session, options = list(steps = tour)) })
     }
 
+    ## Modal to display code.
     observeEvent(input$getcode_all, {
       showModal(modalDialog(
         title = "My code", size = "l",fade = TRUE,
@@ -450,7 +452,7 @@ iSEE <- function(se,
     # of 'id' in the renderPlot() will be the same across all instances, because
     # of when the expression is evaluated.
 
-    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowStatTable", "rowDataPlot", "heatMapPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowStatTable", "rowDataPlot", "customColPlot", "heatMapPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (id in seq_len(max_plots)) {
             local({
@@ -550,7 +552,7 @@ iSEE <- function(se,
     # Parameter panel observers.
     #######################################################################
 
-    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "customColPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (id in seq_len(max_plots)) {
             for (panel in c(.dataParamBoxOpen, .visualParamBoxOpen, .selectParamBoxOpen)) {
@@ -605,7 +607,7 @@ iSEE <- function(se,
     # Point selection observers.
     #######################################################################
 
-    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "customColPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (id in seq_len(max_plots)) {
             local({
@@ -869,7 +871,7 @@ iSEE <- function(se,
     # Click observers.
     #######################################################################
 
-    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "customColPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (id in seq_len(max_plots)) {
             local({
@@ -940,7 +942,7 @@ iSEE <- function(se,
     #   If an open lasso is present, it is deleted.
     #   If there was no open lasso, you zoom out.
 
-    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "customColPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (id in seq_len(max_plots)) {
             local({
@@ -1060,7 +1062,7 @@ iSEE <- function(se,
         }
     }
 
-    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "customColPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (id in seq_len(max_plots)) {
             local({
@@ -1096,7 +1098,17 @@ iSEE <- function(se,
     # Dot-related plot creation section. ----
     #######################################################################
 
-    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot")) {
+    # Setting up functions for the custom column plot.
+    # This modifies the cached coordinates using pass-by-reference on the pObjects environment.
+    .remake_customColPlot <- function(id, ...) {
+        current <- paste0("customColPlot", id)
+        cached <- pObjects$cached_plots[[current]]
+        out <- .make_customColPlot(id, ..., cached=cached)
+        pObjects$cached_plots[[current]] <- out$cached
+        return(out)
+    }
+
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "customColPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
 
         # Defining mode-specific plotting functions.
@@ -1104,14 +1116,16 @@ iSEE <- function(se,
                       redDimPlot=.make_redDimPlot,
                       featAssayPlot=.make_featAssayPlot,
                       colDataPlot=.make_colDataPlot,
-                      rowDataPlot=.make_rowDataPlot)
+                      rowDataPlot=.make_rowDataPlot,
+                      customColPlot=.remake_customColPlot)
 
         # Defining fundamental parameters that destroy brushes/lassos upon being changed.
         protected <- switch(mode,
                             redDimPlot=c(.redDimType, .redDimXAxis, .redDimYAxis),
                             colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
                             featAssayPlot=c(.featAssayAssay, .featAssayXAxisColData),
-                            rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData))
+                            rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData),
+                            customColPlot=character(0))
 
         # Defining non-fundamental parameters that do not destroy brushes/lassos.
         if (mode=="rowDataPlot") {

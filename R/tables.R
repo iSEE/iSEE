@@ -27,7 +27,7 @@
     names(table_links) <- sprintf("rowStatTable%i", seq_len(Ntabs))
   
     # Adding the links for the colors.
-    for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot", "rowDataPlot")) { 
+    for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot", "rowDataPlot", "customColPlot")) { 
         N <- nrow(memory[[mode]])
         cur_panels <- sprintf("%s%i", mode, seq_len(N))
     

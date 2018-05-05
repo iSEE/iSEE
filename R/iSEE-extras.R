@@ -307,9 +307,7 @@
 #' \code{\link{iSEE}}
 .setup_initial <- function(initialPanels, memory) {
     if (is.null(initialPanels)) {
-        initialPanels <- data.frame(Name=c("Reduced dimension plot 1", "Column data plot 1",
-                                           "Feature assay plot 1", "Row statistics table 1",
-                                           "Row data plot 1", "Heat map 1"),
+        initialPanels <- data.frame(Name=paste(translation, 1),
                                     Width=4, Height=500L, stringsAsFactors=FALSE)
     }
 
@@ -380,7 +378,7 @@ height_limits <- c(400L, 1000L)
     all_active <- paste0(active_panels$Type, active_panels$ID)
 
     # Checking for selecting/linking of column-based plots.
-    for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot")) {
+    for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot", "customColPlot")) {
         cur_memory <- memory[[mode]]
         self_active <- rownames(cur_memory)
 

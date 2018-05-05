@@ -22,6 +22,7 @@
 #' This should contain a \code{Name} character field and may have optional \code{Width} and \code{Height} integer fields, see Details.
 #' @param annotFun A function, similar to those returned by \code{\link{annotateEntrez}} or \code{\link{annotateEnsembl}}.
 #' The function should accept two parameters, \code{se} and \code{row_index}, and return a HTML element with annotation for the selected row.
+#' @param customColFun A named list of functions for reporting coordinates to use in a custom column data plot, see \code{?"\link{Custom iSEE plots}"}.
 #' @param colormap An \linkS4class{ExperimentColorMap} object that defines custom color maps to apply to individual \code{assays}, \code{colData} and \code{rowData} covariates.
 #' @param tour A data.frame with the content of the interactive tour to be displayed after starting up the app. 
 #' @param appTitle A string indicating the title to be displayed in the app. 
@@ -95,18 +96,23 @@ iSEE <- function(se,
         heatMapMax=5,
         initialPanels=NULL,
         annotFun = NULL,
+        customColFun = NULL,
         colormap=ExperimentColorMap(),
         tour = NULL,
         appTitle = NULL,
         runLocal=TRUE) {
 
-  # Save the original name of the input object for the command to rename it
-  # in the tracker
+  # Save the original name of the input object for renaming in the tracker
   se_name <- deparse(substitute(se))
   ecm_name <- deparse(substitute(colormap))
+  ccf_name <- deparse(substitute(customColFun))
+
   se_out <- .sanitize_SE_input(se)
   se <- se_out$object
   se_cmds <- se_out$cmds
+
+  # Storing the custom column plot functions.
+  se <- .set_custom_col_fun(se, customColFun)
 
   # Throw an error if the colormap supplied is not compatible with the object
   isColorMapCompatible(colormap, se, error = TRUE)
@@ -1108,7 +1114,7 @@ iSEE <- function(se,
                             colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
                             featAssayPlot=c(.featAssayAssay, .featAssayXAxisColData),
                             rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData),
-                            customColPlot=character(0))
+                            customColPlot=.customColFun)
 
         # Defining non-fundamental parameters that do not destroy brushes/lassos.
         if (mode=="rowDataPlot") {

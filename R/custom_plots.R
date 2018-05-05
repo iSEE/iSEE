@@ -103,14 +103,14 @@
     }
     
     # Constructing the evaluation commands to get the points.
-    # Checking whether the selected points are the same as before.
-    # Otherwise we 'fill in' the cached results.
     validate(need(
         param_choices[[.customColFun]]!=.noSelection,
         "No function selected"
     ))
     generator <- sprintf("custom.data <- custom_col_fun[[%s]](se, rownames(plot.data));", deparse(param_choices[[.customColFun]]))
 
+    # Checking whether the selected points are the same as before.
+    # Otherwise we 'fill in' the cached results.
     if (!identical(rownames(eval_env$plot.data), rownames(cached$coordinates))) {
         eval(parse(text=generator), envir=eval_env)
         cached <- eval_env$custom.data 
@@ -140,7 +140,8 @@
 
     # Adding more plot-specific information, depending on the type of plot to be created.
     specific <- .choose_plot_type(group_X, group_Y, eval_env)
-    cmd_list <- list(data=data_cmds, select=select_cmds, setup=c(custom_cmds, "", specific)) 
+    if (length(specific)) specific <- c("", specific)
+    cmd_list <- list(data=data_cmds, select=select_cmds, setup=c(custom_cmds, specific)) 
 
     # Downsampling and creating the plot object.
     # DO NOT MOVE the 'xy' below .downsample_points(), as downsampling will alter the value in 'envir'.

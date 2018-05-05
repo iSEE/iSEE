@@ -276,24 +276,10 @@ iSEE <- function(se,
     pObjects$memory <- memory
     pObjects$commands <- empty_list
 
+    pObjects$coordinates <- empty_list
     pObjects$selection_links <- .spawn_selection_chart(memory)
     pObjects$table_links <- .spawn_table_links(memory)
-    pObjects$cached_plots <- empty_list
-
-    # Evaluating certain plots to fill the coordinate list, if there are any selections.
-	# This is done in topological order so that all dependencies are satisfied.
-    pObjects$coordinates <- empty_list
-    eval_order <- .establish_eval_order(pObjects$selection_links)
-    for (panelname in eval_order) {
-        enc <- .split_encoded(panelname)
-        FUN <- switch(enc$Type,
-                      redDimPlot=.make_redDimPlot,
-                      featAssayPlot=.make_featAssayPlot,
-                      colDataPlot=.make_colDataPlot,
-                      rowDataPlot=.make_rowDataPlot)
-		p.out <- FUN(enc$ID, pObjects$memory, pObjects$coordinates, se, colormap)
-		pObjects$coordinates[[panelname]] <- p.out$xy[,c("X", "Y")]
-    }
+    pObjects$cached_info <- empty_list
 
     # Storage for all the reactive objects
     rObjects <- reactiveValues(
@@ -316,7 +302,35 @@ iSEE <- function(se,
         rObjects[[paste0(mode, id, "_", .heatMapLegend)]] <- 1L
     }
 
-    # Tour-related observers.
+    # Defining the custom plotting functions.
+    # This modifies the cached coordinates using pass-by-reference on the pObjects environment.
+    .remake_customColPlot <- function(id, ...) {
+        current <- paste0("customColPlot", id)
+        cached <- pObjects$cached_info[[current]]
+        out <- .make_customColPlot(id, ..., cached=cached)
+        pObjects$cached_info[[current]] <- out$cached
+        return(out)
+    }
+
+    # Evaluating certain plots to fill the coordinate list, if there are any selections.
+	# This is done in topological order so that all dependencies are satisfied.
+    eval_order <- .establish_eval_order(pObjects$selection_links)
+    for (panelname in eval_order) {
+        enc <- .split_encoded(panelname)
+        FUN <- switch(enc$Type,
+                      redDimPlot=.make_redDimPlot,
+                      featAssayPlot=.make_featAssayPlot,
+                      colDataPlot=.make_colDataPlot,
+                      rowDataPlot=.make_rowDataPlot,
+                      customColPlot=.remake_custom_plot)
+		p.out <- FUN(enc$ID, pObjects$memory, pObjects$coordinates, se, colormap)
+		pObjects$coordinates[[panelname]] <- p.out$xy[,c("X", "Y")]
+    }
+
+    #######################################################################
+    # General observers. ----
+    #######################################################################
+
     observeEvent(input$tour_firststeps, {
         if(is.null(tour)) {
           tour <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"),
@@ -330,7 +344,6 @@ iSEE <- function(se,
         session$onFlushed(function() { introjs(session, options = list(steps = tour)) })
     }
 
-    ## Modal to display code.
     observeEvent(input$getcode_all, {
       showModal(modalDialog(
         title = "My code", size = "l",fade = TRUE,
@@ -346,7 +359,6 @@ iSEE <- function(se,
         ))
     })
     
-    ## Modal to display current panel settings
     observeEvent(input$get_panel_settings, {
         showModal(modalDialog(
             title = "Panel settings", size = "l",fade = TRUE,
@@ -1088,16 +1100,6 @@ iSEE <- function(se,
     # Dot-related plot creation section. ----
     #######################################################################
 
-    # Setting up functions for the custom column plot.
-    # This modifies the cached coordinates using pass-by-reference on the pObjects environment.
-    .remake_customColPlot <- function(id, ...) {
-        current <- paste0("customColPlot", id)
-        cached <- pObjects$cached_plots[[current]]
-        out <- .make_customColPlot(id, ..., cached=cached)
-        pObjects$cached_plots[[current]] <- out$cached
-        return(out)
-    }
-
     for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "customColPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
 
@@ -1504,14 +1506,14 @@ iSEE <- function(se,
                 p.out <- .make_heatMapPlot(id0, pObjects$memory, pObjects$coordinates, se, colormap)
                 pObjects$commands[[plot_name]] <- p.out$cmd_list
                 pObjects$coordinates[[plot_name]] <- p.out$xy # Caching the expression matrix.
-                pObjects$cached_plots[[plot_name]] <- p.out$legends # Caching the legend plot for downstream use.
+                pObjects$cached_info[[plot_name]] <- p.out$legends # Caching the legend plot for downstream use.
                 p.out$plot
             })
 
             # Defining the legend.
             output[[legend_field]] <- renderPlot({
                 force(rObjects[[legend_field]])
-                gg <- pObjects$cached_plots[[plot_name]]
+                gg <- pObjects$cached_info[[plot_name]]
                 cowplot::plot_grid(plotlist = gg, ncol=1)
             })
 

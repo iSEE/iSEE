@@ -31,3 +31,112 @@
 .get_custom_col_fun <- function(se) {
     SingleCellExperiment:::int_metadata(se)$iSEE$custom_col_fun # AL: will fix this.
 }
+
+#' Make a custom column plot
+#'
+#' Make a custom plot of column (i.e., sample) data, using a user-specified function to generate coordinates.
+#'
+#' @param id Integer scalar specifying the index of the current custom column plot.
+#' @param all_memory list of DataFrames, where each DataFrame corresponds to a panel type and contains the settings for each individual panel of that type.
+#' @param all_coordinates A list of data.frames that contain the coordinates and covariates of data points visible in each of the plots.
+#' @param se A SingleCellExperiment object.
+#' @param colormap An ExperimentColorMap object that defines custom color maps for individual \code{assays}, \code{colData}, and \code{rowData} covariates.
+#' @param cached A data.frame of cached results from previous runs.
+#'
+#' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}, equivalent to the output of \code{?\link{.plot_wrapper}}.
+#' A \code{cached} field is also returned containing the result of evaluating the user-specified function.
+#' 
+#' @details
+#' This function will try to use the input \code{cached} coordinates if possible.
+#' In particular, it will only regenerate the coordinates if a user transmits a restricting selection to the custom column plot,
+#' and the selection differs from what is in the input \code{cached} (based on differences in the names of the selected samples).
+#'
+#' For the output \code{cached}, the idea is that it will be stored in the main \code{\link{iSEE}} function.
+#' It can then be passed to this function upon future re-plotting of the custom column plot.
+#' 
+#' @author Aaron Lun
+#' @rdname INTERNAL_make_customColumnPlot
+#' @seealso
+#' \code{\link{.process_selectby_choice}},
+#' \code{\link{.choose_plot_type}},
+#' \code{\link{.downsample_points}}
+#' 
+#' @importFrom SummarizedExperiment colData
+.make_customColPlot <- function(id, all_memory, all_coordinates, se, colormap, cached) {
+    param_choices <- all_memory$customColPlot[id,]
+    eval_env <- new.env()
+    eval_env$se <- se
+    eval_env$all_coordinates <- all_coordinates
+
+    # Mocking up a plot.data.
+    data_cmds <- character(0)
+    data_cmds[["init"]] <- c("plot.data <- data.frame(row.names=colnames(se));")
+
+    # Adding coloring information as well.    
+    color_out <- .define_colorby_for_column_plot(param_choices, se)
+    data_cmds[["color"]] <- color_out$cmds
+    color_lab <- color_out$label
+
+    # Ensuring that colors are either factor or numeric. 
+    eval(parse(text=data_cmds), envir=eval_env)
+
+    coloring <- eval_env$plot.data$ColorBy
+    if (!is.null(coloring)) {
+        color_coerce_cmd <- .coerce_type(coloring, "ColorBy", as_numeric=!.is_groupable(coloring))
+        eval(parse(text=color_coerce_cmd), envir=eval_env)
+        data_cmds <- c(data_cmds, color_coerce_cmd)
+    }
+
+    # Implementing the selection. 
+    select_out <- .process_selectby_choice(param_choices, all_memory)
+    select_cmds <- select_out$cmds
+    if (length(select_cmds)) { 
+        eval_env$all_brushes <- select_out$data
+        eval_env$all_lassos <- select_out$data
+        eval(parse(text=select_cmds), envir=eval_env)
+    }
+    
+    # Constructing the evaluation commands to get the points.
+    # Checking whether the selected points are the same as before.
+    # Otherwise we 'fill in' the cached results.
+    eval_env$all_functions <- .get_custom_col_fun(se)
+    enerator <- sprintf("custom.data <- all_functions[[%s]](se, rownames(plot.data));", deparse(param_choices[[.customColFun]]))
+
+    if (!identical(rownames(eval_env$plot.data), rownames(cached))) {
+        eval(parse(text=generator), envir=eval_env)
+        cached <- eval_env$custom.data 
+    } else {
+        eval_env$custom.data <- cached
+    }
+
+    # Coercing type of the X and Y values.
+    custom_cmds <- character(0)
+    custom_cmds[["reset"]] <- c("plot.data$X <- custom.data$X;", "plot.data$Y <- custom.data$Y;")
+
+    xvals <- eval_env$plot.data$X
+    group_X <- .is_groupable(xvals)
+    custom_cmds[["more_X"]] <- .coerce_type(xvals, "X", as_numeric=!group_X)
+    
+    yvals <- eval_env$plot.data$Y
+    group_Y <- .is_groupable(yvals)
+    custom_cmds[["more_Y"]] <- .coerce_type(yvals, "Y", as_numeric=!group_Y)
+
+    eval(parse(text=custom_cmds), envir=eval_env)
+    custom_cmds <- c(generator, custom_cmds)
+
+    # Adding more plot-specific information, depending on the type of plot to be created.
+    specific <- .choose_plot_type(group_X, group_Y, eval_env)
+    cmd_list <- list(data=data_cmds, select=select_cmds, setup=c(custom_cmds, "", specific)) 
+
+    # Downsampling and creating the plot object.
+    # DO NOT MOVE the 'xy' below .downsample_points(), as downsampling will alter the value in 'envir'.
+    xy <- eval_env$plot.data 
+    downsample_cmds <- .downsample_points(param_choices, eval_env)
+
+    xlab <- cached$xlab
+    ylab <- cached$ylab
+    plot_title <- cached$title
+    plot_out <- .create_plot(eval_env, param_choices, x_lab=xlab, y_lab=ylab, title=plot_title, color_lab = color_lab, by_row = FALSE)
+
+    return(list(cmd_list = c(cmd_list, list(plot=c(downsample_cmds, plot_out$cmds))), xy = xy, plot = plot_out$plot, cached = cached))
+}

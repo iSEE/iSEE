@@ -4,36 +4,20 @@
 #' SummarizedExperiment/SingleCellExperiment, using a Shiny interface.
 #'
 #' @param se An object that is coercible to \linkS4class{SingleCellExperiment}.
-#' @param redDimArgs A DataFrame similar to that produced by
-#' \code{\link{redDimPlotDefaults}}, specifying initial parameters
-#' for the plots.
-#' @param colDataArgs A DataFrame similar to that produced by
-#' \code{\link{colDataPlotDefaults}}, specifying initial parameters
-#' for the plots.
-#' @param featAssayArgs A DataFrame similar to that produced by
-#' \code{\link{featAssayPlotDefaults}}, specifying initial parameters
-#' for the plots.
-#' @param rowStatArgs A DataFrame similar to that produced by
-#' \code{\link{rowStatTableDefaults}}, specifying initial parameters
-#' for the plots.
-#' @param rowDataArgs A DataFrame similar to that produced by
-#' \code{\link{rowDataPlotDefaults}}, specifying initial parameters
-#' for the plots.
-#' @param heatMapArgs A DataFrame similar to that produced by
-#' \code{\link{heatMapPlotDefaults}}, specifying initial parameters
-#' for the plots.
-#' @param redDimMax An integer scalar specifying the maximum number of
-#' reduced dimension plots in the interface.
-#' @param colDataMax An integer scalar specifying the maximum number of
-#' column data plots in the interface.
-#' @param featAssayMax An integer scalar specifying the maximum number of
-#' feature assay plots in the interface.
-#' @param rowStatMax An integer scalar specifying the maximum number of
-#' row statistics tables in the interface.
-#' @param rowDataMax An integer scalar specifying the maximum number of
-#' row data plots in the interface.
-#' @param heatMapMax An integer scalar specifying the maximum number of
-#' heatmaps in the interface.
+#' @param redDimArgs A DataFrame similar to that produced by \code{\link{redDimPlotDefaults}}, specifying initial parameters for the reduced dimension plots.
+#' @param colDataArgs A DataFrame similar to that produced by \code{\link{colDataPlotDefaults}}, specifying initial parameters for the column data plots.
+#' @param featAssayArgs A DataFrame similar to that produced by \code{\link{featAssayPlotDefaults}}, specifying initial parameters for the feature assay plots.
+#' @param rowStatArgs A DataFrame similar to that produced by \code{\link{rowStatTableDefaults}}, specifying initial parameters for the row statistics tables. 
+#' @param rowDataArgs A DataFrame similar to that produced by \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the row data plots.
+#' @param customPlotArgs A DataFrame similar to that produced by \code{\link{customColPlotDefaults}}, specifying initial parameters for the custom column plots.
+#' @param heatMapArgs A DataFrame similar to that produced by \code{\link{heatMapPlotDefaults}}, specifying initial parameters for the heatmaps.
+#' @param redDimMax An integer scalar specifying the maximum number of reduced dimension plots in the interface.
+#' @param colDataMax An integer scalar specifying the maximum number of column data plots in the interface.
+#' @param featAssayMax An integer scalar specifying the maximum number of feature assay plots in the interface.
+#' @param rowStatMax An integer scalar specifying the maximum number of row statistics tables in the interface.
+#' @param rowDataMax An integer scalar specifying the maximum number of row data plots in the interface.
+#' @param customColMax An integer scalar specifying the maximum number of custom column plots in the interface.
+#' @param heatMapMax An integer scalar specifying the maximum number of heatmaps in the interface.
 #' @param initialPanels A DataFrame specifying which panels should be created at initialization. 
 #' This should contain a \code{Name} character field and may have optional \code{Width} and \code{Height} integer fields, see Details.
 #' @param annotFun A function, constructed in the form of
@@ -111,27 +95,28 @@
 #' if (interactive()) {
 #'   shiny::runApp(app, port = 1234)
 #' }
-iSEE <- function(
-  se,
-  redDimArgs=NULL,
-  colDataArgs=NULL,
-  featAssayArgs=NULL,
-  rowStatArgs=NULL,
-  rowDataArgs=NULL,
-  heatMapArgs=NULL,
-  redDimMax=5,
-  colDataMax=5,
-  featAssayMax=5,
-  rowStatMax=5,
-  rowDataMax=5,
-  heatMapMax=5,
-  initialPanels=NULL,
-  annotFun = NULL,
-  colormap=ExperimentColorMap(),
-  tour = NULL,
-  appTitle = NULL,
-  runLocal=TRUE
-) {
+iSEE <- function(se,
+        redDimArgs=NULL,
+        colDataArgs=NULL,
+        featAssayArgs=NULL,
+        rowStatArgs=NULL,
+        rowDataArgs=NULL,
+        customColArgs=NULL,
+        heatMapArgs=NULL,
+        redDimMax=5,
+        colDataMax=5,
+        featAssayMax=5,
+        rowStatMax=5,
+        rowDataMax=5,
+        customColMax=5,
+        heatMapMax=5,
+        initialPanels=NULL,
+        annotFun = NULL,
+        colormap=ExperimentColorMap(),
+        tour = NULL,
+        appTitle = NULL,
+        runLocal=TRUE) {
+
   # Save the original name of the input object for the command to rename it
   # in the tracker
   se_name <- deparse(substitute(se))
@@ -153,8 +138,8 @@ iSEE <- function(
 
   # Defining the maximum number of plots.
   memory <- .setup_memory(se,
-        redDimArgs,colDataArgs,featAssayArgs,rowStatArgs,rowDataArgs,heatMapArgs,
-        redDimMax, colDataMax, featAssayMax, rowStatMax, rowDataMax, heatMapMax)
+        redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs, customColArgs, heatMapArgs,
+        redDimMax, colDataMax, featAssayMax, rowStatMax, rowDataMax, customColMax, heatMapMax)
 
   # Defining the initial elements to be plotted.
   active_panels <- .setup_initial(initialPanels, memory)

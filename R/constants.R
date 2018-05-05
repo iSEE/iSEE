@@ -32,6 +32,9 @@
 .rowDataXAxis <- "XAxis"
 .rowDataXAxisRowData <- "XAxisRowData"
 
+# Custom column plotting parameters. ----
+.customColFun <- "Function"
+
 # Heatmap plotting parameters. ----
 .heatMapAssay <- "Assay"
 
@@ -153,6 +156,7 @@ translation <- c(redDimPlot="Reduced dimension plot",
                  featAssayPlot="Feature assay plot",
                  rowStatTable="Row statistics table",
                  rowDataPlot="Row data plot",
+                 customColPlot="Custom column plot",
                  heatMapPlot="Heat map")
 rev.translation <- names(translation)
 names(rev.translation) <- translation

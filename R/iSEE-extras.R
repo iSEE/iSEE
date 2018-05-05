@@ -41,6 +41,7 @@
 #' \item Feature assay plots will not be generated if there are no samples, no features or no assays.
 #' \item Row statistics tables will not be generated if there are no features.
 #' \item Row data plots will not be generated if there are no row metdata in \code{rowData(se)} or no features.
+#' \item Custom column data plots will not be generated if there are no samples or if no custom functions are available in the internal metadata of \code{se}.
 #' \item Heatmaps will not be generated if there are no samples, no features or no assays.
 #' }
 #'
@@ -58,6 +59,7 @@
                 featAssayPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
                 rowStatTable=! (nrow(se)==0L),
                 rowDataPlot=! (ncol(rowData(se))==0L || nrow(se)==0L),
+                customColPlot=! (ncol(se)==0L || length(.get_custom_col_fun(se))==0L),
                 heatMapPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L)
     ))
 }
@@ -101,12 +103,14 @@
 #' @param featAssayArgs A DataFrame or data.frame of user-specified arguments for feature assay plots.
 #' @param rowStatArgs A DataFrame or data.frame of user-specified arguments for row statistics tables.
 #' @param rowDataArgs A DataFrame or data.frame of user-specified arguments for row data plots.
+#' @param customColArgs A DataFrame or data.frame of user-specified arguments for custom column plots.
 #' @param heatMapArgs A DataFrame or data.frame of user-specified arguments for heat maps.
 #' @param redDimMax Integer scalar specifying the maximum number of reduced dimension plots.
 #' @param colDataMax Integer scalar specifying the maximum number of column data plots.
 #' @param featAssayMax Integer scalar specifying the maximum number of feature assay plots.
 #' @param rowStatMax Integer scalar specifying the maximum number of row statistics tables.
 #' @param rowDataMax Integer scalar specifying the maximum number of row data plots.
+#' @param customColMax Integer scalar specifying the maximum number of custom column plots.
 #' @param heatMapMax Integer scalar specifying the maximum number of heat maps.
 #'
 #' @return
@@ -133,12 +137,38 @@
 #' \code{\link{iSEE}},
 #' \code{\link{.name2index}},
 #' \code{\link{.check_plot_feasibility}}
-.setup_memory <- function(se, redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs, heatMapArgs,
-                          redDimMax, colDataMax, featAssayMax, rowStatMax, rowDataMax, heatMapMax) {
-    all_args <- list(redDimPlot=redDimArgs, colDataPlot=colDataArgs, featAssayPlot=featAssayArgs,
-                     rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs, heatMapPlot=heatMapArgs)
-    all_maxes <- list(redDimPlot=redDimMax, colDataPlot=colDataMax, featAssayPlot=featAssayMax,
-                      rowStatTable=rowStatMax, rowDataPlot=rowDataMax, heatMapPlot=heatMapMax)
+.setup_memory <- function(se,
+        redDimArgs, 
+        colDataArgs, 
+        featAssayArgs,
+        rowStatArgs, 
+        rowDataArgs, 
+        customColArgs, 
+        heatMapArgs, 
+        redDimMax, 
+        colDataMax, 
+        featAssayMax, 
+        rowStatMax, 
+        rowDataMax, 
+        customColMax,
+        heatMapMax) {
+    
+    all_args <- list(redDimPlot=redDimArgs, 
+                     colDataPlot=colDataArgs, 
+                     featAssayPlot=featAssayArgs,
+                     rowStatTable=rowStatArgs, 
+                     rowDataPlot=rowDataArgs, 
+                     customColPlot=customColArgs,
+                     heatMapPlot=heatMapArgs)
+
+    all_maxes <- list(redDimPlot=redDimMax, 
+                      colDataPlot=colDataMax, 
+                      featAssayPlot=featAssayMax,
+                      rowStatTable=rowStatMax, 
+                      rowDataPlot=rowDataMax, 
+                      customColPlot=customColMax,
+                      heatMapPlot=heatMapMax)
+
     feasibility <- .check_plot_feasibility(se)
 
     for (x in names(all_args)) {
@@ -174,8 +204,9 @@
                          redDimPlot=redDimPlotDefaults,
                          featAssayPlot=featAssayPlotDefaults,
                          colDataPlot=colDataPlotDefaults,
-                         rowDataPlot=rowDataPlotDefaults,
                          rowStatTable=rowStatTableDefaults,
+                         rowDataPlot=rowDataPlotDefaults,
+                         customColPlot=customColPlotDefaults,
                          heatMapPlot=heatMapPlotDefaults)
 
         cur_max <- all_maxes[[mode]]

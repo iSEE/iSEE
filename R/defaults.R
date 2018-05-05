@@ -68,6 +68,12 @@
 #' Defaults to the first entry of \code{rowData(se)}.}
 #' }
 #'
+#' @section Custom column plot parameters:
+#' \describe{
+#' \item{\code{Function}:}{String, which function should be used to generate coordinates for each sample?
+#' Defaults to \code{"---"}, i.e., no coordinates are generated.}
+#' }
+#'
 #' @section Coloring parameters (for points):
 #' \describe{
 #' \item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
@@ -288,6 +294,20 @@ colDataPlotDefaults <- function(se, number) {
     out[[.colDataYAxis]] <- covariates[1]
     out[[.colDataXAxis]] <- .colDataXAxisNothingTitle
     out[[.colDataXAxisColData]] <- ifelse(length(covariates)==1L, covariates[1], covariates[2])
+
+    out <- .add_general_parameters_for_column_plots(out, se)
+    if (waszero) out <- out[0,,drop=FALSE]
+    return(out)
+}
+
+#' @rdname defaults 
+#' @export
+customColPlotDefaults <- function(se, number) {
+    waszero <- number==0 
+    if (waszero) number <- 1
+
+    out <- new("DataFrame", nrows=as.integer(number))
+    out[[.customColFun]] <- .noSelection
 
     out <- .add_general_parameters_for_column_plots(out, se)
     if (waszero) out <- out[0,,drop=FALSE]

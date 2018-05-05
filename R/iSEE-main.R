@@ -340,7 +340,8 @@ iSEE <- function(se,
           "followed by Ctrl/Cmd + C).",
           "This will copy the selected parts to the clipboard."),
         aceEditor("acereport_r", mode="r",theme = "solarized_light", autoComplete = "live",
-                  value = paste0(.track_it_all(rObjects$active_panels, pObjects, se_name, ecm_name,se_cmds), collapse="\n"),
+                  value = paste0(.track_it_all(rObjects$active_panels, pObjects, 
+                          se_name, ecm_name, ccf_name, se_cmds), collapse="\n"),
                   height="600px")
         ))
     })

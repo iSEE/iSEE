@@ -5,6 +5,7 @@
 \alias{redDimPlotDefaults}
 \alias{featAssayPlotDefaults}
 \alias{colDataPlotDefaults}
+\alias{customColPlotDefaults}
 \alias{rowStatTableDefaults}
 \alias{rowDataPlotDefaults}
 \alias{heatMapPlotDefaults}
@@ -15,6 +16,8 @@ redDimPlotDefaults(se, number)
 featAssayPlotDefaults(se, number)
 
 colDataPlotDefaults(se, number)
+
+customColPlotDefaults(se, number)
 
 rowStatTableDefaults(se, number)
 
@@ -93,6 +96,14 @@ Defaults to the first entry of \code{colData(se)}.}
 Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Row data"} or \code{"Feature name"}.}
 \item{\code{XAxisRowData}:}{Character, which column of \code{rowData(se)} should be shown on the x-axis if \code{XAxis="Row data"}?
 Defaults to the first entry of \code{rowData(se)}.}
+}
+}
+
+\section{Custom column plot parameters}{
+
+\describe{
+\item{\code{Function}:}{String, which function should be used to generate coordinates for each sample?
+Defaults to \code{"---"}, i.e., no coordinates are generated.}
 }
 }
 

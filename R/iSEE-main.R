@@ -4,68 +4,38 @@
 #' SummarizedExperiment/SingleCellExperiment, using a Shiny interface.
 #'
 #' @param se An object that is coercible to \linkS4class{SingleCellExperiment}.
-#' @param redDimArgs A DataFrame similar to that produced by
-#' \code{\link{redDimPlotDefaults}}, specifying initial parameters
-#' for the plots.
-#' @param colDataArgs A DataFrame similar to that produced by
-#' \code{\link{colDataPlotDefaults}}, specifying initial parameters
-#' for the plots.
-#' @param featAssayArgs A DataFrame similar to that produced by
-#' \code{\link{featAssayPlotDefaults}}, specifying initial parameters
-#' for the plots.
-#' @param rowStatArgs A DataFrame similar to that produced by
-#' \code{\link{rowStatTableDefaults}}, specifying initial parameters
-#' for the plots.
-#' @param rowDataArgs A DataFrame similar to that produced by
-#' \code{\link{rowDataPlotDefaults}}, specifying initial parameters
-#' for the plots.
-#' @param heatMapArgs A DataFrame similar to that produced by
-#' \code{\link{heatMapPlotDefaults}}, specifying initial parameters
-#' for the plots.
-#' @param redDimMax An integer scalar specifying the maximum number of
-#' reduced dimension plots in the interface.
-#' @param colDataMax An integer scalar specifying the maximum number of
-#' column data plots in the interface.
-#' @param featAssayMax An integer scalar specifying the maximum number of
-#' feature assay plots in the interface.
-#' @param rowStatMax An integer scalar specifying the maximum number of
-#' row statistics tables in the interface.
-#' @param rowDataMax An integer scalar specifying the maximum number of
-#' row data plots in the interface.
-#' @param heatMapMax An integer scalar specifying the maximum number of
-#' heatmaps in the interface.
+#' @param redDimArgs A DataFrame similar to that produced by \code{\link{redDimPlotDefaults}}, specifying initial parameters for the reduced dimension plots.
+#' @param colDataArgs A DataFrame similar to that produced by \code{\link{colDataPlotDefaults}}, specifying initial parameters for the column data plots.
+#' @param featAssayArgs A DataFrame similar to that produced by \code{\link{featAssayPlotDefaults}}, specifying initial parameters for the feature assay plots.
+#' @param rowStatArgs A DataFrame similar to that produced by \code{\link{rowStatTableDefaults}}, specifying initial parameters for the row statistics tables. 
+#' @param rowDataArgs A DataFrame similar to that produced by \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the row data plots.
+#' @param customColArgs A DataFrame similar to that produced by \code{\link{customColPlotDefaults}}, specifying initial parameters for the custom column plots.
+#' @param heatMapArgs A DataFrame similar to that produced by \code{\link{heatMapPlotDefaults}}, specifying initial parameters for the heatmaps.
+#' @param redDimMax An integer scalar specifying the maximum number of reduced dimension plots in the interface.
+#' @param colDataMax An integer scalar specifying the maximum number of column data plots in the interface.
+#' @param featAssayMax An integer scalar specifying the maximum number of feature assay plots in the interface.
+#' @param rowStatMax An integer scalar specifying the maximum number of row statistics tables in the interface.
+#' @param rowDataMax An integer scalar specifying the maximum number of row data plots in the interface.
+#' @param customColMax An integer scalar specifying the maximum number of custom column plots in the interface.
+#' @param heatMapMax An integer scalar specifying the maximum number of heatmaps in the interface.
 #' @param initialPanels A DataFrame specifying which panels should be created at initialization. 
 #' This should contain a \code{Name} character field and may have optional \code{Width} and \code{Height} integer fields, see Details.
-#' @param annotFun A function, constructed in the form of
-#' \code{\link{annotateEntrez}} or \code{\link{annotateEnsembl}}.
-#' This function is built in a way to generate itself 
-#' a function supposed to accept two parameters,
-#' \code{se} and \code{row_index},
-#' to have a unified yet flexible interface to generate additional information
-#' to display for the selected genes of interest. 
-#' @param colormap An \linkS4class{ExperimentColorMap} object that defines
-#' custom color maps to apply to individual \code{assays}, \code{colData},
-#' and \code{rowData} covariates.
-#' @param tour A data.frame with the content of the interactive tour to be 
-#' displayed after starting up the app. Defaults to \code{NULL}. More 
-#' information is provided in the details.
-#' @param appTitle A string indicating the title to be displayed in the app. If 
-#' not provided, the app displays the version info of \code{\link{iSEE}}. Users
-#' can specify this to provide a compact description of the dataset, or the 
-#' PubMedID for the input data. 
-#' @param runLocal A logical indicating whether the app is to be run locally
-#' or remotely on a server, which determines how documentation will be
-#' accessed.
+#' @param annotFun A function, similar to those returned by \code{\link{annotateEntrez}} or \code{\link{annotateEnsembl}}.
+#' The function should accept two parameters, \code{se} and \code{row_index}, and return a HTML element with annotation for the selected row.
+#' @param customColFun A named list of functions for reporting coordinates to use in a custom column data plot, see \code{?"\link{Custom iSEE plots}"}.
+#' @param colormap An \linkS4class{ExperimentColorMap} object that defines custom color maps to apply to individual \code{assays}, \code{colData} and \code{rowData} covariates.
+#' @param tour A data.frame with the content of the interactive tour to be displayed after starting up the app. 
+#' @param appTitle A string indicating the title to be displayed in the app. 
+#' If not provided, the app displays the version info of \code{\link{iSEE}}. 
+#' @param runLocal A logical indicating whether the app is to be run locally or remotely on a server, which determines how documentation will be accessed.
 #'
-#' @details Users can pass default parameters via DataFrame objects in
-#' \code{redDimArgs} and \code{featAssayArgs}. Each object can contain
-#' some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
+#' @details 
+#' Users can pass default parameters via DataFrame objects in \code{redDimArgs} and \code{featAssayArgs}. 
+#' Each object can contain some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
 #' Any missing fields will be filled in with the defaults.
 #'
-#' The number of maximum plots for each type of plot is set to the larger
-#' of \code{*Max} and \code{nrow(*Args)}. Users can specify any number of
-#' maximum plots, though increasing the number will increase the time
-#' required to render the interface.
+#' The number of maximum plots for each type of plot is set to the larger of \code{*Max} and \code{nrow(*Args)}. 
+#' Users can specify any number of maximum plots, though increasing the number will increase the time required to render the interface.
 #'
 #' The \code{initialPanels} argument specifies the panels to be created upon initializing the interface. 
 #' This should be a DataFrame containing a \code{Name} field specifying the identity of the panel, e.g., \code{"Reduced dimension plot 1"}, \code{"Row statistics table 2"}.
@@ -74,11 +44,9 @@
 #' and the \code{Height} field, specifying the height of each panel from 400 to 1000 pixels. 
 #' By default, one panel of each type (where possible) will be generated, with height of 500 and width of 4.
 #' 
-#' The \code{tour} argument needs to be provided in a form compatible with the
-#' format expected by the \code{rintrojs} package, where the variables 
-#' \code{element} and \code{intro} have to be present. See more information at
-#' \url{https://github.com/carlganz/rintrojs#usage} regarding the values that 
-#' the \code{element} can assume for proper displaying.
+#' The \code{tour} argument needs to be provided in a form compatible with the format expected by the \code{rintrojs} package.
+#' There should be two columns, \code{element} and \code{intro}, with the former describing the element to highlight and the latter providing some descriptive text.
+#' See \url{https://github.com/carlganz/rintrojs#usage} for more information.
 #'
 #' @return A Shiny App is launched for interactive data exploration of the
 #' \code{\link{SummarizedExperiment}}/\code{\link{SingleCellExperiment}} 
@@ -111,34 +79,40 @@
 #' if (interactive()) {
 #'   shiny::runApp(app, port = 1234)
 #' }
-iSEE <- function(
-  se,
-  redDimArgs=NULL,
-  colDataArgs=NULL,
-  featAssayArgs=NULL,
-  rowStatArgs=NULL,
-  rowDataArgs=NULL,
-  heatMapArgs=NULL,
-  redDimMax=5,
-  colDataMax=5,
-  featAssayMax=5,
-  rowStatMax=5,
-  rowDataMax=5,
-  heatMapMax=5,
-  initialPanels=NULL,
-  annotFun = NULL,
-  colormap=ExperimentColorMap(),
-  tour = NULL,
-  appTitle = NULL,
-  runLocal=TRUE
-) {
-  # Save the original name of the input object for the command to rename it
-  # in the tracker
+iSEE <- function(se,
+        redDimArgs=NULL,
+        colDataArgs=NULL,
+        featAssayArgs=NULL,
+        rowStatArgs=NULL,
+        rowDataArgs=NULL,
+        customColArgs=NULL,
+        heatMapArgs=NULL,
+        redDimMax=5,
+        colDataMax=5,
+        featAssayMax=5,
+        rowStatMax=5,
+        rowDataMax=5,
+        customColMax=5,
+        heatMapMax=5,
+        initialPanels=NULL,
+        annotFun = NULL,
+        customColFun = NULL,
+        colormap=ExperimentColorMap(),
+        tour = NULL,
+        appTitle = NULL,
+        runLocal=TRUE) {
+
+  # Save the original name of the input object for renaming in the tracker
   se_name <- deparse(substitute(se))
   ecm_name <- deparse(substitute(colormap))
+  ccf_name <- deparse(substitute(customColFun))
+
   se_out <- .sanitize_SE_input(se)
   se <- se_out$object
   se_cmds <- se_out$cmds
+
+  # Storing the custom column plot functions.
+  se <- .set_custom_col_fun(se, customColFun)
 
   # Throw an error if the colormap supplied is not compatible with the object
   isColorMapCompatible(colormap, se, error = TRUE)
@@ -153,8 +127,8 @@ iSEE <- function(
 
   # Defining the maximum number of plots.
   memory <- .setup_memory(se,
-        redDimArgs,colDataArgs,featAssayArgs,rowStatArgs,rowDataArgs,heatMapArgs,
-        redDimMax, colDataMax, featAssayMax, rowStatMax, rowDataMax, heatMapMax)
+        redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs, customColArgs, heatMapArgs,
+        redDimMax, colDataMax, featAssayMax, rowStatMax, rowDataMax, customColMax, heatMapMax)
 
   # Defining the initial elements to be plotted.
   active_panels <- .setup_initial(initialPanels, memory)
@@ -289,7 +263,7 @@ iSEE <- function(
   #nocov start
   iSEE_server <- function(input, output, session) {
     all_names <- list()
-    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "rowStatTable", "heatMapPlot")) {
+    for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot", "rowStatTable", "rowDataPlot", "customColPlot", "heatMapPlot")) {
         max_plots <- nrow(memory[[mode]])
         all_names[[mode]] <- sprintf("%s%i", mode, seq_len(max_plots))
     }
@@ -302,24 +276,10 @@ iSEE <- function(
     pObjects$memory <- memory
     pObjects$commands <- empty_list
 
+    pObjects$coordinates <- empty_list
     pObjects$selection_links <- .spawn_selection_chart(memory)
     pObjects$table_links <- .spawn_table_links(memory)
-    pObjects$cached_plots <- empty_list
-
-    # Evaluating certain plots to fill the coordinate list, if there are any selections.
-	# This is done in topological order so that all dependencies are satisfied.
-    pObjects$coordinates <- empty_list
-    eval_order <- .establish_eval_order(pObjects$selection_links)
-    for (panelname in eval_order) {
-        enc <- .split_encoded(panelname)
-        FUN <- switch(enc$Type,
-                      redDimPlot=.make_redDimPlot,
-                      featAssayPlot=.make_featAssayPlot,
-                      colDataPlot=.make_colDataPlot,
-                      rowDataPlot=.make_rowDataPlot)
-		p.out <- FUN(enc$ID, pObjects$memory, pObjects$coordinates, se, colormap)
-		pObjects$coordinates[[panelname]] <- p.out$xy[,c("X", "Y")]
-    }
+    pObjects$cached_info <- empty_list
 
     # Storage for all the reactive objects
     rObjects <- reactiveValues(
@@ -327,7 +287,7 @@ iSEE <- function(
         rerendered = 1L
     )
 
-    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "rowStatTable", "heatMapPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowStatTable", "rowDataPlot", "customColPlot", "heatMapPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (id in seq_len(max_plots)) {
             rObjects[[paste0(mode, id)]] <- 1L
@@ -341,6 +301,43 @@ iSEE <- function(
     for (id in seq_len(max_plots)) {
         rObjects[[paste0(mode, id, "_", .heatMapLegend)]] <- 1L
     }
+
+    # Defining the custom plotting functions.
+    # This modifies the cached coordinates using pass-by-reference on the pObjects environment.
+    .remake_customColPlot <- function(id, ...) {
+        current <- paste0("customColPlot", id)
+        cached <- pObjects$cached_info[[current]]
+        out <- .make_customColPlot(id, ..., cached=cached)
+        pObjects$cached_info[[current]] <- out$cached
+
+        if (!identical(rownames(out$cached$coordinates), rownames(cached$coordinates))) {
+            # Clearing the brush if the samples involved have changed.
+            # We set the plot to a straight ggplot() to avoid a double-render.
+            .regenerate_unselected_plot("customColPlot", id, pObjects, rObjects, input, session)
+            out$plot <- ggplot()
+        }
+
+        return(out)
+    }
+
+    # Evaluating certain plots to fill the coordinate list, if there are any selections.
+	# This is done in topological order so that all dependencies are satisfied.
+    eval_order <- .establish_eval_order(pObjects$selection_links)
+    for (panelname in eval_order) {
+        enc <- .split_encoded(panelname)
+        FUN <- switch(enc$Type,
+                      redDimPlot=.make_redDimPlot,
+                      featAssayPlot=.make_featAssayPlot,
+                      colDataPlot=.make_colDataPlot,
+                      rowDataPlot=.make_rowDataPlot,
+                      customColPlot=.remake_customColPlot)
+		p.out <- FUN(enc$ID, pObjects$memory, pObjects$coordinates, se, colormap)
+		pObjects$coordinates[[panelname]] <- p.out$xy[,c("X", "Y")]
+    }
+
+    #######################################################################
+    # General observers. ----
+    #######################################################################
 
     observeEvent(input$tour_firststeps, {
         if(is.null(tour)) {
@@ -364,12 +361,12 @@ iSEE <- function(
           "followed by Ctrl/Cmd + C).",
           "This will copy the selected parts to the clipboard."),
         aceEditor("acereport_r", mode="r",theme = "solarized_light", autoComplete = "live",
-                  value = paste0(.track_it_all(rObjects$active_panels, pObjects, se_name, ecm_name,se_cmds), collapse="\n"),
+                  value = paste0(.track_it_all(rObjects$active_panels, pObjects, 
+                          se_name, ecm_name, ccf_name, se_cmds), collapse="\n"),
                   height="600px")
         ))
     })
     
-    ## Modal to display current panel settings
     observeEvent(input$get_panel_settings, {
         showModal(modalDialog(
             title = "Panel settings", size = "l",fade = TRUE,
@@ -465,7 +462,7 @@ iSEE <- function(
     # of 'id' in the renderPlot() will be the same across all instances, because
     # of when the expression is evaluated.
 
-    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowStatTable", "rowDataPlot", "heatMapPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowStatTable", "rowDataPlot", "customColPlot", "heatMapPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (id in seq_len(max_plots)) {
             local({
@@ -565,7 +562,7 @@ iSEE <- function(
     # Parameter panel observers.
     #######################################################################
 
-    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "customColPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (id in seq_len(max_plots)) {
             for (panel in c(.dataParamBoxOpen, .visualParamBoxOpen, .selectParamBoxOpen)) {
@@ -620,7 +617,7 @@ iSEE <- function(
     # Point selection observers.
     #######################################################################
 
-    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "customColPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (id in seq_len(max_plots)) {
             local({
@@ -884,7 +881,7 @@ iSEE <- function(
     # Click observers.
     #######################################################################
 
-    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "customColPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (id in seq_len(max_plots)) {
             local({
@@ -955,7 +952,7 @@ iSEE <- function(
     #   If an open lasso is present, it is deleted.
     #   If there was no open lasso, you zoom out.
 
-    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "customColPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (id in seq_len(max_plots)) {
             local({
@@ -1075,7 +1072,7 @@ iSEE <- function(
         }
     }
 
-    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "customColPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         for (id in seq_len(max_plots)) {
             local({
@@ -1111,7 +1108,7 @@ iSEE <- function(
     # Dot-related plot creation section. ----
     #######################################################################
 
-    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot")) {
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "customColPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
 
         # Defining mode-specific plotting functions.
@@ -1119,14 +1116,16 @@ iSEE <- function(
                       redDimPlot=.make_redDimPlot,
                       featAssayPlot=.make_featAssayPlot,
                       colDataPlot=.make_colDataPlot,
-                      rowDataPlot=.make_rowDataPlot)
+                      rowDataPlot=.make_rowDataPlot,
+                      customColPlot=.remake_customColPlot)
 
         # Defining fundamental parameters that destroy brushes/lassos upon being changed.
         protected <- switch(mode,
                             redDimPlot=c(.redDimType, .redDimXAxis, .redDimYAxis),
                             colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
                             featAssayPlot=c(.featAssayAssay, .featAssayXAxisColData),
-                            rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData))
+                            rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData),
+                            customColPlot=.customColFun)
 
         # Defining non-fundamental parameters that do not destroy brushes/lassos.
         if (mode=="rowDataPlot") {
@@ -1515,14 +1514,14 @@ iSEE <- function(
                 p.out <- .make_heatMapPlot(id0, pObjects$memory, pObjects$coordinates, se, colormap)
                 pObjects$commands[[plot_name]] <- p.out$cmd_list
                 pObjects$coordinates[[plot_name]] <- p.out$xy # Caching the expression matrix.
-                pObjects$cached_plots[[plot_name]] <- p.out$legends # Caching the legend plot for downstream use.
+                pObjects$cached_info[[plot_name]] <- p.out$legends # Caching the legend plot for downstream use.
                 p.out$plot
             })
 
             # Defining the legend.
             output[[legend_field]] <- renderPlot({
                 force(rObjects[[legend_field]])
-                gg <- pObjects$cached_plots[[plot_name]]
+                gg <- pObjects$cached_info[[plot_name]]
                 cowplot::plot_grid(plotlist = gg, ncol=1)
             })
 

@@ -4,6 +4,7 @@ colDataArgs <- colDataPlotDefaults(sce, 2)
 featAssayArgs <- featAssayPlotDefaults(sce, 3)
 rowStatArgs <- rowStatTableDefaults(sce, 3)
 rowDataArgs <- rowDataPlotDefaults(sce, 1)
+customColArgs <- customColPlotDefaults(sce, 1)
 heatMapArgs <- heatMapPlotDefaults(sce, 2)
 
 # Define brush and zoom parameters for one plot each
@@ -28,24 +29,30 @@ redDimArgs[["ZoomData"]][[2]] <-
       ymin = -12.000238947242, ymax = 0.0090335134551633
     )
 
-all_memory <- iSEE:::.setup_memory(
-    se=sce, redDimArgs=redDimArgs, colDataArgs=colDataArgs, 
-    featAssayArgs=featAssayArgs, rowStatArgs=rowStatArgs, 
-    rowDataArgs=rowDataArgs, heatMapArgs=heatMapArgs,
-    redDimMax=3, colDataMax=3, featAssayMax=4, rowStatMax=4, 
-    rowDataMax=2, heatMapMax=3)
-
-inp <- DataFrame(Name = c(
-    paste0("Reduced dimension plot ", 1:3),
-    paste0("Column data plot ", 1:3),
-    paste0("Feature assay plot ", 1:4),
-    paste0("Row statistics table ", 1:4),
-    paste0("Row data plot ", 1:2),
-    paste0("Heat map ", 1:3)), 
-    Width = 4)
-
 test_that(".report_memory generates code that evaluates to the provided object",{
-    
+    sce <- iSEE:::.set_custom_col_fun(sce, list(PCA2="WHEE"))  # Adding custom functions for .setup_memory to check.
+
+    all_memory <- iSEE:::.setup_memory(sce, 
+                                       redDimArgs=redDimArgs, 
+                                       colDataArgs=colDataArgs, 
+                                       featAssayArgs=featAssayArgs, 
+                                       rowStatArgs=rowStatArgs, 
+                                       rowDataArgs=rowDataArgs, 
+                                       customColArgs=customColArgs, 
+                                       heatMapArgs=heatMapArgs,
+                                       redDimMax=3, colDataMax=3, featAssayMax=4, rowStatMax=4, 
+                                       rowDataMax=2, customColMax=0, heatMapMax=3)
+
+    inp <- DataFrame(Name = c(
+        paste("Reduced dimension plot", 1:3),
+        paste("Column data plot", 1:3),
+        paste("Feature assay plot", 1:4),
+        paste("Row statistics table", 1:4),
+        paste("Row data plot", 1:2),
+        paste("Custom column plot", 1),
+        paste("Heat map", 1:3)), 
+        Width = 4)
+
     txt <- iSEE:::.report_memory(inp, all_memory)
     
     eval_env <- new.env()
@@ -56,6 +63,7 @@ test_that(".report_memory generates code that evaluates to the provided object",
     expect_identical(eval_env$featAssayPlotArgs, all_memory$featAssayPlot)
     expect_identical(eval_env$rowStatTableArgs, all_memory$rowStatTable)
     expect_identical(eval_env$rowDataPlotArgs, all_memory$rowDataPlot)
+    expect_identical(eval_env$customColPlotArgs, all_memory$customColPlot)
     expect_identical(eval_env$heatMapPlotArgs, all_memory$heatMapPlot)
 
 })

@@ -7,8 +7,9 @@
 #' @param pObjects An environment containing \code{memory}, a list of DataFrames containing parameters for each panel of each type;
 #' \code{selection_links}, a graph object containing point selection links between panels;
 #' \code{commands}, a list of commands required to generated each plot. 
-#' @param se_name String containing the name of the \code{SummarizedExperiment}/\code{SingleCellExperiment} object.
-#' @param ecm_name String containing the name of the \code{ExperimentColorMap} in use.
+#' @param se_name String containing the name of the SummarizedExperiment or SingleCellExperiment object.
+#' @param ecm_name String containing the name of the ExperimentColorMap in use.
+#' @param ccf_name String containing the name of the list of custom column functions.
 #' @param sanitize_cmds Character vector containing the commands used to sanitizing the \code{se} object. 
 #' This is obtained by extracting \code{cmds} from the returned output of \code{.sanitize_SE_input}.
 #'
@@ -17,7 +18,7 @@
 #' 
 #' @author Federico Marini
 #' @rdname INTERNAL_track_it_all
-.track_it_all <- function(active_panels, pObjects, se_name, ecm_name, sanitize_cmds) {
+.track_it_all <- function(active_panels, pObjects, se_name, ecm_name, ccf_name, sanitize_cmds) {
   # Commands only reported for plots, not for the tables
   aobjs <- active_panels[active_panels$Type!="rowStatTable" & active_panels$Type!="heatMapPlot",]
   aobjs <- aobjs[.get_reporting_order(aobjs, pObjects$selection_links),]
@@ -33,6 +34,7 @@
     sprintf("colormap <- %s", ecm_name),
     sprintf("colormap <- synchronizeAssays(colormap, se)"),
     "all_coordinates <- list()",
+    sprintf("custom_col_fun <- %s", ccf_name),
     "")
   
   #####

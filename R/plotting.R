@@ -301,13 +301,12 @@ names(.all_aes_values) <- .all_aes_names
 #' @param ... Further arguments to pass to \code{\link{.create_plot}}.
 #' 
 #' @details
-#' This function is a convenience wrapper for the combination of \code{\link{.extract_plotting_data}} and \code{\link{.create_plot}}.
-#' The former adds the aesthetic parameters such as coloring and point selection, while the latter will generate the ggplot object itself.
+#' This function is a convenience wrapper for the combination of \code{\link{.extract_plotting_data}}, \code{\link{.downsample_points}} and \code{\link{.create_plot}}.
+#' The first command adds information such as coloring and point selection;
+#' the second incorporates density-dependent downsampling;
+#' and the last will generate the ggplot object itself.
 #' This wrapper is to be used across the individual top-level functions for each plot type.
 #'
-#' Density-dependent downsampling for speed is implemented in this function, based on \code{\link{subsetPointsByGrid}}.
-#' A \code{plot.data.pre} data.frame is also added to \code{envir} to keep the pre-subsetted information, e.g., for use in \code{\link{.violin_plot}}.
-#' 
 #' @return A list that includes the following elements:
 #' \describe{
 #'   \item{cmd_list}{A list of character vectors, where each vector contains commands to parse and evaluate to produce the final plot.
@@ -323,36 +322,18 @@ names(.all_aes_values) <- .all_aes_names
 #' @rdname INTERNAL_plot_wrapper
 #' @seealso
 #' \code{\link{.extract_plotting_data}},
+#' \code{\link{.downsample_points}},
 #' \code{\link{.create_plot}}
 .plot_wrapper <- function(data_cmds, param_choices, all_memory, all_coordinates, se, by_row, ...) {
     setup_out <- .extract_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row = by_row)
-    xy <- setup_out$envir$plot.data # DO NOT MOVE, as downsampling will alter the value in 'envir'.
 
-    # Downsampling at this point, if specified.
-    if (param_choices[[.plotPointDownsample]]) {
-        xtype <- "X"
-        ytype <- "Y"
-    
-        plot_type <- setup_out$envir$plot_type
-        if (plot_type=="square") {
-            xtype <- "jitteredX"
-            ytype <- "jitteredY"
-        } else if (plot_type=="violin" || plot_type=="violin_horizontal") {
-            xtype <- "jitteredX"
-        }
+    xy <- setup_out$envir$plot.data # DO NOT MOVE below .downsample_points, as downsampling will alter the value in 'envir'.
 
-        downsample_cmds <- c("plot.data.pre <- plot.data;", 
-            sprintf("plot.data <- subset(plot.data, subsetPointsByGrid(%s, %s, resolution=%i));",
-                xtype, ytype, param_choices[[.plotPointSampleRes]]), "")
-
-        eval(parse(text=downsample_cmds), envir=setup_out$envir)
-    } else {
-        downsample_cmds <- NULL
-    }
+    downsample_cmds <- .downsample_points(param_choices, setup_out$envir)
 
     plot_out <- .create_plot(setup_out$envir, param_choices, ..., color_lab = setup_out$color_lab, by_row = by_row)
-    return(list(cmd_list = c(setup_out$cmd_list, list(plot=c(downsample_cmds, plot_out$cmds))), 
-                xy = xy, plot = plot_out$plot)) 
+
+    return(list(cmd_list = c(setup_out$cmd_list, list(plot=c(downsample_cmds, plot_out$cmds))), xy = xy, plot = plot_out$plot)) 
 }
 
 ############################################
@@ -382,12 +363,9 @@ names(.all_aes_values) <- .all_aes_names
 #' @return
 #' A list containing \code{cmd_list}, itself a list containing:
 #' \itemize{
-#' \item \code{data}, a list of strings containing commands to generate the
-#' plotting data.frame.
-#' \item \code{select}, a list of strings containing commands to add
-#' \code{SelectBy} information to the plotting data.frame.
-#' \item \code{specific}, a list of strings containing commands to generate
-#' plot-type-specific commands, e.g., scatter for violin plots.
+#' \item \code{data}, a character vector containing commands to generate the plotting data.frame.
+#' \item \code{select}, a character vector containing commands to add \code{SelectBy} information to the plotting data.frame.
+#' \item \code{specific}, a character vector containing commands to generate plot-type-specific commands, e.g., scatter for violin plots.
 #' }
 #' 
 #' The top-level list also contains \code{envir}, an environment that is guaranteed to hold \code{plot.data} and \code{plot.type} entries.
@@ -465,7 +443,7 @@ names(.all_aes_values) <- .all_aes_names
     # Removing NAs as they mess up .proess_selectby_choice.
     more_data_cmds[["na.rm"]] <- "plot.data <- subset(plot.data, !is.na(X) & !is.na(Y));"
 
-    # Evaluating and clearing the commands..
+    # Evaluating and clearing the commands.
     eval(parse(text=unlist(more_data_cmds)), envir=eval_env)
     data_cmds <- c(data_cmds, more_data_cmds)
   
@@ -481,16 +459,45 @@ names(.all_aes_values) <- .all_aes_names
     }
     
     # Adding more plot-specific information, depending on the type of plot to be created.
+    specific <- .choose_plot_type(group_X, group_Y, eval_env)
+
+    return(list(cmd_list=list(data=unlist(data_cmds), select=select_cmds, setup=specific), 
+                envir=eval_env, color_lab=color_lab))
+}
+
+#' Choose the plot type
+#' 
+#' Define and execute commands to choose the type of plot based on whether X and/or Y are categorical or continuous.
+#' 
+#' @param group_X Logical scalar specifying if X is cateogrical.
+#' @param group_Y Logical scalar specifying if Y is cateogrical.
+#' @param envir Environment containing a \code{plot.data} data.frame with \code{X} and \code{Y} fields.
+#' 
+#' @return
+#' A character vector is returned containing commands to perform calculations for each plot type.
+#' All commands are evaluated within \code{envir}.
+#' 
+#' @details
+#' \code{envir} is effectively passed by reference, as the setup commands are executed in the environment by this function.
+#' 
+#' @author Aaron Lun
+#' @rdname INTERNAL_choose_plot_type
+#' @seealso
+#' \code{\link{.violin_setup}},
+#' \code{\link{.square_setup}}, 
+#' \code{\link{.extract_plotting_data}} 
+.choose_plot_type <- function(group_X, group_Y, envir) {
     if (!group_Y && !group_X) {
         mode <- "scatter"
-        specific <- list()
+        specific <- character()
     } else if (!group_Y) {
         mode <- "violin"
         specific <- .violin_setup(FALSE) 
     } else if (!group_X) {
         mode <- "violin_horizontal"
-        specific <- .violin_setup(TRUE) 
-        if (exists("plot.data.all", eval_env)) { # for simplicity, otherwise it becomes choatic in .violin_plot().
+        specific <- .violin_setup(TRUE)
+
+        if (exists("plot.data.all", envir)) { # flipping plot.data.all as well, otherwise it becomes choatic in .violin_plot().
             specific <- c(specific, 
                 "tmp <- plot.data.all$X;
                 plot.data.all$X <- plot.data.all$Y;
@@ -498,16 +505,64 @@ names(.all_aes_values) <- .all_aes_names
         }
     } else {
         mode <- "square"
-        specific <- .square_setup(eval_env$plot.data)
+        specific <- .square_setup(envir$plot.data)
     }
     if (length(specific)) { 
-        eval(parse(text=unlist(specific)), envir=eval_env)
+        eval(parse(text=unlist(specific)), envir=envir)
     }
-    eval_env$plot.type <- mode
-
-    return(list(cmd_list=list(data=data_cmds, select=select_cmds, setup=specific), 
-                envir=eval_env, color_lab=color_lab))
+    envir$plot.type <- mode
+    return(specific) 
 }
+
+############################################
+# Internal functions: downsampler ----
+############################################
+
+#' Downsampling commands
+#' 
+#' Define and execute commands to downsample points for speed.
+#'
+#' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
+#' @param envir Environment containing a \code{plot.data} data.frame with \code{X} and \code{Y} fields.
+#'
+#' @details
+#' Density-dependent downsampling for speed is performed in this function, based on \code{\link{subsetPointsByGrid}}.
+#' \code{envir} is effectively passed by reference, as the setup commands are executed in the environment by this function.
+#' A \code{plot.data.pre} data.frame is also added to \code{envir} to keep the pre-subsetted information, e.g., for use in \code{\link{.violin_plot}}.
+#'
+#' @return
+#' A character vector is returned containing commands to perform downsampling.
+#' All commands are evaluated within \code{envir}.
+#' 
+#' @author Aaron Lun
+#' @rdname INTERNAL_downsample_points
+#' @seealso 
+#' \code{\link{subsetPointsByGrid}},
+#' \code{\link{.plot_wrapper}}
+.downsample_points <- function(param_choices, envir) {
+    if (param_choices[[.plotPointDownsample]]) {
+        xtype <- "X"
+        ytype <- "Y"
+    
+        plot_type <- envir$plot.type
+        if (plot_type=="square") {
+            xtype <- "jitteredX"
+            ytype <- "jitteredY"
+        } else if (plot_type=="violin" || plot_type=="violin_horizontal") {
+            xtype <- "jitteredX"
+        }
+
+        downsample_cmds <- c("plot.data.pre <- plot.data;", 
+            sprintf("plot.data <- subset(plot.data, subsetPointsByGrid(%s, %s, resolution=%i));",
+                xtype, ytype, param_choices[[.plotPointSampleRes]]), "")
+
+        eval(parse(text=downsample_cmds), envir=envir)
+    } else {
+        downsample_cmds <- NULL
+    }
+    return(downsample_cmds)
+}
+
 
 ############################################
 # Internal functions: central plotter ----

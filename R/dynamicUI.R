@@ -138,6 +138,9 @@
     all_assays <- .sanitize_names(assayNames(se))
     red_dim_names <- .sanitize_names(reducedDimNames(se))
     red_dim_dims <- vapply(red_dim_names, FUN=function(x) ncol(reducedDim(se, x)), FUN.VALUE=0L)
+
+    custom_col_fun <- .get_custom_col_fun(se)
+    custom_col_funnames <- c(.noSelection, names(custom_col_fun))
   
     # Defining all transmitting tables and plots for linking.
     link_sources <- .define_link_sources(active_panels)
@@ -226,6 +229,13 @@
                 )
         } else if (mode=="rowStatTable") {
             obj <- tagList(dataTableOutput(paste0(mode, id)), uiOutput(.input_FUN("annotation")))
+        } else if (mode=="customColPlot") {
+            obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
+            plot.param <- list(
+                 selectInput(.input_FUN(.customColFun),
+                             label="Custom function:",
+                             choices=custom_col_funnames, selected=param_choices[[.customColFun]])
+                 )
         } else if (mode=="rowDataPlot") {
             obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
             plot.param <- list(

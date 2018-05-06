@@ -5,6 +5,7 @@ colDataArgs <- colDataPlotDefaults(sce, 2)
 featAssayArgs <- featAssayPlotDefaults(sce, 3)
 rowStatArgs <- rowStatTableDefaults(sce, 3)
 rowDataArgs <- rowDataPlotDefaults(sce, 1)
+customColArgs <- customColPlotDefaults(sce, 1)
 heatMapArgs <- heatMapPlotDefaults(sce, 1)
 
 # Creating test links
@@ -25,9 +26,26 @@ featAssayArgs[3,iSEE:::.featAssayYAxisRowTable] <- "Row statistics table 2"
 featAssayArgs[1,iSEE:::.featAssayXAxis] <-
     featAssayArgs[3,iSEE:::.featAssayXAxis] <-
     iSEE:::.featAssayXAxisFeatNameTitle
+    
+# Adding row names to mimic .setup_memory().
+# We don't actually want to run that function, though, 
+# as the number of customColPlots will be set to zero. 
+rownames(redDimArgs) <- sprintf("redDimPlot%i", seq_len(nrow(redDimArgs)))
+rownames(colDataArgs) <- sprintf("colDataPlot%i", seq_len(nrow(colDataArgs)))
+rownames(featAssayArgs) <- sprintf("featAssayPlot%i", seq_len(nrow(featAssayArgs)))
+rownames(rowStatArgs) <- sprintf("rowStatTable%i", seq_len(nrow(rowStatArgs)))
+rownames(rowDataArgs) <- sprintf("rowDataPlot%i", seq_len(nrow(rowDataArgs)))
+rownames(customColArgs) <- sprintf("customColPlot%i", seq_len(nrow(customColArgs)))
+rownames(heatMapArgs) <- sprintf("heatMapPlot%i", seq_len(nrow(heatMapArgs)))
 
-memory <- iSEE:::.setup_memory(sce, redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs, heatMapArgs, 
-        nrow(redDimArgs), nrow(colDataArgs), nrow(featAssayArgs), nrow(rowStatArgs), nrow(rowDataArgs), nrow(heatMapArgs))
+# Setting up the memory.
+memory <- list(redDimPlot=redDimArgs, 
+               colDataPlot=colDataArgs, 
+               featAssayPlot=featAssayArgs, 
+               rowStatTable=rowStatArgs, 
+               rowDataPlot=rowDataArgs, 
+               customColPlot=customColArgs,
+               heatMapPlot=heatMapArgs) 
 tabs <- iSEE:::.spawn_table_links(memory)
 
 test_that("table link creation works correctly", {
@@ -46,7 +64,13 @@ test_that("table link creation works correctly", {
     # Disabling of xaxis choices should have no effect.
     featAssayArgs2 <- featAssayArgs
     featAssayArgs2[1,iSEE:::.featAssayXAxis] <- featAssayArgs2[3,iSEE:::.featAssayXAxis] <- iSEE:::.featAssayXAxisNothingTitle
-    memory <- list(redDimPlot=redDimArgs, featAssayPlot=featAssayArgs2, colDataPlot=colDataArgs, rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs)
+    memory <- list(redDimPlot=redDimArgs, 
+                   featAssayPlot=featAssayArgs2, 
+                   colDataPlot=colDataArgs, 
+                   rowStatTable=rowStatArgs, 
+                   rowDataPlot=rowDataArgs,
+                   customColPlot=customColArgs,
+                   heatMapPlot=heatMapArgs)
     tab2 <- iSEE:::.spawn_table_links(memory)
     expect_identical(tabs, tab2)
 
@@ -55,14 +79,27 @@ test_that("table link creation works correctly", {
         colDataArgs[2,iSEE:::.colorByField] <-
         redDimArgs[1,iSEE:::.colorByField] <- 
         iSEE:::.colorByNothingTitle
-    memory <- list(redDimPlot=redDimArgs, featAssayPlot=featAssayArgs, colDataPlot=colDataArgs, rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs)
+    memory <- list(redDimPlot=redDimArgs, 
+                   featAssayPlot=featAssayArgs, 
+                   colDataPlot=colDataArgs, 
+                   rowStatTable=rowStatArgs, 
+                   rowDataPlot=rowDataArgs,
+                   customColPlot=customColArgs,
+                   heatMapPlot=heatMapArgs)
+
     tab2 <- iSEE:::.spawn_table_links(memory)
     expect_identical(tabs, tab2)
 
     # yaxis has no choices to disable, so we'll just change the selection.
     featAssayArgs2 <- featAssayArgs
     featAssayArgs2[2:3,iSEE:::.featAssayYAxisRowTable] <- iSEE:::.noSelection
-    memory <- list(redDimPlot=redDimArgs, featAssayPlot=featAssayArgs2, colDataPlot=colDataArgs, rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs)
+    memory <- list(redDimPlot=redDimArgs, 
+                   featAssayPlot=featAssayArgs2, 
+                   colDataPlot=colDataArgs, 
+                   rowStatTable=rowStatArgs, 
+                   rowDataPlot=rowDataArgs,
+                   customColPlot=customColArgs,
+                   heatMapPlot=heatMapArgs)
     tab2 <- iSEE:::.spawn_table_links(memory)
 
     tabX <- tabs

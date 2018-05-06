@@ -5,84 +5,60 @@
 \title{iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer}
 \usage{
 iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featAssayArgs = NULL,
-  rowStatArgs = NULL, rowDataArgs = NULL, heatMapArgs = NULL,
-  redDimMax = 5, colDataMax = 5, featAssayMax = 5, rowStatMax = 5,
-  rowDataMax = 5, heatMapMax = 5, initialPanels = NULL, annotFun = NULL,
+  rowStatArgs = NULL, rowDataArgs = NULL, customColArgs = NULL,
+  heatMapArgs = NULL, redDimMax = 5, colDataMax = 5, featAssayMax = 5,
+  rowStatMax = 5, rowDataMax = 5, customColMax = 5, heatMapMax = 5,
+  initialPanels = NULL, annotFun = NULL, customColFun = NULL,
   colormap = ExperimentColorMap(), tour = NULL, appTitle = NULL,
   runLocal = TRUE)
 }
 \arguments{
 \item{se}{An object that is coercible to \linkS4class{SingleCellExperiment}.}
 
-\item{redDimArgs}{A DataFrame similar to that produced by
-\code{\link{redDimPlotDefaults}}, specifying initial parameters
-for the plots.}
+\item{redDimArgs}{A DataFrame similar to that produced by \code{\link{redDimPlotDefaults}}, specifying initial parameters for the reduced dimension plots.}
 
-\item{colDataArgs}{A DataFrame similar to that produced by
-\code{\link{colDataPlotDefaults}}, specifying initial parameters
-for the plots.}
+\item{colDataArgs}{A DataFrame similar to that produced by \code{\link{colDataPlotDefaults}}, specifying initial parameters for the column data plots.}
 
-\item{featAssayArgs}{A DataFrame similar to that produced by
-\code{\link{featAssayPlotDefaults}}, specifying initial parameters
-for the plots.}
+\item{featAssayArgs}{A DataFrame similar to that produced by \code{\link{featAssayPlotDefaults}}, specifying initial parameters for the feature assay plots.}
 
-\item{rowStatArgs}{A DataFrame similar to that produced by
-\code{\link{rowStatTableDefaults}}, specifying initial parameters
-for the plots.}
+\item{rowStatArgs}{A DataFrame similar to that produced by \code{\link{rowStatTableDefaults}}, specifying initial parameters for the row statistics tables.}
 
-\item{rowDataArgs}{A DataFrame similar to that produced by
-\code{\link{rowDataPlotDefaults}}, specifying initial parameters
-for the plots.}
+\item{rowDataArgs}{A DataFrame similar to that produced by \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the row data plots.}
 
-\item{heatMapArgs}{A DataFrame similar to that produced by
-\code{\link{heatMapPlotDefaults}}, specifying initial parameters
-for the plots.}
+\item{customColArgs}{A DataFrame similar to that produced by \code{\link{customColPlotDefaults}}, specifying initial parameters for the custom column plots.}
 
-\item{redDimMax}{An integer scalar specifying the maximum number of
-reduced dimension plots in the interface.}
+\item{heatMapArgs}{A DataFrame similar to that produced by \code{\link{heatMapPlotDefaults}}, specifying initial parameters for the heatmaps.}
 
-\item{colDataMax}{An integer scalar specifying the maximum number of
-column data plots in the interface.}
+\item{redDimMax}{An integer scalar specifying the maximum number of reduced dimension plots in the interface.}
 
-\item{featAssayMax}{An integer scalar specifying the maximum number of
-feature assay plots in the interface.}
+\item{colDataMax}{An integer scalar specifying the maximum number of column data plots in the interface.}
 
-\item{rowStatMax}{An integer scalar specifying the maximum number of
-row statistics tables in the interface.}
+\item{featAssayMax}{An integer scalar specifying the maximum number of feature assay plots in the interface.}
 
-\item{rowDataMax}{An integer scalar specifying the maximum number of
-row data plots in the interface.}
+\item{rowStatMax}{An integer scalar specifying the maximum number of row statistics tables in the interface.}
 
-\item{heatMapMax}{An integer scalar specifying the maximum number of
-heatmaps in the interface.}
+\item{rowDataMax}{An integer scalar specifying the maximum number of row data plots in the interface.}
+
+\item{customColMax}{An integer scalar specifying the maximum number of custom column plots in the interface.}
+
+\item{heatMapMax}{An integer scalar specifying the maximum number of heatmaps in the interface.}
 
 \item{initialPanels}{A DataFrame specifying which panels should be created at initialization. 
 This should contain a \code{Name} character field and may have optional \code{Width} and \code{Height} integer fields, see Details.}
 
-\item{annotFun}{A function, constructed in the form of
-\code{\link{annotateEntrez}} or \code{\link{annotateEnsembl}}.
-This function is built in a way to generate itself 
-a function supposed to accept two parameters,
-\code{se} and \code{row_index},
-to have a unified yet flexible interface to generate additional information
-to display for the selected genes of interest.}
+\item{annotFun}{A function, similar to those returned by \code{\link{annotateEntrez}} or \code{\link{annotateEnsembl}}.
+The function should accept two parameters, \code{se} and \code{row_index}, and return a HTML element with annotation for the selected row.}
 
-\item{colormap}{An \linkS4class{ExperimentColorMap} object that defines
-custom color maps to apply to individual \code{assays}, \code{colData},
-and \code{rowData} covariates.}
+\item{customColFun}{A named list of functions for reporting coordinates to use in a custom column data plot, see \code{?"\link{Custom iSEE plots}"}.}
 
-\item{tour}{A data.frame with the content of the interactive tour to be 
-displayed after starting up the app. Defaults to \code{NULL}. More 
-information is provided in the details.}
+\item{colormap}{An \linkS4class{ExperimentColorMap} object that defines custom color maps to apply to individual \code{assays}, \code{colData} and \code{rowData} covariates.}
 
-\item{appTitle}{A string indicating the title to be displayed in the app. If 
-not provided, the app displays the version info of \code{\link{iSEE}}. Users
-can specify this to provide a compact description of the dataset, or the 
-PubMedID for the input data.}
+\item{tour}{A data.frame with the content of the interactive tour to be displayed after starting up the app.}
 
-\item{runLocal}{A logical indicating whether the app is to be run locally
-or remotely on a server, which determines how documentation will be
-accessed.}
+\item{appTitle}{A string indicating the title to be displayed in the app. 
+If not provided, the app displays the version info of \code{\link{iSEE}}.}
+
+\item{runLocal}{A logical indicating whether the app is to be run locally or remotely on a server, which determines how documentation will be accessed.}
 }
 \value{
 A Shiny App is launched for interactive data exploration of the
@@ -94,15 +70,12 @@ Interactive and reproducible visualization of data contained in a
 SummarizedExperiment/SingleCellExperiment, using a Shiny interface.
 }
 \details{
-Users can pass default parameters via DataFrame objects in
-\code{redDimArgs} and \code{featAssayArgs}. Each object can contain
-some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
+Users can pass default parameters via DataFrame objects in \code{redDimArgs} and \code{featAssayArgs}. 
+Each object can contain some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
 Any missing fields will be filled in with the defaults.
 
-The number of maximum plots for each type of plot is set to the larger
-of \code{*Max} and \code{nrow(*Args)}. Users can specify any number of
-maximum plots, though increasing the number will increase the time
-required to render the interface.
+The number of maximum plots for each type of plot is set to the larger of \code{*Max} and \code{nrow(*Args)}. 
+Users can specify any number of maximum plots, though increasing the number will increase the time required to render the interface.
 
 The \code{initialPanels} argument specifies the panels to be created upon initializing the interface. 
 This should be a DataFrame containing a \code{Name} field specifying the identity of the panel, e.g., \code{"Reduced dimension plot 1"}, \code{"Row statistics table 2"}.
@@ -111,11 +84,9 @@ Users can also define the \code{Width} field, specifying the width of each panel
 and the \code{Height} field, specifying the height of each panel from 400 to 1000 pixels. 
 By default, one panel of each type (where possible) will be generated, with height of 500 and width of 4.
 
-The \code{tour} argument needs to be provided in a form compatible with the
-format expected by the \code{rintrojs} package, where the variables 
-\code{element} and \code{intro} have to be present. See more information at
-\url{https://github.com/carlganz/rintrojs#usage} regarding the values that 
-the \code{element} can assume for proper displaying.
+The \code{tour} argument needs to be provided in a form compatible with the format expected by the \code{rintrojs} package.
+There should be two columns, \code{element} and \code{intro}, with the former describing the element to highlight and the latter providing some descriptive text.
+See \url{https://github.com/carlganz/rintrojs#usage} for more information.
 }
 \examples{
 library(scRNAseq)

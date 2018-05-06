@@ -53,6 +53,9 @@
 #'
 #' For the output \code{cached}, the idea is that it will be stored in the main \code{\link{iSEE}} function.
 #' It can then be passed to this function upon future re-plotting of the custom column plot.
+#'
+#' If the selected custom column function is \code{"---"}, this function will return \code{NULL} in \code{cmd_list};
+#' a data.frame with no rows in \code{xy}; an empty ggplot in \code{plot}; and \code{NULL} in \code{cached}.
 #' 
 #' @author Aaron Lun
 #' @rdname INTERNAL_make_customColumnPlot
@@ -61,7 +64,6 @@
 #' \code{\link{.choose_plot_type}},
 #' \code{\link{.downsample_points}}
 #' 
-#' @importFrom SummarizedExperiment colData
 .make_customColPlot <- function(id, all_memory, all_coordinates, se, colormap, cached) {
     param_choices <- all_memory$customColPlot[id,]
     eval_env <- new.env()
@@ -91,8 +93,7 @@
         }
     }
 
-    # Implementing the selection, and _eliminating_ plot.data.all.
-    # This is not necessary when plotting only the restricted subset.
+    # Implementing the selection, and _eliminating_ plot.data.all, which is not necessary when plotting only the restricted subset.
     select_out <- .process_selectby_choice(param_choices, all_memory)
     select_cmds <- select_out$cmds
     select_cmds <- select_cmds[!grepl("^plot.data.all", select_cmds)]
@@ -102,12 +103,12 @@
         eval(parse(text=select_cmds), envir=eval_env)
     }
     
-    # Constructing the evaluation commands to get the points.
-    validate(need(
-        param_choices[[.customColFun]]!=.noSelection,
-        "No function selected"
-    ))
-    generator <- sprintf("custom.data <- custom_col_fun[[%s]](se, rownames(plot.data));", deparse(param_choices[[.customColFun]]))
+    # Constructing the evaluation command to get the points.
+    fun_name <- param_choices[[.customColFun]] 
+    if (fun_name==.noSelection) {
+        return(list(cmd_list=NULL, xy=data.frame(X=numeric(0), Y=numeric(0)), plot=ggplot(), cached=NULL))
+    }
+    generator <- sprintf("custom.data <- custom_col_fun[[%s]](se, rownames(plot.data));", deparse(fun_name))
 
     # Checking whether the selected points are the same as before.
     # Otherwise we 'fill in' the cached results.

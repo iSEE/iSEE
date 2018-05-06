@@ -9,7 +9,7 @@
 #' @param featAssayArgs A DataFrame similar to that produced by \code{\link{featAssayPlotDefaults}}, specifying initial parameters for the feature assay plots.
 #' @param rowStatArgs A DataFrame similar to that produced by \code{\link{rowStatTableDefaults}}, specifying initial parameters for the row statistics tables. 
 #' @param rowDataArgs A DataFrame similar to that produced by \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the row data plots.
-#' @param customPlotArgs A DataFrame similar to that produced by \code{\link{customColPlotDefaults}}, specifying initial parameters for the custom column plots.
+#' @param customColArgs A DataFrame similar to that produced by \code{\link{customColPlotDefaults}}, specifying initial parameters for the custom column plots.
 #' @param heatMapArgs A DataFrame similar to that produced by \code{\link{heatMapPlotDefaults}}, specifying initial parameters for the heatmaps.
 #' @param redDimMax An integer scalar specifying the maximum number of reduced dimension plots in the interface.
 #' @param colDataMax An integer scalar specifying the maximum number of column data plots in the interface.
@@ -330,7 +330,7 @@ iSEE <- function(se,
                       featAssayPlot=.make_featAssayPlot,
                       colDataPlot=.make_colDataPlot,
                       rowDataPlot=.make_rowDataPlot,
-                      customColPlot=.remake_custom_plot)
+                      customColPlot=.remake_customColPlot)
 		p.out <- FUN(enc$ID, pObjects$memory, pObjects$coordinates, se, colormap)
 		pObjects$coordinates[[panelname]] <- p.out$xy[,c("X", "Y")]
     }

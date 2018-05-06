@@ -25,6 +25,8 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featAssayArgs = NULL,
 
 \item{rowDataArgs}{A DataFrame similar to that produced by \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the row data plots.}
 
+\item{customColArgs}{A DataFrame similar to that produced by \code{\link{customColPlotDefaults}}, specifying initial parameters for the custom column plots.}
+
 \item{heatMapArgs}{A DataFrame similar to that produced by \code{\link{heatMapPlotDefaults}}, specifying initial parameters for the heatmaps.}
 
 \item{redDimMax}{An integer scalar specifying the maximum number of reduced dimension plots in the interface.}
@@ -57,8 +59,6 @@ The function should accept two parameters, \code{se} and \code{row_index}, and r
 If not provided, the app displays the version info of \code{\link{iSEE}}.}
 
 \item{runLocal}{A logical indicating whether the app is to be run locally or remotely on a server, which determines how documentation will be accessed.}
-
-\item{customPlotArgs}{A DataFrame similar to that produced by \code{\link{customColPlotDefaults}}, specifying initial parameters for the custom column plots.}
 }
 \value{
 A Shiny App is launched for interactive data exploration of the

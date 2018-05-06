@@ -274,14 +274,14 @@ In particular, this allows users to override the appearance of specific assay or
 
 ### Default colormaps
 
-In the absence of any user-defined colormap, the application falls back to a set of two default colormaps -- a discrete and a continuous -- according to the nature of the data displayed.
+In the absence of any user-defined colormap, the application falls back to a set of two default colormaps -- a categorical and a continuous -- according to the nature of the data displayed.
 
 ### Definition of colormaps
 
 Colormaps are defined functions that take one argument: the number of colors that the colormap should return.
 This is particularly important for continuous variables, where the number of colors defines the number of breaks evenly placed across the range of values represented by the color scale, and thereby the resolution between individual colors.
-Conversely, discrete colormap functions may ignore their argument, as the number of factor levels is typically known in advance, and impose a fixed number of corresponding colors.
-Furthermore, discrete colormaps may typically return a named vector of colors, with the name declaring which factor level each color is assigned to.
+Conversely, categorical colormap functions may ignore their argument, as the number of factor levels is typically known in advance, and impose a fixed number of corresponding colors.
+Furthermore, categorical colormaps may typically return a named vector of colors, with the name declaring which factor level each color is assigned to.
 
 ### Specific and shared colormaps
 
@@ -291,7 +291,7 @@ Colormaps can be controlled and overriden by users at three different levels:
 This can be useful to easily remember which assay is currently shown, to apply different color scale limits to assays that vary on different ranges of values, or display boolean information in an intuitive way, among many other scenarios.
 - *shared* colormaps can be defined for all assays, all column data, and all row data, respectively, that do not have an individual colormap defined.
 Those colormaps are stored as items `assays`, `colData`, and `rowData` of lists stored in the `all_discrete` and `all_continuous` slots of the `ExperimentColorMap`.
-- *globally shared* colormaps can be defined for all discrete or continuous data that do not have colormaps defined in the previous two levels.
+- *globally shared* colormaps can be defined for all categorical or continuous data that do not have colormaps defined in the previous two levels.
 Those two colormaps are stored in the `global_discrete` and `global_continuous` slots of the `ExperimentColorMap`.
 
 ### Fall-back mechanism
@@ -299,9 +299,9 @@ Those two colormaps are stored in the `global_discrete` and `global_continuous` 
 When queried for a specific colormap of any type (assay, column data, or row data), the following process takes place:
 
 - the specific colormap is looked up in the appropriate slot (*i.e.*, `@assays`, `@colData`, or `@rowData`) of the `ExperimentColorMap`.
-- if it is not defined, the *shared* colormap of the appropriate slot is looked up, according to the discrete or continuous nature of the data (for instance, `@all_continuous$colData` is looked up for continous column data without a defined individual colormap)
-- if it is not defined, the *globally shared* colormap is looked up, according to the discrete or continuous nature of the data (for instance, `@global_continuous` is looked up for continous column data without a defined individual colormap, in the absance of a *shared* colData continuous colormap)
-- lastly, if none of the above colormaps were defined, the `ExperimentColorMap` will return the default colormap, according to the discrete or continuous nature of the data.
+- if it is not defined, the *shared* colormap of the appropriate slot is looked up, according to the categorical or continuous nature of the data (for instance, `@all_continuous$colData` is looked up for continous column data without a defined individual colormap)
+- if it is not defined, the *globally shared* colormap is looked up, according to the categorical or continuous nature of the data (for instance, `@global_continuous` is looked up for continous column data without a defined individual colormap, in the absance of a *shared* colData continuous colormap)
+- lastly, if none of the above colormaps were defined, the `ExperimentColorMap` will return the default colormap, according to the categorical or continuous nature of the data.
 
 ### Benefits
 
@@ -309,8 +309,8 @@ The `ExperimentColorMap` class offers the following major features:
 
 - a single place to define flexible and lightweight sets of colormaps, that may be saved and reused across sessions and projects outside the app, to apply consistent coloring schemes across entire projects
 - a simple interface through accessors `colDataColorMap(colormap, "coldata_name")` and setters `assayColorMap(colormap, "assay_name") <- colormap_function`
-- an elegant fallback mechanism to consistently return a colormap, even for undefined covariates, including a default discrete and continuous colormap, respectively.
-- three levels of colormaps override: individual, shared within slot (*i.e.*, assays, colData, rowData), or shared globally between all discrete or continuous data scales.
+- an elegant fallback mechanism to consistently return a colormap, even for undefined covariates, including a default categorical and continuous colormap, respectively.
+- three levels of colormaps override: individual, shared within slot (*i.e.*, assays, colData, rowData), or shared globally between all categorical or continuous data scales.
 
 Detailed examples on the use of `ExperimentColorMap` objects are available in the documentation `?ExperimentColorMap`, as well as in use in Section \@ref(usecase-ecm).
 
@@ -407,7 +407,7 @@ ecm
 ```
 
 Users may change the defaults for assays or column data without defined individual colormapping functions.
-Furthermore, default colormap for all variables can also be altered for continuous and discrete variable, respectively.
+Furthermore, default colormap for all variables can also be altered for continuous and categorical variable, respectively.
 The example shown below alters the defaults for continuous variables, but the same applies for categorical factors as well. 
 
 ```{r all_continuous}

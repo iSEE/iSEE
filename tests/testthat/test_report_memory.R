@@ -43,7 +43,7 @@ test_that(".report_memory generates code that evaluates to the provided object",
                                        redDimMax=3, colDataMax=3, featAssayMax=4, rowStatMax=4, 
                                        rowDataMax=2, customColMax=0, heatMapMax=3)
 
-    inp <- DataFrame(Name = c(
+    inp0 <- DataFrame(Name = c(
         paste("Reduced dimension plot", 1:3),
         paste("Column data plot", 1:3),
         paste("Feature assay plot", 1:4),
@@ -52,12 +52,14 @@ test_that(".report_memory generates code that evaluates to the provided object",
         paste("Custom column plot", 1),
         paste("Heat map", 1:3)), 
         Width = 4)
+    inp <- iSEE:::.setup_initial(inp0, all_memory)
 
+    # Re-evaluating the commands.
     txt <- iSEE:::.report_memory(inp, all_memory)
-    
     eval_env <- new.env()
     eval(parse(text = txt), envir=eval_env)
     
+    # Checking all the arguments.
     expect_identical(eval_env$redDimPlotArgs, all_memory$redDimPlot)
     expect_identical(eval_env$colDataPlotArgs, all_memory$colDataPlot)
     expect_identical(eval_env$featAssayPlotArgs, all_memory$featAssayPlot)
@@ -66,4 +68,6 @@ test_that(".report_memory generates code that evaluates to the provided object",
     expect_identical(eval_env$customColPlotArgs, all_memory$customColPlot)
     expect_identical(eval_env$heatMapPlotArgs, all_memory$heatMapPlot)
 
+    # Checking initial panels.
+    expect_identical(eval_env$initialPanels$Name, inp0$Name)
 })

@@ -304,11 +304,10 @@ names(.all_aes_values) <- .all_aes_names
 #' This function is a convenience wrapper for the combination of \code{\link{.extract_plotting_data}} and \code{\link{.create_plot}}.
 #' The former adds the aesthetic parameters such as coloring and point selection, while the latter will generate the ggplot object itself.
 #' This wrapper is to be used across the individual top-level functions for each plot type.
-#' 
-#' Note that \code{xy} needs to be defined \emph{prior} to running \code{\link{.create_plot}}.
-#' This is because the plotting commands may involve further subsetting of the data.frame if downsampling is performed.
-#' It would not be correct to save the subsetted data.frame for use in point selection in the Shiny server function.
 #'
+#' Density-dependent downsampling for speed is implemented in this function, based on \code{\link{subsetPointsByGrid}}.
+#' A \code{plot.data.pre} data.frame is also added to \code{envir} to keep the pre-subsetted information, e.g., for use in \code{\link{.violin_plot}}.
+#' 
 #' @return A list that includes the following elements:
 #' \describe{
 #'   \item{cmd_list}{A list of character vectors, where each vector contains commands to parse and evaluate to produce the final plot.
@@ -327,9 +326,33 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.create_plot}}
 .plot_wrapper <- function(data_cmds, param_choices, all_memory, all_coordinates, se, by_row, ...) {
     setup_out <- .extract_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row = by_row)
-    xy <- setup_out$envir$plot.data # DO NOT MOVE!
+    xy <- setup_out$envir$plot.data # DO NOT MOVE, as downsampling will alter the value in 'envir'.
+
+    # Downsampling at this point, if specified.
+    if (param_choices[[.plotPointDownsample]]) {
+        xtype <- "X"
+        ytype <- "Y"
+    
+        plot_type <- setup_out$envir$plot_type
+        if (plot_type=="square") {
+            xtype <- "jitteredX"
+            ytype <- "jitteredY"
+        } else if (plot_type=="violin" || plot_type=="violin_horizontal") {
+            xtype <- "jitteredX"
+        }
+
+        downsample_cmds <- c("plot.data.pre <- plot.data;", 
+            sprintf("plot.data <- subset(plot.data, subsetPointsByGrid(%s, %s, resolution=%i));",
+                xtype, ytype, param_choices[[.plotPointSampleRes]]), "")
+
+        eval(parse(text=downsample_cmds), envir=setup_out$envir)
+    } else {
+        downsample_cmds <- NULL
+    }
+
     plot_out <- .create_plot(setup_out$envir, param_choices, ..., color_lab = setup_out$color_lab, by_row = by_row)
-    return(list(cmd_list = c(setup_out$cmd_list, list(plot=plot_out$cmds)), xy = xy, plot = plot_out$plot)) 
+    return(list(cmd_list = c(setup_out$cmd_list, list(plot=c(downsample_cmds, plot_out$cmds))), 
+                xy = xy, plot = plot_out$plot)) 
 }
 
 ############################################
@@ -386,13 +409,11 @@ names(.all_aes_values) <- .all_aes_names
 #'
 #' The nature of the plot to be generated will determine whether any additional fields are present in \code{plot.data}.
 #' Violin plots will contain \code{GroupBy} fields as well as \code{jitteredX}.
-#' In horizontal violin plots, \code{X} and \code{Y} will be swapped.
+#' In horizontal violin plots, the values of \code{X} and \code{Y} will be swapped in preparation for \code{\link{coord_flip}} in \code{\link{.create_plot}}.
 #' Square plots will have \code{jitteredX} and \code{jitteredY}.
-#' The \code{envir$plot.type} variable will specify the type of plot for correct dispatch in \code{\link{.create_plot}}.
 #'
-#' The environment will also contain \code{plot.data.all}, a data.frame equivalent to \code{plot.data} but without any \code{SelectBy} information or subsetting to restrict.
-#' This is useful for determining the plotting boundaries of the entire data set, even after subsetting of \code{plot.data} during selection, 
-#' or after downsampling points in \code{\link{.create_plot}}.
+#' The \code{envir$plot.type} variable will specify the type of plot for correct dispatch in \code{\link{.create_plot}}.
+#' The environment may also contain \code{plot.data.all}, see \code{\link{.process_selectby_choice}} for details.
 #' 
 #' @author Aaron Lun
 #' @rdname INTERNAL_extract_plotting_data
@@ -400,12 +421,10 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.define_colorby_for_column_plot}},
 #' \code{\link{.define_colorby_for_row_plot}},
 #' \code{\link{.process_selectby_choice}}
-.extract_plotting_data <- function(
-  data_cmds, param_choices, all_memory, all_coordinates, se, by_row=FALSE) {
+.extract_plotting_data <- function(data_cmds, param_choices, all_memory, all_coordinates, se, by_row=FALSE) {
     # Evaluating to check the grouping status of various fields.
-    # It is important that 
-    # non-numeric X/Y become explicit factors here, which simplifies downstream 
-    # processing (e.g., coercion to integer, no lost levels upon subsetting).
+    # It is important that non-numeric X/Y become explicit factors here, which simplifies downstream processing 
+    # (e.g., coercion to integer, no lost levels upon subsetting).
     eval_env <- new.env()
     eval_env$se <- se
     eval_env$all_coordinates <- all_coordinates
@@ -443,10 +462,8 @@ names(.all_aes_values) <- .all_aes_names
         more_data_cmds[["more_color"]] <- .coerce_type(coloring, "ColorBy", as_numeric=!.is_groupable(coloring))
     }
 
-    # Removing NAs, and defining the full set of valid data (for use in setting plot boundaries later).
-    # We do this here so NAs don't affect the boundaries derived from plot.data.all.
+    # Removing NAs as they mess up .proess_selectby_choice.
     more_data_cmds[["na.rm"]] <- "plot.data <- subset(plot.data, !is.na(X) & !is.na(Y));"
-    more_data_cmds[["full"]] <- "plot.data.all <- plot.data;"
 
     # Evaluating and clearing the commands..
     eval(parse(text=unlist(more_data_cmds)), envir=eval_env)
@@ -463,8 +480,7 @@ names(.all_aes_values) <- .all_aes_names
         eval(parse(text=select_cmds), envir=eval_env)
     }
     
-    # Adding more plot-specific information, depending on the type of plot
-    # to be created.
+    # Adding more plot-specific information, depending on the type of plot to be created.
     if (!group_Y && !group_X) {
         mode <- "scatter"
         specific <- list()
@@ -474,6 +490,12 @@ names(.all_aes_values) <- .all_aes_names
     } else if (!group_X) {
         mode <- "violin_horizontal"
         specific <- .violin_setup(TRUE) 
+        if (exists("plot.data.all", eval_env)) { # for simplicity, otherwise it becomes choatic in .violin_plot().
+            specific <- c(specific, 
+                "tmp <- plot.data.all$X;
+                plot.data.all$X <- plot.data.all$Y;
+                plot.data.all$Y <- tmp;")
+        }
     } else {
         mode <- "square"
         specific <- .square_setup(eval_env$plot.data)
@@ -496,8 +518,7 @@ names(.all_aes_values) <- .all_aes_names
 #' Create and evaluate plotting commands to generate a ggplot for each
 #' combination of X/Y covariate types.
 #' 
-#' @param envir An environment produced by
-#' \code{\link{.extract_plotting_data}}.
+#' @param envir An environment produced by \code{\link{.extract_plotting_data}}.
 #' @param param_choices A single-row DataFrame that contains all the input
 #' settings for the current panel.
 #' @param colormap An ExperimentColorMap object that defines custom color maps
@@ -524,9 +545,6 @@ names(.all_aes_values) <- .all_aes_names
 #' This function will also add a box representing the Shiny brush coordinates, if one is available - see \code{?\link{.self_brush_box}}.
 #' Alternatively, if lasso waypoints are present, it will add them to the plot - see \code{?\link{.self_lasso_path}}.
 #'
-#' Density-dependent downsampling for speed is implemented in this function, based on \code{\link{subsetPointsByGrid}}.
-#' A \code{plot.data.pre} data.frame is added to \code{envir} to keep the pre-subsetted information, e.g., for use in \code{\link{.violin_plot}}.
-#'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson
 #' @rdname INTERNAL_create_plot
 #' @seealso
@@ -537,30 +555,23 @@ names(.all_aes_values) <- .all_aes_names
 .create_plot <- function(envir, param_choices, colormap, ...) {
     envir$colormap <- colormap
     plot_data <- envir$plot.data
-    extra_cmds <- character(0)
     plot_type <- envir$plot.type
+    extra_cmds <- character(0)
 
-    # Deciding whether we should downsample.
-    extra_cmds <- c("plot.data.pre <- plot.data;", extra_cmds)
-    if (param_choices[[.plotPointDownsample]]) {
-        xtype <- "X"
-        ytype <- "Y"
-        if (plot_type=="square") {
-            xtype <- "jitteredX"
-            ytype <- "jitteredY"
-        } else if (plot_type=="violin" || plot_type=="violin_horizontal") {
-            xtype <- "jitteredX"
-        }
-        extra_cmds <- c(extra_cmds, sprintf("plot.data <- subset(plot.data, subsetPointsByGrid(%s, %s, resolution=%i));",
-                                            xtype, ytype, param_choices[[.plotPointSampleRes]]), "")
-    }
-    
+    # Figuring out whether or not we need certain fields.
+    is_subsetted <- exists("plot.data.all", envir=envir)
+    is_downsampled <- exists("plot.data.pre", envir=envir)
+
     # Dispatch to different plotting commands, depending on X/Y being groupable
     extra_cmds <- c(extra_cmds, switch(plot_type,
-        square = .square_plot(plot_data=plot_data, param_choices=param_choices, ...),
-        violin = .violin_plot(plot_data=plot_data, param_choices=param_choices, ...),
-        violin_horizontal = .violin_plot(plot_data=plot_data, param_choices=param_choices, ..., horizontal=TRUE),
-        scatter = .scatter_plot(plot_data=plot_data, param_choices=param_choices, ...)
+        square = .square_plot(plot_data=plot_data, param_choices=param_choices, 
+            is_subsetted=is_subsetted, ...), 
+        violin = .violin_plot(plot_data=plot_data, param_choices=param_choices, 
+            is_subsetted=is_subsetted, is_downsampled=is_downsampled, ...),
+        violin_horizontal = .violin_plot(plot_data=plot_data, param_choices=param_choices, 
+            is_subsetted=is_subsetted, is_downsampled=is_downsampled, ..., horizontal=TRUE),
+        scatter = .scatter_plot(plot_data=plot_data, param_choices=param_choices,
+            is_subsetted=is_subsetted, is_downsampled=is_downsampled, ...)
     ))
 
     # Adding self-brushing boxes, if they exist.
@@ -594,13 +605,11 @@ names(.all_aes_values) <- .all_aes_names
 
 #' Produce a scatter plot
 #' 
-#' Generate (but not evaluate) commands to create a scatter plot of numeric
-#' X/Y. 
+#' Generate (but not evaluate) commands to create a scatter plot of numeric X/Y. 
 #'
 #' @param plot_data A data.frame containing all of the plotting information,
 #' returned by \code{\link{.extract_plotting_data}} in \code{envir$plot.data}.
-#' @param param_choices A single-row DataFrame that contains all the
-#' input settings for the current panel.
+#' @param param_choices A single-row DataFrame that contains all the' input settings for the current panel.
 #' @param x_lab A character label for the X axis.
 #' Set to \code{NULL} to have no x-axis label.
 #' @param y_lab A character label for the Y axis.
@@ -609,18 +618,17 @@ names(.all_aes_values) <- .all_aes_names
 #' Set to \code{NULL} to have no color label.
 #' @param title A character title for the plot.
 #' Set to \code{NULL} to have no title. 
-#' @param by_row A logical scalar specifying whether the plot deals with
-#' row-level metadata.
+#' @param by_row A logical scalar specifying whether the plot deals with row-level metadata.
+#' @param is_subsetted A logical scalar specifying whether \code{plot_data} was subsetted during \code{\link{.process_selectby_choice}}.
+#' @param is_downsampled A logical scalar specifying whether \code{plot_data} was downsampled in \code{\link{.plot_wrapper}}.
 #'
-#' @return A character vector of commands to be parsed and evaluated by
-#' \code{\link{.create_plot}} to produce the scatter plot.
+#' @return A character vector of commands to be parsed and evaluated by \code{\link{.create_plot}} to produce the scatter plot.
 #'
 #' @details
 #' As described in \code{?\link{.create_plot}}, the \code{\link{.scatter_plot}} function should only contain commands to generate the final ggplot object.
 #'
-#' \code{envir$plot.data.all} will be used to define the plot boundaries.
-#' This ensures consistent plot boundaries when selecting points to restrict (see \code{?\link{.process_selectby_choice}})
-#' or when downsampling for speed (see \code{?\link{.create_plot}}.
+#' \code{plot.data.all} will be used to define the plot boundaries when selecting points to restrict (see \code{?\link{.process_selectby_choice}}).
+#' If there is no restriction and we are downsampling for speed (see \code{?\link{.plot_wrapper}}), \code{plot.data.pre} will be used to define the boundaries.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_scatter_plot
@@ -628,14 +636,14 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.create_plot}}
 #'
 #' @importFrom ggplot2 ggplot coord_cartesian theme_bw theme element_text
-.scatter_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, title, by_row = FALSE) {
+.scatter_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, title, by_row = FALSE, is_subsetted = FALSE, is_downsampled = FALSE) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +"
 
     # Adding points to the plot.
     color_set <- !is.null(plot_data$ColorBy)
     new_aes <- .build_aes(color = color_set)
-    plot_cmds[["points"]] <- unlist(.create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set))
+    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set)
 
     # Defining the color commands.
     if (by_row) { 
@@ -651,27 +659,33 @@ names(.all_aes_values) <- .all_aes_names
     bounds <- param_choices[[.zoomData]][[1]]
     if (!is.null(bounds)) {
         plot_cmds[["coord"]] <- sprintf(
-          "coord_cartesian(xlim = c(%s, %s), ylim = c(%s, %s), expand = FALSE) +", # FALSE, to get a literal zoom.
-          deparse(bounds["xmin"]), deparse(bounds["xmax"]),
-          deparse(bounds["ymin"]),  deparse(bounds["ymax"])
+            "coord_cartesian(xlim = c(%s, %s), ylim = c(%s, %s), expand = FALSE) +", # FALSE, to get a literal zoom.
+            deparse(bounds["xmin"]), deparse(bounds["xmax"]),
+            deparse(bounds["ymin"]),  deparse(bounds["ymax"])
         )
     } else {
-        plot_cmds[["coord"]] <- "coord_cartesian(xlim = range(plot.data.all$X, na.rm = TRUE),
-    ylim = range(plot.data.all$Y, na.rm = TRUE), expand = TRUE) +"
+        full_data <- ifelse(is_subsetted, "plot.data.all", ifelse(is_downsampled, "plot.data.pre", "plot.data"))
+        plot_cmds[["coord"]] <- sprintf("coord_cartesian(xlim = range(%s$X, na.rm = TRUE),
+    ylim = range(%s$Y, na.rm = TRUE), expand = TRUE) +", full_data, full_data)
+    }
+
+    # Retain axes when no points are present.
+    if (nrow(plot_data)==0 && is_subsetted) {
+        plot_cmds[["select_blank"]] <- "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
     }
 
     # Adding further aesthetic elements.
     plot_cmds[["scale_color"]] <- color_scale_cmd
     plot_cmds[["theme_base"]] <- "theme_bw() +"
     plot_cmds[["theme_custom"]] <- sprintf(
-      "theme(legend.position = '%s', legend.text=element_text(size=%s), legend.title=element_text(size=%s),
-      axis.text=element_text(size=%s), axis.title=element_text(size=%s), title=element_text(size=%s))",
-      tolower(param_choices[[.plotLegendPosition]]),
-      param_choices[[.plotFontSize]]*.plotFontSizeLegendTextDefault,
-      param_choices[[.plotFontSize]]*.plotFontSizeLegendTitleDefault,
-      param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault,
-      param_choices[[.plotFontSize]]*.plotFontSizeAxisTitleDefault,
-      param_choices[[.plotFontSize]]*.plotFontSizeTitleDefault)
+        "theme(legend.position = '%s', legend.text=element_text(size=%s), legend.title=element_text(size=%s),
+        axis.text=element_text(size=%s), axis.title=element_text(size=%s), title=element_text(size=%s))",
+        tolower(param_choices[[.plotLegendPosition]]),
+        param_choices[[.plotFontSize]]*.plotFontSizeLegendTextDefault,
+        param_choices[[.plotFontSize]]*.plotFontSizeLegendTitleDefault,
+        param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault,
+        param_choices[[.plotFontSize]]*.plotFontSizeAxisTitleDefault,
+        param_choices[[.plotFontSize]]*.plotFontSizeTitleDefault)
     return(unlist(plot_cmds))
 }
 
@@ -684,10 +698,8 @@ names(.all_aes_values) <- .all_aes_names
 #' Generate (but not evaluate) the commands required to produce a vertical or
 #' horizontal violin plot.
 #'
-#' @param plot_data A data.frame containing all of the plotting information,
-#' returned by \code{\link{.extract_plotting_data}} in \code{envir$plot.data}.
-#' @param param_choices A single-row DataFrame that contains all the
-#' input settings for the current panel.
+#' @param plot_data A data.frame containing all of the plotting information, returned by \code{\link{.extract_plotting_data}} in \code{envir$plot.data}.
+#' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
 #' @param x_lab A character label for the X axis.
 #' Set to \code{NULL} to have no x-axis label.
 #' @param y_lab A character label for the Y axis.
@@ -696,11 +708,11 @@ names(.all_aes_values) <- .all_aes_names
 #' Set to \code{NULL} to have no color label.
 #' @param title A character title for the plot.
 #' Set to \code{NULL} to have no title. 
-#' @param horizontal A logical value that indicates whether violins should be
-#' drawn horizontally
+#' @param horizontal A logical value that indicates whether violins should be drawn horizontally
 #' (i.e., Y axis categorical and X axis continuous).
-#' @param by_row A logical scalar specifying whether the plot deals with
-#' row-level metadata.
+#' @param by_row A logical scalar specifying whether the plot deals with row-level metadata.
+#' @param is_subsetted A logical scalar specifying whether \code{plot_data} was subsetted during \code{\link{.process_selectby_choice}}.
+#' @param is_downsampled A logical scalar specifying whether \code{plot_data} was downsampled in \code{\link{.plot_wrapper}}.
 #'
 #' @return 
 #' For \code{\link{.violin_setup}}, a character vector of commands to be parsed
@@ -717,8 +729,8 @@ names(.all_aes_values) <- .all_aes_names
 #'
 #' As described in \code{?\link{.create_plot}}, the \code{\link{.violin_plot}} function should only contain commands to generate the final ggplot object.
 #'
-#' \code{envir$plot.data.all} will be used to define the y-axis boundaries (or x-axis boundaries when \code{horizontal=TRUE}).
-#' This ensures consistent plot boundaries when selecting points to restrict (see \code{?\link{.process_selectby_choice}})
+#' \code{plot.data.all} will be used to define the y-axis boundaries (or x-axis boundaries when \code{horizontal=TRUE}).
+#' This ensures consistent plot boundaries when selecting points to restrict (see \code{?\link{.process_selectby_choice}}),
 #' or when downsampling for speed (see \code{?\link{.create_plot}}.
 #'
 #' Similarly, \code{envir$plot.data.pre} will be used to create the violins (see \code{\link{.create_plot}}).
@@ -732,17 +744,21 @@ names(.all_aes_values) <- .all_aes_names
 #'
 #' @importFrom ggplot2 ggplot geom_violin coord_cartesian theme_bw theme
 #' coord_flip scale_x_discrete scale_y_discrete
-.violin_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, title, horizontal = FALSE, by_row = FALSE) {
+.violin_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, title, 
+        horizontal = FALSE, by_row = FALSE, is_subsetted = FALSE, is_downsampled = FALSE) {
+
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +" # do NOT put aes here, it does not play nice with shiny brushes.
     plot_cmds[["violin"]] <- sprintf(
-      "geom_violin(%s, alpha = 0.2, data=plot.data.pre, scale = 'width', width = 0.8) +", 
-      .build_aes(color = FALSE, group = TRUE))
+        "geom_violin(%s, alpha = 0.2, data=%s, scale = 'width', width = 0.8) +", 
+        .build_aes(color = FALSE, group = TRUE),
+        ifelse(is_downsampled, "plot.data.pre", "plot.data")
+    )
 
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)
     new_aes <- .build_aes(color = color_set, alt=c(x="jitteredX"))
-    plot_cmds[["points"]] <- unlist(.create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set))
+    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set)
 
     # Defining the color commands.
     if (by_row) { 
@@ -773,7 +789,6 @@ names(.all_aes_values) <- .all_aes_names
     }
   
     if (!is.null(bounds)) {
-      
         # Ensure zoom preserves the data points and width ratio of visible groups
         bounds["xmin"] <- ceiling(bounds["xmin"]) - 0.5
         bounds["xmax"] <- floor(bounds["xmax"]) + 0.5
@@ -784,30 +799,36 @@ names(.all_aes_values) <- .all_aes_names
             deparse(bounds["ymin"]), deparse(bounds["ymax"])
         )
     } else {
-        plot_cmds[["coord"]] <- sprintf("%s(ylim = range(plot.data.all$%s, na.rm=TRUE), expand = TRUE) +", 
-                                        coord_cmd, ifelse(horizontal, "X", "Y"))
+        plot_cmds[["coord"]] <- sprintf("%s(ylim = range(%s$Y, na.rm=TRUE), expand = TRUE) +", 
+            coord_cmd, ifelse(is_subsetted, "plot.data.all", ifelse(is_downsampled, "plot.data.pre", "plot.data"))
+        )
     }
   
     plot_cmds[["scale_color"]] <- color_scale_cmd
     
+    # Retain axes when no points are generated.
+    if (nrow(plot_data)==0 && is_subsetted) {
+        plot_cmds[["select_blank"]] <- "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
+    }
+
     # Preserving the x-axis range. This applies even for horizontal violin plots,
     # as this command is executed internally before coord_flip().
     plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +" 
 
     plot_cmds[["theme_base"]] <- "theme_bw() +"
     plot_cmds[["theme_custom"]] <- sprintf(
-    "theme(legend.position = '%s', legend.text=element_text(size=%s), 
-    legend.title=element_text(size=%s), legend.box = 'vertical',
-    axis.text.x = element_text(angle=90, size=%s, hjust=1, vjust=0.5), 
-    axis.text.y=element_text(size=%s), 
-    axis.title=element_text(size=%s), title=element_text(size=%s))",
-    tolower(param_choices[[.plotLegendPosition]]),
-    param_choices[[.plotFontSize]]*.plotFontSizeLegendTextDefault, 
-    param_choices[[.plotFontSize]]*.plotFontSizeLegendTitleDefault,
-    param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault,
-    param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault,
-    param_choices[[.plotFontSize]]*.plotFontSizeAxisTitleDefault,
-    param_choices[[.plotFontSize]]*.plotFontSizeTitleDefault)
+        "theme(legend.position = '%s', legend.text=element_text(size=%s), 
+        legend.title=element_text(size=%s), legend.box = 'vertical',
+        axis.text.x = element_text(angle=90, size=%s, hjust=1, vjust=0.5), 
+        axis.text.y=element_text(size=%s), 
+        axis.title=element_text(size=%s), title=element_text(size=%s))",
+        tolower(param_choices[[.plotLegendPosition]]),
+        param_choices[[.plotFontSize]]*.plotFontSizeLegendTextDefault, 
+        param_choices[[.plotFontSize]]*.plotFontSizeLegendTitleDefault,
+        param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault,
+        param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault,
+        param_choices[[.plotFontSize]]*.plotFontSizeAxisTitleDefault,
+        param_choices[[.plotFontSize]]*.plotFontSizeTitleDefault)
 
     return(unlist(plot_cmds))
 }
@@ -859,6 +880,7 @@ plot.data$Y <- tmp;")
 #' @param title A character title for the plot.
 #' Set to \code{NULL} to have no title. 
 #' @param by_row A logical scalar specifying whether the plot deals with row-level metadata.
+#' @param is_subsetted A logical scalar specifying whether \code{plot_data} was subsetted during \code{\link{.process_selectby_choice}}.
 #'
 #' @return 
 #' For \code{\link{.square_setup}}, a character vector of commands to be parsed and evaluated by \code{\link{.extract_plotting_data}} to set up the required fields.
@@ -883,7 +905,7 @@ plot.data$Y <- tmp;")
 #'
 #' @importFrom ggplot2 ggplot geom_tile coord_cartesian theme_bw theme
 #' scale_x_discrete scale_y_discrete guides
-.square_plot <- function(plot_data, param_choices, se, x_lab, y_lab, color_lab, title, by_row = FALSE) {
+.square_plot <- function(plot_data, param_choices, se, x_lab, y_lab, color_lab, title, by_row = FALSE, is_subsetted = FALSE) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
     plot_cmds[["tile"]] <-
@@ -893,7 +915,7 @@ plot.data$Y <- tmp;")
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)
     new_aes <- .build_aes(color = color_set, alt=c(x="jitteredX", y="jitteredY"))
-    plot_cmds[["points"]] <- unlist(.create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set))
+    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set)
 
     # Defining the color commands.
     if (by_row) { 
@@ -928,6 +950,11 @@ plot.data$Y <- tmp;")
     
     plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +"
     plot_cmds[["scale_y"]] <- "scale_y_discrete(drop = FALSE) +"
+
+    # Retain axes when no points are present.
+    if (nrow(plot_data)==0 && is_subsetted) {
+        plot_cmds[["select_blank"]] <- "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
+    }
   
     # Do not display the size legend (saves plot space, as well)
     plot_cmds[["theme_base"]] <- "theme_bw() +"
@@ -1232,22 +1259,13 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' }
 #'
 #' @details
-#' For the current panel, this function identifies the transmitting panel,
-#' \emph{i.e.}, from which the current panel is receiving a selection of
-#' data points.
-#' It then generates the commands necessary to identify the points selected
-#' in the transmitter, to add as \code{SelectBy} in the current panel.
-#' This requires extraction of the Shiny brush or lasso waypoints in the
-#' transmitter, which are used during evaluation to define the selection.
+#' For the current panel, this function identifies the transmitting panel, i.e., from which the current panel is receiving a selection of data points.
+#' It then generates the commands necessary to identify the points selected in the transmitter, to add as \code{SelectBy} in the current panel.
+#' This requires extraction of the Shiny brush or lasso waypoints in the transmitter, which are used during evaluation to define the selection.
 #'
-#' Note that if selecting to restrict, an extra \code{plot.data.all}
-#' variable will be generated in the evaluation environment
-#' (see \code{\link{.extract_plotting_data}}).
-#' This will be used in \code{\link{.scatter_plot}} and
-#' \code{\link{.violin_plot}} to define the boundaries of the plot
-#' based on the full data.
-#' In this manner, the boundaries of the plot are kept consistent even when
-#' only a subset of the data are used to generate the ggplot object.
+#' Note that if selecting to restrict, an extra \code{plot.data.all} variable will be generated in the evaluation environment
+#' This will be used in \code{\link{.scatter_plot}} and \code{\link{.violin_plot}} to define the boundaries of the plot based on the full data.
+#' In this manner, the boundaries of the plot are kept consistent even when only a subset of the data are used to generate the ggplot object.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_process_selectby_choice
@@ -1305,9 +1323,9 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
         }
 
         if (length(select_obj) && param_choices[[.selectEffect]]==.selectRestrictTitle) {
-          # Duplicate plot.data before selecting points,
-          # to make sure that axes are retained
+          # Duplicate plot.data before selecting points, to make sure that axes are retained
           # even in case of an empty selected subset.
+          cmds[["saved"]] <- "plot.data.all <- plot.data;"
           cmds[["subset"]] <- "plot.data <- subset(plot.data, SelectBy);"
         }
     }
@@ -1396,8 +1414,6 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
       )
     }
     if (select_effect==.selectRestrictTitle) {
-      plot_cmds[["select_blank"]] <-
-        "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
       plot_cmds[["select_restrict"]] <- sprintf(
         "geom_point(%s, alpha = %s, plot.data, %ssize=%s) +",
         aes, param_choices[[.plotPointAlpha]], default_color, 
@@ -1595,11 +1611,9 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' values.
 #'
 #' @param x A \code{vector} of any R internal type.
-#' @param max_levels Maximul count of levels or unique values beyond which
-#' \code{x} is declared to be continuous (\emph{i.e.}, not groupable).
+#' @param max_levels Maximum number of levels or unique values beyond which \code{x} is declared to be continuous (i.e., not groupable).
 #'
-#' @return A \code{logical} that indicates whether \code{x} has fewer than
-#' \code{max_levels} levels or unique values.
+#' @return A \code{logical} that indicates whether \code{x} has fewer than \code{max_levels} levels or unique values.
 #'
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_is_groupable

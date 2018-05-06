@@ -309,6 +309,14 @@ iSEE <- function(se,
         cached <- pObjects$cached_info[[current]]
         out <- .make_customColPlot(id, ..., cached=cached)
         pObjects$cached_info[[current]] <- out$cached
+
+        if (!identical(rownames(out$cached$coordinates), rownames(cached$coordinates))) {
+            # Clearing the brush if the samples involved have changed.
+            # We set the plot to a straight ggplot() to avoid a double-render.
+            .regenerate_unselected_plot("customColPlot", id, pObjects, rObjects, input, session)
+            out$plot <- ggplot()
+        }
+
         return(out)
     }
 

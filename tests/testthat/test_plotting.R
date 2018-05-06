@@ -3,14 +3,18 @@
 redDimArgs <- redDimPlotDefaults(sce, 1)
 colDataArgs <- colDataPlotDefaults(sce, 1)
 featAssayArgs <- featAssayPlotDefaults(sce, 1)
-rowStatArgs <- rowStatTableDefaults(sce, 1)
 rowDataArgs <- rowDataPlotDefaults(sce, 1)
-heatMapArgs <- heatMapPlotDefaults(sce, 1)
 
 # Set up memory
-all_memory <- iSEE:::.setup_memory(
-  sce, redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs, heatMapArgs,
-  redDimMax = 1, colDataMax = 1, featAssayMax = 1, rowStatMax = 1, rowDataMax = 1, heatMapMax = 1)
+all_memory <- iSEE:::.setup_memory(sce, 
+                                   redDimArgs=redDimArgs, 
+                                   colDataArgs=colDataArgs, 
+                                   featAssayArgs=featAssayArgs, 
+                                   rowStatArgs=NULL,
+                                   rowDataArgs=rowDataArgs, 
+                                   customColArgs=NULL,
+                                   heatMapArgs=NULL,
+                                   redDimMax=1, colDataMax=1, featAssayMax=1, rowStatMax=0, rowDataMax=1, customColMax=0, heatMapMax=0)
 
 all_coordinates <- list()
 
@@ -580,7 +584,7 @@ test_that(".make_featAssayPlot works for YAxis set to Feature name", {
   p.out <- iSEE:::.make_featAssayPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_match(
-    p.out$cmd_list$data$y,
+    p.out$cmd_list$data['y'],
     selected_gene,
     fixed = TRUE
   )
@@ -595,7 +599,7 @@ test_that(".make_featAssayPlot works for XAxis set to Column data", {
   p.out <- iSEE:::.make_featAssayPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_match(
-    p.out$cmd_list$data$x,
+    p.out$cmd_list$data['x'],
     "dissection_s",
     fixed = TRUE
   )
@@ -612,7 +616,7 @@ test_that(".make_featAssayPlot works for XAxis set to Feature name", {
   p.out <- iSEE:::.make_featAssayPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_match(
-    p.out$cmd_list$data$x,
+    p.out$cmd_list$data['x'],
     selected_gene,
     fixed = TRUE
   )
@@ -629,12 +633,12 @@ test_that(".make_featAssayPlot works for groupable colour covariate", {
   p.out <- iSEE:::.make_featAssayPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_match(
-    p.out$cmd_list$data$color,
+    p.out$cmd_list$data['color'],
     selected_coldata,
     fixed = TRUE
   )
 
-  expect_identical(p.out$cmd_list$data$more_color, "plot.data$ColorBy <- factor(plot.data$ColorBy);")
+  expect_identical(p.out$cmd_list$data[['more_color']], "plot.data$ColorBy <- factor(plot.data$ColorBy);")
  
   expect_match(
     p.out$cmd_list$plot["scale_color1"],
@@ -675,13 +679,13 @@ test_that(".make_colDataPlot/.create_plot can produce horizontal violins", {
   p.out <- iSEE:::.make_colDataPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
   
   expect_match(
-    p.out$cmd_list$data$y,
+    p.out$cmd_list$data['y'],
     selected_coldataY,
     fixed = TRUE
   )
   
   expect_match(
-    p.out$cmd_list$data$x,
+    p.out$cmd_list$data['x'],
     selected_coldataX,
     fixed = TRUE
   )

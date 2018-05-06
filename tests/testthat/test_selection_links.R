@@ -5,6 +5,7 @@ colDataArgs <- colDataPlotDefaults(sce, 2)
 featAssayArgs <- featAssayPlotDefaults(sce, 3)
 rowStatArgs <- rowStatTableDefaults(sce, 3)
 rowDataArgs <- rowDataPlotDefaults(sce, 1)
+customColArgs <- customColPlotDefaults(sce, 1)
 heatMapArgs <- heatMapPlotDefaults(sce, 2)
 
 # Creating a test graph:
@@ -16,9 +17,14 @@ featAssayArgs[1,iSEE:::.selectByPlot] <- "Feature assay plot 1"
 colDataArgs[2,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
 
 memory <- list(
-  redDimPlot=redDimArgs, featAssayPlot=featAssayArgs, colDataPlot=colDataArgs,
-  rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs, heatMapPlot=heatMapArgs
-  )
+    redDimPlot=redDimArgs, 
+    featAssayPlot=featAssayArgs, 
+    colDataPlot=colDataArgs,
+    rowStatTable=rowStatArgs, 
+    rowDataPlot=rowDataArgs, 
+    customColPlot=customColArgs,
+    heatMapPlot=heatMapArgs
+)
 g <- iSEE:::.spawn_selection_chart(memory)
 
 test_that("selection link creation works correctly", {
@@ -28,6 +34,7 @@ test_that("selection link creation works correctly", {
                                                sprintf("colDataPlot%i", seq_len(nrow(colDataArgs))),
                                                sprintf("rowStatTable%i", seq_len(nrow(rowStatArgs))),
                                                sprintf("rowDataPlot%i", seq_len(nrow(rowDataArgs))),
+                                               sprintf("customColPlot%i", seq_len(nrow(customColArgs))),
                                                sprintf("heatMapPlot%i", seq_len(nrow(heatMapArgs))))))
     expect_identical(sum(m), 3)
 
@@ -45,16 +52,24 @@ test_that("selection link creation works correctly", {
     featAssayArgs[1,iSEE:::.selectByPlot] <- "Column data plot 2"
     colDataArgs[2,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
 
-    expect_error(iSEE:::.spawn_selection_chart(list(redDimPlot=redDimArgs, featAssayPlot=featAssayArgs, colDataPlot=colDataArgs, 
-                                                rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs,
-                                                heatMapPlot=heatMapArgs)),
+    expect_error(iSEE:::.spawn_selection_chart(list(redDimPlot=redDimArgs, 
+                                                    featAssayPlot=featAssayArgs, 
+                                                    colDataPlot=colDataArgs, 
+                                                    rowStatTable=rowStatArgs, 
+                                                    rowDataPlot=rowDataArgs,
+                                                    customColPlot=customColArgs,
+                                                    heatMapPlot=heatMapArgs)),
                  "cyclic point selection dependencies")
 
     # Checking that it throws up upon being given some garbage.
     redDimArgs[1,iSEE:::.selectByPlot] <- "whee!"
-    expect_error(iSEE:::.spawn_selection_chart(list(redDimPlot=redDimArgs, featAssayPlot=featAssayArgs, colDataPlot=colDataArgs,
-                                                rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs,
-                                                heatMapPlot=heatMapArgs)),
+    expect_error(iSEE:::.spawn_selection_chart(list(redDimPlot=redDimArgs, 
+                                                    featAssayPlot=featAssayArgs, 
+                                                    colDataPlot=colDataArgs,
+                                                    rowStatTable=rowStatArgs, 
+                                                    rowDataPlot=rowDataArgs,
+                                                    customColPlot=customColArgs,
+                                                    heatMapPlot=heatMapArgs)),
                  "not a legal panel name")
 })
 
@@ -159,32 +174,52 @@ test_that("select dependent identification works correctly", {
     featAssayArgs[3,iSEE:::.selectByPlot] <- "Column data plot 1"
 
     # No restriction in the children.
-    memory <- list(redDimPlot=redDimArgs, featAssayPlot=featAssayArgs, colDataPlot=colDataArgs,
-                   rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs, heatMapPlot=heatMapArgs)
+    memory <- list(redDimPlot=redDimArgs, 
+                   featAssayPlot=featAssayArgs, 
+                   colDataPlot=colDataArgs,
+                   rowStatTable=rowStatArgs, 
+                   rowDataPlot=rowDataArgs, 
+                   customColPlot=customColArgs,
+                   heatMapPlot=heatMapArgs)
     g <- iSEE:::.spawn_selection_chart(memory)
     expect_identical(iSEE:::.get_selection_dependents(g, "redDimPlot1", memory),
                      c("featAssayPlot1", "featAssayPlot2"))
     
     # Restriction in one of the children, and not the other.
     featAssayArgs[1,iSEE:::.selectEffect] <- iSEE:::.selectRestrictTitle
-    memory <- list(redDimPlot=redDimArgs, featAssayPlot=featAssayArgs, colDataPlot=colDataArgs,
-                   rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs, heatMapPlot=heatMapArgs)
+    memory <- list(redDimPlot=redDimArgs, 
+                   featAssayPlot=featAssayArgs, 
+                   colDataPlot=colDataArgs,
+                   rowStatTable=rowStatArgs, 
+                   rowDataPlot=rowDataArgs, 
+                   customColPlot=customColArgs,
+                   heatMapPlot=heatMapArgs)
     g <- iSEE:::.spawn_selection_chart(memory)
     expect_identical(iSEE:::.get_selection_dependents(g, "redDimPlot1", memory),
                      c("featAssayPlot1", "featAssayPlot2", "colDataPlot1"))
 
     # Restriction in the grandchildren.
     colDataArgs[1,iSEE:::.selectEffect] <- iSEE:::.selectRestrictTitle
-    memory <- list(redDimPlot=redDimArgs, featAssayPlot=featAssayArgs, colDataPlot=colDataArgs,
-                   rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs, heatMapPlot=heatMapArgs)
+    memory <- list(redDimPlot=redDimArgs, 
+                   featAssayPlot=featAssayArgs, 
+                   colDataPlot=colDataArgs,
+                   rowStatTable=rowStatArgs, 
+                   rowDataPlot=rowDataArgs, 
+                   customColPlot=customColArgs,
+                   heatMapPlot=heatMapArgs)
     g <- iSEE:::.spawn_selection_chart(memory)
     expect_identical(iSEE:::.get_selection_dependents(g, "redDimPlot1", memory),
                      c("featAssayPlot1", "featAssayPlot2", "colDataPlot1", "featAssayPlot3"))
 
     # Breaking the chain if we turn off restriction in the child.
     featAssayArgs[1,iSEE:::.selectEffect] <- iSEE:::.selectColorTitle
-    memory <- list(redDimPlot=redDimArgs, featAssayPlot=featAssayArgs, colDataPlot=colDataArgs, 
-                   rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs, heatMapPlot=heatMapArgs)
+    memory <- list(redDimPlot=redDimArgs, 
+                   featAssayPlot=featAssayArgs, 
+                   colDataPlot=colDataArgs, 
+                   rowStatTable=rowStatArgs, 
+                   rowDataPlot=rowDataArgs, 
+                   customColPlot=customColArgs,
+                   heatMapPlot=heatMapArgs)
     g <- iSEE:::.spawn_selection_chart(memory)
     expect_identical(iSEE:::.get_selection_dependents(g, "redDimPlot1", memory),
                      c("featAssayPlot1", "featAssayPlot2"))
@@ -239,9 +274,14 @@ test_that("reporting order is correctly reported", {
   featAssayArgs[1,iSEE:::.selectByPlot] <- "Feature assay plot 1" # self
   
   memory <- list(
-    redDimPlot=redDimArgs, featAssayPlot=featAssayArgs, colDataPlot=colDataArgs,
-    rowStatTable=rowStatArgs, rowDataPlot=rowDataArgs, heatMapPlot=heatMapArgs
-    )
+    redDimPlot=redDimArgs, 
+    featAssayPlot=featAssayArgs, 
+    colDataPlot=colDataArgs,
+    rowStatTable=rowStatArgs, 
+    rowDataPlot=rowDataArgs, 
+    customColPlot=customColArgs,
+    heatMapPlot=heatMapArgs
+  )
   g <- iSEE:::.spawn_selection_chart(memory)
   # plot(g)
   

@@ -329,13 +329,18 @@
 
     # Secondly reporting on the active panels.
     initials <- list(strrep("#", 80), 
-            sprintf("# Settings for %ss", tolower(translation[[mode]])),
-            strrep("#", 80), "", 
-            sprintf("initialPanels <- new('DataFrame', nrows=%iL)", nrow(active_panels)))
-    for (col in colnames(active_panels)) {
-        initials[[col]] <- sprintf("initialPanels[['%s']] <- %s", col, 
-            .deparse_for_viewing(active_panels[[col]]))
-    }
+        "# Initial panel settings",
+        strrep("#", 80), "", 
+        sprintf("initialPanels <- DataFrame(
+    Name=%s,
+    Width=%s,
+    Height=%s
+)", 
+            .deparse_for_viewing(.decode_panel_name(active_panels$Type, active_panels$ID), indent=2),
+            .deparse_for_viewing(active_panels$Width, indent=2),
+            .deparse_for_viewing(active_panels$Height, indent=2)
+        )
+    )
 
     return(unlist(c(collected, "", initials)))
 }

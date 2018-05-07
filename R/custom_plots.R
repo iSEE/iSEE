@@ -188,4 +188,25 @@
 #'     return(list(coordinates=coords, xlab="PC1", ylab="PC2", 
 #'            title="PCA on selected points"))           
 #' }
+#'
+#' library(scRNAseq)
+#' data(allen)
+#' class(allen)
+#'
+#' library(scater)
+#' sce <- as(allen, "SingleCellExperiment")
+#' counts(sce) <- assay(sce, "tophat_counts")
+#' sce <- normalize(sce)
+#' sce <- runPCA(sce)
+#'
+#' rdp <- redDimPlotDefaults(sce, 1)
+#' ccp <- customColPlotDefaults(sce, 1)
+#' ccp$Function <- "PCA2"
+#' ccp$SelectByPlot <- "Reduced dimension plot 1"
+#' ccp$SelectEffect <- "Restrict"
+#' 
+#' app <- iSEE(sce, redDimArgs=rdp, customColArgs=ccp, 
+#'    initialPanels=DataFrame(Name=c("Reduced dimension plot 1", 
+#'        "Custom column plot 1")),
+#'    customColFun=list(PCA2=CUSTOM))
 NULL

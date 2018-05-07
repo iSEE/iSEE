@@ -118,7 +118,7 @@ setClass("ExperimentColorMap",
 #' continuous \code{assays}, \code{colData}, and \code{rowData}, respectively.
 #' @param global_discrete Color map applied to all undefined
 #' categorical covariates.
-#' @param global_continuous Color maps applied to all undefined
+#' @param global_continuous Color map applied to all undefined
 #' continuous covariates.
 #' @param ... additional arguments passed on to the \code{ExperimentColorMap}
 #' constructor

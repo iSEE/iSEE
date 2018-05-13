@@ -734,9 +734,9 @@ height_limits <- c(400L, 1000L)
         done <- c(done, commands)
         commands <- list()
     }
-    for (x in sizeFactorNames(tmp_se)) {
+    for (sf_name in sizeFactorNames(tmp_se)) {
         tmp_se <- eval_env$se
-        get_cmd <- sprintf("sizeFactors(se, %s)", x)
+        get_cmd <- sprintf("sizeFactors(se, %s)", deparse(sf_name))
         new_name <- .safe_field_name(get_cmd, colnames(colData(tmp_se)))
         commands[["sf"]] <- sprintf('colData(se)[,%s] <- %s', deparse(new_name), get_cmd)
         eval(parse(text=commands), envir=eval_env)
@@ -753,9 +753,9 @@ height_limits <- c(400L, 1000L)
         done <- c(done, commands)
         commands <- list()
     }
-    for (x in spikeNames(tmp_se)) {
+    for (s_name in spikeNames(tmp_se)) {
         tmp_se <- eval_env$se
-        get_cmd <- sprintf("isSpike(se, %s)", deparse(x))
+        get_cmd <- sprintf("isSpike(se, %s)", deparse(s_name))
         new_name <- .safe_field_name(get_cmd, colnames(rowData(tmp_se)))
         commands[["sf"]] <- sprintf('rowData(se)[,%s] <- %s', deparse(new_name), get_cmd)
         eval(parse(text=commands), envir=eval_env)

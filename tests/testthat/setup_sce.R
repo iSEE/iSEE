@@ -16,4 +16,4 @@ rowData(sce)$num_cells <- rowSums(counts(sce)>0)
 rowData(sce)$mean_count <- rowMeans(counts(sce))
 
 isSpike(sce, "random") <- sample(c(TRUE, FALSE), nrow(sce), replace = TRUE, prob = c(0.01, 0.99))
-sizeFactors(sce, "ERCC")  <- runif(ncol(sce))
+sizeFactors(sce, "random")  <- runif(ncol(sce))

@@ -1041,21 +1041,18 @@ summary.data$YWidth <- 0.49 * %s;", norm_freq)
     } else if (nlevels(plot_data$Y)!=1L && nlevels(plot_data$X)==1L) {
         width_cmd <- sprintf("summary.data$XWidth <- 0.49 * %s;
 summary.data$YWidth <- 0.4;", norm_freq)
-        ymax <- "0.4"
     } else {
         width_cmd <- sprintf("summary.data$XWidth <- summary.data$YWidth <- 0.49 * sqrt(%s);", norm_freq)
     }
     setup_cmds[["radius"]] <- width_cmd
 
-    setup_cmds[["merged"]] <-
-"plot.data$Marker <- seq_len(nrow(plot.data));
+    setup_cmds[["merged"]] <- "plot.data$Marker <- seq_len(nrow(plot.data));
 combined <- merge(plot.data, summary.data, by=c('X', 'Y'), all.x=TRUE);
 o <- order(combined$Marker)
 width.x <- combined$XWidth[o];
 width.y <- combined$YWidth[o];
 plot.data$Marker <- NULL;"
-    setup_cmds[["jitter"]] <-
-"set.seed(100);
+    setup_cmds[["jitter"]] <- "set.seed(100);
 plot.data$jitteredX <- as.integer(plot.data$X) + width.x*runif(nrow(plot.data), -1, 1);
 plot.data$jitteredY <- as.integer(plot.data$Y) + width.y*runif(nrow(plot.data), -1, 1);"
     return(unlist(setup_cmds))

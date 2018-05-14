@@ -788,15 +788,15 @@ height_limits <- c(400L, 1000L)
     # Destroy all non-atomic fields (only internal, no need to hold commands).
     for (f in colnames(rowData(tmp_se))) {
         cur_field <- rowData(tmp_se)[[f]]
-        if (!is.numeric(cur_field) & !is.factor(cur_field) 
-            & !is.character(cur_field) & !is.logical(cur_field)) {
+        if (!is.numeric(cur_field) && !is.factor(cur_field) 
+            && !is.character(cur_field) && !is.logical(cur_field)) {
             rowData(tmp_se)[[f]] <- NULL
         }
     }
     for (f in colnames(colData(tmp_se))) {
         cur_field <- colData(tmp_se)[[f]]
-        if (!is.numeric(cur_field) & !is.factor(cur_field) 
-            & !is.character(cur_field) & !is.logical(cur_field)) {
+        if (!is.numeric(cur_field) && !is.factor(cur_field) 
+            && !is.character(cur_field) && !is.logical(cur_field)) {
             colData(tmp_se)[[f]] <- NULL
         }
     }

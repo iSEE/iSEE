@@ -26,19 +26,12 @@ test_that(".sanitize_SE_input returns expected commands and object", {
     expected_se <- eval_env$se
     
     for (f in colnames(colData(expected_se))) {
-        cur_field <- colData(tmp_se)[[f]]
-        if (!is.numeric(cur_field) & !is.factor(cur_field) 
-            & !is.character(cur_field) & !is.logical(cur_field)) {
+        cur_field <- colData(expected_se)[[f]]
+        if (!is.numeric(cur_field) && !is.factor(cur_field) 
+            && !is.character(cur_field) && !is.logical(cur_field)) {
             colData(expected_se)[[f]] <- NULL
         }
     }
     
-    # fails!!! does not add the last field?
-    expect_identical(sanitized_sce, expected_se)
-    
-    # emulate the invalid sce produced: this should fail!
-    colData(expected_se)[,"nested:nested2"] <- NULL
     expect_identical(sanitized_sce, expected_se)
 }) 
-
-

@@ -51,7 +51,7 @@ continuous \code{assays}, \code{colData}, and \code{rowData}, respectively.}
 \item{global_discrete}{Color map applied to all undefined
 categorical covariates.}
 
-\item{global_continuous}{Color maps applied to all undefined
+\item{global_continuous}{Color map applied to all undefined
 continuous covariates.}
 
 \item{...}{additional arguments passed on to the \code{ExperimentColorMap}

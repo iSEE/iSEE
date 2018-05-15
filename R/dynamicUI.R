@@ -171,7 +171,7 @@
         if (mode=="redDimPlot") {
             obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
             cur_reddim <- param_choices[[.redDimType]]
-            max_dim <- ncol(reducedDim(sce, cur_reddim))
+            max_dim <- ncol(reducedDim(se, cur_reddim))
 
             plot.param <-  list(
                  selectInput(.input_FUN(.redDimType), label="Type",

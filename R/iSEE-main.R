@@ -118,7 +118,7 @@ iSEE <- function(se,
   isColorMapCompatible(colormap, se, error = TRUE)
 
   # Setting up inputs for DT::datatable something to play with.
-  gene_data <- as.data.frame(rowData(se))
+  gene_data <- data.frame(rowData(se), check.names = FALSE)
   rownames(gene_data) <- rownames(se)
   if (ncol(gene_data)==0L) {
     gene_data$Present <- !logical(nrow(gene_data))

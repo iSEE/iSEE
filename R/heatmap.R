@@ -253,12 +253,21 @@
             col.vec <- c(col.vec, col.vec[length(col.vec)])
         }
         break.vec <- scales::rescale(break.vec, to=c(0, 1), from=limits)
-        fill_cmd <- sprintf("scale_fill_gradientn(colors=c('%s'), 
+        ## If there is only one value in the matrix (since the data is centered,
+        ## the value is 0) and no valid upper or lower bounds have been chosen,
+        ## color by the middle value in the chosen color vector
+        if (limits[1] == limits[length(limits)]) {
+            fill_cmd <- sprintf("scale_fill_gradientn(colors=c('%s'), 
+                                na.value='grey50') +",
+                                strsplit(param_choices[[.heatMapCenteredColors]], "-")[[1]][2])
+        } else {
+            fill_cmd <- sprintf("scale_fill_gradientn(colors=c('%s'), 
                             values=c(%s), 
-                            limits=c(%s), na.value='grey50') +", 
-                            paste0(col.vec, collapse="','"),
-                            paste0(break.vec, collapse=","),
-                            paste0(limits, collapse=","))
+                                limits=c(%s), na.value='grey50') +", 
+                                paste0(col.vec, collapse="','"),
+                                paste0(break.vec, collapse=","),
+                                paste0(limits, collapse=","))
+        }
     } else {
         validate(need( 
             param_choices[[.heatMapLower]] < max.obs,

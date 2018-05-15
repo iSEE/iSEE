@@ -137,7 +137,6 @@
 
     all_assays <- .sanitize_names(assayNames(se))
     red_dim_names <- .sanitize_names(reducedDimNames(se))
-    red_dim_dims <- vapply(red_dim_names, FUN=function(x) ncol(reducedDim(se, x)), FUN.VALUE=0L)
 
     custom_col_fun <- .get_custom_col_fun(se)
     custom_col_funnames <- c(.noSelection, names(custom_col_fun))
@@ -172,14 +171,15 @@
         if (mode=="redDimPlot") {
             obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
             cur_reddim <- param_choices[[.redDimType]]
-            red_choices <- seq_len(red_dim_dims[[cur_reddim]])
+            max_dim <- ncol(reducedDim(se, cur_reddim))
+
             plot.param <-  list(
                  selectInput(.input_FUN(.redDimType), label="Type",
                              choices=red_dim_names, selected=cur_reddim),
-                 selectInput(.input_FUN(.redDimXAxis), label="Dimension 1",
-                             choices=red_choices, selected=param_choices[[.redDimXAxis]]),
-                 selectInput(.input_FUN(.redDimYAxis), label="Dimension 2",
-                             choices=red_choices, selected=param_choices[[.redDimYAxis]])
+                 numericInput(.input_FUN(.redDimXAxis), label="Dimension 1",
+                              min=1, max=max_dim, value=param_choices[[.redDimXAxis]]),
+                 numericInput(.input_FUN(.redDimYAxis), label="Dimension 2",
+                              min=1, max=max_dim, value=param_choices[[.redDimYAxis]])
                  )
         } else if (mode=="colDataPlot") {
             obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)

@@ -42,17 +42,17 @@ ExperimentColorMap(assays = list(), colData = list(), rowData = list(),
 
 \item{rowData}{List of color maps for \code{rowData}.}
 
-\item{all_discrete}{Discrete color maps applied to all undefined
-\code{assays}, \code{colData}, and \code{rowData}, respectively.}
+\item{all_discrete}{Color maps applied to all undefined
+categorical \code{assays}, \code{colData}, and \code{rowData}, respectively.}
 
-\item{all_continuous}{Continuous color maps applied to all undefined
-\code{assays}, \code{colData}, and \code{rowData}, respectively.}
+\item{all_continuous}{Color maps applied to all undefined
+continuous \code{assays}, \code{colData}, and \code{rowData}, respectively.}
 
-\item{global_discrete}{Discrete color maps applied to all undefined discrete
-covariates.}
+\item{global_discrete}{Color map applied to all undefined
+categorical covariates.}
 
-\item{global_continuous}{Continuous color maps applied to all undefined
-discrete covariates.}
+\item{global_continuous}{Color map applied to all undefined
+continuous covariates.}
 
 \item{...}{additional arguments passed on to the \code{ExperimentColorMap}
 constructor}
@@ -75,7 +75,7 @@ to produce constant color maps.
 In the following code snippets, \code{x} is an
 \code{ExperimentColorMap} object. If the color map can not immediately
 be found in the appropriate slot, \code{discrete} is a \code{logical(1)}
-that indicates whether the default color map returned should be discrete
+that indicates whether the default color map returned should be categorical
 \code{TRUE} or continuous (\code{FALSE}, default).
 
 \describe{
@@ -116,7 +116,7 @@ In the following code snippets, \code{x} is an
 # Example color maps ----
 
 count_colors <- function(n){
-  c("black","brown","red","orange","yellow")
+  c("black", "brown", "red", "orange", "yellow")
 }
 fpkm_colors <- viridis::inferno
 tpm_colors <- viridis::plasma
@@ -130,14 +130,14 @@ qc_color_fun <- function(n){
 # Constructor ----
 
 ecm <- ExperimentColorMap(
-    assays = list(
-        counts = count_colors,
-        tophat_counts = count_colors,
-        cufflinks_fpkm = fpkm_colors,
-        rsem_tpm = tpm_colors
+    assays=list(
+        counts=count_colors,
+        tophat_counts=count_colors,
+        cufflinks_fpkm=fpkm_colors,
+        rsem_tpm=tpm_colors
     ),
-    colData = list(
-        passes_qc_checks_s = qc_color_fun
+    colData=list(
+        passes_qc_checks_s=qc_color_fun
     )
 )
 
@@ -162,8 +162,8 @@ assayNames(ecm)
 
 # Setters ----
 
-assayColorMap(ecm, "counts") <- function(n){c("blue","white","red")}
-assay(ecm, 1) <- function(n){c("blue","white","red")}
+assayColorMap(ecm, "counts") <- function(n){c("blue", "white", "red")}
+assay(ecm, 1) <- function(n){c("blue", "white", "red")}
 
 colDataColorMap(ecm, "passes_qc_checks_s") <- function(n){NULL}
 rowDataColorMap(ecm, "undefined") <- function(n){NULL}

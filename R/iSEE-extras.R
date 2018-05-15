@@ -714,11 +714,10 @@ height_limits <- c(400L, 1000L)
     commands <- list()
 
     # Adding row and column names if necessary.
-    tmp_se <- eval_env$se
-    if (is.null(colnames(tmp_se))) {
+    if (is.null(colnames(eval_env$se))) {
         commands[["add_colnames"]] <- 'colnames(se) <- sprintf("SAMPLE_%i", seq_len(ncol(se)))'
     }
-    if (is.null(rownames(tmp_se))) {
+    if (is.null(rownames(eval_env$se))) {
         commands[["add_rownames"]] <- 'rownames(se) <- sprintf("FEATURE_%i", seq_len(nrow(se)))'
     }
     eval(parse(text=commands), envir=eval_env)
@@ -726,18 +725,17 @@ height_limits <- c(400L, 1000L)
     commands <- list()
 
     # Filling in with any sizeFactors.
-    tmp_se <- eval_env$se
-    if (!is.null(sizeFactors(tmp_se))) {
-        new_name <- .safe_field_name("sizeFactors(se)", colnames(colData(tmp_se)))
+    if (!is.null(sizeFactors(eval_env$se))) {
+        new_name <- .safe_field_name("sizeFactors(se)", colnames(colData(eval_env$se)))
         commands[["sf"]] <- sprintf('colData(se)[,%s] <- sizeFactors(se)', deparse(new_name))
         eval(parse(text=commands), envir=eval_env)
         done <- c(done, commands)
         commands <- list()
     }
-    for (sf_name in sizeFactorNames(tmp_se)) {
-        tmp_se <- eval_env$se
+
+    for (sf_name in sizeFactorNames(eval_env$se)) {
         get_cmd <- sprintf("sizeFactors(se, %s)", deparse(sf_name))
-        new_name <- .safe_field_name(get_cmd, colnames(colData(tmp_se)))
+        new_name <- .safe_field_name(get_cmd, colnames(colData(eval_env$se)))
         commands[["sf"]] <- sprintf('colData(se)[,%s] <- %s', deparse(new_name), get_cmd)
         eval(parse(text=commands), envir=eval_env)
         done <- c(done, commands)
@@ -745,18 +743,16 @@ height_limits <- c(400L, 1000L)
     }
     
     # Filling in with spike-ins.
-    tmp_se <- eval_env$se
-    if (!is.null(isSpike(tmp_se))) {
-        new_name <- .safe_field_name("isSpike(se)", colnames(rowData(tmp_se)))
+    if (!is.null(isSpike(eval_env$se))) {
+        new_name <- .safe_field_name("isSpike(se)", colnames(rowData(eval_env$se)))
         commands[["sf"]] <- sprintf('rowData(se)[,%s] <- isSpike(se)', deparse(new_name))
         eval(parse(text=commands), envir=eval_env)
         done <- c(done, commands)
         commands <- list()
     }
-    for (s_name in spikeNames(tmp_se)) {
-        tmp_se <- eval_env$se
+    for (s_name in spikeNames(eval_env$se)) {
         get_cmd <- sprintf("isSpike(se, %s)", deparse(s_name))
-        new_name <- .safe_field_name(get_cmd, colnames(rowData(tmp_se)))
+        new_name <- .safe_field_name(get_cmd, colnames(rowData(eval_env$se)))
         commands[["sf"]] <- sprintf('rowData(se)[,%s] <- %s', deparse(new_name), get_cmd)
         eval(parse(text=commands), envir=eval_env)
         done <- c(done, commands)
@@ -764,21 +760,18 @@ height_limits <- c(400L, 1000L)
     }
 
     # Decomposing nested DataFrames and discarding non-atomic types.
-    tmp_se <- eval_env$se
-    new_rows <- .extract_nested_DF(rowData(tmp_se))
+    new_rows <- .extract_nested_DF(rowData(eval_env$se))
     for (f in seq_along(new_rows$getter)) {
-        tmp_se <- eval_env$se
-        new_name <- .safe_field_name(new_rows$setter[f], colnames(rowData(tmp_se)))
+        new_name <- .safe_field_name(new_rows$setter[f], colnames(rowData(eval_env$se)))
         commands[["nnr"]] <- sprintf("rowData(se)[,%s] <- rowData(se)%s", deparse(new_name), new_rows$getter[f])
         eval(parse(text=commands), envir=eval_env)
         done <- c(done, commands)
         commands <- list()
     }
-    tmp_se <- eval_env$se
-    new_cols <- .extract_nested_DF(colData(tmp_se))
+
+    new_cols <- .extract_nested_DF(colData(eval_env$se))
     for (f in seq_along(new_cols$getter)) {
-        tmp_se <- eval_env$se
-        new_name <- .safe_field_name(new_cols$setter[f], colnames(colData(tmp_se)))
+        new_name <- .safe_field_name(new_cols$setter[f], colnames(colData(eval_env$se)))
         commands[["nnc"]] <- sprintf("colData(se)[,%s] <- colData(se)%s", deparse(new_name), new_cols$getter[f])
         eval(parse(text=commands), envir=eval_env)
         done <- c(done, commands)
@@ -786,22 +779,23 @@ height_limits <- c(400L, 1000L)
     }
 
     # Destroy all non-atomic fields (only internal, no need to hold commands).
-    for (f in colnames(rowData(tmp_se))) {
-        cur_field <- rowData(tmp_se)[[f]]
+    output_se <- eval_env$se
+    for (f in colnames(rowData(output_se))) {
+        cur_field <- rowData(output_se)[[f]]
         if (!is.numeric(cur_field) && !is.factor(cur_field) 
             && !is.character(cur_field) && !is.logical(cur_field)) {
-            rowData(tmp_se)[[f]] <- NULL
+            rowData(output_se)[[f]] <- NULL
         }
     }
-    for (f in colnames(colData(tmp_se))) {
-        cur_field <- colData(tmp_se)[[f]]
+    for (f in colnames(colData(output_se))) {
+        cur_field <- colData(output_se)[[f]]
         if (!is.numeric(cur_field) && !is.factor(cur_field) 
             && !is.character(cur_field) && !is.logical(cur_field)) {
-            colData(tmp_se)[[f]] <- NULL
+            colData(output_se)[[f]] <- NULL
         }
     }
     
-    return(list(cmds=unlist(done), object=tmp_se))
+    return(list(cmds=unlist(done), object=output_se))
 }
 
 #' Make a safe field name

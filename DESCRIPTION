@@ -1,7 +1,7 @@
 Package: iSEE
 Title: Interactive SummarizedExperiment Explorer
 Version: 1.1.1
-Date: 2018-05-02
+Date: 2018-05-17
 Authors@R: c(person("Charlotte", "Soneson", role=c("aut", "cre"),
     email="charlottesoneson@gmail.com"), person("Aaron", "Lun", 
     role="aut", email="alun@wehi.edu.au"), person("Federico",
@@ -58,8 +58,6 @@ Suggests:
     viridis,
     org.Mm.eg.db,
     htmltools
-Enhances:
-    ExperimentHub
 URL: https://github.com/csoneson/iSEE
 BugReports: https://github.com/csoneson/iSEE/issues
 biocViews: Visualization, GUI, DimensionReduction, 

@@ -62,6 +62,14 @@
 .heatMapRelHeightHeatmap <- 1
 .heatMapRelHeightAnnot <- 0.1
 
+# Faceting parameters ----
+
+.colDataFacetRow <- "RowFacetColData"
+.colDataFacetColumn <- "ColumnFacetColData"
+
+.rowDataFacetRow <- "RowFacetColData"
+.rowDataFacetColumn <- "ColumnFacetColData"
+
 # Point colouring parameters. ----
 .colorByNothingTitle <- "None"
 .colorByColDataTitle <- "Column data"

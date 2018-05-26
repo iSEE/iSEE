@@ -1768,14 +1768,12 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     
     facet_row <- param_choices[[.rowDataFacetRow]]
     if (!identical(facet_row, ".")) {
-        message("DEBUG: facet_row:", facet_row)
         facet_cmds["facet_x"] <- sprintf(
             "plot.data$FacetRow <- rowData(se)[,%s];", deparse(facet_row))
     }
     
     facet_column <- param_choices[[.rowDataFacetColumn]]
     if (!identical(facet_column, ".")) {
-        message("DEBUG: facet_column:", facet_column)
         facet_cmds["facet_y"] <- sprintf(
             "plot.data$FacetColumn <- rowData(se)[,%s];", deparse(facet_column))
     }

@@ -291,11 +291,11 @@
         }
     } else {
         validate(need(
-            param_choices[[.heatMapLower]] < max.obs,
+            is.na(param_choices[[.heatMapLower]]) || param_choices[[.heatMapLower]] < max.obs,
             sprintf("Lower bound must be lower than largest value in matrix")
         ))
         validate(need(
-            param_choices[[.heatMapUpper]] > min.obs,
+            is.na(param_choices[[.heatMapUpper]]) || param_choices[[.heatMapUpper]] > min.obs,
             sprintf("Upper bound must be higher than smallest value in matrix")
         ))
         col.vec <- assayColorMap(colormap, param_choices[[.heatMapAssay]], discrete=FALSE)(21L)

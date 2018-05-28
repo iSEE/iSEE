@@ -85,18 +85,21 @@
     alpha_legend_cmd <- NULL
     select_out <- .process_selectby_choice(param_choices, all_memory)
     select_cmds <- select_out$cmds
+    select_as_field <- .safe_field_name("SelectBy", colnames(colData(se)))
 
     if (length(select_cmds)) {
         # plot.data$X contains the gene names (as they are duplicated across plot.data, and cannot be in 'rownames'), hence the sub().
         select_cmds[["select"]] <- sub("rownames(plot.data)", "plot.data$X", select_cmds[["select"]], fixed=TRUE)
+
         eval_env$all_brushes <- select_out$data
         eval_env$all_lassos <- select_out$data
         if (param_choices[[.selectEffect]]==.selectTransTitle) {
             alpha_cmd <- ", alpha=SelectBy"
             alpha_legend_cmd <- "guides(alpha=FALSE) +"
+
         } else if (param_choices[[.selectEffect]]==.selectColorTitle) {
             ## Add annotation bar
-            orderBy <- c(orderBy, "SelectBy")
+            orderBy <- c(orderBy, select_as_field)
         }
         eval(parse(text=select_cmds), envir=eval_env)
     }
@@ -129,20 +132,20 @@
     # Heatmap. Get the colorbar separately to make it easier to guess the real
     # heatmap coordinates from a brush on the final combined plot
     plot_cmds <- c(
-      "p0 <- ggplot(plot.data, aes(x = X, y = Y)) +",
-      "geom_raster(aes(fill = value)) +",
-      "labs(x='', y='') +",
-      .get_heatmap_fill_cmd(param_choices, colormap,
-                            min(eval_env$plot.data$value, na.rm=TRUE),
-                            max(eval_env$plot.data$value, na.rm=TRUE)),
-      "scale_y_discrete(expand=c(0, 0)) +",
-      "theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.line=element_blank());",
-      "heatlegend <- cowplot::get_legend(p0 + theme(legend.position='bottom'));"
+        "p0 <- ggplot(plot.data, aes(x = X, y = Y)) +",
+        "geom_raster(aes(fill = value)) +",
+        "labs(x='', y='') +",
+        .get_heatmap_fill_cmd(param_choices, colormap,
+                              min(eval_env$plot.data$value, na.rm=TRUE),
+                              max(eval_env$plot.data$value, na.rm=TRUE)),
+        "scale_y_discrete(expand=c(0, 0)) +",
+        "theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.line=element_blank());",
+        "heatlegend <- cowplot::get_legend(p0 + theme(legend.position='bottom'));"
     )
 
     # Annotations
     annot_cmds <- list(init="legends <- list()")
-    for (i in which(orderBy!="SelectBy")) {
+    for (i in which(orderBy!=select_as_field)) {
         if (is.numeric(eval_env$plot.data[[paste0("OrderBy", i)]])) {
             color_cmd <- sprintf("scale_fill_gradientn(colors=colDataColorMap(colormap, '%s', discrete=FALSE)(21L), na.value='grey50', name='%s') +",
                                  orderBy[i], orderBy[i])
@@ -161,11 +164,12 @@
             "theme(axis.text.x=element_blank(), axis.ticks=element_blank(), axis.title.x=element_blank(),
     rect=element_blank(), line=element_blank(), axis.title.y=element_blank(),
     plot.margin = unit(c(0,0,-0.5,0), 'lines'));",
-            sprintf("legends[[%i]] <- cowplot::get_legend(p%i + theme(legend.position='bottom', plot.margin = unit(c(0,0,0,0), 'lines')))", i, i)
+            sprintf("legends[[%i]] <- cowplot::get_legend(p%i + theme(legend.position='bottom', plot.margin = unit(c(0,0,0,0), 'lines')));", i, i)
         )
     }
 
-    if ("SelectBy" %in% orderBy) {
+    if (select_as_field %in% orderBy) {
+        i <- which(orderBy==select_as_field) 
         annot_cmds[["SelectBy"]] <- c("",
             sprintf("p%i <- ggplot(plot.data, aes(x = X, y = 1)) +", i),
             "geom_raster(aes(fill = SelectBy)) +",
@@ -174,7 +178,8 @@
             sprintf("scale_fill_manual(values=c(`TRUE`='%s', `FALSE`='white')) +",param_choices[[.selectColor]]),
             "theme(axis.text.x=element_blank(), axis.ticks=element_blank(), axis.title.x=element_blank(),
       rect=element_blank(), line=element_blank(), axis.title.y=element_blank(),
-            plot.margin = unit(c(0,0,-0.5,0), 'lines'));")
+            plot.margin = unit(c(0,0,-0.5,0), 'lines'));",
+            sprintf("legends[[%i]] <- cowplot::get_legend(p%i + theme(legend.position='bottom', plot.margin = unit(c(0,0,0,0), 'lines')));", i, i))
     }
     annot_cmds <- unlist(annot_cmds)
 

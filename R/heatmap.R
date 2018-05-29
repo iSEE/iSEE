@@ -151,7 +151,7 @@
                                  orderBy[i], orderBy[i])
         } else {
             color_cmd <- sprintf("scale_fill_manual(values=colDataColorMap(colormap, '%s', discrete=TRUE)(%i), na.value='grey50', drop=FALSE, name='%s') +",
-                                 orderBy[i], .nlevels(factor(eval_env$plot.data[[paste0("OrderBy", i)]])), orderBy[i])
+                                 orderBy[i], .nlevels(eval_env$plot.data[[paste0("OrderBy", i)]]), orderBy[i])
         }
 
         annot_cmds[[paste0("OrderBy", i)]] <- c("",

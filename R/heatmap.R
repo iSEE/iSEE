@@ -107,10 +107,10 @@
     # Deciding whether to center and scale each row.
     # We do this here instead of using scale(), as this must be done after selection (if restricting).
     censcal_cmds <- list()
-    if (.heatMapCenterTitle %in% param_choices[[.heatMapCenterScale]]) {
+    if (.heatMapCenterTitle %in% param_choices[[.heatMapCenterScale]][[1]]) {
        censcal_cmds[["centering"]] <- "plot.data$value <- plot.data$value - ave(plot.data$value, plot.data$Y);"
     }
-    if (.heatMapScaleTitle %in% param_choices[[.heatMapCenterScale]]) {
+    if (.heatMapScaleTitle %in% param_choices[[.heatMapCenterScale]][[1]]) {
        censcal_cmds[["gene.var"]] <- "gene.var <- ave(plot.data$value, plot.data$Y, FUN=function(x) { sum(x^2)/(length(x)-1) });" # not sd(), to mimic scale().
        censcal_cmds[["scaling"]] <- "plot.data$value <- plot.data$value/sqrt(gene.var);"
     }
@@ -151,7 +151,7 @@
                                  orderBy[i], orderBy[i])
         } else {
             color_cmd <- sprintf("scale_fill_manual(values=colDataColorMap(colormap, '%s', discrete=TRUE)(%i), na.value='grey50', drop=FALSE, name='%s') +",
-                                 orderBy[i], .nlevels(factor(eval_env$plot.data[[paste0("OrderBy", i)]])), orderBy[i])
+                                 orderBy[i], .nlevels(eval_env$plot.data[[paste0("OrderBy", i)]]), orderBy[i])
         }
 
         annot_cmds[[paste0("OrderBy", i)]] <- c("",

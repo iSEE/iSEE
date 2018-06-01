@@ -500,7 +500,7 @@
         title = "Visual parameters",
         open = param_choices[[.visualParamBoxOpen]],
         checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE, selected=param_choices[[.visualParamChoice]][[1]],
-                           choices=c(.visualParamChoiceColorTitle, .visualParamChoicePointTitle, .visualParamChoiceOtherTitle)),
+                           choices=c(.visualParamChoiceColorTitle, .visualParamChoicePointTitle, .visualParamChoiceFacetTitle, .visualParamChoiceOtherTitle)),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceColorTitle,
             hr(),
             radioButtons(colorby_field, label="Color by:", inline=TRUE,
@@ -522,6 +522,8 @@
                                     selected=.choose_link(param_choices[[.colorByRowTable]], active_tab, force_default=TRUE))
                 )
             ),
+        .conditional_on_check_group(pchoice_field, .visualParamChoiceFacetTitle,
+            hr(), .add_coldata_facet_UI_elements(mode, id, param_choices, covariates)),
         .conditional_on_check_group(pchoice_field, .visualParamChoicePointTitle,
             hr(), .add_point_UI_elements(mode, id, param_choices)),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceOtherTitle,
@@ -567,7 +569,7 @@
         title = "Visual parameters",
         open = param_choices[[.visualParamBoxOpen]],
         checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE, selected=param_choices[[.visualParamChoice]][[1]],
-                           choices=c(.visualParamChoiceColorTitle, .visualParamChoicePointTitle, .visualParamChoiceOtherTitle)),
+                           choices=c(.visualParamChoiceColorTitle, .visualParamChoicePointTitle, .visualParamChoiceFacetTitle, .visualParamChoiceOtherTitle)),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceColorTitle,
             radioButtons(colorby_field, label="Color by:", inline=TRUE,
                          choices=color_choices, selected=param_choices[[.colorByField]]
@@ -588,11 +590,56 @@
                                     value=param_choices[[.colorByFeatNameColor]]))
                 )
             ),
+        .conditional_on_check_group(pchoice_field, .visualParamChoiceFacetTitle,
+            hr(), .add_rowdata_facet_UI_elements(mode, id, param_choices, covariates)),
         .conditional_on_check_group(pchoice_field, .visualParamChoicePointTitle,
             hr(), .add_point_UI_elements(mode, id, param_choices)),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceOtherTitle,
             hr(), .add_other_UI_elements(mode, id, param_choices))
         )
+}
+
+#' Faceting visual parameters 
+#'
+#' Create UI elements for selection of faceting visual parameters.
+#'
+#' @param mode String specifying the encoded panel type of the current plot.
+#' @param id Integer scalar specifying the index of a panel of the specified type, for the current plot.
+#' @param param_choices A DataFrame with one row, containing the parameter choices for the current plot.
+#' @param covariates Character vector listing available covariates from the \code{colData} or \code{rowData} slot, respectively.
+#'
+#' @return
+#' A HTML tag object containing faceting parameter inputs.
+#'
+#' @details
+#' This creates UI elements to choose the row and column faceting covariates.
+#'
+#' @author Kevin Rue-Albrecht
+#' @rdname INTERNAL_add_facet_UI_elements
+#' @seealso
+#' \code{\link{.panel_generation}},
+#' \code{\link{.create_visual_box_for_column_plots}},
+#' \code{\link{.create_visual_box_for_row_plots}}
+#'
+#' @importFrom shiny tagList selectInput
+.add_coldata_facet_UI_elements <- function(mode, id, param_choices, covariates) {
+    tagList(
+        selectInput(paste0(mode, id, "_", .colDataFacetRow), label = "Facet (row):",
+                            choices=c(".", covariates), selected=param_choices[[.colDataFacetRow]]),
+        selectInput(paste0(mode, id, "_", .colDataFacetColumn), label = "Facet (column):",
+                            choices=c(".", covariates), selected=param_choices[[.colDataFacetColumn]])
+    )
+}
+
+#' @rdname INTERNAL_add_facet_UI_elements 
+#' @importFrom shiny tagList selectInput
+.add_rowdata_facet_UI_elements <- function(mode, id, param_choices, covariates) {
+    tagList(
+        selectInput(paste0(mode, id, "_", .colDataFacetRow), label = "Facet (row):",
+                            choices=c(".", covariates), selected=param_choices[[.rowDataFacetRow]]),
+        selectInput(paste0(mode, id, "_", .colDataFacetColumn), label = "Facet (column):",
+                            choices=c(".", covariates), selected=param_choices[[.rowDataFacetColumn]])
+    )
 }
 
 #' General visual parameters 

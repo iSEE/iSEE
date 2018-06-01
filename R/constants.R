@@ -120,6 +120,7 @@
 
 .visualParamChoiceColorTitle <- "Color"
 .visualParamChoicePointTitle <- "Points"
+.visualParamChoiceFacetTitle <- "Facets"
 .visualParamChoiceOtherTitle <- "Other"
 
 .plotPointSize <- "PointSize"

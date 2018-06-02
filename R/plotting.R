@@ -636,7 +636,7 @@ names(.all_aes_values) <- .all_aes_names
     ))
     
     # Adding a faceting command, if applicable
-    facet_cmd <- .add_facets(param_choices, ...)
+    facet_cmd <- .add_facets(param_choices, get("by_row", list(...)))
    
     if (length(facet_cmd)) {
         N <- length(extra_cmds)
@@ -1798,7 +1798,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' \code{\link{.define_facetby_for_column_plot}}
 #'
 #' @importFrom ggplot2 facet_grid
-.add_facets <- function(param_choices, by_row, ...){
+.add_facets <- function(param_choices, by_row){
     if (by_row) {
         facet_cmd <- .add_facets_to_row_plot(param_choices)
     } else {

@@ -636,7 +636,7 @@ names(.all_aes_values) <- .all_aes_names
     ))
     
     # Adding a faceting command, if applicable
-    facet_cmd <- .add_facets(param_choices, get("by_row", list(...)))
+    facet_cmd <- .add_facets(param_choices)
    
     if (length(facet_cmd)) {
         N <- length(extra_cmds)
@@ -1747,13 +1747,13 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 .define_facetby_for_column_plot <- function(param_choices, se) {
     facet_cmds <- c()
     
-    facet_row <- param_choices[[.colDataFacetRow]]
+    facet_row <- param_choices[[.facetByRow]]
     if (!identical(facet_row, ".")) {
         facet_cmds["facet_x"] <- sprintf(
             "plot.data$FacetRow <- colData(se)[,%s];", deparse(facet_row))
     }
     
-    facet_column <- param_choices[[.colDataFacetColumn]]
+    facet_column <- param_choices[[.facetByColumn]]
     if (!identical(facet_column, ".")) {
         facet_cmds["facet_y"] <- sprintf(
             "plot.data$FacetColumn <- colData(se)[,%s];", deparse(facet_column))
@@ -1766,13 +1766,13 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 .define_facetby_for_row_plot <- function(param_choices, se) {
     facet_cmds <- c()
     
-    facet_row <- param_choices[[.rowDataFacetRow]]
+    facet_row <- param_choices[[.facetByRow]]
     if (!identical(facet_row, ".")) {
         facet_cmds["facet_x"] <- sprintf(
             "plot.data$FacetRow <- rowData(se)[,%s];", deparse(facet_row))
     }
     
-    facet_column <- param_choices[[.rowDataFacetColumn]]
+    facet_column <- param_choices[[.facetByColumn]]
     if (!identical(facet_column, ".")) {
         facet_cmds["facet_y"] <- sprintf(
             "plot.data$FacetColumn <- rowData(se)[,%s];", deparse(facet_column))
@@ -1788,7 +1788,6 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #'
 #' @param param_choices A single-row DataFrame that contains all the
 #' input settings for the current panel.
-#' @param by_row A logical scalar specifying whether the plot deals with row-level metadata. 
 #'
 #' @return A string containing a command to define the row and column faceting
 #' covariates.
@@ -1798,34 +1797,9 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' \code{\link{.define_facetby_for_column_plot}}
 #'
 #' @importFrom ggplot2 facet_grid
-.add_facets <- function(param_choices, by_row){
-    if (by_row) {
-        facet_cmd <- .add_facets_to_row_plot(param_choices)
-    } else {
-        facet_cmd <- .add_facets_to_column_plot(param_choices)
-    }
-}
-
-#' @rdname INTERNAL_add_facets
-.add_facets_to_column_plot <- function(param_choices) {
-    
-    facet_x <- ifelse(param_choices[[.colDataFacetRow]] == ".", ".", "FacetRow")
-    facet_y <- ifelse(param_choices[[.colDataFacetColumn]] == ".", ".", "FacetColumn")
-    
-    if (facet_x == "." && facet_y == ".") {
-        return(NULL)
-    }
-    
-    facet_cmd <- sprintf("facet_grid(%s ~ %s)", facet_x, facet_y)
-    
-    return(facet_cmd)
-}
-
-#' @rdname INTERNAL_add_facets
-.add_facets_to_row_plot <- function(param_choices) {
-    
-    facet_x <- ifelse(param_choices[[.rowDataFacetRow]] == ".", ".", "FacetRow")
-    facet_y <- ifelse(param_choices[[.rowDataFacetColumn]] == ".", ".", "FacetColumn")
+.add_facets <- function(param_choices){
+    facet_x <- ifelse(param_choices[[.facetByRow]] == ".", ".", "FacetRow")
+    facet_y <- ifelse(param_choices[[.facetByColumn]] == ".", ".", "FacetColumn")
     
     if (facet_x == "." && facet_y == ".") {
         return(NULL)

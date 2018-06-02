@@ -493,8 +493,8 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.colorByRowTable]] <- .noSelection 
     incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameAssay]] <- def_assay
-    incoming[[.colDataFacetRow]] <- "."
-    incoming[[.colDataFacetColumn]] <- "." # e.g. "driver_1_s"
+    incoming[[.facetByRow]] <- "."
+    incoming[[.facetByColumn]] <- "."
 
     return(incoming)
 }
@@ -511,8 +511,8 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.colorByRowTable]] <- .noSelection 
     incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameColor]] <- "red"
-    incoming[[.rowDataFacetRow]] <- "."
-    incoming[[.rowDataFacetColumn]] <- "." # e.g. "letters"
+    incoming[[.facetByRow]] <- "."
+    incoming[[.facetByColumn]] <- "."
 
     return(incoming)
 }

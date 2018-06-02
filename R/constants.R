@@ -64,11 +64,8 @@
 
 # Faceting parameters ----
 
-.colDataFacetRow <- "RowFacetColData"
-.colDataFacetColumn <- "ColumnFacetColData"
-
-.rowDataFacetRow <- "RowFacetColData"
-.rowDataFacetColumn <- "ColumnFacetColData"
+.facetByRow <- "RowFacetColData"
+.facetByColumn <- "ColumnFacetColData"
 
 # Point colouring parameters. ----
 .colorByNothingTitle <- "None"

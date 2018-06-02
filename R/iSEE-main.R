@@ -1121,10 +1121,10 @@ iSEE <- function(se,
 
         # Defining fundamental parameters that destroy brushes/lassos upon being changed.
         protected <- switch(mode,
-                            redDimPlot=c(.redDimType, .redDimXAxis, .redDimYAxis, .colDataFacetRow, .colDataFacetColumn),
-                            colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, .colDataFacetRow, .colDataFacetColumn),
-                            featAssayPlot=c(.featAssayAssay, .featAssayXAxisColData, .colDataFacetRow, .colDataFacetColumn),
-                            rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData, .rowDataFacetRow, .rowDataFacetColumn),
+                            redDimPlot=c(.redDimType, .redDimXAxis, .redDimYAxis, .facetByRow, .facetByColumn),
+                            colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, .facetByRow, .facetByColumn),
+                            featAssayPlot=c(.featAssayAssay, .featAssayXAxisColData, .facetByRow, .facetByColumn),
+                            rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData, .facetByRow, .facetByColumn),
                             customColPlot=.customColFun)
 
         # Defining non-fundamental parameters that do not destroy brushes/lassos.

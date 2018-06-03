@@ -1666,7 +1666,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' @rdname INTERNAL_is_groupable
 #' @seealso 
 #' \code{\link{.nlevels}}.
-.is_groupable <- function(x, max_levels = 24){
+.is_groupable <- function(x, max_levels = getOption("iSEE.maxlevels", 24)){
   return(.nlevels(x) <= max_levels)
 }
 

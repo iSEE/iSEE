@@ -90,10 +90,6 @@ See \url{https://github.com/carlganz/rintrojs#usage} for more information.
 
 By default, categorical data types such as factor and character are limited to 24 levels, beyond which they are coerced to numeric variables for faster plotting.
 This limit may be set to a different value as a global option, e.g. \code{options(iSEE.maxlevels=30)}.
-
- the maximal number of 
-Categorical variables (e.g. \code{colData} and \code{rowData} covariates) are 
-options(iSEE.maxlevels = 24)
 }
 \examples{
 library(scRNAseq)

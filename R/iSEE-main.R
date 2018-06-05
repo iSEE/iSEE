@@ -47,6 +47,9 @@
 #' The \code{tour} argument needs to be provided in a form compatible with the format expected by the \code{rintrojs} package.
 #' There should be two columns, \code{element} and \code{intro}, with the former describing the element to highlight and the latter providing some descriptive text.
 #' See \url{https://github.com/carlganz/rintrojs#usage} for more information.
+#' 
+#' By default, categorical data types such as factor and character are limited to 24 levels, beyond which they are coerced to numeric variables for faster plotting.
+#' This limit may be set to a different value as a global option, e.g. \code{options(iSEE.maxlevels=30)}.
 #'
 #' @return A Shiny App is launched for interactive data exploration of the
 #' \code{\link{SummarizedExperiment}}/\code{\link{SingleCellExperiment}} 

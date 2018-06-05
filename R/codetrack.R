@@ -134,6 +134,9 @@
     if (length(cur_cmds$select)) { 
         collated <- c(collated, "# Receiving selection data", cur_cmds$select, "")
     }
+    if (length(cur_cmds$centerscale)) { 
+        collated <- c(collated, "# Centering and scaling", cur_cmds$centerscale, "")
+    }
     if (length(cur_cmds$zoom)) { 
         collated <- c(collated, "# Zooming in", cur_cmds$zoom, "")
     }

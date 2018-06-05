@@ -1,6 +1,16 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.1.2}{
+  \itemize{
+    \item Enabled faceting by row and column.
+    \item INTERNAL: Enabled storage of additional \code{plot.data} beyond
+        \code{X} and \code{Y} in \code{all.coordinates}.
+        See constant \code{.allCoordinatesNames}.
+        Necessary for correct behaviour of brushes on faceted plots.
+  }
+}
+
 \section{iSEE VERSION 1.0.1}{
   \itemize{
     \item Renamed feature expression plots to feature assay plots, for generality.

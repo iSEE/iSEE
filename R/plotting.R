@@ -428,6 +428,7 @@ names(.all_aes_values) <- .all_aes_names
     more_data_cmds[["color"]] <- color_out$cmds
     color_lab <- color_out$label
 
+    # Add X and Y faceting variables
     for (facet_axis in names(facet_out)){
         more_data_cmds[[facet_axis]] <- facet_out[facet_axis]
     }
@@ -446,8 +447,10 @@ names(.all_aes_values) <- .all_aes_names
         more_data_cmds[["more_color"]] <- .coerce_type(coloring, "ColorBy", as_numeric=!.is_groupable(coloring))
     }
 
-    # Removing NAs as they mess up .proess_selectby_choice.
-    more_data_cmds[["na.rm"]] <- "plot.data <- subset(plot.data, !is.na(X) & !is.na(Y));"
+    # Removing NAs as they mess up .process_selectby_choice.
+    cleanFields <- c("X", "Y", names(facet_out))
+    cleanExpression <- paste(sprintf("!is.na(%s)", cleanFields), collapse = " & ")
+    more_data_cmds[["na.rm"]] <- sprintf("plot.data <- subset(plot.data, %s);", cleanExpression)
 
     # Evaluating and clearing the commands.
     eval(parse(text=unlist(more_data_cmds)), envir=eval_env)
@@ -1744,13 +1747,13 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     
     facet_row <- param_choices[[.facetByRow]]
     if (!identical(facet_row, ".")) {
-        facet_cmds["facet_x"] <- sprintf(
+        facet_cmds["FacetRow"] <- sprintf(
             "plot.data$FacetRow <- colData(se)[,%s];", deparse(facet_row))
     }
     
     facet_column <- param_choices[[.facetByColumn]]
     if (!identical(facet_column, ".")) {
-        facet_cmds["facet_y"] <- sprintf(
+        facet_cmds["FacetColumn"] <- sprintf(
             "plot.data$FacetColumn <- colData(se)[,%s];", deparse(facet_column))
     }
     
@@ -1763,13 +1766,13 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     
     facet_row <- param_choices[[.facetByRow]]
     if (!identical(facet_row, ".")) {
-        facet_cmds["facet_x"] <- sprintf(
+        facet_cmds["FacetRow"] <- sprintf(
             "plot.data$FacetRow <- rowData(se)[,%s];", deparse(facet_row))
     }
     
     facet_column <- param_choices[[.facetByColumn]]
     if (!identical(facet_column, ".")) {
-        facet_cmds["facet_y"] <- sprintf(
+        facet_cmds["FacetColumn"] <- sprintf(
             "plot.data$FacetColumn <- rowData(se)[,%s];", deparse(facet_column))
     }
     

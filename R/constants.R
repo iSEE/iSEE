@@ -136,6 +136,10 @@
 .plotFontSizeLegendTitleDefault <- 11
 .plotFontSizeTitleDefault <- 12
 
+# INTERNAL: Memory parameters ----
+
+.allCoordinatesNames <- c("X", "Y", "FacetRow", "FacetColumn")
+
 # Row statistic table parameters. ----
 .rowStatSelected <- "Selected"
 .rowStatSearch <- "Search"

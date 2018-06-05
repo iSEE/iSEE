@@ -335,7 +335,7 @@ iSEE <- function(se,
                       rowDataPlot=.make_rowDataPlot,
                       customColPlot=.remake_customColPlot)
 		p.out <- FUN(enc$ID, pObjects$memory, pObjects$coordinates, se, colormap)
-		pObjects$coordinates[[panelname]] <- p.out$xy[,c("X", "Y")]
+		pObjects$coordinates[[panelname]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
     }
 
     #######################################################################
@@ -1241,7 +1241,7 @@ iSEE <- function(se,
                     rObjects[[gen_field]] <- .increment_counter(isolate(rObjects[[gen_field]]))
                     p.out <- FUN0(id0, pObjects$memory, pObjects$coordinates, se, colormap)
                     pObjects$commands[[plot_name]] <- p.out$cmd_list
-                    pObjects$coordinates[[plot_name]] <- p.out$xy[,c("X", "Y")]
+                    pObjects$coordinates[[plot_name]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
                     p.out$plot
                 })
 

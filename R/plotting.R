@@ -1860,12 +1860,49 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
         ymax <- 'ymax'
     }
     
+    # Note: Faceting simultaneously on row and column produces a 'flip' effect on the brush data
+    if (all(c(param_choices[[.facetByRow]], param_choices[[.facetByColumn]]) != ".")) {
+        facetrow <- 'panelvar2'
+        facetcolumn <- 'panelvar1'
+    } else {
+        facetrow <- 'panelvar1'
+        facetcolumn <- 'panelvar2'
+    }
+    
     plot_name <- rownames(param_choices)
     enc <- .split_encoded(plot_name)
+    
+    # Build up the aesthetics call
+    aes_call <- sprintf("xmin = %s, xmax = %s, ymin = %s, ymax = %s", xmin, xmax, ymin, ymax)
+    
+    # Initialize the minimal brush information
+    brush_data <- sprintf("all_brushes[['%s']][c('xmin', 'xmax', 'ymin', 'ymax')]", plot_name)
+    
+    # Collect additional panel information for the brush
+    addPanels <- c()
+    if (param_choices[[.facetByRow]] != ".") {
+        addPanels["FacetRow"] <- sprintf("FacetRow = all_brushes[['%s']][['%s']]", plot_name, facetrow)
+    }
+    if (param_choices[[.facetByColumn]] != ".") {
+        addPanels["FacetColumn"] <- sprintf("FacetColumn = all_brushes[['%s']][['%s']]", plot_name, facetcolumn)
+    }
+    
+    # If any facting (row, column) is active, add the relevant data fields
+    if (length(addPanels)) {
+        panel_list <- sprintf("list(%s)", paste(addPanels, collapse = ", "))
+        brush_data <- sprintf("
+            append(
+                %s,
+                %s)",
+            brush_data, panel_list)
+    }
+    
+    # Build up the command that draws the brush
     cmd <- sprintf(
-"geom_rect(aes(xmin = %s, xmax = %s, ymin = %s, ymax = %s), color='%s', alpha=0, 
-    data=do.call(data.frame, all_brushes[['%s']][c('xmin', 'xmax', 'ymin', 'ymax')]), inherit.aes=FALSE)",
-      xmin, xmax, ymin, ymax, panel_colors[enc$Type], plot_name)
+"geom_rect(aes(%s), color='%s', alpha=0, 
+    data=do.call(data.frame, %s),
+    inherit.aes=FALSE)",
+      aes_call, panel_colors[enc$Type], brush_data)
     
     data <- list()
     data[[plot_name]] <- current

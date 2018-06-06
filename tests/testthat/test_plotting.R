@@ -1371,9 +1371,9 @@ test_that(".define_facetby_for_column_plot works", {
     params[["ColumnFacetColData"]] <- "Core.Type"
     
     out <- iSEE:::.define_facetby_for_column_plot(params)
-    expect_named(out, c("facet_x", "facet_y" ))
-    expect_match(out["facet_x"], "driver_1_s", fixed = TRUE)
-    expect_match(out["facet_y"], "Core.Type", fixed = TRUE)
+    expect_named(out, c("FacetRow", "FacetColumn"))
+    expect_match(out["FacetRow"], "driver_1_s", fixed = TRUE)
+    expect_match(out["FacetColumn"], "Core.Type", fixed = TRUE)
 })
 
 # .define_facetby_for_row_plot ----
@@ -1392,9 +1392,9 @@ test_that(".define_facetby_for_row_plot works", {
     params[["ColumnFacetColData"]] <- "num_cells"
     
     out <- iSEE:::.define_facetby_for_row_plot(params)
-    expect_named(out, c("facet_x", "facet_y" ))
-    expect_match(out["facet_x"], "mean_count", fixed = TRUE)
-    expect_match(out["facet_y"], "num_cells", fixed = TRUE)
+    expect_named(out, c("FacetRow", "FacetColumn"))
+    expect_match(out["FacetRow"], "mean_count", fixed = TRUE)
+    expect_match(out["FacetColumn"], "num_cells", fixed = TRUE)
 })
 
 

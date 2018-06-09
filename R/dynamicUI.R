@@ -692,11 +692,15 @@
 #'
 #' @importFrom shiny tagList selectInput
 .add_facet_UI_elements <- function(mode, id, param_choices, covariates) {
+    pchoice_field <- paste0(mode, id, "_", .facetBy)
     tagList(
+        checkboxGroupInput(inputId=pchoice_field, label="Facet by:", inline=TRUE, 
+                           selected=c(),
+                           choices=c("Row", "Column")),
         selectInput(paste0(mode, id, "_", .facetByRowColData), label = "Facet (row):",
-                            choices=c(".", covariates), selected=param_choices[[.facetByRowColData]]),
+            choices=c(".", covariates), selected=param_choices[[.facetByRowColData]]),
         selectInput(paste0(mode, id, "_", .facetByColumnColData), label = "Facet (column):",
-                            choices=c(".", covariates), selected=param_choices[[.facetByColumnColData]])
+            choices=c(".", covariates), selected=param_choices[[.facetByColumnColData]])
     )
 }
 

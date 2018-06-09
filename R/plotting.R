@@ -1701,14 +1701,16 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 .define_facetby_for_column_plot <- function(param_choices, se) {
     facet_cmds <- c()
     
+    active_facets <- param_choices[[.facetBy]]
+    
     facet_row <- param_choices[[.facetByRowColData]]
-    if (!identical(facet_row, ".")) {
+    if ("Row" %in% active_facets) {
         facet_cmds["FacetRow"] <- sprintf(
             "plot.data$FacetRow <- colData(se)[,%s];", deparse(facet_row))
     }
     
     facet_column <- param_choices[[.facetByColumnColData]]
-    if (!identical(facet_column, ".")) {
+    if ("Column" %in% active_facets) {
         facet_cmds["FacetColumn"] <- sprintf(
             "plot.data$FacetColumn <- colData(se)[,%s];", deparse(facet_column))
     }
@@ -1720,14 +1722,16 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 .define_facetby_for_row_plot <- function(param_choices, se) {
     facet_cmds <- c()
     
+    active_facets <- param_choices[[.facetBy]]
+    
     facet_row <- param_choices[[.facetByRowColData]]
-    if (!identical(facet_row, ".")) {
+    if ("Row" %in% active_facets) {
         facet_cmds["FacetRow"] <- sprintf(
             "plot.data$FacetRow <- rowData(se)[,%s];", deparse(facet_row))
     }
     
     facet_column <- param_choices[[.facetByColumnColData]]
-    if (!identical(facet_column, ".")) {
+    if ("Column" %in% active_facets) {
         facet_cmds["FacetColumn"] <- sprintf(
             "plot.data$FacetColumn <- rowData(se)[,%s];", deparse(facet_column))
     }
@@ -1752,12 +1756,16 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #'
 #' @importFrom ggplot2 facet_grid
 .add_facets <- function(param_choices){
-    facet_x <- ifelse(param_choices[[.facetByRowColData]] == ".", ".", "FacetRow")
-    facet_y <- ifelse(param_choices[[.facetByColumnColData]] == ".", ".", "FacetColumn")
+    message(rownames(param_choices))
     
-    if (facet_x == "." && facet_y == ".") {
+    active_facets <- param_choices[[.facetBy]][[1]]
+    
+    if (length(active_facets) == 0L) {
         return(NULL)
     }
+    
+    facet_x <- ifelse("Row" %in% active_facets, "FacetRow", ".")
+    facet_y <- ifelse("Column" %in% active_facets, "FacetColumn", ".")
     
     facet_cmd <- sprintf("facet_grid(%s ~ %s)", facet_x, facet_y)
     
@@ -1817,7 +1825,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     }
     
     # Note: Faceting simultaneously on row and column produces a 'flip' effect on the brush data
-    if (all(c(param_choices[[.facetByRowColData]], param_choices[[.facetByColumnColData]]) != ".")) {
+    if (length(param_choices[[.facetBy]]) == 2L) {
         facetrow <- 'panelvar2'
         facetcolumn <- 'panelvar1'
     } else {
@@ -1836,10 +1844,10 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     
     # Collect additional panel information for the brush
     addPanels <- c()
-    if (param_choices[[.facetByRowColData]] != ".") {
+    if ("Row" %in% param_choices[[.facetBy]]) {
         addPanels["FacetRow"] <- sprintf("FacetRow = all_brushes[['%s']][['%s']]", plot_name, facetrow)
     }
-    if (param_choices[[.facetByColumnColData]] != ".") {
+    if ("Column" %in% param_choices[[.facetBy]]) {
         addPanels["FacetColumn"] <- sprintf("FacetColumn = all_brushes[['%s']][['%s']]", plot_name, facetcolumn)
     }
     

@@ -487,17 +487,17 @@ heatMapPlotDefaults <- function(se, number) {
     # Adding coloring parameters specifically for column plots.
     def_assay <- .set_default_assay(se)
     def_cov <- colnames(colData(se))[1]
+    dev_discrete <- .get_internal_info(se, "column_groupable")[1] # NULL if c()
     incoming[[.colorByField]] <- .colorByNothingTitle
     incoming[[.colorByDefaultColor]] <- "black"
     incoming[[.colorByColData]] <- def_cov
     incoming[[.colorByRowTable]] <- .noSelection 
     incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameAssay]] <- def_assay
-    incoming[[.facetByRow]] <- FALSE
-    incoming[[.facetByColumn]] <- FALSE
+    incoming[[.facetBy]] <- rep(list(NULL), nrow(incoming))
     # TODO: set to first groupable field, if any
-    incoming[[.facetByRowColData]] <- "."
-    incoming[[.facetByColumnColData]] <- "."
+    incoming[[.facetByRowColData]] <- dev_discrete
+    incoming[[.facetByColumnColData]] <- dev_discrete
 
     return(incoming)
 }
@@ -508,19 +508,17 @@ heatMapPlotDefaults <- function(se, number) {
 
     # Adding coloring parameters specifically for row plots.
     def_cov <- colnames(rowData(se))[1]
+    dev_discrete <- .get_internal_info(se, "row_groupable")[1] # NULL if c()
     incoming[[.colorByField]] <- .colorByNothingTitle
     incoming[[.colorByDefaultColor]] <- "black"
     incoming[[.colorByRowData]] <- def_cov
     incoming[[.colorByRowTable]] <- .noSelection 
     incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameColor]] <- "red"
-    incoming[[.facetByRow]] <- FALSE
-    incoming[[.facetByColumn]] <- FALSE
-    incoming[[.facetByRow]] <- FALSE
-    incoming[[.facetByColumn]] <- FALSE
+    incoming[[.facetBy]] <- rep(list(NULL), nrow(incoming))
     # TODO: set to first groupable field, if any
-    incoming[[.facetByRowColData]] <- "."
-    incoming[[.facetByColumnColData]] <- "."
+    incoming[[.facetByRowColData]] <- dev_discrete
+    incoming[[.facetByColumnColData]] <- dev_discrete
 
     return(incoming)
 }

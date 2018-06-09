@@ -226,7 +226,7 @@
     .helper <- function(chosen, choices) { ifelse(chosen %in% choices, chosen, choices[1]) }
     color_choices <- .define_color_options_for_column_plots(se)
     col_groupable <- .get_internal_info(se, "column_groupable")
-    row_groupable <- .get_internal_info(se, "column_groupable")
+    row_groupable <- .get_internal_info(se, "row_groupable")
 
     col_pchoices <- .define_visual_options(col_groupable) 
     for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot")) {
@@ -248,12 +248,12 @@
     all_args[[mode]][[.heatMapColData]] <- lapply(all_args[[mode]][,.heatMapColData], intersect, y=colnames(colData(se)))
 
     # Sanitizing other fields depending on the available data.
-    if (length(col_groupable)==0L) {
+    if (length(col_groupable) == 0L) {
         for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot")) {
             # SANITIZE FACETING HERE.
         }
     }
-    if (length(row_groupable)==0L) {
+    if (length(row_groupable) == 0L) {
         # SANITIZE FACETING HERE.
     }
 

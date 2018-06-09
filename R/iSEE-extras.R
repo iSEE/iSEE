@@ -59,7 +59,7 @@
                 featAssayPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
                 rowStatTable=! (nrow(se)==0L),
                 rowDataPlot=! (ncol(rowData(se))==0L || nrow(se)==0L),
-                customColPlot=! (ncol(se)==0L || length(.get_custom_col_fun(se))==0L),
+                customColPlot=! (ncol(se)==0L || length(.get_internal_info(se, "custom_col_fun"))==0L),
                 heatMapPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L)
     ))
 }

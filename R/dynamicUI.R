@@ -359,6 +359,7 @@
         cur.row[[row.counter]] <- column(width=panel.width, cur_box, style='padding:3px;') 
         row.counter <- row.counter + 1L
         cumulative.width <- cumulative.width + panel.width
+
     }
 
     # Cleaning up the leftovers.
@@ -497,17 +498,17 @@
 
     # Same for faceting options.
     pchoice_field <- paste0(mode, id, "_", .visualParamChoice)
-    param_choices <- c(.visualParamChoiceColorTitle, .visualParamChoicePointTitle)
+    pchoices <- c(.visualParamChoiceColorTitle, .visualParamChoicePointTitle)
     if (length(discrete_covariates)) {
-        param_choices <- c(param_choices, .visualParamChoiceFacetTitle)
+        pchoices <- c(pchoices, .visualParamChoiceFacetTitle)
     } 
-    param_choices <- c(param_choices, .visualParamChoiceOtherTitle)
+    pchoices <- c(pchoices, .visualParamChoiceOtherTitle)
 
     collapseBox(
         id = paste0(mode, id, "_", .visualParamBoxOpen),
         title = "Visual parameters",
         open = param_choices[[.visualParamBoxOpen]],
-        checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE, selected=param_choices[[.visualParamChoice]][[1]], choices=param_choices),
+        checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE, selected=param_choices[[.visualParamChoice]][[1]], choices=pchoices),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceColorTitle,
             hr(),
             radioButtons(colorby_field, label="Color by:", inline=TRUE,
@@ -589,18 +590,18 @@
 
     # Same for faceting options.
     pchoice_field <- paste0(mode, id, "_", .visualParamChoice)
-    param_choices <- c(.visualParamChoiceColorTitle, .visualParamChoicePointTitle)
+    pchoices <- c(.visualParamChoiceColorTitle, .visualParamChoicePointTitle)
     if (length(discrete_covariates)) {
-        param_choices <- c(param_choices, .visualParamChoiceFacetTitle)
+        pchoices <- c(pchoices, .visualParamChoiceFacetTitle)
     } 
-    param_choices <- c(param_choices, .visualParamChoiceOtherTitle)
+    pchoices <- c(pchoices, .visualParamChoiceOtherTitle)
 
     pchoice_field <- paste0(mode, id, "_", .visualParamChoice)
     collapseBox(
         id = paste0(mode, id, "_", .visualParamBoxOpen),
         title = "Visual parameters",
         open = param_choices[[.visualParamBoxOpen]],
-        checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE, selected=param_choices[[.visualParamChoice]][[1]], choices=param_choices),
+        checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE, selected=param_choices[[.visualParamChoice]][[1]], choices=pchoices),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceColorTitle,
             radioButtons(colorby_field, label="Color by:", inline=TRUE,
                          choices=color_choices, selected=param_choices[[.colorByField]]
@@ -869,10 +870,10 @@
 #' @rdname INTERNAL_precompute_UI_info 
 .precompute_UI_info <- function(se, fun_list) {
     out <- list(
-        column_groupable=column_covariates[.which_groupable(colData(se))],
-        row_groupable=row_covariates[.which_groupable(rowData(se))],
-        all_assays=.sanitize_names(assayNames(se))
-        red_dim_names=.sanitize_names(reducedDimNames(se))
+        column_groupable=colnames(colData(se))[.which_groupable(colData(se))],
+        row_groupable=colnames(rowData(se))[.which_groupable(rowData(se))],
+        all_assays=.sanitize_names(assayNames(se)),
+        red_dim_names=.sanitize_names(reducedDimNames(se)),
         custom_col_fun=fun_list
     )
     SingleCellExperiment:::int_metadata(se)$iSEE <- out
@@ -893,7 +894,7 @@
 #' @seealso \code{\link{.precompute_UI_info}}
 #' @rdname INTERNAL_get_internal_info
 .get_internal_info <- function(se, field) {
-    SingleCellExperiment:::int_metadata(se)$field[[field]]
+    SingleCellExperiment:::int_metadata(se)$iSEE[[field]]
 }
 
 

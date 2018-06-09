@@ -114,7 +114,7 @@ iSEE <- function(se,
   se <- se_out$object
   se_cmds <- se_out$cmds
 
-  se <- .precompute_UI_info(se)
+  se <- .precompute_UI_info(se, customColFun)
 
   # Throw an error if the colormap supplied is not compatible with the object
   isColorMapCompatible(colormap, se, error = TRUE)

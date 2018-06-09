@@ -128,7 +128,6 @@
     row.counter <- 1L
 
     # Extracting useful fields from the SE object.
-    feasibility <- .get_internal_info(se, "feasibility")
     column_covariates <- colnames(colData(se))
     row_covariates <- colnames(rowData(se))
     all_assays <- .get_internal_info(se, "all_assays")
@@ -194,10 +193,10 @@
         } else if (mode=="featAssayPlot") {
             obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
             xaxis_choices <- c(.featAssayXAxisNothingTitle)
-            if (feasibility$colDataPlot) {
+            if (length(column_covariates)) { 
                 xaxis_choices <- c(xaxis_choices, .featAssayXAxisColDataTitle)
             }
-            if (feasibility$featAssayPlot) {
+            if (nrow(se) && length(all_assays)) { 
                 xaxis_choices <- c(xaxis_choices, .featAssayXAxisFeatNameTitle)
             }
 
@@ -492,7 +491,7 @@
     if (length(covariates)) {
         color_choices <- c(color_choices, .colorByColDataTitle)
     }
-    if (nrow(se)) { 
+    if (nrow(se) && length(all_assays)) { 
         color_choices <- c(color_choices, .colorByFeatNameTitle)
     }
 
@@ -851,7 +850,6 @@
 #' @details
 #' Precomputed information includes:
 #' \itemize{
-#' \item a list specifying whether particular panel types are feasible.
 #' \item unique-ified selectize choices, to avoid problems with selecting between different unnamed assays or reduced dimension results.
 #' \item the names of discrete metadata fields, for use in restricting choices for faceting.
 #' \item a list of the custom column functions supplied in the \code{\link{iSEE}} function. 
@@ -865,14 +863,12 @@
 #' @return A SingleCellExperiment with values stored in an \code{iSEE} field in the internal metadata.
 #'
 #' @seealso 
-#' \code{\link{.check_plot_feasibility}},
 #' \code{\link{.which_groupable}},
 #' \code{\link{.sanitize_names}},
 #' \code{\link{.get_internal_info}}
 #' @rdname INTERNAL_precompute_UI_info 
 .precompute_UI_info <- function(se, fun_list) {
     out <- list(
-        feasibility=.check_plot_feasibility(se),
         column_groupable=column_covariates[.which_groupable(colData(se))],
         row_groupable=row_covariates[.which_groupable(rowData(se))],
         all_assays=.sanitize_names(assayNames(se))

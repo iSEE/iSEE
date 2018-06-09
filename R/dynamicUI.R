@@ -127,24 +127,15 @@
     cur.row <- list()
     row.counter <- 1L
 
-    # Collecting constants for populating the UI. Note that the assay
-    # and reduced dimension names may not be unique, hence the (%i).
-    feasibility <- .check_plot_feasibility(se)
-
+    # Extracting useful fields from the SE object.
+    feasibility <- .get_internal_info(se, "feasibility")
     column_covariates <- colnames(colData(se))
     row_covariates <- colnames(rowData(se))
-    features <- rownames(se)
-    
-    # Subset of groupable column names available for categorical aesthetics
-    column_groupable <- column_covariates[.which_groupable(colData(se))]
-    row_groupable <- row_covariates[.which_groupable(rowData(se))]
-
-    all_assays <- .sanitize_names(assayNames(se))
-    red_dim_names <- .sanitize_names(reducedDimNames(se))
-
-    custom_col_fun <- .get_custom_col_fun(se)
+    all_assays <- .get_internal_info(se, "all_assays")
+    red_dim_names <- .get_internal_info(se, "red_dim_names")
+    custom_col_fun <- .get_internal_info(se, "custom_col_fun")
     custom_col_funnames <- c(.noSelection, names(custom_col_fun))
-  
+
     # Defining all transmitting tables and plots for linking.
     link_sources <- .define_link_sources(active_panels)
     active_tab <- c(.noSelection, link_sources$tab)
@@ -321,7 +312,7 @@
                                             title="Data parameters",
                                             open=param_choices[[.dataParamBoxOpen]]),
                                        plot.param)),
-                .create_visual_box_for_row_plots(mode, id, param_choices, active_tab, row_covariates),
+                .create_visual_box_for_row_plots(mode, id, param_choices, active_tab, se),
                 .create_selection_param_box(mode, id, param_choices, row_selectable)
                 )
             )
@@ -341,7 +332,7 @@
                                        plot.param)),
 
                 # Options for visual parameters.
-                .create_visual_box_for_column_plots(mode, id, param_choices, active_tab, column_covariates, all_assays, no_rows=nrow(se)==0),
+                .create_visual_box_for_column_plots(mode, id, param_choices, active_tab, se),
 
                 # Options for point selection parameters.
                 .create_selection_param_box(mode, id, param_choices, col_selectable)
@@ -459,9 +450,7 @@
 #' @param id Integer scalar specifying the index of a panel of the specified type, for the current plot.
 #' @param param_choices A DataFrame with one row, containing the parameter choices for the current plot.
 #' @param active_tab A character vector of decoded names for available row statistics tables.
-#' @param covariates A character vector of column metadata fields.
-#' @param all_assays A vector of assay options, usually produced from \code{\link{.sanitize_names}}.
-#' @param no_rows A logicals scalar indicating whether there are no rows to select.
+#' @param se A SingleCellExperiment object with precomputed UI information from \code{\link{.precompute_UI_info}}.
 #'
 #' @return
 #' A HTML tag object containing a \code{\link{collapseBox}} with visual parameters for column-based plots.
@@ -476,8 +465,12 @@
 #' Choosing to colour by feature name will open up a \code{selectizeInput}.
 #' However, the values are filled on the server-side, rather than being sent to the client; this avoids long start times during re-rendering.
 #'
-#' Note that some options will be disabled depending on the nature of the input. 
-#' For example, if there are no column metadata fields, users will not be allowed to colour by column metadata, obviously.
+#' Note that some options will be disabled depending on the nature of the input, namely:
+#' \itemize{
+#' \item If there are no column metadata fields, users will not be allowed to colour by column metadata, obviously.
+#' \item If there are no features, users cannot colour by features.
+#' \item If there are no categorical column metadata fields, users will not be allowed to view the faceting options.
+#' }
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_create_visual_box_for_column_plots
@@ -488,23 +481,34 @@
 #' @importFrom shiny radioButtons tagList selectInput selectizeInput
 #' checkboxGroupInput
 #' @importFrom colourpicker colourInput
-.create_visual_box_for_column_plots <- function(mode, id, param_choices, active_tab, covariates, all_assays, no_rows=FALSE) {
+.create_visual_box_for_column_plots <- function(mode, id, param_choices, active_tab, se) {
+    covariates <- colnames(colData(se))
+    discrete_covariates <- .get_internal_info(se, "column_groupable")
+    all_assays <- .get_internal_info(se, "all_assays")
+
+    # Defining the available choices for colouring, based on the SE. 
     colorby_field <- paste0(mode, id, "_", .colorByField)
     color_choices <- c(.colorByNothingTitle)
     if (length(covariates)) {
         color_choices <- c(color_choices, .colorByColDataTitle)
     }
-    if (!no_rows) {
+    if (nrow(se)) { 
         color_choices <- c(color_choices, .colorByFeatNameTitle)
     }
 
+    # Same for faceting options.
     pchoice_field <- paste0(mode, id, "_", .visualParamChoice)
+    param_choices <- c(.visualParamChoiceColorTitle, .visualParamChoicePointTitle)
+    if (length(discrete_covariates)) {
+        param_choices <- c(param_choices, .visualParamChoiceFacetTitle)
+    } 
+    param_choices <- c(param_choices, .visualParamChoiceOtherTitle)
+
     collapseBox(
         id = paste0(mode, id, "_", .visualParamBoxOpen),
         title = "Visual parameters",
         open = param_choices[[.visualParamBoxOpen]],
-        checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE, selected=param_choices[[.visualParamChoice]][[1]],
-                           choices=c(.visualParamChoiceColorTitle, .visualParamChoicePointTitle, .visualParamChoiceFacetTitle, .visualParamChoiceOtherTitle)),
+        checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE, selected=param_choices[[.visualParamChoice]][[1]], choices=param_choices),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceColorTitle,
             hr(),
             radioButtons(colorby_field, label="Color by:", inline=TRUE,
@@ -527,7 +531,7 @@
                 )
             ),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceFacetTitle,
-            hr(), .add_facet_UI_elements(mode, id, param_choices, covariates)),
+            hr(), .add_facet_UI_elements(mode, id, param_choices, discrete_covariates)),
         .conditional_on_check_group(pchoice_field, .visualParamChoicePointTitle,
             hr(), .add_point_UI_elements(mode, id, param_choices)),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceOtherTitle,
@@ -543,7 +547,7 @@
 #' @param id Integer scalar specifying the index of a panel of the specified type, for the current plot.
 #' @param param_choices A DataFrame with one row, containing the parameter choices for the current plot.
 #' @param active_tab A character vector of decoded names for available row statistics tables.
-#' @param covariates A character vector of row metadata fields.
+#' @param se A SingleCellExperiment object with precomputed UI information from \code{\link{.precompute_UI_info}}.
 #'
 #' @return
 #' A HTML tag object containing a \code{\link{collapseBox}} with visual parameters for row-based plots.
@@ -554,6 +558,13 @@
 #' That is, the single chosen feature will be highlighted on the plot; its expression values are ignored.
 #' Options are provided to choose the colour with which the highlighting is performed.
 #'
+#' Note that some options will be disabled depending on the nature of the input, namely:
+#' \itemize{
+#' \item If there are no row metadata fields, users will not be allowed to colour by row metadata, obviously.
+#' \item If there are no features, users cannot colour by features. 
+#' \item If there are no categorical column metadata fields, users will not be allowed to view the faceting options.
+#' }
+#'
 #' @author Aaron Lun
 #' @rdname INTERNAL_create_visual_box_for_row_plots
 #' @seealso
@@ -563,17 +574,34 @@
 #' @importFrom shiny radioButtons tagList selectInput selectizeInput
 #' checkboxGroupInput
 #' @importFrom colourpicker colourInput
-.create_visual_box_for_row_plots <- function(mode, id, param_choices, active_tab, covariates) {
+.create_visual_box_for_row_plots <- function(mode, id, param_choices, active_tab, se) {
+    covariates <- colnames(rowData(se))
+    discrete_covariates <- .get_internal_info(se, "row_groupable")
+
+    # Defining the available choices for colouring, based on the SE. 
     colorby_field <- paste0(mode, id, "_", .colorByField)
-    color_choices <- c(.colorByNothingTitle, .colorByRowDataTitle, .colorByFeatNameTitle)
+    color_choices <- c(.colorByNothingTitle)
+    if (length(covariates)) {
+        color_choices <- c(color_choices, .colorByRowDataTitle)
+    }
+    if (nrow(se)) { 
+        color_choices <- c(color_choices, .colorByFeatNameTitle)
+    }
+
+    # Same for faceting options.
+    pchoice_field <- paste0(mode, id, "_", .visualParamChoice)
+    param_choices <- c(.visualParamChoiceColorTitle, .visualParamChoicePointTitle)
+    if (length(discrete_covariates)) {
+        param_choices <- c(param_choices, .visualParamChoiceFacetTitle)
+    } 
+    param_choices <- c(param_choices, .visualParamChoiceOtherTitle)
 
     pchoice_field <- paste0(mode, id, "_", .visualParamChoice)
     collapseBox(
         id = paste0(mode, id, "_", .visualParamBoxOpen),
         title = "Visual parameters",
         open = param_choices[[.visualParamBoxOpen]],
-        checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE, selected=param_choices[[.visualParamChoice]][[1]],
-                           choices=c(.visualParamChoiceColorTitle, .visualParamChoicePointTitle, .visualParamChoiceFacetTitle, .visualParamChoiceOtherTitle)),
+        checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE, selected=param_choices[[.visualParamChoice]][[1]], choices=param_choices),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceColorTitle,
             radioButtons(colorby_field, label="Color by:", inline=TRUE,
                          choices=color_choices, selected=param_choices[[.colorByField]]
@@ -811,3 +839,65 @@
 }
 
 .actionbutton_biocstyle <- "color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
+
+
+#' Precompute UI information
+#' 
+#' Precompute information to be shown in the UI and store it in the internal metadata of a SingleCellExperiment object.
+#'
+#' @param se A SingleCellExperiment object.
+#' @param fun_list A named list of custom column functions.
+#'
+#' @details
+#' Precomputed information includes:
+#' \itemize{
+#' \item a list specifying whether particular panel types are feasible.
+#' \item unique-ified selectize choices, to avoid problems with selecting between different unnamed assays or reduced dimension results.
+#' \item the names of discrete metadata fields, for use in restricting choices for faceting.
+#' \item a list of the custom column functions supplied in the \code{\link{iSEE}} function. 
+#' }
+#'
+#' Storage in the internal metadata allows us to pass a single argument to various UI functions and for them to extract out the relevant fields.
+#' This avoids creating functions with many different arguments, which would be difficult to maintain.
+#' 
+#' @author Aaron Lun
+#'
+#' @return A SingleCellExperiment with values stored in an \code{iSEE} field in the internal metadata.
+#'
+#' @seealso 
+#' \code{\link{.check_plot_feasibility}},
+#' \code{\link{.which_groupable}},
+#' \code{\link{.sanitize_names}},
+#' \code{\link{.get_internal_info}}
+#' @rdname INTERNAL_precompute_UI_info 
+.precompute_UI_info <- function(se, fun_list) {
+    out <- list(
+        feasibility=.check_plot_feasibility(se),
+        column_groupable=column_covariates[.which_groupable(colData(se))],
+        row_groupable=row_covariates[.which_groupable(rowData(se))],
+        all_assays=.sanitize_names(assayNames(se))
+        red_dim_names=.sanitize_names(reducedDimNames(se))
+        custom_col_fun=fun_list
+    )
+    SingleCellExperiment:::int_metadata(se)$iSEE <- out
+    return(se)
+}
+
+#' Extract internal information
+#' 
+#' Extracts the requested fields from the internal metadata field of a SingleCellExperiment object.
+#'
+#' @param se A SingleCellExperiment.
+#' @param field A string specifying the field to extract.
+#'
+#' @return The value of \code{field} in the internal metadata of \code{se}.
+#'
+#' @author Aaron Lun
+#' 
+#' @seealso \code{\link{.precompute_UI_info}}
+#' @rdname INTERNAL_get_internal_info
+.get_internal_info <- function(se, field) {
+    SingleCellExperiment:::int_metadata(se)$field[[field]]
+}
+
+

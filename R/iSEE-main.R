@@ -114,8 +114,7 @@ iSEE <- function(se,
   se <- se_out$object
   se_cmds <- se_out$cmds
 
-  # Storing the custom column plot functions.
-  se <- .set_custom_col_fun(se, customColFun)
+  se <- .precompute_UI_info(se)
 
   # Throw an error if the colormap supplied is not compatible with the object
   isColorMapCompatible(colormap, se, error = TRUE)

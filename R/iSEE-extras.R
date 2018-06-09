@@ -125,11 +125,14 @@
 #' It will then call \code{\link{.override_defaults}} to replace the defaults with user-specified values in \code{*Args}.
 #' Not all arguments need to be specified of a given panel type; similarly, arguments do not need to be specified for all panels of a given type
 #'
+#' Each of the \code{*Args} can also be \code{NULL}, in which case they are ignored and only the defaults are used.
+#' However, each of the \code{*Max} values must be specified.
+#'
+#' @section Parameter specification:
 #' Some parameters can be specified as strings for convenience, while internally being represented as integer indices.
 #' Any such string values are converted to integers using the \code{\link{.name2index}} function, for consistency in downstream processing.
 #'
-#' Each of the \code{*Args} can also be \code{NULL}, in which case they are ignored and only the defaults are used.
-#' However, each of the \code{*Max} values must be specified.
+#' 
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_setup_memory
@@ -219,6 +222,41 @@
         memory[[mode]] <- tmp
     }
 
+    # Sanitizing remaining named fields that are _not_ linking-related (for that, see .sanitize_memory() below).
+    .helper <- function(chosen, choices) { ifelse(chosen %in% choices, chosen, choices[1]) }
+    color_choices <- .define_color_options_for_column_plots(se)
+    col_groupable <- .get_internal_info(se, "column_groupable")
+    row_groupable <- .get_internal_info(se, "column_groupable")
+
+    col_pchoices <- .define_visual_options(col_groupable) 
+    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot")) {
+        all_args[[mode]][, .colorByColData] <- .helper(all_args[[mode]][, .colorByColData], colnames(colData(se)))
+        all_args[[mode]][, .facetByRow] <- .helper(all_args[[mode]][, .facetByRow], col_groupable)
+        all_args[[mode]][, .facetByColumn] <- .helper(all_args[[mode]][, .facetByColumn], col_groupable)
+        all_args[[mode]][, .colorByField] <- .helper(all_args[[mode]][, .colorByField], color_choices)
+        all_args[[mode]][[.visualParamChoice]] <- lapply(all_args[[mode]][,.visualParamChoice], intersect, y=col_pchoices) # intersecting with available choices.
+    }
+
+    mode <- "rowDataPlot"
+    all_args[[mode]][, .colorByRowData] <- .helper(all_args[[mode]][, .colorByRowData], colnames(rowData(se)))
+    all_args[[mode]][, .facetByRow] <- .helper(all_args[[mode]][, .facetByRow], row_groupable)
+    all_args[[mode]][, .facetByColumn] <- .helper(all_args[[mode]][, .facetByColumn], row_groupable)
+    all_args[[mode]][, .colorByField] <- .helper(all_args[[mode]][, .colorByField], .define_color_options_for_row_plots(se))
+    all_args[[mode]][[.visualParamChoice]] <- lapply(all_args[[mode]][,.visualParamChoice], intersect, y=.define_visual_options(row_groupable))
+
+    mode <- ".heatMapColData"
+    all_args[[mode]][[.heatMapColData]] <- lapply(all_args[[mode]][,.heatMapColData], intersect, y=colnames(colData(se)))
+
+    # Sanitizing other fields depending on the available data.
+    if (length(col_groupable)==0L) {
+        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot")) {
+            # SANITIZE FACETING HERE.
+        }
+    }
+    if (length(row_groupable)==0L) {
+        # SANITIZE FACETING HERE.
+    }
+
     return(memory)
 }
 
@@ -241,7 +279,6 @@
 #' Any missing matches are set to indices of 1.
 #' If the field contains some other atomic value, the function will try to coerce it into an integer, setting 1 for any failures.
 #' If the field contains a list, each element of the list will be coerced to an integer vector.
-#'
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_name2index

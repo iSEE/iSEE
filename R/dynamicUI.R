@@ -134,6 +134,10 @@
     column_covariates <- colnames(colData(se))
     row_covariates <- colnames(rowData(se))
     features <- rownames(se)
+    
+    # Subset of groupable column names available for categorical aesthetics
+    column_groupable <- column_covariates[.which_groupable(colData(se))]
+    row_groupable <- row_covariates[.which_groupable(rowData(se))]
 
     all_assays <- .sanitize_names(assayNames(se))
     red_dim_names <- .sanitize_names(reducedDimNames(se))

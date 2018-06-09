@@ -536,9 +536,29 @@ heatMapPlotDefaults <- function(se, number) {
 #' \code{?\link{defaults}}
 .set_default_assay <- function(se) { 
     def_assay <- which(assayNames(se)=="logcounts")
-    if (length(def_assay)==0L) {
+    if (length(def_assay) == 0L) {
         return(1L)
     } else {
         return(def_assay[1])
+    }
+}
+
+#' Set the default discrete covariate in a DataFrame
+#'
+#' @param x A DataFrame (or equivalent).
+#'
+#' @return An integer scalar containing the index of the first groupable covariate, if available; otherwise 0L.
+#' 
+#' @author Kevin Rue-Albrecht
+#' 
+#' @rdname INTERNAL_.groupable
+#' @seealso
+#' \code{?\link{defaults}}
+.set_default_discrete <- function(x) {
+    discrete_data <- .which_groupable(x)
+    if (length(discrete_data) == 0L) {
+        return(0L)
+    } else {
+        return(discrete_data[1])
     }
 }

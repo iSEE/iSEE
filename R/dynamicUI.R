@@ -486,33 +486,21 @@
     discrete_covariates <- .get_internal_info(se, "column_groupable")
     all_assays <- .get_internal_info(se, "all_assays")
 
-    # Defining the available choices for colouring, based on the SE. 
     colorby_field <- paste0(mode, id, "_", .colorByField)
-    color_choices <- c(.colorByNothingTitle)
-    if (length(covariates)) {
-        color_choices <- c(color_choices, .colorByColDataTitle)
-    }
-    if (nrow(se) && length(all_assays)) { 
-        color_choices <- c(color_choices, .colorByFeatNameTitle)
-    }
-
-    # Same for faceting options.
     pchoice_field <- paste0(mode, id, "_", .visualParamChoice)
-    pchoices <- c(.visualParamChoiceColorTitle, .visualParamChoicePointTitle)
-    if (length(discrete_covariates)) {
-        pchoices <- c(pchoices, .visualParamChoiceFacetTitle)
-    } 
-    pchoices <- c(pchoices, .visualParamChoiceOtherTitle)
 
     collapseBox(
         id = paste0(mode, id, "_", .visualParamBoxOpen),
         title = "Visual parameters",
         open = param_choices[[.visualParamBoxOpen]],
-        checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE, selected=param_choices[[.visualParamChoice]][[1]], choices=pchoices),
+        checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE, 
+                           selected=param_choices[[.visualParamChoice]][[1]], 
+                           choices=.define_visual_options(discrete_covariates)),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceColorTitle,
             hr(),
             radioButtons(colorby_field, label="Color by:", inline=TRUE,
-                         choices=color_choices, selected=param_choices[[.colorByField]]
+                         choices=.define_color_options_for_column_plots(se),
+                         selected=param_choices[[.colorByField]]
                 ),
             .conditional_on_radio(colorby_field, .colorByNothingTitle,
                 colourInput(paste0(mode, id, "_", .colorByDefaultColor), label=NULL,
@@ -537,6 +525,56 @@
         .conditional_on_check_group(pchoice_field, .visualParamChoiceOtherTitle,
             hr(), .add_other_UI_elements(mode, id, param_choices))
         )
+}
+
+#' Define colouring options
+#' 
+#' Define the available colouring options for row- or column-based plots, 
+#' where availability is defined on the presence of the appropriate data in a SingleCellExperiment object.
+#'
+#' @param se A SingleCellExperiment object.
+#'
+#' @details
+#' Colouring by column data is not available if no column data exists in \code{se} - same for the row data.
+#' Colouring by feature names is not available if there are no features in \code{se}.
+#' For column plots, we have an additional requirement that there must also be assays in \code{se} to colour by features.
+#'
+#' @return A character vector of available colouring modes, i.e., nothing, by column/row data or by feature name.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_define_color_options
+.define_color_options_for_column_plots <- function(se) {
+    color_choices <- .colorByNothingTitle
+    if (ncol(colData(se))) {
+        color_choices <- c(color_choices, .colorByColDataTitle)
+    }
+    if (nrow(se) && length(assayNames(se))) {
+        color_choices <- c(color_choices, .colorByFeatNameTitle)
+    }
+    return(color_choices)
+}
+
+#' Define visual parameter check options
+#'
+#' Define the available visual parameter check boxes that can be ticked.
+#'
+#' @param discrete_covariates A character vector of names of categorical covariates.
+#'
+#' @details
+#' Currently, the only special case is when there are no categorical covariates, in which case the faceting check box will not be available.
+#' The check boxes for showing the colouring, point aesthetics and other options are always available.
+#'
+#' @return A character vector of check boxes that can be clicked in the UI.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_define_visual_options
+.define_visual_options <- function(discrete_covariates) {
+    pchoices <- c(.visualParamChoiceColorTitle, .visualParamChoicePointTitle)
+    if (length(discrete_covariates)) {
+        pchoices <- c(pchoices, .visualParamChoiceFacetTitle)
+    } 
+    pchoices <- c(pchoices, .visualParamChoiceOtherTitle)
+    return(pchoices)
 }
 
 #' Visual parameter box for row plots
@@ -578,33 +616,20 @@
     covariates <- colnames(rowData(se))
     discrete_covariates <- .get_internal_info(se, "row_groupable")
 
-    # Defining the available choices for colouring, based on the SE. 
     colorby_field <- paste0(mode, id, "_", .colorByField)
-    color_choices <- c(.colorByNothingTitle)
-    if (length(covariates)) {
-        color_choices <- c(color_choices, .colorByRowDataTitle)
-    }
-    if (nrow(se)) { 
-        color_choices <- c(color_choices, .colorByFeatNameTitle)
-    }
-
-    # Same for faceting options.
     pchoice_field <- paste0(mode, id, "_", .visualParamChoice)
-    pchoices <- c(.visualParamChoiceColorTitle, .visualParamChoicePointTitle)
-    if (length(discrete_covariates)) {
-        pchoices <- c(pchoices, .visualParamChoiceFacetTitle)
-    } 
-    pchoices <- c(pchoices, .visualParamChoiceOtherTitle)
 
-    pchoice_field <- paste0(mode, id, "_", .visualParamChoice)
     collapseBox(
         id = paste0(mode, id, "_", .visualParamBoxOpen),
         title = "Visual parameters",
         open = param_choices[[.visualParamBoxOpen]],
-        checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE, selected=param_choices[[.visualParamChoice]][[1]], choices=pchoices),
+        checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE, 
+                           selected=param_choices[[.visualParamChoice]][[1]], 
+                           choices=.define_visual_options(discrete_covariates)),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceColorTitle,
             radioButtons(colorby_field, label="Color by:", inline=TRUE,
-                         choices=color_choices, selected=param_choices[[.colorByField]]
+                         choices=.define_color_options_for_column_plots(se),
+                         selected=param_choices[[.colorByField]]
                 ),
             .conditional_on_radio(colorby_field, .colorByNothingTitle,
                 colourInput(paste0(mode, id, "_", .colorByDefaultColor), label=NULL,
@@ -629,6 +654,18 @@
         .conditional_on_check_group(pchoice_field, .visualParamChoiceOtherTitle,
             hr(), .add_other_UI_elements(mode, id, param_choices))
         )
+}
+
+#' @rdname INTERNAL_define_color_options
+.define_color_options_for_row_plots <- function(se) {
+    color_choices <- .colorByNothingTitle
+    if (ncol(rowData(se))) {
+        color_choices <- c(color_choices, .colorByRowDataTitle)
+    }
+    if (nrow(se)) { 
+        color_choices <- c(color_choices, .colorByFeatNameTitle)
+    }
+    return(color_choices)
 }
 
 #' Faceting visual parameters 

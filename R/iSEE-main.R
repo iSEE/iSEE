@@ -70,7 +70,7 @@
 #' counts(sce) <- assay(sce, "tophat_counts")
 #' sce <- normalize(sce)
 #'
-#' sce <- runPCA(sce)
+#' sce <- runPCA(sce, ncomponents=4)
 #' sce <- runTSNE(sce)
 #' rowData(sce)$ave_count <- rowMeans(counts(sce))
 #' rowData(sce)$n_cells <- rowSums(counts(sce)>0)
@@ -114,6 +114,7 @@ iSEE <- function(se,
   se <- se_out$object
   se_cmds <- se_out$cmds
 
+  # Precomputing UI information - must be before .setup_memory() 
   se <- .precompute_UI_info(se, customColFun)
 
   # Throw an error if the colormap supplied is not compatible with the object
@@ -1123,7 +1124,7 @@ iSEE <- function(se,
 
         # Defining fundamental parameters that destroy brushes/lassos upon being changed.
         protected <- switch(mode,
-                            redDimPlot=c(.redDimType, .redDimXAxis, .redDimYAxis, .facetByRow, .facetByColumn),
+                            redDimPlot=c(.redDimXAxis, .redDimYAxis, .facetByRow, .facetByColumn),
                             colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, .facetByRow, .facetByColumn),
                             featAssayPlot=c(.featAssayAssay, .featAssayXAxisColData, .facetByRow, .facetByColumn),
                             rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData, .facetByRow, .facetByColumn),
@@ -1324,6 +1325,39 @@ iSEE <- function(se,
                     return(NULL)
                 }
                 pObjects$memory[[mode0]][[.featAssayYAxisFeatName]][id0] <- matched_input
+                .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
+            }, ignoreInit=TRUE)
+        })
+    }
+
+    # Reduced dimension plots also need a special observer to update the maximum of the numericInput when the type changes.
+    max_plots <- nrow(pObjects$memory$redDimPlot)
+    for (id in seq_len(max_plots)) {
+        local({
+            id0 <- id
+            mode0 <- "redDimPlot"
+            plot_name <- paste0(mode0, id0)
+            cur_field <- paste0(plot_name, "_", .redDimType)
+            dim_fieldX <- paste0(plot_name, "_", .redDimXAxis)
+            dim_fieldY <- paste0(plot_name, "_", .redDimYAxis)
+
+            observeEvent(input[[cur_field]], {
+                matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[.redDimType]]))
+                if (identical(matched_input, pObjects$memory[[mode0]][[.redDimType]][id0])) {
+                    return(NULL)
+                }
+                pObjects$memory[[mode0]][[.redDimType]][id0] <- matched_input
+                
+                # Updating the numericInputs as well. This should not trigger re-plotting as the identical() check in the 
+                # corresponding observers should stop the replotting flag from being set. 
+                new_max <- ncol(reducedDim(se, matched_input))
+                capped_X <- pmin(new_max, pObjects$memory[[mode0]][[.redDimXAxis]][id0])
+                capped_Y <- pmin(new_max, pObjects$memory[[mode0]][[.redDimYAxis]][id0])
+                pObjects$memory[[mode0]][[.redDimXAxis]][id0] <- capped_X
+                pObjects$memory[[mode0]][[.redDimYAxis]][id0] <- capped_Y
+                updateNumericInput(session, dim_fieldX, max=new_max, value=capped_X)
+                updateNumericInput(session, dim_fieldY, max=new_max, value=capped_Y)
+
                 .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
             }, ignoreInit=TRUE)
         })

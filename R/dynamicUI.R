@@ -693,10 +693,10 @@
 #' @importFrom shiny tagList selectInput
 .add_facet_UI_elements <- function(mode, id, param_choices, covariates) {
     tagList(
-        selectInput(paste0(mode, id, "_", .facetByRow), label = "Facet (row):",
-                            choices=c(".", covariates), selected=param_choices[[.facetByRow]]),
-        selectInput(paste0(mode, id, "_", .facetByColumn), label = "Facet (column):",
-                            choices=c(".", covariates), selected=param_choices[[.facetByColumn]])
+        selectInput(paste0(mode, id, "_", .facetByRowColData), label = "Facet (row):",
+                            choices=c(".", covariates), selected=param_choices[[.facetByRowColData]]),
+        selectInput(paste0(mode, id, "_", .facetByColumnColData), label = "Facet (column):",
+                            choices=c(".", covariates), selected=param_choices[[.facetByColumnColData]])
     )
 }
 
@@ -933,5 +933,4 @@
 .get_internal_info <- function(se, field) {
     SingleCellExperiment:::int_metadata(se)$iSEE[[field]]
 }
-
 

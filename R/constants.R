@@ -64,8 +64,13 @@
 
 # Faceting parameters ----
 
-.facetByRow <- "RowFacetColData"
-.facetByColumn <- "ColumnFacetColData"
+# Logical fields whether to facet
+.facetByRow <- "FacetByRow"
+.facetByColumn <- "FacetByColumn"
+
+# Fields holding the covariate to facet by
+.facetByRowColData <- "RowFacetColData"
+.facetByColumnColData <- "ColumnFacetColData"
 
 # Point colouring parameters. ----
 .colorByNothingTitle <- "None"

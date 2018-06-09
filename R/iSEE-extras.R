@@ -163,7 +163,7 @@
                      rowDataPlot=rowDataArgs, 
                      customColPlot=customColArgs,
                      heatMapPlot=heatMapArgs)
-
+    
     all_maxes <- list(redDimPlot=redDimMax, 
                       colDataPlot=colDataMax, 
                       featAssayPlot=featAssayMax,
@@ -223,6 +223,7 @@
     }
 
     # Sanitizing remaining named fields that are _not_ linking-related (for that, see .sanitize_memory() below).
+    # Note: if choice==c() .helper returns NA
     .helper <- function(chosen, choices) { ifelse(chosen %in% choices, chosen, choices[1]) }
     color_choices <- .define_color_options_for_column_plots(se)
     col_groupable <- .get_internal_info(se, "column_groupable")
@@ -230,31 +231,42 @@
 
     col_pchoices <- .define_visual_options(col_groupable) 
     for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot")) {
-        all_args[[mode]][, .colorByColData] <- .helper(all_args[[mode]][, .colorByColData], colnames(colData(se)))
-        all_args[[mode]][, .facetByRow] <- .helper(all_args[[mode]][, .facetByRow], col_groupable)
-        all_args[[mode]][, .facetByColumn] <- .helper(all_args[[mode]][, .facetByColumn], col_groupable)
-        all_args[[mode]][, .colorByField] <- .helper(all_args[[mode]][, .colorByField], color_choices)
-        all_args[[mode]][[.visualParamChoice]] <- lapply(all_args[[mode]][,.visualParamChoice], intersect, y=col_pchoices) # intersecting with available choices.
+        memory[[mode]][, .colorByColData] <- .helper(memory[[mode]][, .colorByColData], colnames(colData(se)))
+        memory[[mode]][, .facetByRow] <- .helper(memory[[mode]][, .facetByRow], c(TRUE, FALSE))
+        memory[[mode]][, .facetByColumn] <- .helper(memory[[mode]][, .facetByColumn], c(TRUE, FALSE))
+        memory[[mode]][, .facetByRowColData] <- .helper(memory[[mode]][, .facetByRowColData], col_groupable)
+        memory[[mode]][, .facetByColumnColData] <- .helper(memory[[mode]][, .facetByColumnColData], col_groupable)
+        memory[[mode]][, .colorByField] <- .helper(memory[[mode]][, .colorByField], color_choices)
+        memory[[mode]][[.visualParamChoice]] <- lapply(memory[[mode]][,.visualParamChoice], intersect, y=col_pchoices) # intersecting with available choices.
     }
 
     mode <- "rowDataPlot"
-    all_args[[mode]][, .colorByRowData] <- .helper(all_args[[mode]][, .colorByRowData], colnames(rowData(se)))
-    all_args[[mode]][, .facetByRow] <- .helper(all_args[[mode]][, .facetByRow], row_groupable)
-    all_args[[mode]][, .facetByColumn] <- .helper(all_args[[mode]][, .facetByColumn], row_groupable)
-    all_args[[mode]][, .colorByField] <- .helper(all_args[[mode]][, .colorByField], .define_color_options_for_row_plots(se))
-    all_args[[mode]][[.visualParamChoice]] <- lapply(all_args[[mode]][,.visualParamChoice], intersect, y=.define_visual_options(row_groupable))
+    memory[[mode]][, .colorByRowData] <- .helper(memory[[mode]][, .colorByRowData], colnames(rowData(se)))
+    memory[[mode]][, .facetByRow] <- .helper(memory[[mode]][, .facetByRow], c(TRUE, FALSE))
+    memory[[mode]][, .facetByColumn] <- .helper(memory[[mode]][, .facetByColumn], c(TRUE, FALSE))
+    memory[[mode]][, .facetByRowColData] <- .helper(memory[[mode]][, .facetByRowColData], row_groupable)
+    memory[[mode]][, .facetByColumnColData] <- .helper(memory[[mode]][, .facetByColumnColData], row_groupable)
+    memory[[mode]][, .colorByField] <- .helper(memory[[mode]][, .colorByField], .define_color_options_for_row_plots(se))
+    memory[[mode]][[.visualParamChoice]] <- lapply(memory[[mode]][,.visualParamChoice], intersect, y=.define_visual_options(row_groupable))
 
-    mode <- ".heatMapColData"
-    all_args[[mode]][[.heatMapColData]] <- lapply(all_args[[mode]][,.heatMapColData], intersect, y=colnames(colData(se)))
-
+    mode <- "heatMapPlot"
+    memory[[mode]][[.heatMapColData]] <- lapply(memory[[mode]][,.heatMapColData], intersect, y=colnames(colData(se)))
+    
     # Sanitizing other fields depending on the available data.
     if (length(col_groupable) == 0L) {
         for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot")) {
-            # SANITIZE FACETING HERE.
+            if (feasibility[[mode]]) {
+                memory[[mode]][, .facetByRow] <- FALSE
+                memory[[mode]][, .facetByColumn] <- FALSE
+            }
         }
     }
+    mode <- "rowDataPlot"
     if (length(row_groupable) == 0L) {
-        # SANITIZE FACETING HERE.
+        if (feasibility[[mode]]) {
+            memory[[mode]][, .facetByRow] <- FALSE
+            memory[[mode]][, .facetByColumn] <- FALSE
+        }
     }
 
     return(memory)

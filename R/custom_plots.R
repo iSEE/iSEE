@@ -43,7 +43,7 @@
 #' @param colormap An ExperimentColorMap object that defines custom color maps for individual \code{assays}, \code{colData}, and \code{rowData} covariates.
 #' @param cached A data.frame of cached results from previous runs.
 #'
-#' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}, equivalent to the output of \code{?\link{.plot_wrapper}}.
+#' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}, equivalent to the output of \code{\link{.plot_wrapper}}.
 #' A \code{cached} field is also returned containing the result of evaluating the user-specified function.
 #' 
 #' @details

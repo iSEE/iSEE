@@ -331,7 +331,7 @@ names(.all_aes_values) <- .all_aes_names
 
     downsample_cmds <- .downsample_points(param_choices, setup_out$envir)
 
-    plot_out <- .create_plot(setup_out$envir, param_choices, ..., color_lab = setup_out$color_lab, by_row = by_row)
+    plot_out <- .create_plot(setup_out$envir, param_choices, ..., color_lab = setup_out$color_lab, shape_lab = setup_out$shape_lab, by_row = by_row)
 
     return(list(cmd_list = c(setup_out$cmd_list, list(plot=c(downsample_cmds, plot_out$cmds))), xy = xy, plot = plot_out$plot)) 
 }
@@ -475,7 +475,7 @@ names(.all_aes_values) <- .all_aes_names
     specific <- .choose_plot_type(group_X, group_Y, eval_env)
 
     return(list(cmd_list=list(data=unlist(data_cmds), select=select_cmds, setup=specific), 
-                envir=eval_env, color_lab=color_lab))
+                envir=eval_env, color_lab=color_lab, shape_lab=shape_lab))
 }
 
 #' Choose the plot type
@@ -713,7 +713,7 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.create_plot}}
 #'
 #' @importFrom ggplot2 ggplot coord_cartesian theme_bw theme element_text
-.scatter_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, title, by_row = FALSE, is_subsetted = FALSE, is_downsampled = FALSE) {
+.scatter_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, shape_lab, title, by_row = FALSE, is_subsetted = FALSE, is_downsampled = FALSE) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +"
 
@@ -731,7 +731,7 @@ names(.all_aes_values) <- .all_aes_names
     }
 
     # Adding axes labels.
-    plot_cmds[["labs"]] <- .build_labs(x = x_lab, y = y_lab, color = color_lab, title = title)
+    plot_cmds[["labs"]] <- .build_labs(x = x_lab, y = y_lab, color = color_lab, shape = shape_lab, title = title)
 
     # Defining boundaries if zoomed.
     bounds <- param_choices[[.zoomData]][[1]]
@@ -822,7 +822,7 @@ names(.all_aes_values) <- .all_aes_names
 #'
 #' @importFrom ggplot2 ggplot geom_violin coord_cartesian theme_bw theme
 #' coord_flip scale_x_discrete scale_y_discrete
-.violin_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, title, 
+.violin_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, shape_lab, title, 
         horizontal = FALSE, by_row = FALSE, is_subsetted = FALSE, is_downsampled = FALSE) {
 
     plot_cmds <- list()
@@ -853,7 +853,7 @@ names(.all_aes_values) <- .all_aes_names
         x_lab <- tmp
     }
    
-    plot_cmds[["labs"]] <- .build_labs(x = x_lab, y = y_lab, color = color_lab, title = title)
+    plot_cmds[["labs"]] <- .build_labs(x = x_lab, y = y_lab, color = color_lab, shape = shape_lab, title = title)
 
     # Defining boundaries if zoomed. This requires some finesse to deal with horizontal plots,
     # where the point selection is computed on the flipped coordinates.
@@ -984,7 +984,7 @@ plot.data$Y <- tmp;")
 #'
 #' @importFrom ggplot2 ggplot geom_tile coord_cartesian theme_bw theme
 #' scale_x_discrete scale_y_discrete guides
-.square_plot <- function(plot_data, param_choices, se, x_lab, y_lab, color_lab, title, by_row = FALSE, is_subsetted = FALSE) {
+.square_plot <- function(plot_data, param_choices, se, x_lab, y_lab, color_lab, shape_lab, title, by_row = FALSE, is_subsetted = FALSE) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
     plot_cmds[["tile"]] <-
@@ -1009,7 +1009,7 @@ plot.data$Y <- tmp;")
     plot_cmds[["scale_color"]] <- color_scale_cmd
 
     # Creating labels.
-    plot_cmds[["labs"]] <- .build_labs(x = x_lab, y = y_lab, color = color_lab, title = title)
+    plot_cmds[["labs"]] <- .build_labs(x = x_lab, y = y_lab, color = color_lab, shape = shape_lab, title = title)
     
     # Defining boundaries if zoomed.
     bounds <- param_choices[[.zoomData]][[1]]

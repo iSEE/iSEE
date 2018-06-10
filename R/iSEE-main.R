@@ -1124,10 +1124,10 @@ iSEE <- function(se,
 
         # Defining fundamental parameters that destroy brushes/lassos upon being changed.
         protected <- switch(mode,
-                            redDimPlot=c(.redDimXAxis, .redDimYAxis, .facetByRow, .facetByColumn, .facetByRowColData, .facetByColumnColData),
-                            colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, .facetByRow, .facetByColumn, .facetByRowColData, .facetByColumnColData),
-                            featAssayPlot=c(.featAssayAssay, .featAssayXAxisColData, .facetByRow, .facetByColumn, .facetByRowColData, .facetByColumnColData),
-                            rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData, .facetByRow, .facetByColumn, .facetByRowRowData, .facetByColumnRowData),
+                            redDimPlot=c(.redDimXAxis, .redDimYAxis, .facetByRow, .facetByColumn, .facetRowsByColData, .facetColumnsByColData),
+                            colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, .facetByRow, .facetByColumn, .facetRowsByColData, .facetColumnsByColData),
+                            featAssayPlot=c(.featAssayAssay, .featAssayXAxisColData, .facetByRow, .facetByColumn, .facetRowsByColData, .facetColumnsByColData),
+                            rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData, .facetByRow, .facetByColumn, .facetRowsByRowData, .facetColumnsByRowData),
                             customColPlot=.customColFun)
 
         # Defining non-fundamental parameters that do not destroy brushes/lassos.

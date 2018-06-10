@@ -500,8 +500,8 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.facetByRow]] <- FALSE
     incoming[[.facetByColumn]] <- FALSE
     # TODO: set to first groupable field, if any
-    incoming[[.facetByRowColData]] <- dev_discrete
-    incoming[[.facetByColumnColData]] <- dev_discrete
+    incoming[[.facetRowsByColData]] <- dev_discrete
+    incoming[[.facetColumnsByColData]] <- dev_discrete
 
     return(incoming)
 }
@@ -525,8 +525,8 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.facetByRow]] <- FALSE
     incoming[[.facetByColumn]] <- FALSE
     # TODO: set to first groupable field, if any
-    incoming[[.facetByRowRowData]] <- dev_discrete
-    incoming[[.facetByColumnRowData]] <- dev_discrete
+    incoming[[.facetRowsByRowData]] <- dev_discrete
+    incoming[[.facetColumnsByRowData]] <- dev_discrete
 
     return(incoming)
 }

@@ -222,56 +222,6 @@
         memory[[mode]] <- tmp
     }
 
-    # Sanitizing remaining named fields that are _not_ linking-related (for that, see .sanitize_memory() below).
-    # Note: if choice==c() .helper returns NA
-    .helper <- function(chosen, choices) { ifelse(chosen %in% choices, chosen, choices[1]) }
-    color_choices <- .define_color_options_for_column_plots(se)
-    facet_pchoices <- c("Row", "Column")
-    col_groupable <- .get_internal_info(se, "column_groupable")
-    row_groupable <- .get_internal_info(se, "row_groupable")
-
-    col_pchoices <- .define_visual_options(col_groupable) 
-    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot")) {
-        memory[[mode]][, .colorByColData] <- .helper(memory[[mode]][, .colorByColData], colnames(colData(se)))
-        memory[[mode]][, .shapeByColData] <- .helper(memory[[mode]][, .colorByColData], col_groupable)
-        memory[[mode]][, .facetByRow] <- .helper(memory[[mode]][, .facetByRow], c(TRUE, FALSE))
-        memory[[mode]][, .facetByColumn] <- .helper(memory[[mode]][, .facetByColumn], c(TRUE, FALSE))
-        memory[[mode]][, .facetByRowColData] <- .helper(memory[[mode]][, .facetByRowColData], col_groupable)
-        memory[[mode]][, .facetByColumnColData] <- .helper(memory[[mode]][, .facetByColumnColData], col_groupable)
-        memory[[mode]][, .colorByField] <- .helper(memory[[mode]][, .colorByField], color_choices)
-        memory[[mode]][[.visualParamChoice]] <- lapply(memory[[mode]][,.visualParamChoice], intersect, y=col_pchoices) # intersecting with available choices.
-    }
-
-    mode <- "rowDataPlot"
-    memory[[mode]][, .colorByRowData] <- .helper(memory[[mode]][, .colorByRowData], colnames(rowData(se)))
-    memory[[mode]][, .shapeByRowData] <- .helper(memory[[mode]][, .shapeByRowData], row_groupable)
-    memory[[mode]][, .facetByRow] <- .helper(memory[[mode]][, .facetByRow], c(TRUE, FALSE)) # same as column plots above, join?
-    memory[[mode]][, .facetByColumn] <- .helper(memory[[mode]][, .facetByColumn], c(TRUE, FALSE)) # same as column plots above, join?
-    memory[[mode]][, .facetByRowRowData] <- .helper(memory[[mode]][, .facetByRowRowData], row_groupable)
-    memory[[mode]][, .facetByColumnRowData] <- .helper(memory[[mode]][, .facetByColumnRowData], row_groupable)
-    memory[[mode]][, .colorByField] <- .helper(memory[[mode]][, .colorByField], .define_color_options_for_row_plots(se))
-    memory[[mode]][[.visualParamChoice]] <- lapply(memory[[mode]][,.visualParamChoice], intersect, y=.define_visual_options(row_groupable))
-
-    mode <- "heatMapPlot"
-    memory[[mode]][[.heatMapColData]] <- lapply(memory[[mode]][,.heatMapColData], intersect, y=colnames(colData(se)))
-    
-    # Sanitizing other fields depending on the available data.
-    if (length(col_groupable) == 0L) {
-        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot")) {
-            if (feasibility[[mode]]) {
-                memory[[mode]][, .facetByRow] <- FALSE
-                memory[[mode]][, .facetByColumn] <- FALSE
-            }
-        }
-    }
-    mode <- "rowDataPlot"
-    if (length(row_groupable) == 0L) {
-        if (feasibility[[mode]]) {
-            memory[[mode]][, .facetByRow] <- FALSE
-            memory[[mode]][, .facetByColumn] <- FALSE
-        }
-    }
-
     return(memory)
 }
 

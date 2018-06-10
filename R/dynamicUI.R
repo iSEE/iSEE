@@ -771,10 +771,10 @@
                       value=param_choices[,.facetByRow]),
         checkboxInput(columnId, label="Column", width = 1,
                       value=param_choices[,.facetByColumn]),
-        selectInput(paste0(mode, id, "_", .facetByRowColData), label = "Facet (row):",
-            choices=covariates, selected=param_choices[[.facetByRowColData]]),
-        selectInput(paste0(mode, id, "_", .facetByColumnColData), label = "Facet (column):",
-            choices=covariates, selected=param_choices[[.facetByColumnColData]])
+        selectInput(paste0(mode, id, "_", .facetRowsByColData), label = "Facet (row):",
+            choices=covariates, selected=param_choices[[.facetRowsByColData]]),
+        selectInput(paste0(mode, id, "_", .facetColumnsByColData), label = "Facet (column):",
+            choices=covariates, selected=param_choices[[.facetColumnsByColData]])
     )
 }
 
@@ -787,10 +787,10 @@
                       value=param_choices[,.facetByRow]),
         checkboxInput(columnId, label="Column", width = 1,
                       value=param_choices[,.facetByColumn]),
-        selectInput(paste0(mode, id, "_", .facetByRowRowData), label = "Facet (row):",
-            choices=covariates, selected=param_choices[[.facetByRowRowData]]),
-        selectInput(paste0(mode, id, "_", .facetByColumnRowData), label = "Facet (column):",
-            choices=covariates, selected=param_choices[[.facetByColumnRowData]])
+        selectInput(paste0(mode, id, "_", .facetRowsByRowData), label = "Facet (row):",
+            choices=covariates, selected=param_choices[[.facetRowsByRowData]]),
+        selectInput(paste0(mode, id, "_", .facetColumnsByRowData), label = "Facet (column):",
+            choices=covariates, selected=param_choices[[.facetColumnsByRowData]])
     )
 }
 

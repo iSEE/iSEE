@@ -505,10 +505,10 @@ names(.all_aes_values) <- .all_aes_names
         specific <- character()
     } else if (!group_Y) {
         mode <- "violin"
-        specific <- .violin_setup(FALSE) 
+        specific <- .violin_setup(envir$plot.data, horizontal=FALSE) 
     } else if (!group_X) {
         mode <- "violin_horizontal"
-        specific <- .violin_setup(TRUE)
+        specific <- .violin_setup(envir$plot.data, horizontal=TRUE)
 
         if (exists("plot.data.all", envir)) { # flipping plot.data.all as well, otherwise it becomes choatic in .violin_plot().
             specific <- c(specific, 
@@ -913,8 +913,7 @@ names(.all_aes_values) <- .all_aes_names
 }
 
 #' @rdname INTERNAL_violin_plot
-#' @importFrom vipor offsetX
-.violin_setup <- function(horizontal=FALSE) { 
+.violin_setup <- function(plot_data, horizontal=FALSE) { 
     setup_cmds <- list()
 
     # Switching X and Y axes if we want a horizontal violin plot.
@@ -925,14 +924,27 @@ plot.data$Y <- tmp;")
     }
     setup_cmds[["group"]] <- "plot.data$GroupBy <- plot.data$X;"
 
-    # Figuring out the scatter. This is done ahead of time to guarantee the
+    # Handling the specification of the jitter-by-group argument.
+    groupvar <- ""
+    if (!is.null(plot_data$FacetRow) || !is.null(plot_data$FacetColumn)) {
+        group_var <- character(0)
+        if (!is.null(plot_data$FacetRow)) {
+            groupvar <- c(group_var, "FacetRow=plot.data$FacetRow")
+        } 
+        if (!is.null(plot_data$FacetColumn)) {
+            groupvar <- c(group_var, "FacetColumn=plot.data$FacetColumn")
+        }
+        groupvar <- paste0("\n    list(", paste(groupvar, collapse=", "), "),")
+    }
+
+    # Figuring out the jitter. This is done ahead of time to guarantee the
     # same results regardless of the subset used for point selection. Note adjust=1
     # for consistency with geom_violin (differs from geom_quasirandom default).
     setup_cmds[["seed"]] <- "set.seed(100);"
-    setup_cmds[["calcX"]] <-
-"plot.data$jitteredX <- vipor::offsetX(plot.data$Y,
-    x=plot.data$X, width=0.4, varwidth=FALSE, adjust=1,
-    method='quasirandom', nbins=NULL) + as.integer(plot.data$X);"
+    setup_cmds[["calcX"]] <- sprintf(
+"plot.data$jitteredX <- iSEE::jitterViolinPoints(plot.data$X, plot.data$Y, %s
+    width=0.4, varwidth=FALSE, adjust=1,
+    method='quasirandom', nbins=NULL);", groupvar)
 
     return(unlist(setup_cmds))
 }
@@ -1057,29 +1069,26 @@ plot.data$Y <- tmp;")
 #' @importFrom stats runif
 .square_setup <- function(plot_data) {
     setup_cmds  <- list()
-    setup_cmds[["table"]] <- "summary.data <- as.data.frame(with(plot.data, table(X, Y)));"
 
-    norm_freq <- "with(summary.data, Freq / max(Freq))"
-    if (nlevels(plot_data$Y)==1L && nlevels(plot_data$X)!=1L) {
-        width_cmd <- sprintf("summary.data$XWidth <- 0.4;
-summary.data$YWidth <- 0.49 * %s;", norm_freq)
-    } else if (nlevels(plot_data$Y)!=1L && nlevels(plot_data$X)==1L) {
-        width_cmd <- sprintf("summary.data$XWidth <- 0.49 * %s;
-summary.data$YWidth <- 0.4;", norm_freq)
-    } else {
-        width_cmd <- sprintf("summary.data$XWidth <- summary.data$YWidth <- 0.49 * sqrt(%s);", norm_freq)
+    # Handling the specification of the jitter-by-group argument.
+    groupvar <- ""
+    if (!is.null(plot_data$FacetRow) || !is.null(plot_data$FacetColumn)) {
+        group_var <- character(0)
+        if (!is.null(plot_data$FacetRow)) {
+            groupvar <- c(group_var, "FacetRow=plot.data$FacetRow")
+        } 
+        if (!is.null(plot_data$FacetColumn)) {
+            groupvar <- c(group_var, "FacetColumn=plot.data$FacetColumn")
+        }
+        groupvar <- paste0(",\n    list(", paste(groupvar, collapse=", "), ")")
     }
-    setup_cmds[["radius"]] <- width_cmd
 
-    setup_cmds[["merged"]] <- "plot.data$Marker <- seq_len(nrow(plot.data));
-combined <- merge(plot.data, summary.data, by=c('X', 'Y'), all.x=TRUE);
-o <- order(combined$Marker)
-width.x <- combined$XWidth[o];
-width.y <- combined$YWidth[o];
-plot.data$Marker <- NULL;"
-    setup_cmds[["jitter"]] <- "set.seed(100);
-plot.data$jitteredX <- as.integer(plot.data$X) + width.x*runif(nrow(plot.data), -1, 1);
-plot.data$jitteredY <- as.integer(plot.data$Y) + width.y*runif(nrow(plot.data), -1, 1);"
+    # Setting the seed to ensure reproducible results.
+    setup_cmds[["jitter"]] <- sprintf("set.seed(100);
+j.out <- iSEE:::jitterSquarePoints(plot.data$X, plot.data$Y%s);
+summary.data <- j.out$summary;
+plot.data$jitteredX <- j.out$X;
+plot.data$jitteredY <- j.out$Y;", groupvar)
     return(unlist(setup_cmds))
 }
 
@@ -1767,13 +1776,13 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 .define_facetby_for_column_plot <- function(param_choices, se) {
     facet_cmds <- c()
     
-    facet_row <- param_choices[[.facetByRowColData]]
+    facet_row <- param_choices[[.facetRowsByColData]]
     if (param_choices[[.facetByRow]]) {
         facet_cmds["FacetRow"] <- sprintf(
             "plot.data$FacetRow <- colData(se)[,%s];", deparse(facet_row))
     }
     
-    facet_column <- param_choices[[.facetByColumnColData]]
+    facet_column <- param_choices[[.facetColumnsByColData]]
     if (param_choices[[.facetByColumn]]) {
         facet_cmds["FacetColumn"] <- sprintf(
             "plot.data$FacetColumn <- colData(se)[,%s];", deparse(facet_column))
@@ -1786,13 +1795,13 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 .define_facetby_for_row_plot <- function(param_choices, se) {
     facet_cmds <- c()
     
-    facet_row <- param_choices[[.facetByRowRowData]]
+    facet_row <- param_choices[[.facetRowsByRowData]]
     if (param_choices[[.facetByRow]]) {
         facet_cmds["FacetRow"] <- sprintf(
             "plot.data$FacetRow <- rowData(se)[,%s];", deparse(facet_row))
     }
     
-    facet_column <- param_choices[[.facetByColumnRowData]]
+    facet_column <- param_choices[[.facetColumnsByRowData]]
     if (param_choices[[.facetByColumn]]) {
         facet_cmds["FacetColumn"] <- sprintf(
             "plot.data$FacetColumn <- rowData(se)[,%s];", deparse(facet_column))

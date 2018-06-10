@@ -921,14 +921,14 @@ plot.data$Y <- tmp;")
     # Handling the specification of the jitter-by-group argument.
     groupvar <- ""
     if (!is.null(plot_data$FacetRow) || !is.null(plot_data$FacetColumn)) {
-        if (is.null(plot_data$FacetRow)) {
-            groupvar <- " plot.data$FacetColumn"
-        } else if (is.null(plot_data$FacetColumn)) {
-            groupvar <- " plot.data$FacetRow"
-        } else {
-            groupvar <- "\n    as.integer(plot.data$FacetRow) + nlevels(plot.data$FacetRow) * plot.data$FacetColumn"
+        group_var <- character(0)
+        if (!is.null(plot_data$FacetRow)) {
+            groupvar <- c(group_var, "FacetRow=plot.data$FacetRow")
+        } 
+        if (!is.null(plot_data$FacetColumn)) {
+            groupvar <- c(group_var, "FacetColumn=plot.data$FacetColumn")
         }
-        groupvar <- paste0(groupvar, ",")
+        groupvar <- paste0("\n    list(", paste(groupvar, collapse=", "), "),")
     }
 
     # Figuring out the jitter. This is done ahead of time to guarantee the
@@ -936,7 +936,7 @@ plot.data$Y <- tmp;")
     # for consistency with geom_violin (differs from geom_quasirandom default).
     setup_cmds[["seed"]] <- "set.seed(100);"
     setup_cmds[["calcX"]] <- sprintf(
-"plot.data$jitteredX <- iSEE::jitterPoints(plot.data$X, plot.data$Y,%s
+"plot.data$jitteredX <- iSEE:::jitterPoints(plot.data$X, plot.data$Y, %s
     width=0.4, varwidth=FALSE, adjust=1,
     method='quasirandom', nbins=NULL);", groupvar)
 
@@ -1066,19 +1066,19 @@ plot.data$Y <- tmp;")
     # Handling the specification of the jitter-by-group argument.
     groupvar <- ""
     if (!is.null(plot_data$FacetRow) || !is.null(plot_data$FacetColumn)) {
-        if (is.null(plot_data$FacetRow)) {
-            groupvar <- " plot.data$FacetColumn"
-        } else if (is.null(plot_data$FacetColumn)) {
-            groupvar <- " plot.data$FacetRow"
-        } else {
-            groupvar <- "\n    as.integer(plot.data$FacetRow) + nlevels(plot.data$FacetRow) * plot.data$FacetColumn"
+        group_var <- character(0)
+        if (!is.null(plot_data$FacetRow)) {
+            groupvar <- c(group_var, "FacetRow=plot.data$FacetRow")
+        } 
+        if (!is.null(plot_data$FacetColumn)) {
+            groupvar <- c(group_var, "FacetColumn=plot.data$FacetColumn")
         }
-        groupvar <- paste0(",", groupvar)
+        groupvar <- paste0(",\n    list(", paste(groupvar, collapse=", "), ")")
     }
 
     # Setting the seed to ensure reproducible results.
     setup_cmds[["jitter"]] <- sprintf("set.seed(100);
-j.out <- jitterPoints(plot.data$X, plot.data$Y%s);
+j.out <- iSEE:::jitterPoints(plot.data$X, plot.data$Y%s);
 summary.data <- j.out$summary;
 plot.data$jitteredX <- j.out$X;
 plot.data$jitteredY <- j.out$Y;", groupvar)

@@ -525,11 +525,6 @@
                          choices=.define_shape_options_for_column_plots(se),
                          selected=param_choices[[.shapeByField]]
                 ),
-            # TODO: fixed selection of default shapes?
-            # .conditional_on_radio(shapeby_field, .shapeByNothingTitle,
-            #     colourInput(paste0(mode, id, "_", .shapeByDefaultShape), label=NULL,
-            #                 value=param_choices[[.shapeByDefaultShape]])
-            #     ),
             .conditional_on_radio(shapeby_field, .shapeByColDataTitle,
                 selectInput(paste0(mode, id, "_", .shapeByColData), label = NULL,
                             choices=discrete_covariates, selected=param_choices[[.shapeByColData]])
@@ -605,17 +600,25 @@
 #' @param discrete_covariates A character vector of names of categorical covariates.
 #'
 #' @details
-#' Currently, the only special case is when there are no categorical covariates, in which case the faceting check box will not be available.
+#' Currently, the only special case is when there are no categorical covariates, in which case the shaping and faceting check boxes will not be available.
 #' The check boxes for showing the colouring, point aesthetics and other options are always available.
 #'
 #' @return A character vector of check boxes that can be clicked in the UI.
 #'
-#' @author Aaron Lun
+#' @author Aaron Lun, Kevin Rue-Albrecht
 #' @rdname INTERNAL_define_visual_options
 .define_visual_options <- function(discrete_covariates) {
-    pchoices <- c(.visualParamChoiceColorTitle, .visualParamChoicePointTitle)
+    pchoices <- c(.visualParamChoiceColorTitle)
+    
     if (length(discrete_covariates)) {
-        pchoices <- c(pchoices, .visualParamChoiceShapeTitle, .visualParamChoiceFacetTitle)
+        pchoices <- c(pchoices, .visualParamChoiceShapeTitle)
+    }
+    
+    # Insert the point choice _after_ the shape aesthetic, if present
+    pchoices <- c(pchoices, .visualParamChoicePointTitle)
+    
+    if (length(discrete_covariates)) {
+        pchoices <- c(pchoices, .visualParamChoiceFacetTitle)
     } 
     pchoices <- c(pchoices, .visualParamChoiceOtherTitle)
     return(pchoices)
@@ -698,11 +701,6 @@
                          choices=.define_shape_options_for_row_plots(se),
                          selected=param_choices[[.shapeByField]]
                 ),
-            # TODO: fixed selection of default shapes?
-            # .conditional_on_radio(shapeby_field, .shapeByNothingTitle,
-            #     colourInput(paste0(mode, id, "_", .shapeByDefaultShape), label=NULL,
-            #                 value=param_choices[[.shapeByDefaultShape]])
-            #     ),
             .conditional_on_radio(shapeby_field, .shapeByRowDataTitle,
                 selectInput(paste0(mode, id, "_", .shapeByRowData), label = NULL,
                             choices=discrete_covariates, selected=param_choices[[.shapeByRowData]])

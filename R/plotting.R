@@ -714,7 +714,6 @@ names(.all_aes_values) <- .all_aes_names
 #'
 #' @importFrom ggplot2 ggplot coord_cartesian theme_bw theme element_text
 .scatter_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, title, by_row = FALSE, is_subsetted = FALSE, is_downsampled = FALSE) {
-    message(rownames(param_choices)); print(param_choices)
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +"
 

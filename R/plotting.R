@@ -501,10 +501,10 @@ names(.all_aes_values) <- .all_aes_names
         specific <- character()
     } else if (!group_Y) {
         mode <- "violin"
-        specific <- .violin_setup(FALSE) 
+        specific <- .violin_setup(envir$plot.data, horizontal=FALSE) 
     } else if (!group_X) {
         mode <- "violin_horizontal"
-        specific <- .violin_setup(TRUE)
+        specific <- .violin_setup(envir$plot.data, horizontal=TRUE)
 
         if (exists("plot.data.all", envir)) { # flipping plot.data.all as well, otherwise it becomes choatic in .violin_plot().
             specific <- c(specific, 
@@ -907,8 +907,7 @@ names(.all_aes_values) <- .all_aes_names
 }
 
 #' @rdname INTERNAL_violin_plot
-#' @importFrom vipor offsetX
-.violin_setup <- function(horizontal=FALSE) { 
+.violin_setup <- function(plot_data, horizontal=FALSE) { 
     setup_cmds <- list()
 
     # Switching X and Y axes if we want a horizontal violin plot.
@@ -919,14 +918,27 @@ plot.data$Y <- tmp;")
     }
     setup_cmds[["group"]] <- "plot.data$GroupBy <- plot.data$X;"
 
-    # Figuring out the scatter. This is done ahead of time to guarantee the
+    # Handling the specification of the jitter-by-group argument.
+    groupvar <- ""
+    if (!is.null(plot_data$FacetRow) || !is.null(plot_data$FacetColumn)) {
+        if (is.null(plot_data$FacetRow)) {
+            groupvar <- " plot.data$FacetColumn"
+        } else if (is.null(plot_data$FacetColumn)) {
+            groupvar <- " plot.data$FacetRow"
+        } else {
+            groupvar <- "\n    as.integer(plot.data$FacetRow) + nlevels(plot.data$FacetRow) * plot.data$FacetColumn"
+        }
+        groupvar <- paste0(groupvar, ",")
+    }
+
+    # Figuring out the jitter. This is done ahead of time to guarantee the
     # same results regardless of the subset used for point selection. Note adjust=1
     # for consistency with geom_violin (differs from geom_quasirandom default).
     setup_cmds[["seed"]] <- "set.seed(100);"
-    setup_cmds[["calcX"]] <-
-"plot.data$jitteredX <- vipor::offsetX(plot.data$Y,
-    x=plot.data$X, width=0.4, varwidth=FALSE, adjust=1,
-    method='quasirandom', nbins=NULL) + as.integer(plot.data$X);"
+    setup_cmds[["calcX"]] <- sprintf(
+"plot.data$jitteredX <- iSEE::jitterPoints(plot.data$X, plot.data$Y,%s
+    width=0.4, varwidth=FALSE, adjust=1,
+    method='quasirandom', nbins=NULL);", groupvar)
 
     return(unlist(setup_cmds))
 }
@@ -1050,29 +1062,26 @@ plot.data$Y <- tmp;")
 #' @importFrom stats runif
 .square_setup <- function(plot_data) {
     setup_cmds  <- list()
-    setup_cmds[["table"]] <- "summary.data <- as.data.frame(with(plot.data, table(X, Y)));"
 
-    norm_freq <- "with(summary.data, Freq / max(Freq))"
-    if (nlevels(plot_data$Y)==1L && nlevels(plot_data$X)!=1L) {
-        width_cmd <- sprintf("summary.data$XWidth <- 0.4;
-summary.data$YWidth <- 0.49 * %s;", norm_freq)
-    } else if (nlevels(plot_data$Y)!=1L && nlevels(plot_data$X)==1L) {
-        width_cmd <- sprintf("summary.data$XWidth <- 0.49 * %s;
-summary.data$YWidth <- 0.4;", norm_freq)
-    } else {
-        width_cmd <- sprintf("summary.data$XWidth <- summary.data$YWidth <- 0.49 * sqrt(%s);", norm_freq)
+    # Handling the specification of the jitter-by-group argument.
+    groupvar <- ""
+    if (!is.null(plot_data$FacetRow) || !is.null(plot_data$FacetColumn)) {
+        if (is.null(plot_data$FacetRow)) {
+            groupvar <- " plot.data$FacetColumn"
+        } else if (is.null(plot_data$FacetColumn)) {
+            groupvar <- " plot.data$FacetRow"
+        } else {
+            groupvar <- "\n    as.integer(plot.data$FacetRow) + nlevels(plot.data$FacetRow) * plot.data$FacetColumn"
+        }
+        groupvar <- paste0(",", groupvar)
     }
-    setup_cmds[["radius"]] <- width_cmd
 
-    setup_cmds[["merged"]] <- "plot.data$Marker <- seq_len(nrow(plot.data));
-combined <- merge(plot.data, summary.data, by=c('X', 'Y'), all.x=TRUE);
-o <- order(combined$Marker)
-width.x <- combined$XWidth[o];
-width.y <- combined$YWidth[o];
-plot.data$Marker <- NULL;"
-    setup_cmds[["jitter"]] <- "set.seed(100);
-plot.data$jitteredX <- as.integer(plot.data$X) + width.x*runif(nrow(plot.data), -1, 1);
-plot.data$jitteredY <- as.integer(plot.data$Y) + width.y*runif(nrow(plot.data), -1, 1);"
+    # Setting the seed to ensure reproducible results.
+    setup_cmds[["jitter"]] <- sprintf("set.seed(100);
+j.out <- jitterPoints(plot.data$X, plot.data$Y%s);
+summary.data <- j.out$summary;
+plot.data$jitteredX <- j.out$X;
+plot.data$jitteredY <- j.out$Y;", groupvar)
     return(unlist(setup_cmds))
 }
 

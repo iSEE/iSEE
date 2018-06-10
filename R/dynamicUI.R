@@ -767,14 +767,18 @@
     rowId <- paste0(mode, id, "_", .facetByRow)
     columnId <- paste0(mode, id, "_", .facetByColumn)
     tagList(
-        checkboxInput(rowId, label="Row", width = 1,
-                      value=param_choices[,.facetByRow]),
-        checkboxInput(columnId, label="Column", width = 1,
-                      value=param_choices[,.facetByColumn]),
-        selectInput(paste0(mode, id, "_", .facetRowsByColData), label = "Facet (row):",
-            choices=covariates, selected=param_choices[[.facetRowsByColData]]),
-        selectInput(paste0(mode, id, "_", .facetColumnsByColData), label = "Facet (column):",
-            choices=covariates, selected=param_choices[[.facetColumnsByColData]])
+        checkboxInput(rowId, label="Facet by row",
+                      value=param_choices[, .facetByRow]),
+        .conditional_on_check_solo(rowId, on_select=TRUE, 
+            selectInput(paste0(mode, id, "_", .facetRowsByColData), label = NULL,
+                        choices=covariates, selected=param_choices[[.facetRowsByColData]])
+        ),
+        checkboxInput(columnId, label="Facet by column",
+                      value=param_choices[, .facetByColumn]),
+        .conditional_on_check_solo(columnId, on_select=TRUE, 
+            selectInput(paste0(mode, id, "_", .facetColumnsByColData), label = NULL,
+                        choices=covariates, selected=param_choices[[.facetColumnsByColData]])
+        )
     )
 }
 
@@ -783,14 +787,18 @@
     rowId <- paste0(mode, id, "_", .facetByRow)
     columnId <- paste0(mode, id, "_", .facetByColumn)
     tagList(
-        checkboxInput(rowId, label="Row", width = 1,
-                      value=param_choices[,.facetByRow]),
-        checkboxInput(columnId, label="Column", width = 1,
-                      value=param_choices[,.facetByColumn]),
-        selectInput(paste0(mode, id, "_", .facetRowsByRowData), label = "Facet (row):",
-            choices=covariates, selected=param_choices[[.facetRowsByRowData]]),
-        selectInput(paste0(mode, id, "_", .facetColumnsByRowData), label = "Facet (column):",
-            choices=covariates, selected=param_choices[[.facetColumnsByRowData]])
+        checkboxInput(rowId, label="Facet by row",
+                      value=param_choices[, .facetByRow]),
+        .conditional_on_check_solo(rowId, on_select=TRUE, 
+            selectInput(paste0(mode, id, "_", .facetRowsByRowData), label = NULL,
+                        choices=covariates, selected=param_choices[[.facetRowsByRowData]])
+        ),
+        checkboxInput(columnId, label="Facet by column",
+                      value=param_choices[, .facetByColumn]),
+        .conditional_on_check_solo(columnId, on_select=TRUE, 
+            selectInput(paste0(mode, id, "_", .facetColumnsByRowData), label = NULL,
+                        choices=covariates, selected=param_choices[[.facetColumnsByRowData]])
+        )
     )
 }
 

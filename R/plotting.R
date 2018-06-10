@@ -1827,12 +1827,11 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     }
     
     # Note: Faceting simultaneously on row and column produces a 'flip' effect on the brush data
-    if (param_choices[[.facetByRow]] && param_choices[[.facetByRow]]) {
+    if (param_choices[[.facetByRow]] && param_choices[[.facetByColumn]]) {
         facetrow <- 'panelvar2'
         facetcolumn <- 'panelvar1'
     } else {
-        facetrow <- 'panelvar1'
-        facetcolumn <- 'panelvar2'
+        facetrow <- facetcolumn <- 'panelvar1'
     }
     
     plot_name <- rownames(param_choices)

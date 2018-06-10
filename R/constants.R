@@ -90,6 +90,16 @@
 .colorByFeatNameAssay <- "ColorByFeatNameAssay"
 .colorByFeatNameColor <- "ColorByFeatNameColor"
 
+# Point shaping parameters. ----
+
+.shapeByNothingTitle <- "None"
+.shapeByColDataTitle <- "Column data"
+.shapeByRowDataTitle <- "Row data"
+
+.shapeByField <- "ShapeBy"
+.shapeByColData <- "ShapeByColData"
+.shapeByRowData <- "ShapeByRowData"
+
 # Point selection parameters. ----
 .selectParamBoxOpen <- "SelectBoxOpen"
 
@@ -123,6 +133,7 @@
 .visualParamChoice <- "VisualChoices"
 
 .visualParamChoiceColorTitle <- "Color"
+.visualParamChoiceShapeTitle <- "Shape"
 .visualParamChoicePointTitle <- "Points"
 .visualParamChoiceFacetTitle <- "Facets"
 .visualParamChoiceOtherTitle <- "Other"

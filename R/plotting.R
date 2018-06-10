@@ -420,13 +420,17 @@ names(.all_aes_values) <- .all_aes_names
     # Adding coloring and faceting information as well.    
     if (by_row) {
         color_out <- .define_colorby_for_row_plot(param_choices, se)
+        shape_out <- .define_shapeby_for_row_plot(param_choices, se)
         facet_out <- .define_facetby_for_row_plot(param_choices, se)
     } else {
         color_out <- .define_colorby_for_column_plot(param_choices, se)
+        shape_out <- .define_shapeby_for_column_plot(param_choices, se)
         facet_out <- .define_facetby_for_column_plot(param_choices, se)
     }
     more_data_cmds[["color"]] <- color_out$cmds
     color_lab <- color_out$label
+    more_data_cmds[["shape"]] <- shape_out$cmds
+    shape_lab <- shape_out$label
 
     # Add X and Y faceting variables
     for (facet_axis in names(facet_out)){
@@ -710,6 +714,7 @@ names(.all_aes_values) <- .all_aes_names
 #'
 #' @importFrom ggplot2 ggplot coord_cartesian theme_bw theme element_text
 .scatter_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, title, by_row = FALSE, is_subsetted = FALSE, is_downsampled = FALSE) {
+    message(rownames(param_choices)); print(param_choices)
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +"
 
@@ -1301,6 +1306,65 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
             "scale_fill_gradientn(colors=%s, na.value='grey50') +",
             cm_cmd)
         ))
+    }
+}
+
+############################################
+# Internal functions: shaping ----
+############################################
+
+#' Define shaping variables 
+#'
+#' Generates the commands necessary to define the variables to shape by in the data.frame to be supplied to ggplot.
+#'
+#' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
+#' @param se A SingleCellExperiment object.
+#' 
+#' @details
+#' These functions generate commands to extract the variable to use for shaping individual points in row- or column-based plots,
+#' i.e., where each point is a feature or sample, respectively.
+#' The commands should be evaluated in the evaluation environment generated in \code{\link{.extract_plotting_data}}. 
+#'
+#' In these commands, the shaping variable is added to the \code{plot.data} data.frame in the \code{ShapeBy} field.
+#' This is distinct from \code{.add_shape_to_*_plot}, which generates the commands for shaping a ggplot by the values in \code{ColourBy}.
+#' 
+#' @return
+#' A list containing \code{label}, a string to use for labelling the shape scale;
+#' and \code{cmds}, a character vector of commands to add a \code{ColorBy} field to \code{plot.data}.
+#' Alternatively \code{NULL}, if no variable to shape by is specified.
+#'
+#' @author Kevin Rue-Albrecht
+#' @rdname INTERNAL_define_shape_variables
+#' @seealso
+#' \code{\link{.extract_plotting_data}},
+#' \code{\link{.add_shape_to_row_plot}},
+#' \code{\link{.add_shape_to_column_plot}}
+#' 
+#' @importFrom SummarizedExperiment assay
+.define_shapeby_for_column_plot <- function(param_choices, se) {
+    shape_choice <- param_choices[[.shapeByField]]
+
+    if (shape_choice==.shapeByColDataTitle) {
+        covariate_name <- param_choices[[.shapeByColData]]
+        return(list(label=covariate_name,
+                    cmds=sprintf("plot.data$ShapeBy <- colData(se)[,%s];", deparse(covariate_name))))
+  
+    } else {
+        return(NULL)
+    }
+}
+
+#' @rdname INTERNAL_define_shape_variables
+.define_shapeby_for_row_plot <- function(param_choices, se) {
+    shape_choice <- param_choices[[.shapeByField]]
+
+    if (shape_choice==.shapeByRowDataTitle) {
+        covariate_name <- param_choices[[.shapeByRowData]]
+        return(list(label=covariate_name,
+                    cmds=sprintf("plot.data$ShapeBy <- rowData(se)[,%s];", deparse(covariate_name))))
+  
+    } else {
+        return(NULL)
     }
 }
 

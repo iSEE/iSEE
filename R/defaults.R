@@ -491,6 +491,9 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.colorByField]] <- .colorByNothingTitle
     incoming[[.colorByDefaultColor]] <- "black"
     incoming[[.colorByColData]] <- def_cov
+    # shape
+    incoming[[.shapeByField]] <- .shapeByNothingTitle
+    incoming[[.shapeByColData]] <- dev_discrete
     incoming[[.colorByRowTable]] <- .noSelection 
     incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameAssay]] <- def_assay
@@ -513,6 +516,9 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.colorByField]] <- .colorByNothingTitle
     incoming[[.colorByDefaultColor]] <- "black"
     incoming[[.colorByRowData]] <- def_cov
+    # shape
+    incoming[[.shapeByField]] <- .shapeByNothingTitle
+    incoming[[.shapeByRowData]] <- dev_discrete
     incoming[[.colorByRowTable]] <- .noSelection 
     incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameColor]] <- "red"

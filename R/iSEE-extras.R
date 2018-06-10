@@ -233,6 +233,7 @@
     col_pchoices <- .define_visual_options(col_groupable) 
     for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot")) {
         memory[[mode]][, .colorByColData] <- .helper(memory[[mode]][, .colorByColData], colnames(colData(se)))
+        memory[[mode]][, .shapeByColData] <- .helper(memory[[mode]][, .colorByColData], col_groupable)
         memory[[mode]][, .facetByRow] <- .helper(memory[[mode]][, .facetByRow], c(TRUE, FALSE))
         memory[[mode]][, .facetByColumn] <- .helper(memory[[mode]][, .facetByColumn], c(TRUE, FALSE))
         memory[[mode]][, .facetByRowColData] <- .helper(memory[[mode]][, .facetByRowColData], col_groupable)
@@ -243,6 +244,7 @@
 
     mode <- "rowDataPlot"
     memory[[mode]][, .colorByRowData] <- .helper(memory[[mode]][, .colorByRowData], colnames(rowData(se)))
+    memory[[mode]][, .shapeByRowData] <- .helper(memory[[mode]][, .shapeByRowData], row_groupable)
     memory[[mode]][, .facetByRow] <- .helper(memory[[mode]][, .facetByRow], c(TRUE, FALSE)) # same as column plots above, join?
     memory[[mode]][, .facetByColumn] <- .helper(memory[[mode]][, .facetByColumn], c(TRUE, FALSE)) # same as column plots above, join?
     memory[[mode]][, .facetByRowRowData] <- .helper(memory[[mode]][, .facetByRowRowData], row_groupable)

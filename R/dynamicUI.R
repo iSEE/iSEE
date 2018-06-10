@@ -487,6 +487,7 @@
     all_assays <- .get_internal_info(se, "all_assays")
 
     colorby_field <- paste0(mode, id, "_", .colorByField)
+    shapeby_field <- paste0(mode, id, "_", .shapeByField)
     pchoice_field <- paste0(mode, id, "_", .visualParamChoice)
 
     collapseBox(
@@ -516,6 +517,22 @@
                                     choices=all_assays, selected=param_choices[[.colorByFeatNameAssay]])),
                         selectInput(paste0(mode, id, "_", .colorByRowTable), label = NULL, choices=active_tab,
                                     selected=.choose_link(param_choices[[.colorByRowTable]], active_tab, force_default=TRUE))
+                )
+            ),
+        .conditional_on_check_group(pchoice_field, .visualParamChoiceShapeTitle,
+            hr(),
+            radioButtons(shapeby_field, label="Shape by:", inline=TRUE,
+                         choices=.define_shape_options_for_column_plots(se),
+                         selected=param_choices[[.shapeByField]]
+                ),
+            # TODO: fixed selection of default shapes?
+            # .conditional_on_radio(shapeby_field, .shapeByNothingTitle,
+            #     colourInput(paste0(mode, id, "_", .shapeByDefaultShape), label=NULL,
+            #                 value=param_choices[[.shapeByDefaultShape]])
+            #     ),
+            .conditional_on_radio(shapeby_field, .shapeByColDataTitle,
+                selectInput(paste0(mode, id, "_", .shapeByColData), label = NULL,
+                            choices=discrete_covariates, selected=param_choices[[.shapeByColData]])
                 )
             ),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceFacetTitle,
@@ -554,6 +571,33 @@
     return(color_choices)
 }
 
+#' Define shaping options
+#' 
+#' Define the available shaping options for row- or column-based plots, 
+#' where availability is defined on the presence of the appropriate data in a SingleCellExperiment object.
+#'
+#' @param se A SingleCellExperiment object.
+#'
+#' @details
+#' Shaping by column data is not available if no column data exists in \code{se} - same for the row data.
+#' For column plots, we have an additional requirement that there must also be assays in \code{se} to shape by features.
+#'
+#' @return A character vector of available shaping modes, i.e., nothing or by column/row data
+#'
+#' @author Kevin Rue-Albrecht
+#' @rdname INTERNAL_define_shape_options
+.define_shape_options_for_column_plots <- function(se) {
+    shape_choices <- .shapeByNothingTitle
+    
+    col_groupable <- .get_internal_info(se, "column_groupable")
+    
+    if (length(col_groupable)) {
+        shape_choices <- c(shape_choices, .shapeByColDataTitle)
+    }
+    
+    return(shape_choices)
+}
+
 #' Define visual parameter check options
 #'
 #' Define the available visual parameter check boxes that can be ticked.
@@ -571,7 +615,7 @@
 .define_visual_options <- function(discrete_covariates) {
     pchoices <- c(.visualParamChoiceColorTitle, .visualParamChoicePointTitle)
     if (length(discrete_covariates)) {
-        pchoices <- c(pchoices, .visualParamChoiceFacetTitle)
+        pchoices <- c(pchoices, .visualParamChoiceShapeTitle, .visualParamChoiceFacetTitle)
     } 
     pchoices <- c(pchoices, .visualParamChoiceOtherTitle)
     return(pchoices)
@@ -617,6 +661,7 @@
     discrete_covariates <- .get_internal_info(se, "row_groupable")
 
     colorby_field <- paste0(mode, id, "_", .colorByField)
+    shapeby_field <- paste0(mode, id, "_", .shapeByField)
     pchoice_field <- paste0(mode, id, "_", .visualParamChoice)
 
     collapseBox(
@@ -647,6 +692,22 @@
                                     value=param_choices[[.colorByFeatNameColor]]))
                 )
             ),
+        .conditional_on_check_group(pchoice_field, .visualParamChoiceShapeTitle,
+            hr(),
+            radioButtons(shapeby_field, label="Shape by:", inline=TRUE,
+                         choices=.define_shape_options_for_row_plots(se),
+                         selected=param_choices[[.shapeByField]]
+                ),
+            # TODO: fixed selection of default shapes?
+            # .conditional_on_radio(shapeby_field, .shapeByNothingTitle,
+            #     colourInput(paste0(mode, id, "_", .shapeByDefaultShape), label=NULL,
+            #                 value=param_choices[[.shapeByDefaultShape]])
+            #     ),
+            .conditional_on_radio(shapeby_field, .shapeByRowDataTitle,
+                selectInput(paste0(mode, id, "_", .shapeByRowData), label = NULL,
+                            choices=discrete_covariates, selected=param_choices[[.shapeByRowData]])
+                )
+            ),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceFacetTitle,
             hr(), .add_facet_UI_elements_for_row_plots(mode, id, param_choices, discrete_covariates)),
         .conditional_on_check_group(pchoice_field, .visualParamChoicePointTitle,
@@ -666,6 +727,19 @@
         color_choices <- c(color_choices, .colorByFeatNameTitle)
     }
     return(color_choices)
+}
+
+#' @rdname INTERNAL_define_shape_options
+.define_shape_options_for_row_plots <- function(se) {
+    shape_choices <- .shapeByNothingTitle
+    
+    row_groupable <- .get_internal_info(se, "row_groupable")
+    
+    if (length(row_groupable)) {
+        shape_choices <- c(shape_choices, .shapeByRowDataTitle)
+    }
+    
+    return(shape_choices)
 }
 
 #' Faceting visual parameters 

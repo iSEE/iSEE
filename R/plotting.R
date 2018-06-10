@@ -719,7 +719,8 @@ names(.all_aes_values) <- .all_aes_names
 
     # Adding points to the plot.
     color_set <- !is.null(plot_data$ColorBy)
-    new_aes <- .build_aes(color = color_set)
+    shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
+    new_aes <- .build_aes(color = color_set, shape = shape_set)
     plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set)
 
     # Defining the color commands.

@@ -993,7 +993,8 @@ plot.data$Y <- tmp;")
 
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)
-    new_aes <- .build_aes(color = color_set, alt=c(x="jitteredX", y="jitteredY"))
+    shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
+    new_aes <- .build_aes(color = color_set, shape = shape_set, alt=c(x="jitteredX", y="jitteredY"))
     plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set)
 
     # Defining the color commands.

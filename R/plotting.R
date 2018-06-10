@@ -1753,7 +1753,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' @importFrom ggplot2 facet_grid
 .add_facets <- function(param_choices){
     
-    if (!param_choices[[.facetByRow]] && !param_choices[[.facetByRow]]) {
+    if (!param_choices[[.facetByRow]] && !param_choices[[.facetByColumn]]) {
         return(NULL)
     }
     

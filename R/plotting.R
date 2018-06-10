@@ -1720,13 +1720,13 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 .define_facetby_for_row_plot <- function(param_choices, se) {
     facet_cmds <- c()
     
-    facet_row <- param_choices[[.facetByRowColData]]
+    facet_row <- param_choices[[.facetByRowRowData]]
     if (param_choices[[.facetByRow]]) {
         facet_cmds["FacetRow"] <- sprintf(
             "plot.data$FacetRow <- rowData(se)[,%s];", deparse(facet_row))
     }
     
-    facet_column <- param_choices[[.facetByColumnColData]]
+    facet_column <- param_choices[[.facetByColumnRowData]]
     if (param_choices[[.facetByColumn]]) {
         facet_cmds["FacetColumn"] <- sprintf(
             "plot.data$FacetColumn <- rowData(se)[,%s];", deparse(facet_column))

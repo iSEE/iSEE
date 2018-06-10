@@ -245,8 +245,8 @@
     memory[[mode]][, .colorByRowData] <- .helper(memory[[mode]][, .colorByRowData], colnames(rowData(se)))
     memory[[mode]][, .facetByRow] <- .helper(memory[[mode]][, .facetByRow], c(TRUE, FALSE)) # same as column plots above, join?
     memory[[mode]][, .facetByColumn] <- .helper(memory[[mode]][, .facetByColumn], c(TRUE, FALSE)) # same as column plots above, join?
-    memory[[mode]][, .facetByRowColData] <- .helper(memory[[mode]][, .facetByRowColData], row_groupable)
-    memory[[mode]][, .facetByColumnColData] <- .helper(memory[[mode]][, .facetByColumnColData], row_groupable)
+    memory[[mode]][, .facetByRowRowData] <- .helper(memory[[mode]][, .facetByRowRowData], row_groupable)
+    memory[[mode]][, .facetByColumnRowData] <- .helper(memory[[mode]][, .facetByColumnRowData], row_groupable)
     memory[[mode]][, .colorByField] <- .helper(memory[[mode]][, .colorByField], .define_color_options_for_row_plots(se))
     memory[[mode]][[.visualParamChoice]] <- lapply(memory[[mode]][,.visualParamChoice], intersect, y=.define_visual_options(row_groupable))
 

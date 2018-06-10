@@ -1127,7 +1127,7 @@ iSEE <- function(se,
                             redDimPlot=c(.redDimXAxis, .redDimYAxis, .facetByRow, .facetByColumn, .facetByRowColData, .facetByColumnColData),
                             colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, .facetByRow, .facetByColumn, .facetByRowColData, .facetByColumnColData),
                             featAssayPlot=c(.featAssayAssay, .featAssayXAxisColData, .facetByRow, .facetByColumn, .facetByRowColData, .facetByColumnColData),
-                            rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData, .facetByRow, .facetByColumn, .facetByRowColData, .facetByColumnColData),
+                            rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData, .facetByRow, .facetByColumn, .facetByRowRowData, .facetByColumnRowData),
                             customColPlot=.customColFun)
 
         # Defining non-fundamental parameters that do not destroy brushes/lassos.

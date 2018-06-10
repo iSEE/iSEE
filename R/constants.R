@@ -69,6 +69,8 @@
 .facetByColumn <- "FacetByColumn"
 
 # Fields holding the covariate to facet by
+.facetByRowRowData <- "RowFacetRowData"
+.facetByColumnRowData <- "ColumnFacetRowData"
 .facetByRowColData <- "RowFacetColData"
 .facetByColumnColData <- "ColumnFacetColData"
 

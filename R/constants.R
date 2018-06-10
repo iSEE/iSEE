@@ -65,7 +65,8 @@
 # Faceting parameters ----
 
 # Logical fields whether to facet
-.facetBy <- "FacetBy"
+.facetByRow <- "FacetByRow"
+.facetByColumn <- "FacetByColumn"
 
 # Fields holding the covariate to facet by
 .facetByRowColData <- "RowFacetColData"

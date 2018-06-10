@@ -494,7 +494,8 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.colorByRowTable]] <- .noSelection 
     incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameAssay]] <- def_assay
-    incoming[[.facetBy]] <- rep(list(NULL), nrow(incoming))
+    incoming[[.facetByRow]] <- FALSE
+    incoming[[.facetByColumn]] <- FALSE
     # TODO: set to first groupable field, if any
     incoming[[.facetByRowColData]] <- dev_discrete
     incoming[[.facetByColumnColData]] <- dev_discrete
@@ -515,7 +516,8 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.colorByRowTable]] <- .noSelection 
     incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameColor]] <- "red"
-    incoming[[.facetBy]] <- rep(list(NULL), nrow(incoming))
+    incoming[[.facetByRow]] <- FALSE
+    incoming[[.facetByColumn]] <- FALSE
     # TODO: set to first groupable field, if any
     incoming[[.facetByRowColData]] <- dev_discrete
     incoming[[.facetByColumnColData]] <- dev_discrete

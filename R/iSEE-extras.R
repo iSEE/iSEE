@@ -233,7 +233,8 @@
     col_pchoices <- .define_visual_options(col_groupable) 
     for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot")) {
         memory[[mode]][, .colorByColData] <- .helper(memory[[mode]][, .colorByColData], colnames(colData(se)))
-        memory[[mode]][[.facetBy]] <- lapply(memory[[mode]][, .facetBy], intersect, y=facet_pchoices) # intersecting with available choices.
+        memory[[mode]][, .facetByRow] <- .helper(memory[[mode]][, .facetByRow], c(TRUE, FALSE))
+        memory[[mode]][, .facetByColumn] <- .helper(memory[[mode]][, .facetByColumn], c(TRUE, FALSE))
         memory[[mode]][, .facetByRowColData] <- .helper(memory[[mode]][, .facetByRowColData], col_groupable)
         memory[[mode]][, .facetByColumnColData] <- .helper(memory[[mode]][, .facetByColumnColData], col_groupable)
         memory[[mode]][, .colorByField] <- .helper(memory[[mode]][, .colorByField], color_choices)
@@ -242,7 +243,8 @@
 
     mode <- "rowDataPlot"
     memory[[mode]][, .colorByRowData] <- .helper(memory[[mode]][, .colorByRowData], colnames(rowData(se)))
-    memory[[mode]][[.facetBy]] <- lapply(memory[[mode]][,.facetBy], intersect, y=facet_pchoices) # intersecting with available choices (Note: same command as colDataPlots - join?).
+    memory[[mode]][, .facetByRow] <- .helper(memory[[mode]][, .facetByRow], c(TRUE, FALSE)) # same as column plots above, join?
+    memory[[mode]][, .facetByColumn] <- .helper(memory[[mode]][, .facetByColumn], c(TRUE, FALSE)) # same as column plots above, join?
     memory[[mode]][, .facetByRowColData] <- .helper(memory[[mode]][, .facetByRowColData], row_groupable)
     memory[[mode]][, .facetByColumnColData] <- .helper(memory[[mode]][, .facetByColumnColData], row_groupable)
     memory[[mode]][, .colorByField] <- .helper(memory[[mode]][, .colorByField], .define_color_options_for_row_plots(se))
@@ -255,14 +257,16 @@
     if (length(col_groupable) == 0L) {
         for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot")) {
             if (feasibility[[mode]]) {
-                memory[[mode]][, .facetBy] <- c()
+                memory[[mode]][, .facetByRow] <- FALSE
+                memory[[mode]][, .facetByColumn] <- FALSE
             }
         }
     }
     mode <- "rowDataPlot"
     if (length(row_groupable) == 0L) {
         if (feasibility[[mode]]) {
-            memory[[mode]][, .facetBy] <- c()
+            memory[[mode]][, .facetByRow] <- FALSE
+            memory[[mode]][, .facetByColumn] <- FALSE
         }
     }
 

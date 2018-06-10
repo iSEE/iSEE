@@ -936,7 +936,7 @@ plot.data$Y <- tmp;")
     # for consistency with geom_violin (differs from geom_quasirandom default).
     setup_cmds[["seed"]] <- "set.seed(100);"
     setup_cmds[["calcX"]] <- sprintf(
-"plot.data$jitteredX <- iSEE:::jitterPoints(plot.data$X, plot.data$Y, %s
+"plot.data$jitteredX <- iSEE::jitterViolinPoints(plot.data$X, plot.data$Y, %s
     width=0.4, varwidth=FALSE, adjust=1,
     method='quasirandom', nbins=NULL);", groupvar)
 
@@ -1078,7 +1078,7 @@ plot.data$Y <- tmp;")
 
     # Setting the seed to ensure reproducible results.
     setup_cmds[["jitter"]] <- sprintf("set.seed(100);
-j.out <- iSEE:::jitterPoints(plot.data$X, plot.data$Y%s);
+j.out <- iSEE:::jitterSquarePoints(plot.data$X, plot.data$Y%s);
 summary.data <- j.out$summary;
 plot.data$jitteredX <- j.out$X;
 plot.data$jitteredY <- j.out$Y;", groupvar)

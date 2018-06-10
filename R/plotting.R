@@ -756,7 +756,7 @@ names(.all_aes_values) <- .all_aes_names
     plot_cmds[["scale_color"]] <- color_scale_cmd
     plot_cmds[["theme_base"]] <- "theme_bw() +"
     plot_cmds[["theme_custom"]] <- sprintf(
-        "theme(legend.position = '%s', legend.text=element_text(size=%s), legend.title=element_text(size=%s),
+        "theme(legend.position = '%s', legend.box = 'vertical', legend.text=element_text(size=%s), legend.title=element_text(size=%s),
         axis.text=element_text(size=%s), axis.title=element_text(size=%s), title=element_text(size=%s))",
         tolower(param_choices[[.plotLegendPosition]]),
         param_choices[[.plotFontSize]]*.plotFontSizeLegendTextDefault,

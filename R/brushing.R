@@ -289,7 +289,7 @@
         return(TRUE)       
     } 
     lasso <- memory[[mode]][,.lassoData][[id]]
-    if (!is.null(lasso) && attr(lasso, "closed")) {
+    if (!is.null(lasso) && lasso$closed) {
         return(TRUE)
     }
     return(FALSE)

@@ -647,7 +647,7 @@ height_limits <- c(400L, 1000L)
 #' @importFrom S4Vectors DataFrame 
 .get_selected_points <- function(names, transmitter, all_memory, all_coordinates) {
     dummy <- DataFrame(transmitter, .selectColorTitle) 
-    rownames(dummy) <- paste0("__", transmitter) # can never match transmitter; avoids using "plot.data" in .process_selectby_choice().
+    rownames(dummy) <- paste0("__", transmitter) # can never match transmitter; avoids using "plot.data" as the source in .process_selectby_choice().
     colnames(dummy) <- c(.selectByPlot, .selectEffect)
 
     selected <- .process_selectby_choice(dummy, all_memory)

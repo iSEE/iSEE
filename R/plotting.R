@@ -1443,30 +1443,19 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     
         } else {
             lasso_val <- all_memory[[select_by$Type]][,.lassoData][[select_by$ID]]
-            closed <- attr(lasso_val, "closed")
-        
-            if (!is.null(lasso_val) && closed) { 
-                flipped <- attr(lasso_val, "flipped")
-                if (flipped) {
-                    v1 <- "Y"
-                    v2 <- "X"
-                } else {
-                    v1 <- "X"
-                    v2 <- "Y"
-                }
-                
+            if (!is.null(lasso_val) && lasso_val$closed) { 
                 select_obj[[transmitter]] <- lasso_val
-                cmds[["lasso"]] <- sprintf("selected_pts <- mgcv::in.out(all_lassos[['%s']], cbind(as.numeric(%s$%s), as.numeric(%s$%s)))",
-                                           transmitter, source_data, v1, source_data, v2)
+                cmds[["lasso"]] <- sprintf("selected_pts <- mgcv::in.out(all_lassos[['%s']]$coord, cbind(as.numeric(%s$%s), as.numeric(%s$%s)))",
+                                           transmitter, source_data, lasso_val$mapping$x, source_data, lasso_val$mapping$y)
                 cmds[["select"]] <- sprintf("plot.data$SelectBy <- rownames(plot.data) %%in%% rownames(%s)[selected_pts]", source_data)
             }
         }
 
         if (length(select_obj) && param_choices[[.selectEffect]]==.selectRestrictTitle) {
-          # Duplicate plot.data before selecting points, to make sure that axes are retained
-          # even in case of an empty selected subset.
-          cmds[["saved"]] <- "plot.data.all <- plot.data;"
-          cmds[["subset"]] <- "plot.data <- subset(plot.data, SelectBy);"
+            # Duplicate plot.data before selecting points, to make sure that axes are retained
+            # even in case of an empty selected subset.
+            cmds[["saved"]] <- "plot.data.all <- plot.data;"
+            cmds[["subset"]] <- "plot.data <- subset(plot.data, SelectBy);"
         }
     }
 
@@ -1978,16 +1967,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     if (is.null(current) || !is.null(param_choices[,.brushData][[1]])) {
         return(NULL)
     }
-    is_closed <- attr(current, "closed")
-  
-    if (flip) {
-        x <- "y"
-        y <- "x"
-    } else {
-        x <- "x"
-        y <- "y"
-    }
-  
+
     plot_name <- rownames(param_choices)
     enc <- .split_encoded(plot_name)
     stroke_color <- panel_colors[enc$Type]
@@ -1995,18 +1975,18 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
  
     if (identical(nrow(current), 1L)) { # lasso has only a start point
       point_cmd <- sprintf("geom_point(aes(x = %s, y = %s), 
-    data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2]),
+    data=data.frame(X = all_lassos[['%s']]$coord[,1], Y = all_lassos[['%s']]$coord[,2]),
     inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s', shape = %s)",
-        x, y, plot_name, plot_name, stroke_color,
+        current$mapping$x, current$mapping$y, plot_name, plot_name, stroke_color,
         .lassoStartShape)
       full_cmd_list <- list(point_cmd)
       
-    } else if (is_closed){ # lasso is closed
+    } else if (current$closed){ # lasso is closed
       polygon_cmd <- sprintf(
 "geom_polygon(aes(x = %s, y = %s), alpha=%s, color='%s', 
-    data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2]), 
+    data=data.frame(X = all_lassos[['%s']]$coord[,1], Y = all_lassos[['%s']]$coord[,2]), 
     inherit.aes=FALSE, fill = '%s')", 
-          x, y ,
+          current$mapping$x, current$mapping$y,
           .brushFillOpacity, stroke_color,
           plot_name, plot_name, fill_color)
     
@@ -2019,15 +1999,17 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 
     } else { # lasso is still open
       path_cmd <- sprintf("geom_path(aes(x = %s, y = %s), 
-    data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2]),
+    data=data.frame(X = all_lassos[['%s']]$coord[,1], Y = all_lassos[['%s']]$coord[,2]), 
     inherit.aes=FALSE, alpha=1, color='%s', linetype = 'longdash')", 
-        x, y, plot_name, plot_name, stroke_color)
+        current$mapping$x, current$mapping$y,
+        plot_name, plot_name, stroke_color)
     
         point_cmd <- sprintf("geom_point(aes(x = %s, y = %s, shape = First), 
-    data=data.frame(x = all_lassos[['%s']][,1], y = all_lassos[['%s']][,2], 
-                    First = seq_len(nrow(all_lassos[['%s']]))==1L),
+    data=data.frame(X = all_lassos[['%s']]$coord[,1], Y = all_lassos[['%s']]$coord[,2], 
+                    First = seq_len(nrow(all_lassos[['%s']]$coord))==1L),
     inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s')",
-        x, y, plot_name, plot_name, plot_name, stroke_color)
+            current$mapping$x, current$mapping$y,
+            plot_name, plot_name, plot_name, stroke_color)
 
         scale_shape_cmd <- sprintf(
           "scale_shape_manual(values = c('TRUE' = %s, 'FALSE' = %s))",

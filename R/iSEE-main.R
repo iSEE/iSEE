@@ -892,49 +892,25 @@ iSEE <- function(se,
                 id0 <- id
                 plot_name <- paste0(mode0, id0)
                 prefix <- paste0(plot_name, "_")
-
                 click_field <- paste0(prefix, .lassoClick)
-                observeEvent(input[[click_field]], {
-                    cur_click <- input[[click_field]]
-                    previous <- pObjects$memory[[mode0]][,.lassoData][[id0]]
-                    bump_children <- FALSE
+                brush_field <- paste0(prefix, .brushField)
 
+                observeEvent(input[[click_field]], {
                     # Don't add to waypoints if a Shiny brush exists in memory (as they are mutually exclusive).
-                    if (!is.null(pObjects$memory[[mode0]][,.brushData][[id0]]) ||
-                        !is.null(input[[paste0(prefix, .brushField)]])) {
+                    if (!is.null(pObjects$memory[[mode0]][,.brushData][[id0]]) || !is.null(input[[brush_field]])) {
                         return(NULL)
                     }
 
-                    # Closing the lasso if you click close to the starting point.
-                    xrange <- cur_click$domain$right - cur_click$domain$left
-                    yrange <- cur_click$domain$top - cur_click$domain$bottom
-                    if (!is.null(previous)
-                        && abs(cur_click$x - previous[1,1]) < xrange/100
-                        && abs(cur_click$y - previous[1,2]) < yrange/100) {
-                        updated <- rbind(previous, previous[1,])
-                        attr(updated, "closed") <- TRUE
-                        bump_children <- TRUE
-
-                        # Checking out whether coordinates are flipped.
-                        attr(updated, "flipped") <- (cur_click$mapping$x=="Y" && cur_click$mapping$y=="X")
-
-                    } else {
-                        is_closed <- attr(previous, "closed")
-                        if (!is.null(is_closed) && is_closed) {
-                            previous <- NULL
-                            bump_children <- TRUE
-                        }
-                        updated <- rbind(previous, c(cur_click$x, cur_click$y))
-                        attr(updated, "closed") <- FALSE
-                    }
-
-                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .lassoData, updated)
+                    prev_lasso <- pObjects$memory[[mode0]][,.lassoData][[id0]]
+                    was_closed <- if(is.null(prev_lasso)) FALSE else prev_lasso$closed
+                    new_lasso <- .update_lasso(input[[click_field]], prev_lasso)
+                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .lassoData, new_lasso)
 
                     # Trigger replotting of self, to draw the lasso waypoints.
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
 
                     # Trigger replotting of child panels that receive point selection information.
-                    if (bump_children) {
+                    if (new_lasso$closed != was_closed) {
                         children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
                         for (child_plot in children) {
                             rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))

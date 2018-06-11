@@ -1435,19 +1435,15 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
         brush_val <- all_memory[[select_by$Type]][,.brushData][[select_by$ID]]
         if (!is.null(brush_val)) {
             select_obj[[transmitter]] <- brush_val
-            cmds[["brush"]] <- sprintf(
-                "selected_pts <- shiny::brushedPoints(%s, all_brushes[['%s']])",
-                source_data, transmitter)
-            cmds[["select"]] <-
-              "plot.data$SelectBy <- rownames(plot.data) %in% rownames(selected_pts);"
+            cmds[["brush"]] <- sprintf("selected_pts <- shiny::brushedPoints(%s, all_brushes[['%s']])", source_data, transmitter)
+            cmds[["select"]] <- "plot.data$SelectBy <- rownames(plot.data) %in% rownames(selected_pts);"
     
         } else {
             lasso_val <- all_memory[[select_by$Type]][,.lassoData][[select_by$ID]]
             if (!is.null(lasso_val) && lasso_val$closed) { 
                 select_obj[[transmitter]] <- lasso_val
-                cmds[["lasso"]] <- sprintf("selected_pts <- mgcv::in.out(all_lassos[['%s']]$coord, cbind(as.numeric(%s$%s), as.numeric(%s$%s)))",
-                                           transmitter, source_data, lasso_val$mapping$x, source_data, lasso_val$mapping$y)
-                cmds[["select"]] <- sprintf("plot.data$SelectBy <- rownames(plot.data) %%in%% rownames(%s)[selected_pts]", source_data)
+                cmds[["lasso"]] <- sprintf("selected_pts <- lassoPoints(%s, all_lassos[['%s']]);", source_data, transmitter)
+                cmds[["select"]] <- sprintf("plot.data$SelectBy <- rownames(plot.data) %%in%% rownames(selected_pts)", source_data)
             }
         }
 

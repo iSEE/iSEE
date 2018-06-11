@@ -46,13 +46,14 @@ To avoid clashes with existing fields, the names in \code{grouping} should not b
 \examples{
 X <- factor(sample(LETTERS[1:4], 100, replace=TRUE))
 Y <- rnorm(100)
-(out1 <- jitterPoints(X=X, Y=Y))
+(out1 <- jitterViolinPoints(X=X, Y=Y))
 
 Y2 <- factor(sample(letters[1:3], 100, replace=TRUE))
-(out2 <- jitterPoints(X=X, Y=Y))
+(out2 <- jitterSquarePoints(X=X, Y=Y))
 
 grouped <- sample(5, 100, replace=TRUE)
-(out3 <- jitterPoints(X=X, Y=Y, grouping=list(FacetRow=grouped)))
+(out3 <- jitterViolinPoints(X=X, Y=Y, grouping=list(FacetRow=grouped)))
+(out4 <- jitterSquarePoints(X=X, Y=Y2, grouping=list(FacetRow=grouped)))
 }
 \author{
 Aaron Lun

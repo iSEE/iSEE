@@ -38,13 +38,14 @@
 #' @examples
 #' X <- factor(sample(LETTERS[1:4], 100, replace=TRUE))
 #' Y <- rnorm(100)
-#' (out1 <- jitterPoints(X=X, Y=Y))
+#' (out1 <- jitterViolinPoints(X=X, Y=Y))
 #' 
 #' Y2 <- factor(sample(letters[1:3], 100, replace=TRUE))
-#' (out2 <- jitterPoints(X=X, Y=Y))
+#' (out2 <- jitterSquarePoints(X=X, Y=Y))
 #'
 #' grouped <- sample(5, 100, replace=TRUE)
-#' (out3 <- jitterPoints(X=X, Y=Y, grouping=list(FacetRow=grouped)))
+#' (out3 <- jitterViolinPoints(X=X, Y=Y, grouping=list(FacetRow=grouped)))
+#' (out4 <- jitterSquarePoints(X=X, Y=Y2, grouping=list(FacetRow=grouped)))
 jitterSquarePoints <- function(X, Y, grouping=NULL) {
     by_group <- .define_groups(X, Y, grouping)
     jittered_X <- jittered_Y <- numeric(length(Y))
@@ -70,7 +71,6 @@ jitterSquarePoints <- function(X, Y, grouping=NULL) {
 
         current$Marker <- seq_len(nrow(current))
         combined <- merge(current, summary_data, by=c('X', 'Y'), all_x=TRUE)
-
         o <- order(combined$Marker)
         width_x <- combined$XWidth[o]
         width_y <- combined$YWidth[o]
@@ -116,9 +116,9 @@ jitterViolinPoints <- function(X, Y, grouping=NULL, ...) {
     if (nvals) {
         for (grp in grouping) {
             grp <- grp[o]
-                is_first <- is_first | c(TRUE, grp[-1]!=grp[-nvals])
+            is_first <- is_first | c(TRUE, grp[-1]!=grp[-nvals])
         }
     }
     overall_group <- cumsum(is_first)
-    by_group <- split(o, overall_group)
+    split(o, overall_group)
 }

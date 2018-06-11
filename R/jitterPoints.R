@@ -47,6 +47,13 @@
 #' (out3 <- jitterViolinPoints(X=X, Y=Y, grouping=list(FacetRow=grouped)))
 #' (out4 <- jitterSquarePoints(X=X, Y=Y2, grouping=list(FacetRow=grouped)))
 jitterSquarePoints <- function(X, Y, grouping=NULL) {
+    if (!is.factor(Y)) {
+        stop("'Y' should be a factor")
+    }
+    if (!is.factor(X)) {
+        stop("'X' should be a factor")
+    }
+
     by_group <- .define_groups(X, Y, grouping)
     jittered_X <- jittered_Y <- numeric(length(Y))
     all_summary <- vector("list", length(by_group))
@@ -56,7 +63,11 @@ jitterSquarePoints <- function(X, Y, grouping=NULL) {
         grp <- by_group[[g]]
 		current <- data.frame(X=X[grp], Y=Y[grp])
 		summary_data <- as.data.frame(table(X=current$X, Y=current$Y))
-		norm_freq <- summary_data$Freq / max(summary_data$Freq)
+
+        norm_freq <- summary_data$Freq / max(summary_data$Freq)
+        if (all(is.na(norm_freq))) {
+            norm_freq <- numeric(nrow(summary_data))
+        }
 
         # Collapsing to a bar plot if there is only one level on either axis.
     	if (nlevels(Y)==1L && nlevels(X)!=1L) {
@@ -66,7 +77,7 @@ jitterSquarePoints <- function(X, Y, grouping=NULL) {
             summary_data$XWidth <- 0.49 * norm_freq
             summary_data$YWidth <- 0.4
         } else {
-            summary_data$XWidth <- summary_data$YWidth <- 0.49 * norm_freq
+            summary_data$XWidth <- summary_data$YWidth <- 0.49 * sqrt(norm_freq)
         }
 
         current$Marker <- seq_len(nrow(current))
@@ -93,6 +104,13 @@ jitterSquarePoints <- function(X, Y, grouping=NULL) {
 #' @rdname jitterPoints
 #' @importFrom vipor offsetX
 jitterViolinPoints <- function(X, Y, grouping=NULL, ...) {
+    if (!is.numeric(Y)) {
+        stop("'Y' should be numeric")
+    }
+    if (!is.factor(X)) {
+        stop("'X' should be a factor")
+    }
+
     jittered_X <- numeric(length(Y))
     by_group <- .define_groups(X, Y, grouping)
     for (g in by_group) {
@@ -119,6 +137,8 @@ jitterViolinPoints <- function(X, Y, grouping=NULL, ...) {
             is_first <- is_first | c(TRUE, grp[-1]!=grp[-nvals])
         }
     }
+
     overall_group <- cumsum(is_first)
-    split(o, overall_group)
+    by.group <- split(o, overall_group)
+    unname(by.group)
 }

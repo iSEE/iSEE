@@ -25,26 +25,26 @@
 #' @rdname INTERNAL_update_lasso
 .update_lasso <- function(click, previous=NULL, tol=0.01) {
     new_lasso <- list(lasso=NULL, closed=FALSE, panelvar1=click$panelvar1, 
-                      panelvar2=click$panelvar2, mapping=click$mapping)
-
+        panelvar2=click$panelvar2, mapping=click$mapping)
+    
     if (!is.null(previous)) {
         # Closing the lasso if you click close to the starting point, within the same facet.
         xrange <- click$domain$right - click$domain$left
         yrange <- click$domain$top - click$domain$bottom
-
+        
         if (abs(click$x - previous$coord[1,1]) < xrange * tol
-                && abs(click$y - previous$coord[1,2]) < yrange * tol
-                && identical(previous$panelvar1, click$panelvar1) # okay for both to be NULL.
-                && identical(previous$panelvar2, click$panelvar2)
-            ) {
+            && abs(click$y - previous$coord[1,2]) < yrange * tol
+            && identical(previous$panelvar1, click$panelvar1) # okay for both to be NULL.
+            && identical(previous$panelvar2, click$panelvar2)
+        ) {
             
             new_lasso$coord <- rbind(previous$coord, previous$coord[1,])
             new_lasso$closed <- TRUE
         } else {
             # Adding a waypoint, but only to an existing open lasso, otherwise using NULL.
             if (!previous$closed 
-                    && identical(previous$panelvar1, click$panelvar1) 
-                    && identical(previous$panelvar2, click$panelvar2) ) {
+                && identical(previous$panelvar1, click$panelvar1) 
+                && identical(previous$panelvar2, click$panelvar2) ) {
                 new_lasso$coord <- previous$coord
             }
             new_lasso$coord <- rbind(new_lasso$coord, c(click$x, click$y))
@@ -52,7 +52,7 @@
     } else {
         new_lasso$coord <- cbind(click$x, click$y)
     }
-  
+    
     return(new_lasso)
 }
 
@@ -96,7 +96,7 @@ lassoPoints <- function(df, lasso) {
     if (!lasso$closed) {
         stop("cannot find points in open lasso")
     }
-
+    
     keep <- !logical(nrow(df))
     if (!is.null(lasso$panelvar1)) {
         keep <- keep & df[[lasso$mapping$panelvar1]]==lasso$panelvar1
@@ -104,7 +104,7 @@ lassoPoints <- function(df, lasso) {
     if (!is.null(lasso$panelvar2)) {
         keep <- keep & df[[lasso$mapping$panelvar2]]==lasso$panelvar2
     }
-
+    
     retained <- in.out(lasso$coord, cbind(
         as.numeric(df[[lasso$mapping$x]][keep]),
         as.numeric(df[[lasso$mapping$y]][keep])

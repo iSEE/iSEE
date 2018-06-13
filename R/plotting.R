@@ -935,12 +935,12 @@ plot.data$Y <- tmp;")
     # Handling the specification of the jitter-by-group argument.
     groupvar <- ""
     if (!is.null(plot_data$FacetRow) || !is.null(plot_data$FacetColumn)) {
-        group_var <- character(0)
+        groupvar <- character(0)
         if (!is.null(plot_data$FacetRow)) {
-            groupvar <- c(group_var, "FacetRow=plot.data$FacetRow")
+            groupvar <- c(groupvar, "FacetRow=plot.data$FacetRow")
         } 
         if (!is.null(plot_data$FacetColumn)) {
-            groupvar <- c(group_var, "FacetColumn=plot.data$FacetColumn")
+            groupvar <- c(groupvar, "FacetColumn=plot.data$FacetColumn")
         }
         groupvar <- paste0("\n    list(", paste(groupvar, collapse=", "), "),")
     }

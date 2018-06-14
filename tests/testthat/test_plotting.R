@@ -878,12 +878,6 @@ test_that(".process_colorby_choice_for_column_plots handles gene text input", {
         fixed = TRUE
     )
     
-    expect_match(
-        color_add[2],
-        "scale_fill_gradientn",
-        fixed = TRUE
-    )
-    
 })
 
 # .gene_axis_label handles NULL rownames ----

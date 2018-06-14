@@ -1049,9 +1049,6 @@ test_that(".process_selectby_choice works with closed lasso selection", {
         reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
         10)
     
-    list(lasso=NULL, closed=FALSE, panelvar1=click$panelvar1, 
-        panelvar2=click$panelvar2, mapping=click$mapping, coord, closed=TRUE)
-    
     new_lasso <- list(lasso=NULL, closed=TRUE, panelvar1=NULL,
         panelvar2=NULL, mapping=list(x="X", y="Y"))
     new_lasso$coord <- matrix(
@@ -1366,6 +1363,8 @@ test_that(".define_facetby_for_column_plot works", {
     expect_identical(out, c())
     
      # Non-default choices
+    params[["FacetByRow"]] <- TRUE
+    params[["FacetByColumn"]] <- TRUE
     params[["RowFacetColData"]] <- "driver_1_s"
     params[["ColumnFacetColData"]] <- "Core.Type"
     
@@ -1412,7 +1411,8 @@ test_that(".add_facets works for column data plots", {
     expect_null(out)
     
     # Non-default choices
-    
+    params[["FacetByRow"]] <- TRUE
+    params[["FacetByColumn"]] <- TRUE
     params[["RowFacetColData"]] <- "driver_1_s"
     params[["ColumnFacetColData"]] <- "Core.Type"
     
@@ -1431,9 +1431,10 @@ test_that(".add_facets works for row data plots", {
     expect_null(out)
     
     # Non-default choices
-    
-    params[["RowFacetColData"]] <- "mean_count"
-    params[["ColumnFacetColData"]] <- "num_cells"
+    params[["FacetByRow"]] <- TRUE
+    params[["FacetByColumn"]] <- TRUE
+    params[["RowFacetRowData"]] <- "mean_count"
+    params[["ColumnFacetRowData"]] <- "num_cells"
     
     out <- iSEE:::.add_facets(params)
     expect_identical(out, "facet_grid(FacetRow ~ FacetColumn)")

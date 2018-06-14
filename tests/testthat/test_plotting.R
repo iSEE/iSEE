@@ -1262,7 +1262,9 @@ test_that(".self_lasso_path work with an open path", {
         reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
         10)
     
-    lasso_val <- matrix(
+    new_lasso <- list(lasso=NULL, closed=FALSE, panelvar1=NULL,
+        panelvar2=NULL, mapping=list(x="X", y="Y"))
+    new_lasso$coord <- matrix(
         data = c(
             min(x_10), min(y_10),
             max(x_10), min(y_10),
@@ -1271,10 +1273,8 @@ test_that(".self_lasso_path work with an open path", {
         ncol = 2,
         byrow = TRUE
     )
-    attr(lasso_val, "closed") <- FALSE
     
-    
-    all_memory$redDimPlot[[iSEE:::.lassoData]][1] <- list(lasso_val)
+    all_memory$redDimPlot[[iSEE:::.lassoData]][1] <- list(new_lasso)
     
     lasso_cmd <- iSEE:::.self_lasso_path(all_memory$redDimPlot, flip=FALSE)
     
@@ -1299,7 +1299,7 @@ test_that(".self_lasso_path work with an open path", {
     
     expect_identical(
         lasso_cmd$data[[1]],
-        lasso_val
+        new_lasso
     )
     
 })

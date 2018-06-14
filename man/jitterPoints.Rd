@@ -49,7 +49,7 @@ Y <- rnorm(100)
 (out1 <- jitterViolinPoints(X=X, Y=Y))
 
 Y2 <- factor(sample(letters[1:3], 100, replace=TRUE))
-(out2 <- jitterSquarePoints(X=X, Y=Y))
+(out2 <- jitterSquarePoints(X=X, Y=Y2))
 
 grouped <- sample(5, 100, replace=TRUE)
 (out3 <- jitterViolinPoints(X=X, Y=Y, grouping=list(FacetRow=grouped)))

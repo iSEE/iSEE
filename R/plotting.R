@@ -700,6 +700,8 @@ names(.all_aes_values) <- .all_aes_names
 #' Set to \code{NULL} to have no y-axis label.
 #' @param color_lab A character label for the color scale.
 #' Set to \code{NULL} to have no color label.
+#' @param shape_lab A character label for the color scale.
+#' Set to \code{NULL} to have no shape label.
 #' @param title A character title for the plot.
 #' Set to \code{NULL} to have no title. 
 #' @param by_row A logical scalar specifying whether the plot deals with row-level metadata.
@@ -791,6 +793,8 @@ names(.all_aes_values) <- .all_aes_names
 #' Set to \code{NULL} to have no y-axis label.
 #' @param color_lab A character label for the color scale.
 #' Set to \code{NULL} to have no color label.
+#' @param shape_lab A character label for the color scale.
+#' Set to \code{NULL} to have no shape label.
 #' @param title A character title for the plot.
 #' Set to \code{NULL} to have no title. 
 #' @param horizontal A logical value that indicates whether violins should be drawn horizontally
@@ -980,6 +984,8 @@ plot.data$Y <- tmp;")
 #' Set to \code{NULL} to have no title. 
 #' @param by_row A logical scalar specifying whether the plot deals with row-level metadata.
 #' @param is_subsetted A logical scalar specifying whether \code{plot_data} was subsetted during \code{\link{.process_selectby_choice}}.
+#' @param shape_lab A character label for the color scale.
+#' Set to \code{NULL} to have no shape label.
 #'
 #' @return 
 #' For \code{\link{.square_setup}}, a character vector of commands to be parsed and evaluated by \code{\link{.extract_plotting_data}} to set up the required fields.
@@ -1358,9 +1364,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_define_shape_variables
 #' @seealso
-#' \code{\link{.extract_plotting_data}},
-#' \code{\link{.add_shape_to_row_plot}},
-#' \code{\link{.add_shape_to_column_plot}}
+#' \code{\link{.extract_plotting_data}}
 #' 
 #' @importFrom SummarizedExperiment assay
 .define_shapeby_for_column_plot <- function(param_choices, se) {

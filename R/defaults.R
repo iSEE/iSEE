@@ -565,7 +565,7 @@ heatMapPlotDefaults <- function(se, number) {
 #' 
 #' @author Kevin Rue-Albrecht
 #' 
-#' @rdname INTERNAL_.groupable
+#' @rdname INTERNAL_set_default_discrete
 #' @seealso
 #' \code{?\link{defaults}}
 .set_default_discrete <- function(x) {

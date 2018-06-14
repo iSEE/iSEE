@@ -335,3 +335,33 @@ test_that("sanitation of memory works correctly", {
     sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory)
 })
+
+# grouping ----
+
+test_that("groupability detection functions work", {
+    
+    .is_groupable
+    
+    df <- DataFrame()
+    
+    # No column returns an empty vector
+    expect_identical(
+        iSEE:::.which_groupable(df),
+        integer()
+    )
+    
+    max_groupable <-  getOption("iSEE.maxlevels", 24)
+    
+    df <- DataFrame(
+        groupable1 = factor(rep(seq_len(max_groupable), 2)),
+        not_groupable = factor(seq_len(max_groupable * 2)),
+        groupable2 = factor(rep(seq_len(max_groupable/2), 4))
+    )
+    
+    expect_identical(
+        iSEE:::.which_groupable(df),
+        c(groupable1 = 1L, groupable2 = 3L)
+    )
+    
+    
+})

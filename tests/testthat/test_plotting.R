@@ -1329,7 +1329,7 @@ test_that(".self_lasso_path work with a closed and flipped path", {
         byrow = TRUE
     )
     
-    all_memory$redDimPlot[[iSEE:::.lassoData]][1] <- list(lasso_val)
+    all_memory$redDimPlot[[iSEE:::.lassoData]][1] <- list(new_lasso)
     
     lasso_cmd <- iSEE:::.self_lasso_path(all_memory$redDimPlot, flip=FALSE)
     
@@ -1350,7 +1350,7 @@ test_that(".self_lasso_path work with a closed and flipped path", {
     
     expect_identical(
         lasso_cmd$data[[1]],
-        lasso_val
+        new_lasso
     )
     
 })
@@ -1387,8 +1387,10 @@ test_that(".define_facetby_for_row_plot works", {
     expect_identical(out, c())
     
      # Non-default choices
-    params[["RowFacetColData"]] <- "mean_count"
-    params[["ColumnFacetColData"]] <- "num_cells"
+    params[["FacetByRow"]] <- TRUE
+    params[["FacetByColumn"]] <- TRUE
+    params[["RowFacetRowData"]] <- "mean_count"
+    params[["ColumnFacetRowData"]] <- "num_cells"
     
     out <- iSEE:::.define_facetby_for_row_plot(params)
     expect_named(out, c("FacetRow", "FacetColumn"))

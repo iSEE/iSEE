@@ -55,5 +55,8 @@
 #' @seealso
 #' \code{?\link{defaults}}
 .which_groupable <- function(x) {
+    if (ncol(x) == 0L) {
+        return(integer())
+    }
     which(sapply(x, .is_groupable))
 }

@@ -1315,7 +1315,9 @@ test_that(".self_lasso_path work with a closed and flipped path", {
         reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
         10)
     
-    lasso_val <- matrix(
+    new_lasso <- list(lasso=NULL, closed=TRUE, panelvar1=NULL,
+        panelvar2=NULL, mapping=list(x="X", y="Y"))
+    new_lasso$coord <- matrix(
         data = c(
             min(x_10), min(y_10),
             max(x_10), min(y_10),
@@ -1326,8 +1328,6 @@ test_that(".self_lasso_path work with a closed and flipped path", {
         ncol = 2,
         byrow = TRUE
     )
-    attr(lasso_val, "closed") <- TRUE
-    attr(lasso_val, "flipped") <- TRUE
     
     all_memory$redDimPlot[[iSEE:::.lassoData]][1] <- list(lasso_val)
     

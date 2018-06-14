@@ -1049,7 +1049,12 @@ test_that(".process_selectby_choice works with closed lasso selection", {
         reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
         10)
     
-    lasso_val <- matrix(
+    list(lasso=NULL, closed=FALSE, panelvar1=click$panelvar1, 
+        panelvar2=click$panelvar2, mapping=click$mapping, coord, closed=TRUE)
+    
+    new_lasso <- list(lasso=NULL, closed=TRUE, panelvar1=NULL,
+        panelvar2=NULL, mapping=list(x="X", y="Y"))
+    new_lasso$coord <- matrix(
         data = c(
             min(x_10), min(y_10),
             min(x_10), max(y_10),
@@ -1059,10 +1064,8 @@ test_that(".process_selectby_choice works with closed lasso selection", {
         ncol = 2,
         byrow = TRUE
     )
-    attr(lasso_val, "closed") <- TRUE
-    attr(lasso_val, "flipped") <- FALSE
     
-    all_memory$redDimPlot[[iSEE:::.lassoData]][1] <- list(lasso_val)
+    all_memory$redDimPlot[[iSEE:::.lassoData]][1] <- list(new_lasso)
     
     select_cmd <- iSEE:::.process_selectby_choice(all_memory$featAssayPlot, all_memory)
     
@@ -1216,7 +1219,9 @@ test_that(".self_lasso_path work with a single point", {
         reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
         10)
     
-    lasso_val <- matrix(
+    new_lasso <- list(lasso=NULL, closed=FALSE, panelvar1=NULL,
+        panelvar2=NULL, mapping=list(x="X", y="Y"))
+    new_lasso$coord <- matrix(
         data = c(
             min(x_10), min(y_10)
         ),
@@ -1224,7 +1229,7 @@ test_that(".self_lasso_path work with a single point", {
         byrow = TRUE
     )
     
-    all_memory$redDimPlot[[iSEE:::.lassoData]][1] <- list(lasso_val)
+    all_memory$redDimPlot[[iSEE:::.lassoData]][1] <- list(new_lasso)
     
     lasso_cmd <- iSEE:::.self_lasso_path(all_memory$redDimPlot, flip=FALSE)
     
@@ -1236,11 +1241,11 @@ test_that(".self_lasso_path work with a single point", {
     
     expect_identical(
         lasso_cmd$data[[1]],
-        lasso_val
+        new_lasso
     )
     
     expect_identical(
-        nrow(lasso_cmd$data[[1]]),
+        nrow(lasso_cmd$data[[1]]$coord),
         1L
     )
     

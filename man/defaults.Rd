@@ -107,11 +107,11 @@ Defaults to \code{"---"}, i.e., no coordinates are generated.}
 }
 }
 
-\section{Coloring parameters (for points)}{
+\section{Coloring parameters (for point-based plots)}{
 
 \describe{
 \item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
-Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Feature name"} or \code{"Column data"}.}
+Defaults to \code{"None"}, but can also be \code{"Feature name"} or \code{"Column data"} (for column-based plots) or \code{"Row data"} for (row-based plots).}
 \item{\code{ColorByDefaultColor}:}{String specifying the default point colour when \code{ColorBy="None"}.
 Defaults to \code{"black"}.}
 \item{\code{ColorByFeatName}:}{Integer, the index of the feature to use for colouring based on expression, if \code{ColorBy="Feature name"}? 
@@ -140,8 +140,53 @@ Defaults to \code{"red"}.}
 }
 }
 
+\section{Shape parameters (for point-based plots)}{
+
+\describe{
+\item{\code{ShapeBy}:}{Character, what type of data should be used for controlling shape?
+Defaults to \code{"None"}, but can also be \code{"Column data"}.}
+}
+
+For the plots where each point represents a sample (i.e., all plots except for heatmaps and row data plots), the following additional options apply:
+\describe{
+\item{\code{ShapeByColData}:}{Character, which column of \code{colData(se)} should be used for shaping if \code{ShapeBy="Column data"}? 
+This should refer to a categorical variable, and will default to the first such entry of \code{colData(se)}.}
+}
+
+For plots where each point represents a feature (i.e., row data plots), the following additional options apply:
+\describe{
+\item{\code{ShapeByRowData}:}{Character, which column of \code{rowData(se)} should be used for shaping if \code{ShapeBy="Row data"}? 
+This should refer to a categorical variable, and will default to the first such entry of \code{rowData(se)}.}
+}
+}
+
+\section{Faceting parameters (for point-based plots)}{
+
+\describe{
+\item{\code{facetByRow}:}{Logical indicating whether the plot should be faceted by row.}
+\item{\code{facetByColumn}:}{Logical indicating whether the plot should be faceted by row.}
+}
+
+For the plots where each point represents a sample (i.e., all plots except for heatmaps and row data plots), the following additional options apply:
+\describe{
+\item{\code{facetRowByColData}:}{Character, which column of \code{colData(se)} should be used to facet by row?
+This should refer to a categorical variable, and will default to the first such entry of \code{colData(se)}.}
+\item{\code{facetColumnByColData}:}{Character, which column of \code{colData(se)} should be used to facet by column?
+This should refer to a categorical variable, and will default to the first such entry of \code{colData(se)}.}
+}
+
+For the plots where each point represents a feature (i.e., row data plots), the following additional options apply:
+\describe{
+\item{\code{facetRowByRowData}:}{Character, which column of \code{colData(se)} should be used to facet by row?
+This should refer to a categorical variable, and will default to the first such entry of \code{colData(se)}.}
+\item{\code{facetColumnByRowData}:}{Character, which column of \code{colData(se)} should be used to facet by column?
+This should refer to a categorical variable, and will default to the first such entry of \code{colData(se)}.}
+}
+}
+
 \section{Other plot parameters (for point-based plots)}{
 
+Parameter visibility options are:
 \describe{
 \item{\code{DataBoxOpen}:}{Logical, should the data parameter box be open upon initialization?
 Defaults to \code{FALSE}.}
@@ -149,6 +194,10 @@ Defaults to \code{FALSE}.}
 Defaults to \code{FALSE}.}
 \item{\code{VisualChoices}:}{A list containing one character vector, specifying the visual box parameters to be shown upon initialization.
 This defaults to \code{list("Color")} to show only the coloring parameters, but the internal vector can also contain \code{"Points"} and \code{"Other"}.}
+}
+
+Options related to the appearance of points are:
+\describe{
 \item{\code{PointSize}:}{Numeric, the size of the points.
 Defaults to 1.}
 \item{\code{PointAlpha}:}{Numeric, what level of transparency should be used for the points?
@@ -159,6 +208,10 @@ Defaults to \code{FALSE}.}
 \item{\code{SampleRes}:}{Numeric, specifying the downsampling resolution, i.e., the granularity at which points are considered to overlap.
 Higher values result in a more stringent definition of overlaps, and thus less downsampling.
 Defaults to 200.}
+}
+
+Text-related parameters are:
+\describe{
 \item{\code{FontSize}:}{Numeric, size of the font.
 Defaults to 1.}
 \item{\code{LegendPosition}:}{String specifying the legend position.

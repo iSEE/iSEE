@@ -94,7 +94,7 @@ test_that("count incrementer works correctly", {
 })
 
 test_that("memory setup works correctly", {
-    sce <- iSEE:::.set_custom_col_fun(sce, list(PCA2="WHEE"))  # Adding custom functions for .setup_memory to check.
+    sce <- iSEE:::.precompute_UI_info(sce, list(PCA2="WHEE"))  # Adding custom functions for .setup_memory to check.
 
     # Works correctly in the vanilla setting.
     memory <- iSEE:::.setup_memory(sce, 
@@ -233,7 +233,7 @@ test_that("name to index coercion works correctly", {
 })
 
 test_that("initialization of active panels works correctly", {
-    sce <- iSEE:::.set_custom_col_fun(sce, list(PCA2="WHEE")) # Adding custom functions for .setup_memory to check.
+    sce <- iSEE:::.precompute_UI_info(sce, list(PCA2="WHEE")) # Adding custom functions for .setup_memory to check.
 
     memory <- iSEE:::.setup_memory(sce, 
                                    redDimArgs=NULL, 
@@ -339,9 +339,7 @@ test_that("sanitation of memory works correctly", {
 # grouping ----
 
 test_that("groupability detection functions work", {
-    
-    .is_groupable
-    
+   
     df <- DataFrame()
     
     # No column returns an empty vector

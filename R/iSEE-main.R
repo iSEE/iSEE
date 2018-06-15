@@ -1099,12 +1099,13 @@ iSEE <- function(se,
                       customColPlot=.remake_customColPlot)
 
         # Defining fundamental parameters that destroy brushes/lassos upon being changed.
+        collected_facet <- c(.facetByRow, .facetByColumn, .facetRowsByColData, .facetColumnsByColData) 
         protected <- switch(mode,
-                            redDimPlot=c(.redDimXAxis, .redDimYAxis, .facetByRow, .facetByColumn, .facetRowsByColData, .facetColumnsByColData),
-                            colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, .facetByRow, .facetByColumn, .facetRowsByColData, .facetColumnsByColData),
-                            featAssayPlot=c(.featAssayAssay, .featAssayXAxisColData, .facetByRow, .facetByColumn, .facetRowsByColData, .facetColumnsByColData),
-                            rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData, .facetByRow, .facetByColumn, .facetRowsByRowData, .facetColumnsByRowData),
-                            customColPlot=.customColFun)
+                            redDimPlot=c(.redDimXAxis, .redDimYAxis, collected_facet),
+                            colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, collected_facet),
+                            featAssayPlot=c(.featAssayAssay, .featAssayXAxisColData, collected_facet),
+                            rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData, collected_facet),
+                            customColPlot=c(.customColFun, collected_facet))
 
         # Defining non-fundamental parameters that do not destroy brushes/lassos.
         if (mode=="rowDataPlot") {

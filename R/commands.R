@@ -4,6 +4,7 @@
 #'
 #' @param obj A command store produced by \code{.initialize_cmd_store}.
 #' @param cmd A character vector containing commands to be executed at some point in time.
+#' @param name A character vector containing names for the commands.
 #' @param envir An environment in which to execute the commands.
 #' 
 #' @return
@@ -25,9 +26,10 @@
 }
 
 #' @rdname INTERNAL_manage_commands
-.add_command <- function(obj, cmd) {
+.add_command <- function(obj, cmd, name=NULL) {
     if (is.list(cmd)) cmd <- unlist(cmd)
-    obj$pending <- c(obj$pending, unname(cmd))
+    if (!is.null(name)) names(cmd) <- name
+    obj$pending <- c(obj$pending, cmd)
     return(obj)
 }
 

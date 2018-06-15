@@ -263,6 +263,7 @@ names(.all_aes_values) <- .all_aes_names
     param_choices <- all_memory$rowDataPlot[id,]
     data_cmds <- list()
     y_lab <- param_choices[[.rowDataYAxis]]
+
     # NOTE: # deparse() automatically adds quotes, AND protects against existing quotes/escapes.
     data_cmds[["y"]] <- sprintf(
         "plot.data <- data.frame(Y = rowData(se)[,%s], row.names=rownames(se));", 
@@ -416,11 +417,11 @@ names(.all_aes_values) <- .all_aes_names
     # (e.g., coercion to integer, no lost levels upon subsetting).
     xvals <- eval_env$plot.data$X
     group_X <- .is_groupable(xvals)
-    more_data_cmds <- .add_command(more_data_cmds, .coerce_type(xvals, "X", as_numeric=!group_X))
+    more_data_cmds <- .add_command(more_data_cmds, .coerce_type(xvals, "X", as_numeric=!group_X), name='more_X')
     
     yvals <- eval_env$plot.data$Y
     group_Y <- .is_groupable(yvals)
-    more_data_cmds <- .add_command(more_data_cmds, .coerce_type(yvals, "Y", as_numeric=!group_Y))
+    more_data_cmds <- .add_command(more_data_cmds, .coerce_type(yvals, "Y", as_numeric=!group_Y), name='more_Y')
     
     # Adding coloring and faceting information as well.    
     if (by_row) {
@@ -433,9 +434,9 @@ names(.all_aes_values) <- .all_aes_names
         facet_out <- .define_facetby_for_column_plot(param_choices, se)
     }
 
-    more_data_cmds <- .add_command(more_data_cmds, color_out$cmds)
+    more_data_cmds <- .add_command(more_data_cmds, color_out$cmds, name='color')
     color_lab <- color_out$label
-    more_data_cmds <- .add_command(more_data_cmds, shape_out$cmds)
+    more_data_cmds <- .add_command(more_data_cmds, shape_out$cmds, name='shape')
     shape_lab <- shape_out$label
     more_data_cmds <- .add_command(more_data_cmds, facet_out)
     
@@ -444,13 +445,13 @@ names(.all_aes_values) <- .all_aes_names
     
     coloring <- eval_env$plot.data$ColorBy
     if (!is.null(coloring)) {
-        more_data_cmds <- .add_command(more_data_cmds, .coerce_type(coloring, "ColorBy", as_numeric=!.is_groupable(coloring)))
+        more_data_cmds <- .add_command(more_data_cmds, .coerce_type(coloring, "ColorBy", as_numeric=!.is_groupable(coloring)), name='more_color')
     }
     
     # Removing NAs as they mess up .process_selectby_choice.
     clean_fields <- c("X", "Y", names(facet_out))
     clean_expression <- paste(sprintf("!is.na(%s)", clean_fields), collapse = " & ")
-    more_data_cmds <- .add_command(more_data_cmds, sprintf("plot.data <- subset(plot.data, %s);", clean_expression))
+    more_data_cmds <- .add_command(more_data_cmds, sprintf("plot.data <- subset(plot.data, %s);", clean_expression), name='na.rm')
    
     more_data_cmds <- .evaluate_commands(more_data_cmds, eval_env)
 

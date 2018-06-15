@@ -111,11 +111,12 @@
     # We do this here instead of using scale(), as this must be done after selection (if restricting).
     censcal_cmds <- .initialize_cmd_store()
     if (.heatMapCenterTitle %in% param_choices[[.heatMapCenterScale]][[1]]) {
-        censcal_cmds <- .add_command(censcal_cmds, "plot.data$value <- plot.data$value - ave(plot.data$value, plot.data$Y);")
+        censcal_cmds <- .add_command(censcal_cmds, "plot.data$value <- plot.data$value - ave(plot.data$value, plot.data$Y);", name='centering')
     }
     if (.heatMapScaleTitle %in% param_choices[[.heatMapCenterScale]][[1]]) {
-        censcal_cmds <- .add_command(censcal_cmds, "gene.var <- ave(plot.data$value, plot.data$Y, FUN=function(x) { sum(x^2)/(length(x)-1) });") # not sd(), to mimic scale().
-        censcal_cmds <- .add_command(censcal_cmds, "plot.data$value <- plot.data$value/sqrt(gene.var);")
+        # We don't use sd() for scaling, to mimic scale().
+        censcal_cmds <- .add_command(censcal_cmds, "gene.var <- ave(plot.data$value, plot.data$Y, FUN=function(x) { sum(x^2)/(length(x)-1) });", name='gene.var')
+        censcal_cmds <- .add_command(censcal_cmds, "plot.data$value <- plot.data$value/sqrt(gene.var);", name='scaling')
     }
     censcal_cmds <- .evaluate_commands(censcal_cmds, eval_env)
 

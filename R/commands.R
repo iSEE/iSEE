@@ -13,7 +13,8 @@
 #'
 #' \code{.add_command} will append \code{cmd} to \code{pending}.
 #'
-#' \code{.evaluate_commands} will evaluate \code{pending} in \code{envir}, and then move them to \code{processed}.
+#' \code{.evaluate_commands} will evaluate any \code{pending} commands in \code{envir}, and then move them to the \code{processed} vector.
+#' If \code{envir=NULL}, no evaluation will be performed but the \code{pending} commands will still be moved to \code{processed} - useful for mimicking evaluation.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_manage_commands
@@ -24,13 +25,15 @@
 #' @rdname INTERNAL_manage_commands
 .add_command <- function(obj, cmd) {
     if (is.list(cmd)) cmd <- unlist(cmd)
-    obj$pending <- c(obj$pending, cmd)
+    obj$pending <- c(obj$pending, unname(cmd))
     return(obj)
 }
 
 #' @rdname INTERNAL_manage_commands
-.evaluate_commands <- function(obj, envir) {
-    eval(parse(text=obj$pending), envir=envir)
+.evaluate_commands <- function(obj, envir, run=TRUE) {
+    if (length(obj$pending) && !is.null(envir)) {
+        eval(parse(text=obj$pending), envir=envir)
+    }
     obj$processed <- c(obj$processed, obj$pending)
     obj$pending <- character(0)
     return(obj)

@@ -1390,6 +1390,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #'
 #' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
 #' @param all_memory A list of DataFrames, where each DataFrame corresponds to a panel type and contains the settings for each individual panel of that type.
+#' @param save_all A logical scalar indicating whether the original data.frame should be saved before subsetting to restrict.
+#' @param self_source A logical scalar indicating whether it is allowable to select points based on coordinates in \code{plot.data}.
 #'
 #' @return A list that includes the following elements:
 #' \describe{
@@ -1406,9 +1408,12 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' It then generates the commands necessary to identify the points selected in the transmitter, to add as \code{SelectBy} in the current panel.
 #' This requires extraction of the Shiny brush or lasso waypoints in the transmitter, which are used during evaluation to define the selection.
 #'
-#' Note that if selecting to restrict, an extra \code{plot.data.all} variable will be generated in the evaluation environment.
+#' If selecting to restrict, an extra \code{plot.data.all} variable will be generated in the evaluation environment.
 #' This will be used in \code{\link{.scatter_plot}} and \code{\link{.violin_plot}} to define the boundaries of the plot based on the full data.
 #' In this manner, the boundaries of the plot are kept consistent even when only a subset of the data are used to generate the ggplot object.
+#'
+#' Setting \code{save_all=FALSE} is used in \code{\link{.make_customColPlot}} to avoid creating \code{plot.data.all}.
+#' Setting \code{self_source=FALSE} is used in \code{\link{.get_selected_points}} to force it to use existing coordinates to define \code{SelectBy}.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_process_selectby_choice
@@ -1419,17 +1424,16 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #'
 #' @importFrom mgcv in.out
 #' @importFrom shiny brushedPoints
-.process_selectby_choice <- function(param_choices, all_memory) {
+.process_selectby_choice <- function(param_choices, all_memory, save_all=TRUE, self_source=TRUE) {
     select_in <- param_choices[[.selectByPlot]]
     select_obj <- list()
     cmds <- list()
-    
-    # Checking which points are selected in the transmitting plot.
+
     if (!identical(select_in, .noSelection)) {
-        
+
         select_by <- .encode_panel_name(select_in)
         transmitter <- paste0(select_by$Type, select_by$ID)
-        if (identical(rownames(param_choices), transmitter)) {
+        if (self_source && identical(rownames(param_choices), transmitter)) {
             source_data <- 'plot.data'
         } else {
             source_data <- sprintf("all_coordinates[['%s']]", transmitter)
@@ -1451,9 +1455,9 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
         }
         
         if (length(select_obj) && param_choices[[.selectEffect]]==.selectRestrictTitle) {
-            # Duplicate plot.data before selecting points, to make sure that axes are retained
-            # even in case of an empty selected subset.
-            cmds[["saved"]] <- "plot.data.all <- plot.data;"
+            if (save_all) { 
+                cmds[["saved"]] <- "plot.data.all <- plot.data;"
+            }
             cmds[["subset"]] <- "plot.data <- subset(plot.data, SelectBy);"
         }
     }

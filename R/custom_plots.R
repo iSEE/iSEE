@@ -84,10 +84,10 @@
     data_cmds <- .add_command(data_cmds, facet_out)
     data_cmds <- .evaluate_commands(data_cmds, eval_env)
 
-    # Implementing the selection, and _eliminating_ plot.data.all, which is not necessary when plotting only the restricted subset.
-    select_out <- .process_selectby_choice(param_choices, all_memory)
+    # Implementing the selection without creating plot.data.all, which is not necessary when plotting only the restricted subset.
+    # In fact, avoiding creation of 'plot.data.all' is important to avoid creating the axes from the full data, which wouldn't make any sense here.
+    select_out <- .process_selectby_choice(param_choices, all_memory, save_all=FALSE)
     select_cmds <- select_out$cmds
-    select_cmds <- select_cmds[!grepl("^plot.data.all", select_cmds)]
     if (length(select_cmds)) { 
         eval_env$all_brushes <- select_out$data
         eval_env$all_lassos <- select_out$data

@@ -634,7 +634,10 @@ height_limits <- c(400L, 1000L)
 #' @details
 #' This function obtains the commands to select points from \code{\link{.process_selectby_choice}}, and evaluates them to identify the selected points.
 #' Such a procedure is necessary in \code{\link{iSEE}} to obtain the actual feature names to show to the user in the interface.
-#' Some work is thus required to trick \code{\link{.process_selectby_choice}} into thinking it is operating on the parameteres for a point-based receiving panel.
+#' 
+#' Some work is required to trick \code{\link{.process_selectby_choice}} into thinking it is operating on the parameters for a point-based receiving panel.
+#' We also set \code{self_source=FALSE} to ensure that the function uses the coordinates in \code{all_coordinates}, and does not try to self-brush from \code{plot.data}
+#' (which would be meaningless here, given the lack of coordinates).
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_get_selected_points
@@ -645,14 +648,12 @@ height_limits <- c(400L, 1000L)
 #' @importFrom S4Vectors DataFrame 
 .get_selected_points <- function(names, transmitter, all_memory, all_coordinates) {
     dummy <- DataFrame(transmitter, .selectColorTitle) 
-    rownames(dummy) <- paste0("__", transmitter) # can never match transmitter; avoids using "plot.data" as the source in .process_selectby_choice().
     colnames(dummy) <- c(.selectByPlot, .selectEffect)
+    selected <- .process_selectby_choice(dummy, all_memory, self_source=FALSE)
 
-    selected <- .process_selectby_choice(dummy, all_memory)
-    tmp_data <- data.frame(row.names=names)
     if (!is.null(selected$cmd)) { 
         chosen.env <- new.env()
-        chosen.env$plot.data <- tmp_data 
+        chosen.env$plot.data <- data.frame(row.names=names)
         chosen.env$all_coordinates <- all_coordinates
         chosen.env$all_brushes <- selected$data
         chosen.env$all_lassos <- selected$data

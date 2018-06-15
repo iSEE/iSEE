@@ -125,23 +125,23 @@
 #'
 #' @section Faceting parameters (for point-based plots):
 #' \describe{
-#' \item{\code{facetByRow}:}{Logical indicating whether the plot should be faceted by row.}
-#' \item{\code{facetByColumn}:}{Logical indicating whether the plot should be faceted by row.}
+#' \item{\code{FacetByRow}:}{Logical indicating whether the plot should be faceted by row.}
+#' \item{\code{FacetByColumn}:}{Logical indicating whether the plot should be faceted by row.}
 #' }
 #'
 #' For the plots where each point represents a sample (i.e., all plots except for heatmaps and row data plots), the following additional options apply:
 #' \describe{
-#' \item{\code{facetRowByColData}:}{Character, which column of \code{colData(se)} should be used to facet by row?
+#' \item{\code{RowFacetByColData}:}{Character, which column of \code{colData(se)} should be used to facet by row?
 #' This should refer to a categorical variable, and will default to the first such entry of \code{colData(se)}.}
-#' \item{\code{facetColumnByColData}:}{Character, which column of \code{colData(se)} should be used to facet by column?
+#' \item{\code{ColumnFacetByColData}:}{Character, which column of \code{colData(se)} should be used to facet by column?
 #' This should refer to a categorical variable, and will default to the first such entry of \code{colData(se)}.}
 #' }
 #' 
 #' For the plots where each point represents a feature (i.e., row data plots), the following additional options apply:
 #' \describe{
-#' \item{\code{facetRowByRowData}:}{Character, which column of \code{colData(se)} should be used to facet by row?
+#' \item{\code{RowFacetByRowData}:}{Character, which column of \code{colData(se)} should be used to facet by row?
 #' This should refer to a categorical variable, and will default to the first such entry of \code{colData(se)}.}
-#' \item{\code{facetColumnByRowData}:}{Character, which column of \code{colData(se)} should be used to facet by column?
+#' \item{\code{ColumnFacetByRowData}:}{Character, which column of \code{colData(se)} should be used to facet by column?
 #' This should refer to a categorical variable, and will default to the first such entry of \code{colData(se)}.}
 #' }
 #'

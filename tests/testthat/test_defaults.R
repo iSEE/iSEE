@@ -41,3 +41,26 @@ test_that(".override_defaults warns about unexpected settings", {
   out <- iSEE:::.override_defaults(ref, DataFrame(ZoomData=I(list(zoomed, zoomed))))
   expect_identical(out$ZoomData, list(zoomed, zoomed, NULL, NULL, NULL))
 })
+
+
+test_that(".add_general_parameters_for_*_plots functions correctly respond to internal fields", {
+    sce <- iSEE:::.precompute_UI_info(sce, NULL)
+
+    out <- iSEE:::.add_general_parameters_for_column_plots(DataFrame(a=1), sce)
+    expect_identical(out[[iSEE:::.facetRowsByColData]], iSEE:::.get_internal_info(sce, "column_groupable")[1])
+    expect_identical(out[[iSEE:::.facetColumnsByColData]], iSEE:::.get_internal_info(sce, "column_groupable")[1])
+
+    SingleCellExperiment:::int_metadata(sce)$iSEE["column_groupable"] <- "YAY"
+    out <- iSEE:::.add_general_parameters_for_column_plots(DataFrame(a=1), sce)
+    expect_identical(out[[iSEE:::.facetRowsByColData]], "YAY")
+    expect_identical(out[[iSEE:::.facetColumnsByColData]], "YAY")
+
+    out <- iSEE:::.add_general_parameters_for_row_plots(DataFrame(b=1), sce)
+    expect_identical(out[[iSEE:::.facetRowsByRowData]], iSEE:::.get_internal_info(sce, "row_groupable")[1])
+    expect_identical(out[[iSEE:::.facetColumnsByRowData]], iSEE:::.get_internal_info(sce, "row_groupable")[1])
+
+    SingleCellExperiment:::int_metadata(sce)$iSEE["row_groupable"] <- "WHEE"
+    out <- iSEE:::.add_general_parameters_for_row_plots(DataFrame(b=1), sce)
+    expect_identical(out[[iSEE:::.facetRowsByRowData]], "WHEE")
+    expect_identical(out[[iSEE:::.facetColumnsByRowData]], "WHEE")
+})

@@ -91,7 +91,7 @@
     if (length(select_cmds)) { 
         eval_env$all_brushes <- select_out$data
         eval_env$all_lassos <- select_out$data
-        eval(parse(text=select_cmds), envir=eval_env)
+        .text_eval(select_cmds, eval_env)
     }
     
     # Constructing the evaluation command to get the points.

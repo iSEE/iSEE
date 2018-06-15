@@ -16,6 +16,8 @@
 #' \code{.evaluate_commands} will evaluate any \code{pending} commands in \code{envir}, and then move them to the \code{processed} vector.
 #' If \code{envir=NULL}, no evaluation will be performed but the \code{pending} commands will still be moved to \code{processed} - useful for mimicking evaluation.
 #'
+#' \code{.text_eval} returns the output of \code{eval(parse(text=cmd), envir)}, unless \code{cmd} is empty in which case it returns \code{NULL}.
+#'
 #' @author Aaron Lun
 #' @rdname INTERNAL_manage_commands
 .initialize_cmd_store <- function() {
@@ -39,3 +41,11 @@
     return(obj)
 }
 
+#' @rdname INTERNAL_manage_commands
+.text_eval <- function(cmd, envir) {
+    if (length(cmd)) { 
+        return(eval(parse(text=cmd), envir))
+    } else {
+        return(NULL)
+    }
+}

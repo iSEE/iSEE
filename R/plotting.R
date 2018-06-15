@@ -404,22 +404,23 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.define_colorby_for_row_plot}},
 #' \code{\link{.process_selectby_choice}}
 .extract_plotting_data <- function(data_cmds, param_choices, all_memory, all_coordinates, se, by_row=FALSE) {
-    # Evaluating to check the grouping status of various fields.
-    # It is important that non-numeric X/Y become explicit factors here, which simplifies downstream processing 
-    # (e.g., coercion to integer, no lost levels upon subsetting).
     eval_env <- new.env()
     eval_env$se <- se
     eval_env$all_coordinates <- all_coordinates
-    eval(parse(text=unlist(data_cmds)), envir=eval_env)
-    more_data_cmds <- list() 
+
+    more_data_cmds <- .initialize_cmd_store()
+    more_data_cmds <- .add_command(more_data_cmds, data_cmds)
+    more_data_cmds <- .evaluate_commands(more_data_cmds, eval_env)
     
+    # It is important that non-numeric X/Y become explicit factors here, which simplifies downstream processing 
+    # (e.g., coercion to integer, no lost levels upon subsetting).
     xvals <- eval_env$plot.data$X
     group_X <- .is_groupable(xvals)
-    more_data_cmds[["more_X"]] <- .coerce_type(xvals, "X", as_numeric=!group_X)
+    more_data_cmds <- .add_command(more_data_cmds, .coerce_type(xvals, "X", as_numeric=!group_X))
     
     yvals <- eval_env$plot.data$Y
     group_Y <- .is_groupable(yvals)
-    more_data_cmds[["more_Y"]] <- .coerce_type(yvals, "Y", as_numeric=!group_Y)
+    more_data_cmds <- .add_command(more_data_cmds, .coerce_type(yvals, "Y", as_numeric=!group_Y))
     
     # Adding coloring and faceting information as well.    
     if (by_row) {
@@ -431,39 +432,28 @@ names(.all_aes_values) <- .all_aes_names
         shape_out <- .define_shapeby_for_column_plot(param_choices, se)
         facet_out <- .define_facetby_for_column_plot(param_choices, se)
     }
-    more_data_cmds[["color"]] <- color_out$cmds
+
+    more_data_cmds <- .add_command(more_data_cmds, color_out$cmds)
     color_lab <- color_out$label
-    more_data_cmds[["shape"]] <- shape_out$cmds
+    more_data_cmds <- .add_command(more_data_cmds, shape_out$cmds)
     shape_lab <- shape_out$label
-    
-    # Add X and Y faceting variables
-    for (facet_axis in names(facet_out)){
-        more_data_cmds[[facet_axis]] <- facet_out[facet_axis]
-    }
-    
-    # Evaluate the latest set of commands, and move them to the evaluated set. 
-    # This must be done to determine if we need to coerce the ColorBy choice.
-    if (length(more_data_cmds)) { 
-        eval(parse(text=unlist(more_data_cmds)), envir=eval_env)
-        data_cmds <- c(data_cmds, more_data_cmds)
-        more_data_cmds <- list() 
-    }
+    more_data_cmds <- .add_command(more_data_cmds, facet_out)
     
     # Ensuring that colors are either factor or numeric. 
+    more_data_cmds <- .evaluate_commands(more_data_cmds, eval_env)
+    
     coloring <- eval_env$plot.data$ColorBy
     if (!is.null(coloring)) {
-        more_data_cmds[["more_color"]] <- .coerce_type(coloring, "ColorBy", as_numeric=!.is_groupable(coloring))
+        more_data_cmds <- .add_command(more_data_cmds, .coerce_type(coloring, "ColorBy", as_numeric=!.is_groupable(coloring)))
     }
     
     # Removing NAs as they mess up .process_selectby_choice.
-    cleanFields <- c("X", "Y", names(facet_out))
-    cleanExpression <- paste(sprintf("!is.na(%s)", cleanFields), collapse = " & ")
-    more_data_cmds[["na.rm"]] <- sprintf("plot.data <- subset(plot.data, %s);", cleanExpression)
-    
-    # Evaluating and clearing the commands.
-    eval(parse(text=unlist(more_data_cmds)), envir=eval_env)
-    data_cmds <- c(data_cmds, more_data_cmds)
-    
+    clean_fields <- c("X", "Y", names(facet_out))
+    clean_expression <- paste(sprintf("!is.na(%s)", clean_fields), collapse = " & ")
+    more_data_cmds <- .add_command(more_data_cmds, sprintf("plot.data <- subset(plot.data, %s);", clean_expression))
+   
+    more_data_cmds <- .evaluate_commands(more_data_cmds, eval_env)
+
     # Creating the command to define SelectBy.
     # Note that 'all_brushes' or 'all_lassos' is needed for the eval() to obtain SelectBy.
     # This approach relatively easy to deparse() in the code tracker, rather than having to construct the Shiny select object or lasso waypoints manually.
@@ -472,14 +462,14 @@ names(.all_aes_values) <- .all_aes_names
     if (length(select_cmds)) { 
         eval_env$all_brushes <- select_out$data
         eval_env$all_lassos <- select_out$data
-        eval(parse(text=select_cmds), envir=eval_env)
+        .text_eval(select_cmds, eval_env)
     }
-    
+
     # Adding more plot-specific information, depending on the type of plot to be created.
     specific <- .choose_plot_type(group_X, group_Y, eval_env)
-    
+
     return(list(
-        cmd_list=list(data=unlist(data_cmds), select=select_cmds, setup=specific),
+        cmd_list=list(data=more_data_cmds$processed, select=select_cmds, setup=specific),
         envir=eval_env,
         color_lab=color_lab,
         shape_lab=shape_lab))
@@ -527,9 +517,8 @@ names(.all_aes_values) <- .all_aes_names
         mode <- "square"
         specific <- .square_setup(envir$plot.data)
     }
-    if (length(specific)) { 
-        eval(parse(text=unlist(specific)), envir=envir)
-    }
+
+    .text_eval(specific, envir)
     envir$plot.type <- mode
     return(specific) 
 }
@@ -575,14 +564,12 @@ names(.all_aes_values) <- .all_aes_names
         downsample_cmds <- c("plot.data.pre <- plot.data;", 
             sprintf("plot.data <- subset(plot.data, subsetPointsByGrid(%s, %s, resolution=%i));",
                 xtype, ytype, param_choices[[.plotPointSampleRes]]), "")
-        
-        eval(parse(text=downsample_cmds), envir=envir)
-    } else {
-        downsample_cmds <- NULL
-    }
-    return(downsample_cmds)
-}
 
+        return(downsample_cmds)
+    } else {
+        return(NULL)
+    }
+}
 
 ############################################
 # Internal functions: central plotter ----
@@ -679,7 +666,7 @@ names(.all_aes_values) <- .all_aes_names
     }
     
     # Evaluating the plotting commands.
-    plot_out <- eval(parse(text=extra_cmds), envir=envir)
+    plot_out <- .text_eval(extra_cmds, envir)
     return(list(cmds = extra_cmds, plot = plot_out))
 }
 

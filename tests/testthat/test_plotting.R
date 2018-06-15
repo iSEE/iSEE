@@ -1366,8 +1366,8 @@ test_that(".define_facetby_for_column_plot works", {
      # Non-default choices
     params[["FacetByRow"]] <- TRUE
     params[["FacetByColumn"]] <- TRUE
-    params[["RowFacetColData"]] <- "driver_1_s"
-    params[["ColumnFacetColData"]] <- "Core.Type"
+    params[["RowFacetByColData"]] <- "driver_1_s"
+    params[["ColumnFacetByColData"]] <- "Core.Type"
     
     out <- iSEE:::.define_facetby_for_column_plot(params)
     expect_named(out, c("FacetRow", "FacetColumn"))
@@ -1389,8 +1389,8 @@ test_that(".define_facetby_for_row_plot works", {
      # Non-default choices
     params[["FacetByRow"]] <- TRUE
     params[["FacetByColumn"]] <- TRUE
-    params[["RowFacetRowData"]] <- "mean_count"
-    params[["ColumnFacetRowData"]] <- "num_cells"
+    params[["RowFacetByRowData"]] <- "mean_count"
+    params[["ColumnFacetByRowData"]] <- "num_cells"
     
     out <- iSEE:::.define_facetby_for_row_plot(params)
     expect_named(out, c("FacetRow", "FacetColumn"))
@@ -1414,8 +1414,8 @@ test_that(".add_facets works for column data plots", {
     # Non-default choices
     params[["FacetByRow"]] <- TRUE
     params[["FacetByColumn"]] <- TRUE
-    params[["RowFacetColData"]] <- "driver_1_s"
-    params[["ColumnFacetColData"]] <- "Core.Type"
+    params[["RowFacetByColData"]] <- "driver_1_s"
+    params[["ColumnFacetByColData"]] <- "Core.Type"
     
     out <- iSEE:::.add_facets(params)
     expect_identical(out, "facet_grid(FacetRow ~ FacetColumn)")
@@ -1434,8 +1434,8 @@ test_that(".add_facets works for row data plots", {
     # Non-default choices
     params[["FacetByRow"]] <- TRUE
     params[["FacetByColumn"]] <- TRUE
-    params[["RowFacetRowData"]] <- "mean_count"
-    params[["ColumnFacetRowData"]] <- "num_cells"
+    params[["RowFacetByRowData"]] <- "mean_count"
+    params[["ColumnFacetByRowData"]] <- "num_cells"
     
     out <- iSEE:::.add_facets(params)
     expect_identical(out, "facet_grid(FacetRow ~ FacetColumn)")

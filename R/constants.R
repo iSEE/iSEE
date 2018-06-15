@@ -69,10 +69,10 @@
 .facetByColumn <- "FacetByColumn"
 
 # Fields holding the covariate to facet by
-.facetRowsByRowData <- "RowFacetRowData"
-.facetColumnsByRowData <- "ColumnFacetRowData"
-.facetRowsByColData <- "RowFacetColData"
-.facetColumnsByColData <- "ColumnFacetColData"
+.facetRowsByRowData <- "RowFacetByRowData"
+.facetColumnsByRowData <- "ColumnFacetByRowData"
+.facetRowsByColData <- "RowFacetByColData"
+.facetColumnsByColData <- "ColumnFacetByColData"
 
 # Point colouring parameters. ----
 .colorByNothingTitle <- "None"

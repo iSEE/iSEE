@@ -58,5 +58,5 @@
     if (ncol(x) == 0L) {
         return(integer())
     }
-    which(sapply(x, .is_groupable))
+    which(vapply(x, FUN=.is_groupable, FUN.VALUE=FALSE))
 }

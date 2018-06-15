@@ -656,7 +656,7 @@ height_limits <- c(400L, 1000L)
         chosen.env$all_coordinates <- all_coordinates
         chosen.env$all_brushes <- selected$data
         chosen.env$all_lassos <- selected$data
-        eval(parse(text=selected$cmd), envir=chosen.env)
+        .text_eval(selected$cmd, envir=chosen.env)
         return(chosen.env$plot.data$SelectBy)
     } 
     return(NULL)
@@ -701,101 +701,79 @@ height_limits <- c(400L, 1000L)
     done <- commands <- list()
     eval_env <- new.env()
     eval_env$se <- se
+    all_cmds <- .initialize_cmd_store()
 
     # Coercing to a SingleCellExperiment object.
     if (!is(se, "SummarizedExperiment")) {
-        commands[["convert_se"]] <- 'se <- as(se, "SummarizedExperiment")'
+        all_cmds <- .add_command(all_cmds, 'se <- as(se, "SummarizedExperiment")')
     }
     if (!is(se, "SingleCellExperiment")) { 
-        commands[["convert_sce"]] <- 'se <- as(se, "SingleCellExperiment")'
+        all_cmds <- .add_command(all_cmds, 'se <- as(se, "SingleCellExperiment")')
     }
-    eval(parse(text=commands), envir=eval_env)
-    done <- c(done, commands)
-    commands <- list()
+    all_cmds <- .evaluate_commands(all_cmds, eval_env)
 
     # Adding row and column names if necessary.
     if (is.null(colnames(eval_env$se))) {
-        commands[["add_colnames"]] <- 'colnames(se) <- sprintf("SAMPLE_%i", seq_len(ncol(se)))'
+        all_cmds <- .add_command(all_cmds, 'colnames(se) <- sprintf("SAMPLE_%i", seq_len(ncol(se)))')
     }
     if (is.null(rownames(eval_env$se))) {
-        commands[["add_rownames"]] <- 'rownames(se) <- sprintf("FEATURE_%i", seq_len(nrow(se)))'
+        all_cmds <- .add_command(all_cmds, 'rownames(se) <- sprintf("FEATURE_%i", seq_len(nrow(se)))')
     }
-    eval(parse(text=commands), envir=eval_env)
-    done <- c(done, commands)
-    commands <- list()
+    all_cmds <- .evaluate_commands(all_cmds, eval_env)
 
     # Filling in with any sizeFactors.
     if (!is.null(sizeFactors(eval_env$se))) {
         new_name <- .safe_field_name("sizeFactors(se)", colnames(colData(eval_env$se)))
-        commands[["sf"]] <- sprintf('colData(se)[,%s] <- sizeFactors(se)', deparse(new_name))
-        eval(parse(text=commands), envir=eval_env)
-        done <- c(done, commands)
-        commands <- list()
+        all_cmds <- .add_command(all_cmds, sprintf('colData(se)[,%s] <- sizeFactors(se)', deparse(new_name)))
     }
-
     for (sf_name in sizeFactorNames(eval_env$se)) {
         get_cmd <- sprintf("sizeFactors(se, %s)", deparse(sf_name))
         new_name <- .safe_field_name(get_cmd, colnames(colData(eval_env$se)))
-        commands[["sf"]] <- sprintf('colData(se)[,%s] <- %s', deparse(new_name), get_cmd)
-        eval(parse(text=commands), envir=eval_env)
-        done <- c(done, commands)
-        commands <- list()
+        all_cmds <- .add_command(all_cmds, sprintf('colData(se)[,%s] <- %s', deparse(new_name), get_cmd))
     }
+    all_cmds <- .evaluate_commands(all_cmds, eval_env)
     
     # Filling in with spike-ins.
     if (!is.null(isSpike(eval_env$se))) {
         new_name <- .safe_field_name("isSpike(se)", colnames(rowData(eval_env$se)))
-        commands[["sf"]] <- sprintf('rowData(se)[,%s] <- isSpike(se)', deparse(new_name))
-        eval(parse(text=commands), envir=eval_env)
-        done <- c(done, commands)
-        commands <- list()
+        all_cmds <- .add_command(all_cmds, sprintf('rowData(se)[,%s] <- isSpike(se)', deparse(new_name)))
     }
     for (s_name in spikeNames(eval_env$se)) {
         get_cmd <- sprintf("isSpike(se, %s)", deparse(s_name))
         new_name <- .safe_field_name(get_cmd, colnames(rowData(eval_env$se)))
-        commands[["sf"]] <- sprintf('rowData(se)[,%s] <- %s', deparse(new_name), get_cmd)
-        eval(parse(text=commands), envir=eval_env)
-        done <- c(done, commands)
-        commands <- list()
+        all_cmds <- .add_command(all_cmds, sprintf('rowData(se)[,%s] <- %s', deparse(new_name), get_cmd))
     }
+    all_cmds <- .evaluate_commands(all_cmds, eval_env)
 
     # Decomposing nested DataFrames and discarding non-atomic types.
     new_rows <- .extract_nested_DF(rowData(eval_env$se))
     for (f in seq_along(new_rows$getter)) {
         new_name <- .safe_field_name(new_rows$setter[f], colnames(rowData(eval_env$se)))
-        commands[["nnr"]] <- sprintf("rowData(se)[,%s] <- rowData(se)%s", deparse(new_name), new_rows$getter[f])
-        eval(parse(text=commands), envir=eval_env)
-        done <- c(done, commands)
-        commands <- list()
+        all_cmds <- .add_command(all_cmds, sprintf("rowData(se)[,%s] <- rowData(se)%s", deparse(new_name), new_rows$getter[f]))
     }
-
     new_cols <- .extract_nested_DF(colData(eval_env$se))
     for (f in seq_along(new_cols$getter)) {
         new_name <- .safe_field_name(new_cols$setter[f], colnames(colData(eval_env$se)))
-        commands[["nnc"]] <- sprintf("colData(se)[,%s] <- colData(se)%s", deparse(new_name), new_cols$getter[f])
-        eval(parse(text=commands), envir=eval_env)
-        done <- c(done, commands)
-        commands <- list()
+        all_cmds <- .add_command(all_cmds, sprintf("colData(se)[,%s] <- colData(se)%s", deparse(new_name), new_cols$getter[f]))
     }
+    all_cmds <- .evaluate_commands(all_cmds, eval_env)
 
     # Destroy all non-atomic fields (only internal, no need to hold commands).
     output_se <- eval_env$se
     for (f in colnames(rowData(output_se))) {
         cur_field <- rowData(output_se)[[f]]
-        if (!is.numeric(cur_field) && !is.factor(cur_field) 
-            && !is.character(cur_field) && !is.logical(cur_field)) {
+        if (!is.numeric(cur_field) && !is.factor(cur_field) && !is.character(cur_field) && !is.logical(cur_field)) {
             rowData(output_se)[[f]] <- NULL
         }
     }
     for (f in colnames(colData(output_se))) {
         cur_field <- colData(output_se)[[f]]
-        if (!is.numeric(cur_field) && !is.factor(cur_field) 
-            && !is.character(cur_field) && !is.logical(cur_field)) {
+        if (!is.numeric(cur_field) && !is.factor(cur_field) && !is.character(cur_field) && !is.logical(cur_field)) {
             colData(output_se)[[f]] <- NULL
         }
     }
     
-    return(list(cmds=unlist(done), object=output_se))
+    return(list(cmds=all_cmds$processed, object=output_se))
 }
 
 #' Make a safe field name

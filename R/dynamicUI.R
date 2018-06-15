@@ -1025,6 +1025,11 @@
 #'
 #' @param se A SingleCellExperiment.
 #' @param field A string specifying the field to extract.
+#' @param empty_fail Logical scalar indicating whether a warning should be raised when no internal info is present.
+#'
+#' @details This function is only safe to run \emph{after} \code{\link{.precompute_UI_info}} has been called.
+#' As such, \code{empty_fail} is set to \code{TRUE} to catch any possible instances of unsafe execution.
+#' If you turn this off, you should ensure that the surrounding code will recompute any fields when the returned value is \code{NULL}.
 #'
 #' @return The value of \code{field} in the internal metadata of \code{se}.
 #'
@@ -1032,7 +1037,11 @@
 #' 
 #' @seealso \code{\link{.precompute_UI_info}}
 #' @rdname INTERNAL_get_internal_info
-.get_internal_info <- function(se, field) {
-    SingleCellExperiment:::int_metadata(se)$iSEE[[field]]
+.get_internal_info <- function(se, field, empty_fail=TRUE) {
+    info <- SingleCellExperiment:::int_metadata(se)$iSEE
+    if (is.null(info) && empty_fail) {
+        stop("no internal metadata in 'se'")
+    }
+    info[[field]]
 }
 

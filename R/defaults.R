@@ -533,22 +533,28 @@ heatMapPlotDefaults <- function(se, number) {
 .add_general_parameters_for_column_plots <- function(incoming, se) {
     incoming <- .add_general_parameters(incoming)
 
-    # Adding coloring parameters specifically for column plots.
     def_assay <- .set_default_assay(se)
     def_cov <- colnames(colData(se))[1]
-    dev_discrete <- .get_internal_info(se, "column_groupable")[1] # NULL if c()
+
+    any_discrete <- .get_internal_info(se, "column_groupable", empty_fail=FALSE)  # if this is run internally, use precomputed; otherwise recompute.
+    if (is.null(any_discrete)) { 
+        any_discrete <- colnames(colData(se))[.which_groupable(colData(se))]
+    }
+    dev_discrete <- any_discrete[1]
+
     incoming[[.colorByField]] <- .colorByNothingTitle
     incoming[[.colorByDefaultColor]] <- "black"
     incoming[[.colorByColData]] <- def_cov
-    # shape
+
     incoming[[.shapeByField]] <- .shapeByNothingTitle
     incoming[[.shapeByColData]] <- dev_discrete
+
     incoming[[.colorByRowTable]] <- .noSelection 
     incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameAssay]] <- def_assay
+
     incoming[[.facetByRow]] <- FALSE
     incoming[[.facetByColumn]] <- FALSE
-    # TODO: set to first groupable field, if any
     incoming[[.facetRowsByColData]] <- dev_discrete
     incoming[[.facetColumnsByColData]] <- dev_discrete
 
@@ -559,21 +565,26 @@ heatMapPlotDefaults <- function(se, number) {
 .add_general_parameters_for_row_plots <- function(incoming, se) {
     incoming <- .add_general_parameters(incoming)
 
-    # Adding coloring parameters specifically for row plots.
     def_cov <- colnames(rowData(se))[1]
-    dev_discrete <- .get_internal_info(se, "row_groupable")[1] # NULL if c()
+    any_discrete <- .get_internal_info(se, "row_groupable", empty_fail=FALSE) # if this is run internally, use precomputed; otherwise recompute.
+    if (is.null(any_discrete)) { 
+        any_discrete <- colnames(rowData(se))[.which_groupable(rowData(se))]
+    }
+    dev_discrete <- any_discrete[1]
+
     incoming[[.colorByField]] <- .colorByNothingTitle
     incoming[[.colorByDefaultColor]] <- "black"
     incoming[[.colorByRowData]] <- def_cov
-    # shape
+
     incoming[[.shapeByField]] <- .shapeByNothingTitle
     incoming[[.shapeByRowData]] <- dev_discrete
+
     incoming[[.colorByRowTable]] <- .noSelection 
     incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameColor]] <- "red"
+
     incoming[[.facetByRow]] <- FALSE
     incoming[[.facetByColumn]] <- FALSE
-    # TODO: set to first groupable field, if any
     incoming[[.facetRowsByRowData]] <- dev_discrete
     incoming[[.facetColumnsByRowData]] <- dev_discrete
 

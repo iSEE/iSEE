@@ -32,7 +32,7 @@ p.out <- iSEE:::.make_customColPlot(id = 1, all_memory, all_coordinates, sceX, E
 ####################
 
 test_that("getting and setting of custom column functions", {
-     expect_identical(iSEE:::.get_internal_info(sce, "custom_col_fun"), NULL)
+     expect_error(iSEE:::.get_internal_info(sce, "custom_col_fun"), "no internal")
      expect_identical(iSEE:::.get_internal_info(sceX, "custom_col_fun"), list(PCA2=CUSTOM))
      
     sceX2 <- iSEE:::.precompute_UI_info(sce, NULL)

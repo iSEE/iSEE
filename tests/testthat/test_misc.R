@@ -22,6 +22,8 @@ test_that("list updater function works correctly", {
 }) 
 
 test_that("plot feasibility checks work correctly", {
+    sce <- iSEE:::.precompute_UI_info(sce, NULL)
+
     out <- iSEE:::.check_plot_feasibility(sce)
     expect_true(out$redDimPlot)
     expect_true(out$featAssayPlot)
@@ -278,6 +280,8 @@ test_that("initialization of active panels works correctly", {
 })
 
 test_that("sanitation of memory works correctly", {
+    sce <- iSEE:::.precompute_UI_info(sce, NULL)
+
     memory <- iSEE:::.setup_memory(sce, 
                                    redDimArgs=NULL, 
                                    colDataArgs=NULL, 

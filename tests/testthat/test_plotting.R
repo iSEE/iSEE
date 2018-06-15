@@ -6,6 +6,7 @@ featAssayArgs <- featAssayPlotDefaults(sce, 1)
 rowDataArgs <- rowDataPlotDefaults(sce, 1)
 
 # Set up memory
+sce <- iSEE:::.precompute_UI_info(sce, NULL)    
 all_memory <- iSEE:::.setup_memory(sce, 
     redDimArgs=redDimArgs, 
     colDataArgs=colDataArgs, 

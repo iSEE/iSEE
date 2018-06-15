@@ -30,7 +30,7 @@ redDimArgs[["ZoomData"]][[2]] <-
     )
 
 test_that(".report_memory generates code that evaluates to the provided object",{
-    sce <- iSEE:::.set_custom_col_fun(sce, list(PCA2="WHEE"))  # Adding custom functions for .setup_memory to check.
+    sce <- iSEE:::.precompute_UI_info(sce, list(PCA2="WHEE"))  # Adding custom functions for .setup_memory to check.
 
     all_memory <- iSEE:::.setup_memory(sce, 
                                        redDimArgs=redDimArgs, 

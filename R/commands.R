@@ -28,7 +28,7 @@
 #' @rdname INTERNAL_manage_commands
 .add_command <- function(obj, cmd, name=NULL) {
     if (is.list(cmd)) cmd <- unlist(cmd)
-    if (!is.null(name)) names(cmd) <- name
+    if (!is.null(cmd) && !is.null(name)) names(cmd) <- name
     obj$pending <- c(obj$pending, cmd)
     return(obj)
 }

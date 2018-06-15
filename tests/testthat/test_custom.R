@@ -10,7 +10,7 @@ CUSTOM <- function(se, columns) {
                 xlab="WHEE", ylab="YAY", title="HOORAY"))
 }
 
-sceX <- iSEE:::.set_custom_col_fun(sce, list(PCA2=CUSTOM))
+sceX <- iSEE:::.precompute_UI_info(sce, list(PCA2=CUSTOM))
 customColArgs$Function <- "PCA2"
 
 # Set up memory
@@ -32,11 +32,11 @@ p.out <- iSEE:::.make_customColPlot(id = 1, all_memory, all_coordinates, sceX, E
 ####################
 
 test_that("getting and setting of custom column functions", {
-     expect_identical(iSEE:::.get_custom_col_fun(sce), NULL)
-     expect_identical(iSEE:::.get_custom_col_fun(sceX), list(PCA2=CUSTOM))
+     expect_identical(iSEE:::.get_internal_info(sce, "custom_col_fun"), NULL)
+     expect_identical(iSEE:::.get_internal_info(sceX, "custom_col_fun"), list(PCA2=CUSTOM))
      
-    sceX2 <- iSEE:::.set_custom_col_fun(sceX, NULL)
-    expect_identical(iSEE:::.get_custom_col_fun(sceX2), NULL)
+    sceX2 <- iSEE:::.precompute_UI_info(sce, NULL)
+    expect_identical(iSEE:::.get_internal_info(sceX2, "custom_col_fun"), NULL)
 })
 
 test_that(".make_customColPlot produces a valid list", {

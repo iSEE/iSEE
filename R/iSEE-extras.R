@@ -128,11 +128,9 @@
 #' Each of the \code{*Args} can also be \code{NULL}, in which case they are ignored and only the defaults are used.
 #' However, each of the \code{*Max} values must be specified.
 #'
-#' @section Parameter specification:
-#' Some parameters can be specified as strings for convenience, while internally being represented as integer indices.
+#' In each DataFrame, some parameters can be specified as strings for convenience, while internally being represented as integer indices.
 #' Any such string values are converted to integers using the \code{\link{.name2index}} function, for consistency in downstream processing.
-#'
-#' 
+#' See \code{?"\link{defaults}"} for more details.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_setup_memory

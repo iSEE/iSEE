@@ -97,3 +97,10 @@ test_that(".panel_generation works", {
     
     expect_is(out, "shiny.tag.list")
 })
+
+test_that(".panel_organization works", {
+    
+    out <- iSEE:::.panel_organization(active_panels)
+    
+    expect_is(out, "shiny.tag.list")
+})

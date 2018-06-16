@@ -59,7 +59,7 @@
                 featAssayPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
                 rowStatTable=! (nrow(se)==0L),
                 rowDataPlot=! (ncol(rowData(se))==0L || nrow(se)==0L),
-                customColPlot=! (ncol(se)==0L || length(.get_custom_col_fun(se))==0L),
+                customColPlot=! (ncol(se)==0L || length(.get_internal_info(se, "custom_col_fun"))==0L),
                 heatMapPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L)
     ))
 }
@@ -125,11 +125,12 @@
 #' It will then call \code{\link{.override_defaults}} to replace the defaults with user-specified values in \code{*Args}.
 #' Not all arguments need to be specified of a given panel type; similarly, arguments do not need to be specified for all panels of a given type
 #'
-#' Some parameters can be specified as strings for convenience, while internally being represented as integer indices.
-#' Any such string values are converted to integers using the \code{\link{.name2index}} function, for consistency in downstream processing.
-#'
 #' Each of the \code{*Args} can also be \code{NULL}, in which case they are ignored and only the defaults are used.
 #' However, each of the \code{*Max} values must be specified.
+#'
+#' In each DataFrame, some parameters can be specified as strings for convenience, while internally being represented as integer indices.
+#' Any such string values are converted to integers using the \code{\link{.name2index}} function, for consistency in downstream processing.
+#' See \code{?"\link{defaults}"} for more details.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_setup_memory
@@ -160,7 +161,7 @@
                      rowDataPlot=rowDataArgs, 
                      customColPlot=customColArgs,
                      heatMapPlot=heatMapArgs)
-
+    
     all_maxes <- list(redDimPlot=redDimMax, 
                       colDataPlot=colDataMax, 
                       featAssayPlot=featAssayMax,
@@ -241,7 +242,6 @@
 #' Any missing matches are set to indices of 1.
 #' If the field contains some other atomic value, the function will try to coerce it into an integer, setting 1 for any failures.
 #' If the field contains a list, each element of the list will be coerced to an integer vector.
-#'
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_name2index
@@ -634,7 +634,10 @@ height_limits <- c(400L, 1000L)
 #' @details
 #' This function obtains the commands to select points from \code{\link{.process_selectby_choice}}, and evaluates them to identify the selected points.
 #' Such a procedure is necessary in \code{\link{iSEE}} to obtain the actual feature names to show to the user in the interface.
-#' Some work is thus required to trick \code{\link{.process_selectby_choice}} into thinking it is operating on the parameteres for a point-based receiving panel.
+#' 
+#' Some work is required to trick \code{\link{.process_selectby_choice}} into thinking it is operating on the parameters for a point-based receiving panel.
+#' We also set \code{self_source=FALSE} to ensure that the function uses the coordinates in \code{all_coordinates}, and does not try to self-brush from \code{plot.data}
+#' (which would be meaningless here, given the lack of coordinates).
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_get_selected_points
@@ -645,18 +648,16 @@ height_limits <- c(400L, 1000L)
 #' @importFrom S4Vectors DataFrame 
 .get_selected_points <- function(names, transmitter, all_memory, all_coordinates) {
     dummy <- DataFrame(transmitter, .selectColorTitle) 
-    rownames(dummy) <- paste0("__", transmitter) # can never match transmitter; avoids using "plot.data" in .process_selectby_choice().
     colnames(dummy) <- c(.selectByPlot, .selectEffect)
+    selected <- .process_selectby_choice(dummy, all_memory, self_source=FALSE)
 
-    selected <- .process_selectby_choice(dummy, all_memory)
-    tmp_data <- data.frame(row.names=names)
     if (!is.null(selected$cmd)) { 
         chosen.env <- new.env()
-        chosen.env$plot.data <- tmp_data 
+        chosen.env$plot.data <- data.frame(row.names=names)
         chosen.env$all_coordinates <- all_coordinates
         chosen.env$all_brushes <- selected$data
         chosen.env$all_lassos <- selected$data
-        eval(parse(text=selected$cmd), envir=chosen.env)
+        .text_eval(selected$cmd, envir=chosen.env)
         return(chosen.env$plot.data$SelectBy)
     } 
     return(NULL)
@@ -701,101 +702,79 @@ height_limits <- c(400L, 1000L)
     done <- commands <- list()
     eval_env <- new.env()
     eval_env$se <- se
+    all_cmds <- .initialize_cmd_store()
 
     # Coercing to a SingleCellExperiment object.
     if (!is(se, "SummarizedExperiment")) {
-        commands[["convert_se"]] <- 'se <- as(se, "SummarizedExperiment")'
+        all_cmds <- .add_command(all_cmds, 'se <- as(se, "SummarizedExperiment")')
     }
     if (!is(se, "SingleCellExperiment")) { 
-        commands[["convert_sce"]] <- 'se <- as(se, "SingleCellExperiment")'
+        all_cmds <- .add_command(all_cmds, 'se <- as(se, "SingleCellExperiment")')
     }
-    eval(parse(text=commands), envir=eval_env)
-    done <- c(done, commands)
-    commands <- list()
+    all_cmds <- .evaluate_commands(all_cmds, eval_env)
 
     # Adding row and column names if necessary.
     if (is.null(colnames(eval_env$se))) {
-        commands[["add_colnames"]] <- 'colnames(se) <- sprintf("SAMPLE_%i", seq_len(ncol(se)))'
+        all_cmds <- .add_command(all_cmds, 'colnames(se) <- sprintf("SAMPLE_%i", seq_len(ncol(se)))')
     }
     if (is.null(rownames(eval_env$se))) {
-        commands[["add_rownames"]] <- 'rownames(se) <- sprintf("FEATURE_%i", seq_len(nrow(se)))'
+        all_cmds <- .add_command(all_cmds, 'rownames(se) <- sprintf("FEATURE_%i", seq_len(nrow(se)))')
     }
-    eval(parse(text=commands), envir=eval_env)
-    done <- c(done, commands)
-    commands <- list()
+    all_cmds <- .evaluate_commands(all_cmds, eval_env)
 
     # Filling in with any sizeFactors.
     if (!is.null(sizeFactors(eval_env$se))) {
         new_name <- .safe_field_name("sizeFactors(se)", colnames(colData(eval_env$se)))
-        commands[["sf"]] <- sprintf('colData(se)[,%s] <- sizeFactors(se)', deparse(new_name))
-        eval(parse(text=commands), envir=eval_env)
-        done <- c(done, commands)
-        commands <- list()
+        all_cmds <- .add_command(all_cmds, sprintf('colData(se)[,%s] <- sizeFactors(se)', deparse(new_name)))
     }
-
     for (sf_name in sizeFactorNames(eval_env$se)) {
         get_cmd <- sprintf("sizeFactors(se, %s)", deparse(sf_name))
         new_name <- .safe_field_name(get_cmd, colnames(colData(eval_env$se)))
-        commands[["sf"]] <- sprintf('colData(se)[,%s] <- %s', deparse(new_name), get_cmd)
-        eval(parse(text=commands), envir=eval_env)
-        done <- c(done, commands)
-        commands <- list()
+        all_cmds <- .add_command(all_cmds, sprintf('colData(se)[,%s] <- %s', deparse(new_name), get_cmd))
     }
+    all_cmds <- .evaluate_commands(all_cmds, eval_env)
     
     # Filling in with spike-ins.
     if (!is.null(isSpike(eval_env$se))) {
         new_name <- .safe_field_name("isSpike(se)", colnames(rowData(eval_env$se)))
-        commands[["sf"]] <- sprintf('rowData(se)[,%s] <- isSpike(se)', deparse(new_name))
-        eval(parse(text=commands), envir=eval_env)
-        done <- c(done, commands)
-        commands <- list()
+        all_cmds <- .add_command(all_cmds, sprintf('rowData(se)[,%s] <- isSpike(se)', deparse(new_name)))
     }
     for (s_name in spikeNames(eval_env$se)) {
         get_cmd <- sprintf("isSpike(se, %s)", deparse(s_name))
         new_name <- .safe_field_name(get_cmd, colnames(rowData(eval_env$se)))
-        commands[["sf"]] <- sprintf('rowData(se)[,%s] <- %s', deparse(new_name), get_cmd)
-        eval(parse(text=commands), envir=eval_env)
-        done <- c(done, commands)
-        commands <- list()
+        all_cmds <- .add_command(all_cmds, sprintf('rowData(se)[,%s] <- %s', deparse(new_name), get_cmd))
     }
+    all_cmds <- .evaluate_commands(all_cmds, eval_env)
 
     # Decomposing nested DataFrames and discarding non-atomic types.
     new_rows <- .extract_nested_DF(rowData(eval_env$se))
     for (f in seq_along(new_rows$getter)) {
         new_name <- .safe_field_name(new_rows$setter[f], colnames(rowData(eval_env$se)))
-        commands[["nnr"]] <- sprintf("rowData(se)[,%s] <- rowData(se)%s", deparse(new_name), new_rows$getter[f])
-        eval(parse(text=commands), envir=eval_env)
-        done <- c(done, commands)
-        commands <- list()
+        all_cmds <- .add_command(all_cmds, sprintf("rowData(se)[,%s] <- rowData(se)%s", deparse(new_name), new_rows$getter[f]))
     }
-
     new_cols <- .extract_nested_DF(colData(eval_env$se))
     for (f in seq_along(new_cols$getter)) {
         new_name <- .safe_field_name(new_cols$setter[f], colnames(colData(eval_env$se)))
-        commands[["nnc"]] <- sprintf("colData(se)[,%s] <- colData(se)%s", deparse(new_name), new_cols$getter[f])
-        eval(parse(text=commands), envir=eval_env)
-        done <- c(done, commands)
-        commands <- list()
+        all_cmds <- .add_command(all_cmds, sprintf("colData(se)[,%s] <- colData(se)%s", deparse(new_name), new_cols$getter[f]))
     }
+    all_cmds <- .evaluate_commands(all_cmds, eval_env)
 
     # Destroy all non-atomic fields (only internal, no need to hold commands).
     output_se <- eval_env$se
     for (f in colnames(rowData(output_se))) {
         cur_field <- rowData(output_se)[[f]]
-        if (!is.numeric(cur_field) && !is.factor(cur_field) 
-            && !is.character(cur_field) && !is.logical(cur_field)) {
+        if (!is.numeric(cur_field) && !is.factor(cur_field) && !is.character(cur_field) && !is.logical(cur_field)) {
             rowData(output_se)[[f]] <- NULL
         }
     }
     for (f in colnames(colData(output_se))) {
         cur_field <- colData(output_se)[[f]]
-        if (!is.numeric(cur_field) && !is.factor(cur_field) 
-            && !is.character(cur_field) && !is.logical(cur_field)) {
+        if (!is.numeric(cur_field) && !is.factor(cur_field) && !is.character(cur_field) && !is.logical(cur_field)) {
             colData(output_se)[[f]] <- NULL
         }
     }
     
-    return(list(cmds=unlist(done), object=output_se))
+    return(list(cmds=all_cmds$processed, object=output_se))
 }
 
 #' Make a safe field name

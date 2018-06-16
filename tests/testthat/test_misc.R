@@ -22,6 +22,8 @@ test_that("list updater function works correctly", {
 }) 
 
 test_that("plot feasibility checks work correctly", {
+    sce <- iSEE:::.precompute_UI_info(sce, NULL)
+
     out <- iSEE:::.check_plot_feasibility(sce)
     expect_true(out$redDimPlot)
     expect_true(out$featAssayPlot)
@@ -94,7 +96,7 @@ test_that("count incrementer works correctly", {
 })
 
 test_that("memory setup works correctly", {
-    sce <- iSEE:::.set_custom_col_fun(sce, list(PCA2="WHEE"))  # Adding custom functions for .setup_memory to check.
+    sce <- iSEE:::.precompute_UI_info(sce, list(PCA2="WHEE"))  # Adding custom functions for .setup_memory to check.
 
     # Works correctly in the vanilla setting.
     memory <- iSEE:::.setup_memory(sce, 
@@ -233,7 +235,7 @@ test_that("name to index coercion works correctly", {
 })
 
 test_that("initialization of active panels works correctly", {
-    sce <- iSEE:::.set_custom_col_fun(sce, list(PCA2="WHEE")) # Adding custom functions for .setup_memory to check.
+    sce <- iSEE:::.precompute_UI_info(sce, list(PCA2="WHEE")) # Adding custom functions for .setup_memory to check.
 
     memory <- iSEE:::.setup_memory(sce, 
                                    redDimArgs=NULL, 
@@ -278,6 +280,8 @@ test_that("initialization of active panels works correctly", {
 })
 
 test_that("sanitation of memory works correctly", {
+    sce <- iSEE:::.precompute_UI_info(sce, NULL)
+
     memory <- iSEE:::.setup_memory(sce, 
                                    redDimArgs=NULL, 
                                    colDataArgs=NULL, 
@@ -334,4 +338,32 @@ test_that("sanitation of memory works correctly", {
     memory2$featAssayPlot[1, iSEE:::.featAssayYAxisRowTable] <- "Row statistics table 2"
     sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory)
+})
+
+# grouping ----
+
+test_that("groupability detection functions work", {
+   
+    df <- DataFrame()
+    
+    # No column returns an empty vector
+    expect_identical(
+        iSEE:::.which_groupable(df),
+        integer()
+    )
+    
+    max_groupable <-  getOption("iSEE.maxlevels", 24)
+    
+    df <- DataFrame(
+        groupable1 = factor(rep(seq_len(max_groupable), 2)),
+        not_groupable = factor(seq_len(max_groupable * 2)),
+        groupable2 = factor(rep(seq_len(max_groupable/2), 4))
+    )
+    
+    expect_identical(
+        iSEE:::.which_groupable(df),
+        c(groupable1 = 1L, groupable2 = 3L)
+    )
+    
+    
 })

@@ -62,6 +62,18 @@
 .heatMapRelHeightHeatmap <- 1
 .heatMapRelHeightAnnot <- 0.1
 
+# Faceting parameters ----
+
+# Logical fields whether to facet
+.facetByRow <- "FacetByRow"
+.facetByColumn <- "FacetByColumn"
+
+# Fields holding the covariate to facet by
+.facetRowsByRowData <- "RowFacetByRowData"
+.facetColumnsByRowData <- "ColumnFacetByRowData"
+.facetRowsByColData <- "RowFacetByColData"
+.facetColumnsByColData <- "ColumnFacetByColData"
+
 # Point colouring parameters. ----
 .colorByNothingTitle <- "None"
 .colorByColDataTitle <- "Column data"
@@ -77,6 +89,16 @@
 .colorByRowTable <- "ColorByRowTable"
 .colorByFeatNameAssay <- "ColorByFeatNameAssay"
 .colorByFeatNameColor <- "ColorByFeatNameColor"
+
+# Point shaping parameters. ----
+
+.shapeByNothingTitle <- "None"
+.shapeByColDataTitle <- "Column data"
+.shapeByRowDataTitle <- "Row data"
+
+.shapeByField <- "ShapeBy"
+.shapeByColData <- "ShapeByColData"
+.shapeByRowData <- "ShapeByRowData"
 
 # Point selection parameters. ----
 .selectParamBoxOpen <- "SelectBoxOpen"
@@ -111,7 +133,9 @@
 .visualParamChoice <- "VisualChoices"
 
 .visualParamChoiceColorTitle <- "Color"
+.visualParamChoiceShapeTitle <- "Shape"
 .visualParamChoicePointTitle <- "Points"
+.visualParamChoiceFacetTitle <- "Facets"
 .visualParamChoiceOtherTitle <- "Other"
 
 .plotPointSize <- "PointSize"
@@ -129,6 +153,10 @@
 .plotFontSizeLegendTextDefault <- 9
 .plotFontSizeLegendTitleDefault <- 11
 .plotFontSizeTitleDefault <- 12
+
+# INTERNAL: Memory parameters ----
+
+.allCoordinatesNames <- c("X", "Y", "FacetRow", "FacetColumn")
 
 # Row statistic table parameters. ----
 .rowStatSelected <- "Selected"

@@ -70,7 +70,7 @@
 #' counts(sce) <- assay(sce, "tophat_counts")
 #' sce <- normalize(sce)
 #'
-#' sce <- runPCA(sce)
+#' sce <- runPCA(sce, ncomponents=4)
 #' sce <- runTSNE(sce)
 #' rowData(sce)$ave_count <- rowMeans(counts(sce))
 #' rowData(sce)$n_cells <- rowSums(counts(sce)>0)
@@ -114,8 +114,8 @@ iSEE <- function(se,
   se <- se_out$object
   se_cmds <- se_out$cmds
 
-  # Storing the custom column plot functions.
-  se <- .set_custom_col_fun(se, customColFun)
+  # Precomputing UI information - must be before .setup_memory() 
+  se <- .precompute_UI_info(se, customColFun)
 
   # Throw an error if the colormap supplied is not compatible with the object
   isColorMapCompatible(colormap, se, error = TRUE)
@@ -335,7 +335,7 @@ iSEE <- function(se,
                       rowDataPlot=.make_rowDataPlot,
                       customColPlot=.remake_customColPlot)
 		p.out <- FUN(enc$ID, pObjects$memory, pObjects$coordinates, se, colormap)
-		pObjects$coordinates[[panelname]] <- p.out$xy[,c("X", "Y")]
+		pObjects$coordinates[[panelname]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
     }
 
     #######################################################################
@@ -892,49 +892,25 @@ iSEE <- function(se,
                 id0 <- id
                 plot_name <- paste0(mode0, id0)
                 prefix <- paste0(plot_name, "_")
-
                 click_field <- paste0(prefix, .lassoClick)
-                observeEvent(input[[click_field]], {
-                    cur_click <- input[[click_field]]
-                    previous <- pObjects$memory[[mode0]][,.lassoData][[id0]]
-                    bump_children <- FALSE
+                brush_field <- paste0(prefix, .brushField)
 
+                observeEvent(input[[click_field]], {
                     # Don't add to waypoints if a Shiny brush exists in memory (as they are mutually exclusive).
-                    if (!is.null(pObjects$memory[[mode0]][,.brushData][[id0]]) ||
-                        !is.null(input[[paste0(prefix, .brushField)]])) {
+                    if (!is.null(pObjects$memory[[mode0]][,.brushData][[id0]]) || !is.null(input[[brush_field]])) {
                         return(NULL)
                     }
 
-                    # Closing the lasso if you click close to the starting point.
-                    xrange <- cur_click$domain$right - cur_click$domain$left
-                    yrange <- cur_click$domain$top - cur_click$domain$bottom
-                    if (!is.null(previous)
-                        && abs(cur_click$x - previous[1,1]) < xrange/100
-                        && abs(cur_click$y - previous[1,2]) < yrange/100) {
-                        updated <- rbind(previous, previous[1,])
-                        attr(updated, "closed") <- TRUE
-                        bump_children <- TRUE
-
-                        # Checking out whether coordinates are flipped.
-                        attr(updated, "flipped") <- (cur_click$mapping$x=="Y" && cur_click$mapping$y=="X")
-
-                    } else {
-                        is_closed <- attr(previous, "closed")
-                        if (!is.null(is_closed) && is_closed) {
-                            previous <- NULL
-                            bump_children <- TRUE
-                        }
-                        updated <- rbind(previous, c(cur_click$x, cur_click$y))
-                        attr(updated, "closed") <- FALSE
-                    }
-
-                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .lassoData, updated)
+                    prev_lasso <- pObjects$memory[[mode0]][,.lassoData][[id0]]
+                    was_closed <- if(is.null(prev_lasso)) FALSE else prev_lasso$closed
+                    new_lasso <- .update_lasso(input[[click_field]], prev_lasso)
+                    pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .lassoData, new_lasso)
 
                     # Trigger replotting of self, to draw the lasso waypoints.
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
 
                     # Trigger replotting of child panels that receive point selection information.
-                    if (bump_children) {
+                    if (new_lasso$closed != was_closed) {
                         children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
                         for (child_plot in children) {
                             rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
@@ -1123,18 +1099,19 @@ iSEE <- function(se,
                       customColPlot=.remake_customColPlot)
 
         # Defining fundamental parameters that destroy brushes/lassos upon being changed.
+        collected_facet <- c(.facetByRow, .facetByColumn, .facetRowsByColData, .facetColumnsByColData) 
         protected <- switch(mode,
-                            redDimPlot=c(.redDimType, .redDimXAxis, .redDimYAxis),
-                            colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
-                            featAssayPlot=c(.featAssayAssay, .featAssayXAxisColData),
-                            rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData),
-                            customColPlot=.customColFun)
+                            redDimPlot=c(.redDimXAxis, .redDimYAxis, collected_facet),
+                            colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, collected_facet),
+                            featAssayPlot=c(.featAssayAssay, .featAssayXAxisColData, collected_facet),
+                            rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData, collected_facet),
+                            customColPlot=c(.customColFun, collected_facet))
 
         # Defining non-fundamental parameters that do not destroy brushes/lassos.
         if (mode=="rowDataPlot") {
-            nonfundamental <- c(.colorByRowData, .colorByFeatNameColor)
+            nonfundamental <- c(.colorByRowData, .colorByFeatNameColor, .shapeByField, .shapeByRowData)
         } else {
-            nonfundamental <- c(.colorByColData, .colorByFeatNameAssay)
+            nonfundamental <- c(.colorByColData, .colorByFeatNameAssay, .shapeByField, .shapeByColData)
         }
         nonfundamental <- c(nonfundamental, .colorByDefaultColor, .selectColor, .selectTransAlpha, 
                             .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition,
@@ -1241,7 +1218,7 @@ iSEE <- function(se,
                     rObjects[[gen_field]] <- .increment_counter(isolate(rObjects[[gen_field]]))
                     p.out <- FUN0(id0, pObjects$memory, pObjects$coordinates, se, colormap)
                     pObjects$commands[[plot_name]] <- p.out$cmd_list
-                    pObjects$coordinates[[plot_name]] <- p.out$xy[,c("X", "Y")]
+                    pObjects$coordinates[[plot_name]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
                     p.out$plot
                 })
 
@@ -1325,6 +1302,39 @@ iSEE <- function(se,
                     return(NULL)
                 }
                 pObjects$memory[[mode0]][[.featAssayYAxisFeatName]][id0] <- matched_input
+                .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
+            }, ignoreInit=TRUE)
+        })
+    }
+
+    # Reduced dimension plots also need a special observer to update the maximum of the numericInput when the type changes.
+    max_plots <- nrow(pObjects$memory$redDimPlot)
+    for (id in seq_len(max_plots)) {
+        local({
+            id0 <- id
+            mode0 <- "redDimPlot"
+            plot_name <- paste0(mode0, id0)
+            cur_field <- paste0(plot_name, "_", .redDimType)
+            dim_fieldX <- paste0(plot_name, "_", .redDimXAxis)
+            dim_fieldY <- paste0(plot_name, "_", .redDimYAxis)
+
+            observeEvent(input[[cur_field]], {
+                matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[.redDimType]]))
+                if (identical(matched_input, pObjects$memory[[mode0]][[.redDimType]][id0])) {
+                    return(NULL)
+                }
+                pObjects$memory[[mode0]][[.redDimType]][id0] <- matched_input
+                
+                # Updating the numericInputs as well. This should not trigger re-plotting as the identical() check in the 
+                # corresponding observers should stop the replotting flag from being set. 
+                new_max <- ncol(reducedDim(se, matched_input))
+                capped_X <- pmin(new_max, pObjects$memory[[mode0]][[.redDimXAxis]][id0])
+                capped_Y <- pmin(new_max, pObjects$memory[[mode0]][[.redDimYAxis]][id0])
+                pObjects$memory[[mode0]][[.redDimXAxis]][id0] <- capped_X
+                pObjects$memory[[mode0]][[.redDimYAxis]][id0] <- capped_Y
+                updateNumericInput(session, dim_fieldX, max=new_max, value=capped_X)
+                updateNumericInput(session, dim_fieldY, max=new_max, value=capped_Y)
+
                 .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
             }, ignoreInit=TRUE)
         })

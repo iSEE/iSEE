@@ -74,10 +74,10 @@
 #' Defaults to \code{"---"}, i.e., no coordinates are generated.}
 #' }
 #'
-#' @section Coloring parameters (for points):
+#' @section Coloring parameters (for point-based plots):
 #' \describe{
 #' \item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
-#' Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Feature name"} or \code{"Column data"}.}
+#' Defaults to \code{"None"}, but can also be \code{"Feature name"} or \code{"Column data"} (for column-based plots) or \code{"Row data"} for (row-based plots).}
 #' \item{\code{ColorByDefaultColor}:}{String specifying the default point colour when \code{ColorBy="None"}.
 #' Defaults to \code{"black"}.}
 #' \item{\code{ColorByFeatName}:}{Integer, the index of the feature to use for colouring based on expression, if \code{ColorBy="Feature name"}? 
@@ -105,7 +105,48 @@
 #' Defaults to \code{"red"}.}
 #' }
 #'
+#' @section Shape parameters (for point-based plots):
+#' \describe{
+#' \item{\code{ShapeBy}:}{Character, what type of data should be used for controlling shape?
+#' Defaults to \code{"None"}, but can also be \code{"Column data"}.}
+#' }
+#'
+#' For the plots where each point represents a sample (i.e., all plots except for heatmaps and row data plots), the following additional options apply:
+#' \describe{
+#' \item{\code{ShapeByColData}:}{Character, which column of \code{colData(se)} should be used for shaping if \code{ShapeBy="Column data"}? 
+#' This should refer to a categorical variable, and will default to the first such entry of \code{colData(se)}.}
+#' }
+#'
+#' For plots where each point represents a feature (i.e., row data plots), the following additional options apply:
+#' \describe{
+#' \item{\code{ShapeByRowData}:}{Character, which column of \code{rowData(se)} should be used for shaping if \code{ShapeBy="Row data"}? 
+#' This should refer to a categorical variable, and will default to the first such entry of \code{rowData(se)}.}
+#' }
+#'
+#' @section Faceting parameters (for point-based plots):
+#' \describe{
+#' \item{\code{FacetByRow}:}{Logical indicating whether the plot should be faceted by row.}
+#' \item{\code{FacetByColumn}:}{Logical indicating whether the plot should be faceted by row.}
+#' }
+#'
+#' For the plots where each point represents a sample (i.e., all plots except for heatmaps and row data plots), the following additional options apply:
+#' \describe{
+#' \item{\code{RowFacetByColData}:}{Character, which column of \code{colData(se)} should be used to facet by row?
+#' This should refer to a categorical variable, and will default to the first such entry of \code{colData(se)}.}
+#' \item{\code{ColumnFacetByColData}:}{Character, which column of \code{colData(se)} should be used to facet by column?
+#' This should refer to a categorical variable, and will default to the first such entry of \code{colData(se)}.}
+#' }
+#' 
+#' For the plots where each point represents a feature (i.e., row data plots), the following additional options apply:
+#' \describe{
+#' \item{\code{RowFacetByRowData}:}{Character, which column of \code{colData(se)} should be used to facet by row?
+#' This should refer to a categorical variable, and will default to the first such entry of \code{colData(se)}.}
+#' \item{\code{ColumnFacetByRowData}:}{Character, which column of \code{colData(se)} should be used to facet by column?
+#' This should refer to a categorical variable, and will default to the first such entry of \code{colData(se)}.}
+#' }
+#'
 #' @section Other plot parameters (for point-based plots):
+#' Parameter visibility options are:
 #' \describe{
 #' \item{\code{DataBoxOpen}:}{Logical, should the data parameter box be open upon initialization?
 #' Defaults to \code{FALSE}.}
@@ -113,6 +154,10 @@
 #' Defaults to \code{FALSE}.}
 #' \item{\code{VisualChoices}:}{A list containing one character vector, specifying the visual box parameters to be shown upon initialization.
 #' This defaults to \code{list("Color")} to show only the coloring parameters, but the internal vector can also contain \code{"Points"} and \code{"Other"}.}
+#' }
+#' 
+#' Options related to the appearance of points are:
+#' \describe{
 #' \item{\code{PointSize}:}{Numeric, the size of the points.
 #' Defaults to 1.}
 #' \item{\code{PointAlpha}:}{Numeric, what level of transparency should be used for the points?
@@ -123,6 +168,10 @@
 #' \item{\code{SampleRes}:}{Numeric, specifying the downsampling resolution, i.e., the granularity at which points are considered to overlap.
 #' Higher values result in a more stringent definition of overlaps, and thus less downsampling.
 #' Defaults to 200.}
+#' }
+#'
+#' Text-related parameters are:
+#' \describe{
 #' \item{\code{FontSize}:}{Numeric, size of the font.
 #' Defaults to 1.}
 #' \item{\code{LegendPosition}:}{String specifying the legend position.
@@ -484,15 +533,30 @@ heatMapPlotDefaults <- function(se, number) {
 .add_general_parameters_for_column_plots <- function(incoming, se) {
     incoming <- .add_general_parameters(incoming)
 
-    # Adding coloring parameters specifically for column plots.
     def_assay <- .set_default_assay(se)
     def_cov <- colnames(colData(se))[1]
+
+    any_discrete <- .get_internal_info(se, "column_groupable", empty_fail=FALSE)  # if this is run internally, use precomputed; otherwise recompute.
+    if (is.null(any_discrete)) { 
+        any_discrete <- colnames(colData(se))[.which_groupable(colData(se))]
+    }
+    dev_discrete <- any_discrete[1]
+
     incoming[[.colorByField]] <- .colorByNothingTitle
     incoming[[.colorByDefaultColor]] <- "black"
     incoming[[.colorByColData]] <- def_cov
+
+    incoming[[.shapeByField]] <- .shapeByNothingTitle
+    incoming[[.shapeByColData]] <- dev_discrete
+
     incoming[[.colorByRowTable]] <- .noSelection 
     incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameAssay]] <- def_assay
+
+    incoming[[.facetByRow]] <- FALSE
+    incoming[[.facetByColumn]] <- FALSE
+    incoming[[.facetRowsByColData]] <- dev_discrete
+    incoming[[.facetColumnsByColData]] <- dev_discrete
 
     return(incoming)
 }
@@ -501,14 +565,28 @@ heatMapPlotDefaults <- function(se, number) {
 .add_general_parameters_for_row_plots <- function(incoming, se) {
     incoming <- .add_general_parameters(incoming)
 
-    # Adding coloring parameters specifically for row plots.
     def_cov <- colnames(rowData(se))[1]
+    any_discrete <- .get_internal_info(se, "row_groupable", empty_fail=FALSE) # if this is run internally, use precomputed; otherwise recompute.
+    if (is.null(any_discrete)) { 
+        any_discrete <- colnames(rowData(se))[.which_groupable(rowData(se))]
+    }
+    dev_discrete <- any_discrete[1]
+
     incoming[[.colorByField]] <- .colorByNothingTitle
     incoming[[.colorByDefaultColor]] <- "black"
     incoming[[.colorByRowData]] <- def_cov
+
+    incoming[[.shapeByField]] <- .shapeByNothingTitle
+    incoming[[.shapeByRowData]] <- dev_discrete
+
     incoming[[.colorByRowTable]] <- .noSelection 
     incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameColor]] <- "red"
+
+    incoming[[.facetByRow]] <- FALSE
+    incoming[[.facetByColumn]] <- FALSE
+    incoming[[.facetRowsByRowData]] <- dev_discrete
+    incoming[[.facetColumnsByRowData]] <- dev_discrete
 
     return(incoming)
 }
@@ -532,9 +610,29 @@ heatMapPlotDefaults <- function(se, number) {
 #' \code{?\link{defaults}}
 .set_default_assay <- function(se) { 
     def_assay <- which(assayNames(se)=="logcounts")
-    if (length(def_assay)==0L) {
+    if (length(def_assay) == 0L) {
         return(1L)
     } else {
         return(def_assay[1])
+    }
+}
+
+#' Set the default discrete covariate in a DataFrame
+#'
+#' @param x A DataFrame (or equivalent).
+#'
+#' @return An integer scalar containing the index of the first groupable covariate, if available; otherwise 0L.
+#' 
+#' @author Kevin Rue-Albrecht
+#' 
+#' @rdname INTERNAL_set_default_discrete
+#' @seealso
+#' \code{?\link{defaults}}
+.set_default_discrete <- function(x) {
+    discrete_data <- .which_groupable(x)
+    if (length(discrete_data) == 0L) {
+        return(0L)
+    } else {
+        return(discrete_data[1])
     }
 }

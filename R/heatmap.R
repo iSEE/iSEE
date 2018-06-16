@@ -51,11 +51,12 @@
     assay_choice <- param_choices[[.heatMapAssay]]
 
     # Extract genes to be included and melt the matrix to long format
-    data_cmds <- c(
+    data_cmds <- .initialize_cmd_store()
+    data_cmds <- .add_command(data_cmds, c(
       sprintf("value.mat <- as.matrix(assay(se, %i)[%s, , drop=FALSE]);",
               assay_choice, paste(deparse(genes_selected_y), collapse="\n")),
       "plot.data <- reshape2::melt(value.mat, varnames = c('Y', 'X'));"
-    )
+    ))
 
     # Arrange cells according to the selected colData columns
     orderBy <- param_choices[[.heatMapColData]][[1]]
@@ -63,7 +64,8 @@
         length(orderBy) > 0L,
         sprintf("At least one column annotation needed for heat map")
     ))
-    setup_cmds <- c(
+
+    data_cmds <- .add_command(data_cmds, c("", 
         vapply(seq_along(orderBy), FUN=function(i) {
             lhs <- sprintf("plot.data[['OrderBy%i']]", i)
             rhs <- sprintf("colData(se)[['%s']][match(plot.data$X, rownames(colData(se)))]", orderBy[i])
@@ -76,9 +78,9 @@
         sprintf("plot.data <- dplyr::arrange(plot.data, %s);",
                 paste0("OrderBy", seq_along(orderBy), collapse = ",")),
         "plot.data$X <- factor(plot.data$X, levels = unique(plot.data$X));"
-    )
-    data_cmds <- c(data_cmds, "", setup_cmds)
-    eval(parse(text=data_cmds), envir=eval_env)
+    ))
+
+    data_cmds <- .evaluate_commands(data_cmds, eval_env)
 
     # Processing the column selection choice.
     alpha_cmd <- ""
@@ -101,30 +103,29 @@
             ## Add annotation bar
             orderBy <- c(orderBy, select_as_field)
         }
-        eval(parse(text=select_cmds), envir=eval_env)
+
+        .text_eval(select_cmds, eval_env)
     }
 
     # Deciding whether to center and scale each row.
     # We do this here instead of using scale(), as this must be done after selection (if restricting).
-    censcal_cmds <- list()
+    censcal_cmds <- .initialize_cmd_store()
     if (.heatMapCenterTitle %in% param_choices[[.heatMapCenterScale]][[1]]) {
-       censcal_cmds[["centering"]] <- "plot.data$value <- plot.data$value - ave(plot.data$value, plot.data$Y);"
+        censcal_cmds <- .add_command(censcal_cmds, "plot.data$value <- plot.data$value - ave(plot.data$value, plot.data$Y);", name='centering')
     }
     if (.heatMapScaleTitle %in% param_choices[[.heatMapCenterScale]][[1]]) {
-       censcal_cmds[["gene.var"]] <- "gene.var <- ave(plot.data$value, plot.data$Y, FUN=function(x) { sum(x^2)/(length(x)-1) });" # not sd(), to mimic scale().
-       censcal_cmds[["scaling"]] <- "plot.data$value <- plot.data$value/sqrt(gene.var);"
+        # We don't use sd() for scaling, to mimic scale().
+        censcal_cmds <- .add_command(censcal_cmds, "gene.var <- ave(plot.data$value, plot.data$Y, FUN=function(x) { sum(x^2)/(length(x)-1) });", name='gene.var')
+        censcal_cmds <- .add_command(censcal_cmds, "plot.data$value <- plot.data$value/sqrt(gene.var);", name='scaling')
     }
-    censcal_cmds <- unlist(censcal_cmds)
-    if (length(censcal_cmds)) {
-        eval(parse(text=censcal_cmds), envir=eval_env)
-    }
+    censcal_cmds <- .evaluate_commands(censcal_cmds, eval_env)
 
     # Define zoom command. Transform the ranges given by zoomData to the actual coordinates in the heatmap
     bounds <- param_choices[[.zoomData]][[1]]
     if (!is.null(bounds)) {
         zoom_cmds <- sprintf("plot.data <- subset(plot.data, Y %%in%% rownames(value.mat)[c(%s)]); # zooming in",
                              paste0(bounds, collapse = ","))
-        eval(parse(text=zoom_cmds), envir=eval_env)
+        .text_eval(zoom_cmds, eval_env)
     } else {
         zoom_cmds <- NULL
     }
@@ -142,6 +143,7 @@
         "theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.line=element_blank());",
         "heatlegend <- cowplot::get_legend(p0 + theme(legend.position='bottom'));"
     )
+    .text_eval(plot_cmds, eval_env)
 
     # Annotations
     annot_cmds <- list(init="legends <- list()")
@@ -184,7 +186,7 @@
     annot_cmds <- unlist(annot_cmds)
 
     # Evaluate to get the individual legends
-    plot_part <- eval(parse(text=c(zoom_cmds, plot_cmds, annot_cmds)), envir=eval_env)
+    .text_eval(annot_cmds, envir=eval_env)
     legends <- eval_env$legends
 
     # Put heatmap and annotations together
@@ -202,8 +204,8 @@
               1-.heatMapRelHeightColorBar, .heatMapRelHeightColorBar)
     )
 
-    plot_out <- eval(parse(text=grid_cmds), envir=eval_env)
-    return(list(cmd_list=list(data=data_cmds, select=select_cmds, centerscale=censcal_cmds,
+    plot_out <- .text_eval(grid_cmds, eval_env)
+    return(list(cmd_list=list(data=data_cmds$processed, select=select_cmds, centerscale=censcal_cmds$processed,
                               zoom=zoom_cmds, plot=plot_cmds, annot=annot_cmds, grid=grid_cmds),
                 xy=eval_env$value.mat, plot=plot_out, legends=legends))
 }

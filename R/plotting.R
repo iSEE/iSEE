@@ -890,9 +890,18 @@ names(.all_aes_values) <- .all_aes_names
         plot_cmds[["select_blank"]] <- "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
     }
     
-    # Preserving the x-axis range. This applies even for horizontal violin plots,
-    # as this command is executed internally before coord_flip().
-    plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +" 
+    # Preserving the x-axis range when no zoom is applied.
+    # This applies even for horizontal violin plots, as this command is executed internally before coord_flip().
+    scale_x_cmd <- "scale_x_discrete(drop = FALSE%s) +" 
+    if (is.null(bounds)) {
+        scale_x_extra <- ""
+    } else {
+        # Restrict axis ticks to visible levels
+        scale_x_extra <- sprintf(
+            ", breaks = levels(plot.data$X)[%i:%i]",
+            ceiling(bounds["xmin"]), floor(bounds["xmax"]))
+    }
+     plot_cmds[["scale_x"]] <- sprintf(scale_x_cmd, scale_x_extra)
     
     plot_cmds[["theme_base"]] <- "theme_bw() +"
     plot_cmds[["theme_custom"]] <- sprintf(
@@ -1042,8 +1051,22 @@ plot.data$Y <- tmp;")
         )
     }
     
-    plot_cmds[["scale_x"]] <- "scale_x_discrete(drop = FALSE) +"
-    plot_cmds[["scale_y"]] <- "scale_y_discrete(drop = FALSE) +"
+    scale_x_cmd <- "scale_x_discrete(drop = FALSE%s) +"
+    scale_y_cmd <- "scale_y_discrete(drop = FALSE%s) +" 
+    if (is.null(bounds)) {
+        scale_x_extra <- ""
+        scale_y_extra <- ""
+    } else {
+        # Restrict axis ticks to visible levels
+        scale_x_extra <- sprintf(
+            ", breaks = levels(plot.data$X)[%i:%i]",
+            ceiling(bounds["xmin"]), floor(bounds["xmax"]))
+        scale_y_extra <- sprintf(
+            ", breaks = levels(plot.data$Y)[%i:%i]",
+            ceiling(bounds["ymin"]), floor(bounds["ymax"]))
+    }
+     plot_cmds[["scale_x"]] <- sprintf(scale_x_cmd, scale_x_extra)
+     plot_cmds[["scale_y"]] <- sprintf(scale_y_cmd, scale_y_extra)
     
     # Retain axes when no points are present.
     if (nrow(plot_data)==0 && is_subsetted) {

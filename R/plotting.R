@@ -566,6 +566,7 @@ names(.all_aes_values) <- .all_aes_names
             sprintf("plot.data <- subset(plot.data, subsetPointsByGrid(%s, %s, resolution=%i));",
                 xtype, ytype, param_choices[[.plotPointSampleRes]]), "")
 
+        .text_eval(downsample_cmds, envir)
         return(downsample_cmds)
     } else {
         return(NULL)

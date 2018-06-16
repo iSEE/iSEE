@@ -34,7 +34,7 @@
 }
 
 #' @rdname INTERNAL_manage_commands
-.evaluate_commands <- function(obj, envir, run=TRUE) {
+.evaluate_commands <- function(obj, envir) {
     if (length(obj$pending) && !is.null(envir)) {
         eval(parse(text=obj$pending), envir=envir)
     }

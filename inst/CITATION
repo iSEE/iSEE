@@ -6,15 +6,13 @@ bibentry(
         person("Kevin", "Rue-Albrecht"),
         person("Federico", "Marini"),
         person("Charlotte", "Soneson"),
-        person("Aaron", "Lun", "TL")),
+        person("Aaron TL", "Lun")),
     journal = "F1000Research",
-    volume = "7",
-    pages = "741",
     year = "2018",
     doi = "10.12688/f1000research.14966.1",
     url = "http://dx.doi.org/10.12688/f1000research.14966.1",
     textVersion = paste0(
     "Rue-Albrecht K, Marini F, Soneson C and Lun ATL. ",
-    "iSEE: Interactive SummarizedExperiment Explorer [version 1; referees: 2 approved]",
+    "iSEE: Interactive SummarizedExperiment Explorer [version 1; referees: 2 approved].",
     " F1000Research 2018, 7:741 ",
     "(doi: 10.12688/f1000research.14966.1)"))

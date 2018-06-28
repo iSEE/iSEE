@@ -9,6 +9,7 @@ cache: packages
 warnings_are_errors: false
 
 before_install:
+    - Rscript -e 'install.packages("devtools")'
     - Rscript -e 'devtools::install(dependencies = c("Depends", "Imports", "Suggests", "Enhances"))'
 
 r_build_args: "--no-manual --no-resave-data"

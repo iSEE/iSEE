@@ -17,6 +17,8 @@ The _iSEE_ package aims to provide an interactive user interface for exploring d
 Particular focus will be given to single-cell data in the `SingleCellExperiment` derived class.
 The interface is implemented with [RStudio](https://www.rstudio.com)'s [_Shiny_](https://shiny.rstudio.com), with a multi-panel setup for ease of navigation.
 
+<img src="screenshot.png" height="300px" />
+
 This initiative was proposed at the European Bioconductor Meeting in Cambridge, 2017.
 Current contributors include:
 

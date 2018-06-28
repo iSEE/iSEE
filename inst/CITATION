@@ -13,7 +13,7 @@ bibentry(
     url = "http://dx.doi.org/10.12688/f1000research.14966.1",
     textVersion = paste0(
         "Rue-Albrecht K, Marini F, Soneson C and Lun ATL. ",
-        "iSEE: Interactive SummarizedExperiment Explorer [version 1; referees: 2 approved].",
+        "iSEE: Interactive SummarizedExperiment Explorer.",
         " F1000Research 2018, 7:741 ",
         "(doi: 10.12688/f1000research.14966.1)"
         )

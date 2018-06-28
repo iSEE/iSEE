@@ -25,6 +25,8 @@ Current contributors include:
 - Federico Marini
 - Kevin Rue-Albrecht
 
+![Figure 1. _iSEE_ uses a customisable multi-panel layout.][Figure1]
+
 ## Cell-based visualizations 
 
 The interface is proposed to contain the following features in its first iteration:
@@ -57,4 +59,4 @@ This can be copy-pasted into R scripts for batch generation of figures.
 We set up an instance of iSEE running on the `allen` dataset at this address: http://shiny.imbei.uni-mainz.de:3838/iSEE. 
 Please keep in mind this is only for trial purposes, yet it can show a quick way of how you or your system administrator can setup `r Biocpkg("iSEE")` for analyzing your `SummarizedExperiment`/`SingleCellExperiment` precomputed object.
 
-
+[Figure1]: https://f1000researchdata.s3.amazonaws.com/manuscripts/16293/6bf85f9d-8352-4a78-a8da-456f05f5c4c9_figure1.gif "iSEE uses a customisable multi-panel layout"

@@ -25,7 +25,7 @@ Current contributors include:
 - Federico Marini
 - Kevin Rue-Albrecht
 
-![Figure 1. _iSEE_ uses a customisable multi-panel layout.][Figure1]
+[![Figure 1. _iSEE_ uses a customisable multi-panel layout.][Figure1]](https://f1000research.com/articles/7-741/v1)
 
 ## Cell-based visualizations 
 

@@ -129,6 +129,28 @@ setClass("ExperimentColorMap",
 #' This argument may be ignored in the body of the color map function
 #' to produce constant color maps. 
 #' 
+#' @section Categorical color maps:
+#' 
+#' The default categorical color map emulates the default ggplot2 categorical color palette
+#' (Credit: \url{https://stackoverflow.com/questions/8197559/emulate-ggplot2-default-color-palette}).
+#' This palette returns a set of colors sampled in steps of equal size that correspond to approximately equal perceptual changes in color:
+#' 
+#' \preformatted{
+#' function(n) {
+#'     hues=seq(15, 375, length=(n + 1))
+#'     hcl(h=hues, l=65, c=100)[1:n]
+#' }
+#' }
+#' 
+#' To change the palette for all categorical variables, users must supply a color map that returns a similar value; namely, an unnamed character vector of length \code{n}.
+#' For instance, using the base R palette \code{rainbow.colors}
+#' 
+#' \preformatted{
+#' function(n) {
+#'     rainbow(n)
+#' }
+#' }
+#' 
 #' @return An object of class \code{ExperimentColorMap}
 #'
 #' @section Accessors:
@@ -258,7 +280,12 @@ setClass("ExperimentColorMap",
 #' colDataColorMap(ecm, "passes_qc_checks_s") <- function(n){NULL}
 #' rowDataColorMap(ecm, "undefined") <- function(n){NULL}
 #' 
-#'
+#' # Categorical color maps ----
+#' 
+#' # Override all discrete color maps using the base rainbow palette
+#' ecm <- ExperimentColorMap(global_discrete = rainbow)
+#' n <- 10
+#' plot(1:n, col=assayColorMap(ecm, "undefined", discrete = TRUE)(n), pch=20, cex=3)
 ExperimentColorMap <- function(
     assays=list(), colData=list(), rowData=list(),
     all_discrete=list(assays=NULL, colData=NULL, rowData=NULL),
@@ -586,20 +613,6 @@ setMethod("rowDataColorMap", c("ExperimentColorMap", "character"),
     return(.globalColorMap(x, discrete))
 }
 
-# global color map ----
-
-.globalColorMap <- function(x, discrete){
-    if (discrete){
-        global_map <- x@global_discrete
-    } else {
-        global_map <- x@global_continuous
-    }
-    if (.activeColormap(global_map)){
-        return(global_map)
-    }
-    return(.defaultColorMap(discrete))
-}
-
 setGeneric("rowDataColorMap<-", signature=c("x", "i"),
     function(x, i, ..., value) standardGeneric("rowDataColorMap<-"))
 
@@ -614,6 +627,20 @@ setReplaceMethod(
     new_rowdata[[i]] <- value
     rowData(x) <- new_rowdata
     x
+}
+
+# global color map ----
+
+.globalColorMap <- function(x, discrete){
+    if (discrete){
+        global_map <- x@global_discrete
+    } else {
+        global_map <- x@global_continuous
+    }
+    if (.activeColormap(global_map)){
+        return(global_map)
+    }
+    return(.defaultColorMap(discrete))
 }
 
 # show ----

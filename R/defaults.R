@@ -301,7 +301,7 @@ redDimPlotDefaults <- function(se, number) {
     out <- new("DataFrame", nrows=as.integer(number))
     out[[.redDimType]] <- 1L
     out[[.redDimXAxis]] <- 1L
-    out[[.redDimYAxis]] <- 2L
+    out[[.redDimYAxis]] <- min(2L, ncol(reducedDim(se))) # if first reduced dim type has only 1 dimension
     
     out <- .add_general_parameters_for_column_plots(out, se)
     if (waszero) out <- out[0,,drop=FALSE]

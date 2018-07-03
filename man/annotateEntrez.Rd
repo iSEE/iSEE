@@ -9,26 +9,24 @@ annotateEntrez(se, orgdb, keytype, rowdata_col = NULL)
 \arguments{
 \item{se}{An object that is coercible to \linkS4class{SingleCellExperiment}.}
 
-\item{orgdb}{An OrgDb object, as a basis for the annotation. Typical values can be
-\code{org.Hs.eg.db} for human, \code{org.Mm.eg.db} for mouse, and so on. The 
-corresponding package has to be available and loaded before calling this function.}
+\item{orgdb}{An OrgDb object, as a basis for the annotation.
+Typical values are \code{org.Hs.eg.db} for human, \code{org.Mm.eg.db} for mouse, and so on.
+The corresponding package has to be available and loaded before calling this function.}
 
-\item{keytype}{The keytype that matches the IDs used in the \code{se} object. Can be one of 
-the values of \code{keytypes(org.XX.eg.db)}, typically being "SYMBOL", "ENSEMBL", or "ENTREZID"}
+\item{keytype}{The keytype that matches the IDs used in the \code{se} object.
+Can be one of  the values of \code{keytypes(org.XX.eg.db)}, typically \code{"SYMBOL"}, \code{"ENSEMBL"}, or \code{"ENTREZID"}.}
 
-\item{rowdata_col}{A character string, corresponding to one of the columns (if present) in
-\code{rowData(se)}. Defaults to NULL, which corresponds to having the ids of the features
-as row names of the \code{se} object itself.}
+\item{rowdata_col}{A character string specifying which column of \code{rowData(se)} contains the keys.
+Defaults to NULL, which corresponds to having the ids of the features as row names of the \code{se} object itself.}
 }
 \value{
-A function to be used as the value of the \code{annotFun} parameter of \code{iSEE}. 
+A function to be used as the value of the \code{annotFun} parameter of \code{iSEE}.
 This function itself returns a \code{HTML} tag object with the content extracted from the call,
-with parameteres the \code{se} object, and the \code{row_index} corresponding to the feature
-of interest.
+accepting as parameters the \code{se} object and the \code{row_index} corresponding to the feature of interest.
 }
 \description{
-Annotation facility for displaying additional information on selected genes, based on
-the data retrieved from the ENTREZ database
+Annotation facility for displaying additional information on selected genes,
+based on the data retrieved from the ENTREZ database
 }
 \examples{
 library(scRNAseq)

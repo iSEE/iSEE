@@ -29,10 +29,10 @@ tolower(names(panel_colors)), panel_colors, panel_colors,
 tolower(names(panel_colors)), tolower(names(panel_colors))
 ), collapse="\n")
 
-
 # Colours for brushing (fill needs to be lighter than the stroke).
 brush_stroke_color <- panel_colors
 
+#' @importFrom grDevices col2rgb rgb
 new_colors <- 255 - ((255 - col2rgb(panel_colors))/5)
 brush_fill_color <- rgb(new_colors[1,], new_colors[2,], new_colors[3,], maxColorValue=255)
 names(brush_fill_color) <- names(panel_colors)

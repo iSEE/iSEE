@@ -14,10 +14,7 @@
 #' @importFrom methods as new
 #' @importFrom reshape2 melt
 #' @importFrom methods new slot is
-#' @importFrom igraph topo_sort V delete.vertices 
-#' set_vertex_attr add_vertices
-#' @importFrom graphics plot
-#' @importFrom grDevices hcl col2rgb rgb
+#' @importFrom grDevices hcl
 #' @importFrom viridisLite viridis
 #' @importFrom cowplot plot_grid
 #' @importFrom scales rescale

@@ -199,7 +199,8 @@ iSEE <- function(se,
                     text = actionButton(
                         "tour_firststeps", "Click me for a quick tour",
                         icon("hand-o-right"),
-                        style=.actionbutton_biocstyle),
+                        style=.actionbutton_biocstyle
+                    ),
                     icon = icon(""), # tricking it to not have additional icon
                     status = "primary"
                 ),
@@ -213,9 +214,9 @@ iSEE <- function(se,
                             sprintf("window.open('http://bioconductor.org/packages/%s/bioc/vignettes/iSEE/inst/doc/iSEE_vignette.html', '_blank')",
                                 ifelse(unlist(packageVersion("iSEE"))[2] %% 2L==0L, "release", "devel")
                             )
-                        ),
-                        icon = icon(""), status = "primary"
-                    )
+                        )
+                    ),
+                    icon = icon(""), status = "primary"
                 )
             ),
 

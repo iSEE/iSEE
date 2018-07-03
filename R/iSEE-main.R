@@ -1307,7 +1307,7 @@ iSEE <- function(se,
         })
     }
 
-    # Reduced dimension plots also need a special observer to update the maximum of the numericInput when the type changes.
+    # Reduced dimension plots also need a special observer to update the maximum of the selectInput when the type changes.
     max_plots <- nrow(pObjects$memory$redDimPlot)
     for (id in seq_len(max_plots)) {
         local({
@@ -1325,15 +1325,18 @@ iSEE <- function(se,
                 }
                 pObjects$memory[[mode0]][[.redDimType]][id0] <- matched_input
                 
-                # Updating the numericInputs as well. This should not trigger re-plotting as the identical() check in the 
+                # Updating the selectInputs as well. This should not trigger re-plotting as the identical() check in the 
                 # corresponding observers should stop the replotting flag from being set. 
                 new_max <- ncol(reducedDim(se, matched_input))
                 capped_X <- pmin(new_max, pObjects$memory[[mode0]][[.redDimXAxis]][id0])
                 capped_Y <- pmin(new_max, pObjects$memory[[mode0]][[.redDimYAxis]][id0])
                 pObjects$memory[[mode0]][[.redDimXAxis]][id0] <- capped_X
                 pObjects$memory[[mode0]][[.redDimYAxis]][id0] <- capped_Y
-                updateNumericInput(session, dim_fieldX, max=new_max, value=capped_X)
-                updateNumericInput(session, dim_fieldY, max=new_max, value=capped_Y)
+
+                new_choices <- seq_len(new_max)
+                names(new_choices) <- new_choices
+                updateSelectInput(session, dim_fieldX, choices=new_choices, selected=capped_X)
+                updateSelectInput(session, dim_fieldY, choices=new_choices, selected=capped_Y)
 
                 .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
             }, ignoreInit=TRUE)

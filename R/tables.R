@@ -190,6 +190,7 @@
 #' \code{\link{iSEE}}
 #'
 #' @importFrom shiny updateSelectizeInput
+#' @importFrom methods as
 .setup_table_observer <- function(mode, id, pObjects, rObjects, input, session,
                                   by_field, title, feat_field, tab_field,
                                   feat_choices, param='color')

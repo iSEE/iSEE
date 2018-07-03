@@ -343,9 +343,10 @@ ExperimentColorMap <- function(
 
 # .default color maps ----
 
-# default continuous colormap
+#' @importFrom viridisLite viridis
 .defaultContinuousColorMap <- viridis # function(n)
-# default categorical colormap
+
+#' @importFrom grDevices hcl
 .defaultDiscreteColorMap <- function(n) {
     # Credit: https://stackoverflow.com/questions/8197559/emulate-ggplot2-default-color-palette
     hues=seq(15, 375, length=(n + 1))

@@ -71,6 +71,7 @@
 #' @importFrom DT datatable renderDataTable dataTableOutput
 #' @importFrom shinyAce aceEditor
 #' @importFrom S4Vectors DataFrame
+#' @importFrom methods as
 #'
 #' @examples
 #' library(scRNAseq)

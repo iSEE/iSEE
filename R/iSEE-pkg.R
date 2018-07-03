@@ -10,11 +10,8 @@
 #' @import SingleCellExperiment
 #' @import SummarizedExperiment
 #' @importMethodsFrom BiocGenerics ncol nrow
-#' @importFrom methods as new
 #' @importFrom reshape2 melt
 #' @importFrom methods new slot is
-#' @importFrom grDevices hcl
-#' @importFrom viridisLite viridis
 #' @importFrom cowplot plot_grid
 #' @importFrom scales rescale
 #' @author Aaron Lun \email{alun@@wehi.edu.au}

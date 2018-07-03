@@ -70,6 +70,7 @@
 #' updateSelectInput updateSelectizeInput updateRadioButtons 
 #' @importFrom DT datatable renderDataTable dataTableOutput
 #' @importFrom shinyAce aceEditor
+#' @importFrom S4Vectors DataFrame
 #'
 #' @examples
 #' library(scRNAseq)

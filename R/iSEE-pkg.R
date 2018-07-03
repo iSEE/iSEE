@@ -9,7 +9,6 @@
 #'
 #' @import SingleCellExperiment
 #' @import SummarizedExperiment
-#' @importFrom S4Vectors DataFrame
 #' @importMethodsFrom BiocGenerics ncol nrow
 #' @importFrom methods as new
 #' @importFrom reshape2 melt

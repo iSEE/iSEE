@@ -16,6 +16,7 @@
 #' object
 #' 
 #' @export
+#' @importFrom S4Vectors DataFrame
 #'
 #' @examples
 #' library(scRNAseq)
@@ -78,7 +79,7 @@ modeGating <- function(
     rep("", nrow(featAssayArgs) - nrow(features))
   )
   # Show only the active 
-  initialPanels = DataFrame(
+  initialPanels <- DataFrame(
     Name = c(
       sprintf("Feature assay plot %i", seq(1, nrow(features), 1))
     ),

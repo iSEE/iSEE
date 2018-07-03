@@ -645,7 +645,7 @@ height_limits <- c(400L, 1000L)
 #' \code{\link{.process_selectby_choice}},
 #' \code{\link{iSEE}}
 #'
-#' @importFrom S4Vectors DataFrame 
+#' @importFrom S4Vectors DataFrame
 .get_selected_points <- function(names, transmitter, all_memory, all_coordinates) {
     dummy <- DataFrame(transmitter, .selectColorTitle) 
     colnames(dummy) <- c(.selectByPlot, .selectEffect)

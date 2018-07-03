@@ -51,13 +51,26 @@
 #' By default, categorical data types such as factor and character are limited to 24 levels, beyond which they are coerced to numeric variables for faster plotting.
 #' This limit may be set to a different value as a global option, e.g. \code{options(iSEE.maxlevels=30)}.
 #'
-#' @return A Shiny App is launched for interactive data exploration of the
-#' \code{\link{SummarizedExperiment}}/\code{\link{SingleCellExperiment}}
-#' object
+#' @return A Shiny app object is returned, for interactive data exploration of the \linkS4class{SummarizedExperiment} or \linkS4class{SingleCellExperiment} object.
 #'
 #' @export
-#'
 #' @importFrom utils packageVersion
+#' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu notificationItem 
+#' @importFrom utils packageVersion read.delim citation sessionInfo browseURL head
+#' @importFrom shinyjs useShinyjs 
+#' @importFrom rintrojs introjsUI introjs
+#' @importFrom shiny plotOutput uiOutput 
+#' renderUI renderPlot renderPrint 
+#' observe observeEvent reactiveValues isolate req
+#' actionButton selectizeInput sliderInput 
+#' showModal modalDialog showNotification 
+#' shinyApp runApp 
+#' HTML br icon hr p em strong
+#' tagList tags 
+#' updateSelectInput updateSelectizeInput updateRadioButtons 
+#' @importFrom DT datatable renderDataTable dataTableOutput
+#' @importFrom shinyAce aceEditor
+#'
 #' @examples
 #' library(scRNAseq)
 #' data(allen)
@@ -1481,7 +1494,7 @@ iSEE <- function(se,
                     limit <- 100
                     if (length(incoming) > limit) {
                         showNotification(sprintf("only the first %i features used", limit), type="warning")
-                        incoming <- utils::head(incoming, limit)
+                        incoming <- head(incoming, limit)
                     }
 
                     combined <- union(pObjects$memory[[mode0]][id0, .heatMapFeatName][[1]], incoming)

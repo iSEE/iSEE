@@ -13,8 +13,6 @@
 #' @importMethodsFrom BiocGenerics ncol nrow
 #' @importFrom methods as new
 #' @importFrom reshape2 melt
-#' @importFrom AnnotationDbi mapIds keytypes
-#' @importFrom rentrez entrez_summary
 #' @importFrom methods new slot is
 #' @importFrom igraph topo_sort V delete.vertices 
 #' set_vertex_attr add_vertices

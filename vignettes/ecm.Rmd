@@ -44,11 +44,11 @@ bibliography: iSEE.bib
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  error = FALSE,
-  warning = FALSE,
-  message = FALSE
+    collapse = TRUE,
+    comment = "#>",
+    error = FALSE,
+    warning = FALSE,
+    message = FALSE
 )
 stopifnot(requireNamespace("htmltools"))
 htmltools::tagList(rmarkdown::html_dependency_font_awesome())
@@ -81,8 +81,7 @@ It is also possible to use a function that completely ignores any arguments, and
 ```{r}
 # Coloring for FPKMs:
 fpkm_color_fun <- function(n){
-  x <- c("black","brown","red","orange","yellow")
-  return(x)
+    c("black","brown","red","orange","yellow")
 }
 ```
 
@@ -94,7 +93,7 @@ Colors are automatically assigned to factor levels in the specified order of the
 ```{r driver_color_fun}
 # Coloring for the 'driver' metadata variable.
 driver_color_fun <- function(n){
-  return(RColorBrewer::brewer.pal(n, "Set2"))
+    RColorBrewer::brewer.pal(n, "Set2")
 }
 ```
 
@@ -105,9 +104,9 @@ For instance, the following colormap function will only be compatible with facto
 ```{r qc_color_fun}
 # Coloring for the QC metadata variable:
 qc_color_fun <- function(n){
-  qc_colors <- c("forestgreen", "firebrick1")
-  names(qc_colors) <- c("Y", "N")
-  return(qc_colors)
+    qc_colors <- c("forestgreen", "firebrick1")
+    names(qc_colors) <- c("Y", "N")
+    qc_colors
 }
 ```
 
@@ -168,11 +167,11 @@ This is demonstrated below for the continuous variables:
 
 ```{r all_continuous}
 ExperimentColorMap(
-  all_continuous=list( # shared
-    assays=viridis::plasma,
-    colData=viridis::inferno
-  ),
-  global_continuous=viridis::magma # global
+    all_continuous=list( # shared
+        assays=viridis::plasma,
+        colData=viridis::inferno
+    ),
+    global_continuous=viridis::magma # global
 )
 ```
 

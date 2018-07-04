@@ -68,8 +68,8 @@ Given a `SingleCellExperiment` or `SummarizedExperiment` object named `sce`, the
 
 ```{r init}
 init <- DataFrame(
-  Name = c("Feature assay plot 1", "Feature assay plot 2"),
-  Width = c(6, 6)
+    Name = c("Feature assay plot 1", "Feature assay plot 2"),
+    Width = c(6, 6)
 )
 app <- iSEE(sce, initialPanels = init)
 ```
@@ -165,8 +165,9 @@ The code below sets up the initial panel configuration and brushing relationship
 
 ```{r initialPanels_cytof, eval=FALSE}
 initialPanels = DataFrame(
-  Name = c(paste("Feature assay plot", 1:5), "Reduced dimension plot 1"),
-  Width = c(rep(3, 5), 5))
+    Name = c(paste("Feature assay plot", 1:5), "Reduced dimension plot 1"),
+    Width = c(rep(3, 5), 5))
+
 # Feature assay plots
 fexArg <- featAssayPlotDefaults(cytof, 5)
 fexArg$XAxis <- "Feature name"

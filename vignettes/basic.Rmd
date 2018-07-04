@@ -45,11 +45,11 @@ bibliography: iSEE.bib
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  error = FALSE,
-  warning = FALSE,
-  message = FALSE
+    collapse = TRUE,
+    comment = "#>",
+    error = FALSE,
+    warning = FALSE,
+    message = FALSE
 )
 stopifnot(requireNamespace("htmltools"))
 htmltools::tagList(rmarkdown::html_dependency_font_awesome())
@@ -128,28 +128,28 @@ The layout of the `r Biocpkg("iSEE")` user interface is based mostly on the `r C
 The dashboard header contains three dropdown menus.
 The first is the Diagnostics dropdown menu, which is identified by a **wrench** icon (<i class="fa fa-wrench"></i>) and contains:
 
-  - the "Examine panel chart" functionality, identified by a **chain** icon (<i class="fa fa-chain"></i>).
-  Click on this button to obtain a graph representation of the existing links and point selection among your open plot and table panels (coded with the same colors as in the app).
-  This can be very useful in sessions that include a large number of panels, to visualise the relationship structure between the various panels that send and receive selections of data points.
-  - the "Extract the R code", functionality (<i class="fa fa-magic"></i>). Once you are done with your live session, you might want to reproduce exactly the plots you generated.
-  Clicking on this button opens a modal popup window, with a `r CRANpkg("shinyAce")`-based text editor, where the code is formatted and displayed with syntax highlighting.
-  You can copy the code to the clipboard by selecting the text (please do include the initial lines and the `sessionInfo()` commands for best tracking of your environment), and store it in your analysis report/script. 
-  Your code can then be further edited to finalize the plots (e.g., for publication). 
+- the "Examine panel chart" functionality, identified by a **chain** icon (<i class="fa fa-chain"></i>).
+Click on this button to obtain a graph representation of the existing links and point selection among your open plot and table panels (coded with the same colors as in the app).
+This can be very useful in sessions that include a large number of panels, to visualise the relationship structure between the various panels that send and receive selections of data points.
+- the "Extract the R code", functionality (<i class="fa fa-magic"></i>). Once you are done with your live session, you might want to reproduce exactly the plots you generated.
+Clicking on this button opens a modal popup window, with a `r CRANpkg("shinyAce")`-based text editor, where the code is formatted and displayed with syntax highlighting.
+You can copy the code to the clipboard by selecting the text (please do include the initial lines and the `sessionInfo()` commands for best tracking of your environment), and store it in your analysis report/script. 
+Your code can then be further edited to finalize the plots (e.g., for publication). 
 
 The Documentation dropdown menu is accessible through the **question mark** icon (<i class="fa fa-question-circle"></i>), which contains:
 
-  - the button to start the Quick Tour (<i class="fa fa-hand-o-right"></i>) of `r Biocpkg("iSEE")`, which allows users to learn the basic usage mechanisms by doing.
-  The highlighted elements will be responding to the user's actions, while the rest of the UI will be shaded.
-  - the button to "Open the vignette" (<i class="fa fa-book"></i>), which will display the `r Biocpkg("iSEE")` vignette, either available locally or accessing the current webpage of the package on the Bioconductor project site 
-    (if the latter, the vignette will refer to the most current release version, which may differ from the version installed on your system)
+- the button to start the Quick Tour (<i class="fa fa-hand-o-right"></i>) of `r Biocpkg("iSEE")`, which allows users to learn the basic usage mechanisms by doing.
+The highlighted elements will be responding to the user's actions, while the rest of the UI will be shaded.
+- the button to "Open the vignette" (<i class="fa fa-book"></i>), which will display the `r Biocpkg("iSEE")` vignette, either available locally or accessing the current webpage of the package on the Bioconductor project site 
+(if the latter, the vignette will refer to the most current release version, which may differ from the version installed on your system)
     
 The Additional Information dropdown menu is accessible through the **information** icon (<i class="fa fa-info"></i>), and contains:
 
-  - the "About this session" button, which reports the output of the `sessionInfo()` function in a modal popup window (<i class="fa fa-window-maximize"></i>).
-  This is particularly useful for reproducing or reporting the environment, especially in the case of errors or unexpected behaviors.
-  - the "About iSEE" button (<i class="fa fa-heart"></i>) will show up the information on the development team, licensing and citation information for the `r Biocpkg("iSEE")` package.
-  You can follow the development of the package by checking the GitHub repository (https://github.com/csoneson/iSEE), where new functionality will be added.
-  Well-considered suggestions in the form of issues and/or pull requests are welcome.
+- the "About this session" button, which reports the output of the `sessionInfo()` function in a modal popup window (<i class="fa fa-window-maximize"></i>).
+This is particularly useful for reproducing or reporting the environment, especially in the case of errors or unexpected behaviors.
+- the "About iSEE" button (<i class="fa fa-heart"></i>) will show up the information on the development team, licensing and citation information for the `r Biocpkg("iSEE")` package.
+You can follow the development of the package by checking the GitHub repository (https://github.com/csoneson/iSEE), where new functionality will be added.
+Well-considered suggestions in the form of issues and/or pull requests are welcome.
     
 ## Sidebar
 

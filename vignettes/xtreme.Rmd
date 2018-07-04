@@ -53,17 +53,18 @@ knitr::opts_chunk$set(
 )
 stopifnot(requireNamespace("htmltools"))
 htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+sce <- readRDS("sce.rds")    
 ```
 
 # Changing the default start configuration
 
 The default start configuration with one plot of each type may not always be the most appropriate.
-`iSEE` allows the user to programmatically modify the initial settings, avoiding the need to click through the choices to obtain the desired panel setup.
+`iSEE` allows the user to programmatically modify the initial settings [@kra2018iSEE], avoiding the need to click through the choices to obtain the desired panel setup.
 Almost every aspect of the initial app state can be customized, down to whether or not the parameter boxes are open or closed!
 
 To demonstrate this feature, let's assume that we are only interested in feature assay plots.
 The default set of panels can be changed via the `initialPanels` argument of the `iSEE` function call. 
-Given a `SingleCellExperiment`/`SummarizedExperiment` named `sce`, the following code opens an app with two adjacent feature assay plots. 
+Given a `SingleCellExperiment` or `SummarizedExperiment` object named `sce`, the following code opens an app with two adjacent feature assay plots. 
 
 ```{r init}
 init <- DataFrame(

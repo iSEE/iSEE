@@ -52,11 +52,12 @@ knitr::opts_chunk$set(
 )
 stopifnot(requireNamespace("htmltools"))
 htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+sce <- readRDS('sce.rds')
 ```
 
 # Using an ExperimentColorMap
 
-`r Biocpkg("iSEE")` coordinates the coloration in every plot via the `ExperimentColorMap` class.
+`r Biocpkg("iSEE")` coordinates the coloration in every plot via the `ExperimentColorMap` class [@kra2018iSEE].
 Colors for samples or features are defined from column or row metadata or assay values using "colormaps".
 Each colormap is a function that takes a single integer argument and returns that number of distinct colors.
 The `ExperimentColorMap` is a container that stores these functions for use within the `iSEE()` function. 
@@ -189,20 +190,7 @@ Detailed examples on the use of `ExperimentColorMap` objects are available in th
 # Demonstration
 
 We will again use the `allen` single-cell RNA-seq data set to demonstrate the use of the `ExperimentColorMap` class.
-First, we set up the `SingleCellExperiment` object containing all of the necessary results:
-
-```{r allen-dataset}
-library(scRNAseq)
-data(allen)
-library(scater)
-sce <- as(allen, "SingleCellExperiment")
-counts(sce) <- assay(sce, "tophat_counts")
-sce <- normalize(sce)
-sce <- runPCA(sce)
-sce <- runTSNE(sce)
-```
-
-We create an `iSEE` app with the `SingleCellExperiment` object and the colormap generated above.
+Assuming that we have the `sce` object from the earlier vignette, we create an `iSEE` app with the `SingleCellExperiment` object and the colormap generated above.
 
 ```{r allen-dataset-4}
 app <- iSEE(sce, colormap = ecm)

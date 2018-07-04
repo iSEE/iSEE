@@ -10,10 +10,6 @@
 #' @import SingleCellExperiment
 #' @import SummarizedExperiment
 #' @importMethodsFrom BiocGenerics ncol nrow
-#' @importFrom reshape2 melt
-#' @importFrom methods new slot is
-#' @importFrom cowplot plot_grid
-#' @importFrom scales rescale
 #' @author Aaron Lun \email{alun@@wehi.edu.au}
 #' @author Charlotte Soneson \email{charlotte.soneson@@uzh.ch}
 #' @author Federico Marini \email{marinif@@uni-mainz.de}

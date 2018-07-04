@@ -72,6 +72,7 @@
 #' @importFrom shinyAce aceEditor
 #' @importFrom S4Vectors DataFrame
 #' @importFrom methods as
+#' @importFrom cowplot plot_grid
 #'
 #' @examples
 #' library(scRNAseq)

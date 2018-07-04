@@ -295,6 +295,7 @@
 #' @seealso
 #' \code{\link{iSEE}}
 #' @importClassesFrom S4Vectors DataFrame
+#' @importFrom methods new
 .report_memory <- function(active_panels, memory) {
     # First, reporting all of the individual panel types.
     collected <- list()

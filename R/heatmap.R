@@ -33,7 +33,6 @@
 #'
 #' @importFrom ggplot2 scale_y_continuous geom_raster element_blank unit
 #' @importFrom cowplot get_legend plot_grid
-#' @importFrom scales rescale
 #' @importFrom reshape2 melt
 #' @importFrom dplyr arrange
 .make_heatMapPlot <- function(id, all_memory, all_coordinates, se, colormap) {

@@ -20,6 +20,7 @@
 #' @importFrom AnnotationDbi mapIds
 #' @importFrom rentrez entrez_summary
 #' @importFrom shiny HTML
+#' @importFrom methods is
 #'
 #' @examples
 #' library(scRNAseq)
@@ -98,7 +99,7 @@ annotateEntrez <- function(se, orgdb, keytype, rowdata_col = NULL) {
 #' @export
 #' @importFrom AnnotationDbi mapIds species
 #' @importFrom shiny HTML
-#'
+#' @importFrom methods is
 #'
 #' @examples
 #' library(scRNAseq)

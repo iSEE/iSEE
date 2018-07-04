@@ -15,7 +15,7 @@
 #' @details
 #' Note that this function will not determine if the links are valid, i.e., between an active table and an active plot.
 #' This is the responsibility of other functions, namely \code{\link{.sanitize_memory}}.
-#' 
+#'
 #' @author Aaron Lun
 #' @rdname INTERNAL_spawn_table_links
 #' @seealso
@@ -25,12 +25,12 @@
     Ntabs <- nrow(memory$rowStatTable)
     table_links <- rep(list(list(color=character(0), xaxis=character(0), yaxis=character(0))), Ntabs)
     names(table_links) <- sprintf("rowStatTable%i", seq_len(Ntabs))
-  
+
     # Adding the links for the colors.
-    for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot", "rowDataPlot", "customColPlot")) { 
+    for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot", "rowDataPlot", "customColPlot")) {
         N <- nrow(memory[[mode]])
         cur_panels <- sprintf("%s%i", mode, seq_len(N))
-    
+
         for (id in seq_len(N)) {
             cur_tab <- memory[[mode]][id, .colorByRowTable]
             if (cur_tab!=.noSelection) {
@@ -39,7 +39,7 @@
             }
         }
     }
-  
+
     # Adding links for x- and y-axes.
     N <- nrow(memory$featAssayPlot)
     cur_panels <- sprintf("featAssayPlot%i", seq_len(N))
@@ -51,32 +51,32 @@
             tab_name <- .decoded2encoded(X_tab)
             table_links[[tab_name]]$xaxis <- c(table_links[[tab_name]]$xaxis, cur_panels[id])
         }
-        
+
         Y_tab <- param_choices[[.featAssayYAxisRowTable]]
         if (Y_tab!=.noSelection) {
-            tab_name <- .decoded2encoded(Y_tab)            
+            tab_name <- .decoded2encoded(Y_tab)
             table_links[[tab_name]]$yaxis <- c(table_links[[tab_name]]$yaxis, cur_panels[id])
         }
     }
-  
-    return(table_links)  
+
+    return(table_links)
 }
 
 #' Clear links for a destroyed table
 #'
 #' Clear all links to a row statistics table that has been destroyed.
-#' 
+#'
 #' @param pObjects An environment containing \code{table_links}, a graph produced by \code{\link{.spawn_table_links}};
 #' and \code{memory}, a list of DataFrames containing parameters for each panel of each type.
 #' @param tab String containing the encoded name of the row statistics table to be destroyed.
-#' 
+#'
 #' @return \code{NULL}, invisibly.
 #'
 #' @details
 #' This function modifies \code{pObjects$table_links} to empty the character vectors containing the encoded names of the receiving plots.
 #' It relies on pass-by-reference behaviour of \code{pObjects} to work properly.
 #'
-#' The function also modifies the \code{pObjects$memory} to remove all references to \code{tab} in the relevant fields of the receiving plots, 
+#' The function also modifies the \code{pObjects$memory} to remove all references to \code{tab} in the relevant fields of the receiving plots,
 #' replacing it with an empty string (i.e., no selection).
 #' This ensures that the memory is always valid, in line with \code{\link{.sanitize_memory}}.
 #'
@@ -86,12 +86,12 @@
 #' \code{\link{.spawn_table_links}}
 .destroy_table <- function(pObjects, tab) {
     links <- pObjects$table_links
-    all_kids <- links[[tab]] 
+    all_kids <- links[[tab]]
 
     # Updating the memory of all linked plots.
     col_kids <- all_kids$color
     enc <- .split_encoded(col_kids)
-    for (i in seq_along(col_kids)) { 
+    for (i in seq_along(col_kids)) {
         kid <- col_kids[i]
         type <- enc$Type[i]
         pObjects$memory[[type]][kid, .colorByRowTable] <- .noSelection
@@ -121,7 +121,7 @@
 #' @param mode A string specifying the mode in which a panel is receiving input, i.e., for color or x/y-axis.
 #'
 #' @return A modified \code{links} where \code{dest} is moved from the dependents of \code{oldtab} to those of \code{newtab}.
-#' 
+#'
 #' @details
 #' This function will remove \code{dest} from the vector for \code{mode} in \code{oldtab}, provided that \code{oldtab} is not an empty string.
 #' It will then add \code{dest} to the vector for \code{mode} in \code{newtab}, provided that \code{newtab} is not an empty string.
@@ -129,7 +129,7 @@
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_modify_table_links
-#' @seealso 
+#' @seealso
 #' \code{\link{.spawn_table_links}},
 #' \code{\link{.setup_table_observer}}
 .modify_table_links <- function(links, dest, newtab, oldtab, mode='color') {
@@ -145,7 +145,7 @@
 }
 
 #' Set up a table observer
-#' 
+#'
 #' Set up the actions for an observer for a parameter choice in a plot panel that may involve a linked table.
 #'
 #' @param mode String specifying the encoded panel type of the current (receiving) plot.
@@ -157,7 +157,7 @@
 #' @param session A \code{session} object from a Shiny server.
 #' @param by_field String specifying the field to check for whether the input is using a row table input of any kind.
 #' @param title String specifying the title of a feature name input, to match to the value of \code{by_field} in \code{memory} for this plot.
-#' @param feat_field String specifying the field to check for the feature to examine. 
+#' @param feat_field String specifying the field to check for the feature to examine.
 #' @param tab_field String specifying the field to check for the identify of the row table input.
 #' @param feat_choices Vector of consecutive integers indexing all rows, named with the feature names.
 #' @param param String specifying the type of table link to the current plot, i.e., color or x/y-axis.
@@ -171,9 +171,9 @@
 #' \item \code{pObjects$table_links} is modified for the new linked table in \code{input[[tab_field]]}.
 #' Note that table links are \emph{not} destroyed if \code{input[[by_field]]} is different to \code{title},
 #' as this could result in failure to clear the memory of the current panel in \code{\link{.delete_table_links}}.
-#' \item Link panel counters in \code{rObjects} are incremented if the new linked table differs from the old link table and \code{input[[by_field]]==title}; 
+#' \item Link panel counters in \code{rObjects} are incremented if the new linked table differs from the old link table and \code{input[[by_field]]==title};
 #' or if \code{input[[by_field]]} differs from that in memory and either of them is equal to \code{title}.
-#' Counters are only updated for the current panel as well as the old/new tables, and only when 
+#' Counters are only updated for the current panel as well as the old/new tables, and only when
 #' \item The selectize UI element corresponding to \code{feat_field} is updated with the current selection in the linked table, if a new linked table was chosen.
 #' Note that this will trigger another call to the observer that contains this function.
 #' }
@@ -190,15 +190,16 @@
 #' \code{\link{iSEE}}
 #'
 #' @importFrom shiny updateSelectizeInput
-.setup_table_observer <- function(mode, id, pObjects, rObjects, input, session, 
-                                  by_field, title, feat_field, tab_field, 
-                                  feat_choices, param='color') 
+#' @importFrom methods as
+.setup_table_observer <- function(mode, id, pObjects, rObjects, input, session,
+                                  by_field, title, feat_field, tab_field,
+                                  feat_choices, param='color')
 {
     plot_name <- paste0(mode, id)
     prefix <- paste0(plot_name, "_")
 
     # Checking that all the incoming arguments are non-NULL.
-    if (param!='yaxis') { 
+    if (param!='yaxis') {
         choice <- input[[paste0(prefix, by_field)]]
     } else {
         choice <- title <- ""
@@ -210,7 +211,7 @@
 
     # Obtaining the old parameter choices, enforcing type and updating memory.
     # The new values should persist due to environment's pass-by-reference.
-    if (param!='yaxis') { 
+    if (param!='yaxis') {
         old_choice <- pObjects$memory[[mode]][id, by_field]
         choice <- as(choice, typeof(old_choice))
         pObjects$memory[[mode]][id, by_field] <- choice
@@ -222,16 +223,16 @@
     pObjects$memory[[mode]][id, tab_field] <- tab
 
     if (old_tab!=tab) {
-        # Editing the table_links, if we're switching the table choice. 
+        # Editing the table_links, if we're switching the table choice.
         pObjects$table_links <- .modify_table_links(pObjects$table_links, plot_name, tab, old_tab, mode=param)
 
         # Updating the feature selection, based on the currently selected row.
-        if (tab!=.noSelection) { 
+        if (tab!=.noSelection) {
             enc_id <- .encode_panel_name(tab)$ID
             tab_chosen <- pObjects$memory$rowStatTable[enc_id,.rowStatSelected]
             feature <- pObjects$memory[[mode]][id, feat_field]
             if (tab_chosen!=feature && !is.null(session)) { # session=NULL used for testing the rest of the function.
-                updateSelectizeInput(session, paste0(prefix, feat_field), label = NULL, 
+                updateSelectizeInput(session, paste0(prefix, feat_field), label = NULL,
                                      choices = feat_choices, server = TRUE, selected = tab_chosen)
             }
         }
@@ -246,14 +247,14 @@
         }
     }
 
-    # Not replotting if none of the variables have changed. Note that the identical-ness of 'tab' 
-    # doesn't matter here, as the feature name determines the plot (and if changing tab changes 
+    # Not replotting if the choice has not changed. Note that the identical-ness of 'tab'
+    # doesn't matter here, as the feature name determines the plot (and if changing tab changes
     # the feature name, this is caught by a differnt observer).
     return(!identical(old_choice, choice))
 }
 
 #' Delete table links for a destroyed panel
-#' 
+#'
 #' Delete all references to any linked row statistics tables when a receiving panel is destroyed.
 #'
 #' @param mode String specifying the encoded panel type of the current (receiving) panel to be destroyed.
@@ -273,29 +274,29 @@
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_delete_table_links
-#' @seealso 
+#' @seealso
 #' \code{\link{.modify_table_links}},
 #' \code{\link{iSEE}}
 .delete_table_links <- function(mode, id, pObjects) {
-    tmp_link <- pObjects$table_links 
+    tmp_link <- pObjects$table_links
     tmp_mem <- pObjects$memory[[mode]]
     plot_name <- paste0(mode, id)
-  
+
     for (param in list(c(.colorByRowTable, "color"),
                        c(.featAssayXAxisRowTable, "xaxis"),
                        c(.featAssayYAxisRowTable, "yaxis"))) {
-  
+
         oldtab <- tmp_mem[id, param[1]]
         if (oldtab!=.noSelection) {
             tmp_link <- .modify_table_links(tmp_link, plot_name, .noSelection, oldtab, mode = param[2])
             tmp_mem[id, param[1]] <- .noSelection
         }
-    
+
         if (mode!="featAssayPlot") {
             break
         }
     }
-  
+
     pObjects$memory[[mode]] <- tmp_mem
     pObjects$table_links <- tmp_link
     return(invisible(NULL))

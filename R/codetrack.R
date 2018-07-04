@@ -228,6 +228,7 @@
 #' @author Federico Marini
 #' @rdname INTERNAL_snapshot_graph_linkedpanels
 #' @importFrom igraph delete.vertices set_vertex_attr V add_edges
+#' @importFrom graphics plot
 .snapshot_graph_linkedpanels <- function(active_panels, pObjects) {
   cur_plots <- sprintf("%s%i", active_panels$Type, active_panels$ID)
   not_used <- setdiff(V(pObjects$selection_links)$name,cur_plots)
@@ -294,6 +295,7 @@
 #' @seealso
 #' \code{\link{iSEE}}
 #' @importClassesFrom S4Vectors DataFrame
+#' @importFrom methods new
 .report_memory <- function(active_panels, memory) {
     # First, reporting all of the individual panel types.
     collected <- list()

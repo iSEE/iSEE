@@ -275,6 +275,9 @@
 #' @return A DataFrame containing default settings for various parameters of each panel.
 #'
 #' @export
+#' @importFrom methods new
+#' @importClassesFrom S4Vectors DataFrame
+#' @importFrom SingleCellExperiment reducedDim
 #'
 #' @examples
 #' library(scRNAseq)
@@ -310,6 +313,10 @@ redDimPlotDefaults <- function(se, number) {
 
 #' @rdname defaults 
 #' @export
+#' @importFrom methods new
+#' @importClassesFrom S4Vectors DataFrame
+#' @importFrom SummarizedExperiment colData
+#' @importFrom BiocGenerics colnames
 featAssayPlotDefaults <- function(se, number) {
     waszero <- number==0 
     if (waszero) number <- 1
@@ -333,6 +340,10 @@ featAssayPlotDefaults <- function(se, number) {
 
 #' @rdname defaults 
 #' @export
+#' @importFrom methods new
+#' @importClassesFrom S4Vectors DataFrame
+#' @importFrom SummarizedExperiment colData
+#' @importFrom BiocGenerics colnames
 colDataPlotDefaults <- function(se, number) {
     waszero <- number==0 
     if (waszero) number <- 1
@@ -351,6 +362,8 @@ colDataPlotDefaults <- function(se, number) {
 
 #' @rdname defaults 
 #' @export
+#' @importFrom methods new
+#' @importClassesFrom S4Vectors DataFrame
 customColPlotDefaults <- function(se, number) {
     waszero <- number==0 
     if (waszero) number <- 1
@@ -365,6 +378,9 @@ customColPlotDefaults <- function(se, number) {
 
 #' @rdname defaults
 #' @export
+#' @importFrom methods new
+#' @importClassesFrom S4Vectors DataFrame
+#' @importFrom SummarizedExperiment rowData 
 rowStatTableDefaults <- function(se, number) {
     waszero <- number==0 
     if (waszero) number <- 1
@@ -387,6 +403,10 @@ rowStatTableDefaults <- function(se, number) {
 
 #' @rdname defaults 
 #' @export
+#' @importFrom methods new
+#' @importClassesFrom S4Vectors DataFrame
+#' @importFrom SummarizedExperiment rowData
+#' @importFrom BiocGenerics colnames
 rowDataPlotDefaults <- function(se, number) {
     waszero <- number==0 
     if (waszero) number <- 1
@@ -405,6 +425,10 @@ rowDataPlotDefaults <- function(se, number) {
 
 #' @rdname defaults 
 #' @export
+#' @importFrom methods new
+#' @importClassesFrom S4Vectors DataFrame
+#' @importFrom SummarizedExperiment colData
+#' @importFrom BiocGenerics colnames
 heatMapPlotDefaults <- function(se, number) {
     waszero <- number==0 # To ensure that we define all the fields with the right types.
     if (waszero) number <- 1
@@ -458,6 +482,7 @@ heatMapPlotDefaults <- function(se, number) {
 #' @seealso
 #' \code{?\link{defaults}},
 #' \code{\link{.setup_memory}}
+#' @importFrom BiocGenerics colnames
 .override_defaults <- function(def, usr)
 {
     ndef <- nrow(def)
@@ -530,6 +555,8 @@ heatMapPlotDefaults <- function(se, number) {
 
 #' @param se A SummarizedExperiment object.
 #' @rdname INTERNAL_add_general_parameters
+#' @importFrom BiocGenerics colnames
+#' @importFrom SummarizedExperiment colData
 .add_general_parameters_for_column_plots <- function(incoming, se) {
     incoming <- .add_general_parameters(incoming)
 
@@ -562,6 +589,8 @@ heatMapPlotDefaults <- function(se, number) {
 }
 
 #' @rdname INTERNAL_add_general_parameters
+#' @importFrom BiocGenerics colnames
+#' @importFrom SummarizedExperiment rowData
 .add_general_parameters_for_row_plots <- function(incoming, se) {
     incoming <- .add_general_parameters(incoming)
 
@@ -608,6 +637,7 @@ heatMapPlotDefaults <- function(se, number) {
 #' @rdname INTERNAL_set_default_assay
 #' @seealso
 #' \code{?\link{defaults}}
+#' @importFrom SummarizedExperiment assayNames
 .set_default_assay <- function(se) { 
     def_assay <- which(assayNames(se)=="logcounts")
     if (length(def_assay) == 0L) {

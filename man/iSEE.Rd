@@ -43,7 +43,7 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featAssayArgs = NULL,
 
 \item{heatMapMax}{An integer scalar specifying the maximum number of heatmaps in the interface.}
 
-\item{initialPanels}{A DataFrame specifying which panels should be created at initialization. 
+\item{initialPanels}{A DataFrame specifying which panels should be created at initialization.
 This should contain a \code{Name} character field and may have optional \code{Width} and \code{Height} integer fields, see Details.}
 
 \item{annotFun}{A function, similar to those returned by \code{\link{annotateEntrez}} or \code{\link{annotateEnsembl}}.
@@ -55,33 +55,31 @@ The function should accept two parameters, \code{se} and \code{row_index}, and r
 
 \item{tour}{A data.frame with the content of the interactive tour to be displayed after starting up the app.}
 
-\item{appTitle}{A string indicating the title to be displayed in the app. 
+\item{appTitle}{A string indicating the title to be displayed in the app.
 If not provided, the app displays the version info of \code{\link{iSEE}}.}
 
 \item{runLocal}{A logical indicating whether the app is to be run locally or remotely on a server, which determines how documentation will be accessed.}
 }
 \value{
-A Shiny App is launched for interactive data exploration of the
-\code{\link{SummarizedExperiment}}/\code{\link{SingleCellExperiment}} 
-object
+A Shiny app object is returned, for interactive data exploration of the \linkS4class{SummarizedExperiment} or \linkS4class{SingleCellExperiment} object.
 }
 \description{
 Interactive and reproducible visualization of data contained in a
 SummarizedExperiment/SingleCellExperiment, using a Shiny interface.
 }
 \details{
-Users can pass default parameters via DataFrame objects in \code{redDimArgs} and \code{featAssayArgs}. 
+Users can pass default parameters via DataFrame objects in \code{redDimArgs} and \code{featAssayArgs}.
 Each object can contain some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
 Any missing fields will be filled in with the defaults.
 
-The number of maximum plots for each type of plot is set to the larger of \code{*Max} and \code{nrow(*Args)}. 
+The number of maximum plots for each type of plot is set to the larger of \code{*Max} and \code{nrow(*Args)}.
 Users can specify any number of maximum plots, though increasing the number will increase the time required to render the interface.
 
-The \code{initialPanels} argument specifies the panels to be created upon initializing the interface. 
+The \code{initialPanels} argument specifies the panels to be created upon initializing the interface.
 This should be a DataFrame containing a \code{Name} field specifying the identity of the panel, e.g., \code{"Reduced dimension plot 1"}, \code{"Row statistics table 2"}.
-The trailing number should not be greater than the number of maximum plots of that type. 
+The trailing number should not be greater than the number of maximum plots of that type.
 Users can also define the \code{Width} field, specifying the width of each panel from 2 to 12 (values will be coerced inside this range);
-and the \code{Height} field, specifying the height of each panel from 400 to 1000 pixels. 
+and the \code{Height} field, specifying the height of each panel from 400 to 1000 pixels.
 By default, one panel of each type (where possible) will be generated, with height of 500 and width of 4.
 
 The \code{tour} argument needs to be provided in a form compatible with the format expected by the \code{rintrojs} package.

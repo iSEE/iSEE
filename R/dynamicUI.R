@@ -118,7 +118,7 @@
 #' @importFrom BiocGenerics rownames
 #' @importFrom SingleCellExperiment reducedDimNames reducedDim
 #' @importFrom shiny actionButton fluidRow selectInput plotOutput uiOutput
-#' sliderInput tagList numericInput column radioButtons tags hr brushOpts
+#' sliderInput tagList column radioButtons tags hr brushOpts
 #' selectizeInput checkboxGroupInput
 .panel_generation <- function(active_panels, memory, se) {
     collected <- list()
@@ -166,14 +166,16 @@
             obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
             cur_reddim <- param_choices[[.redDimType]]
             max_dim <- ncol(reducedDim(se, cur_reddim))
+            choices <- seq_len(max_dim)
+            names(choices) <- choices
 
             plot.param <-  list(
                  selectInput(.input_FUN(.redDimType), label="Type",
                              choices=red_dim_names, selected=cur_reddim),
-                 numericInput(.input_FUN(.redDimXAxis), label="Dimension 1",
-                              min=1, max=max_dim, value=param_choices[[.redDimXAxis]]),
-                 numericInput(.input_FUN(.redDimYAxis), label="Dimension 2",
-                              min=1, max=max_dim, value=param_choices[[.redDimYAxis]])
+                 selectInput(.input_FUN(.redDimXAxis), label="Dimension 1",
+                             choices=choices, selected=param_choices[[.redDimXAxis]]),
+                 selectInput(.input_FUN(.redDimYAxis), label="Dimension 2",
+                             choices=choices, selected=param_choices[[.redDimYAxis]])
                  )
         } else if (mode=="colDataPlot") {
             obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)

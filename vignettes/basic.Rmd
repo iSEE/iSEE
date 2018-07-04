@@ -76,7 +76,7 @@ library("iSEE")
 
 # Quick start {#quickstart}
 
-To demonstrate, we will use a small subset of single-cell RNA sequencing data from the `r Biocpkg("scRNAseq")` package.
+To demonstrate, we will use a small subset of single-cell RNA sequencing data from the `r Biocexptpkg("scRNAseq")` package.
 First we prepare the data:
 
 ```{r qs-data}
@@ -275,7 +275,7 @@ To zoom out to the original plot, simply double-click at any location in the plo
 
 ## Setting up the data
 
-In this section, we illustrate how `r Biocpkg("iSEE")` can be used to explore the `allen` single-cell RNA-seq data set from the `r Biocpkg("scRNAseq")` package.
+In this section, we illustrate how `r Biocpkg("iSEE")` can be used to explore the `allen` single-cell RNA-seq data set from the `r Biocexptpkg("scRNAseq")` package.
 This data set contains expression values for 379 cells from the mouse visual cortex [@tasic2016adult]. 
 
 ```{r allen-dataset}

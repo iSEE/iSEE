@@ -60,9 +60,7 @@ htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 <!-- logo? MOS DEF :) --> 
 <!-- I'd say TODO -->
 
-`r Biocpkg("iSEE")` is a [Bioconductor](http://bioconductor.org) package that provides an interactive Shiny-based graphical user interface for exploring data stored in `SummarizedExperiment` objects, including row- and column-level metadata. 
-Particular attention is given to single-cell data in a `SingleCellExperiment` object with visualization of dimensionality reduction results, e.g., from principal components analysis (PCA) or _t_-distributed stochastic neighbour embedding (_t_-SNE) [@van2008visualizing].
-
+`r Biocpkg("iSEE")` is a [Bioconductor](http://bioconductor.org) package that provides an interactive Shiny-based graphical user interface for exploring data stored in `SummarizedExperiment` objects [@kra2018iSEE].
 To install the package, start R and enter:
 
 ```{r installation, eval=FALSE}
@@ -188,7 +186,8 @@ For each plot panel, three different sets of parameters will be available in col
 
 ## Reduced dimension plots
 
-If a `SingleCellExperiment` object is supplied to `iSEE`, any reduced dimension results (e.g.,  PCA, _t_-SNE) is extracted from the `reducedDim` slot.
+If a `SingleCellExperiment` object is supplied to `iSEE`, any reduced dimension results are extracted from the `reducedDim` slot.
+Examples include low-dimensional embeddings from principal components analysis (PCA) or _t_-distributed stochastic neighbour embedding (_t_-SNE) [@van2008visualizing].
 These results are used to construct two-dimensional *reduced dimension plots* where each point is a sample, to facilitate efficient exploration of high-dimensional datasets. 
 The *Data parameters* control the `reducedDim` slot to be displayed, as well as the two dimensions to plot against each other. 
 Note that `iSEE` does not computed reduced dimension embeddings; they must be precomputed and available in the object to the `iSEE` function.
@@ -294,7 +293,7 @@ counts(sce) <- assay(sce, "tophat_counts")
 sce <- normalize(sce)
 ```
 
-Next, we apply Principal Components Analysis (PCA) and _t_-distributed Stochastic Neighbour Embedding (_t_-SNE) to generate two reduced dimension representations of the cells. 
+Next, we apply PCA and _t_-SNE to generate two low-dimensional representations of the cells. 
 Note that all computations (e.g., dimension reduction, clustering) must be performed *before* passing the object to the `iSEE` function.
 
 ```{r allen-dataset-2}

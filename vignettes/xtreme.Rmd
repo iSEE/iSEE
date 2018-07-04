@@ -1,0 +1,203 @@
+---
+title: >
+  Exploring `r Biocpkg("iSEE")`'s advanced features 
+author:
+- name: Federico Marini
+  affiliation: 
+  - &id1 Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz
+  - Center for Thrombosis and Hemostasis (CTH), Mainz
+  email: marinif@uni-mainz.de
+- name: Aaron Lun
+  affiliation: 
+  - &id2 Cancer Research UK Cambridge Institute, University of Cambridge
+  email: aaron.lun@cruk.cam.ac.uk
+- name: Charlotte Soneson
+  affiliation: 
+  - &id3 Institute of Molecular Life Sciences, University of Zurich
+  - SIB Swiss Institute of Bioinformatics
+  email: charlottesoneson@gmail.com
+- name: Kevin Rue-Albrecht
+  affiliation: 
+  - &id4 Kennedy Institute of Rheumatology, University of Oxford,
+    Headington, Oxford OX3 7FY, UK.
+  email: kevin.rue-albrecht@kennedy.ox.ac.uk
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('iSEE')`"
+output: 
+  BiocStyle::html_document:
+    toc_float: true
+vignette: >
+  %\VignetteIndexEntry{iSEE User's Guide}
+  %\VignetteEncoding{UTF-8}  
+  %\VignettePackage{iSEE}
+  %\VignetteKeywords{GeneExpression, RNASeq, Sequencing, Visualization, QualityControl, GUI}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+bibliography: iSEE.bib
+---
+
+**Compiled date**: `r Sys.Date()`
+
+**Last edited**: 2018-03-08
+
+**License**: `r packageDescription("iSEE")[["License"]]`
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  error = FALSE,
+  warning = FALSE,
+  message = FALSE
+)
+stopifnot(requireNamespace("htmltools"))
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+```
+
+# Changing the default start configuration
+
+The default start configuration with one plot of each type may not always be the most appropriate.
+`iSEE` allows the user to programmatically modify the initial settings, avoiding the need to click through the choices to obtain the desired panel setup.
+Almost every aspect of the initial app state can be customized, down to whether or not the parameter boxes are open or closed!
+
+To demonstrate this feature, let's assume that we are only interested in feature assay plots.
+The default set of panels can be changed via the `initialPanels` argument of the `iSEE` function call. 
+Given a `SingleCellExperiment`/`SummarizedExperiment` named `sce`, the following code opens an app with two adjacent feature assay plots. 
+
+```{r init}
+init <- DataFrame(
+  Name = c("Feature assay plot 1", "Feature assay plot 2"),
+  Width = c(6, 6)
+)
+app <- iSEE(sce, initialPanels = init)
+```
+
+The genes to show on the y-axis in the two plots can be specified via the `geneExprArgs` argument to `iSEE`. This is a `DataFrame`, specifying the initial parameters for each plot. 
+In this case, we want to modify the `YAxis` and `YAxisFeatName` defaults for the two plots:
+
+```{r fexArg}
+fexArg <- featAssayPlotDefaults(sce, 2)
+fexArg$YAxisFeatName <- c("0610009L18Rik", "0610009B22Rik")
+app <- iSEE(sce, initialPanels = init, featAssayArgs = fexArg)
+```
+
+This will open the app with two feature assay plots, showing the selected genes. 
+Of course, from this starting point, all the interactive functionality is still available, and new panels can be added, modified and linked via brushing. 
+Users should refer to `?defaults` for the full list of values that can be specified in `iSEE`.
+
+# Combining with `ExperimentHub`
+
+Here we will use `r Biocpkg("iSEE")` to showcase a TCGA RNA-seq data set of `r Biocpkg("Rsubread")`-summarized raw count data for 7,706 tumor samples, represented as an `ExpressionSet`.
+The R data representation was derived from GEO accession [GSE62944](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE62944).
+It is here retrieved from the Bioconductor `r Biocpkg("ExperimentHub")`, immediately ready for post-processing and visualization.
+
+```{r ExperimentHub, eval=FALSE}
+library(ExperimentHub)
+library(SingleCellExperiment)
+library(irlba)
+library(Rtsne)
+
+ehub <- ExperimentHub()
+eh1 <- ehub[["EH1"]] # an ExpressionSet
+se1 <- as(eh1, "SummarizedExperiment")
+sce1 <- as(se1, "SingleCellExperiment")
+sce1 <- scater::runPCA(sce1, exprs_values = "exprs")
+irlba_out <- irlba(assay(sce1, "exprs"))
+tsne_out <- Rtsne(irlba_out$v, pca = FALSE, perplexity = 50, verbose = TRUE)
+reducedDim(sce1, "TSNE") <- tsne_out$Y
+```
+
+To demonstrate a fully featured app, that also enables row data plot panels, let us add gene-level metadata.
+For instance, the mean log~2~-transformed expression of each gene, the count of samples in which each gene was detected, and the proportion of samples in which each gene was detected :
+
+```{r rowData_sce1, eval=FALSE}
+num_detected <- rowSums(assay(sce1, "exprs") > 0)
+rowData(sce1) <- DataFrame(
+    mean_log_exprs = rowMeans(log2(assay(sce1, "exprs") + 1)),
+    num_detected = num_detected,
+    percent_detected = num_detected * 100 / ncol(sce1)
+)
+iSEE(sce1) 
+```
+
+# Using online file sharing systems
+
+Active projects may require regular updates to the `SingleCellExperiment` object, that must be iteratively re-distributed to collaborators.
+One possible choice is to store the up-to-date `SingleCellExperiment` object in a file produced by the `saveRDS` command, and to host this file in an online file sharing system.
+Users may then download the file and launch the `iSEE` application, using the `r Biocpkg("BiocFileCache")` framework:
+
+```{r bfcdownload, eval=FALSE}
+library(BiocFileCache)
+bfc <- BiocFileCache(ask=FALSE)
+rpath <- bfcrpath(bfc, "https://my.file.sharing.website.com/path/to/RDS")
+sce <- readRDS(rpath)
+iSEE(sce) 
+```
+
+This will download the RDS file and cache it locally for further use.
+Upon changes to the remote resource, the cached version can be updated using the `bfcupdate` function.
+
+# Exploring mass cytometry data
+
+The flexibility of the `iSEE` interface means that it can be used to explore a variety of data types that can be represented in tabular format. 
+Here we show how `iSEE` can be used to explore a mass cytometry (CyTOF) data set (originally from [@bodenmiller2012cytof]), by defining an initial panel configuration that mimics the familiar gating setup, consisting of multiple two-dimensional scatter plots linked to one another.
+The example data set was prepared as described by [@nowicka2017workflow], and the code to generate a `SummarizedExperiment` object is available from [https://github.com/lmweber/CyTOF-example-data](https://github.com/lmweber/CyTOF-example-data). 
+Here we use a subset of the original data, consisting of 5,000 randomly selected cells, for which 35 markers are measured. 
+The `SummarizedExperiment` object also contains a _t_-SNE representation of the 5,000 cells and the results of a cell clustering performed with `r Biocpkg("FlowSOM")` [@vangassen2015flowsom]  in order to automatically detect cell populations.
+The data set can be downloaded as follows:
+
+```{r cytof, eval=FALSE}
+cytof <- readRDS(gzcon(url(
+  "https://www.dropbox.com/s/42kfedfpzyssqvq/cytof_bcrxl_5000cells.rds?dl=1")))
+```
+
+The traditional way to analyze cytometry experiments and identify known cell populations is to construct a collection of two-dimensional scatter plots, each visualizing the cells in the space of two of the measured markers. 
+By successively selecting subsets of cells with specific patterns of marker abundance ("gating"),
+experienced users can assign cells to known populations. 
+To mimic part of the original gating strategy from [@bodenmiller2012cytof], we define a starting configuration for `iSEE` with five *Feature assay plots*, each showing two of the markers. 
+Each plot is linked to the previous one, with the brushing effect set to "Restrict", meaning that only the cells selected by point selection in the previous plot are shown in each plot.
+We also include a *Reduced dimension plot*, in which the cells are colored by the automatic cluster assignment. 
+The *Reduced dimension plot* receives a restricting brush from the last *Feature assay plot*, which means that only the points that are selected by brushing in the latter will be shown in the *Reduced dimension plot*.
+
+The code below sets up the initial panel configuration and brushing relationships. 
+
+```{r initialPanels_cytof, eval=FALSE}
+initialPanels = DataFrame(
+  Name = c(paste("Feature assay plot", 1:5), "Reduced dimension plot 1"),
+  Width = c(rep(3, 5), 5))
+# Feature assay plots
+fexArg <- featAssayPlotDefaults(cytof, 5)
+fexArg$XAxis <- "Feature name"
+fexArg$XAxisFeatName <- c("Cell_length", "CD3", "CD7", "CD3", "CD4")
+fexArg$YAxisFeatName <- c("CD45", "CD20", "CD45", "CD33", "CD45")
+fexArg$SelectByPlot <- c("", paste("Feature assay plot", 1:4))
+fexArg$SelectEffect <- "Restrict"
+# Reduced dimension plot
+redArg <- redDimPlotDefaults(cytof, 1)
+redArg$ColorBy <- "Column data"
+redArg$ColorByColData <- "population"
+redArg$SelectByPlot <- "Feature assay plot 5"
+redArg$SelectEffect <- "Restrict"
+```
+
+```{r iSEE_cytof, eval=FALSE}
+iSEE(cytof, initialPanels = initialPanels, featAssayArgs = fexArg, redDimArgs = redArg)
+```
+
+Once we have started `iSEE` in this configuration, we can start brushing from the first Feature assay plot to successively refine a cell subpopulation. 
+Roughly following the gating strategy in [@bodenmiller2012cytof], we select cells with high CD45 expression in *Feature assay plot 1*, followed by cells with low CD20 expression in *Feature assay plot 2*. 
+Next, we select cells with high CD7 expression in *Feature assay plot 3*, and subsequently cells with high CD3 and low CD33 expression in *Feature assay plot 4*. 
+Finally, by selecting either cells with high CD4 expression or those with low CD4 expression in *Feature assay plot 5*, and reviewing the resulting cells shown in the *Reduced dimension plot 1*, we can see that these are indeed the cells that were automatically classified as CD4^+^ (or CD8^+^) T-cells by the `r Biocpkg("FlowSOM")` clustering. 
+
+At this point, we can export all the code needed to reproduce the six panels by clicking on the **wrench** (<i class="fa fa-wrench"></i>) icon in the top right corner and selecting "Extract the R code". 
+
+# Session Info {.unnumbered}
+
+```{r sessioninfo}
+sessionInfo()
+# devtools::session_info()
+```
+
+# References {.unnumbered}
+

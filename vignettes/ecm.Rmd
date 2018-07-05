@@ -63,7 +63,7 @@ Each colormap is a function that takes a single integer argument and returns tha
 The `ExperimentColorMap` is a container that stores these functions for use within the `iSEE()` function. 
 Users can define their own colormaps to customize coloration for specific assays or covariates.
 
-# Examples of colormaps
+# Defining colormaps
 
 ## Colormaps for continuous variables
 
@@ -98,7 +98,7 @@ driver_color_fun <- function(n){
 ```
 
 Alternatively, the function can ignore its arguments and simply return a named vector of colors if users want to specify the color for each level explicitly 
-It is the user's responsibility to ensure that all levels are accounted for.
+It is the user's responsibility to ensure that all levels are accounted for^[Needless to say, these functions should not be used as shared or global colormaps.].
 For instance, the following colormap function will only be compatible with factors of two levels, namely `"Y"` and `"N"`:
 
 ```{r qc_color_fun}
@@ -110,7 +110,7 @@ qc_color_fun <- function(n){
 }
 ```
 
-# Explaining the colormap hierarchy
+# The colormap hierarchy
 
 ## Specific and shared colormaps
 

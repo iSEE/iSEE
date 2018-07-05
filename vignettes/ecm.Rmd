@@ -1,0 +1,219 @@
+---
+title: Describing the `ExperimentColorMap` class
+author:
+- name: Federico Marini
+  affiliation: 
+  - &id1 Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz
+  - Center for Thrombosis and Hemostasis (CTH), Mainz
+  email: marinif@uni-mainz.de
+- name: Aaron Lun
+  affiliation: 
+  - &id2 Cancer Research UK Cambridge Institute, University of Cambridge
+  email: aaron.lun@cruk.cam.ac.uk
+- name: Charlotte Soneson
+  affiliation: 
+  - &id3 Institute of Molecular Life Sciences, University of Zurich
+  - SIB Swiss Institute of Bioinformatics
+  email: charlottesoneson@gmail.com
+- name: Kevin Rue-Albrecht
+  affiliation: 
+  - &id4 Kennedy Institute of Rheumatology, University of Oxford,
+    Headington, Oxford OX3 7FY, UK.
+  email: kevin.rue-albrecht@kennedy.ox.ac.uk
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('iSEE')`"
+output: 
+  BiocStyle::html_document:
+    toc_float: true
+vignette: >
+  %\VignetteIndexEntry{iSEE User's Guide}
+  %\VignetteEncoding{UTF-8}  
+  %\VignettePackage{iSEE}
+  %\VignetteKeywords{GeneExpression, RNASeq, Sequencing, Visualization, QualityControl, GUI}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+bibliography: iSEE.bib
+---
+
+**Compiled date**: `r Sys.Date()`
+
+**Last edited**: 2018-03-08
+
+**License**: `r packageDescription("iSEE")[["License"]]`
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>",
+    error = FALSE,
+    warning = FALSE,
+    message = FALSE
+)
+stopifnot(requireNamespace("htmltools"))
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+sce <- readRDS('sce.rds')
+```
+
+# Using an ExperimentColorMap
+
+`r Biocpkg("iSEE")` coordinates the coloration in every plot via the `ExperimentColorMap` class [@kra2018iSEE].
+Colors for samples or features are defined from column or row metadata or assay values using "colormaps".
+Each colormap is a function that takes a single integer argument and returns that number of distinct colors.
+The `ExperimentColorMap` is a container that stores these functions for use within the `iSEE()` function. 
+Users can define their own colormaps to customize coloration for specific assays or covariates.
+
+# Defining colormaps
+
+## Colormaps for continuous variables
+
+For continuous variables, the function will be asked to generate a number of colors (21, by default).
+Interpolation will then be performed internally to generate a color gradient.
+Users can use existing color scales like `viridis::viridis` or `heat.colors`:
+
+```{r}
+# Coloring for log-counts:
+logcounts_color_fun <- viridis::viridis
+```
+
+It is also possible to use a function that completely ignores any arguments, and simply returns a fixed number of interpolation points:
+
+```{r}
+# Coloring for FPKMs:
+fpkm_color_fun <- function(n){
+    c("black","brown","red","orange","yellow")
+}
+```
+
+## Colormaps for categorical variables
+
+For categorical variables, the function should accept the number of levels and return a color per level.
+Colors are automatically assigned to factor levels in the specified order of the levels.
+
+```{r driver_color_fun}
+# Coloring for the 'driver' metadata variable.
+driver_color_fun <- function(n){
+    RColorBrewer::brewer.pal(n, "Set2")
+}
+```
+
+Alternatively, the function can ignore its arguments and simply return a named vector of colors if users want to specify the color for each level explicitly 
+It is the user's responsibility to ensure that all levels are accounted for^[Needless to say, these functions should not be used as shared or global colormaps.].
+For instance, the following colormap function will only be compatible with factors of two levels, namely `"Y"` and `"N"`:
+
+```{r qc_color_fun}
+# Coloring for the QC metadata variable:
+qc_color_fun <- function(n){
+    qc_colors <- c("forestgreen", "firebrick1")
+    names(qc_colors) <- c("Y", "N")
+    qc_colors
+}
+```
+
+# The colormap hierarchy
+
+## Specific and shared colormaps
+
+Colormaps can be defined by users at three different levels:
+
+- Each individual assay, column data field, and row data field can be assigned its own distinct colormap. 
+Those colormaps are stored as named lists of functions in the `assays`, `colData`, and `rowData` slots, respectively, of the `ExperimentColorMap`. 
+This can be useful to easily remember which assay is currently shown; 
+to apply different color scale limits to assays that vary on different ranges of values;
+or display boolean information in an intuitive way, among many other scenarios.
+- *Shared* colormaps can be defined for all assays, all column data, and all row data.
+These colormaps are stored in the `all_discrete` and `all_continuous` slots of the `ExperimentColorMap`, as lists of functions named `assays`, `colData`, and `rowData`.
+- *Global* colormaps can be defined for all categorical or continuous data.
+Those two colormaps are stored in the `global_discrete` and `global_continuous` slots of the `ExperimentColorMap`.
+
+## Searching for colors
+
+When queried for a specific colormap of any type (assay, column data, or row data), the following process takes place:
+
+- A specific *individual* colormap is looked up in the appropriate slot of the `ExperimentColorMap`.
+- If it is not found, the *shared* colormap of the appropriate slot is looked up, according to whether the data are categorical or continuous.
+- If it is not found, the *global* colormap is looked up, according to whether the data are categorical or continuous.
+- If none of the above colormaps were defined, the `ExperimentColorMap` will revert to the default colormaps.
+
+By default, `viridis` is used as the default continuous colormap, and `hcl` is used as the default categorical colormap.
+
+# Creating the `ExperimentColorMap`
+
+We store the set of colormap functions in an instance of the `ExperimentColorMap` class.
+Named functions passed as `assays`, `colData`, or `rowData` arguments will be used for coloring data in those slots, respectively.
+
+```{r ecm}
+library(iSEE)
+ecm <- ExperimentColorMap(
+    assays = list(
+        counts = heat.colors,
+        logcounts = logcounts_color_fun,
+        cufflinks_fpkm = fpkm_color_fun
+    ),
+    colData = list(
+        passes_qc_checks_s = qc_color_fun,
+        driver_1_s = driver_color_fun
+    ),
+    all_continuous = list(
+        assays = viridis::plasma
+    )
+)
+ecm
+```
+
+Users can change the defaults for all assays or column data by modifying the *shared* colormaps.
+Similarly, users can modify the defaults for all continuous or categorical data by modifying the global colormaps.
+This is demonstrated below for the continuous variables:
+
+```{r all_continuous}
+ExperimentColorMap(
+    all_continuous=list( # shared
+        assays=viridis::plasma,
+        colData=viridis::inferno
+    ),
+    global_continuous=viridis::magma # global
+)
+```
+
+# Benefits
+
+The `ExperimentColorMap` class offers the following major features:
+
+- a single place to define flexible and lightweight sets of colormaps, that may be saved and reused across sessions and projects outside the app, to apply consistent coloring schemes across entire projects
+- a simple interface through accessors `colDataColorMap(colormap, "coldata_name")` and setters `assayColorMap(colormap, "assay_name") <- colormap_function`
+- an elegant fallback mechanism to consistently return a colormap, even for undefined covariates, including a default categorical and continuous colormap, respectively.
+- three levels of colormaps override: individual, shared within slot (i.e., assays, colData, rowData), or shared globally between all categorical or continuous data scales.
+
+Detailed examples on the use of `ExperimentColorMap` objects are available in the documentation `?ExperimentColorMap`, as well as below.
+
+# Demonstration
+
+We will again use the `allen` single-cell RNA-seq data set to demonstrate the use of the `ExperimentColorMap` class.
+Assuming that we have the `sce` object from the earlier vignette, we create an `iSEE` app with the `SingleCellExperiment` object and the colormap generated above.
+
+```{r allen-dataset-4}
+app <- iSEE(sce, colormap = ecm)
+```
+
+We run this using `runApp` to open the app on our browser.
+
+```{r runApp, eval=FALSE}
+shiny::runApp(app)
+```
+
+Now, choose to color cells by `Column data` and select `passes_qc_checks_s`.
+We will see that all cells that passed QC (`Y`) are colored "forestgreen", while the ones that didn’t pass are colored firebrick. 
+
+If we color any plot by gene expression, we see that use of counts follows the `heat.colors` coloring scheme;
+use of log-counts follows the `viridis` coloring scheme;
+and use of FPKMs follows the black-to-yellow scheme we defined in `fpkm_color_fun`.
+
+# Session Info {.unnumbered}
+
+```{r sessioninfo}
+sessionInfo()
+# devtools::session_info()
+```
+
+# References {.unnumbered}
+

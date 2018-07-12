@@ -71,7 +71,7 @@ biocLite("iSEE")
 To load and attach the package to your current workspace, enter:
 
 ```{r library}
-library("iSEE")
+library(iSEE)
 ```
 
 # Quick start {#quickstart}

@@ -194,6 +194,20 @@ Finally, by selecting either cells with high CD4 expression or those with low CD
 
 At this point, we can export all the code needed to reproduce the six panels by clicking on the **wrench** (<i class="fa fa-wrench"></i>) icon in the top right corner and selecting "Extract the R code". 
 
+# Writing your own tour
+
+By providing a data frame to the `tour` argument of `iSEE`, you can create your own tour that will start when the app is launched. 
+The data frame should have two columns, named `element` and `intro`:
+
+```{r}
+introtour <- read.delim(system.file("inst/extdata/intro_firststeps.txt", package = "iSEE"), 
+                        sep = ";", header = TRUE)
+head(introtour)
+```
+
+Each entry of the `element` column contains the name of a UI element in the application, prefixed by a hash sign (#), and the `intro` column contains the corresponding text that is being shown at each step. 
+To get started, you can for example copy the `intro_firststeps.txt` file from the `inst/extdata` folder and edit it according to your specific data set. 
+
 # Session Info {.unnumbered}
 
 ```{r sessioninfo}

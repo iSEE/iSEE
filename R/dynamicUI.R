@@ -58,29 +58,6 @@
     do.call(tagList, collected)
 }
 
-#' Sanitize names
-#' 
-#' Convert a vector of names into a named integer vector of indices.
-#'
-#' @param raw_names A character vector of names.
-#' 
-#' @return
-#' An integer vector of \code{1:length(raw_names)}, with names based on \code{raw_names}.
-#'
-#' @details
-#' This function protects against non-unique names by converting them to integer indices, which can be used for indexing within the function.
-#' The names are also made unique for display to the user by prefixing them with \code{(<index>)}.
-#'
-#' @author Kevin Rue-Albrecht, Aaron Lun
-#' @rdname INTERNAL_sanitize_names
-#' @seealso
-#' \code{\link{.panel_generation}}
-.sanitize_names <- function(raw_names){
-  indices <- seq_along(raw_names)
-  names(indices) <- sprintf("(%i) %s", indices, raw_names)
-  return(indices)
-}
-
 #' Generate the panels in the app body
 #'
 #' Constructs the active panels in the main body of the app to show the plotting results and tables.
@@ -132,6 +109,7 @@
     row_covariates <- colnames(rowData(se))
     all_assays <- .get_internal_info(se, "all_assays")
     red_dim_names <- .get_internal_info(se, "red_dim_names")
+    sample_names <- .get_internal_info(se, "sample_names")
     custom_col_fun <- .get_internal_info(se, "custom_col_fun")
     custom_col_funnames <- c(.noSelection, names(custom_col_fun))
 
@@ -256,7 +234,7 @@
             plot.param <- list(
                 selectInput(.input_FUN(.sampAssayYAxis),
                             label = "Sample of interest (Y-axis):",
-                            choices=seq_len(ncol(se)), selected=param_choices[[.sampAssayYAxis]]),
+                            choices=sample_names, selected=param_choices[[.sampAssayYAxis]]),
                 selectInput(.input_FUN(.sampAssayAssay), label=NULL,
                             choices=all_assays, selected=param_choices[[.sampAssayAssay]]),
                 radioButtons(.input_FUN(.sampAssayXAxis), label="X-axis:", inline=TRUE,
@@ -270,7 +248,7 @@
                                          .sampAssayXAxisSampleTitle,
                                          selectInput(.input_FUN(.sampAssayXAxisSample),
                                                      label = "Sample of interest (X-axis):",
-                                                     choices=seq_len(ncol(se)), selected=param_choices[[.sampAssayXAxisSample]]))
+                                                     choices=sample_names, selected=param_choices[[.sampAssayXAxisSample]]))
                 )
         } else if (mode=="heatMapPlot") {
             obj <- plotOutput(panel_name, brush=brush.opts, dblclick=dblclick, height=panel_height)
@@ -1009,7 +987,7 @@
 #' @details
 #' Precomputed information includes:
 #' \itemize{
-#' \item unique-ified selectize choices, to avoid problems with selecting between different unnamed assays or reduced dimension results.
+#' \item unique-ified selectize choices, to avoid problems with selecting between different unnamed assays, samples or reduced dimension results.
 #' \item the names of discrete metadata fields, for use in restricting choices for faceting.
 #' \item a list of the custom column functions supplied in the \code{\link{iSEE}} function. 
 #' }
@@ -1032,10 +1010,39 @@
         row_groupable=colnames(rowData(se))[.which_groupable(rowData(se))],
         all_assays=.sanitize_names(assayNames(se)),
         red_dim_names=.sanitize_names(reducedDimNames(se)),
+        sample_names=.sanitize_names(colnames(se)),
         custom_col_fun=fun_list
     )
+
+    if (is.null(colnames(se))) {
+        out$sample_names <- sprintf("Sample %i", seq_len(ncol(se)))
+    }
+
     SingleCellExperiment:::int_metadata(se)$iSEE <- out
     return(se)
+}
+
+#' Sanitize names
+#' 
+#' Convert a vector of names into a named integer vector of indices.
+#'
+#' @param raw_names A character vector of names.
+#' 
+#' @return
+#' An integer vector of \code{1:length(raw_names)}, with names based on \code{raw_names}.
+#'
+#' @details
+#' This function protects against non-unique names by converting them to integer indices, which can be used for indexing within the function.
+#' The names are also made unique for display to the user by prefixing them with \code{(<index>)}.
+#'
+#' @author Kevin Rue-Albrecht, Aaron Lun
+#' @rdname INTERNAL_sanitize_names
+#' @seealso
+#' \code{\link{.panel_generation}}
+.sanitize_names <- function(raw_names, N, prefix) {
+    indices <- seq_along(raw_names)
+    names(indices) <- sprintf("(%i) %s", indices, raw_names)
+    indices
 }
 
 #' Extract internal information

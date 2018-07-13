@@ -71,7 +71,8 @@
 #' @section Sample assay plot parameters:
 #' \describe{
 #' \item{\code{YAxis}:}{Integer, which column of \code{se} should be shown on the y-axis?
-#' Defaults to 1, i.e., the first column.}
+#' Defaults to 1, i.e., the first column.
+#' Alternatively, a character field can be supplied containing the name of the column.}
 #' \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
 #' Defaults to 1, i.e., the first assay in \code{se}.
 #' Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
@@ -80,7 +81,8 @@
 #' \item{\code{XAxisRowData}:}{Character, which column of \code{rowData(se)} should be shown on the x-axis if \code{XAxis="Row data"}?
 #' Defaults to the first entry of \code{rowData(se)}.}
 #' \item{\code{XAxisSample}:}{Integer, which column of \code{se} should be shown on the x-axis?
-#' Defaults to 2 if \code{se} contains multiple columns, otherwise it is set to 1.}
+#' Defaults to 2 if \code{se} contains multiple columns, otherwise it is set to 1.
+#' Alternatively, a character field can be supplied containing the name of the column.}
 #' }
 #'
 #' @section Custom column plot parameters:

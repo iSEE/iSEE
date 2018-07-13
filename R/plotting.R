@@ -64,7 +64,7 @@ names(.all_aes_values) <- .all_aes_names
         "plot.data <- data.frame(X = red.dim[, %i], Y = red.dim[, %i], row.names=colnames(se));",
         param_choices[[.redDimXAxis]], param_choices[[.redDimYAxis]])
     
-    reddim_names <- names(.sanitize_names(reducedDimNames(se)))
+    reddim_names <- names(.get_internal_info(se, field="red_dim_names"))
     plot_title <- reddim_names[param_choices[[.redDimType]]]
     
     x_lab <- sprintf("Dimension %s", param_choices[[.redDimXAxis]])
@@ -321,7 +321,7 @@ names(.all_aes_values) <- .all_aes_names
     y_index <- param_choices[[.sampAssayYAxis]]
     assay_choice <- param_choices[[.sampAssayAssay]]
     data_cmds[["y"]] <- sprintf("plot.data <- data.frame(Y=assay(se, %i)[,%i], row.names = rownames(se));", assay_choice, y_index)
-    y_lab <- paste("Sample", y_index)
+    y_lab <- names(.get_internal_info(se, "sample_names"))[y_index]
 
     # Prepare X-axis data.
     x_choice <- param_choices[[.sampAssayXAxis]]
@@ -333,7 +333,7 @@ names(.all_aes_values) <- .all_aes_names
         data_cmds[["x"]] <- sprintf("plot.data$X <- rowData(se)[,%s];", deparse(x_lab))
     } else {
         x_index <- param_choices[[.sampAssayXAxisSample]]
-        x_lab <- paste("Sample", x_index)
+        x_lab <- names(.get_internal_info(se, "sample_names"))[x_index]
         data_cmds[["x"]] <- sprintf("plot.data$X <- assay(se, %i)[,%i];", assay_choice, x_index)
     }
     

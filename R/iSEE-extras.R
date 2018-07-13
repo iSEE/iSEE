@@ -199,6 +199,9 @@
     all_args$featAssayPlot <- .name2index(all_args$featAssayPlot, .featAssayAssay, assayNames(se))
 
     all_args$rowStatTable <- .name2index(all_args$rowStatTable, .rowStatSelected, rownames(se))
+    
+    all_args$sampAssayPlot <- .name2index(all_args$sampAssayPlot, c(.sampAssayYAxis, .sampAssayXAxisSample), colnames(se))
+    all_args$sampAssayPlot <- .name2index(all_args$sampAssayPlot, .sampAssayAssay, assayNames(se))
 
     all_args$heatMapPlot <- .name2index(all_args$heatMapPlot, .heatMapFeatName, rownames(se))
     all_args$heatMapPlot <- .name2index(all_args$heatMapPlot, .heatMapAssay, assayNames(se))

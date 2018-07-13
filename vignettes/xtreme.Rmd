@@ -229,6 +229,18 @@ head(introtour)
 Each entry of the `element` column contains the name of a UI element in the application, prefixed by a hash sign (#), and the `intro` column contains the corresponding text that is being shown at each step. 
 To get started, you can for example copy the `intro_firststeps.txt` file from the `inst/extdata` folder and edit it according to your specific data set. 
 
+Sometimes it is useful to place one step of the tour in the center. To do so, simply put a hash sign before a word which does not link directly to any CSS selector (e.g., as we do for `#Welcome`) in the corresponding `element` column.
+
+To make the tour efficient, it is critical to select the correct elements of the app which need to be highlighted. Although this can be sometimes difficult, we can recommend one of the following options:
+
+- if using Firefox, open the `Tools` menu. Select `Web Developer`. In the submenu, select `Inspector`. This will toggle a toolbar, and you will be able to read out the name of the element of interest when you hover and click on it. If you want to select another element, you might need to re-click on the icon in the upper left corner of the toolbox, `Pick an element from the page`;
+- if using Safari, in the `Develop` menu select `Show Web Inspector`. To toggle the selection of elements, you need to click on the crosshair icon in the top part of the toolbox, then again, explore the desired element by clicking or hovering on it;
+- if using Chrome, from the `View` menu select first `Developer` and then `Developer Tools`. Click then on the selecting arrow in the top left corner, and similarly to the other browsers, hover or click on the element of interest to obtain its name and report that in the tour under the `element` column.
+
+Most elements can be picked in one of the above manners. Some might be trickier, like Selectize widgets, but these can be dealt with `#heatMapPlot1_ColData + .selectize-control`, for example. Please see the `intro_firststeps.txt` file in the `inst/extdata` folder for more of these.
+
+An alternative way, which would require the installation of an additional browser extension, can also be represented by the SelectorGadget. Please see some examples of usage at this address: https://selectorgadget.com.
+
 # Session Info {.unnumbered}
 
 ```{r sessioninfo}

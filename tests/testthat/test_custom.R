@@ -18,11 +18,12 @@ all_memory <- iSEE:::.setup_memory(sceX,
                                    redDimArgs=redDimArgs, 
                                    colDataArgs=NULL, 
                                    featAssayArgs=NULL,
+                                   sampAssayArgs=NULL,
                                    rowStatArgs=NULL,
                                    rowDataArgs=NULL, 
                                    customColArgs=customColArgs,
                                    heatMapArgs=NULL,
-                                   redDimMax=1, colDataMax=0, featAssayMax=0, rowStatMax=0, rowDataMax=0, customColMax=1, heatMapMax=0)
+                                   redDimMax=1, colDataMax=0, featAssayMax=0, sampAssayMax=0, rowStatMax=0, rowDataMax=0, customColMax=1, heatMapMax=0)
 
 all_coordinates <- list()
 p.out <- iSEE:::.make_customColPlot(id = 1, all_memory, all_coordinates, sceX, ExperimentColorMap(), cached=NULL)

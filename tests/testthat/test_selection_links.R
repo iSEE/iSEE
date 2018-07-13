@@ -3,6 +3,7 @@
 redDimArgs <- redDimPlotDefaults(sce, 1)
 colDataArgs <- colDataPlotDefaults(sce, 2)
 featAssayArgs <- featAssayPlotDefaults(sce, 3)
+sampAssayArgs <- sampAssayPlotDefaults(sce, 3)
 rowStatArgs <- rowStatTableDefaults(sce, 3)
 rowDataArgs <- rowDataPlotDefaults(sce, 1)
 customColArgs <- customColPlotDefaults(sce, 1)
@@ -18,7 +19,8 @@ colDataArgs[2,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
 
 memory <- list(
     redDimPlot=redDimArgs, 
-    featAssayPlot=featAssayArgs, 
+    featAssayPlot=featAssayArgs,
+    sampAssayPlot=sampAssayArgs, 
     colDataPlot=colDataArgs,
     rowStatTable=rowStatArgs, 
     rowDataPlot=rowDataArgs, 
@@ -31,6 +33,7 @@ test_that("selection link creation works correctly", {
     m <- g[]
     expect_identical(sort(rownames(m)), sort(c(sprintf("redDimPlot%i", seq_len(nrow(redDimArgs))),
                                                sprintf("featAssayPlot%i", seq_len(nrow(featAssayArgs))),
+                                               sprintf("sampAssayPlot%i", seq_len(nrow(sampAssayArgs))),
                                                sprintf("colDataPlot%i", seq_len(nrow(colDataArgs))),
                                                sprintf("rowStatTable%i", seq_len(nrow(rowStatArgs))),
                                                sprintf("rowDataPlot%i", seq_len(nrow(rowDataArgs))),
@@ -54,6 +57,7 @@ test_that("selection link creation works correctly", {
 
     expect_error(iSEE:::.spawn_selection_chart(list(redDimPlot=redDimArgs, 
                                                     featAssayPlot=featAssayArgs, 
+                                                    sampAssayPlot=sampAssayArgs,
                                                     colDataPlot=colDataArgs, 
                                                     rowStatTable=rowStatArgs, 
                                                     rowDataPlot=rowDataArgs,
@@ -64,7 +68,8 @@ test_that("selection link creation works correctly", {
     # Checking that it throws up upon being given some garbage.
     redDimArgs[1,iSEE:::.selectByPlot] <- "whee!"
     expect_error(iSEE:::.spawn_selection_chart(list(redDimPlot=redDimArgs, 
-                                                    featAssayPlot=featAssayArgs, 
+                                                    featAssayPlot=featAssayArgs,
+                                                    sampAssayPlot=sampAssayArgs,
                                                     colDataPlot=colDataArgs,
                                                     rowStatTable=rowStatArgs, 
                                                     rowDataPlot=rowDataArgs,
@@ -176,6 +181,7 @@ test_that("select dependent identification works correctly", {
     # No restriction in the children.
     memory <- list(redDimPlot=redDimArgs, 
                    featAssayPlot=featAssayArgs, 
+                   sampAssayPlot=sampAssayArgs,
                    colDataPlot=colDataArgs,
                    rowStatTable=rowStatArgs, 
                    rowDataPlot=rowDataArgs, 
@@ -189,6 +195,7 @@ test_that("select dependent identification works correctly", {
     featAssayArgs[1,iSEE:::.selectEffect] <- iSEE:::.selectRestrictTitle
     memory <- list(redDimPlot=redDimArgs, 
                    featAssayPlot=featAssayArgs, 
+                   sampAssayPlot=sampAssayArgs,
                    colDataPlot=colDataArgs,
                    rowStatTable=rowStatArgs, 
                    rowDataPlot=rowDataArgs, 
@@ -202,6 +209,7 @@ test_that("select dependent identification works correctly", {
     colDataArgs[1,iSEE:::.selectEffect] <- iSEE:::.selectRestrictTitle
     memory <- list(redDimPlot=redDimArgs, 
                    featAssayPlot=featAssayArgs, 
+                   sampAssayPlot=sampAssayArgs,
                    colDataPlot=colDataArgs,
                    rowStatTable=rowStatArgs, 
                    rowDataPlot=rowDataArgs, 
@@ -215,6 +223,7 @@ test_that("select dependent identification works correctly", {
     featAssayArgs[1,iSEE:::.selectEffect] <- iSEE:::.selectColorTitle
     memory <- list(redDimPlot=redDimArgs, 
                    featAssayPlot=featAssayArgs, 
+                   sampAssayPlot=sampAssayArgs,
                    colDataPlot=colDataArgs, 
                    rowStatTable=rowStatArgs, 
                    rowDataPlot=rowDataArgs, 
@@ -276,6 +285,7 @@ test_that("reporting order is correctly reported", {
   memory <- list(
     redDimPlot=redDimArgs, 
     featAssayPlot=featAssayArgs, 
+    sampAssayPlot=sampAssayArgs,
     colDataPlot=colDataArgs,
     rowStatTable=rowStatArgs, 
     rowDataPlot=rowDataArgs, 

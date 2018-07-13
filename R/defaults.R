@@ -63,9 +63,24 @@
 #' \item{\code{YAxis}:}{Character, which column of \code{rowData(se)} should be shown on the y-axis?
 #' Defaults to the first entry of \code{colData(se)}.}
 #' \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
-#' Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Row data"} or \code{"Feature name"}.}
+#' Defaults to \code{"None"}, but can also be \code{"Row data"} or \code{"Feature name"}.}
 #' \item{\code{XAxisRowData}:}{Character, which column of \code{rowData(se)} should be shown on the x-axis if \code{XAxis="Row data"}?
 #' Defaults to the first entry of \code{rowData(se)}.}
+#' }
+#'
+#' @section Sample assay plot parameters:
+#' \describe{
+#' \item{\code{YAxis}:}{Integer, which column of \code{se} should be shown on the y-axis?
+#' Defaults to 1, i.e., the first column.}
+#' \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
+#' Defaults to 1, i.e., the first assay in \code{se}.
+#' Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
+#' \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
+#' Defaults to \code{"None"}, but can also be \code{"Row data"} or \code{"Sample"}.}
+#' \item{\code{XAxisRowData}:}{Character, which column of \code{rowData(se)} should be shown on the x-axis if \code{XAxis="Row data"}?
+#' Defaults to the first entry of \code{rowData(se)}.}
+#' \item{\code{XAxisSample}:}{Integer, which column of \code{se} should be shown on the x-axis?
+#' Defaults to 2 if \code{se} contains multiple columns, otherwise it is set to 1.}
 #' }
 #'
 #' @section Custom column plot parameters:

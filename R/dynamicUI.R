@@ -50,7 +50,7 @@
             downFUN(actionButton(paste0(mode, id, "_", .organizationDown),"",icon = icon("arrow-circle-down fa-2x"), style="display:inline-block; margin:0")),
             actionButton(paste0(mode, id, "_", .organizationModify),"", icon = icon("gear fa-2x"), style="display:inline-block; margin:0"),
             title=.decode_panel_name(mode, id), status="danger", width=NULL, solidHeader=TRUE
-            )
+        )
 
         # Coercing to a different box status ('danger' is a placeholder, above).
         collected[[i]] <- .coerce_box_status(ctrl_panel, mode)
@@ -195,12 +195,10 @@
         } else if (mode=="featAssayPlot") {
             obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
             xaxis_choices <- c(.featAssayXAxisNothingTitle)
-            if (length(column_covariates)) { 
+            if (length(column_covariates)) { # As it is possible for thsi plot to be _feasible_ but for no column data to exist.
                 xaxis_choices <- c(xaxis_choices, .featAssayXAxisColDataTitle)
             }
-            if (nrow(se) && length(all_assays)) { 
-                xaxis_choices <- c(xaxis_choices, .featAssayXAxisFeatNameTitle)
-            }
+            xaxis_choices <- c(xaxis_choices, .featAssayXAxisFeatNameTitle)
 
             plot.param <- list(
                 selectizeInput(.input_FUN(.featAssayYAxisFeatName),
@@ -247,6 +245,33 @@
                                                       label = "Column of interest (X-axis):",
                                                       choices=row_covariates, selected=param_choices[[.rowDataXAxisRowData]]))
                  )
+        } else if (mode=="sampAssayPlot") {
+            obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
+            xaxis_choices <- c(.sampAssayXAxisNothingTitle)
+            if (length(row_covariates)) { # As it is possible for thsi plot to be _feasible_ but for no row data to exist.
+                xaxis_choices <- c(xaxis_choices, .sampAssayXAxisRowDataTitle)
+            }
+            xaxis_choices <- c(xaxis_choices, .sampAssayXAxisSampleTitle)
+
+            plot.param <- list(
+                selectInput(.input_FUN(.sampAssayYAxis),
+                            label = "Sample of interest (Y-axis):",
+                            choices=seq_len(ncol(se)), selected=param_choices[[.sampAssayYAxis]]),
+                selectInput(.input_FUN(.sampAssayAssay), label=NULL,
+                            choices=all_assays, selected=param_choices[[.sampAssayAssay]]),
+                radioButtons(.input_FUN(.sampAssayXAxis), label="X-axis:", inline=TRUE,
+                             choices=xaxis_choices, selected=param_choices[[.sampAssayXAxis]]),
+                .conditional_on_radio(.input_FUN(.sampAssayXAxis),
+                                         .sampAssayXAxisRowDataTitle,
+                                         selectInput(.input_FUN(.sampAssayXAxisRowData),
+                                                     label = "Row data of interest (X-axis):",
+                                                     choices=row_covariates, selected=param_choices[[.sampAssayXAxisRowData]])),
+                .conditional_on_radio(.input_FUN(.sampAssayXAxis),
+                                         .sampAssayXAxisSampleTitle,
+                                         selectInput(.input_FUN(.sampAssayXAxisSample),
+                                                     label = "Sample of interest (X-axis):",
+                                                     choices=seq_len(ncol(se)), selected=param_choices[[.sampAssayXAxisSample]]))
+                )
         } else if (mode=="heatMapPlot") {
             obj <- plotOutput(panel_name, brush=brush.opts, dblclick=dblclick, height=panel_height)
             plot.param <- list(
@@ -306,7 +331,7 @@
                             )
                 )
             )
-        } else if (mode=="rowDataPlot") {
+        } else if (mode %in% c("rowDataPlot", "sampAssayPlot")) {
             # Slightly different handling of the row data.
             param <- list(tags$div(class = "panel-group", role = "tablist",
                 do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
@@ -397,19 +422,11 @@
 #' \code{\link{.panel_generation}}
 .define_link_sources <- function(active_panels) {
     all_names <- .decode_panel_name(active_panels$Type, active_panels$ID)
-
-    is_tab <- active_panels$Type=="rowStatTable"
-    active_tab <- all_names[is_tab]
-    if (length(active_tab)==0L) {
-        active_tab <- ""
-    }
-
-    is_row <- active_panels$Type=="rowDataPlot"
-    is_heat <- active_panels$Type=="heatMapPlot"
-    row_selectable <- all_names[is_row & !is_heat]
-    col_selectable <- all_names[!is_tab & !is_row & !is_heat]
-
-    return(list(tab=active_tab, row=row_selectable, col=col_selectable))
+    list(
+        tab=all_names[active_panels$Type=="rowStatTable"],
+        row=all_names[active_panels$Type %in% c("rowDataPlot", "sampAssayPlot")],
+        col=all_names[active_panels$Type %in% c("redDimPlot", "colDataPlot", "featAssayPlot")]
+    )
 }
 
 #' Choose a linked panel

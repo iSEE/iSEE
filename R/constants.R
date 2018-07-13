@@ -32,6 +32,17 @@
 .rowDataXAxis <- "XAxis"
 .rowDataXAxisRowData <- "XAxisRowData"
 
+# Sample assay plotting parameters. ----
+.sampAssayXAxisNothingTitle <- "None"
+.sampAssayXAxisRowDataTitle <- "Row data"
+.sampAssayXAxisSampleTitle <- "Sample"
+
+.sampAssayYAxis <- "YAxis"
+.sampAssayAssay <- "Assay"
+.sampAssayXAxis <- "XAxis"
+.sampAssayXAxisRowData <- "XAxisRowData"
+.sampAssayXAxisSample <- "XAxisSample"
+
 # Custom column plotting parameters. ----
 .customColFun <- "Function"
 
@@ -184,6 +195,7 @@ translation <- c(redDimPlot="Reduced dimension plot",
                  featAssayPlot="Feature assay plot",
                  rowStatTable="Row statistics table",
                  rowDataPlot="Row data plot",
+                 sampAssayPlot="Sample assay plot",
                  customColPlot="Custom column plot",
                  heatMapPlot="Heat map")
 rev.translation <- names(translation)

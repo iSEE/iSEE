@@ -427,6 +427,31 @@ rowDataPlotDefaults <- function(se, number) {
 #' @export
 #' @importFrom methods new
 #' @importClassesFrom S4Vectors DataFrame
+#' @importFrom SummarizedExperiment rowData
+#' @importFrom BiocGenerics colnames
+sampAssayPlotDefaults <- function(se, number) {
+    waszero <- number==0 
+    if (waszero) number <- 1
+
+    covariates <- colnames(rowData(se))
+    def_assay <- .set_default_assay(se)
+
+    out <- new("DataFrame", nrows=as.integer(number))
+    out[[.sampAssayYAxis]] <- 1L
+    out[[.sampAssayAssay]] <- def_assay
+    out[[.sampAssayXAxis]] <- .sampAssayXAxisNothingTitle
+    out[[.sampAssayXAxisRowData]] <- covariates[1]
+    out[[.sampAssayXAxisSample]] <- ifelse(ncol(se)==1L, 1L, 2L)
+
+    out <- .add_general_parameters_for_row_plots(out, se)
+    if (waszero) out <- out[0,,drop=FALSE]
+    return(out)
+}
+
+#' @rdname defaults 
+#' @export
+#' @importFrom methods new
+#' @importClassesFrom S4Vectors DataFrame
 #' @importFrom SummarizedExperiment colData
 #' @importFrom BiocGenerics colnames
 heatMapPlotDefaults <- function(se, number) {

@@ -1041,17 +1041,11 @@ iSEE <- function(se,
 
         max_plots <- nrow(pObjects$memory$featAssayPlot)
         for (id in seq_len(max_plots)) {
-            for (axis in c("xaxis", "yaxis")) {
-                if (axis=="xaxis") {
-                    axis_name_choice <- .featAssayYAxisFeatName
-                } else {
-                    axis_name_choice <- .featAssayXAxisFeatName
-                }
-
+            for (axis in c(.featAssayYAxisFeatName, .featAssayXAxisFeatName)) {
                 local({
                     id0 <- id
                     mode0 <- "featAssayPlot"
-                    field0 <- axis_name_choice
+                    field0 <- axis
                     cur_field <- paste0(mode0, id0, "_", field0)
 
                     observe({

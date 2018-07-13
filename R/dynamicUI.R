@@ -1039,7 +1039,7 @@
 #' @rdname INTERNAL_sanitize_names
 #' @seealso
 #' \code{\link{.panel_generation}}
-.sanitize_names <- function(raw_names, N, prefix) {
+.sanitize_names <- function(raw_names) {
     indices <- seq_along(raw_names)
     names(indices) <- sprintf("(%i) %s", indices, raw_names)
     indices

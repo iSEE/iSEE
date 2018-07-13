@@ -106,6 +106,7 @@
 #' @param featAssayArgs A DataFrame or data.frame of user-specified arguments for feature assay plots.
 #' @param rowStatArgs A DataFrame or data.frame of user-specified arguments for row statistics tables.
 #' @param rowDataArgs A DataFrame or data.frame of user-specified arguments for row data plots.
+#' @param sampAssayArgs A DataFrame or data.frame of user-specified arguments for sample assay plots.
 #' @param customColArgs A DataFrame or data.frame of user-specified arguments for custom column plots.
 #' @param heatMapArgs A DataFrame or data.frame of user-specified arguments for heat maps.
 #' @param redDimMax Integer scalar specifying the maximum number of reduced dimension plots.
@@ -113,6 +114,7 @@
 #' @param featAssayMax Integer scalar specifying the maximum number of feature assay plots.
 #' @param rowStatMax Integer scalar specifying the maximum number of row statistics tables.
 #' @param rowDataMax Integer scalar specifying the maximum number of row data plots.
+#' @param sampAssayMax Integer scalar specifying the maximum number of sample assay plots.
 #' @param customColMax Integer scalar specifying the maximum number of custom column plots.
 #' @param heatMapMax Integer scalar specifying the maximum number of heat maps.
 #'

@@ -226,7 +226,7 @@
         } else if (mode=="sampAssayPlot") {
             obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
             xaxis_choices <- c(.sampAssayXAxisNothingTitle)
-            if (length(row_covariates)) { # As it is possible for thsi plot to be _feasible_ but for no row data to exist.
+            if (length(row_covariates)) { # As it is possible for this plot to be _feasible_ but for no row data to exist.
                 xaxis_choices <- c(xaxis_choices, .sampAssayXAxisRowDataTitle)
             }
             xaxis_choices <- c(xaxis_choices, .sampAssayXAxisSampleTitle)
@@ -673,7 +673,7 @@
                            choices=.define_visual_options(discrete_covariates)),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceColorTitle,
             radioButtons(colorby_field, label="Color by:", inline=TRUE,
-                         choices=.define_color_options_for_column_plots(se),
+                         choices=.define_color_options_for_row_plots(se),
                          selected=param_choices[[.colorByField]]
                 ),
             .conditional_on_radio(colorby_field, .colorByNothingTitle,

@@ -5,9 +5,10 @@
 \title{iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer}
 \usage{
 iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featAssayArgs = NULL,
-  rowStatArgs = NULL, rowDataArgs = NULL, customColArgs = NULL,
-  heatMapArgs = NULL, redDimMax = 5, colDataMax = 5, featAssayMax = 5,
-  rowStatMax = 5, rowDataMax = 5, customColMax = 5, heatMapMax = 5,
+  rowStatArgs = NULL, rowDataArgs = NULL, sampAssayArgs = NULL,
+  customColArgs = NULL, heatMapArgs = NULL, redDimMax = 5,
+  colDataMax = 5, featAssayMax = 5, rowStatMax = 5, rowDataMax = 5,
+  sampAssayMax = 5, customColMax = 5, heatMapMax = 5,
   initialPanels = NULL, annotFun = NULL, customColFun = NULL,
   colormap = ExperimentColorMap(), tour = NULL, appTitle = NULL,
   runLocal = TRUE)
@@ -25,6 +26,8 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featAssayArgs = NULL,
 
 \item{rowDataArgs}{A DataFrame similar to that produced by \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the row data plots.}
 
+\item{sampAssayArgs}{A DataFrame similar to that produced by \code{\link{sampAssayPlotDefaults}}, specifying initial parameters for the sample assay plots.}
+
 \item{customColArgs}{A DataFrame similar to that produced by \code{\link{customColPlotDefaults}}, specifying initial parameters for the custom column plots.}
 
 \item{heatMapArgs}{A DataFrame similar to that produced by \code{\link{heatMapPlotDefaults}}, specifying initial parameters for the heatmaps.}
@@ -38,6 +41,8 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featAssayArgs = NULL,
 \item{rowStatMax}{An integer scalar specifying the maximum number of row statistics tables in the interface.}
 
 \item{rowDataMax}{An integer scalar specifying the maximum number of row data plots in the interface.}
+
+\item{sampAssayMax}{An integer scalar specifying the maximum number of sample assay plots in the interface.}
 
 \item{customColMax}{An integer scalar specifying the maximum number of custom column plots in the interface.}
 

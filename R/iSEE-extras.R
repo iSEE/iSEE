@@ -41,6 +41,7 @@
 #' \item Feature assay plots will not be generated if there are no samples, no features or no assays.
 #' \item Row statistics tables will not be generated if there are no features.
 #' \item Row data plots will not be generated if there are no row metdata in \code{rowData(se)} or no features.
+#' \item Sample assay plots will not be generated if there are no samples, no features or no assays.
 #' \item Custom column data plots will not be generated if there are no samples or if no custom functions are available in the internal metadata of \code{se}.
 #' \item Heatmaps will not be generated if there are no samples, no features or no assays.
 #' }
@@ -54,14 +55,16 @@
 #' \code{\link{.panel_generation}},
 #' \code{\link{iSEE}}
 .check_plot_feasibility <- function(se) {
-    return(list(redDimPlot=! (length(reducedDims(se))==0L || ncol(se)==0L),
-                colDataPlot=! (ncol(colData(se))==0L || ncol(se)==0L),
-                featAssayPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
-                rowStatTable=! (nrow(se)==0L),
-                rowDataPlot=! (ncol(rowData(se))==0L || nrow(se)==0L),
-                customColPlot=! (ncol(se)==0L || length(.get_internal_info(se, "custom_col_fun"))==0L),
-                heatMapPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L)
-    ))
+    list(
+        redDimPlot=! (length(reducedDims(se))==0L || ncol(se)==0L),
+        colDataPlot=! (ncol(colData(se))==0L || ncol(se)==0L),
+        featAssayPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
+        rowStatTable=! (nrow(se)==0L),
+        rowDataPlot=! (ncol(rowData(se))==0L || nrow(se)==0L),
+        sampAssayPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
+        customColPlot=! (ncol(se)==0L || length(.get_internal_info(se, "custom_col_fun"))==0L),
+        heatMapPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L)
+    )
 }
 
 #' Increment a counter
@@ -103,6 +106,7 @@
 #' @param featAssayArgs A DataFrame or data.frame of user-specified arguments for feature assay plots.
 #' @param rowStatArgs A DataFrame or data.frame of user-specified arguments for row statistics tables.
 #' @param rowDataArgs A DataFrame or data.frame of user-specified arguments for row data plots.
+#' @param sampAssayArgs A DataFrame or data.frame of user-specified arguments for sample assay plots.
 #' @param customColArgs A DataFrame or data.frame of user-specified arguments for custom column plots.
 #' @param heatMapArgs A DataFrame or data.frame of user-specified arguments for heat maps.
 #' @param redDimMax Integer scalar specifying the maximum number of reduced dimension plots.
@@ -110,6 +114,7 @@
 #' @param featAssayMax Integer scalar specifying the maximum number of feature assay plots.
 #' @param rowStatMax Integer scalar specifying the maximum number of row statistics tables.
 #' @param rowDataMax Integer scalar specifying the maximum number of row data plots.
+#' @param sampAssayMax Integer scalar specifying the maximum number of sample assay plots.
 #' @param customColMax Integer scalar specifying the maximum number of custom column plots.
 #' @param heatMapMax Integer scalar specifying the maximum number of heat maps.
 #'
@@ -139,36 +144,44 @@
 #' \code{\link{.name2index}},
 #' \code{\link{.check_plot_feasibility}}
 .setup_memory <- function(se,
-        redDimArgs, 
-        colDataArgs, 
+        redDimArgs,
+        colDataArgs,
         featAssayArgs,
-        rowStatArgs, 
-        rowDataArgs, 
-        customColArgs, 
-        heatMapArgs, 
-        redDimMax, 
-        colDataMax, 
-        featAssayMax, 
-        rowStatMax, 
-        rowDataMax, 
+        rowStatArgs,
+        rowDataArgs,
+        sampAssayArgs,
+        customColArgs,
+        heatMapArgs,
+        redDimMax,
+        colDataMax,
+        featAssayMax,
+        rowStatMax,
+        rowDataMax,
+        sampAssayMax,
         customColMax,
         heatMapMax) {
     
-    all_args <- list(redDimPlot=redDimArgs, 
-                     colDataPlot=colDataArgs, 
-                     featAssayPlot=featAssayArgs,
-                     rowStatTable=rowStatArgs, 
-                     rowDataPlot=rowDataArgs, 
-                     customColPlot=customColArgs,
-                     heatMapPlot=heatMapArgs)
+    all_args <- list(
+        redDimPlot=redDimArgs, 
+        colDataPlot=colDataArgs, 
+        featAssayPlot=featAssayArgs,
+        rowStatTable=rowStatArgs, 
+        rowDataPlot=rowDataArgs, 
+        sampAssayPlot=sampAssayArgs,
+        customColPlot=customColArgs,
+        heatMapPlot=heatMapArgs
+    )
     
-    all_maxes <- list(redDimPlot=redDimMax, 
-                      colDataPlot=colDataMax, 
-                      featAssayPlot=featAssayMax,
-                      rowStatTable=rowStatMax, 
-                      rowDataPlot=rowDataMax, 
-                      customColPlot=customColMax,
-                      heatMapPlot=heatMapMax)
+    all_maxes <- list(
+        redDimPlot=redDimMax, 
+        colDataPlot=colDataMax, 
+        featAssayPlot=featAssayMax,
+        rowStatTable=rowStatMax, 
+        rowDataPlot=rowDataMax, 
+        sampAssayPlot=sampAssayMax,
+        customColPlot=customColMax,
+        heatMapPlot=heatMapMax
+    )
 
     feasibility <- .check_plot_feasibility(se)
 
@@ -188,6 +201,9 @@
     all_args$featAssayPlot <- .name2index(all_args$featAssayPlot, .featAssayAssay, assayNames(se))
 
     all_args$rowStatTable <- .name2index(all_args$rowStatTable, .rowStatSelected, rownames(se))
+    
+    all_args$sampAssayPlot <- .name2index(all_args$sampAssayPlot, c(.sampAssayYAxis, .sampAssayXAxisSample), colnames(se))
+    all_args$sampAssayPlot <- .name2index(all_args$sampAssayPlot, .sampAssayAssay, assayNames(se))
 
     all_args$heatMapPlot <- .name2index(all_args$heatMapPlot, .heatMapFeatName, rownames(se))
     all_args$heatMapPlot <- .name2index(all_args$heatMapPlot, .heatMapAssay, assayNames(se))
@@ -196,19 +212,23 @@
         all_args[[mode]] <- .name2index(all_args[[mode]], .colorByFeatName, rownames(se))
         all_args[[mode]] <- .name2index(all_args[[mode]], .colorByFeatNameAssay, assayNames(se))
     }
-    all_args$rowDataPlot <- .name2index(all_args$rowDataPlot, .colorByFeatName, rownames(se))
+
+    for (mode in c("rowDataPlot", "sampAssayPlot")) {
+        all_args[[mode]] <- .name2index(all_args[[mode]], .colorByFeatName, rownames(se))
+    }
 
     # Setting up parameters for each panel.
     memory <- list()
     for (mode in names(all_maxes)) {
         DEFFUN <- switch(mode,
-                         redDimPlot=redDimPlotDefaults,
-                         featAssayPlot=featAssayPlotDefaults,
-                         colDataPlot=colDataPlotDefaults,
-                         rowStatTable=rowStatTableDefaults,
-                         rowDataPlot=rowDataPlotDefaults,
-                         customColPlot=customColPlotDefaults,
-                         heatMapPlot=heatMapPlotDefaults)
+            redDimPlot=redDimPlotDefaults,
+            featAssayPlot=featAssayPlotDefaults,
+            colDataPlot=colDataPlotDefaults,
+            rowStatTable=rowStatTableDefaults,
+            rowDataPlot=rowDataPlotDefaults,
+            sampAssayPlot=sampAssayPlotDefaults,
+            customColPlot=customColPlotDefaults,
+            heatMapPlot=heatMapPlotDefaults)
 
         cur_max <- all_maxes[[mode]]
         cur_args <- all_args[[mode]]
@@ -307,8 +327,12 @@
 #' \code{\link{iSEE}}
 .setup_initial <- function(initialPanels, memory) {
     if (is.null(initialPanels)) {
-        initialPanels <- data.frame(Name=paste(translation, 1),
-                                    Width=4, Height=500L, stringsAsFactors=FALSE)
+        initialPanels <- data.frame(
+            Name=paste(translation, 1),
+            Width=4, 
+            Height=500L, 
+            stringsAsFactors=FALSE
+        )
     }
 
     if (is.null(initialPanels$Name)) {
@@ -333,7 +357,7 @@
     if (any(illegal)) {
         badpanel <- which(illegal)[1]
         message(sprintf("'%s' in 'initialPanels' is not available (maximum ID is %i)",
-                        initialPanels$Name[badpanel], max_each[encoded$Type[badpanel]]))
+            initialPanels$Name[badpanel], max_each[encoded$Type[badpanel]]))
     }
 
     data.frame(Type=encoded$Type, ID=encoded$ID,
@@ -395,20 +419,22 @@ height_limits <- c(400L, 1000L)
         }
     }
 
-    # Checking for selecting/linking of row data plots.
-    cur_memory <- memory$rowDataPlot
-    self_active <- rownames(cur_memory)
-
-    bb <- cur_memory[,.selectByPlot]
-    bad <- !bb %in% row_selectable | !self_active %in% all_active
-    if (any(bad)) {
-        memory$rowDataPlot[,.selectByPlot][bad] <- .noSelection
-    }
-
-    cb <- cur_memory[,.colorByRowTable]
-    bad <- !cb %in% active_tab | !self_active %in% all_active
-    if (any(bad)) {
-        memory$rowDataPlot[,.colorByRowTable][bad] <- .noSelection
+    # Checking for selecting/linking of row-based plots.
+    for (mode in c("rowDataPlot", "sampAssayPlot")) { 
+        cur_memory <- memory[[mode]]
+        self_active <- rownames(cur_memory)
+    
+        bb <- cur_memory[,.selectByPlot]
+        bad <- !bb %in% row_selectable | !self_active %in% all_active
+        if (any(bad)) {
+            memory[[mode]][,.selectByPlot][bad] <- .noSelection
+        }
+    
+        cb <- cur_memory[,.colorByRowTable]
+        bad <- !cb %in% active_tab | !self_active %in% all_active
+        if (any(bad)) {
+            memory[[mode]][,.colorByRowTable][bad] <- .noSelection
+        }
     }
 
     # Checking for linking of x/y-axes of feature assay plots.

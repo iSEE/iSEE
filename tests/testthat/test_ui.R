@@ -12,6 +12,7 @@ initialPanels <- DataFrame(
         "Reduced dimension plot",
         "Column data plot",
         "Feature assay plot",
+        "Sample assay plot", 
         "Row statistics table",
         "Row data plot",
         "Custom column plot",
@@ -24,6 +25,7 @@ initialPanels <- DataFrame(
 redDimArgs <- redDimPlotDefaults(sce, 1)
 colDataArgs <- colDataPlotDefaults(sce, 1)
 featAssayArgs <- featAssayPlotDefaults(sce, 1)
+sampAssayArgs <- sampAssayPlotDefaults(sce, 1)
 rowStatArgs <- rowStatTableDefaults(sce, 1)
 rowDataArgs <- rowDataPlotDefaults(sce, 1)
 customColArgs <- customColPlotDefaults(sce, 1)
@@ -39,6 +41,7 @@ customColArgs$Function <- "PCA2"
 rownames(redDimArgs) <- sprintf("redDimPlot%i", seq_len(nrow(redDimArgs)))
 rownames(colDataArgs) <- sprintf("colDataPlot%i", seq_len(nrow(colDataArgs)))
 rownames(featAssayArgs) <- sprintf("featAssayPlot%i", seq_len(nrow(featAssayArgs)))
+rownames(sampAssayArgs) <- sprintf("sampAssayPlot%i", seq_len(nrow(sampAssayArgs)))
 rownames(rowStatArgs) <- sprintf("rowStatTable%i", seq_len(nrow(rowStatArgs)))
 rownames(rowDataArgs) <- sprintf("rowDataPlot%i", seq_len(nrow(rowDataArgs)))
 rownames(customColArgs) <- sprintf("customColPlot%i", seq_len(nrow(customColArgs)))
@@ -48,6 +51,7 @@ rownames(heatMapArgs) <- sprintf("heatMapPlot%i", seq_len(nrow(heatMapArgs)))
 memory <- list(redDimPlot=redDimArgs, 
                colDataPlot=colDataArgs, 
                featAssayPlot=featAssayArgs, 
+               sampAssayPlot=sampAssayArgs,
                rowStatTable=rowStatArgs, 
                rowDataPlot=rowDataArgs, 
                customColPlot=customColArgs,

@@ -103,14 +103,16 @@ test_that("memory setup works correctly", {
                                    redDimArgs=NULL, 
                                    colDataArgs=NULL, 
                                    featAssayArgs=NULL, 
+                                   sampAssayArgs=NULL,
                                    rowStatArgs=NULL, 
                                    rowDataArgs=NULL, 
                                    heatMapArgs=NULL, 
                                    customColArgs=NULL,
-                                   redDimMax=5, colDataMax=3, featAssayMax=1, rowStatMax=2, rowDataMax=3, heatMapMax=2, customColMax=2L)
+                                   redDimMax=5, colDataMax=3, featAssayMax=1, sampAssayMax=1, rowStatMax=2, rowDataMax=3, heatMapMax=2, customColMax=2L)
     expect_identical(nrow(memory$redDimPlot), 5L)
     expect_identical(nrow(memory$colDataPlot), 3L)
     expect_identical(nrow(memory$featAssayPlot), 1L)
+    expect_identical(nrow(memory$sampAssayPlot), 1L)
     expect_identical(nrow(memory$rowStatTable), 2L)
     expect_identical(nrow(memory$rowDataPlot), 3L)
     expect_identical(nrow(memory$heatMapPlot), 2L)
@@ -121,14 +123,16 @@ test_that("memory setup works correctly", {
                                    redDimArgs=DataFrame(Type=2L), 
                                    colDataArgs=DataFrame(XAxis="Column data"),
                                    featAssayArgs=DataFrame(XAxis="Row table"),
+                                   sampAssayArgs=DataFrame(YAxis=3L),
                                    rowStatArgs=DataFrame(Selected=10L), 
                                    rowDataArgs=DataFrame(XAxis="Row data"),
                                    heatMapArgs=DataFrame(Assay=1L),
                                    customColArgs=DataFrame(Function="PCA2"),
-                                   redDimMax=5, colDataMax=3, featAssayMax=1, rowStatMax=2, rowDataMax=3, heatMapMax=2, customColMax=2L)
+                                   redDimMax=5, colDataMax=3, featAssayMax=1, sampAssayMax=1, rowStatMax=2, rowDataMax=3, heatMapMax=2, customColMax=2L)
     expect_identical(nrow(memory$redDimPlot), 5L)
     expect_identical(nrow(memory$colDataPlot), 3L)
     expect_identical(nrow(memory$featAssayPlot), 1L)
+    expect_identical(nrow(memory$sampAssayPlot), 1L)
     expect_identical(nrow(memory$rowStatTable), 2L)
     expect_identical(nrow(memory$rowDataPlot), 3L)
     expect_identical(nrow(memory$heatMapPlot), 2L)
@@ -137,6 +141,7 @@ test_that("memory setup works correctly", {
     expect_identical(memory$redDimPlot$Type, rep(2:1, c(1,4))) # Checking arguments were actually replaced.
     expect_identical(memory$colDataPlot$XAxis, rep(c("Column data", "None"), c(1,2)))
     expect_identical(memory$featAssayPlot$XAxis, "Row table")
+    expect_identical(memory$sampAssayPlot$YAxis, 3L)
     expect_identical(memory$rowStatTable$Selected, c(10L, 1L))
     expect_identical(memory$rowDataPlot$XAxis, rep(c("Row data", "None"), c(1,2)))
     expect_identical(memory$heatMapPlot$Assay, c(1L, 6L))
@@ -147,14 +152,16 @@ test_that("memory setup works correctly", {
                                    redDimArgs=DataFrame(Type=2L), 
                                    colDataArgs=DataFrame(XAxis="Column data"),
                                    featAssayArgs=DataFrame(XAxis="Row table"),
+                                   sampAssayArgs=DataFrame(YAxis=3L), 
                                    rowStatArgs=DataFrame(Selected=10L), 
                                    rowDataArgs=DataFrame(XAxis="Row data"),
                                    heatMapArgs=DataFrame(Assay=1L),
                                    customColArgs=DataFrame(Function="PCA2"),
-                                   redDimMax=0, colDataMax=0, featAssayMax=0, rowStatMax=0, rowDataMax=0, heatMapMax=0, customColMax=0)
+                                   redDimMax=0, colDataMax=0, featAssayMax=0, sampAssayMax=0, rowStatMax=0, rowDataMax=0, heatMapMax=0, customColMax=0)
     expect_identical(nrow(memory$redDimPlot), 1L)
     expect_identical(nrow(memory$colDataPlot), 1L)
     expect_identical(nrow(memory$featAssayPlot), 1L)
+    expect_identical(nrow(memory$sampAssayPlot), 1L)
     expect_identical(nrow(memory$rowStatTable), 1L)
     expect_identical(nrow(memory$rowDataPlot), 1L)
     expect_identical(nrow(memory$heatMapPlot), 1L)
@@ -163,6 +170,7 @@ test_that("memory setup works correctly", {
     expect_identical(memory$redDimPlot$Type, 2L) # Checking arguments were actually replaced.
     expect_identical(memory$colDataPlot$XAxis, "Column data")
     expect_identical(memory$featAssayPlot$XAxis, "Row table")
+    expect_identical(memory$sampAssayPlot$YAxis, 3L)
     expect_identical(memory$rowStatTable$Selected, 10L)
     expect_identical(memory$rowDataPlot$XAxis, "Row data")
     expect_identical(memory$heatMapPlot$Assay, 1L)
@@ -182,14 +190,16 @@ test_that("memory setup works correctly", {
                                    redDimArgs=NULL, 
                                    colDataArgs=NULL, 
                                    featAssayArgs=NULL, 
+                                   sampAssayArgs=NULL,
                                    rowStatArgs=NULL, 
                                    rowDataArgs=NULL, 
                                    heatMapArgs=NULL,
                                    customColArgs=NULL,
-                                   redDimMax=5, colDataMax=3, featAssayMax=1, rowStatMax=2, rowDataMax=3, heatMapMax=2, customColMax=2)
+                                   redDimMax=5, colDataMax=3, featAssayMax=1, sampAssayMax=1, rowStatMax=2, rowDataMax=3, heatMapMax=2, customColMax=2)
     expect_identical(nrow(memory$redDimPlot), 0L)
     expect_identical(nrow(memory$colDataPlot), 0L)
     expect_identical(nrow(memory$featAssayPlot), 0L)
+    expect_identical(nrow(memory$sampAssayPlot), 0L)
     expect_identical(nrow(memory$rowStatTable), 0L)
     expect_identical(nrow(memory$rowDataPlot), 0L)
     expect_identical(nrow(memory$heatMapPlot), 0L)
@@ -241,11 +251,12 @@ test_that("initialization of active panels works correctly", {
                                    redDimArgs=NULL, 
                                    colDataArgs=NULL, 
                                    featAssayArgs=NULL, 
+                                   sampAssayArgs=NULL, 
                                    rowStatArgs=NULL, 
                                    rowDataArgs=NULL, 
                                    customColArgs=NULL,
                                    heatMapArgs=NULL,
-                                   redDimMax=5, colDataMax=3, featAssayMax=1, rowStatMax=2, rowDataMax=3, customColMax=2L, heatMapMax=2)
+                                   redDimMax=5, colDataMax=3, featAssayMax=1, sampAssayMax=1, rowStatMax=2, rowDataMax=3, customColMax=2L, heatMapMax=2)
     out <- iSEE:::.setup_initial(NULL, memory)
     expect_identical(out$ID, rep(1L, nrow(out)))
     expect_identical(out$Type, unname(iSEE:::rev.translation))
@@ -286,11 +297,12 @@ test_that("sanitation of memory works correctly", {
                                    redDimArgs=NULL, 
                                    colDataArgs=NULL, 
                                    featAssayArgs=NULL, 
+                                   sampAssayArgs=NULL, 
                                    rowStatArgs=NULL, 
                                    rowDataArgs=NULL, 
                                    heatMapArgs=NULL,
                                    customColArgs=NULL,
-                                   redDimMax=5, colDataMax=3, featAssayMax=2, rowStatMax=2, rowDataMax=3, heatMapMax=2, customColMax=2)
+                                   redDimMax=5, colDataMax=3, featAssayMax=2, sampAssayMax=2, rowStatMax=2, rowDataMax=3, heatMapMax=2, customColMax=2)
     init_panels <- iSEE:::.setup_initial(NULL, memory)
 
     # No effect when there are no links.

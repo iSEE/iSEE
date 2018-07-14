@@ -50,35 +50,12 @@
             downFUN(actionButton(paste0(mode, id, "_", .organizationDown),"",icon = icon("arrow-circle-down fa-2x"), style="display:inline-block; margin:0")),
             actionButton(paste0(mode, id, "_", .organizationModify),"", icon = icon("gear fa-2x"), style="display:inline-block; margin:0"),
             title=.decode_panel_name(mode, id), status="danger", width=NULL, solidHeader=TRUE
-            )
+        )
 
         # Coercing to a different box status ('danger' is a placeholder, above).
         collected[[i]] <- .coerce_box_status(ctrl_panel, mode)
     }
     do.call(tagList, collected)
-}
-
-#' Sanitize names
-#' 
-#' Convert a vector of names into a named integer vector of indices.
-#'
-#' @param raw_names A character vector of names.
-#' 
-#' @return
-#' An integer vector of \code{1:length(raw_names)}, with names based on \code{raw_names}.
-#'
-#' @details
-#' This function protects against non-unique names by converting them to integer indices, which can be used for indexing within the function.
-#' The names are also made unique for display to the user by prefixing them with \code{(<index>)}.
-#'
-#' @author Kevin Rue-Albrecht, Aaron Lun
-#' @rdname INTERNAL_sanitize_names
-#' @seealso
-#' \code{\link{.panel_generation}}
-.sanitize_names <- function(raw_names){
-  indices <- seq_along(raw_names)
-  names(indices) <- sprintf("(%i) %s", indices, raw_names)
-  return(indices)
 }
 
 #' Generate the panels in the app body
@@ -132,6 +109,7 @@
     row_covariates <- colnames(rowData(se))
     all_assays <- .get_internal_info(se, "all_assays")
     red_dim_names <- .get_internal_info(se, "red_dim_names")
+    sample_names <- .get_internal_info(se, "sample_names")
     custom_col_fun <- .get_internal_info(se, "custom_col_fun")
     custom_col_funnames <- c(.noSelection, names(custom_col_fun))
 
@@ -195,12 +173,10 @@
         } else if (mode=="featAssayPlot") {
             obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
             xaxis_choices <- c(.featAssayXAxisNothingTitle)
-            if (length(column_covariates)) { 
+            if (length(column_covariates)) { # As it is possible for thsi plot to be _feasible_ but for no column data to exist.
                 xaxis_choices <- c(xaxis_choices, .featAssayXAxisColDataTitle)
             }
-            if (nrow(se) && length(all_assays)) { 
-                xaxis_choices <- c(xaxis_choices, .featAssayXAxisFeatNameTitle)
-            }
+            xaxis_choices <- c(xaxis_choices, .featAssayXAxisFeatNameTitle)
 
             plot.param <- list(
                 selectizeInput(.input_FUN(.featAssayYAxisFeatName),
@@ -247,6 +223,33 @@
                                                       label = "Column of interest (X-axis):",
                                                       choices=row_covariates, selected=param_choices[[.rowDataXAxisRowData]]))
                  )
+        } else if (mode=="sampAssayPlot") {
+            obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
+            xaxis_choices <- c(.sampAssayXAxisNothingTitle)
+            if (length(row_covariates)) { # As it is possible for this plot to be _feasible_ but for no row data to exist.
+                xaxis_choices <- c(xaxis_choices, .sampAssayXAxisRowDataTitle)
+            }
+            xaxis_choices <- c(xaxis_choices, .sampAssayXAxisSampleTitle)
+
+            plot.param <- list(
+                selectInput(.input_FUN(.sampAssayYAxis),
+                            label = "Sample of interest (Y-axis):",
+                            choices=sample_names, selected=param_choices[[.sampAssayYAxis]]),
+                selectInput(.input_FUN(.sampAssayAssay), label=NULL,
+                            choices=all_assays, selected=param_choices[[.sampAssayAssay]]),
+                radioButtons(.input_FUN(.sampAssayXAxis), label="X-axis:", inline=TRUE,
+                             choices=xaxis_choices, selected=param_choices[[.sampAssayXAxis]]),
+                .conditional_on_radio(.input_FUN(.sampAssayXAxis),
+                                         .sampAssayXAxisRowDataTitle,
+                                         selectInput(.input_FUN(.sampAssayXAxisRowData),
+                                                     label = "Row data of interest (X-axis):",
+                                                     choices=row_covariates, selected=param_choices[[.sampAssayXAxisRowData]])),
+                .conditional_on_radio(.input_FUN(.sampAssayXAxis),
+                                         .sampAssayXAxisSampleTitle,
+                                         selectInput(.input_FUN(.sampAssayXAxisSample),
+                                                     label = "Sample of interest (X-axis):",
+                                                     choices=sample_names, selected=param_choices[[.sampAssayXAxisSample]]))
+                )
         } else if (mode=="heatMapPlot") {
             obj <- plotOutput(panel_name, brush=brush.opts, dblclick=dblclick, height=panel_height)
             plot.param <- list(
@@ -306,7 +309,7 @@
                             )
                 )
             )
-        } else if (mode=="rowDataPlot") {
+        } else if (mode %in% c("rowDataPlot", "sampAssayPlot")) {
             # Slightly different handling of the row data.
             param <- list(tags$div(class = "panel-group", role = "tablist",
                 do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
@@ -397,19 +400,11 @@
 #' \code{\link{.panel_generation}}
 .define_link_sources <- function(active_panels) {
     all_names <- .decode_panel_name(active_panels$Type, active_panels$ID)
-
-    is_tab <- active_panels$Type=="rowStatTable"
-    active_tab <- all_names[is_tab]
-    if (length(active_tab)==0L) {
-        active_tab <- ""
-    }
-
-    is_row <- active_panels$Type=="rowDataPlot"
-    is_heat <- active_panels$Type=="heatMapPlot"
-    row_selectable <- all_names[is_row & !is_heat]
-    col_selectable <- all_names[!is_tab & !is_row & !is_heat]
-
-    return(list(tab=active_tab, row=row_selectable, col=col_selectable))
+    list(
+        tab=all_names[active_panels$Type=="rowStatTable"],
+        row=all_names[active_panels$Type %in% c("rowDataPlot", "sampAssayPlot")],
+        col=all_names[active_panels$Type %in% c("redDimPlot", "colDataPlot", "featAssayPlot")]
+    )
 }
 
 #' Choose a linked panel
@@ -678,7 +673,7 @@
                            choices=.define_visual_options(discrete_covariates)),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceColorTitle,
             radioButtons(colorby_field, label="Color by:", inline=TRUE,
-                         choices=.define_color_options_for_column_plots(se),
+                         choices=.define_color_options_for_row_plots(se),
                          selected=param_choices[[.colorByField]]
                 ),
             .conditional_on_radio(colorby_field, .colorByNothingTitle,
@@ -992,7 +987,7 @@
 #' @details
 #' Precomputed information includes:
 #' \itemize{
-#' \item unique-ified selectize choices, to avoid problems with selecting between different unnamed assays or reduced dimension results.
+#' \item unique-ified selectize choices, to avoid problems with selecting between different unnamed assays, samples or reduced dimension results.
 #' \item the names of discrete metadata fields, for use in restricting choices for faceting.
 #' \item a list of the custom column functions supplied in the \code{\link{iSEE}} function. 
 #' }
@@ -1015,10 +1010,39 @@
         row_groupable=colnames(rowData(se))[.which_groupable(rowData(se))],
         all_assays=.sanitize_names(assayNames(se)),
         red_dim_names=.sanitize_names(reducedDimNames(se)),
+        sample_names=.sanitize_names(colnames(se)),
         custom_col_fun=fun_list
     )
+
+    if (is.null(colnames(se))) {
+        out$sample_names <- sprintf("Sample %i", seq_len(ncol(se)))
+    }
+
     SingleCellExperiment:::int_metadata(se)$iSEE <- out
     return(se)
+}
+
+#' Sanitize names
+#' 
+#' Convert a vector of names into a named integer vector of indices.
+#'
+#' @param raw_names A character vector of names.
+#' 
+#' @return
+#' An integer vector of \code{1:length(raw_names)}, with names based on \code{raw_names}.
+#'
+#' @details
+#' This function protects against non-unique names by converting them to integer indices, which can be used for indexing within the function.
+#' The names are also made unique for display to the user by prefixing them with \code{(<index>)}.
+#'
+#' @author Kevin Rue-Albrecht, Aaron Lun
+#' @rdname INTERNAL_sanitize_names
+#' @seealso
+#' \code{\link{.panel_generation}}
+.sanitize_names <- function(raw_names) {
+    indices <- seq_along(raw_names)
+    names(indices) <- sprintf("(%i) %s", indices, raw_names)
+    indices
 }
 
 #' Extract internal information

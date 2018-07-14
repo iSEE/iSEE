@@ -9,6 +9,7 @@
 #' @param featAssayArgs A DataFrame similar to that produced by \code{\link{featAssayPlotDefaults}}, specifying initial parameters for the feature assay plots.
 #' @param rowStatArgs A DataFrame similar to that produced by \code{\link{rowStatTableDefaults}}, specifying initial parameters for the row statistics tables.
 #' @param rowDataArgs A DataFrame similar to that produced by \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the row data plots.
+#' @param sampAssayArgs A DataFrame similar to that produced by \code{\link{sampAssayPlotDefaults}}, specifying initial parameters for the sample assay plots.
 #' @param customColArgs A DataFrame similar to that produced by \code{\link{customColPlotDefaults}}, specifying initial parameters for the custom column plots.
 #' @param heatMapArgs A DataFrame similar to that produced by \code{\link{heatMapPlotDefaults}}, specifying initial parameters for the heatmaps.
 #' @param redDimMax An integer scalar specifying the maximum number of reduced dimension plots in the interface.
@@ -16,6 +17,7 @@
 #' @param featAssayMax An integer scalar specifying the maximum number of feature assay plots in the interface.
 #' @param rowStatMax An integer scalar specifying the maximum number of row statistics tables in the interface.
 #' @param rowDataMax An integer scalar specifying the maximum number of row data plots in the interface.
+#' @param sampAssayMax An integer scalar specifying the maximum number of sample assay plots in the interface.
 #' @param customColMax An integer scalar specifying the maximum number of custom column plots in the interface.
 #' @param heatMapMax An integer scalar specifying the maximum number of heatmaps in the interface.
 #' @param initialPanels A DataFrame specifying which panels should be created at initialization.
@@ -104,6 +106,7 @@ iSEE <- function(se,
         featAssayArgs=NULL,
         rowStatArgs=NULL,
         rowDataArgs=NULL,
+        sampAssayArgs=NULL,
         customColArgs=NULL,
         heatMapArgs=NULL,
         redDimMax=5,
@@ -111,6 +114,7 @@ iSEE <- function(se,
         featAssayMax=5,
         rowStatMax=5,
         rowDataMax=5,
+        sampAssayMax=5,
         customColMax=5,
         heatMapMax=5,
         initialPanels=NULL,
@@ -146,8 +150,8 @@ iSEE <- function(se,
 
     # Defining the maximum number of plots.
     memory <- .setup_memory(se,
-        redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs, customColArgs, heatMapArgs,
-        redDimMax, colDataMax, featAssayMax, rowStatMax, rowDataMax, customColMax, heatMapMax)
+        redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs, sampAssayArgs, customColArgs, heatMapArgs,
+        redDimMax, colDataMax, featAssayMax, rowStatMax, rowDataMax, sampAssayMax, customColMax, heatMapMax)
 
     # Defining the initial elements to be plotted.
     active_panels <- .setup_initial(initialPanels, memory)
@@ -281,7 +285,7 @@ iSEE <- function(se,
     #nocov start
     iSEE_server <- function(input, output, session) {
         all_names <- list()
-        for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot", "rowStatTable", "rowDataPlot", "customColPlot", "heatMapPlot")) {
+        for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot", "rowStatTable", "rowDataPlot", "sampAssayPlot", "customColPlot", "heatMapPlot")) {
             max_plots <- nrow(memory[[mode]])
             all_names[[mode]] <- sprintf("%s%i", mode, seq_len(max_plots))
         }
@@ -305,7 +309,7 @@ iSEE <- function(se,
             rerendered = 1L
         )
 
-        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowStatTable", "rowDataPlot", "customColPlot", "heatMapPlot")) {
+        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowStatTable", "rowDataPlot", "sampAssayPlot", "customColPlot", "heatMapPlot")) {
             max_plots <- nrow(pObjects$memory[[mode]])
             for (id in seq_len(max_plots)) {
                 rObjects[[paste0(mode, id)]] <- 1L
@@ -348,6 +352,7 @@ iSEE <- function(se,
                 featAssayPlot=.make_featAssayPlot,
                 colDataPlot=.make_colDataPlot,
                 rowDataPlot=.make_rowDataPlot,
+                sampAssayPlot=.make_sampAssayPlot,
                 customColPlot=.remake_customColPlot)
             p.out <- FUN(enc$ID, pObjects$memory, pObjects$coordinates, se, colormap)
             pObjects$coordinates[[panelname]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
@@ -472,7 +477,7 @@ iSEE <- function(se,
         # of 'id' in the renderPlot() will be the same across all instances, because
         # of when the expression is evaluated.
 
-        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowStatTable", "rowDataPlot", "customColPlot", "heatMapPlot")) {
+        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowStatTable", "rowDataPlot", "sampAssayPlot", "customColPlot", "heatMapPlot")) {
             max_plots <- nrow(pObjects$memory[[mode]])
             for (id in seq_len(max_plots)) {
                 local({
@@ -572,7 +577,7 @@ iSEE <- function(se,
         # Parameter panel observers.
         #######################################################################
 
-        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "customColPlot")) {
+        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "sampAssayPlot", "customColPlot")) {
             max_plots <- nrow(pObjects$memory[[mode]])
             for (id in seq_len(max_plots)) {
                 for (panel in c(.dataParamBoxOpen, .visualParamBoxOpen, .selectParamBoxOpen)) {
@@ -627,7 +632,7 @@ iSEE <- function(se,
         # Point selection observers.
         #######################################################################
 
-        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "customColPlot")) {
+        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "sampAssayPlot", "customColPlot")) {
             max_plots <- nrow(pObjects$memory[[mode]])
             for (id in seq_len(max_plots)) {
                 local({
@@ -891,7 +896,7 @@ iSEE <- function(se,
         # Click observers.
         #######################################################################
 
-        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "customColPlot")) {
+        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "sampAssayPlot", "customColPlot")) {
             max_plots <- nrow(pObjects$memory[[mode]])
             for (id in seq_len(max_plots)) {
                 local({
@@ -938,7 +943,7 @@ iSEE <- function(se,
         #   If an open lasso is present, it is deleted.
         #   If there was no open lasso, you zoom out.
 
-        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "customColPlot")) {
+        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "sampAssayPlot", "customColPlot")) {
             max_plots <- nrow(pObjects$memory[[mode]])
             for (id in seq_len(max_plots)) {
                 local({
@@ -1036,17 +1041,11 @@ iSEE <- function(se,
 
         max_plots <- nrow(pObjects$memory$featAssayPlot)
         for (id in seq_len(max_plots)) {
-            for (axis in c("xaxis", "yaxis")) {
-                if (axis=="xaxis") {
-                    axis_name_choice <- .featAssayYAxisFeatName
-                } else {
-                    axis_name_choice <- .featAssayXAxisFeatName
-                }
-
+            for (axis in c(.featAssayYAxisFeatName, .featAssayXAxisFeatName)) {
                 local({
                     id0 <- id
                     mode0 <- "featAssayPlot"
-                    field0 <- axis_name_choice
+                    field0 <- axis
                     cur_field <- paste0(mode0, id0, "_", field0)
 
                     observe({
@@ -1058,7 +1057,7 @@ iSEE <- function(se,
             }
         }
 
-        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "customColPlot")) {
+        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "sampAssayPlot", "customColPlot")) {
             max_plots <- nrow(pObjects$memory[[mode]])
             for (id in seq_len(max_plots)) {
                 local({
@@ -1094,7 +1093,7 @@ iSEE <- function(se,
         # Dot-related plot creation section. ----
         #######################################################################
 
-        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "customColPlot")) {
+        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "sampAssayPlot", "customColPlot")) {
             max_plots <- nrow(pObjects$memory[[mode]])
 
             # Defining mode-specific plotting functions.
@@ -1103,6 +1102,7 @@ iSEE <- function(se,
                           featAssayPlot=.make_featAssayPlot,
                           colDataPlot=.make_colDataPlot,
                           rowDataPlot=.make_rowDataPlot,
+                          sampAssayPlot=.make_sampAssayPlot,
                           customColPlot=.remake_customColPlot)
 
             # Defining fundamental parameters that destroy brushes/lassos upon being changed.
@@ -1112,10 +1112,11 @@ iSEE <- function(se,
                                 colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, collected_facet),
                                 featAssayPlot=c(.featAssayAssay, .featAssayXAxisColData, collected_facet),
                                 rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData, collected_facet),
+                                sampAssayPlot=c(.sampAssayYAxis, .sampAssayAssay, .sampAssayXAxis, .sampAssayXAxisRowData, .sampAssayXAxisSample, collected_facet),
                                 customColPlot=c(.customColFun, collected_facet))
 
             # Defining non-fundamental parameters that do not destroy brushes/lassos.
-            if (mode=="rowDataPlot") {
+            if (mode %in% c("rowDataPlot", "sampAssayPlot")) {
                 nonfundamental <- c(.colorByRowData, .colorByFeatNameColor, .shapeByField, .shapeByRowData)
             } else {
                 nonfundamental <- c(.colorByColData, .colorByFeatNameAssay, .shapeByField, .shapeByColData)

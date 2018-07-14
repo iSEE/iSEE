@@ -2,6 +2,7 @@
 redDimArgs <- redDimPlotDefaults(sce, 2)
 colDataArgs <- colDataPlotDefaults(sce, 2)
 featAssayArgs <- featAssayPlotDefaults(sce, 3)
+sampAssayArgs <- sampAssayPlotDefaults(sce, 2)
 rowStatArgs <- rowStatTableDefaults(sce, 3)
 rowDataArgs <- rowDataPlotDefaults(sce, 1)
 customColArgs <- customColPlotDefaults(sce, 1)
@@ -35,18 +36,20 @@ test_that(".report_memory generates code that evaluates to the provided object",
     all_memory <- iSEE:::.setup_memory(sce, 
                                        redDimArgs=redDimArgs, 
                                        colDataArgs=colDataArgs, 
-                                       featAssayArgs=featAssayArgs, 
+                                       featAssayArgs=featAssayArgs,
+                                       sampAssayArgs=sampAssayArgs,
                                        rowStatArgs=rowStatArgs, 
                                        rowDataArgs=rowDataArgs, 
                                        customColArgs=customColArgs, 
                                        heatMapArgs=heatMapArgs,
-                                       redDimMax=3, colDataMax=3, featAssayMax=4, rowStatMax=4, 
-                                       rowDataMax=2, customColMax=0, heatMapMax=3)
+                                       redDimMax=3, colDataMax=3, featAssayMax=4, sampAssayMax=3, 
+                                       rowStatMax=4, rowDataMax=2, customColMax=0, heatMapMax=3)
 
     inp0 <- DataFrame(Name = c(
         paste("Reduced dimension plot", 1:3),
         paste("Column data plot", 1:3),
         paste("Feature assay plot", 1:4),
+        paste("Sample assay plot", 1:3),
         paste("Row statistics table", 1:4),
         paste("Row data plot", 1:2),
         paste("Custom column plot", 1),
@@ -63,6 +66,7 @@ test_that(".report_memory generates code that evaluates to the provided object",
     expect_identical(eval_env$redDimPlotArgs, all_memory$redDimPlot)
     expect_identical(eval_env$colDataPlotArgs, all_memory$colDataPlot)
     expect_identical(eval_env$featAssayPlotArgs, all_memory$featAssayPlot)
+    expect_identical(eval_env$sampAssayPlotArgs, all_memory$sampAssayPlot)
     expect_identical(eval_env$rowStatTableArgs, all_memory$rowStatTable)
     expect_identical(eval_env$rowDataPlotArgs, all_memory$rowDataPlot)
     expect_identical(eval_env$customColPlotArgs, all_memory$customColPlot)

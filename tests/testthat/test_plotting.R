@@ -11,11 +11,12 @@ all_memory <- iSEE:::.setup_memory(sce,
     redDimArgs=redDimArgs, 
     colDataArgs=colDataArgs, 
     featAssayArgs=featAssayArgs, 
+    sampAssayArgs=NULL, 
     rowStatArgs=NULL,
     rowDataArgs=rowDataArgs, 
     customColArgs=NULL,
     heatMapArgs=NULL,
-    redDimMax=1, colDataMax=1, featAssayMax=1, rowStatMax=0, rowDataMax=1, customColMax=0, heatMapMax=0)
+    redDimMax=1, colDataMax=1, featAssayMax=1, rowStatMax=0, sampAssayMax=0, rowDataMax=1, customColMax=0, heatMapMax=0)
 
 all_coordinates <- list()
 

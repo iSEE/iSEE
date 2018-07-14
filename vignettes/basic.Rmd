@@ -61,14 +61,9 @@ htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 <!-- I'd say TODO -->
 
 `r Biocpkg("iSEE")` is a [Bioconductor](http://bioconductor.org) package that provides an interactive Shiny-based graphical user interface for exploring data stored in `SummarizedExperiment` objects [@kra2018iSEE].
-To install the package, start R and enter:
+Instructions to install the package are available [here](http://bioconductor.org/packages/iSEE/).
 
-```{r installation, eval=FALSE}
-source("http://bioconductor.org/biocLite.R")
-biocLite("iSEE")
-```
-
-To load and attach the package to your current workspace, enter:
+Once installed, the package can be loaded and attached to your current workspace as follows:
 
 ```{r library}
 library(iSEE)

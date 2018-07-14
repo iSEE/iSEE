@@ -257,10 +257,7 @@ synchronizeAssays <- function(ecm, se){
         ecm_warning)
     }
     # Fetch named-matched assay colormaps
-    new_ecm_assays <- sapply(
-      se_assay_names,
-      function(x){assayColorMap(ecm, x)}
-    )
+    new_ecm_assays <- sapply(se_assay_names, function(x){assayColorMap(ecm, x)})
   
   } else if (all(se_assay_names == "")){
     # If none of the SCE assays are named
@@ -294,10 +291,7 @@ synchronizeAssays <- function(ecm, se){
     # Exclude unnamed assay colormaps in the ExperimentColorMap
     assays(ecm) <- assays(ecm)[assayNames(ecm) != ""]
     # Fetch named-matched assay colormaps
-    new_ecm_assays <- sapply(
-      se_assay_names,
-      function(x){assayColorMap(ecm, x)}
-    )
+    new_ecm_assays <- sapply(se_assay_names, function(x){assayColorMap(ecm, x)})
     
   }
   

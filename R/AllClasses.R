@@ -679,11 +679,11 @@ setMethod(
         scat("rowData(%d): %s\n", names(object@rowData))
         
         ## all_discrete
-        which_valid <- sapply(object@all_discrete, .activeColormap)
+        which_valid <- vapply(object@all_discrete, .activeColormap, logical(1))
         scat("all_discrete(%d): %s\n", names(object@all_discrete)[which_valid])
         
         ## all_continuous
-        which_valid <- sapply(object@all_continuous, .activeColormap)
+        which_valid <- vapply(object@all_continuous, .activeColormap, logical(1))
         scat("all_continuous(%d): %s\n", names(object@all_continuous)[which_valid])
         
         ## global_discrete

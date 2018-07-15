@@ -337,13 +337,12 @@ ExperimentColorMap <- function(
     if (is.null(names(usr))){
         stop("User-defined color map must be a named list")
     }
-    def_names <- names(def)
-    usr <- usr[def_names]
+    usr_names <- names(usr)
     usr <- lapply(usr, .substituteNullColorMap)
-    names(usr) <- def_names
+    names(usr) <- usr_names
     # set the color maps given by the user
     # note that invalid ones will be picked up by the class validity check later
-    def <- usr
+    def[names(usr)] <- usr
     return(def)
 }
 

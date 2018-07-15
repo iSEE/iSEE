@@ -608,8 +608,8 @@ test_that("synchronizeAssays works for fully _un_named assays", {
   # same number of un/named colormaps
   ecm_matched <- ExperimentColorMap(
     assays = list(
-      dummy = count_colors,
-      tophat_counts = count_colors,
+      count_colors,
+      count_colors,
       fpkm_colors,
       fpkm_colors,
       count_colors,

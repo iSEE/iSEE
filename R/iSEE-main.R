@@ -218,7 +218,7 @@ iSEE <- function(se,
                         style=.actionbutton_biocstyle,
                         onclick = ifelse(runLocal, "",
                             # Use web vignette, with varying paths depending on whether we're release or devel.
-                            sprintf("window.open('http://bioconductor.org/packages/%s/bioc/vignettes/iSEE/inst/doc/iSEE_vignette.html', '_blank')",
+                            sprintf("window.open('http://bioconductor.org/packages/%s/bioc/vignettes/iSEE/inst/doc/basic.html', '_blank')",
                                 ifelse(unlist(packageVersion("iSEE"))[2] %% 2L==0L, "release", "devel")
                             )
                         )
@@ -436,7 +436,7 @@ iSEE <- function(se,
 
         if (runLocal) {
             observeEvent(input$open_vignette, {
-                path <- system.file("doc","iSEE_vignette.html", package="iSEE")
+                path <- system.file("doc","basic.html", package="iSEE")
                 if (path=="") {
                     showNotification("vignette has not been built on this system", type="error")
                 } else {

@@ -297,14 +297,13 @@ ExperimentColorMap <- function(
     ...){
     
     if (is.null(names(assays))){
-        names(assays) <- rep("", length(assays))
+        names(assays) <- character(length(assays))
     }
-    
-    if (is.null(names(all_discrete))){
-        stop("`all_discrete` must be a named list")
+    if (is.null(names(colData))){
+        names(colData) <- character(length(colData))
     }
-    if (is.null(names(all_continuous))){
-        stop("`all_continuous` must be a named list")
+    if (is.null(names(rowData))){
+        names(rowData) <- character(length(rowData))
     }
     
     all_discrete <- .sanitize_controlled_colormaps(usr=all_discrete)

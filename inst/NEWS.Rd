@@ -9,7 +9,6 @@
     \item Fixed initialization of reduced dimensions with a single plot axis choice.
     \item Substituted discouraged use of \code{sapply}.
     \item Moved roxygen \code{importFrom} instructions closer to the relevant code.
-    \item Four-space indentation throughout the package.
     \item Increased unit test coverage.
     \item Consistent use of "colormap" through the package.
     \item Substituted reference of deprecated \code{biocLite} to \code{BiocManager}.

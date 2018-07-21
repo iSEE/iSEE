@@ -5,8 +5,8 @@
 .valid.Colormap <- function(object){
     # To avoid later checking inside the app, this object should be stored in a
     # slot of its parent SummarizedExperiment that would check its validity
-    # (e.g. all assay color maps should be present in the parent, etc.)
-    # Note that default color maps will be provided for elements
+    # (e.g. all assay colormaps should be present in the parent, etc.)
+    # Note that default colormaps will be provided for elements
     # of the parent that do not have a defined colormap.
     
     errors <- c()
@@ -19,14 +19,14 @@
     
     controlled_names <- c("assays", "colData", "rowData")
     
-    # Check that all color maps are functions
+    # Check that all colormaps are functions
     # and that they return non-empty vectors (character or color)
     for (slotname in c(free_lists, named_lists, controlled_lists)){
         slotmaps <- slot(object, slotname)
         check_function <- vapply(slotmaps, "is.function", logical(1))
         if (!all(check_function)){
             errors <- c(errors, sprintf(
-                "Color map `%s` in slot `%s` is not a function",
+                "Colormap `%s` in slot `%s` is not a function",
                 names(slotmaps)[!check_function],
                 slotname
             ))
@@ -36,11 +36,11 @@
     
     for (slotname in named_lists){
         slotmaps <- slot(object, slotname)
-        # Check that all color maps are named
+        # Check that all colormaps are named
         check_named <- names(slotmaps) != ""
         if (!all(check_named)){
             errors <- c(errors, sprintf(
-                "Color map #%s in slot `%s` must be named",
+                "Colormap #%s in slot `%s` must be named",
                 which(!check_named),
                 slotname
             ))
@@ -49,10 +49,10 @@
     
     for (slotname in controlled_lists){
         slotmaps <- slot(object, slotname)
-        # Check that all color maps have the appropriate names
+        # Check that all colormaps have the appropriate names
         if (!identical(names(slotmaps), controlled_names)){
             errors <- c(errors, sprintf(
-                "Color map in slot `%s` must be named %s",
+                "Colormap in slot `%s` must be named %s",
                 slotname,
                 paste(deparse(controlled_names), collapse="")
             ))
@@ -110,29 +110,29 @@ setClass("ExperimentColorMap",
 #'
 #' @name ExperimentColorMap-class
 #'
-#' @param assays List of color maps for \code{assays}.
-#' @param colData List of color maps for \code{colData}.
-#' @param rowData List of color maps for \code{rowData}.
-#' @param all_discrete Color maps applied to all undefined
+#' @param assays List of colormaps for \code{assays}.
+#' @param colData List of colormaps for \code{colData}.
+#' @param rowData List of colormaps for \code{rowData}.
+#' @param all_discrete Colormaps applied to all undefined
 #' categorical \code{assays}, \code{colData}, and \code{rowData}, respectively.
-#' @param all_continuous Color maps applied to all undefined
+#' @param all_continuous Colormaps applied to all undefined
 #' continuous \code{assays}, \code{colData}, and \code{rowData}, respectively.
-#' @param global_discrete Color map applied to all undefined
+#' @param global_discrete Colormap applied to all undefined
 #' categorical covariates.
-#' @param global_continuous Color map applied to all undefined
+#' @param global_continuous Colormap applied to all undefined
 #' continuous covariates.
 #' @param ... additional arguments passed on to the \code{ExperimentColorMap}
 #' constructor
 #' 
 #' @details 
-#' Color maps must all be functions that take at least one argument: the number
+#' Colormaps must all be functions that take at least one argument: the number
 #' of (named) colours to return as a \code{character} vector.
-#' This argument may be ignored in the body of the color map function
-#' to produce constant color maps. 
+#' This argument may be ignored in the body of the colormap function
+#' to produce constant colormaps. 
 #' 
-#' @section Categorical color maps:
+#' @section Categorical colormaps:
 #' 
-#' The default categorical color map emulates the default ggplot2 categorical color palette
+#' The default categorical colormap emulates the default ggplot2 categorical color palette
 #' (Credit: \url{https://stackoverflow.com/questions/8197559/emulate-ggplot2-default-color-palette}).
 #' This palette returns a set of colors sampled in steps of equal size that correspond to approximately equal perceptual changes in color:
 #' 
@@ -143,7 +143,9 @@ setClass("ExperimentColorMap",
 #' }
 #' }
 #' 
-#' To change the palette for all categorical variables, users must supply a color map that returns a similar value; namely, an unnamed character vector of length \code{n}.
+#' To change the palette for all categorical variables,
+#' users must supply a colormap that returns a similar value;
+#' namely, an unnamed character vector of length \code{n}.
 #' For instance, using the base R palette \code{rainbow.colors}
 #' 
 #' \preformatted{
@@ -156,11 +158,10 @@ setClass("ExperimentColorMap",
 #'
 #' @section Accessors:
 #'
-#' In the following code snippets, \code{x} is an
-#' \code{ExperimentColorMap} object. If the color map can not immediately
-#' be found in the appropriate slot, \code{discrete} is a \code{logical(1)}
-#' that indicates whether the default color map returned should be categorical
-#' \code{TRUE} or continuous (\code{FALSE}, default).
+#' In the following code snippets, \code{x} is an \code{ExperimentColorMap} object.
+#' If the colormap can not immediately be found in the appropriate slot,
+#' \code{discrete} is a \code{logical(1)} that indicates
+#' whether the default colormap returned should be categorical \code{TRUE} or continuous (\code{FALSE}, default).
 #' 
 #' \describe{
 #'   \item{\code{assayColorMap(x, i, ..., discrete=FALSE)}:}{
@@ -228,7 +229,7 @@ setClass("ExperimentColorMap",
 #' 
 #' @examples
 #'
-#' # Example color maps ----
+#' # Example colormaps ----
 #'
 #' count_colors <- function(n){
 #'   c("black", "brown", "red", "orange", "yellow")
@@ -258,17 +259,17 @@ setClass("ExperimentColorMap",
 #'
 #' # Accessors ----
 #'
-#' # assay color maps
+#' # assay colormaps
 #' assayColorMap(ecm, "logcounts") # [undefined --> default]
 #' assayColorMap(ecm, "counts")
 #' assayColorMap(ecm, "cufflinks_fpkm")
 #' assay(ecm, "cufflinks_fpkm") # alias
 #'
-#' # colData color maps
+#' # colData colormaps
 #' colDataColorMap(ecm, "passes_qc_checks_s")
 #' colDataColorMap(ecm, "undefined")
 #'
-#' # rowData color maps
+#' # rowData colormaps
 #' rowDataColorMap(ecm, "undefined")
 #' 
 #' # generic accessors
@@ -283,9 +284,9 @@ setClass("ExperimentColorMap",
 #' colDataColorMap(ecm, "passes_qc_checks_s") <- function(n){NULL}
 #' rowDataColorMap(ecm, "undefined") <- function(n){NULL}
 #' 
-#' # Categorical color maps ----
+#' # Categorical colormaps ----
 #' 
-#' # Override all discrete color maps using the base rainbow palette
+#' # Override all discrete colormaps using the base rainbow palette
 #' ecm <- ExperimentColorMap(global_discrete = rainbow)
 #' n <- 10
 #' plot(1:n, col=assayColorMap(ecm, "undefined", discrete = TRUE)(n), pch=20, cex=3)
@@ -297,14 +298,13 @@ ExperimentColorMap <- function(
     ...){
     
     if (is.null(names(assays))){
-        names(assays) <- rep("", length(assays))
+        names(assays) <- character(length(assays))
     }
-    
-    if (is.null(names(all_discrete))){
-        stop("`all_discrete` must be a named list")
+    if (is.null(names(colData))){
+        names(colData) <- character(length(colData))
     }
-    if (is.null(names(all_continuous))){
-        stop("`all_continuous` must be a named list")
+    if (is.null(names(rowData))){
+        names(rowData) <- character(length(rowData))
     }
     
     all_discrete <- .sanitize_controlled_colormaps(usr=all_discrete)
@@ -335,16 +335,18 @@ ExperimentColorMap <- function(
         rowData=.nullColorMap)
 ){
     if (is.null(names(usr))){
-        stop("User-defined color map must be a named list")
+        stop("User-defined colormap must be a named list")
     }
-    usr <- sapply(usr, .substituteNullColorMap)
-    # set the color maps given by the user
+    usr_names <- names(usr)
+    usr <- lapply(usr, .substituteNullColorMap)
+    names(usr) <- usr_names
+    # set the colormaps given by the user
     # note that invalid ones will be picked up by the class validity check later
     def[names(usr)] <- usr
     return(def)
 }
 
-# .default color maps ----
+# .default colormaps ----
 
 #' @importFrom viridisLite viridis
 .defaultContinuousColorMap <- viridis # function(n)
@@ -476,7 +478,7 @@ setMethod("assayColorMap", c("ExperimentColorMap", "numeric"),
         x@assays[[i]]
     }, error=function(err) {
         # WARNG: out-of-bound index does not throw an error!
-        # instead it returns the default color map
+        # instead it returns the default colormap
         .nullColorMap
     })
     if (is.null(assay_map)){
@@ -633,7 +635,7 @@ setReplaceMethod(
     x
 }
 
-# global color map ----
+# global colormap ----
 
 .globalColorMap <- function(x, discrete){
     if (discrete){
@@ -650,7 +652,7 @@ setReplaceMethod(
 # show ----
 
 .activeColormap <- function(x){
-    # Return TRUE if the color map does not return NULL for an arbitrary
+    # Return TRUE if the colormap does not return NULL for an arbitrary
     # number of colors
     stopifnot(is.function(x))
     return(!is.null(x(21L)))
@@ -679,11 +681,11 @@ setMethod(
         scat("rowData(%d): %s\n", names(object@rowData))
         
         ## all_discrete
-        which_valid <- sapply(object@all_discrete, .activeColormap)
+        which_valid <- vapply(object@all_discrete, .activeColormap, logical(1))
         scat("all_discrete(%d): %s\n", names(object@all_discrete)[which_valid])
         
         ## all_continuous
-        which_valid <- sapply(object@all_continuous, .activeColormap)
+        which_valid <- vapply(object@all_continuous, .activeColormap, logical(1))
         scat("all_continuous(%d): %s\n", names(object@all_continuous)[which_valid])
         
         ## global_discrete

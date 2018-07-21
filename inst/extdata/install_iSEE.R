@@ -1,2 +1,3 @@
-stopifnot(require(BiocInstaller))
-biocLite("iSEE", ask = FALSE, dependencies = TRUE)
+if (!require("BiocManager"))
+    install.packages("BiocManager")
+BiocManager::install("iSEE", version = "devel")

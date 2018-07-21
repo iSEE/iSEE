@@ -25,7 +25,7 @@
 #' @param annotFun A function, similar to those returned by \code{\link{annotateEntrez}} or \code{\link{annotateEnsembl}}.
 #' The function should accept two parameters, \code{se} and \code{row_index}, and return a HTML element with annotation for the selected row.
 #' @param customColFun A named list of functions for reporting coordinates to use in a custom column data plot, see \code{?"\link{Custom iSEE plots}"}.
-#' @param colormap An \linkS4class{ExperimentColorMap} object that defines custom color maps to apply to individual \code{assays}, \code{colData} and \code{rowData} covariates.
+#' @param colormap An \linkS4class{ExperimentColorMap} object that defines custom colormaps to apply to individual \code{assays}, \code{colData} and \code{rowData} covariates.
 #' @param tour A data.frame with the content of the interactive tour to be displayed after starting up the app.
 #' @param appTitle A string indicating the title to be displayed in the app.
 #' If not provided, the app displays the version info of \code{\link{iSEE}}.
@@ -218,7 +218,7 @@ iSEE <- function(se,
                         style=.actionbutton_biocstyle,
                         onclick = ifelse(runLocal, "",
                             # Use web vignette, with varying paths depending on whether we're release or devel.
-                            sprintf("window.open('http://bioconductor.org/packages/%s/bioc/vignettes/iSEE/inst/doc/iSEE_vignette.html', '_blank')",
+                            sprintf("window.open('http://bioconductor.org/packages/%s/bioc/vignettes/iSEE/inst/doc/basic.html', '_blank')",
                                 ifelse(unlist(packageVersion("iSEE"))[2] %% 2L==0L, "release", "devel")
                             )
                         )
@@ -436,7 +436,7 @@ iSEE <- function(se,
 
         if (runLocal) {
             observeEvent(input$open_vignette, {
-                path <- system.file("doc","iSEE_vignette.html", package="iSEE")
+                path <- system.file("doc","basic.html", package="iSEE")
                 if (path=="") {
                     showNotification("vignette has not been built on this system", type="error")
                 } else {

@@ -9,7 +9,7 @@
 #' @param all_coordinates A \code{list} of \code{data.frame}s that contain the coordinates and covariates of data points visible in each of the plots.
 #' @param se A \linkS4class{SingleCellExperiment} object.
 #' @param colormap An \linkS4class{ExperimentColorMap} object that defines
-#' custom color maps to apply to individual \code{assays}, \code{colData},
+#' custom colormaps to apply to individual \code{assays}, \code{colData},
 #' and \code{rowData} covariates.
 #'
 #' @return A \code{list} that includes the following elements:

@@ -36,22 +36,22 @@ ExperimentColorMap(assays = list(), colData = list(), rowData = list(),
   global_discrete = NULL, global_continuous = NULL, ...)
 }
 \arguments{
-\item{assays}{List of color maps for \code{assays}.}
+\item{assays}{List of colormaps for \code{assays}.}
 
-\item{colData}{List of color maps for \code{colData}.}
+\item{colData}{List of colormaps for \code{colData}.}
 
-\item{rowData}{List of color maps for \code{rowData}.}
+\item{rowData}{List of colormaps for \code{rowData}.}
 
-\item{all_discrete}{Color maps applied to all undefined
+\item{all_discrete}{Colormaps applied to all undefined
 categorical \code{assays}, \code{colData}, and \code{rowData}, respectively.}
 
-\item{all_continuous}{Color maps applied to all undefined
+\item{all_continuous}{Colormaps applied to all undefined
 continuous \code{assays}, \code{colData}, and \code{rowData}, respectively.}
 
-\item{global_discrete}{Color map applied to all undefined
+\item{global_discrete}{Colormap applied to all undefined
 categorical covariates.}
 
-\item{global_continuous}{Color map applied to all undefined
+\item{global_continuous}{Colormap applied to all undefined
 continuous covariates.}
 
 \item{...}{additional arguments passed on to the \code{ExperimentColorMap}
@@ -64,15 +64,15 @@ An object of class \code{ExperimentColorMap}
 ExperimentColorMap class
 }
 \details{
-Color maps must all be functions that take at least one argument: the number
+Colormaps must all be functions that take at least one argument: the number
 of (named) colours to return as a \code{character} vector.
-This argument may be ignored in the body of the color map function
-to produce constant color maps.
+This argument may be ignored in the body of the colormap function
+to produce constant colormaps.
 }
-\section{Categorical color maps}{
+\section{Categorical colormaps}{
 
 
-The default categorical color map emulates the default ggplot2 categorical color palette
+The default categorical colormap emulates the default ggplot2 categorical color palette
 (Credit: \url{https://stackoverflow.com/questions/8197559/emulate-ggplot2-default-color-palette}).
 This palette returns a set of colors sampled in steps of equal size that correspond to approximately equal perceptual changes in color:
 
@@ -83,7 +83,9 @@ function(n) {
 }
 }
 
-To change the palette for all categorical variables, users must supply a color map that returns a similar value; namely, an unnamed character vector of length \code{n}.
+To change the palette for all categorical variables,
+users must supply a colormap that returns a similar value;
+namely, an unnamed character vector of length \code{n}.
 For instance, using the base R palette \code{rainbow.colors}
 
 \preformatted{
@@ -96,11 +98,10 @@ function(n) {
 \section{Accessors}{
 
 
-In the following code snippets, \code{x} is an
-\code{ExperimentColorMap} object. If the color map can not immediately
-be found in the appropriate slot, \code{discrete} is a \code{logical(1)}
-that indicates whether the default color map returned should be categorical
-\code{TRUE} or continuous (\code{FALSE}, default).
+In the following code snippets, \code{x} is an \code{ExperimentColorMap} object.
+If the colormap can not immediately be found in the appropriate slot,
+\code{discrete} is a \code{logical(1)} that indicates
+whether the default colormap returned should be categorical \code{TRUE} or continuous (\code{FALSE}, default).
 
 \describe{
   \item{\code{assayColorMap(x, i, ..., discrete=FALSE)}:}{
@@ -137,7 +138,7 @@ In the following code snippets, \code{x} is an
 
 \examples{
 
-# Example color maps ----
+# Example colormaps ----
 
 count_colors <- function(n){
   c("black", "brown", "red", "orange", "yellow")
@@ -167,17 +168,17 @@ ecm <- ExperimentColorMap(
 
 # Accessors ----
 
-# assay color maps
+# assay colormaps
 assayColorMap(ecm, "logcounts") # [undefined --> default]
 assayColorMap(ecm, "counts")
 assayColorMap(ecm, "cufflinks_fpkm")
 assay(ecm, "cufflinks_fpkm") # alias
 
-# colData color maps
+# colData colormaps
 colDataColorMap(ecm, "passes_qc_checks_s")
 colDataColorMap(ecm, "undefined")
 
-# rowData color maps
+# rowData colormaps
 rowDataColorMap(ecm, "undefined")
 
 # generic accessors
@@ -192,9 +193,9 @@ assay(ecm, 1) <- function(n){c("blue", "white", "red")}
 colDataColorMap(ecm, "passes_qc_checks_s") <- function(n){NULL}
 rowDataColorMap(ecm, "undefined") <- function(n){NULL}
 
-# Categorical color maps ----
+# Categorical colormaps ----
 
-# Override all discrete color maps using the base rainbow palette
+# Override all discrete colormaps using the base rainbow palette
 ecm <- ExperimentColorMap(global_discrete = rainbow)
 n <- 10
 plot(1:n, col=assayColorMap(ecm, "undefined", discrete = TRUE)(n), pch=20, cex=3)

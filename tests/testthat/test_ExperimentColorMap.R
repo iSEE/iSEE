@@ -1,7 +1,7 @@
 
 # Validity method ----
 
-test_that("validity method catches color maps that are not functions", {
+test_that("validity method catches colormaps that are not functions", {
     
     # use `new` to bypass 
     ecm <- ExperimentColorMap()
@@ -9,11 +9,11 @@ test_that("validity method catches color maps that are not functions", {
     ecm@assays <- list(dummy1 = 1)
     msg <- iSEE:::.valid.Colormap(ecm)
     
-    expect_match(msg, "Color map `dummy1` in slot `assays` is not a function")
+    expect_match(msg, "Colormap `dummy1` in slot `assays` is not a function")
     
 })
 
-test_that("validity method catches unnamed color maps", {
+test_that("validity method catches unnamed colormaps", {
     
     ecm <- ExperimentColorMap()
     
@@ -22,11 +22,11 @@ test_that("validity method catches unnamed color maps", {
         a=function(){NULL})
     msg <- iSEE:::.valid.Colormap(ecm)
     
-    expect_match(msg, "Color map #1 in slot `colData` must be named", fixed=TRUE)
+    expect_match(msg, "Colormap #1 in slot `colData` must be named", fixed=TRUE)
     
 })
 
-test_that("validity method catches color maps with controlled names", {
+test_that("validity method catches colormaps with controlled names", {
     
     ecm <- ExperimentColorMap()
     
@@ -37,7 +37,7 @@ test_that("validity method catches color maps with controlled names", {
     
     expect_match(
         msg,
-        "Color map in slot `all_discrete` must be named c(\"assays\", \"colData\", \"rowData\")",
+        "Colormap in slot `all_discrete` must be named c(\"assays\", \"colData\", \"rowData\")",
         fixed=TRUE)
     
 })
@@ -76,7 +76,7 @@ test_that("Constructor catches unnamed colormaps",{
             rowData = list(function(x) {NULL}),
             all_discrete = list( function(x) {NULL} )
             ),
-        "User-defined color map must be a named list",
+        "User-defined colormap must be a named list",
         fixed=TRUE
     )
     
@@ -481,33 +481,24 @@ test_that("rowDataColorMap<- sets appropriate values with character indexing",{
 
 test_that("Invalid objects are not allowed to be created", {
     
-    # color maps must be functions
+    # colormaps must be functions
     expect_error(
-        ExperimentColorMap(
-            assays = list(
-                dummy1 = 'a'
-            )
-        ),
-        "not a function"
+        ExperimentColorMap(assays = list(dummy1 = 'a')),
+        "not a function",
+        fixed=TRUE
     )
     expect_error(
-        ExperimentColorMap(
-            colData = list(
-                dummy2 = NULL
-            )
-        ),
-        "not a function"
+        ExperimentColorMap(colData = list(dummy2 = NULL)),
+        "not a function",
+        fixed=TRUE
     )
     expect_error(
-        ExperimentColorMap(
-            rowData = list(
-                dummy2 = NULL
-            )
-        ),
-        "not a function"
+        ExperimentColorMap(rowData = list(dummy2 = NULL)),
+        "not a function",
+        fixed=TRUE
     )
     
-    # colData and rowData color maps must be named
+    # colData and rowData colormaps must be named
     expect_error(
         ExperimentColorMap(
             colData = list(
@@ -515,7 +506,8 @@ test_that("Invalid objects are not allowed to be created", {
                 function(x){NULL} # unnamed
             )
         ),
-        "must be named"
+        "must be named",
+        fixed=TRUE
     )
     expect_error(
         ExperimentColorMap(
@@ -524,7 +516,8 @@ test_that("Invalid objects are not allowed to be created", {
                 function(x){NULL} # unnamed
             )
         ),
-        "must be named"
+        "must be named",
+        fixed=TRUE
     )
     
     # all_* slots have specific names
@@ -539,7 +532,7 @@ test_that("Invalid objects are not allowed to be created", {
 
 # isColorMapCompatible (many assays) ----
 
-test_that("isColorMapCompatible catches too many assays color maps", {
+test_that("isColorMapCompatible catches too many assays colormaps", {
     
     ecm_manyAssays <- ExperimentColorMap(
         assays = list(
@@ -557,7 +550,8 @@ test_that("isColorMapCompatible catches too many assays color maps", {
     
     expect_error(
         iSEE:::isColorMapCompatible(ecm_manyAssays, sce, error = TRUE),
-        "More assays in color map"
+        "More assays in colormap",
+        fixed=TRUE
     )
     expect_identical(
         iSEE:::isColorMapCompatible(ecm_manyAssays, sce, error = FALSE),
@@ -568,7 +562,7 @@ test_that("isColorMapCompatible catches too many assays color maps", {
 
 # isColorMapCompatible (superfluous assays) ----
 
-test_that("isColorMapCompatible catches superfluous assays color map", {
+test_that("isColorMapCompatible catches superfluous assays colormap", {
     
     nullECM <- ExperimentColorMap(
         assays = list(
@@ -578,7 +572,8 @@ test_that("isColorMapCompatible catches superfluous assays color map", {
     
     expect_error(
         iSEE:::isColorMapCompatible(nullECM, sce, error = TRUE),
-        "assay `.*` in color map missing in experiment"
+        "assay `dummy1` in colormap missing in experiment",
+        fixed=TRUE
     )
     expect_identical(
         iSEE:::isColorMapCompatible(nullECM, sce, error = FALSE),
@@ -589,7 +584,7 @@ test_that("isColorMapCompatible catches superfluous assays color map", {
 
 # isColorMapCompatible (superfluous colData) ----
 
-test_that("isColorMapCompatible catches superfluous colData color map", {
+test_that("isColorMapCompatible catches superfluous colData colormap", {
     
     missingColData <- ExperimentColorMap(
         colData = list(
@@ -599,7 +594,8 @@ test_that("isColorMapCompatible catches superfluous colData color map", {
     
     expect_error(
         iSEE:::isColorMapCompatible(missingColData, sce, error = TRUE),
-        "colData `.*` in color map missing in experiment"
+        "colData `dummy2` in colormap missing in experiment",
+        fixed=TRUE
     )
     expect_identical(
         iSEE:::isColorMapCompatible(missingColData, sce, error = FALSE),
@@ -611,7 +607,7 @@ test_that("isColorMapCompatible catches superfluous colData color map", {
 # isColorMapCompatible (superfluous rowData) ----
 
 
-test_that("isColorMapCompatible catches superfluous rowData color map", {
+test_that("isColorMapCompatible catches superfluous rowData colormap", {
     
     missingRowData <- ExperimentColorMap(
         rowData = list(
@@ -621,7 +617,8 @@ test_that("isColorMapCompatible catches superfluous rowData color map", {
     
     expect_error(
         iSEE:::isColorMapCompatible(missingRowData, sce, error = TRUE),
-        "rowData `.*` in color map missing in experiment"
+        "rowData `dummy2` in colormap missing in experiment",
+        fixed=TRUE
     )
     expect_identical(
         iSEE:::isColorMapCompatible(missingRowData, sce, error = FALSE),
@@ -632,7 +629,7 @@ test_that("isColorMapCompatible catches superfluous rowData color map", {
 
 # isColorMapCompatible (valid) ----
 
-test_that("isColorMapCompatible accepts compatible color map", {
+test_that("isColorMapCompatible accepts compatible colormap", {
     
     ecm <- ExperimentColorMap(
         assays = list(
@@ -712,7 +709,8 @@ test_that("synchronizeAssays requires same number of unnamed assays", {
     
     expect_error(
         synchronizeAssays(ecm_unmatched, sce_unnamed),
-        "Cannot synchronize assays"
+        "Cannot synchronize assays",
+        fixed=TRUE
     )
     
 })

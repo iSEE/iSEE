@@ -12,7 +12,7 @@ synchronizeAssays(ecm, se)
 \item{se}{A \linkS4class{SingleCellExperiment}.}
 }
 \value{
-An \linkS4class{ExperimentColorMap} with color maps in the
+An \linkS4class{ExperimentColorMap} with colormaps in the
 \code{assay} slot synchronized to match the position of the corresponding
 assay in the SingleCellExperiment.
 }

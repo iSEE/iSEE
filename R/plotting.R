@@ -39,7 +39,7 @@ names(.all_aes_values) <- .all_aes_names
 #' @param all_coordinates A list of data.frames that contain the coordinates
 #' and covariates of data points visible in each of the plots.
 #' @param se A SingleCellExperiment object.
-#' @param colormap An ExperimentColorMap object that defines custom color maps
+#' @param colormap An ExperimentColorMap object that defines custom colormaps
 #' for individual \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
 #' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}; see \code{?\link{.plot_wrapper}} for more details.
@@ -90,7 +90,7 @@ names(.all_aes_values) <- .all_aes_names
 #' @param all_coordinates A list of data.frames that contain the coordinates
 #' and covariates of data points visible in each of the plots.
 #' @param se A SingleCellExperiment object.
-#' @param colormap An ExperimentColorMap object that defines custom color maps
+#' @param colormap An ExperimentColorMap object that defines custom colormaps
 #' for individual \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
 #' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}; see \code{?\link{.plot_wrapper}} for more details.
@@ -154,7 +154,7 @@ names(.all_aes_values) <- .all_aes_names
 #' @param all_coordinates A list of data.frames that contain the coordinates
 #' and covariates of data points visible in each of the plots.
 #' @param se A SingleCellExperiment object.
-#' @param colormap An ExperimentColorMap object that defines custom color maps
+#' @param colormap An ExperimentColorMap object that defines custom colormaps
 #' for individual \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
 #' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}; see \code{?\link{.plot_wrapper}} for more details.
@@ -243,7 +243,7 @@ names(.all_aes_values) <- .all_aes_names
 #' @param all_coordinates A list of data.frames that contain the coordinates
 #' and covariates of data points visible in each of the plots.
 #' @param se A SingleCellExperiment object.
-#' @param colormap An ExperimentColorMap object that defines custom color maps
+#' @param colormap An ExperimentColorMap object that defines custom colormaps
 #' for individual \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
 #' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}; see \code{?\link{.plot_wrapper}} for more details.
@@ -300,7 +300,7 @@ names(.all_aes_values) <- .all_aes_names
 #' @param all_memory List of DataFrames, where each DataFrame corresponds to a panel type and contains the settings for each individual panel of that type.
 #' @param all_coordinates A list of data.frames that contain the coordinates and covariates of data points visible in each of the plots.
 #' @param se A SingleCellExperiment object.
-#' @param colormap An ExperimentColorMap object that defines custom color maps for individual \code{assays}, \code{colData}, and \code{rowData} covariates.
+#' @param colormap An ExperimentColorMap object that defines custom colormaps for individual \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
 #' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}; see \code{?\link{.plot_wrapper}} for more details.
 #' 
@@ -643,7 +643,7 @@ names(.all_aes_values) <- .all_aes_names
 #' @param envir An environment produced by \code{\link{.extract_plotting_data}}.
 #' @param param_choices A single-row DataFrame that contains all the input
 #' settings for the current panel.
-#' @param colormap An ExperimentColorMap object that defines custom color maps
+#' @param colormap An ExperimentColorMap object that defines custom colormaps
 #' to apply to individual \code{assays}, \code{colData}, and \code{rowData}
 #' covariates.
 #' @param ... Further arguments passed to the specific plotting functions.

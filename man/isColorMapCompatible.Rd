@@ -29,7 +29,7 @@ in the ExperimentColorMap object exist in the SingleCellExperiment object.
 }
 \examples{
 
-# Example color maps ----
+# Example colormaps ----
 
 count_colors <- function(n){
   c("black","brown","red","orange","yellow")

@@ -56,7 +56,7 @@ The function should accept two parameters, \code{se} and \code{row_index}, and r
 
 \item{customColFun}{A named list of functions for reporting coordinates to use in a custom column data plot, see \code{?"\link{Custom iSEE plots}"}.}
 
-\item{colormap}{An \linkS4class{ExperimentColorMap} object that defines custom color maps to apply to individual \code{assays}, \code{colData} and \code{rowData} covariates.}
+\item{colormap}{An \linkS4class{ExperimentColorMap} object that defines custom colormaps to apply to individual \code{assays}, \code{colData} and \code{rowData} covariates.}
 
 \item{tour}{A data.frame with the content of the interactive tour to be displayed after starting up the app.}
 

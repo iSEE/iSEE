@@ -21,7 +21,7 @@
 #' @author Kevin Rue-Albrecht
 #' @examples
 #' 
-#' # Example color maps ----
+#' # Example colormaps ----
 #'
 #' count_colors <- function(n){
 #'   c("black","brown","red","orange","yellow")
@@ -55,13 +55,13 @@
 #' 
 isColorMapCompatible <- function(ecm, se, error = FALSE){
   
-  # The count of color maps cannot exceed the count of assays
+  # The count of colormaps cannot exceed the count of assays
   num_assay_maps <- length(ecm@assays)
   num_assay_se <- length(se@assays)
   if (num_assay_maps > num_assay_se){
     if (error){
       stop(
-        "More assays in color map (",
+        "More assays in colormap (",
         num_assay_maps,
         ") than experiment (",
         num_assay_se,
@@ -71,7 +71,7 @@ isColorMapCompatible <- function(ecm, se, error = FALSE){
     }
   }
   
-  # Named color maps must map to existing data in the experiment
+  # Named colormaps must map to existing data in the experiment
   names_assays_maps <- names(ecm@assays)
   names_coldata_maps <- names(ecm@colData)
   names_rowdata_maps <- names(ecm@rowData)
@@ -87,7 +87,7 @@ isColorMapCompatible <- function(ecm, se, error = FALSE){
     if (error){
       stop(
         sprintf(
-          "assay `%s` in color map missing in experiment",
+          "assay `%s` in colormap missing in experiment",
           names_assays_maps[!check_assay_names]
         )
       )
@@ -102,7 +102,7 @@ isColorMapCompatible <- function(ecm, se, error = FALSE){
     if (error){
       stop(
         sprintf(
-          "colData `%s` in color map missing in experiment",
+          "colData `%s` in colormap missing in experiment",
           names_coldata_maps[!check_coldata_names]
         )
       )
@@ -117,7 +117,7 @@ isColorMapCompatible <- function(ecm, se, error = FALSE){
     if (error){
       stop(
         sprintf(
-          "rowData `%s` in color map missing in experiment",
+          "rowData `%s` in colormap missing in experiment",
           names_rowdata_maps[!check_rowdata_names]
         )
       )
@@ -178,7 +178,7 @@ isColorMapCompatible <- function(ecm, se, error = FALSE){
 #' @param ecm An \linkS4class{ExperimentColorMap}.
 #' @param se A \linkS4class{SingleCellExperiment}.
 #'
-#' @return An \linkS4class{ExperimentColorMap} with color maps in the
+#' @return An \linkS4class{ExperimentColorMap} with colormaps in the
 #' \code{assay} slot synchronized to match the position of the corresponding
 #' assay in the SingleCellExperiment.
 #' 
@@ -229,7 +229,7 @@ synchronizeAssays <- function(ecm, se){
   se_assay_names <- assayNames(se)
   ecm_assay_names <- assayNames(ecm)
   
-  # Prepare a warning message for unused color maps
+  # Prepare a warning message for unused colormaps
   unnamed_ecm <- which(ecm_assay_names == "")
   unnamed_warning <- ifelse(
     length(unnamed_ecm) == 0,

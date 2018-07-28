@@ -532,7 +532,11 @@
         .conditional_on_check_group(pchoice_field, .visualParamChoicePointTitle,
             hr(), .add_point_UI_elements(mode, id, param_choices)),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceOtherTitle,
-            hr(), .add_other_UI_elements(mode, id, param_choices))
+            hr(), 
+            checkboxInput(inputId=paste0(mode, id, "_", .contourAddTitle), 
+                          label="Add contour (only for scatter plots)",
+                          value=FALSE),
+            .add_other_UI_elements(mode, id, param_choices))
         )
 }
 

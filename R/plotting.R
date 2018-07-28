@@ -803,6 +803,10 @@ names(.all_aes_values) <- .all_aes_names
     ylim = range(%s$Y, na.rm = TRUE), expand = TRUE) +", full_data, full_data)
     }
     
+    if (param_choices[[.contourAddTitle]]) {
+        plot_cmds[["contours"]] <- "geom_density_2d(aes(x = X, y = Y), plot.data) +"
+    }
+    
     # Retain axes when no points are present.
     if (nrow(plot_data)==0 && is_subsetted) {
         plot_cmds[["select_blank"]] <- "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
@@ -820,6 +824,7 @@ names(.all_aes_values) <- .all_aes_names
         param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault,
         param_choices[[.plotFontSize]]*.plotFontSizeAxisTitleDefault,
         param_choices[[.plotFontSize]]*.plotFontSizeTitleDefault)
+    
     return(unlist(plot_cmds))
 }
 

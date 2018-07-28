@@ -592,6 +592,8 @@ heatMapPlotDefaults <- function(se, number) {
 
     incoming[[.zoomData]] <- rep(list(NULL), nrow(incoming))
     incoming[[.lassoData]] <- rep(list(NULL), nrow(incoming))
+    
+    incoming[[.contourAddTitle]] <- FALSE
     return(incoming)
 }
 

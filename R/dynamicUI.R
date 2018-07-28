@@ -534,8 +534,11 @@
         .conditional_on_check_group(pchoice_field, .visualParamChoiceOtherTitle,
             hr(), 
             checkboxInput(inputId=paste0(mode, id, "_", .contourAddTitle), 
-                          label="Add contour (only for scatter plots)",
+                          label="Add contour (scatter only)",
                           value=FALSE),
+            .conditional_on_check(paste0(mode, id, "_", .contourAddTitle), 
+                                  colourInput(paste0(mode, id, "_", .colorByDefaultColorContour), label=NULL,
+                                              value=param_choices[[.colorByDefaultColorContour]])),
             .add_other_UI_elements(mode, id, param_choices))
         )
 }
@@ -946,6 +949,12 @@
 #' @importFrom shiny conditionalPanel
 .conditional_on_check_group <- function(id, choice, ...) {
     conditionalPanel(condition=sprintf('(input["%s"].includes("%s"))', id, choice), ...)
+} 
+
+#' @rdname INTERNAL_conditional_elements
+#' @importFrom shiny conditionalPanel
+.conditional_on_check <- function(id, ...) {
+    conditionalPanel(condition=sprintf('(input["%s"] == true)', id), ...)
 } 
 
 #' Coerce box status to custom classes

@@ -1123,7 +1123,8 @@ iSEE <- function(se,
             }
             nonfundamental <- c(nonfundamental, .colorByDefaultColor, .selectColor, .selectTransAlpha,
                                 .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition,
-                                .plotPointDownsample, .plotPointSampleRes, .contourAddTitle)
+                                .plotPointDownsample, .plotPointSampleRes, .contourAddTitle, 
+                                .colorByDefaultColorContour)
 
             for (id in seq_len(max_plots)) {
                 # Observers for the non-fundamental parameter options.

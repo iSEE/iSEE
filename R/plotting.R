@@ -804,7 +804,7 @@ names(.all_aes_values) <- .all_aes_names
     }
     
     if (param_choices[[.contourAddTitle]]) {
-        plot_cmds[["contours"]] <- sprintf("geom_density_2d(aes(x = X, y = Y), plot.data, colour='%s') +", param_choices[[.colorByDefaultColorContour]])
+        plot_cmds[["contours"]] <- sprintf("geom_density_2d(aes(x = X, y = Y), plot.data, colour='%s') +", param_choices[[.contourColor]])
     }
     
     # Retain axes when no points are present.

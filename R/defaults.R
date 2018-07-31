@@ -143,7 +143,7 @@
 #' @section Contour line parameters (for scatter plots):
 #' \describe{
 #' \item{\code{ContourAdd}:}{Logical, should contour lines be added to the plot?}
-#' \item{\code{ColorByDefaultColorContour}:}{String specifying the default colour of contour lines.}
+#' \item{\code{ContourColor}:}{String specifying the default colour of contour lines.}
 #' }
 #' 
 #' @section Faceting parameters (for point-based plots):
@@ -600,7 +600,7 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.lassoData]] <- rep(list(NULL), nrow(incoming))
     
     incoming[[.contourAddTitle]] <- FALSE
-    incoming[[.colorByDefaultColorContour]] <- "blue"
+    incoming[[.contourColor]] <- "blue"
     return(incoming)
 }
 

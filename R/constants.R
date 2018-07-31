@@ -150,7 +150,7 @@
 .visualParamChoiceOtherTitle <- "Other"
 
 .contourAddTitle <- "ContourAdd"
-.colorByDefaultColorContour <- "ColorByDefaultColorContour"
+.contourColor <- "ContourColor"
 
 .plotPointSize <- "PointSize"
 .plotPointAlpha <- "PointAlpha"

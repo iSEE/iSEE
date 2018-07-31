@@ -538,8 +538,8 @@
                           value=FALSE),
             .conditional_on_check_solo(paste0(mode, id, "_", .contourAddTitle), 
                                        on_select=TRUE, 
-                                       colourInput(paste0(mode, id, "_", .colorByDefaultColorContour), label=NULL,
-                                                   value=param_choices[[.colorByDefaultColorContour]])),
+                                       colourInput(paste0(mode, id, "_", .contourColor), label=NULL,
+                                                   value=param_choices[[.contourColor]])),
             .add_other_UI_elements(mode, id, param_choices))
         )
 }

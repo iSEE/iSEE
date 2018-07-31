@@ -182,6 +182,14 @@ This should refer to a categorical variable, and will default to the first such 
 }
 }
 
+\section{Contour line parameters (for scatter plots)}{
+
+\describe{
+\item{\code{ContourAdd}:}{Logical, should contour lines be added to the plot?}
+\item{\code{ColorByDefaultColorContour}:}{String specifying the default colour of contour lines.}
+}
+}
+
 \section{Faceting parameters (for point-based plots)}{
 
 \describe{

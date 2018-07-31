@@ -149,6 +149,9 @@
 .visualParamChoiceFacetTitle <- "Facets"
 .visualParamChoiceOtherTitle <- "Other"
 
+.contourAddTitle <- "ContourAdd"
+.colorByDefaultColorContour <- "ColorByDefaultColorContour"
+
 .plotPointSize <- "PointSize"
 .plotPointAlpha <- "PointAlpha"
 .plotPointDownsample <- "Downsample"

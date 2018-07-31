@@ -140,6 +140,12 @@
 #' This should refer to a categorical variable, and will default to the first such entry of \code{rowData(se)}.}
 #' }
 #'
+#' @section Contour line parameters (for scatter plots):
+#' \describe{
+#' \item{\code{ContourAdd}:}{Logical, should contour lines be added to the plot?}
+#' \item{\code{ColorByDefaultColorContour}:}{String specifying the default colour of contour lines.}
+#' }
+#' 
 #' @section Faceting parameters (for point-based plots):
 #' \describe{
 #' \item{\code{FacetByRow}:}{Logical indicating whether the plot should be faceted by row.}
@@ -592,6 +598,9 @@ heatMapPlotDefaults <- function(se, number) {
 
     incoming[[.zoomData]] <- rep(list(NULL), nrow(incoming))
     incoming[[.lassoData]] <- rep(list(NULL), nrow(incoming))
+    
+    incoming[[.contourAddTitle]] <- FALSE
+    incoming[[.colorByDefaultColorContour]] <- "blue"
     return(incoming)
 }
 

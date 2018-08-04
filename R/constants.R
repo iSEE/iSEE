@@ -44,7 +44,10 @@
 .sampAssayXAxisSample <- "XAxisSample"
 
 # Custom column plotting parameters. ----
-.customColFun <- "Function"
+.customDataFun <- "Function"
+.customDataArgs <- "Arguments"
+.customDataColSource <- "ColumnSource"
+.customDataRowSource <- "RowSource"
 
 # Heatmap plotting parameters. ----
 .heatMapAssay <- "Assay"
@@ -199,7 +202,7 @@ translation <- c(redDimPlot="Reduced dimension plot",
                  rowStatTable="Row statistics table",
                  rowDataPlot="Row data plot",
                  sampAssayPlot="Sample assay plot",
-                 customColPlot="Custom column plot",
+                 customDataPlot="Custom data plot",
                  heatMapPlot="Heat map")
 rev.translation <- names(translation)
 names(rev.translation) <- translation

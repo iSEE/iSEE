@@ -387,14 +387,18 @@ colDataPlotDefaults <- function(se, number) {
 #' @export
 #' @importFrom methods new
 #' @importClassesFrom S4Vectors DataFrame
-customColPlotDefaults <- function(se, number) {
+customDataPlotDefaults <- function(se, number) {
     waszero <- number==0 
     if (waszero) number <- 1
 
     out <- new("DataFrame", nrows=as.integer(number))
-    out[[.customColFun]] <- .noSelection
+    out[[.customDataFun]] <- .noSelection
+    out[[.customDataArgs]] <- ""
+    out[[.customDataColSource]] <- .noSelection
+    out[[.customDataRowSource]] <- .noSelection
+    out[[.dataParamBoxOpen]] <- FALSE
+    out[[.selectParamBoxOpen]] <- FALSE
 
-    out <- .add_general_parameters_for_column_plots(out, se)
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)
 }

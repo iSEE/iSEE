@@ -42,7 +42,7 @@
 #' \item Row statistics tables will not be generated if there are no features.
 #' \item Row data plots will not be generated if there are no row metdata in \code{rowData(se)} or no features.
 #' \item Sample assay plots will not be generated if there are no samples, no features or no assays.
-#' \item Custom column data plots will not be generated if there are no samples or if no custom functions are available in the internal metadata of \code{se}.
+#' \item Custom data plots will not be generated if there are no samples and no features, or if no custom functions are available in the internal metadata of \code{se}.
 #' \item Heatmaps will not be generated if there are no samples, no features or no assays.
 #' }
 #'
@@ -62,7 +62,7 @@
         rowStatTable=! (nrow(se)==0L),
         rowDataPlot=! (ncol(rowData(se))==0L || nrow(se)==0L),
         sampAssayPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
-        customColPlot=! (ncol(se)==0L || length(.get_internal_info(se, "custom_col_fun"))==0L),
+        customDataPlot=! ((ncol(se)==0L && nrow(se)==0L) || length(.get_internal_info(se, "custom_data_fun"))==0L),
         heatMapPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L)
     )
 }
@@ -107,7 +107,7 @@
 #' @param rowStatArgs A DataFrame or data.frame of user-specified arguments for row statistics tables.
 #' @param rowDataArgs A DataFrame or data.frame of user-specified arguments for row data plots.
 #' @param sampAssayArgs A DataFrame or data.frame of user-specified arguments for sample assay plots.
-#' @param customColArgs A DataFrame or data.frame of user-specified arguments for custom column plots.
+#' @param customDataArgs A DataFrame or data.frame of user-specified arguments for custom column plots.
 #' @param heatMapArgs A DataFrame or data.frame of user-specified arguments for heat maps.
 #' @param redDimMax Integer scalar specifying the maximum number of reduced dimension plots.
 #' @param colDataMax Integer scalar specifying the maximum number of column data plots.
@@ -115,7 +115,7 @@
 #' @param rowStatMax Integer scalar specifying the maximum number of row statistics tables.
 #' @param rowDataMax Integer scalar specifying the maximum number of row data plots.
 #' @param sampAssayMax Integer scalar specifying the maximum number of sample assay plots.
-#' @param customColMax Integer scalar specifying the maximum number of custom column plots.
+#' @param customDataMax Integer scalar specifying the maximum number of custom column plots.
 #' @param heatMapMax Integer scalar specifying the maximum number of heat maps.
 #'
 #' @return
@@ -150,7 +150,7 @@
         rowStatArgs,
         rowDataArgs,
         sampAssayArgs,
-        customColArgs,
+        customDataArgs,
         heatMapArgs,
         redDimMax,
         colDataMax,
@@ -158,7 +158,7 @@
         rowStatMax,
         rowDataMax,
         sampAssayMax,
-        customColMax,
+        customDataMax,
         heatMapMax) {
     
     all_args <- list(
@@ -168,7 +168,7 @@
         rowStatTable=rowStatArgs, 
         rowDataPlot=rowDataArgs, 
         sampAssayPlot=sampAssayArgs,
-        customColPlot=customColArgs,
+        customDataPlot=customDataArgs,
         heatMapPlot=heatMapArgs
     )
     
@@ -179,7 +179,7 @@
         rowStatTable=rowStatMax, 
         rowDataPlot=rowDataMax, 
         sampAssayPlot=sampAssayMax,
-        customColPlot=customColMax,
+        customDataPlot=customDataMax,
         heatMapPlot=heatMapMax
     )
 
@@ -227,7 +227,7 @@
             rowStatTable=rowStatTableDefaults,
             rowDataPlot=rowDataPlotDefaults,
             sampAssayPlot=sampAssayPlotDefaults,
-            customColPlot=customColPlotDefaults,
+            customDataPlot=customDataPlotDefaults,
             heatMapPlot=heatMapPlotDefaults)
 
         cur_max <- all_maxes[[mode]]
@@ -402,12 +402,18 @@ height_limits <- c(400L, 1000L)
     all_active <- paste0(active_panels$Type, active_panels$ID)
 
     # Checking for selecting/linking of column-based plots.
-    for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot", "customColPlot")) {
+    for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot", "rowDataPlot", "sampAssayPlot")) {
         cur_memory <- memory[[mode]]
         self_active <- rownames(cur_memory)
 
+        if (mode %in% c("rowDataPlot", "sampAssayPlot")) { 
+            selectable <- row_selectable
+        } else {
+            selectable <- col_selectable
+        }
+
         bb <- cur_memory[,.selectByPlot]
-        bad <- !bb %in% col_selectable | !self_active %in% all_active
+        bad <- !bb %in% selectable | !self_active %in% all_active
         if (any(bad)) {
             memory[[mode]][,.selectByPlot][bad] <- .noSelection
         }
@@ -419,22 +425,20 @@ height_limits <- c(400L, 1000L)
         }
     }
 
-    # Checking for selecting/linking of row-based plots.
-    for (mode in c("rowDataPlot", "sampAssayPlot")) { 
-        cur_memory <- memory[[mode]]
-        self_active <- rownames(cur_memory)
-    
-        bb <- cur_memory[,.selectByPlot]
-        bad <- !bb %in% row_selectable | !self_active %in% all_active
-        if (any(bad)) {
-            memory[[mode]][,.selectByPlot][bad] <- .noSelection
-        }
-    
-        cb <- cur_memory[,.colorByRowTable]
-        bad <- !cb %in% active_tab | !self_active %in% all_active
-        if (any(bad)) {
-            memory[[mode]][,.colorByRowTable][bad] <- .noSelection
-        }
+    # Checking for selecting/linking of custom plots.
+    cur_memory <- memory[["customDataPlot"]]
+    self_active <- rownames(cur_memory)
+
+    bb <- cur_memory[,.customDataRowSource]
+    bad <- !bb %in% row_selectable | !self_active %in% all_active
+    if (any(bad)) {
+        memory[["customDataPlot"]][,.customDataRowSource][bad] <- .noSelection
+    }
+
+    bb <- cur_memory[,.customDataColSource]
+    bad <- !bb %in% col_selectable | !self_active %in% all_active
+    if (any(bad)) {
+        memory[["customDataPlot"]][,.customDataColSource][bad] <- .noSelection
     }
 
     # Checking for linking of x/y-axes of feature assay plots.

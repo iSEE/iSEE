@@ -24,127 +24,118 @@
 #' a data.frame with no rows in \code{xy}; an empty ggplot in \code{plot}; and \code{NULL} in \code{cached}.
 #' 
 #' @author Aaron Lun
-#' @rdname INTERNAL_make_customColumnPlot
+#' @rdname INTERNAL_make_customDataPlot
 #' @seealso
-#' \code{\link{.process_selectby_choice}},
-#' \code{\link{.choose_plot_type}},
 #' \code{\link{.downsample_points}}
 #' 
-.make_customColPlot <- function(id, all_memory, all_coordinates, se, colormap, cached) {
-    param_choices <- all_memory$customColPlot[id,]
+.make_customDataPlot <- function(id, all_memory, all_coordinates, se) {
+    param_choices <- all_memory$customDataPlot[id,]
     eval_env <- new.env()
     eval_env$se <- se
     eval_env$all_coordinates <- all_coordinates
-    eval_env$custom_col_fun <- .get_internal_info(se, "custom_col_fun")
+    eval_env$custom_data_fun <- .get_internal_info(se, "custom_data_fun")
 
-    # Mocking up a plot.data.
-    data_cmds <- .initialize_cmd_store()
-    data_cmds <- .add_command(data_cmds, "plot.data <- data.frame(row.names=colnames(se));")
-
-    # Adding coloring information.
-    {
-        color_out <- .define_colorby_for_column_plot(param_choices, se)
-        data_cmds <- .add_command(data_cmds, color_out$cmds)
-        color_lab <- color_out$label
-
-        # Ensuring that colors are either factor or numeric. 
-        data_cmds <- .evaluate_commands(data_cmds, eval_env)
-
-        coloring <- eval_env$plot.data$ColorBy
-        if (!is.null(coloring)) {
-            color_coerce_cmd <- .coerce_type(coloring, "ColorBy", as_numeric=!.is_groupable(coloring))
-            if (!is.null(color_coerce_cmd)) {
-                data_cmds <- .add_command(data_cmds, color_coerce_cmd)
-                data_cmds <- .evaluate_commands(data_cmds, eval_env)
-            }
-        }
-    }
-
-    # Adding shape information.
-    {
-        shape_out <- .define_shapeby_for_column_plot(param_choices, se)
-        data_cmds <- .add_command(data_cmds, shape_out$cmds)
-        shape_lab <- shape_out$label
-
-        # Ensuring that shapes are either factor or numeric. 
-        data_cmds <- .evaluate_commands(data_cmds, eval_env)
-        
-        shaped <- eval_env$plot.data$ShapeBy
-        if (!is.null(shaped)) {
-            shape_coerce_cmd <- .coerce_type(shaped, "ShapeBy", as_numeric=!.is_groupable(shaped))
-            if (!is.null(shape_coerce_cmd)) { 
-                data_cmds <- .add_command(data_cmds, shape_coerce_cmd)
-                data_cmds <- .evaluate_commands(data_cmds, eval_env)
-            }
-        }
-    }
-
-    # Adding faceting information.
-    facet_out <- .define_facetby_for_column_plot(param_choices, se)
-    data_cmds <- .add_command(data_cmds, facet_out)
-    data_cmds <- .evaluate_commands(data_cmds, eval_env)
-
-    # Implementing the selection without creating plot.data.all, which is not necessary when plotting only the restricted subset.
-    # In fact, avoiding creation of 'plot.data.all' is important to avoid creating the axes from the full data, which wouldn't make any sense here.
-    select_out <- .process_selectby_choice(param_choices, all_memory, save_all=FALSE)
-    select_cmds <- select_out$cmds
-    if (length(select_cmds)) { 
+    # Getting the subselections. 
+    select_out <- .process_custom_selections(param_choices, all_memory)
+    if (length(select_out$data)) { 
         eval_env$all_brushes <- select_out$data
         eval_env$all_lassos <- select_out$data
-        .text_eval(select_cmds, eval_env)
     }
-    
-    # Constructing the evaluation command to get the points.
-    fun_name <- param_choices[[.customColFun]] 
-    if (fun_name==.noSelection) {
-        return(list(cmd_list=NULL, xy=data.frame(X=numeric(0), Y=numeric(0)), plot=ggplot(), cached=NULL))
-    }
-    custom_cmds <- .initialize_cmd_store()
-    custom_cmds <- .add_command(custom_cmds, sprintf("custom.data <- custom_col_fun[[%s]](se, rownames(plot.data));", deparse(fun_name)))
+    .text_eval(select_out$cmds, eval_env)
+ 
+    # Constructing the evaluation command to get the plot. 
+    fun_args <- param_choices[[.customDataArgs]]
+    fun_args <- strsplit(fun_args, "\n")[[1]]
+    arg_names <- sub(" .*", "", fun_args)
+    arg_values <- sub("[^ ]+ +", "", fun_args)
 
-    # Checking whether the selected points are the same as before.
-    # Otherwise we 'fill in' the cached results.
-    if (!identical(rownames(eval_env$plot.data), rownames(cached$coordinates))) {
-        custom_cmds <- .evaluate_commands(custom_cmds, eval_env)
-        cached <- eval_env$custom.data 
+    keep <- arg_names!=""
+    if (any(keep)) {
+        arg_names <- arg_names[keep]
+        arg_values <- arg_values[keep]
+        as_cmd_args <- paste(sprintf("%s=%s", arg_names, vapply(arg_values, deparse, FUN.VALUE=character(1))), collapse=", ")
+        as_cmd_args <- paste0(", ", as_cmd_args)
     } else {
-        custom_cmds <- .evaluate_commands(custom_cmds, NULL)
-        eval_env$custom.data <- cached
+        as_cmd_args <- ""
     }
 
-    custom_cmds <- .add_command(custom_cmds, c("plot.data$X <- custom.data$coordinates$X;", "plot.data$Y <- custom.data$coordinates$Y;"))
-    custom_cmds <- .evaluate_commands(custom_cmds, eval_env)
+    fun_name <- param_choices[[.customDataFun]]
+    custom_cmd <- sprintf("custom_data_fun[[%s]](se, row.names, col.names%s);", deparse(fun_name), as_cmd_args)
+    plot_out <- .text_eval(custom_cmd, eval_env)
+    return(list(cmd_list = list(select=select_out$cmds, plot=custom_cmd), plot=plot_out))
+}
 
-    # Coercing type of the X and Y values.
-    xvals <- eval_env$plot.data$X
-    group_X <- .is_groupable(xvals)
-    custom_cmds <- .add_command(custom_cmds, .coerce_type(xvals, "X", as_numeric=!group_X))
-    
-    yvals <- eval_env$plot.data$Y
-    group_Y <- .is_groupable(yvals)
-    custom_cmds <- .add_command(custom_cmds, .coerce_type(yvals, "Y", as_numeric=!group_Y))
+#' Process selections for a custom data plot
+#'
+#' Process the row and column-level selections for a custom data plot.
+#'
+#' @param param_choices A DataFrame with one row, containing the parameter choices for the current plot.
+#' @param all_memory list of DataFrames, where each DataFrame corresponds to a panel type and contains the settings for each individual panel of that type.
+#'
+#' @return A list that includes the following elements:
+#' \describe{
+#' \item{cmds}{A character vector of commands that generates \code{row.names} and \code{col.names} variables.
+#' Either can be \code{NULL} if no selection should be applied in that dimension.
+#' }
+#' \item{data}{A list containing a Shiny brush object or a matrix of closed lasso waypoint coordinates.
+#' This is named with the encoded panel name of the transmitting plot.
+#' }
+#' }
+#'
+#' @details
+#' This function is very similar to \code{\link{.process_selectby_choice}}, but contains several modifications specific for custom data plots.
+#' Specifically, we need to perform selections for both column and rows based on separate fields in the \code{param_choices} (i.e., not just \code{"SelectBy"}).
+#' There is also no need to consider the selection effect, as this is not relevant for custom data plots.
+#' 
+#' @author Aaron Lun
+#' @rdname INTERNAL_process_custom_selections
+#' @seealso
+#' \code{\link{.process_selectby_choice}}
+#'
+#' @importFrom shiny brushedPoints
+.process_custom_selections <- function(param_choices, all_memory) {
+    row_cmds <- col_cmds <- "NULL"
+    select_obj <- list()
 
-    custom_cmds <- .evaluate_commands(custom_cmds, eval_env)
+	for (dim in c("row", "column")){ 
+        if (dim=="column") {
+            select_in <- param_choices[[.customDataColSource]]
+        } else {
+            select_in <- param_choices[[.customDataRowSource]]
+        }
+        if (identical(select_in, .noSelection)) {
+            next
+        }
 
-    # Adding more plot-specific information, depending on the type of plot to be created.
-    specific <- .choose_plot_type(group_X, group_Y, eval_env)
-    if (length(specific)) {
-        specific <- c("", specific)
+        cmds <- NULL
+        select_by <- .encode_panel_name(select_in)
+        transmitter <- paste0(select_by$Type, select_by$ID)
+        source_data <- sprintf("all_coordinates[['%s']]", transmitter)
+
+        brush_val <- all_memory[[select_by$Type]][,.brushData][[select_by$ID]]
+        if (!is.null(brush_val)) {
+            select_obj[[transmitter]] <- brush_val
+            cmds <- sprintf("shiny::brushedPoints(%s, all_brushes[['%s']])", source_data, transmitter)
+            
+        } else {
+            lasso_val <- all_memory[[select_by$Type]][,.lassoData][[select_by$ID]]
+            if (!is.null(lasso_val) && lasso_val$closed) { 
+                select_obj[[transmitter]] <- lasso_val
+                cmds <- sprintf("lassoPoints(%s, all_lassos[['%s']]);", source_data, transmitter)
+            }
+        }
+
+        if (!is.null(cmds)) {
+            cmds <- sprintf("rownames(%s)", cmds)
+            if (dim=="row") {
+                row_cmds <- cmds
+            } else {
+                col_cmds <- cmds
+            }
+        }
     }
-    
-    cmd_list <- list(data=data_cmds$processed, select=select_cmds, setup=c(custom_cmds$processed, specific)) 
 
-    # Downsampling and creating the plot object.
-    # DO NOT MOVE the 'xy' below .downsample_points(), as downsampling will alter the value in 'envir'.
-    xy <- eval_env$plot.data 
-    downsample_cmds <- .downsample_points(param_choices, eval_env)
-
-    plot_out <- .create_plot(eval_env, param_choices, colormap=colormap, 
-        x_lab=cached$xlab, y_lab=cached$ylab, title=cached$title, 
-        color_lab = color_lab, shape_lab = shape_lab, 
-        by_row = FALSE)
-
-    return(list(cmd_list = c(cmd_list, list(plot=c(downsample_cmds, plot_out$cmds))), xy = xy, plot = plot_out$plot, cached = cached))
+    return(list(cmds=c(paste0(c("row", "col"), ".names <- ", c(row_cmds, col_cmds), ";")), data=select_obj))
 }
 
 #' @name Custom iSEE plots
@@ -171,14 +162,22 @@
 #' @author Aaron Lun
 #' @rdname custom_plots
 #' @examples
-#' CUSTOM <- function(se, columns) {
-#'     kept <- logcounts(se)[,columns]
+#' # Setting up a function:
+#' CUSTOM <- function(se, rows, columns, ...) {
+#'     kept <- logcounts(se)
+#'     if (!is.null(rows)) {
+#'         kept <- kept[rows,,drop=FALSE]
+#'     }
+#'     if (!is.null(columns)) { 
+#'         kept <- kept[,columns,drop=FALSE]
+#'     }
 #'     out <- prcomp(t(kept), rank.=2)$x
-#'     coords <- data.frame(X=out[,1], Y=out[,2], row.names=columns)
-#'     return(list(coordinates=coords, xlab="PC1", ylab="PC2", 
-#'            title="PCA on selected points"))           
+#'     coords <- data.frame(X=out[,1], Y=out[,2])
+#'
+#'     ggplot(coords) + geom_point(aes(x=X, y=Y)) + xlab("PC1") + ylab("PC2")
 #' }
 #'
+#' # Setting up the SCE object:
 #' library(scRNAseq)
 #' data(allen)
 #' class(allen)
@@ -188,15 +187,23 @@
 #' counts(sce) <- assay(sce, "tophat_counts")
 #' sce <- normalize(sce)
 #' sce <- runPCA(sce)
+#' rowData(sce)$mean_log <- rowMeans(logcounts(sce))
+#' rowData(sce)$var_log <- apply(logcounts(sce), 1, var)
 #'
-#' rdp <- redDimPlotDefaults(sce, 1)
-#' ccp <- customColPlotDefaults(sce, 1)
-#' ccp$Function <- "PCA2"
-#' ccp$SelectByPlot <- "Reduced dimension plot 1"
-#' ccp$SelectEffect <- "Restrict"
+#' # Setting up the app:
+#' reddim <- redDimPlotDefaults(sce, 1)
+#' rowdat <- rowDataPlotDefaults(sce, 1)
+#' rowdat$XAxis <- "Row data"
+#' rowdat$XAxisRowData <- "mean_log"
+#' rowdat$YAxis <- "var_log"
 #' 
-#' app <- iSEE(sce, redDimArgs=rdp, customColArgs=ccp, 
+#' cdp <- customDataPlotDefaults(sce, 1)
+#' cdp$Function <- "PCA2"
+#' cdp$ColumnSource <- "Reduced dimension plot 1"
+#' cdp$RowSource <- "Row data plot 1"
+#' 
+#' app <- iSEE(sce, redDimArgs=reddim, rowDataArgs=rowdat, customDataArgs=cdp,
 #'    initialPanels=DataFrame(Name=c("Reduced dimension plot 1", 
-#'        "Custom column plot 1")),
-#'    customColFun=list(PCA2=CUSTOM))
+#'        "Row data plot 1", "Custom data plot 1")),
+#'    customDataFun=list(PCA2=CUSTOM))
 NULL

@@ -96,7 +96,7 @@
 #' @importFrom SingleCellExperiment reducedDimNames reducedDim
 #' @importFrom shiny actionButton fluidRow selectInput plotOutput uiOutput
 #' sliderInput tagList column radioButtons tags hr brushOpts
-#' selectizeInput checkboxGroupInput
+#' selectizeInput checkboxGroupInput textAreaInput
 .panel_generation <- function(active_panels, memory, se) {
     collected <- list()
     counter <- 1L
@@ -110,8 +110,8 @@
     all_assays <- .get_internal_info(se, "all_assays")
     red_dim_names <- .get_internal_info(se, "red_dim_names")
     sample_names <- .get_internal_info(se, "sample_names")
-    custom_col_fun <- .get_internal_info(se, "custom_col_fun")
-    custom_col_funnames <- c(.noSelection, names(custom_col_fun))
+    custom_data_fun <- .get_internal_info(se, "custom_data_fun")
+    custom_data_funnames <- c(.noSelection, names(custom_data_fun))
 
     # Defining all transmitting tables and plots for linking.
     link_sources <- .define_link_sources(active_panels)
@@ -201,13 +201,16 @@
                 )
         } else if (mode=="rowStatTable") {
             obj <- tagList(dataTableOutput(paste0(mode, id)), uiOutput(.input_FUN("annotation")))
-        } else if (mode=="customColPlot") {
-            obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
+        } else if (mode=="customDataPlot") {
+            obj <- plotOutput(panel_name, height=panel_height)
             plot.param <- list(
-                 selectInput(.input_FUN(.customColFun),
-                             label="Custom function:",
-                             choices=custom_col_funnames, selected=param_choices[[.customColFun]])
-                 )
+                selectInput(.input_FUN(.customDataFun),
+                    label="Custom function:",
+                    choices=custom_data_funnames, selected=param_choices[[.customDataFun]]),
+                textAreaInput(.input_FUN(.customDataArgs),
+                    label="Custom arguments:", rows=5,
+                    value=param_choices[[.customDataArgs]])
+                )
         } else if (mode=="rowDataPlot") {
             obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
             plot.param <- list(
@@ -309,6 +312,34 @@
                             )
                 )
             )
+        } else if (mode=="heatMapPlot") {
+            param <- list(do.call(tags$div, c(list(class = "panel-group", role = "tablist"),
+                    plot.param,
+                    .create_selection_param_box(mode, id, param_choices, col_selectable)
+                    )
+                )  
+            )
+        } else if (mode=="customDataPlot") {
+            param <- list(
+                tags$div(class = "panel-group", role = "tablist",
+                    do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
+                                title="Data parameters",
+                                open=param_choices[[.dataParamBoxOpen]]),
+                            plot.param)),
+                    collapseBox(.input_FUN(.selectParamBoxOpen),
+                        title = "Selection parameters",
+                        open = param_choices[[.selectParamBoxOpen]],
+                        selectInput(paste0(mode, id, "_", .customDataRowSource),
+                            label = "Receive row selection from:", 
+                            choices=row_selectable,
+                            selected=.choose_link(param_choices[[.customDataRowSource]], row_selectable)),
+                        selectInput(paste0(mode, id, "_", .customDataColSource),
+                            label = "Receive column selection from:", 
+                            choices=col_selectable,
+                            selected=.choose_link(param_choices[[.customDataColSource]], col_selectable))
+                    )
+                )
+            )
         } else if (mode %in% c("rowDataPlot", "sampAssayPlot")) {
             # Slightly different handling of the row data.
             param <- list(tags$div(class = "panel-group", role = "tablist",
@@ -319,13 +350,6 @@
                 .create_visual_box_for_row_plots(mode, id, param_choices, active_tab, se),
                 .create_selection_param_box(mode, id, param_choices, row_selectable)
                 )
-            )
-        } else if (mode=="heatMapPlot") {
-            param <- list(do.call(tags$div, c(list(class = "panel-group", role = "tablist"),
-                    plot.param,
-                    .create_selection_param_box(mode, id, param_choices, col_selectable)
-                    )
-                )  
             )
         } else {
             param <- list(tags$div(class = "panel-group", role = "tablist",
@@ -1019,7 +1043,7 @@
         all_assays=.sanitize_names(assayNames(se)),
         red_dim_names=.sanitize_names(reducedDimNames(se)),
         sample_names=.sanitize_names(colnames(se)),
-        custom_col_fun=fun_list
+        custom_data_fun=fun_list
     )
 
     if (is.null(colnames(se))) {

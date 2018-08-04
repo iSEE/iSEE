@@ -10,7 +10,7 @@
 #' @param rowStatArgs A DataFrame similar to that produced by \code{\link{rowStatTableDefaults}}, specifying initial parameters for the row statistics tables.
 #' @param rowDataArgs A DataFrame similar to that produced by \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the row data plots.
 #' @param sampAssayArgs A DataFrame similar to that produced by \code{\link{sampAssayPlotDefaults}}, specifying initial parameters for the sample assay plots.
-#' @param customColArgs A DataFrame similar to that produced by \code{\link{customColPlotDefaults}}, specifying initial parameters for the custom column plots.
+#' @param customDataArgs A DataFrame similar to that produced by \code{\link{customDataPlotDefaults}}, specifying initial parameters for the custom data plots.
 #' @param heatMapArgs A DataFrame similar to that produced by \code{\link{heatMapPlotDefaults}}, specifying initial parameters for the heatmaps.
 #' @param redDimMax An integer scalar specifying the maximum number of reduced dimension plots in the interface.
 #' @param colDataMax An integer scalar specifying the maximum number of column data plots in the interface.
@@ -18,13 +18,13 @@
 #' @param rowStatMax An integer scalar specifying the maximum number of row statistics tables in the interface.
 #' @param rowDataMax An integer scalar specifying the maximum number of row data plots in the interface.
 #' @param sampAssayMax An integer scalar specifying the maximum number of sample assay plots in the interface.
-#' @param customColMax An integer scalar specifying the maximum number of custom column plots in the interface.
+#' @param customDataMax An integer scalar specifying the maximum number of custom data plots in the interface.
 #' @param heatMapMax An integer scalar specifying the maximum number of heatmaps in the interface.
 #' @param initialPanels A DataFrame specifying which panels should be created at initialization.
 #' This should contain a \code{Name} character field and may have optional \code{Width} and \code{Height} integer fields, see Details.
 #' @param annotFun A function, similar to those returned by \code{\link{annotateEntrez}} or \code{\link{annotateEnsembl}}.
 #' The function should accept two parameters, \code{se} and \code{row_index}, and return a HTML element with annotation for the selected row.
-#' @param customColFun A named list of functions for reporting coordinates to use in a custom column data plot, see \code{?"\link{Custom iSEE plots}"}.
+#' @param customDataFun A named list of functions for reporting coordinates to use in a custom data plot, see \code{?"\link{Custom iSEE plots}"}.
 #' @param colormap An \linkS4class{ExperimentColorMap} object that defines custom colormaps to apply to individual \code{assays}, \code{colData} and \code{rowData} covariates.
 #' @param tour A data.frame with the content of the interactive tour to be displayed after starting up the app.
 #' @param appTitle A string indicating the title to be displayed in the app.
@@ -107,7 +107,7 @@ iSEE <- function(se,
         rowStatArgs=NULL,
         rowDataArgs=NULL,
         sampAssayArgs=NULL,
-        customColArgs=NULL,
+        customDataArgs=NULL,
         heatMapArgs=NULL,
         redDimMax=5,
         colDataMax=5,
@@ -115,11 +115,11 @@ iSEE <- function(se,
         rowStatMax=5,
         rowDataMax=5,
         sampAssayMax=5,
-        customColMax=5,
+        customDataMax=5,
         heatMapMax=5,
         initialPanels=NULL,
         annotFun = NULL,
-        customColFun = NULL,
+        customDataFun = NULL,
         colormap=ExperimentColorMap(),
         tour = NULL,
         appTitle = NULL,
@@ -128,14 +128,14 @@ iSEE <- function(se,
     # Save the original name of the input object for renaming in the tracker
     se_name <- deparse(substitute(se))
     ecm_name <- deparse(substitute(colormap))
-    ccf_name <- deparse(substitute(customColFun))
+    ccf_name <- deparse(substitute(customDataFun))
 
     se_out <- .sanitize_SE_input(se)
     se <- se_out$object
     se_cmds <- se_out$cmds
 
     # Precomputing UI information - must be before .setup_memory()
-    se <- .precompute_UI_info(se, customColFun)
+    se <- .precompute_UI_info(se, customDataFun)
 
     # Throw an error if the colormap supplied is not compatible with the object
     isColorMapCompatible(colormap, se, error = TRUE)
@@ -150,8 +150,8 @@ iSEE <- function(se,
 
     # Defining the maximum number of plots.
     memory <- .setup_memory(se,
-        redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs, sampAssayArgs, customColArgs, heatMapArgs,
-        redDimMax, colDataMax, featAssayMax, rowStatMax, rowDataMax, sampAssayMax, customColMax, heatMapMax)
+        redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs, sampAssayArgs, customDataArgs, heatMapArgs,
+        redDimMax, colDataMax, featAssayMax, rowStatMax, rowDataMax, sampAssayMax, customDataMax, heatMapMax)
 
     # Defining the initial elements to be plotted.
     active_panels <- .setup_initial(initialPanels, memory)
@@ -282,10 +282,13 @@ iSEE <- function(se,
     ## Server definition. ----
     #######################################################################
 
+    point_plot_types <- c("redDimPlot", "colDataPlot", "featAssayPlot", "rowDataPlot", "sampAssayPlot")
+    all_panel_types <- c(point_plot_types, "rowStatTable", "customDataPlot", "heatMapPlot")
+
     #nocov start
     iSEE_server <- function(input, output, session) {
         all_names <- list()
-        for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot", "rowStatTable", "rowDataPlot", "sampAssayPlot", "customColPlot", "heatMapPlot")) {
+        for (mode in all_panel_types) {
             max_plots <- nrow(memory[[mode]])
             all_names[[mode]] <- sprintf("%s%i", mode, seq_len(max_plots))
         }
@@ -309,7 +312,7 @@ iSEE <- function(se,
             rerendered = 1L
         )
 
-        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowStatTable", "rowDataPlot", "sampAssayPlot", "customColPlot", "heatMapPlot")) {
+        for (mode in all_panel_types) {
             max_plots <- nrow(pObjects$memory[[mode]])
             for (id in seq_len(max_plots)) {
                 rObjects[[paste0(mode, id)]] <- 1L
@@ -324,24 +327,6 @@ iSEE <- function(se,
             rObjects[[paste0(mode, id, "_", .heatMapLegend)]] <- 1L
         }
 
-        # Defining the custom plotting functions.
-        # This modifies the cached coordinates using pass-by-reference on the pObjects environment.
-        .remake_customColPlot <- function(id, ...) {
-            current <- paste0("customColPlot", id)
-            cached <- pObjects$cached_info[[current]]
-            out <- .make_customColPlot(id, ..., cached=cached)
-            pObjects$cached_info[[current]] <- out$cached
-
-            if (!identical(rownames(out$cached$coordinates), rownames(cached$coordinates))) {
-                # Clearing the brush if the samples involved have changed.
-                # We set the plot to a straight ggplot() to avoid a double-render.
-                .regenerate_unselected_plot("customColPlot", id, pObjects, rObjects, input, session)
-                out$plot <- ggplot()
-            }
-
-            return(out)
-        }
-
         # Evaluating certain plots to fill the coordinate list, if there are any selections.
         # This is done in topological order so that all dependencies are satisfied.
         eval_order <- .establish_eval_order(pObjects$selection_links)
@@ -352,8 +337,7 @@ iSEE <- function(se,
                 featAssayPlot=.make_featAssayPlot,
                 colDataPlot=.make_colDataPlot,
                 rowDataPlot=.make_rowDataPlot,
-                sampAssayPlot=.make_sampAssayPlot,
-                customColPlot=.remake_customColPlot)
+                sampAssayPlot=.make_sampAssayPlot)
             p.out <- FUN(enc$ID, pObjects$memory, pObjects$coordinates, se, colormap)
             pObjects$coordinates[[panelname]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
         }
@@ -477,7 +461,7 @@ iSEE <- function(se,
         # of 'id' in the renderPlot() will be the same across all instances, because
         # of when the expression is evaluated.
 
-        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowStatTable", "rowDataPlot", "sampAssayPlot", "customColPlot", "heatMapPlot")) {
+        for (mode in all_panel_types) {
             max_plots <- nrow(pObjects$memory[[mode]])
             for (id in seq_len(max_plots)) {
                 local({
@@ -577,62 +561,41 @@ iSEE <- function(se,
         # Parameter panel observers.
         #######################################################################
 
-        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "sampAssayPlot", "customColPlot")) {
+        for (mode in all_panel_types) {
+            if (mode %in% point_plot_types) {
+                box_types <- c(.dataParamBoxOpen, .visualParamBoxOpen, .selectParamBoxOpen)
+            } else if (mode=="heatMapPlot") {
+                box_types <- c(.heatMapFeatNameBoxOpen, .heatMapColDataBoxOpen, .selectParamBoxOpen)
+            } else if (mode=="customDataPlot") {
+                box_types <- c(.dataParamBoxOpen, .selectParamBoxOpen)
+            } else if (mode=="rowStatTable") {
+                box_types <- .selectParamBoxOpen
+            } else {
+                box_types <- character(0)
+            }
+
             max_plots <- nrow(pObjects$memory[[mode]])
             for (id in seq_len(max_plots)) {
-                for (panel in c(.dataParamBoxOpen, .visualParamBoxOpen, .selectParamBoxOpen)) {
+                for (boxtype in box_types) {
                     local({
                         mode0 <- mode
                         id0 <- id
-                        panel0 <- panel
+                        box0 <- boxtype
 
-                        open_field <- paste0(mode0, id0, "_", panel0)
+                        open_field <- paste0(mode0, id0, "_", box0)
                         observeEvent(input[[open_field]], {
-                            pObjects$memory[[mode0]][[panel0]][id0] <- input[[open_field]]
+                            pObjects$memory[[mode0]][[box0]][id0] <- input[[open_field]]
                         })
                     })
                 }
             }
         }
 
-        # Panel opening/closing observers for heat map plots.
-        max_plots <- nrow(pObjects$memory$heatMapPlot)
-        for (id in seq_len(max_plots)) {
-            for (panel in c(.heatMapFeatNameBoxOpen, .heatMapColDataBoxOpen, .selectParamBoxOpen)) {
-                local({
-                    mode0 <- "heatMapPlot"
-                    id0 <- id
-                    panel0 <- panel
-
-                    open_field <- paste0(mode0, id0, "_", panel0)
-                    observeEvent(input[[open_field]], {
-                        pObjects$memory[[mode0]][[panel0]][id0] <- input[[open_field]]
-                    })
-                })
-            }
-        }
-
-        # Same for the tables.
-        max_tabs <- nrow(pObjects$memory$rowStatTable)
-        for (id in seq_len(max_tabs)) {
-            local({
-                mode0 <- "rowStatTable"
-                id0 <- id
-                tab_name <- paste0(mode0, id0)
-                prefix <- paste0(tab_name, "_")
-
-                select_open_field <- paste0(prefix, .selectParamBoxOpen)
-                observeEvent(input[[select_open_field]], {
-                    pObjects$memory[[mode0]][[.selectParamBoxOpen]][id0] <- input[[select_open_field]]
-                })
-            })
-        }
-
         #######################################################################
         # Point selection observers.
         #######################################################################
 
-        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "sampAssayPlot", "customColPlot")) {
+        for (mode in point_plot_types) {
             max_plots <- nrow(pObjects$memory[[mode]])
             for (id in seq_len(max_plots)) {
                 local({
@@ -847,7 +810,7 @@ iSEE <- function(se,
                     new_select <- new_out$selected
                     new_encoded <- new_out$encoded
 
-                    # Updating the graph (no need to wrorry about DAGs here, as heatmaps do not transmit).
+                    # Updating the graph (no need to worry about DAGs here, as heatmaps do not transmit).
                     pObjects$selection_links <- .choose_new_selection_source(pObjects$selection_links, plot_name, new_encoded, old_encoded)
                     pObjects$memory[[mode0]][id0, .selectByPlot] <- new_transmitter
 
@@ -896,7 +859,7 @@ iSEE <- function(se,
         # Click observers.
         #######################################################################
 
-        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "sampAssayPlot", "customColPlot")) {
+        for (mode in point_plot_types) {
             max_plots <- nrow(pObjects$memory[[mode]])
             for (id in seq_len(max_plots)) {
                 local({
@@ -943,7 +906,7 @@ iSEE <- function(se,
         #   If an open lasso is present, it is deleted.
         #   If there was no open lasso, you zoom out.
 
-        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "sampAssayPlot", "customColPlot")) {
+        for (mode in point_plot_types) {
             max_plots <- nrow(pObjects$memory[[mode]])
             for (id in seq_len(max_plots)) {
                 local({
@@ -1039,81 +1002,57 @@ iSEE <- function(se,
         feature_choices <- seq_len(nrow(se))
         names(feature_choices) <- rownames(se)
 
-        max_plots <- nrow(pObjects$memory$featAssayPlot)
-        for (id in seq_len(max_plots)) {
-            for (axis in c(.featAssayYAxisFeatName, .featAssayXAxisFeatName)) {
-                local({
-                    id0 <- id
-                    mode0 <- "featAssayPlot"
-                    field0 <- axis
-                    cur_field <- paste0(mode0, id0, "_", field0)
-
-                    observe({
-                        force(rObjects$rerendered)
-                        updateSelectizeInput(session, cur_field, label = NULL, choices = feature_choices, server = TRUE,
-                                             selected = pObjects$memory[[mode0]][id0, field0][[1]])
-                    })
-                })
+        for (mode in c(point_plot_types, "heatMapPlot")) {
+            if (mode=="featAssayPlot") {
+                fields <- c(.featAssayYAxisFeatName, .featAssayXAxisFeatName, .colorByFeatName)
+            } else if (mode %in% point_plot_types) {
+                fields <- .colorByFeatName
+            } else if (mode=="heatMapPlot") {
+                fields <- .heatMapFeatName
             }
-        }
 
-        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "sampAssayPlot", "customColPlot")) {
             max_plots <- nrow(pObjects$memory[[mode]])
             for (id in seq_len(max_plots)) {
-                local({
-                    id0 <- id
-                    mode0 <- mode
-                    field0 <- .colorByFeatName
-                    cur_field <- paste0(mode0, id0, "_", field0)
-
-                    observe({
-                        force(rObjects$rerendered)
-                        updateSelectizeInput(session, cur_field, label = NULL, choices = feature_choices, server = TRUE,
-                                             selected = pObjects$memory[[mode0]][id0, field0][[1]])
+                for (field in fields) { 
+                    local({
+                        id0 <- id
+                        mode0 <- mode
+                        field0 <- field
+                        cur_field <- paste0(mode0, id0, "_", field0)
+    
+                        observe({
+                            force(rObjects$rerendered)
+                            updateSelectizeInput(session, cur_field, choices = feature_choices, server = TRUE,
+                                selected = pObjects$memory[[mode0]][id0, field0][[1]])
+                        })
                     })
-                })
+                }
             }
         }
-
-        max_plots <- nrow(pObjects$memory$heatMapPlot)
-        for (id in seq_len(max_plots)) {
-            local({
-                id0 <- id
-                mode0 <- "heatMapPlot"
-
-                observe({
-                    force(rObjects$rerendered)
-                    updateSelectizeInput(session, paste0(mode0, id0, "_", .heatMapFeatName), choices = feature_choices,
-                                         server = TRUE, selected = pObjects$memory[[mode0]][id0, .heatMapFeatName][[1]])
-                })
-            })
-        }
-
+        
         #######################################################################
         # Dot-related plot creation section. ----
         #######################################################################
 
-        for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot", "rowDataPlot", "sampAssayPlot", "customColPlot")) {
+        for (mode in point_plot_types) {
             max_plots <- nrow(pObjects$memory[[mode]])
 
             # Defining mode-specific plotting functions.
             FUN <- switch(mode,
-                          redDimPlot=.make_redDimPlot,
-                          featAssayPlot=.make_featAssayPlot,
-                          colDataPlot=.make_colDataPlot,
-                          rowDataPlot=.make_rowDataPlot,
-                          sampAssayPlot=.make_sampAssayPlot,
-                          customColPlot=.remake_customColPlot)
+                redDimPlot=.make_redDimPlot,
+                featAssayPlot=.make_featAssayPlot,
+                colDataPlot=.make_colDataPlot,
+                rowDataPlot=.make_rowDataPlot,
+                sampAssayPlot=.make_sampAssayPlot)
 
             # Defining fundamental parameters that destroy brushes/lassos upon being changed.
-            collected_facet <- c(.facetByRow, .facetByColumn, .facetRowsByColData, .facetColumnsByColData)
             protected <- switch(mode,
-                                redDimPlot=c(.redDimXAxis, .redDimYAxis, collected_facet),
-                                colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData, collected_facet),
-                                featAssayPlot=c(.featAssayAssay, .featAssayXAxisColData, collected_facet),
-                                rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData, collected_facet),
-                                sampAssayPlot=c(.sampAssayYAxis, .sampAssayAssay, .sampAssayXAxis, .sampAssayXAxisRowData, .sampAssayXAxisSample, collected_facet),
-                                customColPlot=c(.customColFun, collected_facet))
+                redDimPlot=c(.redDimXAxis, .redDimYAxis),
+                colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
+                featAssayPlot=c(.featAssayAssay, .featAssayXAxisColData),
+                rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData),
+                sampAssayPlot=c(.sampAssayYAxis, .sampAssayAssay, .sampAssayXAxis, .sampAssayXAxisRowData, .sampAssayXAxisSample))
+            protected <- c(protected,  .facetByRow, .facetByColumn, .facetRowsByColData, .facetColumnsByColData)
 
             # Defining non-fundamental parameters that do not destroy brushes/lassos.
             if (mode %in% c("rowDataPlot", "sampAssayPlot")) {
@@ -1349,6 +1288,79 @@ iSEE <- function(se,
                     .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
                 }, ignoreInit=TRUE)
             })
+        }
+
+        #######################################################################
+        # Custom plot section. ----
+        #######################################################################
+
+        for (id in seq_len(nrow(memory$customDataPlot))) {
+            local({
+                id0 <- id
+                plot_name <- paste0("customDataPlot", id0)
+
+                # Defining the rendered plot, and saving the coordinates.
+                output[[plot_name]] <- renderPlot({
+                    force(rObjects[[plot_name]])
+                    p.out <- .make_customDataPlot(id0, pObjects$memory, pObjects$coordinates, se)
+                    pObjects$commands[[plot_name]] <- p.out$cmd_list
+                    p.out$plot
+                })
+                              
+                # Describing the links between panels.
+                link_field <- paste0(plot_name, "_", .panelLinkInfo)
+                output[[link_field]] <- renderUI({
+                    force(rObjects[[link_field]])
+                    output <- list()
+                    for (src in c(.customDataRowSource, .customDataColSource)) { 
+                        select_in <- pObjects$memory$customDataPlot[id0,src]
+                        if (select_in!=.noSelection) {
+                            output <- c(output, list("Receiving selection from", em(strong(select_in)), br()))
+                        }
+                    }
+                    do.call(tagList, output)
+                })
+            })
+
+            for (src in c(.customDataRowSource, .customDataColSource)) { 
+                local({
+                    id0 <- id
+                    src0 <- src
+                    plot_name <- paste0("customDataPlot", id0)
+                    select_plot_field <- paste0(plot_name, "_", src0)
+
+                    observeEvent(input[[select_plot_field]], {
+                        old_transmitter <- pObjects$memory$customDataPlot[id0, src0]
+                        new_transmitter <- input[[select_plot_field]]
+
+                        # Determining whether the new and old transmitting plot have selections.
+                        old_out <- .transmitted_selection(old_transmitter, pObjects$memory)
+                        old_select <- old_out$selected
+                        old_encoded <- old_out$encoded
+                        new_out <- .transmitted_selection(new_transmitter, pObjects$memory)
+                        new_select <- new_out$selected
+                        new_encoded <- new_out$encoded
+
+                        # Trying to update the graph. No need to worry about DAGs as custom plots cannot transmit.
+                        pObjects$selection_links <- .choose_new_selection_source(pObjects$selection_links, plot_name, new_encoded, old_encoded)
+                        pObjects$memory$customDataPlot[id0, src0] <- new_transmitter
+
+                        # Update the elements reporting the links between plots.
+                        for (relinked in setdiff(c(old_encoded, new_encoded, plot_name), .noSelection)) {
+                            relink_field <- paste0(relinked, "_", .panelLinkInfo)
+                            rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
+                        }
+
+                        # Not replotting if there were no selection in either the new or old transmitters.
+                        if (!old_select && !new_select){
+                            return(NULL)
+                        }
+
+                        # Triggering self update of the plot.
+                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                    })
+                })
+            }
         }
 
         #######################################################################

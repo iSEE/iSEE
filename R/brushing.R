@@ -33,7 +33,7 @@
     node_names <- list()
     edges <- list()
 
-    for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot", "rowStatTable", "rowDataPlot", "sampAssayPlot", "customColPlot", "heatMapPlot")) {
+    for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot", "rowStatTable", "rowDataPlot", "sampAssayPlot", "heatMapPlot")) {
         N <- nrow(memory[[mode]])
         cur_panels <- sprintf("%s%i", mode, seq_len(N))
         node_names[[mode]] <- cur_panels
@@ -48,6 +48,26 @@
         edges[[mode]] <- cur_edges
     }
 
+    # Custom plots take two forms of input.
+    mode <- "customDataPlot"
+    N <- nrow(memory[[mode]])
+    cur_panels <- sprintf("%s%i", mode, seq_len(N))
+    node_names[[mode]] <- cur_panels
+   
+    collected_edges <- list()
+    for (src in c(.customDataColSource, .customDataRowSource)) { 
+        cur_edges <- vector("list", N)
+        for (id in seq_len(N)) {
+            cur_parent <- memory[[mode]][id, src]
+            if (cur_parent!=.noSelection) {
+                cur_edges[[id]] <- c(.decoded2encoded(cur_parent), cur_panels[id])
+            }
+        }
+        collected_edges <- c(collected_edges, cur_edges)
+    }
+    edges[[mode]] <- collected_edges
+
+    # Creating a graph.
     all_edges <- unlist(edges)
     node_names <- unlist(node_names)
     g <- make_graph(as.character(all_edges), isolates=setdiff(node_names, all_edges), directed=TRUE)
@@ -181,7 +201,7 @@
         ids <- enc$ID
 
         new_children <- character(0)
-        for (i in which(types!="rowStatTable")) { # as tables don't have a selection effect, or even transmit.
+        for (i in which(! types %in% c("rowStatTable", "customDataPlot", "heatMapPlot"))) { # avoiding panels that don't have a selection effect or don't transmit.
             if (memory[[types[i]]][ids[i],.selectEffect]==.selectRestrictTitle) {
                 new_children <- c(new_children, names(adjacent_vertices(graph, children[i], mode="out")[[1]]))
             }

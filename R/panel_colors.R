@@ -5,7 +5,7 @@ panel_colors <- c(redDimPlot="#3c8dbc",
                   colDataPlot="#f39c12",
                   featAssayPlot="#00a65a",
                   sampAssayPlot="#0064aa",
-                  customColPlot="#473c15",
+                  customDataPlot="#473c15",
                   heatMapPlot="#bc4ddd")
 
 .define_box_statuses <- paste(sprintf(".box.box-%s {

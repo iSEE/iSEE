@@ -26,14 +26,22 @@ Row names must be set to \code{columns}.}
 }
 
 \examples{
-CUSTOM <- function(se, columns) {
-    kept <- logcounts(se)[,columns]
+# Setting up a function:
+CUSTOM <- function(se, rows, columns, ...) {
+    kept <- logcounts(se)
+    if (!is.null(rows)) {
+        kept <- kept[rows,,drop=FALSE]
+    }
+    if (!is.null(columns)) { 
+        kept <- kept[,columns,drop=FALSE]
+    }
     out <- prcomp(t(kept), rank.=2)$x
-    coords <- data.frame(X=out[,1], Y=out[,2], row.names=columns)
-    return(list(coordinates=coords, xlab="PC1", ylab="PC2", 
-           title="PCA on selected points"))           
+    coords <- data.frame(X=out[,1], Y=out[,2])
+
+    ggplot(coords) + geom_point(aes(x=X, y=Y)) + xlab("PC1") + ylab("PC2")
 }
 
+# Setting up the SCE object:
 library(scRNAseq)
 data(allen)
 class(allen)
@@ -43,17 +51,25 @@ sce <- as(allen, "SingleCellExperiment")
 counts(sce) <- assay(sce, "tophat_counts")
 sce <- normalize(sce)
 sce <- runPCA(sce)
+rowData(sce)$mean_log <- rowMeans(logcounts(sce))
+rowData(sce)$var_log <- apply(logcounts(sce), 1, var)
 
-rdp <- redDimPlotDefaults(sce, 1)
-ccp <- customColPlotDefaults(sce, 1)
-ccp$Function <- "PCA2"
-ccp$SelectByPlot <- "Reduced dimension plot 1"
-ccp$SelectEffect <- "Restrict"
+# Setting up the app:
+reddim <- redDimPlotDefaults(sce, 1)
+rowdat <- rowDataPlotDefaults(sce, 1)
+rowdat$XAxis <- "Row data"
+rowdat$XAxisRowData <- "mean_log"
+rowdat$YAxis <- "var_log"
 
-app <- iSEE(sce, redDimArgs=rdp, customColArgs=ccp, 
+cdp <- customDataPlotDefaults(sce, 1)
+cdp$Function <- "PCA2"
+cdp$ColumnSource <- "Reduced dimension plot 1"
+cdp$RowSource <- "Row data plot 1"
+
+app <- iSEE(sce, redDimArgs=reddim, rowDataArgs=rowdat, customDataArgs=cdp,
    initialPanels=DataFrame(Name=c("Reduced dimension plot 1", 
-       "Custom column plot 1")),
-   customColFun=list(PCA2=CUSTOM))
+       "Row data plot 1", "Custom data plot 1")),
+   customDataFun=list(PCA2=CUSTOM))
 }
 \author{
 Aaron Lun

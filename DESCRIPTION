@@ -65,4 +65,4 @@ biocViews: Visualization, GUI, DimensionReduction,
     GeneExpression, Transcriptomics, SingleCell, CellBasedAssays
 License: MIT + file LICENSE
 VignetteBuilder: knitr
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0

@@ -5,7 +5,7 @@
 \alias{redDimPlotDefaults}
 \alias{featAssayPlotDefaults}
 \alias{colDataPlotDefaults}
-\alias{customColPlotDefaults}
+\alias{customDataPlotDefaults}
 \alias{rowStatTableDefaults}
 \alias{rowDataPlotDefaults}
 \alias{sampAssayPlotDefaults}
@@ -18,7 +18,7 @@ featAssayPlotDefaults(se, number)
 
 colDataPlotDefaults(se, number)
 
-customColPlotDefaults(se, number)
+customDataPlotDefaults(se, number)
 
 rowStatTableDefaults(se, number)
 

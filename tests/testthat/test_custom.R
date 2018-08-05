@@ -1,9 +1,10 @@
 # Set up plotting parameters
 redDimArgs <- redDimPlotDefaults(sce, 1)
-customColArgs <- customDataPlotDefaults(sce, 1)
+customDataArgs <- customDataPlotDefaults(sce, 1)
+customStatArgs <- customStatTableDefaults(sce, 1)
 
 # Set up alternative object.
-CUSTOM <- function(se, rows, columns, colour_by=NULL, scale_columns=TRUE) {
+CUSTOM_DATA <- function(se, rows, columns, colour_by=NULL, scale_columns=TRUE) {
     if (!is.null(columns)) {
         kept <- se[,columns]
     } else {
@@ -15,24 +16,34 @@ CUSTOM <- function(se, rows, columns, colour_by=NULL, scale_columns=TRUE) {
 	plotPCA(kept, colour_by=colour_by)
 }
 
-sceX <- iSEE:::.precompute_UI_info(sce, list(PCA2=CUSTOM), list())
-customColArgs$Function <- "PCA2"
+CUSTOM_STAT <- function(se, rows, columns, colour_by=NULL, scale_columns=TRUE) {
+    if (!is.null(columns)) {
+        kept <- se[,columns]
+    } else {
+        return(data.frame())
+    }
+
+    data.frame(present=TRUE)
+}
+
+sceX <- iSEE:::.precompute_UI_info(sce, list(PCA2=CUSTOM_DATA), list(PRESENT=CUSTOM_STAT))
+customDataArgs$Function <- "PCA2"
+customStatArgs$Function <- "PRESENT"
 
 # Set up memory
 all_memory <- iSEE:::.setup_memory(
-    se = sceX, 
-    redDimArgs=redDimArgs, 
-    colDataArgs=NULL, 
+    se = sceX,
+    redDimArgs=redDimArgs,
+    colDataArgs=NULL,
     featAssayArgs=NULL,
     sampAssayArgs=NULL,
     rowStatArgs=NULL,
     rowDataArgs=NULL,
-    customDataArgs = customColArgs,
-    customStatArgs = NULL, # TODO: add an example
+    customDataArgs = customDataArgs,
+    customStatArgs = customStatArgs,
     heatMapArgs=NULL,
     redDimMax=1, colDataMax=0, featAssayMax=0, sampAssayMax=0, rowStatMax=0,
-    rowDataMax=0, heatMapMax=0, customDataMax = 1,
-    customStatMax = 0) # TODO: add an example
+    rowDataMax=0, heatMapMax=0, customDataMax = 1, customStatMax = 1)
 
 all_coordinates <- list()
 p.out <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
@@ -43,8 +54,8 @@ p.out <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
 
 test_that("getting and setting of custom column functions", {
     expect_error(iSEE:::.get_internal_info(sce, "custom_data_fun"), "no internal")
-    expect_identical(iSEE:::.get_internal_info(sceX, "custom_data_fun"), list(PCA2=CUSTOM))
-     
+    expect_identical(iSEE:::.get_internal_info(sceX, "custom_data_fun"), list(PCA2=CUSTOM_DATA))
+
     sceX2 <- iSEE:::.precompute_UI_info(sce, NULL, NULL)
     expect_identical(iSEE:::.get_internal_info(sceX2, "custom_data_fun"), NULL)
 })
@@ -57,7 +68,7 @@ test_that(".make_customDataPlot produces a valid list", {
 
     expect_s3_class(p.out$plot, "ggplot")
 })
-  
+
 test_that(".make_customDataPlot works when no function is specified", {
     all_memory$customColPlot$Function <- iSEE:::.noSelection
     p.out <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
@@ -73,26 +84,26 @@ test_that(".make_customDataPlot works when no function is specified", {
 test_that(".make_customDataPlot responds to a transmitted receiver", {
     all_memory$customColPlot$SelectByPlot <- "Reduced dimension plot 1"
     all_memory$customColPlot$SelectEffect <- "Restrict"
-    all_memory$redDimPlot$BrushData[[1]] <- list(xmin = -11.514034644046, xmax = 9.423465477988, 
-         ymin = -10.767314578073, ymax = -1.6587346435671, 
-         mapping = list(x = "X", y = "Y"), 
-         domain = list(left = -14.0531423894257, 
-                       right = 10.9153021971093, 
-                       bottom = -12.0002389472417, 
-                       top = 16.4373197678157), 
-         range = list(left = 39.0740047089041, 
-                      right = 382.520547945205, 
-                      bottom = 468.220917166096, 
-                      top = 24.8879973724842), 
-         log = list(x = NULL, y = NULL), direction = "xy", 
-         brushId = "redDimPlot1_Brush", 
+    all_memory$redDimPlot$BrushData[[1]] <- list(xmin = -11.514034644046, xmax = 9.423465477988,
+         ymin = -10.767314578073, ymax = -1.6587346435671,
+         mapping = list(x = "X", y = "Y"),
+         domain = list(left = -14.0531423894257,
+                       right = 10.9153021971093,
+                       bottom = -12.0002389472417,
+                       top = 16.4373197678157),
+         range = list(left = 39.0740047089041,
+                      right = 382.520547945205,
+                      bottom = 468.220917166096,
+                      top = 24.8879973724842),
+         log = list(x = NULL, y = NULL), direction = "xy",
+         brushId = "redDimPlot1_Brush",
          outputId = "redDimPlot1")
 
-    r.out <- iSEE:::.make_redDimPlot(id =1, all_memory, all_coordinates, sceX, ExperimentColorMap())    
+    r.out <- iSEE:::.make_redDimPlot(id =1, all_memory, all_coordinates, sceX, ExperimentColorMap())
     all_coordinates[["redDimPlot1"]] <- r.out$xy
 
     p.out2 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
-    
+
     # Testing equality:
     expect_named(p.out2, c("cmd_list", "xy", "plot", "cached"))
     expect_match(p.out2$cmd_list$select[1], "redDimPlot1")
@@ -108,7 +119,7 @@ test_that(".make_customDataPlot responds to a transmitted receiver", {
 
     kept <- rownames(shiny:::brushedPoints(all_coordinates[["redDimPlot1"]], all_memory$redDimPlot$BrushData[[1]]))
     expect_identical(kept, rownames(p.out2$cached$coordinates))
-    expect_identical(p.out2$cached, CUSTOM(sceX, kept))
+    expect_identical(p.out2$cached, CUSTOM_DATA(sceX, kept))
 
     # Checking that the cache is ignored or used properly.
     p.out3 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)

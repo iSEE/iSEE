@@ -139,15 +139,3 @@ test_that(".make_customDataPlot responds to colour selection", {
 
     expect_identical(p.out$cached, p.out2$cached)
 })
-  
-test_that(".make_customDataPlot responds to downsampling", {
-    all_memory$customColPlot$Downsample <- TRUE
-    p.out2 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
-
-    expect_named(p.out2, c("cmd_list", "plot"))
-
-    expect_named(p.out2$cmd_list, c("select", "plot"))
-    expect_match(p.out2$cmd_list$plot[1], "^plot.data.pre <-")
-    expect_match(p.out2$cmd_list$plot[2], "subsetPointsByGrid")
-    expect_match(p.out2$cmd_list$plot['coord'], "plot.data.pre")
-})

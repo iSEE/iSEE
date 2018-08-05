@@ -3,30 +3,39 @@ redDimArgs <- redDimPlotDefaults(sce, 1)
 customColArgs <- customDataPlotDefaults(sce, 1)
 
 # Set up alternative object.
-CUSTOM <- function(se, columns) {
-    stuff <- logcounts(se)[1:1000,columns]
-    out <- prcomp(t(stuff), rank.=2)
-    return(list(coordinates=data.frame(X=out$x[,1], Y=out$x[,2], row.names=columns),
-                xlab="WHEE", ylab="YAY", title="HOORAY"))
+CUSTOM_PCA <- function(se, rows, columns, colour_by=NULL, scale_columns=TRUE) {
+    if (!is.null(columns)) {
+        kept <- se[,columns]
+    } else {
+        return(ggplot())
+    }
+
+    scale_columns <- as.logical(scale_columns)
+    kept <- runPCA(kept, feature_set=rows, scale_columns=scale_columns)
+	plotPCA(kept, colour_by=colour_by)
 }
 
-sceX <- iSEE:::.precompute_UI_info(sce, list(PCA2=CUSTOM))
+sceX <- iSEE:::.precompute_UI_info(sce, list(PCA2=CUSTOM_PCA), list())
 customColArgs$Function <- "PCA2"
 
 # Set up memory
-all_memory <- iSEE:::.setup_memory(sceX, 
-                                   redDimArgs=redDimArgs, 
-                                   colDataArgs=NULL, 
-                                   featAssayArgs=NULL,
-                                   sampAssayArgs=NULL,
-                                   rowStatArgs=NULL,
-                                   rowDataArgs=NULL, 
-                                   customColArgs=customColArgs,
-                                   heatMapArgs=NULL,
-                                   redDimMax=1, colDataMax=0, featAssayMax=0, sampAssayMax=0, rowStatMax=0, rowDataMax=0, customColMax=1, heatMapMax=0)
+all_memory <- iSEE:::.setup_memory(
+    se = sceX, 
+    redDimArgs=redDimArgs, 
+    colDataArgs=NULL, 
+    featAssayArgs=NULL,
+    sampAssayArgs=NULL,
+    rowStatArgs=NULL,
+    rowDataArgs=NULL,
+    customDataArgs = customColArgs,
+    customStatArgs = NULL, # TODO: add an example
+    heatMapArgs=NULL,
+    redDimMax=1, colDataMax=0, featAssayMax=0, sampAssayMax=0, rowStatMax=0,
+    rowDataMax=0, heatMapMax=0, customDataMax = 1,
+    customStatMax = 0) # TODO: add an example
 
 all_coordinates <- list()
-p.out <- iSEE:::.make_customColPlot(id = 1, all_memory, all_coordinates, sceX, ExperimentColorMap(), cached=NULL)
+p.out <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
 
 ####################
 # Tests start here #

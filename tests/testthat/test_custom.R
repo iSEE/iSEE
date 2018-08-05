@@ -69,17 +69,13 @@ test_that(".make_customColPlot produces a valid list", {
   
 test_that(".make_customColPlot works when no function is specified", {
     all_memory$customColPlot$Function <- iSEE:::.noSelection
-    p.out <- iSEE:::.make_customColPlot(id = 1, all_memory, all_coordinates, sceX, ExperimentColorMap(), cached=NULL)
+    p.out <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
 
-    expect_named(p.out, c("cmd_list", "xy", "plot", "cached"))
-    expect_identical(p.out$cmd_list, NULL)
+    expect_named(p.out, c("cmd_list", "plot"))
+    expect_named(p.out$cmd_list, c("select", "plot"))
+    expect_identical(p.out$cmd_list$select, c("row.names <- NULL;", "col.names <- NULL;"))
 
     expect_s3_class(p.out$plot, "ggplot")
-
-    expect_identical(p.out$cached, NULL)
-  
-    expect_s3_class(p.out$xy, "data.frame")
-    expect_identical(nrow(p.out$xy), 0L)
 })
 
 test_that(".make_customColPlot responds to a transmitted receiver", {

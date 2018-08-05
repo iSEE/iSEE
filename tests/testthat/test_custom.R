@@ -91,7 +91,7 @@ test_that(".make_customDataPlot responds to a transmitted receiver", {
     r.out <- iSEE:::.make_redDimPlot(id =1, all_memory, all_coordinates, sceX, ExperimentColorMap())    
     all_coordinates[["redDimPlot1"]] <- r.out$xy
 
-    p.out2 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX, ExperimentColorMap(), cached=NULL)
+    p.out2 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
     
     # Testing equality:
     expect_named(p.out2, c("cmd_list", "xy", "plot", "cached"))
@@ -111,15 +111,15 @@ test_that(".make_customDataPlot responds to a transmitted receiver", {
     expect_identical(p.out2$cached, CUSTOM(sceX, kept))
 
     # Checking that the cache is ignored or used properly.
-    p.out3 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX, ExperimentColorMap(), cached=p.out$cached)
+    p.out3 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
     expect_equal(p.out2, p.out3)
 
-    p.out4 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX, ExperimentColorMap(), cached=p.out2$cached)
+    p.out4 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
     expect_equal(p.out2, p.out4)
 
     # Still valid when no function is specified.
     all_memory$customColPlot$Function <- iSEE:::.noSelection
-    p.out5 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX, ExperimentColorMap(), cached=NULL)
+    p.out5 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
     expect_named(p.out5, c("cmd_list", "xy", "plot", "cached"))
     expect_identical(p.out5$cmd_list, NULL)
     expect_identical(p.out5$cached, NULL)
@@ -129,25 +129,20 @@ test_that(".make_customDataPlot responds to a transmitted receiver", {
 test_that(".make_customDataPlot responds to colour selection", {
     all_memory$customColPlot$ColorBy <- "Column data"
     all_memory$customColPlot$ColorByColData <- "NALIGNED"
-    p.out2 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX, ExperimentColorMap(), cached=p.out$cached)
+    p.out2 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
 
-    expect_named(p.out2, c("cmd_list", "xy", "plot", "cached"))
+    expect_named(p.out2, c("cmd_list", "plot"))
 
-    expect_named(p.out2$cmd_list, c("data", "select", "setup", "plot"))
-    expect_match(p.out2$cmd_list$data[2], "NALIGNED")
-    expect_match(p.out2$cmd_list$setup[1], "PCA2")
+    expect_named(p.out2$cmd_list, c("select", "plot"))
 
     expect_s3_class(p.out2$plot, "ggplot")
 
     expect_identical(p.out$cached, p.out2$cached)
-  
-    expect_s3_class(p.out2$xy, "data.frame")
-    expect_named(p.out2$xy, c("ColorBy", "X","Y"))
 })
   
 test_that(".make_customDataPlot responds to downsampling", {
     all_memory$customColPlot$Downsample <- TRUE
-    p.out2 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX, ExperimentColorMap(), cached=p.out$cached)
+    p.out2 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
 
     expect_named(p.out2, c("cmd_list", "xy", "plot", "cached"))
 

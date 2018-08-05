@@ -56,7 +56,6 @@
     fun_name <- param_choices[[.customFun]]
     if (fun_name!=.noSelection) {
         custom_cmd <- sprintf("custom_data_fun[[%s]](se, row.names, col.names%s);", deparse(fun_name), as_cmd_args)
-        print(custom_cmd)
     } else {
         custom_cmd <- "ggplot()"
     }

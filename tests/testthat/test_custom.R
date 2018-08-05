@@ -1,6 +1,6 @@
 # Set up plotting parameters
 redDimArgs <- redDimPlotDefaults(sce, 1)
-customColArgs <- customColPlotDefaults(sce, 1)
+customColArgs <- customDataPlotDefaults(sce, 1)
 
 # Set up alternative object.
 CUSTOM <- function(se, columns) {

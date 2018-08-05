@@ -7,6 +7,7 @@
 \alias{colDataPlotDefaults}
 \alias{customDataPlotDefaults}
 \alias{rowStatTableDefaults}
+\alias{customStatTableDefaults}
 \alias{rowDataPlotDefaults}
 \alias{sampAssayPlotDefaults}
 \alias{heatMapPlotDefaults}
@@ -21,6 +22,8 @@ colDataPlotDefaults(se, number)
 customDataPlotDefaults(se, number)
 
 rowStatTableDefaults(se, number)
+
+customStatTableDefaults(se, number)
 
 rowDataPlotDefaults(se, number)
 

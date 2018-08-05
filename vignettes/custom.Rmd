@@ -99,7 +99,7 @@ CUSTOM_PCA <- function(se, rows, columns, colour_by=NULL, scale_columns=TRUE) {
 
 Note that `rows` and `columns` may be `NULL` if no selection was made in the respective transmitting panels.
 How these should be treated is up to the user-defined function.
-In `CUSTOM`, an empty _ggplot_ is returned if there is no selection on the columns, while the default `runPCA` behaviour is used if `feature_set=NULL`.
+In the `CUSTOM_PCA` example above, an empty _ggplot_ is returned if there is no selection on the columns, while the default `runPCA` behaviour is used if `feature_set=NULL`.
 
 ## Additional arguments
 

@@ -27,7 +27,7 @@ output:
   BiocStyle::html_document:
     toc_float: true
 vignette: >
-  %\VignetteIndexEntry{iSEE Advanced Features}
+  %\VignetteIndexEntry{4. iSEE Advanced Features}
   %\VignetteEncoding{UTF-8}  
   %\VignettePackage{iSEE}
   %\VignetteKeywords{GeneExpression, RNASeq, Sequencing, Visualization, QualityControl, GUI}

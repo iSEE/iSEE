@@ -63,6 +63,7 @@
         rowDataPlot=! (ncol(rowData(se))==0L || nrow(se)==0L),
         sampAssayPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
         customDataPlot=! ((ncol(se)==0L && nrow(se)==0L) || length(.get_internal_info(se, "custom_data_fun"))==0L),
+        customStatTable=! ((ncol(se)==0L && nrow(se)==0L) || length(.get_internal_info(se, "custom_stat_fun"))==0L),
         heatMapPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L)
     )
 }
@@ -107,7 +108,8 @@
 #' @param rowStatArgs A DataFrame or data.frame of user-specified arguments for row statistics tables.
 #' @param rowDataArgs A DataFrame or data.frame of user-specified arguments for row data plots.
 #' @param sampAssayArgs A DataFrame or data.frame of user-specified arguments for sample assay plots.
-#' @param customDataArgs A DataFrame or data.frame of user-specified arguments for custom column plots.
+#' @param customDataArgs A DataFrame or data.frame of user-specified arguments for custom data plots.
+#' @param customStatArgs A DataFrame or data.frame of user-specified arguments for custom statistics tables.
 #' @param heatMapArgs A DataFrame or data.frame of user-specified arguments for heat maps.
 #' @param redDimMax Integer scalar specifying the maximum number of reduced dimension plots.
 #' @param colDataMax Integer scalar specifying the maximum number of column data plots.
@@ -116,6 +118,7 @@
 #' @param rowDataMax Integer scalar specifying the maximum number of row data plots.
 #' @param sampAssayMax Integer scalar specifying the maximum number of sample assay plots.
 #' @param customDataMax Integer scalar specifying the maximum number of custom column plots.
+#' @param customStatMax Integer scalar specifying the maximum number of custom statistics tables. 
 #' @param heatMapMax Integer scalar specifying the maximum number of heat maps.
 #'
 #' @return
@@ -151,6 +154,7 @@
         rowDataArgs,
         sampAssayArgs,
         customDataArgs,
+        customStatArgs,
         heatMapArgs,
         redDimMax,
         colDataMax,
@@ -159,6 +163,7 @@
         rowDataMax,
         sampAssayMax,
         customDataMax,
+        customStatMax,
         heatMapMax) {
     
     all_args <- list(
@@ -169,6 +174,7 @@
         rowDataPlot=rowDataArgs, 
         sampAssayPlot=sampAssayArgs,
         customDataPlot=customDataArgs,
+        customStatTable=customStatArgs,
         heatMapPlot=heatMapArgs
     )
     
@@ -180,6 +186,7 @@
         rowDataPlot=rowDataMax, 
         sampAssayPlot=sampAssayMax,
         customDataPlot=customDataMax,
+        customStatTable=customStatMax,
         heatMapPlot=heatMapMax
     )
 
@@ -228,6 +235,7 @@
             rowDataPlot=rowDataPlotDefaults,
             sampAssayPlot=sampAssayPlotDefaults,
             customDataPlot=customDataPlotDefaults,
+            customStatTable=customStatTableDefaults,
             heatMapPlot=heatMapPlotDefaults)
 
         cur_max <- all_maxes[[mode]]
@@ -401,12 +409,12 @@ height_limits <- c(400L, 1000L)
     col_selectable <-  link_sources$col
     all_active <- paste0(active_panels$Type, active_panels$ID)
 
-    # Checking for selecting/linking of column-based plots.
-    for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot", "rowDataPlot", "sampAssayPlot")) {
+    # Checking for selecting/linking of main panels.
+    for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot", "rowDataPlot", "sampAssayPlot", "rowStatTable")) {
         cur_memory <- memory[[mode]]
         self_active <- rownames(cur_memory)
 
-        if (mode %in% c("rowDataPlot", "sampAssayPlot")) { 
+        if (mode %in% c("rowDataPlot", "sampAssayPlot", "rowStatTable")) { 
             selectable <- row_selectable
         } else {
             selectable <- col_selectable
@@ -418,27 +426,31 @@ height_limits <- c(400L, 1000L)
             memory[[mode]][,.selectByPlot][bad] <- .noSelection
         }
 
-        cb <- cur_memory[,.colorByRowTable]
-        bad <- !cb %in% active_tab | !self_active %in% all_active
-        if (any(bad)) {
-            memory[[mode]][,.colorByRowTable][bad] <- .noSelection
+        if (mode!="rowStatTable") {
+            cb <- cur_memory[,.colorByRowTable]
+            bad <- !cb %in% active_tab | !self_active %in% all_active
+            if (any(bad)) {
+                memory[[mode]][,.colorByRowTable][bad] <- .noSelection
+            }
         }
     }
 
-    # Checking for selecting/linking of custom plots.
-    cur_memory <- memory[["customDataPlot"]]
-    self_active <- rownames(cur_memory)
+    # Checking for selecting/linking of custom plots and tables.
+    for (mode in c("customDataPlot", "customStatTable")) {
+        cur_memory <- memory[[mode]]
+        self_active <- rownames(cur_memory)
 
-    bb <- cur_memory[,.customDataRowSource]
-    bad <- !bb %in% row_selectable | !self_active %in% all_active
-    if (any(bad)) {
-        memory[["customDataPlot"]][,.customDataRowSource][bad] <- .noSelection
-    }
+        bb <- cur_memory[,.customRowSource]
+        bad <- !bb %in% row_selectable | !self_active %in% all_active
+        if (any(bad)) {
+            memory[[mode]][,.customRowSource][bad] <- .noSelection
+        }
 
-    bb <- cur_memory[,.customDataColSource]
-    bad <- !bb %in% col_selectable | !self_active %in% all_active
-    if (any(bad)) {
-        memory[["customDataPlot"]][,.customDataColSource][bad] <- .noSelection
+        bb <- cur_memory[,.customColSource]
+        bad <- !bb %in% col_selectable | !self_active %in% all_active
+        if (any(bad)) {
+            memory[[mode]][,.customColSource][bad] <- .noSelection
+        }
     }
 
     # Checking for linking of x/y-axes of feature assay plots.

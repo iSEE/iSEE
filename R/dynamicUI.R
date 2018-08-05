@@ -110,8 +110,11 @@
     all_assays <- .get_internal_info(se, "all_assays")
     red_dim_names <- .get_internal_info(se, "red_dim_names")
     sample_names <- .get_internal_info(se, "sample_names")
+
     custom_data_fun <- .get_internal_info(se, "custom_data_fun")
     custom_data_funnames <- c(.noSelection, names(custom_data_fun))
+    custom_stat_fun <- .get_internal_info(se, "custom_stat_fun")
+    custom_stat_funnames <- c(.noSelection, names(custom_stat_fun))
 
     # Defining all transmitting tables and plots for linking.
     link_sources <- .define_link_sources(active_panels)
@@ -123,12 +126,13 @@
     for (i in seq_len(nrow(active_panels))) {
         mode <- active_panels$Type[i]
         id <- active_panels$ID[i]
-        panel.width <- active_panels$Width[i]
+        panel_name <- paste0(mode, id)
+        panel_width <- active_panels$Width[i]
         param_choices <- memory[[mode]][id,]
-        .input_FUN <- function(field) { paste0(mode, id, "_", field) }
+        .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
         # Checking what to do with plot-specific parameters (e.g., brushing, clicking, plot height).
-        if (mode!="rowStatTable") { 
+        if (! mode %in% c("rowStatTable", "customStatTable")) { 
             brush.opts <- brushOpts(.input_FUN(.brushField), resetOnNew=FALSE, 
                                     direction = ifelse(mode=="heatMapPlot", "y", "xy"), 
                                     fill=brush_fill_color[mode], stroke=brush_stroke_color[mode], 
@@ -136,7 +140,6 @@
             dblclick <- .input_FUN(.zoomClick)
             clickopt <- .input_FUN(.lassoClick)
             panel_height <- paste0(active_panels$Height[i], "px")
-            panel_name <- paste0(mode, id)
         }
 
         # Creating the plot fields.
@@ -200,16 +203,23 @@
                                                      choices=active_tab, selected=param_choices[[.featAssayXAxisRowTable]]))
                 )
         } else if (mode=="rowStatTable") {
-            obj <- tagList(dataTableOutput(paste0(mode, id)), uiOutput(.input_FUN("annotation")))
-        } else if (mode=="customDataPlot") {
-            obj <- plotOutput(panel_name, height=panel_height)
+            obj <- tagList(dataTableOutput(panel_name), uiOutput(.input_FUN("annotation")))
+        } else if (mode=="customStatTable" || mode=="customDataPlot") {
+            if (mode=="customDataPlot") { 
+                obj <- plotOutput(panel_name, height=panel_height)
+                fun_choices <- custom_data_funnames
+            } else {
+                obj <- dataTableOutput(panel_name)
+                fun_choices <- custom_stat_funnames
+            }
+
             plot.param <- list(
-                selectInput(.input_FUN(.customDataFun),
+                selectInput(.input_FUN(.customFun),
                     label="Custom function:",
-                    choices=custom_data_funnames, selected=param_choices[[.customDataFun]]),
-                textAreaInput(.input_FUN(.customDataArgs),
+                    choices=fun_choices, selected=param_choices[[.customFun]]),
+                textAreaInput(.input_FUN(.customArgs),
                     label="Custom arguments:", rows=5,
-                    value=param_choices[[.customDataArgs]])
+                    value=param_choices[[.customArgs]])
                 )
         } else if (mode=="rowDataPlot") {
             obj <- plotOutput(panel_name, brush = brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
@@ -301,15 +311,11 @@
 
         # Adding graphical parameters if we're plotting.
         if (mode=="rowStatTable") {
-            param <- list(hr(), tags$div(class = "panel-group", role = "tablist",
-                collapseBox(.input_FUN(.selectParamBoxOpen),
-                            title = "Selection parameters",
-                            open = param_choices[[.selectParamBoxOpen]],
-                            selectInput(.input_FUN(.selectByPlot),
-                                        label = "Receive selection from:", 
-                                        choices=row_selectable,
-                                        selected=.choose_link(param_choices[[.selectByPlot]], row_selectable))
-                            )
+            param <- list(hr(), 
+                tags$div(class = "panel-group", role = "tablist",
+                    .create_selection_param_box_define_box(mode, id, param_choices, 
+                        .create_selection_param_box_define_choices(mode, id, param_choices, .selectByPlot, row_selectable)
+                    )
                 )
             )
         } else if (mode=="heatMapPlot") {
@@ -319,57 +325,41 @@
                     )
                 )  
             )
-        } else if (mode=="customDataPlot") {
-            param <- list(
-                tags$div(class = "panel-group", role = "tablist",
-                    do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
-                                title="Data parameters",
-                                open=param_choices[[.dataParamBoxOpen]]),
-                            plot.param)),
-                    collapseBox(.input_FUN(.selectParamBoxOpen),
-                        title = "Selection parameters",
-                        open = param_choices[[.selectParamBoxOpen]],
-                        selectInput(paste0(mode, id, "_", .customDataRowSource),
-                            label = "Receive row selection from:", 
-                            choices=row_selectable,
-                            selected=.choose_link(param_choices[[.customDataRowSource]], row_selectable)),
-                        selectInput(paste0(mode, id, "_", .customDataColSource),
-                            label = "Receive column selection from:", 
-                            choices=col_selectable,
-                            selected=.choose_link(param_choices[[.customDataColSource]], col_selectable))
+        } else {
+            # Options for fundamental plot parameters.
+            data_box <- do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
+                title="Data parameters", open=param_choices[[.dataParamBoxOpen]]), plot.param))            
+            
+            if (mode=="customDataPlot" || mode=="customStatTable") {
+                param <- list(
+                    tags$div(class = "panel-group", role = "tablist",
+                        data_box,
+                        .create_selection_param_box_define_box(mode, id, param_choices, 
+                            .create_selection_param_box_define_choices(mode, id, param_choices, .customRowSource, row_selectable),
+                            .create_selection_param_box_define_choices(mode, id, param_choices, .customColSource, col_selectable)
+                        )
                     )
                 )
-            )
-        } else if (mode %in% c("rowDataPlot", "sampAssayPlot")) {
-            # Slightly different handling of the row data.
-            param <- list(tags$div(class = "panel-group", role = "tablist",
-                do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
-                                            title="Data parameters",
-                                            open=param_choices[[.dataParamBoxOpen]]),
-                                       plot.param)),
-                .create_visual_box_for_row_plots(mode, id, param_choices, active_tab, se),
-                .create_selection_param_box(mode, id, param_choices, row_selectable)
+            } else if (mode %in% c("rowDataPlot", "sampAssayPlot")) {
+                # Slightly different handling of the row data.
+                param <- list(tags$div(class = "panel-group", role = "tablist",
+                    data_box,
+                    .create_visual_box_for_row_plots(mode, id, param_choices, active_tab, se),
+                    .create_selection_param_box(mode, id, param_choices, row_selectable)
+                    )
                 )
-            )
-        } else {
-            param <- list(tags$div(class = "panel-group", role = "tablist",
-                # Options for fundamental plot parameters.
-                do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
-                                            title="Data parameters",
-                                            open=param_choices[[.dataParamBoxOpen]]),
-                                       plot.param)),
-
-                # Options for visual parameters.
-                .create_visual_box_for_column_plots(mode, id, param_choices, active_tab, se),
-
-                # Options for point selection parameters.
-                .create_selection_param_box(mode, id, param_choices, col_selectable)
+            } else {
+                param <- list(tags$div(class = "panel-group", role = "tablist",
+                    data_box,
+                    .create_visual_box_for_column_plots(mode, id, param_choices, active_tab, se), # Options for visual parameters.
+                    .create_selection_param_box(mode, id, param_choices, col_selectable) # Options for point selection parameters.
+                    )
                 )
-            )
+            }
         }
 
         # Deciding whether to continue on the current row, or start a new row.
-        extra <- cumulative.width + panel.width
+        extra <- cumulative.width + panel_width
         if (extra > 12L) {
             collected[[counter]] <- do.call(fluidRow, cur.row)
             counter <- counter + 1L
@@ -385,10 +375,9 @@
             list(uiOutput(.input_FUN(.panelGeneralInfo)), uiOutput(.input_FUN(.panelLinkInfo))),
             list(title=.decode_panel_name(mode, id), solidHeader=TRUE, width=NULL, status = "danger")))
         cur_box <- .coerce_box_status(cur_box, mode)
-        cur.row[[row.counter]] <- column(width=panel.width, cur_box, style='padding:3px;') 
+        cur.row[[row.counter]] <- column(width=panel_width, cur_box, style='padding:3px;') 
         row.counter <- row.counter + 1L
-        cumulative.width <- cumulative.width + panel.width
-
+        cumulative.width <- cumulative.width + panel_width
     }
 
     # Cleaning up the leftovers.
@@ -890,15 +879,23 @@
 #' @param id Integer scalar specifying the index of a panel of the specified type, for the current plot.
 #' @param param_choices A DataFrame with one row, containing the parameter choices for the current plot.
 #' @param selectable A character vector of decoded names for available transmitting panels.
+#' @param ... Further arguments to pass to \code{\link{collapseBox}}.
+#' @param field String containing the name of the parameter with the choice of transmitting panel.
 #'
 #' @return
-#' A HTML tag object containing a \code{\link{collapseBox}} with UI elements for changing point selection parameters.
+#' For \code{.create_selection_param_box} and \code{.create_selection_param_box_define_box}, 
+#' a HTML tag object containing a \code{\link{collapseBox}} with UI elements for changing point selection parameters.
+#' 
+#' For \code{.create_selection_param_box_define_choices}, a HTML tag object containing a \code{selectInput} for choosing the transmitting panels.
 #'
 #' @details
-#' This function creates a collapsible box that contains point selection options, initialized with the choices in \code{memory}.
+#' The \code{.create_selection_param_box} function creates a collapsible box that contains point selection options, initialized with the choices in \code{memory}.
 #' Options include the choice of transmitting plot and the type of selection effect.
 #' Each effect option, once selected, may yield a further subset of nested options.
 #' For example, choosing to colour on the selected points will open up a choice of colour to use.
+#'
+#' The other two functions are helper functions that avoid re-writing related code in the \code{\link{.panel_generation}} function.
+#' This is mostly for other panel types that take selections but do not follow the exact structure produced by \code{.create_selection_param_box}.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_create_selection_param_box
@@ -910,14 +907,8 @@
 .create_selection_param_box <- function(mode, id, param_choices, selectable) {
     select_effect <- paste0(mode, id, "_", .selectEffect)
 
-    collapseBox(
-        id=paste0(mode, id, "_", .selectParamBoxOpen),
-        title = "Selection parameters",
-        open = param_choices[[.selectParamBoxOpen]],
-        selectInput(paste0(mode, id, "_", .selectByPlot),
-                    label = "Receive selection from:", 
-                    choices=selectable,
-                    selected=.choose_link(param_choices[[.selectByPlot]], selectable)),
+    .create_selection_param_box_define_box(mode, id, param_choices,
+        .create_selection_param_box_define_choices(mode, id, param_choices, field=.selectByPlot, selectable=selectable),
 
         radioButtons(select_effect, label="Selection effect:", inline=TRUE,
                      choices=c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle),
@@ -932,6 +923,23 @@
                         min=0, max=1, value=param_choices[[.selectTransAlpha]])
             )
         )
+}
+
+#' @rdname INTERNAL_create_selection_param_box
+.create_selection_param_box_define_box <- function(mode, id, param_choices, ...) {
+    collapseBox(
+        id=paste0(mode, id, "_", .selectParamBoxOpen),
+        title = "Selection parameters",
+        open = param_choices[[.selectParamBoxOpen]],
+        ...)
+}
+
+#' @rdname INTERNAL_create_selection_param_box
+.create_selection_param_box_define_choices <- function(mode, id, param_choices, field, selectable) {
+    selectInput(paste0(mode, id, "_", field),
+            label = "Receive selection from:", 
+            choices=selectable,
+            selected=.choose_link(param_choices[[field]], selectable))
 }
 
 #' Conditional elements on radio or checkbox selection 
@@ -1014,14 +1022,16 @@
 #' Precompute information to be shown in the UI and store it in the internal metadata of a SingleCellExperiment object.
 #'
 #' @param se A SingleCellExperiment object.
-#' @param fun_list A named list of custom column functions.
+#' @param data_fun_list A named list of custom plotting functions.
+#' @param stat_fun_list A named list of custom statistics functions.
 #'
 #' @details
 #' Precomputed information includes:
 #' \itemize{
-#' \item unique-ified selectize choices, to avoid problems with selecting between different unnamed assays, samples or reduced dimension results.
-#' \item the names of discrete metadata fields, for use in restricting choices for faceting.
-#' \item a list of the custom column functions supplied in the \code{\link{iSEE}} function. 
+#' \item Unique-ified selectize choices, to avoid problems with selecting between different unnamed assays, samples or reduced dimension results.
+#' \item The names of discrete metadata fields, for use in restricting choices for faceting.
+#' \item A list of the custom data plot functions supplied to the \code{\link{iSEE}} function. 
+#' \item A list of the custom statistics table functions supplied to the \code{\link{iSEE}} function. 
 #' }
 #'
 #' Storage in the internal metadata allows us to pass a single argument to various UI functions and for them to extract out the relevant fields.
@@ -1036,14 +1046,15 @@
 #' \code{\link{.sanitize_names}},
 #' \code{\link{.get_internal_info}}
 #' @rdname INTERNAL_precompute_UI_info 
-.precompute_UI_info <- function(se, fun_list) {
+.precompute_UI_info <- function(se, data_fun_list, stat_fun_list) {
     out <- list(
         column_groupable=colnames(colData(se))[.which_groupable(colData(se))],
         row_groupable=colnames(rowData(se))[.which_groupable(rowData(se))],
         all_assays=.sanitize_names(assayNames(se)),
         red_dim_names=.sanitize_names(reducedDimNames(se)),
         sample_names=.sanitize_names(colnames(se)),
-        custom_data_fun=fun_list
+        custom_data_fun=data_fun_list,
+        custom_stat_fun=stat_fun_list
     )
 
     if (is.null(colnames(se))) {

@@ -26,7 +26,8 @@
 #' @author Aaron Lun
 #' @rdname INTERNAL_make_customDataPlot
 #' @seealso
-#' \code{\link{.downsample_points}}
+#' \code{\link{.process_custom_selection}},
+#' \code{\link{.text2args}}
 #' 
 .make_customDataPlot <- function(id, all_memory, all_coordinates, se) {
     param_choices <- all_memory$customDataPlot[id,]
@@ -44,23 +45,21 @@
     .text_eval(select_out$cmds, eval_env)
  
     # Constructing the evaluation command to get the plot. 
-    fun_args <- param_choices[[.customDataArgs]]
-    fun_args <- strsplit(fun_args, "\n")[[1]]
-    arg_names <- sub(" .*", "", fun_args)
-    arg_values <- sub("[^ ]+ +", "", fun_args)
-
-    keep <- arg_names!=""
-    if (any(keep)) {
-        arg_names <- arg_names[keep]
-        arg_values <- arg_values[keep]
-        as_cmd_args <- paste(sprintf("%s=%s", arg_names, vapply(arg_values, deparse, FUN.VALUE=character(1))), collapse=", ")
+    fun_args <- .text2args(param_choices[[.customArgs]])
+    if (length(fun_args)) {
+        as_cmd_args <- paste(sprintf("%s=%s", names(fun_args), vapply(fun_args, deparse, FUN.VALUE=character(1))), collapse=", ")
         as_cmd_args <- paste0(", ", as_cmd_args)
     } else {
         as_cmd_args <- ""
     }
 
-    fun_name <- param_choices[[.customDataFun]]
-    custom_cmd <- sprintf("custom_data_fun[[%s]](se, row.names, col.names%s);", deparse(fun_name), as_cmd_args)
+    fun_name <- param_choices[[.customFun]]
+    if (fun_name!=.noSelection) {
+        custom_cmd <- sprintf("custom_data_fun[[%s]](se, row.names, col.names%s);", deparse(fun_name), as_cmd_args)
+        print(custom_cmd)
+    } else {
+        custom_cmd <- "ggplot()"
+    }
     plot_out <- .text_eval(custom_cmd, eval_env)
     return(list(cmd_list = list(select=select_out$cmds, plot=custom_cmd), plot=plot_out))
 }
@@ -99,9 +98,9 @@
 
 	for (dim in c("row", "column")){ 
         if (dim=="column") {
-            select_in <- param_choices[[.customDataColSource]]
+            select_in <- param_choices[[.customColSource]]
         } else {
-            select_in <- param_choices[[.customDataRowSource]]
+            select_in <- param_choices[[.customRowSource]]
         }
         if (identical(select_in, .noSelection)) {
             next
@@ -121,7 +120,7 @@
             lasso_val <- all_memory[[select_by$Type]][,.lassoData][[select_by$ID]]
             if (!is.null(lasso_val) && lasso_val$closed) { 
                 select_obj[[transmitter]] <- lasso_val
-                cmds <- sprintf("lassoPoints(%s, all_lassos[['%s']]);", source_data, transmitter)
+                cmds <- sprintf("lassoPoints(%s, all_lassos[['%s']])", source_data, transmitter)
             }
         }
 
@@ -136,6 +135,36 @@
     }
 
     return(list(cmds=c(paste0(c("row", "col"), ".names <- ", c(row_cmds, col_cmds), ";")), data=select_obj))
+}
+
+#' Convert multi-line text to arguments
+#'
+#' Convert multi-line text input from the app into a series of named arguments for a custom function.
+#'
+#' @param fun_args A multi-line string containing multiple named arguments and their values.
+#'
+#' @details
+#' Each line corresponds to one argument:value pair.
+#' The word before the first space defines the argument name, while all characters after the first space define the value.
+#' Note that all values are strings for purposes of safety, so any type coercion is the responsibility of the function.
+#'
+#' @return
+#' A named character vector of values, where the names are the arguments.
+#' 
+#' @rdname INTERNAL_text2args
+#' @author Aaron Lun
+#' @seealso
+#' \code{\link{.make_customDataPlot}}
+.text2args <- function(fun_args) {
+    fun_args <- strsplit(fun_args, "\n")[[1]]
+    arg_names <- sub(" .*", "", fun_args)
+    arg_values <- sub("[^ ]+ +", "", fun_args)
+
+    keep <- arg_names!=""
+    arg_names <- arg_names[keep]
+    arg_values <- arg_values[keep]
+    names(arg_values) <- arg_names
+    return(arg_values)
 }
 
 #' @name Custom iSEE plots

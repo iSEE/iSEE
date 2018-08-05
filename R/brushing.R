@@ -48,24 +48,25 @@
         edges[[mode]] <- cur_edges
     }
 
-    # Custom plots take two forms of input.
-    mode <- "customDataPlot"
-    N <- nrow(memory[[mode]])
-    cur_panels <- sprintf("%s%i", mode, seq_len(N))
-    node_names[[mode]] <- cur_panels
+    # Custom plots and tables take two forms of input.
+    for (mode in c("customDataPlot", "customStatTable")) {
+        N <- nrow(memory[[mode]])
+        cur_panels <- sprintf("%s%i", mode, seq_len(N))
+        node_names[[mode]] <- cur_panels
    
-    collected_edges <- list()
-    for (src in c(.customDataColSource, .customDataRowSource)) { 
-        cur_edges <- vector("list", N)
-        for (id in seq_len(N)) {
-            cur_parent <- memory[[mode]][id, src]
-            if (cur_parent!=.noSelection) {
-                cur_edges[[id]] <- c(.decoded2encoded(cur_parent), cur_panels[id])
+        collected_edges <- list()
+        for (src in c(.customColSource, .customRowSource)) { 
+            cur_edges <- vector("list", N)
+            for (id in seq_len(N)) {
+                cur_parent <- memory[[mode]][id, src]
+                if (cur_parent!=.noSelection) {
+                    cur_edges[[id]] <- c(.decoded2encoded(cur_parent), cur_panels[id])
+                }
             }
+            collected_edges <- c(collected_edges, cur_edges)
         }
-        collected_edges <- c(collected_edges, cur_edges)
+        edges[[mode]] <- collected_edges
     }
-    edges[[mode]] <- collected_edges
 
     # Creating a graph.
     all_edges <- unlist(edges)
@@ -200,8 +201,10 @@
         types <- enc$Type
         ids <- enc$ID
 
+        # Avoiding panels that don't have a selection effect or don't transmit.
+        endpoints <- types %in% c("rowStatTable", "customDataPlot", "customStatTable", "heatMapPlot") 
         new_children <- character(0)
-        for (i in which(! types %in% c("rowStatTable", "customDataPlot", "heatMapPlot"))) { # avoiding panels that don't have a selection effect or don't transmit.
+        for (i in which(!endpoints)) { 
             if (memory[[types[i]]][ids[i],.selectEffect]==.selectRestrictTitle) {
                 new_children <- c(new_children, names(adjacent_vertices(graph, children[i], mode="out")[[1]]))
             }

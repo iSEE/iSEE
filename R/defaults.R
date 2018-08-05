@@ -392,10 +392,10 @@ customDataPlotDefaults <- function(se, number) {
     if (waszero) number <- 1
 
     out <- new("DataFrame", nrows=as.integer(number))
-    out[[.customDataFun]] <- .noSelection
-    out[[.customDataArgs]] <- ""
-    out[[.customDataColSource]] <- .noSelection
-    out[[.customDataRowSource]] <- .noSelection
+    out[[.customFun]] <- .noSelection
+    out[[.customArgs]] <- ""
+    out[[.customColSource]] <- .noSelection
+    out[[.customRowSource]] <- .noSelection
     out[[.dataParamBoxOpen]] <- FALSE
     out[[.selectParamBoxOpen]] <- FALSE
 
@@ -423,6 +423,28 @@ rowStatTableDefaults <- function(se, number) {
     # Defining the rowDataPlot from which point selections are received.
     out[[.selectParamBoxOpen]] <- FALSE
     out[[.selectByPlot]] <- .noSelection
+
+    if (waszero) out <- out[0,,drop=FALSE]
+    return(out)
+}
+
+#' @rdname defaults 
+#' @export
+#' @importFrom methods new
+#' @importClassesFrom S4Vectors DataFrame
+customStatTableDefaults <- function(se, number) {
+    waszero <- number==0 
+    if (waszero) number <- 1
+
+    out <- new("DataFrame", nrows=as.integer(number))
+    out[[.customFun]] <- .noSelection
+    out[[.customArgs]] <- ""
+    out[[.customColSource]] <- .noSelection
+    out[[.customRowSource]] <- .noSelection
+    out[[.customStatSearch]] <- ""
+
+    out[[.dataParamBoxOpen]] <- FALSE
+    out[[.selectParamBoxOpen]] <- FALSE
 
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)

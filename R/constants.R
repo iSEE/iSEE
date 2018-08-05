@@ -43,11 +43,11 @@
 .sampAssayXAxisRowData <- "XAxisRowData"
 .sampAssayXAxisSample <- "XAxisSample"
 
-# Custom column plotting parameters. ----
-.customDataFun <- "Function"
-.customDataArgs <- "Arguments"
-.customDataColSource <- "ColumnSource"
-.customDataRowSource <- "RowSource"
+# Custom plotting parameters. ----
+.customFun <- "Function"
+.customArgs <- "Arguments"
+.customColSource <- "ColumnSource"
+.customRowSource <- "RowSource"
 
 # Heatmap plotting parameters. ----
 .heatMapAssay <- "Assay"
@@ -183,6 +183,10 @@
 .int_rowStatSearch <- "_search"
 .int_rowStatColSearch <- "_search_columns"
 
+# Custom statistics table parameters. ----
+.customStatSearch <- .rowStatSearch
+.int_customStatSearch <- .int_rowStatSearch
+
 # Panel organization parameters. ----
 .organizationNew <- "MakeNew"
 .organizationUp <- "ShiftUp"
@@ -203,6 +207,7 @@ translation <- c(redDimPlot="Reduced dimension plot",
                  rowDataPlot="Row data plot",
                  sampAssayPlot="Sample assay plot",
                  customDataPlot="Custom data plot",
+                 customStatTable="Custom statistics table",
                  heatMapPlot="Heat map")
 rev.translation <- names(translation)
 names(rev.translation) <- translation

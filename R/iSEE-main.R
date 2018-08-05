@@ -11,6 +11,7 @@
 #' @param rowDataArgs A DataFrame similar to that produced by \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the row data plots.
 #' @param sampAssayArgs A DataFrame similar to that produced by \code{\link{sampAssayPlotDefaults}}, specifying initial parameters for the sample assay plots.
 #' @param customDataArgs A DataFrame similar to that produced by \code{\link{customDataPlotDefaults}}, specifying initial parameters for the custom data plots.
+#' @param customStatArgs A DataFrame similar to that produced by \code{\link{customStatTableDefaults}}, specifying initial parameters for the custom statistics tables. 
 #' @param heatMapArgs A DataFrame similar to that produced by \code{\link{heatMapPlotDefaults}}, specifying initial parameters for the heatmaps.
 #' @param redDimMax An integer scalar specifying the maximum number of reduced dimension plots in the interface.
 #' @param colDataMax An integer scalar specifying the maximum number of column data plots in the interface.
@@ -19,12 +20,14 @@
 #' @param rowDataMax An integer scalar specifying the maximum number of row data plots in the interface.
 #' @param sampAssayMax An integer scalar specifying the maximum number of sample assay plots in the interface.
 #' @param customDataMax An integer scalar specifying the maximum number of custom data plots in the interface.
+#' @param customStatMax An integer scalar specifying the maximum number of custom statistics tables in the interface.
 #' @param heatMapMax An integer scalar specifying the maximum number of heatmaps in the interface.
 #' @param initialPanels A DataFrame specifying which panels should be created at initialization.
 #' This should contain a \code{Name} character field and may have optional \code{Width} and \code{Height} integer fields, see Details.
 #' @param annotFun A function, similar to those returned by \code{\link{annotateEntrez}} or \code{\link{annotateEnsembl}}.
 #' The function should accept two parameters, \code{se} and \code{row_index}, and return a HTML element with annotation for the selected row.
-#' @param customDataFun A named list of functions for reporting coordinates to use in a custom data plot, see \code{?"\link{Custom iSEE plots}"}.
+#' @param customDataFun A named list of functions for reporting coordinates to use in a custom data plot.
+#' @param customStatFun A named list of functions for reporting coordinates to use in a custom statistics table.
 #' @param colormap An \linkS4class{ExperimentColorMap} object that defines custom colormaps to apply to individual \code{assays}, \code{colData} and \code{rowData} covariates.
 #' @param tour A data.frame with the content of the interactive tour to be displayed after starting up the app.
 #' @param appTitle A string indicating the title to be displayed in the app.
@@ -108,6 +111,7 @@ iSEE <- function(se,
         rowDataArgs=NULL,
         sampAssayArgs=NULL,
         customDataArgs=NULL,
+        customStatArgs=NULL,
         heatMapArgs=NULL,
         redDimMax=5,
         colDataMax=5,
@@ -116,10 +120,12 @@ iSEE <- function(se,
         rowDataMax=5,
         sampAssayMax=5,
         customDataMax=5,
+        customStatMax=5,
         heatMapMax=5,
         initialPanels=NULL,
         annotFun = NULL,
         customDataFun = NULL,
+        customStatFun = NULL,
         colormap=ExperimentColorMap(),
         tour = NULL,
         appTitle = NULL,
@@ -135,7 +141,7 @@ iSEE <- function(se,
     se_cmds <- se_out$cmds
 
     # Precomputing UI information - must be before .setup_memory()
-    se <- .precompute_UI_info(se, customDataFun)
+    se <- .precompute_UI_info(se, customDataFun, customStatFun)
 
     # Throw an error if the colormap supplied is not compatible with the object
     isColorMapCompatible(colormap, se, error = TRUE)
@@ -150,8 +156,8 @@ iSEE <- function(se,
 
     # Defining the maximum number of plots.
     memory <- .setup_memory(se,
-        redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs, sampAssayArgs, customDataArgs, heatMapArgs,
-        redDimMax, colDataMax, featAssayMax, rowStatMax, rowDataMax, sampAssayMax, customDataMax, heatMapMax)
+        redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs, sampAssayArgs, customDataArgs, customStatArgs, heatMapArgs,
+        redDimMax, colDataMax, featAssayMax, rowStatMax, rowDataMax, sampAssayMax, customDataMax, customStatMax, heatMapMax)
 
     # Defining the initial elements to be plotted.
     active_panels <- .setup_initial(initialPanels, memory)
@@ -283,7 +289,7 @@ iSEE <- function(se,
     #######################################################################
 
     point_plot_types <- c("redDimPlot", "colDataPlot", "featAssayPlot", "rowDataPlot", "sampAssayPlot")
-    all_panel_types <- c(point_plot_types, "rowStatTable", "customDataPlot", "heatMapPlot")
+    all_panel_types <- c(point_plot_types, "rowStatTable", "customDataPlot", "customStatTable", "heatMapPlot")
 
     #nocov start
     iSEE_server <- function(input, output, session) {
@@ -1291,76 +1297,158 @@ iSEE <- function(se,
         }
 
         #######################################################################
-        # Custom plot section. ----
+        # Custom panel section. ----
         #######################################################################
 
-        for (id in seq_len(nrow(memory$customDataPlot))) {
+        for (mode in c("customDataPlot", "customStatTable")) { 
+            max_plots <- nrow(pObjects$memory[[mode]])
+
+            for (id in seq_len(max_plots)) {
+                # UI containing transmission information.
+                local({
+                    id0 <- id
+                    mode0 <- mode
+                    panel_name <- paste0(mode0, id0)
+
+                    link_field <- paste0(panel_name, "_", .panelLinkInfo)
+                    output[[link_field]] <- renderUI({
+                        force(rObjects[[link_field]])
+                        output <- list()
+                        for (src in c(.customRowSource, .customColSource)) { 
+                            select_in <- pObjects$memory[[mode0]][id0,src]
+                            if (select_in!=.noSelection) {
+                                output <- c(output, list("Receiving selection from", em(strong(select_in)), br()))
+                            }
+                        }
+                        do.call(tagList, output)
+                    })
+                })
+
+                # Fields defining which function and arguments to use. 
+                for (field in c(.customFun, .customArgs)) {
+                    local({
+                        id0 <- id
+                        mode0 <- mode
+                        field0 <- field
+                        panel_name <- paste0(mode0, id0)
+                        cur_field <- paste0(panel_name, "_", field0)
+
+                        observeEvent(input[[cur_field]], {
+                            matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
+                            if (identical(matched_input, pObjects$memory[[mode0]][[field0]][id0])) {
+                                return(NULL)
+                            }
+                            pObjects$memory[[mode0]][[field0]][id0] <- matched_input
+                            rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
+                        }, ignoreInit=TRUE)
+                    })
+                }
+
+                # Specifying the row/column selection.
+                for (src in c(.customRowSource, .customColSource)) { 
+                    local({
+                        id0 <- id
+                        src0 <- src
+                        mode0 <- mode
+                        panel_name <- paste0(mode0, id0)
+                        select_panel_field <- paste0(panel_name, "_", src0)
+
+                        observeEvent(input[[select_panel_field]], {
+                            old_transmitter <- pObjects$memory[[mode0]][id0, src0]
+                            new_transmitter <- input[[select_panel_field]]
+
+                            # Determining whether the new and old transmitting panel have selections.
+                            old_out <- .transmitted_selection(old_transmitter, pObjects$memory)
+                            old_select <- old_out$selected
+                            old_encoded <- old_out$encoded
+                            new_out <- .transmitted_selection(new_transmitter, pObjects$memory)
+                            new_select <- new_out$selected
+                            new_encoded <- new_out$encoded
+
+                            # Trying to update the graph. No need to worry about DAGs as custom panels cannot transmit.
+                            pObjects$selection_links <- .choose_new_selection_source(pObjects$selection_links, panel_name, new_encoded, old_encoded)
+                            pObjects$memory[[mode0]][id0, src0] <- new_transmitter
+
+                            # Update the elements reporting the links between panels.
+                            for (relinked in setdiff(c(old_encoded, new_encoded, panel_name), .noSelection)) {
+                                relink_field <- paste0(relinked, "_", .panelLinkInfo)
+                                rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
+                            }
+
+                            # Not recreating panels if there were no selection in either the new or old transmitters.
+                            if (!old_select && !new_select){
+                                return(NULL)
+                            }
+
+                            # Triggering self update of the panel.
+                            rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
+                        })
+                    })
+                }
+            }
+        }
+
+        # Defining the custom plots.
+        for (id in seq_len(nrow(pObjects$memory$customDataPlot))) {
             local({
                 id0 <- id
                 plot_name <- paste0("customDataPlot", id0)
 
-                # Defining the rendered plot, and saving the coordinates.
                 output[[plot_name]] <- renderPlot({
                     force(rObjects[[plot_name]])
                     p.out <- .make_customDataPlot(id0, pObjects$memory, pObjects$coordinates, se)
                     pObjects$commands[[plot_name]] <- p.out$cmd_list
                     p.out$plot
                 })
-                              
-                # Describing the links between panels.
-                link_field <- paste0(plot_name, "_", .panelLinkInfo)
-                output[[link_field]] <- renderUI({
-                    force(rObjects[[link_field]])
-                    output <- list()
-                    for (src in c(.customDataRowSource, .customDataColSource)) { 
-                        select_in <- pObjects$memory$customDataPlot[id0,src]
-                        if (select_in!=.noSelection) {
-                            output <- c(output, list("Receiving selection from", em(strong(select_in)), br()))
-                        }
+            })
+        }
+
+        # Defining the custom tables.
+        for (id in seq_len(nrow(pObjects$memory$customStatTable))) {
+            local({
+                id0 <- id
+                panel_name <- paste0("customStatTable", id0)
+
+                output[[panel_name]] <- renderDataTable({
+                    force(rObjects$active_panels) # to trigger recreation when the number of plots is changed.
+                    force(rObjects[[panel_name]])
+                    param_choices <- pObjects$memory$customStatTable[id0,]
+
+                    row_selected <- .get_selected_points(rownames(se), param_choices[[.customRowSource]],
+                            pObjects$memory, pObjects$coordinates)
+                    if (!is.null(row_selected)) {
+                        row_selected <- rownames(se)[row_selected]
                     }
-                    do.call(tagList, output)
+
+                    col_selected <- .get_selected_points(colnames(se), param_choices[[.customColSource]],
+                            pObjects$memory, pObjects$coordinates)
+                    if (!is.null(col_selected)) { 
+                        col_selected <- colnames(se)[col_selected]
+                    }
+                    
+                    chosen_fun <- param_choices[[.customFun]]
+                    if (chosen_fun==.noSelection) {
+                        return(NULL)
+                    } 
+                        
+                    chosen_args <- param_choices[[.customArgs]]
+                    FUN <- .get_internal_info(se, "custom_stat_fun")[[chosen_fun]]
+                    tmp_df <- do.call(FUN, c(list(se, row_selected, col_selected), as.list(.text2args(chosen_args))))
+
+                    search <- param_choices[[.customStatSearch]]
+                    datatable(tmp_df, filter="top", rownames=TRUE,
+                        options=list(search=list(search=search, smart=FALSE, regex=TRUE, caseInsensitive=FALSE), scrollX=TRUE))
+                })
+
+                # Updating memory for new selection parameters.
+                search_field <- paste0(panel_name, .int_customStatSearch)
+                observe({
+                    search <- input[[search_field]]
+                    if (length(search)) {
+                        pObjects$memory$customStatTable[id0, .customStatSearch] <- search
+                    }
                 })
             })
-
-            for (src in c(.customDataRowSource, .customDataColSource)) { 
-                local({
-                    id0 <- id
-                    src0 <- src
-                    plot_name <- paste0("customDataPlot", id0)
-                    select_plot_field <- paste0(plot_name, "_", src0)
-
-                    observeEvent(input[[select_plot_field]], {
-                        old_transmitter <- pObjects$memory$customDataPlot[id0, src0]
-                        new_transmitter <- input[[select_plot_field]]
-
-                        # Determining whether the new and old transmitting plot have selections.
-                        old_out <- .transmitted_selection(old_transmitter, pObjects$memory)
-                        old_select <- old_out$selected
-                        old_encoded <- old_out$encoded
-                        new_out <- .transmitted_selection(new_transmitter, pObjects$memory)
-                        new_select <- new_out$selected
-                        new_encoded <- new_out$encoded
-
-                        # Trying to update the graph. No need to worry about DAGs as custom plots cannot transmit.
-                        pObjects$selection_links <- .choose_new_selection_source(pObjects$selection_links, plot_name, new_encoded, old_encoded)
-                        pObjects$memory$customDataPlot[id0, src0] <- new_transmitter
-
-                        # Update the elements reporting the links between plots.
-                        for (relinked in setdiff(c(old_encoded, new_encoded, plot_name), .noSelection)) {
-                            relink_field <- paste0(relinked, "_", .panelLinkInfo)
-                            rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
-                        }
-
-                        # Not replotting if there were no selection in either the new or old transmitters.
-                        if (!old_select && !new_select){
-                            return(NULL)
-                        }
-
-                        # Triggering self update of the plot.
-                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                    })
-                })
-            }
         }
 
         #######################################################################
@@ -1368,7 +1456,7 @@ iSEE <- function(se,
         #######################################################################
 
         # Load the gene level data
-        for (id in seq_len(nrow(memory$rowStatTable))) {
+        for (id in seq_len(nrow(pObjects$memory$rowStatTable))) {
           local({
             id0 <- id
             panel_name <- paste0("rowStatTable", id0)

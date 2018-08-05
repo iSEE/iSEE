@@ -3,7 +3,7 @@ redDimArgs <- redDimPlotDefaults(sce, 1)
 customColArgs <- customDataPlotDefaults(sce, 1)
 
 # Set up alternative object.
-CUSTOM_PCA <- function(se, rows, columns, colour_by=NULL, scale_columns=TRUE) {
+CUSTOM <- function(se, rows, columns, colour_by=NULL, scale_columns=TRUE) {
     if (!is.null(columns)) {
         kept <- se[,columns]
     } else {
@@ -15,7 +15,7 @@ CUSTOM_PCA <- function(se, rows, columns, colour_by=NULL, scale_columns=TRUE) {
 	plotPCA(kept, colour_by=colour_by)
 }
 
-sceX <- iSEE:::.precompute_UI_info(sce, list(PCA2=CUSTOM_PCA), list())
+sceX <- iSEE:::.precompute_UI_info(sce, list(PCA2=CUSTOM), list())
 customColArgs$Function <- "PCA2"
 
 # Set up memory
@@ -42,10 +42,10 @@ p.out <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
 ####################
 
 test_that("getting and setting of custom column functions", {
-     expect_error(iSEE:::.get_internal_info(sce, "custom_data_fun"), "no internal")
-     expect_identical(iSEE:::.get_internal_info(sceX, "custom_data_fun"), list(PCA2=CUSTOM))
+    expect_error(iSEE:::.get_internal_info(sce, "custom_data_fun"), "no internal")
+    expect_identical(iSEE:::.get_internal_info(sceX, "custom_data_fun"), list(PCA2=CUSTOM))
      
-    sceX2 <- iSEE:::.precompute_UI_info(sce, NULL)
+    sceX2 <- iSEE:::.precompute_UI_info(sce, NULL, NULL)
     expect_identical(iSEE:::.get_internal_info(sceX2, "custom_data_fun"), NULL)
 })
 

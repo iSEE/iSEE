@@ -42,11 +42,11 @@ p.out <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
 ####################
 
 test_that("getting and setting of custom column functions", {
-     expect_error(iSEE:::.get_internal_info(sce, "custom_col_fun"), "no internal")
-     expect_identical(iSEE:::.get_internal_info(sceX, "custom_col_fun"), list(PCA2=CUSTOM))
+     expect_error(iSEE:::.get_internal_info(sce, "custom_data_fun"), "no internal")
+     expect_identical(iSEE:::.get_internal_info(sceX, "custom_data_fun"), list(PCA2=CUSTOM))
      
     sceX2 <- iSEE:::.precompute_UI_info(sce, NULL)
-    expect_identical(iSEE:::.get_internal_info(sceX2, "custom_col_fun"), NULL)
+    expect_identical(iSEE:::.get_internal_info(sceX2, "custom_data_fun"), NULL)
 })
 
 test_that(".make_customColPlot produces a valid list", {

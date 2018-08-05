@@ -6,7 +6,7 @@ featAssayArgs <- featAssayPlotDefaults(sce, 3)
 sampAssayArgs <- sampAssayPlotDefaults(sce, 3)
 rowStatArgs <- rowStatTableDefaults(sce, 3)
 rowDataArgs <- rowDataPlotDefaults(sce, 1)
-customColArgs <- customColPlotDefaults(sce, 1)
+customColArgs <- customDataPlotDefaults(sce, 1)
 heatMapArgs <- heatMapPlotDefaults(sce, 2)
 
 # Creating a test graph:

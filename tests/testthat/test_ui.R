@@ -28,9 +28,9 @@ featAssayArgs <- featAssayPlotDefaults(sce, 1)
 sampAssayArgs <- sampAssayPlotDefaults(sce, 1)
 rowStatArgs <- rowStatTableDefaults(sce, 1)
 rowDataArgs <- rowDataPlotDefaults(sce, 1)
-customColArgs <- customColPlotDefaults(sce, 1)
+customColArgs <- customDataPlotDefaults(sce, 1)
 heatMapArgs <- heatMapPlotDefaults(sce, 1)
-customColArgs <- customColPlotDefaults(sce, 1)
+customColArgs <- customDataPlotDefaults(sce, 1)
 
 #
 customColArgs$Function <- "PCA2"

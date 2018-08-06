@@ -70,7 +70,7 @@ test_that(".make_customDataPlot produces a valid list", {
 })
 
 test_that(".make_customDataPlot works when no function is specified", {
-    all_memory$customColPlot$Function <- iSEE:::.noSelection
+    all_memory$customDataPlot$Function <- iSEE:::.noSelection
     p.out <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
 
     expect_named(p.out, c("cmd_list", "plot"))
@@ -122,8 +122,8 @@ test_that(".make_customDataPlot responds to a transmitted receiver", {
 })
 
 test_that(".make_customDataPlot responds to colour selection", {
-    all_memory$customColPlot$ColorBy <- "Column data"
-    all_memory$customColPlot$ColorByColData <- "NALIGNED"
+    all_memory$customDataPlot$ColorBy <- "Column data"
+    all_memory$customDataPlot$ColorByColData <- "NALIGNED"
     p.out2 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
 
     expect_named(p.out2, c("cmd_list", "plot"))

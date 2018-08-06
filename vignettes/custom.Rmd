@@ -84,15 +84,15 @@ and creates a plot of the first two principal components with `plotPCA` [@mccart
 
 ```{r}
 library(scater)
-CUSTOM_PCA <- function(se, rows, columns, colour_by=NULL, scale_columns=TRUE) {
+CUSTOM_PCA <- function(se, rows, columns, colour_by=NULL, scale_features=TRUE) {
     if (!is.null(columns)) {
         kept <- se[,columns]
     } else {
         return(ggplot())
     }
 
-    scale_columns <- as.logical(scale_columns)
-    kept <- runPCA(kept, feature_set=rows, scale_columns=scale_columns)
+    scale_features <- as.logical(scale_features)
+    kept <- runPCA(kept, feature_set=rows, scale_features=scale_features)
 	plotPCA(kept, colour_by=colour_by)
 }
 ```
@@ -111,10 +111,10 @@ For example, if a user were to type:
 
 ```
 colour_by Nanog
-scale_columns FALSE
+scale_features FALSE
 ```
 
-... this would pass `colour_by="Nanog"` and `scale_columns="TRUE"` to `CUSTOM_PCA`.
+... this would pass `colour_by="Nanog"` and `scale_features="TRUE"` to `CUSTOM_PCA`.
 Note that all additional arguments are passed as character strings for the sake of security.
 It is the responsibility of the custom function to perform any necessary type checks and conversions (hence the `as.logical` in `CUSTOM_PCA`).
 
@@ -141,7 +141,7 @@ rowdat$YAxis <- "var_log"
 
 cdp <- customDataPlotDefaults(sce, 1)
 cdp$Function <- "CUSTOM_PCA"
-cdp$Arguments <- "colour_by Nanog\nscale_columns FALSE"
+cdp$Arguments <- "colour_by Nanog\nscale_features FALSE"
 cdp$ColumnSource <- "Reduced dimension plot 1"
 cdp$RowSource <- "Row data plot 1"
 

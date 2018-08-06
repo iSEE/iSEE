@@ -114,13 +114,6 @@ test_that(".make_customDataPlot responds to a transmitted receiver", {
 
     expect_s3_class(p.out2$plot, "ggplot")
 
-    # Checking that the cache is ignored or used properly. there is no more cache
-    # p.out3 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
-    # expect_equal(p.out2, p.out3)
-
-    # p.out4 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
-    # expect_equal(p.out2, p.out4)
-
     # Still valid when no function is specified.
     all_memory$customDataPlot$Function <- iSEE:::.noSelection
     p.out5 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)

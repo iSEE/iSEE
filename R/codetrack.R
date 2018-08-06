@@ -1,176 +1,213 @@
 #' Track code for the plots
 #' 
-#' Fetches all the code that was used to generate the plots during the live
-#' session of \code{iSEE}
+#' Fetches all the code that was used to generate the plots during the live session of \code{iSEE}
 #' 
 #' @param active_panels A data.frame containing information about the currently active panels, of the same form as that produced by \code{\link{.setup_initial}}.
 #' @param pObjects An environment containing \code{memory}, a list of DataFrames containing parameters for each panel of each type;
 #' \code{selection_links}, a graph object containing point selection links between panels;
-#' \code{commands}, a list of commands required to generated each plot. 
+#' and \code{commands}, a list of commands required to generated each plot. 
 #' @param se_name String containing the name of the SummarizedExperiment or SingleCellExperiment object.
 #' @param ecm_name String containing the name of the ExperimentColorMap in use.
 #' @param ccf_name String containing the name of the list of custom column functions.
 #' @param sanitize_cmds Character vector containing the commands used to sanitizing the \code{se} object. 
 #' This is obtained by extracting \code{cmds} from the returned output of \code{.sanitize_SE_input}.
 #'
-#' @return A vector containing the whole code, which can be further passed to 
-#' the instance of the \code{shinyAce} editor in the modal popup of the app.
+#' @return A character vector containing all lines of code (plus comments), to use in the \code{shinyAce} editor in \code{\link{iSEE}}.
 #' 
 #' @author Federico Marini
 #' @rdname INTERNAL_track_it_all
 .track_it_all <- function(active_panels, pObjects, se_name, ecm_name, ccf_name, sanitize_cmds) {
-  # Commands only reported for plots, not for the tables
-  aobjs <- active_panels[active_panels$Type!="rowStatTable" & active_panels$Type!="heatMapPlot",]
-  aobjs <- aobjs[.get_reporting_order(aobjs, pObjects$selection_links),]
+    tracked_code <- c(
+        "## The following list of commands will generate the plots created using iSEE.",
+        "## Copy them into a script or an R session containing your SingleCellExperiment.",
+        "## All commands below refer to your SingleCellExperiment object as `se`.",
+        "",
+        sprintf("se <- %s", se_name),
+        sanitize_cmds,
+        sprintf("colormap <- %s", ecm_name),
+        sprintf("colormap <- synchronizeAssays(colormap, se)"),
+        "all_coordinates <- list()",
+        sprintf("custom_col_fun <- %s", ccf_name),
+        "",
 
-  # storing to a text character vector
-  tracked_code <- c(
-    "## The following list of commands will generate the plots created using iSEE.",
-    "## Copy them into a script or an R session containing your SingleCellExperiment.",
-    "## All commands below refer to your SingleCellExperiment object as `se`.",
-    "",
-    sprintf("se <- %s", se_name),
-    sanitize_cmds,
-    sprintf("colormap <- %s", ecm_name),
-    sprintf("colormap <- synchronizeAssays(colormap, se)"),
-    "all_coordinates <- list()",
-    sprintf("custom_col_fun <- %s", ccf_name),
-    "")
+        .track_selection_code(active_panels, pObjects),
+
+        .track_plotting_code(active_panels, pObjects),
+        
+        .track_custom_code(active_panels, pObjects),
+
+        .track_heatmap_code(active_panels, pObjects),
   
-  #####
-  # Deparsing the brushes and lasso waypoints.
-  brush_code <- lasso_code <- character(0)
+        strrep("#", 80),
+        "## To guarantee the reproducibility of your code, you should also",
+        "## record the output of sessionInfo()",
+        "sessionInfo()")
 
-  for (i in seq_len(nrow(aobjs))) { 
-    panel_type <- aobjs$Type[i]
-    panel_id <- aobjs$ID[i]
-    panel_name <- paste0(panel_type, panel_id)
-
-    brush_struct <- pObjects$memory[[panel_type]][,.brushData][[panel_id]]
-    if (!is.null(brush_struct)) { 
-        brush_struct <- .deparse_for_viewing(brush_struct, indent=0) # deparsed list() auto-indents.
-        brush_code <- c(brush_code, sprintf("all_brushes[['%s']] <- %s", panel_name, brush_struct))
-    }
-
-    lasso_struct <- pObjects$memory[[panel_type]][,.lassoData][[panel_id]]
-    if (!is.null(lasso_struct)) {
-        lasso_struct <- .deparse_for_viewing(lasso_struct)
-        lasso_code <- c(lasso_code, sprintf("all_lassos[['%s']] <- %s", panel_name, lasso_struct))
-    }
-  }
-
-  if (length(brush_code)) { 
-      tracked_code <- c(tracked_code, 
-                        strrep("#", 80),
-                        "# Defining brushes",
-                        strrep("#", 80), "",
-                        "all_brushes <- list()", 
-                        brush_code, "")
-  }
-  if (length(lasso_code)) {
-      tracked_code <- c(tracked_code,
-                        strrep("#", 80),
-                        "# Defining lassos",
-                        strrep("#", 80), "",
-                        "all_lassos <- list()",
-                        lasso_code, "")
-  }
-
-  #####
-  # Defining the code to create each plot.
-  for (i in seq_len(nrow(aobjs))) {
-    panel_type <- aobjs$Type[i]
-    panel_id <- aobjs$ID[i]
-    panel_name <- paste0(panel_type, panel_id)
+    # Restoring indenting for multi-line ggplot code.
+    tracked_code <- unlist(tracked_code)
+    ggplot_ix <- grep("\\+$", tracked_code) + 1L
+    to_mod <- tracked_code[ggplot_ix]
+    to_mod <- paste0("    ", to_mod)
+    to_mod <- gsub("\n", "\n    ", to_mod)
+    tracked_code[ggplot_ix] <- to_mod
     
-    tracked_code <- c(tracked_code,
-                      strrep("#", 80),
-                      paste0("## ", .decode_panel_name(panel_type, panel_id)),
-                      strrep("#", 80),
-                      "")
-
-    # Adding the plotting commands.
-    cur_cmds <- pObjects$commands[[panel_name]]
-    collated <- c(cur_cmds$data, "")
-    if (length(cur_cmds$select)) {
-        collated <- c(collated, "# Receiving point selection", cur_cmds$select, "")
-    }
-
-    # Saving data for transmission after selections have been processed;
-    # this is the equivalent point in .create_plots() where coordinates are saved.
-    collated <- c(collated, "# Saving data for transmission", 
-                  sprintf("all_coordinates[['%s']] <- plot.data", panel_name),
-                  "")
-
-    # Finishing off the rest of the commands.
-    if (length(cur_cmds$setup)) {
-        collated <- c(collated, "# Setting up plot coordinates", cur_cmds$setup, "")        
-    }
-    if (length(cur_cmds$plot)) {
-        collated <- c(collated, "# Creating the plot", cur_cmds$plot)
-    }
-
-    tracked_code <- c(tracked_code, collated, "")
-  }
-
-  #####
-  # Adding the heatmap code.
-  tracked_heat <- character(0)
-  hobjs <- active_panels[active_panels$Type=="heatMapPlot",]
-  heat_names <- paste0(hobjs$Type, hobjs$ID)
-
-  for (i in seq_along(heat_names)) {
-    cur_cmds <- pObjects$commands[[heat_names[i]]]
-
-    tracked_heat <- c(tracked_heat,
-                      strrep("#", 80),
-                      paste0("## ", .decode_panel_name("heatMapPlot", hobjs$ID[i])),
-                      strrep("#", 80), "")
-
-    # Adding the data setup.
-    collated <- c(cur_cmds$data, "")
-
-    # Finishing off the rest of the commands.
-    if (length(cur_cmds$select)) { 
-        collated <- c(collated, "# Receiving selection data", cur_cmds$select, "")
-    }
-    if (length(cur_cmds$centerscale)) { 
-        collated <- c(collated, "# Centering and scaling", cur_cmds$centerscale, "")
-    }
-    if (length(cur_cmds$zoom)) { 
-        collated <- c(collated, "# Zooming in", cur_cmds$zoom, "")
-    }
-    if (length(cur_cmds$plot)) {
-        collated <- c(collated, "# Creating the heat map", cur_cmds$plot, "")
-    }
-    if (length(cur_cmds$annot)) {
-        collated <- c(collated, "# Adding annotations", cur_cmds$annot, "")
-    }
-    if (length(cur_cmds$grid)) {
-        collated <- c(collated, "# Laying out the grid", cur_cmds$grid, "")
-    }
-    tracked_heat <- c(tracked_heat, collated)
-  }
-  tracked_code <- c(tracked_code, tracked_heat)
-
-  # Adding session information.
-  tracked_code <- c(tracked_code,
-                    strrep("#", 80),
-                    "## To guarantee the reproducibility of your code, you should also",
-                    "## record the output of sessionInfo()",
-                    "sessionInfo()")
-
-  # Restoring indenting for multi-line ggplot code.
-  tracked_code <- unlist(tracked_code)
-  ggplot_ix <- grep("\\+$", tracked_code) + 1L
-  to_mod <- tracked_code[ggplot_ix]
-  to_mod <- paste0("    ", to_mod)
-  to_mod <- gsub("\n", "\n    ", to_mod)
-  tracked_code[ggplot_ix] <- to_mod
-
-  return(tracked_code)
+    return(tracked_code)
 }
 
+#' @rdname INTERNAL_track_it_all
+.track_selection_code  <- function(active_panels, pObjects) {
+    # Remove panels that don't have brushes or lassos.
+    is_point_plot <- !active_panels$Type %in% c("rowStatTable", "heatMapPlot", "customDataPlot", "customStatTable")
+    active_panels <- active_panels[is_point_plot,]
+    brush_code <- lasso_code <- vector("list", nrow(active_panels))
+
+    for (i in seq_len(nrow(active_panels))) {
+        panel_type <- active_panels$Type[i]
+        panel_id <- active_panels$ID[i]
+        panel_name <- paste0(panel_type, panel_id)
+
+        brush_struct <- pObjects$memory[[panel_type]][,.brushData][[panel_id]]
+        if (!is.null(brush_struct)) { 
+            brush_struct <- .deparse_for_viewing(brush_struct, indent=0) # deparsed list() auto-indents.
+            brush_code[[i]] <- sprintf("all_brushes[['%s']] <- %s", panel_name, brush_struct)
+        }
+    
+        lasso_struct <- pObjects$memory[[panel_type]][,.lassoData][[panel_id]]
+        if (!is.null(lasso_struct)) {
+            lasso_struct <- .deparse_for_viewing(lasso_struct)
+            lasso_code[[i]] <- sprintf("all_lassos[['%s']] <- %s", panel_name, lasso_struct)
+        }
+    }
+
+    tracked_code <- list(character(0), character(0))
+    if (any(lengths(brush_code) > 0)) { 
+        tracked_code[[1]] <- c(strrep("#", 80),
+                "# Defining brushes",
+                strrep("#", 80), "",
+                "all_brushes <- list()", 
+                unlist(brush_code), "")
+    }
+    if (any(lengths(lasso_code) > 0)) {
+        tracked_code[[2]] <- c(strrep("#", 80),
+                "# Defining lassos",
+                strrep("#", 80), "",
+                "all_lassos <- list()",
+                unlist(lasso_code), "")
+    }
+
+    return(unlist(tracked_code))
+}
+
+#' @rdname INTERNAL_track_it_all
+.track_plotting_code <- function(active_panels, pObjects) {
+    # Ensure that plots are created in the order of their dependencies.
+    active_panels <- active_panels[.get_reporting_order(active_panels, pObjects$selection_links),]
+    is_point_plot <- !active_panels$Type %in% c("rowStatTable", "heatMapPlot", "customDataPlot", "customStatTable")
+    active_panels <- active_panels[is_point_plot,]
+
+    all_tracks <- vector("list", nrow(active_panels))
+    for (i in seq_len(nrow(active_panels))) {
+        panel_type <- active_panels$Type[i]
+        panel_id <- active_panels$ID[i]
+        panel_name <- paste0(panel_type, panel_id)
+
+        header_comments <- c(strrep("#", 80),
+                paste0("## ", .decode_panel_name(panel_type, panel_id)),
+                strrep("#", 80),
+                "")
+
+        # Adding the plotting commands.
+        cur_cmds <- pObjects$commands[[panel_name]]
+        collated <- c(cur_cmds$data, "")
+        if (length(cur_cmds$select)) {
+            collated <- c(collated, "# Receiving point selection", cur_cmds$select, "")
+        }
+    
+        # Saving data for transmission after selections have been processed;
+        # this is the equivalent point in .create_plots() where coordinates are saved.
+        collated <- c(collated, "# Saving data for transmission", 
+                      sprintf("all_coordinates[['%s']] <- plot.data", panel_name),
+                      "")
+    
+        # Finishing off the rest of the commands.
+        if (length(cur_cmds$setup)) {
+            collated <- c(collated, "# Setting up plot coordinates", cur_cmds$setup, "")        
+        }
+        if (length(cur_cmds$plot)) {
+            collated <- c(collated, "# Creating the plot", cur_cmds$plot)
+        }
+    
+        all_tracks[[i]] <- c(header_comments, collated, "")
+    }
+
+    return(unlist(all_tracks))
+}
+
+#' @rdname INTERNAL_track_it_all
+.track_custom_code <- function(active_panels, pObjects) { 
+    active_panels <- active_panels[active_panels$Type=="customDataPlot",]
+
+    all_custom <- vector("list", nrow(active_panels))
+    for (i in seq_len(nrow(active_panels))) {
+        panel_type <- active_panels$Type[i]
+        panel_id <- active_panels$ID[i]
+        panel_name <- paste0(panel_type, panel_id)
+
+        header_comments <- c(strrep("#", 80),
+                paste0("## ", .decode_panel_name(panel_type, panel_id)),
+                strrep("#", 80),
+                "")
+
+        # Adding the plotting commands.
+        cur_cmds <- pObjects$commands[[panel_name]]
+        all_custom[[i]] <- c(header_comments, 
+                "# Receiving selection data", cur_cmds$select, "", 
+                "# Generating plot", cur_cmds$plot, "")
+    }
+    return(unlist(all_custom))
+}
+
+#' @rdname INTERNAL_track_it_all
+.track_heatmap_code <- function(active_panels, pObjects) {
+    hobjs <- active_panels[active_panels$Type=="heatMapPlot",]
+    heat_names <- paste0(hobjs$Type, hobjs$ID)
+    
+    all_heat <- vector("list", nrow(hobjs))
+    for (i in seq_along(heat_names)) {
+        cur_cmds <- pObjects$commands[[heat_names[i]]]
+    
+        header_comments <- c(strrep("#", 80),
+                paste0("## ", .decode_panel_name("heatMapPlot", hobjs$ID[i])),
+                strrep("#", 80), "")
+    
+        # Adding the data setup.
+        collated <- c(cur_cmds$data, "")
+    
+        # Finishing off the rest of the commands.
+        if (length(cur_cmds$select)) { 
+            collated <- c(collated, "# Receiving selection data", cur_cmds$select, "")
+        }
+        if (length(cur_cmds$centerscale)) { 
+            collated <- c(collated, "# Centering and scaling", cur_cmds$centerscale, "")
+        }
+        if (length(cur_cmds$zoom)) { 
+            collated <- c(collated, "# Zooming in", cur_cmds$zoom, "")
+        }
+        if (length(cur_cmds$plot)) {
+            collated <- c(collated, "# Creating the heat map", cur_cmds$plot, "")
+        }
+        if (length(cur_cmds$annot)) {
+            collated <- c(collated, "# Adding annotations", cur_cmds$annot, "")
+        }
+        if (length(cur_cmds$grid)) {
+            collated <- c(collated, "# Laying out the grid", cur_cmds$grid, "")
+        }
+
+        all_heat[[i]] <- c(header_comments , collated)
+    }
+
+    return(unlist(all_heat))
+}
 
 #' Get the reporting order
 #'

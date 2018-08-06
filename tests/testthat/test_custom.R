@@ -82,8 +82,8 @@ test_that(".make_customDataPlot works when no function is specified", {
 })
 
 test_that(".make_customDataPlot responds to a transmitted receiver", {
-    all_memory$customColPlot$SelectByPlot <- "Reduced dimension plot 1"
-    all_memory$customColPlot$SelectEffect <- "Restrict"
+    all_memory$customDataPlot$ColumnSource <- "Reduced dimension plot 1"
+    all_memory$customDataPlot$SelectEffect <- "Restrict"
     all_memory$redDimPlot$BrushData[[1]] <- list(xmin = -11.514034644046, xmax = 9.423465477988,
          ymin = -10.767314578073, ymax = -1.6587346435671,
          mapping = list(x = "X", y = "Y"),
@@ -105,36 +105,27 @@ test_that(".make_customDataPlot responds to a transmitted receiver", {
     p.out2 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
 
     # Testing equality:
-    expect_named(p.out2, c("cmd_list", "xy", "plot", "cached"))
-    expect_match(p.out2$cmd_list$select[1], "redDimPlot1")
-    expect_match(p.out2$cmd_list$setup[1], "PCA2")
+    expect_named(p.out2, c("cmd_list", "plot"))
+    expect_identical(p.out2$cmd_list$select[1], "row.names <- NULL;")
+    expect_match(p.out2$cmd_list$select[2], "redDimPlot1")
+    expect_match(p.out2$cmd_list$plot, "PCA2")
 
     expect_false(any(grepl("plot.data.all", unlist(p.out2$cmd_list)))) # There should be no plot.data.all!
 
     expect_s3_class(p.out2$plot, "ggplot")
 
-    expect_s3_class(p.out2$xy, "data.frame")
-    expect_named(p.out2$xy, c("SelectBy", "X","Y"))
-    expect_false(nrow(p.out2$xy)==ncol(sceX))
+    # Checking that the cache is ignored or used properly. there is no more cache
+    # p.out3 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
+    # expect_equal(p.out2, p.out3)
 
-    kept <- rownames(shiny:::brushedPoints(all_coordinates[["redDimPlot1"]], all_memory$redDimPlot$BrushData[[1]]))
-    expect_identical(kept, rownames(p.out2$cached$coordinates))
-    expect_identical(p.out2$cached, CUSTOM_DATA(sceX, kept))
-
-    # Checking that the cache is ignored or used properly.
-    p.out3 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
-    expect_equal(p.out2, p.out3)
-
-    p.out4 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
-    expect_equal(p.out2, p.out4)
+    # p.out4 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
+    # expect_equal(p.out2, p.out4)
 
     # Still valid when no function is specified.
-    all_memory$customColPlot$Function <- iSEE:::.noSelection
+    all_memory$customDataPlot$Function <- iSEE:::.noSelection
     p.out5 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
-    expect_named(p.out5, c("cmd_list", "xy", "plot", "cached"))
-    expect_identical(p.out5$cmd_list, NULL)
-    expect_identical(p.out5$cached, NULL)
-    expect_identical(nrow(p.out5$xy), 0L)
+    expect_named(p.out5, c("cmd_list", "plot"))
+    expect_length(p.out5$cmd_list, 2)
 })
 
 test_that(".make_customDataPlot responds to colour selection", {

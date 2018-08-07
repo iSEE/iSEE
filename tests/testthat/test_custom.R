@@ -75,7 +75,7 @@ test_that(".make_customDataPlot works when no function is specified", {
 
     expect_named(p.out, c("cmd_list", "plot"))
     expect_named(p.out$cmd_list, c("select", "plot"))
-    expect_match(p.out$cmd_list$plot[1], "PCA2")
+    expect_match(p.out$cmd_list$plot[1], "ggplot")
     expect_identical(p.out$cmd_list$select, c("row.names <- NULL;", "col.names <- NULL;"))
 
     expect_s3_class(p.out$plot, "ggplot")

@@ -347,18 +347,29 @@ test_that("initialization of active panels works correctly", {
 })
 
 test_that("sanitation of memory works correctly", {
-    sce <- iSEE:::.precompute_UI_info(sce, NULL)
+    sce <- iSEE:::.precompute_UI_info(sce, NULL, NULL)
 
-    memory <- iSEE:::.setup_memory(sce,
-                                   redDimArgs=NULL,
-                                   colDataArgs=NULL,
-                                   featAssayArgs=NULL,
-                                   sampAssayArgs=NULL,
-                                   rowStatArgs=NULL,
-                                   rowDataArgs=NULL,
-                                   heatMapArgs=NULL,
-                                   customColArgs=NULL,
-                                   redDimMax=5, colDataMax=3, featAssayMax=2, sampAssayMax=2, rowStatMax=2, rowDataMax=3, heatMapMax=2, customColMax=2)
+    memory <- iSEE:::.setup_memory(
+        sce,
+        redDimArgs=NULL,
+        colDataArgs=NULL,
+        featAssayArgs=NULL,
+        sampAssayArgs=NULL,
+        rowStatArgs=NULL,
+        rowDataArgs=NULL,
+        heatMapArgs=NULL,
+        customDataArgs=NULL,
+        customStatArgs=NULL,
+        redDimMax=5,
+        colDataMax=3,
+        featAssayMax=2,
+        sampAssayMax=2,
+        rowStatMax=2,
+        rowDataMax=3,
+        heatMapMax=2,
+        customDataMax=2,
+        customStatMax=3
+        )
     init_panels <- iSEE:::.setup_initial(NULL, memory)
 
     # No effect when there are no links.

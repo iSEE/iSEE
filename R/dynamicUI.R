@@ -310,7 +310,7 @@
         }
 
         # Adding graphical parameters if we're plotting.
-        if (mode=="rowStatTable") {
+        if (mode %in% linked_table_types) { 
             param <- list(hr(), 
                 tags$div(class = "panel-group", role = "tablist",
                     .create_selection_param_box_define_box(mode, id, param_choices, 
@@ -330,7 +330,7 @@
             data_box <- do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
                 title="Data parameters", open=param_choices[[.dataParamBoxOpen]]), plot.param))            
             
-            if (mode=="customDataPlot" || mode=="customStatTable") {
+            if (mode %in% custom_panel_types) {
                 param <- list(
                     tags$div(class = "panel-group", role = "tablist",
                         data_box,
@@ -340,19 +340,19 @@
                         )
                     )
                 )
-            } else if (mode %in% c("rowDataPlot", "sampAssayPlot")) {
-                # Slightly different handling of the row data.
-                param <- list(tags$div(class = "panel-group", role = "tablist",
-                    data_box,
-                    .create_visual_box_for_row_plots(mode, id, param_choices, active_tab, se),
-                    .create_selection_param_box(mode, id, param_choices, row_selectable)
-                    )
-                )
             } else {
+                if (mode %in% row_point_plot_types) {
+                    select_choices <- row_selectable
+                    create_FUN <- .create_visual_box_for_row_plots
+                } else {
+                    select_choices <- col_selectable
+                    create_FUN <- .create_visual_box_for_column_plots
+                }
+
                 param <- list(tags$div(class = "panel-group", role = "tablist",
                     data_box,
-                    .create_visual_box_for_column_plots(mode, id, param_choices, active_tab, se), # Options for visual parameters.
-                    .create_selection_param_box(mode, id, param_choices, col_selectable) # Options for point selection parameters.
+                    create_FUN(mode, id, param_choices, active_tab, se), # Options for visual parameters.
+                    .create_selection_param_box(mode, id, param_choices, select_choices) # Options for point selection parameters.
                     )
                 )
             }

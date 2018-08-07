@@ -2,21 +2,21 @@
 # .set_default_assay ----
 
 test_that(".set_default_assay returns 1L there is no logcounts assay", {
-  
+
   sce_noLogCount <- sce
   assays(sce_noLogCount) <- assays(sce_noLogCount)["counts"]
-  
+
   expect_identical(
     iSEE:::.set_default_assay(sce_noLogCount),
     1L
   )
-  
+
 })
 
 # .override_defaults ----
 
 test_that(".override_defaults warns about unexpected settings", {
-  
+
   redDimArgsExtraField <- redDimPlotDefaults(sce, 1)
   redDimArgsExtraField$DummyExtraField <- NA_character_
 
@@ -44,7 +44,7 @@ test_that(".override_defaults warns about unexpected settings", {
 
 
 test_that(".add_general_parameters_for_*_plots functions correctly respond to internal fields", {
-    sce <- iSEE:::.precompute_UI_info(sce, NULL)
+    sce <- iSEE:::.precompute_UI_info(sce, NULL, NULL)
 
     out <- iSEE:::.add_general_parameters_for_column_plots(DataFrame(a=1), sce)
     expect_identical(out[[iSEE:::.facetRowsByColData]], iSEE:::.get_internal_info(sce, "column_groupable")[1])

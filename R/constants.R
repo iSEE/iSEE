@@ -216,7 +216,7 @@ names(rev.translation) <- translation
 # Refer to dynamicUI.R for the minimum expected structure for each group.
 row_point_plot_types <- c("rowDataPlot", "sampAssayPlot")
 col_point_plot_types <- c("redDimPlot", "colDataPlot", "featAssayPlot")
-point_plot_types <- c(col_point_plot_types, row_point_row_types)
+point_plot_types <- c(col_point_plot_types, row_point_plot_types)
 linked_table_types <- c("rowStatTable")
 custom_panel_types <- c("customDataPlot", "customStatTable")
 all_panel_types <- c(point_plot_types, table_types, custom_panel_types, "heatMapPlot")

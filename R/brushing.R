@@ -33,29 +33,16 @@
     node_names <- list()
     edges <- list()
 
-    for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot", "rowStatTable", "rowDataPlot", "sampAssayPlot", "heatMapPlot")) {
+    for (mode in all_panel_types) {
         N <- nrow(memory[[mode]])
         cur_panels <- sprintf("%s%i", mode, seq_len(N))
         node_names[[mode]] <- cur_panels
 
-        cur_edges <- vector("list",N)
-        for (id in seq_len(N)) {
-            cur_parent <- memory[[mode]][id, .selectByPlot]
-            if (cur_parent!=.noSelection) {
-                cur_edges[[id]] <- c(.decoded2encoded(cur_parent), cur_panels[id])
-            }
-        }
-        edges[[mode]] <- cur_edges
-    }
+        fields <- .find_selectby_field(mode)
+        collected_edges <- vector("list", length(fields))
+        for (i in seq_along(fields)) {
+            src <- fields[i]
 
-    # Custom plots and tables take two forms of input.
-    for (mode in c("customDataPlot", "customStatTable")) {
-        N <- nrow(memory[[mode]])
-        cur_panels <- sprintf("%s%i", mode, seq_len(N))
-        node_names[[mode]] <- cur_panels
-   
-        collected_edges <- list()
-        for (src in c(.customColSource, .customRowSource)) { 
             cur_edges <- vector("list", N)
             for (id in seq_len(N)) {
                 cur_parent <- memory[[mode]][id, src]
@@ -63,9 +50,10 @@
                     cur_edges[[id]] <- c(.decoded2encoded(cur_parent), cur_panels[id])
                 }
             }
-            collected_edges <- c(collected_edges, cur_edges)
+            collected_edges[[i]] <- cur_edges
         }
-        edges[[mode]] <- collected_edges
+
+        edges[[mode]] <- cur_edges
     }
 
     # Creating a graph.
@@ -76,6 +64,28 @@
         stop("cyclic point selection dependencies in 'initialPanels'")
     }
     return(g)
+}
+
+#' Find the transmitting field
+#'
+#' Finds the field in memory containing the identity of the transmitting plot for a given panel type.
+#'
+#' @param type String specifying the encoded panel type.
+#'
+#' @return A character vector containing the names of memory fields containing the identities of the transmitting plot(s).
+#'
+#' @details
+#' This function is necessary as custom panels have different fields for their upstream transmitting plots compared to all other panels.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_find_selectby_field
+.find_selectby_field <- function(type) {
+    if (type %in% custom_panel_types) { 
+        fields <- c(.customRowSource, .customColSource)
+    } else {
+        fields <- .selectByPlot
+    }
+    return(fields)
 }
 
 #' Change the selection source
@@ -153,12 +163,16 @@
     for (i in seq_along(all_kids)) {
         type <- enc$Type[i]
         id <- enc$ID[i]
-        pObjects$memory[[type]][id, .selectByPlot] <- .noSelection
+        for (f in .find_selectby_field(type)) {
+            pObjects$memory[[type]][id, f] <- .noSelection
+        }
     }
 
     # Destroying self memory of any transmitting panel.
     self <- .split_encoded(panel)
-    pObjects$memory[[self$Type]][self$ID, .selectByPlot] <- .noSelection
+    for (f in .find_selectby_field(self$Type)) {
+        pObjects$memory[[self$Type]][self$ID, f] <- .noSelection
+    }
 
     # Destroying the edges.
     pObjects$selection_links <- graph - incident(graph, panel, mode="all")

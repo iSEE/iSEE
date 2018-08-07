@@ -212,6 +212,13 @@ translation <- c(redDimPlot="Reduced dimension plot",
 rev.translation <- names(translation)
 names(rev.translation) <- translation
 
+# Some constants to summarize panel types.
+row_point_plot_types <- c("rowDataPlot", "sampAssayPlot")
+point_plot_types <- c("redDimPlot", "colDataPlot", "featAssayPlot", row_point_row_types)
+linked_table_types <- c("rowStatTable")
+custom_panel_types <- c("customDataPlot", "customStatTable")
+all_panel_types <- c(point_plot_types, table_types, custom_panel_types, "heatMapPlot")
+
 #' Decode the panel name
 #'
 #' Translate a panel name from the internal encoding to a user-visible encoding.

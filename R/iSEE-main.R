@@ -288,9 +288,6 @@ iSEE <- function(se,
     ## Server definition. ----
     #######################################################################
 
-    point_plot_types <- c("redDimPlot", "colDataPlot", "featAssayPlot", "rowDataPlot", "sampAssayPlot")
-    all_panel_types <- c(point_plot_types, "rowStatTable", "customDataPlot", "customStatTable", "heatMapPlot")
-
     #nocov start
     iSEE_server <- function(input, output, session) {
         all_names <- list()
@@ -483,12 +480,10 @@ iSEE <- function(se,
                         current_type <- all_active$Type==mode0
 
                         # Destroying links for point selection or tables.
-                        if (mode0=="heatMapPlot") {
-                            .destroy_selection_panel(pObjects, panel_name)
-                        } else if (mode0=="rowStatTable") {
+                        .destroy_selection_panel(pObjects, panel_name)
+                        if (mode0 %in% linked_table_types) {
                             .destroy_table(pObjects, panel_name)
-                        } else {
-                            .destroy_selection_panel(pObjects, panel_name)
+                        } else if (mode0 %in% point_plot_types) { 
                             .delete_table_links(mode0, id0, pObjects)
                         }
 
@@ -572,9 +567,9 @@ iSEE <- function(se,
                 box_types <- c(.dataParamBoxOpen, .visualParamBoxOpen, .selectParamBoxOpen)
             } else if (mode=="heatMapPlot") {
                 box_types <- c(.heatMapFeatNameBoxOpen, .heatMapColDataBoxOpen, .selectParamBoxOpen)
-            } else if (mode=="customDataPlot") {
+            } else if (mode %in% custom_panel_types) {
                 box_types <- c(.dataParamBoxOpen, .selectParamBoxOpen)
-            } else if (mode=="rowStatTable") {
+            } else if (mode %in% linked_table_types) {
                 box_types <- .selectParamBoxOpen
             } else {
                 box_types <- character(0)
@@ -1061,7 +1056,7 @@ iSEE <- function(se,
             protected <- c(protected,  .facetByRow, .facetByColumn, .facetRowsByColData, .facetColumnsByColData)
 
             # Defining non-fundamental parameters that do not destroy brushes/lassos.
-            if (mode %in% c("rowDataPlot", "sampAssayPlot")) {
+            if (mode %in% row_point_plot_types) {
                 nonfundamental <- c(.colorByRowData, .colorByFeatNameColor, .shapeByField, .shapeByRowData)
             } else {
                 nonfundamental <- c(.colorByColData, .colorByFeatNameAssay, .shapeByField, .shapeByColData)
@@ -1300,7 +1295,7 @@ iSEE <- function(se,
         # Custom panel section. ----
         #######################################################################
 
-        for (mode in c("customDataPlot", "customStatTable")) { 
+        for (mode in custom_panel_types) { 
             max_plots <- nrow(pObjects$memory[[mode]])
 
             for (id in seq_len(max_plots)) {

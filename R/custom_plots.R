@@ -143,8 +143,8 @@
 #' @param fun_args A multi-line string containing multiple named arguments and their values.
 #'
 #' @details
-#' Each line corresponds to one argument:value pair.
-#' The word before the first space defines the argument name, while all characters after the first space define the value.
+#' Each line corresponds to one argument:value pair, stripped of any leading spaces.
+#' The word before the first remaining space defines the argument name, while all characters after the first space define the value.
 #' Note that all values are strings for purposes of safety, so any type coercion is the responsibility of the function.
 #'
 #' @return
@@ -156,8 +156,9 @@
 #' \code{\link{.make_customDataPlot}}
 .text2args <- function(fun_args) {
     fun_args <- strsplit(fun_args, "\n")[[1]]
+    fun_args <- sub("^ +", "", fun_args)
     arg_names <- sub(" .*", "", fun_args)
-    arg_values <- sub("[^ ]+ +", "", fun_args)
+    arg_values <- sub("^ +", "", sub("^[^ ]+", "", fun_args)) # double trim to avoid failure when no spaces are supplied.
 
     keep <- arg_names!=""
     arg_names <- arg_names[keep]

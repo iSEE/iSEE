@@ -15,11 +15,9 @@ before_install:
 r_build_args: "--no-manual --no-resave-data"
 r_check_args: "--no-build-vignettes --no-manual --timings"
 
-bioc_packages:
-  - BiocInstaller
-
 r_packages:
   - covr
+  - BiocManager
 
 after_success:
   - Rscript -e 'library(covr); codecov()'

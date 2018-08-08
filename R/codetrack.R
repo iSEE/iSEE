@@ -57,7 +57,7 @@
 #' @rdname INTERNAL_track_it_all
 .track_selection_code  <- function(active_panels, pObjects) {
     # Remove panels that don't have brushes or lassos.
-    is_point_plot <- !active_panels$Type %in% c("rowStatTable", "heatMapPlot", "customDataPlot", "customStatTable")
+    is_point_plot <- active_panels$Type %in% point_plot_types
     active_panels <- active_panels[is_point_plot,]
     brush_code <- lasso_code <- vector("list", nrow(active_panels))
 
@@ -102,7 +102,7 @@
 .track_plotting_code <- function(active_panels, pObjects) {
     # Ensure that plots are created in the order of their dependencies.
     active_panels <- active_panels[.get_reporting_order(active_panels, pObjects$selection_links),]
-    is_point_plot <- !active_panels$Type %in% c("rowStatTable", "heatMapPlot", "customDataPlot", "customStatTable")
+    is_point_plot <- active_panels$Type %in% point_plot_types
     active_panels <- active_panels[is_point_plot,]
 
     all_tracks <- vector("list", nrow(active_panels))

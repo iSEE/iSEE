@@ -53,7 +53,7 @@
             collected_edges[[i]] <- cur_edges
         }
 
-        edges[[mode]] <- cur_edges
+        edges[[mode]] <- unlist(collected_edges) 
     }
 
     # Creating a graph.

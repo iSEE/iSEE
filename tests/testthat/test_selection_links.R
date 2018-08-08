@@ -1,3 +1,5 @@
+# This script tests the code related to the creation of the point transmission infrastructure. 
+# library(iSEE); library(testthat); source("setup_sce.R"); source("test_selection_links.R")
 
 # Do NOT move to setup; re-defined here to keep tests self-contained.
 redDimArgs <- redDimPlotDefaults(sce, 1)
@@ -287,6 +289,58 @@ test_that("evaluation order works properly", {
     expect_true("featAssayPlot2" %in% eval_order)
     expect_true(which(eval_order=="featAssayPlot1") < which(eval_order=="redDimPlot1"))
     expect_true(which(eval_order=="featAssayPlot2") < which(eval_order=="featAssayPlot3"))
+})
+
+test_that("selections involving custom panels work correctly", {
+    # Extending the test graph:
+    # featAssayPlot1 -> redDimPlot1 -> colDataPlot2
+    #                               -> customDataPlot1
+    # featAssayPlot1 -> featAssayPlot1
+    # rowDataPlot1 -> customDataPlot1
+    # redDimPlot2 -> customStatTable1
+    # sampAssayPlot2 -> customStatTable1
+    customDataArgs[1,iSEE:::.customColSource] <- "Reduced dimension plot 1"
+    customDataArgs[1,iSEE:::.customRowSource] <- "Row data plot 1"
+    customStatArgs[1,iSEE:::.customColSource] <- "Reduced dimension plot 2"
+    customStatArgs[1,iSEE:::.customRowSource] <- "Sample assay plot 2"
+
+	# Initialization works correctly.
+	memory <- list(
+	    redDimPlot=redDimArgs,
+	    featAssayPlot=featAssayArgs,
+	    sampAssayPlot=sampAssayArgs,
+	    colDataPlot=colDataArgs,
+	    rowStatTable=rowStatArgs,
+	    rowDataPlot=rowDataArgs,
+	    customDataPlot=customDataArgs,
+	    customStatTable=customStatArgs,
+	    heatMapPlot=heatMapArgs
+	)
+	g <- iSEE:::.spawn_selection_chart(memory)
+
+    expect_identical(sort(names(igraph::neighbors(g, "customDataPlot1", mode="in"))), c("redDimPlot1", "rowDataPlot1"))
+    expect_identical(names(igraph::neighbors(g, "customDataPlot1", mode="out")), character(0))
+    expect_identical(sort(names(igraph::neighbors(g, "customStatTable1", mode="in"))), c("redDimPlot2", "sampAssayPlot2"))
+    expect_identical(names(igraph::neighbors(g, "customStatTable1", mode="out")), character(0))
+
+    # Detection of children works properly.
+    expect_identical(sort(iSEE:::.get_selection_dependents(g, "redDimPlot1", memory)), c("colDataPlot2", "customDataPlot1"))
+    expect_identical(iSEE:::.get_selection_dependents(g, "customDataPlot1", memory), character(0))
+    expect_identical(sort(iSEE:::.get_selection_dependents(g, "sampAssayPlot2", memory)), "customStatTable1")
+    expect_identical(iSEE:::.get_selection_dependents(g, "customStatTable1", memory), character(0))
+
+    # Destruction works correctly.
+    pObjects <- new.env()
+    pObjects$selection_links <- g
+    pObjects$memory <- memory
+
+    iSEE:::.destroy_selection_panel(pObjects, "redDimPlot1")
+    expect_identical(sort(names(igraph::neighbors(pObjects$selection_links, "customDataPlot1", mode="in"))), "rowDataPlot1")
+    expect_identical(pObjects$memory$customDataPlot[[1, iSEE:::.customColSource]], iSEE:::.noSelection)
+
+    iSEE:::.destroy_selection_panel(pObjects, "sampAssayPlot2")
+    expect_identical(sort(names(igraph::neighbors(pObjects$selection_links, "customStatTable1", mode="in"))), "redDimPlot2")
+    expect_identical(pObjects$memory$customStatTable[[1, iSEE:::.customRowSource]], iSEE:::.noSelection)
 })
 
 test_that("reporting order is correctly reported", {

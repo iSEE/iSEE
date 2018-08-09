@@ -1,4 +1,3 @@
-
 bibentry(
     bibtype = "Article",
     title = "iSEE: Interactive SummarizedExperiment Explorer",
@@ -6,19 +5,12 @@ bibentry(
         person("Kevin", "Rue-Albrecht"),
         person("Federico", "Marini"),
         person("Charlotte", "Soneson"),
-        person("Aaron TL", "Lun")),
+        person("Aaron", "Lun", "TL")),
     publisher = "F1000 Research, Ltd.",
     journal = "F1000Research",
     year = "2018",
-    month = "jun",
+    month = "Jun",
     volume = "7",
     pages = "741",
-    doi = "10.12688/f1000research.14966.1",
-    url = "https://doi.org/10.12688%2Ff1000research.14966.1",
-    textVersion = paste0(
-        "Rue-Albrecht K, Marini F, Soneson C and Lun ATL. ",
-        "iSEE: Interactive SummarizedExperiment Explorer.",
-        " F1000Research 2018, 7:741 ",
-        "(doi: 10.12688/f1000research.14966.1)"
-        )
-    )
+    doi = "10.12688/f1000research.14966.1"
+)

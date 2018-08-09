@@ -64,20 +64,30 @@
 }
 
 #' @rdname INTERNAL_track_it_all
-#' @importFrom igraph degree
+#' @importFrom igraph adjacent_vertices 
 .track_selections_only <- function(active_panels, pObjects, se_name, sanitize_cmds) {
-    # Keeping only plotting panels that have selections _and_ are transmitters or receivers.
-    keep <- active_panels$Type %in% point_plot_types | active_panels$Type=="customDataPlot"
+    # Only reporting panels that are actively involved in selections.
+    keep <- logical(nrow(active_panels))
+    encoded <- paste0(active_panels$Type, active_panels$ID)
 
-    node_degree <- degree(pObjects$selection_links)
-    connected_panel <- paste0(active_panels$Type, active_panels$ID) %in% names(node_degree)[node_degree > 0]
+    for (i in seq_along(keep)) {
+        if (active_panels$Type[i] %in% point_plot_types && 
+                .any_point_selection(active_panels$Type[i], active_panels$ID[i], pObjects$memory)){
+            keep[i] <- TRUE
+            next
+        }
 
-    has_selection <- logical(nrow(active_panels))
-    for (i in which(active_panels$Type %in% point_plot_types)) {
-        has_selection[i] <- .any_point_selection(active_panels$Type[i], active_panels$ID[i], pObjects$memory)
+        # Keeping if any of its transmitters have a selection.
+        # (No need to check for point_plot_types, as these are the only ones that can transmit anyway.)
+        upstream <- names(adjacent_vertices(pObjects$selection_links, encoded[i], mode="in")[[1]])
+        for (up in which(encoded %in% upstream)) {
+            if (.any_point_selection(active_panels$Type[up], active_panels$ID[up], pObjects$memory)){
+                keep[i] <- TRUE
+                break
+            }
+        }
     }
 
-    keep <- keep & (connected_panel | has_selection)
     active_panels <- active_panels[keep,]
 
     c(

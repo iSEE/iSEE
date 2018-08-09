@@ -128,21 +128,21 @@ test_that("code trackers run correctly", {
     }
     expect_true(any(grepl("ggplot", out)))
 
-    # Tracking selections only - this ignores the custom data plot because it does not receive or transmit.
+    # Tracking selections only - this ignores all panels as there are no brushes defined.
     out <- iSEE:::.track_selections_only(active_panels, pObjects, "sce", "")
-    for (panelname in setdiff(panelnames, c("Heat map 1", "Custom data plot 1"))) {
-        expect_true(any(grepl(panelname, out)))
+    for (panelname in panelnames) {
+        expect_false(any(grepl(panelname, out)))
     }
-    expect_false(any(grepl("Custom data plot 1", out)))
-    expect_false(any(grepl("Heat map 1", out)))
 
-    # Losing featAssayPlot1 if it's no longer linked to anything.
-    pObjects$selection_links <- iSEE:::.choose_new_selection_source(pObjects$selection_links, "featAssayPlot1", iSEE:::.noSelection, "featAssayPlot1")
-    out <- iSEE:::.track_selections_only(active_panels, pObjects, "sce", "")
-    expect_false(any(grepl("Feature assay plot 1", out)))
-
-    # Getting featAssayPlot1 back if it has a selection on it.
+    # Adding a brush to featAssayPlot1, such that we get it back.
     pObjects$memory$featAssayPlot[1, iSEE:::.brushData] <- list("this is a mock brush")
     out <- iSEE:::.track_selections_only(active_panels, pObjects, "sce", "")
     expect_true(any(grepl("Feature assay plot 1", out)))
+
+    # Adding a brush to redDimPlot, which also gives us the two column data plots.
+    pObjects$memory$redDimPlot[1, iSEE:::.brushData] <- list("this is a mock brush")
+    out <- iSEE:::.track_selections_only(active_panels, pObjects, "sce", "")
+    expect_true(any(grepl("Reduced dimension plot 1", out)))
+    expect_true(any(grepl("Column data plot 1", out)))
+    expect_true(any(grepl("Column data plot 2", out)))
 })

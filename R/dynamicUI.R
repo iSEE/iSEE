@@ -1045,7 +1045,8 @@
 #' \code{\link{.which_groupable}},
 #' \code{\link{.sanitize_names}},
 #' \code{\link{.get_internal_info}}
-#' @rdname INTERNAL_precompute_UI_info 
+#' @rdname INTERNAL_precompute_UI_info
+#' @importFrom SingleCellExperiment int_metadata
 .precompute_UI_info <- function(se, data_fun_list, stat_fun_list) {
     out <- list(
         column_groupable=colnames(colData(se))[.which_groupable(colData(se))],
@@ -1061,7 +1062,7 @@
         out$sample_names <- sprintf("Sample %i", seq_len(ncol(se)))
     }
 
-    SingleCellExperiment:::int_metadata(se)$iSEE <- out
+    int_metadata(se)$iSEE <- out
     return(se)
 }
 
@@ -1106,8 +1107,9 @@
 #' 
 #' @seealso \code{\link{.precompute_UI_info}}
 #' @rdname INTERNAL_get_internal_info
+#' @importFrom SingleCellExperiment int_metadata
 .get_internal_info <- function(se, field, empty_fail=TRUE) {
-    info <- SingleCellExperiment:::int_metadata(se)$iSEE
+    info <- int_metadata(se)$iSEE
     if (is.null(info) && empty_fail) {
         stop("no internal metadata in 'se'")
     }

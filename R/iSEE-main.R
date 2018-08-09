@@ -71,7 +71,8 @@
 #' showModal modalDialog showNotification 
 #' shinyApp runApp 
 #' HTML br icon hr p em strong
-#' tagList tags 
+#' tagList tags
+#' tabsetPanel tabPanel
 #' updateSelectInput updateSelectizeInput updateRadioButtons 
 #' @importFrom DT datatable renderDataTable dataTableOutput
 #' @importFrom shinyAce aceEditor
@@ -134,7 +135,8 @@ iSEE <- function(se,
     # Save the original name of the input object for renaming in the tracker
     se_name <- deparse(substitute(se))
     ecm_name <- deparse(substitute(colormap))
-    ccf_name <- deparse(substitute(customDataFun))
+    cdf_name <- deparse(substitute(customDataFun))
+    csf_name <- deparse(substitute(customStatFun))
 
     se_out <- .sanitize_SE_input(se)
     se <- se_out$object
@@ -363,6 +365,12 @@ iSEE <- function(se,
         }
 
         observeEvent(input$getcode_all, {
+            spawn_editor <- function(editor_name, select_only) {
+                aceEditor(editor_name, mode="r",theme = "solarized_light", autoComplete = "live",
+                    value = paste0(.track_it_all(rObjects$active_panels, pObjects,
+                        se_name, ecm_name, cdf_name, csf_name, se_cmds), collapse="\n"),
+                    height="600px")
+            }
             showModal(modalDialog(
                 title = "My code", size = "l",fade = TRUE,
                 footer = NULL, easyClose = TRUE,
@@ -370,10 +378,19 @@ iSEE <- function(se,
                   "a keyboard shortcut that depends on your operating system (e.g. Ctrl/Cmd + A",
                   "followed by Ctrl/Cmd + C).",
                   "This will copy the selected parts to the clipboard."),
-                aceEditor("acereport_r", mode="r",theme = "solarized_light", autoComplete = "live",
-                    value = paste0(.track_it_all(rObjects$active_panels, pObjects,
-                        se_name, ecm_name, ccf_name, se_cmds), collapse="\n"),
-                    height="600px")
+                tabsetPanel(
+                    tabPanel("All commands",
+                        aceEditor("report_all_cmds", mode="r", theme = "solarized_light", autoComplete = "live",
+                            value = paste0(.track_it_all(rObjects$active_panels, pObjects,
+                                    se_name, ecm_name, cdf_name, csf_name, se_cmds), collapse="\n"),
+                            height="600px")                     
+                        ), 
+                    tabPanel("Selection only", 
+                        aceEditor("report_select_cmds", mode="r", theme = "solarized_light", autoComplete = "live",
+                            value = paste0(.track_selections_only(rObjects$active_panels, pObjects, se_name, se_cmds), collapse="\n"),
+                            height="600px")                     
+                        ) 
+                    )
             ))
         })
 

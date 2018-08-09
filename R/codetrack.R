@@ -1,6 +1,6 @@
 #' Track code for the plots
 #' 
-#' Fetches all the code that was used to generate the plots during the live session of \code{iSEE}
+#' Fetches all the code that was used to generate the plots during the live iSEE session.
 #' 
 #' @param active_panels A data.frame containing information about the currently active panels, of the same form as that produced by \code{\link{.setup_initial}}.
 #' @param pObjects An environment containing \code{memory}, a list of DataFrames containing parameters for each panel of each type;
@@ -8,26 +8,36 @@
 #' and \code{commands}, a list of commands required to generated each plot. 
 #' @param se_name String containing the name of the SummarizedExperiment or SingleCellExperiment object.
 #' @param ecm_name String containing the name of the ExperimentColorMap in use.
-#' @param ccf_name String containing the name of the list of custom column functions.
+#' @param cdf_name String containing the expression used to create the list of functions for custom data plots.
+#' @param csf_name String containing the expression used to create the list of functions for custom statistics tables.
 #' @param sanitize_cmds Character vector containing the commands used to sanitizing the \code{se} object. 
 #' This is obtained by extracting \code{cmds} from the returned output of \code{.sanitize_SE_input}.
+#' @param select_only Logical scalar indicating whether only the commands to generate the selections should be returned.
+#' Otherwise, all commands to generate the plots will also be returned.
 #'
 #' @return A character vector containing all lines of code (plus comments), to use in the \code{shinyAce} editor in \code{\link{iSEE}}.
+#'
+#' @details
+#' The \code{.track_it_all} returns all commands required to generate the plots.
+#' The \code{.track_selection_only} returns only the commands required to perform selections.
+#' The latter is cleaner when the aim is to use iSEE to obtain a subset of points for further analysis in R.
 #' 
 #' @author Federico Marini
 #' @rdname INTERNAL_track_it_all
-.track_it_all <- function(active_panels, pObjects, se_name, ecm_name, ccf_name, sanitize_cmds) {
+.track_it_all <- function(active_panels, pObjects, se_name, ecm_name, cdf_name, csf_name, sanitize_cmds) {
     tracked_code <- c(
-        "## The following list of commands will generate the plots created using iSEE.",
+        "## The following list of commands will generate the plots created in iSEE", 
         "## Copy them into a script or an R session containing your SingleCellExperiment.",
         "## All commands below refer to your SingleCellExperiment object as `se`.",
         "",
         sprintf("se <- %s", se_name),
         sanitize_cmds,
-        sprintf("colormap <- %s", ecm_name),
+        sprintf("colormap <- %s", ecm_name), 
         sprintf("colormap <- synchronizeAssays(colormap, se)"),
         "all_coordinates <- list()",
-        sprintf("custom_col_fun <- %s", ccf_name),
+        sprintf("custom_data_fun <- %s", cdf_name), 
+        sprintf("custom_stat_fun <- %s", csf_name),
+
         "",
 
         .track_selection_code(active_panels, pObjects),
@@ -44,14 +54,55 @@
         "sessionInfo()")
 
     # Restoring indenting for multi-line ggplot code.
-    tracked_code <- unlist(tracked_code)
     ggplot_ix <- grep("\\+$", tracked_code) + 1L
     to_mod <- tracked_code[ggplot_ix]
     to_mod <- paste0("    ", to_mod)
     to_mod <- gsub("\n", "\n    ", to_mod)
     tracked_code[ggplot_ix] <- to_mod
-    
+
     return(tracked_code)
+}
+
+#' @rdname INTERNAL_track_it_all
+#' @importFrom igraph degree
+.track_selections_only <- function(active_panels, pObjects, se_name, sanitize_cmds) {
+    # Keeping only plotting panels that have selections _and_ are transmitters or receivers.
+    keep <- active_panels$Type %in% point_plot_types | active_panels$Type=="customDataPlot"
+
+    node_degree <- degree(pObjects$selection_links)
+    connected_panel <- paste0(active_panels$Type, active_panels$ID) %in% names(node_degree)[node_degree > 0]
+
+    has_selection <- logical(nrow(active_panels))
+    for (i in which(active_panels$Type %in% point_plot_types)) {
+        has_selection[i] <- .any_point_selection(active_panels$Type[i], active_panels$ID[i], pObjects$memory)
+    }
+
+    keep <- keep & (connected_panel | has_selection)
+    active_panels <- active_panels[keep,]
+
+    c(
+        "## The following list of commands will generate the selections from iSEE.", 
+        "## Copy them into a script or an R session containing your SingleCellExperiment.",
+        "## All commands below refer to your SingleCellExperiment object as `se`.",
+        "",
+        sprintf("se <- %s", se_name),
+        sanitize_cmds,
+        "all_coordinates <- list()",
+        "",
+
+        .track_selection_code(active_panels, pObjects),
+
+        .track_plotting_code(active_panels, pObjects, select_only = TRUE),
+        
+        .track_custom_code(active_panels, pObjects, select_only = TRUE),
+
+        .track_heatmap_code(active_panels, pObjects, select_only = TRUE),
+  
+        strrep("#", 80),
+        "## To guarantee the reproducibility of your code, you should also",
+        "## record the output of sessionInfo()",
+        "sessionInfo()"
+    )
 }
 
 #' @rdname INTERNAL_track_it_all
@@ -99,7 +150,7 @@
 }
 
 #' @rdname INTERNAL_track_it_all
-.track_plotting_code <- function(active_panels, pObjects) {
+.track_plotting_code <- function(active_panels, pObjects, select_only = FALSE) {
     # Ensure that plots are created in the order of their dependencies.
     active_panels <- active_panels[.get_reporting_order(active_panels, pObjects$selection_links),]
     is_point_plot <- active_panels$Type %in% point_plot_types
@@ -128,23 +179,26 @@
         collated <- c(collated, "# Saving data for transmission", 
                       sprintf("all_coordinates[['%s']] <- plot.data", panel_name),
                       "")
+
     
         # Finishing off the rest of the commands.
-        if (length(cur_cmds$setup)) {
-            collated <- c(collated, "# Setting up plot coordinates", cur_cmds$setup, "")        
-        }
-        if (length(cur_cmds$plot)) {
-            collated <- c(collated, "# Creating the plot", cur_cmds$plot)
+        if (!select_only) {
+            if (length(cur_cmds$setup)) {
+                collated <- c(collated, "# Setting up plot coordinates", cur_cmds$setup, "")        
+            }
+            if (length(cur_cmds$plot)) {
+                collated <- c(collated, "# Creating the plot", cur_cmds$plot, "")
+            }
         }
     
-        all_tracks[[i]] <- c(header_comments, collated, "")
+        all_tracks[[i]] <- c(header_comments, collated)
     }
 
     return(unlist(all_tracks))
 }
 
 #' @rdname INTERNAL_track_it_all
-.track_custom_code <- function(active_panels, pObjects) { 
+.track_custom_code <- function(active_panels, pObjects, select_only = FALSE) {
     active_panels <- active_panels[active_panels$Type=="customDataPlot",]
 
     all_custom <- vector("list", nrow(active_panels))
@@ -158,17 +212,22 @@
                 strrep("#", 80),
                 "")
 
-        # Adding the plotting commands.
+        # Adding the selection commands.
         cur_cmds <- pObjects$commands[[panel_name]]
-        all_custom[[i]] <- c(header_comments, 
-                "# Receiving selection data", cur_cmds$select, "", 
-                "# Generating plot", cur_cmds$plot, "")
+        collated <- c("# Receiving selection data", cur_cmds$select, "") 
+        
+        # Adding the plotting commands.
+        if (!select_only) {
+            collated <- c(collated, "# Generating plot", cur_cmds$plot, "")
+        }
+
+        all_custom[[i]] <- c(header_comments, collated)
     }
     return(unlist(all_custom))
 }
 
 #' @rdname INTERNAL_track_it_all
-.track_heatmap_code <- function(active_panels, pObjects) {
+.track_heatmap_code <- function(active_panels, pObjects,  select_only = FALSE) {
     hobjs <- active_panels[active_panels$Type=="heatMapPlot",]
     heat_names <- paste0(hobjs$Type, hobjs$ID)
     
@@ -187,20 +246,23 @@
         if (length(cur_cmds$select)) { 
             collated <- c(collated, "# Receiving selection data", cur_cmds$select, "")
         }
-        if (length(cur_cmds$centerscale)) { 
-            collated <- c(collated, "# Centering and scaling", cur_cmds$centerscale, "")
-        }
-        if (length(cur_cmds$zoom)) { 
-            collated <- c(collated, "# Zooming in", cur_cmds$zoom, "")
-        }
-        if (length(cur_cmds$plot)) {
-            collated <- c(collated, "# Creating the heat map", cur_cmds$plot, "")
-        }
-        if (length(cur_cmds$annot)) {
-            collated <- c(collated, "# Adding annotations", cur_cmds$annot, "")
-        }
-        if (length(cur_cmds$grid)) {
-            collated <- c(collated, "# Laying out the grid", cur_cmds$grid, "")
+
+        if (!select_only) {
+            if (length(cur_cmds$centerscale)) { 
+                collated <- c(collated, "# Centering and scaling", cur_cmds$centerscale, "")
+            }
+            if (length(cur_cmds$zoom)) { 
+                collated <- c(collated, "# Zooming in", cur_cmds$zoom, "")
+            }
+            if (length(cur_cmds$plot)) {
+                collated <- c(collated, "# Creating the heat map", cur_cmds$plot, "")
+            }
+            if (length(cur_cmds$annot)) {
+                collated <- c(collated, "# Adding annotations", cur_cmds$annot, "")
+            }
+            if (length(cur_cmds$grid)) {
+                collated <- c(collated, "# Laying out the grid", cur_cmds$grid, "")
+            }
         }
 
         all_heat[[i]] <- c(header_comments , collated)

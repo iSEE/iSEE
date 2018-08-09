@@ -6,8 +6,6 @@
 #' @param all_memory list of DataFrames, where each DataFrame corresponds to a panel type and contains the settings for each individual panel of that type.
 #' @param all_coordinates A list of data.frames that contain the coordinates and covariates of data points visible in each of the plots.
 #' @param se A SingleCellExperiment object.
-#' @param colormap An ExperimentColorMap object that defines custom colormaps for individual \code{assays}, \code{colData}, and \code{rowData} covariates.
-#' @param cached A data.frame of cached results from previous runs.
 #'
 #' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}, equivalent to the output of \code{\link{.plot_wrapper}}.
 #' A \code{cached} field is also returned containing the result of evaluating the user-specified function.
@@ -26,7 +24,7 @@
 #' @author Aaron Lun
 #' @rdname INTERNAL_make_customDataPlot
 #' @seealso
-#' \code{\link{.process_custom_selection}},
+#' \code{\link{.process_custom_selections}},
 #' \code{\link{.text2args}}
 #' 
 .make_customDataPlot <- function(id, all_memory, all_coordinates, se) {

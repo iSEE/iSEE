@@ -45,6 +45,7 @@ initial_panels <- DataFrame(Name = c(
 active_panels <- iSEE:::.setup_initial(initial_panels, memory)
 
 test_that("reporting order is correctly reported", {
+    # Shuffling the order to provide a more robust test of the recovery of the correct order.
     for (mode in 1:3) {
         if (mode==1) {
             cur_active <- active_panels
@@ -121,8 +122,27 @@ test_that("code trackers run correctly", {
     }
 
     # Executing the code tracker, and checking that all our commands are there.
-    out <- iSEE:::.track_it_all(active_panels, pObjects, "sce", "ecm", "list(yay=1)", list()) 
+    out <- iSEE:::.track_it_all(active_panels, pObjects, "sce", "ecm", "list()", "list()", "")
     for (panelname in panelnames) {
         expect_true(any(grepl(panelname, out)))
     }
+    expect_true(any(grepl("ggplot", out)))
+
+    # Tracking selections only - this ignores the custom data plot because it does not receive or transmit.
+    out <- iSEE:::.track_selections_only(active_panels, pObjects, "sce", "")
+    for (panelname in setdiff(panelnames, c("Heat map 1", "Custom data plot 1"))) {
+        expect_true(any(grepl(panelname, out)))
+    }
+    expect_false(any(grepl("Custom data plot 1", out)))
+    expect_false(any(grepl("Heat map 1", out)))
+
+    # Losing featAssayPlot1 if it's no longer linked to anything.
+    pObjects$selection_links <- iSEE:::.choose_new_selection_source(pObjects$selection_links, "featAssayPlot1", iSEE:::.noSelection, "featAssayPlot1")
+    out <- iSEE:::.track_selections_only(active_panels, pObjects, "sce", "")
+    expect_false(any(grepl("Feature assay plot 1", out)))
+
+    # Getting featAssayPlot1 back if it has a selection on it.
+    pObjects$memory$featAssayPlot[1, iSEE:::.brushData] <- list("this is a mock brush")
+    out <- iSEE:::.track_selections_only(active_panels, pObjects, "sce", "")
+    expect_true(any(grepl("Feature assay plot 1", out)))
 })

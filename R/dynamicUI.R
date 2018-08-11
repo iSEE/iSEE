@@ -881,8 +881,7 @@
 #' @param id Integer scalar specifying the index of a panel of the specified type, for the current plot.
 #' @param param_choices A DataFrame with one row, containing the parameter choices for the current plot.
 #' @param selectable A character vector of decoded names for available transmitting panels.
-#' @param ... Further arguments to pass to \code{\link{collapseBox}}.
-#' @param field String containing the name of the parameter with the choice of transmitting panel.
+#' @param source_type Type of the panel that is source of the selection. Either \code{"row"} or \code{"column"}.
 #'
 #' @return
 #' For \code{.create_selection_param_box} and \code{.create_selection_param_box_define_box},
@@ -906,8 +905,9 @@
 #'
 #' @importFrom shiny sliderInput radioButtons selectInput
 #' @importFrom colourpicker colourInput
-.create_selection_param_box <- function(mode, id, param_choices, selectable, source_type) {
+.create_selection_param_box <- function(mode, id, param_choices, selectable, source_type=c("row", "column")) {
     select_effect <- paste0(mode, id, "_", .selectEffect)
+    source_type <- match.arg(source_type)
 
     .create_selection_param_box_define_box(mode, id, param_choices,
         .create_selection_param_box_define_choices(mode, id, param_choices, field=.selectByPlot, selectable=selectable, source_type),
@@ -937,7 +937,7 @@
 }
 
 #' @rdname INTERNAL_create_selection_param_box
-.create_selection_param_box_define_choices <- function(mode, id, param_choices, field, selectable, source_type) {
+.create_selection_param_box_define_choices <- function(mode, id, param_choices, field, selectable, source_type=c("row", "column")) {
     selectInput(paste0(mode, id, "_", field),
             label = sprintf("Receive %s selection from:", source_type),
             choices=selectable,

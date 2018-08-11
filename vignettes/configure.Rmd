@@ -99,12 +99,12 @@ Many more options can be set to initialise `iSEE` applications in virtually any 
 Users should refer to the following help pages for the full list of values that can be specified in `iSEE`:
 
 - `?redDimPlotDefaults`
-- `?featAssayPlotDefaults`
 - `?colDataPlotDefaults`
+- `?featAssayPlotDefaults`
 - `?rowDataPlotDefaults,`
+- `?rowStatTableDefaults`
 - `?sampAssayPlotDefaults`
 - `?heatMapPlotDefaults`
-- `?rowStatTableDefaults`
 - `?"iSEE point parameters"`
 - `?"iSEE selection parameters"`
 

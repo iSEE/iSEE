@@ -120,7 +120,7 @@
 #' @author
 #' Aaron Lun, Kevin Rue-Albrecht, Charlotte Soneson
 #'
-#' @rdname point-param
+#' @rdname pointDefaults
 #' @seealso
 #' \code{\link{redDimPlotDefaults}},
 #' \code{\link{featAssayPlotDefaults}},
@@ -178,7 +178,7 @@ NULL
 #' @author
 #' Aaron Lun, Kevin Rue-Albrecht
 #'
-#' @rdname select-param
+#' @rdname selectDefaults
 #' @seealso
 #' \code{\link{redDimPlotDefaults}},
 #' \code{\link{featAssayPlotDefaults}},

@@ -1,10 +1,10 @@
 #' Generate the panel organization UI
-#' 
+#'
 #' Generates the user interface for the sidebar where the organization of the panels is controlled.
 #'
 #' @param active_panels A data.frame specifying the currently active panels, see the output of \code{\link{.setup_initial}}.
 #'
-#' @return 
+#' @return
 #' A HTML tag object containing the UI elements for the panel organization sidebar.
 #'
 #' @details
@@ -13,7 +13,7 @@
 #' Each box follows a colour-coding scheme for the panel type.
 #'
 #' Each box will contain options to move panels up or down, though these options will be disabled for the first and last boxes, respectively.
-#' Users can also change the width or height of the panels via a button that opens a modal. 
+#' Users can also change the width or height of the panels via a button that opens a modal.
 #' Finally, a button is available to delete the panel.
 #'
 #' @author Aaron Lun
@@ -66,7 +66,7 @@
 #' @param memory A list of DataFrames, where each DataFrame corresponds to a panel type and contains the initial settings for each individual panel of that type.
 #' @param se A SingleCellExperiment object.
 #'
-#' @return 
+#' @return
 #' A HTML tag object containing the UI elements for the main body of the app.
 #' This includes the output plots/tables as well as UI elements to control them.
 #'
@@ -80,8 +80,8 @@
 #'
 #' Construction of each panel is done by retrieving all of the memorized parameters and using them to set the initial values of various control elements.
 #' This ensures that the plots are not reset during re-rendering.
-#' The exception is that of the Shiny brush, which cannot be fully restored in the current version - instead, only the bounding box is shown. 
-#' 
+#' The exception is that of the Shiny brush, which cannot be fully restored in the current version - instead, only the bounding box is shown.
+#'
 #' Note that control of the tables lies within \code{\link{iSEE}} itself.
 #' Also, feature name selections will open up a \code{selectizeInput} where the values are filled on the server-side, rather than being sent to the client.
 #' This avoids long start-up times during re-rendering.
@@ -132,10 +132,10 @@
         .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
         # Checking what to do with plot-specific parameters (e.g., brushing, clicking, plot height).
-        if (! mode %in% c("rowStatTable", "customStatTable")) { 
-            brush.opts <- brushOpts(.input_FUN(.brushField), resetOnNew=FALSE, 
-                                    direction = ifelse(mode=="heatMapPlot", "y", "xy"), 
-                                    fill=brush_fill_color[mode], stroke=brush_stroke_color[mode], 
+        if (! mode %in% c("rowStatTable", "customStatTable")) {
+            brush.opts <- brushOpts(.input_FUN(.brushField), resetOnNew=FALSE,
+                                    direction = ifelse(mode=="heatMapPlot", "y", "xy"),
+                                    fill=brush_fill_color[mode], stroke=brush_stroke_color[mode],
                                     opacity = .brushFillOpacity)
             dblclick <- .input_FUN(.zoomClick)
             clickopt <- .input_FUN(.lassoClick)
@@ -197,7 +197,7 @@
                                                      choices=column_covariates, selected=param_choices[[.featAssayXAxisColData]])),
                 .conditional_on_radio(.input_FUN(.featAssayXAxis),
                                          .featAssayXAxisFeatNameTitle,
-                                         selectizeInput(.input_FUN(.featAssayXAxisFeatName), 
+                                         selectizeInput(.input_FUN(.featAssayXAxisFeatName),
                                                         label = "X-axis feature:", choices = NULL, selected = NULL, multiple = FALSE),
                                          selectInput(.input_FUN(.featAssayXAxisRowTable), label=NULL,
                                                      choices=active_tab, selected=param_choices[[.featAssayXAxisRowTable]]))
@@ -205,7 +205,7 @@
         } else if (mode=="rowStatTable") {
             obj <- tagList(dataTableOutput(panel_name), uiOutput(.input_FUN("annotation")))
         } else if (mode=="customStatTable" || mode=="customDataPlot") {
-            if (mode=="customDataPlot") { 
+            if (mode=="customDataPlot") {
                 obj <- plotOutput(panel_name, height=panel_height)
                 fun_choices <- custom_data_funnames
             } else {
@@ -281,13 +281,13 @@
                         selectInput(.input_FUN(.heatMapAssay), label=NULL,
                                     choices=all_assays, selected=param_choices[[.heatMapAssay]]),
                         hr(),
-                        checkboxGroupInput(.input_FUN(.heatMapCenterScale), label="Expression values are:", 
+                        checkboxGroupInput(.input_FUN(.heatMapCenterScale), label="Expression values are:",
                                            selected=param_choices[[.heatMapCenterScale]][[1]],
                                            choices=c(.heatMapCenterTitle, .heatMapScaleTitle), inline=TRUE),
                         numericInput(.input_FUN(.heatMapLower), label="Lower bound:",
-                                     value = param_choices[[.heatMapLower]]), 
+                                     value = param_choices[[.heatMapLower]]),
                         numericInput(.input_FUN(.heatMapUpper), label="Upper bound:",
-                                     value = param_choices[[.heatMapUpper]]), 
+                                     value = param_choices[[.heatMapUpper]]),
                         .conditional_on_check_group(.input_FUN(.heatMapCenterScale), .heatMapCenterTitle,
                                               selectInput(.input_FUN(.heatMapCenteredColors), label="Color scale:",
                                                           choices = c("purple-black-yellow", "blue-white-orange"),
@@ -299,7 +299,7 @@
                         selectizeInput(.input_FUN(.heatMapColData),
                                        label="Column data:",
                                        choices=column_covariates,
-                                       multiple = TRUE, 
+                                       multiple = TRUE,
                                        selected=param_choices[[.heatMapColData]][[1]],
                                        options = list(plugins = list('remove_button', 'drag_drop'))),
                         plotOutput(.input_FUN(.heatMapLegend))
@@ -310,33 +310,33 @@
         }
 
         # Adding graphical parameters if we're plotting.
-        if (mode %in% linked_table_types) { 
-            param <- list(hr(), 
+        if (mode %in% linked_table_types) {
+            param <- list(hr(),
                 tags$div(class = "panel-group", role = "tablist",
-                    .create_selection_param_box_define_box(mode, id, param_choices, 
-                        .create_selection_param_box_define_choices(mode, id, param_choices, .selectByPlot, row_selectable)
+                    .create_selection_param_box_define_box(mode, id, param_choices,
+                        .create_selection_param_box_define_choices(mode, id, param_choices, .selectByPlot, row_selectable, "row")
                     )
                 )
             )
         } else if (mode=="heatMapPlot") {
             param <- list(do.call(tags$div, c(list(class = "panel-group", role = "tablist"),
                     plot.param,
-                    .create_selection_param_box(mode, id, param_choices, col_selectable)
+                    .create_selection_param_box(mode, id, param_choices, col_selectable, "column")
                     )
-                )  
+                )
             )
         } else {
             # Options for fundamental plot parameters.
             data_box <- do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
-                title="Data parameters", open=param_choices[[.dataParamBoxOpen]]), plot.param))            
-            
+                title="Data parameters", open=param_choices[[.dataParamBoxOpen]]), plot.param))
+
             if (mode %in% custom_panel_types) {
                 param <- list(
                     tags$div(class = "panel-group", role = "tablist",
                         data_box,
-                        .create_selection_param_box_define_box(mode, id, param_choices, 
-                            .create_selection_param_box_define_choices(mode, id, param_choices, .customRowSource, row_selectable),
-                            .create_selection_param_box_define_choices(mode, id, param_choices, .customColSource, col_selectable)
+                        .create_selection_param_box_define_box(mode, id, param_choices,
+                            .create_selection_param_box_define_choices(mode, id, param_choices, .customRowSource, row_selectable, "row"),
+                            .create_selection_param_box_define_choices(mode, id, param_choices, .customColSource, col_selectable, "column")
                         )
                     )
                 )
@@ -344,15 +344,17 @@
                 if (mode %in% row_point_plot_types) {
                     select_choices <- row_selectable
                     create_FUN <- .create_visual_box_for_row_plots
+                    source_type <- "row"
                 } else {
                     select_choices <- col_selectable
                     create_FUN <- .create_visual_box_for_column_plots
+                    source_type <- "column"
                 }
 
                 param <- list(tags$div(class = "panel-group", role = "tablist",
                     data_box,
                     create_FUN(mode, id, param_choices, active_tab, se), # Options for visual parameters.
-                    .create_selection_param_box(mode, id, param_choices, select_choices) # Options for point selection parameters.
+                    .create_selection_param_box(mode, id, param_choices, select_choices, source_type) # Options for point selection parameters.
                     )
                 )
             }
@@ -371,11 +373,11 @@
         }
 
         # Aggregating together everything into a box, and then into a column.
-        cur_box <- do.call(box, c(list(obj), param, 
+        cur_box <- do.call(box, c(list(obj), param,
             list(uiOutput(.input_FUN(.panelGeneralInfo)), uiOutput(.input_FUN(.panelLinkInfo))),
             list(title=.decode_panel_name(mode, id), solidHeader=TRUE, width=NULL, status = "danger")))
         cur_box <- .coerce_box_status(cur_box, mode)
-        cur.row[[row.counter]] <- column(width=panel_width, cur_box, style='padding:3px;') 
+        cur.row[[row.counter]] <- column(width=panel_width, cur_box, style='padding:3px;')
         row.counter <- row.counter + 1L
         cumulative.width <- cumulative.width + panel_width
     }
@@ -390,7 +392,7 @@
 }
 
 #' Define link sources
-#' 
+#'
 #' Define all possible sources of links between active panels, i.e., feature selections from row statistics tables or point selections from plots.
 #'
 #' @param active_panels A data.frame specifying the currently active panels, see the output of \code{\link{.setup_initial}}.
@@ -429,7 +431,7 @@
 #' @param force_default Logical scalar indicating whether a non-empty default should be returned if \code{chosen} is not valid.
 #'
 #' @return A string containing a valid choice, or an empty string.
-#' 
+#'
 #' @details
 #' If \code{chosen} is in \code{available}, it will be directly returned.
 #' If not, and if \code{force_default=TRUE} and \code{available} is not empty, the first element of \code{available} is returned.
@@ -469,7 +471,7 @@
 #' Column-based plots can be coloured by nothing, by column metadata or by the expression of certain features.
 #' This function creates a collapsible box that contains all of these options, initialized with the choices in \code{memory}.
 #' The box will also contain options for font size, point size and opacity, and legend placement.
-#' 
+#'
 #' Each option, once selected, yields a further subset of nested options.
 #' For example, choosing to colour by column metadata will open up a \code{selectInput} to specify the metadata field to use.
 #' Choosing to colour by feature name will open up a \code{selectizeInput}.
@@ -504,8 +506,8 @@
         id = paste0(mode, id, "_", .visualParamBoxOpen),
         title = "Visual parameters",
         open = param_choices[[.visualParamBoxOpen]],
-        checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE, 
-                           selected=param_choices[[.visualParamChoice]][[1]], 
+        checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE,
+                           selected=param_choices[[.visualParamChoice]][[1]],
                            choices=.define_visual_options(discrete_covariates)),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceColorTitle,
             hr(),
@@ -545,12 +547,12 @@
         .conditional_on_check_group(pchoice_field, .visualParamChoicePointTitle,
             hr(), .add_point_UI_elements(mode, id, param_choices)),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceOtherTitle,
-            hr(), 
-            checkboxInput(inputId=paste0(mode, id, "_", .contourAddTitle), 
+            hr(),
+            checkboxInput(inputId=paste0(mode, id, "_", .contourAddTitle),
                           label="Add contour (scatter only)",
                           value=FALSE),
-            .conditional_on_check_solo(paste0(mode, id, "_", .contourAddTitle), 
-                                       on_select=TRUE, 
+            .conditional_on_check_solo(paste0(mode, id, "_", .contourAddTitle),
+                                       on_select=TRUE,
                                        colourInput(paste0(mode, id, "_", .contourColor), label=NULL,
                                                    value=param_choices[[.contourColor]])),
             .add_other_UI_elements(mode, id, param_choices))
@@ -558,8 +560,8 @@
 }
 
 #' Define colouring options
-#' 
-#' Define the available colouring options for row- or column-based plots, 
+#'
+#' Define the available colouring options for row- or column-based plots,
 #' where availability is defined on the presence of the appropriate data in a SingleCellExperiment object.
 #'
 #' @param se A SingleCellExperiment object.
@@ -585,8 +587,8 @@
 }
 
 #' Define shaping options
-#' 
-#' Define the available shaping options for row- or column-based plots, 
+#'
+#' Define the available shaping options for row- or column-based plots,
 #' where availability is defined on the presence of the appropriate data in a SingleCellExperiment object.
 #'
 #' @param se A SingleCellExperiment object.
@@ -601,13 +603,13 @@
 #' @rdname INTERNAL_define_shape_options
 .define_shape_options_for_column_plots <- function(se) {
     shape_choices <- .shapeByNothingTitle
-    
+
     col_groupable <- .get_internal_info(se, "column_groupable")
-    
+
     if (length(col_groupable)) {
         shape_choices <- c(shape_choices, .shapeByColDataTitle)
     }
-    
+
     return(shape_choices)
 }
 
@@ -627,17 +629,17 @@
 #' @rdname INTERNAL_define_visual_options
 .define_visual_options <- function(discrete_covariates) {
     pchoices <- c(.visualParamChoiceColorTitle)
-    
+
     if (length(discrete_covariates)) {
         pchoices <- c(pchoices, .visualParamChoiceShapeTitle)
     }
-    
+
     # Insert the point choice _after_ the shape aesthetic, if present
     pchoices <- c(pchoices, .visualParamChoicePointTitle)
-    
+
     if (length(discrete_covariates)) {
         pchoices <- c(pchoices, .visualParamChoiceFacetTitle)
-    } 
+    }
     pchoices <- c(pchoices, .visualParamChoiceOtherTitle)
     return(pchoices)
 }
@@ -664,7 +666,7 @@
 #' Note that some options will be disabled depending on the nature of the input, namely:
 #' \itemize{
 #' \item If there are no row metadata fields, users will not be allowed to colour by row metadata, obviously.
-#' \item If there are no features, users cannot colour by features. 
+#' \item If there are no features, users cannot colour by features.
 #' \item If there are no categorical column metadata fields, users will not be allowed to view the faceting options.
 #' }
 #'
@@ -689,8 +691,8 @@
         id = paste0(mode, id, "_", .visualParamBoxOpen),
         title = "Visual parameters",
         open = param_choices[[.visualParamBoxOpen]],
-        checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE, 
-                           selected=param_choices[[.visualParamChoice]][[1]], 
+        checkboxGroupInput(inputId=pchoice_field, label=NULL, inline=TRUE,
+                           selected=param_choices[[.visualParamChoice]][[1]],
                            choices=.define_visual_options(discrete_covariates)),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceColorTitle,
             radioButtons(colorby_field, label="Color by:", inline=TRUE,
@@ -739,7 +741,7 @@
     if (ncol(rowData(se))) {
         color_choices <- c(color_choices, .colorByRowDataTitle)
     }
-    if (nrow(se)) { 
+    if (nrow(se)) {
         color_choices <- c(color_choices, .colorByFeatNameTitle)
     }
     return(color_choices)
@@ -748,17 +750,17 @@
 #' @rdname INTERNAL_define_shape_options
 .define_shape_options_for_row_plots <- function(se) {
     shape_choices <- .shapeByNothingTitle
-    
+
     row_groupable <- .get_internal_info(se, "row_groupable")
-    
+
     if (length(row_groupable)) {
         shape_choices <- c(shape_choices, .shapeByRowDataTitle)
     }
-    
+
     return(shape_choices)
 }
 
-#' Faceting visual parameters 
+#' Faceting visual parameters
 #'
 #' Create UI elements for selection of faceting visual parameters.
 #'
@@ -787,13 +789,13 @@
     tagList(
         checkboxInput(rowId, label="Facet by row",
                       value=param_choices[, .facetByRow]),
-        .conditional_on_check_solo(rowId, on_select=TRUE, 
+        .conditional_on_check_solo(rowId, on_select=TRUE,
             selectInput(paste0(mode, id, "_", .facetRowsByColData), label = NULL,
                         choices=covariates, selected=param_choices[[.facetRowsByColData]])
         ),
         checkboxInput(columnId, label="Facet by column",
                       value=param_choices[, .facetByColumn]),
-        .conditional_on_check_solo(columnId, on_select=TRUE, 
+        .conditional_on_check_solo(columnId, on_select=TRUE,
             selectInput(paste0(mode, id, "_", .facetColumnsByColData), label = NULL,
                         choices=covariates, selected=param_choices[[.facetColumnsByColData]])
         )
@@ -807,20 +809,20 @@
     tagList(
         checkboxInput(rowId, label="Facet by row",
                       value=param_choices[, .facetByRow]),
-        .conditional_on_check_solo(rowId, on_select=TRUE, 
+        .conditional_on_check_solo(rowId, on_select=TRUE,
             selectInput(paste0(mode, id, "_", .facetRowsByRowData), label = NULL,
                         choices=covariates, selected=param_choices[[.facetRowsByRowData]])
         ),
         checkboxInput(columnId, label="Facet by column",
                       value=param_choices[, .facetByColumn]),
-        .conditional_on_check_solo(columnId, on_select=TRUE, 
+        .conditional_on_check_solo(columnId, on_select=TRUE,
             selectInput(paste0(mode, id, "_", .facetColumnsByRowData), label = NULL,
                         choices=covariates, selected=param_choices[[.facetColumnsByRowData]])
         )
     )
 }
 
-#' General visual parameters 
+#' General visual parameters
 #'
 #' Create UI elements for selection of general visual parameters.
 #'
@@ -845,33 +847,33 @@
 .add_point_UI_elements <- function(mode, id, param_choices) {
     ds_id <- paste0(mode, id, "_", .plotPointDownsample)
     tagList(
-        numericInput(paste0(mode, id, "_", .plotPointSize), label = "Point size:", 
+        numericInput(paste0(mode, id, "_", .plotPointSize), label = "Point size:",
                      min=0, value=param_choices[,.plotPointSize]),
-        sliderInput(paste0(mode, id, "_", .plotPointAlpha), label = "Point opacity", 
+        sliderInput(paste0(mode, id, "_", .plotPointAlpha), label = "Point opacity",
                     min=0.1, max=1, value=param_choices[,.plotPointAlpha]),
         hr(),
-        checkboxInput(ds_id, label="Downsample points for speed", 
+        checkboxInput(ds_id, label="Downsample points for speed",
                       value=param_choices[,.plotPointDownsample]),
-        .conditional_on_check_solo(ds_id, on_select=TRUE, 
-            numericInput(paste0(mode, id, "_", .plotPointSampleRes), label = "Sampling resolution:", 
+        .conditional_on_check_solo(ds_id, on_select=TRUE,
+            numericInput(paste0(mode, id, "_", .plotPointSampleRes), label = "Sampling resolution:",
                          min=1, value=param_choices[,.plotPointSampleRes])
         )
     )
 }
 
-#' @rdname INTERNAL_add_visual_UI_elements 
+#' @rdname INTERNAL_add_visual_UI_elements
 #' @importFrom shiny tagList radioButtons numericInput
-.add_other_UI_elements <- function(mode, id, param_choices) { 
-    tagList(    
-        numericInput(paste0(mode, id, "_", .plotFontSize), label = "Font size:", 
+.add_other_UI_elements <- function(mode, id, param_choices) {
+    tagList(
+        numericInput(paste0(mode, id, "_", .plotFontSize), label = "Font size:",
                      min=0, value=param_choices[,.plotFontSize]),
         radioButtons(paste0(mode, id, "_", .plotLegendPosition), label = "Legend position:", inline=TRUE,
-                     choices=c(.plotLegendBottomTitle, .plotLegendRightTitle), 
+                     choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
                      selected=param_choices[,.plotLegendPosition])
     )
 }
 
-#' Point selection parameter box 
+#' Point selection parameter box
 #'
 #' Create a point selection parameter box for all point-based plots.
 #'
@@ -883,9 +885,9 @@
 #' @param field String containing the name of the parameter with the choice of transmitting panel.
 #'
 #' @return
-#' For \code{.create_selection_param_box} and \code{.create_selection_param_box_define_box}, 
+#' For \code{.create_selection_param_box} and \code{.create_selection_param_box_define_box},
 #' a HTML tag object containing a \code{\link{collapseBox}} with UI elements for changing point selection parameters.
-#' 
+#'
 #' For \code{.create_selection_param_box_define_choices}, a HTML tag object containing a \code{selectInput} for choosing the transmitting panels.
 #'
 #' @details
@@ -899,16 +901,16 @@
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_create_selection_param_box
-#' @seealso 
+#' @seealso
 #' \code{\link{.panel_generation}}
-#' 
+#'
 #' @importFrom shiny sliderInput radioButtons selectInput
 #' @importFrom colourpicker colourInput
-.create_selection_param_box <- function(mode, id, param_choices, selectable) {
+.create_selection_param_box <- function(mode, id, param_choices, selectable, source_type) {
     select_effect <- paste0(mode, id, "_", .selectEffect)
 
     .create_selection_param_box_define_box(mode, id, param_choices,
-        .create_selection_param_box_define_choices(mode, id, param_choices, field=.selectByPlot, selectable=selectable),
+        .create_selection_param_box_define_choices(mode, id, param_choices, field=.selectByPlot, selectable=selectable, source_type),
 
         radioButtons(select_effect, label="Selection effect:", inline=TRUE,
                      choices=c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle),
@@ -935,14 +937,14 @@
 }
 
 #' @rdname INTERNAL_create_selection_param_box
-.create_selection_param_box_define_choices <- function(mode, id, param_choices, field, selectable) {
+.create_selection_param_box_define_choices <- function(mode, id, param_choices, field, selectable, source_type) {
     selectInput(paste0(mode, id, "_", field),
-            label = "Receive selection from:", 
+            label = sprintf("Receive %s selection from:", source_type),
             choices=selectable,
             selected=.choose_link(param_choices[[field]], selectable))
 }
 
-#' Conditional elements on radio or checkbox selection 
+#' Conditional elements on radio or checkbox selection
 #'
 #' Creates a conditional UI element that appears upon a certain choice in a radio button or checkbox group selection.
 #'
@@ -953,7 +955,7 @@
 #'
 #' @return
 #' A HTML object containing elements that only appear when \code{choice} is selected in the UI element for \code{id}.
-#' 
+#'
 #' @details
 #' This function is useful for hiding options that are irrelevant when a different radio button is selected, or when the corresponding checkbox element is unselected.
 #' In this manner, we can avoid cluttering the UI.
@@ -976,13 +978,13 @@
 .conditional_on_check_solo <- function(id, on_select=TRUE, ...) {
     choice <- ifelse(on_select, 'true', 'false')
     conditionalPanel(condition=sprintf('(input["%s"] == %s)', id, choice), ...)
-} 
+}
 
 #' @rdname INTERNAL_conditional_elements
 #' @importFrom shiny conditionalPanel
 .conditional_on_check_group <- function(id, choice, ...) {
     conditionalPanel(condition=sprintf('(input["%s"].includes("%s"))', id, choice), ...)
-} 
+}
 
 #' Coerce box status to custom classes
 #'
@@ -993,7 +995,7 @@
 #' @param old_status String specifying the current status of the \code{box}, to be replaced by \code{mode}.
 #'
 #' @return A modified \code{in_box} where the status is changed from \code{old_status} to \code{mode}.
-#' 
+#'
 #' @details
 #' The \code{\link[shinydashboard]{box}} function does not allow use of custom statuses.
 #' As a result, we generate the box using the \code{"danger"} status, and replace it afterwards with our custom status.
@@ -1009,7 +1011,7 @@
 #' \code{\link{.panel_generation}}
 .coerce_box_status <- function(in_box, mode, old_status="danger") {
     in_box$children[[1]]$attribs$class <- sub(paste0("box-", old_status),
-                                              paste0("box-", tolower(mode)), 
+                                              paste0("box-", tolower(mode)),
                                               in_box$children[[1]]$attribs$class)
     return(in_box)
 }
@@ -1018,7 +1020,7 @@
 
 
 #' Precompute UI information
-#' 
+#'
 #' Precompute information to be shown in the UI and store it in the internal metadata of a SingleCellExperiment object.
 #'
 #' @param se A SingleCellExperiment object.
@@ -1030,18 +1032,18 @@
 #' \itemize{
 #' \item Unique-ified selectize choices, to avoid problems with selecting between different unnamed assays, samples or reduced dimension results.
 #' \item The names of discrete metadata fields, for use in restricting choices for faceting.
-#' \item A list of the custom data plot functions supplied to the \code{\link{iSEE}} function. 
-#' \item A list of the custom statistics table functions supplied to the \code{\link{iSEE}} function. 
+#' \item A list of the custom data plot functions supplied to the \code{\link{iSEE}} function.
+#' \item A list of the custom statistics table functions supplied to the \code{\link{iSEE}} function.
 #' }
 #'
 #' Storage in the internal metadata allows us to pass a single argument to various UI functions and for them to extract out the relevant fields.
 #' This avoids creating functions with many different arguments, which would be difficult to maintain.
-#' 
+#'
 #' @author Aaron Lun
 #'
 #' @return A SingleCellExperiment with values stored in an \code{iSEE} field in the internal metadata.
 #'
-#' @seealso 
+#' @seealso
 #' \code{\link{.which_groupable}},
 #' \code{\link{.sanitize_names}},
 #' \code{\link{.get_internal_info}}
@@ -1067,11 +1069,11 @@
 }
 
 #' Sanitize names
-#' 
+#'
 #' Convert a vector of names into a named integer vector of indices.
 #'
 #' @param raw_names A character vector of names.
-#' 
+#'
 #' @return
 #' An integer vector of \code{1:length(raw_names)}, with names based on \code{raw_names}.
 #'
@@ -1090,7 +1092,7 @@
 }
 
 #' Extract internal information
-#' 
+#'
 #' Extracts the requested fields from the internal metadata field of a SingleCellExperiment object.
 #'
 #' @param se A SingleCellExperiment.
@@ -1104,7 +1106,7 @@
 #' @return The value of \code{field} in the internal metadata of \code{se}.
 #'
 #' @author Aaron Lun
-#' 
+#'
 #' @seealso \code{\link{.precompute_UI_info}}
 #' @rdname INTERNAL_get_internal_info
 #' @importFrom SingleCellExperiment int_metadata

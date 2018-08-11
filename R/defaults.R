@@ -794,7 +794,6 @@ heatMapPlotDefaults <- function(se, number) {
 #' @author Aaron Lun
 #' @rdname INTERNAL_override_defaults
 #' @seealso
-#' \code{?\link{defaults}},
 #' \code{\link{.setup_memory}}
 #' @importFrom BiocGenerics colnames
 .override_defaults <- function(def, usr)
@@ -840,7 +839,7 @@ heatMapPlotDefaults <- function(se, number) {
 #' @author Aaron Lun
 #' @rdname INTERNAL_add_general_parameters
 #' @seealso
-#' \code{\link{defaults}}
+#' \code{?"\link{iSEE point parameters}"}
 .add_general_parameters <- function(incoming) {
     incoming[[.dataParamBoxOpen]] <- FALSE
     incoming[[.visualParamBoxOpen]] <- FALSE
@@ -953,7 +952,9 @@ heatMapPlotDefaults <- function(se, number) {
 #' @author Aaron Lun
 #' @rdname INTERNAL_set_default_assay
 #' @seealso
-#' \code{?\link{defaults}}
+#' \code{?"\link{iSEE point parameters}"},
+#' \code{\link{featAssayPlotDefaults}},
+#' \code{\link{heatMapPlotDefaults}}
 #' @importFrom SummarizedExperiment assayNames
 .set_default_assay <- function(se) {
     def_assay <- which(assayNames(se)=="logcounts")

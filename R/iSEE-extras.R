@@ -138,7 +138,7 @@
 #'
 #' In each DataFrame, some parameters can be specified as strings for convenience, while internally being represented as integer indices.
 #' Any such string values are converted to integers using the \code{\link{.name2index}} function, for consistency in downstream processing.
-#' See \code{?"\link{defaults}"} for more details.
+#' See the \code{Type} parameter in \code{\link{redDimPlotDefaults}} for an example.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_setup_memory

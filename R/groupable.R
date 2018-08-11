@@ -51,9 +51,9 @@
 #' 
 #' @author Kevin Rue-Albrecht
 #' 
-#' @rdname INTERNAL_.groupable
+#' @rdname INTERNAL_groupable
 #' @seealso
-#' \code{?\link{defaults}}
+#' \code{\link{.add_general_parameters}}
 .which_groupable <- function(x) {
     if (ncol(x) == 0L) {
         return(integer())

@@ -1,6 +1,13 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.1.4}{
+\itemize{
+    \item Split \code{?defaults} help page by panel type.
+    \item Generalized support for custome data plots and statistics tables.
+}
+}
+
 \section{iSEE VERSION 1.1.3}{
 \itemize{
     \item Added new Sample assay plot panel type.

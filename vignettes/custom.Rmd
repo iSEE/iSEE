@@ -163,7 +163,7 @@ We will then set up an `iSEE` instance with three panels - a reduced dimension p
 Note how the custom panel initially receives a column selection from the reduced dimension plot and a row selection from the row data plot.
 We also set the initial function to the name of `CUSTOM_PCA` in `customDataFun`, and the initial arguments to the values described above.
 
-```{r iSEE}
+```{r app}
 library(iSEE)
 reddim <- redDimPlotDefaults(sce, 1)
 rowdat <- rowDataPlotDefaults(sce, 1)

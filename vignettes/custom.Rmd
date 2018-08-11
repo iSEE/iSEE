@@ -91,7 +91,7 @@ and creates a plot of the first two principal components with `plotPCA` [@mccart
 library(scater)
 CUSTOM_PCA <- function(se, rows, columns, colour_by=NULL, scale_features=TRUE) {
     if (!is.null(columns)) {
-        kept <- se[,columns]
+        kept <- se[, columns]
     } else {
         return(ggplot())
     }
@@ -118,14 +118,16 @@ CUSTOM_SUMMARY <- function(se, ri, ci, assay="logcounts", min_exprs=0) {
         ri <- rownames(se)
     }
     if (is.null(ci)) {
-        ci <- colnames(ses)
+        ci <- colnames(se)
     }
     
+    assayMatrix <- assay(se, assay)[ri, ci, drop=FALSE]
+    
     data.frame(
-        Mean = rowMeans(assay(se, assay)[ri, ci]),
-        Var = rowVars(assay(se, assay)[ri, ci]),
-        Sum = rowSums(assay(se, assay)[ri, ci]),
-        n_detected = rowSums(assay(se, assay)[ri, ci] > min_exprs),
+        Mean = rowMeans(assayMatrix),
+        Var = rowVars(assayMatrix),
+        Sum = rowSums(assayMatrix),
+        n_detected = rowSums(assayMatrix > min_exprs),
         row.names = ri
     )
 }
@@ -159,8 +161,8 @@ rowData(sce)$mean_log <- rowMeans(logcounts(sce))
 rowData(sce)$var_log <- apply(logcounts(sce), 1, var)
 ```                                                                            
 
-We will then set up an `iSEE` instance with three panels - a reduced dimension plot, a row data plot and a custom plot.
-Note how the custom panel initially receives a column selection from the reduced dimension plot and a row selection from the row data plot.
+We will then set up an `iSEE` instance with four panels - a reduced dimension plot, a row data plot, a custom plot, and a custom table.
+Note how both custom panels initially receives a column selection from the reduced dimension plot and a row selection from the row data plot.
 We also set the initial function to the name of `CUSTOM_PCA` in `customDataFun`, and the initial arguments to the values described above.
 
 ```{r app}
@@ -177,10 +179,21 @@ cdp$Arguments <- "colour_by Nanog\nscale_features FALSE"
 cdp$ColumnSource <- "Reduced dimension plot 1"
 cdp$RowSource <- "Row data plot 1"
 
-app <- iSEE(sce, redDimArgs=reddim, rowDataArgs=rowdat, customDataArgs=cdp,
-    initialPanels=DataFrame(Name=c("Reduced dimension plot 1", 
-            "Row data plot 1", "Custom data plot 1")),
-    customDataFun=list(CUSTOM_PCA=CUSTOM_PCA))
+cst <- customStatTableDefaults(sce, 1)
+cst$Function <- "CUSTOM_SUMMARY"
+cst$ColumnSource <- "Reduced dimension plot 1"
+cst$RowSource <- "Row data plot 1"
+
+app <- iSEE(
+    sce, redDimArgs=reddim, rowDataArgs=rowdat, customDataArgs=cdp, customStatArgs=cst,
+    initialPanels=DataFrame(
+        Name=c(
+            "Reduced dimension plot 1", "Row data plot 1",
+            "Custom data plot 1", "Custom statistics table 1"),
+        Width=c(4, 4, 4, 12)),
+    customDataFun=list(CUSTOM_PCA=CUSTOM_PCA),
+    customStatFun=list(CUSTOM_SUMMARY=CUSTOM_SUMMARY)
+    )
 ```
 
 # Caching for greater efficiency

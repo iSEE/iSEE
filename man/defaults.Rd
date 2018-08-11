@@ -124,14 +124,6 @@ Alternatively, a character field can be supplied containing the name of the colu
 }
 }
 
-\section{Custom column plot parameters}{
-
-\describe{
-\item{\code{Function}:}{String, which function should be used to generate coordinates for each sample?
-Defaults to \code{"---"}, i.e., no coordinates are generated.}
-}
-}
-
 \section{Coloring parameters (for point-based plots)}{
 
 \describe{
@@ -317,6 +309,28 @@ Defaults to \code{"purple-black-yellow"}.}
 Finally, the \code{ZoomData} field for heatmaps should contain an integer vector of consecutive indices to zoom into from the full heatmap.
 This vector will subset the entries in \code{FeatName} for a given panel.
 This defaults to \code{NULL}, i.e., all specified features in \code{FeatName} are shown.
+}
+
+\section{Custom data plot parameters}{
+
+\describe{
+\item{\code{Function}:}{String, which function should be used to generate coordinates for each sample?
+Defaults to \code{"---"}, i.e., no coordinates are generated.}
+\item{\code{ColumnSource}:}{Character, which other plot should be used for point selection in the current plot? Defaults to \code{"---"}, which means that no plot is used for point selection.}
+\item{\code{RowSource}:}{Character, which other plot should be used to select features in the current plot? Defaults to \code{"---"}, which means that no plot is used for point selection.}
+}
+}
+
+\section{Custom statistics table parameters}{
+
+\describe{
+\item{\code{Function}:}{String, which function should be used to generate coordinates for each sample?
+Defaults to \code{"---"}, i.e., no table is generated.}
+\item{\code{ColumnSource}:}{Character, which other plot should be used for point selection in the current table? Defaults to \code{"---"}, which means that no plot is used for point selection.}
+\item{\code{RowSource}:}{Character, which other plot should be used to select features in the current table? Defaults to \code{"---"}, which means that no plot is used for point selection.}
+\item{\code{Search}:}{Character, containing the initial value of the search field.
+Defaults to an empty string.}
+}
 }
 
 \section{Point selection parameters}{

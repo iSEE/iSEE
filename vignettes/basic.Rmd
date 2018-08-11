@@ -215,6 +215,23 @@ The measurement units are selected as one of the `assays(se)`, which is applied 
 Obviously, any other assayed value for any feature can be visualized in this manner, not limited to the expression of genes.
 The only requirement for this type of panel is that the observations can be stored as a matrix in the `SummarizedExperiment` object.
 
+## Row data plots
+
+A *row data plot* allows the visualization of information stored in the `rowData` slot of a `SummarizedExperiment` object. 
+Its behavior mirrors the implementation for the *column data plot*, and correspondingly this plot can assume various forms depending on whether the data are categorical or continuous.
+
+## Sample assay plots
+
+A *sample assay plot* visualizes the assayed values (e.g., gene expression) for a particular sample (e.g., cell) across the features on the Y axis.
+
+This usually results in a (grouped) violin plot, if the X axis is set to `"None"` or a categorical variable (e.g., gene biotype); or a scatter plot, if the X axis is another continuous variable.
+
+Notably, the X axis covariate can also be set to:
+
+- a discrete row data covariates (e.g., gene biotype), to stratify the distribution of assayed values
+- a continuous row data covariate (e.g. count of cells expressing each gene)
+- another sample, to visualize and compare the assayed values in any two samples.
+
 ## Row statistics tables
 
 A *row statistics table* contains the values of the `rowData` slot for the `SingleCellExperiment`/`SummarizedExperiment` object. 
@@ -222,11 +239,6 @@ If none are available, a column named `Present` is added and set to `TRUE` for a
 Typically, these tables are used to link to other plots to determine the genes to use for plotting (or coloring).
 However, they can also be used to retrieve gene-specific annotation on the fly by specifying the `annotFun` parameter, e.g. using the `annotateEntrez` or `annotateEnsembl` functions, provided in `r Biocpkg("iSEE")`. 
 Alternatively, users can create a customized annotation function; for more details on this, please consult the manual pages `?annotateEntrez` and `?annotateEnsembl`.
-
-## Row data plots
-
-A *row data plot* allows the visualization of information stored in the `rowData` slot of a `SummarizedExperiment` object. 
-Its behavior mirrors the implementation for the *column data plot*, and correspondingly this plot can assume various forms depending on whether the data are categorical or continuous.
 
 ## Heat maps
 

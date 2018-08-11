@@ -75,14 +75,19 @@ The only requirements are that the function has to accept:
 - A vector of row names as the second argument, specifying the rows that are selected in the transmitting _row-panel_ panel.
 - A vector of column names as the third argument, specifying the columns that are selected in the transmitting _column-based_ panel.
 
-For custom plot panels, the function is expected to produce a `ggplot` object.
-For custom table panels, the function is expected to produce a `data.frame`.
+In addition:
 
-To demonstrate, we'll define an example function `CUSTOM_PCA` below.
-This takes a subset of features and cells in a `SingleCellExperiment` object, performs a principal components analysis (PCA) using that subset with `runPCA`, 
+- For _custom plot panels_, the function is expected to produce a `ggplot` object.
+- For _custom table panels_, the function is expected to produce a `data.frame`.
+
+## Example of custom plot panel
+
+To demonstrate _custom plot panels_, we define an example function `CUSTOM_PCA` below.
+This takes a subset of features and cells in a `SingleCellExperiment` object,
+performs a principal components analysis (PCA) using that subset with `runPCA`,
 and creates a plot of the first two principal components with `plotPCA` [@mccarthy2017scater].
 
-```{r}
+```{r CUSTOM_PCA}
 library(scater)
 CUSTOM_PCA <- function(se, rows, columns, colour_by=NULL, scale_features=TRUE) {
     if (!is.null(columns)) {
@@ -101,11 +106,38 @@ Note that `rows` and `columns` may be `NULL` if no selection was made in the res
 How these should be treated is up to the user-defined function.
 In the `CUSTOM_PCA` example above, an empty _ggplot_ is returned if there is no selection on the columns, while the default `runPCA` behaviour is used if `feature_set=NULL`.
 
+## Example of custom table panel
+
+To demonstrate _custom table panels_, we define an example function `CUSTOM_SUMMARY` below.
+This takes a subset of features and cells in a `SingleCellExperiment` object,
+and creates data-frame that details the `mean`, `variance` and count of samples with expression above a given cut-off within the selection.
+
+```{r CUSTOM_SUMMARY}
+CUSTOM_SUMMARY <- function(se, ri, ci, assay="logcounts", min_exprs=0) {
+    if (is.null(ri)) {
+        ri <- rownames(se)
+    }
+    if (is.null(ci)) {
+        ci <- colnames(ses)
+    }
+    
+    data.frame(
+        Mean = rowMeans(assay(se, assay)[ri, ci]),
+        Var = rowVars(assay(se, assay)[ri, ci]),
+        Sum = rowSums(assay(se, assay)[ri, ci]),
+        n_detected = rowSums(assay(se, assay)[ri, ci] > min_exprs),
+        row.names = ri
+    )
+}
+```
+
+Note that in the `CUSTOM_SUMMARY` example above, if either `rows` or `columns` are `NULL`, all rows or columns are used, respectively.
+
 ## Additional arguments
 
 Users of custom panels can specify additional arguments via a text box that accepts multi-line inputs.
 This is automatically converted into named arguments before being passed to the custom function.
-Each line corresponds to one argument:value pair, and the name of the argument is defined as the string before the first space.
+Each line corresponds to one space-separated argument:value pair, and the name of the argument is defined as the string before the first space.
 
 For example, if a user were to type:
 
@@ -122,7 +154,7 @@ It is the responsibility of the custom function to perform any necessary type ch
 
 Using the `sce` object that we generated in the first vignette, we will add some fields for examining the mean-variance relationship across features:
 
-```{r}
+```{r mean_log-var_log}
 rowData(sce)$mean_log <- rowMeans(logcounts(sce))
 rowData(sce)$var_log <- apply(logcounts(sce), 1, var)
 ```                                                                            
@@ -131,7 +163,7 @@ We will then set up an `iSEE` instance with three panels - a reduced dimension p
 Note how the custom panel initially receives a column selection from the reduced dimension plot and a row selection from the row data plot.
 We also set the initial function to the name of `CUSTOM_PCA` in `customDataFun`, and the initial arguments to the values described above.
 
-```{r}
+```{r iSEE}
 library(iSEE)
 reddim <- redDimPlotDefaults(sce, 1)
 rowdat <- rowDataPlotDefaults(sce, 1)
@@ -161,7 +193,7 @@ We will demonstrate this below using a function that computes log-fold changes f
 For any given column selection, we compute log-fold changes for all features and cache the results in the `caching` environment.
 This allows us to avoid recomputing these values if only the row selection changes.
 
-```{r}
+```{r CUSTOM_LFC}
 caching <- new.env()
 CUSTOM_LFC <- function(se, rows, columns) {
     if (is.null(columns)) {
@@ -188,7 +220,7 @@ CUSTOM_LFC <- function(se, rows, columns) {
 We will then set up an `iSEE` instance with three panels - a reduced dimension plot, a row data plot and a custom statistics table.
 This is much the same as described for the custom plot panel.
 
-```{r}
+```{r app2}
 cst <- customStatTableDefaults(sce, 1)
 cst$Function <- "CUSTOM_LFC"
 cst$ColumnSource <- "Reduced dimension plot 1"

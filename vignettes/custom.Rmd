@@ -82,7 +82,7 @@ In addition:
 
 ## Example of custom plot panel
 
-To demonstrate _custom plot panels_, we define an example function `CUSTOM_PCA` below.
+To demonstrate the use of _custom plot panels_, we define an example function `CUSTOM_PCA` below.
 This takes a subset of features and cells in a `SingleCellExperiment` object,
 performs a principal components analysis (PCA) using that subset with `runPCA`,
 and creates a plot of the first two principal components with `plotPCA` [@mccarthy2017scater].
@@ -108,7 +108,7 @@ In the `CUSTOM_PCA` example above, an empty _ggplot_ is returned if there is no 
 
 ## Example of custom table panel
 
-To demonstrate _custom table panels_, we define an example function `CUSTOM_SUMMARY` below.
+To demonstrate the use of _custom table panels_, we define an example function `CUSTOM_SUMMARY` below.
 This takes a subset of features and cells in a `SingleCellExperiment` object,
 and creates data-frame that details the `mean`, `variance` and count of samples with expression above a given cut-off within the selection.
 
@@ -139,16 +139,17 @@ Note that in the `CUSTOM_SUMMARY` example above, if either `rows` or `columns` a
 
 Users of custom panels can specify additional arguments via a text box that accepts multi-line inputs.
 This is automatically converted into named arguments before being passed to the custom function.
-Each line corresponds to one space-separated argument:value pair, and the name of the argument is defined as the string before the first space.
+Each line corresponds to one argument:value pair, separated by the first space (ignoring whitespace at the start of the line).
 
-For example, if a user were to type:
+For example, consider the `CUSTOM_PCA` function. 
+If a user were to type:
 
 ```
 colour_by Nanog
 scale_features FALSE
 ```
 
-... this would pass `colour_by="Nanog"` and `scale_features="TRUE"` to `CUSTOM_PCA`.
+... in the text box, this would pass `colour_by="Nanog"` and `scale_features="TRUE"` to `CUSTOM_PCA`.
 Note that all additional arguments are passed as character strings for the sake of security.
 It is the responsibility of the custom function to perform any necessary type checks and conversions (hence the `as.logical` in `CUSTOM_PCA`).
 

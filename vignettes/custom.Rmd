@@ -181,6 +181,7 @@ cdp$RowSource <- "Row data plot 1"
 
 cst <- customStatTableDefaults(sce, 1)
 cst$Function <- "CUSTOM_SUMMARY"
+cst$Arguments <- "assay logcounts\nmin_exprs 1"
 cst$ColumnSource <- "Reduced dimension plot 1"
 cst$RowSource <- "Row data plot 1"
 

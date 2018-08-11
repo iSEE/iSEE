@@ -26,7 +26,7 @@ output:
   BiocStyle::html_document:
     toc_float: true
 vignette: >
-  %\VignetteIndexEntry{3. Deploying custom panels}
+  %\VignetteIndexEntry{4. Deploying custom panels}
   %\VignetteEncoding{UTF-8}  
   %\VignettePackage{iSEE}
   %\VignetteKeywords{GeneExpression, RNASeq, Sequencing, Visualization, QualityControl, GUI}

@@ -1,0 +1,119 @@
+---
+title: >
+  Configuring `r Biocpkg("iSEE")` apps
+author:
+- name: Federico Marini
+  affiliation: 
+  - &id1 Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz
+  - Center for Thrombosis and Hemostasis (CTH), Mainz
+  email: marinif@uni-mainz.de
+- name: Aaron Lun
+  affiliation: 
+  - &id2 Cancer Research UK Cambridge Institute, University of Cambridge
+  email: aaron.lun@cruk.cam.ac.uk
+- name: Charlotte Soneson
+  affiliation: 
+  - &id3 Institute of Molecular Life Sciences, University of Zurich
+  - SIB Swiss Institute of Bioinformatics
+  email: charlottesoneson@gmail.com
+- name: Kevin Rue-Albrecht
+  affiliation: 
+  - &id4 Kennedy Institute of Rheumatology, University of Oxford,
+    Headington, Oxford OX3 7FY, UK.
+  email: kevin.rue-albrecht@kennedy.ox.ac.uk
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('iSEE')`"
+output: 
+  BiocStyle::html_document:
+    toc_float: true
+vignette: >
+  %\VignetteIndexEntry{3. Configuring iSEE apps}
+  %\VignetteEncoding{UTF-8}  
+  %\VignettePackage{iSEE}
+  %\VignetteKeywords{GeneExpression, RNASeq, Sequencing, Visualization, QualityControl, GUI}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+bibliography: iSEE.bib
+---
+
+**Compiled date**: `r Sys.Date()`
+
+**Last edited**: 2018-03-08
+
+**License**: `r packageDescription("iSEE")[["License"]]`
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  error = FALSE,
+  warning = FALSE,
+  message = FALSE
+)
+stopifnot(requireNamespace("htmltools"))
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+sce <- readRDS("sce.rds")    
+```
+
+To load and attach the package to your current workspace, enter:
+
+```{r library}
+library(iSEE)
+```
+
+# Changing the default start configuration
+
+The default start configuration with one plot of each type may not always be the most appropriate.
+`iSEE` allows the user to programmatically modify the initial settings [@kra2018iSEE], avoiding the need to click through the choices to obtain the desired panel setup.
+Almost every aspect of the initial app state can be customized, down to whether or not the parameter boxes are open or closed!
+
+To demonstrate this feature, let's assume that we are only interested in feature assay plots.
+The default set of panels can be changed via the `initialPanels` argument of the `iSEE` function call.
+Given a `SingleCellExperiment` or `SummarizedExperiment` object named `sce`, the following code opens an app with two adjacent feature assay plots.
+Note that each panel is set to occupy half the width of the application window, which is set to 12 units by the `r CRANpkg("shiny")` package.
+
+```{r init}
+init <- DataFrame(
+    Name = c("Feature assay plot 1", "Feature assay plot 2"),
+    Width = c(6, 6)
+)
+app <- iSEE(sce, initialPanels = init)
+```
+
+The genes to show on the y-axis in the two plots can be specified via the `featAssayArgs` argument to `iSEE`. This is a `DataFrame`, specifying the initial parameters for each plot.
+In this case, we want to modify the `YAxis` and `YAxisFeatName` defaults for the two plots:
+
+```{r fexArg}
+fexArg <- featAssayPlotDefaults(sce, 2)
+fexArg$YAxisFeatName <- c("0610009L18Rik", "0610009B22Rik")
+app <- iSEE(sce, initialPanels = init, featAssayArgs = fexArg)
+```
+
+This will open the app with two feature assay plots, showing the selected genes.
+Of course, from this starting point, all the interactive functionality is still available, and new panels can be added, modified and linked via point selection.
+
+# Further reading
+
+Many more options can be set to initialise `iSEE` applications in virtually any state and preferred layout.
+Users should refer to the following help pages for the full list of values that can be specified in `iSEE`:
+
+- `?redDimPlotDefaults`
+- `?featAssayPlotDefaults`
+- `?colDataPlotDefaults`
+- `?rowDataPlotDefaults,`
+- `?sampAssayPlotDefaults`
+- `?heatMapPlotDefaults`
+- `?rowStatTableDefaults`
+- `?"iSEE point parameters"`
+- `?"iSEE selection parameters"`
+
+# Session Info {.unnumbered}
+
+```{r sessioninfo}
+sessionInfo()
+# devtools::session_info()
+```
+
+# References {.unnumbered}
+

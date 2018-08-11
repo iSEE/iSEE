@@ -1,17 +1,17 @@
-#' @name defaults 
+#' @name defaults
 #' @aliases redDimPlotDefaults
 #' @aliases featAssayPlotDefaults
-#' @aliases colDataPlotDefaults 
+#' @aliases colDataPlotDefaults
 #' @aliases rowStatTableDefaults
 #' @aliases rowDataPlotDefaults
 #' @aliases heatMapPlotDefaults
 #'
-#' @title Parameter defaults 
+#' @title Parameter defaults
 #'
 #' @description Create default settings for various panels in the iSEE interface.
 #'
 #' @param se A SummarizedExperiment object.
-#' @param number An integer scalar, specifying the maximum number of 
+#' @param number An integer scalar, specifying the maximum number of
 #' panels of the corresponding type that can be added to the interface.
 #'
 #' @section Reduced dimension plot parameters:
@@ -27,7 +27,7 @@
 #'
 #' @section Feature assay plot parameters:
 #' \describe{
-#' \item{\code{YAxisFeatName}:}{Integer, the index of the feature for which to show the expression on the y-axis if \code{YAxis="Feature name"}. 
+#' \item{\code{YAxisFeatName}:}{Integer, the index of the feature for which to show the expression on the y-axis if \code{YAxis="Feature name"}.
 #' Defaults to 1, i.e., the first feature in \code{se}.
 #' Alternatively, a string can be supplied containing the name of the feature, i.e., the row name.}
 #' \item{\code{YAxisRowTable}:}{Character, what row statistic table should be used to choose a feature to display on the y-axis?
@@ -40,10 +40,10 @@
 #' Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Column data"} or \code{"Feature name"}.}
 #' \item{\code{XAxisColData}:}{Character, what column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
 #' Defaults to the first entry of \code{colData(se)}.}
-#' \item{\code{XAxisFeatName}:}{Integer, the index of the feature for which to show the expression on the x-axis if \code{XAxis="Feature name"}. 
+#' \item{\code{XAxisFeatName}:}{Integer, the index of the feature for which to show the expression on the x-axis if \code{XAxis="Feature name"}.
 #' Defaults to 1, i.e., the first feature in \code{se}.
 #' Alternatively, a string can be supplied containing the name of the feature.}
-#' \item{\code{XAxisRowTable}:}{Character, which row statistic table should be used to choose a feature to put on the x-axis if \code{XAxis="Row table"}? 
+#' \item{\code{XAxisRowTable}:}{Character, which row statistic table should be used to choose a feature to put on the x-axis if \code{XAxis="Row table"}?
 #' Any setting will override \code{XAxisFeatName} upon initialization of the app.
 #' Defaults to \code{"---"}, which means that no table will be used.}
 #' }
@@ -97,26 +97,26 @@
 #' Defaults to \code{"None"}, but can also be \code{"Feature name"} or \code{"Column data"} (for column-based plots) or \code{"Row data"} for (row-based plots).}
 #' \item{\code{ColorByDefaultColor}:}{String specifying the default point colour when \code{ColorBy="None"}.
 #' Defaults to \code{"black"}.}
-#' \item{\code{ColorByFeatName}:}{Integer, the index of the feature to use for colouring based on expression, if \code{ColorBy="Feature name"}? 
+#' \item{\code{ColorByFeatName}:}{Integer, the index of the feature to use for colouring based on expression, if \code{ColorBy="Feature name"}?
 #' Defaults to 1, i.e., the first feature in \code{se}.
 #' Alternatively, a string can be supplied containing the name of the feature.}
-#' \item{\code{ColorByRowTable}:}{Character, which row statistic table should be used to choose a feature to color by, if \code{ColorBy="Feature name"}? 
+#' \item{\code{ColorByRowTable}:}{Character, which row statistic table should be used to choose a feature to color by, if \code{ColorBy="Feature name"}?
 #' Any setting will override \code{ColorByFeatName} upon initialization of the app.
 #' Defaults to \code{"---"}, which means that no table will be used.}
 #' }
 #'
 #' For the plots where each point represents a sample (i.e., all plots except for heatmaps and row data plots), the following additional options apply:
 #' \describe{
-#' \item{\code{ColorByColData}:}{Character, which column of \code{colData(se)} should be used for colouring if \code{ColorBy="Column data"}? 
+#' \item{\code{ColorByColData}:}{Character, which column of \code{colData(se)} should be used for colouring if \code{ColorBy="Column data"}?
 #' Defaults to the first entry of \code{colData(se)}.}
-#' \item{\code{ColorByFeatNameAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Feature name"}? 
+#' \item{\code{ColorByFeatNameAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Feature name"}?
 #' Defaults to 1, i.e., the first assay in \code{se}.
 #' Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
 #' }
 #'
 #' For plots where each point represents a feature (i.e., row data plots), the following additional options apply:
 #' \describe{
-#' \item{\code{ColorByRowData}:}{Character, which column of \code{rowData(se)} should be used for colouring if \code{ColorBy="Row data"}? 
+#' \item{\code{ColorByRowData}:}{Character, which column of \code{rowData(se)} should be used for colouring if \code{ColorBy="Row data"}?
 #' Defaults to the first entry of \code{rowData(se)}.}
 #' \item{\code{ColorByFeatNameColor}:}{String specifying the colour to be used to highlight the selected feature from the text if \code{ColorBy="Feature name"}.
 #' Defaults to \code{"red"}.}
@@ -130,13 +130,13 @@
 #'
 #' For the plots where each point represents a sample (i.e., all plots except for heatmaps and row data plots), the following additional options apply:
 #' \describe{
-#' \item{\code{ShapeByColData}:}{Character, which column of \code{colData(se)} should be used for shaping if \code{ShapeBy="Column data"}? 
+#' \item{\code{ShapeByColData}:}{Character, which column of \code{colData(se)} should be used for shaping if \code{ShapeBy="Column data"}?
 #' This should refer to a categorical variable, and will default to the first such entry of \code{colData(se)}.}
 #' }
 #'
 #' For plots where each point represents a feature (i.e., row data plots), the following additional options apply:
 #' \describe{
-#' \item{\code{ShapeByRowData}:}{Character, which column of \code{rowData(se)} should be used for shaping if \code{ShapeBy="Row data"}? 
+#' \item{\code{ShapeByRowData}:}{Character, which column of \code{rowData(se)} should be used for shaping if \code{ShapeBy="Row data"}?
 #' This should refer to a categorical variable, and will default to the first such entry of \code{rowData(se)}.}
 #' }
 #'
@@ -145,7 +145,7 @@
 #' \item{\code{ContourAdd}:}{Logical, should contour lines be added to the plot?}
 #' \item{\code{ContourColor}:}{String specifying the default colour of contour lines.}
 #' }
-#' 
+#'
 #' @section Faceting parameters (for point-based plots):
 #' \describe{
 #' \item{\code{FacetByRow}:}{Logical indicating whether the plot should be faceted by row.}
@@ -159,7 +159,7 @@
 #' \item{\code{ColumnFacetByColData}:}{Character, which column of \code{colData(se)} should be used to facet by column?
 #' This should refer to a categorical variable, and will default to the first such entry of \code{colData(se)}.}
 #' }
-#' 
+#'
 #' For the plots where each point represents a feature (i.e., row data plots), the following additional options apply:
 #' \describe{
 #' \item{\code{RowFacetByRowData}:}{Character, which column of \code{colData(se)} should be used to facet by row?
@@ -178,7 +178,7 @@
 #' \item{\code{VisualChoices}:}{A list containing one character vector, specifying the visual box parameters to be shown upon initialization.
 #' This defaults to \code{list("Color")} to show only the coloring parameters, but the internal vector can also contain \code{"Points"} and \code{"Other"}.}
 #' }
-#' 
+#'
 #' Options related to the appearance of points are:
 #' \describe{
 #' \item{\code{PointSize}:}{Numeric, the size of the points.
@@ -200,10 +200,10 @@
 #' \item{\code{LegendPosition}:}{String specifying the legend position.
 #' Defaults to \code{"Bottom"} but can also be \code{"Right"}.}
 #' \item{\code{ZoomData}:}{A list containing numeric vectors of length 4, containing values with names \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"}.
-#' These define the zoom window on the x- and y-axes. 
+#' These define the zoom window on the x- and y-axes.
 #' Each element of the list defaults to \code{NULL}, i.e., no zooming is performed.}
 #' }
-#' 
+#'
 #' @section Row statistics table parameters:
 #' \describe{
 #' \item{\code{Selected}:}{Integer, containing the index of the row to be initially selected.
@@ -220,7 +220,7 @@
 #' The features/rows to be used in the construction of the heatmap are specified with:
 #' \describe{
 #' \item{\code{FeatName}:}{List of length equal to the number of panels.
-#' Each list entry corresponds to a panel and should be an integer vector with the indices of the feature(s) for which to show the expression in the heatmap. 
+#' Each list entry corresponds to a panel and should be an integer vector with the indices of the feature(s) for which to show the expression in the heatmap.
 #' Defaults to \code{1L} for each panel, i.e., the first feature in \code{se}.
 #' Alternatively, a character vector can be supplied containing the names of the features.}
 #' \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
@@ -232,7 +232,7 @@
 #' Defaults to \code{FALSE}.}
 #' }
 #'
-#' The column metadata variables control the ordering of the samples in the heatmap. 
+#' The column metadata variables control the ordering of the samples in the heatmap.
 #' They can be controlled with:
 #' \describe{
 #' \item{\code{ColData}:}{List of length equal to the number of panels.
@@ -245,12 +245,12 @@
 #'
 #' A variety of parameters are available to control the color scale of the heatmap.
 #' They can be specified with:
-#' \describe{ 
+#' \describe{
 #' \item{\code{ColorBoxOpen}:}{Logical, should the color selection panel for the heatmap be open upon initialization?
 #' Defaults to \code{FALSE}.}
 #' \item{\code{CenterScale}:}{List of length equal to the number of panels.
 #' Each list entry corresponds to a panel and contains a character vector specifying whether each row of expression values should be mean-centered and/or scaled to unit variance.
-#' Defaults to \code{"Centered"}. 
+#' Defaults to \code{"Centered"}.
 #' Users can set it to \code{c("Centered", "Scaled")} to obtain mean-centered and unit-scaled rows.}
 #' \item{\code{Lower}:}{Numeric, what should be the lower bound of the color scale for the values in the heatmap? All values below this threshold will be shown in the same color.
 #' Defaults to -Inf, meaning that the lowest value in the data matrix will be used.}
@@ -260,8 +260,8 @@
 #' Defaults to \code{"purple-black-yellow"}.}
 #' }
 #'
-#' Finally, the \code{ZoomData} field for heatmaps should contain an integer vector of consecutive indices to zoom into from the full heatmap. 
-#' This vector will subset the entries in \code{FeatName} for a given panel. 
+#' Finally, the \code{ZoomData} field for heatmaps should contain an integer vector of consecutive indices to zoom into from the full heatmap.
+#' This vector will subset the entries in \code{FeatName} for a given panel.
 #' This defaults to \code{NULL}, i.e., all specified features in \code{FeatName} are shown.
 #'
 #' @section Point selection parameters:
@@ -269,16 +269,16 @@
 #' \describe{
 #' \item{\code{SelectBoxOpen}:}{Logical, should the point selection parameter box be open upon initialization?
 #' Defaults to \code{FALSE}.}
-#' \item{\code{SelectByPlot}:}{Character, which other plot should be used for point selection in the current plot? 
+#' \item{\code{SelectByPlot}:}{Character, which other plot should be used for point selection in the current plot?
 #' Defaults to \code{"---"}, which means that no plot is used for point selection.}
 #' \item{\code{SelectEffect}:}{Character, what is the effect of receiving point selection information?
-#' Can be \code{"Restrict"}, where only the selected points are shown; \code{"Color"}, where the selected points have a different color; 
-#' or \code{"Transparent"}, where all points other than those selected are made transparent. 
+#' Can be \code{"Restrict"}, where only the selected points are shown; \code{"Color"}, where the selected points have a different color;
+#' or \code{"Transparent"}, where all points other than those selected are made transparent.
 #' Defaults to \code{"Transparent"}.}
 #' \item{\code{SelectColor}:}{Character, what color should be used for the selected points when \code{SelectEffect="Color"}?
 #' Defaults to \code{"red"}.}
 #' \item{\code{SelectAlpha}:}{Numeric, what level of transparency should be used for the unselected points when \code{SelectEffect="Transparent"}?
-#' This should lie in [0, 1], where 0 is fully transparent and 1 is fully opaque. 
+#' This should lie in [0, 1], where 0 is fully transparent and 1 is fully opaque.
 #' Defaults to 0.1.}
 #' }
 #'
@@ -290,11 +290,11 @@
 #' \describe{
 #' \item{\code{SelectBoxOpen}:}{Logical, should the point selection parameter box be open upon initialization?
 #' Defaults to \code{FALSE}.}
-#' \item{\code{SelectByPlot}:}{Character, which other plot should be used to select features in the current table? 
+#' \item{\code{SelectByPlot}:}{Character, which other plot should be used to select features in the current table?
 #' Defaults to \code{"---"}, which means that no plot is used for point selection.}
 #' }
 #' Only row data plots can be used for selecting points to supply to tables.
-#' 
+#'
 #' @return A DataFrame containing default settings for various parameters of each panel.
 #'
 #' @export
@@ -317,8 +317,11 @@
 #' redDimPlotDefaults(sce, number=5)
 #' featAssayPlotDefaults(sce, number=5)
 #' colDataPlotDefaults(sce, number=5)
+#' customDataPlotDefaults(sce, number=5)
 #' rowStatTableDefaults(sce, number=5)
+#' customStatTableDefaults(sce, number=5)
 #' rowDataPlotDefaults(sce, number=5)
+#' sampAssayPlotDefaults(sce, number=5)
 #' heatMapPlotDefaults(sce, number=5)
 redDimPlotDefaults <- function(se, number) {
     waszero <- number==0 # To ensure that we define all the fields with the right types.
@@ -328,20 +331,20 @@ redDimPlotDefaults <- function(se, number) {
     out[[.redDimType]] <- 1L
     out[[.redDimXAxis]] <- 1L
     out[[.redDimYAxis]] <- min(2L, ncol(reducedDim(se))) # if first reduced dim type has only 1 dimension
-    
+
     out <- .add_general_parameters_for_column_plots(out, se)
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)
 }
 
-#' @rdname defaults 
+#' @rdname defaults
 #' @export
 #' @importFrom methods new
 #' @importClassesFrom S4Vectors DataFrame
 #' @importFrom SummarizedExperiment colData
 #' @importFrom BiocGenerics colnames
 featAssayPlotDefaults <- function(se, number) {
-    waszero <- number==0 
+    waszero <- number==0
     if (waszero) number <- 1
 
     def_assay <- .set_default_assay(se)
@@ -350,7 +353,7 @@ featAssayPlotDefaults <- function(se, number) {
     out <- new("DataFrame", nrows=as.integer(number))
     out[[.featAssayAssay]] <- def_assay
     out[[.featAssayXAxis]] <- .featAssayXAxisNothingTitle
-    out[[.featAssayXAxisColData]] <- covariates[1] 
+    out[[.featAssayXAxisColData]] <- covariates[1]
     out[[.featAssayXAxisFeatName]] <- 1L
     out[[.featAssayXAxisRowTable]] <- .noSelection
     out[[.featAssayYAxisFeatName]] <- 1L
@@ -361,14 +364,14 @@ featAssayPlotDefaults <- function(se, number) {
     return(out)
 }
 
-#' @rdname defaults 
+#' @rdname defaults
 #' @export
 #' @importFrom methods new
 #' @importClassesFrom S4Vectors DataFrame
 #' @importFrom SummarizedExperiment colData
 #' @importFrom BiocGenerics colnames
 colDataPlotDefaults <- function(se, number) {
-    waszero <- number==0 
+    waszero <- number==0
     if (waszero) number <- 1
 
     covariates <- colnames(colData(se))
@@ -383,12 +386,12 @@ colDataPlotDefaults <- function(se, number) {
     return(out)
 }
 
-#' @rdname defaults 
+#' @rdname defaults
 #' @export
 #' @importFrom methods new
 #' @importClassesFrom S4Vectors DataFrame
 customDataPlotDefaults <- function(se, number) {
-    waszero <- number==0 
+    waszero <- number==0
     if (waszero) number <- 1
 
     out <- new("DataFrame", nrows=as.integer(number))
@@ -407,9 +410,9 @@ customDataPlotDefaults <- function(se, number) {
 #' @export
 #' @importFrom methods new
 #' @importClassesFrom S4Vectors DataFrame
-#' @importFrom SummarizedExperiment rowData 
+#' @importFrom SummarizedExperiment rowData
 rowStatTableDefaults <- function(se, number) {
-    waszero <- number==0 
+    waszero <- number==0
     if (waszero) number <- 1
 
     out <- new("DataFrame", nrows=as.integer(number))
@@ -428,12 +431,12 @@ rowStatTableDefaults <- function(se, number) {
     return(out)
 }
 
-#' @rdname defaults 
+#' @rdname defaults
 #' @export
 #' @importFrom methods new
 #' @importClassesFrom S4Vectors DataFrame
 customStatTableDefaults <- function(se, number) {
-    waszero <- number==0 
+    waszero <- number==0
     if (waszero) number <- 1
 
     out <- new("DataFrame", nrows=as.integer(number))
@@ -450,14 +453,14 @@ customStatTableDefaults <- function(se, number) {
     return(out)
 }
 
-#' @rdname defaults 
+#' @rdname defaults
 #' @export
 #' @importFrom methods new
 #' @importClassesFrom S4Vectors DataFrame
 #' @importFrom SummarizedExperiment rowData
 #' @importFrom BiocGenerics colnames
 rowDataPlotDefaults <- function(se, number) {
-    waszero <- number==0 
+    waszero <- number==0
     if (waszero) number <- 1
 
     covariates <- colnames(rowData(se))
@@ -472,14 +475,14 @@ rowDataPlotDefaults <- function(se, number) {
     return(out)
 }
 
-#' @rdname defaults 
+#' @rdname defaults
 #' @export
 #' @importFrom methods new
 #' @importClassesFrom S4Vectors DataFrame
 #' @importFrom SummarizedExperiment rowData
 #' @importFrom BiocGenerics colnames
 sampAssayPlotDefaults <- function(se, number) {
-    waszero <- number==0 
+    waszero <- number==0
     if (waszero) number <- 1
 
     covariates <- colnames(rowData(se))
@@ -497,7 +500,7 @@ sampAssayPlotDefaults <- function(se, number) {
     return(out)
 }
 
-#' @rdname defaults 
+#' @rdname defaults
 #' @export
 #' @importFrom methods new
 #' @importClassesFrom S4Vectors DataFrame
@@ -506,23 +509,23 @@ sampAssayPlotDefaults <- function(se, number) {
 heatMapPlotDefaults <- function(se, number) {
     waszero <- number==0 # To ensure that we define all the fields with the right types.
     if (waszero) number <- 1
-    
+
     def_assay <- .set_default_assay(se)
-    
+
     out <- new("DataFrame", nrows=as.integer(number))
     out[[.heatMapAssay]] <- def_assay
     out[[.heatMapFeatNameBoxOpen]] <- FALSE
     out[[.heatMapFeatName]] <- rep(list(1L), nrow(out))
-  
+
     out[[.heatMapColDataBoxOpen]] <- FALSE
     out[[.heatMapColData]] <- rep(list(colnames(colData(se))[1]), nrow(out))
     out[[.heatMapImportSource]] <- .noSelection
-  
+
     out[[.heatMapCenterScale]] <- rep(list(.heatMapCenterTitle), nrow(out))
     out[[.heatMapLower]] <- -Inf
     out[[.heatMapUpper]] <- Inf
     out[[.heatMapCenteredColors]] <- "purple-black-yellow"
-    
+
     out[[.zoomData]] <- rep(list(NULL), nrow(out))
 
     out[[.selectParamBoxOpen]] <- FALSE
@@ -530,7 +533,7 @@ heatMapPlotDefaults <- function(se, number) {
     out[[.selectEffect]] <- .selectTransTitle
     out[[.selectTransAlpha]] <- 0.1
     out[[.selectColor]] <- "red"
-  
+
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)
 }
@@ -541,7 +544,7 @@ heatMapPlotDefaults <- function(se, number) {
 #'
 #' @param def A DataFrame of default values, generated using \code{\link{redDimPlotDefaults}} or similar functions.
 #' @param usr A DataFrame or data.frame of user-specified values, to use to replace the defaults.
-#' 
+#'
 #' @return A DataFrame with the default parameter settings replaced by user-specified values, where appropriate.
 #'
 #' @details
@@ -550,7 +553,7 @@ heatMapPlotDefaults <- function(se, number) {
 #'
 #' This function expects that \code{nrow(def)} is greater than or equal to \code{nrow(usr)}.
 #' Parameters in \code{def} will only be overwritten for the first \code{nrow(usr)} panels.
-#' 
+#'
 #' @author Aaron Lun
 #' @rdname INTERNAL_override_defaults
 #' @seealso
@@ -561,42 +564,42 @@ heatMapPlotDefaults <- function(se, number) {
 {
     ndef <- nrow(def)
     nusr <- nrow(usr)
-    stopifnot(ndef >= nusr) 
+    stopifnot(ndef >= nusr)
     replacement <- seq_len(nusr)
 
     for (x in colnames(usr)) {
-        if (!x %in% colnames(def)) { 
+        if (!x %in% colnames(def)) {
             warning(sprintf("unknown field '%s' in user-specified settings", x))
-            next 
+            next
         }
 
-        # This method is safer than direct subset assignment, 
+        # This method is safer than direct subset assignment,
         # as it works properly for lists.
         tmp <- def[[x]]
         tmp[replacement] <- usr[[x]]
-        def[[x]] <- tmp 
+        def[[x]] <- tmp
     }
 
     return(def)
-}    
+}
 
-#' Add general plot defaults 
+#' Add general plot defaults
 #'
 #' Add default values for general plot parameters, including row and column-based plots.
 #'
 #' @param incoming A DataFrame with non-zero number of rows, containing default parameters that have already been filled for specific panel types.
-#' 
+#'
 #' @return A DataFrame with additional fields for general plot parameters, filled with default values.
-#' 
+#'
 #' @details
-#' The \code{.add_general_parameters} function adds general parameters such as parameter box opening flags, 
+#' The \code{.add_general_parameters} function adds general parameters such as parameter box opening flags,
 #' point selection specifications, and zoom, brush and lasso data fields.
 #' All parameters are initialized at their default values.
 #'
 #' The \code{.add_general_parameters_for_column_plots} function adds general parameters for column-based plots,
 #' while the \code{.add_general_parameters_for_row_plots} function adds them for row-based plots.
 #' These mainly differ in how colouring is performed.
-#' 
+#'
 #' @author Aaron Lun
 #' @rdname INTERNAL_add_general_parameters
 #' @seealso
@@ -613,18 +616,18 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.brushData]] <- rep(list(NULL), nrow(incoming))
 
     incoming[[.visualParamChoice]] <- rep(list(.visualParamChoiceColorTitle), nrow(incoming))
-   
-    incoming[[.plotPointSize]] <- 1 
+
+    incoming[[.plotPointSize]] <- 1
     incoming[[.plotPointAlpha]] <- 1
     incoming[[.plotPointDownsample]] <- FALSE
     incoming[[.plotPointSampleRes]] <- 200
-    
+
     incoming[[.plotFontSize]] <- 1
     incoming[[.plotLegendPosition]] <- .plotLegendBottomTitle
 
     incoming[[.zoomData]] <- rep(list(NULL), nrow(incoming))
     incoming[[.lassoData]] <- rep(list(NULL), nrow(incoming))
-    
+
     incoming[[.contourAddTitle]] <- FALSE
     incoming[[.contourColor]] <- "blue"
     return(incoming)
@@ -641,7 +644,7 @@ heatMapPlotDefaults <- function(se, number) {
     def_cov <- colnames(colData(se))[1]
 
     any_discrete <- .get_internal_info(se, "column_groupable", empty_fail=FALSE)  # if this is run internally, use precomputed; otherwise recompute.
-    if (is.null(any_discrete)) { 
+    if (is.null(any_discrete)) {
         any_discrete <- colnames(colData(se))[.which_groupable(colData(se))]
     }
     dev_discrete <- any_discrete[1]
@@ -653,7 +656,7 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.shapeByField]] <- .shapeByNothingTitle
     incoming[[.shapeByColData]] <- dev_discrete
 
-    incoming[[.colorByRowTable]] <- .noSelection 
+    incoming[[.colorByRowTable]] <- .noSelection
     incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameAssay]] <- def_assay
 
@@ -673,7 +676,7 @@ heatMapPlotDefaults <- function(se, number) {
 
     def_cov <- colnames(rowData(se))[1]
     any_discrete <- .get_internal_info(se, "row_groupable", empty_fail=FALSE) # if this is run internally, use precomputed; otherwise recompute.
-    if (is.null(any_discrete)) { 
+    if (is.null(any_discrete)) {
         any_discrete <- colnames(rowData(se))[.which_groupable(rowData(se))]
     }
     dev_discrete <- any_discrete[1]
@@ -685,7 +688,7 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.shapeByField]] <- .shapeByNothingTitle
     incoming[[.shapeByRowData]] <- dev_discrete
 
-    incoming[[.colorByRowTable]] <- .noSelection 
+    incoming[[.colorByRowTable]] <- .noSelection
     incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameColor]] <- "red"
 
@@ -702,7 +705,7 @@ heatMapPlotDefaults <- function(se, number) {
 #' Identifies the index of the assay containing the log-count matrix.
 #'
 #' @param se A SummarizedExperiment object.
-#' 
+#'
 #' @return An integer scalar containing the index of the \code{"logcounts"} assay, if available; otherwise 1L.
 #'
 #' @details
@@ -715,7 +718,7 @@ heatMapPlotDefaults <- function(se, number) {
 #' @seealso
 #' \code{?\link{defaults}}
 #' @importFrom SummarizedExperiment assayNames
-.set_default_assay <- function(se) { 
+.set_default_assay <- function(se) {
     def_assay <- which(assayNames(se)=="logcounts")
     if (length(def_assay) == 0L) {
         return(1L)
@@ -729,9 +732,9 @@ heatMapPlotDefaults <- function(se, number) {
 #' @param x A DataFrame (or equivalent).
 #'
 #' @return An integer scalar containing the index of the first groupable covariate, if available; otherwise 0L.
-#' 
+#'
 #' @author Kevin Rue-Albrecht
-#' 
+#'
 #' @rdname INTERNAL_set_default_discrete
 #' @seealso
 #' \code{?\link{defaults}}

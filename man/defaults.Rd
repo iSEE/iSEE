@@ -34,7 +34,7 @@ heatMapPlotDefaults(se, number)
 \arguments{
 \item{se}{A SummarizedExperiment object.}
 
-\item{number}{An integer scalar, specifying the maximum number of 
+\item{number}{An integer scalar, specifying the maximum number of
 panels of the corresponding type that can be added to the interface.}
 }
 \value{
@@ -59,7 +59,7 @@ Defaults to 2.}
 \section{Feature assay plot parameters}{
 
 \describe{
-\item{\code{YAxisFeatName}:}{Integer, the index of the feature for which to show the expression on the y-axis if \code{YAxis="Feature name"}. 
+\item{\code{YAxisFeatName}:}{Integer, the index of the feature for which to show the expression on the y-axis if \code{YAxis="Feature name"}.
 Defaults to 1, i.e., the first feature in \code{se}.
 Alternatively, a string can be supplied containing the name of the feature, i.e., the row name.}
 \item{\code{YAxisRowTable}:}{Character, what row statistic table should be used to choose a feature to display on the y-axis?
@@ -72,10 +72,10 @@ Alternatively, a string can also be supplied containing the name of the assay, i
 Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Column data"} or \code{"Feature name"}.}
 \item{\code{XAxisColData}:}{Character, what column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
 Defaults to the first entry of \code{colData(se)}.}
-\item{\code{XAxisFeatName}:}{Integer, the index of the feature for which to show the expression on the x-axis if \code{XAxis="Feature name"}. 
+\item{\code{XAxisFeatName}:}{Integer, the index of the feature for which to show the expression on the x-axis if \code{XAxis="Feature name"}.
 Defaults to 1, i.e., the first feature in \code{se}.
 Alternatively, a string can be supplied containing the name of the feature.}
-\item{\code{XAxisRowTable}:}{Character, which row statistic table should be used to choose a feature to put on the x-axis if \code{XAxis="Row table"}? 
+\item{\code{XAxisRowTable}:}{Character, which row statistic table should be used to choose a feature to put on the x-axis if \code{XAxis="Row table"}?
 Any setting will override \code{XAxisFeatName} upon initialization of the app.
 Defaults to \code{"---"}, which means that no table will be used.}
 }
@@ -139,26 +139,26 @@ Defaults to \code{"---"}, i.e., no coordinates are generated.}
 Defaults to \code{"None"}, but can also be \code{"Feature name"} or \code{"Column data"} (for column-based plots) or \code{"Row data"} for (row-based plots).}
 \item{\code{ColorByDefaultColor}:}{String specifying the default point colour when \code{ColorBy="None"}.
 Defaults to \code{"black"}.}
-\item{\code{ColorByFeatName}:}{Integer, the index of the feature to use for colouring based on expression, if \code{ColorBy="Feature name"}? 
+\item{\code{ColorByFeatName}:}{Integer, the index of the feature to use for colouring based on expression, if \code{ColorBy="Feature name"}?
 Defaults to 1, i.e., the first feature in \code{se}.
 Alternatively, a string can be supplied containing the name of the feature.}
-\item{\code{ColorByRowTable}:}{Character, which row statistic table should be used to choose a feature to color by, if \code{ColorBy="Feature name"}? 
+\item{\code{ColorByRowTable}:}{Character, which row statistic table should be used to choose a feature to color by, if \code{ColorBy="Feature name"}?
 Any setting will override \code{ColorByFeatName} upon initialization of the app.
 Defaults to \code{"---"}, which means that no table will be used.}
 }
 
 For the plots where each point represents a sample (i.e., all plots except for heatmaps and row data plots), the following additional options apply:
 \describe{
-\item{\code{ColorByColData}:}{Character, which column of \code{colData(se)} should be used for colouring if \code{ColorBy="Column data"}? 
+\item{\code{ColorByColData}:}{Character, which column of \code{colData(se)} should be used for colouring if \code{ColorBy="Column data"}?
 Defaults to the first entry of \code{colData(se)}.}
-\item{\code{ColorByFeatNameAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Feature name"}? 
+\item{\code{ColorByFeatNameAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Feature name"}?
 Defaults to 1, i.e., the first assay in \code{se}.
 Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
 }
 
 For plots where each point represents a feature (i.e., row data plots), the following additional options apply:
 \describe{
-\item{\code{ColorByRowData}:}{Character, which column of \code{rowData(se)} should be used for colouring if \code{ColorBy="Row data"}? 
+\item{\code{ColorByRowData}:}{Character, which column of \code{rowData(se)} should be used for colouring if \code{ColorBy="Row data"}?
 Defaults to the first entry of \code{rowData(se)}.}
 \item{\code{ColorByFeatNameColor}:}{String specifying the colour to be used to highlight the selected feature from the text if \code{ColorBy="Feature name"}.
 Defaults to \code{"red"}.}
@@ -174,13 +174,13 @@ Defaults to \code{"None"}, but can also be \code{"Column data"}.}
 
 For the plots where each point represents a sample (i.e., all plots except for heatmaps and row data plots), the following additional options apply:
 \describe{
-\item{\code{ShapeByColData}:}{Character, which column of \code{colData(se)} should be used for shaping if \code{ShapeBy="Column data"}? 
+\item{\code{ShapeByColData}:}{Character, which column of \code{colData(se)} should be used for shaping if \code{ShapeBy="Column data"}?
 This should refer to a categorical variable, and will default to the first such entry of \code{colData(se)}.}
 }
 
 For plots where each point represents a feature (i.e., row data plots), the following additional options apply:
 \describe{
-\item{\code{ShapeByRowData}:}{Character, which column of \code{rowData(se)} should be used for shaping if \code{ShapeBy="Row data"}? 
+\item{\code{ShapeByRowData}:}{Character, which column of \code{rowData(se)} should be used for shaping if \code{ShapeBy="Row data"}?
 This should refer to a categorical variable, and will default to the first such entry of \code{rowData(se)}.}
 }
 }
@@ -250,7 +250,7 @@ Defaults to 1.}
 \item{\code{LegendPosition}:}{String specifying the legend position.
 Defaults to \code{"Bottom"} but can also be \code{"Right"}.}
 \item{\code{ZoomData}:}{A list containing numeric vectors of length 4, containing values with names \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"}.
-These define the zoom window on the x- and y-axes. 
+These define the zoom window on the x- and y-axes.
 Each element of the list defaults to \code{NULL}, i.e., no zooming is performed.}
 }
 }
@@ -274,7 +274,7 @@ All entries default to an empty string.}
 The features/rows to be used in the construction of the heatmap are specified with:
 \describe{
 \item{\code{FeatName}:}{List of length equal to the number of panels.
-Each list entry corresponds to a panel and should be an integer vector with the indices of the feature(s) for which to show the expression in the heatmap. 
+Each list entry corresponds to a panel and should be an integer vector with the indices of the feature(s) for which to show the expression in the heatmap.
 Defaults to \code{1L} for each panel, i.e., the first feature in \code{se}.
 Alternatively, a character vector can be supplied containing the names of the features.}
 \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
@@ -286,7 +286,7 @@ Alternatively, a string can also be supplied containing the name of the assay, i
 Defaults to \code{FALSE}.}
 }
 
-The column metadata variables control the ordering of the samples in the heatmap. 
+The column metadata variables control the ordering of the samples in the heatmap.
 They can be controlled with:
 \describe{
 \item{\code{ColData}:}{List of length equal to the number of panels.
@@ -299,12 +299,12 @@ Defaults to \code{FALSE}.}
 
 A variety of parameters are available to control the color scale of the heatmap.
 They can be specified with:
-\describe{ 
+\describe{
 \item{\code{ColorBoxOpen}:}{Logical, should the color selection panel for the heatmap be open upon initialization?
 Defaults to \code{FALSE}.}
 \item{\code{CenterScale}:}{List of length equal to the number of panels.
 Each list entry corresponds to a panel and contains a character vector specifying whether each row of expression values should be mean-centered and/or scaled to unit variance.
-Defaults to \code{"Centered"}. 
+Defaults to \code{"Centered"}.
 Users can set it to \code{c("Centered", "Scaled")} to obtain mean-centered and unit-scaled rows.}
 \item{\code{Lower}:}{Numeric, what should be the lower bound of the color scale for the values in the heatmap? All values below this threshold will be shown in the same color.
 Defaults to -Inf, meaning that the lowest value in the data matrix will be used.}
@@ -314,8 +314,8 @@ Defaults to Inf, meaning that the highest value in the data matrix will be used.
 Defaults to \code{"purple-black-yellow"}.}
 }
 
-Finally, the \code{ZoomData} field for heatmaps should contain an integer vector of consecutive indices to zoom into from the full heatmap. 
-This vector will subset the entries in \code{FeatName} for a given panel. 
+Finally, the \code{ZoomData} field for heatmaps should contain an integer vector of consecutive indices to zoom into from the full heatmap.
+This vector will subset the entries in \code{FeatName} for a given panel.
 This defaults to \code{NULL}, i.e., all specified features in \code{FeatName} are shown.
 }
 
@@ -325,16 +325,16 @@ For the point-based plots, the following options apply:
 \describe{
 \item{\code{SelectBoxOpen}:}{Logical, should the point selection parameter box be open upon initialization?
 Defaults to \code{FALSE}.}
-\item{\code{SelectByPlot}:}{Character, which other plot should be used for point selection in the current plot? 
+\item{\code{SelectByPlot}:}{Character, which other plot should be used for point selection in the current plot?
 Defaults to \code{"---"}, which means that no plot is used for point selection.}
 \item{\code{SelectEffect}:}{Character, what is the effect of receiving point selection information?
-Can be \code{"Restrict"}, where only the selected points are shown; \code{"Color"}, where the selected points have a different color; 
-or \code{"Transparent"}, where all points other than those selected are made transparent. 
+Can be \code{"Restrict"}, where only the selected points are shown; \code{"Color"}, where the selected points have a different color;
+or \code{"Transparent"}, where all points other than those selected are made transparent.
 Defaults to \code{"Transparent"}.}
 \item{\code{SelectColor}:}{Character, what color should be used for the selected points when \code{SelectEffect="Color"}?
 Defaults to \code{"red"}.}
 \item{\code{SelectAlpha}:}{Numeric, what level of transparency should be used for the unselected points when \code{SelectEffect="Transparent"}?
-This should lie in [0, 1], where 0 is fully transparent and 1 is fully opaque. 
+This should lie in [0, 1], where 0 is fully transparent and 1 is fully opaque.
 Defaults to 0.1.}
 }
 
@@ -346,7 +346,7 @@ For the row statistics tables, the following options apply:
 \describe{
 \item{\code{SelectBoxOpen}:}{Logical, should the point selection parameter box be open upon initialization?
 Defaults to \code{FALSE}.}
-\item{\code{SelectByPlot}:}{Character, which other plot should be used to select features in the current table? 
+\item{\code{SelectByPlot}:}{Character, which other plot should be used to select features in the current table?
 Defaults to \code{"---"}, which means that no plot is used for point selection.}
 }
 Only row data plots can be used for selecting points to supply to tables.
@@ -367,7 +367,10 @@ sce
 redDimPlotDefaults(sce, number=5)
 featAssayPlotDefaults(sce, number=5)
 colDataPlotDefaults(sce, number=5)
+customDataPlotDefaults(sce, number=5)
 rowStatTableDefaults(sce, number=5)
+customStatTableDefaults(sce, number=5)
 rowDataPlotDefaults(sce, number=5)
+sampAssayPlotDefaults(sce, number=5)
 heatMapPlotDefaults(sce, number=5)
 }

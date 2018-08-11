@@ -11,7 +11,7 @@
 #' @param rowDataArgs A DataFrame similar to that produced by \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the row data plots.
 #' @param sampAssayArgs A DataFrame similar to that produced by \code{\link{sampAssayPlotDefaults}}, specifying initial parameters for the sample assay plots.
 #' @param customDataArgs A DataFrame similar to that produced by \code{\link{customDataPlotDefaults}}, specifying initial parameters for the custom data plots.
-#' @param customStatArgs A DataFrame similar to that produced by \code{\link{customStatTableDefaults}}, specifying initial parameters for the custom statistics tables. 
+#' @param customStatArgs A DataFrame similar to that produced by \code{\link{customStatTableDefaults}}, specifying initial parameters for the custom statistics tables.
 #' @param heatMapArgs A DataFrame similar to that produced by \code{\link{heatMapPlotDefaults}}, specifying initial parameters for the heatmaps.
 #' @param redDimMax An integer scalar specifying the maximum number of reduced dimension plots in the interface.
 #' @param colDataMax An integer scalar specifying the maximum number of column data plots in the interface.
@@ -60,20 +60,20 @@
 #'
 #' @export
 #' @importFrom utils packageVersion
-#' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu notificationItem 
+#' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu notificationItem
 #' @importFrom utils packageVersion read.delim citation sessionInfo browseURL head
-#' @importFrom shinyjs useShinyjs 
+#' @importFrom shinyjs useShinyjs
 #' @importFrom rintrojs introjsUI introjs
-#' @importFrom shiny plotOutput uiOutput 
-#' renderUI renderPlot renderPrint 
+#' @importFrom shiny plotOutput uiOutput
+#' renderUI renderPlot renderPrint
 #' observe observeEvent reactiveValues isolate req
-#' actionButton selectizeInput sliderInput 
-#' showModal modalDialog showNotification 
-#' shinyApp runApp 
+#' actionButton selectizeInput sliderInput
+#' showModal modalDialog showNotification
+#' shinyApp runApp
 #' HTML br icon hr p em strong
 #' tagList tags
 #' tabsetPanel tabPanel
-#' updateSelectInput updateSelectizeInput updateRadioButtons 
+#' updateSelectInput updateSelectizeInput updateRadioButtons
 #' @importFrom DT datatable renderDataTable dataTableOutput
 #' @importFrom shinyAce aceEditor
 #' @importFrom S4Vectors DataFrame
@@ -383,13 +383,13 @@ iSEE <- function(se,
                         aceEditor("report_all_cmds", mode="r", theme = "solarized_light", autoComplete = "live",
                             value = paste0(.track_it_all(rObjects$active_panels, pObjects,
                                     se_name, ecm_name, cdf_name, csf_name, se_cmds), collapse="\n"),
-                            height="600px")                     
-                        ), 
-                    tabPanel("Selection only", 
+                            height="600px")
+                        ),
+                    tabPanel("Selection only",
                         aceEditor("report_select_cmds", mode="r", theme = "solarized_light", autoComplete = "live",
                             value = paste0(.track_selections_only(rObjects$active_panels, pObjects, se_name, se_cmds), collapse="\n"),
-                            height="600px")                     
-                        ) 
+                            height="600px")
+                        )
                     )
             ))
         })
@@ -500,7 +500,7 @@ iSEE <- function(se,
                         .destroy_selection_panel(pObjects, panel_name)
                         if (mode0 %in% linked_table_types) {
                             .destroy_table(pObjects, panel_name)
-                        } else if (mode0 %in% point_plot_types) { 
+                        } else if (mode0 %in% point_plot_types) {
                             .delete_table_links(mode0, id0, pObjects)
                         }
 
@@ -1031,13 +1031,13 @@ iSEE <- function(se,
 
             max_plots <- nrow(pObjects$memory[[mode]])
             for (id in seq_len(max_plots)) {
-                for (field in fields) { 
+                for (field in fields) {
                     local({
                         id0 <- id
                         mode0 <- mode
                         field0 <- field
                         cur_field <- paste0(mode0, id0, "_", field0)
-    
+
                         observe({
                             force(rObjects$rerendered)
                             updateSelectizeInput(session, cur_field, choices = feature_choices, server = TRUE,
@@ -1047,7 +1047,7 @@ iSEE <- function(se,
                 }
             }
         }
-        
+
         #######################################################################
         # Dot-related plot creation section. ----
         #######################################################################
@@ -1080,7 +1080,7 @@ iSEE <- function(se,
             }
             nonfundamental <- c(nonfundamental, .colorByDefaultColor, .selectColor, .selectTransAlpha,
                                 .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition,
-                                .plotPointDownsample, .plotPointSampleRes, .contourAddTitle, 
+                                .plotPointDownsample, .plotPointSampleRes, .contourAddTitle,
                                 .contourColor)
 
             for (id in seq_len(max_plots)) {
@@ -1312,7 +1312,7 @@ iSEE <- function(se,
         # Custom panel section. ----
         #######################################################################
 
-        for (mode in custom_panel_types) { 
+        for (mode in custom_panel_types) {
             max_plots <- nrow(pObjects$memory[[mode]])
 
             for (id in seq_len(max_plots)) {
@@ -1326,7 +1326,7 @@ iSEE <- function(se,
                     output[[link_field]] <- renderUI({
                         force(rObjects[[link_field]])
                         output <- list()
-                        for (src in c(.customRowSource, .customColSource)) { 
+                        for (src in c(.customRowSource, .customColSource)) {
                             select_in <- pObjects$memory[[mode0]][id0,src]
                             if (select_in!=.noSelection) {
                                 output <- c(output, list("Receiving selection from", em(strong(select_in)), br()))
@@ -1336,7 +1336,7 @@ iSEE <- function(se,
                     })
                 })
 
-                # Fields defining which function and arguments to use. 
+                # Fields defining which function and arguments to use.
                 for (field in c(.customFun, .customArgs)) {
                     local({
                         id0 <- id
@@ -1357,7 +1357,7 @@ iSEE <- function(se,
                 }
 
                 # Specifying the row/column selection.
-                for (src in c(.customRowSource, .customColSource)) { 
+                for (src in c(.customRowSource, .customColSource)) {
                     local({
                         id0 <- id
                         src0 <- src
@@ -1434,15 +1434,15 @@ iSEE <- function(se,
 
                     col_selected <- .get_selected_points(colnames(se), param_choices[[.customColSource]],
                             pObjects$memory, pObjects$coordinates)
-                    if (!is.null(col_selected)) { 
+                    if (!is.null(col_selected)) {
                         col_selected <- colnames(se)[col_selected]
                     }
-                    
+
                     chosen_fun <- param_choices[[.customFun]]
                     if (chosen_fun==.noSelection) {
                         return(NULL)
-                    } 
-                        
+                    }
+
                     chosen_args <- param_choices[[.customArgs]]
                     FUN <- .get_internal_info(se, "custom_stat_fun")[[chosen_fun]]
                     tmp_df <- do.call(FUN, c(list(se, row_selected, col_selected), as.list(.text2args(chosen_args))))

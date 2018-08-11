@@ -81,7 +81,7 @@ init <- DataFrame(
 app <- iSEE(sce, initialPanels = init)
 ```
 
-The genes to show on the y-axis in the two plots can be specified via the `featAssayArgs` argument to `iSEE`. This is a `DataFrame`, specifying the initial parameters for each plot.
+The genes to show on the Y-axis in the two plots can be specified via the `featAssayArgs` argument to `iSEE`. This is a `DataFrame`, specifying the initial parameters for each plot.
 In this case, we want to modify the `YAxis` and `YAxisFeatName` defaults for the two plots:
 
 ```{r fexArg}
@@ -93,9 +93,67 @@ app <- iSEE(sce, initialPanels = init, featAssayArgs = fexArg)
 This will open the app with two feature assay plots, showing the selected genes.
 Of course, from this starting point, all the interactive functionality is still available, and new panels can be added, modified and linked via point selection.
 
-# Further reading
+# Data parameters
 
-Many more options can be set to initialise `iSEE` applications in virtually any state and preferred layout.
+The _data parameters_ control the source of the information represented on the X-axis and Y-axis of each plot.
+Those parameters are accessible at runtime in the eponym collapsible box.
+
+## Setting the Y-axis
+
+The nature of the Y-axis is defined by the type of panel.
+For instance, _column data plot_ panels require the name of a column in the `colData` slot of the input `SummarizedExperiment`.
+Users can preconfigure the Y-axis of individual _column data plot_ panels as follows:
+
+```{r yaxis}
+cdArgs <- colDataPlotDefaults(sce, 2)
+cdArgs$YAxis <- c("NREADS", "TOTAL_DUP")
+init <- DataFrame(
+    Name = c("Column data plot 1", "Column data plot 2"),
+    Width = c(6, 6)
+)
+app <- iSEE(sce, initialPanels = init, colDataArgs = cdArgs)
+```
+
+We refer users to the individual help page of each panel type listed [below](#further) to learn more about the Y-axis of each type of panel.
+
+## Setting the X-axis
+
+To do: More complicated as multiple sources are possible...
+
+## Reduced dimension plots
+
+In the case of reduced dimension plots, _data parameters_  include the name of the reduced dimension slot from which to fetch coordinates.
+This information is stored in the `Type` column:
+
+```{r redDimPlotDefaults-type}
+rdArgs <- redDimPlotDefaults(sce, 1)
+rdArgs$Type <- "TSNE"
+rdArgs$XAxis <- 2
+rdArgs$YAxis <- 1
+init <- DataFrame(
+    Name = c("Reduced dimension plot 1"),
+    Width = c(6)
+)
+app <- iSEE(sce, initialPanels = init, redDimArgs = rdArgs)
+```
+
+
+For axes linked to an assay, 
+
+# Aesthetics parameters
+
+
+
+# Selection parameters
+
+
+
+# Fields accepting both integer/character
+
+
+
+# Further reading {#further}
+
 Users should refer to the following help pages for the full list of values that can be specified in `iSEE`:
 
 - `?redDimPlotDefaults`

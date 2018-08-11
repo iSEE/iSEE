@@ -1,91 +1,10 @@
-#' @name defaults
-#' @aliases redDimPlotDefaults
-#' @aliases featAssayPlotDefaults
-#' @aliases colDataPlotDefaults
-#' @aliases rowStatTableDefaults
-#' @aliases rowDataPlotDefaults
-#' @aliases heatMapPlotDefaults
+#' @name iSEE point parameters
 #'
-#' @title Parameter defaults
+#' @title Point plot aesthetic parameters
 #'
-#' @description Create default settings for various panels in the iSEE interface.
+#' @description Parameters related to aesthetics for point-based plotting panels.
 #'
-#' @param se A SummarizedExperiment object.
-#' @param number An integer scalar, specifying the maximum number of
-#' panels of the corresponding type that can be added to the interface.
-#'
-#' @section Reduced dimension plot parameters:
-#' \describe{
-#' \item{\code{Type}:}{Integer, which entry of \code{reducedDims(se)} should be shown?
-#' Defaults to 1, i.e., the first entry.
-#' Alternatively, a string can be supplied containing the name of the reduced dimension field, if \code{reducedDims(se)} has names.}
-#' \item{\code{XAxis}:}{Integer, which component should be shown on the x-axis?
-#' Defaults to 1.}
-#' \item{\code{YAxis}:}{Integer, which component should be shown on the y-axis?
-#' Defaults to 2.}
-#' }
-#'
-#' @section Feature assay plot parameters:
-#' \describe{
-#' \item{\code{YAxisFeatName}:}{Integer, the index of the feature for which to show the expression on the y-axis if \code{YAxis="Feature name"}.
-#' Defaults to 1, i.e., the first feature in \code{se}.
-#' Alternatively, a string can be supplied containing the name of the feature, i.e., the row name.}
-#' \item{\code{YAxisRowTable}:}{Character, what row statistic table should be used to choose a feature to display on the y-axis?
-#' Any setting will override \code{YAxisFeatName} upon initialization of the app.
-#' Defaults to \code{"---"}, which means that no table will be used.}
-#' \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
-#' Defaults to 1, i.e., the first assay in \code{se}.
-#' Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
-#' \item{\code{XAxis}:}{Character, what type of variable should be shown on the x-axis?
-#' Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Column data"} or \code{"Feature name"}.}
-#' \item{\code{XAxisColData}:}{Character, what column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
-#' Defaults to the first entry of \code{colData(se)}.}
-#' \item{\code{XAxisFeatName}:}{Integer, the index of the feature for which to show the expression on the x-axis if \code{XAxis="Feature name"}.
-#' Defaults to 1, i.e., the first feature in \code{se}.
-#' Alternatively, a string can be supplied containing the name of the feature.}
-#' \item{\code{XAxisRowTable}:}{Character, which row statistic table should be used to choose a feature to put on the x-axis if \code{XAxis="Row table"}?
-#' Any setting will override \code{XAxisFeatName} upon initialization of the app.
-#' Defaults to \code{"---"}, which means that no table will be used.}
-#' }
-#'
-#' @section Column data plot parameters:
-#' \describe{
-#' \item{\code{YAxis}:}{Character, which column of \code{colData(se)} should be shown on the y-axis?
-#' Defaults to the first entry of \code{colData(se)}.}
-#' \item{\code{XAxis}:}{Character, what type of variable should be shown on the x-axis?
-#' Defaults to \code{"None"}, but can also be \code{"Column data"}.}
-#' \item{\code{XAxisColData}:}{Character, which column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
-#' Defaults to the first entry of \code{colData(se)}.}
-#' }
-#'
-#' @section Row data plot parameters:
-#' \describe{
-#' \item{\code{YAxis}:}{Character, which column of \code{rowData(se)} should be shown on the y-axis?
-#' Defaults to the first entry of \code{colData(se)}.}
-#' \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
-#' Defaults to \code{"None"}, but can also be \code{"Row data"} or \code{"Feature name"}.}
-#' \item{\code{XAxisRowData}:}{Character, which column of \code{rowData(se)} should be shown on the x-axis if \code{XAxis="Row data"}?
-#' Defaults to the first entry of \code{rowData(se)}.}
-#' }
-#'
-#' @section Sample assay plot parameters:
-#' \describe{
-#' \item{\code{YAxis}:}{Integer, which column of \code{se} should be shown on the y-axis?
-#' Defaults to 1, i.e., the first column.
-#' Alternatively, a character field can be supplied containing the name of the column.}
-#' \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
-#' Defaults to 1, i.e., the first assay in \code{se}.
-#' Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
-#' \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
-#' Defaults to \code{"None"}, but can also be \code{"Row data"} or \code{"Sample"}.}
-#' \item{\code{XAxisRowData}:}{Character, which column of \code{rowData(se)} should be shown on the x-axis if \code{XAxis="Row data"}?
-#' Defaults to the first entry of \code{rowData(se)}.}
-#' \item{\code{XAxisSample}:}{Integer, which column of \code{se} should be shown on the x-axis?
-#' Defaults to 2 if \code{se} contains multiple columns, otherwise it is set to 1.
-#' Alternatively, a character field can be supplied containing the name of the column.}
-#' }
-#'
-#' @section Coloring parameters (for point-based plots):
+#' @section Coloring parameters:
 #' \describe{
 #' \item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
 #' Defaults to \code{"None"}, but can also be \code{"Feature name"} or \code{"Column data"} (for column-based plots) or \code{"Row data"} for (row-based plots).}
@@ -116,7 +35,7 @@
 #' Defaults to \code{"red"}.}
 #' }
 #'
-#' @section Shape parameters (for point-based plots):
+#' @section Shape parameters:
 #' \describe{
 #' \item{\code{ShapeBy}:}{Character, what type of data should be used for controlling shape?
 #' Defaults to \code{"None"}, but can also be \code{"Column data"}.}
@@ -134,13 +53,13 @@
 #' This should refer to a categorical variable, and will default to the first such entry of \code{rowData(se)}.}
 #' }
 #'
-#' @section Contour line parameters (for scatter plots):
+#' @section Contour line parameters:
 #' \describe{
 #' \item{\code{ContourAdd}:}{Logical, should contour lines be added to the plot?}
 #' \item{\code{ContourColor}:}{String specifying the default colour of contour lines.}
 #' }
 #'
-#' @section Faceting parameters (for point-based plots):
+#' @section Faceting parameters:
 #' \describe{
 #' \item{\code{FacetByRow}:}{Logical indicating whether the plot should be faceted by row.}
 #' \item{\code{FacetByColumn}:}{Logical indicating whether the plot should be faceted by row.}
@@ -162,7 +81,7 @@
 #' This should refer to a categorical variable, and will default to the first such entry of \code{colData(se)}.}
 #' }
 #'
-#' @section Other plot parameters (for point-based plots):
+#' @section Other plot parameters:
 #' Parameter visibility options are:
 #' \describe{
 #' \item{\code{DataBoxOpen}:}{Logical, should the data parameter box be open upon initialization?
@@ -170,7 +89,7 @@
 #' \item{\code{VisualBoxOpen}:}{Logical, should the visual parameter box be open upon initialization?
 #' Defaults to \code{FALSE}.}
 #' \item{\code{VisualChoices}:}{A list containing one character vector, specifying the visual box parameters to be shown upon initialization.
-#' This defaults to \code{list("Color")} to show only the coloring parameters, but the internal vector can also contain \code{"Points"} and \code{"Other"}.}
+#' This defaults to \code{list("Color")} to show only the coloring parameters, but the internal vector can also contain \code{"Points"}, \code{"Facets"} and \code{"Other"}.}
 #' }
 #'
 #' Options related to the appearance of points are:
@@ -198,7 +117,330 @@
 #' Each element of the list defaults to \code{NULL}, i.e., no zooming is performed.}
 #' }
 #'
-#' @section Row statistics table parameters:
+#' @author
+#' Aaron Lun, Kevin Rue-Albrecht, Charlotte Soneson
+#'
+#' @rdname point-param
+#' @seealso
+#' \code{\link{redDimPlotDefaults}},
+#' \code{\link{featAssayPlotDefaults}},
+#' \code{\link{colDataPlotDefaults}},
+#' \code{\link{rowDataPlotDefaults}},
+#' \code{\link{sampAssayPlotDefaults}}
+#'
+#' @examples
+#' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
+#' redDimPlotDefaults(sce, n=1)
+#' rowDataPlotDefaults(sce, n=1)
+NULL
+
+#' @name iSEE selection parameters
+#'
+#' @title Selection parameters
+#'
+#' @description Parameters that control the selection of transmitter plots and the effect of selection in a variety of panels.
+#'
+#' @section Selection parameters for plots:
+#' \describe{
+#' \item{\code{SelectBoxOpen}:}{Logical, should the selection parameter box be open upon initialization?
+#' Defaults to \code{FALSE}.}
+#' \item{\code{SelectByPlot}:}{Character, which other plot should be used for point selection in the current plot?
+#' Defaults to \code{"---"}, which means that no plot is used for point selection.}
+#' \item{\code{SelectEffect}:}{Character, what is the effect of receiving point selection information?
+#' Can be \code{"Restrict"}, where only the selected points are shown; \code{"Color"}, where the selected points have a different color;
+#' or \code{"Transparent"}, where all points other than those selected are made transparent.
+#' Defaults to \code{"Transparent"}.}
+#' \item{\code{SelectColor}:}{Character, what color should be used for the selected points when \code{SelectEffect="Color"}?
+#' Defaults to \code{"red"}.}
+#' \item{\code{SelectAlpha}:}{Numeric, what level of transparency should be used for the unselected points when \code{SelectEffect="Transparent"}?
+#' This should lie in [0, 1], where 0 is fully transparent and 1 is fully opaque.
+#' Defaults to 0.1.}
+#' }
+#' For row-based plots, each point represents a feature, while for column-based plots and heatmaps, each point represents a sample.
+#'
+#' @section Inter-plot transmission rules:
+#' Point selection cannot occur between row-based and column-based plots.
+#' This is because each point in a row-based plot is a feature, while each point represents a sample in the other plots.
+#' Thus, point selection can only occur between plots of the same point type.
+#' The only exception to this rule is the custom panels, which can receive transmissions from both row- and column-based plots -- see \code{\link{customDataPlotDefaults}}.
+#' This is because they can generate arbitrary plots and are not truly row- or column-based.
+#'
+#' @section Selection parameters for tables:
+#' For the row statistics tables, the following options apply:
+#' \describe{
+#' \item{\code{SelectBoxOpen}:}{Logical, should the point selection parameter box be open upon initialization?
+#' Defaults to \code{FALSE}.}
+#' \item{\code{SelectByPlot}:}{Character, which other plot should be used to select features in the current table?
+#' Defaults to \code{"---"}, which means that no plot is used for point selection.}
+#' }
+#' Only row-based plots (i.e., row data and sample assay plots) can be used for selecting points to supply to tables, for the same reasons described above.
+#'
+#' @author
+#' Aaron Lun, Kevin Rue-Albrecht
+#'
+#' @rdname select-param
+#' @seealso
+#' \code{\link{redDimPlotDefaults}},
+#' \code{\link{featAssayPlotDefaults}},
+#' \code{\link{colDataPlotDefaults}},
+#' \code{\link{rowDataPlotDefaults}},
+#' \code{\link{sampAssayPlotDefaults}},
+#' \code{\link{heatMapPlotDefaults}},
+#' \code{\link{rowStatTableDefaults}}
+#'
+#' @examples
+#' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
+#' redDimPlotDefaults(sce, n=1)
+#' rowStatTableDefaults(sce, n=1)
+NULL
+
+#' Reduced dimension plot defaults
+#'
+#' Create default settings for reduced dimension plot panels in the iSEE interface.
+#'
+#' @param se A SummarizedExperiment object.
+#' @param number An integer scalar, specifying the maximum number of reduced dimension plots that can be added to the interface.
+#'
+#' @details
+#' Parameters available to reduced dimension plots are:
+#' \describe{
+#' \item{\code{Type}:}{Integer, which entry of \code{reducedDims(se)} should be shown?
+#' Defaults to 1, i.e., the first entry.
+#' Alternatively, a string can be supplied containing the name of the reduced dimension field, if \code{reducedDims(se)} has names.}
+#' \item{\code{XAxis}:}{Integer, which component should be shown on the x-axis?
+#' Defaults to 1.}
+#' \item{\code{YAxis}:}{Integer, which component should be shown on the y-axis?
+#' Defaults to 2.}
+#' }
+#'
+#' All column-based parameters described in \code{?"\link{iSEE point parameters}"} are applicable.
+#' All plot-based parameters described in \code{?"\link{iSEE selection parameters}"} are applicable.
+#' 
+#' @return
+#' A DataFrame containing default settings for parameters of each of \code{number} reduced dimension panels. 
+#' 
+#' @author Aaron Lun
+#'
+#' @export
+#' @importFrom methods new
+#' @importClassesFrom S4Vectors DataFrame
+#' @importFrom SingleCellExperiment reducedDim
+#'
+#' @seealso
+#' \code{?"\link{iSEE point parameters}"},
+#' \code{?"\link{iSEE selection parameters}"}
+#'
+#' @examples
+#' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
+#' redDimPlotDefaults(sce, n=1)
+redDimPlotDefaults <- function(se, number) {
+    waszero <- number==0 # To ensure that we define all the fields with the right types.
+    if (waszero) number <- 1
+
+    out <- new("DataFrame", nrows=as.integer(number))
+    out[[.redDimType]] <- 1L
+    out[[.redDimXAxis]] <- 1L
+    out[[.redDimYAxis]] <- min(2L, ncol(reducedDim(se))) # if first reduced dim type has only 1 dimension
+
+    out <- .add_general_parameters_for_column_plots(out, se)
+    if (waszero) out <- out[0,,drop=FALSE]
+    return(out)
+}
+
+#' Feature assay plot defaults
+#'
+#' Create default settings for feature assay plot panels in the iSEE interface.
+#'
+#' @param se A SummarizedExperiment object.
+#' @param number An integer scalar, specifying the maximum number of feature assay plots that can be added to the interface.
+#'
+#' @details
+#' Parameters available to feature assay plots are:
+#' \describe{
+#' \item{\code{YAxisFeatName}:}{Integer, the index of the feature for which to show the expression on the y-axis if \code{YAxis="Feature name"}.
+#' Defaults to 1, i.e., the first feature in \code{se}.
+#' Alternatively, a string can be supplied containing the name of the feature, i.e., the row name.}
+#' \item{\code{YAxisRowTable}:}{Character, what row statistic table should be used to choose a feature to display on the y-axis?
+#' Any setting will override \code{YAxisFeatName} upon initialization of the app.
+#' Defaults to \code{"---"}, which means that no table will be used.}
+#' \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
+#' Defaults to 1, i.e., the first assay in \code{se}.
+#' Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
+#' \item{\code{XAxis}:}{Character, what type of variable should be shown on the x-axis?
+#' Defaults to \code{"None"}, but can also be \code{"Row table"}, \code{"Column data"} or \code{"Feature name"}.}
+#' \item{\code{XAxisColData}:}{Character, what column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
+#' Defaults to the first entry of \code{colData(se)}.}
+#' \item{\code{XAxisFeatName}:}{Integer, the index of the feature for which to show the expression on the x-axis if \code{XAxis="Feature name"}.
+#' Defaults to 1, i.e., the first feature in \code{se}.
+#' Alternatively, a string can be supplied containing the name of the feature.}
+#' \item{\code{XAxisRowTable}:}{Character, which row statistic table should be used to choose a feature to put on the x-axis if \code{XAxis="Row table"}?
+#' Any setting will override \code{XAxisFeatName} upon initialization of the app.
+#' Defaults to \code{"---"}, which means that no table will be used.}
+#' }
+#'
+#' All column-based parameters described in \code{?"\link{iSEE point parameters}"} are applicable.
+#' All plot-based parameters described in \code{?"\link{iSEE selection parameters}"} are applicable.
+#' 
+#' @return
+#' A DataFrame containing default settings for parameters of each of \code{number} feature assay panels. 
+#'
+#' @author Aaron Lun
+#' 
+#' @export
+#' @importFrom methods new
+#' @importClassesFrom S4Vectors DataFrame
+#' @importFrom SummarizedExperiment colData
+#' @importFrom BiocGenerics colnames
+#'
+#' @seealso
+#' \code{?"\link{iSEE point parameters}"},
+#' \code{?"\link{iSEE selection parameters}"}
+#'
+#' @examples
+#' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
+#' featAssayPlotDefaults(sce, n=1)
+featAssayPlotDefaults <- function(se, number) {
+    waszero <- number==0
+    if (waszero) number <- 1
+
+    def_assay <- .set_default_assay(se)
+    covariates <- colnames(colData(se))
+
+    out <- new("DataFrame", nrows=as.integer(number))
+    out[[.featAssayAssay]] <- def_assay
+    out[[.featAssayXAxis]] <- .featAssayXAxisNothingTitle
+    out[[.featAssayXAxisColData]] <- covariates[1]
+    out[[.featAssayXAxisFeatName]] <- 1L
+    out[[.featAssayXAxisRowTable]] <- .noSelection
+    out[[.featAssayYAxisFeatName]] <- 1L
+    out[[.featAssayYAxisRowTable]] <- .noSelection
+
+    out <- .add_general_parameters_for_column_plots(out, se)
+    if (waszero) out <- out[0,,drop=FALSE]
+    return(out)
+}
+
+#' Column data plot defaults
+#'
+#' Create default settings for column data plot panels in the iSEE interface.
+#'
+#' @param se A SummarizedExperiment object.
+#' @param number An integer scalar, specifying the maximum number of column data plots that can be added to the interface.
+#'
+#' @details
+#' Parameters available to column data plots are:
+#' \describe{
+#' \item{\code{YAxis}:}{Character, which column of \code{colData(se)} should be shown on the y-axis?
+#' Defaults to the first entry of \code{colData(se)}.}
+#' \item{\code{XAxis}:}{Character, what type of variable should be shown on the x-axis?
+#' Defaults to \code{"None"}, but can also be \code{"Column data"}.}
+#' \item{\code{XAxisColData}:}{Character, which column of \code{colData(se)} should be shown on the x-axis if \code{XAxis="Column data"}?
+#' Defaults to the first entry of \code{colData(se)}.}
+#' }
+#'
+#' All column-based parameters described in \code{?"\link{iSEE point parameters}"} are applicable.
+#' All plot-based parameters described in \code{?"\link{iSEE selection parameters}"} are applicable.
+#' 
+#' @return
+#' A DataFrame containing default settings for parameters of each of \code{number} column data panels. 
+#' 
+#' @author Aaron Lun
+#'
+#' @export
+#' @importFrom methods new
+#' @importClassesFrom S4Vectors DataFrame
+#' @importFrom SummarizedExperiment colData
+#' @importFrom BiocGenerics colnames
+#'
+#' @seealso
+#' \code{?"\link{iSEE point parameters}"},
+#' \code{?"\link{iSEE selection parameters}"}
+#'
+#' @examples
+#' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
+#' colDataPlotDefaults(sce, n=1)
+colDataPlotDefaults <- function(se, number) {
+    waszero <- number==0
+    if (waszero) number <- 1
+
+    covariates <- colnames(colData(se))
+
+    out <- new("DataFrame", nrows=as.integer(number))
+    out[[.colDataYAxis]] <- covariates[1]
+    out[[.colDataXAxis]] <- .colDataXAxisNothingTitle
+    out[[.colDataXAxisColData]] <- ifelse(length(covariates)==1L, covariates[1], covariates[2])
+
+    out <- .add_general_parameters_for_column_plots(out, se)
+    if (waszero) out <- out[0,,drop=FALSE]
+    return(out)
+}
+
+#' Custom data plot defaults
+#'
+#' Create default settings for custom data plot panels in the iSEE interface.
+#'
+#' @param se A SummarizedExperiment object.
+#' @param number An integer scalar, specifying the maximum number of custom data plots that can be added to the interface.
+#'
+#' @details
+#' Data parameters available to custom data plots are:
+#' \describe{
+#' \item{\code{DataBoxOpen}:}{Logical, should the data parameter box be open upon initialization?
+#' Defaults to \code{FALSE}.}
+#' \item{\code{Function}:}{String, which function should be used to generate the ggplot for the curent panel?
+#' Defaults to \code{"---"}, i.e., no coordinates are generated.}
+#' \item{\code{Arguments}:}{String with multiple lines specifying the initial arguments for the function, see \code{vignette("custom", package="iSEE")} for details.
+#' Defaults to an empty string.}
+#' }
+#' 
+#' Selection parameters for custom data plots are:
+#' \describe{
+#' \item{\code{SelectBoxOpen}:}{Logical, should the selection parameter box be open upon initialization?
+#' Defaults to \code{FALSE}.}
+#' \item{\code{ColumnSource}:}{Character, which other plot should transmit sample selections to the current plot? 
+#' Defaults to \code{"---"}, which means that no plot is used for point selection.}
+#' \item{\code{RowSource}:}{Character, which other plot should transmit feature selections to the current plot? 
+#' Defaults to \code{"---"}, which means that no plot is used for point selection.}
+#' }
+#'
+#' @return
+#' A DataFrame containing default settings for parameters of each of \code{number} custom data plot panels. 
+#'
+#' @author 
+#' Aaron Lun, Kevin Rue-Albrecht
+#'
+#' @export
+#' @importFrom methods new
+#' @importClassesFrom S4Vectors DataFrame
+#'
+#' @examples
+#' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
+#' customDataPlotDefaults(sce, n=1)
+customDataPlotDefaults <- function(se, number) {
+    waszero <- number==0
+    if (waszero) number <- 1
+
+    out <- new("DataFrame", nrows=as.integer(number))
+    out[[.customFun]] <- .noSelection
+    out[[.customArgs]] <- ""
+    out[[.customColSource]] <- .noSelection
+    out[[.customRowSource]] <- .noSelection
+    out[[.dataParamBoxOpen]] <- FALSE
+    out[[.selectParamBoxOpen]] <- FALSE
+
+    if (waszero) out <- out[0,,drop=FALSE]
+    return(out)
+}
+
+#' Row statistics table defaults
+#'
+#' Create default settings for row statistics table panels in the iSEE interface.
+#'
+#' @param se A SummarizedExperiment object.
+#' @param number An integer scalar, specifying the maximum number of row statistics tables that can be added to the interface.
+#'
+#' @details
+#' Parameters available to row statistics tables are:
 #' \describe{
 #' \item{\code{Selected}:}{Integer, containing the index of the row to be initially selected.
 #' Defaults to the first row, i.e., 1.
@@ -210,7 +452,231 @@
 #' All entries default to an empty string.}
 #' }
 #'
-#' @section Heatmap parameters:
+#' All table-based parameters described in \code{?"\link{iSEE selection parameters}"} are applicable.
+#'
+#' @return
+#' A DataFrame containing default settings for parameters of each of \code{number} row statistics table panels. 
+#'
+#' @author Aaron Lun 
+#'
+#' @export
+#' @importFrom methods new
+#' @importClassesFrom S4Vectors DataFrame
+#' @importFrom SummarizedExperiment rowData
+#'
+#' @seealso
+#' \code{?"\link{iSEE selection parameters}"}
+#'
+#' @examples
+#' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
+#' rowStatTableDefaults(sce, n=1)
+rowStatTableDefaults <- function(se, number) {
+    waszero <- number==0
+    if (waszero) number <- 1
+
+    out <- new("DataFrame", nrows=as.integer(number))
+    out[[.rowStatSelected]] <- 1L
+    out[[.rowStatSearch]] <- ""
+
+    # Defining an empty search for each column of the rowData.
+    colsearch <- character(ncol(rowData(se)))
+    out[[.rowStatColSearch]] <- rep(list(colsearch), as.integer(number))
+
+    # Defining the rowDataPlot from which point selections are received.
+    out[[.selectParamBoxOpen]] <- FALSE
+    out[[.selectByPlot]] <- .noSelection
+
+    if (waszero) out <- out[0,,drop=FALSE]
+    return(out)
+}
+
+#' Custom statistics table defaults
+#'
+#' Create default settings for custom statistics table panels in the iSEE interface.
+#'
+#' @param se A SummarizedExperiment object.
+#' @param number An integer scalar, specifying the maximum number of custom statistics tables that can be added to the interface.
+#'
+#' @details
+#' Data parameters available to custom data plots are:
+#' \describe{
+#' \item{\code{DataBoxOpen}:}{Logical, should the data parameter box be open upon initialization?
+#' Defaults to \code{FALSE}.}
+#' \item{\code{Function}:}{String, which function should be used to generate a data.frame?
+#' Defaults to \code{"---"}, i.e., no coordinates are generated.}
+#' \item{\code{Arguments}:}{String with multiple lines specifying the initial arguments for the function, see \code{vignette("custom", package="iSEE")} for details.
+#' Defaults to an empty string.}
+#' }
+#' 
+#' Selection parameters for custom data plots are:
+#' \describe{
+#' \item{\code{SelectBoxOpen}:}{Logical, should the selection parameter box be open upon initialization?
+#' Defaults to \code{FALSE}.}
+#' \item{\code{ColumnSource}:}{Character, which other plot should transmit sample selections to the current table? 
+#' Defaults to \code{"---"}, which means that no plot is used for point selection.}
+#' \item{\code{RowSource}:}{Character, which other plot should transmit feature selections to the current table? 
+#' Defaults to \code{"---"}, which means that no plot is used for point selection.}
+#' }
+#'
+#' @return
+#' A DataFrame containing default settings for parameters of each of \code{number} custom statistics table panels. 
+#'
+#' @author
+#' Aaron Lun, Kevin Rue-Albrecht
+#'
+#' @export
+#' @importFrom methods new
+#' @importClassesFrom S4Vectors DataFrame
+#'
+#' @examples
+#' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
+#' customStatTableDefaults(sce, n=1)
+customStatTableDefaults <- function(se, number) {
+    waszero <- number==0
+    if (waszero) number <- 1
+
+    out <- new("DataFrame", nrows=as.integer(number))
+    out[[.customFun]] <- .noSelection
+    out[[.customArgs]] <- ""
+    out[[.customColSource]] <- .noSelection
+    out[[.customRowSource]] <- .noSelection
+    out[[.customStatSearch]] <- ""
+
+    out[[.dataParamBoxOpen]] <- FALSE
+    out[[.selectParamBoxOpen]] <- FALSE
+
+    if (waszero) out <- out[0,,drop=FALSE]
+    return(out)
+}
+
+#' Row data plot defaults
+#'
+#' Create default settings for row data plot panels in the iSEE interface.
+#'
+#' @param se A SummarizedExperiment object.
+#' @param number An integer scalar, specifying the maximum number of row data plots that can be added to the interface.
+#'
+#' @details
+#' Parameters available to row data plots are:
+#' \describe{
+#' \item{\code{YAxis}:}{Character, which column of \code{rowData(se)} should be shown on the y-axis?
+#' Defaults to the first entry of \code{colData(se)}.}
+#' \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
+#' Defaults to \code{"None"}, but can also be \code{"Row data"} or \code{"Feature name"}.}
+#' \item{\code{XAxisRowData}:}{Character, which column of \code{rowData(se)} should be shown on the x-axis if \code{XAxis="Row data"}?
+#' Defaults to the first entry of \code{rowData(se)}.}
+#' }
+#'
+#' All row-based parameters described in \code{?"\link{iSEE point parameters}"} are applicable.
+#' All plot-based parameters described in \code{?"\link{iSEE selection parameters}"} are applicable.
+#' 
+#' @return
+#' A DataFrame containing default settings for parameters of each of \code{number} row data panels. 
+#' 
+#' @author Aaron Lun
+#'
+#' @export
+#' @importFrom methods new
+#' @importClassesFrom S4Vectors DataFrame
+#' @importFrom SummarizedExperiment rowData
+#' @importFrom BiocGenerics colnames
+#'
+#' @seealso
+#' \code{?"\link{iSEE point parameters}"},
+#' \code{?"\link{iSEE selection parameters}"}
+#'
+#' @examples
+#' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
+#' rowDataPlotDefaults(sce, n=1)
+rowDataPlotDefaults <- function(se, number) {
+    waszero <- number==0
+    if (waszero) number <- 1
+
+    covariates <- colnames(rowData(se))
+
+    out <- new("DataFrame", nrows=as.integer(number))
+    out[[.rowDataYAxis]] <- covariates[1]
+    out[[.rowDataXAxis]] <- .rowDataXAxisNothingTitle
+    out[[.rowDataXAxisRowData]] <- ifelse(length(covariates)==1L, covariates[1], covariates[2])
+
+    out <- .add_general_parameters_for_row_plots(out, se)
+    if (waszero) out <- out[0,,drop=FALSE]
+    return(out)
+}
+
+#' Sample assay plot defaults
+#'
+#' Create default settings for sample assay plot panels in the iSEE interface.
+#'
+#' @param se A SummarizedExperiment object.
+#' @param number An integer scalar, specifying the maximum number of sample assay plots that can be added to the interface.
+#'
+#' @details
+#' Parameters available to sample assay plots are:
+#' \describe{
+#' \item{\code{YAxis}:}{Integer, which column of \code{se} should be shown on the y-axis?
+#' Defaults to 1, i.e., the first column.
+#' Alternatively, a character field can be supplied containing the name of the column.}
+#' \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
+#' Defaults to 1, i.e., the first assay in \code{se}.
+#' Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
+#' \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
+#' Defaults to \code{"None"}, but can also be \code{"Row data"} or \code{"Sample"}.}
+#' \item{\code{XAxisRowData}:}{Character, which column of \code{rowData(se)} should be shown on the x-axis if \code{XAxis="Row data"}?
+#' Defaults to the first entry of \code{rowData(se)}.}
+#' \item{\code{XAxisSample}:}{Integer, which column of \code{se} should be shown on the x-axis?
+#' Defaults to 2 if \code{se} contains multiple columns, otherwise it is set to 1.
+#' Alternatively, a character field can be supplied containing the name of the column.}
+#' }
+#'
+#' All row-based parameters described in \code{?"\link{iSEE point parameters}"} are applicable.
+#' All plot-based parameters described in \code{?"\link{iSEE selection parameters}"} are applicable.
+#' 
+#' @return
+#' A DataFrame containing default settings for parameters of each of \code{number} sample assay panels. 
+#'
+#' @author Charlotte Soneson
+#'
+#' @export
+#' @importFrom methods new
+#' @importClassesFrom S4Vectors DataFrame
+#' @importFrom SummarizedExperiment rowData
+#' @importFrom BiocGenerics colnames
+#'
+#' @seealso
+#' \code{?"\link{iSEE point parameters}"},
+#' \code{?"\link{iSEE selection parameters}"}
+#'
+#' @examples
+#' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
+#' sampAssayPlotDefaults(sce, n=1)
+sampAssayPlotDefaults <- function(se, number) {
+    waszero <- number==0
+    if (waszero) number <- 1
+
+    covariates <- colnames(rowData(se))
+    def_assay <- .set_default_assay(se)
+
+    out <- new("DataFrame", nrows=as.integer(number))
+    out[[.sampAssayYAxis]] <- 1L
+    out[[.sampAssayAssay]] <- def_assay
+    out[[.sampAssayXAxis]] <- .sampAssayXAxisNothingTitle
+    out[[.sampAssayXAxisRowData]] <- covariates[1]
+    out[[.sampAssayXAxisSample]] <- ifelse(ncol(se)==1L, 1L, 2L)
+
+    out <- .add_general_parameters_for_row_plots(out, se)
+    if (waszero) out <- out[0,,drop=FALSE]
+    return(out)
+}
+
+#' Heatmap defaults
+#'
+#' Create default settings for heatmap panels in the iSEE interface.
+#'
+#' @param se A SummarizedExperiment object.
+#' @param number An integer scalar, specifying the maximum number of heatmaps that can be added to the interface.
+#'
+#' @details
 #' The features/rows to be used in the construction of the heatmap are specified with:
 #' \describe{
 #' \item{\code{FeatName}:}{List of length equal to the number of panels.
@@ -254,270 +720,29 @@
 #' Defaults to \code{"purple-black-yellow"}.}
 #' }
 #'
-#' Finally, the \code{ZoomData} field for heatmaps should contain an integer vector of consecutive indices to zoom into from the full heatmap.
+#' The \code{ZoomData} field for heatmaps should contain an integer vector of consecutive indices to zoom into from the full heatmap.
 #' This vector will subset the entries in \code{FeatName} for a given panel.
 #' This defaults to \code{NULL}, i.e., all specified features in \code{FeatName} are shown.
 #'
-#' @section Custom data plot parameters:
-#' \describe{
-#' \item{\code{Function}:}{String, which function should be used to generate coordinates for each sample?
-#' Defaults to \code{"---"}, i.e., no coordinates are generated.}
-#' \item{\code{ColumnSource}:}{Character, which other plot should be used for point selection in the current plot? Defaults to \code{"---"}, which means that no plot is used for point selection.}
-#' \item{\code{RowSource}:}{Character, which other plot should be used to select features in the current plot? Defaults to \code{"---"}, which means that no plot is used for point selection.}
-#' }
+#' All plot-based parameters described in \code{?"\link{iSEE selection parameters}"} are also applicable.
 #'
-#' @section Custom statistics table parameters:
-#' \describe{
-#' \item{\code{Function}:}{String, which function should be used to generate coordinates for each sample?
-#' Defaults to \code{"---"}, i.e., no table is generated.}
-#' \item{\code{ColumnSource}:}{Character, which other plot should be used for point selection in the current table? Defaults to \code{"---"}, which means that no plot is used for point selection.}
-#' \item{\code{RowSource}:}{Character, which other plot should be used to select features in the current table? Defaults to \code{"---"}, which means that no plot is used for point selection.}
-#' \item{\code{Search}:}{Character, containing the initial value of the search field.
-#' Defaults to an empty string.}
-#' }
-#'
-#' @section Point selection parameters:
-#' For the point-based plots, the following options apply:
-#' \describe{
-#' \item{\code{SelectBoxOpen}:}{Logical, should the point selection parameter box be open upon initialization?
-#' Defaults to \code{FALSE}.}
-#' \item{\code{SelectByPlot}:}{Character, which other plot should be used for point selection in the current plot?
-#' Defaults to \code{"---"}, which means that no plot is used for point selection.}
-#' \item{\code{SelectEffect}:}{Character, what is the effect of receiving point selection information?
-#' Can be \code{"Restrict"}, where only the selected points are shown; \code{"Color"}, where the selected points have a different color;
-#' or \code{"Transparent"}, where all points other than those selected are made transparent.
-#' Defaults to \code{"Transparent"}.}
-#' \item{\code{SelectColor}:}{Character, what color should be used for the selected points when \code{SelectEffect="Color"}?
-#' Defaults to \code{"red"}.}
-#' \item{\code{SelectAlpha}:}{Numeric, what level of transparency should be used for the unselected points when \code{SelectEffect="Transparent"}?
-#' This should lie in [0, 1], where 0 is fully transparent and 1 is fully opaque.
-#' Defaults to 0.1.}
-#' }
-#'
-#' Note that point selection cannot occur between row data plots and the other plot types.
-#' This is because each point in a row data plot is a feature, while each point represents a sample in the other plots.
-#' Point selection can only occur between plots of the same point type.
-#'
-#' For the row statistics tables, the following options apply:
-#' \describe{
-#' \item{\code{SelectBoxOpen}:}{Logical, should the point selection parameter box be open upon initialization?
-#' Defaults to \code{FALSE}.}
-#' \item{\code{SelectByPlot}:}{Character, which other plot should be used to select features in the current table?
-#' Defaults to \code{"---"}, which means that no plot is used for point selection.}
-#' }
-#' Only row data plots can be used for selecting points to supply to tables.
-#'
-#' @return A DataFrame containing default settings for various parameters of each panel.
+#' @return
+#' A DataFrame containing default settings for parameters of each of \code{number} heatmap panels. 
+#' 
+#' @author Charlotte Soneson
 #'
 #' @export
 #' @importFrom methods new
 #' @importClassesFrom S4Vectors DataFrame
-#' @importFrom SingleCellExperiment reducedDim
+#' @importFrom SummarizedExperiment colData
+#' @importFrom BiocGenerics colnames
+#'
+#' @seealso
+#' \code{?"\link{iSEE selection parameters}"}
 #'
 #' @examples
-#' library(scRNAseq)
-#' data(allen)
-#' class(allen)
-#'
-#' library(scater)
-#' sce <- as(allen, "SingleCellExperiment")
-#' counts(sce) <- assay(sce, "tophat_counts")
-#' sce <- normalize(sce)
-#' sce <- runPCA(sce)
-#' sce
-#'
-#' redDimPlotDefaults(sce, number=5)
-#' featAssayPlotDefaults(sce, number=5)
-#' colDataPlotDefaults(sce, number=5)
-#' customDataPlotDefaults(sce, number=5)
-#' rowStatTableDefaults(sce, number=5)
-#' customStatTableDefaults(sce, number=5)
-#' rowDataPlotDefaults(sce, number=5)
-#' sampAssayPlotDefaults(sce, number=5)
-#' heatMapPlotDefaults(sce, number=5)
-redDimPlotDefaults <- function(se, number) {
-    waszero <- number==0 # To ensure that we define all the fields with the right types.
-    if (waszero) number <- 1
-
-    out <- new("DataFrame", nrows=as.integer(number))
-    out[[.redDimType]] <- 1L
-    out[[.redDimXAxis]] <- 1L
-    out[[.redDimYAxis]] <- min(2L, ncol(reducedDim(se))) # if first reduced dim type has only 1 dimension
-
-    out <- .add_general_parameters_for_column_plots(out, se)
-    if (waszero) out <- out[0,,drop=FALSE]
-    return(out)
-}
-
-#' @rdname defaults
-#' @export
-#' @importFrom methods new
-#' @importClassesFrom S4Vectors DataFrame
-#' @importFrom SummarizedExperiment colData
-#' @importFrom BiocGenerics colnames
-featAssayPlotDefaults <- function(se, number) {
-    waszero <- number==0
-    if (waszero) number <- 1
-
-    def_assay <- .set_default_assay(se)
-    covariates <- colnames(colData(se))
-
-    out <- new("DataFrame", nrows=as.integer(number))
-    out[[.featAssayAssay]] <- def_assay
-    out[[.featAssayXAxis]] <- .featAssayXAxisNothingTitle
-    out[[.featAssayXAxisColData]] <- covariates[1]
-    out[[.featAssayXAxisFeatName]] <- 1L
-    out[[.featAssayXAxisRowTable]] <- .noSelection
-    out[[.featAssayYAxisFeatName]] <- 1L
-    out[[.featAssayYAxisRowTable]] <- .noSelection
-
-    out <- .add_general_parameters_for_column_plots(out, se)
-    if (waszero) out <- out[0,,drop=FALSE]
-    return(out)
-}
-
-#' @rdname defaults
-#' @export
-#' @importFrom methods new
-#' @importClassesFrom S4Vectors DataFrame
-#' @importFrom SummarizedExperiment colData
-#' @importFrom BiocGenerics colnames
-colDataPlotDefaults <- function(se, number) {
-    waszero <- number==0
-    if (waszero) number <- 1
-
-    covariates <- colnames(colData(se))
-
-    out <- new("DataFrame", nrows=as.integer(number))
-    out[[.colDataYAxis]] <- covariates[1]
-    out[[.colDataXAxis]] <- .colDataXAxisNothingTitle
-    out[[.colDataXAxisColData]] <- ifelse(length(covariates)==1L, covariates[1], covariates[2])
-
-    out <- .add_general_parameters_for_column_plots(out, se)
-    if (waszero) out <- out[0,,drop=FALSE]
-    return(out)
-}
-
-#' @rdname defaults
-#' @export
-#' @importFrom methods new
-#' @importClassesFrom S4Vectors DataFrame
-customDataPlotDefaults <- function(se, number) {
-    waszero <- number==0
-    if (waszero) number <- 1
-
-    out <- new("DataFrame", nrows=as.integer(number))
-    out[[.customFun]] <- .noSelection
-    out[[.customArgs]] <- ""
-    out[[.customColSource]] <- .noSelection
-    out[[.customRowSource]] <- .noSelection
-    out[[.dataParamBoxOpen]] <- FALSE
-    out[[.selectParamBoxOpen]] <- FALSE
-
-    if (waszero) out <- out[0,,drop=FALSE]
-    return(out)
-}
-
-#' @rdname defaults
-#' @export
-#' @importFrom methods new
-#' @importClassesFrom S4Vectors DataFrame
-#' @importFrom SummarizedExperiment rowData
-rowStatTableDefaults <- function(se, number) {
-    waszero <- number==0
-    if (waszero) number <- 1
-
-    out <- new("DataFrame", nrows=as.integer(number))
-    out[[.rowStatSelected]] <- 1L
-    out[[.rowStatSearch]] <- ""
-
-    # Defining an empty search for each column of the rowData.
-    colsearch <- character(ncol(rowData(se)))
-    out[[.rowStatColSearch]] <- rep(list(colsearch), as.integer(number))
-
-    # Defining the rowDataPlot from which point selections are received.
-    out[[.selectParamBoxOpen]] <- FALSE
-    out[[.selectByPlot]] <- .noSelection
-
-    if (waszero) out <- out[0,,drop=FALSE]
-    return(out)
-}
-
-#' @rdname defaults
-#' @export
-#' @importFrom methods new
-#' @importClassesFrom S4Vectors DataFrame
-customStatTableDefaults <- function(se, number) {
-    waszero <- number==0
-    if (waszero) number <- 1
-
-    out <- new("DataFrame", nrows=as.integer(number))
-    out[[.customFun]] <- .noSelection
-    out[[.customArgs]] <- ""
-    out[[.customColSource]] <- .noSelection
-    out[[.customRowSource]] <- .noSelection
-    out[[.customStatSearch]] <- ""
-
-    out[[.dataParamBoxOpen]] <- FALSE
-    out[[.selectParamBoxOpen]] <- FALSE
-
-    if (waszero) out <- out[0,,drop=FALSE]
-    return(out)
-}
-
-#' @rdname defaults
-#' @export
-#' @importFrom methods new
-#' @importClassesFrom S4Vectors DataFrame
-#' @importFrom SummarizedExperiment rowData
-#' @importFrom BiocGenerics colnames
-rowDataPlotDefaults <- function(se, number) {
-    waszero <- number==0
-    if (waszero) number <- 1
-
-    covariates <- colnames(rowData(se))
-
-    out <- new("DataFrame", nrows=as.integer(number))
-    out[[.rowDataYAxis]] <- covariates[1]
-    out[[.rowDataXAxis]] <- .rowDataXAxisNothingTitle
-    out[[.rowDataXAxisRowData]] <- ifelse(length(covariates)==1L, covariates[1], covariates[2])
-
-    out <- .add_general_parameters_for_row_plots(out, se)
-    if (waszero) out <- out[0,,drop=FALSE]
-    return(out)
-}
-
-#' @rdname defaults
-#' @export
-#' @importFrom methods new
-#' @importClassesFrom S4Vectors DataFrame
-#' @importFrom SummarizedExperiment rowData
-#' @importFrom BiocGenerics colnames
-sampAssayPlotDefaults <- function(se, number) {
-    waszero <- number==0
-    if (waszero) number <- 1
-
-    covariates <- colnames(rowData(se))
-    def_assay <- .set_default_assay(se)
-
-    out <- new("DataFrame", nrows=as.integer(number))
-    out[[.sampAssayYAxis]] <- 1L
-    out[[.sampAssayAssay]] <- def_assay
-    out[[.sampAssayXAxis]] <- .sampAssayXAxisNothingTitle
-    out[[.sampAssayXAxisRowData]] <- covariates[1]
-    out[[.sampAssayXAxisSample]] <- ifelse(ncol(se)==1L, 1L, 2L)
-
-    out <- .add_general_parameters_for_row_plots(out, se)
-    if (waszero) out <- out[0,,drop=FALSE]
-    return(out)
-}
-
-#' @rdname defaults
-#' @export
-#' @importFrom methods new
-#' @importClassesFrom S4Vectors DataFrame
-#' @importFrom SummarizedExperiment colData
-#' @importFrom BiocGenerics colnames
+#' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
+#' heatMapPlotDefaults(sce, n=1)
 heatMapPlotDefaults <- function(se, number) {
     waszero <- number==0 # To ensure that we define all the fields with the right types.
     if (waszero) number <- 1

@@ -68,7 +68,7 @@ The default start configuration with one plot of each type may not always be the
 `iSEE` allows the user to programmatically modify the initial settings [@kra2018iSEE], avoiding the need to click through the choices to obtain the desired panel setup.
 Almost every aspect of the initial app state can be customized, down to whether or not the parameter boxes are open or closed!
 
-To demonstrate this feature, let's assume that we are only interested in feature assay plots.
+To demonstrate this feature, let's assume that we are only interested in _feature assay plot_ panels.
 The default set of panels can be changed via the `initialPanels` argument of the `iSEE` function call.
 Given a `SingleCellExperiment` or `SummarizedExperiment` object named `sce`, the following code opens an app with two adjacent feature assay plots.
 Note that each panel is set to occupy half the width of the application window, which is set to 12 units by the `r CRANpkg("shiny")` package.
@@ -101,7 +101,7 @@ Those parameters are accessible at runtime in the eponym collapsible box.
 ## Setting the Y-axis
 
 The nature of the Y-axis is defined by the type of panel.
-For instance, _column data plot_ panels require the name of a column in the `colData` slot of the input `SummarizedExperiment`.
+For instance, _column data plot_ panels require the name of a column in the `colData(sce)`.
 Users can preconfigure the Y-axis of individual _column data plot_ panels as follows:
 
 ```{r yaxis}
@@ -118,7 +118,53 @@ We refer users to the individual help page of each panel type listed [below](#fu
 
 ## Setting the X-axis
 
-To do: More complicated as multiple sources are possible...
+The X-axis can be set to different types of variables, which generally requires setting at least two columns in the `DataFrame` of arguments.
+The type of variable is generally set in the `XAxis` column, while the name of the variable is stored in a different column for each type of variable.
+At runtime, this allows the app to remember the last selected variable of each type.
+
+For instance, the `XAxis` column of _feature assay plot_ arguments can have up to four different values:
+
+- `"None"`: does not require any addition input (draws a single violin for all features)
+- `"Column data"`: requires `"XAxisColData"` to be set to a column name in the `colData(sce)`
+- `"Feature name"`: requires either
+    - `"XAxisFeatName"` to be set to a feature name (or positional index) in `rownames(sce)`
+    - `"XAxisRowTable"` and `"XAxisFeatName"` to be both set, to the name of a _Row statistics table_ panel and the name (or index) of a feature in that table
+
+We demonstrate below each of the 4 scenarios, as examples 1 to 4:
+
+```{r xaxis}
+fexArg <- featAssayPlotDefaults(sce, 4)
+fexArg$DataBoxOpen <- TRUE
+# Example 1
+fexArg[1, "XAxis"] <- "None"
+# Example 2
+fexArg[2, "XAxis"] <- "Column data"
+fexArg[2, "XAxisColData"] <- "Core.Type"
+# Example 3
+fexArg[3, "XAxis"] <- "Feature name"
+fexArg[3, "XAxisFeatName"] <- "Zyx"
+# Example 4
+fexArg[4, "XAxis"] <- "Feature name"
+fexArg[4, "XAxisRowTable"] <- "Row statistics table 1"
+fexArg[4, "XAxisFeatName"] <- "Ints2"
+# Example 4 also requires a row statistic table
+rowData(sce)[, "gene_id"] <- rownames(sce)
+rsArg <- rowStatTableDefaults(sce, 1)
+rsArg$Selected <- "Ints2"
+rsArg$SearchColumns <- list(gene_id="Ints")
+# Initialisation
+init <- DataFrame(
+    Name = c(
+        paste("Feature assay plot", 1:4),
+        "Row statistics table 1"),
+    Width = c(rep(6, 4), 12)
+)
+app <- iSEE(sce, initialPanels = init, featAssayArgs = fexArg, rowStatArgs = rsArg)
+```
+
+Note how _Example 4_ requires an active _row statistics table_.
+To facilitate visualisation, we added the features identifiers as the `"gene_id"` column in `rowData(sce)`,
+we preselected the feature `"Ints2"`, and we prefiltered the table using the pattern `"Ints"` on the `"gene_id"`column to show this active selection.
 
 ## Reduced dimension plots
 

@@ -301,6 +301,8 @@ We refer users to the `?"iSEE point parameters"` help page to learn more about t
 
 The initial state of _iSEE_ applications can be configured all the way down to point selections and links between panels.
 
+## Shiny brush
+
 For instance, in the example below, we preconfigure the `SelectByPlot` column of a _column data plot_ panel to receive a point selection from a _reduced dimension plot_ panel.
 This requires an active selection in the _reduced dimension plot_ panel, which is achieved by preconfiguring the `BrushData` column of the arguments.
 
@@ -336,6 +338,8 @@ and the color of selected data points to `"darkgoldenrod1"`.
 Other choices include `"Restrict"`, to show only the selected data points;
 and `"Transparent"` (the default), to increase the transparency of unselected data points.
 
+## Lasso selection
+
 An identical process can be followed to preconfigure a lasso point selection:
 
 ```{r select-lasso}
@@ -359,7 +363,6 @@ init <- DataFrame(
 )
 app <- iSEE(sce, initialPanels = init, redDimArgs = rdArgs, colDataArgs = cdArgs)
 ```
-
 
 We refer users to the `?"iSEE selection parameters"` help page to learn more about the choices of parameters that control the appearance of point selections in receiver plot panels.
 

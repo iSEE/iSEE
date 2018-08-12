@@ -93,7 +93,7 @@ app <- iSEE(sce, initialPanels = init, featAssayArgs = fexArg)
 This will open the app with two feature assay plots, showing the selected genes.
 Of course, from this starting point, all the interactive functionality is still available, and new panels can be added, modified and linked via point selection.
 
-# Data parameters
+# Data parameters {#data}
 
 The _data parameters_ control the source of the information represented on the X-axis and Y-axis of each plot.
 Those parameters are accessible at runtime in the eponymous collapsible box.
@@ -172,6 +172,8 @@ Note how _Example 3b_ requires an active _row statistics table_ as a source of s
 To facilitate visualisation, we added the features identifiers as the `gene_id` column in `rowData(sce)`,
 we preselected the feature `"Ints2"`, and we prefiltered the table using the pattern `"Ints"` on the `gene_id`column to show this active selection.
 
+We refer users to the individual help page of each panel type listed [below](#further) to learn more about the choices of X-axis variables for each type of panel.
+
 ## Configuring the type of dimensionality reduction
 
 In the case of reduced dimension plots, _data parameters_  include the name of the reduced dimension slot from which to fetch coordinates.
@@ -189,6 +191,8 @@ init <- DataFrame(
 )
 app <- iSEE(sce, initialPanels = init, redDimArgs = rdArgs)
 ```
+
+We refer users to the `?redDimPlotDefaults` help page to learn more about the choices of default parameters for _reduced dimension plot_ panels.
 
 ## Configuring the type of assay data
 
@@ -221,7 +225,7 @@ a value different than the default `"black"` through the `ColorByDefaultColor` c
 
 ```{r ColorByDefaultColor}
 cdArgs <- colDataPlotDefaults(sce, 2)
-cdArgs$DataBoxOpen <- TRUE
+cdArgs$VisualBoxOpen <- TRUE
 cdArgs$ColorByDefaultColor[2] <- c("chocolate3")
 init <- DataFrame(
     Name = c("Column data plot 1", "Column data plot 2"),
@@ -229,6 +233,28 @@ init <- DataFrame(
 )
 app <- iSEE(sce, initialPanels = init, colDataArgs = cdArgs)
 ```
+
+## Linking the point color to a variable
+
+The color of data points can be linked to variables in a manner similar to the X and Y axes demonstrated in the data parameters section [above](#data).
+
+For instance, the color of data points in _column data plot_ panels can be set to a variable in `colData(sce)` by setting the `ColorBy` value to `"Column data"`, and the `ColorByColData` value to the desired coloumn name:
+
+```{r ColorByDefaultColor}
+cdArgs <- colDataPlotDefaults(sce, 2)
+cdArgs$VisualBoxOpen <- TRUE
+cdArgs$ColorBy <- "Column data"
+cdArgs$ColorByColData <- c("Core.Type", "TOTAL_DUP")
+init <- DataFrame(
+    Name = c("Column data plot 1", "Column data plot 2"),
+    Width = c(6, 6)
+)
+app <- iSEE(sce, initialPanels = init, colDataArgs = cdArgs)
+```
+
+Note how both categorical (e.g. `"Core.Type"`) and continuous (e.g. `"TOTAL_DUP"`) variables can be selected.
+
+We refer users to the `?"iSEE point parameters"` help page to learn more about the choices of coloring variables for each type of panel.
 
 # Selection parameters
 

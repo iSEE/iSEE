@@ -93,10 +93,14 @@ app <- iSEE(sce, initialPanels = init, featAssayArgs = fexArg)
 This will open the app with two feature assay plots, showing the selected genes.
 Of course, from this starting point, all the interactive functionality is still available, and new panels can be added, modified and linked via point selection.
 
-# Data parameters {#data}
+# Data parameters
+
+## Overview
 
 The _data parameters_ control the source of the information represented on the X-axis and Y-axis of each plot.
 Those parameters are accessible at runtime in the eponymous collapsible box.
+
+We refer users to the individual help page of each panel type listed [below](#further) to learn more about the choices of X-axis variables for each type of panel.
 
 ## Setting the Y-axis
 
@@ -115,9 +119,7 @@ init <- DataFrame(
 app <- iSEE(sce, initialPanels = init, colDataArgs = cdArgs)
 ```
 
-We refer users to the individual help page of each panel type listed [below](#further) to learn more about the Y-axis of each type of panel.
-
-## Setting the X-axis
+## Setting the X-axis {#xaxis}
 
 The X-axis can be set to different types of variables, which generally requires setting at least two columns in the `DataFrame` of arguments.
 The type of variable is generally set in the `XAxis` column, while the name of the variable is stored in a different column for each type of variable.
@@ -171,8 +173,6 @@ Note how _Example 3b_ requires an active _row statistics table_ as a source of s
 To facilitate visualisation, we added the features identifiers as the `gene_id` column in `rowData(sce)`,
 we preselected the feature `"Ints2"`, and we prefiltered the table using the pattern `"Ints"` on the `gene_id` column to show this active selection.
 
-We refer users to the individual help page of each panel type listed [below](#further) to learn more about the choices of X-axis variables for each type of panel.
-
 ## Configuring the type of dimensionality reduction
 
 In the case of reduced dimension plots, _data parameters_  include the name of the reduced dimension slot from which to fetch coordinates.
@@ -210,10 +210,15 @@ app <- iSEE(sce, initialPanels = init, featAssayArgs = fexArg)
 
 # Visual parameters
 
+## Overview
+
 The _visual parameters_ control the appearance of data points.
 Those parameters include: color, shape, size, opacity, facet, as well as font size and legend position.
 Some visual parameters can be associated to variables and controlled through `r CRANpkg("ggplot2")` aesthetics, while others can be set to constant user-defined values.
 All those parameters are accessible at runtime in the eponymous collapsible box.
+
+We refer users to the `?"iSEE point parameters"`  help page to learn more about the visual parameters variables configurable for each type of panel;
+and to the `?"iSEE selection parameters"` help page to learn more about the choices of parameters that control the appearance of point selections in receiver plot panels.
 
 ## Configuring default visual parameters
 
@@ -246,7 +251,7 @@ Note that for this demonstration, we facilitate visualization of the preconfigur
 
 ## Linking point aesthetics to variables
 
-The color and point of data points can be linked to variables in a manner similar to the X and Y axes demonstrated in the data parameters section [above](#data).
+The color and point of data points can be linked to variables in a manner similar to the X-axis parameters demonstrated [above](#xaxis).
 
 For instance, the color of data points in _column data plot_ panels can be set to a variable in `colData(sce)` by setting the `ColorBy` value to `"Column data"`, and the `ColorByColData` value to the desired coloumn name:
 
@@ -266,8 +271,6 @@ app <- iSEE(sce, initialPanels = init, colDataArgs = cdArgs)
 ```
 
 Note that points may only be shaped by a categorical variable.
-
-We refer users to the `?"iSEE point parameters"` help page to learn more about the choices of coloring variables for each type of panel.
 
 ## Configuring plot facets
 
@@ -291,8 +294,6 @@ init <- DataFrame(
 )
 app <- iSEE(sce, initialPanels = init, colDataArgs = cdArgs)
 ```
-
-We refer users to the `?"iSEE point parameters"` help page to learn more about the choices of faceting variables for each type of panel.
 
 # Selection parameters
 
@@ -360,8 +361,6 @@ init <- DataFrame(
 )
 app <- iSEE(sce, initialPanels = init, redDimArgs = rdArgs, colDataArgs = cdArgs)
 ```
-
-We refer users to the `?"iSEE selection parameters"` help page to learn more about the choices of parameters that control the appearance of point selections in receiver plot panels.
 
 # Parameter fields accepting both integer/character
 

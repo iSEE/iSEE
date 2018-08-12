@@ -247,19 +247,20 @@ app <- iSEE(sce, initialPanels = init, colDataArgs = cdArgs)
 
 Note that for this demonstration, we facilitate visualization of the preconfigured arguments by setting `VisualChoices` to display both the `"Color"` and `"Shape"` UI panels.
 
-## Linking the point color and shape to a variable
+## Linking point aesthetics to variables
 
 The color and point of data points can be linked to variables in a manner similar to the X and Y axes demonstrated in the data parameters section [above](#data).
 
 For instance, the color of data points in _column data plot_ panels can be set to a variable in `colData(sce)` by setting the `ColorBy` value to `"Column data"`, and the `ColorByColData` value to the desired coloumn name:
 
-```{r ColorByDefaultColor}
+```{r aesthetic-covariate}
 cdArgs <- colDataPlotDefaults(sce, 2)
 cdArgs$VisualBoxOpen <- TRUE
 cdArgs$VisualChoices <- list(c("Color", "Shape"), c("Color", "Shape"))
 cdArgs$ColorBy <- "Column data"
+cdArgs$ShapeBy <- "Column data"
 cdArgs$ColorByColData <- c("Core.Type", "TOTAL_DUP")
-cdArgs$ShapeByColData <- c("Core.Type", "TOTAL_DUP")
+cdArgs$ShapeByColData <- c("Core.Type", "driver_1_s")
 init <- DataFrame(
     Name = c("Column data plot 1", "Column data plot 2"),
     Width = c(6, 6)
@@ -267,7 +268,32 @@ init <- DataFrame(
 app <- iSEE(sce, initialPanels = init, colDataArgs = cdArgs)
 ```
 
+Note that points may only be shaped by a categorical variable.
+
 We refer users to the `?"iSEE point parameters"` help page to learn more about the choices of coloring variables for each type of panel.
+
+## Configuring plot facets
+
+Categorical variables may also be used to facet plots by row and column.
+
+For instance, _column data plot_ panels can be facet by variables stored in the columns of `colData(sce)`.
+Users can enable faceting by setting `FacetByRow` and/or `FacetByColumn` columns to `TRUE`, and set `RowFacetByColData` and `ColumnFacetByColData` to the appropriate column name in `colData(sce)`.
+We demonstrate below how faceting may be enable by row, column, or both:
+
+```{r facet}
+cdArgs <- colDataPlotDefaults(sce, 3)
+cdArgs$VisualBoxOpen <- TRUE
+cdArgs$VisualChoices <- list("Facets", "Facets", "Facets")
+cdArgs$FacetByRow <- c(TRUE, FALSE, TRUE)
+cdArgs$FacetByColumn <- c(FALSE, TRUE, TRUE)
+cdArgs$RowFacetByColData <- "driver_1_s"
+cdArgs$ColumnFacetByColData <- "Core.Type"
+init <- DataFrame(
+    Name = paste("Column data plot", 1:3),
+    Width = c(4, 4, 4)
+)
+app <- iSEE(sce, initialPanels = init, colDataArgs = cdArgs)
+```
 
 # Selection parameters
 

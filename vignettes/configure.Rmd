@@ -295,9 +295,46 @@ init <- DataFrame(
 app <- iSEE(sce, initialPanels = init, colDataArgs = cdArgs)
 ```
 
+We refer users to the `?"iSEE point parameters"` help page to learn more about the choices of faceting variables for each type of panel.
+
 # Selection parameters
 
+The initial state of _iSEE_ applications can be configured all the way down to point selections and links between panels.
 
+For instance, in the example below, we preconfigure the `SelectByPlot` column of a _column data plot_ panel to receive a point selection from a _reduced dimension plot_ panel.
+This requires an active selection in the _reduced dimension plot_ panel, which is achieved by preconfiguring the `BrushData` column of the arguments.
+The simplest way to obtain a valid input for the `BrushData` column is to launch an _iSEE_ application, make the desired selection (either a Shiny brush or a lasso selection), open the _iSEE_ code tracker, and copy paste the relevant point selection data.
+The result should look as below:
+
+```{r facet}
+# Preconfigure the receiver panel
+cdArgs <- colDataPlotDefaults(sce, 1)
+cdArgs$SelectBoxOpen <- TRUE
+cdArgs$SelectByPlot <- "Reduced dimension plot 1"
+cdArgs$SelectEffect <- "Color"
+cdArgs$SelectColor <- "darkgoldenrod1"
+# Preconfigure the sender panel, including the point selection
+rdArgs <- redDimPlotDefaults(sce, 1)
+rdArgs$LassoData <- list(
+    list(lasso = NULL, closed = TRUE, panelvar1 = NULL, panelvar2 = NULL, mapping = list(
+        x = "X", y = "Y"), coord = structure(c(9.79525050774792, 4.06230420782082, 2.05777752952464, 
+    8.23171969867689, 10.5569706455005, 9.79525050774792, 9.02920198559, 12.8872487748289, 
+    7.93608872863897, 0.991604508008889, 2.14901854478057, 9.02920198559), .Dim = c(6L, 
+    2L)))
+    )
+init <- DataFrame(
+    Name = c("Reduced dimension plot 1", "Column data plot 1"),
+    Width = c(6, 6)
+)
+app <- iSEE(sce, initialPanels = init, redDimArgs = rdArgs, colDataArgs = cdArgs)
+```
+
+Note that in the example above, we chose to color selected data points in the receiver panel, by setting the `SelectEffect` argument to `"Color"`,
+and the color of selected data points to `"darkgoldenrod1"`.
+Other choices include `"Restrict"`, to show only the selected data points;
+and `"Transparent"` (the default), to increase the transparency of unselected data points.
+
+We refer users to the `?"iSEE selection parameters"` help page to learn more about the choices of parameters that control the appearance of point selections in receiver plot panels.
 
 # Fields accepting both integer/character
 

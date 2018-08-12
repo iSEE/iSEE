@@ -125,26 +125,30 @@ At runtime, this allows the app to remember the last selected variable of each t
 
 For instance, the `XAxis` column of _feature assay plot_ arguments can have up to four different values:
 
-- `"None"`: does not require any addition input (draws a single violin for all features)
-- `"Column data"`: requires `"XAxisColData"` to be set to a column name in the `colData(sce)`
-- `"Feature name"`: requires either
-    - `"XAxisFeatName"` to be set to a feature name (or positional index) in `rownames(sce)`
-    - `"XAxisRowTable"` and `"XAxisFeatName"` to be both set, to the name of a _Row statistics table_ panel and the name (or index) of a feature in that table
+1. `"None"`: does not require any addition input (draws a single violin for all features)
+2. `"Column data"`: requires `"XAxisColData"` to be set to a column name in the `colData(sce)`
+3. `"Feature name"`: requires either
+    a. `XAxisFeatName` to be set to a feature name (or positional index) in `rownames(sce)`
+    b. `XAxisRowTable` and `XAxisFeatName` to be both set, to the name of a _Row statistics table_ panel and the name (or index) of a feature in that table
 
 We demonstrate below each of the 4 scenarios, as examples 1 to 4:
 
 ```{r xaxis}
 fexArg <- featAssayPlotDefaults(sce, 4)
 fexArg$DataBoxOpen <- TRUE
+
 # Example 1
 fexArg[1, "XAxis"] <- "None"
+
 # Example 2
 fexArg[2, "XAxis"] <- "Column data"
 fexArg[2, "XAxisColData"] <- "Core.Type"
-# Example 3
+
+# Example 3a
 fexArg[3, "XAxis"] <- "Feature name"
 fexArg[3, "XAxisFeatName"] <- "Zyx"
-# Example 4
+
+# Example 3b
 fexArg[4, "XAxis"] <- "Feature name"
 fexArg[4, "XAxisRowTable"] <- "Row statistics table 1"
 fexArg[4, "XAxisFeatName"] <- "Ints2"
@@ -153,6 +157,7 @@ rowData(sce)[, "gene_id"] <- rownames(sce)
 rsArg <- rowStatTableDefaults(sce, 1)
 rsArg$Selected <- "Ints2"
 rsArg$SearchColumns <- list(gene_id="Ints")
+
 # Initialisation
 init <- DataFrame(
     Name = c(
@@ -163,9 +168,9 @@ init <- DataFrame(
 app <- iSEE(sce, initialPanels = init, featAssayArgs = fexArg, rowStatArgs = rsArg)
 ```
 
-Note how _Example 4_ requires an active _row statistics table_.
-To facilitate visualisation, we added the features identifiers as the `"gene_id"` column in `rowData(sce)`,
-we preselected the feature `"Ints2"`, and we prefiltered the table using the pattern `"Ints"` on the `"gene_id"`column to show this active selection.
+Note how _Example 3b_ requires an active _row statistics table_ as a source of selection.
+To facilitate visualisation, we added the features identifiers as the `gene_id` column in `rowData(sce)`,
+we preselected the feature `"Ints2"`, and we prefiltered the table using the pattern `"Ints"` on the `gene_id`column to show this active selection.
 
 ## Reduced dimension plots
 
@@ -185,8 +190,23 @@ init <- DataFrame(
 app <- iSEE(sce, initialPanels = init, redDimArgs = rdArgs)
 ```
 
+## Assay data
 
-For axes linked to an assay, 
+For axes linked to an assay, such as the Y-axis of _feature assay plot_ panels, the assay to display can be set through the `Assay` column of the arguments.
+The value is internally typed as `integer` and should be given as the positional index of the desired assays in `assay(sce)`.
+Neertheless, users may initialize this field as a character vector of assay names, in which case _all_ assays must be defined by name.
+
+```{r featAssayPlotDefaults-assay}
+fexArg <- featAssayPlotDefaults(sce, 2)
+fexArg$DataBoxOpen <- TRUE
+fexArg$Assay <- c("rsem_counts", "tophat_counts")
+init <- DataFrame(
+    Name = paste("Feature assay plot", 1:2),
+    Width = c(6, 6)
+)
+app <- iSEE(sce, initialPanels = init, featAssayArgs = fexArg)
+```
+
 
 # Aesthetics parameters
 

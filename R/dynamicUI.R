@@ -98,6 +98,7 @@
 #' sliderInput tagList column radioButtons tags hr brushOpts
 #' selectizeInput checkboxGroupInput textAreaInput
 .panel_generation <- function(active_panels, memory, se) {
+
     collected <- list()
     counter <- 1L
     cumulative.width <- 0L

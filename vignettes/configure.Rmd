@@ -96,7 +96,7 @@ Of course, from this starting point, all the interactive functionality is still 
 # Data parameters
 
 The _data parameters_ control the source of the information represented on the X-axis and Y-axis of each plot.
-Those parameters are accessible at runtime in the eponym collapsible box.
+Those parameters are accessible at runtime in the eponymous collapsible box.
 
 ## Setting the Y-axis
 
@@ -172,7 +172,7 @@ Note how _Example 3b_ requires an active _row statistics table_ as a source of s
 To facilitate visualisation, we added the features identifiers as the `gene_id` column in `rowData(sce)`,
 we preselected the feature `"Ints2"`, and we prefiltered the table using the pattern `"Ints"` on the `gene_id`column to show this active selection.
 
-## Reduced dimension plots
+## Configuring the type of dimensionality reduction
 
 In the case of reduced dimension plots, _data parameters_  include the name of the reduced dimension slot from which to fetch coordinates.
 This information is stored in the `Type` column:
@@ -190,7 +190,7 @@ init <- DataFrame(
 app <- iSEE(sce, initialPanels = init, redDimArgs = rdArgs)
 ```
 
-## Assay data
+## Configuring the type of assay data
 
 For axes linked to an assay, such as the Y-axis of _feature assay plot_ panels, the assay to display can be set through the `Assay` column of the arguments.
 The value is internally typed as `integer` and should be given as the positional index of the desired assays in `assay(sce)`.
@@ -209,10 +209,12 @@ app <- iSEE(sce, initialPanels = init, featAssayArgs = fexArg)
 
 # Visual parameters
 
+## Configuring the default point color
+
 The _visual parameters_ control the appearance of data points.
 They include: color, shape, size, opacity, facet, as well as font size and legend position.
 Some visual parameters can be associated to variables and controlled through `r CRANpkg("ggplot2")` aesthetics, while others can be set to constant user-defined values.
-All those parameters are accessible at runtime in the eponym collapsible box.
+All those parameters are accessible at runtime in the eponymous collapsible box.
 
 For instance, the default color of data points in _column data plot_ panels can be set to
 a value different than the default `"black"` through the `ColorByDefaultColor` column:

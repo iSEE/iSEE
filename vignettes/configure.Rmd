@@ -131,7 +131,7 @@ For instance, the `XAxis` column of _feature assay plot_ arguments can have up t
     a. `XAxisFeatName` to be set to a feature name (or positional index) in `rownames(sce)`
     b. `XAxisRowTable` and `XAxisFeatName` to be both set, to the name of a _Row statistics table_ panel and the name (or index) of a feature in that table
 
-We demonstrate below each of the 4 scenarios, as examples 1 to 4:
+We demonstrate below each of the 4 scenarios, as examples 1 to 3:
 
 ```{r xaxis}
 fexArg <- featAssayPlotDefaults(sce, 4)

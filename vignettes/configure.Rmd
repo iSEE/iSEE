@@ -106,6 +106,7 @@ Users can preconfigure the Y-axis of individual _column data plot_ panels as fol
 
 ```{r yaxis}
 cdArgs <- colDataPlotDefaults(sce, 2)
+cdArgs$DataBoxOpen <- TRUE
 cdArgs$YAxis <- c("NREADS", "TOTAL_DUP")
 init <- DataFrame(
     Name = c("Column data plot 1", "Column data plot 2"),
@@ -173,6 +174,7 @@ This information is stored in the `Type` column:
 
 ```{r redDimPlotDefaults-type}
 rdArgs <- redDimPlotDefaults(sce, 1)
+rdArgs$DataBoxOpen <- TRUE
 rdArgs$Type <- "TSNE"
 rdArgs$XAxis <- 2
 rdArgs$YAxis <- 1

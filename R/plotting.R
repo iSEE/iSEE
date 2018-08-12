@@ -174,7 +174,7 @@ names(.all_aes_values) <- .all_aes_names
 .make_featAssayPlot <- function(id, all_memory, all_coordinates, se, colormap) {
     param_choices <- all_memory$featAssayPlot[id,]
     data_cmds <- list()
-    print(param_choices)
+
     ## Setting up the y-axis:
     gene_selected_y <- param_choices[[.featAssayYAxisFeatName]]
     validate(need(

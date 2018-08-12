@@ -207,10 +207,26 @@ init <- DataFrame(
 app <- iSEE(sce, initialPanels = init, featAssayArgs = fexArg)
 ```
 
+# Visual parameters
 
-# Aesthetics parameters
+The _visual parameters_ control the appearance of data points.
+They include: color, shape, size, opacity, facet, as well as font size and legend position.
+Some visual parameters can be associated to variables and controlled through `r CRANpkg("ggplot2")` aesthetics, while others can be set to constant user-defined values.
+All those parameters are accessible at runtime in the eponym collapsible box.
 
+For instance, the default color of data points in _column data plot_ panels can be set to
+a value different than the default `"black"` through the `ColorByDefaultColor` column:
 
+```{r ColorByDefaultColor}
+cdArgs <- colDataPlotDefaults(sce, 2)
+cdArgs$DataBoxOpen <- TRUE
+cdArgs$ColorByDefaultColor[2] <- c("chocolate3")
+init <- DataFrame(
+    Name = c("Column data plot 1", "Column data plot 2"),
+    Width = c(6, 6)
+)
+app <- iSEE(sce, initialPanels = init, colDataArgs = cdArgs)
+```
 
 # Selection parameters
 

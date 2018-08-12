@@ -213,20 +213,31 @@ app <- iSEE(sce, initialPanels = init, featAssayArgs = fexArg)
 
 # Visual parameters
 
-## Configuring the default point color
-
 The _visual parameters_ control the appearance of data points.
 They include: color, shape, size, opacity, facet, as well as font size and legend position.
 Some visual parameters can be associated to variables and controlled through `r CRANpkg("ggplot2")` aesthetics, while others can be set to constant user-defined values.
 All those parameters are accessible at runtime in the eponymous collapsible box.
 
+## Configuring default visual parameters
+
+Certain visual parameters can be set to a constant user-defined value.
+Those include: color, transparency (i.e., alpha), downsampling resolution, as well as text font size and legend position.
+
 For instance, the default color of data points in _column data plot_ panels can be set to
-a value different than the default `"black"` through the `ColorByDefaultColor` column:
+a value different than the default `"black"` through the `ColorByDefaultColor` column,
+while the default transparency value is controlled through the `PointAlpha` column.
+Here, we alter several default visual parameters in the second panel:
 
 ```{r ColorByDefaultColor}
 cdArgs <- colDataPlotDefaults(sce, 2)
 cdArgs$VisualBoxOpen <- TRUE
+cdArgs$VisualChoices <- list(c("Color", "Points", "Other"), c("Color", "Points", "Other"))
 cdArgs$ColorByDefaultColor[2] <- c("chocolate3")
+cdArgs$PointAlpha[2] <- 0.2
+cdArgs$PointSize[2] <- 2
+cdArgs$Downsample[2] <- TRUE
+cdArgs$SampleRes[2] <- 150
+cdArgs$FontSize[2] <- 2
 init <- DataFrame(
     Name = c("Column data plot 1", "Column data plot 2"),
     Width = c(6, 6)
@@ -234,25 +245,27 @@ init <- DataFrame(
 app <- iSEE(sce, initialPanels = init, colDataArgs = cdArgs)
 ```
 
-## Linking the point color to a variable
+Note that for this demonstration, we facilitate visualization of the preconfigured arguments by setting `VisualChoices` to display both the `"Color"` and `"Shape"` UI panels.
 
-The color of data points can be linked to variables in a manner similar to the X and Y axes demonstrated in the data parameters section [above](#data).
+## Linking the point color and shape to a variable
+
+The color and point of data points can be linked to variables in a manner similar to the X and Y axes demonstrated in the data parameters section [above](#data).
 
 For instance, the color of data points in _column data plot_ panels can be set to a variable in `colData(sce)` by setting the `ColorBy` value to `"Column data"`, and the `ColorByColData` value to the desired coloumn name:
 
 ```{r ColorByDefaultColor}
 cdArgs <- colDataPlotDefaults(sce, 2)
 cdArgs$VisualBoxOpen <- TRUE
+cdArgs$VisualChoices <- list(c("Color", "Shape"), c("Color", "Shape"))
 cdArgs$ColorBy <- "Column data"
 cdArgs$ColorByColData <- c("Core.Type", "TOTAL_DUP")
+cdArgs$ShapeByColData <- c("Core.Type", "TOTAL_DUP")
 init <- DataFrame(
     Name = c("Column data plot 1", "Column data plot 2"),
     Width = c(6, 6)
 )
 app <- iSEE(sce, initialPanels = init, colDataArgs = cdArgs)
 ```
-
-Note how both categorical (e.g. `"Core.Type"`) and continuous (e.g. `"TOTAL_DUP"`) variables can be selected.
 
 We refer users to the `?"iSEE point parameters"` help page to learn more about the choices of coloring variables for each type of panel.
 

@@ -194,7 +194,7 @@ app <- iSEE(sce, initialPanels = init, redDimArgs = rdArgs)
 
 We refer users to the `?redDimPlotDefaults` help page to learn more about the choices of default parameters for _reduced dimension plot_ panels.
 
-## Configuring the type of assay data
+## Configuring the type of assay data {#assay}
 
 For axes linked to an assay, such as the Y-axis of _feature assay plot_ panels, the assay to display can be set through the `Assay` column of the arguments.
 The value is internally typed as `integer` and should be given as the positional index of the desired assays in `assay(sce)`.
@@ -214,7 +214,7 @@ app <- iSEE(sce, initialPanels = init, featAssayArgs = fexArg)
 # Visual parameters
 
 The _visual parameters_ control the appearance of data points.
-They include: color, shape, size, opacity, facet, as well as font size and legend position.
+Those parameters include: color, shape, size, opacity, facet, as well as font size and legend position.
 Some visual parameters can be associated to variables and controlled through `r CRANpkg("ggplot2")` aesthetics, while others can be set to constant user-defined values.
 All those parameters are accessible at runtime in the eponymous collapsible box.
 
@@ -366,9 +366,60 @@ app <- iSEE(sce, initialPanels = init, redDimArgs = rdArgs, colDataArgs = cdArgs
 
 We refer users to the `?"iSEE selection parameters"` help page to learn more about the choices of parameters that control the appearance of point selections in receiver plot panels.
 
-# Fields accepting both integer/character
+# Parameter fields accepting both integer/character
 
+As we mentioned [earlier](#assay), certain parameters such as assay types may be set to either character or integer values.
+Those include parameters referring to assays `*Assay`, features `*FeatName`, and samples `*Sample`.
 
+We generally recommend to set those parameters using integer values; those are used internally and will always work even in the presence of unnamed assays, for instance:
+
+```{r integer}
+fexArg <- featAssayPlotDefaults(sce, 2)
+fexArg$DataBoxOpen <- TRUE
+fexArg$Assay <- c(6, 6)
+fexArg$YAxisFeatName <- c(10, 11)
+fexArg$XAxis <- "Feature name"
+fexArg$XAxisFeatName <- c(12, 13)
+init <- DataFrame(
+    Name = paste("Feature assay plot", 1:2),
+    Width = c(6, 6)
+)
+app <- iSEE(sce, initialPanels = init, featAssayArgs = fexArg)
+```
+
+Alternatively, users may refer to assays, features, and samples by their character name, if any.
+However, we warn users against mixing character and integer values, as this will cause integer values to be converted to the character type.
+
+For instance, the example below will fail to find an assay called `"6"` for the first panel, and it will instead fall back to using the first assay (`"tophat_counts`):
+
+```{r character-integer}
+fexArg <- featAssayPlotDefaults(sce, 2)
+fexArg$DataBoxOpen <- TRUE
+fexArg$Assay <- c(6, "counts")
+init <- DataFrame(
+    Name = paste("Feature assay plot", 1:2),
+    Width = c(6, 6)
+)
+app <- iSEE(sce, initialPanels = init, featAssayArgs = fexArg)
+```
+
+We provide below an example where all parameters are defined as character values:
+
+```{r character}
+fexArg <- featAssayPlotDefaults(sce, 2)
+fexArg$DataBoxOpen <- TRUE
+fexArg$Assay <- c("logcounts", "counts")
+fexArg$YAxisFeatName <- c("A3galt2", "A4galt")
+fexArg$XAxis <- "Feature name"
+fexArg$XAxisFeatName <- c("L3mbtl1", "L3mbtl2")
+init <- DataFrame(
+    Name = paste("Feature assay plot", 1:2),
+    Width = c(6, 6)
+)
+app <- iSEE(sce, initialPanels = init, featAssayArgs = fexArg)
+```
+
+We refer users to the individual help page of each panel type listed [below](#further) to learn more about the parameters of each type of panel that accept integer and character values.
 
 # Further reading {#further}
 

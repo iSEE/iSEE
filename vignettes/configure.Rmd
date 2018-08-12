@@ -170,7 +170,7 @@ app <- iSEE(sce, initialPanels = init, featAssayArgs = fexArg, rowStatArgs = rsA
 
 Note how _Example 3b_ requires an active _row statistics table_ as a source of selection.
 To facilitate visualisation, we added the features identifiers as the `gene_id` column in `rowData(sce)`,
-we preselected the feature `"Ints2"`, and we prefiltered the table using the pattern `"Ints"` on the `gene_id`column to show this active selection.
+we preselected the feature `"Ints2"`, and we prefiltered the table using the pattern `"Ints"` on the `gene_id` column to show this active selection.
 
 We refer users to the individual help page of each panel type listed [below](#further) to learn more about the choices of X-axis variables for each type of panel.
 

@@ -196,9 +196,7 @@ We refer users to the `?redDimPlotDefaults` help page to learn more about the ch
 
 ## Configuring the type of assay data {#assay}
 
-For axes linked to an assay, such as the Y-axis of _feature assay plot_ panels, the assay to display can be set through the `Assay` column of the arguments.
-The value is internally typed as `integer` and should be given as the positional index of the desired assays in `assay(sce)`.
-Neertheless, users may initialize this field as a character vector of assay names, in which case _all_ assays must be defined by name.
+For axes linked to an assay, such as the Y-axis of _feature assay plot_ panels, the assay to display can be set through the `Assay` column of the arguments:
 
 ```{r featAssayPlotDefaults-assay}
 fexArg <- featAssayPlotDefaults(sce, 2)

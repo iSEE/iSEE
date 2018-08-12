@@ -303,10 +303,11 @@ The initial state of _iSEE_ applications can be configured all the way down to p
 
 For instance, in the example below, we preconfigure the `SelectByPlot` column of a _column data plot_ panel to receive a point selection from a _reduced dimension plot_ panel.
 This requires an active selection in the _reduced dimension plot_ panel, which is achieved by preconfiguring the `BrushData` column of the arguments.
-The simplest way to obtain a valid input for the `BrushData` column is to launch an _iSEE_ application, make the desired selection (either a Shiny brush or a lasso selection), open the _iSEE_ code tracker, and copy paste the relevant point selection data.
+
+The simplest way to obtain a valid input for the `BrushData` column is to launch an _iSEE_ application, make the desired selection using a Shiny brush, open the _iSEE_ code tracker, and copy paste the relevant point selection data.
 The result should look as below:
 
-```{r facet}
+```{r select-brish}
 # Preconfigure the receiver panel
 cdArgs <- colDataPlotDefaults(sce, 1)
 cdArgs$SelectBoxOpen <- TRUE
@@ -315,12 +316,13 @@ cdArgs$SelectEffect <- "Color"
 cdArgs$SelectColor <- "darkgoldenrod1"
 # Preconfigure the sender panel, including the point selection
 rdArgs <- redDimPlotDefaults(sce, 1)
-rdArgs$LassoData <- list(
-    list(lasso = NULL, closed = TRUE, panelvar1 = NULL, panelvar2 = NULL, mapping = list(
-        x = "X", y = "Y"), coord = structure(c(9.79525050774792, 4.06230420782082, 2.05777752952464, 
-    8.23171969867689, 10.5569706455005, 9.79525050774792, 9.02920198559, 12.8872487748289, 
-    7.93608872863897, 0.991604508008889, 2.14901854478057, 9.02920198559), .Dim = c(6L, 
-    2L)))
+rdArgs$BrushData <- list(
+        list(xmin = 2.8, xmax = 10.4, ymin = 0.6, ymax = 13.2, 
+        mapping = list(x = "X", y = "Y"), domain = list(left = -14.0, right = 10.9, 
+            bottom = -12.0, top = 16.4), range = list(left = 38.7, 
+            right = 541.5, bottom = 466.0, top = 23.7), 
+        log = list(x = NULL, y = NULL), direction = "xy", brushId = "redDimPlot1_Brush", 
+        outputId = "redDimPlot1")
     )
 init <- DataFrame(
     Name = c("Reduced dimension plot 1", "Column data plot 1"),
@@ -333,6 +335,31 @@ Note that in the example above, we chose to color selected data points in the re
 and the color of selected data points to `"darkgoldenrod1"`.
 Other choices include `"Restrict"`, to show only the selected data points;
 and `"Transparent"` (the default), to increase the transparency of unselected data points.
+
+An identical process can be followed to preconfigure a lasso point selection:
+
+```{r select-lasso}
+# Preconfigure the receiver panel
+cdArgs <- colDataPlotDefaults(sce, 1)
+cdArgs$SelectBoxOpen <- TRUE
+cdArgs$SelectByPlot <- "Reduced dimension plot 1"
+cdArgs$SelectEffect <- "Color"
+cdArgs$SelectColor <- "darkgoldenrod1"
+# Preconfigure the sender panel, including the point selection
+rdArgs <- redDimPlotDefaults(sce, 1)
+rdArgs$LassoData <- list(
+    list(lasso = NULL, closed = TRUE, panelvar1 = NULL, panelvar2 = NULL, mapping = list(
+        x = "X", y = "Y"), coord = structure(c(9.7, 4.0, 2.0, 
+        8.2, 10.5, 9.7, 9.0, 12.8, 7.9, 0.9, 2.1, 9.0), .Dim = c(6L, 
+        2L)))
+    )
+init <- DataFrame(
+    Name = c("Reduced dimension plot 1", "Column data plot 1"),
+    Width = c(6, 6)
+)
+app <- iSEE(sce, initialPanels = init, redDimArgs = rdArgs, colDataArgs = cdArgs)
+```
+
 
 We refer users to the `?"iSEE selection parameters"` help page to learn more about the choices of parameters that control the appearance of point selections in receiver plot panels.
 

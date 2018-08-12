@@ -482,6 +482,7 @@ iSEE <- function(se,
         # of when the expression is evaluated.
 
         for (mode in all_panel_types) {
+
             max_plots <- nrow(pObjects$memory[[mode]])
             for (id in seq_len(max_plots)) {
                 local({
@@ -1469,6 +1470,7 @@ iSEE <- function(se,
 
         # Load the gene level data
         for (id in seq_len(nrow(pObjects$memory$rowStatTable))) {
+
           local({
             id0 <- id
             panel_name <- paste0("rowStatTable", id0)

@@ -129,7 +129,7 @@ For instance, the `XAxis` column of _feature assay plot_ arguments can have up t
 2. `"Column data"`: requires `"XAxisColData"` to be set to a column name in the `colData(sce)`
 3. `"Feature name"`: requires either
     a. `XAxisFeatName` to be set to a feature name (or positional index) in `rownames(sce)`
-    b. `XAxisRowTable` and `XAxisFeatName` to be both set, to the name of a _Row statistics table_ panel and the name (or index) of a feature in that table
+    b. `XAxisRowTable` to be set to the name of a _Row statistics table_ panel with an active selection set in its own `Selected` column
 
 We demonstrate below each of the 4 scenarios, as examples 1 to 3:
 
@@ -151,7 +151,6 @@ fexArg[3, "XAxisFeatName"] <- "Zyx"
 # Example 3b
 fexArg[4, "XAxis"] <- "Feature name"
 fexArg[4, "XAxisRowTable"] <- "Row statistics table 1"
-fexArg[4, "XAxisFeatName"] <- "Ints2"
 # Example 4 also requires a row statistic table
 rowData(sce)[, "gene_id"] <- rownames(sce)
 rsArg <- rowStatTableDefaults(sce, 1)

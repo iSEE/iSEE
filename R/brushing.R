@@ -33,21 +33,30 @@
     node_names <- list()
     edges <- list()
 
-    for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot", "rowStatTable", "rowDataPlot", "sampAssayPlot", "customColPlot", "heatMapPlot")) {
+    for (mode in all_panel_types) {
         N <- nrow(memory[[mode]])
         cur_panels <- sprintf("%s%i", mode, seq_len(N))
         node_names[[mode]] <- cur_panels
 
-        cur_edges <- vector("list",N)
-        for (id in seq_len(N)) {
-            cur_parent <- memory[[mode]][id, .selectByPlot]
-            if (cur_parent!=.noSelection) {
-                cur_edges[[id]] <- c(.decoded2encoded(cur_parent), cur_panels[id])
+        fields <- .find_selectby_field(mode)
+        collected_edges <- vector("list", length(fields))
+        for (i in seq_along(fields)) {
+            src <- fields[i]
+
+            cur_edges <- vector("list", N)
+            for (id in seq_len(N)) {
+                cur_parent <- memory[[mode]][id, src]
+                if (cur_parent!=.noSelection) {
+                    cur_edges[[id]] <- c(.decoded2encoded(cur_parent), cur_panels[id])
+                }
             }
+            collected_edges[[i]] <- cur_edges
         }
-        edges[[mode]] <- cur_edges
+
+        edges[[mode]] <- unlist(collected_edges) 
     }
 
+    # Creating a graph.
     all_edges <- unlist(edges)
     node_names <- unlist(node_names)
     g <- make_graph(as.character(all_edges), isolates=setdiff(node_names, all_edges), directed=TRUE)
@@ -55,6 +64,28 @@
         stop("cyclic point selection dependencies in 'initialPanels'")
     }
     return(g)
+}
+
+#' Find the transmitting field
+#'
+#' Finds the field in memory containing the identity of the transmitting plot for a given panel type.
+#'
+#' @param type String specifying the encoded panel type.
+#'
+#' @return A character vector containing the names of memory fields containing the identities of the transmitting plot(s).
+#'
+#' @details
+#' This function is necessary as custom panels have different fields for their upstream transmitting plots compared to all other panels.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_find_selectby_field
+.find_selectby_field <- function(type) {
+    if (type %in% custom_panel_types) { 
+        fields <- c(.customRowSource, .customColSource)
+    } else {
+        fields <- .selectByPlot
+    }
+    return(fields)
 }
 
 #' Change the selection source
@@ -132,12 +163,16 @@
     for (i in seq_along(all_kids)) {
         type <- enc$Type[i]
         id <- enc$ID[i]
-        pObjects$memory[[type]][id, .selectByPlot] <- .noSelection
+        for (f in .find_selectby_field(type)) {
+            pObjects$memory[[type]][id, f] <- .noSelection
+        }
     }
 
     # Destroying self memory of any transmitting panel.
     self <- .split_encoded(panel)
-    pObjects$memory[[self$Type]][self$ID, .selectByPlot] <- .noSelection
+    for (f in .find_selectby_field(self$Type)) {
+        pObjects$memory[[self$Type]][self$ID, f] <- .noSelection
+    }
 
     # Destroying the edges.
     pObjects$selection_links <- graph - incident(graph, panel, mode="all")
@@ -180,8 +215,10 @@
         types <- enc$Type
         ids <- enc$ID
 
+        # Avoiding panels that don't have a selection effect or don't transmit.
+        endpoints <- types %in% c("rowStatTable", "customDataPlot", "customStatTable", "heatMapPlot") 
         new_children <- character(0)
-        for (i in which(types!="rowStatTable")) { # as tables don't have a selection effect, or even transmit.
+        for (i in which(!endpoints)) { 
             if (memory[[types[i]]][ids[i],.selectEffect]==.selectRestrictTitle) {
                 new_children <- c(new_children, names(adjacent_vertices(graph, children[i], mode="out")[[1]]))
             }

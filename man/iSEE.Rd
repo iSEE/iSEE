@@ -6,10 +6,11 @@
 \usage{
 iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featAssayArgs = NULL,
   rowStatArgs = NULL, rowDataArgs = NULL, sampAssayArgs = NULL,
-  customColArgs = NULL, heatMapArgs = NULL, redDimMax = 5,
-  colDataMax = 5, featAssayMax = 5, rowStatMax = 5, rowDataMax = 5,
-  sampAssayMax = 5, customColMax = 5, heatMapMax = 5,
-  initialPanels = NULL, annotFun = NULL, customColFun = NULL,
+  customDataArgs = NULL, customStatArgs = NULL, heatMapArgs = NULL,
+  redDimMax = 5, colDataMax = 5, featAssayMax = 5, rowStatMax = 5,
+  rowDataMax = 5, sampAssayMax = 5, customDataMax = 5,
+  customStatMax = 5, heatMapMax = 5, initialPanels = NULL,
+  annotFun = NULL, customDataFun = NULL, customStatFun = NULL,
   colormap = ExperimentColorMap(), tour = NULL, appTitle = NULL,
   runLocal = TRUE)
 }
@@ -28,7 +29,9 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featAssayArgs = NULL,
 
 \item{sampAssayArgs}{A DataFrame similar to that produced by \code{\link{sampAssayPlotDefaults}}, specifying initial parameters for the sample assay plots.}
 
-\item{customColArgs}{A DataFrame similar to that produced by \code{\link{customColPlotDefaults}}, specifying initial parameters for the custom column plots.}
+\item{customDataArgs}{A DataFrame similar to that produced by \code{\link{customDataPlotDefaults}}, specifying initial parameters for the custom data plots.}
+
+\item{customStatArgs}{A DataFrame similar to that produced by \code{\link{customStatTableDefaults}}, specifying initial parameters for the custom statistics tables.}
 
 \item{heatMapArgs}{A DataFrame similar to that produced by \code{\link{heatMapPlotDefaults}}, specifying initial parameters for the heatmaps.}
 
@@ -44,7 +47,9 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featAssayArgs = NULL,
 
 \item{sampAssayMax}{An integer scalar specifying the maximum number of sample assay plots in the interface.}
 
-\item{customColMax}{An integer scalar specifying the maximum number of custom column plots in the interface.}
+\item{customDataMax}{An integer scalar specifying the maximum number of custom data plots in the interface.}
+
+\item{customStatMax}{An integer scalar specifying the maximum number of custom statistics tables in the interface.}
 
 \item{heatMapMax}{An integer scalar specifying the maximum number of heatmaps in the interface.}
 
@@ -54,7 +59,9 @@ This should contain a \code{Name} character field and may have optional \code{Wi
 \item{annotFun}{A function, similar to those returned by \code{\link{annotateEntrez}} or \code{\link{annotateEnsembl}}.
 The function should accept two parameters, \code{se} and \code{row_index}, and return a HTML element with annotation for the selected row.}
 
-\item{customColFun}{A named list of functions for reporting coordinates to use in a custom column data plot, see \code{?"\link{Custom iSEE plots}"}.}
+\item{customDataFun}{A named list of functions for reporting coordinates to use in a custom data plot.}
+
+\item{customStatFun}{A named list of functions for reporting coordinates to use in a custom statistics table.}
 
 \item{colormap}{An \linkS4class{ExperimentColorMap} object that defines custom colormaps to apply to individual \code{assays}, \code{colData} and \code{rowData} covariates.}
 

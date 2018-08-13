@@ -30,10 +30,11 @@
 \alias{rowDataColorMap<-,ExperimentColorMap,character-method}
 \title{ExperimentColorMap class}
 \usage{
-ExperimentColorMap(assays = list(), colData = list(), rowData = list(),
-  all_discrete = list(assays = NULL, colData = NULL, rowData = NULL),
-  all_continuous = list(assays = NULL, colData = NULL, rowData = NULL),
-  global_discrete = NULL, global_continuous = NULL, ...)
+ExperimentColorMap(assays = list(), colData = list(),
+  rowData = list(), all_discrete = list(assays = NULL, colData = NULL,
+  rowData = NULL), all_continuous = list(assays = NULL, colData = NULL,
+  rowData = NULL), global_discrete = NULL, global_continuous = NULL,
+  ...)
 }
 \arguments{
 \item{assays}{List of colormaps for \code{assays}.}

@@ -43,8 +43,11 @@
 .sampAssayXAxisRowData <- "XAxisRowData"
 .sampAssayXAxisSample <- "XAxisSample"
 
-# Custom column plotting parameters. ----
-.customColFun <- "Function"
+# Custom plotting parameters. ----
+.customFun <- "Function"
+.customArgs <- "Arguments"
+.customColSource <- "ColumnSource"
+.customRowSource <- "RowSource"
 
 # Heatmap plotting parameters. ----
 .heatMapAssay <- "Assay"
@@ -180,6 +183,10 @@
 .int_rowStatSearch <- "_search"
 .int_rowStatColSearch <- "_search_columns"
 
+# Custom statistics table parameters. ----
+.customStatSearch <- .rowStatSearch
+.int_customStatSearch <- .int_rowStatSearch
+
 # Panel organization parameters. ----
 .organizationNew <- "MakeNew"
 .organizationUp <- "ShiftUp"
@@ -199,10 +206,20 @@ translation <- c(redDimPlot="Reduced dimension plot",
                  rowStatTable="Row statistics table",
                  rowDataPlot="Row data plot",
                  sampAssayPlot="Sample assay plot",
-                 customColPlot="Custom column plot",
+                 customDataPlot="Custom data plot",
+                 customStatTable="Custom statistics table",
                  heatMapPlot="Heat map")
 rev.translation <- names(translation)
 names(rev.translation) <- translation
+
+# Panel groupings for convenience.
+# Refer to dynamicUI.R for the minimum expected structure for each group.
+row_point_plot_types <- c("rowDataPlot", "sampAssayPlot")
+col_point_plot_types <- c("redDimPlot", "colDataPlot", "featAssayPlot")
+point_plot_types <- c(col_point_plot_types, row_point_plot_types)
+linked_table_types <- c("rowStatTable")
+custom_panel_types <- c("customDataPlot", "customStatTable")
+all_panel_types <- c(point_plot_types, linked_table_types, custom_panel_types, "heatMapPlot")
 
 #' Decode the panel name
 #'

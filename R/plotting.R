@@ -29,7 +29,7 @@ names(.all_aes_values) <- .all_aes_names
 ############################################
 
 #' Makes the dimension reduction plot
-#' 
+#'
 #' Make a plot in reduced dimensions embeddings on X/Y axes.
 #'
 #' @param id Integer scalar specifying the index of the current reduced
@@ -43,7 +43,7 @@ names(.all_aes_values) <- .all_aes_names
 #' for individual \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
 #' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}; see \code{?\link{.plot_wrapper}} for more details.
-#' 
+#'
 #' @details
 #' This function extracts out the data from \code{se} required to produce a reduced dimension plot.
 #' It then calls \code{\link{.plot_wrapper}} to complete the plotting data (\code{xy} in output) and to generate the ggplot object (\code{plot} in output).
@@ -53,7 +53,7 @@ names(.all_aes_values) <- .all_aes_names
 #' @seealso
 #' \code{\link{.extract_plotting_data}},
 #' \code{\link{.create_plot}}
-#' 
+#'
 #' @importFrom SingleCellExperiment reducedDim
 .make_redDimPlot <- function(id, all_memory, all_coordinates, se, colormap) {
     param_choices <- all_memory$redDimPlot[id,]
@@ -63,15 +63,15 @@ names(.all_aes_values) <- .all_aes_names
     data_cmds[["xy"]] <- sprintf(
         "plot.data <- data.frame(X = red.dim[, %i], Y = red.dim[, %i], row.names=colnames(se));",
         param_choices[[.redDimXAxis]], param_choices[[.redDimYAxis]])
-    
+
     reddim_names <- names(.get_internal_info(se, field="red_dim_names"))
     plot_title <- reddim_names[param_choices[[.redDimType]]]
-    
+
     x_lab <- sprintf("Dimension %s", param_choices[[.redDimXAxis]])
     y_lab <- sprintf("Dimension %s", param_choices[[.redDimYAxis]])
-    
-    .plot_wrapper(data_cmds, param_choices = param_choices, all_memory = all_memory, 
-        all_coordinates = all_coordinates, se = se, by_row = FALSE, 
+
+    .plot_wrapper(data_cmds, param_choices = param_choices, all_memory = all_memory,
+        all_coordinates = all_coordinates, se = se, by_row = FALSE,
         colormap = colormap, x_lab = x_lab, y_lab = y_lab, title = plot_title)
 }
 
@@ -80,7 +80,7 @@ names(.all_aes_values) <- .all_aes_names
 ############################################
 
 #' Makes a plot of column data variables
-#' 
+#'
 #' Make a plot of sample metadata on Y axis (and optionally on the X axis).
 #'
 #' @param id Integer scalar specifying the index of the current column data
@@ -94,17 +94,17 @@ names(.all_aes_values) <- .all_aes_names
 #' for individual \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
 #' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}; see \code{?\link{.plot_wrapper}} for more details.
-#' 
+#'
 #' @details
 #' This function extracts out the data from \code{se} required to produce a column data plot.
 #' It then calls \code{\link{.plot_wrapper}} to complete the plotting data (\code{xy} in output) and to generate the ggplot object (\code{plot} in output).
-#' 
+#'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson
 #' @rdname INTERNAL_make_colDataPlot
 #' @seealso
 #' \code{\link{.create_plot}},
 #' \code{\link{.extract_plotting_data}}
-#' 
+#'
 #' @importFrom SummarizedExperiment colData
 .make_colDataPlot <- function(id, all_memory, all_coordinates, se, colormap)
 {
@@ -113,10 +113,10 @@ names(.all_aes_values) <- .all_aes_names
     y_lab <- param_choices[[.colDataYAxis]]
     # NOTE: deparse() automatically adds quotes, AND protects against existing quotes/escapes.
     data_cmds[["y"]] <- sprintf(
-        "plot.data <- data.frame(Y = colData(se)[,%s], row.names=colnames(se));", 
-        deparse(y_lab) 
+        "plot.data <- data.frame(Y = colData(se)[,%s], row.names=colnames(se));",
+        deparse(y_lab)
     )
-    
+
     # Prepare X-axis data.
     if (param_choices[[.colDataXAxis]]==.colDataXAxisNothingTitle) {
         x_lab <- ''
@@ -128,13 +128,13 @@ names(.all_aes_values) <- .all_aes_names
             deparse(x_lab)
         )
     }
-    
+
     x_title <- ifelse(x_lab == '', x_lab, sprintf("vs %s", x_lab))
     plot_title <- sprintf("%s %s", y_lab, x_title)
-    
+
     .plot_wrapper(
-        data_cmds, param_choices = param_choices, all_memory = all_memory, 
-        all_coordinates = all_coordinates, se = se, by_row = FALSE, 
+        data_cmds, param_choices = param_choices, all_memory = all_memory,
+        all_coordinates = all_coordinates, se = se, by_row = FALSE,
         colormap = colormap, x_lab = x_lab, y_lab = y_lab, title = plot_title)
 }
 
@@ -143,7 +143,7 @@ names(.all_aes_values) <- .all_aes_names
 ############################################
 
 #' Makes a plot of feature-level assay values
-#' 
+#'
 #' Make a plot of feature assay data on Y axis, with column data or other
 #' feature assay on the X axis.
 #'
@@ -158,30 +158,30 @@ names(.all_aes_values) <- .all_aes_names
 #' for individual \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
 #' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}; see \code{?\link{.plot_wrapper}} for more details.
-#' 
+#'
 #' @details
 #' This function extracts out the data from \code{se} required to produce a feature assay plot.
 #' It then calls \code{\link{.plot_wrapper}} to complete the plotting data (\code{xy} in output) and to generate the ggplot object (\code{plot} in output).
-#' 
+#'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson
 #' @rdname INTERNAL_make_featAssayPlot
 #' @seealso
 #' \code{\link{.create_plot}},
 #' \code{\link{.extract_plotting_data}}
-#' 
+#'
 #' @importFrom shiny validate need
 #' @importFrom SummarizedExperiment assay colData
 .make_featAssayPlot <- function(id, all_memory, all_coordinates, se, colormap) {
     param_choices <- all_memory$featAssayPlot[id,]
     data_cmds <- list()
-    
+
     ## Setting up the y-axis:
     gene_selected_y <- param_choices[[.featAssayYAxisFeatName]]
-    validate(need( 
+    validate(need(
         length(gene_selected_y)==1L,
         "Invalid y-axis input"
     ))
-    
+
     assay_choice <- param_choices[[.featAssayAssay]]
     y_title <- rownames(se)[gene_selected_y]
     y_lab <- .gene_axis_label(se, gene_selected_y, assay_choice, multiline = FALSE)
@@ -190,21 +190,21 @@ names(.all_aes_values) <- .all_aes_names
         "plot.data <- data.frame(Y=assay(se, %i)[%s,], row.names = colnames(se))",
         assay_choice, deparse(gene_selected_y)
     )
-    
+
     ## Checking X axis choice:
     x_choice <- param_choices[[.featAssayXAxis]]
-    
+
     if (x_choice==.featAssayXAxisColDataTitle) { # colData column selected
         x_lab <- x_title <- param_choices[[.featAssayXAxisColData]]
         data_cmds[["x"]] <- sprintf("plot.data$X <- colData(se)[,%s];", deparse(x_lab))
-        
+
     } else if (x_choice==.featAssayXAxisFeatNameTitle) { # gene selected
         gene_selected_x <- param_choices[[.featAssayXAxisFeatName]]
         validate(need(
             length(gene_selected_x)==1L,
             sprintf("Invalid '%s' > '%s' input", .featAssayXAxis, x_choice)
         ))
-        
+
         x_title <- rownames(se)[gene_selected_x]
         x_lab <- .gene_axis_label(
             se, gene_selected_x, assay_choice, multiline = FALSE)
@@ -212,18 +212,18 @@ names(.all_aes_values) <- .all_aes_names
             "plot.data$X <- assay(se, %i)[%s,];",
             assay_choice, deparse(gene_selected_x)
         )
-        
+
     } else { # no x axis variable specified: show single violin
         x_lab <- x_title <- ''
         data_cmds[["x"]] <- "plot.data$X <- factor(character(ncol(se)))"
     }
-    
+
     x_title <- ifelse(x_title == '', x_title, sprintf("vs %s", x_title))
     plot_title <- sprintf("%s %s", y_title, x_title)
-    
+
     .plot_wrapper(
-        data_cmds, param_choices = param_choices, all_memory = all_memory, 
-        all_coordinates = all_coordinates, se = se, by_row = FALSE, 
+        data_cmds, param_choices = param_choices, all_memory = all_memory,
+        all_coordinates = all_coordinates, se = se, by_row = FALSE,
         colormap = colormap, x_lab = x_lab, y_lab = y_lab, title = plot_title)
 }
 
@@ -232,7 +232,7 @@ names(.all_aes_values) <- .all_aes_names
 ############################################
 
 #' Makes a plot of row data variables
-#' 
+#'
 #' Make a plot of row metadata variables on the Y axis
 #' (optionally on the X axis as well).
 #'
@@ -247,17 +247,17 @@ names(.all_aes_values) <- .all_aes_names
 #' for individual \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
 #' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}; see \code{?\link{.plot_wrapper}} for more details.
-#' 
+#'
 #' @details
 #' This function extracts the data from \code{se} required to produce a row data plot.
 #' It then calls \code{\link{.plot_wrapper}} to complete the plotting data (\code{xy} in output) and to generate the ggplot object (\code{plot} in output).
-#' 
+#'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson
 #' @rdname INTERNAL_make_rowDataPlot
 #' @seealso
 #' \code{\link{.create_plot}},
 #' \code{\link{.extract_plotting_data}}
-#' 
+#'
 #' @importFrom SummarizedExperiment rowData
 .make_rowDataPlot <- function(id, all_memory, all_coordinates, se, colormap) {
     param_choices <- all_memory$rowDataPlot[id,]
@@ -266,10 +266,10 @@ names(.all_aes_values) <- .all_aes_names
 
     # NOTE: # deparse() automatically adds quotes, AND protects against existing quotes/escapes.
     data_cmds[["y"]] <- sprintf(
-        "plot.data <- data.frame(Y = rowData(se)[,%s], row.names=rownames(se));", 
-        deparse(y_lab) 
+        "plot.data <- data.frame(Y = rowData(se)[,%s], row.names=rownames(se));",
+        deparse(y_lab)
     )
-    
+
     # Prepare X-axis data.
     if (param_choices[[.rowDataXAxis]]==.rowDataXAxisNothingTitle) {
         x_lab <- ''
@@ -278,13 +278,13 @@ names(.all_aes_values) <- .all_aes_names
         x_lab <- param_choices[[.rowDataXAxisRowData]]
         data_cmds[["x"]] <- sprintf("plot.data$X <- rowData(se)[,%s];", deparse(x_lab))
     }
-    
+
     x_title <- ifelse(x_lab == '', x_lab, sprintf("vs %s", x_lab))
     plot_title <- sprintf("%s %s", y_lab, x_title)
-    
+
     .plot_wrapper(
-        data_cmds, param_choices = param_choices, all_memory = all_memory, 
-        all_coordinates = all_coordinates, se = se, by_row = TRUE, 
+        data_cmds, param_choices = param_choices, all_memory = all_memory,
+        all_coordinates = all_coordinates, se = se, by_row = TRUE,
         colormap = colormap, x_lab = x_lab, y_lab = y_lab, title = plot_title)
 }
 
@@ -292,8 +292,8 @@ names(.all_aes_values) <- .all_aes_names
 # .make_sampleAssayPlot  ----
 ############################################
 
-#' Makes a plot of sample-level assay values 
-#' 
+#' Makes a plot of sample-level assay values
+#'
 #' Make a plot of sample assay data on the Y axis (optionally on the X axis as well).
 #'
 #' @param id Integer scalar specifying the index of the current row data plot.
@@ -303,17 +303,17 @@ names(.all_aes_values) <- .all_aes_names
 #' @param colormap An ExperimentColorMap object that defines custom colormaps for individual \code{assays}, \code{colData}, and \code{rowData} covariates.
 #'
 #' @return A list containing \code{cmd_list}, \code{xy} and \code{plot}; see \code{?\link{.plot_wrapper}} for more details.
-#' 
+#'
 #' @details
 #' This function extracts the data from \code{se} required to produce a sample assay plot.
 #' It then calls \code{\link{.plot_wrapper}} to complete the plotting data (\code{xy} in output) and to generate the ggplot object (\code{plot} in output).
-#' 
+#'
 #' @author Aaron Lun, Charlotte Soneson
 #' @rdname INTERNAL_make_sampleAssayPlot
 #' @seealso
 #' \code{\link{.create_plot}},
 #' \code{\link{.extract_plotting_data}}
-#' 
+#'
 #' @importFrom SummarizedExperiment rowData
 .make_sampAssayPlot <- function(id, all_memory, all_coordinates, se, colormap) {
     param_choices <- all_memory$sampAssayPlot[id,]
@@ -328,7 +328,7 @@ names(.all_aes_values) <- .all_aes_names
     if (x_choice==.sampAssayXAxisNothingTitle) {
         x_lab <- ''
         data_cmds[["x"]] <- "plot.data$X <- factor(character(nrow(se)));"
-    } else if (x_choice==.sampAssayXAxisRowDataTitle) { 
+    } else if (x_choice==.sampAssayXAxisRowDataTitle) {
         x_lab <- param_choices[[.sampAssayXAxisRowData]]
         data_cmds[["x"]] <- sprintf("plot.data$X <- rowData(se)[,%s];", deparse(x_lab))
     } else {
@@ -336,13 +336,13 @@ names(.all_aes_values) <- .all_aes_names
         x_lab <- names(.get_internal_info(se, "sample_names"))[x_index]
         data_cmds[["x"]] <- sprintf("plot.data$X <- assay(se, %i)[,%i];", assay_choice, x_index)
     }
-    
+
     x_title <- ifelse(x_lab == '', x_lab, sprintf("vs %s", x_lab))
     plot_title <- sprintf("%s %s", y_lab, x_title)
-    
+
     .plot_wrapper(
-        data_cmds, param_choices = param_choices, all_memory = all_memory, 
-        all_coordinates = all_coordinates, se = se, by_row = TRUE, 
+        data_cmds, param_choices = param_choices, all_memory = all_memory,
+        all_coordinates = all_coordinates, se = se, by_row = TRUE,
         colormap = colormap, x_lab = x_lab, y_lab = y_lab, title = plot_title)
 }
 
@@ -351,7 +351,7 @@ names(.all_aes_values) <- .all_aes_names
 ############################################
 
 #' Plot creation wrapper
-#' 
+#'
 #' Wraps the commands to complete the data.frame containing the plot data,
 #' and to create the ggplot object to return to the Shiny server function.
 #'
@@ -362,7 +362,7 @@ names(.all_aes_values) <- .all_aes_names
 #' @param se A SingleCellExperiment object.
 #' @param by_row A logical vector indicating whether this data.frame is for a row-based plot.
 #' @param ... Further arguments to pass to \code{\link{.create_plot}}.
-#' 
+#'
 #' @details
 #' This function is a convenience wrapper for the combination of \code{\link{.extract_plotting_data}}, \code{\link{.downsample_points}} and \code{\link{.create_plot}}.
 #' The first command adds information such as coloring and point selection;
@@ -380,7 +380,7 @@ names(.all_aes_values) <- .all_aes_names
 #'   }
 #'   \item{plot}{A ggplot object that results from the evaluation of \code{"plot"} commands.}
 #' }
-#' 
+#'
 #' @author Aaron Lun
 #' @rdname INTERNAL_plot_wrapper
 #' @seealso
@@ -389,14 +389,14 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.create_plot}}
 .plot_wrapper <- function(data_cmds, param_choices, all_memory, all_coordinates, se, by_row, ...) {
     setup_out <- .extract_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row = by_row)
-    
+
     xy <- setup_out$envir$plot.data # DO NOT MOVE below .downsample_points, as downsampling will alter the value in 'envir'.
-    
+
     downsample_cmds <- .downsample_points(param_choices, setup_out$envir)
-    
+
     plot_out <- .create_plot(setup_out$envir, param_choices, ..., color_lab = setup_out$color_lab, shape_lab = setup_out$shape_lab, by_row = by_row)
-    
-    return(list(cmd_list = c(setup_out$cmd_list, list(plot=c(downsample_cmds, plot_out$cmds))), xy = xy, plot = plot_out$plot)) 
+
+    return(list(cmd_list = c(setup_out$cmd_list, list(plot=c(downsample_cmds, plot_out$cmds))), xy = xy, plot = plot_out$plot))
 }
 
 ############################################
@@ -407,7 +407,7 @@ names(.all_aes_values) <- .all_aes_names
 #'
 #' Fully define all of the data to be stored in a data.frame for ggplot
 #' construction.
-#' This ensures that the data acquisition is separated from the plotting. 
+#' This ensures that the data acquisition is separated from the plotting.
 #'
 #' @param data_cmds A list of character vectors containing commands to
 #' initialize the plotting data.frame.
@@ -430,7 +430,7 @@ names(.all_aes_values) <- .all_aes_names
 #' \item \code{select}, a character vector containing commands to add \code{SelectBy} information to the plotting data.frame.
 #' \item \code{specific}, a character vector containing commands to generate plot-type-specific commands, e.g., scatter for violin plots.
 #' }
-#' 
+#'
 #' The top-level list also contains \code{envir}, an environment that is guaranteed to hold \code{plot.data} and \code{plot.type} entries.
 #'
 #' Finally, the top-level list will contain \code{color_lab}, a string specifying how to label the color scale in the ggplot.
@@ -446,7 +446,7 @@ names(.all_aes_values) <- .all_aes_names
 #' As above, this is either a factor or numeric.
 #' \item \code{SelectBy}, a logical field specifying whether the points were selected by a point selection in a transmitting plot.
 #' If selecting points to restrict, any subsetting will already have been applied.
-#' } 
+#' }
 #'
 #' The nature of the plot to be generated will determine whether any additional fields are present in \code{plot.data}.
 #' Violin plots will contain \code{GroupBy} fields as well as \code{jitteredX}.
@@ -455,7 +455,7 @@ names(.all_aes_values) <- .all_aes_names
 #'
 #' The \code{envir$plot.type} variable will specify the type of plot for correct dispatch in \code{\link{.create_plot}}.
 #' The environment may also contain \code{plot.data.all}, see \code{\link{.process_selectby_choice}} for details.
-#' 
+#'
 #' @author Aaron Lun
 #' @rdname INTERNAL_extract_plotting_data
 #' @seealso
@@ -470,18 +470,18 @@ names(.all_aes_values) <- .all_aes_names
     more_data_cmds <- .initialize_cmd_store()
     more_data_cmds <- .add_command(more_data_cmds, data_cmds)
     more_data_cmds <- .evaluate_commands(more_data_cmds, eval_env)
-    
-    # It is important that non-numeric X/Y become explicit factors here, which simplifies downstream processing 
+
+    # It is important that non-numeric X/Y become explicit factors here, which simplifies downstream processing
     # (e.g., coercion to integer, no lost levels upon subsetting).
     xvals <- eval_env$plot.data$X
     group_X <- .is_groupable(xvals)
     more_data_cmds <- .add_command(more_data_cmds, .coerce_type(xvals, "X", as_numeric=!group_X), name='more_X')
-    
+
     yvals <- eval_env$plot.data$Y
     group_Y <- .is_groupable(yvals)
     more_data_cmds <- .add_command(more_data_cmds, .coerce_type(yvals, "Y", as_numeric=!group_Y), name='more_Y')
-    
-    # Adding coloring and faceting information as well.    
+
+    # Adding coloring and faceting information as well.
     if (by_row) {
         color_out <- .define_colorby_for_row_plot(param_choices, se)
         shape_out <- .define_shapeby_for_row_plot(param_choices, se)
@@ -497,20 +497,20 @@ names(.all_aes_values) <- .all_aes_names
     more_data_cmds <- .add_command(more_data_cmds, shape_out$cmds, name='shape')
     shape_lab <- shape_out$label
     more_data_cmds <- .add_command(more_data_cmds, facet_out)
-    
-    # Ensuring that colors are either factor or numeric. 
+
+    # Ensuring that colors are either factor or numeric.
     more_data_cmds <- .evaluate_commands(more_data_cmds, eval_env)
-    
+
     coloring <- eval_env$plot.data$ColorBy
     if (!is.null(coloring)) {
         more_data_cmds <- .add_command(more_data_cmds, .coerce_type(coloring, "ColorBy", as_numeric=!.is_groupable(coloring)), name='more_color')
     }
-    
+
     # Removing NAs as they mess up .process_selectby_choice.
     clean_fields <- c("X", "Y", names(facet_out))
     clean_expression <- paste(sprintf("!is.na(%s)", clean_fields), collapse = " & ")
     more_data_cmds <- .add_command(more_data_cmds, sprintf("plot.data <- subset(plot.data, %s);", clean_expression), name='na.rm')
-   
+
     more_data_cmds <- .evaluate_commands(more_data_cmds, eval_env)
 
     # Creating the command to define SelectBy.
@@ -518,7 +518,7 @@ names(.all_aes_values) <- .all_aes_names
     # This approach relatively easy to deparse() in the code tracker, rather than having to construct the Shiny select object or lasso waypoints manually.
     select_out <- .process_selectby_choice(param_choices, all_memory)
     select_cmds <- select_out$cmds
-    if (length(select_cmds)) { 
+    if (length(select_cmds)) {
         eval_env$all_brushes <- select_out$data
         eval_env$all_lassos <- select_out$data
         .text_eval(select_cmds, eval_env)
@@ -535,39 +535,39 @@ names(.all_aes_values) <- .all_aes_names
 }
 
 #' Choose the plot type
-#' 
+#'
 #' Define and execute commands to choose the type of plot based on whether X and/or Y are categorical or continuous.
-#' 
+#'
 #' @param group_X Logical scalar specifying if X is cateogrical.
 #' @param group_Y Logical scalar specifying if Y is cateogrical.
 #' @param envir Environment containing a \code{plot.data} data.frame with \code{X} and \code{Y} fields.
-#' 
+#'
 #' @return
 #' A character vector is returned containing commands to perform calculations for each plot type.
 #' All commands are evaluated within \code{envir}.
-#' 
+#'
 #' @details
 #' \code{envir} is effectively passed by reference, as the setup commands are executed in the environment by this function.
-#' 
+#'
 #' @author Aaron Lun
 #' @rdname INTERNAL_choose_plot_type
 #' @seealso
 #' \code{\link{.violin_setup}},
-#' \code{\link{.square_setup}}, 
-#' \code{\link{.extract_plotting_data}} 
+#' \code{\link{.square_setup}},
+#' \code{\link{.extract_plotting_data}}
 .choose_plot_type <- function(group_X, group_Y, envir) {
     if (!group_Y && !group_X) {
         mode <- "scatter"
         specific <- character()
     } else if (!group_Y) {
         mode <- "violin"
-        specific <- .violin_setup(envir$plot.data, horizontal=FALSE) 
+        specific <- .violin_setup(envir$plot.data, horizontal=FALSE)
     } else if (!group_X) {
         mode <- "violin_horizontal"
         specific <- .violin_setup(envir$plot.data, horizontal=TRUE)
-        
+
         if (exists("plot.data.all", envir)) { # flipping plot.data.all as well, otherwise it becomes choatic in .violin_plot().
-            specific <- c(specific, 
+            specific <- c(specific,
                 "tmp <- plot.data.all$X;
                 plot.data.all$X <- plot.data.all$Y;
                 plot.data.all$Y <- tmp;")
@@ -579,7 +579,7 @@ names(.all_aes_values) <- .all_aes_names
 
     .text_eval(specific, envir)
     envir$plot.type <- mode
-    return(specific) 
+    return(specific)
 }
 
 ############################################
@@ -587,7 +587,7 @@ names(.all_aes_values) <- .all_aes_names
 ############################################
 
 #' Downsampling commands
-#' 
+#'
 #' Define and execute commands to downsample points for speed.
 #'
 #' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
@@ -601,17 +601,17 @@ names(.all_aes_values) <- .all_aes_names
 #' @return
 #' A character vector is returned containing commands to perform downsampling.
 #' All commands are evaluated within \code{envir}.
-#' 
+#'
 #' @author Aaron Lun
 #' @rdname INTERNAL_downsample_points
-#' @seealso 
+#' @seealso
 #' \code{\link{subsetPointsByGrid}},
 #' \code{\link{.plot_wrapper}}
 .downsample_points <- function(param_choices, envir) {
     if (param_choices[[.plotPointDownsample]]) {
         xtype <- "X"
         ytype <- "Y"
-        
+
         plot_type <- envir$plot.type
         if (plot_type=="square") {
             xtype <- "jitteredX"
@@ -619,8 +619,8 @@ names(.all_aes_values) <- .all_aes_names
         } else if (plot_type=="violin" || plot_type=="violin_horizontal") {
             xtype <- "jitteredX"
         }
-        
-        downsample_cmds <- c("plot.data.pre <- plot.data;", 
+
+        downsample_cmds <- c("plot.data.pre <- plot.data;",
             sprintf("plot.data <- subset(plot.data, subsetPointsByGrid(%s, %s, resolution=%i));",
                 xtype, ytype, param_choices[[.plotPointSampleRes]]), "")
 
@@ -636,10 +636,10 @@ names(.all_aes_values) <- .all_aes_names
 ############################################
 
 #' Central plotting function
-#' 
+#'
 #' Create and evaluate plotting commands to generate a ggplot for each
 #' combination of X/Y covariate types.
-#' 
+#'
 #' @param envir An environment produced by \code{\link{.extract_plotting_data}}.
 #' @param param_choices A single-row DataFrame that contains all the input
 #' settings for the current panel.
@@ -679,52 +679,52 @@ names(.all_aes_values) <- .all_aes_names
     plot_data <- envir$plot.data
     plot_type <- envir$plot.type
     extra_cmds <- character(0)
-    
+
     # Figuring out whether or not we need certain fields.
     is_subsetted <- exists("plot.data.all", envir=envir)
     is_downsampled <- exists("plot.data.pre", envir=envir)
-    
+
     # Dispatch to different plotting commands, depending on X/Y being groupable
     extra_cmds <- c(extra_cmds, switch(plot_type,
-        square = .square_plot(plot_data=plot_data, param_choices=param_choices, 
-            is_subsetted=is_subsetted, ...), 
-        violin = .violin_plot(plot_data=plot_data, param_choices=param_choices, 
+        square = .square_plot(plot_data=plot_data, param_choices=param_choices,
+            is_subsetted=is_subsetted, ...),
+        violin = .violin_plot(plot_data=plot_data, param_choices=param_choices,
             is_subsetted=is_subsetted, is_downsampled=is_downsampled, ...),
-        violin_horizontal = .violin_plot(plot_data=plot_data, param_choices=param_choices, 
+        violin_horizontal = .violin_plot(plot_data=plot_data, param_choices=param_choices,
             is_subsetted=is_subsetted, is_downsampled=is_downsampled, ..., horizontal=TRUE),
         scatter = .scatter_plot(plot_data=plot_data, param_choices=param_choices,
             is_subsetted=is_subsetted, is_downsampled=is_downsampled, ...)
     ))
-    
+
     # Adding a faceting command, if applicable
     facet_cmd <- .add_facets(param_choices)
-    
+
     if (length(facet_cmd)) {
         N <- length(extra_cmds)
         extra_cmds[[N]] <- paste(extra_cmds[[N]], "+")
         extra_cmds <- c(extra_cmds, facet_cmd)
     }
-    
+
     # Adding self-brushing boxes, if they exist.
     to_flip <- plot_type == "violin_horizontal"
     brush_out <- .self_brush_box(param_choices, flip=to_flip)
     lasso_out <- .self_lasso_path(param_choices, flip=to_flip)
     select_cmds <- c(brush_out$cmds, lasso_out$cmds)
-    
+
     if (length(select_cmds)) {
         N <- length(extra_cmds)
         extra_cmds[[N]] <- paste(extra_cmds[[N]], "+")
-        
+
         intermediate <- seq_len(length(select_cmds)-1L)
         select_cmds[intermediate] <- paste(select_cmds[intermediate], "+")
         extra_cmds <- c(extra_cmds, select_cmds)
-        
-        # We overwrite any existing 'all_brushes' or 'all_lassos', 
+
+        # We overwrite any existing 'all_brushes' or 'all_lassos',
         # as they have served their purpose in defining plot_data.
         envir$all_brushes <- brush_out$data
         envir$all_lassos <- lasso_out$data
     }
-    
+
     # Evaluating the plotting commands.
     plot_out <- .text_eval(extra_cmds, envir)
     return(list(cmds = extra_cmds, plot = plot_out))
@@ -735,8 +735,8 @@ names(.all_aes_values) <- .all_aes_names
 ############################################
 
 #' Produce a scatter plot
-#' 
-#' Generate (but not evaluate) commands to create a scatter plot of numeric X/Y. 
+#'
+#' Generate (but not evaluate) commands to create a scatter plot of numeric X/Y.
 #'
 #' @param plot_data A data.frame containing all of the plotting information,
 #' returned by \code{\link{.extract_plotting_data}} in \code{envir$plot.data}.
@@ -750,7 +750,7 @@ names(.all_aes_values) <- .all_aes_names
 #' @param shape_lab A character label for the color scale.
 #' Set to \code{NULL} to have no shape label.
 #' @param title A character title for the plot.
-#' Set to \code{NULL} to have no title. 
+#' Set to \code{NULL} to have no title.
 #' @param by_row A logical scalar specifying whether the plot deals with row-level metadata.
 #' @param is_subsetted A logical scalar specifying whether \code{plot_data} was subsetted during \code{\link{.process_selectby_choice}}.
 #' @param is_downsampled A logical scalar specifying whether \code{plot_data} was downsampled in \code{\link{.plot_wrapper}}.
@@ -772,23 +772,23 @@ names(.all_aes_values) <- .all_aes_names
 .scatter_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, shape_lab, title, by_row = FALSE, is_subsetted = FALSE, is_downsampled = FALSE) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +"
-    
+
     # Adding points to the plot.
     color_set <- !is.null(plot_data$ColorBy)
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
     new_aes <- .build_aes(color = color_set, shape = shape_set)
     plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set)
-    
+
     # Defining the color commands.
-    if (by_row) { 
+    if (by_row) {
         color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices)
     } else {
         color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices)
     }
-    
+
     # Adding axes labels.
     plot_cmds[["labs"]] <- .build_labs(x = x_lab, y = y_lab, color = color_lab, shape = shape_lab, title = title)
-    
+
     # Defining boundaries if zoomed.
     bounds <- param_choices[[.zoomData]][[1]]
     if (!is.null(bounds)) {
@@ -802,16 +802,16 @@ names(.all_aes_values) <- .all_aes_names
         plot_cmds[["coord"]] <- sprintf("coord_cartesian(xlim = range(%s$X, na.rm = TRUE),
     ylim = range(%s$Y, na.rm = TRUE), expand = TRUE) +", full_data, full_data)
     }
-    
+
     if (param_choices[[.contourAddTitle]]) {
         plot_cmds[["contours"]] <- sprintf("geom_density_2d(aes(x = X, y = Y), plot.data, colour='%s') +", param_choices[[.contourColor]])
     }
-    
+
     # Retain axes when no points are present.
     if (nrow(plot_data)==0 && is_subsetted) {
         plot_cmds[["select_blank"]] <- "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
     }
-    
+
     # Adding further aesthetic elements.
     plot_cmds[["scale_color"]] <- color_scale_cmd
     plot_cmds[["theme_base"]] <- "theme_bw() +"
@@ -824,7 +824,7 @@ names(.all_aes_values) <- .all_aes_names
         param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault,
         param_choices[[.plotFontSize]]*.plotFontSizeAxisTitleDefault,
         param_choices[[.plotFontSize]]*.plotFontSizeTitleDefault)
-    
+
     return(unlist(plot_cmds))
 }
 
@@ -833,7 +833,7 @@ names(.all_aes_values) <- .all_aes_names
 ############################################
 
 #' Produce a violin plot
-#' 
+#'
 #' Generate (but not evaluate) the commands required to produce a vertical or
 #' horizontal violin plot.
 #'
@@ -848,14 +848,14 @@ names(.all_aes_values) <- .all_aes_names
 #' @param shape_lab A character label for the color scale.
 #' Set to \code{NULL} to have no shape label.
 #' @param title A character title for the plot.
-#' Set to \code{NULL} to have no title. 
+#' Set to \code{NULL} to have no title.
 #' @param horizontal A logical value that indicates whether violins should be drawn horizontally
 #' (i.e., Y axis categorical and X axis continuous).
 #' @param by_row A logical scalar specifying whether the plot deals with row-level metadata.
 #' @param is_subsetted A logical scalar specifying whether \code{plot_data} was subsetted during \code{\link{.process_selectby_choice}}.
 #' @param is_downsampled A logical scalar specifying whether \code{plot_data} was downsampled in \code{\link{.plot_wrapper}}.
 #'
-#' @return 
+#' @return
 #' For \code{\link{.violin_setup}}, a character vector of commands to be parsed
 #' and evaluated by \code{\link{.extract_plotting_data}} to set up the
 #' required fields.
@@ -886,39 +886,39 @@ names(.all_aes_values) <- .all_aes_names
 #' @importFrom ggplot2 ggplot geom_violin coord_cartesian theme_bw theme
 #' coord_flip scale_x_discrete scale_y_discrete
 .violin_plot <- function(
-    plot_data, param_choices, x_lab, y_lab, color_lab, shape_lab, title, 
+    plot_data, param_choices, x_lab, y_lab, color_lab, shape_lab, title,
     horizontal = FALSE, by_row = FALSE, is_subsetted = FALSE, is_downsampled = FALSE) {
-    
+
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +" # do NOT put aes here, it does not play nice with shiny brushes.
     plot_cmds[["violin"]] <- sprintf(
-        "geom_violin(%s, alpha = 0.2, data=%s, scale = 'width', width = 0.8) +", 
+        "geom_violin(%s, alpha = 0.2, data=%s, scale = 'width', width = 0.8) +",
         .build_aes(color = FALSE, group = TRUE),
         ifelse(is_downsampled, "plot.data.pre", "plot.data")
     )
-    
+
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
     new_aes <- .build_aes(color = color_set, shape = shape_set, alt=c(x="jitteredX"))
     plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set)
-    
+
     # Defining the color commands.
-    if (by_row) { 
+    if (by_row) {
         color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices)
     } else {
         color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices)
     }
-    
-    # Adding axis labels. 
+
+    # Adding axis labels.
     if (horizontal) {
         tmp <- y_lab
         y_lab <- x_lab
         x_lab <- tmp
     }
-    
+
     plot_cmds[["labs"]] <- .build_labs(x = x_lab, y = y_lab, color = color_lab, shape = shape_lab, title = title)
-    
+
     # Defining boundaries if zoomed. This requires some finesse to deal with horizontal plots,
     # where the point selection is computed on the flipped coordinates.
     bounds <- param_choices[[.zoomData]][[1]]
@@ -930,33 +930,33 @@ names(.all_aes_values) <- .all_aes_names
     } else {
         coord_cmd <- "coord_cartesian"
     }
-    
+
     if (!is.null(bounds)) {
         # Ensure zoom preserves the data points and width ratio of visible groups
         bounds["xmin"] <- ceiling(bounds["xmin"]) - 0.5
         bounds["xmax"] <- floor(bounds["xmax"]) + 0.5
-        
+
         plot_cmds[["coord"]] <- sprintf(
             "%s(xlim = c(%s, %s), ylim = c(%s, %s), expand = FALSE) +", # FALSE, to get a literal zoom.
-            coord_cmd, deparse(bounds["xmin"]), deparse(bounds["xmax"]), 
+            coord_cmd, deparse(bounds["xmin"]), deparse(bounds["xmax"]),
             deparse(bounds["ymin"]), deparse(bounds["ymax"])
         )
     } else {
-        plot_cmds[["coord"]] <- sprintf("%s(ylim = range(%s$Y, na.rm=TRUE), expand = TRUE) +", 
+        plot_cmds[["coord"]] <- sprintf("%s(ylim = range(%s$Y, na.rm=TRUE), expand = TRUE) +",
             coord_cmd, ifelse(is_subsetted, "plot.data.all", ifelse(is_downsampled, "plot.data.pre", "plot.data"))
         )
     }
-    
+
     plot_cmds[["scale_color"]] <- color_scale_cmd
-    
+
     # Retain axes when no points are generated.
     if (nrow(plot_data)==0 && is_subsetted) {
         plot_cmds[["select_blank"]] <- "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
     }
-    
+
     # Preserving the x-axis range when no zoom is applied.
     # This applies even for horizontal violin plots, as this command is executed internally before coord_flip().
-    scale_x_cmd <- "scale_x_discrete(drop = FALSE%s) +" 
+    scale_x_cmd <- "scale_x_discrete(drop = FALSE%s) +"
     if (is.null(bounds)) {
         scale_x_extra <- ""
     } else {
@@ -966,29 +966,29 @@ names(.all_aes_values) <- .all_aes_names
             ceiling(bounds["xmin"]), floor(bounds["xmax"]))
     }
      plot_cmds[["scale_x"]] <- sprintf(scale_x_cmd, scale_x_extra)
-    
+
     plot_cmds[["theme_base"]] <- "theme_bw() +"
     plot_cmds[["theme_custom"]] <- sprintf(
-        "theme(legend.position = '%s', legend.text=element_text(size=%s), 
+        "theme(legend.position = '%s', legend.text=element_text(size=%s),
         legend.title=element_text(size=%s), legend.box = 'vertical',
-        axis.text.x = element_text(angle=90, size=%s, hjust=1, vjust=0.5), 
-        axis.text.y=element_text(size=%s), 
+        axis.text.x = element_text(angle=90, size=%s, hjust=1, vjust=0.5),
+        axis.text.y=element_text(size=%s),
         axis.title=element_text(size=%s), title=element_text(size=%s))",
         tolower(param_choices[[.plotLegendPosition]]),
-        param_choices[[.plotFontSize]]*.plotFontSizeLegendTextDefault, 
+        param_choices[[.plotFontSize]]*.plotFontSizeLegendTextDefault,
         param_choices[[.plotFontSize]]*.plotFontSizeLegendTitleDefault,
         param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault,
         param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault,
         param_choices[[.plotFontSize]]*.plotFontSizeAxisTitleDefault,
         param_choices[[.plotFontSize]]*.plotFontSizeTitleDefault)
-    
+
     return(unlist(plot_cmds))
 }
 
 #' @rdname INTERNAL_violin_plot
-.violin_setup <- function(plot_data, horizontal=FALSE) { 
+.violin_setup <- function(plot_data, horizontal=FALSE) {
     setup_cmds <- list()
-    
+
     # Switching X and Y axes if we want a horizontal violin plot.
     if (horizontal) {
         setup_cmds[["swap"]] <- c("tmp <- plot.data$X;
@@ -996,20 +996,20 @@ plot.data$X <- plot.data$Y;
 plot.data$Y <- tmp;")
     }
     setup_cmds[["group"]] <- "plot.data$GroupBy <- plot.data$X;"
-    
+
     # Handling the specification of the jitter-by-group argument.
     groupvar <- ""
     if (!is.null(plot_data$FacetRow) || !is.null(plot_data$FacetColumn)) {
         groupvar <- character(0)
         if (!is.null(plot_data$FacetRow)) {
             groupvar <- c(groupvar, "FacetRow=plot.data$FacetRow")
-        } 
+        }
         if (!is.null(plot_data$FacetColumn)) {
             groupvar <- c(groupvar, "FacetColumn=plot.data$FacetColumn")
         }
         groupvar <- paste0("\n    list(", paste(groupvar, collapse=", "), "),")
     }
-    
+
     # Figuring out the jitter. This is done ahead of time to guarantee the
     # same results regardless of the subset used for point selection. Note adjust=1
     # for consistency with geom_violin (differs from geom_quasirandom default).
@@ -1018,7 +1018,7 @@ plot.data$Y <- tmp;")
 "plot.data$jitteredX <- iSEE::jitterViolinPoints(plot.data$X, plot.data$Y, %s
     width=0.4, varwidth=FALSE, adjust=1,
     method='quasirandom', nbins=NULL);", groupvar)
-    
+
     return(unlist(setup_cmds))
 }
 
@@ -1027,7 +1027,7 @@ plot.data$Y <- tmp;")
 ############################################
 
 #' Produce a square plot
-#' 
+#'
 #' Generate (but not evaluate) the commands required to produce a square plot.
 #'
 #' @param plot_data A data.frame containing all of the plotting information,
@@ -1042,13 +1042,13 @@ plot.data$Y <- tmp;")
 #' @param color_lab A character label for the color scale.
 #' Set to \code{NULL} to have no color label.
 #' @param title A character title for the plot.
-#' Set to \code{NULL} to have no title. 
+#' Set to \code{NULL} to have no title.
 #' @param by_row A logical scalar specifying whether the plot deals with row-level metadata.
 #' @param is_subsetted A logical scalar specifying whether \code{plot_data} was subsetted during \code{\link{.process_selectby_choice}}.
 #' @param shape_lab A character label for the color scale.
 #' Set to \code{NULL} to have no shape label.
 #'
-#' @return 
+#' @return
 #' For \code{\link{.square_setup}}, a character vector of commands to be parsed and evaluated by \code{\link{.extract_plotting_data}} to set up the required fields.
 #'
 #' For \code{\link{.square_plot}}, a character vector of commands to be parsed and evaluated by \code{\link{.create_plot}} to produce the square plot.
@@ -1077,46 +1077,46 @@ plot.data$Y <- tmp;")
     plot_cmds[["tile"]] <-
 "geom_tile(aes(x = X, y = Y, height = 2*YWidth, width = 2*XWidth, group = interaction(X, Y)),
     summary.data, color = 'black', alpha = 0, size = 0.5) +"
-    
+
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
     new_aes <- .build_aes(color = color_set, shape = shape_set, alt=c(x="jitteredX", y="jitteredY"))
     plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set)
-    
+
     # Defining the color commands.
-    if (by_row) { 
+    if (by_row) {
         color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices)
     } else {
         color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices)
     }
-    
+
     # Adding the commands to color the points and the point selection area
     # (NULL if undefined).
     plot_cmds[["scale_color"]] <- color_scale_cmd
-    
+
     # Creating labels.
     plot_cmds[["labs"]] <- .build_labs(x = x_lab, y = y_lab, color = color_lab, shape = shape_lab, title = title)
-    
+
     # Defining boundaries if zoomed.
     bounds <- param_choices[[.zoomData]][[1]]
     if (!is.null(bounds)) {
-        
+
         # Ensure zoom preserves the data points and width ratio of visible groups
         bounds["xmin"] <- ceiling(bounds["xmin"]) - 0.5
         bounds["xmax"] <- floor(bounds["xmax"]) + 0.5
         bounds["ymin"] <- ceiling(bounds["ymin"]) - 0.5
         bounds["ymax"] <- floor(bounds["ymax"]) + 0.5
-        
+
         plot_cmds[["coord"]] <- sprintf(
             "coord_cartesian(xlim = c(%s, %s), ylim = c(%s, %s), expand = FALSE) +",
             deparse(bounds["xmin"]), deparse(bounds["xmax"]),
             deparse(bounds["ymin"]), deparse(bounds["ymax"])
         )
     }
-    
+
     scale_x_cmd <- "scale_x_discrete(drop = FALSE%s) +"
-    scale_y_cmd <- "scale_y_discrete(drop = FALSE%s) +" 
+    scale_y_cmd <- "scale_y_discrete(drop = FALSE%s) +"
     if (is.null(bounds)) {
         scale_x_extra <- ""
         scale_y_extra <- ""
@@ -1131,18 +1131,18 @@ plot.data$Y <- tmp;")
     }
      plot_cmds[["scale_x"]] <- sprintf(scale_x_cmd, scale_x_extra)
      plot_cmds[["scale_y"]] <- sprintf(scale_y_cmd, scale_y_extra)
-    
+
     # Retain axes when no points are present.
     if (nrow(plot_data)==0 && is_subsetted) {
         plot_cmds[["select_blank"]] <- "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
     }
-    
+
     # Do not display the size legend (saves plot space, as well)
     plot_cmds[["theme_base"]] <- "theme_bw() +"
     plot_cmds[["theme_custom"]] <- sprintf("theme(legend.position = '%s', legend.text=element_text(size=%s),
-    legend.title=element_text(size=%s), legend.box = 'vertical', 
-    axis.text.x = element_text(angle=90, size=%s, hjust=1, vjust=0.5), 
-    axis.text.y = element_text(size=%s), 
+    legend.title=element_text(size=%s), legend.box = 'vertical',
+    axis.text.x = element_text(angle=90, size=%s, hjust=1, vjust=0.5),
+    axis.text.y = element_text(size=%s),
     axis.title=element_text(size=%s), title=element_text(size=%s))",
         tolower(param_choices[[.plotLegendPosition]]),
         param_choices[[.plotFontSize]]*.plotFontSizeLegendTextDefault,
@@ -1158,20 +1158,20 @@ plot.data$Y <- tmp;")
 #' @importFrom stats runif
 .square_setup <- function(plot_data) {
     setup_cmds  <- list()
-    
+
     # Handling the specification of the jitter-by-group argument.
     groupvar <- ""
     if (!is.null(plot_data$FacetRow) || !is.null(plot_data$FacetColumn)) {
         groupvar <- character(0)
         if (!is.null(plot_data$FacetRow)) {
             groupvar <- c(groupvar, "FacetRow=plot.data$FacetRow")
-        } 
+        }
         if (!is.null(plot_data$FacetColumn)) {
             groupvar <- c(groupvar, "FacetColumn=plot.data$FacetColumn")
         }
         groupvar <- paste0(",\n    list(", paste(groupvar, collapse=", "), ")")
     }
-    
+
     # Setting the seed to ensure reproducible results.
     setup_cmds[["jitter"]] <- sprintf("set.seed(100);
 j.out <- iSEE:::jitterSquarePoints(plot.data$X, plot.data$Y%s);
@@ -1185,21 +1185,21 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 # Internal functions: coloring ----
 ############################################
 
-#' Define coloring variables 
+#' Define coloring variables
 #'
 #' Generates the commands necessary to define the variables to color by in the data.frame to be supplied to ggplot.
 #'
 #' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
 #' @param se A SingleCellExperiment object.
-#' 
+#'
 #' @details
 #' These functions generate commands to extract the variable to use for coloring individual points in row- or column-based plots,
 #' i.e., where each point is a feature or sample, respectively.
-#' The commands should be evaluated in the evaluation environment generated in \code{\link{.extract_plotting_data}}. 
+#' The commands should be evaluated in the evaluation environment generated in \code{\link{.extract_plotting_data}}.
 #'
 #' In these commands, the coloring variable is added to the \code{plot.data} data.frame in the \code{ColorBy} field.
 #' This is distinct from \code{.add_color_to_*_plot}, which generates the commands for coloring a ggplot by the values in \code{ColourBy}.
-#' 
+#'
 #' @return
 #' A list containing \code{label}, a string to use for labelling the color scale;
 #' and \code{cmds}, a character vector of commands to add a \code{ColorBy} field to \code{plot.data}.
@@ -1211,16 +1211,16 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' \code{\link{.extract_plotting_data}},
 #' \code{\link{.add_color_to_row_plot}},
 #' \code{\link{.add_color_to_column_plot}}
-#' 
+#'
 #' @importFrom SummarizedExperiment assay
 .define_colorby_for_column_plot <- function(param_choices, se) {
     color_choice <- param_choices[[.colorByField]]
-    
+
     if (color_choice==.colorByColDataTitle) {
         covariate_name <- param_choices[[.colorByColData]]
         return(list(label=covariate_name,
             cmds=sprintf("plot.data$ColorBy <- colData(se)[,%s];", deparse(covariate_name))))
-        
+
     } else if (color_choice==.colorByFeatNameTitle) {
         # Set the color to the selected gene
         chosen_gene <- param_choices[[.colorByFeatName]]
@@ -1232,7 +1232,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         return(list(
             label=.gene_axis_label(se, chosen_gene, assay_choice, multiline = TRUE),
             cmds=sprintf("plot.data$ColorBy <- assay(se, %i)[%i,];", assay_choice, chosen_gene)))
-        
+
     } else {
         return(NULL)
     }
@@ -1241,13 +1241,13 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @rdname INTERNAL_define_color_variables
 .define_colorby_for_row_plot <- function(param_choices, se) {
     color_choice <- param_choices[[.colorByField]]
-    
+
     if (color_choice==.colorByRowDataTitle) {
         covariate_name <- param_choices[[.colorByRowData]]
         return(list(
-            label=covariate_name, 
+            label=covariate_name,
             cmds=sprintf("plot.data$ColorBy <- rowData(se)[,%s];", deparse(covariate_name))))
-        
+
     } else if (color_choice==.colorByFeatNameTitle) {
         chosen_gene <- param_choices[[.colorByFeatName]]
         validate(need(
@@ -1258,23 +1258,23 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
             label=.gene_axis_label(se, chosen_gene, assay_id=NULL),
             cmds=sprintf("plot.data$ColorBy <- FALSE;
 plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
-        
+
     } else {
         return(NULL)
     }
 }
 
 #' Add color scale
-#' 
+#'
 #' Generates commands to add a color scale to the ggplot object, based on the
 #' specification in the ExperimentColorMap.
-#' 
+#'
 #' @param colorby A vector of values to color points by, taken from
 #' \code{plot.data$ColorBy} in upstream functions.
 #' @param param_choices A single-row DataFrame that contains all the
 #' input settings for the current panel.
 #'
-#' @return 
+#' @return
 #' A character vector containing commands to add a color scale to an existing ggplot object, or \code{NULL} if no color scale needs to be added.
 #'
 #' @details
@@ -1298,43 +1298,43 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' \code{\link{.define_colorby_for_row_plot}},
 #' \code{\link{.define_colorby_for_column_plot}}
 .add_color_to_column_plot <- function(colorby, param_choices) {
-    if (is.null(colorby)) { 
+    if (is.null(colorby)) {
         return(NULL)
     }
-    
+
     cmds <- NULL
     color_choice <- param_choices[[.colorByField]]
-    
+
     # This slightly duplicates the work in .define_colorby_for_row_plot(),
     # but this is necessary to separate the function of data acquisition and plot generation.
     if (color_choice==.colorByColDataTitle) {
         covariate_name <- param_choices[[.colorByColData]]
         cmds <- .create_color_scale("colDataColorMap", deparse(covariate_name), colorby)
-        
+
     } else if (color_choice==.colorByFeatNameTitle) {
         assay_choice <- param_choices[[.colorByFeatNameAssay]]
         cmds <- .create_color_scale("assayColorMap", deparse(assay_choice), colorby)
     }
-    
+
     return(cmds)
 }
 
 #' @rdname INTERNAL_add_color_scale
 #' @importFrom ggplot2 scale_color_manual geom_point
 .add_color_to_row_plot <- function(colorby, param_choices) {
-    if (is.null(colorby)) { 
+    if (is.null(colorby)) {
         return(NULL)
     }
-    
+
     cmds <- NULL
     color_choice <- param_choices[[.colorByField]]
-    
+
     # This slightly duplicates the work in .define_colorby_for_row_plot(),
     # but this is necessary to separate the function of data acquisition and plot generation.
     if (color_choice==.colorByRowDataTitle) {
         covariate_name <- param_choices[[.colorByRowData]]
         cmds <- .create_color_scale("rowDataColorMap", deparse(covariate_name), colorby)
-        
+
     } else if (color_choice==.colorByFeatNameTitle) {
         col_choice <- param_choices[[.colorByFeatNameColor]]
         cmds <- c(
@@ -1345,12 +1345,12 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy=='TRUE'), col=%s, size=%s, alpha=1) +",
                 deparse(col_choice), param_choices[[.plotPointSize]])
         )
-    } 
+    }
     return(cmds)
 }
 
 #' Choose between discrete and continuous color scales
-#' 
+#'
 #' Generates a ggplot \code{color_scale} command depending on the number of
 #' levels in the coloring variable.
 #'
@@ -1359,7 +1359,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' specify the colormap to use.
 #' @param colorby A vector of values to color points by, taken from
 #' \code{plot.data$ColorBy} in upstream functions.
-#' 
+#'
 #' @return A string containing an appropriate ggplot \code{color_scale}
 #' command.
 #'
@@ -1387,11 +1387,11 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     } else {
         ncolors <- 21L
     }
-    
+
     cm_cmd <- sprintf(
         "%s(colormap, %s, discrete=%s)(%i)",
         command, choice, discrete_color, ncolors)
-    
+
     if (discrete_color){
         return(c(
             sprintf(
@@ -1416,21 +1416,21 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 # Internal functions: shaping ----
 ############################################
 
-#' Define shaping variables 
+#' Define shaping variables
 #'
 #' Generates the commands necessary to define the variables to shape by in the data.frame to be supplied to ggplot.
 #'
 #' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
 #' @param se A SingleCellExperiment object.
-#' 
+#'
 #' @details
 #' These functions generate commands to extract the variable to use for shaping individual points in row- or column-based plots,
 #' i.e., where each point is a feature or sample, respectively.
-#' The commands should be evaluated in the evaluation environment generated in \code{\link{.extract_plotting_data}}. 
+#' The commands should be evaluated in the evaluation environment generated in \code{\link{.extract_plotting_data}}.
 #'
 #' In these commands, the shaping variable is added to the \code{plot.data} data.frame in the \code{ShapeBy} field.
 #' This is distinct from \code{.add_shape_to_*_plot}, which generates the commands for shaping a ggplot by the values in \code{ColourBy}.
-#' 
+#'
 #' @return
 #' A list containing \code{label}, a string to use for labelling the shape scale;
 #' and \code{cmds}, a character vector of commands to add a \code{ColorBy} field to \code{plot.data}.
@@ -1440,16 +1440,16 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' @rdname INTERNAL_define_shape_variables
 #' @seealso
 #' \code{\link{.extract_plotting_data}}
-#' 
+#'
 #' @importFrom SummarizedExperiment assay
 .define_shapeby_for_column_plot <- function(param_choices, se) {
     shape_choice <- param_choices[[.shapeByField]]
-    
+
     if (shape_choice==.shapeByColDataTitle) {
         covariate_name <- param_choices[[.shapeByColData]]
         return(list(label=covariate_name,
             cmds=sprintf("plot.data$ShapeBy <- colData(se)[,%s];", deparse(covariate_name))))
-        
+
     } else {
         return(NULL)
     }
@@ -1458,12 +1458,12 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' @rdname INTERNAL_define_shape_variables
 .define_shapeby_for_row_plot <- function(param_choices, se) {
     shape_choice <- param_choices[[.shapeByField]]
-    
+
     if (shape_choice==.shapeByRowDataTitle) {
         covariate_name <- param_choices[[.shapeByRowData]]
         return(list(label=covariate_name,
             cmds=sprintf("plot.data$ShapeBy <- rowData(se)[,%s];", deparse(covariate_name))))
-        
+
     } else {
         return(NULL)
     }
@@ -1477,7 +1477,6 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #'
 #' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
 #' @param all_memory A list of DataFrames, where each DataFrame corresponds to a panel type and contains the settings for each individual panel of that type.
-#' @param save_all A logical scalar indicating whether the original data.frame should be saved before subsetting to restrict.
 #' @param self_source A logical scalar indicating whether it is allowable to select points based on coordinates in \code{plot.data}.
 #'
 #' @return A list that includes the following elements:
@@ -1499,19 +1498,18 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' This will be used in \code{\link{.scatter_plot}} and \code{\link{.violin_plot}} to define the boundaries of the plot based on the full data.
 #' In this manner, the boundaries of the plot are kept consistent even when only a subset of the data are used to generate the ggplot object.
 #'
-#' Setting \code{save_all=FALSE} is used in \code{\link{.make_customColPlot}} to avoid creating \code{plot.data.all}.
 #' Setting \code{self_source=FALSE} is used in \code{\link{.get_selected_points}} to force it to use existing coordinates to define \code{SelectBy}.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_process_selectby_choice
 #' @seealso
-#' \code{\link{.extract_plotting_data}}, 
+#' \code{\link{.extract_plotting_data}},
 #' \code{\link{brushedPoints}},
 #' \code{\link{in.out}}
 #'
 #' @importFrom mgcv in.out
 #' @importFrom shiny brushedPoints
-.process_selectby_choice <- function(param_choices, all_memory, save_all=TRUE, self_source=TRUE) {
+.process_selectby_choice <- function(param_choices, all_memory, self_source=TRUE) {
     select_in <- param_choices[[.selectByPlot]]
     select_obj <- list()
     cmds <- list()
@@ -1525,35 +1523,33 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
         } else {
             source_data <- sprintf("all_coordinates[['%s']]", transmitter)
         }
-        
+
         brush_val <- all_memory[[select_by$Type]][,.brushData][[select_by$ID]]
         if (!is.null(brush_val)) {
             select_obj[[transmitter]] <- brush_val
             cmds[["brush"]] <- sprintf("selected_pts <- shiny::brushedPoints(%s, all_brushes[['%s']])", source_data, transmitter)
             cmds[["select"]] <- "plot.data$SelectBy <- rownames(plot.data) %in% rownames(selected_pts);"
-            
+
         } else {
             lasso_val <- all_memory[[select_by$Type]][,.lassoData][[select_by$ID]]
-            if (!is.null(lasso_val) && lasso_val$closed) { 
+            if (!is.null(lasso_val) && lasso_val$closed) {
                 select_obj[[transmitter]] <- lasso_val
                 cmds[["lasso"]] <- sprintf("selected_pts <- lassoPoints(%s, all_lassos[['%s']]);", source_data, transmitter)
                 cmds[["select"]] <- sprintf("plot.data$SelectBy <- rownames(plot.data) %%in%% rownames(selected_pts)", source_data)
             }
         }
-        
+
         if (length(select_obj) && param_choices[[.selectEffect]]==.selectRestrictTitle) {
-            if (save_all) { 
-                cmds[["saved"]] <- "plot.data.all <- plot.data;"
-            }
+            cmds[["saved"]] <- "plot.data.all <- plot.data;"
             cmds[["subset"]] <- "plot.data <- subset(plot.data, SelectBy);"
         }
     }
-    
+
     return(list(cmds=unlist(cmds), data=select_obj))
 }
 
 #' Add points to plot
-#' 
+#'
 #' Generate ggplot commands to control the appearance of data points while
 #' accounting for a point selection effect, if active.
 #'
@@ -1572,16 +1568,16 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' Addition of point commands is done via \code{geom_point} on the
 #' X/Y coordinates (in the \code{plot.data} of the evaluation environment).
 #' This involves some work to highlight selected data points.
-#' Any color specifications are passed in via \code{aes}. 
+#' Any color specifications are passed in via \code{aes}.
 #'
 #' When selecting points to restrict,
 #' this function relies on the availability of a
 #' \code{plot.data.all} variable in the evaluation environment.
 #' See \code{?\link{.process_selectby_choice}} for more details.
-#' 
+#'
 #' A separate \code{selected} argument is necessary here, despite the fact
 #' that most point selection information can be retrieved from
-#' \code{param_choices}, 
+#' \code{param_choices},
 #' This is because \code{param_choices} does not contain any information on
 #' whether the transmitter actually contains a selection of points.
 #' If no Shiny select or closed lasso path is defined in the transmitter,
@@ -1589,7 +1585,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_create_points
-#' @seealso 
+#' @seealso
 #' \code{\link{.scatter_plot}},
 #' \code{\link{.violin_plot}},
 #' \code{\link{.square_plot}}
@@ -1597,7 +1593,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' @importFrom ggplot2 geom_point geom_blank
 .create_points <- function(param_choices, selected, aes, color) {
     plot_cmds <- list()
-    
+
     # If there is already coloring information available in the aes, don't add an
     # additional color= statement to the geom_point() command, since this will
     # overrule the one given in aes().
@@ -1606,36 +1602,36 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     } else {
         default_color <- sprintf("color='%s', ", param_choices[[.colorByDefaultColor]])
     }
-    
+
     if (selected) {
         select_effect <- param_choices[[.selectEffect]]
         if (select_effect==.selectColorTitle) {
             plot_cmds[["select_other"]] <- sprintf(
-                "geom_point(%s, alpha=%s, data=subset(plot.data, !SelectBy), %ssize=%s) +", 
+                "geom_point(%s, alpha=%s, data=subset(plot.data, !SelectBy), %ssize=%s) +",
                 aes, param_choices[[.plotPointAlpha]], default_color,
                 param_choices[[.plotPointSize]]
             )
             plot_cmds[["select_color"]] <- sprintf(
                 "geom_point(%s, alpha=%s, data=subset(plot.data, SelectBy), color=%s, size=%s) +",
-                aes, param_choices[[.plotPointAlpha]], 
+                aes, param_choices[[.plotPointAlpha]],
                 deparse(param_choices[[.selectColor]]), param_choices[[.plotPointSize]]
             )
         }
         if (select_effect==.selectTransTitle) {
             plot_cmds[["select_other"]] <- sprintf(
                 "geom_point(%s, subset(plot.data, !SelectBy), alpha = %.2f, %ssize=%s) +",
-                aes, param_choices[[.selectTransAlpha]], default_color, 
+                aes, param_choices[[.selectTransAlpha]], default_color,
                 param_choices[[.plotPointSize]]
             )
             plot_cmds[["select_alpha"]] <- sprintf(
-                "geom_point(%s, subset(plot.data, SelectBy), %ssize=%s) +", 
+                "geom_point(%s, subset(plot.data, SelectBy), %ssize=%s) +",
                 aes, default_color, param_choices[[.plotPointSize]]
             )
         }
         if (select_effect==.selectRestrictTitle) {
             plot_cmds[["select_restrict"]] <- sprintf(
                 "geom_point(%s, alpha = %s, plot.data, %ssize=%s) +",
-                aes, param_choices[[.plotPointAlpha]], default_color, 
+                aes, param_choices[[.plotPointAlpha]], default_color,
                 param_choices[[.plotPointSize]])
         }
     } else {
@@ -1645,7 +1641,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
             param_choices[[.plotPointSize]]
         )
     }
-    
+
     return(unlist(plot_cmds))
 }
 
@@ -1666,21 +1662,21 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_gene_axis_label
-#' @seealso 
+#' @seealso
 #' \code{\link{.make_featAssayPlot}},
 #' \code{\link{.add_color_to_column_plot}},
 #' \code{\link{.add_color_to_row_plot}}
 .gene_axis_label <- function(se, gene_id, assay_id, multiline=FALSE){
     gene_id <- rownames(se)[gene_id]
-    if (is.null(assay_id)) { 
+    if (is.null(assay_id)) {
         return(gene_id)
     }
-    
+
     assay_name <- assayNames(se)[assay_id]
     if (is.null(assay_name) || identical(assay_name, "")) {
         assay_name <- paste("assay", assay_id)
     }
-    
+
     sep <- ifelse(multiline, "\n", " ")
     sprintf("%s%s(%s)", gene_id, sep, assay_name)
 }
@@ -1688,17 +1684,17 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' Generate ggplot aesthetic instructions
 #'
 #' @param x A \code{logical} that indicates whether to enable \code{x} in the
-#' aesthetic instructions (default: \code{TRUE}). 
+#' aesthetic instructions (default: \code{TRUE}).
 #' @param y A \code{logical} that indicates whether to enable \code{y} in the
-#' aesthetic instructions (default: \code{TRUE}). 
+#' aesthetic instructions (default: \code{TRUE}).
 #' @param color A \code{logical} that indicates whether to enable
-#' \code{color} in the aesthetic instructions (default: \code{FALSE}). 
+#' \code{color} in the aesthetic instructions (default: \code{FALSE}).
 #' @param shape A \code{logical} that indicates whether to enable
-#' \code{shape} in the aesthetic instructions (default: \code{FALSE}). 
+#' \code{shape} in the aesthetic instructions (default: \code{FALSE}).
 #' @param fill A \code{logical} that indicates whether to enable
-#' \code{fill} in the aesthetic instructions (default: \code{FALSE}). 
+#' \code{fill} in the aesthetic instructions (default: \code{FALSE}).
 #' @param group A \code{logical} that indicates whether to enable
-#' \code{group} in the aesthetic instructions (default: \code{FALSE}). 
+#' \code{group} in the aesthetic instructions (default: \code{FALSE}).
 #' @param alt Alternative aesthetics, supplied as a named character vector.
 #'
 #' @return Aesthetic instructions for \code{\link{ggplot}} as a character
@@ -1706,7 +1702,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #'
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_build_aes
-#' @seealso 
+#' @seealso
 #' \code{\link{.scatter_plot}},
 #' \code{\link{.violin_plot}},
 #' \code{\link{.square_plot}}
@@ -1736,7 +1732,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #'
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_make_single_aes
-#' @seealso 
+#' @seealso
 #' \code{\link{.build_aes}}.
 .make_single_aes <- function(name, value){
     sprintf("%s = %s", name, value)
@@ -1760,7 +1756,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #'
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_build_labs
-#' @seealso 
+#' @seealso
 #' \code{\link{.scatter_plot}},
 #' \code{\link{.violin_plot}},
 #' \code{\link{.square_plot}}
@@ -1788,7 +1784,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #'
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_make_single_lab
-#' @seealso 
+#' @seealso
 #' \code{\link{.build_labs}}.
 .make_single_lab <- function(name, value){
     sprintf("%s = %s", name, deparse(value))
@@ -1811,10 +1807,10 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #'
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_coerce_type
-#' @seealso 
+#' @seealso
 #' \code{\link{.create_plot}}.
 .coerce_type <- function(values, field, as_numeric=TRUE) {
-    if (as_numeric) { 
+    if (as_numeric) {
         if (!is.numeric(values)) {
             warning("coloring covariate has too many unique values, coercing to numeric")
             col_var <- sprintf("plot.data$%s", field)
@@ -1835,7 +1831,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 # Internal functions: faceting ----
 ############################################
 
-#' Define faceting variables 
+#' Define faceting variables
 #'
 #' Generates the commands necessary to define the variables to facet by in the data.frame to be supplied to ggplot.
 #'
@@ -1850,48 +1846,48 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' @seealso
 #' \code{\link{.extract_plotting_data}},
 #' \code{\link{.add_color_to_column_plot}}
-#' 
+#'
 #' @importFrom SummarizedExperiment colData
 .define_facetby_for_column_plot <- function(param_choices, se) {
     facet_cmds <- c()
-    
+
     facet_row <- param_choices[[.facetRowsByColData]]
     if (param_choices[[.facetByRow]]) {
         facet_cmds["FacetRow"] <- sprintf(
             "plot.data$FacetRow <- colData(se)[,%s];", deparse(facet_row))
     }
-    
+
     facet_column <- param_choices[[.facetColumnsByColData]]
     if (param_choices[[.facetByColumn]]) {
         facet_cmds["FacetColumn"] <- sprintf(
             "plot.data$FacetColumn <- colData(se)[,%s];", deparse(facet_column))
     }
-    
+
     return(facet_cmds)
 }
 
 #' @rdname INTERNAL_define_facet_variables
 .define_facetby_for_row_plot <- function(param_choices, se) {
     facet_cmds <- c()
-    
+
     facet_row <- param_choices[[.facetRowsByRowData]]
     if (param_choices[[.facetByRow]]) {
         facet_cmds["FacetRow"] <- sprintf(
             "plot.data$FacetRow <- rowData(se)[,%s];", deparse(facet_row))
     }
-    
+
     facet_column <- param_choices[[.facetColumnsByRowData]]
     if (param_choices[[.facetByColumn]]) {
         facet_cmds["FacetColumn"] <- sprintf(
             "plot.data$FacetColumn <- rowData(se)[,%s];", deparse(facet_column))
     }
-    
+
     return(facet_cmds)
 }
 
 
 #' Process faceting choices
-#' 
+#'
 #' Generate ggplot instructions to facet a plot by row and/or column
 #'
 #' @param param_choices A single-row DataFrame that contains all the
@@ -1901,21 +1897,21 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' covariates.
 #' @author Kevin Rue-Albrecht.
 #' @rdname INTERNAL_add_facets
-#' @seealso 
+#' @seealso
 #' \code{\link{.define_facetby_for_column_plot}}
 #'
 #' @importFrom ggplot2 facet_grid
 .add_facets <- function(param_choices){
-    
+
     if (!param_choices[[.facetByRow]] && !param_choices[[.facetByColumn]]) {
         return(NULL)
     }
-    
+
     facet_x <- ifelse(param_choices[[.facetByRow]], "FacetRow", ".")
     facet_y <- ifelse(param_choices[[.facetByColumn]], "FacetColumn", ".")
-    
+
     facet_cmd <- sprintf("facet_grid(%s ~ %s)", facet_x, facet_y)
-    
+
     return(facet_cmd)
 }
 
@@ -1949,16 +1945,16 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_self_brush_box
-#' @seealso 
+#' @seealso
 #' \code{\link{.create_plot}}
 #'
 #' @importFrom ggplot2 geom_rect
-.self_brush_box <- function(param_choices, flip=FALSE) { 
+.self_brush_box <- function(param_choices, flip=FALSE) {
     current <- param_choices[,.brushData][[1]]
     if (is.null(current)) {
         return(NULL)
     }
-    
+
     if (flip) {
         xmin <- 'ymin'
         xmax <- 'ymax'
@@ -1970,7 +1966,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
         ymin <- 'ymin'
         ymax <- 'ymax'
     }
-    
+
     # Note: Faceting simultaneously on row and column produces a 'flip' effect on the brush data
     if (param_choices[[.facetByRow]] && param_choices[[.facetByColumn]]) {
         facetrow <- 'panelvar2'
@@ -1978,16 +1974,16 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     } else {
         facetrow <- facetcolumn <- 'panelvar1'
     }
-    
+
     plot_name <- rownames(param_choices)
     enc <- .split_encoded(plot_name)
-    
+
     # Build up the aesthetics call
     aes_call <- sprintf("xmin = %s, xmax = %s, ymin = %s, ymax = %s", xmin, xmax, ymin, ymax)
-    
+
     # Initialize the minimal brush information
     brush_data <- sprintf("all_brushes[['%s']][c('xmin', 'xmax', 'ymin', 'ymax')]", plot_name)
-    
+
     # Collect additional panel information for the brush
     addPanels <- c()
     if (param_choices[[.facetByRow]]) {
@@ -1996,7 +1992,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     if (param_choices[[.facetByColumn]]) {
         addPanels["FacetColumn"] <- sprintf("FacetColumn = all_brushes[['%s']][['%s']]", plot_name, facetcolumn)
     }
-    
+
     # If any facting (row, column) is active, add the relevant data fields
     if (length(addPanels)) {
         panel_list <- sprintf("list(%s)", paste(addPanels, collapse = ", "))
@@ -2006,14 +2002,14 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 %s)",
             brush_data, panel_list)
     }
-    
+
     # Build up the command that draws the brush
     cmd <- sprintf(
-"geom_rect(aes(%s), color='%s', alpha=0, 
+"geom_rect(aes(%s), color='%s', alpha=0,
     data=do.call(data.frame, %s),
     inherit.aes=FALSE)",
         aes_call, panel_colors[enc$Type], brush_data)
-    
+
     data <- list()
     data[[plot_name]] <- current
     return(list(cmds=cmd, data=data))
@@ -2038,7 +2034,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' This function will generate commands to add a point to the plot, if there is only one lasso waypoint defined;
 #' a path, if multiple waypoints are defined but the lasso is not yet closed;
 #' or a polygon, if multiple waypoints are defined for a closed lasso.
-#' 
+#'
 #' The starting point of open lassos is distinguished from the waypoints using a shape aesthetic;
 #' with one exception, if the shape aesthetic is already being mapped to a covariate for data points,
 #' then lasso points switch to the size aesthetic.
@@ -2048,22 +2044,22 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_self_lasso_path
-#' @seealso 
+#' @seealso
 #' \code{\link{.create_plot}}
 #'
 #' @importFrom ggplot2 geom_point geom_polygon geom_path scale_shape_manual
 #' scale_fill_manual guides
-.self_lasso_path <- function(param_choices, flip=FALSE) { 
+.self_lasso_path <- function(param_choices, flip=FALSE) {
     current <- param_choices[,.lassoData][[1]]
     if (is.null(current) || !is.null(param_choices[,.brushData][[1]])) {
         return(NULL)
     }
-    
+
     plot_name <- rownames(param_choices)
     enc <- .split_encoded(plot_name)
     stroke_color <- panel_colors[enc$Type]
     fill_color <- brush_fill_color[enc$Type]
-    
+
     # Note: Faceting simultaneously on row and column produces a 'flip' effect on the brush data
     if (param_choices[[.facetByRow]] && param_choices[[.facetByColumn]]) {
         facetrow <- 'panelvar2'
@@ -2071,12 +2067,12 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     } else {
         facetrow <- facetcolumn <- 'panelvar1'
     }
-    
+
     # Initialize the minimal brush information
     lasso_data <- sprintf(
         "X = all_lassos[['%s']]$coord[,1], Y = all_lassos[['%s']]$coord[,2]",
         plot_name, plot_name)
-    
+
     # Collect additional panel information for the brush
     addPanels <- c()
     if (param_choices[[.facetByRow]]) {
@@ -2085,7 +2081,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     if (param_choices[[.facetByColumn]]) {
         addPanels["FacetColumn"] <- sprintf("FacetColumn = all_lassos[['%s']][['%s']]", plot_name, facetcolumn)
     }
-    
+
     # If any facting (row, column) is active, add the relevant data fields
     if (length(addPanels)) {
         panel_data <- paste(unlist(addPanels), collapse=", ")
@@ -2094,78 +2090,78 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 
     if (identical(nrow(current$coord), 1L)) { # lasso has only a start point
         point_cmd <- sprintf(
-"geom_point(aes(x = %s, y = %s), 
+"geom_point(aes(x = %s, y = %s),
     data=data.frame(%s),
     inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s', shape = %s)",
             current$mapping$x, current$mapping$y, lasso_data, stroke_color, .lassoStartShape)
         full_cmd_list <- list(point_cmd)
-        
+
     } else if (current$closed){ # lasso is closed
         polygon_cmd <- sprintf(
-"geom_polygon(aes(x = %s, y = %s), alpha=%s, color='%s', 
-    data=data.frame(%s), 
-    inherit.aes=FALSE, fill = '%s')", 
+"geom_polygon(aes(x = %s, y = %s), alpha=%s, color='%s',
+    data=data.frame(%s),
+    inherit.aes=FALSE, fill = '%s')",
             current$mapping$x, current$mapping$y,
             .brushFillOpacity, stroke_color,
             lasso_data, fill_color)
-        
+
         scale_fill_cmd <- sprintf(
             "scale_fill_manual(values = c('TRUE' = '%s', 'FALSE' = '%s'), labels = NULL)",
             stroke_color, fill_color)
-        
+
         if (param_choices[[.shapeByField]] == .shapeByNothingTitle) {
             guides_cmd <- "guides(shape = 'none')"
         } else {
             guides_cmd <- NULL
         }
-        
+
         full_cmd_list <- list(polygon_cmd, scale_fill_cmd, guides_cmd)
-        
+
     } else { # lasso is still open
         path_cmd <- sprintf(
-"geom_path(aes(x = %s, y = %s), 
-    data=data.frame(%s), 
-    inherit.aes=FALSE, alpha=1, color='%s', linetype = 'longdash')", 
+"geom_path(aes(x = %s, y = %s),
+    data=data.frame(%s),
+    inherit.aes=FALSE, alpha=1, color='%s', linetype = 'longdash')",
             current$mapping$x, current$mapping$y, lasso_data, stroke_color)
-        
+
         # Do not control the shape of waypoints if shape is already being mapped to a covariate
         if (param_choices[[.shapeByField]] == .shapeByNothingTitle) {
             point_cmd <- sprintf(
-"geom_point(aes(x = %s, y = %s, shape = First), 
-    data=data.frame(%s, 
+"geom_point(aes(x = %s, y = %s, shape = First),
+    data=data.frame(%s,
                     First = seq_len(nrow(all_lassos[['%s']]$coord))==1L),
     inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s')",
                 current$mapping$x, current$mapping$y,
                 lasso_data, plot_name, stroke_color)
-            
+
             scale_shape_cmd <- sprintf(
                 "scale_shape_manual(values = c('TRUE' = %s, 'FALSE' = %s))",
                 .lassoStartShape, .lassoWaypointShape
             )
-            
+
             guides_cmd <- "guides(shape = 'none')"
         } else {
             point_cmd <- sprintf(
-"geom_point(aes(x = %s, y = %s, size = First), 
-    data=data.frame(%s, 
+"geom_point(aes(x = %s, y = %s, size = First),
+    data=data.frame(%s,
                     First = seq_len(nrow(all_lassos[['%s']]$coord))==1L),
     inherit.aes=FALSE, alpha=1, stroke = 1, shape = %s, color = '%s')",
                 current$mapping$x, current$mapping$y,
                 lasso_data, plot_name, .lassoStartShape, stroke_color)
-            
+
             scale_shape_cmd <- sprintf(
                 "scale_size_manual(values = c('TRUE' = %s, 'FALSE' = %s))",
                 .lassoStartSize, .lassoWaypointSize
             )
-            
+
             guides_cmd <- "guides(size = 'none')"
         }
 
         full_cmd_list <- list(
             path_cmd, point_cmd, scale_shape_cmd, guides_cmd)
-        
+
     }
-    
+
     data <- list()
     data[[plot_name]] <- current
     return(list(cmds=unlist(full_cmd_list), data=data))

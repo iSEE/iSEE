@@ -26,7 +26,7 @@ output:
   BiocStyle::html_document:
     toc_float: true
 vignette: >
-  %\VignetteIndexEntry{The ExperimentColorMap Class}
+  %\VignetteIndexEntry{2. The ExperimentColorMap Class}
   %\VignetteEncoding{UTF-8}  
   %\VignettePackage{iSEE}
   %\VignetteKeywords{GeneExpression, RNASeq, Sequencing, Visualization, QualityControl, GUI}
@@ -55,7 +55,7 @@ htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 sce <- readRDS('sce.rds')
 ```
 
-# Using an ExperimentColorMap
+# Background
 
 `r Biocpkg("iSEE")` coordinates the coloration in every plot via the `ExperimentColorMap` class [@kra2018iSEE].
 Colors for samples or features are defined from column or row metadata or assay values using "colormaps".

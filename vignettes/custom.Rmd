@@ -1,0 +1,259 @@
+---
+title: Deploying custom panels in the `iSEE` interface
+author:
+- name: Federico Marini
+  affiliation: 
+  - &id1 Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz
+  - Center for Thrombosis and Hemostasis (CTH), Mainz
+  email: marinif@uni-mainz.de
+- name: Aaron Lun
+  affiliation: 
+  - &id2 Cancer Research UK Cambridge Institute, University of Cambridge
+  email: aaron.lun@cruk.cam.ac.uk
+- name: Charlotte Soneson
+  affiliation: 
+  - &id3 Institute of Molecular Life Sciences, University of Zurich
+  - SIB Swiss Institute of Bioinformatics
+  email: charlottesoneson@gmail.com
+- name: Kevin Rue-Albrecht
+  affiliation: 
+  - &id4 Kennedy Institute of Rheumatology, University of Oxford,
+    Headington, Oxford OX3 7FY, UK.
+  email: kevin.rue-albrecht@kennedy.ox.ac.uk
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('iSEE')`"
+output: 
+  BiocStyle::html_document:
+    toc_float: true
+vignette: >
+  %\VignetteIndexEntry{4. Deploying custom panels}
+  %\VignetteEncoding{UTF-8}  
+  %\VignettePackage{iSEE}
+  %\VignetteKeywords{GeneExpression, RNASeq, Sequencing, Visualization, QualityControl, GUI}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+bibliography: iSEE.bib
+---
+
+**Compiled date**: `r Sys.Date()`
+
+**Last edited**: 2018-03-08
+
+**License**: `r packageDescription("iSEE")[["License"]]`
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>",
+    error = FALSE,
+    warning = FALSE,
+    message = FALSE
+)
+stopifnot(requireNamespace("htmltools"))
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+sce <- readRDS('sce.rds')
+```
+
+# Background
+
+Users can define their own plots or tables to include in the `iSEE` interface [@kra2018iSEE].
+These custom panels are intended to receive a subset or rows or columns from other transmitting panels in the interface.
+The values in the custom panels will be recomputed "on the fly" by user-defined functions with the transmitted subset.
+This provides a flexible and convenient approach for light-weight interactive analysis during data exploration.
+For example, selection of a particular subset of samples can be transmitted to a custom plot panel that performs dimensionality reduction on that subset.
+Alternatively, the subset can be transmitted to a custom table that performs a differential expression analysis between that subset and all other samples.
+
+# Defining custom functions
+
+## Minimum requirements
+
+Recalculations in custom panels are performed using user-defined functions that are supplied to the `iSEE()` call.
+The only requirements are that the function has to accept:
+
+- A `SummarizedExperiment` object or its derivatives as the first argument.
+- A vector of row names as the second argument, specifying the rows that are selected in the transmitting _row-panel_ panel.
+- A vector of column names as the third argument, specifying the columns that are selected in the transmitting _column-based_ panel.
+
+In addition:
+
+- For _custom plot panels_, the function is expected to produce a `ggplot` object.
+- For _custom table panels_, the function is expected to produce a `data.frame`.
+
+## Example of custom plot panel
+
+To demonstrate the use of _custom plot panels_, we define an example function `CUSTOM_PCA` below.
+This takes a subset of features and cells in a `SingleCellExperiment` object,
+performs a principal components analysis (PCA) using that subset with `runPCA`,
+and creates a plot of the first two principal components with `plotPCA` [@mccarthy2017scater].
+
+```{r CUSTOM_PCA}
+library(scater)
+CUSTOM_PCA <- function(se, rows, columns, colour_by=NULL, scale_features=TRUE) {
+    if (!is.null(columns)) {
+        kept <- se[, columns]
+    } else {
+        return(ggplot())
+    }
+
+    scale_features <- as.logical(scale_features)
+    kept <- runPCA(kept, feature_set=rows, scale_features=scale_features)
+	plotPCA(kept, colour_by=colour_by)
+}
+```
+
+Note that `rows` and `columns` may be `NULL` if no selection was made in the respective transmitting panels.
+How these should be treated is up to the user-defined function.
+In the `CUSTOM_PCA` example above, an empty _ggplot_ is returned if there is no selection on the columns, while the default `runPCA` behaviour is used if `feature_set=NULL`.
+
+## Example of custom table panel
+
+To demonstrate the use of _custom table panels_, we define an example function `CUSTOM_SUMMARY` below.
+This takes a subset of features and cells in a `SingleCellExperiment` object,
+and creates data-frame that details the `mean`, `variance` and count of samples with expression above a given cut-off within the selection.
+
+```{r CUSTOM_SUMMARY}
+CUSTOM_SUMMARY <- function(se, ri, ci, assay="logcounts", min_exprs=0) {
+    if (is.null(ri)) {
+        ri <- rownames(se)
+    }
+    if (is.null(ci)) {
+        ci <- colnames(se)
+    }
+    
+    assayMatrix <- assay(se, assay)[ri, ci, drop=FALSE]
+    
+    data.frame(
+        Mean = rowMeans(assayMatrix),
+        Var = rowVars(assayMatrix),
+        Sum = rowSums(assayMatrix),
+        n_detected = rowSums(assayMatrix > min_exprs),
+        row.names = ri
+    )
+}
+```
+
+Note that in the `CUSTOM_SUMMARY` example above, if either `rows` or `columns` are `NULL`, all rows or columns are used, respectively.
+
+## Additional arguments
+
+Users of custom panels can specify additional arguments via a text box that accepts multi-line inputs.
+This is automatically converted into named arguments before being passed to the custom function.
+Each line corresponds to one argument:value pair, separated by the first space (ignoring whitespace at the start of the line).
+
+For example, consider the `CUSTOM_PCA` function. 
+If a user were to type:
+
+```
+colour_by Nanog
+scale_features FALSE
+```
+
+... in the text box, this would pass `colour_by="Nanog"` and `scale_features="TRUE"` to `CUSTOM_PCA`.
+Note that all additional arguments are passed as character strings for the sake of security.
+It is the responsibility of the custom function to perform any necessary type checks and conversions (hence the `as.logical` in `CUSTOM_PCA`).
+
+## Example use
+
+Using the `sce` object that we generated in the first vignette, we will add some fields for examining the mean-variance relationship across features:
+
+```{r mean_log-var_log}
+rowData(sce)$mean_log <- rowMeans(logcounts(sce))
+rowData(sce)$var_log <- apply(logcounts(sce), 1, var)
+```                                                                            
+
+We will then set up an `iSEE` instance with four panels - a reduced dimension plot, a row data plot, a custom plot, and a custom table.
+Note how both custom panels initially receives a column selection from the reduced dimension plot and a row selection from the row data plot.
+We also set the initial function to the name of `CUSTOM_PCA` in `customDataFun`, and the initial arguments to the values described above.
+
+```{r app}
+library(iSEE)
+reddim <- redDimPlotDefaults(sce, 1)
+rowdat <- rowDataPlotDefaults(sce, 1)
+rowdat$XAxis <- "Row data"
+rowdat$XAxisRowData <- "mean_log"
+rowdat$YAxis <- "var_log"
+
+cdp <- customDataPlotDefaults(sce, 1)
+cdp$Function <- "CUSTOM_PCA"
+cdp$Arguments <- "colour_by Nanog\nscale_features FALSE"
+cdp$ColumnSource <- "Reduced dimension plot 1"
+cdp$RowSource <- "Row data plot 1"
+
+cst <- customStatTableDefaults(sce, 1)
+cst$Function <- "CUSTOM_SUMMARY"
+cst$Arguments <- "assay logcounts\nmin_exprs 1"
+cst$ColumnSource <- "Reduced dimension plot 1"
+cst$RowSource <- "Row data plot 1"
+
+app <- iSEE(
+    sce, redDimArgs=reddim, rowDataArgs=rowdat, customDataArgs=cdp, customStatArgs=cst,
+    initialPanels=DataFrame(
+        Name=c(
+            "Reduced dimension plot 1", "Row data plot 1",
+            "Custom data plot 1", "Custom statistics table 1"),
+        Width=c(4, 4, 4, 12)),
+    customDataFun=list(CUSTOM_PCA=CUSTOM_PCA),
+    customStatFun=list(CUSTOM_SUMMARY=CUSTOM_SUMMARY)
+    )
+```
+
+# Caching for greater efficiency
+
+True R wizards can take advantage of the pass-by-reference activity of environments to cache results throughout the lifetime of the app.
+This can be used to avoid repeating time-consuming steps that are not affected by changes in certain parameters.
+For example, we could cache the output of `runPCA` to avoid repeating the PCA if only `colour_by` changes.
+
+We will demonstrate this below using a function that computes log-fold changes for the selected features in one subset of samples compared to the others.
+For any given column selection, we compute log-fold changes for all features and cache the results in the `caching` environment.
+This allows us to avoid recomputing these values if only the row selection changes.
+
+```{r CUSTOM_LFC}
+caching <- new.env()
+CUSTOM_LFC <- function(se, rows, columns) {
+    if (is.null(columns)) {
+        return(data.frame(logFC=numeric(0)))
+    }
+
+    if (!identical(caching$columns, columns)) {
+        caching$columns <- columns
+        in.subset <- rowMeans(logcounts(sce)[,columns])
+        out.subset <- rowMeans(logcounts(sce)[,setdiff(colnames(sce), columns)])
+        caching$logFC <- setNames(in.subset - out.subset, rownames(sce))
+    } 
+       
+    lfc <- caching$logFC
+    if (!is.null(rows)) {
+        out <- data.frame(logFC=lfc[rows], row.names=rows)
+    } else {
+        out <- data.frame(logFC=lfc, row.names=rownames(se))
+    }
+    out
+}
+```
+
+We will then set up an `iSEE` instance with three panels - a reduced dimension plot, a row data plot and a custom statistics table.
+This is much the same as described for the custom plot panel.
+
+```{r app2}
+cst <- customStatTableDefaults(sce, 1)
+cst$Function <- "CUSTOM_LFC"
+cst$ColumnSource <- "Reduced dimension plot 1"
+cst$RowSource <- "Row data plot 1"
+
+app2 <- iSEE(sce, redDimArgs=reddim, rowDataArgs=rowdat, customStatArgs=cst, 
+    initialPanels=DataFrame(Name=c("Reduced dimension plot 1", 
+            "Row data plot 1", "Custom statistics table 1")),
+    customStatFun=list(CUSTOM_LFC=CUSTOM_LFC))
+```
+
+# Session Info {.unnumbered}
+
+```{r sessioninfo}
+sessionInfo()
+# devtools::session_info()
+```
+
+# References {.unnumbered}
+
+

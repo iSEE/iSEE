@@ -175,7 +175,15 @@
 
 .allCoordinatesNames <- c("X", "Y", "FacetRow", "FacetColumn")
 
-# Row statistic table parameters. ----
+# Table parameters. ----
+.statTableSelected <- "Selected"
+.statTableSelected <- "Selected"
+.statTableSearch <- "Search"
+.statTableColSearch <- "SearchColumns"
+.int_statTableSelected <- "_rows_selected"
+.int_statTableSearch <- "_search"
+.int_statTableColSearch <- "_search_columns"
+
 .rowStatSelected <- "Selected"
 .rowStatSearch <- "Search"
 .rowStatColSearch <- "SearchColumns"
@@ -183,7 +191,6 @@
 .int_rowStatSearch <- "_search"
 .int_rowStatColSearch <- "_search_columns"
 
-# Custom statistics table parameters. ----
 .customStatSearch <- .rowStatSearch
 .int_customStatSearch <- .int_rowStatSearch
 
@@ -206,6 +213,7 @@ translation <- c(redDimPlot="Reduced dimension plot",
                  rowStatTable="Row statistics table",
                  rowDataPlot="Row data plot",
                  sampAssayPlot="Sample assay plot",
+                 colStatTable="Column statistics table",
                  customDataPlot="Custom data plot",
                  customStatTable="Custom statistics table",
                  heatMapPlot="Heat map")
@@ -217,7 +225,7 @@ names(rev.translation) <- translation
 row_point_plot_types <- c("rowDataPlot", "sampAssayPlot")
 col_point_plot_types <- c("redDimPlot", "colDataPlot", "featAssayPlot")
 point_plot_types <- c(col_point_plot_types, row_point_plot_types)
-linked_table_types <- c("rowStatTable")
+linked_table_types <- c("rowStatTable", "colStatTable")
 custom_panel_types <- c("customDataPlot", "customStatTable")
 all_panel_types <- c(point_plot_types, linked_table_types, custom_panel_types, "heatMapPlot")
 

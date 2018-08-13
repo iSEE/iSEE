@@ -5,6 +5,7 @@ panel_colors <- c(redDimPlot="#3c8dbc",
                   colDataPlot="#f39c12",
                   featAssayPlot="#00a65a",
                   sampAssayPlot="#0064aa",
+                  colStatTable="#6b6d10",
                   customDataPlot="#473c15",
                   customStatTable="#473c15",
                   heatMapPlot="#bc4ddd")

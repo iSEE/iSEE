@@ -490,6 +490,64 @@ rowStatTableDefaults <- function(se, number) {
     return(out)
 }
 
+#' Column statistics table defaults
+#'
+#' Create default settings for column statistics table panels in the iSEE interface.
+#'
+#' @param se A SummarizedExperiment object.
+#' @param number An integer scalar, specifying the maximum number of column statistics tables that can be added to the interface.
+#'
+#' @details
+#' Parameters available to col statistics tables are:
+#' \describe{
+#' \item{\code{Selected}:}{Integer, containing the index of the col to be initially selected.
+#' Defaults to the first col, i.e., 1.
+#' Alternatively, a string can be supplied containing the column name.}
+#' \item{\code{Search}:}{Character, containing the initial value of the search field.
+#' Defaults to an empty string.}
+#' \item{\code{SearchColumns}:}{A list containing character vectors of length equal to the number of columns in \code{colData(se)},
+#' specifying the initial value of the search field for each column.
+#' All entries default to an empty string.}
+#' }
+#'
+#' All table-based parameters described in \code{?"\link{iSEE selection parameters}"} are applicable.
+#'
+#' @return
+#' A DataFrame containing default settings for parameters of each of \code{number} column statistics table panels. 
+#'
+#' @author Aaron Lun 
+#'
+#' @export
+#' @importFrom methods new
+#' @importClassesFrom S4Vectors DataFrame
+#' @importFrom SummarizedExperiment colData
+#'
+#' @seealso
+#' \code{?"\link{iSEE selection parameters}"}
+#'
+#' @examples
+#' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
+#' colStatTableDefaults(sce, n=1)
+colStatTableDefaults <- function(se, number) {
+    waszero <- number==0
+    if (waszero) number <- 1
+
+    out <- new("DataFrame", ncols=as.integer(number))
+    out[[.statTableSelected]] <- 1L
+    out[[.statTableSearch]] <- ""
+
+    # Defining an empty search for each column of the colData.
+    colsearch <- character(ncol(colData(se)))
+    out[[.statTableColSearch]] <- rep(list(colsearch), as.integer(number))
+
+    # Defining the colDataPlot from which point selections are received.
+    out[[.selectParamBoxOpen]] <- FALSE
+    out[[.selectByPlot]] <- .noSelection
+
+    if (waszero) out <- out[0,,drop=FALSE]
+    return(out)
+}
+
 #' Custom statistics table defaults
 #'
 #' Create default settings for custom statistics table panels in the iSEE interface.

@@ -62,6 +62,7 @@
         rowStatTable=! (nrow(se)==0L),
         rowDataPlot=! (ncol(rowData(se))==0L || nrow(se)==0L),
         sampAssayPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
+        colStatTable=! (ncol(se)==0L),
         customDataPlot=! ((ncol(se)==0L && nrow(se)==0L) || length(.get_internal_info(se, "custom_data_fun"))==0L),
         customStatTable=! ((ncol(se)==0L && nrow(se)==0L) || length(.get_internal_info(se, "custom_stat_fun"))==0L),
         heatMapPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L)
@@ -108,6 +109,7 @@
 #' @param rowStatArgs A DataFrame or data.frame of user-specified arguments for row statistics tables.
 #' @param rowDataArgs A DataFrame or data.frame of user-specified arguments for row data plots.
 #' @param sampAssayArgs A DataFrame or data.frame of user-specified arguments for sample assay plots.
+#' @param colStatArgs A DataFrame or data.frame of user-specified arguments for column statistics tables. 
 #' @param customDataArgs A DataFrame or data.frame of user-specified arguments for custom data plots.
 #' @param customStatArgs A DataFrame or data.frame of user-specified arguments for custom statistics tables.
 #' @param heatMapArgs A DataFrame or data.frame of user-specified arguments for heat maps.
@@ -117,6 +119,7 @@
 #' @param rowStatMax Integer scalar specifying the maximum number of row statistics tables.
 #' @param rowDataMax Integer scalar specifying the maximum number of row data plots.
 #' @param sampAssayMax Integer scalar specifying the maximum number of sample assay plots.
+#' @param colStatMax Integer scalar specifying the maximum number of column statistics tables.
 #' @param customDataMax Integer scalar specifying the maximum number of custom column plots.
 #' @param customStatMax Integer scalar specifying the maximum number of custom statistics tables. 
 #' @param heatMapMax Integer scalar specifying the maximum number of heat maps.
@@ -153,6 +156,7 @@
         rowStatArgs,
         rowDataArgs,
         sampAssayArgs,
+        colStatArgs,
         customDataArgs,
         customStatArgs,
         heatMapArgs,
@@ -162,6 +166,7 @@
         rowStatMax,
         rowDataMax,
         sampAssayMax,
+        colStatMax,
         customDataMax,
         customStatMax,
         heatMapMax) {
@@ -173,6 +178,7 @@
         rowStatTable=rowStatArgs, 
         rowDataPlot=rowDataArgs, 
         sampAssayPlot=sampAssayArgs,
+        colStatTable=colStatArgs, 
         customDataPlot=customDataArgs,
         customStatTable=customStatArgs,
         heatMapPlot=heatMapArgs
@@ -185,6 +191,7 @@
         rowStatTable=rowStatMax, 
         rowDataPlot=rowDataMax, 
         sampAssayPlot=sampAssayMax,
+        colStatTable=colStatMax,
         customDataPlot=customDataMax,
         customStatTable=customStatMax,
         heatMapPlot=heatMapMax
@@ -207,12 +214,14 @@
     all_args$featAssayPlot <- .name2index(all_args$featAssayPlot, c(.featAssayXAxisFeatName, .featAssayYAxisFeatName), rownames(se))
     all_args$featAssayPlot <- .name2index(all_args$featAssayPlot, .featAssayAssay, assayNames(se))
 
-    all_args$rowStatTable <- .name2index(all_args$rowStatTable, .rowStatSelected, rownames(se))
+    all_args$rowStatTable <- .name2index(all_args$rowStatTable, .statTableSelected, rownames(se))
     
     all_args$sampAssayPlot <- .name2index(all_args$sampAssayPlot, c(.sampAssayYAxis, .sampAssayXAxisSample), colnames(se))
     all_args$sampAssayPlot <- .name2index(all_args$sampAssayPlot, .sampAssayAssay, assayNames(se))
 
-    all_args$heatMapPlot <- .name2index(all_args$heatMapPlot, .heatMapFeatName, rownames(se))
+    all_args$colStatTable <- .name2index(all_args$colStatTable, .statTableSelected, colnames(se))
+
+    all_args$heatMapPlot <- .name2index(all_args$heatMapPlot, .heatMapFeatName, colnames(se))
     all_args$heatMapPlot <- .name2index(all_args$heatMapPlot, .heatMapAssay, assayNames(se))
 
     for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot")) {
@@ -234,6 +243,7 @@
             rowStatTable=rowStatTableDefaults,
             rowDataPlot=rowDataPlotDefaults,
             sampAssayPlot=sampAssayPlotDefaults,
+            colStatTable=colStatTableDefaults,
             customDataPlot=customDataPlotDefaults,
             customStatTable=customStatTableDefaults,
             heatMapPlot=heatMapPlotDefaults)
@@ -410,7 +420,7 @@ height_limits <- c(400L, 1000L)
     all_active <- paste0(active_panels$Type, active_panels$ID)
 
     # Checking for selecting/linking of main panels.
-    for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot", "rowDataPlot", "sampAssayPlot", "rowStatTable")) {
+    for (mode in c(point_plot_types, linked_table_types)) {
         cur_memory <- memory[[mode]]
         self_active <- rownames(cur_memory)
 
@@ -426,7 +436,7 @@ height_limits <- c(400L, 1000L)
             memory[[mode]][,.selectByPlot][bad] <- .noSelection
         }
 
-        if (mode!="rowStatTable") {
+        if (mode %in% point_plot_types) {
             cb <- cur_memory[,.colorByRowTable]
             bad <- !cb %in% active_tab | !self_active %in% all_active
             if (any(bad)) {

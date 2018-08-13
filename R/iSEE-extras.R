@@ -216,7 +216,7 @@
 
     all_args$rowStatTable <- .name2index(all_args$rowStatTable, .statTableSelected, rownames(se))
     
-    all_args$sampAssayPlot <- .name2index(all_args$sampAssayPlot, c(.sampAssayYAxis, .sampAssayXAxisSample), colnames(se))
+    all_args$sampAssayPlot <- .name2index(all_args$sampAssayPlot, c(.sampAssayYAxisSampName, .sampAssayXAxisSampName), colnames(se))
     all_args$sampAssayPlot <- .name2index(all_args$sampAssayPlot, .sampAssayAssay, assayNames(se))
 
     all_args$colStatTable <- .name2index(all_args$colStatTable, .statTableSelected, colnames(se))

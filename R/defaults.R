@@ -7,14 +7,20 @@
 #' @section Coloring parameters:
 #' \describe{
 #' \item{\code{ColorBy}:}{Character, what type of data should be used for coloring?
-#' Defaults to \code{"None"}, but can also be \code{"Feature name"} or \code{"Column data"} (for column-based plots) or \code{"Row data"} for (row-based plots).}
+#' Defaults to \code{"None"}, but can also be \code{"Feature name"}, \code{"Sample name"}, or \code{"Column data"} (for column-based plots) or \code{"Row data"} for (row-based plots).}
 #' \item{\code{ColorByDefaultColor}:}{String specifying the default point colour when \code{ColorBy="None"}.
 #' Defaults to \code{"black"}.}
-#' \item{\code{ColorByFeatName}:}{Integer, the index of the feature to use for colouring based on expression, if \code{ColorBy="Feature name"}?
+#' \item{\code{ColorByFeatName}:}{Integer, the index of the feature to use if \code{ColorBy="Feature name"}.
 #' Defaults to 1, i.e., the first feature in \code{se}.
 #' Alternatively, a string can be supplied containing the name of the feature.}
-#' \item{\code{ColorByRowTable}:}{Character, which row statistic table should be used to choose a feature to color by, if \code{ColorBy="Feature name"}?
-#' Any setting will override \code{ColorByFeatName} upon initialization of the app.
+#' \item{\code{ColorBySampName}:}{Integer, the index of the sample to use if \code{ColorBy="Sample name"}.
+#' Defaults to 1, i.e., the first sample in \code{se}.
+#' Alternatively, a string can be supplied containing the name of the sample.}
+#' \item{\code{ColorByRowTable}:}{Character, which row statistics table should be used to choose a feature to color by, if \code{ColorBy="Feature name"}?
+#' Any setting will override \code{ColorByFeatName} with the selected row in the chosen table upon initialization of the app.
+#' Defaults to \code{"---"}, which means that no table will be used.}
+#' \item{\code{ColorByColTable}:}{Character, which column statistics table should be used to choose a sample to color by, if \code{ColorBy="Sample name"}?
+#' Any setting will override \code{ColorBySampName} with the selected row in the chosen table upon initialization of the app.
 #' Defaults to \code{"---"}, which means that no table will be used.}
 #' }
 #'
@@ -25,14 +31,19 @@
 #' \item{\code{ColorByFeatNameAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Feature name"}?
 #' Defaults to 1, i.e., the first assay in \code{se}.
 #' Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
+#' \item{\code{ColorBySampNameColor}:}{String specifying the colour to be used to highlight the selected sample if \code{ColorBy="Sample name"}.
+#' Defaults to \code{"red"}.}
 #' }
 #'
 #' For plots where each point represents a feature (i.e., row data plots), the following additional options apply:
 #' \describe{
 #' \item{\code{ColorByRowData}:}{Character, which column of \code{rowData(se)} should be used for colouring if \code{ColorBy="Row data"}?
 #' Defaults to the first entry of \code{rowData(se)}.}
-#' \item{\code{ColorByFeatNameColor}:}{String specifying the colour to be used to highlight the selected feature from the text if \code{ColorBy="Feature name"}.
+#' \item{\code{ColorByFeatNameColor}:}{String specifying the colour to be used to highlight the selected feature if \code{ColorBy="Feature name"}.
 #' Defaults to \code{"red"}.}
+#' \item{\code{ColorBySampNameAssay}:}{Integer, which assay should be used to supply the expression values for colouring if \code{ColorBy="Sample name"}?
+#' Defaults to 1, i.e., the first assay in \code{se}.
+#' Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
 #' }
 #'
 #' @section Shape parameters:
@@ -260,8 +271,8 @@ redDimPlotDefaults <- function(se, number) {
 #' \item{\code{YAxisFeatName}:}{Integer, the index of the feature for which to show the expression on the y-axis if \code{YAxis="Feature name"}.
 #' Defaults to 1, i.e., the first feature in \code{se}.
 #' Alternatively, a string can be supplied containing the name of the feature, i.e., the row name.}
-#' \item{\code{YAxisRowTable}:}{Character, what row statistic table should be used to choose a feature to display on the y-axis?
-#' Any setting will override \code{YAxisFeatName} upon initialization of the app.
+#' \item{\code{YAxisRowTable}:}{Character, what row statistics table should be used to choose a feature to display on the y-axis?
+#' Any setting will override \code{YAxisFeatName} with the selected row in the chosen table upon initialization of the app.
 #' Defaults to \code{"---"}, which means that no table will be used.}
 #' \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
 #' Defaults to 1, i.e., the first assay in \code{se}.
@@ -274,7 +285,7 @@ redDimPlotDefaults <- function(se, number) {
 #' Defaults to 1, i.e., the first feature in \code{se}.
 #' Alternatively, a string can be supplied containing the name of the feature.}
 #' \item{\code{XAxisRowTable}:}{Character, which row statistic table should be used to choose a feature to put on the x-axis if \code{XAxis="Row table"}?
-#' Any setting will override \code{XAxisFeatName} upon initialization of the app.
+#' Any setting will override \code{XAxisFeatName} with the selected row in the chosen table upon initialization of the app.
 #' Defaults to \code{"---"}, which means that no table will be used.}
 #' }
 #'
@@ -672,19 +683,25 @@ rowDataPlotDefaults <- function(se, number) {
 #' @details
 #' Parameters available to sample assay plots are:
 #' \describe{
-#' \item{\code{YAxis}:}{Integer, which column of \code{se} should be shown on the y-axis?
+#' \item{\code{YAxisSampName}:}{Integer, which column of \code{se} should be shown on the y-axis?
 #' Defaults to 1, i.e., the first column.
 #' Alternatively, a character field can be supplied containing the name of the column.}
+#' \item{\code{YAxisColTable}:}{Character, what column statistics table should be used to choose a sample to display on the y-axis?
+#' Any setting will override \code{YAxisSampName} with the selected row in the chosen table upon initialization of the app.
+#' Defaults to \code{"---"}, which means that no table will be used.}
 #' \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
 #' Defaults to 1, i.e., the first assay in \code{se}.
 #' Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
 #' \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
-#' Defaults to \code{"None"}, but can also be \code{"Row data"} or \code{"Sample"}.}
+#' Defaults to \code{"None"}, but can also be \code{"Row data"} or \code{"Sample name"}.}
 #' \item{\code{XAxisRowData}:}{Character, which column of \code{rowData(se)} should be shown on the x-axis if \code{XAxis="Row data"}?
 #' Defaults to the first entry of \code{rowData(se)}.}
-#' \item{\code{XAxisSample}:}{Integer, which column of \code{se} should be shown on the x-axis?
+#' \item{\code{XAxisSampName}:}{Integer, which column of \code{se} should be shown on the x-axis?
 #' Defaults to 2 if \code{se} contains multiple columns, otherwise it is set to 1.
 #' Alternatively, a character field can be supplied containing the name of the column.}
+#' \item{\code{XAxisColTable}:}{Character, what column statistics table should be used to choose a sample to display on the x-axis, if \code{XAxis="Sample name"}?
+#' Any setting will override \code{XAxisSampName} with the selected row in the chosen table upon initialization of the app.
+#' Defaults to \code{"---"}, which means that no table will be used.}
 #' }
 #'
 #' All row-based parameters described in \code{?"\link{iSEE point parameters}"} are applicable.

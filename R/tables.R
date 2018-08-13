@@ -7,8 +7,8 @@
 #' @return A list where each entry is itself a list, named with the encoded name of a row statistics table.
 #' Each table-specific list contains:
 #' \itemize{
-#' \item \code{"xaxis"}, a character vector containing encoded names of (feature assay) plots that receive input from this table for x-axis specification.
-#' \item \code{"yaxis"}, a character vector containing encoded names of (feature assay) plots that receive input from this table for y-axis specification.
+#' \item \code{"xaxis"}, a character vector containing encoded names of (feature/sample assay) plots that receive input from this table for x-axis specification.
+#' \item \code{"yaxis"}, a character vector containing encoded names of (feature/sample assay) plots that receive input from this table for y-axis specification.
 #' \item \code{"color"}, a character vector containing encoded names of various plots that receive input from this table for colour specification.
 #' }
 #'
@@ -22,40 +22,53 @@
 #' \code{\link{.modify_table_links}},
 #' \code{\link{.destroy_table}}
 .spawn_table_links <- function(memory) {
-    Ntabs <- nrow(memory$rowStatTable)
-    table_links <- rep(list(list(color=character(0), xaxis=character(0), yaxis=character(0))), Ntabs)
-    names(table_links) <- sprintf("rowStatTable%i", seq_len(Ntabs))
+    all_linked_tabs <- c(sprintf("rowStatTable%i", seq_len(nrow(memory$rowStatTable))), 
+        sprintf("colStatTable%i", seq_len(nrow(memory$colStatTable))))
+    table_links <- rep(list(list(color=character(0), xaxis=character(0), yaxis=character(0))), length(all_linked_tabs))
+    names(table_links) <- all_linked_tabs
 
     # Adding the links for the colors.
-    for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot", "rowDataPlot", "sampAssayPlot")) {
+    for (mode in point_plot_types) {
         N <- nrow(memory[[mode]])
         cur_panels <- sprintf("%s%i", mode, seq_len(N))
 
         for (id in seq_len(N)) {
-            cur_tab <- memory[[mode]][id, .colorByRowTable]
-            if (cur_tab!=.noSelection) {
-                tab_name <- .decoded2encoded(cur_tab)
-                table_links[[tab_name]]$color <- c(table_links[[tab_name]]$color, cur_panels[id])
+            for (tab_type in c(.colorByRowTable, .colorByColTable)) { 
+                cur_tab <- memory[[mode]][id, tab_type]
+                if (cur_tab!=.noSelection) {
+                    tab_name <- .decoded2encoded(cur_tab)
+                    table_links[[tab_name]]$color <- c(table_links[[tab_name]]$color, cur_panels[id])
+                }
             }
         }
     }
 
     # Adding links for x- and y-axes.
-    N <- nrow(memory$featAssayPlot)
-    cur_panels <- sprintf("featAssayPlot%i", seq_len(N))
-    for (id in seq_len(N)) {
-        param_choices <- memory[["featAssayPlot"]][id,]
-
-        X_tab <- param_choices[[.featAssayXAxisRowTable]]
-        if (X_tab!=.noSelection) {
-            tab_name <- .decoded2encoded(X_tab)
-            table_links[[tab_name]]$xaxis <- c(table_links[[tab_name]]$xaxis, cur_panels[id])
+    for (mode in c("featAssayPlot", "sampAssayPlot")) {
+        N <- nrow(memory[[mode]])
+        cur_panels <- sprintf("%s%i", mode, seq_len(N))
+        if (mode=="featAssayPlot") {
+            xtabfield <- .featAssayXAxisRowTable
+            ytabfield <- .featAssayYAxisRowTable
+        } else {
+            xtabfield <- .sampAssayXAxisColTable
+            ytabfield <- .sampAssayYAxisColTable
         }
+        
+        for (id in seq_len(N)) {
+            param_choices <- memory[[mode]][id,]
 
-        Y_tab <- param_choices[[.featAssayYAxisRowTable]]
-        if (Y_tab!=.noSelection) {
-            tab_name <- .decoded2encoded(Y_tab)
-            table_links[[tab_name]]$yaxis <- c(table_links[[tab_name]]$yaxis, cur_panels[id])
+            X_tab <- param_choices[[xtabfield]]
+            if (X_tab!=.noSelection) {
+                tab_name <- .decoded2encoded(X_tab)
+                table_links[[tab_name]]$xaxis <- c(table_links[[tab_name]]$xaxis, cur_panels[id])
+            }
+    
+            Y_tab <- param_choices[[ytabfield]]
+            if (Y_tab!=.noSelection) {
+                tab_name <- .decoded2encoded(Y_tab)
+                table_links[[tab_name]]$yaxis <- c(table_links[[tab_name]]$yaxis, cur_panels[id])
+            }
         }
     }
 
@@ -88,20 +101,33 @@
     links <- pObjects$table_links
     all_kids <- links[[tab]]
 
+    # Deciding which fields to cancel.
+    if (.split_encoded(tab)$Type=="rowStatTable") {
+        col_field <- .colorByRowTable
+        assay_panel_type <- "featAssayPlot"
+        x_field <- .featAssayXAxisRowTable
+        y_field <- .featAssayYAxisRowTable
+    } else {
+        col_field <- .colorByColTable
+        assay_panel_type <- "sampAssayPlot"
+        x_field <- .sampAssayXAxisColTable
+        y_field <- .sampAssayYAxisColTable
+    }
+
     # Updating the memory of all linked plots.
     col_kids <- all_kids$color
     enc <- .split_encoded(col_kids)
     for (i in seq_along(col_kids)) {
         kid <- col_kids[i]
         type <- enc$Type[i]
-        pObjects$memory[[type]][kid, .colorByRowTable] <- .noSelection
+        pObjects$memory[[type]][kid, col_field] <- .noSelection
     }
 
-    for (x in all_kids$yaxis) {
-        pObjects$memory$featAssayPlot[x, .featAssayYAxisRowTable] <- .noSelection
+    for (panel in all_kids$yaxis) {
+        pObjects$memory[[assay_panel_type]][panel, y_field] <- .noSelection
     }
-    for (x in all_kids$xaxis) {
-        pObjects$memory$featAssayPlot[x, .featAssayXAxisRowTable] <- .noSelection
+    for (panel in all_kids$xaxis) {
+        pObjects$memory[[assay_panel_type]][panel, x_field] <- .noSelection
     }
 
     # Erasing the links.
@@ -155,11 +181,11 @@
 #' @param rObjects A reactive list containing incrementable counters for all panels,
 #' @param input A Shiny list of inputs, generated by the server.
 #' @param session A \code{session} object from a Shiny server.
-#' @param by_field String specifying the field to check for whether the input is using a row table input of any kind.
-#' @param title String specifying the title of a feature name input, to match to the value of \code{by_field} in \code{memory} for this plot.
-#' @param feat_field String specifying the field to check for the feature to examine.
-#' @param tab_field String specifying the field to check for the identify of the row table input.
-#' @param feat_choices Vector of consecutive integers indexing all rows, named with the feature names.
+#' @param by_field String specifying the name of the field containing the data source for the current panel.
+#' @param title String specifying the title used for table-based data sources, to match to the value of \code{by_field} in \code{memory} for this plot.
+#' @param select_field String specifying the name of the field containing the selected row for this panel.
+#' @param tab_field String specifying the name of the field containing the decoded name of the table input for this panel.
+#' @param select_choices Vector of consecutive integers indexing all rows, named with the row names.
 #' @param param String specifying the type of table link to the current plot, i.e., color or x/y-axis.
 #'
 #' @return A logical scalar indicating whether the current (receiving) plot needs to be regenerated.
@@ -174,14 +200,14 @@
 #' \item Link panel counters in \code{rObjects} are incremented if the new linked table differs from the old link table and \code{input[[by_field]]==title};
 #' or if \code{input[[by_field]]} differs from that in memory and either of them is equal to \code{title}.
 #' Counters are only updated for the current panel as well as the old/new tables, and only when
-#' \item The selectize UI element corresponding to \code{feat_field} is updated with the current selection in the linked table, if a new linked table was chosen.
+#' \item The selectize UI element corresponding to \code{select_field} is updated with the current selection in the linked table, if a new linked table was chosen.
 #' Note that this will trigger another call to the observer that contains this function.
 #' }
 #'
 #' The flag to regenerate the current plot is set if the \code{by_field} and \code{tab_field} fields in \code{input} are non-\code{NULL};
 #' and the \code{by_field} entry differs from the parameter currently stored in memory.
 #'
-#' Note that \code{by_field} and \code{title} are ignored if \code{param="yaxis"}, as the y-axis of feature assay plots have no other choice of variable.
+#' Note that \code{by_field} and \code{title} are ignored if \code{param="yaxis"}, as the y-axis of feature/sample assay plots have no other choice of variable.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_setup_table_observer
@@ -192,8 +218,8 @@
 #' @importFrom shiny updateSelectizeInput
 #' @importFrom methods as
 .setup_table_observer <- function(mode, id, pObjects, rObjects, input, session,
-                                  by_field, title, feat_field, tab_field,
-                                  feat_choices, param='color')
+                                  by_field, title, select_field, tab_field,
+                                  select_choices, param='color')
 {
     plot_name <- paste0(mode, id)
     prefix <- paste0(plot_name, "_")
@@ -226,14 +252,14 @@
         # Editing the table_links, if we're switching the table choice.
         pObjects$table_links <- .modify_table_links(pObjects$table_links, plot_name, tab, old_tab, mode=param)
 
-        # Updating the feature selection, based on the currently selected row.
+        # Updating the selection, based on the currently selected row.
         if (tab!=.noSelection) {
-            enc_id <- .encode_panel_name(tab)$ID
-            tab_chosen <- pObjects$memory$rowStatTable[enc_id,.rowStatSelected]
-            feature <- pObjects$memory[[mode]][id, feat_field]
-            if (tab_chosen!=feature && !is.null(session)) { # session=NULL used for testing the rest of the function.
-                updateSelectizeInput(session, paste0(prefix, feat_field), label = NULL,
-                                     choices = feat_choices, server = TRUE, selected = tab_chosen)
+            enc <- .encode_panel_name(tab)
+            new_selected <- pObjects$memory[[enc$Type]][enc$ID,.rowStatSelected]
+            old_selected <- pObjects$memory[[mode]][id, select_field]
+            if (new_selected != old_selected && !is.null(session)) { # session=NULL used for testing the rest of the function.
+                updateSelectizeInput(session, paste0(prefix, select_field), label = NULL,
+                        choices = select_choices, server = TRUE, selected = new_selected)
             }
         }
     }
@@ -247,9 +273,8 @@
         }
     }
 
-    # Not replotting if the choice has not changed. Note that the identical-ness of 'tab'
-    # doesn't matter here, as the feature name determines the plot (and if changing tab changes
-    # the feature name, this is caught by a differnt observer).
+    # Not replotting if the row choice has not changed. Note that the identical-ness of 'tab'
+    # doesn't matter here, as the row name determines the plot.
     return(!identical(old_choice, choice))
 }
 
@@ -282,18 +307,23 @@
     tmp_mem <- pObjects$memory[[mode]]
     plot_name <- paste0(mode, id)
 
-    for (param in list(c(.colorByRowTable, "color"),
-                       c(.featAssayXAxisRowTable, "xaxis"),
-                       c(.featAssayYAxisRowTable, "yaxis"))) {
+    if (mode %in% row_point_plot_types) {
+        parameters <- list(c(.colorByColTable, "color"))
+        if (mode=="sampAssayPlot") {
+            parameters <- c(parameters, list(c(.sampAssayXAxisRowTable, "xaxis"), c(.sampAssayYAxisRowTable, "yaxis")))
+        }
+    } else {
+        parameters <- list(c(.colorByRowTable, "color"))
+        if (mode=="featAssayPlot") {
+            parameters <- c(parameters, list(c(.featAssayXAxisRowTable, "xaxis"), c(.featAssayYAxisRowTable, "yaxis")))
+        }
+    }
 
+    for (param in parameters) { 
         oldtab <- tmp_mem[id, param[1]]
         if (oldtab!=.noSelection) {
             tmp_link <- .modify_table_links(tmp_link, plot_name, .noSelection, oldtab, mode = param[2])
             tmp_mem[id, param[1]] <- .noSelection
-        }
-
-        if (mode!="featAssayPlot") {
-            break
         }
     }
 
@@ -301,3 +331,6 @@
     pObjects$table_links <- tmp_link
     return(invisible(NULL))
 }
+
+
+

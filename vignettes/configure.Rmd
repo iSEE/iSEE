@@ -102,6 +102,8 @@ Those parameters are accessible at runtime in the eponymous collapsible box.
 
 We refer users to the individual help page of each panel type listed [below](#further) to learn more about the choices of X-axis variables for each type of panel.
 
+From a running `iSEE` application, you can also display all the R code that is required to set up the current configuration by clicking on `Display panel settings` under the wrench icon in the top-right corner. 
+
 ## Setting the Y-axis
 
 The nature of the Y-axis is defined by the type of panel.

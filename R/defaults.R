@@ -532,7 +532,7 @@ colStatTableDefaults <- function(se, number) {
     waszero <- number==0
     if (waszero) number <- 1
 
-    out <- new("DataFrame", ncols=as.integer(number))
+    out <- new("DataFrame", nrows=as.integer(number))
     out[[.statTableSelected]] <- 1L
     out[[.statTableSearch]] <- ""
 

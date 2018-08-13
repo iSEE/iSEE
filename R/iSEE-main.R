@@ -1502,9 +1502,9 @@ iSEE <- function(se,
                         param_choices <- pObjects$memory[[mode0]][id0,]
                         chosen <- param_choices[[.statTableSelected]]
                         search <- param_choices[[.statTableSearch]]
-                        search_col <- param_choices[[.statTableColSearch]]
+                        search_col <- param_choices[[.statTableColSearch]][[1]]
                         search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
-        
+
                         # Adding a "Selected" field to the plotting data, which responds to point selection input.
                         # Note that this AUTOMATICALLY updates search_col upon re-rendering via the observer below.
                         # The code below keeps search_col valid for the number of columns (i.e., with or without selection).
@@ -1527,7 +1527,7 @@ iSEE <- function(se,
                                                scrollX=TRUE),
                                   selection=list(mode="single", selected=chosen))
                     })
-        
+       
                     # Updating memory for new selection parameters (no need for underscore
                     # in 'select_field' definition, as this is already in the '.int' constant).
                     select_field <- paste0(panel_name, .int_statTableSelected)
@@ -1578,9 +1578,9 @@ iSEE <- function(se,
                             pObjects$memory[[mode0]]<- .update_list_element(pObjects$memory[[mode0]], id0, .statTableColSearch, search)
                         }
                     })
-        
+
                     # Updating the annotation box.
-                    if (mode=="rowStatTable") { 
+                    if (mode0=="rowStatTable") { 
                         anno_field <- paste0(panel_name, "_annotation")
                         output[[anno_field]] <- renderUI({
                             if(is.null(annotFun)) return(NULL)
@@ -1623,7 +1623,7 @@ iSEE <- function(se,
                     if (enc$Type=="rowStatTable") {
                         incoming <- input[[paste0(enc$Type, enc$ID, "_rows_all")]]
                     } else {
-                        selected <- .get_selected_points(rownames(gene_data), origin, pObjects$memory, pObjects$coordinates)
+                        selected <- .get_selected_points(rownames(se), origin, pObjects$memory, pObjects$coordinates)
                         if (is.null(selected)) {
                             showNotification("Invalid: empty selection", type="warning")
                             return(NULL) # avoid corner case: which(NULL)

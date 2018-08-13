@@ -1029,7 +1029,10 @@ iSEE <- function(se,
 
         feature_choices <- seq_len(nrow(se))
         names(feature_choices) <- rownames(se)
+        sample_choices <- seq_len(ncol(se))
+        names(sample_choices) <- colnames(se)
 
+        # Selectize updates for features. 
         for (mode in c(point_plot_types, "heatMapPlot")) {
             if (mode=="featAssayPlot") {
                 fields <- c(.featAssayYAxisFeatName, .featAssayXAxisFeatName, .colorByFeatName)
@@ -1058,6 +1061,33 @@ iSEE <- function(se,
             }
         }
 
+        # Selectize updates for samples. 
+        for (mode in point_plot_types) {
+            if (mode=="sampAssayPlot") {
+                fields <- c(.sampAssayYAxisSampName, .sampAssayXAxisSampName, .colorBySampName)
+            } else if (mode %in% point_plot_types) {
+                fields <- .colorBySampName
+            }
+
+            max_plots <- nrow(pObjects$memory[[mode]])
+            for (id in seq_len(max_plots)) {
+                for (field in fields) {
+                    local({
+                        id0 <- id
+                        mode0 <- mode
+                        field0 <- field
+                        cur_field <- paste0(mode0, id0, "_", field0)
+
+                        observe({
+                            force(rObjects$rerendered)
+                            updateSelectizeInput(session, cur_field, choices = sample_choices, server = TRUE,
+                                selected = pObjects$memory[[mode0]][id0, field0][[1]])
+                        })
+                    })
+                }
+            }
+        }
+
         #######################################################################
         # Dot-related plot creation section. ----
         #######################################################################
@@ -1079,8 +1109,8 @@ iSEE <- function(se,
                 colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
                 featAssayPlot=c(.featAssayAssay, .featAssayXAxisColData),
                 rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData),
-                sampAssayPlot=c(.sampAssayYAxis, .sampAssayAssay, .sampAssayXAxis, .sampAssayXAxisRowData, .sampAssayXAxisSample))
-            protected <- c(protected,  .facetByRow, .facetByColumn, .facetRowsByColData, .facetColumnsByColData)
+                sampAssayPlot=c(.sampAssayAssay, .sampAssayXAxisRowData))
+            protected <- c(protected, .facetByRow, .facetByColumn, .facetRowsByColData, .facetColumnsByColData)
 
             # Defining non-fundamental parameters that do not destroy brushes/lassos.
             if (mode %in% row_point_plot_types) {
@@ -1154,38 +1184,63 @@ iSEE <- function(se,
                     })
                 }
 
+                # Feature and sample name observers. This is handled separately from the other observers,
+                # due to the fact that the selectizeInput can be updated and because the feature name
+                # can change (due to the linked table) without directly affecting the plot.
+                for (field_type in c("feature", "sample")) {
+                    if (field_type=="feature") {
+                        name_field <- .colorByFeatName
+                        color_title <- .colorByFeatNameTitle
+                        table_field <- .colorByRowTable
+                        choices <- feature_choices
+                    } else {
+                        name_field <- .colorBySampName
+                        color_title <- .colorBySampNameTitle
+                        table_field <- .colorByColTable
+                        choices <- sample_choices
+                    }
+
+                    local({
+                        id0 <- id
+                        mode0 <- mode
+                        name_field0 <- name_field
+                        color_title0 <- color_title
+                        table_field0 <- table_field
+                        choices0 <- choices
+                        plot_name <- paste0(mode0, id0)
+    
+                        # Observer for the feature name. 
+                        feat_field <- paste0(plot_name, "_", name_field0)
+                        observeEvent(input[[feat_field]], {
+                            req(input[[feat_field]]) # Required to defend against empty strings before updateSelectizeInput runs upon re-render.
+                            matched_input <- as(input[[feat_field]], typeof(pObjects$memory[[mode0]][[name_field0]]))
+                            if (identical(matched_input, pObjects$memory[[mode0]][[name_field0]][id0])) {
+                                return(NULL)
+                            }
+                            pObjects$memory[[mode0]][[name_field0]][id0] <- matched_input
+                            if (pObjects$memory[[mode0]][id0,.colorByField]==color_title0) { # Only regenerating if featName is used for coloring.
+                                rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                            }
+                        }, ignoreInit=TRUE)
+    
+                        # Observers for the linked color by feature name. This also updates the table_links information.
+                        observe({
+                            replot <- .setup_table_observer(mode0, id0, pObjects, rObjects, input, session,
+                                                            by_field = .colorByField, title = color_title0,
+                                                            feat_field = name_field0, tab_field = table_field0,
+                                                            feat_choices = choices0, param='color')
+                            if (replot) {
+                                rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                            }
+                        })
+                    })
+                }
+
                 local({
                     id0 <- id
                     mode0 <- mode
                     FUN0 <- FUN
                     plot_name <- paste0(mode0, id0)
-
-                    # Observer for the feature name. This is handled differently from the other observers,
-                    # due to the fact that the selectizeInput can be updated and because the feature name
-                    # can change (due to the linked table) without directly affecting the plot.
-                    feat_field <- paste0(plot_name, "_", .colorByFeatName)
-                    observeEvent(input[[feat_field]], {
-                        req(input[[feat_field]]) # Required to defend against empty strings before updateSelectizeInput runs upon re-render.
-                        matched_input <- as(input[[feat_field]], typeof(pObjects$memory[[mode0]][[.colorByFeatName]]))
-                        if (identical(matched_input, pObjects$memory[[mode0]][[.colorByFeatName]][id0])) {
-                            return(NULL)
-                        }
-                        pObjects$memory[[mode0]][[.colorByFeatName]][id0] <- matched_input
-                        if (pObjects$memory[[mode0]][id0,.colorByField]==.colorByFeatNameTitle) { # Only regenerating if featName is used for coloring.
-                            rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                        }
-                    }, ignoreInit=TRUE)
-
-                    # Observers for the linked color by feature name. This also updates the table_links information.
-                    observe({
-                        replot <- .setup_table_observer(mode0, id0, pObjects, rObjects, input, session,
-                                                        by_field = .colorByField, title = .colorByFeatNameTitle,
-                                                        feat_field = .colorByFeatName, tab_field = .colorByRowTable,
-                                                        feat_choices = feature_choices, param='color')
-                        if (replot) {
-                            rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                        }
-                    })
 
                     # Defining the rendered plot, and saving the coordinates.
                     gen_field <- paste0(plot_name, "_", .panelGeneralInfo)
@@ -1223,63 +1278,91 @@ iSEE <- function(se,
             }
         }
 
-        # Feature assay plots need some careful handling, as we need to update the
+        # Feature and sample assay plots need some careful handling, as we need to update the
         # table links and destroy a brush/lasso whenever an x/y-axis-specifying parameter changes.
-        max_plots <- nrow(pObjects$memory$featAssayPlot)
-        for (id in seq_len(max_plots)) {
-            local({
-                id0 <- id
-                mode0 <- "featAssayPlot"
-                plot_name <- paste0(mode0, id0)
+        for (mode in c("featAssayPlot", "sampAssayPlot")) {
+            max_plots <- nrow(pObjects$memory[[mode]])
+            if (mode=="featAssayPlot") {
+                byx_field <- .featAssayXAxis
+                byx_title <- .featAssayXAxisFeatNameTitle
+                x_name_field <- .featAssayXAxisFeatName
+                x_name_tab <- .featAssayXAxisRowTable
+                y_name_field <- .featAssayYAxisFeatName
+                y_name_tab <- .featAssayYAxisRowTable
+                choices <- feature_choices
+            } else {
+                byx_field <- .sampAssayXAxis
+                byx_title <- .sampAssayXAxisSampNameTitle
+                x_name_field <- .sampAssayXAxisSampName
+                x_name_tab <- .sampAssayXAxisColTable
+                y_name_field <- .sampAssayYAxisSampName
+                y_name_tab <- .sampAssayYAxisColTable
+                choices <- sample_choices
+            }
 
-                # X-axis table observer.
-                observe({
-                    replot <- .setup_table_observer(mode0, id0, pObjects, rObjects, input, session,
-                                                    by_field = .featAssayXAxis, title = .featAssayXAxisFeatNameTitle,
-                                                    feat_field = .featAssayXAxisFeatName, tab_field = .featAssayXAxisRowTable,
-                                                    feat_choices = feature_choices, param = "xaxis")
-                    if (replot) {
+            for (id in seq_len(max_plots)) {
+                local({
+                    id0 <- id
+                    mode0 <- mode
+                    plot_name <- paste0(mode0, id0)
+         
+                    byx_field0 <- byx_field
+                    byx_title0 <- byx_title
+                    x_name_field0 <- x_name_field
+                    x_name_tab0 <- x_name_tab
+                    y_name_field0 <- y_name_field
+                    y_name_tab0 <- y_name_tab
+                    choices0 <- choices
+    
+                    # X-axis table observer.
+                    observe({
+                        replot <- .setup_table_observer(mode0, id0, pObjects, rObjects, input, session,
+                                                        by_field = byx_field0, title = byx_title0,
+                                                        feat_field = x_name_field0, tab_field = x_name_tab0,
+                                                        feat_choices = choices0, param = 'xaxis')
+                        if (replot) {
+                            .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
+                        }
+                    })
+    
+                    # X-axis feature name observer (see the explanation above for the colorByFeatName observer).
+                    x_field <- paste0(plot_name, "_", x_name_field0)
+                    observeEvent(input[[x_field]], {
+                        req(input[[x_field]]) # Required to defend against empty strings in XAxisFeatName prior to updateSelectize upon re-render.
+                        matched_input <- as(input[[x_field]], typeof(pObjects$memory[[mode0]][[x_name_field0]]))
+                        if (identical(matched_input, pObjects$memory[[mode0]][[x_name_field0]][id0])) {
+                            return(NULL)
+                        }
+                        pObjects$memory[[mode0]][[x_name_field0]][id0] <- matched_input
+                        if (pObjects$memory[[mode0]][id0, byx_field0]==byx_title0) { # Only regenerating if featName is being used for plotting.
+                            .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
+                        }
+                    }, ignoreInit=TRUE)
+ 
+                    # Y-axis table observer.
+                    observe({
+                        replot <- .setup_table_observer(mode0, id0, pObjects, rObjects, input, session,
+                                                        feat_field = y_name_field0, tab_field = y_name_tab0,
+                                                        feat_choices = choices0, param = 'yaxis')
+                        if (replot) {
+                            .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
+                        }
+                    })
+     
+                    # Y-axis feature name observer. Unlike the X-axis observer, there is no choice for the Y-Axis,
+                    # i.e., the feature name is always being used for plotting.
+                    y_field <- paste0(plot_name, "_", y_name_field0)
+                    observeEvent(input[[y_field]], {
+                        req(input[[y_field]]) # Required for empty strings in YAxisFeatName prior to updateSelectize upon re-render.
+                        matched_input <- as(input[[y_field]], typeof(pObjects$memory[[mode0]][[y_name_field0]]))
+                        if (identical(matched_input, pObjects$memory[[mode0]][[y_name_field0]][id0])) {
+                            return(NULL)
+                        }
+                        pObjects$memory[[mode0]][[y_name_field0]][id0] <- matched_input
                         .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
-                    }
+                    }, ignoreInit=TRUE)
                 })
-
-                # X-axis feature name observer (see the explanation above for the colorByFeatName observer).
-                x_field <- paste0(plot_name, "_", .featAssayXAxisFeatName)
-                observeEvent(input[[x_field]], {
-                    req(input[[x_field]]) # Required to defend against empty strings in XAxisFeatName prior to updateSelectize upon re-render.
-                    matched_input <- as(input[[x_field]], typeof(pObjects$memory[[mode0]][[.featAssayXAxisFeatName]]))
-                    if (identical(matched_input, pObjects$memory[[mode0]][[.featAssayXAxisFeatName]][id0])) {
-                        return(NULL)
-                    }
-                    pObjects$memory[[mode0]][[.featAssayXAxisFeatName]][id0] <- matched_input
-                    if (pObjects$memory[[mode0]][id0, .featAssayXAxis]==.featAssayXAxisFeatNameTitle) { # Only regenerating if featName is being used for plotting.
-                        .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
-                    }
-                }, ignoreInit=TRUE)
-
-                # Y-axis table observer.
-                observe({
-                    replot <- .setup_table_observer(mode0, id0, pObjects, rObjects, input, session,
-                                                    feat_field = .featAssayYAxisFeatName, tab_field = .featAssayYAxisRowTable,
-                                                    feat_choices = feature_choices, param = 'yaxis')
-                    if (replot) {
-                        .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
-                    }
-                })
-
-                # Y-axis feature name observer. Unlike the X-axis observer, there is no choice for the Y-Axis,
-                # i.e., the feature name is always being used for plotting.
-                y_field <- paste0(plot_name, "_", .featAssayYAxisFeatName)
-                observeEvent(input[[y_field]], {
-                    req(input[[y_field]]) # Required for empty strings in YAxisFeatName prior to updateSelectize upon re-render.
-                    matched_input <- as(input[[y_field]], typeof(pObjects$memory[[mode0]][[.featAssayYAxisFeatName]]))
-                    if (identical(matched_input, pObjects$memory[[mode0]][[.featAssayYAxisFeatName]][id0])) {
-                        return(NULL)
-                    }
-                    pObjects$memory[[mode0]][[.featAssayYAxisFeatName]][id0] <- matched_input
-                    .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
-                }, ignoreInit=TRUE)
-            })
+            }
         }
 
         # Reduced dimension plots also need a special observer to update the maximum of the selectInput when the type changes.

@@ -310,7 +310,7 @@
     if (mode %in% row_point_plot_types) {
         parameters <- list(c(.colorByColTable, "color"))
         if (mode=="sampAssayPlot") {
-            parameters <- c(parameters, list(c(.sampAssayXAxisRowTable, "xaxis"), c(.sampAssayYAxisRowTable, "yaxis")))
+            parameters <- c(parameters, list(c(.sampAssayXAxisColTable, "xaxis"), c(.sampAssayYAxisColTable, "yaxis")))
         }
     } else {
         parameters <- list(c(.colorByRowTable, "color"))

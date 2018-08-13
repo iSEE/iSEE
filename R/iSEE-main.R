@@ -111,6 +111,7 @@ iSEE <- function(se,
         rowStatArgs=NULL,
         rowDataArgs=NULL,
         sampAssayArgs=NULL,
+        colStatArgs=NULL,
         customDataArgs=NULL,
         customStatArgs=NULL,
         heatMapArgs=NULL,
@@ -120,6 +121,7 @@ iSEE <- function(se,
         rowStatMax=5,
         rowDataMax=5,
         sampAssayMax=5,
+        colStatMax=5,
         customDataMax=5,
         customStatMax=5,
         heatMapMax=5,
@@ -149,17 +151,24 @@ iSEE <- function(se,
     isColorMapCompatible(colormap, se, error = TRUE)
 
     # Setting up inputs for DT::datatable something to play with.
-    gene_data <- data.frame(rowData(se), check.names = FALSE)
-    rownames(gene_data) <- rownames(se)
-    if (ncol(gene_data)==0L) {
-        gene_data$Present <- !logical(nrow(gene_data))
+    feature_data <- data.frame(rowData(se), check.names = FALSE)
+    rownames(feature_data) <- rownames(se)
+    if (ncol(feature_data)==0L) {
+        feature_data$Present <- !logical(nrow(feature_data))
     }
-    tab_select_col <- .safe_field_name("Selected", colnames(gene_data))
+    feature_data_select_col <- .safe_field_name("Selected", colnames(feature_data))
+
+    sample_data <- data.frame(colData(se), check.names = FALSE)
+    rownames(sample_data) <- colnames(se)
+    if (ncol(sample_data)==0L) {
+        sample_data$Present <- !logical(nrow(sample_data))
+    }
+    sample_data_select_col <- .safe_field_name("Selected", colnames(sample_data))
 
     # Defining the maximum number of plots.
     memory <- .setup_memory(se,
-        redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs, sampAssayArgs, customDataArgs, customStatArgs, heatMapArgs,
-        redDimMax, colDataMax, featAssayMax, rowStatMax, rowDataMax, sampAssayMax, customDataMax, customStatMax, heatMapMax)
+        redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs, sampAssayArgs, colStatArgs, customDataArgs, customStatArgs, heatMapArgs,
+        redDimMax, colDataMax, featAssayMax, rowStatMax, rowDataMax, sampAssayMax, colStatMax, customDataMax, customStatMax, heatMapMax)
 
     # Defining the initial elements to be plotted.
     active_panels <- .setup_initial(initialPanels, memory)
@@ -1468,114 +1477,126 @@ iSEE <- function(se,
         # Row table section. ----
         #######################################################################
 
-        # Load the gene level data
-        for (id in seq_len(nrow(pObjects$memory$rowStatTable))) {
-
-          local({
-            id0 <- id
-            panel_name <- paste0("rowStatTable", id0)
-
-            output[[panel_name]] <- renderDataTable({
-                force(rObjects$active_panels) # to trigger recreation when the number of plots is changed.
-                force(rObjects[[panel_name]])
-
-                chosen <- pObjects$memory$rowStatTable[id0, .rowStatSelected]
-                search <- pObjects$memory$rowStatTable[id0, .rowStatSearch]
-                search_col <- pObjects$memory$rowStatTable[,.rowStatColSearch][[id0]]
-                search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
-
-                # Adding a "Selected" field to the plotting data, which responds to point selection input.
-                # Note that this AUTOMATICALLY updates search_col upon re-rendering via the observer below.
-                # The code below keeps search_col valid for the number of columns (i.e., with or without selection).
-                selected <- .get_selected_points(rownames(gene_data), pObjects$memory$rowStatTable[id0,.selectByPlot],
-                                                 pObjects$memory, pObjects$coordinates)
-                tmp_gene_data <- gene_data
-                if (!is.null(selected)) {
-                    tmp_gene_data[[tab_select_col]] <- selected
-                    if (length(search_col)!=ncol(tmp_gene_data)) {
-                        search_col <- c(search_col, list(list(search="true")))
-                    } else {
-                        search_col[[ncol(tmp_gene_data)]]$search <- "true"
+        for (mode in linked_table_types) {
+            max_plots <- nrow(pObjects$memory[[mode]])
+            if (mode=="rowStatTable") {
+                current_df <- feature_data
+                current_select_col <- feature_data_select_col 
+            } else {
+                current_df <- sample_data                
+                current_select_col <- sample_data_select_col
+            }
+                
+            for (id in seq_len(max_plots)) {
+                local({
+                    mode0 <- mode
+                    id0 <- id
+                    current_df0 <- current_df
+                    current_select_col0 <- current_select_col
+                    panel_name <- paste0(mode0, id0)
+        
+                    output[[panel_name]] <- renderDataTable({
+                        force(rObjects$active_panels) # to trigger recreation when the number of plots is changed.
+                        force(rObjects[[panel_name]])
+       
+                        param_choices <- pObjects$memory[[mode0]][id0,]
+                        chosen <- param_choices[[.statTableSelected]]
+                        search <- param_choices[[.statTableSearch]]
+                        search_col <- param_choices[[.statTableColSearch]]
+                        search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
+        
+                        # Adding a "Selected" field to the plotting data, which responds to point selection input.
+                        # Note that this AUTOMATICALLY updates search_col upon re-rendering via the observer below.
+                        # The code below keeps search_col valid for the number of columns (i.e., with or without selection).
+                        selected <- .get_selected_points(rownames(current_df0), param_choices[[.selectByPlot]], pObjects$memory, pObjects$coordinates)
+                        tmp_df <- current_df0
+                        if (!is.null(selected)) {
+                            tmp_df[[current_select_col0]] <- selected
+                            if (length(search_col)!=ncol(tmp_df)) {
+                                search_col <- c(search_col, list(list(search="true")))
+                            } else {
+                                search_col[[ncol(tmp_df)]]$search <- "true"
+                            }
+                        } else {
+                            search_col <- search_col[seq_len(ncol(tmp_df))]
+                        }
+        
+                        datatable(tmp_df, filter="top", rownames=TRUE,
+                                  options=list(search=list(search=search, smart=FALSE, regex=TRUE, caseInsensitive=FALSE),
+                                               searchCols=c(list(NULL), search_col), # row names are the first column!
+                                               scrollX=TRUE),
+                                  selection=list(mode="single", selected=chosen))
+                    })
+        
+                    # Updating memory for new selection parameters (no need for underscore
+                    # in 'select_field' definition, as this is already in the '.int' constant).
+                    select_field <- paste0(panel_name, .int_statTableSelected)
+                    observe({
+                        chosen <- input[[select_field]]
+                        if (length(chosen)==0L) {
+                            return(NULL)
+                        }
+                        pObjects$memory[[mode0]][id0, .statTableSelected] <- chosen
+        
+                        col_kids <- pObjects$table_links[[id0]][["color"]]
+                        x_kids <- pObjects$table_links[[id0]][["xaxis"]]
+                        y_kids <- pObjects$table_links[[id0]][["yaxis"]]
+        
+                        # Updating the selectize for the color choice.
+                        col_kids <- sprintf("%s_%s", col_kids, .colorByFeatName)
+                        for (kid in col_kids) {
+                            updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=feature_choices)
+                        }
+        
+                        # Updating the selectize for the x-/y-axis choices.
+                        x_kids <- sprintf("%s_%s", x_kids, .featAssayXAxisFeatName)
+                        for (kid in x_kids) {
+                            updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=feature_choices)
+                        }
+                        y_kids <- sprintf("%s_%s", y_kids, .featAssayYAxisFeatName)
+                        for (kid in y_kids) {
+                            updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=feature_choices)
+                        }
+        
+                        # There is a possibility that this would cause triple-rendering as they trigger different observers.
+                        # But this would imply that you're plotting/colouring the same gene against itself, which would be stupid.
+                    })
+        
+                    # Updating memory for new selection parameters.
+                    search_field <- paste0(panel_name, .int_statTableSearch)
+                    observe({
+                        search <- input[[search_field]]
+                        if (length(search)) {
+                            pObjects$memory[[mode0]][id0, .statTableSearch] <- search
+                        }
+                    })
+        
+                    colsearch_field <- paste0(panel_name, .int_statTableColSearch)
+                    observe({
+                        search <- input[[colsearch_field]]
+                        if (length(search)) {
+                            pObjects$memory[[mode0]]<- .update_list_element(pObjects$memory[[mode0]], id0, .statTableColSearch, search)
+                        }
+                    })
+        
+                    # Updating the annotation box.
+                    if (mode=="rowStatTable") { 
+                        anno_field <- paste0(panel_name, "_annotation")
+                        output[[anno_field]] <- renderUI({
+                            if(is.null(annotFun)) return(NULL)
+                            chosen <- input[[select_field]]
+                            annotFun(se,chosen)
+                        })
                     }
-                } else {
-                    search_col <- search_col[seq_len(ncol(tmp_gene_data))]
-                }
-
-                datatable(tmp_gene_data, filter="top", rownames=TRUE,
-                          options=list(search=list(search=search, smart=FALSE, regex=TRUE, caseInsensitive=FALSE),
-                                       searchCols=c(list(NULL), search_col), # row names are the first column!
-                                       scrollX=TRUE),
-                          selection=list(mode="single", selected=chosen))
-            })
-
-            # Updating memory for new selection parameters (no need for underscore
-            # in 'select_field' definition, as this is already in the '.int' constant).
-            select_field <- paste0(panel_name, .int_rowStatSelected)
-            observe({
-                chosen <- input[[select_field]]
-                if (length(chosen)==0L) {
-                    return(NULL)
-                }
-                pObjects$memory$rowStatTable[id0, .rowStatSelected] <- chosen
-
-                col_kids <- pObjects$table_links[[id0]][["color"]]
-                x_kids <- pObjects$table_links[[id0]][["xaxis"]]
-                y_kids <- pObjects$table_links[[id0]][["yaxis"]]
-
-                # Updating the selectize for the color choice.
-                col_kids <- sprintf("%s_%s", col_kids, .colorByFeatName)
-                for (kid in col_kids) {
-                    updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=feature_choices)
-                }
-
-                # Updating the selectize for the x-/y-axis choices.
-                x_kids <- sprintf("%s_%s", x_kids, .featAssayXAxisFeatName)
-                for (kid in x_kids) {
-                    updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=feature_choices)
-                }
-                y_kids <- sprintf("%s_%s", y_kids, .featAssayYAxisFeatName)
-                for (kid in y_kids) {
-                    updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=feature_choices)
-                }
-
-                # There is a possibility that this would cause triple-rendering as they trigger different observers.
-                # But this would imply that you're plotting/colouring the same gene against itself, which would be stupid.
-            })
-
-            # Updating memory for new selection parameters.
-            search_field <- paste0(panel_name, .int_rowStatSearch)
-            observe({
-                search <- input[[search_field]]
-                if (length(search)) {
-                    pObjects$memory$rowStatTable[id0, .rowStatSearch] <- search
-                }
-            })
-
-            colsearch_field <- paste0(panel_name, .int_rowStatColSearch)
-            observe({
-                search <- input[[colsearch_field]]
-                if (length(search)) {
-                    pObjects$memory$rowStatTable <- .update_list_element(
-                        pObjects$memory$rowStatTable, id0, .rowStatColSearch, search)
-                }
-            })
-
-            # Updating the annotation box.
-            anno_field <- paste0(panel_name, "_annotation")
-            output[[anno_field]] <- renderUI({
-              if(is.null(annotFun)) return()
-              chosen <- input[[select_field]]
-              annotFun(se,chosen)
-
-            })
-
-            # Describing the links between panels.
-            link_field <- paste0(panel_name, "_", .panelLinkInfo)
-            output[[link_field]] <- renderUI({
-                force(rObjects[[link_field]])
-                .define_table_links(panel_name, pObjects$memory, pObjects$table_links)
-            })
-          })
+        
+                    # Describing the links between panels.
+                    link_field <- paste0(panel_name, "_", .panelLinkInfo)
+                    output[[link_field]] <- renderUI({
+                        force(rObjects[[link_field]])
+                        .define_table_links(panel_name, pObjects$memory, pObjects$table_links)
+                    })
+                })
+            }
         }
 
         #######################################################################

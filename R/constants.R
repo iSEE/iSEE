@@ -35,13 +35,15 @@
 # Sample assay plotting parameters. ----
 .sampAssayXAxisNothingTitle <- "None"
 .sampAssayXAxisRowDataTitle <- "Row data"
-.sampAssayXAxisSampleTitle <- "Sample"
+.sampAssayXAxisSampNameTitle <- "Sample name"
 
-.sampAssayYAxis <- "YAxis"
 .sampAssayAssay <- "Assay"
 .sampAssayXAxis <- "XAxis"
 .sampAssayXAxisRowData <- "XAxisRowData"
-.sampAssayXAxisSample <- "XAxisSample"
+.sampAssayXAxisColTable <- "XAxisColTable"
+.sampAssayXAxisSampName <- "XAxisSampName"
+.sampAssayYAxisColTable <- "YAxisColTable"
+.sampAssayYAxisSampName <- "YAxisSampeName"
 
 # Custom plotting parameters. ----
 .customFun <- "Function"

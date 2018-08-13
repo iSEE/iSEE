@@ -716,11 +716,13 @@ sampAssayPlotDefaults <- function(se, number) {
     def_assay <- .set_default_assay(se)
 
     out <- new("DataFrame", nrows=as.integer(number))
-    out[[.sampAssayYAxis]] <- 1L
+    out[[.sampAssayYAxisSampName]] <- 1L
+    out[[.sampAssayYAxisColTable]] <- .noSelection
     out[[.sampAssayAssay]] <- def_assay
     out[[.sampAssayXAxis]] <- .sampAssayXAxisNothingTitle
     out[[.sampAssayXAxisRowData]] <- covariates[1]
-    out[[.sampAssayXAxisSample]] <- ifelse(ncol(se)==1L, 1L, 2L)
+    out[[.sampAssayXAxisSampName]] <- ifelse(ncol(se)==1L, 1L, 2L)
+    out[[.sampAssayXAxisColTable]] <- .noSelection
 
     out <- .add_general_parameters_for_row_plots(out, se)
     if (waszero) out <- out[0,,drop=FALSE]

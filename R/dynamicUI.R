@@ -246,12 +246,14 @@
             if (length(row_covariates)) { # As it is possible for this plot to be _feasible_ but for no row data to exist.
                 xaxis_choices <- c(xaxis_choices, .sampAssayXAxisRowDataTitle)
             }
-            xaxis_choices <- c(xaxis_choices, .sampAssayXAxisSampleTitle)
+            xaxis_choices <- c(xaxis_choices, .sampAssayXAxisSampNameTitle)
 
             plot.param <- list(
-                selectInput(.input_FUN(.sampAssayYAxis),
+                selectInput(.input_FUN(.sampAssayYAxisSampName),
                             label = "Sample of interest (Y-axis):",
-                            choices=sample_names, selected=param_choices[[.sampAssayYAxis]]),
+                            choices=sample_names, selected=param_choices[[.sampAssayYAxisSampName]]),
+                selectInput(.input_FUN(.sampAssayYAxisColTable), label=NULL, choices=tab_by_col,
+                            selected=.choose_link(param_choices[[.sampAssayYAxisColTable]], tab_by_col, force_default=TRUE)),
                 selectInput(.input_FUN(.sampAssayAssay), label=NULL,
                             choices=all_assays, selected=param_choices[[.sampAssayAssay]]),
                 radioButtons(.input_FUN(.sampAssayXAxis), label="X-axis:", inline=TRUE,
@@ -263,9 +265,11 @@
                                                      choices=row_covariates, selected=param_choices[[.sampAssayXAxisRowData]])),
                 .conditional_on_radio(.input_FUN(.sampAssayXAxis),
                                          .sampAssayXAxisSampleTitle,
-                                         selectInput(.input_FUN(.sampAssayXAxisSample),
+                                         selectInput(.input_FUN(.sampAssayXAxisSampName),
                                                      label = "Sample of interest (X-axis):",
-                                                     choices=sample_names, selected=param_choices[[.sampAssayXAxisSample]]))
+                                                     choices=sample_names, selected=param_choices[[.sampAssayXAxisSampName]]),
+                                         selectInput(.input_FUN(.sampAssayXAxisColTable), label=NULL,
+                                                     choices=tab_by_row, selected=param_choices[[.sampAssayXAxisColTable]]))
                 )
         } else if (mode=="heatMapPlot") {
             obj <- plotOutput(panel_name, brush=brush.opts, dblclick=dblclick, height=panel_height)

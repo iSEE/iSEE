@@ -224,12 +224,12 @@
     all_args$heatMapPlot <- .name2index(all_args$heatMapPlot, .heatMapFeatName, colnames(se))
     all_args$heatMapPlot <- .name2index(all_args$heatMapPlot, .heatMapAssay, assayNames(se))
 
-    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot")) {
+    for (mode in col_point_plot_types) {
         all_args[[mode]] <- .name2index(all_args[[mode]], .colorByFeatName, rownames(se))
         all_args[[mode]] <- .name2index(all_args[[mode]], .colorByFeatNameAssay, assayNames(se))
     }
 
-    for (mode in c("rowDataPlot", "sampAssayPlot")) {
+    for (mode in row_point_plot_types) { 
         all_args[[mode]] <- .name2index(all_args[[mode]], .colorByFeatName, rownames(se))
     }
 
@@ -446,7 +446,7 @@ height_limits <- c(400L, 1000L)
     }
 
     # Checking for selecting/linking of custom plots and tables.
-    for (mode in c("customDataPlot", "customStatTable")) {
+    for (mode in custom_panel_types) {
         cur_memory <- memory[[mode]]
         self_active <- rownames(cur_memory)
 

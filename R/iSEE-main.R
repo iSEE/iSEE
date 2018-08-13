@@ -1209,11 +1209,11 @@ iSEE <- function(se,
                         choices0 <- choices
                         plot_name <- paste0(mode0, id0)
     
-                        # Observer for the feature name. 
-                        feat_field <- paste0(plot_name, "_", name_field0)
-                        observeEvent(input[[feat_field]], {
-                            req(input[[feat_field]]) # Required to defend against empty strings before updateSelectizeInput runs upon re-render.
-                            matched_input <- as(input[[feat_field]], typeof(pObjects$memory[[mode0]][[name_field0]]))
+                        # Observer for the feature/sample name. 
+                        name_input <- paste0(plot_name, "_", name_field0)
+                        observeEvent(input[[name_input]], {
+                            req(input[[name_input]]) # Required to defend against empty strings before updateSelectizeInput runs upon re-render.
+                            matched_input <- as(input[[name_input]], typeof(pObjects$memory[[mode0]][[name_field0]]))
                             if (identical(matched_input, pObjects$memory[[mode0]][[name_field0]][id0])) {
                                 return(NULL)
                             }
@@ -1227,8 +1227,8 @@ iSEE <- function(se,
                         observe({
                             replot <- .setup_table_observer(mode0, id0, pObjects, rObjects, input, session,
                                                             by_field = .colorByField, title = color_title0,
-                                                            feat_field = name_field0, tab_field = table_field0,
-                                                            feat_choices = choices0, param='color')
+                                                            select_field = name_field0, tab_field = table_field0,
+                                                            select_choices = choices0, param='color')
                             if (replot) {
                                 rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                             }
@@ -1318,8 +1318,8 @@ iSEE <- function(se,
                     observe({
                         replot <- .setup_table_observer(mode0, id0, pObjects, rObjects, input, session,
                                                         by_field = byx_field0, title = byx_title0,
-                                                        feat_field = x_name_field0, tab_field = x_name_tab0,
-                                                        feat_choices = choices0, param = 'xaxis')
+                                                        select_field = x_name_field0, tab_field = x_name_tab0,
+                                                        select_choices = choices0, param = 'xaxis')
                         if (replot) {
                             .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
                         }
@@ -1342,8 +1342,8 @@ iSEE <- function(se,
                     # Y-axis table observer.
                     observe({
                         replot <- .setup_table_observer(mode0, id0, pObjects, rObjects, input, session,
-                                                        feat_field = y_name_field0, tab_field = y_name_tab0,
-                                                        feat_choices = choices0, param = 'yaxis')
+                                                        select_field = y_name_field0, tab_field = y_name_tab0,
+                                                        select_choices = choices0, param = 'yaxis')
                         if (replot) {
                             .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
                         }
@@ -1565,18 +1565,32 @@ iSEE <- function(se,
             if (mode=="rowStatTable") {
                 current_df <- feature_data
                 current_select_col <- feature_data_select_col 
+                choices <- feature_choices
+                col_field <- .colorByFeatName
+                x_field <- .featAssayXAxisFeatName
+                y_field <- .featAssayYAxisFeatName
             } else {
                 current_df <- sample_data                
                 current_select_col <- sample_data_select_col
+                choices <- sample_choices
+                col_field <- .colorBySampName
+                x_field <- .sampAssayXAxisSampName
+                y_field <- .sampAssayYAxisSampName
             }
                 
             for (id in seq_len(max_plots)) {
                 local({
                     mode0 <- mode
                     id0 <- id
+                    panel_name <- paste0(mode0, id0)
+
                     current_df0 <- current_df
                     current_select_col0 <- current_select_col
-                    panel_name <- paste0(mode0, id0)
+
+                    col_field0 <- col_field
+                    x_field0 <- x_field
+                    y_field0 <- y_field
+                    choices0 <- choices
         
                     output[[panel_name]] <- renderDataTable({
                         force(rObjects$active_panels) # to trigger recreation when the number of plots is changed.
@@ -1621,24 +1635,24 @@ iSEE <- function(se,
                         }
                         pObjects$memory[[mode0]][id0, .statTableSelected] <- chosen
         
-                        col_kids <- pObjects$table_links[[id0]][["color"]]
-                        x_kids <- pObjects$table_links[[id0]][["xaxis"]]
-                        y_kids <- pObjects$table_links[[id0]][["yaxis"]]
+                        col_kids <- pObjects$table_links[[panel_name]][["color"]]
+                        x_kids <- pObjects$table_links[[panel_name]][["xaxis"]]
+                        y_kids <- pObjects$table_links[[panel_name]][["yaxis"]]
         
                         # Updating the selectize for the color choice.
-                        col_kids <- sprintf("%s_%s", col_kids, .colorByFeatName)
+                        col_kids <- sprintf("%s_%s", col_kids, col_field0)
                         for (kid in col_kids) {
-                            updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=feature_choices)
+                            updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=choices0)
                         }
         
                         # Updating the selectize for the x-/y-axis choices.
-                        x_kids <- sprintf("%s_%s", x_kids, .featAssayXAxisFeatName)
+                        x_kids <- sprintf("%s_%s", x_kids, x_field0)
                         for (kid in x_kids) {
-                            updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=feature_choices)
+                            updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=choices0)
                         }
-                        y_kids <- sprintf("%s_%s", y_kids, .featAssayYAxisFeatName)
+                        y_kids <- sprintf("%s_%s", y_kids, y_field0)
                         for (kid in y_kids) {
-                            updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=feature_choices)
+                            updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=choices0)
                         }
         
                         # There is a possibility that this would cause triple-rendering as they trigger different observers.

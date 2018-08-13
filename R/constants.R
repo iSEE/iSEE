@@ -93,6 +93,7 @@
 .colorByColDataTitle <- "Column data"
 .colorByRowDataTitle <- "Row data"
 .colorByFeatNameTitle <- "Feature name"
+.colorBySampNameTitle <- "Sample name"
 
 .colorByField <- "ColorBy"
 .colorByDefaultColor <- "ColorByDefaultColor"
@@ -103,6 +104,11 @@
 .colorByRowTable <- "ColorByRowTable"
 .colorByFeatNameAssay <- "ColorByFeatNameAssay"
 .colorByFeatNameColor <- "ColorByFeatNameColor"
+
+.colorBySampName <- "ColorBySampName"
+.colorByColTable <- "ColorByColTable"
+.colorBySampNameAssay <- "ColorBySampNameAssay"
+.colorBySampNameColor <- "ColorBySampNameColor"
 
 # Point shaping parameters. ----
 

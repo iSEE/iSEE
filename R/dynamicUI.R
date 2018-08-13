@@ -534,6 +534,13 @@
                                     choices=all_assays, selected=param_choices[[.colorByFeatNameAssay]])),
                         selectInput(paste0(mode, id, "_", .colorByRowTable), label = NULL, choices=active_tab,
                                     selected=.choose_link(param_choices[[.colorByRowTable]], active_tab, force_default=TRUE))
+                ),
+            .conditional_on_radio(colorby_field, .colorBySampNameTitle,
+                tagList(selectizeInput(paste0(mode, id, "_", .colorBySampName), label = NULL, selected = NULL, choices = NULL, multiple = FALSE),
+                        selectInput(paste0(mode, id, "_", .colorByColTable), label = NULL, choices=active_tab,
+                                    selected=.choose_link(param_choices[[.colorByColTable]], active_tab, force_default=TRUE)),
+                        colourInput(paste0(mode, id, "_", .colorBySampNameColor), label=NULL,
+                                    value=param_choices[[.colorBySampNameColor]]))
                 )
             ),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceShapeTitle,
@@ -587,6 +594,9 @@
     }
     if (nrow(se) && length(assayNames(se))) {
         color_choices <- c(color_choices, .colorByFeatNameTitle)
+    }
+    if (ncol(se)) {
+        color_choices <- c(color_choices, .colorBySampNameTitle)
     }
     return(color_choices)
 }
@@ -687,6 +697,7 @@
 .create_visual_box_for_row_plots <- function(mode, id, param_choices, active_tab, se) {
     covariates <- colnames(rowData(se))
     discrete_covariates <- .get_internal_info(se, "row_groupable")
+    all_assays <- .get_internal_info(se, "all_assays")
 
     colorby_field <- paste0(mode, id, "_", .colorByField)
     shapeby_field <- paste0(mode, id, "_", .shapeByField)
@@ -718,6 +729,13 @@
                                     selected=.choose_link(param_choices[[.colorByRowTable]], active_tab, force_default=TRUE)),
                         colourInput(paste0(mode, id, "_", .colorByFeatNameColor), label=NULL,
                                     value=param_choices[[.colorByFeatNameColor]]))
+                ),
+            .conditional_on_radio(colorby_field, .colorBySampNameTitle,
+                tagList(selectizeInput(paste0(mode, id, "_", .colorBySampName), label = NULL, choices = NULL, selected = NULL, multiple = FALSE),
+                        selectInput(paste0(mode, id, "_", .colorBySampNameAssay), label=NULL,
+                                    choices=all_assays, selected=param_choices[[.colorBySampNameAssay]])),
+                        selectInput(paste0(mode, id, "_", .colorByColTable), label = NULL, choices=active_tab,
+                                    selected=.choose_link(param_choices[[.colorByColTable]], active_tab, force_default=TRUE))
                 )
             ),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceShapeTitle,
@@ -748,6 +766,9 @@
     }
     if (nrow(se)) {
         color_choices <- c(color_choices, .colorByFeatNameTitle)
+    }
+    if (ncol(se) && length(assayNames(se))) {
+        color_choices <- c(color_choices, .colorBySampNameTitle)
     }
     return(color_choices)
 }

@@ -953,6 +953,9 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.colorByRowTable]] <- .noSelection
     incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameAssay]] <- def_assay
+    incoming[[.colorByColTable]] <- .noSelection
+    incoming[[.colorBySampName]] <- 1L
+    incoming[[.colorBySampNameColor]] <- "red"
 
     incoming[[.facetByRow]] <- FALSE
     incoming[[.facetByColumn]] <- FALSE
@@ -985,6 +988,9 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.colorByRowTable]] <- .noSelection
     incoming[[.colorByFeatName]] <- 1L
     incoming[[.colorByFeatNameColor]] <- "red"
+    incoming[[.colorByColTable]] <- .noSelection
+    incoming[[.colorBySampName]] <- 1L
+    incoming[[.colorBySampNameAssay]] <- 1L
 
     incoming[[.facetByRow]] <- FALSE
     incoming[[.facetByColumn]] <- FALSE

@@ -119,9 +119,10 @@
 
     # Defining all transmitting tables and plots for linking.
     link_sources <- .define_link_sources(active_panels)
-    active_tab <- c(.noSelection, link_sources$tab)
-    row_selectable <- c(.noSelection, link_sources$row)
-    col_selectable <- c(.noSelection, link_sources$col)
+    tab_by_row <- c(.noSelection, link_sources$row_tab)
+    tab_by_col <- c(.noSelection, link_sources$col_tab)
+    row_selectable <- c(.noSelection, link_sources$row_plot)
+    col_selectable <- c(.noSelection, link_sources$col_plot)
     heatmap_sources <- c(.noSelection, link_sources$row, link_sources$tab)
 
     for (i in seq_len(nrow(active_panels))) {
@@ -185,8 +186,8 @@
             plot.param <- list(
                 selectizeInput(.input_FUN(.featAssayYAxisFeatName),
                                label = "Y-axis feature:", choices = NULL, selected = NULL, multiple=FALSE),
-                selectInput(.input_FUN(.featAssayYAxisRowTable), label=NULL, choices=active_tab,
-                            selected=.choose_link(param_choices[[.featAssayYAxisRowTable]], active_tab, force_default=TRUE)),
+                selectInput(.input_FUN(.featAssayYAxisRowTable), label=NULL, choices=tab_by_row,
+                            selected=.choose_link(param_choices[[.featAssayYAxisRowTable]], tab_by_row, force_default=TRUE)),
                 selectInput(.input_FUN(.featAssayAssay), label=NULL,
                             choices=all_assays, selected=param_choices[[.featAssayAssay]]),
                 radioButtons(.input_FUN(.featAssayXAxis), label="X-axis:", inline=TRUE,
@@ -201,10 +202,12 @@
                                          selectizeInput(.input_FUN(.featAssayXAxisFeatName),
                                                         label = "X-axis feature:", choices = NULL, selected = NULL, multiple = FALSE),
                                          selectInput(.input_FUN(.featAssayXAxisRowTable), label=NULL,
-                                                     choices=active_tab, selected=param_choices[[.featAssayXAxisRowTable]]))
+                                                     choices=tab_by_row, selected=param_choices[[.featAssayXAxisRowTable]]))
                 )
         } else if (mode=="rowStatTable") {
             obj <- tagList(dataTableOutput(panel_name), uiOutput(.input_FUN("annotation")))
+        } else if (mode=="colStatTable") {
+            obj <- dataTableOutput(panel_name)
         } else if (mode=="customStatTable" || mode=="customDataPlot") {
             if (mode=="customDataPlot") {
                 obj <- plotOutput(panel_name, height=panel_height)
@@ -354,7 +357,7 @@
 
                 param <- list(tags$div(class = "panel-group", role = "tablist",
                     data_box,
-                    create_FUN(mode, id, param_choices, active_tab, se), # Options for visual parameters.
+                    create_FUN(mode, id, param_choices, tab_by_row, se), # Options for visual parameters.
                     .create_selection_param_box(mode, id, param_choices, select_choices, source_type) # Options for point selection parameters.
                     )
                 )
@@ -417,9 +420,10 @@
 .define_link_sources <- function(active_panels) {
     all_names <- .decode_panel_name(active_panels$Type, active_panels$ID)
     list(
-        tab=all_names[active_panels$Type=="rowStatTable"],
-        row=all_names[active_panels$Type %in% c("rowDataPlot", "sampAssayPlot")],
-        col=all_names[active_panels$Type %in% c("redDimPlot", "colDataPlot", "featAssayPlot")]
+        row_tab=all_names[active_panels$Type=="rowStatTable"],
+        col_tab=all_names[active_panels$Type=="colStatTable"],
+        row_plot=all_names[active_panels$Type %in% row_point_plot_types],
+        col_plot=all_names[active_panels$Type %in% col_point_plot_types]
     )
 }
 

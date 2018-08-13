@@ -464,13 +464,20 @@ height_limits <- c(400L, 1000L)
     }
 
     # Checking for linking of x/y-axes of feature assay plots.
-    feat_active <- rownames(memory$featAssayPlot)
-    for (field in c(.featAssayXAxisRowTable, .featAssayYAxisRowTable)) {
-        bb <- memory$featAssayPlot[,field]
-
-        bad <- !bb %in% active_tab | !feat_active %in% all_active
-        if (any(bad)) {
-            memory$featAssayPlot[,field][bad] <- .noSelection
+    for (mode in c("featAssayPlot", "sampAssayPlot")) {
+        self_active <- rownames(memory$featAssayPlot)
+        if (mode=="featAssayPlot") {
+            fields <- c(.featAssayXAxisRowTable, .featAssayYAxisRowTable) 
+        } else {
+            fields <- c(.sampAssayXAxisColTable, .sampAssayYAxisColTable) 
+        }
+            
+        for (field in fields) {
+            bb <- memory[[mode]][,field]
+            bad <- !bb %in% active_tab | !self_active %in% all_active
+            if (any(bad)) {
+                memory[[mode]][,field][bad] <- .noSelection
+            }
         }
     }
     return(memory)
@@ -530,7 +537,7 @@ height_limits <- c(400L, 1000L)
 #'
 #' @details
 #' Information reception includes the receipt of point selection information from a transmitting plot,
-#' or the receipt of a feature selection information from a row statistics table (for color or x/y-axis specification).
+#' or the receipt of a feature/sample selection information from a row/column statistics table (for color or x/y-axis specification).
 #' Transmission should involve transferring point selection information from \code{panel} to other receiving panels.
 #'
 #' @author Aaron Lun
@@ -552,20 +559,34 @@ height_limits <- c(400L, 1000L)
         output <- c(output, list("Receiving selection from", em(strong(select_in)), br()))
     }
 
+    if (enc$Type %in% col_point_plot_types) {
+        col_tab <- .colorByRowTable
+        col_title <- .colorByFeatNameTitle
+        y_tab <- .featAssayYAxisRowTable
+        x_tab <- .featAssayXAxisRowTable
+        x_type <- .featAssayXAxis
+        x_title <- .featAssayXAxisFeatNameTitle
+    } else {
+        col_tab <- .colorByColTable
+        col_title <- .colorBySampNameTitle
+        y_tab <- .sampAssayYAxisColTable
+        x_tab <- .sampAssayXAxisColTable
+        x_type <- .sampAssayXAxis
+        x_title <- .sampAssayXAxisSampNameTitle
+    }
+    
     # Checking colour status.
-    if (param_choices[[.colorByField]]==.colorByFeatNameTitle
-        && param_choices[[.colorByRowTable]]!=.noSelection) {
-        output <- c(output, list("Receiving color from", em(strong(param_choices[[.colorByRowTable]])), br()))
+    if (param_choices[[.colorByField]]==col_title && param_choices[[col_tab]]!=.noSelection) {
+        output <- c(output, list("Receiving color from", em(strong(param_choices[[col_tab]])), br()))
     }
 
     # Checking input/output for feature assay plots.
-    if (enc$Type=="featAssayPlot") {
-        if (param_choices[[.featAssayYAxisRowTable]]!=.noSelection) {
-            output <- c(output, list("Receiving y-axis from", em(strong(param_choices[[.featAssayYAxisRowTable]])), br()))
+    if (enc$Type %in% c("featAssayPlot", "sampAssayPlot")) {
+        if (param_choices[[y_tab]]!=.noSelection) {
+            output <- c(output, list("Receiving y-axis from", em(strong(param_choices[[y_tab]])), br()))
         }
-        if (param_choices[[.featAssayXAxis]]==.featAssayXAxisFeatNameTitle
-            && param_choices[[.featAssayXAxisRowTable]]!=.noSelection) {
-            output <- c(output, list("Receiving x-axis from", em(strong(param_choices[[.featAssayXAxisRowTable]])), br()))
+        if (param_choices[[x_type]]==x_title && param_choices[[x_tab]]!=.noSelection) {
+            output <- c(output, list("Receiving x-axis from", em(strong(param_choices[[x_tab]])), br()))
         }
     }
 
@@ -592,7 +613,8 @@ height_limits <- c(400L, 1000L)
 #' and a description of all the other panels to which \code{panel} transmits information. 
 #'
 #' @details
-#' Information transmission from a row statistics table involves selection of features for use in color or x/y-axis specification in other plots.
+#' Information transmission from a row statistics table involves selection of features for use in color or x/y-axis specification in column-based plots.
+#' Information transmission from a column statistics table involves selection of samples for use in color or x/y-axis specification in row-based plots.
 #' Information reception is less common and involves the receipt of point selections from a transmitting plot.
 #'
 #' @author Aaron Lun
@@ -613,13 +635,20 @@ height_limits <- c(400L, 1000L)
         output <- c(output, list("Receiving selection from", em(strong(select_in)), br()))
     }
 
+    transmittees <- list(c("yaxis", "y-axis", NA, NA))
+    if (enc$Type=="rowStatTable") {
+        transmittees <- c(transmittees, 
+                list(c("xaxis", "x-axis", .featAssayXAxis, .featAssayXAxisFeatNameTitle),
+                c("color", "color", .colorByField, .colorByFeatNameTitle)))
+    } else {
+        transmittees <- c(transmittees, 
+                list(c("xaxis", "x-axis", .sampAssayXAxis, .sampAssayXAxisSampNameTitle),
+                c("color", "color", .colorByField, .colorBySampNameTitle)))
+    }
+
     # Checking where it broadcasts to plots.
     current <- table_links[[panel]]
-    for (trans in list(c("yaxis", "y-axis", NA, NA),
-                       c("xaxis", "x-axis", .featAssayXAxis, .featAssayXAxisFeatNameTitle),
-                       c("color", "color", .colorByField, .colorByFeatNameTitle))
-        ) {
-
+    for (trans in transmittees) {
         children <- current[[trans[1]]]
         child_enc <- .split_encoded(children)
         child_names <- .decode_panel_name(child_enc$Type, child_enc$ID)
@@ -628,8 +657,8 @@ height_limits <- c(400L, 1000L)
         by_field <- trans[3]
         ref_title <- trans[4]
 
-        # Only writing a broadcast label if the plot actually receives the information via the
-        # appropriate parameter choices. Y-axis for feature plots is NA, as there are no choices there.
+        # Only writing a broadcast label if the plot actually receives the information via the appropriate parameter choices. 
+        # Y-axis for feature/sample assay plots is NA, as there are no choices there, so it always gets listed.
         for (i in seq_along(child_names)) {
             if (is.na(by_field) || memory[[child_enc$Type[i]]][child_enc$ID[i], by_field]==ref_title) {
                 output <- c(output, list(out_str, em(strong(child_names[i])), br()))
@@ -673,7 +702,7 @@ height_limits <- c(400L, 1000L)
 
 #' Define the selected points
 #' 
-#' Evaluate the point selection commands to obtain the selected set of points, usually features.
+#' Evaluate the point selection commands to obtain the selected set of points.
 #'
 #' @param names A character vector containing the names of all points.
 #' @param transmitter String containing the decoded name of the transmitting panel.
@@ -685,7 +714,7 @@ height_limits <- c(400L, 1000L)
 #'
 #' @details
 #' This function obtains the commands to select points from \code{\link{.process_selectby_choice}}, and evaluates them to identify the selected points.
-#' Such a procedure is necessary in \code{\link{iSEE}} to obtain the actual feature names to show to the user in the interface.
+#' Such a procedure is necessary in \code{\link{iSEE}} to obtain the actual feature/sample names to show to the user in the row/column statistics tables. 
 #' 
 #' Some work is required to trick \code{\link{.process_selectby_choice}} into thinking it is operating on the parameters for a point-based receiving panel.
 #' We also set \code{self_source=FALSE} to ensure that the function uses the coordinates in \code{all_coordinates}, and does not try to self-brush from \code{plot.data}

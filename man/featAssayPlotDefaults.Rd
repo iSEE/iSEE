@@ -23,8 +23,8 @@ Parameters available to feature assay plots are:
 \item{\code{YAxisFeatName}:}{Integer, the index of the feature for which to show the expression on the y-axis if \code{YAxis="Feature name"}.
 Defaults to 1, i.e., the first feature in \code{se}.
 Alternatively, a string can be supplied containing the name of the feature, i.e., the row name.}
-\item{\code{YAxisRowTable}:}{Character, what row statistic table should be used to choose a feature to display on the y-axis?
-Any setting will override \code{YAxisFeatName} upon initialization of the app.
+\item{\code{YAxisRowTable}:}{Character, what row statistics table should be used to choose a feature to display on the y-axis?
+Any setting will override \code{YAxisFeatName} with the selected row in the chosen table upon initialization of the app.
 Defaults to \code{"---"}, which means that no table will be used.}
 \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
 Defaults to 1, i.e., the first assay in \code{se}.
@@ -37,7 +37,7 @@ Defaults to the first entry of \code{colData(se)}.}
 Defaults to 1, i.e., the first feature in \code{se}.
 Alternatively, a string can be supplied containing the name of the feature.}
 \item{\code{XAxisRowTable}:}{Character, which row statistic table should be used to choose a feature to put on the x-axis if \code{XAxis="Row table"}?
-Any setting will override \code{XAxisFeatName} upon initialization of the app.
+Any setting will override \code{XAxisFeatName} with the selected row in the chosen table upon initialization of the app.
 Defaults to \code{"---"}, which means that no table will be used.}
 }
 

@@ -20,19 +20,25 @@ Create default settings for sample assay plot panels in the iSEE interface.
 \details{
 Parameters available to sample assay plots are:
 \describe{
-\item{\code{YAxis}:}{Integer, which column of \code{se} should be shown on the y-axis?
+\item{\code{YAxisSampName}:}{Integer, which column of \code{se} should be shown on the y-axis?
 Defaults to 1, i.e., the first column.
 Alternatively, a character field can be supplied containing the name of the column.}
+\item{\code{YAxisColTable}:}{Character, what column statistics table should be used to choose a sample to display on the y-axis?
+Any setting will override \code{YAxisSampName} with the selected row in the chosen table upon initialization of the app.
+Defaults to \code{"---"}, which means that no table will be used.}
 \item{\code{Assay}:}{Integer, which assay should be used to supply the expression values shown on the y-axis?
 Defaults to 1, i.e., the first assay in \code{se}.
 Alternatively, a string can also be supplied containing the name of the assay, if \code{assays(se)} has names.}
 \item{\code{XAxis}:}{Character, what variable should be shown on the x-axis?
-Defaults to \code{"None"}, but can also be \code{"Row data"} or \code{"Sample"}.}
+Defaults to \code{"None"}, but can also be \code{"Row data"} or \code{"Sample name"}.}
 \item{\code{XAxisRowData}:}{Character, which column of \code{rowData(se)} should be shown on the x-axis if \code{XAxis="Row data"}?
 Defaults to the first entry of \code{rowData(se)}.}
-\item{\code{XAxisSample}:}{Integer, which column of \code{se} should be shown on the x-axis?
+\item{\code{XAxisSampName}:}{Integer, which column of \code{se} should be shown on the x-axis?
 Defaults to 2 if \code{se} contains multiple columns, otherwise it is set to 1.
 Alternatively, a character field can be supplied containing the name of the column.}
+\item{\code{XAxisColTable}:}{Character, what column statistics table should be used to choose a sample to display on the x-axis, if \code{XAxis="Sample name"}?
+Any setting will override \code{XAxisSampName} with the selected row in the chosen table upon initialization of the app.
+Defaults to \code{"---"}, which means that no table will be used.}
 }
 
 All row-based parameters described in \code{?"\link{iSEE point parameters}"} are applicable.

@@ -114,7 +114,7 @@ rowData(sce)$mean_log <- rowMeans(logcounts(sce))
 rowData(sce)$var_log <- apply(logcounts(sce), 1, var)
 ```
 
-It is important to note that `iSEE` relies solely^[Except when dealing with `r Biocpkg("iSEE", vignette="custom.html", label="custom panels")`] on precomputed values in the `SummarizedExperiment` object.
+It is important to note that `iSEE` relies solely^[Except when dealing with `r Biocpkg("iSEE", vignette="custom.html", label="custom panels")`.] on precomputed values in the `SummarizedExperiment` object.
 This allows users to visualize any metrics of interest, but also requires them to do so before the initialization of the app.
 
 ```{r, echo=FALSE, results="hide"}
@@ -193,14 +193,9 @@ The width and height of each panel can also be adjusted using <i class="fa fa-ge
 
 ## Body
 
+### Overview of panel types
+
 The main element in the body of `r Biocpkg("iSEE")` is the combination of panels, generated (and optionally linked to one another) according to your actions.
-The number and identity of the panels and their inter-relationships can also be specified at initialization by passing appropriate arguments to `iSEE`.
-The main explanation on how the different plots and tables work is presented in Section \@ref(functionality).
-
-# Description of `r Biocpkg("iSEE")` functionality {#functionality}
-
-## Overview
-
 There are currently six different panel types that can be generated with `r Biocpkg("iSEE")`:
 
 - Reduced dimension plots
@@ -216,7 +211,7 @@ For each plot panel, three different sets of parameters will be available in col
 - *Visual parameters*, to specify parameters that will determine the aspect of the plot, in terms of coloring, point features, and more (e.g. legend placement, font size)
 - *Selection parameters* to control the point selection and link relationships to other plots. 
 
-## Reduced dimension plots
+### Reduced dimension plots
 
 If a `SingleCellExperiment` object is supplied to `iSEE`, any reduced dimension results are extracted from the `reducedDim` slot.
 Examples include low-dimensional embeddings from principal components analysis (PCA) or _t_-distributed stochastic neighbour embedding (_t_-SNE) [@van2008visualizing].
@@ -224,7 +219,7 @@ These results are used to construct two-dimensional *reduced dimension plots* wh
 The *Data parameters* control the `reducedDim` slot to be displayed, as well as the two dimensions to plot against each other. 
 Note that `iSEE` does not computed reduced dimension embeddings; they must be precomputed and available in the object to the `iSEE` function.
 
-## Column data plots {#coldataplot}
+### Column data plots {#coldataplot}
 
 A *column data plot* involves visualizing sample metadata stored in the `SummarizedExperiment` object.
 Different fields can be used for the X and Y axes by selecting appropriate values in the plotting parameters.
@@ -237,7 +232,7 @@ This plot can assume various forms, depending on the nature of the data on the x
 
 An X axis setting of "None" is considered to be categorical with a single level.
 
-## Feature assay plots
+### Feature assay plots
 
 A *feature assay plot* visualizes the assayed values (e.g., gene expression) for a particular feature (e.g., gene) across the samples on the y-axis.
 This usually results in a (grouped) violin plot, if the X axis is set to `"None"` or a categorical variable; or a scatter plot, if the X axis is another continuous variable^[That said, if there are categorical values for the assayed values, these will be handled as described in the column data plots.].
@@ -252,12 +247,12 @@ The measurement units are selected as one of the `assays(se)`, which is applied 
 Obviously, any other assayed value for any feature can be visualized in this manner, not limited to the expression of genes.
 The only requirement for this type of panel is that the observations can be stored as a matrix in the `SummarizedExperiment` object.
 
-## Row data plots
+### Row data plots
 
 A *row data plot* allows the visualization of information stored in the `rowData` slot of a `SummarizedExperiment` object. 
 Its behavior mirrors the implementation for the *column data plot*, and correspondingly this plot can assume various forms depending on whether the data are categorical or continuous.
 
-## Sample assay plots
+### Sample assay plots
 
 A *sample assay plot* visualizes the assayed values (e.g., gene expression) for a particular sample (e.g., cell) across the features on the Y axis.
 
@@ -269,7 +264,7 @@ Notably, the X axis covariate can also be set to:
 - a continuous row data covariate (e.g. count of cells expressing each gene)
 - another sample, to visualize and compare the assayed values in any two samples.
 
-## Row statistics tables
+### Row statistics tables
 
 A *row statistics table* contains the values of the `rowData` slot for the `SingleCellExperiment`/`SummarizedExperiment` object. 
 If none are available, a column named `Present` is added and set to `TRUE` for all available genes, to avoid issues with `DT::datatable` and an empty `DataFrame`.
@@ -277,7 +272,7 @@ Typically, these tables are used to link to other plots to determine the genes t
 However, they can also be used to retrieve gene-specific annotation on the fly by specifying the `annotFun` parameter, e.g. using the `annotateEntrez` or `annotateEnsembl` functions, provided in `r Biocpkg("iSEE")`. 
 Alternatively, users can create a customized annotation function; for more details on this, please consult the manual pages `?annotateEntrez` and `?annotateEnsembl`.
 
-## Heat maps
+### Heat maps
 
 Heat maps provide a compact overview of the data for multiple features in the form of color-coded matrices.
 These correspond to the `assays` stored in the `SummarizedExperiment` object, where features (e.g., genes) are the rows and samples are the columns.
@@ -287,6 +282,8 @@ The 'Suggest feature order' button clusters the rows, and also rearranges the el
 It is also possible to choose which assay type is displayed (log-counts being the default choice, if available). 
 The heat map can also be annotated, simply by selecting relevant column data.
 A zooming functionality is also available, restricted to the Y axis (i.e., allowing closer inspection on the individual features included).
+
+# Description of iSEE functionality
 
 ## Coloring plots by sample attributes 
 

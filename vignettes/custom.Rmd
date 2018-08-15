@@ -155,7 +155,7 @@ It is the responsibility of the custom function to perform any necessary type ch
 
 ## Example use
 
-Using the `sce` object that we generated in the first vignette, we will add some fields for examining the mean-variance relationship across features:
+Using the `sce` object that we generated `r Biocpkg("iSEE", vignette="basic.html", label="earlier")`, we will add some fields for examining the mean-variance relationship across features:
 
 ```{r mean_log-var_log}
 rowData(sce)$mean_log <- rowMeans(logcounts(sce))

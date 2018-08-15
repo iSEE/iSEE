@@ -70,7 +70,7 @@ Almost every aspect of the initial app state can be customized, down to whether 
 
 To demonstrate this feature, let's assume that we are only interested in _feature assay plot_ panels.
 The default set of panels can be changed via the `initialPanels` argument of the `iSEE` function call.
-Given a `SingleCellExperiment` or `SummarizedExperiment` object named `sce`, the following code opens an app with two adjacent feature assay plots.
+Given a `SingleCellExperiment` or `SummarizedExperiment` object named `sce`^[We'll re-use the example from the `r Biocpkg("iSEE", vignette="basic.html", label="previous workflow")`.], the following code opens an app with two adjacent feature assay plots.
 Note that each panel is set to occupy half the width of the application window, which is set to 12 units by the `r CRANpkg("shiny")` package.
 
 ```{r init}

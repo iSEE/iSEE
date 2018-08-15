@@ -130,7 +130,7 @@ At runtime, this allows the app to remember the last selected variable of each t
 For instance, the `XAxis` column of _feature assay plot_ arguments can have up to four different values:
 
 1. `"None"`: does not require any addition input (draws a single violin for all features)
-2. `"Column data"`: requires `"XAxisColData"` to be set to a column name in the `colData(sce)`
+2. `"Column data"`: requires `XAxisColData` to be set to a column name in the `colData(sce)`
 3. `"Feature name"`: requires either
     a. `XAxisFeatName` to be set to a feature name (or positional index) in `rownames(sce)`
     b. `XAxisRowTable` to be set to the name of a _Row statistics table_ panel with an active selection set in its own `Selected` column
@@ -152,10 +152,9 @@ fexArg[2, "XAxisColData"] <- "Core.Type"
 fexArg[3, "XAxis"] <- "Feature name"
 fexArg[3, "XAxisFeatName"] <- "Zyx"
 
-# Example 3b
+# Example 3b (also requires a row statistic table)
 fexArg[4, "XAxis"] <- "Feature name"
 fexArg[4, "XAxisRowTable"] <- "Row statistics table 1"
-# Example 4 also requires a row statistic table
 rowData(sce)[, "gene_id"] <- rownames(sce)
 rsArg <- rowStatTableDefaults(sce, 1)
 rsArg$Selected <- "Ints2"
@@ -386,7 +385,7 @@ app <- iSEE(sce, initialPanels = init, featAssayArgs = fexArg)
 ```
 
 Alternatively, users may refer to assays, features, and samples by their character name, if any.
-However, we warn users against mixing character and integer values, as this will cause integer values to be converted to the character type.
+However, users are advised against mixing character and integer values, as this will cause integer values to be converted to the character type.
 
 For instance, the example below will fail to find an assay called `"6"` for the first panel, and it will instead fall back to using the first assay (`"tophat_counts`):
 

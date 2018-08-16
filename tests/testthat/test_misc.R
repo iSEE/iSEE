@@ -100,22 +100,24 @@ test_that("memory setup works correctly", {
 
     # Works correctly in the vanilla setting.
     memory <- iSEE:::.setup_memory(
-        sce,
+        se=sce,
         redDimArgs=NULL,
         colDataArgs=NULL,
         featAssayArgs=NULL,
         rowStatArgs=NULL,
         rowDataArgs=NULL,
         sampAssayArgs=NULL,
-        heatMapArgs=NULL,
+        colStatArgs=NULL,
         customDataArgs=NULL,
         customStatArgs=NULL,
+        heatMapArgs=NULL,
         redDimMax=5,
         colDataMax=3,
         featAssayMax=1,
         rowStatMax=2,
         rowDataMax=3,
         sampAssayMax=1,
+        colStatMax=2,
         customDataMax=2,
         customStatMax=3,
         heatMapMax=2)
@@ -125,50 +127,55 @@ test_that("memory setup works correctly", {
     expect_identical(nrow(memory$rowStatTable), 2L)
     expect_identical(nrow(memory$rowDataPlot), 3L)
     expect_identical(nrow(memory$sampAssayPlot), 1L)
-    expect_identical(nrow(memory$heatMapPlot), 2L)
+    expect_identical(nrow(memory$colStatTable), 2L)
     expect_identical(nrow(memory$customDataPlot), 2L)
     expect_identical(nrow(memory$customStatTable), 3L)
+    expect_identical(nrow(memory$heatMapPlot), 2L)
 
     # Works correctly when arguments are specified.
     memory <- iSEE:::.setup_memory(
-        sce,
+        se=sce,
         redDimArgs=DataFrame(Type=2L),
         colDataArgs=DataFrame(XAxis="Column data"),
         featAssayArgs=DataFrame(XAxis="Row table"),
         rowStatArgs=DataFrame(Selected=10L),
         rowDataArgs=DataFrame(XAxis="Row data"),
-        sampAssayArgs=DataFrame(YAxis=3L),
-        heatMapArgs=DataFrame(Assay=1L),
+        sampAssayArgs=DataFrame(YAxisSampeName=3L),
+        colStatArgs=DataFrame(Selected=5L),
         customDataArgs=DataFrame(Function="PCA2"),
         customStatArgs=DataFrame(Function="DE"),
-        redDimMax=5,
-        colDataMax=3,
-        featAssayMax=1,
-        rowStatMax=2,
-        rowDataMax=3,
-        sampAssayMax=1,
-        heatMapMax=2,
+        heatMapArgs=DataFrame(Assay=1L),
+        redDimMax=5L,
+        colDataMax=3L,
+        featAssayMax=1L,
+        rowStatMax=2L,
+        rowDataMax=3L,
+        sampAssayMax=1L,
+        colStatMax=2L,
         customDataMax=2L,
-        customStatMax=3L)
+        customStatMax=3L,
+        heatMapMax=2L)
     expect_identical(nrow(memory$redDimPlot), 5L)
     expect_identical(nrow(memory$colDataPlot), 3L)
     expect_identical(nrow(memory$featAssayPlot), 1L)
     expect_identical(nrow(memory$rowStatTable), 2L)
     expect_identical(nrow(memory$rowDataPlot), 3L)
     expect_identical(nrow(memory$sampAssayPlot), 1L)
-    expect_identical(nrow(memory$heatMapPlot), 2L)
+    expect_identical(nrow(memory$colStatTable), 2L)
     expect_identical(nrow(memory$customDataPlot), 2L)
     expect_identical(nrow(memory$customStatTable), 3L)
+    expect_identical(nrow(memory$heatMapPlot), 2L)
 
-    expect_identical(memory$redDimPlot$Type, rep(2:1, c(1,4))) # Checking arguments were actually replaced.
-    expect_identical(memory$colDataPlot$XAxis, rep(c("Column data", "None"), c(1,2)))
+    expect_identical(memory$redDimPlot$Type, rep(2:1, c(1, 4))) # Checking arguments were actually replaced.
+    expect_identical(memory$colDataPlot$XAxis, rep(c("Column data", "None"), c(1, 2)))
     expect_identical(memory$featAssayPlot$XAxis, "Row table")
     expect_identical(memory$rowStatTable$Selected, c(10L, 1L))
-    expect_identical(memory$rowDataPlot$XAxis, rep(c("Row data", "None"), c(1,2)))
-    expect_identical(memory$sampAssayPlot$YAxis, 3L)
-    expect_identical(memory$heatMapPlot$Assay, c(1L, 6L))
+    expect_identical(memory$rowDataPlot$XAxis, rep(c("Row data", "None"), c(1, 2)))
+    expect_identical(memory$sampAssayPlot$YAxisSampeName, 3L)
+    expect_identical(memory$colStatTable$Selected, c(5L, 1L))
     expect_identical(memory$customDataPlot$Function, c("PCA2", "---"))
     expect_identical(memory$customStatTable$Function, c("DE", "---", "---"))
+    expect_identical(memory$heatMapPlot$Assay, c(1L, 6L))
 
     # Works correctly when the number of arguments is greater than max.
     memory <- iSEE:::.setup_memory(
@@ -178,33 +185,36 @@ test_that("memory setup works correctly", {
         featAssayArgs=DataFrame(XAxis="Row table"),
         rowStatArgs=DataFrame(Selected=10L),
         rowDataArgs=DataFrame(XAxis="Row data"),
-        sampAssayArgs=DataFrame(YAxis=3L),
-        heatMapArgs=DataFrame(Assay=1L),
+        sampAssayArgs=DataFrame(YAxisSampeName=3L),
+        colStatArgs=DataFrame(Selected=5L),
         customDataArgs=DataFrame(Function="PCA2"),
         customStatArgs=DataFrame(Function="DE"),
+        heatMapArgs=DataFrame(Assay=1L),
         redDimMax=0,
         colDataMax=0,
         featAssayMax=0,
         rowStatMax=0,
         rowDataMax=0,
         sampAssayMax=0,
-        heatMapMax=0,
+        colStatMax=0,
         customDataMax=0,
-        customStatMax=0)
+        customStatMax=0,
+        heatMapMax=0)
     expect_identical(nrow(memory$redDimPlot), 1L)
     expect_identical(nrow(memory$colDataPlot), 1L)
     expect_identical(nrow(memory$featAssayPlot), 1L)
     expect_identical(nrow(memory$sampAssayPlot), 1L)
     expect_identical(nrow(memory$rowStatTable), 1L)
     expect_identical(nrow(memory$rowDataPlot), 1L)
-    expect_identical(nrow(memory$heatMapPlot), 1L)
+    expect_identical(nrow(memory$colStatTable), 1L)
     expect_identical(nrow(memory$customDataPlot), 1L)
     expect_identical(nrow(memory$customStatTable), 1L)
+    expect_identical(nrow(memory$heatMapPlot), 1L)
 
     expect_identical(memory$redDimPlot$Type, 2L) # Checking arguments were actually replaced.
     expect_identical(memory$colDataPlot$XAxis, "Column data")
     expect_identical(memory$featAssayPlot$XAxis, "Row table")
-    expect_identical(memory$sampAssayPlot$YAxis, 3L)
+    expect_identical(memory$sampAssayPlot$YAxisSampeName, 3L)
     expect_identical(memory$rowStatTable$Selected, 10L)
     expect_identical(memory$rowDataPlot$XAxis, "Row data")
     expect_identical(memory$heatMapPlot$Assay, 1L)
@@ -222,34 +232,37 @@ test_that("memory setup works correctly", {
     SingleCellExperiment:::int_metadata(sce) <- list()
 
     memory <- iSEE:::.setup_memory(
-        sceX,
+        se=sceX,
         redDimArgs=NULL,
         colDataArgs=NULL,
         featAssayArgs=NULL,
         rowStatArgs=NULL,
         rowDataArgs=NULL,
         sampAssayArgs=NULL,
-        heatMapArgs=NULL,
+        colStatArgs=NULL,
         customDataArgs=NULL,
         customStatArgs=NULL,
+        heatMapArgs=NULL,
         redDimMax=5,
         colDataMax=3,
         featAssayMax=1,
         sampAssayMax=1,
         rowStatMax=2,
         rowDataMax=3,
-        heatMapMax=2,
+        colStatMax=2,
         customDataMax=2,
-        customStatMax=3)
+        customStatMax=3,
+        heatMapMax=2)
     expect_identical(nrow(memory$redDimPlot), 0L)
     expect_identical(nrow(memory$colDataPlot), 0L)
     expect_identical(nrow(memory$featAssayPlot), 0L)
     expect_identical(nrow(memory$sampAssayPlot), 0L)
     expect_identical(nrow(memory$rowStatTable), 0L)
     expect_identical(nrow(memory$rowDataPlot), 0L)
-    expect_identical(nrow(memory$heatMapPlot), 0L)
+    expect_identical(nrow(memory$colStatTable), 0L)
     expect_identical(nrow(memory$customDataPlot), 0L)
     expect_identical(nrow(memory$customStatTable), 0L)
+    expect_identical(nrow(memory$heatMapPlot), 0L)
 })
 
 test_that("name to index coercion works correctly", {

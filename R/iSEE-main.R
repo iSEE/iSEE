@@ -10,6 +10,7 @@
 #' @param rowStatArgs A DataFrame similar to that produced by \code{\link{rowStatTableDefaults}}, specifying initial parameters for the row statistics tables.
 #' @param rowDataArgs A DataFrame similar to that produced by \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the row data plots.
 #' @param sampAssayArgs A DataFrame similar to that produced by \code{\link{sampAssayPlotDefaults}}, specifying initial parameters for the sample assay plots.
+#' @param colStatArgs A DataFrame similar to that produced by \code{\link{colStatTableDefaults}}, specifying initial parameters for the sample assay plots.
 #' @param customDataArgs A DataFrame similar to that produced by \code{\link{customDataPlotDefaults}}, specifying initial parameters for the custom data plots.
 #' @param customStatArgs A DataFrame similar to that produced by \code{\link{customStatTableDefaults}}, specifying initial parameters for the custom statistics tables.
 #' @param heatMapArgs A DataFrame similar to that produced by \code{\link{heatMapPlotDefaults}}, specifying initial parameters for the heatmaps.
@@ -19,6 +20,7 @@
 #' @param rowStatMax An integer scalar specifying the maximum number of row statistics tables in the interface.
 #' @param rowDataMax An integer scalar specifying the maximum number of row data plots in the interface.
 #' @param sampAssayMax An integer scalar specifying the maximum number of sample assay plots in the interface.
+#' @param colStatMax An integer scalar specifying the maximum number of column statistics tables in the interface.
 #' @param customDataMax An integer scalar specifying the maximum number of custom data plots in the interface.
 #' @param customStatMax An integer scalar specifying the maximum number of custom statistics tables in the interface.
 #' @param heatMapMax An integer scalar specifying the maximum number of heatmaps in the interface.
@@ -1032,7 +1034,7 @@ iSEE <- function(se,
         sample_choices <- seq_len(ncol(se))
         names(sample_choices) <- colnames(se)
 
-        # Selectize updates for features. 
+        # Selectize updates for features.
         for (mode in c(point_plot_types, "heatMapPlot")) {
             if (mode=="featAssayPlot") {
                 fields <- c(.featAssayYAxisFeatName, .featAssayXAxisFeatName, .colorByFeatName)
@@ -1061,7 +1063,7 @@ iSEE <- function(se,
             }
         }
 
-        # Selectize updates for samples. 
+        # Selectize updates for samples.
         for (mode in point_plot_types) {
             if (mode=="sampAssayPlot") {
                 fields <- c(.sampAssayYAxisSampName, .sampAssayXAxisSampName, .colorBySampName)
@@ -1208,8 +1210,8 @@ iSEE <- function(se,
                         table_field0 <- table_field
                         choices0 <- choices
                         plot_name <- paste0(mode0, id0)
-    
-                        # Observer for the feature/sample name. 
+
+                        # Observer for the feature/sample name.
                         name_input <- paste0(plot_name, "_", name_field0)
                         observeEvent(input[[name_input]], {
                             req(input[[name_input]]) # Required to defend against empty strings before updateSelectizeInput runs upon re-render.
@@ -1222,7 +1224,7 @@ iSEE <- function(se,
                                 rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                             }
                         }, ignoreInit=TRUE)
-    
+
                         # Observers for the linked color by feature name. This also updates the table_links information.
                         observe({
                             replot <- .setup_table_observer(mode0, id0, pObjects, rObjects, input, session,
@@ -1305,7 +1307,7 @@ iSEE <- function(se,
                     id0 <- id
                     mode0 <- mode
                     plot_name <- paste0(mode0, id0)
-         
+
                     byx_field0 <- byx_field
                     byx_title0 <- byx_title
                     x_name_field0 <- x_name_field
@@ -1313,7 +1315,7 @@ iSEE <- function(se,
                     y_name_field0 <- y_name_field
                     y_name_tab0 <- y_name_tab
                     choices0 <- choices
-    
+
                     # X-axis table observer.
                     observe({
                         replot <- .setup_table_observer(mode0, id0, pObjects, rObjects, input, session,
@@ -1324,7 +1326,7 @@ iSEE <- function(se,
                             .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
                         }
                     })
-    
+
                     # X-axis feature name observer (see the explanation above for the colorByFeatName observer).
                     x_field <- paste0(plot_name, "_", x_name_field0)
                     observeEvent(input[[x_field]], {
@@ -1338,7 +1340,7 @@ iSEE <- function(se,
                             .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
                         }
                     }, ignoreInit=TRUE)
- 
+
                     # Y-axis table observer.
                     observe({
                         replot <- .setup_table_observer(mode0, id0, pObjects, rObjects, input, session,
@@ -1348,7 +1350,7 @@ iSEE <- function(se,
                             .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
                         }
                     })
-     
+
                     # Y-axis feature name observer. Unlike the X-axis observer, there is no choice for the Y-Axis,
                     # i.e., the feature name is always being used for plotting.
                     y_field <- paste0(plot_name, "_", y_name_field0)
@@ -1564,20 +1566,20 @@ iSEE <- function(se,
             max_plots <- nrow(pObjects$memory[[mode]])
             if (mode=="rowStatTable") {
                 current_df <- feature_data
-                current_select_col <- feature_data_select_col 
+                current_select_col <- feature_data_select_col
                 choices <- feature_choices
                 col_field <- .colorByFeatName
                 x_field <- .featAssayXAxisFeatName
                 y_field <- .featAssayYAxisFeatName
             } else {
-                current_df <- sample_data                
+                current_df <- sample_data
                 current_select_col <- sample_data_select_col
                 choices <- sample_choices
                 col_field <- .colorBySampName
                 x_field <- .sampAssayXAxisSampName
                 y_field <- .sampAssayYAxisSampName
             }
-                
+
             for (id in seq_len(max_plots)) {
                 local({
                     mode0 <- mode
@@ -1591,11 +1593,11 @@ iSEE <- function(se,
                     x_field0 <- x_field
                     y_field0 <- y_field
                     choices0 <- choices
-        
+
                     output[[panel_name]] <- renderDataTable({
                         force(rObjects$active_panels) # to trigger recreation when the number of plots is changed.
                         force(rObjects[[panel_name]])
-       
+
                         param_choices <- pObjects$memory[[mode0]][id0,]
                         chosen <- param_choices[[.statTableSelected]]
                         search <- param_choices[[.statTableSearch]]
@@ -1617,14 +1619,14 @@ iSEE <- function(se,
                         } else {
                             search_col <- search_col[seq_len(ncol(tmp_df))]
                         }
-        
+
                         datatable(tmp_df, filter="top", rownames=TRUE,
                                   options=list(search=list(search=search, smart=FALSE, regex=TRUE, caseInsensitive=FALSE),
                                                searchCols=c(list(NULL), search_col), # row names are the first column!
                                                scrollX=TRUE),
                                   selection=list(mode="single", selected=chosen))
                     })
-       
+
                     # Updating memory for new selection parameters (no need for underscore
                     # in 'select_field' definition, as this is already in the '.int' constant).
                     select_field <- paste0(panel_name, .int_statTableSelected)
@@ -1634,17 +1636,17 @@ iSEE <- function(se,
                             return(NULL)
                         }
                         pObjects$memory[[mode0]][id0, .statTableSelected] <- chosen
-        
+
                         col_kids <- pObjects$table_links[[panel_name]][["color"]]
                         x_kids <- pObjects$table_links[[panel_name]][["xaxis"]]
                         y_kids <- pObjects$table_links[[panel_name]][["yaxis"]]
-        
+
                         # Updating the selectize for the color choice.
                         col_kids <- sprintf("%s_%s", col_kids, col_field0)
                         for (kid in col_kids) {
                             updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=choices0)
                         }
-        
+
                         # Updating the selectize for the x-/y-axis choices.
                         x_kids <- sprintf("%s_%s", x_kids, x_field0)
                         for (kid in x_kids) {
@@ -1654,11 +1656,11 @@ iSEE <- function(se,
                         for (kid in y_kids) {
                             updateSelectizeInput(session, kid, label=NULL, server=TRUE, selected=chosen, choices=choices0)
                         }
-        
+
                         # There is a possibility that this would cause triple-rendering as they trigger different observers.
                         # But this would imply that you're plotting/colouring the same gene against itself, which would be stupid.
                     })
-        
+
                     # Updating memory for new selection parameters.
                     search_field <- paste0(panel_name, .int_statTableSearch)
                     observe({
@@ -1667,7 +1669,7 @@ iSEE <- function(se,
                             pObjects$memory[[mode0]][id0, .statTableSearch] <- search
                         }
                     })
-        
+
                     colsearch_field <- paste0(panel_name, .int_statTableColSearch)
                     observe({
                         search <- input[[colsearch_field]]
@@ -1677,7 +1679,7 @@ iSEE <- function(se,
                     })
 
                     # Updating the annotation box.
-                    if (mode0=="rowStatTable") { 
+                    if (mode0=="rowStatTable") {
                         anno_field <- paste0(panel_name, "_annotation")
                         output[[anno_field]] <- renderUI({
                             if(is.null(annotFun)) return(NULL)
@@ -1685,7 +1687,7 @@ iSEE <- function(se,
                             annotFun(se,chosen)
                         })
                     }
-        
+
                     # Describing the links between panels.
                     link_field <- paste0(panel_name, "_", .panelLinkInfo)
                     output[[link_field]] <- renderUI({

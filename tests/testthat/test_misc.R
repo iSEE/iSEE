@@ -307,25 +307,27 @@ test_that("initialization of active panels works correctly", {
     sce <- iSEE:::.precompute_UI_info(sce, list(PCA2="WHEE"), list(DE="WHOO")) # Adding custom functions for .setup_memory to check.
 
     memory <- iSEE:::.setup_memory(
-        sce,
+        se=sce,
         redDimArgs=NULL,
         colDataArgs=NULL,
-        featAssayArgs=NULL,
         rowStatArgs=NULL,
         rowDataArgs=NULL,
+        featAssayArgs=NULL,
         sampAssayArgs=NULL,
+        colStatArgs=NULL,
         customDataArgs=NULL,
         customStatArgs=NULL,
         heatMapArgs=NULL,
-        redDimMax=5,
-        colDataMax=3,
-        featAssayMax=1,
-        rowStatMax=2,
-        rowDataMax=3,
-        sampAssayMax=1,
+        redDimMax=5L,
+        colDataMax=3L,
+        rowStatMax=2L,
+        rowDataMax=3L,
+        featAssayMax=1L,
+        sampAssayMax=1L,
+        colStatMax=2L,
         customDataMax=2L,
         customStatMax=3L,
-        heatMapMax=2)
+        heatMapMax=2L)
     out <- iSEE:::.setup_initial(NULL, memory)
     expect_identical(out$ID, rep(1L, nrow(out)))
     expect_identical(out$Type, unname(iSEE:::rev.translation))
@@ -363,25 +365,27 @@ test_that("sanitation of memory works correctly", {
     sce <- iSEE:::.precompute_UI_info(sce, NULL, NULL)
 
     memory <- iSEE:::.setup_memory(
-        sce,
+        se=sce,
         redDimArgs=NULL,
         colDataArgs=NULL,
         featAssayArgs=NULL,
-        sampAssayArgs=NULL,
         rowStatArgs=NULL,
         rowDataArgs=NULL,
-        heatMapArgs=NULL,
+        sampAssayArgs=NULL,
+        colStatArgs=NULL,
         customDataArgs=NULL,
         customStatArgs=NULL,
-        redDimMax=5,
-        colDataMax=3,
-        featAssayMax=2,
-        sampAssayMax=2,
-        rowStatMax=2,
-        rowDataMax=3,
-        heatMapMax=2,
-        customDataMax=2,
-        customStatMax=3
+        heatMapArgs=NULL,
+        redDimMax=5L,
+        colDataMax=3L,
+        featAssayMax=2L,
+        rowStatMax=2L,
+        rowDataMax=3L,
+        sampAssayMax=2L,
+        colStatMax=2L,
+        customDataMax=2L,
+        customStatMax=3L,
+        heatMapMax=2L
         )
     init_panels <- iSEE:::.setup_initial(NULL, memory)
 

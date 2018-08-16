@@ -228,6 +228,7 @@ This plot can assume various forms, depending on the nature of the data on the x
 - If the Y axis is continuous and the X axis is categorical, violin plots are generated (grouped by the X axis factor).
 - If the Y axis is categorical and the X axis is continuous, horizontal violin plots are generated (grouped by the Y axis factor).
 - If both are continuous, a scatter plot is generated.
+This enables the use of contours that are overlaid on top of the plot, check the `"Other"` box to see the available options.
 - If both are categorical, a plot of squares is generated where the area of each square is proportional to the number of samples within each combination of factor levels.
 
 An X axis setting of "None" is considered to be categorical with a single level.
@@ -287,24 +288,68 @@ A zooming functionality is also available, restricted to the Y axis (i.e., allow
 
 ## Coloring plots by sample attributes 
 
-Coloring of points (i.e., samples) on each plot can be achieved in different ways.
+Column-based plots are the reduced dimension, feature assay and column data plots, where each point represents a sample.
+Here, points can be colored in different ways:
 
 - The default is no color scheme (`"None"` in the radio button). 
-This results in black data points.
+This results in data points of a constant user-specified color.
 - Any column of `colData(se)` can be used. 
 The plot automatically adjusts the scale to use based on whether the chosen column is continuous or categorical.
 - The assay values of a particular feature in each sample can be used. 
-The feature can be chosen either via a linked row table or text input (as described for *feature assay plots*).
+The feature can be chosen either via a linked row table or selectize input (as described for *feature assay plots*).
 Users can also specify the `assays` from which values are extracted.
+- The identity of a particular sample can be used, which will be highlighted on the plot in a user-specified color.
+The sample can be chosen either via a linked column table or via a selectize input.
+
+For row-based plots (i.e., the sample assay and row data plots), each point represents a feature.
+Like the column-based plots, points can be colored by:
+
+- `"None"`, yielding data points of fixed color.
+- Any column of `rowData(se)`.
+- The identity of a particular _feature_, which is highlighted in the user-specified color.
+- Assay values for a particular _sample_.
+
+Fine control of the color maps is possible through the `ExperimentColorMap` class, see `r Biocpkg("iSEE", vignette="ecm.html", label="this vignette")` for more details.
+
+## Controlling point aesthetics 
+
+Points can be set to different shapes according to categorical factors in `colData(se)` (for column-based plots) or `rowData(se)` (for row-based plots).
+This is achieved by checking the `"Shape"` box to modify the shape-setting options.
+The size and opacity of the points can be modified via the options available by checking the `"Points"` box.
+This may be useful for aesthetically pleasing visualizations when the number of points is very large or small.
+
+It is also possible to downsample points to reduce the time required to generate the plot, via the `"Downsample points for speed"` checkbox.
+This uses density-dependent downsampling whereby only the last point for an overlapping set of points is shown.
+In this manner, we avoid wasting time in plotting many points that would not be visible anyway.
+Note that this is only effective when the point size is large and the opacity is set to unity.
+
+## Faceting 
+
+Each point-based plot can be split into multiple facets using the options in the `"Facets"` checkbox.
+Users can facet by row and/or column, using categorical factors in `colData(se)` (for column-based plots) or `rowData(se)` (for row-based plots). 
+This provides a convenient way to stratify points in a single plot by multiple factors of interest.
+Note that data point selection can only occur _within_ each facet, points cannot be selected across facets.
 
 ## Selecting data points and linking panels {#select-and-link}
 
-To link one plot to another, users can instruct a plotting panel to receive a selection of data points from another (transmitting) plot, using the appropriate field in the selection parameters box.
+To link one plot to another, users can instruct a plotting panel to receive a selection of data points from another (transmitting) plot.
+This is done using the appropriate field in the "Selection parameters" box.
 Once this is done, data point selection on the transmitting plot affects the receiving plot in a variety of ways:
 
 - If the point selection effect is set to `"Restrict"`, only the subset of points selected in the transmitter are visible in the receiver.
 - If set to `"Color"`, the selected subset of points is plotted in the receiver with a user-selected color.
 - If set to `"Transparent"`, the selected subset will be drawn with no transparency, while all non-selected points will be plotted with the specified alpha value.
+
+It is possible to set up a tree of panels that transmit selections to each other, much like the gating structures used in flow cytometry.
+This requires all panels acting as both receivers and transmitters to have their effects set to `"Restrict"` - see `r Biocpkg("iSEE", vignette="xtreme.html#exploring-mass-cytometry-date", label="here")` for an example with mass cytometry data.
+
+While we have focused on receiving point selections for plots, it is also possible to transmit from plots to tables.
+This will subset the table so that only the rows corresponding to selected points are visible.
+Obviously, this means that users should only transmit from row-based plots to row statistics tables, and from column-based plots to column statistics tables.
+
+Custom data panels can receive point selections from both row- and column-based plots, see `r Biocpkg("iSEE", vignette="custom.html", label="here")` for more details.
+
+Note that some points are strictly "end-point" panels and cannot transmit - this includes heat maps, tables and custom data plots.
 
 ## Zooming in and out
 

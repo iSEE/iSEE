@@ -341,7 +341,7 @@ Once this is done, data point selection on the transmitting plot affects the rec
 - If set to `"Transparent"`, the selected subset will be drawn with no transparency, while all non-selected points will be plotted with the specified alpha value.
 
 It is possible to set up a tree of panels that transmit selections to each other, much like the gating structures used in flow cytometry.
-This requires all panels acting as both receivers and transmitters to have their effects set to `"Restrict"` - see `r Biocpkg("iSEE", vignette="xtreme.html#exploring-mass-cytometry-date", label="here")` for an example with mass cytometry data.
+This requires all panels acting as both receivers and transmitters to have their effects set to `"Restrict"` - see [this mass cytometry tour](https://github.com/LTLA/iSEE2018/blob/master/tours/cytof/app.R) for an example.
 
 While we have focused on receiving point selections for plots, it is also possible to transmit from plots to tables.
 This will subset the table so that only the rows corresponding to selected points are visible.

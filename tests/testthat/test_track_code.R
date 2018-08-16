@@ -148,3 +148,4 @@ test_that("code trackers run correctly", {
     expect_true(any(grepl("Column data plot 1", out)))
     expect_true(any(grepl("Column data plot 2", out)))
 })
+

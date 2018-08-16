@@ -14,6 +14,7 @@ all_memory <- iSEE:::.setup_memory(sce,
     rowStatArgs=NULL,
     rowDataArgs=rowDataArgs,
     sampAssayArgs=NULL,
+    colStatArgs=NULL,
     customDataArgs=NULL,
     customStatArgs=NULL,
     heatMapArgs=NULL,
@@ -23,6 +24,7 @@ all_memory <- iSEE:::.setup_memory(sce,
     rowStatMax=0,
     rowDataMax=1,
     sampAssayMax=0,
+    colStatMax=0,
     customDataMax=0,
     customStatMax=0,
     heatMapMax=0)
@@ -585,20 +587,16 @@ test_that(".make_featAssayPlot/.scatter_plot produce a valid xy with color", {
 
 })
 
-test_that(".make_featAssayPlot works for YAxis set to Feature name", {
+test_that(".make_featAssayPlot fails for YAxisFeatName set to a character value", {
     # change the value locally for the specific test
     selected_gene <- "0610009B22Rik"
 
-    # all_memory$featAssayPlot[1,iSEE:::.featAssayYAxis] <- iSEE:::.featAssayYAxisFeatNameTitle
-    all_memory$featAssayPlot[1,iSEE:::.featAssayYAxisFeatName] <- selected_gene
+    all_memory$featAssayPlot[1, iSEE:::.featAssayYAxisFeatName] <- selected_gene
 
-    p.out <- iSEE:::.make_featAssayPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
-
-    expect_match(
-        p.out$cmd_list$data['y'],
-        selected_gene,
-        fixed = TRUE
-    )
+    expect_error(
+        iSEE:::.make_featAssayPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap()),
+        "invalid format '%i'; use format %s for character objects",
+        fixed=TRUE)
 
 })
 
@@ -617,20 +615,17 @@ test_that(".make_featAssayPlot works for XAxis set to Column data", {
 
 })
 
-test_that(".make_featAssayPlot works for XAxis set to Feature name", {
+test_that(".make_featAssayPlot fails for XAxis set to a character feature name", {
     selected_gene <- "0610009B22Rik"
 
     # change the value locally for the specific test
     all_memory$featAssayPlot[1,iSEE:::.featAssayXAxis] <- iSEE:::.featAssayXAxisFeatNameTitle
     all_memory$featAssayPlot[1,iSEE:::.featAssayXAxisFeatName] <- selected_gene
 
-    p.out <- iSEE:::.make_featAssayPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap())
-
-    expect_match(
-        p.out$cmd_list$data['x'],
-        selected_gene,
-        fixed = TRUE
-    )
+    expect_error(
+        iSEE:::.make_featAssayPlot(id = 1, all_memory, all_coordinates, sce, ExperimentColorMap()),
+        "invalid format '%i'; use format %s for character objects",
+        fixed=TRUE)
 
 })
 
@@ -867,7 +862,7 @@ test_that(".process_colorby_choice_for_column_plots handles gene text input", {
     params[[iSEE:::.colorByFeatName]] <- 1L
 
     color_out <- iSEE:::.define_colorby_for_column_plot(params, sce)
-    expect_match(color_out$cmds, "assay(se, 6)[1,]", fixed=TRUE)
+    expect_match(color_out$cmds, "assay(se, 6, withDimnames=FALSE)[1,]", fixed=TRUE)
 
     expect_match(
         color_out$label,
@@ -898,7 +893,7 @@ test_that(".gene_axis_label produces a valid axis label", {
     selected_gene_int <- 1L
     selected_assay <- 1L
 
-    lab_out <- iSEE:::.gene_axis_label(
+    lab_out <- iSEE:::.feature_axis_label(
         sce, selected_gene_int, selected_assay, multiline=FALSE
     )
 
@@ -917,7 +912,7 @@ test_that(".gene_axis_label produces a valid axis label", {
     # Handling unnamed assays.
     assayNames(sce)[] <-""
 
-    lab_out <- iSEE:::.gene_axis_label(
+    lab_out <- iSEE:::.feature_axis_label(
         sce, selected_gene_int, selected_assay, multiline=FALSE
     )
 
@@ -1450,3 +1445,4 @@ test_that(".add_facets works for row data plots", {
     out <- iSEE:::.add_facets(params)
     expect_identical(out, "facet_grid(FacetRow ~ FacetColumn)")
 })
+

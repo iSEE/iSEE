@@ -914,6 +914,8 @@
 #' @param param_choices A DataFrame with one row, containing the parameter choices for the current plot.
 #' @param selectable A character vector of decoded names for available transmitting panels.
 #' @param source_type Type of the panel that is source of the selection. Either \code{"row"} or \code{"column"}.
+#' @param ... Additional arguments passed to \link{\code{collapseBox}}.
+#' @param field Column name in the DataFrame of parameters choices for the current plot.
 #'
 #' @return
 #' For \code{.create_selection_param_box} and \code{.create_selection_param_box_define_box},

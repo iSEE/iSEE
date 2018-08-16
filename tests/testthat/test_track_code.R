@@ -1,13 +1,14 @@
-# This script tests the code related to the creation of the point transmission infrastructure. 
+# This script tests the code related to the creation of the point transmission infrastructure.
 # library(iSEE); library(testthat); source("setup_sce.R"); source("test_track_code.R")
 
 # Do NOT move to setup; re-defined here to keep tests self-contained.
 redDimArgs <- redDimPlotDefaults(sce, 1)
 colDataArgs <- colDataPlotDefaults(sce, 2)
-featAssayArgs <- featAssayPlotDefaults(sce, 3)
 rowStatArgs <- rowStatTableDefaults(sce, 3)
 rowDataArgs <- rowDataPlotDefaults(sce, 1)
+featAssayArgs <- featAssayPlotDefaults(sce, 3)
 sampAssayArgs <- sampAssayPlotDefaults(sce, 3)
+colStatArgs <- colStatTableDefaults(sce, 3)
 customDataArgs <- customDataPlotDefaults(sce, 1)
 customStatArgs <- customStatTableDefaults(sce, 1)
 heatMapArgs <- heatMapPlotDefaults(sce, 2)
@@ -18,15 +19,16 @@ colDataArgs[1,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
 colDataArgs[2,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
 featAssayArgs[2,iSEE:::.selectByPlot] <- "Column data plot 1"
 heatMapArgs[1,iSEE:::.selectByPlot] <- "Column data plot 1"
-featAssayArgs[1,iSEE:::.selectByPlot] <- "Feature assay plot 1" 
+featAssayArgs[1,iSEE:::.selectByPlot] <- "Feature assay plot 1"
 
 memory <- list(
     redDimPlot=redDimArgs,
-    featAssayPlot=featAssayArgs,
-    sampAssayPlot=sampAssayArgs,
     colDataPlot=colDataArgs,
+    featAssayPlot=featAssayArgs,
     rowStatTable=rowStatArgs,
     rowDataPlot=rowDataArgs,
+    sampAssayPlot=sampAssayArgs,
+    colStatTable=colStatArgs,
     customDataPlot=customDataArgs,
     customStatTable=customStatArgs,
     heatMapPlot=heatMapArgs
@@ -65,19 +67,19 @@ test_that("reporting order is correctly reported", {
         expect_true(
             match("Reduced dimension plot 1", report_names) < match("Column data plot 1", report_names)
         )
-    
+
         expect_true(
             match("Column data plot 1", report_names) < match("Feature assay plot 2", report_names)
         )
-    
+
         expect_true(
             match("Column data plot 1", report_names) < match("Heat map 1", report_names)
         )
-    
+
         expect_true(
             match("Reduced dimension plot 1", report_names) < match("Column data plot 2", report_names)
         )
-    
+
         expect_identical(nrow(active_panels), length(report_order))
     }
 })
@@ -86,7 +88,7 @@ test_that("code trackers run correctly", {
     # Adding a custom plot panel for coverage.
     active_panels <- rbind(active_panels, active_panels[1,])
     active_panels[1,"Type"] <- "customDataPlot"
-        
+
     # Mimicking a running instance of the app.
     pObjects <- new.env()
     pObjects$memory <- memory
@@ -94,7 +96,7 @@ test_that("code trackers run correctly", {
 	pObjects$coordinates <- list()
 	pObjects$commands <- list()
 
-	o <- iSEE:::.get_reporting_order(active_panels, g) 
+	o <- iSEE:::.get_reporting_order(active_panels, g)
     panelnames <- iSEE:::.decode_panel_name(active_panels$Type, active_panels$ID)[o]
     se <- iSEE:::.precompute_UI_info(sce, list(), list())
 
@@ -118,7 +120,7 @@ test_that("code trackers run correctly", {
         if ("xy" %in% names(p.out)) {
             pObjects$coordinates[[panelname]] <- p.out$xy[, intersect(iSEE:::.allCoordinatesNames, colnames(p.out$xy))]
         }
-        pObjects$commands[[enc]] <- p.out$cmd_list	
+        pObjects$commands[[enc]] <- p.out$cmd_list
     }
 
     # Executing the code tracker, and checking that all our commands are there.

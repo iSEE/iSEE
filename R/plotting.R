@@ -177,18 +177,12 @@ names(.all_aes_values) <- .all_aes_names
 
     ## Setting up the y-axis:
     gene_selected_y <- param_choices[[.featAssayYAxisFeatName]]
-    validate(need(
-        length(gene_selected_y)==1L,
-        "Invalid y-axis input"
-    ))
-
     assay_choice <- param_choices[[.featAssayAssay]]
     y_title <- rownames(se)[gene_selected_y]
-    y_lab <- .gene_axis_label(se, gene_selected_y, assay_choice, multiline = FALSE)
-    # NOTE: deparse() also handles integer selections correctly.
+    y_lab <- .feature_axis_label(se, gene_selected_y, assay_choice, multiline = FALSE)
     data_cmds[["y"]] <- sprintf(
-        "plot.data <- data.frame(Y=assay(se, %i)[%s,], row.names = colnames(se))",
-        assay_choice, deparse(gene_selected_y)
+        "plot.data <- data.frame(Y=assay(se, %i, withDimnames=FALSE)[%i,], row.names = colnames(se))",
+        assay_choice, gene_selected_y
     )
 
     ## Checking X axis choice:
@@ -200,17 +194,12 @@ names(.all_aes_values) <- .all_aes_names
 
     } else if (x_choice==.featAssayXAxisFeatNameTitle) { # gene selected
         gene_selected_x <- param_choices[[.featAssayXAxisFeatName]]
-        validate(need(
-            length(gene_selected_x)==1L,
-            sprintf("Invalid '%s' > '%s' input", .featAssayXAxis, x_choice)
-        ))
-
         x_title <- rownames(se)[gene_selected_x]
-        x_lab <- .gene_axis_label(
+        x_lab <- .feature_axis_label(
             se, gene_selected_x, assay_choice, multiline = FALSE)
         data_cmds[["x"]] <- sprintf(
-            "plot.data$X <- assay(se, %i)[%s,];",
-            assay_choice, deparse(gene_selected_x)
+            "plot.data$X <- assay(se, %i, withDimnames=FALSE)[%i,];",
+            assay_choice, gene_selected_x
         )
 
     } else { # no x axis variable specified: show single violin
@@ -264,7 +253,7 @@ names(.all_aes_values) <- .all_aes_names
     data_cmds <- list()
     y_lab <- param_choices[[.rowDataYAxis]]
 
-    # NOTE: # deparse() automatically adds quotes, AND protects against existing quotes/escapes.
+    # NOTE: deparse() automatically adds quotes, AND protects against existing quotes/escapes.
     data_cmds[["y"]] <- sprintf(
         "plot.data <- data.frame(Y = rowData(se)[,%s], row.names=rownames(se));",
         deparse(y_lab)
@@ -320,7 +309,7 @@ names(.all_aes_values) <- .all_aes_names
     data_cmds <- list()
     y_index <- param_choices[[.sampAssayYAxisSampName]]
     assay_choice <- param_choices[[.sampAssayAssay]]
-    data_cmds[["y"]] <- sprintf("plot.data <- data.frame(Y=assay(se, %i)[,%i], row.names = rownames(se));", assay_choice, y_index)
+    data_cmds[["y"]] <- sprintf("plot.data <- data.frame(Y=assay(se, %i, withDimnames=FALSE)[,%i], row.names = rownames(se));", assay_choice, y_index)
     y_lab <- names(.get_internal_info(se, "sample_names"))[y_index]
 
     # Prepare X-axis data.
@@ -334,7 +323,7 @@ names(.all_aes_values) <- .all_aes_names
     } else {
         x_index <- param_choices[[.sampAssayXAxisSampName]]
         x_lab <- names(.get_internal_info(se, "sample_names"))[x_index]
-        data_cmds[["x"]] <- sprintf("plot.data$X <- assay(se, %i)[,%i];", assay_choice, x_index)
+        data_cmds[["x"]] <- sprintf("plot.data$X <- assay(se, %i, withDimnames=FALSE)[,%i];", assay_choice, x_index)
     }
 
     x_title <- ifelse(x_lab == '', x_lab, sprintf("vs %s", x_lab))
@@ -1225,13 +1214,16 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         # Set the color to the selected gene
         chosen_gene <- param_choices[[.colorByFeatName]]
         assay_choice <- param_choices[[.colorByFeatNameAssay]]
-        validate(need(
-            length(chosen_gene)==1L,
-            sprintf("Invalid '%s' > '%s' input", .colorByField, color_choice)
-        ))
         return(list(
-            label=.gene_axis_label(se, chosen_gene, assay_choice, multiline = TRUE),
-            cmds=sprintf("plot.data$ColorBy <- assay(se, %i)[%i,];", assay_choice, chosen_gene)))
+            label=.feature_axis_label(se, chosen_gene, assay_choice, multiline = TRUE),
+            cmds=sprintf("plot.data$ColorBy <- assay(se, %i, withDimnames=FALSE)[%i,];", assay_choice, chosen_gene)))
+
+    } else if (color_choice==.colorBySampNameTitle) {
+        chosen_sample <- param_choices[[.colorBySampName]]
+        return(list(
+            label=.sample_axis_label(se, chosen_sample, assay_id=NULL),
+            cmds=sprintf("plot.data$ColorBy <- logical(nrow(plot.data));
+plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_sample))))
 
     } else {
         return(NULL)
@@ -1250,14 +1242,17 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
     } else if (color_choice==.colorByFeatNameTitle) {
         chosen_gene <- param_choices[[.colorByFeatName]]
-        validate(need(
-            length(chosen_gene)==1L,
-            sprintf("Invalid '%s' > '%s' input", .colorByField, color_choice)
-        ))
         return(list(
-            label=.gene_axis_label(se, chosen_gene, assay_id=NULL),
-            cmds=sprintf("plot.data$ColorBy <- FALSE;
+            label=.feature_axis_label(se, chosen_gene, assay_id=NULL),
+            cmds=sprintf("plot.data$ColorBy <- logical(nrow(plot.data));
 plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
+
+    } else if (color_choice==.colorBySampNameTitle) {
+        chosen_sample <- param_choices[[.colorBySampName]]
+        assay_choice <- param_choices[[.colorBySampNameAssay]]
+        return(list(
+            label=.sample_axis_label(se, chosen_sample, assay_choice, multiline = TRUE),
+            cmds=sprintf("plot.data$ColorBy <- assay(se, %i, withDimnames=FALSE)[,%i];", assay_choice, chosen_sample)))
 
     } else {
         return(NULL)
@@ -1314,6 +1309,17 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     } else if (color_choice==.colorByFeatNameTitle) {
         assay_choice <- param_choices[[.colorByFeatNameAssay]]
         cmds <- .create_color_scale("assayColorMap", deparse(assay_choice), colorby)
+
+    } else if (color_choice==.colorBySampNameTitle) {
+        col_choice <- param_choices[[.colorBySampNameColor]]
+        cmds <- c(
+            sprintf(
+                "scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +",
+                deparse(col_choice)),
+            sprintf(
+                "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy=='TRUE'), col=%s, size=%s, alpha=1) +",
+                deparse(col_choice), param_choices[[.plotPointSize]])
+        )
     }
 
     return(cmds)
@@ -1345,6 +1351,10 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy=='TRUE'), col=%s, size=%s, alpha=1) +",
                 deparse(col_choice), param_choices[[.plotPointSize]])
         )
+
+    } else if (color_choice==.colorBySampNameTitle) {
+        assay_choice <- param_choices[[.colorBySampNameAssay]]
+        cmds <- .create_color_scale("assayColorMap", deparse(assay_choice), colorby)
     }
     return(cmds)
 }
@@ -1649,27 +1659,44 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 # Internal functions: aesthetics ----
 ############################################
 
-#' Generate an axis label for gene expression data
+#' @title Assay axis labels
+#'
+#' @description 
+#' Generate an axis label when assay data is used for colouring row- or column-based plots.
 #'
 #' @param se A \linkS4class{SingleCellExperiment} object.
-#' @param gene_id A integer index of the feature in \code{rownames(se)}.
+#' @param feature_id A integer index of the feature in \code{rownames(se)}.
+#' @param sample_id A integer index of the sample in \code{colnames(se)}.
+#' @param name A string containing the feature or sample name.
 #' @param assay_id The integer index of an assay in \code{assayNames(se)}.
 #' If \code{NULL}, only the feature name is reported.
-#' @param multiline A logical value that indicates whether feature and
-#' assay names should appear on separate lines.
+#' @param multiline A logical value that indicates whether feature/sample and assay names should appear on separate lines.
 #'
 #' @return A character value to use as axis label.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
-#' @rdname INTERNAL_gene_axis_label
+#' @rdname INTERNAL_assay_axis_label
+#' @importFrom BiocGenerics rownames
 #' @seealso
 #' \code{\link{.make_featAssayPlot}},
+#' \code{\link{.make_sampAssayPlot}},
 #' \code{\link{.add_color_to_column_plot}},
 #' \code{\link{.add_color_to_row_plot}}
-.gene_axis_label <- function(se, gene_id, assay_id, multiline=FALSE){
-    gene_id <- rownames(se)[gene_id]
+.feature_axis_label <- function(se, feature_id, assay_id, multiline=FALSE){
+    .assay_axis_label(se, rownames(se)[feature_id], assay_id, multiline=multiline)
+}
+
+#' @rdname INTERNAL_assay_axis_label
+#' @importFrom BiocGenerics colnames
+.sample_axis_label <- function(se, sample_id, assay_id, multiline=FALSE){
+    .assay_axis_label(se, colnames(se)[sample_id], assay_id, multiline=multiline)
+}
+
+#' @rdname INTERNAL_assay_axis_label
+#' @importFrom SummarizedExperiment assayNames
+.assay_axis_label <- function(se, name, assay_id, multiline=FALSE) {
     if (is.null(assay_id)) {
-        return(gene_id)
+        return(name)
     }
 
     assay_name <- assayNames(se)[assay_id]
@@ -1678,7 +1705,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     }
 
     sep <- ifelse(multiline, "\n", " ")
-    sprintf("%s%s(%s)", gene_id, sep, assay_name)
+    sprintf("%s%s(%s)", name, sep, assay_name)
 }
 
 #' Generate ggplot aesthetic instructions

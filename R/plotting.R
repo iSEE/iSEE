@@ -3,8 +3,7 @@
 ############################################
 
 .all_aes_names <- c("x", "y", "color", "shape", "fill", "group")
-.all_aes_values <-
-    c("X", "Y", "ColorBy", "ShapeBy", "FillBy", "GroupBy")
+.all_aes_values <- c("X", "Y", "ColorBy", "ShapeBy", "FillBy", "GroupBy")
 names(.all_aes_values) <- .all_aes_names
 
 ############################################
@@ -20,6 +19,7 @@ names(.all_aes_values) <- .all_aes_names
 # Default behaviour
 .lassoStartShape <- 22
 .lassoWaypointShape <- 20
+
 # If shape is being used for data aesthetics, fall back on size
 .lassoStartSize <- 1.5
 .lassoWaypointSize <- 0.25
@@ -178,7 +178,7 @@ names(.all_aes_values) <- .all_aes_names
     ## Setting up the y-axis:
     gene_selected_y <- param_choices[[.featAssayYAxisFeatName]]
     assay_choice <- param_choices[[.featAssayAssay]]
-    y_title <- rownames(se)[gene_selected_y]
+    plot_title <- rownames(se)[gene_selected_y]
     y_lab <- .feature_axis_label(se, gene_selected_y, assay_choice, multiline = FALSE)
     data_cmds[["y"]] <- sprintf(
         "plot.data <- data.frame(Y=assay(se, %i, withDimnames=FALSE)[%i,], row.names = colnames(se))",
@@ -189,26 +189,23 @@ names(.all_aes_values) <- .all_aes_names
     x_choice <- param_choices[[.featAssayXAxis]]
 
     if (x_choice==.featAssayXAxisColDataTitle) { # colData column selected
-        x_lab <- x_title <- param_choices[[.featAssayXAxisColData]]
+        x_lab <- param_choices[[.featAssayXAxisColData]]
+        plot_title <- paste(plot_title, "vs", x_lab)
         data_cmds[["x"]] <- sprintf("plot.data$X <- colData(se)[,%s];", deparse(x_lab))
 
     } else if (x_choice==.featAssayXAxisFeatNameTitle) { # gene selected
         gene_selected_x <- param_choices[[.featAssayXAxisFeatName]]
-        x_title <- rownames(se)[gene_selected_x]
-        x_lab <- .feature_axis_label(
-            se, gene_selected_x, assay_choice, multiline = FALSE)
+        plot_title <- paste(plot_title, "vs", rownames(se)[gene_selected_x])
+        x_lab <- .feature_axis_label(se, gene_selected_x, assay_choice, multiline = FALSE)
         data_cmds[["x"]] <- sprintf(
             "plot.data$X <- assay(se, %i, withDimnames=FALSE)[%i,];",
             assay_choice, gene_selected_x
         )
 
     } else { # no x axis variable specified: show single violin
-        x_lab <- x_title <- ''
+        x_lab <- ''
         data_cmds[["x"]] <- "plot.data$X <- factor(character(ncol(se)))"
     }
-
-    x_title <- ifelse(x_title == '', x_title, sprintf("vs %s", x_title))
-    plot_title <- sprintf("%s %s", y_title, x_title)
 
     .plot_wrapper(
         data_cmds, param_choices = param_choices, all_memory = all_memory,
@@ -307,27 +304,38 @@ names(.all_aes_values) <- .all_aes_names
 .make_sampAssayPlot <- function(id, all_memory, all_coordinates, se, colormap) {
     param_choices <- all_memory$sampAssayPlot[id,]
     data_cmds <- list()
-    y_index <- param_choices[[.sampAssayYAxisSampName]]
+
+    samp_selected_y <- param_choices[[.sampAssayYAxisSampName]]
     assay_choice <- param_choices[[.sampAssayAssay]]
-    data_cmds[["y"]] <- sprintf("plot.data <- data.frame(Y=assay(se, %i, withDimnames=FALSE)[,%i], row.names = rownames(se));", assay_choice, y_index)
-    y_lab <- names(.get_internal_info(se, "sample_names"))[y_index]
+
+    plot_title <- colnames(se)[samp_selected_y]
+    y_lab <- .feature_axis_label(se, samp_selected_y, assay_choice, multiline = FALSE)
+    data_cmds[["y"]] <- sprintf(
+        "plot.data <- data.frame(Y=assay(se, %i, withDimnames=FALSE)[,%i], row.names = rownames(se));", 
+        assay_choice, samp_selected_y
+    )
 
     # Prepare X-axis data.
     x_choice <- param_choices[[.sampAssayXAxis]]
+
     if (x_choice==.sampAssayXAxisNothingTitle) {
         x_lab <- ''
         data_cmds[["x"]] <- "plot.data$X <- factor(character(nrow(se)));"
+
     } else if (x_choice==.sampAssayXAxisRowDataTitle) {
         x_lab <- param_choices[[.sampAssayXAxisRowData]]
+        plot_title <- paste(plot_title, "vs", x_lab)
         data_cmds[["x"]] <- sprintf("plot.data$X <- rowData(se)[,%s];", deparse(x_lab))
-    } else {
-        x_index <- param_choices[[.sampAssayXAxisSampName]]
-        x_lab <- names(.get_internal_info(se, "sample_names"))[x_index]
-        data_cmds[["x"]] <- sprintf("plot.data$X <- assay(se, %i, withDimnames=FALSE)[,%i];", assay_choice, x_index)
-    }
 
-    x_title <- ifelse(x_lab == '', x_lab, sprintf("vs %s", x_lab))
-    plot_title <- sprintf("%s %s", y_lab, x_title)
+    } else {
+        samp_selected_x <- param_choices[[.sampAssayXAxisSampName]]
+        plot_title <- paste(plot_title, "vs", colnames(se)[samp_selected_x])
+        x_lab <- .feature_axis_label(se, samp_selected_x, assay_choice, multiline = FALSE)
+        data_cmds[["x"]] <- sprintf(
+            "plot.data$X <- assay(se, %i, withDimnames=FALSE)[,%i];", 
+            assay_choice, samp_selected_x
+        )
+    }
 
     .plot_wrapper(
         data_cmds, param_choices = param_choices, all_memory = all_memory,

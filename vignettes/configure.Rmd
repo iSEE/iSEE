@@ -468,6 +468,9 @@ Users should refer to the following help pages for the full list of values that 
 - `?"iSEE point parameters"`
 - `?"iSEE selection parameters"`
 
+Some fairly complex configurations for a variety of data sets can be found at https://github.com/LTLA/iSEE2018.
+These may serve as useful examples for setting up your own configurations.
+
 # Session Info {.unnumbered}
 
 ```{r sessioninfo}

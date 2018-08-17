@@ -188,8 +188,8 @@ Detailed examples on the use of `ExperimentColorMap` objects are available in th
 
 # Demonstration
 
-We will again use the `allen` single-cell RNA-seq data set to demonstrate the use of the `ExperimentColorMap` class.
-Assuming that we have the `sce` object from the earlier vignette, we create an `iSEE` app with the `SingleCellExperiment` object and the colormap generated above.
+We will re-use the `allen` single-cell RNA-seq data set to demonstrate the use of the `ExperimentColorMap` class.
+Using the `sce` object that we created `r Biocpkg("iSEE", vignette="basic.html", label="previously")`, we create an `iSEE` app with the `SingleCellExperiment` object and the colormap generated above.
 
 ```{r allen-dataset-4}
 app <- iSEE(sce, colormap = ecm)

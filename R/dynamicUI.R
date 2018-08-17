@@ -123,7 +123,7 @@
     tab_by_col <- c(.noSelection, link_sources$col_tab)
     row_selectable <- c(.noSelection, link_sources$row_plot)
     col_selectable <- c(.noSelection, link_sources$col_plot)
-    heatmap_sources <- c(.noSelection, link_sources$row, link_sources$tab)
+    heatmap_sources <- c(.noSelection, link_sources$row_plot, link_sources$row_tab)
 
     for (i in seq_len(nrow(active_panels))) {
         mode <- active_panels$Type[i]

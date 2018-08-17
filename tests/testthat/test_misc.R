@@ -1,3 +1,5 @@
+# This tests miscellaneous functions in iSEE-extras, required to prepare data for shiny.
+# library(iSEE); library(testthat); source("setup_sce.R"); source("test_misc.R")
 
 test_that("list updater function works correctly", {
     blah <- new("DataFrame", nrows=20L)
@@ -362,7 +364,7 @@ test_that("initialization of active panels works correctly", {
 })
 
 test_that("sanitation of memory works correctly", {
-    sce <- iSEE:::.precompute_UI_info(sce, NULL, NULL)
+    sce <- iSEE:::.precompute_UI_info(sce, list(a=1), list(b=1))
 
     memory <- iSEE:::.setup_memory(
         se=sce,
@@ -393,10 +395,13 @@ test_that("sanitation of memory works correctly", {
     sanitized <- iSEE:::.sanitize_memory(init_panels, memory)
     expect_identical(sanitized, memory)
 
+    ##############
     # Does NOT remove valid selecting or table links in active plots.
     memory2 <- memory
     memory2$redDimPlot[1, iSEE:::.selectByPlot] <- "Column data plot 1"
     memory2$colDataPlot[1, iSEE:::.colorByRowTable] <- "Row statistics table 1"
+    memory2$rowDataPlot[1, iSEE:::.colorByColTable] <- "Column statistics table 1"
+    memory2$rowDataPlot[1, iSEE:::.selectByPlot] <- "Sample assay plot 1"
     sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory2)
 
@@ -404,6 +409,8 @@ test_that("sanitation of memory works correctly", {
     memory2 <- memory
     memory2$redDimPlot[2, iSEE:::.selectByPlot] <- "Column data plot 1"
     memory2$colDataPlot[2, iSEE:::.colorByRowTable] <- "Row statistics table 1"
+    memory2$rowDataPlot[2, iSEE:::.colorByColTable] <- "Column statistics table 1"
+    memory2$rowDataPlot[2, iSEE:::.selectByPlot] <- "Sample assay plot 1"
     sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory)
 
@@ -411,9 +418,12 @@ test_that("sanitation of memory works correctly", {
     memory2 <- memory
     memory2$redDimPlot[1, iSEE:::.selectByPlot] <- "Column data plot 2"
     memory2$colDataPlot[1, iSEE:::.colorByRowTable] <- "Row statistics table 2"
+    memory2$rowDataPlot[1, iSEE:::.colorByColTable] <- "Column statistics table 2"
+    memory2$rowDataPlot[1, iSEE:::.selectByPlot] <- "Sample assay plot 2"
     sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory)
 
+    ##############
     # Repeating for the feature assay plots: retains valid table links in active plots.
     memory2 <- memory
     memory2$featAssayPlot[1, iSEE:::.featAssayXAxisRowTable] <- "Row statistics table 1"
@@ -432,6 +442,69 @@ test_that("sanitation of memory works correctly", {
     memory2 <- memory
     memory2$featAssayPlot[1, iSEE:::.featAssayXAxisRowTable] <- "Row statistics table 2"
     memory2$featAssayPlot[1, iSEE:::.featAssayYAxisRowTable] <- "Row statistics table 2"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
+    expect_identical(sanitized, memory)
+
+    ##############
+    # Repeating for the sample assay plots: retains valid table links in active plots.
+    memory2 <- memory
+    memory2$sampAssayPlot[1, iSEE:::.sampAssayXAxisColTable] <- "Column statistics table 1"
+    memory2$sampAssayPlot[1, iSEE:::.sampAssayYAxisColTable] <- "Column statistics table 1"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
+    expect_identical(sanitized, memory2)
+
+    # Removes valid table links in inactive plots.
+    memory2 <- memory
+    memory2$sampAssayPlot[2, iSEE:::.sampAssayXAxisColTable] <- "Column statistics table 1"
+    memory2$sampAssayPlot[2, iSEE:::.sampAssayYAxisColTable] <- "Column statistics table 1"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
+    expect_identical(sanitized, memory)
+
+    # Removes inactive table links.
+    memory2 <- memory
+    memory2$sampAssayPlot[1, iSEE:::.sampAssayXAxisColTable] <- "Column statistics table 2"
+    memory2$sampAssayPlot[1, iSEE:::.sampAssayYAxisColTable] <- "Column statistics table 2"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
+    expect_identical(sanitized, memory)
+
+    ##############
+    # Repeating for the heatmaps.
+    memory2 <- memory
+    memory2$heatMapPlot[1, iSEE:::.heatMapImportSource] <- "Row statistics table 1"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
+    expect_identical(sanitized, memory2)
+
+    # Removes valid plot/table links in inactive plots.
+    memory2 <- memory
+    memory2$heatMapPlot[2, iSEE:::.heatMapImportSource] <- "Row statistics table 1"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
+    expect_identical(sanitized, memory)
+
+    # Removes inactive plot/table links.
+    memory2 <- memory
+    memory2$heatMapPlot[1, iSEE:::.heatMapImportSource] <- "Row statistics table 2"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
+    expect_identical(sanitized, memory)
+
+    ##############
+    # Repeating for the custom plots. 
+    memory2 <- memory
+    memory2$customDataPlot[1, iSEE:::.customRowSource] <- "Row data plot 1"
+    memory2$customDataPlot[1, iSEE:::.customColSource] <- "Column data plot 1"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
+    expect_identical(sanitized, memory2)
+
+    # Removes valid plot/table links in inactive plots.
+    memory2 <- memory
+    memory2$customDataPlot[2, iSEE:::.customRowSource] <- "Row data plot 1"
+    memory2$customDataPlot[2, iSEE:::.customColSource] <- "Column data plot 1"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
+    expect_identical(sanitized, memory)
+
+    # Removes inactive plot/table links.
+    memory2 <- memory
+    memory2$customDataPlot[1, iSEE:::.customRowSource] <- "Row data plot 2"
+    memory2$customDataPlot[1, iSEE:::.customColSource] <- "Column data plot 2"
     sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory)
 })

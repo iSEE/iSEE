@@ -413,73 +413,63 @@ height_limits <- c(400L, 1000L)
 #' \code{\link{.spawn_table_links}},
 #' \code{\link{.setup_initial}}
 .sanitize_memory <- function(active_panels, memory) {
-    link_sources <- .define_link_sources(active_panels)
-    active_tab <- link_sources$tab
-    row_selectable <- link_sources$row
-    col_selectable <-  link_sources$col
     all_active <- paste0(active_panels$Type, active_panels$ID)
+
+    FUN <- function(memory, field, available) {
+        bb <- memory[,field]
+        bad <- !bb %in% available | !rownames(memory) %in% all_active
+        if (any(bad)) {
+            memory[,field][bad] <- .noSelection
+        }
+        memory
+    }
+
+    link_sources <- .define_link_sources(active_panels)
+    tab_by_row <- link_sources$row_tab
+    tab_by_col <- link_sources$col_tab
+    row_selectable <- link_sources$row_plot
+    col_selectable <- link_sources$col_plot
+    heatmap_sources <- c(tab_by_row, row_selectable)
 
     # Checking for selecting/linking of main panels.
     for (mode in c(point_plot_types, linked_table_types)) {
-        cur_memory <- memory[[mode]]
-        self_active <- rownames(cur_memory)
-
         if (mode %in% c("rowDataPlot", "sampAssayPlot", "rowStatTable")) {
             selectable <- row_selectable
         } else {
             selectable <- col_selectable
         }
 
-        bb <- cur_memory[,.selectByPlot]
-        bad <- !bb %in% selectable | !self_active %in% all_active
-        if (any(bad)) {
-            memory[[mode]][,.selectByPlot][bad] <- .noSelection
-        }
-
+        memory[[mode]] <- FUN(memory[[mode]], .selectByPlot, selectable)
         if (mode %in% point_plot_types) {
-            cb <- cur_memory[,.colorByRowTable]
-            bad <- !cb %in% active_tab | !self_active %in% all_active
-            if (any(bad)) {
-                memory[[mode]][,.colorByRowTable][bad] <- .noSelection
-            }
-        }
-    }
-
-    # Checking for selecting/linking of custom plots and tables.
-    for (mode in custom_panel_types) {
-        cur_memory <- memory[[mode]]
-        self_active <- rownames(cur_memory)
-
-        bb <- cur_memory[,.customRowSource]
-        bad <- !bb %in% row_selectable | !self_active %in% all_active
-        if (any(bad)) {
-            memory[[mode]][,.customRowSource][bad] <- .noSelection
-        }
-
-        bb <- cur_memory[,.customColSource]
-        bad <- !bb %in% col_selectable | !self_active %in% all_active
-        if (any(bad)) {
-            memory[[mode]][,.customColSource][bad] <- .noSelection
+            memory[[mode]] <- FUN(memory[[mode]], .colorByRowTable, tab_by_row)
+            memory[[mode]] <- FUN(memory[[mode]], .colorByColTable, tab_by_col)
         }
     }
 
     # Checking for linking of x/y-axes of feature assay plots.
     for (mode in c("featAssayPlot", "sampAssayPlot")) {
-        self_active <- rownames(memory$featAssayPlot)
         if (mode=="featAssayPlot") {
             fields <- c(.featAssayXAxisRowTable, .featAssayYAxisRowTable)
+            linkable <- tab_by_row
         } else {
             fields <- c(.sampAssayXAxisColTable, .sampAssayYAxisColTable)
+            linkable <- tab_by_col
         }
 
         for (field in fields) {
-            bb <- memory[[mode]][,field]
-            bad <- !bb %in% active_tab | !self_active %in% all_active
-            if (any(bad)) {
-                memory[[mode]][,field][bad] <- .noSelection
-            }
+            memory[[mode]] <- FUN(memory[[mode]], field, linkable) 
         }
     }
+
+    # Checking for selecting/linking of custom plots and tables.
+    for (mode in custom_panel_types) {
+        memory[[mode]] <- FUN(memory[[mode]], .customRowSource, row_selectable)
+        memory[[mode]] <- FUN(memory[[mode]], .customColSource, col_selectable)
+    }
+
+    # Checking for linking of heatmaps.
+    memory$heatMapPlot <- FUN(memory$heatMapPlot, .heatMapImportSource, heatmap_sources)
+
     return(memory)
 }
 

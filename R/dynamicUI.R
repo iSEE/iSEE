@@ -314,7 +314,7 @@
                     )
                 )
         } else {
-            stop(sprintf("'%s' is not a recognized panel mode"), mode)
+            stop(sprintf("'%s' is not a recognized panel mode", mode))
         }
 
         # Adding graphical parameters if we're plotting.

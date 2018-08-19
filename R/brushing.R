@@ -216,7 +216,7 @@
         ids <- enc$ID
 
         # Avoiding panels that don't have a selection effect or don't transmit.
-        endpoints <- types %in% c("rowStatTable", "customDataPlot", "customStatTable", "heatMapPlot") 
+        endpoints <- types %in% c(linked_table_types, custom_panel_types, "heatMapPlot") 
         new_children <- character(0)
         for (i in which(!endpoints)) { 
             if (memory[[types[i]]][ids[i],.selectEffect]==.selectRestrictTitle) {

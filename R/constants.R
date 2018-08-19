@@ -35,13 +35,15 @@
 # Sample assay plotting parameters. ----
 .sampAssayXAxisNothingTitle <- "None"
 .sampAssayXAxisRowDataTitle <- "Row data"
-.sampAssayXAxisSampleTitle <- "Sample"
+.sampAssayXAxisSampNameTitle <- "Sample name"
 
-.sampAssayYAxis <- "YAxis"
 .sampAssayAssay <- "Assay"
 .sampAssayXAxis <- "XAxis"
 .sampAssayXAxisRowData <- "XAxisRowData"
-.sampAssayXAxisSample <- "XAxisSample"
+.sampAssayXAxisColTable <- "XAxisColTable"
+.sampAssayXAxisSampName <- "XAxisSampName"
+.sampAssayYAxisColTable <- "YAxisColTable"
+.sampAssayYAxisSampName <- "YAxisSampeName"
 
 # Custom plotting parameters. ----
 .customFun <- "Function"
@@ -93,6 +95,7 @@
 .colorByColDataTitle <- "Column data"
 .colorByRowDataTitle <- "Row data"
 .colorByFeatNameTitle <- "Feature name"
+.colorBySampNameTitle <- "Sample name"
 
 .colorByField <- "ColorBy"
 .colorByDefaultColor <- "ColorByDefaultColor"
@@ -103,6 +106,11 @@
 .colorByRowTable <- "ColorByRowTable"
 .colorByFeatNameAssay <- "ColorByFeatNameAssay"
 .colorByFeatNameColor <- "ColorByFeatNameColor"
+
+.colorBySampName <- "ColorBySampName"
+.colorByColTable <- "ColorByColTable"
+.colorBySampNameAssay <- "ColorBySampNameAssay"
+.colorBySampNameColor <- "ColorBySampNameColor"
 
 # Point shaping parameters. ----
 
@@ -175,7 +183,15 @@
 
 .allCoordinatesNames <- c("X", "Y", "FacetRow", "FacetColumn")
 
-# Row statistic table parameters. ----
+# Table parameters. ----
+.statTableSelected <- "Selected"
+.statTableSelected <- "Selected"
+.statTableSearch <- "Search"
+.statTableColSearch <- "SearchColumns"
+.int_statTableSelected <- "_rows_selected"
+.int_statTableSearch <- "_search"
+.int_statTableColSearch <- "_search_columns"
+
 .rowStatSelected <- "Selected"
 .rowStatSearch <- "Search"
 .rowStatColSearch <- "SearchColumns"
@@ -183,7 +199,6 @@
 .int_rowStatSearch <- "_search"
 .int_rowStatColSearch <- "_search_columns"
 
-# Custom statistics table parameters. ----
 .customStatSearch <- .rowStatSearch
 .int_customStatSearch <- .int_rowStatSearch
 
@@ -206,6 +221,7 @@ translation <- c(redDimPlot="Reduced dimension plot",
                  rowStatTable="Row statistics table",
                  rowDataPlot="Row data plot",
                  sampAssayPlot="Sample assay plot",
+                 colStatTable="Column statistics table",
                  customDataPlot="Custom data plot",
                  customStatTable="Custom statistics table",
                  heatMapPlot="Heat map")
@@ -217,24 +233,24 @@ names(rev.translation) <- translation
 row_point_plot_types <- c("rowDataPlot", "sampAssayPlot")
 col_point_plot_types <- c("redDimPlot", "colDataPlot", "featAssayPlot")
 point_plot_types <- c(col_point_plot_types, row_point_plot_types)
-linked_table_types <- c("rowStatTable")
+linked_table_types <- c("rowStatTable", "colStatTable")
 custom_panel_types <- c("customDataPlot", "customStatTable")
 all_panel_types <- c(point_plot_types, linked_table_types, custom_panel_types, "heatMapPlot")
 
 #' Decode the panel name
 #'
 #' Translate a panel name from the internal encoding to a user-visible encoding.
-#' 
+#'
 #' @param mode Character vector specifying the types of panel, using the internal encoding.
 #' @param id Integer vector specifying the panel IDs of the given type.
 #'
 #' @return A character vector of decoded panel names.
-#' 
-#' @details 
+#'
+#' @details
 #' This function takes an encoded \code{mode} such as \code{"redDimPlot"} and an ID like \code{1}.
 #' and returns the decoded panel name \code{"Reduced dimension plot 1"} for presentation in the UI.
 #' The input \code{mode} and \code{ID} should be parallel to each other.
-#' 
+#'
 #' @author Aaron Lun
 #' @rdname INTERNAL_decode_panel_name
 #' @seealso
@@ -245,15 +261,15 @@ all_panel_types <- c(point_plot_types, linked_table_types, custom_panel_types, "
 }
 
 #' Encode the panel name
-#' 
+#'
 #' Convert a decoded panel name to the internal encoding.
 #'
 #' @param names Character vector of decoded panel names.
 #'
-#' @return 
+#' @return
 #' For \code{.encode_panel_name}, a list is returned containing \code{Type}, a character vector of panel types in encoded format;
 #' and \code{ID}, an integer vector of panel IDs.
-#' 
+#'
 #' For \code{.decoded2encoded}, a character vector is returned containing the encoded panel names.
 #'
 #' @details
@@ -292,13 +308,13 @@ all_panel_types <- c(point_plot_types, linked_table_types, custom_panel_types, "
 #' @details
 #' This is a convenient function to split an encoded name into its constituents, e.g., for referencing to elements in memory.
 #'
-#' @return 
+#' @return
 #' A list containing \code{Type}, a character vector of panel types in encoded format;
 #' and \code{ID}, an integer vector of panel IDs.
-#' 
+#'
 #' @author Aaron Lun
 #' @rdname INTERNAL_split_encoded
-#' @seealso 
+#' @seealso
 #' \code{\link{.encode_panel_name}},
 #' \code{\link{.decode_panel_name}}
 .split_encoded <- function(names) {

@@ -1,4 +1,4 @@
-# This script tests the code related to the creation of the point transmission infrastructure. 
+# This script tests the code related to the creation of the point transmission infrastructure.
 # library(iSEE); library(testthat); source("setup_sce.R"); source("test_selection_links.R")
 
 # Do NOT move to setup; re-defined here to keep tests self-contained.
@@ -8,6 +8,7 @@ featAssayArgs <- featAssayPlotDefaults(sce, 3)
 rowStatArgs <- rowStatTableDefaults(sce, 3)
 rowDataArgs <- rowDataPlotDefaults(sce, 1)
 sampAssayArgs <- sampAssayPlotDefaults(sce, 3)
+colStatArgs <- colStatTableDefaults(sce, 2)
 customDataArgs <- customDataPlotDefaults(sce, 1)
 customStatArgs <- customStatTableDefaults(sce, 1)
 heatMapArgs <- heatMapPlotDefaults(sce, 2)
@@ -22,11 +23,12 @@ colDataArgs[2,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
 
 memory <- list(
     redDimPlot=redDimArgs,
-    featAssayPlot=featAssayArgs,
-    sampAssayPlot=sampAssayArgs,
     colDataPlot=colDataArgs,
+    featAssayPlot=featAssayArgs,
     rowStatTable=rowStatArgs,
     rowDataPlot=rowDataArgs,
+    sampAssayPlot=sampAssayArgs,
+    colStatTable=colStatArgs,
     customDataPlot=customDataArgs,
     customStatTable=customStatArgs,
     heatMapPlot=heatMapArgs
@@ -39,11 +41,12 @@ test_that("selection link creation works correctly", {
         sort(rownames(m)),
         sort(c(
             sprintf("redDimPlot%i", seq_len(nrow(redDimArgs))),
-            sprintf("featAssayPlot%i", seq_len(nrow(featAssayArgs))),
-            sprintf("sampAssayPlot%i", seq_len(nrow(sampAssayArgs))),
             sprintf("colDataPlot%i", seq_len(nrow(colDataArgs))),
+            sprintf("featAssayPlot%i", seq_len(nrow(featAssayArgs))),
             sprintf("rowStatTable%i", seq_len(nrow(rowStatArgs))),
             sprintf("rowDataPlot%i", seq_len(nrow(rowDataArgs))),
+            sprintf("sampAssayPlot%i", seq_len(nrow(sampAssayArgs))),
+            sprintf("colStatTable%i", seq_len(nrow(colStatArgs))),
             sprintf("customDataPlot%i", seq_len(nrow(customDataArgs))),
             sprintf("customStatTable%i", seq_len(nrow(customStatArgs))),
             sprintf("heatMapPlot%i", seq_len(nrow(heatMapArgs))))))
@@ -66,25 +69,28 @@ test_that("selection link creation works correctly", {
     expect_error(
         iSEE:::.spawn_selection_chart(list(
             redDimPlot=redDimArgs,
-            featAssayPlot=featAssayArgs,
-            sampAssayPlot=sampAssayArgs,
             colDataPlot=colDataArgs,
+            featAssayPlot=featAssayArgs,
             rowStatTable=rowStatArgs,
             rowDataPlot=rowDataArgs,
+            sampAssayPlot=sampAssayArgs,
+            colStatTable=colStatArgs,
             customDataPlot=customDataArgs,
             customStatTable=customStatArgs,
             heatMapPlot=heatMapArgs)),
         "cyclic point selection dependencies")
 
     # Checking that it throws up upon being given some garbage.
-    redDimArgs[1,iSEE:::.selectByPlot] <- "whee!"
+    redDimArgs[1, iSEE:::.selectByPlot] <- "whee!"
     expect_error(
         iSEE:::.spawn_selection_chart(list(
-            redDimPlot=redDimArgs,featAssayPlot=featAssayArgs,
-            sampAssayPlot=sampAssayArgs,
+            redDimPlot=redDimArgs,
             colDataPlot=colDataArgs,
+            featAssayPlot=featAssayArgs,
             rowStatTable=rowStatArgs,
             rowDataPlot=rowDataArgs,
+            sampAssayPlot=sampAssayArgs,
+            colStatTable=colStatArgs,
             customDataPlot=customDataArgs,
             customStatTable=customStatArgs,
             heatMapPlot=heatMapArgs)),
@@ -194,11 +200,12 @@ test_that("select dependent identification works correctly", {
     # No restriction in the children.
     memory <- list(
         redDimPlot=redDimArgs,
-        featAssayPlot=featAssayArgs,
-        sampAssayPlot=sampAssayArgs,
         colDataPlot=colDataArgs,
+        featAssayPlot=featAssayArgs,
         rowStatTable=rowStatArgs,
         rowDataPlot=rowDataArgs,
+        sampAssayPlot=sampAssayArgs,
+        colStatTable=colStatArgs,
         customDataPlot=customDataArgs,
         customStatTable=customStatArgs,
         heatMapPlot=heatMapArgs)
@@ -210,11 +217,12 @@ test_that("select dependent identification works correctly", {
     featAssayArgs[1,iSEE:::.selectEffect] <- iSEE:::.selectRestrictTitle
     memory <- list(
         redDimPlot=redDimArgs,
-        featAssayPlot=featAssayArgs,
-        sampAssayPlot=sampAssayArgs,
         colDataPlot=colDataArgs,
+        featAssayPlot=featAssayArgs,
         rowStatTable=rowStatArgs,
         rowDataPlot=rowDataArgs,
+        sampAssayPlot=sampAssayArgs,
+        colStatTable=colStatArgs,
         customDataPlot=customDataArgs,
         customStatTable=customStatArgs,
         heatMapPlot=heatMapArgs)
@@ -226,11 +234,12 @@ test_that("select dependent identification works correctly", {
     colDataArgs[1,iSEE:::.selectEffect] <- iSEE:::.selectRestrictTitle
     memory <- list(
         redDimPlot=redDimArgs,
-        featAssayPlot=featAssayArgs,
-        sampAssayPlot=sampAssayArgs,
         colDataPlot=colDataArgs,
+        featAssayPlot=featAssayArgs,
         rowStatTable=rowStatArgs,
         rowDataPlot=rowDataArgs,
+        sampAssayPlot=sampAssayArgs,
+        colStatTable=colStatArgs,
         customDataPlot=customDataArgs,
         customStatTable=customStatArgs,
         heatMapPlot=heatMapArgs)
@@ -242,11 +251,12 @@ test_that("select dependent identification works correctly", {
     featAssayArgs[1,iSEE:::.selectEffect] <- iSEE:::.selectColorTitle
     memory <- list(
         redDimPlot=redDimArgs,
-        featAssayPlot=featAssayArgs,
-        sampAssayPlot=sampAssayArgs,
         colDataPlot=colDataArgs,
+        featAssayPlot=featAssayArgs,
         rowStatTable=rowStatArgs,
         rowDataPlot=rowDataArgs,
+        sampAssayPlot=sampAssayArgs,
+        colStatTable=colStatArgs,
         customDataPlot=customDataArgs,
         customStatTable=customStatArgs,
         heatMapPlot=heatMapArgs)
@@ -307,11 +317,12 @@ test_that("selections involving custom panels work correctly", {
 	# Initialization works correctly.
 	memory <- list(
 	    redDimPlot=redDimArgs,
-	    featAssayPlot=featAssayArgs,
-	    sampAssayPlot=sampAssayArgs,
 	    colDataPlot=colDataArgs,
+	    featAssayPlot=featAssayArgs,
 	    rowStatTable=rowStatArgs,
 	    rowDataPlot=rowDataArgs,
+	    sampAssayPlot=sampAssayArgs,
+	    colStatTable=colStatArgs,
 	    customDataPlot=customDataArgs,
 	    customStatTable=customStatArgs,
 	    heatMapPlot=heatMapArgs

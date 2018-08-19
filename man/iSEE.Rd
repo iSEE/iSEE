@@ -6,9 +6,10 @@
 \usage{
 iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featAssayArgs = NULL,
   rowStatArgs = NULL, rowDataArgs = NULL, sampAssayArgs = NULL,
-  customDataArgs = NULL, customStatArgs = NULL, heatMapArgs = NULL,
-  redDimMax = 5, colDataMax = 5, featAssayMax = 5, rowStatMax = 5,
-  rowDataMax = 5, sampAssayMax = 5, customDataMax = 5,
+  colStatArgs = NULL, customDataArgs = NULL, customStatArgs = NULL,
+  heatMapArgs = NULL, redDimMax = 5, colDataMax = 5,
+  featAssayMax = 5, rowStatMax = 5, rowDataMax = 5,
+  sampAssayMax = 5, colStatMax = 5, customDataMax = 5,
   customStatMax = 5, heatMapMax = 5, initialPanels = NULL,
   annotFun = NULL, customDataFun = NULL, customStatFun = NULL,
   colormap = ExperimentColorMap(), tour = NULL, appTitle = NULL,
@@ -29,6 +30,8 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featAssayArgs = NULL,
 
 \item{sampAssayArgs}{A DataFrame similar to that produced by \code{\link{sampAssayPlotDefaults}}, specifying initial parameters for the sample assay plots.}
 
+\item{colStatArgs}{A DataFrame similar to that produced by \code{\link{colStatTableDefaults}}, specifying initial parameters for the sample assay plots.}
+
 \item{customDataArgs}{A DataFrame similar to that produced by \code{\link{customDataPlotDefaults}}, specifying initial parameters for the custom data plots.}
 
 \item{customStatArgs}{A DataFrame similar to that produced by \code{\link{customStatTableDefaults}}, specifying initial parameters for the custom statistics tables.}
@@ -46,6 +49,8 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featAssayArgs = NULL,
 \item{rowDataMax}{An integer scalar specifying the maximum number of row data plots in the interface.}
 
 \item{sampAssayMax}{An integer scalar specifying the maximum number of sample assay plots in the interface.}
+
+\item{colStatMax}{An integer scalar specifying the maximum number of column statistics tables in the interface.}
 
 \item{customDataMax}{An integer scalar specifying the maximum number of custom data plots in the interface.}
 

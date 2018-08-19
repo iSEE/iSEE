@@ -119,10 +119,11 @@
 
     # Defining all transmitting tables and plots for linking.
     link_sources <- .define_link_sources(active_panels)
-    active_tab <- c(.noSelection, link_sources$tab)
-    row_selectable <- c(.noSelection, link_sources$row)
-    col_selectable <- c(.noSelection, link_sources$col)
-    heatmap_sources <- c(.noSelection, link_sources$row, link_sources$tab)
+    tab_by_row <- c(.noSelection, link_sources$row_tab)
+    tab_by_col <- c(.noSelection, link_sources$col_tab)
+    row_selectable <- c(.noSelection, link_sources$row_plot)
+    col_selectable <- c(.noSelection, link_sources$col_plot)
+    heatmap_sources <- c(.noSelection, link_sources$row_plot, link_sources$row_tab)
 
     for (i in seq_len(nrow(active_panels))) {
         mode <- active_panels$Type[i]
@@ -133,7 +134,7 @@
         .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
         # Checking what to do with plot-specific parameters (e.g., brushing, clicking, plot height).
-        if (! mode %in% c("rowStatTable", "customStatTable")) {
+        if (! mode %in% c(linked_table_types, "customStatTable")) {
             brush.opts <- brushOpts(.input_FUN(.brushField), resetOnNew=FALSE,
                                     direction = ifelse(mode=="heatMapPlot", "y", "xy"),
                                     fill=brush_fill_color[mode], stroke=brush_stroke_color[mode],
@@ -185,8 +186,8 @@
             plot.param <- list(
                 selectizeInput(.input_FUN(.featAssayYAxisFeatName),
                                label = "Y-axis feature:", choices = NULL, selected = NULL, multiple=FALSE),
-                selectInput(.input_FUN(.featAssayYAxisRowTable), label=NULL, choices=active_tab,
-                            selected=.choose_link(param_choices[[.featAssayYAxisRowTable]], active_tab, force_default=TRUE)),
+                selectInput(.input_FUN(.featAssayYAxisRowTable), label=NULL, choices=tab_by_row,
+                            selected=.choose_link(param_choices[[.featAssayYAxisRowTable]], tab_by_row, force_default=TRUE)),
                 selectInput(.input_FUN(.featAssayAssay), label=NULL,
                             choices=all_assays, selected=param_choices[[.featAssayAssay]]),
                 radioButtons(.input_FUN(.featAssayXAxis), label="X-axis:", inline=TRUE,
@@ -201,10 +202,12 @@
                                          selectizeInput(.input_FUN(.featAssayXAxisFeatName),
                                                         label = "X-axis feature:", choices = NULL, selected = NULL, multiple = FALSE),
                                          selectInput(.input_FUN(.featAssayXAxisRowTable), label=NULL,
-                                                     choices=active_tab, selected=param_choices[[.featAssayXAxisRowTable]]))
+                                                     choices=tab_by_row, selected=param_choices[[.featAssayXAxisRowTable]]))
                 )
         } else if (mode=="rowStatTable") {
             obj <- tagList(dataTableOutput(panel_name), uiOutput(.input_FUN("annotation")))
+        } else if (mode=="colStatTable") {
+            obj <- dataTableOutput(panel_name)
         } else if (mode=="customStatTable" || mode=="customDataPlot") {
             if (mode=="customDataPlot") {
                 obj <- plotOutput(panel_name, height=panel_height)
@@ -243,12 +246,14 @@
             if (length(row_covariates)) { # As it is possible for this plot to be _feasible_ but for no row data to exist.
                 xaxis_choices <- c(xaxis_choices, .sampAssayXAxisRowDataTitle)
             }
-            xaxis_choices <- c(xaxis_choices, .sampAssayXAxisSampleTitle)
+            xaxis_choices <- c(xaxis_choices, .sampAssayXAxisSampNameTitle)
 
             plot.param <- list(
-                selectInput(.input_FUN(.sampAssayYAxis),
+                selectInput(.input_FUN(.sampAssayYAxisSampName),
                             label = "Sample of interest (Y-axis):",
-                            choices=sample_names, selected=param_choices[[.sampAssayYAxis]]),
+                            choices=sample_names, selected=param_choices[[.sampAssayYAxisSampName]]),
+                selectInput(.input_FUN(.sampAssayYAxisColTable), label=NULL, choices=tab_by_col,
+                            selected=.choose_link(param_choices[[.sampAssayYAxisColTable]], tab_by_col, force_default=TRUE)),
                 selectInput(.input_FUN(.sampAssayAssay), label=NULL,
                             choices=all_assays, selected=param_choices[[.sampAssayAssay]]),
                 radioButtons(.input_FUN(.sampAssayXAxis), label="X-axis:", inline=TRUE,
@@ -259,10 +264,12 @@
                                                      label = "Row data of interest (X-axis):",
                                                      choices=row_covariates, selected=param_choices[[.sampAssayXAxisRowData]])),
                 .conditional_on_radio(.input_FUN(.sampAssayXAxis),
-                                         .sampAssayXAxisSampleTitle,
-                                         selectInput(.input_FUN(.sampAssayXAxisSample),
+                                         .sampAssayXAxisSampNameTitle,
+                                         selectInput(.input_FUN(.sampAssayXAxisSampName),
                                                      label = "Sample of interest (X-axis):",
-                                                     choices=sample_names, selected=param_choices[[.sampAssayXAxisSample]]))
+                                                     choices=sample_names, selected=param_choices[[.sampAssayXAxisSampName]]),
+                                         selectInput(.input_FUN(.sampAssayXAxisColTable), label=NULL,
+                                                     choices=tab_by_col, selected=param_choices[[.sampAssayXAxisColTable]]))
                 )
         } else if (mode=="heatMapPlot") {
             obj <- plotOutput(panel_name, brush=brush.opts, dblclick=dblclick, height=panel_height)
@@ -307,7 +314,7 @@
                     )
                 )
         } else {
-            stop(sprintf("'%s' is not a recognized panel mode"), mode)
+            stop(sprintf("'%s' is not a recognized panel mode", mode))
         }
 
         # Adding graphical parameters if we're plotting.
@@ -354,7 +361,7 @@
 
                 param <- list(tags$div(class = "panel-group", role = "tablist",
                     data_box,
-                    create_FUN(mode, id, param_choices, active_tab, se), # Options for visual parameters.
+                    create_FUN(mode, id, param_choices, tab_by_row, tab_by_col, se), # Options for visual parameters.
                     .create_selection_param_box(mode, id, param_choices, select_choices, source_type) # Options for point selection parameters.
                     )
                 )
@@ -417,9 +424,10 @@
 .define_link_sources <- function(active_panels) {
     all_names <- .decode_panel_name(active_panels$Type, active_panels$ID)
     list(
-        tab=all_names[active_panels$Type=="rowStatTable"],
-        row=all_names[active_panels$Type %in% c("rowDataPlot", "sampAssayPlot")],
-        col=all_names[active_panels$Type %in% c("redDimPlot", "colDataPlot", "featAssayPlot")]
+        row_tab=all_names[active_panels$Type=="rowStatTable"],
+        col_tab=all_names[active_panels$Type=="colStatTable"],
+        row_plot=all_names[active_panels$Type %in% row_point_plot_types],
+        col_plot=all_names[active_panels$Type %in% col_point_plot_types]
     )
 }
 
@@ -462,7 +470,8 @@
 #' @param mode String specifying the encoded panel type of the current plot.
 #' @param id Integer scalar specifying the index of a panel of the specified type, for the current plot.
 #' @param param_choices A DataFrame with one row, containing the parameter choices for the current plot.
-#' @param active_tab A character vector of decoded names for available row statistics tables.
+#' @param active_row_tab A character vector of decoded names for available row statistics tables.
+#' @param active_col_tab A character vector of decoded names for available column statistics tables.
 #' @param se A SingleCellExperiment object with precomputed UI information from \code{\link{.precompute_UI_info}}.
 #'
 #' @return
@@ -494,7 +503,7 @@
 #' @importFrom shiny radioButtons tagList selectInput selectizeInput
 #' checkboxGroupInput
 #' @importFrom colourpicker colourInput
-.create_visual_box_for_column_plots <- function(mode, id, param_choices, active_tab, se) {
+.create_visual_box_for_column_plots <- function(mode, id, param_choices, active_row_tab, active_col_tab, se) {
     covariates <- colnames(colData(se))
     discrete_covariates <- .get_internal_info(se, "column_groupable")
     all_assays <- .get_internal_info(se, "all_assays")
@@ -528,8 +537,15 @@
                 tagList(selectizeInput(paste0(mode, id, "_", .colorByFeatName), label = NULL, choices = NULL, selected = NULL, multiple = FALSE),
                         selectInput(paste0(mode, id, "_", .colorByFeatNameAssay), label=NULL,
                                     choices=all_assays, selected=param_choices[[.colorByFeatNameAssay]])),
-                        selectInput(paste0(mode, id, "_", .colorByRowTable), label = NULL, choices=active_tab,
-                                    selected=.choose_link(param_choices[[.colorByRowTable]], active_tab, force_default=TRUE))
+                        selectInput(paste0(mode, id, "_", .colorByRowTable), label = NULL, choices=active_row_tab,
+                                    selected=.choose_link(param_choices[[.colorByRowTable]], active_row_tab, force_default=TRUE))
+                ),
+            .conditional_on_radio(colorby_field, .colorBySampNameTitle,
+                tagList(selectizeInput(paste0(mode, id, "_", .colorBySampName), label = NULL, selected = NULL, choices = NULL, multiple = FALSE),
+                        selectInput(paste0(mode, id, "_", .colorByColTable), label = NULL, choices=active_col_tab,
+                                    selected=.choose_link(param_choices[[.colorByColTable]], active_col_tab, force_default=TRUE)),
+                        colourInput(paste0(mode, id, "_", .colorBySampNameColor), label=NULL,
+                                    value=param_choices[[.colorBySampNameColor]]))
                 )
             ),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceShapeTitle,
@@ -583,6 +599,9 @@
     }
     if (nrow(se) && length(assayNames(se))) {
         color_choices <- c(color_choices, .colorByFeatNameTitle)
+    }
+    if (ncol(se)) {
+        color_choices <- c(color_choices, .colorBySampNameTitle)
     }
     return(color_choices)
 }
@@ -652,7 +671,8 @@
 #' @param mode String specifying the encoded panel type of the current plot.
 #' @param id Integer scalar specifying the index of a panel of the specified type, for the current plot.
 #' @param param_choices A DataFrame with one row, containing the parameter choices for the current plot.
-#' @param active_tab A character vector of decoded names for available row statistics tables.
+#' @param active_row_tab A character vector of decoded names for available row statistics tables.
+#' @param active_col_tab A character vector of decoded names for available row statistics tables.
 #' @param se A SingleCellExperiment object with precomputed UI information from \code{\link{.precompute_UI_info}}.
 #'
 #' @return
@@ -680,9 +700,10 @@
 #' @importFrom shiny radioButtons tagList selectInput selectizeInput
 #' checkboxGroupInput
 #' @importFrom colourpicker colourInput
-.create_visual_box_for_row_plots <- function(mode, id, param_choices, active_tab, se) {
+.create_visual_box_for_row_plots <- function(mode, id, param_choices, active_row_tab, active_col_tab, se) {
     covariates <- colnames(rowData(se))
     discrete_covariates <- .get_internal_info(se, "row_groupable")
+    all_assays <- .get_internal_info(se, "all_assays")
 
     colorby_field <- paste0(mode, id, "_", .colorByField)
     shapeby_field <- paste0(mode, id, "_", .shapeByField)
@@ -710,10 +731,17 @@
                 ),
             .conditional_on_radio(colorby_field, .colorByFeatNameTitle,
                 tagList(selectizeInput(paste0(mode, id, "_", .colorByFeatName), label = NULL, selected = NULL, choices = NULL, multiple = FALSE),
-                        selectInput(paste0(mode, id, "_", .colorByRowTable), label = NULL, choices=active_tab,
-                                    selected=.choose_link(param_choices[[.colorByRowTable]], active_tab, force_default=TRUE)),
+                        selectInput(paste0(mode, id, "_", .colorByRowTable), label = NULL, choices=active_row_tab,
+                                    selected=.choose_link(param_choices[[.colorByRowTable]], active_row_tab, force_default=TRUE)),
                         colourInput(paste0(mode, id, "_", .colorByFeatNameColor), label=NULL,
                                     value=param_choices[[.colorByFeatNameColor]]))
+                ),
+            .conditional_on_radio(colorby_field, .colorBySampNameTitle,
+                tagList(selectizeInput(paste0(mode, id, "_", .colorBySampName), label = NULL, choices = NULL, selected = NULL, multiple = FALSE),
+                        selectInput(paste0(mode, id, "_", .colorBySampNameAssay), label=NULL,
+                                    choices=all_assays, selected=param_choices[[.colorBySampNameAssay]])),
+                        selectInput(paste0(mode, id, "_", .colorByColTable), label = NULL, choices=active_col_tab,
+                                    selected=.choose_link(param_choices[[.colorByColTable]], active_col_tab, force_default=TRUE))
                 )
             ),
         .conditional_on_check_group(pchoice_field, .visualParamChoiceShapeTitle,
@@ -744,6 +772,9 @@
     }
     if (nrow(se)) {
         color_choices <- c(color_choices, .colorByFeatNameTitle)
+    }
+    if (ncol(se) && length(assayNames(se))) {
+        color_choices <- c(color_choices, .colorBySampNameTitle)
     }
     return(color_choices)
 }
@@ -883,6 +914,8 @@
 #' @param param_choices A DataFrame with one row, containing the parameter choices for the current plot.
 #' @param selectable A character vector of decoded names for available transmitting panels.
 #' @param source_type Type of the panel that is source of the selection. Either \code{"row"} or \code{"column"}.
+#' @param ... Additional arguments passed to \code{\link{collapseBox}}.
+#' @param field Column name in the DataFrame of parameters choices for the current plot.
 #'
 #' @return
 #' For \code{.create_selection_param_box} and \code{.create_selection_param_box_define_box},

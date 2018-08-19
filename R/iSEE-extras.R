@@ -62,6 +62,7 @@
         rowStatTable=! (nrow(se)==0L),
         rowDataPlot=! (ncol(rowData(se))==0L || nrow(se)==0L),
         sampAssayPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
+        colStatTable=! (ncol(se)==0L),
         customDataPlot=! ((ncol(se)==0L && nrow(se)==0L) || length(.get_internal_info(se, "custom_data_fun"))==0L),
         customStatTable=! ((ncol(se)==0L && nrow(se)==0L) || length(.get_internal_info(se, "custom_stat_fun"))==0L),
         heatMapPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L)
@@ -108,6 +109,7 @@
 #' @param rowStatArgs A DataFrame or data.frame of user-specified arguments for row statistics tables.
 #' @param rowDataArgs A DataFrame or data.frame of user-specified arguments for row data plots.
 #' @param sampAssayArgs A DataFrame or data.frame of user-specified arguments for sample assay plots.
+#' @param colStatArgs A DataFrame or data.frame of user-specified arguments for column statistics tables.
 #' @param customDataArgs A DataFrame or data.frame of user-specified arguments for custom data plots.
 #' @param customStatArgs A DataFrame or data.frame of user-specified arguments for custom statistics tables.
 #' @param heatMapArgs A DataFrame or data.frame of user-specified arguments for heat maps.
@@ -117,8 +119,9 @@
 #' @param rowStatMax Integer scalar specifying the maximum number of row statistics tables.
 #' @param rowDataMax Integer scalar specifying the maximum number of row data plots.
 #' @param sampAssayMax Integer scalar specifying the maximum number of sample assay plots.
+#' @param colStatMax Integer scalar specifying the maximum number of column statistics tables.
 #' @param customDataMax Integer scalar specifying the maximum number of custom column plots.
-#' @param customStatMax Integer scalar specifying the maximum number of custom statistics tables. 
+#' @param customStatMax Integer scalar specifying the maximum number of custom statistics tables.
 #' @param heatMapMax Integer scalar specifying the maximum number of heat maps.
 #'
 #' @return
@@ -153,6 +156,7 @@
         rowStatArgs,
         rowDataArgs,
         sampAssayArgs,
+        colStatArgs,
         customDataArgs,
         customStatArgs,
         heatMapArgs,
@@ -162,29 +166,32 @@
         rowStatMax,
         rowDataMax,
         sampAssayMax,
+        colStatMax,
         customDataMax,
         customStatMax,
         heatMapMax) {
-    
+
     all_args <- list(
-        redDimPlot=redDimArgs, 
-        colDataPlot=colDataArgs, 
+        redDimPlot=redDimArgs,
+        colDataPlot=colDataArgs,
         featAssayPlot=featAssayArgs,
-        rowStatTable=rowStatArgs, 
-        rowDataPlot=rowDataArgs, 
+        rowStatTable=rowStatArgs,
+        rowDataPlot=rowDataArgs,
         sampAssayPlot=sampAssayArgs,
+        colStatTable=colStatArgs,
         customDataPlot=customDataArgs,
         customStatTable=customStatArgs,
         heatMapPlot=heatMapArgs
     )
-    
+
     all_maxes <- list(
-        redDimPlot=redDimMax, 
-        colDataPlot=colDataMax, 
+        redDimPlot=redDimMax,
+        colDataPlot=colDataMax,
         featAssayPlot=featAssayMax,
-        rowStatTable=rowStatMax, 
-        rowDataPlot=rowDataMax, 
+        rowStatTable=rowStatMax,
+        rowDataPlot=rowDataMax,
         sampAssayPlot=sampAssayMax,
+        colStatTable=colStatMax,
         customDataPlot=customDataMax,
         customStatTable=customStatMax,
         heatMapPlot=heatMapMax
@@ -207,20 +214,22 @@
     all_args$featAssayPlot <- .name2index(all_args$featAssayPlot, c(.featAssayXAxisFeatName, .featAssayYAxisFeatName), rownames(se))
     all_args$featAssayPlot <- .name2index(all_args$featAssayPlot, .featAssayAssay, assayNames(se))
 
-    all_args$rowStatTable <- .name2index(all_args$rowStatTable, .rowStatSelected, rownames(se))
-    
-    all_args$sampAssayPlot <- .name2index(all_args$sampAssayPlot, c(.sampAssayYAxis, .sampAssayXAxisSample), colnames(se))
+    all_args$rowStatTable <- .name2index(all_args$rowStatTable, .statTableSelected, rownames(se))
+
+    all_args$sampAssayPlot <- .name2index(all_args$sampAssayPlot, c(.sampAssayYAxisSampName, .sampAssayXAxisSampName), colnames(se))
     all_args$sampAssayPlot <- .name2index(all_args$sampAssayPlot, .sampAssayAssay, assayNames(se))
 
-    all_args$heatMapPlot <- .name2index(all_args$heatMapPlot, .heatMapFeatName, rownames(se))
+    all_args$colStatTable <- .name2index(all_args$colStatTable, .statTableSelected, colnames(se))
+
+    all_args$heatMapPlot <- .name2index(all_args$heatMapPlot, .heatMapFeatName, colnames(se))
     all_args$heatMapPlot <- .name2index(all_args$heatMapPlot, .heatMapAssay, assayNames(se))
 
-    for (mode in c("redDimPlot", "featAssayPlot", "colDataPlot")) {
+    for (mode in col_point_plot_types) {
         all_args[[mode]] <- .name2index(all_args[[mode]], .colorByFeatName, rownames(se))
         all_args[[mode]] <- .name2index(all_args[[mode]], .colorByFeatNameAssay, assayNames(se))
     }
 
-    for (mode in c("rowDataPlot", "sampAssayPlot")) {
+    for (mode in row_point_plot_types) {
         all_args[[mode]] <- .name2index(all_args[[mode]], .colorByFeatName, rownames(se))
     }
 
@@ -234,6 +243,7 @@
             rowStatTable=rowStatTableDefaults,
             rowDataPlot=rowDataPlotDefaults,
             sampAssayPlot=sampAssayPlotDefaults,
+            colStatTable=colStatTableDefaults,
             customDataPlot=customDataPlotDefaults,
             customStatTable=customStatTableDefaults,
             heatMapPlot=heatMapPlotDefaults)
@@ -265,7 +275,7 @@
 #' This function was developed because users may find it easier to specify strings for particular parameter settings, e.g., gene or assay names.
 #' However, integer indices are safer to work with (as duplicates cannot occur) and are expected in the internal \pkg{iSEE} functions.
 #' Hence the need for this conversion.
-#' 
+#'
 #' If the field contains strings, the function will \code{match} them to the choices in \code{choices} to identify their indices.
 #' Any missing matches are set to indices of 1.
 #' If the field contains some other atomic value, the function will try to coerce it into an integer, setting 1 for any failures.
@@ -337,8 +347,8 @@
     if (is.null(initialPanels)) {
         initialPanels <- data.frame(
             Name=paste(translation, 1),
-            Width=4, 
-            Height=500L, 
+            Width=4,
+            Height=500L,
             stringsAsFactors=FALSE
         )
     }
@@ -378,7 +388,7 @@ width_limits <- c(2L, 12L)
 height_limits <- c(400L, 1000L)
 
 #' Sanitize the memory
-#' 
+#'
 #' Make sure that the memory is sane by ensuring that links only occur between two active panels.
 #'
 #' @param active_panels A data.frame produced by \code{\link{.setup_initial}}.
@@ -391,7 +401,7 @@ height_limits <- c(400L, 1000L)
 #' Active panels should not receive point selection information from inactive panels or have links to inactive row statistics tables.
 #' Similarly, inactive panels should not receive point selection information from \emph{any} panels.
 #' In both cases, transmitters in memory are set to \code{"---"}.
-#' 
+#'
 #' This behaviour ensures that the graph in \code{\link{.spawn_selection_chart}} or the links in \code{\link{.spawn_table_links}} are valid.
 #' Specifically, there are never any inactive entities in either of these two constructs.
 #' This ensures that only active dependent panels are updated throughout the course of the app, avoiding unnecessary work and improving efficiency.
@@ -403,73 +413,70 @@ height_limits <- c(400L, 1000L)
 #' \code{\link{.spawn_table_links}},
 #' \code{\link{.setup_initial}}
 .sanitize_memory <- function(active_panels, memory) {
-    link_sources <- .define_link_sources(active_panels)
-    active_tab <- link_sources$tab
-    row_selectable <- link_sources$row
-    col_selectable <-  link_sources$col
     all_active <- paste0(active_panels$Type, active_panels$ID)
 
-    # Checking for selecting/linking of main panels.
-    for (mode in c("redDimPlot", "colDataPlot", "featAssayPlot", "rowDataPlot", "sampAssayPlot", "rowStatTable")) {
-        cur_memory <- memory[[mode]]
-        self_active <- rownames(cur_memory)
+    FUN <- function(memory, field, available) {
+        bb <- memory[,field]
+        bad <- !bb %in% available | !rownames(memory) %in% all_active
+        if (any(bad)) {
+            memory[,field][bad] <- .noSelection
+        }
+        memory
+    }
 
-        if (mode %in% c("rowDataPlot", "sampAssayPlot", "rowStatTable")) { 
+    link_sources <- .define_link_sources(active_panels)
+    tab_by_row <- link_sources$row_tab
+    tab_by_col <- link_sources$col_tab
+    row_selectable <- link_sources$row_plot
+    col_selectable <- link_sources$col_plot
+    heatmap_sources <- c(tab_by_row, row_selectable)
+
+    # Checking for selecting/linking of main panels.
+    for (mode in c(point_plot_types, linked_table_types)) {
+        if (mode %in% c("rowDataPlot", "sampAssayPlot", "rowStatTable")) {
             selectable <- row_selectable
         } else {
             selectable <- col_selectable
         }
 
-        bb <- cur_memory[,.selectByPlot]
-        bad <- !bb %in% selectable | !self_active %in% all_active
-        if (any(bad)) {
-            memory[[mode]][,.selectByPlot][bad] <- .noSelection
-        }
-
-        if (mode!="rowStatTable") {
-            cb <- cur_memory[,.colorByRowTable]
-            bad <- !cb %in% active_tab | !self_active %in% all_active
-            if (any(bad)) {
-                memory[[mode]][,.colorByRowTable][bad] <- .noSelection
-            }
-        }
-    }
-
-    # Checking for selecting/linking of custom plots and tables.
-    for (mode in c("customDataPlot", "customStatTable")) {
-        cur_memory <- memory[[mode]]
-        self_active <- rownames(cur_memory)
-
-        bb <- cur_memory[,.customRowSource]
-        bad <- !bb %in% row_selectable | !self_active %in% all_active
-        if (any(bad)) {
-            memory[[mode]][,.customRowSource][bad] <- .noSelection
-        }
-
-        bb <- cur_memory[,.customColSource]
-        bad <- !bb %in% col_selectable | !self_active %in% all_active
-        if (any(bad)) {
-            memory[[mode]][,.customColSource][bad] <- .noSelection
+        memory[[mode]] <- FUN(memory[[mode]], .selectByPlot, selectable)
+        if (mode %in% point_plot_types) {
+            memory[[mode]] <- FUN(memory[[mode]], .colorByRowTable, tab_by_row)
+            memory[[mode]] <- FUN(memory[[mode]], .colorByColTable, tab_by_col)
         }
     }
 
     # Checking for linking of x/y-axes of feature assay plots.
-    feat_active <- rownames(memory$featAssayPlot)
-    for (field in c(.featAssayXAxisRowTable, .featAssayYAxisRowTable)) {
-        bb <- memory$featAssayPlot[,field]
+    for (mode in c("featAssayPlot", "sampAssayPlot")) {
+        if (mode=="featAssayPlot") {
+            fields <- c(.featAssayXAxisRowTable, .featAssayYAxisRowTable)
+            linkable <- tab_by_row
+        } else {
+            fields <- c(.sampAssayXAxisColTable, .sampAssayYAxisColTable)
+            linkable <- tab_by_col
+        }
 
-        bad <- !bb %in% active_tab | !feat_active %in% all_active
-        if (any(bad)) {
-            memory$featAssayPlot[,field][bad] <- .noSelection
+        for (field in fields) {
+            memory[[mode]] <- FUN(memory[[mode]], field, linkable) 
         }
     }
+
+    # Checking for selecting/linking of custom plots and tables.
+    for (mode in custom_panel_types) {
+        memory[[mode]] <- FUN(memory[[mode]], .customRowSource, row_selectable)
+        memory[[mode]] <- FUN(memory[[mode]], .customColSource, col_selectable)
+    }
+
+    # Checking for linking of heatmaps.
+    memory$heatMapPlot <- FUN(memory$heatMapPlot, .heatMapImportSource, heatmap_sources)
+
     return(memory)
 }
 
 #' Trigger replotting
 #'
 #' Trigger regeneration of a particular plot, clearing all selections from Shiny brushes or lasso waypoints.
-#' 
+#'
 #' @param mode String specifying the (encoded) panel type of the current panel to be replotted.
 #' @param id Integer scalar specifying the ID of the current panel of the specified type.
 #' @param pObjects An environment containing \code{memory}, a list of DataFrames containing parameters for each panel of each type.
@@ -487,7 +494,7 @@ height_limits <- c(400L, 1000L)
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_regenerate_unselected_plot
-#' @seealso 
+#' @seealso
 #' \code{\link{iSEE}}
 .regenerate_unselected_plot <- function(mode, id, pObjects, rObjects, input, session) {
     plot_name <- paste0(mode, id)
@@ -516,11 +523,11 @@ height_limits <- c(400L, 1000L)
 #' @param graph A graph object produced by \code{\link{.spawn_selection_chart}}, specifying the point selection links between panels.
 #'
 #' @return A HTML object containing a description of the panel from which \code{panel} receives information,
-#' and a description of all the other panels to which \code{panel} transmits information. 
+#' and a description of all the other panels to which \code{panel} transmits information.
 #'
 #' @details
 #' Information reception includes the receipt of point selection information from a transmitting plot,
-#' or the receipt of a feature selection information from a row statistics table (for color or x/y-axis specification).
+#' or the receipt of a feature/sample selection information from a row/column statistics table (for color or x/y-axis specification).
 #' Transmission should involve transferring point selection information from \code{panel} to other receiving panels.
 #'
 #' @author Aaron Lun
@@ -528,7 +535,7 @@ height_limits <- c(400L, 1000L)
 #' @seealso
 #' \code{\link{iSEE}}
 #'
-#' @importFrom shiny em strong br tagList 
+#' @importFrom shiny em strong br tagList
 #' @importFrom igraph adjacent_vertices
 .define_plot_links <- function(panel, memory, graph)
 {
@@ -542,20 +549,34 @@ height_limits <- c(400L, 1000L)
         output <- c(output, list("Receiving selection from", em(strong(select_in)), br()))
     }
 
+    if (enc$Type %in% col_point_plot_types) {
+        col_tab <- .colorByRowTable
+        col_title <- .colorByFeatNameTitle
+        y_tab <- .featAssayYAxisRowTable
+        x_tab <- .featAssayXAxisRowTable
+        x_type <- .featAssayXAxis
+        x_title <- .featAssayXAxisFeatNameTitle
+    } else {
+        col_tab <- .colorByColTable
+        col_title <- .colorBySampNameTitle
+        y_tab <- .sampAssayYAxisColTable
+        x_tab <- .sampAssayXAxisColTable
+        x_type <- .sampAssayXAxis
+        x_title <- .sampAssayXAxisSampNameTitle
+    }
+
     # Checking colour status.
-    if (param_choices[[.colorByField]]==.colorByFeatNameTitle
-        && param_choices[[.colorByRowTable]]!=.noSelection) {
-        output <- c(output, list("Receiving color from", em(strong(param_choices[[.colorByRowTable]])), br()))
+    if (param_choices[[.colorByField]]==col_title && param_choices[[col_tab]]!=.noSelection) {
+        output <- c(output, list("Receiving color from", em(strong(param_choices[[col_tab]])), br()))
     }
 
     # Checking input/output for feature assay plots.
-    if (enc$Type=="featAssayPlot") {
-        if (param_choices[[.featAssayYAxisRowTable]]!=.noSelection) {
-            output <- c(output, list("Receiving y-axis from", em(strong(param_choices[[.featAssayYAxisRowTable]])), br()))
+    if (enc$Type %in% c("featAssayPlot", "sampAssayPlot")) {
+        if (param_choices[[y_tab]]!=.noSelection) {
+            output <- c(output, list("Receiving y-axis from", em(strong(param_choices[[y_tab]])), br()))
         }
-        if (param_choices[[.featAssayXAxis]]==.featAssayXAxisFeatNameTitle
-            && param_choices[[.featAssayXAxisRowTable]]!=.noSelection) {
-            output <- c(output, list("Receiving x-axis from", em(strong(param_choices[[.featAssayXAxisRowTable]])), br()))
+        if (param_choices[[x_type]]==x_title && param_choices[[x_tab]]!=.noSelection) {
+            output <- c(output, list("Receiving x-axis from", em(strong(param_choices[[x_tab]])), br()))
         }
     }
 
@@ -572,17 +593,18 @@ height_limits <- c(400L, 1000L)
 
 #' Report table links
 #'
-#' Report the links to/from other panels in the interface for the current row statistics table. 
+#' Report the links to/from other panels in the interface for the current row statistics table.
 #'
 #' @param panel String containing the encoded name for the current row statistics table.
 #' @param memory A list of DataFrames containing parameters for each panel of each type.
-#' @param table_links A list of lists produced by \code{\link{.spawn_table_links}}, specifying the links between tables and dependent plots. 
+#' @param table_links A list of lists produced by \code{\link{.spawn_table_links}}, specifying the links between tables and dependent plots.
 #'
 #' @return A HTML object containing a description of the panel from which \code{panel} receives information,
-#' and a description of all the other panels to which \code{panel} transmits information. 
+#' and a description of all the other panels to which \code{panel} transmits information.
 #'
 #' @details
-#' Information transmission from a row statistics table involves selection of features for use in color or x/y-axis specification in other plots.
+#' Information transmission from a row statistics table involves selection of features for use in color or x/y-axis specification in column-based plots.
+#' Information transmission from a column statistics table involves selection of samples for use in color or x/y-axis specification in row-based plots.
 #' Information reception is less common and involves the receipt of point selections from a transmitting plot.
 #'
 #' @author Aaron Lun
@@ -590,7 +612,7 @@ height_limits <- c(400L, 1000L)
 #' @seealso
 #' \code{\link{iSEE}}
 #'
-#' @importFrom shiny em strong br tagList 
+#' @importFrom shiny em strong br tagList
 #' @importFrom igraph adjacent_vertices
 .define_table_links <- function(panel, memory, table_links) {
     enc <- .split_encoded(panel)
@@ -603,13 +625,20 @@ height_limits <- c(400L, 1000L)
         output <- c(output, list("Receiving selection from", em(strong(select_in)), br()))
     }
 
+    transmittees <- list(c("yaxis", "y-axis", NA, NA))
+    if (enc$Type=="rowStatTable") {
+        transmittees <- c(transmittees,
+                list(c("xaxis", "x-axis", .featAssayXAxis, .featAssayXAxisFeatNameTitle),
+                c("color", "color", .colorByField, .colorByFeatNameTitle)))
+    } else {
+        transmittees <- c(transmittees,
+                list(c("xaxis", "x-axis", .sampAssayXAxis, .sampAssayXAxisSampNameTitle),
+                c("color", "color", .colorByField, .colorBySampNameTitle)))
+    }
+
     # Checking where it broadcasts to plots.
     current <- table_links[[panel]]
-    for (trans in list(c("yaxis", "y-axis", NA, NA),
-                       c("xaxis", "x-axis", .featAssayXAxis, .featAssayXAxisFeatNameTitle),
-                       c("color", "color", .colorByField, .colorByFeatNameTitle))
-        ) {
-
+    for (trans in transmittees) {
         children <- current[[trans[1]]]
         child_enc <- .split_encoded(children)
         child_names <- .decode_panel_name(child_enc$Type, child_enc$ID)
@@ -618,8 +647,8 @@ height_limits <- c(400L, 1000L)
         by_field <- trans[3]
         ref_title <- trans[4]
 
-        # Only writing a broadcast label if the plot actually receives the information via the
-        # appropriate parameter choices. Y-axis for feature plots is NA, as there are no choices there.
+        # Only writing a broadcast label if the plot actually receives the information via the appropriate parameter choices.
+        # Y-axis for feature/sample assay plots is NA, as there are no choices there, so it always gets listed.
         for (i in seq_along(child_names)) {
             if (is.na(by_field) || memory[[child_enc$Type[i]]][child_enc$ID[i], by_field]==ref_title) {
                 output <- c(output, list(out_str, em(strong(child_names[i])), br()))
@@ -631,22 +660,22 @@ height_limits <- c(400L, 1000L)
 }
 
 #' Establish the evaluation order
-#' 
+#'
 #' Establish the order in which connected panels are to be evaluated during app initialization.
-#' 
+#'
 #' @param graph A graph object containing links between panels, produced by \code{\link{.spawn_selection_chart}}.
-#' 
+#'
 #' @details
 #' This function identifies any initial connections between panels (e.g., specified in the panel arguments) for point selection.
 #' It then orders the connected panels such that any transmitters are placed in front of their receivers.
-#' 
+#'
 #' The idea is to \dQuote{evaluate} the plots at the start of the app, to obtain the coordinates for transmitting to other panels.
 #' Otherwise, errors will be encountered whereby a panel tries to select from a set of coordinates that do not yet exist.
 #'
 #' Unlike its relative \code{\link{.get_reporting_order}}, only transmitting panels are ever reported by this function.
 #' It is not necessary to evaluate receiving-only panels, and in fact will result in errors for heatmaps and row statistics tables,
 #' as these do not even have coordinates to save.
-#' 
+#'
 #' @return A character vector containing encoded names for transmitting panels in their evaluation order.
 #'
 #' @author Aaron Lun
@@ -662,38 +691,38 @@ height_limits <- c(400L, 1000L)
 }
 
 #' Define the selected points
-#' 
-#' Evaluate the point selection commands to obtain the selected set of points, usually features.
+#'
+#' Evaluate the point selection commands to obtain the selected set of points.
 #'
 #' @param names A character vector containing the names of all points.
 #' @param transmitter String containing the decoded name of the transmitting panel.
 #' @param all_memory A list of DataFrames containing parameters for each panel of each type.
 #' @param all_coordinates A list of data.frames that contain the coordinates and covariates of data points visible in each of the plots.
 #'
-#' @return 
+#' @return
 #' A logical vector of length equal to \code{names}, specifying which points were selected in the \code{transmitter}.
 #'
 #' @details
 #' This function obtains the commands to select points from \code{\link{.process_selectby_choice}}, and evaluates them to identify the selected points.
-#' Such a procedure is necessary in \code{\link{iSEE}} to obtain the actual feature names to show to the user in the interface.
-#' 
+#' Such a procedure is necessary in \code{\link{iSEE}} to obtain the actual feature/sample names to show to the user in the row/column statistics tables.
+#'
 #' Some work is required to trick \code{\link{.process_selectby_choice}} into thinking it is operating on the parameters for a point-based receiving panel.
 #' We also set \code{self_source=FALSE} to ensure that the function uses the coordinates in \code{all_coordinates}, and does not try to self-brush from \code{plot.data}
 #' (which would be meaningless here, given the lack of coordinates).
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_get_selected_points
-#' @seealso 
+#' @seealso
 #' \code{\link{.process_selectby_choice}},
 #' \code{\link{iSEE}}
 #'
 #' @importFrom S4Vectors DataFrame
 .get_selected_points <- function(names, transmitter, all_memory, all_coordinates) {
-    dummy <- DataFrame(transmitter, .selectColorTitle) 
+    dummy <- DataFrame(transmitter, .selectColorTitle)
     colnames(dummy) <- c(.selectByPlot, .selectEffect)
     selected <- .process_selectby_choice(dummy, all_memory, self_source=FALSE)
 
-    if (!is.null(selected$cmd)) { 
+    if (!is.null(selected$cmd)) {
         chosen.env <- new.env()
         chosen.env$plot.data <- data.frame(row.names=names)
         chosen.env$all_coordinates <- all_coordinates
@@ -701,11 +730,11 @@ height_limits <- c(400L, 1000L)
         chosen.env$all_lassos <- selected$data
         .text_eval(selected$cmd, envir=chosen.env)
         return(chosen.env$plot.data$SelectBy)
-    } 
+    }
     return(NULL)
 }
 
-#' Sanitize a SummarizedExperiment 
+#' Sanitize a SummarizedExperiment
 #'
 #' Coerce inputs to SummarizedExperiment, flatten nested DataFrames, add row and column names, and remove other non-atomic fields.
 #' Also sanitize a SingleCellExperiment by moving internal fields into the column- or row-level metadata.
@@ -714,7 +743,7 @@ height_limits <- c(400L, 1000L)
 #'
 #' @return A list containing \code{cmds}, a character vector of commands required to obtain a sanitized SingleCellExperiment;
 #' and \code{object}, a sanitized SingleCellExperiment object derived from \code{se}.
-#' 
+#'
 #' @details
 #' Nested fields are renamed by using \code{:} as separators in the flattened DataFrame.
 #' This is also the case for subtypes of \code{\link{sizeFactors}} or \code{\link{isSpike}}.
@@ -750,7 +779,7 @@ height_limits <- c(400L, 1000L)
     if (!is(se, "SummarizedExperiment")) {
         all_cmds <- .add_command(all_cmds, 'se <- as(se, "SummarizedExperiment")')
     }
-    if (!is(se, "SingleCellExperiment")) { 
+    if (!is(se, "SingleCellExperiment")) {
         all_cmds <- .add_command(all_cmds, 'se <- as(se, "SingleCellExperiment")')
     }
     all_cmds <- .evaluate_commands(all_cmds, eval_env)
@@ -775,7 +804,7 @@ height_limits <- c(400L, 1000L)
         all_cmds <- .add_command(all_cmds, sprintf('colData(se)[,%s] <- %s', deparse(new_name), get_cmd))
     }
     all_cmds <- .evaluate_commands(all_cmds, eval_env)
-    
+
     # Filling in with spike-ins.
     if (!is.null(isSpike(eval_env$se))) {
         new_name <- .safe_field_name("isSpike(se)", colnames(rowData(eval_env$se)))
@@ -815,7 +844,7 @@ height_limits <- c(400L, 1000L)
             colData(output_se)[[f]] <- NULL
         }
     }
-    
+
     return(list(cmds=all_cmds$processed, object=output_se))
 }
 
@@ -825,10 +854,10 @@ height_limits <- c(400L, 1000L)
 #'
 #' @param candidate String, specifying the name of the new field.
 #' @param existing Character vector containing the names of existing fields.
-#' 
+#'
 #' @return A string with a suffix of \code{candidate} and varying numbers of underscores prefixed to the start.
 #' This is guaranteed to not lie in \code{existing}.
-#' 
+#'
 #' @author Aaron Lun
 #' @rdname INTERNAL_safe_field_name
 #' @seealso
@@ -842,12 +871,12 @@ height_limits <- c(400L, 1000L)
 }
 
 #' Extract nested DataFrames
-#' 
+#'
 #' Extract information from nested DataFrames, for use in creating a flattened DataFrame.
-#' 
+#'
 #' @param DF A DataFrame, possibly containing nested DataFrames.
 #' @param top A logical scalar indicating whether \code{DF} is the top-level DataFrame, required for sensible behaviour during recursion.
-#' 
+#'
 #' @return
 #' A list containing \code{getter}, a character vector of commands to be suffixed to \code{colData} or \code{rowData} calls to obtain nested fields;
 #' and \code{setter}, a character vector of names for each field to be used in the flattened DataFrame.
@@ -869,7 +898,7 @@ height_limits <- c(400L, 1000L)
             nextlevel <- .extract_nested_DF(fdata, top=FALSE)
             collected[[f]] <- sprintf("[[%s]]%s", deparse(cnames[f]), nextlevel$getter)
             renamed[[f]] <- sprintf("%s:%s", cnames[f], nextlevel$setter)
-        } else if (!top) { 
+        } else if (!top) {
             collected[[f]] <- sprintf("[[%s]]", deparse(cnames[f]))
             renamed[[f]] <- cnames[f]
         }

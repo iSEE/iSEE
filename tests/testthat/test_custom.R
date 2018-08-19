@@ -34,21 +34,22 @@ customStatArgs$Function <- "PRESENT"
 
 # Set up memory
 all_memory <- iSEE:::.setup_memory(
-    se = sceX,
+    se=sceX,
     redDimArgs=NULL,
     colDataArgs=NULL,
     featAssayArgs=NULL,
-    sampAssayArgs=NULL,
     rowStatArgs=NULL,
     rowDataArgs=NULL,
-    customDataArgs = customDataArgs,
-    customStatArgs = customStatArgs,
+    sampAssayArgs=NULL,
+    colStatArgs=NULL,
+    customDataArgs=customDataArgs,
+    customStatArgs=customStatArgs,
     heatMapArgs=NULL,
-    redDimMax=1, colDataMax=0, featAssayMax=0, sampAssayMax=0, rowStatMax=0,
-    rowDataMax=1, heatMapMax=0, customDataMax = 1, customStatMax = 1)
+    redDimMax=1, colDataMax=0, featAssayMax=0, rowStatMax=0, rowDataMax=1,
+    sampAssayMax=0, colStatMax=0, customDataMax=1, customStatMax=1, heatMapMax=0)
 
 all_coordinates <- list()
-p.out <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
+p.out <- iSEE:::.make_customDataPlot(id=1, all_memory, all_coordinates, sceX)
 
 ####################
 # Tests start here #
@@ -76,7 +77,7 @@ test_that(".make_customDataPlot produces a valid list", {
 
 test_that(".make_customDataPlot works when no function is specified", {
     all_memory$customDataPlot$Function <- iSEE:::.noSelection
-    p.out <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
+    p.out <- iSEE:::.make_customDataPlot(id=1, all_memory, all_coordinates, sceX)
 
     expect_named(p.out, c("cmd_list", "plot"))
     expect_named(p.out$cmd_list, c("select", "plot"))
@@ -88,25 +89,25 @@ test_that(".make_customDataPlot works when no function is specified", {
 
 test_that(".make_customDataPlot responds to a transmitting column receiver", {
     all_memory$customDataPlot$ColumnSource <- "Reduced dimension plot 1"
-    all_memory$redDimPlot$BrushData[[1]] <- list(xmin = -11.514034644046, xmax = 9.423465477988,
-         ymin = -10.767314578073, ymax = -1.6587346435671,
-         mapping = list(x = "X", y = "Y"),
-         domain = list(left = -14.0531423894257,
-                       right = 10.9153021971093,
-                       bottom = -12.0002389472417,
-                       top = 16.4373197678157),
-         range = list(left = 39.0740047089041,
-                      right = 382.520547945205,
-                      bottom = 468.220917166096,
-                      top = 24.8879973724842),
-         log = list(x = NULL, y = NULL), direction = "xy",
-         brushId = "redDimPlot1_Brush",
-         outputId = "redDimPlot1")
+    all_memory$redDimPlot$BrushData[[1]] <- list(xmin=-11.514034644046, xmax=9.423465477988,
+         ymin=-10.767314578073, ymax=-1.6587346435671,
+         mapping=list(x="X", y="Y"),
+         domain=list(left=-14.0531423894257,
+                       right=10.9153021971093,
+                       bottom=-12.0002389472417,
+                       top=16.4373197678157),
+         range=list(left=39.0740047089041,
+                      right=382.520547945205,
+                      bottom=468.220917166096,
+                      top=24.8879973724842),
+         log=list(x=NULL, y=NULL), direction="xy",
+         brushId="redDimPlot1_Brush",
+         outputId="redDimPlot1")
 
     r.out <- iSEE:::.make_redDimPlot(id =1, all_memory, all_coordinates, sceX, ExperimentColorMap())
     all_coordinates[["redDimPlot1"]] <- r.out$xy
 
-    p.out2 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
+    p.out2 <- iSEE:::.make_customDataPlot(id=1, all_memory, all_coordinates, sceX)
 
     # Testing equality:
     expect_named(p.out2, c("cmd_list", "plot"))
@@ -117,27 +118,27 @@ test_that(".make_customDataPlot responds to a transmitting column receiver", {
 
     # Still valid when no function is specified.
     all_memory$customDataPlot$Function <- iSEE:::.noSelection
-    p.out5 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
+    p.out5 <- iSEE:::.make_customDataPlot(id=1, all_memory, all_coordinates, sceX)
     expect_named(p.out5, c("cmd_list", "plot"))
     expect_length(p.out5$cmd_list, 2)
 })
 
 test_that(".make_customDataPlot responds to a transmitting row receiver", {
     all_memory$customDataPlot$RowSource <- "Row data plot 1"
-    all_memory$rowDataPlot$BrushData[[1]] <- list(xmin = 0.81539988574393, xmax = 1.1448535674541, 
-            ymin = 234.6326316453, ymax = 392.16655162581, 
-            mapping = list(x = "X", y = "Y", group = "GroupBy"), 
-            domain = list(left = 0.5, right = 1.5, bottom = -18.95, top = 397.95), 
-            range = list(left = 43.1506849315069, right = 504.520547945205, bottom = 474.849315068493, top = 24.958904109589), 
-            log = list(x = NULL, y = NULL), 
-            direction = "xy", 
-            brushId = "rowDataPlot1_Brush", 
-            outputId = "rowDataPlot1")
+    all_memory$rowDataPlot$BrushData[[1]] <- list(xmin=0.81539988574393, xmax=1.1448535674541,
+            ymin=234.6326316453, ymax=392.16655162581,
+            mapping=list(x="X", y="Y", group="GroupBy"),
+            domain=list(left=0.5, right=1.5, bottom=-18.95, top=397.95),
+            range=list(left=43.1506849315069, right=504.520547945205, bottom=474.849315068493, top=24.958904109589),
+            log=list(x=NULL, y=NULL),
+            direction="xy",
+            brushId="rowDataPlot1_Brush",
+            outputId="rowDataPlot1")
 
     r.out <- iSEE:::.make_rowDataPlot(id =1, all_memory, all_coordinates, sceX, ExperimentColorMap())
     all_coordinates[["rowDataPlot1"]] <- r.out$xy
 
-    p.out2 <- iSEE:::.make_customDataPlot(id = 1, all_memory, all_coordinates, sceX)
+    p.out2 <- iSEE:::.make_customDataPlot(id=1, all_memory, all_coordinates, sceX)
 
     # Testing equality:
     expect_named(p.out2, c("cmd_list", "plot"))

@@ -23,9 +23,10 @@ initialPanels <- DataFrame(
         "Reduced dimension plot",
         "Column data plot",
         "Feature assay plot",
-        "Sample assay plot",
         "Row statistics table",
         "Row data plot",
+        "Sample assay plot",
+        "Column statistics table",
         "Custom data plot",
         "Custom statistics table",
         "Heat map"),
@@ -40,6 +41,7 @@ featAssayArgs <- featAssayPlotDefaults(sce, 1)
 rowStatArgs <- rowStatTableDefaults(sce, 1)
 rowDataArgs <- rowDataPlotDefaults(sce, 1)
 sampAssayArgs <- sampAssayPlotDefaults(sce, 1)
+colStatArgs <- colStatTableDefaults(sce, 1)
 customDataArgs <- customDataPlotDefaults(sce, 1)
 customStatArgs <- customStatTableDefaults(sce, 1)
 heatMapArgs <- heatMapPlotDefaults(sce, 1)
@@ -54,9 +56,10 @@ customStatArgs$Function <- "DE"
 rownames(redDimArgs) <- sprintf("redDimPlot%i", seq_len(nrow(redDimArgs)))
 rownames(colDataArgs) <- sprintf("colDataPlot%i", seq_len(nrow(colDataArgs)))
 rownames(featAssayArgs) <- sprintf("featAssayPlot%i", seq_len(nrow(featAssayArgs)))
-rownames(sampAssayArgs) <- sprintf("sampAssayPlot%i", seq_len(nrow(sampAssayArgs)))
 rownames(rowStatArgs) <- sprintf("rowStatTable%i", seq_len(nrow(rowStatArgs)))
 rownames(rowDataArgs) <- sprintf("rowDataPlot%i", seq_len(nrow(rowDataArgs)))
+rownames(sampAssayArgs) <- sprintf("sampAssayPlot%i", seq_len(nrow(sampAssayArgs)))
+rownames(colStatArgs) <- sprintf("colStatTable%i", seq_len(nrow(colStatArgs)))
 rownames(customDataArgs) <- sprintf("customDataPlot%i", seq_len(nrow(customDataArgs)))
 rownames(customStatArgs) <- sprintf("customStatTable%i", seq_len(nrow(customStatArgs)))
 rownames(heatMapArgs) <- sprintf("heatMapPlot%i", seq_len(nrow(heatMapArgs)))
@@ -66,9 +69,10 @@ memory <- list(
     redDimPlot=redDimArgs,
     colDataPlot=colDataArgs,
     featAssayPlot=featAssayArgs,
-    sampAssayPlot=sampAssayArgs,
     rowStatTable=rowStatArgs,
     rowDataPlot=rowDataArgs,
+    sampAssayPlot=sampAssayArgs,
+    colStatTable=colStatArgs,
     customDataPlot=customDataArgs,
     customStatTable=customStatArgs,
     heatMapPlot=heatMapArgs)
@@ -116,6 +120,19 @@ test_that(".panel_generation works", {
     out <- iSEE:::.panel_generation(active_panels, memory, sceX)
 
     expect_is(out, "shiny.tag.list")
+})
+
+
+test_that(".panel_generation detects invalid panel modes", {
+
+    active_panels <- rbind(active_panels, data.frame(
+        Type="Whee!", ID=1, Width=3, Height=500, row.names = "Whee!"
+    ))
+
+    expect_error(
+        iSEE:::.panel_generation(active_panels, memory=memory, sceX)
+    )
+
 })
 
 test_that(".panel_organization works", {

@@ -10,7 +10,7 @@ LASSO_OPEN <- list(
     mapping=list(x="X", y="Y"),
     coord=matrix(c(1, 2, 2, 1, 1, 1, 2, 2), ncol=2))
 
-CLOSING_CLICK <- list(
+CLICK_CLOSING <- list(
     x=1, y=1,
     mapping=list(x="X", y="Y"),
     domain=list(left=-14.1, right=10.9, bottom=-12, top=16.4),
@@ -18,7 +18,7 @@ CLOSING_CLICK <- list(
     log=list(x=NULL, y=NULL)
 )
 
-WAYPOINT_CLICK <- list(
+CLICK_WAYPOINT <- list(
     x=3, y=4,
     mapping=list(x="X", y="Y"),
     domain=list(left=-14.1, right=10.9, bottom=-12, top=16.4),
@@ -26,47 +26,54 @@ WAYPOINT_CLICK <- list(
     log=list(x=NULL, y=NULL)
 )
 
+LASSO_CLOSED <- list(
+    lasso=NULL,
+    closed=TRUE,
+    panelvar1=NULL, panelvar2=NULL,
+    mapping=list(x="X", y="Y"),
+    coord=matrix(c(1, 2, 2, 1, 1, 1, 1, 2, 2, 1), ncol=2))
+
 DATA_POINTS <- data.frame(
     X=seq(1.05, 2.95, 0.1),
     Y=rep(1.5, 20)
 )
 
+# Run this _after_ the unit tests above
+CLOSED_LASSO <- iSEE:::.update_lasso(CLICK_CLOSING, LASSO_OPEN)
+
 # .update_lasso ----
 
 test_that(".update_lasso works with a first click", {
 
-    out <- iSEE:::.update_lasso(WAYPOINT_CLICK, NULL)
+    out <- iSEE:::.update_lasso(CLICK_WAYPOINT, NULL)
 
     expect_identical(out$closed, FALSE)
 
-    expect_identical(out$coord, matrix(c(WAYPOINT_CLICK$x, WAYPOINT_CLICK$y), ncol=2))
+    expect_identical(out$coord, matrix(c(CLICK_WAYPOINT$x, CLICK_WAYPOINT$y), ncol=2))
 
 })
 
 test_that(".update_lasso works with closing click", {
 
-    out <- iSEE:::.update_lasso(CLOSING_CLICK, LASSO_OPEN)
+    out <- iSEE:::.update_lasso(CLICK_CLOSING, LASSO_OPEN)
 
     expect_identical(out$closed, TRUE)
 
-    expected_coord <- rbind(LASSO_OPEN$coord, matrix(c(CLOSING_CLICK$x, CLOSING_CLICK$y), ncol=2))
+    expected_coord <- rbind(LASSO_OPEN$coord, matrix(c(CLICK_CLOSING$x, CLICK_CLOSING$y), ncol=2))
     expect_identical(out$coord, expected_coord)
 
 })
 
 test_that(".update_lasso works with a non-closing waypoint", {
 
-    out <- iSEE:::.update_lasso(WAYPOINT_CLICK, LASSO_OPEN)
+    out <- iSEE:::.update_lasso(CLICK_WAYPOINT, LASSO_OPEN)
 
     expect_identical(out$closed, FALSE)
 
-    expected_coord <- rbind(LASSO_OPEN$coord, matrix(c(WAYPOINT_CLICK$x, WAYPOINT_CLICK$y), ncol=2))
+    expected_coord <- rbind(LASSO_OPEN$coord, matrix(c(CLICK_WAYPOINT$x, CLICK_WAYPOINT$y), ncol=2))
     expect_identical(out$coord, expected_coord)
 
 })
-
-# Run this _after_ the unit tests above
-CLOSED_LASSO <- iSEE:::.update_lasso(CLOSING_CLICK, LASSO_OPEN)
 
 # lassoPoints ----
 

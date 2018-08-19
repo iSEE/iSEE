@@ -3,8 +3,11 @@
 CUSTOM <- function(se, columns) {
     stuff <- logcounts(se)[1:1000,columns]
     out <- prcomp(t(stuff), rank.=2)
-    return(list(coordinates=data.frame(X=out$x[,1], Y=out$x[,2], row.names=columns),
-                xlab="WHEE", ylab="YAY", title="HOORAY"))
+    return(list(
+        coordinates=data.frame(X=out$x[,1], Y=out$x[,2], row.names=columns),
+        xlab="WHEE",
+        ylab="YAY",
+        title="HOORAY"))
 }
 
 CUSTOM_DE <- function(se, columns) {
@@ -115,6 +118,8 @@ test_that(".add_facet_UI_elements produces a valid tag list for row data plots",
     # TODO: expect_*(out)
 })
 
+# .panel_generation ----
+
 test_that(".panel_generation works", {
 
     out <- iSEE:::.panel_generation(active_panels, memory, sceX)
@@ -135,12 +140,16 @@ test_that(".panel_generation detects invalid panel modes", {
 
 })
 
+# .panel_organization ----
+
 test_that(".panel_organization works", {
 
     out <- iSEE:::.panel_organization(active_panels)
 
     expect_is(out, "shiny.tag.list")
 })
+
+# .choose_links ----
 
 test_that(".choose_links behaves as expected", {
 
@@ -161,5 +170,19 @@ test_that(".choose_links behaves as expected", {
     # Return first available value if chosen is not available, and default is forced
     out <- iSEE:::.choose_link(chosenValue, availableValues, force_default=TRUE)
     expect_identical(out, availableValues[1])
+
+})
+
+# .precompute_UI_info ----
+
+test_that(".precompute_UI_info generates missing sample names for internal metadata", {
+
+    colnames(sce) <- NULL
+    out <- iSEE:::.precompute_UI_info(sce, list(PCA2=CUSTOM), list(DE=CUSTOM_DE))
+
+    expect_identical(
+        int_metadata(out)[["iSEE"]][["sample_names"]],
+        sprintf("Sample %i", seq_len(ncol(out)))
+    )
 
 })

@@ -38,12 +38,12 @@ library(scRNAseq)
 data(allen)
 sce <- as(allen, "SingleCellExperiment")
 library(org.Mm.eg.db)
-myfun <- annotateEnsembl(sce,org.Mm.eg.db,"SYMBOL")
+myfun <- annotateEnsembl(sce, org.Mm.eg.db, keytype="SYMBOL")
 myfun(sce, 4242)
 
 # to be used when launching the app itself ----
 
-app <- iSEE(sce, annotFun = annotateEnsembl(sce,org.Mm.eg.db,"SYMBOL"))
+app <- iSEE(sce, annotFun = myfun)
 if (interactive()) {
   shiny::runApp(app, port = 1234)
 }

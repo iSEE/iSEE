@@ -14,7 +14,7 @@ Typical values are \code{org.Hs.eg.db} for human, \code{org.Mm.eg.db} for mouse,
 The corresponding package has to be available and loaded before calling this function.}
 
 \item{keytype}{The keytype that matches the IDs used in the \code{se} object.
-Can be one of  the values of \code{keytypes(org.XX.eg.db)}, typically \code{"SYMBOL"}, \code{"ENSEMBL"}, or \code{"ENTREZID"}.}
+Can be one of \code{keytypes(org.XX.eg.db)}, typically \code{"SYMBOL"}, \code{"ENSEMBL"}, or \code{"ENTREZID"}.}
 
 \item{rowdata_col}{A character string specifying which column of \code{rowData(se)} contains the keys.
 Defaults to NULL, which corresponds to having the ids of the features as row names of the \code{se} object itself.}
@@ -32,9 +32,9 @@ based on the data retrieved from the ENTREZ database
 library(scRNAseq)
 data(allen)
 sce <- as(allen, "SingleCellExperiment")
+
 library(org.Mm.eg.db)
-annotateEntrez(sce,org.Mm.eg.db,"SYMBOL")
-myfun <- annotateEntrez(sce,org.Mm.eg.db,"SYMBOL")
+myfun <- annotateEntrez(sce, org.Mm.eg.db, keytype="SYMBOL")
 \dontrun{
 # Requires a working internet connection
 myfun(sce, 4242)
@@ -42,7 +42,7 @@ myfun(sce, 4242)
 
 # to be used when launching the app itself ----
 
-app <- iSEE(sce, annotFun = annotateEntrez(sce,org.Mm.eg.db,"SYMBOL"))
+app <- iSEE(sce, annotFun = myfun)
 if (interactive()) {
   shiny::runApp(app, port = 1234)
 }

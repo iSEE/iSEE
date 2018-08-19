@@ -19,7 +19,7 @@ CUSTOM_DE <- function(se, columns) {
 }
 
 initialPanels <- DataFrame(
-    Name = paste(c(
+    Name=paste(c(
         "Reduced dimension plot",
         "Column data plot",
         "Feature assay plot",
@@ -31,7 +31,7 @@ initialPanels <- DataFrame(
         "Custom statistics table",
         "Heat map"),
         1),
-    Width = 3
+    Width=3
 )
 
 # Do NOT move to setup; re-defined here to keep tests self-contained.
@@ -126,7 +126,7 @@ test_that(".panel_generation works", {
 test_that(".panel_generation detects invalid panel modes", {
 
     active_panels <- rbind(active_panels, data.frame(
-        Type="Whee!", ID=1, Width=3, Height=500, row.names = "Whee!"
+        Type="Whee!", ID=1, Width=3, Height=500, row.names="Whee!"
     ))
 
     expect_error(
@@ -140,4 +140,26 @@ test_that(".panel_organization works", {
     out <- iSEE:::.panel_organization(active_panels)
 
     expect_is(out, "shiny.tag.list")
+})
+
+test_that(".choose_links behaves as expected", {
+
+    chosenValue <- "chosen"
+
+    availableValues <- c(chosenValue, head(letters))
+
+    # Return chosen value when available
+    out <- iSEE:::.choose_link(chosenValue, availableValues, force_default=FALSE)
+    expect_identical(out, chosenValue)
+
+    availableValues <- head(letters)
+
+    # Return empty character value if chosen is not available, and default is not forced
+    out <- iSEE:::.choose_link(chosenValue, availableValues, force_default=FALSE)
+    expect_identical(out, character(1))
+
+    # Return first available value if chosen is not available, and default is forced
+    out <- iSEE:::.choose_link(chosenValue, availableValues, force_default=TRUE)
+    expect_identical(out, availableValues[1])
+
 })

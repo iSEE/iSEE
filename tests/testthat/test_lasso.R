@@ -95,7 +95,7 @@ test_that("lassoPoints detects points within lasso in selected facet", {
     CLOSED_LASSO$mapping$panelvar2 <- "FacetY"
     CLOSED_LASSO$panelvar1 <- "inX"
     CLOSED_LASSO$panelvar2 <- "inY"
-
+    # all data points are in the facet with lasso
     DATA_POINTS$FacetX <- "inX"
     DATA_POINTS$FacetY <- "inY"
 
@@ -110,9 +110,9 @@ test_that("lassoPoints ignores points within lasso in other facets", {
 
     CLOSED_LASSO$mapping$panelvar1 <- "FacetX"
     CLOSED_LASSO$mapping$panelvar2 <- "FacetY"
-    CLOSED_LASSO$panelvar1 <- "selectedX"
-    CLOSED_LASSO$panelvar2 <- "selectedY"
-
+    CLOSED_LASSO$panelvar1 <- "inX"
+    CLOSED_LASSO$panelvar2 <- "inY"
+    # all data points are in a different facet than the one with lasso
     DATA_POINTS$FacetX <- "outX"
     DATA_POINTS$FacetY <- "inY"
 

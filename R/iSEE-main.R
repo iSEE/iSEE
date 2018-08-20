@@ -294,7 +294,7 @@ iSEE <- function(se,
 
             uiOutput("allPanels")
         ), # end of dashboardBody
-        skin = "blue"
+        skin = "black"
     ) # end of dashboardPage
 
     #######################################################################

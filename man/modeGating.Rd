@@ -47,19 +47,19 @@ sce <- normalize(sce)
 
 plot_count <- 6
 rv <- rowVars(logcounts(sce))
-top_var <- head(order(rv, decreasing = TRUE), plot_count*2)
+top_var <- head(order(rv, decreasing=TRUE), plot_count*2)
 top_var_genes <- rownames(sce)[top_var]
 
 plot_features <- data.frame(
-    x = head(top_var_genes, plot_count),
-    y = tail(top_var_genes, plot_count),
-    stringsAsFactors = FALSE
+    x=head(top_var_genes, plot_count),
+    y=tail(top_var_genes, plot_count),
+    stringsAsFactors=FALSE
  )
 
 # launch the app itself ----
 
-app <- modeGating(sce, features = plot_features, featAssayMax = 6)
+app <- modeGating(sce, features=plot_features, featAssayMax=6)
 if (interactive()) {
-  shiny::runApp(app, port = 1234)
+  shiny::runApp(app, port=1234)
 }
 }

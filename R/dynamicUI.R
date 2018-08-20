@@ -123,7 +123,7 @@
     tab_by_col <- c(.noSelection, link_sources$col_tab)
     row_selectable <- c(.noSelection, link_sources$row_plot)
     col_selectable <- c(.noSelection, link_sources$col_plot)
-    heatmap_sources <- c(.noSelection, link_sources$row, link_sources$tab)
+    heatmap_sources <- c(.noSelection, link_sources$row_plot, link_sources$row_tab)
 
     for (i in seq_len(nrow(active_panels))) {
         mode <- active_panels$Type[i]
@@ -314,7 +314,7 @@
                     )
                 )
         } else {
-            stop(sprintf("'%s' is not a recognized panel mode"), mode)
+            stop(sprintf("'%s' is not a recognized panel mode", mode))
         }
 
         # Adding graphical parameters if we're plotting.
@@ -914,6 +914,8 @@
 #' @param param_choices A DataFrame with one row, containing the parameter choices for the current plot.
 #' @param selectable A character vector of decoded names for available transmitting panels.
 #' @param source_type Type of the panel that is source of the selection. Either \code{"row"} or \code{"column"}.
+#' @param ... Additional arguments passed to \code{\link{collapseBox}}.
+#' @param field Column name in the DataFrame of parameters choices for the current plot.
 #'
 #' @return
 #' For \code{.create_selection_param_box} and \code{.create_selection_param_box_define_box},

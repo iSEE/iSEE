@@ -240,17 +240,17 @@ all_panel_types <- c(point_plot_types, linked_table_types, custom_panel_types, "
 #' Decode the panel name
 #'
 #' Translate a panel name from the internal encoding to a user-visible encoding.
-#' 
+#'
 #' @param mode Character vector specifying the types of panel, using the internal encoding.
 #' @param id Integer vector specifying the panel IDs of the given type.
 #'
 #' @return A character vector of decoded panel names.
-#' 
-#' @details 
+#'
+#' @details
 #' This function takes an encoded \code{mode} such as \code{"redDimPlot"} and an ID like \code{1}.
 #' and returns the decoded panel name \code{"Reduced dimension plot 1"} for presentation in the UI.
 #' The input \code{mode} and \code{ID} should be parallel to each other.
-#' 
+#'
 #' @author Aaron Lun
 #' @rdname INTERNAL_decode_panel_name
 #' @seealso
@@ -261,15 +261,15 @@ all_panel_types <- c(point_plot_types, linked_table_types, custom_panel_types, "
 }
 
 #' Encode the panel name
-#' 
+#'
 #' Convert a decoded panel name to the internal encoding.
 #'
 #' @param names Character vector of decoded panel names.
 #'
-#' @return 
+#' @return
 #' For \code{.encode_panel_name}, a list is returned containing \code{Type}, a character vector of panel types in encoded format;
 #' and \code{ID}, an integer vector of panel IDs.
-#' 
+#'
 #' For \code{.decoded2encoded}, a character vector is returned containing the encoded panel names.
 #'
 #' @details
@@ -308,13 +308,13 @@ all_panel_types <- c(point_plot_types, linked_table_types, custom_panel_types, "
 #' @details
 #' This is a convenient function to split an encoded name into its constituents, e.g., for referencing to elements in memory.
 #'
-#' @return 
+#' @return
 #' A list containing \code{Type}, a character vector of panel types in encoded format;
 #' and \code{ID}, an integer vector of panel IDs.
-#' 
+#'
 #' @author Aaron Lun
 #' @rdname INTERNAL_split_encoded
-#' @seealso 
+#' @seealso
 #' \code{\link{.encode_panel_name}},
 #' \code{\link{.decode_panel_name}}
 .split_encoded <- function(names) {

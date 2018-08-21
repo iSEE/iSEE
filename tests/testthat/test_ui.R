@@ -81,9 +81,9 @@ memory <- list(
     heatMapPlot=heatMapArgs)
 
 # Set up alternative object.
-sceX <- iSEE:::.precompute_UI_info(sce, list(PCA2=CUSTOM), list(DE=CUSTOM_DE))
-active_panels <- iSEE:::.setup_initial(initialPanels, memory)
-memory <- iSEE:::.sanitize_memory(active_panels, memory)
+sceX <- .precompute_UI_info(sce, list(PCA2=CUSTOM), list(DE=CUSTOM_DE))
+active_panels <- .setup_initial(initialPanels, memory)
+memory <- .sanitize_memory(active_panels, memory)
 
 # .add_coldata_facet_UI_elements ----
 
@@ -93,15 +93,15 @@ test_that(".add_facet_UI_elements produces a valid tag list for column data plot
     rd[["FacetByRow"]] <- TRUE
     rd[["FacetByColumn"]] <- TRUE
 
-    groupable_colData <- colnames(colData(sce))[iSEE:::.which_groupable(colData(sce))]
+    groupable_colData <- colnames(colData(sce))[.which_groupable(colData(sce))]
 
-    out <- iSEE:::.add_facet_UI_elements_for_column_plots("redDimPlot", 1, rd, groupable_colData)
+    out <- .add_facet_UI_elements_for_column_plots("redDimPlot", 1, rd, groupable_colData)
     # TODO: expect_*(out)
 
     # Check a non default choice
     rd[["RowFacetColData"]] <- "Primary.Type"
     rd[["ColumnFacetColData"]] <- "Core.Type"
-    out <- iSEE:::.add_facet_UI_elements_for_column_plots("redDimPlot", 1, rd, groupable_colData)
+    out <- .add_facet_UI_elements_for_column_plots("redDimPlot", 1, rd, groupable_colData)
 
     # TODO: expect_*(out)
 })
@@ -112,9 +112,9 @@ test_that(".add_facet_UI_elements produces a valid tag list for row data plots",
     rd[["FacetByRow"]] <- TRUE
     rd[["FacetByColumn"]] <- TRUE
 
-    groupable_colData <- colnames(colData(sce))[iSEE:::.which_groupable(rowData(sce))]
+    groupable_colData <- colnames(colData(sce))[.which_groupable(rowData(sce))]
 
-    out <- iSEE:::.add_facet_UI_elements_for_row_plots("rowDataPlot", 1, rd, groupable_colData)
+    out <- .add_facet_UI_elements_for_row_plots("rowDataPlot", 1, rd, groupable_colData)
     # TODO: expect_*(out)
 })
 
@@ -122,7 +122,7 @@ test_that(".add_facet_UI_elements produces a valid tag list for row data plots",
 
 test_that(".panel_generation works", {
 
-    out <- iSEE:::.panel_generation(active_panels, memory, sceX)
+    out <- .panel_generation(active_panels, memory, sceX)
 
     expect_is(out, "shiny.tag.list")
 })
@@ -135,7 +135,7 @@ test_that(".panel_generation detects invalid panel modes", {
     ))
 
     expect_error(
-        iSEE:::.panel_generation(active_panels, memory=memory, sceX)
+        .panel_generation(active_panels, memory=memory, sceX)
     )
 
 })
@@ -144,7 +144,7 @@ test_that(".panel_generation detects invalid panel modes", {
 
 test_that(".panel_organization works", {
 
-    out <- iSEE:::.panel_organization(active_panels)
+    out <- .panel_organization(active_panels)
 
     expect_is(out, "shiny.tag.list")
 })
@@ -158,17 +158,17 @@ test_that(".choose_links behaves as expected", {
     availableValues <- c(chosenValue, head(letters))
 
     # Return chosen value when available
-    out <- iSEE:::.choose_link(chosenValue, availableValues, force_default=FALSE)
+    out <- .choose_link(chosenValue, availableValues, force_default=FALSE)
     expect_identical(out, chosenValue)
 
     availableValues <- head(letters)
 
     # Return empty character value if chosen is not available, and default is not forced
-    out <- iSEE:::.choose_link(chosenValue, availableValues, force_default=FALSE)
+    out <- .choose_link(chosenValue, availableValues, force_default=FALSE)
     expect_identical(out, character(1))
 
     # Return first available value if chosen is not available, and default is forced
-    out <- iSEE:::.choose_link(chosenValue, availableValues, force_default=TRUE)
+    out <- .choose_link(chosenValue, availableValues, force_default=TRUE)
     expect_identical(out, availableValues[1])
 
 })
@@ -178,7 +178,7 @@ test_that(".choose_links behaves as expected", {
 test_that(".precompute_UI_info generates missing sample names for internal metadata", {
 
     colnames(sce) <- NULL
-    out <- iSEE:::.precompute_UI_info(sce, list(PCA2=CUSTOM), list(DE=CUSTOM_DE))
+    out <- .precompute_UI_info(sce, list(PCA2=CUSTOM), list(DE=CUSTOM_DE))
 
     expect_identical(
         int_metadata(out)[["iSEE"]][["sample_names"]],

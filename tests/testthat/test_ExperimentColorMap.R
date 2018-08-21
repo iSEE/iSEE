@@ -7,7 +7,7 @@ test_that("validity method catches colormaps that are not functions", {
     ecm <- ExperimentColorMap()
     
     ecm@assays <- list(dummy1 = 1)
-    msg <- iSEE:::.valid.Colormap(ecm)
+    msg <- .valid.Colormap(ecm)
     
     expect_match(msg, "Colormap `dummy1` in slot `assays` is not a function")
     
@@ -20,7 +20,7 @@ test_that("validity method catches unnamed colormaps", {
     ecm@colData <- list(
         function(x){NULL},
         a=function(){NULL})
-    msg <- iSEE:::.valid.Colormap(ecm)
+    msg <- .valid.Colormap(ecm)
     
     expect_match(msg, "Colormap #1 in slot `colData` must be named", fixed=TRUE)
     
@@ -33,7 +33,7 @@ test_that("validity method catches colormaps with controlled names", {
     ecm@all_discrete <- list(
         wrong = function(x){NULL},
         again = function(){NULL})
-    msg <- iSEE:::.valid.Colormap(ecm)
+    msg <- .valid.Colormap(ecm)
     
     expect_match(
         msg,
@@ -549,12 +549,12 @@ test_that("isColorMapCompatible catches too many assays colormaps", {
     )
     
     expect_error(
-        iSEE:::isColorMapCompatible(ecm_manyAssays, sce, error = TRUE),
+        isColorMapCompatible(ecm_manyAssays, sce, error = TRUE),
         "More assays in colormap",
         fixed=TRUE
     )
     expect_identical(
-        iSEE:::isColorMapCompatible(ecm_manyAssays, sce, error = FALSE),
+        isColorMapCompatible(ecm_manyAssays, sce, error = FALSE),
         FALSE
     )
     
@@ -571,12 +571,12 @@ test_that("isColorMapCompatible catches superfluous assays colormap", {
     )
     
     expect_error(
-        iSEE:::isColorMapCompatible(nullECM, sce, error = TRUE),
+        isColorMapCompatible(nullECM, sce, error = TRUE),
         "assay `dummy1` in colormap missing in experiment",
         fixed=TRUE
     )
     expect_identical(
-        iSEE:::isColorMapCompatible(nullECM, sce, error = FALSE),
+        isColorMapCompatible(nullECM, sce, error = FALSE),
         FALSE
     )
     
@@ -593,12 +593,12 @@ test_that("isColorMapCompatible catches superfluous colData colormap", {
     )
     
     expect_error(
-        iSEE:::isColorMapCompatible(missingColData, sce, error = TRUE),
+        isColorMapCompatible(missingColData, sce, error = TRUE),
         "colData `dummy2` in colormap missing in experiment",
         fixed=TRUE
     )
     expect_identical(
-        iSEE:::isColorMapCompatible(missingColData, sce, error = FALSE),
+        isColorMapCompatible(missingColData, sce, error = FALSE),
         FALSE
     )
     
@@ -616,12 +616,12 @@ test_that("isColorMapCompatible catches superfluous rowData colormap", {
     )
     
     expect_error(
-        iSEE:::isColorMapCompatible(missingRowData, sce, error = TRUE),
+        isColorMapCompatible(missingRowData, sce, error = TRUE),
         "rowData `dummy2` in colormap missing in experiment",
         fixed=TRUE
     )
     expect_identical(
-        iSEE:::isColorMapCompatible(missingRowData, sce, error = FALSE),
+        isColorMapCompatible(missingRowData, sce, error = FALSE),
         FALSE
     )
     
@@ -639,7 +639,7 @@ test_that("isColorMapCompatible accepts compatible colormap", {
     )
     
     expect_identical(
-        iSEE:::isColorMapCompatible(ecm, sce, error = FALSE),
+        isColorMapCompatible(ecm, sce, error = FALSE),
         TRUE
     )
     
@@ -666,10 +666,10 @@ test_that("synchronizeAssays works for fully named assays", {
         assays = list(
             tophat_counts = count_colors,
             cufflinks_fpkm = fpkm_colors,
-            rsem_counts = iSEE:::.defaultContinuousColorMap,
+            rsem_counts = .defaultContinuousColorMap,
             rsem_tpm = fpkm_colors,
             counts = count_colors,
-            logcounts = iSEE:::.defaultContinuousColorMap
+            logcounts = .defaultContinuousColorMap
         )
     )
     
@@ -772,12 +772,12 @@ test_that("synchronizeAssays works for partially named assays", {
     
     ecm_expected <- ExperimentColorMap(
         assays = list(
-            iSEE:::.defaultContinuousColorMap,
-            iSEE:::.defaultContinuousColorMap,
-            iSEE:::.defaultContinuousColorMap,
+            .defaultContinuousColorMap,
+            .defaultContinuousColorMap,
+            .defaultContinuousColorMap,
             rsem_tpm = fpkm_colors,
             counts = count_colors,
-            logcounts = iSEE:::.defaultContinuousColorMap
+            logcounts = .defaultContinuousColorMap
         )
     )
     

@@ -6,26 +6,26 @@ test_that(".define_groups works correctly with multi-factor groupings", {
     X <- Y <- integer(nvals) # these values don't matter for this function.
     g <- list(U=sample(LETTERS[1:5], nvals, replace=TRUE), V=sample(3, nvals, replace=TRUE))
 
-    out <- iSEE:::.define_groups(X, Y, grouping=g)
+    out <- .define_groups(X, Y, grouping=g)
     ref <- paste(g$U, g$V, sep="|")
     ref <- split(seq_along(ref), ref)
     expect_identical(out, unname(ref))
 
-    out <- iSEE:::.define_groups(X, Y, grouping=g[1])
+    out <- .define_groups(X, Y, grouping=g[1])
     ref <- split(seq_along(g$U), g$U)
     expect_identical(out, unname(ref))
 
-    out <- iSEE:::.define_groups(X, Y, grouping=g[2])
+    out <- .define_groups(X, Y, grouping=g[2])
     ref <- split(seq_along(g$V), g$V)
     expect_identical(out, unname(ref))
 
     # Throws a variety of errors.
-    expect_error(iSEE:::.define_groups(X[1], Y), "not TRUE")
-    expect_error(iSEE:::.define_groups(X[1:10], Y[1:10], grouping=g), "not TRUE")
-    expect_error(iSEE:::.define_groups(X, Y, grouping=unname(g)), "not TRUE")
+    expect_error(.define_groups(X[1], Y), "not TRUE")
+    expect_error(.define_groups(X[1:10], Y[1:10], grouping=g), "not TRUE")
+    expect_error(.define_groups(X, Y, grouping=unname(g)), "not TRUE")
 
     # Behaves correctly with empty inputs.
-    out <- iSEE:::.define_groups(X[0], Y[0], grouping=lapply(g, "[", 0))
+    out <- .define_groups(X[0], Y[0], grouping=lapply(g, "[", 0))
     expect_identical(out, list())
 })
 

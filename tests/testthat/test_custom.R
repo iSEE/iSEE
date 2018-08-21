@@ -28,12 +28,12 @@ CUSTOM_STAT <- function(se, rows, columns, colour_by=NULL, scale_columns=TRUE) {
     data.frame(present=TRUE)
 }
 
-sceX <- iSEE:::.precompute_UI_info(sce, list(PCA2=CUSTOM_DATA), list(PRESENT=CUSTOM_STAT))
+sceX <- .precompute_UI_info(sce, list(PCA2=CUSTOM_DATA), list(PRESENT=CUSTOM_STAT))
 customDataArgs$Function <- "PCA2"
 customStatArgs$Function <- "PRESENT"
 
 # Set up memory
-all_memory <- iSEE:::.setup_memory(
+all_memory <- .setup_memory(
     se=sceX,
     redDimArgs=NULL,
     colDataArgs=NULL,
@@ -49,21 +49,21 @@ all_memory <- iSEE:::.setup_memory(
     sampAssayMax=0, colStatMax=0, customDataMax=1, customStatMax=1, heatMapMax=0)
 
 all_coordinates <- list()
-p.out <- iSEE:::.make_customDataPlot(id=1, all_memory, all_coordinates, sceX)
+p.out <- .make_customDataPlot(id=1, all_memory, all_coordinates, sceX)
 
 ####################
 # Tests start here #
 ####################
 
 test_that("getting and setting of custom column functions", {
-    expect_error(iSEE:::.get_internal_info(sce, "custom_data_fun"), "no internal")
-    expect_identical(iSEE:::.get_internal_info(sceX, "custom_data_fun"), list(PCA2=CUSTOM_DATA))
+    expect_error(.get_internal_info(sce, "custom_data_fun"), "no internal")
+    expect_identical(.get_internal_info(sceX, "custom_data_fun"), list(PCA2=CUSTOM_DATA))
 
-    expect_error(iSEE:::.get_internal_info(sce, "custom_stat_fun"), "no internal")
-    expect_identical(iSEE:::.get_internal_info(sceX, "custom_stat_fun"), list(PRESENT=CUSTOM_STAT))
+    expect_error(.get_internal_info(sce, "custom_stat_fun"), "no internal")
+    expect_identical(.get_internal_info(sceX, "custom_stat_fun"), list(PRESENT=CUSTOM_STAT))
 
-    sceX2 <- iSEE:::.precompute_UI_info(sce, NULL, NULL)
-    expect_identical(iSEE:::.get_internal_info(sceX2, "custom_data_fun"), NULL)
+    sceX2 <- .precompute_UI_info(sce, NULL, NULL)
+    expect_identical(.get_internal_info(sceX2, "custom_data_fun"), NULL)
 })
 
 test_that(".make_customDataPlot produces a valid list", {
@@ -76,8 +76,8 @@ test_that(".make_customDataPlot produces a valid list", {
 })
 
 test_that(".make_customDataPlot works when no function is specified", {
-    all_memory$customDataPlot$Function <- iSEE:::.noSelection
-    p.out <- iSEE:::.make_customDataPlot(id=1, all_memory, all_coordinates, sceX)
+    all_memory$customDataPlot$Function <- .noSelection
+    p.out <- .make_customDataPlot(id=1, all_memory, all_coordinates, sceX)
 
     expect_named(p.out, c("cmd_list", "plot"))
     expect_named(p.out$cmd_list, c("select", "plot"))
@@ -104,10 +104,10 @@ test_that(".make_customDataPlot responds to a transmitting column receiver", {
          brushId="redDimPlot1_Brush",
          outputId="redDimPlot1")
 
-    r.out <- iSEE:::.make_redDimPlot(id =1, all_memory, all_coordinates, sceX, ExperimentColorMap())
+    r.out <- .make_redDimPlot(id =1, all_memory, all_coordinates, sceX, ExperimentColorMap())
     all_coordinates[["redDimPlot1"]] <- r.out$xy
 
-    p.out2 <- iSEE:::.make_customDataPlot(id=1, all_memory, all_coordinates, sceX)
+    p.out2 <- .make_customDataPlot(id=1, all_memory, all_coordinates, sceX)
 
     # Testing equality:
     expect_named(p.out2, c("cmd_list", "plot"))
@@ -117,8 +117,8 @@ test_that(".make_customDataPlot responds to a transmitting column receiver", {
     expect_s3_class(p.out2$plot, "ggplot")
 
     # Still valid when no function is specified.
-    all_memory$customDataPlot$Function <- iSEE:::.noSelection
-    p.out5 <- iSEE:::.make_customDataPlot(id=1, all_memory, all_coordinates, sceX)
+    all_memory$customDataPlot$Function <- .noSelection
+    p.out5 <- .make_customDataPlot(id=1, all_memory, all_coordinates, sceX)
     expect_named(p.out5, c("cmd_list", "plot"))
     expect_length(p.out5$cmd_list, 2)
 })
@@ -135,10 +135,10 @@ test_that(".make_customDataPlot responds to a transmitting row receiver", {
             brushId="rowDataPlot1_Brush",
             outputId="rowDataPlot1")
 
-    r.out <- iSEE:::.make_rowDataPlot(id =1, all_memory, all_coordinates, sceX, ExperimentColorMap())
+    r.out <- .make_rowDataPlot(id =1, all_memory, all_coordinates, sceX, ExperimentColorMap())
     all_coordinates[["rowDataPlot1"]] <- r.out$xy
 
-    p.out2 <- iSEE:::.make_customDataPlot(id=1, all_memory, all_coordinates, sceX)
+    p.out2 <- .make_customDataPlot(id=1, all_memory, all_coordinates, sceX)
 
     # Testing equality:
     expect_named(p.out2, c("cmd_list", "plot"))
@@ -149,38 +149,38 @@ test_that(".make_customDataPlot responds to a transmitting row receiver", {
 })
 
 test_that(".text2args works correctly", {
-    out <- iSEE:::.text2args("whee blah
+    out <- .text2args("whee blah
 yay 23")
     expect_identical(out, c(whee="blah", yay="23"))
 
     # Handles empty arguments.
-    out <- iSEE:::.text2args("whee blah
+    out <- .text2args("whee blah
 yay")
     expect_identical(out, c(whee="blah", yay=""))
 
     # Handles empty lines.
-    out <- iSEE:::.text2args("
+    out <- .text2args("
 yay 1
 ")
     expect_identical(out, c(yay="1"))
 
     # Handles empty lines.
-    out <- iSEE:::.text2args("whee blah
+    out <- .text2args("whee blah
 
 yay 1
 ")
     expect_identical(out, c(whee="blah", yay="1"))
 
     # Strips front space.
-    out <- iSEE:::.text2args("  yay 1")
+    out <- .text2args("  yay 1")
     expect_identical(out, c(yay="1"))
 
     # Only processes the first space.
-    out <- iSEE:::.text2args("yay 1 2 3")
+    out <- .text2args("yay 1 2 3")
     expect_identical(out, c(yay="1 2 3"))
 
     # Handles empty inputs.
-    out <- iSEE:::.text2args("
+    out <- .text2args("
             ")
     expect_identical(unname(out), character(0))
 })

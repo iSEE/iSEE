@@ -33,9 +33,9 @@ redDimArgs[["ZoomData"]][[2]] <-
     )
 
 test_that(".report_memory generates code that evaluates to the provided object",{
-    sce <- iSEE:::.precompute_UI_info(sce, list(PCA2="WHEE"), list(DE="WHOO"))  # Adding custom functions for .setup_memory to check.
+    sce <- .precompute_UI_info(sce, list(PCA2="WHEE"), list(DE="WHOO"))  # Adding custom functions for .setup_memory to check.
 
-    all_memory <- iSEE:::.setup_memory(
+    all_memory <- .setup_memory(
         se=sce,
         redDimArgs=redDimArgs,
         colDataArgs=colDataArgs,
@@ -70,10 +70,10 @@ test_that(".report_memory generates code that evaluates to the provided object",
         paste("Custom statistics table", 1),
         paste("Heat map", 1:3)),
         Width = 4)
-    inp <- iSEE:::.setup_initial(inp0, all_memory)
+    inp <- .setup_initial(inp0, all_memory)
 
     # Re-evaluating the commands.
-    txt <- iSEE:::.report_memory(inp, all_memory)
+    txt <- .report_memory(inp, all_memory)
     eval_env <- new.env()
     eval(parse(text = txt), envir=eval_env)
 

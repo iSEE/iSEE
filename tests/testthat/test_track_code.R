@@ -14,12 +14,12 @@ customStatArgs <- customStatTableDefaults(sce, 1)
 heatMapArgs <- heatMapPlotDefaults(sce, 2)
 
 # Setting up a chain of plots.
-redDimArgs[1,iSEE:::.selectByPlot] <- "---"
-colDataArgs[1,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
-colDataArgs[2,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
-featAssayArgs[2,iSEE:::.selectByPlot] <- "Column data plot 1"
-heatMapArgs[1,iSEE:::.selectByPlot] <- "Column data plot 1"
-featAssayArgs[1,iSEE:::.selectByPlot] <- "Feature assay plot 1"
+redDimArgs[1,.selectByPlot] <- "---"
+colDataArgs[1,.selectByPlot] <- "Reduced dimension plot 1"
+colDataArgs[2,.selectByPlot] <- "Reduced dimension plot 1"
+featAssayArgs[2,.selectByPlot] <- "Column data plot 1"
+heatMapArgs[1,.selectByPlot] <- "Column data plot 1"
+featAssayArgs[1,.selectByPlot] <- "Feature assay plot 1"
 
 memory <- list(
     redDimPlot=redDimArgs,
@@ -33,7 +33,7 @@ memory <- list(
     customStatTable=customStatArgs,
     heatMapPlot=heatMapArgs
 )
-g <- iSEE:::.spawn_selection_chart(memory)
+g <- .spawn_selection_chart(memory)
 
 # Visible panels (in order)
 initial_panels <- DataFrame(Name = c(
@@ -44,7 +44,7 @@ initial_panels <- DataFrame(Name = c(
     "Feature assay plot 2",  # 5
     "Heat map 1"                  # 6
 ))
-active_panels <- iSEE:::.setup_initial(initial_panels, memory)
+active_panels <- .setup_initial(initial_panels, memory)
 
 test_that("reporting order is correctly reported", {
     # Shuffling the order to provide a more robust test of the recovery of the correct order.
@@ -56,8 +56,8 @@ test_that("reporting order is correctly reported", {
         } else {
             cur_active <- active_panels[sample(nrow(active_panels)),]
         }
-        report_order <- iSEE:::.get_reporting_order(cur_active, g)
-        report_names <- iSEE:::.decode_panel_name(cur_active$Type, cur_active$ID)[report_order]
+        report_order <- .get_reporting_order(cur_active, g)
+        report_names <- .decode_panel_name(cur_active$Type, cur_active$ID)[report_order]
 
         # chain is:
         # redDimPlot (1) -> colDataPlot1 (2) -> featAssayPlot2 (5)
@@ -96,54 +96,54 @@ test_that("code trackers run correctly", {
 	pObjects$coordinates <- list()
 	pObjects$commands <- list()
 
-	o <- iSEE:::.get_reporting_order(active_panels, g)
-    panelnames <- iSEE:::.decode_panel_name(active_panels$Type, active_panels$ID)[o]
-    se <- iSEE:::.precompute_UI_info(sce, list(), list())
+	o <- .get_reporting_order(active_panels, g)
+    panelnames <- .decode_panel_name(active_panels$Type, active_panels$ID)[o]
+    se <- .precompute_UI_info(sce, list(), list())
 
 	for (panelname in panelnames) {
-        enc <- iSEE:::.decoded2encoded(panelname)
-        spenc <- iSEE:::.split_encoded(enc)
+        enc <- .decoded2encoded(panelname)
+        spenc <- .split_encoded(enc)
 
         if (spenc$Type!="customDataPlot") {
             FUN <- switch(spenc$Type,
-                redDimPlot=iSEE:::.make_redDimPlot,
-                featAssayPlot=iSEE:::.make_featAssayPlot,
-                colDataPlot=iSEE:::.make_colDataPlot,
-                rowDataPlot=iSEE:::.make_rowDataPlot,
-                sampAssayPlot=iSEE:::.make_sampAssayPlot,
-                heatMapPlot=iSEE:::.make_heatMapPlot)
+                redDimPlot=.make_redDimPlot,
+                featAssayPlot=.make_featAssayPlot,
+                colDataPlot=.make_colDataPlot,
+                rowDataPlot=.make_rowDataPlot,
+                sampAssayPlot=.make_sampAssayPlot,
+                heatMapPlot=.make_heatMapPlot)
             p.out <- FUN(spenc$ID, pObjects$memory, pObjects$coordinates, se, ExperimentColorMap())
         } else {
-            p.out <- iSEE:::.make_customDataPlot(spenc$ID, pObjects$memory, pObjects$coordinates, se)
+            p.out <- .make_customDataPlot(spenc$ID, pObjects$memory, pObjects$coordinates, se)
         }
 
         if ("xy" %in% names(p.out)) {
-            pObjects$coordinates[[panelname]] <- p.out$xy[, intersect(iSEE:::.allCoordinatesNames, colnames(p.out$xy))]
+            pObjects$coordinates[[panelname]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
         }
         pObjects$commands[[enc]] <- p.out$cmd_list
     }
 
     # Executing the code tracker, and checking that all our commands are there.
-    out <- iSEE:::.track_it_all(active_panels, pObjects, "sce", "ecm", "list()", "list()", "")
+    out <- .track_it_all(active_panels, pObjects, "sce", "ecm", "list()", "list()", "")
     for (panelname in panelnames) {
         expect_true(any(grepl(panelname, out)))
     }
     expect_true(any(grepl("ggplot", out)))
 
     # Tracking selections only - this ignores all panels as there are no brushes defined.
-    out <- iSEE:::.track_selections_only(active_panels, pObjects, "sce", "")
+    out <- .track_selections_only(active_panels, pObjects, "sce", "")
     for (panelname in panelnames) {
         expect_false(any(grepl(panelname, out)))
     }
 
     # Adding a brush to featAssayPlot1, such that we get it back.
-    pObjects$memory$featAssayPlot[1, iSEE:::.brushData] <- list("this is a mock brush")
-    out <- iSEE:::.track_selections_only(active_panels, pObjects, "sce", "")
+    pObjects$memory$featAssayPlot[1, .brushData] <- list("this is a mock brush")
+    out <- .track_selections_only(active_panels, pObjects, "sce", "")
     expect_true(any(grepl("Feature assay plot 1", out)))
 
     # Adding a brush to redDimPlot, which also gives us the two column data plots.
-    pObjects$memory$redDimPlot[1, iSEE:::.brushData] <- list("this is a mock brush")
-    out <- iSEE:::.track_selections_only(active_panels, pObjects, "sce", "")
+    pObjects$memory$redDimPlot[1, .brushData] <- list("this is a mock brush")
+    out <- .track_selections_only(active_panels, pObjects, "sce", "")
     expect_true(any(grepl("Reduced dimension plot 1", out)))
     expect_true(any(grepl("Column data plot 1", out)))
     expect_true(any(grepl("Column data plot 2", out)))

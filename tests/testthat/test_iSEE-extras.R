@@ -19,21 +19,21 @@ customStatArgs <- customStatTableDefaults(sce, 1)
 heatMapArgs <- heatMapPlotDefaults(sce, 2)
 
 # Setting up a chain of plots.
-redDimArgs[1, iSEE:::.selectByPlot] <- "---"
-colDataArgs[1, iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
-colDataArgs[2, iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
-featAssayArgs[2, iSEE:::.selectByPlot] <- "Column data plot 1"
-heatMapArgs[1, iSEE:::.selectByPlot] <- "Column data plot 1"
-featAssayArgs[1, iSEE:::.selectByPlot] <- "Feature assay plot 1"
+redDimArgs[1, .selectByPlot] <- "---"
+colDataArgs[1, .selectByPlot] <- "Reduced dimension plot 1"
+colDataArgs[2, .selectByPlot] <- "Reduced dimension plot 1"
+featAssayArgs[2, .selectByPlot] <- "Column data plot 1"
+heatMapArgs[1, .selectByPlot] <- "Column data plot 1"
+featAssayArgs[1, .selectByPlot] <- "Feature assay plot 1"
 
 # Setting up additional parameters to test color linking
-colDataArgs[1, iSEE:::.colorByField] <- iSEE:::.colorByFeatNameTitle
-colDataArgs[1, iSEE:::.colorByRowTable] <- "Row statistics table 1"
+colDataArgs[1, .colorByField] <- .colorByFeatNameTitle
+colDataArgs[1, .colorByRowTable] <- "Row statistics table 1"
 
 # Setting up additional parameters to test X/Y axis linking
-featAssayArgs[2, iSEE:::.featAssayYAxisRowTable] <- "Row statistics table 1"
-featAssayArgs[2, iSEE:::.featAssayXAxis] <- iSEE:::.featAssayXAxisFeatNameTitle
-featAssayArgs[2, iSEE:::.featAssayXAxisRowTable] <- "Row statistics table 2"
+featAssayArgs[2, .featAssayYAxisRowTable] <- "Row statistics table 1"
+featAssayArgs[2, .featAssayXAxis] <- .featAssayXAxisFeatNameTitle
+featAssayArgs[2, .featAssayXAxisRowTable] <- "Row statistics table 2"
 
 # Setting up additional parameters for table links
 rowStatArgs[2, .selectByPlot] <- "Feature assay plot 3"
@@ -41,7 +41,7 @@ colStatArgs[1, .selectByPlot] <- "Column data plot 1"
 sampAssayArgs[1, .sampAssayXAxis] <- .sampAssayXAxisSampNameTitle
 sampAssayArgs[1, .sampAssayXAxisColTable] <- "Column statistics table 1"
 
-sce <- iSEE:::.precompute_UI_info(sce, NULL, NULL)
+sce <- .precompute_UI_info(sce, NULL, NULL)
 all_memory <- .setup_memory(
     sce,
     redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs,
@@ -49,7 +49,7 @@ all_memory <- .setup_memory(
     redDimMax=1, colDataMax=2, featAssayMax=3, rowStatMax=3, rowDataMax=1,
     sampAssayMax=3, colStatMax=3, customDataMax=1, customStatMax=1, heatMapMax=2)
 
-g <- iSEE:::.spawn_selection_chart(all_memory)
+g <- .spawn_selection_chart(all_memory)
 tl <- .spawn_table_links(all_memory)
 
 all_coordinates <- list()
@@ -58,7 +58,7 @@ all_coordinates <- list()
 
 test_that("nested DataFrame are extracted correctly", {
 
-    df_info <- iSEE:::.extract_nested_DF(colData(sce))
+    df_info <- .extract_nested_DF(colData(sce))
 
     nested_colnames <- colnames(colData(sce)[, "nested"])
 
@@ -76,7 +76,7 @@ test_that(".sanitize_SE_input returns expected commands and object", {
     sizeFactors(sce, "ERCC") <- runif(ncol(sce))
     isSpike(sce, "ERCC") <- sample(nrow(sce), 10)
 
-    sanitized_list <- iSEE:::.sanitize_SE_input(sce)
+    sanitized_list <- .sanitize_SE_input(sce)
     sanitized_cmds <- sanitized_list$cmds
     sanitized_sce <- sanitized_list$object
 
@@ -120,7 +120,7 @@ test_that(".setup_initial throws an error if Name column is missing", {
     all_memory <- list()
 
     expect_error(
-        iSEE:::.setup_initial(initialPanels, all_memory),
+        .setup_initial(initialPanels, all_memory),
         "need 'Name' field in 'initialPanels'",
         fixed=TRUE
     )
@@ -237,10 +237,10 @@ test_that("Nameless SummarizedExperiment objects can be sanitized", {
 
 test_that(".safe_field_name prepends _ to disambiguate colnames", {
 
-    out <- iSEE:::.safe_field_name("test", "test")
+    out <- .safe_field_name("test", "test")
     expect_identical(out, "_test")
 
-    out <- iSEE:::.safe_field_name("test", c("test", "_test", "__test"))
+    out <- .safe_field_name("test", c("test", "_test", "__test"))
     expect_identical(out, "___test")
 
 })
@@ -249,20 +249,20 @@ test_that(".safe_field_name prepends _ to disambiguate colnames", {
 
 test_that(".get_selected_points works", {
 
-    all_memory$colDataPlot[[iSEE:::.brushData]][1] <- list(NULL)
+    all_memory$colDataPlot[[.brushData]][1] <- list(NULL)
 
     p.out <- .make_redDimPlot(id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
     all_coordinates[["redDimPlot1"]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
 
     # No selection in transmitter panel
-    out <- iSEE:::.get_selected_points(
+    out <- .get_selected_points(
         names = rownames(all_coordinates[["redDimPlot1"]]),
         transmitter = "Column data plot 1",
         all_memory, all_coordinates
         )
     expect_null(out)
 
-    all_memory$colDataPlot[[iSEE:::.brushData]][1] <- list(list(
+    all_memory$colDataPlot[[.brushData]][1] <- list(list(
         xmin=0.9, xmax=1.1, ymin=2E7, ymax=4E7,
         direction="xy", mapping=list(x="X", y="Y"),
         brushId="dummy_brush", outputId="dummy_plot"
@@ -271,7 +271,7 @@ test_that(".get_selected_points works", {
     all_coordinates[["colDataPlot1"]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
 
     # A selection exists in the transmitter panel
-    out <- iSEE:::.get_selected_points(
+    out <- .get_selected_points(
         names = rownames(all_coordinates[["redDimPlot1"]]),
         transmitter = "Column data plot 1",
         all_memory, all_coordinates
@@ -279,7 +279,7 @@ test_that(".get_selected_points works", {
     # Mimic brushedPoints to check whether the logical vector is correct
     expectedNames <- rownames(brushedPoints(
         all_coordinates[["colDataPlot1"]],
-        all_memory$colDataPlot[[iSEE:::.brushData]][[1]]))
+        all_memory$colDataPlot[[.brushData]][[1]]))
     expectedOut <- (rownames(all_coordinates[["redDimPlot1"]]) %in% expectedNames)
     expect_identical(out, expectedOut)
 

@@ -2,9 +2,9 @@
 # Default color maps ----
 
 # default continuous colormap
-.defaultContinuousColorMap <- iSEE:::.defaultContinuousColorMap
+.defaultContinuousColorMap <- .defaultContinuousColorMap
 # default discrete colormap
-.defaultDiscreteColorMap <- iSEE:::.defaultDiscreteColorMap
+.defaultDiscreteColorMap <- .defaultDiscreteColorMap
 
 # Example custom color maps ----
 

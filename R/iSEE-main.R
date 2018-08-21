@@ -1559,12 +1559,12 @@ iSEE <- function(se,
         }
 
         #######################################################################
-        # Row table section. ----
+        # Linked table section. ----
         #######################################################################
 
         for (mode in linked_table_types) {
             max_plots <- nrow(pObjects$memory[[mode]])
-            if (mode=="rowStatTable") {
+            if (mode == "rowStatTable") {
                 current_df <- feature_data
                 current_select_col <- feature_data_select_col
                 choices <- feature_choices
@@ -1679,7 +1679,7 @@ iSEE <- function(se,
                     })
 
                     # Updating the annotation box.
-                    if (mode0=="rowStatTable") {
+                    if (mode0 == "rowStatTable") {
                         anno_field <- paste0(panel_name, "_annotation")
                         output[[anno_field]] <- renderUI({
                             if(is.null(annotFun)) return(NULL)
@@ -1713,13 +1713,13 @@ iSEE <- function(se,
                 import_button <- paste0(plot_name, "_", .heatMapImportFeatures)
                 observeEvent(input[[import_button]], {
                     origin <- pObjects$memory[[mode0]][id0, .heatMapImportSource]
-                    if (origin==.noSelection) {
+                    if (origin == .noSelection) {
                         return(NULL)
                     }
                     enc <- .encode_panel_name(origin)
 
                     incoming <- NULL
-                    if (enc$Type=="rowStatTable") {
+                    if (enc$Type == "rowStatTable") {
                         incoming <- input[[paste0(enc$Type, enc$ID, "_rows_all")]]
                     } else {
                         selected <- .get_selected_points(rownames(se), origin, pObjects$memory, pObjects$coordinates)
@@ -1738,8 +1738,9 @@ iSEE <- function(se,
                     }
 
                     combined <- union(pObjects$memory[[mode0]][id0, .heatMapFeatName][[1]], incoming)
-                    updateSelectizeInput(session, paste0(plot_name, "_", .heatMapFeatName), choices = feature_choices,
-                                         server = TRUE, selected = combined)
+                    updateSelectizeInput(
+                        session, paste0(plot_name, "_", .heatMapFeatName), choices = feature_choices,
+                        server = TRUE, selected = combined)
                 }, ignoreInit=TRUE)
 
                 # Triggering an update of the selected elements : clear features, trigger replotting (caught by validate)

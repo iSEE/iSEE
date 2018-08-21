@@ -311,7 +311,7 @@ names(.all_aes_values) <- .all_aes_names
     plot_title <- colnames(se)[samp_selected_y]
     y_lab <- .feature_axis_label(se, samp_selected_y, assay_choice, multiline = FALSE)
     data_cmds[["y"]] <- sprintf(
-        "plot.data <- data.frame(Y=assay(se, %i, withDimnames=FALSE)[,%i], row.names = rownames(se));", 
+        "plot.data <- data.frame(Y=assay(se, %i, withDimnames=FALSE)[,%i], row.names = rownames(se));",
         assay_choice, samp_selected_y
     )
 
@@ -332,7 +332,7 @@ names(.all_aes_values) <- .all_aes_names
         plot_title <- paste(plot_title, "vs", colnames(se)[samp_selected_x])
         x_lab <- .feature_axis_label(se, samp_selected_x, assay_choice, multiline = FALSE)
         data_cmds[["x"]] <- sprintf(
-            "plot.data$X <- assay(se, %i, withDimnames=FALSE)[,%i];", 
+            "plot.data$X <- assay(se, %i, withDimnames=FALSE)[,%i];",
             assay_choice, samp_selected_x
         )
     }
@@ -1669,7 +1669,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 
 #' @title Assay axis labels
 #'
-#' @description 
+#' @description
 #' Generate an axis label when assay data is used for colouring row- or column-based plots.
 #'
 #' @param se A \linkS4class{SingleCellExperiment} object.

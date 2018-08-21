@@ -774,47 +774,49 @@ iSEE <- function(se,
         }
 
         # Linked selection choice observers for the tables. ----
-        max_tabs <- nrow(pObjects$memory$rowStatTable)
-        for (id in seq_len(max_tabs)) {
-            local({
-                mode0 <- "rowStatTable"
-                id0 <- id
-                tab_name <- paste0(mode0, id0)
-                prefix <- paste0(tab_name, "_")
+        for (mode in linked_table_types) {
+            max_tabs <- nrow(pObjects$memory[[mode]])
+            for (id in seq_len(max_tabs)) {
+                local({
+                    mode0 <- mode
+                    id0 <- id
+                    tab_name <- paste0(mode0, id0)
+                    prefix <- paste0(tab_name, "_")
 
-                select_plot_field <- paste0(prefix, .selectByPlot)
-                observeEvent(input[[select_plot_field]], {
-                    old_transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
-                    new_transmitter <- input[[select_plot_field]]
+                    select_plot_field <- paste0(prefix, .selectByPlot)
+                    observeEvent(input[[select_plot_field]], {
+                        old_transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
+                        new_transmitter <- input[[select_plot_field]]
 
-                    # Determining whether the new and old transmitting plot have selections.
-                    old_out <- .transmitted_selection(old_transmitter, pObjects$memory)
-                    old_select <- old_out$selected
-                    old_encoded <- old_out$encoded
-                    new_out <- .transmitted_selection(new_transmitter, pObjects$memory)
-                    new_select <- new_out$selected
-                    new_encoded <- new_out$encoded
+                        # Determining whether the new and old transmitting plot have selections.
+                        old_out <- .transmitted_selection(old_transmitter, pObjects$memory)
+                        old_select <- old_out$selected
+                        old_encoded <- old_out$encoded
+                        new_out <- .transmitted_selection(new_transmitter, pObjects$memory)
+                        new_select <- new_out$selected
+                        new_encoded <- new_out$encoded
 
-                    # Updating the graph (no need for DAG protection here, as tables do not transmit selections).
-                    pObjects$selection_links <- .choose_new_selection_source(pObjects$selection_links, tab_name, new_encoded, old_encoded)
-                    pObjects$memory[[mode0]][id0, .selectByPlot] <- new_transmitter
+                        # Updating the graph (no need for DAG protection here, as tables do not transmit selections).
+                        pObjects$selection_links <- .choose_new_selection_source(pObjects$selection_links, tab_name, new_encoded, old_encoded)
+                        pObjects$memory[[mode0]][id0, .selectByPlot] <- new_transmitter
 
-                    # Update the elements reporting the links between plots.
-                    for (relinked in c(old_encoded, new_encoded, tab_name)) {
-                        if (relinked==.noSelection) { next }
-                        relink_field <- paste0(relinked, "_", .panelLinkInfo)
-                        rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
-                    }
+                        # Update the elements reporting the links between plots.
+                        for (relinked in c(old_encoded, new_encoded, tab_name)) {
+                            if (relinked==.noSelection) { next }
+                            relink_field <- paste0(relinked, "_", .panelLinkInfo)
+                            rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
+                        }
 
-                    # Not re-rendering if there were no selections in either the new or old transmitters.
-                    if (!old_select && !new_select){
-                        return(NULL)
-                    }
+                        # Not re-rendering if there were no selections in either the new or old transmitters.
+                        if (!old_select && !new_select){
+                            return(NULL)
+                        }
 
-                    # Triggering update of the table.
-                    rObjects[[tab_name]] <- .increment_counter(isolate(rObjects[[tab_name]]))
-                }, ignoreInit=TRUE)
-            })
+                        # Triggering update of the table.
+                        rObjects[[tab_name]] <- .increment_counter(isolate(rObjects[[tab_name]]))
+                    }, ignoreInit=TRUE)
+                })
+            }
         }
 
         # Linked selection choice observers for the heatmaps.

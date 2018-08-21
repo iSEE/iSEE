@@ -1261,15 +1261,17 @@ iSEE <- function(se,
                     dec_name <- .decode_panel_name(mode0, id0)
                     output[[gen_field]] <- renderUI({
                         force(rObjects[[gen_field]])
-                        selected <- .get_selected_points(rownames(pObjects$coordinates[[plot_name]]), dec_name,
-                                                         pObjects$memory, pObjects$coordinates)
+                        selected <- .get_selected_points(
+                            rownames(pObjects$coordinates[[plot_name]]), dec_name,
+                            pObjects$memory, pObjects$coordinates)
                         if (is.null(selected)) {
                             return(NULL)
                         }
                         n_selected <- sum(selected)
                         n_total <- length(selected)
-                        HTML(sprintf("%i of %i points selected (%.1f%%)",
-                                     n_selected, n_total, 100*n_selected/n_total))
+                        HTML(sprintf(
+                            "%i of %i points selected (%.1f%%)",
+                            n_selected, n_total, 100*n_selected/n_total))
                     })
 
                     # Describing the links between panels.

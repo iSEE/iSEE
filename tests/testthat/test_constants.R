@@ -6,7 +6,7 @@ test_that(".encode_panel_name can convert plot names", {
   
   ## redDim
   
-  encoded_redDim <- .encode_panel_name(
+  encoded_redDim <- iSEE:::.encode_panel_name(
     paste("Reduced dimension plot", seq_len(array_length))
   )
   
@@ -19,7 +19,7 @@ test_that(".encode_panel_name can convert plot names", {
   
   ## colData
   
-  encoded_colData <- .encode_panel_name(
+  encoded_colData <- iSEE:::.encode_panel_name(
     paste("Column data plot", seq_len(array_length))
   )
   
@@ -32,7 +32,7 @@ test_that(".encode_panel_name can convert plot names", {
   
   ## featAssay
   
-  encoded_featAssay <- .encode_panel_name(
+  encoded_featAssay <- iSEE:::.encode_panel_name(
     paste("Feature assay plot", seq_len(array_length))
   )
   
@@ -48,39 +48,39 @@ test_that(".encode_panel_name can convert plot names", {
 test_that(".encode_panel_name catches invalid inputs", {
   
   expect_error(
-    .encode_panel_name("invalid plot name"),
+    iSEE:::.encode_panel_name("invalid plot name"),
     "is not a legal panel name"
   )
   
 })
 
 test_that(".decode_panel_name works as expected", {
-    expect_identical(.decode_panel_name("featAssayPlot", 1), "Feature assay plot 1")
-    expect_identical(.decode_panel_name("redDimPlot", 2), "Reduced dimension plot 2")
-    expect_identical(.decode_panel_name("colDataPlot", 3), "Column data plot 3")
-    expect_identical(.decode_panel_name("rowStatTable", 4), "Row statistics table 4")
+    expect_identical(iSEE:::.decode_panel_name("featAssayPlot", 1), "Feature assay plot 1")
+    expect_identical(iSEE:::.decode_panel_name("redDimPlot", 2), "Reduced dimension plot 2")
+    expect_identical(iSEE:::.decode_panel_name("colDataPlot", 3), "Column data plot 3")
+    expect_identical(iSEE:::.decode_panel_name("rowStatTable", 4), "Row statistics table 4")
 
     # Works on vectors.
-    expect_identical(.decode_panel_name(c("featAssayPlot", "redDimPlot"), 1:2), 
+    expect_identical(iSEE:::.decode_panel_name(c("featAssayPlot", "redDimPlot"), 1:2), 
                      c("Feature assay plot 1", "Reduced dimension plot 2"))
-    expect_identical(.decode_panel_name(character(0), integer(0)), character(0))
+    expect_identical(iSEE:::.decode_panel_name(character(0), integer(0)), character(0))
 })
 
 test_that(".decoded2encoded works as expected", {
-    expect_identical(.decoded2encoded("Feature assay plot 1"), "featAssayPlot1")
-    expect_identical(.decoded2encoded(c("Feature assay plot 1", "Reduced dimension plot 1")), 
+    expect_identical(iSEE:::.decoded2encoded("Feature assay plot 1"), "featAssayPlot1")
+    expect_identical(iSEE:::.decoded2encoded(c("Feature assay plot 1", "Reduced dimension plot 1")), 
                                              c("featAssayPlot1", "redDimPlot1"))
-    expect_identical(.decoded2encoded(character(0)), character(0))
-    expect_error(.decoded2encoded(c("Feature assay plot 1", "")),
+    expect_identical(iSEE:::.decoded2encoded(character(0)), character(0))
+    expect_error(iSEE:::.decoded2encoded(c("Feature assay plot 1", "")),
                  "'' is not a legal panel name")
-    # expect_identical(.decoded2encoded(c("Feature assay plot 1", "")), 
+    # expect_identical(iSEE:::.decoded2encoded(c("Feature assay plot 1", "")), 
     #                                          c("featAssayPlot1", ""))
 })
 
 test_that(".split_encoded works as expected", {
-    expect_identical(.split_encoded("featAssayPlot1"), list(Type="featAssayPlot", ID=1L))
-    expect_identical(.split_encoded(c("featAssayPlot1", "redDimPlot1")),
+    expect_identical(iSEE:::.split_encoded("featAssayPlot1"), list(Type="featAssayPlot", ID=1L))
+    expect_identical(iSEE:::.split_encoded(c("featAssayPlot1", "redDimPlot1")),
                      list(Type=c("featAssayPlot", "redDimPlot"), ID=c(1L, 1L)))
-    expect_identical(.split_encoded(character(0)), list(Type=character(0), ID=integer(0)))
+    expect_identical(iSEE:::.split_encoded(character(0)), list(Type=character(0), ID=integer(0)))
 })
 

@@ -6,27 +6,27 @@ test_that("list updater function works correctly", {
     blah$A <- vector("list", 20)
 
     # Adding an element.
-    out <- .update_list_element(blah, 2, "A", 1:5)
+    out <- iSEE:::.update_list_element(blah, 2, "A", 1:5)
     expect_type(out$A, "list")
     tmp <- blah$A
     tmp[[2]] <- 1:5
     expect_identical(tmp, out$A)
 
     # Adding an element of a completely different type.
-    out <- .update_list_element(out, 5, "A", list("X"))
+    out <- iSEE:::.update_list_element(out, 5, "A", list("X"))
     expect_type(out$A, "list")
     tmp[[5]] <- list("X")
     expect_identical(tmp, out$A)
 
-    out <- .update_list_element(out, 2, "A", NULL)
-    out <- .update_list_element(out, 5, "A", NULL)
+    out <- iSEE:::.update_list_element(out, 2, "A", NULL)
+    out <- iSEE:::.update_list_element(out, 5, "A", NULL)
     expect_identical(blah, out)
 })
 
 test_that("plot feasibility checks work correctly", {
-    sce <- .precompute_UI_info(sce, NULL, NULL)
+    sce <- iSEE:::.precompute_UI_info(sce, NULL, NULL)
 
-    out <- .check_plot_feasibility(sce)
+    out <- iSEE:::.check_plot_feasibility(sce)
     expect_true(out$redDimPlot)
     expect_true(out$featAssayPlot)
     expect_true(out$colDataPlot)
@@ -34,7 +34,7 @@ test_that("plot feasibility checks work correctly", {
     expect_true(out$rowDataPlot)
 
     # No genes.
-    out <- .check_plot_feasibility(sce[0,])
+    out <- iSEE:::.check_plot_feasibility(sce[0,])
     expect_true(out$redDimPlot)
     expect_false(out$featAssayPlot)
     expect_true(out$colDataPlot)
@@ -42,7 +42,7 @@ test_that("plot feasibility checks work correctly", {
     expect_false(out$rowDataPlot)
 
     # No samples.
-    out <- .check_plot_feasibility(sce[,0])
+    out <- iSEE:::.check_plot_feasibility(sce[,0])
     expect_false(out$redDimPlot)
     expect_false(out$featAssayPlot)
     expect_false(out$colDataPlot)
@@ -52,7 +52,7 @@ test_that("plot feasibility checks work correctly", {
     # No column data.
     sceX <- sce
     colData(sceX) <- colData(sceX)[,0]
-    out <- .check_plot_feasibility(sceX)
+    out <- iSEE:::.check_plot_feasibility(sceX)
     expect_true(out$redDimPlot)
     expect_true(out$featAssayPlot)
     expect_false(out$colDataPlot)
@@ -62,7 +62,7 @@ test_that("plot feasibility checks work correctly", {
     # No reduced dimensions.
     sceX <- sce
     reducedDims(sceX) <- SimpleList()
-    out <- .check_plot_feasibility(sceX)
+    out <- iSEE:::.check_plot_feasibility(sceX)
     expect_false(out$redDimPlot)
     expect_true(out$featAssayPlot)
     expect_true(out$colDataPlot)
@@ -74,7 +74,7 @@ test_that("plot feasibility checks work correctly", {
     for (field in assayNames(sceX)) {
         assay(sceX, field) <- NULL
     }
-    out <- .check_plot_feasibility(sceX)
+    out <- iSEE:::.check_plot_feasibility(sceX)
     expect_true(out$redDimPlot)
     expect_false(out$featAssayPlot)
     expect_true(out$colDataPlot)
@@ -84,7 +84,7 @@ test_that("plot feasibility checks work correctly", {
     # No row data
     sceX <- sce
     rowData(sceX) <- rowData(sceX)[,0]
-    out <- .check_plot_feasibility(sceX)
+    out <- iSEE:::.check_plot_feasibility(sceX)
     expect_true(out$redDimPlot)
     expect_true(out$featAssayPlot)
     expect_true(out$colDataPlot)
@@ -93,15 +93,15 @@ test_that("plot feasibility checks work correctly", {
 })
 
 test_that("count incrementer works correctly", {
-    expect_identical(.increment_counter(0L), 1L)
-    expect_identical(.increment_counter(9999L), 0L)
+    expect_identical(iSEE:::.increment_counter(0L), 1L)
+    expect_identical(iSEE:::.increment_counter(9999L), 0L)
 })
 
 test_that("memory setup works correctly", {
-    sce <- .precompute_UI_info(sce, list(PCA2="WHEE"), list(DE="WHOO"))  # Adding custom functions for .setup_memory to check.
+    sce <- iSEE:::.precompute_UI_info(sce, list(PCA2="WHEE"), list(DE="WHOO"))  # Adding custom functions for .setup_memory to check.
 
     # Works correctly in the vanilla setting.
-    memory <- .setup_memory(
+    memory <- iSEE:::.setup_memory(
         se=sce,
         redDimArgs=NULL,
         colDataArgs=NULL,
@@ -135,7 +135,7 @@ test_that("memory setup works correctly", {
     expect_identical(nrow(memory$heatMapPlot), 2L)
 
     # Works correctly when arguments are specified.
-    memory <- .setup_memory(
+    memory <- iSEE:::.setup_memory(
         se=sce,
         redDimArgs=DataFrame(Type=2L),
         colDataArgs=DataFrame(XAxis="Column data"),
@@ -180,7 +180,7 @@ test_that("memory setup works correctly", {
     expect_identical(memory$heatMapPlot$Assay, c(1L, 6L))
 
     # Works correctly when the number of arguments is greater than max.
-    memory <- .setup_memory(
+    memory <- iSEE:::.setup_memory(
         sce,
         redDimArgs=DataFrame(Type=2L),
         colDataArgs=DataFrame(XAxis="Column data"),
@@ -233,7 +233,7 @@ test_that("memory setup works correctly", {
     rowData(sceX) <- rowData(sceX)[,0]
     SingleCellExperiment:::int_metadata(sce) <- list()
 
-    memory <- .setup_memory(
+    memory <- iSEE:::.setup_memory(
         se=sceX,
         redDimArgs=NULL,
         colDataArgs=NULL,
@@ -272,18 +272,18 @@ test_that("name to index coercion works correctly", {
     ix <- sample(length(LETTERS), 15)
 
     df <- DataFrame(WHEE=ix)
-    out <- .name2index(df, "WHEE", LETTERS)
+    out <- iSEE:::.name2index(df, "WHEE", LETTERS)
     expect_identical(df, out)
 
     df <- DataFrame(WHEE=LETTERS[ix])
-    out <- .name2index(df, "WHEE", LETTERS)
+    out <- iSEE:::.name2index(df, "WHEE", LETTERS)
     expect_identical(ix, out$WHEE)
 
     # Behaves sensibly in response to missing values.
     df <- DataFrame(WHEE=LETTERS[ix])
     chosen <- sample(nrow(df), 5)
     df$WHEE[chosen] <- tolower(df$WHEE[chosen])
-    out <- .name2index(df, "WHEE", LETTERS)
+    out <- iSEE:::.name2index(df, "WHEE", LETTERS)
 
     ref <- ix
     ref[chosen] <- 1L
@@ -292,23 +292,23 @@ test_that("name to index coercion works correctly", {
     # Handles lists correctly.
     input <- lapply(1:5*4, function(x) { sample(length(LETTERS), x) })
     df <- DataFrame(YAY=I(input))
-    out <- .name2index(df, "YAY", LETTERS)
+    out <- iSEE:::.name2index(df, "YAY", LETTERS)
     expect_identical(out, df)
 
     input2 <- lapply(input, function(x) { LETTERS[x] })
     df2 <- DataFrame(YAY=I(input2))
-    out <- .name2index(df2, "YAY", LETTERS)
+    out <- iSEE:::.name2index(df2, "YAY", LETTERS)
     expect_identical(out, df)
 
     df2$YAY <- SimpleList(df2$YAY)
-    out <- .name2index(df2, "YAY", LETTERS)
+    out <- iSEE:::.name2index(df2, "YAY", LETTERS)
     expect_identical(out, df)
 })
 
 test_that("initialization of active panels works correctly", {
-    sce <- .precompute_UI_info(sce, list(PCA2="WHEE"), list(DE="WHOO")) # Adding custom functions for .setup_memory to check.
+    sce <- iSEE:::.precompute_UI_info(sce, list(PCA2="WHEE"), list(DE="WHOO")) # Adding custom functions for .setup_memory to check.
 
-    memory <- .setup_memory(
+    memory <- iSEE:::.setup_memory(
         se=sce,
         redDimArgs=NULL,
         colDataArgs=NULL,
@@ -330,43 +330,43 @@ test_that("initialization of active panels works correctly", {
         customDataMax=2L,
         customStatMax=3L,
         heatMapMax=2L)
-    out <- .setup_initial(NULL, memory)
+    out <- iSEE:::.setup_initial(NULL, memory)
     expect_identical(out$ID, rep(1L, nrow(out)))
-    expect_identical(out$Type, unname(rev.translation))
+    expect_identical(out$Type, unname(iSEE:::rev.translation))
 
     # Trying with actual specifications.
-    out <- .setup_initial(DataFrame(Name=c("Feature assay plot 1", "Reduced dimension plot 2")), memory)
+    out <- iSEE:::.setup_initial(DataFrame(Name=c("Feature assay plot 1", "Reduced dimension plot 2")), memory)
     expect_identical(out$Type, c("featAssayPlot", "redDimPlot"))
     expect_identical(out$ID, 1:2)
     expect_identical(out$Width, rep(4L, 2))
     expect_identical(out$Height, rep(500L, 2))
 
-    out <- .setup_initial(DataFrame(Name=c("Column data plot 3", "Row statistics table 2"), Width=c(6, 3), Height=c(600, 700)), memory)
+    out <- iSEE:::.setup_initial(DataFrame(Name=c("Column data plot 3", "Row statistics table 2"), Width=c(6, 3), Height=c(600, 700)), memory)
     expect_identical(out$Type, c("colDataPlot", "rowStatTable"))
     expect_identical(out$ID, 3:2)
     expect_identical(out$Width, c(6L, 3L))
     expect_identical(out$Height, c(600L, 700L))
 
     # Width and height constraints work correctly.
-    out <- .setup_initial(DataFrame(Name="Column data plot 3", Width=0L, Height=10), memory)
-    expect_identical(out$Width, width_limits[1])
-    expect_identical(out$Height, height_limits[1])
+    out <- iSEE:::.setup_initial(DataFrame(Name="Column data plot 3", Width=0L, Height=10), memory)
+    expect_identical(out$Width, iSEE:::width_limits[1])
+    expect_identical(out$Height, iSEE:::height_limits[1])
 
-    out <- .setup_initial(DataFrame(Name="Column data plot 3", Width=100L, Height=1e6), memory)
-    expect_identical(out$Width, width_limits[2])
-    expect_identical(out$Height, height_limits[2])
+    out <- iSEE:::.setup_initial(DataFrame(Name="Column data plot 3", Width=100L, Height=1e6), memory)
+    expect_identical(out$Width, iSEE:::width_limits[2])
+    expect_identical(out$Height, iSEE:::height_limits[2])
 
     # Throws a message if you request an impossible feature.
-    expect_message(out <- .setup_initial(DataFrame(Name=c("Reduced dimension plot 1", "Column data plot 3", "Feature assay plot 2")), memory),
+    expect_message(out <- iSEE:::.setup_initial(DataFrame(Name=c("Reduced dimension plot 1", "Column data plot 3", "Feature assay plot 2")), memory),
                    "not available")
     expect_identical(out$Type, c("redDimPlot", "colDataPlot"))
     expect_identical(out$ID, c(1L, 3L))
 })
 
 test_that("sanitation of memory works correctly", {
-    sce <- .precompute_UI_info(sce, list(a=1), list(b=1))
+    sce <- iSEE:::.precompute_UI_info(sce, list(a=1), list(b=1))
 
-    memory <- .setup_memory(
+    memory <- iSEE:::.setup_memory(
         se=sce,
         redDimArgs=NULL,
         colDataArgs=NULL,
@@ -389,123 +389,123 @@ test_that("sanitation of memory works correctly", {
         customStatMax=3L,
         heatMapMax=2L
         )
-    init_panels <- .setup_initial(NULL, memory)
+    init_panels <- iSEE:::.setup_initial(NULL, memory)
 
     # No effect when there are no links.
-    sanitized <- .sanitize_memory(init_panels, memory)
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory)
     expect_identical(sanitized, memory)
 
     ##############
     # Does NOT remove valid selecting or table links in active plots.
     memory2 <- memory
-    memory2$redDimPlot[1, .selectByPlot] <- "Column data plot 1"
-    memory2$colDataPlot[1, .colorByRowTable] <- "Row statistics table 1"
-    memory2$rowDataPlot[1, .colorByColTable] <- "Column statistics table 1"
-    memory2$rowDataPlot[1, .selectByPlot] <- "Sample assay plot 1"
-    sanitized <- .sanitize_memory(init_panels, memory2)
+    memory2$redDimPlot[1, iSEE:::.selectByPlot] <- "Column data plot 1"
+    memory2$colDataPlot[1, iSEE:::.colorByRowTable] <- "Row statistics table 1"
+    memory2$rowDataPlot[1, iSEE:::.colorByColTable] <- "Column statistics table 1"
+    memory2$rowDataPlot[1, iSEE:::.selectByPlot] <- "Sample assay plot 1"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory2)
 
     # Correctly removes valid selecting or table links in inactive plots.
     memory2 <- memory
-    memory2$redDimPlot[2, .selectByPlot] <- "Column data plot 1"
-    memory2$colDataPlot[2, .colorByRowTable] <- "Row statistics table 1"
-    memory2$rowDataPlot[2, .colorByColTable] <- "Column statistics table 1"
-    memory2$rowDataPlot[2, .selectByPlot] <- "Sample assay plot 1"
-    sanitized <- .sanitize_memory(init_panels, memory2)
+    memory2$redDimPlot[2, iSEE:::.selectByPlot] <- "Column data plot 1"
+    memory2$colDataPlot[2, iSEE:::.colorByRowTable] <- "Row statistics table 1"
+    memory2$rowDataPlot[2, iSEE:::.colorByColTable] <- "Column statistics table 1"
+    memory2$rowDataPlot[2, iSEE:::.selectByPlot] <- "Sample assay plot 1"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory)
 
     # Correctly removes invalid selecting or table links.
     memory2 <- memory
-    memory2$redDimPlot[1, .selectByPlot] <- "Column data plot 2"
-    memory2$colDataPlot[1, .colorByRowTable] <- "Row statistics table 2"
-    memory2$rowDataPlot[1, .colorByColTable] <- "Column statistics table 2"
-    memory2$rowDataPlot[1, .selectByPlot] <- "Sample assay plot 2"
-    sanitized <- .sanitize_memory(init_panels, memory2)
+    memory2$redDimPlot[1, iSEE:::.selectByPlot] <- "Column data plot 2"
+    memory2$colDataPlot[1, iSEE:::.colorByRowTable] <- "Row statistics table 2"
+    memory2$rowDataPlot[1, iSEE:::.colorByColTable] <- "Column statistics table 2"
+    memory2$rowDataPlot[1, iSEE:::.selectByPlot] <- "Sample assay plot 2"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory)
 
     ##############
     # Repeating for the feature assay plots: retains valid table links in active plots.
     memory2 <- memory
-    memory2$featAssayPlot[1, .featAssayXAxisRowTable] <- "Row statistics table 1"
-    memory2$featAssayPlot[1, .featAssayYAxisRowTable] <- "Row statistics table 1"
-    sanitized <- .sanitize_memory(init_panels, memory2)
+    memory2$featAssayPlot[1, iSEE:::.featAssayXAxisRowTable] <- "Row statistics table 1"
+    memory2$featAssayPlot[1, iSEE:::.featAssayYAxisRowTable] <- "Row statistics table 1"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory2)
 
     # Removes valid table links in inactive plots.
     memory2 <- memory
-    memory2$featAssayPlot[2, .featAssayXAxisRowTable] <- "Row statistics table 1"
-    memory2$featAssayPlot[2, .featAssayYAxisRowTable] <- "Row statistics table 1"
-    sanitized <- .sanitize_memory(init_panels, memory2)
+    memory2$featAssayPlot[2, iSEE:::.featAssayXAxisRowTable] <- "Row statistics table 1"
+    memory2$featAssayPlot[2, iSEE:::.featAssayYAxisRowTable] <- "Row statistics table 1"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory)
 
     # Removes inactive table links.
     memory2 <- memory
-    memory2$featAssayPlot[1, .featAssayXAxisRowTable] <- "Row statistics table 2"
-    memory2$featAssayPlot[1, .featAssayYAxisRowTable] <- "Row statistics table 2"
-    sanitized <- .sanitize_memory(init_panels, memory2)
+    memory2$featAssayPlot[1, iSEE:::.featAssayXAxisRowTable] <- "Row statistics table 2"
+    memory2$featAssayPlot[1, iSEE:::.featAssayYAxisRowTable] <- "Row statistics table 2"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory)
 
     ##############
     # Repeating for the sample assay plots: retains valid table links in active plots.
     memory2 <- memory
-    memory2$sampAssayPlot[1, .sampAssayXAxisColTable] <- "Column statistics table 1"
-    memory2$sampAssayPlot[1, .sampAssayYAxisColTable] <- "Column statistics table 1"
-    sanitized <- .sanitize_memory(init_panels, memory2)
+    memory2$sampAssayPlot[1, iSEE:::.sampAssayXAxisColTable] <- "Column statistics table 1"
+    memory2$sampAssayPlot[1, iSEE:::.sampAssayYAxisColTable] <- "Column statistics table 1"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory2)
 
     # Removes valid table links in inactive plots.
     memory2 <- memory
-    memory2$sampAssayPlot[2, .sampAssayXAxisColTable] <- "Column statistics table 1"
-    memory2$sampAssayPlot[2, .sampAssayYAxisColTable] <- "Column statistics table 1"
-    sanitized <- .sanitize_memory(init_panels, memory2)
+    memory2$sampAssayPlot[2, iSEE:::.sampAssayXAxisColTable] <- "Column statistics table 1"
+    memory2$sampAssayPlot[2, iSEE:::.sampAssayYAxisColTable] <- "Column statistics table 1"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory)
 
     # Removes inactive table links.
     memory2 <- memory
-    memory2$sampAssayPlot[1, .sampAssayXAxisColTable] <- "Column statistics table 2"
-    memory2$sampAssayPlot[1, .sampAssayYAxisColTable] <- "Column statistics table 2"
-    sanitized <- .sanitize_memory(init_panels, memory2)
+    memory2$sampAssayPlot[1, iSEE:::.sampAssayXAxisColTable] <- "Column statistics table 2"
+    memory2$sampAssayPlot[1, iSEE:::.sampAssayYAxisColTable] <- "Column statistics table 2"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory)
 
     ##############
     # Repeating for the heatmaps.
     memory2 <- memory
-    memory2$heatMapPlot[1, .heatMapImportSource] <- "Row statistics table 1"
-    sanitized <- .sanitize_memory(init_panels, memory2)
+    memory2$heatMapPlot[1, iSEE:::.heatMapImportSource] <- "Row statistics table 1"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory2)
 
     # Removes valid plot/table links in inactive plots.
     memory2 <- memory
-    memory2$heatMapPlot[2, .heatMapImportSource] <- "Row statistics table 1"
-    sanitized <- .sanitize_memory(init_panels, memory2)
+    memory2$heatMapPlot[2, iSEE:::.heatMapImportSource] <- "Row statistics table 1"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory)
 
     # Removes inactive plot/table links.
     memory2 <- memory
-    memory2$heatMapPlot[1, .heatMapImportSource] <- "Row statistics table 2"
-    sanitized <- .sanitize_memory(init_panels, memory2)
+    memory2$heatMapPlot[1, iSEE:::.heatMapImportSource] <- "Row statistics table 2"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory)
 
     ##############
     # Repeating for the custom plots. 
     memory2 <- memory
-    memory2$customDataPlot[1, .customRowSource] <- "Row data plot 1"
-    memory2$customDataPlot[1, .customColSource] <- "Column data plot 1"
-    sanitized <- .sanitize_memory(init_panels, memory2)
+    memory2$customDataPlot[1, iSEE:::.customRowSource] <- "Row data plot 1"
+    memory2$customDataPlot[1, iSEE:::.customColSource] <- "Column data plot 1"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory2)
 
     # Removes valid plot/table links in inactive plots.
     memory2 <- memory
-    memory2$customDataPlot[2, .customRowSource] <- "Row data plot 1"
-    memory2$customDataPlot[2, .customColSource] <- "Column data plot 1"
-    sanitized <- .sanitize_memory(init_panels, memory2)
+    memory2$customDataPlot[2, iSEE:::.customRowSource] <- "Row data plot 1"
+    memory2$customDataPlot[2, iSEE:::.customColSource] <- "Column data plot 1"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory)
 
     # Removes inactive plot/table links.
     memory2 <- memory
-    memory2$customDataPlot[1, .customRowSource] <- "Row data plot 2"
-    memory2$customDataPlot[1, .customColSource] <- "Column data plot 2"
-    sanitized <- .sanitize_memory(init_panels, memory2)
+    memory2$customDataPlot[1, iSEE:::.customRowSource] <- "Row data plot 2"
+    memory2$customDataPlot[1, iSEE:::.customColSource] <- "Column data plot 2"
+    sanitized <- iSEE:::.sanitize_memory(init_panels, memory2)
     expect_identical(sanitized, memory)
 })
 
@@ -517,7 +517,7 @@ test_that("groupability detection functions work", {
 
     # No column returns an empty vector
     expect_identical(
-        .which_groupable(df),
+        iSEE:::.which_groupable(df),
         integer()
     )
 
@@ -530,7 +530,7 @@ test_that("groupability detection functions work", {
     )
 
     expect_identical(
-        .which_groupable(df),
+        iSEE:::.which_groupable(df),
         c(groupable1 = 1L, groupable2 = 3L)
     )
 

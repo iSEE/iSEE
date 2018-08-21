@@ -39,13 +39,13 @@ DATA_POINTS <- data.frame(
 )
 
 # Run this _after_ the unit tests above
-CLOSED_LASSO <- .update_lasso(CLICK_CLOSING, LASSO_OPEN)
+CLOSED_LASSO <- iSEE:::.update_lasso(CLICK_CLOSING, LASSO_OPEN)
 
 # .update_lasso ----
 
 test_that(".update_lasso works with a first click", {
 
-    out <- .update_lasso(CLICK_WAYPOINT, NULL)
+    out <- iSEE:::.update_lasso(CLICK_WAYPOINT, NULL)
 
     expect_identical(out$closed, FALSE)
 
@@ -55,7 +55,7 @@ test_that(".update_lasso works with a first click", {
 
 test_that(".update_lasso works with closing click", {
 
-    out <- .update_lasso(CLICK_CLOSING, LASSO_OPEN)
+    out <- iSEE:::.update_lasso(CLICK_CLOSING, LASSO_OPEN)
 
     expect_identical(out$closed, TRUE)
 
@@ -66,7 +66,7 @@ test_that(".update_lasso works with closing click", {
 
 test_that(".update_lasso works with a non-closing waypoint", {
 
-    out <- .update_lasso(CLICK_WAYPOINT, LASSO_OPEN)
+    out <- iSEE:::.update_lasso(CLICK_WAYPOINT, LASSO_OPEN)
 
     expect_identical(out$closed, FALSE)
 

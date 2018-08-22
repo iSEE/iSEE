@@ -277,6 +277,7 @@ iSEE <- function(se,
         ), # end of dashboardSidebar
 
         dashboardBody(
+            includeCSS(system.file(package = "iSEE", "www", "iSEE.css")),
             useShinyjs(),
             introjsUI(), # must be included in UI
 
@@ -289,10 +290,7 @@ iSEE <- function(se,
     text-align: center;
 }
 ", .define_box_statuses))
-                ),
-                tags$style(HTML("
-textarea {font-family: \"Courier New\", Courier, monospace;}
-"))
+                )
             ),
 
             uiOutput("allPanels")

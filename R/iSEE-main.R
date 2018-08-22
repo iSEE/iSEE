@@ -1456,6 +1456,28 @@ iSEE <- function(se,
                     })
                 }
 
+                # Switch button class whether customArgs differ from current
+                for (field in c(.customArgs)) {
+                    local({
+                        id0 <- id
+                        mode0 <- mode
+                        field0 <- field
+                        panel_name <- paste0(mode0, id0)
+                        cur_field <- paste0(panel_name, "_", field0)
+                        cur_submit <- paste0(panel_name, "_", .customSubmit)
+
+                        observeEvent(input[[cur_field]], {
+                            matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
+                            if (identical(matched_input, pObjects$memory[[mode0]][[field0]][id0])) {
+                                disable(cur_submit)
+                            } else {
+                                enable(cur_submit)
+                            }
+
+                        }, ignoreInit=TRUE)
+                    })
+                }
+
                 # Paired fields to submit new arguments on button click
                 for (field in c(.customSubmit)) {
                     local({
@@ -1473,6 +1495,7 @@ iSEE <- function(se,
                             }
                             pObjects$memory[[mode0]][[field0]][id0] <- matched_input
                             rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
+                            disable(cur_submit)
                         }, ignoreInit=TRUE)
                     })
                 }

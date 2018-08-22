@@ -224,7 +224,7 @@
                 textAreaInput(
                     .input_FUN(.customArgs), label="Custom arguments:", rows=5,
                     value=param_choices[[.customArgs]]),
-                actionButton(.input_FUN(.customSubmit), "Submit")
+                actionButton(.input_FUN(.customSubmit), .buttonUpToDateLabel)
             )
         } else if (mode == "rowDataPlot") {
             obj <- plotOutput(panel_name, brush=brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)

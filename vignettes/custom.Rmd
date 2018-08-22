@@ -97,7 +97,7 @@ CUSTOM_PCA <- function(se, rows, columns, colour_by=NULL, scale_features=TRUE) {
             ggplot() + theme_void() + geom_text(
                 aes(x, y, label=label),
                 data.frame(x=0, y=0, label="No column data selected."),
-                size=2)
+                size=5)
             )
     }
 

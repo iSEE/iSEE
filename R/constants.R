@@ -48,6 +48,7 @@
 # Custom plotting parameters. ----
 .customFun <- "Function"
 .customArgs <- "Arguments"
+.customSubmit <- "Submit"
 .customColSource <- "ColumnSource"
 .customRowSource <- "RowSource"
 

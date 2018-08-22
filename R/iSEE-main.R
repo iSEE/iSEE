@@ -1438,8 +1438,8 @@ iSEE <- function(se,
                     })
                 })
 
-                # Fields defining which function and arguments to use.
-                for (field in c(.customFun, .customArgs)) {
+                # Field defining the function to use.
+                for (field in c(.customFun)) {
                     local({
                         id0 <- id
                         mode0 <- mode
@@ -1448,6 +1448,27 @@ iSEE <- function(se,
                         cur_field <- paste0(panel_name, "_", field0)
 
                         observeEvent(input[[cur_field]], {
+                            matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
+                            if (identical(matched_input, pObjects$memory[[mode0]][[field0]][id0])) {
+                                return(NULL)
+                            }
+                            pObjects$memory[[mode0]][[field0]][id0] <- matched_input
+                            rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
+                        }, ignoreInit=TRUE)
+                    })
+                }
+
+                # Paired fields to submit new arguments on button click
+                for (field in c(.customSubmit)) {
+                    local({
+                        id0 <- id
+                        mode0 <- mode
+                        field0 <- .customArgs
+                        panel_name <- paste0(mode0, id0)
+                        cur_field <- paste0(panel_name, "_", field0)
+                        cur_submit <- paste0(panel_name, "_", field)
+
+                        observeEvent(input[[cur_submit]], {
                             matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
                             if (identical(matched_input, pObjects$memory[[mode0]][[field0]][id0])) {
                                 return(NULL)

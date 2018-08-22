@@ -218,12 +218,13 @@
             }
 
             plot.param <- list(
-                selectInput(.input_FUN(.customFun),
-                    label="Custom function:",
+                selectInput(
+                    .input_FUN(.customFun), label="Custom function:",
                     choices=fun_choices, selected=param_choices[[.customFun]]),
-                textAreaInput(.input_FUN(.customArgs),
-                    label="Custom arguments:", rows=5,
-                    value=param_choices[[.customArgs]])
+                textAreaInput(
+                    .input_FUN(.customArgs), label="Custom arguments:", rows=5,
+                    value=param_choices[[.customArgs]]),
+                actionButton(.input_FUN(.customSubmit), "Submit")
             )
         } else if (mode == "rowDataPlot") {
             obj <- plotOutput(panel_name, brush=brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)

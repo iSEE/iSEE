@@ -931,8 +931,8 @@ and Federico Marini (%s).",
 #'
 #' @param id The \code{input} slot that used to access the value.
 #' @param condition The condition that disables the action button.
-#' @param activeLabel Label of the button if active.
 #' @param inactiveLabel Label of the button if inactive.
+#' @param activeLabel Label of the button if active.
 #' @param session The \code{session} object passed to function given to \code{shinyServer}.
 #'
 #' @author Kevin Rue-Albrecht
@@ -943,9 +943,9 @@ and Federico Marini (%s).",
 .disableButtonIf <- function(id, condition, inactiveLabel, activeLabel, session) {
     if (condition) {
         disable(id)
-        updateActionButton(session, activeLabel)
+        updateActionButton(session, id, inactiveLabel)
     } else {
         enable(id)
-        updateActionButton(session, id, inactiveLabel)
+        updateActionButton(session, id, activeLabel)
     }
 }

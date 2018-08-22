@@ -36,13 +36,13 @@ featAssayArgs[2, iSEE:::.featAssayXAxis] <- iSEE:::.featAssayXAxisFeatNameTitle
 featAssayArgs[2, iSEE:::.featAssayXAxisRowTable] <- "Row statistics table 2"
 
 # Setting up additional parameters for table links
-rowStatArgs[2, .selectByPlot] <- "Feature assay plot 3"
-colStatArgs[1, .selectByPlot] <- "Column data plot 1"
-sampAssayArgs[1, .sampAssayXAxis] <- .sampAssayXAxisSampNameTitle
-sampAssayArgs[1, .sampAssayXAxisColTable] <- "Column statistics table 1"
+rowStatArgs[2, iSEE:::.selectByPlot] <- "Feature assay plot 3"
+colStatArgs[1, iSEE:::.selectByPlot] <- "Column data plot 1"
+sampAssayArgs[1, iSEE:::.sampAssayXAxis] <- iSEE:::.sampAssayXAxisSampNameTitle
+sampAssayArgs[1, iSEE:::.sampAssayXAxisColTable] <- "Column statistics table 1"
 
 sce <- iSEE:::.precompute_UI_info(sce, NULL, NULL)
-all_memory <- .setup_memory(
+all_memory <- iSEE:::.setup_memory(
     sce,
     redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs,
     sampAssayArgs, colStatArgs, customDataArgs, customStatArgs, heatMapArgs,
@@ -50,7 +50,7 @@ all_memory <- .setup_memory(
     sampAssayMax=3, colStatMax=3, customDataMax=1, customStatMax=1, heatMapMax=2)
 
 g <- iSEE:::.spawn_selection_chart(all_memory)
-tl <- .spawn_table_links(all_memory)
+tl <- iSEE:::.spawn_table_links(all_memory)
 
 all_coordinates <- list()
 
@@ -132,7 +132,7 @@ test_that(".setup_initial throws an error if Name column is missing", {
 test_that(".define_plot_links detects receiving and transmitting links", {
 
     # Report receiving and transmitting links
-    out <- .define_plot_links("colDataPlot1", all_memory, g)
+    out <- iSEE:::.define_plot_links("colDataPlot1", all_memory, g)
     expect_is(out, c("shiny.tag.list", "list"))
 
     # Every third element is a receiving/transmitting header
@@ -150,7 +150,7 @@ test_that(".define_plot_links detects receiving and transmitting links", {
 
     # Heat maps are not handled by this function
     expect_error(
-        .define_plot_links("heatMapPlot1", all_memory, g),
+        iSEE:::.define_plot_links("heatMapPlot1", all_memory, g),
         "missing value where TRUE/FALSE needed",
         fixed=TRUE
     )
@@ -160,7 +160,7 @@ test_that(".define_plot_links detects receiving and transmitting links", {
 test_that(".define_plot_links treats featAssayPlot specially", {
 
     # Report receiving and transmitting links
-    out <- .define_plot_links("featAssayPlot2", all_memory, g)
+    out <- iSEE:::.define_plot_links("featAssayPlot2", all_memory, g)
     expect_is(out, c("shiny.tag.list", "list"))
 
 })
@@ -170,7 +170,7 @@ test_that(".define_plot_links treats featAssayPlot specially", {
 test_that(".define_plot_links detects in/out links for rowStatTables", {
 
     # Report receiving and transmitting links
-    out <- .define_table_links("rowStatTable2", all_memory, tl)
+    out <- iSEE:::.define_table_links("rowStatTable2", all_memory, tl)
     expect_is(out, c("shiny.tag.list", "list"))
 
     # Every third element is a receiving/transmitting header
@@ -185,7 +185,7 @@ test_that(".define_plot_links detects in/out links for rowStatTables", {
 test_that(".define_plot_links detects in/out links for colStatTables", {
 
     # Report receiving and transmitting links
-    out <- .define_table_links("colStatTable1", all_memory, tl)
+    out <- iSEE:::.define_table_links("colStatTable1", all_memory, tl)
     expect_is(out, c("shiny.tag.list", "list"))
 
     # Every third element is a receiving/transmitting header
@@ -203,7 +203,7 @@ test_that("ExpressionSet objects can be sanitized", {
 
     eset <- as(sce, "ExpressionSet")
 
-    out <- .sanitize_SE_input(eset)
+    out <- iSEE:::.sanitize_SE_input(eset)
     expect_is(out, "list")
     expect_named(out, c("cmds", "object"))
     expect_s4_class(out$object, "SingleCellExperiment")
@@ -219,7 +219,7 @@ test_that("Nameless SummarizedExperiment objects can be sanitized", {
     colnames(se) <- NULL
     rownames(se) <- NULL
 
-    out <- .sanitize_SE_input(se)
+    out <- iSEE:::.sanitize_SE_input(se)
     expect_is(out, "list")
     expect_named(out, c("cmds", "object"))
     expect_s4_class(out$object, "SingleCellExperiment")
@@ -251,7 +251,7 @@ test_that(".get_selected_points works", {
 
     all_memory$colDataPlot[[iSEE:::.brushData]][1] <- list(NULL)
 
-    p.out <- .make_redDimPlot(id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
+    p.out <- iSEE:::.make_redDimPlot(id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
     all_coordinates[["redDimPlot1"]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
 
     # No selection in transmitter panel
@@ -267,7 +267,7 @@ test_that(".get_selected_points works", {
         direction="xy", mapping=list(x="X", y="Y"),
         brushId="dummy_brush", outputId="dummy_plot"
     ))
-    p.out <- .make_colDataPlot(1, all_memory, all_coordinates, sce, ExperimentColorMap())
+    p.out <- iSEE:::.make_colDataPlot(1, all_memory, all_coordinates, sce, ExperimentColorMap())
     all_coordinates[["colDataPlot1"]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
 
     # A selection exists in the transmitter panel

@@ -158,6 +158,14 @@ scale_features FALSE
 Note that all additional arguments are passed as character strings for the sake of security.
 It is the responsibility of the custom function to perform any necessary type checks and conversions (hence the `as.logical` in `CUSTOM_PCA`).
 
+Similarly, additional arguments can be passed to the `CUSTOM_SUMMARY` function above.
+For instance:
+
+```
+assay counts
+min_exprs 5
+```
+
 ## Example use
 
 Using the `sce` object that we generated `r Biocpkg("iSEE", vignette="basic.html", label="earlier")`, we will add some fields for examining the mean-variance relationship across features:

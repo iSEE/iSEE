@@ -1471,7 +1471,7 @@ iSEE <- function(se,
                             .disableButtonIf(
                                 id=cur_submit,
                                 condition=identical(matched_input, pObjects$memory[[mode0]][[field0]][id0]),
-                                inactiveLabel=.buttonUpdateLabel, activeLabel=.buttonUpToDateLabel, session)
+                                inactiveLabel=.buttonUpToDateLabel, activeLabel=.buttonUpdateLabel, session)
 
                         }, ignoreInit=TRUE)
                     })

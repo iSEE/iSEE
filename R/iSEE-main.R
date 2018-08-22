@@ -1468,13 +1468,10 @@ iSEE <- function(se,
 
                         observeEvent(input[[cur_field]], {
                             matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
-                            if (identical(matched_input, pObjects$memory[[mode0]][[field0]][id0])) {
-                                disable(cur_submit)
-                                updateActionButton(session, cur_submit, .buttonUpToDateLabel)
-                            } else {
-                                enable(cur_submit)
-                                updateActionButton(session, cur_submit, .buttonUpdateLabel)
-                            }
+                            .disableButtonIf(
+                                id=cur_submit,
+                                condition=identical(matched_input, pObjects$memory[[mode0]][[field0]][id0]),
+                                inactiveLabel=.buttonUpdateLabel, activeLabel=.buttonUpToDateLabel, session)
 
                         }, ignoreInit=TRUE)
                     })

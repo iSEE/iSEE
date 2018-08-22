@@ -24,18 +24,18 @@ This involves a boundary crossing algorithm that may not be robust in the presen
 \examples{
 lasso <- list(coord=rbind(c(0, 0), c(0.5, 0), c(0, 0.5), c(0, 0)),
     closed=TRUE, mapping=list(x="X", y="Y"))
-values <- data.frame(X=runif(100), Y=runif(100), 
+values <- data.frame(X=runif(100), Y=runif(100),
     row.names=sprintf("VALUE_\%i", seq_len(100)))
 lassoPoints(values, lasso)
 
 # With faceting information:
 lasso <- list(coord=rbind(c(0, 0), c(0.5, 0), c(0, 0.5), c(0, 0)),
-    panelvar1="A", panelvar2="B", closed=TRUE, 
-    mapping=list(x="X", y="Y", 
+    panelvar1="A", panelvar2="B", closed=TRUE,
+    mapping=list(x="X", y="Y",
     panelvar1="FacetRow", panelvar2="FacetColumn"))
-values <- data.frame(X=runif(100), Y=runif(100), 
-    FacetRow=sample(LETTERS[1:2], 100, replace=TRUE),       
-    FacetColumn=sample(LETTERS[1:4], 100, replace=TRUE),       
+values <- data.frame(X=runif(100), Y=runif(100),
+    FacetRow=sample(LETTERS[1:2], 100, replace=TRUE),
+    FacetColumn=sample(LETTERS[1:4], 100, replace=TRUE),
     row.names=sprintf("VALUE_\%i", seq_len(100)))
 lassoPoints(values, lasso)
 

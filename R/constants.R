@@ -149,6 +149,9 @@
 .brushField <- "Brush"
 .brushData <- "BrushData"
 
+# Button parameters ----
+.buttonUpToDateLabel <- "Up to date"
+.buttonUpdateLabel <- "Update"
 
 # Other plot parameters. ----
 .dataParamBoxOpen <- "DataBoxOpen"

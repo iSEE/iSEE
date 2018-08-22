@@ -1470,8 +1470,10 @@ iSEE <- function(se,
                             matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
                             if (identical(matched_input, pObjects$memory[[mode0]][[field0]][id0])) {
                                 disable(cur_submit)
+                                updateActionButton(session, cur_submit, .buttonUpToDateLabel)
                             } else {
                                 enable(cur_submit)
+                                updateActionButton(session, cur_submit, .buttonUpdateLabel)
                             }
 
                         }, ignoreInit=TRUE)
@@ -1496,6 +1498,7 @@ iSEE <- function(se,
                             pObjects$memory[[mode0]][[field0]][id0] <- matched_input
                             rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
                             disable(cur_submit)
+                            updateActionButton(session, cur_submit, .buttonUpToDateLabel)
                         }, ignoreInit=TRUE)
                     })
                 }

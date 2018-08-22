@@ -277,6 +277,9 @@ iSEE <- function(se,
         ), # end of dashboardSidebar
 
         dashboardBody(
+            tags$head(
+                tags$style(HTML("textarea {font-family: \"Courier New\", Courier, monospace;}"))
+                ),
             useShinyjs(),
             introjsUI(), # must be included in UI
 

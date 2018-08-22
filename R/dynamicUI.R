@@ -291,7 +291,7 @@
                         .input_FUN(.heatMapImportSource), label="Import from", choices=heatmap_sources,
                         selected=.choose_link(param_choices[[.heatMapImportSource]], heatmap_sources, force_default=TRUE)),
                     actionButton(.input_FUN(.heatMapImportFeatures), "Import features"),
-                    actionButton(.input_FUN(.heatMapCluster), "Cluster features"),
+                    actionButton(.input_FUN(.heatMapCluster), .buttonCluster),
                     actionButton(.input_FUN(.heatMapClearFeatures), "Clear features"),
                     selectizeInput(
                         .input_FUN(.heatMapFeatName),

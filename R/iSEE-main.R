@@ -1760,6 +1760,8 @@ iSEE <- function(se,
 
                 # Triggering an update of the selected elements : import features
                 import_button <- paste0(plot_name, "_", .heatMapImportFeatures)
+                clear_button <- paste0(plot_name, "_", .heatMapClearFeatures)
+                cluster_button <- paste0(plot_name, "_", .heatMapCluster)
                 observeEvent(input[[import_button]], {
                     origin <- pObjects$memory[[mode0]][id0, .heatMapImportSource]
                     if (origin == .noSelection) {
@@ -1787,15 +1789,20 @@ iSEE <- function(se,
                     }
 
                     combined <- union(pObjects$memory[[mode0]][id0, .heatMapFeatName][[1]], incoming)
+                    .disableButtonIf(
+                                id=cluster_button,
+                                condition=identical(combined, pObjects$memory[[mode0]][id0, .heatMapFeatName][[1]]),
+                                inactiveLabel=.buttonClustered, activeLabel=.buttonCluster, session)
                     updateSelectizeInput(
                         session, paste0(plot_name, "_", .heatMapFeatName), choices = feature_choices,
                         server = TRUE, selected = combined)
                 }, ignoreInit=TRUE)
 
                 # Triggering an update of the selected elements : clear features, trigger replotting (caught by validate)
-                clear_button <- paste0(plot_name, "_", .heatMapClearFeatures)
                 observeEvent(input[[clear_button]], {
                     pObjects$memory[[mode0]][[.heatMapFeatName]][[id0]] <- integer()
+                    disable(cluster_button)
+                    updateActionButton(session, cluster_button, .buttonCluster)
                     updateSelectizeInput(session, paste0(plot_name, "_", .heatMapFeatName), choices = feature_choices,
                                          server = TRUE, selected = integer())
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
@@ -1845,12 +1852,14 @@ iSEE <- function(se,
                 })
 
                 # Triggering an update of the selected order.
-                cluster_button <- paste0(plot_name, "_", .heatMapCluster)
                 observeEvent(input[[cluster_button]], {
                     emat <- pObjects$coordinates[[plot_name]]
                     new_order <- match(.cluster_genes(emat), names(feature_choices))
-                    updateSelectizeInput(session, paste0(plot_name, "_", .heatMapFeatName), choices = feature_choices,
-                                         server = TRUE, selected = new_order)
+                    updateSelectizeInput(
+                        session, paste0(plot_name, "_", .heatMapFeatName)
+                        , choices = feature_choices, server = TRUE, selected = new_order)
+                    disable(cluster_button)
+                    updateActionButton(session, cluster_button, .buttonClustered)
                 })
             })
 

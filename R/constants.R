@@ -152,6 +152,8 @@
 # Button parameters ----
 .buttonUpToDateLabel <- "Up to date"
 .buttonUpdateLabel <- "Update"
+.buttonCluster <- "Cluster features"
+.buttonClustered <- "Clustered"
 
 # Other plot parameters. ----
 .dataParamBoxOpen <- "DataBoxOpen"

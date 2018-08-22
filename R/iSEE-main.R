@@ -277,22 +277,22 @@ iSEE <- function(se,
         ), # end of dashboardSidebar
 
         dashboardBody(
-            tags$head(
-                tags$style(HTML("textarea {font-family: \"Courier New\", Courier, monospace;}"))
-                ),
             useShinyjs(),
             introjsUI(), # must be included in UI
 
             # for error message handling
             tags$head(
                 tags$style(HTML(paste("
-  .shiny-output-error-validation {
-          font-size: 15px;
-          color: forestgreen;
-          text-align: center;
-  }
-  ", .define_box_statuses))
-                )
+.shiny-output-error-validation {
+    font-size: 15px;
+    color: forestgreen;
+    text-align: center;
+}
+", .define_box_statuses))
+                ),
+                tags$style(HTML("
+textarea {font-family: \"Courier New\", Courier, monospace;}
+"))
             ),
 
             uiOutput("allPanels")

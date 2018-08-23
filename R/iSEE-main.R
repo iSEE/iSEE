@@ -78,6 +78,7 @@
 #' updateSelectInput updateSelectizeInput updateRadioButtons
 #' @importFrom DT datatable renderDataTable dataTableOutput
 #' @importFrom shinyAce aceEditor
+#' @importFrom shiny includeCSS
 #' @importFrom S4Vectors DataFrame
 #' @importFrom methods as
 #' @importFrom cowplot plot_grid

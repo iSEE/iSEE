@@ -217,14 +217,22 @@
                 fun_choices <- custom_stat_funnames
             }
 
+            if (param_choices[[.customArgs]]==param_choices[[.customVisibleArgs]]) {
+                button_label <- .buttonUpToDateLabel
+                button_FUN <- disabled
+            } else {
+                button_label <- .buttonUpdateLabel
+                button_FUN <- identity
+            }
+
             plot.param <- list(
                 selectInput(
                     .input_FUN(.customFun), label="Custom function:",
                     choices=fun_choices, selected=param_choices[[.customFun]]),
                 textAreaInput(
-                    .input_FUN(.customArgs), label="Custom arguments:", rows=5,
-                    value=param_choices[[.customArgs]]),
-                actionButton(.input_FUN(.customSubmit), .buttonUpToDateLabel)
+                    .input_FUN(.customVisibleArgs), label="Custom arguments:", rows=5,
+                    value=param_choices[[.customVisibleArgs]]),
+                actionButton(.input_FUN(.customSubmit), button_label)
             )
         } else if (mode == "rowDataPlot") {
             obj <- plotOutput(panel_name, brush=brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)

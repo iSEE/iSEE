@@ -432,12 +432,7 @@ customDataPlotDefaults <- function(se, number) {
     if (waszero) number <- 1
 
     out <- new("DataFrame", nrows=as.integer(number))
-    out[[.customFun]] <- .noSelection
-    out[[.customArgs]] <- ""
-    out[[.customColSource]] <- .noSelection
-    out[[.customRowSource]] <- .noSelection
-    out[[.dataParamBoxOpen]] <- FALSE
-    out[[.selectParamBoxOpen]] <- FALSE
+    out <- .add_custom_panel_parameters(out)
 
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)
@@ -605,14 +600,8 @@ customStatTableDefaults <- function(se, number) {
     if (waszero) number <- 1
 
     out <- new("DataFrame", nrows=as.integer(number))
-    out[[.customFun]] <- .noSelection
-    out[[.customArgs]] <- ""
-    out[[.customColSource]] <- .noSelection
-    out[[.customRowSource]] <- .noSelection
+    out <- .add_custom_panel_parameters(out)
     out[[.customStatSearch]] <- ""
-
-    out[[.dataParamBoxOpen]] <- FALSE
-    out[[.selectParamBoxOpen]] <- FALSE
 
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)
@@ -1015,6 +1004,37 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.facetByColumn]] <- FALSE
     incoming[[.facetRowsByRowData]] <- dev_discrete
     incoming[[.facetColumnsByRowData]] <- dev_discrete
+
+    return(incoming)
+}
+
+#' Add custom panel parameters
+#' 
+#' Add parameters for custom data plots and custom statistics tables.
+#' 
+#' @param incoming A DataFrame with non-zero number of rows, containing default parameters that have already been filled for specific panel types.
+#'
+#' @details
+#' Most of the arguments are fairly self-explanatory.
+#' The only important bit is that \code{NA} arguments for \code{"VisibleArgs"} directs \code{\link{.setup_memory}} to use the values in \code{"Arguments"}.
+#'
+#' @seealso
+#' \code{\link{.setup_memory}}
+#'
+#' @return A DataFrame with additional fields for custom panel parameters, filled with default values.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_add_custom_panel_parameters
+.add_custom_panel_parameters <- function(incoming) {
+    incoming[[.customFun]] <- .noSelection
+    incoming[[.customArgs]] <- ""
+    incoming[[.customVisibleArgs]] <- NA_character_
+
+    incoming[[.customColSource]] <- .noSelection
+    incoming[[.customRowSource]] <- .noSelection
+
+    incoming[[.dataParamBoxOpen]] <- FALSE
+    incoming[[.selectParamBoxOpen]] <- FALSE
 
     return(incoming)
 }

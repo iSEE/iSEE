@@ -233,6 +233,13 @@
         all_args[[mode]] <- .name2index(all_args[[mode]], .colorByFeatName, rownames(se))
     }
 
+    # Other miscellaneous coercions.
+    for (mode in custom_panel_types) {
+        to_show <- all_args[[mode]][,.customVisibleArgs] 
+        to_use <- all_args[[mode]][,.customArgs] 
+        all_args[[mode]][,.customVisibleArgs] <- ifelse(is.na(to_show), to_use, to_show)
+    }
+
     # Setting up parameters for each panel.
     memory <- list()
     for (mode in names(all_maxes)) {

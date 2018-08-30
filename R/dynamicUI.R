@@ -216,8 +216,8 @@
                 obj <- dataTableOutput(panel_name)
                 fun_choices <- custom_stat_funnames
             }
-
-            if (param_choices[[.customArgs]]==param_choices[[.customVisibleArgs]]) {
+            argsUpToDate <- param_choices[[.customArgs]] == param_choices[[.customVisibleArgs]]
+            if (is.na(argsUpToDate) || argsUpToDate) {
                 button_label <- .buttonUpToDateLabel
                 button_FUN <- disabled
             } else {

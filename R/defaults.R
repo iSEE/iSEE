@@ -226,10 +226,10 @@ NULL
 #'
 #' All column-based parameters described in \code{?"\link{iSEE point parameters}"} are applicable.
 #' All plot-based parameters described in \code{?"\link{iSEE selection parameters}"} are applicable.
-#' 
+#'
 #' @return
-#' A DataFrame containing default settings for parameters of each of \code{number} reduced dimension panels. 
-#' 
+#' A DataFrame containing default settings for parameters of each of \code{number} reduced dimension panels.
+#'
 #' @author Aaron Lun
 #'
 #' @export
@@ -291,12 +291,12 @@ redDimPlotDefaults <- function(se, number) {
 #'
 #' All column-based parameters described in \code{?"\link{iSEE point parameters}"} are applicable.
 #' All plot-based parameters described in \code{?"\link{iSEE selection parameters}"} are applicable.
-#' 
+#'
 #' @return
-#' A DataFrame containing default settings for parameters of each of \code{number} feature assay panels. 
+#' A DataFrame containing default settings for parameters of each of \code{number} feature assay panels.
 #'
 #' @author Aaron Lun
-#' 
+#'
 #' @export
 #' @importFrom methods new
 #' @importClassesFrom S4Vectors DataFrame
@@ -351,10 +351,10 @@ featAssayPlotDefaults <- function(se, number) {
 #'
 #' All column-based parameters described in \code{?"\link{iSEE point parameters}"} are applicable.
 #' All plot-based parameters described in \code{?"\link{iSEE selection parameters}"} are applicable.
-#' 
+#'
 #' @return
-#' A DataFrame containing default settings for parameters of each of \code{number} column data panels. 
-#' 
+#' A DataFrame containing default settings for parameters of each of \code{number} column data panels.
+#'
 #' @author Aaron Lun
 #'
 #' @export
@@ -406,21 +406,21 @@ colDataPlotDefaults <- function(se, number) {
 #' This can differ from \code{Arguments}, e.g., to list argument names without their values for users to enter.
 #' Defaults to \code{NA}, which means that the value in \code{Arguments} will be shown.}
 #' }
-#' 
+#'
 #' Selection parameters for custom data plots are:
 #' \describe{
 #' \item{\code{SelectBoxOpen}:}{Logical, should the selection parameter box be open upon initialization?
 #' Defaults to \code{FALSE}.}
-#' \item{\code{ColumnSource}:}{Character, which other plot should transmit sample selections to the current plot? 
+#' \item{\code{ColumnSource}:}{Character, which other plot should transmit sample selections to the current plot?
 #' Defaults to \code{"---"}, which means that no plot is used for point selection.}
-#' \item{\code{RowSource}:}{Character, which other plot should transmit feature selections to the current plot? 
+#' \item{\code{RowSource}:}{Character, which other plot should transmit feature selections to the current plot?
 #' Defaults to \code{"---"}, which means that no plot is used for point selection.}
 #' }
 #'
 #' @return
-#' A DataFrame containing default settings for parameters of each of \code{number} custom data plot panels. 
+#' A DataFrame containing default settings for parameters of each of \code{number} custom data plot panels.
 #'
-#' @author 
+#' @author
 #' Aaron Lun, Kevin Rue-Albrecht
 #'
 #' @export
@@ -464,9 +464,9 @@ customDataPlotDefaults <- function(se, number) {
 #' All table-based parameters described in \code{?"\link{iSEE selection parameters}"} are applicable.
 #'
 #' @return
-#' A DataFrame containing default settings for parameters of each of \code{number} row statistics table panels. 
+#' A DataFrame containing default settings for parameters of each of \code{number} row statistics table panels.
 #'
-#' @author Aaron Lun 
+#' @author Aaron Lun
 #'
 #' @export
 #' @importFrom methods new
@@ -522,9 +522,9 @@ rowStatTableDefaults <- function(se, number) {
 #' All table-based parameters described in \code{?"\link{iSEE selection parameters}"} are applicable.
 #'
 #' @return
-#' A DataFrame containing default settings for parameters of each of \code{number} column statistics table panels. 
+#' A DataFrame containing default settings for parameters of each of \code{number} column statistics table panels.
 #'
-#' @author Aaron Lun 
+#' @author Aaron Lun
 #'
 #' @export
 #' @importFrom methods new
@@ -577,14 +577,14 @@ colStatTableDefaults <- function(se, number) {
 #' This can differ from \code{Arguments}, e.g., to list argument names without their values for users to enter.
 #' Defaults to \code{NA}, which means that the value in \code{Arguments} will be shown.}
 #' }
-#' 
+#'
 #' Selection parameters for custom statistics tables are:
 #' \describe{
 #' \item{\code{SelectBoxOpen}:}{Logical, should the selection parameter box be open upon initialization?
 #' Defaults to \code{FALSE}.}
-#' \item{\code{ColumnSource}:}{Character, which other plot should transmit sample selections to the current table? 
+#' \item{\code{ColumnSource}:}{Character, which other plot should transmit sample selections to the current table?
 #' Defaults to \code{"---"}, which means that no plot is used for point selection.}
-#' \item{\code{RowSource}:}{Character, which other plot should transmit feature selections to the current table? 
+#' \item{\code{RowSource}:}{Character, which other plot should transmit feature selections to the current table?
 #' Defaults to \code{"---"}, which means that no plot is used for point selection.}
 #' }
 #'
@@ -592,7 +592,7 @@ colStatTableDefaults <- function(se, number) {
 #' This defaults to an empty string.
 #'
 #' @return
-#' A DataFrame containing default settings for parameters of each of \code{number} custom statistics table panels. 
+#' A DataFrame containing default settings for parameters of each of \code{number} custom statistics table panels.
 #'
 #' @author
 #' Aaron Lun, Kevin Rue-Albrecht
@@ -636,10 +636,10 @@ customStatTableDefaults <- function(se, number) {
 #'
 #' All row-based parameters described in \code{?"\link{iSEE point parameters}"} are applicable.
 #' All plot-based parameters described in \code{?"\link{iSEE selection parameters}"} are applicable.
-#' 
+#'
 #' @return
-#' A DataFrame containing default settings for parameters of each of \code{number} row data panels. 
-#' 
+#' A DataFrame containing default settings for parameters of each of \code{number} row data panels.
+#'
 #' @author Aaron Lun
 #'
 #' @export
@@ -704,9 +704,9 @@ rowDataPlotDefaults <- function(se, number) {
 #'
 #' All row-based parameters described in \code{?"\link{iSEE point parameters}"} are applicable.
 #' All plot-based parameters described in \code{?"\link{iSEE selection parameters}"} are applicable.
-#' 
+#'
 #' @return
-#' A DataFrame containing default settings for parameters of each of \code{number} sample assay panels. 
+#' A DataFrame containing default settings for parameters of each of \code{number} sample assay panels.
 #'
 #' @author Charlotte Soneson
 #'
@@ -802,8 +802,8 @@ sampAssayPlotDefaults <- function(se, number) {
 #' All plot-based parameters described in \code{?"\link{iSEE selection parameters}"} are also applicable.
 #'
 #' @return
-#' A DataFrame containing default settings for parameters of each of \code{number} heatmap panels. 
-#' 
+#' A DataFrame containing default settings for parameters of each of \code{number} heatmap panels.
+#'
 #' @author Charlotte Soneson
 #'
 #' @export
@@ -1018,9 +1018,9 @@ heatMapPlotDefaults <- function(se, number) {
 }
 
 #' Add custom panel parameters
-#' 
+#'
 #' Add parameters for custom data plots and custom statistics tables.
-#' 
+#'
 #' @param incoming A DataFrame with non-zero number of rows, containing default parameters that have already been filled for specific panel types.
 #'
 #' @details

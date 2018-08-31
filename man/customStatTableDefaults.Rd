@@ -18,7 +18,7 @@ A DataFrame containing default settings for parameters of each of \code{number} 
 Create default settings for custom statistics table panels in the iSEE interface.
 }
 \details{
-Data parameters available to custom data plots are:
+Data parameters available to custom statistics tables are:
 \describe{
 \item{\code{DataBoxOpen}:}{Logical, should the data parameter box be open upon initialization?
 Defaults to \code{FALSE}.}
@@ -26,9 +26,12 @@ Defaults to \code{FALSE}.}
 Defaults to \code{"---"}, i.e., no coordinates are generated.}
 \item{\code{Arguments}:}{String with multiple lines specifying the initial arguments for the function, see \code{vignette("custom", package="iSEE")} for details.
 Defaults to an empty string.}
+\item{\code{VisibleArgs}:}{String with multiple lines specifying the initial arguments to be shown in the text area.
+This can differ from \code{Arguments}, e.g., to list argument names without their values for users to enter.
+Defaults to \code{NA}, which means that the value in \code{Arguments} will be shown.}
 }
 
-Selection parameters for custom data plots are:
+Selection parameters for custom statistics tables are:
 \describe{
 \item{\code{SelectBoxOpen}:}{Logical, should the selection parameter box be open upon initialization?
 Defaults to \code{FALSE}.}
@@ -37,6 +40,9 @@ Defaults to \code{"---"}, which means that no plot is used for point selection.}
 \item{\code{RowSource}:}{Character, which other plot should transmit feature selections to the current table? 
 Defaults to \code{"---"}, which means that no plot is used for point selection.}
 }
+
+Tables also have an \code{Search} field indicating what string should be put into the search box.
+This defaults to an empty string.
 }
 \examples{
 example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.

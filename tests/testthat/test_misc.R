@@ -144,8 +144,8 @@ test_that("memory setup works correctly", {
         rowDataArgs=DataFrame(XAxis="Row data"),
         sampAssayArgs=DataFrame(YAxisSampeName=3L),
         colStatArgs=DataFrame(Selected=5L),
-        customDataArgs=DataFrame(Function="PCA2"),
-        customStatArgs=DataFrame(Function="DE"),
+        customDataArgs=DataFrame(Function="PCA2", Arguments="YAY"),
+        customStatArgs=DataFrame(Function="DE", VisibleArgs="WHEE"),
         heatMapArgs=DataFrame(Assay=1L),
         redDimMax=5L,
         colDataMax=3L,
@@ -175,8 +175,15 @@ test_that("memory setup works correctly", {
     expect_identical(memory$rowDataPlot$XAxis, rep(c("Row data", "None"), c(1, 2)))
     expect_identical(memory$sampAssayPlot$YAxisSampeName, 3L)
     expect_identical(memory$colStatTable$Selected, c(5L, 1L))
+
     expect_identical(memory$customDataPlot$Function, c("PCA2", "---"))
+    expect_identical(memory$customDataPlot$Arguments, c("YAY", ""))
+    expect_identical(memory$customDataPlot$VisibleArgs, memory$customDataPlot$Arguments)
+
     expect_identical(memory$customStatTable$Function, c("DE", "---", "---"))
+    expect_identical(memory$customStatTable$Arguments, character(nrow(memory$customStatTable)))
+    expect_identical(memory$customStatTable$VisibleArgs, c("WHEE", "", ""))
+
     expect_identical(memory$heatMapPlot$Assay, c(1L, 6L))
 
     # Works correctly when the number of arguments is greater than max.

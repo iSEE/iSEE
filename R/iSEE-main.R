@@ -78,6 +78,7 @@
 #' updateSelectInput updateSelectizeInput updateRadioButtons
 #' @importFrom DT datatable renderDataTable dataTableOutput
 #' @importFrom shinyAce aceEditor
+#' @importFrom shiny includeCSS
 #' @importFrom S4Vectors DataFrame
 #' @importFrom methods as
 #' @importFrom cowplot plot_grid
@@ -277,24 +278,25 @@ iSEE <- function(se,
         ), # end of dashboardSidebar
 
         dashboardBody(
+            includeCSS(system.file(package = "iSEE", "www", "iSEE.css")),
             useShinyjs(),
             introjsUI(), # must be included in UI
 
             # for error message handling
             tags$head(
                 tags$style(HTML(paste("
-  .shiny-output-error-validation {
-          font-size: 15px;
-          color: forestgreen;
-          text-align: center;
-  }
-  ", .define_box_statuses))
+.shiny-output-error-validation {
+    font-size: 15px;
+    color: forestgreen;
+    text-align: center;
+}
+", .define_box_statuses))
                 )
             ),
 
             uiOutput("allPanels")
         ), # end of dashboardBody
-        skin = "blue"
+        skin = "black"
     ) # end of dashboardPage
 
     #######################################################################
@@ -774,47 +776,49 @@ iSEE <- function(se,
         }
 
         # Linked selection choice observers for the tables. ----
-        max_tabs <- nrow(pObjects$memory$rowStatTable)
-        for (id in seq_len(max_tabs)) {
-            local({
-                mode0 <- "rowStatTable"
-                id0 <- id
-                tab_name <- paste0(mode0, id0)
-                prefix <- paste0(tab_name, "_")
+        for (mode in linked_table_types) {
+            max_tabs <- nrow(pObjects$memory[[mode]])
+            for (id in seq_len(max_tabs)) {
+                local({
+                    mode0 <- mode
+                    id0 <- id
+                    tab_name <- paste0(mode0, id0)
+                    prefix <- paste0(tab_name, "_")
 
-                select_plot_field <- paste0(prefix, .selectByPlot)
-                observeEvent(input[[select_plot_field]], {
-                    old_transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
-                    new_transmitter <- input[[select_plot_field]]
+                    select_plot_field <- paste0(prefix, .selectByPlot)
+                    observeEvent(input[[select_plot_field]], {
+                        old_transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
+                        new_transmitter <- input[[select_plot_field]]
 
-                    # Determining whether the new and old transmitting plot have selections.
-                    old_out <- .transmitted_selection(old_transmitter, pObjects$memory)
-                    old_select <- old_out$selected
-                    old_encoded <- old_out$encoded
-                    new_out <- .transmitted_selection(new_transmitter, pObjects$memory)
-                    new_select <- new_out$selected
-                    new_encoded <- new_out$encoded
+                        # Determining whether the new and old transmitting plot have selections.
+                        old_out <- .transmitted_selection(old_transmitter, pObjects$memory)
+                        old_select <- old_out$selected
+                        old_encoded <- old_out$encoded
+                        new_out <- .transmitted_selection(new_transmitter, pObjects$memory)
+                        new_select <- new_out$selected
+                        new_encoded <- new_out$encoded
 
-                    # Updating the graph (no need for DAG protection here, as tables do not transmit selections).
-                    pObjects$selection_links <- .choose_new_selection_source(pObjects$selection_links, tab_name, new_encoded, old_encoded)
-                    pObjects$memory[[mode0]][id0, .selectByPlot] <- new_transmitter
+                        # Updating the graph (no need for DAG protection here, as tables do not transmit selections).
+                        pObjects$selection_links <- .choose_new_selection_source(pObjects$selection_links, tab_name, new_encoded, old_encoded)
+                        pObjects$memory[[mode0]][id0, .selectByPlot] <- new_transmitter
 
-                    # Update the elements reporting the links between plots.
-                    for (relinked in c(old_encoded, new_encoded, tab_name)) {
-                        if (relinked==.noSelection) { next }
-                        relink_field <- paste0(relinked, "_", .panelLinkInfo)
-                        rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
-                    }
+                        # Update the elements reporting the links between plots.
+                        for (relinked in c(old_encoded, new_encoded, tab_name)) {
+                            if (relinked==.noSelection) { next }
+                            relink_field <- paste0(relinked, "_", .panelLinkInfo)
+                            rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
+                        }
 
-                    # Not re-rendering if there were no selections in either the new or old transmitters.
-                    if (!old_select && !new_select){
-                        return(NULL)
-                    }
+                        # Not re-rendering if there were no selections in either the new or old transmitters.
+                        if (!old_select && !new_select){
+                            return(NULL)
+                        }
 
-                    # Triggering update of the table.
-                    rObjects[[tab_name]] <- .increment_counter(isolate(rObjects[[tab_name]]))
-                }, ignoreInit=TRUE)
-            })
+                        # Triggering update of the table.
+                        rObjects[[tab_name]] <- .increment_counter(isolate(rObjects[[tab_name]]))
+                    }, ignoreInit=TRUE)
+                })
+            }
         }
 
         # Linked selection choice observers for the heatmaps.
@@ -1259,15 +1263,17 @@ iSEE <- function(se,
                     dec_name <- .decode_panel_name(mode0, id0)
                     output[[gen_field]] <- renderUI({
                         force(rObjects[[gen_field]])
-                        selected <- .get_selected_points(rownames(pObjects$coordinates[[plot_name]]), dec_name,
-                                                         pObjects$memory, pObjects$coordinates)
+                        selected <- .get_selected_points(
+                            rownames(pObjects$coordinates[[plot_name]]), dec_name,
+                            pObjects$memory, pObjects$coordinates)
                         if (is.null(selected)) {
                             return(NULL)
                         }
                         n_selected <- sum(selected)
                         n_total <- length(selected)
-                        HTML(sprintf("%i of %i points selected (%.1f%%)",
-                                     n_selected, n_total, 100*n_selected/n_total))
+                        HTML(sprintf(
+                            "%i of %i points selected (%.1f%%)",
+                            n_selected, n_total, 100*n_selected/n_total))
                     })
 
                     # Describing the links between panels.
@@ -1431,8 +1437,8 @@ iSEE <- function(se,
                     })
                 })
 
-                # Fields defining which function and arguments to use.
-                for (field in c(.customFun, .customArgs)) {
+                # Field defining the function to use.
+                for (field in c(.customFun)) {
                     local({
                         id0 <- id
                         mode0 <- mode
@@ -1450,6 +1456,37 @@ iSEE <- function(se,
                         }, ignoreInit=TRUE)
                     })
                 }
+
+                local({
+                    id0 <- id
+                    mode0 <- mode
+                    panel_name <- paste0(mode0, id0)
+                    cur_vis_field <- paste0(panel_name, "_", .customVisibleArgs)
+                    cur_submit <- paste0(panel_name, "_", .customSubmit)
+
+                    # Switch button class depending on whether the arguments and visible arguments are different.
+                    observeEvent(input[[cur_vis_field]], {
+                        matched_input <- as(input[[cur_vis_field]], typeof(pObjects$memory[[mode0]][[.customVisibleArgs]]))
+                        pObjects$memory[[mode0]][[.customVisibleArgs]][id0] <- matched_input
+
+                        .disableButtonIf(
+                            id=cur_submit,
+                            condition=identical(matched_input, pObjects$memory[[mode0]][[.customArgs]][id0]),
+                            inactiveLabel=.buttonUpToDateLabel, activeLabel=.buttonUpdateLabel, session)
+                    }, ignoreInit=TRUE)
+
+                    # Switch visible arguments with Arguments upon button click.
+                    observeEvent(input[[cur_submit]], {
+                        visible <- pObjects$memory[[mode0]][[.customVisibleArgs]][[id0]]
+                        if (identical(visible, pObjects$memory[[mode0]][[.customArgs]][id0])) {
+                            return(NULL)
+                        }
+                        pObjects$memory[[mode0]][[.customArgs]][[id0]] <- visible 
+                        rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
+                        disable(cur_submit)
+                        updateActionButton(session, cur_submit, .buttonUpToDateLabel)
+                    }, ignoreInit=TRUE)
+                })
 
                 # Specifying the row/column selection.
                 for (src in c(.customRowSource, .customColSource)) {
@@ -1559,12 +1596,12 @@ iSEE <- function(se,
         }
 
         #######################################################################
-        # Row table section. ----
+        # Linked table section. ----
         #######################################################################
 
         for (mode in linked_table_types) {
             max_plots <- nrow(pObjects$memory[[mode]])
-            if (mode=="rowStatTable") {
+            if (mode == "rowStatTable") {
                 current_df <- feature_data
                 current_select_col <- feature_data_select_col
                 choices <- feature_choices
@@ -1679,7 +1716,7 @@ iSEE <- function(se,
                     })
 
                     # Updating the annotation box.
-                    if (mode0=="rowStatTable") {
+                    if (mode0 == "rowStatTable") {
                         anno_field <- paste0(panel_name, "_annotation")
                         output[[anno_field]] <- renderUI({
                             if(is.null(annotFun)) return(NULL)
@@ -1713,13 +1750,13 @@ iSEE <- function(se,
                 import_button <- paste0(plot_name, "_", .heatMapImportFeatures)
                 observeEvent(input[[import_button]], {
                     origin <- pObjects$memory[[mode0]][id0, .heatMapImportSource]
-                    if (origin==.noSelection) {
+                    if (origin == .noSelection) {
                         return(NULL)
                     }
                     enc <- .encode_panel_name(origin)
 
                     incoming <- NULL
-                    if (enc$Type=="rowStatTable") {
+                    if (enc$Type == "rowStatTable") {
                         incoming <- input[[paste0(enc$Type, enc$ID, "_rows_all")]]
                     } else {
                         selected <- .get_selected_points(rownames(se), origin, pObjects$memory, pObjects$coordinates)
@@ -1738,8 +1775,9 @@ iSEE <- function(se,
                     }
 
                     combined <- union(pObjects$memory[[mode0]][id0, .heatMapFeatName][[1]], incoming)
-                    updateSelectizeInput(session, paste0(plot_name, "_", .heatMapFeatName), choices = feature_choices,
-                                         server = TRUE, selected = combined)
+                    updateSelectizeInput(
+                        session, paste0(plot_name, "_", .heatMapFeatName), choices = feature_choices,
+                        server = TRUE, selected = combined)
                 }, ignoreInit=TRUE)
 
                 # Triggering an update of the selected elements : clear features, trigger replotting (caught by validate)

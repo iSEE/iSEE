@@ -258,6 +258,13 @@
         memory[[mode]] <- tmp
     }
 
+    # Setting custom arguments.
+    for (mode in custom_panel_types) {
+        to_show <- memory[[mode]][,.customVisibleArgs] 
+        to_use <- memory[[mode]][,.customArgs] 
+        memory[[mode]][,.customVisibleArgs] <- ifelse(is.na(to_show), to_use, to_show)
+    }
+
     return(memory)
 }
 
@@ -457,7 +464,7 @@ height_limits <- c(400L, 1000L)
         }
 
         for (field in fields) {
-            memory[[mode]] <- FUN(memory[[mode]], field, linkable) 
+            memory[[mode]] <- FUN(memory[[mode]], field, linkable)
         }
     }
 
@@ -540,7 +547,7 @@ height_limits <- c(400L, 1000L)
 .define_plot_links <- function(panel, memory, graph)
 {
     enc <- .split_encoded(panel)
-    param_choices <- memory[[enc$Type]][enc$ID,]
+    param_choices <- memory[[enc$Type]][enc$ID, ]
     output <- list()
 
     # Checking select status.
@@ -566,16 +573,16 @@ height_limits <- c(400L, 1000L)
     }
 
     # Checking colour status.
-    if (param_choices[[.colorByField]]==col_title && param_choices[[col_tab]]!=.noSelection) {
+    if (param_choices[[.colorByField]] == col_title && param_choices[[col_tab]] != .noSelection) {
         output <- c(output, list("Receiving color from", em(strong(param_choices[[col_tab]])), br()))
     }
 
-    # Checking input/output for feature assay plots.
+    # Checking input/output for feature and sample assay plots.
     if (enc$Type %in% c("featAssayPlot", "sampAssayPlot")) {
-        if (param_choices[[y_tab]]!=.noSelection) {
+        if (param_choices[[y_tab]] != .noSelection) {
             output <- c(output, list("Receiving y-axis from", em(strong(param_choices[[y_tab]])), br()))
         }
-        if (param_choices[[x_type]]==x_title && param_choices[[x_tab]]!=.noSelection) {
+        if (param_choices[[x_type]] == x_title && param_choices[[x_tab]] != .noSelection) {
             output <- c(output, list("Receiving x-axis from", em(strong(param_choices[[x_tab]])), br()))
         }
     }
@@ -628,8 +635,9 @@ height_limits <- c(400L, 1000L)
     transmittees <- list(c("yaxis", "y-axis", NA, NA))
     if (enc$Type=="rowStatTable") {
         transmittees <- c(transmittees,
-                list(c("xaxis", "x-axis", .featAssayXAxis, .featAssayXAxisFeatNameTitle),
-                c("color", "color", .colorByField, .colorByFeatNameTitle)))
+                list(
+                    c("xaxis", "x-axis", .featAssayXAxis, .featAssayXAxisFeatNameTitle),
+                    c("color", "color", .colorByField, .colorByFeatNameTitle)))
     } else {
         transmittees <- c(transmittees,
                 list(c("xaxis", "x-axis", .sampAssayXAxis, .sampAssayXAxisSampNameTitle),
@@ -922,3 +930,29 @@ and Federico Marini (%s).",
     a(href="https://github.com/csoneson/iSEE", "GitHub"),
     a(href="https://opensource.org/licenses/MIT","MIT")))
 )
+
+#' Toggle a Shiny actionButton on a condition
+#'
+#' If \code{condition} is met, the button is disabled and its label is set to \code{inactiveLabel}.
+#' Otherwise, the button is enabled and its label is set to \code{activeLabel}.
+#'
+#' @param id The \code{input} slot that used to access the value.
+#' @param condition The condition that disables the action button.
+#' @param inactiveLabel Label of the button if inactive.
+#' @param activeLabel Label of the button if active.
+#' @param session The \code{session} object passed to function given to \code{shinyServer}.
+#'
+#' @author Kevin Rue-Albrecht
+#' @rdname INTERNAL_disableButtonIf
+#'
+#' @importFrom shinyjs disable enable
+#' @importFrom shiny updateActionButton
+.disableButtonIf <- function(id, condition, inactiveLabel, activeLabel, session) {
+    if (condition) {
+        disable(id)
+        updateActionButton(session, id, inactiveLabel)
+    } else {
+        enable(id)
+        updateActionButton(session, id, activeLabel)
+    }
+}

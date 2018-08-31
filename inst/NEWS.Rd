@@ -1,6 +1,14 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.1.5}{
+\itemize{
+    \item New panel colors.
+    \item Control arguments to custom panels through action buttons.
+    \item Distinguish visible from active arguments for custom panels.
+}
+}
+
 \section{iSEE VERSION 1.1.4}{
 \itemize{
     \item Split \code{?defaults} help page by panel type.

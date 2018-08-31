@@ -48,6 +48,8 @@
 # Custom plotting parameters. ----
 .customFun <- "Function"
 .customArgs <- "Arguments"
+.customVisibleArgs <- "VisibleArgs"
+.customSubmit <- "Submit"
 .customColSource <- "ColumnSource"
 .customRowSource <- "RowSource"
 
@@ -148,6 +150,9 @@
 .brushField <- "Brush"
 .brushData <- "BrushData"
 
+# Button parameters ----
+.buttonUpToDateLabel <- "Up to date"
+.buttonUpdateLabel <- "Update"
 
 # Other plot parameters. ----
 .dataParamBoxOpen <- "DataBoxOpen"

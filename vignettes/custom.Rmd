@@ -93,7 +93,12 @@ CUSTOM_PCA <- function(se, rows, columns, colour_by=NULL, scale_features=TRUE) {
     if (!is.null(columns)) {
         kept <- se[, columns]
     } else {
-        return(ggplot())
+        return(
+            ggplot() + theme_void() + geom_text(
+                aes(x, y, label=label),
+                data.frame(x=0, y=0, label="No column data selected."),
+                size=5)
+            )
     }
 
     scale_features <- as.logical(scale_features)
@@ -152,6 +157,14 @@ scale_features FALSE
 ... in the text box, this would pass `colour_by="Nanog"` and `scale_features="TRUE"` to `CUSTOM_PCA`.
 Note that all additional arguments are passed as character strings for the sake of security.
 It is the responsibility of the custom function to perform any necessary type checks and conversions (hence the `as.logical` in `CUSTOM_PCA`).
+
+Similarly, additional arguments can be passed to the `CUSTOM_SUMMARY` function above.
+For instance:
+
+```
+assay counts
+min_exprs 5
+```
 
 ## Example use
 

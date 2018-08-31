@@ -26,6 +26,9 @@ Defaults to \code{FALSE}.}
 Defaults to \code{"---"}, i.e., no coordinates are generated.}
 \item{\code{Arguments}:}{String with multiple lines specifying the initial arguments for the function, see \code{vignette("custom", package="iSEE")} for details.
 Defaults to an empty string.}
+\item{\code{VisibleArgs}:}{String with multiple lines specifying the initial arguments to be shown in the text area.
+This can differ from \code{Arguments}, e.g., to list argument names without their values for users to enter.
+Defaults to \code{NA}, which means that the value in \code{Arguments} will be shown.}
 }
 
 Selection parameters for custom data plots are:

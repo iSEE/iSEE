@@ -5,7 +5,7 @@ bibentry(
         person("Kevin", "Rue-Albrecht"),
         person("Federico", "Marini"),
         person("Charlotte", "Soneson"),
-        person("Aaron", "Lun", "TL")),
+        person(c("Aaron", "T.", "L."), "Lun")),
     publisher = "F1000 Research, Ltd.",
     journal = "F1000Research",
     year = "2018",

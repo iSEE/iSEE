@@ -35,9 +35,9 @@ Selection parameters for custom data plots are:
 \describe{
 \item{\code{SelectBoxOpen}:}{Logical, should the selection parameter box be open upon initialization?
 Defaults to \code{FALSE}.}
-\item{\code{ColumnSource}:}{Character, which other plot should transmit sample selections to the current plot? 
+\item{\code{ColumnSource}:}{Character, which other plot should transmit sample selections to the current plot?
 Defaults to \code{"---"}, which means that no plot is used for point selection.}
-\item{\code{RowSource}:}{Character, which other plot should transmit feature selections to the current plot? 
+\item{\code{RowSource}:}{Character, which other plot should transmit feature selections to the current plot?
 Defaults to \code{"---"}, which means that no plot is used for point selection.}
 }
 }

@@ -35,9 +35,9 @@ Selection parameters for custom statistics tables are:
 \describe{
 \item{\code{SelectBoxOpen}:}{Logical, should the selection parameter box be open upon initialization?
 Defaults to \code{FALSE}.}
-\item{\code{ColumnSource}:}{Character, which other plot should transmit sample selections to the current table? 
+\item{\code{ColumnSource}:}{Character, which other plot should transmit sample selections to the current table?
 Defaults to \code{"---"}, which means that no plot is used for point selection.}
-\item{\code{RowSource}:}{Character, which other plot should transmit feature selections to the current table? 
+\item{\code{RowSource}:}{Character, which other plot should transmit feature selections to the current table?
 Defaults to \code{"---"}, which means that no plot is used for point selection.}
 }
 

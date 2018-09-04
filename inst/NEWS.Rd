@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.1.6}{
+\itemize{
+    \item Minor fix for Windows unit test.
+}
+}
+
 \section{iSEE VERSION 1.1.5}{
 \itemize{
     \item New panel colors.

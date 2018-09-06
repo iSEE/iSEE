@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.1.7}{
+\itemize{
+    \item Resolve BiocManager message.
+}
+}
+
 \section{iSEE VERSION 1.1.6}{
 \itemize{
     \item Minor fix for Windows unit test.
@@ -32,7 +38,7 @@
     \item Moved roxygen \code{importFrom} instructions closer to the relevant code.
     \item Increased unit test coverage.
     \item Consistent use of "colormap" through the package.
-    \item Substituted reference of deprecated \code{biocLite} to \code{BiocManager}.
+    \item Update installation instructions.
     \item Added CITATION file.
     \item Added Figure 1 of article in README.
 }
@@ -74,7 +80,7 @@
     \item Added grid-based visual point downsampling for faster plotting, including control of resolution.
     \item Added button "Clear features" for heat maps.
     \item Reorganized buttons in heat map panels.
-    \item Maintainer badge transferred to Federico
+    \item Maintainer badge transferred to Federico.
 }
 }
 

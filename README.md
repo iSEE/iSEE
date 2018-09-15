@@ -47,35 +47,43 @@ The user interface of `iSEE` web-applications currently offers the following fea
 
 The `iSEE` user interface currently contains the following components where each data point represents a single biological sample:
 
-:white_check_mark:  _Reduced dimension plot_: Scatter plot of reduced dimensionality data.
+:white_check_mark:  **Reduced dimension plot**: Scatter plot of reduced dimensionality data.
 
-:white_check_mark: _Column data plot_: Adaptive plot of any one or two sample metadata.
+:white_check_mark: **Column data plot**: Adaptive plot of any one or two sample metadata.
 A scatter, violin, or square design is dynamically applied according to the continuous or discrete nature of the metadata.
 
-:white_check_mark: _Feature assay plot_: Adaptive plot of expression data for any two features or one feature against one sample metadata.
+:white_check_mark: **Feature assay plot**: Adaptive plot of expression data for any two features or one feature against one sample metadata.
 
-:white_check_mark: _Column statistics table_: Table of sample metadata.
+:white_check_mark: **Column statistics table**: Table of sample metadata.
 
 ## Feature-level visualization
 
 The `iSEE` user interface currently contains the following components where each data point represents a genomic feature:
 
-:white_check_mark: _Row data plot_: Adaptive plot of any two feature metadata.
+:white_check_mark: **Row data plot**: Adaptive plot of any two feature metadata.
 A scatter, violin, or square design is dynamically applied according to the continuous or discrete nature of the metadata.
 
-:white_check_mark: _Sample assay plot_: Adaptive plot of expression data for any two samples or one sample against one feature metadata.
+:white_check_mark: **Sample assay plot**_: Adaptive plot of expression data for any two samples or one sample against one feature metadata.
 
-:white_check_mark: _Row statistics table_: Table of feature metadata.
+:white_check_mark: **Row statistics table**: Table of feature metadata.
 
 ## Integrated visualization
 
 The `iSEE` user interface contains the following components that integrate sample and feature information:
 
-:white_check_mark: _Heat map plot_: Visualize multiple features across multiple samples annotated with sample metadata.
+:white_check_mark: **Heat map plot**: Visualize multiple features across multiple samples annotated with sample metadata.
+
+## Custom panels
+
+The `iSEE` user interface allows users to programmatically define their own plotting and table panels.
+
+:white_check_mark: **Custom data plot**: Plotting panel that can be assigned any user-defined function returning a `ggplot` object.
+
+:white_check_mark: **Custom statistics table**: Table panel that can be assigned any user-defined function returning a `data.frame` object.
 
 ## Miscellaneous
 
-:white_check_mark: The `iSEE` user interface continually tracks the code corresponding to each visible plotting panel.
+:white_check_mark: The `iSEE` user interface continually tracks the code corresponding to all visible plotting panels.
 This code is rendered in a [shinyAce](https://cran.r-project.org/web/packages/shinyAce/index.html) text editor and can be copy-pasted into R scripts for customization and further use.
 
 ## Want to try `iSEE`?

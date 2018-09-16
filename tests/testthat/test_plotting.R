@@ -941,9 +941,9 @@ test_that(".make_colDataPlot/.square_plot works with zoom",{
 
 })
 
-# .process_colorby_choice handles gene text input ----
+# .define_colorby_for_column_plot ----
 
-test_that(".process_colorby_choice_for_column_plots handles gene text input", {
+test_that(".define_colorby_for_column_plot handles feature selection", {
     params <- all_memory$redDimPlot[1, ]
     params[[iSEE:::.colorByField]] <- iSEE:::.colorByFeatNameTitle
     params[[iSEE:::.colorByFeatName]] <- 1L
@@ -970,6 +970,72 @@ test_that(".process_colorby_choice_for_column_plots handles gene text input", {
         "scale_color_gradientn",
         fixed=TRUE
     )
+
+})
+
+test_that(".define_colorby_for_column_plot handles sample selection", {
+    params <- all_memory$redDimPlot[1, ]
+    params[[iSEE:::.colorByField]] <- iSEE:::.colorBySampNameTitle
+    params[1, iSEE:::.colorBySampName] <- 3L
+
+    color_out <- iSEE:::.define_colorby_for_column_plot(params, sce)
+    expect_identical(color_out, list(
+        label="SRR2140055",
+        cmds="plot.data$ColorBy <- logical(nrow(plot.data));\nplot.data[3L, 'ColorBy'] <- TRUE;"))
+
+    color_add <- iSEE:::.add_color_to_column_plot(assay(sce)[1, ], params)
+
+    expect_identical(color_add, c(
+        "scale_color_manual(values=c(`FALSE`='black', `TRUE`=\"red\"), drop=FALSE) +",
+        "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy=='TRUE'), col=\"red\", size=1, alpha=1) +" ))
+
+})
+
+# define_shapeby_for_column_plot ----
+
+test_that("define_shapeby_for_column_plot produces the expected commands", {
+    params <- all_memory$redDimPlot[1, ]
+    params[[iSEE:::.shapeByField]] <- iSEE:::.shapeByColDataTitle
+    params[[iSEE:::.shapeByColData]] <- "driver_1_s"
+
+    color_out <- iSEE:::.define_shapeby_for_column_plot(params, sce)
+    expect_identical(color_out, list(
+        label="driver_1_s",
+        cmds="plot.data$ShapeBy <- colData(se)[,\"driver_1_s\"];"))
+
+})
+
+# .define_shapeby_for_row_plot ----
+
+test_that(".define_shapeby_for_row_plot produces the expected commands", {
+    params <- all_memory$rowDataPlot[1, ]
+    params[[iSEE:::.shapeByField]] <- iSEE:::.shapeByRowDataTitle
+    params[[iSEE:::.shapeByColData]] <- "letters"
+
+    color_out <- iSEE:::.define_shapeby_for_row_plot(params, sce)
+    expect_identical(color_out, list(
+        label="letters",
+        cmds="plot.data$ShapeBy <- rowData(se)[,\"letters\"];"))
+
+})
+
+# .define_colorby_for_row_plot  ----
+
+test_that(".define_colorby_for_row_plot handles sample selection", {
+    params <- all_memory$rowDataPlot[1, ]
+    params[[iSEE:::.colorByField]] <- iSEE:::.colorBySampNameTitle
+    params[1, iSEE:::.colorBySampName] <- 3L
+
+    color_out <- iSEE:::.define_colorby_for_row_plot(params, sce)
+    expect_identical(color_out, list(
+        label="SRR2140055\n(tophat_counts)",
+        cmds="plot.data$ColorBy <- assay(se, 1, withDimnames=FALSE)[,3];"))
+
+    color_add <- iSEE:::.add_color_to_row_plot(assay(sce)[1, ], params)
+
+    expect_identical(
+        color_add,
+        "scale_color_gradientn(colors=assayColorMap(colormap, 1L, discrete=FALSE)(21), na.value='grey50') +")
 
 })
 
@@ -1519,3 +1585,343 @@ test_that(".add_facets works for row data plots", {
     expect_identical(out, "facet_grid(FacetRow ~ FacetColumn)")
 })
 
+# .choose_plot_type ----
+
+test_that(".choose_plot_type flips both full and restricted plot.data for horizontal violins", {
+
+    plot.data <- data.frame(X=seq_along(letters), Y=letters)
+
+    envir <- new.env()
+    assign("plot.data.all", plot.data, envir=envir)
+    out <- iSEE:::.choose_plot_type(group_X=FALSE, group_Y=TRUE, envir=envir)
+
+    expect_true(any(grepl("plot.data.all$X <- plot.data.all$Y;", out, fixed=TRUE)))
+    expect_true(any(grepl("plot.data.all$Y <- tmp;", out, fixed=TRUE)))
+
+})
+
+# .downsample_points ----
+
+test_that(".downsample_points produces the appropriate code", {
+
+    # for square plots
+
+    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
+    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "driver_1_s"
+    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "passes_qc_checks_s"
+    all_memory$colDataPlot[1, iSEE:::.plotPointDownsample] <- TRUE
+    all_memory$colDataPlot[1, iSEE:::.plotPointSampleRes] <- 200
+
+    envir <- new.env()
+    plotData <- data.frame(
+        X=colData(sce)[, all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData]],
+        Y=colData(sce)[, all_memory$colDataPlot[1, iSEE:::.colDataYAxis]],
+        jitteredX=rnorm(ncol(sce)),
+        jitteredY=rnorm(ncol(sce)),
+        row.names=colnames(sce)
+    )
+    assign("plot.data", plotData, envir=envir)
+    assign("plot.type", "square", envir=envir)
+
+    out <- iSEE:::.downsample_points(all_memory$colDataPlot[1, ], envir)
+    expect_identical(out, c(
+        "plot.data.pre <- plot.data;",
+        "plot.data <- subset(plot.data, subsetPointsByGrid(jitteredX, jitteredY, resolution=200));",
+        ""))
+
+    # for violin plots
+
+    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
+    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "passes_qc_checks_s"
+    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "NREADS"
+    all_memory$colDataPlot[1, iSEE:::.plotPointDownsample] <- TRUE
+    all_memory$colDataPlot[1, iSEE:::.plotPointSampleRes] <- 200
+
+    envir <- new.env()
+    plotData <- data.frame(
+        X=colData(sce)[, all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData]],
+        Y=colData(sce)[, all_memory$colDataPlot[1, iSEE:::.colDataYAxis]],
+        jitteredX=rnorm(ncol(sce)),
+        row.names=colnames(sce)
+    )
+    assign("plot.data", plotData, envir=envir)
+    assign("plot.type", "violin_horizontal", envir=envir)
+    # assign("plot.type", "violin", envir = envir)
+
+    out <- iSEE:::.downsample_points(all_memory$colDataPlot[1, ], envir)
+    expect_identical(out, c(
+        "plot.data.pre <- plot.data;",
+        "plot.data <- subset(plot.data, subsetPointsByGrid(jitteredX, Y, resolution=200));",
+        ""))
+
+    # for horizontal violin plots (X and Y are flipped)
+
+    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
+    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "NREADS"
+    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "passes_qc_checks_s"
+    all_memory$colDataPlot[1, iSEE:::.plotPointDownsample] <- TRUE
+    all_memory$colDataPlot[1, iSEE:::.plotPointSampleRes] <- 200
+
+    envir <- new.env()
+    plotData <- data.frame(
+        X=colData(sce)[, all_memory$colDataPlot[1, iSEE:::.colDataYAxis]],
+        Y=colData(sce)[, all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData]],
+        jitteredX=rnorm(ncol(sce)),
+        row.names=colnames(sce)
+    )
+    assign("plot.data", plotData, envir=envir)
+    assign("plot.type", "violin_horizontal", envir=envir)
+    # assign("plot.type", "violin", envir = envir)
+
+    out <- iSEE:::.downsample_points(all_memory$colDataPlot[1, ], envir)
+    expect_identical(out, c(
+        "plot.data.pre <- plot.data;",
+        "plot.data <- subset(plot.data, subsetPointsByGrid(jitteredX, Y, resolution=200));",
+        ""))
+
+})
+
+# .create_plot ----
+
+test_that(".create_plot can add faceting commands", {
+
+    all_memory$redDimPlot[1, iSEE:::.facetByRow] <- TRUE
+    all_memory$redDimPlot[1, iSEE:::.facetColumnsByColData] <- "driver_1_s"
+
+    out <- iSEE:::.make_redDimPlot(1, all_memory, all_coordinates, sce, ExperimentColorMap())
+
+    expect_true(any(grepl("facet_grid(FacetRow ~ .)", out$cmd_list$plot, fixed=TRUE)))
+})
+
+# Contours ----
+
+test_that("2d density contours can be added to scatter plots ", {
+
+    all_memory$redDimPlot[1, iSEE:::.contourAddTitle] <- TRUE
+
+    out <- iSEE:::.scatter_plot(
+        plot_data=data.frame(), param_choices=all_memory$redDimPlot,
+        "x_lab", "y_lab", "color_lab", "shape_lab", "title",
+        by_row=FALSE, is_subsetted=TRUE, is_downsampled=FALSE)
+
+    expect_identical(out[["contours"]], "geom_density_2d(aes(x = X, y = Y), plot.data, colour='blue') +")
+
+})
+
+# .scatter_plot ----
+
+test_that("plots subsetted to no data contain a geom_blank command", {
+
+    geom_blank_cmd <- "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
+
+    # .scatter_plot
+
+    out <- iSEE:::.scatter_plot(
+        plot_data=data.frame(), param_choices=all_memory$redDimPlot,
+        "x_lab", "y_lab", "color_lab", "shape_lab", "title",
+        by_row=FALSE, is_subsetted=TRUE, is_downsampled=FALSE)
+
+    expect_identical(out[["select_blank"]], geom_blank_cmd)
+
+    # .violin_plot
+
+    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColDataTitle
+    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "driver_1_s"
+    all_memory$colDataPlot[1, iSEE:::.colDataYAxis]
+
+    out <- iSEE:::.violin_plot(
+        plot_data=data.frame(), param_choices=all_memory$colDataPlot,
+        "x_lab", "y_lab", "color_lab", "shape_lab", "title",
+        by_row=FALSE, is_subsetted=TRUE, is_downsampled=FALSE)
+
+    expect_identical(out[["select_blank"]], geom_blank_cmd)
+
+    # .square_plot
+
+    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColDataTitle
+    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "driver_1_s"
+    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "dissection_s"
+
+    out <- iSEE:::.square_plot(
+        plot_data=data.frame(), param_choices=all_memory$colDataPlot, sce,
+        "x_lab", "y_lab", "color_lab", "shape_lab", "title",
+        by_row=FALSE, is_subsetted=TRUE)
+
+    expect_identical(out[["select_blank"]], geom_blank_cmd)
+
+})
+
+# .violin_setup ----
+
+test_that("Jitter is properly performed for faceted plots", {
+
+    # .violin_setup
+
+    plotData <- data.frame(
+        FacetRow=letters,
+        FacetColumn=LETTERS
+    )
+
+    out <- iSEE:::.violin_setup(plot_data=plotData, horizontal=FALSE)
+
+    expect_identical(out, c(
+        group="plot.data$GroupBy <- plot.data$X;",
+        seed="set.seed(100);",
+        calcX="plot.data$jitteredX <- iSEE::jitterViolinPoints(plot.data$X, plot.data$Y, \n    list(FacetRow=plot.data$FacetRow, FacetColumn=plot.data$FacetColumn),\n    width=0.4, varwidth=FALSE, adjust=1,\n    method='quasirandom', nbins=NULL);" ))
+
+    # .square_setup
+
+    plotData <- data.frame(
+        FacetRow=letters,
+        FacetColumn=LETTERS
+    )
+
+    out <- iSEE:::.square_setup(plot_data=plotData)
+
+    expect_identical(out, c(
+        jitter="set.seed(100);\nj.out <- iSEE:::jitterSquarePoints(plot.data$X, plot.data$Y,\n    list(FacetRow=plot.data$FacetRow, FacetColumn=plot.data$FacetColumn));\nsummary.data <- j.out$summary;\nplot.data$jitteredX <- j.out$X;\nplot.data$jitteredY <- j.out$Y;")
+        )
+
+})
+
+# .build_labs ----
+
+test_that(".build_labs returns NULL for NULL inputs", {
+
+    expect_null(iSEE:::.build_labs())
+
+})
+
+# .self_brush_box ----
+
+test_that(".self_brush_box can flip axes", {
+
+    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
+    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "NREADS"
+    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "driver_1_s"
+
+    brushData <- list(xmin=1, xmax=2, ymin=3, ymax=4)
+    all_memory$colDataPlot[[iSEE:::.brushData]][[1]] <- list(brushData)
+
+    out <- iSEE:::.self_brush_box(all_memory$colDataPlot, flip=TRUE)
+    expect_match(out$cmds, "aes(xmin = ymin, xmax = ymax, ymin = xmin, ymax = xmax)", fixed=TRUE)
+
+})
+
+test_that(".self_brush_box flip axes when faceting on both X and Y", {
+
+    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
+    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "NREADS"
+    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "driver_1_s"
+    all_memory$colDataPlot[1, iSEE:::.facetByRow] <- TRUE
+    all_memory$colDataPlot[1, iSEE:::.facetByColumn] <- TRUE
+
+    brushData <- list(xmin=1, xmax=2, ymin=3, ymax=4)
+    all_memory$colDataPlot[[iSEE:::.brushData]][[1]] <- list(brushData)
+
+    out <- iSEE:::.self_brush_box(all_memory$colDataPlot, flip=TRUE)
+
+    # Check that row and column are flipped (to panelvar2 and panelvar1)
+    expect_match(
+        out$cmds,
+        "list(FacetRow = all_brushes[['colDataPlot1']][['panelvar2']], FacetColumn = all_brushes[['colDataPlot1']][['panelvar1']])",
+        fixed=TRUE)
+
+    # Check that the faceting data is appended to the brush data
+    expect_match(
+        out$cmds,
+        "data=do.call(data.frame, \n            append(\n                all_brushes[['colDataPlot1']][c('xmin', 'xmax', 'ymin', 'ymax')],\n                list(FacetRow = all_brushes[['colDataPlot1']][['panelvar2']], FacetColumn = all_brushes[['colDataPlot1']][['panelvar1']])))", fixed=TRUE
+    )
+
+})
+
+# .self_lasso_path ----
+
+test_that(".self_lasso_path flip axes when faceting on both X and Y", {
+
+    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
+    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "NREADS"
+    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "driver_1_s"
+    all_memory$colDataPlot[1, iSEE:::.facetByRow] <- TRUE
+    all_memory$colDataPlot[1, iSEE:::.facetByColumn] <- TRUE
+
+    LASSO_CLOSED <- list(
+        lasso=NULL,
+        closed=TRUE,
+        panelvar1=NULL, panelvar2=NULL,
+        mapping=list(x="X", y="Y"),
+        coord=matrix(c(1, 2, 2, 1, 1, 1, 1, 2, 2, 1), ncol=2))
+    all_memory$colDataPlot[[iSEE:::.lassoData]][[1]] <- LASSO_CLOSED
+
+    out <- iSEE:::.self_lasso_path(all_memory$colDataPlot, flip=TRUE)
+
+    # Check that row and column are flipped (to panelvar2 and panelvar1)
+    expect_match(
+        out$cmds[1],
+        "FacetRow = all_lassos[['colDataPlot1']][['panelvar2']], FacetColumn = all_lassos[['colDataPlot1']][['panelvar1']]",
+        fixed=TRUE)
+
+    # Check that the faceting data is appended to the brush data
+    expect_match(
+        out$cmds[1],
+        "data.frame(X = all_lassos[['colDataPlot1']]$coord[,1], Y = all_lassos[['colDataPlot1']]$coord[,2], FacetRow = all_lassos[['colDataPlot1']][['panelvar2']], FacetColumn = all_lassos[['colDataPlot1']][['panelvar1']])", fixed=TRUE
+    )
+
+    expect_identical(
+        out$cmds[2],
+        "scale_fill_manual(values = c('TRUE' = '#DB0230', 'FALSE' = '#F7CCD5'), labels = NULL)")
+
+    expect_identical(out$cmds[3], "guides(shape = 'none')")
+
+})
+
+test_that(".self_lasso_path leaves the shape legend visible if applied to data points", {
+
+    # Note: If data points are not shaped, the shape aesthetic is used to shape
+    # the waypoints of the lasso differently from the start/closing point
+    # In this case, the shape legend should not be shown.
+
+    all_memory$redDimPlot[1, iSEE:::.shapeByField] <- iSEE:::.shapeByColDataTitle
+    all_memory$redDimPlot[1, iSEE:::.shapeByColData] <- "driver_1_s"
+
+    LASSO_CLOSED <- list(
+        lasso=NULL,
+        closed=TRUE,
+        panelvar1=NULL, panelvar2=NULL,
+        mapping=list(x="X", y="Y"),
+        coord=matrix(c(1, 2, 2, 1, 1, 1, 1, 2, 2, 1), ncol=2))
+    all_memory$redDimPlot[[iSEE:::.lassoData]][[1]] <- LASSO_CLOSED
+
+    out <- iSEE:::.self_lasso_path(all_memory$redDimPlot, flip=FALSE)
+    # Do not expect any call to "guides()"
+    expect_false(any(grepl("guides", out$cmds)))
+})
+
+test_that(".self_lasso_path uses the size aesthetic to distinguish waypoints of an open lasso when shape is mapped to a covariate", {
+
+    # Note: If data points are not shaped, the shape aesthetic is used to shape
+    # the waypoints of the lasso differently from the start/closing point
+
+    all_memory$redDimPlot[1, iSEE:::.shapeByField] <- iSEE:::.shapeByColDataTitle
+    all_memory$redDimPlot[1, iSEE:::.shapeByColData] <- "driver_1_s"
+
+    LASSO_OPEN <- list(
+        lasso=NULL,
+        closed=FALSE,
+        panelvar1=NULL, panelvar2=NULL,
+        mapping=list(x="X", y="Y"),
+        coord=matrix(c(1, 2, 2, 1, 1, 1, 2, 2), ncol=2))
+    all_memory$redDimPlot[[iSEE:::.lassoData]][[1]] <- LASSO_OPEN
+
+    out <- iSEE:::.self_lasso_path(all_memory$redDimPlot, flip=FALSE)
+
+
+    expect_identical(
+        out$cmds,
+        c(
+            "geom_path(aes(x = X, y = Y),\n    data=data.frame(X = all_lassos[['redDimPlot1']]$coord[,1], Y = all_lassos[['redDimPlot1']]$coord[,2]),\n    inherit.aes=FALSE, alpha=1, color='#3565AA', linetype = 'longdash')",
+            "geom_point(aes(x = X, y = Y, size = First),\n    data=data.frame(X = all_lassos[['redDimPlot1']]$coord[,1], Y = all_lassos[['redDimPlot1']]$coord[,2],\n                    First = seq_len(nrow(all_lassos[['redDimPlot1']]$coord))==1L),\n    inherit.aes=FALSE, alpha=1, stroke = 1, shape = 22, color = '#3565AA')",
+            "scale_size_manual(values = c('TRUE' = 1.5, 'FALSE' = 0.25))",
+            "guides(size = 'none')"))
+
+})

@@ -1,26 +1,19 @@
 
-# Default color maps ----
-
-# default continuous colormap
-.defaultContinuousColorMap <- iSEE:::.defaultContinuousColorMap
-# default discrete colormap
-.defaultDiscreteColorMap <- iSEE:::.defaultDiscreteColorMap
-
 # Example custom color maps ----
 
-count_colors <- function(n){
+COUNT_COLORS <- function(n){
   c("black","brown","red","orange","yellow")
 }
 
-fpkm_colors <- viridis::inferno
+FPKM_COLORS <- viridis::inferno
 
-tpm_colors <- viridis::plasma
+TPM_COLORS <- viridis::plasma
 
-assay_continuous_colours <- function(n){
+ASSAY_CONTINUOUS_COLORS <- function(n){
   c("black","purple","yellow")
 }
 
-qc_color_fun <- function(n){
+QC_COLOR_FUN <- function(n){
   qc_colors <- c("forestgreen", "firebrick1")
   names(qc_colors) <- c("Y", "N")
   return(qc_colors)

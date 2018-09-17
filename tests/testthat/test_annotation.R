@@ -20,7 +20,7 @@ test_that("Ensembl annotation function is functional", {
     expect_is(myfun, 'function')
 
     out <- myfun(sce, which(rownames(sce)=="Nanog"))
-    expect_match(out, "Nanog")    
+    expect_match(out, "Nanog")
 
     sce2 <- sce
     rownames(sce2)[1] <- "WHEE"
@@ -31,6 +31,7 @@ test_that("Ensembl annotation function is functional", {
     myfun <- annotateEntrez(sce, org.Mm.eg.db, keytype="ENSEMBL", rowdata_col="Ensembl")
     expect_is(myfun, 'function')
 
+    # Note: The following requires an active internet connection
     out <- myfun(sce, which(rownames(sce)=="Nanog"))
-    expect_match(out, "Nanog")    
+    expect_match(out, "Nanog")
 })

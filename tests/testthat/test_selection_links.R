@@ -111,7 +111,7 @@ test_that("selection link updates work correctly", {
     expect_equal(g[], g2[])
 
     # Adding edges without anything being there previously.
-    expect_identical(character(0), names(igraph::adjacent_vertices(g, "colDataPlot1", mode = "in")[[1]])) # no parents.
+    expect_identical(character(0), names(igraph::adjacent_vertices(g, "colDataPlot1", mode="in")[[1]])) # no parents.
     expect_equal(sum(g[]), 3)
     g2 <- iSEE:::.choose_new_selection_source(g, "colDataPlot1", "featAssayPlot3", "---")
     expect_false(igraph::are_adjacent(g2, "featAssayPlot1", "colDataPlot2"))
@@ -352,4 +352,20 @@ test_that("selections involving custom panels work correctly", {
     iSEE:::.destroy_selection_panel(pObjects, "sampAssayPlot2")
     expect_identical(sort(names(igraph::neighbors(pObjects$selection_links, "customStatTable1", mode="in"))), "redDimPlot2")
     expect_identical(pObjects$memory$customStatTable[[1, iSEE:::.customRowSource]], iSEE:::.noSelection)
+})
+
+# .transmitted_selection ----
+
+test_that(".transmitted_selection detects whether a brush is active", {
+
+    # No point selection
+    memory$redDimPlot[[iSEE:::.brushData]][1] <- list(NULL)
+    out <- .transmitted_selection("Reduced dimension plot 1", memory)
+    expect_identical(out, list(selected=FALSE, encoded="redDimPlot1"))
+
+    # Active point selection (non-empty brush or lasso)
+    memory$redDimPlot[[iSEE:::.brushData]][[1]] <- list(a=1, b=2)
+    out <- .transmitted_selection("Reduced dimension plot 1", memory)
+    expect_identical(out, list(selected=TRUE, encoded="redDimPlot1"))
+
 })

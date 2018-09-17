@@ -14,12 +14,14 @@ customStatArgs <- customStatTableDefaults(sce, 1)
 heatMapArgs <- heatMapPlotDefaults(sce, 2)
 
 # Setting up a chain of plots.
-redDimArgs[1,iSEE:::.selectByPlot] <- "---"
-colDataArgs[1,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
-colDataArgs[2,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
-featAssayArgs[2,iSEE:::.selectByPlot] <- "Column data plot 1"
-heatMapArgs[1,iSEE:::.selectByPlot] <- "Column data plot 1"
-featAssayArgs[1,iSEE:::.selectByPlot] <- "Feature assay plot 1"
+redDimArgs[1, iSEE:::.selectByPlot] <- "---"
+redDimArgs[1, iSEE:::.colorByRowTable] <- "Row statistics table 1"
+redDimArgs[1, iSEE:::.colorByField] <- iSEE:::.colorByFeatNameTitle
+colDataArgs[1, iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
+colDataArgs[2, iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
+featAssayArgs[2, iSEE:::.selectByPlot] <- "Column data plot 1"
+heatMapArgs[1, iSEE:::.selectByPlot] <- "Column data plot 1"
+featAssayArgs[1, iSEE:::.selectByPlot] <- "Feature assay plot 1"
 
 memory <- list(
     redDimPlot=redDimArgs,
@@ -40,11 +42,13 @@ initial_panels <- DataFrame(Name = c(
     "Reduced dimension plot 1",   # 1
     "Column data plot 1",         # 2
     "Column data plot 2",         # 3
-    "Feature assay plot 1",  # 4
-    "Feature assay plot 2",  # 5
+    "Feature assay plot 1",       # 4
+    "Feature assay plot 2",       # 5
     "Heat map 1"                  # 6
 ))
 active_panels <- iSEE:::.setup_initial(initial_panels, memory)
+
+# .get_reporting_order ----
 
 test_that("reporting order is correctly reported", {
     # Shuffling the order to provide a more robust test of the recovery of the correct order.
@@ -84,37 +88,41 @@ test_that("reporting order is correctly reported", {
     }
 })
 
-test_that("code trackers run correctly", {
+# .track_it_all ----
+
+test_that("code trackers run correctly for plots", {
     # Adding a custom plot panel for coverage.
     active_panels <- rbind(active_panels, active_panels[1,])
-    active_panels[1,"Type"] <- "customDataPlot"
+    active_panels[1, "Type"] <- "customDataPlot"
 
     # Mimicking a running instance of the app.
     pObjects <- new.env()
     pObjects$memory <- memory
     pObjects$selection_links <- g
-	pObjects$coordinates <- list()
-	pObjects$commands <- list()
+    pObjects$coordinates <- list()
+    pObjects$commands <- list()
 
-	o <- iSEE:::.get_reporting_order(active_panels, g)
+    o <- iSEE:::.get_reporting_order(active_panels, g)
     panelnames <- iSEE:::.decode_panel_name(active_panels$Type, active_panels$ID)[o]
     se <- iSEE:::.precompute_UI_info(sce, list(), list())
 
-	for (panelname in panelnames) {
+    for (panelname in panelnames) {
         enc <- iSEE:::.decoded2encoded(panelname)
         spenc <- iSEE:::.split_encoded(enc)
 
-        if (spenc$Type!="customDataPlot") {
-            FUN <- switch(spenc$Type,
-                redDimPlot=iSEE:::.make_redDimPlot,
-                featAssayPlot=iSEE:::.make_featAssayPlot,
-                colDataPlot=iSEE:::.make_colDataPlot,
-                rowDataPlot=iSEE:::.make_rowDataPlot,
-                sampAssayPlot=iSEE:::.make_sampAssayPlot,
-                heatMapPlot=iSEE:::.make_heatMapPlot)
-            p.out <- FUN(spenc$ID, pObjects$memory, pObjects$coordinates, se, ExperimentColorMap())
-        } else {
-            p.out <- iSEE:::.make_customDataPlot(spenc$ID, pObjects$memory, pObjects$coordinates, se)
+        if (!grepl("Table$", spenc$Type)) {
+            if (spenc$Type != "customDataPlot") {
+                FUN <- switch(spenc$Type,
+                    redDimPlot=iSEE:::.make_redDimPlot,
+                    featAssayPlot=iSEE:::.make_featAssayPlot,
+                    colDataPlot=iSEE:::.make_colDataPlot,
+                    rowDataPlot=iSEE:::.make_rowDataPlot,
+                    sampAssayPlot=iSEE:::.make_sampAssayPlot,
+                    heatMapPlot=iSEE:::.make_heatMapPlot)
+                p.out <- FUN(spenc$ID, pObjects$memory, pObjects$coordinates, se, ExperimentColorMap())
+            } else {
+                p.out <- iSEE:::.make_customDataPlot(spenc$ID, pObjects$memory, pObjects$coordinates, se)
+            }
         }
 
         if ("xy" %in% names(p.out)) {
@@ -149,11 +157,13 @@ test_that("code trackers run correctly", {
     expect_true(any(grepl("Column data plot 2", out)))
 })
 
+# .track_selection_code ----
+
 test_that("code trackers can deparse a lasso", {
 
     initial_panels <- DataFrame(Name = c(
         "Reduced dimension plot 1"
-        ))
+    ))
 
     LASSO_CLOSED <- list(
         lasso=NULL,
@@ -183,13 +193,80 @@ test_that("code trackers can deparse a lasso", {
     pObjects <- new.env()
     pObjects$memory <- memory
     pObjects$selection_links <- g
-	pObjects$coordinates <- list()
-	pObjects$commands <- list()
+    pObjects$coordinates <- list()
+    pObjects$commands <- list()
 
-	out <- .track_selection_code(active_panels, pObjects)
+    out <- .track_selection_code(active_panels, pObjects)
 
-	# Caompare with .deparse_for_viewing directly
-	out2 <- iSEE:::.deparse_for_viewing(LASSO_CLOSED)
-	expect_true(any(grepl(out2, out, fixed=TRUE)))
+    # Caompare with .deparse_for_viewing directly
+    out2 <- iSEE:::.deparse_for_viewing(LASSO_CLOSED)
+    expect_true(any(grepl(out2, out, fixed=TRUE)))
 
+})
+
+# .snapshot_graph_linkedpanels ----
+
+test_that(".snapshot_graph_linkedpanels returns NULL after plotting", {
+
+    # Adding a table panel for coverage of linked tables
+    active_panels <- rbind(active_panels, active_panels[1,])
+    active_panels[1, "Type"] <- "rowStatTable"
+
+    # Mimicking a running instance of the app.
+    pObjects <- new.env()
+    pObjects$memory <- memory
+    pObjects$selection_links <- g
+    pObjects$coordinates <- list()
+    pObjects$commands <- list()
+    pObjects$table_links <- .spawn_table_links(memory)
+
+    # Note: the following command plots as a byproduct but returns nothing
+    out <- iSEE:::.snapshot_graph_linkedpanels(active_panels, pObjects)
+
+    expect_null(out)
+})
+
+# .track_plotting_code ----
+
+test_that(".track_plotting_code detects point selection", {
+
+    DUMMY_COMMAND <- "cat('dummy command')"
+
+    # Mimicking a running instance of the app.
+    pObjects <- new.env()
+    pObjects$memory <- memory
+    pObjects$selection_links <- g
+    pObjects$coordinates <- list()
+    pObjects$commands <- list(
+        colDataPlot1=list(select=DUMMY_COMMAND)
+    )
+
+    out <- .track_plotting_code(active_panels, pObjects, select_only = FALSE)
+
+    expect_true(any(out == "# Receiving point selection"))
+    expect_identical(sum(grepl(DUMMY_COMMAND, out, fixed=TRUE)), 1L)
+})
+
+# .track_heatmap_code ----
+
+test_that(".track_heatmap_code detects point selection and zoom", {
+
+    DUMMY_COMMAND <- "cat('dummy command')"
+
+    # Mimicking a running instance of the app.
+    pObjects <- new.env()
+    pObjects$memory <- memory
+    pObjects$selection_links <- g
+    pObjects$coordinates <- list()
+    pObjects$commands <- list(
+        heatMapPlot1=list(
+            select=DUMMY_COMMAND,
+            zoom=DUMMY_COMMAND)
+    )
+
+    out <- .track_heatmap_code(active_panels, pObjects, select_only = FALSE)
+
+    expect_true(any(out == "# Receiving selection data"))
+    expect_true(any(out == "# Zooming in"))
+    expect_identical(sum(grepl(DUMMY_COMMAND, out, fixed=TRUE)), 2L)
 })

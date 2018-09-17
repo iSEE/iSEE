@@ -8,7 +8,7 @@ customStatArgs <- customStatTableDefaults(sce, 1)
 # Set up alternative object.
 CUSTOM_DATA <- function(se, rows, columns, colour_by=NULL, scale_columns=TRUE) {
     if (!is.null(columns)) {
-        kept <- se[,columns]
+        kept <- se[, columns]
     } else {
         return(ggplot())
     }
@@ -29,8 +29,9 @@ CUSTOM_STAT <- function(se, rows, columns, colour_by=NULL, scale_columns=TRUE) {
 }
 
 sceX <- iSEE:::.precompute_UI_info(sce, list(PCA2=CUSTOM_DATA), list(PRESENT=CUSTOM_STAT))
-customDataArgs$Function <- "PCA2"
-customStatArgs$Function <- "PRESENT"
+customDataArgs[1, iSEE:::.customFun] <- "PCA2"
+customDataArgs[1, iSEE:::.customArgs] <- "colour_by Nanog"
+customStatArgs[1, iSEE:::.customFun] <- "PRESENT"
 
 # Set up memory
 all_memory <- iSEE:::.setup_memory(
@@ -87,8 +88,10 @@ test_that(".make_customDataPlot works when no function is specified", {
     expect_s3_class(p.out$plot, "ggplot")
 })
 
-test_that(".make_customDataPlot responds to a transmitting column receiver", {
+test_that(".make_customDataPlot responds to a transmitting column brush receiver", {
     all_memory$customDataPlot$ColumnSource <- "Reduced dimension plot 1"
+
+    # Shiny brush
     all_memory$redDimPlot$BrushData[[1]] <- list(xmin=-11.514034644046, xmax=9.423465477988,
          ymin=-10.767314578073, ymax=-1.6587346435671,
          mapping=list(x="X", y="Y"),
@@ -103,6 +106,39 @@ test_that(".make_customDataPlot responds to a transmitting column receiver", {
          log=list(x=NULL, y=NULL), direction="xy",
          brushId="redDimPlot1_Brush",
          outputId="redDimPlot1")
+
+    r.out <- iSEE:::.make_redDimPlot(id =1, all_memory, all_coordinates, sceX, ExperimentColorMap())
+    all_coordinates[["redDimPlot1"]] <- r.out$xy
+
+    p.out2 <- iSEE:::.make_customDataPlot(id=1, all_memory, all_coordinates, sceX)
+
+    # Testing equality:
+    expect_named(p.out2, c("cmd_list", "plot"))
+    expect_identical(p.out2$cmd_list$select[1], "row.names <- NULL;")
+    expect_match(p.out2$cmd_list$select[2], "redDimPlot1")
+    expect_match(p.out2$cmd_list$plot, "PCA2")
+    expect_s3_class(p.out2$plot, "ggplot")
+
+    # Still valid when no function is specified.
+    all_memory$customDataPlot$Function <- iSEE:::.noSelection
+    p.out5 <- iSEE:::.make_customDataPlot(id=1, all_memory, all_coordinates, sceX)
+    expect_named(p.out5, c("cmd_list", "plot"))
+    expect_length(p.out5$cmd_list, 2)
+})
+
+test_that(".make_customDataPlot responds to a transmitting column brush receiver", {
+    all_memory$customDataPlot$ColumnSource <- "Reduced dimension plot 1"
+
+    # Lasso selection
+    LASSO_CLOSED <- list(
+        lasso=NULL,
+        closed=TRUE,
+        panelvar1=NULL, panelvar2=NULL,
+        mapping=list(x="X", y="Y"),
+        coord=matrix(c(
+            1, 10,  1, 1,
+            1, 10, 10, 1), ncol=2))
+    all_memory$redDimPlot[[iSEE:::.lassoData]][[1]] <- LASSO_CLOSED
 
     r.out <- iSEE:::.make_redDimPlot(id =1, all_memory, all_coordinates, sceX, ExperimentColorMap())
     all_coordinates[["redDimPlot1"]] <- r.out$xy

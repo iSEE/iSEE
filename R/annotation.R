@@ -118,7 +118,7 @@ annotateEntrez <- function(se, orgdb, keytype, rowdata_col = NULL) {
 annotateEnsembl <- function(se, orgdb, keytype, rowdata_col = NULL, ens_species = gsub(" ","_", species(orgdb))) {
     function(se, row_index) {
         # no species provided -> nothing
-        if (is.null(species)) {
+        if (is.null(ens_species)) {
             return(HTML(""))
         }
 

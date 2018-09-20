@@ -52,7 +52,7 @@ The `iSEE` user interface currently contains the following components where each
 :white_check_mark: **Column data plot**: Adaptive plot of any one or two sample metadata.
 A scatter, violin, or square design is dynamically applied according to the continuous or discrete nature of the metadata.
 
-:white_check_mark: **Feature assay plot**: Adaptive plot of expression data for any two features or one feature against one sample metadata.
+:white_check_mark: **Feature assay plot**: Adaptive plot of expression data across samples for any two features or one feature against one sample metadata.
 
 :white_check_mark: **Column statistics table**: Table of sample metadata.
 
@@ -63,7 +63,7 @@ The `iSEE` user interface currently contains the following components where each
 :white_check_mark: **Row data plot**: Adaptive plot of any two feature metadata.
 A scatter, violin, or square design is dynamically applied according to the continuous or discrete nature of the metadata.
 
-:white_check_mark: **Sample assay plot**: Adaptive plot of expression data for any two samples or one sample against one feature metadata.
+:white_check_mark: **Sample assay plot**: Adaptive plot of expression data across features for any two samples or one sample against one feature metadata.
 
 :white_check_mark: **Row statistics table**: Table of feature metadata.
 

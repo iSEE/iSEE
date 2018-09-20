@@ -35,3 +35,19 @@ test_that("Ensembl annotation function is functional", {
     out <- myfun(sce, which(rownames(sce)=="Nanog"))
     expect_match(out, "Nanog")
 })
+
+test_that("annotateEntrez return an empty element in the absence of annotation package", {
+
+    out <- annotateEntrez(orgdb=NULL)()
+
+    expect_identical(out, structure("", html = TRUE, class = c("html", "character")))
+
+})
+
+test_that("annotateEntrez return an empty element in the absence of annotation package", {
+
+    out <- annotateEnsembl(ens_species=NULL)()
+
+    expect_identical(out, structure("", html = TRUE, class = c("html", "character")))
+
+})

@@ -284,3 +284,20 @@ test_that(".get_selected_points works", {
     expect_identical(out, expectedOut)
 
 })
+
+test_that(".regenerate_unselected_plot can regenerate plots manually", {
+
+    pObjects <- new.env()
+    pObjects$memory <- all_memory
+
+    rObjects <- new.env()
+    rObjects[["redDimPlot1"]] <- 1L
+
+    input <- list()
+    session <- NULL
+
+    iSEE:::.regenerate_unselected_plot("redDimPlot", 1, pObjects, rObjects, input, session)
+
+    expect_identical(rObjects[["redDimPlot1"]], 2L)
+
+})

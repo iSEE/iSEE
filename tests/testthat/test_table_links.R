@@ -25,8 +25,8 @@ redDimArgs[1,iSEE:::.colorByField] <-
 # Creating test links for row-based plots.
 rowDataArgs[1,iSEE:::.colorByColTable] <- "Column statistics table 1"
 sampAssayArgs[2,iSEE:::.colorByColTable] <- "Column statistics table 1"
-rowDataArgs[1,iSEE:::.colorByField] <- 
-    sampAssayArgs[2,iSEE:::.colorByField] <- 
+rowDataArgs[1,iSEE:::.colorByField] <-
+    sampAssayArgs[2,iSEE:::.colorByField] <-
     iSEE:::.colorBySampNameTitle
 
 # Creating test links for feature assay plots.
@@ -114,10 +114,10 @@ test_that("table link creation works correctly", {
 
     sampAssayArgs2 <- sampAssayArgs
     sampAssayArgs2[c(1, 3),iSEE:::.sampAssayXAxis] <- iSEE:::.sampAssayXAxisNothingTitle
-    memory <- list(redDimPlot=redDimArgs, 
-                   featAssayPlot=featAssayArgs, 
-                   colDataPlot=colDataArgs, 
-                   rowStatTable=rowStatArgs, 
+    memory <- list(redDimPlot=redDimArgs,
+                   featAssayPlot=featAssayArgs,
+                   colDataPlot=colDataArgs,
+                   rowStatTable=rowStatArgs,
                    rowDataPlot=rowDataArgs,
                    sampAssayPlot=sampAssayArgs2,
                    colStatTable=colStatArgs,
@@ -131,10 +131,10 @@ test_that("table link creation works correctly", {
     colDataArgs2[1:2,iSEE:::.colorByField] <- iSEE:::.colorByNothingTitle
     redDimArgs2 <- redDimArgs
     redDimArgs2[1,iSEE:::.colorByField] <- iSEE:::.colorByNothingTitle
-    memory <- list(redDimPlot=redDimArgs2, 
-                   featAssayPlot=featAssayArgs, 
-                   colDataPlot=colDataArgs2, 
-                   rowStatTable=rowStatArgs, 
+    memory <- list(redDimPlot=redDimArgs2,
+                   featAssayPlot=featAssayArgs,
+                   colDataPlot=colDataArgs2,
+                   rowStatTable=rowStatArgs,
                    rowDataPlot=rowDataArgs,
                    sampAssayPlot=sampAssayArgs,
                    colStatTable=colStatArgs,
@@ -147,10 +147,10 @@ test_that("table link creation works correctly", {
     sampAssayArgs2 <- sampAssayArgs
     rowDataArgs2[1,iSEE:::.colorByField] <-  iSEE:::.colorByNothingTitle
     sampAssayArgs2[2,iSEE:::.colorByField] <- iSEE:::.colorByNothingTitle
-    memory <- list(redDimPlot=redDimArgs, 
-                   featAssayPlot=featAssayArgs, 
-                   colDataPlot=colDataArgs, 
-                   rowStatTable=rowStatArgs, 
+    memory <- list(redDimPlot=redDimArgs,
+                   featAssayPlot=featAssayArgs,
+                   colDataPlot=colDataArgs,
+                   rowStatTable=rowStatArgs,
                    rowDataPlot=rowDataArgs2,
                    sampAssayPlot=sampAssayArgs2,
                    colStatTable=colStatArgs,
@@ -181,10 +181,10 @@ test_that("table link creation works correctly", {
 
     sampAssayArgs2 <- sampAssayArgs
     sampAssayArgs2[2:3,iSEE:::.sampAssayYAxisColTable] <- iSEE:::.noSelection
-    memory <- list(redDimPlot=redDimArgs, 
-                   featAssayPlot=featAssayArgs, 
-                   colDataPlot=colDataArgs, 
-                   rowStatTable=rowStatArgs, 
+    memory <- list(redDimPlot=redDimArgs,
+                   featAssayPlot=featAssayArgs,
+                   colDataPlot=colDataArgs,
+                   rowStatTable=rowStatArgs,
                    rowDataPlot=rowDataArgs,
                    sampAssayPlot=sampAssayArgs2,
                    colStatTable=colStatArgs,
@@ -231,7 +231,7 @@ test_that("table destruction works correctly for columns", {
 
     # Destroying a column statistics table.
     iSEE:::.destroy_table(pObjects, "colStatTable1")
-    expect_identical(pObjects$table_links$colStatTable1, 
+    expect_identical(pObjects$table_links$colStatTable1,
         list(color=character(0), xaxis=character(0), yaxis=character(0)))
 
     comp <- memory
@@ -243,7 +243,7 @@ test_that("table destruction works correctly for columns", {
 
     # Destroying a simpler table.
     iSEE:::.destroy_table(pObjects, "colStatTable2")
-    expect_identical(pObjects$table_links$colStatTable2, 
+    expect_identical(pObjects$table_links$colStatTable2,
         list(color=character(0), xaxis=character(0), yaxis=character(0)))
 
     comp$sampAssayPlot[1,iSEE:::.sampAssayXAxisColTable] <- iSEE:::.noSelection
@@ -429,6 +429,29 @@ test_that("table observers work correctly (row/column-agnostic)", {
     expect_identical(rObjects$redDimPlot1_PanelLinkInfo, 5L)
     expect_identical(rObjects$rowStatTable2_PanelLinkInfo, 3L)
     expect_identical(rObjects$rowStatTable1_PanelLinkInfo, 4L)
+
+    # Interrupt the function if settings are not set yet
+    input$redDimPlot1_ColorByRowTable <- NULL
+
+    out <- iSEE:::.setup_table_observer(
+        "redDimPlot", 1, pObjects, rObjects, input=input, session=NULL,
+        iSEE:::.colorByField, iSEE:::.colorByFeatNameTitle,
+        iSEE:::.colorByFeatName, iSEE:::.colorByRowTable,
+        select_choices=NULL, param="color")
+    expect_false(out) # no change in the feature.
+    expect_false("redDimPlot1" %in% pObjects$table_links$rowStatTable1$color) # do not trigger any update.
+
+    # Interrupt the function if settings are not set yet
+    input$redDimPlot1_ColorByRowTable <- NULL
+
+    out <- iSEE:::.setup_table_observer(
+        "redDimPlot", 1, pObjects, rObjects, input=input, session=NULL,
+        iSEE:::.colorByField, iSEE:::.colorByFeatNameTitle,
+        iSEE:::.colorByFeatName, iSEE:::.colorByRowTable,
+        select_choices=NULL, param="yaxis")
+    expect_false(out) # no change in the feature.
+    expect_false("redDimPlot1" %in% pObjects$table_links$rowStatTable1$color) # do not trigger any update.
+
 })
 
 test_that("deleting table links is done correctly for row-based plots", {
@@ -467,7 +490,7 @@ test_that("deleting table links is done correctly for column-based plots", {
     iSEE:::.delete_table_links("rowDataPlot", 1, pObjects)
 
     expect_false("rowDataPlot1" %in% pObjects$table_links$colStatTable1$color)
-    expect_identical(pObjects$memory$rowDataPlot[1, iSEE:::.colorByColTable], iSEE:::.noSelection) 
+    expect_identical(pObjects$memory$rowDataPlot[1, iSEE:::.colorByColTable], iSEE:::.noSelection)
 
     # Deleting something with x- and y-axis links.
     expect_true("sampAssayPlot3" %in% tabs$colStatTable1$xaxis)

@@ -1,6 +1,15 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.1.8}{
+\itemize{
+    \item Extended unit test coverage.
+    \item Move generics to separate file.
+    \item Minor fix to \code{annotateEnsembl}.
+    \item Updated list of functionalities in README.
+}
+}
+
 \section{iSEE VERSION 1.1.7}{
 \itemize{
     \item Resolve BiocManager message.

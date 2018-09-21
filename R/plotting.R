@@ -563,7 +563,7 @@ names(.all_aes_values) <- .all_aes_names
         mode <- "violin_horizontal"
         specific <- .violin_setup(envir$plot.data, horizontal=TRUE)
 
-        if (exists("plot.data.all", envir)) { # flipping plot.data.all as well, otherwise it becomes choatic in .violin_plot().
+        if (exists("plot.data.all", envir)) { # flipping plot.data.all as well, otherwise it becomes chaotic in .violin_plot().
             specific <- c(specific,
                 "tmp <- plot.data.all$X;
                 plot.data.all$X <- plot.data.all$Y;

@@ -252,7 +252,7 @@ test_that(".get_selected_points works", {
     all_memory$colDataPlot[[iSEE:::.brushData]][1] <- list(NULL)
 
     p.out <- iSEE:::.make_redDimPlot(id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
-    all_coordinates[["redDimPlot1"]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
+    all_coordinates[["redDimPlot1"]] <- p.out$xy[, intersect(iSEE:::.allCoordinatesNames, colnames(p.out$xy))]
 
     # No selection in transmitter panel
     out <- iSEE:::.get_selected_points(
@@ -268,7 +268,7 @@ test_that(".get_selected_points works", {
         brushId="dummy_brush", outputId="dummy_plot"
     ))
     p.out <- iSEE:::.make_colDataPlot(1, all_memory, all_coordinates, sce, ExperimentColorMap())
-    all_coordinates[["colDataPlot1"]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
+    all_coordinates[["colDataPlot1"]] <- p.out$xy[, intersect(iSEE:::.allCoordinatesNames, colnames(p.out$xy))]
 
     # A selection exists in the transmitter panel
     out <- iSEE:::.get_selected_points(
@@ -282,5 +282,22 @@ test_that(".get_selected_points works", {
         all_memory$colDataPlot[[iSEE:::.brushData]][[1]]))
     expectedOut <- (rownames(all_coordinates[["redDimPlot1"]]) %in% expectedNames)
     expect_identical(out, expectedOut)
+
+})
+
+test_that(".regenerate_unselected_plot can regenerate plots manually", {
+
+    pObjects <- new.env()
+    pObjects$memory <- all_memory
+
+    rObjects <- new.env()
+    rObjects[["redDimPlot1"]] <- 1L
+
+    input <- list()
+    session <- NULL
+
+    iSEE:::.regenerate_unselected_plot("redDimPlot", 1, pObjects, rObjects, input, session)
+
+    expect_identical(rObjects[["redDimPlot1"]], 2L)
 
 })

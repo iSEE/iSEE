@@ -1,6 +1,6 @@
 
 # Set up a custom plotting functions
-CUSTOM <- function(se, columns) {
+CUSTOM <- function(se, columns, arg1=NULL) {
     stuff <- logcounts(se)[1:1000,columns]
     out <- prcomp(t(stuff), rank.=2)
     return(list(
@@ -22,18 +22,19 @@ CUSTOM_DE <- function(se, columns) {
 }
 
 initialPanels <- DataFrame(
-    Name=paste(c(
-        "Reduced dimension plot",
-        "Column data plot",
-        "Feature assay plot",
-        "Row statistics table",
-        "Row data plot",
-        "Sample assay plot",
-        "Column statistics table",
-        "Custom data plot",
-        "Custom statistics table",
-        "Heat map"),
-        1),
+    Name=c(
+        paste(c(
+            "Reduced dimension plot",
+            "Column data plot",
+            "Feature assay plot",
+            "Row statistics table",
+            "Row data plot",
+            "Sample assay plot",
+            "Column statistics table",
+            "Custom data plot",
+            "Custom statistics table",
+            "Heat map"), 1),
+        "Custom data plot 2"),
     Width=3
 )
 
@@ -45,13 +46,16 @@ rowStatArgs <- rowStatTableDefaults(sce, 1)
 rowDataArgs <- rowDataPlotDefaults(sce, 1)
 sampAssayArgs <- sampAssayPlotDefaults(sce, 1)
 colStatArgs <- colStatTableDefaults(sce, 1)
-customDataArgs <- customDataPlotDefaults(sce, 1)
+customDataArgs <- customDataPlotDefaults(sce, 2)
 customStatArgs <- customStatTableDefaults(sce, 1)
 heatMapArgs <- heatMapPlotDefaults(sce, 1)
 
 #
-customDataArgs$Function <- "PCA2"
-customStatArgs$Function <- "DE"
+customDataArgs[1, iSEE:::.customFun] <- "PCA2"
+customDataArgs[2, iSEE:::.customFun] <- "PCA2"
+customDataArgs[2, iSEE:::.customVisibleArgs] <- "arg1 test"
+customDataArgs[2, iSEE:::.customArgs] <- "PCA2"
+customStatArgs[1, iSEE:::.customFun] <- "DE"
 
 # Adding row names to mimic .setup_memory().
 # We don't actually want to run that function, though,

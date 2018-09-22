@@ -1,5 +1,5 @@
 
-# `iSEE` - interactive SummarizedExperiment Explorer
+# _iSEE_ - The interactive SummarizedExperiment Explorer
 
 <!-- TODO logo here too :) --> 
 
@@ -29,7 +29,7 @@ Current contributors include:
 
 ## Functionalities
 
-The user interface of `iSEE` web-applications currently offers the following features:
+The user interface of _iSEE_ web-applications currently offers the following features:
 
 :white_check_mark: Multiple interactive plot types with selectable points.
 
@@ -45,7 +45,7 @@ The user interface of `iSEE` web-applications currently offers the following fea
 
 ## Sample-level visualization
 
-The `iSEE` user interface currently contains the following components where each data point represents a single biological sample:
+The _iSEE_ user interface currently contains the following components where each data point represents a single biological sample:
 
 :white_check_mark:  **Reduced dimension plot**: Scatter plot of reduced dimensionality data.
 
@@ -58,7 +58,7 @@ A scatter, violin, or square design is dynamically applied according to the cont
 
 ## Feature-level visualization
 
-The `iSEE` user interface currently contains the following components where each data point represents a genomic feature:
+The _iSEE_ user interface currently contains the following components where each data point represents a genomic feature:
 
 :white_check_mark: **Row data plot**: Adaptive plot of any two feature metadata.
 A scatter, violin, or square design is dynamically applied according to the continuous or discrete nature of the metadata.
@@ -69,13 +69,13 @@ A scatter, violin, or square design is dynamically applied according to the cont
 
 ## Integrated visualization
 
-The `iSEE` user interface contains the following components that integrate sample and feature information:
+The _iSEE_ user interface contains the following components that integrate sample and feature information:
 
 :white_check_mark: **Heat map plot**: Visualize multiple features across multiple samples annotated with sample metadata.
 
 ## Custom panels
 
-The `iSEE` user interface allows users to programmatically define their own plotting and table panels.
+The _iSEE_ user interface allows users to programmatically define their own plotting and table panels.
 
 :white_check_mark: **Custom data plot**: Plotting panel that can be assigned any user-defined function returning a `ggplot` object.
 
@@ -83,12 +83,12 @@ The `iSEE` user interface allows users to programmatically define their own plot
 
 ## Miscellaneous
 
-:white_check_mark: The `iSEE` user interface continually tracks the code corresponding to all visible plotting panels.
+:white_check_mark: The _iSEE_ user interface continually tracks the code corresponding to all visible plotting panels.
 This code is rendered in a [shinyAce](https://cran.r-project.org/web/packages/shinyAce/index.html) text editor and can be copy-pasted into R scripts for customization and further use.
 
-## Want to try `iSEE`?
+## Want to try _iSEE_?
 
-We set up an instance of iSEE running on the `allen` dataset at those addresses:
+We set up instances of _iSEE_ applications running on diverse types of datasets at those addresses:
 
 - http://shiny.imbei.uni-mainz.de:3838/iSEE
 - https://marionilab.cruk.cam.ac.uk/iSEE_allen
@@ -97,6 +97,6 @@ We set up an instance of iSEE running on the `allen` dataset at those addresses:
 - https://marionilab.cruk.cam.ac.uk/iSEE_cytof
 
 Please keep in mind that those public instances are for trial purposes only;
-yet they demonstrate how you or your system administrator can setup `iSEE` for analyzing or sharing your precomputed `SummarizedExperiment`/`SingleCellExperiment` object.
+yet they demonstrate how you or your system administrator can setup _iSEE_ for analyzing or sharing your precomputed `SummarizedExperiment`/`SingleCellExperiment` object.
 
 [Figure1]: https://f1000researchdata.s3.amazonaws.com/manuscripts/16293/6bf85f9d-8352-4a78-a8da-456f05f5c4c9_figure1.gif "iSEE uses a customisable multi-panel layout"

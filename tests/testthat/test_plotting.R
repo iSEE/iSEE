@@ -749,7 +749,7 @@ test_that(".make_sampAssayPlot works with X variable set to Sample name", {
 
     expect_match(
         p.out$cmd_list$data[["x"]],
-        sprintf("plot.data$X <- assay(se, 6, withDimnames=FALSE)[,%i];", selected_sample),
+        sprintf("plot.data$X <- as.vector(assay(se, 6, withDimnames=FALSE)[,%i]);", selected_sample),
         fixed=TRUE)
 
     expect_match(p.out$cmd_list$plot[["labs"]], colnames(sce)[selected_sample], fixed=TRUE)

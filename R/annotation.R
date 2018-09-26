@@ -46,7 +46,7 @@ annotateEntrez <- function(se, orgdb, keytype, rowdata_col = NULL) {
         if (is.null(orgdb)) {
             return(HTML(""))
         }
-
+        #nocov start
         # if no column provided, implicitly assume the names are in the rownames of the object itself
         if (is.null(rowdata_col)) {
             selectedGene <- rownames(se)[row_index]
@@ -72,6 +72,7 @@ annotateEntrez <- function(se, orgdb, keytype, rowdata_col = NULL) {
             link_pubmed)
 
         return(HTML(mycontent))
+        #nocov end
     }
 }
 
@@ -121,7 +122,7 @@ annotateEnsembl <- function(se, orgdb, keytype, rowdata_col = NULL, ens_species 
         if (is.null(ens_species)) {
             return(HTML(""))
         }
-
+        #nocov start
         # if no column provided, implicitly assume the names are in the rownames of the object itself
         if (is.null(rowdata_col)) {
             selectedGene <- rownames(se)[row_index]
@@ -145,6 +146,6 @@ annotateEnsembl <- function(se, orgdb, keytype, rowdata_col = NULL, ens_species 
             link_ensembl)
 
         return(HTML(mycontent))
+        #nocov end
     }
 }
-

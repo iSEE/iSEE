@@ -31,9 +31,7 @@ test_that("Ensembl annotation function is functional", {
     myfun <- annotateEntrez(sce, org.Mm.eg.db, keytype="ENSEMBL", rowdata_col="Ensembl")
     expect_is(myfun, 'function')
 
-    # Note: The following requires an active internet connection
-    out <- myfun(sce, which(rownames(sce)=="Nanog"))
-    expect_match(out, "Nanog")
+    # Do not try running 'myfun'; requires internet connectivity.
 })
 
 test_that("annotateEntrez return an empty element in the absence of annotation package", {

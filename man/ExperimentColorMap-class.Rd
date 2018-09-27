@@ -119,8 +119,8 @@ whether the default colormap returned should be categorical \code{TRUE} or conti
 \section{Setters}{
 
 
-In the following code snippets, \code{x} is an
-\code{ExperimentColorMap} object, and \code{}.
+In the following code snippets, \code{x} is an \code{ExperimentColorMap} object,
+and \code{i} is a character or numeric index.
 
 \describe{
   \item{\code{assayColorMap(x, i, ...) <- value}:}{

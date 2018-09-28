@@ -11,6 +11,6 @@ WORKDIR /app
 ADD . /app
 
 # Install iSEE
-RUN Rscript /app/install_iSEE.R
+RUN Rscript /app/inst/extdata/install_iSEE.R
 
 CMD R

@@ -1,3 +1,4 @@
+source("http://bioconductor.org/biocLite.R") # require to install DelayedArray below
 if (!require("BiocManager"))
     install.packages("BiocManager")
 devtools::install(build_vignettes=TRUE)

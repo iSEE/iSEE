@@ -52,6 +52,7 @@ Suggests:
     rmarkdown,
     scRNAseq,
     scater,
+    DelayedArray (>= 0.7.44),
     Rtsne,
     irlba,
     RColorBrewer,

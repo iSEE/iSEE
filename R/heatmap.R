@@ -105,11 +105,6 @@
 
         .text_eval(select_cmds, eval_env)
     }
-    
-    validate(need(
-        nrow(eval_env$plot.data) > 0L,
-        sprintf("At least one observation needed for heat map")
-    ))
 
     # Deciding whether to center and scale each row.
     # We do this here instead of using scale(), as this must be done after selection (if restricting).

@@ -1,6 +1,13 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.1.10}{
+\itemize{
+    \item Fix colour scale to be invariant when selecting on a different color.
+    \item Protect heat map plot panels against restriction on zero samples.
+}
+}
+
 \section{iSEE VERSION 1.1.9}{
 \itemize{
     \item Fix compatibility with \code{DelayedArray} assays.

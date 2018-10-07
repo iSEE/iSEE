@@ -1421,7 +1421,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     } else {
         return(c(
             sprintf(
-                "scale_color_gradientn(colors=%s, na.value='grey50') +",
+                "scale_color_gradientn(colors=%s, na.value='grey50', limits=range(plot.data$ColorBy)) +",
                 cm_cmd)#,
             # sprintf(
             #     "scale_fill_gradientn(colors=%s, na.value='grey50') +",

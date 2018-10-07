@@ -1,7 +1,7 @@
 Package: iSEE
 Title: Interactive SummarizedExperiment Explorer
-Version: 1.1.9
-Date: 2018-09-24
+Version: 1.1.10
+Date: 2018-10-07
 Authors@R: c(person("Charlotte", "Soneson", role=c("aut", "cre"),
     email="charlottesoneson@gmail.com"), person("Aaron", "Lun", 
     role="aut", email="alun@wehi.edu.au"), person("Federico",
@@ -52,6 +52,7 @@ Suggests:
     rmarkdown,
     scRNAseq,
     scater,
+    DelayedArray (>= 0.7.44),
     Rtsne,
     irlba,
     RColorBrewer,

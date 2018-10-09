@@ -10,7 +10,7 @@ author:
 - name: Aaron Lun
   affiliation: 
   - &id2 Cancer Research UK Cambridge Institute, University of Cambridge
-  email: aaron.lun@cruk.cam.ac.uk
+  email: infinite.monkeys.with.keyboards@gmail.com
 - name: Charlotte Soneson
   affiliation: 
   - &id3 Institute of Molecular Life Sciences, University of Zurich

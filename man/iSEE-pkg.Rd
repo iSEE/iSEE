@@ -14,7 +14,7 @@
  components analysis (PCA) or t-distributed stochastic neighbour embedding (t-SNE)
 }
 \author{
-Aaron Lun \email{alun@wehi.edu.au}
+Aaron Lun \email{infinite.monkeys.with.keyboards@gmail.com}
 
 Charlotte Soneson \email{charlotte.soneson@uzh.ch}
 

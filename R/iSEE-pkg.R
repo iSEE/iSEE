@@ -10,7 +10,7 @@
 #' @import SingleCellExperiment
 #' @import SummarizedExperiment
 #' @importMethodsFrom BiocGenerics ncol nrow
-#' @author Aaron Lun \email{alun@@wehi.edu.au}
+#' @author Aaron Lun \email{infinite.monkeys.with.keyboards@@gmail.com}
 #' @author Charlotte Soneson \email{charlotte.soneson@@uzh.ch}
 #' @author Federico Marini \email{marinif@@uni-mainz.de}
 #' @author Kevin Rue-Albrecht \email{kevin.rue-albrecht@@kennedy.ox.ac.uk}

@@ -290,7 +290,6 @@ all_panel_types <- c(point_plot_types, linked_table_types, custom_panel_types, "
 .encode_panel_name <- function(names) {
     id <- as.integer(gsub(".* ([0-9]+)$", "\\1", names))
     raw.str <- availablePanelTypes(row.names="decoded")[gsub(" [0-9]+$", "", names), "encoded", drop=TRUE]
-    print(raw.str)
     failed <- is.na(raw.str) | is.na(id)
     if (any(failed)) {
         stop(sprintf("'%s' is not a legal panel name", names[failed][1]))

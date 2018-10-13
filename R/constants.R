@@ -220,7 +220,8 @@
 .panelLinkInfo <- "PanelLinkInfo"
 
 # Encoding and decoding names for user/shiny ----
-translation <- c(redDimPlot="Reduced dimension plot",
+
+panelTypes <- c(redDimPlot="Reduced dimension plot",
                  colDataPlot="Column data plot",
                  featAssayPlot="Feature assay plot",
                  rowStatTable="Row statistics table",
@@ -230,8 +231,6 @@ translation <- c(redDimPlot="Reduced dimension plot",
                  customDataPlot="Custom data plot",
                  customStatTable="Custom statistics table",
                  heatMapPlot="Heat map")
-rev.translation <- names(translation)
-names(rev.translation) <- translation
 
 # Panel groupings for convenience.
 # Refer to dynamicUI.R for the minimum expected structure for each group.
@@ -262,7 +261,7 @@ all_panel_types <- c(point_plot_types, linked_table_types, custom_panel_types, "
 #' \code{\link{.encode_panel_name}},
 #' \code{\link{.split_encoded}}
 .decode_panel_name <- function(mode, id) {
-    paste(translation[mode], id)
+    paste(panelTypes[mode], id)
 }
 
 #' Encode the panel name
@@ -290,7 +289,8 @@ all_panel_types <- c(point_plot_types, linked_table_types, custom_panel_types, "
 #' \code{\link{.decode_panel_name}}
 .encode_panel_name <- function(names) {
     id <- as.integer(gsub(".* ([0-9]+)$", "\\1", names))
-    raw.str <- rev.translation[gsub(" [0-9]+$", "", names)]
+    raw.str <- availablePanelTypes(row.names="decoded")[gsub(" [0-9]+$", "", names), "encoded", drop=TRUE]
+    print(raw.str)
     failed <- is.na(raw.str) | is.na(id)
     if (any(failed)) {
         stop(sprintf("'%s' is not a legal panel name", names[failed][1]))

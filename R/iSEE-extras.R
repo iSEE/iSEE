@@ -353,7 +353,7 @@
 .setup_initial <- function(initialPanels, memory) {
     if (is.null(initialPanels)) {
         initialPanels <- data.frame(
-            Name=paste(translation, 1),
+            Name=paste(panelTypes, 1),
             Width=4,
             Height=500L,
             stringsAsFactors=FALSE

@@ -222,28 +222,29 @@
 # Encoding and decoding names for user/shiny ----
 
 #' Available panel types
-#' 
+#'
 #' @description
 #' \code{panelTypes} is the character vector of available panel types.
 #' Names indicate the encoded panel name.
-#' 
+#'
 #' \code{panelCodes} is the complementary of \code{panelTypes}.
 #' Values are the encoded names of each panel type, and names indicate their full name.
-#' 
+#'
 #' @details
 #' Decoded names are used to define the panels visible at initialization.
 #' Refer to the documentation of the \code{iSEE} function for more information.
-#' 
+#'
 #' Encoded names are used to name the individual HTML elements in the UI.
 #' Those names may be used to anchor tour steps at HTML elements using the \code{rintrojs} package.
-#' 
-#' @format 
+#'
+#' @format
 #' Named character vectors.
-#' 
+#'
 #' @export
 #' @rdname availablePanelTypes
+#' @aliases availablePanelTypes
 #' @author Kevin Rue-Albrecht
-#' 
+#'
 #' @seealso \code{\link{iSEE}}
 #'
 #' @examples

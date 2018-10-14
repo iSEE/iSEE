@@ -1482,7 +1482,7 @@ iSEE <- function(se,
                         if (identical(visible, pObjects$memory[[mode0]][[.customArgs]][id0])) {
                             return(NULL)
                         }
-                        pObjects$memory[[mode0]][[.customArgs]][[id0]] <- visible 
+                        pObjects$memory[[mode0]][[.customArgs]][[id0]] <- visible
                         rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
                         disable(cur_submit)
                         updateActionButton(session, cur_submit, .buttonUpToDateLabel)

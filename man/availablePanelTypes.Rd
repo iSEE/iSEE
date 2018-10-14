@@ -3,6 +3,7 @@
 \docType{data}
 \name{panelTypes}
 \alias{panelTypes}
+\alias{availablePanelTypes}
 \alias{panelCodes}
 \title{Available panel types}
 \format{Named character vectors.}

@@ -46,6 +46,7 @@
 #'
 #' The \code{initialPanels} argument specifies the panels to be created upon initializing the interface.
 #' This should be a DataFrame containing a \code{Name} field specifying the identity of the panel, e.g., \code{"Reduced dimension plot 1"}, \code{"Row statistics table 2"}.
+#' Please refer to \code{\link{availablePanelTypes}} for the full list of panels available.
 #' The trailing number should not be greater than the number of maximum plots of that type.
 #' Users can also define the \code{Width} field, specifying the width of each panel from 2 to 12 (values will be coerced inside this range);
 #' and the \code{Height} field, specifying the height of each panel from 400 to 1000 pixels.
@@ -271,7 +272,7 @@ iSEE <- function(se,
 
         dashboardSidebar(
             selectizeInput("newPanelChoice", label="Choose panel type:",
-                selected=rev.translation[1], choices=rev.translation),
+                selected=names(panelTypes)[1], choices=structure(names(panelTypes), names=panelTypes)),
             actionButton("newPanelAdd", "Add new panel"),
             hr(),
             uiOutput("panelOrganization")
@@ -1481,7 +1482,7 @@ iSEE <- function(se,
                         if (identical(visible, pObjects$memory[[mode0]][[.customArgs]][id0])) {
                             return(NULL)
                         }
-                        pObjects$memory[[mode0]][[.customArgs]][[id0]] <- visible 
+                        pObjects$memory[[mode0]][[.customArgs]][[id0]] <- visible
                         rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
                         disable(cur_submit)
                         updateActionButton(session, cur_submit, .buttonUpToDateLabel)

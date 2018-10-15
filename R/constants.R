@@ -220,7 +220,37 @@
 .panelLinkInfo <- "PanelLinkInfo"
 
 # Encoding and decoding names for user/shiny ----
-translation <- c(redDimPlot="Reduced dimension plot",
+
+#' Available panel types
+#'
+#' @description
+#' \code{panelTypes} is the character vector of available panel types.
+#' Names indicate the encoded panel name.
+#'
+#' \code{panelCodes} is the complementary of \code{panelTypes}.
+#' Values are the encoded names of each panel type, and names indicate their full name.
+#'
+#' @details
+#' Decoded names are used to define the panels visible at initialization.
+#' Refer to the documentation of the \code{iSEE} function for more information.
+#'
+#' Encoded names are used to name the individual HTML elements in the UI.
+#' Those names may be used to anchor tour steps at HTML elements using the \code{rintrojs} package.
+#'
+#' @format
+#' Named character vectors.
+#'
+#' @export
+#' @rdname availablePanelTypes
+#' @aliases availablePanelTypes
+#' @author Kevin Rue-Albrecht
+#'
+#' @seealso \code{\link{iSEE}}
+#'
+#' @examples
+#' panelTypes
+#' panelCodes
+panelTypes <- c(redDimPlot="Reduced dimension plot",
                  colDataPlot="Column data plot",
                  featAssayPlot="Feature assay plot",
                  rowStatTable="Row statistics table",
@@ -230,8 +260,11 @@ translation <- c(redDimPlot="Reduced dimension plot",
                  customDataPlot="Custom data plot",
                  customStatTable="Custom statistics table",
                  heatMapPlot="Heat map")
-rev.translation <- names(translation)
-names(rev.translation) <- translation
+
+#' @export
+#' @rdname availablePanelTypes
+panelCodes <- names(panelTypes)
+names(panelCodes) <- panelTypes
 
 # Panel groupings for convenience.
 # Refer to dynamicUI.R for the minimum expected structure for each group.
@@ -262,7 +295,7 @@ all_panel_types <- c(point_plot_types, linked_table_types, custom_panel_types, "
 #' \code{\link{.encode_panel_name}},
 #' \code{\link{.split_encoded}}
 .decode_panel_name <- function(mode, id) {
-    paste(translation[mode], id)
+    paste(panelTypes[mode], id)
 }
 
 #' Encode the panel name
@@ -290,7 +323,7 @@ all_panel_types <- c(point_plot_types, linked_table_types, custom_panel_types, "
 #' \code{\link{.decode_panel_name}}
 .encode_panel_name <- function(names) {
     id <- as.integer(gsub(".* ([0-9]+)$", "\\1", names))
-    raw.str <- rev.translation[gsub(" [0-9]+$", "", names)]
+    raw.str <- panelCodes[gsub(" [0-9]+$", "", names)]
     failed <- is.na(raw.str) | is.na(id)
     if (any(failed)) {
         stop(sprintf("'%s' is not a legal panel name", names[failed][1]))

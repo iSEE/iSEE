@@ -339,7 +339,7 @@ test_that("initialization of active panels works correctly", {
         heatMapMax=2L)
     out <- iSEE:::.setup_initial(NULL, memory)
     expect_identical(out$ID, rep(1L, nrow(out)))
-    expect_identical(out$Type, unname(iSEE:::rev.translation))
+    expect_identical(out$Type, names(panelTypes))
 
     # Trying with actual specifications.
     out <- iSEE:::.setup_initial(DataFrame(Name=c("Feature assay plot 1", "Reduced dimension plot 2")), memory)

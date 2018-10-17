@@ -1,6 +1,18 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.1.12}{
+\itemize{
+    \item Updated NEWS file.
+}
+}
+
+\section{iSEE VERSION 1.1.11}{
+\itemize{
+    \item Export list of panel names and codes.
+}
+}
+
 \section{iSEE VERSION 1.1.10}{
 \itemize{
     \item Fix colour scale to be invariant when selecting on a different color.

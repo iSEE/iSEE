@@ -192,7 +192,7 @@ iSEE <- function(se,
             dropdownMenu(type = "tasks",
                 icon = icon("wrench fa-1g"),
                 badgeStatus = NULL,
-                headerText = "iSEE diagnostics",
+                headerText = "Diagnostics",
                 notificationItem(
                     text = actionButton(
                         'open_linkgraph', label="Examine panel chart",

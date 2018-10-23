@@ -1035,7 +1035,7 @@ test_that(".define_colorby_for_row_plot handles sample selection", {
 
     expect_identical(
         color_add,
-        "scale_color_gradientn(colors=assayColorMap(colormap, 1L, discrete=FALSE)(21), na.value='grey50', limits=range(plot.data$ColorBy)) +")
+        "scale_color_gradientn(colors=assayColorMap(colormap, 1L, discrete=FALSE)(21), na.value='grey50', limits=range(plot.data$ColorBy, na.rm=TRUE)) +")
 
 })
 

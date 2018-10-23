@@ -1115,7 +1115,7 @@ iSEE <- function(se,
                 redDimPlot=c(.redDimXAxis, .redDimYAxis),
                 colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
                 featAssayPlot=c(.featAssayAssay, .featAssayXAxisColData),
-                rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData),
+                rowDataPlot=c(.colorBySampNameAssay, .rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData),
                 sampAssayPlot=c(.sampAssayAssay, .sampAssayXAxisRowData))
             protected <- c(protected, .facetByRow, .facetByColumn, .facetRowsByColData, .facetColumnsByColData)
 

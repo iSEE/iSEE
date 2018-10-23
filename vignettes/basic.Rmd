@@ -61,7 +61,7 @@ htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 <!-- I'd say TODO -->
 
 `r Biocpkg("iSEE")` is a [Bioconductor](http://bioconductor.org) package that provides an interactive Shiny-based graphical user interface for exploring data stored in objects derived from the `SummarizedExperiment` class [@kra2018iSEE].
-Instructions to install the package are available `Biocpkg("iSEE", label = "here")`.
+Instructions to install the package are available `r Biocpkg("iSEE", label = "here")`.
 Once installed, the package can be loaded and attached to your current workspace as follows:
 
 ```{r library}
@@ -73,10 +73,7 @@ In this vignette, we demonstrate this process using the `allen` single-cell RNA-
 
 # Setting up the data
 
-The `allen` data set contains expression values for 379 cells from the mouse visual cortex [@tasic2016adult]. 
-As provided, the `SummarizedExperiment` object only contains raw data and not much else of interesting information.
-Thus, we need to fill it up for some more exciting visualization.
-To begin with, we load and inspect the `allen` object.
+The `allen` data set contains expression values for 379 cells from the mouse visual cortex [@tasic2016adult]. To begin with, we load and inspect the `allen` object.
 
 ```{r allen-dataset}
 library(scRNAseq)
@@ -84,7 +81,13 @@ data(allen)
 allen
 ```
 
-Then, we start by converting the provided `SummarizedExperiment` object to a `SingleCellExperiment` object and normalizing the expression values with `r Biocpkg("scater")`. 
+As provided, the `allen` object contains raw data and a number of quality control and experimental cell annotations, all available in `colData(allen)`.
+
+```{r colData_sce}
+colnames(colData(allen))
+```
+
+Then, we convert the provided `SummarizedExperiment` object to a `SingleCellExperiment` object and normalize the expression values with `r Biocpkg("scater")`. 
 
 ```{r}
 library(scater)
@@ -93,7 +96,8 @@ counts(sce) <- assay(sce, "tophat_counts")
 sce <- normalize(sce)
 ```
 
-Next, we apply PCA and *t*-SNE to generate two low-dimensional representations of the cells. 
+Next, we apply PCA and *t*-SNE to generate two low-dimensional representations of the cells.
+The dimensionality reduction results are stored in `reducedDim(sce)`.
 Note that all computations (e.g., dimension reduction, clustering) must be performed *before* passing the object to the `iSEE` function.
 
 ```{r allen-dataset-2}
@@ -102,13 +106,8 @@ sce <- runTSNE(sce)
 reducedDimNames(sce)
 ```
 
-The provided cell annotations for this data set are available in `colData(sce)`. 
-
-```{r colData_sce}
-colnames(colData(sce))
-```
-
-We will also add some gene metadata to the `rowData` related to the mean-variance relationship in the data.
+At this point, the `sce` object does not contain any annotations for the rows (i.e., features) in the data set.
+Thus, to prepare a fully-featured example application, we also add some gene metadata to the `rowData` related to the mean-variance relationship in the data.
 
 ```{r}
 rowData(sce)$mean_log <- rowMeans(logcounts(sce))
@@ -144,7 +143,7 @@ shiny::runApp(app)
 By default, the app starts with a dashboard that contains one panel or table of each type.
 By opening the collapsible panels named "Data parameters", "Visual parameters", and "Selection parameters" under each plot, we can control the content and appearance of each panel.
 
-Now, look in the upper right corner for a **question mark** icon (<i class="fa fa-question-circle"></i>), and click on the hand button (<i class="fa fa-hand-o-right"></i>) for an introductory tour.
+Now, look in the upper right corner for a question mark icon (<i class="fa fa-question-circle"></i>), and click on the hand button (<i class="fa fa-hand-o-right"></i>) for an introductory tour.
 This will perform an interactive tour of the app, based on the `r CRANpkg("rintrojs")` package [@ganz2016rintrojs].
 During this tour, you will be taken through the different components of the `r Biocpkg("iSEE")` user interface and learn the basic usage mechanisms by doing small actions guided by the tutorial: 
 the highlighted elements will be responding to your actions, while the rest of the UI will be shaded. 
@@ -152,7 +151,7 @@ You can move forward and backward along the tour by clicking on the "Next"/"Back
 You can even jump to a particular step by clicking on its circle. 
 To exit the tour, either click on "Skip", or simply click outside of the highlighted UI element.
 
-Once you are done generating plots, click on the **wrench** icon (<i class="fa fa-wrench"></i>) in the upper right corner, and click on the magic wand button (<i class="fa fa-magic"></i>) to display R code that you can export and directly re-use in your R session.
+Once you are done generating plots, click on the wrench icon (<i class="fa fa-wrench"></i>) in the upper right corner, and click on the magic wand button (<i class="fa fa-magic"></i>) to display R code that you can export and directly re-use in your R session.
 This will open a modal popup where the R code used to generate the plots is displayed in a `r CRANpkg("shinyAce")`-based text editor. 
 Select parts or all of it to copy-and-paste it into your analysis script/Rmarkdown file.
 However, note that the order in which the code blocks are reported is important if you have linked panels to one another, as the panels sending point selections must be executed before those that receive the corresponding selection.
@@ -164,9 +163,9 @@ However, note that the order in which the code blocks are reported is important 
 The layout of the `r Biocpkg("iSEE")` user interface uses the `r CRANpkg("shinydashboard")` package.
 The dashboard header contains three dropdown menus.
 
-The first is the "Diagnostics" dropdown menu, which is identified by a **wrench** icon (<i class="fa fa-wrench"></i>) and contains:
+The first is the "Diagnostics" dropdown menu, which is identified by a wrench icon (<i class="fa fa-wrench"></i>) and contains:
 
-- the "Examine panel chart" functionality, identified by a **chain** icon (<i class="fa fa-chain"></i>).
+- the "Examine panel chart" functionality, identified by a chain icon (<i class="fa fa-chain"></i>).
 Click on this button to obtain a graph representation of the existing links and point selections among your visible plot and table panels.
 Every panel is represented by a node coded with the same color as in the app.
 This can be very useful in sessions that include a large number of panels, to visualize the relationship structure between the various panels that send and receive selections of data points.
@@ -175,14 +174,14 @@ Clicking on this button opens a modal popup window, with a `r CRANpkg("shinyAce"
 You can copy the code to the clipboard by selecting the text (please do include the initial lines and the `sessionInfo()` commands for best tracking of your environment), and store it in your analysis report/script.
 This code can then be further edited to finalize the plots (e.g., for publication). 
 
-The "Documentation" dropdown menu is accessible through the **question mark** icon (<i class="fa fa-question-circle"></i>), which contains:
+The "Documentation" dropdown menu is accessible through the question mark icon (<i class="fa fa-question-circle"></i>), which contains:
 
 - the button to start an interactive tour (<i class="fa fa-hand-o-right"></i>) of `r Biocpkg("iSEE")`, which allows users to learn the basic usage mechanisms by doing.
 During a tour, the highlighted elements respond to the user's actions, while the rest of the UI is shaded.
 - the button to "Open the vignette" (<i class="fa fa-book"></i>), which displays the `r Biocpkg("iSEE")` vignette, either available on your system or accessed at the webpage of the package on the Bioconductor project site 
 (in the latter case, the vignette will refer to the current release or development version, according to the version of the package installed on your system).
     
-The "Additional Information" dropdown menu is accessible through the **information** icon (<i class="fa fa-info"></i>), and contains:
+The "Additional Information" dropdown menu is accessible through the information icon (<i class="fa fa-info"></i>), and contains:
 
 - the "About this session" button (<i class="fa fa-window-maximize"></i>), which reports the output of the `sessionInfo()` function in a modal popup window.
 This is particularly useful for reproducing or reporting the environment, especially when reporting errors or unexpected behaviors.
@@ -194,7 +193,7 @@ Well-considered suggestions in the form of issues and/or pull requests are welco
 
 The dashboard sidebar of `r Biocpkg("iSEE")` contains a dropdown menu and a button for creating new plots or tables (referred to as "panels") in the interface.
 The maximum number of panels of each type are defined in the initial call to the `iSEE` function that configures an app.
-Clicking these buttons, additional panels of the corresponding type can be inserted into the main body of the app.
+By clicking these buttons, additional panels of the corresponding type can be inserted into the main body of the app.
 Color-coded tabs in the sidebar contain buttons to change the panel order (<i class="fa fa-arrow-circle-up"></i> and <i class="fa fa-arrow-circle-down"></i>) or to remove panels entirely (<i class="fa fa-trash"></i>).
 The width and height of each panel can also be adjusted using <i class="fa fa-gear"></i>.
 

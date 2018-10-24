@@ -987,7 +987,7 @@ test_that(".define_colorby_for_column_plot handles sample selection", {
 
     expect_identical(color_add, c(
         "scale_color_manual(values=c(`FALSE`='black', `TRUE`=\"red\"), drop=FALSE) +",
-        "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy=='TRUE'), col=\"red\", size=1, alpha=1) +" ))
+        "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy=='TRUE'), col=\"red\", size=5*1, alpha=0.8) +" ))
 
 })
 

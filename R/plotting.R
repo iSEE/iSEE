@@ -893,19 +893,21 @@ names(.all_aes_values) <- .all_aes_names
         .build_aes(color = FALSE, group = TRUE),
         ifelse(is_downsampled, "plot.data.pre", "plot.data")
     )
-
-    # Adding the points to the plot (with/without point selection).
-    color_set <- !is.null(plot_data$ColorBy)
-    shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
-    new_aes <- .build_aes(color = color_set, shape = shape_set, alt=c(x="jitteredX"))
-    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set)
-
+    
     # Defining the color commands.
     if (by_row) {
         color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices)
+        colorField <- .colorByFeatNameTitle
     } else {
         color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices)
+        colorField <- .colorBySampNameTitle
     }
+    
+    # Adding the points to the plot (with/without point selection).
+    color_set <- (!is.null(plot_data$ColorBy) && param_choices[[.colorByField]] != colorField)
+    shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
+    new_aes <- .build_aes(color = color_set, shape = shape_set, alt=c(x="jitteredX"))
+    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set)
 
     # Adding axis labels.
     if (horizontal) {
@@ -1075,18 +1077,20 @@ plot.data$Y <- tmp;")
 "geom_tile(aes(x = X, y = Y, height = 2*YWidth, width = 2*XWidth, group = interaction(X, Y)),
     summary.data, color = 'black', alpha = 0, size = 0.5) +"
 
-    # Adding the points to the plot (with/without point selection).
-    color_set <- !is.null(plot_data$ColorBy)
-    shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
-    new_aes <- .build_aes(color = color_set, shape = shape_set, alt=c(x="jitteredX", y="jitteredY"))
-    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set)
-
     # Defining the color commands.
     if (by_row) {
         color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices)
+        colorField <- .colorByFeatNameTitle
     } else {
         color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices)
+        colorField <- .colorBySampNameTitle
     }
+    
+    # Adding the points to the plot (with/without point selection).
+    color_set <- (!is.null(plot_data$ColorBy) && param_choices[[.colorByField]] != colorField)
+    shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
+    new_aes <- .build_aes(color = color_set, shape = shape_set, alt=c(x="jitteredX", y="jitteredY"))
+    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set)
 
     # Adding the commands to color the points and the point selection area
     # (NULL if undefined).
@@ -1325,7 +1329,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 "scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +",
                 deparse(col_choice)),
             sprintf(
-                "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy=='TRUE'), col=%s, size=%s, alpha=1) +",
+                "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy=='TRUE'), col=%s, size=5*%s, alpha=0.8) +",
                 deparse(col_choice), param_choices[[.plotPointSize]])
         )
     }
@@ -1356,7 +1360,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 "scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +",
                 deparse(col_choice)),
             sprintf(
-                "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy=='TRUE'), col=%s, size=%s, alpha=1) +",
+                "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy=='TRUE'), col=%s, size=5*%s, alpha=0.8) +",
                 deparse(col_choice), param_choices[[.plotPointSize]])
         )
 

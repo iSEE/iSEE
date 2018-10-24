@@ -1,6 +1,18 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.1.13}{
+\itemize{
+    \item Add observer to assay type for row data plots.
+    \item Ignore \code{NA} values when computing the range of coloring scales.
+    \item Added a size expansion factor (5x) to the selected point
+        when colouring by feature name in row-based plots, or by sample name in column-based plots.
+    \item Fix rerdundant coloring of selected point
+        when colouring by feature name in row-based plots, or by sample name in column-based plots.
+    \item Updated basic vignette.
+}
+}
+
 \section{iSEE VERSION 1.1.12}{
 \itemize{
     \item Updated NEWS file.

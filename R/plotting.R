@@ -894,21 +894,19 @@ names(.all_aes_values) <- .all_aes_names
         ifelse(is_downsampled, "plot.data.pre", "plot.data")
     )
     
-    # Defining the color commands.
-    if (by_row) {
-        color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices)
-        colorField <- .colorByFeatNameTitle
-    } else {
-        color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices)
-        colorField <- .colorBySampNameTitle
-    }
-    
     # Adding the points to the plot (with/without point selection).
-    color_set <- (!is.null(plot_data$ColorBy) && param_choices[[.colorByField]] != colorField)
+    color_set <- !is.null(plot_data$ColorBy)
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
-    new_aes <- .build_aes(color = color_set, shape = shape_set, alt=c(x="jitteredX"))
+    new_aes <- .build_aes(color = color_set, shape = shape_set, alt=c(x="jitteredX", size=ifelse(color_set, "ColorBy", FALSE)))
     plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set)
 
+    # Defining the color commands.
+    if (by_row) {
+        color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices, "jitteredX")
+    } else {
+        color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices, "jitteredX")
+    }
+    
     # Adding axis labels.
     if (horizontal) {
         tmp <- y_lab
@@ -1077,21 +1075,19 @@ plot.data$Y <- tmp;")
 "geom_tile(aes(x = X, y = Y, height = 2*YWidth, width = 2*XWidth, group = interaction(X, Y)),
     summary.data, color = 'black', alpha = 0, size = 0.5) +"
 
-    # Defining the color commands.
-    if (by_row) {
-        color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices)
-        colorField <- .colorByFeatNameTitle
-    } else {
-        color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices)
-        colorField <- .colorBySampNameTitle
-    }
-    
     # Adding the points to the plot (with/without point selection).
-    color_set <- (!is.null(plot_data$ColorBy) && param_choices[[.colorByField]] != colorField)
+    color_set <- !is.null(plot_data$ColorBy)
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
     new_aes <- .build_aes(color = color_set, shape = shape_set, alt=c(x="jitteredX", y="jitteredY"))
     plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set)
 
+    # Defining the color commands.
+    if (by_row) {
+        color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices, "jitteredX", "jitteredY")
+    } else {
+        color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices, "jitteredX", "jitteredY")
+    }
+    
     # Adding the commands to color the points and the point selection area
     # (NULL if undefined).
     plot_cmds[["scale_color"]] <- color_scale_cmd
@@ -1304,7 +1300,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' \code{\link{.square_plot}},
 #' \code{\link{.define_colorby_for_row_plot}},
 #' \code{\link{.define_colorby_for_column_plot}}
-.add_color_to_column_plot <- function(colorby, param_choices) {
+.add_color_to_column_plot <- function(colorby, param_choices, x_aes="X", y_aes="Y") {
     if (is.null(colorby)) {
         return(NULL)
     }
@@ -1329,8 +1325,10 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 "scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +",
                 deparse(col_choice)),
             sprintf(
-                "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy=='TRUE'), col=%s, size=5*%s, alpha=0.8) +",
-                deparse(col_choice), param_choices[[.plotPointSize]])
+                "geom_point(aes(x=%s, y=%s, size=ColorBy), data=subset(plot.data, ColorBy == 'TRUE'), col=%s, alpha=1) +",
+                x_aes, y_aes, deparse(col_choice), param_choices[[.plotPointSize]]),
+            sprintf("scale_size_manual(values=c(`FALSE`=1, `TRUE`=5), drop=FALSE) +"),
+            "guides(color='none', size='none') +"
         )
     }
 
@@ -1339,7 +1337,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 
 #' @rdname INTERNAL_add_color_scale
 #' @importFrom ggplot2 scale_color_manual geom_point
-.add_color_to_row_plot <- function(colorby, param_choices) {
+.add_color_to_row_plot <- function(colorby, param_choices, x_aes="X", y_aes="Y") {
     if (is.null(colorby)) {
         return(NULL)
     }
@@ -1360,8 +1358,10 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 "scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +",
                 deparse(col_choice)),
             sprintf(
-                "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy=='TRUE'), col=%s, size=5*%s, alpha=0.8) +",
-                deparse(col_choice), param_choices[[.plotPointSize]])
+                "geom_point(aes(x=%s, y=%s, size=ColorBy), data=subset(plot.data, ColorBy == 'TRUE'), col=%s, alpha=1) +",
+                x_aes, y_aes, deparse(col_choice), param_choices[[.plotPointSize]]),
+            sprintf("scale_size_manual(values=c(`FALSE`=1, `TRUE`=5), drop=FALSE) +"),
+            "guides(color='none', size='none') +"
         )
 
     } else if (color_choice==.colorBySampNameTitle) {

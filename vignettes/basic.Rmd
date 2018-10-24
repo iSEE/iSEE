@@ -289,7 +289,8 @@ Alternatively, users can create a customized annotation function; for more detai
 ### Column statistics tables
 
 A *Column statistics table* contains the values of the `colData` slot for the `SingleCellExperiment`/`SummarizedExperiment` object.
-Its behavior mirrors the implementation for the *Row statistics table*, and correspondingly  if none are available, a column named `Present` is added and set to `TRUE` for all samples, to avoid issues with `DT::datatable` and an empty `DataFrame`.
+Its behavior mirrors the implementation for the *Row statistics table*.
+Correspondingly, if none are available, a column named `Present` is added and set to `TRUE` for all samples, to avoid issues with `DT::datatable` and an empty `DataFrame`.
 Typically, these tables are used to link to other plots to determine the samples to use for plotting or coloring.
 
 ### Heat maps

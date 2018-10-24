@@ -281,10 +281,16 @@ Notably, the x-axis covariate can also be set to:
 ### Row statistics tables
 
 A *Row statistics table* contains the values of the `rowData` slot for the `SingleCellExperiment`/`SummarizedExperiment` object. 
-If none are available, a column named `Present` is added and set to `TRUE` for all available genes, to avoid issues with `DT::datatable` and an empty `DataFrame`.
-Typically, these tables are used to link to other plots to determine the genes to use for plotting or coloring.
+If none are available, a column named `Present` is added and set to `TRUE` for all features, to avoid issues with `DT::datatable` and an empty `DataFrame`.
+Typically, these tables are used to link to other plots to determine the features to use for plotting or coloring.
 However, they can also be used to retrieve gene-specific annotation on the fly by specifying the `annotFun` parameter, e.g. using the `annotateEntrez` or `annotateEnsembl` functions, provided in `r Biocpkg("iSEE")`. 
 Alternatively, users can create a customized annotation function; for more details on this, please consult the manual pages `?annotateEntrez` and `?annotateEnsembl`.
+
+### Column statistics tables
+
+A *Column statistics table* contains the values of the `colData` slot for the `SingleCellExperiment`/`SummarizedExperiment` object.
+Its behavior mirrors the implementation for the *Row statistics table*, and correspondingly  if none are available, a column named `Present` is added and set to `TRUE` for all samples, to avoid issues with `DT::datatable` and an empty `DataFrame`.
+Typically, these tables are used to link to other plots to determine the samples to use for plotting or coloring.
 
 ### Heat maps
 

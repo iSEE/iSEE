@@ -1,6 +1,20 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.1.13}{
+\itemize{
+    \item Add missing observer for assay type in row data plot panels.
+    \item Add missing observer for colorpicker
+        when colouring by feature name in row-based plots, or by sample name in column-based plots. 
+    \item Ignore \code{NA} values when computing the range of coloring scales.
+    \item Add a size expansion factor (5x) to the selected point
+        when colouring by feature name in row-based plots, or by sample name in column-based plots.
+    \item Fix redundant coloring of selected point
+        when colouring by feature name in row-based plots, or by sample name in column-based plots.
+    \item Update basic vignette.
+}
+}
+
 \section{iSEE VERSION 1.1.12}{
 \itemize{
     \item Updated NEWS file.

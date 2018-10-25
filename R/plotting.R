@@ -893,7 +893,7 @@ names(.all_aes_values) <- .all_aes_names
         .build_aes(color = FALSE, group = TRUE),
         ifelse(is_downsampled, "plot.data.pre", "plot.data")
     )
-
+    
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
@@ -902,11 +902,11 @@ names(.all_aes_values) <- .all_aes_names
 
     # Defining the color commands.
     if (by_row) {
-        color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices)
+        color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices, x="jitteredX")
     } else {
-        color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices)
+        color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices, x="jitteredX")
     }
-
+    
     # Adding axis labels.
     if (horizontal) {
         tmp <- y_lab
@@ -1083,11 +1083,11 @@ plot.data$Y <- tmp;")
 
     # Defining the color commands.
     if (by_row) {
-        color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices)
+        color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices, x="jitteredX", y="jitteredY")
     } else {
-        color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices)
+        color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices, x="jitteredX", y="jitteredY")
     }
-
+    
     # Adding the commands to color the points and the point selection area
     # (NULL if undefined).
     plot_cmds[["scale_color"]] <- color_scale_cmd
@@ -1276,21 +1276,20 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' \code{plot.data$ColorBy} in upstream functions.
 #' @param param_choices A single-row DataFrame that contains all the
 #' input settings for the current panel.
+#' @param x_aes Name of the column in \code{plot.data} to use for the x-axis.
+#' @param y_aes Name of the column in \code{plot.data} to use for the y-axis.
 #'
 #' @return
 #' A character vector containing commands to add a color scale to an existing ggplot object, or \code{NULL} if no color scale needs to be added.
 #'
 #' @details
-#' These functions generate commands to add a color scale for individual
-#' points in row- or column-based plots,
-#' i.e., where each point is a feature or sample, respectively.
+#' These functions generate commands to add a color scale for individual points in row- or column-based plots,' i.e., where each point is a feature or sample, respectively.
 #'
-#' These commands assume that an ExperimentColorMap object named
-#'  \code{colormap} exists in the evaluation environment.
-#' The availability of \code{colorby} allows the function to determine whether
-#'  discrete or continuous color scales need to be used,
-#' and if discrete, how many levels (i.e., colors) should be requested from
-#'  \code{colormap}.
+#' These commands assume that an ExperimentColorMap object named  \code{colormap} exists in the evaluation environment.
+#' The availability of \code{colorby} allows the function to determine whether  discrete or continuous color scales need to be used,
+#' and if discrete, how many levels (i.e., colors) should be requested from \code{colormap}.
+#'
+#' \code{x_aes} and \code{y_aes} are necessary to ensure that jittering is respected when adding a layer to highlight a specific point.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_add_color_scale
@@ -1300,7 +1299,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' \code{\link{.square_plot}},
 #' \code{\link{.define_colorby_for_row_plot}},
 #' \code{\link{.define_colorby_for_column_plot}}
-.add_color_to_column_plot <- function(colorby, param_choices) {
+.add_color_to_column_plot <- function(colorby, param_choices, x_aes="X", y_aes="Y") {
     if (is.null(colorby)) {
         return(NULL)
     }
@@ -1325,8 +1324,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 "scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +",
                 deparse(col_choice)),
             sprintf(
-                "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy=='TRUE'), col=%s, size=%s, alpha=1) +",
-                deparse(col_choice), param_choices[[.plotPointSize]])
+                "geom_point(aes(x=%s, y=%s), data=subset(plot.data, ColorBy == 'TRUE'), col=%s, alpha=1, size=5*%i) +",
+                x_aes, y_aes, deparse(col_choice), param_choices[[.plotPointSize]])
         )
     }
 
@@ -1335,7 +1334,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 
 #' @rdname INTERNAL_add_color_scale
 #' @importFrom ggplot2 scale_color_manual geom_point
-.add_color_to_row_plot <- function(colorby, param_choices) {
+.add_color_to_row_plot <- function(colorby, param_choices, x_aes="X", y_aes="Y") {
     if (is.null(colorby)) {
         return(NULL)
     }
@@ -1356,8 +1355,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 "scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +",
                 deparse(col_choice)),
             sprintf(
-                "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy=='TRUE'), col=%s, size=%s, alpha=1) +",
-                deparse(col_choice), param_choices[[.plotPointSize]])
+                "geom_point(aes(x=%s, y=%s), data=subset(plot.data, ColorBy == 'TRUE'), col=%s, alpha=1, size=5*%i) +",
+                x_aes, y_aes, deparse(col_choice), param_choices[[.plotPointSize]])
         )
 
     } else if (color_choice==.colorBySampNameTitle) {
@@ -1421,7 +1420,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     } else {
         return(c(
             sprintf(
-                "scale_color_gradientn(colors=%s, na.value='grey50', limits=range(plot.data$ColorBy)) +",
+                "scale_color_gradientn(colors=%s, na.value='grey50', limits=range(plot.data$ColorBy, na.rm=TRUE)) +",
                 cm_cmd)#,
             # sprintf(
             #     "scale_fill_gradientn(colors=%s, na.value='grey50') +",

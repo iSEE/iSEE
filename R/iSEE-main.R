@@ -192,7 +192,7 @@ iSEE <- function(se,
             dropdownMenu(type = "tasks",
                 icon = icon("wrench fa-1g"),
                 badgeStatus = NULL,
-                headerText = "iSEE diagnostics",
+                headerText = "Diagnostics",
                 notificationItem(
                     text = actionButton(
                         'open_linkgraph', label="Examine panel chart",
@@ -1115,15 +1115,15 @@ iSEE <- function(se,
                 redDimPlot=c(.redDimXAxis, .redDimYAxis),
                 colDataPlot=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
                 featAssayPlot=c(.featAssayAssay, .featAssayXAxisColData),
-                rowDataPlot=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData),
+                rowDataPlot=c(.colorBySampNameAssay, .rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData),
                 sampAssayPlot=c(.sampAssayAssay, .sampAssayXAxisRowData))
             protected <- c(protected, .facetByRow, .facetByColumn, .facetRowsByColData, .facetColumnsByColData)
 
             # Defining non-fundamental parameters that do not destroy brushes/lassos.
             if (mode %in% row_point_plot_types) {
-                nonfundamental <- c(.colorByRowData, .colorByFeatNameColor, .shapeByField, .shapeByRowData)
+                nonfundamental <- c(.colorByRowData, .colorByFeatNameColor, .shapeByField, .shapeByRowData, .colorByFeatNameColor)
             } else {
-                nonfundamental <- c(.colorByColData, .colorByFeatNameAssay, .shapeByField, .shapeByColData)
+                nonfundamental <- c(.colorByColData, .colorByFeatNameAssay, .shapeByField, .shapeByColData, .colorBySampNameColor)
             }
             nonfundamental <- c(nonfundamental, .colorByDefaultColor, .selectColor, .selectTransAlpha,
                                 .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition,

@@ -1276,6 +1276,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' \code{plot.data$ColorBy} in upstream functions.
 #' @param param_choices A single-row DataFrame that contains all the
 #' input settings for the current panel.
+#' @param x_aes Name of the column in \code{plot.data} to use for the x-axis.
+#' @param y_aes Name of the column in \code{plot.data} to use for the y-axis.
 #'
 #' @return
 #' A character vector containing commands to add a color scale to an existing ggplot object, or \code{NULL} if no color scale needs to be added.

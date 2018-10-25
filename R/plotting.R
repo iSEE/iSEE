@@ -1355,10 +1355,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 "scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +",
                 deparse(col_choice)),
             sprintf(
-                "geom_point(aes(x=%s, y=%s, size=ColorBy), data=subset(plot.data, ColorBy == 'TRUE'), col=%s, alpha=1) +",
-                x_aes, y_aes, deparse(col_choice), param_choices[[.plotPointSize]]),
-            sprintf("scale_size_manual(values=c(`FALSE`=1, `TRUE`=5), drop=FALSE) +"),
-            "guides(color='none', size='none') +"
+                "geom_point(aes(x=%s, y=%s), data=subset(plot.data, ColorBy == 'TRUE'), col=%s, alpha=1, size=5*%i) +",
+                x_aes, y_aes, deparse(col_choice), param_choices[[.plotPointSize]])
         )
 
     } else if (color_choice==.colorBySampNameTitle) {

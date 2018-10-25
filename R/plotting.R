@@ -897,14 +897,14 @@ names(.all_aes_values) <- .all_aes_names
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
-    new_aes <- .build_aes(color = color_set, shape = shape_set, alt=c(x="jitteredX", size=ifelse(color_set, "ColorBy", FALSE)))
+    new_aes <- .build_aes(color = color_set, shape = shape_set, alt=c(x="jitteredX"))
     plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set)
 
     # Defining the color commands.
     if (by_row) {
-        color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices, "jitteredX")
+        color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices, x="jitteredX")
     } else {
-        color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices, "jitteredX")
+        color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices, x="jitteredX")
     }
     
     # Adding axis labels.
@@ -1083,9 +1083,9 @@ plot.data$Y <- tmp;")
 
     # Defining the color commands.
     if (by_row) {
-        color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices, "jitteredX", "jitteredY")
+        color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices, x="jitteredX", y="jitteredY")
     } else {
-        color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices, "jitteredX", "jitteredY")
+        color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices, x="jitteredX", y="jitteredY")
     }
     
     # Adding the commands to color the points and the point selection area
@@ -1283,16 +1283,13 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' A character vector containing commands to add a color scale to an existing ggplot object, or \code{NULL} if no color scale needs to be added.
 #'
 #' @details
-#' These functions generate commands to add a color scale for individual
-#' points in row- or column-based plots,
-#' i.e., where each point is a feature or sample, respectively.
+#' These functions generate commands to add a color scale for individual points in row- or column-based plots,' i.e., where each point is a feature or sample, respectively.
 #'
-#' These commands assume that an ExperimentColorMap object named
-#'  \code{colormap} exists in the evaluation environment.
-#' The availability of \code{colorby} allows the function to determine whether
-#'  discrete or continuous color scales need to be used,
-#' and if discrete, how many levels (i.e., colors) should be requested from
-#'  \code{colormap}.
+#' These commands assume that an ExperimentColorMap object named  \code{colormap} exists in the evaluation environment.
+#' The availability of \code{colorby} allows the function to determine whether  discrete or continuous color scales need to be used,
+#' and if discrete, how many levels (i.e., colors) should be requested from \code{colormap}.
+#'
+#' \code{x_aes} and \code{y_aes} are necessary to ensure that jittering is respected when adding a layer to highlight a specific point.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_add_color_scale
@@ -1327,10 +1324,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 "scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +",
                 deparse(col_choice)),
             sprintf(
-                "geom_point(aes(x=%s, y=%s, size=ColorBy), data=subset(plot.data, ColorBy == 'TRUE'), col=%s, alpha=1) +",
-                x_aes, y_aes, deparse(col_choice), param_choices[[.plotPointSize]]),
-            sprintf("scale_size_manual(values=c(`FALSE`=1, `TRUE`=5), drop=FALSE) +"),
-            "guides(color='none', size='none') +"
+                "geom_point(aes(x=%s, y=%s), data=subset(plot.data, ColorBy == 'TRUE'), col=%s, alpha=1, size=5*%i) +",
+                x_aes, y_aes, deparse(col_choice), param_choices[[.plotPointSize]])
         )
     }
 

@@ -987,10 +987,7 @@ test_that(".define_colorby_for_column_plot handles sample selection", {
 
     expect_identical(color_add, c(
         "scale_color_manual(values=c(`FALSE`='black', `TRUE`=\"red\"), drop=FALSE) +",
-        "geom_point(aes(x=X, y=Y, size=ColorBy), data=subset(plot.data, ColorBy == 'TRUE'), col=\"red\", alpha=1) +",
-        "scale_size_manual(values=c(`FALSE`=1, `TRUE`=5), drop=FALSE) +",
-        "guides(color='none', size='none') +"))
-
+        "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy == 'TRUE'), col=\"red\", alpha=1, size=5*1) +"))
 })
 
 # define_shapeby_for_column_plot ----
@@ -1927,3 +1924,4 @@ test_that(".self_lasso_path uses the size aesthetic to distinguish waypoints of 
             "guides(size = 'none')"))
 
 })
+

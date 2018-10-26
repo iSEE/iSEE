@@ -902,9 +902,9 @@ names(.all_aes_values) <- .all_aes_names
 
     # Defining the color commands.
     if (by_row) {
-        color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices, x="jitteredX")
+        color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices, x_aes="jitteredX")
     } else {
-        color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices, x="jitteredX")
+        color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices, x_aes="jitteredX")
     }
     
     # Adding axis labels.
@@ -1083,9 +1083,9 @@ plot.data$Y <- tmp;")
 
     # Defining the color commands.
     if (by_row) {
-        color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices, x="jitteredX", y="jitteredY")
+        color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices, x_aes="jitteredX", y_aes="jitteredY")
     } else {
-        color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices, x="jitteredX", y="jitteredY")
+        color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices, x_aes="jitteredX", y_aes="jitteredY")
     }
     
     # Adding the commands to color the points and the point selection area

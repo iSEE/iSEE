@@ -1641,6 +1641,7 @@ iSEE <- function(se,
                         search <- param_choices[[.statTableSearch]]
                         search_col <- param_choices[[.statTableColSearch]][[1]]
                         search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
+                        search_col <- c(search_col, rep(list(list(search="")), ncol(current_df0) - length(search_col))) # TODO: fix for internal fields.
 
                         # Adding a "Selected" field to the plotting data, which responds to point selection input.
                         # Note that this AUTOMATICALLY updates search_col upon re-rendering via the observer below.

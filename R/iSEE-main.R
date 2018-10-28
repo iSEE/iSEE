@@ -1641,7 +1641,10 @@ iSEE <- function(se,
                         search <- param_choices[[.statTableSearch]]
                         search_col <- param_choices[[.statTableColSearch]][[1]]
                         search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
-                        search_col <- c(search_col, rep(list(list(search="")), ncol(current_df0) - length(search_col))) # TODO: fix for internal fields.
+                        # After the first initialization there may not be any need to add columns
+                        # Fact is, the extra "Selected" column may make the table it has more columns than filters
+                        missing_columns <- max(0, ncol(current_df0) - length(search_col))
+                        search_col <- c(search_col, rep(list(list(search="")), missing_columns)) # TODO: fix for internal fields.
 
                         # Adding a "Selected" field to the plotting data, which responds to point selection input.
                         # Note that this AUTOMATICALLY updates search_col upon re-rendering via the observer below.

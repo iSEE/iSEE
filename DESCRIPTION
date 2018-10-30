@@ -1,6 +1,6 @@
 Package: iSEE
 Title: Interactive SummarizedExperiment Explorer
-Version: 1.2.0
+Version: 1.3.0
 Date: 2018-10-24
 Authors@R: c(person("Kevin", "Rue-Albrecht", role = "aut", email = "kevin.rue-albrecht@kennedy.ox.ac.uk"),
     person("Federico", "Marini", role="aut", email="marinif@uni-mainz.de"),

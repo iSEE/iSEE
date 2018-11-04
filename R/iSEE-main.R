@@ -1654,9 +1654,9 @@ iSEE <- function(se,
                         if (!is.null(selected)) {
                             tmp_df[[current_select_col0]] <- selected
                             if (length(search_col)!=ncol(tmp_df)) {
-                                search_col <- c(search_col, list(list(search="[\"true\"]")))
+                                search_col <- c(search_col, list(list(search="[\"true\"]"))) # appears to fix row indexing in RStudio browser (1/2)
                             } else {
-                                search_col[[ncol(tmp_df)]]$search <- "[\"true\"]"
+                                search_col[[ncol(tmp_df)]]$search <- "[\"true\"]" # appears to fix row indexing in RStudio browser (2/2)
                             }
                         } else {
                             search_col <- search_col[seq_len(ncol(tmp_df))]

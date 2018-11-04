@@ -1651,13 +1651,15 @@ iSEE <- function(se,
                         # The code below keeps search_col valid for the number of columns (i.e., with or without selection).
                         selected <- .get_selected_points(rownames(current_df0), param_choices[[.selectByPlot]], pObjects$memory, pObjects$coordinates)
                         tmp_df <- current_df0
+                        columnDefs <- list()
                         if (!is.null(selected)) {
                             tmp_df[[current_select_col0]] <- selected
                             if (length(search_col)!=ncol(tmp_df)) {
-                                search_col <- c(search_col, list(list(search="[\"true\"]"))) # appears to fix row indexing in RStudio browser (1/2)
+                                search_col <- c(search_col, list(list(search="[\"true\"]"))) # brackets appears to fix row indexing in RStudio browser (1/2)
                             } else {
-                                search_col[[ncol(tmp_df)]]$search <- "[\"true\"]" # appears to fix row indexing in RStudio browser (2/2)
+                                search_col[[ncol(tmp_df)]]$search <- "[\"true\"]" # brackets appears to fix row indexing in RStudio browser (2/2)
                             }
+                            columnDefs <- append(columnDefs, list(list(visible=FALSE, targets=length(search_col)))) # this line must stay below the if block
                         } else {
                             search_col <- search_col[seq_len(ncol(tmp_df))]
                         }
@@ -1667,6 +1669,7 @@ iSEE <- function(se,
                             options=list(
                                 search=list(search=search, smart=FALSE, regex=TRUE, caseInsensitive=FALSE),
                                 searchCols=c(list(NULL), search_col), # row names are the first column!
+                                columnDefs=columnDefs,
                                 scrollX=TRUE),
                             selection=list(mode="single", selected=chosen))
                     })

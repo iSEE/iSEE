@@ -1654,19 +1654,21 @@ iSEE <- function(se,
                         if (!is.null(selected)) {
                             tmp_df[[current_select_col0]] <- selected
                             if (length(search_col)!=ncol(tmp_df)) {
-                                search_col <- c(search_col, list(list(search="true")))
+                                search_col <- c(search_col, list(list(search="[\"true\"]")))
                             } else {
-                                search_col[[ncol(tmp_df)]]$search <- "true"
+                                search_col[[ncol(tmp_df)]]$search <- "[\"true\"]"
                             }
                         } else {
                             search_col <- search_col[seq_len(ncol(tmp_df))]
                         }
 
-                        datatable(tmp_df, filter="top", rownames=TRUE,
-                                  options=list(search=list(search=search, smart=FALSE, regex=TRUE, caseInsensitive=FALSE),
-                                               searchCols=c(list(NULL), search_col), # row names are the first column!
-                                               scrollX=TRUE),
-                                  selection=list(mode="single", selected=chosen))
+                        datatable(
+                            tmp_df, filter="top", rownames=TRUE,
+                            options=list(
+                                search=list(search=search, smart=FALSE, regex=TRUE, caseInsensitive=FALSE),
+                                searchCols=c(list(NULL), search_col), # row names are the first column!
+                                scrollX=TRUE),
+                            selection=list(mode="single", selected=chosen))
                     })
 
                     # Updating memory for new selection parameters (no need for underscore

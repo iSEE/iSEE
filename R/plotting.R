@@ -893,7 +893,7 @@ names(.all_aes_values) <- .all_aes_names
         .build_aes(color = FALSE, group = TRUE),
         ifelse(is_downsampled, "plot.data.pre", "plot.data")
     )
-    
+
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
@@ -906,7 +906,7 @@ names(.all_aes_values) <- .all_aes_names
     } else {
         color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices, x_aes="jitteredX")
     }
-    
+
     # Adding axis labels.
     if (horizontal) {
         tmp <- y_lab
@@ -1087,7 +1087,7 @@ plot.data$Y <- tmp;")
     } else {
         color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices, x_aes="jitteredX", y_aes="jitteredY")
     }
-    
+
     # Adding the commands to color the points and the point selection area
     # (NULL if undefined).
     plot_cmds[["scale_color"]] <- color_scale_cmd

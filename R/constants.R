@@ -43,7 +43,7 @@
 .sampAssayXAxisColTable <- "XAxisColTable"
 .sampAssayXAxisSampName <- "XAxisSampName"
 .sampAssayYAxisColTable <- "YAxisColTable"
-.sampAssayYAxisSampName <- "YAxisSampeName"
+.sampAssayYAxisSampName <- "YAxisSampName"
 
 # Custom plotting parameters. ----
 .customFun <- "Function"

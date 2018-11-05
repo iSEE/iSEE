@@ -39,7 +39,10 @@ data(allen)
 sce <- as(allen, "SingleCellExperiment")
 library(org.Mm.eg.db)
 myfun <- annotateEnsembl(sce, org.Mm.eg.db, keytype="SYMBOL")
+\dontrun{
+# Requires a working internet connection
 myfun(sce, 4242)
+}
 
 # to be used when launching the app itself ----
 

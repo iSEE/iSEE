@@ -142,7 +142,7 @@ test_that("memory setup works correctly", {
         featAssayArgs=DataFrame(XAxis="Row table"),
         rowStatArgs=DataFrame(Selected=10L),
         rowDataArgs=DataFrame(XAxis="Row data"),
-        sampAssayArgs=DataFrame(YAxisSampeName=3L),
+        sampAssayArgs=DataFrame(YAxisSampName=3L),
         colStatArgs=DataFrame(Selected=5L),
         customDataArgs=DataFrame(Function="PCA2", Arguments="YAY"),
         customStatArgs=DataFrame(Function="DE", VisibleArgs="WHEE"),
@@ -173,7 +173,7 @@ test_that("memory setup works correctly", {
     expect_identical(memory$featAssayPlot$XAxis, "Row table")
     expect_identical(memory$rowStatTable$Selected, c(10L, 1L))
     expect_identical(memory$rowDataPlot$XAxis, rep(c("Row data", "None"), c(1, 2)))
-    expect_identical(memory$sampAssayPlot$YAxisSampeName, 3L)
+    expect_identical(memory$sampAssayPlot$YAxisSampName, 3L)
     expect_identical(memory$colStatTable$Selected, c(5L, 1L))
 
     expect_identical(memory$customDataPlot$Function, c("PCA2", "---"))
@@ -194,7 +194,7 @@ test_that("memory setup works correctly", {
         featAssayArgs=DataFrame(XAxis="Row table"),
         rowStatArgs=DataFrame(Selected=10L),
         rowDataArgs=DataFrame(XAxis="Row data"),
-        sampAssayArgs=DataFrame(YAxisSampeName=3L),
+        sampAssayArgs=DataFrame(YAxisSampName=3L),
         colStatArgs=DataFrame(Selected=5L),
         customDataArgs=DataFrame(Function="PCA2"),
         customStatArgs=DataFrame(Function="DE"),
@@ -223,7 +223,7 @@ test_that("memory setup works correctly", {
     expect_identical(memory$redDimPlot$Type, 2L) # Checking arguments were actually replaced.
     expect_identical(memory$colDataPlot$XAxis, "Column data")
     expect_identical(memory$featAssayPlot$XAxis, "Row table")
-    expect_identical(memory$sampAssayPlot$YAxisSampeName, 3L)
+    expect_identical(memory$sampAssayPlot$YAxisSampName, 3L)
     expect_identical(memory$rowStatTable$Selected, 10L)
     expect_identical(memory$rowDataPlot$XAxis, "Row data")
     expect_identical(memory$heatMapPlot$Assay, 1L)
@@ -494,7 +494,7 @@ test_that("sanitation of memory works correctly", {
     expect_identical(sanitized, memory)
 
     ##############
-    # Repeating for the custom plots. 
+    # Repeating for the custom plots.
     memory2 <- memory
     memory2$customDataPlot[1, iSEE:::.customRowSource] <- "Row data plot 1"
     memory2$customDataPlot[1, iSEE:::.customColSource] <- "Column data plot 1"

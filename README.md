@@ -1,7 +1,6 @@
+<img src="inst/extdata/iSEE.png" align="right" alt="" width="120" />
 
-# _iSEE_ - The interactive SummarizedExperiment Explorer
-
-<!-- TODO logo here too :) --> 
+# _iSEE_ - The interactive SummarizedExperiment Explorer 
 
 ## Software status
 
@@ -98,5 +97,13 @@ We set up instances of _iSEE_ applications running on diverse types of datasets 
 
 Please keep in mind that those public instances are for trial purposes only;
 yet they demonstrate how you or your system administrator can setup _iSEE_ for analyzing or sharing your precomputed `SummarizedExperiment`/`SingleCellExperiment` object.
+
+## Extending _iSEE_
+
+If you want to extend the functionality of _iSEE_, you can create custom panels which add new possibilities to interact with your data.
+You can find a gallery with working examples of how to do it [here](https://github.com/kevinrue/iSEE_custom).
+Feel free to contact the developing team, should you need some clarifications on how _iSEE_ works internally.
+Submit a pull request once the implementation is complete, if you want to have it added to the gallery. 
+
 
 [Figure1]: https://f1000researchdata.s3.amazonaws.com/manuscripts/16293/6bf85f9d-8352-4a78-a8da-456f05f5c4c9_figure1.gif "iSEE uses a customisable multi-panel layout"

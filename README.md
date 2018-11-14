@@ -1,4 +1,4 @@
-<img src="inst/extdata/iSEE.png" align="right" alt="" width="120" />
+<img src="inst/www/iSEE.png" align="right" alt="" width="120" />
 
 # _iSEE_ - The interactive SummarizedExperiment Explorer 
 

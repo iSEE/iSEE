@@ -1755,7 +1755,7 @@ iSEE <- function(se,
 
         observeEvent(input[[.voiceShowPanelInput]], {
 
-            message(sprintf("Voice add panel: %s", input[[.voiceShowPanelInput]]))
+            message(sprintf("Voice show panel: %s", input[[.voiceShowPanelInput]]))
 
         })
 

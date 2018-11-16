@@ -77,9 +77,9 @@
 #' tagList tags
 #' tabsetPanel tabPanel
 #' updateSelectInput updateSelectizeInput updateRadioButtons
+#' includeCSS singleton includeScript
 #' @importFrom DT datatable renderDataTable dataTableOutput
 #' @importFrom shinyAce aceEditor
-#' @importFrom shiny includeCSS
 #' @importFrom S4Vectors DataFrame
 #' @importFrom methods as
 #' @importFrom cowplot plot_grid
@@ -281,6 +281,10 @@ iSEE <- function(se,
         dashboardBody(
             includeCSS(system.file(package = "iSEE", "www", "iSEE.css")),
             useShinyjs(),
+            singleton(tags$head(
+                tags$script(src="iSEE/annyang.min.js"),
+                includeScript(system.file(package = "iSEE", "www", "voice.js"))
+            )),
             introjsUI(), # must be included in UI
 
             # for error message handling
@@ -1744,6 +1748,16 @@ iSEE <- function(se,
                 })
             }
         }
+
+        #######################################################################
+        # Voice observers. ----
+        #######################################################################
+
+        observeEvent(input[[.voiceShowPanelInput]], {
+
+            message(sprintf("Voice add panel: %s", input[[.voiceShowPanelInput]]))
+
+        })
 
         #######################################################################
         # Heat map section. ----

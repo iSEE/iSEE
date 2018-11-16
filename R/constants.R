@@ -219,6 +219,10 @@
 .panelGeneralInfo <- "PanelGeneralInfo"
 .panelLinkInfo <- "PanelLinkInfo"
 
+# Voice parameters ----
+
+.voiceShowPanelInput <- "voiceShowPanel"
+
 # Encoding and decoding names for user/shiny ----
 
 #' Available panel types

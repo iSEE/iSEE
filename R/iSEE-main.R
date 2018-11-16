@@ -1754,8 +1754,26 @@ iSEE <- function(se,
         #######################################################################
 
         observeEvent(input[[.voiceShowPanelInput]], {
+            x <- input[[.voiceShowPanelInput]]
+            if (x != "") {
+                showNotification(sprintf("<Show panel> %s", input[[.voiceShowPanelInput]]))
+            }
 
-            message(sprintf("Voice show panel: %s", input[[.voiceShowPanelInput]]))
+            x <- .digitalizeNumbers(input[[.voiceShowPanelInput]])
+
+            dec <- .split_decoded(x)
+
+            decodedId <- dec$ID
+            if (is.na(decodedId)) {
+                return(NULL)
+            }
+
+            decodedType <- .nearestPanelType(dec$Type)
+            if (length(decodedType) != 1L) {
+                return(NULL)
+            }
+
+            showNotification(sprintf("<Show panel> %s %s", decodedType, decodedId))
 
         })
 

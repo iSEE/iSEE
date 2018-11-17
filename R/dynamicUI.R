@@ -67,7 +67,7 @@
 #' @return A data.frame specifying the new set of active panels.
 #' @rdname INTERNAL_show_panel
 #'
-#' @examples
+#' @author Kevin Rue-Albrecht
 .showPanel <- function(mode, id, active_panels, width=4L, height=500L) {
     active_panels <- rbind(active_panels, DataFrame(Type=mode, ID=id, Width=width, Height=height))
 
@@ -75,6 +75,7 @@
 }
 
 #' @rdname INTERNAL_show_panel
+#' @author Kevin Rue-Albrecht
 .hidePanel <- function(mode, id, active_panels, pObjects) {
     current_type <- active_panels$Type == mode
     panel_name <- paste0(mode, id)

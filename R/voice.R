@@ -1,3 +1,26 @@
+#' Nearest panel type
+#'
+#' Identify the panel type name that is the smallest edit distance from a recorded voice input.
+#'
+#' @param x Character string expected to match a panel type.
+#' @param max.mismatches Maximal number of mismatches allowed.
+#'
+#' @return Encoded name of the matched panel type.
+#'
+#' @rdname INTERNAL_nearest_panel_type
+.nearestPanelType <- function(x, max.mismatches=5) {
+    distances <- adist(x, y = panelTypes, partial = FALSE, ignore.case = TRUE)[1, ]
+
+    nearEnough <- distances[which(distances <= max.mismatches)]
+
+    if (length(nearEnough) == 0L){
+        return(character(0))
+    }
+
+    nearestMatch <- panelTypes[names(which.min(nearEnough))]
+
+    nearestMatch
+}
 
 # Note: consider package 'english' if we ever need to convert digital numbers to text
 .numbersText <- c(
@@ -28,33 +51,4 @@
 #' @rdname INTERNAL_digitalize_numbers
 .wordIsDigits <- function(x) {
     grepl("^[[:digit:]]+$", x)
-}
-
-
-# Voice add panel:
-# Voice add panel: reduce dimension panel one
-# Voice add panel: reduced dimension panel one
-
-#' Nearest panel type
-#'
-#' Identify the panel type name that is the smallest edit distance from a recorded voice input.
-#'
-#' @param x Character string expected to match a panel type.
-#' @param max.mismatches Maximal number of mismatches allowed.
-#'
-#' @return Encoded name of the matched panel type.
-#'
-#' @rdname INTERNAL_nearest_panel_type
-.nearestPanelType <- function(x, max.mismatches=5) {
-    distances <- adist(x, y = panelTypes, partial = FALSE, ignore.case = TRUE)[1, ]
-
-    nearEnough <- distances[which(distances <= max.mismatches)]
-
-    if (length(nearEnough) == 0L){
-        return(character(0))
-    }
-
-    nearestMatch <- panelTypes[names(which.min(nearEnough))]
-
-    nearestMatch
 }

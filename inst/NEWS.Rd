@@ -1,6 +1,14 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.3.2}{
+\itemize{
+    \item Add control of width and height of new panels.
+    \item Enable voice control to add and remove panels.
+        Refactor internal functions.
+}
+}
+
 \section{iSEE VERSION 1.3.1}{
 \itemize{
     \item Fix invalid row index sent from tables in RStudio browser.

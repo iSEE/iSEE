@@ -68,8 +68,8 @@
 #' @rdname INTERNAL_show_panel
 #'
 #' @examples
-.showPanel <- function(mode, id, active_panels) {
-    active_panels <- rbind(active_panels, DataFrame(Type=mode, ID=id, Width=4L, Height=500L))
+.showPanel <- function(mode, id, active_panels, width=4L, height=500L) {
+    active_panels <- rbind(active_panels, DataFrame(Type=mode, ID=id, Width=width, Height=height))
 
     active_panels
 }

@@ -272,9 +272,11 @@ iSEE <- function(se,
         ), # end of dashboardHeader
 
         dashboardSidebar(
-            selectizeInput("newPanelChoice", label="Choose panel type:",
+            selectizeInput("newPanelChoice", label="Add new panel:",
                 selected=names(panelTypes)[1], choices=structure(names(panelTypes), names=panelTypes)),
-            actionButton("newPanelAdd", "Add new panel"),
+            actionButton("newPanelAdd", "Click to add panel"),
+            sliderInput("newPanelWidth", label="Width", min=width_limits[1], max=width_limits[2], value=4L, step=1),
+            sliderInput("newPanelHeight", label="Height", min=height_limits[1], max=height_limits[2], value=500L, step=50),
             hr(),
             uiOutput("panelOrganization")
         ), # end of dashboardSidebar
@@ -485,12 +487,14 @@ iSEE <- function(se,
         # Panel addition.
         observeEvent(input$newPanelAdd, {
             mode <- input$newPanelChoice
+            height <- input$newPanelHeight
+            width <- input$newPanelWidth
             all_active <- rObjects$active_panels
             all.memory <- pObjects$memory[[mode]]
             first.missing <- setdiff(seq_len(nrow(all.memory)), all_active$ID[all_active$Type==mode])
 
             if (length(first.missing)) {
-                rObjects$active_panels <- .showPanel(mode, first.missing[1], all_active)
+                rObjects$active_panels <- .showPanel(mode, first.missing[1], all_active, width, height)
             } else {
                 showNotification(sprintf("maximum number of plots reached for mode '%s'", mode), type="error")
             }

@@ -1,9 +1,18 @@
 
-test_that("numbers can be digitalized from text", {
+test_that("numbers can be numeralized from text", {
 
-    # i.e. "Reduce dimension plot one"
-    out <- .digitalizeNumbers("reduce dimension plus one")
-    expect_identical(out, "reduce dimension plus 1")
+    out <- .digitalizeNumbers("one")
+    expect_identical(out, c("one"=1))
+
+    out <- .digitalizeNumbers("two")
+    expect_identical(out, c("two"=2))
+
+    # allow some vocal typos
+    out <- .digitalizeNumbers("to")
+    expect_identical(out, c("to"=2))
+
+    out <- .digitalizeNumbers("too")
+    expect_identical(out, c("too"=2))
 
 })
 
@@ -11,10 +20,11 @@ test_that("numbers can be digitalized from text", {
 test_that("vocal typos are handled", {
 
     out <- .nearestPanelType("reduce dimension plus")
-    expect_identical(out, "redDimPlot")
+    expect_identical(out, c(redDimPlot="Reduced dimension plot"))
 
     out <- .nearestPanelType("row statistics table")
+    expect_identical(out, c(rowStatTable = "Row statistics table"))
 
-    .nearestPanelType("row statistics plot")
-
+    out <- .nearestPanelType("row statistics plot")
+    expect_identical(out, c(rowStatTable = "Row statistics table")) # NOTE: closer than row data plot
 })

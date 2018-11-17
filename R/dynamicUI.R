@@ -58,13 +58,24 @@
     do.call(tagList, collected)
 }
 
-.addPanel <- function(mode, id, active_panels) {
+#' Show and hide panels in the User Interface
+#'
+#' @param mode Panel mode. See \code{\link{panelCodes}}.
+#' @param id Integer scalar specifying the index of a panel of the specified type, for the current plot.
+#' @param active_panels A data.frame specifying the currently active panels, see the output of \code{\link{.setup_initial}}.
+#'
+#' @return A data.frame specifying the new set of active panels.
+#' @rdname INTERNAL_show_panel
+#'
+#' @examples
+.showPanel <- function(mode, id, active_panels) {
     active_panels <- rbind(active_panels, DataFrame(Type=mode, ID=id, Width=4L, Height=500L))
 
     active_panels
 }
 
-.removePanel <- function(mode, id, active_panels, pObjects) {
+#' @rdname INTERNAL_show_panel
+.hidePanel <- function(mode, id, active_panels, pObjects) {
     current_type <- active_panels$Type == mode
     panel_name <- paste0(mode, id)
 

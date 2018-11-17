@@ -55,6 +55,6 @@
 }
 
 #' @rdname INTERNAL_digitalize_numbers
-.wordIsDigits <- function(x) {
+.isDigits <- function(x) {
     grepl("^[[:digit:]]+$", x)
 }

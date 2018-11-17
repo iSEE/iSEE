@@ -490,7 +490,7 @@ iSEE <- function(se,
             first.missing <- setdiff(seq_len(nrow(all.memory)), all_active$ID[all_active$Type==mode])
 
             if (length(first.missing)) {
-                rObjects$active_panels <- .addPanel(mode, first.missing[1], all_active)
+                rObjects$active_panels <- .showPanel(mode, first.missing[1], all_active)
             } else {
                 showNotification(sprintf("maximum number of plots reached for mode '%s'", mode), type="error")
             }
@@ -512,7 +512,7 @@ iSEE <- function(se,
 
                     # Panel removal.
                     observeEvent(input[[paste0(prefix, .organizationDiscard)]], {
-                        rObjects$active_panels <- .removePanel(mode0, id0, rObjects$active_panels, pObjects)
+                        rObjects$active_panels <- .hidePanel(mode0, id0, rObjects$active_panels, pObjects)
                    }, ignoreInit=TRUE)
 
                     # Panel shifting, up and down.
@@ -1760,7 +1760,7 @@ iSEE <- function(se,
             # Coerce the recorded word to a numeral
             # Numbers that would take more than two words to pronounce are already recorded as digits
             panelID <- tail(words, 1)
-            panelID <- ifelse(.wordIsDigits(panelID), as.numeric(panelID), .digitalizeNumbers(panelID))
+            panelID <- ifelse(.isDigits(panelID), as.numeric(panelID), .digitalizeNumbers(panelID))
             if (is.na(panelID)) {
                 return(NULL)
             }
@@ -1776,7 +1776,7 @@ iSEE <- function(se,
                 return(NULL)
             }
 
-            rObjects$active_panels <- .addPanel(encodedType, panelID, all_active)
+            rObjects$active_panels <- .showPanel(encodedType, panelID, all_active)
 
             showNotification(sprintf("<Show panel> %s %s", decodedType, panelID))
         })
@@ -1800,7 +1800,7 @@ iSEE <- function(se,
             # Coerce the recorded word to a numeral
             # Numbers that would take more than two words to pronounce are already recorded as digits
             panelID <- tail(words, 1)
-            panelID <- ifelse(.wordIsDigits(panelID), as.numeric(panelID), .digitalizeNumbers(panelID))
+            panelID <- ifelse(.isDigits(panelID), as.numeric(panelID), .digitalizeNumbers(panelID))
             if (is.na(panelID)) {
                 return(NULL)
             }
@@ -1813,7 +1813,7 @@ iSEE <- function(se,
                 return(NULL)
             }
 
-            rObjects$active_panels <- .removePanel(encodedType, panelID, all_active, pObjects)
+            rObjects$active_panels <- .hidePanel(encodedType, panelID, all_active, pObjects)
 
             showNotification(sprintf("<Hide panel> %s %s", decodedType, panelID))
         })

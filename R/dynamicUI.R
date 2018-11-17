@@ -58,6 +58,32 @@
     do.call(tagList, collected)
 }
 
+.addPanel <- function(mode, id, active_panels) {
+    active_panels <- rbind(active_panels, DataFrame(Type=mode, ID=id, Width=4L, Height=500L))
+
+    active_panels
+}
+
+.removePanel <- function(mode, id, active_panels, pObjects) {
+    current_type <- active_panels$Type == mode
+    panel_name <- paste0(mode, id)
+
+    # Destroying links for point selection or tables.
+    .destroy_selection_panel(pObjects, panel_name)
+    if (mode %in% linked_table_types) {
+        .destroy_table(pObjects, panel_name)
+    } else if (mode %in% point_plot_types) {
+        .delete_table_links(mode, id, pObjects)
+    }
+
+    # Triggering re-rendering of the UI via change to active_panels.
+    index <- which(current_type & active_panels$ID == id)
+    active_panels <- active_panels[-index, ]
+
+    # Return the updated table of active panels
+    active_panels
+}
+
 #' Generate the panels in the app body
 #'
 #' Constructs the active panels in the main body of the app to show the plotting results and tables.

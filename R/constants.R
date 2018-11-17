@@ -224,9 +224,6 @@
 .voiceShowPanelInput <- "voiceShowPanel"
 .voiceHidePanelInput <- "voiceHidePanel"
 
-.voiceColorPanelInput = "voiceColorPanel"
-.voiceColorTitleInput = "voiceColorTitle"
-
 # Encoding and decoding names for user/shiny ----
 
 #' Available panel types

@@ -490,7 +490,7 @@ iSEE <- function(se,
             first.missing <- setdiff(seq_len(nrow(all.memory)), all_active$ID[all_active$Type==mode])
 
             if (length(first.missing)) {
-                rObjects$active_panels <- rbind(all_active, DataFrame(Type=mode, ID=first.missing[1], Width=4L, Height=500L))
+                rObjects$active_panels <- .addPanel(mode, first.missing[1], all_active)
             } else {
                 showNotification(sprintf("maximum number of plots reached for mode '%s'", mode), type="error")
             }
@@ -508,25 +508,11 @@ iSEE <- function(se,
                     mode0 <- mode
                     id0 <- id
                     prefix <- paste0(mode0, id0, "_")
-                    panel_name <- paste0(mode0, id0)
                     max_plots0 <- max_plots
 
                     # Panel removal.
                     observeEvent(input[[paste0(prefix, .organizationDiscard)]], {
-                        all_active <- rObjects$active_panels
-                        current_type <- all_active$Type==mode0
-
-                        # Destroying links for point selection or tables.
-                        .destroy_selection_panel(pObjects, panel_name)
-                        if (mode0 %in% linked_table_types) {
-                            .destroy_table(pObjects, panel_name)
-                        } else if (mode0 %in% point_plot_types) {
-                            .delete_table_links(mode0, id0, pObjects)
-                        }
-
-                        # Triggering re-rendering of the UI via change to active_panels.
-                        index <- which(current_type & all_active$ID==id0)
-                        rObjects$active_panels <- rObjects$active_panels[-index,]
+                        rObjects$active_panels <- .removePanel(mode0, id0, rObjects$active_panels, pObjects)
                    }, ignoreInit=TRUE)
 
                     # Panel shifting, up and down.
@@ -1769,14 +1755,18 @@ iSEE <- function(se,
             }
             encodedType <- panelCodes[[decodedType]]
 
-            # Now that we know the panel type, we also know how many of them are available
             # Then identify the numeral index of the requested panel amongst the available ones
             maxPanels <- nrow(pObjects$memory[[encodedType]])
             # Coerce the recorded word to a numeral
             # Numbers that would take more than two words to pronounce are already recorded as digits
             panelID <- tail(words, 1)
-            panelID <- ifelse(.wordIsDigits(panelID), panelID, .digitalizeNumbers(panelID))
+            panelID <- ifelse(.wordIsDigits(panelID), as.numeric(panelID), .digitalizeNumbers(panelID))
             if (is.na(panelID)) {
+                return(NULL)
+            }
+
+            if (panelID > maxPanels) {
+                showNotification(sprintf("maximum number of plots for mode '%s' is %i", encodedType, maxPanels), type="error")
                 return(NULL)
             }
 
@@ -1786,7 +1776,7 @@ iSEE <- function(se,
                 return(NULL)
             }
 
-            rObjects$active_panels <- rbind(all_active, DataFrame(Type=encodedType, ID=panelID, Width=4L, Height=500L))
+            rObjects$active_panels <- .addPanel(encodedType, panelID, all_active)
 
             showNotification(sprintf("<Show panel> %s %s", decodedType, panelID))
         })
@@ -1806,13 +1796,11 @@ iSEE <- function(se,
             }
             encodedType <- panelCodes[[decodedType]]
 
-            # Now that we know the panel type, we also know how many of them are available
             # Then identify the numeral index of the requested panel amongst the available ones
-            maxPanels <- nrow(pObjects$memory[[encodedType]])
             # Coerce the recorded word to a numeral
             # Numbers that would take more than two words to pronounce are already recorded as digits
             panelID <- tail(words, 1)
-            panelID <- ifelse(.wordIsDigits(panelID), panelID, .digitalizeNumbers(panelID))
+            panelID <- ifelse(.wordIsDigits(panelID), as.numeric(panelID), .digitalizeNumbers(panelID))
             if (is.na(panelID)) {
                 return(NULL)
             }
@@ -1821,21 +1809,13 @@ iSEE <- function(se,
             all_active <- rObjects$active_panels
             panelIndex <- which(all_active$Type==encodedType & all_active$ID==panelID)
             if (length(panelIndex) == 0) {
+                showNotification(sprintf("Panel %s %s is not currently active", decodedType, panelID), type="error")
                 return(NULL)
             }
 
-            rObjects$active_panels <- all_active[-panelIndex, ]
+            rObjects$active_panels <- .removePanel(encodedType, panelID, all_active, pObjects)
 
             showNotification(sprintf("<Hide panel> %s %s", decodedType, panelID))
-        })
-
-        observeEvent(input[[.voiceColorPanelInput]], {
-            print("color panel <x> by <y>")
-            voicePanel <- input[[.voiceColorPanelInput]]
-            showNotification(sprintf("<Color panel> %s", voicePanel))
-
-            voiceTitle <- input[[.voiceColorTitleInput]]
-            showNotification(sprintf("<Color title> %s", voiceTitle))
         })
 
         #######################################################################

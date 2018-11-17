@@ -1789,7 +1789,6 @@ iSEE <- function(se,
             rObjects$active_panels <- rbind(all_active, DataFrame(Type=encodedType, ID=panelID, Width=4L, Height=500L))
 
             showNotification(sprintf("<Show panel> %s %s", decodedType, panelID))
-
         })
 
         observeEvent(input[[.voiceHidePanelInput]], {
@@ -1828,7 +1827,15 @@ iSEE <- function(se,
             rObjects$active_panels <- all_active[-panelIndex, ]
 
             showNotification(sprintf("<Hide panel> %s %s", decodedType, panelID))
+        })
 
+        observeEvent(input[[.voiceColorPanelInput]], {
+            print("color panel <x> by <y>")
+            voicePanel <- input[[.voiceColorPanelInput]]
+            showNotification(sprintf("<Color panel> %s", voicePanel))
+
+            voiceTitle <- input[[.voiceColorTitleInput]]
+            showNotification(sprintf("<Color title> %s", voiceTitle))
         })
 
         #######################################################################

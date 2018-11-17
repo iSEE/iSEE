@@ -9,7 +9,7 @@
 #'
 #' @rdname INTERNAL_nearest_panel_type
 .nearestPanelType <- function(x, max.mismatches=5) {
-    distances <- adist(x, y = panelTypes, partial = FALSE, ignore.case = TRUE)[1, ]
+    distances <- adist(x, y = panelTypes, partial=TRUE, ignore.case=TRUE)[1, ]
 
     nearEnough <- distances[which(distances <= max.mismatches)]
 

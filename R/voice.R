@@ -1,25 +1,76 @@
-#' Nearest panel type
+#' Nearest panel
 #'
 #' Identify the panel type name that is the smallest edit distance from a recorded voice input.
 #'
 #' @param x Character string expected to match a panel type.
-#' @param max.mismatches Maximal number of mismatches allowed.
+#' @param max.edits Maximal number of mismatches allowed.
 #'
 #' @return Encoded name of the matched panel type.
 #'
 #' @rdname INTERNAL_nearest_panel_type
-.nearestPanelType <- function(x, max.mismatches=5) {
+.nearestPanelType <- function(x, max.edits=5) {
     distances <- adist(x, y = panelTypes, partial=TRUE, ignore.case=TRUE)[1, ]
 
-    nearEnough <- distances[which(distances <= max.mismatches)]
-
+    # we don't want the "closest" at any cost (it can still be very far)
+    nearEnough <- distances[which(distances <= max.edits)]
     if (length(nearEnough) == 0L){
         return(character(0))
     }
 
     nearestMatch <- panelTypes[names(which.min(nearEnough))]
-
     nearestMatch
+}
+
+#' Nearest panel type
+#'
+#' Identify the panel type name that is the smallest edit distance from a recorded voice input.
+#'
+#' @param x Character string expected to match a panel type.
+#' @param max.edits Maximal number of mismatches allowed.
+#'
+#' @return Encoded name of the matched panel type.
+#'
+#' @rdname INTERNAL_nearest_panel_type
+.nearestPanelType <- function(x, max.edits=5) {
+    distances <- adist(x, y = panelTypes, partial=TRUE, ignore.case=TRUE)[1, ]
+
+    # we don't want the "closest" at any cost (it can still be very far)
+    nearEnough <- distances[which(distances <= max.edits)]
+    if (length(nearEnough) == 0L){
+        return(character(0))
+    }
+
+    nearestMatch <- panelTypes[names(which.min(nearEnough))]
+    nearestMatch
+}
+
+.nearestValidChoice <- function(x, choices, max.edits=5) {
+    names(choices) <- choices
+    distances <- adist(x, y = choices, partial=FALSE, ignore.case=TRUE)[1, ]
+
+    # we don't want the "closest" at any cost (it can still be very far)
+    nearEnough <- distances[which(distances <= max.edits)]
+    if (length(nearEnough) == 0L){
+        return(character(0))
+    }
+
+    nearestMatch <- names(nearEnough)[which.min(nearEnough)]
+    nearestMatch
+}
+
+.getValidParameterChoices <- function(parameterName, mode, se){
+    if (parameterName == "ColorBy") {
+        if (mode %in% row_point_plot_types) {
+            create_FUN <- .create_visual_box_for_row_plots
+        } else {
+            create_FUN <- .define_color_options_for_column_plots
+        }
+    } else {
+        message(sprintf("Parameter '%s' not supported yet", parameterName))
+        return(character(0))
+    }
+    choices <- create_FUN(se)
+    choices
 }
 
 # Note: consider package 'english' if we ever need to convert digital numbers to text
@@ -51,7 +102,7 @@
 #' @rdname INTERNAL_digitalize_numbers
 #' @author Kevin Rue-Albrecht
 .digitalizeNumbers <- function(x) {
-    as.numeric(.numbersText[match(x, names(.numbersText))])
+    as.numeric(.numbersText[match(tolower(x), names(.numbersText))])
 }
 
 #' @rdname INTERNAL_digitalize_numbers

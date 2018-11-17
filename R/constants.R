@@ -1,3 +1,6 @@
+
+.validParameterChoices <- list()
+
 # Reduced dimension plotting parameters. ----
 .redDimType <- "Type"
 .redDimXAxis <- "XAxis"
@@ -103,6 +106,9 @@
 .colorByDefaultColor <- "ColorByDefaultColor"
 .colorByColData <- "ColorByColData"
 .colorByRowData <- "ColorByRowData"
+
+.validParameterChoices[[.colorByField]] <-
+    c(.colorByNothingTitle, .colorByColDataTitle, .colorByRowDataTitle, .colorByFeatNameTitle, .colorBySampNameTitle)
 
 .colorByFeatName <- "ColorByFeatName"
 .colorByRowTable <- "ColorByRowTable"
@@ -223,6 +229,9 @@
 
 .voiceShowPanelInput <- "voiceShowPanel"
 .voiceHidePanelInput <- "voiceHidePanel"
+
+.voiceUpdatePanelInput <- "voiceUpdatePanel"
+.voiceSamePanelInput <- "voiceSamePanel"
 
 # Encoding and decoding names for user/shiny ----
 

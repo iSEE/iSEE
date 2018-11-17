@@ -83,6 +83,7 @@
 #' @importFrom S4Vectors DataFrame
 #' @importFrom methods as
 #' @importFrom cowplot plot_grid
+#' @importFrom stringr str_split
 #'
 #' @examples
 #' library(scRNAseq)
@@ -1756,24 +1757,77 @@ iSEE <- function(se,
         observeEvent(input[[.voiceShowPanelInput]], {
             x <- input[[.voiceShowPanelInput]]
             if (x != "") {
-                showNotification(sprintf("<Show panel> %s", input[[.voiceShowPanelInput]]))
+                showNotification(sprintf("<Show panel> %s", x))
             }
 
-            x <- .digitalizeNumbers(input[[.voiceShowPanelInput]])
+            words <- str_split(x, " ")[[1]]
 
-            dec <- .split_decoded(x)
-
-            decodedId <- dec$ID
-            if (is.na(decodedId)) {
-                return(NULL)
-            }
-
-            decodedType <- .nearestPanelType(dec$Type)
+            # First identify panel type (known panel types are made of at most 3 words)
+            decodedType <- .nearestPanelType(paste(head(words, 3), collapse=" "))
             if (length(decodedType) != 1L) {
                 return(NULL)
             }
+            encodedType <- panelCodes[[decodedType]]
 
-            showNotification(sprintf("<Show panel> %s %s", decodedType, decodedId))
+            # Now that we know the panel type, we also know how many of them are available
+            # Then identify the numeral index of the requested panel amongst the available ones
+            maxPanels <- nrow(pObjects$memory[[encodedType]])
+            # Coerce the recorded word to a numeral
+            # Numbers that would take more than two words to pronounce are already recorded as digits
+            panelID <- tail(words, 1)
+            panelID <- ifelse(.wordIsDigits(panelID), panelID, .digitalizeNumbers(panelID))
+            if (is.na(panelID)) {
+                return(NULL)
+            }
+
+            # Add the panel to the active table if not there yet
+            all_active <- rObjects$active_panels
+            if (any(all_active$Type==encodedType & all_active$ID==panelID)) {
+                return(NULL)
+            }
+
+            rObjects$active_panels <- rbind(all_active, DataFrame(Type=encodedType, ID=panelID, Width=4L, Height=500L))
+
+            showNotification(sprintf("<Show panel> %s %s", decodedType, panelID))
+
+        })
+
+        observeEvent(input[[.voiceHidePanelInput]], {
+            x <- input[[.voiceHidePanelInput]]
+            if (x != "") {
+                showNotification(sprintf("<Hide panel> %s", x))
+            }
+
+            words <- str_split(x, " ")[[1]]
+
+            # First identify panel type (known panel types are made of at most 3 words)
+            decodedType <- .nearestPanelType(paste(head(words, 3), collapse=" "))
+            if (length(decodedType) != 1L) {
+                return(NULL)
+            }
+            encodedType <- panelCodes[[decodedType]]
+
+            # Now that we know the panel type, we also know how many of them are available
+            # Then identify the numeral index of the requested panel amongst the available ones
+            maxPanels <- nrow(pObjects$memory[[encodedType]])
+            # Coerce the recorded word to a numeral
+            # Numbers that would take more than two words to pronounce are already recorded as digits
+            panelID <- tail(words, 1)
+            panelID <- ifelse(.wordIsDigits(panelID), panelID, .digitalizeNumbers(panelID))
+            if (is.na(panelID)) {
+                return(NULL)
+            }
+
+            # Add the panel to the active table if not there yet
+            all_active <- rObjects$active_panels
+            panelIndex <- which(all_active$Type==encodedType & all_active$ID==panelID)
+            if (length(panelIndex) == 0) {
+                return(NULL)
+            }
+
+            rObjects$active_panels <- all_active[-panelIndex, ]
+
+            showNotification(sprintf("<Hide panel> %s %s", decodedType, panelID))
 
         })
 

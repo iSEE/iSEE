@@ -222,6 +222,7 @@
 # Voice parameters ----
 
 .voiceShowPanelInput <- "voiceShowPanel"
+.voiceHidePanelInput <- "voiceHidePanel"
 
 # Encoding and decoding names for user/shiny ----
 

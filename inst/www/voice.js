@@ -1,12 +1,15 @@
 var voiceShowPanelInput = "voiceShowPanel";
+var voiceHidePanelInput = "voiceHidePanel";
 
 var initVoice = function() {
     if (annyang) {
-        Shiny.onInputChange(voiceShowPanelInput, "");
         var commands = {
             'show panel *panel': function(panel) {
                 Shiny.onInputChange(voiceShowPanelInput, panel);
             },
+            'hide panel *panel': function(panel) {
+                Shiny.onInputChange(voiceHidePanelInput, panel);
+            }
         };
         annyang.addCommands(commands);
         annyang.start();

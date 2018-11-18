@@ -147,7 +147,7 @@ prepareVoiceRecognition <- function(use=FALSE) {
     grepl("^[[:digit:]]+$", x)
 }
 
-.colorByChoices <- function(mode, id, colorby_title, se) {
+.colorByChoices <- function(colorby_title, se) {
     
     if (colorby_title == .colorByNothingTitle) {
         choices <- character(0)

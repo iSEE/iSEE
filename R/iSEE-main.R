@@ -1881,11 +1881,11 @@ iSEE <- function(se,
             
             activeSplit <- .split_encoded(activePanel)
             
-            colorby_field <- paste0(mode, id, "_", .colorByField)
-            colorby_title <- input[[colorby_field]]
+            colorby_field <- paste0(activeSplit$Type, activeSplit$ID, "_", .colorByField)
+            colorby_title <- isolate(input[[colorby_field]])
             
             # Check if the choice matches one of the available values
-            choices <- .colorByChoices(activeSplit$Type, activeSplit$ID, colorby_title, se)
+            choices <- .colorByChoices(colorby_title, se)
             matchedChoice <- .nearestValidChoice(voice, choices, max.edits=5)
             if (length(matchedChoice) != 1L) {
                 return(NULL)

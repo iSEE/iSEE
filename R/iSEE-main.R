@@ -74,7 +74,7 @@
 #' actionButton selectizeInput sliderInput
 #' showModal modalDialog showNotification
 #' shinyApp runApp
-#' HTML br icon hr p em strong
+#' HTML br icon hr p em strong img
 #' tagList tags
 #' tabsetPanel tabPanel
 #' updateSelectInput updateSelectizeInput updateRadioButtons
@@ -186,11 +186,13 @@ iSEE <- function(se,
 
     iSEE_ui <- dashboardPage(
         dashboardHeader(
-            title=ifelse(is.null(appTitle),
-                paste0("iSEE - interactive SummarizedExperiment Explorer v", packageVersion("iSEE")),
-                appTitle),
-            titleWidth=750,
-
+            title = tags$span(
+            img(src = "iSEE/iSEE.png", height = "50px"),
+            ifelse(is.null(appTitle),
+                   paste0("iSEE - interactive SummarizedExperiment Explorer v", packageVersion("iSEE")),
+                   appTitle)
+            ),
+            titleWidth = 750,
             dropdownMenu(type="tasks",
                 icon=icon("wrench fa-1g"),
                 badgeStatus=NULL,

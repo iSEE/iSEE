@@ -147,10 +147,8 @@ prepareVoiceRecognition <- function(use=FALSE) {
     grepl("^[[:digit:]]+$", x)
 }
 
-.colorByChoices <- function(mode, id, se) {
+.colorByChoices <- function(mode, id, colorby_title, se) {
     
-    colorby_field <- paste0(mode, id, "_", .colorByField)
-    colorby_title <- input[[colorby_field]]
     if (colorby_title == .colorByNothingTitle) {
         choices <- character(0)
     } else if (colorby_title == .colorByColDataTitle) {

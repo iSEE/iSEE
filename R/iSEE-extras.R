@@ -916,6 +916,8 @@ height_limits <- c(400L, 1000L)
 
 #' @importFrom shiny tagList HTML a br
 iSEE_info <- tagList(
+    HTML('<div align="center"><img src="iSEE/iSEE.png" width="150"></div>'),
+    br(),
     HTML(sprintf("iSEE is a project developed by
 Aaron Lun (%s),
 Charlotte Soneson (%s),

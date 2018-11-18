@@ -83,7 +83,6 @@
 #' @importFrom S4Vectors DataFrame
 #' @importFrom methods as
 #' @importFrom cowplot plot_grid
-#' @importFrom stringr str_split
 #'
 #' @examples
 #' library(scRNAseq)
@@ -331,7 +330,7 @@ iSEE <- function(se,
         pObjects$selection_links <- .spawn_selection_chart(memory)
         pObjects$table_links <- .spawn_table_links(memory)
         pObjects$cached_info <- empty_list
-        pObjects$voiceLastEncodedPanel <- NA_character_
+        pObjects[[.voiceActivePanel]] <- NA_character_
 
         # Storage for all the reactive objects
         rObjects <- reactiveValues(
@@ -1748,150 +1747,79 @@ iSEE <- function(se,
         observeEvent(input[[.voiceShowPanelInput]], {
             x <- input[[.voiceShowPanelInput]]
             if (x != "") {
-                showNotification(sprintf("<Show panel> %s", x))
+                showNotification(sprintf("<Show panel> %s", x), type="message")
             }
 
-            words <- str_split(x, " ")[[1]]
-
-            # First identify panel type (known panel types are made of at most 3 words)
-            decodedType <- .nearestPanelType(paste(head(words, 3), collapse=" "), max.edits=5)
-            if (length(decodedType) != 1L) {
-                return(NULL)
-            }
-            encodedType <- panelCodes[[decodedType]]
-
-            # Then identify the numeral index of the requested panel amongst the available ones
-            maxPanels <- nrow(pObjects$memory[[encodedType]])
-            # Coerce the recorded word to a numeral
-            # Numbers that would take more than two words to pronounce are already recorded as digits
-            panelID <- tail(words, 1)
-            panelID <- ifelse(.isDigits(panelID), as.numeric(panelID), .digitalizeNumbers(panelID))
-            if (is.na(panelID)) {
-                return(NULL)
-            }
-
-            if (panelID > maxPanels) {
-                showNotification(sprintf("maximum number of plots for mode '%s' is %i", encodedType, maxPanels), type="error")
-                return(NULL)
-            }
+            decodedPanel <- .nearestDecodedPanel(x, memory, max.edits=5)
+            if (is.null(decodedPanel)) { return(NULL) }
+            encodedPanel <- .decoded2encoded(decodedPanel)
+            encodedSplit <- .split_encoded(encodedPanel)
 
             # Add the panel to the active table if not there yet
             all_active <- rObjects$active_panels
-            if (any(all_active$Type==encodedType & all_active$ID==panelID)) {
+            if (any(all_active$Type==encodedSplit$Type & all_active$ID==encodedSplit$ID)) {
                 return(NULL)
             }
 
-            rObjects$active_panels <- .showPanel(encodedType, panelID, all_active)
+            rObjects$active_panels <- .showPanel(encodedSplit$Type, encodedSplit$ID, all_active)
 
             # Memorize last valid panel (only if the command succeeded)
-            showNotification(sprintf("<Show panel> %s %s", decodedType, panelID))
-            encodedName <- paste0(encodedType, panelID)
-            pObjects$voiceLastEncodedPanel <- encodedName
-            showNotification(sprintf("<i>Panel memorized</i> [%s]", encodedName))
+            showNotification(sprintf("<Show panel> %s", decodedPanel), type="message")
+            pObjects[[.voiceActivePanel]] <- encodedPanel
+            showNotification(sprintf("Active panel: %s", decodedPanel), id=.voiceActivePanel, duration=NULL)
         })
 
         observeEvent(input[[.voiceHidePanelInput]], {
             x <- input[[.voiceHidePanelInput]]
             if (x != "") {
-                showNotification(sprintf("<Hide panel> %s", x))
+                showNotification(sprintf("<Hide panel> %s", x), type="message")
             }
 
-            words <- str_split(x, " ")[[1]]
+            decodedPanel <- .nearestDecodedPanel(x, memory, max.edits=5)
+            if (is.null(decodedPanel)) { return(NULL) }
+            encodedPanel <- .decoded2encoded(decodedPanel)
+            encodedSplit <- .split_encoded(encodedPanel)
 
-            # First identify panel type (known panel types are made of at most 3 words)
-            decodedType <- .nearestPanelType(paste(head(words, 3), collapse=" "), max.edits=5)
-            if (length(decodedType) != 1L) {
+            # Remove the panel to the active table if it is currently there
+            all_active <- rObjects$active_panels
+            panelIndex <- which(all_active$Type==encodedSplit$Type & all_active$ID==encodedSplit$ID)
+            if (length(panelIndex) == 0) {
+                showNotification(sprintf("Panel %s is not currently active", decodedPanel), type="error")
                 return(NULL)
             }
-            encodedType <- panelCodes[[decodedType]]
 
-            # Then identify the numeral index of the requested panel amongst the available ones
-            # Coerce the recorded word to a numeral
-            # Numbers that would take more than two words to pronounce are already recorded as digits
-            panelID <- tail(words, 1)
-            panelID <- ifelse(.isDigits(panelID), as.numeric(panelID), .digitalizeNumbers(panelID))
-            if (is.na(panelID)) {
-                return(NULL)
-            }
+            rObjects$active_panels <- .hidePanel(encodedSplit$Type, encodedSplit$ID, all_active, pObjects)
+
+            showNotification(sprintf("<Hide panel> %s", decodedPanel), type="message")
             # Clear memory of last panel accessed, as this one is now inactive
-            pObjects$voiceLastEncodedPanel <- NA_character_
-
-            # Add the panel to the active table if not there yet
-            all_active <- rObjects$active_panels
-            panelIndex <- which(all_active$Type==encodedType & all_active$ID==panelID)
-            if (length(panelIndex) == 0) {
-                showNotification(sprintf("Panel %s %s is not currently active", decodedType, panelID), type="error")
-                return(NULL)
-            }
-
-            rObjects$active_panels <- .hidePanel(encodedType, panelID, all_active, pObjects)
-
-            showNotification(sprintf("<Hide panel> %s %s", decodedType, panelID))
-            showNotification(sprintf("<i>Panel memory cleared.</i>", decodedType, panelID))
+            pObjects[[.voiceActivePanel]] <- NA_character_
+            removeNotification(.voiceActivePanel, session)
+            showNotification("Panel memory cleared", type="message")
         })
 
-        observeEvent(input[[.voiceUpdatePanelInput]], {
-            x <- input[[.voiceUpdatePanelInput]]
+        observeEvent(input[[.voiceControlPanelInput]], {
+            x <- input[[.voiceControlPanelInput]]
             if (x != "") {
-                showNotification(sprintf("<Update panel> %s", x), duration = NULL)
+                showNotification(sprintf("<Control panel> %s", x), type="message")
             }
 
-            words <- str_split(x, " ")[[1]]
+            decodedPanel <- .nearestDecodedPanel(x, memory, max.edits=5)
+            if (is.null(decodedPanel)) { return(NULL) }
+            encodedPanel <- .decoded2encoded(decodedPanel)
+            encodedSplit <- .split_encoded(encodedPanel)
 
-            parameterIndex <- grep("(param|field|option|column)", words)[1]
-            valueIndex <- grep("value", words)[1]
-            if (is.na(parameterIndex) || is.na(valueIndex) || parameterIndex >= valueIndex){
-                return(NULL)
-            }
-
-            # First identify panel type (all words before "parameters" and the panel id)
-            decodedType <- .nearestPanelType(paste(head(words, parameterIndex-2), collapse=" "), max.edits=5)
-            if (length(decodedType) != 1L) {
-                return(NULL)
-            }
-            encodedType <- panelCodes[[decodedType]]
-
-            # Then identify the numeral index of the requested panel amongst the available ones
-            # Coerce the recorded word to a numeral
-            # Numbers that would take more than two words to pronounce are already recorded as digits
-            panelID <- tail(head(words, parameterIndex-1), 1)
-            panelID <- ifelse(.isDigits(panelID), as.numeric(panelID), .digitalizeNumbers(panelID))
-            if (is.na(panelID)) {
-                return(NULL)
-            }
-
-            # Abort if the panel is not currently active
+            # Take control of the panel if it is currently there
             all_active <- rObjects$active_panels
-            panelIndex <- which(all_active$Type==encodedType & all_active$ID==panelID)
+            panelIndex <- which(all_active$Type==encodedSplit$Type & all_active$ID==encodedSplit$ID)
             if (length(panelIndex) == 0) {
-                showNotification(sprintf("Panel %s %s is not currently active", decodedType, panelID), type="error")
+                showNotification(sprintf("Panel %s is not currently active", decodedPanel), type="error")
                 return(NULL)
             }
 
-            voice <- paste(words[seq(parameterIndex+1, valueIndex-2)], collapse="")
-            choices <- colnames(pObjects$memory[[encodedType]])
-            parameterName <- .nearestValidChoice(voice, choices, max.edits=5)
-
-            # TODO: voice <- paste the relevant words together
-            voice <- paste(words[seq(valueIndex+1, length(words))], collapse=" ")
-            # TODO: identify which choices are available for (parameterName)
-            choices <- .getValidParameterChoices(parameterName, encodedType, se)
-            parameterValue <- .nearestValidChoice(voice, choices, max.edits=5)
-
-            encodedName <- paste0(encodedType, panelID)
-            updateSelectizeInput(session, paste0(encodedName, "_", parameterName), selected = parameterValue)
-
-            showNotification(sprintf("<Update panel> %s %s parameter %s to value %s", decodedType, panelID, parameterName, parameterValue), duration = NULL)
-            # Memorize last valid panel (even if the rest of the command failed)
-            pObjects$voiceLastEncodedPanel <- encodedName
-            showNotification(sprintf("<i>Panel memorized</i> [%s]", encodedName))
-        })
-
-        observeEvent(input[[.voiceSamePanelInput]], {
-            x <- input[[.voiceSamePanelInput]]
-            if (x != "") {
-                showNotification(sprintf("<Same panel> %s", x))
-            }
+            # Memorize last valid panel (only if the command succeeded)
+            showNotification(sprintf("<Control panel> %s", decodedPanel), type="message")
+            pObjects[[.voiceActivePanel]] <- encodedPanel
+            showNotification(sprintf("Active panel: %s", decodedPanel), id=.voiceActivePanel, duration=NULL)
         })
 
         #######################################################################

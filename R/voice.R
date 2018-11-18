@@ -1,24 +1,49 @@
 #' Nearest panel
 #'
-#' Identify the panel type name that is the smallest edit distance from a recorded voice input.
+#' Identify the decoded panel name that is the smallest edit distance from a recorded voice input.
 #'
-#' @param x Character string expected to match a panel type.
+#' @param x Character string expected to match a decoded panel identifier.
+#' See Details.
 #' @param max.edits Maximal number of mismatches allowed.
+#' @param memory A list of DataFrames, where each DataFrame corresponds to a panel type and contains the initial settings for each individual panel of that type.
 #'
-#' @return Encoded name of the matched panel type.
+#' @details
+#' A panel identifier is composed of:
+#' \itemize{
+#' \item a panel type (see \code{\link{panelTypes}}).
+#' \item a numeral identifier within panels of that type.
+#' }
 #'
-#' @rdname INTERNAL_nearest_panel_type
-.nearestPanelType <- function(x, max.edits=5) {
-    distances <- adist(x, y = panelTypes, partial=TRUE, ignore.case=TRUE)[1, ]
+#' @return Decoded name of the matched panel identifier.
+#'
+#' @rdname INTERNAL_nearest_decoded_panel
+.nearestDecodedPanel <- function(x, memory, max.edits=5) {
+    # Split the last word apart: it should be a number (e.g. "one" or "22")
+    voiceType <- gsub(" [[:alnum:]]+$", "", x)
+    voiceId <- gsub(".* ([[:alnum:]]+)$", "\\1", x)
 
-    # we don't want the "closest" at any cost (it can still be very far)
-    nearEnough <- distances[which(distances <= max.edits)]
-    if (length(nearEnough) == 0L){
-        return(character(0))
+    decodedType <- .nearestPanelType(voiceType, max.edits=5)
+    if (length(decodedType) != 1L) {
+        return(NULL)
+    }
+    encodedType <- panelCodes[[decodedType]]
+
+    # Then identify the numeral index of the requested panel amongst the available ones
+    maxPanels <- nrow(memory[[encodedType]])
+    # Coerce the recorded word to a numeral
+    # Numbers that would take more than two words to pronounce are already recorded as digits
+    voiceId <- ifelse(.isDigits(voiceId), as.numeric(voiceId), .digitalizeNumbers(voiceId))
+    if (is.na(voiceId)) {
+        return(NULL)
     }
 
-    nearestMatch <- panelTypes[names(which.min(nearEnough))]
-    nearestMatch
+    if (voiceId > maxPanels) {
+        showNotification(sprintf("'%s' max is %i", decodedType, maxPanels), type="error")
+        return(NULL)
+    }
+
+    decodedPanel <- paste (decodedType, voiceId)
+    decodedPanel
 }
 
 #' Nearest panel type

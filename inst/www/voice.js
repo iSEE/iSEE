@@ -1,23 +1,19 @@
 var voiceShowPanelInput = "voiceShowPanel";
 var voiceHidePanelInput = "voiceHidePanel";
 
-var voiceUpdatePanelInput = "voiceUpdatePanel";
-var voiceSamePanelInput = "voiceSamePanel";
+var voiceControlPanelInput = "voiceControlPanel";
 
 var initVoice = function() {
     if (annyang) {
         var commands = {
-            'show panel *panel': function(panel) {
+            'show (me|us) panel *panel': function(panel) {
                 Shiny.onInputChange(voiceShowPanelInput, panel);
             },
             'hide panel *panel': function(panel) {
                 Shiny.onInputChange(voiceHidePanelInput, panel);
             },
-            'update panel *blob': function(blob) {
-                Shiny.onInputChange(voiceUpdatePanelInput, blob);
-            },
-            'same panel *blob': function(blob) {
-                Shiny.onInputChange(voiceSamePanelInput, blob);
+            'control panel *panel': function(panel) {
+                Shiny.onInputChange(voiceControlPanelInput, panel);
             },
         };
         annyang.addCommands(commands);

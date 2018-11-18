@@ -41,8 +41,7 @@ Imports:
     viridisLite,
     cowplot,
     scales,
-    dplyr,
-    stringr
+    dplyr
 Suggests:
     testthat,
     BiocStyle,

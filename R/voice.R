@@ -67,7 +67,7 @@ prepareVoiceRecognition <- function(use=FALSE) {
 #'
 #' @rdname INTERNAL_nearest_panel_type
 .nearestPanelType <- function(x, max.edits=5) {
-    distances <- adist(x, y = panelTypes, partial=TRUE, ignore.case=TRUE)[1, ]
+    distances <- adist(x, y = panelTypes, partial=FALSE, ignore.case=TRUE)[1, ]
 
     # we don't want the "closest" at any cost (it can still be very far)
     nearEnough <- distances[which(distances <= max.edits)]

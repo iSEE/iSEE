@@ -4,6 +4,8 @@ var voiceHidePanelInput = "voiceHidePanel";
 var voiceControlPanelInput = "voiceControlPanel";
 var voiceShowActivePanelInput = "voiceShowActivePanel";
 
+var voiceColorByInput = "voiceColorBy";
+
 var initVoice = function() {
     if (annyang) {
         var showActivePanelCount = 0;
@@ -20,6 +22,9 @@ var initVoice = function() {
             'show (me) (us) (the) active panel': function() {
                 showActivePanelCount++;
                 Shiny.onInputChange(voiceShowActivePanelInput, showActivePanelCount);
+            },
+            'colo(u)r by *choice': function(choice) {
+                Shiny.onInputChange(voiceColorByInput, choice);
             },
         };
         annyang.addCommands(commands);

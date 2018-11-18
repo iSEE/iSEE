@@ -1744,12 +1744,12 @@ iSEE <- function(se,
         #######################################################################
 
         observeEvent(input[[.voiceShowPanelInput]], {
-            x <- input[[.voiceShowPanelInput]]
-            if (x != "") {
-                showNotification(sprintf("<Show panel> %s", x), type="message")
+            voice <- input[[.voiceShowPanelInput]]
+            if (voice != "") {
+                showNotification(sprintf("<Show panel> %s", voice), type="message")
             }
 
-            decodedPanel <- .nearestDecodedPanel(x, memory, max.edits=5)
+            decodedPanel <- .nearestDecodedPanel(voice, memory, max.edits=5)
             if (is.null(decodedPanel)) { return(NULL) }
             encodedPanel <- .decoded2encoded(decodedPanel)
             encodedSplit <- .split_encoded(encodedPanel)
@@ -1769,12 +1769,12 @@ iSEE <- function(se,
         })
 
         observeEvent(input[[.voiceHidePanelInput]], {
-            x <- input[[.voiceHidePanelInput]]
-            if (x != "") {
-                showNotification(sprintf("<Hide panel> %s", x), type="message")
+            voice <- input[[.voiceHidePanelInput]]
+            if (voice != "") {
+                showNotification(sprintf("<Hide panel> %s", voice), type="message")
             }
 
-            decodedPanel <- .nearestDecodedPanel(x, memory, max.edits=5)
+            decodedPanel <- .nearestDecodedPanel(voice, memory, max.edits=5)
             if (is.null(decodedPanel)) { return(NULL) }
             encodedPanel <- .decoded2encoded(decodedPanel)
             encodedSplit <- .split_encoded(encodedPanel)
@@ -1797,12 +1797,12 @@ iSEE <- function(se,
         })
 
         observeEvent(input[[.voiceControlPanelInput]], {
-            x <- input[[.voiceControlPanelInput]]
-            if (x != "") {
-                showNotification(sprintf("<Control panel> %s", x), type="message")
+            voice <- input[[.voiceControlPanelInput]]
+            if (voice != "") {
+                showNotification(sprintf("<Control panel> %s", voice), type="message")
             }
 
-            decodedPanel <- .nearestDecodedPanel(x, memory, max.edits=5)
+            decodedPanel <- .nearestDecodedPanel(voice, memory, max.edits=5)
             if (is.null(decodedPanel)) { return(NULL) }
             encodedPanel <- .decoded2encoded(decodedPanel)
             encodedSplit <- .split_encoded(encodedPanel)
@@ -1830,6 +1830,38 @@ iSEE <- function(se,
             encodedSplit <- .split_encoded(encodedPanel)
             decodedPanel <- .decode_panel_name(encodedSplit$Type, encodedSplit$ID)
             showNotification(sprintf("Active panel: %s", decodedPanel), id=.voiceActivePanel, duration=NULL)
+        })
+
+        observeEvent(input[[.voiceColorByInput]], {
+            # TODO: refactor next 4 lines into function
+            activePanel <- pObjects[[.voiceActivePanel]]
+            if (is.na(activePanel)) {
+                showNotification("No active panel", type="error")
+                return(NULL)
+            }
+
+            voice <- input[[.voiceColorByInput]]
+            if (voice != "") {
+                showNotification(sprintf("<Color by> %s", voice), type="message")
+            }
+
+            activeSplit <- .split_encoded(activePanel)
+
+            # Check if the choice matches one of the available titles
+            if (activeSplit$Type %in% row_point_plot_types) {
+                create_FUN <- .define_color_options_for_row_plots
+            } else {
+                create_FUN <- .define_color_options_for_column_plots
+            }
+            choices <- create_FUN(se)
+            matchedChoice <- .nearestValidChoice(voice, choices, max.edits=5)
+            if (length(matchedChoice) != 1L) {
+                return(NULL)
+            }
+
+            updateSelectizeInput(session, paste(activePanel, "ColorBy", sep="_"), selected=matchedChoice)
+            showNotification(sprintf("<Color by> %s", matchedChoice), type="message")
+            rObjects[[activePanel]] <- .increment_counter(isolate(rObjects[[activePanel]]))
         })
 
         #######################################################################

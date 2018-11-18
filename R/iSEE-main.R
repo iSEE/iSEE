@@ -35,6 +35,7 @@
 #' @param appTitle A string indicating the title to be displayed in the app.
 #' If not provided, the app displays the version info of \code{\link{iSEE}}.
 #' @param runLocal A logical indicating whether the app is to be run locally or remotely on a server, which determines how documentation will be accessed.
+#' @param voice A logical indicating whether the voice recognition should be enabled.
 #'
 #' @details
 #' Users can pass default parameters via DataFrame objects in \code{redDimArgs} and \code{featAssayArgs}.
@@ -106,37 +107,38 @@
 #'
 #' app <- iSEE(sce)
 #' if (interactive()) {
-#'   shiny::runApp(app, port = 1234)
+#'   shiny::runApp(app, port=1234)
 #' }
 iSEE <- function(se,
-        redDimArgs=NULL,
-        colDataArgs=NULL,
-        featAssayArgs=NULL,
-        rowStatArgs=NULL,
-        rowDataArgs=NULL,
-        sampAssayArgs=NULL,
-        colStatArgs=NULL,
-        customDataArgs=NULL,
-        customStatArgs=NULL,
-        heatMapArgs=NULL,
-        redDimMax=5,
-        colDataMax=5,
-        featAssayMax=5,
-        rowStatMax=5,
-        rowDataMax=5,
-        sampAssayMax=5,
-        colStatMax=5,
-        customDataMax=5,
-        customStatMax=5,
-        heatMapMax=5,
-        initialPanels=NULL,
-        annotFun = NULL,
-        customDataFun = NULL,
-        customStatFun = NULL,
-        colormap=ExperimentColorMap(),
-        tour = NULL,
-        appTitle = NULL,
-        runLocal=TRUE) {
+    redDimArgs=NULL,
+    colDataArgs=NULL,
+    featAssayArgs=NULL,
+    rowStatArgs=NULL,
+    rowDataArgs=NULL,
+    sampAssayArgs=NULL,
+    colStatArgs=NULL,
+    customDataArgs=NULL,
+    customStatArgs=NULL,
+    heatMapArgs=NULL,
+    redDimMax=5,
+    colDataMax=5,
+    featAssayMax=5,
+    rowStatMax=5,
+    rowDataMax=5,
+    sampAssayMax=5,
+    colStatMax=5,
+    customDataMax=5,
+    customStatMax=5,
+    heatMapMax=5,
+    initialPanels=NULL,
+    annotFun=NULL,
+    customDataFun=NULL,
+    customStatFun=NULL,
+    colormap=ExperimentColorMap(),
+    tour=NULL,
+    appTitle=NULL,
+    runLocal=TRUE,
+    voice=FALSE) {
 
     # Save the original name of the input object for renaming in the tracker
     se_name <- deparse(substitute(se))
@@ -152,17 +154,17 @@ iSEE <- function(se,
     se <- .precompute_UI_info(se, customDataFun, customStatFun)
 
     # Throw an error if the colormap supplied is not compatible with the object
-    isColorMapCompatible(colormap, se, error = TRUE)
+    isColorMapCompatible(colormap, se, error=TRUE)
 
     # Setting up inputs for DT::datatable something to play with.
-    feature_data <- data.frame(rowData(se), check.names = FALSE)
+    feature_data <- data.frame(rowData(se), check.names=FALSE)
     rownames(feature_data) <- rownames(se)
     if (ncol(feature_data)==0L) {
         feature_data$Present <- !logical(nrow(feature_data))
     }
     feature_data_select_col <- .safe_field_name("Selected", colnames(feature_data))
 
-    sample_data <- data.frame(colData(se), check.names = FALSE)
+    sample_data <- data.frame(colData(se), check.names=FALSE)
     rownames(sample_data) <- colnames(se)
     if (ncol(sample_data)==0L) {
         sample_data$Present <- !logical(nrow(sample_data))
@@ -184,88 +186,88 @@ iSEE <- function(se,
 
     iSEE_ui <- dashboardPage(
         dashboardHeader(
-            title = ifelse(is.null(appTitle),
+            title=ifelse(is.null(appTitle),
                 paste0("iSEE - interactive SummarizedExperiment Explorer v", packageVersion("iSEE")),
                 appTitle),
-            titleWidth = 750,
+            titleWidth=750,
 
-            dropdownMenu(type = "tasks",
-                icon = icon("wrench fa-1g"),
-                badgeStatus = NULL,
-                headerText = "Diagnostics",
+            dropdownMenu(type="tasks",
+                icon=icon("wrench fa-1g"),
+                badgeStatus=NULL,
+                headerText="Diagnostics",
                 notificationItem(
-                    text = actionButton(
+                    text=actionButton(
                         'open_linkgraph', label="Examine panel chart",
-                        icon = icon("chain"),
+                        icon=icon("chain"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon = icon(""), status = "primary"
+                    icon=icon(""), status="primary"
                 ),
                 notificationItem(
-                    text = actionButton(
+                    text=actionButton(
                         'getcode_all', label="Extract the R code",
-                        icon = icon("magic"),
+                        icon=icon("magic"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon = icon(""), status = "primary"
+                    icon=icon(""), status="primary"
                 ),
                 notificationItem(
-                    text = actionButton(
+                    text=actionButton(
                         'get_panel_settings', label="Display panel settings",
-                         icon = icon("clipboard"),
+                         icon=icon("clipboard"),
                          style=.actionbutton_biocstyle
                     ),
-                    icon = icon(""), status = "primary"
+                    icon=icon(""), status="primary"
                 )
             ), # end of dropdownMenu
 
-            dropdownMenu(type = "tasks",
-                icon = icon("question-circle fa-1g"),
-                badgeStatus = NULL,
-                headerText = "Documentation",
+            dropdownMenu(type="tasks",
+                icon=icon("question-circle fa-1g"),
+                badgeStatus=NULL,
+                headerText="Documentation",
                 notificationItem(
-                    text = actionButton(
+                    text=actionButton(
                         "tour_firststeps", "Click me for a quick tour",
                         icon("hand-o-right"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon = icon(""), # tricking it to not have additional icon
-                    status = "primary"
+                    icon=icon(""), # tricking it to not have additional icon
+                    status="primary"
                 ),
                 notificationItem(
-                    text = actionButton(
+                    text=actionButton(
                         'open_vignette', label="Open the vignette",
-                        icon = icon("book"),
+                        icon=icon("book"),
                         style=.actionbutton_biocstyle,
-                        onclick = ifelse(runLocal, "",
+                        onclick=ifelse(runLocal, "",
                             # Use web vignette, with varying paths depending on whether we're release or devel.
                             sprintf("window.open('http://bioconductor.org/packages/%s/bioc/vignettes/iSEE/inst/doc/basic.html', '_blank')",
                                 ifelse(unlist(packageVersion("iSEE"))[2] %% 2L==0L, "release", "devel")
                             )
                         )
                     ),
-                    icon = icon(""), status = "primary"
+                    icon=icon(""), status="primary"
                 )
             ),
 
-            dropdownMenu(type = "tasks",
-                icon = icon("info fa-1g"),
-                badgeStatus = NULL,
-                headerText = "Additional information",
+            dropdownMenu(type="tasks",
+                icon=icon("info fa-1g"),
+                badgeStatus=NULL,
+                headerText="Additional information",
                 notificationItem(
-                    text = actionButton(
+                    text=actionButton(
                         'session_info', label="About this session",
-                        icon = icon("window-maximize"),
+                        icon=icon("window-maximize"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon = icon(""), status = "primary"
+                    icon=icon(""), status="primary"
                 ),
                 notificationItem(
-                    text = actionButton('iSEE_info', label="About iSEE",
-                        icon = icon("heart"),
+                    text=actionButton('iSEE_info', label="About iSEE",
+                        icon=icon("heart"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon = icon(""), status = "primary"
+                    icon=icon(""), status="primary"
                 )
             ) # end of dropdownMenu
         ), # end of dashboardHeader
@@ -281,12 +283,9 @@ iSEE <- function(se,
         ), # end of dashboardSidebar
 
         dashboardBody(
-            includeCSS(system.file(package = "iSEE", "www", "iSEE.css")),
+            includeCSS(system.file(package="iSEE", "www", "iSEE.css")),
             useShinyjs(),
-            singleton(tags$head(
-                tags$script(src="iSEE/annyang.min.js"),
-                includeScript(system.file(package = "iSEE", "www", "voice.js"))
-            )),
+            prepareVoiceRecognition(voice),
             introjsUI(), # must be included in UI
 
             # for error message handling
@@ -303,7 +302,7 @@ iSEE <- function(se,
 
             uiOutput("allPanels")
         ), # end of dashboardBody
-        skin = "black"
+        skin="black"
     ) # end of dashboardPage
 
     #######################################################################
@@ -334,8 +333,8 @@ iSEE <- function(se,
 
         # Storage for all the reactive objects
         rObjects <- reactiveValues(
-            active_panels = active_panels,
-            rerendered = 1L
+            active_panels=active_panels,
+            rerendered=1L
         )
 
         for (mode in all_panel_types) {
@@ -374,41 +373,41 @@ iSEE <- function(se,
 
         observeEvent(input$tour_firststeps, {
             if(is.null(tour)) {
-                tour <- read.delim(system.file("extdata", "intro_firststeps.txt",package = "iSEE"),
-                    sep=";", stringsAsFactors = FALSE,row.names = NULL)
+                tour <- read.delim(system.file("extdata", "intro_firststeps.txt",package="iSEE"),
+                    sep=";", stringsAsFactors=FALSE,row.names=NULL)
             }
-            introjs(session, options = list(steps = tour))
+            introjs(session, options=list(steps=tour))
         })
 
         if (!is.null(tour)) {
             # Only triggers _after_ panels are fully setup, so observers are properly ID'd.
-            session$onFlushed(function() { introjs(session, options = list(steps = tour)) })
+            session$onFlushed(function() { introjs(session, options=list(steps=tour)) })
         }
 
         observeEvent(input$getcode_all, {
             spawn_editor <- function(editor_name, select_only) {
-                aceEditor(editor_name, mode="r",theme = "solarized_light", autoComplete = "live",
-                    value = paste0(.track_it_all(rObjects$active_panels, pObjects,
+                aceEditor(editor_name, mode="r",theme="solarized_light", autoComplete="live",
+                    value=paste0(.track_it_all(rObjects$active_panels, pObjects,
                         se_name, ecm_name, cdf_name, csf_name, se_cmds), collapse="\n"),
                     height="600px")
             }
             showModal(modalDialog(
-                title = "My code", size = "l",fade = TRUE,
-                footer = NULL, easyClose = TRUE,
+                title="My code", size="l",fade=TRUE,
+                footer=NULL, easyClose=TRUE,
                 p("You can click anywhere in the code editor and select all the code using",
                   "a keyboard shortcut that depends on your operating system (e.g. Ctrl/Cmd + A",
                   "followed by Ctrl/Cmd + C).",
                   "This will copy the selected parts to the clipboard."),
                 tabsetPanel(
                     tabPanel("All commands",
-                        aceEditor("report_all_cmds", mode="r", theme = "solarized_light", autoComplete = "live",
-                            value = paste0(.track_it_all(rObjects$active_panels, pObjects,
+                        aceEditor("report_all_cmds", mode="r", theme="solarized_light", autoComplete="live",
+                            value=paste0(.track_it_all(rObjects$active_panels, pObjects,
                                     se_name, ecm_name, cdf_name, csf_name, se_cmds), collapse="\n"),
                             height="600px")
                         ),
                     tabPanel("Selection only",
-                        aceEditor("report_select_cmds", mode="r", theme = "solarized_light", autoComplete = "live",
-                            value = paste0(.track_selections_only(rObjects$active_panels, pObjects, se_name, se_cmds), collapse="\n"),
+                        aceEditor("report_select_cmds", mode="r", theme="solarized_light", autoComplete="live",
+                            value=paste0(.track_selections_only(rObjects$active_panels, pObjects, se_name, se_cmds), collapse="\n"),
                             height="600px")
                         )
                     )
@@ -417,18 +416,18 @@ iSEE <- function(se,
 
         observeEvent(input$get_panel_settings, {
             showModal(modalDialog(
-                title = "Panel settings", size = "l",fade = TRUE,
-                footer = NULL, easyClose = TRUE,
-                aceEditor("acereport_r", mode="r", theme = "solarized_light", autoComplete = "live",
-                    value = paste0(.report_memory(rObjects$active_panels, pObjects$memory), collapse="\n"),
+                title="Panel settings", size="l", fade=TRUE,
+                footer=NULL, easyClose=TRUE,
+                aceEditor("acereport_r", mode="r", theme="solarized_light", autoComplete="live",
+                    value=paste0(.report_memory(rObjects$active_panels, pObjects$memory), collapse="\n"),
                     height="600px")
             ))
         })
 
         observeEvent(input$session_info, {
             showModal(modalDialog(
-                title = "Session information", size = "l",fade = TRUE,
-                footer = NULL, easyClose = TRUE,
+                title="Session information", size="l",fade=TRUE,
+                footer=NULL, easyClose=TRUE,
                 tagList(renderPrint({
                     sessionInfo()
                 }))
@@ -437,8 +436,8 @@ iSEE <- function(se,
 
         observeEvent(input$iSEE_info, {
             showModal(modalDialog(
-                title = "About iSEE", size = "m", fade = TRUE,
-                footer = NULL, easyClose = TRUE,
+                title="About iSEE", size="m", fade=TRUE,
+                footer=NULL, easyClose=TRUE,
                 tagList(
                     iSEE_info, br(), br(),
                     HTML("If you use this package, please use the following citation information:"),
@@ -451,8 +450,8 @@ iSEE <- function(se,
 
         observeEvent(input$open_linkgraph, {
             showModal(modalDialog(
-                title = "Graph of inter-panel links", size = "l",
-                fade = TRUE, footer = NULL, easyClose = TRUE,
+                title="Graph of inter-panel links", size="l",
+                fade=TRUE, footer=NULL, easyClose=TRUE,
                 renderPlot({
                     .snapshot_graph_linkedpanels(rObjects$active_panels, pObjects)
                 })
@@ -461,7 +460,7 @@ iSEE <- function(se,
 
         if (runLocal) {
             observeEvent(input$open_vignette, {
-                path <- system.file("doc","basic.html", package="iSEE")
+                path <- system.file("doc", "basic.html", package="iSEE")
                 if (path=="") {
                     showNotification("vignette has not been built on this system", type="error")
                 } else {
@@ -1055,8 +1054,8 @@ iSEE <- function(se,
 
                         observe({
                             force(rObjects$rerendered)
-                            updateSelectizeInput(session, cur_field, choices = feature_choices, server = TRUE,
-                                selected = pObjects$memory[[mode0]][id0, field0][[1]])
+                            updateSelectizeInput(session, cur_field, choices=feature_choices, server=TRUE,
+                                selected=pObjects$memory[[mode0]][id0, field0][[1]])
                         })
                     })
                 }
@@ -1082,8 +1081,8 @@ iSEE <- function(se,
 
                         observe({
                             force(rObjects$rerendered)
-                            updateSelectizeInput(session, cur_field, choices = sample_choices, server = TRUE,
-                                selected = pObjects$memory[[mode0]][id0, field0][[1]])
+                            updateSelectizeInput(session, cur_field, choices=sample_choices, server=TRUE,
+                                selected=pObjects$memory[[mode0]][id0, field0][[1]])
                         })
                     })
                 }
@@ -1228,9 +1227,9 @@ iSEE <- function(se,
                         # Observers for the linked color by feature name. This also updates the table_links information.
                         observe({
                             replot <- .setup_table_observer(mode0, id0, pObjects, rObjects, input, session,
-                                                            by_field = .colorByField, title = color_title0,
-                                                            select_field = name_field0, tab_field = table_field0,
-                                                            select_choices = choices0, param='color')
+                                                            by_field=.colorByField, title=color_title0,
+                                                            select_field=name_field0, tab_field=table_field0,
+                                                            select_choices=choices0, param='color')
                             if (replot) {
                                 rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                             }
@@ -1321,9 +1320,9 @@ iSEE <- function(se,
                     # X-axis table observer.
                     observe({
                         replot <- .setup_table_observer(mode0, id0, pObjects, rObjects, input, session,
-                                                        by_field = byx_field0, title = byx_title0,
-                                                        select_field = x_name_field0, tab_field = x_name_tab0,
-                                                        select_choices = choices0, param = 'xaxis')
+                                                        by_field=byx_field0, title=byx_title0,
+                                                        select_field=x_name_field0, tab_field=x_name_tab0,
+                                                        select_choices=choices0, param="xaxis")
                         if (replot) {
                             .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
                         }
@@ -1346,8 +1345,8 @@ iSEE <- function(se,
                     # Y-axis table observer.
                     observe({
                         replot <- .setup_table_observer(mode0, id0, pObjects, rObjects, input, session,
-                                                        select_field = y_name_field0, tab_field = y_name_tab0,
-                                                        select_choices = choices0, param = 'yaxis')
+                                                        select_field=y_name_field0, tab_field=y_name_tab0,
+                                                        select_choices=choices0, param="yaxis")
                         if (replot) {
                             .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
                         }
@@ -1863,16 +1862,16 @@ iSEE <- function(se,
 
                     combined <- union(pObjects$memory[[mode0]][id0, .heatMapFeatName][[1]], incoming)
                     updateSelectizeInput(
-                        session, paste0(plot_name, "_", .heatMapFeatName), choices = feature_choices,
-                        server = TRUE, selected = combined)
+                        session, paste0(plot_name, "_", .heatMapFeatName), choices=feature_choices,
+                        server=TRUE, selected=combined)
                 }, ignoreInit=TRUE)
 
                 # Triggering an update of the selected elements : clear features, trigger replotting (caught by validate)
                 clear_button <- paste0(plot_name, "_", .heatMapClearFeatures)
                 observeEvent(input[[clear_button]], {
                     pObjects$memory[[mode0]][[.heatMapFeatName]][[id0]] <- integer()
-                    updateSelectizeInput(session, paste0(plot_name, "_", .heatMapFeatName), choices = feature_choices,
-                                         server = TRUE, selected = integer())
+                    updateSelectizeInput(session, paste0(plot_name, "_", .heatMapFeatName), choices=feature_choices,
+                                         server=TRUE, selected=integer())
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                 }, ignoreInit=TRUE)
 
@@ -1905,7 +1904,7 @@ iSEE <- function(se,
                 output[[legend_field]] <- renderPlot({
                     force(rObjects[[legend_field]])
                     gg <- pObjects$cached_info[[plot_name]]
-                    cowplot::plot_grid(plotlist = gg, ncol=1)
+                    cowplot::plot_grid(plotlist=gg, ncol=1)
                 })
 
                 # Defining link information.
@@ -1924,8 +1923,9 @@ iSEE <- function(se,
                 observeEvent(input[[cluster_button]], {
                     emat <- pObjects$coordinates[[plot_name]]
                     new_order <- match(.cluster_genes(emat), names(feature_choices))
-                    updateSelectizeInput(session, paste0(plot_name, "_", .heatMapFeatName), choices = feature_choices,
-                                         server = TRUE, selected = new_order)
+                    updateSelectizeInput(
+                        session, paste0(plot_name, "_", .heatMapFeatName), choices=feature_choices,
+                        server=TRUE, selected=new_order)
                 })
             })
 
@@ -1980,5 +1980,5 @@ iSEE <- function(se,
     # Launching the app.
     #######################################################################
 
-    shinyApp(ui = iSEE_ui, server = iSEE_server)
+    shinyApp(ui=iSEE_ui, server=iSEE_server)
 }

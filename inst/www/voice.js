@@ -6,13 +6,16 @@ var voiceControlPanelInput = "voiceControlPanel";
 var initVoice = function() {
     if (annyang) {
         var commands = {
-            'show (me|us) panel *panel': function(panel) {
+            'show (me) (us) panel *panel': function(panel) {
                 Shiny.onInputChange(voiceShowPanelInput, panel);
             },
             'hide panel *panel': function(panel) {
                 Shiny.onInputChange(voiceHidePanelInput, panel);
             },
-            'control panel *panel': function(panel) {
+            '(take) control (of) (the) panel *panel': function(panel) {
+                Shiny.onInputChange(voiceControlPanelInput, panel);
+            },
+            'show': function(panel) {
                 Shiny.onInputChange(voiceControlPanelInput, panel);
             },
         };

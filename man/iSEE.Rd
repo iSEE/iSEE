@@ -13,7 +13,7 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featAssayArgs = NULL,
   customStatMax = 5, heatMapMax = 5, initialPanels = NULL,
   annotFun = NULL, customDataFun = NULL, customStatFun = NULL,
   colormap = ExperimentColorMap(), tour = NULL, appTitle = NULL,
-  runLocal = TRUE)
+  runLocal = TRUE, voice = FALSE)
 }
 \arguments{
 \item{se}{An object that is coercible to \linkS4class{SingleCellExperiment}.}
@@ -76,6 +76,8 @@ The function should accept two parameters, \code{se} and \code{row_index}, and r
 If not provided, the app displays the version info of \code{\link{iSEE}}.}
 
 \item{runLocal}{A logical indicating whether the app is to be run locally or remotely on a server, which determines how documentation will be accessed.}
+
+\item{voice}{A logical indicating whether the voice recognition should be enabled.}
 }
 \value{
 A Shiny app object is returned, for interactive data exploration of the \linkS4class{SummarizedExperiment} or \linkS4class{SingleCellExperiment} object.
@@ -129,6 +131,6 @@ sce
 
 app <- iSEE(sce)
 if (interactive()) {
-  shiny::runApp(app, port = 1234)
+  shiny::runApp(app, port=1234)
 }
 }

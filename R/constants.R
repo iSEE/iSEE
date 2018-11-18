@@ -229,6 +229,8 @@
 
 .voiceActivePanel <- "voiceActivePanel"
 
+.voiceShowActivePanelInput = "voiceShowActivePanel"
+
 .voiceShowPanelInput <- "voiceShowPanel"
 .voiceHidePanelInput <- "voiceHidePanel"
 

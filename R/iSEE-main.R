@@ -1821,6 +1821,17 @@ iSEE <- function(se,
             showNotification(sprintf("Active panel: %s", decodedPanel), id=.voiceActivePanel, duration=NULL)
         })
 
+        observeEvent(input[[.voiceShowActivePanelInput]], {
+            encodedPanel <- pObjects[[.voiceActivePanel]]
+            if (is.na(encodedPanel)) {
+                showNotification("No active panel", type="error")
+                return(NULL)
+            }
+            encodedSplit <- .split_encoded(encodedPanel)
+            decodedPanel <- .decode_panel_name(encodedSplit$Type, encodedSplit$ID)
+            showNotification(sprintf("Active panel: %s", decodedPanel), id=.voiceActivePanel, duration=NULL)
+        })
+
         #######################################################################
         # Heat map section. ----
         #######################################################################

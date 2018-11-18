@@ -1,3 +1,13 @@
+prepareVoiceRecognition <- function(use=FALSE) {
+    if (!use) {
+        return(list())
+    }
+    singleton(tags$head(
+        tags$script(src="iSEE/annyang.min.js"),
+        includeScript(system.file(package = "iSEE", "www", "voice.js"))
+    ))
+}
+
 #' Nearest panel
 #'
 #' Identify the decoded panel name that is the smallest edit distance from a recorded voice input.
@@ -98,17 +108,19 @@
     choices
 }
 
+# .numbersText ----
 # Note: consider package 'english' if we ever need to convert digital numbers to text
+# allow common vocal typos
 .numbersText <- c(
-    "one"=1,
-    "two"=2, "to"=2, "too"=2, # allow common vocal typos
-    "three"=3,
-    "four"=4, "for"=4,
-    "five"=5,
+    "one"=1, "on"=1,
+    "two"=2, "to"=2, "too"=2, "tour"=2, "tool"=2, "tooth"=2,
+    "three"=3, "free"=3, "freed"=3,
+    "four"=4, "for"=4, "fore"=4, "fall"=4,
+    "five"=5, "hive"=5,
     "six"=6,
     "seven"=7,
-    "eight"=8, "ate"=8,
-    "nine"=9)
+    "eight"=8, "ate"=8, "late"=8,
+    "nine"=9, "dine"=9, "line"=9)
 
 #' Substitute numbers from words to numerals
 #'

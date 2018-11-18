@@ -1824,17 +1824,18 @@ iSEE <- function(se,
         })
 
         observeEvent(input[[.voiceShowActivePanelInput]], {
-            encodedPanel <- pObjects[[.voiceActivePanel]]
-            if (is.na(encodedPanel)) {
+            # TODO: refactor next 4 lines into function
+            activePanel <- pObjects[[.voiceActivePanel]]
+            if (is.na(activePanel)) {
                 showNotification("No active panel", type="error")
                 return(NULL)
             }
-            encodedSplit <- .split_encoded(encodedPanel)
-            decodedPanel <- .decode_panel_name(encodedSplit$Type, encodedSplit$ID)
-            showNotification(sprintf("Active panel: %s", decodedPanel), id=.voiceActivePanel, duration=NULL)
+            activeSplit <- .split_encoded(activePanel)
+            activeDecoded <- .decode_panel_name(activeSplit$Type, activeSplit$ID)
+            showNotification(sprintf("Active panel: %s", activeDecoded), id=.voiceActivePanel, duration=NULL)
         })
 
-        observeEvent(input[[.voiceColorByInput]], {
+        observeEvent(input[[.voiceColorUsingInput]], {
             # TODO: refactor next 4 lines into function
             activePanel <- pObjects[[.voiceActivePanel]]
             if (is.na(activePanel)) {
@@ -1842,9 +1843,9 @@ iSEE <- function(se,
                 return(NULL)
             }
 
-            voice <- input[[.voiceColorByInput]]
+            voice <- input[[.voiceColorUsingInput]]
             if (voice != "") {
-                showNotification(sprintf("<Color by> %s", voice), type="message")
+                showNotification(sprintf("<Color using> %s", voice), type="message")
             }
 
             activeSplit <- .split_encoded(activePanel)
@@ -1862,8 +1863,33 @@ iSEE <- function(se,
             }
 
             updateSelectizeInput(session, paste(activePanel, "ColorBy", sep="_"), selected=matchedChoice)
+            showNotification(sprintf("<Color using> %s", matchedChoice), type="message")
+        })
+        
+        observeEvent(input[[.voiceColorByInput]], {
+            # TODO: refactor next 4 lines into function
+            activePanel <- pObjects[[.voiceActivePanel]]
+            if (is.na(activePanel)) {
+                showNotification("No active panel", type="error")
+                return(NULL)
+            }
+            
+            voice <- input[[.voiceColorByInput]]
+            if (voice != "") {
+                showNotification(sprintf("<Color by> %s", voice), type="message")
+            }
+            
+            activeSplit <- .split_encoded(activePanel)
+            
+            # Check if the choice matches one of the available values
+            choices <- .colorByChoices(activeSplit$Type, activeSplit$ID, se)
+            matchedChoice <- .nearestValidChoice(voice, choices, max.edits=5)
+            if (length(matchedChoice) != 1L) {
+                return(NULL)
+            }
+            # TODO: generalize "ColorByColData" below
+            updateSelectizeInput(session, paste(activePanel, "ColorByColData", sep="_"), selected=matchedChoice)
             showNotification(sprintf("<Color by> %s", matchedChoice), type="message")
-            rObjects[[activePanel]] <- .increment_counter(isolate(rObjects[[activePanel]]))
         })
 
         #######################################################################

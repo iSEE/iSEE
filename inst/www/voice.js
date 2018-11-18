@@ -4,6 +4,7 @@ var voiceHidePanelInput = "voiceHidePanel";
 var voiceControlPanelInput = "voiceControlPanel";
 var voiceShowActivePanelInput = "voiceShowActivePanel";
 
+var voiceColorUsingInput = "voiceColorUsing";
 var voiceColorByInput = "voiceColorBy";
 
 var initVoice = function() {
@@ -16,12 +17,15 @@ var initVoice = function() {
             'hide panel *panel': function(panel) {
                 Shiny.onInputChange(voiceHidePanelInput, panel);
             },
-            '(take) control (of) (the) panel *panel': function(panel) {
+            '(give me) control (of) (the) panel *panel': function(panel) {
                 Shiny.onInputChange(voiceControlPanelInput, panel);
             },
             'show (me) (us) (the) active panel': function() {
                 showActivePanelCount++;
                 Shiny.onInputChange(voiceShowActivePanelInput, showActivePanelCount);
+            },
+            'colo(u)r using *choice': function(choice) {
+                Shiny.onInputChange(voiceColorUsingInput, choice);
             },
             'colo(u)r by *choice': function(choice) {
                 Shiny.onInputChange(voiceColorByInput, choice);

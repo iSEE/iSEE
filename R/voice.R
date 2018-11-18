@@ -146,3 +146,25 @@ prepareVoiceRecognition <- function(use=FALSE) {
 .isDigits <- function(x) {
     grepl("^[[:digit:]]+$", x)
 }
+
+.colorByChoices <- function(mode, id, se) {
+    
+    colorby_field <- paste0(mode, id, "_", .colorByField)
+    colorby_title <- input[[colorby_field]]
+    if (colorby_title == .colorByNothingTitle) {
+        choices <- character(0)
+    } else if (colorby_title == .colorByColDataTitle) {
+        choices <- colnames(colData(se))
+    } else if (FALSE) {
+        choices <- character(0)
+    } else if (FALSE) {
+        choices <- character(0)
+    } else if (FALSE) {
+        choices <- character(0)
+    } else if (FALSE) {
+        choices <- character(0)
+    } else {
+        stop("TODO")
+    }
+    choices
+}

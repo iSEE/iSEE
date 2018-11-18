@@ -124,6 +124,16 @@
 .shapeByColData <- "ShapeByColData"
 .shapeByRowData <- "ShapeByRowData"
 
+# Point sizing parameters. ----
+
+.sizeByNothingTitle <- "None"
+.sizeByColDataTitle <- "Column data"
+.sizeByRowDataTitle <- "Row data"
+
+.sizeByField <- "SizeBy"
+.sizeByColData <- "SizeByColData"
+.sizeByRowData <- "SizeByRowData"
+
 # Point selection parameters. ----
 .selectParamBoxOpen <- "SelectBoxOpen"
 

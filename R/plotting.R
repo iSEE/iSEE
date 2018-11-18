@@ -2,8 +2,8 @@
 # Aesthetics constants -----
 ############################################
 
-.all_aes_names <- c("x", "y", "color", "shape", "fill", "group")
-.all_aes_values <- c("X", "Y", "ColorBy", "ShapeBy", "FillBy", "GroupBy")
+.all_aes_names <- c("x", "y", "color", "shape", "size", "fill", "group")
+.all_aes_values <- c("X", "Y", "ColorBy", "ShapeBy", "SizeBy", "FillBy", "GroupBy")
 names(.all_aes_values) <- .all_aes_names
 
 ############################################
@@ -391,7 +391,7 @@ names(.all_aes_values) <- .all_aes_names
 
     downsample_cmds <- .downsample_points(param_choices, setup_out$envir)
 
-    plot_out <- .create_plot(setup_out$envir, param_choices, ..., color_lab = setup_out$color_lab, shape_lab = setup_out$shape_lab, by_row = by_row)
+    plot_out <- .create_plot(setup_out$envir, param_choices, ..., color_lab = setup_out$color_lab, shape_lab = setup_out$shape_lab, size_lab = setup_out$size_lab, by_row = by_row)
 
     return(list(cmd_list = c(setup_out$cmd_list, list(plot=c(downsample_cmds, plot_out$cmds))), xy = xy, plot = plot_out$plot))
 }
@@ -482,10 +482,12 @@ names(.all_aes_values) <- .all_aes_names
     if (by_row) {
         color_out <- .define_colorby_for_row_plot(param_choices, se)
         shape_out <- .define_shapeby_for_row_plot(param_choices, se)
+        size_out <- .define_sizeby_for_row_plot(param_choices, se)
         facet_out <- .define_facetby_for_row_plot(param_choices, se)
     } else {
         color_out <- .define_colorby_for_column_plot(param_choices, se)
         shape_out <- .define_shapeby_for_column_plot(param_choices, se)
+        size_out <- .define_sizeby_for_column_plot(param_choices, se)
         facet_out <- .define_facetby_for_column_plot(param_choices, se)
     }
 
@@ -493,6 +495,8 @@ names(.all_aes_values) <- .all_aes_names
     color_lab <- color_out$label
     more_data_cmds <- .add_command(more_data_cmds, shape_out$cmds, name='shape')
     shape_lab <- shape_out$label
+    more_data_cmds <- .add_command(more_data_cmds, size_out$cmds, name='size')
+    size_lab <- size_out$label
     more_data_cmds <- .add_command(more_data_cmds, facet_out)
 
     # Ensuring that colors are either factor or numeric.
@@ -528,7 +532,8 @@ names(.all_aes_values) <- .all_aes_names
         cmd_list=list(data=more_data_cmds$processed, select=select_cmds, setup=specific),
         envir=eval_env,
         color_lab=color_lab,
-        shape_lab=shape_lab))
+        shape_lab=shape_lab,
+        size_lab=size_lab))
 }
 
 #' Choose the plot type
@@ -744,8 +749,10 @@ names(.all_aes_values) <- .all_aes_names
 #' Set to \code{NULL} to have no y-axis label.
 #' @param color_lab A character label for the color scale.
 #' Set to \code{NULL} to have no color label.
-#' @param shape_lab A character label for the color scale.
+#' @param shape_lab A character label for the shape scale.
 #' Set to \code{NULL} to have no shape label.
+#' @param size_lab A character label for the size scale.
+#' Set to \code{NULL} to have no size label.
 #' @param title A character title for the plot.
 #' Set to \code{NULL} to have no title.
 #' @param by_row A logical scalar specifying whether the plot deals with row-level metadata.
@@ -766,15 +773,16 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.create_plot}}
 #'
 #' @importFrom ggplot2 ggplot coord_cartesian theme_bw theme element_text
-.scatter_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, shape_lab, title, by_row = FALSE, is_subsetted = FALSE, is_downsampled = FALSE) {
+.scatter_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, shape_lab, size_lab, title, by_row = FALSE, is_subsetted = FALSE, is_downsampled = FALSE) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +"
 
     # Adding points to the plot.
     color_set <- !is.null(plot_data$ColorBy)
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
-    new_aes <- .build_aes(color = color_set, shape = shape_set)
-    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set)
+    size_set <- param_choices[[.sizeByField]] != .sizeByNothingTitle
+    new_aes <- .build_aes(color = color_set, shape = shape_set, size = size_set)
+    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set, size_set)
 
     # Defining the color commands.
     if (by_row) {
@@ -784,7 +792,7 @@ names(.all_aes_values) <- .all_aes_names
     }
 
     # Adding axes labels.
-    plot_cmds[["labs"]] <- .build_labs(x = x_lab, y = y_lab, color = color_lab, shape = shape_lab, title = title)
+    plot_cmds[["labs"]] <- .build_labs(x = x_lab, y = y_lab, color = color_lab, shape = shape_lab, size = size_lab, title = title)
 
     # Defining boundaries if zoomed.
     bounds <- param_choices[[.zoomData]][[1]]
@@ -842,8 +850,10 @@ names(.all_aes_values) <- .all_aes_names
 #' Set to \code{NULL} to have no y-axis label.
 #' @param color_lab A character label for the color scale.
 #' Set to \code{NULL} to have no color label.
-#' @param shape_lab A character label for the color scale.
+#' @param shape_lab A character label for the shape scale.
 #' Set to \code{NULL} to have no shape label.
+#' @param size_lab A character label for the size scale.
+#' Set to \code{NULL} to have no size label.
 #' @param title A character title for the plot.
 #' Set to \code{NULL} to have no title.
 #' @param horizontal A logical value that indicates whether violins should be drawn horizontally
@@ -883,7 +893,7 @@ names(.all_aes_values) <- .all_aes_names
 #' @importFrom ggplot2 ggplot geom_violin coord_cartesian theme_bw theme
 #' coord_flip scale_x_discrete scale_y_discrete
 .violin_plot <- function(
-    plot_data, param_choices, x_lab, y_lab, color_lab, shape_lab, title,
+    plot_data, param_choices, x_lab, y_lab, color_lab, shape_lab, size_lab, title,
     horizontal = FALSE, by_row = FALSE, is_subsetted = FALSE, is_downsampled = FALSE) {
 
     plot_cmds <- list()
@@ -897,8 +907,9 @@ names(.all_aes_values) <- .all_aes_names
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
-    new_aes <- .build_aes(color = color_set, shape = shape_set, alt=c(x="jitteredX"))
-    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set)
+    size_set <- param_choices[[.sizeByField]] != .sizeByNothingTitle
+    new_aes <- .build_aes(color = color_set, shape = shape_set, size=size_set, alt=c(x="jitteredX"))
+    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set, size_set)
 
     # Defining the color commands.
     if (by_row) {
@@ -914,7 +925,7 @@ names(.all_aes_values) <- .all_aes_names
         x_lab <- tmp
     }
 
-    plot_cmds[["labs"]] <- .build_labs(x = x_lab, y = y_lab, color = color_lab, shape = shape_lab, title = title)
+    plot_cmds[["labs"]] <- .build_labs(x = x_lab, y = y_lab, color = color_lab, shape = shape_lab, size = size_lab, title = title)
 
     # Defining boundaries if zoomed. This requires some finesse to deal with horizontal plots,
     # where the point selection is computed on the flipped coordinates.
@@ -1042,8 +1053,10 @@ plot.data$Y <- tmp;")
 #' Set to \code{NULL} to have no title.
 #' @param by_row A logical scalar specifying whether the plot deals with row-level metadata.
 #' @param is_subsetted A logical scalar specifying whether \code{plot_data} was subsetted during \code{\link{.process_selectby_choice}}.
-#' @param shape_lab A character label for the color scale.
+#' @param shape_lab A character label for the shape scale.
 #' Set to \code{NULL} to have no shape label.
+#' @param size_lab A character label for the size scale.
+#' Set to \code{NULL} to have no size label.
 #'
 #' @return
 #' For \code{\link{.square_setup}}, a character vector of commands to be parsed and evaluated by \code{\link{.extract_plotting_data}} to set up the required fields.
@@ -1068,7 +1081,7 @@ plot.data$Y <- tmp;")
 #'
 #' @importFrom ggplot2 ggplot geom_tile coord_cartesian theme_bw theme
 #' scale_x_discrete scale_y_discrete guides
-.square_plot <- function(plot_data, param_choices, se, x_lab, y_lab, color_lab, shape_lab, title, by_row = FALSE, is_subsetted = FALSE) {
+.square_plot <- function(plot_data, param_choices, se, x_lab, y_lab, color_lab, shape_lab, size_lab, title, by_row = FALSE, is_subsetted = FALSE) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
     plot_cmds[["tile"]] <-
@@ -1078,8 +1091,9 @@ plot.data$Y <- tmp;")
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
-    new_aes <- .build_aes(color = color_set, shape = shape_set, alt=c(x="jitteredX", y="jitteredY"))
-    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set)
+    size_set <- param_choices[[.sizeByField]] != .sizeByNothingTitle
+    new_aes <- .build_aes(color = color_set, shape = shape_set, size = size_set, alt=c(x="jitteredX", y="jitteredY"))
+    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set, size_set)
 
     # Defining the color commands.
     if (by_row) {
@@ -1093,7 +1107,7 @@ plot.data$Y <- tmp;")
     plot_cmds[["scale_color"]] <- color_scale_cmd
 
     # Creating labels.
-    plot_cmds[["labs"]] <- .build_labs(x = x_lab, y = y_lab, color = color_lab, shape = shape_lab, title = title)
+    plot_cmds[["labs"]] <- .build_labs(x = x_lab, y = y_lab, color = color_lab, shape = shape_lab, size = size_lab, title = title)
 
     # Defining boundaries if zoomed.
     bounds <- param_choices[[.zoomData]][[1]]
@@ -1324,8 +1338,11 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 "scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +",
                 deparse(col_choice)),
             sprintf(
-                "geom_point(aes(x=%s, y=%s), data=subset(plot.data, ColorBy == 'TRUE'), col=%s, alpha=1, size=5*%i) +",
-                x_aes, y_aes, deparse(col_choice), param_choices[[.plotPointSize]])
+                "geom_point(aes(x=%s, y=%s), data=subset(plot.data, ColorBy == 'TRUE'), col=%s, alpha=1%s) +",
+                x_aes, y_aes, deparse(col_choice), 
+                ifelse(param_choices[[.sizeByField]] == .sizeByNothingTitle,
+                       paste0(", size=5*", param_choices[[.plotPointSize]]), 
+                       ""))
         )
     }
 
@@ -1355,8 +1372,11 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 "scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +",
                 deparse(col_choice)),
             sprintf(
-                "geom_point(aes(x=%s, y=%s), data=subset(plot.data, ColorBy == 'TRUE'), col=%s, alpha=1, size=5*%i) +",
-                x_aes, y_aes, deparse(col_choice), param_choices[[.plotPointSize]])
+                "geom_point(aes(x=%s, y=%s), data=subset(plot.data, ColorBy == 'TRUE'), col=%s, alpha=1%s) +",
+                x_aes, y_aes, deparse(col_choice), 
+                ifelse(param_choices[[.sizeByField]] == .sizeByNothingTitle,
+                       paste0(", size=5*", param_choices[[.plotPointSize]]),
+                       ""))
         )
 
     } else if (color_choice==.colorBySampNameTitle) {
@@ -1487,6 +1507,63 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 }
 
 ############################################
+# Internal functions: sizing ----
+############################################
+
+#' Define sizing variables
+#'
+#' Generates the commands necessary to define the variables to size by in the data.frame to be supplied to ggplot.
+#'
+#' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
+#' @param se A SingleCellExperiment object.
+#'
+#' @details
+#' These functions generate commands to extract the variable to use for sizing individual points in row- or column-based plots,
+#' i.e., where each point is a feature or sample, respectively.
+#' The commands should be evaluated in the evaluation environment generated in \code{\link{.extract_plotting_data}}.
+#'
+#' In these commands, the sizing variable is added to the \code{plot.data} data.frame in the \code{SizeBy} field.
+#' This is distinct from \code{.add_size_to_*_plot}, which generates the commands for sizing a ggplot by the values in \code{SizeBy}.
+#'
+#' @return
+#' A list containing \code{label}, a string to use for labelling the size scale;
+#' and \code{cmds}, a character vector of commands to add a \code{SizeBy} field to \code{plot.data}.
+#' Alternatively \code{NULL}, if no variable to size by is specified.
+#'
+#' @author Charlotte Soneson
+#' @rdname INTERNAL_define_size_variables
+#' @seealso
+#' \code{\link{.extract_plotting_data}}
+#'
+#' @importFrom SummarizedExperiment assay
+.define_sizeby_for_column_plot <- function(param_choices, se) {
+    size_choice <- param_choices[[.sizeByField]]
+    
+    if (size_choice==.sizeByColDataTitle) {
+        covariate_name <- param_choices[[.sizeByColData]]
+        return(list(label=covariate_name,
+                    cmds=sprintf("plot.data$SizeBy <- colData(se)[,%s];", deparse(covariate_name))))
+        
+    } else {
+        return(NULL)
+    }
+}
+
+#' @rdname INTERNAL_define_size_variables
+.define_sizeby_for_row_plot <- function(param_choices, se) {
+    size_choice <- param_choices[[.sizeByField]]
+    
+    if (size_choice==.sizeByRowDataTitle) {
+        covariate_name <- param_choices[[.sizeByRowData]]
+        return(list(label=covariate_name,
+                    cmds=sprintf("plot.data$SizeBy <- rowData(se)[,%s];", deparse(covariate_name))))
+        
+    } else {
+        return(NULL)
+    }
+}
+
+############################################
 # Internal functions: Point selection ----
 ############################################
 
@@ -1608,7 +1685,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' \code{\link{.square_plot}}
 #'
 #' @importFrom ggplot2 geom_point geom_blank
-.create_points <- function(param_choices, selected, aes, color) {
+.create_points <- function(param_choices, selected, aes, color, size) {
     plot_cmds <- list()
 
     # If there is already coloring information available in the aes, don't add an
@@ -1617,45 +1694,60 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     if (color) {
         default_color <- ""
     } else {
-        default_color <- sprintf("color='%s', ", param_choices[[.colorByDefaultColor]])
+        default_color <- sprintf(", color='%s'", param_choices[[.colorByDefaultColor]])
+    }
+    
+    ## If there is already size information available in the aes, don't add an 
+    ## additional size=statement to the geom_point() command.
+    if (size) {
+        common_size <- ""
+    } else {
+        common_size <- sprintf(", size=%s", param_choices[[.plotPointSize]])
     }
 
     if (selected) {
         select_effect <- param_choices[[.selectEffect]]
         if (select_effect==.selectColorTitle) {
             plot_cmds[["select_other"]] <- sprintf(
-                "geom_point(%s, alpha=%s, data=subset(plot.data, !SelectBy), %ssize=%s) +",
+                "geom_point(%s, alpha=%s, data=subset(plot.data, !SelectBy)%s%s) +",
                 aes, param_choices[[.plotPointAlpha]], default_color,
-                param_choices[[.plotPointSize]]
+                common_size
+                # param_choices[[.plotPointSize]]
             )
             plot_cmds[["select_color"]] <- sprintf(
-                "geom_point(%s, alpha=%s, data=subset(plot.data, SelectBy), color=%s, size=%s) +",
+                "geom_point(%s, alpha=%s, data=subset(plot.data, SelectBy), color=%s%s) +",
                 aes, param_choices[[.plotPointAlpha]],
-                deparse(param_choices[[.selectColor]]), param_choices[[.plotPointSize]]
+                deparse(param_choices[[.selectColor]]), common_size
+                # param_choices[[.plotPointSize]]
             )
         }
         if (select_effect==.selectTransTitle) {
             plot_cmds[["select_other"]] <- sprintf(
-                "geom_point(%s, subset(plot.data, !SelectBy), alpha = %.2f, %ssize=%s) +",
+                "geom_point(%s, subset(plot.data, !SelectBy), alpha = %.2f%s%s) +",
                 aes, param_choices[[.selectTransAlpha]], default_color,
-                param_choices[[.plotPointSize]]
+                common_size
+                # param_choices[[.plotPointSize]]
             )
             plot_cmds[["select_alpha"]] <- sprintf(
-                "geom_point(%s, subset(plot.data, SelectBy), %ssize=%s) +",
-                aes, default_color, param_choices[[.plotPointSize]]
+                "geom_point(%s, subset(plot.data, SelectBy)%s%s) +",
+                aes, default_color, common_size
+                # param_choices[[.plotPointSize]]
             )
         }
         if (select_effect==.selectRestrictTitle) {
             plot_cmds[["select_restrict"]] <- sprintf(
-                "geom_point(%s, alpha = %s, plot.data, %ssize=%s) +",
+                "geom_point(%s, alpha = %s, plot.data%s%s) +",
                 aes, param_choices[[.plotPointAlpha]], default_color,
-                param_choices[[.plotPointSize]])
+                common_size
+                # param_choices[[.plotPointSize]]
+            )
         }
     } else {
         plot_cmds[["point"]] <- sprintf(
-            "geom_point(%s, alpha = %s, plot.data, %ssize=%s) +",
+            "geom_point(%s, alpha = %s, plot.data%s%s) +",
             aes, param_choices[[.plotPointAlpha]], default_color,
-            param_choices[[.plotPointSize]]
+            common_size
+            # param_choices[[.plotPointSize]]
         )
     }
 
@@ -1725,6 +1817,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' \code{color} in the aesthetic instructions (default: \code{FALSE}).
 #' @param shape A \code{logical} that indicates whether to enable
 #' \code{shape} in the aesthetic instructions (default: \code{FALSE}).
+#' @param size A \code{logical} that indicates whether to enable
+#' \code{size} in the aesthetic instructions (default: \code{FALSE}).
 #' @param fill A \code{logical} that indicates whether to enable
 #' \code{fill} in the aesthetic instructions (default: \code{FALSE}).
 #' @param group A \code{logical} that indicates whether to enable
@@ -1743,9 +1837,9 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #'
 #' @importFrom ggplot2 aes
 .build_aes <- function(
-    x = TRUE, y = TRUE, color = FALSE, shape = FALSE, fill = FALSE,
+    x = TRUE, y = TRUE, color = FALSE, shape = FALSE, size = FALSE, fill = FALSE,
     group = FALSE, alt=NULL) {
-    active_aes <- .all_aes_values[c(x, y, color, shape, fill, group)]
+    active_aes <- .all_aes_values[c(x, y, color, shape, size, fill, group)]
     if (!is.null(alt)) {
         active_aes <- c(active_aes, alt)
         active_aes <- active_aes[!duplicated(names(active_aes), fromLast=TRUE)]
@@ -1778,6 +1872,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' @param y x The character label for the vertical axis.
 #' @param color The character title for the color scale legend.
 #' @param shape The character title for the point shape legend.
+#' @param size The character title for the point size legend.
 #' @param fill The character title for the color fill legend.
 #' @param group The character title for the group legend.
 #' @param title The character title for the plot title.
@@ -1796,8 +1891,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' \code{\link{.square_plot}}
 #'
 #' @importFrom ggplot2 labs
-.build_labs <- function(x = NULL, y = NULL, color = NULL, shape = NULL, fill = NULL, group = NULL, title = NULL, subtitle = NULL){
-    labs_specs <- list(x, y, color, shape, fill, group, title, subtitle)
+.build_labs <- function(x = NULL, y = NULL, color = NULL, shape = NULL, size = NULL, fill = NULL, group = NULL, title = NULL, subtitle = NULL){
+    labs_specs <- list(x, y, color, shape, size, fill, group, title, subtitle)
     names(labs_specs) <- .all_labs_names
     labs_specs <- labs_specs[lengths(labs_specs)>0L]
     if (identical(length(labs_specs), 0L)){

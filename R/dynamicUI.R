@@ -1195,7 +1195,7 @@
 #' @param raw_names A character vector of names.
 #'
 #' @return
-#' An integer vector of \code{1:length(raw_names)}, with names based on \code{raw_names}.
+#' An integer vector of \code{seq_along(raw_names)}, with names based on \code{raw_names}.
 #'
 #' @details
 #' This function protects against non-unique names by converting them to integer indices, which can be used for indexing within the function.

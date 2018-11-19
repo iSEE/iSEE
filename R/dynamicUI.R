@@ -1,20 +1,15 @@
 #' Generate the panel organization UI
 #'
-#' Generates the user interface for the sidebar where the organization of the panels is controlled.
+#' Generates the user interface to control the organization of the panels, specifically their sizes.
 #'
 #' @param active_panels A data.frame specifying the currently active panels, see the output of \code{\link{.setup_initial}}.
 #'
 #' @return
-#' A HTML tag object containing the UI elements for the panel organization sidebar.
+#' A HTML tag object containing the UI elements for panel sizing.
 #'
 #' @details
-#' This function will create a \code{\link[shinydashboard]{box}} for each active panel of each type,
-#' in the order specified in \code{active_panels}.
-#' Each box follows a colour-coding scheme for the panel type.
-#'
-#' Each box will contain options to move panels up or down, though these options will be disabled for the first and last boxes, respectively.
-#' Users can also change the width or height of the panels via a button that opens a modal.
-#' Finally, a button is available to delete the panel.
+#' This function will create a series of UI elements for all active panels, specifying the width or height of the panels.
+#' We use a select element for the width as this is very discrete, and we use a slider for the height.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_panel_organization
@@ -23,9 +18,8 @@
 #' \code{\link{.panel_generation}},
 #' \code{\link{.setup_initial}}
 #'
-#' @importFrom shiny actionButton tagList icon
+#' @importFrom shiny tagList selectInput sliderInput
 #' @importFrom shinydashboard box
-#' @importFrom shinyjs disabled
 .panel_organization <- function(active_panels) {
     N <- nrow(active_panels)
     collected <- vector("list", N)
@@ -34,21 +28,13 @@
     for (i in seq_len(N)) {
         mode <- active_panels$Type[i]
         id <- active_panels$ID[i]
-
-        # Disabling the buttons if we're at the top or bottom.
-        upFUN <- downFUN <- identity
-        if (i==1L) {
-            upFUN <- disabled
-        }
-        if (i==N) {
-            downFUN <- disabled
-        }
+        prefix <- paste0(mode, id, "_")
 
         ctrl_panel <- box(
-            actionButton(paste0(mode, id, "_", .organizationDiscard),"", icon=icon("trash fa-2x"), style="display:inline-block; margin:0"),
-            upFUN(actionButton(paste0(mode, id, "_", .organizationUp),"",icon=icon("arrow-circle-up fa-2x"), style="display:inline-block; margin:0")),
-            downFUN(actionButton(paste0(mode, id, "_", .organizationDown),"",icon=icon("arrow-circle-down fa-2x"), style="display:inline-block; margin:0")),
-            actionButton(paste0(mode, id, "_", .organizationModify),"", icon=icon("gear fa-2x"), style="display:inline-block; margin:0"),
+            selectInput(paste0(prefix, .organizationWidth), label="Width",
+                choices=seq(width_limits[1], width_limits[2]), selected=active_panels$Width[i]),
+            sliderInput(paste0(prefix, .organizationHeight), label="Height",
+                min=height_limits[1], max=height_limits[2], value=active_panels$Height[i], step=10),
             title=.decode_panel_name(mode, id), status="danger", width=NULL, solidHeader=TRUE
         )
 
@@ -257,10 +243,8 @@
             argsUpToDate <- param_choices[[.customArgs]] == param_choices[[.customVisibleArgs]]
             if (is.na(argsUpToDate) || argsUpToDate) {
                 button_label <- .buttonUpToDateLabel
-                button_FUN <- disabled
             } else {
                 button_label <- .buttonUpdateLabel
-                button_FUN <- identity
             }
 
             plot.param <- list(
@@ -1249,7 +1233,7 @@
 #' @param raw_names A character vector of names.
 #'
 #' @return
-#' An integer vector of \code{1:length(raw_names)}, with names based on \code{raw_names}.
+#' An integer vector of \code{seq_along(raw_names)}, with names based on \code{raw_names}.
 #'
 #' @details
 #' This function protects against non-unique names by converting them to integer indices, which can be used for indexing within the function.

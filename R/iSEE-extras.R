@@ -944,6 +944,9 @@ and Federico Marini (%s).",
 #' @param activeLabel Label of the button if active.
 #' @param session The \code{session} object passed to function given to \code{shinyServer}.
 #'
+#' @return 
+#' The status of the button in the current \code{session} is changed, and a \code{NULL} is invisibly returned.
+#' 
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_disableButtonIf
 #'
@@ -957,4 +960,5 @@ and Federico Marini (%s).",
         enable(id)
         updateActionButton(session, id, activeLabel)
     }
+    invisible(NULL)
 }

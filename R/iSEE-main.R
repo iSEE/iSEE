@@ -184,12 +184,9 @@ iSEE <- function(se,
 
     iSEE_ui <- dashboardPage(
         dashboardHeader(
-            title = tags$span(
-            img(src = "iSEE/iSEE.png", height = "50px"),
-            ifelse(is.null(appTitle),
+            title = ifelse(is.null(appTitle),
                    paste0("iSEE - interactive SummarizedExperiment Explorer v", packageVersion("iSEE")),
-                   appTitle)
-            ),
+                   appTitle),
             titleWidth = 750,
 
             dropdownMenu(type = "tasks",

@@ -10,6 +10,7 @@ var voiceColorByInput = "voiceColorBy";
 var initVoice = function() {
     if (annyang) {
         var showActivePanelCount = 0;
+        var goodBoyCount = 0;
         var commands = {
             'show (me) (us) panel *panel': function(panel) {
                 Shiny.onInputChange(voiceShowPanelInput, panel);
@@ -30,6 +31,10 @@ var initVoice = function() {
             'colo(u)r by *choice': function(choice) {
                 Shiny.onInputChange(voiceColorByInput, choice);
             },
+            'good boy': function() {
+                goodBoyCount++;
+                Shiny.onInputChange("voiceGoodBoyInput", goodBoyCount);
+            }
         };
         annyang.addCommands(commands);
         annyang.start();

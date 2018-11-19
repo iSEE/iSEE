@@ -1894,6 +1894,10 @@ iSEE <- function(se,
             updateSelectizeInput(session, paste(activePanel, "ColorByColData", sep="_"), selected=matchedChoice)
             showNotification(sprintf("<Color by> %s", matchedChoice), type="message")
         })
+        
+        observeEvent(input[["voiceGoodBoyInput"]], {
+            showNotification(HTML("<p style='font-size:300%; text-align:right;'>&#x1F357; &#x1F436;</p>"), type="message")
+        })
 
         #######################################################################
         # Heat map section. ----

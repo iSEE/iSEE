@@ -162,7 +162,8 @@ prepareVoiceRecognition <- function(use=FALSE) {
     } else if (FALSE) {
         choices <- character(0)
     } else {
-        stop("TODO")
+        showNotification("TODO", type="message")
+        warning("TODO")
     }
     choices
 }

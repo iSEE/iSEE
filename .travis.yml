@@ -4,12 +4,13 @@ language: r
 r: bioc-devel
 
 sudo: false
+cache: packages
 
 warnings_are_errors: false
 
 before_install:
     - Rscript -e 'install.packages("devtools")'
-    - Rscript -e 'devtools::install(dependencies = c("Depends", "Imports", "Suggests", "Enhances"))'
+    - Rscript -e 'devtools::install(dependencies = c("Depends", "Imports", "Suggests"))'
 
 r_build_args: "--no-manual --no-resave-data"
 r_check_args: "--no-build-vignettes --no-manual --timings"

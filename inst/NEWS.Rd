@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.3.2}{
+\itemize{
+    \item Move panel organization to modal with selectize to control panel display and ordering, remove sidebar.
+}
+}
+
 \section{iSEE VERSION 1.3.1}{
 \itemize{
     \item Fix invalid row index sent from tables in RStudio browser.

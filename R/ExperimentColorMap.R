@@ -7,7 +7,7 @@
 .defaultDiscreteColorMap <- function(n) {
     # Credit: https://stackoverflow.com/questions/8197559/emulate-ggplot2-default-color-palette
     hues=seq(15, 375, length=(n + 1))
-    hcl(h=hues, l=65, c=100)[1:n]
+    hcl(h=hues, l=65, c=100)[seq_len(n)]
 }
 
 .defaultColorMap <- function(discrete){
@@ -53,7 +53,7 @@
 #' \preformatted{
 #' function(n) {
 #'     hues=seq(15, 375, length=(n + 1))
-#'     hcl(h=hues, l=65, c=100)[1:n]
+#'     hcl(h=hues, l=65, c=100)[seq_len(n)]
 #' }
 #' }
 #'

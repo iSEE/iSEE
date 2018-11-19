@@ -1884,6 +1884,14 @@ iSEE <- function(se,
             colorby_field <- paste0(activeSplit$Type, activeSplit$ID, "_", .colorByField)
             colorby_title <- isolate(input[[colorby_field]])
             
+            if (colorby_title == "Column data") {
+                colorby_param <- "ColorByColData"
+            } else if (FALSE) {
+                colorby_param <- character(0)
+            } else {
+                warning("TODO")
+            }
+            
             # Check if the choice matches one of the available values
             choices <- .colorByChoices(colorby_title, se)
             matchedChoice <- .nearestValidChoice(voice, choices, max.edits=5)
@@ -1891,7 +1899,7 @@ iSEE <- function(se,
                 return(NULL)
             }
             # TODO: generalize "ColorByColData" below
-            updateSelectizeInput(session, paste(activePanel, "ColorByColData", sep="_"), selected=matchedChoice)
+            updateSelectizeInput(session, paste(activePanel, colorby_param, sep="_"), selected=matchedChoice)
             showNotification(sprintf("<Color by> %s", matchedChoice), type="message")
         })
         

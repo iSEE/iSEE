@@ -1879,6 +1879,53 @@ iSEE <- function(se,
             showNotification(sprintf("<Color by> %s", matchedChoice), type="message")
         })
         
+        observeEvent(input[[.voiceReceiveFromInput]], {
+            # TODO: refactor next 4 lines into function
+            activePanel <- pObjects[[.voiceActivePanel]]
+            if (is.na(activePanel)) {
+                showNotification("No active panel", type="error")
+                return(NULL)
+            }
+            
+            voice <- input[[.voiceReceiveFromInput]]
+            if (voice != "") {
+                showNotification(sprintf("<Receive from> %s", voice), type="message")
+            }
+            
+            decodedPanel <- .nearestDecodedPanel(voice, memory, max.edits=5)
+            if (is.null(decodedPanel)) { return(NULL) }
+            
+            updateSelectizeInput(session, paste(activePanel, .selectByPlot, sep="_"), selected=decodedPanel)
+            
+            showNotification(sprintf("<Receive from> %s", decodedPanel), type="message")
+        })
+        
+        observeEvent(input[[.voiceSendToInput]], {
+            # TODO: refactor next 4 lines into function
+            activePanel <- pObjects[[.voiceActivePanel]]
+            if (is.na(activePanel)) {
+                showNotification("No active panel", type="error")
+                return(NULL)
+            }
+            
+            activeSplit <- .split_encoded(activePanel)
+            activeDecoded <- .decode_panel_name(activeSplit$Type, activeSplit$ID)
+            
+            voice <- input[[.voiceSendToInput]]
+            if (voice != "") {
+                showNotification(sprintf("<Send to> %s", voice), type="message")
+            }
+            
+            decodedPanel <- .nearestDecodedPanel(voice, memory, max.edits=5)
+            if (is.null(decodedPanel)) { return(NULL) }
+            encodedPanel <- .decoded2encoded(decodedPanel)
+            encodedSplit <- .split_encoded(encodedPanel)
+            
+            updateSelectizeInput(session, paste(encodedPanel, .selectByPlot, sep="_"), selected=activeDecoded)
+            
+            showNotification(sprintf("<Send to> %s", decodedPanel), type="message")
+        })
+        
         observeEvent(input[["voiceGoodBoyInput"]], {
             showNotification(HTML("<p style='font-size:300%; text-align:right;'>&#x1F357; &#x1F436;</p>"), type="message")
         })

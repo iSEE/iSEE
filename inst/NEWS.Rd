@@ -6,7 +6,7 @@
     \item Move panel organization to modal with selectize to control panel display and ordering, remove sidebar.
     \item Add control of width and height of new panels.
     \item Enable voice control to add and remove panels.
-        Refactor internal functions.
+    \item Refactor internal functions.
 }
 }
 

@@ -237,6 +237,8 @@
 .voiceControlPanelInput <- "voiceControlPanel"
 .voiceColorUsingInput <- "voiceColorUsing"
 .voiceColorByInput <- "voiceColorBy"
+.voiceReceiveFromInput <- "voiceReceiveFrom"
+.voiceSendToInput <- "voiceSendTo"
 
 # Encoding and decoding names for user/shiny ----
 

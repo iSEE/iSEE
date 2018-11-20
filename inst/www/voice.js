@@ -6,6 +6,8 @@ var voiceShowActivePanelInput = "voiceShowActivePanel";
 
 var voiceColorUsingInput = "voiceColorUsing";
 var voiceColorByInput = "voiceColorBy";
+var voiceReceiveFromInput = "voiceReceiveFrom";
+var voiceSendToInput = "voiceSendTo";
 
 var initVoice = function() {
     if (annyang) {
@@ -30,6 +32,12 @@ var initVoice = function() {
             },
             'colo(u)r by *choice': function(choice) {
                 Shiny.onInputChange(voiceColorByInput, choice);
+            },
+            'receive(d) (selection) from (panel) *panel': function(panel) {
+                Shiny.onInputChange(voiceReceiveFromInput, panel);
+            },
+            'send (selection) to (panel) *panel': function(panel) {
+                Shiny.onInputChange(voiceSendToInput, panel);
             },
             'good boy': function() {
                 goodBoyCount++;

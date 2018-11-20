@@ -93,6 +93,11 @@ prepareVoiceRecognition <- function(use=FALSE) {
     nearestMatch
 }
 
+.nearestValidChoiceIndex <- function(x, choices, max.edits=5) {
+    nearestMatch <- .nearestValidChoice(x, names(choices), max.edits)
+    choices[nearestMatch]
+}
+
 .getValidParameterChoices <- function(parameterName, mode, se){
     if (parameterName == "ColorBy") {
         if (mode %in% row_point_plot_types) {
@@ -148,19 +153,17 @@ prepareVoiceRecognition <- function(use=FALSE) {
 }
 
 .colorByChoices <- function(colorby_title, se) {
-    
+
     if (colorby_title == .colorByNothingTitle) {
         choices <- character(0)
     } else if (colorby_title == .colorByColDataTitle) {
         choices <- colnames(colData(se))
-    } else if (FALSE) {
-        choices <- character(0)
-    } else if (FALSE) {
-        choices <- character(0)
-    } else if (FALSE) {
-        choices <- character(0)
-    } else if (FALSE) {
-        choices <- character(0)
+    } else if (colorby_title == .colorByFeatNameTitle) {
+        choices <- seq_len(nrow(se))
+        names(choices) <- rownames(se)
+    } else if (colorby_title == .colorBySampNameTitle) {
+        choices <- seq_len(ncol(se))
+        names(choices) <- colnames(se)
     } else {
         showNotification("TODO", type="message")
         warning("TODO")

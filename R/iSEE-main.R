@@ -71,7 +71,7 @@
 #' @importFrom shiny plotOutput uiOutput
 #' renderUI renderPlot renderPrint
 #' observe observeEvent reactiveValues isolate req
-#' actionButton selectizeInput 
+#' actionButton selectizeInput
 #' showModal modalDialog showNotification
 #' shinyApp runApp
 #' HTML br icon hr p em strong img
@@ -494,7 +494,7 @@ iSEE <- function(se,
             showModal(modalDialog(
                 title = "Panel organization", size = "m", fade = TRUE,
                 footer = NULL, easyClose = TRUE,
-                selectizeInput("panel_order", label=NULL, choices=available_panels, multiple=TRUE, 
+                selectizeInput("panel_order", label=NULL, choices=available_panels, multiple=TRUE,
                     selected=paste0(rObjects$active_panels$Type, rObjects$active_panels$ID),
                     options=list(plugins=list('remove_button', 'drag_drop')), width="500px"),
                 uiOutput("panelParams")
@@ -506,7 +506,7 @@ iSEE <- function(se,
             if (identical(input$panel_order, cur_active)) {
                 return(NULL)
             }
-            
+
             m <- match(input$panel_order, cur_active)
             new_active_panels <- rObjects$active_panels[m,,drop=FALSE]
 
@@ -1841,7 +1841,7 @@ iSEE <- function(se,
             updateSelectizeInput(session, paste(activePanel, "ColorBy", sep="_"), selected=matchedChoice)
             showNotification(sprintf("<Color using> %s", matchedChoice), type="message")
         })
-        
+
         observeEvent(input[[.voiceColorByInput]], {
             # TODO: refactor next 4 lines into function
             activePanel <- pObjects[[.voiceActivePanel]]
@@ -1849,36 +1849,44 @@ iSEE <- function(se,
                 showNotification("No active panel", type="error")
                 return(NULL)
             }
-            
+
             voice <- input[[.voiceColorByInput]]
             if (voice != "") {
                 showNotification(sprintf("<Color by> %s", voice), type="message")
             }
-            
+
             activeSplit <- .split_encoded(activePanel)
-            
+
             colorby_field <- paste0(activeSplit$Type, activeSplit$ID, "_", .colorByField)
             colorby_title <- isolate(input[[colorby_field]])
-            
-            if (colorby_title == "Column data") {
-                colorby_param <- "ColorByColData"
-            } else if (FALSE) {
-                colorby_param <- character(0)
-            } else {
-                warning("TODO")
-            }
-            
+
             # Check if the choice matches one of the available values
             choices <- .colorByChoices(colorby_title, se)
-            matchedChoice <- .nearestValidChoice(voice, choices, max.edits=5)
+
+            if (colorby_title == .colorByNothingTitle) {
+                return(NULL)
+            } else if (colorby_title == .colorByColDataTitle) {
+                colorby_param <- .colorByColData
+                matchedChoice <- .nearestValidChoice(voice, choices, max.edits=5)
+            } else if (colorby_title == .colorByFeatNameTitle) {
+                colorby_param <- .colorByFeatName
+                matchedChoice <- .nearestValidChoiceIndex(voice, choices, max.edits=5)
+            } else if (colorby_title == .colorBySampNameTitle) {
+                colorby_param <- .colorBySampName
+                matchedChoice <- .nearestValidChoiceIndex(voice, choices, max.edits=5)
+            } else {
+                warning("TODO")
+                matchedChoice <- c()
+            }
+
             if (length(matchedChoice) != 1L) {
                 return(NULL)
             }
-            # TODO: generalize "ColorByColData" below
-            updateSelectizeInput(session, paste(activePanel, colorby_param, sep="_"), selected=matchedChoice)
+
+            updateSelectizeInput(session, paste(activePanel, colorby_param, sep="_"), selected=matchedChoice, choices=choices, server=TRUE)
             showNotification(sprintf("<Color by> %s", matchedChoice), type="message")
         })
-        
+
         observeEvent(input[["voiceGoodBoyInput"]], {
             showNotification(HTML("<p style='font-size:300%; text-align:right;'>&#x1F357; &#x1F436;</p>"), type="message")
         })

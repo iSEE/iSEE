@@ -916,6 +916,8 @@ height_limits <- c(400L, 1000L)
 
 #' @importFrom shiny tagList HTML a br
 iSEE_info <- tagList(
+    HTML('<div align="center"><img src="iSEE/iSEE.png" width="150"></div>'),
+    br(),
     HTML(sprintf("iSEE is a project developed by
 Aaron Lun (%s),
 Charlotte Soneson (%s),
@@ -942,6 +944,9 @@ and Federico Marini (%s).",
 #' @param activeLabel Label of the button if active.
 #' @param session The \code{session} object passed to function given to \code{shinyServer}.
 #'
+#' @return 
+#' The status of the button in the current \code{session} is changed, and a \code{NULL} is invisibly returned.
+#' 
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_disableButtonIf
 #'
@@ -955,4 +960,5 @@ and Federico Marini (%s).",
         enable(id)
         updateActionButton(session, id, activeLabel)
     }
+    invisible(NULL)
 }

@@ -70,10 +70,10 @@
 #' @importFrom shiny plotOutput uiOutput
 #' renderUI renderPlot renderPrint
 #' observe observeEvent reactiveValues isolate req
-#' actionButton selectizeInput sliderInput
+#' actionButton selectizeInput 
 #' showModal modalDialog showNotification
 #' shinyApp runApp
-#' HTML br icon hr p em strong
+#' HTML br icon hr p em strong img
 #' tagList tags
 #' tabsetPanel tabPanel
 #' updateSelectInput updateSelectizeInput updateRadioButtons
@@ -185,9 +185,23 @@ iSEE <- function(se,
     iSEE_ui <- dashboardPage(
         dashboardHeader(
             title = ifelse(is.null(appTitle),
-                paste0("iSEE - interactive SummarizedExperiment Explorer v", packageVersion("iSEE")),
-                appTitle),
+                   paste0("iSEE - interactive SummarizedExperiment Explorer v", packageVersion("iSEE")),
+                   appTitle),
             titleWidth = 750,
+
+            dropdownMenu(type = "tasks",
+                icon = icon("object-group fa-1g"),
+                badgeStatus = NULL,
+                headerText = "Organization",
+                notificationItem(
+                    text = actionButton(
+                        'organize_panels', label="Organize panels",
+                        icon = icon("object-ungroup"),
+                        style=.actionbutton_biocstyle
+                    ),
+                    icon = icon(""), status = "primary"
+                )
+            ),
 
             dropdownMenu(type = "tasks",
                 icon = icon("wrench fa-1g"),
@@ -270,13 +284,7 @@ iSEE <- function(se,
             ) # end of dropdownMenu
         ), # end of dashboardHeader
 
-        dashboardSidebar(
-            selectizeInput("newPanelChoice", label="Choose panel type:",
-                selected=names(panelTypes)[1], choices=structure(names(panelTypes), names=panelTypes)),
-            actionButton("newPanelAdd", "Add new panel"),
-            hr(),
-            uiOutput("panelOrganization")
-        ), # end of dashboardSidebar
+        dashboardSidebar(disable=TRUE),
 
         dashboardBody(
             includeCSS(system.file(package = "iSEE", "www", "iSEE.css")),
@@ -472,23 +480,44 @@ iSEE <- function(se,
             .panel_generation(rObjects$active_panels, pObjects$memory, se)
         })
 
-        output$panelOrganization <- renderUI({
-            rObjects$rerendered <- .increment_counter(isolate(rObjects$rerendered))
-            .panel_organization(rObjects$active_panels)
+        n_available <- vapply(pObjects$memory, nrow, FUN.VALUE=0L)
+        enc_ids <- unlist(lapply(n_available, FUN=seq_len))
+        enc_names <- rep(names(pObjects$memory), n_available)
+        available_panels <- paste0(enc_names, enc_ids)
+        names(available_panels) <- .decode_panel_name(enc_names, enc_ids)
+
+        # Panel ordering, addition and deletion.
+        observeEvent(input$organize_panels, {
+            showModal(modalDialog(
+                title = "Panel organization", size = "m", fade = TRUE,
+                footer = NULL, easyClose = TRUE,
+                selectizeInput("panel_order", label=NULL, choices=available_panels, multiple=TRUE, 
+                    selected=paste0(rObjects$active_panels$Type, rObjects$active_panels$ID),
+                    options=list(plugins=list('remove_button', 'drag_drop')), width="500px"),
+                uiOutput("panelParams")
+            ))
         })
 
-        # Panel addition.
-        observeEvent(input$newPanelAdd, {
-            mode <- input$newPanelChoice
-            all_active <- rObjects$active_panels
-            all.memory <- pObjects$memory[[mode]]
-            first.missing <- setdiff(seq_len(nrow(all.memory)), all_active$ID[all_active$Type==mode])
-
-            if (length(first.missing)) {
-                rObjects$active_panels <- rbind(all_active, DataFrame(Type=mode, ID=first.missing[1], Width=4L, Height=500L))
-            } else {
-                showNotification(sprintf("maximum number of plots reached for mode '%s'", mode), type="error")
+        observeEvent(input$panel_order, {
+            cur_active <- paste0(rObjects$active_panels$Type, rObjects$active_panels$ID)
+            if (identical(input$panel_order, cur_active)) {
+                return(NULL)
             }
+            
+            m <- match(input$panel_order, cur_active)
+            new_active_panels <- rObjects$active_panels[m,,drop=FALSE]
+
+            to_add <- is.na(m)
+            if (any(to_add)) {
+                enc_add <- .split_encoded(input$panel_order[to_add])
+                new_active_panels[to_add,] <- data.frame(Type=enc_add$Type, ID=enc_add$ID, Width=4, Height=500L, stringsAsFactors=FALSE)
+            }
+
+            rObjects$active_panels <- new_active_panels
+        })
+
+        output$panelParams <- renderUI({
+            .panel_organization(rObjects$active_panels)
         })
 
         # Note: we need "local" so that each item gets its own number. Without it, the value
@@ -496,7 +525,6 @@ iSEE <- function(se,
         # of when the expression is evaluated.
 
         for (mode in all_panel_types) {
-
             max_plots <- nrow(pObjects$memory[[mode]])
             for (id in seq_len(max_plots)) {
                 local({
@@ -506,71 +534,13 @@ iSEE <- function(se,
                     panel_name <- paste0(mode0, id0)
                     max_plots0 <- max_plots
 
-                    # Panel removal.
-                    observeEvent(input[[paste0(prefix, .organizationDiscard)]], {
-                        all_active <- rObjects$active_panels
-                        current_type <- all_active$Type==mode0
-
-                        # Destroying links for point selection or tables.
-                        .destroy_selection_panel(pObjects, panel_name)
-                        if (mode0 %in% linked_table_types) {
-                            .destroy_table(pObjects, panel_name)
-                        } else if (mode0 %in% point_plot_types) {
-                            .delete_table_links(mode0, id0, pObjects)
-                        }
-
-                        # Triggering re-rendering of the UI via change to active_panels.
-                        index <- which(current_type & all_active$ID==id0)
-                        rObjects$active_panels <- rObjects$active_panels[-index,]
-                   }, ignoreInit=TRUE)
-
-                    # Panel shifting, up and down.
-                    observeEvent(input[[paste0(prefix, .organizationUp)]], {
-                        all_active <- rObjects$active_panels
-                        index <- which(all_active$Type==mode0 & all_active$ID==id0)
-                        if (index!=1L) {
-                            reindex <- seq_len(nrow(all_active))
-                            reindex[index] <- reindex[index]-1L
-                            reindex[index-1L] <- reindex[index-1L]+1L
-                            rObjects$active_panels <- all_active[reindex,]
-                        }
-                    }, ignoreInit=TRUE)
-
-                    observeEvent(input[[paste0(prefix, .organizationDown)]], {
-                        all_active <- rObjects$active_panels
-                        index <- which(all_active$Type==mode0 & all_active$ID==id0)
-                        if (index!=nrow(all_active)) {
-                            reindex <- seq_len(nrow(all_active))
-                            reindex[index] <- reindex[index]+1L
-                            reindex[index+1L] <- reindex[index+1L]-1L
-                            rObjects$active_panels <- all_active[reindex,]
-                        }
-                    }, ignoreInit=TRUE)
-
                     # Panel modification options.
-                    observeEvent(input[[paste0(prefix, .organizationModify)]], {
-                        all_active <- rObjects$active_panels
-                        index <- which(all_active$Type==mode0 & all_active$ID==id0)
-                        cur_width <- all_active$Width[index]
-                        cur_height <- all_active$Height[index]
-
-                        showModal(modalDialog(
-                            sliderInput(paste0(prefix, .organizationWidth), label="Width",
-                                        min=width_limits[1], max=width_limits[2], value=cur_width, step=1),
-                            sliderInput(paste0(prefix, .organizationHeight), label="Height",
-                                        min=height_limits[1], max=height_limits[2], value=cur_height, step=50),
-                            title=paste(.decode_panel_name(mode0, id0), "panel parameters"),
-                            easyClose=TRUE, size="m", footer=NULL
-                            )
-                        )
-                    })
-
                     width_name <- paste0(prefix, .organizationWidth)
                     observeEvent(input[[width_name]], {
                         all_active <- rObjects$active_panels
                         index <- which(all_active$Type==mode0 & all_active$ID==id0)
                         cur.width <- all_active$Width[index]
-                        new.width <- input[[width_name]]
+                        new.width <- as.integer(input[[width_name]])
                         if (!isTRUE(all.equal(new.width, cur.width))) {
                             rObjects$active_panels$Width[index] <- new.width
                         }

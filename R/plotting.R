@@ -1654,6 +1654,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' @param aes A string containing the ggplot aesthetic instructions.
 #' @param color A logical scalar indicating whether coloring information is
 #'   already included in the \code{aes}.
+#' @param size A logical scaler indicating whether sizing information is already
+#'   included in the \code{aes}.
 #'
 #' @return A character vector containing ggplot commands to add points
 #' to the plot.

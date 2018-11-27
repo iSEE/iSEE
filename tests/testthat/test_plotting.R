@@ -1700,7 +1700,7 @@ test_that("2d density contours can be added to scatter plots ", {
 
     out <- iSEE:::.scatter_plot(
         plot_data=data.frame(), param_choices=all_memory$redDimPlot,
-        "x_lab", "y_lab", "color_lab", "shape_lab", "title",
+        "x_lab", "y_lab", "color_lab", "shape_lab", "size_lab", "title",
         by_row=FALSE, is_subsetted=TRUE, is_downsampled=FALSE)
 
     expect_identical(out[["contours"]], "geom_density_2d(aes(x = X, y = Y), plot.data, colour='blue') +")
@@ -1717,7 +1717,7 @@ test_that("plots subsetted to no data contain a geom_blank command", {
 
     out <- iSEE:::.scatter_plot(
         plot_data=data.frame(), param_choices=all_memory$redDimPlot,
-        "x_lab", "y_lab", "color_lab", "shape_lab", "title",
+        "x_lab", "y_lab", "color_lab", "shape_lab", "size_lab", "title",
         by_row=FALSE, is_subsetted=TRUE, is_downsampled=FALSE)
 
     expect_identical(out[["select_blank"]], geom_blank_cmd)
@@ -1730,7 +1730,7 @@ test_that("plots subsetted to no data contain a geom_blank command", {
 
     out <- iSEE:::.violin_plot(
         plot_data=data.frame(), param_choices=all_memory$colDataPlot,
-        "x_lab", "y_lab", "color_lab", "shape_lab", "title",
+        "x_lab", "y_lab", "color_lab", "shape_lab", "size_lab", "title",
         by_row=FALSE, is_subsetted=TRUE, is_downsampled=FALSE)
 
     expect_identical(out[["select_blank"]], geom_blank_cmd)
@@ -1743,7 +1743,7 @@ test_that("plots subsetted to no data contain a geom_blank command", {
 
     out <- iSEE:::.square_plot(
         plot_data=data.frame(), param_choices=all_memory$colDataPlot, sce,
-        "x_lab", "y_lab", "color_lab", "shape_lab", "title",
+        "x_lab", "y_lab", "color_lab", "shape_lab", "size_lab", "title",
         by_row=FALSE, is_subsetted=TRUE)
 
     expect_identical(out[["select_blank"]], geom_blank_cmd)

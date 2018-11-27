@@ -69,7 +69,7 @@
 #' 
 #' @author Charlotte Soneson
 #' 
-#' @rdname INTERNAL_groupable
+#' @rdname INTERNAL_numeric
 #' @seealso
 #' \code{\link{.add_general_parameters}}
 .which_numeric <- function(x) {

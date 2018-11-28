@@ -2,17 +2,17 @@
 test_that("numbers can be numeralized from text", {
 
     out <- .digitalizeNumbers("one")
-    expect_identical(out, c("one"=1))
+    expect_identical(out, 1)
 
     out <- .digitalizeNumbers("two")
-    expect_identical(out, c("two"=2))
+    expect_identical(out, 2)
 
     # allow some vocal typos
     out <- .digitalizeNumbers("to")
-    expect_identical(out, c("to"=2))
+    expect_identical(out, 2)
 
     out <- .digitalizeNumbers("too")
-    expect_identical(out, c("too"=2))
+    expect_identical(out, 2)
 
 })
 

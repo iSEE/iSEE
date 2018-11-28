@@ -66,6 +66,7 @@ prepareVoiceRecognition <- function(use=FALSE) {
 #' @return Encoded name of the matched panel type.
 #'
 #' @rdname INTERNAL_nearest_panel_type
+#' @importFrom utils adist
 .nearestPanelType <- function(x, max.edits=5) {
     distances <- adist(x, y = panelTypes, partial=FALSE, ignore.case=TRUE)[1, ]
 
@@ -79,6 +80,7 @@ prepareVoiceRecognition <- function(use=FALSE) {
     nearestMatch
 }
 
+#' @importFrom utils adist
 .nearestValidChoice <- function(x, choices, max.edits=5) {
     names(choices) <- choices
     distances <- adist(x, y = choices, partial=FALSE, ignore.case=TRUE)[1, ]

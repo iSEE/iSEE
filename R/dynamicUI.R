@@ -49,6 +49,8 @@
 #' @param mode Panel mode. See \code{\link{panelCodes}}.
 #' @param id Integer scalar specifying the index of a panel of the specified type, for the current plot.
 #' @param active_panels A data.frame specifying the currently active panels, see the output of \code{\link{.setup_initial}}.
+#' @param width Grid width of the new panel (must be between 1 and 12).
+#' @param height Height of the new panel (in pixels).
 #'
 #' @return A data.frame specifying the new set of active panels.
 #' @rdname INTERNAL_show_panel
@@ -60,6 +62,8 @@
     active_panels
 }
 
+#' @param pObjects An environment containing \code{table_links}, a graph produced by \code{\link{.spawn_table_links}};
+#' and \code{memory}, a list of DataFrames containing parameters for each panel of each type.
 #' @rdname INTERNAL_show_panel
 #' @author Kevin Rue-Albrecht
 .hidePanel <- function(mode, id, active_panels, pObjects) {

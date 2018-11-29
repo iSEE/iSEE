@@ -290,7 +290,7 @@ iSEE <- function(se,
         dashboardBody(
             includeCSS(system.file(package="iSEE", "www", "iSEE.css")),
             useShinyjs(),
-            prepareVoiceRecognition(voice),
+            prepareSpeechRecognition(voice),
             introjsUI(), # must be included in UI
 
             # for error message handling
@@ -1870,10 +1870,10 @@ iSEE <- function(se,
                 matchedChoice <- .nearestValidChoice(voice, choices, max.edits=5)
             } else if (colorby_title == .colorByFeatNameTitle) {
                 colorby_param <- .colorByFeatName
-                matchedChoice <- .nearestValidChoiceIndex(voice, choices, max.edits=5)
+                matchedChoice <- .nearestValidNamedChoice(voice, choices, max.edits=5)
             } else if (colorby_title == .colorBySampNameTitle) {
                 colorby_param <- .colorBySampName
-                matchedChoice <- .nearestValidChoiceIndex(voice, choices, max.edits=5)
+                matchedChoice <- .nearestValidNamedChoice(voice, choices, max.edits=5)
             } else {
                 warning("TODO")
                 matchedChoice <- c()

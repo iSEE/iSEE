@@ -1,4 +1,10 @@
-prepareVoiceRecognition <- function(use=FALSE) {
+#' Prepare speech recognition
+#'
+#' @param use Whether speech recognition should be enabled.
+#'
+#' @return A list of HTML content to include in the user interface.
+#' @author Kevin Rue-Albrecht
+prepareSpeechRecognition <- function(use=FALSE) {
     if (!use) {
         return(list())
     }
@@ -27,6 +33,7 @@ prepareVoiceRecognition <- function(use=FALSE) {
 #' @return Decoded name of the matched panel identifier.
 #'
 #' @rdname INTERNAL_nearest_decoded_panel
+#' @author Kevin Rue-Albrecht
 .nearestDecodedPanel <- function(x, memory, max.edits=5) {
     # Split the last word apart: it should be a number (e.g. "one" or "22")
     voiceType <- gsub(" [[:alnum:]]+$", "", x)
@@ -48,8 +55,10 @@ prepareVoiceRecognition <- function(use=FALSE) {
     }
 
     if (voiceId > maxPanels) {
+        #nocov start
         showNotification(sprintf("'%s' max is %i", decodedType, maxPanels), type="error")
         return(NULL)
+        #nocov end
     }
 
     decodedPanel <- paste (decodedType, voiceId)
@@ -67,6 +76,7 @@ prepareVoiceRecognition <- function(use=FALSE) {
 #'
 #' @rdname INTERNAL_nearest_panel_type
 #' @importFrom utils adist
+#' @author Kevin Rue-Albrecht
 .nearestPanelType <- function(x, max.edits=5) {
     distances <- adist(x, y = panelTypes, partial=FALSE, ignore.case=TRUE)[1, ]
 
@@ -80,7 +90,25 @@ prepareVoiceRecognition <- function(use=FALSE) {
     nearestMatch
 }
 
+#' Nearest valid choice
+#' 
+#' @description 
+#' \code{.nearestValidChoice} is intended for unnamed character vectors.
+#' It returns the closest match to the given character value.
+#' 
+#' \code{.nearestValidNamedChoice} is intended for named vectors.
+#' It returns the value whose name is closest to the given character value.
+#' 
+#' @rdname INTERNAL_nearestValidChoice
+#'
+#' @param x Character value.
+#' @param choices Character vector of valid choices.
+#' @param max.edits Allowed edit distance.
+#'
+#' @return Nearest match amongst the choices within the allowed edit distance.
+#' 
 #' @importFrom utils adist
+#' @author Kevin Rue-Albrecht
 .nearestValidChoice <- function(x, choices, max.edits=5) {
     names(choices) <- choices
     distances <- adist(x, y = choices, partial=FALSE, ignore.case=TRUE)[1, ]
@@ -95,27 +123,69 @@ prepareVoiceRecognition <- function(use=FALSE) {
     nearestMatch
 }
 
-.nearestValidChoiceIndex <- function(x, choices, max.edits=5) {
+#' @rdname INTERNAL_nearestValidChoice
+.nearestValidNamedChoice <- function(x, choices, max.edits=5) {
     nearestMatch <- .nearestValidChoice(x, names(choices), max.edits)
     choices[nearestMatch]
 }
 
+#' List valid parameter choices
+#' 
+#' @rdname INTERNAL_getValidParameterChoices
+#'
+#' @param parameterName A column name in a \code{DataFrame} stored in \code{memory}.
+#' @param mode String specifying the encoded panel type of the current plot.
+#' @param se A SingleCellExperiment object.
+#'
+#' @return A character vector of valid parameter choices.
+#' @author Kevin Rue-Albecht
 .getValidParameterChoices <- function(parameterName, mode, se){
     if (parameterName == "ColorBy") {
         if (mode %in% row_point_plot_types) {
-            create_FUN <- .create_visual_box_for_row_plots
+            create_FUN <- .define_color_options_for_row_plots
         } else {
             create_FUN <- .define_color_options_for_column_plots
         }
     } else {
-        message(sprintf("Parameter '%s' not supported yet", parameterName))
+        warning(sprintf("Parameter '%s' not supported yet", parameterName))
         return(character(0))
     }
     choices <- create_FUN(se)
     choices
 }
 
-# .numbersText ----
+#' List valid coloring choices
+#' 
+#' @rdname INTERNAL_colorByChoices
+#'
+#' @param colorby_title A character value representing one of the coloring modes.
+#' @param se A SingleCellExperiment object.
+#'
+#' @return A character vector of valid coloring choices.
+#' @author Kevin Rue-Albecht
+.colorByChoices <- function(colorby_title, se) {
+    
+    if (colorby_title == .colorByNothingTitle) {
+        choices <- character(0)
+    } else if (colorby_title == .colorByColDataTitle) {
+        choices <- colnames(colData(se))
+    } else if (colorby_title == .colorByFeatNameTitle) {
+        choices <- seq_len(nrow(se))
+        names(choices) <- rownames(se)
+    } else if (colorby_title == .colorBySampNameTitle) {
+        choices <- seq_len(ncol(se))
+        names(choices) <- colnames(se)
+    } else {
+        #nocov start
+        showNotification("TODO", type="message")
+        warning("TODO")
+        #nocov end
+    }
+    choices
+}
+
+# .numbers and text ----
+
 # Note: consider package 'english' if we ever need to convert digital numbers to text
 # allow common vocal typos
 .numbersText <- c(
@@ -130,6 +200,8 @@ prepareVoiceRecognition <- function(use=FALSE) {
     "nine"=9, "dine"=9, "line"=9)
 
 #' Substitute numbers from words to numerals
+#' 
+#' @rdname INTERNAL_digitalize_numbers
 #'
 #' @description
 #' \code{.wordIsDigits} tests whether inputs are entirely composed of digits.
@@ -143,7 +215,7 @@ prepareVoiceRecognition <- function(use=FALSE) {
 #' \code{.wordIsDigits} returns \code{TRUE} for each input entirely composed of digits.
 #'
 #' \code{.digitalizeNumbers} returns the substituted \code{character} string.
-#' @rdname INTERNAL_digitalize_numbers
+#' 
 #' @author Kevin Rue-Albrecht
 .digitalizeNumbers <- function(x) {
     as.numeric(.numbersText[match(tolower(x), names(.numbersText))])
@@ -152,23 +224,4 @@ prepareVoiceRecognition <- function(use=FALSE) {
 #' @rdname INTERNAL_digitalize_numbers
 .isDigits <- function(x) {
     grepl("^[[:digit:]]+$", x)
-}
-
-.colorByChoices <- function(colorby_title, se) {
-
-    if (colorby_title == .colorByNothingTitle) {
-        choices <- character(0)
-    } else if (colorby_title == .colorByColDataTitle) {
-        choices <- colnames(colData(se))
-    } else if (colorby_title == .colorByFeatNameTitle) {
-        choices <- seq_len(nrow(se))
-        names(choices) <- rownames(se)
-    } else if (colorby_title == .colorBySampNameTitle) {
-        choices <- seq_len(ncol(se))
-        names(choices) <- colnames(se)
-    } else {
-        showNotification("TODO", type="message")
-        warning("TODO")
-    }
-    choices
 }

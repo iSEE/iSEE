@@ -1860,13 +1860,18 @@ iSEE <- function(se,
             colorby_field <- paste0(activeSplit$Type, activeSplit$ID, "_", .colorByField)
             colorby_title <- isolate(input[[colorby_field]])
 
-            # Check if the choice matches one of the available values
+            # Fetch the available choices
             choices <- .colorByChoices(colorby_title, se)
-
+            
+            # Check if the choice matches one of the available values
+            matchedChoice <- character(0)
             if (colorby_title == .colorByNothingTitle) {
                 return(NULL)
             } else if (colorby_title == .colorByColDataTitle) {
                 colorby_param <- .colorByColData
+                matchedChoice <- .nearestValidChoice(voice, choices, max.edits=5)
+            } else if (colorby_title == .colorByRowDataTitle) {
+                colorby_param <- .colorByRowData
                 matchedChoice <- .nearestValidChoice(voice, choices, max.edits=5)
             } else if (colorby_title == .colorByFeatNameTitle) {
                 colorby_param <- .colorByFeatName
@@ -1874,9 +1879,6 @@ iSEE <- function(se,
             } else if (colorby_title == .colorBySampNameTitle) {
                 colorby_param <- .colorBySampName
                 matchedChoice <- .nearestValidNamedChoice(voice, choices, max.edits=5)
-            } else {
-                warning("TODO")
-                matchedChoice <- c()
             }
 
             if (length(matchedChoice) != 1L) {

@@ -169,17 +169,14 @@ prepareSpeechRecognition <- function(use=FALSE) {
         choices <- character(0)
     } else if (colorby_title == .colorByColDataTitle) {
         choices <- colnames(colData(se))
+    } else if (colorby_title == .colorByRowDataTitle) {
+        choices <- colnames(rowData(se))
     } else if (colorby_title == .colorByFeatNameTitle) {
         choices <- seq_len(nrow(se))
         names(choices) <- rownames(se)
     } else if (colorby_title == .colorBySampNameTitle) {
         choices <- seq_len(ncol(se))
         names(choices) <- colnames(se)
-    } else {
-        #nocov start
-        showNotification("TODO", type="message")
-        warning("TODO")
-        #nocov end
     }
     choices
 }

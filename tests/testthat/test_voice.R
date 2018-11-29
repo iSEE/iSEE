@@ -220,6 +220,9 @@ test_that(".colorByChoices works", {
     out <- .colorByChoices("Column data", sce)
     expect_identical(out, colnames(colData(sce)))
     
+    out <- .colorByChoices("Row data", sce)
+    expect_identical(out, colnames(rowData(sce)))
+    
     out <- .colorByChoices("Feature name", sce)
     expectedValue <- seq_len(nrow(sce))
     names(expectedValue) <- rownames(sce)

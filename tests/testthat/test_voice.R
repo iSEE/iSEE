@@ -200,12 +200,22 @@ test_that(".nearestValidNamedChoice handles vocal typos", {
 
 # .getValidParameterChoices ----
 
-test_that(".getValidParameterChoices works ", {
+test_that(".getValidParameterChoices works for column plots", {
     
     out <- .getValidParameterChoices("ColorBy", "redDimPlot", sce)
     expect_identical(out, c("None", "Column data", "Feature name", "Sample name"))
     
-    out <- .getValidParameterChoices("Not Supported Yet", "redDimPlot", sce)
+    out <- .getValidParameterChoices("Not Supported", "redDimPlot", sce)
+    expect_identical(out, character(0))
+    
+})
+
+test_that(".getValidParameterChoices works for row plots", {
+    
+    out <- .getValidParameterChoices("ColorBy", "rowDataPlot", sce)
+    expect_identical(out, c("None", "Row data" , "Feature name", "Sample name"))
+    
+    out <- .getValidParameterChoices("Not Supported", "rowDataPlot", sce)
     expect_identical(out, character(0))
     
 })

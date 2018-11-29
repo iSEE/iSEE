@@ -1,0 +1,132 @@
+---
+title: Controlling the `iSEE` interface by voice
+author:
+- name: Federico Marini
+  affiliation: 
+  - &id1 Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz
+  - Center for Thrombosis and Hemostasis (CTH), Mainz
+  email: marinif@uni-mainz.de
+- name: Aaron Lun
+  affiliation: 
+  - &id2 Cancer Research UK Cambridge Institute, University of Cambridge
+  email: infinite.monkeys.with.keyboards@gmail.com 
+- name: Charlotte Soneson
+  affiliation: 
+  - &id3 Institute of Molecular Life Sciences, University of Zurich
+  - SIB Swiss Institute of Bioinformatics
+  email: charlottesoneson@gmail.com
+- name: Kevin Rue-Albrecht
+  affiliation: 
+  - &id4 Kennedy Institute of Rheumatology, University of Oxford,
+    Headington, Oxford OX3 7FY, UK.
+  email: kevin.rue-albrecht@kennedy.ox.ac.uk
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('iSEE')`"
+output: 
+  BiocStyle::html_document:
+    toc_float: true
+vignette: >
+  %\VignetteIndexEntry{5. Voice control}
+  %\VignetteEncoding{UTF-8}  
+  %\VignettePackage{iSEE}
+  %\VignetteKeywords{GeneExpression, RNASeq, Sequencing, Visualization, QualityControl, GUI}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+bibliography: iSEE.bib
+---
+
+**Compiled date**: `r Sys.Date()`
+
+**Last edited**: 2018-11-29
+
+**License**: `r packageDescription("iSEE")[["License"]]`
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>",
+    error = FALSE,
+    warning = FALSE,
+    message = FALSE
+)
+stopifnot(requireNamespace("htmltools"))
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+sce <- readRDS('sce.rds')
+```
+
+# Feature
+
+Using JavaScript, `iSEE` applications can leverage lightweight speech recognition libraries that react to specific vocal commands (think "OK Google", "Hey Siri") and trigger updates of the UI equivalent to one or more mouse or keyboard interaction with the UI components [@kra2018iSEE].
+
+**Note**: As we value privacy, this feature is disabled by default: `iSEE(..., voice=FALSE)`.
+
+To keep the vocal commands reasonably short, only one panel may be under vocal control at any one time.
+All vocal commands will affect the currently active panel, until a new panel is selected for vocal control.
+See section [Vocal commands available](#availableVocalCommands).
+
+# Implementation
+
+We use the [_annyang_](https://github.com/TalAter/annyang) JavaScript library to handle speech recongnition and update _Shiny_ reactive values in the same way as mouse and keyboard UI elements trigger panel updates.
+
+Note that _annyang_ requires an active internet connection, as it relies on the browser's own speech recognition engine (see the _annyang_ [FAQ](https://github.com/TalAter/annyang/blob/master/docs/FAQ.md#can-annyang-work-offline)).
+For instance, in _Google Chrome_, this engine performs the recognition in the cloud.
+
+# Supported web browsers
+
+Note that the speech recognition library that we use does not work with every web browser.
+We currently only validated this feature in _Google Chrome_.
+Please refer to the _annyang_ [FAQ](https://github.com/TalAter/annyang/blob/master/docs/FAQ.md#which-browsers-are-supported) for details.
+
+# Usage
+
+Using the `sce` object that we generated `r Biocpkg("iSEE", vignette="basic.html", label="earlier")`, enabling speech recognition is as simple as setting `voice=TRUE` below:
+
+```{r}
+library(iSEE)
+app <- iSEE(sce, voice=TRUE)
+```
+
+With `voice=TRUE`, the tiny JavaScript speech recognition library _annyang_ is loaded and activated in any web browser window that runs `app`.
+
+If your default browser is not compatible with the feature, or if you work in _RStudio_, you can prevent the application from opening in the default browser by setting `launch.browser=FALSE` as follows:
+
+```{r}
+if (interactive()) {
+    shiny::runApp(app, port=1234, launch.browser=FALSE)
+}
+```
+
+At that point, your R console should be displaying the address and port where `app` is running:
+
+```
+Listening on http://127.0.0.1:1234
+```
+
+Using a compatible browser, navigate to the indicated address and port.
+Note that when the web page opens, you may be prompted to allow the web browser to use your microphone, which you must accept to enable the functionality.
+
+# Vocal commands available {#availableVocalCommands}
+
+As a proof-of-concept, we have currently implemented only a subset of vocal commands, compare to all the interactions possible using the mouse and keyboard.
+
+Note that in the commands below, words in brackets are optional.
+
+* "**Show active panel**": shows a persistent notification displaying the name of the panel currently under vocal control.
+* "**Show panel <Reduced dimension plot 1>**": Shows and takes vocal control of the requested panel.
+* "**Hide panel <Reduced dimension plot 1>**": Hides the requested panel and removes any panel from vocal control.
+* "**control panel <Reduced dimension plot 1>**": Takes vocal control of the requested panel.
+* "**colour using <Column data | Feature name | ...>**": Changes the colouring mode of the panel under vocal control.
+* "**colour by <...>**": Changes the colouring covariate (e.g. gene name, `colData` column name) of the panel under vocal control.
+* "**receive (selection) from (panel) <Reduced dimension plot 1>**": Makes the panel under vocal control receive the point selection from the requested panel.
+* "**send (selection) to (panel) <Reduced dimension plot 1>**": Makes the requested panel receive the point selection from the panel under vocal control.
+* "**good boy**": If the app is behaving well, throw it a bone!
+
+# Session Info {.unnumbered}
+
+```{r sessioninfo}
+sessionInfo()
+# devtools::session_info()
+```
+
+# References {.unnumbered}

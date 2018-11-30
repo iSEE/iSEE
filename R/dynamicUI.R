@@ -44,6 +44,48 @@
     do.call(tagList, collected)
 }
 
+#' Show and hide panels in the User Interface
+#'
+#' @param mode Panel mode. See \code{\link{panelCodes}}.
+#' @param id Integer scalar specifying the index of a panel of the specified type, for the current plot.
+#' @param active_panels A data.frame specifying the currently active panels, see the output of \code{\link{.setup_initial}}.
+#' @param width Grid width of the new panel (must be between 1 and 12).
+#' @param height Height of the new panel (in pixels).
+#'
+#' @return A data.frame specifying the new set of active panels.
+#' @rdname INTERNAL_show_panel
+#'
+#' @author Kevin Rue-Albrecht
+.showPanel <- function(mode, id, active_panels, width=4L, height=500L) {
+    active_panels <- rbind(active_panels, DataFrame(Type=mode, ID=id, Width=width, Height=height))
+
+    active_panels
+}
+
+#' @param pObjects An environment containing \code{table_links}, a graph produced by \code{\link{.spawn_table_links}};
+#' and \code{memory}, a list of DataFrames containing parameters for each panel of each type.
+#' @rdname INTERNAL_show_panel
+#' @author Kevin Rue-Albrecht
+.hidePanel <- function(mode, id, active_panels, pObjects) {
+    current_type <- active_panels$Type == mode
+    panel_name <- paste0(mode, id)
+
+    # Destroying links for point selection or tables.
+    .destroy_selection_panel(pObjects, panel_name)
+    if (mode %in% linked_table_types) {
+        .destroy_table(pObjects, panel_name)
+    } else if (mode %in% point_plot_types) {
+        .delete_table_links(mode, id, pObjects)
+    }
+
+    # Triggering re-rendering of the UI via change to active_panels.
+    index <- which(current_type & active_panels$ID == id)
+    active_panels <- active_panels[-index, ]
+
+    # Return the updated table of active panels
+    active_panels
+}
+
 #' Generate the panels in the app body
 #'
 #' Constructs the active panels in the main body of the app to show the plotting results and tables.

@@ -260,8 +260,8 @@
 
     # Setting custom arguments.
     for (mode in custom_panel_types) {
-        to_show <- memory[[mode]][,.customVisibleArgs] 
-        to_use <- memory[[mode]][,.customArgs] 
+        to_show <- memory[[mode]][,.customVisibleArgs]
+        to_use <- memory[[mode]][,.customArgs]
         memory[[mode]][,.customVisibleArgs] <- ifelse(is.na(to_show), to_use, to_show)
     }
 

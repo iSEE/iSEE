@@ -1,3 +1,6 @@
+
+.validParameterChoices <- list()
+
 # Reduced dimension plotting parameters. ----
 .redDimType <- "Type"
 .redDimXAxis <- "XAxis"
@@ -103,6 +106,9 @@
 .colorByDefaultColor <- "ColorByDefaultColor"
 .colorByColData <- "ColorByColData"
 .colorByRowData <- "ColorByRowData"
+
+.validParameterChoices[[.colorByField]] <-
+    c(.colorByNothingTitle, .colorByColDataTitle, .colorByRowDataTitle, .colorByFeatNameTitle, .colorBySampNameTitle)
 
 .colorByFeatName <- "ColorByFeatName"
 .colorByRowTable <- "ColorByRowTable"
@@ -219,6 +225,21 @@
 .panelGeneralInfo <- "PanelGeneralInfo"
 .panelLinkInfo <- "PanelLinkInfo"
 
+# Voice parameters ----
+
+.voiceActivePanel <- "voiceActivePanel"
+
+.voiceShowActivePanelInput = "voiceShowActivePanel"
+
+.voiceShowPanelInput <- "voiceShowPanel"
+.voiceHidePanelInput <- "voiceHidePanel"
+
+.voiceControlPanelInput <- "voiceControlPanel"
+.voiceColorUsingInput <- "voiceColorUsing"
+.voiceColorByInput <- "voiceColorBy"
+.voiceReceiveFromInput <- "voiceReceiveFrom"
+.voiceSendToInput <- "voiceSendTo"
+
 # Encoding and decoding names for user/shiny ----
 
 #' Available panel types
@@ -322,19 +343,28 @@ all_panel_types <- c(point_plot_types, linked_table_types, custom_panel_types, "
 #' @seealso
 #' \code{\link{.decode_panel_name}}
 .encode_panel_name <- function(names) {
-    id <- as.integer(gsub(".* ([0-9]+)$", "\\1", names))
-    raw.str <- panelCodes[gsub(" [0-9]+$", "", names)]
-    failed <- is.na(raw.str) | is.na(id)
+    decSplit <- .split_decoded(names)
+    id <- decSplit$ID
+    encType <- panelCodes[decSplit$Type]
+
+    failed <- is.na(encType) | is.na(id)
     if (any(failed)) {
         stop(sprintf("'%s' is not a legal panel name", names[failed][1]))
     }
-    return(list(Type=raw.str, ID=id))
+    return(list(Type=encType, ID=id))
 }
 
 #' @rdname INTERNAL_encode_panel_name
 .decoded2encoded <- function(names) {
     x <- .encode_panel_name(names)
     sprintf("%s%i", x$Type, x$ID)
+}
+
+#' @rdname INTERNAL_encode_panel_name
+.split_decoded <- function(names) {
+    id <- as.integer(gsub(".* ([0-9]+)$", "\\1", names))
+    raw.str <- gsub(" [0-9]+$", "", names)
+    return(list(Type=raw.str, ID=id))
 }
 
 #' Split an encoded name
@@ -360,4 +390,3 @@ all_panel_types <- c(point_plot_types, linked_table_types, custom_panel_types, "
     Type <- gsub("[0-9]+$", "", names)
     return(list(Type=Type, ID=id))
 }
-

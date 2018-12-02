@@ -5,6 +5,7 @@
 \itemize{
     \item Updated default tour steps to match updated user interface.
     \item Parse quote symbols literally in default tour steps.
+    \item Fix name-to-index conversion of feature names for heat map panel.
 }
 }
 

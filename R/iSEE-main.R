@@ -494,14 +494,14 @@ iSEE <- function(se,
             active_panels <- paste0(rObjects$active_panels$Type, rObjects$active_panels$ID)
             names(active_panels) <- .decode_panel_name(rObjects$active_panels$Type, rObjects$active_panels$ID)
 
-            available_panels <- c(
+            ordered_panel_choices <- c(
                 active_panels,
                 setdiff(available_panels, active_panels)
             )
             showModal(modalDialog(
                 title = "Panel organization", size = "m", fade = TRUE,
                 footer = NULL, easyClose = TRUE,
-                selectizeInput("panel_order", label=NULL, choices=available_panels, multiple=TRUE,
+                selectizeInput("panel_order", label=NULL, choices=ordered_panel_choices, multiple=TRUE,
                     selected=active_panels,
                     options=list(plugins=list('remove_button', 'drag_drop')), width="500px"),
                 uiOutput("panelParams")

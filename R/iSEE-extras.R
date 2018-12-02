@@ -221,7 +221,7 @@
 
     all_args$colStatTable <- .name2index(all_args$colStatTable, .statTableSelected, colnames(se))
 
-    all_args$heatMapPlot <- .name2index(all_args$heatMapPlot, .heatMapFeatName, colnames(se))
+    all_args$heatMapPlot <- .name2index(all_args$heatMapPlot, .heatMapFeatName, rownames(se))
     all_args$heatMapPlot <- .name2index(all_args$heatMapPlot, .heatMapAssay, assayNames(se))
 
     for (mode in col_point_plot_types) {
@@ -944,9 +944,9 @@ and Federico Marini (%s).",
 #' @param activeLabel Label of the button if active.
 #' @param session The \code{session} object passed to function given to \code{shinyServer}.
 #'
-#' @return 
+#' @return
 #' The status of the button in the current \code{session} is changed, and a \code{NULL} is invisibly returned.
-#' 
+#'
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_disableButtonIf
 #'

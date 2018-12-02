@@ -378,8 +378,8 @@ iSEE <- function(se,
 
         observeEvent(input$tour_firststeps, {
             if(is.null(tour)) {
-                tour <- read.delim(system.file("extdata", "intro_firststeps.txt",package="iSEE"),
-                    sep=";", stringsAsFactors=FALSE,row.names=NULL)
+                tour <- read.delim(system.file("extdata", "intro_firststeps.txt", package="iSEE"),
+                    sep=";", stringsAsFactors=FALSE, row.names=NULL, quote="")
             }
             introjs(session, options=list(steps=tour))
         })
@@ -1862,7 +1862,7 @@ iSEE <- function(se,
 
             # Fetch the available choices
             choices <- .colorByChoices(colorby_title, se)
-            
+
             # Check if the choice matches one of the available values
             matchedChoice <- character(0)
             if (colorby_title == .colorByNothingTitle) {

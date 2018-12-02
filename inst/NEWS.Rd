@@ -1,6 +1,13 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.3.3}{
+\itemize{
+    \item Updated default tour steps to match updated user interface.
+    \item Parse quote symbols literally in default tour steps.
+}
+}
+
 \section{iSEE VERSION 1.3.2}{
 \itemize{
     \item Move panel organization to modal with selectize to control panel display and ordering, remove sidebar.

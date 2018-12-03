@@ -1,9 +1,15 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.3.4}{
+\itemize{
+    \item Fix panel organization selectize.
+}
+}
+
 \section{iSEE VERSION 1.3.3}{
 \itemize{
-    \item Updated default tour steps to match updated user interface.
+    \item Update default tour steps to match updated user interface.
     \item Parse quote symbols literally in default tour steps.
     \item Fix name-to-index conversion of feature names for heat map panel.
 }

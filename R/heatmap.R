@@ -64,7 +64,7 @@
         sprintf("At least one column annotation needed for heat map")
     ))
 
-    data_cmds <- .add_command(data_cmds, c("", 
+    data_cmds <- .add_command(data_cmds, c("",
         vapply(seq_along(orderBy), FUN=function(i) {
             lhs <- sprintf("plot.data[['OrderBy%i']]", i)
             rhs <- sprintf("colData(se)[['%s']][match(plot.data$X, rownames(colData(se)))]", orderBy[i])
@@ -105,7 +105,7 @@
 
         .text_eval(select_cmds, eval_env)
     }
-    
+
     validate(need(
         nrow(eval_env$plot.data) > 0L,
         sprintf("At least one observation needed for heat map")
@@ -175,7 +175,7 @@
     }
 
     if (select_as_field %in% orderBy) {
-        i <- which(orderBy==select_as_field) 
+        i <- which(orderBy==select_as_field)
         annot_cmds[["SelectBy"]] <- c("",
             sprintf("p%i <- ggplot(plot.data, aes(x = X, y = 1)) +", i),
             "geom_raster(aes(fill = SelectBy)) +",

@@ -85,6 +85,8 @@ The _iSEE_ user interface allows users to programmatically define their own plot
 :white_check_mark: The _iSEE_ user interface continually tracks the code corresponding to all visible plotting panels.
 This code is rendered in a [shinyAce](https://cran.r-project.org/web/packages/shinyAce/index.html) text editor and can be copy-pasted into R scripts for customization and further use.
 
+:white_check_mark: Speech recognition can be enabled to control the user interface using voice commands.
+
 ## Want to try _iSEE_?
 
 We set up instances of _iSEE_ applications running on diverse types of datasets at those addresses:

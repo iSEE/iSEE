@@ -1009,13 +1009,41 @@ test_that("define_shapeby_for_column_plot produces the expected commands", {
 test_that(".define_shapeby_for_row_plot produces the expected commands", {
     params <- all_memory$rowDataPlot[1, ]
     params[[iSEE:::.shapeByField]] <- iSEE:::.shapeByRowDataTitle
-    params[[iSEE:::.shapeByColData]] <- "letters"
+    params[[iSEE:::.shapeByRowData]] <- "letters"
 
     color_out <- iSEE:::.define_shapeby_for_row_plot(params, sce)
     expect_identical(color_out, list(
         label="letters",
         cmds="plot.data$ShapeBy <- rowData(se)[,\"letters\"];"))
 
+})
+
+# define_sizeby_for_column_plot ----
+
+test_that("define_sizeby_for_column_plot produces the expected commands", {
+    params <- all_memory$redDimPlot[1, ]
+    params[[iSEE:::.sizeByField]] <- iSEE:::.sizeByColDataTitle
+    params[[iSEE:::.sizeByColData]] <- "NREADS"
+    
+    color_out <- iSEE:::.define_sizeby_for_column_plot(params, sce)
+    expect_identical(color_out, list(
+        label="NREADS",
+        cmds="plot.data$SizeBy <- colData(se)[,\"NREADS\"];"))
+    
+})
+
+# .define_sizeby_for_row_plot ----
+
+test_that(".define_sizeby_for_row_plot produces the expected commands", {
+    params <- all_memory$rowDataPlot[1, ]
+    params[[iSEE:::.sizeByField]] <- iSEE:::.sizeByRowDataTitle
+    params[[iSEE:::.sizeByRowData]] <- "mean_count"
+    
+    color_out <- iSEE:::.define_sizeby_for_row_plot(params, sce)
+    expect_identical(color_out, list(
+        label="mean_count",
+        cmds="plot.data$SizeBy <- rowData(se)[,\"mean_count\"];"))
+    
 })
 
 # .define_colorby_for_row_plot  ----

@@ -1030,6 +1030,12 @@ test_that("define_sizeby_for_column_plot produces the expected commands", {
         label="NREADS",
         cmds="plot.data$SizeBy <- colData(se)[,\"NREADS\"];"))
     
+    all_memory_sb <- all_memory
+    all_memory_sb$redDimPlot[1, ] <- params
+    p.out <- iSEE:::.make_redDimPlot(
+        id=1, all_memory_sb, all_coordinates, sce, ExperimentColorMap())
+    expect_equivalent(p.out$cmd_list$plot["points.point"],
+                      "geom_point(aes(x = X, y = Y, size = SizeBy), alpha = 1, plot.data, color='black') +")
 })
 
 # .define_sizeby_for_row_plot ----

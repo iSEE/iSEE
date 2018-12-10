@@ -60,3 +60,21 @@
     }
     which(vapply(x, FUN=.is_groupable, FUN.VALUE=FALSE))
 }
+
+#' Identify numeric covariates in a DataFrame
+#' 
+#' @param x A DataFrame (or equivalent).
+#' 
+#' @return An integer vector containing the indices of the numeric covariates.
+#' 
+#' @author Charlotte Soneson
+#' 
+#' @rdname INTERNAL_numeric
+#' @seealso
+#' \code{\link{.add_general_parameters}}
+.which_numeric <- function(x) {
+    if (ncol(x) == 0L) {
+        return(integer())
+    }
+    which(vapply(x, FUN=is.numeric, FUN.VALUE=FALSE))
+}

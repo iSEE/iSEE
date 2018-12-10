@@ -1100,9 +1100,9 @@ iSEE <- function(se,
 
             # Defining non-fundamental parameters that do not destroy brushes/lassos.
             if (mode %in% row_point_plot_types) {
-                nonfundamental <- c(.colorByRowData, .colorByFeatNameColor, .shapeByField, .shapeByRowData, .colorByFeatNameColor)
+                nonfundamental <- c(.colorByRowData, .colorByFeatNameColor, .shapeByField, .shapeByRowData, .sizeByField, .sizeByRowData, .colorByFeatNameColor)
             } else {
-                nonfundamental <- c(.colorByColData, .colorByFeatNameAssay, .shapeByField, .shapeByColData, .colorBySampNameColor)
+                nonfundamental <- c(.colorByColData, .colorByFeatNameAssay, .shapeByField, .shapeByColData, .sizeByField, .sizeByColData, .colorBySampNameColor)
             }
             nonfundamental <- c(nonfundamental, .colorByDefaultColor, .selectColor, .selectTransAlpha,
                                 .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition,

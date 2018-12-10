@@ -1009,13 +1009,47 @@ test_that("define_shapeby_for_column_plot produces the expected commands", {
 test_that(".define_shapeby_for_row_plot produces the expected commands", {
     params <- all_memory$rowDataPlot[1, ]
     params[[iSEE:::.shapeByField]] <- iSEE:::.shapeByRowDataTitle
-    params[[iSEE:::.shapeByColData]] <- "letters"
+    params[[iSEE:::.shapeByRowData]] <- "letters"
 
     color_out <- iSEE:::.define_shapeby_for_row_plot(params, sce)
     expect_identical(color_out, list(
         label="letters",
         cmds="plot.data$ShapeBy <- rowData(se)[,\"letters\"];"))
 
+})
+
+# define_sizeby_for_column_plot ----
+
+test_that("define_sizeby_for_column_plot produces the expected commands", {
+    params <- all_memory$redDimPlot[1, ]
+    params[[iSEE:::.sizeByField]] <- iSEE:::.sizeByColDataTitle
+    params[[iSEE:::.sizeByColData]] <- "NREADS"
+    
+    color_out <- iSEE:::.define_sizeby_for_column_plot(params, sce)
+    expect_identical(color_out, list(
+        label="NREADS",
+        cmds="plot.data$SizeBy <- colData(se)[,\"NREADS\"];"))
+    
+    all_memory_sb <- all_memory
+    all_memory_sb$redDimPlot[1, ] <- params
+    p.out <- iSEE:::.make_redDimPlot(
+        id=1, all_memory_sb, all_coordinates, sce, ExperimentColorMap())
+    expect_equivalent(p.out$cmd_list$plot["points.point"],
+                      "geom_point(aes(x = X, y = Y, size = SizeBy), alpha = 1, plot.data, color='black') +")
+})
+
+# .define_sizeby_for_row_plot ----
+
+test_that(".define_sizeby_for_row_plot produces the expected commands", {
+    params <- all_memory$rowDataPlot[1, ]
+    params[[iSEE:::.sizeByField]] <- iSEE:::.sizeByRowDataTitle
+    params[[iSEE:::.sizeByRowData]] <- "mean_count"
+    
+    color_out <- iSEE:::.define_sizeby_for_row_plot(params, sce)
+    expect_identical(color_out, list(
+        label="mean_count",
+        cmds="plot.data$SizeBy <- rowData(se)[,\"mean_count\"];"))
+    
 })
 
 # .define_colorby_for_row_plot  ----
@@ -1700,7 +1734,7 @@ test_that("2d density contours can be added to scatter plots ", {
 
     out <- iSEE:::.scatter_plot(
         plot_data=data.frame(), param_choices=all_memory$redDimPlot,
-        "x_lab", "y_lab", "color_lab", "shape_lab", "title",
+        "x_lab", "y_lab", "color_lab", "shape_lab", "size_lab", "title",
         by_row=FALSE, is_subsetted=TRUE, is_downsampled=FALSE)
 
     expect_identical(out[["contours"]], "geom_density_2d(aes(x = X, y = Y), plot.data, colour='blue') +")
@@ -1717,7 +1751,7 @@ test_that("plots subsetted to no data contain a geom_blank command", {
 
     out <- iSEE:::.scatter_plot(
         plot_data=data.frame(), param_choices=all_memory$redDimPlot,
-        "x_lab", "y_lab", "color_lab", "shape_lab", "title",
+        "x_lab", "y_lab", "color_lab", "shape_lab", "size_lab", "title",
         by_row=FALSE, is_subsetted=TRUE, is_downsampled=FALSE)
 
     expect_identical(out[["select_blank"]], geom_blank_cmd)
@@ -1730,7 +1764,7 @@ test_that("plots subsetted to no data contain a geom_blank command", {
 
     out <- iSEE:::.violin_plot(
         plot_data=data.frame(), param_choices=all_memory$colDataPlot,
-        "x_lab", "y_lab", "color_lab", "shape_lab", "title",
+        "x_lab", "y_lab", "color_lab", "shape_lab", "size_lab", "title",
         by_row=FALSE, is_subsetted=TRUE, is_downsampled=FALSE)
 
     expect_identical(out[["select_blank"]], geom_blank_cmd)
@@ -1743,7 +1777,7 @@ test_that("plots subsetted to no data contain a geom_blank command", {
 
     out <- iSEE:::.square_plot(
         plot_data=data.frame(), param_choices=all_memory$colDataPlot, sce,
-        "x_lab", "y_lab", "color_lab", "shape_lab", "title",
+        "x_lab", "y_lab", "color_lab", "shape_lab", "size_lab", "title",
         by_row=FALSE, is_subsetted=TRUE)
 
     expect_identical(out[["select_blank"]], geom_blank_cmd)

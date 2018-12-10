@@ -570,10 +570,12 @@
 .create_visual_box_for_column_plots <- function(mode, id, param_choices, active_row_tab, active_col_tab, se) {
     covariates <- colnames(colData(se))
     discrete_covariates <- .get_internal_info(se, "column_groupable")
+    numeric_covariates <- .get_internal_info(se, "column_numeric")
     all_assays <- .get_internal_info(se, "all_assays")
 
     colorby_field <- paste0(mode, id, "_", .colorByField)
     shapeby_field <- paste0(mode, id, "_", .shapeByField)
+    sizeby_field <- paste0(mode, id, "_", .sizeByField)
     pchoice_field <- paste0(mode, id, "_", .visualParamChoice)
 
     collapseBox(
@@ -583,7 +585,7 @@
         checkboxGroupInput(
             inputId=pchoice_field, label=NULL, inline=TRUE,
             selected=param_choices[[.visualParamChoice]][[1]],
-            choices=.define_visual_options(discrete_covariates)),
+            choices=.define_visual_options(discrete_covariates, numeric_covariates)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoiceColorTitle,
             hr(),
@@ -643,7 +645,24 @@
             hr(), .add_facet_UI_elements_for_column_plots(mode, id, param_choices, discrete_covariates)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoicePointTitle,
-            hr(), .add_point_UI_elements(mode, id, param_choices)),
+            hr(), 
+            radioButtons(
+                sizeby_field, label="Size by:", inline=TRUE,
+                choices=.define_size_options_for_column_plots(se),
+                selected=param_choices[[.sizeByField]]
+            ),
+            .conditional_on_radio(
+                sizeby_field, .sizeByNothingTitle,
+                numericInput(
+                    paste0(mode, id, "_", .plotPointSize), label="Point size:",
+                    min=0, value=param_choices[,.plotPointSize])
+            ),
+            .conditional_on_radio(
+                sizeby_field, .sizeByColDataTitle,
+                selectInput(paste0(mode, id, "_", .sizeByColData), label=NULL,
+                            choices=numeric_covariates, selected=param_choices[[.sizeByColData]])
+            ),
+            .add_point_UI_elements(mode, id, param_choices)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoiceOtherTitle,
             hr(),
@@ -718,11 +737,39 @@
     return(shape_choices)
 }
 
+#' Define sizing options
+#'
+#' Define the available sizing options for row- or column-based plots,
+#' where availability is defined on the presence of the appropriate data in a SingleCellExperiment object.
+#'
+#' @param se A SingleCellExperiment object.
+#'
+#' @details
+#' Sizing by column data is not available if no column data exists in \code{se} - same for the row data.
+#' For column plots, we have an additional requirement that there must also be assays in \code{se} to size by features.
+#'
+#' @return A character vector of available sizing modes, i.e., nothing or by column/row data
+#'
+#' @author Kevin Rue-Albrecht, Charlotte Soneson
+#' @rdname INTERNAL_define_size_options
+.define_size_options_for_column_plots <- function(se) {
+    size_choices <- .sizeByNothingTitle
+    
+    col_numeric <- .get_internal_info(se, "column_numeric")
+    
+    if (length(col_numeric)) {
+        size_choices <- c(size_choices, .sizeByColDataTitle)
+    }
+    
+    return(size_choices)
+}
+
 #' Define visual parameter check options
 #'
 #' Define the available visual parameter check boxes that can be ticked.
 #'
 #' @param discrete_covariates A character vector of names of categorical covariates.
+#' @param numeric_covariates A character vector of names of numeric covariates.
 #'
 #' @details
 #' Currently, the only special case is when there are no categorical covariates, in which case the shaping and faceting check boxes will not be available.
@@ -732,7 +779,7 @@
 #'
 #' @author Aaron Lun, Kevin Rue-Albrecht
 #' @rdname INTERNAL_define_visual_options
-.define_visual_options <- function(discrete_covariates) {
+.define_visual_options <- function(discrete_covariates, numeric_covariates) {
     pchoices <- c(.visualParamChoiceColorTitle)
 
     if (length(discrete_covariates)) {
@@ -788,10 +835,12 @@
 .create_visual_box_for_row_plots <- function(mode, id, param_choices, active_row_tab, active_col_tab, se) {
     covariates <- colnames(rowData(se))
     discrete_covariates <- .get_internal_info(se, "row_groupable")
+    numeric_covariates <- .get_internal_info(se, "row_numeric")
     all_assays <- .get_internal_info(se, "all_assays")
 
     colorby_field <- paste0(mode, id, "_", .colorByField)
     shapeby_field <- paste0(mode, id, "_", .shapeByField)
+    sizeby_field <- paste0(mode, id, "_", .sizeByField)
     pchoice_field <- paste0(mode, id, "_", .visualParamChoice)
 
     collapseBox(
@@ -801,7 +850,7 @@
         checkboxGroupInput(
             inputId=pchoice_field, label=NULL, inline=TRUE,
             selected=param_choices[[.visualParamChoice]][[1]],
-            choices=.define_visual_options(discrete_covariates)),
+            choices=.define_visual_options(discrete_covariates, numeric_covariates)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoiceColorTitle,
             radioButtons(
@@ -861,6 +910,26 @@
             hr(), .add_facet_UI_elements_for_row_plots(mode, id, param_choices, discrete_covariates)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoicePointTitle,
+            hr(), 
+            radioButtons(
+                sizeby_field, label="Size by:", inline=TRUE,
+                choices=.define_size_options_for_row_plots(se),
+                selected=param_choices[[.sizeByField]]
+            ),
+            .conditional_on_radio(
+                sizeby_field, .sizeByNothingTitle,
+                numericInput(
+                    paste0(mode, id, "_", .plotPointSize), label="Point size:",
+                    min=0, value=param_choices[,.plotPointSize])
+            ),
+            .conditional_on_radio(
+                sizeby_field, .sizeByRowDataTitle,
+                selectInput(paste0(mode, id, "_", .sizeByRowData), label=NULL,
+                            choices=numeric_covariates, selected=param_choices[[.sizeByRowData]])
+            ),
+            .add_point_UI_elements(mode, id, param_choices)),
+        .conditional_on_check_group(
+            pchoice_field, .visualParamChoicePointTitle,
             hr(), .add_point_UI_elements(mode, id, param_choices)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoiceOtherTitle,
@@ -894,6 +963,19 @@
     }
 
     return(shape_choices)
+}
+
+#' @rdname INTERNAL_define_size_options
+.define_size_options_for_row_plots <- function(se) {
+    size_choices <- .sizeByNothingTitle
+    
+    row_numeric <- .get_internal_info(se, "row_numeric")
+    
+    if (length(row_numeric)) {
+        size_choices <- c(size_choices, .sizeByRowDataTitle)
+    }
+    
+    return(size_choices)
 }
 
 #' Faceting visual parameters
@@ -992,9 +1074,6 @@
 .add_point_UI_elements <- function(mode, id, param_choices) {
     ds_id <- paste0(mode, id, "_", .plotPointDownsample)
     tagList(
-        numericInput(
-            paste0(mode, id, "_", .plotPointSize), label="Point size:",
-            min=0, value=param_choices[,.plotPointSize]),
         sliderInput(
             paste0(mode, id, "_", .plotPointAlpha), label="Point opacity",
             min=0.1, max=1, value=param_choices[,.plotPointAlpha]),
@@ -1215,6 +1294,8 @@
     out <- list(
         column_groupable=colnames(colData(se))[.which_groupable(colData(se))],
         row_groupable=colnames(rowData(se))[.which_groupable(rowData(se))],
+        column_numeric=colnames(colData(se))[.which_numeric(colData(se))],
+        row_numeric=colnames(rowData(se))[.which_numeric(rowData(se))],
         all_assays=.sanitize_names(assayNames(se)),
         red_dim_names=.sanitize_names(reducedDimNames(se)),
         sample_names=.sanitize_names(colnames(se)),

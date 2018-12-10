@@ -750,7 +750,7 @@
 #'
 #' @return A character vector of available sizing modes, i.e., nothing or by column/row data
 #'
-#' @author Kevin Rue-Albrecht
+#' @author Kevin Rue-Albrecht, Charlotte Soneson
 #' @rdname INTERNAL_define_size_options
 .define_size_options_for_column_plots <- function(se) {
     size_choices <- .sizeByNothingTitle
@@ -1074,9 +1074,6 @@
 .add_point_UI_elements <- function(mode, id, param_choices) {
     ds_id <- paste0(mode, id, "_", .plotPointDownsample)
     tagList(
-        # numericInput(
-        #     paste0(mode, id, "_", .plotPointSize), label="Point size:",
-        #     min=0, value=param_choices[,.plotPointSize]),
         sliderInput(
             paste0(mode, id, "_", .plotPointAlpha), label="Point opacity",
             min=0.1, max=1, value=param_choices[,.plotPointAlpha]),

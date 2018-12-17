@@ -119,9 +119,9 @@ Note that in the commands below, words in brackets are optional.
 * "**Control panel <Reduced dimension plot 1>**": Takes vocal control of the requested panel.
 * "**Colour using <Column data | Feature name | ...>**": Changes the colouring mode of the panel under vocal control.
 * "**Colour by <...>**": Changes the colouring covariate (e.g. gene name, `colData` column name) of the panel under vocal control.
-* "**Receive (selection) from (panel) <Reduced dimension plot 1>**": Makes the panel under vocal control receive the point selection from the requested panel.
-* "**Send (selection) to (panel) <Reduced dimension plot 1>**": Makes the requested panel receive the point selection from the panel under vocal control.
-* "**Good boy!**": If the app is behaving well, throw it a bone!
+* "**Receive selection from (panel) <Reduced dimension plot 1>**": Makes the panel under vocal control receive the point selection from the requested panel.
+* "**Send selection to (panel) <Reduced dimension plot 1>**": Makes the requested panel receive the point selection from the panel under vocal control.
+* "**Good <boy | girl>!**": If the app is behaving well, throw it a bone!
 
 # Session Info {.unnumbered}
 

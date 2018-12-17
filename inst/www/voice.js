@@ -14,7 +14,7 @@ var initVoice = function() {
         var showActivePanelCount = 0;
         var goodBoyCount = 0;
         var commands = {
-            'show(n) panel *panel': function(panel) {
+            'show panel *panel': function(panel) {
                 Shiny.onInputChange(voiceShowPanelInput, panel);
             },
             'hide panel *panel': function(panel) {
@@ -33,13 +33,17 @@ var initVoice = function() {
             'colour by *choice': function(choice) {
                 Shiny.onInputChange(voiceColorByInput, choice);
             },
-            'receive(d) (selection) from (panel) *panel': function(panel) {
+            'receive(d) selection from (panel) *panel': function(panel) {
                 Shiny.onInputChange(voiceReceiveFromInput, panel);
             },
-            'send (selection) to (panel) *panel': function(panel) {
+            'send selection to (panel) *panel': function(panel) {
                 Shiny.onInputChange(voiceSendToInput, panel);
             },
             'good boy': function() {
+                goodBoyCount++;
+                Shiny.onInputChange("voiceGoodBoyInput", goodBoyCount);
+            },
+            'good girl': function() {
                 goodBoyCount++;
                 Shiny.onInputChange("voiceGoodBoyInput", goodBoyCount);
             }

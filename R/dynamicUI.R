@@ -1165,7 +1165,7 @@
         ),
         hr(),
         actionButton(paste0(mode, id, "_", .multiSelectSave), label="Save active"),
-        uiOutput(paste0(mode, id, "_", .multiSelectCurrent)), 
+        uiOutput(paste0(mode, id, "_", .multiSelectInfo)), 
         actionButton(paste0(mode, id, "_", .multiSelectPrevious), label="Previous stored"),
         actionButton(paste0(mode, id, "_", .multiSelectNext), label="Next stored"),
         actionButton(paste0(mode, id, "_", .multiSelectDelete), label="Delete current"),

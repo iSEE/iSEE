@@ -1136,7 +1136,7 @@
 #' @seealso
 #' \code{\link{.panel_generation}}
 #'
-#' @importFrom shiny sliderInput radioButtons selectInput
+#' @importFrom shiny sliderInput radioButtons selectInput actionButton hr
 #' @importFrom colourpicker colourInput
 .create_selection_param_box <- function(mode, id, param_choices, selectable, source_type=c("row", "column")) {
     select_effect <- paste0(mode, id, "_", .selectEffect)
@@ -1162,7 +1162,14 @@
             sliderInput(
                 paste0(mode, id, "_", .selectTransAlpha), label=NULL,
                 min=0, max=1, value=param_choices[[.selectTransAlpha]])
-        )
+        ),
+        hr(),
+        actionButton(paste0(mode, id, "_", .multiSelectSave), label="Save active"),
+        uiOutput(paste0(mode, id, "_", .multiSelectCurrent)), 
+        actionButton(paste0(mode, id, "_", .multiSelectPrevious), label="Previous stored"),
+        actionButton(paste0(mode, id, "_", .multiSelectNext), label="Next stored"),
+        actionButton(paste0(mode, id, "_", .multiSelectDelete), label="Delete current"),
+        actionButton(paste0(mode, id, "_", .multiSelectOverwrite), label="Overwrite active")
     )
 }
 

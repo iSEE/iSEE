@@ -152,6 +152,15 @@
 .selectColor <- "SelectColor"
 .selectTransAlpha <- "SelectAlpha"
 
+# Multiple selection parameters. ---
+.multiSelectHistory <- "MultiSelectHistory"
+.multiSelectSave <- "MultiSelectSave"
+.multiSelectPrevious <- "MultiSelectPrevious"
+.multiSelectNext <- "MultiSelectNext"
+.multiSelectCurrent <- "MultiSelectCurrent"
+.multiSelectDelete <- "MultiSelectDelete"
+.multiSelectOverwrite <- "MultiSelectOverwrite"
+
 .noSelection <- "---"
 
 # Zooming parameters. ----

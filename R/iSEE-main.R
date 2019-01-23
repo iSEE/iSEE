@@ -1086,6 +1086,7 @@ iSEE <- function(se,
                 local({
                     mode0 <- mode
                     id0 <- id
+                    plot_name <- paste0(mode0, id0)
 
                     # Creating the information about which stored history is active.                    
                     info_field <- paste0(mode0, id0, "_", .multiSelectInfo)
@@ -1154,7 +1155,32 @@ iSEE <- function(se,
                         rObjects[[info_field]] <- .increment_counter(isolate(rObjects[[info_field]]))
                     })
 
-                    # Overwriting the save.
+                    # Overwriting the save and triggering replotting.
+                    over_field <- paste0(mode0, id0, "_", .multiSelectOverwrite)
+                    observeEvent(input[[over_field]], {
+                        chosen <- pObjects$memory[[mode0]][id0,.multiSelectChosen]
+                        if (chosen==0L) {
+                            return(NULL)
+                        }
+                        
+                        new_active <- pObjects$memory[[mode0]][,.multiSelectHistory][[id0]][[chosen]]
+                        if (!is.null(new_active$closed)) { # i.e., is lasso.
+                            pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .lassoData, new_active)
+                            pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .brushData, NULL)
+
+                        } else {
+                            pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .brushData, new_active)
+                            pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .lassoData, NULL)
+                        }
+
+                        # Trigger replotting of self and independents.
+                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                        children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
+                        for (child_plot in children) {
+                            rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+                        }
+                        
+                    })
                 })
             }
         }

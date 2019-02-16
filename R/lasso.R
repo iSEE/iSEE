@@ -121,7 +121,7 @@ lassoPoints <- function(df, lasso) {
 #' @return A logical scalar specifying if \code{x} is a lasso.
 #'
 #' @author Aaron Lun
+#' @rdname INTERNAL_is_lasso
 .is_lasso <- function(x) {
     !is.null(x$closed)
-
 }

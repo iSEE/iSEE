@@ -711,7 +711,7 @@ names(.all_aes_values) <- .all_aes_names
     to_flip <- plot_type == "violin_horizontal"
     brush_out <- .self_brush_box(param_choices, flip=to_flip)
     lasso_out <- .self_lasso_path(param_choices, flip=to_flip)
-    select_cmds <- c(brush_out$cmds, lasso_out$cmds)
+    select_cmds <- c(brush_out, lasso_out)
 
     if (length(select_cmds)) {
         N <- length(extra_cmds)
@@ -722,9 +722,12 @@ names(.all_aes_values) <- .all_aes_names
         extra_cmds <- c(extra_cmds, select_cmds)
 
         # We overwrite any existing 'all_brushes' or 'all_lassos',
-        # as they have served their purpose in defining plot_data.
-        envir$all_brushes <- brush_out$data
-        envir$all_lassos <- lasso_out$data
+        # as they have already served their purpose in defining plot_data
+        # in .extract_plotting_data().
+        envir$all_brushes <- list(param_choices[,.brushData][[1]])
+        envir$all_lassos <- list(param_choices[,.lassoData][[1]])
+        envir$all_select_histories <- list(param_choices[,.multiSelectHistory][[1]])
+        names(envir$all_brushes) <- names(envir$all_lassos) <- names(envir$all_select_histories) <- rownames(param_choices)
     }
 
     # Evaluating the plotting commands.
@@ -2050,29 +2053,24 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 # Plot update functions ----
 ############################################
 
-#' Draw a Shiny brush
+#' Draw Shiny brushes
 #'
-#' Generate ggplot instructions to draw a rectangular box corresponding
-#' to the Shiny brush coordinates.
+#' Generate ggplot instructions to draw a rectangular box corresponding to Shiny brush coordinates (both active and memorized) in the current plot.
 #'
-#' @param param_choices A single-row DataFrame that contains all the
-#' input settings for the current panel.
-#' @param flip A \code{logical} value that indicates whether
-#' \code{\link{coord_flip}} was applied to the plot.
+#' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
+#' @param flip A \code{logical} value that indicates whether \code{\link{coord_flip}} was applied to the plot.
 #'
-#' @return A list that includes the following elements:
-#' \describe{
-#'   \item{cmds}{A string containing a command to overlay a rectangle
-#'     on the plot, indicating the position of an active Shiny brush.}
-#'   \item{data}{A list containing the Shiny brush structure, named after
-#'     the encoded panel name of the current panel.}
-#' }
+#' @return A character vector containing a command to overlay one or more rectangles on the plot, indicating the position of the active and memorized Shiny brushes.
 #'
 #' @details
-#' Returning \code{data} is necessary for evaluation of \code{cmd}
-#' in the evaluation environment.
-#' In particular, the command expects that \code{data} is assigned to a
-#' variable named \code{all_brushes} in the evaluation environment.
+#' Evaluation of the output commands require:
+#' \itemize{
+#' \item a list object called \code{all_brushes} where each entry is named by the plot name.
+#' The entry corresponding to the current plot should contain the contents of \code{.brushData} in \code{param_choices}.
+#' \item a list object called \code{all_select_histories} where each entry is named by the plot name.
+#' The entry corresponding to the current plot should contain the contents of \code{.multiSelectHistory} in \code{param_choices}.
+#' }
+#' Both of these objects should exist in the environment in which the commands are evaluated.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_self_brush_box
@@ -2081,8 +2079,12 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #'
 #' @importFrom ggplot2 geom_rect
 .self_brush_box <- function(param_choices, flip=FALSE) {
-    current <- param_choices[,.brushData][[1]]
-    if (is.null(current)) {
+    active <- param_choices[,.brushData][[1]]
+    memorized <- param_choices[,.multiSelectHistory][[1]]
+
+    keep <- which(!vapply(memorized, .is_lasso, FUN.VALUE=TRUE))
+    total <- as.integer(!is.null(active)) + length(keep)
+    if (total==0L) {
         return(NULL)
     }
 
@@ -2112,54 +2114,50 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     # Build up the aesthetics call
     aes_call <- sprintf("xmin = %s, xmax = %s, ymin = %s, ymax = %s", xmin, xmax, ymin, ymax)
 
-    # Initialize the minimal brush information
-    brush_data <- sprintf("all_brushes[['%s']][c('xmin', 'xmax', 'ymin', 'ymax')]", plot_name)
+    cmds <- character(0) 
+    for (i in seq_len(total) - !is.null(active)) { 
+        if (i==0L) {
+            brush_src <- sprintf("all_brushes[['%s']]", plot_name)
+        } else {
+            brush_src <- sprintf("all_select_histories[['%s']][[%i]]", plot_name, keep[i])
+        }
 
-    # Collect additional panel information for the brush
-    addPanels <- c()
-    if (param_choices[[.facetByRow]]) {
-        addPanels["FacetRow"] <- sprintf("FacetRow = all_brushes[['%s']][['%s']]", plot_name, facetrow)
-    }
-    if (param_choices[[.facetByColumn]]) {
-        addPanels["FacetColumn"] <- sprintf("FacetColumn = all_brushes[['%s']][['%s']]", plot_name, facetcolumn)
-    }
-
-    # If any facting (row, column) is active, add the relevant data fields
-    if (length(addPanels)) {
-        panel_list <- sprintf("list(%s)", paste(addPanels, collapse = ", "))
-        brush_data <- sprintf("
-            append(
-                %s,
-                %s)",
-            brush_data, panel_list)
-    }
-
-    # Build up the command that draws the brush
-    cmd <- sprintf(
+        # Initialize the minimal brush information
+        brush_data <- sprintf("%s[c('xmin', 'xmax', 'ymin', 'ymax')]", brush_src)
+    
+        # Collect additional panel information for the brush
+        addPanels <- c()
+        if (param_choices[[.facetByRow]]) {
+            addPanels["FacetRow"] <- sprintf("FacetRow = %s[['%s']]", brush_src, facetrow)
+        }
+        if (param_choices[[.facetByColumn]]) {
+            addPanels["FacetColumn"] <- sprintf("FacetColumn = %s[['%s']]", brush_src, facetcolumn)
+        }
+    
+        # If any facting (row, column) is active, add the relevant data fields
+        if (length(addPanels)) {
+            panel_list <- sprintf("list(%s)", paste(addPanels, collapse = ", "))
+            brush_data <- sprintf("append(%s, %s)", brush_data, panel_list)
+        }
+    
+        # Build up the command that draws the brush
+        cmd <- sprintf(
 "geom_rect(aes(%s), color='%s', alpha=0,
     data=do.call(data.frame, %s),
     inherit.aes=FALSE)",
-        aes_call, panel_colors[enc$Type], brush_data)
+            aes_call, panel_colors[enc$Type], brush_data)
+        cmds <- c(cmds, cmd)
+    }
 
-    data <- list()
-    data[[plot_name]] <- current
-    return(list(cmds=cmd, data=data))
+    cmds
 }
 
 #' Generate ggplot instructions to draw a lasso selection path
 #'
-#' @param param_choices A single-row DataFrame that contains all the
-#' input settings for the current panel.
-#' @param flip A \code{logical} value that indicates whether
-#' \code{\link{coord_flip}} was applied to the plot.
+#' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
+#' @param flip A \code{logical} value that indicates whether \code{\link{coord_flip}} was applied to the plot.
 #'
-#' @return A list that includes the following elements:
-#' \describe{
-#'   \item{cmds}{A character vector containing commands to overlay a point,
-#'   path or polygon, indicating the position of an active lasso.}
-#'   \item{data}{A list containing a matrix of lasso waypoint coordinates,
-#'   named after the encoded panel name of the current panel.}
-#' }
+#' @return A character vector containing commands to overlay a point, path or polygon, indicating the position of any active or memorized lassos.
 #'
 #' @details
 #' This function will generate commands to add a point to the plot, if there is only one lasso waypoint defined;
@@ -2170,8 +2168,14 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' with one exception, if the shape aesthetic is already being mapped to a covariate for data points,
 #' then lasso points switch to the size aesthetic.
 #'
-#' Returning \code{data} is necessary for evaluation of \code{cmd} in the evaluation environment.
-#' In particular, the command expects that \code{data} is assigned to a variable named \code{all_lassos} in the evaluation environment.
+#' Evaluation of the output commands require:
+#' \itemize{
+#' \item a list object called \code{all_lassos} where each entry is named by the plot name.
+#' The entry corresponding to the current plot should contain the contents of \code{.lassoData} in \code{param_choices}.
+#' \item a list object called \code{all_select_histories} where each entry is named by the plot name.
+#' The entry corresponding to the current plot should contain the contents of \code{.multiSelectHistory} in \code{param_choices}.
+#' }
+#' Both of these objects should exist in the environment in which the commands are evaluated.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_self_lasso_path
@@ -2181,8 +2185,12 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' @importFrom ggplot2 geom_point geom_polygon geom_path scale_shape_manual
 #' scale_fill_manual guides
 .self_lasso_path <- function(param_choices, flip=FALSE) {
-    current <- param_choices[,.lassoData][[1]]
-    if (is.null(current) || !is.null(param_choices[,.brushData][[1]])) {
+    active <- param_choices[,.lassoData][[1]]
+    memorized <- param_choices[,.multiSelectHistory][[1]]
+
+    keep <- which(vapply(memorized, .is_lasso, FUN.VALUE=TRUE))
+    total <- as.integer(!is.null(active)) + length(keep)
+    if (total==0L) {
         return(NULL)
     }
 
@@ -2191,7 +2199,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     stroke_color <- panel_colors[enc$Type]
     fill_color <- brush_fill_color[enc$Type]
 
-    # Note: Faceting simultaneously on row and column produces a 'flip' effect on the brush data
+    # Note: Faceting simultaneously on row and column produces a 'flip' effect on the lasso data
     if (param_choices[[.facetByRow]] && param_choices[[.facetByColumn]]) {
         facetrow <- 'panelvar2'
         facetcolumn <- 'panelvar1'
@@ -2199,101 +2207,110 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
         facetrow <- facetcolumn <- 'panelvar1'
     }
 
-    # Initialize the minimal brush information
-    lasso_data <- sprintf(
-        "X = all_lassos[['%s']]$coord[,1], Y = all_lassos[['%s']]$coord[,2]",
-        plot_name, plot_name)
+    cmds <- character(0) 
+    for (i in seq_len(total) - !is.null(active)) { 
+        if (i==0L) {
+            lasso_src <- sprintf("all_lassos[['%s']]", plot_name)
+            current <- active
+        } else {
+            chosen <- keep[i]
+            lasso_src <- sprintf("all_select_histories[['%s']][[%i]]", plot_name, chosen)
+            current <- memorized[[chosen]]
+        }
+        
+        # Initialize the minimal lasso information
+        lasso_data <- sprintf("X = %s$coord[,1], Y = %s$coord[,2]", lasso_src, lasso_src)
 
-    # Collect additional panel information for the brush
-    addPanels <- c()
-    if (param_choices[[.facetByRow]]) {
-        addPanels["FacetRow"] <- sprintf("FacetRow = all_lassos[['%s']][['%s']]", plot_name, facetrow)
-    }
-    if (param_choices[[.facetByColumn]]) {
-        addPanels["FacetColumn"] <- sprintf("FacetColumn = all_lassos[['%s']][['%s']]", plot_name, facetcolumn)
-    }
-
-    # If any facting (row, column) is active, add the relevant data fields
-    if (length(addPanels)) {
-        panel_data <- paste(unlist(addPanels), collapse=", ")
-        lasso_data <- paste(lasso_data, panel_data, sep=", ")
-    }
-
-    if (identical(nrow(current$coord), 1L)) { # lasso has only a start point
-        point_cmd <- sprintf(
+        # Collect additional panel information for the lasso.
+        addPanels <- c()
+        if (param_choices[[.facetByRow]]) {
+            addPanels["FacetRow"] <- sprintf("FacetRow = %s[['%s']]", lasso_src, facetrow)
+        }
+        if (param_choices[[.facetByColumn]]) {
+            addPanels["FacetColumn"] <- sprintf("FacetColumn = %s[['%s']]", lasso_src, facetcolumn)
+        }
+    
+        # If any facting (row, column) is active, add the relevant data fields
+        if (length(addPanels)) {
+            panel_data <- paste(unlist(addPanels), collapse=", ")
+            lasso_data <- paste(lasso_data, panel_data, sep=", ")
+        }
+    
+        if (identical(nrow(current$coord), 1L)) { # lasso has only a start point
+            point_cmd <- sprintf(
 "geom_point(aes(x = %s, y = %s),
     data=data.frame(%s),
     inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s', shape = %s)",
-            current$mapping$x, current$mapping$y, lasso_data, stroke_color, .lassoStartShape)
-        full_cmd_list <- list(point_cmd)
-
-    } else if (current$closed){ # lasso is closed
-        polygon_cmd <- sprintf(
-"geom_polygon(aes(x = %s, y = %s), alpha=%s, color='%s',
-    data=data.frame(%s),
-    inherit.aes=FALSE, fill = '%s')",
-            current$mapping$x, current$mapping$y,
-            .brushFillOpacity, stroke_color,
-            lasso_data, fill_color)
-
-        scale_fill_cmd <- sprintf(
-            "scale_fill_manual(values = c('TRUE' = '%s', 'FALSE' = '%s'), labels = NULL)",
-            stroke_color, fill_color)
-
-        if (param_choices[[.shapeByField]] == .shapeByNothingTitle) {
-            guides_cmd <- "guides(shape = 'none')"
-        } else {
-            guides_cmd <- NULL
-        }
-
-        full_cmd_list <- list(polygon_cmd, scale_fill_cmd, guides_cmd)
-
-    } else { # lasso is still open
-        path_cmd <- sprintf(
+                current$mapping$x, current$mapping$y, lasso_data, stroke_color, .lassoStartShape)
+            full_cmd_list <- list(point_cmd)
+    
+        } else if (current$closed){ # lasso is closed
+            polygon_cmd <- sprintf(
+    "geom_polygon(aes(x = %s, y = %s), alpha=%s, color='%s',
+        data=data.frame(%s),
+        inherit.aes=FALSE, fill = '%s')",
+                current$mapping$x, current$mapping$y,
+                .brushFillOpacity, stroke_color,
+                lasso_data, fill_color)
+    
+            scale_fill_cmd <- sprintf(
+                "scale_fill_manual(values = c('TRUE' = '%s', 'FALSE' = '%s'), labels = NULL)",
+                stroke_color, fill_color)
+    
+            if (param_choices[[.shapeByField]] == .shapeByNothingTitle) {
+                guides_cmd <- "guides(shape = 'none')"
+            } else {
+                guides_cmd <- NULL
+            }
+    
+            full_cmd_list <- list(polygon_cmd, scale_fill_cmd, guides_cmd)
+    
+        } else { # lasso is still open
+            path_cmd <- sprintf(
 "geom_path(aes(x = %s, y = %s),
     data=data.frame(%s),
     inherit.aes=FALSE, alpha=1, color='%s', linetype = 'longdash')",
-            current$mapping$x, current$mapping$y, lasso_data, stroke_color)
-
-        # Do not control the shape of waypoints if shape is already being mapped to a covariate
-        if (param_choices[[.shapeByField]] == .shapeByNothingTitle) {
-            point_cmd <- sprintf(
+                current$mapping$x, current$mapping$y, lasso_data, stroke_color)
+    
+            # Do not control the shape of waypoints if shape is already being mapped to a covariate
+            if (param_choices[[.shapeByField]] == .shapeByNothingTitle) {
+                point_cmd <- sprintf(
 "geom_point(aes(x = %s, y = %s, shape = First),
     data=data.frame(%s,
-                    First = seq_len(nrow(all_lassos[['%s']]$coord))==1L),
+        First = seq_len(nrow(%s$coord))==1L),
     inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s')",
-                current$mapping$x, current$mapping$y,
-                lasso_data, plot_name, stroke_color)
-
-            scale_shape_cmd <- sprintf(
-                "scale_shape_manual(values = c('TRUE' = %s, 'FALSE' = %s))",
-                .lassoStartShape, .lassoWaypointShape
-            )
-
-            guides_cmd <- "guides(shape = 'none')"
-        } else {
-            point_cmd <- sprintf(
+                    current$mapping$x, current$mapping$y,
+                    lasso_data, lasso_src, stroke_color)
+    
+                scale_shape_cmd <- sprintf(
+                    "scale_shape_manual(values = c('TRUE' = %s, 'FALSE' = %s))",
+                    .lassoStartShape, .lassoWaypointShape
+                )
+    
+                guides_cmd <- "guides(shape = 'none')"
+            } else {
+                point_cmd <- sprintf(
 "geom_point(aes(x = %s, y = %s, size = First),
     data=data.frame(%s,
-                    First = seq_len(nrow(all_lassos[['%s']]$coord))==1L),
+        First = seq_len(nrow(%s$coord))==1L),
     inherit.aes=FALSE, alpha=1, stroke = 1, shape = %s, color = '%s')",
-                current$mapping$x, current$mapping$y,
-                lasso_data, plot_name, .lassoStartShape, stroke_color)
-
-            scale_shape_cmd <- sprintf(
-                "scale_size_manual(values = c('TRUE' = %s, 'FALSE' = %s))",
-                .lassoStartSize, .lassoWaypointSize
-            )
-
-            guides_cmd <- "guides(size = 'none')"
+                    current$mapping$x, current$mapping$y,
+                    lasso_data, lasso_src, .lassoStartShape, stroke_color)
+    
+                scale_shape_cmd <- sprintf(
+                    "scale_size_manual(values = c('TRUE' = %s, 'FALSE' = %s))",
+                    .lassoStartSize, .lassoWaypointSize
+                )
+    
+                guides_cmd <- "guides(size = 'none')"
+            }
+    
+            full_cmd_list <- list(
+                path_cmd, point_cmd, scale_shape_cmd, guides_cmd)
         }
-
-        full_cmd_list <- list(
-            path_cmd, point_cmd, scale_shape_cmd, guides_cmd)
-
+            
+        cmds <- c(cmds, unlist(full_cmd_list))
     }
 
-    data <- list()
-    data[[plot_name]] <- current
-    return(list(cmds=unlist(full_cmd_list), data=data))
+    cmds
 }

@@ -1164,12 +1164,8 @@
                 min=0, max=1, value=param_choices[[.selectTransAlpha]])
         ),
         hr(),
-        actionButton(paste0(mode, id, "_", .multiSelectSave), label="Save active"),
-        uiOutput(paste0(mode, id, "_", .multiSelectInfo)), 
-        actionButton(paste0(mode, id, "_", .multiSelectPrevious), label="Previous stored"),
-        actionButton(paste0(mode, id, "_", .multiSelectNext), label="Next stored"),
-        actionButton(paste0(mode, id, "_", .multiSelectDelete), label="Delete current"),
-        actionButton(paste0(mode, id, "_", .multiSelectOverwrite), label="Overwrite active")
+        actionButton(paste0(mode, id, "_", .multiSelectSave), label="Save"),
+        actionButton(paste0(mode, id, "_", .multiSelectDelete), label="Delete")
     )
 }
 

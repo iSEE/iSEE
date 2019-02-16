@@ -348,7 +348,6 @@ iSEE <- function(se,
                 rObjects[[paste0(mode, id)]] <- 1L
                 rObjects[[paste0(mode, id, "_", .panelLinkInfo)]] <- 1L
                 rObjects[[paste0(mode, id, "_", .panelGeneralInfo)]] <- 1L
-                rObjects[[paste0(mode, id, "_", .multiSelectInfo)]] <- 1L
             }
         }
 
@@ -1087,21 +1086,10 @@ iSEE <- function(se,
                     mode0 <- mode
                     id0 <- id
                     plot_name <- paste0(mode0, id0)
-
-                    # Creating the information about which stored history is active.                    
-                    info_field <- paste0(mode0, id0, "_", .multiSelectInfo)
-                    output[[info_field]] <- renderUI({
-                        force(rObjects[[info_field]])
-                        nselect <- length(pObjects$memory[[mode0]][,.multiSelectHistory][[id0]])
-                        if (nselect==0L) {
-                            return(HTML("No stored selections available"))
-                        }
-                        return(HTML(sprintf("On selection %i out of %i", 
-                            pObjects$memory[[mode0]][id0,.multiSelectChosen], nselect)))
-                    })
+                    save_field <- paste0(plot_name, "_", .multiSelectSave)
+                    del_field <- paste0(plot_name, "_", .multiSelectDelete)
 
                     # Saving and deleting.
-                    save_field <- paste0(mode0, id0, "_", .multiSelectSave)
                     observeEvent(input[[save_field]], {
                         current <- pObjects$memory[[mode0]][,.multiSelectHistory][[id0]]
 
@@ -1113,73 +1101,17 @@ iSEE <- function(se,
                                 return(NULL)
                             }
                         }
-                        
+                    
                         pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .multiSelectHistory, c(current, list(to_store)))
-                        pObjects$memory[[mode0]][id0,.multiSelectChosen] <- length(current) + 1L # i.e. the most recently added element.
-                        rObjects[[info_field]] <- .increment_counter(isolate(rObjects[[info_field]]))
                     })
 
-                    del_field <- paste0(mode0, id0, "_", .multiSelectDelete)
                     observeEvent(input[[del_field]], {
                         current <- pObjects$memory[[mode0]][,.multiSelectHistory][[id0]]
-                        chosen <- pObjects$memory[[mode0]][id0,.multiSelectChosen]
-                        pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .multiSelectHistory, current[-chosen])
-                        pObjects$memory[[mode0]][id0,.multiSelectChosen] <- min(chosen, length(current) - 1L)
-                        rObjects[[info_field]] <- .increment_counter(isolate(rObjects[[info_field]]))
-                    })
+                        current <- head(current, -1)
+                        pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .multiSelectHistory, current)
 
-                    # Shifting left or right.
-                    prev_field <- paste0(mode0, id0, "_", .multiSelectPrevious)
-                    observeEvent(input[[prev_field]], {
-                        current <- pObjects$memory[[mode0]][,.multiSelectHistory][[id0]]
-                        chosen <- pObjects$memory[[mode0]][id0,.multiSelectChosen]
-                        if (chosen==1L) {
-                            chosen <- length(current)
-                        } else {
-                            chosen <- chosen - 1L
-                        }
-                        pObjects$memory[[mode0]][id0,.multiSelectChosen] <- chosen
-                        rObjects[[info_field]] <- .increment_counter(isolate(rObjects[[info_field]]))
-                    })
-
-                    next_field <- paste0(mode0, id0, "_", .multiSelectNext)
-                    observeEvent(input[[next_field]], {
-                        current <- pObjects$memory[[mode0]][,.multiSelectHistory][[id0]]
-                        chosen <- pObjects$memory[[mode0]][id0,.multiSelectChosen]
-                        if (chosen==length(current)) {
-                            chosen <- 1L
-                        } else {
-                            chosen <- chosen + 1L
-                        }
-                        pObjects$memory[[mode0]][id0,.multiSelectChosen] <- chosen
-                        rObjects[[info_field]] <- .increment_counter(isolate(rObjects[[info_field]]))
-                    })
-
-                    # Overwriting the save and triggering replotting.
-                    over_field <- paste0(mode0, id0, "_", .multiSelectOverwrite)
-                    observeEvent(input[[over_field]], {
-                        chosen <- pObjects$memory[[mode0]][id0,.multiSelectChosen]
-                        if (chosen==0L) {
-                            return(NULL)
-                        }
-                        
-                        new_active <- pObjects$memory[[mode0]][,.multiSelectHistory][[id0]][[chosen]]
-                        if (!is.null(new_active$closed)) { # i.e., is lasso.
-                            pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .lassoData, new_active)
-                            pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .brushData, NULL)
-
-                        } else {
-                            pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .brushData, new_active)
-                            pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .lassoData, NULL)
-                        }
-
-                        # Trigger replotting of self and independents.
+                        # Updating self.
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                        children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
-                        for (child_plot in children) {
-                            rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
-                        }
-                        
                     })
                 })
             }

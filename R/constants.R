@@ -154,14 +154,8 @@
 
 # Multiple selection parameters. ---
 .multiSelectHistory <- "MultiSelectHistory"
-.multiSelectChosen <- "MultiSelectChosen"
-
 .multiSelectSave <- "MultiSelectSave"
-.multiSelectPrevious <- "MultiSelectPrevious"
-.multiSelectNext <- "MultiSelectNext"
 .multiSelectDelete <- "MultiSelectDelete"
-.multiSelectInfo <- "MultiSelectInfo"
-.multiSelectOverwrite <- "MultiSelectOverwrite"
 
 .noSelection <- "---"
 

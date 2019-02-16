@@ -963,7 +963,6 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.brushData]] <- rep(list(NULL), nrow(incoming))
 
     incoming[[.multiSelectHistory]] <- rep(list(NULL), nrow(incoming))
-    incoming[[.multiSelectChosen]] <- 0L
 
     incoming[[.visualParamChoice]] <- rep(list(.visualParamChoiceColorTitle), nrow(incoming))
 

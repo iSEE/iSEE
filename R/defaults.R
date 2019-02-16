@@ -204,6 +204,7 @@ NULL
 #' \item{\code{MultiSelectChosen}:}{Integer, specifying the entry of the per-plot list in \code{MultiSelectHistory} that is chosen to replace the active selection.
 #' Note that it will only actually replace the active selection upon user prompt - modify \code{BrushData} or \code{LassoData} directly to set the active selection beforehand.
 #' }
+#' }
 #'
 #' @section Inter-plot transmission rules:
 #' Point selection cannot occur between row-based and column-based plots.
@@ -963,6 +964,9 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.brushData]] <- rep(list(NULL), nrow(incoming))
 
     incoming[[.multiSelectHistory]] <- rep(list(NULL), nrow(incoming))
+    
+    incoming[[.selectMultiType]] <- .selectMultiActiveTitle
+    incoming[[.selectMultiSaved]] <- 1L
 
     incoming[[.visualParamChoice]] <- rep(list(.visualParamChoiceColorTitle), nrow(incoming))
 

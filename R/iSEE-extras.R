@@ -726,17 +726,15 @@ height_limits <- c(400L, 1000L)
 #'
 #' @importFrom S4Vectors DataFrame
 .get_selected_points <- function(names, transmitter, all_memory, all_coordinates) {
-    dummy <- DataFrame(transmitter, .selectColorTitle)
-    colnames(dummy) <- c(.selectByPlot, .selectEffect)
+    dummy <- DataFrame(transmitter, .selectColorTitle, .selectMultiActiveTitle, 1L) # TODO: allow choice of non-active selections.
+    colnames(dummy) <- c(.selectByPlot, .selectEffect, .selectMultiType, .selectMultiSaved)
     selected <- .process_selectby_choice(dummy, all_memory, self_source=FALSE)
 
-    if (!is.null(selected$cmd)) {
+    if (!is.null(selected$cmds)) {
         chosen.env <- new.env()
         chosen.env$plot.data <- data.frame(row.names=names)
-        chosen.env$all_coordinates <- all_coordinates
-        chosen.env$all_brushes <- selected$data
-        chosen.env$all_lassos <- selected$data
-        .text_eval(selected$cmd, envir=chosen.env)
+        .populate_selection_environment(all_memory[[selected$transmitter$Type]][selected$transmitter$ID,], chosen.env)
+        .text_eval(selected$cmds, envir=chosen.env)
         return(chosen.env$plot.data$SelectBy)
     }
     return(NULL)

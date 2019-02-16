@@ -1147,10 +1147,12 @@ iSEE <- function(se,
             } else {
                 nonfundamental <- c(.colorByColData, .colorByFeatNameAssay, .shapeByField, .shapeByColData, .sizeByField, .sizeByColData, .colorBySampNameColor)
             }
-            nonfundamental <- c(nonfundamental, .colorByDefaultColor, .selectColor, .selectTransAlpha,
-                                .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition,
-                                .plotPointDownsample, .plotPointSampleRes, .contourAddTitle,
-                                .contourColor)
+            nonfundamental <- c(nonfundamental, 
+                .colorByDefaultColor, .selectColor, .selectTransAlpha,
+                .selectMultiType, .selectMultiSaved,
+                .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition,
+                .plotPointDownsample, .plotPointSampleRes, .contourAddTitle,
+                .contourColor)
 
             for (id in seq_len(max_plots)) {
                 # Observers for the non-fundamental parameter options.

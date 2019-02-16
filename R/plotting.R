@@ -515,13 +515,10 @@ names(.all_aes_values) <- .all_aes_names
     more_data_cmds <- .evaluate_commands(more_data_cmds, eval_env)
 
     # Creating the command to define SelectBy.
-    # Note that 'all_brushes' or 'all_lassos' is needed for the eval() to obtain SelectBy.
-    # This approach relatively easy to deparse() in the code tracker, rather than having to construct the Shiny select object or lasso waypoints manually.
     select_out <- .process_selectby_choice(param_choices, all_memory)
     select_cmds <- select_out$cmds
-    if (length(select_cmds)) {
-        eval_env$all_brushes <- select_out$data
-        eval_env$all_lassos <- select_out$data
+    if (!is.null(select_cmds)) {
+        .populate_selection_environment(all_memory[[select_out$transmitter$Type]][select_out$transmitter$ID,], eval_env)
         .text_eval(select_cmds, eval_env)
     }
 
@@ -724,10 +721,7 @@ names(.all_aes_values) <- .all_aes_names
         # We overwrite any existing 'all_brushes' or 'all_lassos',
         # as they have already served their purpose in defining plot_data
         # in .extract_plotting_data().
-        envir$all_brushes <- list(param_choices[,.brushData][[1]])
-        envir$all_lassos <- list(param_choices[,.lassoData][[1]])
-        envir$all_select_histories <- list(param_choices[,.multiSelectHistory][[1]])
-        names(envir$all_brushes) <- names(envir$all_lassos) <- names(envir$all_select_histories) <- rownames(param_choices)
+        .populate_selection_environment(param_choices, envir)
     }
 
     # Evaluating the plotting commands.
@@ -1576,14 +1570,12 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' @param all_memory A list of DataFrames, where each DataFrame corresponds to a panel type and contains the settings for each individual panel of that type.
 #' @param self_source A logical scalar indicating whether it is allowable to select points based on coordinates in \code{plot.data}.
 #'
-#' @return A list that includes the following elements:
-#' \describe{
-#' \item{cmds}{A character vector of commands that results in the addition of a \code{SelectBy} covariate column in the \code{plot.data} data.frame.
-#' This will be \code{NULL} if no selection should be applied.
-#' }
-#' \item{data}{A list containing a Shiny brush object or a matrix of closed lasso waypoint coordinates.
-#' This is named with the encoded panel name of the transmitting plot.
-#' }
+#' @return A list containing:
+#' \itemize{
+#' \item \code{cmds}, a character vector of commands that results in the addition of a \code{SelectBy} covariate column in the \code{plot.data} data.frame.
+#' If no selection should be applied, this is set to \code{NULL}.
+#' \item \code{transmitter}, a list containing the encoded plot name and ID of the transmitting plot for the current panel (see \code{\link{.encode_panel_name}}).
+#' If no selection should be applied, this is set to \code{NULL}.
 #' }
 #'
 #' @details
@@ -1597,6 +1589,17 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #'
 #' Setting \code{self_source=FALSE} is used in \code{\link{.get_selected_points}} to force it to use existing coordinates to define \code{SelectBy}.
 #'
+#' Evaluation of the output commands require:
+#' \itemize{
+#' \item a list object called \code{all_brushes} where each entry is named by the plot name.
+#' The entry corresponding to the transmitting plot should contain the contents of \code{.brushData} in its parameter set in \code{all_memory}.
+#' \item a list object called \code{all_lassos} where each entry is named by the plot name.
+#' The entry corresponding to the transmitting plot should contain the contents of \code{.lassoData} in its parameter set in \code{all_memory}.
+#' \item a list object called \code{all_select_histories} where each entry is named by the plot name.
+#' The entry corresponding to the transmitting plot should contain the contents of \code{.multiSelectHistory} in its parameter set in \code{all_memory}.
+#' }
+#' All of these objects should exist in the environment in which the commands are evaluated.
+#'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_process_selectby_choice
 #' @seealso
@@ -1608,8 +1611,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' @importFrom shiny brushedPoints
 .process_selectby_choice <- function(param_choices, all_memory, self_source=TRUE) {
     select_in <- param_choices[[.selectByPlot]]
-    select_obj <- list()
     cmds <- list()
+    select_by <- NULL
 
     if (!identical(select_in, .noSelection)) {
 
@@ -1621,28 +1624,92 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
             source_data <- sprintf("all_coordinates[['%s']]", transmitter)
         }
 
-        brush_val <- all_memory[[select_by$Type]][,.brushData][[select_by$ID]]
-        if (!is.null(brush_val)) {
-            select_obj[[transmitter]] <- brush_val
-            cmds[["brush"]] <- sprintf("selected_pts <- shiny::brushedPoints(%s, all_brushes[['%s']])", source_data, transmitter)
-            cmds[["select"]] <- "plot.data$SelectBy <- rownames(plot.data) %in% rownames(selected_pts);"
+        transmit_type_param <- all_memory[[select_by$Type]]
 
+        cur_choice <- param_choices[,.selectMultiType]
+        if (cur_choice==.selectMultiUnionTitle) {
+            select_sources <- c(0L, seq_along(transmit_type_param[,.multiSelectHistory][[1]]))
+        } else if (cur_choice==.selectMultiActiveTitle) {
+            select_sources <- 0L
         } else {
-            lasso_val <- all_memory[[select_by$Type]][,.lassoData][[select_by$ID]]
-            if (!is.null(lasso_val) && lasso_val$closed) {
-                select_obj[[transmitter]] <- lasso_val
-                cmds[["lasso"]] <- sprintf("selected_pts <- lassoPoints(%s, all_lassos[['%s']]);", source_data, transmitter)
-                cmds[["select"]] <- sprintf("plot.data$SelectBy <- rownames(plot.data) %%in%% rownames(selected_pts)", source_data)
+            select_sources <- param_choices[,.selectMultiSaved]
+        }
+
+        starting <- TRUE
+        for (i in select_sources) {
+            if (i==0L){ 
+                brush_val <- transmit_type_param[,.brushData][[select_by$ID]]
+                lasso_val <- transmit_type_param[,.lassoData][[select_by$ID]]
+                brush_src <- sprintf("all_brushes[['%s']]", transmitter)
+                lasso_src <- sprintf("all_lassos[['%s']]", transmitter)
+                use_brush <- !is.null(brush_val)
+                use_lasso <- !is.null(lasso_val) && lasso_val$closed
+            } else {
+                all_histories <- transmit_type_param[,.multiSelectHistory][[select_by$ID]]
+                brush_val <- lasso_val <- all_histories[[i]]
+                brush_src <- lasso_src <- sprintf("all_select_histories[['%s']][[%i]]", transmitter, i)
+
+                # TODO: get rid of some of these checks once UI uses selectInput for .selectMultiSaved.
+                use_brush <- !is.null(brush_val) && !is.na(brush_val) && !.is_lasso(brush_val) 
+                use_lasso <- !is.null(lasso_val) && !is.na(lasso_val) && .is_lasso(lasso_val)
+            }
+
+            if (use_brush || use_lasso) {
+                if (starting) {
+                    starting <- FALSE
+                    LEFT <- RIGHT <- ""
+                } else {
+                    LEFT <- "union(selected_pts, "
+                    RIGHT <- ")"
+                }
+            }
+
+            if (use_brush) {
+                cmds[[paste0("brush", i)]] <- sprintf("selected_pts <- %srownames(shiny::brushedPoints(%s, %s))%s;", LEFT, source_data, brush_src, RIGHT)
+            } else if (use_lasso) {
+                cmds[[paste0("lasso", i)]] <- sprintf("selected_pts <- %srownames(lassoPoints(%s, %s))%s;", LEFT, source_data, lasso_src, RIGHT)
             }
         }
 
-        if (length(select_obj) && param_choices[[.selectEffect]]==.selectRestrictTitle) {
-            cmds[["saved"]] <- "plot.data.all <- plot.data;"
-            cmds[["subset"]] <- "plot.data <- subset(plot.data, SelectBy);"
+        if (length(cmds)) {
+            cmds[["select"]] <- "plot.data$SelectBy <- rownames(plot.data) %in% selected_pts;"
+
+            if (param_choices[[.selectEffect]]==.selectRestrictTitle) {
+                cmds[["saved"]] <- "plot.data.all <- plot.data;"
+                cmds[["subset"]] <- "plot.data <- subset(plot.data, SelectBy);"
+            }
         }
     }
 
-    return(list(cmds=unlist(cmds), data=select_obj))
+    list(cmds=unlist(cmds), transmitter=select_by)
+}
+
+#' Populate selection structures
+#'
+#' Populate the environment with data structures required for selection.
+#'
+#' @param param_choices A single-row DataFrame that contains all the #' input settings for the current panel.
+#' @param envir An environment produced by \code{\link{.extract_plotting_data}}.
+#'
+#' @details
+#' This function provides a convenient wrapper to add Shiny brush and lasso objects from any panel to the evaluation environment. 
+#' These are needed for certain commands to be executed (see the \dQuote{See also} section below).
+#'
+#' @return \code{all_brushes}, \code{all_lassos} and \code{all_select_histories} are added to \code{envir} using pass-by-reference behaviour of environments.
+#' A\code{NULL} value is invisibly returned.
+#'
+#' @author Aaron Lun.
+#' @rdname INTERNAL_populate_selection_environment
+#' @seealso
+#' \code{\link{.process_selectby_choice}},
+#' \code{\link{.self_brush_box}},
+#' \code{\link{.self_lasso_path}}
+.populate_selection_environment <- function(param_choices, envir) {
+    envir$all_brushes <- list(param_choices[,.brushData][[1]])
+    envir$all_lassos <- list(param_choices[,.lassoData][[1]])
+    envir$all_select_histories <- list(param_choices[,.multiSelectHistory][[1]])
+    names(envir$all_brushes) <- names(envir$all_lassos) <- names(envir$all_select_histories) <- rownames(param_choices)
+    invisible(NULL)
 }
 
 #' Add points to plot

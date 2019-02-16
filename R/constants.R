@@ -157,6 +157,13 @@
 .multiSelectSave <- "MultiSelectSave"
 .multiSelectDelete <- "MultiSelectDelete"
 
+.selectMultiType <- "SelectMultiType"
+.selectMultiActiveTitle <- "Active"
+.selectMultiUnionTitle <- "Union"
+.selectMultiSavedTitle <- "Saved"
+
+.selectMultiSaved <- "SelectMultiSaved"
+
 .noSelection <- "---"
 
 # Zooming parameters. ----

@@ -1088,6 +1088,7 @@ iSEE <- function(se,
                     plot_name <- paste0(mode0, id0)
                     save_field <- paste0(plot_name, "_", .multiSelectSave)
                     del_field <- paste0(plot_name, "_", .multiSelectDelete)
+                    info_field <- paste0(plot_name, "_", .panelGeneralInfo)
 
                     # Saving and deleting.
                     observeEvent(input[[save_field]], {
@@ -1103,6 +1104,9 @@ iSEE <- function(se,
                         }
                     
                         pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .multiSelectHistory, c(current, list(to_store)))
+
+                        # Updating various fields.
+                        rObjects[[info_field]] <- .increment_counter(isolate(rObjects[[info_field]]))
                     })
 
                     observeEvent(input[[del_field]], {
@@ -1290,15 +1294,40 @@ iSEE <- function(se,
                         force(rObjects[[gen_field]])
                         selected <- .get_selected_points(
                             rownames(pObjects$coordinates[[plot_name]]), dec_name,
-                            pObjects$memory, pObjects$coordinates)
-                        if (is.null(selected)) {
-                            return(NULL)
+                            pObjects$memory, pObjects$coordinates, select_all=TRUE
+                        )
+
+                        all_output <- list()
+                        if (!is.null(selected$active)) {
+                            n_selected <- sum(selected$active)
+                            n_total <- length(selected$active)
+                            all_output <- append(all_output, 
+                                list(
+                                    sprintf(
+                                        "%i of %i points in active selection (%.1f%%)",
+                                        n_selected, n_total, 100*n_selected/n_total
+                                    ), 
+                                    br()
+                                )
+                            )
                         }
-                        n_selected <- sum(selected)
-                        n_total <- length(selected)
-                        HTML(sprintf(
-                            "%i of %i points selected (%.1f%%)",
-                            n_selected, n_total, 100*n_selected/n_total))
+
+                        for (i in seq_along(selected$saved)) {
+                            n_selected <- sum(selected$saved[[i]])
+                            n_total <- length(selected$saved[[i]])
+                            all_output <- append(all_output, 
+                                list(
+                                    sprintf(
+                                        "%i of %i points in saved selection %i (%.1f%%)",
+                                        n_selected, n_total, i, 100*n_selected/n_total
+                                    ),
+                                    br()
+                                )
+                            )
+                        }
+
+                        if (length(all_output)==0L) return(NULL)
+                        do.call(tagList, all_output)
                     })
 
                     # Describing the links between panels.

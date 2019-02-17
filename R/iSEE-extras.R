@@ -706,9 +706,16 @@ height_limits <- c(400L, 1000L)
 #' @param transmitter String containing the decoded name of the transmitting panel.
 #' @param all_memory A list of DataFrames containing parameters for each panel of each type.
 #' @param all_coordinates A list of data.frames that contain the coordinates and covariates of data points visible in each of the plots.
+#' @param select_type String specifying which type of selection from the transmitting plot should be used.
+#' @param select_saved Integer specifying which saved selection in the transmitting plot should be used if \code{select_type="Saved"}.
+#' @param select_all Logical scalar indicating whether a list should be returned containing the results of all selections (active and saved).
 #'
 #' @return
-#' A logical vector of length equal to \code{names}, specifying which points were selected in the \code{transmitter}.
+#' If \code{select_all=FALSE}, a logical vector of length equal to \code{names} is returned, specifying which points were selected in the \code{transmitter}.
+#' If no selections are available in the transmitting plot, \code{NULL} is returned instead.
+#'
+#' Otherwise, a list is returned containing \code{active}, a logical vector (or \code{NULL} specifying the points in the active selection of the transmitting plot;
+#' and \code{saved}, a list of logical vectors specifying the points in each of the saved selections.
 #'
 #' @details
 #' This function obtains the commands to select points from \code{\link{.process_selectby_choice}}, and evaluates them to identify the selected points.
@@ -725,8 +732,23 @@ height_limits <- c(400L, 1000L)
 #' \code{\link{iSEE}}
 #'
 #' @importFrom S4Vectors DataFrame
-.get_selected_points <- function(names, transmitter, all_memory, all_coordinates) {
-    dummy <- DataFrame(transmitter, .selectColorTitle, .selectMultiActiveTitle, 1L) # TODO: allow choice of non-active selections.
+.get_selected_points <- function(names, transmitter, all_memory, all_coordinates, select_type=.selectMultiActiveTitle, select_saved=0L, select_all=FALSE) {
+    if (select_all) {
+        active <- .get_selected_points(names, transmitter, all_memory, all_coordinates, select_all=FALSE)
+
+        enc <- .encode_panel_name(transmitter)
+        N <- length(all_memory[[enc$Type]][,.multiSelectHistory][[enc$ID]])
+        custom <- vector("list", N)
+        for (i in seq_len(N)) {
+            custom[[i]] <- .get_selected_points(names, transmitter, all_memory, all_coordinates, 
+                select_type=.selectMultiSavedTitle, select_saved=i, select_all=FALSE)
+        }
+
+        return(list(active=active, saved=custom))
+    }
+
+    select_type <- match.arg(select_type, c(.selectMultiActiveTitle, .selectMultiUnionTitle, .selectMultiSavedTitle))
+    dummy <- DataFrame(transmitter, .selectColorTitle, select_type, select_saved)
     colnames(dummy) <- c(.selectByPlot, .selectEffect, .selectMultiType, .selectMultiSaved)
     selected <- .process_selectby_choice(dummy, all_memory, self_source=FALSE)
 

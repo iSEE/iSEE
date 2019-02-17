@@ -404,19 +404,10 @@ iSEE <- function(se,
                   "a keyboard shortcut that depends on your operating system (e.g. Ctrl/Cmd + A",
                   "followed by Ctrl/Cmd + C).",
                   "This will copy the selected parts to the clipboard."),
-                tabsetPanel(
-                    tabPanel("All commands",
-                        aceEditor("report_all_cmds", mode="r", theme="solarized_light", autoComplete="live",
-                            value=paste0(.track_it_all(rObjects$active_panels, pObjects,
-                                    se_name, ecm_name, cdf_name, csf_name, se_cmds), collapse="\n"),
-                            height="600px")
-                        ),
-                    tabPanel("Selection only",
-                        aceEditor("report_select_cmds", mode="r", theme="solarized_light", autoComplete="live",
-                            value=paste0(.track_selections_only(rObjects$active_panels, pObjects, se_name, se_cmds), collapse="\n"),
-                            height="600px")
-                        )
-                    )
+                aceEditor("report_all_cmds", mode="r", theme="solarized_light", autoComplete="live",
+                    value=paste0(.track_it_all(rObjects$active_panels, pObjects,
+                            se_name, ecm_name, cdf_name, csf_name, se_cmds), collapse="\n"),
+                    height="600px")
             ))
         })
 

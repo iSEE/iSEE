@@ -91,9 +91,9 @@
     if (length(select_cmds)) {
         # plot.data$X contains the gene names (as they are duplicated across plot.data, and cannot be in 'rownames'), hence the sub().
         select_cmds[["select"]] <- sub("rownames(plot.data)", "plot.data$X", select_cmds[["select"]], fixed=TRUE)
+        .populate_selection_environment(all_memory[[select_out$transmitter$Type]][select_out$transmitter$ID,], eval_env)
+        .text_eval(select_cmds, eval_env)
 
-        eval_env$all_brushes <- select_out$data
-        eval_env$all_lassos <- select_out$data
         if (param_choices[[.selectEffect]]==.selectTransTitle) {
             alpha_cmd <- ", alpha=SelectBy"
             alpha_legend_cmd <- "guides(alpha=FALSE) +"
@@ -102,8 +102,6 @@
             ## Add annotation bar
             orderBy <- c(orderBy, select_as_field)
         }
-
-        .text_eval(select_cmds, eval_env)
     }
 
     validate(need(

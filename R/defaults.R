@@ -899,6 +899,9 @@ heatMapPlotDefaults <- function(se, number) {
     out[[.selectTransAlpha]] <- 0.1
     out[[.selectColor]] <- "red"
 
+    out[[.selectMultiType]] <- .selectMultiActiveTitle
+    out[[.selectMultiSaved]] <- 0L
+
     if (waszero) out <- out[0,,drop=FALSE]
     return(out)
 }

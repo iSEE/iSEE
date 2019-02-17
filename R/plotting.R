@@ -1628,16 +1628,20 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 
         cur_choice <- param_choices[,.selectMultiType]
         if (cur_choice==.selectMultiUnionTitle) {
-            select_sources <- c(0L, seq_along(transmit_type_param[,.multiSelectHistory][[1]]))
+            select_sources <- c(NA_integer_, seq_along(transmit_type_param[,.multiSelectHistory][[1]]))
         } else if (cur_choice==.selectMultiActiveTitle) {
-            select_sources <- 0L
+            select_sources <- NA_integer_
         } else {
             select_sources <- param_choices[,.selectMultiSaved]
+            if (select_sources==0L) {
+                # '0' selection in memory means no selection.
+                select_sources <- integer(0)
+            }
         }
 
         starting <- TRUE
         for (i in select_sources) {
-            if (i==0L){ 
+            if (is.na(i)) {
                 brush_val <- transmit_type_param[,.brushData][[select_by$ID]]
                 lasso_val <- transmit_type_param[,.lassoData][[select_by$ID]]
                 brush_src <- sprintf("all_brushes[['%s']]", transmitter)

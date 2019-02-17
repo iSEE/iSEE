@@ -802,31 +802,33 @@ iSEE <- function(se,
         for (mode in c(point_plot_types, linked_table_types, "heatMapPlot")) {
             max_panels <- nrow(pObjects$memory[[mode]])
             for (id in seq_len(max_panels)) {
-                for (field in c(.selectMultiType, .selectMultiSaved)) {
-                    local({
-                        mode0 <- mode
-                        id0 <- id
-                        field0 <- field 
-                        panel_name <- paste0(mode0, id0)
-                        cur_field <- paste0(panel_name, "_", field0)
-
-                        observeEvent(input[[cur_field]], {
-                            matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
-                            if (identical(matched_input, pObjects$memory[[mode0]][[field0]][id0])) {
-                                return(NULL)
-                            }
-                            pObjects$memory[[mode0]][[field0]][id0] <- matched_input
-                            rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
-                        }, ignoreInit=TRUE)
-                    })
-                }
-
                 local({
                     mode0 <- mode
                     id0 <- id
                     panel_name <- paste0(mode0, id0)
 
+                    type_field <- paste0(panel_name, "_", .selectMultiType)
+                    observeEvent(input[[type_field]], {
+                        matched_input <- as(input[[type_field]], typeof(pObjects$memory[[mode0]][[.selectMultiType]]))
+                        if (identical(matched_input, pObjects$memory[[mode0]][[.selectMultiType]][id0])) {
+                            return(NULL)
+                        }
+                        pObjects$memory[[mode0]][[.selectMultiType]][id0] <- matched_input
+                        rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
+                    }, ignoreInit=TRUE)
+
                     saved_select <- paste0(panel_name, "_", .selectMultiSaved)
+                    observeEvent(input[[saved_select]], {
+                        req(input[[saved_select]]) # Required to defend against empty strings before updateSelectizeInput runs.
+                        matched_input <- as(input[[saved_select]], typeof(pObjects$memory[[mode0]][[.selectMultiSaved]]))
+                        if (identical(matched_input, pObjects$memory[[mode0]][[.selectMultiSaved]][id0])) {
+                            return(NULL)
+                        }
+                        pObjects$memory[[mode0]][[.selectMultiSaved]][id0] <- matched_input
+                        print(sprintf("Replotting %s", panel_name))
+                        rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
+                    }, ignoreInit=TRUE)
+
                     observe({
                         force(rObjects[[saved_select]])
 

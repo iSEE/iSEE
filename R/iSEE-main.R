@@ -628,7 +628,6 @@ iSEE <- function(se,
                             return(NULL)
                         }
 
-                        # Determining whether the new and old transmitting panel have selections.
                         old_encoded <- old_transmitter
                         if (old_transmitter!=.noSelection) {
                             old_encoded <- .decoded2encoded(old_transmitter)
@@ -647,7 +646,7 @@ iSEE <- function(se,
                             self_restrict <- new_encoded==panel_name &&
                                 new_encoded!=.noSelection &&
                                 pObjects$memory[[mode0]][id0, .selectEffect]==.selectRestrictTitle
-    
+
                             if (!daggy || self_restrict) {
                                 if (!daggy) {
                                     showNotification("point selection relationships cannot be cyclic", type="error")
@@ -674,29 +673,8 @@ iSEE <- function(se,
 
                         # Not replotting if there were no active/saved selection in either the new or old transmitters.
                         select_choice <- pObjects$memory[[mode0]][id0, .selectMultiType]
-                        old_enc <- .split_encoded(old_encoded)
-                        new_enc <- .split_encoded(new_encoded)
-                        changed <- FALSE
-
-                        if (select_choice==.selectMultiActiveTitle || select_choice==.selectMultiUnionTitle) { 
-                            if (.any_active_selection(old_enc$Type, old_enc$ID, pObjects$memory) ||
-                                    .any_active_selection(new_enc$Type, new_enc$ID, pObjects$memory)) {
-                                changed <- TRUE
-                            }
-
-                            if (select_choice==.selectMultiUnionTitle) {
-                                if (.any_saved_selection(old_enc$Type, old_enc$ID, pObjects$memory) ||
-                                        .any_saved_selection(new_enc$Type, new_enc$ID, pObjects$memory)) {
-                                    changed <- TRUE
-                                }
-                            }
-                        } else {
-                            if (pObjects$memory[[mode0]][id0, .selectMultiSaved]!=0L) {
-                                changed <- TRUE
-                            }
-                        }
-
-                        if (!changed) {
+                        if (!.transmitted_selection(old_encoded, select_choice, pObjects$memory) && 
+                                !.transmitted_selection(new_encoded, select_choice, pObjects$memory)) {
                             return(NULL)
                         }
 
@@ -851,7 +829,6 @@ iSEE <- function(se,
                             return(NULL)
                         }
                         pObjects$memory[[mode0]][[.selectMultiSaved]][id0] <- matched_input
-                        print(sprintf("Replotting %s", panel_name))
                         rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
                     }, ignoreInit=TRUE)
 
@@ -1007,12 +984,13 @@ iSEE <- function(se,
                             inp_rows <- pObjects$memory$heatMapPlot[id0,][[.zoomData]][[1]]
                         }
 
-                        # Update data and force replotting.
                         # Is the heatmap receiving a color brush (in that case the number of annotations should be increased by 1)
-                        is_receiving_color_selection <- pObjects$memory$heatMapPlot[id0,][[.selectByPlot]]!=.noSelection &&
-                            pObjects$memory$heatMapPlot[id0,][[.selectEffect]]==.selectColorTitle &&
-                            .transmitted_selection(pObjects$memory$heatMapPlot[id0, .selectByPlot], pObjects$memory)$select
+                        trans_enc <- .decoded2encoded(pObjects$memory$heatMapPlot[id0, .selectByPlot])
+                        is_receiving_color_selection <- pObjects$memory$heatMapPlot[id0, .selectByPlot]!=.noSelection &&
+                            pObjects$memory$heatMapPlot[id0,.selectEffect]==.selectColorTitle &&
+                            .transmitted_selection(trans_enc, pObjects$memory$heatMapPlot[id0, .selectMultiType], pObjects$memory)
 
+                        # Update data.
                         n.annot <- length(pObjects$memory$heatMapPlot[,.heatMapColData][[id0]]) + is_receiving_color_selection
                         ymin <- .transform_global_to_local_y(new_coords["ymin"], n.genes=length(inp_rows), n.annot=n.annot)
                         ymax <- .transform_global_to_local_y(new_coords["ymax"], n.genes=length(inp_rows), n.annot=n.annot)
@@ -1122,7 +1100,7 @@ iSEE <- function(se,
                                 return(NULL)
                             }
                         }
-                    
+
                         pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .multiSelectHistory, c(current, list(to_store)))
 
                         # Updating various fields.
@@ -1595,12 +1573,14 @@ iSEE <- function(se,
                             new_transmitter <- input[[select_panel_field]]
 
                             # Determining whether the new and old transmitting panel have selections.
-                            old_out <- .transmitted_selection(old_transmitter, pObjects$memory)
-                            old_select <- old_out$selected
-                            old_encoded <- old_out$encoded
-                            new_out <- .transmitted_selection(new_transmitter, pObjects$memory)
-                            new_select <- new_out$selected
-                            new_encoded <- new_out$encoded
+                            old_encoded <- old_transmitter
+                            if (old_transmitter!=.noSelection) {
+                                old_encoded <- .decoded2encoded(old_transmitter)
+                            }
+                            new_encoded <- new_transmitter
+                            if (new_transmitter!=.noSelection) {
+                                new_encoded <- .decoded2encoded(new_transmitter)
+                            }
 
                             # Trying to update the graph. No need to worry about DAGs as custom panels cannot transmit.
                             pObjects$selection_links <- .choose_new_selection_source(pObjects$selection_links, panel_name, new_encoded, old_encoded)
@@ -1613,7 +1593,10 @@ iSEE <- function(se,
                             }
 
                             # Not recreating panels if there were no selection in either the new or old transmitters.
-                            if (!old_select && !new_select){
+                            # We use "Union" here to trigger replotting if there are both active or saved selections,
+                            # as custom plots will receive everything from their upstream transmitters.
+                            if (!.transmitted_selection(old_encoded, .selectMultiUnionTitle, pObjects$memory) &&
+                                    !.transmitted_selection(new_encoded, .selectMultiUnionTitle, pObjects$memory)) {
                                 return(NULL)
                             }
 

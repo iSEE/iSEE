@@ -274,37 +274,53 @@
     return(TRUE)
 }
 
-#' Checks if a transmitting panel has any point selection
+#' Checks if there is a selection 
 #' 
-#' A convenience function that encodes the transmitter name, and checks whether a Shiny brush or lasso currently exists in the memory of the transmitting plot.
+#' Checks whether there is a Shiny brush or lasso selection from a transmitter, in the active selection or in the saved selection history.
 #'
-#' @param transmitter String containing the decoded name of a transmitting panel.
+#' @param transmitter String containing the encoded name of the transmitting panel.
+#' @param select_choice String specifying whether the current panel is receiving the \code{"Active"}, \code{"Union"} or \code{"Saved"} selections.
 #' @param memory A list of DataFrames containing parameters for each panel of each type.
 #' 
-#' @return A list of of two elements - \code{selected}, a logical scalar indicating whether a brush/lasso exists in \code{transmitter};
-#' and \code{encoded}, the encoded name of \code{transmitter}.
+#' @return A logical scalar specifying whether there is a selection.
 #'
 #' @details 
-#' This is largely a convenience function that avoids the need to write out all of the lines inside it.
-#' Protection against non-selections for \code{transmitter} are particularly inconvenient.
+#' This will look for saved or active selections (or both) depending on the value of \code{select_choice}.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_transmitted_selection
 #' @seealso
-#' \code{\link{.any_point_selection}},
+#' \code{\link{.any_active_selection}},
+#' \code{\link{.any_saved_selection}},
 #' \code{\link{iSEE}}
-.transmitted_selection <- function(transmitter, memory)
+.transmitted_selection <- function(transmitter, select_choice, memory)
 {
-    selection <- FALSE
-    encoded <- .noSelection
-    if (transmitter!=.noSelection) {
-        enc <- .encode_panel_name(transmitter)
-        encoded <- paste0(enc$Type, enc$ID)
-        if (.any_point_selection(enc$Type, enc$ID, memory)) {
-            selection <- TRUE
+    changed <- FALSE
+    if (select_choice==.selectMultiActiveTitle || select_choice==.selectMultiUnionTitle) { 
+        enc <- .split_encoded(transmitter)
+
+        if (.any_active_selection(enc$Type, enc$ID, memory)) {
+            changed <- TRUE
+        }
+
+        if (select_choice==.selectMultiUnionTitle) {
+            if (.any_saved_selection(enc$Type, enc$ID, memory)) {
+                changed <- TRUE
+            }
+        }
+    } else {
+        # In principle, we don't have to check the transmitter options here, because 
+        # the saved index should always be valid. In practice, the saved index might
+        # not be valid if this function is called after the transmitter is changed
+        # but before the .selectMultiSaved selectize is updated. However, if it was
+        # non-zero and invalid, then the update would cause it to be zero, which 
+        # would set changed=TRUE anyway.
+        if (memory[[mode0]][id0, .selectMultiSaved]!=0L) {
+            changed <- TRUE
         }
     }
-    return(list(selected=selection, encoded=encoded))
+
+    changed
 }
 
 #' Checks if any points are selected

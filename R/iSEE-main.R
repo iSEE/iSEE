@@ -348,6 +348,7 @@ iSEE <- function(se,
                 rObjects[[paste0(mode, id)]] <- 1L
                 rObjects[[paste0(mode, id, "_", .panelLinkInfo)]] <- 1L
                 rObjects[[paste0(mode, id, "_", .panelGeneralInfo)]] <- 1L
+                rObjects[[paste0(mode, id, "_", .selectMultiSaved)]] <- 1L
             }
         }
 
@@ -623,6 +624,9 @@ iSEE <- function(se,
                     observeEvent(input[[select_panel_field]], {
                         old_transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
                         new_transmitter <- input[[select_panel_field]]
+                        if (old_transmitter==new_transmitter) {
+                            return(NULL)
+                        }
 
                         # Determining whether the new and old transmitting panel have selections.
                         old_out <- .transmitted_selection(old_transmitter, pObjects$memory)
@@ -664,6 +668,10 @@ iSEE <- function(se,
                             relink_field <- paste0(relinked, "_", .panelLinkInfo)
                             rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
                         }
+
+                        # Update the multi-selection selectize.
+                        saved_select_name <- paste0(panel_name, "_", .selectMultiSaved)
+                        rObjects[[saved_select_name]] <- .increment_counter(isolate(rObjects[[saved_select_name]]))
 
                         # Not replotting if there were no selection in either the new or old transmitters.
                         if (!old_select && !new_select){
@@ -792,15 +800,15 @@ iSEE <- function(se,
         #######################################################################
 
         for (mode in c(point_plot_types, linked_table_types, "heatMapPlot")) {
-            max_plots <- nrow(pObjects$memory[[mode]])
-            for (id in seq_len(max_plots)) {
+            max_panels <- nrow(pObjects$memory[[mode]])
+            for (id in seq_len(max_panels)) {
                 for (field in c(.selectMultiType, .selectMultiSaved)) {
                     local({
                         mode0 <- mode
                         id0 <- id
                         field0 <- field 
-                        plot_name <- paste0(mode0, id0)
-                        cur_field <- paste0(plot_name, "_", field0)
+                        panel_name <- paste0(mode0, id0)
+                        cur_field <- paste0(panel_name, "_", field0)
 
                         observeEvent(input[[cur_field]], {
                             matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
@@ -808,10 +816,47 @@ iSEE <- function(se,
                                 return(NULL)
                             }
                             pObjects$memory[[mode0]][[field0]][id0] <- matched_input
-                            rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                            rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
                         }, ignoreInit=TRUE)
                     })
                 }
+
+                local({
+                    mode0 <- mode
+                    id0 <- id
+                    panel_name <- paste0(mode0, id0)
+
+                    saved_select <- paste0(panel_name, "_", .selectMultiSaved)
+                    observe({
+                        force(rObjects[[saved_select]])
+
+                        # Identify transmitter.
+                        transmitter <- pObjects$memory[[mode0]][id0,.selectByPlot]
+                        if (transmitter==.noSelection) {
+                            available_choices <- integer(0)
+                        } else {
+                            trans <- .encode_panel_name(transmitter)
+                            N <- length(pObjects$memory[[trans$Type]][,.multiSelectHistory][[trans$ID]])
+                            available_choices <- seq_len(N)
+                            names(available_choices) <- available_choices
+                        }
+
+                        # Updating memory if the current choice is no longer valid.
+                        # This potentially requires a re-triggering of the plot (TODO: trigger children).
+                        if (pObjects$memory[[mode0]][id0, .selectMultiSaved] > length(available_choices)) {
+                            pObjects$memory[[mode0]][id0, .selectMultiSaved] <- 0L
+                            if (pObjects$memory[[mode0]][id0, .selectMultiType]==.selectMultiSavedTitle) {
+                                rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
+                            }
+                        }
+
+                        no_choice <- 0L
+                        names(no_choice) <- .noSelection
+                        available_choices <- c(no_choice, available_choices)
+                        updateSelectizeInput(session, saved_select, choices=available_choices, server=TRUE,
+                            selected=pObjects$memory[[mode0]][id0, .selectMultiSaved])
+                    })
+                })
             }
         }
 
@@ -1035,6 +1080,7 @@ iSEE <- function(se,
                     save_field <- paste0(plot_name, "_", .multiSelectSave)
                     del_field <- paste0(plot_name, "_", .multiSelectDelete)
                     info_field <- paste0(plot_name, "_", .panelGeneralInfo)
+                    saved_field <- paste0(plot_name, "_", .selectMultiSaved)
 
                     # Saving and deleting.
                     observeEvent(input[[save_field]], {
@@ -1053,6 +1099,12 @@ iSEE <- function(se,
 
                         # Updating various fields.
                         rObjects[[info_field]] <- .increment_counter(isolate(rObjects[[info_field]]))
+
+                        children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
+                        for (child_plot in children) {
+                            child_saved <- paste0(child_plot, "_", .selectMultiSaved)
+                            rObjects[[child_saved]] <- .increment_counter(isolate(rObjects[[child_saved]]))
+                        }
                     })
 
                     observeEvent(input[[del_field]], {
@@ -1060,8 +1112,14 @@ iSEE <- function(se,
                         current <- head(current, -1)
                         pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .multiSelectHistory, current)
 
-                        # Updating self.
+                        # Updating various fields.
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+
+                        children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
+                        for (child_plot in children) {
+                            child_saved <- paste0(child_plot, "_", .selectMultiSaved)
+                            rObjects[[child_saved]] <- .increment_counter(isolate(rObjects[[child_saved]]))
+                        }
                     })
                 })
             }

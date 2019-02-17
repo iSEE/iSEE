@@ -1181,7 +1181,7 @@
 }
 
 #' @rdname INTERNAL_create_selection_param_box
-#' @importFrom shiny tagList selectInput radioButtons numericInput
+#' @importFrom shiny tagList selectInput radioButtons selectInput 
 .create_selection_param_box_define_choices <- function(mode, id, param_choices, field, selectable, source_type=c("row", "column")) {
     select_multi_type <- paste0(mode, id, "_", .selectMultiType)
 
@@ -1201,10 +1201,9 @@
 
         .conditional_on_radio(
             select_multi_type, .selectMultiSavedTitle,
-            numericInput( # TODO: change to selectInput, but this would need to be updated whenever .multiSelectDelete triggers or the choice of transmitter changes.
+            selectizeInput( 
                 paste0(mode, id, "_", .selectMultiSaved), label=NULL,
-                min=1, max=100,
-                value=param_choices[[.selectMultiSaved]])
+                selected=NULL, choices=NULL, multiple=FALSE)
         )
     )
 }

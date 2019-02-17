@@ -869,6 +869,31 @@ iSEE <- function(se,
             })
         }
 
+        # Adding the multiple selection options.
+        for (mode in c(point_plot_types, linked_table_types, "heatMapPlot")) {
+            max_plots <- nrow(pObjects$memory[[mode]])
+            for (id in seq_len(max_plots)) {
+                for (field in c(.selectMultiType, .selectMultiSaved)) {
+                    local({
+                        mode0 <- mode
+                        id0 <- id
+                        field0 <- field 
+                        plot_name <- paste0(mode0, id0)
+                        cur_field <- paste0(plot_name, "_", field0)
+
+                        observeEvent(input[[cur_field]], {
+                            matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode0]][[field0]]))
+                            if (identical(matched_input, pObjects$memory[[mode0]][[field0]][id0])) {
+                                return(NULL)
+                            }
+                            pObjects$memory[[mode0]][[field0]][id0] <- matched_input
+                            rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                        }, ignoreInit=TRUE)
+                    })
+                }
+            }
+        }
+
         #######################################################################
         # Click observers.
         #######################################################################
@@ -1153,7 +1178,6 @@ iSEE <- function(se,
             }
             nonfundamental <- c(nonfundamental, 
                 .colorByDefaultColor, .selectColor, .selectTransAlpha,
-                .selectMultiType, .selectMultiSaved,
                 .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition,
                 .plotPointDownsample, .plotPointSampleRes, .contourAddTitle,
                 .contourColor)
@@ -1694,6 +1718,7 @@ iSEE <- function(se,
                         search <- param_choices[[.statTableSearch]]
                         search_col <- param_choices[[.statTableColSearch]][[1]]
                         search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
+
                         # After the first initialization there may not be any need to add columns
                         # Fact is, the extra "Selected" column may make the table it has more columns than filters
                         missing_columns <- max(0, ncol(current_df0) - length(search_col))
@@ -1702,7 +1727,9 @@ iSEE <- function(se,
                         # Adding a "Selected" field to the plotting data, which responds to point selection input.
                         # Note that this AUTOMATICALLY updates search_col upon re-rendering via the observer below.
                         # The code below keeps search_col valid for the number of columns (i.e., with or without selection).
-                        selected <- .get_selected_points(rownames(current_df0), param_choices[[.selectByPlot]], pObjects$memory, pObjects$coordinates)
+                        selected <- .get_selected_points(rownames(current_df0), param_choices[[.selectByPlot]], pObjects$memory, pObjects$coordinates,
+                            select_type=param_choices[[.selectMultiType]], select_saved=param_choices[[.selectMultiSaved]])
+
                         tmp_df <- current_df0
                         columnDefs <- list()
                         if (!is.null(selected)) {

@@ -1136,29 +1136,15 @@
 #' @seealso
 #' \code{\link{.panel_generation}}
 #'
-#' @importFrom shiny sliderInput radioButtons selectInput actionButton hr strong br numericInput
+#' @importFrom shiny sliderInput radioButtons selectInput actionButton hr strong br
 #' @importFrom colourpicker colourInput
 .create_selection_param_box <- function(mode, id, param_choices, selectable, source_type=c("row", "column")) {
     select_effect <- paste0(mode, id, "_", .selectEffect)
-    select_multi_type <- paste0(mode, id, "_", .selectMultiType)
     source_type <- match.arg(source_type)
 
     .create_selection_param_box_define_box(
         mode, id, param_choices,
         .create_selection_param_box_define_choices(mode, id, param_choices, field=.selectByPlot, selectable=selectable, source_type),
-
-        radioButtons(
-            select_multi_type, label=NULL, inline=TRUE,
-            choices=c(.selectMultiActiveTitle, .selectMultiUnionTitle, .selectMultiSavedTitle),
-            selected=param_choices[[.selectMultiType]]),
-
-        .conditional_on_radio(
-            select_multi_type, .selectMultiSavedTitle,
-            numericInput( # TODO: change to selectInput, but this would need to be updated whenever .multiSelectDelete triggers or the choice of transmitter changes.
-                paste0(mode, id, "_", .selectMultiSaved), label=NULL,
-                min=1, max=100,
-                value=param_choices[[.selectMultiSaved]])
-        ),
 
         radioButtons(
             select_effect, label="Selection effect:", inline=TRUE,
@@ -1195,12 +1181,32 @@
 }
 
 #' @rdname INTERNAL_create_selection_param_box
+#' @importFrom shiny tagList selectInput radioButtons numericInput
 .create_selection_param_box_define_choices <- function(mode, id, param_choices, field, selectable, source_type=c("row", "column")) {
-    selectInput(
-        paste0(mode, id, "_", field),
-        label=sprintf("Receive %s selection from:", source_type),
-        choices=selectable,
-        selected=.choose_link(param_choices[[field]], selectable))
+    select_multi_type <- paste0(mode, id, "_", .selectMultiType)
+
+    tagList(
+        selectInput(
+            paste0(mode, id, "_", field),
+            label=sprintf("Receive %s selection from:", source_type),
+            choices=selectable,
+            selected=.choose_link(param_choices[[field]], selectable)
+        ),
+
+        radioButtons(
+            select_multi_type, label=NULL, inline=TRUE,
+            choices=c(.selectMultiActiveTitle, .selectMultiUnionTitle, .selectMultiSavedTitle),
+            selected=param_choices[[.selectMultiType]]
+        ),
+
+        .conditional_on_radio(
+            select_multi_type, .selectMultiSavedTitle,
+            numericInput( # TODO: change to selectInput, but this would need to be updated whenever .multiSelectDelete triggers or the choice of transmitter changes.
+                paste0(mode, id, "_", .selectMultiSaved), label=NULL,
+                min=1, max=100,
+                value=param_choices[[.selectMultiSaved]])
+        )
+    )
 }
 
 #' Conditional elements on radio or checkbox selection

@@ -309,19 +309,20 @@
 
 #' Checks if any points are selected
 #'
-#' Checks if any points are selected via a Shiny brush or closed lasso in a transmitting plot.
+#' Checks if any points are actively selected via a Shiny brush or closed lasso in a transmitting plot,
+#' or if there are any saved selections in the memory of the transmitting plot.
 #'
 #' @param mode String specifying the (encoded) panel type for the current (transmitting) panel.
 #' @param id Integer scalar specifying the ID of the current panel of the specified type.
 #' @param memory A list of DataFrames containing parameters for each panel of each type.
 #'
-#' @return A logical scalar specifying whether the specified panel contains a Shiny brush or a closed lasso.
+#' @return A logical scalar specifying whether the specified panel contains an active or saved Shiny brush or a closed lasso.
 #' @author Aaron Lun
 #' @rdname INTERNAL_any_point_selection
 #' @seealso
 #' \code{\link{.transmitted_selection}},
 #' \code{\link{iSEE}}
-.any_point_selection <- function(mode, id, memory) {
+.any_active_selection <- function(mode, id, memory) {
     if (!is.null(memory[[mode]][,.brushData][[id]])) {
         return(TRUE)       
     } 
@@ -330,4 +331,9 @@
         return(TRUE)
     }
     return(FALSE)
+}
+
+#' @rdname INTERNAL_any_point_selection
+.any_saved_selection <- function(mode, id, memory) {
+    length(memory[[mode]][,.multiSelectHistory][[id]]) > 0L
 }

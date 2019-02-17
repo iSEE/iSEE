@@ -629,18 +629,18 @@ iSEE <- function(se,
                         }
 
                         # Determining whether the new and old transmitting panel have selections.
-                        old_out <- .transmitted_selection(old_transmitter, pObjects$memory)
-                        old_select <- old_out$selected
-                        old_encoded <- old_out$encoded
-                        new_out <- .transmitted_selection(new_transmitter, pObjects$memory)
-                        new_select <- new_out$selected
-                        new_encoded <- new_out$encoded
-
+                        old_encoded <- old_transmitter
+                        if (old_transmitter!=.noSelection) {
+                            old_encoded <- .decoded2encoded(old_transmitter)
+                        }
+                        new_encoded <- new_transmitter
+                        if (new_transmitter!=.noSelection) {
+                            new_encoded <- .decoded2encoded(new_transmitter)
+                        }
                         tmp <- .choose_new_selection_source(pObjects$selection_links, panel_name, new_encoded, old_encoded)
 
                         # Trying to update the graph, but breaking if it's not a DAG.
                         # We also break if users try to self-select in restrict mode.
-                        # In both cases, we just reset back to the choice they had before.
                         # These concerns are only relevant for transmitting panels (i.e., point plots).
                         if (can_transmit) {
                             daggy <- is_dag(simplify(tmp, remove.loops=TRUE))
@@ -654,7 +654,6 @@ iSEE <- function(se,
                                 } else if (self_restrict){
                                     showNotification("selecting to self is not compatible with 'Restrict'", type="error")
                                 }
-                                pObjects$memory[[mode0]][id0, .selectByPlot] <- old_transmitter
                                 updateSelectInput(session, select_panel_field, selected=old_transmitter)
                                 return(NULL)
                             }
@@ -673,20 +672,44 @@ iSEE <- function(se,
                         saved_select_name <- paste0(panel_name, "_", .selectMultiSaved)
                         rObjects[[saved_select_name]] <- .increment_counter(isolate(rObjects[[saved_select_name]]))
 
-                        # Not replotting if there were no selection in either the new or old transmitters.
-                        if (!old_select && !new_select){
+                        # Not replotting if there were no active/saved selection in either the new or old transmitters.
+                        select_choice <- pObjects$memory[[mode0]][id0, .selectMultiType]
+                        old_enc <- .split_encoded(old_encoded)
+                        new_enc <- .split_encoded(new_encoded)
+                        changed <- FALSE
+
+                        if (select_choice==.selectMultiActiveTitle || select_choice==.selectMultiUnionTitle) { 
+                            if (.any_active_selection(old_enc$Type, old_enc$ID, pObjects$memory) ||
+                                    .any_active_selection(new_enc$Type, new_enc$ID, pObjects$memory)) {
+                                changed <- TRUE
+                            }
+
+                            if (select_choice==.selectMultiUnionTitle) {
+                                if (.any_saved_selection(old_enc$Type, old_enc$ID, pObjects$memory) ||
+                                        .any_saved_selection(new_enc$Type, new_enc$ID, pObjects$memory)) {
+                                    changed <- TRUE
+                                }
+                            }
+                        } else {
+                            if (pObjects$memory[[mode0]][id0, .selectMultiSaved]!=0L) {
+                                changed <- TRUE
+                            }
+                        }
+
+                        if (!changed) {
                             return(NULL)
                         }
 
-                        # Triggering self update of the panel.
                         rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
 
                         # Triggering replotting of children, if the current panel is set to restrict;
                         # and we have a selection, so that there was already some selection in the children.
                         # Again, these concerns are only relevant for transmitting panels (i.e., point plots).
                         if (can_transmit) {
-                            if (pObjects$memory[[mode0]][id0, .selectEffect]==.selectRestrictTitle
-                                && .any_point_selection(mode0, id0, pObjects$memory)) {
+                            has_active <- .any_active_selection(mode0, id0, pObjects$memory)
+                            has_saved <- .any_saved_selection(mode0, id0, pObjects$memory)
+
+                            if (pObjects$memory[[mode0]][id0, .selectEffect]==.selectRestrictTitle && (has_active || has_saved)) {
                                 children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
                                 for (child_plot in children) {
                                     rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
@@ -719,7 +742,7 @@ iSEE <- function(se,
                         # In which case, we trigger an error and reset to the previous choice.
                         if (can_transmit) {
                             if (cur_effect == .selectRestrictTitle
-                                && pObjects$memory[[mode0]][id0, .selectByPlot]==.decode_panel_name(mode0, id0)) {
+                                    && pObjects$memory[[mode0]][id0, .selectByPlot]==.decode_panel_name(mode0, id0)) {
                                 showNotification("selecting to self is not compatible with 'Restrict'", type="error")
                                 updateRadioButtons(session, select_effect_field, selected=old_effect)
                                 return(NULL)
@@ -733,7 +756,8 @@ iSEE <- function(se,
                             return(NULL)
                         }
                         enc <- .encode_panel_name(transmitter)
-                        if (!.any_point_selection(enc$Type, enc$ID, pObjects$memory)) {
+                        if (!.any_active_selection(enc$Type, enc$ID, pObjects$memory) &&
+                                !.any_saved_selection(enc$Type, enc$ID, pObjects$memory)) {
                             return(NULL)
                         }
 
@@ -743,8 +767,10 @@ iSEE <- function(se,
                         # Triggering replotting of children, if we are set to or from restrict;
                         # and we have a selection, so there was already some selecting in the children.
                         if (can_transmit) {
-                            if ((cur_effect==.selectRestrictTitle || old_effect==.selectRestrictTitle)
-                                    && .any_point_selection(mode0, id0, pObjects$memory)) {
+                            has_active <- .any_active_selection(mode0, id0, pObjects$memory)
+                            has_saved <- .any_saved_selection(mode0, id0, pObjects$memory)
+
+                            if ((cur_effect==.selectRestrictTitle || old_effect==.selectRestrictTitle) && (has_active || has_saved)) {
                                 children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
                                 for (child_plot in children) {
                                     rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))

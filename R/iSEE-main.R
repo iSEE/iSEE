@@ -724,9 +724,10 @@ iSEE <- function(se,
                         if (transmitter==.noSelection) {
                             return(NULL)
                         }
-                        enc <- .encode_panel_name(transmitter)
-                        if (!.any_active_selection(enc$Type, enc$ID, pObjects$memory) &&
-                                !.any_saved_selection(enc$Type, enc$ID, pObjects$memory)) {
+                        if (!.transmitted_selection(
+                                .decoded2encoded(transmitter),
+                                pObjects$memory[[mode0]][id0, .selectMultiType],
+                                pObjects$memory)) {
                             return(NULL)
                         }
 
@@ -801,6 +802,7 @@ iSEE <- function(se,
                     mode0 <- mode
                     id0 <- id
                     panel_name <- paste0(mode0, id0)
+                    can_transmit <- mode %in% point_plot_types
 
                     type_field <- paste0(panel_name, "_", .selectMultiType)
                     observeEvent(input[[type_field]], {
@@ -809,7 +811,14 @@ iSEE <- function(se,
                             return(NULL)
                         }
                         pObjects$memory[[mode0]][[.selectMultiType]][id0] <- matched_input
+
                         rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
+                        if (can_transmit) {
+                            children <- .get_selection_dependents(pObjects$selection_links, panel_name, pObjects$memory)
+                            for (child_plot in children) {
+                               rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+                           }
+                       }
                     }, ignoreInit=TRUE)
 
                     saved_select <- paste0(panel_name, "_", .selectMultiSaved)
@@ -820,7 +829,14 @@ iSEE <- function(se,
                             return(NULL)
                         }
                         pObjects$memory[[mode0]][[.selectMultiSaved]][id0] <- matched_input
+
                         rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
+                        if (can_transmit) {
+                            children <- .get_selection_dependents(pObjects$selection_links, panel_name, pObjects$memory)
+                            for (child_plot in children) {
+                               rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+                           }
+                       }
                     }, ignoreInit=TRUE)
 
                     observe({
@@ -838,11 +854,18 @@ iSEE <- function(se,
                         }
 
                         # Updating memory if the current choice is no longer valid.
-                        # This potentially requires a re-triggering of the plot (TODO: trigger children).
+                        # This potentially requires a re-triggering of the plot.
                         if (pObjects$memory[[mode0]][id0, .selectMultiSaved] > length(available_choices)) {
                             pObjects$memory[[mode0]][id0, .selectMultiSaved] <- 0L
                             if (pObjects$memory[[mode0]][id0, .selectMultiType]==.selectMultiSavedTitle) {
                                 rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
+
+                                if (can_transmit) {
+                                    children <- .get_selection_dependents(pObjects$selection_links, panel_name, pObjects$memory)
+                                    for (child_plot in children) {
+                                        rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+                                    }
+                                }
                             }
                         }
 

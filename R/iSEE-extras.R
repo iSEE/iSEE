@@ -495,7 +495,7 @@ height_limits <- c(400L, 1000L)
 #'
 #' @details
 #' This function will trigger replotting of the current panel by updating the appropriate incrementable counter in \code{rObjects}.
-#' It will also clear Shiny brushes (via \code{\link{session}$resetBrush}) and lasso way points.
+#' It will also clear Shiny brushes (via \code{\link{session}$resetBrush}), lasso way points and any saved selections.
 #'
 #' Note that this function relies on the fact that \code{pObjects}, \code{rObjects} and \code{session} are passed by reference.
 #'
@@ -518,6 +518,9 @@ height_limits <- c(400L, 1000L)
         # Destroying any lasso waypoints as well.
         pObjects$memory[[mode]] <- .update_list_element(pObjects$memory[[mode]], id, .lassoData, NULL)
     }
+
+    # Destroying history.
+    pObjects$memory[[mode]] <- .update_list_element(pObjects$memory[[mode]], id, .multiSelectHistory, list())
     return(invisible(NULL))
 }
 

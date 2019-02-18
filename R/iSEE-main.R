@@ -305,6 +305,12 @@ iSEE <- function(se,
                 )
             ),
 
+            # NOTE: this appears useless but (in conjunction with its observer)
+            # avoids destruction of stored brushes during rerendering. I don't
+            # know why it is, and the name matters! It seems that using 'AAAAAA'
+            # forces it to trigger first, possibly blocking later brush resets.
+            uiOutput("AAAAAA"),
+
             uiOutput("allPanels")
         ), # end of dashboardBody
         skin="black"
@@ -475,6 +481,12 @@ iSEE <- function(se,
         output$allPanels <- renderUI({
             rObjects$rerendered <- .increment_counter(isolate(rObjects$rerendered))
             .panel_generation(rObjects$active_panels, pObjects$memory, se)
+        })
+
+        # NOTE: DO NOT DELETE. See comment above for uiOutput("AAAAAA").
+        output$AAAAAA <- renderUI({
+            rObjects$active_panels
+            HTML("")
         })
 
         n_available <- vapply(pObjects$memory, nrow, FUN.VALUE=0L)

@@ -663,6 +663,14 @@ iSEE <- function(se,
                         saved_select_name <- paste0(panel_name, "_", .selectMultiSaved)
                         rObjects[[saved_select_name]] <- .increment_counter(isolate(rObjects[[saved_select_name]]))
 
+                        saved_val <- pObjects$memory[[mode0]][id0, .selectMultiSaved]
+                        if (saved_val!=0L && new_encoded!=.noSelection) {
+                            new_enc <- .split_encoded(new_encoded)
+                            if (saved_val > length(pObjects$memory[[new_enc$Type]][,.multiSelectHistory][[new_enc$ID]])) {
+                                pObjects$memory[[mode0]][id0, .selectMultiSaved] <- 0L
+                            }
+                        }
+
                         # Checking if there were active/saved selections in either the new or old transmitters.
                         no_old_selection <- !.transmitted_selection(old_encoded, pObjects$memory, mode=mode0, id=id0)
                         no_new_selection <- !.transmitted_selection(new_encoded, pObjects$memory, mode=mode0, id=id0)
@@ -757,7 +765,7 @@ iSEE <- function(se,
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
 
                         # We can't use the transmitting observer below, because the point population in the current
-                        # panel hasn't changed. Thus, we need to manually implement the first generation of propagation.
+                        # panel hasn't changed. Instead, we need to manually implement the first generation of propagation.
                         children <- .get_direct_children(pObjects$selection_links, plot_name)
                         for (child_plot in children) {
                             child_enc <- .split_encoded(child_plot)
@@ -892,10 +900,12 @@ iSEE <- function(se,
                     }, ignoreInit=TRUE)
 
                     ## Selectize observer. ---
+                    # Do NOT be tempted to centralize code by setting .selectMultiSaved to zero here.
+                    # This needs to be done in upstream observers, otherwise there is no guarantee
+                    # that this is executed before plotting observers that use .selectMultiSaved.
                     observe({
                         force(rObjects[[saved_select]])
 
-                        # Identify transmitter.
                         transmitter <- pObjects$memory[[mode0]][id0,.selectByPlot]
                         if (transmitter==.noSelection) {
                             available_choices <- integer(0)
@@ -904,19 +914,6 @@ iSEE <- function(se,
                             N <- length(pObjects$memory[[trans$Type]][,.multiSelectHistory][[trans$ID]])
                             available_choices <- seq_len(N)
                             names(available_choices) <- available_choices
-                        }
-
-                        # Updating memory if the current choice is no longer valid.
-                        if (pObjects$memory[[mode0]][id0, .selectMultiSaved] > length(available_choices)) {
-                            pObjects$memory[[mode0]][id0, .selectMultiSaved] <- 0L
-                        
-                            # This potentially requires a re-triggering of the plot and its children.
-                            if (pObjects$memory[[mode0]][id0, .selectMultiType]==.selectMultiSavedTitle) {
-                                rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
-                                if (pObjects$memory[[mode0]][id0, .selectEffect]==.selectRestrictTitle) {
-                                    rObjects[[react_field]] <- .increment_counter(isolate(rObjects[[react_field]]))
-                                }
-                            }
                         }
 
                         no_choice <- 0L
@@ -942,7 +939,6 @@ iSEE <- function(se,
                     plot_name <- paste0(mode0, id0)
                     click_field <- paste0(plot_name, "_", .lassoClick)
                     brush_field <- paste0(plot_name, "_", .brushField)
-                    react_field <- paste0(plot_name, "_Selected")
 
                     observeEvent(input[[click_field]], {
                         # Don't add to waypoints if a Shiny brush exists in memory (as they are mutually exclusive).
@@ -1166,9 +1162,8 @@ iSEE <- function(se,
                     del_field <- paste0(plot_name, "_", .multiSelectDelete)
                     info_field <- paste0(plot_name, "_", .panelGeneralInfo)
                     saved_field <- paste0(plot_name, "_", .selectMultiSaved)
-                    react_field <- paste0(plot_name, "_Selected")
 
-                    # Saving and deleting.
+                    ## Save selection observer. ---
                     observeEvent(input[[save_field]], {
                         current <- pObjects$memory[[mode0]][,.multiSelectHistory][[id0]]
 
@@ -1183,28 +1178,82 @@ iSEE <- function(se,
 
                         pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .multiSelectHistory, c(current, list(to_store)))
 
-                        # Updating various fields.
+                        # Updating self.
                         rObjects[[info_field]] <- .increment_counter(isolate(rObjects[[info_field]]))
 
-                        children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
+                        transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
+                        if (transmitter!=.noSelection && .decoded2encoded(transmitter)==plot_name) {
+                            rObjects[[saved_field]] <- .increment_counter(isolate(rObjects[[saved_field]]))
+                            if (pObjects$memory[[mode0]][id0, .selectMultiType]==.selectMultiUnionTitle) {
+                                rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                            }
+                        }
+
+                        # Updating children.
+                        children <- .get_direct_children(pObjects$selection_links, plot_name)
                         for (child_plot in children) {
                             child_saved <- paste0(child_plot, "_", .selectMultiSaved)
                             rObjects[[child_saved]] <- .increment_counter(isolate(rObjects[[child_saved]]))
+                            
+                            child_enc <- .split_encoded(child_plot)
+                            child_mode <- child_enc$Type
+                            child_id <- child_enc$ID
+
+                            if (pObjects$memory[[child_mode]][child_id, .selectMultiType]==.selectMultiUnionTitle) {
+                                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+
+                                if (child_mode %in% point_plot_types && pObjects$memory[[child_mode]][child_id, .selectEffect]==.selectRestrictTitle) {
+                                    react_child <- paste0(child_plot, "_Selected")
+                                    rObjects[[react_child]] <- .increment_counter(isolate(rObjects[[react_child]]))
+                                }
+                            }
                         }
                     })
-
+                    
+                    ## Deleted selection observer. ---
                     observeEvent(input[[del_field]], {
                         current <- pObjects$memory[[mode0]][,.multiSelectHistory][[id0]]
                         current <- head(current, -1)
                         pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .multiSelectHistory, current)
 
-                        # Updating various fields.
+                        # Updating self.
+                        rObjects[[info_field]] <- .increment_counter(isolate(rObjects[[info_field]]))
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
 
-                        children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
+                        transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
+                        if (transmitter!=.noSelection && .decoded2encoded(transmitter)==plot_name) {
+                            rObjects[[saved_field]] <- .increment_counter(isolate(rObjects[[saved_field]]))
+
+                            reset <- pObjects$memory[[mode0]][id0, .selectMultiSaved] > length(current)
+                            if (reset) {
+                                pObjects$memory[[mode0]][id0, .selectMultiSaved] <- 0L
+                            }
+                        }
+
+                        # Updating children.
+                        children <- .get_direct_children(pObjects$selection_links, plot_name)
                         for (child_plot in children) {
                             child_saved <- paste0(child_plot, "_", .selectMultiSaved)
                             rObjects[[child_saved]] <- .increment_counter(isolate(rObjects[[child_saved]]))
+                            
+                            child_enc <- .split_encoded(child_plot)
+                            child_mode <- child_enc$Type
+                            child_id <- child_enc$ID
+
+                            reset <- pObjects$memory[[child_mode]][child_id, .selectMultiSaved] > length(current)
+                            if (reset) {
+                                pObjects$memory[[child_mode]][child_id, .selectMultiSaved] <- 0L
+                            }
+
+                            child_select_type <- pObjects$memory[[child_mode]][child_id, .selectMultiType]
+                            if (child_select_type==.selectMultiUnionTitle || (child_select_type==.selectMultiSavedTitle && reset)) {
+                                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+
+                                if (child_mode %in% point_plot_types && pObjects$memory[[child_mode]][child_id, .selectEffect]==.selectRestrictTitle) {
+                                    react_child <- paste0(child_plot, "_Selected")
+                                    rObjects[[react_child]] <- .increment_counter(isolate(rObjects[[react_child]]))
+                                }
+                            }
                         }
                     })
                 })

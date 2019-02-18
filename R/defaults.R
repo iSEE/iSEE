@@ -985,7 +985,7 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.multiSelectHistory]] <- rep(list(NULL), nrow(incoming))
     
     incoming[[.selectMultiType]] <- .selectMultiActiveTitle
-    incoming[[.selectMultiSaved]] <- 1L
+    incoming[[.selectMultiSaved]] <- 0L
 
     incoming[[.visualParamChoice]] <- rep(list(.visualParamChoiceColorTitle), nrow(incoming))
 

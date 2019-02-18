@@ -473,6 +473,7 @@ iSEE <- function(se,
         #######################################################################
 
         output$allPanels <- renderUI({
+            rObjects$rerendered <- .increment_counter(isolate(rObjects$rerendered))
             .panel_generation(rObjects$active_panels, pObjects$memory, se)
         })
 
@@ -905,6 +906,7 @@ iSEE <- function(se,
                     # that this is executed before plotting observers that use .selectMultiSaved.
                     observe({
                         force(rObjects[[saved_select]])
+                        force(rObjects$rerendered)
 
                         transmitter <- pObjects$memory[[mode0]][id0,.selectByPlot]
                         if (transmitter==.noSelection) {

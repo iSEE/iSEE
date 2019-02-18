@@ -349,6 +349,7 @@ iSEE <- function(se,
                 rObjects[[paste0(mode, id, "_", .panelLinkInfo)]] <- 1L
                 rObjects[[paste0(mode, id, "_", .panelGeneralInfo)]] <- 1L
                 rObjects[[paste0(mode, id, "_", .selectMultiSaved)]] <- 1L
+                rObjects[[paste0(mode, id, "_", "Selected")]] <- 1L
             }
         }
 
@@ -599,7 +600,7 @@ iSEE <- function(se,
         # Point selection observers.
         #######################################################################
 
-        # Selection choice observer; applicable to all panels.
+        # Selection choice observer; applicable to all non-custom panels.
         for (mode in c(point_plot_types, linked_table_types, "heatMapPlot")) {
             max_panels <- nrow(pObjects$memory[[mode]])
 
@@ -608,10 +609,10 @@ iSEE <- function(se,
                     mode0 <- mode
                     id0 <- id
                     panel_name <- paste0(mode0, id0)
-                    prefix <- paste0(panel_name, "_")
-                    can_transmit <- mode0 %in% point_plot_types
+                    select_panel_field <- paste0(panel_name, "_", .selectByPlot)
+                    react_field <- paste0(panel_name, "_Selected")
+                    can_transmit <- mode %in% point_plot_types
 
-                    select_panel_field <- paste0(prefix, .selectByPlot)
                     observeEvent(input[[select_panel_field]], {
                         old_transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
                         new_transmitter <- input[[select_panel_field]]
@@ -662,28 +663,19 @@ iSEE <- function(se,
                         saved_select_name <- paste0(panel_name, "_", .selectMultiSaved)
                         rObjects[[saved_select_name]] <- .increment_counter(isolate(rObjects[[saved_select_name]]))
 
-                        # Not replotting if there were no active/saved selection in either the new or old transmitters.
-                        select_choice <- pObjects$memory[[mode0]][id0, .selectMultiType]
-                        if (!.transmitted_selection(old_encoded, select_choice, pObjects$memory) && 
-                                !.transmitted_selection(new_encoded, select_choice, pObjects$memory)) {
+                        # Checking if there were active/saved selections in either the new or old transmitters.
+                        no_old_selection <- !.transmitted_selection(old_encoded, pObjects$memory, mode=mode0, id=id0)
+                        no_new_selection <- !.transmitted_selection(new_encoded, pObjects$memory, mode=mode0, id=id0)
+                        if (no_old_selection && no_new_selection) {
                             return(NULL)
                         }
 
                         rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
 
-                        # Triggering replotting of children, if the current panel is set to restrict;
-                        # and we have a selection, so that there was already some selection in the children.
-                        # Again, these concerns are only relevant for transmitting panels (i.e., point plots).
-                        if (can_transmit) {
-                            has_active <- .any_active_selection(mode0, id0, pObjects$memory)
-                            has_saved <- .any_saved_selection(mode0, id0, pObjects$memory)
-
-                            if (pObjects$memory[[mode0]][id0, .selectEffect]==.selectRestrictTitle && (has_active || has_saved)) {
-                                children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
-                                for (child_plot in children) {
-                                    rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
-                                }
-                            }
+                        # Updating children, if the current panel is set to restrict
+                        # (and thus the point population changes with a new transmitted selection).
+                        if (pObjects$memory[[mode0]][id0, .selectEffect]==.selectRestrictTitle) {
+                            rObjects[[react_field]] <- .increment_counter(isolate(rObjects[[react_field]]))
                         }
                     }, ignoreInit=TRUE)
                 })
@@ -698,11 +690,11 @@ iSEE <- function(se,
                 local({
                     mode0 <- mode
                     id0 <- id
-                    plot_name <- paste0(mode0, id0)
-                    prefix <- paste0(plot_name, "_")
-                    can_transmit <- mode0 %in% point_plot_types
+                    panel_name <- paste0(mode0, id0)
+                    select_effect_field <- paste0(panel_name, "_", .selectEffect)
+                    react_field <- paste0(panel_name, "_Selected")
+                    can_transmit <- mode %in% point_plot_types
 
-                    select_effect_field <- paste0(prefix, .selectEffect)
                     observeEvent(input[[select_effect_field]], {
                         cur_effect <- input[[select_effect_field]]
                         old_effect <- pObjects$memory[[mode0]][id0, .selectEffect]
@@ -721,31 +713,15 @@ iSEE <- function(se,
 
                         # Avoiding replotting if there was no transmitting selection.
                         transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
-                        if (transmitter==.noSelection) {
-                            return(NULL)
-                        }
-                        if (!.transmitted_selection(
-                                .decoded2encoded(transmitter),
-                                pObjects$memory[[mode0]][id0, .selectMultiType],
-                                pObjects$memory)) {
+                        if (!.transmitted_selection(transmitter, pObjects$memory, mode=mode0, id=id0, encoded=FALSE)) {
                             return(NULL)
                         }
 
-                        # Triggering self update.
-                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                        rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
 
-                        # Triggering replotting of children, if we are set to or from restrict;
-                        # and we have a selection, so there was already some selecting in the children.
-                        if (can_transmit) {
-                            has_active <- .any_active_selection(mode0, id0, pObjects$memory)
-                            has_saved <- .any_saved_selection(mode0, id0, pObjects$memory)
-
-                            if ((cur_effect==.selectRestrictTitle || old_effect==.selectRestrictTitle) && (has_active || has_saved)) {
-                                children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
-                                for (child_plot in children) {
-                                    rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
-                                }
-                            }
+                        # Updating children if the selection in the current plot changes due to gain/loss of Restrict.
+                        if (cur_effect==.selectRestrictTitle || old_effect==.selectRestrictTitle) {
+                            rObjects[[react_field]] <- .increment_counter(isolate(rObjects[[react_field]]))
                         }
                     }, ignoreInit=TRUE)
                 })
@@ -760,9 +736,9 @@ iSEE <- function(se,
                     mode0 <- mode
                     id0 <- id
                     plot_name <- paste0(mode0, id0)
-                    prefix <- paste0(plot_name, "_")
+                    react_field <- paste0(mode0, id0, "_Selected")
 
-                    brush_id <- paste0(prefix, .brushField)
+                    brush_id <- paste0(plot_name, "_", .brushField)
                     observeEvent(input[[brush_id]], {
                         cur_brush <- input[[brush_id]]
                         old_brush <- pObjects$memory[[mode0]][,.brushData][[id0]]
@@ -778,15 +754,80 @@ iSEE <- function(se,
                             return(NULL)
                         }
 
-                        # Trigger replotting of self, to draw a more persistent selection Shiny brush visual
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
 
-                        # Trigger replotting of all dependent plots that receive this Shiny brush
-                        children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
+                        # We can't use the transmitting observer below, because the point population in the current
+                        # panel hasn't changed. Thus, we need to manually implement the first generation of propagation.
+                        children <- .get_direct_children(pObjects$selection_links, plot_name)
                         for (child_plot in children) {
-                            rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+                            child_enc <- .split_encoded(child_plot)
+                            child_mode <- child_enc$Type
+                            child_id <- child_enc$ID
+
+                            select_mode <- pObjects$memory[[child_mode]][child_id, .selectMultiType]
+                            if (select_mode==.selectMultiActiveTitle || select_mode==.selectMultiUnionTitle) {
+                                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+
+                                # To warrant replotting of the grandchildren, the child must itself be restricted.                                    
+                                if (child_mode %in% point_plot_types && pObjects$memory[[child_mode]][child_id, .selectEffect]==.selectRestrictTitle) {
+                                    react_child <- paste0(child_mode, child_id, "_Selected")
+                                    rObjects[[react_child]] <- .increment_counter(isolate(rObjects[[react_child]])) 
+                                }
+                            }
                         }
                     }, ignoreInit=TRUE, ignoreNULL=FALSE)
+                })
+            }
+        }
+
+        # Observers to decide whether children need to be replotted.
+        # GIVEN that the population of points has changed in the current panel,
+        # we decide whether to propagate those effects to the children.
+        for (mode in point_plot_types) {
+            max_panels <- nrow(pObjects$memory[[mode]])
+            for (id in seq_len(max_panels)) {
+                local({
+                    mode0 <- mode
+                    id0 <- id
+                    plot_name <- paste0(mode0, id0)
+                    react_field <- paste0(plot_name, "_Selected")
+
+                    observe({
+                        force(rObjects[[react_field]])
+                        has_active <- .any_active_selection(mode0, id0, pObjects$memory)
+                        has_saved <- .any_saved_selection(mode0, id0, pObjects$memory)
+
+                        children <- .get_direct_children(pObjects$selection_links, plot_name)
+                        for (child_plot in children) {
+                            child_enc <- .split_encoded(child_plot)
+                            child_mode <- child_enc$Type
+                            child_id <- child_enc$ID
+                            
+                            # To warrant replotting of the child, it needs there to be Active or Saved selections in the current panel.
+                            # Any point population changes in the current panel will result in new subsets if those selections are available.
+                            changed_active <- changed_saved <- FALSE
+                            select_mode <- pObjects$memory[[child_mode]][child_id, .selectMultiType]
+                            if (select_mode==.selectMultiActiveTitle || select_mode==.selectMultiUnionTitle) {
+                                if (has_active) changed_active <- TRUE
+                            } 
+                            if (select_mode==.selectMultiSavedTitle && pObjects$memory[[child_mode]][child_id, .selectMultiSaved]!=0L) {
+                                if (has_saved) changed_saved <- TRUE
+                            }
+                            if (select_mode==.selectMultiUnionTitle) {
+                                if (has_saved) changed_saved <- TRUE
+                            }
+
+                            if (changed_active || changed_saved) { 
+                                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+
+                                # To warrant replotting of the grandchildren, the child must itself be restricted.
+                                if (child_mode %in% point_plot_types && pObjects$memory[[child_mode]][child_id, .selectEffect]==.selectRestrictTitle) {
+                                    react_child <- paste0(child_mode, child_id, "_Selected")
+                                    rObjects[[react_child]] <- .increment_counter(isolate(rObjects[[react_child]])) 
+                                }
+                            }
+                        }
+                    })
                 })
             }
         }
@@ -802,25 +843,33 @@ iSEE <- function(se,
                     mode0 <- mode
                     id0 <- id
                     panel_name <- paste0(mode0, id0)
-                    can_transmit <- mode %in% point_plot_types
+                    react_field <- paste0(mode0, id0, "_Selected")
 
-                    type_field <- paste0(panel_name, "_", .selectMultiType)
+                    ## Type field observers. ---
+                    type_field <- paste0(mode0, id0, "_", .selectMultiType)
                     observeEvent(input[[type_field]], {
-                        matched_input <- as(input[[type_field]], typeof(pObjects$memory[[mode0]][[.selectMultiType]]))
-                        if (identical(matched_input, pObjects$memory[[mode0]][[.selectMultiType]][id0])) {
+                        old_type <- pObjects$memory[[mode0]][[.selectMultiType]][id0]
+                        new_type <- as(input[[type_field]], typeof(old_type))
+                        if (identical(new_type, old_type)) {
                             return(NULL)
                         }
-                        pObjects$memory[[mode0]][[.selectMultiType]][id0] <- matched_input
+                        pObjects$memory[[mode0]][[.selectMultiType]][id0] <- new_type
+
+                        # Skipping if neither the old or new types were relevant.
+                        transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
+                        no_old_selection <- !.transmitted_selection(transmitter, pObjects$memory, select_type=old_type, mode=mode0, id=id0, encoded=FALSE) 
+                        no_new_selection <- !.transmitted_selection(transmitter, pObjects$memory, mode=mode0, id=id0, encoded=FALSE)
+                        if (no_old_selection && no_new_selection) {
+                            return(NULL)
+                        } 
 
                         rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
-                        if (can_transmit) {
-                            children <- .get_selection_dependents(pObjects$selection_links, panel_name, pObjects$memory)
-                            for (child_plot in children) {
-                               rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
-                           }
-                       }
+                        if (pObjects$memory[[mode0]][id0, .selectEffect]==.selectRestrictTitle) {
+                            rObjects[[react_field]] <- .increment_counter(isolate(rObjects[[react_field]]))
+                        }
                     }, ignoreInit=TRUE)
 
+                    ## Saved field observers. ---
                     saved_select <- paste0(panel_name, "_", .selectMultiSaved)
                     observeEvent(input[[saved_select]], {
                         req(input[[saved_select]]) # Required to defend against empty strings before updateSelectizeInput runs.
@@ -830,15 +879,19 @@ iSEE <- function(se,
                         }
                         pObjects$memory[[mode0]][[.selectMultiSaved]][id0] <- matched_input
 
+                        transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
+                        if (transmitter==.noSelection) {
+                            return(NULL)
+                        }
+
+                        # Switch of 'Saved' will ALWAYS change the current plot, so no need for other checks.
                         rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
-                        if (can_transmit) {
-                            children <- .get_selection_dependents(pObjects$selection_links, panel_name, pObjects$memory)
-                            for (child_plot in children) {
-                               rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
-                           }
-                       }
+                        if (pObjects$memory[[mode0]][id0, .selectEffect]==.selectRestrictTitle) {
+                            rObjects[[react_field]] <- .increment_counter(isolate(rObjects[[react_field]]))
+                        }
                     }, ignoreInit=TRUE)
 
+                    ## Selectize observer. ---
                     observe({
                         force(rObjects[[saved_select]])
 
@@ -854,17 +907,14 @@ iSEE <- function(se,
                         }
 
                         # Updating memory if the current choice is no longer valid.
-                        # This potentially requires a re-triggering of the plot.
                         if (pObjects$memory[[mode0]][id0, .selectMultiSaved] > length(available_choices)) {
                             pObjects$memory[[mode0]][id0, .selectMultiSaved] <- 0L
+                        
+                            # This potentially requires a re-triggering of the plot and its children.
                             if (pObjects$memory[[mode0]][id0, .selectMultiType]==.selectMultiSavedTitle) {
                                 rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
-
-                                if (can_transmit) {
-                                    children <- .get_selection_dependents(pObjects$selection_links, panel_name, pObjects$memory)
-                                    for (child_plot in children) {
-                                        rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
-                                    }
+                                if (pObjects$memory[[mode0]][id0, .selectEffect]==.selectRestrictTitle) {
+                                    rObjects[[react_field]] <- .increment_counter(isolate(rObjects[[react_field]]))
                                 }
                             }
                         }
@@ -890,9 +940,9 @@ iSEE <- function(se,
                     mode0 <- mode
                     id0 <- id
                     plot_name <- paste0(mode0, id0)
-                    prefix <- paste0(plot_name, "_")
-                    click_field <- paste0(prefix, .lassoClick)
-                    brush_field <- paste0(prefix, .brushField)
+                    click_field <- paste0(plot_name, "_", .lassoClick)
+                    brush_field <- paste0(plot_name, "_", .brushField)
+                    react_field <- paste0(plot_name, "_Selected")
 
                     observeEvent(input[[click_field]], {
                         # Don't add to waypoints if a Shiny brush exists in memory (as they are mutually exclusive).
@@ -910,9 +960,24 @@ iSEE <- function(se,
 
                         # Trigger replotting of child panels that receive point selection information.
                         if (new_lasso$closed != was_closed) {
-                            children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
+
+                            # See the Shiny brush observer for why we re-implement this.
+                            children <- .get_direct_children(pObjects$selection_links, plot_name)
                             for (child_plot in children) {
-                                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+                                child_enc <- .split_encoded(child_plot)
+                                child_mode <- child_enc$Type
+                                child_id <- child_enc$ID
+
+                                select_mode <- pObjects$memory[[child_mode]][child_id, .selectMultiType]
+                                if (select_mode==.selectMultiActiveTitle || select_mode==.selectMultiUnionTitle) {
+                                    rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+
+                                    # To warrant replotting of the grandchildren, the child must itself be restricted.                                    
+                                    if (child_mode %in% point_plot_types && pObjects$memory[[child_mode]][child_id, .selectEffect]==.selectRestrictTitle) {
+                                        react_child <- paste0(child_mode, child_id, "_Selected")
+                                        rObjects[[react_child]] <- .increment_counter(isolate(rObjects[[react_child]])) 
+                                    }
+                                }
                             }
                         }
                     })
@@ -1002,7 +1067,7 @@ iSEE <- function(se,
                         trans_enc <- .decoded2encoded(pObjects$memory$heatMapPlot[id0, .selectByPlot])
                         is_receiving_color_selection <- pObjects$memory$heatMapPlot[id0, .selectByPlot]!=.noSelection &&
                             pObjects$memory$heatMapPlot[id0,.selectEffect]==.selectColorTitle &&
-                            .transmitted_selection(trans_enc, pObjects$memory$heatMapPlot[id0, .selectMultiType], pObjects$memory)
+                            .transmitted_selection(trans_enc, pObjects$memory, mode=mode0, id=id0)
 
                         # Update data.
                         n.annot <- length(pObjects$memory$heatMapPlot[,.heatMapColData][[id0]]) + is_receiving_color_selection
@@ -1101,6 +1166,7 @@ iSEE <- function(se,
                     del_field <- paste0(plot_name, "_", .multiSelectDelete)
                     info_field <- paste0(plot_name, "_", .panelGeneralInfo)
                     saved_field <- paste0(plot_name, "_", .selectMultiSaved)
+                    react_field <- paste0(plot_name, "_Selected")
 
                     # Saving and deleting.
                     observeEvent(input[[save_field]], {
@@ -1609,8 +1675,9 @@ iSEE <- function(se,
                             # Not recreating panels if there were no selection in either the new or old transmitters.
                             # We use "Union" here to trigger replotting if there are both active or saved selections,
                             # as custom plots will receive everything from their upstream transmitters.
-                            if (!.transmitted_selection(old_encoded, .selectMultiUnionTitle, pObjects$memory) &&
-                                    !.transmitted_selection(new_encoded, .selectMultiUnionTitle, pObjects$memory)) {
+                            no_old_selection <- !.transmitted_selection(old_encoded, pObjects$memory, select_type=.selectMultiUnionTitle, select_saved=0L)
+                            no_new_selection <- !.transmitted_selection(new_encoded, pObjects$memory, select_type=.selectMultiUnionTitle, select_saved=0L)
+                            if (no_old_selection && no_new_selection) {
                                 return(NULL)
                             }
 

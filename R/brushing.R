@@ -230,6 +230,12 @@
     return(old_children)
 }
 
+.get_direct_children <- function(graph, panel)
+{
+    children <- names(adjacent_vertices(graph, panel, mode="out")[[1]])
+    setdiff(children, panel) # self-updates are handled elsewhere.
+}
+
 #' Test if Shiny brushes are identical
 #' 
 #' Check whether brush coordinates have actually changed between two Shiny brush objects.
@@ -274,18 +280,28 @@
     return(TRUE)
 }
 
-#' Checks if there is a selection 
+#' Checks if there is a relevant selection 
 #' 
-#' Checks whether there is a Shiny brush or lasso selection from a transmitter, in the active selection or in the saved selection history.
+#' Checks whether there is a Shiny brush or lasso selection from a transmitter, in the active selection or in the saved selection history,
+#' that is relevant to the current panel.
 #'
-#' @param transmitter String containing the encoded name of the transmitting panel.
-#' @param select_choice String specifying whether the current panel is receiving the \code{"Active"}, \code{"Union"} or \code{"Saved"} selections.
+#' @param transmitter String containing the name of the transmitting panel.
+#' By default, an encoded panel name is expected.
 #' @param memory A list of DataFrames containing parameters for each panel of each type.
+#' @param select_type String specifying whether the current panel is receiving the \code{"Active"}, \code{"Union"} or \code{"Saved"} selections.
+#' @param select_saved Integer specifying which saved selection is received by the current panel when \code{select_type="Saved"}.
+#' @param mode String specifying the (encoded) panel type of the current panel. 
+#' @param id Integer scalar specifying the ID of the current panel of the specified type.
+#' @param encoded Logical scalar specifying whether \code{transmitter} is an encoded panel name.
 #' 
-#' @return A logical scalar specifying whether there is a selection.
+#' @return A logical scalar specifying whether there is a relevant selection.
 #'
 #' @details 
-#' This will look for saved or active selections (or both) depending on the value of \code{select_choice}.
+#' This will look for saved or active selections (or both) depending on the value of \code{select_type}.
+#' An active selection will not be relevant when \code{select_type="Saved"}, and vice versa.
+#' 
+#' \code{mode} and \code{id} will be used to retrieve the select type and saved index from \code{memory}, 
+#' only if \code{select_type} and \code{select_saved} are not specified.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_transmitted_selection
@@ -293,17 +309,32 @@
 #' \code{\link{.any_active_selection}},
 #' \code{\link{.any_saved_selection}},
 #' \code{\link{iSEE}}
-.transmitted_selection <- function(transmitter, select_choice, memory)
+.transmitted_selection <- function(transmitter, memory, select_type, select_saved, mode, id, encoded=TRUE)
 {
+    if (transmitter==.noSelection) {
+        return(FALSE)
+    }
+
     changed <- FALSE
-    if (select_choice==.selectMultiActiveTitle || select_choice==.selectMultiUnionTitle) { 
-        enc <- .split_encoded(transmitter)
+    if (missing(select_type)) {
+        select_type <- memory[[mode]][id, .selectMultiType]
+    }
+    if (missing(select_saved)) {
+        select_saved <- memory[[mode]][id, .selectMultiSaved]
+    }
+
+    if (select_type==.selectMultiActiveTitle || select_type==.selectMultiUnionTitle) { 
+        if (encoded) {
+            enc <- .split_encoded(transmitter)
+        } else {
+            enc <- .encode_panel_name(transmitter)
+        }
 
         if (.any_active_selection(enc$Type, enc$ID, memory)) {
             changed <- TRUE
         }
 
-        if (select_choice==.selectMultiUnionTitle) {
+        if (select_type==.selectMultiUnionTitle) {
             if (.any_saved_selection(enc$Type, enc$ID, memory)) {
                 changed <- TRUE
             }
@@ -315,7 +346,7 @@
         # but before the .selectMultiSaved selectize is updated. However, if it was
         # non-zero and invalid, then the update would cause it to be zero, which 
         # would set changed=TRUE anyway.
-        if (memory[[mode0]][id0, .selectMultiSaved]!=0L) {
+        if (select_saved!=0L) {
             changed <- TRUE
         }
     }

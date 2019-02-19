@@ -163,7 +163,7 @@
 
         # Checking what to do with plot-specific parameters (e.g., brushing, clicking, plot height).
         if (! mode %in% c(linked_table_types, "customStatTable")) {
-            brush.opts <- brushOpts(.input_FUN(.brushField), resetOnNew=FALSE,
+            brush.opts <- brushOpts(.input_FUN(.brushField), resetOnNew=TRUE, delay=2000,
                 direction=ifelse(mode=="heatMapPlot", "y", "xy"),
                 fill=brush_fill_color[mode], stroke=brush_stroke_color[mode],
                 opacity=.brushFillOpacity)

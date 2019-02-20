@@ -1239,8 +1239,9 @@ iSEE <- function(se,
 
                         pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .multiSelectHistory, c(current, list(to_store)))
 
-                        # Updating self.
+                        # Updating self (replot to get number).
                         rObjects[[info_field]] <- .increment_counter(isolate(rObjects[[info_field]]))
+                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
 
                         transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
                         if (transmitter!=.noSelection && .decoded2encoded(transmitter)==plot_name) {

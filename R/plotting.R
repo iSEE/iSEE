@@ -2126,12 +2126,12 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 
 #' Draw Shiny brushes
 #'
-#' Generate ggplot instructions to draw a rectangular box corresponding to Shiny brush coordinates (both active and memorized) in the current plot.
+#' Generate ggplot instructions to draw a rectangular box corresponding to Shiny brush coordinates (both active and saved) in the current plot.
 #'
 #' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
 #' @param flip A \code{logical} value that indicates whether \code{\link{coord_flip}} was applied to the plot.
 #'
-#' @return A character vector containing a command to overlay one or more rectangles on the plot, indicating the position of the active and memorized Shiny brushes.
+#' @return A character vector containing a command to overlay one or more rectangles on the plot, indicating the position of the active and saved Shiny brushes.
 #'
 #' @details
 #' Evaluation of the output commands require:
@@ -2151,9 +2151,9 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' @importFrom ggplot2 geom_rect
 .self_brush_box <- function(param_choices, flip=FALSE) {
     active <- param_choices[,.brushData][[1]]
-    memorized <- param_choices[,.multiSelectHistory][[1]]
+    saved <- param_choices[,.multiSelectHistory][[1]]
 
-    keep <- which(!vapply(memorized, .is_lasso, FUN.VALUE=TRUE))
+    keep <- which(!vapply(saved, .is_lasso, FUN.VALUE=TRUE))
     total <- as.integer(!is.null(active)) + length(keep)
     if (total==0L) {
         return(NULL)
@@ -2228,7 +2228,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
 #' @param flip A \code{logical} value that indicates whether \code{\link{coord_flip}} was applied to the plot.
 #'
-#' @return A character vector containing commands to overlay a point, path or polygon, indicating the position of any active or memorized lassos.
+#' @return A character vector containing commands to overlay a point, path or polygon, indicating the position of any active or saved lassos.
 #'
 #' @details
 #' This function will generate commands to add a point to the plot, if there is only one lasso waypoint defined;
@@ -2257,9 +2257,9 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' scale_fill_manual guides
 .self_lasso_path <- function(param_choices, flip=FALSE) {
     active <- param_choices[,.lassoData][[1]]
-    memorized <- param_choices[,.multiSelectHistory][[1]]
+    saved <- param_choices[,.multiSelectHistory][[1]]
 
-    keep <- which(vapply(memorized, .is_lasso, FUN.VALUE=TRUE))
+    keep <- which(vapply(saved, .is_lasso, FUN.VALUE=TRUE))
     total <- as.integer(!is.null(active)) + length(keep)
     if (total==0L) {
         return(NULL)
@@ -2286,7 +2286,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
         } else {
             chosen <- keep[i]
             lasso_src <- sprintf("all_select_histories[['%s']][[%i]]", plot_name, chosen)
-            current <- memorized[[chosen]]
+            current <- saved[[chosen]]
         }
         
         # Initialize the minimal lasso information

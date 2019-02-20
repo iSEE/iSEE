@@ -2181,6 +2181,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 
     plot_name <- rownames(param_choices)
     enc <- .split_encoded(plot_name)
+    stroke_color <- panel_colors[enc$Type]
+    fill_color <- brush_fill_color[enc$Type]
 
     # Build up the aesthetics call
     aes_call <- sprintf("xmin = %s, xmax = %s, ymin = %s, ymax = %s", xmin, xmax, ymin, ymax)
@@ -2210,14 +2212,31 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
             panel_list <- sprintf("list(%s)", paste(addPanels, collapse = ", "))
             brush_data <- sprintf("append(%s, %s)", brush_data, panel_list)
         }
-    
+
         # Build up the command that draws the brush
-        cmd <- sprintf(
-"geom_rect(aes(%s), color='%s', alpha=0,
+        brush_draw_cmd <- sprintf(
+"geom_rect(aes(%s), color='%s', alpha=%s, fill='%s',
     data=do.call(data.frame, %s),
     inherit.aes=FALSE)",
-            aes_call, panel_colors[enc$Type], brush_data)
-        cmds <- c(cmds, cmd)
+            aes_call, stroke_color, .brushFillOpacity, fill_color, brush_data)
+
+        # Put a number for saved brushes.
+        if (i!=0L) {
+            text_data <- c(sprintf("x=mean(unlist(%s[c('%s', '%s')]))", brush_src, xmin, xmax),
+				sprintf("y=mean(unlist(%s[c('%s', '%s')]))", brush_src, ymin, ymax),
+				addPanels)
+
+            text_cmd <- sprintf(
+"geom_text(aes(x=x, y=y), inherit.aes=FALSE,
+	data=data.frame(
+		%s),
+    label=%i, size=%s, colour='%s')",
+				paste(text_data, collapse=",\n        "),
+                keep[i], param_choices[[.plotFontSize]] * .plotFontSizeLegendTextDefault, stroke_color)
+            brush_draw_cmd <- c(brush_draw_cmd, text_cmd)
+        }
+
+        cmds <- c(cmds, brush_draw_cmd)
     }
 
     cmds
@@ -2313,8 +2332,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     data=data.frame(%s),
     inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s', shape = %s)",
                 current$mapping$x, current$mapping$y, lasso_data, stroke_color, .lassoStartShape)
-            full_cmd_list <- list(point_cmd)
-    
+            full_cmd_list <- point_cmd
+
         } else if (current$closed){ # lasso is closed
             polygon_cmd <- sprintf(
     "geom_polygon(aes(x = %s, y = %s), alpha=%s, color='%s',
@@ -2323,6 +2342,23 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 current$mapping$x, current$mapping$y,
                 .brushFillOpacity, stroke_color,
                 lasso_data, fill_color)
+
+            # Put a number for saved lassos.
+            if (i!=0L) {
+                text_data <- c(sprintf("X=mean(%s$coord[,1])", lasso_src),
+    				sprintf("Y=mean(%s$coord[,2])", lasso_src),
+    				addPanels)
+    
+                text_cmd <- sprintf(
+"geom_text(aes(x = %s, y=%s), inherit.aes=FALSE,
+    data=data.frame(
+        %s), 
+    label = %i, size = %s, colour = '%s')",
+	                current$mapping$x, current$mapping$y,
+    				paste(text_data, collapse=",\n        "),
+                    chosen, param_choices[[.plotFontSize]] * .plotFontSizeLegendTextDefault, stroke_color)
+                polygon_cmd <- c(polygon_cmd, text_cmd)
+            }
     
             scale_fill_cmd <- sprintf(
                 "scale_fill_manual(values = c('TRUE' = '%s', 'FALSE' = '%s'), labels = NULL)",
@@ -2334,7 +2370,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 guides_cmd <- NULL
             }
     
-            full_cmd_list <- list(polygon_cmd, scale_fill_cmd, guides_cmd)
+            full_cmd_list <- c(polygon_cmd, scale_fill_cmd, guides_cmd)
     
         } else { # lasso is still open
             path_cmd <- sprintf(
@@ -2376,11 +2412,10 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 guides_cmd <- "guides(size = 'none')"
             }
     
-            full_cmd_list <- list(
-                path_cmd, point_cmd, scale_shape_cmd, guides_cmd)
+            full_cmd_list <- c(path_cmd, point_cmd, scale_shape_cmd, guides_cmd)
         }
             
-        cmds <- c(cmds, unlist(full_cmd_list))
+        cmds <- c(cmds, full_cmd_list)
     }
 
     cmds

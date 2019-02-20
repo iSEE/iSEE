@@ -296,7 +296,7 @@ test_that(".regenerate_unselected_plot can regenerate plots manually", {
     input <- list()
     session <- NULL
 
-    iSEE:::.regenerate_unselected_plot("redDimPlot", 1, pObjects, rObjects, input, session)
+    iSEE:::.regenerate_unselected_plot("redDimPlot", 1, pObjects, rObjects)
 
     expect_identical(rObjects[["redDimPlot1"]], 2L)
 

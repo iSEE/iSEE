@@ -59,14 +59,21 @@ This is because they can generate arbitrary plots and are not truly row- or colu
 
 \section{Selection parameters for tables}{
 
-For the row statistics tables, the following options apply:
+For row or column statistics tables, the following options apply:
 \describe{
 \item{\code{SelectBoxOpen}:}{Logical, should the point selection parameter box be open upon initialization?
 Defaults to \code{FALSE}.}
 \item{\code{SelectByPlot}:}{Character, which other plot should be used to select features in the current table?
 Defaults to \code{"---"}, which means that no plot is used for point selection.}
+\item{\code{SelectMultiType}:}{Character, containing \code{"Active"}, which uses the active selection on the transmitting panel;
+\code{"Union"}, which uses the union of the active selection and all saved selections for the transmitting panel;
+or \code{"Saved"}, which uses a single saved selection from the transmitting panel.
 }
-Only row-based plots (i.e., row data and sample assay plots) can be used for selecting points to supply to tables, for the same reasons described above.
+\item{\code{SelectMultiSaved}:}{Integer, specifying the saved selection to use from the transmitting panel when \code{SelectMultiType} is set to \code{"Saved"}.}
+}
+
+Only row-based plots (i.e., row data and sample assay plots) can be used for selecting points to supply to row statistics tables, for the same reasons described above.
+Similarly, only column-based plots can be used to select plots to transmit to column statistics tables.
 }
 
 \examples{

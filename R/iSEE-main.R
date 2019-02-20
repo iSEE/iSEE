@@ -750,7 +750,11 @@ iSEE <- function(se,
             }
         }
 
-        # Shiny brush structure observers.
+        # Shiny brush structure observers. There are three "phases" of a Shiny brush:
+        # - the Javascript (JS) brush, which is what the user draws and the observer responds to.
+        #   This is eliminated upon replotting for various consistency reasons.
+        # - the active brush, which is what is stored in iSEE's ".brushData" field.
+        # - the saved brush(es), stored in iSEE's ".multiSelectHistory" field.
         for (mode in point_plot_types) {
             max_plots <- nrow(pObjects$memory[[mode]])
             for (id in seq_len(max_plots)) {
@@ -865,7 +869,7 @@ iSEE <- function(se,
 
                     ## Observer for changes in the saved selections in the current panel. ---
                     # As described above, we can't use the 'repopulated' observer. The conditions
-                    # to propagate are also slightly different to the conditions for the 'activated' observer.
+                    # to propagate are also slightly different to the conditions for the 'reactivated' observer.
                     save_field <- paste0(plot_name, "_resaved")
                     observe({
                         force(rObjects[[save_field]])
@@ -1003,8 +1007,13 @@ iSEE <- function(se,
                     act_field <- paste0(plot_name, "_reactivated")
 
                     observeEvent(input[[click_field]], {
-                        # There is an Shiny brush in-construction; don't do anything! 
-                        # This cannot refer to a memorized brush, as any Shiny brush would be wiped upon replotting.
+                        # Hack to resolve https://github.com/rstudio/shiny/issues/947.
+                        # By luck, the triggering of the click field seems to be delayed enough
+                        # that input data is sent to the brush field first. Thus, we can 
+                        # check the brush field for a non-NULL value avoid action if 
+                        # the user had brushed rather than clicked. A separate click should 
+                        # continue past this point, as any Shiny brush would be wiped upon 
+                        # replotting and thus would not have any value in the input.
                         if (!is.null(input[[brush_field]])) {
                             return(NULL)
                         }

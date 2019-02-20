@@ -360,12 +360,12 @@ test_that(".transmitted_selection detects whether a brush is active", {
 
     # No point selection
     memory$redDimPlot[[iSEE:::.brushData]][1] <- list(NULL)
-    out <- .transmitted_selection("Reduced dimension plot 1", memory)
-    expect_identical(out, list(selected=FALSE, encoded="redDimPlot1"))
+    out <- .transmitted_selection("redDimPlot1", memory, select_type = "Active", encoded = TRUE)
+    expect_identical(out, FALSE)
 
     # Active point selection (non-empty brush or lasso)
     memory$redDimPlot[[iSEE:::.brushData]][[1]] <- list(a=1, b=2)
-    out <- .transmitted_selection("Reduced dimension plot 1", memory)
-    expect_identical(out, list(selected=TRUE, encoded="redDimPlot1"))
+    out <- .transmitted_selection("redDimPlot1", memory, "Active", encoded = TRUE)
+    expect_identical(out, TRUE)
 
 })

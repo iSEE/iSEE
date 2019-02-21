@@ -814,21 +814,29 @@ iSEE <- function(se,
                             child_mode <- child_enc$Type
                             child_id <- child_enc$ID
                             
-                            # To warrant replotting of the child, it needs there to be Active or Saved selections in the current panel.
-                            # Any point population changes in the current panel will result in new subsets if those selections are available.
-                            changed_active <- changed_saved <- FALSE
-                            select_mode <- pObjects$memory[[child_mode]][child_id, .selectMultiType]
-                            if (select_mode==.selectMultiActiveTitle || select_mode==.selectMultiUnionTitle) {
-                                if (has_active) changed_active <- TRUE
-                            } 
-                            if (select_mode==.selectMultiSavedTitle && pObjects$memory[[child_mode]][child_id, .selectMultiSaved]!=0L) {
-                                if (has_saved) changed_saved <- TRUE
-                            }
-                            if (select_mode==.selectMultiUnionTitle) {
-                                if (has_saved) changed_saved <- TRUE
+                            # We have special rules for custom panel types, as these don't have .selectMultiType or .selectMultiSaved. 
+                            if (child_mode %in% custom_panel_types) {
+                                if (has_active || (customSendAll && has_saved)) {
+                                    rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+                                }
+                                next
                             }
 
-                            if (changed_active || changed_saved) { 
+                            # To warrant replotting of the child, there needs to be Active or Saved selections in the current panel.
+                            # Any point population changes in the current panel will result in new subsets if those selections are available.
+                            replot <- FALSE
+                            select_mode <- pObjects$memory[[child_mode]][child_id, .selectMultiType]
+                            if (select_mode==.selectMultiActiveTitle || select_mode==.selectMultiUnionTitle) {
+                                if (has_active) replot <- TRUE
+                            } 
+                            if (select_mode==.selectMultiSavedTitle && pObjects$memory[[child_mode]][child_id, .selectMultiSaved]!=0L) {
+                                if (has_saved) replot <- TRUE
+                            }
+                            if (select_mode==.selectMultiUnionTitle) {
+                                if (has_saved) replot <- TRUE
+                            }
+
+                            if (replot) {
                                 rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
 
                                 # To warrant replotting of the grandchildren, the child must itself be restricted.
@@ -854,6 +862,12 @@ iSEE <- function(se,
                             child_mode <- child_enc$Type
                             child_id <- child_enc$ID
 
+                            # Custom panels don't have any other settings, so we just replot and move on.
+                            if (child_mode %in% custom_panel_types) {
+                                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+                                next
+                            } 
+
                             select_mode <- pObjects$memory[[child_mode]][child_id, .selectMultiType]
                             if (select_mode==.selectMultiActiveTitle || select_mode==.selectMultiUnionTitle) {
                                 rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
@@ -877,12 +891,17 @@ iSEE <- function(se,
 
                         children <- .get_direct_children(pObjects$selection_links, plot_name)
                         for (child_plot in children) {
-                            child_saved <- paste0(child_plot, "_", .selectMultiSaved)
-                            rObjects[[child_saved]] <- .increment_counter(isolate(rObjects[[child_saved]]))
-                            
                             child_enc <- .split_encoded(child_plot)
                             child_mode <- child_enc$Type
                             child_id <- child_enc$ID
+
+                            # Custom panels don't have any other settings, so we just replot and move on.
+                            if (child_mode %in% custom_panel_types) {
+                                if (customSendAll) {
+                                    rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+                                }
+                                next
+                            } 
 
                             reset <- pObjects$memory[[child_mode]][child_id, .selectMultiSaved] > Nsaved
                             if (reset) {
@@ -898,6 +917,10 @@ iSEE <- function(se,
                                     rObjects[[react_child]] <- .increment_counter(isolate(rObjects[[react_child]]))
                                 }
                             }
+
+                            # Updating the selectize as well.
+                            child_saved <- paste0(child_plot, "_", .selectMultiSaved)
+                            rObjects[[child_saved]] <- .increment_counter(isolate(rObjects[[child_saved]]))
                         }
                     }) 
                 })

@@ -45,7 +45,7 @@
         transmit_param <- all_memory[[current$Type]][current$ID,]
         .populate_selection_environment(transmit_param, temp_env)
         brushes <- c(brushes, temp_env$all_brushes) # Bit of work here to merge the row/col selection objects.
-        lassos <- c(lassos, temp_env$all_lasso)
+        lassos <- c(lassos, temp_env$all_lassos)
         histories <- c(histories, temp_env$all_select_histories)
     }
 

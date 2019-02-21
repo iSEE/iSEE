@@ -383,8 +383,8 @@
 
             param <- list(hr(),
                 tags$div(class="panel-group", role="tablist",
-                    .create_selection_param_box_define_box(mode, id, param_choices,
-                        .create_selection_param_box_define_choices(mode, id, param_choices, .selectByPlot, selectable, source_type)
+                    .define_selection_param_box(mode, id, param_choices,
+                        .define_selection_choices(mode, id, param_choices, .selectByPlot, selectable, source_type)
                     )
                 )
             )
@@ -402,10 +402,10 @@
                 param <- list(
                     tags$div(class="panel-group", role="tablist",
                         data_box,
-                        .create_selection_param_box_define_box(
+                        .define_selection_param_box(
                             mode, id, param_choices,
-                            .create_selection_param_box_define_choices(mode, id, param_choices, .customRowSource, row_selectable, "row"),
-                            .create_selection_param_box_define_choices(mode, id, param_choices, .customColSource, col_selectable, "column")
+                            .define_selection_transmitter(mode, id, param_choices, .customRowSource, row_selectable, "row"),
+                            .define_selection_transmitter(mode, id, param_choices, .customColSource, col_selectable, "column")
                         )
                     )
                 )
@@ -1115,6 +1115,7 @@
 #' @param source_type Type of the panel that is source of the selection. Either \code{"row"} or \code{"column"}.
 #' @param ... Additional arguments passed to \code{\link{collapseBox}}.
 #' @param field Column name in the DataFrame of parameters choices for the current plot.
+#' @param multi_select Logical scalar specifying whether 
 #'
 #' @return
 #' For \code{.create_selection_param_box} and \code{.create_selection_param_box_define_box},
@@ -1128,7 +1129,7 @@
 #' Each effect option, once selected, may yield a further subset of nested options.
 #' For example, choosing to colour on the selected points will open up a choice of colour to use.
 #'
-#' The other two functions are helper functions that avoid re-writing related code in the \code{\link{.panel_generation}} function.
+#' The other three functions are helper functions that avoid re-writing related code in the \code{\link{.panel_generation}} function.
 #' This is mostly for other panel types that take selections but do not follow the exact structure produced by \code{.create_selection_param_box}.
 #'
 #' @author Aaron Lun
@@ -1142,9 +1143,9 @@
     select_effect <- paste0(mode, id, "_", .selectEffect)
     source_type <- match.arg(source_type)
 
-    .create_selection_param_box_define_box(
+    .define_selection_param_box(
         mode, id, param_choices,
-        .create_selection_param_box_define_choices(mode, id, param_choices, field=.selectByPlot, selectable=selectable, source_type),
+        .define_selection_choices(mode, id, param_choices, field=.selectByPlot, selectable=selectable, source_type),
 
         radioButtons(
             select_effect, label="Selection effect:", inline=TRUE,
@@ -1172,7 +1173,7 @@
 }
 
 #' @rdname INTERNAL_create_selection_param_box
-.create_selection_param_box_define_box <- function(mode, id, param_choices, ...) {
+.define_selection_param_box <- function(mode, id, param_choices, ...) {
     collapseBox(
         id=paste0(mode, id, "_", .selectParamBoxOpen),
         title="Selection parameters",
@@ -1181,17 +1182,22 @@
 }
 
 #' @rdname INTERNAL_create_selection_param_box
-#' @importFrom shiny tagList selectInput radioButtons selectInput 
-.create_selection_param_box_define_choices <- function(mode, id, param_choices, field, selectable, source_type=c("row", "column")) {
-    select_multi_type <- paste0(mode, id, "_", .selectMultiType)
+#' @importFrom shiny selectInput 
+.define_selection_transmitter <- function(mode, id, param_choices, field, selectable, source_type="row") {
+    selectInput(
+        paste0(mode, id, "_", field),
+        label=sprintf("Receive %s selection from:", source_type),
+        choices=selectable,
+        selected=.choose_link(param_choices[[field]], selectable)
+    )
+}
 
+#' @rdname INTERNAL_create_selection_param_box
+#' @importFrom shiny tagList radioButtons selectizeInput
+.define_selection_choices <- function(mode, id, param_choices, field, selectable, source_type="row") {
+    select_multi_type <- paste0(mode, id, "_", .selectMultiType)
     tagList(
-        selectInput(
-            paste0(mode, id, "_", field),
-            label=sprintf("Receive %s selection from:", source_type),
-            choices=selectable,
-            selected=.choose_link(param_choices[[field]], selectable)
-        ),
+        .define_selection_transmitter(mode, id, param_choices, field, selectable, source_type),
 
         radioButtons(
             select_multi_type, label=NULL, inline=TRUE,

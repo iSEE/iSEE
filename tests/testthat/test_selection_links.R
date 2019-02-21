@@ -339,3 +339,41 @@ test_that(".transmitted_selection detects whether a brush is active", {
     expect_true(out)
 
 })
+
+# .process_custom_selections ----
+
+LASSO_CLOSED <- list(
+    lasso=NULL,
+    closed=TRUE,
+    panelvar1=NULL, panelvar2=NULL,
+    mapping=list(x="X", y="Y"),
+    coord=matrix(c(1, 2, 2, 1, 1, 1, 1, 2, 2, 1), ncol=2))
+
+BRUSH_DATA <- list(
+    xmin=1, xmax=10, ymin=1, ymax=10,
+    direction="xy", mapping=list(x="X", y="Y"),
+    brushId="dummy_brush", outputId="dummy_plot"
+)
+
+test_that(".process_custom_selections processes incoming selection for custom panels", {
+    
+    # Link to another panel that has no selection or history
+    memory$customDataPlot[1, iSEE:::.customColSource] <- "Reduced dimension plot 1"
+    out <- .process_custom_selections(memory$customDataPlot[1, ], memory ,select_all = TRUE)
+    expect_identical(
+        out$cmds,
+        c("row.names <- list(active=NULL, saved=list());", "col.names <- list(active=NULL,\n    saved=list());" )
+    )
+    
+    # Create a history of selection in the transmitter panel
+    # both a lasso and a brush, for code coverage
+    memory$redDimPlot[[iSEE:::.multiSelectHistory]][[1]] <- list(LASSO_CLOSED, BRUSH_DATA)
+    out <- .process_custom_selections(memory$customDataPlot[1, ], memory ,select_all = TRUE)
+    expect_identical(
+        out$cmds,
+        c(
+            "row.names <- list(active=NULL, saved=list());",
+            "col.names <- list(active=NULL,\n    saved=list(rownames(lassoPoints(all_coordinates[['redDimPlot1']], all_select_histories[['redDimPlot1']][[1]])),\n        rownames(shiny::brushedPoints(all_coordinates[['redDimPlot1']], all_select_histories[['redDimPlot1']][[2]]))));" )
+    )
+    
+})

@@ -1,6 +1,7 @@
 #' Track code for the plots
 #' 
 #' Fetches all the code that was used to generate the plots during the live iSEE session.
+#' See section "Functions" for more details.
 #' 
 #' @param active_panels A data.frame containing information about the currently active panels, of the same form as that produced by \code{\link{.setup_initial}}.
 #' @param pObjects An environment containing \code{memory}, a list of DataFrames containing parameters for each panel of each type;
@@ -58,7 +59,7 @@
     return(tracked_code)
 }
 
-#' @rdname INTERNAL_track_it_all
+#' @describeIn INTERNAL_track_it_all Returns a character vector of commands that create brushes, lassos, and selection history.
 .track_selection_code  <- function(active_panels, pObjects) {
     # Remove panels that don't have brushes or lassos.
     is_point_plot <- active_panels$Type %in% point_plot_types

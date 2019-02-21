@@ -1692,7 +1692,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #'
 #' Populate the environment with data structures required for selection.
 #'
-#' @param param_choices A single-row DataFrame that contains all the #' input settings for the current panel.
+#' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
 #' @param envir An environment produced by \code{\link{.extract_plotting_data}}.
 #'
 #' @details

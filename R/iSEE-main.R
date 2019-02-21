@@ -30,6 +30,8 @@
 #' The function should accept two parameters, \code{se} and \code{row_index}, and return a HTML element with annotation for the selected row.
 #' @param customDataFun A named list of functions for reporting coordinates to use in a custom data plot.
 #' @param customStatFun A named list of functions for reporting coordinates to use in a custom statistics table.
+#' @param customSendAll A logical scalar indicating whether all (active and saved) selections should be passed from transmitting panels to custom plots or tables.
+#' The default (\code{FALSE}) only passes the row names of the points in the active selection.
 #' @param colormap An \linkS4class{ExperimentColorMap} object that defines custom colormaps to apply to individual \code{assays}, \code{colData} and \code{rowData} covariates.
 #' @param tour A data.frame with the content of the interactive tour to be displayed after starting up the app.
 #' @param appTitle A string indicating the title to be displayed in the app.
@@ -134,6 +136,7 @@ iSEE <- function(se,
     annotFun=NULL,
     customDataFun=NULL,
     customStatFun=NULL,
+    customSendAll=FALSE,
     colormap=ExperimentColorMap(),
     tour=NULL,
     appTitle=NULL,
@@ -1767,10 +1770,12 @@ iSEE <- function(se,
                             }
 
                             # Not recreating panels if there were no selection in either the new or old transmitters.
-                            # We use "Union" here to trigger replotting if there are both active or saved selections,
-                            # as custom plots will receive everything from their upstream transmitters.
-                            no_old_selection <- !.transmitted_selection(old_encoded, pObjects$memory, select_type=.selectMultiUnionTitle, select_saved=0L)
-                            no_new_selection <- !.transmitted_selection(new_encoded, pObjects$memory, select_type=.selectMultiUnionTitle, select_saved=0L)
+                            # We use "Union" here to trigger replotting if customSendAll=TRUE as custom plots will 
+                            # receive everything from their upstream transmitters. Otherwise, if customSendAll=TRUE,
+                            # we only respond to the active selection in the upstream transmitter.
+                            select_type <- if (customSendAll) .selectMultiUnionTitle else .selectMultiActiveTitle
+                            no_old_selection <- !.transmitted_selection(old_encoded, pObjects$memory, select_type=select_type, select_saved=0L)
+                            no_new_selection <- !.transmitted_selection(new_encoded, pObjects$memory, select_type=select_type, select_saved=0L)
                             if (no_old_selection && no_new_selection) {
                                 return(NULL)
                             }
@@ -1791,7 +1796,7 @@ iSEE <- function(se,
 
                 output[[plot_name]] <- renderPlot({
                     force(rObjects[[plot_name]])
-                    p.out <- .make_customDataPlot(id0, pObjects$memory, pObjects$coordinates, se)
+                    p.out <- .make_customDataPlot(id0, pObjects$memory, pObjects$coordinates, se, select_all=customSendAll)
                     pObjects$commands[[plot_name]] <- p.out$cmd_list
                     p.out$plot
                 })
@@ -1810,15 +1815,31 @@ iSEE <- function(se,
                     param_choices <- pObjects$memory$customStatTable[id0,]
 
                     row_selected <- .get_selected_points(rownames(se), param_choices[[.customRowSource]],
-                            pObjects$memory, pObjects$coordinates)
-                    if (!is.null(row_selected)) {
-                        row_selected <- rownames(se)[row_selected]
+                        pObjects$memory, pObjects$coordinates, select_all=customSendAll)
+                    row_L2C <- function(keep) rownames(se)[keep]
+                    if (customSendAll) {
+                        if (!is.null(row_selected$active)) {
+                            row_selected$active <- row_L2C(row_selected$active)
+                        }
+                        row_selected$saved <- lapply(row_selected$saved, row_L2C)
+                    } else {
+                        if (!is.null(row_selected)) {
+                            row_selected <- row_L2C(row_selected)
+                        }
                     }
 
                     col_selected <- .get_selected_points(colnames(se), param_choices[[.customColSource]],
-                            pObjects$memory, pObjects$coordinates)
-                    if (!is.null(col_selected)) {
-                        col_selected <- colnames(se)[col_selected]
+                        pObjects$memory, pObjects$coordinates, select_all=customSendAll)
+                    col_L2C <- function(keep) colnames(se)[keep]
+                    if (customSendAll) {
+                        if (!is.null(col_selected$active)) {
+                            col_selected$active <- col_L2C(col_selected$active)
+                        }
+                        col_selected$saved <- lapply(col_selected$saved, col_L2C)
+                    } else {
+                        if (!is.null(col_selected)) {
+                            col_selected <- col_L2C(col_selected)
+                        }
                     }
 
                     chosen_fun <- param_choices[[.customFun]]

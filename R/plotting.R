@@ -2297,7 +2297,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
         facetrow <- facetcolumn <- 'panelvar1'
     }
 
-    cmds <- character(0) 
+    cmds <- character(0)
+    firstClosed <- TRUE
     for (i in seq_len(total) - !is.null(active)) { 
         if (i==0L) {
             lasso_src <- sprintf("all_lassos[['%s']]", plot_name)
@@ -2342,7 +2343,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 current$mapping$x, current$mapping$y,
                 .brushFillOpacity, stroke_color,
                 lasso_data, fill_color)
-
+            
             # Put a number for saved lassos.
             if (i!=0L) {
                 text_data <- c(sprintf("X=mean(%s$coord[,1])", lasso_src),
@@ -2359,17 +2360,22 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                     chosen, param_choices[[.plotFontSize]] * .plotFontSizeLegendTextDefault, stroke_color)
                 polygon_cmd <- c(polygon_cmd, text_cmd)
             }
-    
-            scale_fill_cmd <- sprintf(
-                "scale_fill_manual(values = c('TRUE' = '%s', 'FALSE' = '%s'), labels = NULL)",
-                stroke_color, fill_color)
-    
-            if (param_choices[[.shapeByField]] == .shapeByNothingTitle) {
-                guides_cmd <- "guides(shape = 'none')"
-            } else {
-                guides_cmd <- NULL
+            
+            scale_fill_cmd <- NULL
+            guides_cmd <- NULL
+            
+            if (firstClosed) {
+                # Commands to put only once
+                scale_fill_cmd <- sprintf(
+                    "scale_fill_manual(values = c('TRUE' = '%s', 'FALSE' = '%s'), labels = NULL)",
+                    stroke_color, fill_color)
+                
+                if (param_choices[[.shapeByField]] == .shapeByNothingTitle) {
+                    guides_cmd <- "guides(shape = 'none')"
+                }
+                firstClosed <- FALSE
             }
-    
+            
             full_cmd_list <- c(polygon_cmd, scale_fill_cmd, guides_cmd)
     
         } else { # lasso is still open

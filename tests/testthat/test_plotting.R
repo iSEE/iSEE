@@ -1184,6 +1184,26 @@ test_that(".process_selectby_choice works when sender is another plot", {
         "plot.data$SelectBy",
         fixed=TRUE
     )
+    
+    # union of multiple selections
+    # set up selection history in the transmitter plot
+    all_memory$redDimPlot[[iSEE:::.multiSelectHistory]][[1]] <- list(
+        all_memory$redDimPlot[[iSEE:::.brushData]][[1]]
+    )
+    # request union of selection history
+    all_memory$featAssayPlot[1, iSEE:::.selectMultiType] <- iSEE:::.selectMultiUnionTitle
+    select_cmd <- iSEE:::.process_selectby_choice(all_memory$featAssayPlot, all_memory)
+    expect_match(
+        select_cmd$cmds["brush1"],
+        "union",
+        fixed=TRUE
+    )
+    
+    # saved selection with none selected (0)
+    all_memory$featAssayPlot[1, iSEE:::.selectMultiType] <- iSEE:::.selectMultiSavedTitle
+    all_memory$featAssayPlot[1, iSEE:::.selectMultiSaved] <- 0L
+    select_cmd <- iSEE:::.process_selectby_choice(all_memory$featAssayPlot, all_memory)
+    expect_null(select_cmd$cmds)
 
 })
 
@@ -1810,6 +1830,28 @@ test_that(".build_labs returns NULL for NULL inputs", {
 
 # .self_brush_box ----
 
+test_that(".self_brush_box draw multiple shiny brushes", {
+    
+    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
+    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "NREADS"
+    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "driver_1_s"
+    
+    brushHistory <- list(
+        list(xmin=1, xmax=2, ymin=3, ymax=4),
+        list(xmin=2, xmax=3, ymin=4, ymax=5)
+    )
+    all_memory$colDataPlot[[iSEE:::.multiSelectHistory]][[1]] <- brushHistory
+    
+    out <- iSEE:::.self_brush_box(all_memory$colDataPlot, flip=TRUE)
+    expect_length(out, 2*length(brushHistory))
+    expect_type(out, "character")
+    expect_match(out[1], "geom_rect", fixed=TRUE)
+    expect_match(out[2], "geom_text", fixed=TRUE)
+    expect_match(out[3], "geom_rect", fixed=TRUE)
+    expect_match(out[4], "geom_text", fixed=TRUE)
+    
+})
+
 test_that(".self_brush_box can flip axes", {
 
     all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
@@ -1852,6 +1894,31 @@ test_that(".self_brush_box flip axes when faceting on both X and Y", {
 })
 
 # .self_lasso_path ----
+
+test_that(".self_lasso_path works with multiple lassos", {
+    
+    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
+    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "NREADS"
+    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "driver_1_s"
+    
+    LASSO_CLOSED <- list(
+        lasso=NULL,
+        closed=TRUE,
+        panelvar1=NULL, panelvar2=NULL,
+        mapping=list(x="X", y="Y"),
+        coord=matrix(c(1, 2, 2, 1, 1, 1, 1, 2, 2, 1), ncol=2))
+    lassoHistory <- list(LASSO_CLOSED, LASSO_CLOSED) # yeah, ok, twice the same lasso isn't elegant but hey
+    all_memory$colDataPlot[[iSEE:::.multiSelectHistory]][[1]] <- lassoHistory
+    
+    out <- iSEE:::.self_lasso_path(all_memory$colDataPlot)
+    expect_type(out, "character")
+    # length = (polygon+text)*2 lassos + scale_fill_manual + guides
+    expect_length(out, 2*length(lassoHistory)+2)
+    expect_match(out[1], "geom_polygon", fixed = TRUE)
+    expect_match(out[2], "geom_text", fixed = TRUE)
+    expect_match(out[3], "scale_fill_manual", fixed = TRUE)
+    expect_match(out[4], "guides(shape = 'none')", fixed = TRUE)
+})
 
 test_that(".self_lasso_path flip axes when faceting on both X and Y", {
 

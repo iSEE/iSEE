@@ -72,8 +72,10 @@ Recalculations in custom panels are performed using user-defined functions that 
 The only requirements are that the function has to accept:
 
 - A `SummarizedExperiment` object or its derivatives as the first argument.
-- A vector of row names as the second argument, specifying the rows that are selected in the transmitting _row-panel_ panel.
-- A vector of column names as the third argument, specifying the columns that are selected in the transmitting _column-based_ panel.
+- If `customSendAll=FALSE` (the default), a vector of row names as the second argument, specifying the rows that are selected in the transmitting _row-based_ panel.
+This may be `NULL` if no transmitting panel was selected or if no active selection is available.
+- If `customSendAll=FALSE`, A vector of column names as the third argument, specifying the columns that are selected in the transmitting _column-based_ panel.
+This may be `NULL` if no transmitting panel was selected or if no active selection is available.
 
 In addition:
 
@@ -107,7 +109,7 @@ CUSTOM_PCA <- function(se, rows, columns, colour_by=NULL, scale_features=TRUE) {
 }
 ```
 
-Note that `rows` and `columns` may be `NULL` if no selection was made in the respective transmitting panels.
+As mentioned above, `rows` and `columns` may be `NULL` if no selection was made in the respective transmitting panels.
 How these should be treated is up to the user-defined function.
 In the `CUSTOM_PCA` example above, an empty _ggplot_ is returned if there is no selection on the columns, while the default `runPCA` behaviour is used if `feature_set=NULL`.
 
@@ -208,6 +210,95 @@ app <- iSEE(
         Width=c(4, 4, 4, 12)),
     customDataFun=list(CUSTOM_PCA=CUSTOM_PCA),
     customStatFun=list(CUSTOM_SUMMARY=CUSTOM_SUMMARY)
+    )
+```
+
+# Setting `customSendAll=TRUE`
+
+By default, `iSEE` will only pass the "active" point selection from the transmitting panel to your custom function.
+Users can set `customSendAll=TRUE` to obtain _all_ selections - active and saved - from the transmitting panel.
+This takes the form of a list with two elements:
+
+- `active`, a vector of names specifying the points in the active selection.
+- `saved`, a list of vectors of names specifying the points in each saved selection.
+
+It is possible for `active` to be `NULL` or `saved` to contain no elements.
+This will obviously occur if there are no active and/or saved selections, or if no transmitter has been selected.
+
+This is a powerful system that allows users to compute statistics of interests for multiple selections simultaneously.
+For example, we could write a function that computes log-fold changes between the samples in the active selection and samples in each saved selection.
+(It would be trivial to extend this to obtain actual differential expression statistics, e.g., using `scran::findMarkers()` or functions from packages like `r Biocpkg("limma")`.)
+
+```{r}
+CUSTOM_DIFFEXP <- function(se, ri, ci, assay="logcounts") {
+    ri <- ri$active
+    if (is.null(ri)) { # ignoring saved gene selections for now.
+        ri <- rownames(se)
+    }
+    if (is.null(ci$active) || length(ci$saved)==0L) {
+        return(data.frame(row.names=character(0), LogFC=integer(0))) # dummy value.
+    }
+
+    assayMatrix <- assay(se, assay)[ri, , drop=FALSE]
+    active <- rowMeans(assayMatrix[,ci$active,drop=FALSE])
+
+    lfcs <- vector("list", length(ci$saved))
+    for (i in seq_along(lfcs)) {
+        saved <- rowMeans(assayMatrix[,ci$saved[[i]],drop=FALSE])
+        lfcs[[i]] <- active - saved
+    }
+    names(lfcs) <- sprintf("LogFC/%i", seq_along(lfcs))
+
+    output <- do.call(data.frame, lfcs)
+    rownames(output) <- ri
+    output
+}
+```
+
+We also re-use these statistics to visualize some of the genes with the largest log-fold changes:
+
+```{r}
+CUSTOM_HEAT <- function(se, ri, ci, assay="logcounts") {
+    everything <- CUSTOM_DIFFEXP(se, ri, ci, assay=assay)
+    if (nrow(everything)==0L) {
+        return(ggplot()) # empty ggplot if no genes reported.
+    }
+
+    everything <- as.matrix(everything)
+    top <- order(rowMeans(abs(everything)), decreasing=TRUE)[1:50]
+    topFC <- everything[top,,drop=FALSE]
+    dimnames(topFC) <- list(gene=rownames(topFC), contrast=colnames(topFC))
+    dfFC <- reshape2::melt(topFC)
+    ggplot(dfFC, aes(contrast, gene)) + geom_raster(aes(fill = value))
+}
+```
+
+We test this out as shown below, setting `customSendAll=TRUE` to pass both the active and saved arguments to each custom panel.
+Note that each saved selection will be the same as the active selection when the former is first generated, hence the log-fold changes of zero.
+
+```{r}
+cdp2 <- customDataPlotDefaults(sce, 1)
+cdp2$Function <- "CUSTOM_HEAT"
+cdp2$Arguments <- "assay logcounts"
+cdp2$ColumnSource <- "Reduced dimension plot 1"
+cdp2$RowSource <- "Row data plot 1"
+
+cst2 <- customStatTableDefaults(sce, 1)
+cst2$Function <- "CUSTOM_DIFFEXP"
+cst2$Arguments <- "assay logcounts"
+cst2$ColumnSource <- "Reduced dimension plot 1"
+cst2$RowSource <- "Row data plot 1"
+
+app <- iSEE(
+    sce, redDimArgs=reddim, rowDataArgs=rowdat, customDataArgs=cdp2, customStatArgs=cst2,
+    initialPanels=DataFrame(
+        Name=c(
+            "Reduced dimension plot 1", "Row data plot 1",
+            "Custom data plot 1", "Custom statistics table 1"),
+        Width=c(4, 4, 4, 12)),
+    customDataFun=list(CUSTOM_HEAT=CUSTOM_HEAT),
+    customStatFun=list(CUSTOM_DIFFEXP=CUSTOM_DIFFEXP),
+    customSendAll=TRUE
     )
 ```
 

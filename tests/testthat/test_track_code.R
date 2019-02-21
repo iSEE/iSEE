@@ -88,7 +88,7 @@ test_that("reporting order is correctly reported", {
     }
 })
 
-# .track_it_all ----
+# .track_it_all / .track_selection_code ----
 
 test_that("code trackers run correctly for plots", {
     # Adding a custom plot panel for coverage.
@@ -139,22 +139,21 @@ test_that("code trackers run correctly for plots", {
     expect_true(any(grepl("ggplot", out)))
 
     # Tracking selections only - this ignores all panels as there are no brushes defined.
-    out <- iSEE:::.track_selections_only(active_panels, pObjects, "sce", "")
+    out <- iSEE:::.track_selection_code(active_panels, pObjects)
     for (panelname in panelnames) {
         expect_false(any(grepl(panelname, out)))
     }
 
     # Adding a brush to featAssayPlot1, such that we get it back.
     pObjects$memory$featAssayPlot[1, iSEE:::.brushData] <- list("this is a mock brush")
-    out <- iSEE:::.track_selections_only(active_panels, pObjects, "sce", "")
-    expect_true(any(grepl("Feature assay plot 1", out)))
+    out <- iSEE:::.track_selection_code(active_panels, pObjects)
+    expect_true(any(grepl("featAssayPlot1", out)))
 
-    # Adding a brush to redDimPlot, which also gives us the two column data plots.
+    # Adding a brush to redDimPlot, which also gives us the feature assay plot above.
     pObjects$memory$redDimPlot[1, iSEE:::.brushData] <- list("this is a mock brush")
-    out <- iSEE:::.track_selections_only(active_panels, pObjects, "sce", "")
-    expect_true(any(grepl("Reduced dimension plot 1", out)))
-    expect_true(any(grepl("Column data plot 1", out)))
-    expect_true(any(grepl("Column data plot 2", out)))
+    out <- iSEE:::.track_selection_code(active_panels, pObjects)
+    expect_true(any(grepl("redDimPlot1", out)))
+    expect_true(any(grepl("featAssayPlot1", out)))
 })
 
 # .track_selection_code ----

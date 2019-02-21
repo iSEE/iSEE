@@ -308,15 +308,34 @@ test_that("selections involving custom panels work correctly", {
 # .transmitted_selection ----
 
 test_that(".transmitted_selection detects whether a brush is active", {
+    
+    select_type <- "Active"
 
     # No point selection
     memory$redDimPlot[[iSEE:::.brushData]][1] <- list(NULL)
-    out <- iSEE:::.transmitted_selection("redDimPlot1", memory, select_type = "Active", encoded = TRUE)
-    expect_identical(out, FALSE)
+    out <- iSEE:::.transmitted_selection("redDimPlot1", memory, select_type, encoded=TRUE)
+    expect_false(out, FALSE)
 
     # Active point selection (non-empty brush or lasso)
     memory$redDimPlot[[iSEE:::.brushData]][[1]] <- list(a=1, b=2)
-    out <- iSEE:::.transmitted_selection("redDimPlot1", memory, "Active", encoded = TRUE)
-    expect_identical(out, TRUE)
+    out <- iSEE:::.transmitted_selection("redDimPlot1", memory, select_type, encoded=TRUE)
+    expect_true(out)
+    
+    # Panel linked to no transmitter (---)
+    out <- .transmitted_selection("---", memory, select_type, encoded=TRUE)
+    expect_false(out)
+    
+    # missing "select_type" argument requires to "SelectMultiSaved"
+    memory$colDataPlot[2, "SelectMultiType"] <- iSEE:::.selectMultiUnionTitle
+    # Add a saved selection
+    memory$redDimPlot[[iSEE:::.multiSelectHistory]][[1]] <- list(list(a=1, b=2))
+    out <- .transmitted_selection("Reduced dimension plot 1", memory, mode="colDataPlot", id=2, encoded=FALSE)
+    expect_true(out)
+    
+    # "select_type" argument "Saved"
+    memory$colDataPlot[2, "SelectMultiType"] <- iSEE:::.selectMultiSavedTitle
+    memory$colDataPlot[2, iSEE:::.selectMultiSaved] <- 1L
+    out <- .transmitted_selection("redDimPlot1", memory, mode="colDataPlot", id=2, encoded=TRUE)
+    expect_true(out)
 
 })

@@ -189,7 +189,6 @@ test_that("selection source destruction works correctly", {
 })
 
 test_that("select dependent identification works correctly", {
-    # Setting up a hierarchy.
     redDimArgs[1,iSEE:::.selectByPlot] <- "---"
     featAssayArgs[1,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
     featAssayArgs[2,iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
@@ -197,7 +196,6 @@ test_that("select dependent identification works correctly", {
     colDataArgs[2,iSEE:::.selectByPlot] <- "Feature assay plot 2"
     featAssayArgs[3,iSEE:::.selectByPlot] <- "Column data plot 1"
 
-    # No restriction in the children.
     memory <- list(
         redDimPlot=redDimArgs,
         colDataPlot=colDataArgs,
@@ -210,59 +208,12 @@ test_that("select dependent identification works correctly", {
         customStatTable=customStatArgs,
         heatMapPlot=heatMapArgs)
     g <- iSEE:::.spawn_selection_chart(memory)
-    expect_identical(iSEE:::.get_selection_dependents(g, "redDimPlot1", memory),
+
+    expect_identical(iSEE:::.get_direct_children(g, "redDimPlot1"),
         c("featAssayPlot1", "featAssayPlot2"))
-
-    # Restriction in one of the children, and not the other.
-    featAssayArgs[1,iSEE:::.selectEffect] <- iSEE:::.selectRestrictTitle
-    memory <- list(
-        redDimPlot=redDimArgs,
-        colDataPlot=colDataArgs,
-        featAssayPlot=featAssayArgs,
-        rowStatTable=rowStatArgs,
-        rowDataPlot=rowDataArgs,
-        sampAssayPlot=sampAssayArgs,
-        colStatTable=colStatArgs,
-        customDataPlot=customDataArgs,
-        customStatTable=customStatArgs,
-        heatMapPlot=heatMapArgs)
-    g <- iSEE:::.spawn_selection_chart(memory)
-    expect_identical(iSEE:::.get_selection_dependents(g, "redDimPlot1", memory),
-        c("featAssayPlot1", "featAssayPlot2", "colDataPlot1"))
-
-    # Restriction in the grandchildren.
-    colDataArgs[1,iSEE:::.selectEffect] <- iSEE:::.selectRestrictTitle
-    memory <- list(
-        redDimPlot=redDimArgs,
-        colDataPlot=colDataArgs,
-        featAssayPlot=featAssayArgs,
-        rowStatTable=rowStatArgs,
-        rowDataPlot=rowDataArgs,
-        sampAssayPlot=sampAssayArgs,
-        colStatTable=colStatArgs,
-        customDataPlot=customDataArgs,
-        customStatTable=customStatArgs,
-        heatMapPlot=heatMapArgs)
-    g <- iSEE:::.spawn_selection_chart(memory)
-    expect_identical(iSEE:::.get_selection_dependents(g, "redDimPlot1", memory),
-        c("featAssayPlot1", "featAssayPlot2", "colDataPlot1", "featAssayPlot3"))
-
-    # Breaking the chain if we turn off restriction in the child.
-    featAssayArgs[1,iSEE:::.selectEffect] <- iSEE:::.selectColorTitle
-    memory <- list(
-        redDimPlot=redDimArgs,
-        colDataPlot=colDataArgs,
-        featAssayPlot=featAssayArgs,
-        rowStatTable=rowStatArgs,
-        rowDataPlot=rowDataArgs,
-        sampAssayPlot=sampAssayArgs,
-        colStatTable=colStatArgs,
-        customDataPlot=customDataArgs,
-        customStatTable=customStatArgs,
-        heatMapPlot=heatMapArgs)
-    g <- iSEE:::.spawn_selection_chart(memory)
-    expect_identical(iSEE:::.get_selection_dependents(g, "redDimPlot1", memory),
-        c("featAssayPlot1", "featAssayPlot2"))
+    expect_identical(iSEE:::.get_direct_children(g, "featAssayPlot1"), "colDataPlot1")
+    expect_identical(iSEE:::.get_direct_children(g, "colDataPlot1"), "featAssayPlot3")
+    expect_identical(iSEE:::.get_direct_children(g, "colDataPlot2"), character(0))
 })
 
 test_that("brush identity function works properly", {
@@ -335,10 +286,10 @@ test_that("selections involving custom panels work correctly", {
     expect_identical(names(igraph::neighbors(g, "customStatTable1", mode="out")), character(0))
 
     # Detection of children works properly.
-    expect_identical(sort(iSEE:::.get_selection_dependents(g, "redDimPlot1", memory)), c("colDataPlot2", "customDataPlot1"))
-    expect_identical(iSEE:::.get_selection_dependents(g, "customDataPlot1", memory), character(0))
-    expect_identical(sort(iSEE:::.get_selection_dependents(g, "sampAssayPlot2", memory)), "customStatTable1")
-    expect_identical(iSEE:::.get_selection_dependents(g, "customStatTable1", memory), character(0))
+    expect_identical(sort(iSEE:::.get_direct_children(g, "redDimPlot1")), c("colDataPlot2", "customDataPlot1"))
+    expect_identical(iSEE:::.get_direct_children(g, "customDataPlot1"), character(0))
+    expect_identical(sort(iSEE:::.get_direct_children(g, "sampAssayPlot2")), "customStatTable1")
+    expect_identical(iSEE:::.get_direct_children(g, "customStatTable1"), character(0))
 
     # Destruction works correctly.
     pObjects <- new.env()
@@ -360,12 +311,12 @@ test_that(".transmitted_selection detects whether a brush is active", {
 
     # No point selection
     memory$redDimPlot[[iSEE:::.brushData]][1] <- list(NULL)
-    out <- .transmitted_selection("redDimPlot1", memory, select_type = "Active", encoded = TRUE)
+    out <- iSEE:::.transmitted_selection("redDimPlot1", memory, select_type = "Active", encoded = TRUE)
     expect_identical(out, FALSE)
 
     # Active point selection (non-empty brush or lasso)
     memory$redDimPlot[[iSEE:::.brushData]][[1]] <- list(a=1, b=2)
-    out <- .transmitted_selection("redDimPlot1", memory, "Active", encoded = TRUE)
+    out <- iSEE:::.transmitted_selection("redDimPlot1", memory, "Active", encoded = TRUE)
     expect_identical(out, TRUE)
 
 })

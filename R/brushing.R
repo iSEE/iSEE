@@ -185,51 +185,25 @@
 #'
 #' @param graph A graph object with encoded panel names as the vertices, see \code{\link{.spawn_selection_chart}}.
 #' @param panel A string containing the encoded name of the current transmitting panel.
-#' @param memory A list of DataFrames containing parameters for each panel of each type.
 #'
 #' @return A character vector of encoded names for all panels that need to be updated.
 #'
 #' @details
-#' Upon changes to the point selection informatin in a transmitting panel \code{panel}, all other panels that receive that information need to be updated.
-#' This function identifies the set of child panels that require updates.
-#' 
-#' Note that this includes indirect descendents if the selection effect is \code{"Restrict"} in any of the child panels.
-#' This is because the point selection in \code{panel} will change the selected subset of points in the children, which will then change the grandchildren, and so on.
-#' We recurse throughout the graph until all paths terminate or encounter panels in which the mode is not \code{"Restrict"}.
+#' Upon changes to a transmitting panel \code{panel}, all other panels that receive the point selection information from \code{panel} may need to be updated.
+#' This function identifies the set of children of \code{panel} that potentially require updates.
+#' Whether they \emph{actually} need updates depends on the nature of the changes in \code{panel}, which will be context-specific. 
+#'
+#' Note that this only refers to direct children.
+#' If the selection effect is \code{"Restrict"} in any of the child panels, their children (i.e., the grandchildren of \code{panel}) would also need updating, and so on.
+#' This is achieved via a set of observers to reactive values in \code{\link{iSEE}} that allow such recursion to occur naturally.
 #'
 #' @author Aaron Lun
-#' @rdname INTERNAL_get_selection_dependents
+#' @rdname INTERNAL_get_direct_children
 #' @seealso
 #' \code{\link{.spawn_selection_chart}}
 #' \code{\link{iSEE}}
 #' 
 #' @importFrom igraph adjacent_vertices
-.get_selection_dependents <- function(graph, panel, memory)
-{
-    children <- names(adjacent_vertices(graph, panel, mode="out")[[1]])
-    children <- setdiff(children, panel) # self-updates are handled elsewhere.
-
-    old_children <- children
-    while (length(children)) {
-        enc <- .split_encoded(children)
-        types <- enc$Type
-        ids <- enc$ID
-
-        # Avoiding panels that don't have a selection effect or don't transmit.
-        endpoints <- types %in% c(linked_table_types, custom_panel_types, "heatMapPlot") 
-        new_children <- character(0)
-        for (i in which(!endpoints)) { 
-            if (memory[[types[i]]][ids[i],.selectEffect]==.selectRestrictTitle) {
-                new_children <- c(new_children, names(adjacent_vertices(graph, children[i], mode="out")[[1]]))
-            }
-        }
-
-        old_children <- c(old_children, new_children)
-        children <- new_children
-    }
-    return(old_children)
-}
-
 .get_direct_children <- function(graph, panel)
 {
     children <- names(adjacent_vertices(graph, panel, mode="out")[[1]])

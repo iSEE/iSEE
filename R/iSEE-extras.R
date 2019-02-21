@@ -983,7 +983,7 @@ and Federico Marini (%s).",
 #'
 #' @importFrom shinyjs disable enable
 #' @importFrom shiny updateActionButton
-.disableButtonIf <- function(id, condition, inactiveLabel, activeLabel, session) {
+.disableButtonIf <- function(id, condition, inactiveLabel, activeLabel, session) { # nocov start
     if (condition) {
         disable(id)
         updateActionButton(session, id, inactiveLabel)
@@ -992,4 +992,4 @@ and Federico Marini (%s).",
         updateActionButton(session, id, activeLabel)
     }
     invisible(NULL)
-}
+} # nocov end

@@ -1336,9 +1336,9 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 deparse(col_choice)),
             sprintf(
                 "geom_point(aes(x=%s, y=%s), data=subset(plot.data, ColorBy == 'TRUE'), col=%s, alpha=1%s) +",
-                x_aes, y_aes, deparse(col_choice), 
+                x_aes, y_aes, deparse(col_choice),
                 ifelse(param_choices[[.sizeByField]] == .sizeByNothingTitle,
-                       paste0(", size=5*", param_choices[[.plotPointSize]]), 
+                       paste0(", size=5*", param_choices[[.plotPointSize]]),
                        ""))
         )
     }
@@ -1370,7 +1370,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 deparse(col_choice)),
             sprintf(
                 "geom_point(aes(x=%s, y=%s), data=subset(plot.data, ColorBy == 'TRUE'), col=%s, alpha=1%s) +",
-                x_aes, y_aes, deparse(col_choice), 
+                x_aes, y_aes, deparse(col_choice),
                 ifelse(param_choices[[.sizeByField]] == .sizeByNothingTitle,
                        paste0(", size=5*", param_choices[[.plotPointSize]]),
                        ""))
@@ -1535,12 +1535,12 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' @importFrom SummarizedExperiment assay
 .define_sizeby_for_column_plot <- function(param_choices, se) {
     size_choice <- param_choices[[.sizeByField]]
-    
+
     if (size_choice==.sizeByColDataTitle) {
         covariate_name <- param_choices[[.sizeByColData]]
         return(list(label=covariate_name,
                     cmds=sprintf("plot.data$SizeBy <- colData(se)[,%s];", deparse(covariate_name))))
-        
+
     } else {
         return(NULL)
     }
@@ -1549,12 +1549,12 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' @rdname INTERNAL_define_size_variables
 .define_sizeby_for_row_plot <- function(param_choices, se) {
     size_choice <- param_choices[[.sizeByField]]
-    
+
     if (size_choice==.sizeByRowDataTitle) {
         covariate_name <- param_choices[[.sizeByRowData]]
         return(list(label=covariate_name,
                     cmds=sprintf("plot.data$SizeBy <- rowData(se)[,%s];", deparse(covariate_name))))
-        
+
     } else {
         return(NULL)
     }
@@ -1654,7 +1654,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 brush_src <- lasso_src <- sprintf("all_select_histories[['%s']][[%i]]", transmitter, i)
 
                 # TODO: get rid of some of these checks once UI uses selectInput for .selectMultiSaved.
-                use_brush <- !is.null(brush_val) && !is.na(brush_val) && !.is_lasso(brush_val) 
+                use_brush <- !is.null(brush_val) && !is.na(brush_val) && !.is_lasso(brush_val)
                 use_lasso <- !is.null(lasso_val) && !is.na(lasso_val) && .is_lasso(lasso_val)
             }
 
@@ -1696,7 +1696,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' @param envir An environment produced by \code{\link{.extract_plotting_data}}.
 #'
 #' @details
-#' This function provides a convenient wrapper to add Shiny brush and lasso objects from any panel to the evaluation environment. 
+#' This function provides a convenient wrapper to add Shiny brush and lasso objects from any panel to the evaluation environment.
 #' These are needed for certain commands to be executed (see the \dQuote{See also} section below).
 #'
 #' @return \code{all_brushes}, \code{all_lassos} and \code{all_select_histories} are added to \code{envir} using pass-by-reference behaviour of environments.
@@ -1772,8 +1772,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     } else {
         default_color <- sprintf(", color='%s'", param_choices[[.colorByDefaultColor]])
     }
-    
-    ## If there is already size information available in the aes, don't add an 
+
+    ## If there is already size information available in the aes, don't add an
     ## additional size=statement to the geom_point() command.
     if (size) {
         common_size <- ""
@@ -2148,7 +2148,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' @seealso
 #' \code{\link{.create_plot}}
 #'
-#' @importFrom ggplot2 geom_rect
+#' @importFrom ggplot2 geom_rect geom_text
 .self_brush_box <- function(param_choices, flip=FALSE) {
     active <- param_choices[,.brushData][[1]]
     saved <- param_choices[,.multiSelectHistory][[1]]
@@ -2187,8 +2187,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     # Build up the aesthetics call
     aes_call <- sprintf("xmin = %s, xmax = %s, ymin = %s, ymax = %s", xmin, xmax, ymin, ymax)
 
-    cmds <- character(0) 
-    for (i in seq_len(total) - !is.null(active)) { 
+    cmds <- character(0)
+    for (i in seq_len(total) - !is.null(active)) {
         if (i==0L) {
             brush_src <- sprintf("all_brushes[['%s']]", plot_name)
         } else {
@@ -2197,7 +2197,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 
         # Initialize the minimal brush information
         brush_data <- sprintf("%s[c('xmin', 'xmax', 'ymin', 'ymax')]", brush_src)
-    
+
         # Collect additional panel information for the brush
         addPanels <- c()
         if (param_choices[[.facetByRow]]) {
@@ -2206,7 +2206,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
         if (param_choices[[.facetByColumn]]) {
             addPanels["FacetColumn"] <- sprintf("FacetColumn = %s[['%s']]", brush_src, facetcolumn)
         }
-    
+
         # If any facting (row, column) is active, add the relevant data fields
         if (length(addPanels)) {
             panel_list <- sprintf("list(%s)", paste(addPanels, collapse = ", "))
@@ -2299,7 +2299,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 
     cmds <- character(0)
     firstClosed <- TRUE
-    for (i in seq_len(total) - !is.null(active)) { 
+    for (i in seq_len(total) - !is.null(active)) {
         if (i==0L) {
             lasso_src <- sprintf("all_lassos[['%s']]", plot_name)
             current <- active
@@ -2308,7 +2308,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
             lasso_src <- sprintf("all_select_histories[['%s']][[%i]]", plot_name, chosen)
             current <- saved[[chosen]]
         }
-        
+
         # Initialize the minimal lasso information
         lasso_data <- sprintf("X = %s$coord[,1], Y = %s$coord[,2]", lasso_src, lasso_src)
 
@@ -2320,13 +2320,13 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
         if (param_choices[[.facetByColumn]]) {
             addPanels["FacetColumn"] <- sprintf("FacetColumn = %s[['%s']]", lasso_src, facetcolumn)
         }
-    
+
         # If any facting (row, column) is active, add the relevant data fields
         if (length(addPanels)) {
             panel_data <- paste(unlist(addPanels), collapse=", ")
             lasso_data <- paste(lasso_data, panel_data, sep=", ")
         }
-    
+
         if (identical(nrow(current$coord), 1L)) { # lasso has only a start point
             point_cmd <- sprintf(
 "geom_point(aes(x = %s, y = %s),
@@ -2343,48 +2343,48 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 current$mapping$x, current$mapping$y,
                 .brushFillOpacity, stroke_color,
                 lasso_data, fill_color)
-            
+
             # Put a number for saved lassos.
             if (i!=0L) {
                 text_data <- c(sprintf("X=mean(%s$coord[,1])", lasso_src),
     				sprintf("Y=mean(%s$coord[,2])", lasso_src),
     				addPanels)
-    
+
                 text_cmd <- sprintf(
 "geom_text(aes(x = %s, y=%s), inherit.aes=FALSE,
     data=data.frame(
-        %s), 
+        %s),
     label = %i, size = %s, colour = '%s')",
 	                current$mapping$x, current$mapping$y,
     				paste(text_data, collapse=",\n        "),
                     chosen, param_choices[[.plotFontSize]] * .plotFontSizeLegendTextDefault, stroke_color)
                 polygon_cmd <- c(polygon_cmd, text_cmd)
             }
-            
+
             scale_fill_cmd <- NULL
             guides_cmd <- NULL
-            
+
             if (firstClosed) {
                 # Commands to put only once
                 scale_fill_cmd <- sprintf(
                     "scale_fill_manual(values = c('TRUE' = '%s', 'FALSE' = '%s'), labels = NULL)",
                     stroke_color, fill_color)
-                
+
                 if (param_choices[[.shapeByField]] == .shapeByNothingTitle) {
                     guides_cmd <- "guides(shape = 'none')"
                 }
                 firstClosed <- FALSE
             }
-            
+
             full_cmd_list <- c(polygon_cmd, scale_fill_cmd, guides_cmd)
-    
+
         } else { # lasso is still open
             path_cmd <- sprintf(
 "geom_path(aes(x = %s, y = %s),
     data=data.frame(%s),
     inherit.aes=FALSE, alpha=1, color='%s', linetype = 'longdash')",
                 current$mapping$x, current$mapping$y, lasso_data, stroke_color)
-    
+
             # Do not control the shape of waypoints if shape is already being mapped to a covariate
             if (param_choices[[.shapeByField]] == .shapeByNothingTitle) {
                 point_cmd <- sprintf(
@@ -2394,12 +2394,12 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     inherit.aes=FALSE, alpha=1, stroke = 1, color = '%s')",
                     current$mapping$x, current$mapping$y,
                     lasso_data, lasso_src, stroke_color)
-    
+
                 scale_shape_cmd <- sprintf(
                     "scale_shape_manual(values = c('TRUE' = %s, 'FALSE' = %s))",
                     .lassoStartShape, .lassoWaypointShape
                 )
-    
+
                 guides_cmd <- "guides(shape = 'none')"
             } else {
                 point_cmd <- sprintf(
@@ -2409,18 +2409,18 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     inherit.aes=FALSE, alpha=1, stroke = 1, shape = %s, color = '%s')",
                     current$mapping$x, current$mapping$y,
                     lasso_data, lasso_src, .lassoStartShape, stroke_color)
-    
+
                 scale_shape_cmd <- sprintf(
                     "scale_size_manual(values = c('TRUE' = %s, 'FALSE' = %s))",
                     .lassoStartSize, .lassoWaypointSize
                 )
-    
+
                 guides_cmd <- "guides(size = 'none')"
             }
-    
+
             full_cmd_list <- c(path_cmd, point_cmd, scale_shape_cmd, guides_cmd)
         }
-            
+
         cmds <- c(cmds, full_cmd_list)
     }
 

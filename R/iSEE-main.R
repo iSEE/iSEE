@@ -1280,11 +1280,14 @@ iSEE <- function(se,
                         # Updating children.
                         rObjects[[resaved_field]] <- .increment_counter(isolate(rObjects[[resaved_field]]))
 
-                        .updateSelectionHistoryDeleteButton(del_field, pObjects$memory[[mode0]][,.multiSelectHistory][[id0]], session)
+                        .disableButtonIf(
+                            del_field,
+                            identical(length(pObjects$memory[[mode0]][,.multiSelectHistory][[id0]]), 0L),
+                            .buttonEmptyHistoryLabel, .buttonDeleteLabel, session)
                     })
 
                     ## Deleted selection observer. ---
-                    observeEvent(input[[del_field]], ignoreNULL = FALSE, {
+                    observeEvent(input[[del_field]], {
                         current <- pObjects$memory[[mode0]][,.multiSelectHistory][[id0]]
                         current <- head(current, -1)
                         pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .multiSelectHistory, current)
@@ -1306,7 +1309,10 @@ iSEE <- function(se,
                         # Updating children.
                         rObjects[[resaved_field]] <- .increment_counter(isolate(rObjects[[resaved_field]]))
 
-                        .updateSelectionHistoryDeleteButton(del_field, pObjects$memory[[mode0]][,.multiSelectHistory][[id0]], session)
+                        .disableButtonIf(
+                            del_field,
+                            identical(length(pObjects$memory[[mode0]][,.multiSelectHistory][[id0]]), 0L),
+                            .buttonEmptyHistoryLabel, .buttonDeleteLabel, session)
                     })
                 })
             }

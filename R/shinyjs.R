@@ -28,16 +28,3 @@
     }
     invisible(NULL)
 }
-
-
-#' @author Kevin Rue-Albrecht
-#' @rdname INTERNAL_disableButtonIf
-#'
-#' @param value Content of the selection history.
-.updateSelectionHistoryDeleteButton <- function(id, value, session) {
-    .disableButtonIf(
-        id=id,
-        condition=identical(length(value), 0L),
-        inactiveLabel=.buttonEmptyHistoryLabel, activeLabel=.buttonDeleteLabel, session)
-}
-# nocov end

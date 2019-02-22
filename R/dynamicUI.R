@@ -1137,10 +1137,19 @@
 #' \code{\link{.panel_generation}}
 #'
 #' @importFrom shiny sliderInput radioButtons selectInput actionButton hr strong br
+#' @importFrom shinyjs disabled
 #' @importFrom colourpicker colourInput
 .create_selection_param_box <- function(mode, id, param_choices, selectable, source_type=c("row", "column")) {
     select_effect <- paste0(mode, id, "_", .selectEffect)
     source_type <- match.arg(source_type)
+
+    # initialize active "Delete" button only if a preconfigured selection history exists
+    startFUN <- identity
+    startDeleteButtonLabel <- .buttonDeleteLabel
+    if (identical(length(param_choices[[.multiSelectHistory]][[id]]), 0L)) {
+        startFUN <- disabled
+        startDeleteButtonLabel <- .buttonEmptyHistoryLabel
+    }
 
     .define_selection_param_box(
         mode, id, param_choices,
@@ -1167,7 +1176,7 @@
         strong("Manage multiple selections:"),
         br(),
         actionButton(paste0(mode, id, "_", .multiSelectSave), label="Save"),
-        actionButton(paste0(mode, id, "_", .multiSelectDelete), label="Delete")
+        startFUN(actionButton(paste0(mode, id, "_", .multiSelectDelete), label=startDeleteButtonLabel))
     )
 }
 

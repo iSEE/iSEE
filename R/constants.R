@@ -181,7 +181,7 @@
 # Button parameters ----
 .buttonUpToDateLabel <- "Up to date"
 .buttonUpdateLabel <- "Update"
-.buttonEmptyHistoryLabel <- "Empty history"
+.buttonEmptyHistoryLabel <- "No history"
 .buttonDeleteLabel <- "Delete"
 
 # Other plot parameters. ----

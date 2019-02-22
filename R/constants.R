@@ -181,6 +181,8 @@
 # Button parameters ----
 .buttonUpToDateLabel <- "Up to date"
 .buttonUpdateLabel <- "Update"
+.buttonEmptyHistoryLabel <- "Empty history"
+.buttonDeleteLabel <- "Delete"
 
 # Other plot parameters. ----
 .dataParamBoxOpen <- "DataBoxOpen"

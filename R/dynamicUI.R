@@ -645,7 +645,7 @@
             hr(), .add_facet_UI_elements_for_column_plots(mode, id, param_choices, discrete_covariates)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoicePointTitle,
-            hr(), 
+            hr(),
             radioButtons(
                 sizeby_field, label="Size by:", inline=TRUE,
                 choices=.define_size_options_for_column_plots(se),
@@ -754,13 +754,13 @@
 #' @rdname INTERNAL_define_size_options
 .define_size_options_for_column_plots <- function(se) {
     size_choices <- .sizeByNothingTitle
-    
+
     col_numeric <- .get_internal_info(se, "column_numeric")
-    
+
     if (length(col_numeric)) {
         size_choices <- c(size_choices, .sizeByColDataTitle)
     }
-    
+
     return(size_choices)
 }
 
@@ -910,7 +910,7 @@
             hr(), .add_facet_UI_elements_for_row_plots(mode, id, param_choices, discrete_covariates)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoicePointTitle,
-            hr(), 
+            hr(),
             radioButtons(
                 sizeby_field, label="Size by:", inline=TRUE,
                 choices=.define_size_options_for_row_plots(se),
@@ -968,13 +968,13 @@
 #' @rdname INTERNAL_define_size_options
 .define_size_options_for_row_plots <- function(se) {
     size_choices <- .sizeByNothingTitle
-    
+
     row_numeric <- .get_internal_info(se, "row_numeric")
-    
+
     if (length(row_numeric)) {
         size_choices <- c(size_choices, .sizeByRowDataTitle)
     }
-    
+
     return(size_choices)
 }
 
@@ -1115,7 +1115,6 @@
 #' @param source_type Type of the panel that is source of the selection. Either \code{"row"} or \code{"column"}.
 #' @param ... Additional arguments passed to \code{\link{collapseBox}}.
 #' @param field Column name in the DataFrame of parameters choices for the current plot.
-#' @param multi_select Logical scalar specifying whether 
 #'
 #' @return
 #' For \code{.create_selection_param_box} and \code{.create_selection_param_box_define_box},
@@ -1182,7 +1181,7 @@
 }
 
 #' @rdname INTERNAL_create_selection_param_box
-#' @importFrom shiny selectInput 
+#' @importFrom shiny selectInput
 .define_selection_transmitter <- function(mode, id, param_choices, field, selectable, source_type="row") {
     selectInput(
         paste0(mode, id, "_", field),
@@ -1207,7 +1206,7 @@
 
         .conditional_on_radio(
             select_multi_type, .selectMultiSavedTitle,
-            selectizeInput( 
+            selectizeInput(
                 paste0(mode, id, "_", .selectMultiSaved), label=NULL,
                 selected=NULL, choices=NULL, multiple=FALSE)
         )

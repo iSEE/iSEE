@@ -351,7 +351,7 @@ iSEE <- function(se,
                 # Reactive to trigger replotting.
                 rObjects[[paste0(mode, id)]] <- 1L
 
-                # Reactive to regenerate information panels.                    
+                # Reactive to regenerate information panels.
                 rObjects[[paste0(mode, id, "_", .panelLinkInfo)]] <- 1L
                 rObjects[[paste0(mode, id, "_", .panelGeneralInfo)]] <- 1L
 
@@ -816,8 +816,8 @@ iSEE <- function(se,
                             child_enc <- .split_encoded(child_plot)
                             child_mode <- child_enc$Type
                             child_id <- child_enc$ID
-                            
-                            # We have special rules for custom panel types, as these don't have .selectMultiType or .selectMultiSaved. 
+
+                            # We have special rules for custom panel types, as these don't have .selectMultiType or .selectMultiSaved.
                             if (child_mode %in% custom_panel_types) {
                                 if (has_active || (customSendAll && has_saved)) {
                                     rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
@@ -831,7 +831,7 @@ iSEE <- function(se,
                             select_mode <- pObjects$memory[[child_mode]][child_id, .selectMultiType]
                             if (select_mode==.selectMultiActiveTitle || select_mode==.selectMultiUnionTitle) {
                                 if (has_active) replot <- TRUE
-                            } 
+                            }
                             if (select_mode==.selectMultiSavedTitle && pObjects$memory[[child_mode]][child_id, .selectMultiSaved]!=0L) {
                                 if (has_saved) replot <- TRUE
                             }
@@ -845,15 +845,15 @@ iSEE <- function(se,
                                 # To warrant replotting of the grandchildren, the child must itself be restricted.
                                 if (child_mode %in% point_plot_types && pObjects$memory[[child_mode]][child_id, .selectEffect]==.selectRestrictTitle) {
                                     react_child <- paste0(child_mode, child_id, "_repopulated")
-                                    rObjects[[react_child]] <- .increment_counter(isolate(rObjects[[react_child]])) 
+                                    rObjects[[react_child]] <- .increment_counter(isolate(rObjects[[react_child]]))
                                 }
                             }
                         }
                     })
-                    
+
                     ## Observer for changes in the active selection in the current panel. ---
                     # We can't use the 'repopulated' observer above, because the point population in the current
-                    # panel hasn't changed if the active selection changes in that panel. Instead, we need to 
+                    # panel hasn't changed if the active selection changes in that panel. Instead, we need to
                     # manually implement the first generation of propagation.
                     act_field <- paste0(plot_name, "_reactivated")
                     observe({
@@ -869,16 +869,16 @@ iSEE <- function(se,
                             if (child_mode %in% custom_panel_types) {
                                 rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
                                 next
-                            } 
+                            }
 
                             select_mode <- pObjects$memory[[child_mode]][child_id, .selectMultiType]
                             if (select_mode==.selectMultiActiveTitle || select_mode==.selectMultiUnionTitle) {
                                 rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
 
-                                # To warrant replotting of the grandchildren, the child must itself be restricted.                                    
+                                # To warrant replotting of the grandchildren, the child must itself be restricted.
                                 if (child_mode %in% point_plot_types && pObjects$memory[[child_mode]][child_id, .selectEffect]==.selectRestrictTitle) {
                                     react_child <- paste0(child_mode, child_id, "_repopulated")
-                                    rObjects[[react_child]] <- .increment_counter(isolate(rObjects[[react_child]])) 
+                                    rObjects[[react_child]] <- .increment_counter(isolate(rObjects[[react_child]]))
                                 }
                             }
                         }
@@ -904,7 +904,7 @@ iSEE <- function(se,
                                     rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
                                 }
                                 next
-                            } 
+                            }
 
                             reset <- pObjects$memory[[child_mode]][child_id, .selectMultiSaved] > Nsaved
                             if (reset) {
@@ -925,7 +925,7 @@ iSEE <- function(se,
                             child_saved <- paste0(child_plot, "_", .selectMultiSaved)
                             rObjects[[child_saved]] <- .increment_counter(isolate(rObjects[[child_saved]]))
                         }
-                    }) 
+                    })
                 })
             }
         }
@@ -955,11 +955,11 @@ iSEE <- function(se,
 
                         # Skipping if neither the old or new types were relevant.
                         transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
-                        no_old_selection <- !.transmitted_selection(transmitter, pObjects$memory, select_type=old_type, mode=mode0, id=id0, encoded=FALSE) 
+                        no_old_selection <- !.transmitted_selection(transmitter, pObjects$memory, select_type=old_type, mode=mode0, id=id0, encoded=FALSE)
                         no_new_selection <- !.transmitted_selection(transmitter, pObjects$memory, mode=mode0, id=id0, encoded=FALSE)
                         if (no_old_selection && no_new_selection) {
                             return(NULL)
-                        } 
+                        }
 
                         rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
                         if (pObjects$memory[[mode0]][id0, .selectEffect]==.selectRestrictTitle) {
@@ -1035,10 +1035,10 @@ iSEE <- function(se,
                     observeEvent(input[[click_field]], {
                         # Hack to resolve https://github.com/rstudio/shiny/issues/947.
                         # By luck, the triggering of the click field seems to be delayed enough
-                        # that input data is sent to the brush field first. Thus, we can 
-                        # check the brush field for a non-NULL value avoid action if 
-                        # the user had brushed rather than clicked. A separate click should 
-                        # continue past this point, as any Shiny brush would be wiped upon 
+                        # that input data is sent to the brush field first. Thus, we can
+                        # check the brush field for a non-NULL value avoid action if
+                        # the user had brushed rather than clicked. A separate click should
+                        # continue past this point, as any Shiny brush would be wiped upon
                         # replotting and thus would not have any value in the input.
                         if (!is.null(input[[brush_field]])) {
                             return(NULL)
@@ -1060,7 +1060,7 @@ iSEE <- function(se,
                             } else {
                                 new_lasso <- .update_lasso(input[[click_field]], prev_lasso)
                             }
-                                
+
                             pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .lassoData, new_lasso)
                         }
 
@@ -1095,15 +1095,15 @@ iSEE <- function(se,
                         # Zooming destroys all active brushes or lassos.
                         pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .lassoData, NULL)
                         pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .brushData, NULL)
-    
+
                         new_coords <- NULL
                         if (!is.null(existing_brush)) {
                             dblclick_vals <- input[[dblclick_field]]
-                            if (dblclick_vals$x >= existing_brush$xmin 
-                                    && dblclick_vals$x <= existing_brush$xmax 
-                                    && dblclick_vals$y >= existing_brush$ymin 
+                            if (dblclick_vals$x >= existing_brush$xmin
+                                    && dblclick_vals$x <= existing_brush$xmax
+                                    && dblclick_vals$y >= existing_brush$ymin
                                     && dblclick_vals$y <= existing_brush$ymax) {
-                                
+
                                 # Panels are either NULL or not.
                                 if (identical(dblclick_vals$panelvar1, existing_brush$panelvar1)
                                         && identical(dblclick_vals$panelvar2, existing_brush$panelvar2)) {
@@ -1279,10 +1279,12 @@ iSEE <- function(se,
 
                         # Updating children.
                         rObjects[[resaved_field]] <- .increment_counter(isolate(rObjects[[resaved_field]]))
+
+                        .updateSelectionHistoryDeleteButton(del_field, pObjects$memory[[mode0]][,.multiSelectHistory][[id0]], session)
                     })
-                    
+
                     ## Deleted selection observer. ---
-                    observeEvent(input[[del_field]], {
+                    observeEvent(input[[del_field]], ignoreNULL = FALSE, {
                         current <- pObjects$memory[[mode0]][,.multiSelectHistory][[id0]]
                         current <- head(current, -1)
                         pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .multiSelectHistory, current)
@@ -1303,6 +1305,8 @@ iSEE <- function(se,
 
                         # Updating children.
                         rObjects[[resaved_field]] <- .increment_counter(isolate(rObjects[[resaved_field]]))
+
+                        .updateSelectionHistoryDeleteButton(del_field, pObjects$memory[[mode0]][,.multiSelectHistory][[id0]], session)
                     })
                 })
             }
@@ -1338,7 +1342,7 @@ iSEE <- function(se,
             } else {
                 nonfundamental <- c(.colorByColData, .colorByFeatNameAssay, .shapeByField, .shapeByColData, .sizeByField, .sizeByColData, .colorBySampNameColor)
             }
-            nonfundamental <- c(nonfundamental, 
+            nonfundamental <- c(nonfundamental,
                 .colorByDefaultColor, .selectColor, .selectTransAlpha,
                 .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition,
                 .plotPointDownsample, .plotPointSampleRes, .contourAddTitle,
@@ -1487,12 +1491,12 @@ iSEE <- function(se,
                         if (!is.null(selected$active)) {
                             n_selected <- sum(selected$active)
                             n_total <- length(selected$active)
-                            all_output <- append(all_output, 
+                            all_output <- append(all_output,
                                 list(
                                     sprintf(
                                         "%i of %i points in active selection (%.1f%%)",
                                         n_selected, n_total, 100*n_selected/n_total
-                                    ), 
+                                    ),
                                     br()
                                 )
                             )
@@ -1501,7 +1505,7 @@ iSEE <- function(se,
                         for (i in seq_along(selected$saved)) {
                             n_selected <- sum(selected$saved[[i]])
                             n_total <- length(selected$saved[[i]])
-                            all_output <- append(all_output, 
+                            all_output <- append(all_output,
                                 list(
                                     sprintf(
                                         "%i of %i points in saved selection %i (%.1f%%)",
@@ -1770,7 +1774,7 @@ iSEE <- function(se,
                             }
 
                             # Not recreating panels if there were no selection in either the new or old transmitters.
-                            # We use "Union" here to trigger replotting if customSendAll=TRUE as custom plots will 
+                            # We use "Union" here to trigger replotting if customSendAll=TRUE as custom plots will
                             # receive everything from their upstream transmitters. Otherwise, if customSendAll=TRUE,
                             # we only respond to the active selection in the upstream transmitter.
                             select_type <- if (customSendAll) .selectMultiUnionTitle else .selectMultiActiveTitle

@@ -255,11 +255,10 @@
         # Updating the selection, based on the currently selected row.
         if (tab!=.noSelection) {
             enc <- .encode_panel_name(tab)
-            new_selected <- pObjects$memory[[enc$Type]][enc$ID,.rowStatSelected]
+            new_selected <- pObjects$memory[[enc$Type]][enc$ID, .rowStatSelected]
             old_selected <- pObjects$memory[[mode]][id, select_field]
-            if (new_selected != old_selected && !is.null(session)) { # session=NULL used for testing the rest of the function.
-                updateSelectizeInput(session, paste0(prefix, select_field), label = NULL,
-                        choices = select_choices, server = TRUE, selected = new_selected)
+            if (new_selected != old_selected && !is.null(session)) { # we use session=NULL only for unit testing the rest of the function.
+                updateSelectizeInput(session, paste0(prefix, select_field), label = NULL, choices = select_choices, server = TRUE, selected = new_selected) # nocov
             }
         }
     }

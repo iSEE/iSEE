@@ -225,8 +225,8 @@
 #' @importFrom stats dist hclust as.dendrogram order.dendrogram
 .cluster_genes <- function(X) {
      if (is.null(dim(X)) || nrow(X) < 2L) {
-         showNotification("must have at least 2 features for clustering", type="error")
-         req(FALSE)
+         showNotification("must have at least 2 features for clustering", type="error") # nocov start
+         req(FALSE) # nocov end
      }
      D <- dist(X)
      hc <- hclust(D)

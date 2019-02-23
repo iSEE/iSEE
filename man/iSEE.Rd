@@ -12,8 +12,8 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featAssayArgs = NULL,
   sampAssayMax = 5, colStatMax = 5, customDataMax = 5,
   customStatMax = 5, heatMapMax = 5, initialPanels = NULL,
   annotFun = NULL, customDataFun = NULL, customStatFun = NULL,
-  colormap = ExperimentColorMap(), tour = NULL, appTitle = NULL,
-  runLocal = TRUE, voice = FALSE)
+  customSendAll = FALSE, colormap = ExperimentColorMap(),
+  tour = NULL, appTitle = NULL, runLocal = TRUE, voice = FALSE)
 }
 \arguments{
 \item{se}{An object that is coercible to \linkS4class{SingleCellExperiment}.}
@@ -67,6 +67,9 @@ The function should accept two parameters, \code{se} and \code{row_index}, and r
 \item{customDataFun}{A named list of functions for reporting coordinates to use in a custom data plot.}
 
 \item{customStatFun}{A named list of functions for reporting coordinates to use in a custom statistics table.}
+
+\item{customSendAll}{A logical scalar indicating whether all (active and saved) selections should be passed from transmitting panels to custom plots or tables.
+The default (\code{FALSE}) only passes the row names of the points in the active selection.}
 
 \item{colormap}{An \linkS4class{ExperimentColorMap} object that defines custom colormaps to apply to individual \code{assays}, \code{colData} and \code{rowData} covariates.}
 

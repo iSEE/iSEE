@@ -1,6 +1,18 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.3.6}{
+\itemize{
+    \item Support multiple selections.
+}
+}
+
+\section{iSEE VERSION 1.3.5}{
+\itemize{
+    \item Control point size.
+}
+}
+
 \section{iSEE VERSION 1.3.4}{
 \itemize{
     \item Fix panel organization selectize.

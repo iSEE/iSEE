@@ -185,49 +185,29 @@
 #'
 #' @param graph A graph object with encoded panel names as the vertices, see \code{\link{.spawn_selection_chart}}.
 #' @param panel A string containing the encoded name of the current transmitting panel.
-#' @param memory A list of DataFrames containing parameters for each panel of each type.
 #'
 #' @return A character vector of encoded names for all panels that need to be updated.
 #'
 #' @details
-#' Upon changes to the point selection informatin in a transmitting panel \code{panel}, all other panels that receive that information need to be updated.
-#' This function identifies the set of child panels that require updates.
-#' 
-#' Note that this includes indirect descendents if the selection effect is \code{"Restrict"} in any of the child panels.
-#' This is because the point selection in \code{panel} will change the selected subset of points in the children, which will then change the grandchildren, and so on.
-#' We recurse throughout the graph until all paths terminate or encounter panels in which the mode is not \code{"Restrict"}.
+#' Upon changes to a transmitting panel \code{panel}, all other panels that receive the point selection information from \code{panel} may need to be updated.
+#' This function identifies the set of children of \code{panel} that potentially require updates.
+#' Whether they \emph{actually} need updates depends on the nature of the changes in \code{panel}, which will be context-specific. 
+#'
+#' Note that this only refers to direct children.
+#' If the selection effect is \code{"Restrict"} in any of the child panels, their children (i.e., the grandchildren of \code{panel}) would also need updating, and so on.
+#' This is achieved via a set of observers to reactive values in \code{\link{iSEE}} that allow such recursion to occur naturally.
 #'
 #' @author Aaron Lun
-#' @rdname INTERNAL_get_selection_dependents
+#' @rdname INTERNAL_get_direct_children
 #' @seealso
 #' \code{\link{.spawn_selection_chart}}
 #' \code{\link{iSEE}}
 #' 
 #' @importFrom igraph adjacent_vertices
-.get_selection_dependents <- function(graph, panel, memory)
+.get_direct_children <- function(graph, panel)
 {
     children <- names(adjacent_vertices(graph, panel, mode="out")[[1]])
-    children <- setdiff(children, panel) # self-updates are handled elsewhere.
-
-    old_children <- children
-    while (length(children)) {
-        enc <- .split_encoded(children)
-        types <- enc$Type
-        ids <- enc$ID
-
-        # Avoiding panels that don't have a selection effect or don't transmit.
-        endpoints <- types %in% c(linked_table_types, custom_panel_types, "heatMapPlot") 
-        new_children <- character(0)
-        for (i in which(!endpoints)) { 
-            if (memory[[types[i]]][ids[i],.selectEffect]==.selectRestrictTitle) {
-                new_children <- c(new_children, names(adjacent_vertices(graph, children[i], mode="out")[[1]]))
-            }
-        }
-
-        old_children <- c(old_children, new_children)
-        children <- new_children
-    }
-    return(old_children)
+    setdiff(children, panel) # self-updates are handled elsewhere.
 }
 
 #' Test if Shiny brushes are identical
@@ -274,54 +254,96 @@
     return(TRUE)
 }
 
-#' Checks if a transmitting panel has any point selection
+#' Checks if there is a relevant selection 
 #' 
-#' A convenience function that encodes the transmitter name, and checks whether a Shiny brush or lasso currently exists in the memory of the transmitting plot.
+#' Checks whether there is a Shiny brush or lasso selection from a transmitter, in the active selection or in the saved selection history,
+#' that is relevant to the current panel.
 #'
-#' @param transmitter String containing the decoded name of a transmitting panel.
+#' @param transmitter String containing the name of the transmitting panel.
+#' By default, an encoded panel name is expected.
 #' @param memory A list of DataFrames containing parameters for each panel of each type.
+#' @param select_type String specifying whether the current panel is receiving the \code{"Active"}, \code{"Union"} or \code{"Saved"} selections.
+#' @param select_saved Integer specifying which saved selection is received by the current panel when \code{select_type="Saved"}.
+#' @param mode String specifying the (encoded) panel type of the current panel. 
+#' @param id Integer scalar specifying the ID of the current panel of the specified type.
+#' @param encoded Logical scalar specifying whether \code{transmitter} is an encoded panel name.
 #' 
-#' @return A list of of two elements - \code{selected}, a logical scalar indicating whether a brush/lasso exists in \code{transmitter};
-#' and \code{encoded}, the encoded name of \code{transmitter}.
+#' @return A logical scalar specifying whether there is a relevant selection.
 #'
 #' @details 
-#' This is largely a convenience function that avoids the need to write out all of the lines inside it.
-#' Protection against non-selections for \code{transmitter} are particularly inconvenient.
+#' This will look for saved or active selections (or both) depending on the value of \code{select_type}.
+#' An active selection will not be relevant when \code{select_type="Saved"}, and vice versa.
+#' 
+#' \code{mode} and \code{id} will be used to retrieve the select type and saved index from \code{memory}, 
+#' only if \code{select_type} and \code{select_saved} are not specified.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_transmitted_selection
 #' @seealso
-#' \code{\link{.any_point_selection}},
+#' \code{\link{.any_active_selection}},
+#' \code{\link{.any_saved_selection}},
 #' \code{\link{iSEE}}
-.transmitted_selection <- function(transmitter, memory)
+.transmitted_selection <- function(transmitter, memory, select_type, select_saved, mode, id, encoded=TRUE)
 {
-    selection <- FALSE
-    encoded <- .noSelection
-    if (transmitter!=.noSelection) {
-        enc <- .encode_panel_name(transmitter)
-        encoded <- paste0(enc$Type, enc$ID)
-        if (.any_point_selection(enc$Type, enc$ID, memory)) {
-            selection <- TRUE
+    if (transmitter==.noSelection) {
+        return(FALSE)
+    }
+
+    changed <- FALSE
+    if (missing(select_type)) {
+        select_type <- memory[[mode]][id, .selectMultiType]
+    }
+    if (missing(select_saved)) {
+        select_saved <- memory[[mode]][id, .selectMultiSaved]
+    }
+
+    if (select_type==.selectMultiActiveTitle || select_type==.selectMultiUnionTitle) { 
+        if (encoded) {
+            enc <- .split_encoded(transmitter)
+        } else {
+            enc <- .encode_panel_name(transmitter)
+        }
+
+        if (.any_active_selection(enc$Type, enc$ID, memory)) {
+            changed <- TRUE
+        }
+
+        if (select_type==.selectMultiUnionTitle) {
+            if (.any_saved_selection(enc$Type, enc$ID, memory)) {
+                changed <- TRUE
+            }
+        }
+    } else {
+        # In principle, we don't have to check the transmitter options here, because 
+        # the saved index should always be valid. In practice, the saved index might
+        # not be valid if this function is called after the transmitter is changed
+        # but before the .selectMultiSaved selectize is updated. However, if it was
+        # non-zero and invalid, then the update would cause it to be zero, which 
+        # would set changed=TRUE anyway.
+        if (select_saved!=0L) {
+            changed <- TRUE
         }
     }
-    return(list(selected=selection, encoded=encoded))
+
+    changed
 }
 
 #' Checks if any points are selected
 #'
-#' Checks if any points are selected via a Shiny brush or closed lasso in a transmitting plot.
+#' Checks if any points are actively selected via a Shiny brush or closed lasso in a transmitting plot,
+#' or if there are any saved selections in the memory of the transmitting plot.
 #'
 #' @param mode String specifying the (encoded) panel type for the current (transmitting) panel.
 #' @param id Integer scalar specifying the ID of the current panel of the specified type.
 #' @param memory A list of DataFrames containing parameters for each panel of each type.
 #'
-#' @return A logical scalar specifying whether the specified panel contains a Shiny brush or a closed lasso.
+#' @return A logical scalar specifying whether the specified panel contains an active or saved Shiny brush or a closed lasso.
 #' @author Aaron Lun
 #' @rdname INTERNAL_any_point_selection
 #' @seealso
 #' \code{\link{.transmitted_selection}},
 #' \code{\link{iSEE}}
-.any_point_selection <- function(mode, id, memory) {
+.any_active_selection <- function(mode, id, memory) {
     if (!is.null(memory[[mode]][,.brushData][[id]])) {
         return(TRUE)       
     } 
@@ -330,4 +352,9 @@
         return(TRUE)
     }
     return(FALSE)
+}
+
+#' @rdname INTERNAL_any_point_selection
+.any_saved_selection <- function(mode, id, memory) {
+    length(memory[[mode]][,.multiSelectHistory][[id]]) > 0L
 }

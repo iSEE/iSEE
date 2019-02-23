@@ -282,6 +282,22 @@ test_that(".get_selected_points works", {
         all_memory$colDataPlot[[iSEE:::.brushData]][[1]]))
     expectedOut <- (rownames(all_coordinates[["redDimPlot1"]]) %in% expectedNames)
     expect_identical(out, expectedOut)
+    
+    # A history of selection exists in the transmitter panel and "select_all" is TRUE
+    all_memory$colDataPlot[[iSEE:::.multiSelectHistory]][[1]] <- list(list(
+        xmin=0.9, xmax=1.1, ymin=2E7, ymax=4E7,
+        direction="xy", mapping=list(x="X", y="Y"),
+        brushId="dummy_brush", outputId="dummy_plot"
+    ))
+    out <- iSEE:::.get_selected_points(
+        names = rownames(all_coordinates[["redDimPlot1"]]),
+        transmitter = "Column data plot 1",
+        all_memory, all_coordinates, select_all = TRUE
+    )
+    expect_named(out, c("active", "saved"))
+    expect_type(out$active, "logical")
+    expect_length(out$saved, 1L)
+    expect_type(out$active[[1]], "logical")
 
 })
 
@@ -296,8 +312,33 @@ test_that(".regenerate_unselected_plot can regenerate plots manually", {
     input <- list()
     session <- NULL
 
-    iSEE:::.regenerate_unselected_plot("redDimPlot", 1, pObjects, rObjects, input, session)
+    iSEE:::.regenerate_unselected_plot("redDimPlot", 1, pObjects, rObjects)
 
     expect_identical(rObjects[["redDimPlot1"]], 2L)
 
+})
+
+test_that(".regenerate_unselected_plot can destroy brushes, lassos, and selection history", {
+    
+    # Add dummy active and saved selections
+    all_memory$redDimPlot[[iSEE:::.brushData]][[1]] <- list(a=1, b=2)
+    all_memory$redDimPlot[[iSEE:::.multiSelectHistory]][[1]] <- list(list(a=1, b=2))
+    
+    pObjects <- new.env()
+    pObjects$memory <- all_memory
+    
+    rObjects <- new.env()
+    rObjects[["redDimPlot1"]] <- 1L
+    rObjects[["redDimPlot1_reactivated"]] <- 1L
+    rObjects[["redDimPlot1_resaved"]] <- 1L
+    
+    input <- list()
+    # session <- NULL
+    
+    iSEE:::.regenerate_unselected_plot("redDimPlot", 1, pObjects, rObjects)
+    
+    expect_identical(rObjects[["redDimPlot1"]], 2L)
+    expect_identical(rObjects[["redDimPlot1_reactivated"]], 2L)
+    expect_identical(rObjects[["redDimPlot1_resaved"]], 2L)
+    
 })

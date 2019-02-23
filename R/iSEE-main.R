@@ -30,6 +30,8 @@
 #' The function should accept two parameters, \code{se} and \code{row_index}, and return a HTML element with annotation for the selected row.
 #' @param customDataFun A named list of functions for reporting coordinates to use in a custom data plot.
 #' @param customStatFun A named list of functions for reporting coordinates to use in a custom statistics table.
+#' @param customSendAll A logical scalar indicating whether all (active and saved) selections should be passed from transmitting panels to custom plots or tables.
+#' The default (\code{FALSE}) only passes the row names of the points in the active selection.
 #' @param colormap An \linkS4class{ExperimentColorMap} object that defines custom colormaps to apply to individual \code{assays}, \code{colData} and \code{rowData} covariates.
 #' @param tour A data.frame with the content of the interactive tour to be displayed after starting up the app.
 #' @param appTitle A string indicating the title to be displayed in the app.
@@ -134,6 +136,7 @@ iSEE <- function(se,
     annotFun=NULL,
     customDataFun=NULL,
     customStatFun=NULL,
+    customSendAll=FALSE,
     colormap=ExperimentColorMap(),
     tour=NULL,
     appTitle=NULL,
@@ -345,9 +348,24 @@ iSEE <- function(se,
         for (mode in all_panel_types) {
             max_plots <- nrow(pObjects$memory[[mode]])
             for (id in seq_len(max_plots)) {
+                # Reactive to trigger replotting.
                 rObjects[[paste0(mode, id)]] <- 1L
+
+                # Reactive to regenerate information panels.
                 rObjects[[paste0(mode, id, "_", .panelLinkInfo)]] <- 1L
                 rObjects[[paste0(mode, id, "_", .panelGeneralInfo)]] <- 1L
+
+                # Reactive to regenerate multi-selection selectize.
+                rObjects[[paste0(mode, id, "_", .selectMultiSaved)]] <- 1L
+
+                # Reactive to regenerate children when the point population of the current panel changes.
+                rObjects[[paste0(mode, id, "_repopulated")]] <- 1L
+
+                # Reactive to regenerate children when the active selection of the current panel changes.
+                rObjects[[paste0(mode, id, "_reactivated")]] <- 1L
+
+                # Reactive to regenerate children when the saved selection of the current panel changes.
+                rObjects[[paste0(mode, id, "_resaved")]] <- 1L
             }
         }
 
@@ -403,19 +421,10 @@ iSEE <- function(se,
                   "a keyboard shortcut that depends on your operating system (e.g. Ctrl/Cmd + A",
                   "followed by Ctrl/Cmd + C).",
                   "This will copy the selected parts to the clipboard."),
-                tabsetPanel(
-                    tabPanel("All commands",
-                        aceEditor("report_all_cmds", mode="r", theme="solarized_light", autoComplete="live",
-                            value=paste0(.track_it_all(rObjects$active_panels, pObjects,
-                                    se_name, ecm_name, cdf_name, csf_name, se_cmds), collapse="\n"),
-                            height="600px")
-                        ),
-                    tabPanel("Selection only",
-                        aceEditor("report_select_cmds", mode="r", theme="solarized_light", autoComplete="live",
-                            value=paste0(.track_selections_only(rObjects$active_panels, pObjects, se_name, se_cmds), collapse="\n"),
-                            height="600px")
-                        )
-                    )
+                aceEditor("report_all_cmds", mode="r", theme="solarized_light", autoComplete="live",
+                    value=paste0(.track_it_all(rObjects$active_panels, pObjects,
+                            se_name, ecm_name, cdf_name, csf_name, se_cmds), collapse="\n"),
+                    height="600px")
             ))
         })
 
@@ -480,6 +489,7 @@ iSEE <- function(se,
         #######################################################################
 
         output$allPanels <- renderUI({
+            rObjects$rerendered <- .increment_counter(isolate(rObjects$rerendered))
             .panel_generation(rObjects$active_panels, pObjects$memory, se)
         })
 
@@ -607,6 +617,147 @@ iSEE <- function(se,
         # Point selection observers.
         #######################################################################
 
+        # Selection choice observer; applicable to all non-custom panels.
+        for (mode in c(point_plot_types, linked_table_types, "heatMapPlot")) {
+            max_panels <- nrow(pObjects$memory[[mode]])
+
+            for (id in seq_len(max_panels)) {
+                local({
+                    mode0 <- mode
+                    id0 <- id
+                    panel_name <- paste0(mode0, id0)
+                    select_panel_field <- paste0(panel_name, "_", .selectByPlot)
+                    repop_field <- paste0(panel_name, "_repopulated")
+                    can_transmit <- mode %in% point_plot_types
+
+                    observeEvent(input[[select_panel_field]], {
+                        old_transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
+                        new_transmitter <- input[[select_panel_field]]
+                        if (old_transmitter==new_transmitter) {
+                            return(NULL)
+                        }
+
+                        old_encoded <- old_transmitter
+                        if (old_transmitter!=.noSelection) {
+                            old_encoded <- .decoded2encoded(old_transmitter)
+                        }
+                        new_encoded <- new_transmitter
+                        if (new_transmitter!=.noSelection) {
+                            new_encoded <- .decoded2encoded(new_transmitter)
+                        }
+                        tmp <- .choose_new_selection_source(pObjects$selection_links, panel_name, new_encoded, old_encoded)
+
+                        # Trying to update the graph, but breaking if it's not a DAG.
+                        # We also break if users try to self-select in restrict mode.
+                        # These concerns are only relevant for transmitting panels (i.e., point plots).
+                        if (can_transmit) {
+                            daggy <- is_dag(simplify(tmp, remove.loops=TRUE))
+                            self_restrict <- new_encoded==panel_name &&
+                                new_encoded!=.noSelection &&
+                                pObjects$memory[[mode0]][id0, .selectEffect]==.selectRestrictTitle
+
+                            if (!daggy || self_restrict) {
+                                if (!daggy) {
+                                    showNotification("point selection relationships cannot be cyclic", type="error")
+                                } else if (self_restrict){
+                                    showNotification("selecting to self is not compatible with 'Restrict'", type="error")
+                                }
+                                updateSelectInput(session, select_panel_field, selected=old_transmitter)
+                                return(NULL)
+                            }
+                        }
+
+                        pObjects$selection_links <- tmp
+                        pObjects$memory[[mode0]][id0, .selectByPlot] <- new_transmitter
+
+                        # Update the elements reporting the links between panels.
+                        for (relinked in setdiff(c(old_encoded, new_encoded, panel_name), .noSelection)) {
+                            relink_field <- paste0(relinked, "_", .panelLinkInfo)
+                            rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
+                        }
+
+                        # Update the multi-selection selectize.
+                        saved_select_name <- paste0(panel_name, "_", .selectMultiSaved)
+                        rObjects[[saved_select_name]] <- .increment_counter(isolate(rObjects[[saved_select_name]]))
+
+                        saved_val <- pObjects$memory[[mode0]][id0, .selectMultiSaved]
+                        if (saved_val!=0L && new_encoded!=.noSelection) {
+                            new_enc <- .split_encoded(new_encoded)
+                            if (saved_val > length(pObjects$memory[[new_enc$Type]][,.multiSelectHistory][[new_enc$ID]])) {
+                                pObjects$memory[[mode0]][id0, .selectMultiSaved] <- 0L
+                            }
+                        }
+
+                        # Checking if there were active/saved selections in either the new or old transmitters.
+                        no_old_selection <- !.transmitted_selection(old_encoded, pObjects$memory, mode=mode0, id=id0)
+                        no_new_selection <- !.transmitted_selection(new_encoded, pObjects$memory, mode=mode0, id=id0)
+                        if (no_old_selection && no_new_selection) {
+                            return(NULL)
+                        }
+
+                        rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
+
+                        # Updating children, if the current panel is set to restrict
+                        # (and thus the point population changes with a new transmitted selection).
+                        if (pObjects$memory[[mode0]][id0, .selectEffect]==.selectRestrictTitle) {
+                            rObjects[[repop_field]] <- .increment_counter(isolate(rObjects[[repop_field]]))
+                        }
+                    }, ignoreInit=TRUE)
+                })
+            }
+        }
+
+        # Selection effect observer.
+        for (mode in c(point_plot_types, "heatMapPlot")) {
+            max_plots <- nrow(pObjects$memory[[mode]])
+
+            for (id in seq_len(max_plots)) {
+                local({
+                    mode0 <- mode
+                    id0 <- id
+                    panel_name <- paste0(mode0, id0)
+                    select_effect_field <- paste0(panel_name, "_", .selectEffect)
+                    repop_field <- paste0(panel_name, "_repopulated")
+                    can_transmit <- mode %in% point_plot_types
+
+                    observeEvent(input[[select_effect_field]], {
+                        cur_effect <- input[[select_effect_field]]
+                        old_effect <- pObjects$memory[[mode0]][id0, .selectEffect]
+
+                        # Storing the new choice into memory, unless self-selecting to restrict.
+                        # In which case, we trigger an error and reset to the previous choice.
+                        if (can_transmit) {
+                            if (cur_effect == .selectRestrictTitle
+                                    && pObjects$memory[[mode0]][id0, .selectByPlot]==.decode_panel_name(mode0, id0)) {
+                                showNotification("selecting to self is not compatible with 'Restrict'", type="error")
+                                updateRadioButtons(session, select_effect_field, selected=old_effect)
+                                return(NULL)
+                            }
+                        }
+                        pObjects$memory[[mode0]][id0, .selectEffect] <- cur_effect
+
+                        # Avoiding replotting if there was no transmitting selection.
+                        transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
+                        if (!.transmitted_selection(transmitter, pObjects$memory, mode=mode0, id=id0, encoded=FALSE)) {
+                            return(NULL)
+                        }
+
+                        rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
+
+                        # Updating children if the selection in the current plot changes due to gain/loss of Restrict.
+                        if (cur_effect==.selectRestrictTitle || old_effect==.selectRestrictTitle) {
+                            rObjects[[repop_field]] <- .increment_counter(isolate(rObjects[[repop_field]]))
+                        }
+                    }, ignoreInit=TRUE)
+                })
+            }
+        }
+
+        # Shiny brush structure observers. There are three "phases" of a Shiny brush:
+        # - the Javascript (JS) brush, which is what the user draws and the observer responds to.
+        #   This is eliminated upon replotting for various consistency reasons.
+        # - the active brush, which is what is stored in iSEE's ".brushData" field.
+        # - the saved brush(es), stored in iSEE's ".multiSelectHistory" field.
         for (mode in point_plot_types) {
             max_plots <- nrow(pObjects$memory[[mode]])
             for (id in seq_len(max_plots)) {
@@ -614,119 +765,10 @@ iSEE <- function(se,
                     mode0 <- mode
                     id0 <- id
                     plot_name <- paste0(mode0, id0)
-                    prefix <- paste0(plot_name, "_")
+                    act_field <- paste0(mode0, id0, "_reactivated")
+                    save_field <- paste0(plot_name, "_", .multiSelectSave)
 
-                    ###############
-
-                    # Selection choice observer.
-                    select_plot_field <- paste0(prefix, .selectByPlot)
-                    observeEvent(input[[select_plot_field]], {
-                        old_transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
-                        new_transmitter <- input[[select_plot_field]]
-
-                        # Determining whether the new and old transmitting plot have selections.
-                        old_out <- .transmitted_selection(old_transmitter, pObjects$memory)
-                        old_select <- old_out$selected
-                        old_encoded <- old_out$encoded
-                        new_out <- .transmitted_selection(new_transmitter, pObjects$memory)
-                        new_select <- new_out$selected
-                        new_encoded <- new_out$encoded
-
-                        # Trying to update the graph, but breaking if it's not a DAG.
-                        # We also break if users try to self-select in restrict mode.
-                        # In both cases, we just reset back to the choice they had before.
-                        tmp <- .choose_new_selection_source(pObjects$selection_links, plot_name, new_encoded, old_encoded)
-
-                        daggy <- is_dag(simplify(tmp, remove.loops=TRUE))
-                        self_restrict <- new_encoded==plot_name &&
-                            new_encoded!=.noSelection &&
-                            pObjects$memory[[mode0]][id0, .selectEffect]==.selectRestrictTitle
-
-                        if (!daggy || self_restrict) {
-                            if (!daggy) {
-                                showNotification("point selection relationships cannot be cyclic", type="error")
-                            } else if (self_restrict){
-                                showNotification("selecting to self is not compatible with 'Restrict'", type="error")
-                            }
-                            pObjects$memory[[mode0]][id0, .selectByPlot] <- old_transmitter
-                            updateSelectInput(session, select_plot_field, selected=old_transmitter)
-                            return(NULL)
-                        }
-
-                        pObjects$selection_links <- tmp
-                        pObjects$memory[[mode0]][id0, .selectByPlot] <- new_transmitter
-
-                        # Update the elements reporting the links between plots.
-                        for (relinked in setdiff(c(old_encoded, new_encoded, plot_name), .noSelection)) {
-                            relink_field <- paste0(relinked, "_", .panelLinkInfo)
-                            rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
-                        }
-
-                        # Not replotting if there were no selection in either the new or old transmitters.
-                        if (!old_select && !new_select){
-                            return(NULL)
-                        }
-
-                        # Triggering self update of the plot.
-                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-
-                        # Triggering replotting of children, if the current panel is set to restrict;
-                        # and we have a selection, so that there was already some selection in the children.
-                        if (pObjects$memory[[mode0]][id0, .selectEffect]==.selectRestrictTitle
-                            && .any_point_selection(mode0, id0, pObjects$memory)) {
-                            children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
-                            for (child_plot in children) {
-                                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
-                            }
-                        }
-                    }, ignoreInit=TRUE)
-
-                    ###############
-
-                    # Selection effect observer.
-                    select_effect_field <- paste0(prefix, .selectEffect)
-                    observeEvent(input[[select_effect_field]], {
-                        cur_effect <- input[[select_effect_field]]
-                        old_effect <- pObjects$memory[[mode0]][id0, .selectEffect]
-
-                        # Storing the new choice into memory, unless self-selecting to restrict.
-                        # In which case, we trigger an error and reset to the previous choice.
-                        if (cur_effect == .selectRestrictTitle
-                            && pObjects$memory[[mode0]][id0, .selectByPlot]==.decode_panel_name(mode0, id0)) {
-                            showNotification("selecting to self is not compatible with 'Restrict'", type="error")
-                            updateRadioButtons(session, select_effect_field, selected=old_effect)
-                            return(NULL)
-                        }
-                        pObjects$memory[[mode0]][id0, .selectEffect] <- cur_effect
-
-                        # Avoiding replotting if there was no transmitting selection.
-                        transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
-                        if (transmitter==.noSelection) {
-                            return(NULL)
-                        }
-                        enc <- .encode_panel_name(transmitter)
-                        if (!.any_point_selection(enc$Type, enc$ID, pObjects$memory)) {
-                            return(NULL)
-                        }
-
-                        # Triggering self update.
-                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-
-                        # Triggering replotting of children, if we are set to or from restrict;
-                        # and we have a selection, so there was already some selecting in the children.
-                        if ((cur_effect==.selectRestrictTitle || old_effect==.selectRestrictTitle)
-                            && .any_point_selection(mode0, id0, pObjects$memory)) {
-                            children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
-                            for (child_plot in children) {
-                                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
-                            }
-                        }
-                    }, ignoreInit=TRUE)
-
-                    ###############
-
-                    # Shiny brush structure observers. ----
-                    brush_id <- paste0(prefix, .brushField)
+                    brush_id <- paste0(plot_name, "_", .brushField)
                     observeEvent(input[[brush_id]], {
                         cur_brush <- input[[brush_id]]
                         old_brush <- pObjects$memory[[mode0]][,.brushData][[id0]]
@@ -742,131 +784,244 @@ iSEE <- function(se,
                             return(NULL)
                         }
 
-                        # Trigger replotting of self, to draw a more persistent selection Shiny brush visual
+                        .disableButtonIf(
+                            save_field,
+                            !.any_active_selection(mode0, id0, pObjects$memory),
+                            .buttonNoSelectionLabel, .buttonSaveLabel, session
+                        )
+
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-
-                        # Trigger replotting of all dependent plots that receive this Shiny brush
-                        children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
-                        for (child_plot in children) {
-                            rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
-                        }
-                    }, ignoreInit=TRUE, ignoreNULL=FALSE)
-                })
-            }
-        }
-
-        # Linked selection choice observers for the tables. ----
-        for (mode in linked_table_types) {
-            max_tabs <- nrow(pObjects$memory[[mode]])
-            for (id in seq_len(max_tabs)) {
-                local({
-                    mode0 <- mode
-                    id0 <- id
-                    tab_name <- paste0(mode0, id0)
-                    prefix <- paste0(tab_name, "_")
-
-                    select_plot_field <- paste0(prefix, .selectByPlot)
-                    observeEvent(input[[select_plot_field]], {
-                        old_transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
-                        new_transmitter <- input[[select_plot_field]]
-
-                        # Determining whether the new and old transmitting plot have selections.
-                        old_out <- .transmitted_selection(old_transmitter, pObjects$memory)
-                        old_select <- old_out$selected
-                        old_encoded <- old_out$encoded
-                        new_out <- .transmitted_selection(new_transmitter, pObjects$memory)
-                        new_select <- new_out$selected
-                        new_encoded <- new_out$encoded
-
-                        # Updating the graph (no need for DAG protection here, as tables do not transmit selections).
-                        pObjects$selection_links <- .choose_new_selection_source(pObjects$selection_links, tab_name, new_encoded, old_encoded)
-                        pObjects$memory[[mode0]][id0, .selectByPlot] <- new_transmitter
-
-                        # Update the elements reporting the links between plots.
-                        for (relinked in c(old_encoded, new_encoded, tab_name)) {
-                            if (relinked==.noSelection) { next }
-                            relink_field <- paste0(relinked, "_", .panelLinkInfo)
-                            rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
-                        }
-
-                        # Not re-rendering if there were no selections in either the new or old transmitters.
-                        if (!old_select && !new_select){
-                            return(NULL)
-                        }
-
-                        # Triggering update of the table.
-                        rObjects[[tab_name]] <- .increment_counter(isolate(rObjects[[tab_name]]))
+                        rObjects[[act_field]] <- .increment_counter(isolate(rObjects[[act_field]]))
                     }, ignoreInit=TRUE)
                 })
             }
         }
 
-        # Linked selection choice observers for the heatmaps.
-        max_tabs <- nrow(pObjects$memory$heatMapPlot)
-        for (id in seq_len(max_tabs)) {
-            local({
-                mode0 <- "heatMapPlot"
-                id0 <- id
-                plot_name <- paste0(mode0, id0)
-                prefix <- paste0(plot_name, "_")
+        #######################################################################
+        # Child propagating observers.
+        #######################################################################
 
-                # Selection choice observer.
-                select_plot_field <- paste0(prefix, .selectByPlot)
-                observeEvent(input[[select_plot_field]], {
-                    old_transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
-                    new_transmitter <- input[[select_plot_field]]
+        # Observers to decide whether children need to be replotted.
+        for (mode in point_plot_types) {
+            max_panels <- nrow(pObjects$memory[[mode]])
+            for (id in seq_len(max_panels)) {
+                local({
+                    mode0 <- mode
+                    id0 <- id
+                    plot_name <- paste0(mode0, id0)
+                    repop_field <- paste0(plot_name, "_repopulated")
 
-                    # Determining whether the new and old transmitting plot have selections.
-                    old_out <- .transmitted_selection(old_transmitter, pObjects$memory)
-                    old_select <- old_out$selected
-                    old_encoded <- old_out$encoded
-                    new_out <- .transmitted_selection(new_transmitter, pObjects$memory)
-                    new_select <- new_out$selected
-                    new_encoded <- new_out$encoded
+                    ## Observer for changes in the point population in the current panel. ---
+                    # This refers to changes in the points retained by restriction of selections from upstream transmitters.
+                    observe({
+                        force(rObjects[[repop_field]])
+                        has_active <- .any_active_selection(mode0, id0, pObjects$memory)
+                        has_saved <- .any_saved_selection(mode0, id0, pObjects$memory)
 
-                    # Updating the graph (no need to worry about DAGs here, as heatmaps do not transmit).
-                    pObjects$selection_links <- .choose_new_selection_source(pObjects$selection_links, plot_name, new_encoded, old_encoded)
-                    pObjects$memory[[mode0]][id0, .selectByPlot] <- new_transmitter
+                        children <- .get_direct_children(pObjects$selection_links, plot_name)
+                        for (child_plot in children) {
+                            child_enc <- .split_encoded(child_plot)
+                            child_mode <- child_enc$Type
+                            child_id <- child_enc$ID
 
-                    # Update the elements reporting the links between plots.
-                    for (relinked in c(old_encoded, new_encoded, plot_name)) {
-                        if (relinked==.noSelection) { next }
-                        relink_field <- paste0(relinked, "_", .panelLinkInfo)
-                        rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
-                    }
+                            # We have special rules for custom panel types, as these don't have .selectMultiType or .selectMultiSaved.
+                            if (child_mode %in% custom_panel_types) {
+                                if (has_active || (customSendAll && has_saved)) {
+                                    rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+                                }
+                                next
+                            }
 
-                    # Not replotting if there were no selections in either the new or old transmitters.
-                    if (!old_select && !new_select){
-                        return(NULL)
-                    }
+                            # To warrant replotting of the child, there needs to be Active or Saved selections in the current panel.
+                            # Any point population changes in the current panel will result in new subsets if those selections are available.
+                            replot <- FALSE
+                            select_mode <- pObjects$memory[[child_mode]][child_id, .selectMultiType]
+                            if (select_mode==.selectMultiActiveTitle || select_mode==.selectMultiUnionTitle) {
+                                if (has_active) replot <- TRUE
+                            }
+                            if (select_mode==.selectMultiSavedTitle && pObjects$memory[[child_mode]][child_id, .selectMultiSaved]!=0L) {
+                                if (has_saved) replot <- TRUE
+                            }
+                            if (select_mode==.selectMultiUnionTitle) {
+                                if (has_saved) replot <- TRUE
+                            }
 
-                    # Triggering self update of the plot.
-                    rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                }, ignoreInit=TRUE)
+                            if (replot) {
+                                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
 
-                ###############
+                                # To warrant replotting of the grandchildren, the child must itself be restricted.
+                                if (child_mode %in% point_plot_types && pObjects$memory[[child_mode]][child_id, .selectEffect]==.selectRestrictTitle) {
+                                    react_child <- paste0(child_mode, child_id, "_repopulated")
+                                    rObjects[[react_child]] <- .increment_counter(isolate(rObjects[[react_child]]))
+                                }
+                            }
+                        }
+                    })
 
-                # Selection effect observer.
-                select_effect_field <- paste0(prefix, .selectEffect)
-                observeEvent(input[[select_effect_field]], {
-                    cur_effect <- input[[select_effect_field]]
-                    old_effect <- pObjects$memory[[mode0]][id0, .selectEffect]
-                    pObjects$memory[[mode0]][id0, .selectEffect] <- cur_effect
+                    ## Observer for changes in the active selection in the current panel. ---
+                    # We can't use the 'repopulated' observer above, because the point population in the current
+                    # panel hasn't changed if the active selection changes in that panel. Instead, we need to
+                    # manually implement the first generation of propagation.
+                    act_field <- paste0(plot_name, "_reactivated")
+                    observe({
+                        force(rObjects[[act_field]])
 
-                    # Avoiding replotting if there was no transmitting selection.
-                    transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
-                    if (transmitter==.noSelection) {
-                        return(NULL)
-                    }
-                    enc <- .encode_panel_name(transmitter)
-                    if (!.any_point_selection(enc$Type, enc$ID, pObjects$memory)) {
-                        return(NULL)
-                    }
+                        children <- .get_direct_children(pObjects$selection_links, plot_name)
+                        for (child_plot in children) {
+                            child_enc <- .split_encoded(child_plot)
+                            child_mode <- child_enc$Type
+                            child_id <- child_enc$ID
 
-                    # Triggering self update.
-                    rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-                }, ignoreInit=TRUE)
-            })
+                            # Custom panels don't have any other settings, so we just replot and move on.
+                            if (child_mode %in% custom_panel_types) {
+                                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+                                next
+                            }
+
+                            select_mode <- pObjects$memory[[child_mode]][child_id, .selectMultiType]
+                            if (select_mode==.selectMultiActiveTitle || select_mode==.selectMultiUnionTitle) {
+                                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+
+                                # To warrant replotting of the grandchildren, the child must itself be restricted.
+                                if (child_mode %in% point_plot_types && pObjects$memory[[child_mode]][child_id, .selectEffect]==.selectRestrictTitle) {
+                                    react_child <- paste0(child_mode, child_id, "_repopulated")
+                                    rObjects[[react_child]] <- .increment_counter(isolate(rObjects[[react_child]]))
+                                }
+                            }
+                        }
+                    })
+
+                    ## Observer for changes in the saved selections in the current panel. ---
+                    # As described above, we can't use the 'repopulated' observer. The conditions
+                    # to propagate are also slightly different to the conditions for the 'reactivated' observer.
+                    save_field <- paste0(plot_name, "_resaved")
+                    observe({
+                        force(rObjects[[save_field]])
+                        Nsaved <- length(pObjects$memory[[mode0]][,.multiSelectHistory][[id0]])
+
+                        children <- .get_direct_children(pObjects$selection_links, plot_name)
+                        for (child_plot in children) {
+                            child_enc <- .split_encoded(child_plot)
+                            child_mode <- child_enc$Type
+                            child_id <- child_enc$ID
+
+                            # Custom panels don't have any other settings, so we just replot and move on.
+                            if (child_mode %in% custom_panel_types) {
+                                if (customSendAll) {
+                                    rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+                                }
+                                next
+                            }
+
+                            reset <- pObjects$memory[[child_mode]][child_id, .selectMultiSaved] > Nsaved
+                            if (reset) {
+                                pObjects$memory[[child_mode]][child_id, .selectMultiSaved] <- 0L
+                            }
+
+                            child_select_type <- pObjects$memory[[child_mode]][child_id, .selectMultiType]
+                            if (child_select_type==.selectMultiUnionTitle || (child_select_type==.selectMultiSavedTitle && reset)) {
+                                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+
+                                if (child_mode %in% point_plot_types && pObjects$memory[[child_mode]][child_id, .selectEffect]==.selectRestrictTitle) {
+                                    react_child <- paste0(child_plot, "_repopulated")
+                                    rObjects[[react_child]] <- .increment_counter(isolate(rObjects[[react_child]]))
+                                }
+                            }
+
+                            # Updating the selectize as well.
+                            child_saved <- paste0(child_plot, "_", .selectMultiSaved)
+                            rObjects[[child_saved]] <- .increment_counter(isolate(rObjects[[child_saved]]))
+                        }
+                    })
+                })
+            }
+        }
+
+        #######################################################################
+        # Multiple selection observers.
+        #######################################################################
+
+        for (mode in c(point_plot_types, linked_table_types, "heatMapPlot")) {
+            max_panels <- nrow(pObjects$memory[[mode]])
+            for (id in seq_len(max_panels)) {
+                local({
+                    mode0 <- mode
+                    id0 <- id
+                    panel_name <- paste0(mode0, id0)
+                    repop_field <- paste0(mode0, id0, "_repopulated")
+
+                    ## Type field observers. ---
+                    type_field <- paste0(mode0, id0, "_", .selectMultiType)
+                    observeEvent(input[[type_field]], {
+                        old_type <- pObjects$memory[[mode0]][[.selectMultiType]][id0]
+                        new_type <- as(input[[type_field]], typeof(old_type))
+                        if (identical(new_type, old_type)) {
+                            return(NULL)
+                        }
+                        pObjects$memory[[mode0]][[.selectMultiType]][id0] <- new_type
+
+                        # Skipping if neither the old or new types were relevant.
+                        transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
+                        no_old_selection <- !.transmitted_selection(transmitter, pObjects$memory, select_type=old_type, mode=mode0, id=id0, encoded=FALSE)
+                        no_new_selection <- !.transmitted_selection(transmitter, pObjects$memory, mode=mode0, id=id0, encoded=FALSE)
+                        if (no_old_selection && no_new_selection) {
+                            return(NULL)
+                        }
+
+                        rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
+                        if (pObjects$memory[[mode0]][id0, .selectEffect]==.selectRestrictTitle) {
+                            rObjects[[repop_field]] <- .increment_counter(isolate(rObjects[[repop_field]]))
+                        }
+                    }, ignoreInit=TRUE)
+
+                    ## Saved field observers. ---
+                    saved_select <- paste0(panel_name, "_", .selectMultiSaved)
+                    observeEvent(input[[saved_select]], {
+                        req(input[[saved_select]]) # Required to defend against empty strings before updateSelectizeInput runs.
+                        matched_input <- as(input[[saved_select]], typeof(pObjects$memory[[mode0]][[.selectMultiSaved]]))
+                        if (identical(matched_input, pObjects$memory[[mode0]][[.selectMultiSaved]][id0])) {
+                            return(NULL)
+                        }
+                        pObjects$memory[[mode0]][[.selectMultiSaved]][id0] <- matched_input
+
+                        transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
+                        if (transmitter==.noSelection) {
+                            return(NULL)
+                        }
+
+                        # Switch of 'Saved' will ALWAYS change the current plot, so no need for other checks.
+                        rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
+                        if (pObjects$memory[[mode0]][id0, .selectEffect]==.selectRestrictTitle) {
+                            rObjects[[repop_field]] <- .increment_counter(isolate(rObjects[[repop_field]]))
+                        }
+                    }, ignoreInit=TRUE)
+
+                    ## Selectize observer. ---
+                    # Do NOT be tempted to centralize code by setting .selectMultiSaved to zero here.
+                    # This needs to be done in upstream observers, otherwise there is no guarantee
+                    # that the zero is set before plotting observers that use it.
+                    observe({
+                        force(rObjects[[saved_select]])
+                        force(rObjects$rerendered)
+
+                        transmitter <- pObjects$memory[[mode0]][id0,.selectByPlot]
+                        if (transmitter==.noSelection) {
+                            available_choices <- integer(0)
+                        } else {
+                            trans <- .encode_panel_name(transmitter)
+                            N <- length(pObjects$memory[[trans$Type]][,.multiSelectHistory][[trans$ID]])
+                            available_choices <- seq_len(N)
+                            names(available_choices) <- available_choices
+                        }
+
+                        no_choice <- 0L
+                        names(no_choice) <- .noSelection
+                        available_choices <- c(no_choice, available_choices)
+                        updateSelectizeInput(session, saved_select, choices=available_choices, server=TRUE,
+                            selected=pObjects$memory[[mode0]][id0, .selectMultiSaved])
+                    })
+                })
+            }
         }
 
         #######################################################################
@@ -880,30 +1035,53 @@ iSEE <- function(se,
                     mode0 <- mode
                     id0 <- id
                     plot_name <- paste0(mode0, id0)
-                    prefix <- paste0(plot_name, "_")
-                    click_field <- paste0(prefix, .lassoClick)
-                    brush_field <- paste0(prefix, .brushField)
+                    click_field <- paste0(plot_name, "_", .lassoClick)
+                    brush_field <- paste0(plot_name, "_", .brushField)
+                    act_field <- paste0(plot_name, "_reactivated")
+                    save_field <- paste0(plot_name, "_", .multiSelectSave)
 
                     observeEvent(input[[click_field]], {
-                        # Don't add to waypoints if a Shiny brush exists in memory (as they are mutually exclusive).
-                        if (!is.null(pObjects$memory[[mode0]][,.brushData][[id0]]) || !is.null(input[[brush_field]])) {
+                        # Hack to resolve https://github.com/rstudio/shiny/issues/947.
+                        # By luck, the triggering of the click field seems to be delayed enough
+                        # that input data is sent to the brush field first. Thus, we can
+                        # check the brush field for a non-NULL value avoid action if
+                        # the user had brushed rather than clicked. A separate click should
+                        # continue past this point, as any Shiny brush would be wiped upon
+                        # replotting and thus would not have any value in the input.
+                        if (!is.null(input[[brush_field]])) {
                             return(NULL)
                         }
 
-                        prev_lasso <- pObjects$memory[[mode0]][,.lassoData][[id0]]
-                        was_closed <- if(is.null(prev_lasso)) FALSE else prev_lasso$closed
-                        new_lasso <- .update_lasso(input[[click_field]], prev_lasso)
-                        pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .lassoData, new_lasso)
+                        # Don't add to waypoints if a Shiny brush exists in memory, but instead, destroy the brush.
+                        # Also destroy any closed lassos, or update open lassos.
+                        destroyed <- FALSE
+                        if (!is.null(pObjects$memory[[mode0]][,.brushData][[id0]])) {
+                            pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .brushData, NULL)
+                            destroyed <- TRUE
+                        } else {
+                            prev_lasso <- pObjects$memory[[mode0]][,.lassoData][[id0]]
+                            was_closed <- if(is.null(prev_lasso)) FALSE else prev_lasso$closed
 
-                        # Trigger replotting of self, to draw the lasso waypoints.
+                            if (was_closed) {
+                                new_lasso <- NULL
+                                destroyed <- TRUE
+                            } else {
+                                new_lasso <- .update_lasso(input[[click_field]], prev_lasso)
+                            }
+
+                            pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .lassoData, new_lasso)
+                        }
+
+                        .disableButtonIf(
+                            save_field,
+                            !.any_active_selection(mode0, id0, pObjects$memory),
+                            .buttonNoSelectionLabel, .buttonSaveLabel, session
+                        )
+
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
 
-                        # Trigger replotting of child panels that receive point selection information.
-                        if (new_lasso$closed != was_closed) {
-                            children <- .get_selection_dependents(pObjects$selection_links, plot_name, pObjects$memory)
-                            for (child_plot in children) {
-                                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
-                            }
+                        if (destroyed) {
+                            rObjects[[act_field]] <- .increment_counter(isolate(rObjects[[act_field]]))
                         }
                     })
                 })
@@ -911,14 +1089,8 @@ iSEE <- function(se,
         }
 
         #######################################################################
-        # Zoom observers.
+        # Double-click observers.
         #######################################################################
-
-        # The interpretation of the double-click is somewhat complicated.
-        # - If you double-click on a Shiny brush, you zoom it while wiping the brush.
-        # - If you double-click outside a brush, you wipe the brush (this is done automatically).
-        #   If an open lasso is present, it is deleted.
-        #   If there was no open lasso, you zoom out.
 
         for (mode in point_plot_types) {
             max_plots <- nrow(pObjects$memory[[mode]])
@@ -927,39 +1099,45 @@ iSEE <- function(se,
                     mode0 <- mode
                     id0 <- id
                     plot_name <- paste0(mode0, id0)
-                    prefix <- paste0(plot_name, "_")
+                    dblclick_field <- paste0(plot_name, "_", .zoomClick)
+                    act_field <- paste0(plot_name, "_reactivated")
+                    save_field <- paste0(plot_name, "_", .multiSelectSave)
 
-                    brush_id <- paste0(prefix, .brushField)
-                    zoom_click_field <- paste0(prefix, .zoomClick)
+                    observeEvent(input[[dblclick_field]], {
+                        existing_brush <- pObjects$memory[[mode0]][,.brushData][[id0]]
+                        existing_lasso <- pObjects$memory[[mode0]][,.lassoData][[id0]]
 
-                    observeEvent(input[[zoom_click_field]], {
-                        brush <- input[[brush_id]]
+                        # Zooming destroys all active brushes or lassos.
+                        pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .lassoData, NULL)
+                        pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .brushData, NULL)
 
-                        if (!is.null(brush)) {
-                            new_coords <- c(xmin=brush$xmin, xmax=brush$xmax, ymin=brush$ymin, ymax=brush$ymax)
-                            session$resetBrush(brush_id) # This should auto-trigger replotting above.
-                        } else {
-                            # brush is already NULL at this point, so there is no need to reset it.
-                            # However, we do need to manually trigger replotting. We don't move this outside the
-                            # "else", to avoid two reactive updates of unknown priorities.
-                            new_coords <- pObjects$memory[[mode0]][,.zoomData][[id0]]
+                        new_coords <- NULL
+                        if (!is.null(existing_brush)) {
+                            dblclick_vals <- input[[dblclick_field]]
+                            if (dblclick_vals$x >= existing_brush$xmin
+                                    && dblclick_vals$x <= existing_brush$xmax
+                                    && dblclick_vals$y >= existing_brush$ymin
+                                    && dblclick_vals$y <= existing_brush$ymax) {
 
-                            lasso_data <- pObjects$memory[[mode0]][,.lassoData][[id0]]
-                            if (!is.null(lasso_data)) {
-                                # We wipe out any lasso waypoints if they are present, and trigger replotting with the same scope.
-                                pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .lassoData, NULL)
-                                rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-
-                            } else {
-                                if (!is.null(new_coords)) {
-                                    # If there are already no lasso waypoints, we zoom out.
-                                    new_coords <- NULL
-                                    rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                                # Panels are either NULL or not.
+                                if (identical(dblclick_vals$panelvar1, existing_brush$panelvar1)
+                                        && identical(dblclick_vals$panelvar2, existing_brush$panelvar2)) {
+                                    new_coords <- c(xmin=existing_brush$xmin, xmax=existing_brush$xmax, ymin=existing_brush$ymin, ymax=existing_brush$ymax)
                                 }
                             }
+                            .disableButtonIf(
+                                save_field,
+                                !.any_active_selection(mode0, id0, pObjects$memory),
+                                .buttonNoSelectionLabel, .buttonSaveLabel, session
+                            )
                         }
 
                         pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .zoomData, new_coords)
+                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+
+                        if (!is.null(existing_brush) || (!is.null(existing_lasso) && existing_lasso$closed)) {
+                            rObjects[[act_field]] <- .increment_counter(isolate(rObjects[[act_field]]))
+                        }
                     })
                 })
             }
@@ -975,25 +1153,25 @@ iSEE <- function(se,
                 prefix <- paste0(plot_name, "_")
 
                 brush_id <- paste0(prefix, .brushField)
-                zoom_click_field <- paste0(prefix, .zoomClick)
+                dblclick_field <- paste0(prefix, .zoomClick)
 
-                observeEvent(input[[zoom_click_field]], {
+                observeEvent(input[[dblclick_field]], {
                     brush <- input[[brush_id]]
                     if (!is.null(brush)) {
                         new_coords <- c(xmin=brush$xmin, xmax=brush$xmax, ymin=brush$ymin, ymax=brush$ymax)
-                        session$resetBrush(brush_id) # This does NOT trigger replotting, as there is no brush observer for the heatmap.
                         if (is.null(pObjects$memory$heatMapPlot[id0,][[.zoomData]][[1]])) { # if we haven't already zoomed in
                             inp_rows <- seq_along(pObjects$memory$heatMapPlot[id0,][[.heatMapFeatName]][[1]])
                         } else {
                             inp_rows <- pObjects$memory$heatMapPlot[id0,][[.zoomData]][[1]]
                         }
 
-                        # Update data and force replotting.
                         # Is the heatmap receiving a color brush (in that case the number of annotations should be increased by 1)
-                        is_receiving_color_selection <- pObjects$memory$heatMapPlot[id0,][[.selectByPlot]]!=.noSelection &&
-                            pObjects$memory$heatMapPlot[id0,][[.selectEffect]]==.selectColorTitle &&
-                            .transmitted_selection(pObjects$memory$heatMapPlot[id0, .selectByPlot], pObjects$memory)$select
+                        trans_enc <- .decoded2encoded(pObjects$memory$heatMapPlot[id0, .selectByPlot])
+                        is_receiving_color_selection <- pObjects$memory$heatMapPlot[id0, .selectByPlot]!=.noSelection &&
+                            pObjects$memory$heatMapPlot[id0,.selectEffect]==.selectColorTitle &&
+                            .transmitted_selection(trans_enc, pObjects$memory, mode=mode0, id=id0)
 
+                        # Update data.
                         n.annot <- length(pObjects$memory$heatMapPlot[,.heatMapColData][[id0]]) + is_receiving_color_selection
                         ymin <- .transform_global_to_local_y(new_coords["ymin"], n.genes=length(inp_rows), n.annot=n.annot)
                         ymax <- .transform_global_to_local_y(new_coords["ymax"], n.genes=length(inp_rows), n.annot=n.annot)
@@ -1010,7 +1188,7 @@ iSEE <- function(se,
         }
 
         #######################################################################
-        # Selectize updators. ----
+        # Feature/sample name selectize updators. ----
         #######################################################################
 
         feature_choices <- seq_len(nrow(se))
@@ -1074,6 +1252,93 @@ iSEE <- function(se,
             }
         }
 
+        #####################################################################
+        # Multiple selection observers.
+        #######################################################################
+
+        for (mode in point_plot_types) {
+            max_plots <- nrow(pObjects$memory[[mode]])
+
+            for (id in seq_len(max_plots)) {
+                local({
+                    mode0 <- mode
+                    id0 <- id
+                    plot_name <- paste0(mode0, id0)
+                    save_field <- paste0(plot_name, "_", .multiSelectSave)
+                    del_field <- paste0(plot_name, "_", .multiSelectDelete)
+                    info_field <- paste0(plot_name, "_", .panelGeneralInfo)
+                    saved_field <- paste0(plot_name, "_", .selectMultiSaved)
+                    resaved_field <- paste0(plot_name, "_resaved")
+
+                    ## Save selection observer. ---
+                    observeEvent(input[[save_field]], {
+                        current <- pObjects$memory[[mode0]][,.multiSelectHistory][[id0]]
+
+                        to_store <- pObjects$memory[[mode0]][,.brushData][[id0]]
+                        if (is.null(to_store)) {
+                            to_store <- pObjects$memory[[mode0]][,.lassoData][[id0]]
+                            if (is.null(to_store) || !to_store$closed) {
+                                return(NULL)
+                            }
+                        }
+
+                        pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .multiSelectHistory, c(current, list(to_store)))
+
+                        # Updating self (replot to get number).
+                        rObjects[[info_field]] <- .increment_counter(isolate(rObjects[[info_field]]))
+                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+
+                        transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
+                        if (transmitter!=.noSelection && .decoded2encoded(transmitter)==plot_name) {
+                            rObjects[[saved_field]] <- .increment_counter(isolate(rObjects[[saved_field]]))
+                            if (pObjects$memory[[mode0]][id0, .selectMultiType]==.selectMultiUnionTitle) {
+                                rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                            }
+                        }
+
+                        # Updating children.
+                        rObjects[[resaved_field]] <- .increment_counter(isolate(rObjects[[resaved_field]]))
+
+                        .disableButtonIf(
+                            del_field,
+                            !.any_saved_selection(mode0, id0, pObjects$memory),
+                            .buttonEmptyHistoryLabel, .buttonDeleteLabel, session
+                        )
+                    })
+
+                    ## Deleted selection observer. ---
+                    observeEvent(input[[del_field]], {
+                        current <- pObjects$memory[[mode0]][,.multiSelectHistory][[id0]]
+                        current <- head(current, -1)
+                        pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .multiSelectHistory, current)
+
+                        # Updating self.
+                        rObjects[[info_field]] <- .increment_counter(isolate(rObjects[[info_field]]))
+                        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+
+                        transmitter <- pObjects$memory[[mode0]][id0, .selectByPlot]
+                        if (transmitter!=.noSelection && .decoded2encoded(transmitter)==plot_name) {
+                            rObjects[[saved_field]] <- .increment_counter(isolate(rObjects[[saved_field]]))
+
+                            reset <- pObjects$memory[[mode0]][id0, .selectMultiSaved] > length(current)
+                            if (reset) {
+                                pObjects$memory[[mode0]][id0, .selectMultiSaved] <- 0L
+                            }
+                        }
+
+                        # Updating children.
+                        rObjects[[resaved_field]] <- .increment_counter(isolate(rObjects[[resaved_field]]))
+
+                        .disableButtonIf(
+                            del_field,
+                            !.any_saved_selection(mode0, id0, pObjects$memory),
+                            .buttonEmptyHistoryLabel, .buttonDeleteLabel, session
+                        )
+                    })
+                })
+            }
+        }
+
         #######################################################################
         # Dot-related plot creation section. ----
         #######################################################################
@@ -1104,10 +1369,11 @@ iSEE <- function(se,
             } else {
                 nonfundamental <- c(.colorByColData, .colorByFeatNameAssay, .shapeByField, .shapeByColData, .sizeByField, .sizeByColData, .colorBySampNameColor)
             }
-            nonfundamental <- c(nonfundamental, .colorByDefaultColor, .selectColor, .selectTransAlpha,
-                                .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition,
-                                .plotPointDownsample, .plotPointSampleRes, .contourAddTitle,
-                                .contourColor)
+            nonfundamental <- c(nonfundamental,
+                .colorByDefaultColor, .selectColor, .selectTransAlpha,
+                .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition,
+                .plotPointDownsample, .plotPointSampleRes, .contourAddTitle,
+                .contourColor)
 
             for (id in seq_len(max_plots)) {
                 # Observers for the non-fundamental parameter options.
@@ -1165,7 +1431,7 @@ iSEE <- function(se,
                                 return(NULL)
                             }
                             pObjects$memory[[mode0]][[field0]][id0] <- matched_input
-                            .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
+                            .regenerate_unselected_plot(mode0, id0, pObjects, rObjects)
                          }, ignoreInit=TRUE)
                     })
                 }
@@ -1245,15 +1511,40 @@ iSEE <- function(se,
                         force(rObjects[[gen_field]])
                         selected <- .get_selected_points(
                             rownames(pObjects$coordinates[[plot_name]]), dec_name,
-                            pObjects$memory, pObjects$coordinates)
-                        if (is.null(selected)) {
-                            return(NULL)
+                            pObjects$memory, pObjects$coordinates, select_all=TRUE
+                        )
+
+                        all_output <- list()
+                        if (!is.null(selected$active)) {
+                            n_selected <- sum(selected$active)
+                            n_total <- length(selected$active)
+                            all_output <- append(all_output,
+                                list(
+                                    sprintf(
+                                        "%i of %i points in active selection (%.1f%%)",
+                                        n_selected, n_total, 100*n_selected/n_total
+                                    ),
+                                    br()
+                                )
+                            )
                         }
-                        n_selected <- sum(selected)
-                        n_total <- length(selected)
-                        HTML(sprintf(
-                            "%i of %i points selected (%.1f%%)",
-                            n_selected, n_total, 100*n_selected/n_total))
+
+                        for (i in seq_along(selected$saved)) {
+                            n_selected <- sum(selected$saved[[i]])
+                            n_total <- length(selected$saved[[i]])
+                            all_output <- append(all_output,
+                                list(
+                                    sprintf(
+                                        "%i of %i points in saved selection %i (%.1f%%)",
+                                        n_selected, n_total, i, 100*n_selected/n_total
+                                    ),
+                                    br()
+                                )
+                            )
+                        }
+
+                        if (length(all_output)==0L) return(NULL)
+                        do.call(tagList, all_output)
                     })
 
                     # Describing the links between panels.
@@ -1265,6 +1556,10 @@ iSEE <- function(se,
                 })
             }
         }
+
+        #######################################################################
+        # Feature/sample assay plot section. ----
+        #######################################################################
 
         # Feature and sample assay plots need some careful handling, as we need to update the
         # table links and destroy a brush/lasso whenever an x/y-axis-specifying parameter changes.
@@ -1309,7 +1604,7 @@ iSEE <- function(se,
                                                         select_field=x_name_field0, tab_field=x_name_tab0,
                                                         select_choices=choices0, param="xaxis")
                         if (replot) {
-                            .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
+                            .regenerate_unselected_plot(mode0, id0, pObjects, rObjects)
                         }
                     })
 
@@ -1323,7 +1618,7 @@ iSEE <- function(se,
                         }
                         pObjects$memory[[mode0]][[x_name_field0]][id0] <- matched_input
                         if (pObjects$memory[[mode0]][id0, byx_field0]==byx_title0) { # Only regenerating if featName is being used for plotting.
-                            .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
+                            .regenerate_unselected_plot(mode0, id0, pObjects, rObjects)
                         }
                     }, ignoreInit=TRUE)
 
@@ -1333,7 +1628,7 @@ iSEE <- function(se,
                                                         select_field=y_name_field0, tab_field=y_name_tab0,
                                                         select_choices=choices0, param="yaxis")
                         if (replot) {
-                            .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
+                            .regenerate_unselected_plot(mode0, id0, pObjects, rObjects)
                         }
                     })
 
@@ -1347,11 +1642,15 @@ iSEE <- function(se,
                             return(NULL)
                         }
                         pObjects$memory[[mode0]][[y_name_field0]][id0] <- matched_input
-                        .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
+                        .regenerate_unselected_plot(mode0, id0, pObjects, rObjects)
                     }, ignoreInit=TRUE)
                 })
             }
         }
+
+        #######################################################################
+        # Reduced dimension plot section. ----
+        #######################################################################
 
         # Reduced dimension plots also need a special observer to update the maximum of the selectInput when the type changes.
         max_plots <- nrow(pObjects$memory$redDimPlot)
@@ -1384,7 +1683,7 @@ iSEE <- function(se,
                     updateSelectInput(session, dim_fieldX, choices=new_choices, selected=capped_X)
                     updateSelectInput(session, dim_fieldY, choices=new_choices, selected=capped_Y)
 
-                    .regenerate_unselected_plot(mode0, id0, pObjects, rObjects, input, session)
+                    .regenerate_unselected_plot(mode0, id0, pObjects, rObjects)
                 }, ignoreInit=TRUE)
             })
         }
@@ -1482,12 +1781,14 @@ iSEE <- function(se,
                             new_transmitter <- input[[select_panel_field]]
 
                             # Determining whether the new and old transmitting panel have selections.
-                            old_out <- .transmitted_selection(old_transmitter, pObjects$memory)
-                            old_select <- old_out$selected
-                            old_encoded <- old_out$encoded
-                            new_out <- .transmitted_selection(new_transmitter, pObjects$memory)
-                            new_select <- new_out$selected
-                            new_encoded <- new_out$encoded
+                            old_encoded <- old_transmitter
+                            if (old_transmitter!=.noSelection) {
+                                old_encoded <- .decoded2encoded(old_transmitter)
+                            }
+                            new_encoded <- new_transmitter
+                            if (new_transmitter!=.noSelection) {
+                                new_encoded <- .decoded2encoded(new_transmitter)
+                            }
 
                             # Trying to update the graph. No need to worry about DAGs as custom panels cannot transmit.
                             pObjects$selection_links <- .choose_new_selection_source(pObjects$selection_links, panel_name, new_encoded, old_encoded)
@@ -1500,7 +1801,13 @@ iSEE <- function(se,
                             }
 
                             # Not recreating panels if there were no selection in either the new or old transmitters.
-                            if (!old_select && !new_select){
+                            # We use "Union" here to trigger replotting if customSendAll=TRUE as custom plots will
+                            # receive everything from their upstream transmitters. Otherwise, if customSendAll=TRUE,
+                            # we only respond to the active selection in the upstream transmitter.
+                            select_type <- if (customSendAll) .selectMultiUnionTitle else .selectMultiActiveTitle
+                            no_old_selection <- !.transmitted_selection(old_encoded, pObjects$memory, select_type=select_type, select_saved=0L)
+                            no_new_selection <- !.transmitted_selection(new_encoded, pObjects$memory, select_type=select_type, select_saved=0L)
+                            if (no_old_selection && no_new_selection) {
                                 return(NULL)
                             }
 
@@ -1520,7 +1827,7 @@ iSEE <- function(se,
 
                 output[[plot_name]] <- renderPlot({
                     force(rObjects[[plot_name]])
-                    p.out <- .make_customDataPlot(id0, pObjects$memory, pObjects$coordinates, se)
+                    p.out <- .make_customDataPlot(id0, pObjects$memory, pObjects$coordinates, se, select_all=customSendAll)
                     pObjects$commands[[plot_name]] <- p.out$cmd_list
                     p.out$plot
                 })
@@ -1539,15 +1846,31 @@ iSEE <- function(se,
                     param_choices <- pObjects$memory$customStatTable[id0,]
 
                     row_selected <- .get_selected_points(rownames(se), param_choices[[.customRowSource]],
-                            pObjects$memory, pObjects$coordinates)
-                    if (!is.null(row_selected)) {
-                        row_selected <- rownames(se)[row_selected]
+                        pObjects$memory, pObjects$coordinates, select_all=customSendAll)
+                    row_L2C <- function(keep) rownames(se)[keep]
+                    if (customSendAll) {
+                        if (!is.null(row_selected$active)) {
+                            row_selected$active <- row_L2C(row_selected$active)
+                        }
+                        row_selected$saved <- lapply(row_selected$saved, row_L2C)
+                    } else {
+                        if (!is.null(row_selected)) {
+                            row_selected <- row_L2C(row_selected)
+                        }
                     }
 
                     col_selected <- .get_selected_points(colnames(se), param_choices[[.customColSource]],
-                            pObjects$memory, pObjects$coordinates)
-                    if (!is.null(col_selected)) {
-                        col_selected <- colnames(se)[col_selected]
+                        pObjects$memory, pObjects$coordinates, select_all=customSendAll)
+                    col_L2C <- function(keep) colnames(se)[keep]
+                    if (customSendAll) {
+                        if (!is.null(col_selected$active)) {
+                            col_selected$active <- col_L2C(col_selected$active)
+                        }
+                        col_selected$saved <- lapply(col_selected$saved, col_L2C)
+                    } else {
+                        if (!is.null(col_selected)) {
+                            col_selected <- col_L2C(col_selected)
+                        }
                     }
 
                     chosen_fun <- param_choices[[.customFun]]
@@ -1620,6 +1943,7 @@ iSEE <- function(se,
                         search <- param_choices[[.statTableSearch]]
                         search_col <- param_choices[[.statTableColSearch]][[1]]
                         search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
+
                         # After the first initialization there may not be any need to add columns
                         # Fact is, the extra "Selected" column may make the table it has more columns than filters
                         missing_columns <- max(0, ncol(current_df0) - length(search_col))
@@ -1628,7 +1952,9 @@ iSEE <- function(se,
                         # Adding a "Selected" field to the plotting data, which responds to point selection input.
                         # Note that this AUTOMATICALLY updates search_col upon re-rendering via the observer below.
                         # The code below keeps search_col valid for the number of columns (i.e., with or without selection).
-                        selected <- .get_selected_points(rownames(current_df0), param_choices[[.selectByPlot]], pObjects$memory, pObjects$coordinates)
+                        selected <- .get_selected_points(rownames(current_df0), param_choices[[.selectByPlot]], pObjects$memory, pObjects$coordinates,
+                            select_type=param_choices[[.selectMultiType]], select_saved=param_choices[[.selectMultiSaved]])
+
                         tmp_df <- current_df0
                         columnDefs <- list()
                         if (!is.null(selected)) {

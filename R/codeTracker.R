@@ -1,6 +1,7 @@
 #' Track code for the plots
 #' 
 #' Fetches all the code that was used to generate the plots during the live iSEE session.
+#' See section "Functions" for more details.
 #' 
 #' @param active_panels A data.frame containing information about the currently active panels, of the same form as that produced by \code{\link{.setup_initial}}.
 #' @param pObjects An environment containing \code{memory}, a list of DataFrames containing parameters for each panel of each type;
@@ -17,11 +18,6 @@
 #'
 #' @return A character vector containing all lines of code (plus comments), to use in the \code{shinyAce} editor in \code{\link{iSEE}}.
 #'
-#' @details
-#' The \code{.track_it_all} returns all commands required to generate the plots.
-#' The \code{.track_selection_only} returns only the commands required to perform selections.
-#' The latter is cleaner when the aim is to use iSEE to obtain a subset of points for further analysis in R.
-#' 
 #' @author Federico Marini
 #' @rdname INTERNAL_track_it_all
 .track_it_all <- function(active_panels, pObjects, se_name, ecm_name, cdf_name, csf_name, sanitize_cmds) {
@@ -63,64 +59,12 @@
     return(tracked_code)
 }
 
-#' @rdname INTERNAL_track_it_all
-#' @importFrom igraph adjacent_vertices 
-.track_selections_only <- function(active_panels, pObjects, se_name, sanitize_cmds) {
-    # Only reporting panels that are actively involved in selections.
-    keep <- logical(nrow(active_panels))
-    encoded <- paste0(active_panels$Type, active_panels$ID)
-
-    for (i in seq_along(keep)) {
-        if (active_panels$Type[i] %in% point_plot_types && 
-                .any_point_selection(active_panels$Type[i], active_panels$ID[i], pObjects$memory)){
-            keep[i] <- TRUE
-            next
-        }
-
-        # Keeping if any of its transmitters have a selection.
-        # (No need to check for point_plot_types, as these are the only ones that can transmit anyway.)
-        upstream <- names(adjacent_vertices(pObjects$selection_links, encoded[i], mode="in")[[1]])
-        for (up in which(encoded %in% upstream)) {
-            if (.any_point_selection(active_panels$Type[up], active_panels$ID[up], pObjects$memory)){
-                keep[i] <- TRUE
-                break
-            }
-        }
-    }
-
-    active_panels <- active_panels[keep,]
-
-    c(
-        "## The following list of commands will generate the selections from iSEE.", 
-        "## Copy them into a script or an R session containing your SingleCellExperiment.",
-        "## All commands below refer to your SingleCellExperiment object as `se`.",
-        "",
-        sprintf("se <- %s", se_name),
-        sanitize_cmds,
-        "all_coordinates <- list()",
-        "",
-
-        .track_selection_code(active_panels, pObjects),
-
-        .track_plotting_code(active_panels, pObjects, select_only = TRUE),
-        
-        .track_custom_code(active_panels, pObjects, select_only = TRUE),
-
-        .track_heatmap_code(active_panels, pObjects, select_only = TRUE),
-  
-        strrep("#", 80),
-        "## To guarantee the reproducibility of your code, you should also",
-        "## record the output of sessionInfo()",
-        "sessionInfo()"
-    )
-}
-
-#' @rdname INTERNAL_track_it_all
+#' @describeIn INTERNAL_track_it_all Returns a character vector of commands that create brushes, lassos, and selection history.
 .track_selection_code  <- function(active_panels, pObjects) {
     # Remove panels that don't have brushes or lassos.
     is_point_plot <- active_panels$Type %in% point_plot_types
     active_panels <- active_panels[is_point_plot,]
-    brush_code <- lasso_code <- vector("list", nrow(active_panels))
+    brush_code <- lasso_code <- history_code <- vector("list", nrow(active_panels))
 
     for (i in seq_len(nrow(active_panels))) {
         panel_type <- active_panels$Type[i]
@@ -138,9 +82,15 @@
             lasso_struct <- .deparse_for_viewing(lasso_struct)
             lasso_code[[i]] <- sprintf("all_lassos[['%s']] <- %s", panel_name, lasso_struct)
         }
+
+        saved_struct <- pObjects$memory[[panel_type]][,.multiSelectHistory][[panel_id]]
+        if (length(saved_struct)) {
+            saved_struct <- .deparse_for_viewing(saved_struct)
+            history_code[[i]] <- sprintf("all_select_histories[['%s']] <- %s", panel_name, saved_struct)
+        }
     }
 
-    tracked_code <- list(character(0), character(0))
+    tracked_code <- list(character(0), character(0), character(0))
     if (any(lengths(brush_code) > 0)) { 
         tracked_code[[1]] <- c(strrep("#", 80),
                 "# Defining brushes",
@@ -148,12 +98,21 @@
                 "all_brushes <- list()", 
                 unlist(brush_code), "")
     }
+
     if (any(lengths(lasso_code) > 0)) {
         tracked_code[[2]] <- c(strrep("#", 80),
                 "# Defining lassos",
                 strrep("#", 80), "",
                 "all_lassos <- list()",
                 unlist(lasso_code), "")
+    }
+
+    if (any(lengths(history_code) > 0)) {
+        tracked_code[[2]] <- c(strrep("#", 80),
+                "# Defining selection histories",
+                strrep("#", 80), "",
+                "all_select_histories <- list()",
+                unlist(history_code), "")
     }
 
     return(unlist(tracked_code))

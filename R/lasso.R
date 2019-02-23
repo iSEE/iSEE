@@ -112,3 +112,16 @@ lassoPoints <- function(df, lasso) {
     return(df[which(keep)[retained],])
 }
 
+#' Is the object a lasso store?
+#' 
+#' Checks if an object is a lasso or Shiny brush data store.
+#'
+#' @param x A lasso or Shiny brush object.
+#'
+#' @return A logical scalar specifying if \code{x} is a lasso.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_is_lasso
+.is_lasso <- function(x) {
+    !is.null(x$closed)
+}

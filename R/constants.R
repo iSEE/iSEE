@@ -152,6 +152,18 @@
 .selectColor <- "SelectColor"
 .selectTransAlpha <- "SelectAlpha"
 
+# Multiple selection parameters. ---
+.multiSelectHistory <- "MultiSelectHistory"
+.multiSelectSave <- "MultiSelectSave"
+.multiSelectDelete <- "MultiSelectDelete"
+
+.selectMultiType <- "SelectMultiType"
+.selectMultiActiveTitle <- "Active"
+.selectMultiUnionTitle <- "Union"
+.selectMultiSavedTitle <- "Saved"
+
+.selectMultiSaved <- "SelectMultiSaved"
+
 .noSelection <- "---"
 
 # Zooming parameters. ----
@@ -169,6 +181,10 @@
 # Button parameters ----
 .buttonUpToDateLabel <- "Up to date"
 .buttonUpdateLabel <- "Update"
+.buttonEmptyHistoryLabel <- "No history"
+.buttonDeleteLabel <- "Delete"
+.buttonNoSelectionLabel <- "No selection"
+.buttonSaveLabel <- "Save"
 
 # Other plot parameters. ----
 .dataParamBoxOpen <- "DataBoxOpen"

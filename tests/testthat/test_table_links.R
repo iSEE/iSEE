@@ -299,6 +299,31 @@ test_that("table modification works correctly (row/column-agnostic)", {
     expect_identical(tab2, tabs)
 })
 
+test_that("table observers work to change the y-axis source", {
+    
+    pObjects <- new.env()
+    pObjects$table_links <- tabs
+    pObjects$memory <- memory
+    
+    rObjects <- new.env()
+    rObjects$redDimPlot1_PanelLinkInfo <- 1L
+    rObjects$rowStatTable1_PanelLinkInfo <- 1L
+    rObjects$rowStatTable2_PanelLinkInfo <- 1L
+    
+    input <- list(
+        featAssayPlot2_YAxisFeatName=1L,
+        featAssayPlot2_YAxisRowTable = "Row statistics table 1"
+    )
+    
+    # The y-axis observe has not changed
+    out <- iSEE:::.setup_table_observer(
+        "featAssayPlot", 2, pObjects, rObjects, input=input, session=NULL,
+        select_field=iSEE:::.featAssayYAxisFeatName, tab_field=iSEE:::.featAssayYAxisRowTable,
+        select_choices=NULL, param="yaxis")
+    expect_false(out)
+
+})
+
 test_that("table observers work correctly (row/column-agnostic)", {
     pObjects <- new.env()
     pObjects$table_links <- tabs
@@ -335,9 +360,7 @@ test_that("table observers work correctly (row/column-agnostic)", {
     # Changing the colour source.
     old_table_links <- pObjects$table_links
     old_param <- pObjects$memory$redDimPlot[1,]
-    old_param[,iSEE:::.colorByField] <-
-        input$redDimPlot1_ColorBy <-
-        iSEE:::.colorByNothingTitle
+    old_param[,iSEE:::.colorByField] <- input$redDimPlot1_ColorBy <- iSEE:::.colorByNothingTitle
 
     out <- iSEE:::.setup_table_observer(
         "redDimPlot", 1, pObjects, rObjects, input=input,  session=NULL,

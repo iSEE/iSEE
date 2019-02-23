@@ -1,15 +1,27 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
-\section{iSEE VERSION 1.3.6}{
+\section{iSEE VERSION 1.3.8}{
 \itemize{
     \item Support multiple selections.
 }
 }
 
-\section{iSEE VERSION 1.3.5}{
+\section{iSEE VERSION 1.3.7}{
+\itemize{
+    \item Add ImmunoOncology in biocViews.
+}
+}
+
+\section{iSEE VERSION 1.3.6}{
 \itemize{
     \item Control point size.
+}
+}
+
+\section{iSEE VERSION 1.3.5}{
+\itemize{
+    \item Additional information during the default tour.
 }
 }
 

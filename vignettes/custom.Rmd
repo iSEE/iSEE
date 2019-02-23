@@ -86,7 +86,6 @@ In addition:
 - For _custom table panels_, the function is expected to produce a `data.frame`.
 
 Conversely, `iSEE(..., customSendAll=TRUE)` transmits _all_ selections - active and saved - from the transmitting panel.
-In this case, the _second_ and _third_ arguments of the user-defined functions must each accept a named list of 2 items, `"active"` and `"saved"`, respectively.
 This feature is described in further detail and demonstrated in a [later section](#customSendAll).
 
 ## Example of custom plot panel
@@ -230,7 +229,7 @@ This takes the form of a list with two elements:
 - `saved`, a list of vectors of names specifying the points in each saved selection.
 
 It is possible for `active` to be `NULL` or `saved` to contain no elements.
-This obviously occurs if there are no active and/or saved selections, or if no transmitter has been selected.
+This occurs if there are no active and/or saved selections, or if no transmitter has been selected.
 
 This is a powerful system that allows users to compute statistics of interests for multiple selections simultaneously.
 For example, we can write a function that computes log-fold changes between the samples in the active selection and samples in each saved selection.

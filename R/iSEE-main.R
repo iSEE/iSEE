@@ -766,6 +766,7 @@ iSEE <- function(se,
                     id0 <- id
                     plot_name <- paste0(mode0, id0)
                     act_field <- paste0(mode0, id0, "_reactivated")
+                    save_field <- paste0(plot_name, "_", .multiSelectSave)
 
                     brush_id <- paste0(plot_name, "_", .brushField)
                     observeEvent(input[[brush_id]], {
@@ -782,6 +783,12 @@ iSEE <- function(se,
                         if (!replot) {
                             return(NULL)
                         }
+
+                        .disableButtonIf(
+                            save_field,
+                            !.any_active_selection(mode0, id0, pObjects$memory),
+                            .buttonNoSelectionLabel, .buttonSaveLabel, session
+                        )
 
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                         rObjects[[act_field]] <- .increment_counter(isolate(rObjects[[act_field]]))
@@ -1031,6 +1038,7 @@ iSEE <- function(se,
                     click_field <- paste0(plot_name, "_", .lassoClick)
                     brush_field <- paste0(plot_name, "_", .brushField)
                     act_field <- paste0(plot_name, "_reactivated")
+                    save_field <- paste0(plot_name, "_", .multiSelectSave)
 
                     observeEvent(input[[click_field]], {
                         # Hack to resolve https://github.com/rstudio/shiny/issues/947.
@@ -1064,6 +1072,12 @@ iSEE <- function(se,
                             pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .lassoData, new_lasso)
                         }
 
+                        .disableButtonIf(
+                            save_field,
+                            !.any_active_selection(mode0, id0, pObjects$memory),
+                            .buttonNoSelectionLabel, .buttonSaveLabel, session
+                        )
+
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
 
                         if (destroyed) {
@@ -1087,6 +1101,7 @@ iSEE <- function(se,
                     plot_name <- paste0(mode0, id0)
                     dblclick_field <- paste0(plot_name, "_", .zoomClick)
                     act_field <- paste0(plot_name, "_reactivated")
+                    save_field <- paste0(plot_name, "_", .multiSelectSave)
 
                     observeEvent(input[[dblclick_field]], {
                         existing_brush <- pObjects$memory[[mode0]][,.brushData][[id0]]
@@ -1110,6 +1125,11 @@ iSEE <- function(se,
                                     new_coords <- c(xmin=existing_brush$xmin, xmax=existing_brush$xmax, ymin=existing_brush$ymin, ymax=existing_brush$ymax)
                                 }
                             }
+                            .disableButtonIf(
+                                save_field,
+                                !.any_active_selection(mode0, id0, pObjects$memory),
+                                .buttonNoSelectionLabel, .buttonSaveLabel, session
+                            )
                         }
 
                         pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .zoomData, new_coords)
@@ -1258,7 +1278,6 @@ iSEE <- function(se,
                         if (is.null(to_store)) {
                             to_store <- pObjects$memory[[mode0]][,.lassoData][[id0]]
                             if (is.null(to_store) || !to_store$closed) {
-                                showNotification("no selection available", type="error")
                                 return(NULL)
                             }
                         }
@@ -1282,8 +1301,9 @@ iSEE <- function(se,
 
                         .disableButtonIf(
                             del_field,
-                            identical(length(pObjects$memory[[mode0]][,.multiSelectHistory][[id0]]), 0L),
-                            .buttonEmptyHistoryLabel, .buttonDeleteLabel, session)
+                            !.any_saved_selection(mode0, id0, pObjects$memory),
+                            .buttonEmptyHistoryLabel, .buttonDeleteLabel, session
+                        )
                     })
 
                     ## Deleted selection observer. ---
@@ -1311,8 +1331,9 @@ iSEE <- function(se,
 
                         .disableButtonIf(
                             del_field,
-                            identical(length(pObjects$memory[[mode0]][,.multiSelectHistory][[id0]]), 0L),
-                            .buttonEmptyHistoryLabel, .buttonDeleteLabel, session)
+                            !.any_saved_selection(mode0, id0, pObjects$memory),
+                            .buttonEmptyHistoryLabel, .buttonDeleteLabel, session
+                        )
                     })
                 })
             }

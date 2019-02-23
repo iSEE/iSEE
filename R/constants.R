@@ -183,6 +183,8 @@
 .buttonUpdateLabel <- "Update"
 .buttonEmptyHistoryLabel <- "No history"
 .buttonDeleteLabel <- "Delete"
+.buttonNoSelectionLabel <- "No selection"
+.buttonSaveLabel <- "Save"
 
 # Other plot parameters. ----
 .dataParamBoxOpen <- "DataBoxOpen"

@@ -1144,11 +1144,20 @@
     source_type <- match.arg(source_type)
 
     # initialize active "Delete" button only if a preconfigured selection history exists
-    startFUN <- identity
-    startDeleteButtonLabel <- .buttonDeleteLabel
+    deleteFUN <- identity
+    deleteLabel <- .buttonDeleteLabel
     if (identical(length(param_choices[[.multiSelectHistory]][[id]]), 0L)) {
-        startFUN <- disabled
-        startDeleteButtonLabel <- .buttonEmptyHistoryLabel
+        deleteFUN <- disabled
+        deleteLabel <- .buttonEmptyHistoryLabel
+    }
+    # initialize active "Save" button only if a preconfigured active selection exists
+    saveFUN <- identity
+    saveLabel <- .buttonSaveLabel
+    cur_lasso <- param_choices[[.lassoData]][[id]]
+    cur_brush <- param_choices[[.brushData]][[id]]
+    if (is.null(cur_lasso) && is.null(cur_brush)) {
+        saveFUN <- disabled
+        saveLabel <- .buttonNoSelectionLabel
     }
 
     .define_selection_param_box(
@@ -1175,8 +1184,8 @@
         hr(),
         strong("Manage multiple selections:"),
         br(),
-        actionButton(paste0(mode, id, "_", .multiSelectSave), label="Save"),
-        startFUN(actionButton(paste0(mode, id, "_", .multiSelectDelete), label=startDeleteButtonLabel))
+        saveFUN(actionButton(paste0(mode, id, "_", .multiSelectSave), label=saveLabel)),
+        deleteFUN(actionButton(paste0(mode, id, "_", .multiSelectDelete), label=deleteLabel))
     )
 }
 

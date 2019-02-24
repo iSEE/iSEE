@@ -271,7 +271,7 @@ CUSTOM_HEAT <- function(se, ri, ci, assay="logcounts") {
     }
 
     everything <- as.matrix(everything)
-    top <- order(rowMeans(abs(everything)), decreasing=TRUE)[1:50]
+    top <- head(order(rowMeans(abs(everything)), decreasing=TRUE), 50)
     topFC <- everything[top, , drop=FALSE]
     dimnames(topFC) <- list(gene=rownames(topFC), contrast=colnames(topFC))
     dfFC <- reshape2::melt(topFC)

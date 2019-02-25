@@ -2,25 +2,25 @@
 title: >
   An introduction to the `r Biocpkg("iSEE")` interface 
 author:
-- name: Federico Marini
-  affiliation: 
-  - &id1 Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz
-  - Center for Thrombosis and Hemostasis (CTH), Mainz
-  email: marinif@uni-mainz.de
-- name: Aaron Lun
-  affiliation: 
-  - &id2 Cancer Research UK Cambridge Institute, University of Cambridge
-  email: infinite.monkeys.with.keyboards@gmail.com
-- name: Charlotte Soneson
-  affiliation: 
-  - &id3 Institute of Molecular Life Sciences, University of Zurich
-  - SIB Swiss Institute of Bioinformatics
-  email: charlottesoneson@gmail.com
 - name: Kevin Rue-Albrecht
   affiliation: 
   - &id4 Kennedy Institute of Rheumatology, University of Oxford,
     Headington, Oxford OX3 7FY, UK.
   email: kevin.rue-albrecht@kennedy.ox.ac.uk
+- name: Federico Marini
+  affiliation: 
+  - &id1 Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz
+  - Center for Thrombosis and Hemostasis (CTH), Mainz
+  email: marinif@uni-mainz.de
+- name: Charlotte Soneson
+  affiliation: 
+  - &id3 Institute of Molecular Life Sciences, University of Zurich
+  - SIB Swiss Institute of Bioinformatics
+  email: charlottesoneson@gmail.com
+- name: Aaron Lun
+  affiliation: 
+  - &id2 Cancer Research UK Cambridge Institute, University of Cambridge
+  email: infinite.monkeys.with.keyboards@gmail.com
 date: "`r BiocStyle::doc_date()`"
 package: "`r BiocStyle::pkg_ver('iSEE')`"
 output: 

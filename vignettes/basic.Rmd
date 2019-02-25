@@ -70,6 +70,11 @@ library(iSEE)
 
 If you have a `SummarizedExperiment` object (or instance of a subclass) named `se`, you can launch an `r Biocpkg("iSEE")` app by simply calling `iSEE(se)`.
 In this vignette, we demonstrate this process using the `allen` single-cell RNA-seq data set from the `r Biocpkg("scRNAseq")` package.
+But if you can't be bothered to read the rest of this document, you can start playing with the app immediately with the following code.
+
+```{r quickstart, eval=FALSE}
+example(iSEE, ask=FALSE)
+```
 
 # Setting up the data
 

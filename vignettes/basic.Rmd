@@ -2,25 +2,25 @@
 title: >
   An introduction to the `r Biocpkg("iSEE")` interface 
 author:
-- name: Federico Marini
-  affiliation: 
-  - &id1 Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz
-  - Center for Thrombosis and Hemostasis (CTH), Mainz
-  email: marinif@uni-mainz.de
-- name: Aaron Lun
-  affiliation: 
-  - &id2 Cancer Research UK Cambridge Institute, University of Cambridge
-  email: infinite.monkeys.with.keyboards@gmail.com
-- name: Charlotte Soneson
-  affiliation: 
-  - &id3 Institute of Molecular Life Sciences, University of Zurich
-  - SIB Swiss Institute of Bioinformatics
-  email: charlottesoneson@gmail.com
 - name: Kevin Rue-Albrecht
   affiliation: 
   - &id4 Kennedy Institute of Rheumatology, University of Oxford,
     Headington, Oxford OX3 7FY, UK.
   email: kevin.rue-albrecht@kennedy.ox.ac.uk
+- name: Federico Marini
+  affiliation: 
+  - &id1 Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz
+  - Center for Thrombosis and Hemostasis (CTH), Mainz
+  email: marinif@uni-mainz.de
+- name: Charlotte Soneson
+  affiliation: 
+  - &id3 Institute of Molecular Life Sciences, University of Zurich
+  - SIB Swiss Institute of Bioinformatics
+  email: charlottesoneson@gmail.com
+- name: Aaron Lun
+  affiliation: 
+  - &id2 Cancer Research UK Cambridge Institute, University of Cambridge
+  email: infinite.monkeys.with.keyboards@gmail.com
 date: "`r BiocStyle::doc_date()`"
 package: "`r BiocStyle::pkg_ver('iSEE')`"
 output: 
@@ -55,12 +55,11 @@ stopifnot(requireNamespace("htmltools"))
 htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 ```
 
+![](`r system.file(package="iSEE", "www/iSEE.png", mustWork=TRUE)`)
+
 # Introduction 
 
-<!-- logo? MOS DEF :) --> 
-<!-- I'd say TODO -->
-
-`r Biocpkg("iSEE")` is a [Bioconductor](http://bioconductor.org) package that provides an interactive Shiny-based graphical user interface for exploring data stored in objects derived from the `SummarizedExperiment` class [@kra2018iSEE].
+`r Biocpkg("iSEE")` is a [Bioconductor](http://bioconductor.org) package that provides an interactive Shiny-based graphical user interface for exploring data stored in `SummarizedExperiment` objects [@kra2018iSEE].
 Instructions to install the package are available `r Biocpkg("iSEE", label = "here")`.
 Once installed, the package can be loaded and attached to your current workspace as follows:
 
@@ -68,8 +67,18 @@ Once installed, the package can be loaded and attached to your current workspace
 library(iSEE)
 ```
 
-If you have a `SummarizedExperiment` object (or instance of a subclass) named `se`, you can launch an `r Biocpkg("iSEE")` app by simply calling `iSEE(se)`.
+If you have a `SummarizedExperiment` object^[Or an instance of a subclass, like a `SingleCellExperiment` object.] named `se`, you can launch an `r Biocpkg("iSEE")` app by running:
+
+```{r demostart, eval=FALSE}
+iSEE(se)
+```
+
 In this vignette, we demonstrate this process using the `allen` single-cell RNA-seq data set from the `r Biocpkg("scRNAseq")` package.
+However, if you want to start playing with the app immediately, you can simply run:
+
+```{r quickstart, eval=FALSE}
+example(iSEE, ask=FALSE)
+```
 
 # Setting up the data
 

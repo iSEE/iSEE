@@ -1,25 +1,25 @@
 ---
 title: Deploying custom panels in the `iSEE` interface
 author:
-- name: Federico Marini
-  affiliation: 
-  - &id1 Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz
-  - Center for Thrombosis and Hemostasis (CTH), Mainz
-  email: marinif@uni-mainz.de
-- name: Aaron Lun
-  affiliation: 
-  - &id2 Cancer Research UK Cambridge Institute, University of Cambridge
-  email: infinite.monkeys.with.keyboards@gmail.com 
-- name: Charlotte Soneson
-  affiliation: 
-  - &id3 Institute of Molecular Life Sciences, University of Zurich
-  - SIB Swiss Institute of Bioinformatics
-  email: charlottesoneson@gmail.com
 - name: Kevin Rue-Albrecht
   affiliation: 
   - &id4 Kennedy Institute of Rheumatology, University of Oxford,
     Headington, Oxford OX3 7FY, UK.
   email: kevin.rue-albrecht@kennedy.ox.ac.uk
+- name: Federico Marini
+  affiliation: 
+  - &id1 Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz
+  - Center for Thrombosis and Hemostasis (CTH), Mainz
+  email: marinif@uni-mainz.de
+- name: Charlotte Soneson
+  affiliation: 
+  - &id3 Institute of Molecular Life Sciences, University of Zurich
+  - SIB Swiss Institute of Bioinformatics
+  email: charlottesoneson@gmail.com
+- name: Aaron Lun
+  affiliation: 
+  - &id2 Cancer Research UK Cambridge Institute, University of Cambridge
+  email: infinite.monkeys.with.keyboards@gmail.com 
 date: "`r BiocStyle::doc_date()`"
 package: "`r BiocStyle::pkg_ver('iSEE')`"
 output: 
@@ -80,13 +80,13 @@ This may be `NULL` if no transmitting panel was selected or if no active selecti
 - A vector of column names as the _third_ argument, specifying the columns that are currently selected in the transmitting _column-based_ panel.
 This may be `NULL` if no transmitting panel was selected or if no active selection is available.
 
-In addition:
-
-- For _custom plot panels_, the function is expected to produce a `ggplot` object.
-- For _custom table panels_, the function is expected to produce a `data.frame`.
-
 Conversely, `iSEE(..., customSendAll=TRUE)` transmits _all_ selections - active and saved - from the transmitting panel.
-This feature is described in further detail and demonstrated in a [later section](#customSendAll).
+This feature is described in further detail [below](#customSendAll).
+
+The output of the function should be:
+
+- A `ggplot` object, for functions used in _custom plot panels_.
+- A `data.frame`, for functions used in _custom table panels_.
 
 ## Example of custom plot panel
 

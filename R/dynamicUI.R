@@ -1271,7 +1271,7 @@
 #' @rdname INTERNAL_conditional_elements
 #' @importFrom shiny conditionalPanel
 .conditional_on_check_group <- function(id, choice, ...) {
-    conditionalPanel(condition=sprintf('(input["%s"].includes("%s"))', id, choice), ...)
+    conditionalPanel(condition=sprintf('(typeof input["%s"] !== "undefined" && input["%s"].includes("%s"))', id, id, choice), ...)
 }
 
 #' Coerce box status to custom classes

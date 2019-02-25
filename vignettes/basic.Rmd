@@ -60,16 +60,25 @@ htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 <!-- logo? MOS DEF :) --> 
 <!-- I'd say TODO -->
 
-`r Biocpkg("iSEE")` is a [Bioconductor](http://bioconductor.org) package that provides an interactive Shiny-based graphical user interface for exploring data stored in objects derived from the `SummarizedExperiment` class [@kra2018iSEE].
-Instructions to install the package are available `r Biocpkg("iSEE", label = "here")`.
-Once installed, the package can be loaded and attached to your current workspace as follows:
+`r Biocpkg("iSEE")` is a [Bioconductor](http://bioconductor.org) package that provides an interactive Shiny-based graphical user interface for exploring data stored in objects derived from the `SummarizedExperiment` class, which includes `SingleCellExperiment` objects [@kra2018iSEE].
+
+Instructions to install the package are available `r Biocpkg("iSEE", label = "here")`. Once installed, the package can be loaded as follows:
 
 ```{r library}
 library(iSEE)
 ```
 
-If you have a `SummarizedExperiment` object (or instance of a subclass) named `se`, you can launch an `r Biocpkg("iSEE")` app by simply calling `iSEE(se)`.
-In this vignette, we demonstrate this process using the `allen` single-cell RNA-seq data set from the `r Biocpkg("scRNAseq")` package.
+If you have already loaded a `SummarizedExperiment` or `SingleCellExperiment` object into your workspace named `se`, you can launch an `r Biocpkg("iSEE")` app by running:
+
+```{r quickstart, eval=FALSE}
+iSEE(se)
+```
+
+In this vignette, we demonstrate this process using the `allen` single-cell RNA-seq data set from the `r Biocpkg("scRNAseq")` package. To try out the app using this example dataset, run the following code.
+
+```{r quickstart, eval=FALSE}
+example(iSEE, ask=FALSE)
+```
 
 # Setting up the data
 

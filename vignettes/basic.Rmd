@@ -55,12 +55,11 @@ stopifnot(requireNamespace("htmltools"))
 htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 ```
 
+![](`r system.file(package="iSEE", "www/iSEE.png", mustWork=TRUE)`)
+
 # Introduction 
 
-<!-- logo? MOS DEF :) --> 
-<!-- I'd say TODO -->
-
-`r Biocpkg("iSEE")` is a [Bioconductor](http://bioconductor.org) package that provides an interactive Shiny-based graphical user interface for exploring data stored in objects derived from the `SummarizedExperiment` class [@kra2018iSEE].
+`r Biocpkg("iSEE")` is a [Bioconductor](http://bioconductor.org) package that provides an interactive Shiny-based graphical user interface for exploring data stored in `SummarizedExperiment` objects [@kra2018iSEE].
 Instructions to install the package are available `r Biocpkg("iSEE", label = "here")`.
 Once installed, the package can be loaded and attached to your current workspace as follows:
 
@@ -68,9 +67,14 @@ Once installed, the package can be loaded and attached to your current workspace
 library(iSEE)
 ```
 
-If you have a `SummarizedExperiment` object (or instance of a subclass) named `se`, you can launch an `r Biocpkg("iSEE")` app by simply calling `iSEE(se)`.
+If you have a `SummarizedExperiment` object^[Or an instance of a subclass, like a `SingleCellExperiment` object.] named `se`, you can launch an `r Biocpkg("iSEE")` app by running:
+
+```{r demostart, eval=FALSE}
+iSEE(se)
+```
+
 In this vignette, we demonstrate this process using the `allen` single-cell RNA-seq data set from the `r Biocpkg("scRNAseq")` package.
-But if you can't be bothered to read the rest of this document, you can start playing with the app immediately with the following code.
+However, if you can't wait, you can start playing with the app immediately with the following code.
 
 ```{r quickstart, eval=FALSE}
 example(iSEE, ask=FALSE)

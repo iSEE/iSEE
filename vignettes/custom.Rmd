@@ -80,13 +80,13 @@ This may be `NULL` if no transmitting panel was selected or if no active selecti
 - A vector of column names as the _third_ argument, specifying the columns that are currently selected in the transmitting _column-based_ panel.
 This may be `NULL` if no transmitting panel was selected or if no active selection is available.
 
-In addition:
-
-- For _custom plot panels_, the function is expected to produce a `ggplot` object.
-- For _custom table panels_, the function is expected to produce a `data.frame`.
-
 Conversely, `iSEE(..., customSendAll=TRUE)` transmits _all_ selections - active and saved - from the transmitting panel.
-This feature is described in further detail and demonstrated in a [later section](#customSendAll).
+This feature is described in further detail [below](#customSendAll).
+
+The output of the function should be:
+
+- A `ggplot` object, for functions used in _custom plot panels_.
+- A `data.frame`, for functions used in _custom table panels_.
 
 ## Example of custom plot panel
 

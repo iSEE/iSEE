@@ -4,6 +4,7 @@
 \section{iSEE VERSION 1.3.8}{
 \itemize{
     \item Support multiple selections.
+    \item Avoid Javascript error with check group conditional.
 }
 }
 

@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.2.3}{
+\itemize{
+    \item Fix release date.
+}
+}
+
 \section{iSEE VERSION 1.2.2}{
 \itemize{
     \item Avoid Javascript error with check group conditional.

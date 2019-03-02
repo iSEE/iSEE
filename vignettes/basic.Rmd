@@ -55,7 +55,9 @@ stopifnot(requireNamespace("htmltools"))
 htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 ```
 
-![](`r system.file(package="iSEE", "www/iSEE.png", mustWork=TRUE)`)
+```{r, echo=FALSE, out.width='50%', fig.align='center'}
+knitr::include_graphics(path = system.file(package="iSEE", "www/iSEE.png", mustWork=TRUE))
+```
 
 # Introduction 
 

@@ -1,3 +1,5 @@
+context("codeTracker")
+
 # This script tests the code related to the creation of the point transmission infrastructure.
 # library(iSEE); library(testthat); source("setup_sce.R"); source("test_track_code.R")
 

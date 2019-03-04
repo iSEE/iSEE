@@ -1,3 +1,4 @@
+context("lasso")
 
 stopifnot(
   require(mgcv)

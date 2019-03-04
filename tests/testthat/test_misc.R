@@ -1,3 +1,5 @@
+context("misc")
+
 # This tests miscellaneous functions in iSEE-extras, required to prepare data for shiny.
 # library(iSEE); library(testthat); source("setup_sce.R"); source("test_misc.R")
 

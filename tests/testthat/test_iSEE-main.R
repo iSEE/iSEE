@@ -1,3 +1,4 @@
+context("iSEE-main")
 
 test_that("iSEE main function runs", {
 

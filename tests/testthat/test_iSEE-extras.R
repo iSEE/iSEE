@@ -1,3 +1,4 @@
+context("iSEE-extras")
 
 stopifnot(
   require(shiny)

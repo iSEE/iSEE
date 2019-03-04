@@ -1,3 +1,4 @@
+context("brush")
 
 # .identical_brushes ----
 

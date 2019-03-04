@@ -1,3 +1,4 @@
+context("zzz")
 
 test_that("onLoad works", {
 

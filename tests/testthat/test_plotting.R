@@ -1,3 +1,4 @@
+context("plotting")
 
 # Set up plotting parameters
 redDimArgs <- redDimPlotDefaults(sce, 1)

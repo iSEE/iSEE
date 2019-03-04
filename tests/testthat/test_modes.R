@@ -1,3 +1,4 @@
+context("modes")
 
 ####################
 # Tests start here #

@@ -1,4 +1,4 @@
-
+context("constants")
 
 test_that(".encode_panel_name can convert plot names", {
 

@@ -1,3 +1,5 @@
+context("report_memory")
+
 # Do NOT move to setup; re-defined here to keep tests self-contained.
 redDimArgs <- redDimPlotDefaults(sce, 2)
 colDataArgs <- colDataPlotDefaults(sce, 2)

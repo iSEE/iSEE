@@ -1,3 +1,5 @@
+context("annotation")
+
 # This tests the dynamic annotation functions.
 # library(testthat); library(iSEE); source("setup_sce.R"); source("test_annotation.R")
 

@@ -1,3 +1,4 @@
+context("heatmap")
 
 # Set up plotting parameters
 redDimArgs <- redDimPlotDefaults(sce, 1)

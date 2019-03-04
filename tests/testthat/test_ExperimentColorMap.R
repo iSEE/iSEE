@@ -1,3 +1,4 @@
+context("ExperimentColorMap")
 
 # Validity method ----
 

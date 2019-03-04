@@ -1,3 +1,5 @@
+context("subset_points")
+
 # This tests the subsetPointsByGrid function.
 # library(testthat); library(iSEE); source("test_subset_points.R")
 

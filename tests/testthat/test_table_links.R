@@ -1,3 +1,5 @@
+context("table_links")
+
 # Tests the table linking functions for point-based plots.
 # library(iSEE); library(testthat); source("setup_sce.R"); source("test_table_links.R")
 

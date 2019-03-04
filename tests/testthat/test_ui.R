@@ -1,3 +1,4 @@
+context("ui")
 
 # Set up a custom plotting functions
 CUSTOM <- function(se, columns, arg1=NULL) {

@@ -246,11 +246,11 @@ CUSTOM_DIFFEXP <- function(se, ri, ci, assay="logcounts") {
     }
 
     assayMatrix <- assay(se, assay)[ri, , drop=FALSE]
-    active <- rowMeans(assayMatrix[,ci$active,drop=FALSE])
+    active <- Matrix::rowMeans(assayMatrix[,ci$active,drop=FALSE])
 
     lfcs <- vector("list", length(ci$saved))
     for (i in seq_along(lfcs)) {
-        saved <- rowMeans(assayMatrix[,ci$saved[[i]],drop=FALSE])
+        saved <- Matrix::rowMeans(assayMatrix[,ci$saved[[i]],drop=FALSE])
         lfcs[[i]] <- active - saved
     }
     names(lfcs) <- sprintf("LogFC/%i", seq_along(lfcs))
@@ -271,7 +271,7 @@ CUSTOM_HEAT <- function(se, ri, ci, assay="logcounts") {
     }
 
     everything <- as.matrix(everything)
-    top <- head(order(rowMeans(abs(everything)), decreasing=TRUE), 50)
+    top <- head(order(Matrix::rowMeans(abs(everything)), decreasing=TRUE), 50)
     topFC <- everything[top, , drop=FALSE]
     dimnames(topFC) <- list(gene=rownames(topFC), contrast=colnames(topFC))
     dfFC <- reshape2::melt(topFC)
@@ -328,8 +328,8 @@ CUSTOM_LFC <- function(se, rows, columns) {
 
     if (!identical(caching$columns, columns)) {
         caching$columns <- columns
-        in.subset <- rowMeans(logcounts(sce)[,columns])
-        out.subset <- rowMeans(logcounts(sce)[,setdiff(colnames(sce), columns)])
+        in.subset <- Matrix::rowMeans(logcounts(sce)[,columns])
+        out.subset <- Matrix::rowMeans(logcounts(sce)[,setdiff(colnames(sce), columns)])
         caching$logFC <- setNames(in.subset - out.subset, rownames(sce))
     } 
        

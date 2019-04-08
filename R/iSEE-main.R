@@ -1054,19 +1054,22 @@ iSEE <- function(se,
 
                         # Don't add to waypoints if a Shiny brush exists in memory, but instead, destroy the brush.
                         # Also destroy any closed lassos, or update open lassos.
-                        destroyed <- FALSE
+                        reactivated <- FALSE
                         if (!is.null(pObjects$memory[[mode0]][,.brushData][[id0]])) {
                             pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .brushData, NULL)
-                            destroyed <- TRUE
+                            reactivated <- TRUE
                         } else {
                             prev_lasso <- pObjects$memory[[mode0]][,.lassoData][[id0]]
                             was_closed <- if(is.null(prev_lasso)) FALSE else prev_lasso$closed
 
                             if (was_closed) {
                                 new_lasso <- NULL
-                                destroyed <- TRUE
+                                reactivated <- TRUE
                             } else {
                                 new_lasso <- .update_lasso(input[[click_field]], prev_lasso)
+                                if (new_lasso$closed) {
+                                    reactivated <- TRUE
+                                }
                             }
 
                             pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .lassoData, new_lasso)
@@ -1080,7 +1083,7 @@ iSEE <- function(se,
 
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
 
-                        if (destroyed) {
+                        if (reactivated) {
                             rObjects[[act_field]] <- .increment_counter(isolate(rObjects[[act_field]]))
                         }
                     })

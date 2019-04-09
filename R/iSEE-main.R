@@ -1054,19 +1054,22 @@ iSEE <- function(se,
 
                         # Don't add to waypoints if a Shiny brush exists in memory, but instead, destroy the brush.
                         # Also destroy any closed lassos, or update open lassos.
-                        destroyed <- FALSE
+                        reactivated <- FALSE
                         if (!is.null(pObjects$memory[[mode0]][,.brushData][[id0]])) {
                             pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .brushData, NULL)
-                            destroyed <- TRUE
+                            reactivated <- TRUE
                         } else {
                             prev_lasso <- pObjects$memory[[mode0]][,.lassoData][[id0]]
                             was_closed <- if(is.null(prev_lasso)) FALSE else prev_lasso$closed
 
                             if (was_closed) {
                                 new_lasso <- NULL
-                                destroyed <- TRUE
+                                reactivated <- TRUE
                             } else {
                                 new_lasso <- .update_lasso(input[[click_field]], prev_lasso)
+                                if (new_lasso$closed) {
+                                    reactivated <- TRUE
+                                }
                             }
 
                             pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .lassoData, new_lasso)
@@ -1080,7 +1083,7 @@ iSEE <- function(se,
 
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
 
-                        if (destroyed) {
+                        if (reactivated) {
                             rObjects[[act_field]] <- .increment_counter(isolate(rObjects[[act_field]]))
                         }
                     })
@@ -1844,39 +1847,35 @@ iSEE <- function(se,
                     force(rObjects$active_panels) # to trigger recreation when the number of plots is changed.
                     force(rObjects[[panel_name]])
                     param_choices <- pObjects$memory$customStatTable[id0,]
-
-                    row_selected <- .get_selected_points(rownames(se), param_choices[[.customRowSource]],
-                        pObjects$memory, pObjects$coordinates, select_all=customSendAll)
-                    row_L2C <- function(keep) rownames(se)[keep]
-                    if (customSendAll) {
-                        if (!is.null(row_selected$active)) {
-                            row_selected$active <- row_L2C(row_selected$active)
-                        }
-                        row_selected$saved <- lapply(row_selected$saved, row_L2C)
-                    } else {
-                        if (!is.null(row_selected)) {
-                            row_selected <- row_L2C(row_selected)
-                        }
-                    }
-
-                    col_selected <- .get_selected_points(colnames(se), param_choices[[.customColSource]],
-                        pObjects$memory, pObjects$coordinates, select_all=customSendAll)
-                    col_L2C <- function(keep) colnames(se)[keep]
-                    if (customSendAll) {
-                        if (!is.null(col_selected$active)) {
-                            col_selected$active <- col_L2C(col_selected$active)
-                        }
-                        col_selected$saved <- lapply(col_selected$saved, col_L2C)
-                    } else {
-                        if (!is.null(col_selected)) {
-                            col_selected <- col_L2C(col_selected)
-                        }
-                    }
-
                     chosen_fun <- param_choices[[.customFun]]
                     if (chosen_fun==.noSelection) {
                         return(NULL)
                     }
+
+                    select_out <- .process_custom_selections(param_choices, pObjects$memory, select_all = customSendAll)
+                    brushes <- lassos <- histories <- list()
+
+                    for (i in seq_along(select_out$transmitter)) {
+                        current <- select_out$transmitter[[i]]
+                        transmit_param <- pObjects$memory[[current$Type]][current$ID,]
+                        temp_env <- new.env()
+                        .populate_selection_environment(transmit_param, temp_env)
+
+                        # Storing the extracted brushes and such.
+                        brushes <- c(brushes, temp_env$all_brushes)
+                        lassos <- c(lassos, temp_env$all_lassos)
+                        histories <- c(histories, temp_env$all_select_histories)
+                    }
+
+                    eval_env <- new.env()
+                    eval_env$all_coordinates <- pObjects$coordinates
+                    eval_env$all_brushes <- brushes
+                    eval_env$all_lassos <- lassos
+                    eval_env$all_select_histories <- histories
+                    .text_eval(select_out$cmds, eval_env)
+
+                    row_selected <- eval_env$row.names
+                    col_selected <- eval_env$col.names
 
                     chosen_args <- param_choices[[.customArgs]]
                     FUN <- .get_internal_info(se, "custom_stat_fun")[[chosen_fun]]

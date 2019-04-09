@@ -28,3 +28,4 @@
     }
     invisible(NULL)
 }
+# nocov end

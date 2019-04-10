@@ -54,7 +54,8 @@ Suggests:
     RColorBrewer,
     viridis,
     org.Mm.eg.db,
-    htmltools
+    htmltools,
+    Matrix
 URL: https://github.com/csoneson/iSEE
 BugReports: https://github.com/csoneson/iSEE/issues
 biocViews: ImmunoOncology, Visualization, GUI, DimensionReduction, 

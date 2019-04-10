@@ -498,16 +498,13 @@ iSEE <- function(se,
         enc_names <- rep(names(pObjects$memory), n_available)
         available_panels <- paste0(enc_names, enc_ids)
         names(available_panels) <- .decode_panel_name(enc_names, enc_ids)
-
+        
         # Panel ordering, addition and deletion.
         observeEvent(input$organize_panels, {
             active_panels <- paste0(rObjects$active_panels$Type, rObjects$active_panels$ID)
             names(active_panels) <- .decode_panel_name(rObjects$active_panels$Type, rObjects$active_panels$ID)
-
-            ordered_panel_choices <- c(
-                active_panels,
-                setdiff(available_panels, active_panels)
-            )
+            inactive_panels <- available_panels[which(!available_panels %in% active_panels)]
+            ordered_panel_choices <- c(active_panels, inactive_panels)
             showModal(modalDialog(
                 title = "Panel organization", size = "m", fade = TRUE,
                 footer = NULL, easyClose = TRUE,
@@ -527,25 +524,8 @@ iSEE <- function(se,
         # Height and width are both under the control of the action button
         # Note that panel order is not (see above)
         observeEvent(input$update_ui, {
-            
-            ### Reorder/add/remove panels ###
-            cur_active <- paste0(rObjects$active_panels$Type, rObjects$active_panels$ID)
-            if (identical(input$panel_order, cur_active)) {
-                return(NULL)
-            }
-            
-            m <- match(input$panel_order, cur_active)
-            new_active_panels <- rObjects$active_panels[m,,drop=FALSE]
-            
-            to_add <- is.na(m)
-            if (any(to_add)) {
-                enc_add <- .split_encoded(input$panel_order[to_add])
-                new_active_panels[to_add,] <- data.frame(Type=enc_add$Type, ID=enc_add$ID, Width=4, Height=500L, stringsAsFactors=FALSE)
-            }
-            
-            rObjects$active_panels <- new_active_panels
-            
             ### Update panel width/height ###
+            # Note that this must happen _before_ adding new active panels, as those don't have height/width inputs yet!
             for (mode in all_panel_types) {
                 max_plots <- nrow(pObjects$memory[[mode]])
                 for (id in seq_len(max_plots)) {
@@ -580,6 +560,23 @@ iSEE <- function(se,
                     })
                 }
             }
+            
+            ### Reorder/add/remove panels ###
+            cur_active <- paste0(rObjects$active_panels$Type, rObjects$active_panels$ID)
+            if (identical(input$panel_order, cur_active)) {
+                return(NULL)
+            }
+            
+            m <- match(input$panel_order, cur_active)
+            new_active_panels <- rObjects$active_panels[m,,drop=FALSE]
+            
+            to_add <- is.na(m)
+            if (any(to_add)) {
+                enc_add <- .split_encoded(input$panel_order[to_add])
+                new_active_panels[to_add,] <- data.frame(Type=enc_add$Type, ID=enc_add$ID, Width=4, Height=500L, stringsAsFactors=FALSE)
+            }
+            
+            rObjects$active_panels <- new_active_panels
         })
 
         #######################################################################

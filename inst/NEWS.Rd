@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.3.9}{
+\itemize{
+    \item Control the update of panel width and height using an action button.
+}
+}
+
 \section{iSEE VERSION 1.3.8}{
 \itemize{
     \item Support multiple selections.

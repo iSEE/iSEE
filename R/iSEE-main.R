@@ -699,7 +699,7 @@ iSEE <- function(se,
 
                         # Updating children, if the current panel is set to restrict
                         # (and thus the point population changes with a new transmitted selection).
-                        if (pObjects$memory[[mode0]][id0, .selectEffect]==.selectRestrictTitle) {
+                        if (can_transmit && pObjects$memory[[mode0]][id0, .selectEffect]==.selectRestrictTitle) {
                             rObjects[[repop_field]] <- .increment_counter(isolate(rObjects[[repop_field]]))
                         }
                     }, ignoreInit=TRUE)

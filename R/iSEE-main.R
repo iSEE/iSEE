@@ -498,19 +498,18 @@ iSEE <- function(se,
         enc_names <- rep(names(pObjects$memory), n_available)
         available_panels <- paste0(enc_names, enc_ids)
         names(available_panels) <- .decode_panel_name(enc_names, enc_ids)
-
+        
         # Panel ordering, addition and deletion.
         observeEvent(input$organize_panels, {
             active_panels <- paste0(rObjects$active_panels$Type, rObjects$active_panels$ID)
             names(active_panels) <- .decode_panel_name(rObjects$active_panels$Type, rObjects$active_panels$ID)
-
-            ordered_panel_choices <- c(
-                active_panels,
-                setdiff(available_panels, active_panels)
-            )
+            inactive_panels <- available_panels[which(!available_panels %in% active_panels)]
+            ordered_panel_choices <- c(active_panels, inactive_panels)
             showModal(modalDialog(
                 title = "Panel organization", size = "m", fade = TRUE,
                 footer = NULL, easyClose = TRUE,
+                actionButton("update_ui", "Apply settings", icon=icon("object-ungroup"), width = '100%'),
+                hr(),
                 selectizeInput("panel_order", label=NULL, choices=ordered_panel_choices, multiple=TRUE,
                     selected=active_panels,
                     options=list(plugins=list('remove_button', 'drag_drop')), width="500px"),
@@ -518,44 +517,29 @@ iSEE <- function(se,
             ))
         })
 
-        observeEvent(input$panel_order, {
-            cur_active <- paste0(rObjects$active_panels$Type, rObjects$active_panels$ID)
-            if (identical(input$panel_order, cur_active)) {
-                return(NULL)
-            }
-
-            m <- match(input$panel_order, cur_active)
-            new_active_panels <- rObjects$active_panels[m,,drop=FALSE]
-
-            to_add <- is.na(m)
-            if (any(to_add)) {
-                enc_add <- .split_encoded(input$panel_order[to_add])
-                new_active_panels[to_add,] <- data.frame(Type=enc_add$Type, ID=enc_add$ID, Width=4, Height=500L, stringsAsFactors=FALSE)
-            }
-
-            rObjects$active_panels <- new_active_panels
-        })
-
         output$panelParams <- renderUI({
             .panel_organization(rObjects$active_panels)
         })
-
-        # Note: we need "local" so that each item gets its own number. Without it, the value
-        # of 'id' in the renderPlot() will be the same across all instances, because
-        # of when the expression is evaluated.
-
-        for (mode in all_panel_types) {
-            max_plots <- nrow(pObjects$memory[[mode]])
-            for (id in seq_len(max_plots)) {
-                local({
-                    mode0 <- mode
-                    id0 <- id
-                    prefix <- paste0(mode0, id0, "_")
-                    max_plots0 <- max_plots
-
-                    # Panel modification options.
-                    width_name <- paste0(prefix, .organizationWidth)
-                    observeEvent(input[[width_name]], {
+        
+        # Height and width are both under the control of the action button
+        # Note that panel order is not (see above)
+        observeEvent(input$update_ui, {
+            ### Update panel width/height ###
+            # Note that this must happen _before_ adding new active panels, as those don't have height/width inputs yet!
+            for (mode in all_panel_types) {
+                max_plots <- nrow(pObjects$memory[[mode]])
+                for (id in seq_len(max_plots)) {
+                    # Note: we need "local" so that each item gets its own number. Without it, the value
+                    # of 'id' in the renderPlot() will be the same across all instances, because
+                    # of when the expression is evaluated.
+                    local({
+                        mode0 <- mode
+                        id0 <- id
+                        prefix <- paste0(mode0, id0, "_")
+                        max_plots0 <- max_plots
+                        
+                        # Panel width
+                        width_name <- paste0(prefix, .organizationWidth)
                         all_active <- rObjects$active_panels
                         index <- which(all_active$Type==mode0 & all_active$ID==id0)
                         cur.width <- all_active$Width[index]
@@ -563,10 +547,9 @@ iSEE <- function(se,
                         if (!isTRUE(all.equal(new.width, cur.width))) {
                             rObjects$active_panels$Width[index] <- new.width
                         }
-                    }, ignoreInit=TRUE)
-
-                    height_name <- paste0(prefix, .organizationHeight)
-                    observeEvent(input[[height_name]], {
+                        
+                        # Panel height
+                        height_name <- paste0(prefix, .organizationHeight)
                         all_active <- rObjects$active_panels
                         index <- which(all_active$Type==mode0 & all_active$ID==id0)
                         cur.height <- all_active$Height[index]
@@ -574,10 +557,27 @@ iSEE <- function(se,
                         if (!isTRUE(all.equal(new.height, cur.height))) {
                             rObjects$active_panels$Height[index] <- new.height
                         }
-                    }, ignoreInit=TRUE)
-                })
+                    })
+                }
             }
-        }
+            
+            ### Reorder/add/remove panels ###
+            cur_active <- paste0(rObjects$active_panels$Type, rObjects$active_panels$ID)
+            if (identical(input$panel_order, cur_active)) {
+                return(NULL)
+            }
+            
+            m <- match(input$panel_order, cur_active)
+            new_active_panels <- rObjects$active_panels[m,,drop=FALSE]
+            
+            to_add <- is.na(m)
+            if (any(to_add)) {
+                enc_add <- .split_encoded(input$panel_order[to_add])
+                new_active_panels[to_add,] <- data.frame(Type=enc_add$Type, ID=enc_add$ID, Width=4, Height=500L, stringsAsFactors=FALSE)
+            }
+            
+            rObjects$active_panels <- new_active_panels
+        })
 
         #######################################################################
         # Parameter panel observers.

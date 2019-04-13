@@ -8,6 +8,9 @@ cache: packages
 
 warnings_are_errors: false
 
+env:
+    - R_REMOTES_UPGRADE="always"
+
 before_install:
     - Rscript -e 'install.packages("devtools")'
     - Rscript -e 'devtools::install(dependencies=TRUE)'

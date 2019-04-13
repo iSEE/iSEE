@@ -374,7 +374,7 @@
         curcode <- list(strrep("#", 80),
                 sprintf("# Settings for %ss", tolower(panelTypes[mode])),
                 strrep("#", 80), "", 
-                sprintf("%s <- new('DataFrame', nrows=%iL, rownames=paste0('%s', seq_len(%i)))", arg_obj, Npanels, mode, Npanels))
+                sprintf("%s <- new('DataFrame', nrows=%iL, rownames=sprintf('%s%%i', seq_len(%i)))", arg_obj, Npanels, mode, Npanels))
 
         for (field in colnames(current)) {
             curvals <- current[[field]]

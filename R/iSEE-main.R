@@ -499,18 +499,23 @@ iSEE <- function(se,
         available_panels <- paste0(enc_names, enc_ids)
         names(available_panels) <- .decode_panel_name(enc_names, enc_ids)
 
+        # Persistent objects to give the modal a 'working memory'.
+        org_pObjects <- reactiveValues(active_panels=active_panels)
+        org_rObjects <- reactiveValues(rerender=0)
+
         # Panel ordering, addition and deletion.
         observeEvent(input$organize_panels, {
             active_panels <- paste0(rObjects$active_panels$Type, rObjects$active_panels$ID)
             names(active_panels) <- .decode_panel_name(rObjects$active_panels$Type, rObjects$active_panels$ID)
+            inactive_panels <- available_panels[which(!available_panels %in% active_panels)]
+            ordered_panel_choices <- c(active_panels, inactive_panels)
+            org_pObjects$active_panels <- rObjects$active_panels
 
-            ordered_panel_choices <- c(
-                active_panels,
-                setdiff(available_panels, active_panels)
-            )
             showModal(modalDialog(
                 title = "Panel organization", size = "m", fade = TRUE,
                 footer = NULL, easyClose = TRUE,
+                actionButton("update_ui", "Apply settings", icon=icon("object-ungroup"), width = '100%'),
+                hr(),
                 selectizeInput("panel_order", label=NULL, choices=ordered_panel_choices, multiple=TRUE,
                     selected=active_panels,
                     options=list(plugins=list('remove_button', 'drag_drop')), width="500px"),
@@ -518,66 +523,72 @@ iSEE <- function(se,
             ))
         })
 
-        observeEvent(input$panel_order, {
-            cur_active <- paste0(rObjects$active_panels$Type, rObjects$active_panels$ID)
-            if (identical(input$panel_order, cur_active)) {
-                return(NULL)
-            }
-
-            m <- match(input$panel_order, cur_active)
-            new_active_panels <- rObjects$active_panels[m,,drop=FALSE]
-
-            to_add <- is.na(m)
-            if (any(to_add)) {
-                enc_add <- .split_encoded(input$panel_order[to_add])
-                new_active_panels[to_add,] <- data.frame(Type=enc_add$Type, ID=enc_add$ID, Width=4, Height=500L, stringsAsFactors=FALSE)
-            }
-
-            rObjects$active_panels <- new_active_panels
-        })
-
         output$panelParams <- renderUI({
-            .panel_organization(rObjects$active_panels)
+            force(org_rObjects$rerender)
+            .panel_organization(org_pObjects$active_panels)
         })
-
-        # Note: we need "local" so that each item gets its own number. Without it, the value
-        # of 'id' in the renderPlot() will be the same across all instances, because
-        # of when the expression is evaluated.
 
         for (mode in all_panel_types) {
             max_plots <- nrow(pObjects$memory[[mode]])
             for (id in seq_len(max_plots)) {
+                # Note: we need "local" so that each item gets its own number. Without it, the value
+                # of 'id' in the renderPlot() will be the same across all instances, because
+                # of when the expression is evaluated.
                 local({
                     mode0 <- mode
                     id0 <- id
                     prefix <- paste0(mode0, id0, "_")
                     max_plots0 <- max_plots
 
-                    # Panel modification options.
                     width_name <- paste0(prefix, .organizationWidth)
                     observeEvent(input[[width_name]], {
-                        all_active <- rObjects$active_panels
+                        all_active <- org_pObjects$active_panels
                         index <- which(all_active$Type==mode0 & all_active$ID==id0)
                         cur.width <- all_active$Width[index]
                         new.width <- as.integer(input[[width_name]])
                         if (!isTRUE(all.equal(new.width, cur.width))) {
-                            rObjects$active_panels$Width[index] <- new.width
+                            org_pObjects$active_panels$Width[index] <- new.width
                         }
-                    }, ignoreInit=TRUE)
+                    })
 
                     height_name <- paste0(prefix, .organizationHeight)
                     observeEvent(input[[height_name]], {
-                        all_active <- rObjects$active_panels
+                        all_active <- org_pObjects$active_panels
                         index <- which(all_active$Type==mode0 & all_active$ID==id0)
                         cur.height <- all_active$Height[index]
                         new.height <- input[[height_name]]
                         if (!isTRUE(all.equal(new.height, cur.height))) {
-                            rObjects$active_panels$Height[index] <- new.height
+                            org_pObjects$active_panels$Height[index] <- new.height
                         }
-                    }, ignoreInit=TRUE)
+                    })
                 })
             }
         }
+
+        ### Reorder/add/remove panels ###
+        observeEvent(input$panel_order, {
+            cur_active <- paste0(org_pObjects$active_panels$Type, org_pObjects$active_panels$ID)
+            if (identical(input$panel_order, cur_active)) {
+                return(NULL)
+            }
+
+            m <- match(input$panel_order, cur_active)
+            new_active_panels <- org_pObjects$active_panels[m,,drop=FALSE]
+
+            to_add <- is.na(m)
+            if (any(to_add)) {
+                enc_add <- .split_encoded(input$panel_order[to_add])
+                new_active_panels[to_add,] <- data.frame(Type=enc_add$Type, ID=enc_add$ID, 
+                    Width=4, Height=500L, stringsAsFactors=FALSE)
+            }
+
+            org_pObjects$active_panels <- new_active_panels
+            .increment_counter(org_rObjects$rerender)
+        })
+
+        observeEvent(input$update_ui, {
+            rObjects$active_panels <- org_pObjects$active_panels
+        })
 
         #######################################################################
         # Parameter panel observers.
@@ -699,7 +710,7 @@ iSEE <- function(se,
 
                         # Updating children, if the current panel is set to restrict
                         # (and thus the point population changes with a new transmitted selection).
-                        if (pObjects$memory[[mode0]][id0, .selectEffect]==.selectRestrictTitle) {
+                        if (can_transmit && pObjects$memory[[mode0]][id0, .selectEffect]==.selectRestrictTitle) {
                             rObjects[[repop_field]] <- .increment_counter(isolate(rObjects[[repop_field]]))
                         }
                     }, ignoreInit=TRUE)
@@ -1054,19 +1065,22 @@ iSEE <- function(se,
 
                         # Don't add to waypoints if a Shiny brush exists in memory, but instead, destroy the brush.
                         # Also destroy any closed lassos, or update open lassos.
-                        destroyed <- FALSE
+                        reactivated <- FALSE
                         if (!is.null(pObjects$memory[[mode0]][,.brushData][[id0]])) {
                             pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .brushData, NULL)
-                            destroyed <- TRUE
+                            reactivated <- TRUE
                         } else {
                             prev_lasso <- pObjects$memory[[mode0]][,.lassoData][[id0]]
                             was_closed <- if(is.null(prev_lasso)) FALSE else prev_lasso$closed
 
                             if (was_closed) {
                                 new_lasso <- NULL
-                                destroyed <- TRUE
+                                reactivated <- TRUE
                             } else {
                                 new_lasso <- .update_lasso(input[[click_field]], prev_lasso)
+                                if (new_lasso$closed) {
+                                    reactivated <- TRUE
+                                }
                             }
 
                             pObjects$memory[[mode0]] <- .update_list_element(pObjects$memory[[mode0]], id0, .lassoData, new_lasso)
@@ -1080,7 +1094,7 @@ iSEE <- function(se,
 
                         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
 
-                        if (destroyed) {
+                        if (reactivated) {
                             rObjects[[act_field]] <- .increment_counter(isolate(rObjects[[act_field]]))
                         }
                     })
@@ -1844,39 +1858,35 @@ iSEE <- function(se,
                     force(rObjects$active_panels) # to trigger recreation when the number of plots is changed.
                     force(rObjects[[panel_name]])
                     param_choices <- pObjects$memory$customStatTable[id0,]
-
-                    row_selected <- .get_selected_points(rownames(se), param_choices[[.customRowSource]],
-                        pObjects$memory, pObjects$coordinates, select_all=customSendAll)
-                    row_L2C <- function(keep) rownames(se)[keep]
-                    if (customSendAll) {
-                        if (!is.null(row_selected$active)) {
-                            row_selected$active <- row_L2C(row_selected$active)
-                        }
-                        row_selected$saved <- lapply(row_selected$saved, row_L2C)
-                    } else {
-                        if (!is.null(row_selected)) {
-                            row_selected <- row_L2C(row_selected)
-                        }
-                    }
-
-                    col_selected <- .get_selected_points(colnames(se), param_choices[[.customColSource]],
-                        pObjects$memory, pObjects$coordinates, select_all=customSendAll)
-                    col_L2C <- function(keep) colnames(se)[keep]
-                    if (customSendAll) {
-                        if (!is.null(col_selected$active)) {
-                            col_selected$active <- col_L2C(col_selected$active)
-                        }
-                        col_selected$saved <- lapply(col_selected$saved, col_L2C)
-                    } else {
-                        if (!is.null(col_selected)) {
-                            col_selected <- col_L2C(col_selected)
-                        }
-                    }
-
                     chosen_fun <- param_choices[[.customFun]]
                     if (chosen_fun==.noSelection) {
                         return(NULL)
                     }
+
+                    select_out <- .process_custom_selections(param_choices, pObjects$memory, select_all = customSendAll)
+                    brushes <- lassos <- histories <- list()
+
+                    for (i in seq_along(select_out$transmitter)) {
+                        current <- select_out$transmitter[[i]]
+                        transmit_param <- pObjects$memory[[current$Type]][current$ID,]
+                        temp_env <- new.env()
+                        .populate_selection_environment(transmit_param, temp_env)
+
+                        # Storing the extracted brushes and such.
+                        brushes <- c(brushes, temp_env$all_brushes)
+                        lassos <- c(lassos, temp_env$all_lassos)
+                        histories <- c(histories, temp_env$all_select_histories)
+                    }
+
+                    eval_env <- new.env()
+                    eval_env$all_coordinates <- pObjects$coordinates
+                    eval_env$all_brushes <- brushes
+                    eval_env$all_lassos <- lassos
+                    eval_env$all_select_histories <- histories
+                    .text_eval(select_out$cmds, eval_env)
+
+                    row_selected <- eval_env$row.names
+                    col_selected <- eval_env$col.names
 
                     chosen_args <- param_choices[[.customArgs]]
                     FUN <- .get_internal_info(se, "custom_stat_fun")[[chosen_fun]]

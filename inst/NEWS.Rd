@@ -1,6 +1,17 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.3.9}{
+\itemize{
+    \item Add ORCID identifiers.
+    \item Fix subscript error when tables receive a selection.
+    \item Fix panel names in panel organization selectize input.
+    \item Control the application of panel organization updates using an action button.
+    \item Fix child replotting upon lasso close.
+    \item Fix code reporting for zero-length DataFrame
+}
+}
+
 \section{iSEE VERSION 1.3.8}{
 \itemize{
     \item Support multiple selections.

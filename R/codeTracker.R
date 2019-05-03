@@ -298,53 +298,65 @@
 #' @importFrom igraph delete.vertices set_vertex_attr V add_edges
 #' @importFrom graphics plot
 .snapshot_graph_linkedpanels <- function(active_panels, pObjects) {
-  cur_plots <- sprintf("%s%i", active_panels$Type, active_panels$ID)
-  not_used <- setdiff(V(pObjects$selection_links)$name,cur_plots)
-  curgraph <- delete.vertices(pObjects$selection_links, not_used)
-  curgraph <- set_vertex_attr(curgraph,"plottype", value = sub("[0-9]+$","",V(curgraph)$name))
-  
-  # Incorporating table links as well.
-  tbl_objs <- active_panels[active_panels$Type=="rowStatTable",]
-  cur_tables <- sprintf("%s%i",tbl_objs$Type,tbl_objs$ID)
-  all_tlinks <- pObjects$table_links
-  cur_tlinks <- all_tlinks[cur_tables]
-  
-  # instead of taking the links as such, check whether they are really used to link
-  # following the implementation of .define_table_links...
-  memory <- pObjects$memory
-  
-  for (i in seq_len(nrow(tbl_objs))) {
-    table_used <- cur_tables[i]
-    current <- cur_tlinks[[table_used]]
-    for (trans in list(c("yaxis", NA, NA),
-                       c("xaxis", .featAssayXAxis, .featAssayXAxisFeatNameTitle),
-                       c("color", .colorByField, .colorByFeatNameTitle))
-    ) {
-      children <- current[[trans[1]]]
-      child_enc <- .split_encoded(children)
-      child_names <- .decode_panel_name(child_enc$Type, child_enc$ID)
-      
-      by_field <- trans[2]
-      ref_title <- trans[3]
-      
-      # Only adding the edge if the plot actually receives the information via the
-      # appropriate parameter choices. Y-axis for feature plots is NA, as there are no choices there.
-      for (i in seq_along(child_names)) {
-        if (is.na(by_field) || memory[[child_enc$Type[i]]][child_enc$ID[i], by_field]==ref_title) {
-          curgraph <- add_edges(curgraph, c(table_used, children[i]))
+    cur_plots <- sprintf("%s%i", active_panels$Type, active_panels$ID)
+    not_used <- setdiff(V(pObjects$selection_links)$name,cur_plots)
+    curgraph <- delete.vertices(pObjects$selection_links, not_used)
+    curgraph <- set_vertex_attr(curgraph,"plottype", value = sub("[0-9]+$","",V(curgraph)$name))
+
+    # Incorporating table links as well.
+    tbl_objs <- active_panels[active_panels$Type %in% linked_table_types,]
+    cur_tables <- sprintf("%s%i",tbl_objs$Type,tbl_objs$ID)
+    all_tlinks <- pObjects$table_links
+    cur_tlinks <- all_tlinks[cur_tables]
+
+    # instead of taking the links as such, check whether they are really used to link
+    # following the implementation of .define_table_links...
+    memory <- pObjects$memory
+
+    for (i in seq_len(nrow(tbl_objs))) {
+        table_used <- cur_tables[i]
+        current <- cur_tlinks[[table_used]]
+        for (trans in c("yaxis", "xaxis", "color")) {
+            children <- current[[trans[[1]]]]
+            child_enc <- .split_encoded(children)
+            child_names <- .decode_panel_name(child_enc$Type, child_enc$ID)
+
+            if (trans=="yaxis") {
+                # Always adding links to Y-axis for sample/feature plots;
+                # if it's linked, then there's no choice but to change.
+                for (j in seq_along(child_names)) {
+                    curgraph <- add_edges(curgraph, c(table_used, children[j]))
+                }
+            } else {
+                if (trans=="xaxis") {
+                    by_field <- c(.featAssayXAxis, .sampAssayXAxis)
+                    ref_title <- c(.featAssayXAxisFeatNameTitle, .sampAssayXAxisSampNameTitle)
+                } else {
+                    by_field <- rep(.colorByField, 2)
+                    ref_title <- c(.colorByFeatNameTitle, .colorBySampNameTitle)
+                }
+
+                # Only adding the edge if the plot actually receives the information via the
+                # appropriate parameter choices.
+                for (j in seq_along(child_names)) {
+                    for (k in seq_along(by_field)) {
+                        if (memory[[child_enc$Type[j]]][child_enc$ID[j], by_field[k]] == ref_title[k]) {
+                            curgraph <- add_edges(curgraph, c(table_used, children[j]))
+                        }
+                    }
+                }
+            }
         }
-      }
     }
-  }
  
-  # Creating the plot. 
-  plot(curgraph,
-       edge.arrow.size = .8,
-       vertex.label.cex = 1.3,
-       vertex.label.family = "Helvetica",
-       vertex.label.color = "black",
-       vertex.label.dist = 2.5,
-       vertex.color = panel_colors[V(curgraph)$plottype])
+    # Creating the plot. 
+    plot(curgraph,
+        edge.arrow.size = .8,
+        vertex.label.cex = 1.3,
+        vertex.label.family = "Helvetica",
+        vertex.label.color = "black",
+        vertex.label.dist = 2.5,
+        vertex.color = panel_colors[V(curgraph)$plottype])
 }  
 
 

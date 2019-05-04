@@ -1,6 +1,18 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.5.1}{
+\itemize{
+    \item Fix report of table links.
+}
+}
+
+\section{iSEE VERSION 1.5.0}{
+\itemize{
+    \item Bioconductor release.
+}
+}
+
 \section{iSEE VERSION 1.3.9}{
 \itemize{
     \item Add ORCID identifiers.
@@ -65,6 +77,12 @@
     \item Fix invalid row index sent from tables in RStudio browser.
     \item Fix initialization of search fields for tables that are initialized with an incoming selection.
     \item Fix constant field name.
+}
+}
+
+\section{iSEE VERSION 1.3.0}{
+\itemize{
+    \item Bioconductor release.
 }
 }
 
@@ -173,6 +191,12 @@
     \item INTERNAL: Enable storage of additional \code{plot.data} beyond \code{X} and \code{Y} in \code{all.coordinates}.
         See constant \code{.allCoordinatesNames}.
         Necessary for correct behaviour of brushes on faceted plots.
+}
+}
+
+\section{iSEE VERSION 1.1.0}{
+\itemize{
+    \item Bioconductor release.
 }
 }
 

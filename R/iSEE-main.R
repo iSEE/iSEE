@@ -10,7 +10,7 @@
 #' @param rowStatArgs A DataFrame similar to that produced by \code{\link{rowStatTableDefaults}}, specifying initial parameters for the row statistics tables.
 #' @param rowDataArgs A DataFrame similar to that produced by \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the row data plots.
 #' @param sampAssayArgs A DataFrame similar to that produced by \code{\link{sampAssayPlotDefaults}}, specifying initial parameters for the sample assay plots.
-#' @param colStatArgs A DataFrame similar to that produced by \code{\link{colStatTableDefaults}}, specifying initial parameters for the sample assay plots.
+#' @param colStatArgs A DataFrame similar to that produced by \code{\link{colStatTableDefaults}}, specifying initial parameters for the column statistics tables.
 #' @param customDataArgs A DataFrame similar to that produced by \code{\link{customDataPlotDefaults}}, specifying initial parameters for the custom data plots.
 #' @param customStatArgs A DataFrame similar to that produced by \code{\link{customStatTableDefaults}}, specifying initial parameters for the custom statistics tables.
 #' @param heatMapArgs A DataFrame similar to that produced by \code{\link{heatMapPlotDefaults}}, specifying initial parameters for the heatmaps.

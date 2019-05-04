@@ -24,6 +24,7 @@ colDataArgs[2, iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
 featAssayArgs[2, iSEE:::.selectByPlot] <- "Column data plot 1"
 heatMapArgs[1, iSEE:::.selectByPlot] <- "Column data plot 1"
 featAssayArgs[1, iSEE:::.selectByPlot] <- "Feature assay plot 1"
+featAssayArgs[1, iSEE:::.featAssayYAxisRowTable] <- "Row statistics table 1"
 
 memory <- list(
     redDimPlot=redDimArgs,
@@ -206,20 +207,20 @@ test_that("code trackers can deparse a lasso", {
 })
 
 test_that("code trackers can deparse a selection history", {
-    
+
     initial_panels <- DataFrame(Name = c(
         "Reduced dimension plot 1"
     ))
-    
+
     LASSO_CLOSED <- list(
         lasso=NULL,
         closed=TRUE,
         panelvar1=NULL, panelvar2=NULL,
         mapping=list(x="X", y="Y"),
         coord=matrix(c(1, 2, 2, 1, 1, 1, 1, 2, 2, 1), ncol=2))
-    
+
     redDimArgs[[iSEE:::.multiSelectHistory]][[1]] <- list(LASSO_CLOSED)
-    
+
     memory <- list(
         redDimPlot=redDimArgs,
         colDataPlot=DataFrame(),
@@ -234,20 +235,20 @@ test_that("code trackers can deparse a selection history", {
     )
     active_panels <- iSEE:::.setup_initial(initial_panels, memory)
     g <- iSEE:::.spawn_selection_chart(memory)
-    
+
     # Mimicking a running instance of the app.
     pObjects <- new.env()
     pObjects$memory <- memory
     pObjects$selection_links <- g
     pObjects$coordinates <- list()
     pObjects$commands <- list()
-    
+
     out <- .track_selection_code(active_panels, pObjects)
-    
+
     # Caompare with .deparse_for_viewing directly
     out2 <- iSEE:::.deparse_for_viewing(LASSO_CLOSED)
     expect_true(any(grepl(out2, out, fixed=TRUE)))
-    
+
 })
 
 # .snapshot_graph_linkedpanels ----

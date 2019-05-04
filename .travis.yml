@@ -9,11 +9,11 @@ cache: packages
 warnings_are_errors: false
 
 env:
-    - R_REMOTES_UPGRADE="always"
+  - R_REMOTES_UPGRADE="always"
 
 before_install:
-    - Rscript -e 'install.packages("devtools")'
-    - Rscript -e 'devtools::install(dependencies=TRUE)'
+  - Rscript -e 'install.packages("devtools")'
+  - Rscript -e 'devtools::install(dependencies=TRUE)'
 
 r_build_args: "--no-manual --no-resave-data"
 r_check_args: "--no-build-vignettes --no-manual --timings"
@@ -25,3 +25,12 @@ r_packages:
 after_success:
   - Rscript -e 'library(covr); codecov()'
   
+before_deploy: Rscript -e 'remotes::install_cran("pkgdown")'
+deploy:
+  provider: script
+  script: Rscript -e 'pkgdown::deploy_site_github()'
+  skip_cleanup: true
+  on:
+    branch:
+      - master
+      - pkgdown

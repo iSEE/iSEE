@@ -4,3 +4,6 @@
 ^.travis.yml$
 ^codecov\.yml$
 ^Dockerfile$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

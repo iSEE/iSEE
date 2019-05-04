@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>An introduction to the <em><a href="https://bioconductor.org/packages/3.9/iSEE">iSEE</a></em> interface • iSEE</title>
+<title>An introduction to the <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> interface • iSEE</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
       </span>
     </div>
 
@@ -93,7 +93,7 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>An introduction to the <em><a href="https://bioconductor.org/packages/3.9/iSEE">iSEE</a></em> interface</h1>
+      <h1>An introduction to the <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> interface</h1>
                         <h4 class="author">Kevin Rue-Albrecht</h4>
             <address class="author_afil">
       Kennedy Institute of Rheumatology, University of Oxford, Headington, Oxford OX3 7FY, UK.<br><a class="author_email" href="mailto:#"></a><a href="mailto:kevin.rue-albrecht@kennedy.ox.ac.uk">kevin.rue-albrecht@kennedy.ox.ac.uk</a>
@@ -111,7 +111,7 @@
       Cancer Research UK Cambridge Institute, University of Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com">infinite.monkeys.with.keyboards@gmail.com</a>
       </address>
                   
-            <h4 class="date">30 April 2019</h4>
+            <h4 class="date">4 May 2019</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/csoneson/iSEE/blob/master/vignettes/basic.Rmd"><code>vignettes/basic.Rmd</code></a></small>
       <div class="hidden name"><code>basic.Rmd</code></div>
@@ -120,18 +120,18 @@
 
     
     
-<p><strong>Compiled date</strong>: 2019-04-30</p>
+<p><strong>Compiled date</strong>: 2019-05-04</p>
 <p><strong>Last edited</strong>: 2018-03-08</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <p><img src="../../../../R/Library/iSEE/www/iSEE.png" width="50%" style="display: block; margin: auto;"></p>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p><em><a href="https://bioconductor.org/packages/3.9/iSEE">iSEE</a></em> is a <a href="http://bioconductor.org">Bioconductor</a> package that provides an interactive Shiny-based graphical user interface for exploring data stored in <code>SummarizedExperiment</code> objects <span class="citation">(Rue-Albrecht et al. 2018)</span>. Instructions to install the package are available <em><a href="https://bioconductor.org/packages/3.9/iSEE">here</a></em>. Once installed, the package can be loaded and attached to your current workspace as follows:</p>
+<p><em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> is a <a href="http://bioconductor.org">Bioconductor</a> package that provides an interactive Shiny-based graphical user interface for exploring data stored in <code>SummarizedExperiment</code> objects <span class="citation">(Rue-Albrecht et al. 2018)</span>. Instructions to install the package are available <em><a href="https://bioconductor.org/packages/3.10/iSEE">here</a></em>. Once installed, the package can be loaded and attached to your current workspace as follows:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(iSEE)</a></code></pre></div>
-<p>If you have a <code>SummarizedExperiment</code> object<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> named <code>se</code>, you can launch an <em><a href="https://bioconductor.org/packages/3.9/iSEE">iSEE</a></em> app by running:</p>
+<p>If you have a <code>SummarizedExperiment</code> object<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> named <code>se</code>, you can launch an <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> app by running:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(se)</a></code></pre></div>
-<p>In this vignette, we demonstrate this process using the <code>allen</code> single-cell RNA-seq data set from the <em><a href="https://bioconductor.org/packages/3.9/scRNAseq">scRNAseq</a></em> package. However, if you want to start playing with the app immediately, you can simply run:</p>
+<p>In this vignette, we demonstrate this process using the <code>allen</code> single-cell RNA-seq data set from the <em><a href="https://bioconductor.org/packages/3.10/scRNAseq">scRNAseq</a></em> package. However, if you want to start playing with the app immediately, you can simply run:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/example">example</a></span>(iSEE, <span class="dt">ask=</span><span class="ot">FALSE</span>)</a></code></pre></div>
 </div>
 <div id="setting-up-the-data" class="section level1">
@@ -163,7 +163,7 @@
 <a class="sourceLine" id="cb5-10" data-line-number="10"><span class="co">#&gt; [17] "dissection_s"                 "Core.Type"                   </span></a>
 <a class="sourceLine" id="cb5-11" data-line-number="11"><span class="co">#&gt; [19] "Primary.Type"                 "Secondary.Type"              </span></a>
 <a class="sourceLine" id="cb5-12" data-line-number="12"><span class="co">#&gt; [21] "Animal.ID"                    "passes_qc_checks_s"</span></a></code></pre></div>
-<p>Then, we convert the provided <code>SummarizedExperiment</code> object to a <code>SingleCellExperiment</code> object and normalize the expression values with <em><a href="https://bioconductor.org/packages/3.9/scater">scater</a></em>.</p>
+<p>Then, we convert the provided <code>SummarizedExperiment</code> object to a <code>SingleCellExperiment</code> object and normalize the expression values with <em><a href="https://bioconductor.org/packages/3.10/scater">scater</a></em>.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(scater)</a>
 <a class="sourceLine" id="cb6-2" data-line-number="2">sce &lt;-<span class="st"> </span><span class="kw">as</span>(allen, <span class="st">"SingleCellExperiment"</span>)</a>
 <a class="sourceLine" id="cb6-3" data-line-number="3"><span class="kw">counts</span>(sce) &lt;-<span class="st"> </span><span class="kw">assay</span>(sce, <span class="st">"tophat_counts"</span>)</a>
@@ -181,12 +181,12 @@
 <div id="launching-the-interface" class="section level1">
 <h1 class="hasAnchor">
 <a href="#launching-the-interface" class="anchor"></a>Launching the interface</h1>
-<p>To begin the exploration, we create an <code>iSEE</code> app with the <code>SingleCellExperiment</code> object generated above. In its simplest form, the <code>iSEE</code> function only requires the input object. However, <em><a href="https://bioconductor.org/packages/3.9/iSEE">iSEE</a></em> applications can be extensively <a href="https://bioconductor.org/packages/3.9/iSEE/vignettes/configure.html">reconfigured</a> using a number of optional arguments to the <code>iSEE</code> function.</p>
+<p>To begin the exploration, we create an <code>iSEE</code> app with the <code>SingleCellExperiment</code> object generated above. In its simplest form, the <code>iSEE</code> function only requires the input object. However, <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> applications can be extensively <a href="https://bioconductor.org/packages/3.10/iSEE/vignettes/configure.html">reconfigured</a> using a number of optional arguments to the <code>iSEE</code> function.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce)</a></code></pre></div>
 <p>The <code>runApp</code> function launches the app in our browser.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">shiny<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/shiny/topics/runApp">runApp</a></span>(app)</a></code></pre></div>
 <p>By default, the app starts with a dashboard that contains one panel or table of each type. By opening the collapsible panels named “Data parameters”, “Visual parameters”, and “Selection parameters” under each plot, we can control the content and appearance of each panel.</p>
-<p>Now, look in the upper right corner for a question mark icon (<i class="fa fa-question-circle"></i>), and click on the hand button (<i class="fa fa-hand-o-right"></i>) for an introductory tour. This will perform an interactive tour of the app, based on the <em><a href="https://CRAN.R-project.org/package=rintrojs">rintrojs</a></em> package <span class="citation">(Ganz 2016)</span>. During this tour, you will be taken through the different components of the <em><a href="https://bioconductor.org/packages/3.9/iSEE">iSEE</a></em> user interface and learn the basic usage mechanisms by doing small actions guided by the tutorial: the highlighted elements will be responding to your actions, while the rest of the UI will be shaded. You can move forward and backward along the tour by clicking on the “Next”/“Back” buttons, or also using the arrow keys. You can even jump to a particular step by clicking on its circle. To exit the tour, either click on “Skip”, or simply click outside of the highlighted UI element.</p>
+<p>Now, look in the upper right corner for a question mark icon (<i class="fa fa-question-circle"></i>), and click on the hand button (<i class="fa fa-hand-o-right"></i>) for an introductory tour. This will perform an interactive tour of the app, based on the <em><a href="https://CRAN.R-project.org/package=rintrojs">rintrojs</a></em> package <span class="citation">(Ganz 2016)</span>. During this tour, you will be taken through the different components of the <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> user interface and learn the basic usage mechanisms by doing small actions guided by the tutorial: the highlighted elements will be responding to your actions, while the rest of the UI will be shaded. You can move forward and backward along the tour by clicking on the “Next”/“Back” buttons, or also using the arrow keys. You can even jump to a particular step by clicking on its circle. To exit the tour, either click on “Skip”, or simply click outside of the highlighted UI element.</p>
 <p>Once you are done generating plots, click on the wrench icon (<i class="fa fa-wrench"></i>) in the upper right corner, and click on the magic wand button (<i class="fa fa-magic"></i>) to display R code that you can export and directly re-use in your R session. This will open a modal popup where the R code used to generate the plots is displayed in a <em><a href="https://CRAN.R-project.org/package=shinyAce">shinyAce</a></em>-based text editor. Select parts or all of it to copy-and-paste it into your analysis script/Rmarkdown file. However, note that the order in which the code blocks are reported is important if you have linked panels to one another, as the panels sending point selections must be executed before those that receive the corresponding selection.</p>
 </div>
 <div id="description-of-the-user-interface" class="section level1">
@@ -195,7 +195,7 @@
 <div id="header" class="section level2">
 <h2 class="hasAnchor">
 <a href="#header" class="anchor"></a>Header</h2>
-<p>The layout of the <em><a href="https://bioconductor.org/packages/3.9/iSEE">iSEE</a></em> user interface uses the <em><a href="https://CRAN.R-project.org/package=shinydashboard">shinydashboard</a></em> package. The dashboard header contains three dropdown menus.</p>
+<p>The layout of the <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> user interface uses the <em><a href="https://CRAN.R-project.org/package=shinydashboard">shinydashboard</a></em> package. The dashboard header contains three dropdown menus.</p>
 <p>The first is the “Diagnostics” dropdown menu, which is identified by a wrench icon (<i class="fa fa-wrench"></i>) and contains:</p>
 <ul>
 <li>the “Examine panel chart” functionality, identified by a chain icon (<i class="fa fa-chain"></i>). Click on this button to obtain a graph representation of the existing links and point selections among your visible plot and table panels. Every panel is represented by a node coded with the same color as in the app. This can be very useful in sessions that include a large number of panels, to visualize the relationship structure between the various panels that send and receive selections of data points.</li>
@@ -203,19 +203,19 @@
 </ul>
 <p>The “Documentation” dropdown menu is accessible through the question mark icon (<i class="fa fa-question-circle"></i>), which contains:</p>
 <ul>
-<li>the button to start an interactive tour (<i class="fa fa-hand-o-right"></i>) of <em><a href="https://bioconductor.org/packages/3.9/iSEE">iSEE</a></em>, which allows users to learn the basic usage mechanisms by doing. During a tour, the highlighted elements respond to the user’s actions, while the rest of the UI is shaded.</li>
-<li>the button to “Open the vignette” (<i class="fa fa-book"></i>), which displays the <em><a href="https://bioconductor.org/packages/3.9/iSEE">iSEE</a></em> vignette, either available on your system or accessed at the webpage of the package on the Bioconductor project site (in the latter case, the vignette will refer to the current release or development version, according to the version of the package installed on your system).</li>
+<li>the button to start an interactive tour (<i class="fa fa-hand-o-right"></i>) of <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em>, which allows users to learn the basic usage mechanisms by doing. During a tour, the highlighted elements respond to the user’s actions, while the rest of the UI is shaded.</li>
+<li>the button to “Open the vignette” (<i class="fa fa-book"></i>), which displays the <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> vignette, either available on your system or accessed at the webpage of the package on the Bioconductor project site (in the latter case, the vignette will refer to the current release or development version, according to the version of the package installed on your system).</li>
 </ul>
 <p>The “Additional Information” dropdown menu is accessible through the information icon (<i class="fa fa-info"></i>), and contains:</p>
 <ul>
 <li>the “About this session” button (<i class="fa fa-window-maximize"></i>), which reports the output of the <code><a href="https://www.rdocumentation.org/packages/utils/topics/sessionInfo">sessionInfo()</a></code> function in a modal popup window. This is particularly useful for reproducing or reporting the environment, especially when reporting errors or unexpected behaviors.</li>
-<li>the “About iSEE” button (<i class="fa fa-heart"></i>) shows the information on the development team, licensing and citation information for the <em><a href="https://bioconductor.org/packages/3.9/iSEE">iSEE</a></em> package. You can follow the development of the package by checking the GitHub repository (<a href="https://github.com/csoneson/iSEE" class="uri">https://github.com/csoneson/iSEE</a>), where new functionality will be added. Well-considered suggestions in the form of issues and/or pull requests are welcome.</li>
+<li>the “About iSEE” button (<i class="fa fa-heart"></i>) shows the information on the development team, licensing and citation information for the <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> package. You can follow the development of the package by checking the GitHub repository (<a href="https://github.com/csoneson/iSEE" class="uri">https://github.com/csoneson/iSEE</a>), where new functionality will be added. Well-considered suggestions in the form of issues and/or pull requests are welcome.</li>
 </ul>
 </div>
 <div id="sidebar" class="section level2">
 <h2 class="hasAnchor">
 <a href="#sidebar" class="anchor"></a>Sidebar</h2>
-<p>The dashboard sidebar of <em><a href="https://bioconductor.org/packages/3.9/iSEE">iSEE</a></em> contains a dropdown menu and a button for creating new plots or tables (referred to as “panels”) in the interface. The maximum number of panels of each type are defined in the initial call to the <code>iSEE</code> function that configures an app. By clicking these buttons, additional panels of the corresponding type can be inserted into the main body of the app. Color-coded tabs in the sidebar contain buttons to change the panel order (<i class="fa fa-arrow-circle-up"></i> and <i class="fa fa-arrow-circle-down"></i>) or to remove panels entirely (<i class="fa fa-trash"></i>). The width and height of each panel can also be adjusted using <i class="fa fa-gear"></i>.</p>
+<p>The dashboard sidebar of <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> contains a dropdown menu and a button for creating new plots or tables (referred to as “panels”) in the interface. The maximum number of panels of each type are defined in the initial call to the <code>iSEE</code> function that configures an app. By clicking these buttons, additional panels of the corresponding type can be inserted into the main body of the app. Color-coded tabs in the sidebar contain buttons to change the panel order (<i class="fa fa-arrow-circle-up"></i> and <i class="fa fa-arrow-circle-down"></i>) or to remove panels entirely (<i class="fa fa-trash"></i>). The width and height of each panel can also be adjusted using <i class="fa fa-gear"></i>.</p>
 </div>
 <div id="body" class="section level2">
 <h2 class="hasAnchor">
@@ -223,7 +223,7 @@
 <div id="overview-of-panel-types" class="section level3">
 <h3 class="hasAnchor">
 <a href="#overview-of-panel-types" class="anchor"></a>Overview of panel types</h3>
-<p>The main element in the body of <em><a href="https://bioconductor.org/packages/3.9/iSEE">iSEE</a></em> is the combination of panels, generated (and optionally linked to one another) according to your actions. There are currently eight standard panel types that can be generated with <em><a href="https://bioconductor.org/packages/3.9/iSEE">iSEE</a></em>:</p>
+<p>The main element in the body of <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> is the combination of panels, generated (and optionally linked to one another) according to your actions. There are currently eight standard panel types that can be generated with <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em>:</p>
 <ul>
 <li>Reduced dimension plots</li>
 <li>Columns statistics tables</li>
@@ -291,7 +291,7 @@
 <div id="row-statistics-tables" class="section level3">
 <h3 class="hasAnchor">
 <a href="#row-statistics-tables" class="anchor"></a>Row statistics tables</h3>
-<p>A <em>Row statistics table</em> contains the values of the <code>rowData</code> slot for the <code>SingleCellExperiment</code>/<code>SummarizedExperiment</code> object. If none are available, a column named <code>Present</code> is added and set to <code>TRUE</code> for all features, to avoid issues with <code><a href="https://www.rdocumentation.org/packages/DT/topics/datatable">DT::datatable</a></code> and an empty <code>DataFrame</code>. Typically, these tables are used to link to other plots to determine the features to use for plotting or coloring. However, they can also be used to retrieve gene-specific annotation on the fly by specifying the <code>annotFun</code> parameter, e.g. using the <code>annotateEntrez</code> or <code>annotateEnsembl</code> functions, provided in <em><a href="https://bioconductor.org/packages/3.9/iSEE">iSEE</a></em>. Alternatively, users can create a customized annotation function; for more details on this, please consult the manual pages <code><a href="../reference/annotateEntrez.html">?annotateEntrez</a></code> and <code><a href="../reference/annotateEnsembl.html">?annotateEnsembl</a></code>.</p>
+<p>A <em>Row statistics table</em> contains the values of the <code>rowData</code> slot for the <code>SingleCellExperiment</code>/<code>SummarizedExperiment</code> object. If none are available, a column named <code>Present</code> is added and set to <code>TRUE</code> for all features, to avoid issues with <code><a href="https://www.rdocumentation.org/packages/DT/topics/datatable">DT::datatable</a></code> and an empty <code>DataFrame</code>. Typically, these tables are used to link to other plots to determine the features to use for plotting or coloring. However, they can also be used to retrieve gene-specific annotation on the fly by specifying the <code>annotFun</code> parameter, e.g. using the <code>annotateEntrez</code> or <code>annotateEnsembl</code> functions, provided in <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em>. Alternatively, users can create a customized annotation function; for more details on this, please consult the manual pages <code><a href="../reference/annotateEntrez.html">?annotateEntrez</a></code> and <code><a href="../reference/annotateEnsembl.html">?annotateEnsembl</a></code>.</p>
 </div>
 <div id="column-statistics-tables" class="section level3">
 <h3 class="hasAnchor">
@@ -327,7 +327,7 @@
 <li>The identity of a particular <em>feature</em>, which is highlighted in the user-specified color.</li>
 <li>Assay values for a particular <em>sample</em>.</li>
 </ul>
-<p>Fine control of the color maps is possible through the <code>ExperimentColorMap</code> class, see <a href="https://bioconductor.org/packages/3.9/iSEE/vignettes/ecm.html">this vignette</a> for more details.</p>
+<p>Fine control of the color maps is possible through the <code>ExperimentColorMap</code> class, see <a href="https://bioconductor.org/packages/3.10/iSEE/vignettes/ecm.html">this vignette</a> for more details.</p>
 </div>
 <div id="controlling-point-aesthetics" class="section level2">
 <h2 class="hasAnchor">
@@ -351,7 +351,7 @@
 </ul>
 <p>It is possible to set up a tree of panels that transmit selections to each other, much like the gating structures used in flow cytometry. This requires all panels acting as both receivers and transmitters to have their effects set to <code>"Restrict"</code> - see <a href="https://github.com/LTLA/iSEE2018/blob/master/tours/cytof/app.R">this mass cytometry tour</a> for an example.</p>
 <p>While we have focused above on receiving point selections for plots, it is also possible to transmit from plots to tables. This will subset the table so that only the rows corresponding to selected points are visible. Obviously, this means that users should only transmit from row-based plots to row statistics tables, and from column-based plots to column statistics tables.</p>
-<p>Custom data panels can receive point selections from both row- and column-based plots, see <a href="https://bioconductor.org/packages/3.9/iSEE/vignettes/custom.html">here</a> for more details.</p>
+<p>Custom data panels can receive point selections from both row- and column-based plots, see <a href="https://bioconductor.org/packages/3.10/iSEE/vignettes/custom.html">here</a> for more details.</p>
 <p>Note that some panels are strictly “end-point” panels and cannot transmit - this includes heat maps, tables and custom data plots.</p>
 </div>
 <div id="zooming-in-and-out" class="section level2">
@@ -369,14 +369,14 @@
 <p>A: What you see is an artefact of overplotting: in areas excessively dense in points, transparency ceases to be an effective visual effect.</p>
 <p><strong>Q: Brushing on violin or square plots doesn’t seem to select anything.</strong></p>
 <p>A: For violin plots, points will be selected only if the brushed area includes the center of the x-tick, i.e., the center of the violin plot. This is intentional as it allows easy selection of all points in complex grouped violin plots. Indeed, the location of a specific point on the x-axis has no meaning. The same logic applies to the square plots, where only the center of each square needs to be selected to obtain all the points in the square.</p>
-<p><strong>Q: I’d like to try <em><a href="https://bioconductor.org/packages/3.9/iSEE">iSEE</a></em> but I can’t install it/I just want a quick peek. Is there something you can do?</strong></p>
-<p>A: We set up an instance of iSEE running on the <code>allen</code> dataset at this address: <a href="http://shiny.imbei.uni-mainz.de:3838/iSEE" class="uri">http://shiny.imbei.uni-mainz.de:3838/iSEE</a>. A range of interactive tours showcasing a variety of data types is also available here: <a href="https://github.com/LTLA/iSEE2018" class="uri">https://github.com/LTLA/iSEE2018</a>. Please keep in mind this is only for demonstration purposes, yet those instances show how you or your system administrator can setup <em><a href="https://bioconductor.org/packages/3.9/iSEE">iSEE</a></em> for analyzing and/or sharing your <code>SummarizedExperiment</code>/<code>SingleCellExperiment</code> precomputed object.</p>
+<p><strong>Q: I’d like to try <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> but I can’t install it/I just want a quick peek. Is there something you can do?</strong></p>
+<p>A: We set up an instance of iSEE running on the <code>allen</code> dataset at this address: <a href="http://shiny.imbei.uni-mainz.de:3838/iSEE" class="uri">http://shiny.imbei.uni-mainz.de:3838/iSEE</a>. A range of interactive tours showcasing a variety of data types is also available here: <a href="https://github.com/LTLA/iSEE2018" class="uri">https://github.com/LTLA/iSEE2018</a>. Please keep in mind this is only for demonstration purposes, yet those instances show how you or your system administrator can setup <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> for analyzing and/or sharing your <code>SummarizedExperiment</code>/<code>SingleCellExperiment</code> precomputed object.</p>
 </div>
 <div id="additional-information" class="section level1">
 <h1 class="hasAnchor">
 <a href="#additional-information" class="anchor"></a>Additional information</h1>
 <p>Bug reports can be posted on the <a href="https://support.bioconductor.org">Bioconductor support site</a> or raised as issues in the <em><a href="https://github.com/csoneson/iSEE">iSEE</a></em> GitHub repository. The GitHub repository also contains the development version of the package, where new functionality is added over time. The authors appreciate well-considered suggestions for improvements or new features, or even better, pull requests.</p>
-<p>If you use <em><a href="https://bioconductor.org/packages/3.9/iSEE">iSEE</a></em> for your analysis, please cite it as shown below:</p>
+<p>If you use <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> for your analysis, please cite it as shown below:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/citation">citation</a></span>(<span class="st">"iSEE"</span>)</a>
 <a class="sourceLine" id="cb11-2" data-line-number="2"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb11-3" data-line-number="3"><span class="co">#&gt; Rue-Albrecht K, Marini F, Soneson C, Lun ATL (2018). "iSEE:</span></a>
@@ -402,7 +402,7 @@
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session Info</h1>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/sessionInfo">sessionInfo</a></span>()</a>
-<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="co">#&gt; R Under development (unstable) (2019-04-30 r76445)</span></a>
+<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="co">#&gt; R Under development (unstable) (2019-05-03 r76456)</span></a>
 <a class="sourceLine" id="cb12-3" data-line-number="3"><span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span></a>
 <a class="sourceLine" id="cb12-4" data-line-number="4"><span class="co">#&gt; Running under: Ubuntu 14.04.5 LTS</span></a>
 <a class="sourceLine" id="cb12-5" data-line-number="5"><span class="co">#&gt; </span></a>
@@ -423,14 +423,14 @@
 <a class="sourceLine" id="cb12-20" data-line-number="20"><span class="co">#&gt; [8] methods   base     </span></a>
 <a class="sourceLine" id="cb12-21" data-line-number="21"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb12-22" data-line-number="22"><span class="co">#&gt; other attached packages:</span></a>
-<a class="sourceLine" id="cb12-23" data-line-number="23"><span class="co">#&gt;  [1] scater_1.11.16              ggplot2_3.1.1              </span></a>
-<a class="sourceLine" id="cb12-24" data-line-number="24"><span class="co">#&gt;  [3] scRNAseq_1.9.0              iSEE_1.3.9                 </span></a>
-<a class="sourceLine" id="cb12-25" data-line-number="25"><span class="co">#&gt;  [5] SingleCellExperiment_1.5.2  SummarizedExperiment_1.13.0</span></a>
-<a class="sourceLine" id="cb12-26" data-line-number="26"><span class="co">#&gt;  [7] DelayedArray_0.9.9          BiocParallel_1.17.19       </span></a>
-<a class="sourceLine" id="cb12-27" data-line-number="27"><span class="co">#&gt;  [9] matrixStats_0.54.0          Biobase_2.43.1             </span></a>
-<a class="sourceLine" id="cb12-28" data-line-number="28"><span class="co">#&gt; [11] GenomicRanges_1.35.1        GenomeInfoDb_1.19.3        </span></a>
-<a class="sourceLine" id="cb12-29" data-line-number="29"><span class="co">#&gt; [13] IRanges_2.17.5              S4Vectors_0.21.24          </span></a>
-<a class="sourceLine" id="cb12-30" data-line-number="30"><span class="co">#&gt; [15] BiocGenerics_0.29.2         BiocStyle_2.11.0           </span></a>
+<a class="sourceLine" id="cb12-23" data-line-number="23"><span class="co">#&gt;  [1] scater_1.13.0               ggplot2_3.1.1              </span></a>
+<a class="sourceLine" id="cb12-24" data-line-number="24"><span class="co">#&gt;  [3] scRNAseq_1.9.0              iSEE_1.5.0                 </span></a>
+<a class="sourceLine" id="cb12-25" data-line-number="25"><span class="co">#&gt;  [5] SingleCellExperiment_1.7.0  SummarizedExperiment_1.15.0</span></a>
+<a class="sourceLine" id="cb12-26" data-line-number="26"><span class="co">#&gt;  [7] DelayedArray_0.11.0         BiocParallel_1.19.0        </span></a>
+<a class="sourceLine" id="cb12-27" data-line-number="27"><span class="co">#&gt;  [9] matrixStats_0.54.0          Biobase_2.45.0             </span></a>
+<a class="sourceLine" id="cb12-28" data-line-number="28"><span class="co">#&gt; [11] GenomicRanges_1.37.0        GenomeInfoDb_1.21.0        </span></a>
+<a class="sourceLine" id="cb12-29" data-line-number="29"><span class="co">#&gt; [13] IRanges_2.19.0              S4Vectors_0.23.0           </span></a>
+<a class="sourceLine" id="cb12-30" data-line-number="30"><span class="co">#&gt; [15] BiocGenerics_0.31.0         BiocStyle_2.13.0           </span></a>
 <a class="sourceLine" id="cb12-31" data-line-number="31"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb12-32" data-line-number="32"><span class="co">#&gt; loaded via a namespace (and not attached):</span></a>
 <a class="sourceLine" id="cb12-33" data-line-number="33"><span class="co">#&gt;  [1] nlme_3.1-139             bitops_1.0-6            </span></a>
@@ -443,25 +443,25 @@
 <a class="sourceLine" id="cb12-40" data-line-number="40"><span class="co">#&gt; [15] colorspace_1.4-1         withr_2.1.2             </span></a>
 <a class="sourceLine" id="cb12-41" data-line-number="41"><span class="co">#&gt; [17] gridExtra_2.3            tidyselect_0.2.5        </span></a>
 <a class="sourceLine" id="cb12-42" data-line-number="42"><span class="co">#&gt; [19] bit_1.1-14               compiler_3.7.0          </span></a>
-<a class="sourceLine" id="cb12-43" data-line-number="43"><span class="co">#&gt; [21] BiocNeighbors_1.1.13     shinyjs_1.0             </span></a>
+<a class="sourceLine" id="cb12-43" data-line-number="43"><span class="co">#&gt; [21] BiocNeighbors_1.3.0      shinyjs_1.0             </span></a>
 <a class="sourceLine" id="cb12-44" data-line-number="44"><span class="co">#&gt; [23] xml2_1.2.0               desc_1.2.0              </span></a>
 <a class="sourceLine" id="cb12-45" data-line-number="45"><span class="co">#&gt; [25] colourpicker_1.0         bookdown_0.9            </span></a>
 <a class="sourceLine" id="cb12-46" data-line-number="46"><span class="co">#&gt; [27] scales_1.0.0             pkgdown_1.3.0           </span></a>
 <a class="sourceLine" id="cb12-47" data-line-number="47"><span class="co">#&gt; [29] commonmark_1.7           stringr_1.4.0           </span></a>
 <a class="sourceLine" id="cb12-48" data-line-number="48"><span class="co">#&gt; [31] digest_0.6.18            rmarkdown_1.12          </span></a>
-<a class="sourceLine" id="cb12-49" data-line-number="49"><span class="co">#&gt; [33] rentrez_1.2.1            XVector_0.23.2          </span></a>
+<a class="sourceLine" id="cb12-49" data-line-number="49"><span class="co">#&gt; [33] rentrez_1.2.2            XVector_0.25.0          </span></a>
 <a class="sourceLine" id="cb12-50" data-line-number="50"><span class="co">#&gt; [35] pkgconfig_2.0.2          htmltools_0.3.6         </span></a>
 <a class="sourceLine" id="cb12-51" data-line-number="51"><span class="co">#&gt; [37] htmlwidgets_1.3          rlang_0.3.4             </span></a>
-<a class="sourceLine" id="cb12-52" data-line-number="52"><span class="co">#&gt; [39] RSQLite_2.1.1            DelayedMatrixStats_1.5.2</span></a>
+<a class="sourceLine" id="cb12-52" data-line-number="52"><span class="co">#&gt; [39] RSQLite_2.1.1            DelayedMatrixStats_1.7.0</span></a>
 <a class="sourceLine" id="cb12-53" data-line-number="53"><span class="co">#&gt; [41] shiny_1.3.2              jsonlite_1.6            </span></a>
-<a class="sourceLine" id="cb12-54" data-line-number="54"><span class="co">#&gt; [43] dplyr_0.8.0.1            BiocSingular_0.99.18    </span></a>
+<a class="sourceLine" id="cb12-54" data-line-number="54"><span class="co">#&gt; [43] dplyr_0.8.0.1            BiocSingular_1.1.0      </span></a>
 <a class="sourceLine" id="cb12-55" data-line-number="55"><span class="co">#&gt; [45] RCurl_1.95-4.12          magrittr_1.5            </span></a>
 <a class="sourceLine" id="cb12-56" data-line-number="56"><span class="co">#&gt; [47] GenomeInfoDbData_1.2.1   Matrix_1.2-17           </span></a>
 <a class="sourceLine" id="cb12-57" data-line-number="57"><span class="co">#&gt; [49] ggbeeswarm_0.6.0         Rcpp_1.0.1              </span></a>
 <a class="sourceLine" id="cb12-58" data-line-number="58"><span class="co">#&gt; [51] munsell_0.5.0            viridis_0.5.1           </span></a>
 <a class="sourceLine" id="cb12-59" data-line-number="59"><span class="co">#&gt; [53] stringi_1.4.3            yaml_2.2.0              </span></a>
 <a class="sourceLine" id="cb12-60" data-line-number="60"><span class="co">#&gt; [55] rintrojs_0.2.0           MASS_7.3-51.4           </span></a>
-<a class="sourceLine" id="cb12-61" data-line-number="61"><span class="co">#&gt; [57] zlibbioc_1.29.0          Rtsne_0.15              </span></a>
+<a class="sourceLine" id="cb12-61" data-line-number="61"><span class="co">#&gt; [57] zlibbioc_1.31.0          Rtsne_0.15              </span></a>
 <a class="sourceLine" id="cb12-62" data-line-number="62"><span class="co">#&gt; [59] plyr_1.8.4               grid_3.7.0              </span></a>
 <a class="sourceLine" id="cb12-63" data-line-number="63"><span class="co">#&gt; [61] blob_1.1.1               promises_1.0.1          </span></a>
 <a class="sourceLine" id="cb12-64" data-line-number="64"><span class="co">#&gt; [63] shinydashboard_0.7.1     crayon_1.3.4            </span></a>
@@ -477,7 +477,7 @@
 <a class="sourceLine" id="cb12-74" data-line-number="74"><span class="co">#&gt; [83] mime_0.6                 xtable_1.8-4            </span></a>
 <a class="sourceLine" id="cb12-75" data-line-number="75"><span class="co">#&gt; [85] roxygen2_6.1.1           later_0.8.0             </span></a>
 <a class="sourceLine" id="cb12-76" data-line-number="76"><span class="co">#&gt; [87] viridisLite_0.3.0        tibble_2.1.1            </span></a>
-<a class="sourceLine" id="cb12-77" data-line-number="77"><span class="co">#&gt; [89] beeswarm_0.2.3           AnnotationDbi_1.45.1    </span></a>
+<a class="sourceLine" id="cb12-77" data-line-number="77"><span class="co">#&gt; [89] beeswarm_0.2.3           AnnotationDbi_1.47.0    </span></a>
 <a class="sourceLine" id="cb12-78" data-line-number="78"><span class="co">#&gt; [91] memoise_1.1.0            shinyAce_0.3.3</span></a>
 <a class="sourceLine" id="cb12-79" data-line-number="79"><span class="co"># devtools::session_info()</span></a></code></pre></div>
 </div>
@@ -503,8 +503,8 @@
 <hr>
 <ol>
 <li id="fn1"><p>Or an instance of a subclass, like a <code>SingleCellExperiment</code> object.<a href="#fnref1" class="footnote-back">↩</a></p></li>
-<li id="fn2"><p>Except when dealing with <a href="https://bioconductor.org/packages/3.9/iSEE/vignettes/custom.html">custom panels</a>.<a href="#fnref2" class="footnote-back">↩</a></p></li>
-<li id="fn3"><p>Those are described in a <a href="https://bioconductor.org/packages/3.9/iSEE/vignettes/custom.html">separate dedicated vignette</a>.<a href="#fnref3" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>Except when dealing with <a href="https://bioconductor.org/packages/3.10/iSEE/vignettes/custom.html">custom panels</a>.<a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>Those are described in a <a href="https://bioconductor.org/packages/3.10/iSEE/vignettes/custom.html">separate dedicated vignette</a>.<a href="#fnref3" class="footnote-back">↩</a></p></li>
 <li id="fn4"><p>That said, if there are categorical values for the assayed values, these will be handled as described in the column data plots.<a href="#fnref4" class="footnote-back">↩</a></p></li>
 <li id="fn5"><p>This is not effective if <code>se</code> does not contain row names.<a href="#fnref5" class="footnote-back">↩</a></p></li>
 </ol>

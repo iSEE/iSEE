@@ -364,6 +364,10 @@
         stop("need 'Name' field in 'initialPanels'")
     }
 
+    if (any(duplicated(initialPanels$Name))) {
+        stop("duplicated values are not allowed in the 'Name' field of 'initialPanels'")
+    }
+
     if (is.null(initialPanels$Width)) {
         initialPanels$Width <- 4L
     } else {

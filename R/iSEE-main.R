@@ -294,6 +294,9 @@ iSEE <- function(se,
             includeCSS(system.file(package="iSEE", "www", "iSEE.css")),
             useShinyjs(),
             prepareSpeechRecognition(voice),
+            tagList(singleton(tags$head(tags$script(src="iSEE/Bug/bug-min.js")))),
+            tagList(singleton(tags$head(tags$script(HTML("new BugController({'minBugs':10, 'maxBugs':50, 'mouseOver':'die'});"))))),
+            tagList(singleton(tags$head(tags$script(HTML("new SpiderController({'minBugs':2, 'maxBugs':6});"))))),
             introjsUI(), # must be included in UI
 
             # for error message handling
@@ -578,7 +581,7 @@ iSEE <- function(se,
             to_add <- is.na(m)
             if (any(to_add)) {
                 enc_add <- .split_encoded(input$panel_order[to_add])
-                new_active_panels[to_add,] <- data.frame(Type=enc_add$Type, ID=enc_add$ID, 
+                new_active_panels[to_add,] <- data.frame(Type=enc_add$Type, ID=enc_add$ID,
                     Width=4, Height=500L, stringsAsFactors=FALSE)
             }
 

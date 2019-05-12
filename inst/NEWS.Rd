@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.5.2}{
+\itemize{
+    \item Minor doc fix.
+}
+}
+
 \section{iSEE VERSION 1.5.1}{
 \itemize{
     \item Fix report of table links.

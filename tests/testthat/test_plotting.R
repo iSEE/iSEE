@@ -1663,6 +1663,8 @@ test_that(".downsample_points produces the appropriate code", {
     out <- iSEE:::.downsample_points(all_memory$colDataPlot[1, ], envir)
     expect_identical(out, c(
         "plot.data.pre <- plot.data;",
+        "set.seed(100);",
+        "plot.data <- plot.data[sample(nrow(plot.data)),,drop=FALSE];",
         "plot.data <- subset(plot.data, subsetPointsByGrid(jitteredX, jitteredY, resolution=200));",
         ""))
 
@@ -1688,6 +1690,8 @@ test_that(".downsample_points produces the appropriate code", {
     out <- iSEE:::.downsample_points(all_memory$colDataPlot[1, ], envir)
     expect_identical(out, c(
         "plot.data.pre <- plot.data;",
+        "set.seed(100);",
+        "plot.data <- plot.data[sample(nrow(plot.data)),,drop=FALSE];",
         "plot.data <- subset(plot.data, subsetPointsByGrid(jitteredX, Y, resolution=200));",
         ""))
 
@@ -1713,6 +1717,8 @@ test_that(".downsample_points produces the appropriate code", {
     out <- iSEE:::.downsample_points(all_memory$colDataPlot[1, ], envir)
     expect_identical(out, c(
         "plot.data.pre <- plot.data;",
+        "set.seed(100);",
+        "plot.data <- plot.data[sample(nrow(plot.data)),,drop=FALSE];",
         "plot.data <- subset(plot.data, subsetPointsByGrid(jitteredX, Y, resolution=200));",
         ""))
 

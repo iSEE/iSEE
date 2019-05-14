@@ -620,6 +620,8 @@ names(.all_aes_values) <- .all_aes_names
         }
 
         downsample_cmds <- c("plot.data.pre <- plot.data;",
+                             "set.seed(100);",
+                             "plot.data <- plot.data[sample(nrow(plot.data)),,drop=FALSE];",
             sprintf("plot.data <- subset(plot.data, subsetPointsByGrid(%s, %s, resolution=%i));",
                 xtype, ytype, param_choices[[.plotPointSampleRes]]), "")
 

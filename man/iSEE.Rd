@@ -30,7 +30,7 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featAssayArgs = NULL,
 
 \item{sampAssayArgs}{A DataFrame similar to that produced by \code{\link{sampAssayPlotDefaults}}, specifying initial parameters for the sample assay plots.}
 
-\item{colStatArgs}{A DataFrame similar to that produced by \code{\link{colStatTableDefaults}}, specifying initial parameters for the sample assay plots.}
+\item{colStatArgs}{A DataFrame similar to that produced by \code{\link{colStatTableDefaults}}, specifying initial parameters for the column statistics tables.}
 
 \item{customDataArgs}{A DataFrame similar to that produced by \code{\link{customDataPlotDefaults}}, specifying initial parameters for the custom data plots.}
 

@@ -622,15 +622,20 @@ names(.all_aes_values) <- .all_aes_names
         ## If we color by sample name in a column-based plot, or by feature name
         ## in a row-based plot, we make sure to keep the selected column/row in
         ## the downsampling
-        downsample_cmds <- c("plot.data.pre <- plot.data;",
-                             "set.seed(100);",
-                             "plot.data <- plot.data[sample(nrow(plot.data)),,drop=FALSE];",
-                             ifelse((param_choices[[.colorByField]] == .colorBySampNameTitle && grepl("(redDim|featAssay|colData)Plot([[:digit:]]+)$", rownames(param_choices))) || (param_choices[[.colorByField]] == .colorByFeatNameTitle && grepl("(sampAssay|rowData)Plot([[:digit:]]+)$", rownames(param_choices))),
-                                    sprintf("plot.data <- subset(plot.data, subsetPointsByGrid(%s, %s, resolution=%i) | as.logical(plot.data$ColorBy));",
-                                            xtype, ytype, param_choices[[.plotPointSampleRes]]),
-                                    sprintf("plot.data <- subset(plot.data, subsetPointsByGrid(%s, %s, resolution=%i));",
-                                            xtype, ytype, param_choices[[.plotPointSampleRes]])), "")
-        
+        template_subsample_cmd <- sprintf(
+            "plot.data <- subset(plot.data, subsetPointsByGrid(%s, %s, resolution=%i));",
+            xtype, ytype, param_choices[[.plotPointSampleRes]])
+        downsample_cmds <- c(
+            "plot.data.pre <- plot.data;",
+            "# Randomize data points to avoid a data set bias during the downsampling",
+            "set.seed(100);",
+            "plot.data <- plot.data[sample(nrow(plot.data)), , drop=FALSE];",
+            ifelse(
+                (param_choices[[.colorByField]] == .colorBySampNameTitle && grepl("(redDim|featAssay|colData)Plot([[:digit:]]+)$", rownames(param_choices))) || (param_choices[[.colorByField]] == .colorByFeatNameTitle && grepl("(sampAssay|rowData)Plot([[:digit:]]+)$", rownames(param_choices))),
+                gsub(");", " | as.logical(plot.data$ColorBy));", template_subsample_cmd),
+                template_subsample_cmd),
+            "")
+
         .text_eval(downsample_cmds, envir)
         return(downsample_cmds)
     } else {

@@ -622,18 +622,19 @@ names(.all_aes_values) <- .all_aes_names
         ## If we color by sample name in a column-based plot, or by feature name
         ## in a row-based plot, we make sure to keep the selected column/row in
         ## the downsampling
-        template_subsample_cmd <- sprintf(
-            "plot.data <- subset(plot.data, subsetPointsByGrid(%s, %s, resolution=%i));",
-            xtype, ytype, param_choices[[.plotPointSampleRes]])
+        is_color_by_sample_name <- param_choices[[.colorByField]] == .colorBySampNameTitle && grepl("(redDim|featAssay|colData)Plot([[:digit:]]+)$", rownames(param_choices))
+        is_color_by_feature_name <- param_choices[[.colorByField]] == .colorByFeatNameTitle && grepl("(sampAssay|rowData)Plot([[:digit:]]+)$", rownames(param_choices))
+        protect_coloy_by <- is_color_by_sample_name || is_color_by_feature_name
         downsample_cmds <- c(
             "plot.data.pre <- plot.data;",
             "# Randomize data points to avoid a data set bias during the downsampling",
             "set.seed(100);",
             "plot.data <- plot.data[sample(nrow(plot.data)), , drop=FALSE];",
-            ifelse(
-                (param_choices[[.colorByField]] == .colorBySampNameTitle && grepl("(redDim|featAssay|colData)Plot([[:digit:]]+)$", rownames(param_choices))) || (param_choices[[.colorByField]] == .colorByFeatNameTitle && grepl("(sampAssay|rowData)Plot([[:digit:]]+)$", rownames(param_choices))),
-                gsub(");", " | as.logical(plot.data$ColorBy));", template_subsample_cmd),
-                template_subsample_cmd),
+            sprintf(
+                "plot.data <- subset(plot.data, subsetPointsByGrid(%s, %s, resolution=%i)%s);",
+                xtype, ytype, param_choices[[.plotPointSampleRes]],
+                ifelse(protect_coloy_by, " | as.logical(plot.data$ColorBy)", "")
+            ),
             "")
 
         .text_eval(downsample_cmds, envir)

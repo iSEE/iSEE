@@ -83,8 +83,8 @@ If not provided, the app displays the version info of \code{\link{iSEE}}.}
 
 \item{voice}{A logical indicating whether the voice recognition should be enabled.}
 
-\item{bugs}{A logical indicating whether the bugs Easter egg should be enabled
-(credits to https://github.com/Auz/Bug).}
+\item{bugs}{Set to \code{TRUE} to enable the bugs Easter egg or a named numeric vector to control their respective number (e.g., \code{c(bugs=3, spiders=1)}).
+Credits to https://github.com/Auz/Bug for the JavaScript code.}
 }
 \value{
 A Shiny app object is returned, for interactive data exploration of the \linkS4class{SummarizedExperiment} or \linkS4class{SingleCellExperiment} object.

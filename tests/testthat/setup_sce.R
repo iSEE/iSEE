@@ -2,7 +2,7 @@ stopifnot(
   require(scRNAseq),
   require(scater)
 )
-data(allen)
+allen <- ReprocessedAllenData()
 
 # Example data ----
 

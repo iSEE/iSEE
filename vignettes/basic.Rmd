@@ -88,7 +88,7 @@ The `allen` data set contains expression values for 379 cells from the mouse vis
 
 ```{r allen-dataset}
 library(scRNAseq)
-data(allen)
+allen <- ReprocessedAllenData()
 allen
 ```
 

@@ -35,7 +35,7 @@ based on the data retrieved from the ENSEMBL database
 }
 \examples{
 library(scRNAseq)
-data(allen)
+allen <- ReprocessedAllenData()
 sce <- as(allen, "SingleCellExperiment")
 library(org.Mm.eg.db)
 myfun <- annotateEnsembl(sce, org.Mm.eg.db, keytype="SYMBOL")

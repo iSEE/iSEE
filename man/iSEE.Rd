@@ -114,7 +114,7 @@ This limit may be set to a different value as a global option, e.g. \code{option
 }
 \examples{
 library(scRNAseq)
-data(allen)
+allen <- ReprocessedAllenData()
 class(allen)
 
 # Example data ----

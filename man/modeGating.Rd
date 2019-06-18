@@ -32,7 +32,7 @@ App pre-configured to link multiple feature assay plots
 }
 \examples{
 library(scRNAseq)
-data(allen)
+allen <- ReprocessedAllenData()
 class(allen)
 
 # Example data ----

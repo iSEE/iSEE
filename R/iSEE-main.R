@@ -89,7 +89,7 @@
 #'
 #' @examples
 #' library(scRNAseq)
-#' data(allen)
+#' allen <- ReprocessedAllenData()
 #' class(allen)
 #'
 #' # Example data ----

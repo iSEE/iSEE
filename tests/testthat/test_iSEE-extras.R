@@ -128,6 +128,19 @@ test_that(".setup_initial throws an error if Name column is missing", {
 
 })
 
+test_that(".setup_initial does not allow duplicated values in the Name column", {
+
+    initialPanels <- DataFrame(Name=rep("Dummy", 2))
+    all_memory <- list()
+
+    expect_error(
+        iSEE:::.setup_initial(initialPanels, all_memory),
+        "duplicated values are not allowed in the 'Name' field of 'initialPanels'",
+        fixed=TRUE
+    )
+
+})
+
 # .define_plot_links ----
 
 test_that(".define_plot_links detects receiving and transmitting links", {
@@ -283,7 +296,7 @@ test_that(".get_selected_points works", {
         all_memory$colDataPlot[[iSEE:::.brushData]][[1]]))
     expectedOut <- (rownames(all_coordinates[["redDimPlot1"]]) %in% expectedNames)
     expect_identical(out, expectedOut)
-    
+
     # A history of selection exists in the transmitter panel and "select_all" is TRUE
     all_memory$colDataPlot[[iSEE:::.multiSelectHistory]][[1]] <- list(list(
         xmin=0.9, xmax=1.1, ymin=2E7, ymax=4E7,
@@ -320,26 +333,26 @@ test_that(".regenerate_unselected_plot can regenerate plots manually", {
 })
 
 test_that(".regenerate_unselected_plot can destroy brushes, lassos, and selection history", {
-    
+
     # Add dummy active and saved selections
     all_memory$redDimPlot[[iSEE:::.brushData]][[1]] <- list(a=1, b=2)
     all_memory$redDimPlot[[iSEE:::.multiSelectHistory]][[1]] <- list(list(a=1, b=2))
-    
+
     pObjects <- new.env()
     pObjects$memory <- all_memory
-    
+
     rObjects <- new.env()
     rObjects[["redDimPlot1"]] <- 1L
     rObjects[["redDimPlot1_reactivated"]] <- 1L
     rObjects[["redDimPlot1_resaved"]] <- 1L
-    
+
     input <- list()
     # session <- NULL
-    
+
     iSEE:::.regenerate_unselected_plot("redDimPlot", 1, pObjects, rObjects)
-    
+
     expect_identical(rObjects[["redDimPlot1"]], 2L)
     expect_identical(rObjects[["redDimPlot1_reactivated"]], 2L)
     expect_identical(rObjects[["redDimPlot1_resaved"]], 2L)
-    
+
 })

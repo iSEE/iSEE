@@ -31,7 +31,6 @@ test_that("iSEE main function runs with empty rowData(sce)", {
 
 test_that("iSEE main function runs with empty rowData(sce)", {
 
-    sce <- allen
     colData(sce) <- DataFrame(row.names=colnames(sce))
 
     app <- iSEE(

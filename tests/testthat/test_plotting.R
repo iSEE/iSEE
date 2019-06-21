@@ -1025,12 +1025,12 @@ test_that("define_sizeby_for_column_plot produces the expected commands", {
     params <- all_memory$redDimPlot[1, ]
     params[[iSEE:::.sizeByField]] <- iSEE:::.sizeByColDataTitle
     params[[iSEE:::.sizeByColData]] <- "NREADS"
-    
+
     color_out <- iSEE:::.define_sizeby_for_column_plot(params, sce)
     expect_identical(color_out, list(
         label="NREADS",
         cmds="plot.data$SizeBy <- colData(se)[,\"NREADS\"];"))
-    
+
     all_memory_sb <- all_memory
     all_memory_sb$redDimPlot[1, ] <- params
     p.out <- iSEE:::.make_redDimPlot(
@@ -1045,12 +1045,12 @@ test_that(".define_sizeby_for_row_plot produces the expected commands", {
     params <- all_memory$rowDataPlot[1, ]
     params[[iSEE:::.sizeByField]] <- iSEE:::.sizeByRowDataTitle
     params[[iSEE:::.sizeByRowData]] <- "mean_count"
-    
+
     color_out <- iSEE:::.define_sizeby_for_row_plot(params, sce)
     expect_identical(color_out, list(
         label="mean_count",
         cmds="plot.data$SizeBy <- rowData(se)[,\"mean_count\"];"))
-    
+
 })
 
 # .define_colorby_for_row_plot  ----
@@ -1185,7 +1185,7 @@ test_that(".process_selectby_choice works when sender is another plot", {
         "plot.data$SelectBy",
         fixed=TRUE
     )
-    
+
     # union of multiple selections
     # set up selection history in the transmitter plot
     all_memory$redDimPlot[[iSEE:::.multiSelectHistory]][[1]] <- list(
@@ -1199,7 +1199,7 @@ test_that(".process_selectby_choice works when sender is another plot", {
         "union",
         fixed=TRUE
     )
-    
+
     # saved selection with none selected (0)
     all_memory$featAssayPlot[1, iSEE:::.selectMultiType] <- iSEE:::.selectMultiSavedTitle
     all_memory$featAssayPlot[1, iSEE:::.selectMultiSaved] <- 0L
@@ -1663,6 +1663,9 @@ test_that(".downsample_points produces the appropriate code", {
     out <- iSEE:::.downsample_points(all_memory$colDataPlot[1, ], envir)
     expect_identical(out, c(
         "plot.data.pre <- plot.data;",
+        "# Randomize data points to avoid a data set bias during the downsampling",
+        "set.seed(100);",
+        "plot.data <- plot.data[sample(nrow(plot.data)), , drop=FALSE];",
         "plot.data <- subset(plot.data, subsetPointsByGrid(jitteredX, jitteredY, resolution=200));",
         ""))
 
@@ -1688,6 +1691,9 @@ test_that(".downsample_points produces the appropriate code", {
     out <- iSEE:::.downsample_points(all_memory$colDataPlot[1, ], envir)
     expect_identical(out, c(
         "plot.data.pre <- plot.data;",
+        "# Randomize data points to avoid a data set bias during the downsampling",
+        "set.seed(100);",
+        "plot.data <- plot.data[sample(nrow(plot.data)), , drop=FALSE];",
         "plot.data <- subset(plot.data, subsetPointsByGrid(jitteredX, Y, resolution=200));",
         ""))
 
@@ -1713,6 +1719,9 @@ test_that(".downsample_points produces the appropriate code", {
     out <- iSEE:::.downsample_points(all_memory$colDataPlot[1, ], envir)
     expect_identical(out, c(
         "plot.data.pre <- plot.data;",
+        "# Randomize data points to avoid a data set bias during the downsampling",
+        "set.seed(100);",
+        "plot.data <- plot.data[sample(nrow(plot.data)), , drop=FALSE];",
         "plot.data <- subset(plot.data, subsetPointsByGrid(jitteredX, Y, resolution=200));",
         ""))
 
@@ -1832,17 +1841,17 @@ test_that(".build_labs returns NULL for NULL inputs", {
 # .self_brush_box ----
 
 test_that(".self_brush_box draw multiple shiny brushes", {
-    
+
     all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
     all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "NREADS"
     all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "driver_1_s"
-    
+
     brushHistory <- list(
         list(xmin=1, xmax=2, ymin=3, ymax=4),
         list(xmin=2, xmax=3, ymin=4, ymax=5)
     )
     all_memory$colDataPlot[[iSEE:::.multiSelectHistory]][[1]] <- brushHistory
-    
+
     out <- iSEE:::.self_brush_box(all_memory$colDataPlot, flip=TRUE)
     expect_length(out, 2*length(brushHistory))
     expect_type(out, "character")
@@ -1850,7 +1859,7 @@ test_that(".self_brush_box draw multiple shiny brushes", {
     expect_match(out[2], "geom_text", fixed=TRUE)
     expect_match(out[3], "geom_rect", fixed=TRUE)
     expect_match(out[4], "geom_text", fixed=TRUE)
-    
+
 })
 
 test_that(".self_brush_box can flip axes", {
@@ -1897,11 +1906,11 @@ test_that(".self_brush_box flip axes when faceting on both X and Y", {
 # .self_lasso_path ----
 
 test_that(".self_lasso_path works with multiple lassos", {
-    
+
     all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
     all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "NREADS"
     all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "driver_1_s"
-    
+
     LASSO_CLOSED <- list(
         lasso=NULL,
         closed=TRUE,
@@ -1910,7 +1919,7 @@ test_that(".self_lasso_path works with multiple lassos", {
         coord=matrix(c(1, 2, 2, 1, 1, 1, 1, 2, 2, 1), ncol=2))
     lassoHistory <- list(LASSO_CLOSED, LASSO_CLOSED) # yeah, ok, twice the same lasso isn't elegant but hey
     all_memory$colDataPlot[[iSEE:::.multiSelectHistory]][[1]] <- lassoHistory
-    
+
     out <- iSEE:::.self_lasso_path(all_memory$colDataPlot)
     expect_type(out, "character")
     # length = (polygon+text)*2 lassos + scale_fill_manual + guides

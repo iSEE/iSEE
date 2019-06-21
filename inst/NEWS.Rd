@@ -5,6 +5,7 @@
 \itemize{
     \item Minor doc fix.
     \item Do not allow duplicated values in 'Name' field of 'initialPanels'
+    \item Downsample points randomly
 }
 }
 

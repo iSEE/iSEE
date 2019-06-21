@@ -89,13 +89,12 @@
 #'
 #' @examples
 #' library(scRNAseq)
-#' allen <- ReprocessedAllenData()
-#' class(allen)
-#'
+#' 
 #' # Example data ----
+#' sce <- ReprocessedAllenData()
+#' class(sce)
 #'
 #' library(scater)
-#' sce <- as(allen, "SingleCellExperiment")
 #' counts(sce) <- assay(sce, "tophat_counts")
 #' sce <- normalize(sce)
 #'

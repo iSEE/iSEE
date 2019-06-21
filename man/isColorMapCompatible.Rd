@@ -53,9 +53,8 @@ ecm <- ExperimentColorMap(
 # Example SingleCellExperiment ----
 
 library(scRNAseq)
-allen <- ReprocessedAllenData()
+sce <- ReprocessedAllenData()
 library(scater)
-sce <- as(allen, "SingleCellExperiment")
 
 # Test for compatibility ----
 

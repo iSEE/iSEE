@@ -84,25 +84,25 @@ example(iSEE, ask=FALSE)
 
 # Setting up the data
 
-The `allen` data set contains expression values for 379 cells from the mouse visual cortex [@tasic2016adult]. To begin with, we load and inspect the `allen` object.
+The `allen` data set contains expression values for 379 cells from the mouse visual cortex [@tasic2016adult], and can be loaded directly by calling `ReprocessedAllenData()`. 
+To begin with, we assign the output of this call to an `sce` object and inspect it.
 
 ```{r allen-dataset}
 library(scRNAseq)
-allen <- ReprocessedAllenData()
-allen
+sce <- ReprocessedAllenData()
+sce
 ```
 
-As provided, the `allen` object contains raw data and a number of quality control and experimental cell annotations, all available in `colData(allen)`.
+As provided, the `sce` object contains raw data and a number of quality control and experimental cell annotations, all available in `colData(sce)`.
 
 ```{r colData_sce}
-colnames(colData(allen))
+colnames(colData(sce))
 ```
 
-Then, we convert the provided `SummarizedExperiment` object to a `SingleCellExperiment` object and normalize the expression values with `r Biocpkg("scater")`. 
+Then, we normalize the expression values with `r Biocpkg("scater")`. 
 
 ```{r}
 library(scater)
-sce <- as(allen, "SingleCellExperiment")
 counts(sce) <- assay(sce, "tophat_counts")
 sce <- normalize(sce)
 ```

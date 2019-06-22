@@ -32,6 +32,7 @@ test_that("iSEE main function runs with empty rowData(sce)", {
 test_that("iSEE main function runs with empty colData(sce)", {
 
     colData(sce) <- DataFrame(row.names=colnames(sce))
+    sce <- clearSizeFactors(object)
 
     app <- iSEE(
         sce, redDimArgs=NULL, colDataArgs=NULL, featAssayArgs=NULL, sampAssayArgs=NULL,

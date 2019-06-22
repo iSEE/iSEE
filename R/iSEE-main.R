@@ -89,7 +89,7 @@
 #'
 #' @examples
 #' library(scRNAseq)
-#' 
+#'
 #' # Example data ----
 #' sce <- ReprocessedAllenData()
 #' class(sce)
@@ -161,14 +161,14 @@ iSEE <- function(se,
     # Setting up inputs for DT::datatable something to play with.
     feature_data <- data.frame(rowData(se), check.names=FALSE)
     rownames(feature_data) <- rownames(se)
-    if (ncol(feature_data)==0L) {
+    if (identical(ncol(feature_data), 0L))
         feature_data$Present <- !logical(nrow(feature_data))
     }
     feature_data_select_col <- .safe_field_name("Selected", colnames(feature_data))
 
     sample_data <- data.frame(colData(se), check.names=FALSE)
     rownames(sample_data) <- colnames(se)
-    if (ncol(sample_data)==0L) {
+    if (identical(ncol(sample_data), 0L)) {
         sample_data$Present <- !logical(nrow(sample_data))
     }
     sample_data_select_col <- .safe_field_name("Selected", colnames(sample_data))
@@ -577,7 +577,7 @@ iSEE <- function(se,
             to_add <- is.na(m)
             if (any(to_add)) {
                 enc_add <- .split_encoded(input$panel_order[to_add])
-                new_active_panels[to_add,] <- data.frame(Type=enc_add$Type, ID=enc_add$ID, 
+                new_active_panels[to_add,] <- data.frame(Type=enc_add$Type, ID=enc_add$ID,
                     Width=4, Height=500L, stringsAsFactors=FALSE)
             }
 

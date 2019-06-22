@@ -1,11 +1,18 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.5.3}{
+\itemize{
+    \item Use \code{ReprocessedAllenData()} following the deprecation of
+    \code{data(allen)}.
+}
+}
+
 \section{iSEE VERSION 1.5.2}{
 \itemize{
-    \item Minor doc fix.
-    \item Do not allow duplicated values in 'Name' field of 'initialPanels'
-    \item Downsample points randomly
+    \item Minor doc fix..
+    \item Do not allow duplicated values in \code{Name} field of \code{initialPanels}.
+    \item Downsample points randomly.
 }
 }
 

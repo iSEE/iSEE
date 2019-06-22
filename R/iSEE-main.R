@@ -161,7 +161,7 @@ iSEE <- function(se,
     # Setting up inputs for DT::datatable something to play with.
     feature_data <- data.frame(rowData(se), check.names=FALSE)
     rownames(feature_data) <- rownames(se)
-    if (identical(ncol(feature_data), 0L))
+    if (identical(ncol(feature_data), 0L)) {
         feature_data$Present <- !logical(nrow(feature_data))
     }
     feature_data_select_col <- .safe_field_name("Selected", colnames(feature_data))

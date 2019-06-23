@@ -114,13 +114,12 @@ This limit may be set to a different value as a global option, e.g. \code{option
 }
 \examples{
 library(scRNAseq)
-data(allen)
-class(allen)
 
 # Example data ----
+sce <- ReprocessedAllenData()
+class(sce)
 
 library(scater)
-sce <- as(allen, "SingleCellExperiment")
 counts(sce) <- assay(sce, "tophat_counts")
 sce <- normalize(sce)
 

@@ -92,13 +92,12 @@
 #'
 #' @examples
 #' library(scRNAseq)
-#' data(allen)
-#' class(allen)
 #'
 #' # Example data ----
+#' sce <- ReprocessedAllenData()
+#' class(sce)
 #'
 #' library(scater)
-#' sce <- as(allen, "SingleCellExperiment")
 #' counts(sce) <- assay(sce, "tophat_counts")
 #' sce <- normalize(sce)
 #'
@@ -166,14 +165,14 @@ iSEE <- function(se,
     # Setting up inputs for DT::datatable something to play with.
     feature_data <- data.frame(rowData(se), check.names=FALSE)
     rownames(feature_data) <- rownames(se)
-    if (ncol(feature_data)==0L) {
+    if (identical(ncol(feature_data), 0L)) {
         feature_data$Present <- !logical(nrow(feature_data))
     }
     feature_data_select_col <- .safe_field_name("Selected", colnames(feature_data))
 
     sample_data <- data.frame(colData(se), check.names=FALSE)
     rownames(sample_data) <- colnames(se)
-    if (ncol(sample_data)==0L) {
+    if (identical(ncol(sample_data), 0L)) {
         sample_data$Present <- !logical(nrow(sample_data))
     }
     sample_data_select_col <- .safe_field_name("Selected", colnames(sample_data))

@@ -619,9 +619,23 @@ names(.all_aes_values) <- .all_aes_names
             xtype <- "jitteredX"
         }
 
-        downsample_cmds <- c("plot.data.pre <- plot.data;",
-            sprintf("plot.data <- subset(plot.data, subsetPointsByGrid(%s, %s, resolution=%i));",
-                xtype, ytype, param_choices[[.plotPointSampleRes]]), "")
+        ## If we color by sample name in a column-based plot, or by feature name
+        ## in a row-based plot, we make sure to keep the selected column/row in
+        ## the downsampling
+        enc <- .split_encoded(rownames(param_choices))
+        is_color_by_sample_name <- param_choices[[.colorByField]] == .colorBySampNameTitle && enc$Type %in% col_point_plot_types
+        is_color_by_feature_name <- param_choices[[.colorByField]] == .colorByFeatNameTitle && enc$Type %in% row_point_plot_types
+        downsample_cmds <- c(
+            "plot.data.pre <- plot.data;",
+            "# Randomize data points to avoid a data set bias during the downsampling",
+            "set.seed(100);",
+            "plot.data <- plot.data[sample(nrow(plot.data)), , drop=FALSE];",
+            sprintf(
+                "plot.data <- subset(plot.data, subsetPointsByGrid(%s, %s, resolution=%i)%s);",
+                xtype, ytype, param_choices[[.plotPointSampleRes]],
+                ifelse(is_color_by_sample_name || is_color_by_feature_name, " | as.logical(plot.data$ColorBy)", "")
+            ),
+            "")
 
         .text_eval(downsample_cmds, envir)
         return(downsample_cmds)

@@ -88,7 +88,7 @@
 #' library(scRNAseq)
 #'
 #' # Example data ----
-#' sce <- ReprocessedAllenData()
+#' sce <- ReprocessedAllenData(assays = "tophat_counts")
 #' class(sce)
 #'
 #' library(scater)

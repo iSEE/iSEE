@@ -28,7 +28,10 @@ Current contributors include:
 
 ## Functionalities
 
+<details>
+<summary><b>
 The user interface of _iSEE_ web-applications currently offers the following features:
+</b></summary>  
 
 :white_check_mark: Multiple interactive plot types with selectable points.
 
@@ -79,6 +82,7 @@ The _iSEE_ user interface allows users to programmatically define their own plot
 :white_check_mark: **Custom data plot**: Plotting panel that can be assigned any user-defined function returning a `ggplot` object.
 
 :white_check_mark: **Custom statistics table**: Table panel that can be assigned any user-defined function returning a `data.frame` object.
+</details>
 
 ## Miscellaneous
 

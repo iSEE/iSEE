@@ -33,7 +33,7 @@ App pre-configured to link multiple feature assay plots
 \examples{
 library(scRNAseq)
 # Example data ----
-sce <- ReprocessedAllenData()
+sce <- ReprocessedAllenData(assays = "tophat_counts")
 class(sce)
 
 library(scater)

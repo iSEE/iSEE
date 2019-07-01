@@ -53,7 +53,7 @@ ecm <- ExperimentColorMap(
 # Example SingleCellExperiment ----
 
 library(scRNAseq)
-sce <- ReprocessedAllenData()
+sce <- ReprocessedAllenData(assays = "tophat_counts")
 library(scater)
 
 # Test for compatibility ----

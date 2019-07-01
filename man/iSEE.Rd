@@ -116,7 +116,7 @@ This limit may be set to a different value as a global option, e.g. \code{option
 library(scRNAseq)
 
 # Example data ----
-sce <- ReprocessedAllenData()
+sce <- ReprocessedAllenData(assays = "tophat_counts")
 class(sce)
 
 library(scater)

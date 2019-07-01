@@ -4,7 +4,7 @@ stopifnot(
 )
 
 # Example data ----
-sce <- ReprocessedAllenData()
+sce <- ReprocessedAllenData(assays = "tophat_counts")
 
 counts(sce) <- assay(sce, "tophat_counts")
 sce <- normalize(sce)

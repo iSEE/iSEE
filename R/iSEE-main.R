@@ -300,9 +300,9 @@ iSEE <- function(se,
 
             # Defining the maximum number of plots.
             memory <- .setup_memory(se,
-                redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs, 
+                redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs,
                 sampAssayArgs, colStatArgs, customDataArgs, customStatArgs, heatMapArgs,
-                redDimMax, colDataMax, featAssayMax, rowStatMax, rowDataMax, 
+                redDimMax, colDataMax, featAssayMax, rowStatMax, rowDataMax,
                 sampAssayMax, colStatMax, customDataMax, customStatMax, heatMapMax)
 
             # Defining the initial elements to be plotted.
@@ -329,7 +329,7 @@ iSEE <- function(se,
             pObjects$cached_info <- empty_list
             pObjects[[.voiceActivePanel]] <- NA_character_
 
-            # Generating the reactive objects, used to coordinate 
+            # Generating the reactive objects, used to coordinate
             # behaviour across observers.
             rObjects$active_panels <- active_panels
 
@@ -380,7 +380,7 @@ iSEE <- function(se,
 
             # Observer set-up.
             .general_observers(input, session, pObjects, rObjects, tour, runLocal,
-                 se_name, ecm_name, cdf_name, csf_name, se_cmds) 
+                 se_name, ecm_name, cdf_name, csf_name, se_cmds)
 
             .organization_observers(input, output, se, pObjects, rObjects)
 
@@ -413,13 +413,13 @@ iSEE <- function(se,
             .linked_table_observers(input, output, session, se, pObjects, rObjects, annotFun)
 
             .voice_control_observers(input, session, se, pObjects, rObjects)
-            
+
             .heatmap_observers(input, output, session, se, colormap, pObjects, rObjects)
         }
 
         if (!has_se) {
-            output$allPanels <- renderUI({ 
-                fileInput("new_se", "Choose RDS File", multiple = FALSE) 
+            output$allPanels <- renderUI({
+                fileInput("new_se", "Choose RDS File", multiple = FALSE)
             })
 
             observeEvent(input$new_se, {

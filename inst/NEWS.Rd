@@ -1,6 +1,14 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.5.4}{
+\itemize{
+    \item Added support for file uploads with server re-initialization.
+    \item Bugfixes to observers.
+    \item Updating calls to \code{ReprocessedAllenData} to load only \code{tophat_counts} assay.
+}
+}
+
 \section{iSEE VERSION 1.5.3}{
 \itemize{
     \item Use \code{ReprocessedAllenData()} following the deprecation of

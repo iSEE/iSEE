@@ -756,9 +756,6 @@ test_that("synchronizeAssays works for fully named assays", {
     ecm_expected <- ExperimentColorMap(
         assays = list(
             tophat_counts = COUNT_COLORS,
-            cufflinks_fpkm = FPKM_COLORS,
-            rsem_counts = iSEE:::.defaultContinuousColorMap,
-            rsem_tpm = FPKM_COLORS,
             counts = COUNT_COLORS,
             logcounts = iSEE:::.defaultContinuousColorMap
         )
@@ -793,8 +790,7 @@ test_that("synchronizeAssays requires same number of unnamed assays", {
     ecm_unmatched <- ExperimentColorMap(
         assays = list(
             COUNT_COLORS,
-            test = COUNT_COLORS,
-            FPKM_COLORS
+            test = COUNT_COLORS
         )
     )
 

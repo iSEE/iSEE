@@ -215,7 +215,7 @@ test_that(".get_heatmap_fill_cmd works when not centred", {
     out <- iSEE:::.get_heatmap_fill_cmd(param_choices, ExperimentColorMap(), min.obs, max.obs)
     expect_match(
         out,
-        "colors=c('#440154FF',assayColorMap(colormap, '6', discrete=FALSE)(21L),'#FDE725FF')",
+        "colors=c('#440154FF',assayColorMap(colormap, '3', discrete=FALSE)(21L),'#FDE725FF')",
         fixed=TRUE)
     expect_match(
         out,
@@ -231,7 +231,7 @@ test_that(".get_heatmap_fill_cmd works when not centred", {
     out <- iSEE:::.get_heatmap_fill_cmd(param_choices, ExperimentColorMap(), min.obs, max.obs)
     expect_match(
         out,
-        "colors=c('#440154FF',assayColorMap(colormap, '6', discrete=FALSE)(21L))",
+        "colors=c('#440154FF',assayColorMap(colormap, '3', discrete=FALSE)(21L))",
         fixed=TRUE)
     expect_match(
         out,
@@ -247,7 +247,7 @@ test_that(".get_heatmap_fill_cmd works when not centred", {
     out <- iSEE:::.get_heatmap_fill_cmd(param_choices, ExperimentColorMap(), min.obs, max.obs)
     expect_match(
         out,
-        "colors=c(assayColorMap(colormap, '6', discrete=FALSE)(21L),'#FDE725FF')",
+        "colors=c(assayColorMap(colormap, '3', discrete=FALSE)(21L),'#FDE725FF')",
         fixed=TRUE)
     expect_match(
         out,

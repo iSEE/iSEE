@@ -1,3 +1,119 @@
+#nocov start
+
+#' General observers for \code{\link{iSEE}}
+#'
+#' A function to set up observers for general (i.e., not panel-specific) observers used in the app.
+#'
+#' @param input The Shiny input object from the server function.
+#' @param session The Shiny session object from the server function.
+#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
+#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
+#' @param tour A data.frame of tour steps to use in \code{\link{introjs}}.
+#' @param runLocal A logical scalar indicating whether this app is run locally or on a server.
+#' @param se_name,ecm_name,cdf_name,csf_name Strings containing variable names to be passed to \code{\link{.track_it_all}}.
+#' @param se_cmds String containing the command used to clean the metadata of the \linkS4class{SummarizedExperiment}.
+#'
+#' @return Observers are created in the server function in which this is called.
+#' A \code{NULL} value is invisibly returned.
+#'
+#' @author Aaron Lun
+#'
+#' @importFrom utils read.delim
+#' @importFrom shiny observeEvent showModal modalDialog
+#' HTML br renderPrint tagList showNotification
+#' @importFrom rintrojs introjs
+#' @importFrom shinyAce aceEditor
+#'
+#' @rdname INTERNAL_general_observers
+.general_observers <- function(input, session, pObjects, rObjects, tour, runLocal,
+    se_name, ecm_name, cdf_name, csf_name, se_cmds)
+{
+    observeEvent(input$tour_firststeps, {
+        if(is.null(tour)) {
+            tour <- read.delim(system.file("extdata", "intro_firststeps.txt", package="iSEE"),
+                sep=";", stringsAsFactors=FALSE, row.names=NULL, quote="")
+        }
+        introjs(session, options=list(steps=tour))
+    })
+
+    if (!is.null(tour)) {
+        # Only triggers _after_ panels are fully setup, so observers are properly ID'd.
+        session$onFlushed(function() { introjs(session, options=list(steps=tour)) })
+    }
+
+    observeEvent(input$getcode_all, {
+        showModal(modalDialog(
+            title="My code", size="l",fade=TRUE,
+            footer=NULL, easyClose=TRUE,
+            p("You can click anywhere in the code editor and select all the code using",
+              "a keyboard shortcut that depends on your operating system (e.g. Ctrl/Cmd + A",
+              "followed by Ctrl/Cmd + C).",
+              "This will copy the selected parts to the clipboard."),
+            aceEditor("report_all_cmds", mode="r", theme="solarized_light", autoComplete="live",
+                value=paste0(.track_it_all(rObjects$active_panels, pObjects,
+                        se_name, ecm_name, cdf_name, csf_name, se_cmds), collapse="\n"),
+                height="600px")
+        ))
+    })
+
+    observeEvent(input$get_panel_settings, {
+        showModal(modalDialog(
+            title="Panel settings", size="l", fade=TRUE,
+            footer=NULL, easyClose=TRUE,
+            aceEditor("acereport_r", mode="r", theme="solarized_light", autoComplete="live",
+                value=paste0(.report_memory(rObjects$active_panels, pObjects$memory), collapse="\n"),
+                height="600px")
+        ))
+    })
+
+    observeEvent(input$session_info, {
+        showModal(modalDialog(
+            title="Session information", size="l",fade=TRUE,
+            footer=NULL, easyClose=TRUE,
+            tagList(renderPrint({
+                sessionInfo()
+            }))
+        ))
+    })
+
+    observeEvent(input$iSEE_info, {
+        showModal(modalDialog(
+            title="About iSEE", size="m", fade=TRUE,
+            footer=NULL, easyClose=TRUE,
+            tagList(
+                iSEE_info, br(), br(),
+                HTML("If you use this package, please use the following citation information:"),
+                renderPrint({
+                    citation("iSEE")
+                })
+            )
+        ))
+    })
+
+    observeEvent(input$open_linkgraph, {
+        showModal(modalDialog(
+            title="Graph of inter-panel links", size="l",
+            fade=TRUE, footer=NULL, easyClose=TRUE,
+            renderPlot({
+                .snapshot_graph_linkedpanels(rObjects$active_panels, pObjects)
+            })
+        ))
+    })
+
+    if (runLocal) {
+        observeEvent(input$open_vignette, {
+            path <- system.file("doc", "basic.html", package="iSEE")
+            if (path=="") {
+                showNotification("vignette has not been built on this system", type="error")
+            } else {
+                browseURL(path)
+            }
+        })
+    }
+
+    invisible(NULL)
+}
+
 #' Panel organization observers for \code{\link{iSEE}}
 #'
 #' A function to set up observers for the panel organization observers used in the app.
@@ -166,292 +282,6 @@
                 })
             }
         }
-    }
-
-    invisible(NULL)
-}
-
-#' Child propagating observer
-#'
-#' These observers decide whether child panels needs to be regenerated based on changes in the transmitting (parent) panels.
-#'
-#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
-#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
-#' @param customSendAll A logical scalar indicating whether all saved selections should be sent to custom panels.
-#'
-#' @return Observers are created in the server function in which this is called.
-#' A \code{NULL} value is invisibly returned.
-#'
-#' @details
-#' We expect \code{rObjects} to contain \code{X_repopulated}, \code{X_reactivated} and \code{X_resaved} for each panel \code{X}.
-#' These are simply integer counters that get triggered every time \code{X} changes.
-#'
-#' \code{X_repopulated} is bumped when the population of points changes in \code{X}.
-#' This refers to changes in the points retained by restriction of selections from transmitters upstream of \code{X}.
-#' Bumping will trigger replotting of the children of \code{X}, based on whether they are receiving the active or saved selection.
-#' It will also bump the children's \code{X_repopulated} if they are selecting by restriction.
-#'
-#' \code{X_reactivated} is bumped when the current selection of points in \code{X} changes.
-#' \code{X_resaved} is bumped when the saved selection of points in \code{X} changes.
-#' These use separate observers from \code{X_repopulated} because they only trigger replotting if
-#' the children are receiving active or saved selections, respectively.
-#'
-#' @author Aaron Lun
-#'
-#' @importFrom shiny isolate observe
-#' @rdname INTERNAL_child_propagation_observers
-.child_propagation_observers <- function(pObjects, rObjects, customSendAll) {
-    for (mode in point_plot_types) {
-        max_panels <- nrow(pObjects$memory[[mode]])
-        for (id in seq_len(max_panels)) {
-            local({
-                mode0 <- mode
-                id0 <- id
-                plot_name <- paste0(mode0, id0)
-                repop_field <- paste0(plot_name, "_repopulated")
-
-                ## Observer for changes in the point population in the current panel. ---
-                observe({
-                    force(rObjects[[repop_field]])
-                    has_active <- .any_active_selection(mode0, id0, pObjects$memory)
-                    has_saved <- .any_saved_selection(mode0, id0, pObjects$memory)
-
-                    children <- .get_direct_children(pObjects$selection_links, plot_name)
-                    for (child_plot in children) {
-                        child_enc <- .split_encoded(child_plot)
-                        child_mode <- child_enc$Type
-                        child_id <- child_enc$ID
-
-                        # We have special rules for custom panel types,
-                        # as these don't have .selectMultiType or .selectMultiSaved.
-                        if (child_mode %in% custom_panel_types) {
-                            if (has_active || (customSendAll && has_saved)) {
-                                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
-                            }
-                            next
-                        }
-
-                        # To warrant replotting of the child, there needs to be
-                        # Active or Saved selections in the current panel.
-                        # Any point population changes in the current panel will
-                        # result in new subsets if those selections are available.
-                        replot <- FALSE
-                        select_mode <- pObjects$memory[[child_mode]][child_id, .selectMultiType]
-                        if (select_mode==.selectMultiActiveTitle) {
-                            if (has_active) replot <- TRUE
-                        } else if (select_mode==.selectMultiSavedTitle &&
-                                pObjects$memory[[child_mode]][child_id, .selectMultiSaved]!=0L) {
-                            if (has_saved) replot <- TRUE
-                        } else if (select_mode==.selectMultiUnionTitle) {
-                            if (has_saved || has_active) replot <- TRUE
-                        }
-
-                        if (replot) {
-                            rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
-
-                            # To warrant replotting of the grandchildren, the child must itself be restricted.
-                            if (child_mode %in% point_plot_types &&
-                                pObjects$memory[[child_mode]][child_id, .selectEffect]==.selectRestrictTitle)
-                            {
-                                react_child <- paste0(child_mode, child_id, "_repopulated")
-                                rObjects[[react_child]] <- .increment_counter(isolate(rObjects[[react_child]]))
-                            }
-                        }
-                    }
-                })
-
-                ## Observer for changes in the active selection in the current panel. ---
-                act_field <- paste0(plot_name, "_reactivated")
-                observe({
-                    force(rObjects[[act_field]])
-
-                    children <- .get_direct_children(pObjects$selection_links, plot_name)
-                    for (child_plot in children) {
-                        child_enc <- .split_encoded(child_plot)
-                        child_mode <- child_enc$Type
-                        child_id <- child_enc$ID
-
-                        # Custom panels don't have any other settings, so we just replot and move on.
-                        if (child_mode %in% custom_panel_types) {
-                            rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
-                            next
-                        }
-
-                        select_mode <- pObjects$memory[[child_mode]][child_id, .selectMultiType]
-                        if (select_mode==.selectMultiActiveTitle || select_mode==.selectMultiUnionTitle) {
-                            rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
-
-                            # To warrant replotting of the grandchildren, the child must itself be restricted.
-                            if (child_mode %in% point_plot_types &&
-                                pObjects$memory[[child_mode]][child_id, .selectEffect]==.selectRestrictTitle)
-                            {
-                                react_child <- paste0(child_mode, child_id, "_repopulated")
-                                rObjects[[react_child]] <- .increment_counter(isolate(rObjects[[react_child]]))
-                            }
-                        }
-                    }
-                })
-
-                ## Observer for changes in the saved selections in the current panel. ---
-                save_field <- paste0(plot_name, "_resaved")
-                observe({
-                    force(rObjects[[save_field]])
-                    Nsaved <- length(pObjects$memory[[mode0]][,.multiSelectHistory][[id0]])
-
-                    children <- .get_direct_children(pObjects$selection_links, plot_name)
-                    for (child_plot in children) {
-                        child_enc <- .split_encoded(child_plot)
-                        child_mode <- child_enc$Type
-                        child_id <- child_enc$ID
-
-                        # Custom panels don't have any other settings, so we just replot and move on.
-                        if (child_mode %in% custom_panel_types) {
-                            if (customSendAll) {
-                                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
-                            }
-                            next
-                        }
-
-                        reset <- pObjects$memory[[child_mode]][child_id, .selectMultiSaved] > Nsaved
-                        if (reset) {
-                            pObjects$memory[[child_mode]][child_id, .selectMultiSaved] <- 0L
-                        }
-
-                        child_select_type <- pObjects$memory[[child_mode]][child_id, .selectMultiType]
-                        if (child_select_type==.selectMultiUnionTitle || (child_select_type==.selectMultiSavedTitle && reset)) {
-                            rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
-
-                            # To warrant replotting of the grandchildren, the child must itself be restricted.
-                            if (child_mode %in% point_plot_types &&
-                                pObjects$memory[[child_mode]][child_id, .selectEffect]==.selectRestrictTitle)
-                            {
-                                react_child <- paste0(child_plot, "_repopulated")
-                                rObjects[[react_child]] <- .increment_counter(isolate(rObjects[[react_child]]))
-                            }
-                        }
-
-                        # Updating the selectize as well.
-                        child_saved <- paste0(child_plot, "_", .selectMultiSaved)
-                        rObjects[[child_saved]] <- .increment_counter(isolate(rObjects[[child_saved]]))
-                    }
-                })
-            })
-        }
-    }
-    invisible(NULL)
-}
-
-#nocov start
-
-#' General observers for \code{\link{iSEE}}
-#'
-#' A function to set up observers for general (i.e., not panel-specific) observers used in the app.
-#'
-#' @param input The Shiny input object from the server function.
-#' @param session The Shiny session object from the server function.
-#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
-#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
-#' @param tour A data.frame of tour steps to use in \code{\link{introjs}}.
-#' @param runLocal A logical scalar indicating whether this app is run locally or on a server.
-#' @param se_name,ecm_name,cdf_name,csf_name Strings containing variable names to be passed to \code{\link{.track_it_all}}.
-#' @param se_cmds String containing the command used to clean the metadata of the \linkS4class{SummarizedExperiment}.
-#'
-#' @return Observers are created in the server function in which this is called.
-#' A \code{NULL} value is invisibly returned.
-#'
-#' @author Aaron Lun
-#'
-#' @importFrom utils read.delim
-#' @importFrom shiny observeEvent showModal modalDialog
-#' HTML br renderPrint tagList showNotification
-#' @importFrom rintrojs introjs
-#' @importFrom shinyAce aceEditor
-#'
-#' @rdname INTERNAL_general_observers
-.general_observers <- function(input, session, pObjects, rObjects, tour, runLocal,
-    se_name, ecm_name, cdf_name, csf_name, se_cmds)
-{
-    observeEvent(input$tour_firststeps, {
-        if(is.null(tour)) {
-            tour <- read.delim(system.file("extdata", "intro_firststeps.txt", package="iSEE"),
-                sep=";", stringsAsFactors=FALSE, row.names=NULL, quote="")
-        }
-        introjs(session, options=list(steps=tour))
-    })
-
-    if (!is.null(tour)) {
-        # Only triggers _after_ panels are fully setup, so observers are properly ID'd.
-        session$onFlushed(function() { introjs(session, options=list(steps=tour)) })
-    }
-
-    observeEvent(input$getcode_all, {
-        showModal(modalDialog(
-            title="My code", size="l",fade=TRUE,
-            footer=NULL, easyClose=TRUE,
-            p("You can click anywhere in the code editor and select all the code using",
-              "a keyboard shortcut that depends on your operating system (e.g. Ctrl/Cmd + A",
-              "followed by Ctrl/Cmd + C).",
-              "This will copy the selected parts to the clipboard."),
-            aceEditor("report_all_cmds", mode="r", theme="solarized_light", autoComplete="live",
-                value=paste0(.track_it_all(rObjects$active_panels, pObjects,
-                        se_name, ecm_name, cdf_name, csf_name, se_cmds), collapse="\n"),
-                height="600px")
-        ))
-    })
-
-    observeEvent(input$get_panel_settings, {
-        showModal(modalDialog(
-            title="Panel settings", size="l", fade=TRUE,
-            footer=NULL, easyClose=TRUE,
-            aceEditor("acereport_r", mode="r", theme="solarized_light", autoComplete="live",
-                value=paste0(.report_memory(rObjects$active_panels, pObjects$memory), collapse="\n"),
-                height="600px")
-        ))
-    })
-
-    observeEvent(input$session_info, {
-        showModal(modalDialog(
-            title="Session information", size="l",fade=TRUE,
-            footer=NULL, easyClose=TRUE,
-            tagList(renderPrint({
-                sessionInfo()
-            }))
-        ))
-    })
-
-    observeEvent(input$iSEE_info, {
-        showModal(modalDialog(
-            title="About iSEE", size="m", fade=TRUE,
-            footer=NULL, easyClose=TRUE,
-            tagList(
-                iSEE_info, br(), br(),
-                HTML("If you use this package, please use the following citation information:"),
-                renderPrint({
-                    citation("iSEE")
-                })
-            )
-        ))
-    })
-
-    observeEvent(input$open_linkgraph, {
-        showModal(modalDialog(
-            title="Graph of inter-panel links", size="l",
-            fade=TRUE, footer=NULL, easyClose=TRUE,
-            renderPlot({
-                .snapshot_graph_linkedpanels(rObjects$active_panels, pObjects)
-            })
-        ))
-    })
-
-    if (runLocal) {
-        observeEvent(input$open_vignette, {
-            path <- system.file("doc", "basic.html", package="iSEE")
-            if (path=="") {
-                showNotification("vignette has not been built on this system", type="error")
-            } else {
-                browseURL(path)
-            }
-        })
     }
 
     invisible(NULL)
@@ -676,6 +506,176 @@
                     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
                     rObjects[[act_field]] <- .increment_counter(isolate(rObjects[[act_field]]))
                 }, ignoreInit=TRUE)
+            })
+        }
+    }
+    invisible(NULL)
+}
+
+#' Child propagating observer
+#'
+#' These observers decide whether child panels needs to be regenerated based on changes in the transmitting (parent) panels.
+#'
+#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
+#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
+#' @param customSendAll A logical scalar indicating whether all saved selections should be sent to custom panels.
+#'
+#' @return Observers are created in the server function in which this is called.
+#' A \code{NULL} value is invisibly returned.
+#'
+#' @details
+#' We expect \code{rObjects} to contain \code{X_repopulated}, \code{X_reactivated} and \code{X_resaved} for each panel \code{X}.
+#' These are simply integer counters that get triggered every time \code{X} changes.
+#'
+#' \code{X_repopulated} is bumped when the population of points changes in \code{X}.
+#' This refers to changes in the points retained by restriction of selections from transmitters upstream of \code{X}.
+#' Bumping will trigger replotting of the children of \code{X}, based on whether they are receiving the active or saved selection.
+#' It will also bump the children's \code{X_repopulated} if they are selecting by restriction.
+#'
+#' \code{X_reactivated} is bumped when the current selection of points in \code{X} changes.
+#' \code{X_resaved} is bumped when the saved selection of points in \code{X} changes.
+#' These use separate observers from \code{X_repopulated} because they only trigger replotting if
+#' the children are receiving active or saved selections, respectively.
+#'
+#' @author Aaron Lun
+#'
+#' @importFrom shiny isolate observe
+#' @rdname INTERNAL_child_propagation_observers
+.child_propagation_observers <- function(pObjects, rObjects, customSendAll) {
+    for (mode in point_plot_types) {
+        max_panels <- nrow(pObjects$memory[[mode]])
+        for (id in seq_len(max_panels)) {
+            local({
+                mode0 <- mode
+                id0 <- id
+                plot_name <- paste0(mode0, id0)
+                repop_field <- paste0(plot_name, "_repopulated")
+
+                ## Observer for changes in the point population in the current panel. ---
+                observe({
+                    force(rObjects[[repop_field]])
+                    has_active <- .any_active_selection(mode0, id0, pObjects$memory)
+                    has_saved <- .any_saved_selection(mode0, id0, pObjects$memory)
+
+                    children <- .get_direct_children(pObjects$selection_links, plot_name)
+                    for (child_plot in children) {
+                        child_enc <- .split_encoded(child_plot)
+                        child_mode <- child_enc$Type
+                        child_id <- child_enc$ID
+
+                        # We have special rules for custom panel types,
+                        # as these don't have .selectMultiType or .selectMultiSaved.
+                        if (child_mode %in% custom_panel_types) {
+                            if (has_active || (customSendAll && has_saved)) {
+                                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+                            }
+                            next
+                        }
+
+                        # To warrant replotting of the child, there needs to be
+                        # Active or Saved selections in the current panel.
+                        # Any point population changes in the current panel will
+                        # result in new subsets if those selections are available.
+                        replot <- FALSE
+                        select_mode <- pObjects$memory[[child_mode]][child_id, .selectMultiType]
+                        if (select_mode==.selectMultiActiveTitle) {
+                            if (has_active) replot <- TRUE
+                        } else if (select_mode==.selectMultiSavedTitle &&
+                                pObjects$memory[[child_mode]][child_id, .selectMultiSaved]!=0L) {
+                            if (has_saved) replot <- TRUE
+                        } else if (select_mode==.selectMultiUnionTitle) {
+                            if (has_saved || has_active) replot <- TRUE
+                        }
+
+                        if (replot) {
+                            rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+
+                            # To warrant replotting of the grandchildren, the child must itself be restricted.
+                            if (child_mode %in% point_plot_types &&
+                                pObjects$memory[[child_mode]][child_id, .selectEffect]==.selectRestrictTitle)
+                            {
+                                react_child <- paste0(child_mode, child_id, "_repopulated")
+                                rObjects[[react_child]] <- .increment_counter(isolate(rObjects[[react_child]]))
+                            }
+                        }
+                    }
+                })
+
+                ## Observer for changes in the active selection in the current panel. ---
+                act_field <- paste0(plot_name, "_reactivated")
+                observe({
+                    force(rObjects[[act_field]])
+
+                    children <- .get_direct_children(pObjects$selection_links, plot_name)
+                    for (child_plot in children) {
+                        child_enc <- .split_encoded(child_plot)
+                        child_mode <- child_enc$Type
+                        child_id <- child_enc$ID
+
+                        # Custom panels don't have any other settings, so we just replot and move on.
+                        if (child_mode %in% custom_panel_types) {
+                            rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+                            next
+                        }
+
+                        select_mode <- pObjects$memory[[child_mode]][child_id, .selectMultiType]
+                        if (select_mode==.selectMultiActiveTitle || select_mode==.selectMultiUnionTitle) {
+                            rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+
+                            # To warrant replotting of the grandchildren, the child must itself be restricted.
+                            if (child_mode %in% point_plot_types &&
+                                pObjects$memory[[child_mode]][child_id, .selectEffect]==.selectRestrictTitle)
+                            {
+                                react_child <- paste0(child_mode, child_id, "_repopulated")
+                                rObjects[[react_child]] <- .increment_counter(isolate(rObjects[[react_child]]))
+                            }
+                        }
+                    }
+                })
+
+                ## Observer for changes in the saved selections in the current panel. ---
+                save_field <- paste0(plot_name, "_resaved")
+                observe({
+                    force(rObjects[[save_field]])
+                    Nsaved <- length(pObjects$memory[[mode0]][,.multiSelectHistory][[id0]])
+
+                    children <- .get_direct_children(pObjects$selection_links, plot_name)
+                    for (child_plot in children) {
+                        child_enc <- .split_encoded(child_plot)
+                        child_mode <- child_enc$Type
+                        child_id <- child_enc$ID
+
+                        # Custom panels don't have any other settings, so we just replot and move on.
+                        if (child_mode %in% custom_panel_types) {
+                            if (customSendAll) {
+                                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+                            }
+                            next
+                        }
+
+                        reset <- pObjects$memory[[child_mode]][child_id, .selectMultiSaved] > Nsaved
+                        if (reset) {
+                            pObjects$memory[[child_mode]][child_id, .selectMultiSaved] <- 0L
+                        }
+
+                        child_select_type <- pObjects$memory[[child_mode]][child_id, .selectMultiType]
+                        if (child_select_type==.selectMultiUnionTitle || (child_select_type==.selectMultiSavedTitle && reset)) {
+                            rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+
+                            # To warrant replotting of the grandchildren, the child must itself be restricted.
+                            if (child_mode %in% point_plot_types &&
+                                pObjects$memory[[child_mode]][child_id, .selectEffect]==.selectRestrictTitle)
+                            {
+                                react_child <- paste0(child_plot, "_repopulated")
+                                rObjects[[react_child]] <- .increment_counter(isolate(rObjects[[react_child]]))
+                            }
+                        }
+
+                        # Updating the selectize as well.
+                        child_saved <- paste0(child_plot, "_", .selectMultiSaved)
+                        rObjects[[child_saved]] <- .increment_counter(isolate(rObjects[[child_saved]]))
+                    }
+                })
             })
         }
     }

@@ -1,5 +1,13 @@
 context("iSEE-main")
 
+test_that("iSEE main function runs without object", {
+
+    app <- iSEE()
+
+    expect_s3_class(app, "shiny.appobj")
+
+})
+
 test_that("iSEE main function runs", {
 
     app <- iSEE(

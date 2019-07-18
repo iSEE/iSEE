@@ -4,6 +4,8 @@
 #' SummarizedExperiment/SingleCellExperiment, using a Shiny interface.
 #'
 #' @param se An object that is coercible to \linkS4class{SingleCellExperiment}.
+#' If missing, an app is launched with a file upload control allowing users to upload an RDS file that contains such as object.
+#' See Details for information to set the maximal size limit for file uploads.
 #' @param redDimArgs A DataFrame similar to that produced by \code{\link{redDimPlotDefaults}}, specifying initial parameters for the reduced dimension plots.
 #' @param colDataArgs A DataFrame similar to that produced by \code{\link{colDataPlotDefaults}}, specifying initial parameters for the column data plots.
 #' @param featAssayArgs A DataFrame similar to that produced by \code{\link{featAssayPlotDefaults}}, specifying initial parameters for the feature assay plots.
@@ -62,6 +64,9 @@
 #' By default, categorical data types such as factor and character are limited to 24 levels, beyond which they are coerced to numeric variables for faster plotting.
 #' This limit may be set to a different value as a global option, e.g. \code{options(iSEE.maxlevels=30)}.
 #'
+#' By default, the maximum request size for file uploads defaults to 5MB (https://shiny.rstudio.com/reference/shiny/0.14/shiny-options.html).
+#' To raise the limit (e.g., 50MB), run \code{options(shiny.maxRequestSize=50*1024^2)}.
+#'
 #' @return A Shiny app object is returned, for interactive data exploration of the \linkS4class{SummarizedExperiment} or \linkS4class{SingleCellExperiment} object.
 #'
 #' @export
@@ -88,7 +93,7 @@
 #' library(scRNAseq)
 #'
 #' # Example data ----
-#' sce <- ReprocessedAllenData()
+#' sce <- ReprocessedAllenData(assays = "tophat_counts")
 #' class(sce)
 #'
 #' library(scater)
@@ -300,9 +305,9 @@ iSEE <- function(se,
 
             # Defining the maximum number of plots.
             memory <- .setup_memory(se,
-                redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs, 
+                redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs,
                 sampAssayArgs, colStatArgs, customDataArgs, customStatArgs, heatMapArgs,
-                redDimMax, colDataMax, featAssayMax, rowStatMax, rowDataMax, 
+                redDimMax, colDataMax, featAssayMax, rowStatMax, rowDataMax,
                 sampAssayMax, colStatMax, customDataMax, customStatMax, heatMapMax)
 
             # Defining the initial elements to be plotted.
@@ -329,7 +334,7 @@ iSEE <- function(se,
             pObjects$cached_info <- empty_list
             pObjects[[.voiceActivePanel]] <- NA_character_
 
-            # Generating the reactive objects, used to coordinate 
+            # Generating the reactive objects, used to coordinate
             # behaviour across observers.
             rObjects$active_panels <- active_panels
 
@@ -380,7 +385,7 @@ iSEE <- function(se,
 
             # Observer set-up.
             .general_observers(input, session, pObjects, rObjects, tour, runLocal,
-                 se_name, ecm_name, cdf_name, csf_name, se_cmds) 
+                 se_name, ecm_name, cdf_name, csf_name, se_cmds)
 
             .organization_observers(input, output, se, pObjects, rObjects)
 
@@ -413,13 +418,13 @@ iSEE <- function(se,
             .linked_table_observers(input, output, session, se, pObjects, rObjects, annotFun)
 
             .voice_control_observers(input, session, se, pObjects, rObjects)
-            
+
             .heatmap_observers(input, output, session, se, colormap, pObjects, rObjects)
         }
 
         if (!has_se) {
-            output$allPanels <- renderUI({ 
-                fileInput("new_se", "Choose RDS File", multiple = FALSE) 
+            output$allPanels <- renderUI({
+                fileInput("new_se", "Choose RDS File", multiple = FALSE)
             })
 
             observeEvent(input$new_se, {

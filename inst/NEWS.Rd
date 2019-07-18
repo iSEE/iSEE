@@ -1,11 +1,18 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.5.5}{
+\itemize{
+    \item Rename mode functions to "snake_case()".
+    \item Added \code{mode_void()}.
+}
+}
+
 \section{iSEE VERSION 1.5.4}{
 \itemize{
     \item Added support for file upload with server re-initialization.
     \item Moved observers to separate file. Exclude from code coverage.
-    \item Updating calls to \code{ReprocessedAllenData} to load only \code{tophat_counts} assay.
+    \item Updating calls to \code{ReprocessedAllenData()} to load only \code{tophat_counts} assay.
 }
 }
 

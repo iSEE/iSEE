@@ -4,9 +4,9 @@ context("modes")
 # Tests start here #
 ####################
 
-# .make_redDimPlot/.scatter_plot ----
+# mode_gating ----
 
-test_that("modeGating returns a Shiny app",{
+test_that("mode_gating returns a Shiny app", {
 
   plot_count <- 6
   # rv <- rowVars(logcounts(sce))
@@ -21,7 +21,23 @@ test_that("modeGating returns a Shiny app",{
 
   # launch the app itself ----
 
-  app <- modeGating(sce, features = plot_features, featAssayMax = 12)
+  app <- mode_gating(sce, features = plot_features, featAssayMax = 12)
+
+  # return value is a named list
+  expect_s3_class(
+    app,
+    "shiny.appobj"
+  )
+
+})
+
+# mode_void ----
+
+test_that("mode_void returns a Shiny app", {
+
+  # launch the app itself ----
+
+  app <- mode_void(sce)
 
   # return value is a named list
   expect_s3_class(

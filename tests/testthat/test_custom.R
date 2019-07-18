@@ -220,5 +220,5 @@ yay 1
     # Handles empty inputs.
     out <- iSEE:::.text2args("
             ")
-    expect_identical(unname(out), character(0))
+    expect_identical(unname(out), character(0L))
 })

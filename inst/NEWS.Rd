@@ -3,8 +3,8 @@
 
 \section{iSEE VERSION 1.5.4}{
 \itemize{
-    \item Added support for file uploads with server re-initialization.
-    \item Bugfixes to observers.
+    \item Added support for file upload with server re-initialization.
+    \item Moved observers to separate file. Exclude from code coverage.
     \item Updating calls to \code{ReprocessedAllenData} to load only \code{tophat_counts} assay.
 }
 }

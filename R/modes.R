@@ -114,7 +114,11 @@ mode_gating <- function(
 #'
 #' @examples
 #' example("SingleCellExperiment")
-#' mode_void(sce)
+#'
+#' app <- mode_void(sce)
+#' if (interactive()) {
+#'   shiny::runApp(app, port=1234)
+#' }
 mode_void <- function(...){
     # Do not show any panel
     initialPanels <- DataFrame(

@@ -23,5 +23,9 @@ Users can then use the \code{"Organize panels"} widget to select panels to displ
 }
 \examples{
 example("SingleCellExperiment")
-mode_void(sce)
+
+app <- mode_void(sce)
+if (interactive()) {
+  shiny::runApp(app, port=1234)
+}
 }

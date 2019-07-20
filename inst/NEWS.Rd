@@ -3,8 +3,7 @@
 
 \section{iSEE VERSION 1.5.5}{
 \itemize{
-    \item Rename mode functions to "snake_case()".
-    \item Add \code{mode_void()}.
+    \item Add \code{modeZero()}.
     \item Support zero-row \code{initialPanels} argument.
 }
 }

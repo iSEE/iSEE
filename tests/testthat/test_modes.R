@@ -4,9 +4,9 @@ context("modes")
 # Tests start here #
 ####################
 
-# mode_gating ----
+# modeGating ----
 
-test_that("mode_gating returns a Shiny app", {
+test_that("modeGating returns a Shiny app", {
 
   plot_count <- 6
   # rv <- rowVars(logcounts(sce))
@@ -21,7 +21,7 @@ test_that("mode_gating returns a Shiny app", {
 
   # launch the app itself ----
 
-  app <- mode_gating(sce, features = plot_features, featAssayMax = 12)
+  app <- modeGating(sce, features = plot_features, featAssayMax = 12)
 
   # return value is a named list
   expect_s3_class(
@@ -31,13 +31,13 @@ test_that("mode_gating returns a Shiny app", {
 
 })
 
-# mode_void ----
+# modeZero ----
 
-test_that("mode_void returns a Shiny app", {
+test_that("modeZero returns a Shiny app", {
 
   # launch the app itself ----
 
-  app <- mode_void(sce)
+  app <- modeZero(sce)
 
   # return value is a named list
   expect_s3_class(

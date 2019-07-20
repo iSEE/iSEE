@@ -46,11 +46,11 @@
 #'
 #' # launch the app itself ----
 #'
-#' app <- mode_gating(sce, features=plot_features, featAssayMax=6)
+#' app <- modeGating(sce, features=plot_features, featAssayMax=6)
 #' if (interactive()) {
 #'   shiny::runApp(app, port=1234)
 #' }
-mode_gating <- function(
+modeGating <- function(
     se, features, featAssayMax=max(2, nrow(features)), ..., plot_width=4
 ){
     # This mode is meaningless with fewer than two featAssayPlot
@@ -115,11 +115,11 @@ mode_gating <- function(
 #' @examples
 #' example("SingleCellExperiment")
 #'
-#' app <- mode_void(sce)
+#' app <- modeZero(sce)
 #' if (interactive()) {
 #'   shiny::runApp(app, port=1234)
 #' }
-mode_void <- function(...){
+modeZero <- function(...){
     # Do not show any panel
     initialPanels <- DataFrame(
         Name=character(0),

@@ -369,13 +369,13 @@
     }
 
     if (is.null(initialPanels$Width)) {
-        initialPanels$Width <- 4L
+        initialPanels$Width <- rep(4L, nrow(initialPanels))
     } else {
         initialPanels$Width <- pmax(width_limits[1], pmin(width_limits[2], as.integer(initialPanels$Width)))
     }
 
     if (is.null(initialPanels$Height)) {
-        initialPanels$Height <- 500L
+        initialPanels$Height <- rep(500L, nrow(initialPanels))
     } else {
         initialPanels$Height <- pmax(height_limits[1], pmin(height_limits[2], as.integer(initialPanels$Height)))
     }

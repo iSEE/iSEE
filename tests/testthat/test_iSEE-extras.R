@@ -141,6 +141,25 @@ test_that(".setup_initial does not allow duplicated values in the Name column", 
 
 })
 
+test_that(".setup_initial supports 0-row initialPanels", {
+
+    initialPanels <- data.frame(Name=character(0))
+    all_memory <- list()
+
+    out <- iSEE:::.setup_initial(initialPanels, all_memory)
+
+    expected <- data.frame(
+      Type = character(0),
+      ID = integer(0),
+      Width = integer(0),
+      Height = integer(0),
+      stringsAsFactors = FALSE
+    )
+
+    expect_identical(out, expected)
+
+})
+
 # .define_plot_links ----
 
 test_that(".define_plot_links detects receiving and transmitting links", {

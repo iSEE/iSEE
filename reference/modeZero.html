@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Subset points for faster plotting — subsetPointsByGrid • iSEE</title>
+<title>App pre-configured to launch with no visible panel — modeZero • iSEE</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,10 @@
 
 
 
-<meta property="og:title" content="Subset points for faster plotting — subsetPointsByGrid" />
+<meta property="og:title" content="App pre-configured to launch with no visible panel — modeZero" />
 
-<meta property="og:description" content="Subset points using a grid-based system, to avoid unnecessary rendering when plotting." />
+<meta property="og:description" content="This mode launches an app that does not display any panel,
+irrespective of which panels are available." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -125,64 +126,85 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Subset points for faster plotting</h1>
-    <small class="dont-index">Source: <a href='https://github.com/csoneson/iSEE/blob/master/R/subsetPointsByGrid.R'><code>R/subsetPointsByGrid.R</code></a></small>
-    <div class="hidden name"><code>subsetPointsByGrid.Rd</code></div>
+    <h1>App pre-configured to launch with no visible panel</h1>
+    <small class="dont-index">Source: <a href='https://github.com/csoneson/iSEE/blob/master/R/modes.R'><code>R/modes.R</code></a></small>
+    <div class="hidden name"><code>modeZero.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Subset points using a grid-based system, to avoid unnecessary rendering when plotting.</p>
+    <p>This mode launches an app that does not display any panel,
+irrespective of which panels are available.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>subsetPointsByGrid</span>(<span class='no'>X</span>, <span class='no'>Y</span>, <span class='kw'>resolution</span> <span class='kw'>=</span> <span class='fl'>200</span>)</pre>
+    <pre class="usage"><span class='fu'>modeZero</span>(<span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>X</th>
-      <td><p>A numeric vector of x-coordinates for all points.</p></td>
-    </tr>
-    <tr>
-      <th>Y</th>
-      <td><p>A numeric vector of y-coordinates for all points, of the same length as <code>X</code>.</p></td>
-    </tr>
-    <tr>
-      <th>resolution</th>
-      <td><p>A positive integer specifying the number of bins on each axis of the grid.</p></td>
+      <th>...</th>
+      <td><p>Arguments passed to <code><a href='iSEE.html'>iSEE</a></code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A logical vector indicating which points should be retained.</p>
+    <p>A Shiny app object is returned.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This function will define a grid of the specified resolution across the plot.
-Each point is allocated to a grid location (i.e., pair of bins on the x- and y-axes).
-If multiple points are allocated to a given location, only the last/right-most point is retained. 
-This mimics the fact that plotting will overwrite earlier points with later points.
-In this manner, we can avoid unnecessary rendering of earlier points that would not show up anyway.</p>
-<p>Note that the <code>resolution</code> should be a positive integer less than the square root of the maximum integer size,
-and will be coerced into the valid range if necessary.
-This enables fast calculation of the grid locations for all points.</p>
-<p>For plots where <code>X</code> and <code>Y</code> are originally categorical, use the jittered versions as input to this function.</p>
+    <p>This mode presents the advantage to launch an interface in a minimal amount of time,
+as it does not need to render any panel when the interface is launched.
+Users can then use the <code>"Organize panels"</code> widget to select panels to display in the interface.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>X</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Normal'>rnorm</a></span>(<span class='fl'>100000</span>)
-<span class='no'>Y</span> <span class='kw'>&lt;-</span> <span class='no'>X</span> + <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Normal'>rnorm</a></span>(<span class='fl'>100000</span>)
-
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span>(<span class='fu'>subsetPointsByGrid</span>(<span class='no'>X</span>, <span class='no'>Y</span>, <span class='kw'>resolution</span><span class='kw'>=</span><span class='fl'>100</span>))</div><div class='output co'>#&gt;    Mode   FALSE    TRUE 
-#&gt; logical   97060    2940 </div><div class='input'>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span>(<span class='fu'>subsetPointsByGrid</span>(<span class='no'>X</span>, <span class='no'>Y</span>, <span class='kw'>resolution</span><span class='kw'>=</span><span class='fl'>200</span>))</div><div class='output co'>#&gt;    Mode   FALSE    TRUE 
-#&gt; logical   91069    8931 </div><div class='input'>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span>(<span class='fu'>subsetPointsByGrid</span>(<span class='no'>X</span>, <span class='no'>Y</span>, <span class='kw'>resolution</span><span class='kw'>=</span><span class='fl'>1000</span>))</div><div class='output co'>#&gt;    Mode   FALSE    TRUE 
-#&gt; logical   34174   65826 </div><div class='input'>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/example'>example</a></span>(<span class='st'>"SingleCellExperiment"</span>)</div><div class='output co'>#&gt; 
+#&gt; SnglCE&gt; ncells &lt;- 100
+#&gt; 
+#&gt; SnglCE&gt; u &lt;- matrix(rpois(20000, 5), ncol=ncells)
+#&gt; 
+#&gt; SnglCE&gt; v &lt;- log2(u + 1)
+#&gt; 
+#&gt; SnglCE&gt; pca &lt;- matrix(runif(ncells*5), ncells)
+#&gt; 
+#&gt; SnglCE&gt; tsne &lt;- matrix(rnorm(ncells*2), ncells)
+#&gt; 
+#&gt; SnglCE&gt; sce &lt;- SingleCellExperiment(assays=list(counts=u, logcounts=v),
+#&gt; SnglCE+     reducedDims=SimpleList(PCA=pca, tSNE=tsne))
+#&gt; 
+#&gt; SnglCE&gt; sce
+#&gt; class: SingleCellExperiment 
+#&gt; dim: 200 100 
+#&gt; metadata(0):
+#&gt; assays(2): counts logcounts
+#&gt; rownames: NULL
+#&gt; rowData names(0):
+#&gt; colnames: NULL
+#&gt; colData names(0):
+#&gt; reducedDimNames(2): PCA tSNE
+#&gt; spikeNames(0):
+#&gt; 
+#&gt; SnglCE&gt; ## coercion from SummarizedExperiment
+#&gt; SnglCE&gt; se &lt;- SummarizedExperiment(assays=list(counts=u, logcounts=v))
+#&gt; 
+#&gt; SnglCE&gt; as(se, "SingleCellExperiment")
+#&gt; class: SingleCellExperiment 
+#&gt; dim: 200 100 
+#&gt; metadata(0):
+#&gt; assays(2): counts logcounts
+#&gt; rownames: NULL
+#&gt; rowData names(0):
+#&gt; colnames: NULL
+#&gt; colData names(0):
+#&gt; reducedDimNames(0):
+#&gt; spikeNames(0):</div><div class='input'>
+<span class='no'>app</span> <span class='kw'>&lt;-</span> <span class='fu'>modeZero</span>(<span class='no'>sce</span>)
+<span class='kw'>if</span> (<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/interactive'>interactive</a></span>()) {
+  <span class='kw pkg'>shiny</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/shiny/topics/runApp'>runApp</a></span>(<span class='no'>app</span>, <span class='kw'>port</span><span class='kw'>=</span><span class='fl'>1234</span>)
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -196,8 +218,6 @@ This enables fast calculation of the grid locations for all points.</p>
       <li><a href="#examples">Examples</a></li>
     </ul>
 
-    <h2>Author</h2>
-    <p>Aaron Lun</p>
   </div>
 </div>
 

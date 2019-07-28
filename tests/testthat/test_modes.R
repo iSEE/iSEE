@@ -31,13 +31,13 @@ test_that("modeGating returns a Shiny app", {
 
 })
 
-# modeZero ----
+# modeEmpty ----
 
-test_that("modeZero returns a Shiny app", {
+test_that("modeEmpty returns a Shiny app", {
 
   # launch the app itself ----
 
-  app <- modeZero(sce)
+  app <- modeEmpty(sce)
 
   # return value is a named list
   expect_s3_class(

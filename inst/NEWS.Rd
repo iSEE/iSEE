@@ -3,7 +3,7 @@
 
 \section{iSEE VERSION 1.5.5}{
 \itemize{
-    \item Add \code{modeZero()}.
+    \item Add \code{modeEmpty()}.
     \item Support zero-row \code{initialPanels} argument.
 }
 }

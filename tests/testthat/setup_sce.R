@@ -16,9 +16,7 @@ rowData(sce)$mean_count <- rowMeans(counts(sce))
 # Add a groupable field in rowData
 rowData(sce)$letters <- sample(letters[1:3], nrow(sce), TRUE)
 
-isSpike(sce, "random") <- sample(c(TRUE, FALSE), nrow(sce), replace = TRUE, prob = c(0.01, 0.99))
-
-sizeFactors(sce, "random")  <- runif(ncol(sce))
+sizeFactors(sce)  <- runif(ncol(sce))
 
 colData(sce)[["nested"]] <- DataFrame(
         nested1 = runif(ncol(sce)),

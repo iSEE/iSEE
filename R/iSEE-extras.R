@@ -789,7 +789,6 @@ height_limits <- c(400L, 1000L)
 #'
 #' @details
 #' Nested fields are renamed by using \code{:} as separators in the flattened DataFrame.
-#' This is also the case for subtypes of \code{\link{sizeFactors}} or \code{\link{isSpike}}.
 #' Name clashes are resolved by adding \code{_} to the start of the newer name.
 #'
 #' Note that non-atomic fields are removed from \code{object} only, to ensure that they don't show up in the UI options.
@@ -806,7 +805,6 @@ height_limits <- c(400L, 1000L)
 #' \code{\link{.extract_nested_DF}}
 #'
 #' @importFrom BiocGenerics sizeFactors
-#' @importFrom SingleCellExperiment isSpike
 #' @importFrom S4Vectors DataFrame
 #' @importFrom methods is as
 #' @importFrom SummarizedExperiment colData rowData
@@ -839,24 +837,7 @@ height_limits <- c(400L, 1000L)
     # Filling in with any sizeFactors.
     if (!is.null(sizeFactors(eval_env$se))) {
         new_name <- .safe_field_name("sizeFactors(se)", colnames(colData(eval_env$se)))
-        all_cmds <- .add_command(all_cmds, sprintf('colData(se)[,%s] <- sizeFactors(se)', deparse(new_name)))
-    }
-    for (sf_name in sizeFactorNames(eval_env$se)) {
-        get_cmd <- sprintf("sizeFactors(se, %s)", deparse(sf_name))
-        new_name <- .safe_field_name(get_cmd, colnames(colData(eval_env$se)))
-        all_cmds <- .add_command(all_cmds, sprintf('colData(se)[,%s] <- %s', deparse(new_name), get_cmd))
-    }
-    all_cmds <- .evaluate_commands(all_cmds, eval_env)
-
-    # Filling in with spike-ins.
-    if (!is.null(isSpike(eval_env$se))) {
-        new_name <- .safe_field_name("isSpike(se)", colnames(rowData(eval_env$se)))
-        all_cmds <- .add_command(all_cmds, sprintf('rowData(se)[,%s] <- isSpike(se)', deparse(new_name)))
-    }
-    for (s_name in spikeNames(eval_env$se)) {
-        get_cmd <- sprintf("isSpike(se, %s)", deparse(s_name))
-        new_name <- .safe_field_name(get_cmd, colnames(rowData(eval_env$se)))
-        all_cmds <- .add_command(all_cmds, sprintf('rowData(se)[,%s] <- %s', deparse(new_name), get_cmd))
+        all_cmds <- .add_command(all_cmds, sprintf('colData(se)[, %s] <- sizeFactors(se)', deparse(new_name)))
     }
     all_cmds <- .evaluate_commands(all_cmds, eval_env)
 
@@ -864,12 +845,12 @@ height_limits <- c(400L, 1000L)
     new_rows <- .extract_nested_DF(rowData(eval_env$se))
     for (f in seq_along(new_rows$getter)) {
         new_name <- .safe_field_name(new_rows$setter[f], colnames(rowData(eval_env$se)))
-        all_cmds <- .add_command(all_cmds, sprintf("rowData(se)[,%s] <- rowData(se)%s", deparse(new_name), new_rows$getter[f]))
+        all_cmds <- .add_command(all_cmds, sprintf("rowData(se)[, %s] <- rowData(se)%s", deparse(new_name), new_rows$getter[f]))
     }
     new_cols <- .extract_nested_DF(colData(eval_env$se))
     for (f in seq_along(new_cols$getter)) {
         new_name <- .safe_field_name(new_cols$setter[f], colnames(colData(eval_env$se)))
-        all_cmds <- .add_command(all_cmds, sprintf("colData(se)[,%s] <- colData(se)%s", deparse(new_name), new_cols$getter[f]))
+        all_cmds <- .add_command(all_cmds, sprintf("colData(se)[, %s] <- colData(se)%s", deparse(new_name), new_cols$getter[f]))
     }
     all_cmds <- .evaluate_commands(all_cmds, eval_env)
 

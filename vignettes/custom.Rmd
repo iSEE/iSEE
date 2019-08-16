@@ -1,25 +1,25 @@
 ---
 title: Deploying custom panels in the `iSEE` interface
 author:
-- name: Federico Marini
-  affiliation: 
-  - &id1 Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz
-  - Center for Thrombosis and Hemostasis (CTH), Mainz
-  email: marinif@uni-mainz.de
-- name: Aaron Lun
-  affiliation: 
-  - &id2 Cancer Research UK Cambridge Institute, University of Cambridge
-  email: infinite.monkeys.with.keyboards@gmail.com 
-- name: Charlotte Soneson
-  affiliation: 
-  - &id3 Institute of Molecular Life Sciences, University of Zurich
-  - SIB Swiss Institute of Bioinformatics
-  email: charlottesoneson@gmail.com
 - name: Kevin Rue-Albrecht
   affiliation: 
   - &id4 Kennedy Institute of Rheumatology, University of Oxford,
     Headington, Oxford OX3 7FY, UK.
   email: kevin.rue-albrecht@kennedy.ox.ac.uk
+- name: Federico Marini
+  affiliation: 
+  - &id1 Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz
+  - Center for Thrombosis and Hemostasis (CTH), Mainz
+  email: marinif@uni-mainz.de
+- name: Charlotte Soneson
+  affiliation: 
+  - &id3 Institute of Molecular Life Sciences, University of Zurich
+  - SIB Swiss Institute of Bioinformatics
+  email: charlottesoneson@gmail.com
+- name: Aaron Lun
+  affiliation: 
+  - &id2 Cancer Research UK Cambridge Institute, University of Cambridge
+  email: infinite.monkeys.with.keyboards@gmail.com 
 date: "`r BiocStyle::doc_date()`"
 package: "`r BiocStyle::pkg_ver('iSEE')`"
 output: 
@@ -58,9 +58,9 @@ sce <- readRDS('sce.rds')
 # Background
 
 Users can define their own plots or tables to include in the `iSEE` interface [@kra2018iSEE].
-These custom panels are intended to receive a subset or rows or columns from other transmitting panels in the interface.
-The values in the custom panels will be recomputed "on the fly" by user-defined functions with the transmitted subset.
-This provides a flexible and convenient approach for light-weight interactive analysis during data exploration.
+These custom panels are intended to receive subsets of rows and/or columns from other transmitting panels in the interface.
+The values in the custom panels are recomputed "on the fly" by user-defined functions using the transmitted subset.
+This provides a flexible and convenient framework for lightweight interactive analysis during data exploration.
 For example, selection of a particular subset of samples can be transmitted to a custom plot panel that performs dimensionality reduction on that subset.
 Alternatively, the subset can be transmitted to a custom table that performs a differential expression analysis between that subset and all other samples.
 
@@ -69,16 +69,24 @@ Alternatively, the subset can be transmitted to a custom table that performs a d
 ## Minimum requirements
 
 Recalculations in custom panels are performed using user-defined functions that are supplied to the `iSEE()` call.
-The only requirements are that the function has to accept:
+The only requirements are that the function must accept:
 
 - A `SummarizedExperiment` object or its derivatives as the first argument.
-- A vector of row names as the second argument, specifying the rows that are selected in the transmitting _row-panel_ panel.
-- A vector of column names as the third argument, specifying the columns that are selected in the transmitting _column-based_ panel.
 
-In addition:
+And, if `iSEE(..., customSendAll=FALSE)` (the default):
 
-- For _custom plot panels_, the function is expected to produce a `ggplot` object.
-- For _custom table panels_, the function is expected to produce a `data.frame`.
+- A vector of row names as the _second_ argument, specifying the rows that are currently selected in the transmitting _row-based_ panel.
+This may be `NULL` if no transmitting panel was selected or if no active selection is available.
+- A vector of column names as the _third_ argument, specifying the columns that are currently selected in the transmitting _column-based_ panel.
+This may be `NULL` if no transmitting panel was selected or if no active selection is available.
+
+Conversely, `iSEE(..., customSendAll=TRUE)` transmits _all_ selections - active and saved - from the transmitting panel.
+This feature is described in further detail [below](#customSendAll).
+
+The output of the function should be:
+
+- A `ggplot` object, for functions used in _custom plot panels_.
+- A `data.frame`, for functions used in _custom table panels_.
 
 ## Example of custom plot panel
 
@@ -107,7 +115,7 @@ CUSTOM_PCA <- function(se, rows, columns, colour_by=NULL, scale_features=TRUE) {
 }
 ```
 
-Note that `rows` and `columns` may be `NULL` if no selection was made in the respective transmitting panels.
+As mentioned above, `rows` and `columns` may be `NULL` if no selection was made in the respective transmitting panels.
 How these should be treated is up to the user-defined function.
 In the `CUSTOM_PCA` example above, an empty _ggplot_ is returned if there is no selection on the columns, while the default `runPCA` behaviour is used if `feature_set=NULL`.
 
@@ -211,13 +219,103 @@ app <- iSEE(
     )
 ```
 
+# Setting `customSendAll=TRUE` {#customSendAll}
+
+By default, `iSEE` only passes the "active" point selection from the transmitting panel to your custom function.
+Users can set `customSendAll=TRUE` to obtain _all_ selections - active and saved - from the transmitting panel.
+This takes the form of a list with two elements:
+
+- `active`, a vector of names specifying the points in the active selection.
+- `saved`, a list of vectors of names specifying the points in each saved selection.
+
+It is possible for `active` to be `NULL` or `saved` to contain no elements.
+This occurs if there are no active and/or saved selections, or if no transmitter has been selected.
+
+This is a powerful system that allows users to compute statistics of interests for multiple selections simultaneously.
+For example, we can write a function that computes log-fold changes between the samples in the active selection and samples in each saved selection.
+(It would be trivial to extend this to obtain actual differential expression statistics, e.g., using `scran::findMarkers()` or functions from packages like `r Biocpkg("limma")`.)
+
+```{r}
+CUSTOM_DIFFEXP <- function(se, ri, ci, assay="logcounts") {
+    ri <- ri$active
+    if (is.null(ri)) { # ignoring saved gene selections for now.
+        ri <- rownames(se)
+    }
+    if (is.null(ci$active) || length(ci$saved)==0L) {
+        return(data.frame(row.names=character(0), LogFC=integer(0))) # dummy value.
+    }
+
+    assayMatrix <- assay(se, assay)[ri, , drop=FALSE]
+    active <- rowMeans(assayMatrix[,ci$active,drop=FALSE])
+
+    lfcs <- vector("list", length(ci$saved))
+    for (i in seq_along(lfcs)) {
+        saved <- rowMeans(assayMatrix[,ci$saved[[i]],drop=FALSE])
+        lfcs[[i]] <- active - saved
+    }
+    names(lfcs) <- sprintf("LogFC/%i", seq_along(lfcs))
+
+    output <- do.call(data.frame, lfcs)
+    rownames(output) <- ri
+    output
+}
+```
+
+We also re-use these statistics to visualize some of the genes with the largest log-fold changes:
+
+```{r}
+CUSTOM_HEAT <- function(se, ri, ci, assay="logcounts") {
+    everything <- CUSTOM_DIFFEXP(se, ri, ci, assay=assay)
+    if (nrow(everything) == 0L) {
+        return(ggplot()) # empty ggplot if no genes reported.
+    }
+
+    everything <- as.matrix(everything)
+    top <- head(order(rowMeans(abs(everything)), decreasing=TRUE), 50)
+    topFC <- everything[top, , drop=FALSE]
+    dimnames(topFC) <- list(gene=rownames(topFC), contrast=colnames(topFC))
+    dfFC <- reshape2::melt(topFC)
+    ggplot(dfFC, aes(contrast, gene)) + geom_raster(aes(fill = value))
+}
+```
+
+We test this out as shown below.
+In particular, we set `customSendAll=TRUE` to pass both the active and saved selections to each custom panel.
+Note that each saved selection is also the active selection when it is first generated, hence the log-fold changes of zero in the last column of the heat map until a new active selection is drawn.
+
+```{r}
+cdp2 <- customDataPlotDefaults(sce, 1)
+cdp2$Function <- "CUSTOM_HEAT"
+cdp2$Arguments <- "assay logcounts"
+cdp2$ColumnSource <- "Reduced dimension plot 1"
+cdp2$RowSource <- "Row data plot 1"
+
+cst2 <- customStatTableDefaults(sce, 1)
+cst2$Function <- "CUSTOM_DIFFEXP"
+cst2$Arguments <- "assay logcounts"
+cst2$ColumnSource <- "Reduced dimension plot 1"
+cst2$RowSource <- "Row data plot 1"
+
+app <- iSEE(
+    sce, redDimArgs=reddim, rowDataArgs=rowdat, customDataArgs=cdp2, customStatArgs=cst2,
+    initialPanels=DataFrame(
+        Name=c(
+            "Reduced dimension plot 1", "Row data plot 1",
+            "Custom data plot 1", "Custom statistics table 1"),
+        Width=c(4, 4, 4, 12)),
+    customDataFun=list(CUSTOM_HEAT=CUSTOM_HEAT),
+    customStatFun=list(CUSTOM_DIFFEXP=CUSTOM_DIFFEXP),
+    customSendAll=TRUE
+    )
+```
+
 # Caching for greater efficiency
 
 True R wizards can take advantage of the pass-by-reference activity of environments to cache results throughout the lifetime of the app.
 This can be used to avoid repeating time-consuming steps that are not affected by changes in certain parameters.
 For example, we could cache the output of `runPCA` to avoid repeating the PCA if only `colour_by` changes.
 
-We will demonstrate this below using a function that computes log-fold changes for the selected features in one subset of samples compared to the others.
+We demonstrate this functionality below using a function that computes log-fold changes for the selected features in one subset of samples compared to the others.
 For any given column selection, we compute log-fold changes for all features and cache the results in the `caching` environment.
 This allows us to avoid recomputing these values if only the row selection changes.
 
@@ -245,7 +343,7 @@ CUSTOM_LFC <- function(se, rows, columns) {
 }
 ```
 
-We will then set up an `iSEE` instance with three panels - a reduced dimension plot, a row data plot and a custom statistics table.
+We then set up an `iSEE` instance with three panels - a reduced dimension plot, a row data plot and a custom statistics table.
 This is much the same as described for the custom plot panel.
 
 ```{r app2}

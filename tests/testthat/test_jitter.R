@@ -1,3 +1,5 @@
+context("jitter")
+
 # Tests jitterViolinPoints, jitterSquarePoints and related functions.
 # library(testthat); library(iSEE); source("test_jitter.R")
 
@@ -54,7 +56,7 @@ test_that("jitterViolinPoints works correctly", {
     expect_equal(Z, Xc)
 
     # Function behaves with silly inputs.
-    expect_identical(jitterViolinPoints(X[0], Y[0]), numeric(0))
+    expect_identical(jitterViolinPoints(X[0], Y[0]), numeric(0L))
     expect_error(jitterViolinPoints(1, 1), "'X' should be a factor")
     expect_error(jitterViolinPoints(X[1], "A"), "'Y' should be numeric")
 })
@@ -80,14 +82,14 @@ test_that("jitterSquarePoints works correctly", {
     helper <- function(combinations, summary.data, to.combine=c("X", "Y")) {
         summary.combo <- do.call(paste, c(list(sep="|"), lapply(to.combine, function(i) summary.data[[i]])))
         expect_true(all(combinations %in% summary.combo))
-        for (i in seq_along(summary.combo)) { 
-            expect_identical(summary.data$Freq[i], sum(combinations==summary.combo[i]))
+        for (i in seq_along(summary.combo)) {
+            expect_identical(summary.data$Freq[i], sum(combinations == summary.combo[i]))
         }
         return(NULL)
     }
     helper(combinations, out.a$summary)
     expect_equal(out.a$summary$XWidth, out.a$summary$YWidth)
-    expect_identical(out.a$summary$XWidth==0, out.a$summary$Freq==0)
+    expect_identical(out.a$summary$XWidth == 0, out.a$summary$Freq == 0)
     expect_equal(0, mad(out.a$summary$XWidth^2/out.a$summary$Freq, na.rm=TRUE))
 
     # Correctly reverts to a bar plot if X axis is only one level.
@@ -99,7 +101,7 @@ test_that("jitterSquarePoints works correctly", {
     combinations <- paste0(X0, "|", Y)
     helper(combinations, out.b$summary)
     expect_identical(length(unique(out.b$summary$YWidth)), 1L)
-    expect_identical(out.b$summary$XWidth==0, out.b$summary$Freq==0)
+    expect_identical(out.b$summary$XWidth == 0, out.b$summary$Freq == 0)
     expect_equal(0, mad(out.b$summary$XWidth/out.b$summary$Freq, na.rm=TRUE))
 
     # ... or if the Y axis only has one level.
@@ -111,7 +113,7 @@ test_that("jitterSquarePoints works correctly", {
     combinations <- paste0(X, "|", Y0)
     helper(combinations, out.c$summary)
     expect_identical(length(unique(out.c$summary$XWidth)), 1L)
-    expect_identical(out.c$summary$YWidth==0, out.c$summary$Freq==0)
+    expect_identical(out.c$summary$YWidth == 0, out.c$summary$Freq == 0)
     expect_equal(0, mad(out.c$summary$YWidth/out.c$summary$Freq, na.rm=TRUE))
 
     # Testing with a grouping variable.
@@ -122,15 +124,15 @@ test_that("jitterSquarePoints works correctly", {
     combinations <- paste0(X, "|", Y, "|", g$FacetRow, "|", g$FacetColumn)
     helper(combinations, out.d$summary, to.combine=c("X", "Y", "FacetRow", "FacetColumn"))
     expect_equal(out.d$summary$XWidth, out.d$summary$YWidth)
-    expect_identical(out.d$summary$XWidth==0, out.d$summary$Freq==0)
+    expect_identical(out.d$summary$XWidth == 0, out.d$summary$Freq == 0)
 
     # Function behaves when input is empty.
     out <- jitterSquarePoints(X[0], Y[0])
     expect_identical(out$X, numeric(0))
     expect_identical(out$Y, numeric(0))
-    expect_true(all(out$summary$Freq==0))
-    expect_true(all(out$summary$XWidth==0))
-    expect_true(all(out$summary$YWidth==0))
+    expect_true(all(out$summary$Freq == 0))
+    expect_true(all(out$summary$XWidth == 0))
+    expect_true(all(out$summary$YWidth == 0))
 
     expect_error(jitterSquarePoints(1, Y[1]), "'X' should be a factor")
     expect_error(jitterSquarePoints(X[1], 1), "'Y' should be a factor")

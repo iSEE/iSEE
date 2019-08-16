@@ -1,3 +1,4 @@
+context("lasso")
 
 stopifnot(
   require(mgcv)
@@ -129,7 +130,7 @@ test_that("lassoPoints ignores points within lasso in other facets", {
 
 })
 
-test_that (".any_point_selection detects a closed lasso", {
+test_that (".any_active_selection detects a closed lasso", {
 
     redDimArgs <- redDimPlotDefaults(sce, 1)
     redDimArgs$LassoData[[1]] <- LASSO_CLOSED
@@ -137,6 +138,6 @@ test_that (".any_point_selection detects a closed lasso", {
         redDimPlot=redDimArgs
     )
 
-    expect_true(.any_point_selection("redDimPlot", 1, memory))
+    expect_true(.any_active_selection("redDimPlot", 1, memory))
 
 })

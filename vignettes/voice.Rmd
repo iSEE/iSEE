@@ -1,32 +1,32 @@
 ---
-title: Controlling the `iSEE` interface by voice
+title: Controlling the `iSEE` interface using speech recognition
 author:
-- name: Federico Marini
-  affiliation: 
-  - &id1 Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz
-  - Center for Thrombosis and Hemostasis (CTH), Mainz
-  email: marinif@uni-mainz.de
-- name: Aaron Lun
-  affiliation: 
-  - &id2 Cancer Research UK Cambridge Institute, University of Cambridge
-  email: infinite.monkeys.with.keyboards@gmail.com 
-- name: Charlotte Soneson
-  affiliation: 
-  - &id3 Institute of Molecular Life Sciences, University of Zurich
-  - SIB Swiss Institute of Bioinformatics
-  email: charlottesoneson@gmail.com
 - name: Kevin Rue-Albrecht
   affiliation: 
   - &id4 Kennedy Institute of Rheumatology, University of Oxford,
     Headington, Oxford OX3 7FY, UK.
   email: kevin.rue-albrecht@kennedy.ox.ac.uk
+- name: Federico Marini
+  affiliation: 
+  - &id1 Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz
+  - Center for Thrombosis and Hemostasis (CTH), Mainz
+  email: marinif@uni-mainz.de
+- name: Charlotte Soneson
+  affiliation: 
+  - &id3 Institute of Molecular Life Sciences, University of Zurich
+  - SIB Swiss Institute of Bioinformatics
+  email: charlottesoneson@gmail.com
+- name: Aaron Lun
+  affiliation: 
+  - &id2 Cancer Research UK Cambridge Institute, University of Cambridge
+  email: infinite.monkeys.with.keyboards@gmail.com 
 date: "`r BiocStyle::doc_date()`"
 package: "`r BiocStyle::pkg_ver('iSEE')`"
 output: 
   BiocStyle::html_document:
     toc_float: true
 vignette: >
-  %\VignetteIndexEntry{5. Voice control}
+  %\VignetteIndexEntry{5. Speech recognition}
   %\VignetteEncoding{UTF-8}  
   %\VignettePackage{iSEE}
   %\VignetteKeywords{GeneExpression, RNASeq, Sequencing, Visualization, QualityControl, GUI}
@@ -61,13 +61,13 @@ Using JavaScript, `iSEE` applications can leverage lightweight speech recognitio
 
 **Note**: As we value privacy, this feature is disabled by default: `iSEE(..., voice=FALSE)`.
 
-To keep the vocal commands reasonably short, only one panel may be under vocal control at any one time.
-All vocal commands will affect the currently active panel, until a new panel is selected for vocal control.
+To keep the spoken commands reasonably short, only one panel may be under voice command at any one time.
+All spoken commands will affect the currently active panel, until a new panel is selected for voice command.
 See section [Vocal commands available](#availableVocalCommands).
 
 # Implementation
 
-We use the [_annyang_](https://github.com/TalAter/annyang) JavaScript library to handle speech recongnition and update _Shiny_ reactive values in the same way as mouse and keyboard UI elements trigger panel updates.
+We use the [_annyang_](https://github.com/TalAter/annyang) lightweight JavaScript library to handle speech recongnition and update _Shiny_ reactive values in the same way as mouse and keyboard UI elements trigger panel updates.
 
 Note that _annyang_ requires an active internet connection, as it relies on the browser's own speech recognition engine (see the _annyang_ [FAQ](https://github.com/TalAter/annyang/blob/master/docs/FAQ.md#can-annyang-work-offline)).
 For instance, in _Google Chrome_, this engine performs the recognition in the cloud.
@@ -87,7 +87,7 @@ library(iSEE)
 app <- iSEE(sce, voice=TRUE)
 ```
 
-With `voice=TRUE`, the tiny JavaScript speech recognition library _annyang_ is loaded and activated in any web browser window that runs `app`.
+With `voice=TRUE`, the lightweight JavaScript speech recognition library _annyang_ is loaded and activated in any web browser tab that runs `app`.
 
 If your default browser is not compatible with the feature, or if you work in _RStudio_, you can prevent the application from opening in the default browser by setting `launch.browser=FALSE` as follows:
 
@@ -97,7 +97,8 @@ if (interactive()) {
 }
 ```
 
-At that point, your R console should be displaying the address and port where `app` is running:
+At that point, your R console should be displaying the address and port where `app` is running.
+In the example above, that would be:
 
 ```
 Listening on http://127.0.0.1:1234
@@ -108,19 +109,19 @@ Note that when the web page opens, you may be prompted to allow the web browser 
 
 # Vocal commands available {#availableVocalCommands}
 
-As a proof-of-concept, we have currently implemented only a subset of vocal commands, compare to all the interactions possible using the mouse and keyboard.
+As a proof of concept, only a subset of spoken commands are currently implemented, compared to the full range of interactions possible using the mouse and keyboard.
 
 Note that in the commands below, words in brackets are optional.
 
 * "**Show active panel**": shows a persistent notification displaying the name of the panel currently under vocal control.
 * "**Show panel <Reduced dimension plot 1>**": Shows and takes vocal control of the requested panel.
 * "**Hide panel <Reduced dimension plot 1>**": Hides the requested panel and removes any panel from vocal control.
-* "**control panel <Reduced dimension plot 1>**": Takes vocal control of the requested panel.
-* "**colour using <Column data | Feature name | ...>**": Changes the colouring mode of the panel under vocal control.
-* "**colour by <...>**": Changes the colouring covariate (e.g. gene name, `colData` column name) of the panel under vocal control.
-* "**receive (selection) from (panel) <Reduced dimension plot 1>**": Makes the panel under vocal control receive the point selection from the requested panel.
-* "**send (selection) to (panel) <Reduced dimension plot 1>**": Makes the requested panel receive the point selection from the panel under vocal control.
-* "**good boy**": If the app is behaving well, throw it a bone!
+* "**Control panel <Reduced dimension plot 1>**": Takes vocal control of the requested panel.
+* "**Colour using <Column data | Feature name | ...>**": Changes the colouring mode of the panel under vocal control.
+* "**Colour by <...>**": Changes the colouring covariate (e.g. gene name, `colData` column name) of the panel under vocal control.
+* "**Receive selection from (panel) <Reduced dimension plot 1>**": Makes the panel under vocal control receive the point selection from the requested panel.
+* "**Send selection to (panel) <Reduced dimension plot 1>**": Makes the requested panel receive the point selection from the panel under vocal control.
+* "**Good <boy | girl>!**": If the app is behaving well, throw it a bone!
 
 # Session Info {.unnumbered}
 

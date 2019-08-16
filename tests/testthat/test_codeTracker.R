@@ -1,3 +1,5 @@
+context("codeTracker")
+
 # This script tests the code related to the creation of the point transmission infrastructure.
 # library(iSEE); library(testthat); source("setup_sce.R"); source("test_track_code.R")
 
@@ -22,6 +24,7 @@ colDataArgs[2, iSEE:::.selectByPlot] <- "Reduced dimension plot 1"
 featAssayArgs[2, iSEE:::.selectByPlot] <- "Column data plot 1"
 heatMapArgs[1, iSEE:::.selectByPlot] <- "Column data plot 1"
 featAssayArgs[1, iSEE:::.selectByPlot] <- "Feature assay plot 1"
+featAssayArgs[1, iSEE:::.featAssayYAxisRowTable] <- "Row statistics table 1"
 
 memory <- list(
     redDimPlot=redDimArgs,
@@ -88,7 +91,7 @@ test_that("reporting order is correctly reported", {
     }
 })
 
-# .track_it_all ----
+# .track_it_all / .track_selection_code ----
 
 test_that("code trackers run correctly for plots", {
     # Adding a custom plot panel for coverage.
@@ -139,22 +142,21 @@ test_that("code trackers run correctly for plots", {
     expect_true(any(grepl("ggplot", out)))
 
     # Tracking selections only - this ignores all panels as there are no brushes defined.
-    out <- iSEE:::.track_selections_only(active_panels, pObjects, "sce", "")
+    out <- iSEE:::.track_selection_code(active_panels, pObjects)
     for (panelname in panelnames) {
         expect_false(any(grepl(panelname, out)))
     }
 
     # Adding a brush to featAssayPlot1, such that we get it back.
     pObjects$memory$featAssayPlot[1, iSEE:::.brushData] <- list("this is a mock brush")
-    out <- iSEE:::.track_selections_only(active_panels, pObjects, "sce", "")
-    expect_true(any(grepl("Feature assay plot 1", out)))
+    out <- iSEE:::.track_selection_code(active_panels, pObjects)
+    expect_true(any(grepl("featAssayPlot1", out)))
 
-    # Adding a brush to redDimPlot, which also gives us the two column data plots.
+    # Adding a brush to redDimPlot, which also gives us the feature assay plot above.
     pObjects$memory$redDimPlot[1, iSEE:::.brushData] <- list("this is a mock brush")
-    out <- iSEE:::.track_selections_only(active_panels, pObjects, "sce", "")
-    expect_true(any(grepl("Reduced dimension plot 1", out)))
-    expect_true(any(grepl("Column data plot 1", out)))
-    expect_true(any(grepl("Column data plot 2", out)))
+    out <- iSEE:::.track_selection_code(active_panels, pObjects)
+    expect_true(any(grepl("redDimPlot1", out)))
+    expect_true(any(grepl("featAssayPlot1", out)))
 })
 
 # .track_selection_code ----
@@ -173,6 +175,51 @@ test_that("code trackers can deparse a lasso", {
         coord=matrix(c(1, 2, 2, 1, 1, 1, 1, 2, 2, 1), ncol=2))
 
     redDimArgs[[iSEE:::.lassoData]][[1]] <- LASSO_CLOSED
+
+    memory <- list(
+        redDimPlot=redDimArgs,
+        colDataPlot=DataFrame(),
+        featAssayPlot=DataFrame(),
+        rowStatTable=DataFrame(),
+        rowDataPlot=DataFrame(),
+        sampAssayPlot=DataFrame(),
+        colStatTable=DataFrame(),
+        customDataPlot=DataFrame(),
+        customStatTable=DataFrame(),
+        heatMapPlot=DataFrame()
+    )
+    active_panels <- iSEE:::.setup_initial(initial_panels, memory)
+    g <- iSEE:::.spawn_selection_chart(memory)
+
+    # Mimicking a running instance of the app.
+    pObjects <- new.env()
+    pObjects$memory <- memory
+    pObjects$selection_links <- g
+    pObjects$coordinates <- list()
+    pObjects$commands <- list()
+
+    out <- .track_selection_code(active_panels, pObjects)
+
+    # Caompare with .deparse_for_viewing directly
+    out2 <- iSEE:::.deparse_for_viewing(LASSO_CLOSED)
+    expect_true(any(grepl(out2, out, fixed=TRUE)))
+
+})
+
+test_that("code trackers can deparse a selection history", {
+
+    initial_panels <- DataFrame(Name = c(
+        "Reduced dimension plot 1"
+    ))
+
+    LASSO_CLOSED <- list(
+        lasso=NULL,
+        closed=TRUE,
+        panelvar1=NULL, panelvar2=NULL,
+        mapping=list(x="X", y="Y"),
+        coord=matrix(c(1, 2, 2, 1, 1, 1, 1, 2, 2, 1), ncol=2))
+
+    redDimArgs[[iSEE:::.multiSelectHistory]][[1]] <- list(LASSO_CLOSED)
 
     memory <- list(
         redDimPlot=redDimArgs,

@@ -70,6 +70,26 @@ This should refer to a categorical variable, and will default to the first such 
 }
 }
 
+\section{Size parameters}{
+
+\describe{
+\item{\code{SizeBy}:}{Character, what type of data should be used for controlling size?
+Defaults to \code{"None"}, but can also be \code{"Column data"}.}
+}
+
+For the plots where each point represents a sample (i.e., all plots except for heatmaps and row data plots), the following additional options apply:
+\describe{
+\item{\code{SizeByColData}:}{Character, which column of \code{colData(se)} should be used for sizing if \code{SizeBy="Column data"}?
+This should refer to a continuous variable, and will default to the first such entry of \code{colData(se)}.}
+}
+
+For plots where each point represents a feature (i.e., row data plots), the following additional options apply:
+\describe{
+\item{\code{SizeByRowData}:}{Character, which column of \code{rowData(se)} should be used for sizing if \code{SizeBy="Row data"}?
+This should refer to a continuous variable, and will default to the first such entry of \code{rowData(se)}.}
+}
+}
+
 \section{Contour line parameters}{
 
 \describe{

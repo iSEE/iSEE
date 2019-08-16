@@ -30,8 +30,7 @@ based on the data retrieved from the ENTREZ database
 }
 \examples{
 library(scRNAseq)
-data(allen)
-sce <- as(allen, "SingleCellExperiment")
+sce <- ReprocessedAllenData(assays = "tophat_counts")
 
 library(org.Mm.eg.db)
 myfun <- annotateEntrez(sce, org.Mm.eg.db, keytype="SYMBOL")

@@ -1,4 +1,4 @@
-
+context("constants")
 
 test_that(".encode_panel_name can convert plot names", {
 
@@ -63,14 +63,14 @@ test_that(".decode_panel_name works as expected", {
     # Works on vectors.
     expect_identical(iSEE:::.decode_panel_name(c("featAssayPlot", "redDimPlot"), 1:2),
                      c("Feature assay plot 1", "Reduced dimension plot 2"))
-    expect_identical(iSEE:::.decode_panel_name(character(0), integer(0)), character(0))
+    expect_identical(iSEE:::.decode_panel_name(character(0L), integer(0L)), character(0L))
 })
 
 test_that(".decoded2encoded works as expected", {
     expect_identical(iSEE:::.decoded2encoded("Feature assay plot 1"), "featAssayPlot1")
     expect_identical(iSEE:::.decoded2encoded(c("Feature assay plot 1", "Reduced dimension plot 1")),
                      c("featAssayPlot1", "redDimPlot1"))
-    expect_identical(iSEE:::.decoded2encoded(character(0)), character(0))
+    expect_identical(iSEE:::.decoded2encoded(character(0L)), character(0L))
     expect_error(iSEE:::.decoded2encoded(c("Feature assay plot 1", "")),
                  "'' is not a legal panel name")
     # expect_identical(iSEE:::.decoded2encoded(c("Feature assay plot 1", "")),
@@ -81,6 +81,6 @@ test_that(".split_encoded works as expected", {
     expect_identical(iSEE:::.split_encoded("featAssayPlot1"), list(Type="featAssayPlot", ID=1L))
     expect_identical(iSEE:::.split_encoded(c("featAssayPlot1", "redDimPlot1")),
                      list(Type=c("featAssayPlot", "redDimPlot"), ID=c(1L, 1L)))
-    expect_identical(iSEE:::.split_encoded(character(0)), list(Type=character(0), ID=integer(0)))
+    expect_identical(iSEE:::.split_encoded(character(0L)), list(Type=character(0L), ID=integer(0L)))
 })
 

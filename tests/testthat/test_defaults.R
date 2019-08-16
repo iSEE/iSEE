@@ -1,3 +1,4 @@
+context("defaults")
 
 # .set_default_assay ----
 

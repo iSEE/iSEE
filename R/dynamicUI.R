@@ -163,7 +163,7 @@
 
         # Checking what to do with plot-specific parameters (e.g., brushing, clicking, plot height).
         if (! mode %in% c(linked_table_types, "customStatTable")) {
-            brush.opts <- brushOpts(.input_FUN(.brushField), resetOnNew=FALSE,
+            brush.opts <- brushOpts(.input_FUN(.brushField), resetOnNew=TRUE, delay=2000,
                 direction=ifelse(mode=="heatMapPlot", "y", "xy"),
                 fill=brush_fill_color[mode], stroke=brush_stroke_color[mode],
                 opacity=.brushFillOpacity)
@@ -383,8 +383,8 @@
 
             param <- list(hr(),
                 tags$div(class="panel-group", role="tablist",
-                    .create_selection_param_box_define_box(mode, id, param_choices,
-                        .create_selection_param_box_define_choices(mode, id, param_choices, .selectByPlot, selectable, source_type)
+                    .define_selection_param_box(mode, id, param_choices,
+                        .define_selection_choices(mode, id, param_choices, .selectByPlot, selectable, source_type)
                     )
                 )
             )
@@ -402,10 +402,10 @@
                 param <- list(
                     tags$div(class="panel-group", role="tablist",
                         data_box,
-                        .create_selection_param_box_define_box(
+                        .define_selection_param_box(
                             mode, id, param_choices,
-                            .create_selection_param_box_define_choices(mode, id, param_choices, .customRowSource, row_selectable, "row"),
-                            .create_selection_param_box_define_choices(mode, id, param_choices, .customColSource, col_selectable, "column")
+                            .define_selection_transmitter(mode, id, param_choices, .customRowSource, row_selectable, "row"),
+                            .define_selection_transmitter(mode, id, param_choices, .customColSource, col_selectable, "column")
                         )
                     )
                 )
@@ -570,10 +570,12 @@
 .create_visual_box_for_column_plots <- function(mode, id, param_choices, active_row_tab, active_col_tab, se) {
     covariates <- colnames(colData(se))
     discrete_covariates <- .get_internal_info(se, "column_groupable")
+    numeric_covariates <- .get_internal_info(se, "column_numeric")
     all_assays <- .get_internal_info(se, "all_assays")
 
     colorby_field <- paste0(mode, id, "_", .colorByField)
     shapeby_field <- paste0(mode, id, "_", .shapeByField)
+    sizeby_field <- paste0(mode, id, "_", .sizeByField)
     pchoice_field <- paste0(mode, id, "_", .visualParamChoice)
 
     collapseBox(
@@ -583,7 +585,7 @@
         checkboxGroupInput(
             inputId=pchoice_field, label=NULL, inline=TRUE,
             selected=param_choices[[.visualParamChoice]][[1]],
-            choices=.define_visual_options(discrete_covariates)),
+            choices=.define_visual_options(discrete_covariates, numeric_covariates)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoiceColorTitle,
             hr(),
@@ -643,7 +645,24 @@
             hr(), .add_facet_UI_elements_for_column_plots(mode, id, param_choices, discrete_covariates)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoicePointTitle,
-            hr(), .add_point_UI_elements(mode, id, param_choices)),
+            hr(),
+            radioButtons(
+                sizeby_field, label="Size by:", inline=TRUE,
+                choices=.define_size_options_for_column_plots(se),
+                selected=param_choices[[.sizeByField]]
+            ),
+            .conditional_on_radio(
+                sizeby_field, .sizeByNothingTitle,
+                numericInput(
+                    paste0(mode, id, "_", .plotPointSize), label="Point size:",
+                    min=0, value=param_choices[,.plotPointSize])
+            ),
+            .conditional_on_radio(
+                sizeby_field, .sizeByColDataTitle,
+                selectInput(paste0(mode, id, "_", .sizeByColData), label=NULL,
+                            choices=numeric_covariates, selected=param_choices[[.sizeByColData]])
+            ),
+            .add_point_UI_elements(mode, id, param_choices)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoiceOtherTitle,
             hr(),
@@ -718,11 +737,39 @@
     return(shape_choices)
 }
 
+#' Define sizing options
+#'
+#' Define the available sizing options for row- or column-based plots,
+#' where availability is defined on the presence of the appropriate data in a SingleCellExperiment object.
+#'
+#' @param se A SingleCellExperiment object.
+#'
+#' @details
+#' Sizing by column data is not available if no column data exists in \code{se} - same for the row data.
+#' For column plots, we have an additional requirement that there must also be assays in \code{se} to size by features.
+#'
+#' @return A character vector of available sizing modes, i.e., nothing or by column/row data
+#'
+#' @author Kevin Rue-Albrecht, Charlotte Soneson
+#' @rdname INTERNAL_define_size_options
+.define_size_options_for_column_plots <- function(se) {
+    size_choices <- .sizeByNothingTitle
+
+    col_numeric <- .get_internal_info(se, "column_numeric")
+
+    if (length(col_numeric)) {
+        size_choices <- c(size_choices, .sizeByColDataTitle)
+    }
+
+    return(size_choices)
+}
+
 #' Define visual parameter check options
 #'
 #' Define the available visual parameter check boxes that can be ticked.
 #'
 #' @param discrete_covariates A character vector of names of categorical covariates.
+#' @param numeric_covariates A character vector of names of numeric covariates.
 #'
 #' @details
 #' Currently, the only special case is when there are no categorical covariates, in which case the shaping and faceting check boxes will not be available.
@@ -732,7 +779,7 @@
 #'
 #' @author Aaron Lun, Kevin Rue-Albrecht
 #' @rdname INTERNAL_define_visual_options
-.define_visual_options <- function(discrete_covariates) {
+.define_visual_options <- function(discrete_covariates, numeric_covariates) {
     pchoices <- c(.visualParamChoiceColorTitle)
 
     if (length(discrete_covariates)) {
@@ -788,10 +835,12 @@
 .create_visual_box_for_row_plots <- function(mode, id, param_choices, active_row_tab, active_col_tab, se) {
     covariates <- colnames(rowData(se))
     discrete_covariates <- .get_internal_info(se, "row_groupable")
+    numeric_covariates <- .get_internal_info(se, "row_numeric")
     all_assays <- .get_internal_info(se, "all_assays")
 
     colorby_field <- paste0(mode, id, "_", .colorByField)
     shapeby_field <- paste0(mode, id, "_", .shapeByField)
+    sizeby_field <- paste0(mode, id, "_", .sizeByField)
     pchoice_field <- paste0(mode, id, "_", .visualParamChoice)
 
     collapseBox(
@@ -801,7 +850,7 @@
         checkboxGroupInput(
             inputId=pchoice_field, label=NULL, inline=TRUE,
             selected=param_choices[[.visualParamChoice]][[1]],
-            choices=.define_visual_options(discrete_covariates)),
+            choices=.define_visual_options(discrete_covariates, numeric_covariates)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoiceColorTitle,
             radioButtons(
@@ -861,6 +910,26 @@
             hr(), .add_facet_UI_elements_for_row_plots(mode, id, param_choices, discrete_covariates)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoicePointTitle,
+            hr(),
+            radioButtons(
+                sizeby_field, label="Size by:", inline=TRUE,
+                choices=.define_size_options_for_row_plots(se),
+                selected=param_choices[[.sizeByField]]
+            ),
+            .conditional_on_radio(
+                sizeby_field, .sizeByNothingTitle,
+                numericInput(
+                    paste0(mode, id, "_", .plotPointSize), label="Point size:",
+                    min=0, value=param_choices[,.plotPointSize])
+            ),
+            .conditional_on_radio(
+                sizeby_field, .sizeByRowDataTitle,
+                selectInput(paste0(mode, id, "_", .sizeByRowData), label=NULL,
+                            choices=numeric_covariates, selected=param_choices[[.sizeByRowData]])
+            ),
+            .add_point_UI_elements(mode, id, param_choices)),
+        .conditional_on_check_group(
+            pchoice_field, .visualParamChoicePointTitle,
             hr(), .add_point_UI_elements(mode, id, param_choices)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoiceOtherTitle,
@@ -894,6 +963,19 @@
     }
 
     return(shape_choices)
+}
+
+#' @rdname INTERNAL_define_size_options
+.define_size_options_for_row_plots <- function(se) {
+    size_choices <- .sizeByNothingTitle
+
+    row_numeric <- .get_internal_info(se, "row_numeric")
+
+    if (length(row_numeric)) {
+        size_choices <- c(size_choices, .sizeByRowDataTitle)
+    }
+
+    return(size_choices)
 }
 
 #' Faceting visual parameters
@@ -992,9 +1074,6 @@
 .add_point_UI_elements <- function(mode, id, param_choices) {
     ds_id <- paste0(mode, id, "_", .plotPointDownsample)
     tagList(
-        numericInput(
-            paste0(mode, id, "_", .plotPointSize), label="Point size:",
-            min=0, value=param_choices[,.plotPointSize]),
         sliderInput(
             paste0(mode, id, "_", .plotPointAlpha), label="Point opacity",
             min=0.1, max=1, value=param_choices[,.plotPointAlpha]),
@@ -1049,7 +1128,7 @@
 #' Each effect option, once selected, may yield a further subset of nested options.
 #' For example, choosing to colour on the selected points will open up a choice of colour to use.
 #'
-#' The other two functions are helper functions that avoid re-writing related code in the \code{\link{.panel_generation}} function.
+#' The other three functions are helper functions that avoid re-writing related code in the \code{\link{.panel_generation}} function.
 #' This is mostly for other panel types that take selections but do not follow the exact structure produced by \code{.create_selection_param_box}.
 #'
 #' @author Aaron Lun
@@ -1057,15 +1136,34 @@
 #' @seealso
 #' \code{\link{.panel_generation}}
 #'
-#' @importFrom shiny sliderInput radioButtons selectInput
+#' @importFrom shiny sliderInput radioButtons selectInput actionButton hr strong br
+#' @importFrom shinyjs disabled
 #' @importFrom colourpicker colourInput
 .create_selection_param_box <- function(mode, id, param_choices, selectable, source_type=c("row", "column")) {
     select_effect <- paste0(mode, id, "_", .selectEffect)
     source_type <- match.arg(source_type)
 
-    .create_selection_param_box_define_box(
+    # initialize active "Delete" button only if a preconfigured selection history exists
+    deleteFUN <- identity
+    deleteLabel <- .buttonDeleteLabel
+    if (length(param_choices[[.multiSelectHistory]][[1L]]) == 0L) {
+        deleteFUN <- disabled
+        deleteLabel <- .buttonEmptyHistoryLabel
+    }
+    
+    # initialize active "Save" button only if a preconfigured active selection exists
+    saveFUN <- identity
+    saveLabel <- .buttonSaveLabel
+    cur_lasso <- param_choices[[.lassoData]][[1L]]
+    cur_brush <- param_choices[[.brushData]][[1L]]
+    if (is.null(cur_lasso) && is.null(cur_brush)) {
+        saveFUN <- disabled
+        saveLabel <- .buttonNoSelectionLabel
+    }
+
+    .define_selection_param_box(
         mode, id, param_choices,
-        .create_selection_param_box_define_choices(mode, id, param_choices, field=.selectByPlot, selectable=selectable, source_type),
+        .define_selection_choices(mode, id, param_choices, field=.selectByPlot, selectable=selectable, source_type),
 
         radioButtons(
             select_effect, label="Selection effect:", inline=TRUE,
@@ -1083,12 +1181,17 @@
             sliderInput(
                 paste0(mode, id, "_", .selectTransAlpha), label=NULL,
                 min=0, max=1, value=param_choices[[.selectTransAlpha]])
-        )
+        ),
+        hr(),
+        strong("Manage multiple selections:"),
+        br(),
+        saveFUN(actionButton(paste0(mode, id, "_", .multiSelectSave), label=saveLabel)),
+        deleteFUN(actionButton(paste0(mode, id, "_", .multiSelectDelete), label=deleteLabel))
     )
 }
 
 #' @rdname INTERNAL_create_selection_param_box
-.create_selection_param_box_define_box <- function(mode, id, param_choices, ...) {
+.define_selection_param_box <- function(mode, id, param_choices, ...) {
     collapseBox(
         id=paste0(mode, id, "_", .selectParamBoxOpen),
         title="Selection parameters",
@@ -1097,12 +1200,36 @@
 }
 
 #' @rdname INTERNAL_create_selection_param_box
-.create_selection_param_box_define_choices <- function(mode, id, param_choices, field, selectable, source_type=c("row", "column")) {
+#' @importFrom shiny selectInput
+.define_selection_transmitter <- function(mode, id, param_choices, field, selectable, source_type="row") {
     selectInput(
         paste0(mode, id, "_", field),
         label=sprintf("Receive %s selection from:", source_type),
         choices=selectable,
-        selected=.choose_link(param_choices[[field]], selectable))
+        selected=.choose_link(param_choices[[field]], selectable)
+    )
+}
+
+#' @rdname INTERNAL_create_selection_param_box
+#' @importFrom shiny tagList radioButtons selectizeInput
+.define_selection_choices <- function(mode, id, param_choices, field, selectable, source_type="row") {
+    select_multi_type <- paste0(mode, id, "_", .selectMultiType)
+    tagList(
+        .define_selection_transmitter(mode, id, param_choices, field, selectable, source_type),
+
+        radioButtons(
+            select_multi_type, label=NULL, inline=TRUE,
+            choices=c(.selectMultiActiveTitle, .selectMultiUnionTitle, .selectMultiSavedTitle),
+            selected=param_choices[[.selectMultiType]]
+        ),
+
+        .conditional_on_radio(
+            select_multi_type, .selectMultiSavedTitle,
+            selectizeInput(
+                paste0(mode, id, "_", .selectMultiSaved), label=NULL,
+                selected=NULL, choices=NULL, multiple=FALSE)
+        )
+    )
 }
 
 #' Conditional elements on radio or checkbox selection
@@ -1144,7 +1271,7 @@
 #' @rdname INTERNAL_conditional_elements
 #' @importFrom shiny conditionalPanel
 .conditional_on_check_group <- function(id, choice, ...) {
-    conditionalPanel(condition=sprintf('(input["%s"].includes("%s"))', id, choice), ...)
+    conditionalPanel(condition=sprintf('(typeof input["%s"] !== "undefined" && input["%s"].includes("%s"))', id, id, choice), ...)
 }
 
 #' Coerce box status to custom classes
@@ -1215,6 +1342,8 @@
     out <- list(
         column_groupable=colnames(colData(se))[.which_groupable(colData(se))],
         row_groupable=colnames(rowData(se))[.which_groupable(rowData(se))],
+        column_numeric=colnames(colData(se))[.which_numeric(colData(se))],
+        row_numeric=colnames(rowData(se))[.which_numeric(rowData(se))],
         all_assays=.sanitize_names(assayNames(se)),
         red_dim_names=.sanitize_names(reducedDimNames(se)),
         sample_names=.sanitize_names(colnames(se)),

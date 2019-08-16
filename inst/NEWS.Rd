@@ -1,6 +1,84 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.5.5}{
+\itemize{
+    \item Add \code{modeEmpty()}.
+    \item Support zero-row \code{initialPanels} argument.
+}
+}
+
+\section{iSEE VERSION 1.5.4}{
+\itemize{
+    \item Added support for file upload with server re-initialization.
+    \item Moved observers to separate file. Exclude from code coverage.
+    \item Updating calls to \code{ReprocessedAllenData()} to load only \code{tophat_counts} assay.
+}
+}
+
+\section{iSEE VERSION 1.5.3}{
+\itemize{
+    \item Use \code{ReprocessedAllenData()} following the deprecation of
+    \code{data(allen)}.
+}
+}
+
+\section{iSEE VERSION 1.5.2}{
+\itemize{
+    \item Minor doc fix..
+    \item Do not allow duplicated values in \code{Name} field of \code{initialPanels}.
+    \item Downsample points randomly.
+}
+}
+
+\section{iSEE VERSION 1.5.1}{
+\itemize{
+    \item Fix report of table links.
+}
+}
+
+\section{iSEE VERSION 1.5.0}{
+\itemize{
+    \item Bioconductor release.
+}
+}
+
+\section{iSEE VERSION 1.3.9}{
+\itemize{
+    \item Add ORCID identifiers.
+    \item Fix subscript error when tables receive a selection.
+    \item Fix panel names in panel organization selectize input.
+    \item Control the application of panel organization updates using an action button.
+    \item Fix child replotting upon lasso close.
+    \item Fix code reporting for zero-length DataFrame
+}
+}
+
+\section{iSEE VERSION 1.3.8}{
+\itemize{
+    \item Support multiple selections.
+    \item Avoid Javascript error with check group conditional.
+}
+}
+
+\section{iSEE VERSION 1.3.7}{
+\itemize{
+    \item Add ImmunoOncology in biocViews.
+}
+}
+
+\section{iSEE VERSION 1.3.6}{
+\itemize{
+    \item Control point size.
+}
+}
+
+\section{iSEE VERSION 1.3.5}{
+\itemize{
+    \item Additional information during the default tour.
+}
+}
+
 \section{iSEE VERSION 1.3.4}{
 \itemize{
     \item Fix panel organization selectize.
@@ -29,6 +107,12 @@
     \item Fix invalid row index sent from tables in RStudio browser.
     \item Fix initialization of search fields for tables that are initialized with an incoming selection.
     \item Fix constant field name.
+}
+}
+
+\section{iSEE VERSION 1.3.0}{
+\itemize{
+    \item Bioconductor release.
 }
 }
 
@@ -137,6 +221,12 @@
     \item INTERNAL: Enable storage of additional \code{plot.data} beyond \code{X} and \code{Y} in \code{all.coordinates}.
         See constant \code{.allCoordinatesNames}.
         Necessary for correct behaviour of brushes on faceted plots.
+}
+}
+
+\section{iSEE VERSION 1.1.0}{
+\itemize{
+    \item Bioconductor release.
 }
 }
 

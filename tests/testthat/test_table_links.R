@@ -1,3 +1,5 @@
+context("table_links")
+
 # Tests the table linking functions for point-based plots.
 # library(iSEE); library(testthat); source("setup_sce.R"); source("test_table_links.R")
 
@@ -82,10 +84,10 @@ test_that("table link creation works correctly", {
 
     expect_identical(tabs$rowStatTable2$xaxis, "featAssayPlot1")
     expect_identical(tabs$rowStatTable2$yaxis, "featAssayPlot3")
-    expect_identical(tabs$rowStatTable2$color, character(0))
+    expect_identical(tabs$rowStatTable2$color, character(0L))
 
-    expect_identical(tabs$rowStatTable3$xaxis, character(0))
-    expect_identical(tabs$rowStatTable3$yaxis, character(0))
+    expect_identical(tabs$rowStatTable3$xaxis, character(0L))
+    expect_identical(tabs$rowStatTable3$yaxis, character(0L))
     expect_identical(tabs$rowStatTable3$color, "colDataPlot1")
 
     expect_identical(tabs$colStatTable1$xaxis, "sampAssayPlot3")
@@ -94,7 +96,7 @@ test_that("table link creation works correctly", {
 
     expect_identical(tabs$colStatTable2$xaxis, "sampAssayPlot1")
     expect_identical(tabs$colStatTable2$yaxis, "sampAssayPlot3")
-    expect_identical(tabs$colStatTable2$color, character(0))
+    expect_identical(tabs$colStatTable2$color, character(0L))
 
     # Disabling of xaxis choices should have no effect, it's still linked but hidden.
     featAssayArgs2 <- featAssayArgs
@@ -175,8 +177,8 @@ test_that("table link creation works correctly", {
     tab2 <- iSEE:::.spawn_table_links(memory)
 
     tabX <- tabs
-    tabX$rowStatTable1$yaxis <- character(0)
-    tabX$rowStatTable2$yaxis <- character(0)
+    tabX$rowStatTable1$yaxis <- character(0L)
+    tabX$rowStatTable2$yaxis <- character(0L)
     expect_identical(tabX, tab2)
 
     sampAssayArgs2 <- sampAssayArgs
@@ -193,8 +195,8 @@ test_that("table link creation works correctly", {
     tab2 <- iSEE:::.spawn_table_links(memory)
 
     tabX <- tabs
-    tabX$colStatTable1$yaxis <- character(0)
-    tabX$colStatTable2$yaxis <- character(0)
+    tabX$colStatTable1$yaxis <- character(0L)
+    tabX$colStatTable2$yaxis <- character(0L)
     expect_identical(tabX, tab2)
 })
 
@@ -206,7 +208,7 @@ test_that("table destruction works correctly for rows", {
     # Destroying a row statistics table.
     iSEE:::.destroy_table(pObjects, "rowStatTable1")
     expect_identical(pObjects$table_links$rowStatTable1,
-        list(color=character(0), xaxis=character(0), yaxis=character(0)))
+        list(color=character(0L), xaxis=character(0L), yaxis=character(0L)))
 
     comp <- memory
     comp$redDimPlot[1,iSEE:::.colorByRowTable] <- iSEE:::.noSelection
@@ -218,7 +220,7 @@ test_that("table destruction works correctly for rows", {
     # Destroying a simpler table.
     iSEE:::.destroy_table(pObjects, "rowStatTable3")
     expect_identical(pObjects$table_links$rowStatTable3,
-        list(color=character(0), xaxis=character(0), yaxis=character(0)))
+        list(color=character(0L), xaxis=character(0L), yaxis=character(0L)))
 
     comp$colDataPlot[1,iSEE:::.colorByRowTable] <- iSEE:::.noSelection
     expect_identical(comp, pObjects$memory)
@@ -232,7 +234,7 @@ test_that("table destruction works correctly for columns", {
     # Destroying a column statistics table.
     iSEE:::.destroy_table(pObjects, "colStatTable1")
     expect_identical(pObjects$table_links$colStatTable1,
-        list(color=character(0), xaxis=character(0), yaxis=character(0)))
+        list(color=character(0L), xaxis=character(0L), yaxis=character(0L)))
 
     comp <- memory
     comp$rowDataPlot[1,iSEE:::.colorByColTable] <- iSEE:::.noSelection
@@ -244,7 +246,7 @@ test_that("table destruction works correctly for columns", {
     # Destroying a simpler table.
     iSEE:::.destroy_table(pObjects, "colStatTable2")
     expect_identical(pObjects$table_links$colStatTable2,
-        list(color=character(0), xaxis=character(0), yaxis=character(0)))
+        list(color=character(0L), xaxis=character(0L), yaxis=character(0L)))
 
     comp$sampAssayPlot[1,iSEE:::.sampAssayXAxisColTable] <- iSEE:::.noSelection
     comp$sampAssayPlot[3,iSEE:::.sampAssayYAxisColTable] <- iSEE:::.noSelection
@@ -278,10 +280,10 @@ test_that("table modification works correctly (row/column-agnostic)", {
     expect_identical(tab2$rowStatTable1$color, "colDataPlot2")
 
     tab2 <- iSEE:::.modify_table_links(tabs, "featAssayPlot3", iSEE:::.noSelection, "Row statistics table 1", mode="xaxis")
-    expect_identical(tab2$rowStatTable1$xaxis, character(0))
+    expect_identical(tab2$rowStatTable1$xaxis, character(0L))
 
     tab2 <- iSEE:::.modify_table_links(tabs, "featAssayPlot2", iSEE:::.noSelection, "Row statistics table 1", mode="yaxis")
-    expect_identical(tab2$rowStatTable1$yaxis, character(0))
+    expect_identical(tab2$rowStatTable1$yaxis, character(0L))
 
     # Destroying links that were never there has no effect.
     expect_false("featAssayPlot2" %in% tabs$rowStatTable3$color)
@@ -297,6 +299,31 @@ test_that("table modification works correctly (row/column-agnostic)", {
     expect_true("featAssayPlot2" %in% tabs$rowStatTable1$yaxis)
     tab2 <- iSEE:::.modify_table_links(tabs, "featAssayPlot2", "Row statistics table 1", iSEE:::.noSelection, mode="yaxis")
     expect_identical(tab2, tabs)
+})
+
+test_that("table observers work to change the y-axis source", {
+
+    pObjects <- new.env()
+    pObjects$table_links <- tabs
+    pObjects$memory <- memory
+
+    rObjects <- new.env()
+    rObjects$redDimPlot1_PanelLinkInfo <- 1L
+    rObjects$rowStatTable1_PanelLinkInfo <- 1L
+    rObjects$rowStatTable2_PanelLinkInfo <- 1L
+
+    input <- list(
+        featAssayPlot2_YAxisFeatName=1L,
+        featAssayPlot2_YAxisRowTable = "Row statistics table 1"
+    )
+
+    # The y-axis observe has not changed
+    out <- iSEE:::.setup_table_observer(
+        "featAssayPlot", 2, pObjects, rObjects, input=input, session=NULL,
+        select_field=iSEE:::.featAssayYAxisFeatName, tab_field=iSEE:::.featAssayYAxisRowTable,
+        select_choices=NULL, param="yaxis")
+    expect_false(out)
+
 })
 
 test_that("table observers work correctly (row/column-agnostic)", {
@@ -335,9 +362,7 @@ test_that("table observers work correctly (row/column-agnostic)", {
     # Changing the colour source.
     old_table_links <- pObjects$table_links
     old_param <- pObjects$memory$redDimPlot[1,]
-    old_param[,iSEE:::.colorByField] <-
-        input$redDimPlot1_ColorBy <-
-        iSEE:::.colorByNothingTitle
+    old_param[,iSEE:::.colorByField] <- input$redDimPlot1_ColorBy <- iSEE:::.colorByNothingTitle
 
     out <- iSEE:::.setup_table_observer(
         "redDimPlot", 1, pObjects, rObjects, input=input,  session=NULL,

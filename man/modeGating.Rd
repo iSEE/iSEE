@@ -22,23 +22,21 @@ Plots are serially linked from the first row to the last.}
 length either 1 or equal to \code{nrow(features)}}
 }
 \value{
-A Shiny App preconfigured with multiple chain-linked feature
-expression plots is launched for interactive data exploration of the
-\code{\link{SingleCellExperiment}} / \code{\link{SummarizedExperiment}}
-object
+A Shiny app object is returned.
 }
 \description{
-App pre-configured to link multiple feature assay plots
+This mode launches a Shiny App preconfigured with multiple chain-linked
+feature expression plots is launched for interactive data exploration of the
+\code{\link{SingleCellExperiment}} or \code{\link{SummarizedExperiment}}
+object.
 }
 \examples{
 library(scRNAseq)
-data(allen)
-class(allen)
-
 # Example data ----
+sce <- ReprocessedAllenData(assays = "tophat_counts")
+class(sce)
 
 library(scater)
-sce <- as(allen, "SingleCellExperiment")
 counts(sce) <- assay(sce, "tophat_counts")
 sce <- normalize(sce)
 

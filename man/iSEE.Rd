@@ -12,11 +12,13 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featAssayArgs = NULL,
   sampAssayMax = 5, colStatMax = 5, customDataMax = 5,
   customStatMax = 5, heatMapMax = 5, initialPanels = NULL,
   annotFun = NULL, customDataFun = NULL, customStatFun = NULL,
-  colormap = ExperimentColorMap(), tour = NULL, appTitle = NULL,
-  runLocal = TRUE, voice = FALSE)
+  customSendAll = FALSE, colormap = ExperimentColorMap(),
+  tour = NULL, appTitle = NULL, runLocal = TRUE, voice = FALSE)
 }
 \arguments{
-\item{se}{An object that is coercible to \linkS4class{SingleCellExperiment}.}
+\item{se}{An object that is coercible to \linkS4class{SingleCellExperiment}.
+If missing, an app is launched with a file upload control allowing users to upload an RDS file that contains such as object.
+See Details for information to set the maximal size limit for file uploads.}
 
 \item{redDimArgs}{A DataFrame similar to that produced by \code{\link{redDimPlotDefaults}}, specifying initial parameters for the reduced dimension plots.}
 
@@ -30,7 +32,7 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featAssayArgs = NULL,
 
 \item{sampAssayArgs}{A DataFrame similar to that produced by \code{\link{sampAssayPlotDefaults}}, specifying initial parameters for the sample assay plots.}
 
-\item{colStatArgs}{A DataFrame similar to that produced by \code{\link{colStatTableDefaults}}, specifying initial parameters for the sample assay plots.}
+\item{colStatArgs}{A DataFrame similar to that produced by \code{\link{colStatTableDefaults}}, specifying initial parameters for the column statistics tables.}
 
 \item{customDataArgs}{A DataFrame similar to that produced by \code{\link{customDataPlotDefaults}}, specifying initial parameters for the custom data plots.}
 
@@ -67,6 +69,9 @@ The function should accept two parameters, \code{se} and \code{row_index}, and r
 \item{customDataFun}{A named list of functions for reporting coordinates to use in a custom data plot.}
 
 \item{customStatFun}{A named list of functions for reporting coordinates to use in a custom statistics table.}
+
+\item{customSendAll}{A logical scalar indicating whether all (active and saved) selections should be passed from transmitting panels to custom plots or tables.
+The default (\code{FALSE}) only passes the row names of the points in the active selection.}
 
 \item{colormap}{An \linkS4class{ExperimentColorMap} object that defines custom colormaps to apply to individual \code{assays}, \code{colData} and \code{rowData} covariates.}
 
@@ -108,16 +113,18 @@ See \url{https://github.com/carlganz/rintrojs#usage} for more information.
 
 By default, categorical data types such as factor and character are limited to 24 levels, beyond which they are coerced to numeric variables for faster plotting.
 This limit may be set to a different value as a global option, e.g. \code{options(iSEE.maxlevels=30)}.
+
+By default, the maximum request size for file uploads defaults to 5MB (https://shiny.rstudio.com/reference/shiny/0.14/shiny-options.html).
+To raise the limit (e.g., 50MB), run \code{options(shiny.maxRequestSize=50*1024^2)}.
 }
 \examples{
 library(scRNAseq)
-data(allen)
-class(allen)
 
 # Example data ----
+sce <- ReprocessedAllenData(assays = "tophat_counts")
+class(sce)
 
 library(scater)
-sce <- as(allen, "SingleCellExperiment")
 counts(sce) <- assay(sce, "tophat_counts")
 sce <- normalize(sce)
 

@@ -130,6 +130,16 @@
 .shapeByColData <- "ShapeByColData"
 .shapeByRowData <- "ShapeByRowData"
 
+# Point sizing parameters. ----
+
+.sizeByNothingTitle <- "None"
+.sizeByColDataTitle <- "Column data"
+.sizeByRowDataTitle <- "Row data"
+
+.sizeByField <- "SizeBy"
+.sizeByColData <- "SizeByColData"
+.sizeByRowData <- "SizeByRowData"
+
 # Point selection parameters. ----
 .selectParamBoxOpen <- "SelectBoxOpen"
 
@@ -141,6 +151,18 @@
 
 .selectColor <- "SelectColor"
 .selectTransAlpha <- "SelectAlpha"
+
+# Multiple selection parameters. ---
+.multiSelectHistory <- "MultiSelectHistory"
+.multiSelectSave <- "MultiSelectSave"
+.multiSelectDelete <- "MultiSelectDelete"
+
+.selectMultiType <- "SelectMultiType"
+.selectMultiActiveTitle <- "Active"
+.selectMultiUnionTitle <- "Union"
+.selectMultiSavedTitle <- "Saved"
+
+.selectMultiSaved <- "SelectMultiSaved"
 
 .noSelection <- "---"
 
@@ -159,6 +181,10 @@
 # Button parameters ----
 .buttonUpToDateLabel <- "Up to date"
 .buttonUpdateLabel <- "Update"
+.buttonEmptyHistoryLabel <- "No history"
+.buttonDeleteLabel <- "Delete"
+.buttonNoSelectionLabel <- "No selection"
+.buttonSaveLabel <- "Save"
 
 # Other plot parameters. ----
 .dataParamBoxOpen <- "DataBoxOpen"

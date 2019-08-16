@@ -1,3 +1,5 @@
+context("custom")
+
 # This script tests the code related to the creation of custom panels.
 # library(iSEE); library(testthat); source("setup_sce.R"); source("test_custom.R")
 
@@ -14,7 +16,7 @@ CUSTOM_DATA <- function(se, rows, columns, colour_by=NULL, scale_columns=TRUE) {
     }
 
     scale_columns <- as.logical(scale_columns)
-    kept <- runPCA(kept, feature_set=rows, scale_columns=scale_columns)
+    kept <- runPCA(kept, feature_set=rows, scale_features=scale_columns)
 	plotPCA(kept, colour_by=colour_by)
 }
 
@@ -218,5 +220,5 @@ yay 1
     # Handles empty inputs.
     out <- iSEE:::.text2args("
             ")
-    expect_identical(unname(out), character(0))
+    expect_identical(unname(out), character(0L))
 })

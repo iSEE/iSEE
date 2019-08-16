@@ -1,3 +1,12 @@
+context("iSEE-main")
+
+test_that("iSEE main function runs without object", {
+
+    app <- iSEE()
+
+    expect_s3_class(app, "shiny.appobj")
+
+})
 
 test_that("iSEE main function runs", {
 
@@ -28,10 +37,10 @@ test_that("iSEE main function runs with empty rowData(sce)", {
 
 })
 
-test_that("iSEE main function runs with empty rowData(sce)", {
+test_that("iSEE main function runs with empty colData(sce)", {
 
-    sce <- allen
     colData(sce) <- DataFrame(row.names=colnames(sce))
+    sce <- clearSizeFactors(sce)
 
     app <- iSEE(
         sce, redDimArgs=NULL, colDataArgs=NULL, featAssayArgs=NULL, sampAssayArgs=NULL,

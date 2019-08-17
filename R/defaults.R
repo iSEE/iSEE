@@ -381,7 +381,7 @@ featAssayPlotDefaults <- function(se, number) {
     out[[.featAssayYAxisRowTable]] <- .noSelection
 
     out <- .add_general_parameters_for_column_plots(out, se)
-    if (waszero) out <- out[0,,drop=FALSE]
+    if (waszero) out <- out[0, , drop=FALSE]
     return(out)
 }
 
@@ -1025,23 +1025,23 @@ heatMapPlotDefaults <- function(se, number) {
     if (is.null(any_discrete)) {
         any_discrete <- colnames(colData(se))[.which_groupable(colData(se))]
     }
-    dev_discrete <- any_discrete[1]
+    def_discrete <- any_discrete[1]
 
     any_numeric <- .get_internal_info(se, "column_numeric", empty_fail=FALSE)  # if this is run internally, use precomputed; otherwise recompute.
     if (is.null(any_numeric)) {
         any_numeric <- colnames(colData(se))[.which_numeric(colData(se))]
     }
-    dev_numeric <- any_numeric[1]
+    def_numeric <- any_numeric[1]
 
     incoming[[.colorByField]] <- .colorByNothingTitle
     incoming[[.colorByDefaultColor]] <- "black"
     incoming[[.colorByColData]] <- def_cov
 
     incoming[[.shapeByField]] <- .shapeByNothingTitle
-    incoming[[.shapeByColData]] <- dev_discrete
+    incoming[[.shapeByColData]] <- def_discrete
 
     incoming[[.sizeByField]] <- .sizeByNothingTitle
-    incoming[[.sizeByColData]] <- dev_numeric
+    incoming[[.sizeByColData]] <- def_numeric
 
     incoming[[.colorByRowTable]] <- .noSelection
     incoming[[.colorByFeatName]] <- 1L
@@ -1052,8 +1052,8 @@ heatMapPlotDefaults <- function(se, number) {
 
     incoming[[.facetByRow]] <- FALSE
     incoming[[.facetByColumn]] <- FALSE
-    incoming[[.facetRowsByColData]] <- dev_discrete
-    incoming[[.facetColumnsByColData]] <- dev_discrete
+    incoming[[.facetRowsByColData]] <- def_discrete
+    incoming[[.facetColumnsByColData]] <- def_discrete
 
     return(incoming)
 }
@@ -1069,23 +1069,23 @@ heatMapPlotDefaults <- function(se, number) {
     if (is.null(any_discrete)) {
         any_discrete <- colnames(rowData(se))[.which_groupable(rowData(se))]
     }
-    dev_discrete <- any_discrete[1]
+    def_discrete <- any_discrete[1]
 
     any_numeric <- .get_internal_info(se, "row_numeric", empty_fail=FALSE) # if this is run internally, use precomputed; otherwise recompute.
     if (is.null(any_numeric)) {
         any_numeric <- colnames(rowData(se))[.which_numeric(rowData(se))]
     }
-    dev_numeric <- any_numeric[1]
+    def_numeric <- any_numeric[1]
 
     incoming[[.colorByField]] <- .colorByNothingTitle
     incoming[[.colorByDefaultColor]] <- "black"
     incoming[[.colorByRowData]] <- def_cov
 
     incoming[[.shapeByField]] <- .shapeByNothingTitle
-    incoming[[.shapeByRowData]] <- dev_discrete
+    incoming[[.shapeByRowData]] <- def_discrete
 
     incoming[[.sizeByField]] <- .sizeByNothingTitle
-    incoming[[.sizeByRowData]] <- dev_numeric
+    incoming[[.sizeByRowData]] <- def_numeric
 
     incoming[[.colorByRowTable]] <- .noSelection
     incoming[[.colorByFeatName]] <- 1L
@@ -1096,8 +1096,8 @@ heatMapPlotDefaults <- function(se, number) {
 
     incoming[[.facetByRow]] <- FALSE
     incoming[[.facetByColumn]] <- FALSE
-    incoming[[.facetRowsByRowData]] <- dev_discrete
-    incoming[[.facetColumnsByRowData]] <- dev_discrete
+    incoming[[.facetRowsByRowData]] <- def_discrete
+    incoming[[.facetColumnsByRowData]] <- def_discrete
 
     return(incoming)
 }

@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.5.6}{
+\itemize{
+    \item Updates following deprecation of \code{isSpike} and \code{sizeFactorNames}.
+}
+}
+
 \section{iSEE VERSION 1.5.5}{
 \itemize{
     \item Add \code{modeEmpty()}.

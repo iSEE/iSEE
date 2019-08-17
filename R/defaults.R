@@ -63,7 +63,7 @@
 #' \item{\code{ShapeByRowData}:}{Character, which column of \code{rowData(se)} should be used for shaping if \code{ShapeBy="Row data"}?
 #' This should refer to a categorical variable, and will default to the first such entry of \code{rowData(se)}.}
 #' }
-#' 
+#'
 #' @section Size parameters:
 #' \describe{
 #' \item{\code{SizeBy}:}{Character, what type of data should be used for controlling size?
@@ -200,7 +200,7 @@ NULL
 #' This should contain a list of lists of brush or lasso objects containing saved alternative selections for each plot.
 #' The outer list should be of length equal to the number of plots.
 #' Again, users are advised to copy-and-paste reported code rather than writing these objects by hand.
-#' 
+#'
 #' If the transmitting plot has multiple selections, the current panel can choose between them using:
 #' \describe{
 #' \item{\code{SelectMultiType}:}{Character, containing \code{"Active"}, which uses the active selection on the transmitting panel;
@@ -234,7 +234,7 @@ NULL
 #'
 #' Only row-based plots (i.e., row data and sample assay plots) can be used for selecting points to supply to row statistics tables, for the same reasons described above.
 #' Similarly, only column-based plots can be used to select plots to transmit to column statistics tables.
-#' 
+#'
 #' @author
 #' Aaron Lun, Kevin Rue-Albrecht
 #'
@@ -298,12 +298,23 @@ redDimPlotDefaults <- function(se, number) {
     if (waszero) number <- 1
 
     out <- new("DataFrame", nrows=as.integer(number))
-    out[[.redDimType]] <- 1L
-    out[[.redDimXAxis]] <- 1L
-    out[[.redDimYAxis]] <- min(2L, ncol(reducedDim(se))) # if first reduced dim type has only 1 dimension
+    # if there is no reduced dimension available
+    if (identical(length(reducedDims(se)), 0L)) {
+        def_Type <- NA_integer_
+        def_XAxis <- NA_integer_
+        def_YAxis <- NA_integer_
+    } else {
+        def_Type <- 1L
+        def_XAxis <- 1L
+        # if the reduced dimension has only 1 dimension
+        def_YAxis <- min(2L, ncol(reducedDim(se, type = def_Type)))
+    }
 
+    out[[.redDimType]] <- def_Type
+    out[[.redDimXAxis]] <- def_XAxis
+    out[[.redDimYAxis]] <- def_YAxis
     out <- .add_general_parameters_for_column_plots(out, se)
-    if (waszero) out <- out[0,,drop=FALSE]
+    if (waszero) out <- out[0, , drop=FALSE]
     return(out)
 }
 
@@ -984,7 +995,7 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.brushData]] <- rep(list(NULL), nrow(incoming))
 
     incoming[[.multiSelectHistory]] <- rep(list(NULL), nrow(incoming))
-    
+
     incoming[[.selectMultiType]] <- .selectMultiActiveTitle
     incoming[[.selectMultiSaved]] <- 0L
 
@@ -1021,7 +1032,7 @@ heatMapPlotDefaults <- function(se, number) {
         any_discrete <- colnames(colData(se))[.which_groupable(colData(se))]
     }
     dev_discrete <- any_discrete[1]
-    
+
     any_numeric <- .get_internal_info(se, "column_numeric", empty_fail=FALSE)  # if this is run internally, use precomputed; otherwise recompute.
     if (is.null(any_numeric)) {
         any_numeric <- colnames(colData(se))[.which_numeric(colData(se))]
@@ -1034,7 +1045,7 @@ heatMapPlotDefaults <- function(se, number) {
 
     incoming[[.shapeByField]] <- .shapeByNothingTitle
     incoming[[.shapeByColData]] <- dev_discrete
-    
+
     incoming[[.sizeByField]] <- .sizeByNothingTitle
     incoming[[.sizeByColData]] <- dev_numeric
 
@@ -1065,7 +1076,7 @@ heatMapPlotDefaults <- function(se, number) {
         any_discrete <- colnames(rowData(se))[.which_groupable(rowData(se))]
     }
     dev_discrete <- any_discrete[1]
-    
+
     any_numeric <- .get_internal_info(se, "row_numeric", empty_fail=FALSE) # if this is run internally, use precomputed; otherwise recompute.
     if (is.null(any_numeric)) {
         any_numeric <- colnames(rowData(se))[.which_numeric(rowData(se))]
@@ -1078,7 +1089,7 @@ heatMapPlotDefaults <- function(se, number) {
 
     incoming[[.shapeByField]] <- .shapeByNothingTitle
     incoming[[.shapeByRowData]] <- dev_discrete
-    
+
     incoming[[.sizeByField]] <- .sizeByNothingTitle
     incoming[[.sizeByRowData]] <- dev_numeric
 

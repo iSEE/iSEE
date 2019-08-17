@@ -64,7 +64,7 @@ irrespective of which panels are available." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.6</span>
       </span>
     </div>
 
@@ -186,6 +186,7 @@ Users can then use the <code>"Organize panels"</code> widget to select panels to
 #&gt; colData names(0):
 #&gt; reducedDimNames(2): PCA tSNE
 #&gt; spikeNames(0):
+#&gt; altExpNames(0):
 #&gt; 
 #&gt; SnglCE&gt; ## coercion from SummarizedExperiment
 #&gt; SnglCE&gt; se &lt;- SummarizedExperiment(assays=list(counts=u, logcounts=v))
@@ -200,7 +201,8 @@ Users can then use the <code>"Organize panels"</code> widget to select panels to
 #&gt; colnames: NULL
 #&gt; colData names(0):
 #&gt; reducedDimNames(0):
-#&gt; spikeNames(0):</div><div class='input'>
+#&gt; spikeNames(0):
+#&gt; altExpNames(0):</div><div class='input'>
 <span class='no'>app</span> <span class='kw'>&lt;-</span> <span class='fu'>modeEmpty</span>(<span class='no'>sce</span>)
 <span class='kw'>if</span> (<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/interactive'>interactive</a></span>()) {
   <span class='kw pkg'>shiny</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/shiny/topics/runApp'>runApp</a></span>(<span class='no'>app</span>, <span class='kw'>port</span><span class='kw'>=</span><span class='fl'>1234</span>)

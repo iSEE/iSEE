@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.5.7}{
+\itemize{
+    \item Simplified protection of \code{redDimPlotDefaults} against empty \code{reducedDims}
+}
+}
+
 \section{iSEE VERSION 1.5.6}{
 \itemize{
     \item Updates following deprecation of \code{isSpike} and \code{sizeFactorNames}.

@@ -294,25 +294,19 @@ NULL
 #' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
 #' redDimPlotDefaults(sce, n=1)
 redDimPlotDefaults <- function(se, number) {
-    waszero <- number==0 # To ensure that we define all the fields with the right types.
+    waszero <- number == 0 # To ensure that we define all the fields with the right types.
     if (waszero) number <- 1
 
     out <- new("DataFrame", nrows=as.integer(number))
-    # if there is no reduced dimension available
-    if (identical(length(reducedDims(se)), 0L)) {
-        def_Type <- NA_integer_
-        def_XAxis <- NA_integer_
-        def_YAxis <- NA_integer_
+    out[[.redDimType]] <- 1L
+    out[[.redDimXAxis]] <- 1L
+
+    if (waszero) {
+        out[[.redDimYAxis]] <- NA_integer_
     } else {
-        def_Type <- 1L
-        def_XAxis <- 1L
-        # if the reduced dimension has only 1 dimension
-        def_YAxis <- min(2L, ncol(reducedDim(se, type = def_Type)))
+        out[[.redDimYAxis]] <- min(2L, ncol(reducedDim(se, 1L)))
     }
 
-    out[[.redDimType]] <- def_Type
-    out[[.redDimXAxis]] <- def_XAxis
-    out[[.redDimYAxis]] <- def_YAxis
     out <- .add_general_parameters_for_column_plots(out, se)
     if (waszero) out <- out[0, , drop=FALSE]
     return(out)

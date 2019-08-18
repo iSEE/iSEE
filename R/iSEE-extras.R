@@ -385,8 +385,8 @@
     illegal <- max_each[encoded$Type] < encoded$ID
     if (any(illegal)) {
         badpanel <- which(illegal)[1]
-        message(sprintf("'%s' in 'initialPanels' is not available (maximum ID is %i)",
-            initialPanels$Name[badpanel], max_each[encoded$Type[badpanel]]))
+        message(sprintf("\n'%s' in 'initialPanels' is not available (maximum ID is %i)",
+            initialPanels$Name[illegal], max_each[encoded$Type[illegal]]))
     }
 
     data.frame(Type=encoded$Type, ID=encoded$ID,

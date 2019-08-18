@@ -56,16 +56,16 @@
 #' \code{\link{iSEE}}
 .check_plot_feasibility <- function(se) {
     list(
-        redDimPlot=! (length(reducedDims(se))==0L || ncol(se)==0L),
-        colDataPlot=! (ncol(colData(se))==0L || ncol(se)==0L),
-        featAssayPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
-        rowStatTable=! (nrow(se)==0L),
-        rowDataPlot=! (ncol(rowData(se))==0L || nrow(se)==0L),
-        sampAssayPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
-        colStatTable=! (ncol(se)==0L),
-        customDataPlot=! ((ncol(se)==0L && nrow(se)==0L) || length(.get_internal_info(se, "custom_data_fun"))==0L),
-        customStatTable=! ((ncol(se)==0L && nrow(se)==0L) || length(.get_internal_info(se, "custom_stat_fun"))==0L),
-        heatMapPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L)
+        redDimPlot=! (length(reducedDims(se)) == 0L || ncol(se) == 0L),
+        colDataPlot=! (ncol(colData(se)) == 0L || ncol(se) == 0L),
+        featAssayPlot=! (nrow(se) == 0L || ncol(se) == 0L || length(assayNames(se)) == 0L),
+        rowStatTable=! (nrow(se) == 0L),
+        rowDataPlot=! (ncol(rowData(se)) == 0L || nrow(se) == 0L),
+        sampAssayPlot=! (nrow(se) == 0L || ncol(se) == 0L || length(assayNames(se)) == 0L),
+        colStatTable=! (ncol(se) == 0L),
+        customDataPlot=! ((ncol(se) == 0L && nrow(se) == 0L) || length(.get_internal_info(se, "custom_data_fun")) == 0L),
+        customStatTable=! ((ncol(se) == 0L && nrow(se) == 0L) || length(.get_internal_info(se, "custom_stat_fun")) == 0L),
+        heatMapPlot=! (nrow(se) == 0L || ncol(se) == 0L || length(assayNames(se)) == 0L)
     )
 }
 
@@ -459,7 +459,7 @@ height_limits <- c(400L, 1000L)
 
     # Checking for linking of x/y-axes of feature assay plots.
     for (mode in c("featAssayPlot", "sampAssayPlot")) {
-        if (mode=="featAssayPlot") {
+        if (mode == "featAssayPlot") {
             fields <- c(.featAssayXAxisRowTable, .featAssayYAxisRowTable)
             linkable <- tab_by_row
         } else {
@@ -648,7 +648,7 @@ height_limits <- c(400L, 1000L)
     }
 
     transmittees <- list(c("yaxis", "y-axis", NA, NA))
-    if (enc$Type=="rowStatTable") {
+    if (enc$Type == "rowStatTable") {
         transmittees <- c(transmittees,
                 list(
                     c("xaxis", "x-axis", .featAssayXAxis, .featAssayXAxisFeatNameTitle),
@@ -673,7 +673,7 @@ height_limits <- c(400L, 1000L)
         # Only writing a broadcast label if the plot actually receives the information via the appropriate parameter choices.
         # Y-axis for feature/sample assay plots is NA, as there are no choices there, so it always gets listed.
         for (i in seq_along(child_names)) {
-            if (is.na(by_field) || memory[[child_enc$Type[i]]][child_enc$ID[i], by_field]==ref_title) {
+            if (is.na(by_field) || memory[[child_enc$Type[i]]][child_enc$ID[i], by_field] == ref_title) {
                 output <- c(output, list(out_str, em(strong(child_names[i])), br()))
             }
         }
@@ -708,7 +708,7 @@ height_limits <- c(400L, 1000L)
 #' \code{\link{.spawn_selection_chart}}
 #' @importFrom igraph delete.vertices V topo_sort degree
 .establish_eval_order <- function(graph) {
-    iso <- V(graph)[degree(graph, mode="out")==0]
+    iso <- V(graph)[degree(graph, mode="out") == 0]
     graph <- delete.vertices(graph, iso)
     names(topo_sort(graph, mode="out"))
 }

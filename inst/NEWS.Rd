@@ -3,7 +3,8 @@
 
 \section{iSEE VERSION 1.5.7}{
 \itemize{
-    \item Simplified protection of \code{redDimPlotDefaults} against empty \code{reducedDims}
+    \item Simplify protection of \code{redDimPlotDefaults} against empty \code{reducedDims}
+    \item Fix to declare all panel types not available.
 }
 }
 

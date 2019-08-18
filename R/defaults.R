@@ -294,26 +294,20 @@ NULL
 #' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
 #' redDimPlotDefaults(sce, n=1)
 redDimPlotDefaults <- function(se, number) {
-    waszero <- number==0 # To ensure that we define all the fields with the right types.
+    # Ensure that we define all the fields with the right types, using a transient 1-row DF
+    # number=0 guarantees that se is not touched to define dummy values of the right type
+    waszero <- number == 0
     if (waszero) number <- 1
 
     out <- new("DataFrame", nrows=as.integer(number))
-    # if there is no reduced dimension available
-    if (identical(length(reducedDims(se)), 0L)) {
-        def_Type <- NA_integer_
-        def_XAxis <- NA_integer_
-        def_YAxis <- NA_integer_
-    } else {
-        def_Type <- 1L
-        def_XAxis <- 1L
-        # if the reduced dimension has only 1 dimension
-        def_YAxis <- min(2L, ncol(reducedDim(se, type = def_Type)))
-    }
+    out[[.redDimType]] <- 1L
+    out[[.redDimXAxis]] <- 1L
 
-    out[[.redDimType]] <- def_Type
-    out[[.redDimXAxis]] <- def_XAxis
-    out[[.redDimYAxis]] <- def_YAxis
-    out <- .add_general_parameters_for_column_plots(out, se)
+    def_yaxis <- NA_integer_
+    if (!waszero) def_yaxis <- min(2L, ncol(reducedDim(se, 1L)))
+    out[[.redDimYAxis]] <- def_yaxis
+
+    out <- .add_general_parameters_for_column_plots(out, if (waszero) NULL else se)
     if (waszero) out <- out[0, , drop=FALSE]
     return(out)
 }
@@ -371,11 +365,16 @@ redDimPlotDefaults <- function(se, number) {
 #' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
 #' featAssayPlotDefaults(sce, n=1)
 featAssayPlotDefaults <- function(se, number) {
-    waszero <- number==0
+    # Ensure that we define all the fields with the right types, using a transient 1-row DF
+    # number=0 guarantees that se is not touched to define dummy values of the right type
+    waszero <- number == 0
     if (waszero) number <- 1
 
-    def_assay <- .set_default_assay(se)
-    covariates <- colnames(colData(se))
+    def_assay <- NA_integer_
+    if (!waszero) def_assay <- .set_default_assay(se)
+
+    covariates <- NA_character_
+    if (!waszero) covariates <- colnames(colData(se))
 
     out <- new("DataFrame", nrows=as.integer(number))
     out[[.featAssayAssay]] <- def_assay
@@ -386,8 +385,8 @@ featAssayPlotDefaults <- function(se, number) {
     out[[.featAssayYAxisFeatName]] <- 1L
     out[[.featAssayYAxisRowTable]] <- .noSelection
 
-    out <- .add_general_parameters_for_column_plots(out, se)
-    if (waszero) out <- out[0,,drop=FALSE]
+    out <- .add_general_parameters_for_column_plots(out, if (waszero) NULL else se)
+    if (waszero) out <- out[0, , drop=FALSE]
     return(out)
 }
 
@@ -431,18 +430,21 @@ featAssayPlotDefaults <- function(se, number) {
 #' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
 #' colDataPlotDefaults(sce, n=1)
 colDataPlotDefaults <- function(se, number) {
-    waszero <- number==0
+    # Ensure that we define all the fields with the right types, using a transient 1-row DF
+    # number=0 guarantees that se is not touched to define dummy values of the right type
+    waszero <- number == 0
     if (waszero) number <- 1
 
-    covariates <- colnames(colData(se))
+    covariates <- NA_character_
+    if (!waszero) covariates <- colnames(colData(se))
 
     out <- new("DataFrame", nrows=as.integer(number))
     out[[.colDataYAxis]] <- covariates[1]
     out[[.colDataXAxis]] <- .colDataXAxisNothingTitle
-    out[[.colDataXAxisColData]] <- ifelse(length(covariates)==1L, covariates[1], covariates[2])
+    out[[.colDataXAxisColData]] <- ifelse(length(covariates) == 1L, covariates[1], covariates[2])
 
-    out <- .add_general_parameters_for_column_plots(out, se)
-    if (waszero) out <- out[0,,drop=FALSE]
+    out <- .add_general_parameters_for_column_plots(out, if (waszero) NULL else se)
+    if (waszero) out <- out[0, , drop=FALSE]
     return(out)
 }
 
@@ -491,13 +493,15 @@ colDataPlotDefaults <- function(se, number) {
 #' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
 #' customDataPlotDefaults(sce, n=1)
 customDataPlotDefaults <- function(se, number) {
-    waszero <- number==0
+    # Ensure that we define all the fields with the right types, using a transient 1-row DF
+    # number=0 guarantees that se is not touched to define dummy values of the right type
+    waszero <- number == 0
     if (waszero) number <- 1
 
     out <- new("DataFrame", nrows=as.integer(number))
     out <- .add_custom_panel_parameters(out)
 
-    if (waszero) out <- out[0,,drop=FALSE]
+    if (waszero) out <- out[0, , drop=FALSE]
     return(out)
 }
 
@@ -540,7 +544,9 @@ customDataPlotDefaults <- function(se, number) {
 #' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
 #' rowStatTableDefaults(sce, n=1)
 rowStatTableDefaults <- function(se, number) {
-    waszero <- number==0
+    # Ensure that we define all the fields with the right types, using a transient 1-row DF
+    # number=0 guarantees that se is not touched to define dummy values of the right type
+    waszero <- number == 0
     if (waszero) number <- 1
 
     out <- new("DataFrame", nrows=as.integer(number))
@@ -548,7 +554,8 @@ rowStatTableDefaults <- function(se, number) {
     out[[.rowStatSearch]] <- ""
 
     # Defining an empty search for each column of the rowData.
-    colsearch <- character(ncol(rowData(se)))
+    colsearch <- character(0)
+    if (!waszero) colsearch <- character(ncol(rowData(se)))
     out[[.rowStatColSearch]] <- rep(list(colsearch), as.integer(number))
 
     # Defining the rowDataPlot from which point selections are received.
@@ -557,7 +564,7 @@ rowStatTableDefaults <- function(se, number) {
     out[[.selectMultiType]] <- .selectMultiActiveTitle
     out[[.selectMultiSaved]] <- 0L
 
-    if (waszero) out <- out[0,,drop=FALSE]
+    if (waszero) out <- out[0, , drop=FALSE]
     return(out)
 }
 
@@ -600,7 +607,9 @@ rowStatTableDefaults <- function(se, number) {
 #' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
 #' colStatTableDefaults(sce, n=1)
 colStatTableDefaults <- function(se, number) {
-    waszero <- number==0
+    # Ensure that we define all the fields with the right types, using a transient 1-row DF
+    # number=0 guarantees that se is not touched to define dummy values of the right type
+    waszero <- number == 0
     if (waszero) number <- 1
 
     out <- new("DataFrame", nrows=as.integer(number))
@@ -608,7 +617,8 @@ colStatTableDefaults <- function(se, number) {
     out[[.statTableSearch]] <- ""
 
     # Defining an empty search for each column of the colData.
-    colsearch <- character(ncol(colData(se)))
+    colsearch <- character(0)
+    if (!waszero) colsearch <- character(ncol(colData(se)))
     out[[.statTableColSearch]] <- rep(list(colsearch), as.integer(number))
 
     # Defining the colDataPlot from which point selections are received.
@@ -618,7 +628,7 @@ colStatTableDefaults <- function(se, number) {
     out[[.selectMultiType]] <- .selectMultiActiveTitle
     out[[.selectMultiSaved]] <- 0L
 
-    if (waszero) out <- out[0,,drop=FALSE]
+    if (waszero) out <- out[0, , drop=FALSE]
     return(out)
 }
 
@@ -670,14 +680,16 @@ colStatTableDefaults <- function(se, number) {
 #' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
 #' customStatTableDefaults(sce, n=1)
 customStatTableDefaults <- function(se, number) {
-    waszero <- number==0
+    # Ensure that we define all the fields with the right types, using a transient 1-row DF
+    # number=0 guarantees that se is not touched to define dummy values of the right type
+    waszero <- number == 0
     if (waszero) number <- 1
 
     out <- new("DataFrame", nrows=as.integer(number))
     out <- .add_custom_panel_parameters(out)
     out[[.customStatSearch]] <- ""
 
-    if (waszero) out <- out[0,,drop=FALSE]
+    if (waszero) out <- out[0, , drop=FALSE]
     return(out)
 }
 
@@ -721,18 +733,21 @@ customStatTableDefaults <- function(se, number) {
 #' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
 #' rowDataPlotDefaults(sce, n=1)
 rowDataPlotDefaults <- function(se, number) {
-    waszero <- number==0
+    # Ensure that we define all the fields with the right types, using a transient 1-row DF
+    # number=0 guarantees that se is not touched to define dummy values of the right type
+    waszero <- number == 0
     if (waszero) number <- 1
 
-    covariates <- colnames(rowData(se))
+    covariates <- NA_character_
+    if (!waszero) covariates <- colnames(rowData(se))
 
     out <- new("DataFrame", nrows=as.integer(number))
     out[[.rowDataYAxis]] <- covariates[1]
     out[[.rowDataXAxis]] <- .rowDataXAxisNothingTitle
     out[[.rowDataXAxisRowData]] <- ifelse(length(covariates)==1L, covariates[1], covariates[2])
 
-    out <- .add_general_parameters_for_row_plots(out, se)
-    if (waszero) out <- out[0,,drop=FALSE]
+    out <- .add_general_parameters_for_row_plots(out, if (waszero) NULL else se)
+    if (waszero) out <- out[0, , drop=FALSE]
     return(out)
 }
 
@@ -789,11 +804,19 @@ rowDataPlotDefaults <- function(se, number) {
 #' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
 #' sampAssayPlotDefaults(sce, n=1)
 sampAssayPlotDefaults <- function(se, number) {
-    waszero <- number==0
+    # Ensure that we define all the fields with the right types, using a transient 1-row DF
+    # number=0 guarantees that se is not touched to define dummy values of the right type
+    waszero <- number == 0
     if (waszero) number <- 1
 
-    covariates <- colnames(rowData(se))
-    def_assay <- .set_default_assay(se)
+    def_assay <- NA_integer_
+    if (!waszero) def_assay <- .set_default_assay(se)
+
+    covariates <- NA_character_
+    if (!waszero) covariates <- colnames(rowData(se))
+
+    def_sampname <- NA_integer_
+    if (!waszero) def_sampname <- ifelse(ncol(se) == 1L, 1L, 2L)
 
     out <- new("DataFrame", nrows=as.integer(number))
     out[[.sampAssayYAxisSampName]] <- 1L
@@ -801,11 +824,11 @@ sampAssayPlotDefaults <- function(se, number) {
     out[[.sampAssayAssay]] <- def_assay
     out[[.sampAssayXAxis]] <- .sampAssayXAxisNothingTitle
     out[[.sampAssayXAxisRowData]] <- covariates[1]
-    out[[.sampAssayXAxisSampName]] <- ifelse(ncol(se)==1L, 1L, 2L)
+    out[[.sampAssayXAxisSampName]] <- def_sampname
     out[[.sampAssayXAxisColTable]] <- .noSelection
 
-    out <- .add_general_parameters_for_row_plots(out, se)
-    if (waszero) out <- out[0,,drop=FALSE]
+    out <- .add_general_parameters_for_row_plots(out, if (waszero) NULL else se)
+    if (waszero) out <- out[0, , drop=FALSE]
     return(out)
 }
 
@@ -884,10 +907,16 @@ sampAssayPlotDefaults <- function(se, number) {
 #' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
 #' heatMapPlotDefaults(sce, n=1)
 heatMapPlotDefaults <- function(se, number) {
-    waszero <- number==0 # To ensure that we define all the fields with the right types.
+    # Ensure that we define all the fields with the right types, using a transient 1-row DF
+    # number=0 guarantees that se is not touched to define dummy values of the right type
+    waszero <- number == 0
     if (waszero) number <- 1
 
-    def_assay <- .set_default_assay(se)
+    def_assay <- NA_integer_
+    if (!waszero) def_assay <- .set_default_assay(se)
+
+    def_coldata <- NULL
+    if (!waszero) def_coldata <- colnames(colData(se))[1]
 
     out <- new("DataFrame", nrows=as.integer(number))
     out[[.heatMapAssay]] <- def_assay
@@ -895,7 +924,7 @@ heatMapPlotDefaults <- function(se, number) {
     out[[.heatMapFeatName]] <- rep(list(1L), nrow(out))
 
     out[[.heatMapColDataBoxOpen]] <- FALSE
-    out[[.heatMapColData]] <- rep(list(colnames(colData(se))[1]), nrow(out))
+    out[[.heatMapColData]] <- rep(list(def_coldata), nrow(out))
     out[[.heatMapImportSource]] <- .noSelection
 
     out[[.heatMapCenterScale]] <- rep(list(.heatMapCenterTitle), nrow(out))
@@ -914,7 +943,7 @@ heatMapPlotDefaults <- function(se, number) {
     out[[.selectMultiType]] <- .selectMultiActiveTitle
     out[[.selectMultiSaved]] <- 0L
 
-    if (waszero) out <- out[0,,drop=FALSE]
+    if (waszero) out <- out[0, , drop=FALSE]
     return(out)
 }
 
@@ -979,6 +1008,9 @@ heatMapPlotDefaults <- function(se, number) {
 #' while the \code{.add_general_parameters_for_row_plots} function adds them for row-based plots.
 #' These mainly differ in how colouring is performed.
 #'
+#' The default argument \code{se=NULL} is intended to populate the DataFrame \code{incoming} with dummy values of the appropriate type for each column.
+#' This avoids the need to query the \code{se} object for information that will ultimately not be used.
+#'
 #' @author Aaron Lun
 #' @rdname INTERNAL_add_general_parameters
 #' @seealso
@@ -1017,37 +1049,46 @@ heatMapPlotDefaults <- function(se, number) {
     return(incoming)
 }
 
-#' @param se A SummarizedExperiment object.
+#' @param se A SummarizedExperiment object, or \code{NULL}.
 #' @rdname INTERNAL_add_general_parameters
 #' @importFrom BiocGenerics colnames
 #' @importFrom SummarizedExperiment colData
-.add_general_parameters_for_column_plots <- function(incoming, se) {
+.add_general_parameters_for_column_plots <- function(incoming, se=NULL) {
     incoming <- .add_general_parameters(incoming)
 
-    def_assay <- .set_default_assay(se)
-    def_cov <- colnames(colData(se))[1]
+    def_assay <- NA_integer_
+    if (!is.null(se)) def_assay <- .set_default_assay(se)
 
-    any_discrete <- .get_internal_info(se, "column_groupable", empty_fail=FALSE)  # if this is run internally, use precomputed; otherwise recompute.
-    if (is.null(any_discrete)) {
-        any_discrete <- colnames(colData(se))[.which_groupable(colData(se))]
-    }
-    dev_discrete <- any_discrete[1]
+    def_cov <- NA_character_
+    if (!is.null(se)) def_cov <- colnames(colData(se))[1]
 
-    any_numeric <- .get_internal_info(se, "column_numeric", empty_fail=FALSE)  # if this is run internally, use precomputed; otherwise recompute.
-    if (is.null(any_numeric)) {
-        any_numeric <- colnames(colData(se))[.which_numeric(colData(se))]
+    def_discrete <- NA_character_
+    if (!is.null(se)) {
+        any_discrete <- .get_internal_info(se, "column_groupable", empty_fail=FALSE) # if this is run internally, use precomputed; otherwise recompute.
+        if (is.null(any_discrete)) {
+            any_discrete <- colnames(colData(se))[.which_groupable(colData(se))]
+        }
+        def_discrete <- any_discrete[1]
     }
-    dev_numeric <- any_numeric[1]
+
+    def_numeric <- NA_character_
+    if (!is.null(se)) {
+        any_numeric <- .get_internal_info(se, "column_numeric", empty_fail=FALSE)  # if this is run internally, use precomputed; otherwise recompute.
+        if (is.null(any_numeric)) {
+            any_numeric <- colnames(colData(se))[.which_numeric(colData(se))]
+        }
+        def_numeric <- any_numeric[1]
+    }
 
     incoming[[.colorByField]] <- .colorByNothingTitle
     incoming[[.colorByDefaultColor]] <- "black"
     incoming[[.colorByColData]] <- def_cov
 
     incoming[[.shapeByField]] <- .shapeByNothingTitle
-    incoming[[.shapeByColData]] <- dev_discrete
+    incoming[[.shapeByColData]] <- def_discrete
 
     incoming[[.sizeByField]] <- .sizeByNothingTitle
-    incoming[[.sizeByColData]] <- dev_numeric
+    incoming[[.sizeByColData]] <- def_numeric
 
     incoming[[.colorByRowTable]] <- .noSelection
     incoming[[.colorByFeatName]] <- 1L
@@ -1058,8 +1099,8 @@ heatMapPlotDefaults <- function(se, number) {
 
     incoming[[.facetByRow]] <- FALSE
     incoming[[.facetByColumn]] <- FALSE
-    incoming[[.facetRowsByColData]] <- dev_discrete
-    incoming[[.facetColumnsByColData]] <- dev_discrete
+    incoming[[.facetRowsByColData]] <- def_discrete
+    incoming[[.facetColumnsByColData]] <- def_discrete
 
     return(incoming)
 }
@@ -1067,31 +1108,39 @@ heatMapPlotDefaults <- function(se, number) {
 #' @rdname INTERNAL_add_general_parameters
 #' @importFrom BiocGenerics colnames
 #' @importFrom SummarizedExperiment rowData
-.add_general_parameters_for_row_plots <- function(incoming, se) {
+.add_general_parameters_for_row_plots <- function(incoming, se=NULL) {
     incoming <- .add_general_parameters(incoming)
 
-    def_cov <- colnames(rowData(se))[1]
-    any_discrete <- .get_internal_info(se, "row_groupable", empty_fail=FALSE) # if this is run internally, use precomputed; otherwise recompute.
-    if (is.null(any_discrete)) {
-        any_discrete <- colnames(rowData(se))[.which_groupable(rowData(se))]
-    }
-    dev_discrete <- any_discrete[1]
+    def_cov <- NA_character_
+    if (!is.null(se)) def_cov <- colnames(rowData(se))[1]
 
-    any_numeric <- .get_internal_info(se, "row_numeric", empty_fail=FALSE) # if this is run internally, use precomputed; otherwise recompute.
-    if (is.null(any_numeric)) {
-        any_numeric <- colnames(rowData(se))[.which_numeric(rowData(se))]
+    def_discrete <- NA_character_
+    if (!is.null(se)) {
+        any_discrete <- .get_internal_info(se, "row_groupable", empty_fail=FALSE) # if this is run internally, use precomputed; otherwise recompute.
+        if (is.null(any_discrete)) {
+            any_discrete <- colnames(rowData(se))[.which_groupable(rowData(se))]
+        }
+        def_discrete <- any_discrete[1]
     }
-    dev_numeric <- any_numeric[1]
+
+    def_numeric <- NA_character_
+    if (!is.null(se)) {
+        any_numeric <- .get_internal_info(se, "row_numeric", empty_fail=FALSE) # if this is run internally, use precomputed; otherwise recompute.
+        if (is.null(any_numeric)) {
+            any_numeric <- colnames(rowData(se))[.which_numeric(rowData(se))]
+        }
+        def_numeric <- any_numeric[1]
+    }
 
     incoming[[.colorByField]] <- .colorByNothingTitle
     incoming[[.colorByDefaultColor]] <- "black"
     incoming[[.colorByRowData]] <- def_cov
 
     incoming[[.shapeByField]] <- .shapeByNothingTitle
-    incoming[[.shapeByRowData]] <- dev_discrete
+    incoming[[.shapeByRowData]] <- def_discrete
 
     incoming[[.sizeByField]] <- .sizeByNothingTitle
-    incoming[[.sizeByRowData]] <- dev_numeric
+    incoming[[.sizeByRowData]] <- def_numeric
 
     incoming[[.colorByRowTable]] <- .noSelection
     incoming[[.colorByFeatName]] <- 1L
@@ -1102,8 +1151,8 @@ heatMapPlotDefaults <- function(se, number) {
 
     incoming[[.facetByRow]] <- FALSE
     incoming[[.facetByColumn]] <- FALSE
-    incoming[[.facetRowsByRowData]] <- dev_discrete
-    incoming[[.facetColumnsByRowData]] <- dev_discrete
+    incoming[[.facetRowsByRowData]] <- def_discrete
+    incoming[[.facetColumnsByRowData]] <- def_discrete
 
     return(incoming)
 }
@@ -1160,10 +1209,11 @@ heatMapPlotDefaults <- function(se, number) {
 #' \code{\link{heatMapPlotDefaults}}
 #' @importFrom SummarizedExperiment assayNames
 .set_default_assay <- function(se) {
-    def_assay <- which(assayNames(se)=="logcounts")
+    def_assay <- which(assayNames(se) == "logcounts")
+
     if (length(def_assay) == 0L) {
         return(1L)
-    } else {
-        return(def_assay[1])
     }
+
+    return(def_assay[1])
 }

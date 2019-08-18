@@ -5,10 +5,8 @@ context("defaults")
 test_that("redDimPlotDefaults supports objects without reduced dimensions", {
     sce0 <- SingleCellExperiment()
 
-    out <- redDimPlotDefaults(sce0, 1)
-    expect_identical(out$Type, NA_integer_)
-    expect_identical(out$XAxis, NA_integer_)
-    expect_identical(out$YAxis, NA_integer_)
+    out <- redDimPlotDefaults(sce0, 0)
+    expect_identical(nrow(out), 0L)
 })
 
 # .set_default_assay ----

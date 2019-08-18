@@ -294,7 +294,8 @@ NULL
 #' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
 #' redDimPlotDefaults(sce, n=1)
 redDimPlotDefaults <- function(se, number) {
-    # Transient 1-row DF, to ensure that we define all the fields with the right types.
+    # Ensure that we define all the fields with the right types, using a transient 1-row DF
+    # number=0 guarantees that se is not touched to define dummy values of the right type
     waszero <- number == 0
     if (waszero) number <- 1
 
@@ -364,7 +365,8 @@ redDimPlotDefaults <- function(se, number) {
 #' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
 #' featAssayPlotDefaults(sce, n=1)
 featAssayPlotDefaults <- function(se, number) {
-    # Transient 1-row DF, to ensure that we define all the fields with the right types.
+    # Ensure that we define all the fields with the right types, using a transient 1-row DF
+    # number=0 guarantees that se is not touched to define dummy values of the right type
     waszero <- number == 0
     if (waszero) number <- 1
 
@@ -428,7 +430,8 @@ featAssayPlotDefaults <- function(se, number) {
 #' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
 #' colDataPlotDefaults(sce, n=1)
 colDataPlotDefaults <- function(se, number) {
-    # Transient 1-row DF, to ensure that we define all the fields with the right types.
+    # Ensure that we define all the fields with the right types, using a transient 1-row DF
+    # number=0 guarantees that se is not touched to define dummy values of the right type
     waszero <- number == 0
     if (waszero) number <- 1
 
@@ -490,7 +493,8 @@ colDataPlotDefaults <- function(se, number) {
 #' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
 #' customDataPlotDefaults(sce, n=1)
 customDataPlotDefaults <- function(se, number) {
-    # Transient 1-row DF, to ensure that we define all the fields with the right types.
+    # Ensure that we define all the fields with the right types, using a transient 1-row DF
+    # number=0 guarantees that se is not touched to define dummy values of the right type
     waszero <- number == 0
     if (waszero) number <- 1
 
@@ -540,7 +544,8 @@ customDataPlotDefaults <- function(se, number) {
 #' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
 #' rowStatTableDefaults(sce, n=1)
 rowStatTableDefaults <- function(se, number) {
-    # Transient 1-row DF, to ensure that we define all the fields with the right types.
+    # Ensure that we define all the fields with the right types, using a transient 1-row DF
+    # number=0 guarantees that se is not touched to define dummy values of the right type
     waszero <- number == 0
     if (waszero) number <- 1
 
@@ -602,7 +607,8 @@ rowStatTableDefaults <- function(se, number) {
 #' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
 #' colStatTableDefaults(sce, n=1)
 colStatTableDefaults <- function(se, number) {
-    # Transient 1-row DF, to ensure that we define all the fields with the right types.
+    # Ensure that we define all the fields with the right types, using a transient 1-row DF
+    # number=0 guarantees that se is not touched to define dummy values of the right type
     waszero <- number == 0
     if (waszero) number <- 1
 
@@ -674,7 +680,8 @@ colStatTableDefaults <- function(se, number) {
 #' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
 #' customStatTableDefaults(sce, n=1)
 customStatTableDefaults <- function(se, number) {
-    # Transient 1-row DF, to ensure that we define all the fields with the right types.
+    # Ensure that we define all the fields with the right types, using a transient 1-row DF
+    # number=0 guarantees that se is not touched to define dummy values of the right type
     waszero <- number == 0
     if (waszero) number <- 1
 
@@ -726,7 +733,8 @@ customStatTableDefaults <- function(se, number) {
 #' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
 #' rowDataPlotDefaults(sce, n=1)
 rowDataPlotDefaults <- function(se, number) {
-    # Transient 1-row DF, to ensure that we define all the fields with the right types.
+    # Ensure that we define all the fields with the right types, using a transient 1-row DF
+    # number=0 guarantees that se is not touched to define dummy values of the right type
     waszero <- number == 0
     if (waszero) number <- 1
 
@@ -796,7 +804,8 @@ rowDataPlotDefaults <- function(se, number) {
 #' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
 #' sampAssayPlotDefaults(sce, n=1)
 sampAssayPlotDefaults <- function(se, number) {
-    # Transient 1-row DF, to ensure that we define all the fields with the right types.
+    # Ensure that we define all the fields with the right types, using a transient 1-row DF
+    # number=0 guarantees that se is not touched to define dummy values of the right type
     waszero <- number == 0
     if (waszero) number <- 1
 
@@ -898,7 +907,8 @@ sampAssayPlotDefaults <- function(se, number) {
 #' example(SingleCellExperiment, echo=FALSE) # mock up 'sce'.
 #' heatMapPlotDefaults(sce, n=1)
 heatMapPlotDefaults <- function(se, number) {
-    # Transient 1-row DF, to ensure that we define all the fields with the right types.
+    # Ensure that we define all the fields with the right types, using a transient 1-row DF
+    # number=0 guarantees that se is not touched to define dummy values of the right type
     waszero <- number == 0
     if (waszero) number <- 1
 

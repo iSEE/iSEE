@@ -368,7 +368,8 @@ featAssayPlotDefaults <- function(se, number) {
     waszero <- number == 0
     if (waszero) number <- 1
 
-    def_assay <- .set_default_assay(if (waszero) NULL else se)
+    def_assay <- NA_integer_
+    if (!waszero) def_assay <- .set_default_assay(se)
 
     covariates <- NA_character_
     if (!waszero) covariates <- colnames(colData(se))
@@ -799,7 +800,8 @@ sampAssayPlotDefaults <- function(se, number) {
     waszero <- number == 0
     if (waszero) number <- 1
 
-    def_assay <- .set_default_assay(if (waszero) NULL else se)
+    def_assay <- NA_integer_
+    if (!waszero) def_assay <- .set_default_assay(se)
 
     covariates <- NA_character_
     if (!waszero) covariates <- colnames(rowData(se))
@@ -900,7 +902,8 @@ heatMapPlotDefaults <- function(se, number) {
     waszero <- number == 0
     if (waszero) number <- 1
 
-    def_assay <- .set_default_assay(if (waszero) NULL else se)
+    def_assay <- NA_integer_
+    if (!waszero) def_assay <- .set_default_assay(se)
 
     def_coldata <- NULL
     if (!waszero) def_coldata <- colnames(colData(se))[1]
@@ -1043,7 +1046,8 @@ heatMapPlotDefaults <- function(se, number) {
 .add_general_parameters_for_column_plots <- function(incoming, se=NULL) {
     incoming <- .add_general_parameters(incoming)
 
-    def_assay <- .set_default_assay(se)
+    def_assay <- NA_integer_
+    if (!is.null(se)) def_assay <- .set_default_assay(se)
 
     def_cov <- NA_character_
     if (!is.null(se)) def_cov <- colnames(colData(se))[1]
@@ -1178,7 +1182,7 @@ heatMapPlotDefaults <- function(se, number) {
 #'
 #' Identifies the index of the assay containing the log-count matrix.
 #'
-#' @param se A SummarizedExperiment object, or \code{NULL}.
+#' @param se A SummarizedExperiment object.
 #'
 #' @return An integer scalar containing the index of the \code{"logcounts"} assay, if available; otherwise 1L.
 #'
@@ -1194,11 +1198,7 @@ heatMapPlotDefaults <- function(se, number) {
 #' \code{\link{featAssayPlotDefaults}},
 #' \code{\link{heatMapPlotDefaults}}
 #' @importFrom SummarizedExperiment assayNames
-.set_default_assay <- function(se=NULL) {
-    if (is.null(se)) {
-        return(NA_integer_)
-    }
-
+.set_default_assay <- function(se) {
     def_assay <- which(assayNames(se) == "logcounts")
 
     if (length(def_assay) == 0L) {

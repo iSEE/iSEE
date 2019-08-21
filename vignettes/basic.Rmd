@@ -103,8 +103,7 @@ Then, we normalize the expression values with `r Biocpkg("scater")`.
 
 ```{r}
 library(scater)
-counts(sce) <- assay(sce, "tophat_counts")
-sce <- normalize(sce)
+sce <- logNormCounts(sce, exprs_values="tophat_counts")
 ```
 
 Next, we apply PCA and *t*-SNE to generate two low-dimensional representations of the cells.

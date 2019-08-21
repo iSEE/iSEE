@@ -724,7 +724,7 @@ test_that("isColorMapCompatible accepts compatible colormap", {
 
     ecm <- ExperimentColorMap(
         assays = list(
-            counts = COUNT_COLORS
+            tophat_counts = COUNT_COLORS
         ),
         global_continuous = ASSAY_CONTINUOUS_COLORS
     )
@@ -756,7 +756,6 @@ test_that("synchronizeAssays works for fully named assays", {
     ecm_expected <- ExperimentColorMap(
         assays = list(
             tophat_counts = COUNT_COLORS,
-            counts = COUNT_COLORS,
             logcounts = iSEE:::.defaultContinuousColorMap
         )
     )
@@ -790,7 +789,8 @@ test_that("synchronizeAssays requires same number of unnamed assays", {
     ecm_unmatched <- ExperimentColorMap(
         assays = list(
             COUNT_COLORS,
-            test = COUNT_COLORS
+            test = COUNT_COLORS,
+            test2 = COUNT_COLORS
         )
     )
 
@@ -812,8 +812,7 @@ test_that("synchronizeAssays works for fully _un_named assays", {
     ecm_matched <- ExperimentColorMap(
         assays = list(
             COUNT_COLORS,
-            FPKM_COLORS,
-            COUNT_COLORS
+            FPKM_COLORS
         )
     )
 
@@ -836,17 +835,17 @@ test_that("synchronizeAssays works for fully _un_named assays", {
 
 test_that("synchronizeAssays works for partially named assays", {
 
-    sce_some_names <- sce
-    assayNames(sce_some_names)[1] <- ""
+    sce_some_names <- sce # tophat_counts, logcounts [1, 2]
+    counts(sce_some_names) <- assay(sce_some_names, "tophat_counts") # counts [3]
+    assayNames(sce_some_names)[3] <- ""
 
     ecm <- ExperimentColorMap(
         assays = list(
-            counts = COUNT_COLORS,
             tophat_counts = COUNT_COLORS,
-            cufflinks_fpkm = FPKM_COLORS,
+            cufflinks_fpkm = FPKM_COLORS, # missing colormap
             rsem_tpm = FPKM_COLORS, # missing colormap
-            orphan = COUNT_COLORS,
-            orphan2 = COUNT_COLORS,
+            orphan = COUNT_COLORS, # missing colormap
+            orphan2 = COUNT_COLORS, # missing colormap
             COUNT_COLORS,
             TPM_COLORS
         )
@@ -856,16 +855,16 @@ test_that("synchronizeAssays works for partially named assays", {
 
     ecm_expected <- ExperimentColorMap(
         assays = list(
-            iSEE:::.defaultContinuousColorMap,
-            counts = COUNT_COLORS,
-            logcounts = iSEE:::.defaultContinuousColorMap
+            tophat_counts = COUNT_COLORS,
+            logcounts = iSEE:::.defaultContinuousColorMap,
+            iSEE:::.defaultContinuousColorMap
         )
     )
 
     # Expect:
-    # - unnamed assays to be assigned default continuous colormap
-    # - named assays matched to have the appropriate colormap
-    # - named assays unmatched to have the default continuous colormap
+    # - named assays matched to have the appropriate colormap (tophat_counts)
+    # - named assays unmatched to have the default continuous colormap (logcounts)
+    # - unnamed assays to be assigned default continuous colormap (3rd assay)
     expect_identical(
         ecm_sync,
         ecm_expected
@@ -878,4 +877,3 @@ test_that("synchronizeAssays works for partially named assays", {
     )
 
 })
-

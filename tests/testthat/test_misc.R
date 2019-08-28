@@ -186,7 +186,7 @@ test_that("memory setup works correctly", {
     expect_identical(memory$customStatTable$Arguments, character(nrow(memory$customStatTable)))
     expect_identical(memory$customStatTable$VisibleArgs, c("WHEE", "", ""))
 
-    expect_identical(memory$heatMapPlot$Assay, c(1L, 3L))
+    expect_identical(memory$heatMapPlot$Assay, c(1L, 2L))
 
     # Works correctly when the number of arguments is greater than max.
     memory <- iSEE:::.setup_memory(

@@ -22,19 +22,18 @@
 #'
 #' @examples
 #' library(scRNAseq)
+#'
 #' # Example data ----
-#' sce <- ReprocessedAllenData(assays = "tophat_counts")
+#' sce <- ReprocessedAllenData(assays="tophat_counts")
 #' class(sce)
 #'
 #' library(scater)
-#' counts(sce) <- assay(sce, "tophat_counts")
-#' sce <- normalize(sce)
-#'
+#' sce <- logNormCounts(sce, exprs_values="tophat_counts")
 #'
 #' # Select top variable genes ----
 #'
 #' plot_count <- 6
-#' rv <- rowVars(logcounts(sce))
+#' rv <- rowVars(assay(sce, "tophat_counts"))
 #' top_var <- head(order(rv, decreasing=TRUE), plot_count*2)
 #' top_var_genes <- rownames(sce)[top_var]
 #'

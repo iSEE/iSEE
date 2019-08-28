@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.5.8}{
+\itemize{
+    \item Substitute deprecated \code{scater::normalize} by \code{logNormCounts}.
+}
+}
+
 \section{iSEE VERSION 1.5.7}{
 \itemize{
     \item Simplify protection of \code{redDimPlotDefaults} against empty \code{reducedDims}.

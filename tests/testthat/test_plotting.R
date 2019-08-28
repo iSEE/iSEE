@@ -419,8 +419,8 @@ test_that(".make_rowDataPlot/.violin_plot produce a valid xy with color", {
 
 test_that(".make_rowDataPlot/.square_plot produce a valid list",{
 
-    rowData(sce)[,"letters"] <- sample(letters[1:5], nrow(sce), replace=TRUE)
-    rowData(sce)[,"LETTERS"] <- sample(LETTERS[1:3], nrow(sce), replace=TRUE)
+    rowData(sce)[, "letters"] <- sample(letters[1:5], nrow(sce), replace=TRUE)
+    rowData(sce)[, "LETTERS"] <- sample(LETTERS[1:3], nrow(sce), replace=TRUE)
 
     all_memory$rowDataPlot[1, iSEE:::.rowDataXAxis] <- iSEE:::.rowDataXAxisRowData
     all_memory$rowDataPlot[1, iSEE:::.rowDataXAxisRowData] <- "letters"
@@ -469,8 +469,8 @@ test_that(".make_rowDataPlot/.square_plot produce a valid list",{
 
 test_that(".make_rowDataPlot/.square_plot produce a valid xy with color",{
 
-    rowData(sce)[,"letters"] <- sample(letters[1:5], nrow(sce), replace=TRUE)
-    rowData(sce)[,"LETTERS"] <- sample(LETTERS[1:3], nrow(sce), replace=TRUE)
+    rowData(sce)[, "letters"] <- sample(letters[1:5], nrow(sce), replace=TRUE)
+    rowData(sce)[, "LETTERS"] <- sample(LETTERS[1:3], nrow(sce), replace=TRUE)
 
     all_memory$rowDataPlot[1, iSEE:::.rowDataXAxis] <- iSEE:::.rowDataXAxisRowData
     all_memory$rowDataPlot[1, iSEE:::.rowDataXAxisRowData] <- "letters"
@@ -750,7 +750,7 @@ test_that(".make_sampAssayPlot works with X variable set to Sample name", {
 
     expect_match(
         p.out$cmd_list$data[["x"]],
-        sprintf("plot.data$X <- assay(se, 3, withDimnames=FALSE)[,%i];", selected_sample),
+        sprintf("plot.data$X <- assay(se, 2, withDimnames=FALSE)[, %i];", selected_sample),
         fixed=TRUE)
 
     expect_match(p.out$cmd_list$plot[["labs"]], colnames(sce)[selected_sample], fixed=TRUE)
@@ -798,10 +798,10 @@ test_that(".scatter_plot works with zoom",{
     # Identify range of data
     params <- all_memory$redDimPlot[1, ]
     x_range <- range(head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]]
+        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimXAxis]]]
     ), 10)
     y_range <- range(head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]]
+        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimYAxis]]]
     ), 10)
     # Set zoom min/max to the first two distinct values in X/Y direction
     zoom_range <- c(x_range, y_range)
@@ -814,8 +814,8 @@ test_that(".scatter_plot works with zoom",{
 
     params <- all_memory$redDimPlot[1, ]
     expected_xy <- data.frame(
-        X=reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
-        Y=reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
+        X=reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimXAxis]]],
+        Y=reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimYAxis]]],
         row.names=colnames(sce)
     )
 
@@ -852,12 +852,12 @@ test_that(".make_colDataPlot/.violin_plot works with zoom",{
 
     params <- all_memory$colDataPlot[1, ]
     expected_xy <- data.frame(
-        Y=colData(sce)[,params[[iSEE:::.colDataYAxis]]],
-        X=colData(sce)[,params[[iSEE:::.colDataXAxisColData]]],
+        Y=colData(sce)[, params[[iSEE:::.colDataYAxis]]],
+        X=colData(sce)[, params[[iSEE:::.colDataXAxisColData]]],
         row.names=colnames(sce)
     )
 
-    expect_identical(p.out$xy[,c("Y", "X")], expected_xy)
+    expect_identical(p.out$xy[, c("Y", "X")], expected_xy)
 
 })
 
@@ -893,8 +893,8 @@ test_that(".make_colDataPlot/.violin_plot works with zoom",{
     # This requires some finesse to deal with horizontal plots
     # where the X and Y coordinates are flipped to draw the violins
     expected_xy <- data.frame(
-        Y=colData(sce)[,params[[iSEE:::.colDataXAxisColData]]], # Y/X switch
-        X=colData(sce)[,params[[iSEE:::.colDataYAxis]]], # X/Y switch
+        Y=colData(sce)[, params[[iSEE:::.colDataXAxisColData]]], # Y/X switch
+        X=colData(sce)[, params[[iSEE:::.colDataYAxis]]], # X/Y switch
         row.names=colnames(sce)
     )
 
@@ -933,8 +933,8 @@ test_that(".make_colDataPlot/.square_plot works with zoom",{
 
     params <- all_memory$colDataPlot[1, ]
     expected_xy <- data.frame(
-        Y=colData(sce)[,params[[iSEE:::.colDataYAxis]]],
-        X=colData(sce)[,params[[iSEE:::.colDataXAxisColData]]],
+        Y=colData(sce)[, params[[iSEE:::.colDataYAxis]]],
+        X=colData(sce)[, params[[iSEE:::.colDataXAxisColData]]],
         row.names=colnames(sce)
     )
 
@@ -950,7 +950,7 @@ test_that(".define_colorby_for_column_plot handles feature selection", {
     params[[iSEE:::.colorByFeatName]] <- 1L
 
     color_out <- iSEE:::.define_colorby_for_column_plot(params, sce)
-    expect_match(color_out$cmds, "assay(se, 3, withDimnames=FALSE)[1,]", fixed=TRUE)
+    expect_match(color_out$cmds, "assay(se, 2, withDimnames=FALSE)[1, ]", fixed=TRUE)
 
     expect_match(
         color_out$label,
@@ -1001,7 +1001,7 @@ test_that("define_shapeby_for_column_plot produces the expected commands", {
     color_out <- iSEE:::.define_shapeby_for_column_plot(params, sce)
     expect_identical(color_out, list(
         label="driver_1_s",
-        cmds="plot.data$ShapeBy <- colData(se)[,\"driver_1_s\"];"))
+        cmds="plot.data$ShapeBy <- colData(se)[, \"driver_1_s\"];"))
 
 })
 
@@ -1015,7 +1015,7 @@ test_that(".define_shapeby_for_row_plot produces the expected commands", {
     color_out <- iSEE:::.define_shapeby_for_row_plot(params, sce)
     expect_identical(color_out, list(
         label="letters",
-        cmds="plot.data$ShapeBy <- rowData(se)[,\"letters\"];"))
+        cmds="plot.data$ShapeBy <- rowData(se)[, \"letters\"];"))
 
 })
 
@@ -1029,14 +1029,14 @@ test_that("define_sizeby_for_column_plot produces the expected commands", {
     color_out <- iSEE:::.define_sizeby_for_column_plot(params, sce)
     expect_identical(color_out, list(
         label="NREADS",
-        cmds="plot.data$SizeBy <- colData(se)[,\"NREADS\"];"))
+        cmds="plot.data$SizeBy <- colData(se)[, \"NREADS\"];"))
 
     all_memory_sb <- all_memory
     all_memory_sb$redDimPlot[1, ] <- params
     p.out <- iSEE:::.make_redDimPlot(
         id=1, all_memory_sb, all_coordinates, sce, ExperimentColorMap())
     expect_equivalent(p.out$cmd_list$plot["points.point"],
-                      "geom_point(aes(x = X, y = Y, size = SizeBy), alpha = 1, plot.data, color='black') +")
+                      "geom_point(aes(x=X, y=Y, size=SizeBy), alpha=1, plot.data, color='black') +")
 })
 
 # .define_sizeby_for_row_plot ----
@@ -1049,7 +1049,7 @@ test_that(".define_sizeby_for_row_plot produces the expected commands", {
     color_out <- iSEE:::.define_sizeby_for_row_plot(params, sce)
     expect_identical(color_out, list(
         label="mean_count",
-        cmds="plot.data$SizeBy <- rowData(se)[,\"mean_count\"];"))
+        cmds="plot.data$SizeBy <- rowData(se)[, \"mean_count\"];"))
 
 })
 
@@ -1063,7 +1063,7 @@ test_that(".define_colorby_for_row_plot handles sample selection", {
     color_out <- iSEE:::.define_colorby_for_row_plot(params, sce)
     expect_identical(color_out, list(
         label="SRR2140055\n(tophat_counts)",
-        cmds="plot.data$ColorBy <- assay(se, 1, withDimnames=FALSE)[,3];"))
+        cmds="plot.data$ColorBy <- assay(se, 1, withDimnames=FALSE)[, 3];"))
 
     color_add <- iSEE:::.add_color_to_row_plot(assay(sce)[1, ], params)
 
@@ -1152,10 +1152,10 @@ test_that(".process_selectby_choice works when sender is another plot", {
     # Set up the selected data (in redDim1)
     params <- all_memory$redDimPlot[1, ]
     x_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
+        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimXAxis]]],
         10)
     y_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
+        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimYAxis]]],
         10)
     all_memory$redDimPlot[[iSEE:::.brushData]][1] <- list(list(
         xmin=min(x_10), xmax=max(x_10), ymin=min(y_10), ymax=max(y_10),
@@ -1218,10 +1218,10 @@ test_that(".process_selectby_choice works when sender is self plot", {
     # Set up the selected data (in redDim1)
     params <- all_memory$redDimPlot[1, ]
     x_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
+        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimXAxis]]],
         10)
     y_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
+        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimYAxis]]],
         10)
     all_memory$redDimPlot[[iSEE:::.brushData]][1] <- list(list(
         xmin=min(x_10), xmax=max(x_10), ymin=min(y_10), ymax=max(y_10),
@@ -1256,10 +1256,10 @@ test_that(".process_selectby_choice works with closed lasso selection", {
     # Set up the selected data (in redDim1)
     params <- all_memory$redDimPlot[1, ]
     x_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
+        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimXAxis]]],
         10)
     y_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
+        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimYAxis]]],
         10)
 
     new_lasso <- list(lasso=NULL, closed=TRUE, panelvar1=NULL,
@@ -1308,10 +1308,10 @@ test_that(".create_points handles transparency selection effect", {
     # Set up the selected data (in redDim1)
     params <- all_memory$redDimPlot[1, ]
     x_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
+        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimXAxis]]],
         10)
     y_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
+        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimYAxis]]],
         10)
     all_memory$redDimPlot[[iSEE:::.brushData]][1] <- list(list(
         xmin=min(x_10), xmax=max(x_10), ymin=min(y_10), ymax=max(y_10),
@@ -1345,10 +1345,10 @@ test_that(".create_points handles coloured selection effect", {
     # Set up the selected data (in redDim1)
     params <- all_memory$redDimPlot[1, ]
     x_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
+        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimXAxis]]],
         10)
     y_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
+        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimYAxis]]],
         10)
     all_memory$redDimPlot[[iSEE:::.brushData]][1] <- list(list(
         xmin=min(x_10), xmax=max(x_10), ymin=min(y_10), ymax=max(y_10),
@@ -1387,10 +1387,10 @@ test_that(".create_points handles restrict selection effect", {
     # Set up the selected data (in redDim1)
     params <- all_memory$redDimPlot[1, ]
     x_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
+        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimXAxis]]],
         10)
     y_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
+        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimYAxis]]],
         10)
     all_memory$redDimPlot[[iSEE:::.brushData]][1] <- list(list(
         xmin=min(x_10), xmax=max(x_10), ymin=min(y_10), ymax=max(y_10),
@@ -1423,10 +1423,10 @@ test_that(".self_lasso_path work with a single point", {
     # Set up the selected data (in redDim1)
     params <- all_memory$redDimPlot[1, ]
     x_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
+        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimXAxis]]],
         10)
     y_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
+        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimYAxis]]],
         10)
 
     new_lasso <- list(lasso=NULL, closed=FALSE, panelvar1=NULL,
@@ -1456,10 +1456,10 @@ test_that(".self_lasso_path work with an open path", {
     # Set up the selected data (in redDim1)
     params <- all_memory$redDimPlot[1, ]
     x_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
+        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimXAxis]]],
         10)
     y_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
+        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimYAxis]]],
         10)
 
     new_lasso <- list(lasso=NULL, closed=FALSE, panelvar1=NULL,
@@ -1490,11 +1490,11 @@ test_that(".self_lasso_path work with an open path", {
     )
     expect_identical(
         lasso_cmd[3],
-        "scale_shape_manual(values = c('TRUE' = 22, 'FALSE' = 20))"
+        "scale_shape_manual(values=c('TRUE'=22, 'FALSE'=20))"
     )
     expect_identical(
         lasso_cmd[4],
-        "guides(shape = 'none')"
+        "guides(shape='none')"
     )
 
 })
@@ -1504,10 +1504,10 @@ test_that(".self_lasso_path work with a closed and flipped path", {
     # Set up the selected data (in redDim1)
     params <- all_memory$redDimPlot[1, ]
     x_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimXAxis]]],
+        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimXAxis]]],
         10)
     y_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[,params[[iSEE:::.redDimYAxis]]],
+        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimYAxis]]],
         10)
 
     new_lasso <- list(lasso=NULL, closed=TRUE, panelvar1=NULL,
@@ -1530,7 +1530,7 @@ test_that(".self_lasso_path work with a closed and flipped path", {
 
     expect_match(lasso_cmd[1], "geom_polygon", fixed=TRUE)
     expect_match(lasso_cmd[2], "scale_fill_manual", fixed=TRUE)
-    expect_identical(lasso_cmd[3], "guides(shape = 'none')")
+    expect_identical(lasso_cmd[3], "guides(shape='none')")
 
 })
 
@@ -1686,7 +1686,7 @@ test_that(".downsample_points produces the appropriate code", {
     )
     assign("plot.data", plotData, envir=envir)
     assign("plot.type", "violin_horizontal", envir=envir)
-    # assign("plot.type", "violin", envir = envir)
+    # assign("plot.type", "violin", envir=envir)
 
     out <- iSEE:::.downsample_points(all_memory$colDataPlot[1, ], envir)
     expect_identical(out, c(
@@ -1714,7 +1714,7 @@ test_that(".downsample_points produces the appropriate code", {
     )
     assign("plot.data", plotData, envir=envir)
     assign("plot.type", "violin_horizontal", envir=envir)
-    # assign("plot.type", "violin", envir = envir)
+    # assign("plot.type", "violin", envir=envir)
 
     out <- iSEE:::.downsample_points(all_memory$colDataPlot[1, ], envir)
     expect_identical(out, c(
@@ -1750,7 +1750,7 @@ test_that("2d density contours can be added to scatter plots ", {
         "x_lab", "y_lab", "color_lab", "shape_lab", "size_lab", "title",
         by_row=FALSE, is_subsetted=TRUE, is_downsampled=FALSE)
 
-    expect_identical(out[["contours"]], "geom_density_2d(aes(x = X, y = Y), plot.data, colour='blue') +")
+    expect_identical(out[["contours"]], "geom_density_2d(aes(x=X, y=Y), plot.data, colour='blue') +")
 
 })
 
@@ -1758,7 +1758,7 @@ test_that("2d density contours can be added to scatter plots ", {
 
 test_that("plots subsetted to no data contain a geom_blank command", {
 
-    geom_blank_cmd <- "geom_blank(data = plot.data.all, inherit.aes = FALSE, aes(x = X, y = Y)) +"
+    geom_blank_cmd <- "geom_blank(data=plot.data.all, inherit.aes=FALSE, aes(x=X, y=Y)) +"
 
     # .scatter_plot
 
@@ -1872,7 +1872,7 @@ test_that(".self_brush_box can flip axes", {
     all_memory$colDataPlot[[iSEE:::.brushData]][[1]] <- list(brushData)
 
     out <- iSEE:::.self_brush_box(all_memory$colDataPlot, flip=TRUE)
-    expect_match(out, "aes(xmin = ymin, xmax = ymax, ymin = xmin, ymax = xmax)", fixed=TRUE)
+    expect_match(out, "aes(xmin=ymin, xmax=ymax, ymin=xmin, ymax=xmax)", fixed=TRUE)
 
 })
 
@@ -1892,13 +1892,13 @@ test_that(".self_brush_box flip axes when faceting on both X and Y", {
     # Check that row and column are flipped (to panelvar2 and panelvar1)
     expect_match(
         out,
-        "list(FacetRow = all_brushes[['colDataPlot1']][['panelvar2']], FacetColumn = all_brushes[['colDataPlot1']][['panelvar1']])",
+        "list(FacetRow=all_brushes[['colDataPlot1']][['panelvar2']], FacetColumn=all_brushes[['colDataPlot1']][['panelvar1']])",
         fixed=TRUE)
 
     # Check that the faceting data is appended to the brush data
     expect_match(
         out,
-        "do.call(data.frame, append(all_brushes[['colDataPlot1']][c('xmin', 'xmax', 'ymin', 'ymax')], list(FacetRow = all_brushes[['colDataPlot1']][['panelvar2']], FacetColumn = all_brushes[['colDataPlot1']][['panelvar1']])))", fixed=TRUE
+        "do.call(data.frame, append(all_brushes[['colDataPlot1']][c('xmin', 'xmax', 'ymin', 'ymax')], list(FacetRow=all_brushes[['colDataPlot1']][['panelvar2']], FacetColumn=all_brushes[['colDataPlot1']][['panelvar1']])))", fixed=TRUE
     )
 
 })
@@ -1922,12 +1922,12 @@ test_that(".self_lasso_path works with multiple lassos", {
 
     out <- iSEE:::.self_lasso_path(all_memory$colDataPlot)
     expect_type(out, "character")
-    # length = (polygon+text)*2 lassos + scale_fill_manual + guides
+    # length=(polygon+text)*2 lassos + scale_fill_manual + guides
     expect_length(out, 2*length(lassoHistory)+2)
-    expect_match(out[1], "geom_polygon", fixed = TRUE)
-    expect_match(out[2], "geom_text", fixed = TRUE)
-    expect_match(out[3], "scale_fill_manual", fixed = TRUE)
-    expect_match(out[4], "guides(shape = 'none')", fixed = TRUE)
+    expect_match(out[1], "geom_polygon", fixed=TRUE)
+    expect_match(out[2], "geom_text", fixed=TRUE)
+    expect_match(out[3], "scale_fill_manual", fixed=TRUE)
+    expect_match(out[4], "guides(shape='none')", fixed=TRUE)
 })
 
 test_that(".self_lasso_path flip axes when faceting on both X and Y", {
@@ -1951,20 +1951,20 @@ test_that(".self_lasso_path flip axes when faceting on both X and Y", {
     # Check that row and column are flipped (to panelvar2 and panelvar1)
     expect_match(
         out[1],
-        "FacetRow = all_lassos[['colDataPlot1']][['panelvar2']], FacetColumn = all_lassos[['colDataPlot1']][['panelvar1']]",
+        "FacetRow=all_lassos[['colDataPlot1']][['panelvar2']], FacetColumn=all_lassos[['colDataPlot1']][['panelvar1']]",
         fixed=TRUE)
 
     # Check that the faceting data is appended to the brush data
     expect_match(
         out[1],
-        "data.frame(X = all_lassos[['colDataPlot1']]$coord[,1], Y = all_lassos[['colDataPlot1']]$coord[,2], FacetRow = all_lassos[['colDataPlot1']][['panelvar2']], FacetColumn = all_lassos[['colDataPlot1']][['panelvar1']])", fixed=TRUE
+        "data.frame(X=all_lassos[['colDataPlot1']]$coord[, 1], Y=all_lassos[['colDataPlot1']]$coord[, 2], FacetRow=all_lassos[['colDataPlot1']][['panelvar2']], FacetColumn=all_lassos[['colDataPlot1']][['panelvar1']])", fixed=TRUE
     )
 
     expect_identical(
         out[2],
-        "scale_fill_manual(values = c('TRUE' = '#DB0230', 'FALSE' = '#F7CCD5'), labels = NULL)")
+        "scale_fill_manual(values=c('TRUE'='#DB0230', 'FALSE'='#F7CCD5'), labels=NULL)")
 
-    expect_identical(out[3], "guides(shape = 'none')")
+    expect_identical(out[3], "guides(shape='none')")
 
 })
 
@@ -2011,11 +2011,10 @@ test_that(".self_lasso_path uses the size aesthetic to distinguish waypoints of 
     expect_identical(
         out,
         c(
-            "geom_path(aes(x = X, y = Y),\n    data=data.frame(X = all_lassos[['redDimPlot1']]$coord[,1], Y = all_lassos[['redDimPlot1']]$coord[,2]),\n    inherit.aes=FALSE, alpha=1, color='#3565AA', linetype = 'longdash')",
-            "geom_point(aes(x = X, y = Y, size = First),\n    data=data.frame(X = all_lassos[['redDimPlot1']]$coord[,1], Y = all_lassos[['redDimPlot1']]$coord[,2],\n        First = seq_len(nrow(all_lassos[['redDimPlot1']]$coord))==1L),\n    inherit.aes=FALSE, alpha=1, stroke = 1, shape = 22, color = '#3565AA')",
-            "scale_size_manual(values = c('TRUE' = 1.5, 'FALSE' = 0.25))",
-            "guides(size = 'none')")
+            "geom_path(aes(x=X, y=Y),\n    data=data.frame(X=all_lassos[['redDimPlot1']]$coord[, 1], Y=all_lassos[['redDimPlot1']]$coord[, 2]),\n    inherit.aes=FALSE, alpha=1, color='#3565AA', linetype='longdash')",
+            "geom_point(aes(x=X, y=Y, size=First),\n    data=data.frame(X=all_lassos[['redDimPlot1']]$coord[, 1], Y=all_lassos[['redDimPlot1']]$coord[, 2],\n        First=seq_len(nrow(all_lassos[['redDimPlot1']]$coord)) == 1L),\n    inherit.aes=FALSE, alpha=1, stroke=1, shape=22, color='#3565AA')",
+            "scale_size_manual(values=c('TRUE'=1.5, 'FALSE'=0.25))",
+            "guides(size='none')")
     )
 
 })
-

@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.8</span>
       </span>
     </div>
 
@@ -111,7 +111,7 @@
       Cancer Research UK Cambridge Institute, University of Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com">infinite.monkeys.with.keyboards@gmail.com</a>
       </address>
                   
-            <h4 class="date">27 August 2019</h4>
+            <h4 class="date">28 August 2019</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/csoneson/iSEE/blob/master/vignettes/basic.Rmd"><code>vignettes/basic.Rmd</code></a></small>
       <div class="hidden name"><code>basic.Rmd</code></div>
@@ -120,7 +120,7 @@
 
     
     
-<p><strong>Compiled date</strong>: 2019-08-27</p>
+<p><strong>Compiled date</strong>: 2019-08-28</p>
 <p><strong>Last edited</strong>: 2018-03-08</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <p><img src="../../../../R/Library/iSEE/www/iSEE.png" width="50%" style="display: block; margin: auto;"></p>
@@ -168,8 +168,7 @@
 <a class="sourceLine" id="cb5-12" data-line-number="12"><span class="co">#&gt; [21] "Animal.ID"                    "passes_qc_checks_s"</span></a></code></pre></div>
 <p>Then, we normalize the expression values with <em><a href="https://bioconductor.org/packages/3.10/scater">scater</a></em>.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(scater)</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw">counts</span>(sce) &lt;-<span class="st"> </span><span class="kw">assay</span>(sce, <span class="st">"tophat_counts"</span>)</a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">sce &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/scater/topics/normalize">normalize</a></span>(sce)</a></code></pre></div>
+<a class="sourceLine" id="cb6-2" data-line-number="2">sce &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/scater/topics/logNormCounts">logNormCounts</a></span>(sce, <span class="dt">exprs_values=</span><span class="st">"tophat_counts"</span>)</a></code></pre></div>
 <p>Next, we apply PCA and <em>t</em>-SNE to generate two low-dimensional representations of the cells. The dimensionality reduction results are stored in <code>reducedDim(sce)</code>. Note that all computations (e.g., dimension reduction, clustering) must be performed <em>before</em> passing the object to the <code>iSEE</code> function.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/scater/topics/runPCA">runPCA</a></span>(sce)</a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">sce &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/scater/topics/runTSNE">runTSNE</a></span>(sce)</a>
@@ -426,7 +425,7 @@
 <a class="sourceLine" id="cb12-21" data-line-number="21"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb12-22" data-line-number="22"><span class="co">#&gt; other attached packages:</span></a>
 <a class="sourceLine" id="cb12-23" data-line-number="23"><span class="co">#&gt;  [1] scater_1.13.17              ggplot2_3.2.1              </span></a>
-<a class="sourceLine" id="cb12-24" data-line-number="24"><span class="co">#&gt;  [3] scRNAseq_1.99.1             iSEE_1.5.7                 </span></a>
+<a class="sourceLine" id="cb12-24" data-line-number="24"><span class="co">#&gt;  [3] scRNAseq_1.99.1             iSEE_1.5.8                 </span></a>
 <a class="sourceLine" id="cb12-25" data-line-number="25"><span class="co">#&gt;  [5] SingleCellExperiment_1.7.7  SummarizedExperiment_1.15.8</span></a>
 <a class="sourceLine" id="cb12-26" data-line-number="26"><span class="co">#&gt;  [7] DelayedArray_0.11.4         BiocParallel_1.19.2        </span></a>
 <a class="sourceLine" id="cb12-27" data-line-number="27"><span class="co">#&gt;  [9] matrixStats_0.54.0          Biobase_2.45.0             </span></a>

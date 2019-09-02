@@ -23,7 +23,7 @@
             stop("'use' must be TRUE, FALSE, or an integer vector named c('bugs', 'spiders')")
         }
     }
-    stopifnot(all(lengths(use)) == 1)
+
     singleton(tags$head(
         tags$script(src="iSEE/bug-min.js"),
         tags$script(HTML(sprintf(

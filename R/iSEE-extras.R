@@ -56,16 +56,16 @@
 #' \code{\link{iSEE}}
 .check_plot_feasibility <- function(se) {
     list(
-        redDimPlot=! (length(reducedDims(se))==0L || ncol(se)==0L),
-        colDataPlot=! (ncol(colData(se))==0L || ncol(se)==0L),
-        featAssayPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
-        rowStatTable=! (nrow(se)==0L),
-        rowDataPlot=! (ncol(rowData(se))==0L || nrow(se)==0L),
-        sampAssayPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L),
-        colStatTable=! (ncol(se)==0L),
-        customDataPlot=! ((ncol(se)==0L && nrow(se)==0L) || length(.get_internal_info(se, "custom_data_fun"))==0L),
-        customStatTable=! ((ncol(se)==0L && nrow(se)==0L) || length(.get_internal_info(se, "custom_stat_fun"))==0L),
-        heatMapPlot=! (nrow(se)==0L || ncol(se)==0L || length(assayNames(se))==0L)
+        redDimPlot=! (length(reducedDims(se)) == 0L || ncol(se) == 0L),
+        colDataPlot=! (ncol(colData(se)) == 0L || ncol(se) == 0L),
+        featAssayPlot=! (nrow(se) == 0L || ncol(se) == 0L || length(assayNames(se)) == 0L),
+        rowStatTable=! (nrow(se) == 0L),
+        rowDataPlot=! (ncol(rowData(se)) == 0L || nrow(se) == 0L),
+        sampAssayPlot=! (nrow(se) == 0L || ncol(se) == 0L || length(assayNames(se)) == 0L),
+        colStatTable=! (ncol(se) == 0L),
+        customDataPlot=! ((ncol(se) == 0L && nrow(se) == 0L) || length(.get_internal_info(se, "custom_data_fun")) == 0L),
+        customStatTable=! ((ncol(se) == 0L && nrow(se) == 0L) || length(.get_internal_info(se, "custom_stat_fun")) == 0L),
+        heatMapPlot=! (nrow(se) == 0L || ncol(se) == 0L || length(assayNames(se)) == 0L)
     )
 }
 
@@ -369,13 +369,13 @@
     }
 
     if (is.null(initialPanels$Width)) {
-        initialPanels$Width <- 4L
+        initialPanels$Width <- rep(4L, nrow(initialPanels))
     } else {
         initialPanels$Width <- pmax(width_limits[1], pmin(width_limits[2], as.integer(initialPanels$Width)))
     }
 
     if (is.null(initialPanels$Height)) {
-        initialPanels$Height <- 500L
+        initialPanels$Height <- rep(500L, nrow(initialPanels))
     } else {
         initialPanels$Height <- pmax(height_limits[1], pmin(height_limits[2], as.integer(initialPanels$Height)))
     }
@@ -385,8 +385,8 @@
     illegal <- max_each[encoded$Type] < encoded$ID
     if (any(illegal)) {
         badpanel <- which(illegal)[1]
-        message(sprintf("'%s' in 'initialPanels' is not available (maximum ID is %i)",
-            initialPanels$Name[badpanel], max_each[encoded$Type[badpanel]]))
+        message(sprintf("\n'%s' in 'initialPanels' is not available (maximum ID is %i)",
+            initialPanels$Name[illegal], max_each[encoded$Type[illegal]]))
     }
 
     data.frame(Type=encoded$Type, ID=encoded$ID,
@@ -459,7 +459,7 @@ height_limits <- c(400L, 1000L)
 
     # Checking for linking of x/y-axes of feature assay plots.
     for (mode in c("featAssayPlot", "sampAssayPlot")) {
-        if (mode=="featAssayPlot") {
+        if (mode == "featAssayPlot") {
             fields <- c(.featAssayXAxisRowTable, .featAssayYAxisRowTable)
             linkable <- tab_by_row
         } else {
@@ -648,7 +648,7 @@ height_limits <- c(400L, 1000L)
     }
 
     transmittees <- list(c("yaxis", "y-axis", NA, NA))
-    if (enc$Type=="rowStatTable") {
+    if (enc$Type == "rowStatTable") {
         transmittees <- c(transmittees,
                 list(
                     c("xaxis", "x-axis", .featAssayXAxis, .featAssayXAxisFeatNameTitle),
@@ -673,7 +673,7 @@ height_limits <- c(400L, 1000L)
         # Only writing a broadcast label if the plot actually receives the information via the appropriate parameter choices.
         # Y-axis for feature/sample assay plots is NA, as there are no choices there, so it always gets listed.
         for (i in seq_along(child_names)) {
-            if (is.na(by_field) || memory[[child_enc$Type[i]]][child_enc$ID[i], by_field]==ref_title) {
+            if (is.na(by_field) || memory[[child_enc$Type[i]]][child_enc$ID[i], by_field] == ref_title) {
                 output <- c(output, list(out_str, em(strong(child_names[i])), br()))
             }
         }
@@ -708,7 +708,7 @@ height_limits <- c(400L, 1000L)
 #' \code{\link{.spawn_selection_chart}}
 #' @importFrom igraph delete.vertices V topo_sort degree
 .establish_eval_order <- function(graph) {
-    iso <- V(graph)[degree(graph, mode="out")==0]
+    iso <- V(graph)[degree(graph, mode="out") == 0]
     graph <- delete.vertices(graph, iso)
     names(topo_sort(graph, mode="out"))
 }
@@ -789,7 +789,6 @@ height_limits <- c(400L, 1000L)
 #'
 #' @details
 #' Nested fields are renamed by using \code{:} as separators in the flattened DataFrame.
-#' This is also the case for subtypes of \code{\link{sizeFactors}} or \code{\link{isSpike}}.
 #' Name clashes are resolved by adding \code{_} to the start of the newer name.
 #'
 #' Note that non-atomic fields are removed from \code{object} only, to ensure that they don't show up in the UI options.
@@ -806,7 +805,6 @@ height_limits <- c(400L, 1000L)
 #' \code{\link{.extract_nested_DF}}
 #'
 #' @importFrom BiocGenerics sizeFactors
-#' @importFrom SingleCellExperiment isSpike
 #' @importFrom S4Vectors DataFrame
 #' @importFrom methods is as
 #' @importFrom SummarizedExperiment colData rowData
@@ -839,24 +837,7 @@ height_limits <- c(400L, 1000L)
     # Filling in with any sizeFactors.
     if (!is.null(sizeFactors(eval_env$se))) {
         new_name <- .safe_field_name("sizeFactors(se)", colnames(colData(eval_env$se)))
-        all_cmds <- .add_command(all_cmds, sprintf('colData(se)[,%s] <- sizeFactors(se)', deparse(new_name)))
-    }
-    for (sf_name in sizeFactorNames(eval_env$se)) {
-        get_cmd <- sprintf("sizeFactors(se, %s)", deparse(sf_name))
-        new_name <- .safe_field_name(get_cmd, colnames(colData(eval_env$se)))
-        all_cmds <- .add_command(all_cmds, sprintf('colData(se)[,%s] <- %s', deparse(new_name), get_cmd))
-    }
-    all_cmds <- .evaluate_commands(all_cmds, eval_env)
-
-    # Filling in with spike-ins.
-    if (!is.null(isSpike(eval_env$se))) {
-        new_name <- .safe_field_name("isSpike(se)", colnames(rowData(eval_env$se)))
-        all_cmds <- .add_command(all_cmds, sprintf('rowData(se)[,%s] <- isSpike(se)', deparse(new_name)))
-    }
-    for (s_name in spikeNames(eval_env$se)) {
-        get_cmd <- sprintf("isSpike(se, %s)", deparse(s_name))
-        new_name <- .safe_field_name(get_cmd, colnames(rowData(eval_env$se)))
-        all_cmds <- .add_command(all_cmds, sprintf('rowData(se)[,%s] <- %s', deparse(new_name), get_cmd))
+        all_cmds <- .add_command(all_cmds, sprintf('colData(se)[, %s] <- sizeFactors(se)', deparse(new_name)))
     }
     all_cmds <- .evaluate_commands(all_cmds, eval_env)
 
@@ -864,12 +845,12 @@ height_limits <- c(400L, 1000L)
     new_rows <- .extract_nested_DF(rowData(eval_env$se))
     for (f in seq_along(new_rows$getter)) {
         new_name <- .safe_field_name(new_rows$setter[f], colnames(rowData(eval_env$se)))
-        all_cmds <- .add_command(all_cmds, sprintf("rowData(se)[,%s] <- rowData(se)%s", deparse(new_name), new_rows$getter[f]))
+        all_cmds <- .add_command(all_cmds, sprintf("rowData(se)[, %s] <- rowData(se)%s", deparse(new_name), new_rows$getter[f]))
     }
     new_cols <- .extract_nested_DF(colData(eval_env$se))
     for (f in seq_along(new_cols$getter)) {
         new_name <- .safe_field_name(new_cols$setter[f], colnames(colData(eval_env$se)))
-        all_cmds <- .add_command(all_cmds, sprintf("colData(se)[,%s] <- colData(se)%s", deparse(new_name), new_cols$getter[f]))
+        all_cmds <- .add_command(all_cmds, sprintf("colData(se)[, %s] <- colData(se)%s", deparse(new_name), new_cols$getter[f]))
     }
     all_cmds <- .evaluate_commands(all_cmds, eval_env)
 

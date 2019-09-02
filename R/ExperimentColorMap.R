@@ -615,8 +615,7 @@ setMethod(
 #' # Example SingleCellExperiment ----
 #'
 #' library(scRNAseq)
-#' sce <- ReprocessedAllenData()
-#' library(scater)
+#' sce <- ReprocessedAllenData(assays="tophat_counts")
 #'
 #' # Test for compatibility ----
 #'
@@ -780,10 +779,9 @@ isColorMapCompatible <- function(ecm, se, error = FALSE){
 #' # Example SingleCellExperiment ----
 #'
 #' library(scRNAseq)
-#' sce <- ReprocessedAllenData()
+#' sce <- ReprocessedAllenData(assays="tophat_counts")
 #' library(scater)
-#' counts(sce) <- assay(sce, "tophat_counts")
-#' sce <- normalize(sce)
+#' sce <- logNormCounts(sce, exprs_values="tophat_counts")
 #' sce <- runPCA(sce)
 #' sce <- runTSNE(sce)
 #'

@@ -24,7 +24,7 @@
 #'
 #' @examples
 #' library(scRNAseq)
-#' sce <- ReprocessedAllenData()
+#' sce <- ReprocessedAllenData(assays="tophat_counts")
 #'
 #' library(org.Mm.eg.db)
 #' myfun <- annotateEntrez(sce, org.Mm.eg.db, keytype="SYMBOL")
@@ -103,7 +103,7 @@ annotateEntrez <- function(se, orgdb, keytype, rowdata_col = NULL) {
 #'
 #' @examples
 #' library(scRNAseq)
-#' sce <- ReprocessedAllenData()
+#' sce <- ReprocessedAllenData(assays="tophat_counts")
 #' library(org.Mm.eg.db)
 #' myfun <- annotateEnsembl(sce, org.Mm.eg.db, keytype="SYMBOL")
 #' \dontrun{

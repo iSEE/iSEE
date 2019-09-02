@@ -74,8 +74,6 @@ test_that(".sanitize_SE_input returns expected commands and object", {
     colData(sce)$nested <- DataFrame(nested=seq_len(ncol(sce)))
     rowData(sce)$nested <- DataFrame(nested=seq_len(nrow(sce)))
     sizeFactors(sce) <- runif(ncol(sce))
-    sizeFactors(sce, "ERCC") <- runif(ncol(sce))
-    isSpike(sce, "ERCC") <- sample(nrow(sce), 10)
 
     sanitized_list <- iSEE:::.sanitize_SE_input(sce)
     sanitized_cmds <- sanitized_list$cmds
@@ -85,8 +83,6 @@ test_that(".sanitize_SE_input returns expected commands and object", {
     expect_identical(colData(sanitized_sce)[["nested:nested"]], sce$nested$nested)
     expect_identical(rowData(sanitized_sce)[["nested:nested"]], rowData(sce)$nested$nested)
     expect_identical(colData(sanitized_sce)[["sizeFactors(se)"]], sizeFactors(sce))
-    expect_identical(colData(sanitized_sce)[['sizeFactors(se, "ERCC")']], sizeFactors(sce, "ERCC"))
-    expect_identical(rowData(sanitized_sce)[['isSpike(se, "ERCC")']], isSpike(sce, "ERCC"))
 
     # emulate the function behaviour to obtain the expected
     eval_env <- new.env()
@@ -138,6 +134,25 @@ test_that(".setup_initial does not allow duplicated values in the Name column", 
         "duplicated values are not allowed in the 'Name' field of 'initialPanels'",
         fixed=TRUE
     )
+
+})
+
+test_that(".setup_initial supports 0-row initialPanels", {
+
+    initialPanels <- data.frame(Name=character(0))
+    all_memory <- list()
+
+    out <- iSEE:::.setup_initial(initialPanels, all_memory)
+
+    expected <- data.frame(
+      Type = character(0),
+      ID = integer(0),
+      Width = integer(0),
+      Height = integer(0),
+      stringsAsFactors = FALSE
+    )
+
+    expect_identical(out, expected)
 
 })
 
@@ -242,8 +257,8 @@ test_that("Nameless SummarizedExperiment objects can be sanitized", {
             "se <- as(se, \"SingleCellExperiment\")",
             "colnames(se) <- sprintf(\"SAMPLE_%i\", seq_len(ncol(se)))",
             "rownames(se) <- sprintf(\"FEATURE_%i\", seq_len(nrow(se)))",
-            "colData(se)[,\"nested:nested1\"] <- colData(se)[[\"nested\"]][[\"nested1\"]]",
-            "colData(se)[,\"nested:nested2\"] <- colData(se)[[\"nested\"]][[\"nested2\"]]"))
+            "colData(se)[, \"nested:nested1\"] <- colData(se)[[\"nested\"]][[\"nested1\"]]",
+            "colData(se)[, \"nested:nested2\"] <- colData(se)[[\"nested\"]][[\"nested2\"]]"))
 
 })
 

@@ -1,6 +1,40 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.5.8}{
+\itemize{
+    \item Substitute deprecated \code{scater::normalize} by \code{logNormCounts}.
+}
+}
+
+\section{iSEE VERSION 1.5.7}{
+\itemize{
+    \item Simplify protection of \code{redDimPlotDefaults} against empty \code{reducedDims}.
+    \item Fix to declare all panel types not available.
+}
+}
+
+\section{iSEE VERSION 1.5.6}{
+\itemize{
+    \item Updates following deprecation of \code{isSpike} and \code{sizeFactorNames}.
+}
+}
+
+\section{iSEE VERSION 1.5.5}{
+\itemize{
+    \item Add \code{modeEmpty()}.
+    \item Support zero-row \code{initialPanels} argument.
+}
+}
+
+\section{iSEE VERSION 1.5.4}{
+\itemize{
+    \item Added support for file upload with server re-initialization.
+    \item Moved observers to separate file. Exclude from code coverage.
+    \item Updating calls to \code{ReprocessedAllenData()} to load only \code{tophat_counts} assay.
+}
+}
+
 \section{iSEE VERSION 1.5.3}{
 \itemize{
     \item Use \code{ReprocessedAllenData()} following the deprecation of

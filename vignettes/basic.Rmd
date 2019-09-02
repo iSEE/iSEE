@@ -84,12 +84,12 @@ example(iSEE, ask=FALSE)
 
 # Setting up the data
 
-The `allen` data set contains expression values for 379 cells from the mouse visual cortex [@tasic2016adult], and can be loaded directly by calling `ReprocessedAllenData()`. 
+The `allen` data set contains expression values for 379 cells from the mouse visual cortex [@tasic2016adult], and can be loaded directly by calling `ReprocessedAllenData()` and specifying the value for the `assays` parameter. 
 To begin with, we assign the output of this call to an `sce` object and inspect it.
 
 ```{r allen-dataset}
 library(scRNAseq)
-sce <- ReprocessedAllenData()
+sce <- ReprocessedAllenData(assays = "tophat_counts")   # specifying the assays to speed up the example
 sce
 ```
 
@@ -103,8 +103,7 @@ Then, we normalize the expression values with `r Biocpkg("scater")`.
 
 ```{r}
 library(scater)
-counts(sce) <- assay(sce, "tophat_counts")
-sce <- normalize(sce)
+sce <- logNormCounts(sce, exprs_values="tophat_counts")
 ```
 
 Next, we apply PCA and *t*-SNE to generate two low-dimensional representations of the cells.

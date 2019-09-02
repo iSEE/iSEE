@@ -35,7 +35,7 @@ based on the data retrieved from the ENSEMBL database
 }
 \examples{
 library(scRNAseq)
-sce <- ReprocessedAllenData()
+sce <- ReprocessedAllenData(assays="tophat_counts")
 library(org.Mm.eg.db)
 myfun <- annotateEnsembl(sce, org.Mm.eg.db, keytype="SYMBOL")
 \dontrun{

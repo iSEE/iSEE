@@ -26,5 +26,5 @@ test_that("subsetPointsByGrid works correctly", {
     expect_true(sum(chosen.high) > sum(chosen))
 
     # Checking silly inputs.
-    expect_identical(suppressWarnings(subsetPointsByGrid(integer(0), integer(0))), logical(0))
+    expect_identical(suppressWarnings(subsetPointsByGrid(integer(0L), integer(0L))), logical(0L))
 })

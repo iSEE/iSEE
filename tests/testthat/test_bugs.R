@@ -16,26 +16,15 @@ test_that("prepareBugsEasterEgg loads", {
         c("name", "attribs", "children")
     )
 
-    out <- .prepareBugsEasterEgg(use = c(bugs=3, spiders=10))
+    out <- .prepareBugsEasterEgg(use = c(bugs=3L, spiders=10L))
     expect_identical(
         names(out),
         c("name", "attribs", "children")
     )
 
-    out <- .prepareBugsEasterEgg(use = c(spiders=10, bugs=3))
-    expect_identical(
-        names(out),
-        c("name", "attribs", "children")
-    )
-
-    out <- .prepareBugsEasterEgg(use = c(spiders=10))
-    expect_identical(
-        names(out),
-        c("name", "attribs", "children")
-    )
-
+    # both values must be defined
     expect_error(
-        .prepareBugsEasterEgg(use = c(bugs=3)),
+        .prepareBugsEasterEgg(use = c(bugs=3L)),
         "'use' must be TRUE, FALSE, or an integer vector named c('bugs', 'spiders')",
         fixed=TRUE
     )

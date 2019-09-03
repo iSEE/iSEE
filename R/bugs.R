@@ -13,11 +13,10 @@
 #' @rdname INTERNAL_nearest_decoded_panel
 #' @author Kevin Rue-Albrecht
 .prepareBugsEasterEgg <- function(use=FALSE) {
-    defaults <- c(bugs=3, spiders=1)
     if (isFALSE(use)) {
         return(list())
     } else if (isTRUE(use)) {
-        use <- defaults
+        use <- c(bugs=3L, spiders=1L)
     } else {
         if (!identical(names(use), c('bugs', 'spiders'))) {
             stop("'use' must be TRUE, FALSE, or an integer vector named c('bugs', 'spiders')")

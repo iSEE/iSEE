@@ -16,13 +16,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -45,6 +47,7 @@
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
 
 
   </head>
@@ -71,7 +74,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -109,7 +112,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/csoneson/iSEE">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -120,6 +123,7 @@
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -169,8 +173,10 @@ Alternatively, a string can also be supplied containing the name of the assay, i
  Defaults to <code>"---"</code>, which means that no panel is used for feature selection.</p></dd>
 <dt><code>FeatNameBoxOpen</code>:</dt><dd><p>Logical, should the feature selection box be open upon initialization?
 Defaults to <code>FALSE</code>.</p></dd>
+
 </dl>
-    <p>The column metadata variables control the ordering of the samples in the heatmap.
+
+<p>The column metadata variables control the ordering of the samples in the heatmap.
 They can be controlled with:</p><dl class='dl-horizontal'>
 <dt><code>ColData</code>:</dt><dd><p>List of length equal to the number of panels.
 Each list entry corresponds to a panel and should contain a character vector specifying the field(s) of <code>colData(se)</code> that should be used to order the samples in the heatmap.
@@ -178,23 +184,27 @@ Note that these fields will also appear as annotation bars.
 Each character vector defaults to the first entry of <code>colData(se)</code>.</p></dd>
 <dt><code>ColDataBoxOpen</code>:</dt><dd><p>Logical, should the column data selection box be open upon initialization?
 Defaults to <code>FALSE</code>.</p></dd>
+
 </dl>
-    <p>A variety of parameters are available to control the color scale of the heatmap.
+
+<p>A variety of parameters are available to control the color scale of the heatmap.
 They can be specified with:</p><dl class='dl-horizontal'>
 <dt><code>ColorBoxOpen</code>:</dt><dd><p>Logical, should the color selection panel for the heatmap be open upon initialization?
 Defaults to <code>FALSE</code>.</p></dd>
 <dt><code>CenterScale</code>:</dt><dd><p>List of length equal to the number of panels.
 Each list entry corresponds to a panel and contains a character vector specifying whether each row of expression values should be mean-centered and/or scaled to unit variance.
 Defaults to <code>"Centered"</code>.
-Users can set it to <code><a href='https://www.rdocumentation.org/packages/base/topics/c'>c("Centered", "Scaled")</a></code> to obtain mean-centered and unit-scaled rows.</p></dd>
+Users can set it to <code><a href='https://rdrr.io/r/base/c.html'>c("Centered", "Scaled")</a></code> to obtain mean-centered and unit-scaled rows.</p></dd>
 <dt><code>Lower</code>:</dt><dd><p>Numeric, what should be the lower bound of the color scale for the values in the heatmap? All values below this threshold will be shown in the same color.
 Defaults to -Inf, meaning that the lowest value in the data matrix will be used.</p></dd>
 <dt><code>Upper</code>:</dt><dd><p>Numeric, what should be the upper bound of the color scale for the values in the heatmap? All values above this threshold will be shown in the same color.
 Defaults to Inf, meaning that the highest value in the data matrix will be used.</p></dd>
 <dt><code>ColorScale</code>:</dt><dd><p>Character, what color scale (in the form low-mid-high) should be used to color the heatmap when values are centered?
 Defaults to <code>"purple-black-yellow"</code>.</p></dd>
+
 </dl>
-    <p>The <code>ZoomData</code> field for heatmaps should contain an integer vector of consecutive indices to zoom into from the full heatmap.
+
+<p>The <code>ZoomData</code> field for heatmaps should contain an integer vector of consecutive indices to zoom into from the full heatmap.
 This vector will subset the entries in <code>FeatName</code> for a given panel.
 This defaults to <code>NULL</code>, i.e., all specified features in <code>FeatName</code> are shown.</p>
 <p>All plot-based parameters described in <code>?"<a href='selectDefaults.html'>iSEE selection parameters</a>"</code> are also applicable.</p>
@@ -205,7 +215,7 @@ This defaults to <code>NULL</code>, i.e., all specified features in <code>FeatNa
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/example'>example</a></span>(<span class='no'>SingleCellExperiment</span>, <span class='kw'>echo</span><span class='kw'>=</span><span class='fl'>FALSE</span>) <span class='co'># mock up 'sce'.</span>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/example.html'>example</a></span>(<span class='no'>SingleCellExperiment</span>, <span class='kw'>echo</span><span class='kw'>=</span><span class='fl'>FALSE</span>) <span class='co'># mock up 'sce'.</span>
 <span class='fu'>heatMapPlotDefaults</span>(<span class='no'>sce</span>, <span class='kw'>n</span><span class='kw'>=</span><span class='fl'>1</span>)</div><div class='output co'>#&gt; DataFrame with 1 row and 18 columns
 #&gt;       Assay FeatNameBoxOpen FeatName ColDataBoxOpen ColData FeatNameSource
 #&gt;   &lt;integer&gt;       &lt;logical&gt;   &lt;list&gt;      &lt;logical&gt;  &lt;list&gt;    &lt;character&gt;
@@ -239,19 +249,23 @@ This defaults to <code>NULL</code>, i.e., all specified features in <code>FeatNa
   </div>
 </div>
 
+
       <footer>
       <div class="copyright">
   <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 

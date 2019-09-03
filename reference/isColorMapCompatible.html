@@ -17,13 +17,15 @@ objects — isColorMapCompatible • iSEE</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -52,6 +54,7 @@ in the ExperimentColorMap object exist in the SingleCellExperiment object." />
 <![endif]-->
 
 
+
   </head>
 
   <body>
@@ -76,7 +79,7 @@ in the ExperimentColorMap object exist in the SingleCellExperiment object." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -114,7 +117,7 @@ in the ExperimentColorMap object exist in the SingleCellExperiment object." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/csoneson/iSEE">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -125,6 +128,7 @@ in the ExperimentColorMap object exist in the SingleCellExperiment object." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -178,28 +182,28 @@ rather than returing <code>FALSE</code>.</p>
 <span class='co'># Example colormaps ----</span>
 
 <span class='no'>count_colors</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>n</span>){
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"black"</span>,<span class='st'>"brown"</span>,<span class='st'>"red"</span>,<span class='st'>"orange"</span>,<span class='st'>"yellow"</span>)
+  <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"black"</span>,<span class='st'>"brown"</span>,<span class='st'>"red"</span>,<span class='st'>"orange"</span>,<span class='st'>"yellow"</span>)
 }
 
 <span class='no'>qc_color_fun</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>n</span>){
-  <span class='no'>qc_colors</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"forestgreen"</span>, <span class='st'>"firebrick1"</span>)
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>qc_colors</span>) <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"Y"</span>, <span class='st'>"N"</span>)
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/function'>return</a></span>(<span class='no'>qc_colors</span>)
+  <span class='no'>qc_colors</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"forestgreen"</span>, <span class='st'>"firebrick1"</span>)
+  <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>qc_colors</span>) <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Y"</span>, <span class='st'>"N"</span>)
+  <span class='fu'><a href='https://rdrr.io/r/base/function.html'>return</a></span>(<span class='no'>qc_colors</span>)
 }
 
 <span class='no'>ecm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='ExperimentColorMap-class.html'>ExperimentColorMap</a></span>(
-    <span class='kw'>assays</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(
+    <span class='kw'>assays</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
         <span class='kw'>tophat_counts</span> <span class='kw'>=</span> <span class='no'>count_colors</span>
     ),
-    <span class='kw'>colData</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(
+    <span class='kw'>colData</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
         <span class='kw'>passes_qc_checks_s</span> <span class='kw'>=</span> <span class='no'>qc_color_fun</span>
     )
 )
 
 <span class='co'># Example SingleCellExperiment ----</span>
 
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>scRNAseq</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/scRNAseq/topics/ReprocessedData'>ReprocessedAllenData</a></span>(<span class='kw'>assays</span><span class='kw'>=</span><span class='st'>"tophat_counts"</span>)</div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/RtmpVJEygP/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>snapshotDate(): 2019-08-13</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/RtmpVJEygP/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/RtmpVJEygP/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/RtmpVJEygP/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>downloading 0 resources</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/RtmpVJEygP/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/RtmpVJEygP/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/RtmpVJEygP/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/RtmpVJEygP/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/RtmpVJEygP/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/RtmpVJEygP/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>downloading 0 resources</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/RtmpVJEygP/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/RtmpVJEygP/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/RtmpVJEygP/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/RtmpVJEygP/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/RtmpVJEygP/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/RtmpVJEygP/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>downloading 0 resources</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/RtmpVJEygP/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/RtmpVJEygP/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/RtmpVJEygP/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/RtmpVJEygP/BiocFileCache</span></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scRNAseq</span>)
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedAllenData</a></span>(<span class='kw'>assays</span><span class='kw'>=</span><span class='st'>"tophat_counts"</span>)</div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/Rtmp3rvWQV/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>snapshotDate(): 2019-09-03</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/Rtmp3rvWQV/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/Rtmp3rvWQV/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/Rtmp3rvWQV/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>downloading 0 resources</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/Rtmp3rvWQV/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/Rtmp3rvWQV/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/Rtmp3rvWQV/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/Rtmp3rvWQV/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/Rtmp3rvWQV/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/Rtmp3rvWQV/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>downloading 0 resources</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/Rtmp3rvWQV/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/Rtmp3rvWQV/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/Rtmp3rvWQV/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/Rtmp3rvWQV/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/Rtmp3rvWQV/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/Rtmp3rvWQV/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>downloading 0 resources</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/Rtmp3rvWQV/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/Rtmp3rvWQV/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/Rtmp3rvWQV/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>Using temporary cache /tmp/Rtmp3rvWQV/BiocFileCache</span></div><div class='input'>
 <span class='co'># Test for compatibility ----</span>
 
 <span class='fu'>isColorMapCompatible</span>(<span class='no'>ecm</span>, <span class='no'>sce</span>)</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
@@ -220,19 +224,23 @@ rather than returing <code>FALSE</code>.</p>
   </div>
 </div>
 
+
       <footer>
       <div class="copyright">
   <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 

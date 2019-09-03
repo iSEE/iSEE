@@ -5,11 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deploying custom panels in the <code>iSEE</code> interface • iSEE</title>
+<title>Deploying custom panels in the `iSEE` interface • iSEE</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Deploying custom panels in the &lt;code&gt;iSEE&lt;/code&gt; interface">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Deploying custom panels in the `iSEE` interface">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -38,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -75,7 +76,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/csoneson/iSEE">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -88,6 +89,7 @@
 <!--/.navbar -->
 
       
+
       </header><link href="custom_files/font-awesome-5.1.0/css/all.css" rel="stylesheet">
 <link href="custom_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet">
 <div class="row">
@@ -111,7 +113,7 @@
       Cancer Research UK Cambridge Institute, University of Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com">infinite.monkeys.with.keyboards@gmail.com</a>
       </address>
                   
-            <h4 class="date">28 August 2019</h4>
+            <h4 class="date">3 September 2019</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/csoneson/iSEE/blob/master/vignettes/custom.Rmd"><code>vignettes/custom.Rmd</code></a></small>
       <div class="hidden name"><code>custom.Rmd</code></div>
@@ -120,7 +122,7 @@
 
     
     
-<p><strong>Compiled date</strong>: 2019-08-28</p>
+<p><strong>Compiled date</strong>: 2019-09-03</p>
 <p><strong>Last edited</strong>: 2018-03-08</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div id="background" class="section level1">
@@ -154,22 +156,22 @@
 <h2 class="hasAnchor">
 <a href="#example-of-custom-plot-panel" class="anchor"></a>Example of custom plot panel</h2>
 <p>To demonstrate the use of <em>custom plot panels</em>, we define an example function <code>CUSTOM_PCA</code> below. This takes a subset of features and cells in a <code>SingleCellExperiment</code> object, performs a principal components analysis (PCA) using that subset with <code>runPCA</code>, and creates a plot of the first two principal components with <code>plotPCA</code> <span class="citation">(McCarthy et al. 2017)</span>.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(scater)</a>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(scater)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2">CUSTOM_PCA &lt;-<span class="st"> </span><span class="cf">function</span>(se, rows, columns, <span class="dt">colour_by=</span><span class="ot">NULL</span>, <span class="dt">scale_features=</span><span class="ot">TRUE</span>) {</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3">    <span class="cf">if</span> (<span class="op">!</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NULL">is.null</a></span>(columns)) {</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">    <span class="cf">if</span> (<span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(columns)) {</a>
 <a class="sourceLine" id="cb1-4" data-line-number="4">        kept &lt;-<span class="st"> </span>se[, columns]</a>
 <a class="sourceLine" id="cb1-5" data-line-number="5">    } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb1-6" data-line-number="6">        <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">        <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span>(</a>
 <a class="sourceLine" id="cb1-7" data-line-number="7">            <span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span><span class="kw">theme_void</span>() <span class="op">+</span><span class="st"> </span><span class="kw">geom_text</span>(</a>
 <a class="sourceLine" id="cb1-8" data-line-number="8">                <span class="kw">aes</span>(x, y, <span class="dt">label=</span>label),</a>
-<a class="sourceLine" id="cb1-9" data-line-number="9">                <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">x=</span><span class="dv">0</span>, <span class="dt">y=</span><span class="dv">0</span>, <span class="dt">label=</span><span class="st">"No column data selected."</span>),</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9">                <span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">x=</span><span class="dv">0</span>, <span class="dt">y=</span><span class="dv">0</span>, <span class="dt">label=</span><span class="st">"No column data selected."</span>),</a>
 <a class="sourceLine" id="cb1-10" data-line-number="10">                <span class="dt">size=</span><span class="dv">5</span>)</a>
 <a class="sourceLine" id="cb1-11" data-line-number="11">            )</a>
 <a class="sourceLine" id="cb1-12" data-line-number="12">    }</a>
 <a class="sourceLine" id="cb1-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb1-14" data-line-number="14">    scale_features &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/logical">as.logical</a></span>(scale_features)</a>
-<a class="sourceLine" id="cb1-15" data-line-number="15">    kept &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/scater/topics/runPCA">runPCA</a></span>(kept, <span class="dt">feature_set=</span>rows, <span class="dt">scale_features=</span>scale_features)</a>
-<a class="sourceLine" id="cb1-16" data-line-number="16">    <span class="kw"><a href="https://www.rdocumentation.org/packages/scater/topics/plot_reddim">plotPCA</a></span>(kept, <span class="dt">colour_by=</span>colour_by)</a>
+<a class="sourceLine" id="cb1-14" data-line-number="14">    scale_features &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/logical.html">as.logical</a></span>(scale_features)</a>
+<a class="sourceLine" id="cb1-15" data-line-number="15">    kept &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/scater/man/runPCA.html">runPCA</a></span>(kept, <span class="dt">feature_set=</span>rows, <span class="dt">scale_features=</span>scale_features)</a>
+<a class="sourceLine" id="cb1-16" data-line-number="16">    <span class="kw"><a href="https://rdrr.io/pkg/scater/man/plot_reddim.html">plotPCA</a></span>(kept, <span class="dt">colour_by=</span>colour_by)</a>
 <a class="sourceLine" id="cb1-17" data-line-number="17">}</a></code></pre></div>
 <p>As mentioned above, <code>rows</code> and <code>columns</code> may be <code>NULL</code> if no selection was made in the respective transmitting panels. How these should be treated is up to the user-defined function. In the <code>CUSTOM_PCA</code> example above, an empty <em>ggplot</em> is returned if there is no selection on the columns, while the default <code>runPCA</code> behaviour is used if <code>feature_set=NULL</code>.</p>
 </div>
@@ -178,20 +180,20 @@
 <a href="#example-of-custom-table-panel" class="anchor"></a>Example of custom table panel</h2>
 <p>To demonstrate the use of <em>custom table panels</em>, we define an example function <code>CUSTOM_SUMMARY</code> below. This takes a subset of features and cells in a <code>SingleCellExperiment</code> object, and creates data-frame that details the <code>mean</code>, <code>variance</code> and count of samples with expression above a given cut-off within the selection.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">CUSTOM_SUMMARY &lt;-<span class="st"> </span><span class="cf">function</span>(se, ri, ci, <span class="dt">assay=</span><span class="st">"logcounts"</span>, <span class="dt">min_exprs=</span><span class="dv">0</span>) {</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">    <span class="cf">if</span> (<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NULL">is.null</a></span>(ri)) {</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3">        ri &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">rownames</a></span>(se)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">    <span class="cf">if</span> (<span class="kw"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(ri)) {</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">        ri &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(se)</a>
 <a class="sourceLine" id="cb2-4" data-line-number="4">    }</a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">    <span class="cf">if</span> (<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NULL">is.null</a></span>(ci)) {</a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">        ci &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(se)</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">    <span class="cf">if</span> (<span class="kw"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(ci)) {</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">        ci &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(se)</a>
 <a class="sourceLine" id="cb2-7" data-line-number="7">    }</a>
 <a class="sourceLine" id="cb2-8" data-line-number="8">    </a>
 <a class="sourceLine" id="cb2-9" data-line-number="9">    assayMatrix &lt;-<span class="st"> </span><span class="kw">assay</span>(se, assay)[ri, ci, drop=<span class="ot">FALSE</span>]</a>
 <a class="sourceLine" id="cb2-10" data-line-number="10">    </a>
-<a class="sourceLine" id="cb2-11" data-line-number="11">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(</a>
-<a class="sourceLine" id="cb2-12" data-line-number="12">        <span class="dt">Mean =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowMeans</a></span>(assayMatrix),</a>
+<a class="sourceLine" id="cb2-11" data-line-number="11">    <span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(</a>
+<a class="sourceLine" id="cb2-12" data-line-number="12">        <span class="dt">Mean =</span> <span class="kw"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span>(assayMatrix),</a>
 <a class="sourceLine" id="cb2-13" data-line-number="13">        <span class="dt">Var =</span> <span class="kw">rowVars</span>(assayMatrix),</a>
-<a class="sourceLine" id="cb2-14" data-line-number="14">        <span class="dt">Sum =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(assayMatrix),</a>
-<a class="sourceLine" id="cb2-15" data-line-number="15">        <span class="dt">n_detected =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(assayMatrix <span class="op">&gt;</span><span class="st"> </span>min_exprs),</a>
+<a class="sourceLine" id="cb2-14" data-line-number="14">        <span class="dt">Sum =</span> <span class="kw"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(assayMatrix),</a>
+<a class="sourceLine" id="cb2-15" data-line-number="15">        <span class="dt">n_detected =</span> <span class="kw"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(assayMatrix <span class="op">&gt;</span><span class="st"> </span>min_exprs),</a>
 <a class="sourceLine" id="cb2-16" data-line-number="16">        <span class="dt">row.names =</span> ri</a>
 <a class="sourceLine" id="cb2-17" data-line-number="17">    )</a>
 <a class="sourceLine" id="cb2-18" data-line-number="18">}</a></code></pre></div>
@@ -213,10 +215,10 @@ min_exprs 5</code></pre>
 <h2 class="hasAnchor">
 <a href="#example-use" class="anchor"></a>Example use</h2>
 <p>Using the <code>sce</code> object that we generated <a href="https://bioconductor.org/packages/3.10/iSEE/vignettes/basic.html">earlier</a>, we will add some fields for examining the mean-variance relationship across features:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">rowData</span>(sce)<span class="op">$</span>mean_log &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowMeans</a></span>(<span class="kw">logcounts</span>(sce))</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw">rowData</span>(sce)<span class="op">$</span>var_log &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(<span class="kw">logcounts</span>(sce), <span class="dv">1</span>, var)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">rowData</span>(sce)<span class="op">$</span>mean_log &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span>(<span class="kw">logcounts</span>(sce))</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw">rowData</span>(sce)<span class="op">$</span>var_log &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(<span class="kw">logcounts</span>(sce), <span class="dv">1</span>, var)</a></code></pre></div>
 <p>We will then set up an <code>iSEE</code> instance with four panels - a reduced dimension plot, a row data plot, a custom plot, and a custom table. Note how both custom panels initially receives a column selection from the reduced dimension plot and a row selection from the row data plot. We also set the initial function to the name of <code>CUSTOM_PCA</code> in <code>customDataFun</code>, and the initial arguments to the values described above.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(iSEE)</a>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(iSEE)</a>
 <a class="sourceLine" id="cb6-2" data-line-number="2">reddim &lt;-<span class="st"> </span><span class="kw"><a href="../reference/redDimPlotDefaults.html">redDimPlotDefaults</a></span>(sce, <span class="dv">1</span>)</a>
 <a class="sourceLine" id="cb6-3" data-line-number="3">rowdat &lt;-<span class="st"> </span><span class="kw"><a href="../reference/rowDataPlotDefaults.html">rowDataPlotDefaults</a></span>(sce, <span class="dv">1</span>)</a>
 <a class="sourceLine" id="cb6-4" data-line-number="4">rowdat<span class="op">$</span>XAxis &lt;-<span class="st"> "Row data"</span></a>
@@ -238,12 +240,12 @@ min_exprs 5</code></pre>
 <a class="sourceLine" id="cb6-20" data-line-number="20">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(</a>
 <a class="sourceLine" id="cb6-21" data-line-number="21">    sce, <span class="dt">redDimArgs=</span>reddim, <span class="dt">rowDataArgs=</span>rowdat, <span class="dt">customDataArgs=</span>cdp, <span class="dt">customStatArgs=</span>cst,</a>
 <a class="sourceLine" id="cb6-22" data-line-number="22">    <span class="dt">initialPanels=</span><span class="kw">DataFrame</span>(</a>
-<a class="sourceLine" id="cb6-23" data-line-number="23">        <span class="dt">Name=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(</a>
+<a class="sourceLine" id="cb6-23" data-line-number="23">        <span class="dt">Name=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(</a>
 <a class="sourceLine" id="cb6-24" data-line-number="24">            <span class="st">"Reduced dimension plot 1"</span>, <span class="st">"Row data plot 1"</span>,</a>
 <a class="sourceLine" id="cb6-25" data-line-number="25">            <span class="st">"Custom data plot 1"</span>, <span class="st">"Custom statistics table 1"</span>),</a>
-<a class="sourceLine" id="cb6-26" data-line-number="26">        <span class="dt">Width=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">12</span>)),</a>
-<a class="sourceLine" id="cb6-27" data-line-number="27">    <span class="dt">customDataFun=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">CUSTOM_PCA=</span>CUSTOM_PCA),</a>
-<a class="sourceLine" id="cb6-28" data-line-number="28">    <span class="dt">customStatFun=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">CUSTOM_SUMMARY=</span>CUSTOM_SUMMARY)</a>
+<a class="sourceLine" id="cb6-26" data-line-number="26">        <span class="dt">Width=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">12</span>)),</a>
+<a class="sourceLine" id="cb6-27" data-line-number="27">    <span class="dt">customDataFun=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">CUSTOM_PCA=</span>CUSTOM_PCA),</a>
+<a class="sourceLine" id="cb6-28" data-line-number="28">    <span class="dt">customStatFun=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">CUSTOM_SUMMARY=</span>CUSTOM_SUMMARY)</a>
 <a class="sourceLine" id="cb6-29" data-line-number="29">    )</a></code></pre></div>
 </div>
 </div>
@@ -262,39 +264,39 @@ min_exprs 5</code></pre>
 <p>This is a powerful system that allows users to compute statistics of interests for multiple selections simultaneously. For example, we can write a function that computes log-fold changes between the samples in the active selection and samples in each saved selection. (It would be trivial to extend this to obtain actual differential expression statistics, e.g., using <code>scran::findMarkers()</code> or functions from packages like <em><a href="https://bioconductor.org/packages/3.10/limma">limma</a></em>.)</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">CUSTOM_DIFFEXP &lt;-<span class="st"> </span><span class="cf">function</span>(se, ri, ci, <span class="dt">assay=</span><span class="st">"logcounts"</span>) {</a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">    ri &lt;-<span class="st"> </span>ri<span class="op">$</span>active</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3">    <span class="cf">if</span> (<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NULL">is.null</a></span>(ri)) { <span class="co"># ignoring saved gene selections for now.</span></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4">        ri &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">rownames</a></span>(se)</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">    <span class="cf">if</span> (<span class="kw"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(ri)) { <span class="co"># ignoring saved gene selections for now.</span></a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">        ri &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(se)</a>
 <a class="sourceLine" id="cb7-5" data-line-number="5">    }</a>
-<a class="sourceLine" id="cb7-6" data-line-number="6">    <span class="cf">if</span> (<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NULL">is.null</a></span>(ci<span class="op">$</span>active) <span class="op">||</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(ci<span class="op">$</span>saved)<span class="op">==</span>0L) {</a>
-<a class="sourceLine" id="cb7-7" data-line-number="7">        <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">row.names=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/character">character</a></span>(<span class="dv">0</span>), <span class="dt">LogFC=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/integer">integer</a></span>(<span class="dv">0</span>))) <span class="co"># dummy value.</span></a>
+<a class="sourceLine" id="cb7-6" data-line-number="6">    <span class="cf">if</span> (<span class="kw"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(ci<span class="op">$</span>active) <span class="op">||</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(ci<span class="op">$</span>saved)<span class="op">==</span>0L) {</a>
+<a class="sourceLine" id="cb7-7" data-line-number="7">        <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">row.names=</span><span class="kw"><a href="https://rdrr.io/r/base/character.html">character</a></span>(<span class="dv">0</span>), <span class="dt">LogFC=</span><span class="kw"><a href="https://rdrr.io/r/base/integer.html">integer</a></span>(<span class="dv">0</span>))) <span class="co"># dummy value.</span></a>
 <a class="sourceLine" id="cb7-8" data-line-number="8">    }</a>
 <a class="sourceLine" id="cb7-9" data-line-number="9"></a>
 <a class="sourceLine" id="cb7-10" data-line-number="10">    assayMatrix &lt;-<span class="st"> </span><span class="kw">assay</span>(se, assay)[ri, , drop=<span class="ot">FALSE</span>]</a>
-<a class="sourceLine" id="cb7-11" data-line-number="11">    active &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowMeans</a></span>(assayMatrix[,ci<span class="op">$</span>active,<span class="dt">drop=</span><span class="ot">FALSE</span>])</a>
+<a class="sourceLine" id="cb7-11" data-line-number="11">    active &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span>(assayMatrix[,ci<span class="op">$</span>active,<span class="dt">drop=</span><span class="ot">FALSE</span>])</a>
 <a class="sourceLine" id="cb7-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb7-13" data-line-number="13">    lfcs &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/vector">vector</a></span>(<span class="st">"list"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(ci<span class="op">$</span>saved))</a>
-<a class="sourceLine" id="cb7-14" data-line-number="14">    <span class="cf">for</span> (i <span class="cf">in</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_along</a></span>(lfcs)) {</a>
-<a class="sourceLine" id="cb7-15" data-line-number="15">        saved &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowMeans</a></span>(assayMatrix[,ci<span class="op">$</span>saved[[i]],<span class="dt">drop=</span><span class="ot">FALSE</span>])</a>
+<a class="sourceLine" id="cb7-13" data-line-number="13">    lfcs &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/vector.html">vector</a></span>(<span class="st">"list"</span>, <span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(ci<span class="op">$</span>saved))</a>
+<a class="sourceLine" id="cb7-14" data-line-number="14">    <span class="cf">for</span> (i <span class="cf">in</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq_along</a></span>(lfcs)) {</a>
+<a class="sourceLine" id="cb7-15" data-line-number="15">        saved &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span>(assayMatrix[,ci<span class="op">$</span>saved[[i]],<span class="dt">drop=</span><span class="ot">FALSE</span>])</a>
 <a class="sourceLine" id="cb7-16" data-line-number="16">        lfcs[[i]] &lt;-<span class="st"> </span>active <span class="op">-</span><span class="st"> </span>saved</a>
 <a class="sourceLine" id="cb7-17" data-line-number="17">    }</a>
-<a class="sourceLine" id="cb7-18" data-line-number="18">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(lfcs) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sprintf">sprintf</a></span>(<span class="st">"LogFC/%i"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_along</a></span>(lfcs))</a>
+<a class="sourceLine" id="cb7-18" data-line-number="18">    <span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(lfcs) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"LogFC/%i"</span>, <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq_along</a></span>(lfcs))</a>
 <a class="sourceLine" id="cb7-19" data-line-number="19"></a>
-<a class="sourceLine" id="cb7-20" data-line-number="20">    output &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/do.call">do.call</a></span>(data.frame, lfcs)</a>
-<a class="sourceLine" id="cb7-21" data-line-number="21">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">rownames</a></span>(output) &lt;-<span class="st"> </span>ri</a>
+<a class="sourceLine" id="cb7-20" data-line-number="20">    output &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span>(data.frame, lfcs)</a>
+<a class="sourceLine" id="cb7-21" data-line-number="21">    <span class="kw"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(output) &lt;-<span class="st"> </span>ri</a>
 <a class="sourceLine" id="cb7-22" data-line-number="22">    output</a>
 <a class="sourceLine" id="cb7-23" data-line-number="23">}</a></code></pre></div>
 <p>We also re-use these statistics to visualize some of the genes with the largest log-fold changes:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">CUSTOM_HEAT &lt;-<span class="st"> </span><span class="cf">function</span>(se, ri, ci, <span class="dt">assay=</span><span class="st">"logcounts"</span>) {</a>
 <a class="sourceLine" id="cb8-2" data-line-number="2">    everything &lt;-<span class="st"> </span><span class="kw">CUSTOM_DIFFEXP</span>(se, ri, ci, <span class="dt">assay=</span>assay)</a>
-<a class="sourceLine" id="cb8-3" data-line-number="3">    <span class="cf">if</span> (<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(everything) <span class="op">==</span><span class="st"> </span>0L) {</a>
-<a class="sourceLine" id="cb8-4" data-line-number="4">        <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(<span class="kw">ggplot</span>()) <span class="co"># empty ggplot if no genes reported.</span></a>
+<a class="sourceLine" id="cb8-3" data-line-number="3">    <span class="cf">if</span> (<span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(everything) <span class="op">==</span><span class="st"> </span>0L) {</a>
+<a class="sourceLine" id="cb8-4" data-line-number="4">        <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="kw">ggplot</span>()) <span class="co"># empty ggplot if no genes reported.</span></a>
 <a class="sourceLine" id="cb8-5" data-line-number="5">    }</a>
 <a class="sourceLine" id="cb8-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb8-7" data-line-number="7">    everything &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(everything)</a>
-<a class="sourceLine" id="cb8-8" data-line-number="8">    top &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/order">order</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowMeans</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">abs</a></span>(everything)), <span class="dt">decreasing=</span><span class="ot">TRUE</span>), <span class="dv">50</span>)</a>
+<a class="sourceLine" id="cb8-7" data-line-number="7">    everything &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span>(everything)</a>
+<a class="sourceLine" id="cb8-8" data-line-number="8">    top &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/order.html">order</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span>(everything)), <span class="dt">decreasing=</span><span class="ot">TRUE</span>), <span class="dv">50</span>)</a>
 <a class="sourceLine" id="cb8-9" data-line-number="9">    topFC &lt;-<span class="st"> </span>everything[top, , drop=<span class="ot">FALSE</span>]</a>
-<a class="sourceLine" id="cb8-10" data-line-number="10">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/dimnames">dimnames</a></span>(topFC) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">gene=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">rownames</a></span>(topFC), <span class="dt">contrast=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(topFC))</a>
-<a class="sourceLine" id="cb8-11" data-line-number="11">    dfFC &lt;-<span class="st"> </span>reshape2<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/reshape2/topics/melt">melt</a></span>(topFC)</a>
+<a class="sourceLine" id="cb8-10" data-line-number="10">    <span class="kw"><a href="https://rdrr.io/r/base/dimnames.html">dimnames</a></span>(topFC) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">gene=</span><span class="kw"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(topFC), <span class="dt">contrast=</span><span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(topFC))</a>
+<a class="sourceLine" id="cb8-11" data-line-number="11">    dfFC &lt;-<span class="st"> </span>reshape2<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/reshape2/man/melt.html">melt</a></span>(topFC)</a>
 <a class="sourceLine" id="cb8-12" data-line-number="12">    <span class="kw">ggplot</span>(dfFC, <span class="kw">aes</span>(contrast, gene)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_raster</span>(<span class="kw">aes</span>(<span class="dt">fill =</span> value))</a>
 <a class="sourceLine" id="cb8-13" data-line-number="13">}</a></code></pre></div>
 <p>We test this out as shown below. In particular, we set <code>customSendAll=TRUE</code> to pass both the active and saved selections to each custom panel. Note that each saved selection is also the active selection when it is first generated, hence the log-fold changes of zero in the last column of the heat map until a new active selection is drawn.</p>
@@ -313,12 +315,12 @@ min_exprs 5</code></pre>
 <a class="sourceLine" id="cb9-13" data-line-number="13">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(</a>
 <a class="sourceLine" id="cb9-14" data-line-number="14">    sce, <span class="dt">redDimArgs=</span>reddim, <span class="dt">rowDataArgs=</span>rowdat, <span class="dt">customDataArgs=</span>cdp2, <span class="dt">customStatArgs=</span>cst2,</a>
 <a class="sourceLine" id="cb9-15" data-line-number="15">    <span class="dt">initialPanels=</span><span class="kw">DataFrame</span>(</a>
-<a class="sourceLine" id="cb9-16" data-line-number="16">        <span class="dt">Name=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(</a>
+<a class="sourceLine" id="cb9-16" data-line-number="16">        <span class="dt">Name=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(</a>
 <a class="sourceLine" id="cb9-17" data-line-number="17">            <span class="st">"Reduced dimension plot 1"</span>, <span class="st">"Row data plot 1"</span>,</a>
 <a class="sourceLine" id="cb9-18" data-line-number="18">            <span class="st">"Custom data plot 1"</span>, <span class="st">"Custom statistics table 1"</span>),</a>
-<a class="sourceLine" id="cb9-19" data-line-number="19">        <span class="dt">Width=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">12</span>)),</a>
-<a class="sourceLine" id="cb9-20" data-line-number="20">    <span class="dt">customDataFun=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">CUSTOM_HEAT=</span>CUSTOM_HEAT),</a>
-<a class="sourceLine" id="cb9-21" data-line-number="21">    <span class="dt">customStatFun=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">CUSTOM_DIFFEXP=</span>CUSTOM_DIFFEXP),</a>
+<a class="sourceLine" id="cb9-19" data-line-number="19">        <span class="dt">Width=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">12</span>)),</a>
+<a class="sourceLine" id="cb9-20" data-line-number="20">    <span class="dt">customDataFun=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">CUSTOM_HEAT=</span>CUSTOM_HEAT),</a>
+<a class="sourceLine" id="cb9-21" data-line-number="21">    <span class="dt">customStatFun=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">CUSTOM_DIFFEXP=</span>CUSTOM_DIFFEXP),</a>
 <a class="sourceLine" id="cb9-22" data-line-number="22">    <span class="dt">customSendAll=</span><span class="ot">TRUE</span></a>
 <a class="sourceLine" id="cb9-23" data-line-number="23">    )</a></code></pre></div>
 </div>
@@ -327,24 +329,24 @@ min_exprs 5</code></pre>
 <a href="#caching-for-greater-efficiency" class="anchor"></a>Caching for greater efficiency</h1>
 <p>True R wizards can take advantage of the pass-by-reference activity of environments to cache results throughout the lifetime of the app. This can be used to avoid repeating time-consuming steps that are not affected by changes in certain parameters. For example, we could cache the output of <code>runPCA</code> to avoid repeating the PCA if only <code>colour_by</code> changes.</p>
 <p>We demonstrate this functionality below using a function that computes log-fold changes for the selected features in one subset of samples compared to the others. For any given column selection, we compute log-fold changes for all features and cache the results in the <code>caching</code> environment. This allows us to avoid recomputing these values if only the row selection changes.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">caching &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/environment">new.env</a></span>()</a>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">caching &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/environment.html">new.env</a></span>()</a>
 <a class="sourceLine" id="cb10-2" data-line-number="2">CUSTOM_LFC &lt;-<span class="st"> </span><span class="cf">function</span>(se, rows, columns) {</a>
-<a class="sourceLine" id="cb10-3" data-line-number="3">    <span class="cf">if</span> (<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NULL">is.null</a></span>(columns)) {</a>
-<a class="sourceLine" id="cb10-4" data-line-number="4">        <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">logFC=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">numeric</a></span>(<span class="dv">0</span>)))</a>
+<a class="sourceLine" id="cb10-3" data-line-number="3">    <span class="cf">if</span> (<span class="kw"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(columns)) {</a>
+<a class="sourceLine" id="cb10-4" data-line-number="4">        <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">logFC=</span><span class="kw"><a href="https://rdrr.io/r/base/numeric.html">numeric</a></span>(<span class="dv">0</span>)))</a>
 <a class="sourceLine" id="cb10-5" data-line-number="5">    }</a>
 <a class="sourceLine" id="cb10-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb10-7" data-line-number="7">    <span class="cf">if</span> (<span class="op">!</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/identical">identical</a></span>(caching<span class="op">$</span>columns, columns)) {</a>
+<a class="sourceLine" id="cb10-7" data-line-number="7">    <span class="cf">if</span> (<span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/identical.html">identical</a></span>(caching<span class="op">$</span>columns, columns)) {</a>
 <a class="sourceLine" id="cb10-8" data-line-number="8">        caching<span class="op">$</span>columns &lt;-<span class="st"> </span>columns</a>
-<a class="sourceLine" id="cb10-9" data-line-number="9">        in.subset &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowMeans</a></span>(<span class="kw">logcounts</span>(sce)[,columns])</a>
-<a class="sourceLine" id="cb10-10" data-line-number="10">        out.subset &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowMeans</a></span>(<span class="kw">logcounts</span>(sce)[,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sets">setdiff</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(sce), columns)])</a>
-<a class="sourceLine" id="cb10-11" data-line-number="11">        caching<span class="op">$</span>logFC &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/setNames">setNames</a></span>(in.subset <span class="op">-</span><span class="st"> </span>out.subset, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">rownames</a></span>(sce))</a>
+<a class="sourceLine" id="cb10-9" data-line-number="9">        in.subset &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span>(<span class="kw">logcounts</span>(sce)[,columns])</a>
+<a class="sourceLine" id="cb10-10" data-line-number="10">        out.subset &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span>(<span class="kw">logcounts</span>(sce)[,<span class="kw"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(sce), columns)])</a>
+<a class="sourceLine" id="cb10-11" data-line-number="11">        caching<span class="op">$</span>logFC &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span>(in.subset <span class="op">-</span><span class="st"> </span>out.subset, <span class="kw"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(sce))</a>
 <a class="sourceLine" id="cb10-12" data-line-number="12">    } </a>
 <a class="sourceLine" id="cb10-13" data-line-number="13">       </a>
 <a class="sourceLine" id="cb10-14" data-line-number="14">    lfc &lt;-<span class="st"> </span>caching<span class="op">$</span>logFC</a>
-<a class="sourceLine" id="cb10-15" data-line-number="15">    <span class="cf">if</span> (<span class="op">!</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NULL">is.null</a></span>(rows)) {</a>
-<a class="sourceLine" id="cb10-16" data-line-number="16">        out &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">logFC=</span>lfc[rows], <span class="dt">row.names=</span>rows)</a>
+<a class="sourceLine" id="cb10-15" data-line-number="15">    <span class="cf">if</span> (<span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(rows)) {</a>
+<a class="sourceLine" id="cb10-16" data-line-number="16">        out &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">logFC=</span>lfc[rows], <span class="dt">row.names=</span>rows)</a>
 <a class="sourceLine" id="cb10-17" data-line-number="17">    } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb10-18" data-line-number="18">        out &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">logFC=</span>lfc, <span class="dt">row.names=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">rownames</a></span>(se))</a>
+<a class="sourceLine" id="cb10-18" data-line-number="18">        out &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">logFC=</span>lfc, <span class="dt">row.names=</span><span class="kw"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(se))</a>
 <a class="sourceLine" id="cb10-19" data-line-number="19">    }</a>
 <a class="sourceLine" id="cb10-20" data-line-number="20">    out</a>
 <a class="sourceLine" id="cb10-21" data-line-number="21">}</a></code></pre></div>
@@ -355,14 +357,14 @@ min_exprs 5</code></pre>
 <a class="sourceLine" id="cb11-4" data-line-number="4">cst<span class="op">$</span>RowSource &lt;-<span class="st"> "Row data plot 1"</span></a>
 <a class="sourceLine" id="cb11-5" data-line-number="5"></a>
 <a class="sourceLine" id="cb11-6" data-line-number="6">app2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce, <span class="dt">redDimArgs=</span>reddim, <span class="dt">rowDataArgs=</span>rowdat, <span class="dt">customStatArgs=</span>cst, </a>
-<a class="sourceLine" id="cb11-7" data-line-number="7">    <span class="dt">initialPanels=</span><span class="kw">DataFrame</span>(<span class="dt">Name=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Reduced dimension plot 1"</span>, </a>
+<a class="sourceLine" id="cb11-7" data-line-number="7">    <span class="dt">initialPanels=</span><span class="kw">DataFrame</span>(<span class="dt">Name=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Reduced dimension plot 1"</span>, </a>
 <a class="sourceLine" id="cb11-8" data-line-number="8">            <span class="st">"Row data plot 1"</span>, <span class="st">"Custom statistics table 1"</span>)),</a>
-<a class="sourceLine" id="cb11-9" data-line-number="9">    <span class="dt">customStatFun=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">CUSTOM_LFC=</span>CUSTOM_LFC))</a></code></pre></div>
+<a class="sourceLine" id="cb11-9" data-line-number="9">    <span class="dt">customStatFun=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">CUSTOM_LFC=</span>CUSTOM_LFC))</a></code></pre></div>
 </div>
 <div id="session-info" class="section level1 unnumbered">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session Info</h1>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/sessionInfo">sessionInfo</a></span>()</a>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</a>
 <a class="sourceLine" id="cb12-2" data-line-number="2"><span class="co">#&gt; R version 3.6.1 (2017-01-27)</span></a>
 <a class="sourceLine" id="cb12-3" data-line-number="3"><span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span></a>
 <a class="sourceLine" id="cb12-4" data-line-number="4"><span class="co">#&gt; Running under: Ubuntu 16.04.6 LTS</span></a>
@@ -384,7 +386,7 @@ min_exprs 5</code></pre>
 <a class="sourceLine" id="cb12-20" data-line-number="20"><span class="co">#&gt; [8] methods   base     </span></a>
 <a class="sourceLine" id="cb12-21" data-line-number="21"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb12-22" data-line-number="22"><span class="co">#&gt; other attached packages:</span></a>
-<a class="sourceLine" id="cb12-23" data-line-number="23"><span class="co">#&gt;  [1] iSEE_1.5.8                  scater_1.13.17             </span></a>
+<a class="sourceLine" id="cb12-23" data-line-number="23"><span class="co">#&gt;  [1] iSEE_1.5.8                  scater_1.13.18             </span></a>
 <a class="sourceLine" id="cb12-24" data-line-number="24"><span class="co">#&gt;  [3] ggplot2_3.2.1               SingleCellExperiment_1.7.7 </span></a>
 <a class="sourceLine" id="cb12-25" data-line-number="25"><span class="co">#&gt;  [5] SummarizedExperiment_1.15.8 DelayedArray_0.11.4        </span></a>
 <a class="sourceLine" id="cb12-26" data-line-number="26"><span class="co">#&gt;  [7] BiocParallel_1.19.2         matrixStats_0.54.0         </span></a>
@@ -405,43 +407,41 @@ min_exprs 5</code></pre>
 <a class="sourceLine" id="cb12-41" data-line-number="41"><span class="co">#&gt; [17] tidyselect_0.2.5         gridExtra_2.3           </span></a>
 <a class="sourceLine" id="cb12-42" data-line-number="42"><span class="co">#&gt; [19] bit_1.1-14               compiler_3.6.1          </span></a>
 <a class="sourceLine" id="cb12-43" data-line-number="43"><span class="co">#&gt; [21] BiocNeighbors_1.3.3      shinyjs_1.0             </span></a>
-<a class="sourceLine" id="cb12-44" data-line-number="44"><span class="co">#&gt; [23] xml2_1.2.2               desc_1.2.0              </span></a>
-<a class="sourceLine" id="cb12-45" data-line-number="45"><span class="co">#&gt; [25] colourpicker_1.0         bookdown_0.13           </span></a>
-<a class="sourceLine" id="cb12-46" data-line-number="46"><span class="co">#&gt; [27] scales_1.0.0             pkgdown_1.3.0           </span></a>
-<a class="sourceLine" id="cb12-47" data-line-number="47"><span class="co">#&gt; [29] commonmark_1.7           stringr_1.4.0           </span></a>
-<a class="sourceLine" id="cb12-48" data-line-number="48"><span class="co">#&gt; [31] digest_0.6.20            rmarkdown_1.15          </span></a>
-<a class="sourceLine" id="cb12-49" data-line-number="49"><span class="co">#&gt; [33] rentrez_1.2.2            XVector_0.25.0          </span></a>
-<a class="sourceLine" id="cb12-50" data-line-number="50"><span class="co">#&gt; [35] pkgconfig_2.0.2          htmltools_0.3.6         </span></a>
-<a class="sourceLine" id="cb12-51" data-line-number="51"><span class="co">#&gt; [37] htmlwidgets_1.3          rlang_0.4.0             </span></a>
-<a class="sourceLine" id="cb12-52" data-line-number="52"><span class="co">#&gt; [39] RSQLite_2.1.2            shiny_1.3.2             </span></a>
-<a class="sourceLine" id="cb12-53" data-line-number="53"><span class="co">#&gt; [41] DelayedMatrixStats_1.7.1 jsonlite_1.6            </span></a>
-<a class="sourceLine" id="cb12-54" data-line-number="54"><span class="co">#&gt; [43] dplyr_0.8.3              RCurl_1.95-4.12         </span></a>
-<a class="sourceLine" id="cb12-55" data-line-number="55"><span class="co">#&gt; [45] magrittr_1.5             BiocSingular_1.1.5      </span></a>
-<a class="sourceLine" id="cb12-56" data-line-number="56"><span class="co">#&gt; [47] GenomeInfoDbData_1.2.1   Matrix_1.2-17           </span></a>
-<a class="sourceLine" id="cb12-57" data-line-number="57"><span class="co">#&gt; [49] Rcpp_1.0.2               ggbeeswarm_0.6.0        </span></a>
-<a class="sourceLine" id="cb12-58" data-line-number="58"><span class="co">#&gt; [51] munsell_0.5.0            viridis_0.5.1           </span></a>
-<a class="sourceLine" id="cb12-59" data-line-number="59"><span class="co">#&gt; [53] rintrojs_0.2.2           stringi_1.4.3           </span></a>
-<a class="sourceLine" id="cb12-60" data-line-number="60"><span class="co">#&gt; [55] yaml_2.2.0               MASS_7.3-51.4           </span></a>
-<a class="sourceLine" id="cb12-61" data-line-number="61"><span class="co">#&gt; [57] zlibbioc_1.31.0          plyr_1.8.4              </span></a>
-<a class="sourceLine" id="cb12-62" data-line-number="62"><span class="co">#&gt; [59] grid_3.6.1               blob_1.2.0              </span></a>
-<a class="sourceLine" id="cb12-63" data-line-number="63"><span class="co">#&gt; [61] promises_1.0.1           shinydashboard_0.7.1    </span></a>
-<a class="sourceLine" id="cb12-64" data-line-number="64"><span class="co">#&gt; [63] crayon_1.3.4             miniUI_0.1.1.1          </span></a>
-<a class="sourceLine" id="cb12-65" data-line-number="65"><span class="co">#&gt; [65] lattice_0.20-38          splines_3.6.1           </span></a>
-<a class="sourceLine" id="cb12-66" data-line-number="66"><span class="co">#&gt; [67] cowplot_1.0.0            zeallot_0.1.0           </span></a>
-<a class="sourceLine" id="cb12-67" data-line-number="67"><span class="co">#&gt; [69] knitr_1.24               pillar_1.4.2            </span></a>
-<a class="sourceLine" id="cb12-68" data-line-number="68"><span class="co">#&gt; [71] igraph_1.2.4.1           reshape2_1.4.3          </span></a>
-<a class="sourceLine" id="cb12-69" data-line-number="69"><span class="co">#&gt; [73] XML_3.98-1.20            glue_1.3.1              </span></a>
-<a class="sourceLine" id="cb12-70" data-line-number="70"><span class="co">#&gt; [75] evaluate_0.14            BiocManager_1.30.4      </span></a>
-<a class="sourceLine" id="cb12-71" data-line-number="71"><span class="co">#&gt; [77] vctrs_0.2.0              httpuv_1.5.1            </span></a>
-<a class="sourceLine" id="cb12-72" data-line-number="72"><span class="co">#&gt; [79] gtable_0.3.0             purrr_0.3.2             </span></a>
-<a class="sourceLine" id="cb12-73" data-line-number="73"><span class="co">#&gt; [81] assertthat_0.2.1         xfun_0.9                </span></a>
-<a class="sourceLine" id="cb12-74" data-line-number="74"><span class="co">#&gt; [83] rsvd_1.0.2               mime_0.7                </span></a>
-<a class="sourceLine" id="cb12-75" data-line-number="75"><span class="co">#&gt; [85] xtable_1.8-4             roxygen2_6.1.1          </span></a>
-<a class="sourceLine" id="cb12-76" data-line-number="76"><span class="co">#&gt; [87] later_0.8.0              viridisLite_0.3.0       </span></a>
-<a class="sourceLine" id="cb12-77" data-line-number="77"><span class="co">#&gt; [89] tibble_2.1.3             AnnotationDbi_1.47.1    </span></a>
-<a class="sourceLine" id="cb12-78" data-line-number="78"><span class="co">#&gt; [91] beeswarm_0.2.3           memoise_1.1.0           </span></a>
-<a class="sourceLine" id="cb12-79" data-line-number="79"><span class="co">#&gt; [93] shinyAce_0.4.0</span></a>
-<a class="sourceLine" id="cb12-80" data-line-number="80"><span class="co"># devtools::session_info()</span></a></code></pre></div>
+<a class="sourceLine" id="cb12-44" data-line-number="44"><span class="co">#&gt; [23] desc_1.2.0               colourpicker_1.0        </span></a>
+<a class="sourceLine" id="cb12-45" data-line-number="45"><span class="co">#&gt; [25] bookdown_0.13            scales_1.0.0            </span></a>
+<a class="sourceLine" id="cb12-46" data-line-number="46"><span class="co">#&gt; [27] pkgdown_1.4.0            stringr_1.4.0           </span></a>
+<a class="sourceLine" id="cb12-47" data-line-number="47"><span class="co">#&gt; [29] digest_0.6.20            rmarkdown_1.15          </span></a>
+<a class="sourceLine" id="cb12-48" data-line-number="48"><span class="co">#&gt; [31] rentrez_1.2.2            XVector_0.25.0          </span></a>
+<a class="sourceLine" id="cb12-49" data-line-number="49"><span class="co">#&gt; [33] pkgconfig_2.0.2          htmltools_0.3.6         </span></a>
+<a class="sourceLine" id="cb12-50" data-line-number="50"><span class="co">#&gt; [35] htmlwidgets_1.3          rlang_0.4.0             </span></a>
+<a class="sourceLine" id="cb12-51" data-line-number="51"><span class="co">#&gt; [37] RSQLite_2.1.2            shiny_1.3.2             </span></a>
+<a class="sourceLine" id="cb12-52" data-line-number="52"><span class="co">#&gt; [39] DelayedMatrixStats_1.7.1 jsonlite_1.6            </span></a>
+<a class="sourceLine" id="cb12-53" data-line-number="53"><span class="co">#&gt; [41] dplyr_0.8.3              RCurl_1.95-4.12         </span></a>
+<a class="sourceLine" id="cb12-54" data-line-number="54"><span class="co">#&gt; [43] magrittr_1.5             BiocSingular_1.1.5      </span></a>
+<a class="sourceLine" id="cb12-55" data-line-number="55"><span class="co">#&gt; [45] GenomeInfoDbData_1.2.1   Matrix_1.2-17           </span></a>
+<a class="sourceLine" id="cb12-56" data-line-number="56"><span class="co">#&gt; [47] Rcpp_1.0.2               ggbeeswarm_0.6.0        </span></a>
+<a class="sourceLine" id="cb12-57" data-line-number="57"><span class="co">#&gt; [49] munsell_0.5.0            viridis_0.5.1           </span></a>
+<a class="sourceLine" id="cb12-58" data-line-number="58"><span class="co">#&gt; [51] rintrojs_0.2.2           stringi_1.4.3           </span></a>
+<a class="sourceLine" id="cb12-59" data-line-number="59"><span class="co">#&gt; [53] yaml_2.2.0               MASS_7.3-51.4           </span></a>
+<a class="sourceLine" id="cb12-60" data-line-number="60"><span class="co">#&gt; [55] zlibbioc_1.31.0          plyr_1.8.4              </span></a>
+<a class="sourceLine" id="cb12-61" data-line-number="61"><span class="co">#&gt; [57] grid_3.6.1               blob_1.2.0              </span></a>
+<a class="sourceLine" id="cb12-62" data-line-number="62"><span class="co">#&gt; [59] promises_1.0.1           shinydashboard_0.7.1    </span></a>
+<a class="sourceLine" id="cb12-63" data-line-number="63"><span class="co">#&gt; [61] crayon_1.3.4             miniUI_0.1.1.1          </span></a>
+<a class="sourceLine" id="cb12-64" data-line-number="64"><span class="co">#&gt; [63] lattice_0.20-38          splines_3.6.1           </span></a>
+<a class="sourceLine" id="cb12-65" data-line-number="65"><span class="co">#&gt; [65] cowplot_1.0.0            zeallot_0.1.0           </span></a>
+<a class="sourceLine" id="cb12-66" data-line-number="66"><span class="co">#&gt; [67] knitr_1.24               pillar_1.4.2            </span></a>
+<a class="sourceLine" id="cb12-67" data-line-number="67"><span class="co">#&gt; [69] igraph_1.2.4.1           reshape2_1.4.3          </span></a>
+<a class="sourceLine" id="cb12-68" data-line-number="68"><span class="co">#&gt; [71] XML_3.98-1.20            glue_1.3.1              </span></a>
+<a class="sourceLine" id="cb12-69" data-line-number="69"><span class="co">#&gt; [73] evaluate_0.14            BiocManager_1.30.4      </span></a>
+<a class="sourceLine" id="cb12-70" data-line-number="70"><span class="co">#&gt; [75] vctrs_0.2.0              httpuv_1.5.1            </span></a>
+<a class="sourceLine" id="cb12-71" data-line-number="71"><span class="co">#&gt; [77] gtable_0.3.0             purrr_0.3.2             </span></a>
+<a class="sourceLine" id="cb12-72" data-line-number="72"><span class="co">#&gt; [79] assertthat_0.2.1         xfun_0.9                </span></a>
+<a class="sourceLine" id="cb12-73" data-line-number="73"><span class="co">#&gt; [81] rsvd_1.0.2               mime_0.7                </span></a>
+<a class="sourceLine" id="cb12-74" data-line-number="74"><span class="co">#&gt; [83] xtable_1.8-4             later_0.8.0             </span></a>
+<a class="sourceLine" id="cb12-75" data-line-number="75"><span class="co">#&gt; [85] viridisLite_0.3.0        tibble_2.1.3            </span></a>
+<a class="sourceLine" id="cb12-76" data-line-number="76"><span class="co">#&gt; [87] AnnotationDbi_1.47.1     beeswarm_0.2.3          </span></a>
+<a class="sourceLine" id="cb12-77" data-line-number="77"><span class="co">#&gt; [89] memoise_1.1.0            shinyAce_0.4.0</span></a>
+<a class="sourceLine" id="cb12-78" data-line-number="78"><span class="co"># devtools::session_info()</span></a></code></pre></div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
@@ -483,17 +483,20 @@ min_exprs 5</code></pre>
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

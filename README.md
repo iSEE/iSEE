@@ -28,7 +28,12 @@ Current contributors include:
 
 ## Functionalities
 
-The user interface of _iSEE_ web-applications currently offers the following features:
+<details>
+<summary><b>
+Click to expand the list of features available in _iSEE_ applications.
+</b></summary>  
+
+### General
 
 :white_check_mark: Multiple interactive plot types with selectable points.
 
@@ -42,7 +47,7 @@ The user interface of _iSEE_ web-applications currently offers the following fea
 
 :white_check_mark: Lasso point selection to define complex shapes.
 
-## Sample-level visualization
+### Sample-level visualization
 
 The _iSEE_ user interface currently contains the following components where each data point represents a single biological sample:
 
@@ -55,7 +60,7 @@ A scatter, violin, or square design is dynamically applied according to the cont
 
 :white_check_mark: **Column statistics table**: Table of sample metadata.
 
-## Feature-level visualization
+### Feature-level visualization
 
 The _iSEE_ user interface currently contains the following components where each data point represents a genomic feature:
 
@@ -66,13 +71,13 @@ A scatter, violin, or square design is dynamically applied according to the cont
 
 :white_check_mark: **Row statistics table**: Table of feature metadata.
 
-## Integrated visualization
+### Integrated visualization
 
 The _iSEE_ user interface contains the following components that integrate sample and feature information:
 
 :white_check_mark: **Heat map plot**: Visualize multiple features across multiple samples annotated with sample metadata.
 
-## Custom panels
+### Custom panels
 
 The _iSEE_ user interface allows users to programmatically define their own plotting and table panels.
 
@@ -80,12 +85,14 @@ The _iSEE_ user interface allows users to programmatically define their own plot
 
 :white_check_mark: **Custom statistics table**: Table panel that can be assigned any user-defined function returning a `data.frame` object.
 
-## Miscellaneous
+### Miscellaneous
 
 :white_check_mark: The _iSEE_ user interface continually tracks the code corresponding to all visible plotting panels.
 This code is rendered in a [shinyAce](https://cran.r-project.org/web/packages/shinyAce/index.html) text editor and can be copy-pasted into R scripts for customization and further use.
 
 :white_check_mark: Speech recognition can be enabled to control the user interface using voice commands.
+
+</details>
 
 ## Want to try _iSEE_?
 

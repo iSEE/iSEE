@@ -30,7 +30,7 @@ Current contributors include:
 
 <details>
 <summary><b>
-Click to expand the list of features available in _iSEE_ applications.
+Click to expand the list of features available in <i>iSEE</i> applications.
 </b></summary>  
 
 ### General

@@ -12,6 +12,9 @@ env:
   - R_REMOTES_UPGRADE="always"
 
 before_install:
+  - mkdir -p ~/.R
+  - echo -e 'MAKEFLAGS = -j2' > ~/.R/Makevars
+  - echo 'options(Ncpus = 2)' > ~/.Rprofile
   - Rscript -e 'install.packages("devtools")'
   - Rscript -e 'devtools::install(dependencies=TRUE)'
 

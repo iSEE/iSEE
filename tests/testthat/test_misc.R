@@ -186,7 +186,7 @@ test_that("memory setup works correctly", {
     expect_identical(memory$customStatTable$Arguments, character(nrow(memory$customStatTable)))
     expect_identical(memory$customStatTable$VisibleArgs, c("WHEE", "", ""))
 
-    expect_identical(memory$heatMapPlot$Assay, c(1L, 6L))
+    expect_identical(memory$heatMapPlot$Assay, c(1L, 2L))
 
     # Works correctly when the number of arguments is greater than max.
     memory <- iSEE:::.setup_memory(
@@ -527,20 +527,20 @@ test_that("groupability detection functions work", {
     # No column returns an empty vector
     expect_identical(
         iSEE:::.which_groupable(df),
-        integer()
+        integer(0L)
     )
 
     max_groupable <-  getOption("iSEE.maxlevels", 24)
 
     df <- DataFrame(
-        groupable1 = factor(rep(seq_len(max_groupable), 2)),
-        not_groupable = factor(seq_len(max_groupable * 2)),
-        groupable2 = factor(rep(seq_len(max_groupable/2), 4))
+        groupable1=factor(rep(seq_len(max_groupable), 2)),
+        not_groupable=factor(seq_len(max_groupable * 2)),
+        groupable2=factor(rep(seq_len(max_groupable/2), 4))
     )
 
     expect_identical(
         iSEE:::.which_groupable(df),
-        c(groupable1 = 1L, groupable2 = 3L)
+        c(groupable1=1L, groupable2=3L)
     )
 
 

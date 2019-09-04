@@ -113,7 +113,7 @@ test_that("selection link updates work correctly", {
     expect_equal(g[], g2[])
 
     # Adding edges without anything being there previously.
-    expect_identical(character(0), names(igraph::adjacent_vertices(g, "colDataPlot1", mode="in")[[1]])) # no parents.
+    expect_identical(character(0L), names(igraph::adjacent_vertices(g, "colDataPlot1", mode="in")[[1]])) # no parents.
     expect_equal(sum(g[]), 3)
     g2 <- iSEE:::.choose_new_selection_source(g, "colDataPlot1", "featAssayPlot3", "---")
     expect_false(igraph::are_adjacent(g2, "featAssayPlot1", "colDataPlot2"))
@@ -215,7 +215,7 @@ test_that("select dependent identification works correctly", {
         c("featAssayPlot1", "featAssayPlot2"))
     expect_identical(iSEE:::.get_direct_children(g, "featAssayPlot1"), "colDataPlot1")
     expect_identical(iSEE:::.get_direct_children(g, "colDataPlot1"), "featAssayPlot3")
-    expect_identical(iSEE:::.get_direct_children(g, "colDataPlot2"), character(0))
+    expect_identical(iSEE:::.get_direct_children(g, "colDataPlot2"), character(0L))
 })
 
 test_that("brush identity function works properly", {
@@ -283,15 +283,15 @@ test_that("selections involving custom panels work correctly", {
 	g <- iSEE:::.spawn_selection_chart(memory)
 
     expect_identical(sort(names(igraph::neighbors(g, "customDataPlot1", mode="in"))), c("redDimPlot1", "rowDataPlot1"))
-    expect_identical(names(igraph::neighbors(g, "customDataPlot1", mode="out")), character(0))
+    expect_identical(names(igraph::neighbors(g, "customDataPlot1", mode="out")), character(0L))
     expect_identical(sort(names(igraph::neighbors(g, "customStatTable1", mode="in"))), c("redDimPlot2", "sampAssayPlot2"))
-    expect_identical(names(igraph::neighbors(g, "customStatTable1", mode="out")), character(0))
+    expect_identical(names(igraph::neighbors(g, "customStatTable1", mode="out")), character(0L))
 
     # Detection of children works properly.
     expect_identical(sort(iSEE:::.get_direct_children(g, "redDimPlot1")), c("colDataPlot2", "customDataPlot1"))
-    expect_identical(iSEE:::.get_direct_children(g, "customDataPlot1"), character(0))
+    expect_identical(iSEE:::.get_direct_children(g, "customDataPlot1"), character(0L))
     expect_identical(sort(iSEE:::.get_direct_children(g, "sampAssayPlot2")), "customStatTable1")
-    expect_identical(iSEE:::.get_direct_children(g, "customStatTable1"), character(0))
+    expect_identical(iSEE:::.get_direct_children(g, "customStatTable1"), character(0L))
 
     # Destruction works correctly.
     pObjects <- new.env()
@@ -310,7 +310,7 @@ test_that("selections involving custom panels work correctly", {
 # .transmitted_selection ----
 
 test_that(".transmitted_selection detects whether a brush is active", {
-    
+
     select_type <- "Active"
 
     # No point selection
@@ -322,18 +322,18 @@ test_that(".transmitted_selection detects whether a brush is active", {
     memory$redDimPlot[[iSEE:::.brushData]][[1]] <- list(a=1, b=2)
     out <- iSEE:::.transmitted_selection("redDimPlot1", memory, select_type, encoded=TRUE)
     expect_true(out)
-    
+
     # Panel linked to no transmitter (---)
     out <- .transmitted_selection("---", memory, select_type, encoded=TRUE)
     expect_false(out)
-    
+
     # missing "select_type" argument requires to "SelectMultiSaved"
     memory$colDataPlot[2, "SelectMultiType"] <- iSEE:::.selectMultiUnionTitle
     # Add a saved selection
     memory$redDimPlot[[iSEE:::.multiSelectHistory]][[1]] <- list(list(a=1, b=2))
     out <- .transmitted_selection("Reduced dimension plot 1", memory, mode="colDataPlot", id=2, encoded=FALSE)
     expect_true(out)
-    
+
     # "select_type" argument "Saved"
     memory$colDataPlot[2, "SelectMultiType"] <- iSEE:::.selectMultiSavedTitle
     memory$colDataPlot[2, iSEE:::.selectMultiSaved] <- 1L
@@ -358,7 +358,7 @@ BRUSH_DATA <- list(
 )
 
 test_that(".process_custom_selections processes incoming selection for custom panels", {
-    
+
     # Link to another panel that has no selection or history
     memory$customDataPlot[1, iSEE:::.customColSource] <- "Reduced dimension plot 1"
     out <- .process_custom_selections(memory$customDataPlot[1, ], memory ,select_all = TRUE)
@@ -366,7 +366,7 @@ test_that(".process_custom_selections processes incoming selection for custom pa
         out$cmds,
         c("row.names <- list(active=NULL, saved=list());", "col.names <- list(active=NULL,\n    saved=list());" )
     )
-    
+
     # Create a history of selection in the transmitter panel
     # both a lasso and a brush, for code coverage
     memory$redDimPlot[[iSEE:::.multiSelectHistory]][[1]] <- list(LASSO_CLOSED, BRUSH_DATA)
@@ -377,5 +377,5 @@ test_that(".process_custom_selections processes incoming selection for custom pa
             "row.names <- list(active=NULL, saved=list());",
             "col.names <- list(active=NULL,\n    saved=list(rownames(lassoPoints(all_coordinates[['redDimPlot1']], all_select_histories[['redDimPlot1']][[1]])),\n        rownames(shiny::brushedPoints(all_coordinates[['redDimPlot1']], all_select_histories[['redDimPlot1']][[2]]))));" )
     )
-    
+
 })

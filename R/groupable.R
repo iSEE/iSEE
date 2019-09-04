@@ -8,7 +8,7 @@
 #'
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_nlevels
-#' @seealso 
+#' @seealso
 #' \code{\link{nlevels}},
 #' \code{\link{unique}}.
 .nlevels <- function(x){
@@ -25,7 +25,7 @@
 }
 
 #' Determine whether a vector is discrete
-#' 
+#'
 #' This function requires a threshold on the count of unique values
 #' beyond which the vector is declared as continuous and coerced to numeric
 #' values.
@@ -37,7 +37,7 @@
 #'
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_is_groupable
-#' @seealso 
+#' @seealso
 #' \code{\link{.nlevels}}.
 .is_groupable <- function(x, max_levels = getOption("iSEE.maxlevels", 24)){
   return(.nlevels(x) <= max_levels)
@@ -48,33 +48,33 @@
 #' @param x A DataFrame (or equivalent).
 #'
 #' @return An integer vector containing the indices of the groupable covariates.
-#' 
+#'
 #' @author Kevin Rue-Albrecht
-#' 
+#'
 #' @rdname INTERNAL_groupable
 #' @seealso
 #' \code{\link{.add_general_parameters}}
 .which_groupable <- function(x) {
-    if (ncol(x) == 0L) {
-        return(integer())
+    if (identical(ncol(x), 0L)) {
+        return(integer(0L))
     }
     which(vapply(x, FUN=.is_groupable, FUN.VALUE=FALSE))
 }
 
 #' Identify numeric covariates in a DataFrame
-#' 
+#'
 #' @param x A DataFrame (or equivalent).
-#' 
+#'
 #' @return An integer vector containing the indices of the numeric covariates.
-#' 
+#'
 #' @author Charlotte Soneson
-#' 
+#'
 #' @rdname INTERNAL_numeric
 #' @seealso
 #' \code{\link{.add_general_parameters}}
 .which_numeric <- function(x) {
-    if (ncol(x) == 0L) {
-        return(integer())
+    if (identical(ncol(x), 0L)) {
+        return(integer(0L))
     }
     which(vapply(x, FUN=is.numeric, FUN.VALUE=FALSE))
 }

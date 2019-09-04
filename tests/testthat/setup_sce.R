@@ -4,21 +4,18 @@ stopifnot(
 )
 
 # Example data ----
-sce <- ReprocessedAllenData()
+sce <- ReprocessedAllenData(assays = "tophat_counts")
 
-counts(sce) <- assay(sce, "tophat_counts")
-sce <- normalize(sce)
+sce <- logNormCounts(sce, exprs_values="tophat_counts")
 sce <- runPCA(sce)
 sce <- runTSNE(sce)
 
-rowData(sce)$num_cells <- rowSums(counts(sce)>0)
-rowData(sce)$mean_count <- rowMeans(counts(sce))
+rowData(sce)$num_cells <- rowSums(assay(sce, "tophat_counts") > 0)
+rowData(sce)$mean_count <- rowMeans(assay(sce, "tophat_counts"))
 # Add a groupable field in rowData
 rowData(sce)$letters <- sample(letters[1:3], nrow(sce), TRUE)
 
-isSpike(sce, "random") <- sample(c(TRUE, FALSE), nrow(sce), replace = TRUE, prob = c(0.01, 0.99))
-
-sizeFactors(sce, "random")  <- runif(ncol(sce))
+sizeFactors(sce)  <- runif(ncol(sce))
 
 colData(sce)[["nested"]] <- DataFrame(
         nested1 = runif(ncol(sce)),

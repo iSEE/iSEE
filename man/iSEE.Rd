@@ -13,10 +13,13 @@ iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featAssayArgs = NULL,
   customStatMax = 5, heatMapMax = 5, initialPanels = NULL,
   annotFun = NULL, customDataFun = NULL, customStatFun = NULL,
   customSendAll = FALSE, colormap = ExperimentColorMap(),
-  tour = NULL, appTitle = NULL, runLocal = TRUE, voice = FALSE)
+  tour = NULL, appTitle = NULL, runLocal = TRUE, voice = FALSE,
+  bugs = FALSE)
 }
 \arguments{
-\item{se}{An object that is coercible to \linkS4class{SingleCellExperiment}.}
+\item{se}{An object that is coercible to \linkS4class{SingleCellExperiment}.
+If missing, an app is launched with a file upload control allowing users to upload an RDS file that contains such as object.
+See Details for information to set the maximal size limit for file uploads.}
 
 \item{redDimArgs}{A DataFrame similar to that produced by \code{\link{redDimPlotDefaults}}, specifying initial parameters for the reduced dimension plots.}
 
@@ -81,6 +84,9 @@ If not provided, the app displays the version info of \code{\link{iSEE}}.}
 \item{runLocal}{A logical indicating whether the app is to be run locally or remotely on a server, which determines how documentation will be accessed.}
 
 \item{voice}{A logical indicating whether the voice recognition should be enabled.}
+
+\item{bugs}{Set to \code{TRUE} to enable the bugs Easter egg or a named numeric vector to control their respective number (e.g., \code{c(bugs=3, spiders=1)}).
+Credits to https://github.com/Auz/Bug for the JavaScript code.}
 }
 \value{
 A Shiny app object is returned, for interactive data exploration of the \linkS4class{SummarizedExperiment} or \linkS4class{SingleCellExperiment} object.
@@ -111,22 +117,24 @@ See \url{https://github.com/carlganz/rintrojs#usage} for more information.
 
 By default, categorical data types such as factor and character are limited to 24 levels, beyond which they are coerced to numeric variables for faster plotting.
 This limit may be set to a different value as a global option, e.g. \code{options(iSEE.maxlevels=30)}.
+
+By default, the maximum request size for file uploads defaults to 5MB (https://shiny.rstudio.com/reference/shiny/0.14/shiny-options.html).
+To raise the limit (e.g., 50MB), run \code{options(shiny.maxRequestSize=50*1024^2)}.
 }
 \examples{
 library(scRNAseq)
 
 # Example data ----
-sce <- ReprocessedAllenData()
+sce <- ReprocessedAllenData(assays="tophat_counts")
 class(sce)
 
 library(scater)
-counts(sce) <- assay(sce, "tophat_counts")
-sce <- normalize(sce)
+sce <- logNormCounts(sce, exprs_values="tophat_counts")
 
 sce <- runPCA(sce, ncomponents=4)
 sce <- runTSNE(sce)
-rowData(sce)$ave_count <- rowMeans(counts(sce))
-rowData(sce)$n_cells <- rowSums(counts(sce)>0)
+rowData(sce)$ave_count <- rowMeans(assay(sce, "tophat_counts"))
+rowData(sce)$n_cells <- rowSums(assay(sce, "tophat_counts") > 0)
 sce
 
 # launch the app itself ----

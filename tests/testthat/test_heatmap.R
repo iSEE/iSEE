@@ -8,12 +8,12 @@ heatMapArgs <- heatMapPlotDefaults(sce, 1)
 redDimArgs$Type <- 2L
 redDimArgs[[iSEE:::.colorByField]] <- iSEE:::.colorByColDataTitle
 redDimArgs[[iSEE:::.colorByColData]] <- "driver_1_s"
-redDimArgs$BrushData <- list(list(xmin = -5.8936302389057, xmax = 2.3755515915654, ymin = 4.3811474670046, ymax = 12.602031654675,
-    mapping = list(x = "X", y = "Y"), domain = list(left = -9.30648713007475, right = 11.286214260173,
-        bottom = -9.17816645795467, top = 13.1270784675571), range = list(left = 35.3889661815069,
-        right = 386.520547945205, bottom = 466.050486943493, top = 23.7921069615253),
-    log = list(x = NULL, y = NULL), direction = "xy", brushId = "redDimPlot1_Brush",
-    outputId = "redDimPlot1"))
+redDimArgs$BrushData <- list(list(xmin=-5.8936302389057, xmax=2.3755515915654, ymin=4.3811474670046, ymax=12.602031654675,
+    mapping=list(x="X", y="Y"), domain=list(left=-9.30648713007475, right=11.286214260173,
+        bottom=-9.17816645795467, top=13.1270784675571), range=list(left=35.3889661815069,
+        right=386.520547945205, bottom=466.050486943493, top=23.7921069615253),
+    log=list(x=NULL, y=NULL), direction="xy", brushId="redDimPlot1_Brush",
+    outputId="redDimPlot1"))
 
 heatMapArgs[[iSEE:::.heatMapFeatName]][[1]] <- head(which(rowData(sce)[, "num_cells"] == ncol(sce)), 100)
 heatMapArgs[[iSEE:::.heatMapColData]][[1]] <- c("driver_1_s", "NREADS")
@@ -53,7 +53,7 @@ all_coordinates[["redDimPlot1"]] <- p.out$xy[, intersect(iSEE:::.allCoordinatesN
 
 test_that(".make_heatMapPlot with groupable and non-groupable colData", {
 
-    out <- iSEE:::.make_heatMapPlot(1, all_memory, all_coordinates, se = sce, colormap = ExperimentColorMap())
+    out <- iSEE:::.make_heatMapPlot(1, all_memory, all_coordinates, se=sce, colormap=ExperimentColorMap())
 
     expect_named(out, c("cmd_list", "xy", "plot", "legends"))
     expect_true(any(grepl("driver_1_s", out$cmd_list$data)))
@@ -76,20 +76,20 @@ test_that(".make_heatMapPlot works with incoming selection", {
     all_memory$heatMapPlot$SelectByPlot <- "Reduced dimension plot 1"
     all_memory$heatMapPlot$SelectEffect <- iSEE:::.selectTransTitle
 
-    out <- iSEE:::.make_heatMapPlot(1, all_memory, all_coordinates, se = sce, colormap = ExperimentColorMap())
+    out <- iSEE:::.make_heatMapPlot(1, all_memory, all_coordinates, se=sce, colormap=ExperimentColorMap())
 
     expect_named(out, c("cmd_list", "xy", "plot", "legends"))
     expect_true(any(grepl("driver_1_s", out$cmd_list$data)))
     expect_true(any(grepl("NREADS", out$cmd_list$data)))
-    expect_true(any(grepl("geom_raster(aes(fill = OrderBy1, alpha=SelectBy)) +", out$cmd_list$annot, fixed = TRUE)))
+    expect_true(any(grepl("geom_raster(aes(fill=OrderBy1, alpha=SelectBy)) +", out$cmd_list$annot, fixed=TRUE)))
 
     ## Color effect for selection
 
     all_memory$heatMapPlot$SelectEffect <- iSEE:::.selectColorTitle
 
-    out <- iSEE:::.make_heatMapPlot(1, all_memory, all_coordinates, se = sce, colormap = ExperimentColorMap())
+    out <- iSEE:::.make_heatMapPlot(1, all_memory, all_coordinates, se=sce, colormap=ExperimentColorMap())
 
-    expect_true(any(grepl("geom_raster(aes(fill = SelectBy))", out$cmd_list$annot, fixed = TRUE)))
+    expect_true(any(grepl("geom_raster(aes(fill=SelectBy))", out$cmd_list$annot, fixed=TRUE)))
 
 })
 
@@ -103,7 +103,7 @@ test_that(".get_colorscale_limits produces expected color scale limits", {
     lower.bound <- -Inf
     upper.bound <- Inf
 
-    out <- iSEE:::.get_colorscale_limits(min.value, max.value, lower.bound, upper.bound, include.zero = TRUE)
+    out <- iSEE:::.get_colorscale_limits(min.value, max.value, lower.bound, upper.bound, include.zero=TRUE)
     expect_identical(out, c(min.value, 0, max.value))
 
     out <- iSEE:::.get_colorscale_limits(min.value, max.value, lower.bound, upper.bound, include.zero=FALSE)
@@ -113,7 +113,7 @@ test_that(".get_colorscale_limits produces expected color scale limits", {
     lower.bound <- -0.5
     upper.bound <- 0.5
 
-    out <- iSEE:::.get_colorscale_limits(min.value, max.value, lower.bound, upper.bound, include.zero = TRUE)
+    out <- iSEE:::.get_colorscale_limits(min.value, max.value, lower.bound, upper.bound, include.zero=TRUE)
     expect_identical(out, c(lower.bound, 0, upper.bound))
 
     out <- iSEE:::.get_colorscale_limits(min.value, max.value, lower.bound, upper.bound, include.zero=FALSE)
@@ -215,11 +215,11 @@ test_that(".get_heatmap_fill_cmd works when not centred", {
     out <- iSEE:::.get_heatmap_fill_cmd(param_choices, ExperimentColorMap(), min.obs, max.obs)
     expect_match(
         out,
-        "colors=c('#440154FF',assayColorMap(colormap, '6', discrete=FALSE)(21L),'#FDE725FF')",
+        "colors=c('#440154FF', assayColorMap(colormap, '2', discrete=FALSE)(21L), '#FDE725FF')",
         fixed=TRUE)
     expect_match(
         out,
-        "values=scales::rescale(c(-6,seq(-0.5,0.5,length.out=21L),6), to=c(0,1), from=c(-6,6))",
+        "values=scales::rescale(c(-6, seq(-0.5, 0.5, length.out=21L), 6), to=c(0, 1), from=c(-6, 6))",
         fixed=TRUE)
 
     # Disabling the upper limit only adds an additional lower color and break (to the left)
@@ -231,11 +231,11 @@ test_that(".get_heatmap_fill_cmd works when not centred", {
     out <- iSEE:::.get_heatmap_fill_cmd(param_choices, ExperimentColorMap(), min.obs, max.obs)
     expect_match(
         out,
-        "colors=c('#440154FF',assayColorMap(colormap, '6', discrete=FALSE)(21L))",
+        "colors=c('#440154FF', assayColorMap(colormap, '2', discrete=FALSE)(21L))",
         fixed=TRUE)
     expect_match(
         out,
-        "values=scales::rescale(c(-6,seq(-0.5,6,length.out=21L)), to=c(0,1), from=c(-6,6))",
+        "values=scales::rescale(c(-6, seq(-0.5, 6, length.out=21L)), to=c(0, 1), from=c(-6, 6))",
         fixed=TRUE)
 
     # Disabling the lower limit only adds an additional upper color and break (to the right)
@@ -247,11 +247,11 @@ test_that(".get_heatmap_fill_cmd works when not centred", {
     out <- iSEE:::.get_heatmap_fill_cmd(param_choices, ExperimentColorMap(), min.obs, max.obs)
     expect_match(
         out,
-        "colors=c(assayColorMap(colormap, '6', discrete=FALSE)(21L),'#FDE725FF')",
+        "colors=c(assayColorMap(colormap, '2', discrete=FALSE)(21L), '#FDE725FF')",
         fixed=TRUE)
     expect_match(
         out,
-        "values=scales::rescale(c(seq(-6,0.5,length.out=21L),6), to=c(0,1), from=c(-6,6))",
+        "values=scales::rescale(c(seq(-6, 0.5, length.out=21L), 6), to=c(0, 1), from=c(-6, 6))",
         fixed=TRUE)
 
 })

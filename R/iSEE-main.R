@@ -40,6 +40,9 @@
 #' If not provided, the app displays the version info of \code{\link{iSEE}}.
 #' @param runLocal A logical indicating whether the app is to be run locally or remotely on a server, which determines how documentation will be accessed.
 #' @param voice A logical indicating whether the voice recognition should be enabled.
+#' @param bugs Set to \code{TRUE} to enable the bugs Easter egg.
+#' Alternatively, a named numeric vector control the respective number of each bug type (e.g., \code{c(bugs=3L, spiders=1L)}).
+#' Credits to https://github.com/Auz/Bug for the JavaScript code.
 #'
 #' @details
 #' Users can pass default parameters via DataFrame objects in \code{redDimArgs} and \code{featAssayArgs}.
@@ -141,7 +144,8 @@ iSEE <- function(se,
     tour=NULL,
     appTitle=NULL,
     runLocal=TRUE,
-    voice=FALSE) {
+    voice=FALSE,
+    bugs=FALSE) {
 
     # Save the original name of the input object for renaming in the tracker
     if (has_se <- !missing(se)) {
@@ -264,6 +268,7 @@ iSEE <- function(se,
             includeCSS(system.file(package="iSEE", "www", "iSEE.css")),
             useShinyjs(),
             prepareSpeechRecognition(voice),
+            .prepareBugsEasterEgg(bugs),
             introjsUI(), # must be included in UI
 
             # for error message handling

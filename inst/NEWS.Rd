@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.5.9}{
+\itemize{
+    \item Introduce Bugs Easter egg.
+}
+}
+
 \section{iSEE VERSION 1.5.8}{
 \itemize{
     \item Substitute deprecated \code{scater::normalize} by \code{logNormCounts}.

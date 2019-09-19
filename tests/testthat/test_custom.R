@@ -138,8 +138,12 @@ test_that(".make_customDataPlot responds to a transmitting column brush receiver
         panelvar1=NULL, panelvar2=NULL,
         mapping=list(x="X", y="Y"),
         coord=matrix(c(
-            1, 10,  1, 1,
-            1, 10, 10, 1), ncol=2))
+            -50, -25,
+            -25, -25,
+            -25, 50,
+            -50, 50,
+            -50, -25),
+            ncol=2, byrow = TRUE))
     all_memory$redDimPlot[[iSEE:::.lassoData]][[1]] <- LASSO_CLOSED
 
     r.out <- iSEE:::.make_redDimPlot(id =1, all_memory, all_coordinates, sceX, ExperimentColorMap())

@@ -9,14 +9,15 @@ customStatArgs <- customStatTableDefaults(sce, 1)
 
 # Set up alternative object.
 CUSTOM_DATA <- function(se, rows, columns, colour_by=NULL, scale_columns=TRUE) {
-    if (!is.null(columns)) {
+
+    if (length(columns)) { # either NULL (no receiver) or character(0) (empty selection)
         kept <- se[, columns]
     } else {
         return(ggplot())
     }
 
     scale_columns <- as.logical(scale_columns)
-    kept <- runPCA(kept, feature_set=rows, scale_features=scale_columns)
+    kept <- runPCA(kept, feature_set=rows, scale=scale_columns)
 	plotPCA(kept, colour_by=colour_by)
 }
 
@@ -186,6 +187,35 @@ test_that(".make_customDataPlot responds to a transmitting row receiver", {
     expect_named(p.out2, c("cmd_list", "plot"))
     expect_match(p.out2$cmd_list$select[1], "rowDataPlot1")
     expect_identical(p.out2$cmd_list$select[2], "col.names <- NULL;")
+    expect_match(p.out2$cmd_list$plot, "PCA2")
+    expect_s3_class(p.out2$plot, "ggplot")
+})
+
+test_that(".make_customDataPlot responds to an empty transmitting column brush receiver", {
+    all_memory$customDataPlot$ColumnSource <- "Reduced dimension plot 1"
+
+    # Lasso selection
+    LASSO_CLOSED <- list(
+        lasso=NULL,
+        closed=TRUE,
+        panelvar1=NULL, panelvar2=NULL,
+        mapping=list(x="X", y="Y"),
+        coord=matrix(c(
+            -50, -25,
+            -49, -25,
+            -49, -24,
+            -50, -24,
+            -50, -25),
+            ncol=2, byrow = TRUE))
+    all_memory$redDimPlot[[iSEE:::.lassoData]][[1]] <- LASSO_CLOSED
+
+    r.out <- iSEE:::.make_redDimPlot(id =1, all_memory, all_coordinates, sceX, ExperimentColorMap())
+    all_coordinates[["redDimPlot1"]] <- r.out$xy
+
+    p.out2 <- iSEE:::.make_customDataPlot(id=1, all_memory, all_coordinates, sceX)
+    expect_named(p.out2, c("cmd_list", "plot"))
+    expect_match(p.out2$cmd_list$select[1], "row.names <- NULL")
+    expect_match(p.out2$cmd_list$select[2], "redDimPlot1")
     expect_match(p.out2$cmd_list$plot, "PCA2")
     expect_s3_class(p.out2$plot, "ggplot")
 })

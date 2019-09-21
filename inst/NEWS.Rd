@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.5.10}{
+\itemize{
+    \item Fix test to provide a non-empty selection to custom plot function.
+}
+}
+
 \section{iSEE VERSION 1.5.9}{
 \itemize{
     \item Introduce Bugs Easter egg.

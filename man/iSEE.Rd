@@ -85,7 +85,8 @@ If not provided, the app displays the version info of \code{\link{iSEE}}.}
 
 \item{voice}{A logical indicating whether the voice recognition should be enabled.}
 
-\item{bugs}{Set to \code{TRUE} to enable the bugs Easter egg or a named numeric vector to control their respective number (e.g., \code{c(bugs=3, spiders=1)}).
+\item{bugs}{Set to \code{TRUE} to enable the bugs Easter egg.
+Alternatively, a named numeric vector control the respective number of each bug type (e.g., \code{c(bugs=3L, spiders=1L)}).
 Credits to https://github.com/Auz/Bug for the JavaScript code.}
 }
 \value{

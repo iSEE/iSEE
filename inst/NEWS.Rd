@@ -3,8 +3,7 @@
 
 \section{iSEE VERSION 1.5.11}{
 \itemize{
-    \item Fix graceful handling of \code{isColorMapCompatible} on the server side using
-        \code{shiny::showNotification} to display error to users.
+    \item Fix graceful server side handling of \code{isColorMapCompatible}.
     \item Update documentation about panel organisation in vignette.
 }
 }

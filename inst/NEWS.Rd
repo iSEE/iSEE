@@ -5,6 +5,7 @@
 \itemize{
     \item Fix graceful handling of \code{isColorMapCompatible} on the server side using
         \code{shiny::showNotification} to display error to users.
+    \item Update documentation about panel organisation in vignette.
 }
 }
 

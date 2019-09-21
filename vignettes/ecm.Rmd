@@ -117,14 +117,14 @@ qc_color_fun <- function(n){
 Colormaps can be defined by users at three different levels:
 
 - Each individual assay, column data field, and row data field can be assigned its own distinct colormap. 
-Those colormaps are stored as named lists of functions in the `assays`, `colData`, and `rowData` slots, respectively, of the `ExperimentColorMap`. 
-This can be useful to easily remember which assay is currently shown; 
+    Those colormaps are stored as named lists of functions in the `assays`, `colData`, and `rowData` slots, respectively, of the `ExperimentColorMap`.
+    This can be useful to easily remember which assay is currently shown;
 to apply different color scale limits to assays that vary on different ranges of values;
 or display boolean information in an intuitive way, among many other scenarios.
 - *Shared* colormaps can be defined for all assays, all column data, and all row data.
-These colormaps are stored in the `all_discrete` and `all_continuous` slots of the `ExperimentColorMap`, as lists of functions named `assays`, `colData`, and `rowData`.
+    These colormaps are stored in the `all_discrete` and `all_continuous` slots of the `ExperimentColorMap`, as lists of functions named `assays`, `colData`, and `rowData`.
 - *Global* colormaps can be defined for all categorical or continuous data.
-Those two colormaps are stored in the `global_discrete` and `global_continuous` slots of the `ExperimentColorMap`.
+    Those two colormaps are stored in the `global_discrete` and `global_continuous` slots of the `ExperimentColorMap`.
 
 ## Searching for colors
 
@@ -179,16 +179,16 @@ ExperimentColorMap(
 
 The `ExperimentColorMap` class offers the following major features:
 
-- a single place to define flexible and lightweight sets of colormaps, that may be saved and reused across sessions and projects outside the app, to apply consistent coloring schemes across entire projects
-- a simple interface through accessors `colDataColorMap(colormap, "coldata_name")` and setters `assayColorMap(colormap, "assay_name") <- colormap_function`
-- an elegant fallback mechanism to consistently return a colormap, even for undefined covariates, including a default categorical and continuous colormap, respectively.
-- three levels of colormaps override: individual, shared within slot (i.e., assays, colData, rowData), or shared globally between all categorical or continuous data scales.
+- A single place to define flexible and lightweight sets of colormaps, that may be saved and reused across sessions and projects outside the app, to apply consistent coloring schemes across entire projects
+- A simple interface through accessors `colDataColorMap(colormap, "coldata_name")` and setters `assayColorMap(colormap, "assay_name") <- colormap_function`
+- An elegant fallback mechanism to consistently return a colormap, even for undefined covariates, including a default categorical and continuous colormap, respectively.
+- Three levels of colormaps override: individual, shared within slot (i.e., `assays`, `colData`, `rowData`), or shared globally between all categorical or continuous data scales.
 
 Detailed examples on the use of `ExperimentColorMap` objects are available in the documentation `?ExperimentColorMap`, as well as below.
 
 # Demonstration
 
-We will re-use the `allen` single-cell RNA-seq data set to demonstrate the use of the `ExperimentColorMap` class.
+Here, we use the `allen` single-cell RNA-seq data set to demonstrate the use of the `ExperimentColorMap` class.
 Using the `sce` object that we created `r Biocpkg("iSEE", vignette="basic.html", label="previously")`, we create an `iSEE` app with the `SingleCellExperiment` object and the colormap generated above.
 
 ```{r allen-dataset-4}
@@ -216,4 +216,3 @@ sessionInfo()
 ```
 
 # References {.unnumbered}
-

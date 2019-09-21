@@ -76,9 +76,9 @@ The only requirements are that the function must accept:
 And, if `iSEE(..., customSendAll=FALSE)` (the default):
 
 - A vector of row names as the _second_ argument, specifying the rows that are currently selected in the transmitting _row-based_ panel.
-This may be `NULL` if no transmitting panel was selected or if no active selection is available.
+    This may be `NULL` if no transmitting panel was selected or if no active selection is available.
 - A vector of column names as the _third_ argument, specifying the columns that are currently selected in the transmitting _column-based_ panel.
-This may be `NULL` if no transmitting panel was selected or if no active selection is available.
+    This may be `NULL` if no transmitting panel was selected or if no active selection is available.
 
 Conversely, `iSEE(..., customSendAll=TRUE)` transmits _all_ selections - active and saved - from the transmitting panel.
 This feature is described in further detail [below](#customSendAll).
@@ -311,7 +311,7 @@ app <- iSEE(
 
 # Caching for greater efficiency
 
-True R wizards can take advantage of the pass-by-reference activity of environments to cache results throughout the lifetime of the app.
+True R wizards can take advantage of the pass-by-reference activity of environments to cache results throughout the lifetime of an app session.
 This can be used to avoid repeating time-consuming steps that are not affected by changes in certain parameters.
 For example, we could cache the output of `runPCA` to avoid repeating the PCA if only `colour_by` changes.
 
@@ -366,5 +366,3 @@ sessionInfo()
 ```
 
 # References {.unnumbered}
-
-

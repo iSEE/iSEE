@@ -82,7 +82,7 @@
 #' renderUI renderPrint
 #' actionButton selectizeInput
 #' shinyApp runApp
-#' HTML br icon hr p em strong img code
+#' HTML br icon hr p em strong img code pre h1
 #' tagList tags
 #' tabsetPanel tabPanel
 #' includeCSS singleton includeScript
@@ -305,16 +305,20 @@ iSEE <- function(se,
             se <- .precompute_UI_info(se, customDataFun, customStatFun)
 
             # Throw an error if the colormap supplied is not compatible with the object
-            if (!isColorMapCompatible(colormap, se, error=FALSE)) {
-                ui_msg <- tagList(
-                    strong("Invalid colormap:"), br(),
-                    "Reverting to default", code("ExperimentColorMap()"), "."
-                )
-                action_msg <- tagList(
-                    "Use ", code("isColorMapCompatible(colormap, se, error=TRUE)"),
-                    "for more information."
-                )
-                showNotification(ui=ui_msg, action=action_msg, type="error", duration=NULL)
+            out <- tryCatch(
+                isColorMapCompatible(colormap, se, error=TRUE),
+                error = function(err) {
+                    output$allPanels <- renderUI({
+                        tagList(
+                            h1("Invalid color map"),
+                            column(pre(conditionMessage(err)), width=12)
+                        )
+                    })
+                    return(FALSE)
+                }
+            )
+            if (isFALSE(out)) {
+                return(NULL) # do not initialize the server further
             }
 
             # Defining the maximum number of plots.

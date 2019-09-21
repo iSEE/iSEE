@@ -1,6 +1,13 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.5.11}{
+\itemize{
+    \item Fix graceful handling of \code{isColorMapCompatible} on the server side using
+        \code{shiny::showNotification} to display error to users.
+}
+}
+
 \section{iSEE VERSION 1.5.10}{
 \itemize{
     \item Fix test to provide a non-empty selection to custom plot function.

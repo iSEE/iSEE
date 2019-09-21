@@ -623,20 +623,18 @@ setMethod(
 #'
 isColorMapCompatible <- function(ecm, se, error = FALSE){
 
+  errors <- c()
+
   # The count of colormaps cannot exceed the count of assays
   num_assay_maps <- length(ecm@assays)
   num_assay_se <- length(se@assays)
   if (num_assay_maps > num_assay_se){
-    if (error){
-      stop(
-        "More assays in colormap (",
-        num_assay_maps,
-        ") than experiment (",
-        num_assay_se,
-        ")")
-    } else {
-      return(FALSE)
-    }
+      errors <- c(errors, paste0(
+          "More assays in colormap (",
+          num_assay_maps,
+          ") than experiment (",
+          num_assay_se,
+          ")"))
   }
 
   # Named colormaps must map to existing data in the experiment
@@ -652,43 +650,33 @@ isColorMapCompatible <- function(ecm, se, error = FALSE){
   names_assays_maps <- names_assays_maps[names_assays_maps != ""]
   check_assay_names <- names_assays_maps %in% names_assays_se
   if (!all(check_assay_names)){
-    if (error){
-      stop(
-        sprintf(
+    errors <- c(errors, sprintf(
           "assay `%s` in colormap missing in experiment",
           names_assays_maps[!check_assay_names]
-        )
-      )
-    } else {
-      return(FALSE)
-    }
+        ))
   }
 
   # process colData
   check_coldata_names <- names_coldata_maps %in% names_coldata_se
   if (!all(check_coldata_names)){
-    if (error){
-      stop(
-        sprintf(
+    errors <- c(errors, sprintf(
           "colData `%s` in colormap missing in experiment",
           names_coldata_maps[!check_coldata_names]
-        )
-      )
-    } else {
-      return(FALSE)
-    }
+        ))
   }
 
   # process rowData
   check_rowdata_names <- names_rowdata_maps %in% names_rowdata_se
   if (!all(check_rowdata_names)){
-    if (error){
-      stop(
-        sprintf(
+    errors <- c(errors, sprintf(
           "rowData `%s` in colormap missing in experiment",
           names_rowdata_maps[!check_rowdata_names]
-        )
-      )
+        ))
+  }
+
+  if (length(errors)) {
+    if (error){
+      stop(vapply(errors, S4Vectors:::wmsg2, character(1), USE.NAMES = FALSE))
     } else {
       return(FALSE)
     }

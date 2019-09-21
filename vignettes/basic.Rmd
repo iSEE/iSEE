@@ -171,9 +171,19 @@ However, note that the order in which the code blocks are reported is important 
 ## Header
 
 The layout of the `r Biocpkg("iSEE")` user interface uses the `r CRANpkg("shinydashboard")` package.
-The dashboard header contains three dropdown menus.
+The dashboard header contains four dropdown menus.
 
-The first is the "Diagnostics" dropdown menu, which is identified by a wrench icon (<i class="fa fa-wrench"></i>) and contains:
+The first icon in the dashboard header is the "Organization" menu, which is identified by an icon displaying multiple windows (<i class="fa fa-object-ungroup"></i>).
+This menu contains a single item "Organize panels".
+Click on this button to open a modal window that contains:
+
+- A selectize input to add, remove, and reorder panels in the main interface. 
+    The maximum number of panels of each type are defined in the initial call to the `iSEE` function that configures an app.
+- Two inputs to control the width and height, respectively, of each panel selected above.
+    Note that panel width is defined in integer grid units between 1 and 12 (see `?shiny::column`).
+    In contrast, panel height is defined in pixels (see `?shiny::plotOutput`).
+
+The second icon in the dashboard header is the "Diagnostics" dropdown menu, which is identified by a wrench icon (<i class="fa fa-wrench"></i>) and contains:
 
 - the "Examine panel chart" functionality, identified by a chain icon (<i class="fa fa-chain"></i>).
 Click on this button to obtain a graph representation of the existing links and point selections among your visible plot and table panels.
@@ -197,15 +207,7 @@ The "Additional Information" dropdown menu is accessible through the information
 This is particularly useful for reproducing or reporting the environment, especially when reporting errors or unexpected behaviors.
 - the "About iSEE" button (<i class="fa fa-heart"></i>) shows the information on the development team, licensing and citation information for the `r Biocpkg("iSEE")` package.
 You can follow the development of the package by checking the GitHub repository (https://github.com/csoneson/iSEE), where new functionality will be added.
-Well-considered suggestions in the form of issues and/or pull requests are welcome.
-    
-## Sidebar
-
-The dashboard sidebar of `r Biocpkg("iSEE")` contains a dropdown menu and a button for creating new plots or tables (referred to as "panels") in the interface.
-The maximum number of panels of each type are defined in the initial call to the `iSEE` function that configures an app.
-By clicking these buttons, additional panels of the corresponding type can be inserted into the main body of the app.
-Color-coded tabs in the sidebar contain buttons to change the panel order (<i class="fa fa-arrow-circle-up"></i> and <i class="fa fa-arrow-circle-down"></i>) or to remove panels entirely (<i class="fa fa-trash"></i>).
-The width and height of each panel can also be adjusted using <i class="fa fa-gear"></i>.
+Well-considered suggestions in the form of issues or pull requests are welcome.
 
 ## Body
 

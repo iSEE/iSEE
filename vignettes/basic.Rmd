@@ -185,29 +185,29 @@ Click on this button to open a modal window that contains:
 
 The second icon in the dashboard header is the "Diagnostics" dropdown menu, which is identified by a wrench icon (<i class="fa fa-wrench"></i>) and contains:
 
-- the "Examine panel chart" functionality, identified by a chain icon (<i class="fa fa-chain"></i>).
-Click on this button to obtain a graph representation of the existing links and point selections among your visible plot and table panels.
-Every panel is represented by a node coded with the same color as in the app.
-This can be very useful in sessions that include a large number of panels, to visualize the relationship structure between the various panels that send and receive selections of data points.
+- The "Examine panel chart" functionality, identified by a chain icon (<i class="fa fa-chain"></i>).
+    Click on this button to obtain a graph representation of the existing links and point selections among your visible plot and table panels.
+    Every panel is represented by a node coded with the same color as in the app.
+    This can be very useful in sessions that include a large number of panels, to visualize the relationship structure between the various panels that send and receive selections of data points.
 - the "Extract the R code", functionality (<i class="fa fa-magic"></i>). At any point during your live session, you might want to record the code that reproduces exactly the state of each plot.
-Clicking on this button opens a modal popup window, with a `r CRANpkg("shinyAce")`-based text editor, where the code is formatted and displayed with syntax highlighting.
-You can copy the code to the clipboard by selecting the text (please do include the initial lines and the `sessionInfo()` commands for best tracking of your environment), and store it in your analysis report/script.
-This code can then be further edited to finalize the plots (e.g., for publication). 
+    Clicking on this button opens a modal popup window, with a `r CRANpkg("shinyAce")`-based text editor, where the code is formatted and displayed with syntax highlighting.
+    You can copy the code to the clipboard by selecting the text (please do include the initial lines and the `sessionInfo()` commands for best tracking of your environment), and store it in your analysis report/script.
+    This code can then be further edited to finalize the plots (e.g., for publication). 
 
 The "Documentation" dropdown menu is accessible through the question mark icon (<i class="fa fa-question-circle"></i>), which contains:
 
-- the button to start an interactive tour (<i class="fa fa-hand-o-right"></i>) of `r Biocpkg("iSEE")`, which allows users to learn the basic usage mechanisms by doing.
-During a tour, the highlighted elements respond to the user's actions, while the rest of the UI is shaded.
-- the button to "Open the vignette" (<i class="fa fa-book"></i>), which displays the `r Biocpkg("iSEE")` vignette, either available on your system or accessed at the webpage of the package on the Bioconductor project site 
-(in the latter case, the vignette will refer to the current release or development version, according to the version of the package installed on your system).
+- The button to start an interactive tour (<i class="fa fa-hand-o-right"></i>) of `r Biocpkg("iSEE")`, which allows users to learn the basic usage mechanisms by doing.
+    During a tour, the highlighted elements respond to the user's actions, while the rest of the UI is shaded.
+- The button to "Open the vignette" (<i class="fa fa-book"></i>), which displays the `r Biocpkg("iSEE")` vignette, either available on your system or accessed at the webpage of the package on the Bioconductor project site.
+    In the latter case, the vignette will refer to the current release or development version, according to the version of the package installed on your system).
     
 The "Additional Information" dropdown menu is accessible through the information icon (<i class="fa fa-info"></i>), and contains:
 
-- the "About this session" button (<i class="fa fa-window-maximize"></i>), which reports the output of the `sessionInfo()` function in a modal popup window.
-This is particularly useful for reproducing or reporting the environment, especially when reporting errors or unexpected behaviors.
-- the "About iSEE" button (<i class="fa fa-heart"></i>) shows the information on the development team, licensing and citation information for the `r Biocpkg("iSEE")` package.
-You can follow the development of the package by checking the GitHub repository (https://github.com/csoneson/iSEE), where new functionality will be added.
-Well-considered suggestions in the form of issues or pull requests are welcome.
+- The "About this session" button (<i class="fa fa-window-maximize"></i>), which reports the output of the `sessionInfo()` function in a modal popup window.
+    This is particularly useful for reproducing or reporting the environment, especially when reporting errors or unexpected behaviors.
+- The "About iSEE" button (<i class="fa fa-heart"></i>) shows the information on the development team, licensing and citation information for the `r Biocpkg("iSEE")` package.
+    You can follow the development of the package by checking the GitHub repository (https://github.com/csoneson/iSEE), where new functionality will be added.
+    Well-considered suggestions in the form of issues or pull requests are welcome.
 
 ## Body
 
@@ -233,12 +233,12 @@ In addition, two custom panel types are available^[Those are described in a `r B
 For each standard plot panel, three different sets of parameters will be available in collapsible boxes:
 
 - "Data parameters", to control parameters specific to each type of plot. 
-- "Visual parameters", to specify parameters that will determine the aspect of the plot, in terms of coloring, point features, and more (e.g. legend placement, font size)
+- "Visual parameters", to specify parameters that will determine the aspect of the plot, in terms of coloring, point features, and more (e.g., legend placement, font size).
 - "Selection parameters" to control the incoming point selection and link relationships to other plots.
 
 ### Reduced dimension plots
 
-If a `SingleCellExperiment` object is supplied to `iSEE`, any reduced dimension results are extracted from the `reducedDim` slot.
+If a `SingleCellExperiment` object is supplied to the `iSEE` function, reduced dimension results are extracted from the `reducedDim` slot.
 Examples include low-dimensional embeddings from principal components analysis (PCA) or _t_-distributed stochastic neighbour embedding (_t_-SNE) [@van2008visualizing].
 These results are used to construct a two-dimensional *Reduced dimension plot* where each point is a sample, to facilitate efficient exploration of high-dimensional datasets. 
 The "Data parameters" control the `reducedDim` slot to be displayed, as well as the two dimensions to plot against each other. 
@@ -253,7 +253,7 @@ This plot can assume various forms, depending on the nature of the data on the x
 - If the y-axis is continuous and the x-axis is categorical, violin plots are generated (grouped by the x-axis factor).
 - If the y-axis is categorical and the x-axis is continuous, horizontal violin plots are generated (grouped by the y-axis factor).
 - If both axes are continuous, a scatter plot is generated.
-This enables the use of contours that are overlaid on top of the plot, check the `"Other"` box to see the available options.
+    This enables the use of contours that are overlaid on top of the plot, check the `"Other"` box to see the available options.
 - If both axes are categorical, a plot of squares is generated where the area of each square is proportional to the number of samples within each combination of factor levels.
 
 Note that an x-axis setting of "None" is considered to be categorical with a single level.
@@ -286,9 +286,9 @@ This usually results in a (grouped) violin plot, if the x-axis is set to `"None"
 
 Notably, the x-axis covariate can also be set to:
 
-- a discrete row data covariates (e.g., gene biotype), to stratify the distribution of assayed values
-- a continuous row data covariate (e.g. count of cells expressing each gene)
-- another sample, to visualize and compare the assayed values in any two samples.
+- A discrete row data covariates (e.g., gene biotype), to stratify the distribution of assayed values
+- A continuous row data covariate (e.g., count of cells expressing each gene)
+- Another sample, to visualize and compare the assayed values in any two samples.
 
 ### Row statistics tables
 
@@ -324,14 +324,14 @@ Column-based plots are the reduced dimension, feature assay and column data plot
 Here, data points can be colored in different ways:
 
 - The default is no color scheme (`"None"` in the radio button). 
-This results in data points of a constant user-specified color.
+    This results in data points of a constant user-specified color.
 - Any column of `colData(se)` can be used. 
-The plot automatically adjusts the scale to use based on whether the chosen column is continuous or categorical.
+    The plot automatically adjusts the scale to use based on whether the chosen column is continuous or categorical.
 - The assay values of a particular feature in each sample can be used. 
-The feature can be chosen either via a linked row table or selectize input (as described for the *Feature assay plot* panel).
-Users can also specify the `assays` from which values are extracted.
+    The feature can be chosen either via a linked row table or selectize input (as described for the *Feature assay plot* panel).
+    Users can also specify the `assays` from which values are extracted.
 - The identity of a particular sample can be used, which will be highlighted on the plot in a user-specified color.
-The sample can be chosen either via a linked column table or via a selectize input.
+    The sample can be chosen either via a linked column table or via a selectize input.
 
 For row-based plots (i.e., the sample assay and row data plots), each data point represents a feature.
 Like the column-based plots, data points can be colored by:

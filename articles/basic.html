@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.11</span>
       </span>
     </div>
 
@@ -114,7 +114,7 @@
       Cancer Research UK Cambridge Institute, University of Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com">infinite.monkeys.with.keyboards@gmail.com</a>
       </address>
                   
-            <h4 class="date">21 September 2019</h4>
+            <h4 class="date">22 September 2019</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/csoneson/iSEE/blob/master/vignettes/basic.Rmd"><code>vignettes/basic.Rmd</code></a></small>
       <div class="hidden name"><code>basic.Rmd</code></div>
@@ -123,7 +123,7 @@
 
     
     
-<p><strong>Compiled date</strong>: 2019-09-21</p>
+<p><strong>Compiled date</strong>: 2019-09-22</p>
 <p><strong>Last edited</strong>: 2018-03-08</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <p><img src="../../../../R/Library/iSEE/www/iSEE.png" width="50%" style="display: block; margin: auto;"></p>
@@ -199,27 +199,27 @@
 <div id="header" class="section level2">
 <h2 class="hasAnchor">
 <a href="#header" class="anchor"></a>Header</h2>
-<p>The layout of the <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> user interface uses the <em><a href="https://CRAN.R-project.org/package=shinydashboard">shinydashboard</a></em> package. The dashboard header contains three dropdown menus.</p>
-<p>The first is the “Diagnostics” dropdown menu, which is identified by a wrench icon (<i class="fa fa-wrench"></i>) and contains:</p>
+<p>The layout of the <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> user interface uses the <em><a href="https://CRAN.R-project.org/package=shinydashboard">shinydashboard</a></em> package. The dashboard header contains four dropdown menus.</p>
+<p>The first icon in the dashboard header is the “Organization” menu, which is identified by an icon displaying multiple windows (<i class="fa fa-object-ungroup"></i>). This menu contains a single item “Organize panels”. Click on this button to open a modal window that contains:</p>
 <ul>
-<li>the “Examine panel chart” functionality, identified by a chain icon (<i class="fa fa-chain"></i>). Click on this button to obtain a graph representation of the existing links and point selections among your visible plot and table panels. Every panel is represented by a node coded with the same color as in the app. This can be very useful in sessions that include a large number of panels, to visualize the relationship structure between the various panels that send and receive selections of data points.</li>
+<li>A selectize input to add, remove, and reorder panels in the main interface. The maximum number of panels of each type are defined in the initial call to the <code>iSEE</code> function that configures an app.</li>
+<li>Two inputs to control the width and height, respectively, of each panel selected above. Note that panel width is defined in integer grid units between 1 and 12 (see <code><a href="https://rdrr.io/pkg/shiny/man/column.html">?shiny::column</a></code>). In contrast, panel height is defined in pixels (see <code><a href="https://rdrr.io/pkg/shiny/man/plotOutput.html">?shiny::plotOutput</a></code>).</li>
+</ul>
+<p>The second icon in the dashboard header is the “Diagnostics” dropdown menu, which is identified by a wrench icon (<i class="fa fa-wrench"></i>) and contains:</p>
+<ul>
+<li>The “Examine panel chart” functionality, identified by a chain icon (<i class="fa fa-chain"></i>). Click on this button to obtain a graph representation of the existing links and point selections among your visible plot and table panels. Every panel is represented by a node coded with the same color as in the app. This can be very useful in sessions that include a large number of panels, to visualize the relationship structure between the various panels that send and receive selections of data points.</li>
 <li>the “Extract the R code”, functionality (<i class="fa fa-magic"></i>). At any point during your live session, you might want to record the code that reproduces exactly the state of each plot. Clicking on this button opens a modal popup window, with a <em><a href="https://CRAN.R-project.org/package=shinyAce">shinyAce</a></em>-based text editor, where the code is formatted and displayed with syntax highlighting. You can copy the code to the clipboard by selecting the text (please do include the initial lines and the <code><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo()</a></code> commands for best tracking of your environment), and store it in your analysis report/script. This code can then be further edited to finalize the plots (e.g., for publication).</li>
 </ul>
 <p>The “Documentation” dropdown menu is accessible through the question mark icon (<i class="fa fa-question-circle"></i>), which contains:</p>
 <ul>
-<li>the button to start an interactive tour (<i class="fa fa-hand-o-right"></i>) of <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em>, which allows users to learn the basic usage mechanisms by doing. During a tour, the highlighted elements respond to the user’s actions, while the rest of the UI is shaded.</li>
-<li>the button to “Open the vignette” (<i class="fa fa-book"></i>), which displays the <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> vignette, either available on your system or accessed at the webpage of the package on the Bioconductor project site (in the latter case, the vignette will refer to the current release or development version, according to the version of the package installed on your system).</li>
+<li>The button to start an interactive tour (<i class="fa fa-hand-o-right"></i>) of <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em>, which allows users to learn the basic usage mechanisms by doing. During a tour, the highlighted elements respond to the user’s actions, while the rest of the UI is shaded.</li>
+<li>The button to “Open the vignette” (<i class="fa fa-book"></i>), which displays the <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> vignette, either available on your system or accessed at the webpage of the package on the Bioconductor project site. In the latter case, the vignette will refer to the current release or development version, according to the version of the package installed on your system).</li>
 </ul>
 <p>The “Additional Information” dropdown menu is accessible through the information icon (<i class="fa fa-info"></i>), and contains:</p>
 <ul>
-<li>the “About this session” button (<i class="fa fa-window-maximize"></i>), which reports the output of the <code><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo()</a></code> function in a modal popup window. This is particularly useful for reproducing or reporting the environment, especially when reporting errors or unexpected behaviors.</li>
-<li>the “About iSEE” button (<i class="fa fa-heart"></i>) shows the information on the development team, licensing and citation information for the <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> package. You can follow the development of the package by checking the GitHub repository (<a href="https://github.com/csoneson/iSEE" class="uri">https://github.com/csoneson/iSEE</a>), where new functionality will be added. Well-considered suggestions in the form of issues and/or pull requests are welcome.</li>
+<li>The “About this session” button (<i class="fa fa-window-maximize"></i>), which reports the output of the <code><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo()</a></code> function in a modal popup window. This is particularly useful for reproducing or reporting the environment, especially when reporting errors or unexpected behaviors.</li>
+<li>The “About iSEE” button (<i class="fa fa-heart"></i>) shows the information on the development team, licensing and citation information for the <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> package. You can follow the development of the package by checking the GitHub repository (<a href="https://github.com/csoneson/iSEE" class="uri">https://github.com/csoneson/iSEE</a>), where new functionality will be added. Well-considered suggestions in the form of issues or pull requests are welcome.</li>
 </ul>
-</div>
-<div id="sidebar" class="section level2">
-<h2 class="hasAnchor">
-<a href="#sidebar" class="anchor"></a>Sidebar</h2>
-<p>The dashboard sidebar of <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> contains a dropdown menu and a button for creating new plots or tables (referred to as “panels”) in the interface. The maximum number of panels of each type are defined in the initial call to the <code>iSEE</code> function that configures an app. By clicking these buttons, additional panels of the corresponding type can be inserted into the main body of the app. Color-coded tabs in the sidebar contain buttons to change the panel order (<i class="fa fa-arrow-circle-up"></i> and <i class="fa fa-arrow-circle-down"></i>) or to remove panels entirely (<i class="fa fa-trash"></i>). The width and height of each panel can also be adjusted using <i class="fa fa-gear"></i>.</p>
 </div>
 <div id="body" class="section level2">
 <h2 class="hasAnchor">
@@ -246,14 +246,14 @@
 <p>For each standard plot panel, three different sets of parameters will be available in collapsible boxes:</p>
 <ul>
 <li>“Data parameters”, to control parameters specific to each type of plot.</li>
-<li>“Visual parameters”, to specify parameters that will determine the aspect of the plot, in terms of coloring, point features, and more (e.g. legend placement, font size)</li>
+<li>“Visual parameters”, to specify parameters that will determine the aspect of the plot, in terms of coloring, point features, and more (e.g., legend placement, font size).</li>
 <li>“Selection parameters” to control the incoming point selection and link relationships to other plots.</li>
 </ul>
 </div>
 <div id="reduced-dimension-plots" class="section level3">
 <h3 class="hasAnchor">
 <a href="#reduced-dimension-plots" class="anchor"></a>Reduced dimension plots</h3>
-<p>If a <code>SingleCellExperiment</code> object is supplied to <code>iSEE</code>, any reduced dimension results are extracted from the <code>reducedDim</code> slot. Examples include low-dimensional embeddings from principal components analysis (PCA) or <em>t</em>-distributed stochastic neighbour embedding (<em>t</em>-SNE) <span class="citation">(Van der Maaten and Hinton 2008)</span>. These results are used to construct a two-dimensional <em>Reduced dimension plot</em> where each point is a sample, to facilitate efficient exploration of high-dimensional datasets. The “Data parameters” control the <code>reducedDim</code> slot to be displayed, as well as the two dimensions to plot against each other. Note that <code>iSEE</code> does not compute reduced dimension embeddings; they must be precomputed and available in the object to the <code>iSEE</code> function.</p>
+<p>If a <code>SingleCellExperiment</code> object is supplied to the <code>iSEE</code> function, reduced dimension results are extracted from the <code>reducedDim</code> slot. Examples include low-dimensional embeddings from principal components analysis (PCA) or <em>t</em>-distributed stochastic neighbour embedding (<em>t</em>-SNE) <span class="citation">(Van der Maaten and Hinton 2008)</span>. These results are used to construct a two-dimensional <em>Reduced dimension plot</em> where each point is a sample, to facilitate efficient exploration of high-dimensional datasets. The “Data parameters” control the <code>reducedDim</code> slot to be displayed, as well as the two dimensions to plot against each other. Note that <code>iSEE</code> does not compute reduced dimension embeddings; they must be precomputed and available in the object to the <code>iSEE</code> function.</p>
 </div>
 <div id="coldataplot" class="section level3">
 <h3 class="hasAnchor">
@@ -287,9 +287,9 @@
 <p>This usually results in a (grouped) violin plot, if the x-axis is set to <code>"None"</code> or a categorical variable (e.g., gene biotype); or a scatter plot, if the x-axis is another continuous variable.</p>
 <p>Notably, the x-axis covariate can also be set to:</p>
 <ul>
-<li>a discrete row data covariates (e.g., gene biotype), to stratify the distribution of assayed values</li>
-<li>a continuous row data covariate (e.g. count of cells expressing each gene)</li>
-<li>another sample, to visualize and compare the assayed values in any two samples.</li>
+<li>A discrete row data covariates (e.g., gene biotype), to stratify the distribution of assayed values</li>
+<li>A continuous row data covariate (e.g., count of cells expressing each gene)</li>
+<li>Another sample, to visualize and compare the assayed values in any two samples.</li>
 </ul>
 </div>
 <div id="row-statistics-tables" class="section level3">
@@ -428,7 +428,7 @@
 <a class="sourceLine" id="cb12-21" data-line-number="21"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb12-22" data-line-number="22"><span class="co">#&gt; other attached packages:</span></a>
 <a class="sourceLine" id="cb12-23" data-line-number="23"><span class="co">#&gt;  [1] scater_1.13.20              ggplot2_3.2.1              </span></a>
-<a class="sourceLine" id="cb12-24" data-line-number="24"><span class="co">#&gt;  [3] scRNAseq_1.99.6             iSEE_1.5.10                </span></a>
+<a class="sourceLine" id="cb12-24" data-line-number="24"><span class="co">#&gt;  [3] scRNAseq_1.99.6             iSEE_1.5.11                </span></a>
 <a class="sourceLine" id="cb12-25" data-line-number="25"><span class="co">#&gt;  [5] SingleCellExperiment_1.7.9  SummarizedExperiment_1.15.9</span></a>
 <a class="sourceLine" id="cb12-26" data-line-number="26"><span class="co">#&gt;  [7] DelayedArray_0.11.5         BiocParallel_1.19.2        </span></a>
 <a class="sourceLine" id="cb12-27" data-line-number="27"><span class="co">#&gt;  [9] matrixStats_0.55.0          Biobase_2.45.1             </span></a>
@@ -470,7 +470,7 @@
 <a class="sourceLine" id="cb12-63" data-line-number="63"><span class="co">#&gt; [61] gridExtra_2.3                 memoise_1.1.0                </span></a>
 <a class="sourceLine" id="cb12-64" data-line-number="64"><span class="co">#&gt; [63] stringi_1.4.3                 RSQLite_2.1.2                </span></a>
 <a class="sourceLine" id="cb12-65" data-line-number="65"><span class="co">#&gt; [65] desc_1.2.0                    rlang_0.4.0                  </span></a>
-<a class="sourceLine" id="cb12-66" data-line-number="66"><span class="co">#&gt; [67] pkgconfig_2.0.2               bitops_1.0-6                 </span></a>
+<a class="sourceLine" id="cb12-66" data-line-number="66"><span class="co">#&gt; [67] pkgconfig_2.0.3               bitops_1.0-6                 </span></a>
 <a class="sourceLine" id="cb12-67" data-line-number="67"><span class="co">#&gt; [69] evaluate_0.14                 lattice_0.20-38              </span></a>
 <a class="sourceLine" id="cb12-68" data-line-number="68"><span class="co">#&gt; [71] purrr_0.3.2                   htmlwidgets_1.3              </span></a>
 <a class="sourceLine" id="cb12-69" data-line-number="69"><span class="co">#&gt; [73] cowplot_1.0.0                 bit_1.1-14                   </span></a>
@@ -530,7 +530,6 @@
       <li>
 <a href="#description-of-the-user-interface">Description of the user interface</a><ul class="nav nav-pills nav-stacked">
 <li><a href="#header">Header</a></li>
-      <li><a href="#sidebar">Sidebar</a></li>
       <li><a href="#body">Body</a></li>
       </ul>
 </li>

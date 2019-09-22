@@ -305,20 +305,18 @@ iSEE <- function(se,
             se <- .precompute_UI_info(se, customDataFun, customStatFun)
 
             # Throw an error if the colormap supplied is not compatible with the object
-            out <- tryCatch(
-                isColorMapCompatible(colormap, se, error=TRUE),
-                error = function(err) {
-                    output$allPanels <- renderUI({
-                        tagList(
-                            h1("Invalid color map"),
-                            column(pre(conditionMessage(err)), width=12)
-                        )
-                    })
-                    return(FALSE)
+
+            errors <- checkColormapCompatibility(colormap, se)
+
+            if (length(errors)){
+                ui_msg <- tagList(
+                    strong("Invalid colormap:"), br(),
+                    "Reverting to default", code("ExperimentColorMap()"), "."
+                )
+                showNotification(ui=ui_msg, type="warning", duration=10)
+                for (i in seq_along(errors)) {
+                    showNotification(ui=errors[i], type="error", duration=10)
                 }
-            )
-            if (isFALSE(out)) {
-                return(NULL) # do not initialize the server further
             }
 
             # Defining the maximum number of plots.

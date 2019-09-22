@@ -566,7 +566,9 @@ setMethod(
     }
 )
 
-# isColorMapCompatible ----
+# colorMap
+
+# checkColormapCompatibility ----
 
 #' Check compatibility between ExperimentColorMap and SummarizedExperiment
 #' objects
@@ -578,13 +580,8 @@ setMethod(
 #'
 #' @param ecm An \linkS4class{ExperimentColorMap}.
 #' @param se A \linkS4class{SingleCellExperiment}.
-#' @param error A logical value that indicates whether an informative error
-#' should be thrown, describing why the two objects are not compatible.
 #'
-#' @return A logical value that indicates whether a given pair of
-#' ExperimentColorMap and SummarizedExperiment objects are compatible.
-#' If \code{error=TRUE}, an informative error is thrown,
-#' rather than returing \code{FALSE}.
+#' @return A character vector of incompability error messages, if any.
 #'
 #' @export
 #'
@@ -619,70 +616,62 @@ setMethod(
 #'
 #' # Test for compatibility ----
 #'
-#' isColorMapCompatible(ecm, sce)
+#' checkColormapCompatibility(ecm, sce)
 #'
-isColorMapCompatible <- function(ecm, se, error = FALSE){
+checkColormapCompatibility <- function(ecm, se){
 
-  errors <- c()
+    errors <- c()
 
-  # The count of colormaps cannot exceed the count of assays
-  num_assay_maps <- length(ecm@assays)
-  num_assay_se <- length(se@assays)
-  if (num_assay_maps > num_assay_se){
-      errors <- c(errors, paste0(
-          "More assays in colormap (",
-          num_assay_maps,
-          ") than experiment (",
-          num_assay_se,
-          ")"))
-  }
-
-  # Named colormaps must map to existing data in the experiment
-  names_assays_maps <- names(ecm@assays)
-  names_coldata_maps <- names(ecm@colData)
-  names_rowdata_maps <- names(ecm@rowData)
-
-  names_assays_se <- assayNames(se)
-  names_coldata_se <- names(colData(se))
-  names_rowdata_se <- names(rowData(se))
-
-  # process assays
-  names_assays_maps <- names_assays_maps[names_assays_maps != ""]
-  check_assay_names <- names_assays_maps %in% names_assays_se
-  if (!all(check_assay_names)){
-    errors <- c(errors, sprintf(
-          "assay `%s` in colormap missing in experiment",
-          names_assays_maps[!check_assay_names]
-        ))
-  }
-
-  # process colData
-  check_coldata_names <- names_coldata_maps %in% names_coldata_se
-  if (!all(check_coldata_names)){
-    errors <- c(errors, sprintf(
-          "colData `%s` in colormap missing in experiment",
-          names_coldata_maps[!check_coldata_names]
-        ))
-  }
-
-  # process rowData
-  check_rowdata_names <- names_rowdata_maps %in% names_rowdata_se
-  if (!all(check_rowdata_names)){
-    errors <- c(errors, sprintf(
-          "rowData `%s` in colormap missing in experiment",
-          names_rowdata_maps[!check_rowdata_names]
-        ))
-  }
-
-  if (length(errors)) {
-    if (error){
-      stop(vapply(errors, S4Vectors:::wmsg2, character(1), USE.NAMES = FALSE))
-    } else {
-      return(FALSE)
+    # The count of colormaps cannot exceed the count of assays
+    num_assay_maps <- length(ecm@assays)
+    num_assay_se <- length(se@assays)
+    if (num_assay_maps > num_assay_se){
+        errors <- c(errors, paste0(
+            "More assays in colormap (",
+            num_assay_maps,
+            ") than experiment (",
+            num_assay_se,
+            ")"))
     }
-  }
 
-  return(TRUE)
+    # Named colormaps must map to existing data in the experiment
+    names_assays_maps <- names(ecm@assays)
+    names_coldata_maps <- names(ecm@colData)
+    names_rowdata_maps <- names(ecm@rowData)
+
+    names_assays_se <- assayNames(se)
+    names_coldata_se <- names(colData(se))
+    names_rowdata_se <- names(rowData(se))
+
+    # process assays
+    names_assays_maps <- names_assays_maps[names_assays_maps != ""]
+    check_assay_names <- names_assays_maps %in% names_assays_se
+    if (!all(check_assay_names)){
+        errors <- c(errors, sprintf(
+            "assay `%s` in colormap missing in experiment",
+            names_assays_maps[!check_assay_names]
+        ))
+    }
+
+    # process colData
+    check_coldata_names <- names_coldata_maps %in% names_coldata_se
+    if (!all(check_coldata_names)){
+        errors <- c(errors, sprintf(
+            "colData `%s` in colormap missing in experiment",
+            names_coldata_maps[!check_coldata_names]
+        ))
+    }
+
+    # process rowData
+    check_rowdata_names <- names_rowdata_maps %in% names_rowdata_se
+    if (!all(check_rowdata_names)){
+        errors <- c(errors, sprintf(
+            "rowData `%s` in colormap missing in experiment",
+            names_rowdata_maps[!check_rowdata_names]
+        ))
+    }
+
+    return(errors)
 }
 
 # synchronizeAssays ----
@@ -778,81 +767,81 @@ isColorMapCompatible <- function(ecm, se, error = FALSE){
 #' ecm_sync <- synchronizeAssays(ecm, sce)
 #'
 synchronizeAssays <- function(ecm, se){
-  stopifnot(is(ecm, "ExperimentColorMap"))
-  stopifnot(inherits(se, "SummarizedExperiment"))
+    stopifnot(is(ecm, "ExperimentColorMap"))
+    stopifnot(inherits(se, "SummarizedExperiment"))
 
-  se_assay_names <- assayNames(se)
-  ecm_assay_names <- assayNames(ecm)
+    se_assay_names <- assayNames(se)
+    ecm_assay_names <- assayNames(ecm)
 
-  # Prepare a warning message for unused colormaps
-  unnamed_ecm <- which(ecm_assay_names == "")
-  unnamed_warning <- ifelse(
-    length(unnamed_ecm) == 0,
-    "",
-    sprintf("unnamed [%s]", paste(unnamed_ecm, collapse = ","))
-  )
+    # Prepare a warning message for unused colormaps
+    unnamed_ecm <- which(ecm_assay_names == "")
+    unnamed_warning <- ifelse(
+        length(unnamed_ecm) == 0,
+        "",
+        sprintf("unnamed [%s]", paste(unnamed_ecm, collapse = ","))
+    )
 
-  orphan_ecm <- setdiff(ecm_assay_names, se_assay_names)
-  orphan_ecm <- setdiff(orphan_ecm, "")
-  orphan_warning <- ifelse(
-    length(orphan_ecm) == 0,
-    "",
-    sprintf("named [%s]", paste(orphan_ecm, collapse = ","))
-  )
+    orphan_ecm <- setdiff(ecm_assay_names, se_assay_names)
+    orphan_ecm <- setdiff(orphan_ecm, "")
+    orphan_warning <- ifelse(
+        length(orphan_ecm) == 0,
+        "",
+        sprintf("named [%s]", paste(orphan_ecm, collapse = ","))
+    )
 
-  ecm_warning <- paste(unnamed_warning, orphan_warning, sep = ", ")
+    ecm_warning <- paste(unnamed_warning, orphan_warning, sep = ", ")
 
-  if (all(se_assay_names != "")){
-    # If all of the SCE assays are named
+    if (all(se_assay_names != "")){
+        # If all of the SCE assays are named
 
-    # Drop assays from ECM that are absent in se
-    if (length(orphan_ecm) + length(unnamed_ecm) > 0){
-      warning(
-        "Unused assays dropped from ecm: ",
-        ecm_warning)
-    }
-    # Fetch named-matched assay colormaps
-    new_ecm_assays <- lapply(se_assay_names, function(x){assayColorMap(ecm, x)})
+        # Drop assays from ECM that are absent in se
+        if (length(orphan_ecm) + length(unnamed_ecm) > 0){
+            warning(
+                "Unused assays dropped from ecm: ",
+                ecm_warning)
+        }
+        # Fetch named-matched assay colormaps
+        new_ecm_assays <- lapply(se_assay_names, function(x){assayColorMap(ecm, x)})
 
-  } else if (all(se_assay_names == "")){
-    # If none of the SCE assays are named
+    } else if (all(se_assay_names == "")){
+        # If none of the SCE assays are named
 
-    # Require that the number of assay colormaps in ECM is identical
-    # if so, return the ECM as is
-    if (length(ecm_assay_names) == length(se_assay_names)){
-      new_ecm_assays <- assays(ecm)
-      # NOTE: uncomment below to strip assayNames from the colormaps,
-      # thereby matching the assayNames of the SCE
-      # names(new_ecm_assays) <- rep("", length(new_ecm_assays))
+        # Require that the number of assay colormaps in ECM is identical
+        # if so, return the ECM as is
+        if (length(ecm_assay_names) == length(se_assay_names)){
+            new_ecm_assays <- assays(ecm)
+            # NOTE: uncomment below to strip assayNames from the colormaps,
+            # thereby matching the assayNames of the SCE
+            # names(new_ecm_assays) <- rep("", length(new_ecm_assays))
+        } else {
+            stop(paste(
+                "Cannot synchronize assays.",
+                sprintf(
+                    "Length of unnamed assays must match: se [%i], ecm [%i]",
+                    length(se_assay_names),
+                    length(ecm_assay_names)
+                )
+            ))
+        }
+
     } else {
-      stop(paste(
-        "Cannot synchronize assays.",
-        sprintf(
-          "Length of unnamed assays must match: se [%i], ecm [%i]",
-          length(se_assay_names),
-          length(ecm_assay_names)
-        )
-      ))
+        # If a subset of the SCE assays are named
+
+        if (length(orphan_ecm) + length(unnamed_ecm) > 0){
+            warning(
+                "Unused assays dropped from ecm: ",
+                ecm_warning)
+        }
+        # Exclude unnamed assay colormaps in the ExperimentColorMap
+        assays(ecm) <- assays(ecm)[assayNames(ecm) != ""]
+        # Fetch named-matched assay colormaps
+        new_ecm_assays <- lapply(se_assay_names, function(x){assayColorMap(ecm, x)})
+
     }
 
-  } else {
-    # If a subset of the SCE assays are named
+    # Apply assayNames from the SummarizedExperiment
+    names(new_ecm_assays) <- se_assay_names
 
-    if (length(orphan_ecm) + length(unnamed_ecm) > 0){
-      warning(
-        "Unused assays dropped from ecm: ",
-        ecm_warning)
-    }
-    # Exclude unnamed assay colormaps in the ExperimentColorMap
-    assays(ecm) <- assays(ecm)[assayNames(ecm) != ""]
-    # Fetch named-matched assay colormaps
-    new_ecm_assays <- lapply(se_assay_names, function(x){assayColorMap(ecm, x)})
-
-  }
-
-  # Apply assayNames from the SummarizedExperiment
-  names(new_ecm_assays) <- se_assay_names
-
-  assays(ecm) <- new_ecm_assays
-  return(ecm)
+    assays(ecm) <- new_ecm_assays
+    return(ecm)
 }

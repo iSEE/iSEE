@@ -1,6 +1,14 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.5.11}{
+\itemize{
+    \item Rename \code{isColorMapCompatible} to \code{checkColormapCompatibility}.
+    \item Fix graceful server side handling of \code{checkColormapCompatibility}.
+    \item Update documentation about panel organisation in vignette.
+}
+}
+
 \section{iSEE VERSION 1.5.10}{
 \itemize{
     \item Fix test to provide a non-empty selection to custom plot function.

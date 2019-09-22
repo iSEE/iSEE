@@ -124,11 +124,11 @@ At runtime, this allows the app to remember the last selected variable of each t
 
 For instance, the `XAxis` column of _feature assay plot_ arguments can have up to four different values:
 
-1. `"None"`: does not require any addition input (draws a single violin for all features)
-2. `"Column data"`: requires `XAxisColData` to be set to a column name in the `colData(sce)`
+1. `"None"`: does not require any addition input (draws a single violin for all features).
+2. `"Column data"`: requires `XAxisColData` to be set to a column name in the `colData(sce)`.
 3. `"Feature name"`: requires either
-    a. `XAxisFeatName` to be set to a feature name (or positional index) in `rownames(sce)`
-    b. `XAxisRowTable` to be set to the name of a _Row statistics table_ panel with an active selection set in its own `Selected` column
+    a. `XAxisFeatName` to be set to a feature name (or positional index) in `rownames(sce)`.
+    b. `XAxisRowTable` to be set to the name of a _Row statistics table_ panel with an active selection set in its own `Selected` column.
 
 Each of these scenarios is demonstrated below:
 
@@ -420,7 +420,8 @@ We refer users to the individual help page of each panel type listed [below](#fu
 
 # Writing your own tour
 
-By providing a data frame to the `tour` argument of `iSEE`, you can create your own tour that will start when the app is launched^[In theory. On servers, sometimes the tour does not recognize the UI elements at start-up and needs to be restarted via the "Click me for quick tour" button to work properly.]. 
+By providing a data frame to the `tour` argument of `iSEE`, you can create your own tour that will start when the app is launched^[In theory.
+On servers, sometimes the tour does not recognize the UI elements at start-up and needs to be restarted via the "Click me for quick tour" button to work properly.].
 The data frame should have two columns, `element` and `intro`:
 
 ```{r}
@@ -433,25 +434,25 @@ head(introtour)
 Each entry of the `element` column contains the name of a UI element in the application, prefixed by a hash sign (`#`).
 The `intro` column contains the corresponding text (or basic HTML) that is to be shown at each step.
 
-The simplest way to get started is to copy the `intro_firststeps.txt` file from the `inst/extdata` folder and edit it for your specific data set. 
+The simplest way to get started is to copy the `intro_firststeps.txt` file from the `inst/extdata` folder and edit it for your specific data set.
 More customized tours require some knowledge of the names of the UI elements to put in the `element` column.
 We recommend one of the following options:
 
-- If using Firefox, open the `Tools` menu. 
-Select `Web Developer`, and in the submenu, select `Inspector`. 
-This will toggle a toolbar, and you will be able to read out the name of the element of interest when you hover and click on it. 
-If you want to select another element, you might need to re-click on the icon in the upper left corner of the toolbox, `Pick an element from the page`.
-- If using Safari, open the `Develop` menu and select `Show Web Inspector`. 
-To toggle the selection of elements, you need to click on the crosshair icon in the top part of the toolbox, then again, explore the desired element by clicking or hovering on it.
-- If using Chrome, from the `View` menu, select first `Developer` and then `Developer Tools`. 
-Click then on the selecting arrow in the top left corner, and similarly to the other browsers, hover or click on the element of interest to obtain its name.
+- If using Firefox, open the `Tools` menu.
+    Select `Web Developer`, and in the submenu, select `Inspector`.
+    This will toggle a toolbar, and you will be able to read out the name of the element of interest when you hover and click on it.
+    If you want to select another element, you might need to re-click on the icon in the upper left corner of the toolbox, `Pick an element from the page`.
+- If using Safari, open the `Develop` menu and select `Show Web Inspector`.
+    To toggle the selection of elements, you need to click on the crosshair icon in the top part of the toolbox, then again, explore the desired element by clicking or hovering on it.
+- If using Chrome, from the `View` menu, select first `Developer` and then `Developer Tools`.
+    Click then on the selecting arrow in the top left corner, and similarly to the other browsers, hover or click on the element of interest to obtain its name.
 - Alternatively, the [SelectorGadget](https://selectorgadget.com) browser extension can be used.
 
 Most elements can be identified using the above strategies.
 Selectize widgets are trickier but can be handled with, e.g., `#heatMapPlot1_ColData + .selectize-control`.
 Please see the `intro_firststeps.txt` file in the `inst/extdata` folder for more of these examples.
 
-Sometimes it is useful to place one step of the tour in the center. 
+Sometimes it is useful to place one step of the tour in the center.
 To do so, simply put a hash sign before a word which does not link directly to any CSS selector (e.g., as we do for `#Welcome`) in the corresponding `element` column.
 
 # Further reading {#further}
@@ -479,4 +480,3 @@ sessionInfo()
 ```
 
 # References {.unnumbered}
-

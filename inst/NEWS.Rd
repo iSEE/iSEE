@@ -3,7 +3,8 @@
 
 \section{iSEE VERSION 1.5.11}{
 \itemize{
-    \item Fix graceful server side handling of \code{isColorMapCompatible}.
+    \item Rename \code{isColorMapCompatible} to \code{checkColormapCompatibility}.
+    \item Fix graceful server side handling of \code{checkColormapCompatibility}.
     \item Update documentation about panel organisation in vignette.
 }
 }

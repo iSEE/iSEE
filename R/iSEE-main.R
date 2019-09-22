@@ -309,14 +309,17 @@ iSEE <- function(se,
             errors <- checkColormapCompatibility(colormap, se)
 
             if (length(errors)){
+                # Show unknown number of errors first, as they may be pushed out of screen
+                for (i in seq_along(errors)) {
+                    ui_msg <- tagList(strong("Compatibility error:"), errors[i], ".")
+                    showNotification(ui=ui_msg, type="error", duration=10)
+                }
+                # Show overall warning last, so that it is visible at the bottom of the screen
                 ui_msg <- tagList(
                     strong("Invalid colormap:"), br(),
                     "Reverting to default", code("ExperimentColorMap()"), "."
                 )
                 showNotification(ui=ui_msg, type="warning", duration=10)
-                for (i in seq_along(errors)) {
-                    showNotification(ui=errors[i], type="error", duration=10)
-                }
             }
 
             # Defining the maximum number of plots.

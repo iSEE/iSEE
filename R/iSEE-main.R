@@ -308,7 +308,8 @@ iSEE <- function(se,
 
             errors <- checkColormapCompatibility(colormap, se)
 
-            if (length(errors)){
+            if (!is.null(errors)){
+                colormap <- ExperimentColorMap()
                 # Show unknown number of errors first, as they may be pushed out of screen
                 for (i in seq_along(errors)) {
                     ui_msg <- tagList(strong("Compatibility error:"), errors[i], ".")

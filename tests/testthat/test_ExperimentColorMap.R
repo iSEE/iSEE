@@ -52,7 +52,6 @@ test_that("validity method catches colormaps with controlled names", {
 
 })
 
-
 # Constructors ----
 
 test_that("Constructor produce a valid object",{
@@ -639,14 +638,20 @@ test_that("checkColormapCompatibility catches too many assays colormaps", {
         )
     )
 
-    expect_error(
-        checkColormapCompatibility(ecm_manyAssays, sce),
-        "More assays in colormap",
-        fixed=TRUE
-    )
+    out <- checkColormapCompatibility(ecm_manyAssays, sce)
+
     expect_identical(
         checkColormapCompatibility(ecm_manyAssays, sce),
-        FALSE
+        c(
+            "More assays in colormap (9) than experiment (2)",
+            "assay `counts` in colormap missing in experiment",
+            "assay `cufflinks_fpkm` in colormap missing in experiment",
+            "assay `cufflinks_fpkm` in colormap missing in experiment",
+            "assay `rsem_tpm` in colormap missing in experiment",
+            "assay `another` in colormap missing in experiment",
+            "assay `yet_another` in colormap missing in experiment",
+            "assay `last_one_i_promise` in colormap missing in experiment",
+            "assay `oh_well` in colormap missing in experiment")
     )
 
 })
@@ -661,15 +666,8 @@ test_that("checkColormapCompatibility catches superfluous assays colormap", {
         )
     )
 
-    expect_error(
-        checkColormapCompatibility(nullECM, sce),
-        "assay `dummy1` in colormap missing in experiment",
-        fixed=TRUE
-    )
-    expect_identical(
-        checkColormapCompatibility(nullECM, sce),
-        FALSE
-    )
+    out <- checkColormapCompatibility(nullECM, sce)
+    expect_identical(out, "assay `dummy1` in colormap missing in experiment")
 
 })
 
@@ -683,15 +681,8 @@ test_that("checkColormapCompatibility catches superfluous colData colormap", {
         )
     )
 
-    expect_error(
-        checkColormapCompatibility(missingColData, sce),
-        "colData `dummy2` in colormap missing in experiment",
-        fixed=TRUE
-    )
-    expect_identical(
-        checkColormapCompatibility(missingColData, sce),
-        FALSE
-    )
+    out <- checkColormapCompatibility(missingColData, sce)
+    expect_identical(out, "colData `dummy2` in colormap missing in experiment")
 
 })
 
@@ -706,15 +697,8 @@ test_that("checkColormapCompatibility catches superfluous rowData colormap", {
         )
     )
 
-    expect_error(
-        checkColormapCompatibility(missingRowData, sce),
-        "rowData `dummy2` in colormap missing in experiment",
-        fixed=TRUE
-    )
-    expect_identical(
-        checkColormapCompatibility(missingRowData, sce),
-        FALSE
-    )
+    out <- checkColormapCompatibility(missingRowData, sce)
+    expect_identical(out, "rowData `dummy2` in colormap missing in experiment")
 
 })
 
@@ -729,10 +713,8 @@ test_that("checkColormapCompatibility accepts compatible colormap", {
         global_continuous=ASSAY_CONTINUOUS_COLORS
     )
 
-    expect_identical(
-        checkColormapCompatibility(ecm, sce),
-        TRUE
-    )
+    out <- checkColormapCompatibility(ecm, sce)
+    expect_null(out)
 
 })
 

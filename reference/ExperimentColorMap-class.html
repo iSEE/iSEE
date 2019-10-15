@@ -324,20 +324,20 @@ and <code>i</code> is a character or numeric index.</p>
 #&gt;     cols &lt;- fn_cols(seq(begin, end, length.out = n))/255
 #&gt;     grDevices::rgb(cols[, 1], cols[, 2], cols[, 3], alpha = alpha)
 #&gt; }
-#&gt; &lt;bytecode: 0xd46d8b8&gt;
+#&gt; &lt;bytecode: 0x1a13ca48&gt;
 #&gt; &lt;environment: namespace:viridisLite&gt;</div><div class='input'><span class='fu'>assayColorMap</span>(<span class='no'>ecm</span>, <span class='st'>"counts"</span>)</div><div class='output co'>#&gt; function(n){
 #&gt;   c("black", "brown", "red", "orange", "yellow")
 #&gt; }
-#&gt; &lt;environment: 0x13f63b68&gt;</div><div class='input'><span class='fu'>assayColorMap</span>(<span class='no'>ecm</span>, <span class='st'>"cufflinks_fpkm"</span>)</div><div class='output co'>#&gt; function (n, alpha = 1, begin = 0, end = 1, direction = 1) 
+#&gt; &lt;environment: 0x106cb7f0&gt;</div><div class='input'><span class='fu'>assayColorMap</span>(<span class='no'>ecm</span>, <span class='st'>"cufflinks_fpkm"</span>)</div><div class='output co'>#&gt; function (n, alpha = 1, begin = 0, end = 1, direction = 1) 
 #&gt; {
 #&gt;     viridis(n, alpha, begin, end, direction, option = "inferno")
 #&gt; }
-#&gt; &lt;bytecode: 0x138e5b00&gt;
+#&gt; &lt;bytecode: 0x19b10698&gt;
 #&gt; &lt;environment: namespace:viridisLite&gt;</div><div class='input'><span class='fu'>assay</span>(<span class='no'>ecm</span>, <span class='st'>"cufflinks_fpkm"</span>) <span class='co'># alias</span></div><div class='output co'>#&gt; function (n, alpha = 1, begin = 0, end = 1, direction = 1) 
 #&gt; {
 #&gt;     viridis(n, alpha, begin, end, direction, option = "inferno")
 #&gt; }
-#&gt; &lt;bytecode: 0x138e5b00&gt;
+#&gt; &lt;bytecode: 0x19b10698&gt;
 #&gt; &lt;environment: namespace:viridisLite&gt;</div><div class='input'>
 <span class='co'># colData colormaps</span>
 <span class='fu'>colDataColorMap</span>(<span class='no'>ecm</span>, <span class='st'>"passes_qc_checks_s"</span>)</div><div class='output co'>#&gt; function(n){
@@ -345,7 +345,7 @@ and <code>i</code> is a character or numeric index.</p>
 #&gt;   names(qc_colors) &lt;- c("Y", "N")
 #&gt;   return(qc_colors)
 #&gt; }
-#&gt; &lt;environment: 0x13f63b68&gt;</div><div class='input'><span class='fu'>colDataColorMap</span>(<span class='no'>ecm</span>, <span class='st'>"undefined"</span>)</div><div class='output co'>#&gt; function (n, alpha = 1, begin = 0, end = 1, direction = 1, option = "D") 
+#&gt; &lt;environment: 0x106cb7f0&gt;</div><div class='input'><span class='fu'>colDataColorMap</span>(<span class='no'>ecm</span>, <span class='st'>"undefined"</span>)</div><div class='output co'>#&gt; function (n, alpha = 1, begin = 0, end = 1, direction = 1, option = "D") 
 #&gt; {
 #&gt;     if (begin &lt; 0 | begin &gt; 1 | end &lt; 0 | end &gt; 1) {
 #&gt;         stop("begin and end must be in [0,1]")
@@ -372,7 +372,7 @@ and <code>i</code> is a character or numeric index.</p>
 #&gt;     cols &lt;- fn_cols(seq(begin, end, length.out = n))/255
 #&gt;     grDevices::rgb(cols[, 1], cols[, 2], cols[, 3], alpha = alpha)
 #&gt; }
-#&gt; &lt;bytecode: 0xd46d8b8&gt;
+#&gt; &lt;bytecode: 0x1a13ca48&gt;
 #&gt; &lt;environment: namespace:viridisLite&gt;</div><div class='input'>
 <span class='co'># rowData colormaps</span>
 <span class='fu'>rowDataColorMap</span>(<span class='no'>ecm</span>, <span class='st'>"undefined"</span>)</div><div class='output co'>#&gt; function (n, alpha = 1, begin = 0, end = 1, direction = 1, option = "D") 
@@ -402,27 +402,27 @@ and <code>i</code> is a character or numeric index.</p>
 #&gt;     cols &lt;- fn_cols(seq(begin, end, length.out = n))/255
 #&gt;     grDevices::rgb(cols[, 1], cols[, 2], cols[, 3], alpha = alpha)
 #&gt; }
-#&gt; &lt;bytecode: 0xd46d8b8&gt;
+#&gt; &lt;bytecode: 0x1a13ca48&gt;
 #&gt; &lt;environment: namespace:viridisLite&gt;</div><div class='input'>
 <span class='co'># generic accessors</span>
 <span class='fu'>assays</span>(<span class='no'>ecm</span>)</div><div class='output co'>#&gt; $counts
 #&gt; function(n){
 #&gt;   c("black", "brown", "red", "orange", "yellow")
 #&gt; }
-#&gt; &lt;environment: 0x13f63b68&gt;
+#&gt; &lt;environment: 0x106cb7f0&gt;
 #&gt; 
 #&gt; $tophat_counts
 #&gt; function(n){
 #&gt;   c("black", "brown", "red", "orange", "yellow")
 #&gt; }
-#&gt; &lt;environment: 0x13f63b68&gt;
+#&gt; &lt;environment: 0x106cb7f0&gt;
 #&gt; 
 #&gt; $cufflinks_fpkm
 #&gt; function (n, alpha = 1, begin = 0, end = 1, direction = 1) 
 #&gt; {
 #&gt;     viridis(n, alpha, begin, end, direction, option = "inferno")
 #&gt; }
-#&gt; &lt;bytecode: 0x138e5b00&gt;
+#&gt; &lt;bytecode: 0x19b10698&gt;
 #&gt; &lt;environment: namespace:viridisLite&gt;
 #&gt; 
 #&gt; $rsem_tpm
@@ -430,7 +430,7 @@ and <code>i</code> is a character or numeric index.</p>
 #&gt; {
 #&gt;     viridis(n, alpha, begin, end, direction, option = "plasma")
 #&gt; }
-#&gt; &lt;bytecode: 0x137f5eb0&gt;
+#&gt; &lt;bytecode: 0x19ba5f90&gt;
 #&gt; &lt;environment: namespace:viridisLite&gt;
 #&gt; </div><div class='input'><span class='fu'>assayNames</span>(<span class='no'>ecm</span>)</div><div class='output co'>#&gt; [1] "counts"         "tophat_counts"  "cufflinks_fpkm" "rsem_tpm"      </div><div class='input'>
 <span class='co'># Setters ----</span>

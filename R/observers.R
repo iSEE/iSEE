@@ -2309,7 +2309,11 @@
                                     height="500px")
                             ),
                             column(width=6,
-                                uiOutput(.input_FUN(.heatMapFeaturesDiagnostic))
+                                verticalLayout(
+                                    uiOutput(.input_FUN(.heatMapModalSummary)),
+                                    tableOutput(.input_FUN(.heatMapModalTable)),
+                                    uiOutput(.input_FUN(.heatMapModalNotShown))
+                                )
                             )
                         ),
                         fluidRow(
@@ -2384,17 +2388,13 @@
                     value=paste0(c(new_names, ""), collapse="\n"))
             })
 
-            output[[.input_FUN(.heatMapFeaturesDiagnostic)]] <- renderUI({
+            output[[.input_FUN(.heatMapModalSummary)]] <- renderUI({
                 current_text_value <- input[[.input_FUN(.heatMapFeaturesTextInput)]]
                 current_names <- strsplit(current_text_value, "\n")[[1]]
-                tags_out <- tagList()
-
-                # Add section if there are any invalid entries
                 invalid_ids <- which(!current_names %in% names(feature_choices))
                 invalid_count <- length(invalid_ids)
                 if (invalid_count > 0) {
-
-                    tags_out <- append(tags_out, tagList(
+                    return(tagList(
                         p(
                             format(invalid_count, big.mark=","), " ",
                             ifelse(invalid_count > 1, "entries", "entry"), " ",
@@ -2404,25 +2404,32 @@
                             "and will be ignored.",
                             ifelse(invalid_count > 10, "The first 10 are shown below.", ""))
                     ))
-
-                    tags_out <- append(tags_out, tagList(
-                        tags$ul(tagList(
-                            lapply(head(invalid_ids, 10), function(s) {
-                                tags$li("'", current_names[s], "'", sprintf("(line %s)", s))
-                            })
-                        ))
-                    ))
-
-                    if (invalid_count > 10) {
-                        tags_out <- append(tags_out, tagList(
-                            p(sprintf("(%s more ...)", format(invalid_count-10, big.mark=",")))
-                        ))
-                    }
-
                 }
+                return(list())
+            })
 
-                if (length(tags_out) > 1) { # The <p> tag already counts for 1.
-                    return(tags_out)
+            output[[.input_FUN(.heatMapModalTable)]] <- renderTable({
+                current_text_value <- input[[.input_FUN(.heatMapFeaturesTextInput)]]
+                current_names <- strsplit(current_text_value, "\n")[[1]]
+                invalid_ids <- which(!current_names %in% names(feature_choices))
+                invalid_count <- length(invalid_ids)
+                if (invalid_count > 0) {
+                    df <- data.frame(
+                        Feature=current_names[head(invalid_ids, 10)],
+                        Line=head(invalid_ids, 10)
+                    )
+                    return(df)
+                }
+                return(NULL)
+            }, striped=TRUE)
+
+            output[[.input_FUN(.heatMapModalNotShown)]] <- renderUI({
+                current_text_value <- input[[.input_FUN(.heatMapFeaturesTextInput)]]
+                current_names <- strsplit(current_text_value, "\n")[[1]]
+                invalid_ids <- which(!current_names %in% names(feature_choices))
+                invalid_count <- length(invalid_ids)
+                if (invalid_count > 10) {
+                    return(tagList(p(sprintf("(%s more ...)", format(invalid_count-10, big.mark=",")))))
                 }
                 return(list())
             })

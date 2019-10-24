@@ -60,7 +60,10 @@
 .heatMapFeaturesTextInput <- "FeatTextInput"
 .heatMapFeaturesTextSubmit <- "FeatTextSubmit"
 .heatMapFeaturesFileInput <- "FeatFileInput"
-.heatMapFeaturesDiagnostic <- "FeatDiagnostic"
+
+.heatMapModalSummary <- "ModalSummary"
+.heatMapModalTable <- "ModalTable"
+.heatMapModalNotShown <- "ModalNotShow"
 
 # Heatmap plotting parameters. ----
 .heatMapAssay <- "Assay"

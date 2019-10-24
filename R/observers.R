@@ -2311,8 +2311,7 @@
                             column(width=6,
                                 verticalLayout(
                                     uiOutput(.input_FUN(.heatMapModalSummary)),
-                                    tableOutput(.input_FUN(.heatMapModalTable)),
-                                    uiOutput(.input_FUN(.heatMapModalNotShown))
+                                    tableOutput(.input_FUN(.heatMapModalTable))
                                 )
                             )
                         ),
@@ -2422,17 +2421,6 @@
                 }
                 return(NULL)
             }, striped=TRUE)
-
-            output[[.input_FUN(.heatMapModalNotShown)]] <- renderUI({
-                current_text_value <- input[[.input_FUN(.heatMapFeaturesTextInput)]]
-                current_names <- strsplit(current_text_value, "\n")[[1]]
-                invalid_ids <- which(!current_names %in% names(feature_choices))
-                invalid_count <- length(invalid_ids)
-                if (invalid_count > 10) {
-                    return(tagList(p(sprintf("(%s more ...)", format(invalid_count-10, big.mark=",")))))
-                }
-                return(list())
-            })
 
             # Triggering an update of the selected elements : clear features, trigger replotting (caught by validate)
             clear_button <- paste0(plot_name, "_", .heatMapClearFeatures)

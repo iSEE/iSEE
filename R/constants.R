@@ -63,7 +63,6 @@
 
 .heatMapModalSummary <- "ModalSummary"
 .heatMapModalTable <- "ModalTable"
-.heatMapModalNotShown <- "ModalNotShow"
 
 # Heatmap plotting parameters. ----
 .heatMapAssay <- "Assay"

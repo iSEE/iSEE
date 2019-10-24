@@ -2274,7 +2274,7 @@
 #'
 #' @author Aaron Lun
 #'
-#' @importFrom shiny observeEvent isolate renderUI renderPlot updateSelectizeInput
+#' @importFrom shiny observeEvent isolate renderUI renderPlot renderTable updateSelectizeInput uiOutput tableOutput
 #' @importFrom shinyAce updateAceEditor
 #' @rdname INTERNAL_heatmap_observers
 .heatmap_observers <- function(input, output, session, se, colormap, pObjects, rObjects) {

@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.5.12}{
+\itemize{
+    \item Support gene list input from \code{aceEditor} and \code{fileInput}.
+}
+}
+
 \section{iSEE VERSION 1.5.11}{
 \itemize{
     \item Rename \code{isColorMapCompatible} to \code{checkColormapCompatibility}.

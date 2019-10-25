@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.5.13}{
+\itemize{
+    \item Order features selected in heat map selectize from top to bottom.
+}
+}
+
 \section{iSEE VERSION 1.5.12}{
 \itemize{
     \item Support gene list input from \code{aceEditor} and \code{fileInput}.

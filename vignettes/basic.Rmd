@@ -311,6 +311,9 @@ Typically, these tables are used to link to other plots to determine the samples
 These correspond to the `assays` stored in the `SummarizedExperiment` object, where features (e.g., genes) are the rows and samples are the columns.
 
 User can select features (rows) to display from the selectize widget (which supports autocompletion), or also via other panels, like row data plots or row statistics tables. 
+In addition, users can rapidly import custom lists of feature names using a modal popup that provides an [Ace editor](https://ace.c9.io/) where they can directly type of paste feature names, and a file upload button that accepts text files containing one feature name per line.
+Users should remember to click the "Apply" button before closing the modal, to update the heat map with the new list of features. 
+
 The "Suggest feature order" button clusters the rows, and also rearranges the elements in the selectize according to the clustering.
 It is also possible to choose which assay type is displayed (`"logcounts"` being the default choice, if available). 
 Samples in the heat map can also be annotated, simply by selecting relevant column metadata.

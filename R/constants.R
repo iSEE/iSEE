@@ -56,6 +56,14 @@
 .customColSource <- "ColumnSource"
 .customRowSource <- "RowSource"
 
+# Heatmap modal ----
+.heatMapFeaturesTextInput <- "FeatTextInput"
+.heatMapFeaturesTextSubmit <- "FeatTextSubmit"
+.heatMapFeaturesFileInput <- "FeatFileInput"
+
+.heatMapModalSummary <- "ModalSummary"
+.heatMapModalTable <- "ModalTable"
+
 # Heatmap plotting parameters. ----
 .heatMapAssay <- "Assay"
 
@@ -165,6 +173,7 @@
 .selectMultiSaved <- "SelectMultiSaved"
 
 .noSelection <- "---"
+.customSelection <- "Custom ..."
 
 # Zooming parameters. ----
 .zoomData <- "ZoomData"

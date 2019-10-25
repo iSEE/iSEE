@@ -159,9 +159,9 @@
         org_pObjects$active_panels <- rObjects$active_panels
 
         showModal(modalDialog(
-            title = "Panel organization", size = "m", fade = TRUE,
-            footer = NULL, easyClose = TRUE,
-            actionButton("update_ui", "Apply settings", icon=icon("object-ungroup"), width = '100%'),
+            title="Panel organization", size="m", fade=TRUE,
+            footer=NULL, easyClose=TRUE,
+            actionButton("update_ui", "Apply settings", icon=icon("object-ungroup"), width='100%'),
             hr(),
             selectizeInput("panel_order", label=NULL, choices=ordered_panel_choices, multiple=TRUE,
                 selected=active_panels,
@@ -1772,7 +1772,7 @@
                     return(NULL)
                 }
 
-                select_out <- .process_custom_selections(param_choices, pObjects$memory, select_all = customSendAll)
+                select_out <- .process_custom_selections(param_choices, pObjects$memory, select_all=customSendAll)
                 brushes <- lassos <- histories <- list()
 
                 for (i in seq_along(select_out$transmitter)) {
@@ -2274,7 +2274,8 @@
 #'
 #' @author Aaron Lun
 #'
-#' @importFrom shiny observeEvent isolate renderUI renderPlot updateSelectizeInput
+#' @importFrom shiny observeEvent isolate renderUI renderPlot renderTable updateSelectizeInput uiOutput tableOutput verticalLayout
+#' @importFrom shinyAce updateAceEditor
 #' @rdname INTERNAL_heatmap_observers
 .heatmap_observers <- function(input, output, session, se, colormap, pObjects, rObjects) {
     feature_choices <- seq_len(nrow(se))
@@ -2286,12 +2287,47 @@
             mode0 <- "heatMapPlot"
             id0 <- id
             plot_name <- paste0(mode0, id0)
+            .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
             # Triggering an update of the selected elements : import features
-            import_button <- paste0(plot_name, "_", .heatMapImportFeatures)
+            import_button <- .input_FUN(.heatMapImportFeatures)
             observeEvent(input[[import_button]], {
                 origin <- pObjects$memory[[mode0]][id0, .heatMapImportSource]
-                if (origin == .noSelection) {
+                if (origin == .customSelection) {
+                    current_choices <- rownames(se)[pObjects$memory[[mode0]][[.heatMapFeatName]][[id0]]]
+                    showModal(modalDialog(
+                        title=sprintf("Features for %s", .decode_panel_name(mode0, id0)),
+                        size="l", fade=TRUE,
+                        footer=NULL, easyClose=TRUE,
+                        fluidRow(
+                            column(width=6,
+                                aceEditor(.input_FUN(.heatMapFeaturesTextInput),
+                                    mode="text",
+                                    theme="xcode",
+                                    autoComplete="disabled",
+                                    value=paste0(c(current_choices, ""), collapse="\n"),
+                                    height="500px")
+                            ),
+                            column(width=6,
+                                verticalLayout(
+                                    uiOutput(.input_FUN(.heatMapModalSummary)),
+                                    tableOutput(.input_FUN(.heatMapModalTable))
+                                )
+                            )
+                        ),
+                        fluidRow(
+                            column(width=1, actionButton(.input_FUN(.heatMapFeaturesTextSubmit), label="Apply")),
+                            column(width=5, fileInput(
+                                inputId=.input_FUN(.heatMapFeaturesFileInput),
+                                label=NULL, buttonLabel="Import from file ...",
+                                placeholder="No file selected",
+                                accept=c(
+                                    "text/csv", "text/comma-separated-values,text/plain", ".csv",
+                                    "text/txt", ".txt",
+                                    "text/tsv", ".tsv"
+                                )))
+                        )
+                    ))
                     return(NULL)
                 }
                 enc <- .encode_panel_name(origin)
@@ -2317,9 +2353,74 @@
 
                 combined <- union(pObjects$memory[[mode0]][id0, .heatMapFeatName][[1]], incoming)
                 updateSelectizeInput(
-                    session, paste0(plot_name, "_", .heatMapFeatName), choices=feature_choices,
+                    session, .input_FUN(.heatMapFeaturesTextInput), choices=feature_choices,
                     server=TRUE, selected=combined)
             }, ignoreInit=TRUE)
+
+            .get_feature_names_from_input <- function() {
+                # Split the input field value into a character vector
+                strsplit(input[[.input_FUN(.heatMapFeaturesTextInput)]], "\n")[[1]]
+            }
+
+            observeEvent(input[[.input_FUN(.heatMapFeaturesTextSubmit)]], {
+                submitted_names <- .get_feature_names_from_input()
+                matched_ids <- unique(setdiff(feature_choices[submitted_names], NA))
+                updateSelectizeInput(
+                    session, .input_FUN(.heatMapFeatName), choices=feature_choices,
+                    server=TRUE, selected=matched_ids)
+                new_value <- paste0(c(rownames(se)[matched_ids], ""), collapse="\n")
+                updateAceEditor(
+                    session, .input_FUN(.heatMapFeaturesTextInput),
+                    value=new_value)
+            })
+
+            observeEvent(input[[.input_FUN(.heatMapFeaturesFileInput)]], {
+                current_names <- .get_feature_names_from_input()
+                input_filepath <- input[[.input_FUN(.heatMapFeaturesFileInput)]][["datapath"]]
+                names_from_file <- tryCatch(
+                    scan(file=input_filepath, what="character"),
+                    error=function(err){paste0("Could not read file\n", conditionMessage(err))}
+                )
+                new_names <- c(current_names, names_from_file)
+                updateAceEditor(
+                    session, .input_FUN(.heatMapFeaturesTextInput),
+                    value=paste0(c(new_names, ""), collapse="\n"))
+            })
+
+            output[[.input_FUN(.heatMapModalSummary)]] <- renderUI({
+                current_text_value <- input[[.input_FUN(.heatMapFeaturesTextInput)]]
+                current_names <- strsplit(current_text_value, "\n")[[1]]
+                invalid_ids <- which(!current_names %in% names(feature_choices))
+                invalid_count <- length(invalid_ids)
+                if (invalid_count > 0) {
+                    return(tagList(
+                        p(
+                            format(invalid_count, big.mark=","), " ",
+                            ifelse(invalid_count > 1, "entries", "entry"), " ",
+                            ifelse(invalid_count > 1, "do", "does"), " ",
+                            "not exist in",
+                            code("rownames(se)"),
+                            "and will be ignored.",
+                            ifelse(invalid_count > 10, "The first 10 are shown below.", ""))
+                    ))
+                }
+                return(list())
+            })
+
+            output[[.input_FUN(.heatMapModalTable)]] <- renderTable({
+                current_text_value <- input[[.input_FUN(.heatMapFeaturesTextInput)]]
+                current_names <- strsplit(current_text_value, "\n")[[1]]
+                invalid_ids <- which(!current_names %in% names(feature_choices))
+                invalid_count <- length(invalid_ids)
+                if (invalid_count > 0) {
+                    df <- data.frame(
+                        Feature=current_names[head(invalid_ids, 10)],
+                        Line=head(invalid_ids, 10)
+                    )
+                    return(df)
+                }
+                return(NULL)
+            }, striped=TRUE)
 
             # Triggering an update of the selected elements : clear features, trigger replotting (caught by validate)
             clear_button <- paste0(plot_name, "_", .heatMapClearFeatures)

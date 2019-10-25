@@ -151,7 +151,7 @@
     tab_by_col <- c(.noSelection, link_sources$col_tab)
     row_selectable <- c(.noSelection, link_sources$row_plot)
     col_selectable <- c(.noSelection, link_sources$col_plot)
-    heatmap_sources <- c(.noSelection, link_sources$row_plot, link_sources$row_tab)
+    heatmap_sources <- c(.customSelection, link_sources$row_plot, link_sources$row_tab)
 
     for (i in seq_len(nrow(active_panels))) {
         mode <- active_panels$Type[i]
@@ -1150,7 +1150,7 @@
         deleteFUN <- disabled
         deleteLabel <- .buttonEmptyHistoryLabel
     }
-    
+
     # initialize active "Save" button only if a preconfigured active selection exists
     saveFUN <- identity
     saveLabel <- .buttonSaveLabel

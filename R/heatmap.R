@@ -54,7 +54,8 @@
     data_cmds <- .add_command(data_cmds, c(
       sprintf("value.mat <- as.matrix(assay(se, %i)[%s, , drop=FALSE]);",
               assay_choice, paste(deparse(genes_selected_y), collapse="\n")),
-      "plot.data <- reshape2::melt(value.mat, varnames=c('Y', 'X'));"
+      "plot.data <- reshape2::melt(value.mat, varnames=c('Y', 'X'));",
+      "plot.data$Y <- factor(plot.data$Y, rev(rownames(value.mat)))"
     ))
 
     # Arrange cells according to the selected colData columns

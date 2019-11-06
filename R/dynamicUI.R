@@ -57,7 +57,7 @@
 #'
 #' @author Kevin Rue-Albrecht
 .showPanel <- function(mode, id, active_panels, width=4L, height=500L) {
-    active_panels <- rbind(active_panels, DataFrame(Type=mode, ID=id, Width=width, Height=height))
+    active_panels <- rbind(DataFrame(active_panels), DataFrame(Type=mode, ID=id, Width=width, Height=height))
 
     active_panels
 }

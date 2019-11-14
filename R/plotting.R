@@ -1668,8 +1668,8 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
                 brush_src <- lasso_src <- sprintf("all_select_histories[['%s']][[%i]]", transmitter, i)
 
                 # TODO: get rid of some of these checks once UI uses selectInput for .selectMultiSaved.
-                use_brush <- !is.null(brush_val) && !is.na(brush_val) && !.is_lasso(brush_val)
-                use_lasso <- !is.null(lasso_val) && !is.na(lasso_val) && .is_lasso(lasso_val)
+                use_brush <- !is.null(brush_val) && !any(is.na(brush_val)) && !.is_lasso(brush_val)
+                use_lasso <- !is.null(lasso_val) && !any(is.na(lasso_val)) && .is_lasso(lasso_val)
             }
 
             if (use_brush || use_lasso) {

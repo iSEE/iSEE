@@ -1,6 +1,21 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.7.1}{
+\itemize{
+    \item Fix \code{rbind} of \code{data.frame} and \code{DataFrame}.
+    \item Fix error related to using \code{&&} with variable length greater than 1.
+    \item Replace deprecated scater argument.
+    \item Replace deprecated functions: \code{clearSpikes}, \code{clearSizeFactors}.
+}
+}
+
+\section{iSEE VERSION 1.7.0}{
+\itemize{
+    \item Bioconductor release.
+}
+}
+
 \section{iSEE VERSION 1.5.13}{
 \itemize{
     \item Order features selected in heat map selectize from top to bottom.
@@ -61,9 +76,9 @@
 
 \section{iSEE VERSION 1.5.4}{
 \itemize{
-    \item Added support for file upload with server re-initialization.
-    \item Moved observers to separate file. Exclude from code coverage.
-    \item Updating calls to \code{ReprocessedAllenData()} to load only \code{tophat_counts} assay.
+    \item Add support for file upload with server re-initialization.
+    \item Move observers to separate file. Exclude from code coverage.
+    \item Update calls to \code{ReprocessedAllenData()} to load only \code{tophat_counts} assay.
 }
 }
 
@@ -189,7 +204,7 @@
 
 \section{iSEE VERSION 1.1.12}{
 \itemize{
-    \item Updated NEWS file.
+    \item Update NEWS file.
 }
 }
 
@@ -223,7 +238,7 @@
 
 \section{iSEE VERSION 1.1.7}{
 \itemize{
-    \item Resolved BiocManager message.
+    \item Resolve \code{BiocManager} message.
 }
 }
 
@@ -244,7 +259,7 @@
 \section{iSEE VERSION 1.1.4}{
 \itemize{
     \item Split \code{?defaults} help page by panel type.
-    \item Generalized support for custome data plots and statistics tables.
+    \item Generalize support for custom data plots and statistics tables.
 }
 }
 
@@ -255,7 +270,7 @@
     \item Split vignette into three: basic, advanced, ExperimentColorMap.
     \item Fix initialization of reduced dimensions with a single plot axis choice.
     \item Substitute discouraged use of \code{sapply}.
-    \item Moved roxygen \code{importFrom} instructions closer to the relevant code.
+    \item Move roxygen \code{importFrom} instructions closer to the relevant code.
     \item Increase unit test coverage.
     \item Consistent use of "colormap" through the package.
     \item Update installation instructions.
@@ -306,7 +321,7 @@
     \item Add grid-based visual point downsampling for faster plotting, including control of resolution.
     \item Add button "Clear features" for heat maps.
     \item Reorganize buttons in heat map panels.
-    \item Maintainer badge transferred to Federico.
+    \item Transfer maintainer badge to Federico.
 }
 }
 

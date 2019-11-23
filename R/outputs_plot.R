@@ -97,10 +97,41 @@
 #' @importFrom shiny renderUI
 #' @rdname INTERNAL_define_link_info_output
 .define_link_info_output <- function(mode, id, pObjects, rObjects) {
+    plot_name <- paste0(mode, id)
     link_field <- paste0(plot_name, "_", .panelLinkInfo)
     output[[link_field]] <- renderUI({
         force(rObjects[[link_field]])
         .define_plot_links(plot_name, pObjects$memory, pObjects$selection_links)
     })
     invisible(NULL)
+}
+
+#' Create plot UI
+#'
+#' Create the \code{\link{plotOutput}} object for a given panel containing a single plot.
+#'
+#' @inheritParams .define_plot_parameter_observers
+#' @param height Integer scalar specifying the height of the plot in pixels.
+#' @param brush_direction String specifying the direction of brushing, i.e., \code{"x"}, \code{"y"} or \code{"xy"}.
+#' @param brush_fill String containing a color to use for the fill of the brush.
+#' @param brush_stroke String containing a color to use for the stroke of the brush.
+#'
+#' @return The output of \code{\link{plotOutput}} with relevant parametrization.
+#'
+#' @author Aaron Lun
+#'
+#' @rdname INTERNAL_create_plot_ui
+.create_plot_ui <- function(mode, id, height, brush_direction, brush_fill, brush_stroke) {
+    plot_name <- paste0(mode, id)
+    .input_FUN <- function(field) { paste0(plot_name, "_", field) }
+
+    brush.opts <- brushOpts(.input_FUN(.brushField), resetOnNew=TRUE, delay=2000,
+        direction=brush_direction, fill=brush_fill, stroke=brush_stroke, 
+        opacity=.brushFillOpacity)
+
+    dblclick <- .input_FUN(.zoomClick)
+    clickopt <- .input_FUN(.lassoClick)
+    panel_height <- paste0(height, "px")
+
+    plotOutput(plot_name, brush=brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
 }

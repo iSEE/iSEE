@@ -82,3 +82,19 @@
         table_field=.colorByColTable,
         choices=sample_choices)
 }
+
+#' Create column dot plot UI
+#'
+#' Create the \code{\link{plotOutput}} object for a given panel of the column dot family.
+#' 
+#' @inheritParams .create_plot_ui
+#' 
+#' @return The output of \code{\link{plotOutput}} with relevant parametrization.
+#' Brushing direction is set to \code{"xy"}.
+#' 
+#' @author Aaron Lun
+#' 
+#' @rdname INTERNAL_create_column_dot_plot_ui
+.create_column_dot_plot_ui <- function(mode, id, height, brush_fill, brush_stroke) {
+    .create_plot_ui(mode, id, height, brush_direction="xy", brush_fill=brush_fill, brush_stroke=brush_stroke)
+}

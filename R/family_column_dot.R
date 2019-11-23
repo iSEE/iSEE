@@ -18,7 +18,7 @@
     link_sources <- .define_link_sources(active_panels)
     tab_by_row <- c(.noSelection, link_sources$row_tab)
     tab_by_col <- c(.noSelection, link_sources$col_tab)
-    row_selectable <- c(.noSelection, link_sources$row_plot)
+    col_selectable <- c(.noSelection, link_sources$col_plot)
 
     list(
         .create_visual_box_for_column_plots(mode, id, param_choices, tab_by_row, tab_by_col, se), 

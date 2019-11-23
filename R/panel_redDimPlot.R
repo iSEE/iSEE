@@ -13,7 +13,7 @@
 #'
 #' @author Aaron Lun
 #'
-#' @importFrom SingleCellExperiment reducedDim
+#' @importFrom SingleCellExperiment reducedDim reducedDimNames
 #' @importFrom shiny selectInput
 .create_redDimPlot_parameter_ui <- function(mode, id, param_choices, se, active_panels) {
     cur_reddim <- param_choices[[.redDimType]]
@@ -26,26 +26,22 @@
 
     plot.param <- list(
         selectInput(.input_FUN(.redDimType), label="Type",
-            choices=red_dim_names, selected=cur_reddim),
+            choices=.get_internal_info(se, "red_dim_names"), selected=cur_reddim),
         selectInput(.input_FUN(.redDimXAxis), label="Dimension 1",
             choices=choices, selected=param_choices[[.redDimXAxis]]),
         selectInput(.input_FUN(.redDimYAxis), label="Dimension 2",
             choices=choices, selected=param_choices[[.redDimYAxis]])
     )
        
-    list(
-        do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
-            title="Data parameters", open=param_choices[[.dataParamBoxOpen]]), plot.param)),
-        .create_column_dot_parameter_ui(mode, id, param_choices=param_choices, 
-            se=se, active_panels=active_panels)
-    )
+    do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
+        title="Data parameters", open=param_choices[[.dataParamBoxOpen]]), plot.param))
 }
 
 #' Define reduced dimension plot observers
 #'
 #' Define a series of observers to track changes to the standard parameters for a given reduced dimension plot panel.
 #'
-#' @param mode String specifying the encoded panel type (e.g., \code{"redDimPlot"}).
+#' @param mode String specifying the encoded panel type - this should be \code{"redDimPlot"}.
 #' @param id Integer specifying the index of the current panel.
 #' @param input The Shiny input object from the server function.
 #' @param output The Shiny output object from the server function.

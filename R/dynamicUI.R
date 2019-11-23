@@ -161,6 +161,39 @@
         param_choices <- memory[[mode]][id,]
         .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
+if (mode %in% c("redDimPlot")) { 
+        #### The new world begins here! ###
+
+        families <- list(redDimPlot="column_dot") # TODO: these should be arguments, to account for custom panels.
+        ui_FUNs <- list(redDimPlot=.create_redDimPlot_parameter_ui)
+
+        fill_colors <- c(NULL, brush_fill_color) # TODO: replace NULL with user-supplied values.
+        fill_colors <- fill_colors[!duplicated(names(fill_colors))] # favor user specification.
+        stroke_colors <- c(NULL, brush_stroke_color)
+        stroke_colors <- stroke_colors[!duplicated(names(stroke_colors))] 
+
+        #### Within-loop elements #####
+
+        obj_FUN <- switch(families[[mode]],
+            column_dot=.create_column_dot_plot_ui)
+
+        # Creating the plot fields.
+        obj <- obj_FUN(mode, id, height=active_panels$Height[i],
+            brush_fill=fill_colors[mode], brush_stroke=stroke_colors[mode])
+
+        standard_ui_FUN <- switch(families[[mode]], 
+            column_dot=.create_column_dot_parameter_ui)
+
+        param <- do.call(tags$div, 
+            c(
+                list(class="panel-group", role="tablist"),
+                list(ui_FUNs[[mode]](mode, id, param_choices=param_choices, se=se, active_panels=active_panels)),
+                standard_ui_FUN(mode, id, param_choices=param_choices, se=se, active_panels=active_panels)
+            )
+        )
+        param <- list(param)
+
+} else {
         # Checking what to do with plot-specific parameters (e.g., brushing, clicking, plot height).
         if (! mode %in% c(linked_table_types, "customStatTable")) {
             brush.opts <- brushOpts(.input_FUN(.brushField), resetOnNew=TRUE, delay=2000,
@@ -429,6 +462,7 @@
                 )
             }
         }
+}
 
         # Deciding whether to continue on the current row, or start a new row.
         extra <- cumulative.width + panel_width

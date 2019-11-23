@@ -4,34 +4,26 @@
 #' 
 #' @param se A \linkS4class{SingleCellExperiment} object with precomputed UI information from \code{\link{.precompute_UI_info}}.
 #' @param active_panels A data.frame specifying the currently active panels, see the output of \code{\link{.setup_initial}}.
+#' @param mode String specifying the encoded panel type (e.g., \code{"redDimPlot"}).
+#' @param id Integer specifying the identity of the panel.
+#' @param param_choices A \linkS4class{DataFrame} with one row containing the parameter choices for the current plot.
 #'
-#' @return A function that returns a list of UI elements for parameter selection, given:
-#' \itemize{
-#' \item \code{mode}, string specifying the encoded panel type (e.g., \code{"redDimPlot"}).
-#' \item \code{id}, integer specifying the identity of the panel.
-#' \item \code{param_choices}, a DataFrame with one row containing the parameter choices for the current plot.
-#' }
-#'
-#' @details
-#' This function will spawn another function that will actually be called in \code{\link{.panel_generation}},
-#' to create the standardized UI elements for parameter selection in all panel types of the column dot family.
+#' @return 
+#' A list of standardized UI elements for parameter selection in any panel types of the column dot family.
 #'
 #' @author Aaron Lun
 #'
-#' @rdname INTERNAL_spawn_column_dot_parameter_ui
-.spawn_column_dot_parameter_ui <- function(se, active_panels) {
+#' @rdname INTERNAL_create_column_dot_parameter_ui
+.create_column_dot_parameter_ui <- function(mode, id, param_choices, se, active_panels) {
     link_sources <- .define_link_sources(active_panels)
     tab_by_row <- c(.noSelection, link_sources$row_tab)
     tab_by_col <- c(.noSelection, link_sources$col_tab)
     row_selectable <- c(.noSelection, link_sources$row_plot)
-    col_selectable <- c(.noSelection, link_sources$col_plot)
 
-    function(mode, id, param_choices) {
-        list(
-            .create_visual_box_for_column_plots(mode, id, param_choices, tab_by_row, tab_by_col, se), 
-            .create_selection_param_box(mode, id, param_choices, select_choices, source_type) 
-        )
-    }
+    list(
+        .create_visual_box_for_column_plots(mode, id, param_choices, tab_by_row, tab_by_col, se), 
+        .create_selection_param_box(mode, id, param_choices, col_selectable, "column") 
+    )
 }
 
 # TODO: move to a better place.
@@ -62,7 +54,7 @@
 #' @author Aaron Lun
 #'
 #' @rdname INTERNAL_create_column_dot_parameter_observers
-.create_column_dot_parameter_observers <- function(mode, id, 
+.define_column_dot_parameter_observers <- function(mode, id, 
     input, output, session, pObjects, rObjects) 
 {
     .define_box_observers(mode, id, c(.visualParamBoxOpen, .selectParamBoxOpen), input, pObjects)

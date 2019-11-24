@@ -60,6 +60,8 @@ setMethod(".createParamObservers", "RedDimPlot", function(x, id, se, input, sess
         nonfundamental=character(0),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
+    .define_box_observers(mode, id, .dataParamBoxOpen, input, pObjects)
+
     plot_name <- paste0(mode, id)
     cur_field <- paste0(plot_name, "_", .redDimType)
     dim_fieldX <- paste0(plot_name, "_", .redDimXAxis)

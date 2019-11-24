@@ -1195,14 +1195,16 @@
         print(mode)
         max_plots <- nrow(pObjects$memory[[mode]])
 
-if (mode %in% c("featAssayPlot", "redDimPlot", "colDataPlot")) { 
+if (mode %in% c("featAssayPlot", "redDimPlot", "colDataPlot", "rowDataPlot", "sampAssayPlot")) { 
         ##### new world begins here #####
 
         # To be replaced once we change the underlying architecture to operate directly on objects.
         instance <- switch(mode, 
             redDimPlot=RedDimPlot(),
             featAssayPlot=FeatAssayPlot(),
-            colDataPlot=ColDataPlot()
+            colDataPlot=ColDataPlot(),
+            rowDataPlot=RowDataPlot(),
+            sampAssayPlot=SampAssayPlot()
         ) 
 
         for (id in seq_len(max_plots)) {

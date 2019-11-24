@@ -89,6 +89,8 @@ setMethod(".createParamObservers", "RedDimPlot", function(x, id, se, input, sess
 
         .regenerate_unselected_plot(mode, id, pObjects, rObjects)
     }, ignoreInit=TRUE)
+
+    callNextMethod()
 })
 
 #' @export

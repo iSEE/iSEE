@@ -41,9 +41,9 @@
 #'
 #' @author Aaron Lun
 #'
-#' @rdname INTERNAL_define_visual_param_choice_observer
+#' @rdname INTERNAL_define_visual_parameter_choice_observer
 #' @importFrom shiny observeEvent
-.define_visual_param_choice_observer  <- function(mode, id, pObjects) {
+.define_visual_parameter_choice_observer  <- function(mode, id, input, pObjects) {
     plot_name <- paste0(mode, id)
     cur_field <- paste0(plot_name, "_", .visualParamChoice)
 
@@ -130,8 +130,9 @@
 #' @inheritParams .define_plot_parameter_observers
 #' @param name_field String specifying the name of the parameter that uses the dimension name as input.
 #' @param choices Character vector containing the all possible (unique) choices for the dimension name.
-#' @param in_use_field String specifying the parameter field of \code{pObjects$memory} that indicates whether the panel is currently depending on the dimension name for its plot.
-#' @param in_use_value String specifying the value of the parameter field that indicates whether the panel is currently depending on the dimension name for its plot.
+#' @param in_use_field String specifying the parameter field of \code{pObjects$memory} that indicates whether the panel is currently responsive to the dimension name for its plot.
+#' If \code{NA}, the panel is assumed to always respond on the dimension name.
+#' @param in_use_value String specifying the value of the parameter field that indicates whether the panel is currently responding  to the dimension name for its plot.
 #' @param is_protected Logical scalar indicating if the dimension name is a protected parameter (see \code{\link{.define_plot_parameter_observers}}.
 #' @param table_field String specifying the parameter field of \code{pObjects$memory} that specifies the transmitting table panel for a selection of the dimension name.
 #' @param link_type String specifying the link type for the current parameter to the transmitting table in \code{table_field}, same as \code{param=} in \code{\link{.setup_table_observer}}.
@@ -157,7 +158,7 @@
 .define_dim_name_observer <- function(mode, id, name_field, choices, 
     in_use_field, in_use_value, is_protected, 
     table_field, link_type,
-    pObjects, rObjects, session) 
+    input, session, pObjects, rObjects)
 {
     choice_names <- choices
     choices <- seq_along(choices)
@@ -165,7 +166,9 @@
 
     plot_name <- paste0(mode, id)
     name_input <- paste0(plot_name, "_", name_field)
-    
+
+    always_in_use <- is.na(in_use_field)
+
     observeEvent(input[[name_input]], {
         # Required to defend against empty strings before updateSelectizeInput runs upon re-render.
         req(input[[name_input]])
@@ -177,7 +180,7 @@
         pObjects$memory[[mode]][[name_field]][id] <- matched_input
 
         # Only regenerating if the current parameter is actually in use.
-        if (pObjects$memory[[mode]][id,in_use_field]==in_use_value) {
+        if (always_in_use || pObjects$memory[[mode]][id,in_use_field]==in_use_value) {
             if (!is_protected) {
                 rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
             } else {

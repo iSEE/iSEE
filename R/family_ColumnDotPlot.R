@@ -49,28 +49,39 @@ setMethod(".createParamObservers", "ColumnDotPlot", function(x, id, se, input, s
     mode <- .getEncodedName(x)
     .define_box_observers(mode, id, c(.visualParamBoxOpen, .selectParamBoxOpen), input, pObjects)
 
-    .define_visual_parameter_choice_observer(mode, id, pObjects)
+    .define_visual_parameter_choice_observer(mode, id, input, pObjects)
 
     .define_plot_parameter_observers(mode, id,
         protected=c(.facetByRow, .facetByColumn, .facetRowsByColData, .facetColumnsByColData),
-        nonfundamental=c(.general_nonfundamental,
+        nonfundamental=c(.dot_parameter_nonfundamental,
             .colorByColData, .colorByFeatNameAssay, .shapeByField,
             .shapeByColData, .sizeByField, .sizeByColData, .colorBySampNameColor),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects) 
 
+    feature_choices <- seq_len(nrow(se))
+    names(feature_choices) <- rownames(se)
+    sample_choices <- seq_len(ncol(se))
+    names(sample_choices) <- colnames(se)
+
     .define_dim_name_observer(mode, id,
         name_field=.colorByFeatName,
+        choices=feature_choices,
         in_use_field=.colorByField,
         in_use_value=.colorByFeatNameTitle,
         table_field=.colorByRowTable,
-        choices=feature_choices)
+        is_protected=FALSE,
+        link_type="color",
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .define_dim_name_observer(mode, id,
         name_field=.colorBySampName,
+        choices=sample_choices,
         in_use_field=.colorByField,
         in_use_value=.colorBySampNameTitle,
         table_field=.colorByColTable,
-        choices=sample_choices)
+        is_protected=FALSE,
+        link_type="color",
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export

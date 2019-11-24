@@ -17,8 +17,6 @@
 #' @docType methods
 #' @aliases .defineParamInterface,ColumnDotPlot-method
 #' .createParamObservers,ColumnDotPlot-method
-#' .defineOutputElement,ColumnDotPlot-method
-#' .createRenderedOutput,ColumnDotPlot-method
 #' @name ColumnDotPlot
 NULL
 
@@ -36,67 +34,13 @@ setMethod(".defineParamInterface", "ColumnDotPlot", function(x, id, param_choice
     )
 })
 
-# TODO: move to a better place.
-.dot_parameter_nonfundamental <- c(
-    .colorByDefaultColor, .selectColor, .selectTransAlpha,
-    .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition,
-    .plotPointDownsample, .plotPointSampleRes, .contourAddTitle,
-    .contourColor
-)
-
 #' @export
 setMethod(".createParamObservers", "ColumnDotPlot", function(x, id, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
-    .define_box_observers(mode, id, c(.visualParamBoxOpen, .selectParamBoxOpen), input, pObjects)
-
-    .define_visual_parameter_choice_observer(mode, id, input, pObjects)
-
     .define_plot_parameter_observers(mode, id,
-        protected=c(.facetByRow, .facetByColumn, .facetRowsByColData, .facetColumnsByColData),
-        nonfundamental=c(.dot_parameter_nonfundamental,
-            .colorByColData, .colorByFeatNameAssay, .shapeByField,
-            .shapeByColData, .sizeByField, .sizeByColData, .colorBySampNameColor),
+        protected=character(0),
+        nonfundamental=c(.colorByColData, .colorByFeatNameAssay, 
+            .shapeByColData, .sizeByColData, .colorBySampNameColor),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects) 
-
-    feature_choices <- seq_len(nrow(se))
-    names(feature_choices) <- rownames(se)
-    sample_choices <- seq_len(ncol(se))
-    names(sample_choices) <- colnames(se)
-
-    .define_dim_name_observer(mode, id,
-        name_field=.colorByFeatName,
-        choices=feature_choices,
-        in_use_field=.colorByField,
-        in_use_value=.colorByFeatNameTitle,
-        table_field=.colorByRowTable,
-        is_protected=FALSE,
-        link_type="color",
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-
-    .define_dim_name_observer(mode, id,
-        name_field=.colorBySampName,
-        choices=sample_choices,
-        in_use_field=.colorByField,
-        in_use_value=.colorBySampNameTitle,
-        table_field=.colorByColTable,
-        is_protected=FALSE,
-        link_type="color",
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-})
-
-#' @export
-setMethod(".defineOutputElement", "ColumnDotPlot", function(x, id, height) {
-    mode <- .getEncodedName(x)
-    .create_plot_ui(mode, id, brush_direction="xy", 
-        height=height,
-        brush_fill=brush_fill_color[mode],
-        brush_stroke=brush_stroke_color[mode]
-    )
-})
-
-#' @export
-setMethod(".createRenderedOutput", "ColumnDotPlot", function(x, id, se, colormap, output, pObjects, rObjects) {
-# TODO: move colormap INSIDE se's metadata.
-    .define_plot_output(.getEncodedName(x), id, FUN=.getPlottingFunction(x), selectable=TRUE, 
-        se=se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
+    callNextMethod()
 })

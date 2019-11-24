@@ -5,8 +5,6 @@
 \alias{ColumnDotPlot}
 \alias{.defineParamInterface,ColumnDotPlot-method}
 \alias{.createParamObservers,ColumnDotPlot-method}
-\alias{.defineOutputElement,ColumnDotPlot-method}
-\alias{.createRenderedOutput,ColumnDotPlot-method}
 \title{Column dot plot panel family}
 \description{
 The column dot plot panel family covers all plot panel types where each column of the \linkS4class{SummarizedExperiment} is represented by a point.

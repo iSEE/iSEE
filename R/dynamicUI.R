@@ -161,12 +161,14 @@
         param_choices <- memory[[mode]][id,]
         .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
-if (mode %in% c("redDimPlot")) { 
+if (mode %in% c("redDimPlot", "featAssayPlot")) { 
         #### The new world begins here! ###
         
         # This is a placeholder for the grand future when classes are directly specified as an iSEE() argument.
         instance <- switch(mode, 
-            redDimPlot=RedDimPlot()) 
+            redDimPlot=RedDimPlot(),
+            featAssayPlot=FeatAssayPlot()
+        ) 
 
         obj <- .defineOutputElement(instance, id, height=active_panels$Height[i])
         all.params <- .defineParamInterface(instance, id, param_choices=param_choices, se=se, active_panels=active_panels)

@@ -115,3 +115,6 @@ setClass("ColumnDotPlot", contains="Panel", representation("VIRTUAL"))
 
 #' @export
 setClass("RedDimPlot", contains="ColumnDotPlot")
+
+#' @export
+setClass("FeatAssayPlot", contains="ColumnDotPlot")

@@ -1195,11 +1195,14 @@
         print(mode)
         max_plots <- nrow(pObjects$memory[[mode]])
 
-if (mode=="redDimPlot") { 
+if (mode %in% c("featAssayPlot", "redDimPlot")) { 
         ##### New world begins here #####
 
         # To be replaced once we change the underlying architecture to operate directly on objects.
-        instance <- switch(mode, redDimPlot=RedDimPlot()) 
+        instance <- switch(mode, 
+            redDimPlot=RedDimPlot(),
+            featAssayPlot=FeatAssayPlot()
+        ) 
 
         for (id in seq_len(max_plots)) {
             .createParamObservers(instance, id, se, input=input,
@@ -1458,7 +1461,7 @@ if (mode=="redDimPlot") {
     sample_choices <- seq_len(ncol(se))
     names(sample_choices) <- colnames(se)
 
-    for (mode in c("featAssayPlot", "sampAssayPlot")) {
+    for (mode in c("sampAssayPlot")) {
         max_plots <- nrow(pObjects$memory[[mode]])
         if (mode=="featAssayPlot") {
             byx_field <- .featAssayXAxis

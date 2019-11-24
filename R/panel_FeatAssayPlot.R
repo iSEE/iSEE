@@ -23,7 +23,6 @@ FeatAssayPlot <- function() {
 }
 
 #' @export
-#' @importFrom SingleCellExperiment reducedDim reducedDimNames
 #' @importFrom shiny selectInput radioButtons
 setMethod(".defineParamInterface", "FeatAssayPlot", function(x, id, param_choices, se, active_panels) {
     mode <- .getEncodedName(x)
@@ -72,7 +71,6 @@ setMethod(".defineParamInterface", "FeatAssayPlot", function(x, id, param_choice
 })
 
 #' @export
-#' @importFrom SingleCellExperiment reducedDim
 #' @importFrom shiny observeEvent updateSelectInput
 setMethod(".createParamObservers", "FeatAssayPlot", function(x, id, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
@@ -83,10 +81,6 @@ setMethod(".createParamObservers", "FeatAssayPlot", function(x, id, se, input, s
 
     feature_choices <- seq_len(nrow(se))
     names(feature_choices) <- rownames(se)
-
-    id0 <- id
-    mode0 <- mode
-    plot_name <- paste0(mode0, id0)
 
     .define_dim_name_observer(mode, id, 
         name_field=.featAssayXAxisFeatName, 

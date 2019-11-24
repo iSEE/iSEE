@@ -27,7 +27,7 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #'
 #' The Panel S4 hierarchy enables arbitrary extensions of the \pkg{iSEE} visualization to new panel types.
 #' New panels must follow a few rules in order to interact correctly with the Shiny architecture inside \code{\link{iSEE}}.
-#' 
+#'
 #' @section Defining the parameter interface:
 #' The \code{.defineParamInterface} generic takes the following arguments:
 #' \itemize{
@@ -37,12 +37,12 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #' \item \code{se}, a \linkS4class{SingleCellExperiment} object with precomputed UI information from \code{\link{.precompute_UI_info}}.
 #' \item \code{active_panels}, a data.frame specifying the currently active panels, see the output of \code{\link{.setup_initial}}.
 #' }
-#' Each method is expected to return a list of \code{\link{collapseBox}} elements, 
+#' Each method is expected to return a list of \code{\link{collapseBox}} elements,
 #' where each parameter box can contain arbitrary numbers of UI elements for interactive setting of various parameters.
-#' 
-#' @param Creating parameter observers:
+#'
+#' @section Creating parameter observers:
 #' The \code{.createParamObservers} generic takes the following arguments:
-#' \itemize{ 
+#' \itemize{
 #' \item \code{x}, an instance of a Panel subclass.
 #' \item \code{id}, integer scalar specifying the index of the current panel.
 #' \item \code{se}, a \linkS4class{SingleCellExperiment} object with precomputed UI information from \code{\link{.precompute_UI_info}}.
@@ -82,7 +82,7 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 NULL
 
 #' @export
-setGeneric(".defineParamInterface", function(x, id, param_choices, se, active_panels) { 
+setGeneric(".defineParamInterface", function(x, id, param_choices, se, active_panels) {
 # TODO: have 'id' and 'param_choices' actually live inside 'x'.
 # TODO: switch 'active_panels' for 'pObjects' to make life a bit easier.
     standardGeneric(".defineParamInterface")

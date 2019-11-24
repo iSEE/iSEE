@@ -9,20 +9,6 @@
 \alias{.createRenderedOutput}
 \alias{Panel-class}
 \title{Panel generics}
-\arguments{
-\item{Creating}{parameter observers:
-The \code{.createParamObservers} generic takes the following arguments:
-\itemize{ 
-\item \code{x}, an instance of a Panel subclass.
-\item \code{id}, integer scalar specifying the index of the current panel.
-\item \code{se}, a \linkS4class{SingleCellExperiment} object with precomputed UI information from \code{\link{.precompute_UI_info}}.
-\item \code{input}, the Shiny input object from the server function.
-\item \code{session}, the Shiny session object from the server function.
-\item \code{pObjects}, an environment containing global parameters generated in the \code{\link{iSEE}} app.
-\item \code{rObjects}, a reactive list of values generated in the \code{\link{iSEE}} app.
-}
-It is expected to set up all observers required to respond to input changes in the UI elements set up by \code{\link{.defineParamInterface}}.}
-}
 \description{
 The Panel S4 hierarchy enables arbitrary extensions of the \pkg{iSEE} visualization to new panel types.
 New panels must follow a few rules in order to interact correctly with the Shiny architecture inside \code{\link{iSEE}}.
@@ -37,8 +23,23 @@ The \code{.defineParamInterface} generic takes the following arguments:
 \item \code{se}, a \linkS4class{SingleCellExperiment} object with precomputed UI information from \code{\link{.precompute_UI_info}}.
 \item \code{active_panels}, a data.frame specifying the currently active panels, see the output of \code{\link{.setup_initial}}.
 }
-Each method is expected to return a list of \code{\link{collapseBox}} elements, 
+Each method is expected to return a list of \code{\link{collapseBox}} elements,
 where each parameter box can contain arbitrary numbers of UI elements for interactive setting of various parameters.
+}
+
+\section{Creating parameter observers}{
+
+The \code{.createParamObservers} generic takes the following arguments:
+\itemize{
+\item \code{x}, an instance of a Panel subclass.
+\item \code{id}, integer scalar specifying the index of the current panel.
+\item \code{se}, a \linkS4class{SingleCellExperiment} object with precomputed UI information from \code{\link{.precompute_UI_info}}.
+\item \code{input}, the Shiny input object from the server function.
+\item \code{session}, the Shiny session object from the server function.
+\item \code{pObjects}, an environment containing global parameters generated in the \code{\link{iSEE}} app.
+\item \code{rObjects}, a reactive list of values generated in the \code{\link{iSEE}} app.
+}
+It is expected to set up all observers required to respond to input changes in the UI elements set up by \code{\link{.defineParamInterface}}.
 }
 
 \section{Defining the output element}{

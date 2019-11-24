@@ -118,3 +118,6 @@ setClass("RedDimPlot", contains="ColumnDotPlot")
 
 #' @export
 setClass("FeatAssayPlot", contains="ColumnDotPlot")
+
+#' @export
+setClass("ColDataPlot", contains="ColumnDotPlot")

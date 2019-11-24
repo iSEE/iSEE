@@ -1195,13 +1195,14 @@
         print(mode)
         max_plots <- nrow(pObjects$memory[[mode]])
 
-if (mode %in% c("featAssayPlot", "redDimPlot")) { 
-        ##### New world begins here #####
+if (mode %in% c("featAssayPlot", "redDimPlot", "colDataPlot")) { 
+        ##### new world begins here #####
 
         # To be replaced once we change the underlying architecture to operate directly on objects.
         instance <- switch(mode, 
             redDimPlot=RedDimPlot(),
-            featAssayPlot=FeatAssayPlot()
+            featAssayPlot=FeatAssayPlot(),
+            colDataPlot=ColDataPlot()
         ) 
 
         for (id in seq_len(max_plots)) {

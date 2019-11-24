@@ -4,8 +4,13 @@
 \alias{modeGating}
 \title{App pre-configured to link multiple feature assay plots}
 \usage{
-modeGating(se, features, featAssayMax = max(2, nrow(features)), ...,
-  plot_width = 4)
+modeGating(
+  se,
+  features,
+  featAssayMax = max(2, nrow(features)),
+  ...,
+  plot_width = 4
+)
 }
 \arguments{
 \item{se}{An object that coercible to \linkS4class{SingleCellExperiment}}

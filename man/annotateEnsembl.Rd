@@ -4,8 +4,13 @@
 \alias{annotateEnsembl}
 \title{Annotation via ENSEMBL database}
 \usage{
-annotateEnsembl(se, orgdb, keytype, rowdata_col = NULL,
-  ens_species = gsub(" ", "_", species(orgdb)))
+annotateEnsembl(
+  se,
+  orgdb,
+  keytype,
+  rowdata_col = NULL,
+  ens_species = gsub(" ", "_", species(orgdb))
+)
 }
 \arguments{
 \item{se}{An object that is coercible to \linkS4class{SingleCellExperiment}.}

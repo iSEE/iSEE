@@ -4,17 +4,40 @@
 \alias{iSEE}
 \title{iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer}
 \usage{
-iSEE(se, redDimArgs = NULL, colDataArgs = NULL, featAssayArgs = NULL,
-  rowStatArgs = NULL, rowDataArgs = NULL, sampAssayArgs = NULL,
-  colStatArgs = NULL, customDataArgs = NULL, customStatArgs = NULL,
-  heatMapArgs = NULL, redDimMax = 5, colDataMax = 5,
-  featAssayMax = 5, rowStatMax = 5, rowDataMax = 5,
-  sampAssayMax = 5, colStatMax = 5, customDataMax = 5,
-  customStatMax = 5, heatMapMax = 5, initialPanels = NULL,
-  annotFun = NULL, customDataFun = NULL, customStatFun = NULL,
-  customSendAll = FALSE, colormap = ExperimentColorMap(),
-  tour = NULL, appTitle = NULL, runLocal = TRUE, voice = FALSE,
-  bugs = FALSE)
+iSEE(
+  se,
+  redDimArgs = NULL,
+  colDataArgs = NULL,
+  featAssayArgs = NULL,
+  rowStatArgs = NULL,
+  rowDataArgs = NULL,
+  sampAssayArgs = NULL,
+  colStatArgs = NULL,
+  customDataArgs = NULL,
+  customStatArgs = NULL,
+  heatMapArgs = NULL,
+  redDimMax = 5,
+  colDataMax = 5,
+  featAssayMax = 5,
+  rowStatMax = 5,
+  rowDataMax = 5,
+  sampAssayMax = 5,
+  colStatMax = 5,
+  customDataMax = 5,
+  customStatMax = 5,
+  heatMapMax = 5,
+  initialPanels = NULL,
+  annotFun = NULL,
+  customDataFun = NULL,
+  customStatFun = NULL,
+  customSendAll = FALSE,
+  colormap = ExperimentColorMap(),
+  tour = NULL,
+  appTitle = NULL,
+  runLocal = TRUE,
+  voice = FALSE,
+  bugs = FALSE
+)
 }
 \arguments{
 \item{se}{An object that is coercible to \linkS4class{SingleCellExperiment}.

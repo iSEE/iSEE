@@ -66,7 +66,6 @@
 #' @inheritParams .define_box_observers
 #' @param protected Character vector containing the identifies of the UI elements corresponding to protected parameters.
 #' @param nonfundamental Character vector containing the identifies of the UI elements corresponding to non-fundamental parameters.
-#' @param output The Shiny output object from the server function.
 #' @param session The Shiny session object from the server function.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
 #' 
@@ -83,7 +82,7 @@
 #' @rdname INTERNAL_define_plot_parameter_observers
 #' @importFrom shiny observeEvent
 .define_plot_parameter_observers <- function(mode, id, protected, nonfundamental,
-    input, output, session, pObjects, rObjects) 
+    input, session, pObjects, rObjects) 
 {
     # Observers for the non-fundamental parameter options.
     for (field in nonfundamental) {

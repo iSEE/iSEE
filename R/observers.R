@@ -1197,17 +1197,14 @@
 
 if (mode=="redDimPlot") { 
         ##### New world begins here #####
-        obs_FUNs <- list(redDimPlot=.define_redDimPlot_parameter_observers) # TODO: move outside of the loop.
-        plot_FUNs <- list(redDimPlot=.make_redDimPlot)
+
+        # To be replaced once we change the underlying architecture to operate directly on objects.
+        instance <- switch(mode, redDimPlot=RedDimPlot()) 
 
         for (id in seq_len(max_plots)) {
-            obs_FUNs[[mode]](mode, id, se, input=input, output=output, 
+            .createParamObservers(instance, id, se, input=input,
                 session=session, pObjects=pObjects, rObjects=rObjects)
-
-            base_FUN <- switch(mode, 
-                redDimPlot=.define_column_dot_plot_output)
-
-            base_FUN(mode, id, FUN=plot_FUNs[[mode]], se=se, colormap=colormap, 
+            .createRenderedOutput(instance, id, se=se, colormap=colormap, 
                 output=output, pObjects=pObjects, rObjects=rObjects) 
         }
 

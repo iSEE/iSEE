@@ -163,34 +163,14 @@
 
 if (mode %in% c("redDimPlot")) { 
         #### The new world begins here! ###
+        
+        # This is a placeholder for the grand future when classes are directly specified as an iSEE() argument.
+        instance <- switch(mode, 
+            redDimPlot=RedDimPlot()) 
 
-        families <- list(redDimPlot="column_dot") # TODO: these should be arguments, to account for custom panels.
-        ui_FUNs <- list(redDimPlot=.create_redDimPlot_parameter_ui)
-
-        fill_colors <- c(NULL, brush_fill_color) # TODO: replace NULL with user-supplied values.
-        fill_colors <- fill_colors[!duplicated(names(fill_colors))] # favor user specification.
-        stroke_colors <- c(NULL, brush_stroke_color)
-        stroke_colors <- stroke_colors[!duplicated(names(stroke_colors))] 
-
-        #### Within-loop elements #####
-
-        obj_FUN <- switch(families[[mode]],
-            column_dot=.create_column_dot_plot_ui)
-
-        # Creating the plot fields.
-        obj <- obj_FUN(mode, id, height=active_panels$Height[i],
-            brush_fill=fill_colors[mode], brush_stroke=stroke_colors[mode])
-
-        standard_ui_FUN <- switch(families[[mode]], 
-            column_dot=.create_column_dot_parameter_ui)
-
-        param <- do.call(tags$div, 
-            c(
-                list(class="panel-group", role="tablist"),
-                list(ui_FUNs[[mode]](mode, id, param_choices=param_choices, se=se, active_panels=active_panels)),
-                standard_ui_FUN(mode, id, param_choices=param_choices, se=se, active_panels=active_panels)
-            )
-        )
+        obj <- .defineOutputElement(instance, id, height=active_panels$Height[i])
+        all.params <- .defineParamInterface(instance, id, param_choices=param_choices, se=se, active_panels=active_panels)
+        param <- do.call(tags$div, c(list(class="panel-group", role="tablist"), all.params))
         param <- list(param)
 
 } else {

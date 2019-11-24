@@ -1,26 +1,37 @@
-#' Create reduced dimension plot parameter UI
+#' The reduced dimension plot panel
 #'
-#' Create the parameter selection UI elements for the reduced dimension plot panel type.
+#' Plots reduced dimensions. What more do I have to say?
 #'
-#' @param se A \linkS4class{SingleCellExperiment} object with precomputed UI information from \code{\link{.precompute_UI_info}}.
-#' @param active_panels A data.frame specifying the currently active panels, see the output of \code{\link{.setup_initial}}.
-#' @param mode String specifying the encoded panel type (e.g., \code{"redDimPlot"}).
-#' @param id Integer specifying the identity of the panel.
-#' @param param_choices A \linkS4class{DataFrame} with one row containing the parameter choices for the current plot.
+#' @section Constructor:
+#' \code{RedDimPlot()} creates an instance of a RedDimPlot class.
 #'
-#' @return 
-#' A list of standardized UI elements for parameter selection in any reduced dimension plot.
+#' @section Panel parameters:
+#' \code{\link{.defineParamInterface}} will create parameter elements for choosing the reduced dimensions to plot.
+#' More details to be added.
 #'
 #' @author Aaron Lun
 #'
+#' @docType methods
+#' @aliases RedDimPlot RedDimPlot-class
+#' .defineParamInterface,RedDimPlot-method
+#' .createParamObservers,RedDimPlot-method
+#' @name RedDimPlot
+NULL
+
+RedDimPlot <- function() {
+    new("RedDimPlot")
+}
+
+#' @export
 #' @importFrom SingleCellExperiment reducedDim reducedDimNames
 #' @importFrom shiny selectInput
-.create_redDimPlot_parameter_ui <- function(mode, id, param_choices, se, active_panels) {
+setMethod(".defineParamInterface", "RedDimPlot", function(x, id, param_choices, se, active_panels) {
     cur_reddim <- param_choices[[.redDimType]]
     max_dim <- ncol(reducedDim(se, cur_reddim))
     choices <- seq_len(max_dim)
     names(choices) <- choices
 
+    mode <- .getEncodedName(x)
     panel_name <- paste0(mode, id)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
@@ -32,34 +43,22 @@
         selectInput(.input_FUN(.redDimYAxis), label="Dimension 2",
             choices=choices, selected=param_choices[[.redDimYAxis]])
     )
-       
-    do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
+  
+    param <- do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
         title="Data parameters", open=param_choices[[.dataParamBoxOpen]]), plot.param))
-}
 
-#' Define reduced dimension plot observers
-#'
-#' Define a series of observers to track changes to the standard parameters for a given reduced dimension plot panel.
-#'
-#' @inheritParams .create_redDimPlot_parameter_ui  
-#' @param output The Shiny output object from the server function.
-#' @param session The Shiny session object from the server function.
-#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
-#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
-#'
-#' @return
-#' Observers pertaining to standard parameters for a reduced dimension plot are created.
-#' A \code{NULL} is invisibly returned.
-#'
+    c(list(param), callNextMethod())
+})
+
+#' @export
 #' @importFrom SingleCellExperiment reducedDim
 #' @importFrom shiny observeEvent updateSelectInput
-.define_redDimPlot_parameter_observers <- function(mode, id, se,
-    input, output, session, pObjects, rObjects) 
-{
+setMethod(".createParamObservers", "RedDimPlot", function(x, id, se, input, session, pObjects, rObjects) {
+    mode <- .getEncodedName(x)
     .define_plot_parameter_observers(mode, id,
         protected=c(.redDimXAxis, .redDimYAxis),
         nonfundamental=character(0),
-        input=input, output=output, session=session, pObjects=pObjects, rObjects=rObjects)
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     plot_name <- paste0(mode, id)
     cur_field <- paste0(plot_name, "_", .redDimType)
@@ -88,4 +87,10 @@
 
         .regenerate_unselected_plot(mode, id, pObjects, rObjects)
     }, ignoreInit=TRUE)
-}
+})
+
+#' @export
+setMethod(".getEncodedName", "RedDimPlot", function(x) "redDimPlot")
+
+#' @export
+setMethod(".getPlottingFunction", "RedDimPlot", function(x) .make_redDimPlot)

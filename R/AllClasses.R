@@ -104,3 +104,14 @@ setClass("ExperimentColorMap",
     validity=.valid.Colormap
 )
 
+####################################################
+
+#' @export
+setClass("Panel", representation("VIRTUAL")) #, slots=c(id="integer", param.args="list", panel.args="list"))
+# TODO: actually use these slots. Currently for show until we complete the transition to the new world.
+
+#' @export
+setClass("ColumnDotPlot", contains="Panel", representation("VIRTUAL"))
+
+#' @export
+setClass("RedDimPlot", contains="ColumnDotPlot")

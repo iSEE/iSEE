@@ -1192,8 +1192,26 @@
     names(sample_choices) <- colnames(se)
 
     for (mode in point_plot_types) {
+        print(mode)
         max_plots <- nrow(pObjects$memory[[mode]])
 
+if (mode=="redDimPlot") { 
+        ##### New world begins here #####
+        obs_FUNs <- list(redDimPlot=.define_redDimPlot_parameter_observers) # TODO: move outside of the loop.
+        plot_FUNs <- list(redDimPlot=.make_redDimPlot)
+
+        for (id in seq_len(max_plots)) {
+            obs_FUNs[[mode]](mode, id, se, input=input, output=output, 
+                session=session, pObjects=pObjects, rObjects=rObjects)
+
+            base_FUN <- switch(mode, 
+                redDimPlot=.define_column_dot_plot_output)
+
+            base_FUN(mode, id, FUN=plot_FUNs[[mode]], se=se, colormap=colormap, 
+                output=output, pObjects=pObjects, rObjects=rObjects) 
+        }
+
+} else {
         # Defining mode-specific plotting functions.
         FUN <- switch(mode,
             redDimPlot=.make_redDimPlot,
@@ -1201,6 +1219,7 @@
             colDataPlot=.make_colDataPlot,
             rowDataPlot=.make_rowDataPlot,
             sampAssayPlot=.make_sampAssayPlot)
+
 
         # Defining fundamental parameters that destroy brushes/lassos upon being changed.
         protected <- switch(mode,
@@ -1410,6 +1429,7 @@
                 })
             })
         }
+}
     }
     invisible(NULL)
 }

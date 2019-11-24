@@ -21,6 +21,10 @@
     se, colormap, output, pObjects, rObjects) 
 {
     plot_name <- paste0(mode, id)
+    force(FUN)
+    force(se)
+    force(colormap)
+
     output[[plot_name]] <- renderPlot({
         force(rObjects[[plot_name]])
         rObjects[[gen_field]] <- .increment_counter(isolate(rObjects[[gen_field]]))

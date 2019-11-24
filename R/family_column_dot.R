@@ -87,7 +87,9 @@
 #'
 #' Create the \code{\link{plotOutput}} object for a given panel of the column dot family.
 #' 
-#' @inheritParams .create_plot_ui
+#' @param mode String specifying the encoded panel type (e.g., \code{"redDimPlot"}).
+#' @param id Integer specifying the index of the current panel.
+#' @param ... Further arguments to pass to \code{\link{.create_plot_ui}}.
 #' 
 #' @return The output of \code{\link{plotOutput}} with relevant parametrization.
 #' Brushing direction is set to \code{"xy"}.
@@ -95,6 +97,23 @@
 #' @author Aaron Lun
 #' 
 #' @rdname INTERNAL_create_column_dot_plot_ui
-.create_column_dot_plot_ui <- function(mode, id, height, brush_fill, brush_stroke) {
-    .create_plot_ui(mode, id, height, brush_direction="xy", brush_fill=brush_fill, brush_stroke=brush_stroke)
+.create_column_dot_plot_ui <- function(mode, id, ...) {
+    .create_plot_ui(mode, id, brush_direction="xy", ...)
+}
+
+#' Define the column dot plot output
+#'
+#' Define a reactive expression to render the plot output for a panel of the column dot plot family.
+#'
+#' @param mode String specifying the encoded panel type (e.g., \code{"redDimPlot"}).
+#' @param id Integer specifying the index of the current panel.
+#' @param output,... Further arguments to pass to \code{\link{.define_plot_output}}.
+#' 
+#' @return 
+#' A reactive element to render the plot is added to \code{output}, with parameters appropriate to a column dot plot panel.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_define_column_dot_plot_output
+.define_column_dot_plot_output <- function(mode, id, output, ...) {
+    .define_plot_output(mode, id, output=output, selectable=TRUE, ...)
 }

@@ -41,9 +41,7 @@
 #'
 #' Define a series of observers to track changes to the standard parameters for a given reduced dimension plot panel.
 #'
-#' @param mode String specifying the encoded panel type - this should be \code{"redDimPlot"}.
-#' @param id Integer specifying the index of the current panel.
-#' @param input The Shiny input object from the server function.
+#' @inheritParams .create_redDimPlot_parameter_ui  
 #' @param output The Shiny output object from the server function.
 #' @param session The Shiny session object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
@@ -55,11 +53,12 @@
 #'
 #' @importFrom SingleCellExperiment reducedDim
 #' @importFrom shiny observeEvent updateSelectInput
-.define_redDimPlot_parameter_observers <- function(mode, id, 
+.define_redDimPlot_parameter_observers <- function(mode, id, se,
     input, output, session, pObjects, rObjects) 
 {
     .define_plot_parameter_observers(mode, id,
         protected=c(.redDimXAxis, .redDimYAxis),
+        nonfundamental=character(0),
         input=input, output=output, session=session, pObjects=pObjects, rObjects=rObjects)
 
     plot_name <- paste0(mode, id)

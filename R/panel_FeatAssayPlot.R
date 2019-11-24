@@ -74,6 +74,9 @@ setMethod(".defineParamInterface", "FeatAssayPlot", function(x, id, param_choice
 #' @importFrom shiny observeEvent updateSelectInput
 setMethod(".createParamObservers", "FeatAssayPlot", function(x, id, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
+
+    .define_box_observers(mode, id, .dataParamBoxOpen, input, pObjects)
+
     .define_plot_parameter_observers(mode, id,
         protected=c(.featAssayAssay, .featAssayXAxisColData),
         nonfundamental=character(0),

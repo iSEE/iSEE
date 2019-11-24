@@ -111,7 +111,13 @@ setClass("Panel", representation("VIRTUAL")) #, slots=c(id="integer", param.args
 # TODO: actually use these slots. Currently for show until we complete the transition to the new world.
 
 #' @export
-setClass("ColumnDotPlot", contains="Panel", representation("VIRTUAL"))
+setClass("DotPlot", contains="Panel", representation("VIRTUAL"))
+
+#' @export
+setClass("ColumnDotPlot", contains="DotPlot", representation("VIRTUAL"))
+
+#' @export
+setClass("RowDotPlot", contains="DotPlot", representation("VIRTUAL"))
 
 #' @export
 setClass("RedDimPlot", contains="ColumnDotPlot")
@@ -121,3 +127,9 @@ setClass("FeatAssayPlot", contains="ColumnDotPlot")
 
 #' @export
 setClass("ColDataPlot", contains="ColumnDotPlot")
+
+#' @export
+setClass("SampAssayPlot", contains="RowDotPlot")
+
+#' @export
+setClass("RowDataPlot", contains="RowDotPlot")

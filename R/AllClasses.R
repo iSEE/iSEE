@@ -133,3 +133,18 @@ setClass("SampAssayPlot", contains="RowDotPlot")
 
 #' @export
 setClass("RowDataPlot", contains="RowDotPlot")
+
+#' @export
+setClass("Table", contains="Panel", representation("VIRTUAL"))
+
+#' @export
+setClass("RowTable", contains="Table", representation("VIRTUAL"))
+
+#' @export
+setClass("ColumnTable", contains="Table", representation("VIRTUAL"))
+
+#' @export
+setClass("RowStatTable", contains="RowTable")
+
+#' @export
+setClass("ColStatTable", contains="ColumnTable")

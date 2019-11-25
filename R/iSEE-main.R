@@ -409,8 +409,6 @@ iSEE <- function(se,
 
             .organization_observers(input, output, se, pObjects, rObjects)
 
-            .box_observers(input, pObjects)
-
             .selection_parameter_observers(input, session, pObjects, rObjects)
 
             .brush_observers(input, session, pObjects, rObjects)

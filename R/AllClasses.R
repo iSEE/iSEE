@@ -148,3 +148,6 @@ setClass("RowStatTable", contains="RowTable")
 
 #' @export
 setClass("ColStatTable", contains="ColumnTable")
+
+#' @export
+setClass("HeatMapPlot", contains="Panel")

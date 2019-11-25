@@ -133,19 +133,6 @@
     cur.row <- list()
     row.counter <- 1L
 
-    # Extracting useful fields from the SE object.
-    column_covariates <- colnames(colData(se))
-    row_covariates <- colnames(rowData(se))
-    all_assays <- .get_internal_info(se, "all_assays")
-
-    # Defining all transmitting tables and plots for linking.
-    link_sources <- .define_link_sources(active_panels)
-    tab_by_row <- c(.noSelection, link_sources$row_tab)
-    tab_by_col <- c(.noSelection, link_sources$col_tab)
-    row_selectable <- c(.noSelection, link_sources$row_plot)
-    col_selectable <- c(.noSelection, link_sources$col_plot)
-    heatmap_sources <- c(.customSelection, link_sources$row_plot, link_sources$row_tab)
-
     for (i in seq_len(nrow(active_panels))) {
         mode <- active_panels$Type[i]
         id <- active_panels$ID[i]
@@ -154,9 +141,6 @@
         param_choices <- memory[[mode]][id,]
         .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
-if (mode != "heatMapPlot") {
-        #### The new world begins here! ###
-        
         # This is a placeholder for the grand future when classes are directly specified as an iSEE() argument.
         instance <- switch(mode, 
             redDimPlot=RedDimPlot(),
@@ -165,72 +149,13 @@ if (mode != "heatMapPlot") {
             rowDataPlot=RowDataPlot(),
             sampAssayPlot=SampAssayPlot(),
             colStatTable=ColStatTable(),
-            rowStatTable=RowStatTable()
+            rowStatTable=RowStatTable(),
+            heatMapPlot=HeatMapPlot()
         ) 
 
         obj <- .defineOutputElement(instance, id, height=active_panels$Height[i])
         all.params <- .defineParamInterface(instance, id, param_choices=param_choices, se=se, active_panels=active_panels)
         param <- do.call(tags$div, c(list(class="panel-group", role="tablist"), all.params))
-
-} else {
-        obj <- plotOutput(panel_name, brush=brush.opts, dblclick=dblclick, height=panel_height)
-        plot.param <- list(
-            collapseBox(
-                id=.input_FUN(.heatMapFeatNameBoxOpen),
-                title="Feature parameters",
-                open=param_choices[[.heatMapFeatNameBoxOpen]],
-                selectInput(
-                    .input_FUN(.heatMapImportSource), label="Import from", choices=heatmap_sources,
-                    selected=.choose_link(param_choices[[.heatMapImportSource]], heatmap_sources, force_default=TRUE)),
-                actionButton(.input_FUN(.heatMapImportFeatures), "Import features"),
-                actionButton(.input_FUN(.heatMapCluster), "Cluster features"),
-                actionButton(.input_FUN(.heatMapClearFeatures), "Clear features"),
-                selectizeInput(
-                    .input_FUN(.heatMapFeatName),
-                    label="Features:",
-                    choices=NULL, selected=NULL, multiple=TRUE,
-                    options=list(plugins=list('remove_button', 'drag_drop'))),
-                selectInput(
-                    .input_FUN(.heatMapAssay), label=NULL,
-                    choices=all_assays, selected=param_choices[[.heatMapAssay]]),
-                hr(),
-                checkboxGroupInput(
-                    .input_FUN(.heatMapCenterScale), label="Expression values are:",
-                    selected=param_choices[[.heatMapCenterScale]][[1]],
-                    choices=c(.heatMapCenterTitle, .heatMapScaleTitle), inline=TRUE),
-                numericInput(
-                    .input_FUN(.heatMapLower), label="Lower bound:",
-                    value=param_choices[[.heatMapLower]]),
-                numericInput(
-                    .input_FUN(.heatMapUpper), label="Upper bound:",
-                    value=param_choices[[.heatMapUpper]]),
-                .conditional_on_check_group(
-                    .input_FUN(.heatMapCenterScale), .heatMapCenterTitle,
-                    selectInput(
-                        .input_FUN(.heatMapCenteredColors), label="Color scale:",
-                        choices=c("purple-black-yellow", "blue-white-orange"),
-                        selected=param_choices[[.heatMapCenteredColors]]))
-            ),
-            collapseBox(
-                id=.input_FUN(.heatMapColDataBoxOpen),
-                title="Column data parameters",
-                open=param_choices[[.heatMapColDataBoxOpen]],
-                selectizeInput(
-                    .input_FUN(.heatMapColData),
-                    label="Column data:",
-                    choices=column_covariates,
-                    multiple=TRUE,
-                    selected=param_choices[[.heatMapColData]][[1]],
-                    options=list(plugins=list('remove_button', 'drag_drop'))),
-                plotOutput(.input_FUN(.heatMapLegend))
-            )
-        )
-
-        param <- do.call(tags$div, c(list(class="panel-group", role="tablist"),
-            plot.param,
-            .create_selection_param_box(mode, id, param_choices, col_selectable, "column")
-        ))
-}
 
         # Deciding whether to continue on the current row, or start a new row.
         extra <- cumulative.width + panel_width

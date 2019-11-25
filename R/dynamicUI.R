@@ -137,13 +137,6 @@
     column_covariates <- colnames(colData(se))
     row_covariates <- colnames(rowData(se))
     all_assays <- .get_internal_info(se, "all_assays")
-    red_dim_names <- .get_internal_info(se, "red_dim_names")
-    sample_names <- .get_internal_info(se, "sample_names")
-
-    custom_data_fun <- .get_internal_info(se, "custom_data_fun")
-    custom_data_funnames <- c(.noSelection, names(custom_data_fun))
-    custom_stat_fun <- .get_internal_info(se, "custom_stat_fun")
-    custom_stat_funnames <- c(.noSelection, names(custom_stat_fun))
 
     # Defining all transmitting tables and plots for linking.
     link_sources <- .define_link_sources(active_panels)
@@ -161,7 +154,7 @@
         param_choices <- memory[[mode]][id,]
         .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
-if (mode %in% c("redDimPlot", "featAssayPlot", "colDataPlot", "sampAssayPlot", "rowDataPlot")) { 
+if (mode != "heatMapPlot") {
         #### The new world begins here! ###
         
         # This is a placeholder for the grand future when classes are directly specified as an iSEE() argument.
@@ -170,283 +163,73 @@ if (mode %in% c("redDimPlot", "featAssayPlot", "colDataPlot", "sampAssayPlot", "
             featAssayPlot=FeatAssayPlot(),
             colDataPlot=ColDataPlot(),
             rowDataPlot=RowDataPlot(),
-            sampAssayPlot=SampAssayPlot()
+            sampAssayPlot=SampAssayPlot(),
+            colStatTable=ColStatTable(),
+            rowStatTable=RowStatTable()
         ) 
 
         obj <- .defineOutputElement(instance, id, height=active_panels$Height[i])
         all.params <- .defineParamInterface(instance, id, param_choices=param_choices, se=se, active_panels=active_panels)
         param <- do.call(tags$div, c(list(class="panel-group", role="tablist"), all.params))
-        param <- list(param)
 
 } else {
-        # Checking what to do with plot-specific parameters (e.g., brushing, clicking, plot height).
-        if (! mode %in% c(linked_table_types, "customStatTable")) {
-            brush.opts <- brushOpts(.input_FUN(.brushField), resetOnNew=TRUE, delay=2000,
-                direction=ifelse(mode=="heatMapPlot", "y", "xy"),
-                fill=brush_fill_color[mode], stroke=brush_stroke_color[mode],
-                opacity=.brushFillOpacity)
-            dblclick <- .input_FUN(.zoomClick)
-            clickopt <- .input_FUN(.lassoClick)
-            panel_height <- paste0(active_panels$Height[i], "px")
-        }
-
-        # Creating the plot fields.
-        if (mode == "redDimPlot") {
-            obj <- plotOutput(panel_name, brush=brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
-            cur_reddim <- param_choices[[.redDimType]]
-            max_dim <- ncol(reducedDim(se, cur_reddim))
-            choices <- seq_len(max_dim)
-            names(choices) <- choices
-
-            plot.param <-  list(
-                selectInput(.input_FUN(.redDimType), label="Type",
-                    choices=red_dim_names, selected=cur_reddim),
-                selectInput(.input_FUN(.redDimXAxis), label="Dimension 1",
-                    choices=choices, selected=param_choices[[.redDimXAxis]]),
-                selectInput(.input_FUN(.redDimYAxis), label="Dimension 2",
-                    choices=choices, selected=param_choices[[.redDimYAxis]])
-            )
-        } else if (mode == "colDataPlot") {
-            obj <- plotOutput(panel_name, brush=brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
-            plot.param <- list(
-                selectInput(.input_FUN(.colDataYAxis),
-                    label="Column of interest (Y-axis):",
-                    choices=column_covariates, selected=param_choices[[.colDataYAxis]]),
-                radioButtons(.input_FUN(.colDataXAxis), label="X-axis:", inline=TRUE,
-                    choices=c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle),
-                    selected=param_choices[[.colDataXAxis]]),
-                .conditional_on_radio(.input_FUN(.colDataXAxis),
-                    .colDataXAxisColDataTitle,
-                    selectInput(.input_FUN(.colDataXAxisColData),
-                        label="Column of interest (X-axis):",
-                        choices=column_covariates, selected=param_choices[[.colDataXAxisColData]]))
-            )
-        } else if (mode == "featAssayPlot") {
-            obj <- plotOutput(panel_name, brush=brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
-            xaxis_choices <- c(.featAssayXAxisNothingTitle)
-            if (length(column_covariates)) { # As it is possible for thsi plot to be _feasible_ but for no column data to exist.
-                xaxis_choices <- c(xaxis_choices, .featAssayXAxisColDataTitle)
-            }
-            xaxis_choices <- c(xaxis_choices, .featAssayXAxisFeatNameTitle)
-
-            plot.param <- list(
-                selectizeInput(.input_FUN(.featAssayYAxisFeatName),
-                    label="Y-axis feature:", choices=NULL, selected=NULL, multiple=FALSE),
-                selectInput(.input_FUN(.featAssayYAxisRowTable), label=NULL, choices=tab_by_row,
-                    selected=.choose_link(param_choices[[.featAssayYAxisRowTable]], tab_by_row, force_default=TRUE)),
-                selectInput(.input_FUN(.featAssayAssay), label=NULL,
-                    choices=all_assays, selected=param_choices[[.featAssayAssay]]),
-                radioButtons(.input_FUN(.featAssayXAxis), label="X-axis:", inline=TRUE,
-                    choices=xaxis_choices, selected=param_choices[[.featAssayXAxis]]),
-                .conditional_on_radio(.input_FUN(.featAssayXAxis),
-                    .featAssayXAxisColDataTitle,
-                    selectInput(.input_FUN(.featAssayXAxisColData),
-                        label="X-axis column data:",
-                        choices=column_covariates, selected=param_choices[[.featAssayXAxisColData]])),
-                .conditional_on_radio(.input_FUN(.featAssayXAxis),
-                    .featAssayXAxisFeatNameTitle,
-                    selectizeInput(.input_FUN(.featAssayXAxisFeatName),
-                        label="X-axis feature:", choices=NULL, selected=NULL, multiple=FALSE),
-                    selectInput(.input_FUN(.featAssayXAxisRowTable), label=NULL,
-                        choices=tab_by_row, selected=param_choices[[.featAssayXAxisRowTable]]))
-            )
-        } else if (mode == "rowStatTable") {
-            obj <- tagList(dataTableOutput(panel_name), uiOutput(.input_FUN("annotation")))
-        } else if (mode == "colStatTable") {
-            obj <- dataTableOutput(panel_name)
-        } else if (mode == "customStatTable" || mode == "customDataPlot") {
-            if (mode == "customDataPlot") {
-                obj <- plotOutput(panel_name, height=panel_height)
-                fun_choices <- custom_data_funnames
-            } else {
-                obj <- dataTableOutput(panel_name)
-                fun_choices <- custom_stat_funnames
-            }
-            argsUpToDate <- param_choices[[.customArgs]] == param_choices[[.customVisibleArgs]]
-            if (is.na(argsUpToDate) || argsUpToDate) {
-                button_label <- .buttonUpToDateLabel
-            } else {
-                button_label <- .buttonUpdateLabel
-            }
-
-            plot.param <- list(
+        obj <- plotOutput(panel_name, brush=brush.opts, dblclick=dblclick, height=panel_height)
+        plot.param <- list(
+            collapseBox(
+                id=.input_FUN(.heatMapFeatNameBoxOpen),
+                title="Feature parameters",
+                open=param_choices[[.heatMapFeatNameBoxOpen]],
                 selectInput(
-                    .input_FUN(.customFun), label="Custom function:",
-                    choices=fun_choices, selected=param_choices[[.customFun]]),
-                textAreaInput(
-                    .input_FUN(.customVisibleArgs), label="Custom arguments:", rows=5,
-                    value=param_choices[[.customVisibleArgs]]),
-                actionButton(.input_FUN(.customSubmit), button_label)
-            )
-        } else if (mode == "rowDataPlot") {
-            obj <- plotOutput(panel_name, brush=brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
-            plot.param <- list(
-                selectInput(.input_FUN(.rowDataYAxis),
-                    label="Column of interest (Y-axis):",
-                    choices=row_covariates, selected=param_choices[[.rowDataYAxis]]),
-                radioButtons(.input_FUN(.rowDataXAxis), label="X-axis:", inline=TRUE,
-                    choices=c(.rowDataXAxisNothingTitle, .rowDataXAxisRowDataTitle),
-                    selected=param_choices[[.rowDataXAxis]]),
-                .conditional_on_radio(.input_FUN(.rowDataXAxis),
-                    .rowDataXAxisRowDataTitle,
-                    selectInput(.input_FUN(.rowDataXAxisRowData),
-                        label="Column of interest (X-axis):",
-                        choices=row_covariates, selected=param_choices[[.rowDataXAxisRowData]]))
-            )
-        } else if (mode == "sampAssayPlot") {
-            obj <- plotOutput(panel_name, brush=brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
-            xaxis_choices <- c(.sampAssayXAxisNothingTitle)
-            if (length(row_covariates)) { # As it is possible for this plot to be _feasible_ but for no row data to exist.
-                xaxis_choices <- c(xaxis_choices, .sampAssayXAxisRowDataTitle)
-            }
-            xaxis_choices <- c(xaxis_choices, .sampAssayXAxisSampNameTitle)
-
-            plot.param <- list(
+                    .input_FUN(.heatMapImportSource), label="Import from", choices=heatmap_sources,
+                    selected=.choose_link(param_choices[[.heatMapImportSource]], heatmap_sources, force_default=TRUE)),
+                actionButton(.input_FUN(.heatMapImportFeatures), "Import features"),
+                actionButton(.input_FUN(.heatMapCluster), "Cluster features"),
+                actionButton(.input_FUN(.heatMapClearFeatures), "Clear features"),
+                selectizeInput(
+                    .input_FUN(.heatMapFeatName),
+                    label="Features:",
+                    choices=NULL, selected=NULL, multiple=TRUE,
+                    options=list(plugins=list('remove_button', 'drag_drop'))),
                 selectInput(
-                    .input_FUN(.sampAssayYAxisSampName),
-                    label="Sample of interest (Y-axis):",
-                    choices=sample_names, selected=param_choices[[.sampAssayYAxisSampName]]),
-                selectInput(
-                    .input_FUN(.sampAssayYAxisColTable), label=NULL, choices=tab_by_col,
-                    selected=.choose_link(param_choices[[.sampAssayYAxisColTable]], tab_by_col, force_default=TRUE)),
-                selectInput(
-                    .input_FUN(.sampAssayAssay), label=NULL,
-                    choices=all_assays, selected=param_choices[[.sampAssayAssay]]),
-                radioButtons(
-                    .input_FUN(.sampAssayXAxis), label="X-axis:", inline=TRUE,
-                    choices=xaxis_choices, selected=param_choices[[.sampAssayXAxis]]),
-                .conditional_on_radio(
-                    .input_FUN(.sampAssayXAxis),
-                    .sampAssayXAxisRowDataTitle,
+                    .input_FUN(.heatMapAssay), label=NULL,
+                    choices=all_assays, selected=param_choices[[.heatMapAssay]]),
+                hr(),
+                checkboxGroupInput(
+                    .input_FUN(.heatMapCenterScale), label="Expression values are:",
+                    selected=param_choices[[.heatMapCenterScale]][[1]],
+                    choices=c(.heatMapCenterTitle, .heatMapScaleTitle), inline=TRUE),
+                numericInput(
+                    .input_FUN(.heatMapLower), label="Lower bound:",
+                    value=param_choices[[.heatMapLower]]),
+                numericInput(
+                    .input_FUN(.heatMapUpper), label="Upper bound:",
+                    value=param_choices[[.heatMapUpper]]),
+                .conditional_on_check_group(
+                    .input_FUN(.heatMapCenterScale), .heatMapCenterTitle,
                     selectInput(
-                        .input_FUN(.sampAssayXAxisRowData),
-                        label="Row data of interest (X-axis):",
-                        choices=row_covariates, selected=param_choices[[.sampAssayXAxisRowData]])),
-                .conditional_on_radio(
-                    .input_FUN(.sampAssayXAxis),
-                    .sampAssayXAxisSampNameTitle,
-                    selectInput(
-                        .input_FUN(.sampAssayXAxisSampName),
-                        label="Sample of interest (X-axis):",
-                        choices=sample_names, selected=param_choices[[.sampAssayXAxisSampName]]),
-                    selectInput(.input_FUN(.sampAssayXAxisColTable), label=NULL,
-                        choices=tab_by_col, selected=param_choices[[.sampAssayXAxisColTable]]))
+                        .input_FUN(.heatMapCenteredColors), label="Color scale:",
+                        choices=c("purple-black-yellow", "blue-white-orange"),
+                        selected=param_choices[[.heatMapCenteredColors]]))
+            ),
+            collapseBox(
+                id=.input_FUN(.heatMapColDataBoxOpen),
+                title="Column data parameters",
+                open=param_choices[[.heatMapColDataBoxOpen]],
+                selectizeInput(
+                    .input_FUN(.heatMapColData),
+                    label="Column data:",
+                    choices=column_covariates,
+                    multiple=TRUE,
+                    selected=param_choices[[.heatMapColData]][[1]],
+                    options=list(plugins=list('remove_button', 'drag_drop'))),
+                plotOutput(.input_FUN(.heatMapLegend))
             )
-        } else if (mode == "heatMapPlot") {
-            obj <- plotOutput(panel_name, brush=brush.opts, dblclick=dblclick, height=panel_height)
-            plot.param <- list(
-                collapseBox(
-                    id=.input_FUN(.heatMapFeatNameBoxOpen),
-                    title="Feature parameters",
-                    open=param_choices[[.heatMapFeatNameBoxOpen]],
-                    selectInput(
-                        .input_FUN(.heatMapImportSource), label="Import from", choices=heatmap_sources,
-                        selected=.choose_link(param_choices[[.heatMapImportSource]], heatmap_sources, force_default=TRUE)),
-                    actionButton(.input_FUN(.heatMapImportFeatures), "Import features"),
-                    actionButton(.input_FUN(.heatMapCluster), "Cluster features"),
-                    actionButton(.input_FUN(.heatMapClearFeatures), "Clear features"),
-                    selectizeInput(
-                        .input_FUN(.heatMapFeatName),
-                        label="Features:",
-                        choices=NULL, selected=NULL, multiple=TRUE,
-                        options=list(plugins=list('remove_button', 'drag_drop'))),
-                    selectInput(
-                        .input_FUN(.heatMapAssay), label=NULL,
-                        choices=all_assays, selected=param_choices[[.heatMapAssay]]),
-                    hr(),
-                    checkboxGroupInput(
-                        .input_FUN(.heatMapCenterScale), label="Expression values are:",
-                        selected=param_choices[[.heatMapCenterScale]][[1]],
-                        choices=c(.heatMapCenterTitle, .heatMapScaleTitle), inline=TRUE),
-                    numericInput(
-                        .input_FUN(.heatMapLower), label="Lower bound:",
-                        value=param_choices[[.heatMapLower]]),
-                    numericInput(
-                        .input_FUN(.heatMapUpper), label="Upper bound:",
-                        value=param_choices[[.heatMapUpper]]),
-                    .conditional_on_check_group(
-                        .input_FUN(.heatMapCenterScale), .heatMapCenterTitle,
-                        selectInput(
-                            .input_FUN(.heatMapCenteredColors), label="Color scale:",
-                            choices=c("purple-black-yellow", "blue-white-orange"),
-                            selected=param_choices[[.heatMapCenteredColors]]))
-                ),
-                collapseBox(
-                    id=.input_FUN(.heatMapColDataBoxOpen),
-                    title="Column data parameters",
-                    open=param_choices[[.heatMapColDataBoxOpen]],
-                    selectizeInput(
-                        .input_FUN(.heatMapColData),
-                        label="Column data:",
-                        choices=column_covariates,
-                        multiple=TRUE,
-                        selected=param_choices[[.heatMapColData]][[1]],
-                        options=list(plugins=list('remove_button', 'drag_drop'))),
-                    plotOutput(.input_FUN(.heatMapLegend))
-                )
-            )
-        } else {
-            stop(sprintf("'%s' is not a recognized panel mode", mode))
-        }
+        )
 
-        # Adding graphical parameters if we're plotting.
-        if (mode %in% linked_table_types) {
-            if (mode %in% "rowStatTable") {
-                source_type <- "row"
-                selectable <- row_selectable
-            } else  {
-                source_type <- "column"
-                selectable <- col_selectable
-            }
-
-            param <- list(hr(),
-                tags$div(class="panel-group", role="tablist",
-                    .define_selection_param_box(mode, id, param_choices,
-                        .define_selection_choices(mode, id, param_choices, .selectByPlot, selectable, source_type)
-                    )
-                )
-            )
-        } else if (mode=="heatMapPlot") {
-            param <- list(do.call(tags$div, c(list(class="panel-group", role="tablist"),
-                plot.param,
-                .create_selection_param_box(mode, id, param_choices, col_selectable, "column")
-            )))
-        } else {
-            # Options for fundamental plot parameters.
-            data_box <- do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
-                title="Data parameters", open=param_choices[[.dataParamBoxOpen]]), plot.param))
-
-            if (mode %in% custom_panel_types) {
-                param <- list(
-                    tags$div(class="panel-group", role="tablist",
-                        data_box,
-                        .define_selection_param_box(
-                            mode, id, param_choices,
-                            .define_selection_transmitter(mode, id, param_choices, .customRowSource, row_selectable, "row"),
-                            .define_selection_transmitter(mode, id, param_choices, .customColSource, col_selectable, "column")
-                        )
-                    )
-                )
-            } else {
-                if (mode %in% row_point_plot_types) {
-                    select_choices <- row_selectable
-                    create_FUN <- .create_visual_box_for_row_plots
-                    source_type <- "row"
-                } else {
-                    select_choices <- col_selectable
-                    create_FUN <- .create_visual_box_for_column_plots
-                    source_type <- "column"
-                }
-
-                param <- list(
-                    tags$div(class="panel-group", role="tablist",
-                    data_box,
-                    create_FUN(mode, id, param_choices, tab_by_row, tab_by_col, se), # Options for visual parameters.
-                    .create_selection_param_box(mode, id, param_choices, select_choices, source_type) # Options for point selection parameters.
-                )
-                )
-            }
-        }
+        param <- do.call(tags$div, c(list(class="panel-group", role="tablist"),
+            plot.param,
+            .create_selection_param_box(mode, id, param_choices, col_selectable, "column")
+        ))
 }
 
         # Deciding whether to continue on the current row, or start a new row.
@@ -463,10 +246,10 @@ if (mode %in% c("redDimPlot", "featAssayPlot", "colDataPlot", "sampAssayPlot", "
 
         # Aggregating together everything into a box, and then into a column.
         cur_box <- do.call(box, c(
-            list(obj),
-            param,
+            list(obj, param),
             list(uiOutput(.input_FUN(.panelGeneralInfo)), uiOutput(.input_FUN(.panelLinkInfo))),
-            list(title=.decode_panel_name(mode, id), solidHeader=TRUE, width=NULL, status="danger")))
+            list(title=.decode_panel_name(mode, id), solidHeader=TRUE, width=NULL, status="danger")
+        ))
         cur_box <- .coerce_box_status(cur_box, mode)
         cur.row[[row.counter]] <- column(width=panel_width, cur_box, style='padding:3px;')
         row.counter <- row.counter + 1L

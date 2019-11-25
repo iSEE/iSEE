@@ -429,10 +429,6 @@ iSEE <- function(se,
 
             .dot_plot_observers(input, output, session, se, colormap, pObjects, rObjects)
 
-            .assay_plot_observers(input, session, se, pObjects, rObjects)
-
-            .reddim_plot_observers(input, session, se, pObjects, rObjects)
-
             .custom_panel_observers(input, output, session, se, pObjects, rObjects, customSendAll)
 
             .linked_table_observers(input, output, session, se, pObjects, rObjects, annotFun)

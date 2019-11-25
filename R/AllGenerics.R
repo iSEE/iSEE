@@ -99,7 +99,7 @@ setGeneric(".defineOutputElement", function(x, id, ...) {
 })
 
 #' @export
-setGeneric(".createRenderedOutput", function(x, id, output, ...) {
+setGeneric(".createRenderedOutput", function(x, id, se, ..., output, pObjects, rObjects) {
     standardGeneric(".createRenderedOutput")
 })
 

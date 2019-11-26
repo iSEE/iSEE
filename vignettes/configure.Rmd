@@ -53,7 +53,7 @@ knitr::opts_chunk$set(
 )
 stopifnot(requireNamespace("htmltools"))
 htmltools::tagList(rmarkdown::html_dependency_font_awesome())
-sce <- readRDS("sce.rds")    
+sce <- readRDS("sce.rds")
 ```
 
 # Changing the default start configuration

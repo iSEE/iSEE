@@ -393,12 +393,16 @@ iSEE <- function(se,
             eval_order <- .establish_eval_order(pObjects$selection_links)
             for (panelname in eval_order) {
                 enc <- .split_encoded(panelname)
-                FUN <- switch(enc$Type,
-                    redDimPlot=.make_redDimPlot,
-                    featAssayPlot=.make_featAssayPlot,
-                    colDataPlot=.make_colDataPlot,
-                    rowDataPlot=.make_rowDataPlot,
-                    sampAssayPlot=.make_sampAssayPlot)
+                # This is a placeholder for the grand future when classes are directly specified as an iSEE() argument.
+                instance <- switch(enc$Type,
+                    redDimPlot=RedDimPlot(),
+                    featAssayPlot=FeatAssayPlot(),
+                    colDataPlot=ColDataPlot(),
+                    rowDataPlot=RowDataPlot(),
+                    sampAssayPlot=SampAssayPlot()
+                )
+
+                FUN <- .getPlottingFunction(instance)
                 p.out <- FUN(enc$ID, pObjects$memory, pObjects$coordinates, se, colormap)
                 pObjects$coordinates[[panelname]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
             }

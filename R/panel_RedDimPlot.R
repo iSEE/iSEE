@@ -12,22 +12,9 @@
 #' @author Aaron Lun
 #'
 #' @examples
-#' # For users:
 #' x <- RedDimPlot()
 #' x[["Type"]] 
 #' x[["Type"]] <- "PCA"
-#' 
-#' ###########################
-#' # For developers:
-#' library(scater)
-#' sce <- mockSCE()
-#' sce <- logNormCounts(sce)
-#' sce2 <- runPCA(sce)
-#'
-#' # NULL if no reduced dims are available,
-#' # or it will set default values appropriately:
-#' .refineParameters(x, sce)
-#' .refineParameters(x, sce2)
 #' 
 #' @docType methods
 #' @aliases RedDimPlot RedDimPlot-class
@@ -57,9 +44,21 @@ setMethod("initialize", "RedDimPlot", function(.Object, ...) {
 })
 
 #' @export
+setMethod(".cacheCommonInfo", "RedDimPlot", function(x, se) {
+    available <- reducedDimNames(se)
+    for (y in seq_along(available)) {
+        if (ncol(reducedDim(x, y)) > 0L) {
+            available[y] <- NA_character_
+        }
+    }
+    c(list(available=available[!is.na(available)]), callNextMethod())
+})
+
+#' @export
 #' @importFrom SingleCellExperiment reducedDimNames reducedDim
 setMethod(".refineParameters", "RedDimPlot", function(x, se, active_panels) {
-    available <- reducedDimNames(se)
+    available <- .get_common_info(se, .getEncodedName(x))$available
+
     if (!is.na(chosen <- x[[.redDimType]]) &&
         chosen %in% available &&
         x[[.redDimXAxis]] <= ncol(reducedDim(se, chosen)) &&
@@ -71,18 +70,7 @@ setMethod(".refineParameters", "RedDimPlot", function(x, se, active_panels) {
             return(NULL)
         }
 
-        # Otherwise, we try to find the first field with non-zero dimensions.
-        somedim <- FALSE
-        for (y in available) {
-            if (ncol(reducedDim(x, y)) > 0L) {
-                somedim <- TRUE
-                break
-            }
-        }
-        if (!somedim) {
-            return(NULL)
-        }
-
+        y <- available[1]
         .Object[[.redDimType]] <- y
         .Object[[.redDimXAxis]] <- 1L
         .Object[[.redDimYAxis]] <- min(ncol(reducedDim(x, y)), 2L)
@@ -123,7 +111,7 @@ setMethod(".defineParamInterface", "RedDimPlot", function(x, id, param_choices, 
 
     plot.param <- list(
         selectInput(.input_FUN(.redDimType), label="Type",
-            choices=.get_internal_info(se, "red_dim_names"), selected=cur_reddim),
+            choices=.get_common_info(se, mode)$available, selected=cur_reddim),
         selectInput(.input_FUN(.redDimXAxis), label="Dimension 1",
             choices=choices, selected=param_choices[[.redDimXAxis]]),
         selectInput(.input_FUN(.redDimYAxis), label="Dimension 2",

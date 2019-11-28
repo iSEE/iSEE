@@ -24,3 +24,8 @@ setReplaceMethod("[", "Panel", function(x, i, j, ..., value) {
 setMethod(".refineParameters", "Panel", function(x, se, active_panels) {
     x
 })
+
+#' @export
+setMethod(".cacheCommonInfo", "Panel", function(x, se) {
+    NULL
+})

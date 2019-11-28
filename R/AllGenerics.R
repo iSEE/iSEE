@@ -111,3 +111,6 @@ setGeneric(".getPlottingFunction", function(x) standardGeneric(".getPlottingFunc
 
 #' @export
 setGeneric(".refineParameters", function(x, se, active_panels) standardGeneric(".refineParameters")) 
+
+#' @export
+setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo"))

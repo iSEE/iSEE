@@ -1,19 +1,6 @@
 
 .validParameterChoices <- list()
 
-# Sample assay plotting parameters. ----
-.sampAssayXAxisNothingTitle <- "None"
-.sampAssayXAxisRowDataTitle <- "Row data"
-.sampAssayXAxisSampNameTitle <- "Sample name"
-
-.sampAssayAssay <- "Assay"
-.sampAssayXAxis <- "XAxis"
-.sampAssayXAxisRowData <- "XAxisRowData"
-.sampAssayXAxisColTable <- "XAxisColTable"
-.sampAssayXAxisSampName <- "XAxisSampName"
-.sampAssayYAxisColTable <- "YAxisColTable"
-.sampAssayYAxisSampName <- "YAxisSampName"
-
 # Custom plotting parameters. ----
 .customFun <- "Function"
 .customArgs <- "Arguments"

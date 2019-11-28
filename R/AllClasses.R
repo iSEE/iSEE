@@ -185,8 +185,27 @@ setClass("RowDataPlot", contains="RowDotPlot", slots=collated)
 
 ####################################################
 
+.sampAssayAssay <- "Assay"
+.sampAssayXAxis <- "XAxis"
+.sampAssayXAxisRowData <- "XAxisRowData"
+.sampAssayXAxisColTable <- "XAxisColTable"
+.sampAssayXAxisSampName <- "XAxisSampName"
+.sampAssayYAxisColTable <- "YAxisColTable"
+.sampAssayYAxisSampName <- "YAxisSampName"
+
+collated <- character(0)
+collated[.sampAssayAssay] <- "character" 
+collated[.sampAssayXAxis] <- "character" 
+collated[.sampAssayXAxisRowData] <- "character" 
+collated[.sampAssayXAxisColTable] <- "character" 
+collated[.sampAssayXAxisSampName] <- "character" 
+collated[.sampAssayYAxisColTable] <- "character" 
+collated[.sampAssayYAxisSampName] <- "character" 
+
 #' @export
-setClass("SampAssayPlot", contains="RowDotPlot")
+setClass("SampAssayPlot", contains="RowDotPlot", slots=collated)
+
+####################################################
 
 #' @export
 setClass("Table", contains="Panel", representation("VIRTUAL"))

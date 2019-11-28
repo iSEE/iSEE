@@ -1,14 +1,6 @@
 
 .validParameterChoices <- list()
 
-# Row data plotting parameters. ----
-.rowDataXAxisNothingTitle <- "None"
-.rowDataXAxisRowDataTitle <- "Row data"
-
-.rowDataYAxis <- "YAxis"
-.rowDataXAxis <- "XAxis"
-.rowDataXAxisRowData <- "XAxisRowData"
-
 # Sample assay plotting parameters. ----
 .sampAssayXAxisNothingTitle <- "None"
 .sampAssayXAxisRowDataTitle <- "Row data"

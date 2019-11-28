@@ -171,11 +171,22 @@ setClass("ColDataPlot", contains="ColumnDotPlot", slots=collated)
 
 ####################################################
 
-#' @export
-setClass("SampAssayPlot", contains="RowDotPlot")
+.rowDataYAxis <- "YAxis"
+.rowDataXAxis <- "XAxis"
+.rowDataXAxisRowData <- "XAxisRowData"
+
+collated <- character(0)
+collated[.rowDataXAxis] <- "character" 
+collated[.rowDataYAxis] <- "character" 
+collated[.rowDataXAxisRowData] <- "character" 
 
 #' @export
-setClass("RowDataPlot", contains="RowDotPlot")
+setClass("RowDataPlot", contains="RowDotPlot", slots=collated)
+
+####################################################
+
+#' @export
+setClass("SampAssayPlot", contains="RowDotPlot")
 
 #' @export
 setClass("Table", contains="Panel", representation("VIRTUAL"))

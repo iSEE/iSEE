@@ -1,6 +1,6 @@
-#' The column data plot panel
+#' The row data plot panel
 #'
-#' Plots column data values. What more do I have to say?
+#' Plots row data values. What more do I have to say?
 #'
 #' @section Constructor:
 #' \code{RowDataPlot()} creates an instance of a RowDataPlot class.
@@ -10,6 +10,33 @@
 #' More details to be added.
 #'
 #' @author Aaron Lun
+#' @examples
+#' #################
+#' # For end-users #
+#' #################
+#'
+#' x <- RowDataPlot()
+#' x[["XAxis"]]
+#' x[["XAxis"]] <- "Row data"
+#' 
+#' ##################
+#' # For developers #
+#' ##################
+#' 
+#' library(scater)
+#' sce <- mockSCE()
+#' sce <- logNormCounts(sce)
+#'
+#' # Spits out a NULL and a warning if no assays are named.
+#' sce <- iSEE:::.set_common_info(sce, .getEncodedName(x), 
+#'     .cacheCommonInfo(x, sce))
+#' .refineParameters(x, sce, list())
+#' 
+#' # Replaces the default with something sensible.
+#' rowData(sce)$Stuff <- runif(nrow(sce))
+#' sce <- iSEE:::.set_common_info(sce, .getEncodedName(x), 
+#'     .cacheCommonInfo(x, sce))
+#' .refineParameters(x, sce, list())
 #'
 #' @docType methods
 #' @aliases RowDataPlot RowDataPlot-class
@@ -18,9 +45,82 @@
 #' @name RowDataPlot
 NULL
 
+#' @export
 RowDataPlot <- function() {
     new("RowDataPlot")
 }
+
+#' @export
+setMethod("initialize", "RowDataPlot", function(.Object, ...) {
+    .Object <- callNextMethod(.Object, ...)
+    .Object <- .empty_default(.Object, .rowDataXAxis, .rowDataXAxisNothingTitle)
+    .Object <- .empty_default(.Object, .rowDataXAxisRowData)
+    .Object <- .empty_default(.Object, .rowDataYAxis)
+    .Object
+})
+
+.rowDataXAxisNothingTitle <- "None"
+.rowDataXAxisRowDataTitle <- "Row data"
+
+#' @export
+#' @importFrom SummarizedExperiment rowData
+setMethod(".cacheCommonInfo", "RowDataPlot", function(x, se) {
+    covariates <- .find_atomic_fields(rowData(se))
+
+    # Namespacing to avoid clashes with parent class' common info.
+    out <- callNextMethod()
+    out$RowDataPlot <- list(covariates=covariates)
+    out
+})
+
+#' @export
+setMethod(".refineParameters", "RowDataPlot", function(x, se, active_panels) {
+    covariates <- .get_common_info(se, .getEncodedName(x))$RowDataPlot$covariates
+
+    if (length(covariates)==0L) {
+        warning(sprintf("no atomic 'rowData' fields for '%s'", class(x)[1]))
+        return(NULL)
+    }
+
+    xchoice <- x[[.rowDataXAxis]]
+    if (!xchoice %in% c(.rowDataXAxisNothingTitle, .rowDataXAxisRowDataTitle)) { 
+        x[[.rowDataXAxis]] <- .rowDataXAxisNothingTitle
+    }
+
+    xcol <- x[[.rowDataXAxisRowData]]
+    if (is.na(xcol) || !xcol %in% covariates) {
+        x[[.rowDataXAxisRowData]] <- covariates[1]
+    }
+
+    ycol <- x[[.rowDataYAxis]]
+    if (is.na(ycol) || !ycol %in% covariates) {
+        x[[.rowDataYAxis]] <- covariates[1]
+    }
+
+    callNextMethod()
+})
+
+#' @importFrom S4Vectors setValidity2 isSingleString
+setValidity2("RowDataPlot", function(object) {
+    msg <- character(0)
+
+    allowable <- c(.rowDataXAxisNothingTitle, .rowDataXAxisRowDataTitle)
+    if (!object[[.rowDataXAxis]] %in% allowable) {
+        msg <- c(msg, sprintf("choice of '%s' should be one of %s", .rowDataXAxis, 
+            paste(sprintf("'%s'", allowable), collapse=", ")))
+    }
+
+    for (field in c(.rowDataXAxisRowData, .rowDataYAxis)) {
+        if (!isSingleString(val <- object[[field]])) {
+            msg <- c(msg, sprintf("'%s' must be a single string", field))
+        }
+    }
+
+    if (length(msg)) {
+        return(msg)
+    }
+    TRUE
+})
 
 #' @export
 #' @importFrom shiny selectInput radioButtons
@@ -29,7 +129,7 @@ setMethod(".defineParamInterface", "RowDataPlot", function(x, id, param_choices,
     panel_name <- paste0(mode, id)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
-    row_covariates <- colnames(rowData(se))
+    row_covariates <- .get_common_info(se, mode)$RowDataPlot$covariates
 
     plot.param <- list(
         selectInput(.input_FUN(.rowDataYAxis),

@@ -1,14 +1,6 @@
 
 .validParameterChoices <- list()
 
-# Column data plotting parameters. ----
-.colDataXAxisNothingTitle <- "None"
-.colDataXAxisColDataTitle <- "Column data"
-
-.colDataYAxis <- "YAxis"
-.colDataXAxis <- "XAxis"
-.colDataXAxisColData <- "XAxisColData"
-
 # Row data plotting parameters. ----
 .rowDataXAxisNothingTitle <- "None"
 .rowDataXAxisRowDataTitle <- "Row data"

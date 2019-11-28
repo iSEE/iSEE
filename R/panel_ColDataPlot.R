@@ -10,6 +10,36 @@
 #' More details to be added.
 #'
 #' @author Aaron Lun
+#' @examples
+#' #################
+#' # For end-users #
+#' #################
+#'
+#' x <- ColDataPlot()
+#' x[["XAxis"]]
+#' x[["XAxis"]] <- "Column data"
+#' 
+#' ##################
+#' # For developers #
+#' ##################
+#' 
+#' library(scater)
+#' sce <- mockSCE()
+#' sce <- logNormCounts(sce)
+#'
+#' old_cd <- colData(sce)
+#' colData(sce) <- NULL
+#' 
+#' # Spits out a NULL and a warning if no assays are named.
+#' sce <- iSEE:::.set_common_info(sce, .getEncodedName(x), 
+#'     .cacheCommonInfo(x, sce))
+#' .refineParameters(x, sce, list())
+#' 
+#' # Replaces the default with something sensible.
+#' colData(sce) <- old_cd
+#' sce <- iSEE:::.set_common_info(sce, .getEncodedName(x), 
+#'     .cacheCommonInfo(x, sce))
+#' .refineParameters(x, sce, list())
 #'
 #' @docType methods
 #' @aliases ColDataPlot ColDataPlot-class
@@ -18,9 +48,84 @@
 #' @name ColDataPlot
 NULL
 
+#' @export
 ColDataPlot <- function() {
     new("ColDataPlot")
 }
+
+#' @export
+setMethod("initialize", "ColDataPlot", function(.Object, ...) {
+    .Object <- callNextMethod(.Object, ...)
+    .Object <- .empty_default(.Object, .colDataXAxis, .colDataXAxisNothingTitle)
+    .Object <- .empty_default(.Object, .colDataXAxisColData)
+    .Object <- .empty_default(.Object, .colDataYAxis)
+    .Object
+})
+
+.colDataXAxisNothingTitle <- "None"
+.colDataXAxisColDataTitle <- "Column data"
+
+#' @export
+#' @importFrom SingleCellExperiment reducedDimNames reducedDim
+#' @importClassesFrom SingleCellExperiment SingleCellExperiment
+setMethod(".cacheCommonInfo", "ColDataPlot", function(x, se) {
+    covariates <- .find_atomic_fields(colData(se))
+
+    # Namespacing to avoid clashes with parent class' common info.
+    out <- callNextMethod()
+    out$ColDataPlot <- list(covariates=covariates)
+    out
+})
+
+#' @export
+#' @importFrom SingleCellExperiment reducedDim
+setMethod(".refineParameters", "ColDataPlot", function(x, se, active_panels) {
+    covariates <- .get_common_info(se, .getEncodedName(x))$ColDataPlot$covariates
+
+    if (length(covariates)==0L) {
+        warning(sprintf("no atomic 'colData' fields for '%s'", class(x)[1]))
+        return(NULL)
+    }
+
+    xchoice <- x[[.colDataXAxis]]
+    if (!xchoice %in% c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle)) { 
+        x[[.colDataXAxis]] <- .colDataXAxisNothingTitle
+    }
+
+    xcol <- x[[.colDataXAxisColData]]
+    if (is.na(xcol) || !xcol %in% covariates) {
+        x[[.colDataXAxisColData]] <- covariates[1]
+    }
+
+    ycol <- x[[.colDataYAxis]]
+    if (is.na(ycol) || !ycol %in% covariates) {
+        x[[.colDataYAxis]] <- covariates[1]
+    }
+
+    callNextMethod()
+})
+
+#' @importFrom S4Vectors setValidity2 isSingleString
+setValidity2("ColDataPlot", function(object) {
+    msg <- character(0)
+
+    allowable <- c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle)
+    if (!object[[.colDataXAxis]] %in% allowable) {
+        msg <- c(msg, sprintf("choice of '%s' should be one of %s", .colDataXAxis, 
+            paste(sprintf("'%s'", allowable), collapse=", ")))
+    }
+
+    for (field in c(.colDataXAxisColData, .colDataYAxis)) {
+        if (!isSingleString(val <- object[[field]])) {
+            msg <- c(msg, sprintf("'%s' must be a single string", field))
+        }
+    }
+
+    if (length(msg)) {
+        return(msg)
+    }
+    TRUE
+})
 
 #' @export
 #' @importFrom shiny selectInput radioButtons

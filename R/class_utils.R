@@ -18,3 +18,14 @@
     }
     x
 }
+
+.find_atomic_fields <- function(df) {
+    covariates <- colnames(df)
+    for (i in seq_along(covariates)) {
+        current <- df[,i]
+        if (!is.atomic(current) || !is.null(dim(current))) {
+            covariates[i] <- NA_character_
+        }
+    }
+    covariates[!is.na(covariates)]
+}

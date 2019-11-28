@@ -157,9 +157,19 @@ setClass("FeatAssayPlot", contains="ColumnDotPlot", slots=collated)
 
 ####################################################
 
+.colDataYAxis <- "YAxis"
+.colDataXAxis <- "XAxis"
+.colDataXAxisColData <- "XAxisColData"
+
+collated <- character(0)
+collated[.colDataXAxis] <- "character" 
+collated[.colDataYAxis] <- "character" 
+collated[.colDataXAxisColData] <- "character" 
 
 #' @export
-setClass("ColDataPlot", contains="ColumnDotPlot")
+setClass("ColDataPlot", contains="ColumnDotPlot", slots=collated)
+
+####################################################
 
 #' @export
 setClass("SampAssayPlot", contains="RowDotPlot")

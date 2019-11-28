@@ -108,3 +108,6 @@ setGeneric(".getEncodedName", function(x) standardGeneric(".getEncodedName"))
 
 #' @export
 setGeneric(".getPlottingFunction", function(x) standardGeneric(".getPlottingFunction"))
+
+#' @export
+setGeneric(".refineParameters", function(x, se, active_panels) standardGeneric(".refineParameters")) 

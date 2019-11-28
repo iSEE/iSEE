@@ -1,11 +1,6 @@
 
 .validParameterChoices <- list()
 
-# Reduced dimension plotting parameters. ----
-.redDimType <- "Type"
-.redDimXAxis <- "XAxis"
-.redDimYAxis <- "YAxis"
-
 # Feature assay plotting parameters. ----
 .featAssayXAxisNothingTitle <- "None"
 .featAssayXAxisColDataTitle <- "Column data"

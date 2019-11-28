@@ -119,8 +119,21 @@ setClass("ColumnDotPlot", contains="DotPlot", representation("VIRTUAL"))
 #' @export
 setClass("RowDotPlot", contains="DotPlot", representation("VIRTUAL"))
 
+####################################################
+
+.redDimType <- "Type"
+.redDimXAxis <- "XAxis"
+.redDimYAxis <- "YAxis"
+
+collated <- character(0)
+collated[.redDimType] <- "character"
+collated[.redDimXAxis] <- "integer"
+collated[.redDimYAxis] <- "integer"
+
 #' @export
-setClass("RedDimPlot", contains="ColumnDotPlot")
+setClass("RedDimPlot", contains="ColumnDotPlot", slots=collated)
+
+####################################################
 
 #' @export
 setClass("FeatAssayPlot", contains="ColumnDotPlot")

@@ -11,6 +11,24 @@
 #'
 #' @author Aaron Lun
 #'
+#' @examples
+#' # For users:
+#' x <- RedDimPlot()
+#' x[["Type"]] 
+#' x[["Type"]] <- "PCA"
+#' 
+#' ###########################
+#' # For developers:
+#' library(scater)
+#' sce <- mockSCE()
+#' sce <- logNormCounts(sce)
+#' sce2 <- runPCA(sce)
+#'
+#' # NULL if no reduced dims are available,
+#' # or it will set default values appropriately:
+#' .refineParameters(x, sce)
+#' .refineParameters(x, sce2)
+#' 
 #' @docType methods
 #' @aliases RedDimPlot RedDimPlot-class
 #' .defineParamInterface,RedDimPlot-method
@@ -18,9 +36,78 @@
 #' @name RedDimPlot
 NULL
 
+#' @export
 RedDimPlot <- function() {
-    new("RedDimPlot")
+    new("RedDimPlot") 
 }
+
+#' @export
+setMethod("initialize", "RedDimPlot", function(.Object, ...) {
+    .Object <- callNextMethod(.Object, ...)
+    if (length(.Object[[.redDimType]])==0L) {
+        .Object[[.redDimType]] <- NA_character_
+    }
+    if (length(.Object[[.redDimXAxis]])==0L) {
+        .Object[[.redDimXAxis]] <- 1L
+    }
+    if (length(.Object[[.redDimYAxis]])==0L) {
+        .Object[[.redDimYAxis]] <- 2L
+    }
+    .Object
+})
+
+#' @export
+#' @importFrom SingleCellExperiment reducedDimNames reducedDim
+setMethod(".refineParameters", "RedDimPlot", function(x, se, active_panels) {
+    available <- reducedDimNames(se)
+    if (!is.na(chosen <- x[[.redDimType]]) &&
+        chosen %in% available &&
+        x[[.redDimXAxis]] <= ncol(reducedDim(se, chosen)) &&
+        x[[.redDimYAxis]] <= ncol(reducedDim(se, chosen)))
+    {   
+        # All is well, nothing needs to be done here.
+    } else {
+        if (length(available)==0L) {
+            return(NULL)
+        }
+
+        # Otherwise, we try to find the first field with non-zero dimensions.
+        somedim <- FALSE
+        for (y in available) {
+            if (ncol(reducedDim(x, y)) > 0L) {
+                somedim <- TRUE
+                break
+            }
+        }
+        if (!somedim) {
+            return(NULL)
+        }
+
+        .Object[[.redDimType]] <- y
+        .Object[[.redDimXAxis]] <- 1L
+        .Object[[.redDimYAxis]] <- min(ncol(reducedDim(x, y)), 2L)
+    }
+
+    callNextMethod()
+})
+
+#' @importFrom S4Vectors setValidity2 isSingleString
+setValidity2("RedDimPlot", function(object) {
+    msg <- character(0)
+    if (!isSingleString(val <- object[[.redDimType]]) || is.na(val)) {
+        msg <- c(msg, sprintf("'%s' must be a single string", .redDimType))
+    }
+    if (length(val <- object[[.redDimXAxis]])!=1 || is.na(val) || val <= 0L) {
+        msg <- c(msg, sprintf("'%s' must be a single positive integer", .redDimXAxis))
+    }
+    if (length(val <- object[[.redDimYAxis]])!=1 || is.na(val) || val <= 0L) {
+        msg <- c(msg, sprintf("'%s' must be a single positive integer", .redDimYAxis))
+    }
+    if (length(msg)>0) {
+        return(msg)
+    }
+    TRUE   
+})
 
 #' @export
 #' @importFrom SingleCellExperiment reducedDim reducedDimNames
@@ -29,7 +116,6 @@ setMethod(".defineParamInterface", "RedDimPlot", function(x, id, param_choices, 
     cur_reddim <- param_choices[[.redDimType]]
     max_dim <- ncol(reducedDim(se, cur_reddim))
     choices <- seq_len(max_dim)
-    names(choices) <- choices
 
     mode <- .getEncodedName(x)
     panel_name <- paste0(mode, id)

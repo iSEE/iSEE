@@ -135,8 +135,28 @@ setClass("RedDimPlot", contains="ColumnDotPlot", slots=collated)
 
 ####################################################
 
+.featAssayAssay <- "Assay"
+.featAssayXAxis <- "XAxis"
+.featAssayXAxisColData <- "XAxisColData"
+.featAssayXAxisRowTable <- "XAxisRowTable"
+.featAssayXAxisFeatName <- "XAxisFeatName"
+.featAssayYAxisRowTable <- "YAxisRowTable"
+.featAssayYAxisFeatName <- "YAxisFeatName"
+
+collated <- character(0)
+collated[.featAssayAssay] <- "character" 
+collated[.featAssayXAxis] <- "character" 
+collated[.featAssayXAxisColData] <- "character" 
+collated[.featAssayXAxisRowTable] <- "character" 
+collated[.featAssayXAxisFeatName] <- "character" 
+collated[.featAssayYAxisRowTable] <- "character" 
+collated[.featAssayYAxisFeatName] <- "character" 
+
 #' @export
-setClass("FeatAssayPlot", contains="ColumnDotPlot")
+setClass("FeatAssayPlot", contains="ColumnDotPlot", slots=collated)
+
+####################################################
+
 
 #' @export
 setClass("ColDataPlot", contains="ColumnDotPlot")

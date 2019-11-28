@@ -10,6 +10,37 @@
 #' More details to be added.
 #'
 #' @author Aaron Lun
+#' @examples
+#' #################
+#' # For end-users #
+#' #################
+#'
+#' x <- FeatAssayPlot()
+#' x[["XAxis"]]
+#' x[["Assay"]] <- "logcounts"
+#' x[["XAxisColData"]] <- "stuff"
+#' 
+#' ##################
+#' # For developers #
+#' ##################
+#' 
+#' library(scater)
+#' sce <- mockSCE()
+#' sce <- logNormCounts(sce)
+#'
+#' old_assay_names <- assayNames(sce)
+#' assayNames(sce) <- character(length(old_assay_names))
+#' 
+#' # Spits out a NULL and a warning if no assays are named.
+#' sce <- iSEE:::.set_common_info(sce, .getEncodedName(x), 
+#'     .cacheCommonInfo(x, sce))
+#' .refineParameters(x, sce, list())
+#' 
+#' # Replaces the default with something sensible.
+#' assayNames(sce) <- old_assay_names
+#' sce <- iSEE:::.set_common_info(sce, .getEncodedName(x), 
+#'     .cacheCommonInfo(x, sce))
+#' .refineParameters(x, sce, list())
 #'
 #' @docType methods
 #' @aliases FeatAssayPlot FeatAssayPlot-class
@@ -18,9 +49,91 @@
 #' @name FeatAssayPlot
 NULL
 
+#' @export
 FeatAssayPlot <- function() {
     new("FeatAssayPlot")
 }
+
+#' @export
+setMethod("initialize", "FeatAssayPlot", function(.Object, ...) {
+    .Object <- callNextMethod(.Object, ...)
+    .Object <- .empty_default(.Object, .featAssayAssay)
+    .Object <- .empty_default(.Object, .featAssayXAxis, .featAssayXAxisNothingTitle) 
+    .Object <- .empty_default(.Object, .featAssayXAxisColData)
+    .Object <- .empty_default(.Object, .featAssayXAxisRowTable, .noSelection)
+    .Object <- .empty_default(.Object, .featAssayXAxisFeatName)
+    .Object <- .empty_default(.Object, .featAssayYAxisRowTable, .noSelection)
+    .Object <- .empty_default(.Object, .featAssayYAxisFeatName)
+    .Object
+})
+
+#' @export
+#' @importFrom SummarizedExperiment assayNames colData
+setMethod(".cacheCommonInfo", "FeatAssayPlot", function(x, se) {
+    # Only using named assays.
+    named_assays <- assayNames(se)
+    named_assays <- named_assays[named_assays!=""]
+
+    # Only allowing atomic covariates.
+    covariates <- colnames(colData(se))
+    for (i in seq_along(covariates)) {
+        current <- colData(se)[,i]
+        if (!is.atomic(current) || !is.null(dim(current))) {
+            covariates[i] <- NA_character_
+        }
+    }
+    covariates <- covariates[!is.na(covariates)]
+
+    # Namespacing.
+    out <- callNextMethod()
+    out$FeatAssayPlot <- list(assays=named_assays, covariates=covariates)
+    out
+})
+
+#' @export
+#' @importFrom SingleCellExperiment reducedDim
+setMethod(".refineParameters", "FeatAssayPlot", function(x, se, active_panels) {
+    if (any(dim(se)==0L)) {
+        warning(sprintf("no dimensions for plotting '%s'", class(x)[1]))
+        return(NULL)
+    }
+    if (is.null(rownames(se))) {
+        warning(sprintf("no row names for plotting '%s'", class(x)[1]))
+        return(NULL)
+    }
+
+    mode <- .getEncodedName(x)
+    all_assays <- .get_common_info(se, mode)$FeatAssayPlot$assays
+    if (length(all_assays)==0L) {
+        warning(sprintf("no named 'assays' for plotting '%s'", class(x)[1]))
+        return(NULL)
+    }
+
+    xchoice <- x[[.featAssayXAxis]]
+    if (!xchoice %in% c(.featAssayXAxisNothingTitle, .featAssayXAxisColDataTitle, .featAssayXAxisFeatNameTitle)) {
+        x[[.featAssayXAxis]] <- .featAssayXAxisNothingTitle
+    }
+
+    assay_choice <- x[[.featAssayAssay]] 
+    if (is.na(assay_choice) || !assay_choice %in% all_assays) {
+        x[[.featAssayAssay]] <- all_assays[1]
+    }
+
+    x[[.featAssayXAxisFeatName]] <- rownames(se)[1]
+    x[[.featAssayYAxisFeatName]] <- rownames(se)[1]
+
+    column_covariates <- .get_common_info(se, mode)$FeatAssayPlot$covariates
+    column_choice <- x[[.featAssayXAxisColData]]
+    if ((is.na(column_choice) || !column_choice %in% column_covariates) && length(column_covariates)) {
+        x[[.featAssayXAxisColData]] <- column_covariates[1]
+    }
+
+    callNextMethod()
+})
+
+.featAssayXAxisNothingTitle <- "None"
+.featAssayXAxisColDataTitle <- "Column data"
+.featAssayXAxisFeatNameTitle <- "Feature name"
 
 #' @export
 #' @importFrom shiny selectInput radioButtons
@@ -32,15 +145,15 @@ setMethod(".defineParamInterface", "FeatAssayPlot", function(x, id, param_choice
     link_sources <- .define_link_sources(active_panels)
     tab_by_row <- c(.noSelection, link_sources$row_tab)
 
-    column_covariates <- colnames(colData(se))
+    all_assays <- .get_common_info(se, mode)$FeatAssayPlot$assays
+    column_covariates <- .get_common_info(se, mode)$FeatAssayPlot$covariates
+
     xaxis_choices <- c(.featAssayXAxisNothingTitle)
     if (length(column_covariates)) { 
         # As it is possible for this plot to be _feasible_ but for no column data to exist.
         xaxis_choices <- c(xaxis_choices, .featAssayXAxisColDataTitle)
     }
     xaxis_choices <- c(xaxis_choices, .featAssayXAxisFeatNameTitle)
-
-    all_assays <- .get_internal_info(se, "all_assays")
 
     plot.param <- list(
         selectizeInput(.input_FUN(.featAssayYAxisFeatName),

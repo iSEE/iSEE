@@ -1,19 +1,6 @@
 
 .validParameterChoices <- list()
 
-# Feature assay plotting parameters. ----
-.featAssayXAxisNothingTitle <- "None"
-.featAssayXAxisColDataTitle <- "Column data"
-.featAssayXAxisFeatNameTitle <- "Feature name"
-
-.featAssayAssay <- "Assay"
-.featAssayXAxis <- "XAxis"
-.featAssayXAxisColData <- "XAxisColData"
-.featAssayXAxisRowTable <- "XAxisRowTable"
-.featAssayXAxisFeatName <- "XAxisFeatName"
-.featAssayYAxisRowTable <- "YAxisRowTable"
-.featAssayYAxisFeatName <- "YAxisFeatName"
-
 # Column data plotting parameters. ----
 .colDataXAxisNothingTitle <- "None"
 .colDataXAxisColDataTitle <- "Column data"

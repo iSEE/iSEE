@@ -12,10 +12,33 @@
 #' @author Aaron Lun
 #'
 #' @examples
+#' #################
+#' # For end-users #
+#' #################
+#'
 #' x <- RedDimPlot()
 #' x[["Type"]] 
-#' x[["Type"]] <- "PCA"
+#' x[["Type"]] <- "TSNE"
 #' 
+#' ##################
+#' # For developers #
+#' ##################
+#' 
+#' library(scater)
+#' sce <- mockSCE()
+#' sce <- logNormCounts(sce)
+#'
+#' # Spits out a NULL and a warning if no reducedDims are available.
+#' sce <- iSEE:::.set_common_info(sce, .getEncodedName(x), 
+#'     .cacheCommonInfo(x, sce))
+#' .refineParameters(x, sce)
+#' 
+#' # Replaces the default with something sensible.
+#' sce <- runPCA(sce)
+#' sce <- iSEE:::.set_common_info(sce, .getEncodedName(x), 
+#'     .cacheCommonInfo(x, sce))
+#' .refineParameters(x, sce)
+#'
 #' @docType methods
 #' @aliases RedDimPlot RedDimPlot-class
 #' .defineParamInterface,RedDimPlot-method
@@ -31,33 +54,37 @@ RedDimPlot <- function() {
 #' @export
 setMethod("initialize", "RedDimPlot", function(.Object, ...) {
     .Object <- callNextMethod(.Object, ...)
-    if (length(.Object[[.redDimType]])==0L) {
-        .Object[[.redDimType]] <- NA_character_
-    }
-    if (length(.Object[[.redDimXAxis]])==0L) {
-        .Object[[.redDimXAxis]] <- 1L
-    }
-    if (length(.Object[[.redDimYAxis]])==0L) {
-        .Object[[.redDimYAxis]] <- 2L
-    }
+    .Object <- .empty_default(.Object, .redDimType)
+    .Object <- .empty_default(.Object, .redDimXAxis, 1L)
+    .Object <- .empty_default(.Object, .redDimYAxis, 2L)
     .Object
 })
 
 #' @export
+#' @importFrom SingleCellExperiment reducedDimNames reducedDim
+#' @importClassesFrom SingleCellExperiment SingleCellExperiment
 setMethod(".cacheCommonInfo", "RedDimPlot", function(x, se) {
-    available <- reducedDimNames(se)
-    for (y in seq_along(available)) {
-        if (ncol(reducedDim(x, y)) > 0L) {
-            available[y] <- NA_character_
+    if (is(se, "SingleCellExperiment")) {
+        available <- reducedDimNames(se)
+        for (y in seq_along(available)) {
+            if (ncol(reducedDim(se, y))==0L) {
+                available[y] <- NA_character_
+            }
         }
+    } else {
+        available <- character(0)
     }
-    c(list(available=available[!is.na(available)]), callNextMethod())
+
+    # Namespacing to avoid clashes with parent class' common info.
+    out <- callNextMethod()
+    out$RedDimPlot <- list(available=available[!is.na(available)])
+    out
 })
 
 #' @export
-#' @importFrom SingleCellExperiment reducedDimNames reducedDim
+#' @importFrom SingleCellExperiment reducedDim
 setMethod(".refineParameters", "RedDimPlot", function(x, se, active_panels) {
-    available <- .get_common_info(se, .getEncodedName(x))$available
+    available <- .get_common_info(se, .getEncodedName(x))$RedDimPlot$available
 
     if (!is.na(chosen <- x[[.redDimType]]) &&
         chosen %in% available &&
@@ -67,13 +94,14 @@ setMethod(".refineParameters", "RedDimPlot", function(x, se, active_panels) {
         # All is well, nothing needs to be done here.
     } else {
         if (length(available)==0L) {
+            warning(sprintf("no 'reducedDims' with non-zero dimensions for '%s'", class(x)[1]))
             return(NULL)
         }
 
         y <- available[1]
-        .Object[[.redDimType]] <- y
-        .Object[[.redDimXAxis]] <- 1L
-        .Object[[.redDimYAxis]] <- min(ncol(reducedDim(x, y)), 2L)
+        x[[.redDimType]] <- y
+        x[[.redDimXAxis]] <- 1L
+        x[[.redDimYAxis]] <- min(ncol(reducedDim(se, y)), 2L)
     }
 
     callNextMethod()
@@ -111,7 +139,8 @@ setMethod(".defineParamInterface", "RedDimPlot", function(x, id, param_choices, 
 
     plot.param <- list(
         selectInput(.input_FUN(.redDimType), label="Type",
-            choices=.get_common_info(se, mode)$available, selected=cur_reddim),
+            choices=.get_common_info(se, mode)$RedDimPlot$available, 
+            selected=cur_reddim),
         selectInput(.input_FUN(.redDimXAxis), label="Dimension 1",
             choices=choices, selected=param_choices[[.redDimXAxis]]),
         selectInput(.input_FUN(.redDimYAxis), label="Dimension 2",

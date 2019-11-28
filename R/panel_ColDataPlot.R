@@ -66,8 +66,7 @@ setMethod("initialize", "ColDataPlot", function(.Object, ...) {
 .colDataXAxisColDataTitle <- "Column data"
 
 #' @export
-#' @importFrom SingleCellExperiment reducedDimNames reducedDim
-#' @importClassesFrom SingleCellExperiment SingleCellExperiment
+#' @importFrom SummarizedExperiment colData
 setMethod(".cacheCommonInfo", "ColDataPlot", function(x, se) {
     covariates <- .find_atomic_fields(colData(se))
 
@@ -78,7 +77,6 @@ setMethod(".cacheCommonInfo", "ColDataPlot", function(x, se) {
 })
 
 #' @export
-#' @importFrom SingleCellExperiment reducedDim
 setMethod(".refineParameters", "ColDataPlot", function(x, se, active_panels) {
     covariates <- .get_common_info(se, .getEncodedName(x))$ColDataPlot$covariates
 

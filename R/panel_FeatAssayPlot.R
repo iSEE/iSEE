@@ -157,12 +157,12 @@ setMethod(".defineParamInterface", "FeatAssayPlot", function(x, id, param_choice
     link_sources <- .define_link_sources(active_panels)
     tab_by_row <- c(.noSelection, link_sources$row_tab)
 
-    all_assays <- .get_common_info(se, mode)$FeatAssayPlot$assays
-    column_covariates <- .get_common_info(se, mode)$FeatAssayPlot$covariates
+    common_info <- .get_common_info(se, mode)$FeatAssayPlot
+    all_assays <- common_info$assays
+    column_covariates <- common_info$covariates
 
     xaxis_choices <- c(.featAssayXAxisNothingTitle)
-    if (length(column_covariates)) { 
-        # As it is possible for this plot to be _feasible_ but for no column data to exist.
+    if (length(column_covariates)) { # As it is possible for this plot to be _feasible_ but for no column data to exist.
         xaxis_choices <- c(xaxis_choices, .featAssayXAxisColDataTitle)
     }
     xaxis_choices <- c(xaxis_choices, .featAssayXAxisFeatNameTitle)

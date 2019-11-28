@@ -110,15 +110,17 @@ setMethod(".refineParameters", "RedDimPlot", function(x, se, active_panels) {
 #' @importFrom S4Vectors setValidity2 isSingleString
 setValidity2("RedDimPlot", function(object) {
     msg <- character(0)
-    if (!isSingleString(val <- object[[.redDimType]]) || is.na(val)) {
+
+    if (!isSingleString(val <- object[[.redDimType]])) { 
         msg <- c(msg, sprintf("'%s' must be a single string", .redDimType))
     }
-    if (length(val <- object[[.redDimXAxis]])!=1 || is.na(val) || val <= 0L) {
-        msg <- c(msg, sprintf("'%s' must be a single positive integer", .redDimXAxis))
+
+    for (field in c(.redDimXAxis, .redDimYAxis)) {
+        if (length(val <- object[[field]])!=1 || is.na(val) || val <= 0L) {
+            msg <- c(msg, sprintf("'%s' must be a single positive integer", field))
+        }
     }
-    if (length(val <- object[[.redDimYAxis]])!=1 || is.na(val) || val <= 0L) {
-        msg <- c(msg, sprintf("'%s' must be a single positive integer", .redDimYAxis))
-    }
+
     if (length(msg)>0) {
         return(msg)
     }

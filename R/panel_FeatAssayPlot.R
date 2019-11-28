@@ -75,14 +75,7 @@ setMethod(".cacheCommonInfo", "FeatAssayPlot", function(x, se) {
     named_assays <- named_assays[named_assays!=""]
 
     # Only allowing atomic covariates.
-    covariates <- colnames(colData(se))
-    for (i in seq_along(covariates)) {
-        current <- colData(se)[,i]
-        if (!is.atomic(current) || !is.null(dim(current))) {
-            covariates[i] <- NA_character_
-        }
-    }
-    covariates <- covariates[!is.na(covariates)]
+    covariates <- .find_atomic_fields(colData(se))
 
     # Namespacing.
     out <- callNextMethod()
@@ -109,11 +102,6 @@ setMethod(".refineParameters", "FeatAssayPlot", function(x, se, active_panels) {
         return(NULL)
     }
 
-    xchoice <- x[[.featAssayXAxis]]
-    if (!xchoice %in% c(.featAssayXAxisNothingTitle, .featAssayXAxisColDataTitle, .featAssayXAxisFeatNameTitle)) {
-        x[[.featAssayXAxis]] <- .featAssayXAxisNothingTitle
-    }
-
     assay_choice <- x[[.featAssayAssay]] 
     if (is.na(assay_choice) || !assay_choice %in% all_assays) {
         x[[.featAssayAssay]] <- all_assays[1]
@@ -134,6 +122,30 @@ setMethod(".refineParameters", "FeatAssayPlot", function(x, se, active_panels) {
 .featAssayXAxisNothingTitle <- "None"
 .featAssayXAxisColDataTitle <- "Column data"
 .featAssayXAxisFeatNameTitle <- "Feature name"
+
+#' @importFrom S4Vectors setValidity2 isSingleString
+setValidity2("FeatAssayPlot", function(object) {
+    msg <- character(0)
+
+    allowable <- c(.featAssayXAxisNothingTitle, .featAssayXAxisColDataTitle, .featAssayXAxisFeatNameTitle)
+    if (!object[[.featAssayXAxis]] %in% allowable) {
+        msg <- c(msg, sprintf("choice of '%s' should be one of %s", .featAssayXAxis, 
+            paste(sprintf("'%s'", allowable), collapse=", ")))
+    }
+
+    for (field in c(.featAssayAssay, .featAssayXAxisColData, .featAssayXAxisRowTable,
+        .featAssayXAxisFeatName, .featAssayYAxisRowTable, .featAssayYAxisFeatName))
+    {
+        if (!isSingleString(val <- object[[field]])) {
+            msg <- c(msg, sprintf("'%s' must be a single string", field))
+        }
+    }
+
+    if (length(msg)) {
+        return(msg)
+    }
+    TRUE
+})
 
 #' @export
 #' @importFrom shiny selectInput radioButtons

@@ -116,15 +116,15 @@ setClass("Panel", representation("VIRTUAL"))
 
 collated <- character(0)
 collated[.facetByRow] <- "logical"
-collated[.facetByCol] <- "logical"
+collated[.facetByColumn] <- "logical"
 
 #' @export
 setClass("DotPlot", contains=c("Panel", "VIRTUAL"), slots=collated)
 
 ####################################################
 
-.facetColumnsByRowData <- "ColumnFacetByRowData"
-.facetRowsByRowData <- "RowFacetByRowData"
+.facetColumnsByColData <- "ColumnFacetByColData"
+.facetRowsByColData <- "RowFacetByColData"
 
 collated <- character(0)
 collated[.facetColumnsByColData] <- "character"
@@ -135,8 +135,8 @@ setClass("ColumnDotPlot", contains=c("DotPlot", "VIRTUAL"), slots=collated)
 
 ####################################################
 
-.facetColumnsByColData <- "ColumnFacetByColData"
-.facetRowsByColData <- "RowFacetByColData"
+.facetColumnsByRowData <- "ColumnFacetByRowData"
+.facetRowsByRowData <- "RowFacetByRowData"
 
 collated <- character(0)
 collated[.facetColumnsByRowData] <- "character"

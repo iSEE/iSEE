@@ -42,17 +42,17 @@ setMethod("initialize", "ColumnDotPlot", function(.Object, ...) {
 setValidity2("ColumnDotPlot", function(object) {
     msg <- character(0)
 
-    .single_string_error(x, 
+    msg <- .single_string_error(msg, x, 
         c(.facetColumnsByColData, .facetRowsByColData,
             .colorByColData, .colorByFeatNameAssay, .colorBySampNameColor))
 
-    .allowable_choice_error(object, .colorByField,
+    msg <- .allowable_choice_error(msg, object, .colorByField,
         c(.colorByNothingTitle, .colorByColDataTitle, .colorByFeatNameTitle, .colorBySampNameTitle))
 
-    .allowable_choice_error(object, .shapeByField,
+    .msg <- allowable_choice_error(msg, object, .shapeByField,
           c(.shapeByNothingTitle, .shapeByColDataTitle))
 
-    .allowable_choice_error(object, .sizeByField,
+    msg <- .allowable_choice_error(msg, object, .sizeByField,
           c(.sizeByNothingTitle, .sizeByColDataTitle))
 
     if (length(msg)) {

@@ -23,9 +23,9 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
 setValidity2("DotPlot", function(object) {
     msg <- character(0)
 
-    .valid_logical_error(object, c(.facetByRow, .facetByColumn))
+    msg <- .valid_logical_error(msg, object, c(.facetByRow, .facetByColumn))
 
-    .single_string_error(object, 
+    msg <- .single_string_error(msg, object, 
         c(.colorByField, .colorByDefaultColor, .colorByFeatName, 
             .colorByRowTable, .colorBySampName, .colorByColTable,
             .shapeByField,

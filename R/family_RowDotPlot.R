@@ -38,14 +38,14 @@ setMethod("initialize", "RowDotPlot", function(.Object, ...) {
 setValidity2("RowDotPlot", function(object) {
     msg <- character(0)
 
-    .single_string_error(object, 
+    msg <- .single_string_error(msg, object, 
         c(.facetRowsByRowData, .facetColumnsByRowData,
             .colorByRowData, .colorBySampNameAssay, .colorByFeatNameColor))
 
-    .allowable_choice_error(object, .colorByField,
+    msg <- .allowable_choice_error(msg, object, .colorByField,
           c(.colorByNothingTitle, .colorByRowDataTitle, .colorByFeatNameTitle, .colorBySampNameTitle))
 
-    .allowable_choice_error(object, .shapeByField,
+    msg <- .allowable_choice_error(msg, object, .shapeByField,
           c(.shapeByNothingTitle, .shapeByRowDataTitle))
 
     if (length(msg)) {

@@ -31,27 +31,30 @@
 }
 
 #' @importFrom S4Vectors isSingleString
-.single_string_error <- function(x, fields) {
+.single_string_error <- function(msg, x, fields) {
     for (field in fields) {
         if (!isSingleString(object[[field]])) {
             msg <- c(msg, sprintf("'%s' should be a single string for '%s'", field, class(object)[1]))
         }
     }
+    msg
 }
 
-.valid_logical_error <- function(x, fields) {
+.valid_logical_error <- function(msg, x, fields) {
     for (field in fields) {
         if (length(val <- x[[field]]) || is.na(val)) {
             msg <- c(msg, sprintf("'%s' should be a non-NA logical scalar for '%s'", field, class(x)[1]))
         }
     }
+    msg
 }
 
-.allowable_choice_error <- function(x, field, allowable) {
+.allowable_choice_error <- function(msg, x, field, allowable) {
     if (!x[[field]] %in% allowed) {
         msg <- c(msg, sprintf("'%s' for '%s' should be one of %s", field, class(x)[1],
             paste(sprintf("'%s'", allowed), collapse=", ")))
     }
+    msg
 }
 
 .replace_na_with_first <- function(x, field, choices) {

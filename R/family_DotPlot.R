@@ -21,6 +21,9 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
     .Object <- .empty_default(.Object, .selectColor, "red")
     .Object <- .empty_default(.Object, .selectTransAlpha, 0.1)
 
+    .Object <- .empty_default(.Object, .selectMultiType, .selectMultiActiveTitle)
+    .Object <- .empty_default(.Object, .selectMultiSaved, 0L)
+
     .Object
 })
 
@@ -42,6 +45,13 @@ setValidity2("DotPlot", function(object) {
         c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle))
 
     msg <- .transparency_error(msg, object, .selectByTransAlpha)
+
+    msg <- .allowable_choice_error(msg, object, .selectMultiType,
+        c(.selectMultiActiveTitle, .selectMultiUnionTitle, .selectMultiSavedTitle))
+
+    if (length(saved <- object[[.selectMultiSaved]]) > 1L || saved < 0L) {
+        msg <- c(msg, sprintf("'%s' must be a non-negative integer in '%s'", .selectMultiSaved, class(object)[1]))
+    }
 
     if (length(msg)) {
         return(msg)

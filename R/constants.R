@@ -39,16 +39,13 @@
 .selectTransTitle <- "Transparent"
 
 # Multiple selection parameters. ---
-.multiSelectHistory <- "MultiSelectHistory"
+
 .multiSelectSave <- "MultiSelectSave"
 .multiSelectDelete <- "MultiSelectDelete"
 
-.selectMultiType <- "SelectMultiType"
 .selectMultiActiveTitle <- "Active"
 .selectMultiUnionTitle <- "Union"
 .selectMultiSavedTitle <- "Saved"
-
-.selectMultiSaved <- "SelectMultiSaved"
 
 .noSelection <- "---"
 .customSelection <- "Custom ..."

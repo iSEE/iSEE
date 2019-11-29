@@ -155,6 +155,16 @@ collated[.selectEffect] <- "character"
 collated[.selectColor] <- "character"
 collated[.selectTransAlpha] <- "numeric"
 
+.selectMultiType <- "SelectMultiType"
+.selectMultiSaved <- "SelectMultiSaved"
+
+collated[.selectMultiType] <- "character"
+collated[.selectMultiSaved] <- "integer"
+
+.multiSelectHistory <- "MultiSelectHistory"
+
+collated[.multiSelectHistory] <- "list"
+
 #' @export
 setClass("DotPlot", contains=c("Panel", "VIRTUAL"), slots=collated)
 

@@ -33,16 +33,10 @@
 .sizeByRowDataTitle <- "Row data"
 
 # Point selection parameters. ----
-.selectParamBoxOpen <- "SelectBoxOpen"
 
-.selectByPlot <- "SelectByPlot"
-.selectEffect <- "SelectEffect"
 .selectRestrictTitle <- "Restrict"
 .selectColorTitle <- "Color"
 .selectTransTitle <- "Transparent"
-
-.selectColor <- "SelectColor"
-.selectTransAlpha <- "SelectAlpha"
 
 # Multiple selection parameters. ---
 .multiSelectHistory <- "MultiSelectHistory"

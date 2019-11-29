@@ -62,6 +62,11 @@ setMethod("initialize", "HeatMapPlot", function(.Object, ...) {
     .Object <- .empty_default(.Object, .heatMapLower, -Inf)
     .Object <- .empty_default(.Object, .heatMapUpper, Inf)
     .Object <- .empty_default(.Object, .heatMapCenteredColors, "purple-black-yellow") 
+
+    .Object <- .empty_default(.Object, .selectEffect, .selectTransTitle)
+    .Object <- .empty_default(.Object, .selectColor, "red")
+    .Object <- .empty_default(.Object, .selectTransAlpha, 0.1)
+
     .Object
 })
 
@@ -109,6 +114,11 @@ setValidity2("HeatMapPlot", function(object) {
         msg <- c(msg, sprintf("values in '%s' should only contain %s", .heatMapCenterScale,
             paste(sprintf("'%s'", allowable), collapse=", ")))
     }
+
+    msg <- .allowable_choice_error(msg, object, .selectEffect,
+        c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle))
+
+    msg <- .transparency_error(msg, object, .selectByTransAlpha)
 
     if (length(msg)) {
         return(msg)

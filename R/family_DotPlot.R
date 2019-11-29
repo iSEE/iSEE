@@ -16,6 +16,10 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
 
     .Object <- .empty_default(.Object, .sizeByField, .sizeByNothingTitle)
 
+    .Object <- .empty_default(.Object, .selectEffect, .selectTransTitle)
+    .Object <- .empty_default(.Object, .selectColor, "red")
+    .Object <- .empty_default(.Object, .selectTransAlpha, 0.1)
+
     .Object
 })
 
@@ -26,10 +30,17 @@ setValidity2("DotPlot", function(object) {
     msg <- .valid_logical_error(msg, object, c(.facetByRow, .facetByColumn))
 
     msg <- .single_string_error(msg, object, 
-        c(.colorByField, .colorByDefaultColor, .colorByFeatName, 
-            .colorByRowTable, .colorBySampName, .colorByColTable,
+        c(.colorByField, .colorByFeatName, .colorByRowTable, .colorBySampName, .colorByColTable,
             .shapeByField,
-            .sizeByField))
+            .sizeByField,
+            .selectEffect))
+
+    msg <- .valid_string_error(msg, object, c(.colorByDefaultColor, .selectColor))
+
+    msg <- .allowable_choice_error(msg, object, .selectEffect,
+        c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle))
+
+    msg <- .transparency_error(msg, object, .selectByTransAlpha)
 
     if (length(msg)) {
         return(msg)

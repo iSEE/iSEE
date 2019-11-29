@@ -106,8 +106,15 @@ setClass("ExperimentColorMap",
 
 ####################################################
 
+.selectParamBoxOpen <- "SelectBoxOpen"
+.selectByPlot <- "SelectByPlot"
+
+collated <- character(0)
+collated[.selectParamBoxOpen] <- "logical"
+collated[.selectByPlot] <- "character"
+
 #' @export
-setClass("Panel", representation("VIRTUAL")) 
+setClass("Panel", contains="VIRTUAL", slots=collated) 
 
 ####################################################
 
@@ -139,6 +146,14 @@ collated[.shapeByField] <- "character"
 .sizeByField <- "SizeBy"
 
 collated[.sizeByField] <- "character"
+
+.selectEffect <- "SelectEffect"
+.selectColor <- "SelectColor"
+.selectTransAlpha <- "SelectAlpha"
+
+collated[.selectEffect] <- "character"
+collated[.selectColor] <- "character"
+collated[.selectTransAlpha] <- "numeric"
 
 #' @export
 setClass("DotPlot", contains=c("Panel", "VIRTUAL"), slots=collated)
@@ -337,6 +352,15 @@ collated[.heatMapCenterScale] <- "character"
 collated[.heatMapLower] <- "numeric"
 collated[.heatMapUpper] <- "numeric"
 collated[.heatMapCenteredColors] <- "character"
+
+.selectEffect <- "SelectEffect"
+.selectColor <- "SelectColor"
+.selectTransAlpha <- "SelectAlpha"
+
+collated[.selectEffect] <- "character"
+collated[.selectColor] <- "character"
+collated[.selectTransAlpha] <- "numeric"
+
 
 #' @export
 setClass("HeatMapPlot", contains="Panel", slots=collated)

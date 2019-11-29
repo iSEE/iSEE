@@ -1,4 +1,22 @@
 #' @export
+setMethod("initialize", "Panel", function(.Object, ...) {
+    .Object <- .empty_default(.Object, .selectParamBoxOpen, FALSE)
+    .Object <- .empty_default(.Object, .selectByPlot, .noSelection)
+    .Object
+})
+
+setValidity2("Panel", function(object) {
+    msg <- character(0)
+    msg <- .valid_logical_error(msg, object, .selectParamBoxOpen)
+    msg <- .single_string_error(msg, object, .selectByPlot)
+
+    if (length(msg)) {
+        return(msg)
+    }
+    TRUE
+})
+
+#' @export
 setMethod("[[", "Panel", function(x, i, j, ...) {
     slot(x, i)        
 })

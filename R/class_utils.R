@@ -42,8 +42,17 @@
 
 .valid_logical_error <- function(msg, x, fields) {
     for (field in fields) {
-        if (length(val <- x[[field]]) || is.na(val)) {
+        if (length(val <- x[[field]])!=1 || is.na(val)) {
             msg <- c(msg, sprintf("'%s' should be a non-NA logical scalar for '%s'", field, class(x)[1]))
+        }
+    }
+    msg
+}
+
+.valid_string_error <- function(msg, x, fields) {
+    for (field in fields) {
+        if (length(val <- x[[field]])!=1 || is.na(val)) {
+            msg <- c(msg, sprintf("'%s' should be a non-NA string for '%s'", field, class(x)[1]))
         }
     }
     msg
@@ -53,6 +62,13 @@
     if (!x[[field]] %in% allowed) {
         msg <- c(msg, sprintf("'%s' for '%s' should be one of %s", field, class(x)[1],
             paste(sprintf("'%s'", allowed), collapse=", ")))
+    }
+    msg
+}
+
+.transparency_error <- function(msg, x, field) {
+    if (length(val <- x[[field]])!=1 || is.na(val) || val < 0 || val > 1) {
+        msg <- c(msg, sprintf("'%s' for '%s' should be a numeric scalar in [0, 1]", field, class(x)[1]))
     }
     msg
 }

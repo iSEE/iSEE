@@ -1,7 +1,177 @@
+#' Heat map plot panel
+#'
+#' Create a panel with a heatmap where features are rows and samples are columns.
+#'
+#' Plots reduced dimensions. What more do I have to say?
+#'
+#' @section Constructor:
+#' \code{HeatMapPlot()} creates an instance of a HeatMapPlot class.
+#'
+#' @section Panel parameters:
+#' \code{\link{.defineParamInterface}} will create parameter elements for choosing the elements to show on the heatmap.
+#' More details to be added.
+#'
+#' @author Aaron Lun
+#'
+#' @examples
+#' #################
+#' # For end-users #
+#' #################
+#'
+#' x <- HeatMapPlot()
+#' x[["ColorScale"]] 
+#' x[["Lower"]] <- -5
+#' 
+#' ##################
+#' # For developers #
+#' ##################
+#' 
+#' library(scater)
+#' sce <- mockSCE()
+#' sce <- logNormCounts(sce)
+#'
+#' # Replaces the default with something sensible.
+#' sce <- runPCA(sce)
+#' sce <- iSEE:::.set_common_info(sce, .getEncodedName(x), 
+#'     .cacheCommonInfo(x, sce))
+#' .refineParameters(x, sce)
+#'
+#' @docType methods
+#' @aliases HeatMapPlot HeatMapPlot-class
+#' .defineParamInterface,HeatMapPlot-method
+#' .createParamObservers,HeatMapPlot-method
+#' @name HeatMapPlot
+NULL
+
 #' @export
 HeatMapPlot <- function() {
     new("HeatMapPlot")
 }
+
+#' @export
+setMethod("initialize", "HeatMapPlot", function(.Object, ...) {
+    .Object <- callNextMethod(.Object, ...)
+    .Object <- .empty_default(.Object, .heatMapAssay)
+    .Object <- .empty_default(.Object, .heatMapFeatNameBoxOpen, FALSE)
+    .Object <- .empty_default(.Object, .heatMapImportSource, .noSelection)
+    .Object <- .empty_default(.Object, .heatMapColDataBoxOpen, FALSE)
+    .Object <- .empty_default(.Object, .heatMapColorBoxOpen, FALSE)
+    .Object <- .empty_default(.Object, .heatMapCenterScale, .heatMapCenterTitle)
+    .Object <- .empty_default(.Object, .heatMapLower, -Inf)
+    .Object <- .empty_default(.Object, .heatMapUpper, Inf)
+    .Object <- .empty_default(.Object, .heatMapCenteredColors, "purple-black-yellow") 
+    .Object
+})
+
+.heatMapCenterTitle <- "Centered"
+.heatMapScaleTitle <- "Scaled"
+
+setValidity2("HeatMapPlot", function(object) {
+    msg <- character(0)
+
+    for (box in c(.heatMapFeatNameBoxOpen, .heatMapColDataBoxOpen, .heatMapColorBoxOpen)) {
+        if (length(val <- object[[box]])!=1L || is.na(val)) {
+            msg <- c(msg, sprintf("'%s' should be a non-NA logical scalar for '%s'", box, class(object)[1]))
+        }
+    }
+
+    # Checks for the numeric limits.
+    for (lim in c(.heatMapLower, .heatMapUpper) ){
+        if (length(val <- object[[lim]])!=1L || is.na(val)) {
+            msg <- c(msg, sprintf("'%s' should be a non-NA numeric scalar for '%s'", lim, class(object)[1]))
+        }
+    }
+
+    if (object[[.heatMapLower]] >= object[[.heatMapUpper]]) {
+        msg <- c(msg, sprintf("'%s' should have a lower value than '%s' for '%s'", 
+            .heatMapLower, .heatMapUpper, class(object)[1]))
+    }
+
+    # Checks for the assorted string fields.
+    for (field in c(.heatMapAssay, .heatMapImportSource, .heatMapCenteredColors)) {
+        if (!isSingleString(object[[field]])) {
+            msg <- c(msg, sprintf("'%s' should be a single string for '%s'", field, class(object)[1]))
+        }
+    }
+
+    for (field in c(.heatMapImportSource, .heatMapCenteredColors)) {
+        if (is.na(object[[field]])) {
+            msg <- c(msg, sprintf("'%s' should be a non-NA string for '%s'", field, class(object)[1]))
+        }
+    }
+
+    # Checks for centering/scaling.
+    choices <- object[[.heatMapCenterScale]]
+    allowable <- c(.heatMapCenterTitle, .heatMapScaleTitle)
+    if (any(!choices %in% allowable)) {
+        msg <- c(msg, sprintf("values in '%s' should only contain %s", .heatMapCenterScale,
+            paste(sprintf("'%s'", allowable), collapse=", ")))
+    }
+
+    if (length(msg)) {
+        return(msg)
+    }
+    TRUE
+})
+
+#' @export
+#' @importFrom SummarizedExperiment colData assayNames
+setMethod(".cacheCommonInfo", "HeatMapPlot", function(x, se) {
+    # Only using named assays.
+    named_assays <- assayNames(se)
+    named_assays <- named_assays[named_assays!=""]
+
+    # Only allowing atomic covariates.
+    covariates <- .find_atomic_fields(colData(se))
+
+    # Namespacing.
+    out <- callNextMethod()
+    out$HeatMapPlot <- list(assays=named_assays, covariates=covariates)
+    out
+})
+
+setMethod(".refineParameters", "HeatMapPlot", function(x, se, active_panels) {
+    if (any(dim(se)==0L)) {
+        warning(sprintf("no dimensions for plotting '%s'", class(x)[1]))
+        return(NULL)
+    }
+
+    mode <- .getEncodedName(x)
+    all_assays <- .get_common_info(se, mode)$HeatMapPlot$assays
+    if (length(all_assays)==0L) {
+        warning(sprintf("no named 'assays' for plotting '%s'", class(x)[1]))
+        return(NULL)
+    }
+
+    assay_choice <- x[[.heatMapAssay]] 
+    if (is.na(assay_choice) || !assay_choice %in% all_assays) {
+        x[[.heatMapAssay]] <- all_assays[1]
+    }
+
+    feat_choice <- x[[.heatMapFeatName]]
+    x[[.heatMapFeatName]] <- feat_choice[feat_choice %in% rownames(se)]
+
+    cov_choice <- x[[.heatMapColData]]
+    column_covariates <- .get_common_info(se, mode)$HeatMapPlot$covariates
+    x[[.heatMapColData]] <- cov_choice[cov_choice %in% column_covariates]
+
+    x
+})
+
+.heatMapFeaturesTextInput <- "FeatTextInput"
+.heatMapFeaturesTextSubmit <- "FeatTextSubmit"
+.heatMapFeaturesFileInput <- "FeatFileInput"
+
+.heatMapModalSummary <- "ModalSummary"
+.heatMapModalTable <- "ModalTable"
+.heatMapImportFeatures <- "Import"
+.heatMapClearFeatures <- "Clear"
+.heatMapCluster <- "Clustered"
+.heatMapLegend <- "Legend"
+
+.heatMapRelHeightColorBar <- 0.1
+.heatMapRelHeightHeatmap <- 1
+.heatMapRelHeightAnnot <- 0.1
 
 #' @export
 #' @importFrom shiny selectInput actionButton selectizeInput hr

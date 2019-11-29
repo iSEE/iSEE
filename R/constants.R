@@ -9,41 +9,6 @@
 .customColSource <- "ColumnSource"
 .customRowSource <- "RowSource"
 
-# Heatmap modal ----
-.heatMapFeaturesTextInput <- "FeatTextInput"
-.heatMapFeaturesTextSubmit <- "FeatTextSubmit"
-.heatMapFeaturesFileInput <- "FeatFileInput"
-
-.heatMapModalSummary <- "ModalSummary"
-.heatMapModalTable <- "ModalTable"
-
-# Heatmap plotting parameters. ----
-.heatMapAssay <- "Assay"
-
-.heatMapFeatName <- "FeatName"
-.heatMapFeatNameBoxOpen <- "FeatNameBoxOpen"
-.heatMapImportFeatures <- "Import"
-.heatMapClearFeatures <- "Clear"
-.heatMapImportSource <- "FeatNameSource"
-.heatMapCluster <- "Clustered"
-
-.heatMapColData <- "ColData"
-.heatMapColDataBoxOpen <- "ColDataBoxOpen"
-.heatMapLegend <- "Legend"
-
-.heatMapColorBoxOpen <- "ColorBoxOpen"
-.heatMapCenterScale <- "CenterScale"
-.heatMapCenterTitle <- "Centered"
-.heatMapScaleTitle <- "Scaled"
-
-.heatMapLower <- "Lower"
-.heatMapUpper <- "Upper"
-.heatMapCenteredColors <- "ColorScale"
-
-.heatMapRelHeightColorBar <- 0.1
-.heatMapRelHeightHeatmap <- 1
-.heatMapRelHeightAnnot <- 0.1
-
 # Faceting parameters ----
 
 # Logical fields whether to facet

@@ -233,5 +233,30 @@ setClass("ColStatTable", contains="ColumnTable")
 
 ####################################################
 
+.heatMapAssay <- "Assay"
+.heatMapFeatName <- "FeatName"
+.heatMapFeatNameBoxOpen <- "FeatNameBoxOpen"
+.heatMapImportSource <- "FeatNameSource"
+.heatMapColData <- "ColData"
+.heatMapColDataBoxOpen <- "ColDataBoxOpen"
+.heatMapColorBoxOpen <- "ColorBoxOpen"
+.heatMapCenterScale <- "CenterScale"
+.heatMapLower <- "Lower"
+.heatMapUpper <- "Upper"
+.heatMapCenteredColors <- "ColorScale"
+
+collated <- character(0)
+collated[.heatMapAssay] <- "character"
+collated[.heatMapFeatName] <- "character"
+collated[.heatMapFeatNameBoxOpen] <- "logical"
+collated[.heatMapImportSource] <- "character"
+collated[.heatMapColData] <- "character"
+collated[.heatMapColDataBoxOpen] <- "logical"
+collated[.heatMapColorBoxOpen] <- "logical"
+collated[.heatMapCenterScale] <- "character"
+collated[.heatMapLower] <- "numeric"
+collated[.heatMapUpper] <- "numeric"
+collated[.heatMapCenteredColors] <- "character"
+
 #' @export
-setClass("HeatMapPlot", contains="Panel")
+setClass("HeatMapPlot", contains="Panel", slots=collated)

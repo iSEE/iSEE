@@ -207,8 +207,17 @@ setClass("SampAssayPlot", contains="RowDotPlot", slots=collated)
 
 ####################################################
 
+.TableSelected <- "Selected"
+.TableSearch <- "Search"
+.TableColSearch <- "SearchColumns"
+
+collated <- character(0)
+collated[.TableSelected] <- "integer" 
+collated[.TableSearch] <- "character" 
+collated[.TableColSearch] <- "character" 
+
 #' @export
-setClass("Table", contains="Panel", representation("VIRTUAL"))
+setClass("Table", contains=c("Panel", "VIRTUAL"), slots=collated)
 
 #' @export
 setClass("RowTable", contains="Table", representation("VIRTUAL"))
@@ -221,6 +230,8 @@ setClass("RowStatTable", contains="RowTable")
 
 #' @export
 setClass("ColStatTable", contains="ColumnTable")
+
+####################################################
 
 #' @export
 setClass("HeatMapPlot", contains="Panel")

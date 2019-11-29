@@ -1,4 +1,30 @@
 #' @export
+setMethod("initialize", "Table", function(.Object, ...) {
+    .Object <- callNextMethod(.Object, ...)
+    .Object <- .empty_default(.Object, .TableSelected, 1L)
+    .Object <- .empty_default(.Object, .TableSearch, "")
+    .Object
+})
+
+#' @importFrom S4Vectors setValidity2 isSingleString
+setValidity2("Table", function(object) {
+    msg <- character(0)
+
+    if (length(chosen <- object[[.TableSelected]])!=1L || is.na(chosen) || chosen <= 0L) {
+        msg <- c(msg, sprintf("'%s' should be a positive integer for '%s'", .TableSelected, class(object)[1]))
+    }
+
+    if (!isSingleString(val <- object[[.TableSearch]]) || is.na(val)) {
+        msg <- c(msg, sprintf("'%s' should be a single non-NA string for '%s'", .TableSearch, class(object)[1]))
+    }
+
+    if (length(msg)) {
+        return(msg)
+    }
+    TRUE
+})
+
+#' @export
 #' @importFrom DT dataTableOutput
 setMethod(".defineOutputElement", "Table", function(x, id, ...) {
     mode <- .getEncodedName(x)

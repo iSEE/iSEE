@@ -1,4 +1,29 @@
 #' @export
+setMethod("initialize", "DotPlot", function(.Object, ...) {
+    .Object <- callNextMethod(.Object, ...)
+    .Object <- .empty_default(.Object, .facetByRow, FALSE)
+    .Object <- .empty_default(.Object, .facetByColumn, FALSE)
+    .Object
+})
+
+#' @export
+#' @importFrom S4Vectors isSingleString setValidity2
+setValidity2("DotPlot", function(object) {
+    msg <- character(0)
+
+    for (field in c(.facetByRow, .facetByColumn)) {
+        if (length(val <- object[[field]]) || is.na(val)) {
+            msg <- c(msg, sprintf("'%s' should be a non-NA logical scalar for '%s'", field, class(object)[1]))
+        }
+    }
+
+    if (length(msg)) {
+        return(msg)
+    }
+    TRUE
+})
+
+#' @export
 setMethod(".createParamObservers", "DotPlot", function(x, id, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
     .define_box_observers(mode, id, c(.visualParamBoxOpen, .selectParamBoxOpen), input, pObjects)

@@ -9,18 +9,6 @@
 .customColSource <- "ColumnSource"
 .customRowSource <- "RowSource"
 
-# Faceting parameters ----
-
-# Logical fields whether to facet
-.facetByRow <- "FacetByRow"
-.facetByColumn <- "FacetByColumn"
-
-# Fields holding the covariate to facet by
-.facetRowsByRowData <- "RowFacetByRowData"
-.facetColumnsByRowData <- "ColumnFacetByRowData"
-.facetRowsByColData <- "RowFacetByColData"
-.facetColumnsByColData <- "ColumnFacetByColData"
-
 # Point colouring parameters. ----
 .colorByNothingTitle <- "None"
 .colorByColDataTitle <- "Column data"

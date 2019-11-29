@@ -21,6 +21,65 @@
 NULL
 
 #' @export
+setMethod("initialize", "RowDotPlot", function(.Object, ...) {
+    .Object <- callNextMethod(.Object, ...)
+    .Object <- .empty_default(.Object, .facetRowsByRowData)
+    .Object <- .empty_default(.Object, .facetColumnsByRowData)
+    .Object
+})
+
+#' @export
+#' @importFrom S4Vectors isSingleString setValidity2
+setValidity2("RowDotPlot", function(object) {
+    msg <- character(0)
+
+    for (field in c(.facetRowsByRowData, .facetColumnsByRowData)){
+        if (!isSingleString(object[[field]])) {
+            msg <- c(msg, sprintf("'%s' should be a single string for '%s'", field, class(object)[1]))
+        }
+    }
+
+    if (length(msg)) {
+        return(msg)
+    }
+    TRUE
+})
+
+#' @export
+#' @importFrom SummarizedExperiment rowData
+setMethod(".cacheCommonInfo", "RowDotPlot", function(x, se) {
+    if (is.null(.get_common_info(x, "RowDotPlot"))) {
+        df <- rowData(x)
+        displayable <- .find_atomic_fields(df)
+        chosen <- .which_groupable(df[,displayable])
+
+        se <- .set_common_info(x, "RowDotPlot",
+            list(
+                valid.coldata=colnames(df)[displayable],
+                discrete.coldata=colnames(df)[displayable][chosen]
+            )
+        )
+    }
+
+    callNextMethod()
+})
+
+#' @export
+setMethod(".refineParameters", "RowDotPlot", function(x, se, active_panels) {
+    discrete <- .get_common_info(x, "RowDotPlot")$discrete.coldata
+
+    if (is.na(chosen <- x[[.facetRowsByRowData]]) || !chosen %in% discrete) {
+        x[[.facetRowsByRowData]] <- discrete[1]
+    }
+
+    if (is.na(chosen <- x[[.facetColumnsByRowData]]) || !chosen %in% discrete) {
+        x[[.facetColumnsByRowData]] <- discrete[1]
+    }
+
+    x
+})
+
+#' @export
 setMethod(".defineParamInterface", "RowDotPlot", function(x, id, param_choices, se, active_panels) {
     link_sources <- .define_link_sources(active_panels)
     tab_by_row <- c(.noSelection, link_sources$row_tab)

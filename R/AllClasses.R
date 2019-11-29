@@ -107,17 +107,43 @@ setClass("ExperimentColorMap",
 ####################################################
 
 #' @export
-setClass("Panel", representation("VIRTUAL")) #, slots=c(id="integer", param.args="list", panel.args="list"))
-# TODO: actually use these slots. Currently for show until we complete the transition to the new world.
+setClass("Panel", representation("VIRTUAL")) 
+
+####################################################
+
+.facetByRow <- "FacetByRow"
+.facetByColumn <- "FacetByColumn"
+
+collated <- character(0)
+collated[.facetByRow] <- "logical"
+collated[.facetByCol] <- "logical"
 
 #' @export
-setClass("DotPlot", contains="Panel", representation("VIRTUAL"))
+setClass("DotPlot", contains=c("Panel", "VIRTUAL"), slots=collated)
+
+####################################################
+
+.facetColumnsByRowData <- "ColumnFacetByRowData"
+.facetRowsByRowData <- "RowFacetByRowData"
+
+collated <- character(0)
+collated[.facetColumnsByColData] <- "character"
+collated[.facetRowsByColData] <- "character"
 
 #' @export
-setClass("ColumnDotPlot", contains="DotPlot", representation("VIRTUAL"))
+setClass("ColumnDotPlot", contains=c("DotPlot", "VIRTUAL"), slots=collated)
+
+####################################################
+
+.facetColumnsByColData <- "ColumnFacetByColData"
+.facetRowsByColData <- "RowFacetByColData"
+
+collated <- character(0)
+collated[.facetColumnsByRowData] <- "character"
+collated[.facetRowsByRowData] <- "character"
 
 #' @export
-setClass("RowDotPlot", contains="DotPlot", representation("VIRTUAL"))
+setClass("RowDotPlot", contains=c("DotPlot", "VIRTUAL"), slots=collated)
 
 ####################################################
 

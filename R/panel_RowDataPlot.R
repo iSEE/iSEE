@@ -27,16 +27,14 @@
 #' sce <- mockSCE()
 #' sce <- logNormCounts(sce)
 #'
-#' # Spits out a NULL and a warning if no assays are named.
-#' sce <- iSEE:::.set_common_info(sce, .getEncodedName(x), 
-#'     .cacheCommonInfo(x, sce))
-#' .refineParameters(x, sce, list())
+#' # Spits out a NULL and a warning if is nothing to plot.
+#' sce0 <- .cacheCommonInfo(x, sce)
+#' .refineParameters(x, sce0)
 #' 
 #' # Replaces the default with something sensible.
 #' rowData(sce)$Stuff <- runif(nrow(sce))
-#' sce <- iSEE:::.set_common_info(sce, .getEncodedName(x), 
-#'     .cacheCommonInfo(x, sce))
-#' .refineParameters(x, sce, list())
+#' sce0 <- .cacheCommonInfo(x, sce)
+#' .refineParameters(x, sce0)
 #'
 #' @docType methods
 #' @aliases RowDataPlot RowDataPlot-class
@@ -63,19 +61,13 @@ setMethod("initialize", "RowDataPlot", function(.Object, ...) {
 .rowDataXAxisRowDataTitle <- "Row data"
 
 #' @export
-#' @importFrom SummarizedExperiment rowData
-setMethod(".cacheCommonInfo", "RowDataPlot", function(x, se) {
-    covariates <- .find_atomic_fields(rowData(se))
+setMethod(".refineParameters", "RowDataPlot", function(x, se) {
+    x <- callNextMethod()
+    if (is.null(x)) {
+        return(NULL)
+    }
 
-    # Namespacing to avoid clashes with parent class' common info.
-    out <- callNextMethod()
-    out$RowDataPlot <- list(covariates=covariates)
-    out
-})
-
-#' @export
-setMethod(".refineParameters", "RowDataPlot", function(x, se, active_panels) {
-    covariates <- .get_common_info(se, .getEncodedName(x))$RowDataPlot$covariates
+    covariates <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
 
     if (length(covariates)==0L) {
         warning(sprintf("no atomic 'rowData' fields for '%s'", class(x)[1]))
@@ -97,7 +89,7 @@ setMethod(".refineParameters", "RowDataPlot", function(x, se, active_panels) {
         x[[.rowDataYAxis]] <- covariates[1]
     }
 
-    callNextMethod()
+    x
 })
 
 #' @importFrom S4Vectors setValidity2 isSingleString
@@ -129,7 +121,7 @@ setMethod(".defineParamInterface", "RowDataPlot", function(x, id, param_choices,
     panel_name <- paste0(mode, id)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
-    row_covariates <- .get_common_info(se, mode)$RowDataPlot$covariates
+    row_covariates <- .get_common_info(se, "RowDataPlot")$valid.rowData.names
 
     plot.param <- list(
         selectInput(.input_FUN(.rowDataYAxis),

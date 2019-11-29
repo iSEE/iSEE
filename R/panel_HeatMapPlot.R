@@ -30,11 +30,13 @@
 #' sce <- mockSCE()
 #' sce <- logNormCounts(sce)
 #'
+#' # Returns NULL if there is not enough information.
+#' sce0 <- .cacheCommonInfo(x, sce[,0])
+#' .refineParameters(x, sce0)
+#' 
 #' # Replaces the default with something sensible.
-#' sce <- runPCA(sce)
-#' sce <- iSEE:::.set_common_info(sce, .getEncodedName(x), 
-#'     .cacheCommonInfo(x, sce))
-#' .refineParameters(x, sce)
+#' sce0 <- .cacheCommonInfo(x, sce)
+#' .refineParameters(x, sce0)
 #'
 #' @docType methods
 #' @aliases HeatMapPlot HeatMapPlot-class
@@ -117,27 +119,35 @@ setValidity2("HeatMapPlot", function(object) {
 #' @export
 #' @importFrom SummarizedExperiment colData assayNames
 setMethod(".cacheCommonInfo", "HeatMapPlot", function(x, se) {
-    # Only using named assays.
-    named_assays <- assayNames(se)
-    named_assays <- named_assays[named_assays!=""]
+    if (is.null(.get_common_info(se, "HeatMapPlot"))) {
+        # Only using named assays.
+        named_assays <- assayNames(se)
+        named_assays <- named_assays[named_assays!=""]
 
-    # Only allowing atomic covariates.
-    covariates <- .find_atomic_fields(colData(se))
+        # Only allowing atomic covariates.
+        covariates <- .find_atomic_fields(colData(se))
 
-    # Namespacing.
-    out <- callNextMethod()
-    out$HeatMapPlot <- list(assays=named_assays, covariates=covariates)
-    out
+        se <- .set_common_info(se, "HeatMapPlot",
+            valid.assay.names=named_assays,
+            valid.colData.names=covariates)
+    }
+
+    callNextMethod()
 })
 
-setMethod(".refineParameters", "HeatMapPlot", function(x, se, active_panels) {
+setMethod(".refineParameters", "HeatMapPlot", function(x, se) {
+    x <- callNextMethod()
+    if (is.null(x)) {
+        return(NULL)
+    }
+
     if (any(dim(se)==0L)) {
         warning(sprintf("no dimensions for plotting '%s'", class(x)[1]))
         return(NULL)
     }
 
     mode <- .getEncodedName(x)
-    all_assays <- .get_common_info(se, mode)$HeatMapPlot$assays
+    all_assays <- .get_common_info(se, "HeatMapPlot")$valid.assay.names
     if (length(all_assays)==0L) {
         warning(sprintf("no named 'assays' for plotting '%s'", class(x)[1]))
         return(NULL)
@@ -152,7 +162,7 @@ setMethod(".refineParameters", "HeatMapPlot", function(x, se, active_panels) {
     x[[.heatMapFeatName]] <- feat_choice[feat_choice %in% rownames(se)]
 
     cov_choice <- x[[.heatMapColData]]
-    column_covariates <- .get_common_info(se, mode)$HeatMapPlot$covariates
+    column_covariates <- .get_common_info(se, "HeatMapPlot")$valid.colData.names
     x[[.heatMapColData]] <- cov_choice[cov_choice %in% column_covariates]
 
     x

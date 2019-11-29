@@ -48,30 +48,29 @@ setValidity2("RowDotPlot", function(object) {
 #' @export
 #' @importFrom SummarizedExperiment rowData
 setMethod(".cacheCommonInfo", "RowDotPlot", function(x, se) {
-    if (is.null(.get_common_info(x, "RowDotPlot"))) {
-        df <- rowData(x)
+    if (is.null(.get_common_info(se, "RowDotPlot"))) {
+        df <- rowData(se)
         displayable <- .find_atomic_fields(df)
-        chosen <- .which_groupable(df[,displayable])
-
-        se <- .set_common_info(x, "RowDotPlot",
-            list(
-                valid.coldata=colnames(df)[displayable],
-                discrete.coldata=colnames(df)[displayable][chosen]
-            )
-        )
+        chosen <- .which_groupable(df[,displayable,drop=FALSE])
+        se <- .set_common_info(se, "RowDotPlot",
+            valid.rowData.names=displayable,
+            discrete.rowData.names=displayable[chosen])
     }
 
     callNextMethod()
 })
 
 #' @export
-setMethod(".refineParameters", "RowDotPlot", function(x, se, active_panels) {
-    discrete <- .get_common_info(x, "RowDotPlot")$discrete.coldata
+setMethod(".refineParameters", "RowDotPlot", function(x, se) {
+    x <- callNextMethod()
+    if (is.null(x)) {
+        return(NULL)
+    }
 
+    discrete <- .get_common_info(se, "RowDotPlot")$discrete.rowData.names
     if (is.na(chosen <- x[[.facetRowsByRowData]]) || !chosen %in% discrete) {
         x[[.facetRowsByRowData]] <- discrete[1]
     }
-
     if (is.na(chosen <- x[[.facetColumnsByRowData]]) || !chosen %in% discrete) {
         x[[.facetColumnsByRowData]] <- discrete[1]
     }

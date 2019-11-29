@@ -23,6 +23,17 @@ setValidity2("DotPlot", function(object) {
     TRUE
 })
 
+setMethod(".cacheCommonInfo", "DotPlot", function(x, se) {
+    if (is.null(.get_common_info(se, "DotPlot"))) {
+        named_assays <- assayNames(se)
+        named_assays <- named_assays[named_assays!=""]
+        se <- .set_common_info(se, "DotPlot",
+            valid.assay.names=named_assays)
+    }
+
+    callNextMethod()
+})
+
 #' @export
 setMethod(".createParamObservers", "DotPlot", function(x, id, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)

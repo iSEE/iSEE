@@ -28,15 +28,8 @@
 #' library(scater)
 #' sce <- mockSCE()
 #'
-#' # Spits out a NULL and a warning if no reducedDims are available.
-#' sce0 <- sce[0,]
-#' sce0 <- iSEE:::.set_common_info(sce0, .getEncodedName(x), 
-#'     .cacheCommonInfo(x, sce0))
-#' .refineParameters(x, sce0)
-#' 
-#' # Replaces the default with something sensible.
-#' sce <- iSEE:::.set_common_info(sce, .getEncodedName(x), 
-#'     .cacheCommonInfo(x, sce))
+#' # Sets the search columns appropriately. 
+#' sce <- .cacheCommonInfo(x, sce)
 #' .refineParameters(x, sce)
 #'
 #' @name RowStatTable
@@ -54,7 +47,7 @@ RowStatTable <- function() {
 setMethod(".createRenderedOutput", "RowStatTable", function(x, id, se, colormap, output, pObjects, rObjects) {
     mode <- .getEncodedName(x)
 
-    feature_data <- .get_common_info(x, .getEncodedName(x))$RowTable$df 
+    feature_data <- .get_common_info(se, "RowTable")$valid.rowData.df 
     if (identical(ncol(feature_data), 0L)) {
         feature_data$Present <- !logical(nrow(feature_data))
     }

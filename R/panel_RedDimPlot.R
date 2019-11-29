@@ -29,15 +29,13 @@
 #' sce <- logNormCounts(sce)
 #'
 #' # Spits out a NULL and a warning if no reducedDims are available.
-#' sce <- iSEE:::.set_common_info(sce, .getEncodedName(x), 
-#'     .cacheCommonInfo(x, sce))
-#' .refineParameters(x, sce)
+#' sce0 <- .cacheCommonInfo(x, sce)
+#' .refineParameters(x, sce0)
 #' 
 #' # Replaces the default with something sensible.
 #' sce <- runPCA(sce)
-#' sce <- iSEE:::.set_common_info(sce, .getEncodedName(x), 
-#'     .cacheCommonInfo(x, sce))
-#' .refineParameters(x, sce)
+#' sce0 <- .cacheCommonInfo(x, sce)
+#' .refineParameters(x, sce0)
 #'
 #' @docType methods
 #' @aliases RedDimPlot RedDimPlot-class
@@ -64,28 +62,35 @@ setMethod("initialize", "RedDimPlot", function(.Object, ...) {
 #' @importFrom SingleCellExperiment reducedDimNames reducedDim
 #' @importClassesFrom SingleCellExperiment SingleCellExperiment
 setMethod(".cacheCommonInfo", "RedDimPlot", function(x, se) {
-    if (is(se, "SingleCellExperiment")) {
-        available <- reducedDimNames(se)
-        for (y in seq_along(available)) {
-            if (ncol(reducedDim(se, y))==0L) {
-                available[y] <- NA_character_
+    if (is.null(.get_common_info(se, "RedDimPlot"))) {
+        if (is(se, "SingleCellExperiment")) {
+            available <- reducedDimNames(se)
+            for (y in seq_along(available)) {
+                if (ncol(reducedDim(se, y))==0L) {
+                    available[y] <- NA_character_
+                }
             }
+            available <- available[!is.na(available)]
+        } else {
+            available <- character(0)
         }
-    } else {
-        available <- character(0)
+
+        se <- .set_common_info(se, "RedDimPlot",
+            valid.reducedDim.names=available)
     }
 
-    # Namespacing to avoid clashes with parent class' common info.
-    out <- callNextMethod()
-    out$RedDimPlot <- list(available=available[!is.na(available)])
-    out
+    callNextMethod()
 })
 
 #' @export
 #' @importFrom SingleCellExperiment reducedDim
-setMethod(".refineParameters", "RedDimPlot", function(x, se, active_panels) {
-    available <- .get_common_info(se, .getEncodedName(x))$RedDimPlot$available
+setMethod(".refineParameters", "RedDimPlot", function(x, se) {
+    x <- callNextMethod()
+    if (is.null(x)) {
+        return(NULL)
+    }
 
+    available <- .get_common_info(se, "RedDimPlot")$valid.reducedDim.names
     if (!is.na(chosen <- x[[.redDimType]]) &&
         chosen %in% available &&
         x[[.redDimXAxis]] <= ncol(reducedDim(se, chosen)) &&
@@ -104,7 +109,7 @@ setMethod(".refineParameters", "RedDimPlot", function(x, se, active_panels) {
         x[[.redDimYAxis]] <- min(ncol(reducedDim(se, y)), 2L)
     }
 
-    callNextMethod()
+    x
 })
 
 #' @importFrom S4Vectors setValidity2 isSingleString
@@ -141,7 +146,7 @@ setMethod(".defineParamInterface", "RedDimPlot", function(x, id, param_choices, 
 
     plot.param <- list(
         selectInput(.input_FUN(.redDimType), label="Type",
-            choices=.get_common_info(se, mode)$RedDimPlot$available, 
+            choices=.get_common_info(se, "RedDimPlot")$valid.reducedDim.names,
             selected=cur_reddim),
         selectInput(.input_FUN(.redDimXAxis), label="Dimension 1",
             choices=choices, selected=param_choices[[.redDimXAxis]]),

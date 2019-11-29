@@ -1,23 +1,26 @@
 #' @export
 #' @importFrom SummarizedExperiment rowData
 setMethod(".cacheCommonInfo", "RowTable", function(x, se) {
-    df <- rowData(se)
-    available <- .find_atomic_fields(df)
-    df <- df[,available,drop=FALSE]
+    if (is.null(.get_common_info(se, "ColumnTable"))) {
+        df <- rowData(se)
+        available <- .find_atomic_fields(df)
+        df <- df[,available,drop=FALSE]
+        se <- .set_common_info(se, "RowTable",
+            valid.rowData.df=data.frame(df, check.names=FALSE))
+    }
 
-    out <- callNextMethod()
-    out$RowTable <- list(df=data.frame(df, check.names=FALSE))
-    out
+    callNextMethod()
 })
 
 #' @export
 #' @importFrom SummarizedExperiment rowData
-setMethod(".refineParameters", "RowTable", function(x, se, active_panels) {
-    df <- .get_common_info(se, .getEncodedName(x))$RowTable$df
-    if (nrow(df)==0) {
-        warning(sprintf("no rows in 'se' to create '%s'", class(x)[1]))
+setMethod(".refineParameters", "RowTable", function(x, se) {
+    x <- callNextMethod()
+    if (is.null(x)) {
         return(NULL)
     }
+
+    df <- .get_common_info(se, "RowTable")$valid.rowData.df
 
     # First, expanding out so that we cover all columns.
     search_vals <- x[[.TableColSearch]]
@@ -30,7 +33,7 @@ setMethod(".refineParameters", "RowTable", function(x, se, active_panels) {
     search_vals <- search_vals[keep]
     x[[.TableColSearch]] <- search_vals
 
-    callNextMethod()    
+    x
 })
 
 #' @export

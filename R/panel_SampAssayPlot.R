@@ -1,6 +1,6 @@
-#' The feature assay plot panel
+#' The sample assay plot panel
 #'
-#' Plots feature assay values. What more do I have to say?
+#' Plots sample assay values. What more do I have to say?
 #'
 #' @section Constructor:
 #' \code{SampAssayPlot()} creates an instance of a SampAssayPlot class.
@@ -32,15 +32,13 @@
 #' assayNames(sce) <- character(length(old_assay_names))
 #' 
 #' # Spits out a NULL and a warning if no assays are named.
-#' sce <- iSEE:::.set_common_info(sce, .getEncodedName(x), 
-#'     .cacheCommonInfo(x, sce))
-#' .refineParameters(x, sce, list())
+#' sce0 <- .cacheCommonInfo(x, sce)
+#' .refineParameters(x, sce0)
 #' 
 #' # Replaces the default with something sensible.
 #' assayNames(sce) <- old_assay_names
-#' sce <- iSEE:::.set_common_info(sce, .getEncodedName(x), 
-#'     .cacheCommonInfo(x, sce))
-#' .refineParameters(x, sce, list())
+#' sce0 <- .cacheCommonInfo(x, sce)
+#' .refineParameters(x, sce0)
 #'
 #' @docType methods
 #' @aliases SampAssayPlot SampAssayPlot-class
@@ -68,35 +66,20 @@ setMethod("initialize", "SampAssayPlot", function(.Object, ...) {
 })
 
 #' @export
-#' @importFrom SummarizedExperiment assayNames rowData
-setMethod(".cacheCommonInfo", "SampAssayPlot", function(x, se) {
-    # Only using named assays.
-    named_assays <- assayNames(se)
-    named_assays <- named_assays[named_assays!=""]
-
-    # Only allowing atomic covariates.
-    covariates <- .find_atomic_fields(rowData(se))
-
-    # Namespacing.
-    out <- callNextMethod()
-    out$SampAssayPlot <- list(assays=named_assays, covariates=covariates)
-    out
-})
-
-#' @export
 #' @importFrom SingleCellExperiment reducedDim
-setMethod(".refineParameters", "SampAssayPlot", function(x, se, active_panels) {
-    if (any(dim(se)==0L)) {
-        warning(sprintf("no dimensions for plotting '%s'", class(x)[1]))
+setMethod(".refineParameters", "SampAssayPlot", function(x, se) {
+    x <- callNextMethod()
+    if (is.null(x)) {
         return(NULL)
     }
-    if (is.null(colnames(se))) {
-        warning(sprintf("no column names for plotting '%s'", class(x)[1]))
+
+    if (ncol(se)==0L) {
+        warning(sprintf("no columns for plotting '%s'", class(x)[1]))
         return(NULL)
     }
 
     mode <- .getEncodedName(x)
-    all_assays <- .get_common_info(se, mode)$SampAssayPlot$assays
+    all_assays <- .get_common_info(se, "DotPlot")$valid.assay.names
     if (length(all_assays)==0L) {
         warning(sprintf("no named 'assays' for plotting '%s'", class(x)[1]))
         return(NULL)
@@ -110,13 +93,13 @@ setMethod(".refineParameters", "SampAssayPlot", function(x, se, active_panels) {
     x[[.sampAssayXAxisSampName]] <- colnames(se)[1]
     x[[.sampAssayYAxisSampName]] <- colnames(se)[1]
 
-    row_covariates <- .get_common_info(se, mode)$SampAssayPlot$covariates
+    row_covariates <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
     row_choice <- x[[.sampAssayXAxisRowData]]
     if ((is.na(row_choice) || !row_choice %in% row_covariates) && length(row_covariates)) {
         x[[.sampAssayXAxisRowData]] <- row_covariates[1]
     }
 
-    callNextMethod()
+    x 
 })
 
 .sampAssayXAxisNothingTitle <- "None"
@@ -157,7 +140,7 @@ setMethod(".defineParamInterface", "SampAssayPlot", function(x, id, param_choice
     link_sources <- .define_link_sources(active_panels)
     tab_by_col <- c(.noSelection, link_sources$col_tab)
 
-    common_info <- .get_common_info(se, mode)$SampAssayPlot
+    common_info <- .get_common_info(se, "SampAssayPlot")
     row_covariates <- common_info$covariates
     all_assays <- common_info$assays
 

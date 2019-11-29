@@ -30,16 +30,14 @@
 #' old_cd <- colData(sce)
 #' colData(sce) <- NULL
 #' 
-#' # Spits out a NULL and a warning if no assays are named.
-#' sce <- iSEE:::.set_common_info(sce, .getEncodedName(x), 
-#'     .cacheCommonInfo(x, sce))
-#' .refineParameters(x, sce, list())
+#' # Spits out a NULL and a warning if there is nothing to plot.
+#' sce0 <- .cacheCommonInfo(x, sce)
+#' .refineParameters(x, sce0)
 #' 
 #' # Replaces the default with something sensible.
 #' colData(sce) <- old_cd
-#' sce <- iSEE:::.set_common_info(sce, .getEncodedName(x), 
-#'     .cacheCommonInfo(x, sce))
-#' .refineParameters(x, sce, list())
+#' sce0 <- .cacheCommonInfo(x, sce)
+#' .refineParameters(x, sce0)
 #'
 #' @docType methods
 #' @aliases ColDataPlot ColDataPlot-class
@@ -66,22 +64,15 @@ setMethod("initialize", "ColDataPlot", function(.Object, ...) {
 .colDataXAxisColDataTitle <- "Column data"
 
 #' @export
-#' @importFrom SummarizedExperiment colData
-setMethod(".cacheCommonInfo", "ColDataPlot", function(x, se) {
-    covariates <- .find_atomic_fields(colData(se))
+setMethod(".refineParameters", "ColDataPlot", function(x, se) {
+    x <- callNextMethod() # Do this first to trigger warnings from base classes.
+    if (is.null(x)) {
+        return(NULL)
+    }
 
-    # Namespacing to avoid clashes with parent class' common info.
-    out <- callNextMethod()
-    out$ColDataPlot <- list(covariates=covariates)
-    out
-})
-
-#' @export
-setMethod(".refineParameters", "ColDataPlot", function(x, se, active_panels) {
-    covariates <- .get_common_info(se, .getEncodedName(x))$ColDataPlot$covariates
-
+    covariates <- .get_common_info(se, "ColumnDotPlot")$valid.colData.names
     if (length(covariates)==0L) {
-        warning(sprintf("no atomic 'colData' fields for '%s'", class(x)[1]))
+        warning(sprintf("no valid 'colData' fields for '%s'", class(x)[1]))
         return(NULL)
     }
 
@@ -100,7 +91,7 @@ setMethod(".refineParameters", "ColDataPlot", function(x, se, active_panels) {
         x[[.colDataYAxis]] <- covariates[1]
     }
 
-    callNextMethod()
+    x
 })
 
 #' @importFrom S4Vectors setValidity2 isSingleString
@@ -132,7 +123,7 @@ setMethod(".defineParamInterface", "ColDataPlot", function(x, id, param_choices,
     panel_name <- paste0(mode, id)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
-    column_covariates <- colnames(colData(se))
+    column_covariates <- .get_common_info(se, "ColDataPlot")$valid.colData.names
 
     plot.param <- list(
         selectInput(.input_FUN(.colDataYAxis),

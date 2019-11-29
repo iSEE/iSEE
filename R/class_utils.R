@@ -1,15 +1,15 @@
 #' @importFrom S4Vectors metadata metadata<-
-.set_common_info <- function(se, mode, info) {
-    if (!is.null(metadata(se)$iSEE)) {
+.set_common_info <- function(se, cls, ...) {
+    if (is.null(metadata(se)$iSEE)) {
         metadata(se)$iSEE <- list()
     }
-    metadata(se)$iSEE[[mode]] <- info
+    metadata(se)$iSEE[[cls]] <- list(...)
     se
 }
 
 #' @importFrom S4Vectors metadata
-.get_common_info <- function(se, mode) {
-    metadata(se)$iSEE[[mode]]
+.get_common_info <- function(se, cls) {
+    metadata(se)$iSEE[[cls]]
 }
 
 .empty_default <- function(x, field, newdef=NA) {

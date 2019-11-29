@@ -32,15 +32,13 @@
 #' assayNames(sce) <- character(length(old_assay_names))
 #' 
 #' # Spits out a NULL and a warning if no assays are named.
-#' sce <- iSEE:::.set_common_info(sce, .getEncodedName(x), 
-#'     .cacheCommonInfo(x, sce))
-#' .refineParameters(x, sce, list())
+#' sce0 <- .cacheCommonInfo(x, sce)
+#' .refineParameters(x, sce0)
 #' 
 #' # Replaces the default with something sensible.
 #' assayNames(sce) <- old_assay_names
-#' sce <- iSEE:::.set_common_info(sce, .getEncodedName(x), 
-#'     .cacheCommonInfo(x, sce))
-#' .refineParameters(x, sce, list())
+#' sce0 <- .cacheCommonInfo(x, sce)
+#' .refineParameters(x, sce0)
 #'
 #' @docType methods
 #' @aliases FeatAssayPlot FeatAssayPlot-class
@@ -68,37 +66,22 @@ setMethod("initialize", "FeatAssayPlot", function(.Object, ...) {
 })
 
 #' @export
-#' @importFrom SummarizedExperiment assayNames colData
-setMethod(".cacheCommonInfo", "FeatAssayPlot", function(x, se) {
-    # Only using named assays.
-    named_assays <- assayNames(se)
-    named_assays <- named_assays[named_assays!=""]
-
-    # Only allowing atomic covariates.
-    covariates <- .find_atomic_fields(colData(se))
-
-    # Namespacing.
-    out <- callNextMethod()
-    out$FeatAssayPlot <- list(assays=named_assays, covariates=covariates)
-    out
-})
-
-#' @export
 #' @importFrom SingleCellExperiment reducedDim
-setMethod(".refineParameters", "FeatAssayPlot", function(x, se, active_panels) {
-    if (any(dim(se)==0L)) {
-        warning(sprintf("no dimensions for plotting '%s'", class(x)[1]))
+setMethod(".refineParameters", "FeatAssayPlot", function(x, se) {
+    x <- callNextMethod()
+    if (is.null(x)) {
         return(NULL)
     }
-    if (is.null(rownames(se))) {
-        warning(sprintf("no row names for plotting '%s'", class(x)[1]))
+
+    if (nrow(se)==0L) {
+        warning(sprintf("no rows available for plotting '%s'", class(x)[1]))
         return(NULL)
     }
 
     mode <- .getEncodedName(x)
-    all_assays <- .get_common_info(se, mode)$FeatAssayPlot$assays
+    all_assays <- .get_common_info(se, "DotPlot")$valid.assay.names
     if (length(all_assays)==0L) {
-        warning(sprintf("no named 'assays' for plotting '%s'", class(x)[1]))
+        warning(sprintf("no valid 'assays' for plotting '%s'", class(x)[1]))
         return(NULL)
     }
 
@@ -110,13 +93,13 @@ setMethod(".refineParameters", "FeatAssayPlot", function(x, se, active_panels) {
     x[[.featAssayXAxisFeatName]] <- rownames(se)[1]
     x[[.featAssayYAxisFeatName]] <- rownames(se)[1]
 
-    column_covariates <- .get_common_info(se, mode)$FeatAssayPlot$covariates
+    column_covariates <- .get_common_info(se, "ColumnDotPlot")$valid.colData.names
     column_choice <- x[[.featAssayXAxisColData]]
     if ((is.na(column_choice) || !column_choice %in% column_covariates) && length(column_covariates)) {
         x[[.featAssayXAxisColData]] <- column_covariates[1]
     }
 
-    callNextMethod()
+    x
 })
 
 .featAssayXAxisNothingTitle <- "None"
@@ -157,9 +140,9 @@ setMethod(".defineParamInterface", "FeatAssayPlot", function(x, id, param_choice
     link_sources <- .define_link_sources(active_panels)
     tab_by_row <- c(.noSelection, link_sources$row_tab)
 
-    common_info <- .get_common_info(se, mode)$FeatAssayPlot
-    all_assays <- common_info$assays
-    column_covariates <- common_info$covariates
+    common_info <- .get_common_info(se, "FeatAssayPlot")
+    all_assays <- common_info$valid.assay.names
+    column_covariates <- common_info$valid.colData.names
 
     xaxis_choices <- c(.featAssayXAxisNothingTitle)
     if (length(column_covariates)) { # As it is possible for this plot to be _feasible_ but for no column data to exist.

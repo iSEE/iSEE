@@ -28,16 +28,9 @@
 #' library(scater)
 #' sce <- mockSCE()
 #'
-#' # Spits out a NULL and a warning if no reducedDims are available.
-#' sce0 <- sce[,0]
-#' sce0 <- iSEE:::.set_common_info(sce0, .getEncodedName(x), 
-#'     .cacheCommonInfo(x, sce0))
+#' # Search column refinement works as expected.
+#' sce0 <- .cacheCommonInfo(x, sce)
 #' .refineParameters(x, sce0)
-#' 
-#' # Replaces the default with something sensible.
-#' sce <- iSEE:::.set_common_info(sce, .getEncodedName(x), 
-#'     .cacheCommonInfo(x, sce))
-#' .refineParameters(x, sce)
 #'
 #' @name ColStatTable
 #' @aliases ColStatTable ColStatTable-class
@@ -55,8 +48,7 @@ ColStatTable <- function() {
 setMethod(".createRenderedOutput", "ColStatTable", function(x, id, se, colormap, output, pObjects, rObjects) {
     mode <- .getEncodedName(x)
 
-    sample_data <- data.frame(colData(se), check.names=FALSE)
-    rownames(sample_data) <- colnames(se)
+    sample_data <- .get_common_info(se, "ColumnTable")$valid.colData.df
     if (identical(ncol(sample_data), 0L)) {
         sample_data$Present <- !logical(nrow(sample_data))
     }

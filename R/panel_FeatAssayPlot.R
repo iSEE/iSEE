@@ -19,22 +19,22 @@
 #' x[["XAxis"]]
 #' x[["Assay"]] <- "logcounts"
 #' x[["XAxisColData"]] <- "stuff"
-#' 
+#'
 #' ##################
 #' # For developers #
 #' ##################
-#' 
+#'
 #' library(scater)
 #' sce <- mockSCE()
 #' sce <- logNormCounts(sce)
 #'
 #' old_assay_names <- assayNames(sce)
 #' assayNames(sce) <- character(length(old_assay_names))
-#' 
+#'
 #' # Spits out a NULL and a warning if no assays are named.
 #' sce0 <- .cacheCommonInfo(x, sce)
 #' .refineParameters(x, sce0)
-#' 
+#'
 #' # Replaces the default with something sensible.
 #' assayNames(sce) <- old_assay_names
 #' sce0 <- .cacheCommonInfo(x, sce)
@@ -53,10 +53,11 @@ FeatAssayPlot <- function() {
 }
 
 #' @export
+#' @importFrom methods callNextMethod
 setMethod("initialize", "FeatAssayPlot", function(.Object, ...) {
     .Object <- callNextMethod(.Object, ...)
     .Object <- .empty_default(.Object, .featAssayAssay)
-    .Object <- .empty_default(.Object, .featAssayXAxis, .featAssayXAxisNothingTitle) 
+    .Object <- .empty_default(.Object, .featAssayXAxis, .featAssayXAxisNothingTitle)
     .Object <- .empty_default(.Object, .featAssayXAxisColData)
     .Object <- .empty_default(.Object, .featAssayXAxisRowTable, .noSelection)
     .Object <- .empty_default(.Object, .featAssayXAxisFeatName)
@@ -67,6 +68,7 @@ setMethod("initialize", "FeatAssayPlot", function(.Object, ...) {
 
 #' @export
 #' @importFrom SingleCellExperiment reducedDim
+#' @importFrom methods callNextMethod
 setMethod(".refineParameters", "FeatAssayPlot", function(x, se) {
     x <- callNextMethod()
     if (is.null(x)) {
@@ -85,7 +87,7 @@ setMethod(".refineParameters", "FeatAssayPlot", function(x, se) {
         return(NULL)
     }
 
-    assay_choice <- x[[.featAssayAssay]] 
+    assay_choice <- x[[.featAssayAssay]]
     if (is.na(assay_choice) || !assay_choice %in% all_assays) {
         x[[.featAssayAssay]] <- all_assays[1]
     }
@@ -112,7 +114,7 @@ setValidity2("FeatAssayPlot", function(object) {
 
     allowable <- c(.featAssayXAxisNothingTitle, .featAssayXAxisColDataTitle, .featAssayXAxisFeatNameTitle)
     if (!object[[.featAssayXAxis]] %in% allowable) {
-        msg <- c(msg, sprintf("choice of '%s' should be one of %s", .featAssayXAxis, 
+        msg <- c(msg, sprintf("choice of '%s' should be one of %s", .featAssayXAxis,
             paste(sprintf("'%s'", allowable), collapse=", ")))
     }
 
@@ -132,6 +134,7 @@ setValidity2("FeatAssayPlot", function(object) {
 
 #' @export
 #' @importFrom shiny selectInput radioButtons
+#' @importFrom methods callNextMethod
 setMethod(".defineParamInterface", "FeatAssayPlot", function(x, id, param_choices, se, active_panels) {
     mode <- .getEncodedName(x)
     panel_name <- paste0(mode, id)
@@ -180,6 +183,7 @@ setMethod(".defineParamInterface", "FeatAssayPlot", function(x, id, param_choice
 
 #' @export
 #' @importFrom shiny observeEvent updateSelectInput
+#' @importFrom methods callNextMethod
 setMethod(".createParamObservers", "FeatAssayPlot", function(x, id, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
 
@@ -193,23 +197,23 @@ setMethod(".createParamObservers", "FeatAssayPlot", function(x, id, se, input, s
     feature_choices <- seq_len(nrow(se))
     names(feature_choices) <- rownames(se)
 
-    .define_dim_name_observer(mode, id, 
-        name_field=.featAssayXAxisFeatName, 
+    .define_dim_name_observer(mode, id,
+        name_field=.featAssayXAxisFeatName,
         choices=feature_choices,
-        in_use_field=.featAssayXAxis, 
+        in_use_field=.featAssayXAxis,
         in_use_value=.featAssayXAxisFeatNameTitle,
         is_protected=TRUE,
-        table_field=.featAssayXAxisRowTable, 
+        table_field=.featAssayXAxisRowTable,
         link_type="xaxis",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_dim_name_observer(mode, id, 
-        name_field=.featAssayYAxisFeatName, 
+    .define_dim_name_observer(mode, id,
+        name_field=.featAssayYAxisFeatName,
         choices=feature_choices,
-        in_use_field=NA, 
+        in_use_field=NA,
         in_use_value=NA,
         is_protected=TRUE,
-        table_field=.featAssayYAxisRowTable, 
+        table_field=.featAssayYAxisRowTable,
         link_type="yaxis",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 

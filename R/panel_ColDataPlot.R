@@ -18,22 +18,22 @@
 #' x <- ColDataPlot()
 #' x[["XAxis"]]
 #' x[["XAxis"]] <- "Column data"
-#' 
+#'
 #' ##################
 #' # For developers #
 #' ##################
-#' 
+#'
 #' library(scater)
 #' sce <- mockSCE()
 #' sce <- logNormCounts(sce)
 #'
 #' old_cd <- colData(sce)
 #' colData(sce) <- NULL
-#' 
+#'
 #' # Spits out a NULL and a warning if there is nothing to plot.
 #' sce0 <- .cacheCommonInfo(x, sce)
 #' .refineParameters(x, sce0)
-#' 
+#'
 #' # Replaces the default with something sensible.
 #' colData(sce) <- old_cd
 #' sce0 <- .cacheCommonInfo(x, sce)
@@ -52,6 +52,7 @@ ColDataPlot <- function() {
 }
 
 #' @export
+#' @importFrom methods callNextMethod
 setMethod("initialize", "ColDataPlot", function(.Object, ...) {
     .Object <- callNextMethod(.Object, ...)
     .Object <- .empty_default(.Object, .colDataXAxis, .colDataXAxisNothingTitle)
@@ -64,6 +65,7 @@ setMethod("initialize", "ColDataPlot", function(.Object, ...) {
 .colDataXAxisColDataTitle <- "Column data"
 
 #' @export
+#' @importFrom methods callNextMethod
 setMethod(".refineParameters", "ColDataPlot", function(x, se) {
     x <- callNextMethod() # Do this first to trigger warnings from base classes.
     if (is.null(x)) {
@@ -77,7 +79,7 @@ setMethod(".refineParameters", "ColDataPlot", function(x, se) {
     }
 
     xchoice <- x[[.colDataXAxis]]
-    if (!xchoice %in% c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle)) { 
+    if (!xchoice %in% c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle)) {
         x[[.colDataXAxis]] <- .colDataXAxisNothingTitle
     }
 
@@ -100,7 +102,7 @@ setValidity2("ColDataPlot", function(object) {
 
     allowable <- c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle)
     if (!object[[.colDataXAxis]] %in% allowable) {
-        msg <- c(msg, sprintf("choice of '%s' should be one of %s", .colDataXAxis, 
+        msg <- c(msg, sprintf("choice of '%s' should be one of %s", .colDataXAxis,
             paste(sprintf("'%s'", allowable), collapse=", ")))
     }
 
@@ -118,6 +120,7 @@ setValidity2("ColDataPlot", function(object) {
 
 #' @export
 #' @importFrom shiny selectInput radioButtons
+#' @importFrom methods callNextMethod
 setMethod(".defineParamInterface", "ColDataPlot", function(x, id, param_choices, se, active_panels) {
     mode <- .getEncodedName(x)
     panel_name <- paste0(mode, id)
@@ -147,6 +150,7 @@ setMethod(".defineParamInterface", "ColDataPlot", function(x, id, param_choices,
 
 #' @export
 #' @importFrom shiny observeEvent updateSelectInput
+#' @importFrom methods callNextMethod
 setMethod(".createParamObservers", "ColDataPlot", function(x, id, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
     .define_plot_parameter_observers(mode, id,

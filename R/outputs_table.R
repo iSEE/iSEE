@@ -26,7 +26,7 @@
         tmp_df <- tab
         columnDefs <- list()
         if (!is.null(selected)) {
-            tmp_df[[select_col0]] <- selected
+            tmp_df[[select_col]] <- selected
             if (length(search_col)!=ncol(tmp_df)) {
                 # brackets appears to fix row indexing in RStudio browser (1/2)
                 search_col <- c(search_col, list(list(search="[\"true\"]")))

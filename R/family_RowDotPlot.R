@@ -1,5 +1,5 @@
-#' Row dot plot panel family 
-#' 
+#' Row dot plot panel family
+#'
 #' The row dot plot panel family covers all plot panel types where each row of the \linkS4class{SummarizedExperiment} is represented by a point.
 #' This family is represented by the \code{RowDotPlot} virtual class, which has a number of concrete subclasses (e.g., \linkS4class{SampAssayPlot}) to direct the construction of specific plots.
 #' We provide a number of useful methods on this virtual class to make it easier for developers to define their own subclasses.
@@ -11,7 +11,7 @@
 #' @section Output plot:
 #' \code{\link{.createOutputElement}} will return the output of \code{\link{plotOutput}} with two-dimensional brushing.
 #' More details to be added.
-#' 
+#'
 #' @author Aaron Lun
 #'
 #' @docType methods
@@ -21,6 +21,7 @@
 NULL
 
 #' @export
+#' @importFrom methods callNextMethod
 setMethod("initialize", "RowDotPlot", function(.Object, ...) {
     .Object <- callNextMethod(.Object, ...)
 
@@ -38,7 +39,7 @@ setMethod("initialize", "RowDotPlot", function(.Object, ...) {
 setValidity2("RowDotPlot", function(object) {
     msg <- character(0)
 
-    msg <- .single_string_error(msg, object, 
+    msg <- .single_string_error(msg, object,
         c(.facetRowsByRowData, .facetColumnsByRowData,
             .colorByRowData, .colorBySampNameAssay, .colorByFeatNameColor))
 
@@ -56,6 +57,7 @@ setValidity2("RowDotPlot", function(object) {
 
 #' @export
 #' @importFrom SummarizedExperiment rowData
+#' @importFrom methods callNextMethod
 setMethod(".cacheCommonInfo", "RowDotPlot", function(x, se) {
     if (is.null(.get_common_info(se, "RowDotPlot"))) {
         df <- rowData(se)
@@ -63,7 +65,7 @@ setMethod(".cacheCommonInfo", "RowDotPlot", function(x, se) {
 
         subdf <- df[,displayable,drop=FALSE]
         discrete <- .which_groupable(subdf)
-        continuous <- .which_numeric(subdf)  
+        continuous <- .which_numeric(subdf)
 
         se <- .set_common_info(se, "RowDotPlot",
             valid.rowData.names=displayable,
@@ -75,6 +77,7 @@ setMethod(".cacheCommonInfo", "RowDotPlot", function(x, se) {
 })
 
 #' @export
+#' @importFrom methods callNextMethod
 setMethod(".refineParameters", "RowDotPlot", function(x, se) {
     x <- callNextMethod()
     if (is.null(x)) {
@@ -111,17 +114,18 @@ setMethod(".defineParamInterface", "RowDotPlot", function(x, id, param_choices, 
 
     mode <- .getEncodedName(x)
     list(
-        .create_visual_box_for_row_plots(mode, id, param_choices, tab_by_row, tab_by_col, se), 
-        .create_selection_param_box(mode, id, param_choices, row_selectable, "row") 
+        .create_visual_box_for_row_plots(mode, id, param_choices, tab_by_row, tab_by_col, se),
+        .create_selection_param_box(mode, id, param_choices, row_selectable, "row")
     )
 })
 
 #' @export
+#' @importFrom methods callNextMethod
 setMethod(".createParamObservers", "RowDotPlot", function(x, id, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
     .define_plot_parameter_observers(mode, id,
         protected=character(0),
-        nonfundamental=c(.colorByRowData, .colorBySampNameAssay, 
+        nonfundamental=c(.colorByRowData, .colorBySampNameAssay,
             .shapeByRowData, .sizeByRowData, .colorByFeatNameColor),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
     callNextMethod()

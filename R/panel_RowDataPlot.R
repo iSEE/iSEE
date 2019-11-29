@@ -18,11 +18,11 @@
 #' x <- RowDataPlot()
 #' x[["XAxis"]]
 #' x[["XAxis"]] <- "Row data"
-#' 
+#'
 #' ##################
 #' # For developers #
 #' ##################
-#' 
+#'
 #' library(scater)
 #' sce <- mockSCE()
 #' sce <- logNormCounts(sce)
@@ -30,7 +30,7 @@
 #' # Spits out a NULL and a warning if is nothing to plot.
 #' sce0 <- .cacheCommonInfo(x, sce)
 #' .refineParameters(x, sce0)
-#' 
+#'
 #' # Replaces the default with something sensible.
 #' rowData(sce)$Stuff <- runif(nrow(sce))
 #' sce0 <- .cacheCommonInfo(x, sce)
@@ -49,6 +49,7 @@ RowDataPlot <- function() {
 }
 
 #' @export
+#' @importFrom methods callNextMethod
 setMethod("initialize", "RowDataPlot", function(.Object, ...) {
     .Object <- callNextMethod(.Object, ...)
     .Object <- .empty_default(.Object, .rowDataXAxis, .rowDataXAxisNothingTitle)
@@ -61,6 +62,7 @@ setMethod("initialize", "RowDataPlot", function(.Object, ...) {
 .rowDataXAxisRowDataTitle <- "Row data"
 
 #' @export
+#' @importFrom methods callNextMethod
 setMethod(".refineParameters", "RowDataPlot", function(x, se) {
     x <- callNextMethod()
     if (is.null(x)) {
@@ -75,7 +77,7 @@ setMethod(".refineParameters", "RowDataPlot", function(x, se) {
     }
 
     xchoice <- x[[.rowDataXAxis]]
-    if (!xchoice %in% c(.rowDataXAxisNothingTitle, .rowDataXAxisRowDataTitle)) { 
+    if (!xchoice %in% c(.rowDataXAxisNothingTitle, .rowDataXAxisRowDataTitle)) {
         x[[.rowDataXAxis]] <- .rowDataXAxisNothingTitle
     }
 
@@ -98,7 +100,7 @@ setValidity2("RowDataPlot", function(object) {
 
     allowable <- c(.rowDataXAxisNothingTitle, .rowDataXAxisRowDataTitle)
     if (!object[[.rowDataXAxis]] %in% allowable) {
-        msg <- c(msg, sprintf("choice of '%s' should be one of %s", .rowDataXAxis, 
+        msg <- c(msg, sprintf("choice of '%s' should be one of %s", .rowDataXAxis,
             paste(sprintf("'%s'", allowable), collapse=", ")))
     }
 
@@ -116,6 +118,7 @@ setValidity2("RowDataPlot", function(object) {
 
 #' @export
 #' @importFrom shiny selectInput radioButtons
+#' @importFrom methods callNextMethod
 setMethod(".defineParamInterface", "RowDataPlot", function(x, id, param_choices, se, active_panels) {
     mode <- .getEncodedName(x)
     panel_name <- paste0(mode, id)
@@ -145,6 +148,7 @@ setMethod(".defineParamInterface", "RowDataPlot", function(x, id, param_choices,
 
 #' @export
 #' @importFrom shiny observeEvent updateSelectInput
+#' @importFrom methods callNextMethod
 setMethod(".createParamObservers", "RowDataPlot", function(x, id, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
 

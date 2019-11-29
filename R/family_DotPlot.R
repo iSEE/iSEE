@@ -1,4 +1,5 @@
 #' @export
+#' @importFrom methods callNextMethod
 setMethod("initialize", "DotPlot", function(.Object, ...) {
     .Object <- callNextMethod(.Object, ...)
 
@@ -29,7 +30,7 @@ setValidity2("DotPlot", function(object) {
 
     msg <- .valid_logical_error(msg, object, c(.facetByRow, .facetByColumn))
 
-    msg <- .single_string_error(msg, object, 
+    msg <- .single_string_error(msg, object,
         c(.colorByField, .colorByFeatName, .colorByRowTable, .colorBySampName, .colorByColTable,
             .shapeByField,
             .sizeByField,
@@ -49,6 +50,7 @@ setValidity2("DotPlot", function(object) {
 })
 
 #' @export
+#' @importFrom methods callNextMethod
 setMethod(".cacheCommonInfo", "DotPlot", function(x, se) {
     if (is.null(.get_common_info(se, "DotPlot"))) {
         named_assays <- assayNames(se)
@@ -61,6 +63,7 @@ setMethod(".cacheCommonInfo", "DotPlot", function(x, se) {
 })
 
 #' @export
+#' @importFrom methods callNextMethod
 setMethod(".refineParameters", "DotPlot", function(x, se) {
     x <- callNextMethod()
     if (is.null(x)) {
@@ -88,7 +91,7 @@ setMethod(".createParamObservers", "DotPlot", function(x, id, se, input, session
             .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition,
             .plotPointDownsample, .plotPointSampleRes, .contourAddTitle,
             .contourColor),
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects) 
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     feature_choices <- seq_len(nrow(se))
     names(feature_choices) <- rownames(se)
@@ -120,7 +123,7 @@ setMethod(".createParamObservers", "DotPlot", function(x, id, se, input, session
 #' @export
 setMethod(".defineOutputElement", "DotPlot", function(x, id, height) {
     mode <- .getEncodedName(x)
-    .create_plot_ui(mode, id, brush_direction="xy", 
+    .create_plot_ui(mode, id, brush_direction="xy",
         height=height,
         brush_fill=brush_fill_color[mode],
         brush_stroke=brush_stroke_color[mode]
@@ -130,6 +133,6 @@ setMethod(".defineOutputElement", "DotPlot", function(x, id, height) {
 #' @export
 setMethod(".createRenderedOutput", "DotPlot", function(x, id, se, colormap, output, pObjects, rObjects) {
 # TODO: move colormap INSIDE se's metadata.
-    .define_plot_output(.getEncodedName(x), id, FUN=.getPlottingFunction(x), selectable=TRUE, 
+    .define_plot_output(.getEncodedName(x), id, FUN=.getPlottingFunction(x), selectable=TRUE,
         se=se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
 })

@@ -1,4 +1,5 @@
 #' @export
+#' @importFrom methods callNextMethod
 setMethod("initialize", "Table", function(.Object, ...) {
     .Object <- callNextMethod(.Object, ...)
     .Object <- .empty_default(.Object, .TableSelected, 1L)

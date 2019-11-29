@@ -1,5 +1,6 @@
 #' @export
 #' @importFrom SummarizedExperiment colData
+#' @importFrom methods callNextMethod
 setMethod(".cacheCommonInfo", "ColumnTable", function(x, se) {
     if (is.null(.get_common_info(se, "ColumnTable"))) {
         df <- colData(se)
@@ -14,6 +15,7 @@ setMethod(".cacheCommonInfo", "ColumnTable", function(x, se) {
 
 #' @export
 #' @importFrom SummarizedExperiment colData
+#' @importFrom methods callNextMethod
 setMethod(".refineParameters", "ColumnTable", function(x, se) {
     x <- callNextMethod()
     if (is.null(x)) {
@@ -48,6 +50,7 @@ setMethod(".defineParamInterface", "ColumnTable", function(x, id, param_choices,
 })
 
 #' @export
+#' @importFrom methods callNextMethod
 setMethod(".createParamObservers", "ColumnTable", function(x, id, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
     panel_name <- paste0(mode, id)

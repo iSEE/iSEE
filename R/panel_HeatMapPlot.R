@@ -19,13 +19,13 @@
 #' #################
 #'
 #' x <- HeatMapPlot()
-#' x[["ColorScale"]] 
+#' x[["ColorScale"]]
 #' x[["Lower"]] <- -5
-#' 
+#'
 #' ##################
 #' # For developers #
 #' ##################
-#' 
+#'
 #' library(scater)
 #' sce <- mockSCE()
 #' sce <- logNormCounts(sce)
@@ -33,7 +33,7 @@
 #' # Returns NULL if there is not enough information.
 #' sce0 <- .cacheCommonInfo(x, sce[,0])
 #' .refineParameters(x, sce0)
-#' 
+#'
 #' # Replaces the default with something sensible.
 #' sce0 <- .cacheCommonInfo(x, sce)
 #' .refineParameters(x, sce0)
@@ -51,6 +51,7 @@ HeatMapPlot <- function() {
 }
 
 #' @export
+#' @importFrom methods callNextMethod
 setMethod("initialize", "HeatMapPlot", function(.Object, ...) {
     .Object <- callNextMethod(.Object, ...)
     .Object <- .empty_default(.Object, .heatMapAssay)
@@ -61,7 +62,7 @@ setMethod("initialize", "HeatMapPlot", function(.Object, ...) {
     .Object <- .empty_default(.Object, .heatMapCenterScale, .heatMapCenterTitle)
     .Object <- .empty_default(.Object, .heatMapLower, -Inf)
     .Object <- .empty_default(.Object, .heatMapUpper, Inf)
-    .Object <- .empty_default(.Object, .heatMapCenteredColors, "purple-black-yellow") 
+    .Object <- .empty_default(.Object, .heatMapCenteredColors, "purple-black-yellow")
 
     .Object <- .empty_default(.Object, .selectEffect, .selectTransTitle)
     .Object <- .empty_default(.Object, .selectColor, "red")
@@ -90,7 +91,7 @@ setValidity2("HeatMapPlot", function(object) {
     }
 
     if (object[[.heatMapLower]] >= object[[.heatMapUpper]]) {
-        msg <- c(msg, sprintf("'%s' should have a lower value than '%s' for '%s'", 
+        msg <- c(msg, sprintf("'%s' should have a lower value than '%s' for '%s'",
             .heatMapLower, .heatMapUpper, class(object)[1]))
     }
 
@@ -128,6 +129,7 @@ setValidity2("HeatMapPlot", function(object) {
 
 #' @export
 #' @importFrom SummarizedExperiment colData assayNames
+#' @importFrom methods callNextMethod
 setMethod(".cacheCommonInfo", "HeatMapPlot", function(x, se) {
     if (is.null(.get_common_info(se, "HeatMapPlot"))) {
         # Only using named assays.
@@ -145,6 +147,7 @@ setMethod(".cacheCommonInfo", "HeatMapPlot", function(x, se) {
     callNextMethod()
 })
 
+#' @importFrom methods callNextMethod
 setMethod(".refineParameters", "HeatMapPlot", function(x, se) {
     x <- callNextMethod()
     if (is.null(x)) {
@@ -163,7 +166,7 @@ setMethod(".refineParameters", "HeatMapPlot", function(x, se) {
         return(NULL)
     }
 
-    assay_choice <- x[[.heatMapAssay]] 
+    assay_choice <- x[[.heatMapAssay]]
     if (is.na(assay_choice) || !assay_choice %in% all_assays) {
         x[[.heatMapAssay]] <- all_assays[1]
     }
@@ -273,11 +276,11 @@ setMethod(".createParamObservers", "HeatMapPlot", function(x, id, se, input, ses
         nonfundamental=c(.heatMapAssay, .heatMapLower, .heatMapUpper, .heatMapCenteredColors),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_heatmap_import_observer(mode, id, se, input, session, pObjects, rObjects) 
+    .create_heatmap_import_observer(mode, id, se, input, session, pObjects, rObjects)
 
     .create_heatmap_feature_observers(mode, id, se, input, session, pObjects, rObjects)
 
-    .create_heatmap_button_observers(mode, id, se, input, session, pObjects)
+    .create_heatmap_button_observers(mode, id, se, input, session, pObjects, rObjects)
 
     # Updating the import source, but this does NOT trigger replotting, as we need to press the button.
     cur_field <- paste0(plot_name, "_", .heatMapImportSource)
@@ -395,6 +398,9 @@ setMethod(".createParamObservers", "HeatMapPlot", function(x, id, se, input, ses
     plot_name <- paste0(mode, id)
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
+    feature_choices <- seq_len(nrow(se))
+    names(feature_choices) <- rownames(se)
+
     .get_feature_names_from_input <- function() {
         # Split the input field value into a character vector
         strsplit(input[[.input_FUN(.heatMapFeaturesTextInput)]], "\n")[[1]]
@@ -427,8 +433,11 @@ setMethod(".createParamObservers", "HeatMapPlot", function(x, id, se, input, ses
 }
 
 #' @importFrom shiny observeEvent updateSelectizeInput
-.create_heatmap_button_observers <- function(mode, id, se, input, pObjects, rObjects) {
+.create_heatmap_button_observers <- function(mode, id, se, input, session, pObjects, rObjects) {
     plot_name <- paste0(mode, id)
+
+    feature_choices <- seq_len(nrow(se))
+    names(feature_choices) <- rownames(se)
 
     # Triggering an update of the selected elements : clear features, trigger replotting (caught by validate)
     clear_button <- paste0(plot_name, "_", .heatMapClearFeatures)
@@ -453,7 +462,7 @@ setMethod(".createParamObservers", "HeatMapPlot", function(x, id, se, input, ses
 #' @export
 setMethod(".defineOutputElement", "HeatMapPlot", function(x, id, height) {
     mode <- .getEncodedName(x)
-    .create_plot_ui(mode, id, brush_direction="x", 
+    .create_plot_ui(mode, id, brush_direction="x",
         height=height,
         brush_fill=brush_fill_color[mode],
         brush_stroke=brush_stroke_color[mode]
@@ -502,6 +511,7 @@ setMethod(".createRenderedOutput", "HeatMapPlot", function(x, id, se, colormap, 
         tagList("Receiving selection from", em(strong(select_in)), br())
     })
 
+    # TODO: pass "input" as an argument
     output[[.input_FUN(.heatMapModalSummary)]] <- renderUI({
         current_text_value <- input[[.input_FUN(.heatMapFeaturesTextInput)]]
         current_names <- strsplit(current_text_value, "\n")[[1]]
@@ -521,6 +531,9 @@ setMethod(".createRenderedOutput", "HeatMapPlot", function(x, id, se, colormap, 
         }
         return(list())
     })
+
+    feature_choices <- seq_len(nrow(se))
+    names(feature_choices) <- rownames(se)
 
     output[[.input_FUN(.heatMapModalTable)]] <- renderTable({
         current_text_value <- input[[.input_FUN(.heatMapFeaturesTextInput)]]

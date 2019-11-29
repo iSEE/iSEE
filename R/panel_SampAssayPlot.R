@@ -19,22 +19,22 @@
 #' x[["XAxis"]]
 #' x[["Assay"]] <- "logcounts"
 #' x[["XAxisRowData"]] <- "stuff"
-#' 
+#'
 #' ##################
 #' # For developers #
 #' ##################
-#' 
+#'
 #' library(scater)
 #' sce <- mockSCE()
 #' sce <- logNormCounts(sce)
 #'
 #' old_assay_names <- assayNames(sce)
 #' assayNames(sce) <- character(length(old_assay_names))
-#' 
+#'
 #' # Spits out a NULL and a warning if no assays are named.
 #' sce0 <- .cacheCommonInfo(x, sce)
 #' .refineParameters(x, sce0)
-#' 
+#'
 #' # Replaces the default with something sensible.
 #' assayNames(sce) <- old_assay_names
 #' sce0 <- .cacheCommonInfo(x, sce)
@@ -53,6 +53,7 @@ SampAssayPlot <- function() {
 }
 
 #' @export
+#' @importFrom methods callNextMethod
 setMethod("initialize", "SampAssayPlot", function(.Object, ...) {
     .Object <- callNextMethod(.Object, ...)
     .Object <- .empty_default(.Object, .sampAssayAssay)
@@ -67,6 +68,7 @@ setMethod("initialize", "SampAssayPlot", function(.Object, ...) {
 
 #' @export
 #' @importFrom SingleCellExperiment reducedDim
+#' @importFrom methods callNextMethod
 setMethod(".refineParameters", "SampAssayPlot", function(x, se) {
     x <- callNextMethod()
     if (is.null(x)) {
@@ -99,7 +101,7 @@ setMethod(".refineParameters", "SampAssayPlot", function(x, se) {
         x[[.sampAssayXAxisRowData]] <- row_covariates[1]
     }
 
-    x 
+    x
 })
 
 .sampAssayXAxisNothingTitle <- "None"
@@ -132,6 +134,7 @@ setValidity2("SampAssayPlot", function(object) {
 
 #' @export
 #' @importFrom shiny selectInput radioButtons
+#' @importFrom methods callNextMethod
 setMethod(".defineParamInterface", "SampAssayPlot", function(x, id, param_choices, se, active_panels) {
     mode <- .getEncodedName(x)
     panel_name <- paste0(mode, id)
@@ -149,6 +152,9 @@ setMethod(".defineParamInterface", "SampAssayPlot", function(x, id, param_choice
         xaxis_choices <- c(xaxis_choices, .sampAssayXAxisRowDataTitle)
     }
     xaxis_choices <- c(xaxis_choices, .sampAssayXAxisSampNameTitle)
+
+    sample_names <- seq_len(ncol(se))
+    names(sample_names) <- int_metadata(se)$iSEE$sample_names
 
     plot.param <- list(
         selectInput(
@@ -190,6 +196,7 @@ setMethod(".defineParamInterface", "SampAssayPlot", function(x, id, param_choice
 
 #' @export
 #' @importFrom shiny observeEvent updateSelectInput
+#' @importFrom methods callNextMethod
 setMethod(".createParamObservers", "SampAssayPlot", function(x, id, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
 
@@ -203,23 +210,23 @@ setMethod(".createParamObservers", "SampAssayPlot", function(x, id, se, input, s
     sample_choices <- seq_len(ncol(se))
     names(sample_choices) <- colnames(se)
 
-    .define_dim_name_observer(mode, id, 
-        name_field=.sampAssayXAxisSampName, 
+    .define_dim_name_observer(mode, id,
+        name_field=.sampAssayXAxisSampName,
         choices=sample_choices,
-        in_use_field=.sampAssayXAxis, 
+        in_use_field=.sampAssayXAxis,
         in_use_value=.sampAssayXAxisSampNameTitle,
         is_protected=TRUE,
-        table_field=.sampAssayXAxisColTable, 
+        table_field=.sampAssayXAxisColTable,
         link_type="xaxis",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_dim_name_observer(mode, id, 
-        name_field=.sampAssayYAxisSampName, 
+    .define_dim_name_observer(mode, id,
+        name_field=.sampAssayYAxisSampName,
         choices=sample_choices,
-        in_use_field=NA, 
+        in_use_field=NA,
         in_use_value=NA,
         is_protected=TRUE,
-        table_field=.sampAssayYAxisColTable, 
+        table_field=.sampAssayYAxisColTable,
         link_type="yaxis",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 

@@ -17,13 +17,13 @@
 #' #################
 #'
 #' x <- RedDimPlot()
-#' x[["Type"]] 
+#' x[["Type"]]
 #' x[["Type"]] <- "TSNE"
-#' 
+#'
 #' ##################
 #' # For developers #
 #' ##################
-#' 
+#'
 #' library(scater)
 #' sce <- mockSCE()
 #' sce <- logNormCounts(sce)
@@ -31,7 +31,7 @@
 #' # Spits out a NULL and a warning if no reducedDims are available.
 #' sce0 <- .cacheCommonInfo(x, sce)
 #' .refineParameters(x, sce0)
-#' 
+#'
 #' # Replaces the default with something sensible.
 #' sce <- runPCA(sce)
 #' sce0 <- .cacheCommonInfo(x, sce)
@@ -46,10 +46,11 @@ NULL
 
 #' @export
 RedDimPlot <- function() {
-    new("RedDimPlot") 
+    new("RedDimPlot")
 }
 
 #' @export
+#' @importFrom methods callNextMethod
 setMethod("initialize", "RedDimPlot", function(.Object, ...) {
     .Object <- callNextMethod(.Object, ...)
     .Object <- .empty_default(.Object, .redDimType)
@@ -61,6 +62,7 @@ setMethod("initialize", "RedDimPlot", function(.Object, ...) {
 #' @export
 #' @importFrom SingleCellExperiment reducedDimNames reducedDim
 #' @importClassesFrom SingleCellExperiment SingleCellExperiment
+#' @importFrom methods callNextMethod
 setMethod(".cacheCommonInfo", "RedDimPlot", function(x, se) {
     if (is.null(.get_common_info(se, "RedDimPlot"))) {
         if (is(se, "SingleCellExperiment")) {
@@ -84,6 +86,7 @@ setMethod(".cacheCommonInfo", "RedDimPlot", function(x, se) {
 
 #' @export
 #' @importFrom SingleCellExperiment reducedDim
+#' @importFrom methods callNextMethod
 setMethod(".refineParameters", "RedDimPlot", function(x, se) {
     x <- callNextMethod()
     if (is.null(x)) {
@@ -95,7 +98,7 @@ setMethod(".refineParameters", "RedDimPlot", function(x, se) {
         chosen %in% available &&
         x[[.redDimXAxis]] <= ncol(reducedDim(se, chosen)) &&
         x[[.redDimYAxis]] <= ncol(reducedDim(se, chosen)))
-    {   
+    {
         # All is well, nothing needs to be done here.
     } else {
         if (length(available)==0L) {
@@ -116,7 +119,7 @@ setMethod(".refineParameters", "RedDimPlot", function(x, se) {
 setValidity2("RedDimPlot", function(object) {
     msg <- character(0)
 
-    if (!isSingleString(val <- object[[.redDimType]])) { 
+    if (!isSingleString(val <- object[[.redDimType]])) {
         msg <- c(msg, sprintf("'%s' must be a single string", .redDimType))
     }
 
@@ -129,12 +132,13 @@ setValidity2("RedDimPlot", function(object) {
     if (length(msg)>0) {
         return(msg)
     }
-    TRUE   
+    TRUE
 })
 
 #' @export
 #' @importFrom SingleCellExperiment reducedDim reducedDimNames
 #' @importFrom shiny selectInput
+#' @importFrom methods callNextMethod
 setMethod(".defineParamInterface", "RedDimPlot", function(x, id, param_choices, se, active_panels) {
     cur_reddim <- param_choices[[.redDimType]]
     max_dim <- ncol(reducedDim(se, cur_reddim))
@@ -153,7 +157,7 @@ setMethod(".defineParamInterface", "RedDimPlot", function(x, id, param_choices, 
         selectInput(.input_FUN(.redDimYAxis), label="Dimension 2",
             choices=choices, selected=param_choices[[.redDimYAxis]])
     )
-  
+
     param <- do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
         title="Data parameters", open=param_choices[[.dataParamBoxOpen]]), plot.param))
 
@@ -163,6 +167,7 @@ setMethod(".defineParamInterface", "RedDimPlot", function(x, id, param_choices, 
 #' @export
 #' @importFrom SingleCellExperiment reducedDim
 #' @importFrom shiny observeEvent updateSelectInput
+#' @importFrom methods callNextMethod
 setMethod(".createParamObservers", "RedDimPlot", function(x, id, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
     .define_plot_parameter_observers(mode, id,

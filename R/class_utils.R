@@ -14,7 +14,7 @@
 
 .empty_default <- function(x, field, newdef=NA) {
     if (length(x[[field]])==0L) {
-        x[[field]] <- as(newdef, type(x[[field]]))
+        x[[field]] <- as(newdef, typeof(x[[field]]))
     }
     x
 }
@@ -33,8 +33,8 @@
 #' @importFrom S4Vectors isSingleString
 .single_string_error <- function(msg, x, fields) {
     for (field in fields) {
-        if (!isSingleString(object[[field]])) {
-            msg <- c(msg, sprintf("'%s' should be a single string for '%s'", field, class(object)[1]))
+        if (!isSingleString(x[[field]])) {
+            msg <- c(msg, sprintf("'%s' should be a single string for '%s'", field, class(x)[1]))
         }
     }
     msg
@@ -59,9 +59,9 @@
 }
 
 .allowable_choice_error <- function(msg, x, field, allowable) {
-    if (!x[[field]] %in% allowed) {
+    if (!x[[field]] %in% allowable) {
         msg <- c(msg, sprintf("'%s' for '%s' should be one of %s", field, class(x)[1],
-            paste(sprintf("'%s'", allowed), collapse=", ")))
+            paste(sprintf("'%s'", allowable), collapse=", ")))
     }
     msg
 }
@@ -77,5 +77,5 @@
     if (is.na(chosen <- x[[field]]) || !chosen %in% choices) {
         x[[field]] <- choices[1]
     }
-    x   
+    x
 }

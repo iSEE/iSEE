@@ -1191,20 +1191,20 @@
         max_plots <- nrow(pObjects$memory[[mode]])
 
         # To be replaced once we change the underlying architecture to operate directly on objects.
-        instance <- switch(mode, 
+        instance <- switch(mode,
             redDimPlot=RedDimPlot(),
             featAssayPlot=FeatAssayPlot(),
             colDataPlot=ColDataPlot(),
             rowDataPlot=RowDataPlot(),
             sampAssayPlot=SampAssayPlot(),
             heatMapPlot=HeatMapPlot()
-        ) 
+        )
 
         for (id in seq_len(max_plots)) {
             .createParamObservers(instance, id, se, input=input,
                 session=session, pObjects=pObjects, rObjects=rObjects)
-            .createRenderedOutput(instance, id, se=se, colormap=colormap, 
-                output=output, pObjects=pObjects, rObjects=rObjects) 
+            .createRenderedOutput(instance, id, se=se, colormap=colormap,
+                output=output, pObjects=pObjects, rObjects=rObjects)
         }
     }
     invisible(NULL)
@@ -1461,9 +1461,9 @@
 .linked_table_observers <- function(input, output, session, se, pObjects, rObjects, annotFun) {
     for (mode in linked_table_types) {
         max_plots <- nrow(pObjects$memory[[mode]])
-    
+
         for (id in seq_len(max_plots)) {
-            current <- switch(mode, 
+            current <- switch(mode,
                 colStatTable=ColStatTable(),
                 rowStatTable=RowStatTable()
             )
@@ -1472,7 +1472,7 @@
             .createRenderedOutput(current, id, se=se, colormap=NULL, output=output, pObjects=pObjects, rObjects=rObjects)
         }
     }
-    return(NULL)    
+    return(NULL)
 }
 
 #' Voice control observers
@@ -1744,7 +1744,7 @@
     max_plots <- nrow(pObjects$memory$heatMapPlot)
     for (id in seq_len(max_plots)) {
         .createParamObservers(HeatMapPlot(), id, se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-        .createRenderedOutput(HeatMapPlot(), id, se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
+        .createRenderedOutput(HeatMapPlot(), id, se, input=input, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
     }
     invisible(NULL)
 }

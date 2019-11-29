@@ -33,6 +33,8 @@ setMethod("initialize", "ColumnDotPlot", function(.Object, ...) {
 
     .Object <- .empty_default(.Object, .shapeByColData)
 
+    .Object <- .empty_default(.Object, .sizeByColData)
+
     .Object
 })
 
@@ -50,6 +52,9 @@ setValidity2("ColumnDotPlot", function(object) {
     .allowable_choice_error(object, .shapeByField,
           c(.shapeByNothingTitle, .shapeByColDataTitle))
 
+    .allowable_choice_error(object, .sizeByField,
+          c(.sizeByNothingTitle, .sizeByColDataTitle))
+
     if (length(msg)) {
         return(msg)
     }
@@ -62,10 +67,15 @@ setMethod(".cacheCommonInfo", "ColumnDotPlot", function(x, se) {
     if (is.null(.get_common_info(se, "ColumnDotPlot"))) {
         df <- colData(se)
         displayable <- .find_atomic_fields(df)
-        chosen <- .which_groupable(df[,displayable,drop=FALSE])
+
+        subdf <- df[,displayable,drop=FALSE]
+        discrete <- .which_groupable(subdf)
+        continuous <- .which_numeric(subdf)  
+
         se <- .set_common_info(se, "ColumnDotPlot", 
             valid.colData.names=displayable,
-            discrete.colData.names=displayable[chosen])
+            discrete.colData.names=displayable[discrete],
+            continuous.colData.names=displayable[continuous])
     }
 
     callNextMethod()
@@ -92,6 +102,9 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
     x <- .replace_na_with_first(x, .colorByFeatNameAssay, assays)
 
     x <- .replace_na_with_first(x, .shapeByColData, discrete)
+
+    continuous <- cdp_cached$continuous.colData.names
+    x <- .replace_na_with_first(x, .sizeByColData, continuous)
 
     x
 })

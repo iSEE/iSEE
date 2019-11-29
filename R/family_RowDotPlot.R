@@ -60,10 +60,15 @@ setMethod(".cacheCommonInfo", "RowDotPlot", function(x, se) {
     if (is.null(.get_common_info(se, "RowDotPlot"))) {
         df <- rowData(se)
         displayable <- .find_atomic_fields(df)
-        chosen <- .which_groupable(df[,displayable,drop=FALSE])
+
+        subdf <- df[,displayable,drop=FALSE]
+        discrete <- .which_groupable(subdf)
+        continuous <- .which_numeric(subdf)  
+
         se <- .set_common_info(se, "RowDotPlot",
             valid.rowData.names=displayable,
-            discrete.rowData.names=displayable[chosen])
+            discrete.rowData.names=displayable[discrete],
+            continuous.rowData.names=displayable[continuous])
     }
 
     callNextMethod()
@@ -90,6 +95,9 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
     x <- .replace_na_with_first(x, .colorBySampNameAssay, assays)
 
     x <- .replace_na_with_first(x, .shapeByRowData, discrete)
+
+    continuous <- cdp_cached$continuous.rowData.names
+    x <- .replace_na_with_first(x, .sizeByRowData, continuous)
 
     x
 })

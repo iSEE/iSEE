@@ -32,10 +32,6 @@
 .sizeByColDataTitle <- "Column data"
 .sizeByRowDataTitle <- "Row data"
 
-.sizeByField <- "SizeBy"
-.sizeByColData <- "SizeByColData"
-.sizeByRowData <- "SizeByRowData"
-
 # Point selection parameters. ----
 .selectParamBoxOpen <- "SelectBoxOpen"
 

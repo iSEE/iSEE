@@ -14,6 +14,8 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
 
     .Object <- .empty_default(.Object, .shapeByField, .shapeByNothingTitle)
 
+    .Object <- .empty_default(.Object, .sizeByField, .sizeByNothingTitle)
+
     .Object
 })
 
@@ -26,7 +28,8 @@ setValidity2("DotPlot", function(object) {
     .single_string_error(object, 
         c(.colorByField, .colorByDefaultColor, .colorByFeatName, 
             .colorByRowTable, .colorBySampName, .colorByColTable,
-            .shapeByField))
+            .shapeByField,
+            .sizeByField))
 
     if (length(msg)) {
         return(msg)

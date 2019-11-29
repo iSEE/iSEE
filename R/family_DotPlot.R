@@ -1,8 +1,17 @@
 #' @export
 setMethod("initialize", "DotPlot", function(.Object, ...) {
     .Object <- callNextMethod(.Object, ...)
+
     .Object <- .empty_default(.Object, .facetByRow, FALSE)
     .Object <- .empty_default(.Object, .facetByColumn, FALSE)
+
+    .Object <- .empty_default(.Object, .colorByField, .colorByNothingTitle)
+    .Object <- .empty_default(.Object, .colorByDefaultColor, "black")
+    .Object <- .empty_default(.Object, .colorByFeatName, NA)
+    .Object <- .empty_default(.Object, .colorByRowTable, .noSelection)
+    .Object <- .empty_default(.Object, .colorBySampName, NA)
+    .Object <- .empty_default(.Object, .colorByColTable, .noSelection)
+
     .Object
 })
 
@@ -16,12 +25,21 @@ setValidity2("DotPlot", function(object) {
         }
     }
 
+    for (field in c(.colorByField, .colorByDefaultColor, .colorByFeatName, 
+        .colorByRowTable, .colorBySampName, .colorByColTable)) 
+    {
+        if (!isSingleString(object[[field]])) {
+            msg <- c(msg, sprintf("'%s' should be a single string for '%s'", field, class(object)[1]))
+        }
+    }
+
     if (length(msg)) {
         return(msg)
     }
     TRUE
 })
 
+#' @export
 setMethod(".cacheCommonInfo", "DotPlot", function(x, se) {
     if (is.null(.get_common_info(se, "DotPlot"))) {
         named_assays <- assayNames(se)
@@ -31,6 +49,24 @@ setMethod(".cacheCommonInfo", "DotPlot", function(x, se) {
     }
 
     callNextMethod()
+})
+
+#' @export
+setMethod(".refineParameters", "DotPlot", function(x, se) {
+    x <- callNextMethod()
+    if (is.null(x)) {
+        return(NULL)
+    }
+
+    if (is.na(val <- x[[.colorByFeatName]]) || !val %in% rownames(se)) {
+        x[[.colorByFeatName]] <- rownames(se)[1]
+    }
+
+    if (is.na(val <- x[[.colorBySampName]]) || !val %in% colnames(se)) {
+        x[[.colorBySampName]] <- colnames(se)[1]
+    }
+
+    x
 })
 
 #' @export

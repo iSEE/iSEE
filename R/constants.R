@@ -10,29 +10,15 @@
 .customRowSource <- "RowSource"
 
 # Point colouring parameters. ----
+
 .colorByNothingTitle <- "None"
 .colorByColDataTitle <- "Column data"
 .colorByRowDataTitle <- "Row data"
 .colorByFeatNameTitle <- "Feature name"
 .colorBySampNameTitle <- "Sample name"
 
-.colorByField <- "ColorBy"
-.colorByDefaultColor <- "ColorByDefaultColor"
-.colorByColData <- "ColorByColData"
-.colorByRowData <- "ColorByRowData"
-
 .validParameterChoices[[.colorByField]] <-
     c(.colorByNothingTitle, .colorByColDataTitle, .colorByRowDataTitle, .colorByFeatNameTitle, .colorBySampNameTitle)
-
-.colorByFeatName <- "ColorByFeatName"
-.colorByRowTable <- "ColorByRowTable"
-.colorByFeatNameAssay <- "ColorByFeatNameAssay"
-.colorByFeatNameColor <- "ColorByFeatNameColor"
-
-.colorBySampName <- "ColorBySampName"
-.colorByColTable <- "ColorByColTable"
-.colorBySampNameAssay <- "ColorBySampNameAssay"
-.colorBySampNameColor <- "ColorBySampNameColor"
 
 # Point shaping parameters. ----
 

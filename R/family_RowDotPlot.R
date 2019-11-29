@@ -23,8 +23,14 @@ NULL
 #' @export
 setMethod("initialize", "RowDotPlot", function(.Object, ...) {
     .Object <- callNextMethod(.Object, ...)
+
     .Object <- .empty_default(.Object, .facetRowsByRowData)
     .Object <- .empty_default(.Object, .facetColumnsByRowData)
+
+    .Object <- .empty_default(.Object, .colorByRowData)
+    .Object <- .empty_default(.Object, .colorBySampNameAssay)
+    .Object <- .empty_default(.Object, .colorByFeatNameColor, "red")
+
     .Object
 })
 
@@ -32,10 +38,18 @@ setMethod("initialize", "RowDotPlot", function(.Object, ...) {
 setValidity2("RowDotPlot", function(object) {
     msg <- character(0)
 
-    for (field in c(.facetRowsByRowData, .facetColumnsByRowData)){
+    for (field in c(.facetRowsByRowData, .facetColumnsByRowData,
+        .colorByRowData, .colorBySampNameAssay, .colorByFeatNameColor))
+    {
         if (!isSingleString(object[[field]])) {
             msg <- c(msg, sprintf("'%s' should be a single string for '%s'", field, class(object)[1]))
         }
+    }
+
+    allowed <- c(.colorByNothingTitle, .colorByRowDataTitle, .colorByFeatNameTitle, .colorBySampNameTitle)
+    if (!object[[.colorByField]] %in% allowed) {
+        msg <- c(msg, sprintf("'%s' for '%s' should be one of %s", .colorByField, class(object)[1],
+            paste(sprintf("'%s'", allowed), collapse=", ")))
     }
 
     if (length(msg)) {
@@ -66,12 +80,25 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
         return(NULL)
     }
 
-    discrete <- .get_common_info(se, "RowDotPlot")$discrete.rowData.names
+    rdp_cached <- .get_common_info(se, "RowDotPlot")
+    dp_cached <- .get_common_info(se, "DotPlot")
+
+    discrete <- rdp_cached$discrete.rowData.names
     if (is.na(chosen <- x[[.facetRowsByRowData]]) || !chosen %in% discrete) {
         x[[.facetRowsByRowData]] <- discrete[1]
     }
     if (is.na(chosen <- x[[.facetColumnsByRowData]]) || !chosen %in% discrete) {
         x[[.facetColumnsByRowData]] <- discrete[1]
+    }
+
+    available <- rdp_cached$valid.rowData.names
+    if (is.na(chosen <- x[[.colorByRowData]]) || !chosen %in% available) {
+        x[[.colorByRowData]] <- available[1]
+    }
+
+    assays <- dp_cached$valid.assay.names
+    if (is.na(chosen <- x[[.colorBySampNameAssay]]) || !chosen %in% assays) {
+        x[[.colorBySampNameAssay]] <- assays[1]
     }
 
     x

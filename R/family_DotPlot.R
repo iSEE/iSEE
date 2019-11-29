@@ -6,7 +6,6 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
     .Object
 })
 
-#' @export
 #' @importFrom S4Vectors isSingleString setValidity2
 setValidity2("DotPlot", function(object) {
     msg <- character(0)

@@ -6,9 +6,9 @@
 \alias{RowDataPlot-class}
 \alias{.defineParamInterface,RowDataPlot-method}
 \alias{.createParamObservers,RowDataPlot-method}
-\title{The column data plot panel}
+\title{The row data plot panel}
 \description{
-Plots column data values. What more do I have to say?
+Plots row data values. What more do I have to say?
 }
 \section{Constructor}{
 
@@ -21,6 +21,33 @@ Plots column data values. What more do I have to say?
 More details to be added.
 }
 
+\examples{
+#################
+# For end-users #
+#################
+
+x <- RowDataPlot()
+x[["XAxis"]]
+x[["XAxis"]] <- "Row data"
+
+##################
+# For developers #
+##################
+
+library(scater)
+sce <- mockSCE()
+sce <- logNormCounts(sce)
+
+# Spits out a NULL and a warning if is nothing to plot.
+sce0 <- .cacheCommonInfo(x, sce)
+.refineParameters(x, sce0)
+
+# Replaces the default with something sensible.
+rowData(sce)$Stuff <- runif(nrow(sce))
+sce0 <- .cacheCommonInfo(x, sce)
+.refineParameters(x, sce0)
+
+}
 \author{
 Aaron Lun
 }

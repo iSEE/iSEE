@@ -6,9 +6,9 @@
 \alias{SampAssayPlot-class}
 \alias{.defineParamInterface,SampAssayPlot-method}
 \alias{.createParamObservers,SampAssayPlot-method}
-\title{The feature assay plot panel}
+\title{The sample assay plot panel}
 \description{
-Plots feature assay values. What more do I have to say?
+Plots sample assay values. What more do I have to say?
 }
 \section{Constructor}{
 
@@ -21,6 +21,37 @@ Plots feature assay values. What more do I have to say?
 More details to be added.
 }
 
+\examples{
+#################
+# For end-users #
+#################
+
+x <- SampAssayPlot()
+x[["XAxis"]]
+x[["Assay"]] <- "logcounts"
+x[["XAxisRowData"]] <- "stuff"
+
+##################
+# For developers #
+##################
+
+library(scater)
+sce <- mockSCE()
+sce <- logNormCounts(sce)
+
+old_assay_names <- assayNames(sce)
+assayNames(sce) <- character(length(old_assay_names))
+
+# Spits out a NULL and a warning if no assays are named.
+sce0 <- .cacheCommonInfo(x, sce)
+.refineParameters(x, sce0)
+
+# Replaces the default with something sensible.
+assayNames(sce) <- old_assay_names
+sce0 <- .cacheCommonInfo(x, sce)
+.refineParameters(x, sce0)
+
+}
 \author{
 Aaron Lun
 }

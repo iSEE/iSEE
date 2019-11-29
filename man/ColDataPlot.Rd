@@ -21,6 +21,36 @@ Plots column data values. What more do I have to say?
 More details to be added.
 }
 
+\examples{
+#################
+# For end-users #
+#################
+
+x <- ColDataPlot()
+x[["XAxis"]]
+x[["XAxis"]] <- "Column data"
+
+##################
+# For developers #
+##################
+
+library(scater)
+sce <- mockSCE()
+sce <- logNormCounts(sce)
+
+old_cd <- colData(sce)
+colData(sce) <- NULL
+
+# Spits out a NULL and a warning if there is nothing to plot.
+sce0 <- .cacheCommonInfo(x, sce)
+.refineParameters(x, sce0)
+
+# Replaces the default with something sensible.
+colData(sce) <- old_cd
+sce0 <- .cacheCommonInfo(x, sce)
+.refineParameters(x, sce0)
+
+}
 \author{
 Aaron Lun
 }

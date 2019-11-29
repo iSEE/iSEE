@@ -132,6 +132,10 @@ collated[.colorByRowTable] <- "character"
 collated[.colorBySampName] <- "character"
 collated[.colorByColTable] <- "character"
 
+.shapeByField <- "ShapeBy"
+
+collated[.shapeByField] <- "character"
+
 #' @export
 setClass("DotPlot", contains=c("Panel", "VIRTUAL"), slots=collated)
 
@@ -152,6 +156,10 @@ collated[.colorByColData] <- "character"
 collated[.colorByFeatNameAssay] <- "character"
 collated[.colorBySampNameColor] <- "character"
 
+.shapeByColData <- "ShapeByColData"
+
+collated[.shapeByColData] <- "character"
+
 #' @export
 setClass("ColumnDotPlot", contains=c("DotPlot", "VIRTUAL"), slots=collated)
 
@@ -171,6 +179,10 @@ collated[.facetRowsByRowData] <- "character"
 collated[.colorByRowData] <- "character"
 collated[.colorBySampNameAssay] <- "character"
 collated[.colorByFeatNameColor] <- "character"
+
+.shapeByRowData <- "ShapeByRowData"
+
+collated[.shapeByRowData] <- "character"
 
 #' @export
 setClass("RowDotPlot", contains=c("DotPlot", "VIRTUAL"), slots=collated)

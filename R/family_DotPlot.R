@@ -12,26 +12,21 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
     .Object <- .empty_default(.Object, .colorBySampName, NA)
     .Object <- .empty_default(.Object, .colorByColTable, .noSelection)
 
+    .Object <- .empty_default(.Object, .shapeByField, .shapeByNothingTitle)
+
     .Object
 })
 
-#' @importFrom S4Vectors isSingleString setValidity2
+#' @importFrom S4Vectors setValidity2
 setValidity2("DotPlot", function(object) {
     msg <- character(0)
 
-    for (field in c(.facetByRow, .facetByColumn)) {
-        if (length(val <- object[[field]]) || is.na(val)) {
-            msg <- c(msg, sprintf("'%s' should be a non-NA logical scalar for '%s'", field, class(object)[1]))
-        }
-    }
+    .valid_logical_error(object, c(.facetByRow, .facetByColumn))
 
-    for (field in c(.colorByField, .colorByDefaultColor, .colorByFeatName, 
-        .colorByRowTable, .colorBySampName, .colorByColTable)) 
-    {
-        if (!isSingleString(object[[field]])) {
-            msg <- c(msg, sprintf("'%s' should be a single string for '%s'", field, class(object)[1]))
-        }
-    }
+    .single_string_error(object, 
+        c(.colorByField, .colorByDefaultColor, .colorByFeatName, 
+            .colorByRowTable, .colorBySampName, .colorByColTable,
+            .shapeByField))
 
     if (length(msg)) {
         return(msg)
@@ -58,13 +53,8 @@ setMethod(".refineParameters", "DotPlot", function(x, se) {
         return(NULL)
     }
 
-    if (is.na(val <- x[[.colorByFeatName]]) || !val %in% rownames(se)) {
-        x[[.colorByFeatName]] <- rownames(se)[1]
-    }
-
-    if (is.na(val <- x[[.colorBySampName]]) || !val %in% colnames(se)) {
-        x[[.colorBySampName]] <- colnames(se)[1]
-    }
+    x <- .replace_na_with_first(x, .colorByFeatName, rownames(se))
+    x <- .replace_na_with_first(x, .colorBySampName, colnames(se))
 
     x
 })

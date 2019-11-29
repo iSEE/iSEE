@@ -31,6 +31,8 @@ setMethod("initialize", "ColumnDotPlot", function(.Object, ...) {
     .Object <- .empty_default(.Object, .colorByFeatNameAssay)
     .Object <- .empty_default(.Object, .colorBySampNameColor, "red")
 
+    .Object <- .empty_default(.Object, .shapeByColData)
+
     .Object
 })
 
@@ -38,19 +40,15 @@ setMethod("initialize", "ColumnDotPlot", function(.Object, ...) {
 setValidity2("ColumnDotPlot", function(object) {
     msg <- character(0)
 
-    for (field in c(.facetColumnsByColData, .facetRowsByColData,
-        .colorByColData, .colorByFeatNameAssay, .colorBySampNameColor))
-    {
-        if (!isSingleString(object[[field]])) {
-            msg <- c(msg, sprintf("'%s' should be a single string for '%s'", field, class(object)[1]))
-        }
-    }
+    .single_string_error(x, 
+        c(.facetColumnsByColData, .facetRowsByColData,
+            .colorByColData, .colorByFeatNameAssay, .colorBySampNameColor))
 
-    allowed <- c(.colorByNothingTitle, .colorByColDataTitle, .colorByFeatNameTitle, .colorBySampNameTitle)
-    if (!object[[.colorByField]] %in% allowed) {
-        msg <- c(msg, sprintf("'%s' for '%s' should be one of %s", .colorByField, class(object)[1],
-            paste(sprintf("'%s'", allowed), collapse=", ")))
-    }
+    .allowable_choice_error(object, .colorByField,
+        c(.colorByNothingTitle, .colorByColDataTitle, .colorByFeatNameTitle, .colorBySampNameTitle))
+
+    .allowable_choice_error(object, .shapeByField,
+          c(.shapeByNothingTitle, .shapeByColDataTitle))
 
     if (length(msg)) {
         return(msg)
@@ -84,22 +82,16 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
     dp_cached <- .get_common_info(se, "DotPlot")
 
     discrete <- cdp_cached$discrete.colData.names
-    if (is.na(chosen <- x[[.facetRowsByColData]]) || !chosen %in% discrete) {
-        x[[.facetRowsByColData]] <- discrete[1]
-    }
-    if (is.na(chosen <- x[[.facetColumnsByColData]]) || !chosen %in% discrete) {
-        x[[.facetColumnsByColData]] <- discrete[1]
-    }
+    x <- .replace_na_with_first(x, .facetRowsByColData, discrete)
+    x <- .replace_na_with_first(x, .facetColumnsByColData, discrete)
 
     available <- cdp_cached$valid.colData.names
-    if (is.na(chosen <- x[[.colorByColData]]) || !chosen %in% available) {
-        x[[.colorByColData]] <- available[1]
-    }
+    x <- .replace_na_with_first(x, .colorByColData, available)
 
     assays <- dp_cached$valid.assay.names
-    if (is.na(chosen <- x[[.colorByFeatNameAssay]]) || !chosen %in% assays) {
-        x[[.colorByFeatNameAssay]] <- assays[1]        
-    }
+    x <- .replace_na_with_first(x, .colorByFeatNameAssay, assays)
+
+    x <- .replace_na_with_first(x, .shapeByColData, discrete)
 
     x
 })

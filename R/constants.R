@@ -26,10 +26,6 @@
 .shapeByColDataTitle <- "Column data"
 .shapeByRowDataTitle <- "Row data"
 
-.shapeByField <- "ShapeBy"
-.shapeByColData <- "ShapeByColData"
-.shapeByRowData <- "ShapeByRowData"
-
 # Point sizing parameters. ----
 
 .sizeByNothingTitle <- "None"

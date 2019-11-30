@@ -117,8 +117,6 @@
 .organizationDown <- "ShiftDown"
 .organizationDiscard <- "Discard"
 .organizationModify <- "Modify"
-.organizationWidth <- "PanelWidth"
-.organizationHeight <- "PanelHeight"
 
 .panelGeneralInfo <- "PanelGeneralInfo"
 .panelLinkInfo <- "PanelLinkInfo"

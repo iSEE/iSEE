@@ -113,7 +113,9 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
 })
 
 #' @export
-setMethod(".defineParamInterface", "ColumnDotPlot", function(x, id, param_choices, se, active_panels) {
+setMethod(".defineParamInterface", "ColumnDotPlot", function(x, se, active_panels) {
+    id <- x[[.organizationId]]
+
     link_sources <- .define_link_sources(active_panels)
     tab_by_row <- c(.noSelection, link_sources$row_tab)
     tab_by_col <- c(.noSelection, link_sources$col_tab)
@@ -121,16 +123,16 @@ setMethod(".defineParamInterface", "ColumnDotPlot", function(x, id, param_choice
 
     mode <- .getEncodedName(x)
     list(
-        .create_visual_box_for_column_plots(mode, id, param_choices, tab_by_row, tab_by_col, se),
-        .create_selection_param_box(mode, id, param_choices, col_selectable, "column")
+        .create_visual_box_for_column_plots(mode, id, x, tab_by_row, tab_by_col, se),
+        .create_selection_param_box(mode, id, x, col_selectable, "column")
     )
 })
 
 #' @export
 #' @importFrom methods callNextMethod
-setMethod(".createParamObservers", "ColumnDotPlot", function(x, id, se, input, session, pObjects, rObjects) {
+setMethod(".createParamObservers", "ColumnDotPlot", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
-    .define_plot_parameter_observers(mode, id,
+    .define_plot_parameter_observers(mode, x[[.organizationId]],
         protected=character(0),
         nonfundamental=c(.colorByColData, .colorByFeatNameAssay,
             .shapeByColData, .sizeByColData, .colorBySampNameColor),

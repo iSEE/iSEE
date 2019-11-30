@@ -37,19 +37,21 @@ setMethod(".refineParameters", "RowTable", function(x, se) {
 })
 
 #' @export
-setMethod(".defineParamInterface", "RowTable", function(x, id, param_choices, se, active_panels) {
+setMethod(".defineParamInterface", "RowTable", function(x, se, active_panels) {
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
     link_sources <- .define_link_sources(active_panels)
     row_selectable <- c(.noSelection, link_sources$row_plot)
 
-    .define_selection_param_box(mode, id, param_choices,
-       .define_selection_choices(mode, id, param_choices, .selectByPlot, row_selectable, "row")
+    .define_selection_param_box(mode, id, x,
+       .define_selection_choices(mode, id, x, .selectByPlot, row_selectable, "row")
     )
 })
 
 #' @export
-setMethod(".createParamObservers", "RowTable", function(x, id, se, input, session, pObjects, rObjects) {
+setMethod(".createParamObservers", "RowTable", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
 
     feature_choices <- seq_len(nrow(se))
     names(feature_choices) <- rownames(se)

@@ -139,12 +139,13 @@ setValidity2("RedDimPlot", function(object) {
 #' @importFrom SingleCellExperiment reducedDim reducedDimNames
 #' @importFrom shiny selectInput
 #' @importFrom methods callNextMethod
-setMethod(".defineParamInterface", "RedDimPlot", function(x, id, param_choices, se, active_panels) {
-    cur_reddim <- param_choices[[.redDimType]]
+setMethod(".defineParamInterface", "RedDimPlot", function(x, se, active_panels) {
+    cur_reddim <- x[[.redDimType]]
     max_dim <- ncol(reducedDim(se, cur_reddim))
     choices <- seq_len(max_dim)
 
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
     panel_name <- paste0(mode, id)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
@@ -153,13 +154,13 @@ setMethod(".defineParamInterface", "RedDimPlot", function(x, id, param_choices, 
             choices=.get_common_info(se, "RedDimPlot")$valid.reducedDim.names,
             selected=cur_reddim),
         selectInput(.input_FUN(.redDimXAxis), label="Dimension 1",
-            choices=choices, selected=param_choices[[.redDimXAxis]]),
+            choices=choices, selected=x[[.redDimXAxis]]),
         selectInput(.input_FUN(.redDimYAxis), label="Dimension 2",
-            choices=choices, selected=param_choices[[.redDimYAxis]])
+            choices=choices, selected=x[[.redDimYAxis]])
     )
 
     param <- do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
-        title="Data parameters", open=param_choices[[.dataParamBoxOpen]]), plot.param))
+        title="Data parameters", open=x[[.dataParamBoxOpen]]), plot.param))
 
     c(list(param), callNextMethod())
 })
@@ -168,8 +169,10 @@ setMethod(".defineParamInterface", "RedDimPlot", function(x, id, param_choices, 
 #' @importFrom SingleCellExperiment reducedDim
 #' @importFrom shiny observeEvent updateSelectInput
 #' @importFrom methods callNextMethod
-setMethod(".createParamObservers", "RedDimPlot", function(x, id, se, input, session, pObjects, rObjects) {
+setMethod(".createParamObservers", "RedDimPlot", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
+
     .define_plot_parameter_observers(mode, id,
         protected=c(.redDimXAxis, .redDimYAxis),
         nonfundamental=character(0),

@@ -121,8 +121,9 @@ setValidity2("ColDataPlot", function(object) {
 #' @export
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
-setMethod(".defineParamInterface", "ColDataPlot", function(x, id, param_choices, se, active_panels) {
+setMethod(".defineParamInterface", "ColDataPlot", function(x, se, active_panels) {
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
     panel_name <- paste0(mode, id)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
@@ -131,19 +132,19 @@ setMethod(".defineParamInterface", "ColDataPlot", function(x, id, param_choices,
     plot.param <- list(
         selectInput(.input_FUN(.colDataYAxis),
             label="Column of interest (Y-axis):",
-            choices=column_covariates, selected=param_choices[[.colDataYAxis]]),
+            choices=column_covariates, selected=x[[.colDataYAxis]]),
         radioButtons(.input_FUN(.colDataXAxis), label="X-axis:", inline=TRUE,
             choices=c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle),
-            selected=param_choices[[.colDataXAxis]]),
+            selected=x[[.colDataXAxis]]),
         .conditional_on_radio(.input_FUN(.colDataXAxis),
             .colDataXAxisColDataTitle,
             selectInput(.input_FUN(.colDataXAxisColData),
                 label="Column of interest (X-axis):",
-                choices=column_covariates, selected=param_choices[[.colDataXAxisColData]]))
+                choices=column_covariates, selected=x[[.colDataXAxisColData]]))
     )
 
     param <- do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
-        title="Data parameters", open=param_choices[[.dataParamBoxOpen]]), plot.param))
+        title="Data parameters", open=x[[.dataParamBoxOpen]]), plot.param))
 
     c(list(param), callNextMethod())
 })
@@ -151,8 +152,9 @@ setMethod(".defineParamInterface", "ColDataPlot", function(x, id, param_choices,
 #' @export
 #' @importFrom shiny observeEvent updateSelectInput
 #' @importFrom methods callNextMethod
-setMethod(".createParamObservers", "ColDataPlot", function(x, id, se, input, session, pObjects, rObjects) {
+setMethod(".createParamObservers", "ColDataPlot", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
     .define_plot_parameter_observers(mode, id,
         protected=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
         nonfundamental=character(0),

@@ -39,20 +39,21 @@ setMethod(".refineParameters", "ColumnTable", function(x, se) {
 })
 
 #' @export
-setMethod(".defineParamInterface", "ColumnTable", function(x, id, param_choices, se, active_panels) {
+setMethod(".defineParamInterface", "ColumnTable", function(x, se, active_panels) {
     mode <- .getEncodedName(x)
     link_sources <- .define_link_sources(active_panels)
     col_selectable <- c(.noSelection, link_sources$col_plot)
 
-    .define_selection_param_box(mode, id, param_choices,
-       .define_selection_choices(mode, id, param_choices, .selectByPlot, col_selectable, "column")
+    .define_selection_param_box(mode, id, x,
+       .define_selection_choices(mode, id, x, .selectByPlot, col_selectable, "column")
     )
 })
 
 #' @export
 #' @importFrom methods callNextMethod
-setMethod(".createParamObservers", "ColumnTable", function(x, id, se, input, session, pObjects, rObjects) {
+setMethod(".createParamObservers", "ColumnTable", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
     panel_name <- paste0(mode, id)
 
     sample_choices <- seq_len(nrow(se))

@@ -107,6 +107,12 @@ setClass("ExperimentColorMap",
 ####################################################
 
 collated <- character(0)
+
+.organizationId <- "PanelId"
+.organizationWidth <- "PanelWidth"
+.organizationHeight <- "PanelHeight"
+
+collated[.organizationId] <- "integer"
 collated[.organizationHeight] <- "integer"
 collated[.organizationWidth] <- "integer"
 

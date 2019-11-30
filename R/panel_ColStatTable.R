@@ -45,8 +45,9 @@ ColStatTable <- function() {
 
 #' @export
 #' @importFrom SummarizedExperiment colData
-setMethod(".createRenderedOutput", "ColStatTable", function(x, id, se, colormap, output, pObjects, rObjects) {
+setMethod(".createRenderedOutput", "ColStatTable", function(x, se, colormap, output, pObjects, rObjects) {
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
 
     sample_data <- .get_common_info(se, "ColumnTable")$valid.colData.df
     if (identical(ncol(sample_data), 0L)) {

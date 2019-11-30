@@ -123,8 +123,9 @@ setMethod(".refineParameters", "DotPlot", function(x, se) {
 })
 
 #' @export
-setMethod(".createParamObservers", "DotPlot", function(x, id, se, input, session, pObjects, rObjects) {
+setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
     .define_box_observers(mode, id, c(.visualParamBoxOpen, .selectParamBoxOpen), input, pObjects)
 
     .define_visual_parameter_choice_observer(mode, id, input, pObjects)
@@ -169,7 +170,7 @@ setMethod(".createParamObservers", "DotPlot", function(x, id, se, input, session
 #' @export
 setMethod(".defineOutputElement", "DotPlot", function(x, id, height) {
     mode <- .getEncodedName(x)
-    .create_plot_ui(mode, id, brush_direction="xy",
+    .create_plot_ui(mode, x[[.organizationId]], brush_direction="xy",
         height=height,
         brush_fill=brush_fill_color[mode],
         brush_stroke=brush_stroke_color[mode]
@@ -177,8 +178,9 @@ setMethod(".defineOutputElement", "DotPlot", function(x, id, height) {
 })
 
 #' @export
-setMethod(".createRenderedOutput", "DotPlot", function(x, id, se, colormap, output, pObjects, rObjects) {
+setMethod(".createRenderedOutput", "DotPlot", function(x, se, colormap, output, pObjects, rObjects) {
 # TODO: move colormap INSIDE se's metadata.
-    .define_plot_output(.getEncodedName(x), id, FUN=.getPlottingFunction(x), selectable=TRUE,
+    .define_plot_output(.getEncodedName(x), x[[.organizationId]],
+        FUN=.getPlottingFunction(x), selectable=TRUE,
         se=se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
 })

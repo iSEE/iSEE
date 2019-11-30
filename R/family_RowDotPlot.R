@@ -109,23 +109,26 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
 })
 
 #' @export
-setMethod(".defineParamInterface", "RowDotPlot", function(x, id, param_choices, se, active_panels) {
+setMethod(".defineParamInterface", "RowDotPlot", function(x, se, active_panels) {
     link_sources <- .define_link_sources(active_panels)
     tab_by_row <- c(.noSelection, link_sources$row_tab)
     tab_by_col <- c(.noSelection, link_sources$col_tab)
     row_selectable <- c(.noSelection, link_sources$row_plot)
 
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
     list(
-        .create_visual_box_for_row_plots(mode, id, param_choices, tab_by_row, tab_by_col, se),
-        .create_selection_param_box(mode, id, param_choices, row_selectable, "row")
+        .create_visual_box_for_row_plots(mode, id, x, tab_by_row, tab_by_col, se),
+        .create_selection_param_box(mode, id, x, row_selectable, "row")
     )
 })
 
 #' @export
 #' @importFrom methods callNextMethod
-setMethod(".createParamObservers", "RowDotPlot", function(x, id, se, input, session, pObjects, rObjects) {
+setMethod(".createParamObservers", "RowDotPlot", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
+
     .define_plot_parameter_observers(mode, id,
         protected=character(0),
         nonfundamental=c(.colorByRowData, .colorBySampNameAssay,

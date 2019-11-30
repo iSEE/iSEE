@@ -199,8 +199,9 @@ setMethod(".refineParameters", "HeatMapPlot", function(x, se) {
 #' @export
 #' @importFrom shiny selectInput actionButton selectizeInput hr
 #' checkboxGroupInput numericInput plotOutput
-setMethod(".defineParamInterface", "HeatMapPlot", function(x, id, param_choices, se, active_panels) {
+setMethod(".defineParamInterface", "HeatMapPlot", function(x, se, active_panels) {
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
     plot_name <- paste0(mode, id)
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
@@ -214,10 +215,10 @@ setMethod(".defineParamInterface", "HeatMapPlot", function(x, id, param_choices,
         collapseBox(
             id=.input_FUN(.heatMapFeatNameBoxOpen),
             title="Feature parameters",
-            open=param_choices[[.heatMapFeatNameBoxOpen]],
+            open=x[[.heatMapFeatNameBoxOpen]],
             selectInput(
                 .input_FUN(.heatMapImportSource), label="Import from", choices=heatmap_sources,
-                selected=.choose_link(param_choices[[.heatMapImportSource]], heatmap_sources, force_default=TRUE)),
+                selected=.choose_link(x[[.heatMapImportSource]], heatmap_sources, force_default=TRUE)),
             actionButton(.input_FUN(.heatMapImportFeatures), "Import features"),
             actionButton(.input_FUN(.heatMapCluster), "Cluster features"),
             actionButton(.input_FUN(.heatMapClearFeatures), "Clear features"),
@@ -228,45 +229,46 @@ setMethod(".defineParamInterface", "HeatMapPlot", function(x, id, param_choices,
                 options=list(plugins=list('remove_button', 'drag_drop'))),
             selectInput(
                 .input_FUN(.heatMapAssay), label=NULL,
-                choices=all_assays, selected=param_choices[[.heatMapAssay]]),
+                choices=all_assays, selected=x[[.heatMapAssay]]),
             hr(),
             checkboxGroupInput(
                 .input_FUN(.heatMapCenterScale), label="Expression values are:",
-                selected=param_choices[[.heatMapCenterScale]][[1]],
+                selected=x[[.heatMapCenterScale]][[1]],
                 choices=c(.heatMapCenterTitle, .heatMapScaleTitle), inline=TRUE),
             numericInput(
                 .input_FUN(.heatMapLower), label="Lower bound:",
-                value=param_choices[[.heatMapLower]]),
+                value=x[[.heatMapLower]]),
             numericInput(
                 .input_FUN(.heatMapUpper), label="Upper bound:",
-                value=param_choices[[.heatMapUpper]]),
+                value=x[[.heatMapUpper]]),
             .conditional_on_check_group(
                 .input_FUN(.heatMapCenterScale), .heatMapCenterTitle,
                 selectInput(
                     .input_FUN(.heatMapCenteredColors), label="Color scale:",
                     choices=c("purple-black-yellow", "blue-white-orange"),
-                    selected=param_choices[[.heatMapCenteredColors]]))
+                    selected=x[[.heatMapCenteredColors]]))
         ),
         collapseBox(
             id=.input_FUN(.heatMapColDataBoxOpen),
             title="Column data parameters",
-            open=param_choices[[.heatMapColDataBoxOpen]],
+            open=x[[.heatMapColDataBoxOpen]],
             selectizeInput(
                 .input_FUN(.heatMapColData),
                 label="Column data:",
                 choices=column_covariates,
                 multiple=TRUE,
-                selected=param_choices[[.heatMapColData]][[1]],
+                selected=x[[.heatMapColData]][[1]],
                 options=list(plugins=list('remove_button', 'drag_drop'))),
             plotOutput(.input_FUN(.heatMapLegend))
         ),
-        .create_selection_param_box(mode, id, param_choices, col_selectable, "column")
+        .create_selection_param_box(mode, id, x, col_selectable, "column")
     )
 })
 
 #' @export
-setMethod(".createParamObservers", "HeatMapPlot", function(x, id, se, input, session, pObjects, rObjects) {
+setMethod(".createParamObservers", "HeatMapPlot", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
     plot_name <- paste0(mode, id)
 
     .define_box_observers(mode, id, c(.heatMapFeatNameBoxOpen, .heatMapColDataBoxOpen, .selectParamBoxOpen), input, pObjects)

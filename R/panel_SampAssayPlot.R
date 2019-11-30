@@ -135,8 +135,9 @@ setValidity2("SampAssayPlot", function(object) {
 #' @export
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
-setMethod(".defineParamInterface", "SampAssayPlot", function(x, id, param_choices, se, active_panels) {
-    mode <- .getEncodedName(x)
+setMethod(".defineParamInterface", "SampAssayPlot", function(x, se, active_panels) {
+    mode <- .getEncodedName(x) 
+    id <- x[[.organizationId]]
     panel_name <- paste0(mode, id)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
@@ -160,36 +161,36 @@ setMethod(".defineParamInterface", "SampAssayPlot", function(x, id, param_choice
         selectInput(
             .input_FUN(.sampAssayYAxisSampName),
             label="Sample of interest (Y-axis):",
-            choices=sample_names, selected=param_choices[[.sampAssayYAxisSampName]]),
+            choices=sample_names, selected=x[[.sampAssayYAxisSampName]]),
         selectInput(
             .input_FUN(.sampAssayYAxisColTable), label=NULL, choices=tab_by_col,
-            selected=.choose_link(param_choices[[.sampAssayYAxisColTable]], tab_by_col, force_default=TRUE)),
+            selected=.choose_link(x[[.sampAssayYAxisColTable]], tab_by_col, force_default=TRUE)),
         selectInput(
             .input_FUN(.sampAssayAssay), label=NULL,
-            choices=all_assays, selected=param_choices[[.sampAssayAssay]]),
+            choices=all_assays, selected=x[[.sampAssayAssay]]),
         radioButtons(
             .input_FUN(.sampAssayXAxis), label="X-axis:", inline=TRUE,
-            choices=xaxis_choices, selected=param_choices[[.sampAssayXAxis]]),
+            choices=xaxis_choices, selected=x[[.sampAssayXAxis]]),
         .conditional_on_radio(
             .input_FUN(.sampAssayXAxis),
             .sampAssayXAxisRowDataTitle,
             selectInput(
                 .input_FUN(.sampAssayXAxisRowData),
                 label="Row data of interest (X-axis):",
-                choices=row_covariates, selected=param_choices[[.sampAssayXAxisRowData]])),
+                choices=row_covariates, selected=x[[.sampAssayXAxisRowData]])),
         .conditional_on_radio(
             .input_FUN(.sampAssayXAxis),
             .sampAssayXAxisSampNameTitle,
             selectInput(
                 .input_FUN(.sampAssayXAxisSampName),
                 label="Sample of interest (X-axis):",
-                choices=sample_names, selected=param_choices[[.sampAssayXAxisSampName]]),
+                choices=sample_names, selected=x[[.sampAssayXAxisSampName]]),
             selectInput(.input_FUN(.sampAssayXAxisColTable), label=NULL,
-                choices=tab_by_col, selected=param_choices[[.sampAssayXAxisColTable]]))
+                choices=tab_by_col, selected=x[[.sampAssayXAxisColTable]]))
     )
 
     param <- do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
-        title="Data parameters", open=param_choices[[.dataParamBoxOpen]]), plot.param))
+        title="Data parameters", open=x[[.dataParamBoxOpen]]), plot.param))
 
     c(list(param), callNextMethod())
 })
@@ -197,8 +198,9 @@ setMethod(".defineParamInterface", "SampAssayPlot", function(x, id, param_choice
 #' @export
 #' @importFrom shiny observeEvent updateSelectInput
 #' @importFrom methods callNextMethod
-setMethod(".createParamObservers", "SampAssayPlot", function(x, id, se, input, session, pObjects, rObjects) {
+setMethod(".createParamObservers", "SampAssayPlot", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
 
     .define_box_observers(mode, id, .dataParamBoxOpen, input, pObjects)
 

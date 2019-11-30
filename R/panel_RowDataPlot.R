@@ -119,8 +119,9 @@ setValidity2("RowDataPlot", function(object) {
 #' @export
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
-setMethod(".defineParamInterface", "RowDataPlot", function(x, id, param_choices, se, active_panels) {
+setMethod(".defineParamInterface", "RowDataPlot", function(x, se, active_panels) {
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
     panel_name <- paste0(mode, id)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
@@ -129,19 +130,19 @@ setMethod(".defineParamInterface", "RowDataPlot", function(x, id, param_choices,
     plot.param <- list(
         selectInput(.input_FUN(.rowDataYAxis),
             label="Column of interest (Y-axis):",
-            choices=row_covariates, selected=param_choices[[.rowDataYAxis]]),
+            choices=row_covariates, selected=x[[.rowDataYAxis]]),
         radioButtons(.input_FUN(.rowDataXAxis), label="X-axis:", inline=TRUE,
             choices=c(.rowDataXAxisNothingTitle, .rowDataXAxisRowDataTitle),
-            selected=param_choices[[.rowDataXAxis]]),
+            selected=x[[.rowDataXAxis]]),
         .conditional_on_radio(.input_FUN(.rowDataXAxis),
             .rowDataXAxisRowDataTitle,
             selectInput(.input_FUN(.rowDataXAxisRowData),
                 label="Column of interest (X-axis):",
-                choices=row_covariates, selected=param_choices[[.rowDataXAxisRowData]]))
+                choices=row_covariates, selected=x[[.rowDataXAxisRowData]]))
     )
 
     param <- do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
-        title="Data parameters", open=param_choices[[.dataParamBoxOpen]]), plot.param))
+        title="Data parameters", open=x[[.dataParamBoxOpen]]), plot.param))
 
     c(list(param), callNextMethod())
 })
@@ -149,8 +150,9 @@ setMethod(".defineParamInterface", "RowDataPlot", function(x, id, param_choices,
 #' @export
 #' @importFrom shiny observeEvent updateSelectInput
 #' @importFrom methods callNextMethod
-setMethod(".createParamObservers", "RowDataPlot", function(x, id, se, input, session, pObjects, rObjects) {
+setMethod(".createParamObservers", "RowDataPlot", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
 
     .define_box_observers(mode, id, .dataParamBoxOpen, input, pObjects)
 

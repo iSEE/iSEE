@@ -1,5 +1,8 @@
 #' @export
 setMethod("initialize", "Panel", function(.Object, ...) {
+    .Object <- .empty_default(.Object, .organizationId)
+    .Object <- .empty_default(.Object, .organizationHeight, 500L)
+    .Object <- .empty_default(.Object, .organizationWidth, 4L)
     .Object <- .empty_default(.Object, .selectParamBoxOpen, FALSE)
     .Object <- .empty_default(.Object, .selectByPlot, .noSelection)
     .Object <- .empty_default(.Object, .organizationHeight, 500L)
@@ -12,8 +15,12 @@ setValidity2("Panel", function(object) {
     msg <- .valid_logical_error(msg, object, .selectParamBoxOpen)
     msg <- .single_string_error(msg, object, .selectByPlot)
 
-    :msg <- .valid_numeric_error(msg, object, .organizationHeight, lower=400L, upper=1000L)
+    msg <- .valid_numeric_error(msg, object, .organizationHeight, lower=400L, upper=1000L)
     msg <- .valid_numeric_error(msg, object, .organizationWidth, lower=1L, upper=12L)
+
+    if (length(val <- object[[.organizationId]])!=1 || (!is.na(val) && val <= 0L)) {
+        msg <- c(msg, sprintf("'%s' must be a positive integer or NA for '%s'", .organizationId, class(object)[1]))
+    }
 
     if (length(msg)) {
         return(msg)
@@ -53,8 +60,9 @@ setMethod(".cacheCommonInfo", "Panel", function(x, se) {
     se
 })
 
-setMethod(".createParamObservers", "Panel", function(x, id, se, input, session, pObjects, rObjects) {
+setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
     panel_name <- paste0(mode, id)
     input_FUN <- function(field) paste0(panel_name, "_", field)
 

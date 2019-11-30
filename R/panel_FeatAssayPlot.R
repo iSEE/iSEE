@@ -135,8 +135,9 @@ setValidity2("FeatAssayPlot", function(object) {
 #' @export
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
-setMethod(".defineParamInterface", "FeatAssayPlot", function(x, id, param_choices, se, active_panels) {
+setMethod(".defineParamInterface", "FeatAssayPlot", function(x, se, active_panels) {
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
     panel_name <- paste0(mode, id)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
@@ -157,26 +158,26 @@ setMethod(".defineParamInterface", "FeatAssayPlot", function(x, id, param_choice
         selectizeInput(.input_FUN(.featAssayYAxisFeatName),
             label="Y-axis feature:", choices=NULL, selected=NULL, multiple=FALSE),
         selectInput(.input_FUN(.featAssayYAxisRowTable), label=NULL, choices=tab_by_row,
-            selected=.choose_link(param_choices[[.featAssayYAxisRowTable]], tab_by_row, force_default=TRUE)),
+            selected=.choose_link(x[[.featAssayYAxisRowTable]], tab_by_row, force_default=TRUE)),
         selectInput(.input_FUN(.featAssayAssay), label=NULL,
-            choices=all_assays, selected=param_choices[[.featAssayAssay]]),
+            choices=all_assays, selected=x[[.featAssayAssay]]),
         radioButtons(.input_FUN(.featAssayXAxis), label="X-axis:", inline=TRUE,
-            choices=xaxis_choices, selected=param_choices[[.featAssayXAxis]]),
+            choices=xaxis_choices, selected=x[[.featAssayXAxis]]),
         .conditional_on_radio(.input_FUN(.featAssayXAxis),
             .featAssayXAxisColDataTitle,
             selectInput(.input_FUN(.featAssayXAxisColData),
                 label="X-axis column data:",
-                choices=column_covariates, selected=param_choices[[.featAssayXAxisColData]])),
+                choices=column_covariates, selected=x[[.featAssayXAxisColData]])),
         .conditional_on_radio(.input_FUN(.featAssayXAxis),
             .featAssayXAxisFeatNameTitle,
             selectizeInput(.input_FUN(.featAssayXAxisFeatName),
                 label="X-axis feature:", choices=NULL, selected=NULL, multiple=FALSE),
             selectInput(.input_FUN(.featAssayXAxisRowTable), label=NULL,
-                choices=tab_by_row, selected=param_choices[[.featAssayXAxisRowTable]]))
+                choices=tab_by_row, selected=x[[.featAssayXAxisRowTable]]))
     )
 
     param <- do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
-        title="Data parameters", open=param_choices[[.dataParamBoxOpen]]), plot.param))
+        title="Data parameters", open=x[[.dataParamBoxOpen]]), plot.param))
 
     c(list(param), callNextMethod())
 })
@@ -184,8 +185,9 @@ setMethod(".defineParamInterface", "FeatAssayPlot", function(x, id, param_choice
 #' @export
 #' @importFrom shiny observeEvent updateSelectInput
 #' @importFrom methods callNextMethod
-setMethod(".createParamObservers", "FeatAssayPlot", function(x, id, se, input, session, pObjects, rObjects) {
+setMethod(".createParamObservers", "FeatAssayPlot", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
 
     .define_box_observers(mode, id, .dataParamBoxOpen, input, pObjects)
 

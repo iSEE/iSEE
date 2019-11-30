@@ -27,15 +27,17 @@ setValidity2("Table", function(object) {
 
 #' @export
 #' @importFrom DT dataTableOutput
-setMethod(".defineOutputElement", "Table", function(x, id, ...) {
+setMethod(".defineOutputElement", "Table", function(x, ...) {
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
     panel_name <- paste0(mode, id)
     tagList(dataTableOutput(panel_name), hr())
 })
 
 #' @export
-setMethod(".createParamObservers", "Table", function(x, id, se, input, session, pObjects, rObjects) {
+setMethod(".createParamObservers", "Table", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
     .define_box_observers(mode, id, .selectParamBoxOpen, input, pObjects)
 
     # Updating memory for new selection parameters.

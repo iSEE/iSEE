@@ -44,8 +44,9 @@ RowStatTable <- function() {
 }
 
 #' @export
-setMethod(".createRenderedOutput", "RowStatTable", function(x, id, se, colormap, output, pObjects, rObjects) {
+setMethod(".createRenderedOutput", "RowStatTable", function(x, se, colormap, output, pObjects, rObjects) {
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
 
     feature_data <- .get_common_info(se, "RowTable")$valid.rowData.df 
     if (identical(ncol(feature_data), 0L)) {

@@ -82,24 +82,24 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 NULL
 
 #' @export
-setGeneric(".defineParamInterface", function(x, id, param_choices, se, active_panels) {
+setGeneric(".defineParamInterface", function(x, se, active_panels) {
 # TODO: have 'id' and 'param_choices' actually live inside 'x'.
 # TODO: switch 'active_panels' for 'pObjects' to make life a bit easier.
     standardGeneric(".defineParamInterface")
 })
 
 #' @export
-setGeneric(".createParamObservers", function(x, id, se, input, session, pObjects, rObjects) {
+setGeneric(".createParamObservers", function(x, se, input, session, pObjects, rObjects) {
     standardGeneric(".createParamObservers")
 })
 
 #' @export
-setGeneric(".defineOutputElement", function(x, id, ...) {
+setGeneric(".defineOutputElement", function(x, ...) {
     standardGeneric(".defineOutputElement")
 })
 
 #' @export
-setGeneric(".createRenderedOutput", function(x, id, se, ..., output, pObjects, rObjects) {
+setGeneric(".createRenderedOutput", function(x, se, ..., output, pObjects, rObjects) {
     standardGeneric(".createRenderedOutput")
 })
 

@@ -43,14 +43,14 @@ setMethod("initialize", "ColumnDotPlot", function(.Object, ...) {
 setValidity2("ColumnDotPlot", function(object) {
     msg <- character(0)
 
-    msg <- .single_string_error(msg, x,
+    msg <- .single_string_error(msg, object,
         c(.facetColumnsByColData, .facetRowsByColData,
             .colorByColData, .colorByFeatNameAssay, .colorBySampNameColor))
 
     msg <- .allowable_choice_error(msg, object, .colorByField,
         c(.colorByNothingTitle, .colorByColDataTitle, .colorByFeatNameTitle, .colorBySampNameTitle))
 
-    .msg <- allowable_choice_error(msg, object, .shapeByField,
+    msg <- .allowable_choice_error(msg, object, .shapeByField,
           c(.shapeByNothingTitle, .shapeByColDataTitle))
 
     msg <- .allowable_choice_error(msg, object, .sizeByField,

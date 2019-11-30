@@ -49,6 +49,9 @@ setValidity2("RowDotPlot", function(object) {
     msg <- .allowable_choice_error(msg, object, .shapeByField,
           c(.shapeByNothingTitle, .shapeByRowDataTitle))
 
+    msg <- .allowable_choice_error(msg, object, .sizeByField,
+          c(.sizeByNothingTitle, .sizeByRowDataTitle))
+
     if (length(msg)) {
         return(msg)
     }

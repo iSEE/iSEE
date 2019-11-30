@@ -59,13 +59,13 @@ setValidity2("DotPlot", function(object) {
 
     msg <- .valid_string_error(msg, object, 
         c(.colorByDefaultColor, 
-            selectColor,
+            .selectColor,
             .contourColor))
 
     msg <- .allowable_choice_error(msg, object, .selectEffect,
         c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle))
 
-    msg <- .valid_number_error(msg, object, .selectByTransAlpha, lower=0, upper=1)
+    msg <- .valid_number_error(msg, object, .selectTransAlpha, lower=0, upper=1)
 
     msg <- .allowable_choice_error(msg, object, .selectMultiType,
         c(.selectMultiActiveTitle, .selectMultiUnionTitle, .selectMultiSavedTitle))

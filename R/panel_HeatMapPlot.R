@@ -119,7 +119,7 @@ setValidity2("HeatMapPlot", function(object) {
     msg <- .allowable_choice_error(msg, object, .selectEffect,
         c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle))
 
-    msg <- .transparency_error(msg, object, .selectByTransAlpha)
+    msg <- .valid_number_error(msg, object, .selectTransAlpha, lower=0, upper=1)
 
     if (length(msg)) {
         return(msg)

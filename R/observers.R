@@ -1186,26 +1186,12 @@
 #' @importFrom shiny observeEvent isolate observe renderPlot
 #' @rdname INTERNAL_dot_plot_observers
 .dot_plot_observers <- function(input, output, session, se, colormap, pObjects, rObjects) {
-    for (mode in point_plot_types) {
-        print(mode)
-        max_plots <- nrow(pObjects$memory[[mode]])
-
-        # To be replaced once we change the underlying architecture to operate directly on objects.
-        instance <- switch(mode,
-            redDimPlot=RedDimPlot(),
-            featAssayPlot=FeatAssayPlot(),
-            colDataPlot=ColDataPlot(),
-            rowDataPlot=RowDataPlot(),
-            sampAssayPlot=SampAssayPlot(),
-            heatMapPlot=HeatMapPlot()
-        )
-
-        for (id in seq_len(max_plots)) {
-            .createParamObservers(instance, se=se, input=input,
-                session=session, pObjects=pObjects, rObjects=rObjects)
-            .createRenderedOutput(instance, se=se, colormap=colormap,
-                output=output, pObjects=pObjects, rObjects=rObjects)
-        }
+    for (idx in seq_along(pObjects$memory)) { 
+        instance <- pObjects$memory[[idx]]
+        .createParamObservers(instance, se=se, input=input,
+            session=session, pObjects=pObjects, rObjects=rObjects)
+        .createRenderedOutput(instance, se=se, colormap=colormap,
+            output=output, pObjects=pObjects, rObjects=rObjects)
     }
     invisible(NULL)
 }

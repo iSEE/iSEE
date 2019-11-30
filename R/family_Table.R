@@ -38,6 +38,8 @@ setMethod(".defineOutputElement", "Table", function(x, ...) {
 setMethod(".createParamObservers", "Table", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
+    panel_name <- paste0(mode, id)
+
     .define_box_observers(mode, id, .selectParamBoxOpen, input, pObjects)
 
     # Updating memory for new selection parameters.
@@ -47,7 +49,7 @@ setMethod(".createParamObservers", "Table", function(x, se, input, session, pObj
     observe({
         search <- input[[search_field]]
         if (length(search)) {
-            pObjects$memory[[mode]][id, .statTableSearch] <- search
+            pObjects$memory[[panel_name]][[.statTableSearch]] <- search
         }
     })
 
@@ -55,7 +57,7 @@ setMethod(".createParamObservers", "Table", function(x, se, input, session, pObj
     observe({
         search <- input[[colsearch_field]]
         if (length(search)) {
-            pObjects$memory[[mode]]<- .update_list_element(pObjects$memory[[mode]], id, .statTableColSearch, search)
+            pObjects$memory[[panel_name]][[.statTableColSearch]] <- search
         }
     })
 })

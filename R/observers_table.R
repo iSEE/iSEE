@@ -13,7 +13,7 @@
         if (length(chosen)==0L) {
             return(NULL)
         }
-        pObjects$memory[[mode]][id, .statTableSelected] <- chosen
+        pObjects$memory[[panel_name]][[.statTableSelected]] <- chosen
 
         col_kids <- pObjects$table_links[[panel_name]][["color"]]
         x_kids <- pObjects$table_links[[panel_name]][["xaxis"]]

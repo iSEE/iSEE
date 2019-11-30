@@ -2,13 +2,13 @@
 .define_table_output <- function(mode, id, tab, select_col, output, pObjects, rObjects) {
     panel_name <- paste0(mode, id)
     output[[panel_name]] <- renderDataTable({
-        force(rObjects$active_panels) # to trigger recreation when the number of plots is changed.
+        force(rObjects$rerendered) # to trigger recreation when the number of plots is changed.
         force(rObjects[[panel_name]])
 
-        param_choices <- pObjects$memory[[mode]][id,]
+        param_choices <- pObjects$memory[[panel_name]]
         chosen <- param_choices[[.statTableSelected]]
         search <- param_choices[[.statTableSearch]]
-        search_col <- param_choices[[.statTableColSearch]][[1]]
+        search_col <- param_choices[[.statTableColSearch]]
         search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
 
         # After the first initialization there may not be any need to add columns

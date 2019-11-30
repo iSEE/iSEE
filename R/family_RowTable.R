@@ -53,14 +53,11 @@ setMethod(".createParamObservers", "RowTable", function(x, se, input, session, p
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
 
-    feature_choices <- seq_len(nrow(se))
-    names(feature_choices) <- rownames(se)
-
     .define_table_selection_observer(mode, id, 
         x_field=.featAssayXAxisFeatName, 
         y_field=.featAssayYAxisFeatName,
         col_field=.colorByFeatName,
-        choices=feature_choices,
+        choices=rownames(se),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     callNextMethod()

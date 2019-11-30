@@ -226,4 +226,7 @@ setMethod(".createParamObservers", "FeatAssayPlot", function(x, se, input, sessi
 setMethod(".getEncodedName", "FeatAssayPlot", function(x) "featAssayPlot") # TODO change to class name.
 
 #' @export
+setMethod(".getFullName", "FeatAssayPlot", function(x) "Feature assay plot") # TODO change to class name.
+
+#' @export
 setMethod(".getPlottingFunction", "FeatAssayPlot", function(x) .make_featAssayPlot)

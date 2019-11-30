@@ -239,4 +239,7 @@ setMethod(".createParamObservers", "SampAssayPlot", function(x, se, input, sessi
 setMethod(".getEncodedName", "SampAssayPlot", function(x) "sampAssayPlot") # TODO change to class name.
 
 #' @export
+setMethod(".getFullName", "SampAssayPlot", function(x) "Sample assay plot") # TODO change to class name.
+
+#' @export
 setMethod(".getPlottingFunction", "SampAssayPlot", function(x) .make_sampAssayPlot)

@@ -462,10 +462,10 @@ setMethod(".createParamObservers", "HeatMapPlot", function(x, se, input, session
 }
 
 #' @export
-setMethod(".defineOutputElement", "HeatMapPlot", function(x, id, height) {
+setMethod(".defineOutputElement", "HeatMapPlot", function(x, id) {
     mode <- .getEncodedName(x)
     .create_plot_ui(mode, id, brush_direction="x",
-        height=height,
+        height=x[[.organizationHeight]],
         brush_fill=brush_fill_color[mode],
         brush_stroke=brush_stroke_color[mode]
     )
@@ -473,6 +473,9 @@ setMethod(".defineOutputElement", "HeatMapPlot", function(x, id, height) {
 
 #' @export
 setMethod(".getEncodedName", "HeatMapPlot", function(x) "heatMapPlot")
+
+#' @export
+setMethod(".getFullName", "HeatMapPlot", function(x) "Heatmap")
 
 #' @export
 #' @importFrom shiny renderPlot renderUI renderTable

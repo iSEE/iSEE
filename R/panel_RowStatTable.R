@@ -61,3 +61,6 @@ setMethod(".createRenderedOutput", "RowStatTable", function(x, se, colormap, out
 
 #' @export
 setMethod(".getEncodedName", "RowStatTable", function(x) "rowStatTable")
+
+#' @export
+setMethod(".getFullName", "RowStatTable", function(x) "Row statistics table")

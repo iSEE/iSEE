@@ -215,4 +215,7 @@ setMethod(".createParamObservers", "RedDimPlot", function(x, se, input, session,
 setMethod(".getEncodedName", "RedDimPlot", function(x) "redDimPlot")
 
 #' @export
+setMethod(".getFullName", "RedDimPlot", function(x) "Reduced dimension plot")
+
+#' @export
 setMethod(".getPlottingFunction", "RedDimPlot", function(x) .make_redDimPlot)

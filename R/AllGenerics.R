@@ -107,6 +107,9 @@ setGeneric(".createRenderedOutput", function(x, se, ..., output, pObjects, rObje
 setGeneric(".getEncodedName", function(x) standardGeneric(".getEncodedName"))
 
 #' @export
+setGeneric(".getFullName", function(x) standardGeneric(".getFullName"))
+
+#' @export
 setGeneric(".getPlottingFunction", function(x) standardGeneric(".getPlottingFunction"))
 
 #' @export

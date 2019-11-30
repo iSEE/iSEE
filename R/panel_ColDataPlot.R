@@ -166,4 +166,7 @@ setMethod(".createParamObservers", "ColDataPlot", function(x, se, input, session
 setMethod(".getEncodedName", "ColDataPlot", function(x) "colDataPlot") # TODO change to class name.
 
 #' @export
+setMethod(".getFullName", "ColDataPlot", function(x) "Column data plot")
+
+#' @export
 setMethod(".getPlottingFunction", "ColDataPlot", function(x) .make_colDataPlot)

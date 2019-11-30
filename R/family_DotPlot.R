@@ -21,9 +21,6 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
     .Object <- .empty_default(.Object, .selectColor, "red")
     .Object <- .empty_default(.Object, .selectTransAlpha, 0.1)
 
-    .Object <- .empty_default(.Object, .selectMultiType, .selectMultiActiveTitle)
-    .Object <- .empty_default(.Object, .selectMultiSaved, 0L)
-
     .Object <- .empty_default(.Object, .dataParamBoxOpen, FALSE)
     .Object <- .empty_default(.Object, .visualParamBoxOpen, FALSE)
     .Object <- .empty_default(.Object, .visualParamChoice, .visualParamChoiceColorTitle)
@@ -66,13 +63,6 @@ setValidity2("DotPlot", function(object) {
         c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle))
 
     msg <- .valid_number_error(msg, object, .selectTransAlpha, lower=0, upper=1)
-
-    msg <- .allowable_choice_error(msg, object, .selectMultiType,
-        c(.selectMultiActiveTitle, .selectMultiUnionTitle, .selectMultiSavedTitle))
-
-    if (length(saved <- object[[.selectMultiSaved]]) > 1L || saved < 0L) {
-        msg <- c(msg, sprintf("'%s' must be a non-negative integer in '%s'", .selectMultiSaved, class(object)[1]))
-    }
 
     msg <- .multiple_choice_error(msg, object, .visualParamChoice,
         c(.visualParamChoiceColorTitle, .visualParamChoiceShapeTitle, .visualParamChoicePointTitle,
@@ -168,10 +158,10 @@ setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pO
 
 
 #' @export
-setMethod(".defineOutputElement", "DotPlot", function(x, id, height) {
+setMethod(".defineOutputElement", "DotPlot", function(x, id) {
     mode <- .getEncodedName(x)
     .create_plot_ui(mode, x[[.organizationId]], brush_direction="xy",
-        height=height,
+        height=x[[.organizationHeight]],
         brush_fill=brush_fill_color[mode],
         brush_stroke=brush_stroke_color[mode]
     )

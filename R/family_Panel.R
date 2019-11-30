@@ -3,10 +3,13 @@ setMethod("initialize", "Panel", function(.Object, ...) {
     .Object <- .empty_default(.Object, .organizationId)
     .Object <- .empty_default(.Object, .organizationHeight, 500L)
     .Object <- .empty_default(.Object, .organizationWidth, 4L)
+
     .Object <- .empty_default(.Object, .selectParamBoxOpen, FALSE)
     .Object <- .empty_default(.Object, .selectByPlot, .noSelection)
-    .Object <- .empty_default(.Object, .organizationHeight, 500L)
-    .Object <- .empty_default(.Object, .organizationWidth, 4L)
+
+    .Object <- .empty_default(.Object, .selectMultiType, .selectMultiActiveTitle)
+    .Object <- .empty_default(.Object, .selectMultiSaved, 0L)
+
     .Object
 })
 
@@ -20,6 +23,13 @@ setValidity2("Panel", function(object) {
 
     if (length(val <- object[[.organizationId]])!=1 || (!is.na(val) && val <= 0L)) {
         msg <- c(msg, sprintf("'%s' must be a positive integer or NA for '%s'", .organizationId, class(object)[1]))
+    }
+
+    msg <- .allowable_choice_error(msg, object, .selectMultiType,
+        c(.selectMultiActiveTitle, .selectMultiUnionTitle, .selectMultiSavedTitle))
+
+    if (length(saved <- object[[.selectMultiSaved]]) > 1L || saved < 0L) {
+        msg <- c(msg, sprintf("'%s' must be a non-negative integer in '%s'", .selectMultiSaved, class(object)[1]))
     }
 
     if (length(msg)) {
@@ -41,12 +51,12 @@ setReplaceMethod("[[", "Panel", function(x, i, j, ..., value) {
 
 #' @export
 setMethod("[", "Panel", function(x, i, j, ..., drop=FALSE) {
-    x[[i]]
+    x[[j]]
 })
 
 #' @export
 setReplaceMethod("[", "Panel", function(x, i, j, ..., value) {
-    x[[i]] <- value
+    x[[j]] <- value
     x
 })
 

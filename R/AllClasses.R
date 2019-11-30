@@ -122,6 +122,12 @@ collated[.organizationWidth] <- "integer"
 collated[.selectParamBoxOpen] <- "logical"
 collated[.selectByPlot] <- "character"
 
+.selectMultiType <- "SelectMultiType"
+.selectMultiSaved <- "SelectMultiSaved"
+
+collated[.selectMultiType] <- "character"
+collated[.selectMultiSaved] <- "integer"
+
 #' @export
 setClass("Panel", contains="VIRTUAL", slots=collated) 
 
@@ -163,12 +169,6 @@ collated[.sizeByField] <- "character"
 collated[.selectEffect] <- "character"
 collated[.selectColor] <- "character"
 collated[.selectTransAlpha] <- "numeric"
-
-.selectMultiType <- "SelectMultiType"
-.selectMultiSaved <- "SelectMultiSaved"
-
-collated[.selectMultiType] <- "character"
-collated[.selectMultiSaved] <- "integer"
 
 .multiSelectHistory <- "MultiSelectHistory"
 

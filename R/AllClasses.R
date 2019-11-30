@@ -165,6 +165,42 @@ collated[.selectMultiSaved] <- "integer"
 
 collated[.multiSelectHistory] <- "list"
 
+.zoomData <- "ZoomData"
+.brushData <- "BrushData"
+
+collated[.zoomData] <- "list"
+collated[.brushData] <- "list"
+
+.dataParamBoxOpen <- "DataBoxOpen"
+.visualParamBoxOpen <- "VisualBoxOpen"
+.visualParamChoice <- "VisualChoices"
+
+collated[.dataParamBoxOpen] <- "logical"
+collated[.visualParamBoxOpen] <- "logical"
+collated[.visualParamChoice] <- "character"
+
+.contourColor <- "ContourColor"
+.contourAddTitle <- "ContourAdd" # TODO: why is this a *Title?
+
+collated[.contourAddTitle] <- "logical"
+collated[.contourColor] <- "character"
+
+.plotPointSize <- "PointSize"
+.plotPointAlpha <- "PointAlpha"
+.plotPointDownsample <- "Downsample"
+.plotPointSampleRes <- "SampleRes"
+
+collated[.plotPointSize] <- "numeric"
+collated[.plotPointAlpha] <- "numeric"
+collated[.plotPointDownsample] <- "logical"
+collated[.plotPointSampleRes] <- "numeric"
+
+.plotFontSize <- "FontSize"
+.plotLegendPosition <- "LegendPosition"
+
+collated[.plotFontSize] <- "numeric"
+collated[.plotLegendPosition] <- "character"
+
 #' @export
 setClass("DotPlot", contains=c("Panel", "VIRTUAL"), slots=collated)
 

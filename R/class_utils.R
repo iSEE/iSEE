@@ -66,9 +66,18 @@
     msg
 }
 
-.transparency_error <- function(msg, x, field) {
-    if (length(val <- x[[field]])!=1 || is.na(val) || val < 0 || val > 1) {
-        msg <- c(msg, sprintf("'%s' for '%s' should be a numeric scalar in [0, 1]", field, class(x)[1]))
+.multiple_choice_error <- function(msg, x, field, allowable) {
+    if (any(!x[[field]] %in% allowable)) {
+        msg <- c(msg, sprintf("values of '%s' for '%s' should be in %s", field, class(x)[1],
+            paste(sprintf("'%s'", allowable), collapse=", ")))
+    }
+    msg
+}
+
+.valid_number_error <- function(msg, x, field, lower, upper) {
+    if (length(val <- x[[field]])!=1 || is.na(val) || val < lower || val > upper) {
+        msg <- c(msg, sprintf("'%s' for '%s' should be a numeric scalar in [%s, %s]", 
+            field, class(x)[1], lower, upper))
     }
     msg
 }

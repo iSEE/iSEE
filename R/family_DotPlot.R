@@ -24,6 +24,21 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
     .Object <- .empty_default(.Object, .selectMultiType, .selectMultiActiveTitle)
     .Object <- .empty_default(.Object, .selectMultiSaved, 0L)
 
+    .Object <- .empty_default(.Object, .dataParamBoxOpen, FALSE)
+    .Object <- .empty_default(.Object, .visualParamBoxOpen, FALSE)
+    .Object <- .empty_default(.Object, .visualParamChoice, .visualParamChoiceColorTitle)
+
+    .Object <- .empty_default(.Object, .contourAddTitle, FALSE)
+    .Object <- .empty_default(.Object, .contourColor, "blue")
+
+    .Object <- .empty_default(.Object, .plotPointSize, 1)
+    .Object <- .empty_default(.Object, .plotPointAlpha, 1)
+    .Object <- .empty_default(.Object, .plotPointDownsample, FALSE)
+    .Object <- .empty_default(.Object, .plotPointSampleRes, 200)
+
+    .Object <- .empty_default(.Object, .plotFontSize, 1)
+    .Object <- .empty_default(.Object, .plotLegendPosition, .plotLegendBottomTitle)
+
     .Object
 })
 
@@ -31,7 +46,10 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
 setValidity2("DotPlot", function(object) {
     msg <- character(0)
 
-    msg <- .valid_logical_error(msg, object, c(.facetByRow, .facetByColumn))
+    msg <- .valid_logical_error(msg, object, 
+        c(.facetByRow, .facetByColumn,
+            .dataParamBoxOpen, .visualParamBoxOpen,
+            .contourAddTitle))
 
     msg <- .single_string_error(msg, object,
         c(.colorByField, .colorByFeatName, .colorByRowTable, .colorBySampName, .colorByColTable,
@@ -39,12 +57,15 @@ setValidity2("DotPlot", function(object) {
             .sizeByField,
             .selectEffect))
 
-    msg <- .valid_string_error(msg, object, c(.colorByDefaultColor, .selectColor))
+    msg <- .valid_string_error(msg, object, 
+        c(.colorByDefaultColor, 
+            selectColor,
+            .contourColor))
 
     msg <- .allowable_choice_error(msg, object, .selectEffect,
         c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle))
 
-    msg <- .transparency_error(msg, object, .selectByTransAlpha)
+    msg <- .valid_number_error(msg, object, .selectByTransAlpha, lower=0, upper=1)
 
     msg <- .allowable_choice_error(msg, object, .selectMultiType,
         c(.selectMultiActiveTitle, .selectMultiUnionTitle, .selectMultiSavedTitle))
@@ -52,6 +73,21 @@ setValidity2("DotPlot", function(object) {
     if (length(saved <- object[[.selectMultiSaved]]) > 1L || saved < 0L) {
         msg <- c(msg, sprintf("'%s' must be a non-negative integer in '%s'", .selectMultiSaved, class(object)[1]))
     }
+
+    msg <- .multiple_choice_error(msg, object, .visualParamChoice,
+        c(.visualParamChoiceColorTitle, .visualParamChoiceShapeTitle, .visualParamChoicePointTitle,
+            .visualParamChoiceFacetTitle, .visualParamChoiceOtherTitle))
+
+    msg <- .valid_number_error(msg, object, .plotPointSize, lower=0, upper=Inf)
+
+    msg <- .valid_number_error(msg, object, .plotPointAlpha, lower=0, upper=1)
+
+    msg <- .valid_number_error(msg, object, .plotPointSampleRes, lower=0, upper=Inf)
+
+    msg <- .valid_number_error(msg, object, .plotFontSize, lower=0, upper=Inf)
+
+    msg <- .allowable_choice_error(msg, object, .plotLegendPosition,
+        c(.plotLegendRightTitle, .plotLegendBottomTitle))
 
     if (length(msg)) {
         return(msg)

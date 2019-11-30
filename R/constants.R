@@ -51,18 +51,19 @@
 .customSelection <- "Custom ..."
 
 # Zooming parameters. ----
-.zoomData <- "ZoomData"
+
 .zoomClick <- "ZoomClick"
 
 # Lasso parameters. ----
+
 .lassoClick <- "LassoClick"
-.lassoData <- "LassoData"
 
 # Brush parameters. ----
+
 .brushField <- "Brush"
-.brushData <- "BrushData"
 
 # Button parameters ----
+
 .buttonUpToDateLabel <- "Up to date"
 .buttonUpdateLabel <- "Update"
 .buttonEmptyHistoryLabel <- "No history"
@@ -71,9 +72,6 @@
 .buttonSaveLabel <- "Save"
 
 # Other plot parameters. ----
-.dataParamBoxOpen <- "DataBoxOpen"
-.visualParamBoxOpen <- "VisualBoxOpen"
-.visualParamChoice <- "VisualChoices"
 
 .visualParamChoiceColorTitle <- "Color"
 .visualParamChoiceShapeTitle <- "Shape"
@@ -81,16 +79,6 @@
 .visualParamChoiceFacetTitle <- "Facets"
 .visualParamChoiceOtherTitle <- "Other"
 
-.contourAddTitle <- "ContourAdd"
-.contourColor <- "ContourColor"
-
-.plotPointSize <- "PointSize"
-.plotPointAlpha <- "PointAlpha"
-.plotPointDownsample <- "Downsample"
-.plotPointSampleRes <- "SampleRes"
-
-.plotFontSize <- "FontSize"
-.plotLegendPosition <- "LegendPosition"
 .plotLegendRightTitle <- "Right"
 .plotLegendBottomTitle <- "Bottom"
 

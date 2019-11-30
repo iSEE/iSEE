@@ -106,10 +106,13 @@ setClass("ExperimentColorMap",
 
 ####################################################
 
+collated <- character(0)
+collated[.organizationHeight] <- "integer"
+collated[.organizationWidth] <- "integer"
+
 .selectParamBoxOpen <- "SelectBoxOpen"
 .selectByPlot <- "SelectByPlot"
 
-collated <- character(0)
 collated[.selectParamBoxOpen] <- "logical"
 collated[.selectByPlot] <- "character"
 

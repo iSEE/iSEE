@@ -301,13 +301,8 @@ iSEE <- function(se,
             se <- se_out$object
             se_cmds <- se_out$cmds
 
-            # Precomputing UI information - must be before .setup_memory()
-            se <- .precompute_UI_info(se, customDataFun, customStatFun)
-
             # Throw an error if the colormap supplied is not compatible with the object
-
             errors <- checkColormapCompatibility(colormap, se)
-
             if (!is.null(errors)){
                 colormap <- ExperimentColorMap()
                 # Show unknown number of errors first, as they may be pushed out of screen
@@ -323,121 +318,131 @@ iSEE <- function(se,
                 showNotification(ui=ui_msg, type="warning", duration=10)
             }
 
-            # Defining the maximum number of plots.
-            memory <- .setup_memory(se,
-                redDimArgs, colDataArgs, featAssayArgs, rowStatArgs, rowDataArgs,
-                sampAssayArgs, colStatArgs, customDataArgs, customStatArgs, heatMapArgs,
-                redDimMax, colDataMax, featAssayMax, rowStatMax, rowDataMax,
-                sampAssayMax, colStatMax, customDataMax, customStatMax, heatMapMax)
+            # TEST:
+            memory <- list(RedDimPlot(), RowStatTable())
 
-            # Defining the initial elements to be plotted.
-            active_panels <- .setup_initial(initialPanels, memory)
-            memory <- .sanitize_memory(active_panels, memory)
-
-            all_names <- list()
-            for (mode in all_panel_types) {
-                max_plots <- nrow(memory[[mode]])
-                all_names[[mode]] <- sprintf("%s%i", mode, seq_len(max_plots))
+            for (idx in seq_along(memory)) {
+                se <- .cacheCommonInfo(memory[[idx]], se)
+                memory[idx] <- list(.refineParameters(memory[[idx]], se))
             }
-            all_names <- unlist(all_names)
+            memory <- memory[!vapply(memory, is.null, TRUE)]
+
+            # Assigning names and IDs to each panel.
+            all_modes <- vapply(memory, .getEncodedName, "")
+            num_modes <- as.list(table(all_modes))
+
+            # TODO: fix to accommodate user-supplied IDs.
+            running_modes <- lapply(num_modes, FUN=function(x) 1L)
+            for (idx in seq_along(memory)) {
+                mode <- .getEncodedName(memory[[idx]])
+                cur.id <- running_modes[[mode]]
+                memory[[idx]][[.organizationId]] <- cur.id
+                running_modes[[mode]] <- running_modes[[mode]] + 1L
+            }
+
+            all_ids <- vapply(memory, "[[", i=.organizationId, 0L)
+            all_names <- paste0(all_modes, all_ids)
+            names(memory) <- all_names
+          
             empty_list <- vector("list", length(all_names))
             names(empty_list) <- all_names
 
             # Storage for persistent non-reactive objects.
             pObjects <- new.env()
             pObjects$memory <- memory
+            pObjects$counter <- num_modes
             pObjects$commands <- empty_list
 
             pObjects$coordinates <- empty_list
-            pObjects$selection_links <- .spawn_selection_chart(memory)
-            pObjects$table_links <- .spawn_table_links(memory)
+#            pObjects$selection_links <- .spawn_selection_chart(memory)
+#            pObjects$table_links <- .spawn_table_links(memory)
             pObjects$cached_info <- empty_list
             pObjects[[.voiceActivePanel]] <- NA_character_
 
-            # Generating the reactive objects, used to coordinate
-            # behaviour across observers.
-            rObjects$active_panels <- active_panels
+#            # Generating the reactive objects, used to coordinate
+#            # behaviour across observers.
+#            rObjects$active_panels <- active_panels
+#
+#            for (mode in all_panel_types) {
+#                max_plots <- nrow(pObjects$memory[[mode]])
+#                for (id in seq_len(max_plots)) {
+#                    # Reactive to trigger replotting.
+#                    rObjects[[paste0(mode, id)]] <- 1L
+#
+#                    # Reactive to regenerate information panels.
+#                    rObjects[[paste0(mode, id, "_", .panelLinkInfo)]] <- 1L
+#                    rObjects[[paste0(mode, id, "_", .panelGeneralInfo)]] <- 1L
+#
+#                    # Reactive to regenerate multi-selection selectize.
+#                    rObjects[[paste0(mode, id, "_", .selectMultiSaved)]] <- 1L
+#
+#                    # Reactive to regenerate children when the point population of the current panel changes.
+#                    rObjects[[paste0(mode, id, "_repopulated")]] <- 1L
+#
+#                    # Reactive to regenerate children when the active selection of the current panel changes.
+#                    rObjects[[paste0(mode, id, "_reactivated")]] <- 1L
+#
+#                    # Reactive to regenerate children when the saved selection of the current panel changes.
+#                    rObjects[[paste0(mode, id, "_resaved")]] <- 1L
+#                }
+#            }
 
-            for (mode in all_panel_types) {
-                max_plots <- nrow(pObjects$memory[[mode]])
-                for (id in seq_len(max_plots)) {
-                    # Reactive to trigger replotting.
-                    rObjects[[paste0(mode, id)]] <- 1L
+#            mode <- "heatMapPlot"
+#            max_plots <- nrow(pObjects$memory[[mode]])
+#            for (id in seq_len(max_plots)) {
+#                rObjects[[paste0(mode, id, "_", .heatMapLegend)]] <- 1L
+#            }
+#
+#            # Evaluating certain plots to fill the coordinate list, if there are any selections.
+#            # This is done in topological order so that all dependencies are satisfied.
+#            eval_order <- .establish_eval_order(pObjects$selection_links)
+#            for (panelname in eval_order) {
+#                enc <- .split_encoded(panelname)
+#                # This is a placeholder for the grand future when classes are directly specified as an iSEE() argument.
+#                instance <- switch(enc$Type,
+#                    redDimPlot=RedDimPlot(),
+#                    featAssayPlot=FeatAssayPlot(),
+#                    colDataPlot=ColDataPlot(),
+#                    rowDataPlot=RowDataPlot(),
+#                    sampAssayPlot=SampAssayPlot()
+#                )
+#
+#                FUN <- .getPlottingFunction(instance)
+#                p.out <- FUN(enc$ID, pObjects$memory, pObjects$coordinates, se, colormap)
+#                pObjects$coordinates[[panelname]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
+#            }
 
-                    # Reactive to regenerate information panels.
-                    rObjects[[paste0(mode, id, "_", .panelLinkInfo)]] <- 1L
-                    rObjects[[paste0(mode, id, "_", .panelGeneralInfo)]] <- 1L
-
-                    # Reactive to regenerate multi-selection selectize.
-                    rObjects[[paste0(mode, id, "_", .selectMultiSaved)]] <- 1L
-
-                    # Reactive to regenerate children when the point population of the current panel changes.
-                    rObjects[[paste0(mode, id, "_repopulated")]] <- 1L
-
-                    # Reactive to regenerate children when the active selection of the current panel changes.
-                    rObjects[[paste0(mode, id, "_reactivated")]] <- 1L
-
-                    # Reactive to regenerate children when the saved selection of the current panel changes.
-                    rObjects[[paste0(mode, id, "_resaved")]] <- 1L
-                }
-            }
-
-            mode <- "heatMapPlot"
-            max_plots <- nrow(pObjects$memory[[mode]])
-            for (id in seq_len(max_plots)) {
-                rObjects[[paste0(mode, id, "_", .heatMapLegend)]] <- 1L
-            }
-
-            # Evaluating certain plots to fill the coordinate list, if there are any selections.
-            # This is done in topological order so that all dependencies are satisfied.
-            eval_order <- .establish_eval_order(pObjects$selection_links)
-            for (panelname in eval_order) {
-                enc <- .split_encoded(panelname)
-                # This is a placeholder for the grand future when classes are directly specified as an iSEE() argument.
-                instance <- switch(enc$Type,
-                    redDimPlot=RedDimPlot(),
-                    featAssayPlot=FeatAssayPlot(),
-                    colDataPlot=ColDataPlot(),
-                    rowDataPlot=RowDataPlot(),
-                    sampAssayPlot=SampAssayPlot()
-                )
-
-                FUN <- .getPlottingFunction(instance)
-                p.out <- FUN(enc$ID, pObjects$memory, pObjects$coordinates, se, colormap)
-                pObjects$coordinates[[panelname]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
-            }
-
-            # Observer set-up.
-            .general_observers(input, session, pObjects, rObjects, tour, runLocal,
-                 se_name, ecm_name, cdf_name, csf_name, se_cmds)
-
+#            # Observer set-up.
+#            .general_observers(input, session, pObjects, rObjects, tour, runLocal,
+#                 se_name, ecm_name, cdf_name, csf_name, se_cmds)
+#
             .organization_observers(input, output, se, pObjects, rObjects)
-
-            .selection_parameter_observers(input, session, pObjects, rObjects)
-
-            .brush_observers(input, session, pObjects, rObjects)
-
-            .child_propagation_observers(pObjects, rObjects, customSendAll)
-
-            .multiselect_param_observers(input, session, pObjects, rObjects)
-
-            .lasso_observers(input, session, pObjects, rObjects)
-
-            .zoom_observers(input, session, pObjects, rObjects)
-
-            .selectize_update_observers(input, session, se, pObjects, rObjects)
-
-            .multiple_select_observers(input, session, pObjects, rObjects)
-
-            .dot_plot_observers(input, output, session, se, colormap, pObjects, rObjects)
-
-            .custom_panel_observers(input, output, session, se, pObjects, rObjects, customSendAll)
-
-            .linked_table_observers(input, output, session, se, pObjects, rObjects, annotFun)
-
-            .voice_control_observers(input, session, se, pObjects, rObjects)
-
-            .heatmap_observers(input, output, session, se, colormap, pObjects, rObjects)
+#
+#            .selection_parameter_observers(input, session, pObjects, rObjects)
+#
+#            .brush_observers(input, session, pObjects, rObjects)
+#
+#            .child_propagation_observers(pObjects, rObjects, customSendAll)
+#
+#            .multiselect_param_observers(input, session, pObjects, rObjects)
+#
+#            .lasso_observers(input, session, pObjects, rObjects)
+#
+#            .zoom_observers(input, session, pObjects, rObjects)
+#
+#            .selectize_update_observers(input, session, se, pObjects, rObjects)
+#
+#            .multiple_select_observers(input, session, pObjects, rObjects)
+#
+#            .dot_plot_observers(input, output, session, se, colormap, pObjects, rObjects)
+#
+#            .custom_panel_observers(input, output, session, se, pObjects, rObjects, customSendAll)
+#
+#            .linked_table_observers(input, output, session, se, pObjects, rObjects, annotFun)
+#
+#            .voice_control_observers(input, session, se, pObjects, rObjects)
+#
+#            .heatmap_observers(input, output, session, se, colormap, pObjects, rObjects)
         }
 
         if (!has_se) {

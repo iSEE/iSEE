@@ -135,107 +135,107 @@
     # This is adapted from https://stackoverflow.com/questions/15875786/dynamically-add-plots-to-web-page-using-shiny.
     output$allPanels <- renderUI({
         rObjects$rerendered <- .increment_counter(isolate(rObjects$rerendered))
-        .panel_generation(rObjects$active_panels, pObjects$memory, se)
+        .panel_generation(pObjects$memory, se)
     })
 
-    n_available <- vapply(pObjects$memory, nrow, FUN.VALUE=0L)
-    enc_ids <- unlist(lapply(n_available, FUN=seq_len))
-    enc_names <- rep(names(pObjects$memory), n_available)
-    available_panels <- paste0(enc_names, enc_ids)
-    names(available_panels) <- .decode_panel_name(enc_names, enc_ids)
-
-    # Persistent objects to give the modal a 'working memory'.
-    # These get captured in the current environment to persist
-    # when observeEvent's expression actually gets executed.
-    org_pObjects <- reactiveValues(active_panels=isolate(rObjects$active_panels))
-    org_rObjects <- reactiveValues(rerender=0)
-
-    # Panel ordering, addition and deletion.
-    observeEvent(input$organize_panels, {
-        active_panels <- paste0(rObjects$active_panels$Type, rObjects$active_panels$ID)
-        names(active_panels) <- .decode_panel_name(rObjects$active_panels$Type, rObjects$active_panels$ID)
-        inactive_panels <- available_panels[which(!available_panels %in% active_panels)]
-        ordered_panel_choices <- c(active_panels, inactive_panels)
-        org_pObjects$active_panels <- rObjects$active_panels
-
-        showModal(modalDialog(
-            title="Panel organization", size="m", fade=TRUE,
-            footer=NULL, easyClose=TRUE,
-            actionButton("update_ui", "Apply settings", icon=icon("object-ungroup"), width='100%'),
-            hr(),
-            selectizeInput("panel_order", label=NULL, choices=ordered_panel_choices, multiple=TRUE,
-                selected=active_panels,
-                options=list(plugins=list('remove_button', 'drag_drop')), width="500px"),
-            uiOutput("panelParams")
-        ))
-    })
-
-    output$panelParams <- renderUI({
-        force(org_rObjects$rerender)
-        .panel_organization(org_pObjects$active_panels)
-    })
-
-    for (mode in all_panel_types) {
-        max_plots <- nrow(pObjects$memory[[mode]])
-        for (id in seq_len(max_plots)) {
-            # Note: we need "local" so that each item gets its own number. Without it, the value
-            # of 'id' in the renderPlot() will be the same across all instances, because
-            # of when the expression is evaluated.
-            local({
-                mode0 <- mode
-                id0 <- id
-                prefix <- paste0(mode0, id0, "_")
-                max_plots0 <- max_plots
-
-                width_name <- paste0(prefix, .organizationWidth)
-                observeEvent(input[[width_name]], {
-                    all_active <- org_pObjects$active_panels
-                    index <- which(all_active$Type==mode0 & all_active$ID==id0)
-                    cur.width <- all_active$Width[index]
-                    new.width <- as.integer(input[[width_name]])
-                    if (!isTRUE(all.equal(new.width, cur.width))) {
-                        org_pObjects$active_panels$Width[index] <- new.width
-                    }
-                })
-
-                height_name <- paste0(prefix, .organizationHeight)
-                observeEvent(input[[height_name]], {
-                    all_active <- org_pObjects$active_panels
-                    index <- which(all_active$Type==mode0 & all_active$ID==id0)
-                    cur.height <- all_active$Height[index]
-                    new.height <- input[[height_name]]
-                    if (!isTRUE(all.equal(new.height, cur.height))) {
-                        org_pObjects$active_panels$Height[index] <- new.height
-                    }
-                })
-            })
-        }
-    }
-
-    ### Reorder/add/remove panels ###
-    observeEvent(input$panel_order, {
-        cur_active <- paste0(org_pObjects$active_panels$Type, org_pObjects$active_panels$ID)
-        if (identical(input$panel_order, cur_active)) {
-            return(NULL)
-        }
-
-        m <- match(input$panel_order, cur_active)
-        new_active_panels <- org_pObjects$active_panels[m,,drop=FALSE]
-
-        to_add <- is.na(m)
-        if (any(to_add)) {
-            enc_add <- .split_encoded(input$panel_order[to_add])
-            new_active_panels[to_add,] <- data.frame(Type=enc_add$Type, ID=enc_add$ID,
-                Width=4, Height=500L, stringsAsFactors=FALSE)
-        }
-
-        org_pObjects$active_panels <- new_active_panels
-        .increment_counter(org_rObjects$rerender)
-    })
-
-    observeEvent(input$update_ui, {
-        rObjects$active_panels <- org_pObjects$active_panels
-    })
+#    n_available <- vapply(pObjects$memory, nrow, FUN.VALUE=0L)
+#    enc_ids <- unlist(lapply(n_available, FUN=seq_len))
+#    enc_names <- rep(names(pObjects$memory), n_available)
+#    available_panels <- paste0(enc_names, enc_ids)
+#    names(available_panels) <- .decode_panel_name(enc_names, enc_ids)
+#
+#    # Persistent objects to give the modal a 'working memory'.
+#    # These get captured in the current environment to persist
+#    # when observeEvent's expression actually gets executed.
+#    org_pObjects <- reactiveValues(active_panels=isolate(rObjects$active_panels))
+#    org_rObjects <- reactiveValues(rerender=0)
+#
+#    # Panel ordering, addition and deletion.
+#    observeEvent(input$organize_panels, {
+#        active_panels <- paste0(rObjects$active_panels$Type, rObjects$active_panels$ID)
+#        names(active_panels) <- .decode_panel_name(rObjects$active_panels$Type, rObjects$active_panels$ID)
+#        inactive_panels <- available_panels[which(!available_panels %in% active_panels)]
+#        ordered_panel_choices <- c(active_panels, inactive_panels)
+#        org_pObjects$active_panels <- rObjects$active_panels
+#
+#        showModal(modalDialog(
+#            title="Panel organization", size="m", fade=TRUE,
+#            footer=NULL, easyClose=TRUE,
+#            actionButton("update_ui", "Apply settings", icon=icon("object-ungroup"), width='100%'),
+#            hr(),
+#            selectizeInput("panel_order", label=NULL, choices=ordered_panel_choices, multiple=TRUE,
+#                selected=active_panels,
+#                options=list(plugins=list('remove_button', 'drag_drop')), width="500px"),
+#            uiOutput("panelParams")
+#        ))
+#    })
+#
+#    output$panelParams <- renderUI({
+#        force(org_rObjects$rerender)
+#        .panel_organization(org_pObjects$active_panels)
+#    })
+#
+#    for (mode in all_panel_types) {
+#        max_plots <- nrow(pObjects$memory[[mode]])
+#        for (id in seq_len(max_plots)) {
+#            # Note: we need "local" so that each item gets its own number. Without it, the value
+#            # of 'id' in the renderPlot() will be the same across all instances, because
+#            # of when the expression is evaluated.
+#            local({
+#                mode0 <- mode
+#                id0 <- id
+#                prefix <- paste0(mode0, id0, "_")
+#                max_plots0 <- max_plots
+#
+#                width_name <- paste0(prefix, .organizationWidth)
+#                observeEvent(input[[width_name]], {
+#                    all_active <- org_pObjects$active_panels
+#                    index <- which(all_active$Type==mode0 & all_active$ID==id0)
+#                    cur.width <- all_active$Width[index]
+#                    new.width <- as.integer(input[[width_name]])
+#                    if (!isTRUE(all.equal(new.width, cur.width))) {
+#                        org_pObjects$active_panels$Width[index] <- new.width
+#                    }
+#                })
+#
+#                height_name <- paste0(prefix, .organizationHeight)
+#                observeEvent(input[[height_name]], {
+#                    all_active <- org_pObjects$active_panels
+#                    index <- which(all_active$Type==mode0 & all_active$ID==id0)
+#                    cur.height <- all_active$Height[index]
+#                    new.height <- input[[height_name]]
+#                    if (!isTRUE(all.equal(new.height, cur.height))) {
+#                        org_pObjects$active_panels$Height[index] <- new.height
+#                    }
+#                })
+#            })
+#        }
+#    }
+#
+#    ### Reorder/add/remove panels ###
+#    observeEvent(input$panel_order, {
+#        cur_active <- paste0(org_pObjects$active_panels$Type, org_pObjects$active_panels$ID)
+#        if (identical(input$panel_order, cur_active)) {
+#            return(NULL)
+#        }
+#
+#        m <- match(input$panel_order, cur_active)
+#        new_active_panels <- org_pObjects$active_panels[m,,drop=FALSE]
+#
+#        to_add <- is.na(m)
+#        if (any(to_add)) {
+#            enc_add <- .split_encoded(input$panel_order[to_add])
+#            new_active_panels[to_add,] <- data.frame(Type=enc_add$Type, ID=enc_add$ID,
+#                Width=4, Height=500L, stringsAsFactors=FALSE)
+#        }
+#
+#        org_pObjects$active_panels <- new_active_panels
+#        .increment_counter(org_rObjects$rerender)
+#    })
+#
+#    observeEvent(input$update_ui, {
+#        rObjects$active_panels <- org_pObjects$active_panels
+#    })
 
     invisible(NULL)
 }
@@ -1201,9 +1201,9 @@
         )
 
         for (id in seq_len(max_plots)) {
-            .createParamObservers(instance, id, se, input=input,
+            .createParamObservers(instance, se=se, input=input,
                 session=session, pObjects=pObjects, rObjects=rObjects)
-            .createRenderedOutput(instance, id, se=se, colormap=colormap,
+            .createRenderedOutput(instance, se=se, colormap=colormap,
                 output=output, pObjects=pObjects, rObjects=rObjects)
         }
     }
@@ -1468,8 +1468,8 @@
                 rowStatTable=RowStatTable()
             )
 
-            .createParamObservers(current, id, se=se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-            .createRenderedOutput(current, id, se=se, colormap=NULL, output=output, pObjects=pObjects, rObjects=rObjects)
+            .createParamObservers(current, se=se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+            .createRenderedOutput(current, se=se, colormap=NULL, output=output, pObjects=pObjects, rObjects=rObjects)
         }
     }
     return(NULL)
@@ -1743,8 +1743,8 @@
 
     max_plots <- nrow(pObjects$memory$heatMapPlot)
     for (id in seq_len(max_plots)) {
-        .createParamObservers(HeatMapPlot(), id, se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-        .createRenderedOutput(HeatMapPlot(), id, se, input=input, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
+        .createParamObservers(HeatMapPlot(), se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        .createRenderedOutput(HeatMapPlot(), se, input=input, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
     }
     invisible(NULL)
 }

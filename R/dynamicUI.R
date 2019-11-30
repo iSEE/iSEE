@@ -125,39 +125,25 @@
 #' @importFrom shiny actionButton fluidRow selectInput plotOutput uiOutput
 #' sliderInput tagList column radioButtons tags hr brushOpts
 #' selectizeInput checkboxGroupInput textAreaInput
-.panel_generation <- function(active_panels, memory, se) {
-
+.panel_generation <- function(memory, se) {
     collected <- list()
     counter <- 1L
     cumulative.width <- 0L
     cur.row <- list()
     row.counter <- 1L
 
-    for (i in seq_len(nrow(active_panels))) {
-        mode <- active_panels$Type[i]
-        id <- active_panels$ID[i]
-        panel_name <- paste0(mode, id)
-        panel_width <- active_panels$Width[i]
-        param_choices <- memory[[mode]][id,]
-        .input_FUN <- function(field) { paste0(panel_name, "_", field) }
+    for (i in seq_along(memory)) {
+        instance <- memory[[i]]
+        mode <- .getEncodedName(instance)
+        id <- instance[[.organizationId]]
+        .input_FUN <- function(field) paste0(mode, id, "_", field)
 
-        # This is a placeholder for the grand future when classes are directly specified as an iSEE() argument.
-        instance <- switch(mode, 
-            redDimPlot=RedDimPlot(),
-            featAssayPlot=FeatAssayPlot(),
-            colDataPlot=ColDataPlot(),
-            rowDataPlot=RowDataPlot(),
-            sampAssayPlot=SampAssayPlot(),
-            colStatTable=ColStatTable(),
-            rowStatTable=RowStatTable(),
-            heatMapPlot=HeatMapPlot()
-        ) 
-
-        obj <- .defineOutputElement(instance, id, height=active_panels$Height[i])
-        all.params <- .defineParamInterface(instance, id, param_choices=param_choices, se=se, active_panels=active_panels)
+        obj <- .defineOutputElement(instance)
+        all.params <- .defineParamInterface(instance, se=se, active_panels=memory)
         param <- do.call(tags$div, c(list(class="panel-group", role="tablist"), all.params))
 
         # Deciding whether to continue on the current row, or start a new row.
+        panel_width <- instance[[.organizationWidth]]
         extra <- cumulative.width + panel_width
         if (extra > 12L) {
             collected[[counter]] <- do.call(fluidRow, cur.row)
@@ -173,7 +159,7 @@
         cur_box <- do.call(box, c(
             list(obj, param),
             list(uiOutput(.input_FUN(.panelGeneralInfo)), uiOutput(.input_FUN(.panelLinkInfo))),
-            list(title=.decode_panel_name(mode, id), solidHeader=TRUE, width=NULL, status="danger")
+            list(title=paste(.getFullName(instance), id), solidHeader=TRUE, width=NULL, status="danger")
         ))
         cur_box <- .coerce_box_status(cur_box, mode)
         cur.row[[row.counter]] <- column(width=panel_width, cur_box, style='padding:3px;')
@@ -212,13 +198,19 @@
 #' @seealso
 #' \code{\link{.sanitize_memory}},
 #' \code{\link{.panel_generation}}
-.define_link_sources <- function(active_panels) {
-    all_names <- .decode_panel_name(active_panels$Type, active_panels$ID)
+.define_link_sources <- function(memory) {
+    all_names <- vapply(memory, .getFullName, "")
+
+    is_row_tab <- vapply(memory, FUN=is, class2="RowTable", TRUE)
+    is_col_tab <- vapply(memory, FUN=is, class2="ColumnTable", TRUE)
+    is_row_plot <- vapply(memory, FUN=is, class2="RowDotPlot", TRUE)
+    is_col_plot <- vapply(memory, FUN=is, class2="ColumnDotPlot", TRUE)
+
     list(
-        row_tab=all_names[active_panels$Type == "rowStatTable"],
-        col_tab=all_names[active_panels$Type == "colStatTable"],
-        row_plot=all_names[active_panels$Type %in% row_point_plot_types],
-        col_plot=all_names[active_panels$Type %in% col_point_plot_types]
+        row_tab=all_names[is_row_tab],
+        col_tab=all_names[is_col_tab],
+        row_plot=all_names[is_row_plot],
+        col_plot=all_names[is_col_plot]
     )
 }
 
@@ -295,10 +287,10 @@
 #' checkboxGroupInput
 #' @importFrom colourpicker colourInput
 .create_visual_box_for_column_plots <- function(mode, id, param_choices, active_row_tab, active_col_tab, se) {
-    covariates <- colnames(colData(se))
-    discrete_covariates <- .get_internal_info(se, "column_groupable")
-    numeric_covariates <- .get_internal_info(se, "column_numeric")
-    all_assays <- .get_internal_info(se, "all_assays")
+    covariates <- .get_common_info(se, "ColumnDotPlot")$valid.colData.names
+    discrete_covariates <- .get_common_info(se, "ColumnDotPlot")$discrete.colData.names
+    numeric_covariates <- .get_common_info(se, "ColumnDotPlot")$continuous.colData.names
+    all_assays <- .get_common_info(se, "DotPlot")$valid.assay.names
 
     colorby_field <- paste0(mode, id, "_", .colorByField)
     shapeby_field <- paste0(mode, id, "_", .shapeByField)
@@ -311,7 +303,7 @@
         open=param_choices[[.visualParamBoxOpen]],
         checkboxGroupInput(
             inputId=pchoice_field, label=NULL, inline=TRUE,
-            selected=param_choices[[.visualParamChoice]][[1]],
+            selected=param_choices[[.visualParamChoice]],
             choices=.define_visual_options(discrete_covariates, numeric_covariates)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoiceColorTitle,
@@ -382,7 +374,7 @@
                 sizeby_field, .sizeByNothingTitle,
                 numericInput(
                     paste0(mode, id, "_", .plotPointSize), label="Point size:",
-                    min=0, value=param_choices[,.plotPointSize])
+                    min=0, value=param_choices[[.plotPointSize]])
             ),
             .conditional_on_radio(
                 sizeby_field, .sizeByColDataTitle,
@@ -455,7 +447,7 @@
 .define_shape_options_for_column_plots <- function(se) {
     shape_choices <- .shapeByNothingTitle
 
-    col_groupable <- .get_internal_info(se, "column_groupable")
+    col_groupable <- .get_common_info(se, "ColumnDotPlot")$discrete.colData.names
 
     if (length(col_groupable)) {
         shape_choices <- c(shape_choices, .shapeByColDataTitle)
@@ -482,7 +474,7 @@
 .define_size_options_for_column_plots <- function(se) {
     size_choices <- .sizeByNothingTitle
 
-    col_numeric <- .get_internal_info(se, "column_numeric")
+    col_numeric <- .get_common_info(se, "ColumnDotPlot")$continuous.colData.names
 
     if (length(col_numeric)) {
         size_choices <- c(size_choices, .sizeByColDataTitle)
@@ -560,10 +552,10 @@
 #' checkboxGroupInput
 #' @importFrom colourpicker colourInput
 .create_visual_box_for_row_plots <- function(mode, id, param_choices, active_row_tab, active_col_tab, se) {
-    covariates <- colnames(rowData(se))
-    discrete_covariates <- .get_internal_info(se, "row_groupable")
-    numeric_covariates <- .get_internal_info(se, "row_numeric")
-    all_assays <- .get_internal_info(se, "all_assays")
+    covariates <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
+    discrete_covariates <- .get_common_info(se, "RowDotPlot")$discrete.rowData.names
+    numeric_covariates <- .get_common_info(se, "RowDotPlot")$continuous.rowData.names
+    all_assays <- .get_common_info(se, "DotPlot")$valid.assay.names
 
     colorby_field <- paste0(mode, id, "_", .colorByField)
     shapeby_field <- paste0(mode, id, "_", .shapeByField)
@@ -576,7 +568,7 @@
         open=param_choices[[.visualParamBoxOpen]],
         checkboxGroupInput(
             inputId=pchoice_field, label=NULL, inline=TRUE,
-            selected=param_choices[[.visualParamChoice]][[1]],
+            selected=param_choices[[.visualParamChoice]],
             choices=.define_visual_options(discrete_covariates, numeric_covariates)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoiceColorTitle,
@@ -647,7 +639,7 @@
                 sizeby_field, .sizeByNothingTitle,
                 numericInput(
                     paste0(mode, id, "_", .plotPointSize), label="Point size:",
-                    min=0, value=param_choices[,.plotPointSize])
+                    min=0, value=param_choices[[.plotPointSize]])
             ),
             .conditional_on_radio(
                 sizeby_field, .sizeByRowDataTitle,
@@ -734,7 +726,7 @@
     tagList(
         checkboxInput(
             rowId, label="Facet by row",
-            value=param_choices[, .facetByRow]),
+            value=param_choices[[.facetByRow]]),
         .conditional_on_check_solo(
             rowId, on_select=TRUE,
             selectInput(paste0(mode, id, "_", .facetRowsByColData), label=NULL,
@@ -742,7 +734,7 @@
         ),
         checkboxInput(
             columnId, label="Facet by column",
-            value=param_choices[, .facetByColumn]),
+            value=param_choices[[.facetByColumn]]),
         .conditional_on_check_solo(
             columnId, on_select=TRUE,
             selectInput(paste0(mode, id, "_", .facetColumnsByColData), label=NULL,
@@ -758,7 +750,7 @@
     tagList(
         checkboxInput(
             rowId, label="Facet by row",
-            value=param_choices[, .facetByRow]),
+            value=param_choices[[.facetByRow]]),
         .conditional_on_check_solo(
             rowId, on_select=TRUE,
             selectInput(
@@ -767,7 +759,7 @@
         ),
         checkboxInput(
             columnId, label="Facet by column",
-            value=param_choices[, .facetByColumn]),
+            value=param_choices[[.facetByColumn]]),
         .conditional_on_check_solo(
             columnId, on_select=TRUE,
             selectInput(paste0(mode, id, "_", .facetColumnsByRowData), label=NULL,
@@ -803,16 +795,16 @@
     tagList(
         sliderInput(
             paste0(mode, id, "_", .plotPointAlpha), label="Point opacity",
-            min=0.1, max=1, value=param_choices[,.plotPointAlpha]),
+            min=0.1, max=1, value=param_choices[[.plotPointAlpha]]),
         hr(),
         checkboxInput(
             ds_id, label="Downsample points for speed",
-            value=param_choices[,.plotPointDownsample]),
+            value=param_choices[[.plotPointDownsample]]),
         .conditional_on_check_solo(
             ds_id, on_select=TRUE,
             numericInput(
                 paste0(mode, id, "_", .plotPointSampleRes), label="Sampling resolution:",
-                min=1, value=param_choices[,.plotPointSampleRes])
+                min=1, value=param_choices[[.plotPointSampleRes]])
         )
     )
 }
@@ -823,11 +815,11 @@
     tagList(
         numericInput(
             paste0(mode, id, "_", .plotFontSize), label="Font size:",
-            min=0, value=param_choices[,.plotFontSize]),
+            min=0, value=param_choices[[.plotFontSize]]),
         radioButtons(
             paste0(mode, id, "_", .plotLegendPosition), label="Legend position:", inline=TRUE,
             choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
-            selected=param_choices[,.plotLegendPosition])
+            selected=param_choices[[.plotLegendPosition]])
     )
 }
 
@@ -873,7 +865,7 @@
     # initialize active "Delete" button only if a preconfigured selection history exists
     deleteFUN <- identity
     deleteLabel <- .buttonDeleteLabel
-    if (length(param_choices[[.multiSelectHistory]][[1L]]) == 0L) {
+    if (length(param_choices[[.multiSelectHistory]]) == 0L) {
         deleteFUN <- disabled
         deleteLabel <- .buttonEmptyHistoryLabel
     }
@@ -881,9 +873,8 @@
     # initialize active "Save" button only if a preconfigured active selection exists
     saveFUN <- identity
     saveLabel <- .buttonSaveLabel
-    cur_lasso <- param_choices[[.lassoData]][[1L]]
-    cur_brush <- param_choices[[.brushData]][[1L]]
-    if (is.null(cur_lasso) && is.null(cur_brush)) {
+    cur_brush <- param_choices[[.brushData]]
+    if (length(cur_brush)==0L) {
         saveFUN <- disabled
         saveLabel <- .buttonNoSelectionLabel
     }

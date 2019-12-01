@@ -128,6 +128,10 @@ collated[.selectByPlot] <- "character"
 collated[.selectMultiType] <- "character"
 collated[.selectMultiSaved] <- "integer"
 
+.multiSelectHistory <- "MultiSelectHistory"
+
+collated[.multiSelectHistory] <- "list"
+
 #' @export
 setClass("Panel", contains="VIRTUAL", slots=collated) 
 
@@ -169,10 +173,6 @@ collated[.sizeByField] <- "character"
 collated[.selectEffect] <- "character"
 collated[.selectColor] <- "character"
 collated[.selectTransAlpha] <- "numeric"
-
-.multiSelectHistory <- "MultiSelectHistory"
-
-collated[.multiSelectHistory] <- "list"
 
 .zoomData <- "ZoomData"
 .brushData <- "BrushData"
@@ -389,7 +389,6 @@ setClass("ColStatTable", contains="ColumnTable")
 .heatMapImportSource <- "FeatNameSource"
 .heatMapColData <- "ColData"
 .heatMapColDataBoxOpen <- "ColDataBoxOpen"
-.heatMapColorBoxOpen <- "ColorBoxOpen"
 .heatMapCenterScale <- "CenterScale"
 .heatMapLower <- "Lower"
 .heatMapUpper <- "Upper"
@@ -402,7 +401,6 @@ collated[.heatMapFeatNameBoxOpen] <- "logical"
 collated[.heatMapImportSource] <- "character"
 collated[.heatMapColData] <- "character"
 collated[.heatMapColDataBoxOpen] <- "logical"
-collated[.heatMapColorBoxOpen] <- "logical"
 collated[.heatMapCenterScale] <- "character"
 collated[.heatMapLower] <- "numeric"
 collated[.heatMapUpper] <- "numeric"
@@ -416,6 +414,11 @@ collated[.selectEffect] <- "character"
 collated[.selectColor] <- "character"
 collated[.selectTransAlpha] <- "numeric"
 
+.zoomData <- "ZoomData"
+.brushData <- "BrushData"
+
+collated[.zoomData] <- "numeric"
+collated[.brushData] <- "list"
 
 #' @export
 setClass("HeatMapPlot", contains="Panel", slots=collated)

@@ -55,10 +55,14 @@ HeatMapPlot <- function() {
 setMethod("initialize", "HeatMapPlot", function(.Object, ...) {
     .Object <- callNextMethod(.Object, ...)
     .Object <- .empty_default(.Object, .heatMapAssay)
+    .Object <- .empty_default(.Object, .heatMapFeatName)
     .Object <- .empty_default(.Object, .heatMapFeatNameBoxOpen, FALSE)
+
     .Object <- .empty_default(.Object, .heatMapImportSource, .noSelection)
+
+    .Object <- .empty_default(.Object, .heatMapColData)
     .Object <- .empty_default(.Object, .heatMapColDataBoxOpen, FALSE)
-    .Object <- .empty_default(.Object, .heatMapColorBoxOpen, FALSE)
+
     .Object <- .empty_default(.Object, .heatMapCenterScale, .heatMapCenterTitle)
     .Object <- .empty_default(.Object, .heatMapLower, -Inf)
     .Object <- .empty_default(.Object, .heatMapUpper, Inf)
@@ -77,18 +81,12 @@ setMethod("initialize", "HeatMapPlot", function(.Object, ...) {
 setValidity2("HeatMapPlot", function(object) {
     msg <- character(0)
 
-    for (box in c(.heatMapFeatNameBoxOpen, .heatMapColDataBoxOpen, .heatMapColorBoxOpen)) {
-        if (length(val <- object[[box]])!=1L || is.na(val)) {
-            msg <- c(msg, sprintf("'%s' should be a non-NA logical scalar for '%s'", box, class(object)[1]))
-        }
-    }
+    msg <- .valid_logical_error(msg, object, 
+        fields=c(.heatMapFeatNameBoxOpen, .heatMapColDataBoxOpen))
 
     # Checks for the numeric limits.
-    for (lim in c(.heatMapLower, .heatMapUpper) ){
-        if (length(val <- object[[lim]])!=1L || is.na(val)) {
-            msg <- c(msg, sprintf("'%s' should be a non-NA numeric scalar for '%s'", lim, class(object)[1]))
-        }
-    }
+    msg <- .valid_number_error(msg, object, .heatMapLower)
+    msg <- .valid_number_error(msg, object, .heatMapUpper)
 
     if (object[[.heatMapLower]] >= object[[.heatMapUpper]]) {
         msg <- c(msg, sprintf("'%s' should have a lower value than '%s' for '%s'",
@@ -96,25 +94,14 @@ setValidity2("HeatMapPlot", function(object) {
     }
 
     # Checks for the assorted string fields.
-    for (field in c(.heatMapAssay, .heatMapImportSource, .heatMapCenteredColors)) {
-        if (!isSingleString(object[[field]])) {
-            msg <- c(msg, sprintf("'%s' should be a single string for '%s'", field, class(object)[1]))
-        }
-    }
+    msg <- .single_string_error(msg, object, .heatMapAssay)
 
-    for (field in c(.heatMapImportSource, .heatMapCenteredColors)) {
-        if (is.na(object[[field]])) {
-            msg <- c(msg, sprintf("'%s' should be a non-NA string for '%s'", field, class(object)[1]))
-        }
-    }
+    msg <- .valid_string_error(msg, object, 
+        c(.heatMapImportSource, .heatMapCenteredColors))
 
     # Checks for centering/scaling.
-    choices <- object[[.heatMapCenterScale]]
-    allowable <- c(.heatMapCenterTitle, .heatMapScaleTitle)
-    if (any(!choices %in% allowable)) {
-        msg <- c(msg, sprintf("values in '%s' should only contain %s", .heatMapCenterScale,
-            paste(sprintf("'%s'", allowable), collapse=", ")))
-    }
+    msg <- .multiple_choice_error(msg, object, .heatMapCenterScale,
+        c(.heatMapCenterTitle, .heatMapScaleTitle))
 
     msg <- .allowable_choice_error(msg, object, .selectEffect,
         c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle))
@@ -166,16 +153,15 @@ setMethod(".refineParameters", "HeatMapPlot", function(x, se) {
         return(NULL)
     }
 
-    assay_choice <- x[[.heatMapAssay]]
-    if (is.na(assay_choice) || !assay_choice %in% all_assays) {
-        x[[.heatMapAssay]] <- all_assays[1]
-    }
-
+    x <- .replace_na_with_first(x, .heatMapFeatName, rownames(se))
     feat_choice <- x[[.heatMapFeatName]]
     x[[.heatMapFeatName]] <- feat_choice[feat_choice %in% rownames(se)]
 
-    cov_choice <- x[[.heatMapColData]]
+    x <- .replace_na_with_first(x, .heatMapAssay, all_assays)
+
     column_covariates <- .get_common_info(se, "HeatMapPlot")$valid.colData.names
+    x <- .replace_na_with_first(x, .heatMapColData, column_covariates)
+    cov_choice <- x[[.heatMapColData]]
     x[[.heatMapColData]] <- cov_choice[cov_choice %in% column_covariates]
 
     x
@@ -205,8 +191,9 @@ setMethod(".defineParamInterface", "HeatMapPlot", function(x, se, active_panels)
     plot_name <- paste0(mode, id)
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
-    column_covariates <- colnames(colData(se))
-    all_assays <- .get_internal_info(se, "all_assays")
+    common_info <- .get_common_info(se, "HeatMapPlot")
+    all_assays <- common_info$valid.assay.names
+    column_covariates <- common_info$valid.colData.names
     link_sources <- .define_link_sources(active_panels)
     heatmap_sources <- c(.customSelection, link_sources$row_plot, link_sources$row_tab)
     col_selectable <- c(.noSelection, link_sources$col_plot)
@@ -233,7 +220,7 @@ setMethod(".defineParamInterface", "HeatMapPlot", function(x, se, active_panels)
             hr(),
             checkboxGroupInput(
                 .input_FUN(.heatMapCenterScale), label="Expression values are:",
-                selected=x[[.heatMapCenterScale]][[1]],
+                selected=x[[.heatMapCenterScale]],
                 choices=c(.heatMapCenterTitle, .heatMapScaleTitle), inline=TRUE),
             numericInput(
                 .input_FUN(.heatMapLower), label="Lower bound:",
@@ -257,7 +244,7 @@ setMethod(".defineParamInterface", "HeatMapPlot", function(x, se, active_panels)
                 label="Column data:",
                 choices=column_covariates,
                 multiple=TRUE,
-                selected=x[[.heatMapColData]][[1]],
+                selected=x[[.heatMapColData]],
                 options=list(plugins=list('remove_button', 'drag_drop'))),
             plotOutput(.input_FUN(.heatMapLegend))
         ),
@@ -271,68 +258,53 @@ setMethod(".createParamObservers", "HeatMapPlot", function(x, se, input, session
     id <- x[[.organizationId]]
     plot_name <- paste0(mode, id)
 
-    .define_box_observers(mode, id, c(.heatMapFeatNameBoxOpen, .heatMapColDataBoxOpen, .selectParamBoxOpen), input, pObjects)
+    rObjects[[paste0(plot_name, "_", .heatMapLegend)]] <- 1L
 
-    .define_plot_parameter_observers(mode, id,
-        protected=character(0),
-        nonfundamental=c(.heatMapAssay, .heatMapLower, .heatMapUpper, .heatMapCenteredColors),
+    .define_box_observers(plot_name, c(.heatMapFeatNameBoxOpen, .heatMapColDataBoxOpen, .selectParamBoxOpen), input, pObjects)
+
+    .define_nonfundamental_parameter_observers(plot_name,
+        fields=c(.heatMapAssay, .heatMapLower, .heatMapUpper, .heatMapCenteredColors,
+            .heatMapFeatName, .heatMapColData),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_heatmap_import_observer(mode, id, se, input, session, pObjects, rObjects)
+    # Don't ignore empty inputs.
+    .define_nonfundamental_parameter_observers(plot_name, fields=.heatMapCenterScale,
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects, ignoreNULL=FALSE)
 
-    .create_heatmap_feature_observers(mode, id, se, input, session, pObjects, rObjects)
+    .create_heatmap_import_observer(plot_name, .getFullName(x), se, input, session, pObjects, rObjects)
 
-    .create_heatmap_button_observers(mode, id, se, input, session, pObjects, rObjects)
+    .create_heatmap_feature_observers(plot_name, se, input, session, pObjects, rObjects)
+
+    .define_selectize_update_observer(plot_name, .heatMapFeatName,
+        choices=rownames(se), selected=x[[.heatMapFeatName]],
+        session=session, rObjects=rObjects)
+
+    .create_heatmap_button_observers(plot_name, se, input, session, pObjects, rObjects)
 
     # Updating the import source, but this does NOT trigger replotting, as we need to press the button.
     cur_field <- paste0(plot_name, "_", .heatMapImportSource)
     observeEvent(input[[cur_field]], {
-        matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode]][[.heatMapImportSource]]))
-        if (identical(input[[cur_field]], pObjects$memory[[mode]][id, .heatMapImportSource])) {
+        matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[plot_name]][[.heatMapImportSource]]))
+        if (identical(input[[cur_field]], pObjects$memory[[plot_name]][[.heatMapImportSource]])) {
             return(NULL)
         }
-        pObjects$memory[[mode]][[.heatMapImportSource]][id] <- matched_input
+        pObjects$memory[[plot_name]][[.heatMapImportSource]] <- matched_input
     }, ignoreInit=TRUE)
-
-    # Saving list-based values.
-    # TODO: generalize .define_plot_parameter_observers to be able to handle this kind of stuff.
-    for (field in c(.heatMapColData, .heatMapFeatName, .heatMapCenterScale)) {
-        local({
-            field0 <- field
-            cur_field <- paste0(plot_name, "_", field0)
-
-            observeEvent(input[[cur_field]], {
-                existing <- pObjects$memory[[mode]][,field0][[id]]
-                incoming <- as(input[[cur_field]], typeof(existing))
-                if (identical(incoming, existing)) {
-                    return(NULL)
-                }
-                pObjects$memory[[mode]] <- .update_list_element(pObjects$memory[[mode]], id, field0, incoming)
-                rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-            }, ignoreInit=TRUE, ignoreNULL=(field0==.heatMapFeatName))
-
-            # ignoreNULL necessary for FeatName where updateSelectize generates a temporary NULL;
-            # this would trigger re-rendering of the plot upon re-rendering of the UI.
-        })
-    }
 })
 
 #' @importFrom shiny observeEvent fluidRow column actionButton modalDialog showModal
 #' @importFrom shinyAce aceEditor
-.create_heatmap_import_observer <- function(mode, id, se, input, session, pObjects, rObjects) {
-    feature_choices <- seq_len(nrow(se))
-    names(feature_choices) <- rownames(se)
-
-    plot_name <- paste0(mode, id)
+.create_heatmap_import_observer <- function(plot_name, full_name, se, input, session, pObjects, rObjects) {
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
     import_button <- .input_FUN(.heatMapImportFeatures)
     observeEvent(input[[import_button]], {
-        origin <- pObjects$memory[[mode]][id, .heatMapImportSource]
+        origin <- pObjects$memory[[plot_name]][[.heatMapImportSource]]
+
         if (origin == .customSelection) {
-            current_choices <- rownames(se)[pObjects$memory[[mode]][[.heatMapFeatName]][[id]]]
+            current_choices <- pObjects$memory[[plot_name]][[.heatMapFeatName]]
             showModal(modalDialog(
-                title=sprintf("Features for %s", .decode_panel_name(mode, id)),
+                title=sprintf("Features for %s", full_name),
                 size="l", fade=TRUE,
                 footer=NULL, easyClose=TRUE,
                 fluidRow(
@@ -387,21 +359,17 @@ setMethod(".createParamObservers", "HeatMapPlot", function(x, se, input, session
             incoming <- head(incoming, limit)
         }
 
-        combined <- union(pObjects$memory[[mode]][id, .heatMapFeatName][[1]], incoming)
+        combined <- union(pObjects$memory[[plot_name]][[.heatMapFeatName]], incoming)
         updateSelectizeInput(
-            session, .input_FUN(.heatMapFeaturesTextInput), choices=feature_choices,
+            session, .input_FUN(.heatMapFeaturesTextInput), choices=rownames(se),
             server=TRUE, selected=combined)
     }, ignoreInit=TRUE)
 }
 
 #' @importFrom shiny updateSelectizeInput observeEvent
 #' @importFrom shinyAce updateAceEditor
-.create_heatmap_feature_observers <- function(mode, id, se, input, session, pObjects, rObjects) {
-    plot_name <- paste0(mode, id)
+.create_heatmap_feature_observers <- function(plot_name, se, input, session, pObjects, rObjects) {
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
-
-    feature_choices <- seq_len(nrow(se))
-    names(feature_choices) <- rownames(se)
 
     .get_feature_names_from_input <- function() {
         # Split the input field value into a character vector
@@ -410,11 +378,11 @@ setMethod(".createParamObservers", "HeatMapPlot", function(x, se, input, session
 
     observeEvent(input[[.input_FUN(.heatMapFeaturesTextSubmit)]], {
         submitted_names <- .get_feature_names_from_input()
-        matched_ids <- unique(setdiff(feature_choices[submitted_names], NA))
+        matched_ids <- intersect(submitted_names, rownames(se))
         updateSelectizeInput(
-            session, .input_FUN(.heatMapFeatName), choices=feature_choices,
+            session, .input_FUN(.heatMapFeatName), choices=rownames(se),
             server=TRUE, selected=matched_ids)
-        new_value <- paste0(c(rownames(se)[matched_ids], ""), collapse="\n")
+        new_value <- paste0(c(matched_ids, ""), collapse="\n")
         updateAceEditor(
             session, .input_FUN(.heatMapFeaturesTextInput),
             value=new_value)
@@ -425,7 +393,7 @@ setMethod(".createParamObservers", "HeatMapPlot", function(x, se, input, session
         input_filepath <- input[[.input_FUN(.heatMapFeaturesFileInput)]][["datapath"]]
         names_from_file <- tryCatch(
             scan(file=input_filepath, what="character"),
-            error=function(err){paste0("Could not read file\n", conditionMessage(err))}
+            error=function(err){paste0("Could not read file\n", conditionMessage(err))} # TODO: should be a notification.
         )
         new_names <- c(current_names, names_from_file)
         updateAceEditor(
@@ -435,17 +403,12 @@ setMethod(".createParamObservers", "HeatMapPlot", function(x, se, input, session
 }
 
 #' @importFrom shiny observeEvent updateSelectizeInput
-.create_heatmap_button_observers <- function(mode, id, se, input, session, pObjects, rObjects) {
-    plot_name <- paste0(mode, id)
-
-    feature_choices <- seq_len(nrow(se))
-    names(feature_choices) <- rownames(se)
-
+.create_heatmap_button_observers <- function(plot_name, se, input, session, pObjects, rObjects) {
     # Triggering an update of the selected elements : clear features, trigger replotting (caught by validate)
     clear_button <- paste0(plot_name, "_", .heatMapClearFeatures)
     observeEvent(input[[clear_button]], {
-        pObjects$memory[[mode]][[.heatMapFeatName]][[id]] <- integer()
-        updateSelectizeInput(session, paste0(plot_name, "_", .heatMapFeatName), choices=feature_choices,
+        pObjects$memory[[plot_name]][[.heatMapFeatName]] <- integer()
+        updateSelectizeInput(session, paste0(plot_name, "_", .heatMapFeatName), choices=rownames(se),
             server=TRUE, selected=integer())
         rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
     }, ignoreInit=TRUE)
@@ -454,16 +417,16 @@ setMethod(".createParamObservers", "HeatMapPlot", function(x, se, input, session
     cluster_button <- paste0(plot_name, "_", .heatMapCluster)
     observeEvent(input[[cluster_button]], {
         emat <- pObjects$coordinates[[plot_name]]
-        new_order <- match(.cluster_genes(emat), names(feature_choices))
         updateSelectizeInput(
-            session, paste0(plot_name, "_", .heatMapFeatName), choices=feature_choices,
-            server=TRUE, selected=new_order)
+            session, paste0(plot_name, "_", .heatMapFeatName), choices=rownames(se),
+            server=TRUE, selected=.cluster_genes(emat))
     })
 }
 
 #' @export
-setMethod(".defineOutputElement", "HeatMapPlot", function(x, id) {
+setMethod(".defineOutputElement", "HeatMapPlot", function(x) {
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
     .create_plot_ui(mode, id, brush_direction="x",
         height=x[[.organizationHeight]],
         brush_fill=brush_fill_color[mode],
@@ -479,8 +442,9 @@ setMethod(".getFullName", "HeatMapPlot", function(x) "Heatmap")
 
 #' @export
 #' @importFrom shiny renderPlot renderUI renderTable
-setMethod(".createRenderedOutput", "HeatMapPlot", function(x, id, se, colormap, output, pObjects, rObjects) {
+setMethod(".createRenderedOutput", "HeatMapPlot", function(x, se, colormap, output, pObjects, rObjects) {
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]] 
     plot_name <- paste0(mode, id)
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
@@ -491,7 +455,7 @@ setMethod(".createRenderedOutput", "HeatMapPlot", function(x, id, se, colormap, 
         force(rObjects[[plot_name]])
         rObjects[[legend_field]] <- .increment_counter(isolate(rObjects[[legend_field]]))
 
-        p.out <- .make_heatMapPlot(id, pObjects$memory, pObjects$coordinates, se, colormap)
+        p.out <- .make_heatMapPlot(pObjects$memory[[plot_name]], pObjects$memory, pObjects$coordinates, se, colormap)
         pObjects$commands[[plot_name]] <- p.out$cmd_list
         pObjects$coordinates[[plot_name]] <- p.out$xy # Caching the expression matrix.
         pObjects$cached_info[[plot_name]] <- p.out$legends # Caching the legend plot for downstream use.

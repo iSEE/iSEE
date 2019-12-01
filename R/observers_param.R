@@ -80,7 +80,9 @@
 #'
 #' @rdname INTERNAL_define_plot_parameter_observers
 #' @importFrom shiny observeEvent
-.define_nonfundamental_parameter_observers <- function(plot_name, fields, input, session, pObjects, rObjects) {
+.define_nonfundamental_parameter_observers <- function(plot_name, fields, input, session, pObjects, rObjects,
+    ignoreInit=TRUE, ignoreNULL=TRUE) 
+{
     for (field in fields) {
         local({
             field0 <- field
@@ -93,7 +95,7 @@
                 }
                 pObjects$memory[[plot_name]][[field0]] <- matched_input
                 rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-            }, ignoreInit=TRUE)
+            }, ignoreInit=ignoreInit, ignoreNULL=ignoreNULL)
         })
     }
 
@@ -102,7 +104,9 @@
 
 #' @rdname INTERNAL_define_plot_parameter_observers
 #' @importFrom shiny observeEvent
-.define_protected_parameter_observers <- function(plot_name, fields, input, session, pObjects, rObjects) {
+.define_protected_parameter_observers <- function(plot_name, fields, input, session, pObjects, rObjects,
+    ignoreInit=TRUE, ignoreNULL=TRUE) 
+{
     for (field in fields) {
         local({
             field0 <- field
@@ -115,7 +119,7 @@
                 }
                 pObjects$memory[[plot_name]][[field0]] <- matched_input
                 .regenerate_unselected_plot(plot_name, pObjects, rObjects)
-             }, ignoreInit=TRUE)
+            }, ignoreInit=ignoreInit, ignoreNULL=ignoreNULL)
         })
     }
 

@@ -35,14 +35,13 @@
 #' @importFrom cowplot get_legend plot_grid
 #' @importFrom reshape2 melt
 #' @importFrom dplyr arrange
-.make_heatMapPlot <- function(id, all_memory, all_coordinates, se, colormap) {
-    param_choices <- all_memory$heatMapPlot[id,]
+.make_heatMapPlot <- function(param_choices, all_memory, all_coordinates, se, colormap) {
     eval_env <- new.env()
     eval_env$se <- se
     eval_env$colormap <- colormap
     eval_env$all_coordinates <- all_coordinates
 
-    genes_selected_y <- param_choices[[.heatMapFeatName]][[1]]
+    genes_selected_y <- param_choices[[.heatMapFeatName]]
     validate(need(
         length(genes_selected_y) > 0L,
         sprintf("At least one feature needed for heat map")
@@ -52,14 +51,14 @@
     # Extract genes to be included and melt the matrix to long format
     data_cmds <- .initialize_cmd_store()
     data_cmds <- .add_command(data_cmds, c(
-      sprintf("value.mat <- as.matrix(assay(se, %i)[%s, , drop=FALSE]);",
-              assay_choice, paste(deparse(genes_selected_y), collapse="\n")),
+      sprintf("value.mat <- as.matrix(assay(se, %s)[%s, , drop=FALSE]);",
+              deparse(assay_choice), paste(deparse(genes_selected_y), collapse="\n")),
       "plot.data <- reshape2::melt(value.mat, varnames=c('Y', 'X'));",
       "plot.data$Y <- factor(plot.data$Y, rev(rownames(value.mat)))"
     ))
 
     # Arrange cells according to the selected colData columns
-    orderBy <- param_choices[[.heatMapColData]][[1]]
+    orderBy <- param_choices[[.heatMapColData]]
     validate(need(
         length(orderBy) > 0L,
         sprintf("At least one column annotation needed for heat map")
@@ -113,10 +112,10 @@
     # Deciding whether to center and scale each row.
     # We do this here instead of using scale(), as this must be done after selection (if restricting).
     censcal_cmds <- .initialize_cmd_store()
-    if (.heatMapCenterTitle %in% param_choices[[.heatMapCenterScale]][[1]]) {
+    if (.heatMapCenterTitle %in% param_choices[[.heatMapCenterScale]]) {
         censcal_cmds <- .add_command(censcal_cmds, "plot.data$value <- plot.data$value - ave(plot.data$value, plot.data$Y);", name='centering')
     }
-    if (.heatMapScaleTitle %in% param_choices[[.heatMapCenterScale]][[1]]) {
+    if (.heatMapScaleTitle %in% param_choices[[.heatMapCenterScale]]) {
         # We don't use sd() for scaling, to mimic scale().
         censcal_cmds <- .add_command(censcal_cmds, "gene.var <- ave(plot.data$value, plot.data$Y, FUN=function(x) { sum(x^2)/(length(x)-1) });", name='gene.var')
         censcal_cmds <- .add_command(censcal_cmds, "plot.data$value <- plot.data$value/sqrt(gene.var);", name='scaling')
@@ -124,8 +123,8 @@
     censcal_cmds <- .evaluate_commands(censcal_cmds, eval_env)
 
     # Define zoom command. Transform the ranges given by zoomData to the actual coordinates in the heatmap
-    bounds <- param_choices[[.zoomData]][[1]]
-    if (!is.null(bounds)) {
+    bounds <- param_choices[[.zoomData]]
+    if (length(bounds)) {
         zoom_cmds <- sprintf("plot.data <- subset(plot.data, Y %%in%% rownames(value.mat)[c(%s)]); # zooming in",
                              paste0(bounds, collapse=","))
         .text_eval(zoom_cmds, eval_env)
@@ -252,7 +251,7 @@
                     max.obs, param_choices[[.heatMapUpper]], finite=TRUE, na.rm=TRUE)
 
     # Get values to define range of colors
-    centered <- .heatMapCenterTitle %in% param_choices[[.heatMapCenterScale]][[1]]
+    centered <- .heatMapCenterTitle %in% param_choices[[.heatMapCenterScale]]
     break.vec <- .get_colorscale_limits(min.value=min.obs, max.value=max.obs,
                                         lower.bound=param_choices[[.heatMapLower]],
                                         upper.bound=param_choices[[.heatMapUpper]],

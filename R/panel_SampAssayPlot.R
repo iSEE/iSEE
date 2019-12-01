@@ -144,9 +144,8 @@ setMethod(".defineParamInterface", "SampAssayPlot", function(x, se, active_panel
     link_sources <- .define_link_sources(active_panels)
     tab_by_col <- c(.noSelection, link_sources$col_tab)
 
-    common_info <- .get_common_info(se, "SampAssayPlot")
-    row_covariates <- common_info$covariates
-    all_assays <- common_info$assays
+    row_covariates <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
+    all_assays <- .get_common_info(se, "DotPlot")$valid.assay.names
 
     xaxis_choices <- c(.sampAssayXAxisNothingTitle)
     if (length(row_covariates)) { # As it is possible for this plot to be _feasible_ but for no row data to exist.
@@ -201,20 +200,17 @@ setMethod(".defineParamInterface", "SampAssayPlot", function(x, se, active_panel
 setMethod(".createParamObservers", "SampAssayPlot", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
+    plot_name <- paste0(mode, id)
 
-    .define_box_observers(mode, id, .dataParamBoxOpen, input, pObjects)
+    .define_box_observers(plot_name, .dataParamBoxOpen, input, pObjects)
 
-    .define_plot_parameter_observers(mode, id,
-        protected=c(.sampAssayAssay, .sampAssayXAxisRowData),
-        nonfundamental=character(0),
+    .define_protected_parameter_observers(plot_name,
+        fields=c(.sampAssayAssay, .sampAssayXAxisRowData),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    sample_choices <- seq_len(ncol(se))
-    names(sample_choices) <- colnames(se)
-
-    .define_dim_name_observer(mode, id,
+    .define_dim_name_observer(plot_name,
         name_field=.sampAssayXAxisSampName,
-        choices=sample_choices,
+        choices=colnames(se),
         in_use_field=.sampAssayXAxis,
         in_use_value=.sampAssayXAxisSampNameTitle,
         is_protected=TRUE,
@@ -222,15 +218,23 @@ setMethod(".createParamObservers", "SampAssayPlot", function(x, se, input, sessi
         link_type="xaxis",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_dim_name_observer(mode, id,
+    .define_dim_name_observer(plot_name,
         name_field=.sampAssayYAxisSampName,
-        choices=sample_choices,
+        choices=colnames(se),
         in_use_field=NA,
         in_use_value=NA,
         is_protected=TRUE,
         table_field=.sampAssayYAxisColTable,
         link_type="yaxis",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
+    .define_selectize_update_observer(plot_name, .sampAssayYAxisSampName,
+        choices=colnames(se), selected=x[[.sampAssayYAxisSampName]],
+        session=session, rObjects=rObjects)
+
+    .define_selectize_update_observer(plot_name, .sampAssayXAxisSampName,
+        choices=colnames(se), selected=x[[.sampAssayXAxisSampName]],
+        session=session, rObjects=rObjects)
 
     callNextMethod()
 })

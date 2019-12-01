@@ -240,8 +240,7 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.extract_plotting_data}}
 #'
 #' @importFrom SummarizedExperiment rowData
-.make_rowDataPlot <- function(id, all_memory, all_coordinates, se, colormap) {
-    param_choices <- all_memory$rowDataPlot[id,]
+.make_rowDataPlot <- function(param_choices, all_memory, all_coordinates, se, colormap) {
     data_cmds <- list()
     y_lab <- param_choices[[.rowDataYAxis]]
 
@@ -296,8 +295,7 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.extract_plotting_data}}
 #'
 #' @importFrom SummarizedExperiment rowData
-.make_sampAssayPlot <- function(id, all_memory, all_coordinates, se, colormap) {
-    param_choices <- all_memory$sampAssayPlot[id,]
+.make_sampAssayPlot <- function(param_choices, all_memory, all_coordinates, se, colormap) {
     data_cmds <- list()
 
     samp_selected_y <- param_choices[[.sampAssayYAxisSampName]]

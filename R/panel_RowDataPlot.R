@@ -125,7 +125,7 @@ setMethod(".defineParamInterface", "RowDataPlot", function(x, se, active_panels)
     panel_name <- paste0(mode, id)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
-    row_covariates <- .get_common_info(se, "RowDataPlot")$valid.rowData.names
+    row_covariates <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
 
     plot.param <- list(
         selectInput(.input_FUN(.rowDataYAxis),
@@ -153,13 +153,14 @@ setMethod(".defineParamInterface", "RowDataPlot", function(x, se, active_panels)
 setMethod(".createParamObservers", "RowDataPlot", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
+    plot_name <- paste0(mode, id)
 
-    .define_box_observers(mode, id, .dataParamBoxOpen, input, pObjects)
+    .define_box_observers(plot_name, .dataParamBoxOpen, input, pObjects)
 
-    .define_plot_parameter_observers(mode, id,
-        protected=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData),
-        nonfundamental=character(0),
+    .define_protected_parameter_observers(plot_name,
+        fields=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
     callNextMethod()
 })
 

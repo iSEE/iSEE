@@ -32,6 +32,10 @@ setMethod("initialize", "RowDotPlot", function(.Object, ...) {
     .Object <- .empty_default(.Object, .colorBySampNameAssay)
     .Object <- .empty_default(.Object, .colorByFeatNameColor, "red")
 
+    .Object <- .empty_default(.Object, .shapeByRowData)
+
+    .Object <- .empty_default(.Object, .sizeByRowData)
+
     .Object
 })
 
@@ -102,7 +106,7 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
 
     x <- .replace_na_with_first(x, .shapeByRowData, discrete)
 
-    continuous <- cdp_cached$continuous.rowData.names
+    continuous <- rdp_cached$continuous.rowData.names
     x <- .replace_na_with_first(x, .sizeByRowData, continuous)
 
     x
@@ -128,11 +132,12 @@ setMethod(".defineParamInterface", "RowDotPlot", function(x, se, active_panels) 
 setMethod(".createParamObservers", "RowDotPlot", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
+    plot_name <- paste0(mode, id)
 
-    .define_plot_parameter_observers(mode, id,
-        protected=character(0),
-        nonfundamental=c(.colorByRowData, .colorBySampNameAssay,
+    .define_nonfundamental_parameter_observers(plot_name,
+        fields=c(.colorByRowData, .colorBySampNameAssay,
             .shapeByRowData, .sizeByRowData, .colorByFeatNameColor),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
     callNextMethod()
 })

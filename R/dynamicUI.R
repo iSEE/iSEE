@@ -310,7 +310,7 @@
             hr(),
             radioButtons(
                 colorby_field, label="Color by:", inline=TRUE,
-                choices=.define_color_options_for_column_plots(se),
+                choices=.define_color_options_for_column_plots(se, covariates, all_assays),
                 selected=param_choices[[.colorByField]]
             ),
             .conditional_on_radio(
@@ -326,7 +326,8 @@
             .conditional_on_radio(
                 colorby_field, .colorByFeatNameTitle,
                 tagList(
-                    selectizeInput(paste0(mode, id, "_", .colorByFeatName), label=NULL, choices=NULL, selected=NULL, multiple=FALSE),
+                    selectizeInput(paste0(mode, id, "_", .colorByFeatName), label=NULL, 
+                        choices=NULL, selected=NULL, multiple=FALSE),
                     selectInput(
                         paste0(mode, id, "_", .colorByFeatNameAssay), label=NULL,
                         choices=all_assays, selected=param_choices[[.colorByFeatNameAssay]])),
@@ -336,7 +337,8 @@
             ),
             .conditional_on_radio(colorby_field, .colorBySampNameTitle,
                 tagList(
-                    selectizeInput(paste0(mode, id, "_", .colorBySampName), label=NULL, selected=NULL, choices=NULL, multiple=FALSE),
+                    selectizeInput(paste0(mode, id, "_", .colorBySampName), 
+                        label=NULL, selected=NULL, choices=NULL, multiple=FALSE),
                     selectInput(
                         paste0(mode, id, "_", .colorByColTable), label=NULL, choices=active_col_tab,
                         selected=.choose_link(param_choices[[.colorByColTable]], active_col_tab, force_default=TRUE)),
@@ -349,7 +351,7 @@
             hr(),
             radioButtons(
                 shapeby_field, label="Shape by:", inline=TRUE,
-                choices=.define_shape_options_for_column_plots(se),
+                choices=c(.shapeByNothingTitle, if (length(discrete_covariates)) .shapeByColDataTitle),
                 selected=param_choices[[.shapeByField]]
             ),
             .conditional_on_radio(
@@ -367,7 +369,7 @@
             hr(),
             radioButtons(
                 sizeby_field, label="Size by:", inline=TRUE,
-                choices=.define_size_options_for_column_plots(se),
+                choices=c(.sizeByNothingTitle, if (length(numeric_covariates)) .sizeByColDataTitle),
                 selected=param_choices[[.sizeByField]]
             ),
             .conditional_on_radio(
@@ -379,7 +381,7 @@
             .conditional_on_radio(
                 sizeby_field, .sizeByColDataTitle,
                 selectInput(paste0(mode, id, "_", .sizeByColData), label=NULL,
-                            choices=numeric_covariates, selected=param_choices[[.sizeByColData]])
+                    choices=numeric_covariates, selected=param_choices[[.sizeByColData]])
             ),
             .add_point_UI_elements(mode, id, param_choices)),
         .conditional_on_check_group(
@@ -415,72 +417,18 @@
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_define_color_options
-.define_color_options_for_column_plots <- function(se) {
+.define_color_options_for_column_plots <- function(se, covariates, assay_names) {
     color_choices <- .colorByNothingTitle
-    if (ncol(colData(se))) {
+    if (length(covariates)) {
         color_choices <- c(color_choices, .colorByColDataTitle)
     }
-    if (nrow(se) && length(assayNames(se))) {
+    if (nrow(se) && length(assay_names)) {
         color_choices <- c(color_choices, .colorByFeatNameTitle)
     }
     if (ncol(se)) {
         color_choices <- c(color_choices, .colorBySampNameTitle)
     }
-    return(color_choices)
-}
-
-#' Define shaping options
-#'
-#' Define the available shaping options for row- or column-based plots,
-#' where availability is defined on the presence of the appropriate data in a SingleCellExperiment object.
-#'
-#' @param se A SingleCellExperiment object.
-#'
-#' @details
-#' Shaping by column data is not available if no column data exists in \code{se} - same for the row data.
-#' For column plots, we have an additional requirement that there must also be assays in \code{se} to shape by features.
-#'
-#' @return A character vector of available shaping modes, i.e., nothing or by column/row data
-#'
-#' @author Kevin Rue-Albrecht
-#' @rdname INTERNAL_define_shape_options
-.define_shape_options_for_column_plots <- function(se) {
-    shape_choices <- .shapeByNothingTitle
-
-    col_groupable <- .get_common_info(se, "ColumnDotPlot")$discrete.colData.names
-
-    if (length(col_groupable)) {
-        shape_choices <- c(shape_choices, .shapeByColDataTitle)
-    }
-
-    return(shape_choices)
-}
-
-#' Define sizing options
-#'
-#' Define the available sizing options for row- or column-based plots,
-#' where availability is defined on the presence of the appropriate data in a SingleCellExperiment object.
-#'
-#' @param se A SingleCellExperiment object.
-#'
-#' @details
-#' Sizing by column data is not available if no column data exists in \code{se} - same for the row data.
-#' For column plots, we have an additional requirement that there must also be assays in \code{se} to size by features.
-#'
-#' @return A character vector of available sizing modes, i.e., nothing or by column/row data
-#'
-#' @author Kevin Rue-Albrecht, Charlotte Soneson
-#' @rdname INTERNAL_define_size_options
-.define_size_options_for_column_plots <- function(se) {
-    size_choices <- .sizeByNothingTitle
-
-    col_numeric <- .get_common_info(se, "ColumnDotPlot")$continuous.colData.names
-
-    if (length(col_numeric)) {
-        size_choices <- c(size_choices, .sizeByColDataTitle)
-    }
-
-    return(size_choices)
+    color_choices
 }
 
 #' Define visual parameter check options
@@ -511,8 +459,8 @@
     if (length(discrete_covariates)) {
         pchoices <- c(pchoices, .visualParamChoiceFacetTitle)
     }
-    pchoices <- c(pchoices, .visualParamChoiceOtherTitle)
-    return(pchoices)
+    
+    c(pchoices, .visualParamChoiceOtherTitle)
 }
 
 #' Visual parameter box for row plots
@@ -574,7 +522,7 @@
             pchoice_field, .visualParamChoiceColorTitle,
             radioButtons(
                 colorby_field, label="Color by:", inline=TRUE,
-                choices=.define_color_options_for_row_plots(se),
+                choices=.define_color_options_for_row_plots(se, covariates, all_assays),
                 selected=param_choices[[.colorByField]]
             ),
             .conditional_on_radio(
@@ -591,7 +539,8 @@
             ),
             .conditional_on_radio(colorby_field, .colorByFeatNameTitle,
                 tagList(
-                    selectizeInput(paste0(mode, id, "_", .colorByFeatName), label=NULL, selected=NULL, choices=NULL, multiple=FALSE),
+                    selectizeInput(paste0(mode, id, "_", .colorByFeatName), 
+                        label=NULL, selected=NULL, choices=NULL, multiple=FALSE),
                     selectInput(
                         paste0(mode, id, "_", .colorByRowTable), label=NULL, choices=active_row_tab,
                         selected=.choose_link(param_choices[[.colorByRowTable]], active_row_tab, force_default=TRUE)),
@@ -600,7 +549,8 @@
             ),
             .conditional_on_radio(colorby_field, .colorBySampNameTitle,
                 tagList(
-                    selectizeInput(paste0(mode, id, "_", .colorBySampName), label=NULL, choices=NULL, selected=NULL, multiple=FALSE),
+                    selectizeInput(paste0(mode, id, "_", .colorBySampName), 
+                        label=NULL, choices=NULL, selected=NULL, multiple=FALSE),
                     selectInput(
                         paste0(mode, id, "_", .colorBySampNameAssay), label=NULL,
                         choices=all_assays, selected=param_choices[[.colorBySampNameAssay]])),
@@ -614,7 +564,7 @@
             hr(),
             radioButtons(
                 shapeby_field, label="Shape by:", inline=TRUE,
-                choices=.define_shape_options_for_row_plots(se),
+                choices=c(.shapeByNothingTitle, if (length(discrete_covariates)) .shapeByRowDataTitle),
                 selected=param_choices[[.shapeByField]]
             ),
             .conditional_on_radio(
@@ -632,7 +582,7 @@
             hr(),
             radioButtons(
                 sizeby_field, label="Size by:", inline=TRUE,
-                choices=.define_size_options_for_row_plots(se),
+                choices=c(.sizeByNothingTitle, if (length(discrete_covariates)) .sizeByRowDataTitle),
                 selected=param_choices[[.sizeByField]]
             ),
             .conditional_on_radio(
@@ -657,44 +607,18 @@
 }
 
 #' @rdname INTERNAL_define_color_options
-.define_color_options_for_row_plots <- function(se) {
+.define_color_options_for_row_plots <- function(se, covariates, assay_names) {
     color_choices <- .colorByNothingTitle
-    if (ncol(rowData(se))) {
+    if (length(covariates)) {
         color_choices <- c(color_choices, .colorByRowDataTitle)
     }
     if (nrow(se)) {
         color_choices <- c(color_choices, .colorByFeatNameTitle)
     }
-    if (ncol(se) && length(assayNames(se))) {
+    if (ncol(se) && length(assay_names)) {
         color_choices <- c(color_choices, .colorBySampNameTitle)
     }
-    return(color_choices)
-}
-
-#' @rdname INTERNAL_define_shape_options
-.define_shape_options_for_row_plots <- function(se) {
-    shape_choices <- .shapeByNothingTitle
-
-    row_groupable <- .get_internal_info(se, "row_groupable")
-
-    if (length(row_groupable)) {
-        shape_choices <- c(shape_choices, .shapeByRowDataTitle)
-    }
-
-    return(shape_choices)
-}
-
-#' @rdname INTERNAL_define_size_options
-.define_size_options_for_row_plots <- function(se) {
-    size_choices <- .sizeByNothingTitle
-
-    row_numeric <- .get_internal_info(se, "row_numeric")
-
-    if (length(row_numeric)) {
-        size_choices <- c(size_choices, .sizeByRowDataTitle)
-    }
-
-    return(size_choices)
+    color_choices
 }
 
 #' Faceting visual parameters

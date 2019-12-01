@@ -319,7 +319,7 @@ iSEE <- function(se,
             }
 
             # TEST:
-            memory <- list(RedDimPlot(), RowStatTable())
+            memory <- list(RedDimPlot(), RowStatTable(), FeatAssayPlot(), ColDataPlot())
 
             for (idx in seq_along(memory)) {
                 se <- .cacheCommonInfo(memory[[idx]], se)

@@ -78,20 +78,8 @@ setMethod(".refineParameters", "ColDataPlot", function(x, se) {
         return(NULL)
     }
 
-    xchoice <- x[[.colDataXAxis]]
-    if (!xchoice %in% c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle)) {
-        x[[.colDataXAxis]] <- .colDataXAxisNothingTitle
-    }
-
-    xcol <- x[[.colDataXAxisColData]]
-    if (is.na(xcol) || !xcol %in% covariates) {
-        x[[.colDataXAxisColData]] <- covariates[1]
-    }
-
-    ycol <- x[[.colDataYAxis]]
-    if (is.na(ycol) || !ycol %in% covariates) {
-        x[[.colDataYAxis]] <- covariates[1]
-    }
+    x <- .replace_na_with_first(x, .colDataXAxisColData, covariates)
+    x <- .replace_na_with_first(x, .colDataYAxis, covariates)
 
     x
 })
@@ -100,17 +88,11 @@ setMethod(".refineParameters", "ColDataPlot", function(x, se) {
 setValidity2("ColDataPlot", function(object) {
     msg <- character(0)
 
-    allowable <- c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle)
-    if (!object[[.colDataXAxis]] %in% allowable) {
-        msg <- c(msg, sprintf("choice of '%s' should be one of %s", .colDataXAxis,
-            paste(sprintf("'%s'", allowable), collapse=", ")))
-    }
+    msg <- .allowable_choice_error(msg, object, .colDataXAxis,
+        c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle))
 
-    for (field in c(.colDataXAxisColData, .colDataYAxis)) {
-        if (!isSingleString(val <- object[[field]])) {
-            msg <- c(msg, sprintf("'%s' must be a single string", field))
-        }
-    }
+    msg <- .single_string_error(msg, object, 
+        c(.colDataXAxisColData, .colDataYAxis))
 
     if (length(msg)) {
         return(msg)
@@ -127,7 +109,7 @@ setMethod(".defineParamInterface", "ColDataPlot", function(x, se, active_panels)
     panel_name <- paste0(mode, id)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
-    column_covariates <- .get_common_info(se, "ColDataPlot")$valid.colData.names
+    column_covariates <- .get_common_info(se, "ColumnDotPlot")$valid.colData.names
 
     plot.param <- list(
         selectInput(.input_FUN(.colDataYAxis),
@@ -155,9 +137,10 @@ setMethod(".defineParamInterface", "ColDataPlot", function(x, se, active_panels)
 setMethod(".createParamObservers", "ColDataPlot", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
-    .define_plot_parameter_observers(mode, id,
-        protected=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
-        nonfundamental=character(0),
+    plot_name <- paste0(mode, id)
+
+    .define_protected_parameter_observers(plot_name,
+        fields=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
     callNextMethod()
 })

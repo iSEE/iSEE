@@ -200,3 +200,12 @@
 
     invisible(NULL)
 }
+
+#' @importFrom shiny observe updateSelectizeInput
+.define_selectize_update_observer <- function(panel_name, field, choices, selected, session, rObjects) {
+    observe({
+        force(rObjects$rerendered)
+        updateSelectizeInput(session, paste0(panel_name, "_", field), 
+            choices=choices, selected=selected, server=TRUE)
+    })
+}

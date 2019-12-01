@@ -144,9 +144,8 @@ setMethod(".defineParamInterface", "FeatAssayPlot", function(x, se, active_panel
     link_sources <- .define_link_sources(active_panels)
     tab_by_row <- c(.noSelection, link_sources$row_tab)
 
-    common_info <- .get_common_info(se, "FeatAssayPlot")
-    all_assays <- common_info$valid.assay.names
-    column_covariates <- common_info$valid.colData.names
+    all_assays <- .get_common_info(se, "DotPlot")$valid.assay.names
+    column_covariates <- .get_common_info(se, "ColumnDotPlot")$valid.colData.names
 
     xaxis_choices <- c(.featAssayXAxisNothingTitle)
     if (length(column_covariates)) { # As it is possible for this plot to be _feasible_ but for no column data to exist.
@@ -188,20 +187,17 @@ setMethod(".defineParamInterface", "FeatAssayPlot", function(x, se, active_panel
 setMethod(".createParamObservers", "FeatAssayPlot", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
+    plot_name <- paste0(mode, id)
 
-    .define_box_observers(mode, id, .dataParamBoxOpen, input, pObjects)
+    .define_box_observers(plot_name, .dataParamBoxOpen, input, pObjects)
 
-    .define_plot_parameter_observers(mode, id,
-        protected=c(.featAssayAssay, .featAssayXAxisColData),
-        nonfundamental=character(0),
+    .define_protected_parameter_observers(plot_name,
+        fields=c(.featAssayAssay, .featAssayXAxisColData),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    feature_choices <- seq_len(nrow(se))
-    names(feature_choices) <- rownames(se)
-
-    .define_dim_name_observer(mode, id,
+    .define_dim_name_observer(plot_name,
         name_field=.featAssayXAxisFeatName,
-        choices=feature_choices,
+        choices=rownames(se),
         in_use_field=.featAssayXAxis,
         in_use_value=.featAssayXAxisFeatNameTitle,
         is_protected=TRUE,
@@ -209,15 +205,23 @@ setMethod(".createParamObservers", "FeatAssayPlot", function(x, se, input, sessi
         link_type="xaxis",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_dim_name_observer(mode, id,
+    .define_dim_name_observer(plot_name,
         name_field=.featAssayYAxisFeatName,
-        choices=feature_choices,
+        choices=rownames(se),
         in_use_field=NA,
         in_use_value=NA,
         is_protected=TRUE,
         table_field=.featAssayYAxisRowTable,
         link_type="yaxis",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
+    .define_selectize_update_observer(plot_name, .featAssayYAxisFeatName,
+        choices=rownames(se), selected=x[[.featAssayYAxisFeatName]],
+        session=session, rObjects=rObjects)
+
+    .define_selectize_update_observer(plot_name, .featAssayXAxisFeatName,
+        choices=rownames(se), selected=x[[.featAssayXAxisFeatName]],
+        session=session, rObjects=rObjects)
 
     callNextMethod()
 })
@@ -226,7 +230,7 @@ setMethod(".createParamObservers", "FeatAssayPlot", function(x, se, input, sessi
 setMethod(".getEncodedName", "FeatAssayPlot", function(x) "featAssayPlot") # TODO change to class name.
 
 #' @export
-setMethod(".getFullName", "FeatAssayPlot", function(x) "Feature assay plot") # TODO change to class name.
+setMethod(".getFullName", "FeatAssayPlot", function(x) "Feature assay plot")
 
 #' @export
 setMethod(".getPlottingFunction", "FeatAssayPlot", function(x) .make_featAssayPlot)

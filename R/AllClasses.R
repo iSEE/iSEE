@@ -177,7 +177,7 @@ collated[.multiSelectHistory] <- "list"
 .zoomData <- "ZoomData"
 .brushData <- "BrushData"
 
-collated[.zoomData] <- "list"
+collated[.zoomData] <- "numeric"
 collated[.brushData] <- "list"
 
 .dataParamBoxOpen <- "DataBoxOpen"

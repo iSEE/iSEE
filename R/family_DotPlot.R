@@ -8,9 +8,9 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
 
     .Object <- .empty_default(.Object, .colorByField, .colorByNothingTitle)
     .Object <- .empty_default(.Object, .colorByDefaultColor, "black")
-    .Object <- .empty_default(.Object, .colorByFeatName, NA)
+    .Object <- .empty_default(.Object, .colorByFeatName)
     .Object <- .empty_default(.Object, .colorByRowTable, .noSelection)
-    .Object <- .empty_default(.Object, .colorBySampName, NA)
+    .Object <- .empty_default(.Object, .colorBySampName)
     .Object <- .empty_default(.Object, .colorByColTable, .noSelection)
 
     .Object <- .empty_default(.Object, .shapeByField, .shapeByNothingTitle)
@@ -154,6 +154,14 @@ setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pO
         is_protected=FALSE,
         link_type="color",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
+    .define_selectize_update_observer(plot_name, .colorByFeatName, 
+        choices=rownames(se), selected=x[[.colorByFeatName]],
+        session=session, rObjects=rObjects) 
+
+    .define_selectize_update_observer(plot_name, .colorBySampName,
+        choices=colnames(se), selected=x[[.colorBySampName]],
+        session=session, rObjects=rObjects)
 })
 
 

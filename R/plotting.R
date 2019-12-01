@@ -103,9 +103,8 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.extract_plotting_data}}
 #'
 #' @importFrom SummarizedExperiment colData
-.make_colDataPlot <- function(id, all_memory, all_coordinates, se, colormap)
+.make_colDataPlot <- function(param_choices, all_memory, all_coordinates, se, colormap)
 {
-    param_choices <- all_memory$colDataPlot[id,]
     data_cmds <- list()
     y_lab <- param_choices[[.colDataYAxis]]
     # NOTE: deparse() automatically adds quotes, AND protects against existing quotes/escapes.
@@ -168,18 +167,17 @@ names(.all_aes_values) <- .all_aes_names
 #'
 #' @importFrom shiny validate need
 #' @importFrom SummarizedExperiment assay colData
-.make_featAssayPlot <- function(id, all_memory, all_coordinates, se, colormap) {
-    param_choices <- all_memory$featAssayPlot[id,]
+.make_featAssayPlot <- function(param_choices, all_memory, all_coordinates, se, colormap) {
     data_cmds <- list()
 
     ## Setting up the y-axis:
     gene_selected_y <- param_choices[[.featAssayYAxisFeatName]]
     assay_choice <- param_choices[[.featAssayAssay]]
-    plot_title <- rownames(se)[gene_selected_y]
-    y_lab <- .feature_axis_label(se, gene_selected_y, assay_choice, multiline=FALSE)
+    plot_title <- gene_selected_y
+    y_lab <- sprintf("%s (%s)", gene_selected_y, assay_choice)
     data_cmds[["y"]] <- sprintf(
-        "plot.data <- data.frame(Y=assay(se, %i, withDimnames=FALSE)[%i, ], row.names=colnames(se))",
-        assay_choice, gene_selected_y
+        "plot.data <- data.frame(Y=assay(se, %s, withDimnames=FALSE)[%s, ], row.names=colnames(se))",
+        deparse(assay_choice), deparse(gene_selected_y)
     )
 
     ## Checking X axis choice:
@@ -192,11 +190,11 @@ names(.all_aes_values) <- .all_aes_names
 
     } else if (x_choice == .featAssayXAxisFeatNameTitle) { # gene selected
         gene_selected_x <- param_choices[[.featAssayXAxisFeatName]]
-        plot_title <- paste(plot_title, "vs", rownames(se)[gene_selected_x])
-        x_lab <- .feature_axis_label(se, gene_selected_x, assay_choice, multiline=FALSE)
+        plot_title <- paste(plot_title, "vs", gene_selected_x)
+        x_lab <- sprintf("%s (%s)", gene_selected_x, assay_choice)
         data_cmds[["x"]] <- sprintf(
-            "plot.data$X <- assay(se, %i, withDimnames=FALSE)[%i, ];",
-            assay_choice, gene_selected_x
+            "plot.data$X <- assay(se, %s, withDimnames=FALSE)[%s, ];",
+            deparse(assay_choice), deparse(gene_selected_x)
         )
 
     } else { # no x axis variable specified: show single violin
@@ -305,11 +303,11 @@ names(.all_aes_values) <- .all_aes_names
     samp_selected_y <- param_choices[[.sampAssayYAxisSampName]]
     assay_choice <- param_choices[[.sampAssayAssay]]
 
-    plot_title <- colnames(se)[samp_selected_y]
-    y_lab <- .sample_axis_label(se, samp_selected_y, assay_choice, multiline=FALSE)
+    plot_title <- samp_selected_y
+    y_lab <- sprintf("%s (%s)", samp_selected_y, assay_choice)
     data_cmds[["y"]] <- sprintf(
-        "plot.data <- data.frame(Y=assay(se, %i, withDimnames=FALSE)[,%i], row.names=rownames(se));",
-        assay_choice, samp_selected_y
+        "plot.data <- data.frame(Y=assay(se, %s, withDimnames=FALSE)[,%s], row.names=rownames(se));",
+        deparse(assay_choice), deparse(samp_selected_y)
     )
 
     # Prepare X-axis data.
@@ -326,11 +324,11 @@ names(.all_aes_values) <- .all_aes_names
 
     } else {
         samp_selected_x <- param_choices[[.sampAssayXAxisSampName]]
-        plot_title <- paste(plot_title, "vs", colnames(se)[samp_selected_x])
-        x_lab <- .sample_axis_label(se, samp_selected_x, assay_choice, multiline=FALSE)
+        plot_title <- paste(plot_title, "vs", samp_selected_x)
+        x_lab <- sprintf("%s (%s)", samp_selected_x, assay_choice)
         data_cmds[["x"]] <- sprintf(
-            "plot.data$X <- assay(se, %i, withDimnames=FALSE)[, %i];",
-            assay_choice, samp_selected_x
+            "plot.data$X <- assay(se, %s, withDimnames=FALSE)[, %s];",
+            deparse(assay_choice), deparse(samp_selected_x)
         )
     }
 
@@ -737,7 +735,7 @@ names(.all_aes_values) <- .all_aes_names
 
     # Evaluating the plotting commands.
     plot_out <- .text_eval(extra_cmds, envir)
-    return(list(cmds=extra_cmds, plot=plot_out))
+    list(cmds=extra_cmds, plot=plot_out)
 }
 
 ############################################
@@ -940,14 +938,14 @@ names(.all_aes_values) <- .all_aes_names
     bounds <- param_choices[[.zoomData]]
     if (horizontal) {
         coord_cmd <- "coord_flip"
-        if (!is.null(bounds)) {
+        if (length(bounds)) {
             names(bounds) <- c(xmin="ymin", xmax="ymax", ymin="xmin", ymax="xmax")[names(bounds)]
         }
     } else {
         coord_cmd <- "coord_cartesian"
     }
 
-    if (!is.null(bounds)) {
+    if (length(bounds)) {
         # Ensure zoom preserves the data points and width ratio of visible groups
         bounds["xmin"] <- ceiling(bounds["xmin"]) - 0.5
         bounds["xmax"] <- floor(bounds["xmax"]) + 0.5
@@ -973,7 +971,7 @@ names(.all_aes_values) <- .all_aes_names
     # Preserving the x-axis range when no zoom is applied.
     # This applies even for horizontal violin plots, as this command is executed internally before coord_flip().
     scale_x_cmd <- "scale_x_discrete(drop=FALSE%s) +"
-    if (is.null(bounds)) {
+    if (!length(bounds)) {
         scale_x_extra <- ""
     } else {
         # Restrict axis ticks to visible levels
@@ -1119,7 +1117,7 @@ plot.data$Y <- tmp;")
 
     # Defining boundaries if zoomed.
     bounds <- param_choices[[.zoomData]]
-    if (!is.null(bounds)) {
+    if (length(bounds)) {
 
         # Ensure zoom preserves the data points and width ratio of visible groups
         bounds["xmin"] <- ceiling(bounds["xmin"]) - 0.5
@@ -1136,7 +1134,7 @@ plot.data$Y <- tmp;")
 
     scale_x_cmd <- "scale_x_discrete(drop=FALSE%s) +"
     scale_y_cmd <- "scale_y_discrete(drop=FALSE%s) +"
-    if (is.null(bounds)) {
+    if (!length(bounds)) {
         scale_x_extra <- ""
         scale_y_extra <- ""
     } else {
@@ -1237,26 +1235,31 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
     if (color_choice == .colorByColDataTitle) {
         covariate_name <- param_choices[[.colorByColData]]
-        return(list(label=covariate_name,
-            cmds=sprintf("plot.data$ColorBy <- colData(se)[, %s];", deparse(covariate_name))))
+        list(
+            label=covariate_name,
+            cmds=sprintf("plot.data$ColorBy <- colData(se)[, %s];", deparse(covariate_name))
+        )
 
     } else if (color_choice == .colorByFeatNameTitle) {
         # Set the color to the selected gene
         chosen_gene <- param_choices[[.colorByFeatName]]
         assay_choice <- param_choices[[.colorByFeatNameAssay]]
-        return(list(
+        list(
             label=.feature_axis_label(se, chosen_gene, assay_choice, multiline=TRUE),
-            cmds=sprintf("plot.data$ColorBy <- assay(se, %i, withDimnames=FALSE)[%i, ];", assay_choice, chosen_gene)))
+            cmds=sprintf("plot.data$ColorBy <- assay(se, %s, withDimnames=FALSE)[%s, ];", 
+                deparse(assay_choice), deparse(chosen_gene))
+        )
 
     } else if (color_choice == .colorBySampNameTitle) {
         chosen_sample <- param_choices[[.colorBySampName]]
-        return(list(
+        list(
             label=.sample_axis_label(se, chosen_sample, assay_id=NULL),
-            cmds=sprintf("plot.data$ColorBy <- logical(nrow(plot.data));
-plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_sample))))
+            cmds=sprintf("plot.data$ColorBy <- logical(nrow(plot.data));\nplot.data[%s, 'ColorBy'] <- TRUE;", 
+                deparse(chosen_sample))
+        )
 
     } else {
-        return(NULL)
+        NULL
     }
 }
 
@@ -1266,26 +1269,30 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_sample))))
 
     if (color_choice == .colorByRowDataTitle) {
         covariate_name <- param_choices[[.colorByRowData]]
-        return(list(
+        list(
             label=covariate_name,
-            cmds=sprintf("plot.data$ColorBy <- rowData(se)[, %s];", deparse(covariate_name))))
+            cmds=sprintf("plot.data$ColorBy <- rowData(se)[, %s];", deparse(covariate_name))
+        )
 
     } else if (color_choice == .colorByFeatNameTitle) {
         chosen_gene <- param_choices[[.colorByFeatName]]
-        return(list(
+        list(
             label=.feature_axis_label(se, chosen_gene, assay_id=NULL),
-            cmds=sprintf("plot.data$ColorBy <- logical(nrow(plot.data));
-plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
+            cmds=sprintf("plot.data$ColorBy <- logical(nrow(plot.data));\nplot.data[%s, 'ColorBy'] <- TRUE;", 
+                deparse(chosen_gene))
+        )
 
     } else if (color_choice == .colorBySampNameTitle) {
         chosen_sample <- param_choices[[.colorBySampName]]
         assay_choice <- param_choices[[.colorBySampNameAssay]]
-        return(list(
+        list(
             label=.sample_axis_label(se, chosen_sample, assay_choice, multiline=TRUE),
-            cmds=sprintf("plot.data$ColorBy <- assay(se, %i, withDimnames=FALSE)[, %i];", assay_choice, chosen_sample)))
+            cmds=sprintf("plot.data$ColorBy <- assay(se, %i, withDimnames=FALSE)[, %i];", 
+                deparse(assay_choice), deparse(chosen_sample))
+        )
 
     } else {
-        return(NULL)
+        NULL
     }
 }
 

@@ -52,8 +52,9 @@ setMethod(".defineParamInterface", "RowTable", function(x, se, active_panels) {
 setMethod(".createParamObservers", "RowTable", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
+    panel_name <- paste0(mode, id)
 
-    .define_table_selection_observer(mode, id, 
+    .define_table_selection_observer(panel_name, 
         x_field=.featAssayXAxisFeatName, 
         y_field=.featAssayYAxisFeatName,
         col_field=.colorByFeatName,

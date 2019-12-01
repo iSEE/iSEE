@@ -56,14 +56,11 @@ setMethod(".createParamObservers", "ColumnTable", function(x, se, input, session
     id <- x[[.organizationId]]
     panel_name <- paste0(mode, id)
 
-    sample_choices <- seq_len(nrow(se))
-    names(sample_choices) <- rownames(se)
-
-    .define_table_selection_observer(mode, id,
+    .define_table_selection_observer(panel_name,
         x_field=.sampAssayXAxisSampName,
         y_field=.sampAssayYAxisSampName,
         col_field=.colorBySampName,
-        choices=sample_choices,
+        choices=colnames(se),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     callNextMethod()

@@ -363,29 +363,28 @@ iSEE <- function(se,
 #            # behaviour across observers.
 #            rObjects$active_panels <- active_panels
 #
-#            for (mode in all_panel_types) {
-#                max_plots <- nrow(pObjects$memory[[mode]])
-#                for (id in seq_len(max_plots)) {
-#                    # Reactive to trigger replotting.
-#                    rObjects[[paste0(mode, id)]] <- 1L
-#
-#                    # Reactive to regenerate information panels.
-#                    rObjects[[paste0(mode, id, "_", .panelLinkInfo)]] <- 1L
-#                    rObjects[[paste0(mode, id, "_", .panelGeneralInfo)]] <- 1L
-#
-#                    # Reactive to regenerate multi-selection selectize.
-#                    rObjects[[paste0(mode, id, "_", .selectMultiSaved)]] <- 1L
-#
-#                    # Reactive to regenerate children when the point population of the current panel changes.
-#                    rObjects[[paste0(mode, id, "_repopulated")]] <- 1L
-#
-#                    # Reactive to regenerate children when the active selection of the current panel changes.
-#                    rObjects[[paste0(mode, id, "_reactivated")]] <- 1L
-#
-#                    # Reactive to regenerate children when the saved selection of the current panel changes.
-#                    rObjects[[paste0(mode, id, "_resaved")]] <- 1L
-#                }
-#            }
+            for (idx in seq_along(memory)) {
+                instance <- memory[[idx]]
+                mode <- .getEncodedName(instance)
+                id <- instance[[.organizationId]]
+                rObjects[[paste0(mode, id)]] <- 1L
+
+                # Reactive to regenerate information panels.
+                rObjects[[paste0(mode, id, "_", .panelLinkInfo)]] <- 1L
+                rObjects[[paste0(mode, id, "_", .panelGeneralInfo)]] <- 1L
+
+                # Reactive to regenerate multi-selection selectize.
+                rObjects[[paste0(mode, id, "_", .selectMultiSaved)]] <- 1L
+
+                # Reactive to regenerate children when the point population of the current panel changes.
+                rObjects[[paste0(mode, id, "_repopulated")]] <- 1L
+
+                # Reactive to regenerate children when the active selection of the current panel changes.
+                rObjects[[paste0(mode, id, "_reactivated")]] <- 1L
+
+                # Reactive to regenerate children when the saved selection of the current panel changes.
+                rObjects[[paste0(mode, id, "_resaved")]] <- 1L
+            }
 
 #            mode <- "heatMapPlot"
 #            max_plots <- nrow(pObjects$memory[[mode]])
@@ -434,7 +433,7 @@ iSEE <- function(se,
 #
 #            .multiple_select_observers(input, session, pObjects, rObjects)
 #
-#            .dot_plot_observers(input, output, session, se, colormap, pObjects, rObjects)
+            .dot_plot_observers(input, output, session, se, colormap, pObjects, rObjects)
 #
 #            .custom_panel_observers(input, output, session, se, pObjects, rObjects, customSendAll)
 #

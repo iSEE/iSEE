@@ -116,13 +116,18 @@ setMethod(".refineParameters", "DotPlot", function(x, se) {
 setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
-    .define_box_observers(mode, id, c(.visualParamBoxOpen, .selectParamBoxOpen), input, pObjects)
+    plot_name <- paste0(mode, id)
 
-    .define_visual_parameter_choice_observer(mode, id, input, pObjects)
+    .define_box_observers(plot_name, c(.visualParamBoxOpen, .selectParamBoxOpen), input, pObjects)
 
-    .define_plot_parameter_observers(mode, id,
-        protected=c(.facetByRow, .facetByColumn, .facetRowsByRowData, .facetColumnsByRowData),
-        nonfundamental=c(
+    .define_visual_parameter_choice_observer(plot_name, input, pObjects)
+
+    .define_protected_parameter_observers(plot_name,
+        fields=c(.facetByRow, .facetByColumn, .facetRowsByRowData, .facetColumnsByRowData),
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
+    .define_nonfundamental_parameter_observers(plot_name,
+        fields=c(
             .colorByDefaultColor, .selectColor, .selectTransAlpha,
             .shapeByField, .sizeByField,
             .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition,
@@ -130,14 +135,9 @@ setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pO
             .contourColor),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    feature_choices <- seq_len(nrow(se))
-    names(feature_choices) <- rownames(se)
-    sample_choices <- seq_len(ncol(se))
-    names(sample_choices) <- colnames(se)
-
-    .define_dim_name_observer(mode, id,
+    .define_dim_name_observer(plot_name,
         name_field=.colorByFeatName,
-        choices=feature_choices,
+        choices=rownames(se),
         in_use_field=.colorByField,
         in_use_value=.colorByFeatNameTitle,
         table_field=.colorByRowTable,
@@ -145,9 +145,9 @@ setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pO
         link_type="color",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_dim_name_observer(mode, id,
+    .define_dim_name_observer(plot_name,
         name_field=.colorBySampName,
-        choices=sample_choices,
+        choices=colnames(se),
         in_use_field=.colorByField,
         in_use_value=.colorBySampNameTitle,
         table_field=.colorByColTable,

@@ -29,7 +29,7 @@
         force(rObjects[[plot_name]])
         rObjects[[gen_field]] <- .increment_counter(isolate(rObjects[[gen_field]]))
 
-        p.out <- FUN(id, pObjects$memory, pObjects$coordinates, se, colormap)
+        p.out <- FUN(pObjects$memory[[plot_name]], pObjects$memory, pObjects$coordinates, se, colormap)
         pObjects$commands[[plot_name]] <- p.out$cmd_list
 
         if (selectable) {

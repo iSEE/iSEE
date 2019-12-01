@@ -55,18 +55,15 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.create_plot}}
 #'
 #' @importFrom SingleCellExperiment reducedDim
-.make_redDimPlot <- function(id, all_memory, all_coordinates, se, colormap) {
-    param_choices <- all_memory$redDimPlot[id,]
+.make_redDimPlot <- function(param_choices, all_memory, all_coordinates, se, colormap) {
     data_cmds <- list()
     data_cmds[["reducedDim"]] <- sprintf(
-        "red.dim <- reducedDim(se, %i);", param_choices[[.redDimType]])
+        "red.dim <- reducedDim(se, %s);", deparse(param_choices[[.redDimType]]))
     data_cmds[["xy"]] <- sprintf(
         "plot.data <- data.frame(X=red.dim[, %i], Y=red.dim[, %i], row.names=colnames(se));",
         param_choices[[.redDimXAxis]], param_choices[[.redDimYAxis]])
 
-    reddim_names <- names(.get_internal_info(se, field="red_dim_names"))
-    plot_title <- reddim_names[param_choices[[.redDimType]]]
-
+    plot_title <- param_choices[[.redDimType]]
     x_lab <- sprintf("Dimension %s", param_choices[[.redDimXAxis]])
     y_lab <- sprintf("Dimension %s", param_choices[[.redDimYAxis]])
 
@@ -806,8 +803,8 @@ names(.all_aes_values) <- .all_aes_names
     plot_cmds[["labs"]] <- .build_labs(x=x_lab, y=y_lab, color=color_lab, shape=shape_lab, size=size_lab, title=title)
 
     # Defining boundaries if zoomed.
-    bounds <- param_choices[[.zoomData]][[1]]
-    if (!is.null(bounds)) {
+    bounds <- param_choices[[.zoomData]]
+    if (length(bounds)) {
         plot_cmds[["coord"]] <- sprintf(
             "coord_cartesian(xlim=c(%s, %s), ylim=c(%s, %s), expand=FALSE) +", # FALSE, to get a literal zoom.
             deparse(bounds["xmin"]), deparse(bounds["xmax"]),
@@ -940,7 +937,7 @@ names(.all_aes_values) <- .all_aes_names
 
     # Defining boundaries if zoomed. This requires some finesse to deal with horizontal plots,
     # where the point selection is computed on the flipped coordinates.
-    bounds <- param_choices[[.zoomData]][[1]]
+    bounds <- param_choices[[.zoomData]]
     if (horizontal) {
         coord_cmd <- "coord_flip"
         if (!is.null(bounds)) {
@@ -1121,7 +1118,7 @@ plot.data$Y <- tmp;")
     plot_cmds[["labs"]] <- .build_labs(x=x_lab, y=y_lab, color=color_lab, shape=shape_lab, size=size_lab, title=title)
 
     # Defining boundaries if zoomed.
-    bounds <- param_choices[[.zoomData]][[1]]
+    bounds <- param_choices[[.zoomData]]
     if (!is.null(bounds)) {
 
         # Ensure zoom preserves the data points and width ratio of visible groups
@@ -1640,13 +1637,13 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 
         transmit_type_param <- all_memory[[select_by$Type]]
 
-        cur_choice <- param_choices[, .selectMultiType]
+        cur_choice <- param_choices[[.selectMultiType]]
         if (cur_choice == .selectMultiUnionTitle) {
-            select_sources <- c(NA_integer_, seq_along(transmit_type_param[, .multiSelectHistory][[1]]))
+            select_sources <- c(NA_integer_, seq_along(transmit_type_param[[.multiSelectHistory]]))
         } else if (cur_choice == .selectMultiActiveTitle) {
             select_sources <- NA_integer_
         } else {
-            select_sources <- param_choices[, .selectMultiSaved]
+            select_sources <- param_choices[[.selectMultiSaved]]
             if (select_sources == 0L) {
                 # '0' selection in memory means no selection.
                 select_sources <- integer(0)
@@ -1722,11 +1719,13 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' \code{\link{.process_selectby_choice}},
 #' \code{\link{.self_brush_box}},
 #' \code{\link{.self_lasso_path}}
-.populate_selection_environment <- function(param_choices, envir) {
-    envir$all_brushes <- list(param_choices[, .brushData][[1]])
-    envir$all_lassos <- list(param_choices[, .lassoData][[1]])
-    envir$all_select_histories <- list(param_choices[, .multiSelectHistory][[1]])
-    names(envir$all_brushes) <- names(envir$all_lassos) <- names(envir$all_select_histories) <- rownames(param_choices)
+.populate_selection_environment <- function(x, envir) {
+    envir$all_brushes <- list(x[[.brushData]])
+    envir$all_select_histories <- list(x[[.multiSelectHistory]])
+
+    mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
+    names(envir$all_brushes) <- names(envir$all_select_histories) <- paste0(mode, id)
     invisible(NULL)
 }
 
@@ -2164,11 +2163,12 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #'
 #' @importFrom ggplot2 geom_rect geom_text
 .self_brush_box <- function(param_choices, flip=FALSE) {
-    active <- param_choices[, .brushData][[1]]
-    saved <- param_choices[, .multiSelectHistory][[1]]
+    active <- param_choices[[.brushData]]
+    saved <- param_choices[[.multiSelectHistory]]
 
-    keep <- which(!vapply(saved, .is_lasso, FUN.VALUE=TRUE))
-    total <- as.integer(!is.null(active)) + length(keep)
+    keep <- which(vapply(saved, .is_brush, FUN.VALUE=TRUE))
+    has_brush <- as.integer(.is_brush(active))
+    total <- has_brush + length(keep)
     if (total == 0L) {
         return(NULL)
     }
@@ -2202,7 +2202,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
     aes_call <- sprintf("xmin=%s, xmax=%s, ymin=%s, ymax=%s", xmin, xmax, ymin, ymax)
 
     cmds <- character(0)
-    for (i in seq_len(total) - !is.null(active)) {
+    for (i in seq_len(total) - has_brush) {
         if (i == 0L) {
             brush_src <- sprintf("all_brushes[['%s']]", plot_name)
         } else {
@@ -2289,11 +2289,12 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 #' @importFrom ggplot2 geom_point geom_polygon geom_path scale_shape_manual
 #' scale_fill_manual guides
 .self_lasso_path <- function(param_choices, flip=FALSE) {
-    active <- param_choices[, .lassoData][[1]]
-    saved <- param_choices[, .multiSelectHistory][[1]]
+    active <- param_choices[[.brushData]]
+    saved <- param_choices[[.multiSelectHistory]]
 
     keep <- which(vapply(saved, .is_lasso, FUN.VALUE=TRUE))
-    total <- as.integer(!is.null(active)) + length(keep)
+    has_lasso <- as.integer(.is_lasso(active))
+    total <- has_lasso + length(keep)
     if (total == 0L) {
         return(NULL)
     }
@@ -2313,7 +2314,7 @@ plot.data[%s, 'ColorBy'] <- TRUE;", deparse(chosen_gene))))
 
     cmds <- character(0)
     firstClosed <- TRUE
-    for (i in seq_len(total) - !is.null(active)) {
+    for (i in seq_len(total) - has_lasso) {
         if (i == 0L) {
             lasso_src <- sprintf("all_lassos[['%s']]", plot_name)
             current <- active

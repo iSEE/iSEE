@@ -16,13 +16,13 @@
 #' 
 #' @rdname INTERNAL_define_box_observer
 #' @importFrom shiny observeEvent
-.define_box_observers <- function(mode, id, box_types, input, pObjects) {
+.define_box_observers <- function(panel_name, box_types, input, pObjects) {
     for (box in box_types) {
         local({
             box0 <- box
-            open_field <- paste0(mode, id, "_", box0)
+            open_field <- paste0(panel_name, "_", box0)
             observeEvent(input[[open_field]], {
-                pObjects$memory[[mode]][[box0]][id] <- input[[open_field]]
+                pObjects$memory[[panel_name]][[box0]] <- input[[open_field]]
             })
         })
     }
@@ -43,17 +43,16 @@
 #'
 #' @rdname INTERNAL_define_visual_parameter_choice_observer
 #' @importFrom shiny observeEvent
-.define_visual_parameter_choice_observer  <- function(mode, id, input, pObjects) {
-    plot_name <- paste0(mode, id)
-    cur_field <- paste0(plot_name, "_", .visualParamChoice)
+.define_visual_parameter_choice_observer  <- function(panel_name, input, pObjects) {
+    cur_field <- paste0(panel_name, "_", .visualParamChoice)
 
     observeEvent(input[[cur_field]], {
-        existing <- pObjects$memory[[mode]][,.visualParamChoice][[id]]
+        existing <- pObjects$memory[[panel_name]][[.visualParamChoice]]
         incoming <- as(input[[cur_field]], typeof(existing))
         if (identical(incoming, existing)) {
             return(NULL)
         }
-        pObjects$memory[[mode]] <- .update_list_element(pObjects$memory[[mode]], id, .visualParamChoice, incoming)
+        pObjects$memory[[panel_name]][[.visualParamChoice]] <- incoming
     }, ignoreInit=TRUE, ignoreNULL=FALSE)
 
     invisible(NULL)
@@ -81,41 +80,41 @@
 #'
 #' @rdname INTERNAL_define_plot_parameter_observers
 #' @importFrom shiny observeEvent
-.define_plot_parameter_observers <- function(mode, id, protected, nonfundamental,
-    input, session, pObjects, rObjects) 
-{
-    # Observers for the non-fundamental parameter options.
-    for (field in nonfundamental) {
+.define_nonfundamental_parameter_observers <- function(plot_name, fields, input, session, pObjects, rObjects) {
+    for (field in fields) {
         local({
             field0 <- field
-            plot_name <- paste0(mode, id)
             cur_field <- paste0(plot_name, "_", field0)
 
             observeEvent(input[[cur_field]], {
-                matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode]][[field0]]))
-                if (identical(matched_input, pObjects$memory[[mode]][[field0]][id])) {
+                matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[plot_name]][[field0]]))
+                if (identical(matched_input, pObjects$memory[[plot_name]][[field0]])) {
                     return(NULL)
                 }
-                pObjects$memory[[mode]][[field0]][id] <- matched_input
+                pObjects$memory[[plot_name]][[field0]] <- matched_input
                 rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
             }, ignoreInit=TRUE)
         })
     }
 
-    # Observers for the fundamental plot parameters.
-    for (field in protected) {
+    invisible(NULL)
+}
+
+#' @rdname INTERNAL_define_plot_parameter_observers
+#' @importFrom shiny observeEvent
+.define_protected_parameter_observers <- function(plot_name, fields, input, session, pObjects, rObjects) {
+    for (field in fields) {
         local({
             field0 <- field
-            plot_name <- paste0(mode, id)
             cur_field <- paste0(plot_name, "_", field0)
 
             observeEvent(input[[cur_field]], {
-                matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode]][[field0]]))
-                if (identical(matched_input, pObjects$memory[[mode]][[field0]][id])) {
+                matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[plot_name]][[field0]]))
+                if (identical(matched_input, pObjects$memory[[plot_name]][[field0]])) {
                     return(NULL)
                 }
-                pObjects$memory[[mode]][[field0]][id] <- matched_input
-                .regenerate_unselected_plot(mode, id, pObjects, rObjects)
+                pObjects$memory[[plot_name]][[field0]] <- matched_input
+                .regenerate_unselected_plot(plot_name, pObjects, rObjects)
              }, ignoreInit=TRUE)
         })
     }
@@ -155,43 +154,37 @@
 #'
 #' @rdname INTERNAL_define_dim_name_observer
 #' @importFrom shiny observeEvent
-.define_dim_name_observer <- function(mode, id, name_field, choices, 
+.define_dim_name_observer <- function(plot_name, name_field, choices, 
     in_use_field, in_use_value, is_protected, 
     table_field, link_type,
     input, session, pObjects, rObjects)
 {
-    choice_names <- choices
-    choices <- seq_along(choices)
-    names(choices) <- choice_names
-
-    plot_name <- paste0(mode, id)
     name_input <- paste0(plot_name, "_", name_field)
-
     always_in_use <- is.na(in_use_field)
 
     observeEvent(input[[name_input]], {
         # Required to defend against empty strings before updateSelectizeInput runs upon re-render.
         req(input[[name_input]])
 
-        matched_input <- as(input[[name_input]], typeof(pObjects$memory[[mode]][[name_field]]))
-        if (identical(matched_input, pObjects$memory[[mode]][[name_field]][id])) {
+        matched_input <- as(input[[name_input]], typeof(pObjects$memory[[plot_name]][[name_field]]))
+        if (identical(matched_input, pObjects$memory[[plot_name]][[name_field]])) {
             return(NULL)
         }
-        pObjects$memory[[mode]][[name_field]][id] <- matched_input
+        pObjects$memory[[plot_name]][[name_field]] <- matched_input
 
         # Only regenerating if the current parameter is actually in use.
-        if (always_in_use || pObjects$memory[[mode]][id,in_use_field]==in_use_value) {
+        if (always_in_use || pObjects$memory[[plot_name]][[in_use_field]]==in_use_value) {
             if (!is_protected) {
                 rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
             } else {
-                .regenerate_unselected_plot(mode, id, pObjects, rObjects)
+                .regenerate_unselected_plot(plot_name, pObjects, rObjects)
             }
         }
     }, ignoreInit=TRUE)
 
     # Observers for the linked color by feature name. This also updates the table_links information.
     observe({
-        replot <- .setup_table_observer(mode, id, pObjects, rObjects, input, session,
+        replot <- .setup_table_observer(plot_name, pObjects, rObjects, input, session,
             by_field=in_use_field, title=in_use_value,
             select_field=name_field, tab_field=table_field,
             select_choices=choices, param=link_type)
@@ -200,7 +193,7 @@
             if (!is_protected) {
                 rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
             } else {
-                .regenerate_unselected_plot(mode, id, pObjects, rObjects)
+                .regenerate_unselected_plot(plot_name, pObjects, rObjects)
             }
         }
     })

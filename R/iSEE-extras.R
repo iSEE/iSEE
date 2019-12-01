@@ -506,18 +506,16 @@ height_limits <- c(400L, 1000L)
 #' @rdname INTERNAL_regenerate_unselected_plot
 #' @seealso
 #' \code{\link{iSEE}}
-.regenerate_unselected_plot <- function(mode, id, pObjects, rObjects) {
-    plot_name <- paste0(mode, id)
+.regenerate_unselected_plot <- function(plot_name, pObjects, rObjects) {
     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
 
     # Destroying any brushes or lasso waypoints.
-    has_active <- .any_active_selection(mode, id, pObjects$memory)
-    pObjects$memory[[mode]] <- .update_list_element(pObjects$memory[[mode]], id, .brushData, NULL)
-    pObjects$memory[[mode]] <- .update_list_element(pObjects$memory[[mode]], id, .lassoData, NULL)
+    has_active <- .any_active_selection(pObjects$memory[[plot_name]])
+    pObjects$memory[[plot_name]][[.brushData]] <- list()
 
     # Destroying history.
-    has_saved <- .any_saved_selection(mode, id, pObjects$memory)
-    pObjects$memory[[mode]] <- .update_list_element(pObjects$memory[[mode]], id, .multiSelectHistory, list())
+    has_saved <- .any_saved_selection(pObjects$memory[[plot_name]])
+    pObjects$memory[[plot_name]][[.multiSelectHistory]] <- list()
 
     # Forcibly updating all children.
     # Hypothetically, this could cause union children to trigger twice,

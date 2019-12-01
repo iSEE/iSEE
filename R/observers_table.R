@@ -1,12 +1,11 @@
 #' @importFrom shiny observe updateSelectizeInput
-.define_table_selection_observer <- function(mode, id, 
+.define_table_selection_observer <- function(panel_name, 
     x_field, y_field, col_field, choices,
     input, session, pObjects, rObjects) 
 {
     # No need for underscore in 'select_field' definition, as this is already in the '.int' constant.
-    panel_name <- paste0(mode, id)
     select_field <- paste0(panel_name, .int_statTableSelected)
-    
+
     # Updating memory for new selection parameters 
     observe({
         chosen <- input[[select_field]]

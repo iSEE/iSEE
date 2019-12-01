@@ -172,40 +172,37 @@ setMethod(".defineParamInterface", "RedDimPlot", function(x, se, active_panels) 
 setMethod(".createParamObservers", "RedDimPlot", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
+    plot_name <- paste0(mode, id)
 
-    .define_plot_parameter_observers(mode, id,
-        protected=c(.redDimXAxis, .redDimYAxis),
-        nonfundamental=character(0),
+    .define_protected_parameter_observers(plot_name, fields=c(.redDimXAxis, .redDimYAxis),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_box_observers(mode, id, .dataParamBoxOpen, input, pObjects)
+    .define_box_observers(plot_name, .dataParamBoxOpen, input, pObjects)
 
-    plot_name <- paste0(mode, id)
     cur_field <- paste0(plot_name, "_", .redDimType)
     dim_fieldX <- paste0(plot_name, "_", .redDimXAxis)
     dim_fieldY <- paste0(plot_name, "_", .redDimYAxis)
 
     observeEvent(input[[cur_field]], {
-        matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[mode]][[.redDimType]]))
-        if (identical(matched_input, pObjects$memory[[mode]][[.redDimType]][id])) {
+        matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[plot_name]][[.redDimType]]))
+        if (identical(matched_input, pObjects$memory[[plot_name]][[.redDimType]])) {
             return(NULL)
         }
-        pObjects$memory[[mode]][[.redDimType]][id] <- matched_input
+        pObjects$memory[[plot_name]][[.redDimType]] <- matched_input
 
         # Updating the selectInputs as well. This should not trigger re-plotting as the identical() check in the
         # corresponding observers should stop the replotting flag from being set.
         new_max <- ncol(reducedDim(se, matched_input))
-        capped_X <- pmin(new_max, pObjects$memory[[mode]][[.redDimXAxis]][id])
-        capped_Y <- pmin(new_max, pObjects$memory[[mode]][[.redDimYAxis]][id])
-        pObjects$memory[[mode]][[.redDimXAxis]][id] <- capped_X
-        pObjects$memory[[mode]][[.redDimYAxis]][id] <- capped_Y
+        capped_X <- pmin(new_max, pObjects$memory[[plot_name]][[.redDimXAxis]])
+        capped_Y <- pmin(new_max, pObjects$memory[[plot_name]][[.redDimYAxis]])
+        pObjects$memory[[plot_name]][[.redDimXAxis]] <- capped_X
+        pObjects$memory[[plot_name]][[.redDimYAxis]] <- capped_Y
 
         new_choices <- seq_len(new_max)
-        names(new_choices) <- new_choices
         updateSelectInput(session, dim_fieldX, choices=new_choices, selected=capped_X)
         updateSelectInput(session, dim_fieldY, choices=new_choices, selected=capped_Y)
 
-        .regenerate_unselected_plot(mode, id, pObjects, rObjects)
+        .regenerate_unselected_plot(plot_name, pObjects, rObjects)
     }, ignoreInit=TRUE)
 
     callNextMethod()

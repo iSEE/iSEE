@@ -217,11 +217,10 @@
 #'
 #' @importFrom shiny updateSelectizeInput
 #' @importFrom methods as
-.setup_table_observer <- function(mode, id, pObjects, rObjects, input, session,
+.setup_table_observer <- function(plot_name, pObjects, rObjects, input, session,
                                   by_field, title, select_field, tab_field,
                                   select_choices, param='color')
 {
-    plot_name <- paste0(mode, id)
     prefix <- paste0(plot_name, "_")
 
     # Checking that all the incoming arguments are non-NULL.
@@ -238,15 +237,15 @@
     # Obtaining the old parameter choices, enforcing type and updating memory.
     # The new values should persist due to environment's pass-by-reference.
     if (param!='yaxis') {
-        old_choice <- pObjects$memory[[mode]][id, by_field]
+        old_choice <- pObjects$memory[[plot_name]][[by_field]]
         choice <- as(choice, typeof(old_choice))
-        pObjects$memory[[mode]][id, by_field] <- choice
+        pObjects$memory[[plot_name]][[by_field]] <- choice
     } else {
         old_choice <- choice
     }
-    old_tab <- pObjects$memory[[mode]][id, tab_field]
+    old_tab <- pObjects$memory[[plot_name]][[tab_field]]
     tab <- as(tab, typeof(old_tab))
-    pObjects$memory[[mode]][id, tab_field] <- tab
+    pObjects$memory[[plot_name]][[tab_field]] <- tab
 
     if (old_tab!=tab) {
         # Editing the table_links, if we're switching the table choice.
@@ -256,7 +255,7 @@
         if (tab!=.noSelection) {
             enc <- .encode_panel_name(tab)
             new_selected <- pObjects$memory[[enc$Type]][enc$ID, .rowStatSelected]
-            old_selected <- pObjects$memory[[mode]][id, select_field]
+            old_selected <- pObjects$memory[[plot_name]][[select_field]]
             if (new_selected != old_selected && !is.null(session)) { # we use session=NULL only for unit testing the rest of the function.
                 updateSelectizeInput(session, paste0(prefix, select_field), label = NULL, choices = select_choices, server = TRUE, selected = new_selected) # nocov
             }

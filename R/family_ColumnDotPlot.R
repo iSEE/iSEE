@@ -132,10 +132,13 @@ setMethod(".defineParamInterface", "ColumnDotPlot", function(x, se, active_panel
 #' @importFrom methods callNextMethod
 setMethod(".createParamObservers", "ColumnDotPlot", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
-    .define_plot_parameter_observers(mode, x[[.organizationId]],
-        protected=character(0),
-        nonfundamental=c(.colorByColData, .colorByFeatNameAssay,
+    id <- x[[.organizationId]]
+    plot_name <- paste0(mode, id)
+
+    .define_nonfundamental_parameter_observers(plot_name,
+        fields=c(.colorByColData, .colorByFeatNameAssay,
             .shapeByColData, .sizeByColData, .colorBySampNameColor),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
     callNextMethod()
 })

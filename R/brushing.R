@@ -1,3 +1,7 @@
+.is_brush <- function(x) {
+    length(x) && is.null(x$closed)
+}
+
 #' Creates the initial point selection chart
 #'
 #' Creates a graph containing all of the possible vertices (i.e., panels), and sets up the initial relationships between them.
@@ -343,18 +347,11 @@
 #' @seealso
 #' \code{\link{.transmitted_selection}},
 #' \code{\link{iSEE}}
-.any_active_selection <- function(mode, id, memory) {
-    if (!is.null(memory[[mode]][,.brushData][[id]])) {
-        return(TRUE)       
-    } 
-    lasso <- memory[[mode]][,.lassoData][[id]]
-    if (!is.null(lasso) && lasso$closed) {
-        return(TRUE)
-    }
-    return(FALSE)
+.any_active_selection <- function(panel_name) {
+    length(panel_name[[.brushData]]) > 0L
 }
 
 #' @rdname INTERNAL_any_point_selection
-.any_saved_selection <- function(mode, id, memory) {
-    length(memory[[mode]][,.multiSelectHistory][[id]]) > 0L
+.any_saved_selection <- function(panel_name) {
+    length(panel_name[[.multiSelectHistory]]) > 0L
 }

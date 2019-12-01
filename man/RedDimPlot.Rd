@@ -27,7 +27,7 @@ More details to be added.
 #################
 
 x <- RedDimPlot()
-x[["Type"]] 
+x[["Type"]]
 x[["Type"]] <- "TSNE"
 
 ##################

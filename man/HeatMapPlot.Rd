@@ -30,7 +30,7 @@ More details to be added.
 #################
 
 x <- HeatMapPlot()
-x[["ColorScale"]] 
+x[["ColorScale"]]
 x[["Lower"]] <- -5
 
 ##################

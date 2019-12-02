@@ -294,7 +294,7 @@ iSEE <- function(se,
 
     #nocov start
     iSEE_server <- function(input, output, session) {
-        rObjects <- reactiveValues(rerendered=1L)
+        rObjects <- reactiveValues(rerender=1L, rerendered=1L)
 
         initialize_server <- function(se, rObjects) {
             se_out <- .sanitize_SE_input(se)
@@ -322,6 +322,9 @@ iSEE <- function(se,
             memory <- list(RedDimPlot(), RowStatTable(), FeatAssayPlot(), ColDataPlot(), 
                 RowDataPlot(), SampAssayPlot(), ColStatTable(), HeatMapPlot())
 
+            # NOTE: .cacheCommonInfo() should be run on all possible panels, 
+            # not just those that are visible. This is necessary to set up the
+            # cache for potential panels that have yet to be generated.
             for (idx in seq_along(memory)) {
                 se <- .cacheCommonInfo(memory[[idx]], se)
                 memory[idx] <- list(.refineParameters(memory[[idx]], se))
@@ -387,12 +390,6 @@ iSEE <- function(se,
                 rObjects[[paste0(mode, id, "_resaved")]] <- 1L
             }
 
-#            mode <- "heatMapPlot"
-#            max_plots <- nrow(pObjects$memory[[mode]])
-#            for (id in seq_len(max_plots)) {
-#                rObjects[[paste0(mode, id, "_", .heatMapLegend)]] <- 1L
-#            }
-#
 #            # Evaluating certain plots to fill the coordinate list, if there are any selections.
 #            # This is done in topological order so that all dependencies are satisfied.
 #            eval_order <- .establish_eval_order(pObjects$selection_links)
@@ -416,7 +413,9 @@ iSEE <- function(se,
 #            .general_observers(input, session, pObjects, rObjects, tour, runLocal,
 #                 se_name, ecm_name, cdf_name, csf_name, se_cmds)
 #
-            .organization_observers(input, output, se, pObjects, rObjects)
+            .organization_observers(se=se, colormap=colormap,
+                input=input, output=output, session=session, 
+                pObjects=pObjects, rObjects=rObjects)
 #
 #            .selection_parameter_observers(input, session, pObjects, rObjects)
 #

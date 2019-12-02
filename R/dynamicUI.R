@@ -21,21 +21,22 @@
 #' @importFrom shiny tagList selectInput sliderInput
 #' @importFrom shinydashboard box
 .panel_organization <- function(active_panels) {
-    N <- nrow(active_panels)
+    N <- length(active_panels)
     collected <- vector("list", N)
     counter <- 1L
 
     for (i in seq_len(N)) {
-        mode <- active_panels$Type[i]
-        id <- active_panels$ID[i]
+        instance <- active_panels[[i]]
+        mode <- .getEncodedName(instance)
+        id <- instance[[.organizationId]]
         prefix <- paste0(mode, id, "_")
 
         ctrl_panel <- box(
             selectInput(paste0(prefix, .organizationWidth), label="Width",
-                choices=seq(width_limits[1], width_limits[2]), selected=active_panels$Width[i]),
+                choices=seq(width_limits[1], width_limits[2]), selected=instance[[.organizationWidth]]),
             sliderInput(paste0(prefix, .organizationHeight), label="Height",
-                min=height_limits[1], max=height_limits[2], value=active_panels$Height[i], step=10),
-            title=.decode_panel_name(mode, id), status="danger", width=NULL, solidHeader=TRUE
+                min=height_limits[1], max=height_limits[2], value=instance[[.organizationHeight]], step=10),
+            title=paste(.getFullName(instance), id), status="danger", width=NULL, solidHeader=TRUE
         )
 
         # Coercing to a different box status ('danger' is a placeholder, above).
@@ -137,6 +138,7 @@
         mode <- .getEncodedName(instance)
         id <- instance[[.organizationId]]
         .input_FUN <- function(field) paste0(mode, id, "_", field)
+        print(c(mode, id))
 
         obj <- .defineOutputElement(instance)
         all.params <- .defineParamInterface(instance, se=se, active_panels=memory)

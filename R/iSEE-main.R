@@ -419,13 +419,9 @@ iSEE <- function(se,
 #
 #            .selection_parameter_observers(input, session, pObjects, rObjects)
 #
-#            .brush_observers(input, session, pObjects, rObjects)
-#
 #            .child_propagation_observers(pObjects, rObjects, customSendAll)
 #
 #            .multiselect_param_observers(input, session, pObjects, rObjects)
-#
-#            .lasso_observers(input, session, pObjects, rObjects)
 #
 #            .zoom_observers(input, session, pObjects, rObjects)
 #

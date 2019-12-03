@@ -162,6 +162,12 @@ setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pO
     .define_selectize_update_observer(plot_name, .colorBySampName,
         choices=colnames(se), selected=x[[.colorBySampName]],
         session=session, rObjects=rObjects)
+
+    .define_brush_observer(plot_name, input=input, session=session, 
+        pObjects=pObjects, rObjects=rObjects)
+
+    .define_lasso_observer(plot_name, input=input, session=session, 
+        pObjects=pObjects, rObjects=rObjects)
 })
 
 

@@ -713,9 +713,7 @@ names(.all_aes_values) <- .all_aes_names
 
     # Adding self-brushing boxes, if they exist.
     to_flip <- plot_type == "violin_horizontal"
-    brush_out <- .self_brush_box(param_choices, flip=to_flip)
-    lasso_out <- .self_lasso_path(param_choices, flip=to_flip)
-    select_cmds <- c(brush_out, lasso_out)
+    select_cmds <- .self_select_boxes(param_choices, flip=to_flip)
 
     if (length(select_cmds)) {
         N <- length(extra_cmds)
@@ -2167,17 +2165,68 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' \code{\link{.create_plot}}
 #'
 #' @importFrom ggplot2 geom_rect geom_text
-.self_brush_box <- function(param_choices, flip=FALSE) {
+.self_select_boxes <- function(param_choices, flip=FALSE) {
     active <- param_choices[[.brushData]]
     saved <- param_choices[[.multiSelectHistory]]
 
-    keep <- which(vapply(saved, .is_brush, FUN.VALUE=TRUE))
-    has_brush <- as.integer(.is_brush(active))
-    total <- has_brush + length(keep)
+    has_active <- as.integer(length(active) > 0)
+    total <- has_active + length(saved)
     if (total == 0L) {
         return(NULL)
     }
 
+    # Note: Faceting simultaneously on row and column produces a 'flip' effect on the brush data
+    if (param_choices[[.facetByRow]] && param_choices[[.facetByColumn]]) {
+        facetrow <- 'panelvar2'
+        facetcolumn <- 'panelvar1'
+    } else {
+        facetrow <- facetcolumn <- 'panelvar1'
+    }
+
+    mode <- .getEncodedName(param_choices)
+    id <- param_choices[[.organizationId]]
+    stroke_color <- panel_colors[mode]
+    fill_color <- brush_fill_color[mode]
+    plot_name <- paste0(mode, id)
+
+    cmds <- character(0)
+    firstClosed <- FALSE
+    for (i in seq_len(total) - has_active) {
+        if (i==0L) {
+            chosen <- active
+        } else {
+            chosen <- saved[[i]]
+        }
+
+        if (.is_brush(chosen)) {
+            draw_cmd <- .draw_brush(plot_name, param_choices, index=i, 
+                flip=flip, facetrow=facetrow, facetcolumn=facetcolumn, 
+                stroke_color=stroke_color, fill_color=fill_color)
+        } else {
+            cmd.out <- .draw_lasso(plot_name, param_choices, index=i, 
+                facetrow=facetrow, facetcolumn=facetcolumn, 
+                stroke_color=stroke_color, fill_color=fill_color,
+                firstClosed=firstClosed)
+            firstClosed <- cmd.out$firstClosed
+            draw_cmd <- cmd.out$cmds 
+        }
+
+        cmds <- c(cmds, draw_cmd)
+    }
+
+    cmds
+}
+
+.draw_brush <- function(plot_name, param_choices, index, flip, 
+    facetrow, facetcolumn, stroke_color, fill_color) 
+{
+    if (index == 0L) {
+        brush_src <- sprintf("all_brushes[['%s']]", plot_name)
+    } else {
+        brush_src <- sprintf("all_select_histories[['%s']][[%i]]", plot_name, index) 
+    }
+
+    # Build up the aes call, to account for flipped behavior.
     if (flip) {
         xmin <- 'ymin'
         xmax <- 'ymax'
@@ -2189,76 +2238,50 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         ymin <- 'ymin'
         ymax <- 'ymax'
     }
-
-    # Note: Faceting simultaneously on row and column produces a 'flip' effect on the brush data
-    if (param_choices[[.facetByRow]] && param_choices[[.facetByColumn]]) {
-        facetrow <- 'panelvar2'
-        facetcolumn <- 'panelvar1'
-    } else {
-        facetrow <- facetcolumn <- 'panelvar1'
-    }
-
-    plot_name <- rownames(param_choices)
-    enc <- .split_encoded(plot_name)
-    stroke_color <- panel_colors[enc$Type]
-    fill_color <- brush_fill_color[enc$Type]
-
-    # Build up the aesthetics call
     aes_call <- sprintf("xmin=%s, xmax=%s, ymin=%s, ymax=%s", xmin, xmax, ymin, ymax)
 
-    cmds <- character(0)
-    for (i in seq_len(total) - has_brush) {
-        if (i == 0L) {
-            brush_src <- sprintf("all_brushes[['%s']]", plot_name)
-        } else {
-            brush_src <- sprintf("all_select_histories[['%s']][[%i]]", plot_name, keep[i])
-        }
+    # Initialize the minimal brush information
+    brush_data <- sprintf("%s[c('xmin', 'xmax', 'ymin', 'ymax')]", brush_src)
 
-        # Initialize the minimal brush information
-        brush_data <- sprintf("%s[c('xmin', 'xmax', 'ymin', 'ymax')]", brush_src)
-
-        # Collect additional panel information for the brush
-        addPanels <- c()
-        if (param_choices[[.facetByRow]]) {
-            addPanels["FacetRow"] <- sprintf("FacetRow=%s[['%s']]", brush_src, facetrow)
-        }
-        if (param_choices[[.facetByColumn]]) {
-            addPanels["FacetColumn"] <- sprintf("FacetColumn=%s[['%s']]", brush_src, facetcolumn)
-        }
-
-        # If any facting (row, column) is active, add the relevant data fields
-        if (length(addPanels)) {
-            panel_list <- sprintf("list(%s)", paste(addPanels, collapse=", "))
-            brush_data <- sprintf("append(%s, %s)", brush_data, panel_list)
-        }
-
-        # Build up the command that draws the brush
-        brush_draw_cmd <- sprintf(
-"geom_rect(aes(%s), color='%s', alpha=%s, fill='%s',
-    data=do.call(data.frame, %s),
-    inherit.aes=FALSE)",
-            aes_call, stroke_color, .brushFillOpacity, fill_color, brush_data)
-
-        # Put a number for saved brushes.
-        if (i!=0L) {
-            text_data <- c(sprintf("x=mean(unlist(%s[c('%s', '%s')]))", brush_src, xmin, xmax),
-				sprintf("y=mean(unlist(%s[c('%s', '%s')]))", brush_src, ymin, ymax),
-				addPanels)
-
-            text_cmd <- sprintf(
-"geom_text(aes(x=x, y=y), inherit.aes=FALSE,
-	data=data.frame(
-		%s),
-    label=%i, size=%s, colour='%s')",
-				paste(text_data, collapse=",\n        "),
-                keep[i], param_choices[[.plotFontSize]] * .plotFontSizeLegendTextDefault, stroke_color)
-            brush_draw_cmd <- c(brush_draw_cmd, text_cmd)
-        }
-
-        cmds <- c(cmds, brush_draw_cmd)
+    # Collect additional panel information for the brush
+    addPanels <- character(0)
+    if (param_choices[[.facetByRow]]) {
+        addPanels["FacetRow"] <- sprintf("FacetRow=%s[['%s']]", brush_src, facetrow)
+    }
+    if (param_choices[[.facetByColumn]]) {
+        addPanels["FacetColumn"] <- sprintf("FacetColumn=%s[['%s']]", brush_src, facetcolumn)
     }
 
-    cmds
+    # If any facting (row, column) is active, add the relevant data fields
+    if (length(addPanels)) {
+        panel_list <- sprintf("list(%s)", paste(addPanels, collapse=", "))
+        brush_data <- sprintf("append(%s, %s)", brush_data, panel_list)
+    }
+
+    # Build up the command that draws the brush
+    brush_draw_cmd <- sprintf(
+"geom_rect(aes(%s), color='%s', alpha=%s, fill='%s',
+data=do.call(data.frame, %s),
+inherit.aes=FALSE)",
+        aes_call, stroke_color, .brushFillOpacity, fill_color, brush_data)
+
+    # Put a number for saved brushes.
+    if (index!=0L) {
+        text_data <- c(sprintf("x=mean(unlist(%s[c('%s', '%s')]))", brush_src, xmin, xmax),
+            sprintf("y=mean(unlist(%s[c('%s', '%s')]))", brush_src, ymin, ymax),
+            addPanels)
+
+        text_cmd <- sprintf(
+"geom_text(aes(x=x, y=y), inherit.aes=FALSE,
+data=data.frame(
+    %s),
+label=%i, size=%s, colour='%s')",
+            paste(text_data, collapse=",\n        "),
+            index, param_choices[[.plotFontSize]] * .plotFontSizeLegendTextDefault, stroke_color)
+        brush_draw_cmd <- c(brush_draw_cmd, text_cmd)
+    }
+
+    brush_draw_cmd
 }
 
 #' Generate ggplot instructions to draw a lasso selection path
@@ -2293,156 +2316,124 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #'
 #' @importFrom ggplot2 geom_point geom_polygon geom_path scale_shape_manual
 #' scale_fill_manual guides
-.self_lasso_path <- function(param_choices, flip=FALSE) {
-    active <- param_choices[[.brushData]]
-    saved <- param_choices[[.multiSelectHistory]]
-
-    keep <- which(vapply(saved, .is_lasso, FUN.VALUE=TRUE))
-    has_lasso <- as.integer(.is_lasso(active))
-    total <- has_lasso + length(keep)
-    if (total == 0L) {
-        return(NULL)
-    }
-
-    plot_name <- rownames(param_choices)
-    enc <- .split_encoded(plot_name)
-    stroke_color <- panel_colors[enc$Type]
-    fill_color <- brush_fill_color[enc$Type]
-
-    # Note: Faceting simultaneously on row and column produces a 'flip' effect on the lasso data
-    if (param_choices[[.facetByRow]] && param_choices[[.facetByColumn]]) {
-        facetrow <- 'panelvar2'
-        facetcolumn <- 'panelvar1'
+.draw_lasso <- function(plot_name, param_choices, index,  
+    facetrow, facetcolumn, stroke_color, fill_color, firstClosed)
+{
+    if (index == 0L) {
+        lasso_src <- sprintf("all_brushes[['%s']]", plot_name)
+        current <- param_choices[[.brushData]]
     } else {
-        facetrow <- facetcolumn <- 'panelvar1'
+        lasso_src <- sprintf("all_select_histories[['%s']][[%i]]", plot_name, index)
+        current <- param_choices[[.multiSelectHistory]][[index]]
     }
 
-    cmds <- character(0)
-    firstClosed <- TRUE
-    for (i in seq_len(total) - has_lasso) {
-        if (i == 0L) {
-            lasso_src <- sprintf("all_lassos[['%s']]", plot_name)
-            current <- active
-        } else {
-            chosen <- keep[i]
-            lasso_src <- sprintf("all_select_histories[['%s']][[%i]]", plot_name, chosen)
-            current <- saved[[chosen]]
-        }
+    # Initialize the minimal lasso information
+    lasso_data <- sprintf("X=%s$coord[, 1], Y=%s$coord[, 2]", lasso_src, lasso_src)
 
-        # Initialize the minimal lasso information
-        lasso_data <- sprintf("X=%s$coord[, 1], Y=%s$coord[, 2]", lasso_src, lasso_src)
+    # Collect additional panel information for the lasso.
+    addPanels <- character(0)
+    if (param_choices[[.facetByRow]]) {
+        addPanels["FacetRow"] <- sprintf("FacetRow=%s[['%s']]", lasso_src, facetrow)
+    }
+    if (param_choices[[.facetByColumn]]) {
+        addPanels["FacetColumn"] <- sprintf("FacetColumn=%s[['%s']]", lasso_src, facetcolumn)
+    }
+    if (length(addPanels)) {
+        panel_data <- paste(unlist(addPanels), collapse=", ")
+        lasso_data <- paste(lasso_data, panel_data, sep=", ")
+    }
 
-        # Collect additional panel information for the lasso.
-        addPanels <- c()
-        if (param_choices[[.facetByRow]]) {
-            addPanels["FacetRow"] <- sprintf("FacetRow=%s[['%s']]", lasso_src, facetrow)
-        }
-        if (param_choices[[.facetByColumn]]) {
-            addPanels["FacetColumn"] <- sprintf("FacetColumn=%s[['%s']]", lasso_src, facetcolumn)
-        }
-
-        # If any facting (row, column) is active, add the relevant data fields
-        if (length(addPanels)) {
-            panel_data <- paste(unlist(addPanels), collapse=", ")
-            lasso_data <- paste(lasso_data, panel_data, sep=", ")
-        }
-
-        if (identical(nrow(current$coord), 1L)) { # lasso has only a start point
-            point_cmd <- sprintf(
+    if (identical(nrow(current$coord), 1L)) { # lasso has only a start point
+        point_cmd <- sprintf(
 "geom_point(aes(x=%s, y=%s),
     data=data.frame(%s),
     inherit.aes=FALSE, alpha=1, stroke=1, color='%s', shape=%s)",
-                current$mapping$x, current$mapping$y, lasso_data, stroke_color, .lassoStartShape)
-            full_cmd_list <- point_cmd
+            current$mapping$x, current$mapping$y, lasso_data, stroke_color, .lassoStartShape)
+        full_cmd_list <- point_cmd
 
-        } else if (current$closed){ # lasso is closed
-            polygon_cmd <- sprintf(
-    "geom_polygon(aes(x=%s, y=%s), alpha=%s, color='%s',
-        data=data.frame(%s),
-        inherit.aes=FALSE, fill='%s')",
-                current$mapping$x, current$mapping$y,
-                .brushFillOpacity, stroke_color,
-                lasso_data, fill_color)
+    } else if (current$closed){ # lasso is closed
+        polygon_cmd <- sprintf(
+"geom_polygon(aes(x=%s, y=%s), alpha=%s, color='%s',
+    data=data.frame(%s),
+    inherit.aes=FALSE, fill='%s')",
+            current$mapping$x, current$mapping$y,
+            .brushFillOpacity, stroke_color,
+            lasso_data, fill_color)
 
-            # Put a number for saved lassos.
-            if (i!=0L) {
-                text_data <- c(sprintf("X=mean(%s$coord[, 1])", lasso_src),
-    				sprintf("Y=mean(%s$coord[, 2])", lasso_src),
-    				addPanels)
+        # Put a number for saved lassos.
+        if (index!=0L) {
+            text_data <- c(sprintf("X=mean(%s$coord[, 1])", lasso_src),
+                sprintf("Y=mean(%s$coord[, 2])", lasso_src),
+                addPanels)
 
-                text_cmd <- sprintf(
+            text_cmd <- sprintf(
 "geom_text(aes(x=%s, y=%s), inherit.aes=FALSE,
     data=data.frame(
         %s),
     label=%i, size=%s, colour='%s')",
-	                current$mapping$x, current$mapping$y,
-    				paste(text_data, collapse=",\n        "),
-                    chosen, param_choices[[.plotFontSize]] * .plotFontSizeLegendTextDefault, stroke_color)
-                polygon_cmd <- c(polygon_cmd, text_cmd)
+                current$mapping$x, current$mapping$y,
+                paste(text_data, collapse=",\n        "),
+                chosen, param_choices[[.plotFontSize]] * .plotFontSizeLegendTextDefault, stroke_color)
+            polygon_cmd <- c(polygon_cmd, text_cmd)
+        }
+
+        full_cmd_list <- polygon_cmd
+
+        if (firstClosed) { # Commands to add only once for both saved/active lassos.
+            scale_fill_cmd <- sprintf(
+                "scale_fill_manual(values=c('TRUE'='%s', 'FALSE'='%s'), labels=NULL)",
+                stroke_color, fill_color)
+            full_cmd_list <- c(polygon_cmd, scale_fill_cmd)
+
+            if (param_choices[[.shapeByField]] == .shapeByNothingTitle) {
+                guides_cmd <- "guides(shape='none')"
+                full_cmd_list <- c(full_cmd_list, guides_cmd)
             }
+            firstClosed <- FALSE
+        }
 
-            scale_fill_cmd <- NULL
-            guides_cmd <- NULL
-
-            if (firstClosed) {
-                # Commands to put only once
-                scale_fill_cmd <- sprintf(
-                    "scale_fill_manual(values=c('TRUE'='%s', 'FALSE'='%s'), labels=NULL)",
-                    stroke_color, fill_color)
-
-                if (param_choices[[.shapeByField]] == .shapeByNothingTitle) {
-                    guides_cmd <- "guides(shape='none')"
-                }
-                firstClosed <- FALSE
-            }
-
-            full_cmd_list <- c(polygon_cmd, scale_fill_cmd, guides_cmd)
-
-        } else { # lasso is still open
-            path_cmd <- sprintf(
+    } else { # lasso is still open
+        path_cmd <- sprintf(
 "geom_path(aes(x=%s, y=%s),
     data=data.frame(%s),
     inherit.aes=FALSE, alpha=1, color='%s', linetype='longdash')",
-                current$mapping$x, current$mapping$y, lasso_data, stroke_color)
+            current$mapping$x, current$mapping$y, lasso_data, stroke_color)
 
-            # Do not control the shape of waypoints if shape is already being mapped to a covariate
-            if (param_choices[[.shapeByField]] == .shapeByNothingTitle) {
-                point_cmd <- sprintf(
+        # Do not control the shape of waypoints if shape is already being mapped to a covariate
+        if (param_choices[[.shapeByField]] == .shapeByNothingTitle) {
+            point_cmd <- sprintf(
 "geom_point(aes(x=%s, y=%s, shape=First),
     data=data.frame(%s,
         First=seq_len(nrow(%s$coord)) == 1L),
     inherit.aes=FALSE, alpha=1, stroke=1, color='%s')",
-                    current$mapping$x, current$mapping$y,
-                    lasso_data, lasso_src, stroke_color)
+                current$mapping$x, current$mapping$y,
+                lasso_data, lasso_src, stroke_color)
 
-                scale_shape_cmd <- sprintf(
-                    "scale_shape_manual(values=c('TRUE'=%s, 'FALSE'=%s))",
-                    .lassoStartShape, .lassoWaypointShape
-                )
+            scale_shape_cmd <- sprintf(
+                "scale_shape_manual(values=c('TRUE'=%s, 'FALSE'=%s))",
+                .lassoStartShape, .lassoWaypointShape
+            )
 
-                guides_cmd <- "guides(shape='none')"
-            } else {
-                point_cmd <- sprintf(
+            guides_cmd <- "guides(shape='none')"
+        } else {
+            point_cmd <- sprintf(
 "geom_point(aes(x=%s, y=%s, size=First),
     data=data.frame(%s,
         First=seq_len(nrow(%s$coord)) == 1L),
     inherit.aes=FALSE, alpha=1, stroke=1, shape=%s, color='%s')",
-                    current$mapping$x, current$mapping$y,
-                    lasso_data, lasso_src, .lassoStartShape, stroke_color)
+                current$mapping$x, current$mapping$y,
+                lasso_data, lasso_src, .lassoStartShape, stroke_color)
 
-                scale_shape_cmd <- sprintf(
-                    "scale_size_manual(values=c('TRUE'=%s, 'FALSE'=%s))",
-                    .lassoStartSize, .lassoWaypointSize
-                )
+            scale_shape_cmd <- sprintf(
+                "scale_size_manual(values=c('TRUE'=%s, 'FALSE'=%s))",
+                .lassoStartSize, .lassoWaypointSize
+            )
 
-                guides_cmd <- "guides(size='none')"
-            }
-
-            full_cmd_list <- c(path_cmd, point_cmd, scale_shape_cmd, guides_cmd)
+            guides_cmd <- "guides(size='none')"
         }
 
-        cmds <- c(cmds, full_cmd_list)
+        full_cmd_list <- c(path_cmd, point_cmd, scale_shape_cmd, guides_cmd)
     }
 
-    cmds
+    list(cmds=full_cmd_list, firstClosed=firstClosed)
 }

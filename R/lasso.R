@@ -28,7 +28,7 @@
         lasso=NULL, closed=FALSE, panelvar1=click$panelvar1,
         panelvar2=click$panelvar2, mapping=click$mapping)
 
-    if (!is.null(previous)) {
+    if (length(previous)) {
         # Closing the lasso if you click close to the starting point, within the same facet.
         xrange <- click$domain$right - click$domain$left
         yrange <- click$domain$top - click$domain$bottom

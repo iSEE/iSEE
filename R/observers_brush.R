@@ -175,4 +175,89 @@
     invisible(NULL)
 }
 
+#' Multiple selection observers
+#'
+#' Observers to change the multiple selections by saving the active selection or deleting existing saved selections.
+#'
+#' @param input The Shiny input object from the server function.
+#' @param session The Shiny session object from the server function.
+#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
+#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
+#'
+#' @return Observers are created in the server function in which this is called.
+#' A \code{NULL} value is invisibly returned.
+#'
+#' @author Aaron Lun
+#'
+#' @importFrom shiny observeEvent isolate
+#' @rdname INTERNAL_multiple_select_observers
+.define_multiselect_observers <- function(plot_name, input, session, pObjects, rObjects) {
+    save_field <- paste0(plot_name, "_", .multiSelectSave)
+    del_field <- paste0(plot_name, "_", .multiSelectDelete)
+    info_field <- paste0(plot_name, "_", .panelGeneralInfo)
+    saved_field <- paste0(plot_name, "_", .selectMultiSaved)
+    resaved_field <- paste0(plot_name, "_resaved")
 
+    ## Save selection observer. ---
+    observeEvent(input[[save_field]], {
+        current <- pObjects$memory[[plot_name]][[.multiSelectHistory]]
+
+        to_store <- pObjects$memory[[plot_name]][[.brushData]]
+        if (!length(to_store) || (!.is_brush(to_store) && !to_store$closed)) {
+            return(NULL)
+        }
+
+        pObjects$memory[[plot_name]][[.multiSelectHistory]] <- c(current, list(to_store))
+
+        # Updating self (replot to get number).
+        rObjects[[info_field]] <- .increment_counter(isolate(rObjects[[info_field]]))
+        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+
+        transmitter <- pObjects$memory[[plot_name]][[.selectByPlot]]
+        if (transmitter!=.noSelection && .decoded2encoded(transmitter)==plot_name) {
+            rObjects[[saved_field]] <- .increment_counter(isolate(rObjects[[saved_field]]))
+            if (pObjects$memory[[plot_name]][[.selectMultiType]]==.selectMultiUnionTitle) {
+                rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+            }
+        }
+
+        # Updating children.
+        rObjects[[resaved_field]] <- .increment_counter(isolate(rObjects[[resaved_field]]))
+
+        .disableButtonIf(
+            del_field,
+            FALSE,
+            .buttonEmptyHistoryLabel, .buttonDeleteLabel, session
+        )
+    })
+
+    ## Deleted selection observer. ---
+    observeEvent(input[[del_field]], {
+        current <- pObjects$memory[[plot_name]][[.multiSelectHistory]]
+        current <- head(current, -1)
+        pObjects$memory[[plot_name]][[.multiSelectHistory]] <- current
+
+        # Updating self.
+        rObjects[[info_field]] <- .increment_counter(isolate(rObjects[[info_field]]))
+        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+
+        transmitter <- pObjects$memory[[plot_name]][[.selectByPlot]]
+        if (transmitter!=.noSelection && .decoded2encoded(transmitter)==plot_name) {
+            rObjects[[saved_field]] <- .increment_counter(isolate(rObjects[[saved_field]]))
+            if (pObjects$memory[[plot_name]][[.selectMultiSaved]] > length(current)) {
+                pObjects$memory[[plot_name]][[.selectMultiSaved]] <- 0L
+            }
+        }
+
+        # Updating children.
+        rObjects[[resaved_field]] <- .increment_counter(isolate(rObjects[[resaved_field]]))
+
+        .disableButtonIf(
+            del_field,
+            length(current)==0,
+            .buttonEmptyHistoryLabel, .buttonDeleteLabel, session
+        )
+    })
+
+    invisible(NULL)
+}

@@ -2373,7 +2373,7 @@ label=%i, size=%s, colour='%s')",
     label=%i, size=%s, colour='%s')",
                 current$mapping$x, current$mapping$y,
                 paste(text_data, collapse=",\n        "),
-                chosen, param_choices[[.plotFontSize]] * .plotFontSizeLegendTextDefault, stroke_color)
+                index, param_choices[[.plotFontSize]] * .plotFontSizeLegendTextDefault, stroke_color)
             polygon_cmd <- c(polygon_cmd, text_cmd)
         }
 

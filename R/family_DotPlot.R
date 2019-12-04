@@ -168,8 +168,10 @@ setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pO
 
     .define_lasso_observer(plot_name, input=input, session=session, 
         pObjects=pObjects, rObjects=rObjects)
-})
 
+    .define_multiselect_observers(plot_name, input=input, session=session,
+        pObjects=pObjects, rObjects=rObjects)
+})
 
 #' @export
 setMethod(".defineOutputElement", "DotPlot", function(x, id) {

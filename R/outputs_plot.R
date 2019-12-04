@@ -24,6 +24,7 @@
     force(FUN)
     force(se)
     force(colormap)
+    gen_field <- paste0(plot_name, "_", .panelGeneralInfo)
 
     output[[plot_name]] <- renderPlot({
         force(rObjects[[plot_name]])
@@ -38,75 +39,7 @@
         p.out$plot
     })
 
-    if (selectable) {
-        gen_field <- paste0(plot_name, "_", .panelGeneralInfo)
-        dec_name <- .decode_panel_name(mode, id)
-        output[[gen_field]] <- renderUI({
-            force(rObjects[[gen_field]])
-            selected <- .get_selected_points(
-                rownames(pObjects$coordinates[[plot_name]]), dec_name,
-                pObjects$memory, pObjects$coordinates, select_all=TRUE
-            )
 
-            all_output <- list()
-            if (!is.null(selected$active)) {
-                n_selected <- sum(selected$active)
-                n_total <- length(selected$active)
-                all_output <- append(all_output,
-                    list(
-                        sprintf(
-                            "%i of %i points in active selection (%.1f%%)",
-                            n_selected, n_total, 100*n_selected/n_total
-                        ),
-                        br()
-                    )
-                )
-            }
-
-            for (i in seq_along(selected$saved)) {
-                n_selected <- sum(selected$saved[[i]])
-                n_total <- length(selected$saved[[i]])
-                all_output <- append(all_output,
-                    list(
-                        sprintf(
-                            "%i of %i points in saved selection %i (%.1f%%)",
-                            n_selected, n_total, i, 100*n_selected/n_total
-                        ),
-                        br()
-                    )
-                )
-            }
-
-            if (length(all_output)==0L) {
-                NULL
-            } else {
-                do.call(tagList, all_output)
-            }
-        })
-    }
-
-    invisible(NULL)
-}
-
-#' Define the link information
-#'
-#' Define the text field containing linking information for a given plot.
-#'
-#' @inheritParams .define_plot_parameter_observers
-#'
-#' @return
-#' A reactive element to render the plot is added to \code{output}.
-#' A \code{NULL} is invisibly returned.
-#'
-#' @importFrom shiny renderUI
-#' @rdname INTERNAL_define_link_info_output
-.define_link_info_output <- function(mode, id, pObjects, rObjects) {
-    plot_name <- paste0(mode, id)
-    link_field <- paste0(plot_name, "_", .panelLinkInfo)
-    output[[link_field]] <- renderUI({
-        force(rObjects[[link_field]])
-        .define_plot_links(plot_name, pObjects$memory, pObjects$selection_links)
-    })
     invisible(NULL)
 }
 

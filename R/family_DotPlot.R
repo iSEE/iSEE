@@ -186,7 +186,13 @@ setMethod(".defineOutputElement", "DotPlot", function(x, id) {
 #' @export
 setMethod(".createRenderedOutput", "DotPlot", function(x, se, colormap, output, pObjects, rObjects) {
 # TODO: move colormap INSIDE se's metadata.
-    .define_plot_output(.getEncodedName(x), x[[.organizationId]],
+    mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
+
+    .define_plot_output(mode, id,
         FUN=.getPlottingFunction(x), selectable=TRUE,
         se=se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
+
+    .define_selection_info_output(mode, id, 
+        output=output, pObjects=pObjects, rObjects=rObjects)
 })

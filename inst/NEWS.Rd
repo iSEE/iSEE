@@ -1,12 +1,18 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.7.2}{
+\itemize{
+    \item Added notification on birthday.
+}
+}
+
 \section{iSEE VERSION 1.7.1}{
 \itemize{
-    \item Fix \code{rbind} of \code{data.frame} and \code{DataFrame}.
-    \item Fix error related to using \code{&&} with variable length greater than 1.
-    \item Replace deprecated scater argument.
-    \item Replace deprecated functions: \code{clearSpikes}, \code{clearSizeFactors}.
+    \item Fixed \code{rbind} of \code{data.frame} and \code{DataFrame}.
+    \item Fixed error related to using \code{&&} with variable length greater than 1.
+    \item Replaced deprecated scater argument.
+    \item Replaced deprecated functions: \code{clearSpikes}, \code{clearSizeFactors}.
 }
 }
 
@@ -30,33 +36,33 @@
 
 \section{iSEE VERSION 1.5.11}{
 \itemize{
-    \item Rename \code{isColorMapCompatible} to \code{checkColormapCompatibility}.
-    \item Fix graceful server side handling of \code{checkColormapCompatibility}.
-    \item Update documentation about panel organisation in vignette.
+    \item Renamed \code{isColorMapCompatible} to \code{checkColormapCompatibility}.
+    \item Fixed graceful server side handling of \code{checkColormapCompatibility}.
+    \item Updated documentation about panel organisation in vignette.
 }
 }
 
 \section{iSEE VERSION 1.5.10}{
 \itemize{
-    \item Fix test to provide a non-empty selection to custom plot function.
+    \item Fixed test to provide a non-empty selection to custom plot function.
 }
 }
 
 \section{iSEE VERSION 1.5.9}{
 \itemize{
-    \item Introduce Bugs Easter egg.
+    \item Introduced Bugs Easter egg.
 }
 }
 
 \section{iSEE VERSION 1.5.8}{
 \itemize{
-    \item Substitute deprecated \code{scater::normalize} by \code{logNormCounts}.
+    \item Substituted deprecated \code{scater::normalize} by \code{logNormCounts}.
 }
 }
 
 \section{iSEE VERSION 1.5.7}{
 \itemize{
-    \item Simplify protection of \code{redDimPlotDefaults} against empty \code{reducedDims}.
+    \item Simplified protection of \code{redDimPlotDefaults} against empty \code{reducedDims}.
     \item Fix to declare all panel types not available.
 }
 }
@@ -69,23 +75,22 @@
 
 \section{iSEE VERSION 1.5.5}{
 \itemize{
-    \item Add \code{modeEmpty()}.
+    \item Added \code{modeEmpty()}.
     \item Support zero-row \code{initialPanels} argument.
 }
 }
 
 \section{iSEE VERSION 1.5.4}{
 \itemize{
-    \item Add support for file upload with server re-initialization.
-    \item Move observers to separate file. Exclude from code coverage.
-    \item Update calls to \code{ReprocessedAllenData()} to load only \code{tophat_counts} assay.
+    \item Added support for file upload with server re-initialization.
+    \item Moved observers to separate file. Exclude from code coverage.
+    \item Updated calls to \code{ReprocessedAllenData()} to load only \code{tophat_counts} assay.
 }
 }
 
 \section{iSEE VERSION 1.5.3}{
 \itemize{
-    \item Use \code{ReprocessedAllenData()} following the deprecation of
-    \code{data(allen)}.
+    \item Use \code{ReprocessedAllenData()} following the deprecation of \code{data(allen)}.
 }
 }
 
@@ -99,7 +104,7 @@
 
 \section{iSEE VERSION 1.5.1}{
 \itemize{
-    \item Fix report of table links.
+    \item Fixed report of table links.
 }
 }
 
@@ -111,25 +116,25 @@
 
 \section{iSEE VERSION 1.3.9}{
 \itemize{
-    \item Add ORCID identifiers.
-    \item Fix subscript error when tables receive a selection.
-    \item Fix panel names in panel organization selectize input.
+    \item Added ORCID identifiers.
+    \item Fixed subscript error when tables receive a selection.
+    \item Fixed panel names in panel organization selectize input.
     \item Control the application of panel organization updates using an action button.
-    \item Fix child replotting upon lasso close.
-    \item Fix code reporting for zero-length DataFrame
+    \item Fixed child replotting upon lasso close.
+    \item Fixed code reporting for zero-length DataFrame
 }
 }
 
 \section{iSEE VERSION 1.3.8}{
 \itemize{
-    \item Support multiple selections.
+    \item Added support for multiple selections.
     \item Avoid Javascript error with check group conditional.
 }
 }
 
 \section{iSEE VERSION 1.3.7}{
 \itemize{
-    \item Add ImmunoOncology in biocViews.
+    \item Added ImmunoOncology in biocViews.
 }
 }
 
@@ -147,32 +152,32 @@
 
 \section{iSEE VERSION 1.3.4}{
 \itemize{
-    \item Fix panel organization selectize.
+    \item Fixed panel organization selectize.
 }
 }
 
 \section{iSEE VERSION 1.3.3}{
 \itemize{
-    \item Update default tour steps to match updated user interface.
-    \item Parse quote symbols literally in default tour steps.
-    \item Fix name-to-index conversion of feature names for heat map panel.
+    \item Updated default tour steps to match updated user interface.
+    \item Parsed quote symbols literally in default tour steps.
+    \item Fixed name-to-index conversion of feature names for heat map panel.
 }
 }
 
 \section{iSEE VERSION 1.3.2}{
 \itemize{
-    \item Move panel organization to modal with selectize to control panel display and ordering, remove sidebar.
-    \item Add control of width and height of new panels.
-    \item Enable voice control.
-    \item Refactor internal functions.
+    \item Moved panel organization to modal with selectize to control panel display and ordering, remove sidebar.
+    \item Added control of width and height of new panels.
+    \item Enabled voice control.
+    \item Refactored internal functions.
 }
 }
 
 \section{iSEE VERSION 1.3.1}{
 \itemize{
-    \item Fix invalid row index sent from tables in RStudio browser.
-    \item Fix initialization of search fields for tables that are initialized with an incoming selection.
-    \item Fix constant field name.
+    \item Fixed invalid row index sent from tables in RStudio browser.
+    \item Fixed initialization of search fields for tables that are initialized with an incoming selection.
+    \item Fixed constant field name.
 }
 }
 
@@ -184,61 +189,61 @@
 
 \section{iSEE VERSION 1.1.14}{
 \itemize{
-    \item Fix unit test.
+    \item Fixed unit test.
 }
 }
 
 \section{iSEE VERSION 1.1.13}{
 \itemize{
-    \item Add missing observer for assay type in row data plot panels.
-    \item Add missing observer for colorpicker
+    \item Added missing observer for assay type in row data plot panels.
+    \item Added missing observer for colorpicker
         when colouring by feature name in row-based plots, or by sample name in column-based plots.
     \item Ignore \code{NA} values when computing the range of coloring scales.
-    \item Add a size expansion factor (5x) to the selected point
+    \item Added a size expansion factor (5x) to the selected point
         when colouring by feature name in row-based plots, or by sample name in column-based plots.
-    \item Fix redundant coloring of selected point
+    \item Fixed redundant coloring of selected point
         when colouring by feature name in row-based plots, or by sample name in column-based plots.
-    \item Update basic vignette.
+    \item Updated basic vignette.
 }
 }
 
 \section{iSEE VERSION 1.1.12}{
 \itemize{
-    \item Update NEWS file.
+    \item Updated NEWS file.
 }
 }
 
 \section{iSEE VERSION 1.1.11}{
 \itemize{
-    \item Export list of panel names and codes.
+    \item Exported list of panel names and codes.
 }
 }
 
 \section{iSEE VERSION 1.1.10}{
 \itemize{
-    \item Fix colour scale to be invariant when selecting on a different color.
-    \item Protect heat map plot panels against restriction on zero samples.
+    \item Fixed colour scale to be invariant when selecting on a different color.
+    \item Protected heat map plot panels against restriction on zero samples.
 }
 }
 
 \section{iSEE VERSION 1.1.9}{
 \itemize{
-    \item Fix compatibility with \code{DelayedArray} assays.
+    \item Fixed compatibility with \code{DelayedArray} assays.
 }
 }
 
 \section{iSEE VERSION 1.1.8}{
 \itemize{
-    \item Extend unit test coverage.
-    \item Move generics to separate file.
+    \item Extended unit test coverage.
+    \item Moved generics to separate file.
     \item Minor fix to \code{annotateEnsembl}.
-    \item Update list of functionalities in README.
+    \item Updated list of functionalities in README.
 }
 }
 
 \section{iSEE VERSION 1.1.7}{
 \itemize{
-    \item Resolve \code{BiocManager} message.
+    \item Resolved \code{BiocManager} message.
 }
 }
 
@@ -251,40 +256,40 @@
 \section{iSEE VERSION 1.1.5}{
 \itemize{
     \item New panel colors.
-    \item Control arguments to custom panels through action buttons.
-    \item Distinguish visible from active arguments for custom panels.
+    \item Added control for arguments to custom panels through action buttons.
+    \item Distinguished visible from active arguments for custom panels.
 }
 }
 
 \section{iSEE VERSION 1.1.4}{
 \itemize{
     \item Split \code{?defaults} help page by panel type.
-    \item Generalize support for custom data plots and statistics tables.
+    \item Generalized support for custom data plots and statistics tables.
 }
 }
 
 \section{iSEE VERSION 1.1.3}{
 \itemize{
-    \item Add new \emph{Sample assay plot} panel type.
-    \item Extend documentation.
+    \item Added new \emph{Sample assay plot} panel type.
+    \item Extended documentation.
     \item Split vignette into three: basic, advanced, ExperimentColorMap.
-    \item Fix initialization of reduced dimensions with a single plot axis choice.
-    \item Substitute discouraged use of \code{sapply}.
-    \item Move roxygen \code{importFrom} instructions closer to the relevant code.
-    \item Increase unit test coverage.
+    \item Fixed initialization of reduced dimensions with a single plot axis choice.
+    \item Substituted discouraged use of \code{sapply}.
+    \item Moved roxygen \code{importFrom} instructions closer to the relevant code.
+    \item Increased unit test coverage.
     \item Consistent use of "colormap" through the package.
-    \item Update installation instructions.
-    \item Add CITATION file.
-    \item Add Figure 1 of article in README.
+    \item Updated installation instructions.
+    \item Added CITATION file.
+    \item Added Figure 1 of article in README.
 }
 }
 
 \section{iSEE VERSION 1.1.2}{
 \itemize{
-    \item Enable faceting by row and column, with appropriate updates to brush and lasso.
-    \item Enable shaping on data points.
+    \item Enabled faceting by row and column, with appropriate updates to brush and lasso.
+    \item Enabled shaping on data points.
     \item Minor fix of jitter for violin and square plots.
-    \item INTERNAL: Enable storage of additional \code{plot.data} beyond \code{X} and \code{Y} in \code{all.coordinates}.
+    \item INTERNAL: Enabled storage of additional \code{plot.data} beyond \code{X} and \code{Y} in \code{all.coordinates}.
         See constant \code{.allCoordinatesNames}.
         Necessary for correct behaviour of brushes on faceted plots.
 }
@@ -298,30 +303,30 @@
 
 \section{iSEE VERSION 1.0.1}{
 \itemize{
-    \item Rename feature expression plots to feature assay plots, for generality.
+    \item Renamed feature expression plots to feature assay plots, for generality.
 }
 }
 
 \section{iSEE VERSION 0.99.3}{
 \itemize{
     \item Custom tours can be restarted via the dropdown menu button, overwriting the default tour.
-    \item Add functionality to provide a custom title to be displayed in the app.
-    \item Preserve data points and width ratio upon zoom on discrete variables.
+    \item Added functionality to provide a custom title to be displayed in the app.
+    \item Preserved data points and width ratio upon zoom on discrete variables.
 }
 }
 
 \section{iSEE VERSION 0.99.2}{
 \itemize{
-    \item Add functionality for providing additional custom tours, to be launched directly upon starting the app.
+    \item Added functionality for providing additional custom tours, to be launched directly upon starting the app.
 }
 }
 
 \section{iSEE VERSION 0.99.1}{
 \itemize{
-    \item Add grid-based visual point downsampling for faster plotting, including control of resolution.
-    \item Add button "Clear features" for heat maps.
-    \item Reorganize buttons in heat map panels.
-    \item Transfer maintainer badge to Federico.
+    \item Added grid-based visual point downsampling for faster plotting, including control of resolution.
+    \item Added button "Clear features" for heat maps.
+    \item Reorganized buttons in heat map panels.
+    \item Transfered maintainer badge to Federico.
 }
 }
 

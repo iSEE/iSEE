@@ -95,4 +95,6 @@ setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObj
             pObjects$memory_copy[[panel_name]][[.organizationHeight]] <- new.height
         }
     })
+
+    .define_child_propagation_observers(panel_name, session=session, pObjects=pObjects, rObjects=rObjects)
 })

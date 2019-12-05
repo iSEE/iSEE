@@ -380,14 +380,6 @@ iSEE <- function(se,
                 # Reactive to regenerate multi-selection selectize.
                 rObjects[[paste0(mode, id, "_", .selectMultiSaved)]] <- 1L
 
-                # Reactive to regenerate children when the point population of the current panel changes.
-                rObjects[[paste0(mode, id, "_repopulated")]] <- 1L
-
-                # Reactive to regenerate children when the active selection of the current panel changes.
-                rObjects[[paste0(mode, id, "_reactivated")]] <- 1L
-
-                # Reactive to regenerate children when the saved selection of the current panel changes.
-                rObjects[[paste0(mode, id, "_resaved")]] <- 1L
             }
 
 #            # Evaluating certain plots to fill the coordinate list, if there are any selections.

@@ -57,12 +57,12 @@
             }
 
             if (replot) {
-                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+                .safe_reactive_bump(rObjects, child_plot)
 
                 # To warrant replotting of the grandchildren, the child must itself be restricted.
                 if (can_transmit && child_instance[[.selectEffect]]==.selectRestrictTitle) {
                     react_child <- paste0(child_plot, "_repopulated")
-                    rObjects[[react_child]] <- .increment_counter(isolate(rObjects[[react_child]]))
+                    .safe_reactive_bump(rObjects, react_child)
                 }
             }
         }
@@ -70,7 +70,7 @@
  
     # Reactive to regenerate children when the active selection of the current panel changes.
     act_field <- paste0(panel_name, "_reactivated")
-    rObjects[[act_field]] <- 1L
+    .safe_reactive_init(rObjects, act_field)
 
     observe({
         force(rObjects[[act_field]])
@@ -80,12 +80,12 @@
 
             select_mode <- child_instance[[.selectMultiType]]
             if (select_mode==.selectMultiActiveTitle || select_mode==.selectMultiUnionTitle) {
-                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+                .safe_reactive_bump(rObjects, child_plot)
 
                 # To warrant replotting of the grandchildren, the child must itself be restricted.
                 if (can_transmit && child_instance[[.selectEffect]]==.selectRestrictTitle) {
                     react_child <- paste0(child_plot, "_repopulated")
-                    rObjects[[react_child]] <- .increment_counter(isolate(rObjects[[react_child]]))
+                    .safe_reactive_bump(rObjects, react_child)
                 }
             }
         }
@@ -93,7 +93,7 @@
 
     # Reactive to regenerate children when the saved selection of the current panel changes.
     save_field <- paste0(panel_name, "_resaved")
-    rObjects[[save_field]] <- 1L
+    .safe_reactive_init(rObjects, save_field)
 
     observe({
         force(rObjects[[save_field]])
@@ -110,21 +110,18 @@
 
             child_select_type <- child_instance[[.selectMultiType]]
             if (child_select_type==.selectMultiUnionTitle || (child_select_type==.selectMultiSavedTitle && reset)) {
-                rObjects[[child_plot]] <- .increment_counter(isolate(rObjects[[child_plot]]))
+                .safe_reactive_bump(rObjects, child_plot)
 
                 # To warrant replotting of the grandchildren, the child must itself be restricted.
                 if (can_transmit && child_instance[[.selectEffect]]==.selectRestrictTitle) {
                     react_child <- paste0(child_plot, "_repopulated")
-                    rObjects[[react_child]] <- .increment_counter(isolate(rObjects[[react_child]]))
+                    .safe_reactive_bump(rObjects, react_child)
                 }
             }
 
-            # Updating the selectize as well (skipping it if hasn't been instantiated,
-            # which is theoretically impossible, but we might as well add some protection).
+            # Updating the selectize as well.
             child_saved <- paste0(child_plot, "_", .selectMultiSaved)
-            if (child_saved %in% names(rObjects)) {
-                rObjects[[child_saved]] <- .increment_counter(isolate(rObjects[[child_saved]]))
-            }
+            .safe_reactive_bump(rObjects, child_saved)
         }
     })
 

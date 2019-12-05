@@ -43,8 +43,8 @@
             .buttonNoSelectionLabel, .buttonSaveLabel, session
         )
 
-        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-        rObjects[[act_field]] <- .increment_counter(isolate(rObjects[[act_field]]))
+        .safe_reactive_bump(rObjects, plot_name)
+        .safe_reactive_bump(rObjects, act_field)
     }, ignoreInit=TRUE)
 
     invisible(NULL)
@@ -165,10 +165,10 @@
             .buttonNoSelectionLabel, .buttonSaveLabel, session
         )
 
-        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+        .safe_reactive_bump(rObjects, plot_name)
 
         if (reactivated) {
-            rObjects[[act_field]] <- .increment_counter(isolate(rObjects[[act_field]]))
+            .safe_reactive_bump(rObjects, act_field)
         }
     })
 
@@ -198,9 +198,6 @@
     saved_field <- paste0(plot_name, "_", .selectMultiSaved)
     resaved_field <- paste0(plot_name, "_resaved")
 
-    # Reactive to regenerate multi-selection selectize, used in .define_child_propagation_observers().
-    rObjects[[saved_field]] <- 1L
-
     ## Save selection observer. ---
     observeEvent(input[[save_field]], {
         current <- pObjects$memory[[plot_name]][[.multiSelectHistory]]
@@ -213,19 +210,15 @@
         pObjects$memory[[plot_name]][[.multiSelectHistory]] <- c(current, list(to_store))
 
         # Updating self (replot to get number).
-        rObjects[[info_field]] <- .increment_counter(isolate(rObjects[[info_field]]))
-        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+        .safe_reactive_bump(rObjects, info_field)
+        .safe_reactive_bump(rObjects, plot_name)
 
-        transmitter <- pObjects$memory[[plot_name]][[.selectByPlot]]
-        if (transmitter!=.noSelection && .decoded2encoded(transmitter)==plot_name) {
-            rObjects[[saved_field]] <- .increment_counter(isolate(rObjects[[saved_field]]))
-            if (pObjects$memory[[plot_name]][[.selectMultiType]]==.selectMultiUnionTitle) {
-                rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
-            }
+        if (pObjects$memory[[plot_name]][[.selectByPlot]]==plot_name) {
+            .safe_reactive_bump(rObjects, saved_field)
         }
 
         # Updating children.
-        rObjects[[resaved_field]] <- .increment_counter(isolate(rObjects[[resaved_field]]))
+        .safe_reactive_bump(rObjects, resaved_field)
 
         .disableButtonIf(
             del_field,
@@ -241,19 +234,19 @@
         pObjects$memory[[plot_name]][[.multiSelectHistory]] <- current
 
         # Updating self.
-        rObjects[[info_field]] <- .increment_counter(isolate(rObjects[[info_field]]))
-        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+        .safe_reactive_bump(rObjects, info_field)
+        .safe_reactive_bump(rObjects, plot_name)
 
         transmitter <- pObjects$memory[[plot_name]][[.selectByPlot]]
         if (transmitter!=.noSelection && .decoded2encoded(transmitter)==plot_name) {
-            rObjects[[saved_field]] <- .increment_counter(isolate(rObjects[[saved_field]]))
+            .safe_reactive_bump(rObjects, saved_field)
             if (pObjects$memory[[plot_name]][[.selectMultiSaved]] > length(current)) {
                 pObjects$memory[[plot_name]][[.selectMultiSaved]] <- 0L
             }
         }
 
         # Updating children.
-        rObjects[[resaved_field]] <- .increment_counter(isolate(rObjects[[resaved_field]]))
+        .save_reactive_bump(rObjects, resaved_field)
 
         .disableButtonIf(
             del_field,

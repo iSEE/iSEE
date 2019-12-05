@@ -20,7 +20,7 @@
     select_panel_field <- paste0(panel_name, "_", .selectByPlot)
     repop_field <- paste0(panel_name, "_repopulated")
     can_transmit <- .can_transmit(pObjects$memory[[panel_anem]])
-    rObjects[[paste0(mode, id, "_", .selectMultiSaved)]] <- 1L
+    .safe_reactive_init(rObjects, paste0(mode, id, "_", .selectMultiSaved))
 
     observeEvent(input[[select_panel_field]], {
         old_transmitter <- pObjects$memory[[panel_name]][[.selectByPlot]]
@@ -57,12 +57,12 @@
         # Update the elements reporting the links between panels.
         for (relinked in setdiff(c(old_transmitter, new_transmitter, panel_name), .noSelection)) {
             relink_field <- paste0(relinked, "_", .panelLinkInfo)
-            rObjects[[relink_field]] <- .increment_counter(isolate(rObjects[[relink_field]]))
+            .safe_reactive_bump(rObjects, relink_field)
         }
 
         # Update the multi-selection selectize.
         saved_select_name <- paste0(panel_name, "_", .selectMultiSaved)
-        rObjects[[saved_select_name]] <- .increment_counter(isolate(rObjects[[saved_select_name]]))
+        .safe_reactive_bump(rObjects, saved_select_name)
 
         saved_val <- pObjects$memory[[panel_name]][[.selectMultiSaved]]
         if (saved_val!=0L && new_transmitter!=.noSelection) {
@@ -78,12 +78,12 @@
             return(NULL)
         }
 
-        rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
+        .safe_reactive_bump(rObjects, panel_name)
 
         # Updating children, if the current panel is set to restrict
         # (and thus the point population changes with a new transmitted selection).
         if (can_transmit && pObjects$memory[[panel_name]][[.selectEffect]]==.selectRestrictTitle) {
-            rObjects[[repop_field]] <- .increment_counter(isolate(rObjects[[repop_field]]))
+            .safe_reactive_bump(rObjects, repop_field)
         }
     }, ignoreInit=TRUE)
 
@@ -117,11 +117,11 @@
             return(NULL)
         }
 
-        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+        .safe_reactive_bump(rObjects, plot_name)
 
         # Updating children if the selection in the current plot changes due to gain/loss of Restrict.
         if (cur_effect==.selectRestrictTitle || old_effect==.selectRestrictTitle) {
-            rObjects[[repop_field]] <- .increment_counter(isolate(rObjects[[repop_field]]))
+            .safe_reactive_bump(rObjects, repop_field)
         }
     }, ignoreInit=TRUE)
 
@@ -166,9 +166,9 @@
             return(NULL)
         }
 
-        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+        .safe_reactive_bump(rObjects, plot_name)
         if (pObjects$memory[[plot_name]][[.selectEffect]]==.selectRestrictTitle) {
-            rObjects[[repop_field]] <- .increment_counter(isolate(rObjects[[repop_field]]))
+            .safe_reactive_bump(rObjects, repop_field)
         }
     }, ignoreInit=TRUE)
 
@@ -190,9 +190,9 @@
         }
 
         # Switch of 'Saved' will ALWAYS change the current plot, so no need for other checks.
-        rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+        .safe_reactive_bump(rObjects, plot_name)
         if (pObjects$memory[[plot_name]][[.selectEffect]]==.selectRestrictTitle) {
-            rObjects[[repop_field]] <- .increment_counter(isolate(rObjects[[repop_field]]))
+            .safe_reactive_bump(rObjects, repop_field)
         }
     }, ignoreInit=TRUE)
 
@@ -200,8 +200,8 @@
     # Do NOT be tempted to centralize code by setting .selectMultiSaved in the above observer.
     # This needs to be done in a separate observer that actually executes to set the 
     # the field to something upon initialization of the panel.
-    # (As a consequence, this function must be run after .define_selection_choice_observer()).
     observe({
+        .safe_reactive_init(rObjects, saved_select)
         force(rObjects[[saved_select]])
         force(rObjects$rerendered)
 

@@ -88,3 +88,22 @@
     }
     x
 }
+
+.safe_reactive_init <- function(rObjects, field, value=1L) {
+    if (!field %in% names(rObjects)) {
+        rObjects[[field]] <- value
+    }
+    invisible(rObjects)
+}
+
+#' @importFrom shiny isolate
+.safe_reactive_bump <- function(rObjects, field, max=10000L) {
+    .safe_reactive_init(rObjects, field)
+    counter <- isolate(rObjects[[field]]) + 1L
+    if (counter >= max) {
+        counter <- 0L
+    }
+    rObjects[[field]] <- counter
+    invisible(counter)
+}
+

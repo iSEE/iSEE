@@ -297,6 +297,13 @@ iSEE <- function(se,
         rObjects <- reactiveValues(rerendered=1L)
 
         initialize_server <- function(se, rObjects) {
+            if (grepl("[[:digit:]]+-12-06", Sys.Date())) {
+                showNotification(ui=HTML(paste0(
+                    "<p style='font-size:500%; text-align:center;'>&#x1F382;</p>",
+                    "<p style='font-size:200%; text-align:center;'>Happy Birthday <code>iSEE</code>!</p>", collapse = "")),
+                    type="default", duration = NULL)
+            }
+            
             se_out <- .sanitize_SE_input(se)
             se <- se_out$object
             se_cmds <- se_out$cmds

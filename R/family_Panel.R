@@ -76,6 +76,8 @@ setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObj
     panel_name <- paste0(mode, id)
     input_FUN <- function(field) paste0(panel_name, "_", field)
 
+    .safe_reactive_bump(rObjects, .input_FUN(.panelLinkInfo))
+
     width_name <- input_FUN(.organizationWidth)
     observeEvent(input[[width_name]], {
         copy <- pObjects$memory_copy[[panel_name]]

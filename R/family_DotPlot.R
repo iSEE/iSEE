@@ -118,6 +118,9 @@ setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pO
     id <- x[[.organizationId]]
     plot_name <- paste0(mode, id)
 
+    .safe_reactive_bump(rObjects, plot_name)
+    .safe_reactive_bump(rObjects, paste0(plot_name, "_", .panelGeneralInfo))
+
     .define_box_observers(plot_name, c(.visualParamBoxOpen, .selectParamBoxOpen), input, pObjects)
 
     .define_visual_parameter_choice_observer(plot_name, input, pObjects)

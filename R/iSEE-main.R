@@ -363,25 +363,6 @@ iSEE <- function(se,
             pObjects$cached_info <- empty_list
             pObjects[[.voiceActivePanel]] <- NA_character_
 
-#            # Generating the reactive objects, used to coordinate
-#            # behaviour across observers.
-#            rObjects$active_panels <- active_panels
-#
-            for (idx in seq_along(memory)) {
-                instance <- memory[[idx]]
-                mode <- .getEncodedName(instance)
-                id <- instance[[.organizationId]]
-                rObjects[[paste0(mode, id)]] <- 1L
-
-                # Reactive to regenerate information panels.
-                rObjects[[paste0(mode, id, "_", .panelLinkInfo)]] <- 1L
-                rObjects[[paste0(mode, id, "_", .panelGeneralInfo)]] <- 1L
-
-                # Reactive to regenerate multi-selection selectize.
-                rObjects[[paste0(mode, id, "_", .selectMultiSaved)]] <- 1L
-
-            }
-
 #            # Evaluating certain plots to fill the coordinate list, if there are any selections.
 #            # This is done in topological order so that all dependencies are satisfied.
 #            eval_order <- .establish_eval_order(pObjects$selection_links)

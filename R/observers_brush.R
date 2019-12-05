@@ -198,6 +198,9 @@
     saved_field <- paste0(plot_name, "_", .selectMultiSaved)
     resaved_field <- paste0(plot_name, "_resaved")
 
+    # Reactive to regenerate multi-selection selectize, used in .define_child_propagation_observers().
+    rObjects[[saved_field]] <- 1L
+
     ## Save selection observer. ---
     observeEvent(input[[save_field]], {
         current <- pObjects$memory[[plot_name]][[.multiSelectHistory]]

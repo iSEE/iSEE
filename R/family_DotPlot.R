@@ -190,7 +190,7 @@ setMethod(".createRenderedOutput", "DotPlot", function(x, se, colormap, output, 
     id <- x[[.organizationId]]
 
     out <- .getCodeChunk(x, pObjects$memory, pObjects$coordinates, se, colormap)
-    print(out$cmd_list)
+    lapply(out, function(x){invisible(cat(paste0(x, collapse = "\n"))); cat("\n")})
 
     .define_plot_output(mode, id,
         FUN=.getPlottingFunction(x), selectable=TRUE,
@@ -212,6 +212,5 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
     out <- .getCommandsDataExtra(x, out$data_cmds, param_choices=param_choices, all_memory=all_memory,
         all_coordinates=all_coordinates, se=se,
         colormap=colormap, x_lab=out$x_lab, y_lab=out$y_lab, title=out$plot_title)
-
-    return(out$cmds)
+    return(out$cmd_list)
 })

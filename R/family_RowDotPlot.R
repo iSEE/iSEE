@@ -143,7 +143,7 @@ setMethod(".createParamObservers", "RowDotPlot", function(x, se, input, session,
 })
 
 #' @export
-setMethod(".getCommandsDataExtra", "RowDotPlot", function(x, data_cmds, param_choices, all_memory, all_coordinates, se, ...) {
+setMethod(".getCommandsExtra", "RowDotPlot", function(x, data_cmds, param_choices, all_memory, all_coordinates, se, ...) {
     # TODO: this signature differs from ColumnDotPlot only for "by_row"
     setup_out <- .extract_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row=TRUE)
 

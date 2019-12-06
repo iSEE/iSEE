@@ -234,3 +234,42 @@ setMethod(".getFullName", "FeatAssayPlot", function(x) "Feature assay plot")
 
 #' @export
 setMethod(".getPlottingFunction", "FeatAssayPlot", function(x) .make_featAssayPlot)
+
+#' @export
+setMethod(".getCommandsDataXY", "FeatAssayPlot", function(x, param_choices) {
+    data_cmds <- list()
+
+    ## Setting up the y-axis:
+    gene_selected_y <- param_choices[[.featAssayYAxisFeatName]]
+    assay_choice <- param_choices[[.featAssayAssay]]
+    plot_title <- gene_selected_y
+    y_lab <- sprintf("%s (%s)", gene_selected_y, assay_choice)
+    data_cmds[["y"]] <- sprintf(
+        "plot.data <- data.frame(Y=assay(se, %s, withDimnames=FALSE)[%s, ], row.names=colnames(se))",
+        deparse(assay_choice), deparse(gene_selected_y)
+    )
+
+    ## Checking X axis choice:
+    x_choice <- param_choices[[.featAssayXAxis]]
+
+    if (x_choice == .featAssayXAxisColDataTitle) { # colData column selected
+        x_lab <- param_choices[[.featAssayXAxisColData]]
+        plot_title <- paste(plot_title, "vs", x_lab)
+        data_cmds[["x"]] <- sprintf("plot.data$X <- colData(se)[, %s];", deparse(x_lab))
+
+    } else if (x_choice == .featAssayXAxisFeatNameTitle) { # gene selected
+        gene_selected_x <- param_choices[[.featAssayXAxisFeatName]]
+        plot_title <- paste(plot_title, "vs", gene_selected_x)
+        x_lab <- sprintf("%s (%s)", gene_selected_x, assay_choice)
+        data_cmds[["x"]] <- sprintf(
+            "plot.data$X <- assay(se, %s, withDimnames=FALSE)[%s, ];",
+            deparse(assay_choice), deparse(gene_selected_x)
+        )
+
+    } else { # no x axis variable specified: show single violin
+        x_lab <- ''
+        data_cmds[["x"]] <- "plot.data$X <- factor(character(ncol(se)))"
+    }
+
+    return(list(data_cmds=data_cmds, plot_title=plot_title, x_lab=x_lab, y_lab=y_lab))
+})

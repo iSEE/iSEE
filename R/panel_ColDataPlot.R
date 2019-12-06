@@ -91,7 +91,7 @@ setValidity2("ColDataPlot", function(object) {
     msg <- .allowable_choice_error(msg, object, .colDataXAxis,
         c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle))
 
-    msg <- .single_string_error(msg, object, 
+    msg <- .single_string_error(msg, object,
         c(.colDataXAxisColData, .colDataYAxis))
 
     if (length(msg)) {
@@ -153,3 +153,32 @@ setMethod(".getFullName", "ColDataPlot", function(x) "Column data plot")
 
 #' @export
 setMethod(".getPlottingFunction", "ColDataPlot", function(x) .make_colDataPlot)
+
+#' @export
+setMethod(".getCommandsDataXY", "ColDataPlot", function(x, param_choices) {
+    data_cmds <- list()
+
+    y_lab <- param_choices[[.colDataYAxis]]
+    # NOTE: deparse() automatically adds quotes, AND protects against existing quotes/escapes.
+    data_cmds[["y"]] <- sprintf(
+        "plot.data <- data.frame(Y=colData(se)[, %s], row.names=colnames(se));",
+        deparse(y_lab)
+    )
+
+    # Prepare X-axis data.
+    if (param_choices[[.colDataXAxis]] == .colDataXAxisNothingTitle) {
+        x_lab <- ''
+        data_cmds[["x"]] <- "plot.data$X <- factor(character(ncol(se)))"
+    } else {
+        x_lab <- param_choices[[.colDataXAxisColData]]
+        data_cmds[["x"]] <- sprintf(
+            "plot.data$X <- colData(se)[, %s];",
+            deparse(x_lab)
+        )
+    }
+
+    x_title <- ifelse(x_lab == '', x_lab, sprintf("vs %s", x_lab))
+    plot_title <- sprintf("%s %s", y_lab, x_title)
+
+    return(list(data_cmds=data_cmds, plot_title=plot_title, x_lab=x_lab, y_lab=y_lab))
+})

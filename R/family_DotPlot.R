@@ -43,7 +43,7 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
 setValidity2("DotPlot", function(object) {
     msg <- character(0)
 
-    msg <- .valid_logical_error(msg, object, 
+    msg <- .valid_logical_error(msg, object,
         c(.facetByRow, .facetByColumn,
             .dataParamBoxOpen, .visualParamBoxOpen,
             .contourAddTitle))
@@ -54,8 +54,8 @@ setValidity2("DotPlot", function(object) {
             .sizeByField,
             .selectEffect))
 
-    msg <- .valid_string_error(msg, object, 
-        c(.colorByDefaultColor, 
+    msg <- .valid_string_error(msg, object,
+        c(.colorByDefaultColor,
             .selectColor,
             .contourColor))
 
@@ -155,18 +155,18 @@ setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pO
         link_type="color",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_selectize_update_observer(plot_name, .colorByFeatName, 
+    .define_selectize_update_observer(plot_name, .colorByFeatName,
         choices=rownames(se), selected=x[[.colorByFeatName]],
-        session=session, rObjects=rObjects) 
+        session=session, rObjects=rObjects)
 
     .define_selectize_update_observer(plot_name, .colorBySampName,
         choices=colnames(se), selected=x[[.colorBySampName]],
         session=session, rObjects=rObjects)
 
-    .define_brush_observer(plot_name, input=input, session=session, 
+    .define_brush_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 
-    .define_lasso_observer(plot_name, input=input, session=session, 
+    .define_lasso_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 
     .define_multiselect_observers(plot_name, input=input, session=session,
@@ -189,10 +189,29 @@ setMethod(".createRenderedOutput", "DotPlot", function(x, se, colormap, output, 
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
 
+    out <- .getCodeChunk(x, pObjects$memory, pObjects$coordinates, se, colormap)
+    print(out$cmd_list)
+
     .define_plot_output(mode, id,
         FUN=.getPlottingFunction(x), selectable=TRUE,
         se=se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
 
-    .define_selection_info_output(mode, id, 
+    .define_selection_info_output(mode, id,
         output=output, pObjects=pObjects, rObjects=rObjects)
+})
+
+#' @export
+setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, se, colormap) {
+    mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
+    plot_name <- paste0(mode, id)
+    param_choices <- all_memory[[plot_name]]
+    # TODO: cache commands in x itself
+    out <- .getCommandsDataXY(x, param_choices)
+    # TODO: cache commands in x itself
+    out <- .getCommandsDataExtra(x, out$data_cmds, param_choices=param_choices, all_memory=all_memory,
+        all_coordinates=all_coordinates, se=se,
+        colormap=colormap, x_lab=out$x_lab, y_lab=out$y_lab, title=out$plot_title)
+
+    return(out$cmds)
 })

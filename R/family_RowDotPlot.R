@@ -141,3 +141,17 @@ setMethod(".createParamObservers", "RowDotPlot", function(x, se, input, session,
 
     callNextMethod()
 })
+
+#' @export
+setMethod(".getCommandsDataExtra", "RowDotPlot", function(x, data_cmds, param_choices, all_memory, all_coordinates, se, ...) {
+    # TODO: this signature differs from ColumnDotPlot only for "by_row"
+    setup_out <- .extract_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row=TRUE)
+
+    xy <- setup_out$envir$plot.data # DO NOT MOVE below .downsample_points, as downsampling will alter the value in 'envir'.
+
+    downsample_cmds <- .downsample_points(param_choices, setup_out$envir)
+
+    plot_out <- .create_plot(setup_out$envir, param_choices, ..., color_lab=setup_out$color_lab, shape_lab=setup_out$shape_lab, size_lab=setup_out$size_lab, by_row=TRUE)
+
+    return(list(cmd_list=c(setup_out$cmd_list, list(plot=c(downsample_cmds, plot_out$cmds))), xy=xy, plot=plot_out$plot))
+})

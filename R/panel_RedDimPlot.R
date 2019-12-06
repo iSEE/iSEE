@@ -216,3 +216,20 @@ setMethod(".getFullName", "RedDimPlot", function(x) "Reduced dimension plot")
 
 #' @export
 setMethod(".getPlottingFunction", "RedDimPlot", function(x) .make_redDimPlot)
+
+#' @export
+setMethod(".getCommandsDataXY", "RedDimPlot", function(x, param_choices) {
+    data_cmds <- list()
+
+    data_cmds[["reducedDim"]] <- sprintf(
+        "red.dim <- reducedDim(se, %s);", deparse(param_choices[[.redDimType]]))
+    data_cmds[["xy"]] <- sprintf(
+        "plot.data <- data.frame(X=red.dim[, %i], Y=red.dim[, %i], row.names=colnames(se));",
+        param_choices[[.redDimXAxis]], param_choices[[.redDimYAxis]])
+
+    plot_title <- param_choices[[.redDimType]]
+    x_lab <- sprintf("Dimension %s", param_choices[[.redDimXAxis]])
+    y_lab <- sprintf("Dimension %s", param_choices[[.redDimYAxis]])
+
+    return(list(data_cmds=data_cmds, plot_title=plot_title, x_lab=x_lab, y_lab=y_lab))
+})

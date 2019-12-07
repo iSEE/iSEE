@@ -235,8 +235,8 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
     data_cmds_store <- .add_command(data_cmds_store, out$cmds, name='size')
     plot_env$labs <- c(plot_env$labs, size = out$label)
 
-    out <- .getCommandsDataFacets(x, param_choices, se)
-    data_cmds_store <- .add_command(data_cmds_store, out)
+    out_facets <- .getCommandsDataFacets(x, param_choices, se)
+    data_cmds_store <- .add_command(data_cmds_store, out_facets)
 
     # Add commands coercing ColorBy to appropriate type, if present
     data_cmds_store <- .evaluate_commands(data_cmds_store, plot_env)
@@ -245,7 +245,10 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
         data_cmds_store <- .add_commands_coerce(plot_env, data_cmds_store, c("ColorBy"))
     }
 
-    print(plot_env$labs)
+    # Removing NAs in axes aesthetics as they mess up .process_selectby_choice.
+    clean_select_fields <- c("X", "Y", names(out_facets))
+    clean_expression <- paste(sprintf("!is.na(%s)", clean_select_fields), collapse=" & ")
+    data_cmds_store <- .add_command(data_cmds_store, sprintf("plot.data <- subset(plot.data, %s);", clean_expression), name='na.rm')
 
     # TODO: don't forget to define the plot type based on XY and add extra commands
 

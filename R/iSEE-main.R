@@ -319,10 +319,21 @@ iSEE <- function(se,
             }
 
             # TEST:
-            memory <- list(RedDimPlot(), RowStatTable(), FeatAssayPlot(), ColDataPlot(), 
-                RowDataPlot(), SampAssayPlot(), ColStatTable(), HeatMapPlot())
+            RedDimPlot1 <- RedDimPlot()
+            ColDataPlot1 <- ColDataPlot()
+            FeatAssayPlot1 <- FeatAssayPlot()
+            RowDataPlot1 <- RowDataPlot()
+            SampAssayPlot1 <- SampAssayPlot()
+            HeatMapPlot1 <- HeatMapPlot()
+            ColStatTable1 <- ColStatTable()
+            RowStatTable1 <- RowStatTable()
+            # slotNames(RedDimPlot1)
+            RedDimPlot1[["ColorBy"]] <- "Column data"
+            RedDimPlot1[["ColorByColData"]] <- "driver_1_s"
+            memory <- list(RedDimPlot1, ColDataPlot1, FeatAssayPlot1, RowDataPlot1,
+                SampAssayPlot1, HeatMapPlot1, ColStatTable1, RowStatTable1)
 
-            # NOTE: .cacheCommonInfo() should be run on all possible panels, 
+            # NOTE: .cacheCommonInfo() should be run on all possible panels,
             # not just those that are visible. This is necessary to set up the
             # cache for potential panels that have yet to be generated.
             for (idx in seq_along(memory)) {
@@ -347,7 +358,7 @@ iSEE <- function(se,
             all_ids <- vapply(memory, "[[", i=.organizationId, 0L)
             all_names <- paste0(all_modes, all_ids)
             names(memory) <- all_names
-          
+
             empty_list <- vector("list", length(all_names))
             names(empty_list) <- all_names
 
@@ -414,7 +425,7 @@ iSEE <- function(se,
 #                 se_name, ecm_name, cdf_name, csf_name, se_cmds)
 #
             .organization_observers(se=se, colormap=colormap,
-                input=input, output=output, session=session, 
+                input=input, output=output, session=session,
                 pObjects=pObjects, rObjects=rObjects)
 #
 #            .selection_parameter_observers(input, session, pObjects, rObjects)

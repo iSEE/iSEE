@@ -218,8 +218,12 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
     data_cmds_store <- .add_command(data_cmds_store, out_xy$data_cmds)
     data_cmds_store <- .evaluate_commands(data_cmds_store, plot_env)
     plot_env$labs <- c(x=out_xy$x_lab, y=out_xy$y_lab, title=out_xy$plot_title)
-    print(ls(plot_env))
-    print(plot_env$labs)
+
+    # Add commands coercing X and Y to appropriate type
+    data_cmds_store <- .addCommandsDataCoerceXY(plot_env, data_cmds_store)
+    print(data_cmds_store)
+
+    # TODO: don't forget to define the plot type based on XY
 
     # TODO: streamline the workflow below (previously .plot_wrapper)
     setup_out <- .extract_plotting_data(out_xy$data_cmds, param_choices, all_memory, all_coordinates, se, by_row=is_row_plot)

@@ -1242,7 +1242,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         assay_choice <- param_choices[[.colorByFeatNameAssay]]
         list(
             label=.feature_axis_label(se, chosen_gene, assay_choice, multiline=TRUE),
-            cmds=sprintf("plot.data$ColorBy <- assay(se, %s, withDimnames=FALSE)[%s, ];", 
+            cmds=sprintf("plot.data$ColorBy <- assay(se, %s, withDimnames=FALSE)[%s, ];",
                 deparse(assay_choice), deparse(chosen_gene))
         )
 
@@ -1250,7 +1250,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         chosen_sample <- param_choices[[.colorBySampName]]
         list(
             label=.sample_axis_label(se, chosen_sample, assay_id=NULL),
-            cmds=sprintf("plot.data$ColorBy <- logical(nrow(plot.data));\nplot.data[%s, 'ColorBy'] <- TRUE;", 
+            cmds=sprintf("plot.data$ColorBy <- logical(nrow(plot.data));\nplot.data[%s, 'ColorBy'] <- TRUE;",
                 deparse(chosen_sample))
         )
 
@@ -1274,7 +1274,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         chosen_gene <- param_choices[[.colorByFeatName]]
         list(
             label=.feature_axis_label(se, chosen_gene, assay_id=NULL),
-            cmds=sprintf("plot.data$ColorBy <- logical(nrow(plot.data));\nplot.data[%s, 'ColorBy'] <- TRUE;", 
+            cmds=sprintf("plot.data$ColorBy <- logical(nrow(plot.data));\nplot.data[%s, 'ColorBy'] <- TRUE;",
                 deparse(chosen_gene))
         )
 
@@ -1283,7 +1283,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         assay_choice <- param_choices[[.colorBySampNameAssay]]
         list(
             label=.sample_axis_label(se, chosen_sample, assay_choice, multiline=TRUE),
-            cmds=sprintf("plot.data$ColorBy <- assay(se, %i, withDimnames=FALSE)[, %i];", 
+            cmds=sprintf("plot.data$ColorBy <- assay(se, %i, withDimnames=FALSE)[, %i];",
                 deparse(assay_choice), deparse(chosen_sample))
         )
 
@@ -2048,6 +2048,20 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     return(NULL)
 }
 
+# TODO: document
+.addCommandsDataCoerceXY <- function(plot_env, data_cmds_store) {
+
+    xvals <- plot_env$plot.data$X
+    group_X <- .is_groupable(xvals)
+    data_cmds_store <- .add_command(data_cmds_store, .coerce_type(xvals, "X", as_numeric=!group_X), name='more_X')
+
+    yvals <- plot_env$plot.data$Y
+    group_Y <- .is_groupable(yvals)
+    data_cmds_store <- .add_command(data_cmds_store, .coerce_type(yvals, "Y", as_numeric=!group_Y), name='more_Y')
+
+    return(data_cmds_store)
+}
+
 ############################################
 # Internal functions: faceting ----
 ############################################
@@ -2199,16 +2213,16 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         }
 
         if (.is_brush(chosen)) {
-            draw_cmd <- .draw_brush(plot_name, param_choices, index=i, 
-                flip=flip, facetrow=facetrow, facetcolumn=facetcolumn, 
+            draw_cmd <- .draw_brush(plot_name, param_choices, index=i,
+                flip=flip, facetrow=facetrow, facetcolumn=facetcolumn,
                 stroke_color=stroke_color, fill_color=fill_color)
         } else {
-            cmd.out <- .draw_lasso(plot_name, param_choices, index=i, 
-                facetrow=facetrow, facetcolumn=facetcolumn, 
+            cmd.out <- .draw_lasso(plot_name, param_choices, index=i,
+                facetrow=facetrow, facetcolumn=facetcolumn,
                 stroke_color=stroke_color, fill_color=fill_color,
                 firstClosed=firstClosed)
             firstClosed <- cmd.out$firstClosed
-            draw_cmd <- cmd.out$cmds 
+            draw_cmd <- cmd.out$cmds
         }
 
         cmds <- c(cmds, draw_cmd)
@@ -2217,13 +2231,13 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     cmds
 }
 
-.draw_brush <- function(plot_name, param_choices, index, flip, 
-    facetrow, facetcolumn, stroke_color, fill_color) 
+.draw_brush <- function(plot_name, param_choices, index, flip,
+    facetrow, facetcolumn, stroke_color, fill_color)
 {
     if (index == 0L) {
         brush_src <- sprintf("all_brushes[['%s']]", plot_name)
     } else {
-        brush_src <- sprintf("all_select_histories[['%s']][[%i]]", plot_name, index) 
+        brush_src <- sprintf("all_select_histories[['%s']][[%i]]", plot_name, index)
     }
 
     # Build up the aes call, to account for flipped behavior.
@@ -2316,7 +2330,7 @@ label=%i, size=%s, colour='%s')",
 #'
 #' @importFrom ggplot2 geom_point geom_polygon geom_path scale_shape_manual
 #' scale_fill_manual guides
-.draw_lasso <- function(plot_name, param_choices, index,  
+.draw_lasso <- function(plot_name, param_choices, index,
     facetrow, facetcolumn, stroke_color, fill_color, firstClosed)
 {
     if (index == 0L) {

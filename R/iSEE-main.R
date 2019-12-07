@@ -356,12 +356,14 @@ iSEE <- function(se,
             pObjects <- new.env()
             pObjects$memory <- memory
             pObjects$counter <- num_modes
-            pObjects$commands <- empty_list
 
+            pObjects$commands <- empty_list
             pObjects$coordinates <- empty_list
-#            pObjects$selection_links <- .spawn_selection_chart(memory)
-#            pObjects$table_links <- .spawn_table_links(memory)
             pObjects$cached_info <- empty_list
+
+            pObjects$aesthetics_links <- make_graph(edges=character(0), isolates=names(memory))
+            pObjects$transmission_links <- make_graph(edges=character(0), isolates=names(memory))
+
             pObjects[[.voiceActivePanel]] <- NA_character_
 
 #            # Evaluating certain plots to fill the coordinate list, if there are any selections.

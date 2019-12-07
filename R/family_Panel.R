@@ -79,7 +79,8 @@ setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObj
     .safe_reactive_init(rObjects, panel_name)
     .safe_reactive_init(rObjects, .input_FUN(.panelLinkInfo))
 
-    pObjects$links <- add_panel_vertex(pObjects$links, panel_name) 
+    pObjects$transmission_links <- add_panel_vertex(pObjects$transmission_links, panel_name) 
+    pObjects$aesthetics_links <- add_panel_vertex(pObjects$aesthetics_links, panel_name) 
 
     width_name <- .input_FUN(.organizationWidth)
     observeEvent(input[[width_name]], {

@@ -8,20 +8,21 @@
 }
 
 #' @importFrom igraph add_edges get.edge.ids E E<-
-.add_interpanel_link <- function(graph, current, transmitter, field) {
-    graph <- .add_panel_vertex(graph, transmitter)
-    
+#' @importFrom stats setNames
+.add_interpanel_link <- function(graph, current, transmitter, field, protected=FALSE) {
     idx <- get.edge.ids(graph, c(transmitter, current))
     if (idx==0L) {
         graph <- add_edges(graph, c(transmitter, current))
         nedges <- length(E(graph))
+
+        val <- list(setNames(protected, field))
         if (length(nedges)==1L) {
-            E(graph)$fields <- list(field)
+            E(graph)$fields <- val
         } else {
-            E(graph)$fields[[nedges]] <- list(field)
+            E(graph)$fields[[nedges]] <- val
         }
     } else {
-        E(graph)$fields[[idx]] <- union(E(graph)$fields[[idx]], field) 
+        E(graph)$fields[[idx]][field] <- protected
     }
 
     graph

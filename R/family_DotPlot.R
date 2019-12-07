@@ -209,7 +209,6 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
     is_row_plot <- is(x, "RowDotPlot")
     # TODO: cache commands in x itself ?
     out <- .getCommandsDataXY(x, param_choices)
-    # TODO: cache commands in x itself ?
 
     # TODO: streamline the workflow below (previously .plot_wrapper)
     setup_out <- .extract_plotting_data(out$data_cmds, param_choices, all_memory, all_coordinates, se, by_row=is_row_plot)

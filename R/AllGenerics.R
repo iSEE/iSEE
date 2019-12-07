@@ -117,8 +117,6 @@ setGeneric(".getCodeChunk", function(x, all_memory, all_coordinates, se, colorma
 #' @export
 setGeneric(".getCommandsDataXY", function(x, param_choices) standardGeneric(".getCommandsDataXY"))
 
-setGeneric(".getCommandsExtra", function(x, ...) standardGeneric(".getCommandsExtra"))
-
 #' @export
 setGeneric(".refineParameters", function(x, se) standardGeneric(".refineParameters"))
 

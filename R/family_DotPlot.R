@@ -206,26 +206,17 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
     id <- x[[.organizationId]]
     plot_name <- paste0(mode, id)
     param_choices <- all_memory[[plot_name]]
+    is_row_plot <- is(x, "RowDotPlot")
     # TODO: cache commands in x itself ?
     out <- .getCommandsDataXY(x, param_choices)
     # TODO: cache commands in x itself ?
-    out <- .getCommandsExtra(x, out$data_cmds, param_choices=param_choices, all_memory=all_memory,
-        all_coordinates=all_coordinates, se=se,
-        colormap=colormap, x_lab=out$x_lab, y_lab=out$y_lab, title=out$plot_title)
-    return(out$cmd_list)
-})
 
-setMethod(".getCommandsExtra", "DotPlot", function(x, data_cmds, param_choices, all_memory, all_coordinates, se, ...) {
-    by_row <- is(x, "RowDotPlot")
-    print(by_row)
-
-    setup_out <- .extract_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row=by_row)
-
-    xy <- setup_out$envir$plot.data # DO NOT MOVE below .downsample_points, as downsampling will alter the value in 'envir'.
-
+    # TODO: streamline the workflow below (previously .plot_wrapper)
+    setup_out <- .extract_plotting_data(out$data_cmds, param_choices, all_memory, all_coordinates, se, by_row=is_row_plot)
     downsample_cmds <- .downsample_points(param_choices, setup_out$envir)
-
-    plot_out <- .create_plot(setup_out$envir, param_choices, ..., color_lab=setup_out$color_lab, shape_lab=setup_out$shape_lab, size_lab=setup_out$size_lab, by_row=by_row)
-
-    return(list(cmd_list=c(setup_out$cmd_list, list(plot=c(downsample_cmds, plot_out$cmds))), xy=xy, plot=plot_out$plot))
+    plot_out <- .create_plot(setup_out$envir, param_choices, colormap=colormap,
+        x_lab=out$x_lab, y_lab=out$y_lab, title=out$plot_title, color_lab=setup_out$color_lab, shape_lab=setup_out$shape_lab, size_lab=setup_out$size_lab,
+        by_row=is_row_plot)
+    cmd_list <- c(setup_out$cmd_list, list(plot=c(downsample_cmds, plot_out$cmds)))
+    return(cmd_list)
 })

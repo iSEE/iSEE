@@ -110,7 +110,7 @@ If not provided, the app displays the version info of \code{\link{iSEE}}.}
 
 \item{bugs}{Set to \code{TRUE} to enable the bugs Easter egg.
 Alternatively, a named numeric vector control the respective number of each bug type (e.g., \code{c(bugs=3L, spiders=1L)}).
-Credits to https://github.com/Auz/Bug for the JavaScript code.}
+Credits to \url{https://github.com/Auz/Bug} for the JavaScript code.}
 }
 \value{
 A Shiny app object is returned, for interactive data exploration of the \linkS4class{SummarizedExperiment} or \linkS4class{SingleCellExperiment} object.
@@ -142,7 +142,7 @@ See \url{https://github.com/carlganz/rintrojs#usage} for more information.
 By default, categorical data types such as factor and character are limited to 24 levels, beyond which they are coerced to numeric variables for faster plotting.
 This limit may be set to a different value as a global option, e.g. \code{options(iSEE.maxlevels=30)}.
 
-By default, the maximum request size for file uploads defaults to 5MB (https://shiny.rstudio.com/reference/shiny/0.14/shiny-options.html).
+By default, the maximum request size for file uploads defaults to 5MB (\url{https://shiny.rstudio.com/reference/shiny/0.14/shiny-options.html}).
 To raise the limit (e.g., 50MB), run \code{options(shiny.maxRequestSize=50*1024^2)}.
 }
 \examples{

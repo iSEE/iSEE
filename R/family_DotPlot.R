@@ -240,8 +240,10 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
 
     # Add commands coercing ColorBy to appropriate type, if present
     data_cmds_store <- .evaluate_commands(data_cmds_store, plot_env)
-
-    data_cmds_store <- .add_commands_coerce(plot_env, data_cmds_store, c("ColorBy"))
+    color_data <- plot_env$plot.data$ColorBy
+    if (!is.null(color_data)) {
+        data_cmds_store <- .add_commands_coerce(plot_env, data_cmds_store, c("ColorBy"))
+    }
 
     print(plot_env$labs)
 

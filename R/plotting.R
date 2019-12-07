@@ -2049,15 +2049,13 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 }
 
 # TODO: document
-.add_commands_coerce_xy <- function(plot_env, data_cmds_store) {
+.add_commands_coerce <- function(plot_env, data_cmds_store, fields) {
 
-    xvals <- plot_env$plot.data$X
-    group_X <- .is_groupable(xvals)
-    data_cmds_store <- .add_command(data_cmds_store, .coerce_type(xvals, "X", as_numeric=!group_X), name='more_X')
-
-    yvals <- plot_env$plot.data$Y
-    group_Y <- .is_groupable(yvals)
-    data_cmds_store <- .add_command(data_cmds_store, .coerce_type(yvals, "Y", as_numeric=!group_Y), name='more_Y')
+    for (field0 in fields) {
+        values0 <- plot_env$plot.data[[field0]]
+        groupable0 <- .is_groupable(values0)
+        data_cmds_store <- .add_command(data_cmds_store, .coerce_type(values0, field0, as_numeric=!groupable0), name=sprintf("coerce_%s", field0))
+    }
 
     return(data_cmds_store)
 }

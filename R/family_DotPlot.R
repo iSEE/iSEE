@@ -250,6 +250,15 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
     clean_expression <- paste(sprintf("!is.na(%s)", clean_select_fields), collapse=" & ")
     data_cmds_store <- .add_command(data_cmds_store, sprintf("plot.data <- subset(plot.data, %s);", clean_expression), name='na.rm')
 
+    # Add commands adding the optional SelectBy column to plot.data
+    data_cmds_store <- .evaluate_commands(data_cmds_store, plot_env)
+    select_out <- .process_selectby_choice(param_choices, all_memory)
+    select_cmds <- select_out$cmds
+    if (!is.null(select_cmds)) {
+        .populate_selection_environment(all_memory[[select_out$transmitter$Type]][select_out$transmitter$ID,], plot_env)
+        .text_eval(select_cmds, plot_env)
+    }
+
     # TODO: don't forget to define the plot type based on XY and add extra commands
 
     # TODO: streamline the workflow below (previously .plot_wrapper)

@@ -73,7 +73,7 @@
 .get_direct_children <- function(graph, panel_name)
 {
     children <- names(adjacent_vertices(graph, panel_name, mode="out")[[1]])
-    setdiff(children, panel) # self-updates are handled elsewhere.
+    setdiff(children, panel_name) # self-updates are handled elsewhere.
 }
 
 #' Destroy a selection transmitter or receiver

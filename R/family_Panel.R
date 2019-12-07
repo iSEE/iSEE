@@ -79,8 +79,8 @@ setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObj
     .safe_reactive_init(rObjects, panel_name)
     .safe_reactive_init(rObjects, .input_FUN(.panelLinkInfo))
 
-    pObjects$transmission_links <- add_panel_vertex(pObjects$transmission_links, panel_name) 
-    pObjects$aesthetics_links <- add_panel_vertex(pObjects$aesthetics_links, panel_name) 
+    pObjects$selection_links <- .add_panel_vertex(pObjects$selection_links, panel_name) 
+    pObjects$aesthetics_links <- .add_panel_vertex(pObjects$aesthetics_links, panel_name) 
 
     width_name <- .input_FUN(.organizationWidth)
     observeEvent(input[[width_name]], {
@@ -104,9 +104,9 @@ setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObj
 
     .define_child_propagation_observers(panel_name, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_selection_choice_observer(plot_name, input=input, session=session,
+    .define_selection_choice_observer(panel_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 
-    .define_saved_selection_choice_observers(plot_name, input=input, session=session,
+    .define_saved_selection_choice_observers(panel_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 })

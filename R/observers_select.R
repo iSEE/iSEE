@@ -19,8 +19,9 @@
 .define_selection_choice_observer <- function(panel_name, input, session, pObjects, rObjects) {
     select_panel_field <- paste0(panel_name, "_", .selectByPlot)
     repop_field <- paste0(panel_name, "_repopulated")
-    can_transmit <- .can_transmit(pObjects$memory[[panel_anem]])
-    .safe_reactive_init(rObjects, paste0(mode, id, "_", .selectMultiSaved))
+    can_transmit <- .can_transmit(pObjects$memory[[panel_name]])
+
+    .safe_reactive_init(rObjects, paste0(panel_name, "_", .selectMultiSaved))
 
     observeEvent(input[[select_panel_field]], {
         old_transmitter <- pObjects$memory[[panel_name]][[.selectByPlot]]
@@ -156,7 +157,7 @@
         if (identical(new_type, old_type)) {
             return(NULL)
         }
-        pObjects$memory[[mode0]][[.selectMultiType]] <- new_type
+        pObjects$memory[[panel_name]][[.selectMultiType]] <- new_type
 
         # Skipping if neither the old or new types were relevant.
         transmitter <- pObjects$memory[[panel_name]][[.selectByPlot]]

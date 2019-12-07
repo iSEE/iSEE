@@ -475,7 +475,7 @@ setMethod(".createRenderedOutput", "HeatMapPlot", function(x, se, colormap, outp
     link_field <- paste0(plot_name, "_", .panelLinkInfo)
     output[[link_field]] <- renderUI({
         force(rObjects[[link_field]])
-        select_in <- pObjects$memory$heatMapPlot[[id, .selectByPlot]]
+        select_in <- pObjects$memory[[plot_name]][[.selectByPlot]]
         if (select_in==.noSelection) {
             return(NULL)
         }

@@ -221,9 +221,16 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
 
     # Add commands coercing X and Y to appropriate type
     data_cmds_store <- .add_commands_coerce_xy(plot_env, data_cmds_store)
-    print(data_cmds_store)
 
-    # TODO: don't forget to define the plot type based on XY
+    # Add commands adding optional columns to plot.data
+    out <- .getCommandsDataColor(x, param_choices, se)
+    data_cmds_store <- .add_command(data_cmds_store, out$cmds, name='color')
+    plot_env$labs <- c(plot_env$labs, color = out$label)
+
+    print(data_cmds_store$color)
+    print(plot_env$labs)
+
+    # TODO: don't forget to define the plot type based on XY and add extra commands
 
     # TODO: streamline the workflow below (previously .plot_wrapper)
     setup_out <- .extract_plotting_data(out_xy$data_cmds, param_choices, all_memory, all_coordinates, se, by_row=is_row_plot)

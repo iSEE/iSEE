@@ -141,3 +141,36 @@ setMethod(".createParamObservers", "RowDotPlot", function(x, se, input, session,
 
     callNextMethod()
 })
+
+setMethod(".getCommandsDataColor", "RowDotPlot", function(x, param_choices, se) {
+    color_choice <- param_choices[[.colorByField]]
+
+    if (color_choice == .colorByRowDataTitle) {
+        covariate_name <- param_choices[[.colorByRowData]]
+        list(
+            label=covariate_name,
+            cmds=sprintf("plot.data$ColorBy <- rowData(se)[, %s];", deparse(covariate_name))
+        )
+
+    } else if (color_choice == .colorByFeatNameTitle) {
+        chosen_gene <- param_choices[[.colorByFeatName]]
+        list(
+            label=.feature_axis_label(se, chosen_gene, assay_id=NULL),
+            cmds=sprintf("plot.data$ColorBy <- logical(nrow(plot.data));\nplot.data[%s, 'ColorBy'] <- TRUE;",
+                deparse(chosen_gene))
+        )
+
+    } else if (color_choice == .colorBySampNameTitle) {
+        chosen_sample <- param_choices[[.colorBySampName]]
+        assay_choice <- param_choices[[.colorBySampNameAssay]]
+        list(
+            label=.sample_axis_label(se, chosen_sample, assay_choice, multiline=TRUE),
+            cmds=sprintf("plot.data$ColorBy <- assay(se, %i, withDimnames=FALSE)[, %i];",
+                deparse(assay_choice), deparse(chosen_sample))
+        )
+
+    } else {
+        NULL
+    }
+})
+

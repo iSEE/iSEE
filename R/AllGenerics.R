@@ -114,8 +114,9 @@ setGeneric(".getPlottingFunction", function(x) standardGeneric(".getPlottingFunc
 
 setGeneric(".getCodeChunk", function(x, all_memory, all_coordinates, se, colormap) standardGeneric(".getCodeChunk"))
 
-#' @export
 setGeneric(".getCommandsDataXY", function(x, param_choices) standardGeneric(".getCommandsDataXY"))
+
+setGeneric(".getCommandsDataColor", function(x, param_choices, se) standardGeneric(".getCommandsDataColor"))
 
 #' @export
 setGeneric(".refineParameters", function(x, se) standardGeneric(".refineParameters"))

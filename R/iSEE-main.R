@@ -330,8 +330,8 @@ iSEE <- function(se,
             # slotNames(RedDimPlot1)
             RedDimPlot1[["ColorBy"]] <- "Column data"
             RedDimPlot1[["ColorByColData"]] <- "driver_1_s"
-            memory <- list(RedDimPlot1, ColDataPlot1, FeatAssayPlot1, RowDataPlot1,
-                SampAssayPlot1, HeatMapPlot1, ColStatTable1, RowStatTable1)
+            memory <- list(RedDimPlot1, RowStatTable1, FeatAssayPlot1, ColDataPlot1, RowDataPlot1,
+                SampAssayPlot1, ColStatTable1, HeatMapPlot1)
 
             # NOTE: .cacheCommonInfo() should be run on all possible panels,
             # not just those that are visible. This is necessary to set up the

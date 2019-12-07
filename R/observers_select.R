@@ -30,7 +30,9 @@
             return(NULL)
         }
 
-        tmp <- .choose_new_selection_source(pObjects$selection_links, panel_name, new_transmitter, old_transmitter)
+        tmp <- .choose_new_selection_source(pObjects$selection_links, panel_name, 
+            new_parent_name=new_transmitter, old_parent_name=old_transmitter,
+            field=.selectByPlot)
 
         # Trying to update the graph, but breaking if it's not a DAG.
         # We also break if users try to self-select in restrict mode.
@@ -67,14 +69,14 @@
 
         saved_val <- pObjects$memory[[panel_name]][[.selectMultiSaved]]
         if (saved_val!=0L && new_transmitter!=.noSelection) {
-            if (saved_val > length(pObjects$memory[[new_transmitter]][[.multiSelectHistory]])) {
+            if (saved_val > any_saved_selection(pObjects$memory[[new_transmitter]], count=TRUE)) {
                 pObjects$memory[[panel_name]][[.selectMultiSaved]] <- 0L
             }
         }
 
         # Checking if there were active/saved selections in either the new or old transmitters.
-        no_old_selection <- !.transmitted_selection(old_transmitter, pObjects$memory, panel_name)
-        no_new_selection <- !.transmitted_selection(new_transmitter, pObjects$memory, panel_name)
+        no_old_selection <- !.transmitted_selection(panel_name, old_transmitter, pObjects$memory)
+        no_new_selection <- !.transmitted_selection(panel_name, new_transmitter, pObjects$memory)
         if (no_old_selection && no_new_selection) {
             return(NULL)
         }
@@ -114,7 +116,7 @@
 
         # Avoiding replotting if there was no transmitting selection.
         transmitter <- pObjects$memory[[plot_name]][[.selectByPlot]]
-        if (!.transmitted_selection(transmitter, pObjects$memory, plot_name)) {
+        if (!.transmitted_selection(plot_name, transmitter, pObjects$memory)) {
             return(NULL)
         }
 
@@ -161,8 +163,8 @@
 
         # Skipping if neither the old or new types were relevant.
         transmitter <- pObjects$memory[[panel_name]][[.selectByPlot]]
-        no_old_selection <- !.transmitted_selection(transmitter, pObjects$memory, select_type=old_type, panel_name)
-        no_new_selection <- !.transmitted_selection(transmitter, pObjects$memory, panel_name)
+        no_old_selection <- !.transmitted_selection(panel_name, transmitter, pObjects$memory, select_type=old_type)
+        no_new_selection <- !.transmitted_selection(panel_name, transmitter, pObjects$memory)
         if (no_old_selection && no_new_selection) {
             return(NULL)
         }

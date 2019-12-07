@@ -35,8 +35,8 @@
 
     observe({
         force(rObjects[[repop_field]])
-        has_active <- length(pObjects$memory[[panel_name]][[.brushData]]) > 0
-        has_saved <- length(pObjects$memory[[panel_name]][[.multiSelectHistory]]) > 0
+        has_active <- .any_active_selection(pObjects$memory[[panel_name]])
+        has_saved <- .any_saved_selection(pObjects$memory[[panel_name]])
 
         children <- .get_direct_children(pObjects$selection_links, panel_name)
         for (child_plot in children) {

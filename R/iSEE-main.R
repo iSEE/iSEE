@@ -301,7 +301,8 @@ iSEE <- function(se,
             se <- se_out$object
             se_cmds <- se_out$cmds
 
-            # Throw an error if the colormap supplied is not compatible with the object
+            # Display an error notifications if colormap is not compatible with se
+            # Display one warning notification for each incompatibility issue
             errors <- checkColormapCompatibility(colormap, se)
             if (!is.null(errors)){
                 colormap <- ExperimentColorMap()
@@ -319,10 +320,10 @@ iSEE <- function(se,
             }
 
             # TEST:
-            memory <- list(RedDimPlot(), RowStatTable(), FeatAssayPlot(), ColDataPlot(), 
+            memory <- list(RedDimPlot(), RowStatTable(), FeatAssayPlot(), ColDataPlot(),
                 RowDataPlot(), SampAssayPlot(), ColStatTable(), HeatMapPlot())
 
-            # NOTE: .cacheCommonInfo() should be run on all possible panels, 
+            # NOTE: .cacheCommonInfo() should be run on all possible panels,
             # not just those that are visible. This is necessary to set up the
             # cache for potential panels that have yet to be generated.
             for (idx in seq_along(memory)) {
@@ -347,7 +348,7 @@ iSEE <- function(se,
             all_ids <- vapply(memory, "[[", i=.organizationId, 0L)
             all_names <- paste0(all_modes, all_ids)
             names(memory) <- all_names
-          
+
             empty_list <- vector("list", length(all_names))
             names(empty_list) <- all_names
 
@@ -387,7 +388,7 @@ iSEE <- function(se,
 #                 se_name, ecm_name, cdf_name, csf_name, se_cmds)
 #
             .organization_observers(se=se, colormap=colormap,
-                input=input, output=output, session=session, 
+                input=input, output=output, session=session,
                 pObjects=pObjects, rObjects=rObjects)
 #
 #            .selection_parameter_observers(input, session, pObjects, rObjects)

@@ -547,7 +547,9 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.violin_setup}},
 #' \code{\link{.square_setup}},
 #' \code{\link{.extract_plotting_data}}
-.choose_plot_type <- function(group_X, group_Y, envir) {
+.choose_plot_type <- function(envir) {
+    group_X <- .is_groupable(plot_env$plot.data$X)
+    group_Y <- .is_groupable(plot_env$plot.data$Y)
     if (!group_Y && !group_X) {
         mode <- "scatter"
         specific <- character()

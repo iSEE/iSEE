@@ -260,6 +260,11 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
         data_cmds_store <- .evaluate_commands(data_cmds_store, plot_env)
     }
 
+    # Define the type of plot to create, and add geometry-specific commands, if needed
+    specific <- .choose_plot_type(plot_env)
+    data_cmds_store <- .add_command(data_cmds_store, specific, clean_expression)
+    data_cmds_store <- .evaluate_commands(data_cmds_store, plot_env)
+
     # TODO: don't forget to define the plot type based on XY and add extra commands
 
     # TODO: streamline the workflow below (previously .plot_wrapper)

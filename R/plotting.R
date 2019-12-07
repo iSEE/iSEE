@@ -1699,7 +1699,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         }
     }
 
-    list(cmds=unlist(cmds), transmitter=select_by)
+    list(cmds=cmds, transmitter=select_by)
 }
 
 #' Populate selection structures

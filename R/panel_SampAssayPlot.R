@@ -250,7 +250,6 @@ setMethod(".getPlottingFunction", "SampAssayPlot", function(x) .make_sampAssayPl
 
 #' @export
 setMethod(".getCommandsDataXY", "SampAssayPlot", function(x, param_choices) {
-    # TODO: refactor as a funtion living in a slot of x
     data_cmds <- list()
 
     samp_selected_y <- param_choices[[.sampAssayYAxisSampName]]

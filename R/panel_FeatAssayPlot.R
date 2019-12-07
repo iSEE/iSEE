@@ -237,6 +237,7 @@ setMethod(".getPlottingFunction", "FeatAssayPlot", function(x) .make_featAssayPl
 
 #' @export
 setMethod(".getCommandsDataXY", "FeatAssayPlot", function(x, param_choices) {
+    # TODO: refactor as a funtion living in a slot of x
     data_cmds <- list()
 
     ## Setting up the y-axis:

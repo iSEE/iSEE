@@ -219,6 +219,7 @@ setMethod(".getPlottingFunction", "RedDimPlot", function(x) .make_redDimPlot)
 
 #' @export
 setMethod(".getCommandsDataXY", "RedDimPlot", function(x, param_choices) {
+    # TODO: refactor as a funtion living in a slot of x
     data_cmds <- list()
 
     data_cmds[["reducedDim"]] <- sprintf(

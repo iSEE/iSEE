@@ -206,9 +206,9 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
     id <- x[[.organizationId]]
     plot_name <- paste0(mode, id)
     param_choices <- all_memory[[plot_name]]
-    # TODO: cache commands in x itself
+    # TODO: cache commands in x itself ?
     out <- .getCommandsDataXY(x, param_choices)
-    # TODO: cache commands in x itself
+    # TODO: cache commands in x itself ?
     out <- .getCommandsExtra(x, out$data_cmds, param_choices=param_choices, all_memory=all_memory,
         all_coordinates=all_coordinates, se=se,
         colormap=colormap, x_lab=out$x_lab, y_lab=out$y_lab, title=out$plot_title)

@@ -156,6 +156,7 @@ setMethod(".getPlottingFunction", "ColDataPlot", function(x) .make_colDataPlot)
 
 #' @export
 setMethod(".getCommandsDataXY", "ColDataPlot", function(x, param_choices) {
+    # TODO: refactor as a funtion living in a slot of x
     data_cmds <- list()
 
     y_lab <- param_choices[[.colDataYAxis]]

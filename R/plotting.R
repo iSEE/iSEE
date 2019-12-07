@@ -2049,7 +2049,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 }
 
 # TODO: document
-.addCommandsDataCoerceXY <- function(plot_env, data_cmds_store) {
+.add_commands_coerce_xy <- function(plot_env, data_cmds_store) {
 
     xvals <- plot_env$plot.data$X
     group_X <- .is_groupable(xvals)

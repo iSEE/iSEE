@@ -199,3 +199,21 @@ setMethod(".getCommandsDataSize", "RowDotPlot", function(x, param_choices, se) {
         return(NULL)
     }
 })
+
+setMethod(".getCommandsDataFacets", "RowDotPlot", function(x, param_choices, se) {
+    facet_cmds <- c()
+
+    facet_row <- param_choices[[.facetRowsByRowData]]
+    if (param_choices[[.facetByRow]]) {
+        facet_cmds["FacetRow"] <- sprintf(
+            "plot.data$FacetRow <- rowData(se)[, %s];", deparse(facet_row))
+    }
+
+    facet_column <- param_choices[[.facetColumnsByRowData]]
+    if (param_choices[[.facetByColumn]]) {
+        facet_cmds["FacetColumn"] <- sprintf(
+            "plot.data$FacetColumn <- rowData(se)[, %s];", deparse(facet_column))
+    }
+
+    return(facet_cmds)
+})

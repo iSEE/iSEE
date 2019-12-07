@@ -122,6 +122,8 @@ setGeneric(".getCommandsDataShape", function(x, param_choices, se) standardGener
 
 setGeneric(".getCommandsDataSize", function(x, param_choices, se) standardGeneric(".getCommandsDataSize"))
 
+setGeneric(".getCommandsDataFacets", function(x, param_choices, se) standardGeneric(".getCommandsDataFacets"))
+
 #' @export
 setGeneric(".refineParameters", function(x, se) standardGeneric(".refineParameters"))
 

@@ -198,3 +198,21 @@ setMethod(".getCommandsDataSize", "ColumnDotPlot", function(x, param_choices, se
         return(NULL)
     }
 })
+
+setMethod(".getCommandsDataFacets", "ColumnDotPlot", function(x, param_choices, se) {
+    facet_cmds <- c()
+
+    facet_row <- param_choices[[.facetRowsByColData]]
+    if (param_choices[[.facetByRow]]) {
+        facet_cmds["FacetRow"] <- sprintf(
+            "plot.data$FacetRow <- colData(se)[, %s];", deparse(facet_row))
+    }
+
+    facet_column <- param_choices[[.facetColumnsByColData]]
+    if (param_choices[[.facetByColumn]]) {
+        facet_cmds["FacetColumn"] <- sprintf(
+            "plot.data$FacetColumn <- colData(se)[, %s];", deparse(facet_column))
+    }
+
+    return(facet_cmds)
+})

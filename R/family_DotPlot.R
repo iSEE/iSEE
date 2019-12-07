@@ -235,7 +235,10 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
     data_cmds_store <- .add_command(data_cmds_store, out$cmds, name='size')
     plot_env$labs <- c(plot_env$labs, size = out$label)
 
-    print(data_cmds_store$shape)
+    out <- .getCommandsDataFacets(x, param_choices, se)
+    data_cmds_store <- .add_command(data_cmds_store, out)
+
+    print(data_cmds_store)
     print(plot_env$labs)
 
     # TODO: don't forget to define the plot type based on XY and add extra commands

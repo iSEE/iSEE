@@ -36,6 +36,8 @@ setMethod(".defineOutputElement", "Table", function(x, ...) {
 
 #' @export
 setMethod(".createParamObservers", "Table", function(x, se, input, session, pObjects, rObjects) {
+    callNextMethod()
+
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
     panel_name <- paste0(mode, id)

@@ -254,11 +254,13 @@ setMethod(".defineParamInterface", "HeatMapPlot", function(x, se, active_panels)
 
 #' @export
 setMethod(".createParamObservers", "HeatMapPlot", function(x, se, input, session, pObjects, rObjects) {
+    callNextMethod()
+
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
     plot_name <- paste0(mode, id)
 
-    rObjects[[paste0(plot_name, "_", .heatMapLegend)]] <- 1L
+    .safe_reactive_init(rObjects, paste0(plot_name, "_", .heatMapLegend))
 
     .define_box_observers(plot_name, c(.heatMapFeatNameBoxOpen, .heatMapColDataBoxOpen, .selectParamBoxOpen), input, pObjects)
 
@@ -371,13 +373,13 @@ setMethod(".createParamObservers", "HeatMapPlot", function(x, se, input, session
 .create_heatmap_feature_observers <- function(plot_name, se, input, session, pObjects, rObjects) {
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
-    .get_feature_names_from_input <- function() {
+    .get_feature_names_from_input <- function(input) {
         # Split the input field value into a character vector
         strsplit(input[[.input_FUN(.heatMapFeaturesTextInput)]], "\n")[[1]]
     }
 
     observeEvent(input[[.input_FUN(.heatMapFeaturesTextSubmit)]], {
-        submitted_names <- .get_feature_names_from_input()
+        submitted_names <- .get_feature_names_from_input(input)
         matched_ids <- intersect(submitted_names, rownames(se))
         updateSelectizeInput(
             session, .input_FUN(.heatMapFeatName), choices=rownames(se),
@@ -389,7 +391,7 @@ setMethod(".createParamObservers", "HeatMapPlot", function(x, se, input, session
     })
 
     observeEvent(input[[.input_FUN(.heatMapFeaturesFileInput)]], {
-        current_names <- .get_feature_names_from_input()
+        current_names <- .get_feature_names_from_input(input)
         input_filepath <- input[[.input_FUN(.heatMapFeaturesFileInput)]][["datapath"]]
         names_from_file <- tryCatch(
             scan(file=input_filepath, what="character"),

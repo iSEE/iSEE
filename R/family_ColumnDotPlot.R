@@ -131,6 +131,8 @@ setMethod(".defineParamInterface", "ColumnDotPlot", function(x, se, active_panel
 #' @export
 #' @importFrom methods callNextMethod
 setMethod(".createParamObservers", "ColumnDotPlot", function(x, se, input, session, pObjects, rObjects) {
+    callNextMethod()
+
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
     plot_name <- paste0(mode, id)
@@ -139,6 +141,4 @@ setMethod(".createParamObservers", "ColumnDotPlot", function(x, se, input, sessi
         fields=c(.colorByColData, .colorByFeatNameAssay,
             .shapeByColData, .sizeByColData, .colorBySampNameColor),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-
-    callNextMethod()
 })

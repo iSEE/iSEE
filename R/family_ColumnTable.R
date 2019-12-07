@@ -53,6 +53,8 @@ setMethod(".defineParamInterface", "ColumnTable", function(x, se, active_panels)
 #' @export
 #' @importFrom methods callNextMethod
 setMethod(".createParamObservers", "ColumnTable", function(x, se, input, session, pObjects, rObjects) {
+    callNextMethod()
+
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
     panel_name <- paste0(mode, id)
@@ -63,7 +65,5 @@ setMethod(".createParamObservers", "ColumnTable", function(x, se, input, session
         col_field=.colorBySampName,
         choices=colnames(se),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-
-    callNextMethod()
 })
 

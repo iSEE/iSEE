@@ -130,6 +130,8 @@ setMethod(".defineParamInterface", "RowDotPlot", function(x, se, active_panels) 
 #' @export
 #' @importFrom methods callNextMethod
 setMethod(".createParamObservers", "RowDotPlot", function(x, se, input, session, pObjects, rObjects) {
+    callNextMethod()
+
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
     plot_name <- paste0(mode, id)
@@ -138,6 +140,4 @@ setMethod(".createParamObservers", "RowDotPlot", function(x, se, input, session,
         fields=c(.colorByRowData, .colorBySampNameAssay,
             .shapeByRowData, .sizeByRowData, .colorByFeatNameColor),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-
-    callNextMethod()
 })

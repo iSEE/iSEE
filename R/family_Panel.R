@@ -74,11 +74,12 @@ setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObj
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
     panel_name <- paste0(mode, id)
-    input_FUN <- function(field) paste0(panel_name, "_", field)
+    .input_FUN <- function(field) paste0(panel_name, "_", field)
 
-    .safe_reactive_bump(rObjects, .input_FUN(.panelLinkInfo))
+    .safe_reactive_init(rObjects, panel_name)
+    .safe_reactive_init(rObjects, .input_FUN(.panelLinkInfo))
 
-    width_name <- input_FUN(.organizationWidth)
+    width_name <- .input_FUN(.organizationWidth)
     observeEvent(input[[width_name]], {
         copy <- pObjects$memory_copy[[panel_name]]
         cur.width <- copy[[.organizationWidth]]
@@ -88,7 +89,7 @@ setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObj
         }
     })
 
-    height_name <- input_FUN(.organizationHeight)
+    height_name <- .input_FUN(.organizationHeight)
     observeEvent(input[[height_name]], {
         copy <- pObjects$memory_copy[[panel_name]]
         cur.height <- copy[[.organizationWidth]]

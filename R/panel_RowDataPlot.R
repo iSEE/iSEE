@@ -151,6 +151,8 @@ setMethod(".defineParamInterface", "RowDataPlot", function(x, se, active_panels)
 #' @importFrom shiny observeEvent updateSelectInput
 #' @importFrom methods callNextMethod
 setMethod(".createParamObservers", "RowDataPlot", function(x, se, input, session, pObjects, rObjects) {
+    callNextMethod()
+
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
     plot_name <- paste0(mode, id)
@@ -160,8 +162,6 @@ setMethod(".createParamObservers", "RowDataPlot", function(x, se, input, session
     .define_protected_parameter_observers(plot_name,
         fields=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-
-    callNextMethod()
 })
 
 #' @export

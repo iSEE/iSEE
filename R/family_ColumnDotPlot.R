@@ -148,30 +148,40 @@ setMethod(".getCommandsDataColor", "ColumnDotPlot", function(x, param_choices, s
 
     if (color_choice == .colorByColDataTitle) {
         covariate_name <- param_choices[[.colorByColData]]
-        list(
+        return(list(
             label=covariate_name,
-            cmds=sprintf("plot.data$ColorBy <- colData(se)[, %s];", deparse(covariate_name))
-        )
+            cmds=sprintf("plot.data$ColorBy <- colData(se)[, %s];", deparse(covariate_name))))
 
     } else if (color_choice == .colorByFeatNameTitle) {
         # Set the color to the selected gene
         chosen_gene <- param_choices[[.colorByFeatName]]
         assay_choice <- param_choices[[.colorByFeatNameAssay]]
-        list(
+        return(list(
             label=.feature_axis_label(se, chosen_gene, assay_choice, multiline=TRUE),
             cmds=sprintf("plot.data$ColorBy <- assay(se, %s, withDimnames=FALSE)[%s, ];",
-                deparse(assay_choice), deparse(chosen_gene))
-        )
+                deparse(assay_choice), deparse(chosen_gene))))
 
     } else if (color_choice == .colorBySampNameTitle) {
         chosen_sample <- param_choices[[.colorBySampName]]
-        list(
+        return(list(
             label=.sample_axis_label(se, chosen_sample, assay_id=NULL),
             cmds=sprintf("plot.data$ColorBy <- logical(nrow(plot.data));\nplot.data[%s, 'ColorBy'] <- TRUE;",
-                deparse(chosen_sample))
-        )
+                deparse(chosen_sample))))
 
     } else {
-        NULL
+        return(NULL)
+    }
+})
+
+setMethod(".getCommandsDataShape", "ColumnDotPlot", function(x, param_choices, se) {
+    shape_choice <- param_choices[[.shapeByField]]
+
+    if (shape_choice == .shapeByColDataTitle) {
+        covariate_name <- param_choices[[.shapeByColData]]
+        return(list(label=covariate_name,
+            cmds=sprintf("plot.data$ShapeBy <- colData(se)[, %s];", deparse(covariate_name))))
+
+    } else {
+        return(NULL)
     }
 })

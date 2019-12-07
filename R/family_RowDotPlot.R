@@ -174,3 +174,15 @@ setMethod(".getCommandsDataColor", "RowDotPlot", function(x, param_choices, se) 
     }
 })
 
+setMethod(".getCommandsDataShape", "RowDotPlot", function(x, param_choices, se) {
+    shape_choice <- param_choices[[.shapeByField]]
+
+    if (shape_choice == .shapeByColDataTitle) {
+        covariate_name <- param_choices[[.shapeByColData]]
+        return(list(label=covariate_name,
+            cmds=sprintf("plot.data$ShapeBy <- colData(se)[, %s];", deparse(covariate_name))))
+
+    } else {
+        return(NULL)
+    }
+})

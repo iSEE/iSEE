@@ -186,3 +186,16 @@ setMethod(".getCommandsDataShape", "RowDotPlot", function(x, param_choices, se) 
         return(NULL)
     }
 })
+
+setMethod(".getCommandsDataSize", "RowDotPlot", function(x, param_choices, se) {
+    size_choice <- param_choices[[.sizeByField]]
+
+    if (size_choice == .sizeByRowDataTitle) {
+        covariate_name <- param_choices[[.sizeByRowData]]
+        return(list(label=covariate_name,
+                    cmds=sprintf("plot.data$SizeBy <- rowData(se)[, %s];", deparse(covariate_name))))
+
+    } else {
+        return(NULL)
+    }
+})

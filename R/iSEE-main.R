@@ -327,12 +327,13 @@ iSEE <- function(se,
             HeatMapPlot1 <- HeatMapPlot()
             ColStatTable1 <- ColStatTable()
             RowStatTable1 <- RowStatTable()
-            # slotNames(RedDimPlot1)
+            # sort(slotNames(RedDimPlot1))
             RedDimPlot1[["ColorBy"]] <- "Column data"
             RedDimPlot1[["ColorByColData"]] <- "driver_1_s"
             RedDimPlot1[["ShapeBy"]] <- "Column data"
             RedDimPlot1[["ShapeByColData"]] <- "driver_1_s"
-            RedDimPlot1[["PointSize"]] <- 3
+            RedDimPlot1[["SizeBy"]] <- "Column data"
+            RedDimPlot1[["SizeByColData"]] <- "RALIGN"
             memory <- list(RedDimPlot1, RowStatTable1, FeatAssayPlot1, ColDataPlot1, RowDataPlot1,
                 SampAssayPlot1, ColStatTable1, HeatMapPlot1)
 

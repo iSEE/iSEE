@@ -231,6 +231,10 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
     data_cmds_store <- .add_command(data_cmds_store, out$cmds, name='shape')
     plot_env$labs <- c(plot_env$labs, shape = out$label)
 
+    out <- .getCommandsDataSize(x, param_choices, se)
+    data_cmds_store <- .add_command(data_cmds_store, out$cmds, name='size')
+    plot_env$labs <- c(plot_env$labs, size = out$label)
+
     print(data_cmds_store$shape)
     print(plot_env$labs)
 

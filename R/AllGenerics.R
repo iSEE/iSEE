@@ -120,6 +120,8 @@ setGeneric(".getCommandsDataColor", function(x, param_choices, se) standardGener
 
 setGeneric(".getCommandsDataShape", function(x, param_choices, se) standardGeneric(".getCommandsDataShape"))
 
+setGeneric(".getCommandsDataSize", function(x, param_choices, se) standardGeneric(".getCommandsDataSize"))
+
 #' @export
 setGeneric(".refineParameters", function(x, se) standardGeneric(".refineParameters"))
 

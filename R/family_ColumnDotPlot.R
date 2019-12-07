@@ -185,3 +185,16 @@ setMethod(".getCommandsDataShape", "ColumnDotPlot", function(x, param_choices, s
         return(NULL)
     }
 })
+
+setMethod(".getCommandsDataSize", "ColumnDotPlot", function(x, param_choices, se) {
+    size_choice <- param_choices[[.sizeByField]]
+
+    if (size_choice == .sizeByColDataTitle) {
+        covariate_name <- param_choices[[.sizeByColData]]
+        return(list(label=covariate_name,
+                    cmds=sprintf("plot.data$SizeBy <- colData(se)[, %s];", deparse(covariate_name))))
+
+    } else {
+        return(NULL)
+    }
+})

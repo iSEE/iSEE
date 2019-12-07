@@ -191,7 +191,7 @@
 #'
 #' @importFrom shiny observeEvent isolate
 #' @rdname INTERNAL_multiple_select_observers
-.define_multiselect_observers <- function(plot_name, input, session, pObjects, rObjects) {
+.define_saved_selection_observers <- function(plot_name, input, session, pObjects, rObjects) {
     save_field <- paste0(plot_name, "_", .multiSelectSave)
     del_field <- paste0(plot_name, "_", .multiSelectDelete)
     info_field <- paste0(plot_name, "_", .panelGeneralInfo)

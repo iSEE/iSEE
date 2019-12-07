@@ -145,13 +145,13 @@
 #'
 #' @importFrom shiny observeEvent observe updateSelectInput isolate
 #' @rdname INTERNAL_multiselect_param_observers
-.define_multiselect_param_observers <- function(plot_name, input, session, pObjects, rObjects) {
-    repop_field <- paste0(plot_name, "_repopulated")
+.define_saved_selection_choice_observers <- function(panel_name, input, session, pObjects, rObjects) {
+    repop_field <- paste0(panel_name, "_repopulated")
 
     ## Type field observers. ---
-    type_field <- paste0(plot_name, "_", .selectMultiType)
+    type_field <- paste0(panel_name, "_", .selectMultiType)
     observeEvent(input[[type_field]], {
-        old_type <- pObjects$memory[[plot_name]][[.selectMultiType]]
+        old_type <- pObjects$memory[[panel_name]][[.selectMultiType]]
         new_type <- as(input[[type_field]], typeof(old_type))
         if (identical(new_type, old_type)) {
             return(NULL)
@@ -159,39 +159,39 @@
         pObjects$memory[[mode0]][[.selectMultiType]] <- new_type
 
         # Skipping if neither the old or new types were relevant.
-        transmitter <- pObjects$memory[[plot_name]][[.selectByPlot]]
-        no_old_selection <- !.transmitted_selection(transmitter, pObjects$memory, select_type=old_type, plot_name)
-        no_new_selection <- !.transmitted_selection(transmitter, pObjects$memory, plot_name)
+        transmitter <- pObjects$memory[[panel_name]][[.selectByPlot]]
+        no_old_selection <- !.transmitted_selection(transmitter, pObjects$memory, select_type=old_type, panel_name)
+        no_new_selection <- !.transmitted_selection(transmitter, pObjects$memory, panel_name)
         if (no_old_selection && no_new_selection) {
             return(NULL)
         }
 
-        .safe_reactive_bump(rObjects, plot_name)
-        if (pObjects$memory[[plot_name]][[.selectEffect]]==.selectRestrictTitle) {
+        .safe_reactive_bump(rObjects, panel_name)
+        if (pObjects$memory[[panel_name]][[.selectEffect]]==.selectRestrictTitle) {
             .safe_reactive_bump(rObjects, repop_field)
         }
     }, ignoreInit=TRUE)
 
     ## Saved field observers. ---
-    saved_select <- paste0(plot_name, "_", .selectMultiSaved)
+    saved_select <- paste0(panel_name, "_", .selectMultiSaved)
     observeEvent(input[[saved_select]], {
         # Required to defend against empty strings before updateSelectizeInput runs.
         req(input[[saved_select]]) 
 
-        matched_input <- as(input[[saved_select]], typeof(pObjects$memory[[plot_name]][[.selectMultiSaved]]))
-        if (identical(matched_input, pObjects$memory[[plot_name]][[.selectMultiSaved]])) {
+        matched_input <- as(input[[saved_select]], typeof(pObjects$memory[[panel_name]][[.selectMultiSaved]]))
+        if (identical(matched_input, pObjects$memory[[panel_name]][[.selectMultiSaved]])) {
             return(NULL)
         }
-        pObjects$memory[[plot_name]][[.selectMultiSaved]] <- matched_input
+        pObjects$memory[[panel_name]][[.selectMultiSaved]] <- matched_input
 
-        transmitter <- pObjects$memory[[plot_name]][[.selectByPlot]]
+        transmitter <- pObjects$memory[[panel_name]][[.selectByPlot]]
         if (transmitter==.noSelection) {
             return(NULL)
         }
 
         # Switch of 'Saved' will ALWAYS change the current plot, so no need for other checks.
-        .safe_reactive_bump(rObjects, plot_name)
-        if (pObjects$memory[[plot_name]][[.selectEffect]]==.selectRestrictTitle) {
+        .safe_reactive_bump(rObjects, panel_name)
+        if (pObjects$memory[[panel_name]][[.selectEffect]]==.selectRestrictTitle) {
             .safe_reactive_bump(rObjects, repop_field)
         }
     }, ignoreInit=TRUE)
@@ -205,11 +205,11 @@
         force(rObjects[[saved_select]])
         force(rObjects$rerendered)
 
-        transmitter <- pObjects$memory[[plot_name]][[.selectByPlot]]
+        transmitter <- pObjects$memory[[panel_name]][[.selectByPlot]]
         if (transmitter==.noSelection) {
             available_choices <- integer(0)
         } else {
-            trans <- .encode_plot_name(transmitter)
+            trans <- .encode_panel_name(transmitter)
             N <- length(pObjects$memory[[trans$Type]][,.multiSelectHistory][[trans$ID]])
             available_choices <- seq_len(N)
             names(available_choices) <- available_choices
@@ -219,7 +219,7 @@
         names(no_choice) <- .noSelection
         available_choices <- c(no_choice, available_choices)
         updateSelectizeInput(session, saved_select, choices=available_choices, server=TRUE,
-            selected=pObjects$memory[[plot_name]][[.selectMultiSaved]])
+            selected=pObjects$memory[[panel_name]][[.selectMultiSaved]])
     })
 
     invisible(NULL)

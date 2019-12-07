@@ -99,4 +99,10 @@ setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObj
     })
 
     .define_child_propagation_observers(panel_name, session=session, pObjects=pObjects, rObjects=rObjects)
+
+    .define_selection_choice_observers(plot_name, input=input, session=session,
+        pObjects=pObjects, rObjects=rObjects)
+
+    .define_saved_selection_choice_observers(plot_name, input=input, session=session,
+        pObjects=pObjects, rObjects=rObjects)
 })

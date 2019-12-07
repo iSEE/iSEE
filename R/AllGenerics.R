@@ -112,13 +112,11 @@ setGeneric(".getFullName", function(x) standardGeneric(".getFullName"))
 #' @export
 setGeneric(".getPlottingFunction", function(x) standardGeneric(".getPlottingFunction"))
 
-#' @export
 setGeneric(".getCodeChunk", function(x, all_memory, all_coordinates, se, colormap) standardGeneric(".getCodeChunk"))
 
 #' @export
 setGeneric(".getCommandsDataXY", function(x, param_choices) standardGeneric(".getCommandsDataXY"))
 
-#' @export
 setGeneric(".getCommandsExtra", function(x, ...) standardGeneric(".getCommandsExtra"))
 
 #' @export

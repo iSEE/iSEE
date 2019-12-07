@@ -214,3 +214,18 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
         colormap=colormap, x_lab=out$x_lab, y_lab=out$y_lab, title=out$plot_title)
     return(out$cmd_list)
 })
+
+setMethod(".getCommandsExtra", "DotPlot", function(x, data_cmds, param_choices, all_memory, all_coordinates, se, ...) {
+    by_row <- is(x, "RowDotPlot")
+    print(by_row)
+
+    setup_out <- .extract_plotting_data(data_cmds, param_choices, all_memory, all_coordinates, se, by_row=by_row)
+
+    xy <- setup_out$envir$plot.data # DO NOT MOVE below .downsample_points, as downsampling will alter the value in 'envir'.
+
+    downsample_cmds <- .downsample_points(param_choices, setup_out$envir)
+
+    plot_out <- .create_plot(setup_out$envir, param_choices, ..., color_lab=setup_out$color_lab, shape_lab=setup_out$shape_lab, size_lab=setup_out$size_lab, by_row=by_row)
+
+    return(list(cmd_list=c(setup_out$cmd_list, list(plot=c(downsample_cmds, plot_out$cmds))), xy=xy, plot=plot_out$plot))
+})

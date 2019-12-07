@@ -209,8 +209,7 @@
         if (transmitter==.noSelection) {
             available_choices <- integer(0)
         } else {
-            trans <- .encode_panel_name(transmitter)
-            N <- length(pObjects$memory[[trans$Type]][,.multiSelectHistory][[trans$ID]])
+            N <- length(pObjects$memory[[transmitter]][[.multiSelectHistory]])
             available_choices <- seq_len(N)
             names(available_choices) <- available_choices
         }

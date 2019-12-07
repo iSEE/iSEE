@@ -89,8 +89,9 @@
     x
 }
 
+#' @importFrom shiny isolate
 .safe_reactive_init <- function(rObjects, field, value=1L) {
-    if (!field %in% names(rObjects)) {
+    if (!field %in% isolate(names(rObjects))) {
         rObjects[[field]] <- value
     }
     invisible(rObjects)

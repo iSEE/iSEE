@@ -97,7 +97,7 @@
 
     observe({
         force(rObjects[[save_field]])
-        Nsaved <- length(pObjects$memory[[panel_name]][[multiSelectHistory]])
+        Nsaved <- length(pObjects$memory[[panel_name]][[.multiSelectHistory]])
 
         children <- .get_direct_children(pObjects$selection_links, panel_name)
         for (child_plot in children) {

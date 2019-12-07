@@ -229,36 +229,6 @@
     invisible(NULL)
 }
 
-#' Dot plot observers
-#'
-#' Observers to set up parameters for the point-based plots as well as to trigger their rendering.
-#'
-#' @param input The Shiny input object from the server function.
-#' @param output The Shiny output object from the server function.
-#' @param session The Shiny session object from the server function.
-#' @param se The \linkS4class{SummarizedExperiment} object.
-#' @param colormap An \linkS4class{ExperimentColorMap} object.
-#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
-#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
-#'
-#' @return Observers are created in the server function in which this is called.
-#' A \code{NULL} value is invisibly returned.
-#'
-#' @author Aaron Lun
-#'
-#' @importFrom shiny observeEvent isolate observe renderPlot
-#' @rdname INTERNAL_dot_plot_observers
-.dot_plot_observers <- function(input, output, session, se, colormap, pObjects, rObjects) {
-    for (idx in seq_along(pObjects$memory)) { 
-        instance <- pObjects$memory[[idx]]
-        .createParamObservers(instance, se=se, input=input,
-            session=session, pObjects=pObjects, rObjects=rObjects)
-        .createRenderedOutput(instance, se=se, colormap=colormap,
-            output=output, pObjects=pObjects, rObjects=rObjects)
-    }
-    invisible(NULL)
-}
-
 #' Custom panel observers
 #'
 #' Observers to set up parameters for the custom panels as well as to trigger their rendering.

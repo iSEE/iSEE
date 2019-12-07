@@ -362,7 +362,7 @@ iSEE <- function(se,
             pObjects$cached_info <- empty_list
 
             pObjects$aesthetics_links <- make_graph(edges=character(0), isolates=names(memory))
-            pObjects$transmission_links <- make_graph(edges=character(0), isolates=names(memory))
+            pObjects$selection_links <- make_graph(edges=character(0), isolates=names(memory))
 
             pObjects[[.voiceActivePanel]] <- NA_character_
 
@@ -392,28 +392,18 @@ iSEE <- function(se,
             .organization_observers(se=se, colormap=colormap,
                 input=input, output=output, session=session,
                 pObjects=pObjects, rObjects=rObjects)
-#
-#            .selection_parameter_observers(input, session, pObjects, rObjects)
-#
-#            .child_propagation_observers(pObjects, rObjects, customSendAll)
-#
-#            .multiselect_param_observers(input, session, pObjects, rObjects)
-#
+
 #            .zoom_observers(input, session, pObjects, rObjects)
-#
-#            .selectize_update_observers(input, session, se, pObjects, rObjects)
-#
-#            .multiple_select_observers(input, session, pObjects, rObjects)
-#
-            .dot_plot_observers(input, output, session, se, colormap, pObjects, rObjects)
-#
-#            .custom_panel_observers(input, output, session, se, pObjects, rObjects, customSendAll)
-#
-#            .linked_table_observers(input, output, session, se, pObjects, rObjects, annotFun)
-#
+
+            for (idx in seq_along(pObjects$memory)) {
+                instance <- pObjects$memory[[idx]]
+                .createParamObservers(instance, se=se, input=input,
+                    session=session, pObjects=pObjects, rObjects=rObjects)
+                .createRenderedOutput(instance, se=se, colormap=colormap,
+                    output=output, pObjects=pObjects, rObjects=rObjects)
+            }
+
 #            .voice_control_observers(input, session, se, pObjects, rObjects)
-#
-#            .heatmap_observers(input, output, session, se, colormap, pObjects, rObjects)
         }
 
         if (!has_se) {

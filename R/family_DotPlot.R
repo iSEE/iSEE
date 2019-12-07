@@ -190,7 +190,7 @@ setMethod(".createRenderedOutput", "DotPlot", function(x, se, colormap, output, 
     id <- x[[.organizationId]]
 
     out <- .getCodeChunk(x, pObjects$memory, pObjects$coordinates, se, colormap)
-    lapply(out, function(x){invisible(cat(paste0(x, collapse = "\n"))); cat("\n")})
+    lapply(out, function(x){invisible(cat(paste0(x, collapse = "\n"), sep = "\n"))})
 
     .define_plot_output(mode, id,
         FUN=.getPlottingFunction(x), selectable=TRUE,
@@ -207,14 +207,25 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
     plot_name <- paste0(mode, id)
     param_choices <- all_memory[[plot_name]]
     is_row_plot <- is(x, "RowDotPlot")
-    # TODO: cache commands in x itself ?
-    out <- .getCommandsDataXY(x, param_choices)
+    # Apply the function provided to generate XY commands and axis labels
+    out_xy <- .getCommandsDataXY(x, param_choices)
+    # Initialize an environment storing information for generating ggplot commands
+    plot_env <- new.env()
+    plot_env$se <- se
+
+    # Process the XY commands
+    data_cmds_store <- .initialize_cmd_store()
+    data_cmds_store <- .add_command(data_cmds_store, out_xy$data_cmds)
+    data_cmds_store <- .evaluate_commands(data_cmds_store, plot_env)
+    plot_env$labs <- c(x=out_xy$x_lab, y=out_xy$y_lab, title=out_xy$plot_title)
+    print(ls(plot_env))
+    print(plot_env$labs)
 
     # TODO: streamline the workflow below (previously .plot_wrapper)
-    setup_out <- .extract_plotting_data(out$data_cmds, param_choices, all_memory, all_coordinates, se, by_row=is_row_plot)
+    setup_out <- .extract_plotting_data(out_xy$data_cmds, param_choices, all_memory, all_coordinates, se, by_row=is_row_plot)
     downsample_cmds <- .downsample_points(param_choices, setup_out$envir)
     plot_out <- .create_plot(setup_out$envir, param_choices, colormap=colormap,
-        x_lab=out$x_lab, y_lab=out$y_lab, title=out$plot_title, color_lab=setup_out$color_lab, shape_lab=setup_out$shape_lab, size_lab=setup_out$size_lab,
+        x_lab=out_xy$x_lab, y_lab=out_xy$y_lab, title=out_xy$plot_title, color_lab=setup_out$color_lab, shape_lab=setup_out$shape_lab, size_lab=setup_out$size_lab,
         by_row=is_row_plot)
     cmd_list <- c(setup_out$cmd_list, list(plot=c(downsample_cmds, plot_out$cmds)))
     return(cmd_list)

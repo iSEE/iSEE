@@ -153,9 +153,6 @@ setMethod(".getEncodedName", "ColDataPlot", function(x) "colDataPlot") # TODO ch
 setMethod(".getFullName", "ColDataPlot", function(x) "Column data plot")
 
 #' @export
-setMethod(".getPlottingFunction", "ColDataPlot", function(x) .make_colDataPlot)
-
-#' @export
 setMethod(".getCommandsDataXY", "ColDataPlot", function(x, param_choices) {
     data_cmds <- list()
 

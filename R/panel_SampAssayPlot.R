@@ -246,9 +246,6 @@ setMethod(".getEncodedName", "SampAssayPlot", function(x) "sampAssayPlot") # TOD
 setMethod(".getFullName", "SampAssayPlot", function(x) "Sample assay plot") # TODO change to class name.
 
 #' @export
-setMethod(".getPlottingFunction", "SampAssayPlot", function(x) .make_sampAssayPlot)
-
-#' @export
 setMethod(".getCommandsDataXY", "SampAssayPlot", function(x, param_choices) {
     data_cmds <- list()
 

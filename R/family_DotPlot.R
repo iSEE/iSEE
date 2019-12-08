@@ -316,8 +316,7 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
         plot_cmds <- c(plot_cmds, select_cmds)
 
         # We overwrite any existing 'all_brushes' or 'all_lassos',
-        # as they have already served their purpose in defining plot_data
-        # in .extract_plotting_data().
+        # as they have already served their purpose in defining plot_data above
         .populate_selection_environment(param_choices, plot_env)
     }
 

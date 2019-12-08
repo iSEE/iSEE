@@ -171,9 +171,6 @@ setMethod(".getEncodedName", "RowDataPlot", function(x) "rowDataPlot") # TODO ch
 setMethod(".getFullName", "RowDataPlot", function(x) "Row data plot") # TODO change to class name.
 
 #' @export
-setMethod(".getPlottingFunction", "RowDataPlot", function(x) .make_rowDataPlot)
-
-#' @export
 setMethod(".getCommandsDataXY", "RowDataPlot", function(x, param_choices) {
     data_cmds <- list()
 

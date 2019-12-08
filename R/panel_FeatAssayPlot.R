@@ -233,9 +233,6 @@ setMethod(".getEncodedName", "FeatAssayPlot", function(x) "featAssayPlot") # TOD
 setMethod(".getFullName", "FeatAssayPlot", function(x) "Feature assay plot")
 
 #' @export
-setMethod(".getPlottingFunction", "FeatAssayPlot", function(x) .make_featAssayPlot)
-
-#' @export
 setMethod(".getCommandsDataXY", "FeatAssayPlot", function(x, param_choices) {
     data_cmds <- list()
 

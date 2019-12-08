@@ -215,9 +215,6 @@ setMethod(".getEncodedName", "RedDimPlot", function(x) "redDimPlot")
 setMethod(".getFullName", "RedDimPlot", function(x) "Reduced dimension plot")
 
 #' @export
-setMethod(".getPlottingFunction", "RedDimPlot", function(x) .make_redDimPlot)
-
-#' @export
 setMethod(".getCommandsDataXY", "RedDimPlot", function(x, param_choices) {
     data_cmds <- list()
 

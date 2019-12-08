@@ -384,7 +384,7 @@ names(.all_aes_values) <- .all_aes_names
 
     downsample_cmds <- .downsample_points(param_choices, setup_out$envir)
 
-    plot_out <- .create_plot(setup_out$envir, param_choices, ..., color_lab=setup_out$color_lab, 
+    plot_out <- .create_plot(setup_out$envir, param_choices, ..., color_lab=setup_out$color_lab,
         shape_lab=setup_out$shape_lab, size_lab=setup_out$size_lab, by_row=by_row)
 
     list(cmd_list=c(setup_out$cmd_list, list(plot=c(downsample_cmds, plot_out$cmds))), xy=xy, plot=plot_out$plot)
@@ -549,8 +549,8 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.square_setup}},
 #' \code{\link{.extract_plotting_data}}
 .choose_plot_type <- function(envir) {
-    group_X <- .is_groupable(plot_env$plot.data$X)
-    group_Y <- .is_groupable(plot_env$plot.data$Y)
+    group_X <- .is_groupable(envir$plot.data$X)
+    group_Y <- .is_groupable(envir$plot.data$Y)
     if (!group_Y && !group_X) {
         mode <- "scatter"
         specific <- character()
@@ -1633,8 +1633,8 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
     if (!identical(transmitter, .noSelection)) {
         if (self_source && identical(
-            paste0(.getEncodedName(param_choices), param_choices[[.organizationId]]), 
-            transmitter)) 
+            paste0(.getEncodedName(param_choices), param_choices[[.organizationId]]),
+            transmitter))
         {
             source_data <- 'plot.data'
         } else {
@@ -1691,7 +1691,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
             outname <- if (is.na(i)) "active" else paste0("saved", i)
 
             # Taking the union if there are multiple filters.
-            cmds[[outname]] <- c(curcmds, paste0("selected_pts <- ", LEFT, "rownames(selected)", RIGHT)) 
+            cmds[[outname]] <- c(curcmds, paste0("selected_pts <- ", LEFT, "rownames(selected)", RIGHT))
             if (LEFT=="") {
                 LEFT <- "union(selected_pts, "
                 RIGHT <- ")"

@@ -53,6 +53,16 @@
             columnDefs <- list(list(visible=FALSE, targets=length(search_col)))
         }
 
+        # If the existing row in memory doesn't exist in the current table,
+        # we don't initialize it with any selection - this should be ignored
+        # by the row selection observer, so it'll just keep the one in memory.
+        idx <- which(rownames(full_tab)==chosen)[1]
+        if (!is.na(idx)) {
+            selection <- list(mode="single", selected=idx)
+        } else {
+            selection <- "single"
+        }
+
         datatable(
             full_tab, filter="top", rownames=TRUE,
             options=list(
@@ -60,7 +70,7 @@
                 searchCols=c(list(NULL), search_col), # row names are the first column!
                 columnDefs=columnDefs,
                 scrollX=TRUE),
-            selection=list(mode="single", selected=which(rownames(full_tab)==chosen)[1])
+            selection=selection
         )
     })
 }

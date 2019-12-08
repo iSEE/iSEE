@@ -202,7 +202,7 @@ setMethod(".createRenderedOutput", "DotPlot", function(x, se, colormap, output, 
     id <- x[[.organizationId]]
 
     .define_plot_output(mode, id,
-        FUN=.getCodeChunk(x), selectable=TRUE,
+        FUN=.getPanelPlottingFunction(x), selectable=TRUE,
         se=se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
 
     .define_selection_info_output(mode, id,
@@ -215,8 +215,7 @@ setMethod(".restrictsSelection", "DotPlot", function(x) {
 })
 
 #' @export
-setMethod(".getCodeChunk", "DotPlot", function(x) {
-    # TODO: rename to ".getPanelFunction"
+setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
 
     function(param_choices, all_memory, all_coordinates, se, colormap) {
 

@@ -109,7 +109,7 @@ setGeneric(".getEncodedName", function(x) standardGeneric(".getEncodedName"))
 #' @export
 setGeneric(".getFullName", function(x) standardGeneric(".getFullName"))
 
-setGeneric(".getCodeChunk", function(x, all_memory, all_coordinates, se, colormap) standardGeneric(".getCodeChunk"))
+setGeneric(".getPanelPlottingFunction", function(x, all_memory, all_coordinates, se, colormap) standardGeneric(".getPanelPlottingFunction"))
 
 #' @export
 setGeneric(".getCommandsDataXY", function(x, param_choices) standardGeneric(".getCommandsDataXY"))

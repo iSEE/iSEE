@@ -330,5 +330,27 @@
     return(invisible(NULL))
 }
 
+.generate_table_filter <- function(panel, varname="tab") {
+    filters <- NULL
+
+    search <- panel[[.TableSearch]]
+    if (search!="") {
+        filters <- c(filters,
+            sprintf("Reduce('|', lapply(%s, FUN=grepl, pattern=%s))", 
+                varname, deparse(search)))
+    }
+
+    searchcols <- panel[[.TableColSearch]]
+    involved <- which(searchcols!="")
+    if (length(involved)) {
+        filters <- c(filters, sprintf("iSEE::filterDTColumn(%s[[%i]], %s)", 
+            varname, involved, vapply(searchcols[involved], deparse, "")))
+    }
+
+    if (!is.null(filters)) {
+        filters <- paste(filters, collapse="\n    & ")
+    }
+    filters
+}
 
 

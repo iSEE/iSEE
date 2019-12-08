@@ -185,6 +185,8 @@ setMethod(".defineParamInterface", "FeatAssayPlot", function(x, se, active_panel
 #' @importFrom shiny observeEvent updateSelectInput
 #' @importFrom methods callNextMethod
 setMethod(".createParamObservers", "FeatAssayPlot", function(x, se, input, session, pObjects, rObjects) {
+    callNextMethod()
+
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
     plot_name <- paste0(mode, id)
@@ -222,8 +224,6 @@ setMethod(".createParamObservers", "FeatAssayPlot", function(x, se, input, sessi
     .define_selectize_update_observer(plot_name, .featAssayXAxisFeatName,
         choices=rownames(se), selected=x[[.featAssayXAxisFeatName]],
         session=session, rObjects=rObjects)
-
-    callNextMethod()
 })
 
 #' @export

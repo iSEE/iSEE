@@ -125,7 +125,13 @@ setGeneric(".getCommandsDataSize", function(x, param_choices, se) standardGeneri
 setGeneric(".getCommandsDataFacets", function(x, param_choices, se) standardGeneric(".getCommandsDataFacets"))
 
 #' @export
+setGeneric(".getTableFunction", function(x) standardGeneric(".getTableFunction"))
+
+#' @export
 setGeneric(".refineParameters", function(x, se) standardGeneric(".refineParameters"))
 
 #' @export
 setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo"))
+
+#' @export
+setGeneric(".restrictsSelection", function(x) standardGeneric(".restrictsSelection"))

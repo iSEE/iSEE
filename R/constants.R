@@ -111,6 +111,8 @@
 .customStatSearch <- .rowStatSearch
 .int_customStatSearch <- .int_rowStatSearch
 
+.tableSecretColumnTitle <- "I_prefer_Aria_The_Natural"
+
 # Panel organization parameters. ----
 .organizationNew <- "MakeNew"
 .organizationUp <- "ShiftUp"

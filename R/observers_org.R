@@ -14,7 +14,7 @@
 #' @author Aaron Lun
 #' @rdname INTERNAL_organization_observers
 #' @importFrom shiny renderUI reactiveValues observeEvent
-#' showModal modalDialog isolate
+#' showModal modalDialog isolate removeModal
 .organization_observers <- function(se, colormap, input, output, session, pObjects, rObjects) {
     output$allPanels <- renderUI({
         force(rObjects$rerender)
@@ -25,7 +25,8 @@
     # Persistent objects to give the modal a 'working memory'.
     # These get captured in the current environment to persist
     # when observeEvent's expression actually gets executed.
-    org_pObjects <- reactiveValues(memory=pObjects$memory, counter=pObjects$counter)
+    org_pObjects <- new.env()
+    org_pObjects$initialized <- FALSE
     org_rObjects <- reactiveValues(rerender=0)
 
     available_enc <- vapply(pObjects$memory, function(x) class(x)[1], "")
@@ -42,7 +43,17 @@
     }
 
     observeEvent(input$organize_panels, {
-        enc_names <- .define_choices(org_pObjects$memory)
+        enc_names <- .define_choices(pObjects$memory)
+        org_pObjects$memory <- pObjects$memory
+        org_pObjects$counter <- pObjects$counter
+
+        if (!org_pObjects$initialized) {
+            for (x in org_pObjects$memory) {
+                .define_width_height_observers(x, input, org_pObjects)
+            }
+            org_pObjects$initialized <- TRUE
+        }
+
         showModal(modalDialog(
             title="Panel organization", size="m", fade=TRUE,
             footer=NULL, easyClose=TRUE,
@@ -97,24 +108,47 @@
 
     observeEvent(input$update_ui, {
         added <- setdiff(names(org_pObjects$memory), names(pObjects$memory))
-        for (a in added) {
-            instance <- org_pObjects$memory[[a]]
-            .createParamObservers(instance, se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-            .createRenderedOutput(instance, se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
+        if (length(added)) { 
+            pObjects$memory <- org_pObjects$memory
+            pObjects$counter <- org_pObjects$counter
+            
+            for (a in added) {
+                instance <- pObjects$memory[[a]]
+                .createParamObservers(instance, se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+                .createRenderedOutput(instance, se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
+                .define_width_height_observers(instance, input, org_pObjects)
+            }
 
-            # TODO: add all the other stuff that we set up in the main app.
-            mode <- .getEncodedName(instance)
-            id <- instance[[.organizationId]]
-            rObjects[[paste0(mode, id)]] <- 1L
-
-            rObjects[[paste0(mode, id, "_", .panelLinkInfo)]] <- 1L
-            rObjects[[paste0(mode, id, "_", .panelGeneralInfo)]] <- 1L
+            rObjects$rerender <- .increment_counter(rObjects$rerender)
         }
-
-        pObjects$memory <- org_pObjects$memory
-        pObjects$counter <- org_pObjects$counter
-        rObjects$rerender <- .increment_counter(rObjects$rerender)
     })
 
     invisible(NULL)
+}
+
+#' @importFrom shiny observeEvent
+.define_width_height_observers <- function(panel, input, org_pObjects) {
+    mode <- .getEncodedName(panel)
+    id <- panel[[.organizationId]]
+    panel_name <- paste0(mode, id)
+
+    width_name <- paste0(panel_name, "_", .organizationWidth)
+    observeEvent(input[[width_name]], {
+        copy <- org_pObjects$memory[[panel_name]]
+        cur.width <- copy[[.organizationWidth]]
+        new.width <- as.integer(input[[width_name]])
+        if (!isTRUE(all.equal(new.width, cur.width))) {
+            org_pObjects$memory[[panel_name]][[.organizationWidth]] <- new.width
+        }
+    }, ignoreInit=TRUE)
+
+    height_name <- paste0(panel_name, .organizationHeight)
+    observeEvent(input[[height_name]], {
+        copy <- org_pObjects$memory[[panel_name]]
+        cur.height <- copy[[.organizationWidth]]
+        new.height <- as.integer(input[[height_name]])
+        if (!isTRUE(all.equal(new.height, cur.height))) {
+            org_pObjects$memory[[panel_name]][[.organizationHeight]] <- new.height
+        }
+    }, ignoreInit=TRUE)
 }

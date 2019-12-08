@@ -114,9 +114,13 @@ setMethod(".refineParameters", "DotPlot", function(x, se) {
 
 #' @export
 setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pObjects, rObjects) {
+    callNextMethod()
+
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
     plot_name <- paste0(mode, id)
+
+    .safe_reactive_init(rObjects, paste0(plot_name, "_", .panelGeneralInfo))
 
     .define_box_observers(plot_name, c(.visualParamBoxOpen, .selectParamBoxOpen), input, pObjects)
 
@@ -169,7 +173,10 @@ setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pO
     .define_lasso_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 
-    .define_multiselect_observers(plot_name, input=input, session=session,
+    .define_selection_effect_observer(plot_name, input=input, session=session,
+        pObjects=pObjects, rObjects=rObjects)
+
+    .define_saved_selection_observers(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 })
 
@@ -275,4 +282,9 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
         by_row=is_row_plot)
     cmd_list <- c(setup_out$cmd_list, list(plot=c(downsample_cmds, plot_out$cmds)))
     return(cmd_list)
+})
+
+#' @export
+setMethod(".restrictsSelection", "DotPlot", function(x) {
+    x[[.selectEffect]]==.selectRestrictTitle
 })

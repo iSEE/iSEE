@@ -196,11 +196,10 @@ setMethod(".createRenderedOutput", "DotPlot", function(x, se, colormap, output, 
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
 
-    out <- .getCodeChunk(x, pObjects$memory, pObjects$coordinates, se, colormap)
+    out_chunk <- .getCodeChunk(x, pObjects$memory, pObjects$coordinates, se, colormap)
 
-    .define_plot_output(mode, id,
-        FUN=.getPlottingFunction(x), selectable=TRUE,
-        se=se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
+    .define_plot_output(mode, id, out_chunk,
+        selectable=TRUE, output=output, pObjects=pObjects, rObjects=rObjects)
 
     .define_selection_info_output(mode, id,
         output=output, pObjects=pObjects, rObjects=rObjects)
@@ -217,12 +216,17 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
     id <- x[[.organizationId]]
     plot_name <- paste0(mode, id)
     param_choices <- all_memory[[plot_name]]
-    is_row_plot <- is(x, "RowDotPlot")
+
+    force(colormap)
+    force(se)
+
     # Apply the function provided to generate XY commands and axis labels
     out_xy <- .getCommandsDataXY(x, param_choices)
+
     # Initialize an environment storing information for generating ggplot commands
     plot_env <- new.env()
     plot_env$se <- se
+    plot_env$colormap <- colormap
 
     # Process the XY commands
     data_cmds <- .initialize_cmd_store()
@@ -329,6 +333,7 @@ setMethod(".getCommandsPlot", "DotPlot", function(x, param_choices, plot_data, p
 
     is_row_plot <- is(x, "RowDotPlot")
 
+    # TODO: update the functions below to work with a single list "labs"
     plot_cmds <- switch(plot_type,
         square=.square_plot(plot_data, param_choices, labs$x, labs$y, labs$color, labs$shape, labs$size, labs$title,
             is_row_plot, is_subsetted),

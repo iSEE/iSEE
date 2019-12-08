@@ -517,7 +517,7 @@ names(.all_aes_values) <- .all_aes_names
     }
 
     # Adding more plot-specific information, depending on the type of plot to be created.
-    specific <- .choose_plot_type(group_X, group_Y, eval_env)
+    specific <- .choose_plot_type(eval_env)
 
     return(list(
         cmd_list=list(data=more_data_cmds$processed, select=select_cmds, setup=specific),

@@ -1638,6 +1638,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         } else {
             source_data <- sprintf("all_coordinates[['%s']]", transmitter)
         }
+        init_cmd <- paste("transmitter <-", source_data)
 
         transmit_param <- all_memory[[transmitter]]
         cur_choice <- param_choices[[.selectMultiType]]
@@ -1653,37 +1654,50 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
             }
         }
 
-        starting <- TRUE
+        LEFT <- RIGHT <- ""
         for (i in select_sources) {
-            if (is.na(i)) {
-                brush_val <- transmit_param[[.brushData]]
-                brush_src <- sprintf("all_brushes[['%s']]", transmitter)
-            } else {
-                brush_val <- transmit_param[[.multiSelectHistory]][[i]]
-                brush_src <- sprintf("all_select_histories[['%s']][[%i]]", transmitter, i)
-            }
 
-            if (.is_brush(brush_val)) {
-                curcmds <- sprintf("shiny::brushedPoints(%s, %s)", source_data, brush_src)
-            } else if (isTRUE(brush_val$closed)) {
-                curcmds <- sprintf("iSEE::lassoPoints(%s, %s)", source_data, brush_src)
-            } else { # i.e., an unclosed lasso.
+            # Varying how the filter is defined.
+            if (is(transmit_param, "DotPlot")) {
+                if (is.na(i)) {
+                    brush_val <- transmit_param[[.brushData]]
+                    brush_src <- sprintf("all_brushes[['%s']]", transmitter)
+                } else {
+                    brush_val <- transmit_param[[.multiSelectHistory]][[i]]
+                    brush_src <- sprintf("all_select_histories[['%s']][[%i]]", transmitter, i)
+                }
+
+                if (.is_brush(brush_val)) {
+                    curcmds <- sprintf("shiny::brushedPoints(transmitter, %s)", brush_src)
+                } else if (isTRUE(brush_val$closed)) {
+                    curcmds <- sprintf("iSEE::lassoPoints(transmitter, %s)", brush_src)
+                } else { # i.e., an unclosed lasso.
+                    next
+                }
+            } else if (is(transmit_param, "Table")) {
+                filter_cmds <- .generate_table_filter(transmit_param, varname="transmitter")
+                if (!is.null(filter_cmds)) {
+                    curcmds <- sprintf("transmitter[%s,,drop=FALSE]", filter_cmds)
+                } else {
+                    next
+                }
+            } else {
                 next
             }
 
-            if (starting) {
-                starting <- FALSE
-                LEFT <- RIGHT <- ""
-            } else {
+            curcmds <- paste("selected <- ", curcmds)
+            outname <- if (is.na(i)) "active" else paste0("saved", i)
+
+            # Taking the union if there are multiple filters.
+            cmds[[outname]] <- c(curcmds, paste0("selected_pts <- ", LEFT, "rownames(selected)", RIGHT)) 
+            if (LEFT=="") {
                 LEFT <- "union(selected_pts, "
                 RIGHT <- ")"
             }
-
-            outname <- if (is.na(i)) "active" else paste0("saved", i)
-            cmds[[outname]] <- paste0("selected_pts <- ", LEFT, "rownames(", curcmds, ")", RIGHT) 
         }
 
         if (length(cmds)) {
+            cmds <- c(list(setup=init_cmd), cmds)
             cmds[["select"]] <- "plot.data$SelectBy <- rownames(plot.data) %in% selected_pts;"
 
             if (.restrictsSelection(param_choices)) {
@@ -1717,12 +1731,14 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' \code{\link{.self_brush_box}},
 #' \code{\link{.self_lasso_path}}
 .populate_selection_environment <- function(x, envir) {
-    envir$all_brushes <- list(x[[.brushData]])
-    envir$all_select_histories <- list(x[[.multiSelectHistory]])
+    if (is(x, "DotPlot")) {
+        envir$all_brushes <- list(x[[.brushData]])
+        envir$all_select_histories <- list(x[[.multiSelectHistory]])
 
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    names(envir$all_brushes) <- names(envir$all_select_histories) <- paste0(mode, id)
+        mode <- .getEncodedName(x)
+        id <- x[[.organizationId]]
+        names(envir$all_brushes) <- names(envir$all_select_histories) <- paste0(mode, id)
+    }
     invisible(NULL)
 }
 

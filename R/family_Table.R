@@ -2,7 +2,7 @@
 #' @importFrom methods callNextMethod
 setMethod("initialize", "Table", function(.Object, ...) {
     .Object <- callNextMethod(.Object, ...)
-    .Object <- .empty_default(.Object, .TableSelected, 1L)
+    .Object <- .empty_default(.Object, .TableSelected)
     .Object <- .empty_default(.Object, .TableSearch, "")
     .Object
 })
@@ -11,13 +11,9 @@ setMethod("initialize", "Table", function(.Object, ...) {
 setValidity2("Table", function(object) {
     msg <- character(0)
 
-    if (length(chosen <- object[[.TableSelected]])!=1L || is.na(chosen) || chosen <= 0L) {
-        msg <- c(msg, sprintf("'%s' should be a positive integer for '%s'", .TableSelected, class(object)[1]))
-    }
+    msg <- .single_string_error(msg, object, .TableSelected)
 
-    if (!isSingleString(val <- object[[.TableSearch]]) || is.na(val)) {
-        msg <- c(msg, sprintf("'%s' should be a single non-NA string for '%s'", .TableSearch, class(object)[1]))
-    }
+    msg <- .valid_string_error(msg, object, .TableSearch)
 
     if (length(msg)) {
         return(msg)
@@ -45,8 +41,6 @@ setMethod(".createParamObservers", "Table", function(x, se, input, session, pObj
     panel_name <- paste0(mode, id)
 
     .define_box_observers(panel_name, .selectParamBoxOpen, input, pObjects)
-
-    .define_table_selection_observer(panel_name, input, session, pObjects, rObjects)
 
     # Updating memory for new selection parameters.
     # Note that '.int' variables already have underscores, so these are not necessary.

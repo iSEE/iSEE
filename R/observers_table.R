@@ -1,5 +1,5 @@
 #' @importFrom shiny observe updateSelectizeInput
-.define_table_selection_observer <- function(panel_name, input, session, pObjects, rObjects) {
+.define_table_selection_observer <- function(panel_name, choices, input, session, pObjects, rObjects) {
     # No need for underscore in 'select_field' definition, as this is already in the '.int' constant.
     select_field <- paste0(panel_name, .int_statTableSelected)
 
@@ -10,22 +10,24 @@
             return(NULL)
         }
 
+        chosen <- rownames(pObjects$coordinates[[panel_name]])[chosen]
+        previous <- pObjects$memory[[panel_name]][[.TableSelected]] 
+        if (chosen==previous) {
+            return(NULL)
+        }
         pObjects$memory[[panel_name]][[.TableSelected]] <- chosen
-        all_choices <- rownames(pObjects$coordinates[[panel_name]])
-        actual_choice <- all_choices[chosen]
 
         dependents <- .get_direct_children(pObjects$aesthetics_links, panel_name, names_only=FALSE)
-
         for (kid in names(dependents)) {
             all_fields <- dependents[[kid]]
-            for (field in names(all_fields)) {
+
+            # There is a possibility that this would cause multi-rendering as they
+            # trigger different observers.  Oh well.
+            for (field in all_fields) {
                 updateSelectizeInput(session, paste0(kid, "_", field), server=TRUE, 
-                    choices=all_choices, selected=actual_choice)
+                    choices=choices, selected=chosen)
             }
         }
-
-        # There is a possibility that this would cause multi-rendering as they trigger different observers.
-        # Oh well.
     })
 }
 
@@ -76,7 +78,9 @@
 #'
 #' @importFrom shiny updateSelectizeInput
 #' @importFrom methods as
-.setup_table_observer <- function(plot_name, by_field, title, select_field, tab_field, input, session, pObjects, rObjects) {
+.setup_table_observer <- function(plot_name, by_field, title, select_field, tab_field, choices, 
+    input, session, pObjects, rObjects) 
+{
     .input_FUN <- function(field) paste0(plot_name, "_", field)
     uses_by_field <- !is.na(by_field)
 
@@ -119,7 +123,7 @@
             if (new_selected != old_selected && !is.null(session)) { 
                 all_choices <- rownames(pObjects$coordinates[[tab]])
                 updateSelectizeInput(session, .input_FUN(select_field), label = NULL, 
-                    choices = all_choices, server = TRUE, selected = all_choices[new_selected]) # nocov
+                    choices = choices, server = TRUE, selected = all_choices[new_selected]) # nocov
             }
         }
     }

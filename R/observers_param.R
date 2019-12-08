@@ -191,6 +191,7 @@
         replot <- .setup_table_observer(plot_name, 
             by_field=in_use_field, title=in_use_value,
             select_field=name_field, tab_field=table_field,
+            choices=choices,
             input=input, session=session,
             pObjects=pObjects, rObjects=rObjects)
 

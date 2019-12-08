@@ -7,9 +7,9 @@
         force(rObjects[[panel_name]])
 
         param_choices <- pObjects$memory[[panel_name]]
-        chosen <- param_choices[[.statTableSelected]]
-        search <- param_choices[[.statTableSearch]]
-        search_col <- param_choices[[.statTableColSearch]]
+        chosen <- param_choices[[.TableSelected]]
+        search <- param_choices[[.TableSearch]]
+        search_col <- param_choices[[.TableColSearch]]
         search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
 
         # Constructing commands to generate the final table.
@@ -60,7 +60,7 @@
                 searchCols=c(list(NULL), search_col), # row names are the first column!
                 columnDefs=columnDefs,
                 scrollX=TRUE),
-            selection=list(mode="single", selected=chosen)
+            selection=list(mode="single", selected=which(rownames(full_tab)==chosen)[1])
         )
     })
 }

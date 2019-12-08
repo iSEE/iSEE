@@ -179,23 +179,24 @@
         # Only regenerating if the current parameter is actually in use.
         if (always_in_use || pObjects$memory[[plot_name]][[in_use_field]]==in_use_value) {
             if (!is_protected) {
-                rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                .safe_reactive_bump(rObjects, plot_name)
             } else {
                 .regenerate_unselected_plot(plot_name, pObjects, rObjects)
             }
         }
     }, ignoreInit=TRUE)
 
-    # Observers for the linked color by feature name. This also updates the table_links information.
+    # Observers for the linked color by feature name. This also updates the aesthetics_links information.
     observe({
-        replot <- .setup_table_observer(plot_name, pObjects, rObjects, input, session,
+        replot <- .setup_table_observer(plot_name, 
             by_field=in_use_field, title=in_use_value,
             select_field=name_field, tab_field=table_field,
-            select_choices=choices, param=link_type)
+            input=input, session=session,
+            pObjects=pObjects, rObjects=rObjects)
 
         if (replot) {
             if (!is_protected) {
-                rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                .safe_reactive_bump(rObjects, plot_name)
             } else {
                 .regenerate_unselected_plot(plot_name, pObjects, rObjects)
             }

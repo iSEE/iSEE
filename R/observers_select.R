@@ -29,7 +29,7 @@
             return(NULL)
         }
 
-        tmp <- .choose_new_selection_source(pObjects$selection_links, panel_name, 
+        tmp <- .choose_new_parent(pObjects$selection_links, panel_name, 
             new_parent_name=new_transmitter, old_parent_name=old_transmitter,
             field=.selectByPlot)
 

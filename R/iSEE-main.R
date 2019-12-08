@@ -351,7 +351,6 @@ iSEE <- function(se,
             RedDimPlot1[["SampleRes"]] <- 50
             memory <- list(RedDimPlot1, RowStatTable1, FeatAssayPlot1, ColDataPlot1, RowDataPlot1,
                 SampAssayPlot1, ColStatTable1, HeatMapPlot1)
-            memory <- list(RedDimPlot1)
 
             # NOTE: .cacheCommonInfo() should be run on all possible panels,
             # not just those that are visible. This is necessary to set up the

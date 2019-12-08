@@ -13,7 +13,7 @@
     if (parent_name!=.noSelection) {
         idx <- get.edge.ids(graph, c(parent_name, panel_name))
         if (idx==0L) {
-            graph <- add_edges(graph, c(parent_name, panel_name), attr=list(field=list(field)))
+            graph <- add_edges(graph, c(parent_name, panel_name), attr=list(fields=list(field)))
         } else {
             E(graph)$fields[[idx]] <- union(E(graph)$fields[[idx]], field)
         }

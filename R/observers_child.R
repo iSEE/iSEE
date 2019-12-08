@@ -123,7 +123,3 @@
 
     invisible(NULL)
 }
-
-.can_transmit <- function(x) {
-    is(x, "DotPlot")
-}

@@ -36,21 +36,17 @@
         # Trying to update the graph, but breaking if it's not a DAG.
         # We also break if users try to self-select in restrict mode.
         # These concerns are only relevant for transmitting panels (i.e., point plots).
-        if (can_transmit) {
-            daggy <- is_dag(simplify(tmp, remove.loops=TRUE))
-            self_restrict <- new_transmitter==panel_name &&
-                new_transmitter!=.noSelection &&
-                pObjects$memory[[panel_name]][[.selectEffect]]==.selectRestrictTitle
+        daggy <- is_dag(simplify(tmp, remove.loops=TRUE))
+        self_restrict <- new_transmitter==panel_name && .restrictsSelection(pObjects$memory[[panel_name]])
 
-            if (!daggy || self_restrict) {
-                if (!daggy) {
-                    showNotification("point selection relationships cannot be cyclic", type="error")
-                } else if (self_restrict){
-                    showNotification("selecting to self is not compatible with 'Restrict'", type="error")
-                }
-                updateSelectInput(session, select_panel_field, selected=old_transmitter)
-                return(NULL)
+        if (!daggy || self_restrict) {
+            if (!daggy) {
+                showNotification("point selection relationships cannot be cyclic", type="error")
+            } else if (self_restrict){
+                showNotification("selecting to self is not compatible with 'Restrict'", type="error")
             }
+            updateSelectInput(session, select_panel_field, selected=old_transmitter)
+            return(NULL)
         }
 
         pObjects$selection_links <- tmp

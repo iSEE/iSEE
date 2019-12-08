@@ -237,6 +237,11 @@ setMethod(".createParamObservers", "SampAssayPlot", function(x, se, input, sessi
     .define_selectize_update_observer(plot_name, .sampAssayXAxisSampName,
         choices=colnames(se), selected=x[[.sampAssayXAxisSampName]],
         session=session, rObjects=rObjects)
+
+    for (field in c(.sampAssayXAxisColTable, .sampAssayYAxisColTable)) {
+        pObjects$aesthetics_links <- .add_interpanel_link(pObjects$aesthetics_links, 
+            panel_name=plot_name, parent_name=x[[field]], field=field, protected=TRUE)
+    }
 })
 
 #' @export

@@ -10,19 +10,21 @@
 #' @importFrom igraph add_edges get.edge.ids E E<-
 #' @importFrom stats setNames
 .add_interpanel_link <- function(graph, panel_name, parent_name, field, protected=FALSE) {
-    idx <- get.edge.ids(graph, c(parent_name, panel_name))
-    if (idx==0L) {
-        graph <- add_edges(graph, c(parent_name, panel_name))
-        nedges <- length(E(graph))
+    if (parent_name!=.noSelection) {
+        idx <- get.edge.ids(graph, c(parent_name, panel_name))
+        if (idx==0L) {
+            graph <- add_edges(graph, c(parent_name, panel_name))
+            nedges <- length(E(graph))
 
-        val <- list(setNames(protected, field))
-        if (length(nedges)==1L) {
-            E(graph)$fields <- val
+            val <- list(setNames(protected, field))
+            if (length(nedges)==1L) {
+                E(graph)$fields <- val
+            } else {
+                E(graph)$fields[[nedges]] <- val
+            }
         } else {
-            E(graph)$fields[[nedges]] <- val
+            E(graph)$fields[[idx]][field] <- protected
         }
-    } else {
-        E(graph)$fields[[idx]][field] <- protected
     }
 
     graph
@@ -30,15 +32,17 @@
 
 #' @importFrom igraph E<- E delete_edges
 .delete_interpanel_link <- function(graph, panel_name, parent_name, field) {
-    idx <- get.edge.ids(graph, c(parent_name, panel_name))
-    if (idx!=0L) {
-        fields <- E(graph)$fields[[idx]]
-        remaining <- setdiff(names(fields), field)
+    if (parent_name!=.noSelection) {
+        idx <- get.edge.ids(graph, c(parent_name, panel_name))
+        if (idx!=0L) {
+            fields <- E(graph)$fields[[idx]]
+            remaining <- setdiff(names(fields), field)
 
-        if (length(fields)) {
-            E(graph)$fields[[idx]] <- fields[remaining]
-        } else {
-            graph <- delete_edges(graph, c(parent_name, panel_name))
+            if (length(fields)) {
+                E(graph)$fields[[idx]] <- fields[remaining]
+            } else {
+                graph <- delete_edges(graph, c(parent_name, panel_name))
+            }
         }
     }
     graph
@@ -69,11 +73,22 @@
 #' \code{\link{.spawn_selection_chart}}
 #' \code{\link{iSEE}}
 #'
-#' @importFrom igraph adjacent_vertices
-.get_direct_children <- function(graph, panel_name)
-{
+#' @importFrom igraph adjacent_vertices get.edge.ids
+.get_direct_children <- function(graph, panel_name, names_only=TRUE) {
     children <- names(adjacent_vertices(graph, panel_name, mode="out")[[1]])
-    setdiff(children, panel_name) # self-updates are handled elsewhere.
+    children <- setdiff(children, panel_name) # self-updates are handled elsewhere.
+    if (names_only) {
+        return(children)        
+    }
+
+    if (!length(children)) {
+        return(list())
+    }
+
+    ids <- get.edge.ids(graph, as.vector(rbind(panel_name, children)))
+    output <- E(graph)$fields[ids]
+    names(output) <- children
+    output    
 }
 
 #' Destroy a selection transmitter or receiver
@@ -145,13 +160,8 @@
 #' @seealso \code{\link{.spawn_selection_chart}}
 #'
 .choose_new_selection_source <- function(graph, panel_name, new_parent_name, old_parent_name, field) {
-    if (old_parent_name!=.noSelection) {
-        graph <- .delete_interpanel_link(graph, panel_name, old_parent_name, field)
-    }
-    if (new_parent_name!=.noSelection) {
-        graph <- .add_interpanel_link(graph, panel_name, new_parent_name, field)
-    }
-    graph
+    graph <- .delete_interpanel_link(graph, panel_name, old_parent_name, field)
+    .add_interpanel_link(graph, panel_name, new_parent_name, field)
 }
 
 #' Checks if there is a relevant selection 

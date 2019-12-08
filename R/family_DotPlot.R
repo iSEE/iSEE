@@ -230,17 +230,17 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
     data_cmds_store <- .add_commands_coerce(plot_env, data_cmds_store, c("X", "Y"))
 
     # Add commands adding optional columns to plot.data
-    out <- .getCommandsDataColor(x, param_choices, se)
-    data_cmds_store <- .add_command(data_cmds_store, out$cmds, name='color')
-    plot_env$labs <- c(plot_env$labs, color = out$label)
+    out_color <- .getCommandsDataColor(x, param_choices, se)
+    data_cmds_store <- .add_command(data_cmds_store, out_color$cmds, name='color')
+    plot_env$labs <- c(plot_env$labs, color = out_color$label)
 
-    out <- .getCommandsDataShape(x, param_choices, se)
-    data_cmds_store <- .add_command(data_cmds_store, out$cmds, name='shape')
-    plot_env$labs <- c(plot_env$labs, shape = out$label)
+    out_shape <- .getCommandsDataShape(x, param_choices, se)
+    data_cmds_store <- .add_command(data_cmds_store, out_shape$cmds, name='shape')
+    plot_env$labs <- c(plot_env$labs, shape = out_shape$label)
 
-    out <- .getCommandsDataSize(x, param_choices, se)
-    data_cmds_store <- .add_command(data_cmds_store, out$cmds, name='size')
-    plot_env$labs <- c(plot_env$labs, size = out$label)
+    out_size <- .getCommandsDataSize(x, param_choices, se)
+    data_cmds_store <- .add_command(data_cmds_store, out_size$cmds, name='size')
+    plot_env$labs <- c(plot_env$labs, size = out_size$label)
 
     out_facets <- .getCommandsDataFacets(x, param_choices, se)
     data_cmds_store <- .add_command(data_cmds_store, out_facets)
@@ -259,22 +259,20 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
 
     # Add commands adding the optional SelectBy column to plot.data
     data_cmds_store <- .evaluate_commands(data_cmds_store, plot_env)
-    select_out <- .process_selectby_choice(param_choices, all_memory)
-    select_cmds <- select_out$cmds
+    out_select <- .process_selectby_choice(param_choices, all_memory)
+    select_cmds <- out_select$cmds
     if (!is.null(select_cmds)) {
-        .populate_selection_environment(all_memory[[select_out$transmitter$Type]][select_out$transmitter$ID,], plot_env)
+        .populate_selection_environment(all_memory[[out_select$transmitter$Type]][out_select$transmitter$ID,], plot_env)
         data_cmds_store <- .add_command(data_cmds_store, select_cmds)
         data_cmds_store <- .evaluate_commands(data_cmds_store, plot_env)
     }
 
     # Define the type of plot to create, and add geometry-specific commands, if needed
-    specific <- .choose_plot_type(plot_env)
-    data_cmds_store <- .add_command(data_cmds_store, specific)
+    out_specific <- .choose_plot_type(plot_env)
+    data_cmds_store <- .add_command(data_cmds_store, out_specific)
     data_cmds_store <- .evaluate_commands(data_cmds_store, plot_env)
 
-    # TODO: don't forget to define the plot type based on XY and add extra commands
-
-    # TODO: streamline the workflow below (previously .plot_wrapper)
+    # TODO: streamline the workflow below, then delete (previously .plot_wrapper)
     setup_out <- .extract_plotting_data(out_xy$data_cmds, param_choices, all_memory, all_coordinates, se, by_row=is_row_plot)
     downsample_cmds <- .downsample_points(param_choices, setup_out$envir)
     plot_out <- .create_plot(setup_out$envir, param_choices, colormap=colormap,

@@ -17,22 +17,26 @@
 #'
 #' @rdname INTERNAL_define_plot_output
 #' @importFrom shiny renderPlot renderUI tagList br
-.define_plot_output <- function(mode, id, panel, selectable, output, pObjects, rObjects) {
+.define_plot_output <- function(mode, id, FUN, selectable,
+    se, colormap, output, pObjects, rObjects)
+{
     plot_name <- paste0(mode, id)
-
+    force(FUN)
+    force(se)
+    force(colormap)
     gen_field <- paste0(plot_name, "_", .panelGeneralInfo)
 
     output[[plot_name]] <- renderPlot({
         force(rObjects[[plot_name]])
         .safe_reactive_bump(rObjects, gen_field)
 
-        # p.out <- FUN(pObjects$memory[[plot_name]], pObjects$memory, pObjects$coordinates, se, colormap)
-        pObjects$commands[[plot_name]] <- panel$cmd_list
+        p.out <- FUN(pObjects$memory[[plot_name]], pObjects$memory, pObjects$coordinates, se, colormap)
+        pObjects$commands[[plot_name]] <- p.out$cmd_list
 
         if (selectable) {
-            pObjects$coordinates[[plot_name]] <- panel$xy[, intersect(.allCoordinatesNames, colnames(panel$xy))]
+            pObjects$coordinates[[plot_name]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
         }
-        panel$plot
+        p.out$plot
     })
 
 

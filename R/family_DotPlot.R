@@ -263,13 +263,13 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
     select_cmds <- select_out$cmds
     if (!is.null(select_cmds)) {
         .populate_selection_environment(all_memory[[select_out$transmitter$Type]][select_out$transmitter$ID,], plot_env)
-        data_cmds_store <- .add_command(data_cmds_store, select_cmds, clean_expression)
+        data_cmds_store <- .add_command(data_cmds_store, select_cmds)
         data_cmds_store <- .evaluate_commands(data_cmds_store, plot_env)
     }
 
     # Define the type of plot to create, and add geometry-specific commands, if needed
     specific <- .choose_plot_type(plot_env)
-    data_cmds_store <- .add_command(data_cmds_store, specific, clean_expression)
+    data_cmds_store <- .add_command(data_cmds_store, specific)
     data_cmds_store <- .evaluate_commands(data_cmds_store, plot_env)
 
     # TODO: don't forget to define the plot type based on XY and add extra commands

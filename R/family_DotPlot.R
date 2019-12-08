@@ -224,7 +224,7 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
     data_cmds_store <- .initialize_cmd_store()
     data_cmds_store <- .add_command(data_cmds_store, out_xy$data_cmds)
     data_cmds_store <- .evaluate_commands(data_cmds_store, plot_env)
-    plot_env$labs <- c(x=out_xy$x_lab, y=out_xy$y_lab, title=out_xy$plot_title)
+    ggplot_labs <- c(x=out_xy$x_lab, y=out_xy$y_lab, title=out_xy$plot_title)
 
     # Add commands coercing X and Y to appropriate type
     data_cmds_store <- .add_commands_coerce(plot_env, data_cmds_store, c("X", "Y"))
@@ -232,15 +232,15 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
     # Add commands adding optional columns to plot.data
     out_color <- .getCommandsDataColor(x, param_choices, se)
     data_cmds_store <- .add_command(data_cmds_store, out_color$cmds, name='color')
-    plot_env$labs <- c(plot_env$labs, color = out_color$label)
+    ggplot_labs <- c(ggplot_labs, color = out_color$label)
 
     out_shape <- .getCommandsDataShape(x, param_choices, se)
     data_cmds_store <- .add_command(data_cmds_store, out_shape$cmds, name='shape')
-    plot_env$labs <- c(plot_env$labs, shape = out_shape$label)
+    ggplot_labs <- c(ggplot_labs, shape = out_shape$label)
 
     out_size <- .getCommandsDataSize(x, param_choices, se)
     data_cmds_store <- .add_command(data_cmds_store, out_size$cmds, name='size')
-    plot_env$labs <- c(plot_env$labs, size = out_size$label)
+    ggplot_labs <- c(ggplot_labs, size = out_size$label)
 
     facets_cmds <- .getCommandsDataFacets(x, param_choices, se)
     data_cmds_store <- .add_command(data_cmds_store, facets_cmds)
@@ -275,6 +275,8 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
     downsample_cmds <- .downsample_points(param_choices, plot_env)
 
     data_cmds_store <- .add_command(data_cmds_store, downsample_cmds)
+
+
 
     # TODO: streamline the workflow below, then delete (previously .plot_wrapper)
     setup_out <- .extract_plotting_data(out_xy$data_cmds, param_choices, all_memory, all_coordinates, se, by_row=is_row_plot)

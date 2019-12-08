@@ -35,6 +35,8 @@ setMethod(".defineOutputElement", "Table", function(x, ...) {
 })
 
 #' @export
+#' @importFrom shiny observeEvent
+#' @importFrom utils head
 setMethod(".createParamObservers", "Table", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
@@ -47,21 +49,33 @@ setMethod(".createParamObservers", "Table", function(x, se, input, session, pObj
     # Updating memory for new selection parameters.
     # Note that '.int' variables already have underscores, so these are not necessary.
     panel_name <- paste0(mode, id)
+    act_field <- paste0(panel_name, "_reactivated")
     search_field <- paste0(panel_name, .int_statTableSearch)
-    observe({
-        search <- input[[search_field]]
-        if (length(search)) {
-            pObjects$memory[[panel_name]][[.statTableSearch]] <- search
-        }
+
+    observeEvent(input[[search_field]], {
+        pObjects$memory[[panel_name]][[.statTableSearch]] <- input[[search_field]]
+        .safe_reactive_bump(rObjects, act_field)
     })
 
     colsearch_field <- paste0(panel_name, .int_statTableColSearch)
-    observe({
+    observeEvent(input[[colsearch_field]], {
         search <- input[[colsearch_field]]
-        if (length(search)) {
-            pObjects$memory[[panel_name]][[.statTableColSearch]] <- search
+
+        # Usually getting rid of the secret column added to filter the table.
+        if (ncol(pObjects$coordinates[[panel_name]]) < length(search)) {
+            search <- head(search, -1)
         }
+
+        pObjects$memory[[panel_name]][[.statTableColSearch]] <- search
+        .safe_reactive_bump(rObjects, act_field)
     })
 })
 
-
+#' @export
+#' @importFrom SummarizedExperiment colData
+setMethod(".createRenderedOutput", "Table", function(x, se, ..., output, pObjects, rObjects) {
+    mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
+    .define_table_output(mode, id, FUN=.getTableFunction(x),
+        se=se, output=output, pObjects=pObjects, rObjects=rObjects)
+})

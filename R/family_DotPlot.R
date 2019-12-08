@@ -197,7 +197,7 @@ setMethod(".createRenderedOutput", "DotPlot", function(x, se, colormap, output, 
     id <- x[[.organizationId]]
 
     out <- .getCodeChunk(x, pObjects$memory, pObjects$coordinates, se, colormap)
-    lapply(out, function(x){invisible(cat(paste0(x, collapse = "\n"), sep = "\n"))})
+    # lapply(out, function(x){invisible(cat(paste0(x, collapse = "\n"), sep = "\n"))}) # DEBUG
 
     .define_plot_output(mode, id,
         FUN=.getPlottingFunction(x), selectable=TRUE,
@@ -205,6 +205,11 @@ setMethod(".createRenderedOutput", "DotPlot", function(x, se, colormap, output, 
 
     .define_selection_info_output(mode, id,
         output=output, pObjects=pObjects, rObjects=rObjects)
+})
+
+#' @export
+setMethod(".restrictsSelection", "DotPlot", function(x) {
+    x[[.selectEffect]]==.selectRestrictTitle
 })
 
 #' @export
@@ -276,7 +281,13 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
 
     data_cmds_store <- .add_command(data_cmds_store, downsample_cmds)
 
+    # Determine the name of the full data frame
+    is_subsetted <- exists("plot.data.all", envir=plot_env)
+    is_downsampled <- exists("plot.data.pre", envir=plot_env)
 
+    # Get the ggplot call
+    out_ggplot <- .getCommandsPlot(x, param_choices, plot_env$plot.data, plot_env$plot.type, as.list(ggplot_labs), is_subsetted, is_downsampled)
+    # lapply(out_ggplot, function(x){invisible(cat(paste0(x, collapse = "\n"), sep = "\n"))}) # DEBUG
 
     # TODO: streamline the workflow below, then delete (previously .plot_wrapper)
     setup_out <- .extract_plotting_data(out_xy$data_cmds, param_choices, all_memory, all_coordinates, se, by_row=is_row_plot)
@@ -289,6 +300,19 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
 })
 
 #' @export
-setMethod(".restrictsSelection", "DotPlot", function(x) {
-    x[[.selectEffect]]==.selectRestrictTitle
+setMethod(".getCommandsPlot", "DotPlot", function(x, param_choices, plot_data, plot_type, labs, is_subsetted, is_downsampled) {
+
+    is_row_plot <- is(x, "RowDotPlot")
+
+    plot_cmds <- switch(plot_type,
+        square=.square_plot(plot_data, param_choices, labs$x, labs$y, labs$color, labs$shape, labs$size, labs$title,
+            is_row_plot, is_subsetted),
+        violin=.violin_plot(plot_data = plot_data, param_choices, labs$x, labs$y, labs$color, labs$shape, labs$size, labs$title,
+            is_row_plot, is_subsetted),
+        violin_horizontal=.violin_plot(plot_data = plot_data, param_choices, labs$x, labs$y, labs$color, labs$shape, labs$size, labs$title,
+            is_row_plot, is_subsetted, horizontal=TRUE),
+        scatter=.scatter_plot(plot_data = plot_data, param_choices, labs$x, labs$y, labs$color, labs$shape, labs$size, labs$title,
+            is_row_plot, is_subsetted)
+    )
+
 })

@@ -114,7 +114,11 @@ setGeneric(".getPlottingFunction", function(x) standardGeneric(".getPlottingFunc
 
 setGeneric(".getCodeChunk", function(x, all_memory, all_coordinates, se, colormap) standardGeneric(".getCodeChunk"))
 
+#' @export
 setGeneric(".getCommandsDataXY", function(x, param_choices) standardGeneric(".getCommandsDataXY"))
+
+#' @export
+setGeneric(".getCommandsPlot", function(x, param_choices, plot_data, plot_type, labs, is_subsetted, is_downsampled) standardGeneric(".getCommandsPlot"))
 
 setGeneric(".getCommandsDataColor", function(x, param_choices, se) standardGeneric(".getCommandsDataColor"))
 

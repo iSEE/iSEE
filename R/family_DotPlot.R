@@ -242,8 +242,8 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
     data_cmds_store <- .add_command(data_cmds_store, out_size$cmds, name='size')
     plot_env$labs <- c(plot_env$labs, size = out_size$label)
 
-    out_facets <- .getCommandsDataFacets(x, param_choices, se)
-    data_cmds_store <- .add_command(data_cmds_store, out_facets)
+    facets_cmds <- .getCommandsDataFacets(x, param_choices, se)
+    data_cmds_store <- .add_command(data_cmds_store, facets_cmds)
 
     # Add commands coercing ColorBy to appropriate type, if present
     data_cmds_store <- .evaluate_commands(data_cmds_store, plot_env)
@@ -253,7 +253,7 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
     }
 
     # Removing NAs in axes aesthetics as they mess up .process_selectby_choice.
-    clean_select_fields <- c("X", "Y", names(out_facets))
+    clean_select_fields <- c("X", "Y", names(facets_cmds))
     clean_expression <- paste(sprintf("!is.na(%s)", clean_select_fields), collapse=" & ")
     data_cmds_store <- .add_command(data_cmds_store, sprintf("plot.data <- subset(plot.data, %s);", clean_expression), name='na.rm')
 
@@ -271,6 +271,10 @@ setMethod(".getCodeChunk", "DotPlot", function(x, all_memory, all_coordinates, s
     out_specific <- .choose_plot_type(plot_env)
     data_cmds_store <- .add_command(data_cmds_store, out_specific)
     data_cmds_store <- .evaluate_commands(data_cmds_store, plot_env)
+
+    downsample_cmds <- .downsample_points(param_choices, plot_env)
+
+    data_cmds_store <- .add_command(data_cmds_store, downsample_cmds)
 
     # TODO: streamline the workflow below, then delete (previously .plot_wrapper)
     setup_out <- .extract_plotting_data(out_xy$data_cmds, param_choices, all_memory, all_coordinates, se, by_row=is_row_plot)

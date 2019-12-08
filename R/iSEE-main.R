@@ -347,8 +347,11 @@ iSEE <- function(se,
             RedDimPlot1[["FacetByColumn"]] <- TRUE
             RedDimPlot1[["RowFacetByColData"]] <- "passes_qc_checks_s"
             RedDimPlot1[["ColumnFacetByColData"]] <- "driver_1_s"
+            RedDimPlot1[["Downsample"]] <- TRUE
+            RedDimPlot1[["SampleRes"]] <- 50
             memory <- list(RedDimPlot1, RowStatTable1, FeatAssayPlot1, ColDataPlot1, RowDataPlot1,
                 SampAssayPlot1, ColStatTable1, HeatMapPlot1)
+            memory <- list(RedDimPlot1)
 
             # NOTE: .cacheCommonInfo() should be run on all possible panels,
             # not just those that are visible. This is necessary to set up the

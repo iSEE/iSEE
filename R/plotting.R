@@ -899,7 +899,7 @@ names(.all_aes_values) <- .all_aes_names
 #' coord_flip scale_x_discrete scale_y_discrete
 .violin_plot <- function(
     plot_data, param_choices, x_lab, y_lab, color_lab, shape_lab, size_lab, title,
-    horizontal=FALSE, by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE) {
+    by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE, horizontal=FALSE) {
 
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +" # do NOT put aes here, it does not play nice with shiny brushes.

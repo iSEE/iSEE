@@ -1047,7 +1047,6 @@ plot.data$Y <- tmp;")
 #' returned by \code{\link{.extract_plotting_data}} in \code{envir$plot.data}.
 #' @param param_choices A single-row DataFrame that contains all the
 #' input settings for the current panel.
-#' @param se A SingleCellExperiment object.
 #' @param x_lab A character label for the X axis.
 #' Set to \code{NULL} to have no x-axis label.
 #' @param y_lab A character label for the Y axis.
@@ -1086,7 +1085,7 @@ plot.data$Y <- tmp;")
 #'
 #' @importFrom ggplot2 ggplot geom_tile coord_cartesian theme_bw theme
 #' scale_x_discrete scale_y_discrete guides
-.square_plot <- function(plot_data, param_choices, se, x_lab, y_lab, color_lab, shape_lab, size_lab, title, by_row=FALSE, is_subsetted=FALSE) {
+.square_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, shape_lab, size_lab, title, by_row=FALSE, is_subsetted=FALSE) {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
     plot_cmds[["tile"]] <-

@@ -63,7 +63,7 @@ setMethod(".refineParameters", "RowStatTable", function(x, se) {
         return(NULL)
     }
 
-    available <- .get_common_info(se, "RowStatTable")$valid.rowData.names
+    valid.names <- .get_common_info(se, "RowStatTable")$valid.rowData.names
     df <- rowData(se)
 
     # First, expanding out so that we cover all columns.

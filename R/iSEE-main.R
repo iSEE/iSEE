@@ -91,6 +91,7 @@
 #' @importFrom S4Vectors DataFrame
 #' @importFrom methods as
 #' @importFrom cowplot plot_grid
+#' @importFrom igraph make_graph
 #'
 #' @examples
 #' library(scRNAseq)

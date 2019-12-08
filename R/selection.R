@@ -1,7 +1,7 @@
 #' @importFrom igraph V add_vertices 
 .add_panel_vertex <- function(graph, panel_name) {
     if (!panel_name %in% names(V(graph))) {
-        graph <- add_vertices(graph, panel_name)
+        graph <- add_vertices(graph, 1L, name=panel_name)
     } else {
         graph
     }

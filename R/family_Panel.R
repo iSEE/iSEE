@@ -83,26 +83,6 @@ setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObj
     pObjects$selection_links <- .add_panel_vertex(pObjects$selection_links, panel_name) 
     pObjects$aesthetics_links <- .add_panel_vertex(pObjects$aesthetics_links, panel_name) 
 
-    width_name <- .input_FUN(.organizationWidth)
-    observeEvent(input[[width_name]], {
-        copy <- pObjects$memory_copy[[panel_name]]
-        cur.width <- copy[[.organizationWidth]]
-        new.width <- as.integer(input[[width_name]])
-        if (!isTRUE(all.equal(new.width, cur.width))) {
-            pObjects$memory_copy[[panel_name]][[.organizationWidth]] <- new.width
-        }
-    })
-
-    height_name <- .input_FUN(.organizationHeight)
-    observeEvent(input[[height_name]], {
-        copy <- pObjects$memory_copy[[panel_name]]
-        cur.height <- copy[[.organizationWidth]]
-        new.height <- as.integer(input[[height_name]])
-        if (!isTRUE(all.equal(new.height, cur.height))) {
-            pObjects$memory_copy[[panel_name]][[.organizationHeight]] <- new.height
-        }
-    })
-
     .define_child_propagation_observers(panel_name, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .define_selection_choice_observer(panel_name, input=input, session=session,

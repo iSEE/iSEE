@@ -170,6 +170,8 @@ setMethod(".defineParamInterface", "RedDimPlot", function(x, se, active_panels) 
 #' @importFrom shiny observeEvent updateSelectInput
 #' @importFrom methods callNextMethod
 setMethod(".createParamObservers", "RedDimPlot", function(x, se, input, session, pObjects, rObjects) {
+    callNextMethod()
+
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
     plot_name <- paste0(mode, id)
@@ -204,8 +206,6 @@ setMethod(".createParamObservers", "RedDimPlot", function(x, se, input, session,
 
         .regenerate_unselected_plot(plot_name, pObjects, rObjects)
     }, ignoreInit=TRUE)
-
-    callNextMethod()
 })
 
 #' @export

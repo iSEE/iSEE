@@ -201,7 +201,10 @@
 #' \code{\link{.sanitize_memory}},
 #' \code{\link{.panel_generation}}
 .define_link_sources <- function(memory) {
-    all_names <- vapply(memory, .getFullName, "")
+    all_names <- vapply(memory, .getEncodedName, "")
+    all_ids <- vapply(memory, "[[", i=.organizationId, 1L)
+    all_names <- paste0(all_names, all_ids)
+    names(all_names) <- paste(vapply(memory, .getFullName, ""), all_ids)
 
     is_row_tab <- vapply(memory, FUN=is, class2="RowTable", TRUE)
     is_col_tab <- vapply(memory, FUN=is, class2="ColumnTable", TRUE)

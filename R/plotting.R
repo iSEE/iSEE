@@ -384,9 +384,10 @@ names(.all_aes_values) <- .all_aes_names
 
     downsample_cmds <- .downsample_points(param_choices, setup_out$envir)
 
-    plot_out <- .create_plot(setup_out$envir, param_choices, ..., color_lab=setup_out$color_lab, shape_lab=setup_out$shape_lab, size_lab=setup_out$size_lab, by_row=by_row)
+    plot_out <- .create_plot(setup_out$envir, param_choices, ..., color_lab=setup_out$color_lab, 
+        shape_lab=setup_out$shape_lab, size_lab=setup_out$size_lab, by_row=by_row)
 
-    return(list(cmd_list=c(setup_out$cmd_list, list(plot=c(downsample_cmds, plot_out$cmds))), xy=xy, plot=plot_out$plot))
+    list(cmd_list=c(setup_out$cmd_list, list(plot=c(downsample_cmds, plot_out$cmds))), xy=xy, plot=plot_out$plot)
 }
 
 ############################################
@@ -508,10 +509,10 @@ names(.all_aes_values) <- .all_aes_names
     more_data_cmds <- .evaluate_commands(more_data_cmds, eval_env)
 
     # Creating the command to define SelectBy.
-    select_out <- .process_selectby_choice(param_choices, all_memory)
-    select_cmds <- select_out$cmds
+    select_cmds <- .process_selectby_choice(param_choices, all_memory)
     if (!is.null(select_cmds)) {
-        .populate_selection_environment(all_memory[[select_out$transmitter$Type]][select_out$transmitter$ID,], eval_env)
+        transmitter <- param_choices[[.selectByPlot]]
+        .populate_selection_environment(all_memory[[transmitter]], eval_env)
         .text_eval(select_cmds, eval_env)
     }
 
@@ -1624,25 +1625,25 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @importFrom mgcv in.out
 #' @importFrom shiny brushedPoints
 .process_selectby_choice <- function(param_choices, all_memory, self_source=TRUE) {
-    select_in <- param_choices[[.selectByPlot]]
+    transmitter <- param_choices[[.selectByPlot]]
     cmds <- list()
     select_by <- NULL
 
-    if (!identical(select_in, .noSelection)) {
-
-        select_by <- .encode_panel_name(select_in)
-        transmitter <- paste0(select_by$Type, select_by$ID)
-        if (self_source && identical(rownames(param_choices), transmitter)) {
+    if (!identical(transmitter, .noSelection)) {
+        if (self_source && identical(
+            paste0(.getEncodedName(param_choices), param_choices[[.organizationId]]), 
+            transmitter)) 
+        {
             source_data <- 'plot.data'
         } else {
             source_data <- sprintf("all_coordinates[['%s']]", transmitter)
         }
+        init_cmd <- paste("transmitter <-", source_data)
 
-        transmit_type_param <- all_memory[[select_by$Type]]
-
+        transmit_param <- all_memory[[transmitter]]
         cur_choice <- param_choices[[.selectMultiType]]
         if (cur_choice == .selectMultiUnionTitle) {
-            select_sources <- c(NA_integer_, seq_along(transmit_type_param[[.multiSelectHistory]]))
+            select_sources <- c(NA_integer_, seq_along(transmit_param[[.multiSelectHistory]]))
         } else if (cur_choice == .selectMultiActiveTitle) {
             select_sources <- NA_integer_
         } else {
@@ -1653,53 +1654,60 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
             }
         }
 
-        starting <- TRUE
+        LEFT <- RIGHT <- ""
         for (i in select_sources) {
-            if (is.na(i)) {
-                brush_val <- transmit_type_param[, .brushData][[select_by$ID]]
-                lasso_val <- transmit_type_param[, .lassoData][[select_by$ID]]
-                brush_src <- sprintf("all_brushes[['%s']]", transmitter)
-                lasso_src <- sprintf("all_lassos[['%s']]", transmitter)
-                use_brush <- !is.null(brush_val)
-                use_lasso <- !is.null(lasso_val) && lasso_val$closed
-            } else {
-                all_histories <- transmit_type_param[, .multiSelectHistory][[select_by$ID]]
-                brush_val <- lasso_val <- all_histories[[i]]
-                brush_src <- lasso_src <- sprintf("all_select_histories[['%s']][[%i]]", transmitter, i)
 
-                # TODO: get rid of some of these checks once UI uses selectInput for .selectMultiSaved.
-                use_brush <- !is.null(brush_val) && !any(is.na(brush_val)) && !.is_lasso(brush_val)
-                use_lasso <- !is.null(lasso_val) && !any(is.na(lasso_val)) && .is_lasso(lasso_val)
-            }
-
-            if (use_brush || use_lasso) {
-                if (starting) {
-                    starting <- FALSE
-                    LEFT <- RIGHT <- ""
+            # Varying how the filter is defined.
+            if (is(transmit_param, "DotPlot")) {
+                if (is.na(i)) {
+                    brush_val <- transmit_param[[.brushData]]
+                    brush_src <- sprintf("all_brushes[['%s']]", transmitter)
                 } else {
-                    LEFT <- "union(selected_pts, "
-                    RIGHT <- ")"
+                    brush_val <- transmit_param[[.multiSelectHistory]][[i]]
+                    brush_src <- sprintf("all_select_histories[['%s']][[%i]]", transmitter, i)
                 }
+
+                if (.is_brush(brush_val)) {
+                    curcmds <- sprintf("shiny::brushedPoints(transmitter, %s)", brush_src)
+                } else if (isTRUE(brush_val$closed)) {
+                    curcmds <- sprintf("iSEE::lassoPoints(transmitter, %s)", brush_src)
+                } else { # i.e., an unclosed lasso.
+                    next
+                }
+            } else if (is(transmit_param, "Table")) {
+                filter_cmds <- .generate_table_filter(transmit_param, varname="transmitter")
+                if (!is.null(filter_cmds)) {
+                    curcmds <- sprintf("transmitter[%s,,drop=FALSE]", filter_cmds)
+                } else {
+                    next
+                }
+            } else {
+                next
             }
 
-            if (use_brush) {
-                cmds[[paste0("brush", i)]] <- sprintf("selected_pts <- %srownames(shiny::brushedPoints(%s, %s))%s;", LEFT, source_data, brush_src, RIGHT)
-            } else if (use_lasso) {
-                cmds[[paste0("lasso", i)]] <- sprintf("selected_pts <- %srownames(lassoPoints(%s, %s))%s;", LEFT, source_data, lasso_src, RIGHT)
+            curcmds <- paste("selected <- ", curcmds)
+            outname <- if (is.na(i)) "active" else paste0("saved", i)
+
+            # Taking the union if there are multiple filters.
+            cmds[[outname]] <- c(curcmds, paste0("selected_pts <- ", LEFT, "rownames(selected)", RIGHT)) 
+            if (LEFT=="") {
+                LEFT <- "union(selected_pts, "
+                RIGHT <- ")"
             }
         }
 
         if (length(cmds)) {
+            cmds <- c(list(setup=init_cmd), cmds)
             cmds[["select"]] <- "plot.data$SelectBy <- rownames(plot.data) %in% selected_pts;"
 
-            if (param_choices[[.selectEffect]] == .selectRestrictTitle) {
+            if (.restrictsSelection(param_choices)) {
                 cmds[["saved"]] <- "plot.data.all <- plot.data;"
                 cmds[["subset"]] <- "plot.data <- subset(plot.data, SelectBy);"
             }
         }
     }
 
-    list(cmds=unlist(cmds), transmitter=select_by)
+    unlist(cmds)
 }
 
 #' Populate selection structures
@@ -1723,12 +1731,14 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' \code{\link{.self_brush_box}},
 #' \code{\link{.self_lasso_path}}
 .populate_selection_environment <- function(x, envir) {
-    envir$all_brushes <- list(x[[.brushData]])
-    envir$all_select_histories <- list(x[[.multiSelectHistory]])
+    if (is(x, "DotPlot")) {
+        envir$all_brushes <- list(x[[.brushData]])
+        envir$all_select_histories <- list(x[[.multiSelectHistory]])
 
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    names(envir$all_brushes) <- names(envir$all_select_histories) <- paste0(mode, id)
+        mode <- .getEncodedName(x)
+        id <- x[[.organizationId]]
+        names(envir$all_brushes) <- names(envir$all_select_histories) <- paste0(mode, id)
+    }
     invisible(NULL)
 }
 

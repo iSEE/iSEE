@@ -28,7 +28,7 @@
 
     output[[plot_name]] <- renderPlot({
         force(rObjects[[plot_name]])
-        rObjects[[gen_field]] <- .increment_counter(isolate(rObjects[[gen_field]]))
+        .safe_reactive_bump(rObjects, gen_field)
 
         p.out <- FUN(pObjects$memory[[plot_name]], pObjects$memory, pObjects$coordinates, se, colormap)
         pObjects$commands[[plot_name]] <- p.out$cmd_list

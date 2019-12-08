@@ -113,7 +113,13 @@ setGeneric(".getFullName", function(x) standardGeneric(".getFullName"))
 setGeneric(".getPlottingFunction", function(x) standardGeneric(".getPlottingFunction"))
 
 #' @export
+setGeneric(".getTableFunction", function(x) standardGeneric(".getTableFunction"))
+
+#' @export
 setGeneric(".refineParameters", function(x, se) standardGeneric(".refineParameters")) 
 
 #' @export
 setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo"))
+
+#' @export
+setGeneric(".restrictsSelection", function(x) standardGeneric(".restrictsSelection"))

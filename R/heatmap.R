@@ -84,14 +84,16 @@
     # Processing the column selection choice.
     alpha_cmd <- ""
     alpha_legend_cmd <- NULL
-    select_out <- .process_selectby_choice(param_choices, all_memory)
-    select_cmds <- select_out$cmds
+    select_cmds <- .process_selectby_choice(param_choices, all_memory)
     select_as_field <- .safe_field_name("SelectBy", colnames(colData(se)))
 
     if (length(select_cmds)) {
-        # plot.data$X contains the gene names (as they are duplicated across plot.data, and cannot be in 'rownames'), hence the sub().
-        select_cmds[["select"]] <- sub("rownames(plot.data)", "plot.data$X", select_cmds[["select"]], fixed=TRUE)
-        .populate_selection_environment(all_memory[[select_out$transmitter$Type]][select_out$transmitter$ID,], eval_env)
+        # plot.data$X contains the gene names (as they are duplicated across
+        # plot.data, and cannot be in 'rownames'), hence the sub().
+        select_cmds[["select"]] <- sub("rownames(plot.data)", "plot.data$X", elect_cmds[["select"]], fixed=TRUE)
+
+        transmitter <- param_choices[[.selectBy]]
+        .populate_selection_environment(all_memory[[transmitter]], eval_env)
         .text_eval(select_cmds, eval_env)
 
         if (param_choices[[.selectEffect]]==.selectTransTitle) {

@@ -198,6 +198,8 @@ setMethod(".defineParamInterface", "SampAssayPlot", function(x, se, active_panel
 #' @importFrom shiny observeEvent updateSelectInput
 #' @importFrom methods callNextMethod
 setMethod(".createParamObservers", "SampAssayPlot", function(x, se, input, session, pObjects, rObjects) {
+    callNextMethod()
+
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
     plot_name <- paste0(mode, id)
@@ -235,8 +237,6 @@ setMethod(".createParamObservers", "SampAssayPlot", function(x, se, input, sessi
     .define_selectize_update_observer(plot_name, .sampAssayXAxisSampName,
         choices=colnames(se), selected=x[[.sampAssayXAxisSampName]],
         session=session, rObjects=rObjects)
-
-    callNextMethod()
 })
 
 #' @export

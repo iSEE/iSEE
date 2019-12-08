@@ -70,29 +70,27 @@ setMethod(".cacheCommonInfo", "Panel", function(x, se) {
     se
 })
 
+#' @export
 setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
     panel_name <- paste0(mode, id)
-    input_FUN <- function(field) paste0(panel_name, "_", field)
+    .input_FUN <- function(field) paste0(panel_name, "_", field)
 
-    width_name <- input_FUN(.organizationWidth)
-    observeEvent(input[[width_name]], {
-        copy <- pObjects$memory_copy[[panel_name]]
-        cur.width <- copy[[.organizationWidth]]
-        new.width <- as.integer(input[[width_name]])
-        if (!isTRUE(all.equal(new.width, cur.width))) {
-            pObjects$memory_copy[[panel_name]][[.organizationWidth]] <- new.width
-        }
-    })
+    .safe_reactive_init(rObjects, panel_name)
+    .safe_reactive_init(rObjects, .input_FUN(.panelLinkInfo))
 
-    height_name <- input_FUN(.organizationHeight)
-    observeEvent(input[[height_name]], {
-        copy <- pObjects$memory_copy[[panel_name]]
-        cur.height <- copy[[.organizationWidth]]
-        new.height <- as.integer(input[[height_name]])
-        if (!isTRUE(all.equal(new.height, cur.height))) {
-            pObjects$memory_copy[[panel_name]][[.organizationHeight]] <- new.height
-        }
-    })
+    pObjects$selection_links <- .add_panel_vertex(pObjects$selection_links, panel_name) 
+    pObjects$aesthetics_links <- .add_panel_vertex(pObjects$aesthetics_links, panel_name) 
+
+    .define_child_propagation_observers(panel_name, session=session, pObjects=pObjects, rObjects=rObjects)
+
+    .define_selection_choice_observer(panel_name, input=input, session=session,
+        pObjects=pObjects, rObjects=rObjects)
+
+    .define_saved_selection_choice_observers(panel_name, input=input, session=session,
+        pObjects=pObjects, rObjects=rObjects)
 })
+
+#' @export
+setMethod(".restrictsSelection", "Panel", function(x) TRUE)

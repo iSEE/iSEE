@@ -44,19 +44,41 @@ RowStatTable <- function() {
 }
 
 #' @export
-setMethod(".createRenderedOutput", "RowStatTable", function(x, se, colormap, output, pObjects, rObjects) {
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-
-    feature_data <- .get_common_info(se, "RowTable")$valid.rowData.df 
-    if (identical(ncol(feature_data), 0L)) {
-        feature_data$Present <- !logical(nrow(feature_data))
+#' @importFrom SummarizedExperiment rowData
+setMethod(".cacheCommonInfo", "RowStatTable", function(x, se) {
+    if (is.null(.get_common_info(se, "RowStatTable"))) {
+        df <- rowData(se)
+        available <- .find_atomic_fields(df)
+        se <- .set_common_info(se, "RowStatTable",
+            valid.rowData.names=available)
     }
-    feature_data_select_col <- .safe_field_name("Selected", colnames(feature_data))
+    callNextMethod()
+})
 
-    .define_table_output(mode, id, 
-        tab=feature_data, select_col=feature_data_select_col,
-        output=output, pObjects=pObjects, rObjects=rObjects)
+#' @export
+#' @importFrom SummarizedExperiment rowData
+setMethod(".refineParameters", "RowStatTable", function(x, se) {
+    x <- callNextMethod()
+    if (is.null(x)) {
+        return(NULL)
+    }
+
+    valid.names <- .get_common_info(se, "RowStatTable")$valid.rowData.names
+    df <- rowData(se)
+
+    # First, expanding out so that we cover all columns.
+    search_vals <- x[[.TableColSearch]]
+    N <- ncol(df)
+    if (length(search_vals)!=N) {
+        search_vals <- character(N)
+    }
+
+    # Then, contracting only to those columns that survived.
+    keep <- match(colnames(df), valid.names)
+    search_vals <- search_vals[keep]
+    x[[.TableColSearch]] <- search_vals
+
+    x
 })
 
 #' @export
@@ -64,3 +86,17 @@ setMethod(".getEncodedName", "RowStatTable", function(x) "rowStatTable")
 
 #' @export
 setMethod(".getFullName", "RowStatTable", function(x) "Row statistics table")
+
+#' @export
+#' @importFrom SummarizedExperiment rowData
+setMethod(".getTableFunction", "RowStatTable", function(x) {
+    function(param_choices, se) {
+        cmds <-"tab <- as.data.frame(rowData(se));"
+        valid.names <- .get_common_info(se, "RowStatTable")$valid.rowData.names
+        if (!identical(colnames(rowData(se)), valid.names)) {
+            cmds <- c(cmds, sprintf("tab <- tab[,%s,drop=FALSE]", 
+                paste(deparse(valid.names), collapse="\n     ")))
+        }
+        cmds
+    }
+})

@@ -117,7 +117,7 @@ setMethod(".defineParamInterface", "RowDotPlot", function(x, se, active_panels) 
     link_sources <- .define_link_sources(active_panels)
     tab_by_row <- c(.noSelection, link_sources$row_tab)
     tab_by_col <- c(.noSelection, link_sources$col_tab)
-    row_selectable <- c(.noSelection, link_sources$row_plot)
+    row_selectable <- c(.noSelection, link_sources$row_plot, link_sources$row_tab)
 
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
@@ -130,6 +130,8 @@ setMethod(".defineParamInterface", "RowDotPlot", function(x, se, active_panels) 
 #' @export
 #' @importFrom methods callNextMethod
 setMethod(".createParamObservers", "RowDotPlot", function(x, se, input, session, pObjects, rObjects) {
+    callNextMethod()
+
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
     plot_name <- paste0(mode, id)
@@ -138,6 +140,4 @@ setMethod(".createParamObservers", "RowDotPlot", function(x, se, input, session,
         fields=c(.colorByRowData, .colorBySampNameAssay,
             .shapeByRowData, .sizeByRowData, .colorByFeatNameColor),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-
-    callNextMethod()
 })

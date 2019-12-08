@@ -27,16 +27,16 @@
 
         select_cmds <- .process_selectby_choice(param_choices, pObjects$memory)
         if (!is.null(select_cmds)) {
-            eval_env <- new.env()
             tab_cmds <- .add_command(tab_cmds, "plot.data <- data.frame(row.names=rownames(tab));")
             tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
 
             tab_cmds <- .add_command(tab_cmds, select_cmds)
             transmitter <- param_choices[[.selectByPlot]]
             .populate_selection_environment(pObjects$memory[[transmitter]], eval_env)
+            eval_env$all_coordinates <- pObjects$coordinates
             tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
 
-            tab_cmds <- .add_command(tab_cmd, "tab <- tab[dummy$SelectBy,];") 
+            tab_cmds <- .add_command(tab_cmds, "tab <- tab[rownames(plot.data),,drop=FALSE];") 
             tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
         }
 
@@ -46,7 +46,7 @@
         # We need to account for the fact that we are silently adding an extra column to this table.
         columnDefs <- list()
         if (!is.null(select_cmds)) {
-            full_tab[[.tableSecretColumnTitle]] <- eval_env$dummy$SelectBy
+            full_tab[[.tableSecretColumnTitle]] <- rownames(full_tab) %in% rownames(eval_env$plot.data)
 
             # brackets appears to fix row indexing in RStudio browser
             search_col <- c(search_col, list(list(search="[\"true\"]")))

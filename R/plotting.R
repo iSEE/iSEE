@@ -1686,7 +1686,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         if (length(cmds)) {
             cmds[["select"]] <- "plot.data$SelectBy <- rownames(plot.data) %in% selected_pts;"
 
-            if (param_choices[[.selectEffect]] == .selectRestrictTitle) {
+            if (.restrictsSelection(param_choices)) {
                 cmds[["saved"]] <- "plot.data.all <- plot.data;"
                 cmds[["subset"]] <- "plot.data <- subset(plot.data, SelectBy);"
             }

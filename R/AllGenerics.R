@@ -120,3 +120,6 @@ setGeneric(".refineParameters", function(x, se) standardGeneric(".refineParamete
 
 #' @export
 setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo"))
+
+#' @export
+setGeneric(".restrictsSelection", function(x) standardGeneric(".restrictsSelection"))

@@ -203,3 +203,8 @@ setMethod(".createRenderedOutput", "DotPlot", function(x, se, colormap, output, 
     .define_selection_info_output(mode, id, 
         output=output, pObjects=pObjects, rObjects=rObjects)
 })
+
+#' @export
+setMethod(".restrictsSelection", "DotPlot", function(x) {
+    x[[.selectEffect]]==.selectRestrictTitle
+})

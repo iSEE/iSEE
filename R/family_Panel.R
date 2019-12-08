@@ -70,6 +70,7 @@ setMethod(".cacheCommonInfo", "Panel", function(x, se) {
     se
 })
 
+#' @export
 setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
@@ -110,3 +111,6 @@ setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObj
     .define_saved_selection_choice_observers(panel_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 })
+
+#' @export
+setMethod(".restrictsSelection", "Panel", function(x) TRUE)

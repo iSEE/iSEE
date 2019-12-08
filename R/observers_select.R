@@ -19,7 +19,6 @@
 .define_selection_choice_observer <- function(panel_name, input, session, pObjects, rObjects) {
     select_panel_field <- paste0(panel_name, "_", .selectByPlot)
     repop_field <- paste0(panel_name, "_repopulated")
-    can_transmit <- .can_transmit(pObjects$memory[[panel_name]])
 
     .safe_reactive_init(rObjects, paste0(panel_name, "_", .selectMultiSaved))
 
@@ -85,7 +84,7 @@
 
         # Updating children, if the current panel is set to restrict
         # (and thus the point population changes with a new transmitted selection).
-        if (can_transmit && pObjects$memory[[panel_name]][[.selectEffect]]==.selectRestrictTitle) {
+        if (.restrictsSelection(pObjects$memory[[panel_name]])) {
             .safe_reactive_bump(rObjects, repop_field)
         }
     }, ignoreInit=TRUE)
@@ -97,7 +96,6 @@
 .define_selection_effect_observer <- function(plot_name, input, session, pObjects, rObjects) {
     select_effect_field <- paste0(plot_name, "_", .selectEffect)
     repop_field <- paste0(plot_name, "_repopulated")
-    can_transmit <- .can_transmit(pObjects$memory[[plot_name]])
 
     observeEvent(input[[select_effect_field]], {
         cur_effect <- input[[select_effect_field]]
@@ -105,12 +103,10 @@
 
         # Storing the new choice into memory, unless self-selecting to restrict.
         # In which case, we trigger an error and reset to the previous choice.
-        if (can_transmit) {
-            if (cur_effect == .selectRestrictTitle && pObjects$memory[[plot_name]][[.selectByPlot]]==plot_name) {
-                showNotification("selecting to self is not compatible with 'Restrict'", type="error")
-                updateRadioButtons(session, select_effect_field, selected=old_effect)
-                return(NULL)
-            }
+        if (cur_effect == .selectRestrictTitle && pObjects$memory[[plot_name]][[.selectByPlot]]==plot_name) {
+            showNotification("selecting to self is not compatible with 'Restrict'", type="error")
+            updateRadioButtons(session, select_effect_field, selected=old_effect)
+            return(NULL)
         }
         pObjects$memory[[plot_name]][[.selectEffect]] <- cur_effect
 
@@ -170,7 +166,7 @@
         }
 
         .safe_reactive_bump(rObjects, panel_name)
-        if (pObjects$memory[[panel_name]][[.selectEffect]]==.selectRestrictTitle) {
+        if (.restrictsSelection(pObjects$memory[[panel_name]])) {
             .safe_reactive_bump(rObjects, repop_field)
         }
     }, ignoreInit=TRUE)
@@ -194,7 +190,7 @@
 
         # Switch of 'Saved' will ALWAYS change the current plot, so no need for other checks.
         .safe_reactive_bump(rObjects, panel_name)
-        if (pObjects$memory[[panel_name]][[.selectEffect]]==.selectRestrictTitle) {
+        if (.restrictsSelection(pObjects$memory[[panel_name]])) {
             .safe_reactive_bump(rObjects, repop_field)
         }
     }, ignoreInit=TRUE)

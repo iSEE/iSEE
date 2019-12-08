@@ -31,7 +31,6 @@
     # Reactive to regenerate children when the point population of the current panel changes.
     repop_field <- paste0(panel_name, "_repopulated")
     rObjects[[repop_field]] <- 1L
-    can_transmit <- .can_transmit(pObjects$memory[[panel_name]])
 
     observe({
         force(rObjects[[repop_field]])
@@ -60,9 +59,8 @@
                 .safe_reactive_bump(rObjects, child_plot)
 
                 # To warrant replotting of the grandchildren, the child must itself be restricted.
-                if (can_transmit && child_instance[[.selectEffect]]==.selectRestrictTitle) {
-                    react_child <- paste0(child_plot, "_repopulated")
-                    .safe_reactive_bump(rObjects, react_child)
+                if (.restrictsSelection(child_instance)) {
+                    .safe_reactive_bump(rObjects, paste0(child_plot, "_repopulated"))
                 }
             }
         }
@@ -83,9 +81,8 @@
                 .safe_reactive_bump(rObjects, child_plot)
 
                 # To warrant replotting of the grandchildren, the child must itself be restricted.
-                if (can_transmit && child_instance[[.selectEffect]]==.selectRestrictTitle) {
-                    react_child <- paste0(child_plot, "_repopulated")
-                    .safe_reactive_bump(rObjects, react_child)
+                if (.restrictsSelection(child_instance)) {
+                    .safe_reactive_bump(rObjects, paste0(child_plot, "_repopulated"))
                 }
             }
         }
@@ -113,9 +110,8 @@
                 .safe_reactive_bump(rObjects, child_plot)
 
                 # To warrant replotting of the grandchildren, the child must itself be restricted.
-                if (can_transmit && child_instance[[.selectEffect]]==.selectRestrictTitle) {
-                    react_child <- paste0(child_plot, "_repopulated")
-                    .safe_reactive_bump(rObjects, react_child)
+                if (.restrictsSelection(child_instance)) {
+                    .safe_reactive_bump(rObjects, paste0(child_plot, "_repopulated"))
                 }
             }
 

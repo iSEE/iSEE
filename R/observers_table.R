@@ -107,7 +107,7 @@
 
     if (old_tab!=tab) {
         # Editing the aesthetics_links, if we're switching the aesthetics choice.
-        pObjects$aesthetics_links <- .choose_new_selection_source(pObjects$aesthetics_links, 
+        pObjects$aesthetics_links <- .choose_new_parent(pObjects$aesthetics_links, 
             plot_name, tab, old_tab, field=select_field)
 
         # Updating the selection, based on the currently selected row.

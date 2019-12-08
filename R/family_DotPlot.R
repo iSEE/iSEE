@@ -181,7 +181,7 @@ setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pO
 
     for (field in c(.colorByColTable, .colorByRowTable)) {
         pObjects$aesthetics_links <- .add_interpanel_link(pObjects$aesthetics_links, 
-            panel_name=plot_name, parent_name=x[[field]], field=field, protected=FALSE)
+            panel_name=plot_name, parent_name=x[[field]], field=field)
     }
 })
 

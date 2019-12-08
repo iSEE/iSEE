@@ -227,7 +227,7 @@ setMethod(".createParamObservers", "FeatAssayPlot", function(x, se, input, sessi
 
     for (field in c(.featAssayXAxisRowTable, .featAssayYAxisRowTable)) {
         pObjects$aesthetics_links <- .add_interpanel_link(pObjects$aesthetics_links, 
-            panel_name=plot_name, parent_name=x[[field]], field=field, protected=TRUE)
+            panel_name=plot_name, parent_name=x[[field]], field=field)
     }
 })
 

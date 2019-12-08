@@ -9,24 +9,15 @@
 
 #' @importFrom igraph add_edges get.edge.ids E E<-
 #' @importFrom stats setNames
-.add_interpanel_link <- function(graph, panel_name, parent_name, field, protected=FALSE) {
+.add_interpanel_link <- function(graph, panel_name, parent_name, field) {
     if (parent_name!=.noSelection) {
         idx <- get.edge.ids(graph, c(parent_name, panel_name))
         if (idx==0L) {
-            graph <- add_edges(graph, c(parent_name, panel_name))
-            nedges <- length(E(graph))
-
-            val <- list(setNames(protected, field))
-            if (length(nedges)==1L) {
-                E(graph)$fields <- val
-            } else {
-                E(graph)$fields[[nedges]] <- val
-            }
+            graph <- add_edges(graph, c(parent_name, panel_name), attr=list(field=list(field)))
         } else {
-            E(graph)$fields[[idx]][field] <- protected
+            E(graph)$fields[[idx]] <- union(E(graph)$fields[[idx]], field)
         }
     }
-
     graph
 }
 
@@ -36,10 +27,10 @@
         idx <- get.edge.ids(graph, c(parent_name, panel_name))
         if (idx!=0L) {
             fields <- E(graph)$fields[[idx]]
-            remaining <- setdiff(names(fields), field)
+            remaining <- setdiff(fields, field)
 
-            if (length(fields)) {
-                E(graph)$fields[[idx]] <- fields[remaining]
+            if (length(remaining)) {
+                E(graph)$fields[[idx]] <- remaining
             } else {
                 graph <- delete_edges(graph, c(parent_name, panel_name))
             }
@@ -159,7 +150,7 @@
 #' @rdname INTERNAL_choose_new_selection_source
 #' @seealso \code{\link{.spawn_selection_chart}}
 #'
-.choose_new_selection_source <- function(graph, panel_name, new_parent_name, old_parent_name, field) {
+.choose_new_parent <- function(graph, panel_name, new_parent_name, old_parent_name, field) {
     graph <- .delete_interpanel_link(graph, panel_name, old_parent_name, field)
     .add_interpanel_link(graph, panel_name, new_parent_name, field)
 }

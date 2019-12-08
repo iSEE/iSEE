@@ -240,7 +240,7 @@ setMethod(".createParamObservers", "SampAssayPlot", function(x, se, input, sessi
 
     for (field in c(.sampAssayXAxisColTable, .sampAssayYAxisColTable)) {
         pObjects$aesthetics_links <- .add_interpanel_link(pObjects$aesthetics_links, 
-            panel_name=plot_name, parent_name=x[[field]], field=field, protected=TRUE)
+            panel_name=plot_name, parent_name=x[[field]], field=field)
     }
 })
 

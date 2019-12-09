@@ -73,3 +73,51 @@
 .is_brush <- function(x) {
     length(x) && is.null(x$closed)
 }
+
+#' Test if Shiny brushes are identical
+#'
+#' Check whether brush coordinates have actually changed between two Shiny brush objects.
+#'
+#' @param old_brush A Shiny brush object with the elements \code{xmin}, \code{xmax}, \code{ymin} and \code{ymax}.
+#' @param new_brush Another  Shiny brush object for the same plot.
+#'
+#' @details
+#' This function checks whether there are any significant differences in the rectangular regions defined by two Shiny brushes.
+#' If there is no change, there is no need to waste time updating the plot.
+#'
+#' The tolerance is defined as one millionth of the x- and y-axis range for \code{xmin}/\code{xmax} and \code{ymin}/\code{ymax}, respectively.
+#' We do not use \code{all.equal(old_brush, new_brush)}, as the plot domain can sometimes change without affecting the actual brush coordinates.
+#'
+#' @return A logical scalar indicating whether the brushes are identical.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_identical_brushes
+#' @seealso
+#' \code{\link{iSEE}}
+.identical_brushes <- function(old_brush, new_brush) {
+    old_null <- length(old_brush)==0L
+    new_null <- length(new_brush)==0L
+    if (old_null || new_null) {
+        return(old_null==new_null)
+    }
+
+    if (!.is_brush(old_brush) || !.is_brush(new_brush)) {
+        return(FALSE)
+    }
+
+    xspan <- old_brush$xmax - old_brush$xmin
+    tol <- xspan * 1e-6
+    if (abs(old_brush$xmin - new_brush$xmin) > tol
+        || abs(old_brush$xmax - new_brush$xmax) > tol) {
+      return(FALSE)
+    }
+
+    yspan <- old_brush$ymax - old_brush$ymin
+    tol <- yspan * 1e-6
+    if (abs(old_brush$ymin - new_brush$ymin) > tol
+        || abs(old_brush$ymax - new_brush$ymax) > tol) {
+      return(FALSE)
+    }
+
+    TRUE
+}

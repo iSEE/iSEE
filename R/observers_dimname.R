@@ -1,26 +1,3 @@
-#' @importFrom shiny observe updateSelectizeInput
-.define_table_selection_observer <- function(panel_name, input, session, pObjects, rObjects) {
-    # No need for underscore in 'select_field' definition, as this is already in the '.int' constant.
-    select_field <- paste0(panel_name, .int_statTableSelected)
-
-    # Updating memory for new selection parameters 
-    observe({
-        chosen <- input[[select_field]]
-        if (length(chosen)==0L) {
-            return(NULL)
-        }
-
-        chosen <- rownames(pObjects$coordinates[[panel_name]])[chosen]
-        previous <- pObjects$memory[[panel_name]][[.TableSelected]] 
-        if (chosen==previous) {
-            return(NULL)
-        }
-        pObjects$memory[[panel_name]][[.TableSelected]] <- chosen
-
-        .safe_reactive_bump(rObjects, paste0(panel_name, "_", .propagateDimnames))
-    })
-}
-
 #' @importFrom shiny eventReactive updateSelectizeInput
 .define_dimname_propagation_observer <-  function(panel_name, choices, session, pObjects, rObjects) {
     dimname_field <- paste0(panel_name, "_", .propagateDimnames)
@@ -56,7 +33,7 @@
     })
 }
 
-#' Set up a table observer
+#' Set up a dimname choice observer
 #'
 #' Set up the actions for an observer for a parameter choice in a plot panel that may involve a linked table.
 #'
@@ -96,14 +73,14 @@
 #' Note that \code{by_field} and \code{title} are ignored if \code{param="yaxis"}, as the y-axis of feature/sample assay plots have no other choice of variable.
 #'
 #' @author Aaron Lun
-#' @rdname INTERNAL_setup_table_observer
+#' @rdname INTERNAL_setup_dimname_source_observer
 #' @seealso
 #' \code{\link{.modify_table_links}},
 #' \code{\link{iSEE}}
 #'
 #' @importFrom shiny updateSelectizeInput
 #' @importFrom methods as
-.setup_table_observer <- function(plot_name, by_field, title, select_field, tab_field, choices, 
+.setup_dimname_source_observer <- function(plot_name, by_field, title, select_field, tab_field, choices, 
     input, session, pObjects, rObjects) 
 {
     .input_FUN <- function(field) paste0(plot_name, "_", field)
@@ -189,7 +166,7 @@
 #' @param in_use_value String specifying the value of the parameter field that indicates whether the panel is currently responding  to the dimension name for its plot.
 #' @param is_protected Logical scalar indicating if the dimension name is a protected parameter (see \code{\link{.define_plot_parameter_observers}}.
 #' @param table_field String specifying the parameter field of \code{pObjects$memory} that specifies the transmitting table panel for a selection of the dimension name.
-#' @param link_type String specifying the link type for the current parameter to the transmitting table in \code{table_field}, same as \code{param=} in \code{\link{.setup_table_observer}}.
+#' @param link_type String specifying the link type for the current parameter to the transmitting table in \code{table_field}, same as \code{param=} in \code{\link{.setup_dimname_source_observer}}.
 #'
 #' @return
 #' An observer is set up to track changes to the dimension name, possibly triggering a regeneration of the plot.
@@ -238,7 +215,7 @@
 
     # Observer for the linked panel that controls the dimname selection.
     observe({
-        replot <- .setup_table_observer(plot_name,
+        replot <- .setup_dimname_source_observer(plot_name,
             by_field=in_use_field, title=in_use_value,
             select_field=name_field, tab_field=table_field,
             choices=choices,

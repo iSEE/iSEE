@@ -42,32 +42,7 @@ setMethod(".createParamObservers", "Table", function(x, se, input, session, pObj
 
     .define_box_observers(panel_name, .selectParamBoxOpen, input, pObjects)
 
-    .define_table_selection_observer(panel_name, input=input,
-        session=session, pObjects=pObjects, rObjects=rObjects)
-
-    # Updating memory for new selection parameters.
-    # Note that '.int' variables already have underscores, so these are not necessary.
-    panel_name <- paste0(mode, id)
-    act_field <- paste0(panel_name, "_reactivated")
-    search_field <- paste0(panel_name, .int_statTableSearch)
-
-    observeEvent(input[[search_field]], {
-        pObjects$memory[[panel_name]][[.statTableSearch]] <- input[[search_field]]
-        .safe_reactive_bump(rObjects, act_field)
-    })
-
-    colsearch_field <- paste0(panel_name, .int_statTableColSearch)
-    observeEvent(input[[colsearch_field]], {
-        search <- input[[colsearch_field]]
-
-        # Usually getting rid of the secret column added to filter the table.
-        if (ncol(pObjects$coordinates[[panel_name]]) < length(search)) {
-            search <- head(search, -1)
-        }
-
-        pObjects$memory[[panel_name]][[.statTableColSearch]] <- search
-        .safe_reactive_bump(rObjects, act_field)
-    })
+    .define_table_observers(panel_name, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export

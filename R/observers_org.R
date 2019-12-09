@@ -129,9 +129,9 @@
         }
 
         # NOTE: there should be no need to updateSelectize on the choice of
-        # linkable panels; this should be handled by the rerendering.
-        # Similarly, there should be no need to trigger the replotting of
-        # children via the 'repopulated' reactive.
+        # linkable panels; this should be handled by the rerendering. This
+        # should also trigger the corresponding observers to update the memory
+        # and propagate the required downstream changes.
 
         rObjects$rerender <- .increment_counter(rObjects$rerender)
     })

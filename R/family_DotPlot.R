@@ -266,10 +266,11 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
 
         # Add commands adding the optional SelectBy column to plot.data
         data_cmds <- .evaluate_commands(data_cmds, plot_env)
-        out_select <- .process_selectby_choice(param_choices, all_memory)
-        select_cmds <- out_select$cmds
-        if (!is.null(select_cmds)) {
-            .populate_selection_environment(all_memory[[out_select$transmitter$Type]][out_select$transmitter$ID,], plot_env)
+        select_cmds <- .process_selectby_choice(param_choices, all_memory)
+        select_cmds <- select_cmds
+        if (length(select_cmds)) {
+            transmitter <- param_choices[[.selectByPlot]]
+            .populate_selection_environment(all_memory[[transmitter]], plot_env)
             data_cmds <- .add_command(data_cmds, select_cmds)
             data_cmds <- .evaluate_commands(data_cmds, plot_env)
         }

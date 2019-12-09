@@ -13,7 +13,7 @@
     if (parent_name!=.noSelection) {
         idx <- get.edge.ids(graph, c(parent_name, panel_name))
         if (idx==0L) {
-            graph <- add_edges(graph, c(parent_name, panel_name), attr=list(field=list(field)))
+            graph <- add_edges(graph, c(parent_name, panel_name), attr=list(fields=list(field)))
         } else {
             E(graph)$fields[[idx]] <- union(E(graph)$fields[[idx]], field)
         }
@@ -32,7 +32,7 @@
             if (length(remaining)) {
                 E(graph)$fields[[idx]] <- remaining
             } else {
-                graph <- delete_edges(graph, c(parent_name, panel_name))
+                graph <- delete_edges(graph, idx)
             }
         }
     }
@@ -65,12 +65,9 @@
 #' \code{\link{iSEE}}
 #'
 #' @importFrom igraph adjacent_vertices get.edge.ids
-.get_direct_children <- function(graph, panel_name, names_only=TRUE) {
+.get_direct_children <- function(graph, panel_name) {
     children <- names(adjacent_vertices(graph, panel_name, mode="out")[[1]])
     children <- setdiff(children, panel_name) # self-updates are handled elsewhere.
-    if (names_only) {
-        return(children)        
-    }
 
     if (!length(children)) {
         return(list())
@@ -111,20 +108,9 @@
 #' \code{\link{.sanitize_memory}}
 #' \code{\link{iSEE}}
 #'
-#' @importFrom igraph adjacent_vertices incident
-.destroy_transmitter <- function(graph, panel_name, pObjects) {
-    # Resetting memory.
-    all_kids <- .get_children(graph, panel_name)
-    for (kid in all_kids) {
-        pObjects$memory[[kid]][[.selectByPlot]] <- .noSelection
-    }
-
-    # Technically the population changes because all points are destroyed with the panel.
-    .safe_reactive_bump(rObjects, paste0(panel_name, "_repopulated"))
-
-    # Destroying the edges.
-    pObjects$selection_links <- graph - incident(graph, panel, mode="all")
-    invisible(NULL)
+#' @importFrom igraph incident
+.destroy_parent <- function(graph, parent_name) {
+    graph - incident(graph, parent_name, mode="all")
 }
 
 #' Change the selection source

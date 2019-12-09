@@ -30,14 +30,13 @@
 .define_child_propagation_observers <- function(panel_name, session, pObjects, rObjects) {
     # Reactive to regenerate children when the point population of the current panel changes.
     repop_field <- paste0(panel_name, "_repopulated")
-    rObjects[[repop_field]] <- 1L
+    .safe_reactive_init(rObjects, repop_field)
 
-    observe({
-        force(rObjects[[repop_field]])
+    observeEvent(rObjects[[repop_field]], {
         has_active <- .any_active_selection(pObjects$memory[[panel_name]])
         has_saved <- .any_saved_selection(pObjects$memory[[panel_name]])
 
-        children <- .get_direct_children(pObjects$selection_links, panel_name)
+        children <- names(.get_direct_children(pObjects$selection_links, panel_name))
         for (child_plot in children) {
             child_instance <- pObjects$memory[[child_plot]]
 
@@ -70,9 +69,11 @@
     act_field <- paste0(panel_name, "_reactivated")
     .safe_reactive_init(rObjects, act_field)
 
-    observe({
-        force(rObjects[[act_field]])
-        children <- .get_direct_children(pObjects$selection_links, panel_name)
+    dimprop_field <- paste0(panel_name, "_", .propagateDimnames)
+    .safe_reactive_init(rObjects, dimprop_field)
+
+    observeEvent(rObjects[[act_field]], {
+        children <- names(.get_direct_children(pObjects$selection_links, panel_name))
         for (child_plot in children) {
             child_instance <- pObjects$memory[[child_plot]]
 
@@ -86,17 +87,18 @@
                 }
             }
         }
+
+        .safe_reactive_bump(rObjects, dimprop_field)
     })
 
     # Reactive to regenerate children when the saved selection of the current panel changes.
     save_field <- paste0(panel_name, "_resaved")
     .safe_reactive_init(rObjects, save_field)
 
-    observe({
-        force(rObjects[[save_field]])
+    observeEvent(rObjects[[save_field]], {
         Nsaved <- length(pObjects$memory[[panel_name]][[.multiSelectHistory]])
 
-        children <- .get_direct_children(pObjects$selection_links, panel_name)
+        children <- names(.get_direct_children(pObjects$selection_links, panel_name))
         for (child_plot in children) {
             child_instance <- pObjects$memory[[child_plot]]
 

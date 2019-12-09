@@ -96,6 +96,8 @@
                 adjusted[[a]] <- latest 
                 names(adjusted)[a] <- paste0(mode, idx)
                 org_pObjects$counter[[mode]] <- idx
+
+                .define_width_height_observers(latest, input, org_pObjects)
             }
             updated_names <- .define_choices(adjusted)
             updateSelectizeInput(session, 'panel_order', 
@@ -107,20 +109,31 @@
     })
 
     observeEvent(input$update_ui, {
-        added <- setdiff(names(org_pObjects$memory), names(pObjects$memory))
-        if (length(added)) { 
-            pObjects$memory <- org_pObjects$memory
-            pObjects$counter <- org_pObjects$counter
-            
-            for (a in added) {
-                instance <- pObjects$memory[[a]]
-                .createParamObservers(instance, se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-                .createRenderedOutput(instance, se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
-                .define_width_height_observers(instance, input, org_pObjects)
-            }
+        left <- names(org_pObjects$memory)
+        right <- names(pObjects$memory)
 
-            rObjects$rerender <- .increment_counter(rObjects$rerender)
+        pObjects$memory <- org_pObjects$memory
+        pObjects$counter <- org_pObjects$counter
+
+        added <- setdiff(left, right)           
+        for (a in added) {
+            instance <- pObjects$memory[[a]]
+            .createParamObservers(instance, se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+            .createRenderedOutput(instance, se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
         }
+
+        lost <- setdiff(right, left)
+        for (l in lost) {
+            pObjects$selection_links <- .destroy_parent(pObjects$selection_links, l)
+            pObjects$aesthetics_links <- .destroy_parent(pObjects$aesthetics_links, l)
+        }
+
+        # NOTE: there should be no need to updateSelectize on the choice of
+        # linkable panels; this should be handled by the rerendering. This
+        # should also trigger the corresponding observers to update the memory
+        # and propagate the required downstream changes.
+
+        rObjects$rerender <- .increment_counter(rObjects$rerender)
     })
 
     invisible(NULL)

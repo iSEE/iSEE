@@ -362,7 +362,7 @@ setClass("SampAssayPlot", contains="RowDotPlot", slots=collated)
 .TableColSearch <- "SearchColumns"
 
 collated <- character(0)
-collated[.TableSelected] <- "integer" 
+collated[.TableSelected] <- "character" 
 collated[.TableSearch] <- "character" 
 collated[.TableColSearch] <- "character" 
 

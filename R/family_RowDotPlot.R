@@ -115,14 +115,13 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
 #' @export
 setMethod(".defineParamInterface", "RowDotPlot", function(x, se, active_panels) {
     link_sources <- .define_link_sources(active_panels)
-    tab_by_row <- c(.noSelection, link_sources$row_tab)
-    tab_by_col <- c(.noSelection, link_sources$col_tab)
     row_selectable <- c(.noSelection, link_sources$row_plot, link_sources$row_tab)
+    col_selectable <- c(.noSelection, link_sources$col_plot, link_sources$col_tab)
 
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
     list(
-        .create_visual_box_for_row_plots(mode, id, x, tab_by_row, tab_by_col, se),
+        .create_visual_box_for_row_plots(mode, id, x, row_selectable, col_selectable, se),
         .create_selection_param_box(mode, id, x, row_selectable, "row")
     )
 })
@@ -140,6 +139,9 @@ setMethod(".createParamObservers", "RowDotPlot", function(x, se, input, session,
         fields=c(.colorByRowData, .colorBySampNameAssay,
             .shapeByRowData, .sizeByRowData, .colorByFeatNameColor),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
+    .define_dimname_propagation_observer(plot_name, choices=rownames(se),
+        session=session, pObjects=pObjects, rObjects=rObjects)
 })
 
 setMethod(".getCommandsDataColor", "RowDotPlot", function(x, param_choices, se) {

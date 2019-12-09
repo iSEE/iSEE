@@ -69,11 +69,15 @@
             }
         }
 
-        # Checking if there were active/saved selections in either the new or old transmitters.
-        no_old_selection <- !.transmitted_selection(panel_name, old_transmitter, pObjects$memory)
-        no_new_selection <- !.transmitted_selection(panel_name, new_transmitter, pObjects$memory)
-        if (no_old_selection && no_new_selection) {
-            return(NULL)
+        # Checking if there were active/saved selections in either the new or
+        # old transmitters. This requires some protection when this observer
+        # is triggered because the old transmitter was deleted.
+        if (old_transmitter %in% names(pObjects$memory)) {
+            no_old_selection <- !.transmitted_selection(panel_name, old_transmitter, pObjects$memory)
+            no_new_selection <- !.transmitted_selection(panel_name, new_transmitter, pObjects$memory)
+            if (no_old_selection && no_new_selection) {
+                return(NULL)
+            }
         }
 
         .safe_reactive_bump(rObjects, panel_name)
@@ -195,10 +199,15 @@
     # Do NOT be tempted to centralize code by setting .selectMultiSaved in the above observer.
     # This needs to be done in a separate observer that actually executes to set the 
     # the field to something upon initialization of the panel.
+    .safe_reactive_init(rObjects, saved_select)
     observe({
-        .safe_reactive_init(rObjects, saved_select)
         force(rObjects[[saved_select]])
         force(rObjects$rerendered)
+
+        # Protect against re-rendering after deleting a panel.
+        if (!panel_name %in% names(pObjects$memory)) {
+            return(NULL)
+        }
 
         transmitter <- pObjects$memory[[panel_name]][[.selectByPlot]]
         if (transmitter==.noSelection) {

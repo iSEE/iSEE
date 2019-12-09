@@ -139,33 +139,23 @@ setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pO
             .contourColor),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_dim_name_observer(plot_name,
+    .define_dimname_observers(plot_name,
         name_field=.colorByFeatName,
         choices=rownames(se),
         in_use_field=.colorByField,
         in_use_value=.colorByFeatNameTitle,
         table_field=.colorByRowTable,
         is_protected=FALSE,
-        link_type="color",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_dim_name_observer(plot_name,
+    .define_dimname_observers(plot_name,
         name_field=.colorBySampName,
         choices=colnames(se),
         in_use_field=.colorByField,
         in_use_value=.colorBySampNameTitle,
         table_field=.colorByColTable,
         is_protected=FALSE,
-        link_type="color",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-
-    .define_selectize_update_observer(plot_name, .colorByFeatName,
-        choices=rownames(se), selected=x[[.colorByFeatName]],
-        session=session, rObjects=rObjects)
-
-    .define_selectize_update_observer(plot_name, .colorBySampName,
-        choices=colnames(se), selected=x[[.colorBySampName]],
-        session=session, rObjects=rObjects)
 
     .define_brush_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)

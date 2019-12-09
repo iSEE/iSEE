@@ -197,33 +197,23 @@ setMethod(".createParamObservers", "FeatAssayPlot", function(x, se, input, sessi
         fields=c(.featAssayAssay, .featAssayXAxisColData),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_dim_name_observer(plot_name,
+    .define_dimname_observers(plot_name,
         name_field=.featAssayXAxisFeatName,
         choices=rownames(se),
         in_use_field=.featAssayXAxis,
         in_use_value=.featAssayXAxisFeatNameTitle,
         is_protected=TRUE,
         table_field=.featAssayXAxisRowTable,
-        link_type="xaxis",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_dim_name_observer(plot_name,
+    .define_dimname_observers(plot_name,
         name_field=.featAssayYAxisFeatName,
         choices=rownames(se),
         in_use_field=NA,
         in_use_value=NA,
         is_protected=TRUE,
         table_field=.featAssayYAxisRowTable,
-        link_type="yaxis",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-
-    .define_selectize_update_observer(plot_name, .featAssayYAxisFeatName,
-        choices=rownames(se), selected=x[[.featAssayYAxisFeatName]],
-        session=session, rObjects=rObjects)
-
-    .define_selectize_update_observer(plot_name, .featAssayXAxisFeatName,
-        choices=rownames(se), selected=x[[.featAssayXAxisFeatName]],
-        session=session, rObjects=rObjects)
 
     for (field in c(.featAssayXAxisRowTable, .featAssayYAxisRowTable)) {
         pObjects$aesthetics_links <- .add_interpanel_link(pObjects$aesthetics_links, 

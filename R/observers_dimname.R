@@ -175,3 +175,90 @@
     # doesn't matter here, as the row name determines the plot.
     !identical(old_choice, choice)
 }
+
+
+#' Define dimension name observer
+#'
+#' Define an observer to track changes to fields involving the dimension name.
+#'
+#' @inheritParams .define_plot_parameter_observers
+#' @param name_field String specifying the name of the parameter that uses the dimension name as input.
+#' @param choices Character vector containing the all possible (unique) choices for the dimension name.
+#' @param in_use_field String specifying the parameter field of \code{pObjects$memory} that indicates whether the panel is currently responsive to the dimension name for its plot.
+#' If \code{NA}, the panel is assumed to always respond on the dimension name.
+#' @param in_use_value String specifying the value of the parameter field that indicates whether the panel is currently responding  to the dimension name for its plot.
+#' @param is_protected Logical scalar indicating if the dimension name is a protected parameter (see \code{\link{.define_plot_parameter_observers}}.
+#' @param table_field String specifying the parameter field of \code{pObjects$memory} that specifies the transmitting table panel for a selection of the dimension name.
+#' @param link_type String specifying the link type for the current parameter to the transmitting table in \code{table_field}, same as \code{param=} in \code{\link{.setup_table_observer}}.
+#'
+#' @return
+#' An observer is set up to track changes to the dimension name, possibly triggering a regeneration of the plot.
+#' Another observer is set up to detect changes in the transmitting panels.
+#'
+#' @details
+#' This is handled separately from the other observers because:
+#' \itemize{
+#' \item The \code{\link{selectizeInput}} element used for the dimension names are typically updated server-side,
+#' requiring some care to defend against empty inputs before the \code{\link{updateSelectizeInput}} runs.
+#' \item The dimension name can change (due to the linked table) without directly affecting the plot,
+#' if the dimension name is not currently in use.
+#' In such cases, we want to avoid needless re-rendering.
+#' }
+#'
+#' @author Aaron Lun
+#'
+#' @rdname INTERNAL_define_dim_name_observer
+#' @importFrom shiny observeEvent observe updateSelectizeInput
+.define_dimname_observers <- function(plot_name, name_field, choices,
+    in_use_field, in_use_value, is_protected, table_field, 
+    input, session, pObjects, rObjects)
+{
+    name_input <- paste0(plot_name, "_", name_field)
+    always_in_use <- is.na(in_use_field)
+
+    observeEvent(input[[name_input]], {
+        # Required to defend against empty strings before updateSelectizeInput runs upon re-render.
+        req(input[[name_input]])
+
+        matched_input <- as(input[[name_input]], typeof(pObjects$memory[[plot_name]][[name_field]]))
+        if (identical(matched_input, pObjects$memory[[plot_name]][[name_field]])) {
+            return(NULL)
+        }
+        pObjects$memory[[plot_name]][[name_field]] <- matched_input
+
+        # Only regenerating if the current parameter is actually in use.
+        if (always_in_use || pObjects$memory[[plot_name]][[in_use_field]]==in_use_value) {
+            if (!is_protected) {
+                .safe_reactive_bump(rObjects, plot_name)
+            } else {
+                .regenerate_unselected_plot(plot_name, pObjects, rObjects)
+            }
+        }
+    }, ignoreInit=TRUE)
+
+    # Observer for the linked panel that controls the dimname selection.
+    observe({
+        replot <- .setup_table_observer(plot_name,
+            by_field=in_use_field, title=in_use_value,
+            select_field=name_field, tab_field=table_field,
+            choices=choices,
+            input=input, session=session,
+            pObjects=pObjects, rObjects=rObjects)
+
+        if (replot) {
+            if (!is_protected) {
+                .safe_reactive_bump(rObjects, plot_name)
+            } else {
+                .regenerate_unselected_plot(plot_name, pObjects, rObjects)
+            }
+        }
+    })
+
+    observe({
+        force(rObjects$rerendered)
+        updateSelectizeInput(session, paste0(plot_name, "_", name_field),
+            choices=choices, selected=pObjects$memory[[plot_name]][[name_field]], server=TRUE)
+    })
+
+    invisible(NULL)
+}

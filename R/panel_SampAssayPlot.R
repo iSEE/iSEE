@@ -210,33 +210,23 @@ setMethod(".createParamObservers", "SampAssayPlot", function(x, se, input, sessi
         fields=c(.sampAssayAssay, .sampAssayXAxisRowData),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_dim_name_observer(plot_name,
+    .define_dimname_observers(plot_name,
         name_field=.sampAssayXAxisSampName,
         choices=colnames(se),
         in_use_field=.sampAssayXAxis,
         in_use_value=.sampAssayXAxisSampNameTitle,
         is_protected=TRUE,
         table_field=.sampAssayXAxisColTable,
-        link_type="xaxis",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_dim_name_observer(plot_name,
+    .define_dimname_observers(plot_name,
         name_field=.sampAssayYAxisSampName,
         choices=colnames(se),
         in_use_field=NA,
         in_use_value=NA,
         is_protected=TRUE,
         table_field=.sampAssayYAxisColTable,
-        link_type="yaxis",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-
-    .define_selectize_update_observer(plot_name, .sampAssayYAxisSampName,
-        choices=colnames(se), selected=x[[.sampAssayYAxisSampName]],
-        session=session, rObjects=rObjects)
-
-    .define_selectize_update_observer(plot_name, .sampAssayXAxisSampName,
-        choices=colnames(se), selected=x[[.sampAssayXAxisSampName]],
-        session=session, rObjects=rObjects)
 
     for (field in c(.sampAssayXAxisColTable, .sampAssayYAxisColTable)) {
         pObjects$aesthetics_links <- .add_interpanel_link(pObjects$aesthetics_links, 

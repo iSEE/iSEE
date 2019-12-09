@@ -277,9 +277,11 @@ setMethod(".createParamObservers", "HeatMapPlot", function(x, se, input, session
 
     .create_heatmap_feature_observers(plot_name, se, input, session, pObjects, rObjects)
 
-    .define_selectize_update_observer(plot_name, .heatMapFeatName,
-        choices=rownames(se), selected=x[[.heatMapFeatName]],
-        session=session, rObjects=rObjects)
+    observe({
+        force(rObjects$rerendered)
+        updateSelectizeInput(session, paste0(plot_name, "_", .heatMapFeatName),
+            choices=rownames(se), selected=pObjects$memory[[plot_name]][[.heatMapFeatName]], server=TRUE)
+    })
 
     .create_heatmap_button_observers(plot_name, se, input, session, pObjects, rObjects)
 

@@ -1349,6 +1349,10 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     fill_color <- brush_fill_color[mode]
     plot_name <- paste0(mode, id)
 
+    # TODO: workaround to make brushes visible on non-builtin panels
+    stroke_color <- ifelse(is.na(stroke_color), "gray10", stroke_color)
+    fill_color <- ifelse(is.na(fill_color), "gray90", fill_color)
+
     cmds <- character(0)
     firstClosed <- FALSE
     for (i in seq_len(total) - has_active) {

@@ -65,12 +65,9 @@
 #' \code{\link{iSEE}}
 #'
 #' @importFrom igraph adjacent_vertices get.edge.ids
-.get_direct_children <- function(graph, panel_name, names_only=TRUE) {
+.get_direct_children <- function(graph, panel_name) {
     children <- names(adjacent_vertices(graph, panel_name, mode="out")[[1]])
     children <- setdiff(children, panel_name) # self-updates are handled elsewhere.
-    if (names_only) {
-        return(children)        
-    }
 
     if (!length(children)) {
         return(list())
@@ -111,22 +108,9 @@
 #' \code{\link{.sanitize_memory}}
 #' \code{\link{iSEE}}
 #'
-#' @importFrom igraph adjacent_vertices incident
-.destroy_parent <- function(graph, parent_name, pObjects) {
-    # Resetting memory.
-    all_kids <- .get_children(graph, parent_name, names_only=FALSE)
-    for (kid in names(all_kids)) {
-        for (field in all_kids[[kid]]) {
-            pObjects$memory[[kid]][[field]] <- .noSelection
-        }
-    }
-
-    # Technically the population changes because all points are destroyed with the panel.
-    .safe_reactive_bump(rObjects, paste0(parent_name, "_repopulated"))
-
-    # Destroying the edges.
-    pObjects$selection_links <- graph - incident(graph, parent_name, mode="all")
-    invisible(NULL)
+#' @importFrom igraph incident
+.destroy_parent <- function(graph, parent_name) {
+    graph - incident(graph, parent_name, mode="all")
 }
 
 #' Change the selection source

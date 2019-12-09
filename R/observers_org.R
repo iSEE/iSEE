@@ -96,6 +96,8 @@
                 adjusted[[a]] <- latest 
                 names(adjusted)[a] <- paste0(mode, idx)
                 org_pObjects$counter[[mode]] <- idx
+
+                .define_width_height_observers(latest, input, org_pObjects)
             }
             updated_names <- .define_choices(adjusted)
             updateSelectizeInput(session, 'panel_order', 
@@ -118,14 +120,18 @@
             instance <- pObjects$memory[[a]]
             .createParamObservers(instance, se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
             .createRenderedOutput(instance, se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
-            .define_width_height_observers(instance, input, org_pObjects)
         }
 
         lost <- setdiff(right, left)
         for (l in lost) {
-            .destroy_parent(pObjects$selection_links, l, pObjects)
-            .destroy_parent(pObjects$aesthetics_links, l, pObjects)
+            pObjects$selection_links <- .destroy_parent(pObjects$selection_links, l)
+            pObjects$aesthetics_links <- .destroy_parent(pObjects$aesthetics_links, l)
         }
+
+        # NOTE: there should be no need to updateSelectize on the choice of
+        # linkable panels; this should be handled by the rerendering.
+        # Similarly, there should be no need to trigger the replotting of
+        # children via the 'repopulated' reactive.
 
         rObjects$rerender <- .increment_counter(rObjects$rerender)
     })

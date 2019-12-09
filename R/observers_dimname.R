@@ -18,7 +18,7 @@
             return(NULL)
         }
 
-        dependents <- .get_direct_children(pObjects$aesthetics_links, panel_name, names_only=FALSE)
+        dependents <- .get_direct_children(pObjects$aesthetics_links, panel_name)
         for (kid in names(dependents)) {
             all_fields <- dependents[[kid]]
 
@@ -231,8 +231,12 @@
 
     observe({
         force(rObjects$rerendered)
-        updateSelectizeInput(session, paste0(plot_name, "_", name_field),
-            choices=choices, selected=pObjects$memory[[plot_name]][[name_field]], server=TRUE)
+
+        # Protect against re-rendering after deleting a panel.
+        if (plot_name %in% names(pObjects$memory)) {
+            updateSelectizeInput(session, paste0(plot_name, "_", name_field),
+                choices=choices, selected=pObjects$memory[[plot_name]][[name_field]], server=TRUE)
+        }
     })
 
     invisible(NULL)

@@ -195,10 +195,15 @@
     # Do NOT be tempted to centralize code by setting .selectMultiSaved in the above observer.
     # This needs to be done in a separate observer that actually executes to set the 
     # the field to something upon initialization of the panel.
+    .safe_reactive_init(rObjects, saved_select)
     observe({
-        .safe_reactive_init(rObjects, saved_select)
         force(rObjects[[saved_select]])
         force(rObjects$rerendered)
+
+        # Protect against re-rendering after deleting a panel.
+        if (!panel_name %in% names(pObjects$memory)) {
+            return(NULL)
+        }
 
         transmitter <- pObjects$memory[[panel_name]][[.selectByPlot]]
         if (transmitter==.noSelection) {

@@ -3,7 +3,6 @@
     panel_name <- paste0(mode, id)
 
     output[[panel_name]] <- renderDataTable({
-        force(rObjects$rerendered) # to trigger recreation when the number of plots is changed.
         force(rObjects[[panel_name]])
 
         param_choices <- pObjects$memory[[panel_name]]

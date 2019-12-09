@@ -33,13 +33,14 @@
 
         all_output <- list()
         cur_brush <- instance[[.brushData]]
-        n_selected <- .get_n_selected_points(cur_coords, cur_brush)
-        if (!is.null(n_selected)) {
+        brushed <- .get_brushed_points(cur_coords, cur_brush)
+        if (!is.null(brushed)) {
+            n_brushed <- length(brushed)
             all_output <- append(all_output,
                 list(
                     sprintf(
                         "%i of %i points in active selection (%.1f%%)",
-                        n_selected, n_total, 100*n_selected/n_total
+                        n_brushed, n_total, 100*n_brushed/n_total
                     ),
                     br()
                 )
@@ -48,16 +49,17 @@
 
         saved <- instance[[.multiSelectHistory]]
         for (i in seq_along(saved)) {
-            n_selected <- .get_n_selected_points(cur_coords, saved[[i]])
-            if (is.null(n_selected)) {
+            brushed <- .get_brushed_points(cur_coords, saved[[i]])
+            if (is.null(brushed)) {
                 next
             }
 
+            n_brushed <- length(brushed)
             all_output <- append(all_output,
                 list(
                     sprintf(
                         "%i of %i points in saved selection %i (%.1f%%)",
-                        n_selected, n_total, i, 100*n_selected/n_total
+                        n_brushed, n_total, i, 100*n_brushed/n_total
                     ),
                     br()
                 )
@@ -70,22 +72,4 @@
             do.call(tagList, all_output)
         }
     })
-}
-
-
-#' @importFrom shiny brushedPoints
-.get_n_selected_points <- function(cur_coords, cur_brush, count=TRUE) {
-    if (!length(cur_brush) || (!.is_brush(cur_brush) && !cur_brush$closed)) {
-        return(NULL)
-    }
-
-    FUN <- if (count) nrow else rownames
-
-    FUN(
-        if (.is_brush(cur_brush)) {
-            brushedPoints(cur_coords, cur_brush)
-        } else {
-            lassoPoints(cur_coords, cur_brush)
-        }
-    )
 }

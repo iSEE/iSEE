@@ -7,8 +7,7 @@
         instance <- pObjects$memory[[panel_name]]
 
         if (is(instance, "DotPlot")) {
-            chosen <- .get_n_selected_points(pObjects$coordinates[[panel_name]], 
-                instance[[.brushData]], count=FALSE)
+            chosen <- .get_brushed_points(pObjects$coordinates[[panel_name]], instance[[.brushData]])
             if (!length(chosen)) {
                 return(NULL)
             }
@@ -124,8 +123,7 @@
             if (is(parent, "Table")) {
                 new_selected <- parent[[.TableSelected]]
             } else if (is(parent, "DotPlot")) {
-                chosen <- .get_n_selected_points(pObjects$coordinates[[tab]], 
-                    parent[[.brushData]], count=FALSE)
+                chosen <- .get_brushed_points(pObjects$coordinates[[tab]], parent[[.brushData]])
                 if (length(chosen)) {
                     new_selected <- chosen[1]
                 }

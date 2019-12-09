@@ -121,3 +121,18 @@
 
     TRUE
 }
+
+#' @importFrom shiny brushedPoints
+.get_brushed_points <- function(cur_coords, cur_brush) {
+    if (!length(cur_brush) || (!.is_brush(cur_brush) && !cur_brush$closed)) {
+        return(NULL)
+    }
+
+    rownames(
+        if (.is_brush(cur_brush)) {
+            brushedPoints(cur_coords, cur_brush)
+        } else {
+            lassoPoints(cur_coords, cur_brush)
+        }
+    )
+}

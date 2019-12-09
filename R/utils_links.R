@@ -112,18 +112,20 @@
 #' \code{\link{iSEE}}
 #'
 #' @importFrom igraph adjacent_vertices incident
-.destroy_transmitter <- function(graph, panel_name, pObjects) {
+.destroy_parent <- function(graph, parent_name, pObjects) {
     # Resetting memory.
-    all_kids <- .get_children(graph, panel_name)
-    for (kid in all_kids) {
-        pObjects$memory[[kid]][[.selectByPlot]] <- .noSelection
+    all_kids <- .get_children(graph, parent_name, names_only=FALSE)
+    for (kid in names(all_kids)) {
+        for (field in all_kids[[kid]]) {
+            pObjects$memory[[kid]][[field]] <- .noSelection
+        }
     }
 
     # Technically the population changes because all points are destroyed with the panel.
-    .safe_reactive_bump(rObjects, paste0(panel_name, "_repopulated"))
+    .safe_reactive_bump(rObjects, paste0(parent_name, "_repopulated"))
 
     # Destroying the edges.
-    pObjects$selection_links <- graph - incident(graph, panel, mode="all")
+    pObjects$selection_links <- graph - incident(graph, parent_name, mode="all")
     invisible(NULL)
 }
 

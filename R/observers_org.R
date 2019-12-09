@@ -107,20 +107,27 @@
     })
 
     observeEvent(input$update_ui, {
-        added <- setdiff(names(org_pObjects$memory), names(pObjects$memory))
-        if (length(added)) { 
-            pObjects$memory <- org_pObjects$memory
-            pObjects$counter <- org_pObjects$counter
-            
-            for (a in added) {
-                instance <- pObjects$memory[[a]]
-                .createParamObservers(instance, se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-                .createRenderedOutput(instance, se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
-                .define_width_height_observers(instance, input, org_pObjects)
-            }
+        left <- names(org_pObjects$memory)
+        right <- names(pObjects$memory)
 
-            rObjects$rerender <- .increment_counter(rObjects$rerender)
+        pObjects$memory <- org_pObjects$memory
+        pObjects$counter <- org_pObjects$counter
+
+        added <- setdiff(left, right)           
+        for (a in added) {
+            instance <- pObjects$memory[[a]]
+            .createParamObservers(instance, se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+            .createRenderedOutput(instance, se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
+            .define_width_height_observers(instance, input, org_pObjects)
         }
+
+        lost <- setdiff(right, left)
+        for (l in lost) {
+            .destroy_parent(pObjects$selection_links, l, pObjects)
+            .destroy_parent(pObjects$aesthetics_links, l, pObjects)
+        }
+
+        rObjects$rerender <- .increment_counter(rObjects$rerender)
     })
 
     invisible(NULL)

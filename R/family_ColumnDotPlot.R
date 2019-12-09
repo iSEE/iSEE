@@ -114,16 +114,14 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
 
 #' @export
 setMethod(".defineParamInterface", "ColumnDotPlot", function(x, se, active_panels) {
-    id <- x[[.organizationId]]
-
     link_sources <- .define_link_sources(active_panels)
-    tab_by_row <- c(.noSelection, link_sources$row_tab)
-    tab_by_col <- c(.noSelection, link_sources$col_tab)
+    row_selectable <- c(.noSelection, link_sources$row_plot, link_sources$row_tab)
     col_selectable <- c(.noSelection, link_sources$col_plot, link_sources$col_tab)
 
     mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
     list(
-        .create_visual_box_for_column_plots(mode, id, x, tab_by_row, tab_by_col, se),
+        .create_visual_box_for_column_plots(mode, id, x, row_selectable, col_selectable, se),
         .create_selection_param_box(mode, id, x, col_selectable, "column")
     )
 })
@@ -141,4 +139,7 @@ setMethod(".createParamObservers", "ColumnDotPlot", function(x, se, input, sessi
         fields=c(.colorByColData, .colorByFeatNameAssay,
             .shapeByColData, .sizeByColData, .colorBySampNameColor),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
+    .define_dimname_propagation_observer(plot_name, choices=colnames(se),
+        session=session, pObjects=pObjects, rObjects=rObjects)
 })

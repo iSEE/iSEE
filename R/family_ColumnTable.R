@@ -28,6 +28,6 @@ setMethod(".createParamObservers", "ColumnTable", function(x, se, input, session
     callNextMethod()
 
     panel_name <- paste0(.getEncodedName(x), x[[.organizationId]])
-    .define_table_selection_observer(panel_name, choices=colnames(se), input=input,
+    .define_dimname_propagation_observer(panel_name, choices=colnames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)
 })

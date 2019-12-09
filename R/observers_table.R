@@ -1,5 +1,5 @@
 #' @importFrom shiny observe updateSelectizeInput
-.define_table_selection_observer <- function(panel_name, choices, input, session, pObjects, rObjects) {
+.define_table_selection_observer <- function(panel_name, input, session, pObjects, rObjects) {
     # No need for underscore in 'select_field' definition, as this is already in the '.int' constant.
     select_field <- paste0(panel_name, .int_statTableSelected)
 
@@ -17,12 +17,37 @@
         }
         pObjects$memory[[panel_name]][[.TableSelected]] <- chosen
 
+        .safe_reactive_bump(rObjects, paste0(panel_name, "_", .propagateDimnames))
+    })
+}
+
+#' @importFrom shiny eventReactive updateSelectizeInput
+.define_dimname_propagation_observer <-  function(panel_name, choices, session, pObjects, rObjects) {
+    dimname_field <- paste0(panel_name, "_", .propagateDimnames)
+    .safe_reactive_init(rObjects, dimname_field)
+
+    observeEvent(rObjects[[dimname_field]], {
+        instance <- pObjects$memory[[panel_name]]
+
+        if (is(instance, "DotPlot")) {
+            chosen <- .get_n_selected_points(pObjects$coordinates[[panel_name]], 
+                instance[[.brushData]], count=FALSE)
+            if (!length(chosen)) {
+                return(NULL)
+            }
+            chosen <- chosen[1]
+        } else if (is(instance, "Table")) {
+            chosen <- instance[[.TableSelected]]
+        }  else {
+            return(NULL)
+        }
+
         dependents <- .get_direct_children(pObjects$aesthetics_links, panel_name, names_only=FALSE)
         for (kid in names(dependents)) {
             all_fields <- dependents[[kid]]
 
             # There is a possibility that this would cause multi-rendering as they
-            # trigger different observers.  Oh well.
+            # trigger different observers. Oh well.
             for (field in all_fields) {
                 updateSelectizeInput(session, paste0(kid, "_", field), server=TRUE, 
                     choices=choices, selected=chosen)
@@ -116,14 +141,24 @@
 
         # Updating the selection, based on the currently selected row.
         if (tab!=.noSelection) {
-            new_selected <- pObjects$memory[[tab]][[.TableSelected]]
-            old_selected <- pObjects$memory[[plot_name]][[select_field]]
+            new_selected <- old_selected <- pObjects$memory[[plot_name]][[select_field]]
+
+            parent <- pObjects$memory[[tab]]
+            if (is(parent, "Table")) {
+                new_selected <- parent[[.TableSelected]]
+            } else if (is(parent, "DotPlot")) {
+                chosen <- .get_n_selected_points(pObjects$coordinates[[tab]], 
+                    parent[[.brushData]], count=FALSE)
+                if (length(chosen)) {
+                    new_selected <- chosen[1]
+                }
+            }
 
             # We use session=NULL only for unit testing the rest of the function.
             if (new_selected != old_selected && !is.null(session)) { 
                 all_choices <- rownames(pObjects$coordinates[[tab]])
                 updateSelectizeInput(session, .input_FUN(select_field), label = NULL, 
-                    choices = choices, server = TRUE, selected = all_choices[new_selected]) # nocov
+                    choices = choices, server = TRUE, selected = new_selected) # nocov
             }
         }
     }

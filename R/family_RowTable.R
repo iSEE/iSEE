@@ -28,6 +28,6 @@ setMethod(".createParamObservers", "RowTable", function(x, se, input, session, p
     callNextMethod()
 
     panel_name <- paste0(.getEncodedName(x), x[[.organizationId]])
-    .define_table_selection_observer(panel_name, choices=rownames(se), input=input, 
+    .define_dimname_propagation_observer(panel_name, choices=rownames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)
 })

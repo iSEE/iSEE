@@ -42,6 +42,9 @@ setMethod(".createParamObservers", "Table", function(x, se, input, session, pObj
 
     .define_box_observers(panel_name, .selectParamBoxOpen, input, pObjects)
 
+    .define_table_selection_observer(panel_name, input=input,
+        session=session, pObjects=pObjects, rObjects=rObjects)
+
     # Updating memory for new selection parameters.
     # Note that '.int' variables already have underscores, so these are not necessary.
     panel_name <- paste0(mode, id)

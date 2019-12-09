@@ -32,7 +32,7 @@
             if (length(remaining)) {
                 E(graph)$fields[[idx]] <- remaining
             } else {
-                graph <- delete_edges(graph, c(parent_name, panel_name))
+                graph <- delete_edges(graph, idx)
             }
         }
     }

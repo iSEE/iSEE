@@ -70,8 +70,12 @@
     act_field <- paste0(panel_name, "_reactivated")
     .safe_reactive_init(rObjects, act_field)
 
+    dimprop_field <- paste0(panel_name, "_", .propagateDimnames)
+    .safe_reactive_init(rObjects, dimprop_field)
+
     observe({
         force(rObjects[[act_field]])
+
         children <- .get_direct_children(pObjects$selection_links, panel_name)
         for (child_plot in children) {
             child_instance <- pObjects$memory[[child_plot]]
@@ -86,6 +90,8 @@
                 }
             }
         }
+
+        .safe_reactive_bump(rObjects, dimprop_field)
     })
 
     # Reactive to regenerate children when the saved selection of the current panel changes.

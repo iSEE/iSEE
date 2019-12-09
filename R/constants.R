@@ -111,7 +111,12 @@
 .customStatSearch <- .rowStatSearch
 .int_customStatSearch <- .int_rowStatSearch
 
+# Internal fields.
+
+.propagateDimnames <- "INTERNAL_dimnames"
+
 .tableSecretColumnTitle <- "I_prefer_Aria_The_Natural"
+
 
 # Panel organization parameters. ----
 .organizationNew <- "MakeNew"

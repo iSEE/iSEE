@@ -74,12 +74,14 @@
 
 
 #' @importFrom shiny brushedPoints
-.get_n_selected_points <- function(cur_coords, cur_brush) {
+.get_n_selected_points <- function(cur_coords, cur_brush, count=TRUE) {
     if (!length(cur_brush) || (!.is_brush(cur_brush) && !cur_brush$closed)) {
         return(NULL)
     }
 
-    nrow(
+    FUN <- if (count) nrow else rownames
+
+    FUN(
         if (.is_brush(cur_brush)) {
             brushedPoints(cur_coords, cur_brush)
         } else {

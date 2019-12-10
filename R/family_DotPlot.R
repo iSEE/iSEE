@@ -173,6 +173,9 @@ setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pO
         pObjects$aesthetics_links <- .add_interpanel_link(pObjects$aesthetics_links, 
             panel_name=plot_name, parent_name=x[[field]], field=field)
     }
+
+    .define_zoom_observer(plot_name, input=input, session=session,
+        pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export

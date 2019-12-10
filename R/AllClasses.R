@@ -414,11 +414,5 @@ collated[.selectEffect] <- "character"
 collated[.selectColor] <- "character"
 collated[.selectTransAlpha] <- "numeric"
 
-.zoomData <- "ZoomData"
-.brushData <- "BrushData"
-
-collated[.zoomData] <- "numeric"
-collated[.brushData] <- "list"
-
 #' @export
 setClass("HeatMapPlot", contains="Panel", slots=collated)

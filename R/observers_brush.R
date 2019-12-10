@@ -93,12 +93,12 @@
             reactivated <- TRUE
         } else {
             was_closed <- prev_lasso$closed
-            if (is.null(was_closed)) { 
-                was_closed <- FALSE 
+            if (is.null(was_closed)) {
+                was_closed <- FALSE
             }
 
             if (was_closed) {
-                new_lasso <- NULL
+                new_lasso <- list()
                 reactivated <- TRUE
             } else {
                 new_lasso <- .update_lasso(input[[click_field]], prev_lasso)

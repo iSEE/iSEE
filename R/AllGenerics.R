@@ -109,14 +109,27 @@ setGeneric(".getEncodedName", function(x) standardGeneric(".getEncodedName"))
 #' @export
 setGeneric(".getFullName", function(x) standardGeneric(".getFullName"))
 
+setGeneric(".getPanelPlottingFunction", function(x, all_memory, all_coordinates, se, colormap) standardGeneric(".getPanelPlottingFunction"))
+
 #' @export
-setGeneric(".getPlottingFunction", function(x) standardGeneric(".getPlottingFunction"))
+setGeneric(".getCommandsDataXY", function(x, param_choices) standardGeneric(".getCommandsDataXY"))
+
+#' @export
+setGeneric(".getCommandsPlot", function(x, param_choices, plot_data, plot_type, labs, is_subsetted, is_downsampled) standardGeneric(".getCommandsPlot"))
+
+setGeneric(".getCommandsDataColor", function(x, param_choices, se) standardGeneric(".getCommandsDataColor"))
+
+setGeneric(".getCommandsDataShape", function(x, param_choices, se) standardGeneric(".getCommandsDataShape"))
+
+setGeneric(".getCommandsDataSize", function(x, param_choices, se) standardGeneric(".getCommandsDataSize"))
+
+setGeneric(".getCommandsDataFacets", function(x, param_choices, se) standardGeneric(".getCommandsDataFacets"))
 
 #' @export
 setGeneric(".getTableFunction", function(x) standardGeneric(".getTableFunction"))
 
 #' @export
-setGeneric(".refineParameters", function(x, se) standardGeneric(".refineParameters")) 
+setGeneric(".refineParameters", function(x, se) standardGeneric(".refineParameters"))
 
 #' @export
 setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo"))

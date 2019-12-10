@@ -42,7 +42,7 @@
 #' @param voice A logical indicating whether the voice recognition should be enabled.
 #' @param bugs Set to \code{TRUE} to enable the bugs Easter egg.
 #' Alternatively, a named numeric vector control the respective number of each bug type (e.g., \code{c(bugs=3L, spiders=1L)}).
-#' Credits to https://github.com/Auz/Bug for the JavaScript code.
+#' Credits to \url{https://github.com/Auz/Bug} for the JavaScript code.
 #'
 #' @details
 #' Users can pass default parameters via DataFrame objects in \code{redDimArgs} and \code{featAssayArgs}.
@@ -67,7 +67,7 @@
 #' By default, categorical data types such as factor and character are limited to 24 levels, beyond which they are coerced to numeric variables for faster plotting.
 #' This limit may be set to a different value as a global option, e.g. \code{options(iSEE.maxlevels=30)}.
 #'
-#' By default, the maximum request size for file uploads defaults to 5MB (https://shiny.rstudio.com/reference/shiny/0.14/shiny-options.html).
+#' By default, the maximum request size for file uploads defaults to 5MB (\url{https://shiny.rstudio.com/reference/shiny/0.14/shiny-options.html}).
 #' To raise the limit (e.g., 50MB), run \code{options(shiny.maxRequestSize=50*1024^2)}.
 #'
 #' @return A Shiny app object is returned, for interactive data exploration of the \linkS4class{SummarizedExperiment} or \linkS4class{SingleCellExperiment} object.
@@ -304,7 +304,7 @@ iSEE <- function(se,
                     "<p style='font-size:200%; text-align:center;'>Happy Birthday <code>iSEE</code>!</p>", collapse = "")),
                     type="default", duration = NULL)
             }
-            
+
             # Display an error notifications if colormap is not compatible with se
             # Display one warning notification for each incompatibility issue
             errors <- checkColormapCompatibility(colormap, se)
@@ -324,8 +324,29 @@ iSEE <- function(se,
             }
 
             # TEST:
-            memory <- list(RedDimPlot(), RowStatTable(), FeatAssayPlot(), ColDataPlot(),
-                RowDataPlot(), SampAssayPlot(), ColStatTable(), HeatMapPlot())
+            RedDimPlot1 <- RedDimPlot()
+            ColDataPlot1 <- ColDataPlot()
+            FeatAssayPlot1 <- FeatAssayPlot()
+            RowDataPlot1 <- RowDataPlot()
+            SampAssayPlot1 <- SampAssayPlot()
+            HeatMapPlot1 <- HeatMapPlot()
+            ColStatTable1 <- ColStatTable()
+            RowStatTable1 <- RowStatTable()
+            # sort(slotNames(RedDimPlot1))
+            RedDimPlot1[["ColorBy"]] <- "Column data"
+            RedDimPlot1[["ColorByColData"]] <- "driver_1_s"
+            RedDimPlot1[["ShapeBy"]] <- "Column data"
+            RedDimPlot1[["ShapeByColData"]] <- "driver_1_s"
+            RedDimPlot1[["SizeBy"]] <- "Column data"
+            RedDimPlot1[["SizeByColData"]] <- "RALIGN"
+            RedDimPlot1[["FacetByRow"]] <- TRUE
+            RedDimPlot1[["FacetByColumn"]] <- TRUE
+            RedDimPlot1[["RowFacetByColData"]] <- "passes_qc_checks_s"
+            RedDimPlot1[["ColumnFacetByColData"]] <- "driver_1_s"
+            RedDimPlot1[["Downsample"]] <- TRUE
+            RedDimPlot1[["SampleRes"]] <- 50
+            memory <- list(RedDimPlot1, RowStatTable1, FeatAssayPlot1, ColDataPlot1, RowDataPlot1,
+                SampAssayPlot1, ColStatTable1, HeatMapPlot1)
 
             # NOTE: .cacheCommonInfo() should be run on all possible panels,
             # not just those that are visible. This is necessary to set up the

@@ -136,7 +136,7 @@ setValidity2("SampAssayPlot", function(object) {
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
 setMethod(".defineParamInterface", "SampAssayPlot", function(x, se, active_panels) {
-    mode <- .getEncodedName(x) 
+    mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
     panel_name <- paste0(mode, id)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
@@ -238,4 +238,40 @@ setMethod(".getEncodedName", "SampAssayPlot", function(x) "sampAssayPlot") # TOD
 setMethod(".getFullName", "SampAssayPlot", function(x) "Sample assay plot") # TODO change to class name.
 
 #' @export
-setMethod(".getPlottingFunction", "SampAssayPlot", function(x) .make_sampAssayPlot)
+setMethod(".getCommandsDataXY", "SampAssayPlot", function(x, param_choices) {
+    data_cmds <- list()
+
+    samp_selected_y <- param_choices[[.sampAssayYAxisSampName]]
+    assay_choice <- param_choices[[.sampAssayAssay]]
+
+    plot_title <- samp_selected_y
+    y_lab <- sprintf("%s (%s)", samp_selected_y, assay_choice)
+    data_cmds[["y"]] <- sprintf(
+        "plot.data <- data.frame(Y=assay(se, %s, withDimnames=FALSE)[,%s], row.names=rownames(se));",
+        deparse(assay_choice), deparse(samp_selected_y)
+    )
+
+    # Prepare X-axis data.
+    x_choice <- param_choices[[.sampAssayXAxis]]
+
+    if (x_choice == .sampAssayXAxisNothingTitle) {
+        x_lab <- ''
+        data_cmds[["x"]] <- "plot.data$X <- factor(character(nrow(se)));"
+
+    } else if (x_choice == .sampAssayXAxisRowDataTitle) {
+        x_lab <- param_choices[[.sampAssayXAxisRowData]]
+        plot_title <- paste(plot_title, "vs", x_lab)
+        data_cmds[["x"]] <- sprintf("plot.data$X <- rowData(se)[, %s];", deparse(x_lab))
+
+    } else {
+        samp_selected_x <- param_choices[[.sampAssayXAxisSampName]]
+        plot_title <- paste(plot_title, "vs", samp_selected_x)
+        x_lab <- sprintf("%s (%s)", samp_selected_x, assay_choice)
+        data_cmds[["x"]] <- sprintf(
+            "plot.data$X <- assay(se, %s, withDimnames=FALSE)[, %s];",
+            deparse(assay_choice), deparse(samp_selected_x)
+        )
+    }
+
+    return(list(data_cmds=data_cmds, plot_title=plot_title, x_lab=x_lab, y_lab=y_lab))
+})

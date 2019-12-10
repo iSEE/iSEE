@@ -43,7 +43,7 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
 setValidity2("DotPlot", function(object) {
     msg <- character(0)
 
-    msg <- .valid_logical_error(msg, object, 
+    msg <- .valid_logical_error(msg, object,
         c(.facetByRow, .facetByColumn,
             .dataParamBoxOpen, .visualParamBoxOpen,
             .contourAddTitle))
@@ -54,8 +54,8 @@ setValidity2("DotPlot", function(object) {
             .sizeByField,
             .selectEffect))
 
-    msg <- .valid_string_error(msg, object, 
-        c(.colorByDefaultColor, 
+    msg <- .valid_string_error(msg, object,
+        c(.colorByDefaultColor,
             .selectColor,
             .contourColor))
 
@@ -157,10 +157,10 @@ setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pO
         is_protected=FALSE,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_brush_observer(plot_name, input=input, session=session, 
+    .define_brush_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 
-    .define_lasso_observer(plot_name, input=input, session=session, 
+    .define_lasso_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 
     .define_selection_effect_observer(plot_name, input=input, session=session,
@@ -170,7 +170,7 @@ setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pO
         pObjects=pObjects, rObjects=rObjects)
 
     for (field in c(.colorByColTable, .colorByRowTable)) {
-        pObjects$aesthetics_links <- .add_interpanel_link(pObjects$aesthetics_links, 
+        pObjects$aesthetics_links <- .add_interpanel_link(pObjects$aesthetics_links,
             panel_name=plot_name, parent_name=x[[field]], field=field)
     }
 
@@ -195,14 +195,149 @@ setMethod(".createRenderedOutput", "DotPlot", function(x, se, colormap, output, 
     id <- x[[.organizationId]]
 
     .define_plot_output(mode, id,
-        FUN=.getPlottingFunction(x), selectable=TRUE,
+        FUN=.getPanelPlottingFunction(x), selectable=TRUE,
         se=se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
 
-    .define_selection_info_output(mode, id, 
+    .define_selection_info_output(mode, id,
         output=output, pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export
 setMethod(".restrictsSelection", "DotPlot", function(x) {
     x[[.selectEffect]]==.selectRestrictTitle
+})
+
+#' @export
+setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
+
+    function(param_choices, all_memory, all_coordinates, se, colormap) {
+
+        # Apply the function provided to generate XY commands and axis labels
+        out_xy <- .getCommandsDataXY(x, param_choices)
+
+        # Initialize an environment storing information for generating ggplot commands
+        plot_env <- new.env()
+        plot_env$se <- se
+        plot_env$colormap <- colormap
+
+        # Process the XY commands
+        data_cmds <- .initialize_cmd_store()
+        data_cmds <- .add_command(data_cmds, out_xy$data_cmds)
+        data_cmds <- .evaluate_commands(data_cmds, plot_env)
+        ggplot_labs <- c(x=out_xy$x_lab, y=out_xy$y_lab, title=out_xy$plot_title)
+
+        # Add commands coercing X and Y to appropriate type
+        data_cmds <- .add_commands_coerce(plot_env, data_cmds, c("X", "Y"))
+
+        # Add commands adding optional columns to plot.data
+        out_color <- .getCommandsDataColor(x, param_choices, se)
+        data_cmds <- .add_command(data_cmds, out_color$cmds, name='color')
+        ggplot_labs <- c(ggplot_labs, color = out_color$label)
+
+        out_shape <- .getCommandsDataShape(x, param_choices, se)
+        data_cmds <- .add_command(data_cmds, out_shape$cmds, name='shape')
+        ggplot_labs <- c(ggplot_labs, shape = out_shape$label)
+
+        out_size <- .getCommandsDataSize(x, param_choices, se)
+        data_cmds <- .add_command(data_cmds, out_size$cmds, name='size')
+        ggplot_labs <- c(ggplot_labs, size = out_size$label)
+
+        facets_cmds <- .getCommandsDataFacets(x, param_choices, se)
+        data_cmds <- .add_command(data_cmds, facets_cmds)
+
+        # Add commands coercing ColorBy to appropriate type, if present
+        data_cmds <- .evaluate_commands(data_cmds, plot_env)
+        color_data <- plot_env$plot.data$ColorBy
+        if (!is.null(color_data)) {
+            data_cmds <- .add_commands_coerce(plot_env, data_cmds, c("ColorBy"))
+        }
+
+        # Removing NAs in axes aesthetics as they mess up .process_selectby_choice.
+        clean_select_fields <- c("X", "Y", names(facets_cmds))
+        clean_expression <- paste(sprintf("!is.na(%s)", clean_select_fields), collapse=" & ")
+        data_cmds <- .add_command(data_cmds, sprintf("plot.data <- subset(plot.data, %s);", clean_expression), name='na.rm')
+
+        # Add commands adding the optional SelectBy column to plot.data
+        data_cmds <- .evaluate_commands(data_cmds, plot_env)
+        select_cmds <- .process_selectby_choice(param_choices, all_memory)
+        select_cmds <- select_cmds
+        if (length(select_cmds)) {
+            transmitter <- param_choices[[.selectByPlot]]
+            .populate_selection_environment(all_memory[[transmitter]], plot_env)
+            data_cmds <- .add_command(data_cmds, select_cmds)
+            data_cmds <- .evaluate_commands(data_cmds, plot_env)
+        }
+
+        # Define the type of plot to create, and add geometry-specific commands, if needed
+        out_specific <- .choose_plot_type(plot_env)
+        data_cmds <- .add_command(data_cmds, out_specific)
+        data_cmds <- .evaluate_commands(data_cmds, plot_env)
+
+        # Collect the plot coordinates BEFORE downsampling (which alters the environment value)
+        panel_data <- plot_env$plot.data
+
+        # Add downsampling commands, if applicable
+        downsample_cmds <- .downsample_points(param_choices, plot_env)
+        data_cmds <- .add_command(data_cmds, downsample_cmds)
+
+        # Prepare information about subsetting and downsampling, to generate the plotting commands
+        is_subsetted <- exists("plot.data.all", envir=plot_env)
+        is_downsampled <- exists("plot.data.pre", envir=plot_env)
+        plot_type <- plot_env$plot.type
+
+        # Get the ggplot call
+        plot_cmds <- .getCommandsPlot(x, param_choices, plot_env$plot.data, plot_type, as.list(ggplot_labs), is_subsetted, is_downsampled)
+
+        # Adding a faceting command, if applicable
+        facet_cmd <- .add_facets(param_choices)
+        if (length(facet_cmd)) {
+            N <- length(plot_cmds)
+            plot_cmds[[N]] <- paste(plot_cmds[[N]], "+")
+            plot_cmds <- c(plot_cmds, facet_cmd)
+        }
+
+        # Adding self-brushing boxes, if they exist.
+        to_flip <- plot_type == "violin_horizontal"
+        select_cmds <- .self_select_boxes(param_choices, flip=to_flip)
+
+        if (length(select_cmds)) {
+            N <- length(plot_cmds)
+            plot_cmds[[N]] <- paste(plot_cmds[[N]], "+")
+
+            intermediate <- seq_len(length(select_cmds)-1L)
+            select_cmds[intermediate] <- paste(select_cmds[intermediate], "+")
+            plot_cmds <- c(plot_cmds, select_cmds)
+
+            # We overwrite any existing 'all_brushes' or 'all_lassos',
+            # as they have already served their purpose in defining plot_data above
+            .populate_selection_environment(param_choices, plot_env)
+        }
+
+        # TODO: make sure "plot_env" contains the bare essentials
+        # Evaluating the plotting commands.
+        plot_out <- .text_eval(plot_cmds, plot_env)
+
+        return(list(cmd_list=c(data_cmds, plot_cmds), xy=panel_data, plot=plot_out))
+    }
+
+})
+
+#' @export
+setMethod(".getCommandsPlot", "DotPlot", function(x, param_choices, plot_data, plot_type, labs, is_subsetted, is_downsampled) {
+
+    is_row_plot <- is(x, "RowDotPlot")
+
+    # TODO: update the functions below to work with a single list "labs"
+    plot_cmds <- switch(plot_type,
+        square=.square_plot(plot_data, param_choices, labs$x, labs$y, labs$color, labs$shape, labs$size, labs$title,
+            is_row_plot, is_subsetted),
+        violin=.violin_plot(plot_data = plot_data, param_choices, labs$x, labs$y, labs$color, labs$shape, labs$size, labs$title,
+            is_row_plot, is_subsetted),
+        violin_horizontal=.violin_plot(plot_data = plot_data, param_choices, labs$x, labs$y, labs$color, labs$shape, labs$size, labs$title,
+            is_row_plot, is_subsetted, horizontal=TRUE),
+        scatter=.scatter_plot(plot_data = plot_data, param_choices, labs$x, labs$y, labs$color, labs$shape, labs$size, labs$title,
+            is_row_plot, is_subsetted)
+    )
+
+    return(plot_cmds)
 })

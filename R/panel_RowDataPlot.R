@@ -171,4 +171,28 @@ setMethod(".getEncodedName", "RowDataPlot", function(x) "rowDataPlot") # TODO ch
 setMethod(".getFullName", "RowDataPlot", function(x) "Row data plot") # TODO change to class name.
 
 #' @export
-setMethod(".getPlottingFunction", "RowDataPlot", function(x) .make_rowDataPlot)
+setMethod(".getCommandsDataXY", "RowDataPlot", function(x, param_choices) {
+    data_cmds <- list()
+
+    y_lab <- param_choices[[.rowDataYAxis]]
+
+    # NOTE: deparse() automatically adds quotes, AND protects against existing quotes/escapes.
+    data_cmds[["y"]] <- sprintf(
+        "plot.data <- data.frame(Y=rowData(se)[, %s], row.names=rownames(se));",
+        deparse(y_lab)
+    )
+
+    # Prepare X-axis data.
+    if (param_choices[[.rowDataXAxis]] == .rowDataXAxisNothingTitle) {
+        x_lab <- ''
+        data_cmds[["x"]] <- "plot.data$X <- factor(character(nrow(se)))"
+    } else {
+        x_lab <- param_choices[[.rowDataXAxisRowData]]
+        data_cmds[["x"]] <- sprintf("plot.data$X <- rowData(se)[, %s];", deparse(x_lab))
+    }
+
+    x_title <- ifelse(x_lab == '', x_lab, sprintf("vs %s", x_lab))
+    plot_title <- sprintf("%s %s", y_lab, x_title)
+
+    return(list(data_cmds=data_cmds, plot_title=plot_title, x_lab=x_lab, y_lab=y_lab))
+})

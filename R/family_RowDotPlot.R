@@ -143,3 +143,79 @@ setMethod(".createParamObservers", "RowDotPlot", function(x, se, input, session,
     .define_dimname_propagation_observer(plot_name, choices=rownames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)
 })
+
+setMethod(".getCommandsDataColor", "RowDotPlot", function(x, param_choices, se) {
+    color_choice <- param_choices[[.colorByField]]
+
+    if (color_choice == .colorByRowDataTitle) {
+        covariate_name <- param_choices[[.colorByRowData]]
+        list(
+            label=covariate_name,
+            cmds=sprintf("plot.data$ColorBy <- rowData(se)[, %s];", deparse(covariate_name))
+        )
+
+    } else if (color_choice == .colorByFeatNameTitle) {
+        chosen_gene <- param_choices[[.colorByFeatName]]
+        list(
+            label=.feature_axis_label(se, chosen_gene, assay_id=NULL),
+            cmds=sprintf("plot.data$ColorBy <- logical(nrow(plot.data));\nplot.data[%s, 'ColorBy'] <- TRUE;",
+                deparse(chosen_gene))
+        )
+
+    } else if (color_choice == .colorBySampNameTitle) {
+        chosen_sample <- param_choices[[.colorBySampName]]
+        assay_choice <- param_choices[[.colorBySampNameAssay]]
+        list(
+            label=.sample_axis_label(se, chosen_sample, assay_choice, multiline=TRUE),
+            cmds=sprintf("plot.data$ColorBy <- assay(se, %i, withDimnames=FALSE)[, %i];",
+                deparse(assay_choice), deparse(chosen_sample))
+        )
+
+    } else {
+        NULL
+    }
+})
+
+setMethod(".getCommandsDataShape", "RowDotPlot", function(x, param_choices, se) {
+    shape_choice <- param_choices[[.shapeByField]]
+
+    if (shape_choice == .shapeByColDataTitle) {
+        covariate_name <- param_choices[[.shapeByColData]]
+        return(list(label=covariate_name,
+            cmds=sprintf("plot.data$ShapeBy <- colData(se)[, %s];", deparse(covariate_name))))
+
+    } else {
+        return(NULL)
+    }
+})
+
+setMethod(".getCommandsDataSize", "RowDotPlot", function(x, param_choices, se) {
+    size_choice <- param_choices[[.sizeByField]]
+
+    if (size_choice == .sizeByRowDataTitle) {
+        covariate_name <- param_choices[[.sizeByRowData]]
+        return(list(label=covariate_name,
+                    cmds=sprintf("plot.data$SizeBy <- rowData(se)[, %s];", deparse(covariate_name))))
+
+    } else {
+        return(NULL)
+    }
+})
+
+setMethod(".getCommandsDataFacets", "RowDotPlot", function(x, param_choices, se) {
+    facet_cmds <- c()
+
+    facet_row <- param_choices[[.facetRowsByRowData]]
+    if (param_choices[[.facetByRow]]) {
+        facet_cmds["FacetRow"] <- sprintf(
+            "plot.data$FacetRow <- rowData(se)[, %s];", deparse(facet_row))
+    }
+
+    facet_column <- param_choices[[.facetColumnsByRowData]]
+    if (param_choices[[.facetByColumn]]) {
+        facet_cmds["FacetColumn"] <- sprintf(
+            "plot.data$FacetColumn <- rowData(se)[, %s];", deparse(facet_column))
+    }
+
+    return(facet_cmds)
+})

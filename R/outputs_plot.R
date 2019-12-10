@@ -18,7 +18,7 @@
 #' @rdname INTERNAL_define_plot_output
 #' @importFrom shiny renderPlot renderUI tagList br
 .define_plot_output <- function(mode, id, FUN, selectable,
-    se, colormap, output, pObjects, rObjects) 
+    se, colormap, output, pObjects, rObjects)
 {
     plot_name <- paste0(mode, id)
     force(FUN)
@@ -58,21 +58,21 @@
 #' @author Aaron Lun
 #'
 #' @rdname INTERNAL_create_plot_ui
-#' @importFrom shinyWidgets addSpinner
+#' @importFrom shinycustomloader withLoader
 .create_plot_ui <- function(mode, id, height, brush_direction, brush_fill, brush_stroke) {
     plot_name <- paste0(mode, id)
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
-
+    
     brush.opts <- brushOpts(.input_FUN(.brushField), resetOnNew=TRUE, delay=2000,
-        direction=brush_direction, fill=brush_fill, stroke=brush_stroke, 
-        opacity=.brushFillOpacity)
-
+                            direction=brush_direction, fill=brush_fill, stroke=brush_stroke,
+                            opacity=.brushFillOpacity)
+    
     dblclick <- .input_FUN(.zoomClick)
     clickopt <- .input_FUN(.lassoClick)
     panel_height <- paste0(height, "px")
-
-    addSpinner(
+    
+    withLoader(
         plotOutput(plot_name, brush=brush.opts, dblclick=dblclick, click=clickopt, height=panel_height),
-        color=brush_fill
+        type="image", loader="iSEE/Bioconductor-loader.gif"
     )
 }

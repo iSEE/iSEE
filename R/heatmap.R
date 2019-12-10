@@ -124,16 +124,6 @@
     }
     censcal_cmds <- .evaluate_commands(censcal_cmds, eval_env)
 
-    # Define zoom command. Transform the ranges given by zoomData to the actual coordinates in the heatmap
-    bounds <- param_choices[[.zoomData]]
-    if (length(bounds)) {
-        zoom_cmds <- sprintf("plot.data <- subset(plot.data, Y %%in%% rownames(value.mat)[c(%s)]); # zooming in",
-                             paste0(bounds, collapse=","))
-        .text_eval(zoom_cmds, eval_env)
-    } else {
-        zoom_cmds <- NULL
-    }
-
     # Heatmap. Get the colorbar separately to make it easier to guess the real
     # heatmap coordinates from a brush on the final combined plot
     plot_cmds <- c(
@@ -210,7 +200,7 @@
 
     plot_out <- .text_eval(grid_cmds, eval_env)
     return(list(cmd_list=list(data=data_cmds$processed, select=select_cmds, centerscale=censcal_cmds$processed,
-                              zoom=zoom_cmds, plot=plot_cmds, annot=annot_cmds, grid=grid_cmds),
+                              plot=plot_cmds, annot=annot_cmds, grid=grid_cmds),
                 xy=eval_env$value.mat, plot=plot_out, legends=legends))
 }
 

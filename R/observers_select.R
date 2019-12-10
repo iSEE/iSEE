@@ -72,7 +72,7 @@
         # Checking if there were active/saved selections in either the new or
         # old transmitters. This requires some protection when this observer
         # is triggered because the old transmitter was deleted.
-        if (old_transmitter %in% names(pObjects$memory)) {
+        if (old_transmitter %in% c(.noSelection, names(pObjects$memory))) {
             no_old_selection <- !.transmitted_selection(panel_name, old_transmitter, pObjects$memory)
             no_new_selection <- !.transmitted_selection(panel_name, new_transmitter, pObjects$memory)
             if (no_old_selection && no_new_selection) {

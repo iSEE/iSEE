@@ -198,6 +198,8 @@ setMethod(".defineParamInterface", "HeatMapPlot", function(x, se, active_panels)
     heatmap_sources <- c(.customSelection, link_sources$row_plot, link_sources$row_tab)
     col_selectable <- c(.noSelection, link_sources$col_plot)
 
+    select_effect <- .input_FUN(.selectEffect)
+
     list(
         collapseBox(
             id=.input_FUN(.heatMapFeatNameBoxOpen),
@@ -248,7 +250,23 @@ setMethod(".defineParamInterface", "HeatMapPlot", function(x, se, active_panels)
                 options=list(plugins=list('remove_button', 'drag_drop'))),
             plotOutput(.input_FUN(.heatMapLegend))
         ),
-        .create_selection_param_box(mode, id, x, col_selectable, "column")
+        .define_selection_param_box(
+            mode, id, x,
+            .define_selection_choices(mode, id, x, field=.selectByPlot, selectable=col_selectable, "column"),
+            radioButtons(
+                select_effect, label="Selection effect:", inline=TRUE,
+                choices=c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle),
+                selected=x[[.selectEffect]]
+            ),
+            .conditional_on_radio(
+                select_effect, .selectColorTitle,
+                colourInput(.input_FUN(.selectColor), label=NULL, value=x[[.selectColor]])
+            ),
+            .conditional_on_radio(
+                select_effect, .selectTransTitle,
+                sliderInput(.input_FUN(.selectTransAlpha), label=NULL, min=0, max=1, value=x[[.selectTransAlpha]])
+            )
+        )
     )
 })
 
@@ -431,11 +449,8 @@ setMethod(".createParamObservers", "HeatMapPlot", function(x, se, input, session
 setMethod(".defineOutputElement", "HeatMapPlot", function(x) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
-    .create_plot_ui(mode, id, brush_direction="x",
-        height=x[[.organizationHeight]],
-        brush_fill=brush_fill_color[mode],
-        brush_stroke=brush_stroke_color[mode]
-    )
+    plot_name <- paste0(mode, id)
+    plotOutput(plot_name, height=paste0(x[[.organizationHeight]], "px"))
 })
 
 #' @export

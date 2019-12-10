@@ -305,10 +305,6 @@ iSEE <- function(se,
                     type="default", duration = NULL)
             }
 
-            se_out <- .sanitize_SE_input(se)
-            se <- se_out$object
-            se_cmds <- se_out$cmds
-
             # Display an error notifications if colormap is not compatible with se
             # Display one warning notification for each incompatibility issue
             errors <- checkColormapCompatibility(colormap, se)
@@ -414,15 +410,13 @@ iSEE <- function(se,
 #                pObjects$coordinates[[panelname]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
 #            }
 
-#            # Observer set-up.
-#            .general_observers(input, session, pObjects, rObjects, tour, runLocal,
-#                 se_name, ecm_name, cdf_name, csf_name, se_cmds)
-#
+            # Observer set-up.
+            .general_observers(tour, runLocal, se_name, ecm_name, 
+                input, session, pObjects, rObjects)
+
             .organization_observers(se=se, colormap=colormap,
                 input=input, output=output, session=session,
                 pObjects=pObjects, rObjects=rObjects)
-
-#            .zoom_observers(input, session, pObjects, rObjects)
 
             for (idx in seq_along(pObjects$memory)) {
                 instance <- pObjects$memory[[idx]]

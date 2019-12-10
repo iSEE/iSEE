@@ -40,7 +40,8 @@ Imports:
     viridisLite,
     cowplot,
     scales,
-    dplyr
+    dplyr,
+    shinycssloaders
 Suggests:
     testthat,
     BiocStyle,

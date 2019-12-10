@@ -58,6 +58,7 @@
 #' @author Aaron Lun
 #'
 #' @rdname INTERNAL_create_plot_ui
+#' @importFrom shinycssloaders withSpinner
 .create_plot_ui <- function(mode, id, height, brush_direction, brush_fill, brush_stroke) {
     plot_name <- paste0(mode, id)
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
@@ -70,5 +71,8 @@
     clickopt <- .input_FUN(.lassoClick)
     panel_height <- paste0(height, "px")
 
-    plotOutput(plot_name, brush=brush.opts, dblclick=dblclick, click=clickopt, height=panel_height)
+    withSpinner(
+        plotOutput(plot_name, brush=brush.opts, dblclick=dblclick, click=clickopt, height=panel_height),
+        color=brush_fill
+    )
 }

@@ -25,9 +25,7 @@
 #' @importFrom shinyAce aceEditor
 #'
 #' @rdname INTERNAL_general_observers
-.general_observers <- function(input, session, pObjects, rObjects, tour, runLocal,
-    se_name, ecm_name, cdf_name, csf_name, se_cmds)
-{
+.general_observers <- function(tour, runLocal, se_name, ecm_name, input, session, pObjects, rObjects) {
     observeEvent(input$tour_firststeps, {
         if(is.null(tour)) {
             tour <- read.delim(system.file("extdata", "intro_firststeps.txt", package="iSEE"),
@@ -49,9 +47,9 @@
               "a keyboard shortcut that depends on your operating system (e.g. Ctrl/Cmd + A",
               "followed by Ctrl/Cmd + C).",
               "This will copy the selected parts to the clipboard."),
+
             aceEditor("report_all_cmds", mode="r", theme="solarized_light", autoComplete="live",
-                value=paste0(.track_it_all(rObjects$active_panels, pObjects,
-                        se_name, ecm_name, cdf_name, csf_name, se_cmds), collapse="\n"),
+                value=paste0(.track_it_all(pObjects$memory, pObjects, se_name, ecm_name), collapse="\n"),
                 height="600px")
         ))
     })
@@ -61,7 +59,7 @@
             title="Panel settings", size="l", fade=TRUE,
             footer=NULL, easyClose=TRUE,
             aceEditor("acereport_r", mode="r", theme="solarized_light", autoComplete="live",
-                value=paste0(.report_memory(rObjects$active_panels, pObjects$memory), collapse="\n"),
+                value=paste(.report_memory(rObjects$active_panels, pObjects$memory), collapse="\n"),
                 height="600px")
         ))
     })

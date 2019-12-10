@@ -147,18 +147,16 @@
 
     width_name <- paste0(panel_name, "_", .organizationWidth)
     observeEvent(input[[width_name]], {
-        copy <- org_pObjects$memory[[panel_name]]
-        cur.width <- copy[[.organizationWidth]]
+        cur.width <- org_pObjects$memory[[panel_name]][[.organizationWidth]]
         new.width <- as.integer(input[[width_name]])
         if (!isTRUE(all.equal(new.width, cur.width))) {
             org_pObjects$memory[[panel_name]][[.organizationWidth]] <- new.width
         }
     }, ignoreInit=TRUE)
 
-    height_name <- paste0(panel_name, .organizationHeight)
+    height_name <- paste0(panel_name, "_", .organizationHeight)
     observeEvent(input[[height_name]], {
-        copy <- org_pObjects$memory[[panel_name]]
-        cur.height <- copy[[.organizationWidth]]
+        cur.height <- org_pObjects$memory[[panel_name]][[.organizationHeight]]
         new.height <- as.integer(input[[height_name]])
         if (!isTRUE(all.equal(new.height, cur.height))) {
             org_pObjects$memory[[panel_name]][[.organizationHeight]] <- new.height

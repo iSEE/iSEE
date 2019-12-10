@@ -153,14 +153,11 @@ setMethod(".defineParamInterface", "SampAssayPlot", function(x, se, active_panel
     }
     xaxis_choices <- c(xaxis_choices, .sampAssayXAxisSampNameTitle)
 
-    sample_names <- seq_len(ncol(se))
-    names(sample_names) <- int_metadata(se)$iSEE$sample_names
-
     plot.param <- list(
-        selectInput(
+        selectizeInput(
             .input_FUN(.sampAssayYAxisSampName),
             label="Sample of interest (Y-axis):",
-            choices=sample_names, selected=x[[.sampAssayYAxisSampName]]),
+            choices=NULL, selected=NULL, multiple=FALSE),
         selectInput(
             .input_FUN(.sampAssayYAxisColTable), label=NULL, choices=tab_by_col,
             selected=.choose_link(x[[.sampAssayYAxisColTable]], tab_by_col, force_default=TRUE)),
@@ -180,10 +177,10 @@ setMethod(".defineParamInterface", "SampAssayPlot", function(x, se, active_panel
         .conditional_on_radio(
             .input_FUN(.sampAssayXAxis),
             .sampAssayXAxisSampNameTitle,
-            selectInput(
+            selectizeInput(
                 .input_FUN(.sampAssayXAxisSampName),
                 label="Sample of interest (X-axis):",
-                choices=sample_names, selected=x[[.sampAssayXAxisSampName]]),
+                choices=NULL, selected=NULL, multiple=FALSE),
             selectInput(.input_FUN(.sampAssayXAxisColTable), label=NULL,
                 choices=tab_by_col, selected=x[[.sampAssayXAxisColTable]]))
     )

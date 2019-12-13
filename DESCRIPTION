@@ -41,7 +41,8 @@ Imports:
     cowplot,
     scales,
     dplyr,
-    shinycustomloader
+    shinycustomloader,
+    rstudioapi
 Suggests:
     testthat,
     BiocStyle,

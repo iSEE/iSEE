@@ -56,7 +56,6 @@ setMethod("initialize", "__ENCODED__", function(.Object, ...) {
 })
 
 #' @export
-#' @importFrom SingleCellExperiment reducedDimNames reducedDim
 #' @importClassesFrom SingleCellExperiment SingleCellExperiment
 #' @importFrom methods callNextMethod
 setMethod(".cacheCommonInfo", "__ENCODED__", function(x, se) {
@@ -64,14 +63,13 @@ setMethod(".cacheCommonInfo", "__ENCODED__", function(x, se) {
 })
 
 #' @export
-#' @importFrom SingleCellExperiment reducedDim
 #' @importFrom methods callNextMethod
 setMethod(".refineParameters", "__ENCODED__", function(x, se) {
     x <- callNextMethod()
     x
 })
 
-#' @importFrom S4Vectors setValidity2 isSingleString
+#' @importFrom S4Vectors setValidity2
 setValidity2("__ENCODED__", function(object) {
     msg <- character(0)
 
@@ -82,16 +80,12 @@ setValidity2("__ENCODED__", function(object) {
 })
 
 #' @export
-#' @importFrom SingleCellExperiment reducedDim reducedDimNames
-#' @importFrom shiny selectInput
 #' @importFrom methods callNextMethod
 setMethod(".defineParamInterface", "__ENCODED__", function(x, se, active_panels) {
     callNextMethod()
 })
 
 #' @export
-#' @importFrom SingleCellExperiment reducedDim
-#' @importFrom shiny observeEvent updateSelectInput
 #' @importFrom methods callNextMethod
 setMethod(".createParamObservers", "__ENCODED__", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
@@ -110,15 +104,5 @@ setMethod(".getCommandsDataXY", "__ENCODED__", function(x, param_choices) {
 
 #' @export
 setMethod(".getCommandsPlot", "__ENCODED__", function(x, param_choices, plot_data, plot_type, labs, is_subsetted, is_downsampled) {
-
-    plot_cmds <- list()
-    plot_cmds[["ggplot"]] <- "ggplot() +"
-
-    # Adding hexbins to the plot.
-    new_aes <- .build_aes()
-    plot_cmds[["hex"]] <- sprintf("geom_hex(%s, plot.data) +", new_aes)
-    plot_cmds[["theme_base"]] <- "theme_bw()"
-
-
-    return(unlist(plot_cmds))
+    callNextMethod()
 })

@@ -20,7 +20,6 @@ collect_parents <- function() {
 #' @param decoded Extended name of the new panel class (for display).
 #' @param parent Name of the parent panel class
 #'
-#' @importFrom rstudioapi documentNew
 #' @export
 #'
 #' @author Kevin Rue-Albrecht
@@ -31,10 +30,10 @@ collect_parents <- function() {
 #' new_panel_file("NewRedDimPlot", "New reduced dimension plot", "RedDimPlot")
 new_panel_file <- function(encoded, decoded, parent="Panel") {
   template_file <- system.file(package = "iSEE", "templates", "NewPanel.R")
-  template_content <- scan(template_file, "character", sep = "\n")
+  template_content <- scan(template_file, "character", sep = "\n", quiet = TRUE)
   template_content <- paste0(template_content, collapse = "\n")
   template_content <- gsub("__ENCODED__", encoded, template_content, fixed = TRUE)
   template_content <- gsub("__DECODED__", decoded, template_content, fixed = TRUE)
   template_content <- gsub("__PARENT__", parent, template_content, fixed = TRUE)
-  documentNew(template_content, type = "r")
+  rstudioapi::documentNew(template_content, type = "r")
 }

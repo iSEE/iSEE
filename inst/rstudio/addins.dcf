@@ -1,0 +1,4 @@
+Name: New Panel
+Description: Create a new panel class with iSEE::new_panel().
+Binding: new_panel_addin
+Interactive: true

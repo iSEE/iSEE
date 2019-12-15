@@ -250,11 +250,10 @@ setMethod(".defineParamInterface", "HeatMapPlot", function(x, se, active_panels)
                 options=list(plugins=list('remove_button', 'drag_drop'))),
             plotOutput(.input_FUN(.heatMapLegend))
         ),
-        .define_selection_param_box(
-            mode, id, x,
-            .define_selection_choices(mode, id, x, by_field=.selectColSource, 
+        .define_selection_param_box(x,
+            .define_selection_choices(x, by_field=.selectColSource, 
                 type_field=.selectColType, saved_field=.selectColSaved,
-                selectable=col_selectable, "column"),
+                selectable=col_selectable, source_type="column"),
             radioButtons(
                 select_effect, label="Selection effect:", inline=TRUE,
                 choices=c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle),

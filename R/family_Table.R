@@ -40,13 +40,13 @@ setMethod(".defineParamInterface", "Table", function(x, se, active_panels) {
     row_selectable <- c(.noSelection, link_sources$row)
     col_selectable <- c(.noSelection, link_sources$column)
 
-    .define_selection_param_box(mode, id, x,
-        .define_selection_choices(mode, id, x, by_field=.selectRowSource, 
+    .define_selection_param_box(x,
+        .define_selection_choices(x, by_field=.selectRowSource, 
             type_field=.selectRowType, saved_field=.selectRowSaved,
-            selectable=row_selectable, "row"),
-        .define_selection_choices(mode, id, x, by_field=.selectColSource, 
+            selectable=row_selectable, source_type="row"),
+        .define_selection_choices(x, by_field=.selectColSource, 
             type_field=.selectColType, saved_field=.selectColSaved,
-            selectable=col_selectable, "column")
+            selectable=col_selectable, source_type="column")
     )
 })
 

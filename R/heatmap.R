@@ -84,7 +84,8 @@
     # Processing the column selection choice.
     alpha_cmd <- ""
     alpha_legend_cmd <- NULL
-    select_cmds <- .process_selectby_choice(param_choices, all_memory)
+    select_cmds <- .process_selectby_choice(param_choices, 
+        by_field=.selectColSource, all_memory=all_memory)
     select_as_field <- .safe_field_name("SelectBy", colnames(colData(se)))
 
     if (length(select_cmds)) {
@@ -92,7 +93,7 @@
         # plot.data, and cannot be in 'rownames'), hence the sub().
         select_cmds[["select"]] <- sub("rownames(plot.data)", "plot.data$X", elect_cmds[["select"]], fixed=TRUE)
 
-        transmitter <- param_choices[[.selectBy]]
+        transmitter <- param_choices[[.selectColSource]]
         .populate_selection_environment(all_memory[[transmitter]], eval_env)
         .text_eval(select_cmds, eval_env)
 

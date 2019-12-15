@@ -252,7 +252,9 @@ setMethod(".defineParamInterface", "HeatMapPlot", function(x, se, active_panels)
         ),
         .define_selection_param_box(
             mode, id, x,
-            .define_selection_choices(mode, id, x, field=.selectByPlot, selectable=col_selectable, "column"),
+            .define_selection_choices(mode, id, x, by_field=.selectColSource, 
+                type_field=.selectColType, saved_field=.selectColSaved,
+                selectable=col_selectable, "column"),
             radioButtons(
                 select_effect, label="Selection effect:", inline=TRUE,
                 choices=c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle),
@@ -492,7 +494,7 @@ setMethod(".createRenderedOutput", "HeatMapPlot", function(x, se, colormap, outp
     link_field <- paste0(plot_name, "_", .panelLinkInfo)
     output[[link_field]] <- renderUI({
         force(rObjects[[link_field]])
-        select_in <- pObjects$memory[[plot_name]][[.selectByPlot]]
+        select_in <- pObjects$memory[[plot_name]][[.selectColSource]]
         if (select_in==.noSelection) {
             return(NULL)
         }

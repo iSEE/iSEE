@@ -200,11 +200,16 @@
 #' @seealso
 #' \code{\link{.sanitize_memory}},
 #' \code{\link{.panel_generation}}
-.define_link_sources <- function(memory) {
+.define_link_sources <- function(memory, exclude=NULL) {
+    if (!is.null(exclude)) {
+        memory <- memory[setdiff(names(memory), exclude)]
+    }
+
     all_names <- vapply(memory, .getEncodedName, "")
     all_ids <- vapply(memory, "[[", i=.organizationId, 1L)
     all_names <- paste0(all_names, all_ids)
     names(all_names) <- paste(vapply(memory, .getFullName, ""), all_ids)
+
     tdims <- vapply(memory, FUN=.transmittedDimension, "")
     list(row=all_names[tdims=="row"], column=all_names[tdims=="column"])
 }

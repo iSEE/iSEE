@@ -114,12 +114,13 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
 
 #' @export
 setMethod(".defineParamInterface", "ColumnDotPlot", function(x, se, active_panels) {
-    link_sources <- .define_link_sources(active_panels)
+    mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
+
+    link_sources <- .define_link_sources(active_panels, exclude=paste0(mode, id))
     row_selectable <- c(.noSelection, link_sources$row)
     col_selectable <- c(.noSelection, link_sources$column)
 
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
     list(
         .create_visual_box_for_column_plots(mode, id, x, row_selectable, col_selectable, se),
         .create_selection_param_box(mode, id, x, row_selectable, col_selectable)

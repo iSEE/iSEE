@@ -15,8 +15,7 @@
 #' @author Aaron Lun
 #'
 #' @rdname INTERNAL_selection_parameter_observers
-#' @importFrom shiny observeEvent isolate
-#' showNotification updateSelectInput updateRadioButtons
+#' @importFrom shiny observeEvent isolate showNotification updateSelectInput 
 #' @importFrom igraph is_dag simplify
 .define_selection_choice_observer <- function(panel_name, 
     by_field, type_field, saved_field, input, session, pObjects, rObjects) 
@@ -39,17 +38,8 @@
             field=by_field)
 
         # Trying to update the graph, but breaking if it's not a DAG.
-        # We also break if users try to self-select in restrict mode.
-        # These concerns are only relevant for transmitting panels (i.e., point plots).
-        daggy <- is_dag(simplify(tmp, remove.loops=TRUE))
-        self_restrict <- new_transmitter==panel_name && .restrictsSelection(pObjects$memory[[panel_name]])
-
-        if (!daggy || self_restrict) {
-            if (!daggy) {
-                showNotification("point selection relationships cannot be cyclic", type="error")
-            } else if (self_restrict){
-                showNotification("selecting to self is not compatible with 'Restrict'", type="error")
-            }
+        if (!is_dag(simplify(tmp, remove.loops=TRUE))) {
+            showNotification("point selection relationships cannot be cyclic", type="error")
             updateSelectInput(session, select_panel_field, selected=old_transmitter)
             return(NULL)
         }
@@ -102,7 +92,7 @@
     invisible(NULL)
 }
 
-#' @importFrom shiny showNotification updateRadioButtons observeEvent
+#' @importFrom shiny showNotification observeEvent
 .define_selection_effect_observer <- function(plot_name, 
     by_field, type_field, saved_field, 
     input, session, pObjects, rObjects) 
@@ -114,14 +104,6 @@
     observeEvent(input[[select_effect_field]], {
         cur_effect <- input[[select_effect_field]]
         old_effect <- pObjects$memory[[plot_name]][[.selectEffect]]
-
-        # Storing the new choice into memory, unless self-selecting to restrict.
-        # In which case, we trigger an error and reset to the previous choice.
-        if (cur_effect == .selectRestrictTitle && pObjects$memory[[plot_name]][[by_field]]==plot_name) {
-            showNotification("selecting to self is not compatible with 'Restrict'", type="error")
-            updateRadioButtons(session, select_effect_field, selected=old_effect)
-            return(NULL)
-        }
         pObjects$memory[[plot_name]][[.selectEffect]] <- cur_effect
 
         # Avoiding replotting if there was no transmitting selection.

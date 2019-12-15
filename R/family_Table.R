@@ -25,7 +25,8 @@ setValidity2("Table", function(object) {
 setMethod(".defineParamInterface", "Table", function(x, se, active_panels) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
-    link_sources <- .define_link_sources(active_panels)
+
+    link_sources <- .define_link_sources(active_panels, exclude=paste0(mode, id))
     row_selectable <- c(.noSelection, link_sources$row)
     col_selectable <- c(.noSelection, link_sources$column)
 

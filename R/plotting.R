@@ -822,11 +822,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     cmds <- list()
 
     if (!identical(transmitter, .noSelection)) {
-        if (identical(paste0(.getEncodedName(param_choices), param_choices[[.organizationId]]), transmitter)) {
-            source_data <- 'plot.data'
-        } else {
-            source_data <- sprintf("all_coordinates[['%s']]", transmitter)
-        }
+        source_data <- sprintf("all_coordinates[['%s']]", transmitter)
         init_cmd <- paste("transmitter <-", source_data)
 
         transmit_param <- all_memory[[transmitter]]
@@ -882,10 +878,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         if (length(cmds)) {
             cmds <- c(init=c(init_cmd, paste(var_name, "<- list();")), cmds)
         }
-
-        print(cmds)
     }
-
     unlist(cmds)
 }
 

@@ -215,23 +215,23 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
         # plot-generating functions know what to do with them.
         row_select_cmds <- .process_selectby_choice(param_choices, 
             by_field=.selectRowSource, type_field=.selectRowType, saved_field=.selectRowSaved,
-            all_memory=pObjects$memory, var_name="row_selected")
+            all_memory=all_memory, var_name="row_selected")
 
         if (!is.null(row_select_cmds)) {
             transmitter <- param_choices[[.selectRowSource]]
-            .populate_selection_environment(pObjects$memory[[transmitter]], plot_env)
-            plot_env$all_coordinates <- pObjects$coordinates
+            .populate_selection_environment(all_memory[[transmitter]], plot_env)
+            plot_env$all_coordinates <- all_coordinates
             .text_eval(row_select_cmds, plot_env)
         }
 
         col_select_cmds <- .process_selectby_choice(param_choices, 
             by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
-            all_memory=pObjects$memory, var_name="col_selected")
+            all_memory=all_memory, var_name="col_selected")
 
         if (!is.null(col_select_cmds)) {
             transmitter <- param_choices[[.selectColSource]]
-            .populate_selection_environment(pObjects$memory[[transmitter]], plot_env)
-            plot_env$all_coordinates <- pObjects$coordinates
+            .populate_selection_environment(all_memory[[transmitter]], plot_env)
+            plot_env$all_coordinates <- all_coordinates
             .text_eval(col_select_cmds, plot_env)
         }
 

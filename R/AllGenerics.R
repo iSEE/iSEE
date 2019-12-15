@@ -147,12 +147,3 @@ setGeneric(".restrictsSelection", function(x) standardGeneric(".restrictsSelecti
 
 #' @export
 setGeneric(".transmittedDimension", function(x) standardGeneric(".transmittedDimension"))
-
-#' @export
-setGeneric(".getMainSelectSource", function(x) standardGeneric(".getMainSelectSource"))
-
-#' @export
-setGeneric(".getMainSelectSaved", function(x) standardGeneric(".getMainSelectSaved"))
-
-#' @export
-setGeneric(".getMainSelectType", function(x) standardGeneric(".getMainSelectType"))

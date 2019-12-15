@@ -148,15 +148,6 @@ setMethod(".createParamObservers", "RowDotPlot", function(x, se, input, session,
 })
 
 #' @export
-setMethod(".getMainSelectSource", "RowDotPlot", function(x) .selectRowSource)
-
-#' @export
-setMethod(".getMainSelectType", "RowDotPlot", function(x) .selectRowType)
-
-#' @export
-setMethod(".getMainSelectSaved", "RowDotPlot", function(x) .selectRowSaved)
-
-#' @export
 setMethod(".transmittedDimension", "RowDotPlot", function(x) "row")
 
 setMethod(".getCommandsDataColor", "RowDotPlot", function(x, param_choices, se) {

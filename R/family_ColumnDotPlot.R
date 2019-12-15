@@ -148,15 +148,6 @@ setMethod(".createParamObservers", "ColumnDotPlot", function(x, se, input, sessi
 })
 
 #' @export
-setMethod(".getMainSelectSource", "ColumnDotPlot", function(x) .selectColSource)
-
-#' @export
-setMethod(".getMainSelectType", "ColumnDotPlot", function(x) .selectColType)
-
-#' @export
-setMethod(".getMainSelectSaved", "ColumnDotPlot", function(x) .selectColSaved)
-
-#' @export
 setMethod(".transmittedDimension", "ColumnDotPlot", function(x) "column")
 
 setMethod(".getCommandsDataColor", "ColumnDotPlot", function(x, param_choices, se) {

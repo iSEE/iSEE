@@ -166,7 +166,8 @@
         .safe_reactive_bump(rObjects, info_name)
         .safe_reactive_bump(rObjects, plot_name)
 
-        by_field <- .getMainSelectSource(instance)
+        trans_row <- .transmittedSelection(instance)=="row"
+        by_field <- if (trans_row) .selectRowSource else .selectColSource
         if (instance[[by_field]]==plot_name) {
             .safe_reactive_bump(rObjects, saved_select_name)
         }
@@ -192,11 +193,12 @@
         .safe_reactive_bump(rObjects, info_name)
         .safe_reactive_bump(rObjects, plot_name)
 
-        by_field <- .getMainSelectSource(instance)
+        trans_row <- .transmittedSelection(instance)=="row"
+        by_field <- if (trans_row) .selectRowSource else .selectColSource
         if (instance[[by_field]]==plot_name) {
             .safe_reactive_bump(rObjects, saved_select_name)
 
-            saved_field <- .getMainSelectSaved(instance)
+            saved_field <- if (trans_row) .selectRowSaved else .selectColSaved
             if (instance[[saved_field]] > length(current)) {
                 pObjects$memory[[plot_name]][[saved_field]] <- 0L
             }

@@ -21,13 +21,4 @@ setMethod(".createParamObservers", "ColumnTable", function(x, se, input, session
 })
 
 #' @export
-setMethod(".getMainSelectSource", "ColumnTable", function(x) .selectColSource)
-
-#' @export
-setMethod(".getMainSelectType", "ColumnTable", function(x) .selectColType)
-
-#' @export
-setMethod(".getMainSelectSaved", "ColumnTable", function(x) .selectColSaved)
-
-#' @export
 setMethod(".transmittedDimension", "ColumnTable", function(x) "column")

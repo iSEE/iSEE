@@ -21,13 +21,4 @@ setMethod(".createParamObservers", "RowTable", function(x, se, input, session, p
 })
 
 #' @export
-setMethod(".getMainSelectSource", "RowTable", function(x) .selectRowSource)
-
-#' @export
-setMethod(".getMainSelectType", "RowTable", function(x) .selectRowType)
-
-#' @export
-setMethod(".getMainSelectSaved", "RowTable", function(x) .selectRowSaved)
-
-#' @export
 setMethod(".transmittedDimension", "RowTable", function(x) "row")

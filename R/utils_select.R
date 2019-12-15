@@ -27,7 +27,7 @@
 #' \code{\link{.any_active_selection}},
 #' \code{\link{.any_saved_selection}},
 #' \code{\link{iSEE}}
-.transmitted_selection <- function(panel_name, parent_name, memory, select_type=NULL, select_saved=NULL) {
+.transmitted_selection <- function(panel_name, parent_name, all_memory, select_type, select_saved) {
     if (parent_name==.noSelection) {
         return(FALSE)
     }
@@ -35,13 +35,6 @@
     transmitter <- memory[[parent_name]]
 
     changed <- FALSE
-    if (is.null(select_type)) {
-        select_type <- panel[[.selectMultiType]]
-    }
-    if (is.null(select_saved)) {
-        select_saved <- panel[[.selectMultiSaved]]
-    }
-
     if (select_type==.selectMultiActiveTitle || select_type==.selectMultiUnionTitle) {
         if (.any_active_selection(transmitter)) {
             changed <- TRUE

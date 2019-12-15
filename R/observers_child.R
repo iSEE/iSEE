@@ -1,3 +1,7 @@
+.panelRepopulated <- "INTERNAL_repopulated"
+.panelReactivated <- "INTERNAL_reactivated"
+.panelResaved <- "INTERNAL_resaved"
+
 #' Child propagating observer
 #'
 #' These observers decide whether child panels needs to be regenerated based on changes in the transmitting (parent) panels.
@@ -29,12 +33,21 @@
 #' @rdname INTERNAL_child_propagation_observers
 .define_child_propagation_observers <- function(panel_name, session, pObjects, rObjects) {
     # Reactive to regenerate children when the point population of the current panel changes.
-    repop_field <- paste0(panel_name, "_repopulated")
-    .safe_reactive_init(rObjects, repop_field)
+    repop_name <- paste0(panel_name, "_", .panelRepopulated)
+    .safe_reactive_init(rObjects, repop_name)
 
-    observeEvent(rObjects[[repop_field]], {
-        has_active <- .any_active_selection(pObjects$memory[[panel_name]])
-        has_saved <- .any_saved_selection(pObjects$memory[[panel_name]])
+    observeEvent(rObjects[[repop_name]], {
+        instance <- pObjects$memory[[panel_name]]
+        has_active <- .any_active_selection(instance)
+        has_saved <- .any_saved_selection(instance)
+        transmit_dim <- .transmittedDimension(instance)
+        if (transmit_dim=="row") {
+            type_field <- .selectRowType
+            saved_field <- .selectRowSaved
+        } else {
+            type_field <- .selectColType
+            saved_field <- .selectColSaved
+        }
 
         children <- names(.get_direct_children(pObjects$selection_links, panel_name))
         for (child_plot in children) {
@@ -45,10 +58,10 @@
             # Any point population changes in the current panel will
             # result in new subsets if those selections are available.
             replot <- FALSE
-            select_mode <- child_instance[[.selectMultiType]]
+            select_mode <- child_instance[[type_field]]
             if (select_mode==.selectMultiActiveTitle) {
                 if (has_active) replot <- TRUE
-            } else if (select_mode==.selectMultiSavedTitle && child_instance[[.selectMultiSaved]]!=0L) {
+            } else if (select_mode==.selectMultiSavedTitle && child_instance[[saved_field]]!=0L) {
                 if (has_saved) replot <- TRUE
             } else if (select_mode==.selectMultiUnionTitle) {
                 if (has_saved || has_active) replot <- TRUE
@@ -59,66 +72,85 @@
 
                 # To warrant replotting of the grandchildren, the child must itself be restricted.
                 if (.restrictsSelection(child_instance)) {
-                    .safe_reactive_bump(rObjects, paste0(child_plot, "_repopulated"))
+                    .safe_reactive_bump(rObjects, paste0(child_plot, "_", .panelRepopulated))
                 }
             }
         }
     })
  
     # Reactive to regenerate children when the active selection of the current panel changes.
-    act_field <- paste0(panel_name, "_reactivated")
-    .safe_reactive_init(rObjects, act_field)
+    act_name <- paste0(panel_name, "_", .panelReactivated)
+    .safe_reactive_init(rObjects, act_name)
 
-    dimprop_field <- paste0(panel_name, "_", .propagateDimnames)
-    .safe_reactive_init(rObjects, dimprop_field)
+    dimprop_name <- paste0(panel_name, "_", .propagateDimnames)
+    .safe_reactive_init(rObjects, dimprop_name)
 
-    observeEvent(rObjects[[act_field]], {
+    observeEvent(rObjects[[act_name]], {
+        instance <- pObjects$memory[[panel_name]]
+        transmit_dim <- .transmittedDimension(instance)
+        if (transmit_dim=="row") {
+            type_field <- .selectRowType
+            saved_field <- .selectRowSaved
+        } else {
+            type_field <- .selectColType
+            saved_field <- .selectColSaved
+        }
+
         children <- names(.get_direct_children(pObjects$selection_links, panel_name))
         for (child_plot in children) {
             child_instance <- pObjects$memory[[child_plot]]
 
-            select_mode <- child_instance[[.selectMultiType]]
+            select_mode <- child_instance[[type_field]]
             if (select_mode==.selectMultiActiveTitle || select_mode==.selectMultiUnionTitle) {
                 .safe_reactive_bump(rObjects, child_plot)
 
                 # To warrant replotting of the grandchildren, the child must itself be restricted.
                 if (.restrictsSelection(child_instance)) {
-                    .safe_reactive_bump(rObjects, paste0(child_plot, "_repopulated"))
+                    .safe_reactive_bump(rObjects, paste0(child_plot, "_", .panelRepopulated))
                 }
             }
         }
 
-        .safe_reactive_bump(rObjects, dimprop_field)
+         # Also bumping the dimension names of any dependencies.
+        .safe_reactive_bump(rObjects, dimprop_name)
     })
 
     # Reactive to regenerate children when the saved selection of the current panel changes.
-    save_field <- paste0(panel_name, "_resaved")
-    .safe_reactive_init(rObjects, save_field)
+    save_name <- paste0(panel_name, "_", .panelResaved)
+    .safe_reactive_init(rObjects, save_name)
 
-    observeEvent(rObjects[[save_field]], {
+    observeEvent(rObjects[[save_name]], {
         Nsaved <- length(pObjects$memory[[panel_name]][[.multiSelectHistory]])
+        transmit_dim <- .transmittedDimension(instance)
+        if (transmit_dim=="row") {
+            type_field <- .selectRowType
+            saved_field <- .selectRowSaved
+        } else {
+            type_field <- .selectColType
+            saved_field <- .selectColSaved
+        }
 
         children <- names(.get_direct_children(pObjects$selection_links, panel_name))
         for (child_plot in children) {
             child_instance <- pObjects$memory[[child_plot]]
 
-            reset <- child_instance[[.selectMultiSaved]] > Nsaved
+            reset <- child_instance[[saved_field]] > Nsaved
             if (reset) {
-                pObjects$memory[[child_plot]][[.selectMultiSaved]] <- 0L
+                pObjects$memory[[child_plot]][[saved_field]] <- 0L
             }
 
-            child_select_type <- child_instance[[.selectMultiType]]
+            child_select_type <- child_instance[[type_field]]
             if (child_select_type==.selectMultiUnionTitle || (child_select_type==.selectMultiSavedTitle && reset)) {
                 .safe_reactive_bump(rObjects, child_plot)
 
                 # To warrant replotting of the grandchildren, the child must itself be restricted.
                 if (.restrictsSelection(child_instance)) {
-                    .safe_reactive_bump(rObjects, paste0(child_plot, "_repopulated"))
+                    .safe_reactive_bump(rObjects, paste0(child_plot, "_", .panelRepopulated))
                 }
             }
 
             # Updating the selectize as well.
-            child_saved <- paste0(child_plot, "_", .selectMultiSaved)
+            child_saved <- paste0(child_plot, "_", .updateSavedChoices)
             .safe_reactive_bump(rObjects, child_saved)
         }
     })

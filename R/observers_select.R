@@ -1,3 +1,5 @@
+.updateSavedChoices <- "INTERNAL_saved_choices"
+
 #' Selection parameter observers
 #'
 #' A function to set up observers for selection parameter observers used in the app.
@@ -12,18 +14,21 @@
 #'
 #' @author Aaron Lun
 #'
+#' @rdname INTERNAL_selection_parameter_observers
 #' @importFrom shiny observeEvent isolate
 #' showNotification updateSelectInput updateRadioButtons
 #' @importFrom igraph is_dag simplify
-#' @rdname INTERNAL_selection_parameter_observers
-.define_selection_choice_observer <- function(panel_name, input, session, pObjects, rObjects) {
-    select_panel_field <- paste0(panel_name, "_", .selectByPlot)
-    repop_field <- paste0(panel_name, "_repopulated")
+.define_selection_choice_observer <- function(panel_name, 
+    by_field, saved_field, input, session, pObjects, rObjects) 
+{
+    repop_name <- paste0(panel_name, "_", .panelRepopulated)
+    .safe_reactive_init(rObjects, repop_name)
+    saved_select_name <- paste0(panel_name, "_", .updateSavedChoices)
+    .safe_reactive_init(rObjects, saved_select_name)
 
-    .safe_reactive_init(rObjects, paste0(panel_name, "_", .selectMultiSaved))
-
+    select_panel_field <- paste0(panel_name, "_", by_field)
     observeEvent(input[[select_panel_field]], {
-        old_transmitter <- pObjects$memory[[panel_name]][[.selectByPlot]]
+        old_transmitter <- pObjects$memory[[panel_name]][[by_field]]
         new_transmitter <- input[[select_panel_field]]
         if (old_transmitter==new_transmitter) {
             return(NULL)
@@ -31,7 +36,7 @@
 
         tmp <- .choose_new_parent(pObjects$selection_links, panel_name, 
             new_parent_name=new_transmitter, old_parent_name=old_transmitter,
-            field=.selectByPlot)
+            field=by_field)
 
         # Trying to update the graph, but breaking if it's not a DAG.
         # We also break if users try to self-select in restrict mode.
@@ -50,22 +55,21 @@
         }
 
         pObjects$selection_links <- tmp
-        pObjects$memory[[panel_name]][[.selectByPlot]] <- new_transmitter
+        pObjects$memory[[panel_name]][[by_field]] <- new_transmitter
 
         # Update the elements reporting the links between panels.
         for (relinked in setdiff(c(old_transmitter, new_transmitter, panel_name), .noSelection)) {
-            relink_field <- paste0(relinked, "_", .panelLinkInfo)
-            .safe_reactive_bump(rObjects, relink_field)
+            relink_name <- paste0(relinked, "_", .panelLinkInfo)
+            .safe_reactive_bump(rObjects, relink_name)
         }
 
-        # Update the multi-selection selectize.
-        saved_select_name <- paste0(panel_name, "_", .selectMultiSaved)
+        # Update the saved selection choice selectize.
         .safe_reactive_bump(rObjects, saved_select_name)
 
-        saved_val <- pObjects$memory[[panel_name]][[.selectMultiSaved]]
+        saved_val <- pObjects$memory[[panel_name]][[saved_field]]
         if (saved_val!=0L && new_transmitter!=.noSelection) {
             if (saved_val > any_saved_selection(pObjects$memory[[new_transmitter]], count=TRUE)) {
-                pObjects$memory[[panel_name]][[.selectMultiSaved]] <- 0L
+                pObjects$memory[[panel_name]][[saved_field]] <- 0L
             }
         }
 
@@ -73,8 +77,14 @@
         # old transmitters. This requires some protection when this observer
         # is triggered because the old transmitter was deleted.
         if (old_transmitter %in% c(.noSelection, names(pObjects$memory))) {
-            no_old_selection <- !.transmitted_selection(panel_name, old_transmitter, pObjects$memory)
-            no_new_selection <- !.transmitted_selection(panel_name, new_transmitter, pObjects$memory)
+            select_type <- pObjects$memory[[panel_name]][[type_field]]
+            select_saved <- pObjects$memory[[panel_name]][[saved_field]]
+
+            no_old_selection <- !.transmitted_selection(panel_name, old_transmitter, pObjects$memory,
+                select_type=select_type, select_saved=select_saved)
+            no_new_selection <- !.transmitted_selection(panel_name, new_transmitter, pObjects$memory,
+                select_type=select_type, select_saved=select_saved)
+
             if (no_old_selection && no_new_selection) {
                 return(NULL)
             }
@@ -85,7 +95,7 @@
         # Updating children, if the current panel is set to restrict
         # (and thus the point population changes with a new transmitted selection).
         if (.restrictsSelection(pObjects$memory[[panel_name]])) {
-            .safe_reactive_bump(rObjects, repop_field)
+            .safe_reactive_bump(rObjects, repop_name)
         }
     }, ignoreInit=TRUE)
 
@@ -93,17 +103,21 @@
 }
 
 #' @importFrom shiny showNotification updateRadioButtons observeEvent
-.define_selection_effect_observer <- function(plot_name, input, session, pObjects, rObjects) {
-    select_effect_field <- paste0(plot_name, "_", .selectEffect)
-    repop_field <- paste0(plot_name, "_repopulated")
+.define_selection_effect_observer <- function(plot_name, 
+    by_field, type_field, saved_field, 
+    input, session, pObjects, rObjects) 
+{
+    repop_name <- paste0(panel_name, "_", .panelRepopulated)
+    .safe_reactive_init(rObjects, repop_name)
 
+    select_effect_field <- paste0(plot_name, "_", .selectEffect)
     observeEvent(input[[select_effect_field]], {
         cur_effect <- input[[select_effect_field]]
         old_effect <- pObjects$memory[[plot_name]][[.selectEffect]]
 
         # Storing the new choice into memory, unless self-selecting to restrict.
         # In which case, we trigger an error and reset to the previous choice.
-        if (cur_effect == .selectRestrictTitle && pObjects$memory[[plot_name]][[.selectByPlot]]==plot_name) {
+        if (cur_effect == .selectRestrictTitle && pObjects$memory[[plot_name]][[by_field]]==plot_name) {
             showNotification("selecting to self is not compatible with 'Restrict'", type="error")
             updateRadioButtons(session, select_effect_field, selected=old_effect)
             return(NULL)
@@ -111,8 +125,12 @@
         pObjects$memory[[plot_name]][[.selectEffect]] <- cur_effect
 
         # Avoiding replotting if there was no transmitting selection.
-        transmitter <- pObjects$memory[[plot_name]][[.selectByPlot]]
-        if (!.transmitted_selection(plot_name, transmitter, pObjects$memory)) {
+        if (!.transmitted_selection(plot_name, 
+            pObjects$memory[[plot_name]][[by_field]],
+            all_memory=pObjects$memory,
+            select_type=pObjects$memory[[plot_name]][[type_field]],
+            select_saved=pObjects$memory[[plot_name]][[saved_field]])) 
+        {
             return(NULL)
         }
 
@@ -120,13 +138,12 @@
 
         # Updating children if the selection in the current plot changes due to gain/loss of Restrict.
         if (cur_effect==.selectRestrictTitle || old_effect==.selectRestrictTitle) {
-            .safe_reactive_bump(rObjects, repop_field)
+            .safe_reactive_bump(rObjects, repop_name)
         }
     }, ignoreInit=TRUE)
 
     invisible(NULL)
 }
-
 
 #' Multi-select parameter observers
 #'
@@ -144,46 +161,56 @@
 #'
 #' @importFrom shiny observeEvent observe updateSelectInput isolate
 #' @rdname INTERNAL_multiselect_param_observers
-.define_saved_selection_choice_observers <- function(panel_name, input, session, pObjects, rObjects) {
-    repop_field <- paste0(panel_name, "_repopulated")
+.define_saved_selection_choice_observers <- function(panel_name, 
+    by_field, type_field, saved_field,
+    input, session, pObjects, rObjects) 
+{
+    repop_name <- paste0(panel_name, "_", .panelRepopulated)
+    .safe_reactive_init(rObjects, repop_name)
 
     ## Type field observers. ---
-    type_field <- paste0(panel_name, "_", .selectMultiType)
+    type_field <- paste0(panel_name, "_", type_field)
     observeEvent(input[[type_field]], {
-        old_type <- pObjects$memory[[panel_name]][[.selectMultiType]]
+        old_type <- pObjects$memory[[panel_name]][[type_field]]
         new_type <- as(input[[type_field]], typeof(old_type))
         if (identical(new_type, old_type)) {
             return(NULL)
         }
-        pObjects$memory[[panel_name]][[.selectMultiType]] <- new_type
+        pObjects$memory[[panel_name]][[type_field]] <- new_type
 
         # Skipping if neither the old or new types were relevant.
-        transmitter <- pObjects$memory[[panel_name]][[.selectByPlot]]
-        no_old_selection <- !.transmitted_selection(panel_name, transmitter, pObjects$memory, select_type=old_type)
-        no_new_selection <- !.transmitted_selection(panel_name, transmitter, pObjects$memory)
+        transmitter <- pObjects$memory[[panel_name]][[by_field]]
+        select_saved <- pObjects$memory[[panel_name]][[saved_field]]
+
+        no_old_selection <- !.transmitted_selection(panel_name, transmitter, pObjects$memory, 
+            select_type=old_type, select_saved=select_saved)
+        no_new_selection <- !.transmitted_selection(panel_name, transmitter, pObjects$memory, 
+            select_type=new_type, select_saved=select_saved)
+
         if (no_old_selection && no_new_selection) {
             return(NULL)
         }
 
         .safe_reactive_bump(rObjects, panel_name)
         if (.restrictsSelection(pObjects$memory[[panel_name]])) {
-            .safe_reactive_bump(rObjects, repop_field)
+            .safe_reactive_bump(rObjects, repop_name)
         }
     }, ignoreInit=TRUE)
 
     ## Saved field observers. ---
-    saved_select <- paste0(panel_name, "_", .selectMultiSaved)
-    observeEvent(input[[saved_select]], {
+    saved_select_field <- paste0(panel_name, "_", saved_field)
+    observeEvent(input[[saved_select_field]], {
         # Required to defend against empty strings before updateSelectizeInput runs.
-        req(input[[saved_select]]) 
+        req(input[[saved_select_field]]) 
 
-        matched_input <- as(input[[saved_select]], typeof(pObjects$memory[[panel_name]][[.selectMultiSaved]]))
-        if (identical(matched_input, pObjects$memory[[panel_name]][[.selectMultiSaved]])) {
+        matched_input <- as(input[[saved_select_field]], 
+            typeof(pObjects$memory[[panel_name]][[saved_field]]))
+        if (identical(matched_input, pObjects$memory[[panel_name]][[saved_field]])) {
             return(NULL)
         }
-        pObjects$memory[[panel_name]][[.selectMultiSaved]] <- matched_input
+        pObjects$memory[[panel_name]][[saved_field]] <- matched_input
 
-        transmitter <- pObjects$memory[[panel_name]][[.selectByPlot]]
+        transmitter <- pObjects$memory[[panel_name]][[by_field]]
         if (transmitter==.noSelection) {
             return(NULL)
         }
@@ -191,17 +218,19 @@
         # Switch of 'Saved' will ALWAYS change the current plot, so no need for other checks.
         .safe_reactive_bump(rObjects, panel_name)
         if (.restrictsSelection(pObjects$memory[[panel_name]])) {
-            .safe_reactive_bump(rObjects, repop_field)
+            .safe_reactive_bump(rObjects, repop_name)
         }
     }, ignoreInit=TRUE)
 
     ## Selectize observer. ---
-    # Do NOT be tempted to centralize code by setting .selectMultiSaved in the above observer.
+    # Do NOT be tempted to centralize code by setting 'saved_field' in the above observer.
     # This needs to be done in a separate observer that actually executes to set the 
     # the field to something upon initialization of the panel.
-    .safe_reactive_init(rObjects, saved_select)
+    saved_choice_name <- paste0(panel_name, "_", .updateSavedChoices)
+    .safe_reactive_init(rObjects, saved_choice_name)
+
     observe({
-        force(rObjects[[saved_select]])
+        force(rObjects[[saved_choice_name]])
         force(rObjects$rerendered)
 
         # Protect against re-rendering after deleting a panel.
@@ -209,7 +238,7 @@
             return(NULL)
         }
 
-        transmitter <- pObjects$memory[[panel_name]][[.selectByPlot]]
+        transmitter <- pObjects$memory[[panel_name]][[by_field]]
         if (transmitter==.noSelection) {
             available_choices <- integer(0)
         } else {
@@ -221,8 +250,8 @@
         no_choice <- 0L
         names(no_choice) <- .noSelection
         available_choices <- c(no_choice, available_choices)
-        updateSelectizeInput(session, saved_select, choices=available_choices, server=TRUE,
-            selected=pObjects$memory[[panel_name]][[.selectMultiSaved]])
+        updateSelectizeInput(session, saved_select_field, choices=available_choices, server=TRUE,
+            selected=pObjects$memory[[panel_name]][[saved_field]])
     })
 
     invisible(NULL)

@@ -24,11 +24,12 @@
 #' @author Aaron Lun
 #' @importFrom shiny observeEvent
 .define_brush_observer <- function(plot_name, input, session, pObjects, rObjects) {
-    act_field <- paste0(plot_name, "_reactivated")
+    act_name <- paste0(plot_name, "_", .panelReactivated)
     save_field <- paste0(plot_name, "_", .multiSelectSave)
-    brush_id <- paste0(plot_name, "_", .brushField)
-    observeEvent(input[[brush_id]], {
-        cur_brush <- input[[brush_id]]
+
+    brush_field <- paste0(plot_name, "_", .brushField)
+    observeEvent(input[[brush_field]], {
+        cur_brush <- input[[brush_field]]
         old_brush <- pObjects$memory[[plot_name]][[.brushData]]
         pObjects$memory[[plot_name]][[.brushData]] <- cur_brush
 
@@ -44,7 +45,7 @@
         )
 
         .safe_reactive_bump(rObjects, plot_name)
-        .safe_reactive_bump(rObjects, act_field)
+        .safe_reactive_bump(rObjects, act_name)
     }, ignoreInit=TRUE)
 
     invisible(NULL)
@@ -69,7 +70,7 @@
 .define_lasso_observer <- function(plot_name, input, session, pObjects, rObjects) {
     click_field <- paste0(plot_name, "_", .lassoClick)
     brush_field <- paste0(plot_name, "_", .brushField)
-    act_field <- paste0(plot_name, "_reactivated")
+    act_name <- paste0(plot_name, "_", .panelReactivated)
     save_field <- paste0(plot_name, "_", .multiSelectSave)
 
     observeEvent(input[[click_field]], {
@@ -120,7 +121,7 @@
         .safe_reactive_bump(rObjects, plot_name)
 
         if (reactivated) {
-            .safe_reactive_bump(rObjects, act_field)
+            .safe_reactive_bump(rObjects, act_name)
         }
     })
 
@@ -146,15 +147,15 @@
 .define_saved_selection_observers <- function(plot_name, input, session, pObjects, rObjects) {
     save_field <- paste0(plot_name, "_", .multiSelectSave)
     del_field <- paste0(plot_name, "_", .multiSelectDelete)
-    info_field <- paste0(plot_name, "_", .panelGeneralInfo)
-    saved_field <- paste0(plot_name, "_", .selectMultiSaved)
-    resaved_field <- paste0(plot_name, "_resaved")
+    info_name <- paste0(plot_name, "_", .panelGeneralInfo)
+    saved_select_name <- paste0(plot_name, "_", .updateSavedChoices)
+    resaved_name <- paste0(plot_name, "_", .panelResaved)
 
     ## Save selection observer. ---
     observeEvent(input[[save_field]], {
-        current <- pObjects$memory[[plot_name]][[.multiSelectHistory]]
-
-        to_store <- pObjects$memory[[plot_name]][[.brushData]]
+        instance <- pObjects$memory[[plot_name]]
+        current <- instance[[.multiSelectHistory]]
+        to_store <- instance[[.brushData]]
         if (!length(to_store) || (!.is_brush(to_store) && !to_store$closed)) {
             return(NULL)
         }
@@ -162,15 +163,16 @@
         pObjects$memory[[plot_name]][[.multiSelectHistory]] <- c(current, list(to_store))
 
         # Updating self (replot to get number).
-        .safe_reactive_bump(rObjects, info_field)
+        .safe_reactive_bump(rObjects, info_name)
         .safe_reactive_bump(rObjects, plot_name)
 
-        if (pObjects$memory[[plot_name]][[.selectByPlot]]==plot_name) {
-            .safe_reactive_bump(rObjects, saved_field)
+        by_field <- .getMainSelectSource(instance)
+        if (instance[[by_field]]==plot_name) {
+            .safe_reactive_bump(rObjects, saved_select_name)
         }
 
         # Updating children.
-        .safe_reactive_bump(rObjects, resaved_field)
+        .safe_reactive_bump(rObjects, resaved_name)
 
         .disableButtonIf(
             del_field,
@@ -181,24 +183,27 @@
 
     ## Deleted selection observer. ---
     observeEvent(input[[del_field]], {
-        current <- pObjects$memory[[plot_name]][[.multiSelectHistory]]
+        instance <- pObjects$memory[[plot_name]]
+        current <- instance[[.multiSelectHistory]]
         current <- head(current, -1)
         pObjects$memory[[plot_name]][[.multiSelectHistory]] <- current
 
         # Updating self.
-        .safe_reactive_bump(rObjects, info_field)
+        .safe_reactive_bump(rObjects, info_name)
         .safe_reactive_bump(rObjects, plot_name)
 
-        transmitter <- pObjects$memory[[plot_name]][[.selectByPlot]]
-        if (transmitter!=.noSelection && .decoded2encoded(transmitter)==plot_name) {
-            .safe_reactive_bump(rObjects, saved_field)
-            if (pObjects$memory[[plot_name]][[.selectMultiSaved]] > length(current)) {
-                pObjects$memory[[plot_name]][[.selectMultiSaved]] <- 0L
+        by_field <- .getMainSelectSource(instance)
+        if (instance[[by_field]]==plot_name) {
+            .safe_reactive_bump(rObjects, saved_select_name)
+
+            saved_field <- .getMainSelectSaved(instance)
+            if (instance[[saved_field]] > length(current)) {
+                pObjects$memory[[plot_name]][[saved_field]] <- 0L
             }
         }
 
         # Updating children.
-        .save_reactive_bump(rObjects, resaved_field)
+        .save_reactive_bump(rObjects, resaved_name)
 
         .disableButtonIf(
             del_field,

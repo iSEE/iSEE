@@ -16,7 +16,7 @@
 #' @rdname INTERNAL_zoom_observers
 .define_zoom_observer <- function(plot_name, input, session, pObjects, rObjects) {
     dblclick_field <- paste0(plot_name, "_", .zoomClick)
-    act_field <- paste0(plot_name, "_reactivated")
+    act_name <- paste0(plot_name, "_", .panelReactivated)
     save_field <- paste0(plot_name, "_", .multiSelectSave)
 
     observeEvent(input[[dblclick_field]], {
@@ -54,7 +54,7 @@
         # re-trigger the observer as the observer ignores NULLs.
         # So we have to manually retrigger the downstream effects.
         if (.is_brush(existing_brush) || (.is_lasso(existing_brush) && existing_brush$closed)) {
-            .safe_reactive_bump(rObjects, act_field)
+            .safe_reactive_bump(rObjects, act_name)
         }
     })
 }

@@ -216,14 +216,14 @@ setMethod(".processTransmission", "DotPlot", function(x, index) {
     }
 
     if (.is_brush(brush_val)) {
-        cur_cmds <- sprintf("selected0 <- shiny::brushedPoints(transmitter, %s)", brush_src)
+        cur_cmds <- sprintf(".selected <- shiny::brushedPoints(transmitter, %s)", brush_src)
     } else if (isTRUE(brush_val$closed)) {
-        cur_cmds <- sprintf("selected0 <- iSEE::lassoPoints(transmitter, %s)", brush_src)
+        cur_cmds <- sprintf(".selected <- iSEE::lassoPoints(transmitter, %s)", brush_src)
     } else { # i.e., an unclosed lasso.
         return(NULL)
     }
 
-    c(cur_cmds, "selected <- rownames(selected0);")
+    c(cur_cmds, "selected <- rownames(.selected);")
 })
 
 #' @export

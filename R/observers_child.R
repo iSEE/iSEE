@@ -44,9 +44,11 @@
         if (transmit_dim=="row") {
             type_field <- .selectRowType
             saved_field <- .selectRowSaved
-        } else {
+        } else if (transmit_dim=="column") {
             type_field <- .selectColType
             saved_field <- .selectColSaved
+        } else {
+            return(NULL)
         }
 
         children <- names(.get_direct_children(pObjects$selection_links, panel_name))
@@ -91,9 +93,11 @@
         if (transmit_dim=="row") {
             type_field <- .selectRowType
             saved_field <- .selectRowSaved
-        } else {
+        } else if (transmit_dim=="column") {
             type_field <- .selectColType
             saved_field <- .selectColSaved
+        } else {
+            return(NULL)
         }
 
         children <- names(.get_direct_children(pObjects$selection_links, panel_name))
@@ -120,14 +124,17 @@
     .safe_reactive_init(rObjects, save_name)
 
     observeEvent(rObjects[[save_name]], {
-        Nsaved <- length(pObjects$memory[[panel_name]][[.multiSelectHistory]])
+        instance <- pObjects$memory[[panel_name]]
+        Nsaved <- length(instance[[.multiSelectHistory]])
         transmit_dim <- .transmittedDimension(instance)
         if (transmit_dim=="row") {
             type_field <- .selectRowType
             saved_field <- .selectRowSaved
-        } else {
+        } else if (transmit_dim=="column") {
             type_field <- .selectColType
             saved_field <- .selectColSaved
+        } else {
+            return(NULL)
         }
 
         children <- names(.get_direct_children(pObjects$selection_links, panel_name))

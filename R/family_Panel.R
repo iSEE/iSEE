@@ -109,3 +109,6 @@ setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObj
 
 #' @export
 setMethod(".restrictsSelection", "Panel", function(x) TRUE)
+
+#' @export
+setMethod(".transmittedDimension", "Panel", function(x) "none")

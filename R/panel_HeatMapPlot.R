@@ -195,8 +195,8 @@ setMethod(".defineParamInterface", "HeatMapPlot", function(x, se, active_panels)
     all_assays <- common_info$valid.assay.names
     column_covariates <- common_info$valid.colData.names
     link_sources <- .define_link_sources(active_panels)
-    heatmap_sources <- c(.customSelection, link_sources$row_plot, link_sources$row_tab)
-    col_selectable <- c(.noSelection, link_sources$col_plot)
+    heatmap_sources <- c(.customSelection, link_sources$row)
+    col_selectable <- c(.noSelection, link_sources$column)
 
     select_effect <- .input_FUN(.selectEffect)
 

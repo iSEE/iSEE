@@ -205,18 +205,8 @@
     all_ids <- vapply(memory, "[[", i=.organizationId, 1L)
     all_names <- paste0(all_names, all_ids)
     names(all_names) <- paste(vapply(memory, .getFullName, ""), all_ids)
-
-    is_row_tab <- vapply(memory, FUN=is, class2="RowTable", TRUE)
-    is_col_tab <- vapply(memory, FUN=is, class2="ColumnTable", TRUE)
-    is_row_plot <- vapply(memory, FUN=is, class2="RowDotPlot", TRUE)
-    is_col_plot <- vapply(memory, FUN=is, class2="ColumnDotPlot", TRUE)
-
-    list(
-        row_tab=all_names[is_row_tab],
-        col_tab=all_names[is_col_tab],
-        row_plot=all_names[is_row_plot],
-        col_plot=all_names[is_col_plot]
-    )
+    tdims <- vapply(memory, FUN=.transmittedDimension, "")
+    list(row=all_names[tdims=="row"], column=all_names[tdims=="column"])
 }
 
 #' Choose a linked panel

@@ -115,8 +115,8 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
 #' @export
 setMethod(".defineParamInterface", "ColumnDotPlot", function(x, se, active_panels) {
     link_sources <- .define_link_sources(active_panels)
-    row_selectable <- c(.noSelection, link_sources$row_plot, link_sources$row_tab)
-    col_selectable <- c(.noSelection, link_sources$col_plot, link_sources$col_tab)
+    row_selectable <- c(.noSelection, link_sources$row)
+    col_selectable <- c(.noSelection, link_sources$column)
 
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]

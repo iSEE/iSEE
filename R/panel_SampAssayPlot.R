@@ -142,7 +142,7 @@ setMethod(".defineParamInterface", "SampAssayPlot", function(x, se, active_panel
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
     link_sources <- .define_link_sources(active_panels)
-    tab_by_col <- c(.noSelection, link_sources$col_tab)
+    tab_by_col <- c(.noSelection, link_sources$column)
 
     row_covariates <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
     all_assays <- .get_common_info(se, "DotPlot")$valid.assay.names

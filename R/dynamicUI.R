@@ -787,9 +787,8 @@
 #' @importFrom shiny sliderInput radioButtons selectInput actionButton hr strong br
 #' @importFrom shinyjs disabled
 #' @importFrom colourpicker colourInput
-.create_selection_param_box <- function(mode, id, param_choices, selectable, source_type=c("row", "column")) {
+.create_selection_param_box <- function(mode, id, param_choices, row_selectable, col_selectable) {
     select_effect <- paste0(mode, id, "_", .selectEffect)
-    source_type <- match.arg(source_type)
 
     # initialize active "Delete" button only if a preconfigured selection history exists
     deleteFUN <- identity
@@ -810,7 +809,14 @@
 
     .define_selection_param_box(
         mode, id, param_choices,
-        .define_selection_choices(mode, id, param_choices, field=.selectByPlot, selectable=selectable, source_type),
+
+        .define_selection_choices(mode, id, param_choices, by_field=.selectRowSource,
+            type_field=.selectRowType, saved_field=.selectRowSaved, 
+            selectable=row_selectable, "row"),
+
+        .define_selection_choices(mode, id, param_choices, by_field=.selectColSource, 
+            type_field=.selectColType, saved_field=.selectColSaved, 
+            selectable=col_selectable, "column"),
 
         radioButtons(
             select_effect, label="Selection effect:", inline=TRUE,
@@ -829,6 +835,7 @@
                 paste0(mode, id, "_", .selectTransAlpha), label=NULL,
                 min=0, max=1, value=param_choices[[.selectTransAlpha]])
         ),
+
         hr(),
         strong("Manage multiple selections:"),
         br(),
@@ -859,21 +866,23 @@
 
 #' @rdname INTERNAL_create_selection_param_box
 #' @importFrom shiny tagList radioButtons selectizeInput
-.define_selection_choices <- function(mode, id, param_choices, field, selectable, source_type="row") {
-    select_multi_type <- paste0(mode, id, "_", .selectMultiType)
+.define_selection_choices <- function(mode, id, param_choices, by_field, type_field, 
+    saved_field, selectable, source_type="row") 
+{
+    select_type <- paste0(mode, id, "_", type_field)
     tagList(
         .define_selection_transmitter(mode, id, param_choices, field, selectable, source_type),
 
         radioButtons(
-            select_multi_type, label=NULL, inline=TRUE,
+            select_type, label=NULL, inline=TRUE,
             choices=c(.selectMultiActiveTitle, .selectMultiUnionTitle, .selectMultiSavedTitle),
             selected=param_choices[[.selectMultiType]]
         ),
 
         .conditional_on_radio(
-            select_multi_type, .selectMultiSavedTitle,
+            select_type, .selectMultiSavedTitle,
             selectizeInput(
-                paste0(mode, id, "_", .selectMultiSaved), label=NULL,
+                paste0(mode, id, "_", saved_field), label=NULL,
                 selected=NULL, choices=NULL, multiple=FALSE)
         )
     )

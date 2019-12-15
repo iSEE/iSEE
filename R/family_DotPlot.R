@@ -204,6 +204,29 @@ setMethod(".restrictsSelection", "DotPlot", function(x) {
 })
 
 #' @export
+setMethod(".processTransmission", "DotPlot", function(x, index) {
+    transmitter <- paste0(.getEncodedName(x), x[[.organizationId]])
+
+    if (is.na(index)) {
+        brush_val <- x[[.brushData]]
+        brush_src <- sprintf("all_brushes[['%s']]", transmitter)
+    } else {
+        brush_val <- x[[.multiSelectHistory]][[i]]
+        brush_src <- sprintf("all_select_histories[['%s']][[%i]]", transmitter, index)
+    }
+
+    if (.is_brush(brush_val)) {
+        cur_cmds <- sprintf("selected0 <- shiny::brushedPoints(transmitter, %s)", brush_src)
+    } else if (isTRUE(brush_val$closed)) {
+        cur_cmds <- sprintf("selected0 <- iSEE::lassoPoints(transmitter, %s)", brush_src)
+    } else { # i.e., an unclosed lasso.
+        return(NULL)
+    }
+
+    c(cur_cmds, "selected <- rownames(selected0);")
+})
+
+#' @export
 setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
     function(param_choices, all_memory, all_coordinates, se, colormap) {
         # Initialize an environment storing information for generating ggplot commands

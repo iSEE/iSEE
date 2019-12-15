@@ -22,6 +22,16 @@ setValidity2("Table", function(object) {
 })
 
 #' @export
+setMethod(".processTransmission", "Table", function(x, index) {
+    filter_cmds <- .generate_table_filter(x, varname="transmitter")
+    if (!is.null(filter_cmds)) {
+        sprintf("selected <- rownames(transmitter)[%s]", filter_cmds)
+    } else {
+        NULL
+    }
+})
+
+#' @export
 setMethod(".defineParamInterface", "Table", function(x, se, active_panels) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]

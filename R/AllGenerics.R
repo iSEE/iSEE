@@ -147,3 +147,6 @@ setGeneric(".restrictsSelection", function(x) standardGeneric(".restrictsSelecti
 
 #' @export
 setGeneric(".transmittedDimension", function(x) standardGeneric(".transmittedDimension"))
+
+#' @export
+setGeneric(".processTransmission", function(x, index) standardGeneric(".processTransmission"))

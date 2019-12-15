@@ -840,39 +840,12 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         }
 
         for (i in select_sources) {
-            # Varying how the filter is defined.
-            if (is(transmit_param, "DotPlot")) {
-                if (is.na(i)) {
-                    brush_val <- transmit_param[[.brushData]]
-                    brush_src <- sprintf("all_brushes[['%s']]", transmitter)
-                } else {
-                    brush_val <- transmit_param[[.multiSelectHistory]][[i]]
-                    brush_src <- sprintf("all_select_histories[['%s']][[%i]]", transmitter, i)
-                }
-
-                if (.is_brush(brush_val)) {
-                    curcmds <- sprintf("shiny::brushedPoints(transmitter, %s)", brush_src)
-                } else if (isTRUE(brush_val$closed)) {
-                    curcmds <- sprintf("iSEE::lassoPoints(transmitter, %s)", brush_src)
-                } else { # i.e., an unclosed lasso.
-                    next
-                }
-            } else if (is(transmit_param, "Table")) {
-                filter_cmds <- .generate_table_filter(transmit_param, varname="transmitter")
-                if (!is.null(filter_cmds)) {
-                    curcmds <- sprintf("transmitter[%s,,drop=FALSE]", filter_cmds)
-                } else {
-                    next
-                }
-            } else {
+            cur_cmds <- .processTransmission(transmit_param, i)
+            if (is.null(cur_cmds)) {
                 next
             }
-
             outname <- if (is.na(i)) "active" else paste0("saved", i)
-            cmds[[outname]] <- c(
-                paste("selected <- ", curcmds),
-                sprintf("%s[[%s]] <- rownames(selected);", var_name, deparse(outname))
-            )
+            cmds[[outname]] <- c(cur_cmds, sprintf("%s[[%s]] <- selected;", var_name, deparse(outname)))
         }
 
         if (length(cmds)) {

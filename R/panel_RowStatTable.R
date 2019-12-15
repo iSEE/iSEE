@@ -94,7 +94,7 @@ setMethod(".getTableFunction", "RowStatTable", function(x) {
         cmds <-"tab <- as.data.frame(rowData(se));"
 
         if (exists("row_selected", envir=envir)) {
-            cmds <- c(cmds, "tab <- tab[row_selected,,drop=FALSE]")
+            cmds <- c(cmds, "tab <- tab[unlist(row_selected),,drop=FALSE]")
         }
 
         valid.names <- .get_common_info(se, "RowStatTable")$valid.rowData.names

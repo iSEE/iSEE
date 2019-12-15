@@ -843,7 +843,6 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
             }
         }
 
-        LEFT <- RIGHT <- ""
         for (i in select_sources) {
             # Varying how the filter is defined.
             if (is(transmit_param, "DotPlot")) {
@@ -873,20 +872,18 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
                 next
             }
 
-            curcmds <- paste("selected <- ", curcmds)
             outname <- if (is.na(i)) "active" else paste0("saved", i)
-
-            # Taking the union if there are multiple filters.
-            cmds[[outname]] <- c(curcmds, paste0(var_name, " <- ", LEFT, "rownames(selected)", RIGHT))
-            if (LEFT=="") {
-                LEFT <- sprintf("union(%s, ", var_name)
-                RIGHT <- ")"
-            }
+            cmds[[outname]] <- c(
+                paste("selected <- ", curcmds),
+                sprintf("%s[[%s]] <- rownames(selected);", var_name, deparse(outname))
+            )
         }
 
         if (length(cmds)) {
-            cmds <- c(init=init_cmd, cmds)
+            cmds <- c(init=c(init_cmd, paste(var_name, "<- list();")), cmds)
         }
+
+        print(cmds)
     }
 
     unlist(cmds)

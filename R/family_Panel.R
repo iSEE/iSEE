@@ -110,6 +110,9 @@ setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObj
 })
 
 #' @export
+setMethod(".hideInterfaceElement", "Panel", function(x, field) FALSE)
+
+#' @export
 setMethod(".restrictsSelection", "Panel", function(x) TRUE)
 
 #' @export

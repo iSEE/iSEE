@@ -128,6 +128,15 @@ setMethod(".defineParamInterface", "ColumnDotPlot", function(x, se, active_panel
 })
 
 #' @export
+setMethod(".hideInterfaceElement", "ColumnDotPlot", function(x, field) {
+    if (field %in% c(.selectRowSource, .selectRowType, .selectRowSaved)) { 
+        TRUE
+    } else {
+        callNextMethod()
+    }
+})
+
+#' @export
 setMethod(".createParamObservers", "ColumnDotPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 

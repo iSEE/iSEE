@@ -83,10 +83,11 @@ NULL
 
 #' @export
 setGeneric(".defineParamInterface", function(x, se, active_panels) {
-# TODO: have 'id' and 'param_choices' actually live inside 'x'.
-# TODO: switch 'active_panels' for 'pObjects' to make life a bit easier.
     standardGeneric(".defineParamInterface")
 })
+
+#' @export
+setGeneric(".hideInterfaceElement", function(x, field) standardGeneric(".hideInterfaceElement"))
 
 #' @export
 setGeneric(".createParamObservers", function(x, se, input, session, pObjects, rObjects) {

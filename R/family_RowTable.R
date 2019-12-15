@@ -21,4 +21,13 @@ setMethod(".createParamObservers", "RowTable", function(x, se, input, session, p
 })
 
 #' @export
+setMethod(".hideInterfaceElement", "RowTable", function(x, field) {
+    if (field %in% c(.selectColSource, .selectColType, .selectColSaved)) {
+        TRUE
+    } else {
+        callNextMethod()
+    }
+})
+
+#' @export
 setMethod(".transmittedDimension", "RowTable", function(x) "row")

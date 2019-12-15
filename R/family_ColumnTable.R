@@ -22,3 +22,12 @@ setMethod(".createParamObservers", "ColumnTable", function(x, se, input, session
 
 #' @export
 setMethod(".transmittedDimension", "ColumnTable", function(x) "column")
+
+#' @export
+setMethod(".hideInterfaceElement", "ColumnDotPlot", function(x, field) {
+    if (field %in% c(.selectRowSource, .selectRowType, .selectRowSaved)) {
+        TRUE
+    } else {
+        callNextMethod()
+    }
+})

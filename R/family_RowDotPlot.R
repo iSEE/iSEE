@@ -128,6 +128,15 @@ setMethod(".defineParamInterface", "RowDotPlot", function(x, se, active_panels) 
 })
 
 #' @export
+setMethod(".hideInterfaceElement", "RowDotPlot", function(x, field) {
+    if (field %in% c(.selectColSource, .selectColType, .selectColSaved)) {
+        TRUE
+    } else {
+        callNextMethod()
+    }
+})
+
+#' @export
 setMethod(".createParamObservers", "RowDotPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 

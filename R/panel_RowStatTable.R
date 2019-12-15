@@ -90,13 +90,19 @@ setMethod(".getFullName", "RowStatTable", function(x) "Row statistics table")
 #' @export
 #' @importFrom SummarizedExperiment rowData
 setMethod(".getTableFunction", "RowStatTable", function(x) {
-    function(param_choices, se) {
+    function(param_choices, se, envir) {
         cmds <-"tab <- as.data.frame(rowData(se));"
+
+        if (exists("row_selected", envir=envir)) {
+            cmds <- c(cmds, "tab <- tab[row_selected,,drop=FALSE]")
+        }
+
         valid.names <- .get_common_info(se, "RowStatTable")$valid.rowData.names
         if (!identical(colnames(rowData(se)), valid.names)) {
             cmds <- c(cmds, sprintf("tab <- tab[,%s,drop=FALSE]", 
                 paste(deparse(valid.names), collapse="\n     ")))
         }
+
         cmds
     }
 })

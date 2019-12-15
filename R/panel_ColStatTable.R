@@ -91,8 +91,13 @@ setMethod(".getFullName", "ColStatTable", function(x) "Column statistics table")
 #' @export
 #' @importFrom SummarizedExperiment colData
 setMethod(".getTableFunction", "ColStatTable", function(x) {
-    function(param_choices, se) {
+    function(param_choices, se, eval_env) {
         cmds <-"tab <- as.data.frame(colData(se));"
+
+        if (exists("col_selected", envir=eval_env)) {
+            cmds <- c(cmds, "tab <- tab[col_selected,,drop=FALSE]")
+        }
+
         valid.names <- .get_common_info(se, "ColStatTable")$valid.colData.names
         if (!identical(colnames(colData(se)), valid.names)) {
             cmds <- c(cmds, sprintf("tab <- tab[,%s,drop=FALSE]", 

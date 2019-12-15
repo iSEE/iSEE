@@ -4,59 +4,50 @@
 
     output[[panel_name]] <- renderDataTable({
         force(rObjects[[panel_name]])
-
         param_choices <- pObjects$memory[[panel_name]]
+        tab_cmds <- .initialize_cmd_store()
+        eval_env <- new.env()
+
+        # Defining the row and column selections, and hoping that the 
+        # table-generating function in FUN knows what to do with this.
+        row_select_cmds <- .process_selectby_choice(param_choices, 
+            by_field=.selectRowSource, type_field=.selectRowType, saved_field=.selectRowSaved,
+            all_memory=pObjects$memory, var_name="row_selected")
+
+        if (!is.null(row_select_cmds)) {
+            transmitter <- param_choices[[.selectRowSource]]
+            .populate_selection_environment(pObjects$memory[[transmitter]], eval_env)
+            eval_env$all_coordinates <- pObjects$coordinates
+            tab_cmds <- .add_command(tab_cmds, row_select_cmds)
+            tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
+        }
+
+        col_select_cmds <- .process_selectby_choice(param_choices, 
+            by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
+            all_memory=pObjects$memory, var_name="col_selected")
+
+        if (!is.null(col_select_cmds)) {
+            transmitter <- param_choices[[.selectColSource]]
+            .populate_selection_environment(pObjects$memory[[transmitter]], eval_env)
+            eval_env$all_coordinates <- pObjects$coordinates
+            tab_cmds <- .add_command(tab_cmds, col_select_cmds)
+            tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
+        }
+
+        tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
+
+        # Creating the table and storing it.
+        tab_cmds <- .add_command(tab_cmds, FUN(pObjects$memory[[panel_name]], se, eval_env))
+        tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
+
+        full_tab <- eval_env$tab
+        pObjects$coordinates[[panel_name]] <- full_tab
+        pObjects$commands[[panel_name]] <- tab_cmds$processed
+
         chosen <- param_choices[[.TableSelected]]
         search <- param_choices[[.TableSearch]]
         search_col <- param_choices[[.TableColSearch]]
         search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
-
-        # Constructing commands to generate the final table.
-        # TODO: flip this around so table creation can be aware of the subsetting.
-        tab_cmds <- .initialize_cmd_store()
-        tab_cmds <- .add_command(tab_cmds, FUN(pObjects$memory[[panel_name]], se))
-
-        # We record the filtered table but we implicitly show the full table,
-        # using some DataTable trickery. This is necessary to avoid
-        # invalidating table links (e.g., to feature assay plots) when the
-        # current selection is not in the subset.
-        eval_env <- new.env()
-        tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
-        full_tab <- eval_env$tab
-
-        select_cmds <- .process_selectby_choice(param_choices, 
-            by_field=.getMainSelectSource(param_choices),
-            type_field=.getMainSelectType(param_choices),
-            saved_field=.getMainSelectSaved(param_choices),
-            all_memory=pObjects$memory)
-
-        if (!is.null(select_cmds)) {
-            tab_cmds <- .add_command(tab_cmds, "plot.data <- data.frame(row.names=rownames(tab));")
-            tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
-
-            by_field <- .getMainSelectSource(param_choices)
-            transmitter <- param_choices[[by_field]]
-            .populate_selection_environment(pObjects$memory[[transmitter]], eval_env)
-            eval_env$all_coordinates <- pObjects$coordinates
-            tab_cmds <- .add_command(tab_cmds, select_cmds)
-            tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
-
-            tab_cmds <- .add_command(tab_cmds, "tab <- tab[rownames(plot.data),,drop=FALSE];") 
-            tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
-        }
-
-        pObjects$coordinates[[panel_name]] <- eval_env$tab
-        pObjects$commands[[panel_name]] <- tab_cmds$processed
-
-        # We need to account for the fact that we are silently adding an extra column to this table.
-        columnDefs <- list()
-        if (!is.null(select_cmds)) {
-            full_tab[[.tableSecretColumnTitle]] <- rownames(full_tab) %in% rownames(eval_env$plot.data)
-
-            # brackets appears to fix row indexing in RStudio browser
-            search_col <- c(search_col, list(list(search="[\"true\"]")))
-            columnDefs <- list(list(visible=FALSE, targets=length(search_col)))
-        }
 
         # If the existing row in memory doesn't exist in the current table,
         # we don't initialize it with any selection - this should be ignored
@@ -73,9 +64,9 @@
             options=list(
                 search=list(search=search, smart=FALSE, regex=TRUE, caseInsensitive=FALSE),
                 searchCols=c(list(NULL), search_col), # row names are the first column!
-                columnDefs=columnDefs,
                 scrollX=TRUE),
             selection=selection
         )
     })
 }
+

@@ -817,10 +817,9 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #'
 #' @importFrom mgcv in.out
 #' @importFrom shiny brushedPoints
-.process_selectby_choice <- function(param_choices, by_field, type_field, saved_field, all_memory) {
+.process_selectby_choice <- function(param_choices, by_field, type_field, saved_field, all_memory, var_name="selected_pts") {
     transmitter <- param_choices[[by_field]]
     cmds <- list()
-    select_by <- NULL
 
     if (!identical(transmitter, .noSelection)) {
         if (identical(paste0(.getEncodedName(param_choices), param_choices[[.organizationId]]), transmitter)) {
@@ -846,7 +845,6 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
         LEFT <- RIGHT <- ""
         for (i in select_sources) {
-
             # Varying how the filter is defined.
             if (is(transmit_param, "DotPlot")) {
                 if (is.na(i)) {
@@ -879,21 +877,15 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
             outname <- if (is.na(i)) "active" else paste0("saved", i)
 
             # Taking the union if there are multiple filters.
-            cmds[[outname]] <- c(curcmds, paste0("selected_pts <- ", LEFT, "rownames(selected)", RIGHT))
+            cmds[[outname]] <- c(curcmds, paste0(var_name, " <- ", LEFT, "rownames(selected)", RIGHT))
             if (LEFT=="") {
-                LEFT <- "union(selected_pts, "
+                LEFT <- sprintf("union(%s, ", var_name)
                 RIGHT <- ")"
             }
         }
 
         if (length(cmds)) {
-            cmds <- c(list(setup=init_cmd), cmds)
-            cmds[["select"]] <- "plot.data$SelectBy <- rownames(plot.data) %in% selected_pts;"
-
-            if (.restrictsSelection(param_choices)) {
-                cmds[["saved"]] <- "plot.data.all <- plot.data;"
-                cmds[["subset"]] <- "plot.data <- subset(plot.data, SelectBy);"
-            }
+            cmds <- c(init=init_cmd, cmds)
         }
     }
 

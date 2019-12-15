@@ -122,12 +122,11 @@ setMethod(".defineParamInterface", "ColumnDotPlot", function(x, se, active_panel
     id <- x[[.organizationId]]
     list(
         .create_visual_box_for_column_plots(mode, id, x, row_selectable, col_selectable, se),
-        .create_selection_param_box(mode, id, x, col_selectable, "column")
+        .create_selection_param_box(mode, id, x, row_selectable, col_selectable)
     )
 })
 
 #' @export
-#' @importFrom methods callNextMethod
 setMethod(".createParamObservers", "ColumnDotPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
@@ -142,7 +141,23 @@ setMethod(".createParamObservers", "ColumnDotPlot", function(x, se, input, sessi
 
     .define_dimname_propagation_observer(plot_name, choices=colnames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)
+
+    .define_selection_effect_observer(plot_name, 
+        by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved, 
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects) 
 })
+
+#' @export
+setMethod(".getMainSelectSource", "ColumnDotPlot", function(x) .selectColSource)
+
+#' @export
+setMethod(".getMainSelectType", "ColumnDotPlot", function(x) .selectColType)
+
+#' @export
+setMethod(".getMainSelectSaved", "ColumnDotPlot", function(x) .selectColSaved)
+
+#' @export
+setMethod(".transmittedDimension", "ColumnDotPlot", function(x) "column")
 
 setMethod(".getCommandsDataColor", "ColumnDotPlot", function(x, param_choices, se) {
     color_choice <- param_choices[[.colorByField]]

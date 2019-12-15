@@ -5,10 +5,13 @@ setMethod("initialize", "Panel", function(.Object, ...) {
     .Object <- .empty_default(.Object, .organizationWidth, 4L)
 
     .Object <- .empty_default(.Object, .selectParamBoxOpen, FALSE)
-    .Object <- .empty_default(.Object, .selectByPlot, .noSelection)
+    .Object <- .empty_default(.Object, .selectRowSource, .noSelection)
+    .Object <- .empty_default(.Object, .selectColSource, .noSelection)
 
-    .Object <- .empty_default(.Object, .selectMultiType, .selectMultiActiveTitle)
-    .Object <- .empty_default(.Object, .selectMultiSaved, 0L)
+    .Object <- .empty_default(.Object, .selectRowType, .selectMultiActiveTitle)
+    .Object <- .empty_default(.Object, .selectRowSaved, 0L)
+    .Object <- .empty_default(.Object, .selectColType, .selectMultiActiveTitle)
+    .Object <- .empty_default(.Object, .selectColSaved, 0L)
 
     .Object
 })
@@ -16,7 +19,7 @@ setMethod("initialize", "Panel", function(.Object, ...) {
 setValidity2("Panel", function(object) {
     msg <- character(0)
     msg <- .valid_logical_error(msg, object, .selectParamBoxOpen)
-    msg <- .single_string_error(msg, object, .selectByPlot)
+    msg <- .single_string_error(msg, object, c(.selectRowSource, .selectColSource))
 
     msg <- .valid_numeric_error(msg, object, .organizationHeight, lower=400L, upper=1000L)
     msg <- .valid_numeric_error(msg, object, .organizationWidth, lower=1L, upper=12L)
@@ -28,8 +31,10 @@ setValidity2("Panel", function(object) {
     msg <- .allowable_choice_error(msg, object, .selectMultiType,
         c(.selectMultiActiveTitle, .selectMultiUnionTitle, .selectMultiSavedTitle))
 
-    if (length(saved <- object[[.selectMultiSaved]]) > 1L || saved < 0L) {
-        msg <- c(msg, sprintf("'%s' must be a non-negative integer in '%s'", .selectMultiSaved, class(object)[1]))
+    for (field in c(.selectRowSaved, .selectColSaved)) {
+        if (length(saved <- object[[field]]) > 1L || saved < 0L) {
+            msg <- c(msg, sprintf("'%s' must be a non-negative integer in '%s'", field, class(object)[1]))
+        }
     }
 
     if (length(msg)) {
@@ -85,11 +90,21 @@ setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObj
 
     .define_child_propagation_observers(panel_name, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_selection_choice_observer(panel_name, input=input, session=session,
-        pObjects=pObjects, rObjects=rObjects)
+    .define_selection_choice_observer(panel_name,
+        by_field=.selectRowSource, saved_field=.selectRowSaved,
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_saved_selection_choice_observers(panel_name, input=input, session=session,
-        pObjects=pObjects, rObjects=rObjects)
+    .define_selection_choice_observer(panel_name,
+        by_field=.selectColSource, saved_field=.selectColSaved,
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
+    .define_saved_selection_choice_observers(panel_name, by_field=.selectRowSource,
+        type_field=.selectRowType, saved_field=.selectRowSaved,
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
+    .define_saved_selection_choice_observers(panel_name, by_field=.selectColSource,
+        type_field=.selectColType, saved_field=.selectColSaved,
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export

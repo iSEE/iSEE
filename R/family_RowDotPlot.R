@@ -117,17 +117,16 @@ setMethod(".defineParamInterface", "RowDotPlot", function(x, se, active_panels) 
     link_sources <- .define_link_sources(active_panels)
     row_selectable <- c(.noSelection, link_sources$row_plot, link_sources$row_tab)
     col_selectable <- c(.noSelection, link_sources$col_plot, link_sources$col_tab)
-
+    
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
-    list(
-        .create_visual_box_for_row_plots(mode, id, x, row_selectable, col_selectable, se),
-        .create_selection_param_box(mode, id, x, row_selectable, "row")
+    c(
+        list(.create_visual_box_for_row_plots(mode, id, x, row_selectable, col_selectable, se)),
+        .create_selection_param_box(mode, id, x, row_selectable, col_selectable)
     )
 })
 
 #' @export
-#' @importFrom methods callNextMethod
 setMethod(".createParamObservers", "RowDotPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
@@ -142,7 +141,23 @@ setMethod(".createParamObservers", "RowDotPlot", function(x, se, input, session,
 
     .define_dimname_propagation_observer(plot_name, choices=rownames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)
+
+    .define_selection_effect_observer(plot_name, 
+        by_field=.selectRowSource, type_field=.selectRowType, saved_field=.selectRowSaved, 
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects) 
 })
+
+#' @export
+setMethod(".getMainSelectSource", "RowDotPlot", function(x) .selectRowSource)
+
+#' @export
+setMethod(".getMainSelectType", "RowDotPlot", function(x) .selectRowType)
+
+#' @export
+setMethod(".getMainSelectSaved", "RowDotPlot", function(x) .selectRowSaved)
+
+#' @export
+setMethod(".transmittedDimension", "RowDotPlot", function(x) "row")
 
 setMethod(".getCommandsDataColor", "RowDotPlot", function(x, param_choices, se) {
     color_choice <- param_choices[[.colorByField]]

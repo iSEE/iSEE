@@ -117,20 +117,22 @@ collated[.organizationHeight] <- "integer"
 collated[.organizationWidth] <- "integer"
 
 .selectParamBoxOpen <- "SelectBoxOpen"
-.selectByPlot <- "SelectByPlot"
+.selectRowSource <- "SelectRowSource"
+.selectColSource <- "SelectColSource"
 
 collated[.selectParamBoxOpen] <- "logical"
-collated[.selectByPlot] <- "character"
+collated[.selectRowSource] <- "character"
+collated[.selectColSource] <- "character"
 
-.selectMultiType <- "SelectMultiType"
-.selectMultiSaved <- "SelectMultiSaved"
+.selectRowType <- "SelectRowType"
+.selectRowSaved <- "SelectRowSaved"
+.selectColType <- "SelectColType"
+.selectColSaved <- "SelectColSaved"
 
-collated[.selectMultiType] <- "character"
-collated[.selectMultiSaved] <- "integer"
-
-.multiSelectHistory <- "MultiSelectHistory"
-
-collated[.multiSelectHistory] <- "list"
+collated[.selectRowType] <- "character"
+collated[.selectRowSaved] <- "integer"
+collated[.selectColType] <- "character"
+collated[.selectColSaved] <- "integer"
 
 #' @export
 setClass("Panel", contains="VIRTUAL", slots=collated) 
@@ -179,6 +181,10 @@ collated[.selectTransAlpha] <- "numeric"
 
 collated[.zoomData] <- "numeric"
 collated[.brushData] <- "list"
+
+.multiSelectHistory <- "MultiSelectHistory"
+
+collated[.multiSelectHistory] <- "list"
 
 .dataParamBoxOpen <- "DataBoxOpen"
 .visualParamBoxOpen <- "VisualBoxOpen"

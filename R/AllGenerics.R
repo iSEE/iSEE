@@ -103,11 +103,15 @@ setGeneric(".createRenderedOutput", function(x, se, ..., output, pObjects, rObje
     standardGeneric(".createRenderedOutput")
 })
 
+##########################
+
 #' @export
 setGeneric(".getEncodedName", function(x) standardGeneric(".getEncodedName"))
 
 #' @export
 setGeneric(".getFullName", function(x) standardGeneric(".getFullName"))
+
+##########################
 
 setGeneric(".getPanelPlottingFunction", function(x, all_memory, all_coordinates, se, colormap) standardGeneric(".getPanelPlottingFunction"))
 
@@ -125,6 +129,8 @@ setGeneric(".getCommandsDataSize", function(x, param_choices, se) standardGeneri
 
 setGeneric(".getCommandsDataFacets", function(x, param_choices, se) standardGeneric(".getCommandsDataFacets"))
 
+###########################
+
 #' @export
 setGeneric(".getTableFunction", function(x) standardGeneric(".getTableFunction"))
 
@@ -134,5 +140,19 @@ setGeneric(".refineParameters", function(x, se) standardGeneric(".refineParamete
 #' @export
 setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo"))
 
+###########################
+
 #' @export
 setGeneric(".restrictsSelection", function(x) standardGeneric(".restrictsSelection"))
+
+#' @export
+setGeneric(".transmittedDimension", function(x) standardGeneric(".transmittedDimension"))
+
+#' @export
+setGeneric(".getMainSelectSource", function(x) standardGeneric(".getMainSelectSource"))
+
+#' @export
+setGeneric(".getMainSelectSaved", function(x) standardGeneric(".getMainSelectSaved"))
+
+#' @export
+setGeneric(".getMainSelectType", function(x) standardGeneric(".getMainSelectType"))

@@ -22,6 +22,24 @@ setValidity2("Table", function(object) {
 })
 
 #' @export
+setMethod(".defineParamInterface", "Table", function(x, se, active_panels) {
+    mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
+    link_sources <- .define_link_sources(active_panels)
+    row_selectable <- c(.noSelection, link_sources$row_plot, link_sources$row_tab)
+    col_selectable <- c(.noSelection, link_sources$col_plot, link_sources$col_tab)
+
+    .define_selection_param_box(mode, id, x,
+        .define_selection_choices(mode, id, x, by_field=.selectRowSource, 
+            type_field=.selectRowType, saved_field=.selectRowSaved,
+            selectable=row_selectable, "row"),
+        .define_selection_choices(mode, id, x, by_field=.selectColSource, 
+            type_field=.selectColType, saved_field=.selectColSaved,
+            selectable=col_selectable, "column")
+    )
+})
+
+#' @export
 #' @importFrom DT dataTableOutput
 setMethod(".defineOutputElement", "Table", function(x, ...) {
     mode <- .getEncodedName(x)

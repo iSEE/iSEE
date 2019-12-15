@@ -12,18 +12,6 @@ setMethod(".refineParameters", "RowTable", function(x, se) {
 })
 
 #' @export
-setMethod(".defineParamInterface", "RowTable", function(x, se, active_panels) {
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    link_sources <- .define_link_sources(active_panels)
-    row_selectable <- c(.noSelection, link_sources$row_plot, link_sources$row_tab)
-
-    .define_selection_param_box(mode, id, x,
-       .define_selection_choices(mode, id, x, .selectByPlot, row_selectable, "row")
-    )
-})
-
-#' @export
 setMethod(".createParamObservers", "RowTable", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
@@ -31,3 +19,15 @@ setMethod(".createParamObservers", "RowTable", function(x, se, input, session, p
     .define_dimname_propagation_observer(panel_name, choices=rownames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)
 })
+
+#' @export
+setMethod(".getMainSelectSource", "RowTable", function(x) .selectRowSource)
+
+#' @export
+setMethod(".getMainSelectType", "RowTable", function(x) .selectRowType)
+
+#' @export
+setMethod(".getMainSelectSaved", "RowTable", function(x) .selectRowSaved)
+
+#' @export
+setMethod(".transmittedDimension", "RowTable", function(x) "row")

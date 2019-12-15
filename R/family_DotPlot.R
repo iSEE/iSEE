@@ -139,6 +139,7 @@ setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pO
             .contourColor),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
+    # Setting up the linked colors:
     .define_dimname_observers(plot_name,
         name_field=.colorByFeatName,
         choices=rownames(se),
@@ -157,22 +158,17 @@ setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pO
         is_protected=FALSE,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
+    for (field in c(.colorByColTable, .colorByRowTable)) {
+        pObjects$aesthetics_links <- .add_interpanel_link(pObjects$aesthetics_links,
+            panel_name=plot_name, parent_name=x[[field]], field=field)
+    }
+
+    # Filling the plot interaction observers:
     .define_brush_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 
     .define_lasso_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
-
-    .define_selection_effect_observer(plot_name, input=input, session=session,
-        pObjects=pObjects, rObjects=rObjects)
-
-    .define_saved_selection_observers(plot_name, input=input, session=session,
-        pObjects=pObjects, rObjects=rObjects)
-
-    for (field in c(.colorByColTable, .colorByRowTable)) {
-        pObjects$aesthetics_links <- .add_interpanel_link(pObjects$aesthetics_links,
-            panel_name=plot_name, parent_name=x[[field]], field=field)
-    }
 
     .define_zoom_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
@@ -209,6 +205,7 @@ setMethod(".restrictsSelection", "DotPlot", function(x) {
 
 #' @export
 setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
+    by_field <- .getMainSelectSource(x)
 
     function(param_choices, all_memory, all_coordinates, se, colormap) {
 
@@ -259,10 +256,10 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
 
         # Add commands adding the optional SelectBy column to plot.data
         data_cmds <- .evaluate_commands(data_cmds, plot_env)
-        select_cmds <- .process_selectby_choice(param_choices, all_memory)
-        select_cmds <- select_cmds
+        select_cmds <- .process_selectby_choice(param_choices, 
+            by_field=.getMainSelectSource(param_choices), all_memory=all_memory)
         if (length(select_cmds)) {
-            transmitter <- param_choices[[.selectByPlot]]
+            transmitter <- param_choices[[by_field]]
             .populate_selection_environment(all_memory[[transmitter]], plot_env)
             data_cmds <- .add_command(data_cmds, select_cmds)
             data_cmds <- .evaluate_commands(data_cmds, plot_env)

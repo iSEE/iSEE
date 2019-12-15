@@ -871,12 +871,12 @@
 {
     select_type <- paste0(mode, id, "_", type_field)
     tagList(
-        .define_selection_transmitter(mode, id, param_choices, field, selectable, source_type),
+        .define_selection_transmitter(mode, id, param_choices, by_field, selectable, source_type),
 
         radioButtons(
             select_type, label=NULL, inline=TRUE,
             choices=c(.selectMultiActiveTitle, .selectMultiUnionTitle, .selectMultiSavedTitle),
-            selected=param_choices[[.selectMultiType]]
+            selected=param_choices[[type_field]]
         ),
 
         .conditional_on_radio(

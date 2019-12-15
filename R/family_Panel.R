@@ -28,8 +28,10 @@ setValidity2("Panel", function(object) {
         msg <- c(msg, sprintf("'%s' must be a positive integer or NA for '%s'", .organizationId, class(object)[1]))
     }
 
-    msg <- .allowable_choice_error(msg, object, .selectMultiType,
-        c(.selectMultiActiveTitle, .selectMultiUnionTitle, .selectMultiSavedTitle))
+    for (field in c(.selectRowType, .selectColType)) {
+        msg <- .allowable_choice_error(msg, object, field,
+            c(.selectMultiActiveTitle, .selectMultiUnionTitle, .selectMultiSavedTitle))
+    }
 
     for (field in c(.selectRowSaved, .selectColSaved)) {
         if (length(saved <- object[[field]]) > 1L || saved < 0L) {
@@ -90,12 +92,12 @@ setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObj
 
     .define_child_propagation_observers(panel_name, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_selection_choice_observer(panel_name,
-        by_field=.selectRowSource, saved_field=.selectRowSaved,
+    .define_selection_choice_observer(panel_name, by_field=.selectRowSource, 
+        type_field=.selectRowType, saved_field=.selectRowSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_selection_choice_observer(panel_name,
-        by_field=.selectColSource, saved_field=.selectColSaved,
+    .define_selection_choice_observer(panel_name, by_field=.selectColSource, 
+        type_field=.selectColType, saved_field=.selectColSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .define_saved_selection_choice_observers(panel_name, by_field=.selectRowSource,

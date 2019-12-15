@@ -19,7 +19,7 @@
 #' showNotification updateSelectInput updateRadioButtons
 #' @importFrom igraph is_dag simplify
 .define_selection_choice_observer <- function(panel_name, 
-    by_field, saved_field, input, session, pObjects, rObjects) 
+    by_field, type_field, saved_field, input, session, pObjects, rObjects) 
 {
     repop_name <- paste0(panel_name, "_", .panelRepopulated)
     .safe_reactive_init(rObjects, repop_name)
@@ -107,7 +107,7 @@
     by_field, type_field, saved_field, 
     input, session, pObjects, rObjects) 
 {
-    repop_name <- paste0(panel_name, "_", .panelRepopulated)
+    repop_name <- paste0(plot_name, "_", .panelRepopulated)
     .safe_reactive_init(rObjects, repop_name)
 
     select_effect_field <- paste0(plot_name, "_", .selectEffect)
@@ -169,10 +169,10 @@
     .safe_reactive_init(rObjects, repop_name)
 
     ## Type field observers. ---
-    type_field <- paste0(panel_name, "_", type_field)
-    observeEvent(input[[type_field]], {
+    select_type_field <- paste0(panel_name, "_", type_field)
+    observeEvent(input[[select_type_field]], {
         old_type <- pObjects$memory[[panel_name]][[type_field]]
-        new_type <- as(input[[type_field]], typeof(old_type))
+        new_type <- as(input[[select_type_field]], typeof(old_type))
         if (identical(new_type, old_type)) {
             return(NULL)
         }

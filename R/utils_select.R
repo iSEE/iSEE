@@ -31,8 +31,8 @@
     if (parent_name==.noSelection) {
         return(FALSE)
     }
-    panel <- memory[[panel_name]]
-    transmitter <- memory[[parent_name]]
+    panel <- all_memory[[panel_name]]
+    transmitter <- all_memory[[parent_name]]
 
     changed <- FALSE
     if (select_type==.selectMultiActiveTitle || select_type==.selectMultiUnionTitle) {

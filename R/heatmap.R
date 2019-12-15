@@ -85,7 +85,11 @@
     alpha_cmd <- ""
     alpha_legend_cmd <- NULL
     select_cmds <- .process_selectby_choice(param_choices, 
-        by_field=.selectColSource, all_memory=all_memory)
+        by_field=.selectColSource, 
+        type_field=.selectColType,
+        saved_field=.selectColSaved,
+        all_memory=all_memory)
+
     select_as_field <- .safe_field_name("SelectBy", colnames(colData(se)))
 
     if (length(select_cmds)) {

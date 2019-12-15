@@ -24,15 +24,21 @@
         tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
         full_tab <- eval_env$tab
 
-        select_cmds <- .process_selectby_choice(param_choices, pObjects$memory)
+        select_cmds <- .process_selectby_choice(param_choices, 
+            by_field=.getMainSelectSource(param_choices),
+            type_field=.getMainSelectType(param_choices),
+            saved_field=.getMainSelectSaved(param_choices),
+            all_memory=pObjects$memory)
+
         if (!is.null(select_cmds)) {
             tab_cmds <- .add_command(tab_cmds, "plot.data <- data.frame(row.names=rownames(tab));")
             tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
 
-            tab_cmds <- .add_command(tab_cmds, select_cmds)
-            transmitter <- param_choices[[.selectByPlot]]
+            by_field <- .getMainSelectSource(param_choices)
+            transmitter <- param_choices[[by_field]]
             .populate_selection_environment(pObjects$memory[[transmitter]], eval_env)
             eval_env$all_coordinates <- pObjects$coordinates
+            tab_cmds <- .add_command(tab_cmds, select_cmds)
             tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
 
             tab_cmds <- .add_command(tab_cmds, "tab <- tab[rownames(plot.data),,drop=FALSE];") 

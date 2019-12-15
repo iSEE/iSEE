@@ -817,16 +817,13 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #'
 #' @importFrom mgcv in.out
 #' @importFrom shiny brushedPoints
-.process_selectby_choice <- function(param_choices, all_memory, self_source=TRUE) {
-    transmitter <- param_choices[[.selectByPlot]]
+.process_selectby_choice <- function(param_choices, by_field, type_field, saved_field, all_memory) {
+    transmitter <- param_choices[[by_field]]
     cmds <- list()
     select_by <- NULL
 
     if (!identical(transmitter, .noSelection)) {
-        if (self_source && identical(
-            paste0(.getEncodedName(param_choices), param_choices[[.organizationId]]),
-            transmitter))
-        {
+        if (identical(paste0(.getEncodedName(param_choices), param_choices[[.organizationId]]), transmitter)) {
             source_data <- 'plot.data'
         } else {
             source_data <- sprintf("all_coordinates[['%s']]", transmitter)
@@ -834,13 +831,13 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         init_cmd <- paste("transmitter <-", source_data)
 
         transmit_param <- all_memory[[transmitter]]
-        cur_choice <- param_choices[[.selectMultiType]]
+        cur_choice <- param_choices[[type_field]]
         if (cur_choice == .selectMultiUnionTitle) {
             select_sources <- c(NA_integer_, seq_along(transmit_param[[.multiSelectHistory]]))
         } else if (cur_choice == .selectMultiActiveTitle) {
             select_sources <- NA_integer_
         } else {
-            select_sources <- param_choices[[.selectMultiSaved]]
+            select_sources <- param_choices[[saved_field]]
             if (select_sources == 0L) {
                 # '0' selection in memory means no selection.
                 select_sources <- integer(0)

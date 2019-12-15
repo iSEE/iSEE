@@ -88,14 +88,12 @@
         by_field=.selectColSource, 
         type_field=.selectColType,
         saved_field=.selectColSaved,
-        all_memory=all_memory)
+        all_memory=all_memory, var_name="col_selected")
 
     select_as_field <- .safe_field_name("SelectBy", colnames(colData(se)))
 
     if (length(select_cmds)) {
-        # plot.data$X contains the gene names (as they are duplicated across
-        # plot.data, and cannot be in 'rownames'), hence the sub().
-        select_cmds[["select"]] <- sub("rownames(plot.data)", "plot.data$X", elect_cmds[["select"]], fixed=TRUE)
+        select_cmds[["select"]] <- "plot.data$SelectBy <- plot.data$X %in% col_selected;"
 
         transmitter <- param_choices[[.selectColSource]]
         .populate_selection_environment(all_memory[[transmitter]], eval_env)

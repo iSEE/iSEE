@@ -134,6 +134,12 @@ collated[.selectRowSaved] <- "integer"
 collated[.selectColType] <- "character"
 collated[.selectColSaved] <- "integer"
 
+# Practically, this is only a DotPlot feature, but we put it here otherwise the
+# Saved concept is not generic.
+.multiSelectHistory <- "MultiSelectHistory"
+
+collated[.multiSelectHistory] <- "list"
+
 #' @export
 setClass("Panel", contains="VIRTUAL", slots=collated) 
 
@@ -181,10 +187,6 @@ collated[.selectTransAlpha] <- "numeric"
 
 collated[.zoomData] <- "numeric"
 collated[.brushData] <- "list"
-
-.multiSelectHistory <- "MultiSelectHistory"
-
-collated[.multiSelectHistory] <- "list"
 
 .dataParamBoxOpen <- "DataBoxOpen"
 .visualParamBoxOpen <- "VisualBoxOpen"

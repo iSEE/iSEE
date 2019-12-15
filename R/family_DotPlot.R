@@ -205,19 +205,38 @@ setMethod(".restrictsSelection", "DotPlot", function(x) {
 
 #' @export
 setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
-    by_field <- .getMainSelectSource(x)
-
     function(param_choices, all_memory, all_coordinates, se, colormap) {
-
-        # Apply the function provided to generate XY commands and axis labels
-        out_xy <- .getCommandsDataXY(x, param_choices)
-
         # Initialize an environment storing information for generating ggplot commands
         plot_env <- new.env()
         plot_env$se <- se
         plot_env$colormap <- colormap
 
-        # Process the XY commands
+        # Defining the row and column selections, and hoping that the 
+        # plot-generating functions know what to do with them.
+        row_select_cmds <- .process_selectby_choice(param_choices, 
+            by_field=.selectRowSource, type_field=.selectRowType, saved_field=.selectRowSaved,
+            all_memory=pObjects$memory, var_name="row_selected")
+
+        if (!is.null(row_select_cmds)) {
+            transmitter <- param_choices[[.selectRowSource]]
+            .populate_selection_environment(pObjects$memory[[transmitter]], plot_env)
+            plot_env$all_coordinates <- pObjects$coordinates
+            .text_eval(row_select_cmds, plot_env)
+        }
+
+        col_select_cmds <- .process_selectby_choice(param_choices, 
+            by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
+            all_memory=pObjects$memory, var_name="col_selected")
+
+        if (!is.null(col_select_cmds)) {
+            transmitter <- param_choices[[.selectColSource]]
+            .populate_selection_environment(pObjects$memory[[transmitter]], plot_env)
+            plot_env$all_coordinates <- pObjects$coordinates
+            .text_eval(col_select_cmds, plot_env)
+        }
+
+        # Apply the function provided to generate XY commands and axis labels
+        out_xy <- .getCommandsDataXY(x, param_choices)
         data_cmds <- .initialize_cmd_store()
         data_cmds <- .add_command(data_cmds, out_xy$data_cmds)
         data_cmds <- .evaluate_commands(data_cmds, plot_env)
@@ -254,19 +273,10 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
         clean_expression <- paste(sprintf("!is.na(%s)", clean_select_fields), collapse=" & ")
         data_cmds <- .add_command(data_cmds, sprintf("plot.data <- subset(plot.data, %s);", clean_expression), name='na.rm')
 
-        # Add commands adding the optional SelectBy column to plot.data
-        data_cmds <- .evaluate_commands(data_cmds, plot_env)
-        select_cmds <- .process_selectby_choice(param_choices, 
-            by_field=.getMainSelectSource(param_choices), 
-            type_field=.getMainSelectType(param_choices), 
-            saved_field=.getMainSelectSaved(param_choices), 
-            all_memory=all_memory)
-
-        if (length(select_cmds)) {
-            transmitter <- param_choices[[by_field]]
-            .populate_selection_environment(all_memory[[transmitter]], plot_env)
-            data_cmds <- .add_command(data_cmds, select_cmds)
-            data_cmds <- .evaluate_commands(data_cmds, plot_env)
+        # TODO: fix this to use generics that know to whether to use
+        # col_selected or row_selected to create SelectBy.
+        if (param_choices[[.selectEffect]]==.selectRestrictTitle) {
+            data_cmds <- .add_command(data_cmds, "plot.data <- subset(plot.data, SelectBy);")
         }
 
         # Define the type of plot to create, and add geometry-specific commands, if needed

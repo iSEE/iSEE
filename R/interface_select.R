@@ -30,12 +30,9 @@
 #' @seealso
 #' \code{\link{.panel_generation}}
 #'
-#' @importFrom shiny sliderInput radioButtons selectInput actionButton hr strong br
+#' @importFrom shiny selectInput actionButton hr strong br
 #' @importFrom shinyjs disabled
-#' @importFrom colourpicker colourInput
-.create_selection_param_box <- function(mode, id, param_choices, row_selectable, col_selectable) {
-    select_effect <- paste0(mode, id, "_", .selectEffect)
-
+.create_selection_param_box <- function(mode, id, param_choices, row_selectable, col_selectable, ...) {
     # initialize active "Delete" button only if a preconfigured selection history exists
     deleteFUN <- identity
     deleteLabel <- .buttonDeleteLabel
@@ -47,13 +44,13 @@
     # initialize active "Save" button only if a preconfigured active selection exists
     saveFUN <- identity
     saveLabel <- .buttonSaveLabel
-    cur_brush <- param_choices[[.brushData]]
-    if (length(cur_brush)==0L) {
+    if (!.any_active_selection(param_choices)) {
         saveFUN <- disabled
         saveLabel <- .buttonNoSelectionLabel
     }
 
-    .define_selection_param_box(param_choices,
+    args <- list(
+        param_choices=param_choices,
 
         .define_selection_choices(param_choices, by_field=.selectRowSource,
             type_field=.selectRowType, saved_field=.selectRowSaved, 
@@ -63,6 +60,30 @@
             type_field=.selectColType, saved_field=.selectColSaved, 
             selectable=col_selectable, "column"),
 
+        ...
+    )
+
+    if (!.hideInterfaceElement(param_choices, .multiSelectHistory)) {
+        args <- c(args,
+            list(
+                hr(),
+                strong("Manage multiple selections:"),
+                br(),
+                saveFUN(actionButton(paste0(mode, id, "_", .multiSelectSave), label=saveLabel)),
+                deleteFUN(actionButton(paste0(mode, id, "_", .multiSelectDelete), label=deleteLabel))
+            )
+        )
+    }
+
+    do.call(.define_selection_param_box, args)
+}
+
+#' @importFrom colourpicker colourInput
+#' @importFrom shiny sliderInput
+.create_dotplot_selection_param_box <- function(mode, id, param_choices, row_selectable, col_selectable) {
+    select_effect <- paste0(mode, id, "_", .selectEffect)
+
+    .create_selection_param_box(mode, id, param_choices, row_selectable, col_selectable,
         .radioButtonsHidden(param_choices, field=select_effect, 
             label="Selection effect:", inline=TRUE,
             choices=c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle),
@@ -79,13 +100,7 @@
             sliderInput(
                 paste0(mode, id, "_", .selectTransAlpha), label=NULL,
                 min=0, max=1, value=param_choices[[.selectTransAlpha]])
-        ),
-
-        hr(),
-        strong("Manage multiple selections:"),
-        br(),
-        saveFUN(actionButton(paste0(mode, id, "_", .multiSelectSave), label=saveLabel)),
-        deleteFUN(actionButton(paste0(mode, id, "_", .multiSelectDelete), label=deleteLabel))
+        )
     )
 }
 

@@ -121,9 +121,9 @@ setMethod(".defineParamInterface", "RowDotPlot", function(x, se, active_panels) 
     row_selectable <- c(.noSelection, link_sources$row)
     col_selectable <- c(.noSelection, link_sources$column)
 
-    c(
-        list(.create_visual_box_for_row_plots(mode, id, x, row_selectable, col_selectable, se)),
-        .create_selection_param_box(mode, id, x, row_selectable, col_selectable)
+    list(
+        .create_visual_box_for_row_plots(mode, id, x, row_selectable, col_selectable, se),
+        .create_dotplot_selection_param_box(mode, id, x, row_selectable, col_selectable)
     )
 })
 

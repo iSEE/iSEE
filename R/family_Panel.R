@@ -155,6 +155,18 @@ setMethod(".cacheCommonInfo", "Panel", function(x, se) {
 })
 
 #' @export
+setMethod(".defineParamInterface", "Panel", function(x, se, active_panels) {
+    mode <- .getEncodedName(x)
+    id <- x[[.organizationId]]
+
+    link_sources <- .define_link_sources(active_panels, exclude=paste0(mode, id))
+    row_selectable <- c(.noSelection, link_sources$row)
+    col_selectable <- c(.noSelection, link_sources$column)
+
+    list(.create_selection_param_box(mode, id, x, row_selectable, col_selectable))
+})
+
+#' @export
 setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]

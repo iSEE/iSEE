@@ -32,25 +32,6 @@ setMethod(".processTransmission", "Table", function(x, index) {
 })
 
 #' @export
-setMethod(".defineParamInterface", "Table", function(x, se, active_panels) {
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-
-    link_sources <- .define_link_sources(active_panels, exclude=paste0(mode, id))
-    row_selectable <- c(.noSelection, link_sources$row)
-    col_selectable <- c(.noSelection, link_sources$column)
-
-    .define_selection_param_box(x,
-        .define_selection_choices(x, by_field=.selectRowSource, 
-            type_field=.selectRowType, saved_field=.selectRowSaved,
-            selectable=row_selectable, source_type="row"),
-        .define_selection_choices(x, by_field=.selectColSource, 
-            type_field=.selectColType, saved_field=.selectColSaved,
-            selectable=col_selectable, source_type="column")
-    )
-})
-
-#' @export
 #' @importFrom DT dataTableOutput
 setMethod(".defineOutputElement", "Table", function(x, ...) {
     mode <- .getEncodedName(x)
@@ -81,4 +62,13 @@ setMethod(".createRenderedOutput", "Table", function(x, se, ..., output, pObject
     id <- x[[.organizationId]]
     .define_table_output(mode, id, FUN=.getTableFunction(x),
         se=se, output=output, pObjects=pObjects, rObjects=rObjects)
+})
+
+#' @export
+setMethod(".hideInterfaceElement", "Table", function(x, field) {
+    if (field %in% .multiSelectHistory) {
+        TRUE
+    } else {
+        callNextMethod()
+    }
 })

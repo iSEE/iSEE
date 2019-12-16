@@ -123,7 +123,7 @@ setMethod(".defineParamInterface", "ColumnDotPlot", function(x, se, active_panel
 
     list(
         .create_visual_box_for_column_plots(mode, id, x, row_selectable, col_selectable, se),
-        .create_selection_param_box(mode, id, x, row_selectable, col_selectable)
+        .create_dotplot_selection_param_box(mode, id, x, row_selectable, col_selectable)
     )
 })
 

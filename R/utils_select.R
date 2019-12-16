@@ -77,23 +77,12 @@
 #' \code{\link{.transmitted_selection}},
 #' \code{\link{iSEE}}
 .any_active_selection <- function(panel) {
-    if (is(panel, "DotPlot")) {
-        length(panel[[.brushData]]) > 0L
-    } else if (is(panel, "Table")) {
-        panel[[.TableSearch]]!="" || any(panel[[.TableColSearch]]!="")
-    } else {
-        FALSE
-    }
+    .hasActiveSelection(panel) # TODO: get rid of this function.
 }
 
 #' @rdname INTERNAL_any_point_selection
 .any_saved_selection <- function(panel, count=TRUE) {
-    if (is(panel, "DotPlot")) {
-        n <- length(panel[[.multiSelectHistory]])
-    } else {
-        n <- 0L
-    }
-
+    n <- length(panel[[.multiSelectHistory]])
     if (count) {
         n
     } else {

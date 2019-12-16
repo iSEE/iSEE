@@ -68,7 +68,8 @@
 #' \item \code{\link{.cacheCommonInfo}(x, se)} is a no-op, returning \code{se} without modification.
 #' \item \code{\link{.hideInterfaceElement}(x, field)} will always return \code{FALSE}.
 #' \item \code{\link{.restrictsSelection}(x)} will always return \code{TRUE}.
-#' \item \code{\link{.transmittedDimension}(x)} will a;ways return \code{"none"}.
+#' \item \code{\link{.transmittedDimension}(x)} will always return \code{"none"}.
+#' \item \code{\link{.hasActiveSelection}(x)} will always return \code{FALSE}.
 #' }
 #'
 #' @author Aaron Lun
@@ -206,3 +207,6 @@ setMethod(".restrictsSelection", "Panel", function(x) TRUE)
 
 #' @export
 setMethod(".transmittedDimension", "Panel", function(x) "none")
+
+#' @export
+setMethod(".hasActiveSelection", "Panel", function(x) FALSE)

@@ -204,6 +204,11 @@ setMethod(".restrictsSelection", "DotPlot", function(x) {
 })
 
 #' @export
+setMethod(".hasActiveSelection", "DotPlot", function(x) {
+    length(x[[.brushData]]) > 0L
+})
+
+#' @export
 setMethod(".processTransmission", "DotPlot", function(x, index) {
     transmitter <- paste0(.getEncodedName(x), x[[.organizationId]])
 

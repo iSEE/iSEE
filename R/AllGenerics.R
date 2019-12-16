@@ -151,3 +151,6 @@ setGeneric(".transmittedDimension", function(x) standardGeneric(".transmittedDim
 
 #' @export
 setGeneric(".processTransmission", function(x, index) standardGeneric(".processTransmission"))
+
+#' @export
+setGeneric(".hasActiveSelection", function(x) standardGeneric(".hasActiveSelection"))

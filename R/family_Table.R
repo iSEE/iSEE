@@ -32,6 +32,11 @@ setMethod(".processTransmission", "Table", function(x, index) {
 })
 
 #' @export
+setMethod(".hasActiveSelection", "Table", function(x) {
+    x[[.TableSearch]]!="" || any(x[[.TableColSearch]]!="")
+})
+
+#' @export
 #' @importFrom DT dataTableOutput
 setMethod(".defineOutputElement", "Table", function(x, ...) {
     mode <- .getEncodedName(x)

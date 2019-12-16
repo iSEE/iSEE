@@ -1,3 +1,91 @@
+#' The Panel virtual class
+#'
+#' The Panel is a virtual base class for all \pkg{iSEE} panels.
+#' It provides slots and methods to control the height and width of each panel,
+#' as well as to control the choice of transmitting panels from which to receive a selection.
+#'
+#' @section Slot overview:
+#' The following slots are relevant to panel organization:
+#' \itemize{
+#' \item \code{PanelId}, an integer scalar specifying the identifier for the panel.
+#' This should be unique across panels of the same concrete class.
+#' \item \code{PanelWidth}, an integer scalar specifying the width of the panel.
+#' Bootstrap coordinates are used so this value should lie between 1 and 12; defaults to 4.
+#' \item \code{PanelHeight}, an integer scalar specifying the height of the panel in pixels.
+#' This is expected to lie between 400 and 1000; defaults to 500.
+#' }
+#'
+#' The following slots are relevant to receiving a selection of points:
+#' \itemize{
+#' \item \code{SelectBoxOpen}, a logical scalar indicating whether the selection parameter box should be open.
+#' Defaults to \code{FALSE}.
+#' \item \code{SelectRowSource}, a string specifying the name of the panel from which to receive a selection along the rows (e.g., \code{"rowDataPlot1"}).
+#' Defaults to \code{"---"}.
+#' \item \code{SelectRowType}, a string specifying which row-based selections should be used.
+#' Takes one of \code{"Active"}, only the active selection;
+#' \code{"Union"}, the union of active and saved selections;
+#' and \code{"Saved"}, one of the saved selections.
+#' Defaults to \code{"Active"}.
+#' \item \code{SelectRowSaved}, an integer scalar specifying the index of the saved selection to use when \code{SelectRowType="Saved"}.
+#' Defaults to 0.
+#' \item \code{"SelectColSource"}, a string specifying the name of the panel from which to receive a selection along the columns (e.g., \code{"colDataPlot1"}).
+#' Defaults to \code{"---"}.
+#' \item \code{SelectColType}, a string specifying which column-based selections should be used.
+#' Takes one of \code{"Active"}, only the active selection;
+#' \code{"Union"}, the union of active and saved selections;
+#' and \code{"Saved"}, one of the saved selections.
+#' Defaults to \code{"Active"}.
+#' \item \code{SelectColSaved}, an integer scalar specifying the index of the saved selection to use when \code{SelectColType="Saved"}.
+#' Defaults to 0.
+#' }
+#'
+#' The following slots are relevant to transmitting a selection of points:
+#' \itemize{
+#' \item \code{MultiSelectHistory}, a list of arbitrary elements that contain parameters for saved selections.
+#' Each element of this list corresponds to one saved selection.
+#' Defaults to an empty list.
+#' }
+#'
+#' @section Getting and setting slots:
+#' In all of the following code chunks, \code{x} is an instance of a Panel,
+#' and \code{i} is a string containing the slot name:
+#' \itemize{
+#' \item \code{x[[i]]} returns the value of a slot named \code{i}.
+#' \item \code{x[[i]] <- value} modifies \code{x} so that the value in slot \code{i} is replaced with \code{value}.
+#' }
+#'
+#' @section Contract description:
+#' The Panel class offers interface elements and observers to modify all of its slots.
+#' Subclass definitions should not overwrite these slots.
+#'
+#' Otherwise, no strict requirements are imposed on Panel subclasses.
+#' HOwever, developers should consider subclassing \code{\link{.hideInterfaceElement}} if they do not intend to respond to certain parameters (e.g., the row or column selections).
+#'
+#' @section Miscellaneous:
+#' In all of the following code chunks, \code{x} is an instance of a Panel:
+#' \itemize{
+#' \item \code{\link{.refineParameters}(x, se)} is a no-op, returning \code{x} without modification.
+#' \item \code{\link{.cacheCommonInfo}(x, se)} is a no-op, returning \code{se} without modification.
+#' \item \code{\link{.hideInterfaceElement}(x, field)} will always return \code{FALSE}.
+#' \item \code{\link{.restrictsSelection}(x)} will always return \code{TRUE}.
+#' \item \code{\link{.transmittedDimension}(x)} will a;ways return \code{"none"}.
+#' }
+#'
+#' @author Aaron Lun
+#'
+#' @name Panel-class
+#' @aliases 
+#' initialize,Panel-method
+#' [[,Panel-method
+#' [[<-,Panel-method
+#' .refineParameters,Panel-method
+#' .cacheCommonInfo,Panel-method
+#' .createParamObservers,Panel-method
+#' .hideInterfaceElement,Panel-method
+#' .restrictsSelection,Panel-method
+#' .transmittedDimension,Panel-method 
+NULL
+
 #' @export
 setMethod("initialize", "Panel", function(.Object, ...) {
     .Object <- .empty_default(.Object, .organizationId)
@@ -53,17 +141,6 @@ setMethod("[[", "Panel", function(x, i, j, ...) {
 #' @export
 setReplaceMethod("[[", "Panel", function(x, i, j, ..., value) {
     slot(x, i) <- value
-    x
-})
-
-#' @export
-setMethod("[", "Panel", function(x, i, j, ..., drop=FALSE) {
-    x[[j]]
-})
-
-#' @export
-setReplaceMethod("[", "Panel", function(x, i, j, ..., value) {
-    x[[j]] <- value
     x
 })
 

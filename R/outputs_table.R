@@ -1,4 +1,4 @@
-#' @importFrom DT datatable renderDataTable
+#' @importFrom DT datatable renderDataTable selectRows dataTableProxy
 .define_table_output <- function(mode, id, FUN, se, output, pObjects, rObjects) {
     panel_name <- paste0(mode, id)
 
@@ -49,15 +49,20 @@
         search_col <- param_choices[[.TableColSearch]]
         search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
 
-        # If the existing row in memory doesn't exist in the current table,
-        # we don't initialize it with any selection - this should be ignored
-        # by the row selection observer, so it'll just keep the one in memory.
+        # If the existing row in memory doesn't exist in the current table, we
+        # don't initialize it with any selection.
         idx <- which(rownames(full_tab)==chosen)[1]
         if (!is.na(idx)) {
             selection <- list(mode="single", selected=idx)
         } else {
             selection <- "single"
         }
+
+        # Clearing the current row selection in 'input', otherwise some madness
+        # happens with the observer seeming to respond to the datatable()
+        # re-rendering but applying the old value of 'input[[*_rows_selected]]'
+        # to the new 'full_tab' - not good.
+        selectRows(dataTableProxy(panel_name), NULL)
 
         datatable(
             full_tab, filter="top", rownames=TRUE,

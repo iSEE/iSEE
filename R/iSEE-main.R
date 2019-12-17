@@ -339,10 +339,8 @@ iSEE <- function(se,
             RedDimPlot1[["ShapeByColData"]] <- "driver_1_s"
             RedDimPlot1[["SizeBy"]] <- "Column data"
             RedDimPlot1[["SizeByColData"]] <- "RALIGN"
-            RedDimPlot1[["FacetByRow"]] <- TRUE
-            RedDimPlot1[["FacetByColumn"]] <- TRUE
-            RedDimPlot1[["RowFacetByColData"]] <- "passes_qc_checks_s"
-            RedDimPlot1[["ColumnFacetByColData"]] <- "driver_1_s"
+            RedDimPlot1[["FacetByRow"]] <- "passes_qc_checks_s"
+            RedDimPlot1[["FacetByColumn"]] <- "driver_1_s"
             RedDimPlot1[["Downsample"]] <- TRUE
             RedDimPlot1[["SampleRes"]] <- 50
             memory <- list(RedDimPlot1, RowStatTable1, FeatAssayPlot1, ColDataPlot1, RowDataPlot1,

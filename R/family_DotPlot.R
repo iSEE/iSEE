@@ -94,9 +94,11 @@
 #' Defaults to 1.
 #' \item \code{PointAlpha}, non-negative numeric scalar specifying the transparency of the points.
 #' Defaults to 1, i.e., not transparent.
-#' \item \code{Downsample}, numeric scalar specifying the resolution of the downsampling grid (see \code{?\link{subsetPointsByGrid}}).
+#' \item \code{Downsample}, logical scalar indicating whether to downsample points for faster plotting.
+#' Defaults to \code{FALSE}.
+#' \item \code{SampleRes}, numeric scalar specifying the resolution of the downsampling grid (see \code{?\link{subsetPointsByGrid}}) if \code{Downsample=TRUE}.
 #' Larger values correspond to reduced downsampling at the cost of plotting speed.
-#' Defaults to the special value of zero, which indicates that no downsampling is to be performed.
+#' Defaults to 200.
 #' }
 #' 
 #' The following slots refer to general plotting parameters:
@@ -137,6 +139,9 @@
 #' \item \code{\link{.hasActiveSelection}(x)} returns a logical scalar indicating whether \code{x} has an active brush or lasso.
 #' \item \code{\link{.processSelection}(x, index)} returns a character vector of R expressions that - when evaluated - return a character vector of the names of selected points in the active and/or saved selections of \code{x}.
 #' }
+#'
+#' @seealso
+#' \linkS4class{RowDotPlot} and \linkS4class{ColumnDotPlot}, which are more amenable to extension.
 #' 
 #' @author Aaron Lun
 #'
@@ -200,7 +205,8 @@ setValidity2("DotPlot", function(object) {
 
     msg <- .valid_logical_error(msg, object,
         c(.dataParamBoxOpen, .visualParamBoxOpen,
-            .contourAdd))
+            .contourAdd,
+            .plotPointDownsample))
 
     msg <- .single_string_error(msg, object,
         c(.colorByField, .colorByFeatName, .colorByRowTable, .colorBySampName, .colorByColTable,
@@ -227,7 +233,7 @@ setValidity2("DotPlot", function(object) {
 
     msg <- .valid_number_error(msg, object, .plotPointAlpha, lower=0, upper=1)
 
-    msg <- .valid_number_error(msg, object, .plotPointSampleRes, lower=0, upper=Inf)
+    msg <- .valid_number_error(msg, object, .plotPointSampleRes, lower=1, upper=Inf)
 
     msg <- .valid_number_error(msg, object, .plotFontSize, lower=0, upper=Inf)
 

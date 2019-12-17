@@ -74,6 +74,9 @@
 #'
 #' @author Aaron Lun
 #'
+#' @seealso
+#' \linkS4class{DotPlot} and \linkS4class{Table}, for examples of direct subclasses.
+#' 
 #' @name Panel-class
 #' @aliases 
 #' initialize,Panel-method

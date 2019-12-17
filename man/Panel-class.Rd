@@ -73,20 +73,31 @@ and \code{i} is a string containing the slot name:
 
 \section{Contract description}{
 
-The Panel class offers interface elements and observers to modify all of its slots.
-Subclass definitions should not overwrite these slots.
+The Panel class offers interface elements to modify all of its slots.
+Observers are also created to trigger rerendering upon changes to a slot or when a selection in a transmitting panel changes.
 
-Otherwise, no strict requirements are imposed on Panel subclasses.
-HOwever, developers should consider subclassing \code{\link{.hideInterfaceElement}} if they do not intend to respond to certain parameters (e.g., the row or column selections).
+Subclasses are expected to implement methods for (at least) \code{\link{.defineOutputElement}}.
+Subclasses that transmit selections should also implement methods for selection-related parameters listed below.
 }
 
-\section{Miscellaneous}{
+\section{Supported methods}{
 
-In all of the following code chunks, \code{x} is an instance of a Panel:
+In the following code snippets, \code{x} is an instance of a \linkS4class{ColumnDotPlot} class.
+Refer to the documentation for each method for more details on the remaining arguments.
+
+For setting up data values:
 \itemize{
 \item \code{\link{.refineParameters}(x, se)} is a no-op, returning \code{x} without modification.
 \item \code{\link{.cacheCommonInfo}(x, se)} is a no-op, returning \code{se} without modification.
+}
+
+For defining the interface:
+\itemize{
 \item \code{\link{.hideInterfaceElement}(x, field)} will always return \code{FALSE}.
+}
+
+For controlling selections:
+\itemize{
 \item \code{\link{.restrictsSelection}(x)} will always return \code{TRUE}.
 \item \code{\link{.transmittedDimension}(x)} will always return \code{"none"}.
 \item \code{\link{.hasActiveSelection}(x)} will always return \code{FALSE}.

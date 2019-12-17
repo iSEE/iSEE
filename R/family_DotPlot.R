@@ -158,8 +158,8 @@ NULL
 setMethod("initialize", "DotPlot", function(.Object, ...) {
     .Object <- callNextMethod(.Object, ...)
 
-    .Object <- .empty_default(.Object, .facetByRow, FALSE)
-    .Object <- .empty_default(.Object, .facetByColumn, FALSE)
+    .Object <- .empty_default(.Object, .facetByRow, .noSelection)
+    .Object <- .empty_default(.Object, .facetByColumn, .noSelection)
 
     .Object <- .empty_default(.Object, .colorByField, .colorByNothingTitle)
     .Object <- .empty_default(.Object, .colorByDefaultColor, "black")
@@ -199,8 +199,7 @@ setValidity2("DotPlot", function(object) {
     msg <- character(0)
 
     msg <- .valid_logical_error(msg, object,
-        c(.facetByRow, .facetByColumn,
-            .dataParamBoxOpen, .visualParamBoxOpen,
+        c(.dataParamBoxOpen, .visualParamBoxOpen,
             .contourAdd))
 
     msg <- .single_string_error(msg, object,
@@ -212,6 +211,7 @@ setValidity2("DotPlot", function(object) {
     msg <- .valid_string_error(msg, object,
         c(.colorByDefaultColor,
             .selectColor,
+            .facetByRow, .facetByColumn,
             .contourColor))
 
     msg <- .allowable_choice_error(msg, object, .selectEffect,
@@ -282,7 +282,7 @@ setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pO
     .define_visual_parameter_choice_observer(plot_name, input, pObjects)
 
     .define_protected_parameter_observers(plot_name,
-        fields=c(.facetByRow, .facetByColumn, .facetRowsByRowData, .facetColumnsByRowData),
+        fields=c(.facetByRow, .facetByColumn),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .define_nonfundamental_parameter_observers(plot_name,

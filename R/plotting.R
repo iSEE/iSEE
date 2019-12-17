@@ -1235,17 +1235,15 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #'
 #' @importFrom ggplot2 facet_grid
 .add_facets <- function(param_choices){
-
-    if (!param_choices[[.facetByRow]] && !param_choices[[.facetByColumn]]) {
+    row_facet <- param_choices[[.facetByRow]]!=.noSelection
+    col_facet <- param_choices[[.facetByColumn]]!=.noSelection
+    if (!row_facet && !col_facet) {
         return(NULL)
     }
 
-    facet_x <- ifelse(param_choices[[.facetByRow]], "FacetRow", ".")
-    facet_y <- ifelse(param_choices[[.facetByColumn]], "FacetColumn", ".")
-
-    facet_cmd <- sprintf("facet_grid(%s ~ %s)", facet_x, facet_y)
-
-    return(facet_cmd)
+    facet_x <- if (row_facet) "FacetRow" else "."
+    facet_y <- if (col_facet) "FacetColumn" else "."
+    sprintf("facet_grid(%s ~ %s)", facet_x, facet_y)
 }
 
 ############################################
@@ -1288,7 +1286,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     }
 
     # Note: Faceting simultaneously on row and column produces a 'flip' effect on the brush data
-    if (param_choices[[.facetByRow]] && param_choices[[.facetByColumn]]) {
+    if (param_choices[[.facetByRow]]!=.noSelection && param_choices[[.facetByColumn]]!=.noSelection) {
         facetrow <- 'panelvar2'
         facetcolumn <- 'panelvar1'
     } else {
@@ -1361,10 +1359,10 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
     # Collect additional panel information for the brush
     addPanels <- character(0)
-    if (param_choices[[.facetByRow]]) {
+    if (param_choices[[.facetByRow]]!=.noSelection) {
         addPanels["FacetRow"] <- sprintf("FacetRow=%s[['%s']]", brush_src, facetrow)
     }
-    if (param_choices[[.facetByColumn]]) {
+    if (param_choices[[.facetByColumn]]!=.noSelection) {
         addPanels["FacetColumn"] <- sprintf("FacetColumn=%s[['%s']]", brush_src, facetcolumn)
     }
 
@@ -1448,10 +1446,10 @@ label=%i, size=%s, colour='%s')",
 
     # Collect additional panel information for the lasso.
     addPanels <- character(0)
-    if (param_choices[[.facetByRow]]) {
+    if (param_choices[[.facetByRow]]!=.noSelection) {
         addPanels["FacetRow"] <- sprintf("FacetRow=%s[['%s']]", lasso_src, facetrow)
     }
-    if (param_choices[[.facetByColumn]]) {
+    if (param_choices[[.facetByColumn]]!=.noSelection) {
         addPanels["FacetColumn"] <- sprintf("FacetColumn=%s[['%s']]", lasso_src, facetcolumn)
     }
     if (length(addPanels)) {

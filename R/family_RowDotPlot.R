@@ -25,9 +25,6 @@ NULL
 setMethod("initialize", "RowDotPlot", function(.Object, ...) {
     .Object <- callNextMethod(.Object, ...)
 
-    .Object <- .empty_default(.Object, .facetRowsByRowData)
-    .Object <- .empty_default(.Object, .facetColumnsByRowData)
-
     .Object <- .empty_default(.Object, .colorByRowData)
     .Object <- .empty_default(.Object, .colorBySampNameAssay)
     .Object <- .empty_default(.Object, .colorByFeatNameColor, "red")
@@ -44,8 +41,7 @@ setValidity2("RowDotPlot", function(object) {
     msg <- character(0)
 
     msg <- .single_string_error(msg, object,
-        c(.facetRowsByRowData, .facetColumnsByRowData,
-            .colorByRowData, .colorBySampNameAssay, .colorByFeatNameColor))
+        c(.colorByRowData, .colorBySampNameAssay, .colorByFeatNameColor))
 
     msg <- .allowable_choice_error(msg, object, .colorByField,
           c(.colorByNothingTitle, .colorByRowDataTitle, .colorByFeatNameTitle, .colorBySampNameTitle))
@@ -95,8 +91,8 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
     dp_cached <- .get_common_info(se, "DotPlot")
 
     discrete <- rdp_cached$discrete.rowData.names
-    x <- .replace_na_with_first(x, .facetRowsByRowData, discrete)
-    x <- .replace_na_with_first(x, .facetColumnsByRowData, discrete)
+    x <- .replace_na_with_first(x, .facetByRow, discrete)
+    x <- .replace_na_with_first(x, .facetByColumn, discrete)
 
     available <- rdp_cached$valid.rowData.names
     x <- .replace_na_with_first(x, .colorByRowData, available)
@@ -221,14 +217,14 @@ setMethod(".getCommandsDataSize", "RowDotPlot", function(x, param_choices, se) {
 setMethod(".getCommandsDataFacets", "RowDotPlot", function(x, param_choices, se) {
     facet_cmds <- c()
 
-    facet_row <- param_choices[[.facetRowsByRowData]]
-    if (param_choices[[.facetByRow]]) {
+    facet_row <- param_choices[[.facetByRow]]
+    if (facet_row!=.noSelection) {
         facet_cmds["FacetRow"] <- sprintf(
             "plot.data$FacetRow <- rowData(se)[, %s];", deparse(facet_row))
     }
 
-    facet_column <- param_choices[[.facetColumnsByRowData]]
-    if (param_choices[[.facetByColumn]]) {
+    facet_column <- param_choices[[.facetByColumn]]
+    if (facet_column!=.noSelection) {
         facet_cmds["FacetColumn"] <- sprintf(
             "plot.data$FacetColumn <- rowData(se)[, %s];", deparse(facet_column))
     }

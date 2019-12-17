@@ -363,7 +363,7 @@
         ),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoiceFacetTitle,
-            hr(), .add_facet_UI_elements_for_column_plots(mode, id, param_choices, discrete_covariates)),
+            hr(), .add_facet_UI_elements(mode, id, param_choices, discrete_covariates)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoicePointTitle,
             hr(),
@@ -576,7 +576,7 @@
         ),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoiceFacetTitle,
-            hr(), .add_facet_UI_elements_for_row_plots(mode, id, param_choices, discrete_covariates)),
+            hr(), .add_facet_UI_elements(mode, id, param_choices, discrete_covariates)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoicePointTitle,
             hr(),
@@ -644,51 +644,16 @@
 #' \code{\link{.create_visual_box_for_row_plots}}
 #'
 #' @importFrom shiny tagList selectInput
-.add_facet_UI_elements_for_column_plots <- function(mode, id, param_choices, covariates) {
+.add_facet_UI_elements <- function(mode, id, param_choices, covariates) {
     rowId <- paste0(mode, id, "_", .facetByRow)
     columnId <- paste0(mode, id, "_", .facetByColumn)
+    choices <- c(.noSelection, covariates)
+    
     tagList(
-        checkboxInput(
-            rowId, label="Facet by row",
-            value=param_choices[[.facetByRow]]),
-        .conditional_on_check_solo(
-            rowId, on_select=TRUE,
-            selectInput(paste0(mode, id, "_", .facetRowsByColData), label=NULL,
-                choices=covariates, selected=param_choices[[.facetRowsByColData]])
-        ),
-        checkboxInput(
-            columnId, label="Facet by column",
-            value=param_choices[[.facetByColumn]]),
-        .conditional_on_check_solo(
-            columnId, on_select=TRUE,
-            selectInput(paste0(mode, id, "_", .facetColumnsByColData), label=NULL,
-                choices=covariates, selected=param_choices[[.facetColumnsByColData]])
-        )
-    )
-}
-
-#' @rdname INTERNAL_add_facet_UI_elements
-.add_facet_UI_elements_for_row_plots <- function(mode, id, param_choices, covariates) {
-    rowId <- paste0(mode, id, "_", .facetByRow)
-    columnId <- paste0(mode, id, "_", .facetByColumn)
-    tagList(
-        checkboxInput(
-            rowId, label="Facet by row",
-            value=param_choices[[.facetByRow]]),
-        .conditional_on_check_solo(
-            rowId, on_select=TRUE,
-            selectInput(
-                paste0(mode, id, "_", .facetRowsByRowData), label=NULL,
-                choices=covariates, selected=param_choices[[.facetRowsByRowData]])
-        ),
-        checkboxInput(
-            columnId, label="Facet by column",
-            value=param_choices[[.facetByColumn]]),
-        .conditional_on_check_solo(
-            columnId, on_select=TRUE,
-            selectInput(paste0(mode, id, "_", .facetColumnsByRowData), label=NULL,
-                choices=covariates, selected=param_choices[[.facetColumnsByRowData]])
-        )
+        selectInput(paste0(mode, id, "_", .facetByRow), label="Facet by row:",
+            choices=choices, selected=param_choices[[.facetByRow]]),
+        selectInput(paste0(mode, id, "_", .facetByColumn), label="Facet by column:",
+            choices=choices, selected=param_choices[[.facetByColumn]])
     )
 }
 

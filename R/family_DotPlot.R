@@ -180,7 +180,7 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
     .Object <- .empty_default(.Object, .visualParamBoxOpen, FALSE)
     .Object <- .empty_default(.Object, .visualParamChoice, .visualParamChoiceColorTitle)
 
-    .Object <- .empty_default(.Object, .contourAddTitle, FALSE)
+    .Object <- .empty_default(.Object, .contourAdd, FALSE)
     .Object <- .empty_default(.Object, .contourColor, "blue")
 
     .Object <- .empty_default(.Object, .plotPointSize, 1)
@@ -201,7 +201,7 @@ setValidity2("DotPlot", function(object) {
     msg <- .valid_logical_error(msg, object,
         c(.facetByRow, .facetByColumn,
             .dataParamBoxOpen, .visualParamBoxOpen,
-            .contourAddTitle))
+            .contourAdd))
 
     msg <- .single_string_error(msg, object,
         c(.colorByField, .colorByFeatName, .colorByRowTable, .colorBySampName, .colorByColTable,
@@ -290,7 +290,7 @@ setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pO
             .colorByDefaultColor, .selectColor, .selectTransAlpha,
             .shapeByField, .sizeByField,
             .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition,
-            .plotPointDownsample, .plotPointSampleRes, .contourAddTitle,
+            .plotPointDownsample, .plotPointSampleRes, .contourAdd,
             .contourColor),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 

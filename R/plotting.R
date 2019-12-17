@@ -213,7 +213,7 @@ names(.all_aes_values) <- .all_aes_names
     ylim=range(%s$Y, na.rm=TRUE), expand=TRUE) +", full_data, full_data)
     }
 
-    if (param_choices[[.contourAddTitle]]) {
+    if (param_choices[[.contourAdd]]) {
         plot_cmds[["contours"]] <- sprintf("geom_density_2d(aes(x=X, y=Y), plot.data, colour='%s') +", param_choices[[.contourColor]])
     }
 

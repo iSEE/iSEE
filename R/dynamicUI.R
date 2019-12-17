@@ -388,11 +388,11 @@
             pchoice_field, .visualParamChoiceOtherTitle,
             hr(),
             checkboxInput(
-                inputId=paste0(mode, id, "_", .contourAddTitle),
+                inputId=paste0(mode, id, "_", .contourAdd),
                 label="Add contour (scatter only)",
                 value=FALSE),
             .conditional_on_check_solo(
-                paste0(mode, id, "_", .contourAddTitle),
+                paste0(mode, id, "_", .contourAdd),
                 on_select=TRUE,
                 colourInput(
                     paste0(mode, id, "_", .contourColor), label=NULL,

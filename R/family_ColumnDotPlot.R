@@ -1,23 +1,86 @@
-#' Column dot plot panel family
+#' The ColumnDotPlot virtual class
 #'
-#' The column dot plot panel family covers all plot panel types where each column of the \linkS4class{SummarizedExperiment} is represented by a point.
-#' This family is represented by the \code{ColumnDotPlot} virtual class, which has a number of concrete subclasses (e.g., \linkS4class{RedDimPlot}) to direct the construction of specific plots.
-#' We provide a number of useful methods on this virtual class to make it easier for developers to define their own subclasses.
+#' The ColumnDotPlot is a virtual class where each column in the \linkS4class{SummarizedExperiment} is represented by a point (\dQuote{dot}) in a brushable plot.
+#' It provides slots and methods to control various aesthetics of the dots and to store the brush or lasso selection.
 #'
-#' @section Panel parameters:
-#' \code{\link{.defineParamInterface}} will create parameter elements for visualization and point selection.
-#' More details to be added.
+#' @section Slot overview:
+#' The following slots control coloring of the points:
+#' \itemize{
+#' \item \code{ColorByColData}, a string specifying the \code{\link{colData}} field for controlling point color,
+#' if \code{ColorBy="Column data"} (see the \linkS4class{Panel} class).
+#' Defaults to the first field.
+#' \item \code{ColorByFeatNameAssay}, a string specifying the assay of the SummarizedExperiment object containing values to use for coloring,
+#' if \code{ColorBy="Feature name"}.
+#' Defaults to the name of the first assay.
+#' \item \code{ColorBySampNameColor}, a string specifying the color to use for coloring an individual sample on the plot, 
+#' if \code{ColorBy="Sample name"}.
+#' Defaults to \code{"red"}.
+#' }
 #'
-#' @section Output plot:
-#' \code{\link{.createOutputElement}} will return the output of \code{\link{plotOutput}} with two-dimensional brushing.
-#' More details to be added.
+#' The following slots control other metadata-related aesthetic aspects of the points:
+#' \itemize{
+#' \item \code{ShapeByColData}, a string specifying the \code{\link{colData}} field for controlling point shape,
+#' if \code{ShapeBy="Column data"} (see the \linkS4class{Panel} class).
+#' The specified field should contain categorical values; defaults to the first such field.
+#' \item \code{SizeByColData}, a string specifying the \code{\link{colData}} field for controlling point size,
+#' if \code{SizeBy="Column data"} (see the \linkS4class{Panel} class).
+#' The specified field should contain continuous values; defaults to the first such field.
+#' }
 #'
+#' @section Contract description:
+#' The ColumnDotPlot will provide user interface elements to change all above slots and in its parent classes \linkS4class{DotPlot} and \linkS4class{Panel}.
+#' It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
+#'
+#' Subclasses are expected to implement methods for (at least) \code{\link{.getCommandsDataXY}}.
+#' 
+#' @section Supported methods:
+#' In the following code snippets, \code{x} is an instance of a \linkS4class{ColumnDotPlot} class.
+#' Refer to the documentation for each method for more details on the remaining arguments.
+#'
+#' For setting up data values:
+#' \itemize{
+#' \item \code{\link{.cacheCommonInfo}(x)} adds a \code{"ColumnDotPlot"} entry containing \code{valid.colData.names}, a character vector of valid column data names (i.e., containing atomic values); \code{discrete.colData.names}, a character vector of names for discrete columns; and \code{continuous.colData.names}, a character vector of names of continuous columns.
+#' This will also call the equivalent \linkS4class{DotPlot} method.
+#' \item \code{\link{.refineParameters}(x, se)} replaces \code{NA} values in \code{ColorByFeatAssay} with the first valid assay name in \code{se}.
+#' This will also call the equivalent \linkS4class{DotPlot} method.
+#' }
+#'
+#' For defining the interface:
+#' \itemize{
+#' \item \code{\link{.defineParamInterface}(x, se, active_panels)} defines the user interface for manipulating all slots in the \linkS4class{ColumnDotPlot}.
+#' This will \emph{override} the \linkS4class{Panel} method.
+#' \item \code{\link{.hideInterfaceElement}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
+#' This returns \code{TRUE} for row selection parameters (\code{"SelectRowSource"}, \code{"SelectRowType"} and \code{"SelectRowSaved"}),
+#' otherwise it dispatches to the \linkS4class{Panel} method.
+#' }
+#'
+#' For monitoring reactive expressions:
+#' \itemize{
+#' \item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots in the \linkS4class{ColumnDotPlot}.
+#' This will also call the equivalent \linkS4class{DotPlot} method.
+#' }
+#'
+#' For controlling selections:
+#' \itemize{
+#' \item \code{\link{.transmittedDimension}(x)} returns \code{"column"} to indicate that a column selection is being transmitted.
+#' }
+#'
+#' Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.
+#'
+#' @seealso
+#' \linkS4class{DotPlot}, for the immediate parent class that contains the actual slot definitions.
 #' @author Aaron Lun
 #'
 #' @docType methods
-#' @aliases .defineParamInterface,ColumnDotPlot-method
+#' @aliases 
+#' initialize,ColumnDotPlot-method
+#' .cacheCommonInfo,ColumnDotPlot-method
+#' .refineParameters,ColumnDotPlot-method
+#' .defineParamInterface,ColumnDotPlot-method
 #' .createParamObservers,ColumnDotPlot-method
-#' @name ColumnDotPlot
+#' .hideInterfaceElement,ColumnDotPlot-method
+#' .transmittedDimension,ColumnDotPlot-method
+#' @name ColumnDotPlot-class
 NULL
 
 #' @export

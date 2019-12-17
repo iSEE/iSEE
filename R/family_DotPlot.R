@@ -1,13 +1,13 @@
 #' The DotPlot virtual class
 #'
-#' The DotPlot is a virtual class for all panels where each row or column is represented by a point (\dQuote{dot}) in a brushable plot.
+#' The DotPlot is a virtual class for all panels where each row or column in the \linkS4class{SummarizedExperiment} is represented by a point (\dQuote{dot}) in a brushable plot.
 #' It provides slots and methods to control various aesthetics of the dots and to store the brush or lasso selection.
 #' 
 #' @section Slot overview:
 #' The following slots are relevant to coloring of the points:
 #' \itemize{
 #' \item \code{ColorBy}, a string specifying how points should be colored.
-#' This should be \code{"None"}, \code{"Feature name"}, \code{"Sample name"} and either \code{"Column data"} (for \linkS4class{ColumnDotPlot}s) or \code{"Row data"} (for \linkS4class{RowDotPlot}s).
+#' This should be one of \code{"None"}, \code{"Feature name"}, \code{"Sample name"} and either \code{"Column data"} (for \linkS4class{ColumnDotPlot}s) or \code{"Row data"} (for \linkS4class{RowDotPlot}s).
 #' Defaults to \code{"None"}.
 #' \item \code{ColorByDefaultColor}, a string specifying the default color to use for all points if \code{ColorBy="None"}.
 #' Defaults to \code{"black"}.
@@ -27,14 +27,12 @@
 #'
 #' The following slots control other metadata-related aesthetic aspects of the points:
 #' \itemize{
-#' \item \code{ShapeBy}, a string specifying the metadata field for controlling point shape.
-#' For \linkS4class{RowDotPlot}s, this should be a field in the \code{\link{rowData}},
-#' while for \linkS4class{ColumnDotPlot}s, this should be a field in the \code{\link{colData}}.
-#' Only discrete fields are allowed.
+#' \item \code{ShapeBy}, a string specifying how the point shape should be determined.
+#' This should be one of \code{"None"} and either \code{"Column data"} (for \linkS4class{ColumnDotPlot}s) or \code{"Row data"} (for \linkS4class{RowDotPlot}s).
+#' Defaults to \code{"None"}.
 #' \item \code{SizeBy}, a string specifying the metadata field for controlling point size. 
-#' For \linkS4class{RowDotPlot}s, this should be a field in the \code{\link{rowData}},
-#' while for \linkS4class{ColumnDotPlot}s, this should be a field in the \code{\link{colData}}.
-#' Only continuous fields are allowed.
+#' This should be one of \code{"None"} and either \code{"Column data"} (for \linkS4class{ColumnDotPlot}s) or \code{"Row data"} (for \linkS4class{RowDotPlot}s).
+#' Defaults to \code{"None"}.
 #' }
 #'
 #' The following slots control the faceting:
@@ -111,34 +109,44 @@
 #'
 #' In addition, this class inherits all slots from its parent \linkS4class{Panel} class.
 #'
-#' @section Developer note:
+#' @section Contract description:
 #' This is a rather vaguely defined class for which the only purpose is to avoid duplicating code for \linkS4class{ColumnDotPlot}s and \linkS4class{RowDotPlot}s.
 #' Observers are only provided for some slots - the remainders are supported by the aforementioned subclasses - and no interface elements are provided at all.
-#' It is likely that developers will prefer to extend these subclasses instead of the \linkS4class{DotPlot} directly.
+#' It is likely that developers will prefer to extend these subclasses instead of the \linkS4class{DotPlot} directly, as the former have more well-defined contracts.
 #'
-#' @section Supported methods for parameter handling:
+#' @section Supported methods:
 #' In the following code snippets, \code{x} is an instance of a \linkS4class{DotPlot} class.
 #' Refer to the documentation for each method for more details on the remaining arguments.
 #'
 #' For setting up the objects:
 #' \itemize{
-#' \item \code{\link{.cacheCommonInfo}(x)} adds a \code{DotPlot} entry containing \code{valid.assay.names}, a character vector of valid assay names (i.e., non-empty and non-duplicated).
+#' \item \code{\link{.cacheCommonInfo}(x)} adds a \code{"DotPlot"} entry containing \code{valid.assay.names}, a character vector of valid assay names (i.e., non-empty and non-duplicated).
 #' This will also call the equivalent \linkS4class{Panel} method.
 #' \item \code{\link{.refineParameters}(x, se)} replaces \code{NA} values in \code{ColorByFeatName} and \code{ColorBySampName} with the first row and column name, respectively, of \code{se}.
 #' This will also call the equivalent \linkS4class{Panel} method.
+#' }
+#'
+#' For defining the interface:
+#' \itemize{
+#' \item \code{\link{.defineOutputElement}(x, id)} returns a UI element for a brushable plot.
 #' }
 #'
 #' For defining reactive expressions:
 #' \itemize{
 #' \item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for some (but not all!) of the slots. 
 #' This will also call the equivalent \linkS4class{Panel} method.
-#' \item \code{\link{.defineOutputElement}(x, id)} returns a UI element for a brushable plot.
 #' \item \code{\link{.createRenderedOutput}(x, se, colormap, output, pObjects, rObjects)} will add a rendered plot element to \code{output}.
 #' It will also create a rendered UI element for selection information.
+#' }
+#'
+#' For controlling selections: 
+#' \itemize{
 #' \item \code{\link{.restrictsSelection}(x)} returns a logical scalar indicating whether \code{x} is restricting the plotted points to those that were selected in a transmitting panel, i.e., is \code{SelectEffect="Restrict"}.
 #' \item \code{\link{.hasActiveSelection}(x)} returns a logical scalar indicating whether \code{x} has an active brush or lasso.
 #' \item \code{\link{.processSelection}(x, index)} returns a character vector of R expressions that - when evaluated - return a character vector of the names of selected points in the active and/or saved selections of \code{x}.
 #' }
+#'
+#' Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.
 #'
 #' @seealso
 #' \linkS4class{RowDotPlot} and \linkS4class{ColumnDotPlot}, which are more amenable to extension.

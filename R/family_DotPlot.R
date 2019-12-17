@@ -1,3 +1,155 @@
+#' The DotPlot virtual class
+#'
+#' The DotPlot is a virtual class for all panels where each row or column is represented by a point (\dQuote{dot}) in a brushable plot.
+#' It provides slots and methods to control various aesthetics of the dots and to store the brush or lasso selection.
+#' This is a rather vaguely defined class for which the only purpose is to avoid duplicating code for \linkS4class{ColumnDotPlot}s and \linkS4class{RowDotPlot}s.
+#' Observers are only provided for some slots - the remainders are supported by the aforementioned subclasses - and no interface elements are provided at all.
+#' It is likely that developers will prefer to extend these subclasses instead of the \linkS4class{DotPlot} directly.
+#' 
+#' @section Slot overview:
+#' The following slots are relevant to coloring of the points:
+#' \itemize{
+#' \item \code{ColorBy}, a string specifying how points should be colored.
+#' This should be \code{"None"}, \code{"Feature name"}, \code{"Sample name"} and either \code{"Column data"} (for \linkS4class{ColumnDotPlot}s) or \code{"Row data"} (for \linkS4class{RowDotPlot}s).
+#' Defaults to \code{"None"}.
+#' \item \code{ColorByDefaultColor}, a string specifying the default color to use for all points if \code{ColorBy="None"}.
+#' Defaults to \code{"black"}.
+#' \item \code{ColorByFeatName}, a string specifying the feature to be used for coloring points when \code{ColorBy="Feature name"}.
+#' For \linkS4class{RowDotPlot}s, this is used to highlight the point corresponding to the selected feature;
+#' for \linkS4class{ColumnDotPlot}s, this is used to color each point according to the expression of that feature.
+#' If \code{NA}, this defaults to the name of the first row.
+#' \item \code{ColorByRowTable}, a string specifying the name of the panel to use for transmitting the feature selection to \code{ColorByFeatName}.
+#' Defaults to \code{"---"}.
+#' \item \code{ColorBySampName}, a string specifying the sample to be used for coloring points when \code{ColorBy="Sample name"}.
+#' For \linkS4class{RowDotPlot}s, this is used to color each point according to the expression of that sample;
+#' for \linkS4class{ColumnDotPlot}s, this is used to highlight the point corresponding to the selected sample.
+#' If \code{NA}, this defaults to the name of the first column.
+#' \item \code{ColorByColTable}, a string specifying the name of the panel to use for transmitting the sample selection to \code{ColorBySampName}.
+#' Defaults to \code{"---"}.
+#' }
+#'
+#' The following slots control other metadata-related aesthetic aspects of the points:
+#' \itemize{
+#' \item \code{ShapeBy}, a string specifying the metadata field for controlling point shape.
+#' For \linkS4class{RowDotPlot}s, this should be a field in the \code{\link{rowData}},
+#' while for \linkS4class{ColumnDotPlot}s, this should be a field in the \code{\link{colData}}.
+#' Only discrete fields are allowed.
+#' \item \code{SizeBy}, a string specifying the metadata field for controlling point size. 
+#' For \linkS4class{RowDotPlot}s, this should be a field in the \code{\link{rowData}},
+#' while for \linkS4class{ColumnDotPlot}s, this should be a field in the \code{\link{colData}}.
+#' Only continuous fields are allowed.
+#' }
+#'
+#' The following slots control the faceting:
+#' \itemize{
+#' \item \code{FacetByRow}, a string specifying the metadata field to use for creating row facets.
+#' For \linkS4class{RowDotPlot}s, this should be a field in the \code{\link{rowData}},
+#' while for \linkS4class{ColumnDotPlot}s, this should be a field in the \code{\link{colData}}.
+#' Defaults to \code{"---"}, i.e., no row faceting.
+#' \item \code{FacetByColumn}, a string specifying the metadata field to use for creating column facets.
+#' For \linkS4class{RowDotPlot}s, this should be a field in the \code{\link{rowData}},
+#' while for \linkS4class{ColumnDotPlot}s, this should be a field in the \code{\link{colData}}.
+#' Defaults to \code{"---"}, i.e., no row faceting.
+#' }
+#'
+#' The following slots control the effect of the transmitted selection from another panel:
+#' \itemize{
+#' \item \code{SelectEffect}, a string specifying the selection effect.
+#' This should be one of \code{"Transparent"} (the default), where all non-selected points become transparent;
+#' \code{"Color"}, where all selected points change to the specified color;
+#' \code{"Restrict"}, where all non-selected points are not plotted.
+#' \item \code{SelectAlpha}, a numeric scalar in [0, 1] specifying the transparency to use for non-selected points when \code{SelectEffect="Transparent"}.
+#' Defaults to 0.1.
+#' \item \code{SelectColor}, a string specifying the color to use for selected points when \code{SelectEffect="Color"}.
+#' Defaults to \code{"red"}.
+#' }
+#'
+#' The following slots control the behavior of brushes:
+#' \itemize{
+#' \item \code{ZoomData}, a named numeric vector of plot coordinates with \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"} elements parametrizing the zoom boundaries.
+#' Defaults to an empty vector, i.e., no zoom.
+#' \item \code{BrushData}, a list containing either a Shiny brush (see \code{?\link{brushedPoints}}) or an \pkg{iSEE} lasso (see \code{?\link{lassoPoints}}).
+#' Defaults to an empty list, i.e., no brush or lasso.
+#' }
+#'
+#' The following slots control some aspects of the user interface:
+#' \itemize{
+#' \item \code{DataBoxOpen}, a logical scalar indicating whether the data parameter box should be open.
+#' Defaults to \code{FALSE}.
+#' \item \code{VisualBoxOpen}, a logical scalar indicating whether the visual parameter box should be open.
+#' Defaults to \code{FALSE}.
+#' \item \code{VisualChoices}, a character vector specifying the visible interface elements upon initialization.
+#' Defaults to \code{"Color"}, but can contain zero to all of \code{"Color"}, \code{"Shape"}, \code{"Facets"}, \code{"Points"} and \code{"Other"}.
+#' }
+#'
+#' The following slots control the addition of a contour:
+#' \itemize{
+#' \item \code{ContourAdd}, logical scalar indicating whether a contour should be added to a (scatter) plot.
+#' Defaults to \code{FALSE}.
+#' \item \code{ContourColor}, string specifying the color to use for the contour lines.
+#' Defaults to \code{"blue"}.
+#' }
+#'
+#' The following slots control the general appearance of the points.
+#' \itemize{
+#' \item \code{PointSize}, positive numeric scalar specifying the relative size of the points.
+#' Defaults to 1.
+#' \item \code{PointAlpha}, non-negative numeric scalar specifying the transparency of the points.
+#' Defaults to 1, i.e., not transparent.
+#' \item \code{Downsample}, numeric scalar specifying the resolution of the downsampling grid (see \code{?\link{subsetPointsByGrid}}).
+#' Larger values correspond to reduced downsampling at the cost of plotting speed.
+#' Defaults to the special value of zero, which indicates that no downsampling is to be performed.
+#' }
+#' 
+#' The following slots refer to general plotting parameters:
+#' \itemize{
+#' \item \code{FontSize}, positive numeric scalar specifying the relative font size.
+#' Defaults to 1.
+#' \item \code{LegendPosition}, string specifying the position of the legend on the plot.
+#' Defaults to \code{"Right"} but can also be \code{"Bottom"}.
+#' }
+#'
+#' In addition, this class inherits all slots from its parent \linkS4class{Panel} class.
+#'
+#' @section Supported methods for handling parameters:
+#' In the following code snippets, \code{x} is an instance of a \linkS4class{DotPlot} class.
+#' Refer to the documentation for each method for more details on the remaining arguments.
+#'
+#' For setting up the objects:
+#' \itemize{
+#' \item \code{\link{.cacheCommonInfo}(x)} adds a \code{DotPlot} entry containing \code{valid.assay.names}, a character vector of valid assay names (i.e., non-empty and non-duplicated).
+#' This will also call the equivalent \linkS4class{Panel} method.
+#' \item \code{\link{.refineParameters}(x, se)} replaces \code{NA} values in \code{ColorByFeatName} and \code{ColorBySampName} with the first row and column name, respectively, of \code{se}.
+#' This will also call the equivalent \linkS4class{Panel} method.
+#' }
+#'
+#' For defining reactive expressions:
+#' \itemize{
+#' \item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for some (but not all!) of the slots. 
+#' This will also call the equivalent \linkS4class{Panel} method.
+#' \item \code{\link{.defineOutputElement}(x, id)} returns a UI element for a brushable plot.
+#' \item \code{\link{.createRenderedOutput}(x, se, colormap, output, pObjects, rObjects)} will add a rendered plot element to \code{output}.
+#' It will also create a rendered UI element for selection information.
+#' \item \code{\link{.restrictsSelection}(x)} returns a logical scalar indicating whether \code{x} is restricting the plotted points to those that were selected in a transmitting panel, i.e., is \code{SelectEffect="Restrict"}.
+#' \item \code{\link{.hasActiveSelection}(x)} returns a logical scalar indicating whether \code{x} has an active brush or lasso.
+#' \item \code{\link{.processSelection}(x, index)} returns a character vector of R expressions that - when evaluated - return a character vector of the names of selected points in the active and/or saved selections of \code{x}.
+#' }
+#' 
+#' @author Aaron Lun
+#'
+#' @name DotPlot-class
+#' @aliases
+#' initialize,DotPlot-method
+#' [[,DotPlot-method
+#' [[<-,DotPlot-method
+#' .refineParameters,DotPlot-method
+#' .cacheCommonInfo,DotPlot-method
+#' .createParamObservers,DotPlot-method
+#' .hideInterfaceElement,DotPlot-method
+#' .restrictsSelection,DotPlot-method
+#' .transmittedDimension,DotPlot-method
+NULL
+
 #' @export
 #' @importFrom methods callNextMethod
 setMethod("initialize", "DotPlot", function(.Object, ...) {

@@ -2,9 +2,6 @@
 #'
 #' The DotPlot is a virtual class for all panels where each row or column is represented by a point (\dQuote{dot}) in a brushable plot.
 #' It provides slots and methods to control various aesthetics of the dots and to store the brush or lasso selection.
-#' This is a rather vaguely defined class for which the only purpose is to avoid duplicating code for \linkS4class{ColumnDotPlot}s and \linkS4class{RowDotPlot}s.
-#' Observers are only provided for some slots - the remainders are supported by the aforementioned subclasses - and no interface elements are provided at all.
-#' It is likely that developers will prefer to extend these subclasses instead of the \linkS4class{DotPlot} directly.
 #' 
 #' @section Slot overview:
 #' The following slots are relevant to coloring of the points:
@@ -49,7 +46,7 @@
 #' \item \code{FacetByColumn}, a string specifying the metadata field to use for creating column facets.
 #' For \linkS4class{RowDotPlot}s, this should be a field in the \code{\link{rowData}},
 #' while for \linkS4class{ColumnDotPlot}s, this should be a field in the \code{\link{colData}}.
-#' Defaults to \code{"---"}, i.e., no row faceting.
+#' Defaults to \code{"---"}, i.e., no column faceting.
 #' }
 #'
 #' The following slots control the effect of the transmitted selection from another panel:
@@ -79,7 +76,8 @@
 #' \item \code{VisualBoxOpen}, a logical scalar indicating whether the visual parameter box should be open.
 #' Defaults to \code{FALSE}.
 #' \item \code{VisualChoices}, a character vector specifying the visible interface elements upon initialization.
-#' Defaults to \code{"Color"}, but can contain zero to all of \code{"Color"}, \code{"Shape"}, \code{"Facets"}, \code{"Points"} and \code{"Other"}.
+#' This can contain zero or more of \code{"Color"}, \code{"Shape"}, \code{"Facets"}, \code{"Points"} and \code{"Other"}.
+#' Defaults to \code{"Color"}.
 #' }
 #'
 #' The following slots control the addition of a contour:
@@ -111,7 +109,12 @@
 #'
 #' In addition, this class inherits all slots from its parent \linkS4class{Panel} class.
 #'
-#' @section Supported methods for handling parameters:
+#' @section Developer note:
+#' This is a rather vaguely defined class for which the only purpose is to avoid duplicating code for \linkS4class{ColumnDotPlot}s and \linkS4class{RowDotPlot}s.
+#' Observers are only provided for some slots - the remainders are supported by the aforementioned subclasses - and no interface elements are provided at all.
+#' It is likely that developers will prefer to extend these subclasses instead of the \linkS4class{DotPlot} directly.
+#'
+#' @section Supported methods for parameter handling:
 #' In the following code snippets, \code{x} is an instance of a \linkS4class{DotPlot} class.
 #' Refer to the documentation for each method for more details on the remaining arguments.
 #'

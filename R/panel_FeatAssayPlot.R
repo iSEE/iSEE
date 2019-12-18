@@ -114,8 +114,8 @@
 NULL
 
 #' @export
-FeatAssayPlot <- function() {
-    new("FeatAssayPlot")
+FeatAssayPlot <- function(...) {
+    new("FeatAssayPlot", ...)
 }
 
 #' @export

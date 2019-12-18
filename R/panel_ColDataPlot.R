@@ -106,8 +106,8 @@
 NULL
 
 #' @export
-ColDataPlot <- function() {
-    new("ColDataPlot")
+ColDataPlot <- function(...) {
+    new("ColDataPlot", ...)
 }
 
 #' @export

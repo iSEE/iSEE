@@ -21,10 +21,10 @@ The following slots control coloring of the points:
 \itemize{
 \item \code{ColorByColData}, a string specifying the \code{\link{colData}} field for controlling point color,
 if \code{ColorBy="Column data"} (see the \linkS4class{Panel} class).
-Defaults to the first field.
+Defaults to the first valid field (see \code{.refineParameters} below).
 \item \code{ColorByFeatNameAssay}, a string specifying the assay of the SummarizedExperiment object containing values to use for coloring,
 if \code{ColorBy="Feature name"}.
-Defaults to the name of the first assay.
+Defaults to the name of the first valid assay (see \code{?"\link{.refineParameters,DotPlot-method}"} for details).
 \item \code{ColorBySampNameColor}, a string specifying the color to use for coloring an individual sample on the plot, 
 if \code{ColorBy="Sample name"}.
 Defaults to \code{"red"}.
@@ -34,16 +34,16 @@ The following slots control other metadata-related aesthetic aspects of the poin
 \itemize{
 \item \code{ShapeByColData}, a string specifying the \code{\link{colData}} field for controlling point shape,
 if \code{ShapeBy="Column data"} (see the \linkS4class{Panel} class).
-The specified field should contain categorical values; defaults to the first such field.
+The specified field should contain categorical values; defaults to the first such valid field.
 \item \code{SizeByColData}, a string specifying the \code{\link{colData}} field for controlling point size,
 if \code{SizeBy="Column data"} (see the \linkS4class{Panel} class).
-The specified field should contain continuous values; defaults to the first such field.
+The specified field should contain continuous values; defaults to the first such valid field.
 }
 }
 
 \section{Contract description}{
 
-The ColumnDotPlot will provide user interface elements to change all above slots and in its parent classes \linkS4class{DotPlot} and \linkS4class{Panel}.
+The ColumnDotPlot will provide user interface elements to change all above slots as well as slots in its parent classes \linkS4class{DotPlot} and \linkS4class{Panel}.
 It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
 
 Subclasses are expected to implement methods for (at least) \code{\link{.getCommandsDataXY}}.
@@ -56,7 +56,7 @@ Refer to the documentation for each method for more details on the remaining arg
 
 For setting up data values:
 \itemize{
-\item \code{\link{.cacheCommonInfo}(x)} adds a \code{"ColumnDotPlot"} entry containing \code{valid.colData.names}, a character vector of valid column data names (i.e., containing atomic values); \code{discrete.colData.names}, a character vector of names for discrete columns; and \code{continuous.colData.names}, a character vector of names of continuous columns.
+\item \code{\link{.cacheCommonInfo}(x)} adds a \code{"ColumnDotPlot"} entry containing \code{valid.colData.names}, a character vector of names of columns that are valid (i.e., contain atomic values); \code{discrete.colData.names}, a character vector of names for columns with discrete atomic values; and \code{continuous.colData.names}, a character vector of names of columns with continuous atomic values.
 This will also call the equivalent \linkS4class{DotPlot} method.
 \item \code{\link{.refineParameters}(x, se)} replaces \code{NA} values in \code{ColorByFeatAssay} with the first valid assay name in \code{se}.
 This will also call the equivalent \linkS4class{DotPlot} method.
@@ -64,7 +64,7 @@ This will also call the equivalent \linkS4class{DotPlot} method.
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineParamInterface}(x, se, active_panels)} defines the user interface for manipulating all slots in the \linkS4class{ColumnDotPlot}.
+\item \code{\link{.defineParamInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
 This will \emph{override} the \linkS4class{Panel} method.
 \item \code{\link{.hideInterfaceElement}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 This returns \code{TRUE} for row selection parameters (\code{"SelectRowSource"}, \code{"SelectRowType"} and \code{"SelectRowSaved"}),
@@ -73,7 +73,7 @@ otherwise it dispatches to the \linkS4class{Panel} method.
 
 For monitoring reactive expressions:
 \itemize{
-\item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots in the \linkS4class{ColumnDotPlot}.
+\item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
 This will also call the equivalent \linkS4class{DotPlot} method.
 }
 

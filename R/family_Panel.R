@@ -58,8 +58,8 @@
 #' The Panel class offers interface elements to modify all of its slots.
 #' Observers are also created to trigger rerendering upon changes to a slot or when a selection in a transmitting panel changes.
 #'
-#' Subclasses are expected to implement methods for (at least) \code{\link{.defineOutputElement}}.
-#' Subclasses that transmit selections should also implement methods for selection-related parameters listed below.
+#' Subclasses are expected to implement methods for (at least) \code{\link{.defineOutputElement}}, \code{\link{.getEncodedName}} and \code{\link{.getFullName}}.
+#' Subclasses that transmit selections should also implement specialized methods for selection-related parameters listed below.
 #'
 #' @section Supported methods:
 #' In the following code snippets, \code{x} is an instance of a \linkS4class{ColumnDotPlot} class.

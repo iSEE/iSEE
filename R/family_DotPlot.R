@@ -120,8 +120,9 @@
 #'
 #' For setting up the objects:
 #' \itemize{
-#' \item \code{\link{.cacheCommonInfo}(x)} adds a \code{"DotPlot"} entry containing \code{valid.assay.names}, a character vector of valid assay names (i.e., non-empty and non-duplicated).
-#' This will also call the equivalent \linkS4class{Panel} method.
+#' \item \code{\link{.cacheCommonInfo}(x)} adds a \code{"DotPlot"} entry containing \code{valid.assay.names}, a character vector of valid assay names.
+#' Valid names are defined as those that are non-empty, i.e., not \code{""}.
+#' This method will also call the equivalent \linkS4class{Panel} method.
 #' \item \code{\link{.refineParameters}(x, se)} replaces \code{NA} values in \code{ColorByFeatName} and \code{ColorBySampName} with the first row and column name, respectively, of \code{se}.
 #' This will also call the equivalent \linkS4class{Panel} method.
 #' }

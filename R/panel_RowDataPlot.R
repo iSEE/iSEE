@@ -1,15 +1,69 @@
-#' The row data plot panel
+#' The RowDataPlot panel
 #'
-#' Plots row data values. What more do I have to say?
+#' The RowDotPlot is a panel class for creating a \linkS4class{RowDotPlot} where the y-axis represents a variable from the \code{\link{rowData}} of a \linkS4class{SummarizedExperiment} object.
+#' It provides slots and methods for specifying which row metadata variable to use and what to plot on the x-axis.
+#'
+#' @section Slot overview:
+#' The following slots control the dimensionality reduction result that is used:
+#' \itemize{
+#' \item \code{YAxis}, a string specifying the row of the \code{\link{rowData}} to show on the y-axis.
+#' If \code{NA}, defaults to the first valid field (see \code{?"\link{.refineParameters,RowDotPlot-method}"}).
+#' \item \code{XAxis}, string specifying what should be plotting on the x-axis.
+#' This can be any one of \code{"None"} or \code{"Row data"}.
+#' Defaults to \code{"None"}.
+#' \item \code{XAxisRowData}, string specifying the row of the \code{\link{rowData}} to show on the x-axis.
+#' If \code{NA}, defaults to the first valid field.
+#' }
+#'
+#' In addition, this class inherits all slots from its parent \linkS4class{RowDotPlot}, \linkS4class{DotPlot} and \linkS4class{Panel} classes.
 #'
 #' @section Constructor:
-#' \code{RowDataPlot()} creates an instance of a RowDataPlot class.
+#' \code{RowDataPlot(...)} creates an instance of a RowDataPlot class, where any slot and its value can be passed to \code{...} as a named argument.
 #'
-#' @section Panel parameters:
-#' \code{\link{.defineParamInterface}} will create parameter elements for choosing the reduced dimensions to plot.
-#' More details to be added.
+#' @section Contract description:
+#' The RowDataPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
+#' It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
+#' Subclasses do not have to provide any methods, as this is a concrete class.
+#' 
+#' @section Supported methods:
+#' In the following code snippets, \code{x} is an instance of a \linkS4class{RowDataPlot} class.
+#' Refer to the documentation for each method for more details on the remaining arguments.
+#'
+#' For setting up data values:
+#' \itemize{
+#' \item \code{\link{.refineParameters}(x, se)} returns \code{x} after replacing any \code{NA} value in \code{YAxis} or \code{XAxisRowData} with the name of the first valid \code{\link{rowData}} field.
+#' This will also call the equivalent \linkS4class{RowDotPlot} method for further refinements to \code{x}.
+#' If no valid row metadata fields are available, \code{NULL} is returned instead.
+#' }
+#'
+#' For defining the interface:
+#' \itemize{
+#' \item \code{\link{.defineParamInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
+#' This is combined with the interface elements provided by the \linkS4class{RowDotPlot}. 
+#' }
+#'
+#' For monitoring reactive expressions:
+#' \itemize{
+#' \item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
+#' This will also call the equivalent \linkS4class{RowDotPlot} method.
+#' }
+#'
+#' For defining the panel name:
+#' \itemize{
+#' \item \code{\link{.getEncodedName}(x)} will return \code{"RowDataPlot"}.
+#' \item \code{\link{.getFullName}(x)} will return \code{"Row data plot"}.
+#' }
+#'
+#' For creating the plot:
+#' \itemize{
+#' \item \code{\link{.getCommandsDataXY}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of row metadata variables.
+#' }
 #'
 #' @author Aaron Lun
+#'
+#' @seealso
+#' \linkS4class{RowDotPlot}, for the immediate parent class.
+#'
 #' @examples
 #' #################
 #' # For end-users #
@@ -38,9 +92,13 @@
 #'
 #' @docType methods
 #' @aliases RowDataPlot RowDataPlot-class
+#' .refineParameters,RowDataPlot-method
 #' .defineParamInterface,RowDataPlot-method
 #' .createParamObservers,RowDataPlot-method
-#' @name RowDataPlot
+#' .getEncodedName,RowDataPlot-method
+#' .getFullName,RowDataPlot-method
+#' .getCommandsDataXY,RowDataPlot-method
+#' @name RowDataPlot-class
 NULL
 
 #' @export

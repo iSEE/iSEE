@@ -24,7 +24,7 @@
 #' The RowDataPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
 #' It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
 #' Subclasses do not have to provide any methods, as this is a concrete class.
-#' 
+#'
 #' @section Supported methods:
 #' In the following code snippets, \code{x} is an instance of a \linkS4class{RowDataPlot} class.
 #' Refer to the documentation for each method for more details on the remaining arguments.
@@ -39,7 +39,7 @@
 #' For defining the interface:
 #' \itemize{
 #' \item \code{\link{.defineParamInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
-#' This is combined with the interface elements provided by the \linkS4class{RowDotPlot}. 
+#' This is combined with the interface elements provided by the \linkS4class{RowDotPlot}.
 #' }
 #'
 #' For monitoring reactive expressions:
@@ -229,10 +229,10 @@ setMethod(".getEncodedName", "RowDataPlot", function(x) "rowDataPlot") # TODO ch
 setMethod(".getFullName", "RowDataPlot", function(x) "Row data plot") # TODO change to class name.
 
 #' @export
-setMethod(".getCommandsDataXY", "RowDataPlot", function(x, param_choices) {
+setMethod(".getCommandsDataXY", "RowDataPlot", function(x) {
     data_cmds <- list()
 
-    y_lab <- param_choices[[.rowDataYAxis]]
+    y_lab <- x[[.rowDataYAxis]]
 
     # NOTE: deparse() automatically adds quotes, AND protects against existing quotes/escapes.
     data_cmds[["y"]] <- sprintf(
@@ -241,11 +241,11 @@ setMethod(".getCommandsDataXY", "RowDataPlot", function(x, param_choices) {
     )
 
     # Prepare X-axis data.
-    if (param_choices[[.rowDataXAxis]] == .rowDataXAxisNothingTitle) {
+    if (x[[.rowDataXAxis]] == .rowDataXAxisNothingTitle) {
         x_lab <- ''
         data_cmds[["x"]] <- "plot.data$X <- factor(character(nrow(se)))"
     } else {
-        x_lab <- param_choices[[.rowDataXAxisRowData]]
+        x_lab <- x[[.rowDataXAxisRowData]]
         data_cmds[["x"]] <- sprintf("plot.data$X <- rowData(se)[, %s];", deparse(x_lab))
     }
 

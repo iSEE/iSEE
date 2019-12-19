@@ -2,7 +2,7 @@
 #'
 #' The DotPlot is a virtual class for all panels where each row or column in the \linkS4class{SummarizedExperiment} is represented by a point (\dQuote{dot}) in a brushable plot.
 #' It provides slots and methods to control various aesthetics of the dots and to store the brush or lasso selection.
-#' 
+#'
 #' @section Slot overview:
 #' The following slots are relevant to coloring of the points:
 #' \itemize{
@@ -30,7 +30,7 @@
 #' \item \code{ShapeBy}, a string specifying how the point shape should be determined.
 #' This should be one of \code{"None"} and either \code{"Column data"} (for \linkS4class{ColumnDotPlot}s) or \code{"Row data"} (for \linkS4class{RowDotPlot}s).
 #' Defaults to \code{"None"}.
-#' \item \code{SizeBy}, a string specifying the metadata field for controlling point size. 
+#' \item \code{SizeBy}, a string specifying the metadata field for controlling point size.
 #' This should be one of \code{"None"} and either \code{"Column data"} (for \linkS4class{ColumnDotPlot}s) or \code{"Row data"} (for \linkS4class{RowDotPlot}s).
 #' Defaults to \code{"None"}.
 #' }
@@ -98,7 +98,7 @@
 #' Larger values correspond to reduced downsampling at the cost of plotting speed.
 #' Defaults to 200.
 #' }
-#' 
+#'
 #' The following slots refer to general plotting parameters:
 #' \itemize{
 #' \item \code{FontSize}, positive numeric scalar specifying the relative font size.
@@ -134,13 +134,13 @@
 #'
 #' For defining reactive expressions:
 #' \itemize{
-#' \item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for some (but not all!) of the slots. 
+#' \item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for some (but not all!) of the slots.
 #' This will also call the equivalent \linkS4class{Panel} method.
 #' \item \code{\link{.createRenderedOutput}(x, se, colormap, output, pObjects, rObjects)} will add a rendered plot element to \code{output}.
 #' It will also create a rendered UI element for selection information.
 #' }
 #'
-#' For controlling selections: 
+#' For controlling selections:
 #' \itemize{
 #' \item \code{\link{.restrictsSelection}(x)} returns a logical scalar indicating whether \code{x} is restricting the plotted points to those that were selected in a transmitting panel, i.e., is \code{SelectEffect="Restrict"}.
 #' \item \code{\link{.hasActiveSelection}(x)} returns a logical scalar indicating whether \code{x} has an active brush or lasso.
@@ -151,7 +151,7 @@
 #'
 #' @seealso
 #' \linkS4class{RowDotPlot} and \linkS4class{ColumnDotPlot}, which are more amenable to extension.
-#' 
+#'
 #' @author Aaron Lun
 #'
 #' @name DotPlot-class
@@ -414,9 +414,9 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
         plot_env$se <- se
         plot_env$colormap <- colormap
 
-        # Defining the row and column selections, and hoping that the 
+        # Defining the row and column selections, and hoping that the
         # plot-generating functions know what to do with them.
-        row_select_cmds <- .process_selectby_choice(param_choices, 
+        row_select_cmds <- .process_selectby_choice(param_choices,
             by_field=.selectRowSource, type_field=.selectRowType, saved_field=.selectRowSaved,
             all_memory=all_memory, var_name="row_selected")
 
@@ -427,7 +427,7 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
             .text_eval(row_select_cmds, plot_env)
         }
 
-        col_select_cmds <- .process_selectby_choice(param_choices, 
+        col_select_cmds <- .process_selectby_choice(param_choices,
             by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
             all_memory=all_memory, var_name="col_selected")
 
@@ -439,7 +439,7 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
         }
 
         # Apply the function provided to generate XY commands and axis labels
-        out_xy <- .getCommandsDataXY(x, param_choices)
+        out_xy <- .getCommandsDataXY(param_choices)
         data_cmds <- .initialize_cmd_store()
         data_cmds <- .add_command(data_cmds, out_xy$data_cmds)
         data_cmds <- .evaluate_commands(data_cmds, plot_env)

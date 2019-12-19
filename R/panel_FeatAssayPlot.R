@@ -32,7 +32,7 @@
 #' The FeatAssayPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
 #' It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
 #' Subclasses do not have to provide any methods, as this is a concrete class.
-#' 
+#'
 #' @section Supported methods:
 #' In the following code snippets, \code{x} is an instance of a \linkS4class{FeatAssayPlot} class.
 #' Refer to the documentation for each method for more details on the remaining arguments.
@@ -47,7 +47,7 @@
 #' For defining the interface:
 #' \itemize{
 #' \item \code{\link{.defineParamInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
-#' This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}. 
+#' This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}.
 #' }
 #'
 #' For monitoring reactive expressions:
@@ -282,7 +282,7 @@ setMethod(".createParamObservers", "FeatAssayPlot", function(x, se, input, sessi
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     for (field in c(.featAssayXAxisRowTable, .featAssayYAxisRowTable)) {
-        pObjects$aesthetics_links <- .add_interpanel_link(pObjects$aesthetics_links, 
+        pObjects$aesthetics_links <- .add_interpanel_link(pObjects$aesthetics_links,
             panel_name=plot_name, parent_name=x[[field]], field=field)
     }
 })
@@ -294,12 +294,12 @@ setMethod(".getEncodedName", "FeatAssayPlot", function(x) "featAssayPlot") # TOD
 setMethod(".getFullName", "FeatAssayPlot", function(x) "Feature assay plot")
 
 #' @export
-setMethod(".getCommandsDataXY", "FeatAssayPlot", function(x, param_choices) {
+setMethod(".getCommandsDataXY", "FeatAssayPlot", function(x) {
     data_cmds <- list()
 
     ## Setting up the y-axis:
-    gene_selected_y <- param_choices[[.featAssayYAxisFeatName]]
-    assay_choice <- param_choices[[.featAssayAssay]]
+    gene_selected_y <- x[[.featAssayYAxisFeatName]]
+    assay_choice <- x[[.featAssayAssay]]
     plot_title <- gene_selected_y
     y_lab <- sprintf("%s (%s)", gene_selected_y, assay_choice)
     data_cmds[["y"]] <- sprintf(
@@ -308,15 +308,15 @@ setMethod(".getCommandsDataXY", "FeatAssayPlot", function(x, param_choices) {
     )
 
     ## Checking X axis choice:
-    x_choice <- param_choices[[.featAssayXAxis]]
+    x_choice <- x[[.featAssayXAxis]]
 
     if (x_choice == .featAssayXAxisColDataTitle) { # colData column selected
-        x_lab <- param_choices[[.featAssayXAxisColData]]
+        x_lab <- x[[.featAssayXAxisColData]]
         plot_title <- paste(plot_title, "vs", x_lab)
         data_cmds[["x"]] <- sprintf("plot.data$X <- colData(se)[, %s];", deparse(x_lab))
 
     } else if (x_choice == .featAssayXAxisFeatNameTitle) { # gene selected
-        gene_selected_x <- param_choices[[.featAssayXAxisFeatName]]
+        gene_selected_x <- x[[.featAssayXAxisFeatName]]
         plot_title <- paste(plot_title, "vs", gene_selected_x)
         x_lab <- sprintf("%s (%s)", gene_selected_x, assay_choice)
         data_cmds[["x"]] <- sprintf(

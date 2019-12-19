@@ -24,7 +24,7 @@
 #' The ColDataPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
 #' It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
 #' Subclasses do not have to provide any methods, as this is a concrete class.
-#' 
+#'
 #' @section Supported methods:
 #' In the following code snippets, \code{x} is an instance of a \linkS4class{ColDataPlot} class.
 #' Refer to the documentation for each method for more details on the remaining arguments.
@@ -39,7 +39,7 @@
 #' For defining the interface:
 #' \itemize{
 #' \item \code{\link{.defineParamInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
-#' This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}. 
+#' This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}.
 #' }
 #'
 #' For monitoring reactive expressions:
@@ -212,10 +212,10 @@ setMethod(".getEncodedName", "ColDataPlot", function(x) "colDataPlot") # TODO ch
 setMethod(".getFullName", "ColDataPlot", function(x) "Column data plot")
 
 #' @export
-setMethod(".getCommandsDataXY", "ColDataPlot", function(x, param_choices) {
+setMethod(".getCommandsDataXY", "ColDataPlot", function(x) {
     data_cmds <- list()
 
-    y_lab <- param_choices[[.colDataYAxis]]
+    y_lab <- x[[.colDataYAxis]]
     # NOTE: deparse() automatically adds quotes, AND protects against existing quotes/escapes.
     data_cmds[["y"]] <- sprintf(
         "plot.data <- data.frame(Y=colData(se)[, %s], row.names=colnames(se));",
@@ -223,11 +223,11 @@ setMethod(".getCommandsDataXY", "ColDataPlot", function(x, param_choices) {
     )
 
     # Prepare X-axis data.
-    if (param_choices[[.colDataXAxis]] == .colDataXAxisNothingTitle) {
+    if (x[[.colDataXAxis]] == .colDataXAxisNothingTitle) {
         x_lab <- ''
         data_cmds[["x"]] <- "plot.data$X <- factor(character(ncol(se)))"
     } else {
-        x_lab <- param_choices[[.colDataXAxisColData]]
+        x_lab <- x[[.colDataXAxisColData]]
         data_cmds[["x"]] <- sprintf(
             "plot.data$X <- colData(se)[, %s];",
             deparse(x_lab)

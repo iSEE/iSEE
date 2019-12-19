@@ -32,7 +32,7 @@
 #' The SampAssayPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
 #' It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
 #' Subclasses do not have to provide any methods, as this is a concrete class.
-#' 
+#'
 #' @section Supported methods:
 #' In the following code snippets, \code{x} is an instance of a \linkS4class{SampAssayPlot} class.
 #' Refer to the documentation for each method for more details on the remaining arguments.
@@ -47,7 +47,7 @@
 #' For defining the interface:
 #' \itemize{
 #' \item \code{\link{.defineParamInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
-#' This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}. 
+#' This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}.
 #' }
 #'
 #' For monitoring reactive expressions:
@@ -292,7 +292,7 @@ setMethod(".createParamObservers", "SampAssayPlot", function(x, se, input, sessi
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     for (field in c(.sampAssayXAxisColTable, .sampAssayYAxisColTable)) {
-        pObjects$aesthetics_links <- .add_interpanel_link(pObjects$aesthetics_links, 
+        pObjects$aesthetics_links <- .add_interpanel_link(pObjects$aesthetics_links,
             panel_name=plot_name, parent_name=x[[field]], field=field)
     }
 })
@@ -304,11 +304,11 @@ setMethod(".getEncodedName", "SampAssayPlot", function(x) "sampAssayPlot") # TOD
 setMethod(".getFullName", "SampAssayPlot", function(x) "Sample assay plot") # TODO change to class name.
 
 #' @export
-setMethod(".getCommandsDataXY", "SampAssayPlot", function(x, param_choices) {
+setMethod(".getCommandsDataXY", "SampAssayPlot", function(x) {
     data_cmds <- list()
 
-    samp_selected_y <- param_choices[[.sampAssayYAxisSampName]]
-    assay_choice <- param_choices[[.sampAssayAssay]]
+    samp_selected_y <- x[[.sampAssayYAxisSampName]]
+    assay_choice <- x[[.sampAssayAssay]]
 
     plot_title <- samp_selected_y
     y_lab <- sprintf("%s (%s)", samp_selected_y, assay_choice)
@@ -318,19 +318,19 @@ setMethod(".getCommandsDataXY", "SampAssayPlot", function(x, param_choices) {
     )
 
     # Prepare X-axis data.
-    x_choice <- param_choices[[.sampAssayXAxis]]
+    x_choice <- x[[.sampAssayXAxis]]
 
     if (x_choice == .sampAssayXAxisNothingTitle) {
         x_lab <- ''
         data_cmds[["x"]] <- "plot.data$X <- factor(character(nrow(se)));"
 
     } else if (x_choice == .sampAssayXAxisRowDataTitle) {
-        x_lab <- param_choices[[.sampAssayXAxisRowData]]
+        x_lab <- x[[.sampAssayXAxisRowData]]
         plot_title <- paste(plot_title, "vs", x_lab)
         data_cmds[["x"]] <- sprintf("plot.data$X <- rowData(se)[, %s];", deparse(x_lab))
 
     } else {
-        samp_selected_x <- param_choices[[.sampAssayXAxisSampName]]
+        samp_selected_x <- x[[.sampAssayXAxisSampName]]
         plot_title <- paste(plot_title, "vs", samp_selected_x)
         x_lab <- sprintf("%s (%s)", samp_selected_x, assay_choice)
         data_cmds[["x"]] <- sprintf(

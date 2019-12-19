@@ -23,7 +23,7 @@
 #' The RedDimPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
 #' It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
 #' Subclasses do not have to provide any methods, as this is a concrete class.
-#' 
+#'
 #' @section Supported methods:
 #' In the following code snippets, \code{x} is an instance of a \linkS4class{RedDimPlot} class.
 #' Refer to the documentation for each method for more details on the remaining arguments.
@@ -40,7 +40,7 @@
 #' For defining the interface:
 #' \itemize{
 #' \item \code{\link{.defineParamInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
-#' This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}. 
+#' This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}.
 #' }
 #'
 #' For monitoring reactive expressions:
@@ -273,18 +273,18 @@ setMethod(".getEncodedName", "RedDimPlot", function(x) "redDimPlot")
 setMethod(".getFullName", "RedDimPlot", function(x) "Reduced dimension plot")
 
 #' @export
-setMethod(".getCommandsDataXY", "RedDimPlot", function(x, param_choices) {
+setMethod(".getCommandsDataXY", "RedDimPlot", function(x) {
     data_cmds <- list()
 
     data_cmds[["reducedDim"]] <- sprintf(
-        "red.dim <- reducedDim(se, %s);", deparse(param_choices[[.redDimType]]))
+        "red.dim <- reducedDim(se, %s);", deparse(x[[.redDimType]]))
     data_cmds[["xy"]] <- sprintf(
         "plot.data <- data.frame(X=red.dim[, %i], Y=red.dim[, %i], row.names=colnames(se));",
-        param_choices[[.redDimXAxis]], param_choices[[.redDimYAxis]])
+        x[[.redDimXAxis]], x[[.redDimYAxis]])
 
-    plot_title <- param_choices[[.redDimType]]
-    x_lab <- sprintf("Dimension %s", param_choices[[.redDimXAxis]])
-    y_lab <- sprintf("Dimension %s", param_choices[[.redDimYAxis]])
+    plot_title <- x[[.redDimType]]
+    x_lab <- sprintf("Dimension %s", x[[.redDimXAxis]])
+    y_lab <- sprintf("Dimension %s", x[[.redDimYAxis]])
 
     return(list(data_cmds=data_cmds, plot_title=plot_title, x_lab=x_lab, y_lab=y_lab))
 })

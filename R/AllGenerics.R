@@ -117,7 +117,7 @@ setGeneric(".getFullName", function(x) standardGeneric(".getFullName"))
 setGeneric(".getPanelPlottingFunction", function(x) standardGeneric(".getPanelPlottingFunction"))
 
 #' @export
-setGeneric(".getCommandsDataXY", function(x, param_choices) standardGeneric(".getCommandsDataXY"))
+setGeneric(".getCommandsDataXY", function(x) standardGeneric(".getCommandsDataXY"))
 
 #' @export
 setGeneric(".getCommandsPlot", function(x, param_choices, plot_data, plot_type, labs, is_subsetted, is_downsampled) standardGeneric(".getCommandsPlot"))

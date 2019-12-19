@@ -493,6 +493,7 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
         # Add downsampling commands, if applicable
         downsample_cmds <- .downsample_points(param_choices, plot_env)
         data_cmds <- .add_command(data_cmds, downsample_cmds)
+        data_cmds <- .evaluate_commands(data_cmds, plot_env)
 
         # Prepare information about subsetting and downsampling, to generate the plotting commands
         is_subsetted <- exists("plot.data.all", envir=plot_env)
@@ -531,7 +532,7 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
         # Evaluating the plotting commands.
         plot_out <- .text_eval(plot_cmds, plot_env)
 
-        return(list(cmd_list=c(data_cmds, plot_cmds), xy=panel_data, plot=plot_out))
+        return(list(cmd_list=list(data_cmds$processed, plot_cmds), xy=panel_data, plot=plot_out))
     }
 
 })

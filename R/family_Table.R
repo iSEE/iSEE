@@ -52,6 +52,20 @@
 #'
 #' @author Aaron Lun
 #' @seealso \linkS4class{Panel}, for the immediate parent class.
+#'
+#' @name Table-class
+#' @aliases
+#' initialize,Table-method
+#' .createParamObservers,Table-method
+#' .createRenderedOutput,Table-method
+#' .defineOutputElement,Table-method
+#' .hideInterfaceElement,Table-method
+#' .restrictsSelection,Table-method
+#' .transmittedDimension,Table-method
+#' .processTransmission,Table-method
+#' .hasActiveSelection,Table-method
+NULL
+
 #' @export
 #' @importFrom methods callNextMethod
 setMethod("initialize", "Table", function(.Object, ...) {

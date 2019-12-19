@@ -500,7 +500,7 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
         plot_type <- plot_env$plot.type
 
         # Get the ggplot call
-        plot_cmds <- .getCommandsPlot(x, param_choices, plot_env$plot.data, plot_type, as.list(ggplot_labs), is_subsetted, is_downsampled)
+        plot_cmds <- .getCommandsPlot(param_choices, plot_env$plot.data, plot_type, as.list(ggplot_labs), is_subsetted, is_downsampled)
 
         # Adding a faceting command, if applicable
         facet_cmd <- .add_facets(param_choices)
@@ -537,19 +537,19 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
 })
 
 #' @export
-setMethod(".getCommandsPlot", "DotPlot", function(x, param_choices, plot_data, plot_type, labs, is_subsetted, is_downsampled) {
+setMethod(".getCommandsPlot", "DotPlot", function(x, plot_data, plot_type, labs, is_subsetted, is_downsampled) {
 
     is_row_plot <- is(x, "RowDotPlot")
 
     # TODO: update the functions below to work with a single list "labs"
     plot_cmds <- switch(plot_type,
-        square=.square_plot(plot_data, param_choices, labs$x, labs$y, labs$color, labs$shape, labs$size, labs$title,
+        square=.square_plot(plot_data, x, labs$x, labs$y, labs$color, labs$shape, labs$size, labs$title,
             is_row_plot, is_subsetted),
-        violin=.violin_plot(plot_data = plot_data, param_choices, labs$x, labs$y, labs$color, labs$shape, labs$size, labs$title,
+        violin=.violin_plot(plot_data = plot_data, x, labs$x, labs$y, labs$color, labs$shape, labs$size, labs$title,
             is_row_plot, is_subsetted),
-        violin_horizontal=.violin_plot(plot_data = plot_data, param_choices, labs$x, labs$y, labs$color, labs$shape, labs$size, labs$title,
+        violin_horizontal=.violin_plot(plot_data = plot_data, x, labs$x, labs$y, labs$color, labs$shape, labs$size, labs$title,
             is_row_plot, is_subsetted, horizontal=TRUE),
-        scatter=.scatter_plot(plot_data = plot_data, param_choices, labs$x, labs$y, labs$color, labs$shape, labs$size, labs$title,
+        scatter=.scatter_plot(plot_data = plot_data, x, labs$x, labs$y, labs$color, labs$shape, labs$size, labs$title,
             is_row_plot, is_subsetted)
     )
 

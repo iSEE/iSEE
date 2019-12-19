@@ -120,7 +120,7 @@ setGeneric(".getPanelPlottingFunction", function(x) standardGeneric(".getPanelPl
 setGeneric(".getCommandsDataXY", function(x) standardGeneric(".getCommandsDataXY"))
 
 #' @export
-setGeneric(".getCommandsPlot", function(x, param_choices, plot_data, plot_type, labs, is_subsetted, is_downsampled) standardGeneric(".getCommandsPlot"))
+setGeneric(".getCommandsPlot", function(x, plot_data, plot_type, labs, is_subsetted, is_downsampled) standardGeneric(".getCommandsPlot"))
 
 setGeneric(".getCommandsDataColor", function(x, param_choices, se) standardGeneric(".getCommandsDataColor"))
 

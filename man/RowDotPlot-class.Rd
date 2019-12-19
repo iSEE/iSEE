@@ -12,9 +12,8 @@
 \alias{.transmittedDimension,RowDotPlot-method}
 \title{Row dot plot panel family}
 \description{
-The row dot plot panel family covers all plot panel types where each row of the \linkS4class{SummarizedExperiment} is represented by a point.
-This family is represented by the \code{RowDotPlot} virtual class, which has a number of concrete subclasses (e.g., \linkS4class{SampAssayPlot}) to direct the construction of specific plots.
-We provide a number of useful methods on this virtual class to make it easier for developers to define their own subclasses.
+The RowDotPlot is a virtual class where each row in the \linkS4class{SummarizedExperiment} is represented by a point (\dQuote{dot}) in a brushable plot.
+It provides slots and methods to control various aesthetics of the dots and to store the brush or lasso selection.
 }
 \section{Slot overview}{
 

@@ -449,19 +449,19 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
         data_cmds <- .add_commands_coerce(plot_env, data_cmds, c("X", "Y"))
 
         # Add commands adding optional columns to plot.data
-        out_color <- .getCommandsDataColor(x, param_choices, se)
+        out_color <- .getCommandsDataColor(param_choices, se)
         data_cmds <- .add_command(data_cmds, out_color$cmds, name='color')
         ggplot_labs <- c(ggplot_labs, color = out_color$label)
 
-        out_shape <- .getCommandsDataShape(x, param_choices, se)
+        out_shape <- .getCommandsDataShape(param_choices, se)
         data_cmds <- .add_command(data_cmds, out_shape$cmds, name='shape')
         ggplot_labs <- c(ggplot_labs, shape = out_shape$label)
 
-        out_size <- .getCommandsDataSize(x, param_choices, se)
+        out_size <- .getCommandsDataSize(param_choices, se)
         data_cmds <- .add_command(data_cmds, out_size$cmds, name='size')
         ggplot_labs <- c(ggplot_labs, size = out_size$label)
 
-        facets_cmds <- .getCommandsDataFacets(x, param_choices, se)
+        facets_cmds <- .getCommandsDataFacets(param_choices, se)
         data_cmds <- .add_command(data_cmds, facets_cmds)
 
         # Add commands coercing ColorBy to appropriate type, if present

@@ -122,13 +122,13 @@ setGeneric(".getCommandsDataXY", function(x) standardGeneric(".getCommandsDataXY
 #' @export
 setGeneric(".getCommandsPlot", function(x, plot_data, plot_type, labs, is_subsetted, is_downsampled) standardGeneric(".getCommandsPlot"))
 
-setGeneric(".getCommandsDataColor", function(x, param_choices, se) standardGeneric(".getCommandsDataColor"))
+setGeneric(".getCommandsDataColor", function(x, se) standardGeneric(".getCommandsDataColor"))
 
-setGeneric(".getCommandsDataShape", function(x, param_choices, se) standardGeneric(".getCommandsDataShape"))
+setGeneric(".getCommandsDataShape", function(x, se) standardGeneric(".getCommandsDataShape"))
 
-setGeneric(".getCommandsDataSize", function(x, param_choices, se) standardGeneric(".getCommandsDataSize"))
+setGeneric(".getCommandsDataSize", function(x, se) standardGeneric(".getCommandsDataSize"))
 
-setGeneric(".getCommandsDataFacets", function(x, param_choices, se) standardGeneric(".getCommandsDataFacets"))
+setGeneric(".getCommandsDataFacets", function(x, se) standardGeneric(".getCommandsDataFacets"))
 
 ###########################
 

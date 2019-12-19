@@ -16,7 +16,7 @@
 #' if \code{ColorBy="Feature name"}.
 #' Defaults to \code{"red"}.
 #' }
-#' 
+#'
 #' The following slots control other metadata-related aesthetic aspects of the points:
 #' \itemize{
 #' \item \code{ShapeByRowData}, a string specifying the \code{\link{rowData}} field for controlling point shape,
@@ -32,7 +32,7 @@
 #' It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
 #'
 #' Subclasses are expected to implement methods for (at least) \code{\link{.getCommandsDataXY}}.
-#' 
+#'
 #' @section Supported methods:
 #' In the following code snippets, \code{x} is an instance of a \linkS4class{RowDotPlot} class.
 #' Refer to the documentation for each method for more details on the remaining arguments.
@@ -72,7 +72,7 @@
 #' \linkS4class{DotPlot}, for the immediate parent class that contains the actual slot definitions.
 #'
 #' @docType methods
-#' @aliases 
+#' @aliases
 #' initialize,RowDotPlot-method
 #' .cacheCommonInfo,RowDotPlot-method
 #' .refineParameters,RowDotPlot-method
@@ -211,26 +211,26 @@ setMethod(".createParamObservers", "RowDotPlot", function(x, se, input, session,
     .define_dimname_propagation_observer(plot_name, choices=rownames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_selection_effect_observer(plot_name, 
-        by_field=.selectRowSource, type_field=.selectRowType, saved_field=.selectRowSaved, 
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects) 
+    .define_selection_effect_observer(plot_name,
+        by_field=.selectRowSource, type_field=.selectRowType, saved_field=.selectRowSaved,
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export
 setMethod(".transmittedDimension", "RowDotPlot", function(x) "row")
 
-setMethod(".getCommandsDataColor", "RowDotPlot", function(x, param_choices, se) {
-    color_choice <- param_choices[[.colorByField]]
+setMethod(".getCommandsDataColor", "RowDotPlot", function(x, se) {
+    color_choice <- x[[.colorByField]]
 
     if (color_choice == .colorByRowDataTitle) {
-        covariate_name <- param_choices[[.colorByRowData]]
+        covariate_name <- x[[.colorByRowData]]
         list(
             label=covariate_name,
             cmds=sprintf("plot.data$ColorBy <- rowData(se)[, %s];", deparse(covariate_name))
         )
 
     } else if (color_choice == .colorByFeatNameTitle) {
-        chosen_gene <- param_choices[[.colorByFeatName]]
+        chosen_gene <- x[[.colorByFeatName]]
         list(
             label=.feature_axis_label(se, chosen_gene, assay_id=NULL),
             cmds=sprintf("plot.data$ColorBy <- logical(nrow(plot.data));\nplot.data[%s, 'ColorBy'] <- TRUE;",
@@ -238,8 +238,8 @@ setMethod(".getCommandsDataColor", "RowDotPlot", function(x, param_choices, se) 
         )
 
     } else if (color_choice == .colorBySampNameTitle) {
-        chosen_sample <- param_choices[[.colorBySampName]]
-        assay_choice <- param_choices[[.colorBySampNameAssay]]
+        chosen_sample <- x[[.colorBySampName]]
+        assay_choice <- x[[.colorBySampNameAssay]]
         list(
             label=.sample_axis_label(se, chosen_sample, assay_choice, multiline=TRUE),
             cmds=sprintf("plot.data$ColorBy <- assay(se, %i, withDimnames=FALSE)[, %i];",
@@ -251,11 +251,11 @@ setMethod(".getCommandsDataColor", "RowDotPlot", function(x, param_choices, se) 
     }
 })
 
-setMethod(".getCommandsDataShape", "RowDotPlot", function(x, param_choices, se) {
-    shape_choice <- param_choices[[.shapeByField]]
+setMethod(".getCommandsDataShape", "RowDotPlot", function(x, se) {
+    shape_choice <- x[[.shapeByField]]
 
     if (shape_choice == .shapeByColDataTitle) {
-        covariate_name <- param_choices[[.shapeByColData]]
+        covariate_name <- x[[.shapeByColData]]
         return(list(label=covariate_name,
             cmds=sprintf("plot.data$ShapeBy <- colData(se)[, %s];", deparse(covariate_name))))
 
@@ -264,11 +264,11 @@ setMethod(".getCommandsDataShape", "RowDotPlot", function(x, param_choices, se) 
     }
 })
 
-setMethod(".getCommandsDataSize", "RowDotPlot", function(x, param_choices, se) {
-    size_choice <- param_choices[[.sizeByField]]
+setMethod(".getCommandsDataSize", "RowDotPlot", function(x, se) {
+    size_choice <- x[[.sizeByField]]
 
     if (size_choice == .sizeByRowDataTitle) {
-        covariate_name <- param_choices[[.sizeByRowData]]
+        covariate_name <- x[[.sizeByRowData]]
         return(list(label=covariate_name,
                     cmds=sprintf("plot.data$SizeBy <- rowData(se)[, %s];", deparse(covariate_name))))
 
@@ -277,16 +277,16 @@ setMethod(".getCommandsDataSize", "RowDotPlot", function(x, param_choices, se) {
     }
 })
 
-setMethod(".getCommandsDataFacets", "RowDotPlot", function(x, param_choices, se) {
+setMethod(".getCommandsDataFacets", "RowDotPlot", function(x, se) {
     facet_cmds <- c()
 
-    facet_row <- param_choices[[.facetByRow]]
+    facet_row <- x[[.facetByRow]]
     if (facet_row!=.noSelection) {
         facet_cmds["FacetRow"] <- sprintf(
             "plot.data$FacetRow <- rowData(se)[, %s];", deparse(facet_row))
     }
 
-    facet_column <- param_choices[[.facetByColumn]]
+    facet_column <- x[[.facetByColumn]]
     if (facet_column!=.noSelection) {
         facet_cmds["FacetColumn"] <- sprintf(
             "plot.data$FacetColumn <- rowData(se)[, %s];", deparse(facet_column))

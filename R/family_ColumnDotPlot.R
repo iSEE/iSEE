@@ -12,7 +12,7 @@
 #' \item \code{ColorByFeatNameAssay}, a string specifying the assay of the SummarizedExperiment object containing values to use for coloring,
 #' if \code{ColorBy="Feature name"}.
 #' Defaults to the name of the first valid assay (see \code{?"\link{.refineParameters,DotPlot-method}"} for details).
-#' \item \code{ColorBySampNameColor}, a string specifying the color to use for coloring an individual sample on the plot, 
+#' \item \code{ColorBySampNameColor}, a string specifying the color to use for coloring an individual sample on the plot,
 #' if \code{ColorBy="Sample name"}.
 #' Defaults to \code{"red"}.
 #' }
@@ -32,7 +32,7 @@
 #' It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
 #'
 #' Subclasses are expected to implement methods for (at least) \code{\link{.getCommandsDataXY}}.
-#' 
+#'
 #' @section Supported methods:
 #' In the following code snippets, \code{x} is an instance of a \linkS4class{ColumnDotPlot} class.
 #' Refer to the documentation for each method for more details on the remaining arguments.
@@ -72,7 +72,7 @@
 #' @author Aaron Lun
 #'
 #' @docType methods
-#' @aliases 
+#' @aliases
 #' initialize,ColumnDotPlot-method
 #' .cacheCommonInfo,ColumnDotPlot-method
 #' .refineParameters,ColumnDotPlot-method
@@ -188,7 +188,7 @@ setMethod(".defineParamInterface", "ColumnDotPlot", function(x, se, active_panel
 
 #' @export
 setMethod(".hideInterfaceElement", "ColumnDotPlot", function(x, field) {
-    if (field %in% c(.selectRowSource, .selectRowType, .selectRowSaved)) { 
+    if (field %in% c(.selectRowSource, .selectRowType, .selectRowSaved)) {
         TRUE
     } else {
         callNextMethod()
@@ -211,34 +211,34 @@ setMethod(".createParamObservers", "ColumnDotPlot", function(x, se, input, sessi
     .define_dimname_propagation_observer(plot_name, choices=colnames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_selection_effect_observer(plot_name, 
-        by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved, 
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects) 
+    .define_selection_effect_observer(plot_name,
+        by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export
 setMethod(".transmittedDimension", "ColumnDotPlot", function(x) "column")
 
-setMethod(".getCommandsDataColor", "ColumnDotPlot", function(x, param_choices, se) {
-    color_choice <- param_choices[[.colorByField]]
+setMethod(".getCommandsDataColor", "ColumnDotPlot", function(x, se) {
+    color_choice <- x[[.colorByField]]
 
     if (color_choice == .colorByColDataTitle) {
-        covariate_name <- param_choices[[.colorByColData]]
+        covariate_name <- x[[.colorByColData]]
         return(list(
             label=covariate_name,
             cmds=sprintf("plot.data$ColorBy <- colData(se)[, %s];", deparse(covariate_name))))
 
     } else if (color_choice == .colorByFeatNameTitle) {
         # Set the color to the selected gene
-        chosen_gene <- param_choices[[.colorByFeatName]]
-        assay_choice <- param_choices[[.colorByFeatNameAssay]]
+        chosen_gene <- x[[.colorByFeatName]]
+        assay_choice <- x[[.colorByFeatNameAssay]]
         return(list(
             label=.feature_axis_label(se, chosen_gene, assay_choice, multiline=TRUE),
             cmds=sprintf("plot.data$ColorBy <- assay(se, %s, withDimnames=FALSE)[%s, ];",
                 deparse(assay_choice), deparse(chosen_gene))))
 
     } else if (color_choice == .colorBySampNameTitle) {
-        chosen_sample <- param_choices[[.colorBySampName]]
+        chosen_sample <- x[[.colorBySampName]]
         return(list(
             label=.sample_axis_label(se, chosen_sample, assay_id=NULL),
             cmds=sprintf("plot.data$ColorBy <- logical(nrow(plot.data));\nplot.data[%s, 'ColorBy'] <- TRUE;",
@@ -249,11 +249,11 @@ setMethod(".getCommandsDataColor", "ColumnDotPlot", function(x, param_choices, s
     }
 })
 
-setMethod(".getCommandsDataShape", "ColumnDotPlot", function(x, param_choices, se) {
-    shape_choice <- param_choices[[.shapeByField]]
+setMethod(".getCommandsDataShape", "ColumnDotPlot", function(x, se) {
+    shape_choice <- x[[.shapeByField]]
 
     if (shape_choice == .shapeByColDataTitle) {
-        covariate_name <- param_choices[[.shapeByColData]]
+        covariate_name <- x[[.shapeByColData]]
         return(list(label=covariate_name,
             cmds=sprintf("plot.data$ShapeBy <- colData(se)[, %s];", deparse(covariate_name))))
 
@@ -262,11 +262,11 @@ setMethod(".getCommandsDataShape", "ColumnDotPlot", function(x, param_choices, s
     }
 })
 
-setMethod(".getCommandsDataSize", "ColumnDotPlot", function(x, param_choices, se) {
-    size_choice <- param_choices[[.sizeByField]]
+setMethod(".getCommandsDataSize", "ColumnDotPlot", function(x, se) {
+    size_choice <- x[[.sizeByField]]
 
     if (size_choice == .sizeByColDataTitle) {
-        covariate_name <- param_choices[[.sizeByColData]]
+        covariate_name <- x[[.sizeByColData]]
         return(list(label=covariate_name,
                     cmds=sprintf("plot.data$SizeBy <- colData(se)[, %s];", deparse(covariate_name))))
 
@@ -275,16 +275,16 @@ setMethod(".getCommandsDataSize", "ColumnDotPlot", function(x, param_choices, se
     }
 })
 
-setMethod(".getCommandsDataFacets", "ColumnDotPlot", function(x, param_choices, se) {
+setMethod(".getCommandsDataFacets", "ColumnDotPlot", function(x, se) {
     facet_cmds <- c()
 
-    facet_row <- param_choices[[.facetByRow]]
+    facet_row <- x[[.facetByRow]]
     if (facet_row!=.noSelection) {
         facet_cmds["FacetRow"] <- sprintf(
             "plot.data$FacetRow <- colData(se)[, %s];", deparse(facet_row))
     }
 
-    facet_column <- param_choices[[.facetByColumn]]
+    facet_column <- x[[.facetByColumn]]
     if (facet_column!=.noSelection) {
         facet_cmds["FacetColumn"] <- sprintf(
             "plot.data$FacetColumn <- colData(se)[, %s];", deparse(facet_column))

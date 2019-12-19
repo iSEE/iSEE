@@ -114,7 +114,7 @@ setGeneric(".getFullName", function(x) standardGeneric(".getFullName"))
 
 ##########################
 
-setGeneric(".getPanelPlottingFunction", function(x, all_memory, all_coordinates, se, colormap) standardGeneric(".getPanelPlottingFunction"))
+setGeneric(".getPanelPlottingFunction", function(x) standardGeneric(".getPanelPlottingFunction"))
 
 #' @export
 setGeneric(".getCommandsDataXY", function(x, param_choices) standardGeneric(".getCommandsDataXY"))

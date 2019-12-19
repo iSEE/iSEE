@@ -58,7 +58,14 @@
 #' The Panel class offers interface elements to modify all of its slots.
 #' Observers are also created to trigger rerendering upon changes to a slot or when a selection in a transmitting panel changes.
 #'
-#' Subclasses are expected to implement methods for (at least) \code{\link{.defineOutputElement}}, \code{\link{.getEncodedName}} and \code{\link{.getFullName}}.
+#' Subclasses are expected to implement methods for, at least:
+#' \itemize{
+#' \item \code{\link{.createRenderedOutput}}
+#' \item \code{\link{.defineOutputElement}}
+#' \item \code{\link{.getEncodedName}}
+#' \item \code{\link{.getFullName}}
+#' \item \code{\link{.selectionToSave}}
+#' }
 #' Subclasses that transmit selections should also implement specialized methods for selection-related parameters listed below.
 #'
 #' @section Supported methods:
@@ -210,6 +217,9 @@ setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObj
 
     .define_saved_selection_choice_observers(panel_name, by_field=.selectColSource,
         type_field=.selectColType, saved_field=.selectColSaved,
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
+    .define_saved_selection_observers(panel_name, field=.selectionToSave(x), 
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })
 

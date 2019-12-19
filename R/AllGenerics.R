@@ -154,3 +154,6 @@ setGeneric(".processTransmission", function(x, index) standardGeneric(".processT
 
 #' @export
 setGeneric(".hasActiveSelection", function(x) standardGeneric(".hasActiveSelection"))
+
+#' @param
+setGeneric(".selectionToSave", function(x) standardGeneric(".selectionToSave")) 

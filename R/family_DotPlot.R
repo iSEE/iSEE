@@ -379,6 +379,11 @@ setMethod(".hasActiveSelection", "DotPlot", function(x) {
 })
 
 #' @export
+setMethod(".selectionToSave", "DotPlot", function(x) {
+    .brushData
+})
+
+#' @export
 setMethod(".processTransmission", "DotPlot", function(x, index) {
     transmitter <- paste0(.getEncodedName(x), x[[.organizationId]])
 

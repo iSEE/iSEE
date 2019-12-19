@@ -144,7 +144,7 @@
 #'
 #' @importFrom shiny observeEvent isolate
 #' @rdname INTERNAL_multiple_select_observers
-.define_saved_selection_observers <- function(plot_name, input, session, pObjects, rObjects) {
+.define_saved_selection_observers <- function(plot_name, field, input, session, pObjects, rObjects) {
     save_field <- paste0(plot_name, "_", .multiSelectSave)
     del_field <- paste0(plot_name, "_", .multiSelectDelete)
     info_name <- paste0(plot_name, "_", .panelGeneralInfo)
@@ -155,7 +155,7 @@
     observeEvent(input[[save_field]], {
         instance <- pObjects$memory[[plot_name]]
         current <- instance[[.multiSelectHistory]]
-        to_store <- instance[[.brushData]]
+        to_store <- instance[[field]]
         if (!length(to_store) || (!.is_brush(to_store) && !to_store$closed)) {
             return(NULL)
         }
@@ -166,7 +166,7 @@
         .safe_reactive_bump(rObjects, info_name)
         .safe_reactive_bump(rObjects, plot_name)
 
-        trans_row <- .transmittedSelection(instance)=="row"
+        trans_row <- .transmittedDimension(instance)=="row"
         by_field <- if (trans_row) .selectRowSource else .selectColSource
         if (instance[[by_field]]==plot_name) {
             .safe_reactive_bump(rObjects, saved_select_name)
@@ -193,7 +193,7 @@
         .safe_reactive_bump(rObjects, info_name)
         .safe_reactive_bump(rObjects, plot_name)
 
-        trans_row <- .transmittedSelection(instance)=="row"
+        trans_row <- .transmittedDimension(instance)=="row"
         by_field <- if (trans_row) .selectRowSource else .selectColSource
         if (instance[[by_field]]==plot_name) {
             .safe_reactive_bump(rObjects, saved_select_name)

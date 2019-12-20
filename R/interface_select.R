@@ -84,7 +84,7 @@
     select_effect <- paste0(mode, id, "_", .selectEffect)
 
     .create_selection_param_box(mode, id, param_choices, row_selectable, col_selectable,
-        .radioButtonsHidden(param_choices, field=select_effect, 
+        .radioButtonsHidden(param_choices, field=.selectEffect, 
             label="Selection effect:", inline=TRUE,
             choices=c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle),
             selected=param_choices[[.selectEffect]]),

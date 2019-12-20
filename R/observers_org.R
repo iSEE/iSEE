@@ -118,8 +118,8 @@
         added <- setdiff(left, right)           
         for (a in added) {
             instance <- pObjects$memory[[a]]
-            .createParamObservers(instance, se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-            .createRenderedOutput(instance, se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
+            .createObservers(instance, se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+            .renderOutput(instance, se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
         }
 
         lost <- setdiff(right, left)

@@ -129,14 +129,14 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineOutputElement}(x, id)} returns a UI element for a brushable plot.
+#' \item \code{\link{.defineOutput}(x, id)} returns a UI element for a brushable plot.
 #' }
 #'
 #' For defining reactive expressions:
 #' \itemize{
-#' \item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for some (but not all!) of the slots.
+#' \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for some (but not all!) of the slots.
 #' This will also call the equivalent \linkS4class{Panel} method.
-#' \item \code{\link{.createRenderedOutput}(x, se, colormap, output, pObjects, rObjects)} will add a rendered plot element to \code{output}.
+#' \item \code{\link{.renderOutput}(x, se, colormap, output, pObjects, rObjects)} will add a rendered plot element to \code{output}.
 #' It will also create a rendered UI element for selection information.
 #' }
 #'
@@ -162,8 +162,8 @@
 #' [[<-,DotPlot-method
 #' .refineParameters,DotPlot-method
 #' .cacheCommonInfo,DotPlot-method
-#' .createParamObservers,DotPlot-method
-#' .hideInterfaceElement,DotPlot-method
+#' .createObservers,DotPlot-method
+#' .hideInterface,DotPlot-method
 #' .multiSelectionRestricted,DotPlot-method
 #' .multiSelectionSlot,DotPlot-method
 #' .multiSelectionCommands,DotPlot-method
@@ -286,7 +286,7 @@ setMethod(".refineParameters", "DotPlot", function(x, se) {
 })
 
 #' @export
-setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pObjects, rObjects) {
+setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
     mode <- .getEncodedName(x)
@@ -348,7 +348,7 @@ setMethod(".createParamObservers", "DotPlot", function(x, se, input, session, pO
 })
 
 #' @export
-setMethod(".defineOutputElement", "DotPlot", function(x, id) {
+setMethod(".defineOutput", "DotPlot", function(x, id) {
     mode <- .getEncodedName(x)
     .create_plot_ui(mode, x[[.organizationId]], brush_direction="xy",
         height=x[[.organizationHeight]],
@@ -358,7 +358,7 @@ setMethod(".defineOutputElement", "DotPlot", function(x, id) {
 })
 
 #' @export
-setMethod(".createRenderedOutput", "DotPlot", function(x, se, colormap, output, pObjects, rObjects) {
+setMethod(".renderOutput", "DotPlot", function(x, se, colormap, output, pObjects, rObjects) {
 # TODO: move colormap INSIDE se's metadata.
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]

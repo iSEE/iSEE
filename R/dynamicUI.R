@@ -180,7 +180,7 @@
 
         # Aggregating together everything into a box, and then into a column.
         cur_box <- do.call(box, c(
-            list(.defineOutputElement(instance), param),
+            list(.defineOutput(instance), param),
             list(uiOutput(.input_FUN(.panelGeneralInfo)), uiOutput(.input_FUN(.panelLinkInfo))),
             list(title=paste(.getFullName(instance), id), solidHeader=TRUE, width=NULL, status="danger")
         ))

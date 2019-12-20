@@ -22,14 +22,14 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.hideInterfaceElement}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
+#' \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 #' This returns \code{TRUE} for column selection parameters (\code{"SelectColSource"}, \code{"SelectColType"} and \code{"SelectColSaved"}),
 #' otherwise it dispatches to the \linkS4class{Panel} method.
 #' }
 #'
 #' For monitoring reactive expressions:
 #' \itemize{
-#' \item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers to propagate changes in the \code{Selected} to linked plots.
+#' \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers to propagate changes in the \code{Selected} to linked plots.
 #' This will also call the equivalent \linkS4class{DotPlot} method.
 #' }
 #'
@@ -51,8 +51,8 @@
 #' .cacheCommonInfo,RowTable-method
 #' .refineParameters,RowTable-method
 #' .defineInterface,RowTable-method
-#' .createParamObservers,RowTable-method
-#' .hideInterfaceElement,RowTable-method
+#' .createObservers,RowTable-method
+#' .hideInterface,RowTable-method
 #' .multiSelectionDimension,RowTable-method
 #' @name RowTable-class
 NULL
@@ -70,7 +70,7 @@ setMethod(".refineParameters", "RowTable", function(x, se) {
 })
 
 #' @export
-setMethod(".createParamObservers", "RowTable", function(x, se, input, session, pObjects, rObjects) {
+setMethod(".createObservers", "RowTable", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
     panel_name <- paste0(.getEncodedName(x), x[[.organizationId]])
@@ -79,7 +79,7 @@ setMethod(".createParamObservers", "RowTable", function(x, se, input, session, p
 })
 
 #' @export
-setMethod(".hideInterfaceElement", "RowTable", function(x, field) {
+setMethod(".hideInterface", "RowTable", function(x, field) {
     if (field %in% c(.selectColSource, .selectColType, .selectColSaved)) {
         TRUE
     } else {

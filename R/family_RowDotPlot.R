@@ -49,14 +49,14 @@
 #' \itemize{
 #' \item \code{\link{.defineInterface}(x, se, active_panels)} defines the user interface for manipulating all slots in the \linkS4class{RowDotPlot}.
 #' This will \emph{override} the \linkS4class{Panel} method.
-#' \item \code{\link{.hideInterfaceElement}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
+#' \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 #' This returns \code{TRUE} for row selection parameters (\code{"SelectRowSource"}, \code{"SelectRowType"} and \code{"SelectRowSaved"}),
 #' otherwise it dispatches to the \linkS4class{Panel} method.
 #' }
 #'
 #' For monitoring reactive expressions:
 #' \itemize{
-#' \item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots in the \linkS4class{RowDotPlot}.
+#' \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots in the \linkS4class{RowDotPlot}.
 #' This will also call the equivalent \linkS4class{DotPlot} method.
 #' }
 #'
@@ -77,8 +77,8 @@
 #' .cacheCommonInfo,RowDotPlot-method
 #' .refineParameters,RowDotPlot-method
 #' .defineInterface,RowDotPlot-method
-#' .createParamObservers,RowDotPlot-method
-#' .hideInterfaceElement,RowDotPlot-method
+#' .createObservers,RowDotPlot-method
+#' .hideInterface,RowDotPlot-method
 #' .multiSelectionDimension,RowDotPlot-method
 #' @name RowDotPlot-class
 NULL
@@ -182,7 +182,7 @@ setMethod(".defineInterface", "RowDotPlot", function(x, se, select_info) {
 })
 
 #' @export
-setMethod(".hideInterfaceElement", "RowDotPlot", function(x, field) {
+setMethod(".hideInterface", "RowDotPlot", function(x, field) {
     if (field %in% c(.selectColSource, .selectColType, .selectColSaved)) {
         TRUE
     } else {
@@ -191,7 +191,7 @@ setMethod(".hideInterfaceElement", "RowDotPlot", function(x, field) {
 })
 
 #' @export
-setMethod(".createParamObservers", "RowDotPlot", function(x, se, input, session, pObjects, rObjects) {
+setMethod(".createObservers", "RowDotPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
     mode <- .getEncodedName(x)

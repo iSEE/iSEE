@@ -63,7 +63,7 @@
         ...
     )
 
-    if (!.hideInterfaceElement(param_choices, .multiSelectHistory)) {
+    if (!.hideInterface(param_choices, .multiSelectHistory)) {
         args <- c(args,
             list(
                 hr(),

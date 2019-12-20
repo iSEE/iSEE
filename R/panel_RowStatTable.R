@@ -34,7 +34,7 @@
 #'
 #' @name RowStatTable
 #' @aliases RowStatTable RowStatTable-class
-#' .createRenderedOutput,RowStatTable-method
+#' .renderOutput,RowStatTable-method
 #' .getEncodedName,RowStatTable-method 
 NULL
 

@@ -45,7 +45,7 @@
 #'
 #' For monitoring reactive expressions:
 #' \itemize{
-#' \item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
+#' \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
 #' This will also call the equivalent \linkS4class{ColumnDotPlot} method.
 #' }
 #'
@@ -95,7 +95,7 @@
 #' .refineParameters,RedDimPlot-method
 #' .cacheCommonInfo,RedDimPlot-method
 #' .defineInterface,RedDimPlot-method
-#' .createParamObservers,RedDimPlot-method
+#' .createObservers,RedDimPlot-method
 #' .getEncodedName,RedDimPlot-method
 #' .getFullName,RedDimPlot-method
 #' .getCommandsDataXY,RedDimPlot-method
@@ -227,7 +227,7 @@ setMethod(".defineInterface", "RedDimPlot", function(x, se, select_info) {
 #' @importFrom SingleCellExperiment reducedDim
 #' @importFrom shiny observeEvent updateSelectInput
 #' @importFrom methods callNextMethod
-setMethod(".createParamObservers", "RedDimPlot", function(x, se, input, session, pObjects, rObjects) {
+setMethod(".createObservers", "RedDimPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
     mode <- .getEncodedName(x)

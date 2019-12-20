@@ -49,14 +49,14 @@
 #' \itemize{
 #' \item \code{\link{.defineInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
 #' This will \emph{override} the \linkS4class{Panel} method.
-#' \item \code{\link{.hideInterfaceElement}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
+#' \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 #' This returns \code{TRUE} for row selection parameters (\code{"SelectRowSource"}, \code{"SelectRowType"} and \code{"SelectRowSaved"}),
 #' otherwise it dispatches to the \linkS4class{Panel} method.
 #' }
 #'
 #' For monitoring reactive expressions:
 #' \itemize{
-#' \item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
+#' \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
 #' This will also call the equivalent \linkS4class{DotPlot} method.
 #' }
 #'
@@ -77,8 +77,8 @@
 #' .cacheCommonInfo,ColumnDotPlot-method
 #' .refineParameters,ColumnDotPlot-method
 #' .defineInterface,ColumnDotPlot-method
-#' .createParamObservers,ColumnDotPlot-method
-#' .hideInterfaceElement,ColumnDotPlot-method
+#' .createObservers,ColumnDotPlot-method
+#' .hideInterface,ColumnDotPlot-method
 #' .multiSelectionDimension,ColumnDotPlot-method
 #' @name ColumnDotPlot-class
 NULL
@@ -182,7 +182,7 @@ setMethod(".defineInterface", "ColumnDotPlot", function(x, se, select_info) {
 })
 
 #' @export
-setMethod(".hideInterfaceElement", "ColumnDotPlot", function(x, field) {
+setMethod(".hideInterface", "ColumnDotPlot", function(x, field) {
     if (field %in% c(.selectRowSource, .selectRowType, .selectRowSaved)) {
         TRUE
     } else {
@@ -191,7 +191,7 @@ setMethod(".hideInterfaceElement", "ColumnDotPlot", function(x, field) {
 })
 
 #' @export
-setMethod(".createParamObservers", "ColumnDotPlot", function(x, se, input, session, pObjects, rObjects) {
+setMethod(".createObservers", "ColumnDotPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
     mode <- .getEncodedName(x)

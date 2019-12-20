@@ -60,8 +60,8 @@
 #'
 #' Subclasses are expected to implement methods for, at least:
 #' \itemize{
-#' \item \code{\link{.createRenderedOutput}}
-#' \item \code{\link{.defineOutputElement}}
+#' \item \code{\link{.renderOutput}}
+#' \item \code{\link{.defineOutput}}
 #' \item \code{\link{.getEncodedName}}
 #' \item \code{\link{.getFullName}}
 #' \item \code{\link{.multiSelectionToSave}}
@@ -80,7 +80,7 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.hideInterfaceElement}(x, field)} will always return \code{FALSE}.
+#' \item \code{\link{.hideInterface}(x, field)} will always return \code{FALSE}.
 #' }
 #'
 #' For controlling selections:
@@ -102,8 +102,8 @@
 #' [[<-,Panel-method
 #' .refineParameters,Panel-method
 #' .cacheCommonInfo,Panel-method
-#' .createParamObservers,Panel-method
-#' .hideInterfaceElement,Panel-method
+#' .createObservers,Panel-method
+#' .hideInterface,Panel-method
 #' .multiSelectionRestricted,Panel-method
 #' .multiSelectionDimension,Panel-method 
 NULL
@@ -184,7 +184,7 @@ setMethod(".defineInterface", "Panel", function(x, se, select_info) {
 })
 
 #' @export
-setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObjects, rObjects) {
+setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects, rObjects) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
     panel_name <- paste0(mode, id)
@@ -219,7 +219,7 @@ setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObj
 })
 
 #' @export
-setMethod(".hideInterfaceElement", "Panel", function(x, field) FALSE)
+setMethod(".hideInterface", "Panel", function(x, field) FALSE)
 
 #' @export
 setMethod(".multiSelectionRestricted", "Panel", function(x) TRUE)

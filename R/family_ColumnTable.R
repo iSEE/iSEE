@@ -22,14 +22,14 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.hideInterfaceElement}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
+#' \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 #' This returns \code{TRUE} for row selection parameters (\code{"SelectRowSource"}, \code{"SelectRowType"} and \code{"SelectRowSaved"}),
 #' otherwise it dispatches to the \linkS4class{Panel} method.
 #' }
 #'
 #' For monitoring reactive expressions:
 #' \itemize{
-#' \item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers to propagate changes in the \code{Selected} to linked plots.
+#' \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers to propagate changes in the \code{Selected} to linked plots.
 #' This will also call the equivalent \linkS4class{DotPlot} method.
 #' }
 #'
@@ -51,8 +51,8 @@
 #' .cacheCommonInfo,ColumnTable-method
 #' .refineParameters,ColumnTable-method
 #' .defineInterface,ColumnTable-method
-#' .createParamObservers,ColumnTable-method
-#' .hideInterfaceElement,ColumnTable-method
+#' .createObservers,ColumnTable-method
+#' .hideInterface,ColumnTable-method
 #' .multiSelectionDimension,ColumnTable-method
 #' @name ColumnTable-class
 NULL
@@ -70,7 +70,7 @@ setMethod(".refineParameters", "ColumnTable", function(x, se) {
 })
 
 #' @export
-setMethod(".createParamObservers", "ColumnTable", function(x, se, input, session, pObjects, rObjects) {
+setMethod(".createObservers", "ColumnTable", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
     panel_name <- paste0(.getEncodedName(x), x[[.organizationId]])
@@ -82,7 +82,7 @@ setMethod(".createParamObservers", "ColumnTable", function(x, se, input, session
 setMethod(".multiSelectionDimension", "ColumnTable", function(x) "column")
 
 #' @export
-setMethod(".hideInterfaceElement", "ColumnTable", function(x, field) {
+setMethod(".hideInterface", "ColumnTable", function(x, field) {
     if (field %in% c(.selectRowSource, .selectRowType, .selectRowSaved)) {
         TRUE
     } else {

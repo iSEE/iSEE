@@ -34,7 +34,7 @@
 #'
 #' @name ColStatTable
 #' @aliases ColStatTable ColStatTable-class
-#' .createRenderedOutput,ColStatTable-method
+#' .renderOutput,ColStatTable-method
 #' .getEncodedName,ColStatTable-method 
 NULL
 

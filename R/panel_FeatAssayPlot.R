@@ -52,7 +52,7 @@
 #'
 #' For monitoring reactive expressions:
 #' \itemize{
-#' \item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
+#' \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
 #' This will also call the equivalent \linkS4class{ColumnDotPlot} method.
 #' }
 #'
@@ -105,7 +105,7 @@
 #' @aliases FeatAssayPlot FeatAssayPlot-class
 #' .refineParameters,FeatAssayPlot-method
 #' .defineInterface,FeatAssayPlot-method
-#' .createParamObservers,FeatAssayPlot-method
+#' .createObservers,FeatAssayPlot-method
 #' .getEncodedName,FeatAssayPlot-method
 #' .getFullName,FeatAssayPlot-method
 #' .getCommandsDataXY,FeatAssayPlot-method
@@ -248,7 +248,7 @@ setMethod(".defineInterface", "FeatAssayPlot", function(x, se, select_info) {
 #' @export
 #' @importFrom shiny observeEvent updateSelectInput
 #' @importFrom methods callNextMethod
-setMethod(".createParamObservers", "FeatAssayPlot", function(x, se, input, session, pObjects, rObjects) {
+setMethod(".createObservers", "FeatAssayPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
     mode <- .getEncodedName(x)

@@ -44,7 +44,7 @@
 #'
 #' For monitoring reactive expressions:
 #' \itemize{
-#' \item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
+#' \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
 #' This will also call the equivalent \linkS4class{ColumnDotPlot} method.
 #' }
 #'
@@ -97,7 +97,7 @@
 #' @aliases ColDataPlot ColDataPlot-class
 #' .refineParameters,ColDataPlot-method
 #' .defineInterface,ColDataPlot-method
-#' .createParamObservers,ColDataPlot-method
+#' .createObservers,ColDataPlot-method
 #' .getEncodedName,ColDataPlot-method
 #' .getFullName,ColDataPlot-method
 #' .getCommandsDataXY,ColDataPlot-method
@@ -193,7 +193,7 @@ setMethod(".defineInterface", "ColDataPlot", function(x, se, select_info) {
 #' @export
 #' @importFrom shiny observeEvent updateSelectInput
 #' @importFrom methods callNextMethod
-setMethod(".createParamObservers", "ColDataPlot", function(x, se, input, session, pObjects, rObjects) {
+setMethod(".createObservers", "ColDataPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
     mode <- .getEncodedName(x)

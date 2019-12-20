@@ -1,5 +1,5 @@
 .hide_this_thing <- function(x, field, FUN, ...) {
-    if (.hideInterfaceElement(x, field)) {
+    if (.hideInterface(x, field)) {
         NULL        
     } else {
         FUN(paste0(.getEncodedName(x), x[[.organizationId]], "_", field), ...)

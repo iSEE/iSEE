@@ -41,7 +41,7 @@
 #' @docType methods
 #' @aliases HeatMapPlot HeatMapPlot-class
 #' .defineInterface,HeatMapPlot-method
-#' .createParamObservers,HeatMapPlot-method
+#' .createObservers,HeatMapPlot-method
 #' @name HeatMapPlot
 NULL
 
@@ -271,7 +271,7 @@ setMethod(".defineInterface", "HeatMapPlot", function(x, se, select_info) {
 })
 
 #' @export
-setMethod(".createParamObservers", "HeatMapPlot", function(x, se, input, session, pObjects, rObjects) {
+setMethod(".createObservers", "HeatMapPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
     mode <- .getEncodedName(x)
@@ -446,7 +446,7 @@ setMethod(".createParamObservers", "HeatMapPlot", function(x, se, input, session
 }
 
 #' @export
-setMethod(".defineOutputElement", "HeatMapPlot", function(x) {
+setMethod(".defineOutput", "HeatMapPlot", function(x) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
     plot_name <- paste0(mode, id)
@@ -461,7 +461,7 @@ setMethod(".getFullName", "HeatMapPlot", function(x) "Heatmap")
 
 #' @export
 #' @importFrom shiny renderPlot renderUI renderTable
-setMethod(".createRenderedOutput", "HeatMapPlot", function(x, se, colormap, output, pObjects, rObjects) {
+setMethod(".renderOutput", "HeatMapPlot", function(x, se, colormap, output, pObjects, rObjects) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]] 
     plot_name <- paste0(mode, id)

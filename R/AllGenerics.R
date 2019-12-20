@@ -41,7 +41,7 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #' where each parameter box can contain arbitrary numbers of UI elements for interactive setting of various parameters.
 #'
 #' @section Creating parameter observers:
-#' The \code{.createParamObservers} generic takes the following arguments:
+#' The \code{.createObservers} generic takes the following arguments:
 #' \itemize{
 #' \item \code{x}, an instance of a Panel subclass.
 #' \item \code{id}, integer scalar specifying the index of the current panel.
@@ -54,7 +54,7 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #' It is expected to set up all observers required to respond to input changes in the UI elements set up by \code{\link{.defineInterface}}.
 #'
 #' @section Defining the output element:
-#' The \code{.defineOutputElement} generic takes the following arguments:
+#' The \code{.defineOutput} generic takes the following arguments:
 #' \itemize{
 #' \item \code{x}, an instance of a Panel subclass.
 #' \item \code{id}, integer scalar specifying the index of the current panel.
@@ -63,7 +63,7 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #' It is expected to return an output element like \code{\link{plotOutput}}.
 #'
 #' @section Defining the rendered output:
-#' The \code{.defineRenderedOutput} generic takes the following arguments:
+#' The \code{.renderOutput} generic takes the following arguments:
 #' \itemize{
 #' \item \code{x}, an instance of a Panel subclass.
 #' \item \code{id}, integer scalar specifying the index of the current panel.
@@ -75,8 +75,8 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #' @author Aaron Lun
 #'
 #' @docType methods
-#' @aliases .defineInterface .createParamObservers
-#' .defineOutputElement .createRenderedOutput
+#' @aliases .defineInterface .createObservers
+#' .defineOutput .renderOutput
 #' Panel-class
 #' @name Panel
 NULL
@@ -87,21 +87,21 @@ setGeneric(".defineInterface", function(x, se, select_info) {
 })
 
 #' @export
-setGeneric(".hideInterfaceElement", function(x, field) standardGeneric(".hideInterfaceElement"))
+setGeneric(".hideInterface", function(x, field) standardGeneric(".hideInterface"))
 
 #' @export
-setGeneric(".createParamObservers", function(x, se, input, session, pObjects, rObjects) {
-    standardGeneric(".createParamObservers")
+setGeneric(".createObservers", function(x, se, input, session, pObjects, rObjects) {
+    standardGeneric(".createObservers")
 })
 
 #' @export
-setGeneric(".defineOutputElement", function(x, ...) {
-    standardGeneric(".defineOutputElement")
+setGeneric(".defineOutput", function(x, ...) {
+    standardGeneric(".defineOutput")
 })
 
 #' @export
-setGeneric(".createRenderedOutput", function(x, se, ..., output, pObjects, rObjects) {
-    standardGeneric(".createRenderedOutput")
+setGeneric(".renderOutput", function(x, se, ..., output, pObjects, rObjects) {
+    standardGeneric(".renderOutput")
 })
 
 ##########################

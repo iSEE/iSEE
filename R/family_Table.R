@@ -29,14 +29,14 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineOutputElement}(x, id)} returns a UI element for a \code{\link[DT]{dataTableOutput}} widget.
+#' \item \code{\link{.defineOutput}(x, id)} returns a UI element for a \code{\link[DT]{dataTableOutput}} widget.
 #' }
 #'
 #' For defining reactive expressions:
 #' \itemize{
-#' \item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all of the slots. 
+#' \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all of the slots. 
 #' This will also call the equivalent \linkS4class{Panel} method.
-#' \item \code{\link{.createRenderedOutput}(x, se, colormap, output, pObjects, rObjects)} will add a rendered \code{\link{datatable}} object to \code{output}.
+#' \item \code{\link{.renderOutput}(x, se, colormap, output, pObjects, rObjects)} will add a rendered \code{\link{datatable}} object to \code{output}.
 #' It will also create a rendered UI element for selection information.
 #' }
 #'
@@ -56,10 +56,10 @@
 #' @name Table-class
 #' @aliases
 #' initialize,Table-method
-#' .createParamObservers,Table-method
-#' .createRenderedOutput,Table-method
-#' .defineOutputElement,Table-method
-#' .hideInterfaceElement,Table-method
+#' .createObservers,Table-method
+#' .renderOutput,Table-method
+#' .defineOutput,Table-method
+#' .hideInterface,Table-method
 #' .multiSelectionCommands,Table-method
 #' .multiSelectionHasActive,Table-method
 NULL
@@ -109,7 +109,7 @@ setMethod(".singleSelectionValue", "Table", function(x, pObjects) {
 
 #' @export
 #' @importFrom DT dataTableOutput
-setMethod(".defineOutputElement", "Table", function(x, ...) {
+setMethod(".defineOutput", "Table", function(x, ...) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
     panel_name <- paste0(mode, id)
@@ -119,7 +119,7 @@ setMethod(".defineOutputElement", "Table", function(x, ...) {
 #' @export
 #' @importFrom shiny observeEvent
 #' @importFrom utils head
-setMethod(".createParamObservers", "Table", function(x, se, input, session, pObjects, rObjects) {
+setMethod(".createObservers", "Table", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
     mode <- .getEncodedName(x)
@@ -133,7 +133,7 @@ setMethod(".createParamObservers", "Table", function(x, se, input, session, pObj
 
 #' @export
 #' @importFrom SummarizedExperiment colData
-setMethod(".createRenderedOutput", "Table", function(x, se, ..., output, pObjects, rObjects) {
+setMethod(".renderOutput", "Table", function(x, se, ..., output, pObjects, rObjects) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
     .define_table_output(mode, id, FUN=.getTableFunction(x),
@@ -141,7 +141,7 @@ setMethod(".createRenderedOutput", "Table", function(x, se, ..., output, pObject
 })
 
 #' @export
-setMethod(".hideInterfaceElement", "Table", function(x, field) {
+setMethod(".hideInterface", "Table", function(x, field) {
     if (field %in% .multiSelectHistory) {
         TRUE
     } else {

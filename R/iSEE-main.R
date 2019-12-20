@@ -418,9 +418,9 @@ iSEE <- function(se,
 
             for (idx in seq_along(pObjects$memory)) {
                 instance <- pObjects$memory[[idx]]
-                .createParamObservers(instance, se=se, input=input,
+                .createObservers(instance, se=se, input=input,
                     session=session, pObjects=pObjects, rObjects=rObjects)
-                .createRenderedOutput(instance, se=se, colormap=colormap,
+                .renderOutput(instance, se=se, colormap=colormap,
                     output=output, pObjects=pObjects, rObjects=rObjects)
             }
 

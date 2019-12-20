@@ -205,7 +205,7 @@
         }
 
         # Updating children.
-        .save_reactive_bump(rObjects, resaved_name)
+        .safe_reactive_bump(rObjects, resaved_name)
 
         .disableButtonIf(
             del_field,

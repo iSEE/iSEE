@@ -197,7 +197,7 @@ setValidity2("RedDimPlot", function(object) {
 #' @importFrom SingleCellExperiment reducedDim reducedDimNames
 #' @importFrom shiny selectInput
 #' @importFrom methods callNextMethod
-setMethod(".defineInterface", "RedDimPlot", function(x, se, active_panels) {
+setMethod(".defineInterface", "RedDimPlot", function(x, se, select_info) {
     cur_reddim <- x[[.redDimType]]
     max_dim <- ncol(reducedDim(se, cur_reddim))
     choices <- seq_len(max_dim)

@@ -510,7 +510,7 @@ height_limits <- c(400L, 1000L)
     rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
 
     # Destroying any brushes or lasso waypoints.
-    has_active <- .any_active_selection(pObjects$memory[[plot_name]])
+    has_active <- .multiSelectionHasActive(pObjects$memory[[plot_name]])
     pObjects$memory[[plot_name]][[.brushData]] <- list()
 
     # Destroying history.

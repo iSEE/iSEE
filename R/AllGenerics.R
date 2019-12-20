@@ -162,4 +162,4 @@ setGeneric(".multiSelectionSlot", function(x) standardGeneric(".multiSelectionSl
 setGeneric(".singleSelectionDimension", function(x) standardGeneric(".singleSelectionDimension"))
 
 #' @export 
-setGeneric(".singleSelectionValue", function(x, pObjects) standardGeneric(".multiSelectionValue"))
+setGeneric(".singleSelectionValue", function(x, pObjects) standardGeneric(".singleSelectionValue"))

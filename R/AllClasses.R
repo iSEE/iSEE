@@ -198,7 +198,7 @@ collated[.visualParamBoxOpen] <- "logical"
 collated[.visualParamChoice] <- "character"
 
 .contourColor <- "ContourColor"
-.contourAdd <- "ContourAdd" # TODO: why is this a *Title?
+.contourAdd <- "ContourAdd" 
 
 collated[.contourAdd] <- "logical"
 collated[.contourColor] <- "character"

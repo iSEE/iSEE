@@ -148,7 +148,7 @@
     sdims <- vapply(memory, FUN=.singleSelectionDimension, "")
     single_sources <- list(
         row=c(.noSelection, all_names[sdims=="row"]),
-        column=c(.noSelection, all_names[sdims=="column"]
+        column=c(.noSelection, all_names[sdims=="column"])
     )
 
     for (i in seq_along(memory)) {
@@ -162,7 +162,7 @@
             single=lapply(single_sources, FUN=setdiff, y=plot_name),
             multi=lapply(multi_sources, FUN=setdiff, y=plot_name)
         )
-        all.params <- .defineInterace(instance, se=se, select_info=select_info) 
+        all.params <- .defineInterface(instance, se=se, select_info=select_info) 
         param <- do.call(tags$div, c(list(class="panel-group", role="tablist"), all.params))
 
         # Deciding whether to continue on the current row, or start a new row.

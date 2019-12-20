@@ -36,7 +36,7 @@
 
     changed <- FALSE
     if (select_type==.selectMultiActiveTitle || select_type==.selectMultiUnionTitle) {
-        if (.multiSelectHasActive(transmitter)) {
+        if (.multiSelectionHasActive(transmitter)) {
             changed <- TRUE
         }
 

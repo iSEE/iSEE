@@ -840,7 +840,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         }
 
         for (i in select_sources) {
-            cur_cmds <- .processTransmission(transmit_param, i)
+            cur_cmds <- .multiSelectionCommands(transmit_param, i)
             if (is.null(cur_cmds)) {
                 next
             }

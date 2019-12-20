@@ -64,7 +64,7 @@
 #' \item \code{\link{.defineOutputElement}}
 #' \item \code{\link{.getEncodedName}}
 #' \item \code{\link{.getFullName}}
-#' \item \code{\link{.selectionToSave}}
+#' \item \code{\link{.multiSelectionToSave}}
 #' }
 #' Subclasses that transmit selections should also implement specialized methods for selection-related parameters listed below.
 #'
@@ -85,9 +85,9 @@
 #'
 #' For controlling selections:
 #' \itemize{
-#' \item \code{\link{.restrictsSelection}(x)} will always return \code{TRUE}.
-#' \item \code{\link{.transmittedDimension}(x)} will always return \code{"none"}.
-#' \item \code{\link{.hasActiveSelection}(x)} will always return \code{FALSE}.
+#' \item \code{\link{.multiSelectionRestricted}(x)} will always return \code{TRUE}.
+#' \item \code{\link{.multiSelectionDimension}(x)} will always return \code{"none"}.
+#' \item \code{\link{.multiSelectionHasActive}(x)} will always return \code{FALSE}.
 #' }
 #'
 #' @author Aaron Lun
@@ -104,8 +104,8 @@
 #' .cacheCommonInfo,Panel-method
 #' .createParamObservers,Panel-method
 #' .hideInterfaceElement,Panel-method
-#' .restrictsSelection,Panel-method
-#' .transmittedDimension,Panel-method 
+#' .multiSelectionRestricted,Panel-method
+#' .multiSelectionDimension,Panel-method 
 NULL
 
 #' @export
@@ -219,7 +219,7 @@ setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObj
         type_field=.selectColType, saved_field=.selectColSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_saved_selection_observers(panel_name, field=.selectionToSave(x), 
+    .define_saved_selection_observers(panel_name, field=.multiSelectionToSave(x), 
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })
 
@@ -227,10 +227,10 @@ setMethod(".createParamObservers", "Panel", function(x, se, input, session, pObj
 setMethod(".hideInterfaceElement", "Panel", function(x, field) FALSE)
 
 #' @export
-setMethod(".restrictsSelection", "Panel", function(x) TRUE)
+setMethod(".multiSelectionRestricted", "Panel", function(x) TRUE)
 
 #' @export
-setMethod(".transmittedDimension", "Panel", function(x) "none")
+setMethod(".multiSelectionDimension", "Panel", function(x) "none")
 
 #' @export
-setMethod(".hasActiveSelection", "Panel", function(x) FALSE)
+setMethod(".multiSelectionHasActive", "Panel", function(x) FALSE)

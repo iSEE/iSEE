@@ -142,9 +142,10 @@
 #'
 #' For controlling selections:
 #' \itemize{
-#' \item \code{\link{.restrictsSelection}(x)} returns a logical scalar indicating whether \code{x} is restricting the plotted points to those that were selected in a transmitting panel, i.e., is \code{SelectEffect="Restrict"}.
-#' \item \code{\link{.hasActiveSelection}(x)} returns a logical scalar indicating whether \code{x} has an active brush or lasso.
-#' \item \code{\link{.processSelection}(x, index)} returns a character vector of R expressions that - when evaluated - return a character vector of the names of selected points in the active and/or saved selections of \code{x}.
+#' \item \code{\link{.multiSelectionRestricted}(x)} returns a logical scalar indicating whether \code{x} is restricting the plotted points to those that were selected in a transmitting panel, i.e., is \code{SelectEffect="Restrict"}.
+#' \item \code{\link{.multiSelectionHasActive}(x)} returns a logical scalar indicating whether \code{x} has an active brush or lasso.
+#' \item \code{\link{.multiSelectionCommands}(x, index)} returns a character vector of R expressions that - when evaluated - return a character vector of the names of selected points in the active and/or saved selections of \code{x}.
+#' \item \code{\link{.multiSelectionSlot}(x)}  returns \code{"BrushData"}.
 #' }
 #'
 #' Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.
@@ -163,8 +164,10 @@
 #' .cacheCommonInfo,DotPlot-method
 #' .createParamObservers,DotPlot-method
 #' .hideInterfaceElement,DotPlot-method
-#' .restrictsSelection,DotPlot-method
-#' .transmittedDimension,DotPlot-method
+#' .multiSelectionRestricted,DotPlot-method
+#' .multiSelectionSlot,DotPlot-method
+#' .multiSelectionCommands,DotPlot-method
+#' .multiSelectionDimension,DotPlot-method
 NULL
 
 #' @export
@@ -369,22 +372,22 @@ setMethod(".createRenderedOutput", "DotPlot", function(x, se, colormap, output, 
 })
 
 #' @export
-setMethod(".restrictsSelection", "DotPlot", function(x) {
+setMethod(".multiSelectionRestricted", "DotPlot", function(x) {
     x[[.selectEffect]]==.selectRestrictTitle
 })
 
 #' @export
-setMethod(".hasActiveSelection", "DotPlot", function(x) {
+setMethod(".multiSelectionHasActive", "DotPlot", function(x) {
     length(x[[.brushData]]) > 0L
 })
 
 #' @export
-setMethod(".selectionToSave", "DotPlot", function(x) {
+setMethod(".multiSelectionSlot", "DotPlot", function(x) {
     .brushData
 })
 
 #' @export
-setMethod(".processTransmission", "DotPlot", function(x, index) {
+setMethod(".multiSelectionCommands", "DotPlot", function(x, index) {
     transmitter <- paste0(.getEncodedName(x), x[[.organizationId]])
 
     if (is.na(index)) {

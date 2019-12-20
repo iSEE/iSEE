@@ -28,12 +28,6 @@
     colsearch_field <- paste0(panel_name, .int_statTableColSearch)
     observeEvent(input[[colsearch_field]], {
         search <- input[[colsearch_field]]
-
-        # Usually getting rid of the secret column added to filter the table.
-        if (ncol(pObjects$coordinates[[panel_name]]) < length(search)) {
-            search <- head(search, -1)
-        }
-
         pObjects$memory[[panel_name]][[.statTableColSearch]] <- search
         .safe_reactive_bump(rObjects, act_name)
     })

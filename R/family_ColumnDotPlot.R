@@ -62,7 +62,7 @@
 #'
 #' For controlling selections:
 #' \itemize{
-#' \item \code{\link{.transmittedDimension}(x)} returns \code{"column"} to indicate that a column selection is being transmitted.
+#' \item \code{\link{.multiSelectionDimension}(x)} returns \code{"column"} to indicate that a column selection is being transmitted.
 #' }
 #'
 #' Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.
@@ -79,7 +79,7 @@
 #' .defineParamInterface,ColumnDotPlot-method
 #' .createParamObservers,ColumnDotPlot-method
 #' .hideInterfaceElement,ColumnDotPlot-method
-#' .transmittedDimension,ColumnDotPlot-method
+#' .multiSelectionDimension,ColumnDotPlot-method
 #' @name ColumnDotPlot-class
 NULL
 
@@ -217,7 +217,7 @@ setMethod(".createParamObservers", "ColumnDotPlot", function(x, se, input, sessi
 })
 
 #' @export
-setMethod(".transmittedDimension", "ColumnDotPlot", function(x) "column")
+setMethod(".multiSelectionDimension", "ColumnDotPlot", function(x) "column")
 
 setMethod(".getCommandsDataColor", "ColumnDotPlot", function(x, se) {
     color_choice <- x[[.colorByField]]

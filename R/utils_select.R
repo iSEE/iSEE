@@ -77,7 +77,7 @@
 #' \code{\link{.transmitted_selection}},
 #' \code{\link{iSEE}}
 .any_active_selection <- function(panel) {
-    .hasActiveSelection(panel) # TODO: get rid of this function.
+    .multiSelectionHasActive(panel) # TODO: get rid of this function.
 }
 
 #' @rdname INTERNAL_any_point_selection

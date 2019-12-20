@@ -40,7 +40,7 @@
         instance <- pObjects$memory[[panel_name]]
         has_active <- .any_active_selection(instance)
         has_saved <- .any_saved_selection(instance)
-        transmit_dim <- .transmittedDimension(instance)
+        transmit_dim <- .multiSelectionDimension(instance)
         if (transmit_dim=="row") {
             type_field <- .selectRowType
             saved_field <- .selectRowSaved
@@ -73,7 +73,7 @@
                 .safe_reactive_bump(rObjects, child_plot)
 
                 # To warrant replotting of the grandchildren, the child must itself be restricted.
-                if (.restrictsSelection(child_instance)) {
+                if (.multiSelectionRestricted(child_instance)) {
                     .safe_reactive_bump(rObjects, paste0(child_plot, "_", .panelRepopulated))
                 }
             }
@@ -89,7 +89,7 @@
 
     observeEvent(rObjects[[act_name]], {
         instance <- pObjects$memory[[panel_name]]
-        transmit_dim <- .transmittedDimension(instance)
+        transmit_dim <- .multiSelectionDimension(instance)
         if (transmit_dim=="row") {
             type_field <- .selectRowType
             saved_field <- .selectRowSaved
@@ -109,7 +109,7 @@
                 .safe_reactive_bump(rObjects, child_plot)
 
                 # To warrant replotting of the grandchildren, the child must itself be restricted.
-                if (.restrictsSelection(child_instance)) {
+                if (.multiSelectionRestricted(child_instance)) {
                     .safe_reactive_bump(rObjects, paste0(child_plot, "_", .panelRepopulated))
                 }
             }
@@ -126,7 +126,7 @@
     observeEvent(rObjects[[save_name]], {
         instance <- pObjects$memory[[panel_name]]
         Nsaved <- length(instance[[.multiSelectHistory]])
-        transmit_dim <- .transmittedDimension(instance)
+        transmit_dim <- .multiSelectionDimension(instance)
         if (transmit_dim=="row") {
             type_field <- .selectRowType
             saved_field <- .selectRowSaved
@@ -151,7 +151,7 @@
                 .safe_reactive_bump(rObjects, child_plot)
 
                 # To warrant replotting of the grandchildren, the child must itself be restricted.
-                if (.restrictsSelection(child_instance)) {
+                if (.multiSelectionRestricted(child_instance)) {
                     .safe_reactive_bump(rObjects, paste0(child_plot, "_", .panelRepopulated))
                 }
             }

@@ -35,7 +35,7 @@
 #'
 #' For controlling selections:
 #' \itemize{
-#' \item \code{\link{.transmittedDimension}(x)} returns \code{"column"} to indicate that a column selection is being transmitted.
+#' \item \code{\link{.multiSelectionDimension}(x)} returns \code{"column"} to indicate that a column selection is being transmitted.
 #' }
 #'
 #' Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.
@@ -53,7 +53,7 @@
 #' .defineParamInterface,ColumnTable-method
 #' .createParamObservers,ColumnTable-method
 #' .hideInterfaceElement,ColumnTable-method
-#' .transmittedDimension,ColumnTable-method
+#' .multiSelectionDimension,ColumnTable-method
 #' @name ColumnTable-class
 NULL
 
@@ -79,7 +79,7 @@ setMethod(".createParamObservers", "ColumnTable", function(x, se, input, session
 })
 
 #' @export
-setMethod(".transmittedDimension", "ColumnTable", function(x) "column")
+setMethod(".multiSelectionDimension", "ColumnTable", function(x) "column")
 
 #' @export
 setMethod(".hideInterfaceElement", "ColumnTable", function(x, field) {

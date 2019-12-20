@@ -144,16 +144,22 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 ###########################
 
 #' @export
-setGeneric(".restrictsSelection", function(x) standardGeneric(".restrictsSelection"))
+setGeneric(".multiSelectionCommands", function(x, index) standardGeneric(".multiSelectionCommands"))
 
 #' @export
-setGeneric(".transmittedDimension", function(x) standardGeneric(".transmittedDimension"))
+setGeneric(".multiSelectionRestricted", function(x) standardGeneric(".multiSelectionRestricted"))
+
+#' @export 
+setGeneric(".multiSelectionDimension", function(x) standardGeneric(".multiSelectionDimension"))
 
 #' @export
-setGeneric(".processTransmission", function(x, index) standardGeneric(".processTransmission"))
+setGeneric(".multiSelectionHasActive", function(x) standardGeneric(".multiSelectionHasActive"))
 
 #' @export
-setGeneric(".hasActiveSelection", function(x) standardGeneric(".hasActiveSelection"))
+setGeneric(".multiSelectionSlot", function(x) standardGeneric(".multiSelectionSlot")) 
 
-#' @param
-setGeneric(".selectionToSave", function(x) standardGeneric(".selectionToSave")) 
+#' @export
+setGeneric(".singleSelectionDimension", function(x) standardGeneric(".singleSelectionDimension"))
+
+#' @export 
+setGeneric(".singleSelectionValue", function(x, pObjects) standardGeneric(".multiSelectionValue"))

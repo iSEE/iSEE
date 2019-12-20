@@ -210,7 +210,7 @@
     all_names <- paste0(all_names, all_ids)
     names(all_names) <- paste(vapply(memory, .getFullName, ""), all_ids)
 
-    tdims <- vapply(memory, FUN=.transmittedDimension, "")
+    tdims <- vapply(memory, FUN=.multiSelectionDimension, "")
     list(row=all_names[tdims=="row"], column=all_names[tdims=="column"])
 }
 

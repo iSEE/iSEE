@@ -84,7 +84,7 @@
 
         # Updating children, if the current panel is set to restrict
         # (and thus the point population changes with a new transmitted selection).
-        if (.restrictsSelection(pObjects$memory[[panel_name]])) {
+        if (.multiSelectionRestricted(pObjects$memory[[panel_name]])) {
             .safe_reactive_bump(rObjects, repop_name)
         }
     }, ignoreInit=TRUE)
@@ -174,7 +174,7 @@
         }
 
         .safe_reactive_bump(rObjects, panel_name)
-        if (.restrictsSelection(pObjects$memory[[panel_name]])) {
+        if (.multiSelectionRestricted(pObjects$memory[[panel_name]])) {
             .safe_reactive_bump(rObjects, repop_name)
         }
     }, ignoreInit=TRUE)
@@ -199,7 +199,7 @@
 
         # Switch of 'Saved' will ALWAYS change the current plot, so no need for other checks.
         .safe_reactive_bump(rObjects, panel_name)
-        if (.restrictsSelection(pObjects$memory[[panel_name]])) {
+        if (.multiSelectionRestricted(pObjects$memory[[panel_name]])) {
             .safe_reactive_bump(rObjects, repop_name)
         }
     }, ignoreInit=TRUE)

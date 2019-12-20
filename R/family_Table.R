@@ -42,9 +42,9 @@
 #'
 #' For controlling selections: 
 #' \itemize{
-#' \item \code{\link{.restrictsSelection}(x)} returns \code{TRUE}.
+#' \item \code{\link{.multiSelectionRestricted}(x)} returns \code{TRUE}.
 #' Transmission of a selection to a Table will manifest as a subsetting of the rows.
-#' \item \code{\link{.hasActiveSelection}(x)} returns a logical scalar indicating whether \code{x} has any active search fields.
+#' \item \code{\link{.multiSelectionHasActive}(x)} returns a logical scalar indicating whether \code{x} has any active search fields.
 #' \item \code{\link{.processSelection}(x, index)} returns a character vector of R expressions that - when evaluated - return a character vector of the row names of the table after applying all search filters.
 #' }
 #'
@@ -60,10 +60,8 @@
 #' .createRenderedOutput,Table-method
 #' .defineOutputElement,Table-method
 #' .hideInterfaceElement,Table-method
-#' .restrictsSelection,Table-method
-#' .transmittedDimension,Table-method
-#' .processTransmission,Table-method
-#' .hasActiveSelection,Table-method
+#' .multiSelectionCommands,Table-method
+#' .multiSelectionHasActive,Table-method
 NULL
 
 #' @export
@@ -90,7 +88,7 @@ setValidity2("Table", function(object) {
 })
 
 #' @export
-setMethod(".processTransmission", "Table", function(x, index) {
+setMethod(".multiSelectionCommands", "Table", function(x, index) {
     filter_cmds <- .generate_table_filter(x, varname="transmitter")
     if (!is.null(filter_cmds)) {
         sprintf("selected <- rownames(transmitter)[%s]", filter_cmds)
@@ -100,7 +98,7 @@ setMethod(".processTransmission", "Table", function(x, index) {
 })
 
 #' @export
-setMethod(".hasActiveSelection", "Table", function(x) {
+setMethod(".multiSelectionHasActive", "Table", function(x) {
     x[[.TableSearch]]!="" || any(x[[.TableColSearch]]!="")
 })
 

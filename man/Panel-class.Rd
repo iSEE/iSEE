@@ -82,7 +82,7 @@ Subclasses are expected to implement methods for, at least:
 \item \code{\link{.defineOutput}}
 \item \code{\link{.getEncodedName}}
 \item \code{\link{.getFullName}}
-\item \code{\link{.multiSelectionToSave}}
+\item \code{\link{.multiSelectionSlot}}
 }
 Subclasses that transmit selections should also implement specialized methods for selection-related parameters listed below.
 }

@@ -64,7 +64,7 @@
 #' \item \code{\link{.defineOutput}}
 #' \item \code{\link{.getEncodedName}}
 #' \item \code{\link{.getFullName}}
-#' \item \code{\link{.multiSelectionToSave}}
+#' \item \code{\link{.multiSelectionSlot}}
 #' }
 #' Subclasses that transmit selections should also implement specialized methods for selection-related parameters listed below.
 #'
@@ -214,7 +214,7 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
         type_field=.selectColType, saved_field=.selectColSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_saved_selection_observers(panel_name, field=.multiSelectionToSave(x), 
+    .define_saved_selection_observers(panel_name, field=.multiSelectionSlot(x), 
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })
 

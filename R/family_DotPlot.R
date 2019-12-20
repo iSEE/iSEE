@@ -394,7 +394,7 @@ setMethod(".multiSelectionCommands", "DotPlot", function(x, index) {
         brush_val <- x[[.brushData]]
         brush_src <- sprintf("all_brushes[['%s']]", transmitter)
     } else {
-        brush_val <- x[[.multiSelectHistory]][[i]]
+        brush_val <- x[[.multiSelectHistory]][[index]]
         brush_src <- sprintf("all_select_histories[['%s']][[%i]]", transmitter, index)
     }
 

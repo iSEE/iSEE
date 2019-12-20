@@ -849,7 +849,10 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         }
 
         if (length(cmds)) {
-            cmds <- c(init=c(init_cmd, paste(var_name, "<- list();")), cmds)
+            cmds <- c(
+                init=c(init_cmd, paste(var_name, "<- list();")),
+                cmds,
+                collapse=sprintf("%s <- unique(unlist(%s));", var_name, var_name))
         }
     }
     unlist(cmds)

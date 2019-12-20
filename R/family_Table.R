@@ -103,6 +103,11 @@ setMethod(".multiSelectionHasActive", "Table", function(x) {
 })
 
 #' @export
+setMethod(".singleSelectionValue", "Table", function(x, pObjects) {
+    x[[.TableSelected]]
+})
+
+#' @export
 #' @importFrom DT dataTableOutput
 setMethod(".defineOutputElement", "Table", function(x, ...) {
     mode <- .getEncodedName(x)

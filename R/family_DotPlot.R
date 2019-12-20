@@ -410,6 +410,13 @@ setMethod(".multiSelectionCommands", "DotPlot", function(x, index) {
 })
 
 #' @export
+setMethod(".singleSelectionValue", "DotPlot", function(x, pObjects) {
+    plot_name <- paste0(.getEncodedName(x), x[[.organizationId]])
+    chosen <- .get_brushed_points(pObjects$coordinates[[plot_name]], x[[.brushData]])
+    if (!length(chosen)) NULL else chosen[1]
+})
+
+#' @export
 setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
     function(param_choices, all_memory, all_coordinates, se, colormap) {
         # Initialize an environment storing information for generating ggplot commands

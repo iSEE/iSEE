@@ -6,15 +6,8 @@
     observeEvent(rObjects[[dimname_field]], {
         instance <- pObjects$memory[[panel_name]]
 
-        if (is(instance, "DotPlot")) {
-            chosen <- .get_brushed_points(pObjects$coordinates[[panel_name]], instance[[.brushData]])
-            if (!length(chosen)) {
-                return(NULL)
-            }
-            chosen <- chosen[1]
-        } else if (is(instance, "Table")) {
-            chosen <- instance[[.TableSelected]]
-        }  else {
+        chosen <- .singleSelectionValue(instance, pObjects)
+        if (is.null(chosen)) {
             return(NULL)
         }
 

@@ -38,7 +38,7 @@
 
     observeEvent(rObjects[[repop_name]], {
         instance <- pObjects$memory[[panel_name]]
-        has_active <- .any_active_selection(instance)
+        has_active <- .multiSelectionHasActive(instance)
         has_saved <- .any_saved_selection(instance)
         transmit_dim <- .multiSelectionDimension(instance)
         if (transmit_dim=="row") {

@@ -44,7 +44,7 @@
     # initialize active "Save" button only if a preconfigured active selection exists
     saveFUN <- identity
     saveLabel <- .buttonSaveLabel
-    if (!.any_active_selection(param_choices)) {
+    if (!.multiSelectionHasActive(param_choices)) {
         saveFUN <- disabled
         saveLabel <- .buttonNoSelectionLabel
     }

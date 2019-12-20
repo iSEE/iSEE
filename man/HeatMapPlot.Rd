@@ -4,8 +4,8 @@
 \name{HeatMapPlot}
 \alias{HeatMapPlot}
 \alias{HeatMapPlot-class}
-\alias{.defineParamInterface,HeatMapPlot-method}
-\alias{.createParamObservers,HeatMapPlot-method}
+\alias{.defineInterface,HeatMapPlot-method}
+\alias{.createObservers,HeatMapPlot-method}
 \title{Heat map plot panel}
 \description{
 Create a panel with a heatmap where features are rows and samples are columns.
@@ -20,7 +20,7 @@ Plots reduced dimensions. What more do I have to say?
 
 \section{Panel parameters}{
 
-\code{\link{.defineParamInterface}} will create parameter elements for choosing the elements to show on the heatmap.
+\code{\link{.defineInterface}} will create parameter elements for choosing the elements to show on the heatmap.
 More details to be added.
 }
 

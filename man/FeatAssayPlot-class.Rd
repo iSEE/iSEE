@@ -5,8 +5,8 @@
 \alias{FeatAssayPlot-class}
 \alias{FeatAssayPlot}
 \alias{.refineParameters,FeatAssayPlot-method}
-\alias{.defineParamInterface,FeatAssayPlot-method}
-\alias{.createParamObservers,FeatAssayPlot-method}
+\alias{.defineInterface,FeatAssayPlot-method}
+\alias{.createObservers,FeatAssayPlot-method}
 \alias{.getEncodedName,FeatAssayPlot-method}
 \alias{.getFullName,FeatAssayPlot-method}
 \alias{.getCommandsDataXY,FeatAssayPlot-method}
@@ -65,13 +65,13 @@ If no rows or assays are present, \code{NULL} is returned instead.
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineParamInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
-This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}. 
+\item \code{\link{.defineInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
+This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}.
 }
 
 For monitoring reactive expressions:
 \itemize{
-\item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
+\item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
 This will also call the equivalent \linkS4class{ColumnDotPlot} method.
 }
 

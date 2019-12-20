@@ -6,10 +6,10 @@
 \alias{initialize,ColumnTable-method}
 \alias{.cacheCommonInfo,ColumnTable-method}
 \alias{.refineParameters,ColumnTable-method}
-\alias{.defineParamInterface,ColumnTable-method}
-\alias{.createParamObservers,ColumnTable-method}
-\alias{.hideInterfaceElement,ColumnTable-method}
-\alias{.transmittedDimension,ColumnTable-method}
+\alias{.defineInterface,ColumnTable-method}
+\alias{.createObservers,ColumnTable-method}
+\alias{.hideInterface,ColumnTable-method}
+\alias{.multiSelectionDimension,ColumnTable-method}
 \title{The ColumnTable class}
 \description{
 The ColumnTable is a virtual class where each column in the \linkS4class{SummarizedExperiment} is represented by a row in a \code{\link{datatable}} widget.
@@ -39,20 +39,20 @@ This will also call the equivalent \linkS4class{DotPlot} method.
 
 For defining the interface:
 \itemize{
-\item \code{\link{.hideInterfaceElement}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
+\item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 This returns \code{TRUE} for row selection parameters (\code{"SelectRowSource"}, \code{"SelectRowType"} and \code{"SelectRowSaved"}),
 otherwise it dispatches to the \linkS4class{Panel} method.
 }
 
 For monitoring reactive expressions:
 \itemize{
-\item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers to propagate changes in the \code{Selected} to linked plots.
+\item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers to propagate changes in the \code{Selected} to linked plots.
 This will also call the equivalent \linkS4class{DotPlot} method.
 }
 
 For controlling selections:
 \itemize{
-\item \code{\link{.transmittedDimension}(x)} returns \code{"column"} to indicate that a column selection is being transmitted.
+\item \code{\link{.multiSelectionDimension}(x)} returns \code{"column"} to indicate that a column selection is being transmitted.
 }
 
 Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.

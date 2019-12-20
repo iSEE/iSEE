@@ -3,7 +3,7 @@
 \name{RowStatTable}
 \alias{RowStatTable}
 \alias{RowStatTable-class}
-\alias{.createRenderedOutput,RowStatTable-method}
+\alias{.renderOutput,RowStatTable-method}
 \alias{.getEncodedName,RowStatTable-method}
 \title{Row statistics table panel}
 \description{
@@ -17,7 +17,7 @@ from the \code{\link{rowData}} of a \linkS4class{SummarizedExperiment}.
 
 \section{Panel parameters}{
 
-\code{\link{.defineParamInterface}} will create parameter elements for choosing the reduced dimensions to plot.
+\code{\link{.defineInterface}} will create parameter elements for choosing the reduced dimensions to plot.
 More details to be added.
 }
 

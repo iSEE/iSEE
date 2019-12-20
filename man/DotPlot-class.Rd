@@ -7,10 +7,12 @@
 \alias{[[<-,DotPlot-method}
 \alias{.refineParameters,DotPlot-method}
 \alias{.cacheCommonInfo,DotPlot-method}
-\alias{.createParamObservers,DotPlot-method}
-\alias{.hideInterfaceElement,DotPlot-method}
-\alias{.restrictsSelection,DotPlot-method}
-\alias{.transmittedDimension,DotPlot-method}
+\alias{.createObservers,DotPlot-method}
+\alias{.hideInterface,DotPlot-method}
+\alias{.multiSelectionRestricted,DotPlot-method}
+\alias{.multiSelectionSlot,DotPlot-method}
+\alias{.multiSelectionCommands,DotPlot-method}
+\alias{.multiSelectionDimension,DotPlot-method}
 \title{The DotPlot virtual class}
 \description{
 The DotPlot is a virtual class for all panels where each row or column in the \linkS4class{SummarizedExperiment} is represented by a point (\dQuote{dot}) in a brushable plot.
@@ -44,7 +46,7 @@ The following slots control other metadata-related aesthetic aspects of the poin
 \item \code{ShapeBy}, a string specifying how the point shape should be determined.
 This should be one of \code{"None"} and either \code{"Column data"} (for \linkS4class{ColumnDotPlot}s) or \code{"Row data"} (for \linkS4class{RowDotPlot}s).
 Defaults to \code{"None"}.
-\item \code{SizeBy}, a string specifying the metadata field for controlling point size. 
+\item \code{SizeBy}, a string specifying the metadata field for controlling point size.
 This should be one of \code{"None"} and either \code{"Column data"} (for \linkS4class{ColumnDotPlot}s) or \code{"Row data"} (for \linkS4class{RowDotPlot}s).
 Defaults to \code{"None"}.
 }
@@ -147,22 +149,23 @@ This will also call the equivalent \linkS4class{Panel} method.
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineOutputElement}(x, id)} returns a UI element for a brushable plot.
+\item \code{\link{.defineOutput}(x, id)} returns a UI element for a brushable plot.
 }
 
 For defining reactive expressions:
 \itemize{
-\item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for some (but not all!) of the slots. 
+\item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for some (but not all!) of the slots.
 This will also call the equivalent \linkS4class{Panel} method.
-\item \code{\link{.createRenderedOutput}(x, se, colormap, output, pObjects, rObjects)} will add a rendered plot element to \code{output}.
+\item \code{\link{.renderOutput}(x, se, colormap, output, pObjects, rObjects)} will add a rendered plot element to \code{output}.
 It will also create a rendered UI element for selection information.
 }
 
-For controlling selections: 
+For controlling selections:
 \itemize{
-\item \code{\link{.restrictsSelection}(x)} returns a logical scalar indicating whether \code{x} is restricting the plotted points to those that were selected in a transmitting panel, i.e., is \code{SelectEffect="Restrict"}.
-\item \code{\link{.hasActiveSelection}(x)} returns a logical scalar indicating whether \code{x} has an active brush or lasso.
-\item \code{\link{.processSelection}(x, index)} returns a character vector of R expressions that - when evaluated - return a character vector of the names of selected points in the active and/or saved selections of \code{x}.
+\item \code{\link{.multiSelectionRestricted}(x)} returns a logical scalar indicating whether \code{x} is restricting the plotted points to those that were selected in a transmitting panel, i.e., is \code{SelectEffect="Restrict"}.
+\item \code{\link{.multiSelectionHasActive}(x)} returns a logical scalar indicating whether \code{x} has an active brush or lasso.
+\item \code{\link{.multiSelectionCommands}(x, index)} returns a character vector of R expressions that - when evaluated - return a character vector of the names of selected points in the active and/or saved selections of \code{x}.
+\item \code{\link{.multiSelectionSlot}(x)}  returns \code{"BrushData"}.
 }
 
 Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.

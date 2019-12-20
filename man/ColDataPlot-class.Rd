@@ -5,8 +5,8 @@
 \alias{ColDataPlot-class}
 \alias{ColDataPlot}
 \alias{.refineParameters,ColDataPlot-method}
-\alias{.defineParamInterface,ColDataPlot-method}
-\alias{.createParamObservers,ColDataPlot-method}
+\alias{.defineInterface,ColDataPlot-method}
+\alias{.createObservers,ColDataPlot-method}
 \alias{.getEncodedName,ColDataPlot-method}
 \alias{.getFullName,ColDataPlot-method}
 \alias{.getCommandsDataXY,ColDataPlot-method}
@@ -57,13 +57,13 @@ If no valid column metadata fields are available, \code{NULL} is returned instea
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineParamInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
-This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}. 
+\item \code{\link{.defineInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
+This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}.
 }
 
 For monitoring reactive expressions:
 \itemize{
-\item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
+\item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
 This will also call the equivalent \linkS4class{ColumnDotPlot} method.
 }
 

@@ -6,10 +6,10 @@
 \alias{initialize,RowDotPlot-method}
 \alias{.cacheCommonInfo,RowDotPlot-method}
 \alias{.refineParameters,RowDotPlot-method}
-\alias{.defineParamInterface,RowDotPlot-method}
-\alias{.createParamObservers,RowDotPlot-method}
-\alias{.hideInterfaceElement,RowDotPlot-method}
-\alias{.transmittedDimension,RowDotPlot-method}
+\alias{.defineInterface,RowDotPlot-method}
+\alias{.createObservers,RowDotPlot-method}
+\alias{.hideInterface,RowDotPlot-method}
+\alias{.multiSelectionDimension,RowDotPlot-method}
 \title{Row dot plot panel family}
 \description{
 The RowDotPlot is a virtual class where each row in the \linkS4class{SummarizedExperiment} is represented by a point (\dQuote{dot}) in a brushable plot.
@@ -64,22 +64,22 @@ This will also call the equivalent \linkS4class{DotPlot} method.
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineParamInterface}(x, se, active_panels)} defines the user interface for manipulating all slots in the \linkS4class{RowDotPlot}.
+\item \code{\link{.defineInterface}(x, se, active_panels)} defines the user interface for manipulating all slots in the \linkS4class{RowDotPlot}.
 This will \emph{override} the \linkS4class{Panel} method.
-\item \code{\link{.hideInterfaceElement}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
+\item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 This returns \code{TRUE} for row selection parameters (\code{"SelectRowSource"}, \code{"SelectRowType"} and \code{"SelectRowSaved"}),
 otherwise it dispatches to the \linkS4class{Panel} method.
 }
 
 For monitoring reactive expressions:
 \itemize{
-\item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots in the \linkS4class{RowDotPlot}.
+\item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots in the \linkS4class{RowDotPlot}.
 This will also call the equivalent \linkS4class{DotPlot} method.
 }
 
 For controlling selections:
 \itemize{
-\item \code{\link{.transmittedDimension}(x)} returns \code{"column"} to indicate that a column selection is being transmitted.
+\item \code{\link{.multiSelectionDimension}(x)} returns \code{"column"} to indicate that a column selection is being transmitted.
 }
 
 Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.

@@ -5,8 +5,8 @@
 \alias{RowDataPlot-class}
 \alias{RowDataPlot}
 \alias{.refineParameters,RowDataPlot-method}
-\alias{.defineParamInterface,RowDataPlot-method}
-\alias{.createParamObservers,RowDataPlot-method}
+\alias{.defineInterface,RowDataPlot-method}
+\alias{.createObservers,RowDataPlot-method}
 \alias{.getEncodedName,RowDataPlot-method}
 \alias{.getFullName,RowDataPlot-method}
 \alias{.getCommandsDataXY,RowDataPlot-method}
@@ -57,13 +57,13 @@ If no valid row metadata fields are available, \code{NULL} is returned instead.
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineParamInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
-This is combined with the interface elements provided by the \linkS4class{RowDotPlot}. 
+\item \code{\link{.defineInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
+This is combined with the interface elements provided by the \linkS4class{RowDotPlot}.
 }
 
 For monitoring reactive expressions:
 \itemize{
-\item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
+\item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
 This will also call the equivalent \linkS4class{RowDotPlot} method.
 }
 

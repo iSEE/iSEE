@@ -6,10 +6,10 @@
 \alias{initialize,ColumnDotPlot-method}
 \alias{.cacheCommonInfo,ColumnDotPlot-method}
 \alias{.refineParameters,ColumnDotPlot-method}
-\alias{.defineParamInterface,ColumnDotPlot-method}
-\alias{.createParamObservers,ColumnDotPlot-method}
-\alias{.hideInterfaceElement,ColumnDotPlot-method}
-\alias{.transmittedDimension,ColumnDotPlot-method}
+\alias{.defineInterface,ColumnDotPlot-method}
+\alias{.createObservers,ColumnDotPlot-method}
+\alias{.hideInterface,ColumnDotPlot-method}
+\alias{.multiSelectionDimension,ColumnDotPlot-method}
 \title{The ColumnDotPlot virtual class}
 \description{
 The ColumnDotPlot is a virtual class where each column in the \linkS4class{SummarizedExperiment} is represented by a point (\dQuote{dot}) in a brushable plot.
@@ -25,7 +25,7 @@ Defaults to the first valid field (see \code{.refineParameters} below).
 \item \code{ColorByFeatNameAssay}, a string specifying the assay of the SummarizedExperiment object containing values to use for coloring,
 if \code{ColorBy="Feature name"}.
 Defaults to the name of the first valid assay (see \code{?"\link{.refineParameters,DotPlot-method}"} for details).
-\item \code{ColorBySampNameColor}, a string specifying the color to use for coloring an individual sample on the plot, 
+\item \code{ColorBySampNameColor}, a string specifying the color to use for coloring an individual sample on the plot,
 if \code{ColorBy="Sample name"}.
 Defaults to \code{"red"}.
 }
@@ -64,22 +64,22 @@ This will also call the equivalent \linkS4class{DotPlot} method.
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineParamInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
+\item \code{\link{.defineInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
 This will \emph{override} the \linkS4class{Panel} method.
-\item \code{\link{.hideInterfaceElement}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
+\item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 This returns \code{TRUE} for row selection parameters (\code{"SelectRowSource"}, \code{"SelectRowType"} and \code{"SelectRowSaved"}),
 otherwise it dispatches to the \linkS4class{Panel} method.
 }
 
 For monitoring reactive expressions:
 \itemize{
-\item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
+\item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
 This will also call the equivalent \linkS4class{DotPlot} method.
 }
 
 For controlling selections:
 \itemize{
-\item \code{\link{.transmittedDimension}(x)} returns \code{"column"} to indicate that a column selection is being transmitted.
+\item \code{\link{.multiSelectionDimension}(x)} returns \code{"column"} to indicate that a column selection is being transmitted.
 }
 
 Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.

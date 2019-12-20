@@ -3,14 +3,12 @@
 \name{Table-class}
 \alias{Table-class}
 \alias{initialize,Table-method}
-\alias{.createParamObservers,Table-method}
-\alias{.createRenderedOutput,Table-method}
-\alias{.defineOutputElement,Table-method}
-\alias{.hideInterfaceElement,Table-method}
-\alias{.restrictsSelection,Table-method}
-\alias{.transmittedDimension,Table-method}
-\alias{.processTransmission,Table-method}
-\alias{.hasActiveSelection,Table-method}
+\alias{.createObservers,Table-method}
+\alias{.renderOutput,Table-method}
+\alias{.defineOutput,Table-method}
+\alias{.hideInterface,Table-method}
+\alias{.multiSelectionCommands,Table-method}
+\alias{.multiSelectionHasActive,Table-method}
 \title{The Table class}
 \description{
 The Table is a virtual class for all panels containing a \code{\link{datatable}} widget from the \pkg{DT} package, where each row \emph{usually} corresponds to a row or column of the \linkS4class{SummarizedExperiment} object.
@@ -47,22 +45,22 @@ Refer to the documentation for each method for more details on the remaining arg
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineOutputElement}(x, id)} returns a UI element for a \code{\link[DT]{dataTableOutput}} widget.
+\item \code{\link{.defineOutput}(x, id)} returns a UI element for a \code{\link[DT]{dataTableOutput}} widget.
 }
 
 For defining reactive expressions:
 \itemize{
-\item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all of the slots. 
+\item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all of the slots. 
 This will also call the equivalent \linkS4class{Panel} method.
-\item \code{\link{.createRenderedOutput}(x, se, colormap, output, pObjects, rObjects)} will add a rendered \code{\link{datatable}} object to \code{output}.
+\item \code{\link{.renderOutput}(x, se, colormap, output, pObjects, rObjects)} will add a rendered \code{\link{datatable}} object to \code{output}.
 It will also create a rendered UI element for selection information.
 }
 
 For controlling selections: 
 \itemize{
-\item \code{\link{.restrictsSelection}(x)} returns \code{TRUE}.
+\item \code{\link{.multiSelectionRestricted}(x)} returns \code{TRUE}.
 Transmission of a selection to a Table will manifest as a subsetting of the rows.
-\item \code{\link{.hasActiveSelection}(x)} returns a logical scalar indicating whether \code{x} has any active search fields.
+\item \code{\link{.multiSelectionHasActive}(x)} returns a logical scalar indicating whether \code{x} has any active search fields.
 \item \code{\link{.processSelection}(x, index)} returns a character vector of R expressions that - when evaluated - return a character vector of the row names of the table after applying all search filters.
 }
 

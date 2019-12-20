@@ -6,8 +6,8 @@
 \alias{RedDimPlot}
 \alias{.refineParameters,RedDimPlot-method}
 \alias{.cacheCommonInfo,RedDimPlot-method}
-\alias{.defineParamInterface,RedDimPlot-method}
-\alias{.createParamObservers,RedDimPlot-method}
+\alias{.defineInterface,RedDimPlot-method}
+\alias{.createObservers,RedDimPlot-method}
 \alias{.getEncodedName,RedDimPlot-method}
 \alias{.getFullName,RedDimPlot-method}
 \alias{.getCommandsDataXY,RedDimPlot-method}
@@ -59,13 +59,13 @@ If no dimensionality reduction results are available, \code{NULL} is returned in
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineParamInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
-This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}. 
+\item \code{\link{.defineInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
+This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}.
 }
 
 For monitoring reactive expressions:
 \itemize{
-\item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
+\item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
 This will also call the equivalent \linkS4class{ColumnDotPlot} method.
 }
 

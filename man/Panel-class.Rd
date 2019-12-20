@@ -7,10 +7,10 @@
 \alias{[[<-,Panel-method}
 \alias{.refineParameters,Panel-method}
 \alias{.cacheCommonInfo,Panel-method}
-\alias{.createParamObservers,Panel-method}
-\alias{.hideInterfaceElement,Panel-method}
-\alias{.restrictsSelection,Panel-method}
-\alias{.transmittedDimension,Panel-method}
+\alias{.createObservers,Panel-method}
+\alias{.hideInterface,Panel-method}
+\alias{.multiSelectionRestricted,Panel-method}
+\alias{.multiSelectionDimension,Panel-method}
 \title{The Panel virtual class}
 \description{
 The Panel is a virtual base class for all \pkg{iSEE} panels.
@@ -78,11 +78,11 @@ Observers are also created to trigger rerendering upon changes to a slot or when
 
 Subclasses are expected to implement methods for, at least:
 \itemize{
-\item \code{\link{.createRenderedOutput}}
-\item \code{\link{.defineOutputElement}}
+\item \code{\link{.renderOutput}}
+\item \code{\link{.defineOutput}}
 \item \code{\link{.getEncodedName}}
 \item \code{\link{.getFullName}}
-\item \code{\link{.selectionToSave}}
+\item \code{\link{.multiSelectionToSave}}
 }
 Subclasses that transmit selections should also implement specialized methods for selection-related parameters listed below.
 }
@@ -100,14 +100,14 @@ For setting up data values:
 
 For defining the interface:
 \itemize{
-\item \code{\link{.hideInterfaceElement}(x, field)} will always return \code{FALSE}.
+\item \code{\link{.hideInterface}(x, field)} will always return \code{FALSE}.
 }
 
 For controlling selections:
 \itemize{
-\item \code{\link{.restrictsSelection}(x)} will always return \code{TRUE}.
-\item \code{\link{.transmittedDimension}(x)} will always return \code{"none"}.
-\item \code{\link{.hasActiveSelection}(x)} will always return \code{FALSE}.
+\item \code{\link{.multiSelectionRestricted}(x)} will always return \code{TRUE}.
+\item \code{\link{.multiSelectionDimension}(x)} will always return \code{"none"}.
+\item \code{\link{.multiSelectionHasActive}(x)} will always return \code{FALSE}.
 }
 }
 

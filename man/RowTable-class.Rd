@@ -6,10 +6,10 @@
 \alias{initialize,RowTable-method}
 \alias{.cacheCommonInfo,RowTable-method}
 \alias{.refineParameters,RowTable-method}
-\alias{.defineParamInterface,RowTable-method}
-\alias{.createParamObservers,RowTable-method}
-\alias{.hideInterfaceElement,RowTable-method}
-\alias{.transmittedDimension,RowTable-method}
+\alias{.defineInterface,RowTable-method}
+\alias{.createObservers,RowTable-method}
+\alias{.hideInterface,RowTable-method}
+\alias{.multiSelectionDimension,RowTable-method}
 \title{The RowTable class}
 \description{
 The RowTable is a virtual class where each row in the \linkS4class{SummarizedExperiment} is represented by a row in a \code{\link{datatable}} widget.
@@ -39,20 +39,20 @@ This will also call the equivalent \linkS4class{DotPlot} method.
 
 For defining the interface:
 \itemize{
-\item \code{\link{.hideInterfaceElement}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
+\item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 This returns \code{TRUE} for column selection parameters (\code{"SelectColSource"}, \code{"SelectColType"} and \code{"SelectColSaved"}),
 otherwise it dispatches to the \linkS4class{Panel} method.
 }
 
 For monitoring reactive expressions:
 \itemize{
-\item \code{\link{.createParamObservers}(x, se, input, session, pObjects, rObjects)} sets up observers to propagate changes in the \code{Selected} to linked plots.
+\item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers to propagate changes in the \code{Selected} to linked plots.
 This will also call the equivalent \linkS4class{DotPlot} method.
 }
 
 For controlling selections:
 \itemize{
-\item \code{\link{.transmittedDimension}(x)} returns \code{"row"} to indicate that a row selection is being transmitted.
+\item \code{\link{.multiSelectionDimension}(x)} returns \code{"row"} to indicate that a row selection is being transmitted.
 }
 
 Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.

@@ -3,7 +3,7 @@
 \name{ColStatTable}
 \alias{ColStatTable}
 \alias{ColStatTable-class}
-\alias{.createRenderedOutput,ColStatTable-method}
+\alias{.renderOutput,ColStatTable-method}
 \alias{.getEncodedName,ColStatTable-method}
 \title{Column statistics table panel}
 \description{
@@ -17,7 +17,7 @@ from the \code{\link{colData}} of a \linkS4class{SummarizedExperiment}.
 
 \section{Panel parameters}{
 
-\code{\link{.defineParamInterface}} will create parameter elements for choosing the reduced dimensions to plot.
+\code{\link{.defineInterface}} will create parameter elements for choosing the reduced dimensions to plot.
 More details to be added.
 }
 

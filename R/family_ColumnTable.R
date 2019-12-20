@@ -50,7 +50,7 @@
 #' initialize,ColumnTable-method
 #' .cacheCommonInfo,ColumnTable-method
 #' .refineParameters,ColumnTable-method
-#' .defineParamInterface,ColumnTable-method
+#' .defineInterface,ColumnTable-method
 #' .createParamObservers,ColumnTable-method
 #' .hideInterfaceElement,ColumnTable-method
 #' .multiSelectionDimension,ColumnTable-method

@@ -29,7 +29,7 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #' New panels must follow a few rules in order to interact correctly with the Shiny architecture inside \code{\link{iSEE}}.
 #'
 #' @section Defining the parameter interface:
-#' The \code{.defineParamInterface} generic takes the following arguments:
+#' The \code{.defineInterface} generic takes the following arguments:
 #' \itemize{
 #' \item \code{x}, an instance of a Panel subclass.
 #' \item \code{id}, integer scalar specifying the identity of the panel.
@@ -51,7 +51,7 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #' \item \code{pObjects}, an environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' \item \code{rObjects}, a reactive list of values generated in the \code{\link{iSEE}} app.
 #' }
-#' It is expected to set up all observers required to respond to input changes in the UI elements set up by \code{\link{.defineParamInterface}}.
+#' It is expected to set up all observers required to respond to input changes in the UI elements set up by \code{\link{.defineInterface}}.
 #'
 #' @section Defining the output element:
 #' The \code{.defineOutputElement} generic takes the following arguments:
@@ -75,15 +75,15 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #' @author Aaron Lun
 #'
 #' @docType methods
-#' @aliases .defineParamInterface .createParamObservers
+#' @aliases .defineInterface .createParamObservers
 #' .defineOutputElement .createRenderedOutput
 #' Panel-class
 #' @name Panel
 NULL
 
 #' @export
-setGeneric(".defineParamInterface", function(x, se, active_panels) {
-    standardGeneric(".defineParamInterface")
+setGeneric(".defineInterface", function(x, se, select_info) {
+    standardGeneric(".defineInterface")
 })
 
 #' @export

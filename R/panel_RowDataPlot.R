@@ -38,7 +38,7 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineParamInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
+#' \item \code{\link{.defineInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
 #' This is combined with the interface elements provided by the \linkS4class{RowDotPlot}.
 #' }
 #'
@@ -93,7 +93,7 @@
 #' @docType methods
 #' @aliases RowDataPlot RowDataPlot-class
 #' .refineParameters,RowDataPlot-method
-#' .defineParamInterface,RowDataPlot-method
+#' .defineInterface,RowDataPlot-method
 #' .createParamObservers,RowDataPlot-method
 #' .getEncodedName,RowDataPlot-method
 #' .getFullName,RowDataPlot-method
@@ -177,7 +177,7 @@ setValidity2("RowDataPlot", function(object) {
 #' @export
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
-setMethod(".defineParamInterface", "RowDataPlot", function(x, se, active_panels) {
+setMethod(".defineInterface", "RowDataPlot", function(x, se, active_panels) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
     panel_name <- paste0(mode, id)

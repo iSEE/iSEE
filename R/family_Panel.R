@@ -177,15 +177,10 @@ setMethod(".cacheCommonInfo", "Panel", function(x, se) {
 })
 
 #' @export
-setMethod(".defineParamInterface", "Panel", function(x, se, active_panels) {
+setMethod(".defineInterface", "Panel", function(x, se, select_info) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
-
-    link_sources <- .define_link_sources(active_panels, exclude=paste0(mode, id))
-    row_selectable <- c(.noSelection, link_sources$row)
-    col_selectable <- c(.noSelection, link_sources$column)
-
-    list(.create_selection_param_box(mode, id, x, row_selectable, col_selectable))
+    list(.create_selection_param_box(mode, id, x, select_info$multi$row, select_info$multi$column))
 })
 
 #' @export
@@ -234,3 +229,6 @@ setMethod(".multiSelectionDimension", "Panel", function(x) "none")
 
 #' @export
 setMethod(".multiSelectionHasActive", "Panel", function(x) FALSE)
+
+#' @export
+setMethod(".singleSelectionDimension", "Panel", function(x) .multiSelectionDimension(x))

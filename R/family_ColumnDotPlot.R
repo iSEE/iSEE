@@ -47,7 +47,7 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineParamInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
+#' \item \code{\link{.defineInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
 #' This will \emph{override} the \linkS4class{Panel} method.
 #' \item \code{\link{.hideInterfaceElement}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 #' This returns \code{TRUE} for row selection parameters (\code{"SelectRowSource"}, \code{"SelectRowType"} and \code{"SelectRowSaved"}),
@@ -76,7 +76,7 @@
 #' initialize,ColumnDotPlot-method
 #' .cacheCommonInfo,ColumnDotPlot-method
 #' .refineParameters,ColumnDotPlot-method
-#' .defineParamInterface,ColumnDotPlot-method
+#' .defineInterface,ColumnDotPlot-method
 #' .createParamObservers,ColumnDotPlot-method
 #' .hideInterfaceElement,ColumnDotPlot-method
 #' .multiSelectionDimension,ColumnDotPlot-method
@@ -172,17 +172,12 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
 })
 
 #' @export
-setMethod(".defineParamInterface", "ColumnDotPlot", function(x, se, active_panels) {
+setMethod(".defineInterface", "ColumnDotPlot", function(x, se, select_info) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
-
-    link_sources <- .define_link_sources(active_panels, exclude=paste0(mode, id))
-    row_selectable <- c(.noSelection, link_sources$row)
-    col_selectable <- c(.noSelection, link_sources$column)
-
     list(
-        .create_visual_box_for_column_plots(mode, id, x, row_selectable, col_selectable, se),
-        .create_dotplot_selection_param_box(mode, id, x, row_selectable, col_selectable)
+        .create_visual_box_for_column_plots(mode, id, x, select_info$single$row, select_info$single$column, se),
+        .create_dotplot_selection_param_box(mode, id, x, select_info$multi$row, select_info$multi$column)
     )
 })
 

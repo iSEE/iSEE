@@ -7,7 +7,7 @@
 #' \code{RowStatTable()} creates an instance of a RowStatTable class.
 #'
 #' @section Panel parameters:
-#' \code{\link{.defineParamInterface}} will create parameter elements for choosing the reduced dimensions to plot.
+#' \code{\link{.defineInterface}} will create parameter elements for choosing the reduced dimensions to plot.
 #' More details to be added.
 #'
 #' @author Aaron Lun

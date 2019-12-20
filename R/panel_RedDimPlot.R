@@ -39,7 +39,7 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineParamInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
+#' \item \code{\link{.defineInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
 #' This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}.
 #' }
 #'
@@ -94,7 +94,7 @@
 #' @aliases RedDimPlot RedDimPlot-class
 #' .refineParameters,RedDimPlot-method
 #' .cacheCommonInfo,RedDimPlot-method
-#' .defineParamInterface,RedDimPlot-method
+#' .defineInterface,RedDimPlot-method
 #' .createParamObservers,RedDimPlot-method
 #' .getEncodedName,RedDimPlot-method
 #' .getFullName,RedDimPlot-method
@@ -197,7 +197,7 @@ setValidity2("RedDimPlot", function(object) {
 #' @importFrom SingleCellExperiment reducedDim reducedDimNames
 #' @importFrom shiny selectInput
 #' @importFrom methods callNextMethod
-setMethod(".defineParamInterface", "RedDimPlot", function(x, se, active_panels) {
+setMethod(".defineInterface", "RedDimPlot", function(x, se, active_panels) {
     cur_reddim <- x[[.redDimType]]
     max_dim <- ncol(reducedDim(se, cur_reddim))
     choices <- seq_len(max_dim)

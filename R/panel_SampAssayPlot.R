@@ -46,7 +46,7 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineParamInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
+#' \item \code{\link{.defineInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
 #' This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}.
 #' }
 #'
@@ -104,7 +104,7 @@
 #' @docType methods
 #' @aliases SampAssayPlot SampAssayPlot-class
 #' .refineParameters,SampAssayPlot-method
-#' .defineParamInterface,SampAssayPlot-method
+#' .defineInterface,SampAssayPlot-method
 #' .createParamObservers,SampAssayPlot-method
 #' .getEncodedName,SampAssayPlot-method
 #' .getFullName,SampAssayPlot-method
@@ -201,17 +201,15 @@ setValidity2("SampAssayPlot", function(object) {
 #' @export
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
-setMethod(".defineParamInterface", "SampAssayPlot", function(x, se, active_panels) {
+setMethod(".defineInterface", "SampAssayPlot", function(x, se, select_info) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
     panel_name <- paste0(mode, id)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
-    link_sources <- .define_link_sources(active_panels)
-    tab_by_col <- c(.noSelection, link_sources$column)
-
     row_covariates <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
     all_assays <- .get_common_info(se, "DotPlot")$valid.assay.names
+    tab_by_col <- select_info$single$column
 
     xaxis_choices <- c(.sampAssayXAxisNothingTitle)
     if (length(row_covariates)) { # As it is possible for this plot to be _feasible_ but for no row data to exist.

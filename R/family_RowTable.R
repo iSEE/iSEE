@@ -50,7 +50,7 @@
 #' initialize,RowTable-method
 #' .cacheCommonInfo,RowTable-method
 #' .refineParameters,RowTable-method
-#' .defineParamInterface,RowTable-method
+#' .defineInterface,RowTable-method
 #' .createParamObservers,RowTable-method
 #' .hideInterfaceElement,RowTable-method
 #' .multiSelectionDimension,RowTable-method

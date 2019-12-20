@@ -133,15 +133,36 @@
     cur.row <- list()
     row.counter <- 1L
 
+    # Getting all panel choices for single/multiselection links.
+    all_names <- vapply(memory, .getEncodedName, "")
+    all_ids <- vapply(memory, "[[", i=.organizationId, 1L)
+    all_names <- paste0(all_names, all_ids)
+    names(all_names) <- paste(vapply(memory, .getFullName, ""), all_ids)
+
+    mdims <- vapply(memory, FUN=.multiSelectionDimension, "")
+    multi_sources <- list(
+        row=c(.noSelection, all_names[mdims=="row"]),
+        column=c(.noSelection, all_names[mdims=="column"])
+    )
+
+    sdims <- vapply(memory, FUN=.singleSelectionDimension, "")
+    single_sources <- list(
+        row=c(.noSelection, all_names[sdims=="row"]),
+        column=c(.noSelection, all_names[sdims=="column"]
+    )
+
     for (i in seq_along(memory)) {
         instance <- memory[[i]]
         mode <- .getEncodedName(instance)
         id <- instance[[.organizationId]]
-        .input_FUN <- function(field) paste0(mode, id, "_", field)
-        print(c(mode, id))
+        plot_name <- paste0(mode, id)
+        .input_FUN <- function(field) paste0(plot_name, "_", field)
 
-        obj <- .defineOutputElement(instance)
-        all.params <- .defineParamInterface(instance, se=se, active_panels=memory)
+        select_info <- list(
+            single=lapply(single_sources, FUN=setdiff, y=plot_name),
+            multi=lapply(multi_sources, FUN=setdiff, y=plot_name)
+        )
+        all.params <- .defineInterace(instance, se=se, select_info=select_info) 
         param <- do.call(tags$div, c(list(class="panel-group", role="tablist"), all.params))
 
         # Deciding whether to continue on the current row, or start a new row.
@@ -159,7 +180,7 @@
 
         # Aggregating together everything into a box, and then into a column.
         cur_box <- do.call(box, c(
-            list(obj, param),
+            list(.defineOutputElement(instance), param),
             list(uiOutput(.input_FUN(.panelGeneralInfo)), uiOutput(.input_FUN(.panelLinkInfo))),
             list(title=paste(.getFullName(instance), id), solidHeader=TRUE, width=NULL, status="danger")
         ))
@@ -176,42 +197,6 @@
 
     # Convert the list to a tagList - this is necessary for the list of items to display properly.
     do.call(tagList, collected)
-}
-
-#' Define link sources
-#'
-#' Define all possible sources of links between active panels, i.e., feature selections from row statistics tables or point selections from plots.
-#'
-#' @param active_panels A data.frame specifying the currently active panels, see the output of \code{\link{.setup_initial}}.
-#'
-#' @return
-#' A list containing:
-#' \describe{
-#' \item{\code{tab}:}{A character vector of decoded names for all active row statistics tables.}
-#' \item{\code{row}:}{A character vector of decoded names for all active row data plots.}
-#' \item{\code{col}:}{A character vector of decoded names for all active sample-based plots, i.e., where each point is a sample.}
-#' }
-#'
-#' @details
-#' Decoded names are returned as the output values are intended to be displayed to the user.
-#'
-#' @author Aaron Lun
-#' @rdname INTERNAL_define_link_sources
-#' @seealso
-#' \code{\link{.sanitize_memory}},
-#' \code{\link{.panel_generation}}
-.define_link_sources <- function(memory, exclude=NULL) {
-    if (!is.null(exclude)) {
-        memory <- memory[setdiff(names(memory), exclude)]
-    }
-
-    all_names <- vapply(memory, .getEncodedName, "")
-    all_ids <- vapply(memory, "[[", i=.organizationId, 1L)
-    all_names <- paste0(all_names, all_ids)
-    names(all_names) <- paste(vapply(memory, .getFullName, ""), all_ids)
-
-    tdims <- vapply(memory, FUN=.multiSelectionDimension, "")
-    list(row=all_names[tdims=="row"], column=all_names[tdims=="column"])
 }
 
 #' Choose a linked panel

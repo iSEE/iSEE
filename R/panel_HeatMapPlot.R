@@ -8,7 +8,7 @@
 #' \code{HeatMapPlot()} creates an instance of a HeatMapPlot class.
 #'
 #' @section Panel parameters:
-#' \code{\link{.defineParamInterface}} will create parameter elements for choosing the elements to show on the heatmap.
+#' \code{\link{.defineInterface}} will create parameter elements for choosing the elements to show on the heatmap.
 #' More details to be added.
 #'
 #' @author Aaron Lun
@@ -40,7 +40,7 @@
 #'
 #' @docType methods
 #' @aliases HeatMapPlot HeatMapPlot-class
-#' .defineParamInterface,HeatMapPlot-method
+#' .defineInterface,HeatMapPlot-method
 #' .createParamObservers,HeatMapPlot-method
 #' @name HeatMapPlot
 NULL
@@ -185,7 +185,7 @@ setMethod(".refineParameters", "HeatMapPlot", function(x, se) {
 #' @export
 #' @importFrom shiny selectInput actionButton selectizeInput hr
 #' checkboxGroupInput numericInput plotOutput
-setMethod(".defineParamInterface", "HeatMapPlot", function(x, se, active_panels) {
+setMethod(".defineInterface", "HeatMapPlot", function(x, se, select_info) {
     mode <- .getEncodedName(x)
     id <- x[[.organizationId]]
     plot_name <- paste0(mode, id)
@@ -194,9 +194,8 @@ setMethod(".defineParamInterface", "HeatMapPlot", function(x, se, active_panels)
     common_info <- .get_common_info(se, "HeatMapPlot")
     all_assays <- common_info$valid.assay.names
     column_covariates <- common_info$valid.colData.names
-    link_sources <- .define_link_sources(active_panels)
-    heatmap_sources <- c(.customSelection, link_sources$row)
-    col_selectable <- c(.noSelection, link_sources$column)
+    heatmap_sources <- select_info$multi$row
+    col_selectable <- select_info$multi$column
 
     select_effect <- .input_FUN(.selectEffect)
 

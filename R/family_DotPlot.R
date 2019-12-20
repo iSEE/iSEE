@@ -426,6 +426,7 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
 
         # Defining the row and column selections, and hoping that the
         # plot-generating functions know what to do with them.
+        select_cmds <- .initialize_cmd_store()
         row_select_cmds <- .process_selectby_choice(param_choices,
             by_field=.selectRowSource, type_field=.selectRowType, saved_field=.selectRowSaved,
             all_memory=all_memory, var_name="row_selected")
@@ -434,7 +435,8 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
             transmitter <- param_choices[[.selectRowSource]]
             .populate_selection_environment(all_memory[[transmitter]], plot_env)
             plot_env$all_coordinates <- all_coordinates
-            .text_eval(row_select_cmds, plot_env)
+            select_cmds <- .add_command(select_cmds, row_select_cmds)
+            select_cmds <- .evaluate_commands(select_cmds, plot_env)
         }
 
         col_select_cmds <- .process_selectby_choice(param_choices,
@@ -445,7 +447,8 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
             transmitter <- param_choices[[.selectColSource]]
             .populate_selection_environment(all_memory[[transmitter]], plot_env)
             plot_env$all_coordinates <- all_coordinates
-            .text_eval(col_select_cmds, plot_env)
+            select_cmds <- .add_command(select_cmds, col_select_cmds)
+            select_cmds <- .evaluate_commands(select_cmds, plot_env)
         }
 
         # Apply the function provided to generate XY commands and axis labels
@@ -486,10 +489,10 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
         clean_expression <- paste(sprintf("!is.na(%s)", clean_select_fields), collapse=" & ")
         data_cmds <- .add_command(data_cmds, sprintf("plot.data <- subset(plot.data, %s);", clean_expression), name='na.rm')
 
-        # TODO: fix this to use generics that know to whether to use
-        # col_selected or row_selected to create SelectBy.
+
         if (param_choices[[.selectEffect]]==.selectRestrictTitle) {
-            data_cmds <- .add_command(data_cmds, "plot.data <- subset(plot.data, SelectBy);")
+            data_cmds <- .add_command(data_cmds, .getCommandsDataSelect(param_choices, plot_env))
+            data_cmds <- .evaluate_commands(data_cmds, plot_env)
         }
 
         # Define the type of plot to create, and add geometry-specific commands, if needed
@@ -523,15 +526,15 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
 
         # Adding self-brushing boxes, if they exist.
         to_flip <- plot_type == "violin_horizontal"
-        select_cmds <- .self_select_boxes(param_choices, flip=to_flip)
+        brush_cmds <- .self_select_boxes(param_choices, flip=to_flip)
 
-        if (length(select_cmds)) {
+        if (length(brush_cmds)) {
             N <- length(plot_cmds)
             plot_cmds[[N]] <- paste(plot_cmds[[N]], "+")
 
-            intermediate <- seq_len(length(select_cmds)-1L)
-            select_cmds[intermediate] <- paste(select_cmds[intermediate], "+")
-            plot_cmds <- c(plot_cmds, select_cmds)
+            intermediate <- seq_len(length(brush_cmds)-1L)
+            brush_cmds[intermediate] <- paste(brush_cmds[intermediate], "+")
+            plot_cmds <- c(plot_cmds, brush_cmds)
 
             # We overwrite any existing 'all_brushes' or 'all_lassos',
             # as they have already served their purpose in defining plot_data above
@@ -542,7 +545,7 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
         # Evaluating the plotting commands.
         plot_out <- .text_eval(plot_cmds, plot_env)
 
-        return(list(cmd_list=list(data_cmds$processed, plot_cmds), xy=panel_data, plot=plot_out))
+        return(list(cmd_list=list(select_cmds, data_cmds$processed, plot_cmds), xy=panel_data, plot=plot_out))
     }
 
 })

@@ -130,6 +130,8 @@ setGeneric(".getCommandsDataSize", function(x, se) standardGeneric(".getCommands
 
 setGeneric(".getCommandsDataFacets", function(x, se) standardGeneric(".getCommandsDataFacets"))
 
+setGeneric(".getCommandsDataSelect", function(x, envir) standardGeneric(".getCommandsDataSelect"))
+
 ###########################
 
 #' @export

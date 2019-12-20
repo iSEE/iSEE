@@ -289,3 +289,21 @@ setMethod(".getCommandsDataFacets", "RowDotPlot", function(x, se) {
 
     return(facet_cmds)
 })
+
+setMethod(".getCommandsDataSelect", "RowDotPlot", function(x, envir) {
+    cmds <- c()
+
+    if (exists("row_selected", envir=envir)) {
+        # TODO: adapt whether row_selected contains active, union, or saved selection
+        cmds[["header1"]] <- ""
+        cmds[["header2"]] <- "# Receiving row point selection"
+        cmds["SelectBy"] <- "plot.data$SelectBy <- rownames(plot.data) %in% row_selected[[\"active\"]];"
+        if (x[[.selectEffect]] == .selectRestrictTitle) {
+            cmds[["saved"]] <- "plot.data.all <- plot.data;"
+            cmds[["subset"]] <- "plot.data <- subset(plot.data, SelectBy);"
+        }
+        cmds[["footer"]] <- ""
+    }
+
+    return(cmds)
+})

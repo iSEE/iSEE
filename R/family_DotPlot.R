@@ -526,15 +526,15 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
 
         # Adding self-brushing boxes, if they exist.
         to_flip <- plot_type == "violin_horizontal"
-        brush_cmds <- .self_select_boxes(param_choices, flip=to_flip)
+        self_select_cmds <- .self_select_boxes(param_choices, flip=to_flip)
 
-        if (length(brush_cmds)) {
+        if (length(self_select_cmds)) {
             N <- length(plot_cmds)
             plot_cmds[[N]] <- paste(plot_cmds[[N]], "+")
 
-            intermediate <- seq_len(length(brush_cmds)-1L)
-            brush_cmds[intermediate] <- paste(brush_cmds[intermediate], "+")
-            plot_cmds <- c(plot_cmds, brush_cmds)
+            intermediate <- seq_len(length(self_select_cmds)-1L)
+            self_select_cmds[intermediate] <- paste(self_select_cmds[intermediate], "+")
+            plot_cmds <- c(plot_cmds, self_select_cmds)
 
             # We overwrite any existing 'all_brushes' or 'all_lassos',
             # as they have already served their purpose in defining plot_data above

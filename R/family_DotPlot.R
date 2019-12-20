@@ -489,11 +489,8 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
         clean_expression <- paste(sprintf("!is.na(%s)", clean_select_fields), collapse=" & ")
         data_cmds <- .add_command(data_cmds, sprintf("plot.data <- subset(plot.data, %s);", clean_expression), name='na.rm')
 
-
-        if (param_choices[[.selectEffect]]==.selectRestrictTitle) {
-            data_cmds <- .add_command(data_cmds, .getCommandsDataSelect(param_choices, plot_env))
-            data_cmds <- .evaluate_commands(data_cmds, plot_env)
-        }
+        data_cmds <- .add_command(data_cmds, .getCommandsDataSelect(param_choices, plot_env))
+        data_cmds <- .evaluate_commands(data_cmds, plot_env)
 
         # Define the type of plot to create, and add geometry-specific commands, if needed
         out_specific <- .choose_plot_type(plot_env)
@@ -509,8 +506,8 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
         data_cmds <- .evaluate_commands(data_cmds, plot_env)
 
         # Prepare information about subsetting and downsampling, to generate the plotting commands
-        is_subsetted <- exists("plot.data.all", envir=plot_env)
-        is_downsampled <- exists("plot.data.pre", envir=plot_env)
+        is_subsetted <- exists("plot.data.all", envir=plot_env, inherits=FALSE)
+        is_downsampled <- exists("plot.data.pre", envir=plot_env, inherits=FALSE)
         plot_type <- plot_env$plot.type
 
         # Get the ggplot call

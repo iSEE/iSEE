@@ -132,6 +132,8 @@ setGeneric(".getCommandsDataFacets", function(x, se) standardGeneric(".getComman
 
 setGeneric(".getCommandsDataSelect", function(x, envir) standardGeneric(".getCommandsDataSelect"))
 
+setGeneric(".getCommandsPlotColor", function(x, colorby, x_aes="X", y_aes="Y") standardGeneric(".getCommandsPlotColor"))
+
 ###########################
 
 #' @export
@@ -151,17 +153,17 @@ setGeneric(".multiSelectionCommands", function(x, index) standardGeneric(".multi
 #' @export
 setGeneric(".multiSelectionRestricted", function(x) standardGeneric(".multiSelectionRestricted"))
 
-#' @export 
+#' @export
 setGeneric(".multiSelectionDimension", function(x) standardGeneric(".multiSelectionDimension"))
 
 #' @export
 setGeneric(".multiSelectionHasActive", function(x) standardGeneric(".multiSelectionHasActive"))
 
 #' @export
-setGeneric(".multiSelectionSlot", function(x) standardGeneric(".multiSelectionSlot")) 
+setGeneric(".multiSelectionSlot", function(x) standardGeneric(".multiSelectionSlot"))
 
 #' @export
 setGeneric(".singleSelectionDimension", function(x) standardGeneric(".singleSelectionDimension"))
 
-#' @export 
+#' @export
 setGeneric(".singleSelectionValue", function(x, pObjects) standardGeneric(".singleSelectionValue"))

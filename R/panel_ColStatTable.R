@@ -1,8 +1,8 @@
 #' Column statistics table panel
 #'
-#' Defines a \code{\link{datatable}} panel containing statistics 
+#' Defines a \code{\link{datatable}} panel containing statistics
 #' from the \code{\link{colData}} of a \linkS4class{SummarizedExperiment}.
-#' 
+#'
 #' @section Constructor:
 #' \code{ColStatTable()} creates an instance of a ColStatTable class.
 #'
@@ -18,13 +18,13 @@
 #' #################
 #'
 #' x <- ColStatTable()
-#' x[["Selected"]] 
+#' x[["Selected"]]
 #' x[["Selected"]] <- 2L
-#' 
+#'
 #' ##################
 #' # For developers #
 #' ##################
-#' 
+#'
 #' library(scater)
 #' sce <- mockSCE()
 #'
@@ -35,7 +35,7 @@
 #' @name ColStatTable
 #' @aliases ColStatTable ColStatTable-class
 #' .renderOutput,ColStatTable-method
-#' .getEncodedName,ColStatTable-method 
+#' .getEncodedName,ColStatTable-method
 NULL
 
 #' @export
@@ -94,13 +94,13 @@ setMethod(".getTableFunction", "ColStatTable", function(x) {
     function(param_choices, se, eval_env) {
         cmds <-"tab <- as.data.frame(colData(se));"
 
-        if (exists("col_selected", envir=eval_env)) {
+        if (exists("col_selected", envir=eval_env, inherits=FALSE)) {
             cmds <- c(cmds, "tab <- tab[unlist(col_selected),,drop=FALSE]")
         }
 
         valid.names <- .get_common_info(se, "ColStatTable")$valid.colData.names
         if (!identical(colnames(colData(se)), valid.names)) {
-            cmds <- c(cmds, sprintf("tab <- tab[,%s,drop=FALSE]", 
+            cmds <- c(cmds, sprintf("tab <- tab[,%s,drop=FALSE]",
                 paste(deparse(valid.names), collapse="\n     ")))
         }
         cmds

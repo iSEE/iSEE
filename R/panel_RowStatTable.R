@@ -1,8 +1,8 @@
 #' Row statistics table panel
 #'
-#' Defines a \code{\link{datatable}} panel containing statistics 
+#' Defines a \code{\link{datatable}} panel containing statistics
 #' from the \code{\link{rowData}} of a \linkS4class{SummarizedExperiment}.
-#' 
+#'
 #' @section Constructor:
 #' \code{RowStatTable()} creates an instance of a RowStatTable class.
 #'
@@ -18,24 +18,24 @@
 #' #################
 #'
 #' x <- RowStatTable()
-#' x[["Selected"]] 
+#' x[["Selected"]]
 #' x[["Selected"]] <- 2L
-#' 
+#'
 #' ##################
 #' # For developers #
 #' ##################
-#' 
+#'
 #' library(scater)
 #' sce <- mockSCE()
 #'
-#' # Sets the search columns appropriately. 
+#' # Sets the search columns appropriately.
 #' sce <- .cacheCommonInfo(x, sce)
 #' .refineParameters(x, sce)
 #'
 #' @name RowStatTable
 #' @aliases RowStatTable RowStatTable-class
 #' .renderOutput,RowStatTable-method
-#' .getEncodedName,RowStatTable-method 
+#' .getEncodedName,RowStatTable-method
 NULL
 
 #' @export
@@ -93,13 +93,13 @@ setMethod(".getTableFunction", "RowStatTable", function(x) {
     function(param_choices, se, envir) {
         cmds <-"tab <- as.data.frame(rowData(se));"
 
-        if (exists("row_selected", envir=envir)) {
+        if (exists("row_selected", envir=envir, inherits=FALSE)) {
             cmds <- c(cmds, "tab <- tab[unlist(row_selected),,drop=FALSE]")
         }
 
         valid.names <- .get_common_info(se, "RowStatTable")$valid.rowData.names
         if (!identical(colnames(rowData(se)), valid.names)) {
-            cmds <- c(cmds, sprintf("tab <- tab[,%s,drop=FALSE]", 
+            cmds <- c(cmds, sprintf("tab <- tab[,%s,drop=FALSE]",
                 paste(deparse(valid.names), collapse="\n     ")))
         }
 

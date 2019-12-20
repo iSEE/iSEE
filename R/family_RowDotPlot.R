@@ -293,17 +293,53 @@ setMethod(".getCommandsDataFacets", "RowDotPlot", function(x, se) {
 setMethod(".getCommandsDataSelect", "RowDotPlot", function(x, envir) {
     cmds <- c()
 
-    if (exists("row_selected", envir=envir)) {
+    if (exists("row_selected", envir=envir, inherits=FALSE)) {
         # TODO: adapt whether row_selected contains active, union, or saved selection
-        cmds[["header1"]] <- ""
-        cmds[["header2"]] <- "# Receiving row point selection"
+        cmds["header1"] <- ""
+        cmds["header2"] <- "# Receiving row point selection"
         cmds["SelectBy"] <- "plot.data$SelectBy <- rownames(plot.data) %in% row_selected;"
         if (x[[.selectEffect]] == .selectRestrictTitle) {
-            cmds[["saved"]] <- "plot.data.all <- plot.data;"
-            cmds[["subset"]] <- "plot.data <- subset(plot.data, SelectBy);"
+            cmds["saved"] <- "plot.data.all <- plot.data;"
+            cmds["subset"] <- "plot.data <- subset(plot.data, SelectBy);"
         }
         cmds[["footer"]] <- ""
     }
 
+    return(cmds)
+})
+
+#' @importFrom ggplot2 scale_color_manual geom_point
+setMethod(".getCommandsPlotColor", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="Y") {
+    if (is.null(colorby)) {
+        return(NULL)
+    }
+
+    cmds <- NULL
+    color_choice <- x[[.colorByField]]
+
+    # This slightly duplicates the work in .define_colorby_for_row_plot(),
+    # but this is necessary to separate the function of data acquisition and plot generation.
+    if (color_choice == .colorByRowDataTitle) {
+        covariate_name <- x[[.colorByRowData]]
+        cmds <- .create_color_scale("rowDataColorMap", deparse(covariate_name), colorby)
+
+    } else if (color_choice == .colorByFeatNameTitle) {
+        col_choice <- x[[.colorByFeatNameColor]]
+        cmds <- c(
+            sprintf(
+                "scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +",
+                deparse(col_choice)),
+            sprintf(
+                "geom_point(aes(x=%s, y=%s), data=subset(plot.data, ColorBy == 'TRUE'), col=%s, alpha=1%s) +",
+                x_aes, y_aes, deparse(col_choice),
+                ifelse(x[[.sizeByField]] == .sizeByNothingTitle,
+                       paste0(", size=5*", x[[.plotPointSize]]),
+                       ""))
+        )
+
+    } else if (color_choice == .colorBySampNameTitle) {
+        assay_choice <- x[[.colorBySampNameAssay]]
+        cmds <- .create_color_scale("assayColorMap", deparse(assay_choice), colorby)
+    }
     return(cmds)
 })

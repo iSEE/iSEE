@@ -190,11 +190,7 @@ names(.all_aes_values) <- .all_aes_names
     plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set, size_set)
 
     # Defining the color commands.
-    if (by_row) {
-        color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices)
-    } else {
-        color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices)
-    }
+    color_scale_cmd <- .getCommandsPlotColor(param_choices, plot_data$ColorBy)
 
     # Adding axes labels.
     plot_cmds[["labs"]] <- .build_labs(x=x_lab, y=y_lab, color=color_lab, shape=shape_lab, size=size_lab, title=title)
@@ -317,11 +313,7 @@ names(.all_aes_values) <- .all_aes_names
     plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set, size_set)
 
     # Defining the color commands.
-    if (by_row) {
-        color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices, x_aes="jitteredX")
-    } else {
-        color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices, x_aes="jitteredX")
-    }
+    color_scale_cmd <- .getCommandsPlotColor(param_choices, plot_data$ColorBy, x_aes="jitteredX")
 
     # Adding axis labels.
     if (horizontal) {
@@ -500,11 +492,7 @@ plot.data$Y <- tmp;")
     plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set, size_set)
 
     # Defining the color commands.
-    if (by_row) {
-        color_scale_cmd <- .add_color_to_row_plot(plot_data$ColorBy, param_choices, x_aes="jitteredX", y_aes="jitteredY")
-    } else {
-        color_scale_cmd <- .add_color_to_column_plot(plot_data$ColorBy, param_choices, x_aes="jitteredX", y_aes="jitteredY")
-    }
+    color_scale_cmd <- .getCommandsPlotColor(param_choices, plot_data$ColorBy, x_aes="jitteredX", y_aes="jitteredY")
 
     # Adding the commands to color the points and the point selection area
     # (NULL if undefined).
@@ -599,111 +587,6 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 ############################################
 # Internal functions: coloring ----
 ############################################
-
-#' Add color scale
-#'
-#' Generates commands to add a color scale to the ggplot object, based on the
-#' specification in the ExperimentColorMap.
-#'
-#' @param colorby A vector of values to color points by, taken from
-#' \code{plot.data$ColorBy} in upstream functions.
-#' @param param_choices A single-row DataFrame that contains all the
-#' input settings for the current panel.
-#' @param x_aes Name of the column in \code{plot.data} to use for the x-axis.
-#' @param y_aes Name of the column in \code{plot.data} to use for the y-axis.
-#'
-#' @return
-#' A character vector containing commands to add a color scale to an existing ggplot object, or \code{NULL} if no color scale needs to be added.
-#'
-#' @details
-#' These functions generate commands to add a color scale for individual points in row- or column-based plots,' i.e., where each point is a feature or sample, respectively.
-#'
-#' These commands assume that an ExperimentColorMap object named  \code{colormap} exists in the evaluation environment.
-#' The availability of \code{colorby} allows the function to determine whether  discrete or continuous color scales need to be used,
-#' and if discrete, how many levels (i.e., colors) should be requested from \code{colormap}.
-#'
-#' \code{x_aes} and \code{y_aes} are necessary to ensure that jittering is respected when adding a layer to highlight a specific point.
-#'
-#' @author Kevin Rue-Albrecht, Aaron Lun.
-#' @rdname INTERNAL_add_color_scale
-#' @seealso
-#' \code{\link{.scatter_plot}},
-#' \code{\link{.violin_plot}},
-#' \code{\link{.square_plot}},
-#' \code{\link{.define_colorby_for_row_plot}},
-#' \code{\link{.define_colorby_for_column_plot}}
-.add_color_to_column_plot <- function(colorby, param_choices, x_aes="X", y_aes="Y") {
-    if (is.null(colorby)) {
-        return(NULL)
-    }
-
-    cmds <- NULL
-    color_choice <- param_choices[[.colorByField]]
-
-    # This slightly duplicates the work in .define_colorby_for_row_plot(),
-    # but this is necessary to separate the function of data acquisition and plot generation.
-    if (color_choice == .colorByColDataTitle) {
-        covariate_name <- param_choices[[.colorByColData]]
-        cmds <- .create_color_scale("colDataColorMap", deparse(covariate_name), colorby)
-
-    } else if (color_choice == .colorByFeatNameTitle) {
-        assay_choice <- param_choices[[.colorByFeatNameAssay]]
-        cmds <- .create_color_scale("assayColorMap", deparse(assay_choice), colorby)
-
-    } else if (color_choice == .colorBySampNameTitle) {
-        col_choice <- param_choices[[.colorBySampNameColor]]
-        cmds <- c(
-            sprintf(
-                "scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +",
-                deparse(col_choice)),
-            sprintf(
-                "geom_point(aes(x=%s, y=%s), data=subset(plot.data, ColorBy == 'TRUE'), col=%s, alpha=1%s) +",
-                x_aes, y_aes, deparse(col_choice),
-                ifelse(param_choices[[.sizeByField]] == .sizeByNothingTitle,
-                       paste0(", size=5*", param_choices[[.plotPointSize]]),
-                       ""))
-        )
-    }
-
-    return(cmds)
-}
-
-#' @rdname INTERNAL_add_color_scale
-#' @importFrom ggplot2 scale_color_manual geom_point
-.add_color_to_row_plot <- function(colorby, param_choices, x_aes="X", y_aes="Y") {
-    if (is.null(colorby)) {
-        return(NULL)
-    }
-
-    cmds <- NULL
-    color_choice <- param_choices[[.colorByField]]
-
-    # This slightly duplicates the work in .define_colorby_for_row_plot(),
-    # but this is necessary to separate the function of data acquisition and plot generation.
-    if (color_choice == .colorByRowDataTitle) {
-        covariate_name <- param_choices[[.colorByRowData]]
-        cmds <- .create_color_scale("rowDataColorMap", deparse(covariate_name), colorby)
-
-    } else if (color_choice == .colorByFeatNameTitle) {
-        col_choice <- param_choices[[.colorByFeatNameColor]]
-        cmds <- c(
-            sprintf(
-                "scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +",
-                deparse(col_choice)),
-            sprintf(
-                "geom_point(aes(x=%s, y=%s), data=subset(plot.data, ColorBy == 'TRUE'), col=%s, alpha=1%s) +",
-                x_aes, y_aes, deparse(col_choice),
-                ifelse(param_choices[[.sizeByField]] == .sizeByNothingTitle,
-                       paste0(", size=5*", param_choices[[.plotPointSize]]),
-                       ""))
-        )
-
-    } else if (color_choice == .colorBySampNameTitle) {
-        assay_choice <- param_choices[[.colorBySampNameAssay]]
-        cmds <- .create_color_scale("assayColorMap", deparse(assay_choice), colorby)
-    }
-    return(cmds)
-}
 
 #' Choose between discrete and continuous color scales
 #'

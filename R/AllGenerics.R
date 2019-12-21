@@ -128,6 +128,11 @@ setGeneric(".hideInterface", function(x, field) standardGeneric(".hideInterface"
 #' @name observer-generics
 NULL
 
+#' @export
+setGeneric(".createObservers", function(x, se, input, session, pObjects, rObjects) {
+    standardGeneric(".createObservers")
+})
+
 #' Generics for Panel outputs
 #'
 #' An overview of the generics for defining the panel outputs, along with recommendations on their implementation.
@@ -171,11 +176,6 @@ NULL
 NULL
 
 #' @export
-setGeneric(".createObservers", function(x, se, input, session, pObjects, rObjects) {
-    standardGeneric(".createObservers")
-})
-
-#' @export
 setGeneric(".defineOutput", function(x, ...) {
     standardGeneric(".defineOutput")
 })
@@ -184,8 +184,6 @@ setGeneric(".defineOutput", function(x, ...) {
 setGeneric(".renderOutput", function(x, se, ..., output, pObjects, rObjects) {
     standardGeneric(".renderOutput")
 })
-
-##########################
 
 #' @export
 setGeneric(".getEncodedName", function(x) standardGeneric(".getEncodedName"))
@@ -228,6 +226,55 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 
 ###########################
 
+#' Generics for controlling multiple selections
+#'
+#' A panel can create a multiple selection on either the rows or columns 
+#' and transmit this selection to another panel to affect its set of displayed points.
+#' For example, users can brush on a \linkS4class{DotPlot}s to select a set of points,
+#' and then the panel can transmit the identities of those points to another panel for highlighting.
+#' This suite of generics controls the behavior of these multiple selections.
+#'
+#' @section Specifying the nature of the selection:
+#' In all of the code chunks shown below, \code{x} is assumed to be an instance of the \linkS4class{Panel} class.
+#' \itemize{
+#' \item \code{.multiSelectionDimension(x)} should return a string specifying whether the selection contains rows (\code{"row"}), columns (\code{"column"}) or if the Panel in \code{x} does not perform multiple selections at all (\code{"none"}).
+#' The output should be constant for all instances of \code{x}.
+#' \item \code{.multiSelectionHasActive(x)} should return a logical scalar indicating whether there is a currently active selection in \code{x}.
+#' This is used to avoid unnecessary re-renderings of child panels that receive transmissions from \code{x}.
+#' \item \code{.multiSelectionStructure(x)} should return the value(s) of the slot in \code{x} containing the parameters required to perform a multiple selection.
+#' For example, for \linkS4class{DotPlot}s, this would be the contents of the \code{BrushData} slot.
+#' This is used to save multiple selections into the \code{MultiSelectHistory} slot.
+#' \item \code{.multiSelectionRestricted(x)} should return a logical scalar indicating whether \code{x}'s output will be restricted to the selection transmitted from another panel.
+#' This is used to determine whether child panels of \code{x} need to be re-rendered when \code{x}'s transmitter changes its multiple selection.
+#' }
+#'
+#' @section Performing the selection:
+#' \code{.multiSelectionCommands(x, index)} is expected to return a character vector of commands to generate a character vector of row or column names in the desired multiple selection.
+#' If \code{index=NA}, the desired selection is the currently active one;
+#' otherwise, for an integer \code{index}, it refers to the corresponding saved selection in the \code{MultiSelectHistory}.
+#'
+#' The commands will be evaluated in an environment containing:
+#' \itemize{
+#' \item \code{all_select_histories}, a list containing the value of the \code{MultiSelectHistory} slot from all panels.
+#' Each element is named by the panel, which can be used to retrieve the \code{index} saved selection for \code{x}. 
+#' \item \code{all_contents}, a list containing some arbitrary content from all panels.
+#' Each element is named by the panel and should have some sensible interaction with the panel's multiple selection mechanism.
+#' For example, a data.frame of coordinates is stored by \linkS4class{DotPlot}s to identify the points selected by a brush/lasso.
+#' The value of each element is set by the rendering output in \code{\link{.renderOutput}}.
+#' }
+#' 
+#' The command is expected to produce a character vector named \code{selected} in the evaluation environment.
+#' All internal variables should be prefixed with \code{.} to avoid name clashes.
+#' 
+#' @author Aaron Lun
+#' @name multiselect-generics
+#' @aliases .multiSelectionDimension
+#' .multiSelectionHasActive
+#' .multiSelectionRestricted
+#' .multiSelectionStructure
+#' .multiSelectionCommands
+NULL
+
 #' @export
 setGeneric(".multiSelectionCommands", function(x, index) standardGeneric(".multiSelectionCommands"))
 
@@ -242,6 +289,34 @@ setGeneric(".multiSelectionHasActive", function(x) standardGeneric(".multiSelect
 
 #' @export
 setGeneric(".multiSelectionStructure", function(x) standardGeneric(".multiSelectionStructure"))
+
+#' Generics for controlling single selections
+#'
+#' A panel can create a single selection on either the rows or columns
+#' and transmit this selection to another panel for use as an aesthetic parameter.
+#' For example, users can click on a \linkS4class{RowTable} to select a gene of interest,
+#' and then the panel can transmit the identities of that row to another panel for coloring by that selected gene's expression.
+#' This suite of generics controls the behavior of these single selections.
+#'
+#' @section Specifying the nature of the selection:
+#' Given an instance of the \linkS4class{Panel} class \code{x}, \code{.singleSelectionDimension(x)} should return a string 
+#' specifying whether the selection contains a row (\code{"row"}), 
+#' column (\code{"column"}) or if the Panel in \code{x} does not perform single selections at all (\code{"none"}).
+#' The output should be constant for all instances of \code{x}.
+#'
+#' @section Obtaining the selected element:
+#' \code{.singleSelectionValue}(x, contents) should return a string specifying the selected row or column.
+#' If no row or column is selected, it should return \code{NULL}.
+#'
+#' \code{contents} is any arbitrary structure set by the rendering expression in \code{\link{.renderOutput}} for \code{x}.
+#' This should contain all of the information necessary to determine the name of the selected row/column.
+#' For example, a data.frame of coordinates is stored by \linkS4class{DotPlot}s to identify the point selected by a brush/lasso.
+#'
+#' @author Aaron Lun
+#' @name single-select-generics
+#' @aliases .singleSelectionDimension
+#' .singleSelectionValue
+NULL
 
 #' @export
 setGeneric(".singleSelectionDimension", function(x) standardGeneric(".singleSelectionDimension"))

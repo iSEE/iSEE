@@ -523,12 +523,10 @@ height_limits <- c(400L, 1000L)
     # plot rendering should occur after all reactives are resolved,
     # so this shouldn't occur. Oh well.
     if (has_active) {
-        act_field <- paste0(plot_name, "_reactivated")
-        rObjects[[act_field]] <- .increment_counter(isolate(rObjects[[act_field]]))
+        .safe_reactive_bump(rObjects, paste0(plot_name, "_", .panelReactivated))
     }
     if (has_saved) {
-        save_field <- paste0(plot_name, "_resaved")
-        rObjects[[save_field]] <- .increment_counter(isolate(rObjects[[save_field]]))
+        .safe_reactive_bump(rObjects, paste0(plot_name, "_", .panelResaved))
     }
 
     invisible(NULL)

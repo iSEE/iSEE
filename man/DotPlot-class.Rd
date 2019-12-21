@@ -10,7 +10,7 @@
 \alias{.createObservers,DotPlot-method}
 \alias{.hideInterface,DotPlot-method}
 \alias{.multiSelectionRestricted,DotPlot-method}
-\alias{.multiSelectionSlot,DotPlot-method}
+\alias{.multiSelectionStructure,DotPlot-method}
 \alias{.multiSelectionCommands,DotPlot-method}
 \alias{.multiSelectionDimension,DotPlot-method}
 \title{The DotPlot virtual class}
@@ -165,7 +165,10 @@ For controlling selections:
 \item \code{\link{.multiSelectionRestricted}(x)} returns a logical scalar indicating whether \code{x} is restricting the plotted points to those that were selected in a transmitting panel, i.e., is \code{SelectEffect="Restrict"}.
 \item \code{\link{.multiSelectionHasActive}(x)} returns a logical scalar indicating whether \code{x} has an active brush or lasso.
 \item \code{\link{.multiSelectionCommands}(x, index)} returns a character vector of R expressions that - when evaluated - return a character vector of the names of selected points in the active and/or saved selections of \code{x}.
-\item \code{\link{.multiSelectionSlot}(x)}  returns \code{"BrushData"}.
+The active selection is returned if \code{index=NA}, otherwise one of the saved selection is returned.
+\item \code{\link{.multiSelectionStructure}(x)} returns \code{"BrushData"}.
+\item \code{\link{.singleSelectionValue}(x)} returns the name of the first selected element in the active brush. 
+If no brush is active, \code{NULL} is returned instead.
 }
 
 Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.

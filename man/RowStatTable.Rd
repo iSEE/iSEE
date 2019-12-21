@@ -7,7 +7,7 @@
 \alias{.getEncodedName,RowStatTable-method}
 \title{Row statistics table panel}
 \description{
-Defines a \code{\link{datatable}} panel containing statistics 
+Defines a \code{\link{datatable}} panel containing statistics
 from the \code{\link{rowData}} of a \linkS4class{SummarizedExperiment}.
 }
 \section{Constructor}{
@@ -27,7 +27,7 @@ More details to be added.
 #################
 
 x <- RowStatTable()
-x[["Selected"]] 
+x[["Selected"]]
 x[["Selected"]] <- 2L
 
 ##################
@@ -37,7 +37,7 @@ x[["Selected"]] <- 2L
 library(scater)
 sce <- mockSCE()
 
-# Sets the search columns appropriately. 
+# Sets the search columns appropriately.
 sce <- .cacheCommonInfo(x, sce)
 .refineParameters(x, sce)
 

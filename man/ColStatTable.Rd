@@ -7,7 +7,7 @@
 \alias{.getEncodedName,ColStatTable-method}
 \title{Column statistics table panel}
 \description{
-Defines a \code{\link{datatable}} panel containing statistics 
+Defines a \code{\link{datatable}} panel containing statistics
 from the \code{\link{colData}} of a \linkS4class{SummarizedExperiment}.
 }
 \section{Constructor}{
@@ -27,7 +27,7 @@ More details to be added.
 #################
 
 x <- ColStatTable()
-x[["Selected"]] 
+x[["Selected"]]
 x[["Selected"]] <- 2L
 
 ##################

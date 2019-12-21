@@ -82,7 +82,6 @@ Subclasses are expected to implement methods for, at least:
 \item \code{\link{.defineOutput}}
 \item \code{\link{.getEncodedName}}
 \item \code{\link{.getFullName}}
-\item \code{\link{.multiSelectionSlot}}
 }
 Subclasses that transmit selections should also implement specialized methods for selection-related parameters listed below.
 }
@@ -108,6 +107,8 @@ For controlling selections:
 \item \code{\link{.multiSelectionRestricted}(x)} will always return \code{TRUE}.
 \item \code{\link{.multiSelectionDimension}(x)} will always return \code{"none"}.
 \item \code{\link{.multiSelectionHasActive}(x)} will always return \code{FALSE}.
+\item \code{\link{.multiSelectionStructure}(x)} will always return \code{NULL}.
+\item \code{\link{.singleSelectionDimension}(x)} will return \code{.multiSelectionDimension(x)}.
 }
 }
 

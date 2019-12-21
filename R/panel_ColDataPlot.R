@@ -38,7 +38,7 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineInterface}(x, se, active_panels)} defines the user interface for manipulating all slots described above and in the parent classes.
+#' \item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
 #' This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}.
 #' }
 #'

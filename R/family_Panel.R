@@ -88,6 +88,7 @@
 #' \item \code{\link{.multiSelectionRestricted}(x)} will always return \code{TRUE}.
 #' \item \code{\link{.multiSelectionDimension}(x)} will always return \code{"none"}.
 #' \item \code{\link{.multiSelectionHasActive}(x)} will always return \code{FALSE}.
+#' \item \code{\link{.singleSelectionDimension}(x)} will return \code{.multiSelectionDimension(x)}.
 #' }
 #'
 #' @author Aaron Lun

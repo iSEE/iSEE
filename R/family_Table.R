@@ -45,7 +45,9 @@
 #' \item \code{\link{.multiSelectionRestricted}(x)} returns \code{TRUE}.
 #' Transmission of a selection to a Table will manifest as a subsetting of the rows.
 #' \item \code{\link{.multiSelectionHasActive}(x)} returns a logical scalar indicating whether \code{x} has any active search fields.
-#' \item \code{\link{.processSelection}(x, index)} returns a character vector of R expressions that - when evaluated - return a character vector of the row names of the table after applying all search filters.
+#' \item \code{\link{.multiSelectionCommands}(x, index)} returns a character vector of R expressions that - when evaluated - return a character vector of the row names of the table after applying all search filters.
+#' The value of \code{index} is ignored.
+#' \item \code{\link{.singleSelectionValue}(x, pObjects)} returns the name of the row that was last selected in the \code{\link{datatable}} widget.
 #' }
 #'
 #' Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.

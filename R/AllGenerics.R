@@ -160,7 +160,7 @@ setGeneric(".multiSelectionDimension", function(x) standardGeneric(".multiSelect
 setGeneric(".multiSelectionHasActive", function(x) standardGeneric(".multiSelectionHasActive"))
 
 #' @export
-setGeneric(".multiSelectionSlot", function(x) standardGeneric(".multiSelectionSlot"))
+setGeneric(".multiSelectionStructure", function(x) standardGeneric(".multiSelectionStructure"))
 
 #' @export
 setGeneric(".singleSelectionDimension", function(x) standardGeneric(".singleSelectionDimension"))

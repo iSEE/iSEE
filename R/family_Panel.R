@@ -64,7 +64,6 @@
 #' \item \code{\link{.defineOutput}}
 #' \item \code{\link{.getEncodedName}}
 #' \item \code{\link{.getFullName}}
-#' \item \code{\link{.multiSelectionSlot}}
 #' }
 #' Subclasses that transmit selections should also implement specialized methods for selection-related parameters listed below.
 #'
@@ -88,6 +87,7 @@
 #' \item \code{\link{.multiSelectionRestricted}(x)} will always return \code{TRUE}.
 #' \item \code{\link{.multiSelectionDimension}(x)} will always return \code{"none"}.
 #' \item \code{\link{.multiSelectionHasActive}(x)} will always return \code{FALSE}.
+#' \item \code{\link{.multiSelectionStructure}(x)} will always return \code{NULL}.
 #' \item \code{\link{.singleSelectionDimension}(x)} will return \code{.multiSelectionDimension(x)}.
 #' }
 #'
@@ -215,7 +215,7 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
         type_field=.selectColType, saved_field=.selectColSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_saved_selection_observers(panel_name, field=.multiSelectionSlot(x), 
+    .define_saved_selection_observers(panel_name, 
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })
 
@@ -233,3 +233,6 @@ setMethod(".multiSelectionHasActive", "Panel", function(x) FALSE)
 
 #' @export
 setMethod(".singleSelectionDimension", "Panel", function(x) .multiSelectionDimension(x))
+
+#' @export
+setMethod(".multiSelectionStructure", "Panel", function(x) NULL)

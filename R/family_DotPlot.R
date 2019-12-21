@@ -146,7 +146,7 @@
 #' \item \code{\link{.multiSelectionHasActive}(x)} returns a logical scalar indicating whether \code{x} has an active brush or lasso.
 #' \item \code{\link{.multiSelectionCommands}(x, index)} returns a character vector of R expressions that - when evaluated - return a character vector of the names of selected points in the active and/or saved selections of \code{x}.
 #' The active selection is returned if \code{index=NA}, otherwise one of the saved selection is returned.
-#' \item \code{\link{.multiSelectionSlot}(x)} returns \code{"BrushData"}.
+#' \item \code{\link{.multiSelectionStructure}(x)} returns \code{"BrushData"}.
 #' \item \code{\link{.singleSelectionValue}(x)} returns the name of the first selected element in the active brush. 
 #' If no brush is active, \code{NULL} is returned instead.
 #' }
@@ -168,7 +168,7 @@
 #' .createObservers,DotPlot-method
 #' .hideInterface,DotPlot-method
 #' .multiSelectionRestricted,DotPlot-method
-#' .multiSelectionSlot,DotPlot-method
+#' .multiSelectionStructure,DotPlot-method
 #' .multiSelectionCommands,DotPlot-method
 #' .multiSelectionDimension,DotPlot-method
 NULL
@@ -385,8 +385,13 @@ setMethod(".multiSelectionHasActive", "DotPlot", function(x) {
 })
 
 #' @export
-setMethod(".multiSelectionSlot", "DotPlot", function(x) {
-    .brushData
+setMethod(".multiSelectionStructure", "DotPlot", function(x) {
+    to_store <- x[[.brushData]]
+    if (!length(to_store) || (!.is_brush(to_store) && !to_store$closed)) {
+        NULL
+    } else {
+        to_store
+    }
 })
 
 #' @export

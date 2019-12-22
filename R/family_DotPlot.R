@@ -333,11 +333,6 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
         is_protected=FALSE,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    for (field in c(.colorByColTable, .colorByRowTable)) {
-        pObjects$aesthetics_links <- .add_interpanel_link(pObjects$aesthetics_links,
-            panel_name=plot_name, parent_name=x[[field]], field=field)
-    }
-
     # Filling the plot interaction observers:
     .define_brush_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
@@ -410,6 +405,13 @@ setMethod(".singleSelectionValue", "DotPlot", function(x, pObjects) {
     plot_name <- .getEncodedName(x)
     chosen <- .get_brushed_points(pObjects$contents[[plot_name]], x[[.brushData]])
     if (!length(chosen)) NULL else chosen[1]
+})
+
+#' @export
+setMethod(".singleSelectionSlots", "DotPlot", function(x) {
+    added <- c(.colorByFeatName, .colorBySampName)
+    names(added) <- c(.colorByRowTable, .colorByColTable)
+    c(callNextMethod(), added)
 })
 
 #' @export

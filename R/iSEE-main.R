@@ -391,8 +391,8 @@ iSEE <- function(se,
             pObjects$contents <- list()
             pObjects$cached_info <- list()
 
-            pObjects$aesthetics_links <- make_graph(edges=character(0), isolates=names(memory))
-            pObjects$selection_links <- make_graph(edges=character(0), isolates=names(memory))
+            pObjects$aesthetics_links <- .spawn_single_selection_graph(memory)
+            pObjects$selection_links <- .spawn_multi_selection_graph(memory)
 
             pObjects[[.voiceActivePanel]] <- NA_character_
 

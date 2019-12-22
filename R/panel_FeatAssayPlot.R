@@ -271,11 +271,13 @@ setMethod(".createObservers", "FeatAssayPlot", function(x, se, input, session, p
         is_protected=TRUE,
         table_field=.featAssayYAxisRowTable,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+})
 
-    for (field in c(.featAssayXAxisRowTable, .featAssayYAxisRowTable)) {
-        pObjects$aesthetics_links <- .add_interpanel_link(pObjects$aesthetics_links,
-            panel_name=plot_name, parent_name=x[[field]], field=field)
-    }
+#' @export
+setMethod(".singleSelectionSlots", "FeatAssayPlot", function(x) {
+    added <- c(.featAssayXAxisFeatName, .featAssayYAxisFeatName)
+    names(added) <- c(.featAssayXAxisRowTable, .featAssayYAxisRowTable)
+    c(callNextMethod(), added)
 })
 
 #' @export

@@ -281,11 +281,13 @@ setMethod(".createObservers", "SampAssayPlot", function(x, se, input, session, p
         is_protected=TRUE,
         table_field=.sampAssayYAxisColTable,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+})
 
-    for (field in c(.sampAssayXAxisColTable, .sampAssayYAxisColTable)) {
-        pObjects$aesthetics_links <- .add_interpanel_link(pObjects$aesthetics_links,
-            panel_name=plot_name, parent_name=x[[field]], field=field)
-    }
+#' @export
+setMethod(".singleSelectionSlots", "SampAssayPlot", function(x) {
+    added <- c(.sampAssayXAxisSampName, .sampAssayYAxisSampName)
+    names(added) <- c(.sampAssayXAxisColTable, .sampAssayYAxisColTable)
+    c(callNextMethod(), added)
 })
 
 #' @export

@@ -375,3 +375,6 @@ setGeneric(".singleSelectionDimension", function(x) standardGeneric(".singleSele
 
 #' @export
 setGeneric(".singleSelectionValue", function(x, pObjects) standardGeneric(".singleSelectionValue"))
+
+#' @export
+setGeneric(".singleSelectionSlots", function(x) standardGeneric(".singleSelectionSlots"))

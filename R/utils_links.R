@@ -1,3 +1,32 @@
+#' @importFrom igraph make_graph
+.spawn_multi_selection_graph <- function(all_memory) {
+    graph <- make_graph(edges=character(0), isolates=names(all_memory))
+
+    for (x in names(all_memory)) {
+        instance <- all_memory[[x]]
+        for (f in c(.selectRowSource, .selectColSource)) {
+            graph <- .add_interpanel_link(graph, x, instance[[f]], field=f)
+        }
+    }
+
+    graph
+}
+
+#' @importFrom igraph make_graph
+.spawn_single_selection_graph <- function(all_memory) {
+    graph <- make_graph(edges=character(0), isolates=names(all_memory))
+
+    for (x in names(all_memory)) {
+        instance <- all_memory[[x]]
+        fields <- .singleSelectionSlots(instance)
+        for (f in names(fields)) {
+            graph <- .add_interpanel_link(graph, x, instance[[f]], field=fields[f])
+        }
+    }
+
+    graph
+}
+
 #' @importFrom igraph V add_vertices 
 .add_panel_vertex <- function(graph, panel_name) {
     if (!panel_name %in% names(V(graph))) {

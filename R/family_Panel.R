@@ -244,3 +244,6 @@ setMethod(".multiSelectionActive", "Panel", function(x) NULL)
 
 #' @export
 setMethod(".singleSelectionDimension", "Panel", function(x) .multiSelectionDimension(x))
+
+#' @export
+setMethod(".singleSelectionSlots", "Panel", function(x) NULL)

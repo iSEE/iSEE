@@ -1101,9 +1101,9 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     facetrow, facetcolumn, stroke_color, fill_color)
 {
     if (index == 0L) {
-        brush_src <- sprintf("all_brushes[['%s']]", plot_name)
+        brush_src <- sprintf("all_active[['%s']]", plot_name)
     } else {
-        brush_src <- sprintf("all_select_histories[['%s']][[%i]]", plot_name, index)
+        brush_src <- sprintf("all_saved[['%s']][[%i]]", plot_name, index)
     }
 
     # Build up the aes call, to account for flipped behavior.
@@ -1200,10 +1200,10 @@ label=%i, size=%s, colour='%s')",
     facetrow, facetcolumn, stroke_color, fill_color, firstClosed)
 {
     if (index == 0L) {
-        lasso_src <- sprintf("all_brushes[['%s']]", plot_name)
+        lasso_src <- sprintf("all_active[['%s']]", plot_name)
         current <- param_choices[[.brushData]]
     } else {
-        lasso_src <- sprintf("all_select_histories[['%s']][[%i]]", plot_name, index)
+        lasso_src <- sprintf("all_saved[['%s']][[%i]]", plot_name, index)
         current <- param_choices[[.multiSelectHistory]][[index]]
     }
 

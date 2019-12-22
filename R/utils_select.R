@@ -183,13 +183,6 @@
             }
         }
 
-        if (any(is.na(select_sources))) {
-            init_cmd <- c(init_cmd, sprintf("active <- all_active[['%s']]", transmitter))
-        }
-        if (any(!is.na(select_sources))) {
-            init_cmd <- c(init_cmd, )
-        }
-
         for (i in select_sources) {
             cur_cmds <- .multiSelectionCommands(transmit_param, i)
             if (is.null(cur_cmds)) {
@@ -199,7 +192,7 @@
             if (is.na(i)) {
                 cur_cmds <- c(sprintf("select <- all_active[['%s']]", transmitter), cur_cmds)
             } else {
-                cur_cmds <- c(sprintf("select <- all_saved[['%s']]", transmitter), cur_cmds)
+                cur_cmds <- c(sprintf("select <- all_saved[['%s']][[%i]]", transmitter, i), cur_cmds)
             }
 
             outname <- if (is.na(i)) "active" else paste0("saved", i)

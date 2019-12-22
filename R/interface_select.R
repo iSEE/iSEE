@@ -131,11 +131,7 @@
 .define_selection_choices <- function(param_choices, by_field, type_field, 
     saved_field, selectable, source_type="row") 
 {
-    select_type <- paste0(
-        .getEncodedName(param_choices),
-        param_choices[[.organizationId]],
-        "_", type_field
-    )
+    select_type <- paste0(.getEncodedName(param_choices), "_", type_field)
 
     tagList(
         .define_selection_transmitter(param_choices, by_field, selectable, source_type),

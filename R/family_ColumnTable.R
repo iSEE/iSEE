@@ -48,7 +48,6 @@
 #' @docType methods
 #' @aliases 
 #' initialize,ColumnTable-method
-#' .cacheCommonInfo,ColumnTable-method
 #' .refineParameters,ColumnTable-method
 #' .defineInterface,ColumnTable-method
 #' .createObservers,ColumnTable-method

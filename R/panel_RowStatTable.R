@@ -46,13 +46,16 @@ RowStatTable <- function() {
 #' @export
 #' @importFrom SummarizedExperiment rowData
 setMethod(".cacheCommonInfo", "RowStatTable", function(x, se) {
-    if (is.null(.get_common_info(se, "RowStatTable"))) {
-        df <- rowData(se)
-        available <- .find_atomic_fields(df)
-        se <- .set_common_info(se, "RowStatTable",
-            valid.rowData.names=available)
+    if (!is.null(.get_common_info(se, "RowStatTable"))) {
+        return(se)
     }
-    callNextMethod()
+
+    se <- callNextMethod()
+
+    df <- rowData(se)
+    available <- .find_atomic_fields(df)
+    .set_common_info(se, "RowStatTable",
+        valid.rowData.names=available)
 })
 
 #' @export

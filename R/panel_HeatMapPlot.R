@@ -357,11 +357,12 @@ setMethod(".createObservers", "HeatMapPlot", function(x, se, input, session, pOb
         }
         enc <- .encode_panel_name(origin)
 
+        # TODO: replace this with .multiSelectionCommands().
         incoming <- NULL
         if (enc$Type == "rowStatTable") {
             incoming <- input[[paste0(enc$Type, enc$ID, "_rows_all")]]
         } else {
-            selected <- .get_selected_points(rownames(se), origin, pObjects$memory, pObjects$coordinates)
+            selected <- .get_brushed_points(pObjects$coordinates, pObjects$memory[[.brushData]])
             if (is.null(selected)) {
                 showNotification("Invalid: empty selection", type="warning")
                 return(NULL) # avoid corner case: which(NULL)

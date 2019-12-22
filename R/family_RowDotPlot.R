@@ -125,21 +125,23 @@ setValidity2("RowDotPlot", function(object) {
 #' @importFrom SummarizedExperiment rowData
 #' @importFrom methods callNextMethod
 setMethod(".cacheCommonInfo", "RowDotPlot", function(x, se) {
-    if (is.null(.get_common_info(se, "RowDotPlot"))) {
-        df <- rowData(se)
-        displayable <- .find_atomic_fields(df)
-
-        subdf <- df[,displayable,drop=FALSE]
-        discrete <- .which_groupable(subdf)
-        continuous <- .which_numeric(subdf)
-
-        se <- .set_common_info(se, "RowDotPlot",
-            valid.rowData.names=displayable,
-            discrete.rowData.names=displayable[discrete],
-            continuous.rowData.names=displayable[continuous])
+    if (!is.null(.get_common_info(se, "RowDotPlot"))) {
+        return(se)
     }
 
-    callNextMethod()
+    se <- callNextMethod()
+
+    df <- rowData(se)
+    displayable <- .find_atomic_fields(df)
+
+    subdf <- df[,displayable,drop=FALSE]
+    discrete <- .which_groupable(subdf)
+    continuous <- .which_numeric(subdf)
+
+    .set_common_info(se, "RowDotPlot",
+        valid.rowData.names=displayable,
+        discrete.rowData.names=displayable[discrete],
+        continuous.rowData.names=displayable[continuous])
 })
 
 #' @export

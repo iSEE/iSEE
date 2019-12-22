@@ -48,7 +48,6 @@
 #' @docType methods
 #' @aliases 
 #' initialize,RowTable-method
-#' .cacheCommonInfo,RowTable-method
 #' .refineParameters,RowTable-method
 #' .defineInterface,RowTable-method
 #' .createObservers,RowTable-method

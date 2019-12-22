@@ -120,24 +120,26 @@ setMethod("initialize", "RedDimPlot", function(.Object, ...) {
 #' @importClassesFrom SingleCellExperiment SingleCellExperiment
 #' @importFrom methods callNextMethod
 setMethod(".cacheCommonInfo", "RedDimPlot", function(x, se) {
-    if (is.null(.get_common_info(se, "RedDimPlot"))) {
-        if (is(se, "SingleCellExperiment")) {
-            available <- reducedDimNames(se)
-            for (y in seq_along(available)) {
-                if (ncol(reducedDim(se, y))==0L) {
-                    available[y] <- NA_character_
-                }
-            }
-            available <- available[!is.na(available)]
-        } else {
-            available <- character(0)
-        }
-
-        se <- .set_common_info(se, "RedDimPlot",
-            valid.reducedDim.names=available)
+    if (!is.null(.get_common_info(se, "RedDimPlot"))) {
+        return(se)
     }
 
-    callNextMethod()
+    se <- callNextMethod()
+
+    if (is(se, "SingleCellExperiment")) {
+        available <- reducedDimNames(se)
+        for (y in seq_along(available)) {
+            if (ncol(reducedDim(se, y))==0L) {
+                available[y] <- NA_character_
+            }
+        }
+        available <- available[!is.na(available)]
+    } else {
+        available <- character(0)
+    }
+
+    .set_common_info(se, "RedDimPlot",
+        valid.reducedDim.names=available)
 })
 
 #' @export

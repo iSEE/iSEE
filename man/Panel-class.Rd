@@ -24,7 +24,7 @@ The following slots are relevant to panel organization:
 \item \code{PanelId}, an integer scalar specifying the identifier for the panel.
 This should be unique across panels of the same concrete class.
 \item \code{PanelWidth}, an integer scalar specifying the width of the panel.
-Bootstrap coordinates are used so this value should lie between 1 and 12; defaults to 4.
+Bootstrap coordinates are used so this value should lie between 2 and 12; defaults to 4.
 \item \code{PanelHeight}, an integer scalar specifying the height of the panel in pixels.
 This is expected to lie between 400 and 1000; defaults to 500.
 }
@@ -80,8 +80,7 @@ Subclasses are expected to implement methods for, at least:
 \itemize{
 \item \code{\link{.renderOutput}}
 \item \code{\link{.defineOutput}}
-\item \code{\link{.getEncodedName}}
-\item \code{\link{.getFullName}}
+\item \code{\link{.fullName}}
 }
 Subclasses that transmit selections should also implement specialized methods for selection-related parameters listed below.
 }
@@ -106,8 +105,7 @@ For controlling selections:
 \itemize{
 \item \code{\link{.multiSelectionRestricted}(x)} will always return \code{TRUE}.
 \item \code{\link{.multiSelectionDimension}(x)} will always return \code{"none"}.
-\item \code{\link{.multiSelectionHasActive}(x)} will always return \code{FALSE}.
-\item \code{\link{.multiSelectionStructure}(x)} will always return \code{NULL}.
+\item \code{\link{.multiSelectionActive}(x)} will always return \code{NULL}.
 \item \code{\link{.singleSelectionDimension}(x)} will return \code{.multiSelectionDimension(x)}.
 }
 }

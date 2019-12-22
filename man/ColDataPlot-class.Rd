@@ -7,8 +7,7 @@
 \alias{.refineParameters,ColDataPlot-method}
 \alias{.defineInterface,ColDataPlot-method}
 \alias{.createObservers,ColDataPlot-method}
-\alias{.getEncodedName,ColDataPlot-method}
-\alias{.getFullName,ColDataPlot-method}
+\alias{.fullName,ColDataPlot-method}
 \alias{.getCommandsDataXY,ColDataPlot-method}
 \title{The ColDataPlot panel}
 \description{
@@ -69,8 +68,7 @@ This will also call the equivalent \linkS4class{ColumnDotPlot} method.
 
 For defining the panel name:
 \itemize{
-\item \code{\link{.getEncodedName}(x)} will return \code{"ColDataPlot"}.
-\item \code{\link{.getFullName}(x)} will return \code{"Column data plot"}.
+\item \code{\link{.fullName}(x)} will return \code{"Column data plot"}.
 }
 
 For creating the plot:

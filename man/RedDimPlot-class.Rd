@@ -8,8 +8,7 @@
 \alias{.cacheCommonInfo,RedDimPlot-method}
 \alias{.defineInterface,RedDimPlot-method}
 \alias{.createObservers,RedDimPlot-method}
-\alias{.getEncodedName,RedDimPlot-method}
-\alias{.getFullName,RedDimPlot-method}
+\alias{.fullName,RedDimPlot-method}
 \alias{.getCommandsDataXY,RedDimPlot-method}
 \title{The RedDimPlot panel}
 \description{
@@ -71,8 +70,7 @@ This will also call the equivalent \linkS4class{ColumnDotPlot} method.
 
 For defining the panel name:
 \itemize{
-\item \code{\link{.getEncodedName}(x)} will return \code{"RedDimPlot"}.
-\item \code{\link{.getFullName}(x)} will return \code{"Reduced dimension plot"}.
+\item \code{\link{.fullName}(x)} will return \code{"Reduced dimension plot"}.
 }
 
 For creating the plot:

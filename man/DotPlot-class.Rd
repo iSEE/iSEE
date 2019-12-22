@@ -10,7 +10,7 @@
 \alias{.createObservers,DotPlot-method}
 \alias{.hideInterface,DotPlot-method}
 \alias{.multiSelectionRestricted,DotPlot-method}
-\alias{.multiSelectionStructure,DotPlot-method}
+\alias{.multiSelectionActive,DotPlot-method}
 \alias{.multiSelectionCommands,DotPlot-method}
 \alias{.multiSelectionDimension,DotPlot-method}
 \title{The DotPlot virtual class}
@@ -163,10 +163,9 @@ It will also create a rendered UI element for selection information.
 For controlling selections:
 \itemize{
 \item \code{\link{.multiSelectionRestricted}(x)} returns a logical scalar indicating whether \code{x} is restricting the plotted points to those that were selected in a transmitting panel, i.e., is \code{SelectEffect="Restrict"}.
-\item \code{\link{.multiSelectionHasActive}(x)} returns a logical scalar indicating whether \code{x} has an active brush or lasso.
 \item \code{\link{.multiSelectionCommands}(x, index)} returns a character vector of R expressions that - when evaluated - return a character vector of the names of selected points in the active and/or saved selections of \code{x}.
 The active selection is returned if \code{index=NA}, otherwise one of the saved selection is returned.
-\item \code{\link{.multiSelectionStructure}(x)} returns \code{"BrushData"}.
+\item \code{\link{.multiSelectionActive}(x)} returns \code{x[["BrushData"]]} or \code{NULL} if there is no brush or closed lasso.
 \item \code{\link{.singleSelectionValue}(x)} returns the name of the first selected element in the active brush. 
 If no brush is active, \code{NULL} is returned instead.
 }

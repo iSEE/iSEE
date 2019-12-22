@@ -7,7 +7,6 @@
 \alias{.refineParameters,FeatAssayPlot-method}
 \alias{.defineInterface,FeatAssayPlot-method}
 \alias{.createObservers,FeatAssayPlot-method}
-\alias{.getEncodedName,FeatAssayPlot-method}
 \alias{.getFullName,FeatAssayPlot-method}
 \alias{.getCommandsDataXY,FeatAssayPlot-method}
 \title{The FeatAssayPlot panel}
@@ -77,8 +76,7 @@ This will also call the equivalent \linkS4class{ColumnDotPlot} method.
 
 For defining the panel name:
 \itemize{
-\item \code{\link{.getEncodedName}(x)} will return \code{"FeatAssayPlot"}.
-\item \code{\link{.getFullName}(x)} will return \code{"Feature assay plot"}.
+\item \code{\link{.fullName}(x)} will return \code{"Feature assay plot"}.
 }
 
 For creating the plot:

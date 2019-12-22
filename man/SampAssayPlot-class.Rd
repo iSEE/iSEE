@@ -7,8 +7,7 @@
 \alias{.refineParameters,SampAssayPlot-method}
 \alias{.defineInterface,SampAssayPlot-method}
 \alias{.createObservers,SampAssayPlot-method}
-\alias{.getEncodedName,SampAssayPlot-method}
-\alias{.getFullName,SampAssayPlot-method}
+\alias{.fullName,SampAssayPlot-method}
 \alias{.getCommandsDataXY,SampAssayPlot-method}
 \title{The SampAssayPlot panel}
 \description{
@@ -77,8 +76,7 @@ This will also call the equivalent \linkS4class{ColumnDotPlot} method.
 
 For defining the panel name:
 \itemize{
-\item \code{\link{.getEncodedName}(x)} will return \code{"SampAssayPlot"}.
-\item \code{\link{.getFullName}(x)} will return \code{"Sample assay plot"}.
+\item \code{\link{.fullName}(x)} will return \code{"Sample assay plot"}.
 }
 
 For creating the plot:

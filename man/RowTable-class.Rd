@@ -4,7 +4,6 @@
 \name{RowTable-class}
 \alias{RowTable-class}
 \alias{initialize,RowTable-method}
-\alias{.cacheCommonInfo,RowTable-method}
 \alias{.refineParameters,RowTable-method}
 \alias{.defineInterface,RowTable-method}
 \alias{.createObservers,RowTable-method}

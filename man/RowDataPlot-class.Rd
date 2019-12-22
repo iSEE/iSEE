@@ -7,8 +7,7 @@
 \alias{.refineParameters,RowDataPlot-method}
 \alias{.defineInterface,RowDataPlot-method}
 \alias{.createObservers,RowDataPlot-method}
-\alias{.getEncodedName,RowDataPlot-method}
-\alias{.getFullName,RowDataPlot-method}
+\alias{.fullName,RowDataPlot-method}
 \alias{.getCommandsDataXY,RowDataPlot-method}
 \title{The RowDataPlot panel}
 \description{
@@ -69,8 +68,7 @@ This will also call the equivalent \linkS4class{RowDotPlot} method.
 
 For defining the panel name:
 \itemize{
-\item \code{\link{.getEncodedName}(x)} will return \code{"RowDataPlot"}.
-\item \code{\link{.getFullName}(x)} will return \code{"Row data plot"}.
+\item \code{\link{.fullName}(x)} will return \code{"Row data plot"}.
 }
 
 For creating the plot:

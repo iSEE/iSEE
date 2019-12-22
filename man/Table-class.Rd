@@ -8,7 +8,7 @@
 \alias{.defineOutput,Table-method}
 \alias{.hideInterface,Table-method}
 \alias{.multiSelectionCommands,Table-method}
-\alias{.multiSelectionHasActive,Table-method}
+\alias{.multiSelectionActive,Table-method}
 \title{The Table class}
 \description{
 The Table is a virtual class for all panels containing a \code{\link{datatable}} widget from the \pkg{DT} package, where each row \emph{usually} corresponds to a row or column of the \linkS4class{SummarizedExperiment} object.
@@ -60,7 +60,8 @@ For controlling selections:
 \itemize{
 \item \code{\link{.multiSelectionRestricted}(x)} returns \code{TRUE}.
 Transmission of a selection to a Table will manifest as a subsetting of the rows.
-\item \code{\link{.multiSelectionHasActive}(x)} returns a logical scalar indicating whether \code{x} has any active search fields.
+\item \code{\link{.multiSelectionActive}(x)} returns a list containing the contents of \code{x[["Search"]]} and \code{x[["ColumnSearch"]]}.
+If both contain only empty strings, a \code{NULL} is returned instead.
 \item \code{\link{.multiSelectionCommands}(x, index)} returns a character vector of R expressions that - when evaluated - return a character vector of the row names of the table after applying all search filters.
 The value of \code{index} is ignored.
 \item \code{\link{.singleSelectionValue}(x, pObjects)} returns the name of the row that was last selected in the \code{\link{datatable}} widget.

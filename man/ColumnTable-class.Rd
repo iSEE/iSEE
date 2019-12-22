@@ -4,7 +4,6 @@
 \name{ColumnTable-class}
 \alias{ColumnTable-class}
 \alias{initialize,ColumnTable-method}
-\alias{.cacheCommonInfo,ColumnTable-method}
 \alias{.refineParameters,ColumnTable-method}
 \alias{.defineInterface,ColumnTable-method}
 \alias{.createObservers,ColumnTable-method}

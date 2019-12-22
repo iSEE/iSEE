@@ -42,7 +42,7 @@ height_limits <- c(400L, 1000L)
         )
 
         # Coercing to a different box status ('danger' is a placeholder, above).
-        collected[[i]] <- .coerce_box_status(ctrl_panel, mode)
+        collected[[i]] <- .coerce_box_status(ctrl_panel, .encodedName(instance))
     }
     do.call(tagList, collected)
 }

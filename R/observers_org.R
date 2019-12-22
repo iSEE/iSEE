@@ -29,8 +29,8 @@
     org_pObjects$initialized <- FALSE
     org_rObjects <- reactiveValues(rerender=0)
 
-    available_enc <- vapply(pObjects$memory, .encodedName, "")
-    names(available_enc) <- vapply(pObjects$memory, .fullName, "")
+    available_enc <- vapply(pObjects$reservoir, .encodedName, "")
+    names(available_enc) <- vapply(pObjects$reservoir, .fullName, "")
 
     .define_choices <- function(memory, named=TRUE) {
         enc_names <- vapply(memory, .getEncodedName, "")
@@ -81,13 +81,11 @@
         adjusted <- org_pObjects$memory[ipo]
 
         # Adding some newly created panels. This assumes that 
-        # the common cache already exists for new types.
+        # the reservoir types have already been cached and refined.
         if (length(added <- which(ipo %in% available_enc))) {
             for (a in added) {
-                latest <- new(ipo[a])
-                latest <- .refineParameters(latest, se)
-
-                mode <- .encodedName(latest)
+                mode <- ipo[a]
+                latest <- pObjects$reservoir[[mode]]
                 idx <- org_pObjects$counter[[mode]] + 1L
                 latest[[.organizationId]] <- idx
 

@@ -116,6 +116,8 @@
 #'   shiny::runApp(app, port=1234)
 #' }
 iSEE <- function(se,
+    initial=NULL,
+    extra=NULL,
     redDimArgs=NULL,
     colDataArgs=NULL,
     featAssayArgs=NULL,
@@ -146,8 +148,8 @@ iSEE <- function(se,
     appTitle=NULL,
     runLocal=TRUE,
     voice=FALSE,
-    bugs=FALSE) {
-
+    bugs=FALSE) 
+{
     # Save the original name of the input object for renaming in the tracker
     if (has_se <- !missing(se)) {
         se_name <- deparse(substitute(se))
@@ -155,8 +157,11 @@ iSEE <- function(se,
         se_name <- "se"
     }
     ecm_name <- deparse(substitute(colormap))
-    cdf_name <- deparse(substitute(customDataFun))
-    csf_name <- deparse(substitute(customStatFun))
+
+    if (is.null(initial)) {
+        initial <- list(RedDimPlot(), RowStatTable(), FeatAssayPlot(), ColDataPlot(), 
+            RowDataPlot(), SampAssayPlot(), ColStatTable(), HeatMapPlot())
+    }
 
     #######################################################################
     ## UI definition. ----
@@ -323,66 +328,68 @@ iSEE <- function(se,
                 showNotification(ui=ui_msg, type="warning", duration=10)
             }
 
-            # TEST:
-            RedDimPlot1 <- RedDimPlot()
-            ColDataPlot1 <- ColDataPlot()
-            FeatAssayPlot1 <- FeatAssayPlot()
-            RowDataPlot1 <- RowDataPlot()
-            SampAssayPlot1 <- SampAssayPlot()
-            HeatMapPlot1 <- HeatMapPlot()
-            ColStatTable1 <- ColStatTable()
-            RowStatTable1 <- RowStatTable()
-            # sort(slotNames(RedDimPlot1))
-            RedDimPlot1[["ColorBy"]] <- "Column data"
-            RedDimPlot1[["ColorByColData"]] <- "driver_1_s"
-            RedDimPlot1[["ShapeBy"]] <- "Column data"
-            RedDimPlot1[["ShapeByColData"]] <- "driver_1_s"
-            RedDimPlot1[["SizeBy"]] <- "Column data"
-            RedDimPlot1[["SizeByColData"]] <- "RALIGN"
-            RedDimPlot1[["FacetByRow"]] <- "passes_qc_checks_s"
-            RedDimPlot1[["FacetByColumn"]] <- "driver_1_s"
-            RedDimPlot1[["Downsample"]] <- TRUE
-            RedDimPlot1[["SampleRes"]] <- 50
-            memory <- list(RedDimPlot1, RowStatTable1, FeatAssayPlot1, ColDataPlot1, RowDataPlot1,
-                SampAssayPlot1, ColStatTable1, HeatMapPlot1)
-
-            # NOTE: .cacheCommonInfo() should be run on all possible panels,
-            # not just those that are visible. This is necessary to set up the
-            # cache for potential panels that have yet to be generated.
-            for (idx in seq_along(memory)) {
-                se <- .cacheCommonInfo(memory[[idx]], se)
-                memory[idx] <- list(.refineParameters(memory[[idx]], se))
+            # Caching and refining the initial panels.
+            for (idx in seq_along(initial)) {
+                se <- .cacheCommonInfo(initial[[idx]], se)
             }
-            memory <- memory[!vapply(memory, is.null, TRUE)]
+            for (idx in seq_along(initial)) {
+                initial[idx] <- list(.refineParameters(initial[[idx]], se))
+            }
+            memory <- initial[!vapply(initial, is.null, TRUE)]
 
             # Assigning names and IDs to each panel.
-            all_modes <- vapply(memory, class, "")
-            num_modes <- as.list(table(all_modes))
+            all_modes <- vapply(memory, .encodedName, "")
+            all_ids <- vapply(memory, "[[", i=.organizationId, 0L)
+            by_mode <- split(all_ids, all_modes)
+            counter <- vapply(by_mode, function(x) max(c(0L, x), na.rm=TRUE), 0L)
 
-            # TODO: fix to accommodate user-supplied IDs.
-            running_modes <- lapply(num_modes, FUN=function(x) 1L)
             for (idx in seq_along(memory)) {
-                mode <- all_modes[idx]
-                cur.id <- running_modes[[mode]]
-                memory[[idx]][[.organizationId]] <- cur.id
-                running_modes[[mode]] <- running_modes[[mode]] + 1L
+                instance <- memory[[idx]]
+                curid <- instance[[.organizationId]]
+                if (is.na(curid)) {
+                    nm <- .encodedName(instance)
+                    curid <- counter[nm] + 1L
+                    memory[[idx]][[.organizationId]] <- curid
+                    counter[nm] <- curid
+                }
             }
 
-            all_ids <- vapply(memory, "[[", i=.organizationId, 0L)
-            all_names <- paste0(all_modes, all_ids)
+            all_names <- vapply(memory, .getEncodedName, "")
+            if (dup <- anyDuplicated(all_names)) {
+                stop("panels of same class with duplicated IDs '", all_names[dup], "'")
+            }
             names(memory) <- all_names
 
-            empty_list <- vector("list", length(all_names))
-            names(empty_list) <- all_names
+            # Adding a reservoir of extra panel classes.
+            for (idx in seq_along(extra)) {
+                se <- .cacheCommonInfo(extra[[idx]], se)
+            }
+            for (idx in seq_along(extra)) {
+                extra[idx] <- list(.refineParameters(extra[[idx]], se))
+            }
+            extra <- extra[!vapply(extra, is.null, TRUE)]
+
+            extra_enc <- vapply(extra, .encodedName, "")
+            leftovers <- setdiff(extra_enc, names(counter))
+            empty <- integer(length(leftovers))
+            names(empty) <- leftovers
+            counter <- c(counter, empty)
+
+            reservoir <- c(memory, extra)
+            res_names <- c(all_modes, extra_enc)
+            res_nondup <- !duplicated(res_names)
+            reservoir <- reservoir[res_nondup]
+            names(reservoir) <- res_names[res_nondup]
 
             # Storage for persistent non-reactive objects.
             pObjects <- new.env()
             pObjects$memory <- memory
-            pObjects$counter <- num_modes
+            pObjects$reservoir <- reservoir 
+            pObjects$counter <- counter
 
-            pObjects$commands <- empty_list
-            pObjects$contents <- empty_list
-            pObjects$cached_info <- empty_list
+            pObjects$commands <- list()
+            pObjects$contents <- list()
+            pObjects$cached_info <- list()
 
             pObjects$aesthetics_links <- make_graph(edges=character(0), isolates=names(memory))
             pObjects$selection_links <- make_graph(edges=character(0), isolates=names(memory))

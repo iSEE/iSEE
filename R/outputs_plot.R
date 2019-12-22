@@ -72,3 +72,51 @@
         color=brush_fill
     )
 }
+
+#' Trigger replotting
+#'
+#' Trigger regeneration of a particular plot, clearing all selections from Shiny brushes or lasso waypoints.
+#'
+#' @param mode String specifying the (encoded) panel type of the current panel to be replotted.
+#' @param id Integer scalar specifying the ID of the current panel of the specified type.
+#' @param pObjects An environment containing \code{memory}, a list of DataFrames containing parameters for each panel of each type.
+#' @param rObjects A reactive list containing incrementable counters for all panels,
+#'
+#' @return \code{NULL}, invisibly.
+#'
+#' @details
+#' This function will trigger replotting of the current panel by updating the appropriate incrementable counter in \code{rObjects}.
+#' It will clear Shiny brushes, lasso way points and any saved selections.
+#' It will also trigger replotting of all children.
+#'
+#' Note that this function relies on the fact that \code{pObjects} and \code{rObjects} are passed by reference.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_regenerate_unselected_plot
+#' @seealso
+#' \code{\link{iSEE}}
+.regenerate_unselected_plot <- function(plot_name, pObjects, rObjects) {
+    rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+
+    # Destroying any brushes or lasso waypoints.
+    has_active <- .multiSelectionHasActive(pObjects$memory[[plot_name]])
+    pObjects$memory[[plot_name]][[.brushData]] <- list()
+
+    # Destroying history.
+    has_saved <- .any_saved_selection(pObjects$memory[[plot_name]])
+    pObjects$memory[[plot_name]][[.multiSelectHistory]] <- list()
+
+    # Forcibly updating all children.
+    # Hypothetically, this could cause union children to trigger twice,
+    # as their reactive values will be updated twice. In practice,
+    # plot rendering should occur after all reactives are resolved,
+    # so this shouldn't occur. Oh well.
+    if (has_active) {
+        .safe_reactive_bump(rObjects, paste0(plot_name, "_", .panelReactivated))
+    }
+    if (has_saved) {
+        .safe_reactive_bump(rObjects, paste0(plot_name, "_", .panelResaved))
+    }
+
+    invisible(NULL)
+}

@@ -1,3 +1,6 @@
+width_limits <- c(2L, 12L)
+height_limits <- c(400L, 1000L)
+
 #' Generate the panel organization UI
 #'
 #' Generates the user interface to control the organization of the panels, specifically their sizes.

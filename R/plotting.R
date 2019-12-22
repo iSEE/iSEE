@@ -115,9 +115,8 @@ names(.all_aes_values) <- .all_aes_names
         ## If we color by sample name in a column-based plot, or by feature name
         ## in a row-based plot, we make sure to keep the selected column/row in
         ## the downsampling
-        enc <- .split_encoded(rownames(param_choices))
-        is_color_by_sample_name <- param_choices[[.colorByField]] == .colorBySampNameTitle && enc$Type %in% col_point_plot_types
-        is_color_by_feature_name <- param_choices[[.colorByField]] == .colorByFeatNameTitle && enc$Type %in% row_point_plot_types
+        is_color_by_sample_name <- param_choices[[.colorByField]] == .colorBySampNameTitle && is(param_choices, "ColumnDotPlot")
+        is_color_by_feature_name <- param_choices[[.colorByField]] == .colorByFeatNameTitle && is(param_choices, "RowDotPlot")
         downsample_cmds <- c(
             "plot.data.pre <- plot.data;",
             "# Randomize data points to avoid a data set bias during the downsampling",

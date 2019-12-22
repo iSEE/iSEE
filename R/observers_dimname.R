@@ -1,3 +1,5 @@
+.propagateDimnames <- "INTERNAL_dimnames"
+
 #' @importFrom shiny eventReactive updateSelectizeInput
 .define_dimname_propagation_observer <-  function(panel_name, choices, session, pObjects, rObjects) {
     dimname_field <- paste0(panel_name, "_", .propagateDimnames)

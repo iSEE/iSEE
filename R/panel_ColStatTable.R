@@ -92,7 +92,7 @@ setMethod(".getTableFunction", "ColStatTable", function(x) {
         cmds <-"tab <- as.data.frame(colData(se));"
 
         if (exists("col_selected", envir=eval_env, inherits=FALSE)) {
-            cmds <- c(cmds, "tab <- tab[unlist(col_selected),,drop=FALSE]")
+            cmds <- c(cmds, "tab <- tab[unique(unlist(col_selected)),,drop=FALSE]")
         }
 
         valid.names <- .get_common_info(se, "ColStatTable")$valid.colData.names

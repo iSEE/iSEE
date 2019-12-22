@@ -292,7 +292,7 @@ setMethod(".getCommandsDataSelect", "ColumnDotPlot", function(x, envir) {
         # TODO: adapt whether col_selected contains active, union, or saved selection
         cmds["header1"] <- ""
         cmds["header2"] <- "# Receiving column point selection"
-        cmds["SelectBy"] <- "plot.data$SelectBy <- rownames(plot.data) %in% col_selected;"
+        cmds["SelectBy"] <- "plot.data$SelectBy <- rownames(plot.data) %in% unlist(col_selected);"
         if (x[[.selectEffect]] == .selectRestrictTitle) {
             cmds["saved"] <- "plot.data.all <- plot.data;"
             cmds["subset"] <- "plot.data <- subset(plot.data, SelectBy);"

@@ -10,7 +10,7 @@
 #' \item \code{PanelId}, an integer scalar specifying the identifier for the panel.
 #' This should be unique across panels of the same concrete class.
 #' \item \code{PanelWidth}, an integer scalar specifying the width of the panel.
-#' Bootstrap coordinates are used so this value should lie between 1 and 12; defaults to 4.
+#' Bootstrap coordinates are used so this value should lie between 2 and 12; defaults to 4.
 #' \item \code{PanelHeight}, an integer scalar specifying the height of the panel in pixels.
 #' This is expected to lie between 400 and 1000; defaults to 500.
 #' }
@@ -131,8 +131,8 @@ setValidity2("Panel", function(object) {
     msg <- .valid_logical_error(msg, object, .selectParamBoxOpen)
     msg <- .single_string_error(msg, object, c(.selectRowSource, .selectColSource))
 
-    msg <- .valid_numeric_error(msg, object, .organizationHeight, lower=400L, upper=1000L)
-    msg <- .valid_numeric_error(msg, object, .organizationWidth, lower=1L, upper=12L)
+    msg <- .valid_numeric_error(msg, object, .organizationHeight, lower=height_limits[1], upper=height_limits[2])
+    msg <- .valid_numeric_error(msg, object, .organizationWidth, lower=width_limits[1], upper=width_limits[2])
 
     if (length(val <- object[[.organizationId]])!=1 || (!is.na(val) && val <= 0L)) {
         msg <- c(msg, sprintf("'%s' must be a positive integer or NA for '%s'", .organizationId, class(object)[1]))

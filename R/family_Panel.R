@@ -85,8 +85,7 @@
 #' \itemize{
 #' \item \code{\link{.multiSelectionRestricted}(x)} will always return \code{TRUE}.
 #' \item \code{\link{.multiSelectionDimension}(x)} will always return \code{"none"}.
-#' \item \code{\link{.multiSelectionHasActive}(x)} will always return \code{FALSE}.
-#' \item \code{\link{.multiSelectionStructure}(x)} will always return \code{NULL}.
+#' \item \code{\link{.multiSelectionActive}(x)} will always return \code{NULL}.
 #' \item \code{\link{.singleSelectionDimension}(x)} will return \code{.multiSelectionDimension(x)}.
 #' }
 #'
@@ -224,10 +223,7 @@ setMethod(".multiSelectionRestricted", "Panel", function(x) TRUE)
 setMethod(".multiSelectionDimension", "Panel", function(x) "none")
 
 #' @export
-setMethod(".multiSelectionHasActive", "Panel", function(x) FALSE)
+setMethod(".multiSelectionActive", "Panel", function(x) NULL)
 
 #' @export
 setMethod(".singleSelectionDimension", "Panel", function(x) .multiSelectionDimension(x))
-
-#' @export
-setMethod(".multiSelectionStructure", "Panel", function(x) NULL)

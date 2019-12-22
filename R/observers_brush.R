@@ -155,7 +155,7 @@
     observeEvent(input[[save_field]], {
         instance <- pObjects$memory[[plot_name]]
         current <- instance[[.multiSelectHistory]]
-        to_store <- .multiSelectionStructure(instance)
+        to_store <- .multiSelectionActive(instance)
         if (is.null(to_store)) {
             return(NULL)
         }

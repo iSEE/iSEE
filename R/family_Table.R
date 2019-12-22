@@ -44,7 +44,8 @@
 #' \itemize{
 #' \item \code{\link{.multiSelectionRestricted}(x)} returns \code{TRUE}.
 #' Transmission of a selection to a Table will manifest as a subsetting of the rows.
-#' \item \code{\link{.multiSelectionHasActive}(x)} returns a logical scalar indicating whether \code{x} has any active search fields.
+#' \item \code{\link{.multiSelectionActive}(x)} returns a list containing the contents of \code{x[["Search"]]} and \code{x[["ColumnSearch"]]}.
+#' If both contain only empty strings, a \code{NULL} is returned instead.
 #' \item \code{\link{.multiSelectionCommands}(x, index)} returns a character vector of R expressions that - when evaluated - return a character vector of the row names of the table after applying all search filters.
 #' The value of \code{index} is ignored.
 #' \item \code{\link{.singleSelectionValue}(x, pObjects)} returns the name of the row that was last selected in the \code{\link{datatable}} widget.
@@ -63,7 +64,7 @@
 #' .defineOutput,Table-method
 #' .hideInterface,Table-method
 #' .multiSelectionCommands,Table-method
-#' .multiSelectionHasActive,Table-method
+#' .multiSelectionActive,Table-method
 NULL
 
 #' @export
@@ -100,8 +101,12 @@ setMethod(".multiSelectionCommands", "Table", function(x, index) {
 })
 
 #' @export
-setMethod(".multiSelectionHasActive", "Table", function(x) {
-    x[[.TableSearch]]!="" || any(x[[.TableColSearch]]!="")
+setMethod(".multiSelectionActive", "Table", function(x) {
+    if (x[[.TableSearch]]!="" || any(x[[.TableColSearch]]!="")) {
+        list(Search=x[[.TableSearch]], ColumnSearch=x[[.TableColSearch]]) 
+    } else {
+        NULL
+    }
 })
 
 #' @export

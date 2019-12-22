@@ -293,11 +293,10 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #' \itemize{
 #' \item \code{.multiSelectionDimension(x)} should return a string specifying whether the selection contains rows (\code{"row"}), columns (\code{"column"}) or if the Panel in \code{x} does not perform multiple selections at all (\code{"none"}).
 #' The output should be constant for all instances of \code{x}.
-#' \item \code{.multiSelectionHasActive(x)} should return a logical scalar indicating whether there is a currently active selection in \code{x}.
-#' This is used to avoid unnecessary re-renderings of child panels that receive transmissions from \code{x}.
-#' \item \code{.multiSelectionStructure(x)} should return the value(s) of the slot in \code{x} containing the parameters required to perform a multiple selection.
+#' \item \code{.multiSelectionActive(x)} should return some structure containing all the parameters required to identify all points in the active multiple selection of \code{x}.
 #' For example, for \linkS4class{DotPlot}s, this would be the contents of the \code{BrushData} slot.
-#' This is used to save multiple selections into the \code{MultiSelectHistory} slot.
+#' If \code{NULL}, \code{x} is assumed to have no active multiple selection.
+#' This is primarily used to save multiple selections into the \code{MultiSelectHistory} slot.
 #' \item \code{.multiSelectionRestricted(x)} should return a logical scalar indicating whether \code{x}'s output will be restricted to the selection transmitted from another panel.
 #' This is used to determine whether child panels of \code{x} need to be re-rendered when \code{x}'s transmitter changes its multiple selection.
 #' }
@@ -323,9 +322,8 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #' @author Aaron Lun
 #' @name multi-select-generics
 #' @aliases .multiSelectionDimension
-#' .multiSelectionHasActive
 #' .multiSelectionRestricted
-#' .multiSelectionStructure
+#' .multiSelectionActive
 #' .multiSelectionCommands
 NULL
 
@@ -339,10 +337,7 @@ setGeneric(".multiSelectionRestricted", function(x) standardGeneric(".multiSelec
 setGeneric(".multiSelectionDimension", function(x) standardGeneric(".multiSelectionDimension"))
 
 #' @export
-setGeneric(".multiSelectionHasActive", function(x) standardGeneric(".multiSelectionHasActive"))
-
-#' @export
-setGeneric(".multiSelectionStructure", function(x) standardGeneric(".multiSelectionStructure"))
+setGeneric(".multiSelectionActive", function(x) standardGeneric(".multiSelectionActive"))
 
 #' Generics for controlling single selections
 #'

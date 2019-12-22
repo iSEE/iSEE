@@ -234,8 +234,12 @@
 #' \code{\link{.self_brush_box}},
 #' \code{\link{.self_lasso_path}}
 .populate_selection_environment <- function(x, envir) {
-    envir$all_active <- list(.multiSelectionStructure(x))
+    envir$all_active <- list(.multiSelectionActive(x))
     envir$all_saved <- list(x[[.multiSelectHistory]])
     names(envir$all_active) <- names(envir$all_saved) <- .getEncodedName(x)
     invisible(NULL)
+}
+
+.multiSelectionHasActive <- function(x) {
+    !is.null(.multiSelectionActive(x))
 }

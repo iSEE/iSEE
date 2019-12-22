@@ -92,9 +92,9 @@ setValidity2("Table", function(object) {
 
 #' @export
 setMethod(".multiSelectionCommands", "Table", function(x, index) {
-    filter_cmds <- .generate_table_filter(x, varname="transmitter")
+    filter_cmds <- .generate_table_filter(x, varname="contents")
     if (!is.null(filter_cmds)) {
-        sprintf("selected <- rownames(transmitter)[%s]", filter_cmds)
+        sprintf("selected <- rownames(contents)[%s]", filter_cmds)
     } else {
         NULL
     }

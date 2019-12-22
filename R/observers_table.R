@@ -20,9 +20,11 @@
 
     search_field <- paste0(panel_name, .int_statTableSearch)
     act_name <- paste0(panel_name, "_", .panelReactivated)
+    gen_name <- paste0(panel_name, "_", .panelGeneralInfo)
     observeEvent(input[[search_field]], {
         pObjects$memory[[panel_name]][[.TableSearch]] <- input[[search_field]]
         .safe_reactive_bump(rObjects, act_name)
+        .safe_reactive_bump(rObjects, gen_name)
     })
 
     colsearch_field <- paste0(panel_name, .int_statTableColSearch)
@@ -30,5 +32,6 @@
         search <- input[[colsearch_field]]
         pObjects$memory[[panel_name]][[.TableColSearch]] <- search
         .safe_reactive_bump(rObjects, act_name)
+        .safe_reactive_bump(rObjects, gen_name)
     })
 }

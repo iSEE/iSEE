@@ -1,5 +1,8 @@
 #' @importFrom DT datatable renderDataTable selectRows dataTableProxy
 .define_table_output <- function(panel_name, FUN, se, output, pObjects, rObjects) {
+    force(FUN)
+    force(se)
+
     output[[panel_name]] <- renderDataTable({
         force(rObjects[[panel_name]])
         param_choices <- pObjects$memory[[panel_name]]
@@ -31,8 +34,6 @@
             tab_cmds <- .add_command(tab_cmds, col_select_cmds)
             tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
         }
-
-        tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
 
         # Creating the table and storing it.
         tab_cmds <- .add_command(tab_cmds, FUN(pObjects$memory[[panel_name]], se, eval_env))

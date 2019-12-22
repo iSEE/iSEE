@@ -6,7 +6,7 @@
 #' @param all_memory A \code{list} of \linkS4class{DataFrame}s, where each
 #' \linkS4class{DataFrame} corresponds to a panel type and contains the
 #' initial settings for each individual panel of that type.
-#' @param all_coordinates A \code{list} of \code{data.frame}s that contain the coordinates and covariates of data points visible in each of the plots.
+#' @param all_contents A \code{list} of \code{data.frame}s that contain the coordinates and covariates of data points visible in each of the plots.
 #' @param se A \linkS4class{SingleCellExperiment} object.
 #' @param colormap An \linkS4class{ExperimentColorMap} object that defines
 #' custom colormaps to apply to individual \code{assays}, \code{colData},
@@ -35,11 +35,11 @@
 #' @importFrom cowplot get_legend plot_grid
 #' @importFrom reshape2 melt
 #' @importFrom dplyr arrange
-.make_heatMapPlot <- function(param_choices, all_memory, all_coordinates, se, colormap) {
+.make_heatMapPlot <- function(param_choices, all_memory, all_contents, se, colormap) {
     eval_env <- new.env()
     eval_env$se <- se
     eval_env$colormap <- colormap
-    eval_env$all_coordinates <- all_coordinates
+    eval_env$all_contents <- all_contents
 
     genes_selected_y <- param_choices[[.heatMapFeatName]]
     validate(need(

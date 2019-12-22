@@ -118,7 +118,7 @@
             if (is(parent, "Table")) {
                 new_selected <- parent[[.TableSelected]]
             } else if (is(parent, "DotPlot")) {
-                chosen <- .get_brushed_points(pObjects$coordinates[[tab]], parent[[.brushData]])
+                chosen <- .get_brushed_points(pObjects$contents[[tab]], parent[[.brushData]])
                 if (length(chosen)) {
                     new_selected <- chosen[1]
                 }
@@ -126,7 +126,7 @@
 
             # We use session=NULL only for unit testing the rest of the function.
             if (new_selected != old_selected && !is.null(session)) { 
-                all_choices <- rownames(pObjects$coordinates[[tab]])
+                all_choices <- rownames(pObjects$contents[[tab]])
                 updateSelectizeInput(session, .input_FUN(select_field), label = NULL, 
                     choices = choices, server = TRUE, selected = new_selected) # nocov
             }

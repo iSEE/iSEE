@@ -362,7 +362,7 @@ setMethod(".createObservers", "HeatMapPlot", function(x, se, input, session, pOb
         if (enc$Type == "rowStatTable") {
             incoming <- input[[paste0(enc$Type, enc$ID, "_rows_all")]]
         } else {
-            selected <- .get_brushed_points(pObjects$coordinates, pObjects$memory[[.brushData]])
+            selected <- .get_brushed_points(pObjects$contents, pObjects$memory[[.brushData]])
             if (is.null(selected)) {
                 showNotification("Invalid: empty selection", type="warning")
                 return(NULL) # avoid corner case: which(NULL)
@@ -434,7 +434,7 @@ setMethod(".createObservers", "HeatMapPlot", function(x, se, input, session, pOb
     # Triggering an update of the selected order.
     cluster_button <- paste0(plot_name, "_", .heatMapCluster)
     observeEvent(input[[cluster_button]], {
-        emat <- pObjects$coordinates[[plot_name]]
+        emat <- pObjects$contents[[plot_name]]
         updateSelectizeInput(
             session, paste0(plot_name, "_", .heatMapFeatName), choices=rownames(se),
             server=TRUE, selected=.cluster_genes(emat))
@@ -463,9 +463,9 @@ setMethod(".renderOutput", "HeatMapPlot", function(x, se, colormap, output, pObj
         force(rObjects[[plot_name]])
         rObjects[[legend_field]] <- .increment_counter(isolate(rObjects[[legend_field]]))
 
-        p.out <- .make_heatMapPlot(pObjects$memory[[plot_name]], pObjects$memory, pObjects$coordinates, se, colormap)
+        p.out <- .make_heatMapPlot(pObjects$memory[[plot_name]], pObjects$memory, pObjects$contents, se, colormap)
         pObjects$commands[[plot_name]] <- p.out$cmd_list
-        pObjects$coordinates[[plot_name]] <- p.out$xy # Caching the expression matrix.
+        pObjects$contents[[plot_name]] <- p.out$xy # Caching the expression matrix.
         pObjects$cached_info[[plot_name]] <- p.out$legends # Caching the legend plot for downstream use.
         p.out$plot
     })

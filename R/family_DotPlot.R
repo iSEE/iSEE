@@ -421,13 +421,13 @@ setMethod(".multiSelectionCommands", "DotPlot", function(x, index) {
 #' @export
 setMethod(".singleSelectionValue", "DotPlot", function(x, pObjects) {
     plot_name <- .getEncodedName(x)
-    chosen <- .get_brushed_points(pObjects$coordinates[[plot_name]], x[[.brushData]])
+    chosen <- .get_brushed_points(pObjects$contents[[plot_name]], x[[.brushData]])
     if (!length(chosen)) NULL else chosen[1]
 })
 
 #' @export
 setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
-    function(param_choices, all_memory, all_coordinates, se, colormap) {
+    function(param_choices, all_memory, all_contents, se, colormap) {
         # Initialize an environment storing information for generating ggplot commands
         plot_env <- new.env()
         plot_env$se <- se
@@ -443,7 +443,7 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
         if (!is.null(row_select_cmds)) {
             transmitter <- param_choices[[.selectRowSource]]
             .populate_selection_environment(all_memory[[transmitter]], plot_env)
-            plot_env$all_coordinates <- all_coordinates
+            plot_env$all_contents <- all_contents
             select_cmds <- .add_command(select_cmds, row_select_cmds)
             select_cmds <- .evaluate_commands(select_cmds, plot_env)
         }
@@ -455,7 +455,7 @@ setMethod(".getPanelPlottingFunction", "DotPlot", function(x) {
         if (!is.null(col_select_cmds)) {
             transmitter <- param_choices[[.selectColSource]]
             .populate_selection_environment(all_memory[[transmitter]], plot_env)
-            plot_env$all_coordinates <- all_coordinates
+            plot_env$all_contents <- all_contents
             select_cmds <- .add_command(select_cmds, col_select_cmds)
             select_cmds <- .evaluate_commands(select_cmds, plot_env)
         }

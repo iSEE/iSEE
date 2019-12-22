@@ -25,7 +25,7 @@
         sprintf("se <- %s", se_name),
         sprintf("colormap <- %s", ecm_name),
         sprintf("colormap <- synchronizeAssays(colormap, se)"),
-        "all_coordinates <- list()",
+        "all_contents <- list()",
 
         "",
 
@@ -113,11 +113,11 @@
             # Saving data for transmission after selections have been processed;
             # this is the equivalent point in .create_plots() where coordinates are saved.
             collated <- c(collated, "# Saving data for transmission",
-                sprintf("all_coordinates[['%s']] <- plot.data", panel_name),
+                sprintf("all_contents[['%s']] <- plot.data", panel_name),
                 "")
         } else if (is(instance, "Table")) {
             collated <- c(collated, "# Saving data for transmission",
-                sprintf("all_coordinates[['%s']] <- tab", panel_name),
+                sprintf("all_contents[['%s']] <- tab", panel_name),
                 "")
         }
 

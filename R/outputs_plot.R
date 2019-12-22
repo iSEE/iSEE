@@ -27,11 +27,11 @@
         force(rObjects[[plot_name]])
         .safe_reactive_bump(rObjects, gen_field)
 
-        p.out <- FUN(pObjects$memory[[plot_name]], pObjects$memory, pObjects$coordinates, se, colormap)
+        p.out <- FUN(pObjects$memory[[plot_name]], pObjects$memory, pObjects$contents, se, colormap)
         pObjects$commands[[plot_name]] <- p.out$cmd_list
 
         if (selectable) {
-            pObjects$coordinates[[plot_name]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
+            pObjects$contents[[plot_name]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
         }
         p.out$plot
     })

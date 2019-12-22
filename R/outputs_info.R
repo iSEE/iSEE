@@ -26,7 +26,7 @@
     output[[gen_field]] <- renderUI({
         force(rObjects[[gen_field]])
         instance <- pObjects$memory[[plot_name]]
-        cur_coords <- pObjects$coordinates[[plot_name]]
+        cur_coords <- pObjects$contents[[plot_name]]
         n_total <- nrow(cur_coords)
 
         all_output <- list()

@@ -381,7 +381,7 @@ iSEE <- function(se,
             pObjects$counter <- num_modes
 
             pObjects$commands <- empty_list
-            pObjects$coordinates <- empty_list
+            pObjects$contents <- empty_list
             pObjects$cached_info <- empty_list
 
             pObjects$aesthetics_links <- make_graph(edges=character(0), isolates=names(memory))
@@ -404,8 +404,8 @@ iSEE <- function(se,
 #                )
 #
 #                FUN <- .getPlottingFunction(instance)
-#                p.out <- FUN(enc$ID, pObjects$memory, pObjects$coordinates, se, colormap)
-#                pObjects$coordinates[[panelname]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
+#                p.out <- FUN(enc$ID, pObjects$memory, pObjects$contents, se, colormap)
+#                pObjects$contents[[panelname]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
 #            }
 
             # Observer set-up.

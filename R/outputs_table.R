@@ -15,7 +15,7 @@
         if (!is.null(row_select_cmds)) {
             transmitter <- param_choices[[.selectRowSource]]
             .populate_selection_environment(pObjects$memory[[transmitter]], eval_env)
-            eval_env$all_coordinates <- pObjects$coordinates
+            eval_env$all_contents <- pObjects$contents
             tab_cmds <- .add_command(tab_cmds, row_select_cmds)
             tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
         }
@@ -27,7 +27,7 @@
         if (!is.null(col_select_cmds)) {
             transmitter <- param_choices[[.selectColSource]]
             .populate_selection_environment(pObjects$memory[[transmitter]], eval_env)
-            eval_env$all_coordinates <- pObjects$coordinates
+            eval_env$all_contents <- pObjects$contents
             tab_cmds <- .add_command(tab_cmds, col_select_cmds)
             tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
         }
@@ -39,7 +39,7 @@
         tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
 
         full_tab <- eval_env$tab
-        pObjects$coordinates[[panel_name]] <- full_tab
+        pObjects$contents[[panel_name]] <- full_tab
         pObjects$commands[[panel_name]] <- tab_cmds$processed
 
         chosen <- param_choices[[.TableSelected]]

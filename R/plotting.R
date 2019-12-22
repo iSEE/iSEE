@@ -704,7 +704,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     cmds <- list()
 
     if (!identical(transmitter, .noSelection)) {
-        source_data <- sprintf("all_coordinates[['%s']]", transmitter)
+        source_data <- sprintf("all_contents[['%s']]", transmitter)
         init_cmd <- paste("transmitter <-", source_data)
 
         transmit_param <- all_memory[[transmitter]]

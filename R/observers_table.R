@@ -8,7 +8,7 @@
             return(NULL)
         }
 
-        chosen <- rownames(pObjects$coordinates[[panel_name]])[chosen]
+        chosen <- rownames(pObjects$contents[[panel_name]])[chosen]
         previous <- pObjects$memory[[panel_name]][[.TableSelected]]
         if (chosen==previous) {
             return(NULL)

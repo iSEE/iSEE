@@ -2,7 +2,7 @@
     if (.hideInterface(x, field)) {
         NULL        
     } else {
-        FUN(paste0(.getEncodedName(x), x[[.organizationId]], "_", field), ...)
+        FUN(paste0(.getEncodedName(x), "_", field), ...)
     }
 }
 

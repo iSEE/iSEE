@@ -1,15 +1,15 @@
 # Colours for shinydashboard::box statuses.
 # 8 intense cols + 2 greys for custom, with some matching row/cols plots/tables
-panel_colors <- c(redDimPlot="#3565AA",
-                  rowStatTable="#E47E04",
-                  rowDataPlot="#F2B701",
-                  colDataPlot="#DB0230",
-                  featAssayPlot="#7BB854",
-                  sampAssayPlot="#07A274",
-                  colStatTable="#B00258",
-                  customDataPlot="#515356",
-                  customStatTable="#B0B0B0",
-                  heatMapPlot="#7C378A")
+panel_colors <- c(RedDimPlot="#3565AA",
+                  RowStatTable="#E47E04",
+                  RowDataPlot="#F2B701",
+                  ColDataPlot="#DB0230",
+                  FeatAssayPlot="#7BB854",
+                  SampAssayPlot="#07A274",
+                  ColStatTable="#B00258",
+                  CustomDataPlot="#515356",
+                  CustomStatTable="#B0B0B0",
+                  HeatMapPlot="#7C378A")
 
 .define_box_statuses <- paste(sprintf(".box.box-%s {
         border-top-color: %s;

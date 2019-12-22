@@ -58,8 +58,7 @@
 #'
 #' For defining the panel name:
 #' \itemize{
-#' \item \code{\link{.getEncodedName}(x)} will return \code{"SampAssayPlot"}.
-#' \item \code{\link{.getFullName}(x)} will return \code{"Sample assay plot"}.
+#' \item \code{\link{.fullName}(x)} will return \code{"Sample assay plot"}.
 #' }
 #'
 #' For creating the plot:
@@ -106,8 +105,7 @@
 #' .refineParameters,SampAssayPlot-method
 #' .defineInterface,SampAssayPlot-method
 #' .createObservers,SampAssayPlot-method
-#' .getEncodedName,SampAssayPlot-method
-#' .getFullName,SampAssayPlot-method
+#' .fullName,SampAssayPlot-method
 #' .getCommandsDataXY,SampAssayPlot-method
 #'
 #' @name SampAssayPlot-class
@@ -146,7 +144,6 @@ setMethod(".refineParameters", "SampAssayPlot", function(x, se) {
         return(NULL)
     }
 
-    mode <- .getEncodedName(x)
     all_assays <- .get_common_info(se, "DotPlot")$valid.assay.names
     if (length(all_assays)==0L) {
         warning(sprintf("no named 'assays' for plotting '%s'", class(x)[1]))
@@ -202,9 +199,7 @@ setValidity2("SampAssayPlot", function(object) {
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
 setMethod(".defineInterface", "SampAssayPlot", function(x, se, select_info) {
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    panel_name <- paste0(mode, id)
+    panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
     row_covariates <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
@@ -261,9 +256,7 @@ setMethod(".defineInterface", "SampAssayPlot", function(x, se, select_info) {
 setMethod(".createObservers", "SampAssayPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    plot_name <- paste0(mode, id)
+    plot_name <- .getEncodedName(x)
 
     .define_box_observers(plot_name, .dataParamBoxOpen, input, pObjects)
 
@@ -296,10 +289,7 @@ setMethod(".createObservers", "SampAssayPlot", function(x, se, input, session, p
 })
 
 #' @export
-setMethod(".getEncodedName", "SampAssayPlot", function(x) "sampAssayPlot") # TODO change to class name.
-
-#' @export
-setMethod(".getFullName", "SampAssayPlot", function(x) "Sample assay plot") # TODO change to class name.
+setMethod(".fullName", "SampAssayPlot", function(x) "Sample assay plot")
 
 #' @export
 setMethod(".getCommandsDataXY", "SampAssayPlot", function(x) {

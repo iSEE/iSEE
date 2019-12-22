@@ -292,9 +292,7 @@ setMethod(".refineParameters", "DotPlot", function(x, se) {
 setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    plot_name <- paste0(mode, id)
+    plot_name <- .getEncodedName(x)
 
     .safe_reactive_init(rObjects, paste0(plot_name, "_", .panelGeneralInfo))
 
@@ -352,8 +350,10 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 
 #' @export
 setMethod(".defineOutput", "DotPlot", function(x, id) {
-    mode <- .getEncodedName(x)
-    .create_plot_ui(mode, x[[.organizationId]], brush_direction="xy",
+    plot_name <- .getEncodedName(x)
+    mode <- .encodedName(x)
+
+    .create_plot_ui(plot_name, brush_direction="xy",
         height=x[[.organizationHeight]],
         brush_fill=brush_fill_color[mode],
         brush_stroke=brush_stroke_color[mode]
@@ -363,14 +363,13 @@ setMethod(".defineOutput", "DotPlot", function(x, id) {
 #' @export
 setMethod(".renderOutput", "DotPlot", function(x, se, colormap, output, pObjects, rObjects) {
 # TODO: move colormap INSIDE se's metadata.
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
+    plot_name <- .getEncodedName(x)
 
-    .define_plot_output(mode, id,
+    .define_plot_output(plot_name,
         FUN=.getPanelPlottingFunction(x), selectable=TRUE,
         se=se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
 
-    .define_selection_info_output(mode, id,
+    .define_selection_info_output(plot_name,
         output=output, pObjects=pObjects, rObjects=rObjects)
 })
 
@@ -396,7 +395,7 @@ setMethod(".multiSelectionStructure", "DotPlot", function(x) {
 
 #' @export
 setMethod(".multiSelectionCommands", "DotPlot", function(x, index) {
-    transmitter <- paste0(.getEncodedName(x), x[[.organizationId]])
+    transmitter <- .getEncodedName(x)
 
     if (is.na(index)) {
         brush_val <- x[[.brushData]]
@@ -419,7 +418,7 @@ setMethod(".multiSelectionCommands", "DotPlot", function(x, index) {
 
 #' @export
 setMethod(".singleSelectionValue", "DotPlot", function(x, pObjects) {
-    plot_name <- paste0(.getEncodedName(x), x[[.organizationId]])
+    plot_name <- .getEncodedName(x)
     chosen <- .get_brushed_points(pObjects$coordinates[[plot_name]], x[[.brushData]])
     if (!length(chosen)) NULL else chosen[1]
 })

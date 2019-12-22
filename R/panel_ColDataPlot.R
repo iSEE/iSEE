@@ -50,8 +50,7 @@
 #'
 #' For defining the panel name:
 #' \itemize{
-#' \item \code{\link{.getEncodedName}(x)} will return \code{"ColDataPlot"}.
-#' \item \code{\link{.getFullName}(x)} will return \code{"Column data plot"}.
+#' \item \code{\link{.fullName}(x)} will return \code{"Column data plot"}.
 #' }
 #'
 #' For creating the plot:
@@ -98,8 +97,7 @@
 #' .refineParameters,ColDataPlot-method
 #' .defineInterface,ColDataPlot-method
 #' .createObservers,ColDataPlot-method
-#' .getEncodedName,ColDataPlot-method
-#' .getFullName,ColDataPlot-method
+#' .fullName,ColDataPlot-method
 #' .getCommandsDataXY,ColDataPlot-method
 #'
 #' @name ColDataPlot-class
@@ -163,9 +161,7 @@ setValidity2("ColDataPlot", function(object) {
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
 setMethod(".defineInterface", "ColDataPlot", function(x, se, select_info) {
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    panel_name <- paste0(mode, id)
+    panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
     column_covariates <- .get_common_info(se, "ColumnDotPlot")$valid.colData.names
@@ -196,9 +192,7 @@ setMethod(".defineInterface", "ColDataPlot", function(x, se, select_info) {
 setMethod(".createObservers", "ColDataPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    plot_name <- paste0(mode, id)
+    plot_name <- .getEncodedName(x)
 
     .define_protected_parameter_observers(plot_name,
         fields=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
@@ -206,10 +200,7 @@ setMethod(".createObservers", "ColDataPlot", function(x, se, input, session, pOb
 })
 
 #' @export
-setMethod(".getEncodedName", "ColDataPlot", function(x) "colDataPlot") # TODO change to class name.
-
-#' @export
-setMethod(".getFullName", "ColDataPlot", function(x) "Column data plot")
+setMethod(".fullName", "ColDataPlot", function(x) "Column data plot")
 
 #' @export
 setMethod(".getCommandsDataXY", "ColDataPlot", function(x) {

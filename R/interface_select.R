@@ -32,7 +32,7 @@
 #'
 #' @importFrom shiny selectInput actionButton hr strong br
 #' @importFrom shinyjs disabled
-.create_selection_param_box <- function(mode, id, param_choices, row_selectable, col_selectable, ...) {
+.create_selection_param_box <- function(param_choices, row_selectable, col_selectable, ...) {
     # initialize active "Delete" button only if a preconfigured selection history exists
     deleteFUN <- identity
     deleteLabel <- .buttonDeleteLabel
@@ -64,13 +64,14 @@
     )
 
     if (!.hideInterface(param_choices, .multiSelectHistory)) {
+        panel_name <- .getEncodedName(param_choices)
         args <- c(args,
             list(
                 hr(),
                 strong("Manage multiple selections:"),
                 br(),
-                saveFUN(actionButton(paste0(mode, id, "_", .multiSelectSave), label=saveLabel)),
-                deleteFUN(actionButton(paste0(mode, id, "_", .multiSelectDelete), label=deleteLabel))
+                saveFUN(actionButton(paste0(panel_name, "_", .multiSelectSave), label=saveLabel)),
+                deleteFUN(actionButton(paste0(panel_name, "_", .multiSelectDelete), label=deleteLabel))
             )
         )
     }
@@ -80,10 +81,11 @@
 
 #' @importFrom colourpicker colourInput
 #' @importFrom shiny sliderInput
-.create_dotplot_selection_param_box <- function(mode, id, param_choices, row_selectable, col_selectable) {
-    select_effect <- paste0(mode, id, "_", .selectEffect)
+.create_dotplot_selection_param_box <- function(param_choices, row_selectable, col_selectable) {
+    plot_name <- .getEncodedName(param_choices)
+    select_effect <- paste0(plot_name, "_", .selectEffect)
 
-    .create_selection_param_box(mode, id, param_choices, row_selectable, col_selectable,
+    .create_selection_param_box(param_choices, row_selectable, col_selectable,
         .radioButtonsHidden(param_choices, field=.selectEffect, 
             label="Selection effect:", inline=TRUE,
             choices=c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle),
@@ -92,13 +94,13 @@
         .conditional_on_radio(
             select_effect, .selectColorTitle,
             colourInput(
-                paste0(mode, id, "_", .selectColor), label=NULL,
+                paste0(plot_name, "_", .selectColor), label=NULL,
                 value=param_choices[[.selectColor]])
         ),
         .conditional_on_radio(
             select_effect, .selectTransTitle,
             sliderInput(
-                paste0(mode, id, "_", .selectTransAlpha), label=NULL,
+                paste0(plot_name, "_", .selectTransAlpha), label=NULL,
                 min=0, max=1, value=param_choices[[.selectTransAlpha]])
         )
     )

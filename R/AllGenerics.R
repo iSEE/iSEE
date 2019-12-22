@@ -186,10 +186,8 @@ setGeneric(".renderOutput", function(x, se, ..., output, pObjects, rObjects) {
 })
 
 #' @export
-setGeneric(".getEncodedName", function(x) standardGeneric(".getEncodedName"))
-
-#' @export
-setGeneric(".getFullName", function(x) standardGeneric(".getFullName"))
+#' @rdname getEncodedName
+setGeneric(".fullName", function(x) standardGeneric(".fullName"))
 
 ##########################
 

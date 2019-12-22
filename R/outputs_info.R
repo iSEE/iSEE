@@ -10,8 +10,7 @@
 #'
 #' @importFrom shiny renderUI
 #' @rdname INTERNAL_define_link_info_output
-.define_link_info_output <- function(mode, id, pObjects, rObjects) {
-    plot_name <- paste0(mode, id)
+.define_link_info_output <- function(plot_name, pObjects, rObjects) {
     link_field <- paste0(plot_name, "_", .panelLinkInfo)
     output[[link_field]] <- renderUI({
         force(rObjects[[link_field]])
@@ -21,8 +20,7 @@
 }
 
 #' @importFrom shiny tagList
-.define_selection_info_output <- function(mode, id, output, pObjects, rObjects) {
-    plot_name <- paste0(mode, id)
+.define_selection_info_output <- function(plot_name, output, pObjects, rObjects) {
     gen_field <- paste0(plot_name, "_", .panelGeneralInfo)
 
     output[[gen_field]] <- renderUI({

@@ -58,8 +58,7 @@
 #'
 #' For defining the panel name:
 #' \itemize{
-#' \item \code{\link{.getEncodedName}(x)} will return \code{"FeatAssayPlot"}.
-#' \item \code{\link{.getFullName}(x)} will return \code{"Feature assay plot"}.
+#' \item \code{\link{.fullName}(x)} will return \code{"Feature assay plot"}.
 #' }
 #'
 #' For creating the plot:
@@ -106,7 +105,6 @@
 #' .refineParameters,FeatAssayPlot-method
 #' .defineInterface,FeatAssayPlot-method
 #' .createObservers,FeatAssayPlot-method
-#' .getEncodedName,FeatAssayPlot-method
 #' .getFullName,FeatAssayPlot-method
 #' .getCommandsDataXY,FeatAssayPlot-method
 #'
@@ -146,7 +144,6 @@ setMethod(".refineParameters", "FeatAssayPlot", function(x, se) {
         return(NULL)
     }
 
-    mode <- .getEncodedName(x)
     all_assays <- .get_common_info(se, "DotPlot")$valid.assay.names
     if (length(all_assays)==0L) {
         warning(sprintf("no valid 'assays' for plotting '%s'", class(x)[1]))
@@ -202,9 +199,7 @@ setValidity2("FeatAssayPlot", function(object) {
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
 setMethod(".defineInterface", "FeatAssayPlot", function(x, se, select_info) {
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    panel_name <- paste0(mode, id)
+    panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
     all_assays <- .get_common_info(se, "DotPlot")$valid.assay.names
@@ -251,9 +246,7 @@ setMethod(".defineInterface", "FeatAssayPlot", function(x, se, select_info) {
 setMethod(".createObservers", "FeatAssayPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    plot_name <- paste0(mode, id)
+    plot_name <- .getEncodedName(x)
 
     .define_box_observers(plot_name, .dataParamBoxOpen, input, pObjects)
 
@@ -286,10 +279,7 @@ setMethod(".createObservers", "FeatAssayPlot", function(x, se, input, session, p
 })
 
 #' @export
-setMethod(".getEncodedName", "FeatAssayPlot", function(x) "featAssayPlot") # TODO change to class name.
-
-#' @export
-setMethod(".getFullName", "FeatAssayPlot", function(x) "Feature assay plot")
+setMethod(".fullName", "FeatAssayPlot", function(x) "Feature assay plot")
 
 #' @export
 setMethod(".getCommandsDataXY", "FeatAssayPlot", function(x) {

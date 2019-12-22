@@ -356,13 +356,13 @@ iSEE <- function(se,
             memory <- memory[!vapply(memory, is.null, TRUE)]
 
             # Assigning names and IDs to each panel.
-            all_modes <- vapply(memory, .getEncodedName, "")
+            all_modes <- vapply(memory, class, "")
             num_modes <- as.list(table(all_modes))
 
             # TODO: fix to accommodate user-supplied IDs.
             running_modes <- lapply(num_modes, FUN=function(x) 1L)
             for (idx in seq_along(memory)) {
-                mode <- .getEncodedName(memory[[idx]])
+                mode <- all_modes[idx]
                 cur.id <- running_modes[[mode]]
                 memory[[idx]][[.organizationId]] <- cur.id
                 running_modes[[mode]] <- running_modes[[mode]] + 1L

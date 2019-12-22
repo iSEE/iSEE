@@ -82,10 +82,7 @@ setMethod(".refineParameters", "RowStatTable", function(x, se) {
 })
 
 #' @export
-setMethod(".getEncodedName", "RowStatTable", function(x) "rowStatTable")
-
-#' @export
-setMethod(".getFullName", "RowStatTable", function(x) "Row statistics table")
+setMethod(".fullName", "RowStatTable", function(x) "Row statistics table")
 
 #' @export
 #' @importFrom SummarizedExperiment rowData

@@ -765,10 +765,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     if (is(x, "DotPlot")) {
         envir$all_brushes <- list(x[[.brushData]])
         envir$all_select_histories <- list(x[[.multiSelectHistory]])
-
-        mode <- .getEncodedName(x)
-        id <- x[[.organizationId]]
-        names(envir$all_brushes) <- names(envir$all_select_histories) <- paste0(mode, id)
+        names(envir$all_brushes) <- names(envir$all_select_histories) <- .getEncodedName(x)
     }
     invisible(NULL)
 }
@@ -1179,11 +1176,10 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         facetrow <- facetcolumn <- 'panelvar1'
     }
 
-    mode <- .getEncodedName(param_choices)
-    id <- param_choices[[.organizationId]]
+    mode <- .encodedName(param_choices)
+    plot_name <- .getEncodedName(param_choices)
     stroke_color <- panel_colors[mode]
     fill_color <- brush_fill_color[mode]
-    plot_name <- paste0(mode, id)
 
     # TODO: workaround to make brushes visible on non-builtin panels
     stroke_color <- ifelse(is.na(stroke_color), "gray10", stroke_color)

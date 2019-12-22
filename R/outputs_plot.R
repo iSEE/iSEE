@@ -17,10 +17,7 @@
 #'
 #' @rdname INTERNAL_define_plot_output
 #' @importFrom shiny renderPlot renderUI tagList br
-.define_plot_output <- function(mode, id, FUN, selectable,
-    se, colormap, output, pObjects, rObjects)
-{
-    plot_name <- paste0(mode, id)
+.define_plot_output <- function(plot_name, FUN, selectable, se, colormap, output, pObjects, rObjects) {
     force(FUN)
     force(se)
     force(colormap)
@@ -59,8 +56,7 @@
 #'
 #' @rdname INTERNAL_create_plot_ui
 #' @importFrom shinyWidgets addSpinner
-.create_plot_ui <- function(mode, id, height, brush_direction, brush_fill, brush_stroke) {
-    plot_name <- paste0(mode, id)
+.create_plot_ui <- function(plot_name, height, brush_direction, brush_fill, brush_stroke) {
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
     brush.opts <- brushOpts(.input_FUN(.brushField), resetOnNew=TRUE, delay=2000,

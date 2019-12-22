@@ -173,11 +173,9 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
 
 #' @export
 setMethod(".defineInterface", "ColumnDotPlot", function(x, se, select_info) {
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
     list(
-        .create_visual_box_for_column_plots(mode, id, x, select_info$single$row, select_info$single$column, se),
-        .create_dotplot_selection_param_box(mode, id, x, select_info$multi$row, select_info$multi$column)
+        .create_visual_box_for_column_plots(x, select_info$single$row, select_info$single$column, se),
+        .create_dotplot_selection_param_box(x, select_info$multi$row, select_info$multi$column)
     )
 })
 
@@ -194,9 +192,7 @@ setMethod(".hideInterface", "ColumnDotPlot", function(x, field) {
 setMethod(".createObservers", "ColumnDotPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    plot_name <- paste0(mode, id)
+    plot_name <- .getEncodedName(x)
 
     .define_nonfundamental_parameter_observers(plot_name,
         fields=c(.colorByColData, .colorByFeatNameAssay,

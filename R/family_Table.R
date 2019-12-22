@@ -112,10 +112,7 @@ setMethod(".singleSelectionValue", "Table", function(x, pObjects) {
 #' @export
 #' @importFrom DT dataTableOutput
 setMethod(".defineOutput", "Table", function(x, ...) {
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    panel_name <- paste0(mode, id)
-    tagList(dataTableOutput(panel_name), hr())
+    tagList(dataTableOutput(.getEncodedName(x)), hr())
 })
 
 #' @export
@@ -124,9 +121,7 @@ setMethod(".defineOutput", "Table", function(x, ...) {
 setMethod(".createObservers", "Table", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    panel_name <- paste0(mode, id)
+    panel_name <- .getEncodedName(x)
 
     .define_box_observers(panel_name, .selectParamBoxOpen, input, pObjects)
 
@@ -136,9 +131,7 @@ setMethod(".createObservers", "Table", function(x, se, input, session, pObjects,
 #' @export
 #' @importFrom SummarizedExperiment colData
 setMethod(".renderOutput", "Table", function(x, se, ..., output, pObjects, rObjects) {
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    .define_table_output(mode, id, FUN=.getTableFunction(x),
+    .define_table_output(.getEncodedName(x), FUN=.getTableFunction(x),
         se=se, output=output, pObjects=pObjects, rObjects=rObjects)
 })
 

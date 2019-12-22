@@ -62,8 +62,7 @@
 #' \itemize{
 #' \item \code{\link{.renderOutput}}
 #' \item \code{\link{.defineOutput}}
-#' \item \code{\link{.getEncodedName}}
-#' \item \code{\link{.getFullName}}
+#' \item \code{\link{.fullName}}
 #' }
 #' Subclasses that transmit selections should also implement specialized methods for selection-related parameters listed below.
 #'
@@ -179,16 +178,12 @@ setMethod(".cacheCommonInfo", "Panel", function(x, se) {
 
 #' @export
 setMethod(".defineInterface", "Panel", function(x, se, select_info) {
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    list(.create_selection_param_box(mode, id, x, select_info$multi$row, select_info$multi$column))
+    list(.create_selection_param_box(x, select_info$multi$row, select_info$multi$column))
 })
 
 #' @export
 setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects, rObjects) {
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    panel_name <- paste0(mode, id)
+    panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) paste0(panel_name, "_", field)
 
     .safe_reactive_init(rObjects, panel_name)

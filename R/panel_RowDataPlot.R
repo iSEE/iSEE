@@ -50,8 +50,7 @@
 #'
 #' For defining the panel name:
 #' \itemize{
-#' \item \code{\link{.getEncodedName}(x)} will return \code{"RowDataPlot"}.
-#' \item \code{\link{.getFullName}(x)} will return \code{"Row data plot"}.
+#' \item \code{\link{.fullName}(x)} will return \code{"Row data plot"}.
 #' }
 #'
 #' For creating the plot:
@@ -95,8 +94,7 @@
 #' .refineParameters,RowDataPlot-method
 #' .defineInterface,RowDataPlot-method
 #' .createObservers,RowDataPlot-method
-#' .getEncodedName,RowDataPlot-method
-#' .getFullName,RowDataPlot-method
+#' .fullName,RowDataPlot-method
 #' .getCommandsDataXY,RowDataPlot-method
 #' @name RowDataPlot-class
 NULL
@@ -178,9 +176,7 @@ setValidity2("RowDataPlot", function(object) {
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
 setMethod(".defineInterface", "RowDataPlot", function(x, se, select_info) {
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    panel_name <- paste0(mode, id)
+    panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
     row_covariates <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
@@ -211,9 +207,7 @@ setMethod(".defineInterface", "RowDataPlot", function(x, se, select_info) {
 setMethod(".createObservers", "RowDataPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    plot_name <- paste0(mode, id)
+    plot_name <- .getEncodedName(x)
 
     .define_box_observers(plot_name, .dataParamBoxOpen, input, pObjects)
 
@@ -223,10 +217,7 @@ setMethod(".createObservers", "RowDataPlot", function(x, se, input, session, pOb
 })
 
 #' @export
-setMethod(".getEncodedName", "RowDataPlot", function(x) "rowDataPlot") # TODO change to class name.
-
-#' @export
-setMethod(".getFullName", "RowDataPlot", function(x) "Row data plot") # TODO change to class name.
+setMethod(".fullName", "RowDataPlot", function(x) "Row data plot") # TODO change to class name.
 
 #' @export
 setMethod(".getCommandsDataXY", "RowDataPlot", function(x) {

@@ -29,15 +29,13 @@
     org_pObjects$initialized <- FALSE
     org_rObjects <- reactiveValues(rerender=0)
 
-    available_enc <- vapply(pObjects$memory, function(x) class(x)[1], "")
-    names(available_enc) <- vapply(pObjects$memory, .getFullName, "")
+    available_enc <- vapply(pObjects$memory, .encodedName, "")
+    names(available_enc) <- vapply(pObjects$memory, .fullName, "")
 
     .define_choices <- function(memory, named=TRUE) {
-        ids <- vapply(memory, "[[", i=.organizationId, 0L)
         enc_names <- vapply(memory, .getEncodedName, "")
-        enc_names <- paste0(enc_names, ids)
         if (named) {
-            names(enc_names) <- paste(vapply(memory, .getFullName, ""), ids)
+            names(enc_names) <- vapply(memory, .getFullName, "")
         }
         enc_names
     }
@@ -89,7 +87,7 @@
                 latest <- new(ipo[a])
                 latest <- .refineParameters(latest, se)
 
-                mode <- .getEncodedName(latest)
+                mode <- .encodedName(latest)
                 idx <- org_pObjects$counter[[mode]] + 1L
                 latest[[.organizationId]] <- idx
 
@@ -141,9 +139,7 @@
 
 #' @importFrom shiny observeEvent
 .define_width_height_observers <- function(panel, input, org_pObjects) {
-    mode <- .getEncodedName(panel)
-    id <- panel[[.organizationId]]
-    panel_name <- paste0(mode, id)
+    panel_name <- .getEncodedName(panel)
 
     width_name <- paste0(panel_name, "_", .organizationWidth)
     observeEvent(input[[width_name]], {

@@ -83,10 +83,7 @@ setMethod(".refineParameters", "ColStatTable", function(x, se) {
 })
 
 #' @export
-setMethod(".getEncodedName", "ColStatTable", function(x) "colStatTable")
-
-#' @export
-setMethod(".getFullName", "ColStatTable", function(x) "Column statistics table")
+setMethod(".fullName", "ColStatTable", function(x) "Column statistics table")
 
 #' @export
 #' @importFrom SummarizedExperiment colData

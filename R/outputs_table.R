@@ -1,7 +1,5 @@
 #' @importFrom DT datatable renderDataTable selectRows dataTableProxy
-.define_table_output <- function(mode, id, FUN, se, output, pObjects, rObjects) {
-    panel_name <- paste0(mode, id)
-
+.define_table_output <- function(panel_name, FUN, se, output, pObjects, rObjects) {
     output[[panel_name]] <- renderDataTable({
         force(rObjects[[panel_name]])
         param_choices <- pObjects$memory[[panel_name]]

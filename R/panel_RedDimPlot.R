@@ -51,8 +51,7 @@
 #'
 #' For defining the panel name:
 #' \itemize{
-#' \item \code{\link{.getEncodedName}(x)} will return \code{"RedDimPlot"}.
-#' \item \code{\link{.getFullName}(x)} will return \code{"Reduced dimension plot"}.
+#' \item \code{\link{.fullName}(x)} will return \code{"Reduced dimension plot"}.
 #' }
 #'
 #' For creating the plot:
@@ -96,8 +95,7 @@
 #' .cacheCommonInfo,RedDimPlot-method
 #' .defineInterface,RedDimPlot-method
 #' .createObservers,RedDimPlot-method
-#' .getEncodedName,RedDimPlot-method
-#' .getFullName,RedDimPlot-method
+#' .fullName,RedDimPlot-method
 #' .getCommandsDataXY,RedDimPlot-method
 #' @name RedDimPlot-class
 NULL
@@ -202,9 +200,7 @@ setMethod(".defineInterface", "RedDimPlot", function(x, se, select_info) {
     max_dim <- ncol(reducedDim(se, cur_reddim))
     choices <- seq_len(max_dim)
 
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    panel_name <- paste0(mode, id)
+    panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
     plot.param <- list(
@@ -230,9 +226,7 @@ setMethod(".defineInterface", "RedDimPlot", function(x, se, select_info) {
 setMethod(".createObservers", "RedDimPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    plot_name <- paste0(mode, id)
+    plot_name <- .getEncodedName(x)
 
     .define_protected_parameter_observers(plot_name, fields=c(.redDimXAxis, .redDimYAxis),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
@@ -267,10 +261,7 @@ setMethod(".createObservers", "RedDimPlot", function(x, se, input, session, pObj
 })
 
 #' @export
-setMethod(".getEncodedName", "RedDimPlot", function(x) "redDimPlot")
-
-#' @export
-setMethod(".getFullName", "RedDimPlot", function(x) "Reduced dimension plot")
+setMethod(".fullName", "RedDimPlot", function(x) "Reduced dimension plot")
 
 #' @export
 setMethod(".getCommandsDataXY", "RedDimPlot", function(x) {

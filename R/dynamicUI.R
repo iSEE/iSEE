@@ -27,16 +27,15 @@
 
     for (i in seq_len(N)) {
         instance <- active_panels[[i]]
-        mode <- .getEncodedName(instance)
-        id <- instance[[.organizationId]]
-        prefix <- paste0(mode, id, "_")
+        panel_name <- .getEncodedName(instance)
+        prefix <- paste0(panel_name, "_")
 
         ctrl_panel <- box(
             selectInput(paste0(prefix, .organizationWidth), label="Width",
                 choices=seq(width_limits[1], width_limits[2]), selected=instance[[.organizationWidth]]),
             sliderInput(paste0(prefix, .organizationHeight), label="Height",
                 min=height_limits[1], max=height_limits[2], value=instance[[.organizationHeight]], step=10),
-            title=paste(.getFullName(instance), id), status="danger", width=NULL, solidHeader=TRUE
+            title=.getFullName(instance), status="danger", width=NULL, solidHeader=TRUE
         )
 
         # Coercing to a different box status ('danger' is a placeholder, above).
@@ -135,9 +134,7 @@
 
     # Getting all panel choices for single/multiselection links.
     all_names <- vapply(memory, .getEncodedName, "")
-    all_ids <- vapply(memory, "[[", i=.organizationId, 1L)
-    all_names <- paste0(all_names, all_ids)
-    names(all_names) <- paste(vapply(memory, .getFullName, ""), all_ids)
+    names(all_names) <- vapply(memory, .getFullName, "")
 
     mdims <- vapply(memory, FUN=.multiSelectionDimension, "")
     multi_sources <- list(
@@ -153,9 +150,7 @@
 
     for (i in seq_along(memory)) {
         instance <- memory[[i]]
-        mode <- .getEncodedName(instance)
-        id <- instance[[.organizationId]]
-        plot_name <- paste0(mode, id)
+        plot_name <- .getEncodedName(instance)
         .input_FUN <- function(field) paste0(plot_name, "_", field)
 
         select_info <- list(
@@ -182,9 +177,11 @@
         cur_box <- do.call(box, c(
             list(.defineOutput(instance), param),
             list(uiOutput(.input_FUN(.panelGeneralInfo)), uiOutput(.input_FUN(.panelLinkInfo))),
-            list(title=paste(.getFullName(instance), id), solidHeader=TRUE, width=NULL, status="danger")
+            list(title=.getFullName(instance), solidHeader=TRUE, width=NULL, status="danger")
         ))
-        cur_box <- .coerce_box_status(cur_box, mode)
+
+        cur_box <- .coerce_box_status(cur_box, .encodedName(instance))
+
         cur.row[[row.counter]] <- column(width=panel_width, cur_box, style='padding:3px;')
         row.counter <- row.counter + 1L
         cumulative.width <- cumulative.width + panel_width
@@ -271,19 +268,20 @@
 #' @importFrom shiny radioButtons tagList selectInput selectizeInput
 #' checkboxGroupInput
 #' @importFrom colourpicker colourInput
-.create_visual_box_for_column_plots <- function(mode, id, param_choices, active_row_tab, active_col_tab, se) {
+.create_visual_box_for_column_plots <- function(param_choices, active_row_tab, active_col_tab, se) {
     covariates <- .get_common_info(se, "ColumnDotPlot")$valid.colData.names
     discrete_covariates <- .get_common_info(se, "ColumnDotPlot")$discrete.colData.names
     numeric_covariates <- .get_common_info(se, "ColumnDotPlot")$continuous.colData.names
     all_assays <- .get_common_info(se, "DotPlot")$valid.assay.names
 
-    colorby_field <- paste0(mode, id, "_", .colorByField)
-    shapeby_field <- paste0(mode, id, "_", .shapeByField)
-    sizeby_field <- paste0(mode, id, "_", .sizeByField)
-    pchoice_field <- paste0(mode, id, "_", .visualParamChoice)
+    plot_name <- .getEncodedName(param_choices)
+    colorby_field <- paste0(plot_name, "_", .colorByField)
+    shapeby_field <- paste0(plot_name, "_", .shapeByField)
+    sizeby_field <- paste0(plot_name, "_", .sizeByField)
+    pchoice_field <- paste0(plot_name, "_", .visualParamChoice)
 
     collapseBox(
-        id=paste0(mode, id, "_", .visualParamBoxOpen),
+        id=paste0(plot_name, "_", .visualParamBoxOpen),
         title="Visual parameters",
         open=param_choices[[.visualParamBoxOpen]],
         checkboxGroupInput(
@@ -300,35 +298,35 @@
             ),
             .conditional_on_radio(
                 colorby_field, .colorByNothingTitle,
-                colourInput(paste0(mode, id, "_", .colorByDefaultColor), label=NULL,
+                colourInput(paste0(plot_name, "_", .colorByDefaultColor), label=NULL,
                     value=param_choices[[.colorByDefaultColor]])
             ),
             .conditional_on_radio(
                 colorby_field, .colorByColDataTitle,
-                selectInput(paste0(mode, id, "_", .colorByColData), label=NULL,
+                selectInput(paste0(plot_name, "_", .colorByColData), label=NULL,
                     choices=covariates, selected=param_choices[[.colorByColData]])
             ),
             .conditional_on_radio(
                 colorby_field, .colorByFeatNameTitle,
                 tagList(
-                    selectizeInput(paste0(mode, id, "_", .colorByFeatName), label=NULL, 
+                    selectizeInput(paste0(plot_name, "_", .colorByFeatName), label=NULL, 
                         choices=NULL, selected=NULL, multiple=FALSE),
                     selectInput(
-                        paste0(mode, id, "_", .colorByFeatNameAssay), label=NULL,
+                        paste0(plot_name, "_", .colorByFeatNameAssay), label=NULL,
                         choices=all_assays, selected=param_choices[[.colorByFeatNameAssay]])),
                 selectInput(
-                    paste0(mode, id, "_", .colorByRowTable), label=NULL, choices=active_row_tab,
+                    paste0(plot_name, "_", .colorByRowTable), label=NULL, choices=active_row_tab,
                     selected=.choose_link(param_choices[[.colorByRowTable]], active_row_tab, force_default=TRUE))
             ),
             .conditional_on_radio(colorby_field, .colorBySampNameTitle,
                 tagList(
-                    selectizeInput(paste0(mode, id, "_", .colorBySampName), 
+                    selectizeInput(paste0(plot_name, "_", .colorBySampName), 
                         label=NULL, selected=NULL, choices=NULL, multiple=FALSE),
                     selectInput(
-                        paste0(mode, id, "_", .colorByColTable), label=NULL, choices=active_col_tab,
+                        paste0(plot_name, "_", .colorByColTable), label=NULL, choices=active_col_tab,
                         selected=.choose_link(param_choices[[.colorByColTable]], active_col_tab, force_default=TRUE)),
                     colourInput(
-                        paste0(mode, id, "_", .colorBySampNameColor), label=NULL,
+                        paste0(plot_name, "_", .colorBySampNameColor), label=NULL,
                         value=param_choices[[.colorBySampNameColor]]))
             )
         ),
@@ -342,13 +340,13 @@
             .conditional_on_radio(
                 shapeby_field, .shapeByColDataTitle,
                 selectInput(
-                    paste0(mode, id, "_", .shapeByColData), label=NULL,
+                    paste0(plot_name, "_", .shapeByColData), label=NULL,
                     choices=discrete_covariates, selected=param_choices[[.shapeByColData]])
             )
         ),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoiceFacetTitle,
-            hr(), .add_facet_UI_elements(mode, id, param_choices, discrete_covariates)),
+            hr(), .add_facet_UI_elements(param_choices, discrete_covariates)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoicePointTitle,
             hr(),
@@ -360,29 +358,29 @@
             .conditional_on_radio(
                 sizeby_field, .sizeByNothingTitle,
                 numericInput(
-                    paste0(mode, id, "_", .plotPointSize), label="Point size:",
+                    paste0(plot_name, "_", .plotPointSize), label="Point size:",
                     min=0, value=param_choices[[.plotPointSize]])
             ),
             .conditional_on_radio(
                 sizeby_field, .sizeByColDataTitle,
-                selectInput(paste0(mode, id, "_", .sizeByColData), label=NULL,
+                selectInput(paste0(plot_name, "_", .sizeByColData), label=NULL,
                     choices=numeric_covariates, selected=param_choices[[.sizeByColData]])
             ),
-            .add_point_UI_elements(mode, id, param_choices)),
+            .add_point_UI_elements(param_choices)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoiceOtherTitle,
             hr(),
             checkboxInput(
-                inputId=paste0(mode, id, "_", .contourAdd),
+                inputId=paste0(plot_name, "_", .contourAdd),
                 label="Add contour (scatter only)",
                 value=FALSE),
             .conditional_on_check_solo(
-                paste0(mode, id, "_", .contourAdd),
+                paste0(plot_name, "_", .contourAdd),
                 on_select=TRUE,
                 colourInput(
-                    paste0(mode, id, "_", .contourColor), label=NULL,
+                    paste0(plot_name, "_", .contourColor), label=NULL,
                     value=param_choices[[.contourColor]])),
-            .add_other_UI_elements(mode, id, param_choices))
+            .add_other_UI_elements(param_choices))
     )
 }
 
@@ -484,19 +482,20 @@
 #' @importFrom shiny radioButtons tagList selectInput selectizeInput
 #' checkboxGroupInput
 #' @importFrom colourpicker colourInput
-.create_visual_box_for_row_plots <- function(mode, id, param_choices, active_row_tab, active_col_tab, se) {
+.create_visual_box_for_row_plots <- function(param_choices, active_row_tab, active_col_tab, se) {
     covariates <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
     discrete_covariates <- .get_common_info(se, "RowDotPlot")$discrete.rowData.names
     numeric_covariates <- .get_common_info(se, "RowDotPlot")$continuous.rowData.names
     all_assays <- .get_common_info(se, "DotPlot")$valid.assay.names
 
-    colorby_field <- paste0(mode, id, "_", .colorByField)
-    shapeby_field <- paste0(mode, id, "_", .shapeByField)
-    sizeby_field <- paste0(mode, id, "_", .sizeByField)
-    pchoice_field <- paste0(mode, id, "_", .visualParamChoice)
+    plot_name <- .getEncodedName(param_choices)
+    colorby_field <- paste0(plot_name, "_", .colorByField)
+    shapeby_field <- paste0(plot_name, "_", .shapeByField)
+    sizeby_field <- paste0(plot_name, "_", .sizeByField)
+    pchoice_field <- paste0(plot_name, "_", .visualParamChoice)
 
     collapseBox(
-        id=paste0(mode, id, "_", .visualParamBoxOpen),
+        id=paste0(plot_name, "_", .visualParamBoxOpen),
         title="Visual parameters",
         open=param_choices[[.visualParamBoxOpen]],
         checkboxGroupInput(
@@ -513,34 +512,34 @@
             .conditional_on_radio(
                 colorby_field, .colorByNothingTitle,
                 colourInput(
-                    paste0(mode, id, "_", .colorByDefaultColor), label=NULL,
+                    paste0(plot_name, "_", .colorByDefaultColor), label=NULL,
                     value=param_choices[[.colorByDefaultColor]])
             ),
             .conditional_on_radio(
                 colorby_field, .colorByRowDataTitle,
                 selectInput(
-                    paste0(mode, id, "_", .colorByRowData), label=NULL,
+                    paste0(plot_name, "_", .colorByRowData), label=NULL,
                     choices=covariates, selected=param_choices[[.colorByRowData]])
             ),
             .conditional_on_radio(colorby_field, .colorByFeatNameTitle,
                 tagList(
-                    selectizeInput(paste0(mode, id, "_", .colorByFeatName), 
+                    selectizeInput(paste0(plot_name, "_", .colorByFeatName), 
                         label=NULL, selected=NULL, choices=NULL, multiple=FALSE),
                     selectInput(
-                        paste0(mode, id, "_", .colorByRowTable), label=NULL, choices=active_row_tab,
+                        paste0(plot_name, "_", .colorByRowTable), label=NULL, choices=active_row_tab,
                         selected=.choose_link(param_choices[[.colorByRowTable]], active_row_tab, force_default=TRUE)),
-                    colourInput(paste0(mode, id, "_", .colorByFeatNameColor), label=NULL,
+                    colourInput(paste0(plot_name, "_", .colorByFeatNameColor), label=NULL,
                         value=param_choices[[.colorByFeatNameColor]]))
             ),
             .conditional_on_radio(colorby_field, .colorBySampNameTitle,
                 tagList(
-                    selectizeInput(paste0(mode, id, "_", .colorBySampName), 
+                    selectizeInput(paste0(plot_name, "_", .colorBySampName), 
                         label=NULL, choices=NULL, selected=NULL, multiple=FALSE),
                     selectInput(
-                        paste0(mode, id, "_", .colorBySampNameAssay), label=NULL,
+                        paste0(plot_name, "_", .colorBySampNameAssay), label=NULL,
                         choices=all_assays, selected=param_choices[[.colorBySampNameAssay]])),
                 selectInput(
-                    paste0(mode, id, "_", .colorByColTable), label=NULL, choices=active_col_tab,
+                    paste0(plot_name, "_", .colorByColTable), label=NULL, choices=active_col_tab,
                     selected=.choose_link(param_choices[[.colorByColTable]], active_col_tab, force_default=TRUE))
             )
         ),
@@ -555,13 +554,13 @@
             .conditional_on_radio(
                 shapeby_field, .shapeByRowDataTitle,
                 selectInput(
-                    paste0(mode, id, "_", .shapeByRowData), label=NULL,
+                    paste0(plot_name, "_", .shapeByRowData), label=NULL,
                     choices=discrete_covariates, selected=param_choices[[.shapeByRowData]])
             )
         ),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoiceFacetTitle,
-            hr(), .add_facet_UI_elements(mode, id, param_choices, discrete_covariates)),
+            hr(), .add_facet_UI_elements(param_choices, discrete_covariates)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoicePointTitle,
             hr(),
@@ -573,21 +572,18 @@
             .conditional_on_radio(
                 sizeby_field, .sizeByNothingTitle,
                 numericInput(
-                    paste0(mode, id, "_", .plotPointSize), label="Point size:",
+                    paste0(plot_name, "_", .plotPointSize), label="Point size:",
                     min=0, value=param_choices[[.plotPointSize]])
             ),
             .conditional_on_radio(
                 sizeby_field, .sizeByRowDataTitle,
-                selectInput(paste0(mode, id, "_", .sizeByRowData), label=NULL,
+                selectInput(paste0(plot_name, "_", .sizeByRowData), label=NULL,
                             choices=numeric_covariates, selected=param_choices[[.sizeByRowData]])
             ),
-            .add_point_UI_elements(mode, id, param_choices)),
-        .conditional_on_check_group(
-            pchoice_field, .visualParamChoicePointTitle,
-            hr(), .add_point_UI_elements(mode, id, param_choices)),
+            .add_point_UI_elements(param_choices)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoiceOtherTitle,
-            hr(), .add_other_UI_elements(mode, id, param_choices))
+            hr(), .add_other_UI_elements(param_choices))
     )
 }
 
@@ -629,15 +625,16 @@
 #' \code{\link{.create_visual_box_for_row_plots}}
 #'
 #' @importFrom shiny tagList selectInput
-.add_facet_UI_elements <- function(mode, id, param_choices, covariates) {
-    rowId <- paste0(mode, id, "_", .facetByRow)
-    columnId <- paste0(mode, id, "_", .facetByColumn)
+.add_facet_UI_elements <- function(param_choices, covariates) {
+    plot_name <- .getEncodedName(param_choices)
+    rowId <- paste0(plot_name, "_", .facetByRow)
+    columnId <- paste0(plot_name, "_", .facetByColumn)
     choices <- c(.noSelection, covariates)
     
     tagList(
-        selectInput(paste0(mode, id, "_", .facetByRow), label="Facet by row:",
+        selectInput(paste0(plot_name, "_", .facetByRow), label="Facet by row:",
             choices=choices, selected=param_choices[[.facetByRow]]),
-        selectInput(paste0(mode, id, "_", .facetByColumn), label="Facet by column:",
+        selectInput(paste0(plot_name, "_", .facetByColumn), label="Facet by column:",
             choices=choices, selected=param_choices[[.facetByColumn]])
     )
 }
@@ -664,11 +661,12 @@
 #' \code{\link{.create_visual_box_for_row_plots}}
 #'
 #' @importFrom shiny tagList numericInput sliderInput hr checkboxInput
-.add_point_UI_elements <- function(mode, id, param_choices) {
-    ds_id <- paste0(mode, id, "_", .plotPointDownsample)
+.add_point_UI_elements <- function(param_choices) {
+    plot_name <- .getEncodedName(param_choices)
+    ds_id <- paste0(plot_name, "_", .plotPointDownsample)
     tagList(
         sliderInput(
-            paste0(mode, id, "_", .plotPointAlpha), label="Point opacity",
+            paste0(plot_name, "_", .plotPointAlpha), label="Point opacity",
             min=0.1, max=1, value=param_choices[[.plotPointAlpha]]),
         hr(),
         checkboxInput(
@@ -677,7 +675,7 @@
         .conditional_on_check_solo(
             ds_id, on_select=TRUE,
             numericInput(
-                paste0(mode, id, "_", .plotPointSampleRes), label="Sampling resolution:",
+                paste0(plot_name, "_", .plotPointSampleRes), label="Sampling resolution:",
                 min=1, value=param_choices[[.plotPointSampleRes]])
         )
     )
@@ -685,13 +683,14 @@
 
 #' @rdname INTERNAL_add_visual_UI_elements
 #' @importFrom shiny tagList radioButtons numericInput
-.add_other_UI_elements <- function(mode, id, param_choices) {
+.add_other_UI_elements <- function(param_choices) {
+    plot_name <- .getEncodedName(param_choices)
     tagList(
         numericInput(
-            paste0(mode, id, "_", .plotFontSize), label="Font size:",
+            paste0(plot_name, "_", .plotFontSize), label="Font size:",
             min=0, value=param_choices[[.plotFontSize]]),
         radioButtons(
-            paste0(mode, id, "_", .plotLegendPosition), label="Legend position:", inline=TRUE,
+            paste0(plot_name, "_", .plotLegendPosition), label="Legend position:", inline=TRUE,
             choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
             selected=param_choices[[.plotLegendPosition]])
     )

@@ -146,7 +146,6 @@ setMethod(".refineParameters", "HeatMapPlot", function(x, se) {
         return(NULL)
     }
 
-    mode <- .getEncodedName(x)
     all_assays <- .get_common_info(se, "HeatMapPlot")$valid.assay.names
     if (length(all_assays)==0L) {
         warning(sprintf("no named 'assays' for plotting '%s'", class(x)[1]))
@@ -186,9 +185,7 @@ setMethod(".refineParameters", "HeatMapPlot", function(x, se) {
 #' @importFrom shiny selectInput actionButton selectizeInput hr
 #' checkboxGroupInput numericInput plotOutput
 setMethod(".defineInterface", "HeatMapPlot", function(x, se, select_info) {
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    plot_name <- paste0(mode, id)
+    plot_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
     common_info <- .get_common_info(se, "HeatMapPlot")
@@ -274,9 +271,7 @@ setMethod(".defineInterface", "HeatMapPlot", function(x, se, select_info) {
 setMethod(".createObservers", "HeatMapPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    plot_name <- paste0(mode, id)
+    plot_name <- .getEncodedName(x)
 
     .safe_reactive_init(rObjects, paste0(plot_name, "_", .heatMapLegend))
 
@@ -447,24 +442,17 @@ setMethod(".createObservers", "HeatMapPlot", function(x, se, input, session, pOb
 
 #' @export
 setMethod(".defineOutput", "HeatMapPlot", function(x) {
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]]
-    plot_name <- paste0(mode, id)
+    plot_name <- .getEncodedName(x)
     plotOutput(plot_name, height=paste0(x[[.organizationHeight]], "px"))
 })
 
 #' @export
-setMethod(".getEncodedName", "HeatMapPlot", function(x) "heatMapPlot")
-
-#' @export
-setMethod(".getFullName", "HeatMapPlot", function(x) "Heatmap")
+setMethod(".fullName", "HeatMapPlot", function(x) "Heatmap")
 
 #' @export
 #' @importFrom shiny renderPlot renderUI renderTable
 setMethod(".renderOutput", "HeatMapPlot", function(x, se, colormap, output, pObjects, rObjects) {
-    mode <- .getEncodedName(x)
-    id <- x[[.organizationId]] 
-    plot_name <- paste0(mode, id)
+    plot_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
     # Defining the rendered plot, and saving the coordinates.

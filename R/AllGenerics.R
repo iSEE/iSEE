@@ -168,6 +168,16 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' Within the rendering expression for each output, developers should call \code{force(rObjects[[PANEL]])} where \code{PANEL} is the panel name.
 #' This ensures that the output is rerendered upon changes to the appropriate reactive variable, which is itself modified by \code{\link{.renderPanel}} and related functions in \code{\link{.createObservers}}.
 #'
+#' @section Additional rendering obligations:
+#' The rendering expression defined in \code{\link{.renderOutput}} is also expected to:
+#' \itemize{
+#' \item Fill \code{pObjects$contents[[PANEL]]} with some content related to the displayed output.
+#' This will be used in other generics like \code{\link{.multiSelectionCommands}} and \code{\link{.singleSelectionValue}} to determine the identity of the selected point(s).
+#' \item Fill \code{pObjects$commands[[PANEL]]} with a character vector of commands required to produce the displayed output.
+#' This will minimally include the commands required to generate \code{pObjects$contents[[PANEL]]};
+#' for plotting panels, the vector should also include code to create the plot.
+#' }
+#'
 #' @author Aaron Lun
 #'
 #' @docType methods
@@ -299,19 +309,19 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #'
 #' The commands will be evaluated in an environment containing:
 #' \itemize{
-#' \item \code{all_select_histories}, a list containing the value of the \code{MultiSelectHistory} slot from all panels.
-#' Each element is named by the panel, which can be used to retrieve the \code{index} saved selection for \code{x}. 
-#' \item \code{all_contents}, a list containing some arbitrary content from all panels.
-#' Each element is named by the panel and should have some sensible interaction with the panel's multiple selection mechanism.
+#' \item \code{select}, a variable of the same type as returned by \code{\link{.multiSelectionStructure}(x)}.
+#' This will contain the active selection if \code{index=NA} and one of the saved selections otherwise.
+#' For example, for \linkS4class{DotPlot}s, \code{select} will be either a Shiny brush or a lasso structure.
+#' \item \code{contents}, some arbitrary content saved by the rendering expression in \code{\link{.renderOutput}(x)}.
+#' This content should have some sensible interaction with the panel's multiple selection mechanism.
 #' For example, a data.frame of coordinates is stored by \linkS4class{DotPlot}s to identify the points selected by a brush/lasso.
-#' The value of each element is set by the rendering output in \code{\link{.renderOutput}}.
 #' }
 #' 
 #' The command is expected to produce a character vector named \code{selected} in the evaluation environment.
 #' All internal variables should be prefixed with \code{.} to avoid name clashes.
 #' 
 #' @author Aaron Lun
-#' @name multiselect-generics
+#' @name multi-select-generics
 #' @aliases .multiSelectionDimension
 #' .multiSelectionHasActive
 #' .multiSelectionRestricted

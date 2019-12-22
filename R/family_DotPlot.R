@@ -401,16 +401,14 @@ setMethod(".multiSelectionCommands", "DotPlot", function(x, index) {
 
     if (is.na(index)) {
         brush_val <- x[[.brushData]]
-        brush_src <- sprintf("all_brushes[['%s']]", transmitter)
     } else {
         brush_val <- x[[.multiSelectHistory]][[index]]
-        brush_src <- sprintf("all_select_histories[['%s']][[%i]]", transmitter, index)
     }
 
     if (.is_brush(brush_val)) {
-        cur_cmds <- sprintf(".selected <- shiny::brushedPoints(transmitter, %s)", brush_src)
+        cur_cmds <- ".selected <- shiny::brushedPoints(contents, select);"
     } else if (isTRUE(brush_val$closed)) {
-        cur_cmds <- sprintf(".selected <- iSEE::lassoPoints(transmitter, %s)", brush_src)
+        cur_cmds <- ".selected <- iSEE::lassoPoints(contents, select);"
     } else { # i.e., an unclosed lasso.
         return(NULL)
     }

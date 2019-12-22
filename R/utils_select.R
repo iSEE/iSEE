@@ -167,6 +167,8 @@
     cmds <- list()
 
     if (!identical(transmitter, .noSelection)) {
+        init_cmd <- sprintf("contents <- all_contents[['%s']]", transmitter)
+
         transmit_param <- all_memory[[transmitter]]
         cur_choice <- param_choices[[type_field]]
         if (cur_choice == .selectMultiUnionTitle) {
@@ -181,12 +183,11 @@
             }
         }
 
-        init_cmd <- sprintf("contents <- all_contents[['%s']]", transmitter)
         if (any(is.na(select_sources))) {
-            init_cmds <- c(init_cmds, sprintf("active <- all_active[['%s']]", transmitter))
+            init_cmd <- c(init_cmd, sprintf("active <- all_active[['%s']]", transmitter))
         }
         if (any(!is.na(select_sources))) {
-            init_cmds <- c(init_cmds, sprintf("saved <- all_saved[['%s']]", transmitter))
+            init_cmd <- c(init_cmd, )
         }
 
         for (i in select_sources) {
@@ -194,6 +195,13 @@
             if (is.null(cur_cmds)) {
                 next
             }
+
+            if (is.na(i)) {
+                cur_cmds <- c(sprintf("select <- all_active[['%s']]", transmitter), cur_cmds)
+            } else {
+                cur_cmds <- c(sprintf("select <- all_saved[['%s']]", transmitter), cur_cmds)
+            }
+
             outname <- if (is.na(i)) "active" else paste0("saved", i)
             cmds[[outname]] <- c(cur_cmds, sprintf("%s[[%s]] <- selected;", var_name, deparse(outname)))
         }
@@ -226,10 +234,8 @@
 #' \code{\link{.self_brush_box}},
 #' \code{\link{.self_lasso_path}}
 .populate_selection_environment <- function(x, envir) {
-    if (is(x, "DotPlot")) {
-        envir$all_brushes <- list(x[[.brushData]])
-        envir$all_select_histories <- list(x[[.multiSelectHistory]])
-        names(envir$all_brushes) <- names(envir$all_select_histories) <- .getEncodedName(x)
-    }
+    envir$all_active <- list(.multiSelectionStructure(x))
+    envir$all_saved <- list(x[[.multiSelectHistory]])
+    names(envir$all_active) <- names(envir$all_saved) <- .getEncodedName(x)
     invisible(NULL)
 }

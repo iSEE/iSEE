@@ -399,14 +399,12 @@ setMethod(".multiSelectionCommands", "DotPlot", function(x, index) {
     }
 
     if (.is_brush(brush_val)) {
-        cur_cmds <- ".selected <- shiny::brushedPoints(contents, select);"
+        "selected <- rownames(shiny::brushedPoints(contents, select));"
     } else if (isTRUE(brush_val$closed)) {
-        cur_cmds <- ".selected <- iSEE::lassoPoints(contents, select);"
+        "selected <- rownames(iSEE::lassoPoints(contents, select));"
     } else { # i.e., an unclosed lasso.
         return(NULL)
     }
-
-    c(cur_cmds, "selected <- rownames(.selected);")
 })
 
 #' @export

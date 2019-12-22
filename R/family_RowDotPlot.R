@@ -155,16 +155,13 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
     rdp_cached <- .get_common_info(se, "RowDotPlot")
     dp_cached <- .get_common_info(se, "DotPlot")
 
-    discrete <- rdp_cached$discrete.rowData.names
-    x <- .replace_na_with_first(x, .facetByRow, discrete)
-    x <- .replace_na_with_first(x, .facetByColumn, discrete)
-
     available <- rdp_cached$valid.rowData.names
     x <- .replace_na_with_first(x, .colorByRowData, available)
 
     assays <- dp_cached$valid.assay.names
     x <- .replace_na_with_first(x, .colorBySampNameAssay, assays)
 
+    discrete <- rdp_cached$discrete.rowData.names
     x <- .replace_na_with_first(x, .shapeByRowData, discrete)
 
     continuous <- rdp_cached$continuous.rowData.names

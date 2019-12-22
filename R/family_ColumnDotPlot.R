@@ -155,16 +155,13 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
     cdp_cached <- .get_common_info(se, "ColumnDotPlot")
     dp_cached <- .get_common_info(se, "DotPlot")
 
-    discrete <- cdp_cached$discrete.colData.names
-    x <- .replace_na_with_first(x, .facetByRow, discrete)
-    x <- .replace_na_with_first(x, .facetByColumn, discrete)
-
     available <- cdp_cached$valid.colData.names
     x <- .replace_na_with_first(x, .colorByColData, available)
 
     assays <- dp_cached$valid.assay.names
     x <- .replace_na_with_first(x, .colorByFeatNameAssay, assays)
 
+    discrete <- cdp_cached$discrete.colData.names
     x <- .replace_na_with_first(x, .shapeByColData, discrete)
 
     continuous <- cdp_cached$continuous.colData.names

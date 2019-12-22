@@ -5,7 +5,9 @@
     for (x in names(all_memory)) {
         instance <- all_memory[[x]]
         for (f in c(.selectRowSource, .selectColSource)) {
-            graph <- .add_interpanel_link(graph, x, instance[[f]], field=f)
+            if (instance[[f]] %in% names(all_memory)) {
+                graph <- .add_interpanel_link(graph, x, instance[[f]], field=f)
+            }
         }
     }
 
@@ -20,7 +22,9 @@
         instance <- all_memory[[x]]
         fields <- .singleSelectionSlots(instance)
         for (f in names(fields)) {
-            graph <- .add_interpanel_link(graph, x, instance[[f]], field=fields[f])
+            if (instance[[f]] %in% names(all_memory)) {
+                graph <- .add_interpanel_link(graph, x, instance[[f]], field=fields[f])
+            }
         }
     }
 

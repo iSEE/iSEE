@@ -118,11 +118,8 @@
             .renderOutput(instance, se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
         }
 
-        lost <- setdiff(right, left)
-        for (l in lost) {
-            pObjects$selection_links <- .destroy_parent(pObjects$selection_links, l)
-            pObjects$aesthetics_links <- .destroy_parent(pObjects$aesthetics_links, l)
-        }
+        pObjects$selection_links <- .spawn_multi_selection_graph(pObjects$memory)
+        pObjects$aesthetics_links <- .spawn_single_selection_graph(pObjects$memory)
 
         # NOTE: there should be no need to updateSelectize on the choice of
         # linkable panels; this should be handled by the rerendering. This

@@ -37,7 +37,7 @@
 #' \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all of the slots. 
 #' This will also call the equivalent \linkS4class{Panel} method.
 #' \item \code{\link{.renderOutput}(x, se, colormap, output, pObjects, rObjects)} will add a rendered \code{\link{datatable}} object to \code{output}.
-#' It will also create a rendered UI element for selection information.
+#' This will also call the equivalent \linkS4class{Panel} method to render the panel information testboxes.
 #' }
 #'
 #' For controlling selections: 
@@ -138,6 +138,8 @@ setMethod(".createObservers", "Table", function(x, se, input, session, pObjects,
 setMethod(".renderOutput", "Table", function(x, se, ..., output, pObjects, rObjects) {
     .define_table_output(.getEncodedName(x), FUN=.getTableFunction(x),
         se=se, output=output, pObjects=pObjects, rObjects=rObjects)
+
+    callNextMethod()
 })
 
 #' @export

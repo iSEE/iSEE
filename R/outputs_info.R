@@ -8,18 +8,8 @@
 #' A reactive element to render the plot is added to \code{output}.
 #' A \code{NULL} is invisibly returned.
 #'
-#' @importFrom shiny renderUI
 #' @rdname INTERNAL_define_link_info_output
-.define_link_info_output <- function(plot_name, pObjects, rObjects) {
-    link_field <- paste0(plot_name, "_", .panelLinkInfo)
-    output[[link_field]] <- renderUI({
-        force(rObjects[[link_field]])
-        .define_plot_links(plot_name, pObjects$memory, pObjects$selection_links)
-    })
-    invisible(NULL)
-}
-
-#' @importFrom shiny tagList
+#' @importFrom shiny tagList renderUI
 .define_selection_info_output <- function(plot_name, output, pObjects, rObjects) {
     gen_field <- paste0(plot_name, "_", .panelGeneralInfo)
 
@@ -68,6 +58,62 @@
             NULL
         } else {
             do.call(tagList, all_output)
+        }
+    })
+}
+
+#' @importFrom shiny tagList renderUI
+#' @importFrom igraph adjacent_vertices get.edge.ids E
+.define_link_info_output <- function(plot_name, output, pObjects, rObjects) {
+    link_field <- paste0(plot_name, "_", .panelLinkInfo)
+
+    output[[link_field]] <- renderUI({
+        force(rObjects[[link_field]])
+        info <- NULL
+        graph <- pObjects$selection_links
+
+        # Defining from 'selection_links' first.
+        parents <- names(adjacent_vertices(graph, plot_name, mode="in")[[1]]) 
+        for (p in parents) {
+            full_name <- .getFullName(pObjects$memory[[p]])
+            info <- c(info, list("Receiving selection from", em(strong(full_name)), br()))
+        }
+
+        children <- names(adjacent_vertices(graph, plot_name)[[1]])
+        for (child in children) {
+            full_name <- .getFullName(pObjects$memory[[child]])
+            info <- c(info, list("Transmitting selection to", em(strong(full_name)), br()))
+        }
+
+        # Defining from aesthetic links.
+        graph2 <- pObjects$aesthetics_links
+
+        parents2 <- names(adjacent_vertices(graph2, plot_name, mode="in")[[1]])
+        for (p in parents2) {
+            full_name <- .getFullName(pObjects$memory[[p]])
+            eid <- get.edge.ids(graph2, c(p, plot_name))
+
+            fields <- E(graph2)$fields[[eid]]
+            for (f in fields) {
+                info <- c(info, list("Receiving", em(strong(f)), "from", em(strong(full_name)), br()))
+            }
+        }
+
+        children2 <- names(adjacent_vertices(graph2, plot_name)[[1]])
+        for (child in children2) {
+            full_name <- .getFullName(pObjects$memory[[child]])
+            eid <- get.edge.ids(graph2, c(plot_name, child))
+
+            fields <- E(graph2)$fields[[eid]]
+            for (f in fields) {
+                info <- c(info, list("Transmitting", em(strong(f)), "to", em(strong(full_name)), br()))
+            }
+        }
+
+        if (length(info)==0L) {
+            NULL
+        } else {
+            do.call(tagList, info)
         }
     })
 }

@@ -137,7 +137,7 @@
 #' \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for some (but not all!) of the slots.
 #' This will also call the equivalent \linkS4class{Panel} method.
 #' \item \code{\link{.renderOutput}(x, se, colormap, output, pObjects, rObjects)} will add a rendered plot element to \code{output}.
-#' It will also create a rendered UI element for selection information.
+#' This will also call the equivalent \linkS4class{Panel} method to render the panel information testboxes.
 #' }
 #'
 #' For controlling selections:
@@ -370,8 +370,7 @@ setMethod(".renderOutput", "DotPlot", function(x, se, colormap, output, pObjects
         FUN=.getPanelPlottingFunction(x), selectable=TRUE,
         se=se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
 
-    .define_selection_info_output(plot_name,
-        output=output, pObjects=pObjects, rObjects=rObjects)
+    callNextMethod()
 })
 
 #' @export

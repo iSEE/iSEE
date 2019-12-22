@@ -58,10 +58,10 @@
 #' The Panel class offers interface elements to modify all of its slots.
 #' Observers are also created to trigger rerendering upon changes to a slot or when a selection in a transmitting panel changes.
 #'
-#' Subclasses are expected to implement methods for, at least:
+#' Subclasses are required to implement methods for:
 #' \itemize{
-#' \item \code{\link{.renderOutput}}
 #' \item \code{\link{.defineOutput}}
+#' \item \code{\link{.renderOutput}}
 #' \item \code{\link{.fullName}}
 #' }
 #' Subclasses that transmit selections should also implement specialized methods for selection-related parameters listed below.
@@ -81,6 +81,12 @@
 #' \item \code{\link{.hideInterface}(x, field)} will always return \code{FALSE}.
 #' }
 #'
+#' For rendering the output:
+#' \itemize{
+#' \item \code{\link{.renderOutput}(x, se, ..., output, pObjects, rObjects)} will add elements to \code{output} for rendering the information textboxes at the bottom of each panel.
+#' This should be specialized for each panels to add rendering expressions for the actual output (e.g., plots, tables).
+#' }
+#' 
 #' For controlling selections:
 #' \itemize{
 #' \item \code{\link{.multiSelectionRestricted}(x)} will always return \code{TRUE}.
@@ -211,6 +217,17 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
 
     .define_saved_selection_observers(panel_name, 
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+})
+
+#' @export
+setMethod(".renderOutput", "Panel", function(x, se, ..., output, pObjects, rObjects) {
+    plot_name <- .getEncodedName(x)
+
+    .define_selection_info_output(plot_name,
+        output=output, pObjects=pObjects, rObjects=rObjects)
+
+    .define_link_info_output(plot_name,
+        output=output, pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export

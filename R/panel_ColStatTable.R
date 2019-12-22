@@ -87,19 +87,17 @@ setMethod(".fullName", "ColStatTable", function(x) "Column statistics table")
 
 #' @export
 #' @importFrom SummarizedExperiment colData
-setMethod(".getTableFunction", "ColStatTable", function(x) {
-    function(param_choices, se, eval_env) {
-        cmds <-"tab <- as.data.frame(colData(se));"
+setMethod(".getTableCommands", "ColStatTable", function(x, envir) {
+    cmds <-"tab <- as.data.frame(colData(se));"
 
-        if (exists("col_selected", envir=eval_env, inherits=FALSE)) {
-            cmds <- c(cmds, "tab <- tab[unique(unlist(col_selected)),,drop=FALSE]")
-        }
-
-        valid.names <- .get_common_info(se, "ColStatTable")$valid.colData.names
-        if (!identical(colnames(colData(se)), valid.names)) {
-            cmds <- c(cmds, sprintf("tab <- tab[,%s,drop=FALSE]",
-                paste(deparse(valid.names), collapse="\n     ")))
-        }
-        cmds
+    if (exists("col_selected", envir=eval_env, inherits=FALSE)) {
+        cmds <- c(cmds, "tab <- tab[unique(unlist(col_selected)),,drop=FALSE]")
     }
+
+    valid.names <- .get_common_info(envir$se, "ColStatTable")$valid.colData.names
+    if (!identical(colnames(colData(envir$se)), valid.names)) {
+        cmds <- c(cmds, sprintf("tab <- tab[,%s,drop=FALSE]",
+            paste(deparse(valid.names), collapse="\n     ")))
+    }
+    cmds
 })

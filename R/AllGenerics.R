@@ -196,12 +196,15 @@ setGeneric(".renderOutput", function(x, se, ..., output, pObjects, rObjects) {
 })
 
 #' @export
+setGeneric(".generateOutput", function(x, se, ..., all_memory, all_contents) {
+    standardGeneric(".generateOutput")
+})
+
+#' @export
 #' @rdname getEncodedName
 setGeneric(".fullName", function(x) standardGeneric(".fullName"))
 
 ##########################
-
-setGeneric(".getPanelPlottingFunction", function(x) standardGeneric(".getPanelPlottingFunction"))
 
 #' @export
 setGeneric(".getCommandsDataXY", function(x) standardGeneric(".getCommandsDataXY"))
@@ -224,7 +227,7 @@ setGeneric(".getCommandsPlotColor", function(x, colorby, x_aes="X", y_aes="Y") s
 ###########################
 
 #' @export
-setGeneric(".getTableFunction", function(x) standardGeneric(".getTableFunction"))
+setGeneric(".getTableCommands", function(x, envir) standardGeneric(".getTableCommands"))
 
 #' Generics for setting up parameters
 #'

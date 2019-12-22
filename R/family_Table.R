@@ -136,10 +136,14 @@ setMethod(".createObservers", "Table", function(x, se, input, session, pObjects,
 #' @export
 #' @importFrom SummarizedExperiment colData
 setMethod(".renderOutput", "Table", function(x, se, ..., output, pObjects, rObjects) {
-    .define_table_output(.getEncodedName(x), FUN=.getTableFunction(x),
-        se=se, output=output, pObjects=pObjects, rObjects=rObjects)
+    .define_table_output(.getEncodedName(x), se=se, output=output, pObjects=pObjects, rObjects=rObjects)
 
     callNextMethod()
+})
+
+#' @export
+setMethod(".generateOutput", "Table", function(x, se, ..., all_memory, all_contents) {
+    .create_table_commands(x, se, all_memory=all_memory, all_contents=all_contents)
 })
 
 #' @export

@@ -1,47 +1,15 @@
 #' @importFrom DT datatable renderDataTable selectRows dataTableProxy
-.define_table_output <- function(panel_name, FUN, se, output, pObjects, rObjects) {
-    force(FUN)
+.define_table_output <- function(panel_name, se, output, pObjects, rObjects) {
     force(se)
 
     output[[panel_name]] <- renderDataTable({
         force(rObjects[[panel_name]])
         param_choices <- pObjects$memory[[panel_name]]
-        tab_cmds <- .initialize_cmd_store()
-        eval_env <- new.env()
-
-        # Defining the row and column selections, and hoping that the 
-        # table-generating function in FUN knows what to do with this.
-        row_select_cmds <- .process_selectby_choice(param_choices, 
-            by_field=.selectRowSource, type_field=.selectRowType, saved_field=.selectRowSaved,
-            all_memory=pObjects$memory, var_name="row_selected")
-
-        if (!is.null(row_select_cmds)) {
-            transmitter <- param_choices[[.selectRowSource]]
-            .populate_selection_environment(pObjects$memory[[transmitter]], eval_env)
-            eval_env$all_contents <- pObjects$contents
-            tab_cmds <- .add_command(tab_cmds, row_select_cmds)
-            tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
-        }
-
-        col_select_cmds <- .process_selectby_choice(param_choices, 
-            by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
-            all_memory=pObjects$memory, var_name="col_selected")
-
-        if (!is.null(col_select_cmds)) {
-            transmitter <- param_choices[[.selectColSource]]
-            .populate_selection_environment(pObjects$memory[[transmitter]], eval_env)
-            eval_env$all_contents <- pObjects$contents
-            tab_cmds <- .add_command(tab_cmds, col_select_cmds)
-            tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
-        }
-
-        # Creating the table and storing it.
-        tab_cmds <- .add_command(tab_cmds, FUN(pObjects$memory[[panel_name]], se, eval_env))
-        tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
-
-        full_tab <- eval_env$tab
+       
+        t.out <- .generateOutput(param_choices, se=se, all_memory=pObjects$memory, all_contents=pObjects$contents)
+        full_tab <- t.out$contents
         pObjects$contents[[panel_name]] <- full_tab
-        pObjects$commands[[panel_name]] <- tab_cmds$processed
+        pObjects$commands[[panel_name]] <- t.out$commands
 
         chosen <- param_choices[[.TableSelected]]
         search <- param_choices[[.TableSearch]]
@@ -74,3 +42,40 @@
     })
 }
 
+.create_table_commands <- function(param_choices, se, all_memory, all_contents) {
+    tab_cmds <- .initialize_cmd_store()
+    eval_env <- new.env()
+    eval_env$se <- se
+
+    # Defining the row and column selections, and hoping that the 
+    # table-generating function in FUN knows what to do with this.
+    row_select_cmds <- .process_selectby_choice(param_choices, 
+        by_field=.selectRowSource, type_field=.selectRowType, saved_field=.selectRowSaved,
+        all_memory=all_memory, var_name="row_selected")
+
+    if (!is.null(row_select_cmds)) {
+        transmitter <- param_choices[[.selectRowSource]]
+        .populate_selection_environment(all_memory[[transmitter]], eval_env)
+        eval_env$all_contents <- all_contents
+        tab_cmds <- .add_command(tab_cmds, row_select_cmds)
+        tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
+    }
+
+    col_select_cmds <- .process_selectby_choice(param_choices, 
+        by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
+        all_memory=all_memory, var_name="col_selected")
+
+    if (!is.null(col_select_cmds)) {
+        transmitter <- param_choices[[.selectColSource]]
+        .populate_selection_environment(all_memory[[transmitter]], eval_env)
+        eval_env$all_contents <- all_contents
+        tab_cmds <- .add_command(tab_cmds, col_select_cmds)
+        tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
+    }
+
+    # Creating the table and storing it.
+    tab_cmds <- .add_command(tab_cmds, .getTableCommands(param_choices, eval_env))
+    tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
+
+    list(commands=tab_cmds, contents=eval_env$tab)
+}

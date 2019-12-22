@@ -17,8 +17,7 @@
 #'
 #' @rdname INTERNAL_define_plot_output
 #' @importFrom shiny renderPlot renderUI tagList br
-.define_plot_output <- function(plot_name, FUN, selectable, se, colormap, output, pObjects, rObjects) {
-    force(FUN)
+.define_plot_output <- function(plot_name, se, colormap, output, pObjects, rObjects) {
     force(se)
     force(colormap)
     gen_field <- paste0(plot_name, "_", .panelGeneralInfo)
@@ -27,15 +26,13 @@
         force(rObjects[[plot_name]])
         .safe_reactive_bump(rObjects, gen_field)
 
-        p.out <- FUN(pObjects$memory[[plot_name]], pObjects$memory, pObjects$contents, se, colormap)
-        pObjects$commands[[plot_name]] <- p.out$cmd_list
+        p.out <- .generateOutput(pObjects$memory[[plot_name]], se, colormap=colormap, 
+            all_memory=pObjects$memory, all_contents=pObjects$contents)
+        pObjects$commands[[plot_name]] <- p.out$commands
+        pObjects$contents[[plot_name]] <- p.out$contents
 
-        if (selectable) {
-            pObjects$contents[[plot_name]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
-        }
         p.out$plot
     })
-
 
     invisible(NULL)
 }

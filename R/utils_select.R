@@ -84,3 +84,35 @@
         n > 0L
     }
 }
+
+#' Choose a linked panel
+#'
+#' Chooses a linked panel from those available, forcing a valid choice if required.
+#'
+#' @param chosen String specifying the proposed choice, usually a decoded panel name.
+#' @param available Character vector containing the valid choices, usually decoded panel names.
+#' @param force_default Logical scalar indicating whether a non-empty default should be returned if \code{chosen} is not valid.
+#'
+#' @return A string containing a valid choice, or an empty string.
+#'
+#' @details
+#' If \code{chosen} is in \code{available}, it will be directly returned.
+#' If not, and if \code{force_default=TRUE} and \code{available} is not empty, the first element of \code{available} is returned.
+#' Otherwise, an empty string is returned.
+#'
+#' Setting \code{force_default=TRUE} is required for panels linking to row statistics tables, where an empty choice would result in an invalid plot.
+#' However, a default choice is not necessary for point selection transmission, where no selection is perfectly valid.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_choose_link
+#' @seealso
+#' \code{\link{.panel_generation}}
+.choose_link <- function(chosen, available, force_default=FALSE) {
+    if (!chosen %in% available) {
+        if (force_default && length(available)) {
+            return(available[1])
+        }
+        return("")
+    }
+    return(chosen)
+}

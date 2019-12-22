@@ -20,10 +20,15 @@
         n_total <- nrow(cur_coords)
 
         all_output <- list()
-        cur_brush <- instance[[.brushData]]
-        brushed <- .get_brushed_points(cur_coords, cur_brush)
-        if (!is.null(brushed)) {
-            n_brushed <- length(brushed)
+        env <- new.env()
+        env$contents <- cur_coords
+
+        if (.multiSelectionHasActive(instance)) {
+            env$select <- .multiSelectionActive(instance)
+            cmds <- .multiSelectionCommands(instance, NA)
+            .text_eval(cmds, env)
+            n_brushed <- length(env$selected)
+
             all_output <- append(all_output,
                 list(
                     sprintf(
@@ -37,12 +42,15 @@
 
         saved <- instance[[.multiSelectHistory]]
         for (i in seq_along(saved)) {
-            brushed <- .get_brushed_points(cur_coords, saved[[i]])
-            if (is.null(brushed)) {
+            cmds <- .multiSelectionCommands(instance, i)
+            if (is.null(cmds)) {
                 next
             }
 
-            n_brushed <- length(brushed)
+            env$select <- saved[[i]]
+            .text_eval(cmds, env)
+            n_brushed <- length(env$selected)
+
             all_output <- append(all_output,
                 list(
                     sprintf(

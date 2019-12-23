@@ -429,32 +429,8 @@ setMethod(".generateOutput", "DotPlot", function(x, se, colormap, all_memory, al
     plot_env$se <- se
     plot_env$colormap <- colormap
 
-    # Defining the row and column selections, and hoping that the
-    # plot-generating functions know what to do with them.
-    select_cmds <- .initialize_cmd_store()
-    row_select_cmds <- .process_selectby_choice(x,
-        by_field=.selectRowSource, type_field=.selectRowType, saved_field=.selectRowSaved,
-        all_memory=all_memory, var_name="row_selected")
-
-    if (!is.null(row_select_cmds)) {
-        transmitter <- x[[.selectRowSource]]
-        .populate_selection_environment(all_memory[[transmitter]], plot_env)
-        plot_env$all_contents <- all_contents
-        select_cmds <- .add_command(select_cmds, row_select_cmds)
-        select_cmds <- .evaluate_commands(select_cmds, plot_env)
-    }
-
-    col_select_cmds <- .process_selectby_choice(x,
-        by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
-        all_memory=all_memory, var_name="col_selected")
-
-    if (!is.null(col_select_cmds)) {
-        transmitter <- x[[.selectColSource]]
-        .populate_selection_environment(all_memory[[transmitter]], plot_env)
-        plot_env$all_contents <- all_contents
-        select_cmds <- .add_command(select_cmds, col_select_cmds)
-        select_cmds <- .evaluate_commands(select_cmds, plot_env)
-    }
+    # Doing this first so that .getCommandsDataXY can respond to the selection.
+    select_cmds <- .processMultiSelections(x, all_memory, all_contents, plot_env)
 
     # Apply the function provided to generate XY commands and axis labels
     out_xy <- .getCommandsDataXY(x)

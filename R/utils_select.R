@@ -117,6 +117,65 @@
     return(chosen)
 }
 
+#' Process multiple selections
+#'
+#' Generate and execute commands to process multiple selections,
+#' creating variables in the evaluation environment with the identity of the selected rows or columns.
+#'
+#' @param x An instance of a \linkS4class{Panel} class.
+#' @param all_memory A named list of \linkS4class{Panel} instances containing parameters for the current app state.
+#' @param all_contents A named list of arbitrary contents with one entry per panel.
+#' @param envir The evaluation environment.
+#'
+#' @return 
+#' \code{envir} is populated with one, none or both of \code{col_selected} and/or \code{row_selected},
+#' depending on whether \code{x} is receiving a multiple selection on the rows and/or columns.
+#' The return value is the  character vector of commands required to construct those variables.
+#'
+#' @details
+#' This function is primarily intended for use by developers of new panels.
+#' It should be called inside \code{\link{.generateOutput}} to easily process row/column multiple selections.
+#' Developers can check whether \code{row_selected} or \code{col_selected} exists in \code{envir}
+#' to determine whether any row or column selection was performed (and adjust the behavior of \code{.generateOutput} accordingly).
+#'
+#' @author Aaron Lun
+#'
+#' @seealso
+#' \code{\link{.generateOutput}} and its related generic \code{\link{.renderOutput}}, where this function should generally be used.
+#'
+#' @rdname processMultiSelections
+#' @export
+.processMultiSelections <- function(x, all_memory, all_contents, envir) {
+    # Defining the row and column selections, and hoping that the
+    # plot-generating functions know what to do with them.
+    select_cmds <- .initialize_cmd_store()
+    row_select_cmds <- .process_selectby_choice(x,
+        by_field=.selectRowSource, type_field=.selectRowType, saved_field=.selectRowSaved,
+        all_memory=all_memory, var_name="row_selected")
+
+    if (!is.null(row_select_cmds)) {
+        transmitter <- x[[.selectRowSource]]
+        .populate_selection_environment(all_memory[[transmitter]], envir)
+        envir$all_contents <- all_contents
+        select_cmds <- .add_command(select_cmds, row_select_cmds)
+        select_cmds <- .evaluate_commands(select_cmds, envir)
+    }
+
+    col_select_cmds <- .process_selectby_choice(x,
+        by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
+        all_memory=all_memory, var_name="col_selected")
+
+    if (!is.null(col_select_cmds)) {
+        transmitter <- x[[.selectColSource]]
+        .populate_selection_environment(all_memory[[transmitter]], envir)
+        envir$all_contents <- all_contents
+        select_cmds <- .add_command(select_cmds, col_select_cmds)
+        select_cmds <- .evaluate_commands(select_cmds, envir)
+    }
+
+    select_cmds$processed
+}
+
 #' Process point selection choice
 #'
 #' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.

@@ -194,6 +194,8 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' The output list may contain any number of other fields that will be ignored.
 #' We suggest implementing this method to also return \code{commands} so that it can be used in \code{.renderOutput},
 #' thus avoiding the need to write redundant code for both methods.
+#'
+#' Developers should consider using the \code{\link{.processMultiSelections}} function for easily processing the multiple selection parameters.
 #' 
 #' @author Aaron Lun
 #'

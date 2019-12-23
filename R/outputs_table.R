@@ -47,31 +47,8 @@
     eval_env <- new.env()
     eval_env$se <- se
 
-    # Defining the row and column selections, and hoping that the 
-    # table-generating function in FUN knows what to do with this.
-    row_select_cmds <- .process_selectby_choice(param_choices, 
-        by_field=.selectRowSource, type_field=.selectRowType, saved_field=.selectRowSaved,
-        all_memory=all_memory, var_name="row_selected")
-
-    if (!is.null(row_select_cmds)) {
-        transmitter <- param_choices[[.selectRowSource]]
-        .populate_selection_environment(all_memory[[transmitter]], eval_env)
-        eval_env$all_contents <- all_contents
-        tab_cmds <- .add_command(tab_cmds, row_select_cmds)
-        tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
-    }
-
-    col_select_cmds <- .process_selectby_choice(param_choices, 
-        by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
-        all_memory=all_memory, var_name="col_selected")
-
-    if (!is.null(col_select_cmds)) {
-        transmitter <- param_choices[[.selectColSource]]
-        .populate_selection_environment(all_memory[[transmitter]], eval_env)
-        eval_env$all_contents <- all_contents
-        tab_cmds <- .add_command(tab_cmds, col_select_cmds)
-        tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
-    }
+    # Doing this first so that .getTableCommands can respond to the selection.
+    select_cmds <- .processMultiSelections(param_choices, all_memory, all_contents, eval_env)
 
     # Creating the table and storing it.
     tab_cmds <- .add_command(tab_cmds, .getTableCommands(param_choices, eval_env))

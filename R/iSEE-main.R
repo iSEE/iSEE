@@ -279,13 +279,17 @@ iSEE <- function(se,
 
             # for error message handling
             tags$head(
-                tags$style(HTML(paste("
+                tags$style(
+                    HTML(
+                        paste("
 .shiny-output-error-validation {
     font-size: 15px;
     color: forestgreen;
     text-align: center;
 }
-", .define_box_statuses))
+", .define_box_statuses(c(initial, extra))
+                        )
+                    )
                 )
             ),
 

@@ -294,6 +294,9 @@ setMethod(".singleSelectionSlots", "SampAssayPlot", function(x) {
 setMethod(".fullName", "SampAssayPlot", function(x) "Sample assay plot")
 
 #' @export
+setMethod(".panelColor", "SampAssayPlot", function(x) "#07A274")
+
+#' @export
 setMethod(".getCommandsDataXY", "SampAssayPlot", function(x) {
     data_cmds <- list()
 

@@ -451,6 +451,9 @@ setMethod(".defineOutput", "HeatMapPlot", function(x) {
 setMethod(".fullName", "HeatMapPlot", function(x) "Heatmap")
 
 #' @export
+setMethod(".panelColor", "HeatMapPlot", function(x) "#7C378A")
+
+#' @export
 #' @importFrom shiny renderPlot renderUI renderTable
 setMethod(".renderOutput", "HeatMapPlot", function(x, se, colormap, output, pObjects, rObjects) {
     plot_name <- .getEncodedName(x)

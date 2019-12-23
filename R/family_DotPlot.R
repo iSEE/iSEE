@@ -347,12 +347,12 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 #' @export
 setMethod(".defineOutput", "DotPlot", function(x, id) {
     plot_name <- .getEncodedName(x)
-    mode <- .encodedName(x)
+    col <- .getPanelColor(x)
 
     .create_plot_ui(plot_name, brush_direction="xy",
         height=x[[.organizationHeight]],
-        brush_fill=brush_fill_color[mode],
-        brush_stroke=brush_stroke_color[mode]
+        brush_fill=.lighten_color_for_fill(col),
+        brush_stroke=col
     )
 })
 

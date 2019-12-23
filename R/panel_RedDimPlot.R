@@ -266,6 +266,9 @@ setMethod(".createObservers", "RedDimPlot", function(x, se, input, session, pObj
 setMethod(".fullName", "RedDimPlot", function(x) "Reduced dimension plot")
 
 #' @export
+setMethod(".panelColor", "RedDimPlot", function(x) "#3565AA")
+
+#' @export
 setMethod(".getCommandsDataXY", "RedDimPlot", function(x) {
     data_cmds <- list()
 

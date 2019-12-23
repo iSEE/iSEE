@@ -203,6 +203,9 @@ setMethod(".createObservers", "ColDataPlot", function(x, se, input, session, pOb
 setMethod(".fullName", "ColDataPlot", function(x) "Column data plot")
 
 #' @export
+setMethod(".panelColor", "ColDataPlot", function(x) "#DB0230")
+
+#' @export
 setMethod(".getCommandsDataXY", "ColDataPlot", function(x) {
     data_cmds <- list()
 

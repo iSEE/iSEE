@@ -88,6 +88,9 @@ setMethod(".refineParameters", "RowStatTable", function(x, se) {
 setMethod(".fullName", "RowStatTable", function(x) "Row statistics table")
 
 #' @export
+setMethod(".panelColor", "RowStatTable", function(x) "#E47E04")
+
+#' @export
 #' @importFrom SummarizedExperiment rowData
 setMethod(".getTableCommands", "RowStatTable", function(x, envir) {
     cmds <-"tab <- as.data.frame(rowData(se));"

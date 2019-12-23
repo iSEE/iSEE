@@ -1062,8 +1062,8 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
     mode <- .encodedName(param_choices)
     plot_name <- .getEncodedName(param_choices)
-    stroke_color <- panel_colors[mode]
-    fill_color <- brush_fill_color[mode]
+    stroke_color <- .getPanelColor(param_choices)
+    fill_color <- .lighten_color_for_fill(stroke_color)
 
     # TODO: workaround to make brushes visible on non-builtin panels
     stroke_color <- ifelse(is.na(stroke_color), "gray10", stroke_color)

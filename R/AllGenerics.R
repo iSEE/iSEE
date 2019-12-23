@@ -204,6 +204,9 @@ setGeneric(".generateOutput", function(x, se, ..., all_memory, all_contents) {
 #' @rdname getEncodedName
 setGeneric(".fullName", function(x) standardGeneric(".fullName"))
 
+#' @export
+setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
+
 ##########################
 
 #' @export

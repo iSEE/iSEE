@@ -284,6 +284,9 @@ setMethod(".singleSelectionSlots", "FeatAssayPlot", function(x) {
 setMethod(".fullName", "FeatAssayPlot", function(x) "Feature assay plot")
 
 #' @export
+setMethod(".panelColor", "FeatAssayPlot", function(x) "#7BB854")
+
+#' @export
 setMethod(".getCommandsDataXY", "FeatAssayPlot", function(x) {
     data_cmds <- list()
 

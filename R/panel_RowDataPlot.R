@@ -217,7 +217,10 @@ setMethod(".createObservers", "RowDataPlot", function(x, se, input, session, pOb
 })
 
 #' @export
-setMethod(".fullName", "RowDataPlot", function(x) "Row data plot") # TODO change to class name.
+setMethod(".fullName", "RowDataPlot", function(x) "Row data plot") 
+
+#' @export
+setMethod(".panelColor", "RowDataPlot", function(x) "#F2B701")
 
 #' @export
 setMethod(".getCommandsDataXY", "RowDataPlot", function(x) {

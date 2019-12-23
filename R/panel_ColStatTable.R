@@ -86,6 +86,9 @@ setMethod(".refineParameters", "ColStatTable", function(x, se) {
 setMethod(".fullName", "ColStatTable", function(x) "Column statistics table")
 
 #' @export
+setMethod(".panelColor", "ColStatTable", function(x) "#B00258")
+
+#' @export
 #' @importFrom SummarizedExperiment colData
 setMethod(".getTableCommands", "ColStatTable", function(x, envir) {
     cmds <-"tab <- as.data.frame(colData(se));"

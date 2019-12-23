@@ -171,17 +171,34 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' @section Additional rendering obligations:
 #' The rendering expression defined in \code{\link{.renderOutput}} is also expected to:
 #' \itemize{
-#' \item Fill \code{pObjects$contents[[PANEL]]} with some content related to the displayed output.
+#' \item Fill \code{pObjects$contents[[PANEL]]} with some content related to the displayed output that allows cross-referencing with single/multiple selection structures.
 #' This will be used in other generics like \code{\link{.multiSelectionCommands}} and \code{\link{.singleSelectionValue}} to determine the identity of the selected point(s).
 #' \item Fill \code{pObjects$commands[[PANEL]]} with a character vector of commands required to produce the displayed output.
 #' This will minimally include the commands required to generate \code{pObjects$contents[[PANEL]]};
 #' for plotting panels, the vector should also include code to create the plot.
 #' }
 #'
+#' @section Generating content:
+#' In \code{.generateOutput(x, se, ..., output, pObjects, rObjects)}, the following arguments are required:
+#' \itemize{
+#' \item \code{x}, an instance of a \linkS4class{Panel} class.
+#' \item \code{se}, a \linkS4class{SummarizedExperiment} object containing the current dataset.
+#' \item \code{...}, further arguments that may be used by specific methods.
+#' \item \code{all_memory}, a named list containing \linkS4class{Panel} objects with their parameters for the current state of the app.
+#' \item \code{all_contents}, a named list containing the contents of each panel.
+#' }
+#' 
+#' Methods for this generic should return a list containing \code{contents}, some arbitrary content for the panel.
+#' This is used during app initialization to ensure that \code{pObjects$contents} of transmitter panels is filled before rendering their children.
+#' 
+#' The output list may contain any number of other fields that will be ignored.
+#' We suggest implementing this method to also return \code{commands} so that it can be used in \code{.renderOutput},
+#' thus avoiding the need to write redundant code for both methods.
+#' 
 #' @author Aaron Lun
 #'
 #' @docType methods
-#' @aliases .renderOutput .defineOutput
+#' @aliases .renderOutput .defineOutput .generateOutput
 #' @name output-generics
 NULL
 
@@ -205,6 +222,7 @@ setGeneric(".generateOutput", function(x, se, ..., all_memory, all_contents) {
 setGeneric(".fullName", function(x) standardGeneric(".fullName"))
 
 #' @export
+#' @rdname getPanelColor
 setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 
 ##########################
@@ -314,7 +332,7 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #'
 #' The commands will be evaluated in an environment containing:
 #' \itemize{
-#' \item \code{select}, a variable of the same type as returned by \code{\link{.multiSelectionStructure}(x)}.
+#' \item \code{select}, a variable of the same type as returned by \code{\link{.multiSelectionActive}(x)}.
 #' This will contain the active selection if \code{index=NA} and one of the saved selections otherwise.
 #' For example, for \linkS4class{DotPlot}s, \code{select} will be either a Shiny brush or a lasso structure.
 #' \item \code{contents}, some arbitrary content saved by the rendering expression in \code{\link{.renderOutput}(x)}.

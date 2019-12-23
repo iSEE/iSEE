@@ -173,3 +173,34 @@
     graph <- .delete_interpanel_link(graph, panel_name, old_parent_name, field)
     .add_interpanel_link(graph, panel_name, new_parent_name, field)
 }
+
+#' Establish the evaluation order
+#'
+#' Establish the order in which connected panels are to be evaluated during app initialization.
+#'
+#' @param graph A graph object containing links between panels, produced by \code{\link{.spawn_selection_chart}}.
+#'
+#' @details
+#' This function identifies any initial connections between panels (e.g., specified in the panel arguments) for point selection.
+#' It then orders the connected panels such that any transmitters are placed in front of their receivers.
+#'
+#' The idea is to \dQuote{evaluate} the plots at the start of the app, to obtain the coordinates for transmitting to other panels.
+#' Otherwise, errors will be encountered whereby a panel tries to select from a set of coordinates that do not yet exist.
+#'
+#' Unlike its relative \code{\link{.get_reporting_order}}, only transmitting panels are ever reported by this function.
+#' It is not necessary to evaluate receiving-only panels, and in fact will result in errors for heatmaps and row statistics tables,
+#' as these do not even have coordinates to save.
+#'
+#' @return A character vector containing encoded names for transmitting panels in their evaluation order.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_establish_eval_order
+#' @seealso
+#' \code{\link{iSEE}},
+#' \code{\link{.spawn_selection_chart}}
+#' @importFrom igraph delete.vertices V topo_sort degree
+.establish_eval_order <- function(graph) {
+    iso <- V(graph)[degree(graph, mode="out") == 0]
+    graph <- delete.vertices(graph, iso)
+    names(topo_sort(graph, mode="out"))
+}

@@ -396,24 +396,14 @@ iSEE <- function(se,
 
             pObjects[[.voiceActivePanel]] <- NA_character_
 
-#            # Evaluating certain plots to fill the coordinate list, if there are any selections.
-#            # This is done in topological order so that all dependencies are satisfied.
-#            eval_order <- .establish_eval_order(pObjects$selection_links)
-#            for (panelname in eval_order) {
-#                enc <- .split_encoded(panelname)
-#                # This is a placeholder for the grand future when classes are directly specified as an iSEE() argument.
-#                instance <- switch(enc$Type,
-#                    redDimPlot=RedDimPlot(),
-#                    featAssayPlot=FeatAssayPlot(),
-#                    colDataPlot=ColDataPlot(),
-#                    rowDataPlot=RowDataPlot(),
-#                    sampAssayPlot=SampAssayPlot()
-#                )
-#
-#                FUN <- .getPlottingFunction(instance)
-#                p.out <- FUN(enc$ID, pObjects$memory, pObjects$contents, se, colormap)
-#                pObjects$contents[[panelname]] <- p.out$xy[, intersect(.allCoordinatesNames, colnames(p.out$xy))]
-#            }
+            # Evaluating certain plots to fill the coordinate list, if there are any selections.
+            # This is done in topological order so that all dependencies are satisfied.
+            eval_order <- .establish_eval_order(pObjects$selection_links)
+            for (panel_name in eval_order) {
+                p.out <- .generateOutput(pObjects$memory[[panel_name]], se, colormap, 
+                    all_memory=pObjects$memory, all_contents=pObjects$contents)
+                pObjects$contents[[panel_name]] <- p.out$contents
+            }
 
             # Observer set-up.
             .general_observers(tour, runLocal, se_name, ecm_name, 

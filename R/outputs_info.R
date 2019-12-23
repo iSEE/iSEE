@@ -125,3 +125,22 @@
         }
     })
 }
+
+#' @importFrom shiny tagList HTML a br
+iSEE_info <- tagList(
+    HTML('<div align="center"><img src="iSEE/iSEE.png" width="150"></div>'),
+    br(),
+    HTML(sprintf("iSEE is a project developed by
+Aaron Lun (%s),
+Charlotte Soneson (%s),
+Kevin Rue-Albrecht (%s),
+and Federico Marini (%s).",
+    a(href="http://www.cruk.cam.ac.uk/", "CRUK Cambridge Institute, University of Cambridge"),
+    a(href="https://www.sib.swiss/", "University of Zurich and SIB Swiss Institute of Bioinformatics"),
+    a(href="https://www.kennedy.ox.ac.uk", "Kennedy Institute of Rheumatology, University of Oxford"),
+    a(href="http://www.unimedizin-mainz.de/imbei","Institute for Medical Biostatistics, Epidemiology and Informatics"))),
+    br(), br(),
+    HTML(sprintf("The iSEE package is being developed on %s under the %s license.",
+    a(href="https://github.com/csoneson/iSEE", "GitHub"),
+    a(href="https://opensource.org/licenses/MIT","MIT")))
+)

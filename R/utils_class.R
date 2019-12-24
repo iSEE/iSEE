@@ -87,3 +87,75 @@
     }
     x
 }
+
+#' Number of levels for any data type
+#'
+#' @param x An atomic vector.
+#'
+#' @return Numeric scalar specifying the number of unique levels in \code{x}.
+#' This is \code{Inf} for numeric \code{x}
+#'
+#' @author Kevin Rue-Albrecht
+#' @rdname INTERNAL_nlevels
+#' @seealso
+#' \code{\link{nlevels}},
+#' \code{\link{unique}}.
+.nlevels <- function(x){
+    if (is.numeric(x)){
+        Inf
+    } else if (is.factor(x)) {
+        nlevels(x)
+    } else {
+        length(unique(x))
+    }
+}
+
+#' Determine whether a vector is categorical
+#'
+#' This function is used to eliminate non-numeric variables with very large numbers of levels.
+#' Otherwise, plotting functions that attempt to show too many variables (e.g., in the legend, or in the facets) will freeze.
+#'
+#' @param x An atomic vector.
+#' @param max_levels Integer scalar specifying the maximum number unique values for \code{x} to be categorical.
+#'
+#' @return A logical scalar that indicates whether \code{x} has no more than than \code{max_levels} unique values.
+#'
+#' @author Kevin Rue-Albrecht
+#' @rdname INTERNAL_is_groupable
+#' @seealso
+#' \code{\link{.nlevels}}.
+.is_groupable <- function(x, max_levels = getOption("iSEE.maxlevels", 24)){
+    .nlevels(x) <= max_levels
+}
+
+#' Identify categorical columns
+#'
+#' Identify categorical columns that can be used as options in various interface elements, e.g., for faceting or shaping.
+#' This is typically called in \code{\link{.cacheCommonInfo}} for later use by methods of \code{\link{.defineInterface}}.
+#' 
+#' @param x A DataFrame (or equivalent).
+#'
+#' @return An integer vector containing the indices of the categorical columns.
+#'
+#' @author Kevin Rue-Albrecht
+#'
+#' @rdname INTERNAL_groupable
+.which_groupable <- function(x) {
+    which(vapply(x, FUN=.is_groupable, FUN.VALUE=FALSE))
+}
+
+#' Identify numeric columns
+#'
+#' Identify continuous columns that can be used as options in various interface elements, e.g., for sizing.
+#' This is typically called in \code{\link{.cacheCommonInfo}} for later use by methods of \code{\link{.defineInterface}}.
+#'
+#' @param x A \linkS4class{DataFrame} or data.frame.
+#'
+#' @return An integer vector containing the indices of the numeric columns.
+#'
+#' @author Charlotte Soneson
+#'
+#' @rdname INTERNAL_numeric
+.which_numeric <- function(x) {
+    which(vapply(x, FUN=is.numeric, FUN.VALUE=FALSE))
+}

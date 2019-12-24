@@ -1,11 +1,3 @@
-# Custom plotting parameters. ----
-.customFun <- "Function"
-.customArgs <- "Arguments"
-.customVisibleArgs <- "VisibleArgs"
-.customSubmit <- "Submit"
-.customColSource <- "ColumnSource"
-.customRowSource <- "RowSource"
-
 # Point colouring parameters. ----
 
 .colorByNothingTitle <- "None"
@@ -81,10 +73,6 @@
 .plotFontSizeLegendTextDefault <- 9
 .plotFontSizeLegendTitleDefault <- 11
 .plotFontSizeTitleDefault <- 12
-
-# INTERNAL: Memory parameters ----
-
-.allCoordinatesNames <- c("X", "Y", "FacetRow", "FacetColumn")
 
 # Table parameters. ----
 

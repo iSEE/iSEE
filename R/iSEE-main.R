@@ -158,6 +158,21 @@ iSEE <- function(se,
     }
     ecm_name <- deparse(substitute(colormap))
 
+    old_stuff <- .create_new_from_old(se, redDimArgs=redDimArgs,
+        colDataArgs=colDataArgs,
+        featAssayArgs=featAssayArgs,
+        rowStatArgs=rowStatArgs,
+        rowDataArgs=rowDataArgs,
+        sampAssayArgs=sampAssayArgs,
+        colStatArgs=colStatArgs,
+        heatMapArgs=heatMapArgs,
+        initialPanels=initialPanels)
+
+    if (!is.null(old_stuff)) {
+        initial <- old_stuff$initial
+        extra <- old_stuff$extra
+    }
+
     if (is.null(initial)) {
         initial <- list(RedDimPlot(), RowStatTable(), FeatAssayPlot(), ColDataPlot(), 
             RowDataPlot(), SampAssayPlot(), ColStatTable(), HeatMapPlot())

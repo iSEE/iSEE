@@ -21,7 +21,8 @@
 #' It will also provide observers to update slots based on user interactions with the widget. 
 #' Interface elements and observers are also provided for slots in its parent class \linkS4class{Panel}.
 #'
-#' Subclasses are expected to implement methods for (at least) \code{\link{.getTableFunction}}.
+#' Subclasses are expected to implement methods for (at least) \code{\link{.getTableCommands}}.
+#' See below for more details.
 #'
 #' @section Supported methods:
 #' In the following code snippets, \code{x} is an instance of a \linkS4class{Table} class.
@@ -53,6 +54,25 @@
 #'
 #' Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.
 #'
+#' @section Defining the table commands:
+#' Developers of Table subclasses do not need to explicitly define \code{\link{.generateOutput}} or \code{\link{.renderOutput}} if they instead specialize \code{\link{.getTableCommands}}.
+#' This generic is used to construct the data.frame that is supplied to the \code{\link{datatable}} widget in \code{\link{.renderOutput,Table-method}}.
+#' 
+#' In \code{.getTableCommands(x, envir)}, the following arguments are required:
+#' \itemize{
+#' \item \code{x}, an instance of a Table subclass.
+#' \item \code{envir}, the evaluation environment in which the data.frame is to be constructed.
+#' This can be assumed to have \code{se}, the \linkS4class{SummarizedExperiment} object containing the current dataset;
+#' possibly \code{col_selected}, if a multiple column selection is being transmitted to \code{x};
+#' and possibly \code{row_selected}, if a multiple row selection is being transmitted to \code{x}.
+#' }
+#'
+#' In return, the method should return a character vector of R commands that, when evaluated in \code{envir}, should yield a data.frame named \code{tab}.
+#' This will automatically be used to construct the \code{\link{datatable}} as well as being stored in \code{pObjects$contents}.
+#' 
+#' It is permissible to modify the state of \code{envir} as a side-effect;
+#' however, any R expressions that do so should be captured in the output commands.
+#' 
 #' @author Aaron Lun
 #' @seealso \linkS4class{Panel}, for the immediate parent class.
 #'
@@ -65,6 +85,7 @@
 #' .hideInterface,Table-method
 #' .multiSelectionCommands,Table-method
 #' .multiSelectionActive,Table-method
+#' .generateTableCommands
 NULL
 
 #' @export

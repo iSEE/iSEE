@@ -1,14 +1,43 @@
-#' Column statistics table panel
+#' The ColStatTable panel
 #'
-#' Defines a \code{\link{datatable}} panel containing statistics
-#' from the \code{\link{colData}} of a \linkS4class{SummarizedExperiment}.
+#' The ColStatTable is a panel class for creating a \linkS4class{ColumnTable} where the value of the table is defined as the \code{\link{colData}} of the \linkS4class{SummarizedExperiment}.
+#'
+#' @section Slot overview:
+#' This class inherits all slots from its parent \linkS4class{ColumnTable} and \linkS4class{Table} classes.
 #'
 #' @section Constructor:
-#' \code{ColStatTable()} creates an instance of a ColStatTable class.
+#' \code{ColStatTable(...)} creates an instance of a ColStatTable class, where any slot and its value can be passed to \code{...} as a named argument.
 #'
-#' @section Panel parameters:
-#' \code{\link{.defineInterface}} will create parameter elements for choosing the reduced dimensions to plot.
-#' More details to be added.
+#' Note that \code{ColSearch} should be a character vector of length equal to the total number of columns in the \code{\link{colData}}, though only the entries for the atomic fields will actually be used.
+#' 
+#' @section Contract description:
+#' The ColStatTable will provide user interface elements and observers to change all of its slots.
+#' The \code{\link{datatable}} is rendered with all atomic contents of the \code{\link{colData}} of the SummarizedExperiment.
+#' Subclasses do not have to provide any methods, as this is a concrete class.
+#'
+#' @section Supported methods:
+#' In the following code snippets, \code{x} is an instance of a \linkS4class{RedDimPlot} class.
+#' Refer to the documentation for each method for more details on the remaining arguments.
+#'
+#' For setting up data values:
+#' \itemize{
+#' \item \code{\link{.cacheCommonInfo}(x)} adds a \code{"ColStatTable"} entry containing \code{valid.colData.names}, a character vector of names of atomic columns of the \code{\link{colData}}.
+#' This will also call the equivalent \linkS4class{ColumnTable} method.
+#' \item \code{\link{.refineParameters}(x, se)} adjusts \code{ColSearch} to a character vector of length equal to the number of atomic fields in the \code{\link{colData}}.
+#' This will also call the equivalent \linkS4class{ColumnTable} method for further refinements to \code{x}.
+#' }
+#'
+#' For defining the interface:
+#' \itemize{
+#' \item \code{\link{.fullName}(x)} will return the full name of the panel class.
+#' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
+#' }
+#'
+#' For creating the output:
+#' \itemize{
+#' \item \code{\link{.getTableCommands}(x, envir)} will return a character vector of R commands to construct the data.frame that is supplied to the \code{\link{datatable}} widget.
+#' Each row of the data.frame should correspond to a column of the SummarizedExperiment.
+#' }
 #'
 #' @author Aaron Lun
 #'
@@ -34,26 +63,31 @@
 #'
 #' @name ColStatTable
 #' @aliases ColStatTable ColStatTable-class
-#' .renderOutput,ColStatTable-method
-#' .getEncodedName,ColStatTable-method
+#' .cacheCommonInfo,ColStatTable-method
+#' .refineParameters,ColStatTable-method
+#' .getTableCommands,ColStatTable-method
+#' .panelColor,ColStatTable-method
+#' .fullName,ColStatTable-method
 NULL
 
 #' @export
-ColStatTable <- function() {
-    new("ColStatTable")
+ColStatTable <- function(...) {
+    new("ColStatTable", ...)
 }
 
 #' @export
 #' @importFrom SummarizedExperiment colData
 setMethod(".cacheCommonInfo", "ColStatTable", function(x, se) {
-    if (is.null(.get_common_info(se, "ColStatTable"))) {
-        df <- colData(se)
-        available <- .find_atomic_fields(df)
-        se <- .set_common_info(se, "ColStatTable",
-            valid.colData.names=available)
+    if (!is.null(.get_common_info(se, "ColStatTable"))) {
+        return(NULL)
     }
 
-    callNextMethod()
+    se <- callNextMethod()
+
+    df <- colData(se)
+    available <- .find_atomic_fields(df)
+    .set_common_info(se, "ColStatTable",
+        valid.colData.names=available)
 })
 
 #' @export

@@ -185,7 +185,12 @@
 {
     name_input <- paste0(plot_name, "_", name_field)
     always_in_use <- is.na(in_use_field)
+
+    # Forcibly evaluating to ensure that the correct values are used in observer expressions.
     force(in_use_value)
+    force(choices)
+    force(is_protected)
+    force(table_field)
 
     observeEvent(input[[name_input]], {
         # Required to defend against empty strings before updateSelectizeInput runs upon re-render.

@@ -91,10 +91,10 @@ NULL
 #' @export
 #' @importFrom methods callNextMethod
 setMethod("initialize", "Table", function(.Object, ...) {
-    .Object <- callNextMethod(.Object, ...)
-    .Object <- .empty_default(.Object, .TableSelected)
-    .Object <- .empty_default(.Object, .TableSearch, "")
-    .Object
+    args <- list(...)
+    args <- .empty_default(args, .TableSelected, NA_character_)
+    args <- .empty_default(args, .TableSearch, "")
+    do.call(callNextMethod, c(list(.Object), args))
 })
 
 #' @importFrom S4Vectors setValidity2 isSingleString

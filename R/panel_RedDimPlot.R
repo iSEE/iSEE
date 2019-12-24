@@ -105,11 +105,11 @@ RedDimPlot <- function(...) {
 #' @export
 #' @importFrom methods callNextMethod
 setMethod("initialize", "RedDimPlot", function(.Object, ...) {
-    .Object <- callNextMethod(.Object, ...)
-    .Object <- .empty_default(.Object, .redDimType)
-    .Object <- .empty_default(.Object, .redDimXAxis, 1L)
-    .Object <- .empty_default(.Object, .redDimYAxis, 2L)
-    .Object
+    args <- list(...)
+    args <- .empty_default(args, .redDimType, NA_character_)
+    args <- .empty_default(args, .redDimXAxis, 1L)
+    args <- .empty_default(args, .redDimYAxis, 2L)
+    do.call(callNextMethod, c(list(.Object), args))
 })
 
 #' @export
@@ -174,9 +174,7 @@ setMethod(".refineParameters", "RedDimPlot", function(x, se) {
 setValidity2("RedDimPlot", function(object) {
     msg <- character(0)
 
-    if (!isSingleString(val <- object[[.redDimType]])) {
-        msg <- c(msg, sprintf("'%s' must be a single string", .redDimType))
-    }
+    msg <- .single_string_error(msg, object, .redDimType)
 
     for (field in c(.redDimXAxis, .redDimYAxis)) {
         if (length(val <- object[[field]])!=1 || is.na(val) || val <= 0L) {

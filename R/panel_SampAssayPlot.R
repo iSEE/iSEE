@@ -126,15 +126,15 @@ SampAssayPlot <- function(...) {
 #' @export
 #' @importFrom methods callNextMethod
 setMethod("initialize", "SampAssayPlot", function(.Object, ...) {
-    .Object <- callNextMethod(.Object, ...)
-    .Object <- .empty_default(.Object, .sampAssayAssay)
-    .Object <- .empty_default(.Object, .sampAssayXAxis, .sampAssayXAxisNothingTitle)
-    .Object <- .empty_default(.Object, .sampAssayXAxisRowData)
-    .Object <- .empty_default(.Object, .sampAssayXAxisColTable, .noSelection)
-    .Object <- .empty_default(.Object, .sampAssayXAxisSampName)
-    .Object <- .empty_default(.Object, .sampAssayYAxisColTable, .noSelection)
-    .Object <- .empty_default(.Object, .sampAssayYAxisSampName)
-    .Object
+    args <- list(...)
+    args <- .empty_default(args, .sampAssayAssay, NA_character_)
+    args <- .empty_default(args, .sampAssayXAxis, .sampAssayXAxisNothingTitle)
+    args <- .empty_default(args, .sampAssayXAxisRowData, NA_character_)
+    args <- .empty_default(args, .sampAssayXAxisColTable, .noSelection)
+    args <- .empty_default(args, .sampAssayXAxisSampName, NA_character_)
+    args <- .empty_default(args, .sampAssayYAxisColTable, .noSelection)
+    args <- .empty_default(args, .sampAssayYAxisSampName, NA_character_)
+    do.call(callNextMethod, c(list(.Object), args))
 })
 
 #' @export
@@ -182,19 +182,12 @@ setMethod(".refineParameters", "SampAssayPlot", function(x, se) {
 setValidity2("SampAssayPlot", function(object) {
     msg <- character(0)
 
-    allowable <- c(.sampAssayXAxisNothingTitle, .sampAssayXAxisRowDataTitle, .sampAssayXAxisSampNameTitle)
-    if (!object[[.sampAssayXAxis]] %in% allowable) {
-        msg <- c(msg, sprintf("choice of '%s' should be one of %s", .sampAssayXAxis,
-            paste(sprintf("'%s'", allowable), collapse=", ")))
-    }
+    msg <- .allowable_choice_error(msg, object, .sampAssayXAxis,
+        c(.sampAssayXAxisNothingTitle, .sampAssayXAxisRowDataTitle, .sampAssayXAxisSampNameTitle))
 
-    for (field in c(.sampAssayAssay, .sampAssayXAxisRowData, .sampAssayXAxisColTable,
+    msg <- .single_string_error(msg, object, 
+        c(.sampAssayAssay, .sampAssayXAxisRowData, .sampAssayXAxisColTable,
         .sampAssayXAxisSampName, .sampAssayYAxisColTable, .sampAssayYAxisSampName))
-    {
-        if (!isSingleString(val <- object[[field]])) {
-            msg <- c(msg, sprintf("'%s' must be a single string", field))
-        }
-    }
 
     if (length(msg)) {
         return(msg)

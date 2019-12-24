@@ -53,26 +53,27 @@ HeatMapPlot <- function() {
 #' @export
 #' @importFrom methods callNextMethod
 setMethod("initialize", "HeatMapPlot", function(.Object, ...) {
-    .Object <- callNextMethod(.Object, ...)
-    .Object <- .empty_default(.Object, .heatMapAssay)
-    .Object <- .empty_default(.Object, .heatMapFeatName)
-    .Object <- .empty_default(.Object, .heatMapFeatNameBoxOpen, FALSE)
+    args <- list(...)
 
-    .Object <- .empty_default(.Object, .heatMapImportSource, .noSelection)
+    args <- .empty_default(args, .heatMapAssay, NA_character_)
+    args <- .empty_default(args, .heatMapFeatName, NA_character_)
+    args <- .empty_default(args, .heatMapFeatNameBoxOpen, FALSE)
 
-    .Object <- .empty_default(.Object, .heatMapColData)
-    .Object <- .empty_default(.Object, .heatMapColDataBoxOpen, FALSE)
+    args <- .empty_default(args, .heatMapImportSource, .noSelection)
 
-    .Object <- .empty_default(.Object, .heatMapCenterScale, .heatMapCenterTitle)
-    .Object <- .empty_default(.Object, .heatMapLower, -Inf)
-    .Object <- .empty_default(.Object, .heatMapUpper, Inf)
-    .Object <- .empty_default(.Object, .heatMapCenteredColors, "purple-black-yellow")
+    args <- .empty_default(args, .heatMapColData, NA_character_)
+    args <- .empty_default(args, .heatMapColDataBoxOpen, FALSE)
 
-    .Object <- .empty_default(.Object, .selectEffect, .selectTransTitle)
-    .Object <- .empty_default(.Object, .selectColor, "red")
-    .Object <- .empty_default(.Object, .selectTransAlpha, 0.1)
+    args <- .empty_default(args, .heatMapCenterScale, .heatMapCenterTitle)
+    args <- .empty_default(args, .heatMapLower, -Inf)
+    args <- .empty_default(args, .heatMapUpper, Inf)
+    args <- .empty_default(args, .heatMapCenteredColors, "purple-black-yellow")
 
-    .Object
+    args <- .empty_default(args, .selectEffect, .selectTransTitle)
+    args <- .empty_default(args, .selectColor, "red")
+    args <- .empty_default(args, .selectTransAlpha, 0.1)
+
+    do.call(callNextMethod, c(list(.Object), args))
 })
 
 .heatMapCenterTitle <- "Centered"
@@ -85,8 +86,8 @@ setValidity2("HeatMapPlot", function(object) {
         fields=c(.heatMapFeatNameBoxOpen, .heatMapColDataBoxOpen))
 
     # Checks for the numeric limits.
-    msg <- .valid_number_error(msg, object, .heatMapLower)
-    msg <- .valid_number_error(msg, object, .heatMapUpper)
+    msg <- .valid_number_error(msg, object, .heatMapLower, -Inf, Inf)
+    msg <- .valid_number_error(msg, object, .heatMapUpper, -Inf, Inf)
 
     if (object[[.heatMapLower]] >= object[[.heatMapUpper]]) {
         msg <- c(msg, sprintf("'%s' should have a lower value than '%s' for '%s'",

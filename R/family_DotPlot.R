@@ -187,42 +187,41 @@ NULL
 #' @export
 #' @importFrom methods callNextMethod
 setMethod("initialize", "DotPlot", function(.Object, ...) {
-    .Object <- callNextMethod(.Object, ...)
+    args <- list(...)
+    args <- .empty_default(args, .facetByRow, .noSelection)
+    args <- .empty_default(args, .facetByColumn, .noSelection)
 
-    .Object <- .empty_default(.Object, .facetByRow, .noSelection)
-    .Object <- .empty_default(.Object, .facetByColumn, .noSelection)
+    args <- .empty_default(args, .colorByField, .colorByNothingTitle)
+    args <- .empty_default(args, .colorByDefaultColor, "black")
+    args <- .empty_default(args, .colorByFeatName, NA_character_)
+    args <- .empty_default(args, .colorByRowTable, .noSelection)
+    args <- .empty_default(args, .colorBySampName, NA_character_)
+    args <- .empty_default(args, .colorByColTable, .noSelection)
 
-    .Object <- .empty_default(.Object, .colorByField, .colorByNothingTitle)
-    .Object <- .empty_default(.Object, .colorByDefaultColor, "black")
-    .Object <- .empty_default(.Object, .colorByFeatName)
-    .Object <- .empty_default(.Object, .colorByRowTable, .noSelection)
-    .Object <- .empty_default(.Object, .colorBySampName)
-    .Object <- .empty_default(.Object, .colorByColTable, .noSelection)
+    args <- .empty_default(args, .shapeByField, .shapeByNothingTitle)
 
-    .Object <- .empty_default(.Object, .shapeByField, .shapeByNothingTitle)
+    args <- .empty_default(args, .sizeByField, .sizeByNothingTitle)
 
-    .Object <- .empty_default(.Object, .sizeByField, .sizeByNothingTitle)
+    args <- .empty_default(args, .selectEffect, .selectTransTitle)
+    args <- .empty_default(args, .selectColor, "red")
+    args <- .empty_default(args, .selectTransAlpha, 0.1)
 
-    .Object <- .empty_default(.Object, .selectEffect, .selectTransTitle)
-    .Object <- .empty_default(.Object, .selectColor, "red")
-    .Object <- .empty_default(.Object, .selectTransAlpha, 0.1)
+    args <- .empty_default(args, .dataParamBoxOpen, FALSE)
+    args <- .empty_default(args, .visualParamBoxOpen, FALSE)
+    args <- .empty_default(args, .visualParamChoice, .visualParamChoiceColorTitle)
 
-    .Object <- .empty_default(.Object, .dataParamBoxOpen, FALSE)
-    .Object <- .empty_default(.Object, .visualParamBoxOpen, FALSE)
-    .Object <- .empty_default(.Object, .visualParamChoice, .visualParamChoiceColorTitle)
+    args <- .empty_default(args, .contourAdd, FALSE)
+    args <- .empty_default(args, .contourColor, "blue")
 
-    .Object <- .empty_default(.Object, .contourAdd, FALSE)
-    .Object <- .empty_default(.Object, .contourColor, "blue")
+    args <- .empty_default(args, .plotPointSize, 1)
+    args <- .empty_default(args, .plotPointAlpha, 1)
+    args <- .empty_default(args, .plotPointDownsample, FALSE)
+    args <- .empty_default(args, .plotPointSampleRes, 200)
 
-    .Object <- .empty_default(.Object, .plotPointSize, 1)
-    .Object <- .empty_default(.Object, .plotPointAlpha, 1)
-    .Object <- .empty_default(.Object, .plotPointDownsample, FALSE)
-    .Object <- .empty_default(.Object, .plotPointSampleRes, 200)
+    args <- .empty_default(args, .plotFontSize, 1)
+    args <- .empty_default(args, .plotLegendPosition, .plotLegendBottomTitle)
 
-    .Object <- .empty_default(.Object, .plotFontSize, 1)
-    .Object <- .empty_default(.Object, .plotLegendPosition, .plotLegendBottomTitle)
-
-    .Object
+    do.call(callNextMethod, c(list(.Object), args))
 })
 
 #' @importFrom S4Vectors setValidity2

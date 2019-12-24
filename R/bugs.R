@@ -10,7 +10,7 @@
 #'
 #' @return A list of HTML content to include in the user interface.
 #'
-#' @rdname INTERNAL_nearest_decoded_panel
+#' @rdname INTERNAL_prepare_bugs
 #' @author Kevin Rue-Albrecht
 .prepareBugsEasterEgg <- function(use=FALSE) {
     if (isFALSE(use)) {

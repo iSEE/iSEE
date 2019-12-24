@@ -107,11 +107,11 @@ RowDataPlot <- function(...) {
 #' @export
 #' @importFrom methods callNextMethod
 setMethod("initialize", "RowDataPlot", function(.Object, ...) {
-    .Object <- callNextMethod(.Object, ...)
-    .Object <- .empty_default(.Object, .rowDataXAxis, .rowDataXAxisNothingTitle)
-    .Object <- .empty_default(.Object, .rowDataXAxisRowData)
-    .Object <- .empty_default(.Object, .rowDataYAxis)
-    .Object
+    args <- list(...)
+    args <- .empty_default(args, .rowDataXAxis, .rowDataXAxisNothingTitle)
+    args <- .empty_default(args, .rowDataXAxisRowData, NA_character_)
+    args <- .empty_default(args, .rowDataYAxis, NA_character_)
+    do.call(callNextMethod, c(list(.Object), args))
 })
 
 .rowDataXAxisNothingTitle <- "None"
@@ -154,17 +154,10 @@ setMethod(".refineParameters", "RowDataPlot", function(x, se) {
 setValidity2("RowDataPlot", function(object) {
     msg <- character(0)
 
-    allowable <- c(.rowDataXAxisNothingTitle, .rowDataXAxisRowDataTitle)
-    if (!object[[.rowDataXAxis]] %in% allowable) {
-        msg <- c(msg, sprintf("choice of '%s' should be one of %s", .rowDataXAxis,
-            paste(sprintf("'%s'", allowable), collapse=", ")))
-    }
+    msg <- .allowable_choice_error(msg, object, .rowDataXAxis,
+        c(.rowDataXAxisNothingTitle, .rowDataXAxisRowDataTitle))
 
-    for (field in c(.rowDataXAxisRowData, .rowDataYAxis)) {
-        if (!isSingleString(val <- object[[field]])) {
-            msg <- c(msg, sprintf("'%s' must be a single string", field))
-        }
-    }
+    msg <- .single_string_error(msg, object, c(.rowDataXAxisRowData, .rowDataYAxis))
 
     if (length(msg)) {
         return(msg)

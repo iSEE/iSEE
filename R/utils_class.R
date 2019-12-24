@@ -12,9 +12,9 @@
     metadata(se)$iSEE[[cls]]
 }
 
-.empty_default <- function(x, field, newdef=NA) {
-    if (length(x[[field]])==0L) {
-        x[[field]] <- as(newdef, typeof(x[[field]]))
+.empty_default <- function(x, field, default) {
+    if (is.null(x[[field]])) {
+        x[[field]] <- default 
     }
     x
 }
@@ -30,10 +30,9 @@
     covariates[!is.na(covariates)]
 }
 
-#' @importFrom S4Vectors isSingleString
 .single_string_error <- function(msg, x, fields) {
     for (field in fields) {
-        if (!isSingleString(x[[field]])) {
+        if (length(x[[field]]) != 1L) {
             msg <- c(msg, sprintf("'%s' should be a single string for '%s'", field, class(x)[1]))
         }
     }

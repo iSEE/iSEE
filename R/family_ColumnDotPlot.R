@@ -86,17 +86,16 @@ NULL
 #' @export
 #' @importFrom methods callNextMethod
 setMethod("initialize", "ColumnDotPlot", function(.Object, ...) {
-    .Object <- callNextMethod(.Object, ...)
+    args <- list(...)
+    args <- .empty_default(args, .colorByColData, NA_character_)
+    args <- .empty_default(args, .colorByFeatNameAssay, NA_character_)
+    args <- .empty_default(args, .colorBySampNameColor, "red")
 
-    .Object <- .empty_default(.Object, .colorByColData)
-    .Object <- .empty_default(.Object, .colorByFeatNameAssay)
-    .Object <- .empty_default(.Object, .colorBySampNameColor, "red")
+    args <- .empty_default(args, .shapeByColData, NA_character_)
 
-    .Object <- .empty_default(.Object, .shapeByColData)
+    args <- .empty_default(args, .sizeByColData, NA_character_)
 
-    .Object <- .empty_default(.Object, .sizeByColData)
-
-    .Object
+    do.call(callNextMethod, c(list(.Object), args))
 })
 
 #' @importFrom S4Vectors isSingleString setValidity2

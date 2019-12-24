@@ -126,15 +126,15 @@ FeatAssayPlot <- function(...) {
 #' @export
 #' @importFrom methods callNextMethod
 setMethod("initialize", "FeatAssayPlot", function(.Object, ...) {
-    .Object <- callNextMethod(.Object, ...)
-    .Object <- .empty_default(.Object, .featAssayAssay)
-    .Object <- .empty_default(.Object, .featAssayXAxis, .featAssayXAxisNothingTitle)
-    .Object <- .empty_default(.Object, .featAssayXAxisColData)
-    .Object <- .empty_default(.Object, .featAssayXAxisRowTable, .noSelection)
-    .Object <- .empty_default(.Object, .featAssayXAxisFeatName)
-    .Object <- .empty_default(.Object, .featAssayYAxisRowTable, .noSelection)
-    .Object <- .empty_default(.Object, .featAssayYAxisFeatName)
-    .Object
+    args <- list(...)
+    args <- .empty_default(args, .featAssayAssay, NA_character_)
+    args <- .empty_default(args, .featAssayXAxis, .featAssayXAxisNothingTitle)
+    args <- .empty_default(args, .featAssayXAxisColData, NA_character_)
+    args <- .empty_default(args, .featAssayXAxisRowTable, .noSelection)
+    args <- .empty_default(args, .featAssayXAxisFeatName, NA_character_)
+    args <- .empty_default(args, .featAssayYAxisRowTable, .noSelection)
+    args <- .empty_default(args, .featAssayYAxisFeatName, NA_character_)
+    do.call(callNextMethod, c(list(.Object), args))
 })
 
 #' @export
@@ -182,19 +182,12 @@ setMethod(".refineParameters", "FeatAssayPlot", function(x, se) {
 setValidity2("FeatAssayPlot", function(object) {
     msg <- character(0)
 
-    allowable <- c(.featAssayXAxisNothingTitle, .featAssayXAxisColDataTitle, .featAssayXAxisFeatNameTitle)
-    if (!object[[.featAssayXAxis]] %in% allowable) {
-        msg <- c(msg, sprintf("choice of '%s' should be one of %s", .featAssayXAxis,
-            paste(sprintf("'%s'", allowable), collapse=", ")))
-    }
+    msg <- .allowable_choice_error(msg, object, .featAssayXAxis,
+        c(.featAssayXAxisNothingTitle, .featAssayXAxisColDataTitle, .featAssayXAxisFeatNameTitle))
 
-    for (field in c(.featAssayAssay, .featAssayXAxisColData, .featAssayXAxisRowTable,
+    msg <- .single_string_error(msg, object, 
+        c(.featAssayAssay, .featAssayXAxisColData, .featAssayXAxisRowTable,
         .featAssayXAxisFeatName, .featAssayYAxisRowTable, .featAssayYAxisFeatName))
-    {
-        if (!isSingleString(val <- object[[field]])) {
-            msg <- c(msg, sprintf("'%s' must be a single string", field))
-        }
-    }
 
     if (length(msg)) {
         return(msg)

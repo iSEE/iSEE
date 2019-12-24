@@ -125,28 +125,22 @@ NULL
 
 #' @export
 setMethod("initialize", "Panel", function(.Object, ...) {
-    # Avoid validity check by the base initialize method
-    # before .selectRowType is instantiated.
-    old <- S4Vectors:::disableValidity()
-    S4Vectors:::disableValidity(TRUE)
-    on.exit(S4Vectors:::disableValidity(old))
+    args <- list(...)
 
-    .Object <- callNextMethod(.Object, ...)
+    args <- .empty_default(args, .organizationId, NA_integer_)
+    args <- .empty_default(args, .organizationHeight, 500L)
+    args <- .empty_default(args, .organizationWidth, 4L)
 
-    .Object <- .empty_default(.Object, .organizationId)
-    .Object <- .empty_default(.Object, .organizationHeight, 500L)
-    .Object <- .empty_default(.Object, .organizationWidth, 4L)
+    args <- .empty_default(args, .selectParamBoxOpen, FALSE)
+    args <- .empty_default(args, .selectRowSource, .noSelection)
+    args <- .empty_default(args, .selectColSource, .noSelection)
 
-    .Object <- .empty_default(.Object, .selectParamBoxOpen, FALSE)
-    .Object <- .empty_default(.Object, .selectRowSource, .noSelection)
-    .Object <- .empty_default(.Object, .selectColSource, .noSelection)
+    args <- .empty_default(args, .selectRowType, .selectMultiActiveTitle)
+    args <- .empty_default(args, .selectRowSaved, 0L)
+    args <- .empty_default(args, .selectColType, .selectMultiActiveTitle)
+    args <- .empty_default(args, .selectColSaved, 0L)
 
-    .Object <- .empty_default(.Object, .selectRowType, .selectMultiActiveTitle)
-    .Object <- .empty_default(.Object, .selectRowSaved, 0L)
-    .Object <- .empty_default(.Object, .selectColType, .selectMultiActiveTitle)
-    .Object <- .empty_default(.Object, .selectColSaved, 0L)
-
-    .Object
+    do.call(callNextMethod, c(list(.Object), args))
 })
 
 setValidity2("Panel", function(object) {

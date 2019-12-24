@@ -325,25 +325,6 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
             .contourColor),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    # Setting up the linked colors:
-    .define_dimname_observers(plot_name,
-        name_field=.colorByFeatName,
-        choices=rownames(se),
-        in_use_field=.colorByField,
-        in_use_value=.colorByFeatNameTitle,
-        table_field=.colorByRowTable,
-        is_protected=FALSE,
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-
-    .define_dimname_observers(plot_name,
-        name_field=.colorBySampName,
-        choices=colnames(se),
-        in_use_field=.colorByField,
-        in_use_value=.colorBySampNameTitle,
-        table_field=.colorByColTable,
-        is_protected=FALSE,
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-
     # Filling the plot interaction observers:
     .define_brush_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
@@ -422,8 +403,10 @@ setMethod(".singleSelectionValue", "DotPlot", function(x, pObjects) {
 setMethod(".singleSelectionSlots", "DotPlot", function(x) {
     c(callNextMethod(), 
         list(
-            c(parameter=.colorByFeatName, source=.colorByRowTable),
-            c(parameter=.colorBySampName, source=.colorByColTable)
+            list(parameter=.colorByFeatName, source=.colorByRowTable, dimension="row", 
+                use_mode=.colorByField, use_value=.colorByFeatNameTitle, protected=FALSE),
+            list(parameter=.colorBySampName, source=.colorByColTable, dimension="column",
+                use_mode=.colorByField, use_value=.colorBySampNameTitle, protected=FALSE)
         )
     ) 
 })

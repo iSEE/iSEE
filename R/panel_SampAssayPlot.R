@@ -268,32 +268,16 @@ setMethod(".createObservers", "SampAssayPlot", function(x, se, input, session, p
     .define_protected_parameter_observers(plot_name,
         fields=c(.sampAssayAssay, .sampAssayXAxisRowData),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-
-    .define_dimname_observers(plot_name,
-        name_field=.sampAssayXAxisSampName,
-        choices=colnames(se),
-        in_use_field=.sampAssayXAxis,
-        in_use_value=.sampAssayXAxisSampNameTitle,
-        is_protected=TRUE,
-        table_field=.sampAssayXAxisColTable,
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-
-    .define_dimname_observers(plot_name,
-        name_field=.sampAssayYAxisSampName,
-        choices=colnames(se),
-        in_use_field=NA,
-        in_use_value=NA,
-        is_protected=TRUE,
-        table_field=.sampAssayYAxisColTable,
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export
 setMethod(".singleSelectionSlots", "SampAssayPlot", function(x) {
     c(callNextMethod(),
         list(
-            c(parameter=.sampAssayXAxisSampName, source=.sampAssayXAxisColTable),
-            c(parameter=.sampAssayYAxisSampName, source=.sampAssayYAxisColTable)
+            list(parameter=.sampAssayXAxisSampName, source=.sampAssayXAxisColTable, dimension="column",
+                use_mode=.sampAssayXAxis, use_value=.sampAssayXAxisSampNameTitle, protected=TRUE),
+            list(parameter=.sampAssayYAxisSampName, source=.sampAssayYAxisColTable, dimension="column",
+                use_mode=NA, use_value=NA, protected=TRUE)
         )
     )
 })

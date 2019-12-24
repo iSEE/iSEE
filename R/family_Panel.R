@@ -221,6 +221,19 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
 
     .define_saved_selection_observers(panel_name, 
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
+    for (f in .singleSelectionSlots(x)) {
+        if ("dimension" %in% names(f)) {
+            .define_dimname_observers(panel_name,
+                name_field=f$parameter,
+                choices=if (f$dimension=="column") colnames(se) else rownames(se),
+                in_use_field=f$use_mode,
+                in_use_value=f$use_value,
+                table_field=f$source,
+                is_protected=f$protected,
+                input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        }
+    }
 })
 
 #' @export

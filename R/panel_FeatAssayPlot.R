@@ -258,32 +258,16 @@ setMethod(".createObservers", "FeatAssayPlot", function(x, se, input, session, p
     .define_protected_parameter_observers(plot_name,
         fields=c(.featAssayAssay, .featAssayXAxisColData),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-
-    .define_dimname_observers(plot_name,
-        name_field=.featAssayXAxisFeatName,
-        choices=rownames(se),
-        in_use_field=.featAssayXAxis,
-        in_use_value=.featAssayXAxisFeatNameTitle,
-        is_protected=TRUE,
-        table_field=.featAssayXAxisRowTable,
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-
-    .define_dimname_observers(plot_name,
-        name_field=.featAssayYAxisFeatName,
-        choices=rownames(se),
-        in_use_field=NA,
-        in_use_value=NA,
-        is_protected=TRUE,
-        table_field=.featAssayYAxisRowTable,
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export
 setMethod(".singleSelectionSlots", "FeatAssayPlot", function(x) {
     c(callNextMethod(),
         list(
-            c(parameter=.featAssayXAxisFeatName, source=.featAssayXAxisRowTable),
-            c(parameter=.featAssayYAxisFeatName, source=.featAssayYAxisRowTable)
+            list(parameter=.featAssayXAxisFeatName, source=.featAssayXAxisRowTable, dimension="row",
+                use_mode=.featAssayXAxis, use_value=.featAssayXAxisFeatNameTitle, protected=TRUE),
+            list(parameter=.featAssayYAxisFeatName, source=.featAssayYAxisRowTable, dimension="row",
+                use_mode=NA, use_value=NA, protected=TRUE)
         )
     )
 })

@@ -68,8 +68,8 @@
 NULL
 
 #' @export
-RowStatTable <- function() {
-    new("RowStatTable")
+RowStatTable <- function(...) {
+    new("RowStatTable", ...)
 }
 
 #' @export

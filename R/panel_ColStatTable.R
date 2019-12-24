@@ -79,7 +79,7 @@ ColStatTable <- function(...) {
 #' @importFrom SummarizedExperiment colData
 setMethod(".cacheCommonInfo", "ColStatTable", function(x, se) {
     if (!is.null(.get_common_info(se, "ColStatTable"))) {
-        return(NULL)
+        return(se)
     }
 
     se <- callNextMethod()

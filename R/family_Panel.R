@@ -125,6 +125,14 @@ NULL
 
 #' @export
 setMethod("initialize", "Panel", function(.Object, ...) {
+    # Avoid validity check by the base initialize method
+    # before .selectRowType is instantiated.
+    old <- S4Vectors:::disableValidity()
+    S4Vectors:::disableValidity(TRUE)
+    on.exit(S4Vectors:::disableValidity(old))
+
+    .Object <- callNextMethod(.Object, ...)
+
     .Object <- .empty_default(.Object, .organizationId)
     .Object <- .empty_default(.Object, .organizationHeight, 500L)
     .Object <- .empty_default(.Object, .organizationWidth, 4L)
@@ -146,8 +154,8 @@ setValidity2("Panel", function(object) {
     msg <- .valid_logical_error(msg, object, .selectParamBoxOpen)
     msg <- .single_string_error(msg, object, c(.selectRowSource, .selectColSource))
 
-    msg <- .valid_numeric_error(msg, object, .organizationHeight, lower=height_limits[1], upper=height_limits[2])
-    msg <- .valid_numeric_error(msg, object, .organizationWidth, lower=width_limits[1], upper=width_limits[2])
+    msg <- .valid_number_error(msg, object, .organizationHeight, lower=height_limits[1], upper=height_limits[2])
+    msg <- .valid_number_error(msg, object, .organizationWidth, lower=width_limits[1], upper=width_limits[2])
 
     if (length(val <- object[[.organizationId]])!=1 || (!is.na(val) && val <= 0L)) {
         msg <- c(msg, sprintf("'%s' must be a positive integer or NA for '%s'", .organizationId, class(object)[1]))

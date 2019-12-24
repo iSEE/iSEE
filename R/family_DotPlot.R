@@ -156,7 +156,8 @@
 #' \item \code{\link{.multiSelectionActive}(x)} returns \code{x[["BrushData"]]} or \code{NULL} if there is no brush or closed lasso.
 #' \item \code{\link{.singleSelectionValue}(x)} returns the name of the first selected element in the active brush. 
 #' If no brush is active, \code{NULL} is returned instead.
-#' \item \code{\link{.singleSelectionSlots}(x)} will return a data.frame specifying the slots that can be updated by single selections in transmitter panels (\code{ColorByFeatName}, \code{ColorBySampName}) and the corresponding slots governing the choice of those panels (\code{ColorByRowTable}, \code{ColorByColTable}).
+#' \item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of coloring parameters.
+#' This includes the output of \code{callNextMethod}.
 #' }
 #'
 #' Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.

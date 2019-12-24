@@ -68,7 +68,8 @@
 #'
 #' For managing selections:
 #' \itemize{
-#' \item \code{\link{.singleSelectionSlots}(x)} will return a data.frame specifying the slots that can be updated by single selections in transmitter panels (\code{YAxisFeatName}, \code{XAxisFeatName}) and the corresponding slots governing the choice of those panels (\code{YAxisColTable}, \code{XAxisColTable}).
+#' \item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of feature on the x- and y-axes.
+#' This includes the output of \code{callNextMethod}.
 #' }
 #' @author Aaron Lun
 #'
@@ -110,6 +111,7 @@
 #' .refineParameters,FeatAssayPlot-method
 #' .defineInterface,FeatAssayPlot-method
 #' .createObservers,FeatAssayPlot-method
+#' .singleSelectionSlots,FeatAssayPlot-method
 #' .getFullName,FeatAssayPlot-method
 #' .getCommandsDataXY,FeatAssayPlot-method
 #'

@@ -83,10 +83,13 @@
 #' \item \code{\link{.hideInterface}(x, field)} will always return \code{FALSE}.
 #' }
 #'
-#' For rendering the output:
+#' For monitoring reactive expressions:
 #' \itemize{
+#' \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} will add observers to respond to changes in multiple selection options.
+#' It will also call \code{\link{.singleSelectionSlots}(x)} to set up observers for responding to transmitted single selections.
 #' \item \code{\link{.renderOutput}(x, se, ..., output, pObjects, rObjects)} will add elements to \code{output} for rendering the information textboxes at the bottom of each panel.
-#' This should be specialized for each panels to add rendering expressions for the actual output (e.g., plots, tables).
+#' Each panel should specialize this method to add rendering expressions for the actual output (e.g., plots, tables),
+#' followed by a \code{callNextMethod} to create the textboxes.
 #' }
 #' 
 #' For controlling selections:
@@ -95,6 +98,8 @@
 #' \item \code{\link{.multiSelectionDimension}(x)} will always return \code{"none"}.
 #' \item \code{\link{.multiSelectionActive}(x)} will always return \code{NULL}.
 #' \item \code{\link{.singleSelectionDimension}(x)} will return \code{.multiSelectionDimension(x)}.
+#' \item \code{\link{.singleSelectionValue}(x)} will return \code{NULL}.
+#' \item \code{\link{.singleSelectionSlots}(x)} will return an empty list.
 #' }
 #'
 #' @author Aaron Lun
@@ -114,6 +119,7 @@
 #' .multiSelectionRestricted,Panel-method
 #' .multiSelectionDimension,Panel-method 
 #' .singleSelectionDimension,Panel-method
+#' .singleSelectionValue,Panel-method
 #' .singleSelectionSlots,Panel-method
 NULL
 

@@ -93,7 +93,7 @@ setMethod(".panelColor", "ColStatTable", function(x) "#B00258")
 setMethod(".getTableCommands", "ColStatTable", function(x, envir) {
     cmds <-"tab <- as.data.frame(colData(se));"
 
-    if (exists("col_selected", envir=eval_env, inherits=FALSE)) {
+    if (exists("col_selected", envir=envir, inherits=FALSE)) {
         cmds <- c(cmds, "tab <- tab[unique(unlist(col_selected)),,drop=FALSE]")
     }
 

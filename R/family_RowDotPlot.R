@@ -286,21 +286,23 @@ setMethod(".getCommandsDataFacets", "RowDotPlot", function(x, se) {
 })
 
 setMethod(".getCommandsDataSelect", "RowDotPlot", function(x, envir) {
-    cmds <- c()
-
-    if (exists("row_selected", envir=envir, inherits=FALSE)) {
-        # TODO: adapt whether row_selected contains active, union, or saved selection
-        cmds["header1"] <- ""
-        cmds["header2"] <- "# Receiving row point selection"
-        cmds["SelectBy"] <- "plot.data$SelectBy <- rownames(plot.data) %in% unlist(row_selected);"
-        if (x[[.selectEffect]] == .selectRestrictTitle) {
-            cmds["saved"] <- "plot.data.all <- plot.data;"
-            cmds["subset"] <- "plot.data <- subset(plot.data, SelectBy);"
-        }
-        cmds[["footer"]] <- ""
+    cmds <- character(0)
+    if (!exists("row_selected", envir=envir, inherits=FALSE)) {
+        return(cmds)
     }
 
-    return(cmds)
+    # TODO: adapt whether row_selected contains active, union, or saved selection
+    cmds["header1"] <- ""
+    cmds["header2"] <- "# Receiving row point selection"
+    cmds["SelectBy"] <- "plot.data$SelectBy <- rownames(plot.data) %in% unlist(row_selected);"
+
+    if (x[[.selectEffect]] == .selectRestrictTitle) {
+        cmds["saved"] <- "plot.data.all <- plot.data;"
+        cmds["subset"] <- "plot.data <- subset(plot.data, SelectBy);"
+    }
+
+    cmds[["footer"]] <- ""
+    cmds
 })
 
 #' @importFrom ggplot2 scale_color_manual geom_point

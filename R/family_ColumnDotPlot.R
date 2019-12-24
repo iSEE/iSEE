@@ -284,19 +284,22 @@ setMethod(".getCommandsDataFacets", "ColumnDotPlot", function(x, se) {
 })
 
 setMethod(".getCommandsDataSelect", "ColumnDotPlot", function(x, envir) {
-    cmds <- c(x)
-    if (exists("col_selected", envir=envir, inherits=FALSE)) {
-        # TODO: adapt whether col_selected contains active, union, or saved selection
-        cmds["header1"] <- ""
-        cmds["header2"] <- "# Receiving column point selection"
-        cmds["SelectBy"] <- "plot.data$SelectBy <- rownames(plot.data) %in% unlist(col_selected);"
-        if (x[[.selectEffect]] == .selectRestrictTitle) {
-            cmds["saved"] <- "plot.data.all <- plot.data;"
-            cmds["subset"] <- "plot.data <- subset(plot.data, SelectBy);"
-        }
-        cmds[["footer"]] <- ""
+    cmds <- character(0)
+    if (!exists("col_selected", envir=envir, inherits=FALSE)) {
+        return(cmds)
     }
-    return(cmds)
+
+    # TODO: adapt whether col_selected contains active, union, or saved selection
+    cmds["header1"] <- ""
+    cmds["header2"] <- "# Receiving column point selection"
+    cmds["SelectBy"] <- "plot.data$SelectBy <- rownames(plot.data) %in% unlist(col_selected);"
+    if (x[[.selectEffect]] == .selectRestrictTitle) {
+        cmds["saved"] <- "plot.data.all <- plot.data;"
+        cmds["subset"] <- "plot.data <- subset(plot.data, SelectBy);"
+    }
+    cmds[["footer"]] <- ""
+
+    cmds
 })
 
 setMethod(".getCommandsPlotColor", "ColumnDotPlot", function(x, colorby, x_aes="X", y_aes="Y") {

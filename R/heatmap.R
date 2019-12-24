@@ -84,13 +84,11 @@
     # Processing the column selection choice.
     alpha_cmd <- ""
     alpha_legend_cmd <- NULL
-    select_cmds <- .process_selectby_choice(param_choices, 
-        by_field=.selectColSource, 
+    select_cmds <- .process_selectby_choice(param_choices,
+        by_field=.selectColSource,
         type_field=.selectColType,
         saved_field=.selectColSaved,
         all_memory=all_memory, varname="col_selected")
-
-    select_as_field <- .safe_field_name("SelectBy", colnames(colData(se)))
 
     if (length(select_cmds)) {
         select_cmds[["select"]] <- "plot.data$SelectBy <- plot.data$X %in% col_selected;"
@@ -105,7 +103,7 @@
 
         } else if (param_choices[[.selectEffect]]==.selectColorTitle) {
             ## Add annotation bar
-            orderBy <- c(orderBy, select_as_field)
+            orderBy <- c(orderBy, "SelectBy")
         }
     }
 
@@ -144,7 +142,7 @@
 
     # Annotations
     annot_cmds <- list(init="legends <- list()")
-    for (i in which(orderBy!=select_as_field)) {
+    for (i in which(orderBy!="SelectBy")) {
         if (is.numeric(eval_env$plot.data[[paste0("OrderBy", i)]])) {
             color_cmd <- sprintf("scale_fill_gradientn(colors=colDataColorMap(colormap, '%s', discrete=FALSE)(21L), na.value='grey50', name='%s') +",
                                  orderBy[i], orderBy[i])
@@ -167,8 +165,8 @@
         )
     }
 
-    if (select_as_field %in% orderBy) {
-        i <- which(orderBy==select_as_field)
+    if ("SelectBy" %in% orderBy) {
+        i <- which(orderBy=="SelectBy")
         annot_cmds[["SelectBy"]] <- c("",
             sprintf("p%i <- ggplot(plot.data, aes(x=X, y=1)) +", i),
             "geom_raster(aes(fill=SelectBy)) +",

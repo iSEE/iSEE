@@ -99,7 +99,7 @@
     for (panel_name in ordering) {
         instance <- active_panels[[panel_name]]
         header_comments <- c(strrep("#", 80),
-            paste("##", .getFullName(instance), instance[[.organizationId]]),
+            paste("##", .getFullName(instance)),
             strrep("#", 80),
             "")
 
@@ -109,15 +109,12 @@
             collated <- c(collated, cmds, "")
         }
 
-        if (is(instance, "DotPlot")) {
-            # Saving data for transmission after selections have been processed;
-            # this is the equivalent point in .create_plots() where coordinates are saved.
+        # Saving data for transmission after selections have been processed;
+        # this is the equivalent point in .create_plots() where coordinates are saved.
+        varname <- pObjects$varname[[panel_name]]
+        if (!is.null(varname)) {
             collated <- c(collated, "# Saving data for transmission",
-                sprintf("all_contents[['%s']] <- plot.data", panel_name),
-                "")
-        } else if (is(instance, "Table")) {
-            collated <- c(collated, "# Saving data for transmission",
-                sprintf("all_contents[['%s']] <- tab", panel_name),
+                sprintf("all_contents[['%s']] <- %s", panel_name, varname),
                 "")
         }
 

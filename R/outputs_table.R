@@ -10,6 +10,7 @@
         full_tab <- t.out$contents
         pObjects$contents[[panel_name]] <- full_tab
         pObjects$commands[[panel_name]] <- t.out$commands
+        pObjects$varname[[panel_name]] <- "tab"
 
         chosen <- param_choices[[.TableSelected]]
         search <- param_choices[[.TableSearch]]

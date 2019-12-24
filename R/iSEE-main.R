@@ -393,7 +393,7 @@ iSEE <- function(se,
 
             pObjects$commands <- list()
             pObjects$contents <- list()
-            pObjects$cached_info <- list()
+            pObjects$varname <- list()
 
             pObjects$aesthetics_links <- .spawn_single_selection_graph(memory)
             pObjects$selection_links <- .spawn_multi_selection_graph(memory)

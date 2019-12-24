@@ -30,6 +30,7 @@
             all_memory=pObjects$memory, all_contents=pObjects$contents)
         pObjects$commands[[plot_name]] <- p.out$commands
         pObjects$contents[[plot_name]] <- p.out$contents
+        pObjects$varname[[plot_name]] <- "plot.data"
 
         p.out$plot
     })

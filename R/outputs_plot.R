@@ -54,6 +54,7 @@
 #'
 #' @rdname INTERNAL_create_plot_ui
 #' @importFrom shinyWidgets addSpinner
+#' @importFrom shiny brushOpts
 .create_plot_ui <- function(plot_name, height, brush_direction, brush_fill, brush_stroke) {
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 

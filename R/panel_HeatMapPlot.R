@@ -247,7 +247,10 @@ setMethod(".defineInterface", "HeatMapPlot", function(x, se, select_info) {
                 options=list(plugins=list('remove_button', 'drag_drop'))),
             plotOutput(.input_FUN(.heatMapLegend))
         ),
-        .define_selection_param_box(x,
+        collapseBox(
+            id=.input_FUN(.selectParamBoxOpen), 
+            title="Selection parameters", 
+            open=x[[.selectParamBoxOpen]],
             .define_selection_choices(x, by_field=.selectColSource, 
                 type_field=.selectColType, saved_field=.selectColSaved,
                 selectable=col_selectable, source_type="column"),

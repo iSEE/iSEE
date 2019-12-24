@@ -1,3 +1,28 @@
+#' Hidden interface elements
+#' 
+#' Returns an interface element or \code{NULL}, depending on whether the element is hidden based on \code{\link{.hideInterface}}.
+#' This allows panels to hide interface elements that are provided by parent classes but are not needed in the subclass.
+#'
+#' @param x An instance of a \linkS4class{Panel} class.
+#' @param field String specifying the name of the suffix of the ID of the interface element.
+#' @param FUN Function to create an HTML widget for a given interface element.
+#' @param ... Further arguments to pass to \code{FUN} (in \code{.hide_this_thing}}),
+#' or whichever widget is being used in the specialized functions.
+#'
+#' @return
+#' If \code{.hideInterface(x, field)} is \code{TRUE},
+#' the output of \code{FUN(id, ..)} is returned where \code{id} is defined 
+#' by concatenating \code{\link{.getEncodedName}(x)} and \code{field} (separated by an underscore).
+#' Otherwise, \code{NULL} is returned.
+#'
+#' @author Aaron Lun
+#' @seealso
+#' \code{\link{.hideInterface}}, which determines whether an interface element should be hidden.
+#'
+#' \code{\link{.defineInterface}}, where these functions are typically used.
+#' 
+#' \code{\link{.create_selection_param_box}}, for a specific usage example.
+#' @rdname INTERNAL_hidden_elements 
 .hide_this_thing <- function(x, field, FUN, ...) {
     if (.hideInterface(x, field)) {
         NULL        
@@ -7,19 +32,23 @@
 }
 
 #' @importFrom shiny selectInput
+#' @rdname INTERNAL_hidden_elements 
 .selectInputHidden <- function(x, field, ...) {
     .hide_this_thing(x, field, selectInput, ...)
 }
 
+#' @rdname INTERNAL_hidden_elements 
 .collapseBoxHidden <- function(x, field, ...) {
     .hide_this_thing(x, field, collapseBox, ...)
 }
 
+#' @rdname INTERNAL_hidden_elements 
 #' @importFrom shiny radioButtons
 .radioButtonsHidden <- function(x, field, ...) {
     .hide_this_thing(x, field, radioButtons, ...)
 }
 
+#' @rdname INTERNAL_hidden_elements 
 #' @importFrom shiny selectizeInput
 .selectizeInputHidden <- function(x, field, ...) {
     .hide_this_thing(x, field, selectizeInput, ...)
@@ -38,7 +67,8 @@
 #' A HTML object containing elements that only appear when \code{choice} is selected in the UI element for \code{id}.
 #'
 #' @details
-#' This function is useful for hiding options that are irrelevant when a different radio button is selected, or when the corresponding checkbox element is unselected.
+#' This function is useful for hiding options that are irrelevant when a different radio button is selected
+#' or when the corresponding checkbox element is unselected.
 #' In this manner, we can avoid cluttering the UI.
 #'
 #' @author Aaron Lun

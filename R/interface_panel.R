@@ -5,7 +5,7 @@ height_limits <- c(400L, 1000L)
 #'
 #' Generates the user interface to control the organization of the panels, specifically their sizes.
 #'
-#' @param active_panels A data.frame specifying the currently active panels, see the output of \code{\link{.setup_initial}}.
+#' @param all_memory A list of \linkS4class{Panel} objects specifying the current state of the application.
 #'
 #' @return
 #' A HTML tag object containing the UI elements for panel sizing.
@@ -17,19 +17,19 @@ height_limits <- c(400L, 1000L)
 #' @author Aaron Lun
 #' @rdname INTERNAL_panel_organization
 #' @seealso
-#' \code{\link{iSEE}},
-#' \code{\link{.panel_generation}},
-#' \code{\link{.setup_initial}}
+#' \code{\link{.organization_observers}}, where this UI element is used.
+#' 
+#' \code{\link{.panel_generation}}, which uses the set parameters.
 #'
 #' @importFrom shiny tagList selectInput sliderInput
 #' @importFrom shinydashboard box
-.panel_organization <- function(active_panels) {
-    N <- length(active_panels)
+.panel_organization <- function(all_memory) {
+    N <- length(all_memory)
     collected <- vector("list", N)
     counter <- 1L
 
     for (i in seq_len(N)) {
-        instance <- active_panels[[i]]
+        instance <- all_memory[[i]]
         panel_name <- .getEncodedName(instance)
         prefix <- paste0(panel_name, "_")
 
@@ -49,11 +49,11 @@ height_limits <- c(400L, 1000L)
 
 #' Generate the panels in the app body
 #'
-#' Constructs the active panels in the main body of the app to show the plotting results and tables.
+#' Constructs the interface and output elements of all panels in the main body of the app,
+#' using the parameters in memory to set appropriate initial values for all widgets.
 #'
-#' @param active_panels A data.frame specifying the currently active panels, see the output of \code{\link{.setup_initial}}.
-#' @param memory A list of DataFrames, where each DataFrame corresponds to a panel type and contains the initial settings for each individual panel of that type.
-#' @param se A SingleCellExperiment object.
+#' @param all_memory A list of \linkS4class{Panel} objects specifying the current state of the application.
+#' @param se A \linkS4class{SummarizedExperiment} object.
 #'
 #' @return
 #' A HTML tag object containing the UI elements for the main body of the app.
@@ -71,21 +71,14 @@ height_limits <- c(400L, 1000L)
 #' This ensures that the plots are not reset during re-rendering.
 #' The exception is that of the Shiny brush, which cannot be fully restored in the current version - instead, only the bounding box is shown.
 #'
-#' Note that control of the tables lies within \code{\link{iSEE}} itself.
-#' Also, feature name selections will open up a \code{selectizeInput} where the values are filled on the server-side, rather than being sent to the client.
+#' Note that feature name selections will open up a \code{selectizeInput} where the values are filled on the server-side, rather than being sent to the client.
 #' This avoids long start-up times during re-rendering.
 #'
 #' @author Aaron Lun
-#' @rdname INTERNAL_panel_generation
 #' @seealso
-#' \code{\link{iSEE}}
+#' \code{\link{.defineInterface}} and \code{\link{.defineOutput}}, for panel-specific definition of interface elements.
 #'
-#' @importFrom SummarizedExperiment colData rowData assayNames
-#' @importFrom BiocGenerics rownames
-#' @importFrom SingleCellExperiment reducedDimNames reducedDim
-#' @importFrom shiny actionButton fluidRow selectInput plotOutput uiOutput
-#' sliderInput tagList column radioButtons tags hr brushOpts
-#' selectizeInput checkboxGroupInput textAreaInput
+#' @rdname INTERNAL_panel_generation
 .panel_generation <- function(memory, se) {
     collected <- list()
     counter <- 1L
@@ -178,14 +171,16 @@ height_limits <- c(400L, 1000L)
 #' @author Aaron Lun
 #' @rdname INTERNAL_coerce_box_status
 #' @seealso
-#' \code{\link{.panel_organization}},
-#' \code{\link{.panel_generation}}
+#' \code{\link{.panel_organization}} and \code{\link{.panel_generation}}, which call this function.
+#'
+#' \code{\link{.define_box_statuses}}, to set up the Javascript classes for each custom status.
 .coerce_box_status <- function(in_box, mode, old_status="danger") {
     in_box$children[[1]]$attribs$class <- sub(
         paste0("box-", old_status),
         paste0("box-", tolower(mode)),
         in_box$children[[1]]$attribs$class)
-    return(in_box)
+
+    in_box
 }
 
 .actionbutton_biocstyle <- "color: #ffffff; background-color: #0092AC; border-color: #2e6da4"

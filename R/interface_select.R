@@ -1,42 +1,47 @@
-#' Point selection parameter box
+#' Multiple selection parameter box
 #'
-#' Create a point selection parameter box for all point-based plots.
+#' Create a multiple selection parameter box for a given instance of a \linkS4class{Panel}.
 #'
-#' @param mode String specifying the encoded panel type of the current plot.
-#' @param id Integer scalar specifying the index of a panel of the specified type, for the current plot.
-#' @param param_choices A DataFrame with one row, containing the parameter choices for the current plot.
+#' @param x A \linkS4class{Panel} object.
+#' @param row_selectable A character vector of names for available panels that can transmit a row selection.
+#' @param col_selectable A character vector of names for available panels that can transmit a column selection.
 #' @param selectable A character vector of decoded names for available transmitting panels.
-#' @param source_type Type of the panel that is source of the selection. Either \code{"row"} or \code{"column"}.
-#' @param ... Additional arguments passed to \code{\link{collapseBox}}.
-#' @param field Column name in the DataFrame of parameters choices for the current plot.
+#' @param source_type String specifying the type of the panel that is source of the selection,
+#' either \code{"row"} or \code{"column"}.
+#' @param ... Additional interface elements to be included in the parameter box, passed to \code{\link{collapseBox}}.
+#' @param by_field String specifying the name of the slot containing the identity of the panel transmitting to \code{x}.
+#' @param type_field String specifying the name of the slot containing the type of multiple selection to use in \code{x}.
+#' @param saved_field String specifying the name of the slot containing the index of the saved selection to use in \code{x}.
 #'
 #' @return
-#' For \code{.create_selection_param_box} and \code{.create_selection_param_box_define_box},
-#' a HTML tag object containing a \code{\link{collapseBox}} with UI elements for changing point selection parameters.
+#' For \code{.create_selection_param_box} and \code{.create_dotplot_selection_param_box},
+#' a HTML tag object is returned containing a parameter box of UI elements for changing multiple selection parameters.
+#' The latter will also contain elements to control the visual effects of the transmitted selection for \linkS4class{DotPlot]s.
 #'
-#' For \code{.create_selection_param_box_define_choices}, a HTML tag object containing a \code{selectInput} for choosing the transmitting panels.
+#' For \code{.define_selection_transmitter}, an interface element is returned for selecting the transmitting panel.
+#' For \code{.define_selection_choices}, a tag list of interface elements is returned to choose the identity of transmitting panel, the type of multiple selection and the index of the saved selection to use.
+#'
+#' All return values may potentially also be \code{NULL}, depending on \code{\link{.hideInterface}}.
 #'
 #' @details
-#' The \code{.create_selection_param_box} function creates a collapsible box that contains point selection options, initialized with the choices in \code{memory}.
+#' These functions are used to create a collapsible box that contains point selection options, 
+#' initialized with the choices in \code{memory}.
 #' Options include the choice of transmitting plot and the type of selection effect.
 #' Each effect option, once selected, may yield a further subset of nested options.
 #' For example, choosing to colour on the selected points will open up a choice of colour to use.
 #'
-#' The other three functions are helper functions that avoid re-writing related code in the \code{\link{.panel_generation}} function.
-#' This is mostly for other panel types that take selections but do not follow the exact structure produced by \code{.create_selection_param_box}.
-#'
 #' @author Aaron Lun
 #' @rdname INTERNAL_create_selection_param_box
 #' @seealso
-#' \code{\link{.panel_generation}}
+#' \code{\link{.defineInterface}}, where this function is typically called.
 #'
 #' @importFrom shiny selectInput actionButton hr strong br
 #' @importFrom shinyjs disabled
-.create_selection_param_box <- function(param_choices, row_selectable, col_selectable, ...) {
+.create_selection_param_box <- function(x, row_selectable, col_selectable, ...) {
     # initialize active "Delete" button only if a preconfigured selection history exists
     deleteFUN <- identity
     deleteLabel <- .buttonDeleteLabel
-    if (length(param_choices[[.multiSelectHistory]]) == 0L) {
+    if (length(x[[.multiSelectHistory]]) == 0L) {
         deleteFUN <- disabled
         deleteLabel <- .buttonEmptyHistoryLabel
     }
@@ -44,27 +49,30 @@
     # initialize active "Save" button only if a preconfigured active selection exists
     saveFUN <- identity
     saveLabel <- .buttonSaveLabel
-    if (!.multiSelectionHasActive(param_choices)) {
+    if (!.multiSelectionHasActive(x)) {
         saveFUN <- disabled
         saveLabel <- .buttonNoSelectionLabel
     }
 
     args <- list(
-        param_choices=param_choices,
+        x=x, 
+        field=.selectParamBoxOpen, 
+        title="Selection parameters", 
+        open=x[[.selectParamBoxOpen]],
 
-        .define_selection_choices(param_choices, by_field=.selectRowSource,
+        .define_selection_choices(x, by_field=.selectRowSource,
             type_field=.selectRowType, saved_field=.selectRowSaved, 
             selectable=row_selectable, "row"),
 
-        .define_selection_choices(param_choices, by_field=.selectColSource, 
+        .define_selection_choices(x, by_field=.selectColSource, 
             type_field=.selectColType, saved_field=.selectColSaved, 
             selectable=col_selectable, "column"),
 
         ...
     )
 
-    if (!.hideInterface(param_choices, .multiSelectHistory)) {
-        panel_name <- .getEncodedName(param_choices)
+    if (!.hideInterface(x, .multiSelectHistory)) {
+        panel_name <- .getEncodedName(x)
         args <- c(args,
             list(
                 hr(),
@@ -76,76 +84,67 @@
         )
     }
 
-    do.call(.define_selection_param_box, args)
+    do.call(.collapseBoxHidden, args)
 }
 
 #' @importFrom colourpicker colourInput
 #' @importFrom shiny sliderInput
-.create_dotplot_selection_param_box <- function(param_choices, row_selectable, col_selectable) {
-    plot_name <- .getEncodedName(param_choices)
+.create_dotplot_selection_param_box <- function(x, row_selectable, col_selectable) {
+    plot_name <- .getEncodedName(x)
     select_effect <- paste0(plot_name, "_", .selectEffect)
 
-    .create_selection_param_box(param_choices, row_selectable, col_selectable,
-        .radioButtonsHidden(param_choices, field=.selectEffect, 
+    .create_selection_param_box(x, row_selectable, col_selectable,
+        .radioButtonsHidden(x, field=.selectEffect, 
             label="Selection effect:", inline=TRUE,
             choices=c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle),
-            selected=param_choices[[.selectEffect]]),
+            selected=x[[.selectEffect]]),
 
         .conditional_on_radio(
             select_effect, .selectColorTitle,
             colourInput(
                 paste0(plot_name, "_", .selectColor), label=NULL,
-                value=param_choices[[.selectColor]])
+                value=x[[.selectColor]])
         ),
         .conditional_on_radio(
             select_effect, .selectTransTitle,
             sliderInput(
                 paste0(plot_name, "_", .selectTransAlpha), label=NULL,
-                min=0, max=1, value=param_choices[[.selectTransAlpha]])
+                min=0, max=1, value=x[[.selectTransAlpha]])
         )
     )
 }
 
 #' @rdname INTERNAL_create_selection_param_box
-.define_selection_param_box <- function(param_choices, ...) {
-    .collapseBoxHidden(
-        x=param_choices, field=.selectParamBoxOpen,
-        title="Selection parameters",
-        open=param_choices[[.selectParamBoxOpen]],
-        ...)
-}
-
-#' @rdname INTERNAL_create_selection_param_box
 #' @importFrom shiny selectInput
-.define_selection_transmitter <- function(param_choices, field, selectable, source_type="row") {
+.define_selection_transmitter <- function(x, by_field, selectable, source_type="row") {
     .selectInputHidden(
-        x=param_choices, field=field, 
+        x=x, field=by_field, 
         label=sprintf("Receive %s selection from:", source_type),
         choices=selectable,
-        selected=.choose_link(param_choices[[field]], selectable)
+        selected=.choose_link(x[[by_field]], selectable)
     )
 }
 
 #' @rdname INTERNAL_create_selection_param_box
 #' @importFrom shiny tagList radioButtons selectizeInput
-.define_selection_choices <- function(param_choices, by_field, type_field, 
+.define_selection_choices <- function(x, by_field, type_field, 
     saved_field, selectable, source_type="row") 
 {
-    select_type <- paste0(.getEncodedName(param_choices), "_", type_field)
+    select_type <- paste0(.getEncodedName(x), "_", type_field)
 
     tagList(
-        .define_selection_transmitter(param_choices, by_field, selectable, source_type),
+        .define_selection_transmitter(x, by_field, selectable, source_type),
 
         .radioButtonsHidden(
-            param_choices, field=type_field, label=NULL, inline=TRUE,
+            x, field=type_field, label=NULL, inline=TRUE,
             choices=c(.selectMultiActiveTitle, .selectMultiUnionTitle, .selectMultiSavedTitle),
-            selected=param_choices[[type_field]]
+            selected=x[[type_field]]
         ),
 
         .conditional_on_radio(
             select_type, .selectMultiSavedTitle,
             .selectizeInputHidden(
-                param_choices, field=saved_field, 
+                x, field=saved_field, 
                 label=NULL, selected=NULL, choices=NULL, multiple=FALSE
             )
         )

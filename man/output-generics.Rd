@@ -51,9 +51,12 @@ The rendering expression defined in \code{\link{.renderOutput}} is also expected
 \itemize{
 \item Fill \code{pObjects$contents[[PANEL]]} with some content related to the displayed output that allows cross-referencing with single/multiple selection structures.
 This will be used in other generics like \code{\link{.multiSelectionCommands}} and \code{\link{.singleSelectionValue}} to determine the identity of the selected point(s).
+As a result, it is only strictly necessary if the panel is a potential transmitter, as determined by the return value of \code{\link{.multiSelectionDimension}}.
 \item Fill \code{pObjects$commands[[PANEL]]} with a character vector of commands required to produce the displayed output.
-This will minimally include the commands required to generate \code{pObjects$contents[[PANEL]]};
+This should minimally include the commands required to generate \code{pObjects$contents[[PANEL]]};
 for plotting panels, the vector should also include code to create the plot.
+\item Fill \code{pObjects$varname[[PANEL]]} with a string containing the R expression in \code{pObjects$commands[[PANEL]]} that holds the contents stored in \code{pObjects$contents[[PANEL]]}.
+This is used for code reporting, and again, is only strictly necessary if the panel is a potential transmitter.
 }
 }
 

@@ -4,6 +4,7 @@
 \alias{single-select-generics}
 \alias{.singleSelectionDimension}
 \alias{.singleSelectionValue}
+\alias{.singleSelectionSlots}
 \title{Generics for controlling single selections}
 \description{
 A panel can create a single selection on either the rows or columns
@@ -22,12 +23,50 @@ The output should be constant for all instances of \code{x}.
 
 \section{Obtaining the selected element}{
 
-\code{.singleSelectionValue}(x, contents) should return a string specifying the selected row or column.
+\code{.singleSelectionValue(x, contents)} should return a string specifying the selected row or column.
 If no row or column is selected, it should return \code{NULL}.
 
 \code{contents} is any arbitrary structure set by the rendering expression in \code{\link{.renderOutput}} for \code{x}.
 This should contain all of the information necessary to determine the name of the selected row/column.
 For example, a data.frame of coordinates is stored by \linkS4class{DotPlot}s to identify the point selected by a brush/lasso.
+}
+
+\section{Indicating the receiving slots}{
+
+\code{.singleSelectionSlots(x)} should return a list with one internal list for each slot in \code{x} that might respond to a single selection from a transmitting panel.
+This internal list should contain at least entries with the following names:
+\itemize{
+\item \code{param}, the name of the slot of \code{x} that can potentially respond to a single selection in a transmitting panel,
+e.g., \code{ColorByFeatName} in \linkS4class{DotPlot}s.
+\item \code{source}, the name of the slot of \code{x} that indicates which transmitting panel to respond to,
+e.g., \code{ColorByRowTable} in \linkS4class{DotPlot}s.
+}
+
+The paradigm here is that the interface will contain two \code{\link{selectInput}} elements, one for each of the \code{param} and \code{source} slots.
+It is possible for users to manually alter the choice in the \code{param}'s \code{selectInput};
+it is also possible for users to specify a transmitting panel via the \code{source}'s \code{selectInput},
+which will then trigger automatic updates to the chosen entry in the \code{param}'s \code{selectInput} when the transmitter's single selection changes.
+
+Developers are strongly recommended to follow the above paradigm.
+In fact, the observers to perform these updates are automatically set up by \code{\link{.createObservers,Panel-method}}
+if the internal list also contains the following named entries:
+\itemize{
+\item \code{dimension}, either \code{"row"} or \code{"column"}.
+This specifies whether the slot specified by \code{param} contains row or column names; 
+if this is not present, no observers will be set up.
+\item \code{use_mode}, the name of the slot of \code{x} containing the current usage mode,
+in cases where there are multiple aesthetic choices.
+An example would be \code{ColorBy} in \linkS4class{DotPlot}s where coloring by feature name is only one of many options,
+such that the panel should only respond to transmitted single selections when the user intends to color by feature name.
+If this is \code{NA}, the usage mode is assumed to be such that the panel should always respond to transmissions.
+\item \code{use_value}, a string containing the relevant value of the slot specified by \code{use_mode} in order for the panel to respond to transmitted single selections.
+An example would be \code{"Feature name"} in \linkS4class{DotPlot}s.
+\item \code{protected}, a logical scalar indicating whether the slot specified by \code{param} is \dQuote{protected},
+i.e., changing this value will cause all existing selections to be invalidated
+and will trigger re-rendering of the children receiving multiple selections.
+This is \code{FALSE} for purely aesthetic parameters (e.g., coloring) and \code{TRUE} for data-related parameters
+(e.g., \code{XAxisFeatName} in \linkS4class{FeatAssayPlot}).
+}
 }
 
 \author{

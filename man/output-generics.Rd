@@ -5,6 +5,7 @@
 \alias{output-generics}
 \alias{.renderOutput}
 \alias{.defineOutput}
+\alias{.generateOutput}
 \title{Generics for Panel outputs}
 \description{
 An overview of the generics for defining the panel outputs, along with recommendations on their implementation.
@@ -48,12 +49,33 @@ This ensures that the output is rerendered upon changes to the appropriate react
 
 The rendering expression defined in \code{\link{.renderOutput}} is also expected to:
 \itemize{
-\item Fill \code{pObjects$contents[[PANEL]]} with some content related to the displayed output.
+\item Fill \code{pObjects$contents[[PANEL]]} with some content related to the displayed output that allows cross-referencing with single/multiple selection structures.
 This will be used in other generics like \code{\link{.multiSelectionCommands}} and \code{\link{.singleSelectionValue}} to determine the identity of the selected point(s).
 \item Fill \code{pObjects$commands[[PANEL]]} with a character vector of commands required to produce the displayed output.
 This will minimally include the commands required to generate \code{pObjects$contents[[PANEL]]};
 for plotting panels, the vector should also include code to create the plot.
 }
+}
+
+\section{Generating content}{
+
+In \code{.generateOutput(x, se, ..., output, pObjects, rObjects)}, the following arguments are required:
+\itemize{
+\item \code{x}, an instance of a \linkS4class{Panel} class.
+\item \code{se}, a \linkS4class{SummarizedExperiment} object containing the current dataset.
+\item \code{...}, further arguments that may be used by specific methods.
+\item \code{all_memory}, a named list containing \linkS4class{Panel} objects with their parameters for the current state of the app.
+\item \code{all_contents}, a named list containing the contents of each panel.
+}
+
+Methods for this generic should return a list containing \code{contents}, some arbitrary content for the panel.
+This is used during app initialization to ensure that \code{pObjects$contents} of transmitter panels is filled before rendering their children.
+
+The output list may contain any number of other fields that will be ignored.
+We suggest implementing this method to also return \code{commands} so that it can be used in \code{.renderOutput},
+thus avoiding the need to write redundant code for both methods.
+
+Developers should consider using the \code{\link{.processMultiSelections}} function for easily processing the multiple selection parameters.
 }
 
 \author{

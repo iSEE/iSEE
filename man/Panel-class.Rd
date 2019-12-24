@@ -11,6 +11,9 @@
 \alias{.hideInterface,Panel-method}
 \alias{.multiSelectionRestricted,Panel-method}
 \alias{.multiSelectionDimension,Panel-method}
+\alias{.singleSelectionDimension,Panel-method}
+\alias{.singleSelectionValue,Panel-method}
+\alias{.singleSelectionSlots,Panel-method}
 \title{The Panel virtual class}
 \description{
 The Panel is a virtual base class for all \pkg{iSEE} panels.
@@ -76,11 +79,13 @@ and \code{i} is a string containing the slot name:
 The Panel class offers interface elements to modify all of its slots.
 Observers are also created to trigger rerendering upon changes to a slot or when a selection in a transmitting panel changes.
 
-Subclasses are expected to implement methods for, at least:
+Subclasses are required to implement methods for:
 \itemize{
-\item \code{\link{.renderOutput}}
 \item \code{\link{.defineOutput}}
+\item \code{\link{.generateOutput}}
+\item \code{\link{.renderOutput}}
 \item \code{\link{.fullName}}
+\item \code{\link{.panelColor}}
 }
 Subclasses that transmit selections should also implement specialized methods for selection-related parameters listed below.
 }
@@ -101,12 +106,23 @@ For defining the interface:
 \item \code{\link{.hideInterface}(x, field)} will always return \code{FALSE}.
 }
 
+For monitoring reactive expressions:
+\itemize{
+\item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} will add observers to respond to changes in multiple selection options.
+It will also call \code{\link{.singleSelectionSlots}(x)} to set up observers for responding to transmitted single selections.
+\item \code{\link{.renderOutput}(x, se, ..., output, pObjects, rObjects)} will add elements to \code{output} for rendering the information textboxes at the bottom of each panel.
+Each panel should specialize this method to add rendering expressions for the actual output (e.g., plots, tables),
+followed by a \code{callNextMethod} to create the textboxes.
+}
+
 For controlling selections:
 \itemize{
 \item \code{\link{.multiSelectionRestricted}(x)} will always return \code{TRUE}.
 \item \code{\link{.multiSelectionDimension}(x)} will always return \code{"none"}.
 \item \code{\link{.multiSelectionActive}(x)} will always return \code{NULL}.
 \item \code{\link{.singleSelectionDimension}(x)} will return \code{.multiSelectionDimension(x)}.
+\item \code{\link{.singleSelectionValue}(x)} will return \code{NULL}.
+\item \code{\link{.singleSelectionSlots}(x)} will return an empty list.
 }
 }
 

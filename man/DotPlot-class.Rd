@@ -13,6 +13,8 @@
 \alias{.multiSelectionActive,DotPlot-method}
 \alias{.multiSelectionCommands,DotPlot-method}
 \alias{.multiSelectionDimension,DotPlot-method}
+\alias{.singleSelectionValue,DotPlot-method}
+\alias{.singleSelectionSlots,DotPlot-method}
 \title{The DotPlot virtual class}
 \description{
 The DotPlot is a virtual class for all panels where each row or column in the \linkS4class{SummarizedExperiment} is represented by a point (\dQuote{dot}) in a brushable plot.
@@ -152,12 +154,20 @@ For defining the interface:
 \item \code{\link{.defineOutput}(x, id)} returns a UI element for a brushable plot.
 }
 
+For generating the output:
+\itemize{
+\item \code{\link{.generateOutput}(x, se, colormap, all_memory, all_contents)} returns a list containing \code{contents}, a data.frame with one row per point currently present in the plot;
+\code{plot}, a \link{ggplot} object;
+and \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot}.
+}
+
 For defining reactive expressions:
 \itemize{
 \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for some (but not all!) of the slots.
 This will also call the equivalent \linkS4class{Panel} method.
 \item \code{\link{.renderOutput}(x, se, colormap, output, pObjects, rObjects)} will add a rendered plot element to \code{output}.
-It will also create a rendered UI element for selection information.
+The reactive expression will add the contents of the plot to \code{pObjects$contents} and the relevant commands to \code{pObjects$commands}.
+This will also call the equivalent \linkS4class{Panel} method to render the panel information testboxes.
 }
 
 For controlling selections:
@@ -168,6 +178,8 @@ The active selection is returned if \code{index=NA}, otherwise one of the saved 
 \item \code{\link{.multiSelectionActive}(x)} returns \code{x[["BrushData"]]} or \code{NULL} if there is no brush or closed lasso.
 \item \code{\link{.singleSelectionValue}(x)} returns the name of the first selected element in the active brush. 
 If no brush is active, \code{NULL} is returned instead.
+\item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of coloring parameters.
+This includes the output of \code{callNextMethod}.
 }
 
 Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.

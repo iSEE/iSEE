@@ -6,6 +6,8 @@
 \usage{
 iSEE(
   se,
+  initial = NULL,
+  extra = NULL,
   redDimArgs = NULL,
   colDataArgs = NULL,
   featAssayArgs = NULL,

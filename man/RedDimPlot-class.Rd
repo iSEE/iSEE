@@ -60,17 +60,14 @@ For defining the interface:
 \itemize{
 \item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
 This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}.
+\item \code{\link{.fullName}(x)} will return the full name of the panel class.
+\item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 }
 
 For monitoring reactive expressions:
 \itemize{
 \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
 This will also call the equivalent \linkS4class{ColumnDotPlot} method.
-}
-
-For defining the panel name:
-\itemize{
-\item \code{\link{.fullName}(x)} will return \code{"Reduced dimension plot"}.
 }
 
 For creating the plot:

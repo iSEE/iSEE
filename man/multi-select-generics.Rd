@@ -37,7 +37,7 @@ otherwise, for an integer \code{index}, it refers to the corresponding saved sel
 
 The commands will be evaluated in an environment containing:
 \itemize{
-\item \code{select}, a variable of the same type as returned by \code{\link{.multiSelectionStructure}(x)}.
+\item \code{select}, a variable of the same type as returned by \code{\link{.multiSelectionActive}(x)}.
 This will contain the active selection if \code{index=NA} and one of the saved selections otherwise.
 For example, for \linkS4class{DotPlot}s, \code{select} will be either a Shiny brush or a lasso structure.
 \item \code{contents}, some arbitrary content saved by the rendering expression in \code{\link{.renderOutput}(x)}.

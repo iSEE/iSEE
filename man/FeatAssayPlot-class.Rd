@@ -7,6 +7,7 @@
 \alias{.refineParameters,FeatAssayPlot-method}
 \alias{.defineInterface,FeatAssayPlot-method}
 \alias{.createObservers,FeatAssayPlot-method}
+\alias{.singleSelectionSlots,FeatAssayPlot-method}
 \alias{.getFullName,FeatAssayPlot-method}
 \alias{.getCommandsDataXY,FeatAssayPlot-method}
 \title{The FeatAssayPlot panel}
@@ -82,6 +83,12 @@ For defining the panel name:
 For creating the plot:
 \itemize{
 \item \code{\link{.getCommandsDataXY}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of feature expression values.
+}
+
+For managing selections:
+\itemize{
+\item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of feature on the x- and y-axes.
+This includes the output of \code{callNextMethod}.
 }
 }
 

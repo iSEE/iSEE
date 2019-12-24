@@ -46,7 +46,7 @@ otherwise it dispatches to the \linkS4class{Panel} method.
 For monitoring reactive expressions:
 \itemize{
 \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers to propagate changes in the \code{Selected} to linked plots.
-This will also call the equivalent \linkS4class{DotPlot} method.
+This will also call the equivalent \linkS4class{Table} method.
 }
 
 For controlling selections:

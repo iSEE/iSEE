@@ -61,8 +61,10 @@
 #' Subclasses are required to implement methods for:
 #' \itemize{
 #' \item \code{\link{.defineOutput}}
+#' \item \code{\link{.generateOutput}}
 #' \item \code{\link{.renderOutput}}
 #' \item \code{\link{.fullName}}
+#' \item \code{\link{.panelColor}}
 #' }
 #' Subclasses that transmit selections should also implement specialized methods for selection-related parameters listed below.
 #'
@@ -111,6 +113,8 @@
 #' .hideInterface,Panel-method
 #' .multiSelectionRestricted,Panel-method
 #' .multiSelectionDimension,Panel-method 
+#' .singleSelectionDimension,Panel-method
+#' .singleSelectionSlots,Panel-method
 NULL
 
 #' @export
@@ -246,4 +250,4 @@ setMethod(".multiSelectionActive", "Panel", function(x) NULL)
 setMethod(".singleSelectionDimension", "Panel", function(x) .multiSelectionDimension(x))
 
 #' @export
-setMethod(".singleSelectionSlots", "Panel", function(x) NULL)
+setMethod(".singleSelectionSlots", "Panel", function(x) list())

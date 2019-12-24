@@ -65,6 +65,11 @@
 #' \itemize{
 #' \item \code{\link{.getCommandsDataXY}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of feature expression values.
 #' }
+#'
+#' For managing selections:
+#' \itemize{
+#' \item \code{\link{.singleSelectionSlots}(x)} will return a data.frame specifying the slots that can be updated by single selections in transmitter panels (\code{YAxisFeatName}, \code{XAxisFeatName}) and the corresponding slots governing the choice of those panels (\code{YAxisColTable}, \code{XAxisColTable}).
+#' }
 #' @author Aaron Lun
 #'
 #' @seealso
@@ -275,9 +280,12 @@ setMethod(".createObservers", "FeatAssayPlot", function(x, se, input, session, p
 
 #' @export
 setMethod(".singleSelectionSlots", "FeatAssayPlot", function(x) {
-    added <- c(.featAssayXAxisFeatName, .featAssayYAxisFeatName)
-    names(added) <- c(.featAssayXAxisRowTable, .featAssayYAxisRowTable)
-    c(callNextMethod(), added)
+    c(callNextMethod(),
+        list(
+            c(parameter=.featAssayXAxisFeatName, source=.featAssayXAxisRowTable),
+            c(parameter=.featAssayYAxisFeatName, source=.featAssayYAxisRowTable)
+        )
+    )
 })
 
 #' @export

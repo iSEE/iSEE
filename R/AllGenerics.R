@@ -380,17 +380,29 @@ setGeneric(".multiSelectionActive", function(x) standardGeneric(".multiSelection
 #' The output should be constant for all instances of \code{x}.
 #'
 #' @section Obtaining the selected element:
-#' \code{.singleSelectionValue}(x, contents) should return a string specifying the selected row or column.
+#' \code{.singleSelectionValue(x, contents)} should return a string specifying the selected row or column.
 #' If no row or column is selected, it should return \code{NULL}.
 #'
 #' \code{contents} is any arbitrary structure set by the rendering expression in \code{\link{.renderOutput}} for \code{x}.
 #' This should contain all of the information necessary to determine the name of the selected row/column.
 #' For example, a data.frame of coordinates is stored by \linkS4class{DotPlot}s to identify the point selected by a brush/lasso.
 #'
+#' @section Indicating the receiving slots:
+#' \code{.singleSelectionSlots(x)} should return a data.frame with two character columns \code{param} and \code{source}.
+#' Each element of \code{param} should be a slot of \code{x} that could respond to a single selection in a transmitting panel.
+#' The element of \code{source} in the same row should be the slot of \code{x} that governs the choice of transmitting panel.
+#'
+#' The paradigm here is that the interface will contain two \code{\link{selectInput}} elements, one for each of the \code{param} and \code{source} slots.
+#' It is possible for users to manually alter the choice in the \code{param}'s \code{selectInput};
+#' it is also possible for users to specify a transmitting panel via the \code{source}'s \code{selectInput},
+#' which will then trigger automatic updates to the chosen entry in the \code{param}'s \code{selectInput} when the transmitter's single selection changes.
+#' A classic example is the \code{ColorByFeatName} (\code{param}) and \code{ColorByRowTable} (\code{source}) combination in a \linkS4class{RedDimPlot}.
+#' 
 #' @author Aaron Lun
 #' @name single-select-generics
 #' @aliases .singleSelectionDimension
 #' .singleSelectionValue
+#' .singleSelectionSlots
 NULL
 
 #' @export

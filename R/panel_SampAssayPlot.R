@@ -65,6 +65,11 @@
 #' \itemize{
 #' \item \code{\link{.getCommandsDataXY}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of sample expression values.
 #' }
+#'
+#' For managing selections:
+#' \itemize{
+#' \item \code{\link{.singleSelectionSlots}(x)} will return a data.frame specifying the slots that can be updated by single selections in transmitter panels (\code{YAxisSampName}, \code{XAxisSampName}) and the corresponding slots governing the choice of those panels (\code{YAxisColTable}, \code{XAxisColTable}).
+#' }
 #' @author Aaron Lun
 #'
 #' @seealso
@@ -285,9 +290,12 @@ setMethod(".createObservers", "SampAssayPlot", function(x, se, input, session, p
 
 #' @export
 setMethod(".singleSelectionSlots", "SampAssayPlot", function(x) {
-    added <- c(.sampAssayXAxisSampName, .sampAssayYAxisSampName)
-    names(added) <- c(.sampAssayXAxisColTable, .sampAssayYAxisColTable)
-    c(callNextMethod(), added)
+    c(callNextMethod(),
+        list(
+            c(parameter=.sampAssayXAxisSampName, source=.sampAssayXAxisColTable),
+            c(parameter=.sampAssayYAxisSampName, source=.sampAssayYAxisColTable)
+        )
+    )
 })
 
 #' @export

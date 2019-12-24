@@ -21,9 +21,10 @@
     for (x in names(all_memory)) {
         instance <- all_memory[[x]]
         fields <- .singleSelectionSlots(instance)
-        for (f in names(fields)) {
-            if (instance[[f]] %in% names(all_memory)) {
-                graph <- .add_interpanel_link(graph, x, instance[[f]], field=fields[f])
+        for (f in fields) {
+            src <- f["source"]
+            if (instance[[src]] %in% names(all_memory)) {
+                graph <- .add_interpanel_link(graph, x, instance[[src]], field=f["parameter"])
             }
         }
     }

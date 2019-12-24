@@ -156,6 +156,7 @@
 #' \item \code{\link{.multiSelectionActive}(x)} returns \code{x[["BrushData"]]} or \code{NULL} if there is no brush or closed lasso.
 #' \item \code{\link{.singleSelectionValue}(x)} returns the name of the first selected element in the active brush. 
 #' If no brush is active, \code{NULL} is returned instead.
+#' \item \code{\link{.singleSelectionSlots}(x)} will return a data.frame specifying the slots that can be updated by single selections in transmitter panels (\code{ColorByFeatName}, \code{ColorBySampName}) and the corresponding slots governing the choice of those panels (\code{ColorByRowTable}, \code{ColorByColTable}).
 #' }
 #'
 #' Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.
@@ -178,6 +179,8 @@
 #' .multiSelectionActive,DotPlot-method
 #' .multiSelectionCommands,DotPlot-method
 #' .multiSelectionDimension,DotPlot-method
+#' .singleSelectionValue,DotPlot-method
+#' .singleSelectionSlots,DotPlot-method
 NULL
 
 #' @export
@@ -417,9 +420,12 @@ setMethod(".singleSelectionValue", "DotPlot", function(x, pObjects) {
 
 #' @export
 setMethod(".singleSelectionSlots", "DotPlot", function(x) {
-    added <- c(.colorByFeatName, .colorBySampName)
-    names(added) <- c(.colorByRowTable, .colorByColTable)
-    c(callNextMethod(), added)
+    c(callNextMethod(), 
+        list(
+            c(parameter=.colorByFeatName, source=.colorByRowTable),
+            c(parameter=.colorBySampName, source=.colorByColTable)
+        )
+    ) 
 })
 
 #' @export

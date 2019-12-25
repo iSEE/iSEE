@@ -374,10 +374,10 @@ setMethod(".multiSelectionClear", "DotPlot", function(x) {
 #' @export
 setMethod(".multiSelectionActive", "DotPlot", function(x) {
     to_store <- x[[.brushData]]
-    if (!length(to_store) || (!.is_brush(to_store) && !to_store$closed)) {
-        NULL
-    } else {
+    if (.is_brush(to_store) || .is_closed_lasso(to_store)) {
         to_store
+    } else {
+        NULL
     }
 })
 
@@ -393,10 +393,10 @@ setMethod(".multiSelectionCommands", "DotPlot", function(x, index) {
 
     if (.is_brush(brush_val)) {
         "selected <- rownames(shiny::brushedPoints(contents, select));"
-    } else if (isTRUE(brush_val$closed)) {
+    } else if (.is_closed_lasso(brush_val)) {
         "selected <- rownames(iSEE::lassoPoints(contents, select));"
-    } else { # i.e., an unclosed lasso.
-        return(NULL)
+    } else { 
+        NULL
     }
 })
 

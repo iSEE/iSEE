@@ -56,20 +56,22 @@
     return(new_lasso)
 }
 
-#' Is the object a lasso store?
+#' Is the object a closed lasso or Shiny brush?
 #' 
 #' Checks if an object is a lasso or Shiny brush data store.
+#' Note that it may not be either if there is no brush or if the lasso is not yet closed.
 #'
 #' @param x A lasso or Shiny brush object.
 #'
-#' @return A logical scalar specifying if \code{x} is a lasso.
+#' @return A logical scalar specifying if \code{x} is a closed lasso or Shiny brush.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_is_lasso
-.is_lasso <- function(x) {
-    !is.null(x$closed)
+.is_closed_lasso <- function(x) {
+    isTRUE(x$closed)
 }
 
+#' @rdname INTERNAL_is_lasso
 .is_brush <- function(x) {
     length(x) && is.null(x$closed)
 }
@@ -122,17 +124,27 @@
     TRUE
 }
 
+#' Get the brushed points
+#'
+#' Get the identities of brushed points selected by a Shiny brush or a closed lasso.
+#'
+#' @param contents A data.frame containing all points displayed in the affected plot with their identities in the row names.
+#' @param cur_brush A Shiny brush or lasso structure in the affected plot.
+#'
+#' @return
+#' A character vector of names of selected points in the brush/lasso.
+#' If \code{cur_brush} is empty or not a closed lasso, \code{NULL} is returned instead.
+#'
+#' @author Aaron Lun
+#'
+#' @rdname INTERNAL_get_brushed_points
 #' @importFrom shiny brushedPoints
-.get_brushed_points <- function(cur_coords, cur_brush) {
-    if (!length(cur_brush) || (!.is_brush(cur_brush) && !cur_brush$closed)) {
-        return(NULL)
+.get_brushed_points <- function(contents, cur_brush) {
+    if (.is_brush(cur_brush)) {
+        rownames(brushedPoints(contents, cur_brush))
+    } else if (.is_closed_lasso(cur_brush)) {
+        rownames(lassoPoints(contents, cur_brush))
+    } else {
+        NULL
     }
-
-    rownames(
-        if (.is_brush(cur_brush)) {
-            brushedPoints(cur_coords, cur_brush)
-        } else {
-            lassoPoints(cur_coords, cur_brush)
-        }
-    )
 }

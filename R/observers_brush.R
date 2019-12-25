@@ -110,22 +110,14 @@
         if (.is_brush(prev_lasso)) {
             new_lasso <- list()
             reactivated <- TRUE
+        } else if (.is_closed_lasso(prev_lasso)) {
+            new_lasso <- list()
+            reactivated <- TRUE
         } else {
-            was_closed <- prev_lasso$closed
-            if (is.null(was_closed)) {
-                was_closed <- FALSE
-            }
-
-            if (was_closed) {
-                new_lasso <- list()
+            new_lasso <- .update_lasso(input[[click_field]], prev_lasso)
+            if (new_lasso$closed) {
                 reactivated <- TRUE
-            } else {
-                new_lasso <- .update_lasso(input[[click_field]], prev_lasso)
-                if (new_lasso$closed) {
-                    reactivated <- TRUE
-                }
             }
-
         }
 
         pObjects$memory[[plot_name]][[.brushData]] <- new_lasso

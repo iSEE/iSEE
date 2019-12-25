@@ -56,7 +56,7 @@
         # While re-creating the plot clears the brush, it doesn't 
         # re-trigger the observer as the observer ignores NULLs.
         # So we have to manually retrigger the downstream effects.
-        if (.is_brush(existing_brush) || (.is_lasso(existing_brush) && existing_brush$closed)) {
+        if (.is_brush(existing_brush) || .is_closed_lasso(existing_brush)) {
             .safe_reactive_bump(rObjects, act_name)
         }
     })

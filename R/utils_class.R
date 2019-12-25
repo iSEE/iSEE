@@ -1,3 +1,20 @@
+#' Set and get common information
+#'
+#' Set and get common cached information, 
+#' usually called in \code{\link{.cacheCommonInfo}} and \code{\link{.defineInterface}}, respectively.
+#'
+#' @param se A \linkS4class{SummarizedExperiment} object containing the current dataset.
+#' @param cls String containing the name of the class for which this information is cached.
+#' @param ... Any number of named R objects to cache.
+#'
+#' @return
+#' \code{.set_common_info} returns \code{se} with \code{...} added to its \code{\link{metadata}}.
+#' 
+#' \code{.get_common_info} retrieves the cached common information for class \code{cls}.
+#'
+#' @author Aaron Lun
+#' 
+#' @rdname INTERNAL_set_common_info
 #' @importFrom S4Vectors metadata metadata<-
 .set_common_info <- function(se, cls, ...) {
     if (is.null(metadata(se)$iSEE)) {
@@ -7,18 +24,50 @@
     se
 }
 
+#' @rdname INTERNAL_set_common_info
 #' @importFrom S4Vectors metadata
 .get_common_info <- function(se, cls) {
     metadata(se)$iSEE[[cls]]
 }
 
-.empty_default <- function(x, field, default) {
-    if (is.null(x[[field]])) {
-        x[[field]] <- default 
+#' Set default slot values
+#'
+#' A utility function to set slots to default values if their values are not provided to \code{\link{initialize}} methods.
+#'
+#' @param args A named list of arguments to pass to the \code{initialize} method for a given class.
+#' @param field String specifying the field to set.
+#' @param default The default value of the slot in \code{field}.
+#'
+#' @details
+#' A more natural approach would be to have the default values in the arguments of the \code{initialize} method.
+#' However, this would require us to hard-code the slot names in the function signature,
+#' which would break our current DRY model of only specifying the slot names once.
+#'
+#' @return
+#' \code{args} is returned with the named \code{field} set to \code{default} if it was previously absent.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_set_empty_default
+.empty_default <- function(args, field, default) {
+    if (is.null(args[[field]])) {
+        args[[field]] <- default 
     }
-    x
+    args
 }
 
+#' Find atomic fields
+#' 
+#' A utility function to find column sin a data.frame or \linkS4class{DataFrame}
+#' that are atomic R types, as most of the app does not know how to handle  more complex types being stored as columns. 
+#' An obvious example is in data.frames expected by \code{\link{ggplot}} or \code{\link{datatable}}.
+#'
+#' @param df A data.frame or \linkS4class{DataFrame}.
+#'
+#' @return A character vector of names of atomic fields in \code{df}.
+#'
+#' @author Aaron Lun
+#'
+#' @rdname INTERNAL_find_atomic_fields
 .find_atomic_fields <- function(df) {
     covariates <- colnames(df)
     for (i in seq_along(covariates)) {
@@ -30,6 +79,37 @@
     covariates[!is.na(covariates)]
 }
 
+#' Validation error utilites
+#'
+#' Helper functions to implement \code{\link{setValidity}} methods for \linkS4class{Panel} subclasses.
+#'
+#' @param msg Character vector containing the current error messages.
+#' @param x An instance of a \linkS4class{Panel} subclass.
+#' @param field String containing the name of the relevant slot under investigation.
+#' @param fields Character vector containing the names of the relevant slots.
+#' @param allowable Character vector of allowable choices for a multiple-choice selection.
+#' @param lower Numeric scalar specifying the lower bound of possible values.
+#' @param upper Numeric scalar specifying the upper bound of possible values.
+#' 
+#' @return
+#' All functions return \code{msg}, possibly appended with additional error messages.
+#'
+#' @details
+#' \code{.single_string_error} adds an error message if any of the slots named in \code{fields} does not contain a single string.
+#'
+#' \code{.valid_string_error} adds an error message if any of the slots named in \code{fields} does not contain a single non-\code{NA} string.
+#'
+#' \code{.valid_logical_error} adds an error message if any of the slots named in \code{fields} does not contain a non-\code{NA} logical scalar.
+#'
+#' \code{.allowable_choice_error} adds an error message if the slot named \code{field} does not have a value in \code{allowable}, assuming it contains a single string.
+#'
+#' \code{.multiple_choice_error} adds an error message if the slot named \code{field} does not have all of its values in \code{allowable}, assuming it contains a character vector of any length.
+#' 
+#' \code{.valid_number_error} adds an error message if the slot named \code{field} is not a non-\code{NA} number within [\code{lower}, \code{upper}].
+#'
+#' @author Aaron Lun
+#'
+#' @rdname INTERNAL_validation_errors
 .single_string_error <- function(msg, x, fields) {
     for (field in fields) {
         if (length(x[[field]]) != 1L) {
@@ -39,6 +119,7 @@
     msg
 }
 
+#' @rdname INTERNAL_validation_errors
 .valid_logical_error <- function(msg, x, fields) {
     for (field in fields) {
         if (length(val <- x[[field]])!=1 || is.na(val)) {
@@ -48,6 +129,7 @@
     msg
 }
 
+#' @rdname INTERNAL_validation_errors
 .valid_string_error <- function(msg, x, fields) {
     for (field in fields) {
         if (length(val <- x[[field]])!=1 || is.na(val)) {
@@ -57,6 +139,7 @@
     msg
 }
 
+#' @rdname INTERNAL_validation_errors
 .allowable_choice_error <- function(msg, x, field, allowable) {
     if (!x[[field]] %in% allowable) {
         msg <- c(msg, sprintf("'%s' for '%s' should be one of %s", field, class(x)[1],
@@ -65,6 +148,7 @@
     msg
 }
 
+#' @rdname INTERNAL_validation_errors
 .multiple_choice_error <- function(msg, x, field, allowable) {
     if (any(!x[[field]] %in% allowable)) {
         msg <- c(msg, sprintf("values of '%s' for '%s' should be in %s", field, class(x)[1],
@@ -73,6 +157,7 @@
     msg
 }
 
+#' @rdname INTERNAL_validation_errors
 .valid_number_error <- function(msg, x, field, lower, upper) {
     if (length(val <- x[[field]])!=1 || is.na(val) || val < lower || val > upper) {
         msg <- c(msg, sprintf("'%s' for '%s' should be a numeric scalar in [%s, %s]", 
@@ -81,6 +166,20 @@
     msg
 }
 
+#' Replace with first choice
+#'
+#' Replace a \code{NA} value in a slot with the first valid choice.
+#' This is usually called in \code{\link{.refineParameters}}.
+#'
+#' @param x An instance of a \linkS4class{Panel} class.
+#' @param field String containing the name of the relevant slot.
+#' @param choices Character vector of permissible values for this slot.
+#' 
+#' @return
+#' \code{x} where the slot named \code{field} is replaced with \code{choices[1]} if it was previously \code{NA}.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_replace_na_with_first
 .replace_na_with_first <- function(x, field, choices) {
     if (is.na(chosen <- x[[field]]) || !chosen %in% choices) {
         x[[field]] <- choices[1]

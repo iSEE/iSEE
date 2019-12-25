@@ -295,3 +295,48 @@
 .multiSelectionHasActive <- function(x) {
     !is.null(.multiSelectionActive(x))
 }
+
+#' Render an unselected panel
+#'
+#' Trigger a re-rendering of a particular panel after clearing all active and saved selections.
+#'
+#' @param panel_name String containing the name of the panel.
+#' @param pObjects An environment containing \code{memory}, a list of DataFrames containing parameters for each panel of each type.
+#' @param rObjects A reactive list containing incrementable counters for all panels,
+#'
+#' @return \code{NULL}, invisibly.
+#' \code{pObjects} and \code{rObjects} are modified by reference.
+#'
+#' @details
+#' This function will trigger re-rendering of the current panel by updating the appropriate incrementable counter in \code{rObjects}.
+#' It will clear any active and saved selections, and trigger rerendering all children via the observers in \code{\link{.create_child_propagation_observers}}.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_regenerate_unselected_plot
+#' @seealso
+#' \code{\link{iSEE}}
+.regenerate_unselected_plot <- function(panel_name, pObjects, rObjects) {
+    rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
+
+    # Destroying any brushes or lasso waypoints.
+    has_active <- .multiSelectionHasActive(pObjects$memory[[panel_name]])
+    pObjects$memory[[panel_name]] <- .multiSelectionClear(pObjects$memory[[panel_name]])
+
+    # Destroying history.
+    has_saved <- .any_saved_selection(pObjects$memory[[panel_name]])
+    pObjects$memory[[panel_name]][[.multiSelectHistory]] <- list()
+
+    # Forcibly updating all children.
+    # Hypothetically, this could cause union children to trigger twice,
+    # as their reactive values will be updated twice. In practice,
+    # plot rendering should occur after all reactives are resolved,
+    # so this shouldn't occur. Oh well.
+    if (has_active) {
+        .safe_reactive_bump(rObjects, paste0(panel_name, "_", .panelReactivated))
+    }
+    if (has_saved) {
+        .safe_reactive_bump(rObjects, paste0(panel_name, "_", .panelResaved))
+    }
+
+    invisible(NULL)
+}

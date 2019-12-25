@@ -97,6 +97,7 @@
 #' \item \code{\link{.multiSelectionRestricted}(x)} will always return \code{TRUE}.
 #' \item \code{\link{.multiSelectionDimension}(x)} will always return \code{"none"}.
 #' \item \code{\link{.multiSelectionActive}(x)} will always return \code{NULL}.
+#' \item \code{\link{.multiSelectionClear}(x)} will always return \code{x}.
 #' \item \code{\link{.singleSelectionDimension}(x)} will return \code{.multiSelectionDimension(x)}.
 #' \item \code{\link{.singleSelectionValue}(x)} will return \code{NULL}.
 #' \item \code{\link{.singleSelectionSlots}(x)} will return an empty list.
@@ -118,6 +119,8 @@
 #' .hideInterface,Panel-method
 #' .multiSelectionRestricted,Panel-method
 #' .multiSelectionDimension,Panel-method 
+#' .multiSelectionClear,Panel-method 
+#' .multiSelectionActive,Panel-method 
 #' .singleSelectionDimension,Panel-method
 #' .singleSelectionValue,Panel-method
 #' .singleSelectionSlots,Panel-method
@@ -266,6 +269,9 @@ setMethod(".multiSelectionDimension", "Panel", function(x) "none")
 
 #' @export
 setMethod(".multiSelectionActive", "Panel", function(x) NULL)
+
+#' @export
+setMethod(".multiSelectionClear", "Panel", function(x) x)
 
 #' @export
 setMethod(".singleSelectionDimension", "Panel", function(x) .multiSelectionDimension(x))

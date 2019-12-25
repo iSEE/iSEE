@@ -341,7 +341,7 @@ setMethod(".defineOutput", "DotPlot", function(x, id) {
     plot_name <- .getEncodedName(x)
     col <- .getPanelColor(x)
 
-    .create_plot_ui(plot_name, brush_direction="xy",
+    .define_plot_ui(plot_name, brush_direction="xy",
         height=x[[.organizationHeight]],
         brush_fill=.lighten_color_for_fill(col),
         brush_stroke=col
@@ -353,7 +353,7 @@ setMethod(".renderOutput", "DotPlot", function(x, se, colormap, output, pObjects
 # TODO: move colormap INSIDE se's metadata.
     plot_name <- .getEncodedName(x)
 
-    .define_plot_output(plot_name, se=se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
+    .create_plot_output(plot_name, se=se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
 
     callNextMethod()
 })

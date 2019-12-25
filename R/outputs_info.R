@@ -1,16 +1,24 @@
-#' Define the link information
+#' Create information boxes 
 #'
-#' Define the text field containing linking information for a given plot.
+#' Create reactive elements to render text field containing various information for a given panel.
 #'
-#' @inheritParams .define_plot_parameter_observers
+#' @param plot_name String containing the name of the panel transmitting a multiple selection.
+#' @param output The Shiny output object from the server function.
+#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
+#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
+#'
+#' @details
+#' The linking information box contains information about single selections that are transmitted to/from the current panel.
+#'
+#' The selection information box contains information about multiple selections that are transmitted to/from the current panel.
 #'
 #' @return
-#' A reactive element to render the plot is added to \code{output}.
+#' Reactive elements to render the relevant text fields are added to \code{output}.
 #' A \code{NULL} is invisibly returned.
 #'
-#' @rdname INTERNAL_define_link_info_output
+#' @rdname INTERNAL_link_info_output
 #' @importFrom shiny tagList renderUI
-.define_selection_info_output <- function(plot_name, output, pObjects, rObjects) {
+.create_selection_info_output <- function(plot_name, output, pObjects, rObjects) {
     gen_field <- paste0(plot_name, "_", .panelGeneralInfo)
 
     output[[gen_field]] <- renderUI({
@@ -70,9 +78,10 @@
     })
 }
 
+#' @rdname INTERNAL_link_info_output
 #' @importFrom shiny tagList renderUI
 #' @importFrom igraph adjacent_vertices get.edge.ids E
-.define_link_info_output <- function(plot_name, output, pObjects, rObjects) {
+.create_link_info_output <- function(plot_name, output, pObjects, rObjects) {
     link_field <- paste0(plot_name, "_", .panelLinkInfo)
 
     output[[link_field]] <- renderUI({

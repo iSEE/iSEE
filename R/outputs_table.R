@@ -1,5 +1,24 @@
+#' Create Table output
+#'
+#' Create a reactive expression to render the Table output,
+#' in a manner that satisfies all the requirements of the \code{\link{.renderOutput}} generic.
+#' This function will call \code{\link{.generateOutput}} to get the heavy lifting done.
+#'
+#' @param panel_name String containing the name of the panel.
+#' @param se A \linkS4class{SummarizedExperiment} object for the current dataset.
+#' @param output The Shiny output object from the server function.
+#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
+#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
+#'
+#' @return
+#' A reactive element to render the table is added to \code{output}.
+#' A \code{NULL} is invisibly returned.
+#' 
+#' @author Aaron Lun
+#'
+#' @rdname INTERNAL_create_table_output
 #' @importFrom DT datatable renderDataTable selectRows dataTableProxy
-.define_table_output <- function(panel_name, se, output, pObjects, rObjects) {
+.create_table_output <- function(panel_name, se, output, pObjects, rObjects) {
     force(se)
 
     output[[panel_name]] <- renderDataTable({
@@ -43,16 +62,33 @@
     })
 }
 
-.create_table_commands <- function(param_choices, se, all_memory, all_contents) {
+#' Commands to define the Table
+#'
+#' Define commands to generate the contents of the \linkS4class{Table}.
+#' This uses \code{\link{.getTableCommands}} and is itself called inside \code{\link{.generateOutput}}.
+#' 
+#' @param x An instance of a \linkS4class{Table} class.
+#' @param se A \linkS4class{SummarizedExperiment} object for the current dataset.
+#' @param all_memory A list of \linkS4class{Panel} instances representing the current state of the application.
+#' @param all_contents A list of displayed contents for each panel in the app, see \code{\link{.renderOutput}} for details.
+#'
+#' @return
+#' A list containing \code{\link{commands}}, the commands required to produce the data.frame;
+#' and \code{contents}, a data.frame of the current contents of the Table.
+#'
+#' @author Aaron Lun
+#'
+#' @rdname INTERNAL_table_commands
+.define_table_commands <- function(x, se, all_memory, all_contents) {
     tab_cmds <- .initialize_cmd_store()
     eval_env <- new.env()
     eval_env$se <- se
 
     # Doing this first so that .getTableCommands can respond to the selection.
-    select_cmds <- .processMultiSelections(param_choices, all_memory, all_contents, eval_env)
+    select_cmds <- .processMultiSelections(x, all_memory, all_contents, eval_env)
 
     # Creating the table and storing it.
-    tab_cmds <- .add_command(tab_cmds, .getTableCommands(param_choices, eval_env))
+    tab_cmds <- .add_command(tab_cmds, .getTableCommands(x, eval_env))
     tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
 
     list(commands=tab_cmds, contents=eval_env$tab)

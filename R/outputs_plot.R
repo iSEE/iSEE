@@ -1,23 +1,25 @@
-#' Define the plot output
+#' Create the plot output
 #'
-#' Define a reactive expression to render the plot output for a given panel type and identifier.
+#' Create a reactive expression to render the plot output.
+#' This is used inside \code{\link{.renderOutput,DotPlot-method}} to satisfy the requirements of that generic.
+#' It calls \code{\link{.generateOutput}} to do the heavy lifting of creating a panel-specific plot.
 #'
-#' @inheritParams .define_plot_parameter_observers
+#' @param plot_name String containing the current name of the plot panel.
 #' @param se The \linkS4class{SingleCellExperiment} object to be visualized.
 #' @param colormap The \linkS4class{ExperimentColorMap} object containing coloring information.
-#' @param FUN A function that creates a plot of the panel type specified by \code{mode}, see \code{\link{.make_redDimPlot}} for an example.
-#' @param selectable Logical scalar indicating whether the plot contains points that can be selected.
+#' @param output The Shiny output object from the server function.
+#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
+#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
 #'
 #' @return
 #' A reactive element to render the plot is added to \code{output}.
-#' If \code{selectable=TRUE}, another element is added to fill in selection information in the text field.
 #' A \code{NULL} is invisibly returned.
 #'
 #' @author Aaron Lun
 #'
-#' @rdname INTERNAL_define_plot_output
+#' @rdname INTERNAL_create_plot_output
 #' @importFrom shiny renderPlot renderUI tagList br
-.define_plot_output <- function(plot_name, se, colormap, output, pObjects, rObjects) {
+.create_plot_output <- function(plot_name, se, colormap, output, pObjects, rObjects) {
     force(se)
     force(colormap)
     gen_field <- paste0(plot_name, "_", .panelGeneralInfo)
@@ -38,11 +40,11 @@
     invisible(NULL)
 }
 
-#' Create plot UI
+#' Define the plot UI
 #'
-#' Create the \code{\link{plotOutput}} object for a given panel containing a single plot.
+#' Define the \code{\link{plotOutput}} object for a given panel containing a single plot.
 #'
-#' @inheritParams .define_plot_parameter_observers
+#' @param plot_name String containing the name of the plot.
 #' @param height Integer scalar specifying the height of the plot in pixels.
 #' @param brush_direction String specifying the direction of brushing, i.e., \code{"x"}, \code{"y"} or \code{"xy"}.
 #' @param brush_fill String containing a color to use for the fill of the brush.
@@ -52,10 +54,10 @@
 #'
 #' @author Aaron Lun
 #'
-#' @rdname INTERNAL_create_plot_ui
+#' @rdname INTERNAL_define_plot_ui
 #' @importFrom shinyWidgets addSpinner
 #' @importFrom shiny brushOpts
-.create_plot_ui <- function(plot_name, height, brush_direction, brush_fill, brush_stroke) {
+.define_plot_ui <- function(plot_name, height, brush_direction, brush_fill, brush_stroke) {
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
     brush.opts <- brushOpts(.input_FUN(.brushField), resetOnNew=TRUE, delay=2000,

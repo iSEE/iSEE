@@ -211,23 +211,23 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
 
     .define_child_propagation_observers(panel_name, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_selection_choice_observer(panel_name, by_field=.selectRowSource, 
+    .create_multi_selection_choice_observer(panel_name, by_field=.selectRowSource, 
         type_field=.selectRowType, saved_field=.selectRowSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_selection_choice_observer(panel_name, by_field=.selectColSource, 
+    .create_multi_selection_choice_observer(panel_name, by_field=.selectColSource, 
         type_field=.selectColType, saved_field=.selectColSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_saved_selection_choice_observers(panel_name, by_field=.selectRowSource,
+    .create_multi_selection_type_observers(panel_name, by_field=.selectRowSource,
         type_field=.selectRowType, saved_field=.selectRowSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_saved_selection_choice_observers(panel_name, by_field=.selectColSource,
+    .create_multi_selection_type_observers(panel_name, by_field=.selectColSource,
         type_field=.selectColType, saved_field=.selectColSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_saved_selection_observers(panel_name, 
+    .create_multi_selection_history_observers(panel_name, 
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     for (f in .singleSelectionSlots(x)) {

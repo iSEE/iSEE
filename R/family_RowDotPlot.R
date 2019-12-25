@@ -200,7 +200,7 @@ setMethod(".createObservers", "RowDotPlot", function(x, se, input, session, pObj
     .define_dimname_propagation_observer(plot_name, choices=rownames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_selection_effect_observer(plot_name,
+    .create_multi_selection_effect_observer(plot_name,
         by_field=.selectRowSource, type_field=.selectRowType, saved_field=.selectRowSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })

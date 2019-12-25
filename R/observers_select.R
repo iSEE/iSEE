@@ -2,22 +2,31 @@
 
 #' Selection parameter observers
 #'
-#' A function to set up observers for selection parameter observers used in the app.
+#' A function to set up observers for the choice and effect of transmitting panels for multiple selections.
 #'
+#' @param panel_name String containing the name of the panel.
+#' @param by_field String specifying the name of the slot containing the identity of the panel transmitting to the current panel.
+#' @param type_field String specifying the name of the slot containing the type of multiple selection to use from the transmitter.
+#' @param saved_field String specifying the name of the slot containing the index of the saved selection to use from the transmitter.
 #' @param input The Shiny input object from the server function.
 #' @param session The Shiny session object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
 #'
-#' @return Observers are created in the server function in which this is called.
+#' @return Observers are created in the server function in which these functions are called.
 #' A \code{NULL} value is invisibly returned.
 #'
 #' @author Aaron Lun
 #'
+#' @seealso
+#' \code{\link{.renderOutput,Panel-method}}, where \code{.create_multi_selection_choice_observer} is called.
+#'
+#' \code{\link{.renderOutput,DotPlot-method}}, where \code{.create_multi_selection_effect_observer} is called.
+#'
 #' @rdname INTERNAL_selection_parameter_observers
-#' @importFrom shiny observeEvent isolate showNotification updateSelectInput 
+#' @importFrom shiny observeEvent showNotification updateSelectInput 
 #' @importFrom igraph is_dag simplify
-.define_selection_choice_observer <- function(panel_name, 
+.create_multi_selection_choice_observer <- function(panel_name, 
     by_field, type_field, saved_field, input, session, pObjects, rObjects) 
 {
     repop_name <- paste0(panel_name, "_", .panelRepopulated)
@@ -92,8 +101,9 @@
     invisible(NULL)
 }
 
+#' @rdname INTERNAL_selection_parameter_observers
 #' @importFrom shiny showNotification observeEvent
-.define_selection_effect_observer <- function(plot_name, 
+.create_multi_selection_effect_observer <- function(plot_name, 
     by_field, type_field, saved_field, 
     input, session, pObjects, rObjects) 
 {
@@ -127,23 +137,9 @@
     invisible(NULL)
 }
 
-#' Multi-select parameter observers
-#'
-#' Observers for the multiple (i.e., saved) selection parameter choices.
-#'
-#' @param input The Shiny input object from the server function.
-#' @param session The Shiny session object from the server function.
-#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
-#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
-#'
-#' @return Observers are created in the server function in which this is called.
-#' A \code{NULL} value is invisibly returned.
-#'
-#' @author Aaron Lun
-#'
-#' @importFrom shiny observeEvent observe updateSelectInput isolate
-#' @rdname INTERNAL_multiselect_param_observers
-.define_saved_selection_choice_observers <- function(panel_name, 
+#' @importFrom shiny observeEvent observe updateSelectInput 
+#' @rdname INTERNAL_selection_parameter_observers
+.create_multi_selection_type_observers <- function(panel_name, 
     by_field, type_field, saved_field,
     input, session, pObjects, rObjects) 
 {
@@ -239,11 +235,12 @@
     invisible(NULL)
 }
 
-
 #' Multiple selection observers
 #'
 #' Observers to change the multiple selections by saving the active selection or deleting existing saved selections.
+#' This differs from \code{\link{.create_multi_selection_type_observers}}, which just involves using existing saved selections.
 #'
+#' @param plot_name String containing the name of the plot..
 #' @param input The Shiny input object from the server function.
 #' @param session The Shiny session object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
@@ -254,9 +251,9 @@
 #'
 #' @author Aaron Lun
 #'
-#' @importFrom shiny observeEvent isolate
+#' @importFrom shiny observeEvent 
 #' @rdname INTERNAL_multiple_select_observers
-.define_saved_selection_history_observers <- function(plot_name, input, session, pObjects, rObjects) {
+.create_multi_selection_history_observers <- function(plot_name, input, session, pObjects, rObjects) {
     save_field <- paste0(plot_name, "_", .multiSelectSave)
     del_field <- paste0(plot_name, "_", .multiSelectDelete)
     info_name <- paste0(plot_name, "_", .panelGeneralInfo)

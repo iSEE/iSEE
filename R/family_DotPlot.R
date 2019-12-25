@@ -326,10 +326,10 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     # Filling the plot interaction observers:
-    .define_brush_observer(plot_name, input=input, session=session,
+    .create_brush_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 
-    .define_lasso_observer(plot_name, input=input, session=session,
+    .create_lasso_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 
     .define_zoom_observer(plot_name, input=input, session=session,

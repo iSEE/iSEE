@@ -1,7 +1,8 @@
-#' Brush observers
+#' Brush observer
 #'
-#' A function to set up observers for brushing on point-based plots, as used in the app.
+#' A function to set up observers for brushing on \linkS4class{DotPlot}s.
 #'
+#' @param plot_name String containing the name of the plot panel containing the brush.
 #' @param input The Shiny input object from the server function.
 #' @param session The Shiny session object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
@@ -11,19 +12,21 @@
 #' There are three "phases" of a Shiny brush:
 #' \itemize{
 #' \item the Javascript (JS) brush, which is what the user draws and the observer responds to.
-#'   This is eliminated upon replotting for various consistency reasons.
+#' This is eliminated upon replotting for various consistency reasons.
 #' \item the active brush, which is what is stored in the \code{.brushData} field of the memory.
 #' \item the saved brush(es), stored in the \code{.multiSelectHistory} field of the memory.
 #' }
-#' This particular observer only deals with the first and second elements, updating them as necessary.
+#' This particular observer only deals with the first and second elements, updating the latter with the former as necessary.
 #'
 #' @return Observers are created in the server function in which this is called.
 #' A \code{NULL} value is invisibly returned.
 #'
+#' @seealso
+#' \code{\link{.createObservers,DotPlot-method}}, where this function is called.
 #' @rdname INTERNAL_brush_observers
 #' @author Aaron Lun
 #' @importFrom shiny observeEvent
-.define_brush_observer <- function(plot_name, input, session, pObjects, rObjects) {
+.create_brush_observer <- function(plot_name, input, session, pObjects, rObjects) {
     act_name <- paste0(plot_name, "_", .panelReactivated)
     save_field <- paste0(plot_name, "_", .multiSelectSave)
 
@@ -53,8 +56,9 @@
 
 #' Lasso selection observers
 #'
-#' Observers for the lasso selection.
+#' Observers for the lasso selection feature of \linkS4class{DotPlot}s.
 #'
+#' @param plot_name String containing the name of the plot panel containing the brush.
 #' @param input The Shiny input object from the server function.
 #' @param session The Shiny session object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
@@ -63,11 +67,22 @@
 #' @return Observers are created in the server function in which this is called.
 #' A \code{NULL} value is invisibly returned.
 #'
+#' @details
+#' Unlike Shiny brushing, the lasso involves some work to check whether the click event closes the lasso.
+#' Only a closed lasso will result in rendering the children of \code{plot_name}; 
+#' before that, no selection is considered to have been made.
+#'
+#' Like brushing, the lasso structure itself is stored in the \code{.brushData} slot.
+#' Both lassos and Shiny brushes are considered to be specializations of the \dQuote{brush} concept.
+#' Practically, we re-use this slot to make it clear that we can only have one brush or lasso at any given time.
+#'
 #' @author Aaron Lun
 #'
+#' @seealso
+#' \code{\link{.createObservers,DotPlot-method}}, where this function is called.
 #' @importFrom shiny observeEvent isolate
 #' @rdname INTERNAL_lasso_observers
-.define_lasso_observer <- function(plot_name, input, session, pObjects, rObjects) {
+.create_lasso_observer <- function(plot_name, input, session, pObjects, rObjects) {
     click_field <- paste0(plot_name, "_", .lassoClick)
     brush_field <- paste0(plot_name, "_", .brushField)
     act_name <- paste0(plot_name, "_", .panelReactivated)
@@ -123,95 +138,6 @@
         if (reactivated) {
             .safe_reactive_bump(rObjects, act_name)
         }
-    })
-
-    invisible(NULL)
-}
-
-#' Multiple selection observers
-#'
-#' Observers to change the multiple selections by saving the active selection or deleting existing saved selections.
-#'
-#' @param input The Shiny input object from the server function.
-#' @param session The Shiny session object from the server function.
-#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
-#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
-#'
-#' @return Observers are created in the server function in which this is called.
-#' A \code{NULL} value is invisibly returned.
-#'
-#' @author Aaron Lun
-#'
-#' @importFrom shiny observeEvent isolate
-#' @rdname INTERNAL_multiple_select_observers
-.define_saved_selection_observers <- function(plot_name, input, session, pObjects, rObjects) {
-    save_field <- paste0(plot_name, "_", .multiSelectSave)
-    del_field <- paste0(plot_name, "_", .multiSelectDelete)
-    info_name <- paste0(plot_name, "_", .panelGeneralInfo)
-    saved_select_name <- paste0(plot_name, "_", .updateSavedChoices)
-    resaved_name <- paste0(plot_name, "_", .panelResaved)
-
-    ## Save selection observer. ---
-    observeEvent(input[[save_field]], {
-        instance <- pObjects$memory[[plot_name]]
-        current <- instance[[.multiSelectHistory]]
-        to_store <- .multiSelectionActive(instance)
-        if (is.null(to_store)) {
-            return(NULL)
-        }
-
-        pObjects$memory[[plot_name]][[.multiSelectHistory]] <- c(current, list(to_store))
-
-        # Updating self (replot to get number).
-        .safe_reactive_bump(rObjects, info_name)
-        .safe_reactive_bump(rObjects, plot_name)
-
-        trans_row <- .multiSelectionDimension(instance)=="row"
-        by_field <- if (trans_row) .selectRowSource else .selectColSource
-        if (instance[[by_field]]==plot_name) {
-            .safe_reactive_bump(rObjects, saved_select_name)
-        }
-
-        # Updating children.
-        .safe_reactive_bump(rObjects, resaved_name)
-
-        .disableButtonIf(
-            del_field,
-            FALSE,
-            .buttonEmptyHistoryLabel, .buttonDeleteLabel, session
-        )
-    })
-
-    ## Deleted selection observer. ---
-    observeEvent(input[[del_field]], {
-        instance <- pObjects$memory[[plot_name]]
-        current <- instance[[.multiSelectHistory]]
-        current <- head(current, -1)
-        pObjects$memory[[plot_name]][[.multiSelectHistory]] <- current
-
-        # Updating self.
-        .safe_reactive_bump(rObjects, info_name)
-        .safe_reactive_bump(rObjects, plot_name)
-
-        trans_row <- .multiSelectionDimension(instance)=="row"
-        by_field <- if (trans_row) .selectRowSource else .selectColSource
-        if (instance[[by_field]]==plot_name) {
-            .safe_reactive_bump(rObjects, saved_select_name)
-
-            saved_field <- if (trans_row) .selectRowSaved else .selectColSaved
-            if (instance[[saved_field]] > length(current)) {
-                pObjects$memory[[plot_name]][[saved_field]] <- 0L
-            }
-        }
-
-        # Updating children.
-        .safe_reactive_bump(rObjects, resaved_name)
-
-        .disableButtonIf(
-            del_field,
-            length(current)==0,
-            .buttonEmptyHistoryLabel, .buttonDeleteLabel, session
-        )
     })
 
     invisible(NULL)

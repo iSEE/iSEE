@@ -238,3 +238,93 @@
 
     invisible(NULL)
 }
+
+
+#' Multiple selection observers
+#'
+#' Observers to change the multiple selections by saving the active selection or deleting existing saved selections.
+#'
+#' @param input The Shiny input object from the server function.
+#' @param session The Shiny session object from the server function.
+#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
+#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
+#'
+#' @return Observers are created in the server function in which this is called.
+#' A \code{NULL} value is invisibly returned.
+#'
+#' @author Aaron Lun
+#'
+#' @importFrom shiny observeEvent isolate
+#' @rdname INTERNAL_multiple_select_observers
+.define_saved_selection_history_observers <- function(plot_name, input, session, pObjects, rObjects) {
+    save_field <- paste0(plot_name, "_", .multiSelectSave)
+    del_field <- paste0(plot_name, "_", .multiSelectDelete)
+    info_name <- paste0(plot_name, "_", .panelGeneralInfo)
+    saved_select_name <- paste0(plot_name, "_", .updateSavedChoices)
+    resaved_name <- paste0(plot_name, "_", .panelResaved)
+
+    ## Save selection observer. ---
+    observeEvent(input[[save_field]], {
+        instance <- pObjects$memory[[plot_name]]
+        current <- instance[[.multiSelectHistory]]
+        to_store <- .multiSelectionActive(instance)
+        if (is.null(to_store)) {
+            return(NULL)
+        }
+
+        pObjects$memory[[plot_name]][[.multiSelectHistory]] <- c(current, list(to_store))
+
+        # Updating self (replot to get number).
+        .safe_reactive_bump(rObjects, info_name)
+        .safe_reactive_bump(rObjects, plot_name)
+
+        trans_row <- .multiSelectionDimension(instance)=="row"
+        by_field <- if (trans_row) .selectRowSource else .selectColSource
+        if (instance[[by_field]]==plot_name) {
+            .safe_reactive_bump(rObjects, saved_select_name)
+        }
+
+        # Updating children.
+        .safe_reactive_bump(rObjects, resaved_name)
+
+        .disableButtonIf(
+            del_field,
+            FALSE,
+            .buttonEmptyHistoryLabel, .buttonDeleteLabel, session
+        )
+    })
+
+    ## Deleted selection observer. ---
+    observeEvent(input[[del_field]], {
+        instance <- pObjects$memory[[plot_name]]
+        current <- instance[[.multiSelectHistory]]
+        current <- head(current, -1)
+        pObjects$memory[[plot_name]][[.multiSelectHistory]] <- current
+
+        # Updating self.
+        .safe_reactive_bump(rObjects, info_name)
+        .safe_reactive_bump(rObjects, plot_name)
+
+        trans_row <- .multiSelectionDimension(instance)=="row"
+        by_field <- if (trans_row) .selectRowSource else .selectColSource
+        if (instance[[by_field]]==plot_name) {
+            .safe_reactive_bump(rObjects, saved_select_name)
+
+            saved_field <- if (trans_row) .selectRowSaved else .selectColSaved
+            if (instance[[saved_field]] > length(current)) {
+                pObjects$memory[[plot_name]][[saved_field]] <- 0L
+            }
+        }
+
+        # Updating children.
+        .safe_reactive_bump(rObjects, resaved_name)
+
+        .disableButtonIf(
+            del_field,
+            length(current)==0,
+            .buttonEmptyHistoryLabel, .buttonDeleteLabel, session
+        )
+    })
+
+    invisible(NULL)
+}

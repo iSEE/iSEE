@@ -225,10 +225,10 @@ setMethod(".createObservers", "RedDimPlot", function(x, se, input, session, pObj
 
     plot_name <- .getEncodedName(x)
 
-    .define_protected_parameter_observers(plot_name, fields=c(.redDimXAxis, .redDimYAxis),
+    .create_protected_parameter_observers(plot_name, fields=c(.redDimXAxis, .redDimYAxis),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_box_observers(plot_name, .dataParamBoxOpen, input, pObjects)
+    .create_box_observers(plot_name, .dataParamBoxOpen, input, pObjects)
 
     cur_field <- paste0(plot_name, "_", .redDimType)
     dim_fieldX <- paste0(plot_name, "_", .redDimXAxis)

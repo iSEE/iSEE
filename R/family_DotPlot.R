@@ -308,15 +308,15 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 
     .safe_reactive_init(rObjects, paste0(plot_name, "_", .panelGeneralInfo))
 
-    .define_box_observers(plot_name, c(.visualParamBoxOpen, .selectParamBoxOpen), input, pObjects)
+    .create_box_observers(plot_name, c(.visualParamBoxOpen, .selectParamBoxOpen), input, pObjects)
 
-    .define_visual_parameter_choice_observer(plot_name, input, pObjects)
+    .create_visual_parameter_choice_observer(plot_name, input, pObjects)
 
-    .define_protected_parameter_observers(plot_name,
+    .create_protected_parameter_observers(plot_name,
         fields=c(.facetByRow, .facetByColumn),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_nonfundamental_parameter_observers(plot_name,
+    .create_nonfundamental_parameter_observers(plot_name,
         fields=c(
             .colorByDefaultColor, .selectColor, .selectTransAlpha,
             .shapeByField, .sizeByField,
@@ -332,7 +332,7 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
     .create_lasso_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 
-    .define_zoom_observer(plot_name, input=input, session=session,
+    .create_zoom_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 })
 

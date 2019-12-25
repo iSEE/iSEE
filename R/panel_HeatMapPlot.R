@@ -279,15 +279,15 @@ setMethod(".createObservers", "HeatMapPlot", function(x, se, input, session, pOb
 
     .safe_reactive_init(rObjects, paste0(plot_name, "_", .heatMapLegend))
 
-    .define_box_observers(plot_name, c(.heatMapFeatNameBoxOpen, .heatMapColDataBoxOpen, .selectParamBoxOpen), input, pObjects)
+    .create_box_observers(plot_name, c(.heatMapFeatNameBoxOpen, .heatMapColDataBoxOpen, .selectParamBoxOpen), input, pObjects)
 
-    .define_nonfundamental_parameter_observers(plot_name,
+    .create_nonfundamental_parameter_observers(plot_name,
         fields=c(.heatMapAssay, .heatMapLower, .heatMapUpper, .heatMapCenteredColors,
             .heatMapFeatName, .heatMapColData),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     # Don't ignore empty inputs.
-    .define_nonfundamental_parameter_observers(plot_name, fields=.heatMapCenterScale,
+    .create_nonfundamental_parameter_observers(plot_name, fields=.heatMapCenterScale,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects, ignoreNULL=FALSE)
 
     .create_heatmap_import_observer(plot_name, .getFullName(x), se, input, session, pObjects, rObjects)

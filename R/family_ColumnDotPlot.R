@@ -192,7 +192,7 @@ setMethod(".createObservers", "ColumnDotPlot", function(x, se, input, session, p
 
     plot_name <- .getEncodedName(x)
 
-    .define_nonfundamental_parameter_observers(plot_name,
+    .create_nonfundamental_parameter_observers(plot_name,
         fields=c(.colorByColData, .colorByFeatNameAssay,
             .shapeByColData, .sizeByColData, .colorBySampNameColor),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)

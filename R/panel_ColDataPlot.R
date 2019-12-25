@@ -194,7 +194,7 @@ setMethod(".createObservers", "ColDataPlot", function(x, se, input, session, pOb
 
     plot_name <- .getEncodedName(x)
 
-    .define_protected_parameter_observers(plot_name,
+    .create_protected_parameter_observers(plot_name,
         fields=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })

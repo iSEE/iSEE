@@ -149,9 +149,9 @@ setMethod(".createObservers", "Table", function(x, se, input, session, pObjects,
 
     panel_name <- .getEncodedName(x)
 
-    .define_box_observers(panel_name, .selectParamBoxOpen, input, pObjects)
+    .create_box_observers(panel_name, .selectParamBoxOpen, input, pObjects)
 
-    .define_table_observers(panel_name, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+    .create_table_observers(panel_name, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export

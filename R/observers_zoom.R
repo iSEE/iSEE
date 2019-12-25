@@ -1,7 +1,10 @@
 #' Zoom observers
 #'
 #' Observers for the zoom functionality.
+#' This will zoom in to the region covered by a Shiny brush after double-clicking within the area of a brush.
+#' Double clicking outside of the brush will zoom out to the original coordinates.
 #'
+#' @param plot_name String containing the name of the panel.
 #' @param input The Shiny input object from the server function.
 #' @param session The Shiny session object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
@@ -14,7 +17,7 @@
 #'
 #' @importFrom shiny observeEvent
 #' @rdname INTERNAL_zoom_observers
-.define_zoom_observer <- function(plot_name, input, session, pObjects, rObjects) {
+.create_zoom_observer <- function(plot_name, input, session, pObjects, rObjects) {
     dblclick_field <- paste0(plot_name, "_", .zoomClick)
     act_name <- paste0(plot_name, "_", .panelReactivated)
     save_field <- paste0(plot_name, "_", .multiSelectSave)

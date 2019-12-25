@@ -1,12 +1,24 @@
 #' Panel organization observers for \code{\link{iSEE}}
 #'
 #' A function to set up observers for the panel organization observers used in the app.
+#' These handle the creation, destruction, re-ordering and resizing of all panels.
 #'
+#' @param session The Shiny session object from the server function.
 #' @param input The Shiny input object from the server function.
 #' @param output The Shiny output object from the server function.
 #' @param se The \linkS4class{SummarizedExperiment} object.
+#' @param colormap An \linkS4class{ExperimentColorMap} object that defines custom colormaps.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
+#'
+#' @details
+#' The application does not immediately respond to user changes in the reorganization modal.
+#' Rather, the user must press the \dQuote{Apply settings} for the application to fully re-render.
+#' This avoids wasting time in repeated re-renderings before the reorganization is fully complete.
+#'
+#' The exception to the above rule lies in the interface elements for changing panel sizes.
+#' These are immediately re-rendered upon changes in panel organization while preserving any user-set values of the height/width.
+#' Achieving this requires the use of a \dQuote{working memory}.
 #'
 #' @return Observers are created in the server function in which this is called.
 #' A \code{NULL} value is invisibly returned.
@@ -15,7 +27,7 @@
 #' @rdname INTERNAL_organization_observers
 #' @importFrom shiny renderUI reactiveValues observeEvent
 #' showModal modalDialog isolate removeModal
-.organization_observers <- function(se, colormap, input, output, session, pObjects, rObjects) {
+.create_organization_observers <- function(se, colormap, input, output, session, pObjects, rObjects) {
     output$allPanels <- renderUI({
         force(rObjects$rerender)
         rObjects$rerendered <- .increment_counter(isolate(rObjects$rerendered))
@@ -47,7 +59,7 @@
 
         if (!org_pObjects$initialized) {
             for (x in org_pObjects$memory) {
-                .define_width_height_observers(x, input, org_pObjects)
+                .create_width_height_observers(x, input, org_pObjects)
             }
             org_pObjects$initialized <- TRUE
         }
@@ -93,7 +105,7 @@
                 names(adjusted)[a] <- paste0(mode, idx)
                 org_pObjects$counter[[mode]] <- idx
 
-                .define_width_height_observers(latest, input, org_pObjects)
+                .create_width_height_observers(latest, input, org_pObjects)
             }
             updated_names <- .define_choices(adjusted)
             updateSelectizeInput(session, 'panel_order', 
@@ -133,7 +145,7 @@
 }
 
 #' @importFrom shiny observeEvent
-.define_width_height_observers <- function(panel, input, org_pObjects) {
+.create_width_height_observers <- function(panel, input, org_pObjects) {
     panel_name <- .getEncodedName(panel)
 
     width_name <- paste0(panel_name, "_", .organizationWidth)

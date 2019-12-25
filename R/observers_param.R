@@ -2,8 +2,7 @@
 #'
 #' Define a series of observers to track the opening and closing of parameter boxes for a given panel type.
 #' 
-#' @param mode String specifying the encoded panel type (e.g., \code{"redDimPlot"}).
-#' @param id Integer specifying the index of the current panel.
+#' @param panel_name String containing the name of the panel.
 #' @param box_types Character vector specifying all available box types for the current panel type.
 #' @param input The Shiny input object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
@@ -14,9 +13,9 @@
 #' 
 #' @author Aaron Lun
 #' 
-#' @rdname INTERNAL_define_box_observer
+#' @rdname INTERNAL_box_observer
 #' @importFrom shiny observeEvent
-.define_box_observers <- function(panel_name, box_types, input, pObjects) {
+.create_box_observers <- function(panel_name, box_types, input, pObjects) {
     for (box in box_types) {
         local({
             box0 <- box
@@ -33,7 +32,7 @@
 #'
 #' Define an observer to track the checkboxes in the visual parameter box.
 #'
-#' @inheritParams .define_box_observers
+#' @inheritParams .create_box_observers
 #'
 #' @return
 #' An observer is set up to record the checking of visual parameter options.
@@ -41,9 +40,9 @@
 #'
 #' @author Aaron Lun
 #'
-#' @rdname INTERNAL_define_visual_parameter_choice_observer
+#' @rdname INTERNAL_visual_parameter_choice_observer
 #' @importFrom shiny observeEvent
-.define_visual_parameter_choice_observer  <- function(panel_name, input, pObjects) {
+.create_visual_parameter_choice_observer  <- function(panel_name, input, pObjects) {
     cur_field <- paste0(panel_name, "_", .visualParamChoice)
 
     observeEvent(input[[cur_field]], {
@@ -60,27 +59,28 @@
 
 #' Define plot parameter observers
 #' 
-#' Define a series of observers to track \dQuote{protected} and \dQuote{non-fundamental} parameters for a given panel.
+#' Define a series of observers to track \dQuote{protected} or \dQuote{non-fundamental} parameters for a given panel.
 #' 
-#' @inheritParams .define_box_observers
-#' @param protected Character vector containing the identifies of the UI elements corresponding to protected parameters.
+#' @inheritParams .create_box_observers
 #' @param nonfundamental Character vector containing the identifies of the UI elements corresponding to non-fundamental parameters.
 #' @param session The Shiny session object from the server function.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
+#' @param ignoreInit,ignoreNULL Further arguments to pass to \code{\link{observeEvent}}.
 #' 
 #' @return
 #' Observers are set up to monitor the UI elements that can change the protected and non-fundamental parameters.
 #' A \code{NULL} is invisibly returned.
 #' 
 #' @details
-#' A protected parameter is one that breaks brushes and lassos, usually by changing the actual data being plotted.
+#' A protected parameter is one that breaks existing multiple selections, usually by changing the actual data being plotted.
+#' Alterations to protected parameters should clear all active and saved selections in the panel.
 #' By comparison, a non-fundamental parameter only changes the aesthetics.
 #' 
 #' @author Aaron Lun
 #'
-#' @rdname INTERNAL_define_plot_parameter_observers
+#' @rdname INTERNAL_plot_parameter_observers
 #' @importFrom shiny observeEvent
-.define_nonfundamental_parameter_observers <- function(plot_name, fields, input, session, pObjects, rObjects,
+.create_nonfundamental_parameter_observers <- function(plot_name, fields, input, session, pObjects, rObjects,
     ignoreInit=TRUE, ignoreNULL=TRUE) 
 {
     for (field in fields) {
@@ -102,9 +102,9 @@
     invisible(NULL)
 }
 
-#' @rdname INTERNAL_define_plot_parameter_observers
+#' @rdname INTERNAL_plot_parameter_observers
 #' @importFrom shiny observeEvent
-.define_protected_parameter_observers <- function(plot_name, fields, input, session, pObjects, rObjects,
+.create_protected_parameter_observers <- function(plot_name, fields, input, session, pObjects, rObjects,
     ignoreInit=TRUE, ignoreNULL=TRUE) 
 {
     for (field in fields) {

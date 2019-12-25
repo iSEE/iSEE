@@ -1,5 +1,25 @@
-#' @importFrom shiny observe updateSelectizeInput
-.define_table_observers <- function(panel_name, input, session, pObjects, rObjects) {
+#' Define table-related observers
+#'
+#' Define observers for responding to table selection and search events.
+#'
+#' @param panel_name String containing the name of the panel.
+#' @param input The Shiny input object from the server function.
+#' @param session The Shiny session object from the server function.
+#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
+#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
+#' 
+#' @return Observers are created in the server function in which this is called.
+#' A \code{NULL} value is invisibly returned.
+#'
+#' @details
+#' This needs to plug into the various propagation observers in \code{\link{.create_child_propagation_observers}}
+#' and \code{\link{.create_dimname_propagation_observer}} when the search or single selection changes, respectively.
+#' Note that the \pkg{iSEE} multiple selection concept is not the same as the DataTable multiple selection;
+#' rather, our multiple selections correspond to the search filter.
+#'
+#' @author Aaron Lun
+#' @importFrom shiny observe observeEvent 
+.create_table_observers <- function(panel_name, input, session, pObjects, rObjects) {
     # Note that '.int' variables already have underscores, so these are not necessary.
     select_field <- paste0(panel_name, .int_statTableSelected)
     observeEvent(input[[select_field]], {

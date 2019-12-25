@@ -9,9 +9,9 @@
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
 #' @param tour A data.frame of tour steps to use in \code{\link{introjs}}.
-#' @param runLocal A logical scalar indicating whether this app is run locally or on a server.
-#' @param se_name,ecm_name,cdf_name,csf_name Strings containing variable names to be passed to \code{\link{.track_it_all}}.
-#' @param se_cmds String containing the command used to clean the metadata of the \linkS4class{SummarizedExperiment}.
+#' @param runLocal A logical scalar indicating whether this app is run locally or on a server,
+#' which determines which vignette to serve.
+#' @param se_name,ecm_name Strings containing variable names to be passed to \code{\link{.track_it_all}}.
 #'
 #' @return Observers are created in the server function in which this is called.
 #' A \code{NULL} value is invisibly returned.

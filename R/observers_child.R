@@ -4,17 +4,19 @@
 
 #' Child propagating observer
 #'
-#' These observers decide whether child panels needs to be regenerated based on changes in the transmitting (parent) panels.
+#' These observers decide whether child panels need to be regenerated based on changes in the transmitting (parent) panel for multiple selections.
 #'
+#' @param panel_name String containing the name of the panel transmitting a multiple selection.
+#' @param session The Shiny session object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
-#' @param customSendAll A logical scalar indicating whether all saved selections should be sent to custom panels.
 #'
 #' @return Observers are created in the server function in which this is called.
 #' A \code{NULL} value is invisibly returned.
 #'
 #' @details
-#' We expect \code{rObjects} to contain \code{X_repopulated}, \code{X_reactivated} and \code{X_resaved} for each panel \code{X}.
+#' We expect \code{rObjects} to contain \code{X_INTERNAL_repopulated}, 
+#' \code{X_INTERNAL_reactivated} and \code{X_INTERNAL_resaved} for each panel \code{X}.
 #' These are simply integer counters that get triggered every time \code{X} changes.
 #'
 #' \code{X_repopulated} is bumped when the population of points changes in \code{X}.
@@ -31,7 +33,7 @@
 #'
 #' @importFrom shiny isolate observe
 #' @rdname INTERNAL_child_propagation_observers
-.define_child_propagation_observers <- function(panel_name, session, pObjects, rObjects) {
+.create_child_propagation_observers <- function(panel_name, session, pObjects, rObjects) {
     # Reactive to regenerate children when the point population of the current panel changes.
     repop_name <- paste0(panel_name, "_", .panelRepopulated)
     .safe_reactive_init(rObjects, repop_name)
@@ -114,9 +116,6 @@
                 }
             }
         }
-
-         # Also bumping the dimension names of any dependencies.
-        .safe_reactive_bump(rObjects, dimprop_name)
     })
 
     # Reactive to regenerate children when the saved selection of the current panel changes.

@@ -29,6 +29,7 @@
 .create_brush_observer <- function(plot_name, input, session, pObjects, rObjects) {
     act_name <- paste0(plot_name, "_", .panelReactivated)
     save_field <- paste0(plot_name, "_", .multiSelectSave)
+    dimprop_name <- paste0(plot_name, "_", .propagateDimnames)
 
     brush_field <- paste0(plot_name, "_", .brushField)
     observeEvent(input[[brush_field]], {
@@ -49,6 +50,7 @@
 
         .safe_reactive_bump(rObjects, plot_name)
         .safe_reactive_bump(rObjects, act_name)
+        .safe_reactive_bump(rObjects, dimprop_name)
     }, ignoreInit=TRUE)
 
     invisible(NULL)
@@ -86,6 +88,7 @@
     click_field <- paste0(plot_name, "_", .lassoClick)
     brush_field <- paste0(plot_name, "_", .brushField)
     act_name <- paste0(plot_name, "_", .panelReactivated)
+    dimprop_name <- paste0(plot_name, "_", .propagateDimnames)
     save_field <- paste0(plot_name, "_", .multiSelectSave)
 
     observeEvent(input[[click_field]], {
@@ -137,6 +140,7 @@
 
         if (reactivated) {
             .safe_reactive_bump(rObjects, act_name)
+            .safe_reactive_bump(rObjects, dimprop_name)
         }
     })
 

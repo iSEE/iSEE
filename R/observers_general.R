@@ -25,7 +25,7 @@
 #' @importFrom shinyAce aceEditor
 #'
 #' @rdname INTERNAL_general_observers
-.general_observers <- function(tour, runLocal, se_name, ecm_name, input, session, pObjects, rObjects) {
+.create_general_observers <- function(tour, runLocal, se_name, ecm_name, input, session, pObjects, rObjects) {
     observeEvent(input$tour_firststeps, {
         if(is.null(tour)) {
             tour <- read.delim(system.file("extdata", "intro_firststeps.txt", package="iSEE"),

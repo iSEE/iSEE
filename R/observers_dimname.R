@@ -181,7 +181,7 @@
 #'
 #' @author Aaron Lun
 #'
-#' @rdname INTERNAL_define_dim_name_observer
+#' @rdname INTERNAL_dimname_observer
 #' @importFrom shiny observeEvent observe updateSelectizeInput
 .create_dimname_observers <- function(plot_name, name_field, choices,
     use_mode_field, use_value, is_protected, tab_field, 

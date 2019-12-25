@@ -16,7 +16,7 @@
 #' @return
 #' For \code{.create_selection_param_box} and \code{.create_dotplot_selection_param_box},
 #' a HTML tag object is returned containing a parameter box of UI elements for changing multiple selection parameters.
-#' The latter will also contain elements to control the visual effects of the transmitted selection for \linkS4class{DotPlot]s.
+#' The latter will also contain elements to control the visual effects of the transmitted selection for \linkS4class{DotPlot}s.
 #'
 #' For \code{.define_selection_transmitter}, an interface element is returned for selecting the transmitting panel.
 #' For \code{.define_selection_choices}, a tag list of interface elements is returned to choose the identity of transmitting panel, the type of multiple selection and the index of the saved selection to use.

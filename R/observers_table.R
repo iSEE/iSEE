@@ -19,6 +19,7 @@
 #'
 #' @author Aaron Lun
 #' @importFrom shiny observe observeEvent 
+#' @rdname INTERNAL_table_observers
 .create_table_observers <- function(panel_name, input, session, pObjects, rObjects) {
     # Note that '.int' variables already have underscores, so these are not necessary.
     select_field <- paste0(panel_name, .int_statTableSelected)

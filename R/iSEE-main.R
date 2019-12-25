@@ -425,10 +425,10 @@ iSEE <- function(se,
             }
 
             # Observer set-up.
-            .general_observers(tour, runLocal, se_name, ecm_name, 
+            .create_general_observers(tour, runLocal, se_name, ecm_name, 
                 input, session, pObjects, rObjects)
 
-            .organization_observers(se=se, colormap=colormap,
+            .create_organization_observers(se=se, colormap=colormap,
                 input=input, output=output, session=session,
                 pObjects=pObjects, rObjects=rObjects)
 

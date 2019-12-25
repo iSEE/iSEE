@@ -6,7 +6,7 @@
 #' @param x An instance of a \linkS4class{Panel} class.
 #' @param field String specifying the name of the suffix of the ID of the interface element.
 #' @param FUN Function to create an HTML widget for a given interface element.
-#' @param ... Further arguments to pass to \code{FUN} (in \code{.hide_this_thing}}),
+#' @param ... Further arguments to pass to \code{FUN} (in \code{.hide_this_thing}),
 #' or whichever widget is being used in the specialized functions.
 #'
 #' @return

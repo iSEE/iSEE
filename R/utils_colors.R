@@ -1,3 +1,19 @@
+#' Define Javascript box classes
+#'
+#' Define Javascript box classes for different coloring based on the \linkS4class{Panel} subclasses.
+#' This should be inserted into the \code{head} tag of the UI in \code{\link{iSEE}}.
+#'
+#' @param instances A list of all \linkS4class{Panel} classes that might be used in the app.
+#' 
+#' @return A string containing the definition for Panel-specific JS classes.
+#'
+#' @author Aaron Lun
+#'
+#' @details
+#' Note that JS classes seem to only consider lower-case class names,
+#' so it would be unwise to use Panels in \code{instances} with class names that only differ by case.
+#'
+#' @rdname INTERNAL_define_box_statuses
 .define_box_statuses <- function(instances) {
     all_modes <- vapply(instances, .encodedName, "")
     first <- !duplicated(all_modes)
@@ -75,6 +91,18 @@
     }
 }
 
+#' Lighten colors for fill
+#'
+#' Create a lighter version of the color for each Panel,
+#' primarily for use in the fill of a brush.
+#'
+#' @param col String containing the color of a panel.
+#'
+#' @return String containing the lightened color.
+#'
+#' @author Aaron Lun
+#' 
+#' @rdname INTERNAL_lighten_color_for_fill
 #' @importFrom grDevices col2rgb rgb
 .lighten_color_for_fill <- function(col) {
     new_colors <- 255 - ((255 - col2rgb(col))/5)

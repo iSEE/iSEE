@@ -197,7 +197,7 @@ setMethod(".createObservers", "RowDotPlot", function(x, se, input, session, pObj
             .shapeByRowData, .sizeByRowData, .colorByFeatNameColor),
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .define_dimname_propagation_observer(plot_name, choices=rownames(se),
+    .create_dimname_propagation_observer(plot_name, choices=rownames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_multi_selection_effect_observer(plot_name,

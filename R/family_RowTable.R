@@ -72,7 +72,7 @@ setMethod(".refineParameters", "RowTable", function(x, se) {
 setMethod(".createObservers", "RowTable", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
-    .define_dimname_propagation_observer(.getEncodedName(x), choices=rownames(se),
+    .create_dimname_propagation_observer(.getEncodedName(x), choices=rownames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)
 })
 

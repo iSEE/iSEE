@@ -1,7 +1,29 @@
 .propagateDimnames <- "INTERNAL_dimnames"
 
+#' Set up a dimname propagation observer
+#'
+#' Set up an observer to re-transmit a single selection to the dimension names of all child plots.
+#' This differs from \code{\link{.setup_dimname_source_observer}} in that the current panel is the transmitter, not the receiver.
+#' 
+#' @param panel_name String containing the name of the current transmitting panel.
+#' @param choices Character vector containing all of possible choices for the transmitted dimension names.
+#' Usually set to the row or column names of the provided \linkS4class{SummarizedExperiment} object.
+#' @param session The Shiny session object from the server function.
+#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
+#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
+#'
+#' @details
+#' The specification of \code{choices} is necessary because we run \code{\link{updateSelectizeInput}} to update the choice of dimension name in the child panels;
+#' however, for a server-side selectize, it seems that the possible choices are forgotten unless they are explicitly provided during the update.
+#'
+#' @author Aaron Lun
+#'
+#' @seealso
+#' \code{\link{.createObserver,RowTable-method}} for an example of a transmitter that needs to call this function.
+#'
+#' @rdname INTERNAL_dimname_prop
 #' @importFrom shiny eventReactive updateSelectizeInput
-.define_dimname_propagation_observer <-  function(panel_name, choices, session, pObjects, rObjects) {
+.create_dimname_propagation_observer <-  function(panel_name, choices, session, pObjects, rObjects) {
     dimname_field <- paste0(panel_name, "_", .propagateDimnames)
     .safe_reactive_init(rObjects, dimname_field)
 

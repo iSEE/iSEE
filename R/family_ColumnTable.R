@@ -72,8 +72,7 @@ setMethod(".refineParameters", "ColumnTable", function(x, se) {
 setMethod(".createObservers", "ColumnTable", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
-    panel_name <- .getEncodedName(x)
-    .define_dimname_propagation_observer(panel_name, choices=colnames(se),
+    .create_dimname_propagation_observer(.getEncodedName(x), choices=colnames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)
 })
 

@@ -127,13 +127,13 @@ setGeneric(".hideInterface", function(x, field) standardGeneric(".hideInterface"
 #' there is no direct interaction between \code{input} and \code{output} in this framework.
 #' 
 #' @section Triggering re-rendering:
-#' To trigger re-rendering of an output, observers should call \code{\link{.refreshPanel}(panel_name, rObjects)}, 
+#' To trigger re-rendering of an output, observers should call \code{\link{.refreshPanelOutput}(panel_name, rObjects)}, 
 #' where \code{panel_name} is the name of the current panel.
 #' This will simply re-render the output with no additional side effects and is most useful for responding to aesthetic parameters.
 #'
-#' In the specific case of \linkS4class{DotPlot} subclasses, changes to some parameters may invalidate brushes or lassos,
-#' e.g., if the variable on the axes are altered.
-#' Observers responding to such changes should instead call \code{\link{.refreshPlot}(panel_name, rObjects)},
+#' In some cases, changes to some parameters may invalidate existing multiple selections, 
+#' e.g., brushes and lassos are no longer valid if the variable on the axes are altered.
+#' Observers responding to such changes should instead call \code{\link{.refreshPanelOutput}} with \code{clear=TRUE},
 #' which will destroy all brushes and lassos to avoid misleading conclusions.
 #'
 #' @aliases .createObservers
@@ -160,7 +160,7 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' Methods for this generic are expected to return an output element for inclusion into the \pkg{iSEE} interface, such as the output of \code{\link{plotOutput}}.
 #' Multiple elements can be provided via a \code{\link{tagList}}.
 #' 
-#' The IDs of the output elements are expected to be prefixed with \code{PANEL} (the panel name) and an underscore.
+#' The IDs of the output elements are expected to be prefixed with \code{PANEL} (the panel name from \code{\link{.getEncodedName}(x)}) and an underscore.
 #' One of the output elements may simply have the ID set to \code{PANEL} alone;
 #' this is usually the case for simple panels with one primary output like a \linkS4class{DotPlot}.
 #'
@@ -178,7 +178,7 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' It is expected to attach a reactive expression to \code{output} to render the output elements created by \code{.defineOutput}.
 #' The return value of this generic is not used; only the side-effect of the output set-up is relevant.
 #' 
-#' Within the rendering expression for each output, developers should call \code{force(rObjects[[PANEL]])} where \code{PANEL} is the panel name.
+#' Within the rendering expression for each output, developers should call \code{\link{.respondPanelOutput}(PANEL)} where \code{PANEL} is the panel name.
 #' This ensures that the output is rerendered upon changes to the appropriate reactive variable, which is itself modified by \code{\link{.renderOutput}} and related functions in \code{\link{.createObservers}}.
 #'
 #' @section Additional rendering obligations:

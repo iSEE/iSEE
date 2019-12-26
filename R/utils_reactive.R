@@ -1,3 +1,51 @@
+#' Reactive manipulations for Panel output
+#'
+#' Respond to or request a re-rendering of the \linkS4class{Panel} output via reactive variables.
+#'
+#' @param panel_name String containing the panel name.
+#' @param pObjects An environment containing \code{memory}, a list of \linkS4class{Panels}s containing parameters for each panel.
+#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
+#' @param clear Logical scalar indicating whether selections should be cleared upon re-rendering.
+#'
+#' @return
+#' \code{.respondPanelOutput} will use the \code{panel_name} reactive variable in \code{rObjects}.
+#'
+#' \code{.refreshPanelOutput} will bump the \code{panel_name} reactive variable in \code{rObjects}.
+#' If \code{clear=TRUE}, it will eliminate all selections in the chosen panel via \code{\link{.multiSelectionClear}}.
+#'
+#' Both functions will invisibly return \code{NULL}.
+#'
+#' @details
+#' \code{.respondPanelOutput} should be used in the expression for rendering output, e.g., in \code{\link{.renderOutput}}.
+#' This ensures that this expression is re-evaluated upon requested re-rendering of the panel.
+#'
+#' \code{.refreshPanelOutput} should be used in various observers to request a re-rendering of the panel,
+#' usually in response to user-driven parameter changes in \code{\link{.createObservers}}.
+#'
+#' If \code{clear=TRUE}, active and saved multiple selections in the current panel are removed.
+#' This is usually desirable for parameter changes that invalidate previous selections,
+#' e.g., if the coordinates change in a \linkS4class{DotPlot}, existing brushes and lassos are usually not applicable.
+#'
+#' @author Aaron Lun
+#'
+#' @export
+#' @rdname respondPanelOutput
+.respondPanelOutput <- function(panel_name, rObjects) {
+    force(rObjects[[panel_name]])
+    invisible(NULL)
+}
+
+#' @export
+#' @rdname respondPanelOutput
+.refreshPanelOutput <- function(panel_name, pObjects, rObjects, clear=FALSE) {
+    if (clear) {
+        .regenerate_unselected_plot(panel_name, pObjects, rObjects)
+    } else {
+        .safe_reactive_bump(rObjects, panel_name)
+    }
+    invisible(NULL)
+}
+
 #' Safely use reactive values
 #'
 #' Initialize and bump reactive variables in a manner that avoids errors if they were not already present in \code{rObjects}.

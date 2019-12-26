@@ -29,6 +29,8 @@
 #'
 #' For defining the interface:
 #' \itemize{
+#' \item \code{\link{.hideInterface}(x, field)} returns \code{TRUE} if \code{field="DataBoxOpen"}, 
+#' otherwise it calls \code{\link{.hideInterface,Table-method}}
 #' \item \code{\link{.fullName}(x)} will return the full name of the panel class.
 #' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 #' }
@@ -63,8 +65,12 @@
 #'
 #' @name RowStatTable
 #' @aliases RowStatTable RowStatTable-class
-#' .renderOutput,RowStatTable-method
-#' .getEncodedName,RowStatTable-method
+#' .cacheCommonInfo,RowStatTable-method
+#' .refineParameters,RowStatTable-method
+#' .hideInterface,RowStatTable-method
+#' .getTableCommands,RowStatTable-method
+#' .panelRowor,RowStatTable-method
+#' .fullName,RowStatTable-method
 NULL
 
 #' @export
@@ -118,6 +124,15 @@ setMethod(".fullName", "RowStatTable", function(x) "Row statistics table")
 
 #' @export
 setMethod(".panelColor", "RowStatTable", function(x) "#E47E04")
+
+#' @export
+setMethod(".hideInterface", "RowStatTable", function(x, field) {
+    if (field %in% .dataParamBoxOpen) {
+        TRUE
+    } else {
+        callNextMethod()
+    }
+})
 
 #' @export
 #' @importFrom SummarizedExperiment rowData

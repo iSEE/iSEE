@@ -124,6 +124,10 @@ collated[.selectParamBoxOpen] <- "logical"
 collated[.selectRowSource] <- "character"
 collated[.selectColSource] <- "character"
 
+.dataParamBoxOpen <- "DataBoxOpen"
+
+collated[.dataParamBoxOpen] <- "logical"
+
 .selectRowType <- "SelectRowType"
 .selectRowSaved <- "SelectRowSaved"
 .selectColType <- "SelectColType"
@@ -189,11 +193,9 @@ collated[.selectTransAlpha] <- "numeric"
 collated[.zoomData] <- "numeric"
 collated[.brushData] <- "list"
 
-.dataParamBoxOpen <- "DataBoxOpen"
 .visualParamBoxOpen <- "VisualBoxOpen"
 .visualParamChoice <- "VisualChoices"
 
-collated[.dataParamBoxOpen] <- "logical"
 collated[.visualParamBoxOpen] <- "logical"
 collated[.visualParamChoice] <- "character"
 

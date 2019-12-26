@@ -29,6 +29,8 @@
 #'
 #' For defining the interface:
 #' \itemize{
+#' \item \code{\link{.hideInterface}(x, field)} returns \code{TRUE} if \code{field="DataBoxOpen"}, 
+#' otherwise it calls \code{\link{.hideInterface,Table-method}}
 #' \item \code{\link{.fullName}(x)} will return the full name of the panel class.
 #' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 #' }
@@ -65,6 +67,7 @@
 #' @aliases ColStatTable ColStatTable-class
 #' .cacheCommonInfo,ColStatTable-method
 #' .refineParameters,ColStatTable-method
+#' .hideInterface,ColStatTable-method
 #' .getTableCommands,ColStatTable-method
 #' .panelColor,ColStatTable-method
 #' .fullName,ColStatTable-method
@@ -121,6 +124,15 @@ setMethod(".fullName", "ColStatTable", function(x) "Column statistics table")
 
 #' @export
 setMethod(".panelColor", "ColStatTable", function(x) "#B00258")
+
+#' @export
+setMethod(".hideInterface", "ColStatTable", function(x, field) {
+    if (field %in% .dataParamBoxOpen) {
+        TRUE
+    } else {
+        callNextMethod()
+    }
+})
 
 #' @export
 #' @importFrom SummarizedExperiment colData

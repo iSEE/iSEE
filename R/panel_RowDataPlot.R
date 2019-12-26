@@ -38,8 +38,9 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
-#' This is combined with the interface elements provided by the \linkS4class{RowDotPlot}.
+#' \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
+#' \item \code{\link{.fullName}(x)} will return the full name of the panel class.
+#' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 #' }
 #'
 #' For monitoring reactive expressions:
@@ -92,9 +93,10 @@
 #' @docType methods
 #' @aliases RowDataPlot RowDataPlot-class
 #' .refineParameters,RowDataPlot-method
-#' .defineInterface,RowDataPlot-method
+#' .defineDataInterface,RowDataPlot-method
 #' .createObservers,RowDataPlot-method
 #' .fullName,RowDataPlot-method
+#' .panelColor,RowDataPlot-method
 #' .getCommandsDataXY,RowDataPlot-method
 #' @name RowDataPlot-class
 NULL
@@ -162,7 +164,7 @@ setMethod(".defineInterface", "RowDataPlot", function(x, se, select_info) {
 
     row_covariates <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
 
-    plot.param <- list(
+    list(
         selectInput(.input_FUN(.rowDataYAxis),
             label="Column of interest (Y-axis):",
             choices=row_covariates, selected=x[[.rowDataYAxis]]),
@@ -175,11 +177,6 @@ setMethod(".defineInterface", "RowDataPlot", function(x, se, select_info) {
                 label="Column of interest (X-axis):",
                 choices=row_covariates, selected=x[[.rowDataXAxisRowData]]))
     )
-
-    param <- do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
-        title="Data parameters", open=x[[.dataParamBoxOpen]]), plot.param))
-
-    c(list(param), callNextMethod())
 })
 
 #' @export

@@ -48,6 +48,7 @@
 #' For defining the interface:
 #' \itemize{
 #' \item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
+#' It will also create a data parameter box that can respond to specialized \code{\link{.defineDataInterface}}.
 #' This will \emph{override} the \linkS4class{Panel} method.
 #' \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 #' This returns \code{TRUE} for row selection parameters (\code{"SelectRowSource"}, \code{"SelectRowType"} and \code{"SelectRowSaved"}),
@@ -172,6 +173,7 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
 #' @export
 setMethod(".defineInterface", "ColumnDotPlot", function(x, se, select_info) {
     list(
+        .create_data_param_box(x, se, select_info), 
         .create_visual_box_for_column_plots(x, select_info$single$row, select_info$single$column, se),
         .create_dotplot_selection_param_box(x, select_info$multi$row, select_info$multi$column)
     )

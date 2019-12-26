@@ -208,7 +208,6 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
     args <- .empty_default(args, .selectColor, "red")
     args <- .empty_default(args, .selectTransAlpha, 0.1)
 
-    args <- .empty_default(args, .dataParamBoxOpen, FALSE)
     args <- .empty_default(args, .visualParamBoxOpen, FALSE)
     args <- .empty_default(args, .visualParamChoice, .visualParamChoiceColorTitle)
 
@@ -231,9 +230,7 @@ setValidity2("DotPlot", function(object) {
     msg <- character(0)
 
     msg <- .valid_logical_error(msg, object,
-        c(.dataParamBoxOpen, .visualParamBoxOpen,
-            .contourAdd,
-            .plotPointDownsample))
+        c(.visualParamBoxOpen, .contourAdd, .plotPointDownsample))
 
     msg <- .single_string_error(msg, object,
         c(.colorByField, .colorByFeatName, .colorByRowTable, .colorBySampName, .colorByColTable,

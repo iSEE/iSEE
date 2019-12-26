@@ -46,8 +46,9 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
-#' This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}.
+#' \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
+#' \item \code{\link{.fullName}(x)} will return the full name of the panel class.
+#' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 #' }
 #'
 #' For monitoring reactive expressions:
@@ -109,10 +110,11 @@
 #' @docType methods
 #' @aliases SampAssayPlot SampAssayPlot-class
 #' .refineParameters,SampAssayPlot-method
-#' .defineInterface,SampAssayPlot-method
+#' .defineDataInterface,SampAssayPlot-method
 #' .createObservers,SampAssayPlot-method
 #' .singleSelectionSlots,SampAssayPlot-method
 #' .fullName,SampAssayPlot-method
+#' .panelColor,SampAssayPlot-method
 #' .getCommandsDataXY,SampAssayPlot-method
 #'
 #' @name SampAssayPlot-class
@@ -193,7 +195,7 @@ setValidity2("SampAssayPlot", function(object) {
 #' @export
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
-setMethod(".defineInterface", "SampAssayPlot", function(x, se, select_info) {
+setMethod(".defineDataInterface", "SampAssayPlot", function(x, se, select_info) {
     panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
@@ -207,7 +209,7 @@ setMethod(".defineInterface", "SampAssayPlot", function(x, se, select_info) {
     }
     xaxis_choices <- c(xaxis_choices, .sampAssayXAxisSampNameTitle)
 
-    plot.param <- list(
+    list(
         selectizeInput(
             .input_FUN(.sampAssayYAxisSampName),
             label="Sample of interest (Y-axis):",
@@ -238,11 +240,6 @@ setMethod(".defineInterface", "SampAssayPlot", function(x, se, select_info) {
             selectInput(.input_FUN(.sampAssayXAxisColTable), label=NULL,
                 choices=tab_by_col, selected=x[[.sampAssayXAxisColTable]]))
     )
-
-    param <- do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
-        title="Data parameters", open=x[[.dataParamBoxOpen]]), plot.param))
-
-    c(list(param), callNextMethod())
 })
 
 #' @export

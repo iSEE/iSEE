@@ -49,6 +49,18 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #' It is the developer's responsibility to call \code{\link{callNextMethod}} to obtain interface elements for parent classes.
 #' Refer to the contract for each \linkS4class{Panel} class to determine what is already provided by each parent.
 #'
+#' @section Defining the data parameter interface:
+#' In \code{.defineDataInterface(x, se, select_info)}, the required arguments are the same as those for \code{.defineInterface}.
+#' Methods for this generic are expected to return a list of UI elements for altering data-related parameters,
+#' which are automatically placed inside the \dQuote{Data parameters} collapsible box.
+#'
+#' This method aims to provide a simpler alternative to specializing \code{.defineInterface} for the most common use case,
+#' where new panels wish to add their own interface elements for altering the contents of the panel.
+#' In fact, \code{\link{.defineInterface,Panel-method}} will simply call \code{.defineDataInterface} to populate the data parameter box.
+#'
+#' It is the developer's responsibility to call \code{\link{callNextMethod}} to obtain interface elements for parent classes.
+#' Refer to the contract for each \linkS4class{Panel} class to determine what is already provided by each parent.
+#'
 #' @section Hiding interface elements:
 #' In \code{.hideInterface(x, field)}, the required arguments are:
 #' \itemize{
@@ -64,15 +76,16 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #' Refer to the contract for each \linkS4class{Panel} class to determine what is already provided by each parent.
 #'
 #' @docType methods
-#' @aliases .defineInterface .hideInterface
+#' @aliases .defineInterface .defineDataInterface .hideInterface
 #' @name interface-generics
 #' @author Aaron Lun
 NULL
 
 #' @export
-setGeneric(".defineInterface", function(x, se, select_info) {
-    standardGeneric(".defineInterface")
-})
+setGeneric(".defineInterface", function(x, se, select_info) standardGeneric(".defineInterface"))
+
+#' @export
+setGeneric(".defineDataInterface", function(x, se, select_info) standardGeneric(".defineDataInterface"))
 
 #' @export
 setGeneric(".hideInterface", function(x, field) standardGeneric(".hideInterface"))

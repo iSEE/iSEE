@@ -80,6 +80,9 @@
 #'
 #' For defining the interface:
 #' \itemize{
+#' \item \code{\link{.defineInterface}(x, se, select_info)} will return a list of collapsible boxes for changing data and selection parameters.
+#' The data parameter box will be populated based on \code{\link{.defineDataInterface}}.
+#' \item \code{\link{.defineDataInterface}(x, se, select_info)} will return an empty list.
 #' \item \code{\link{.hideInterface}(x, field)} will always return \code{FALSE}.
 #' }
 #'
@@ -143,12 +146,14 @@ setMethod("initialize", "Panel", function(.Object, ...) {
     args <- .empty_default(args, .selectColType, .selectMultiActiveTitle)
     args <- .empty_default(args, .selectColSaved, 0L)
 
+    args <- .empty_default(args, .dataParamBoxOpen, FALSE)
+
     do.call(callNextMethod, c(list(.Object), args))
 })
 
 setValidity2("Panel", function(object) {
     msg <- character(0)
-    msg <- .valid_logical_error(msg, object, .selectParamBoxOpen)
+    msg <- .valid_logical_error(msg, object, c(.selectParamBoxOpen, .dataParamBoxOpen))
     msg <- .single_string_error(msg, object, c(.selectRowSource, .selectColSource))
 
     msg <- .valid_number_error(msg, object, .organizationHeight, lower=height_limits[1], upper=height_limits[2])
@@ -198,8 +203,14 @@ setMethod(".cacheCommonInfo", "Panel", function(x, se) {
 
 #' @export
 setMethod(".defineInterface", "Panel", function(x, se, select_info) {
-    list(.create_selection_param_box(x, select_info$multi$row, select_info$multi$column))
+    list(
+        .create_data_param_box(x, se, select_info), 
+        .create_selection_param_box(x, select_info$multi$row, select_info$multi$column)
+    )
 })
+
+#' @export
+setMethod(".defineDataInterface", "Panel", function(x, se, select_info) list())
 
 #' @export
 setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects, rObjects) {

@@ -46,8 +46,9 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
-#' This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}.
+#' \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
+#' \item \code{\link{.fullName}(x)} will return the full name of the panel class.
+#' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 #' }
 #'
 #' For monitoring reactive expressions:
@@ -109,10 +110,11 @@
 #' @docType methods
 #' @aliases FeatAssayPlot FeatAssayPlot-class
 #' .refineParameters,FeatAssayPlot-method
-#' .defineInterface,FeatAssayPlot-method
+#' .defineDataInterface,FeatAssayPlot-method
 #' .createObservers,FeatAssayPlot-method
 #' .singleSelectionSlots,FeatAssayPlot-method
-#' .getFullName,FeatAssayPlot-method
+#' .fullName,FeatAssayPlot-method
+#' .panelColor,FeatAssayPlot-method
 #' .getCommandsDataXY,FeatAssayPlot-method
 #'
 #' @name FeatAssayPlot-class
@@ -193,7 +195,7 @@ setValidity2("FeatAssayPlot", function(object) {
 #' @export
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
-setMethod(".defineInterface", "FeatAssayPlot", function(x, se, select_info) {
+setMethod(".defineDataInterface", "FeatAssayPlot", function(x, se, select_info) {
     panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
@@ -207,7 +209,7 @@ setMethod(".defineInterface", "FeatAssayPlot", function(x, se, select_info) {
     }
     xaxis_choices <- c(xaxis_choices, .featAssayXAxisFeatNameTitle)
 
-    plot.param <- list(
+    list(
         selectizeInput(.input_FUN(.featAssayYAxisFeatName),
             label="Y-axis feature:", choices=NULL, selected=NULL, multiple=FALSE),
         selectInput(.input_FUN(.featAssayYAxisRowTable), label=NULL, choices=tab_by_row,
@@ -228,11 +230,6 @@ setMethod(".defineInterface", "FeatAssayPlot", function(x, se, select_info) {
             selectInput(.input_FUN(.featAssayXAxisRowTable), label=NULL,
                 choices=tab_by_row, selected=x[[.featAssayXAxisRowTable]]))
     )
-
-    param <- do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
-        title="Data parameters", open=x[[.dataParamBoxOpen]]), plot.param))
-
-    c(list(param), callNextMethod())
 })
 
 #' @export

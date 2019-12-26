@@ -39,8 +39,7 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
-#' This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}.
+#' \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
 #' \item \code{\link{.fullName}(x)} will return the full name of the panel class.
 #' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 #' }
@@ -90,9 +89,10 @@
 #' @aliases RedDimPlot RedDimPlot-class
 #' .refineParameters,RedDimPlot-method
 #' .cacheCommonInfo,RedDimPlot-method
-#' .defineInterface,RedDimPlot-method
+#' .defineDataInterface,RedDimPlot-method
 #' .createObservers,RedDimPlot-method
 #' .fullName,RedDimPlot-method
+#' .panelColor,RedDimPlot-method
 #' .getCommandsDataXY,RedDimPlot-method
 #' @name RedDimPlot-class
 NULL
@@ -192,7 +192,7 @@ setValidity2("RedDimPlot", function(object) {
 #' @importFrom SingleCellExperiment reducedDim reducedDimNames
 #' @importFrom shiny selectInput
 #' @importFrom methods callNextMethod
-setMethod(".defineInterface", "RedDimPlot", function(x, se, select_info) {
+setMethod(".defineDataInterface", "RedDimPlot", function(x, se, select_info) {
     cur_reddim <- x[[.redDimType]]
     max_dim <- ncol(reducedDim(se, cur_reddim))
     choices <- seq_len(max_dim)
@@ -200,7 +200,7 @@ setMethod(".defineInterface", "RedDimPlot", function(x, se, select_info) {
     panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
-    plot.param <- list(
+    list(
         selectInput(.input_FUN(.redDimType), label="Type",
             choices=.get_common_info(se, "RedDimPlot")$valid.reducedDim.names,
             selected=cur_reddim),
@@ -209,11 +209,6 @@ setMethod(".defineInterface", "RedDimPlot", function(x, se, select_info) {
         selectInput(.input_FUN(.redDimYAxis), label="Dimension 2",
             choices=choices, selected=x[[.redDimYAxis]])
     )
-
-    param <- do.call(collapseBox, c(list(id=.input_FUN(.dataParamBoxOpen),
-        title="Data parameters", open=x[[.dataParamBoxOpen]]), plot.param))
-
-    c(list(param), callNextMethod())
 })
 
 #' @export

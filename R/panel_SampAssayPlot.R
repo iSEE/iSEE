@@ -219,7 +219,7 @@ setMethod(".defineInterface", "SampAssayPlot", function(x, se, select_info) {
             choices=NULL, selected=NULL, multiple=FALSE),
         selectInput(
             .input_FUN(.sampAssayYAxisColTable), label=NULL, choices=tab_by_col,
-            selected=.choose_link(x[[.sampAssayYAxisColTable]], tab_by_col, force_default=TRUE)),
+            selected=.choose_link(x[[.sampAssayYAxisColTable]], tab_by_col)),
         selectInput(
             .input_FUN(.sampAssayAssay), label=NULL,
             choices=all_assays, selected=x[[.sampAssayAssay]]),

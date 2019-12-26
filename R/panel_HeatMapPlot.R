@@ -204,7 +204,7 @@ setMethod(".defineInterface", "HeatMapPlot", function(x, se, select_info) {
             open=x[[.heatMapFeatNameBoxOpen]],
             selectInput(
                 .input_FUN(.heatMapImportSource), label="Import from", choices=heatmap_sources,
-                selected=.choose_link(x[[.heatMapImportSource]], heatmap_sources, force_default=TRUE)),
+                selected=.choose_link(x[[.heatMapImportSource]], heatmap_sources)),
             actionButton(.input_FUN(.heatMapImportFeatures), "Import features"),
             actionButton(.input_FUN(.heatMapCluster), "Cluster features"),
             actionButton(.input_FUN(.heatMapClearFeatures), "Clear features"),

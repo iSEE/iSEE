@@ -88,7 +88,7 @@
         by_field=.selectColSource, 
         type_field=.selectColType,
         saved_field=.selectColSaved,
-        all_memory=all_memory, var_name="col_selected")
+        all_memory=all_memory, varname="col_selected")
 
     select_as_field <- .safe_field_name("SelectBy", colnames(colData(se)))
 

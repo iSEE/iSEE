@@ -86,7 +86,7 @@
                         choices=all_assays, selected=x[[.colorByFeatNameAssay]])),
                 selectInput(
                     paste0(plot_name, "_", .colorByRowTable), label=NULL, choices=row_selectable,
-                    selected=.choose_link(x[[.colorByRowTable]], row_selectable, force_default=TRUE))
+                    selected=.choose_link(x[[.colorByRowTable]], row_selectable))
             ),
             .conditional_on_radio(colorby_field, .colorBySampNameTitle,
                 tagList(
@@ -94,7 +94,7 @@
                         label=NULL, selected=NULL, choices=NULL, multiple=FALSE),
                     selectInput(
                         paste0(plot_name, "_", .colorByColTable), label=NULL, choices=col_selectable,
-                        selected=.choose_link(x[[.colorByColTable]], col_selectable, force_default=TRUE)),
+                        selected=.choose_link(x[[.colorByColTable]], col_selectable)),
                     colourInput(
                         paste0(plot_name, "_", .colorBySampNameColor), label=NULL,
                         value=x[[.colorBySampNameColor]]))
@@ -266,7 +266,7 @@
                         label=NULL, selected=NULL, choices=NULL, multiple=FALSE),
                     selectInput(
                         paste0(plot_name, "_", .colorByRowTable), label=NULL, choices=row_selectable,
-                        selected=.choose_link(x[[.colorByRowTable]], row_selectable, force_default=TRUE)),
+                        selected=.choose_link(x[[.colorByRowTable]], row_selectable)),
                     colourInput(paste0(plot_name, "_", .colorByFeatNameColor), label=NULL,
                         value=x[[.colorByFeatNameColor]]))
             ),
@@ -279,7 +279,7 @@
                         choices=all_assays, selected=x[[.colorBySampNameAssay]])),
                 selectInput(
                     paste0(plot_name, "_", .colorByColTable), label=NULL, choices=col_selectable,
-                    selected=.choose_link(x[[.colorByColTable]], col_selectable, force_default=TRUE))
+                    selected=.choose_link(x[[.colorByColTable]], col_selectable))
             )
         ),
         .conditional_on_check_group(

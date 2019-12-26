@@ -216,7 +216,7 @@ setMethod(".defineInterface", "FeatAssayPlot", function(x, se, select_info) {
         selectizeInput(.input_FUN(.featAssayYAxisFeatName),
             label="Y-axis feature:", choices=NULL, selected=NULL, multiple=FALSE),
         selectInput(.input_FUN(.featAssayYAxisRowTable), label=NULL, choices=tab_by_row,
-            selected=.choose_link(x[[.featAssayYAxisRowTable]], tab_by_row, force_default=TRUE)),
+            selected=.choose_link(x[[.featAssayYAxisRowTable]], tab_by_row)),
         selectInput(.input_FUN(.featAssayAssay), label=NULL,
             choices=all_assays, selected=x[[.featAssayAssay]]),
         radioButtons(.input_FUN(.featAssayXAxis), label="X-axis:", inline=TRUE,

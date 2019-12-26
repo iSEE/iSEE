@@ -57,6 +57,8 @@ sce <- readRDS('sce.rds')
 
 # Background
 
+**READ THE BOOK.**
+
 Users can define their own plots or tables to include in the `iSEE` interface [@kra2018iSEE].
 These custom panels are intended to receive subsets of rows and/or columns from other transmitting panels in the interface.
 The values in the custom panels are recomputed "on the fly" by user-defined functions using the transmitted subset.
@@ -187,7 +189,7 @@ We will then set up an `iSEE` instance with four panels - a reduced dimension pl
 Note how both custom panels initially receives a column selection from the reduced dimension plot and a row selection from the row data plot.
 We also set the initial function to the name of `CUSTOM_PCA` in `customDataFun`, and the initial arguments to the values described above.
 
-```{r app}
+```{r app, eval=FALSE}
 library(iSEE)
 reddim <- redDimPlotDefaults(sce, 1)
 rowdat <- rowDataPlotDefaults(sce, 1)
@@ -283,7 +285,7 @@ We test this out as shown below.
 In particular, we set `customSendAll=TRUE` to pass both the active and saved selections to each custom panel.
 Note that each saved selection is also the active selection when it is first generated, hence the log-fold changes of zero in the last column of the heat map until a new active selection is drawn.
 
-```{r}
+```{r, eval=FALSE}
 cdp2 <- customDataPlotDefaults(sce, 1)
 cdp2$Function <- "CUSTOM_HEAT"
 cdp2$Arguments <- "assay logcounts"
@@ -346,7 +348,7 @@ CUSTOM_LFC <- function(se, rows, columns) {
 We then set up an `iSEE` instance with three panels - a reduced dimension plot, a row data plot and a custom statistics table.
 This is much the same as described for the custom plot panel.
 
-```{r app2}
+```{r app2, eval=FALSE}
 cst <- customStatTableDefaults(sce, 1)
 cst$Function <- "CUSTOM_LFC"
 cst$ColumnSource <- "Reduced dimension plot 1"

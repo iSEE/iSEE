@@ -430,7 +430,6 @@ citation("iSEE")
 
 ```{r sessioninfo}
 sessionInfo()
-# devtools::session_info()
 ```
 
 # References {.unnumbered}

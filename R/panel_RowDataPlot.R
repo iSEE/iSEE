@@ -158,7 +158,7 @@ setValidity2("RowDataPlot", function(object) {
 #' @export
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
-setMethod(".defineInterface", "RowDataPlot", function(x, se, select_info) {
+setMethod(".defineDataInterface", "RowDataPlot", function(x, se, select_info) {
     panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 

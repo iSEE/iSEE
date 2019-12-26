@@ -1,3 +1,23 @@
+#' Safely use reactive values
+#'
+#' Initialize and bump reactive variables in a manner that avoids errors if they were not already present in \code{rObjects}.
+#' Also avoids creation of links in the Shiny reactive graph when we are only writing to these reactive variables.
+#'
+#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
+#' @param field String containing the name of the reactive variable.
+#' @param value Integer scalar containing the initial value of the variable.
+#' @param max Integer scalar specifying the maximum value of the variable, see \code{\link{.increment_counter}}.
+#'
+#' @return \code{.safe_reactive_init} will add \code{field} to \code{rObjects} with value \code{value},
+#' but only if it was not already present; otherwise this is a no-op.
+#' It returns \code{rObjects} invisibly.
+#'
+#' \code{.safe_reactive_bump} will increment \code{field} in \code{rObjects}, initializing it if it was not already present.
+#' It returns the incremented value invisibly.
+#' 
+#' @author Aaron Lun
+#' 
+#' @rdname INTERNAL_safe_reactive
 #' @importFrom shiny isolate
 .safe_reactive_init <- function(rObjects, field, value=1L) {
     if (!field %in% isolate(names(rObjects))) {
@@ -6,6 +26,7 @@
     invisible(rObjects)
 }
 
+#' @rdname INTERNAL_safe_reactive
 #' @importFrom shiny isolate
 .safe_reactive_bump <- function(rObjects, field, max=10000L) {
     .safe_reactive_init(rObjects, field)

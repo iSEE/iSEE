@@ -67,7 +67,7 @@
 
         saved_val <- pObjects$memory[[panel_name]][[saved_field]]
         if (saved_val!=0L && new_transmitter!=.noSelection) {
-            if (saved_val > any_saved_selection(pObjects$memory[[new_transmitter]], count=TRUE)) {
+            if (saved_val > .any_saved_selection(pObjects$memory[[new_transmitter]], count=TRUE)) {
                 pObjects$memory[[panel_name]][[saved_field]] <- 0L
             }
         }

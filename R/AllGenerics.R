@@ -179,7 +179,7 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' The return value of this generic is not used; only the side-effect of the output set-up is relevant.
 #' 
 #' Within the rendering expression for each output, developers should call \code{force(rObjects[[PANEL]])} where \code{PANEL} is the panel name.
-#' This ensures that the output is rerendered upon changes to the appropriate reactive variable, which is itself modified by \code{\link{.renderPanel}} and related functions in \code{\link{.createObservers}}.
+#' This ensures that the output is rerendered upon changes to the appropriate reactive variable, which is itself modified by \code{\link{.renderOutput}} and related functions in \code{\link{.createObservers}}.
 #'
 #' @section Additional rendering obligations:
 #' The rendering expression defined in \code{\link{.renderOutput}} is also expected to:

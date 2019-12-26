@@ -5,7 +5,7 @@
 #'
 #' @param panel_name String containing the name of the current panel.
 #' @param parent_name String containing the name of the transmitting panel.
-#' @param all_memory A named list of \linkS4class{Panels} representing the current state of the application.
+#' @param all_memory A named list of \linkS4class{Panel}s representing the current state of the application.
 #' @param select_type String specifying whether the current panel is receiving the \code{"Active"}, \code{"Union"} or \code{"Saved"} selections.
 #' @param select_saved Integer specifying which saved selection is received by the current panel when \code{select_type="Saved"}.
 #'

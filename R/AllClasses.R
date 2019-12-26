@@ -1,7 +1,6 @@
 
 # Validation function ----
 
-#' @importFrom methods slot
 .valid.Colormap <- function(object){
     # To avoid later checking inside the app, this object should be stored in a
     # slot of its parent SummarizedExperiment that would check its validity

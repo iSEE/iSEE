@@ -790,11 +790,6 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_assay_axis_label
 #' @importFrom BiocGenerics rownames
-#' @seealso
-#' \code{\link{.make_featAssayPlot}},
-#' \code{\link{.make_sampAssayPlot}},
-#' \code{\link{.add_color_to_column_plot}},
-#' \code{\link{.add_color_to_row_plot}}
 .feature_axis_label <- function(se, feature_id, assay_id, multiline=FALSE){
     .assay_axis_label(se, rownames(se)[feature_id], assay_id, multiline=multiline)
 }
@@ -997,9 +992,6 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' covariates.
 #' @author Kevin Rue-Albrecht.
 #' @rdname INTERNAL_add_facets
-#' @seealso
-#' \code{\link{.define_facetby_for_column_plot}}
-#'
 #' @importFrom ggplot2 facet_grid
 .add_facets <- function(param_choices){
     row_facet <- param_choices[[.facetByRow]]!=.noSelection

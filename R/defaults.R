@@ -298,8 +298,6 @@ heatMapPlotDefaults <- function(se, number) {
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_add_general_parameters
-#' @seealso
-#' \code{?"\link{iSEE point parameters}"}
 .add_general_parameters <- function(incoming) {
     incoming[[.dataParamBoxOpen]] <- FALSE
     incoming[[.visualParamBoxOpen]] <- FALSE

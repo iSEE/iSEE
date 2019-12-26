@@ -115,7 +115,7 @@
 #'
 #' Identifies the receiving panels that need to be updated when a transmitting panel updates its multiple/single selection.
 #'
-#' @param graph A \link{graph} object with panel names as the vertices, see \code{\link{.spawn_multiple_selection_graph}}.
+#' @param graph A \link{graph} object with panel names as the vertices, see \code{\link{.spawn_multi_selection_graph}}.
 #' @param panel_name A string containing the encoded name of the current transmitting panel.
 #'
 #' @return A character vector of names for all panels that need to be updated.
@@ -167,8 +167,6 @@
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_choose_new_selection_source
-#' @seealso \code{\link{.spawn_selection_chart}}
-#'
 .choose_new_parent <- function(graph, panel_name, new_parent_name, old_parent_name, field) {
     graph <- .delete_interpanel_link(graph, panel_name, old_parent_name, field)
     .add_interpanel_link(graph, panel_name, new_parent_name, field)
@@ -196,8 +194,7 @@
 #' @author Aaron Lun
 #' @rdname INTERNAL_establish_eval_order
 #' @seealso
-#' \code{\link{iSEE}},
-#' \code{\link{.spawn_selection_chart}}
+#' \code{\link{.spawn_multi_selection_graph}}
 #' @importFrom igraph delete.vertices V topo_sort degree
 .establish_eval_order <- function(graph) {
     iso <- V(graph)[degree(graph, mode="out") == 0]

@@ -17,7 +17,7 @@ height_limits <- c(400L, 1000L)
 #' @author Aaron Lun
 #' @rdname INTERNAL_panel_organization
 #' @seealso
-#' \code{\link{.organization_observers}}, where this UI element is used.
+#' \code{\link{.create_organization_observers}}, where this UI element is used.
 #' 
 #' \code{\link{.panel_generation}}, which uses the set parameters.
 #'

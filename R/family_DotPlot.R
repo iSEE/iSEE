@@ -173,6 +173,7 @@
 #' initialize,DotPlot-method
 #' [[,DotPlot-method
 #' [[<-,DotPlot-method
+#' .renderOutput,DotPlot-method
 #' .refineParameters,DotPlot-method
 #' .cacheCommonInfo,DotPlot-method
 #' .createObservers,DotPlot-method

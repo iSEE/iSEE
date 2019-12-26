@@ -134,9 +134,14 @@
         pObjects$aesthetics_links <- .spawn_single_selection_graph(pObjects$memory)
 
         # NOTE: there should be no need to updateSelectize on the choice of
-        # linkable panels; this should be handled by the rerendering. This
-        # should also trigger the corresponding observers to update the memory
-        # and propagate the required downstream changes.
+        # linkable panels; this should be handled by the rerendering of the UI.
+        # This should also trigger the corresponding observers to update the
+        # memory and propagate the required downstream changes, which avoids us
+        # having to recapitulate all of that in this observer. As a consequence,
+        # though, some downstream observers need to be robustified to references
+        # to panels that no longer exist in the brief time after panel deletion
+        # but before the memory is resync'd. See .add_interpanel_links() and 
+        # .create_dimname_observers() for some affected functions.
 
         rObjects$rerender <- .increment_counter(rObjects$rerender)
     })

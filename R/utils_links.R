@@ -70,14 +70,18 @@
 #'
 #' Deleting a link will remove \code{field} from the \code{fields} attribute of an existing edge,
 #' or delete the edge entirely if the \code{fields} attribute is subsequently empty.
+#'
+#' This function is a no-op if \code{parent_name="---"} or is not in \code{graph}.
+#' The latter protection is necessary as this function is called during the process of updating the memory after panel deletion;
+#' in that brief window, there may be references to panels that no longer exist.
 #' 
 #' @author Aaron Lun
 #'
 #' @rdname INTERNAL_interpanel_link
-#' @importFrom igraph add_edges get.edge.ids E E<-
+#' @importFrom igraph add_edges get.edge.ids E E<- V
 #' @importFrom stats setNames
 .add_interpanel_link <- function(graph, panel_name, parent_name, field) {
-    if (parent_name!=.noSelection) {
+    if (parent_name %in% names(V(graph))) { # implicitly protects against noSelection *and* recently deleted panels.
         idx <- get.edge.ids(graph, c(parent_name, panel_name))
         if (idx==0L) {
             graph <- add_edges(graph, c(parent_name, panel_name), attr=list(fields=list(field)))
@@ -91,7 +95,7 @@
 #' @rdname INTERNAL_interpanel_link
 #' @importFrom igraph E<- E delete_edges
 .delete_interpanel_link <- function(graph, panel_name, parent_name, field) {
-    if (parent_name!=.noSelection) {
+    if (parent_name %in% names(V(graph))) { # implicitly protects against noSelection *and* recently deleted panels.
         idx <- get.edge.ids(graph, c(parent_name, panel_name))
         if (idx!=0L) {
             fields <- E(graph)$fields[[idx]]

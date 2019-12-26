@@ -133,8 +133,8 @@
         }
     } else {
         if (old_choice==use_value) {
-            pObjects$aesthetics_links <- .choose_new_parent(pObjects$aesthetics_links, 
-                plot_name, .noSelection, old_tab, field=name_field)
+            pObjects$aesthetics_links <- .delete_interpanel_link(pObjects$aesthetics_links, 
+                plot_name, old_tab, field=name_field)
             update_info <- TRUE
         }
     }

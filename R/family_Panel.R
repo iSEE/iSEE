@@ -209,9 +209,6 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
     .safe_reactive_init(rObjects, panel_name)
     .safe_reactive_init(rObjects, .input_FUN(.panelLinkInfo))
 
-    pObjects$selection_links <- .add_panel_vertex(pObjects$selection_links, panel_name) 
-    pObjects$aesthetics_links <- .add_panel_vertex(pObjects$aesthetics_links, panel_name) 
-
     .create_child_propagation_observers(panel_name, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_multi_selection_choice_observer(panel_name, by_field=.selectRowSource, 

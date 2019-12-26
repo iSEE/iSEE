@@ -1,3 +1,23 @@
+#' Spawn transmitter graphs
+#'
+#' Create graphs for the links between panels due to multiple or single selections.
+#'
+#' @param all_memory A named list of \linkS4class{Panel} objects representing the current state of the application.
+#'
+#' @return A \link{graph} object containing one node per panel and one directed edge from parent to child.
+#' Each edge has a \code{fields} attribute specifying the slot in the child to which the transmission is directed.
+#' 
+#' @author Aaron Lun
+#'
+#' @details
+#' As the name suggests, \code{.spawn_multi_selection_graph} captures the transmission of multiple selections on the rows/columns.
+#' 
+#' Similarly, \code{.spawn_single_selection_graph} captures the transmission of single selections.
+#' The receiving slots are panel-dependent, hence the need to use \code{\link{.singleSelectionSlots}} here.
+#'
+#' These functions are used during app initialization as well as to reconstruct the graph after panel reorganization.
+#'
+#' @rdname INTERNAL_spawn_graph
 #' @importFrom igraph make_graph
 .spawn_multi_selection_graph <- function(all_memory) {
     graph <- make_graph(edges=character(0), isolates=names(all_memory))
@@ -14,6 +34,7 @@
     graph
 }
 
+#' @rdname INTERNAL_spawn_graph
 #' @importFrom igraph make_graph
 .spawn_single_selection_graph <- function(all_memory) {
     graph <- make_graph(edges=character(0), isolates=names(all_memory))
@@ -32,15 +53,27 @@
     graph
 }
 
-#' @importFrom igraph V add_vertices 
-.add_panel_vertex <- function(graph, panel_name) {
-    if (!panel_name %in% names(V(graph))) {
-        graph <- add_vertices(graph, 1L, name=panel_name)
-    } else {
-        graph
-    }
-}
-
+#' Add or remove links in the graph
+#'
+#' Add or remote inter-panel links that reflect single or multiple selections.
+#'
+#' @param graph A \link{graph} object containing one node per panel in the app.
+#' @param panel_name String containing the name of the receiving panel.
+#' @param parent_name String containing the name of the transmitting (parent) panel.
+#' @param field String containing the name of the slot that is modified by the transmission.
+#'
+#' @return A \link{graph} where the requested link is added or removed.
+#'
+#' @details
+#' Adding a link will either create an edge with the \code{fields} attribute set to \code{field}.
+#' or add \code{field} to the \code{fields} attribute of an existing edge.
+#'
+#' Deleting a link will remove \code{field} from the \code{fields} attribute of an existing edge,
+#' or delete the edge entirely if the \code{fields} attribute is subsequently empty.
+#' 
+#' @author Aaron Lun
+#'
+#' @rdname INTERNAL_interpanel_link
 #' @importFrom igraph add_edges get.edge.ids E E<-
 #' @importFrom stats setNames
 .add_interpanel_link <- function(graph, panel_name, parent_name, field) {
@@ -55,6 +88,7 @@
     graph
 }
 
+#' @rdname INTERNAL_interpanel_link
 #' @importFrom igraph E<- E delete_edges
 .delete_interpanel_link <- function(graph, panel_name, parent_name, field) {
     if (parent_name!=.noSelection) {
@@ -73,31 +107,26 @@
     graph
 }
 
-
 #' Identifies a panel's point selection receivers
 #'
-#' Identifies the receiving panels that need to be updated when a transmitting panel updates its point selection.
+#' Identifies the receiving panels that need to be updated when a transmitting panel updates its multiple/single selection.
 #'
-#' @param graph A graph object with encoded panel names as the vertices, see \code{\link{.spawn_selection_chart}}.
-#' @param panel A string containing the encoded name of the current transmitting panel.
+#' @param graph A \link{graph} object with panel names as the vertices, see \code{\link{.spawn_multiple_selection_graph}}.
+#' @param panel_name A string containing the encoded name of the current transmitting panel.
 #'
-#' @return A character vector of encoded names for all panels that need to be updated.
+#' @return A character vector of names for all panels that need to be updated.
 #'
 #' @details
-#' Upon changes to a transmitting panel \code{panel}, all other panels that receive the point selection information from \code{panel} may need to be updated.
+#' Upon changes to a transmitting panel \code{panel}, all other panels that receive selection information from \code{panel_name} may need to be updated.
 #' This function identifies the set of children of \code{panel} that potentially require updates.
 #' Whether they \emph{actually} need updates depends on the nature of the changes in \code{panel}, which will be context-specific.
 #'
 #' Note that this only refers to direct children.
 #' If the selection effect is \code{"Restrict"} in any of the child panels, their children (i.e., the grandchildren of \code{panel}) would also need updating, and so on.
-#' This is achieved via a set of observers to reactive values in \code{\link{iSEE}} that allow such recursion to occur naturally.
+#' This is achieved via a set of observers to reactive values in \code{\link{iSEE}} to enable this recursion, see \code{\link{.create_child_propagation_observers}}.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_get_direct_children
-#' @seealso
-#' \code{\link{.spawn_selection_chart}}
-#' \code{\link{iSEE}}
-#'
 #' @importFrom igraph adjacent_vertices get.edge.ids
 .get_direct_children <- function(graph, panel_name) {
     children <- names(adjacent_vertices(graph, panel_name, mode="out")[[1]])
@@ -113,57 +142,23 @@
     output    
 }
 
-#' Destroy a selection transmitter or receiver
-#'
-#' Destroys all edges to and from the current panel upon its removal from the UI, to break all transfers of point selection information.
-#' Also updates the memory to eliminate discarded plots as the default choice.
-#'
-#' @param pObjects An environment containing \code{selection_links}, a graph produced by \code{\link{.spawn_selection_chart}};
-#' and \code{memory}, a list of DataFrames containing parameters for each panel of each type.
-#' @param panel A string containing the encoded name of the panel to be deleted.
-#'
-#' @details
-#' This function relies on pass-by-reference semantics with \code{pObjects} as an environment.
-#' Thus, it can implicitly update \code{pObjects$selection_links} upon removal of edges to/from \code{panel}.
-#'
-#' The transmitting panel in \code{pObjects$memory} for the current panel is replaced with \code{"---"}, i.e., no selection.
-#' This is necessary as there is no guarantee that the transmitter will be alive when this panel is added back to the UI.
-#' Removal of all selection links ensures that the memory is valid, in line with the philosophy in \code{\link{.sanitize_memory}}.
-#'
-#' The function also replaces all references to \code{panel} in \code{pObjects$memory} with \code{"---"}.
-#' Again, this is necessary as there is no guarantee that the receiving panel will be alive when this panel is added back to the UI.
-#'
-#' @return \code{NULL}, invisibly.
-#'
-#' @author Aaron Lun
-#' @rdname INTERNAL_destroy_selection_source
-#' @seealso
-#' \code{\link{.spawn_selection_chart}},
-#' \code{\link{.sanitize_memory}}
-#' \code{\link{iSEE}}
-#'
-#' @importFrom igraph incident
-.destroy_parent <- function(graph, parent_name) {
-    graph - incident(graph, parent_name, mode="all")
-}
-
 #' Change the selection source
 #'
-#' Replaces the edge in the graph if the choice of transmitting plot (i.e., to receive point selection information from) changes in the current panel.
+#' Replaces the edge in the graph if the choice of transmitting panel changes in the current panel.
 #'
 #' @param graph A graph object with encoded panel names as the vertices, see \code{\link{.spawn_selection_chart}}.
-#' @param panel A string containing the encoded name of the current receiving panel.
-#' @param new_parent A string containing the encoded name of the new transmitting panel.
-#' @param old_parent A string containing the encoded name of the old transmitting panel.
+#' @param panel_name A string containing the encoded name of the current receiving panel.
+#' @param new_parent_name A string containing the encoded name of the new transmitting panel.
+#' @param old_parent_name A string containing the encoded name of the old transmitting panel.
 #'
 #' @return A graph object with the old edge deleted (possibly) and replaced by a new edge (possibly).
 #'
 #' @details
-#' This function will delete the edge from \code{old_parent} to \code{panel}, and add the edge from \code{new_parent} to \code{panel}.
+#' This function will delete the edge from \code{old_parent_name} to \code{panel_name}, and add the edge from \code{new_parent_name} to \code{panel_name}.
 #' This reflects a UI-mediated change in the transmitter panel from which the current panel receives its selection.
 #'
-#' If \code{old_parent="---"}, no edge will be deleted.
-#' If \code{new_parent="---"}, no edge will be added.
+#' If \code{old_parent_name="---"}, no edge will be deleted.
+#' If \code{new_parent_name="---"}, no edge will be added.
 #' Similarly, no deletion will occur if the edge is not present, and no addition will occur if the edge is already there.
 #'
 #' @author Aaron Lun
@@ -177,9 +172,10 @@
 
 #' Establish the evaluation order
 #'
-#' Establish the order in which connected panels are to be evaluated during app initialization.
+#' Establish the order in which panels are to be evaluated during app initialization,
+#' to ensure that panels transmitting a multiple selection have valid \code{pObjects$contents} for downstream use.
 #'
-#' @param graph A graph object containing links between panels, produced by \code{\link{.spawn_selection_chart}}.
+#' @param graph A graph object containing links between panels, produced by \code{\link{.spawn_multi_selection_graph}}.
 #'
 #' @details
 #' This function identifies any initial connections between panels (e.g., specified in the panel arguments) for point selection.
@@ -188,11 +184,10 @@
 #' The idea is to \dQuote{evaluate} the plots at the start of the app, to obtain the coordinates for transmitting to other panels.
 #' Otherwise, errors will be encountered whereby a panel tries to select from a set of coordinates that do not yet exist.
 #'
-#' Unlike its relative \code{\link{.get_reporting_order}}, only transmitting panels are ever reported by this function.
-#' It is not necessary to evaluate receiving-only panels, and in fact will result in errors for heatmaps and row statistics tables,
-#' as these do not even have coordinates to save.
+#' Note that only transmitting panels are ever reported by this function.
+#' It is not necessary to evaluate receiving-only panels.
 #'
-#' @return A character vector containing encoded names for transmitting panels in their evaluation order.
+#' @return A character vector of names for transmitting panels in their evaluation order.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_establish_eval_order

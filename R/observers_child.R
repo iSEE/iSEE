@@ -72,12 +72,7 @@
             }
 
             if (replot) {
-                .safe_reactive_bump(rObjects, child_plot)
-
-                # To warrant replotting of the grandchildren, the child must itself be restricted.
-                if (.multiSelectionRestricted(child_instance)) {
-                    .safe_reactive_bump(rObjects, paste0(child_plot, "_", .panelRepopulated))
-                }
+                .trigger_child_rerender(child_instance, child_plot, pObjects, rObjects)
             }
         }
     })
@@ -108,12 +103,7 @@
 
             select_mode <- child_instance[[type_field]]
             if (select_mode==.selectMultiActiveTitle || select_mode==.selectMultiUnionTitle) {
-                .safe_reactive_bump(rObjects, child_plot)
-
-                # To warrant replotting of the grandchildren, the child must itself be restricted.
-                if (.multiSelectionRestricted(child_instance)) {
-                    .safe_reactive_bump(rObjects, paste0(child_plot, "_", .panelRepopulated))
-                }
+                .trigger_child_rerender(child_instance, child_plot, pObjects, rObjects)
             }
         }
     })
@@ -147,12 +137,7 @@
 
             child_select_type <- child_instance[[type_field]]
             if (child_select_type==.selectMultiUnionTitle || (child_select_type==.selectMultiSavedTitle && reset)) {
-                .safe_reactive_bump(rObjects, child_plot)
-
-                # To warrant replotting of the grandchildren, the child must itself be restricted.
-                if (.multiSelectionRestricted(child_instance)) {
-                    .safe_reactive_bump(rObjects, paste0(child_plot, "_", .panelRepopulated))
-                }
+                .trigger_child_rerender(child_instance, child_plot, pObjects, rObjects)
             }
 
             # Updating the selectize as well.
@@ -161,5 +146,36 @@
         }
     })
 
+    invisible(NULL)
+}
+
+#' Trigger re-rendering of the child
+#'
+#' Trigger re-rendering of a child panel within observers set up by \code{\link{.create_child_propagation_observers}}.
+#'
+#' @param x An instance of a \linkS4class{Panel} class, representing a child receiving a multiple selection.
+#' @param panel_name String containing the name of \code{x}.
+#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
+#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
+#'
+#' @return \code{NULL} invisibly.
+#' Re-rendering of the child panel is triggered, 
+#' possibly after wiping existing multiple selections depending on \code{\link{.multiSelectionInvalidated}}.
+#' Re-rendering of the grand-children may also be triggered depending on \code{\link{.multiSelectionRestricted}}.
+#'
+#' @author Aaron Lun
+#'
+#' @rdname INTERNAL_trigger_child_rerender
+.trigger_child_rerender <- function(x, panel_name, pObjects, rObjects) {
+    if (.multiSelectionInvalidated(x)) {
+        .regenerate_unselected_plot(panel_name, pObjects, rObjects)
+    } else {
+        .safe_reactive_bump(rObjects, panel_name)
+    }
+
+    # To warrant replotting of the grandchildren, the child must itself be restricted.
+    if (.multiSelectionRestricted(x)) {
+        .safe_reactive_bump(rObjects, paste0(panel_name, "_", .panelRepopulated))
+    }
     invisible(NULL)
 }

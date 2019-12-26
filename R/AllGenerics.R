@@ -43,7 +43,8 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #' Each parameter box can contain arbitrary numbers of additional UI elements, 
 #' each of which is expected to modify one slot of \code{x} upon user interaction.
 #'
-#' The ID of each interface element should follow the form of \code{PANEL_SLOT} where \code{PANEL} is the panel name and \code{SLOT} is the name of the slot modified by the interface element, e.g., \code{"redDimPlot1_RedDimType"}.
+#' The ID of each interface element should follow the form of \code{PANEL_SLOT} where \code{PANEL} is the panel name (from \code{\link{.getEncodedName}(x)}) and \code{SLOT} is the name of the slot modified by the interface element, 
+#' e.g., \code{"RedDimPlot1_Type"}.
 #' Each interface element should have an equivalent observer in \code{\link{.createObservers}} unless they are hidden by \code{\link{.hideInterface}} (see below).
 #'
 #' It is the developer's responsibility to call \code{\link{callNextMethod}} to obtain interface elements for parent classes.
@@ -53,6 +54,7 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #' In \code{.defineDataInterface(x, se, select_info)}, the required arguments are the same as those for \code{.defineInterface}.
 #' Methods for this generic are expected to return a list of UI elements for altering data-related parameters,
 #' which are automatically placed inside the \dQuote{Data parameters} collapsible box.
+#' Each element's ID should still follow the \code{PANEL_SLOT} pattern described above.
 #'
 #' This method aims to provide a simpler alternative to specializing \code{.defineInterface} for the most common use case,
 #' where new panels wish to add their own interface elements for altering the contents of the panel.
@@ -127,14 +129,14 @@ setGeneric(".hideInterface", function(x, field) standardGeneric(".hideInterface"
 #' there is no direct interaction between \code{input} and \code{output} in this framework.
 #' 
 #' @section Triggering re-rendering:
-#' To trigger re-rendering of an output, observers should call \code{\link{.refreshPanelOutput}(panel_name, rObjects)}, 
-#' where \code{panel_name} is the name of the current panel.
+#' To trigger re-rendering of an output, observers should call \code{\link{.refreshPanelOutput}(PANEL, pObjects, rObjects)}, 
+#' where \code{PANEL} is the name of the current panel.
 #' This will simply re-render the output with no additional side effects and is most useful for responding to aesthetic parameters.
 #'
 #' In some cases, changes to some parameters may invalidate existing multiple selections, 
 #' e.g., brushes and lassos are no longer valid if the variable on the axes are altered.
 #' Observers responding to such changes should instead call \code{\link{.refreshPanelOutput}} with \code{clear=TRUE},
-#' which will destroy all brushes and lassos to avoid misleading conclusions.
+#' which will destroy all existing selections to avoid misleading conclusions.
 #'
 #' @aliases .createObservers
 #' @author Aaron Lun
@@ -160,7 +162,7 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' Methods for this generic are expected to return an output element for inclusion into the \pkg{iSEE} interface, such as the output of \code{\link{plotOutput}}.
 #' Multiple elements can be provided via a \code{\link{tagList}}.
 #' 
-#' The IDs of the output elements are expected to be prefixed with \code{PANEL} (the panel name from \code{\link{.getEncodedName}(x)}) and an underscore.
+#' The IDs of the output elements are expected to be prefixed with the panel name from \code{\link{.getEncodedName}(x)} and an underscore, e.g., \code{"RedDimPlot1_someOutput"}.
 #' One of the output elements may simply have the ID set to \code{PANEL} alone;
 #' this is usually the case for simple panels with one primary output like a \linkS4class{DotPlot}.
 #'
@@ -178,7 +180,7 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' It is expected to attach a reactive expression to \code{output} to render the output elements created by \code{.defineOutput}.
 #' The return value of this generic is not used; only the side-effect of the output set-up is relevant.
 #' 
-#' Within the rendering expression for each output, developers should call \code{\link{.respondPanelOutput}(PANEL)} where \code{PANEL} is the panel name.
+#' Within the rendering expression for each output, developers should call \code{\link{.respondPanelOutput}(panel_name, rObjects)} where \code{panel_name} is the output of \code{\link{.getEncodedName}(x)}.
 #' This ensures that the output is rerendered upon changes to the appropriate reactive variable, which is itself modified by \code{\link{.renderOutput}} and related functions in \code{\link{.createObservers}}.
 #'
 #' @section Additional rendering obligations:
@@ -367,15 +369,18 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #' @section Destroying selections:
 #' \code{.multiSelectionClear(x)} should return \code{x} after removing the active selection, i.e., so that nothing is selected.
 #' This is used internally to remove multiple selections that do not make sense after the panel paramaters have changed.
-#' For example, a selection made on a PCA plot in \linkS4class{RedDimPlot}s would not make sense after switching to t-SNE coordinates, so the application will automatically erase those selections to avoid misleading conclusions.
+#' For example, a brush or lasso made on a PCA plot in \linkS4class{RedDimPlot}s would not make sense after switching to t-SNE coordinates, so the application will automatically erase those selections to avoid misleading conclusions.
 #'
 #' @section Responding to selections:
+#' These generics pertain to how \code{x} responds to a transmitted selection, not how \code{x} itself transmits selections.
+#'
 #' \code{.multiSelectionRestricted(x)} should return a logical scalar indicating whether \code{x}'s displayed contents will be restricted to the selection transmitted from \emph{another panel}.
 #' This is used to determine whether child panels of \code{x} need to be re-rendered when \code{x}'s transmitter changes its multiple selection.
-#' Note that this generic pertains to how \code{x} responds to a transmitted selection, not how \code{x} itself transmits selections.
+#' For example, in \linkS4class{DotPlot}s, the method for this generic would return \code{TRUE} if \code{SelectEffect="Restrict"}.
+#' Otherwise, it would be \code{FALSE} as the transmitted selection is only used for aesthetics, not for changing the identity of the displayed points.
 #'
-#' As an example, in \linkS4class{DotPlot}s, the method for this generic would return \code{TRUE} if \code{SelectEffect="Restrict"}.
-#' Otherwise, it would be \code{FALSE} as the transmitted selection is only used for aesthetics are not for changing the identity of the displayed points.
+#' \code{.multiSelectionInvalidated(x)} should return a logical scalar indicating whether a transmission of a multiple selection to \code{x} invalidates \code{x}'s own existing selections.
+#' This should only be \code{TRUE} in special circumstances, e.g., if receipt of a new multiple selection causes recalculation of coordinates in a \linkS4class{DotPlot}.
 #' 
 #' @author Aaron Lun
 #' @name multi-select-generics
@@ -384,6 +389,7 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #' .multiSelectionActive
 #' .multiSelectionCommands
 #' .multiSelectionClear
+#' .multiSelectionInvalidated
 NULL
 
 #' @export
@@ -400,6 +406,9 @@ setGeneric(".multiSelectionActive", function(x) standardGeneric(".multiSelection
 
 #' @export
 setGeneric(".multiSelectionClear", function(x) standardGeneric(".multiSelectionClear"))
+
+#' @export
+setGeneric(".multiSelectionInvalidated", function(x) standardGeneric(".multiSelectionInvalidated"))
 
 #' Generics for controlling single selections
 #'

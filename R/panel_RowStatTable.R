@@ -37,7 +37,8 @@
 #'
 #' For creating the output:
 #' \itemize{
-#' \item \code{\link{.getTableCommands}(x, envir)} will return a character vector of R commands to construct the data.frame that is supplied to the \code{\link{datatable}} widget.
+#' \item \code{\link{.generateTable}(x, envir)} will modify \code{envir} to contain the relevant data.frame for display,
+#' while returning a character vector of commands required to produce that data.frame.
 #' Each row of the data.frame should correspond to a row of the SummarizedExperiment.
 #' }
 #'
@@ -68,7 +69,7 @@
 #' .cacheCommonInfo,RowStatTable-method
 #' .refineParameters,RowStatTable-method
 #' .hideInterface,RowStatTable-method
-#' .getTableCommands,RowStatTable-method
+#' .generateTable,RowStatTable-method
 #' .panelRowor,RowStatTable-method
 #' .fullName,RowStatTable-method
 NULL
@@ -136,7 +137,7 @@ setMethod(".hideInterface", "RowStatTable", function(x, field) {
 
 #' @export
 #' @importFrom SummarizedExperiment rowData
-setMethod(".getTableCommands", "RowStatTable", function(x, envir) {
+setMethod(".generateTable", "RowStatTable", function(x, envir) {
     cmds <-"tab <- as.data.frame(rowData(se));"
 
     if (exists("row_selected", envir=envir, inherits=FALSE)) {
@@ -148,6 +149,8 @@ setMethod(".getTableCommands", "RowStatTable", function(x, envir) {
         cmds <- c(cmds, sprintf("tab <- tab[,%s,drop=FALSE]",
             paste(deparse(valid.names), collapse="\n     ")))
     }
+
+    .text_eval(cmds, envir)
 
     cmds
 })

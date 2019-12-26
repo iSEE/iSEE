@@ -268,7 +268,7 @@ setGeneric(".getCommandsPlotColor", function(x, colorby, x_aes="X", y_aes="Y") s
 ###########################
 
 #' @export
-setGeneric(".getTableCommands", function(x, envir) standardGeneric(".getTableCommands"))
+setGeneric(".generateTable", function(x, envir) standardGeneric(".generateTable"))
 
 #' Generics for setting up parameters
 #'

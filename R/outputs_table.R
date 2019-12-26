@@ -62,10 +62,10 @@
     })
 }
 
-#' Commands to define the Table
+#' Generate the Table
 #'
 #' Define commands to generate the contents of the \linkS4class{Table}.
-#' This uses \code{\link{.getTableCommands}} and is itself called inside \code{\link{.generateOutput}}.
+#' This uses \code{\link{.generateTable}} and is itself called inside \code{\link{.generateOutput}}.
 #' 
 #' @param x An instance of a \linkS4class{Table} class.
 #' @param se A \linkS4class{SummarizedExperiment} object for the current dataset.
@@ -73,7 +73,7 @@
 #' @param all_contents A list of displayed contents for each panel in the app, see \code{\link{.renderOutput}} for details.
 #'
 #' @return
-#' A list containing \code{\link{commands}}, the commands required to produce the data.frame;
+#' A list containing \code{\link{commands}}, a list of the commands required to produce the data.frame;
 #' and \code{contents}, a data.frame of the current contents of the Table.
 #'
 #' @author Aaron Lun
@@ -84,12 +84,11 @@
     eval_env <- new.env()
     eval_env$se <- se
 
-    # Doing this first so that .getTableCommands can respond to the selection.
+    # Doing this first so that .generateTable can respond to the selection.
     select_cmds <- .processMultiSelections(x, all_memory, all_contents, eval_env)
 
     # Creating the table and storing it.
-    tab_cmds <- .add_command(tab_cmds, .getTableCommands(x, eval_env))
-    tab_cmds <- .evaluate_commands(tab_cmds, eval_env)
+    tab_cmds <- .generateTable(x, eval_env)
 
-    list(commands=tab_cmds, contents=eval_env$tab)
+    list(commands=list(select_cmds, tab_cmds), contents=eval_env$tab)
 }

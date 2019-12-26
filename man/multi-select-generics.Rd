@@ -6,6 +6,7 @@
 \alias{.multiSelectionRestricted}
 \alias{.multiSelectionActive}
 \alias{.multiSelectionCommands}
+\alias{.multiSelectionClear}
 \title{Generics for controlling multiple selections}
 \description{
 A panel can create a multiple selection on either the rows or columns 

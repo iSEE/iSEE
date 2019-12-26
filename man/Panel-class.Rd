@@ -11,6 +11,8 @@
 \alias{.hideInterface,Panel-method}
 \alias{.multiSelectionRestricted,Panel-method}
 \alias{.multiSelectionDimension,Panel-method}
+\alias{.multiSelectionClear,Panel-method}
+\alias{.multiSelectionActive,Panel-method}
 \alias{.singleSelectionDimension,Panel-method}
 \alias{.singleSelectionValue,Panel-method}
 \alias{.singleSelectionSlots,Panel-method}

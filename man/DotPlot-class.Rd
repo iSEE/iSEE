@@ -12,6 +12,7 @@
 \alias{.multiSelectionRestricted,DotPlot-method}
 \alias{.multiSelectionActive,DotPlot-method}
 \alias{.multiSelectionCommands,DotPlot-method}
+\alias{.multiSelectionClear,DotPlot-method}
 \alias{.multiSelectionDimension,DotPlot-method}
 \alias{.singleSelectionValue,DotPlot-method}
 \alias{.singleSelectionSlots,DotPlot-method}

@@ -135,8 +135,9 @@ setMethod(".refineParameters", "ColDataPlot", function(x, se) {
         return(NULL)
     }
 
-    x <- .replace_na_with_first(x, .colDataXAxisColData, covariates)
-    x <- .replace_na_with_first(x, .colDataYAxis, covariates)
+    for (field in c(.colDataXAxisColData, .colDataYAxis)) {
+        x <- .replace_na_with_first(x, field, covariates)
+    }
 
     x
 })

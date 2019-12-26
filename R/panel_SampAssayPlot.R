@@ -157,19 +157,14 @@ setMethod(".refineParameters", "SampAssayPlot", function(x, se) {
         return(NULL)
     }
 
-    assay_choice <- x[[.sampAssayAssay]]
-    if (is.na(assay_choice) || !assay_choice %in% all_assays) {
-        x[[.sampAssayAssay]] <- all_assays[1]
-    }
+    x <- .replace_na_with_first(x, .sampAssayAssay, all_assays)
 
-    x[[.sampAssayXAxisSampName]] <- colnames(se)[1]
-    x[[.sampAssayYAxisSampName]] <- colnames(se)[1]
+    for (field in c(.sampAssayXAxisSampName, .sampAssayYAxisSampName)) {
+        x <- .replace_na_with_first(x, field, colnames(se))
+    }
 
     row_covariates <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
-    row_choice <- x[[.sampAssayXAxisRowData]]
-    if ((is.na(row_choice) || !row_choice %in% row_covariates) && length(row_covariates)) {
-        x[[.sampAssayXAxisRowData]] <- row_covariates[1]
-    }
+    x <- .replace_na_with_first(x, .sampAssayXAxisRowData, row_covariates)
 
     x
 })

@@ -126,25 +126,13 @@ setMethod(".refineParameters", "RowDataPlot", function(x, se) {
     }
 
     covariates <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
-
     if (length(covariates)==0L) {
         warning(sprintf("no atomic 'rowData' fields for '%s'", class(x)[1]))
         return(NULL)
     }
 
-    xchoice <- x[[.rowDataXAxis]]
-    if (!xchoice %in% c(.rowDataXAxisNothingTitle, .rowDataXAxisRowDataTitle)) {
-        x[[.rowDataXAxis]] <- .rowDataXAxisNothingTitle
-    }
-
-    xcol <- x[[.rowDataXAxisRowData]]
-    if (is.na(xcol) || !xcol %in% covariates) {
-        x[[.rowDataXAxisRowData]] <- covariates[1]
-    }
-
-    ycol <- x[[.rowDataYAxis]]
-    if (is.na(ycol) || !ycol %in% covariates) {
-        x[[.rowDataYAxis]] <- covariates[1]
+    for (field in c(.rowDataXAxisRowData, .rowDataYAxis)) {
+        x <- .replace_na_with_first(x, field, covariates)
     }
 
     x

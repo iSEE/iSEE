@@ -157,19 +157,14 @@ setMethod(".refineParameters", "FeatAssayPlot", function(x, se) {
         return(NULL)
     }
 
-    assay_choice <- x[[.featAssayAssay]]
-    if (is.na(assay_choice) || !assay_choice %in% all_assays) {
-        x[[.featAssayAssay]] <- all_assays[1]
-    }
+    x <- .replace_na_with_first(x, .featAssayAssay, all_assays)
 
-    x[[.featAssayXAxisFeatName]] <- rownames(se)[1]
-    x[[.featAssayYAxisFeatName]] <- rownames(se)[1]
+    for (field in c(.featAssayXAxisFeatName, .featAssayYAxisFeatName)) { 
+        x <- .replace_na_with_first(x, field, rownames(se))
+    }
 
     column_covariates <- .get_common_info(se, "ColumnDotPlot")$valid.colData.names
-    column_choice <- x[[.featAssayXAxisColData]]
-    if ((is.na(column_choice) || !column_choice %in% column_covariates) && length(column_covariates)) {
-        x[[.featAssayXAxisColData]] <- column_covariates[1]
-    }
+    x <- .replace_na_with_first(x, .featAssayXAxisColData, column_covariates)
 
     x
 })

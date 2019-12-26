@@ -49,7 +49,7 @@
         # happens with the observer seeming to respond to the datatable()
         # re-rendering but applying the old value of 'input[[*_rows_selected]]'
         # to the new 'full_tab' - not good.
-        selectRows(dataTableProxy(panel_name), NULL)
+        selectRows(dataTableProxy(panel_name, deferUntilFlush=FALSE), NULL)
 
         datatable(
             full_tab, filter="top", rownames=TRUE,

@@ -279,13 +279,7 @@
         .safe_reactive_bump(rObjects, info_name)
         .refreshPanelOutput(panel_name, se, pObjects, rObjects)
 
-        trans_row <- .multiSelectionDimension(instance)=="row"
-        by_field <- if (trans_row) .selectRowSource else .selectColSource
-        if (instance[[by_field]]==panel_name) {
-            .safe_reactive_bump(rObjects, saved_select_name)
-        }
-
-        # Updating children.
+        # Updating children's selectize's.
         .safe_reactive_bump(rObjects, resaved_name)
 
         .disableButtonIf(
@@ -305,17 +299,6 @@
         # Updating self.
         .safe_reactive_bump(rObjects, info_name)
         .refreshPanelOutput(panel_name, se, pObjects, rObjects)
-
-        trans_row <- .multiSelectionDimension(instance)=="row"
-        by_field <- if (trans_row) .selectRowSource else .selectColSource
-        if (instance[[by_field]]==panel_name) {
-            .safe_reactive_bump(rObjects, saved_select_name)
-
-            saved_field <- if (trans_row) .selectRowSaved else .selectColSaved
-            if (instance[[saved_field]] > length(current)) {
-                pObjects$memory[[panel_name]][[saved_field]] <- 0L
-            }
-        }
 
         # Updating children.
         .safe_reactive_bump(rObjects, resaved_name)

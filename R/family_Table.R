@@ -85,11 +85,13 @@
 #' @aliases
 #' initialize,Table-method
 #' .createObservers,Table-method
+#' .generateOutput,Table-method
 #' .renderOutput,Table-method
 #' .defineOutput,Table-method
 #' .hideInterface,Table-method
 #' .multiSelectionCommands,Table-method
 #' .multiSelectionActive,Table-method
+#' .singleSelectionValue,Table-method
 #' .generateTable
 NULL
 

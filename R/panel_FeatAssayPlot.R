@@ -109,6 +109,7 @@
 #'
 #' @docType methods
 #' @aliases FeatAssayPlot FeatAssayPlot-class
+#' initialize,FeatAssayPlot-method
 #' .refineParameters,FeatAssayPlot-method
 #' .defineDataInterface,FeatAssayPlot-method
 #' .createObservers,FeatAssayPlot-method

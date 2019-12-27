@@ -66,12 +66,14 @@
 #'
 #' @name RowStatTable
 #' @aliases RowStatTable RowStatTable-class
+#' initialize,RowStatTable-method
 #' .cacheCommonInfo,RowStatTable-method
 #' .refineParameters,RowStatTable-method
 #' .hideInterface,RowStatTable-method
 #' .generateTable,RowStatTable-method
-#' .panelRowor,RowStatTable-method
+#' .panelColor,RowStatTable-method
 #' .fullName,RowStatTable-method
+#' .generateTable,RowStatTable-method
 NULL
 
 #' @export

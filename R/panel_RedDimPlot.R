@@ -87,6 +87,7 @@
 #'
 #' @docType methods
 #' @aliases RedDimPlot RedDimPlot-class
+#' initialize,RedDimPlot-method
 #' .refineParameters,RedDimPlot-method
 #' .cacheCommonInfo,RedDimPlot-method
 #' .defineDataInterface,RedDimPlot-method

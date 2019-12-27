@@ -109,6 +109,7 @@
 #'
 #' @docType methods
 #' @aliases SampAssayPlot SampAssayPlot-class
+#' initialize,SampAssayPlot-method
 #' .refineParameters,SampAssayPlot-method
 #' .defineDataInterface,SampAssayPlot-method
 #' .createObservers,SampAssayPlot-method

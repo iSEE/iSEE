@@ -95,6 +95,7 @@
 #'
 #' @docType methods
 #' @aliases ColDataPlot ColDataPlot-class
+#' initialize,ColDataPlot-method
 #' .refineParameters,ColDataPlot-method
 #' .defineDataInterface,ColDataPlot-method
 #' .createObservers,ColDataPlot-method

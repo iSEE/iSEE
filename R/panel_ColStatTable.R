@@ -66,12 +66,14 @@
 #'
 #' @name ColStatTable
 #' @aliases ColStatTable ColStatTable-class
+#' initialize,ColStatTable-method
 #' .cacheCommonInfo,ColStatTable-method
 #' .refineParameters,ColStatTable-method
 #' .hideInterface,ColStatTable-method
 #' .generateTable,ColStatTable-method
 #' .panelColor,ColStatTable-method
 #' .fullName,ColStatTable-method
+#' .generateTable,ColStatTable-method
 NULL
 
 #' @export

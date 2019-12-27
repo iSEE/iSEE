@@ -92,6 +92,7 @@
 #'
 #' @docType methods
 #' @aliases RowDataPlot RowDataPlot-class
+#' initialize,RowDataPlot-method
 #' .refineParameters,RowDataPlot-method
 #' .defineDataInterface,RowDataPlot-method
 #' .createObservers,RowDataPlot-method

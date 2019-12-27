@@ -117,6 +117,9 @@
 #' initialize,Panel-method
 #' [[,Panel-method
 #' [[<-,Panel-method
+#' [[,Panel,ANY,ANY-method
+#' [[<-,Panel,ANY,ANY-method
+#' .defineInterface,Panel-method
 #' .refineParameters,Panel-method
 #' .cacheCommonInfo,Panel-method
 #' .createObservers,Panel-method

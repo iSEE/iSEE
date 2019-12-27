@@ -171,8 +171,8 @@
 #' @name DotPlot-class
 #' @aliases
 #' initialize,DotPlot-method
-#' [[,DotPlot-method
-#' [[<-,DotPlot-method
+#' .defineOutput,DotPlot-method
+#' .generateOutput,DotPlot-method
 #' .renderOutput,DotPlot-method
 #' .refineParameters,DotPlot-method
 #' .cacheCommonInfo,DotPlot-method

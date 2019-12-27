@@ -313,6 +313,11 @@ setMethod(".createObservers", "HeatMapPlot", function(x, se, input, session, pOb
     }, ignoreInit=TRUE)
 })
 
+setMethod(".generateOutput", "HeatMapPlot", function(x, se, all_memory, all_contents) {
+    # Placeholder for the time being.
+    list()
+})
+
 #' @importFrom shiny observeEvent fluidRow column actionButton modalDialog showModal
 #' @importFrom shinyAce aceEditor
 .create_heatmap_import_observer <- function(plot_name, full_name, se, input, session, pObjects, rObjects) {

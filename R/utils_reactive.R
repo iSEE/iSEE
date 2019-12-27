@@ -3,47 +3,86 @@
 #' Respond to or request a re-rendering of the \linkS4class{Panel} output via reactive variables.
 #'
 #' @param panel_name String containing the panel name.
-#' @param pObjects An environment containing \code{memory}, a list of \linkS4class{Panel}s containing parameters for each panel.
+#' @param se A \linkS4class{SummarizedExperiment} object containing the current dataset.
+#' @param pObjects An environment containing \code{memory}, a list of \linkS4class{Panel}s containing parameters for each panel;
+#' \code{contents}, a list of panel-specific contents to be used to determine the selection values;
+#' and \code{cached}, a list of panel-specific cached values to be used during rendering.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
-#' @param clear Logical scalar indicating whether selections should be cleared upon re-rendering.
 #'
 #' @return
-#' \code{.respondPanelOutput} will use the \code{panel_name} reactive variable in \code{rObjects}.
+#' \code{.respondPanelOutput} will return the output of running \code{\link{.generateOutput}} for the current panel.
+#' It will also register the use of the \code{panel_name} reactive variable in \code{rObjects}.
 #'
 #' \code{.refreshPanelOutput} will bump the \code{panel_name} reactive variable in \code{rObjects}.
-#' If \code{clear=TRUE}, it will eliminate all selections in the chosen panel via \code{\link{.multiSelectionClear}}.
+#' \code{.refreshPanelOutputUnselected} will also remove all selections in the chosen panel.
 #'
 #' Both functions will invisibly return \code{NULL}.
 #'
 #' @details
 #' \code{.respondPanelOutput} should be used in the expression for rendering output, e.g., in \code{\link{.renderOutput}}.
-#' This ensures that this expression is re-evaluated upon requested re-rendering of the panel.
+#' This ensures that this expression is re-evaluated upon requested re-rendering of the panel
 #'
 #' \code{.refreshPanelOutput} should be used in various observers to request a re-rendering of the panel,
 #' usually in response to user-driven parameter changes in \code{\link{.createObservers}}.
 #'
-#' If \code{clear=TRUE}, active and saved multiple selections in the current panel are removed.
-#' This is usually desirable for parameter changes that invalidate previous selections,
+#' \code{.refreshPanelOutputUnselected} is usually desirable for parameter changes that invalidate previous selections,
 #' e.g., if the coordinates change in a \linkS4class{DotPlot}, existing brushes and lassos are usually not applicable.
 #'
 #' @author Aaron Lun
 #'
 #' @export
 #' @rdname respondPanelOutput
-.respondPanelOutput <- function(panel_name, rObjects) {
+.respondPanelOutput <- function(panel_name, se, pObjects, rObjects) {
     force(rObjects[[panel_name]])
+
+    if (length(pObjects$cached[[panel_name]])!=0L) {
+        output <- pObjects$cached[[panel_name]]
+        pObjects$cached[panel_name] <- list(NULL)
+    } else {
+        output <- .generateOutput(pObjects$memory[[panel_name]], se, 
+            all_memory=pObjects$memory, all_contents=pObjects$contents)
+    }
+
+    pObjects$commands[[panel_name]] <- output$commands
+    pObjects$contents[[panel_name]] <- output$contents
+
+    output
+}
+
+#' @export
+#' @rdname respondPanelOutput
+.refreshPanelOutput <- function(panel_name, se, pObjects, rObjects) {
+    .safe_reactive_bump(rObjects, panel_name)
+    if (length(pObjects$cached[[panel_name]])==0L) {
+        p.out <- .generateOutput(pObjects$memory[[panel_name]], se, 
+            all_memory=pObjects$memory, all_contents=pObjects$contents)
+        pObjects$contents[[panel_name]] <- p.out$contents
+        pObjects$cached[[panel_name]] <- p.out
+    }
     invisible(NULL)
 }
 
 #' @export
 #' @rdname respondPanelOutput
-.refreshPanelOutput <- function(panel_name, pObjects, rObjects, clear=FALSE) {
-    if (clear) {
-        .regenerate_unselected_plot(panel_name, pObjects, rObjects)
-    } else {
-        .safe_reactive_bump(rObjects, panel_name)
+.refreshPanelOutputUnselected <- function(panel_name, se, pObjects, rObjects) {
+    has_active <- .multiSelectionHasActive(pObjects$memory[[panel_name]])
+    has_saved <- .any_saved_selection(pObjects$memory[[panel_name]])
+
+    # Destroying active and saved selections, and marking the children to be
+    # updated. Hypothetically, this could cause union children to trigger
+    # twice, as their reactive values will be updated twice. In practice, plot
+    # rendering should occur after all reactives are resolved, so this
+    # shouldn't occur. Oh well.
+    if (has_active) {
+        pObjects$memory[[panel_name]] <- .multiSelectionClear(pObjects$memory[[panel_name]])
+        .safe_reactive_bump(rObjects, paste0(panel_name, "_", .panelReactivated))
     }
-    invisible(NULL)
+    if (has_saved) {
+        pObjects$memory[[panel_name]][[.multiSelectHistory]] <- list()
+        .safe_reactive_bump(rObjects, paste0(panel_name, "_", .panelResaved))
+    }
+
+    .refreshPanelOutput(panel_name, se, pObjects, rObjects)
 }
 
 #' Safely use reactive values

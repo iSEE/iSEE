@@ -227,25 +227,27 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
     .safe_reactive_init(rObjects, panel_name)
     .safe_reactive_init(rObjects, .input_FUN(.panelLinkInfo))
 
-    .create_child_propagation_observers(panel_name, session=session, pObjects=pObjects, rObjects=rObjects)
+    .create_box_observers(panel_name, c(.dataParamBoxOpen, .selectParamBoxOpen), pObjects, rObjects)
+
+    .create_child_propagation_observers(panel_name, se, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_multi_selection_choice_observer(panel_name, by_field=.selectRowSource, 
         type_field=.selectRowType, saved_field=.selectRowSaved,
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        se=se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_multi_selection_choice_observer(panel_name, by_field=.selectColSource, 
         type_field=.selectColType, saved_field=.selectColSaved,
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        se=se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_multi_selection_type_observers(panel_name, by_field=.selectRowSource,
         type_field=.selectRowType, saved_field=.selectRowSaved,
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        se=se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_multi_selection_type_observers(panel_name, by_field=.selectColSource,
         type_field=.selectColType, saved_field=.selectColSaved,
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        se=se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_multi_selection_history_observers(panel_name, 
+    .create_multi_selection_history_observers(panel_name, se=se,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     for (f in .singleSelectionSlots(x)) {
@@ -257,7 +259,7 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
                 use_value=f$use_value,
                 tab_field=f$source,
                 protected=f$protected,
-                input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+                se=se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
         }
     }
 })

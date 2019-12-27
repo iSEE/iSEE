@@ -134,7 +134,7 @@
 #' 
 #' For generating the output:
 #' \itemize{
-#' \item \code{\link{.generateOutput}(x, se, colormap, all_memory, all_contents)} returns a list containing \code{contents}, a data.frame with one row per point currently present in the plot;
+#' \item \code{\link{.generateOutput}(x, se, all_memory, all_contents)} returns a list containing \code{contents}, a data.frame with one row per point currently present in the plot;
 #' \code{plot}, a \link{ggplot} object;
 #' and \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot}.
 #' }
@@ -143,7 +143,7 @@
 #' \itemize{
 #' \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for some (but not all!) of the slots.
 #' This will also call the equivalent \linkS4class{Panel} method.
-#' \item \code{\link{.renderOutput}(x, se, colormap, output, pObjects, rObjects)} will add a rendered plot element to \code{output}.
+#' \item \code{\link{.renderOutput}(x, se, output, pObjects, rObjects)} will add a rendered plot element to \code{output}.
 #' The reactive expression will add the contents of the plot to \code{pObjects$contents} and the relevant commands to \code{pObjects$commands}.
 #' This will also call the equivalent \linkS4class{Panel} method to render the panel information testboxes.
 #' }
@@ -308,13 +308,13 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 
     .safe_reactive_init(rObjects, paste0(plot_name, "_", .panelGeneralInfo))
 
-    .create_box_observers(plot_name, c(.visualParamBoxOpen, .selectParamBoxOpen), input, pObjects)
+    .create_box_observers(plot_name, .visualParamBoxOpen, input, pObjects)
 
     .create_visual_parameter_choice_observer(plot_name, input, pObjects)
 
     .create_protected_parameter_observers(plot_name,
         fields=c(.facetByRow, .facetByColumn),
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        se=se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_nonfundamental_parameter_observers(plot_name,
         fields=c(
@@ -323,16 +323,16 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
             .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition,
             .plotPointDownsample, .plotPointSampleRes, .contourAdd,
             .contourColor),
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        se=se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     # Filling the plot interaction observers:
-    .create_brush_observer(plot_name, input=input, session=session,
+    .create_brush_observer(plot_name, se=se, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 
-    .create_lasso_observer(plot_name, input=input, session=session,
+    .create_lasso_observer(plot_name, se=se, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 
-    .create_zoom_observer(plot_name, input=input, session=session,
+    .create_zoom_observer(plot_name, se=se, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 })
 
@@ -349,11 +349,10 @@ setMethod(".defineOutput", "DotPlot", function(x, id) {
 })
 
 #' @export
-setMethod(".renderOutput", "DotPlot", function(x, se, colormap, output, pObjects, rObjects) {
-# TODO: move colormap INSIDE se's metadata.
+setMethod(".renderOutput", "DotPlot", function(x, se, output, pObjects, rObjects) {
     plot_name <- .getEncodedName(x)
 
-    .create_plot_output(plot_name, se=se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
+    .create_plot_output(plot_name, se=se, output=output, pObjects=pObjects, rObjects=rObjects)
 
     callNextMethod()
 })
@@ -418,11 +417,12 @@ setMethod(".singleSelectionSlots", "DotPlot", function(x) {
 })
 
 #' @export
-setMethod(".generateOutput", "DotPlot", function(x, se, colormap, all_memory, all_contents) {
+#' @importFrom S4Vectors metadata
+setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents) {
     # Initialize an environment storing information for generating ggplot commands
     plot_env <- new.env()
     plot_env$se <- se
-    plot_env$colormap <- colormap
+    plot_env$colormap <- metadata(se)$colormap
 
     # Doing this first so that .generateDotPlotData can respond to the selection.
     select_cmds <- .processMultiSelections(x, all_memory, all_contents, plot_env)

@@ -284,11 +284,11 @@ setMethod(".createObservers", "HeatMapPlot", function(x, se, input, session, pOb
     .create_nonfundamental_parameter_observers(plot_name,
         fields=c(.heatMapAssay, .heatMapLower, .heatMapUpper, .heatMapCenteredColors,
             .heatMapFeatName, .heatMapColData),
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        se=se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     # Don't ignore empty inputs.
     .create_nonfundamental_parameter_observers(plot_name, fields=.heatMapCenterScale,
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects, ignoreNULL=FALSE)
+        se=se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, ignoreNULL=FALSE)
 
     .create_heatmap_import_observer(plot_name, .getFullName(x), se, input, session, pObjects, rObjects)
 
@@ -459,7 +459,7 @@ setMethod(".panelColor", "HeatMapPlot", function(x) "#7C378A")
 
 #' @export
 #' @importFrom shiny renderPlot renderUI renderTable
-setMethod(".renderOutput", "HeatMapPlot", function(x, se, colormap, output, pObjects, rObjects) {
+setMethod(".renderOutput", "HeatMapPlot", function(x, se, output, pObjects, rObjects) {
     plot_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
@@ -470,7 +470,7 @@ setMethod(".renderOutput", "HeatMapPlot", function(x, se, colormap, output, pObj
         force(rObjects[[plot_name]])
         rObjects[[legend_field]] <- .increment_counter(isolate(rObjects[[legend_field]]))
 
-        p.out <- .make_heatMapPlot(pObjects$memory[[plot_name]], pObjects$memory, pObjects$contents, se, colormap)
+        p.out <- .make_heatMapPlot(pObjects$memory[[plot_name]], pObjects$memory, pObjects$contents, se, metadata(se)$colormap)
         pObjects$commands[[plot_name]] <- p.out$cmd_list
         pObjects$contents[[plot_name]] <- p.out$xy # Caching the expression matrix.
         pObjects$cached_info[[plot_name]] <- p.out$legends # Caching the legend plot for downstream use.

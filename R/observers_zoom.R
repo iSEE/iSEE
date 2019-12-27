@@ -17,7 +17,7 @@
 #'
 #' @importFrom shiny observeEvent
 #' @rdname INTERNAL_zoom_observers
-.create_zoom_observer <- function(plot_name, input, session, pObjects, rObjects) {
+.create_zoom_observer <- function(plot_name, se, input, session, pObjects, rObjects) {
     dblclick_field <- paste0(plot_name, "_", .zoomClick)
     act_name <- paste0(plot_name, "_", .panelReactivated)
     save_field <- paste0(plot_name, "_", .multiSelectSave)
@@ -51,7 +51,7 @@
         }
 
         pObjects$memory[[plot_name]][[.zoomData]] <- new_coords
-        .safe_reactive_bump(rObjects, plot_name)
+        .refreshPanelOutput(plot_name, se, pObjects, rObjects)
 
         # While re-creating the plot clears the brush, it doesn't 
         # re-trigger the observer as the observer ignores NULLs.

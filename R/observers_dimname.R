@@ -59,7 +59,9 @@
 #'
 #' @return 
 #' \code{pObjects} and \code{rObjects} are modified and selectize elements are possibly updated.
-#' A logical scalar is returned indicating whether the current panel should be re-rendered.
+#' A logical scalar is returned indicating whether the current panel should be re-rendered
+#' based on whether the choice of usage mode has changed.
+#' (Changes in the transmitted single selection are handled implicitly via the selectize update.)
 #'
 #' @details
 #' This function has a number of side-effects, relying on the pass-by-reference behaviour of \code{pObjects}, \code{rObjects} and \code{session} to perform its role.
@@ -186,7 +188,7 @@
 #' @importFrom shiny observeEvent observe updateSelectizeInput
 .create_dimname_observers <- function(panel_name, name_field, choices,
     use_mode_field, use_value, protected, tab_field, 
-    input, session, pObjects, rObjects)
+    se, input, session, pObjects, rObjects)
 {
     name_input <- paste0(panel_name, "_", name_field)
     always_in_use <- is.na(use_mode_field)
@@ -210,9 +212,9 @@
         # Only regenerating if the current parameter is actually in use.
         if (always_in_use || pObjects$memory[[panel_name]][[use_mode_field]]==use_value) {
             if (!protected) {
-                .safe_reactive_bump(rObjects, panel_name)
+                .refreshPanelOutput(panel_name, se, pObjects, rObjects)
             } else {
-                .regenerate_unselected_plot(panel_name, pObjects, rObjects)
+                .refreshPanelOutputUnselected(panel_name, se, pObjects, rObjects)
             }
         }
     }, ignoreInit=TRUE)
@@ -230,9 +232,9 @@
 
         if (replot) {
             if (!protected) {
-                .safe_reactive_bump(rObjects, panel_name)
+                .refreshPanelOutput(panel_name, se, pObjects, rObjects)
             } else {
-                .regenerate_unselected_plot(panel_name, pObjects, rObjects)
+                .refreshPanelOutputUnselected(panel_name, se, pObjects, rObjects)
             }
         }
     })

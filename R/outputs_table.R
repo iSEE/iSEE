@@ -24,11 +24,9 @@
     output[[panel_name]] <- renderDataTable({
         force(rObjects[[panel_name]])
         param_choices <- pObjects$memory[[panel_name]]
-       
-        t.out <- .generateOutput(param_choices, se=se, all_memory=pObjects$memory, all_contents=pObjects$contents)
+
+        t.out <- .respondPanelOutput(panel_name, se, pObjects, rObjects)
         full_tab <- t.out$contents
-        pObjects$contents[[panel_name]] <- full_tab
-        pObjects$commands[[panel_name]] <- t.out$commands
         pObjects$varname[[panel_name]] <- "tab"
 
         chosen <- param_choices[[.TableSelected]]

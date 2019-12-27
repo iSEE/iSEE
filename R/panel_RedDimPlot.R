@@ -222,9 +222,7 @@ setMethod(".createObservers", "RedDimPlot", function(x, se, input, session, pObj
     plot_name <- .getEncodedName(x)
 
     .create_protected_parameter_observers(plot_name, fields=c(.redDimXAxis, .redDimYAxis),
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-
-    .create_box_observers(plot_name, .dataParamBoxOpen, input, pObjects)
+        se=se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     cur_field <- paste0(plot_name, "_", .redDimType)
     dim_fieldX <- paste0(plot_name, "_", .redDimXAxis)
@@ -249,7 +247,7 @@ setMethod(".createObservers", "RedDimPlot", function(x, se, input, session, pObj
         updateSelectInput(session, dim_fieldX, choices=new_choices, selected=capped_X)
         updateSelectInput(session, dim_fieldY, choices=new_choices, selected=capped_Y)
 
-        .regenerate_unselected_plot(plot_name, pObjects, rObjects)
+        .refreshPanelOutputUnselected(plot_name, se, pObjects, rObjects)
     }, ignoreInit=TRUE)
 })
 

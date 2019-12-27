@@ -251,11 +251,9 @@ setMethod(".createObservers", "SampAssayPlot", function(x, se, input, session, p
 
     plot_name <- .getEncodedName(x)
 
-    .create_box_observers(plot_name, .dataParamBoxOpen, input, pObjects)
-
     .create_protected_parameter_observers(plot_name,
         fields=c(.sampAssayAssay, .sampAssayXAxisRowData),
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        se=se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export

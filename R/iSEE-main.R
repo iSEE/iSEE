@@ -88,7 +88,7 @@
 #' includeCSS singleton includeScript
 #' fileInput observeEvent isolate
 #' @importFrom DT datatable renderDataTable dataTableOutput
-#' @importFrom S4Vectors DataFrame
+#' @importFrom S4Vectors DataFrame metadata metadata<-
 #' @importFrom methods as
 #' @importFrom cowplot plot_grid
 #' @importFrom igraph make_graph
@@ -347,6 +347,8 @@ iSEE <- function(se,
                 showNotification(ui=ui_msg, type="warning", duration=10)
             }
 
+            metadata(se)$colormap <- colormap
+
             # Caching and refining the initial panels.
             for (idx in seq_along(initial)) {
                 se <- .cacheCommonInfo(initial[[idx]], se)
@@ -407,6 +409,7 @@ iSEE <- function(se,
             pObjects$counter <- counter
 
             pObjects$commands <- list()
+            pObjects$cached <- list()
             pObjects$contents <- list()
             pObjects$varname <- list()
 
@@ -419,7 +422,7 @@ iSEE <- function(se,
             # This is done in topological order so that all dependencies are satisfied.
             eval_order <- .establish_eval_order(pObjects$selection_links)
             for (panel_name in eval_order) {
-                p.out <- .generateOutput(pObjects$memory[[panel_name]], se, colormap, 
+                p.out <- .generateOutput(pObjects$memory[[panel_name]], se, 
                     all_memory=pObjects$memory, all_contents=pObjects$contents)
                 pObjects$contents[[panel_name]] <- p.out$contents
             }
@@ -428,7 +431,7 @@ iSEE <- function(se,
             .create_general_observers(tour, runLocal, se_name, ecm_name, 
                 input, session, pObjects, rObjects)
 
-            .create_organization_observers(se=se, colormap=colormap,
+            .create_organization_observers(se=se, 
                 input=input, output=output, session=session,
                 pObjects=pObjects, rObjects=rObjects)
 
@@ -436,7 +439,7 @@ iSEE <- function(se,
                 instance <- pObjects$memory[[idx]]
                 .createObservers(instance, se=se, input=input,
                     session=session, pObjects=pObjects, rObjects=rObjects)
-                .renderOutput(instance, se=se, colormap=colormap,
+                .renderOutput(instance, se=se, 
                     output=output, pObjects=pObjects, rObjects=rObjects)
             }
 

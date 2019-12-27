@@ -7,7 +7,6 @@
 #' @param input The Shiny input object from the server function.
 #' @param output The Shiny output object from the server function.
 #' @param se The \linkS4class{SummarizedExperiment} object.
-#' @param colormap An \linkS4class{ExperimentColorMap} object that defines custom colormaps.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
 #'
@@ -27,7 +26,7 @@
 #' @rdname INTERNAL_organization_observers
 #' @importFrom shiny renderUI reactiveValues observeEvent
 #' showModal modalDialog isolate removeModal
-.create_organization_observers <- function(se, colormap, input, output, session, pObjects, rObjects) {
+.create_organization_observers <- function(se, input, output, session, pObjects, rObjects) {
     output$allPanels <- renderUI({
         force(rObjects$rerender)
         rObjects$rerendered <- .increment_counter(isolate(rObjects$rerendered))
@@ -127,7 +126,7 @@
         for (a in added) {
             instance <- pObjects$memory[[a]]
             .createObservers(instance, se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
-            .renderOutput(instance, se, colormap=colormap, output=output, pObjects=pObjects, rObjects=rObjects)
+            .renderOutput(instance, se, output=output, pObjects=pObjects, rObjects=rObjects)
         }
 
         pObjects$selection_links <- .spawn_multi_selection_graph(pObjects$memory)

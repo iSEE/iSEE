@@ -6,7 +6,6 @@
 #'
 #' @param plot_name String containing the current name of the plot panel.
 #' @param se The \linkS4class{SingleCellExperiment} object to be visualized.
-#' @param colormap The \linkS4class{ExperimentColorMap} object containing coloring information.
 #' @param output The Shiny output object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
@@ -19,21 +18,14 @@
 #'
 #' @rdname INTERNAL_create_plot_output
 #' @importFrom shiny renderPlot renderUI tagList br
-.create_plot_output <- function(plot_name, se, colormap, output, pObjects, rObjects) {
+.create_plot_output <- function(plot_name, se, output, pObjects, rObjects) {
     force(se)
-    force(colormap)
     gen_field <- paste0(plot_name, "_", .panelGeneralInfo)
 
     output[[plot_name]] <- renderPlot({
-        force(rObjects[[plot_name]])
         .safe_reactive_bump(rObjects, gen_field)
-
-        p.out <- .generateOutput(pObjects$memory[[plot_name]], se, colormap=colormap, 
-            all_memory=pObjects$memory, all_contents=pObjects$contents)
-        pObjects$commands[[plot_name]] <- p.out$commands
-        pObjects$contents[[plot_name]] <- p.out$contents
+        p.out <- .respondPanelOutput(plot_name, se, pObjects, rObjects)
         pObjects$varname[[plot_name]] <- "plot.data"
-
         p.out$plot
     })
 

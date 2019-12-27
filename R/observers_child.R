@@ -33,13 +33,14 @@
 #'
 #' @importFrom shiny isolate observe
 #' @rdname INTERNAL_child_propagation_observers
-.create_child_propagation_observers <- function(panel_name, session, pObjects, rObjects) {
+.create_child_propagation_observers <- function(panel_name, se, session, pObjects, rObjects) {
     # Reactive to regenerate children when the point population of the current panel changes.
     repop_name <- paste0(panel_name, "_", .panelRepopulated)
     .safe_reactive_init(rObjects, repop_name)
 
     observeEvent(rObjects[[repop_name]], {
         instance <- pObjects$memory[[panel_name]]
+
         has_active <- .multiSelectionHasActive(instance)
         has_saved <- .any_saved_selection(instance)
         transmit_dim <- .multiSelectionDimension(instance)
@@ -72,7 +73,7 @@
             }
 
             if (replot) {
-                .trigger_child_rerender(child_instance, child_plot, pObjects, rObjects)
+                .trigger_child_rerender(child_instance, child_plot, se, pObjects, rObjects)
             }
         }
     })
@@ -103,7 +104,7 @@
 
             select_mode <- child_instance[[type_field]]
             if (select_mode==.selectMultiActiveTitle || select_mode==.selectMultiUnionTitle) {
-                .trigger_child_rerender(child_instance, child_plot, pObjects, rObjects)
+                .trigger_child_rerender(child_instance, child_plot, se, pObjects, rObjects)
             }
         }
     })
@@ -137,7 +138,7 @@
 
             child_select_type <- child_instance[[type_field]]
             if (child_select_type==.selectMultiUnionTitle || (child_select_type==.selectMultiSavedTitle && reset)) {
-                .trigger_child_rerender(child_instance, child_plot, pObjects, rObjects)
+                .trigger_child_rerender(child_instance, child_plot, se, pObjects, rObjects)
             }
 
             # Updating the selectize as well.
@@ -166,14 +167,12 @@
 #' @author Aaron Lun
 #'
 #' @rdname INTERNAL_trigger_child_rerender
-.trigger_child_rerender <- function(x, panel_name, pObjects, rObjects) {
+.trigger_child_rerender <- function(x, panel_name, se, pObjects, rObjects) {
     if (.multiSelectionInvalidated(x)) {
-        .regenerate_unselected_plot(panel_name, pObjects, rObjects)
+        .refreshPanelOutputUnselected(panel_name, se, pObjects, rObjects)
     } else {
-        .safe_reactive_bump(rObjects, panel_name)
+        .refreshPanelOutput(panel_name, se, pObjects, rObjects)
     }
-
-    # To warrant replotting of the grandchildren, the child must itself be restricted.
     if (.multiSelectionRestricted(x)) {
         .safe_reactive_bump(rObjects, paste0(panel_name, "_", .panelRepopulated))
     }

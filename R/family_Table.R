@@ -37,7 +37,7 @@
 #' \itemize{
 #' \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all of the slots. 
 #' This will also call the equivalent \linkS4class{Panel} method.
-#' \item \code{\link{.renderOutput}(x, se, colormap, output, pObjects, rObjects)} will add a rendered \code{\link{datatable}} object to \code{output}.
+#' \item \code{\link{.renderOutput}(x, se, output, pObjects, rObjects)} will add a rendered \code{\link{datatable}} object to \code{output}.
 #' This will also call the equivalent \linkS4class{Panel} method to render the panel information testboxes.
 #' }
 #'
@@ -155,8 +155,6 @@ setMethod(".createObservers", "Table", function(x, se, input, session, pObjects,
     callNextMethod()
 
     panel_name <- .getEncodedName(x)
-
-    .create_box_observers(panel_name, .selectParamBoxOpen, input, pObjects)
 
     .create_table_observers(panel_name, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })

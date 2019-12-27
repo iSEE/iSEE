@@ -27,8 +27,8 @@
 #' @rdname INTERNAL_selection_parameter_observers
 #' @importFrom shiny observeEvent showNotification updateSelectInput 
 #' @importFrom igraph is_dag simplify
-.create_multi_selection_choice_observer <- function(panel_name, 
-    by_field, type_field, saved_field, input, session, pObjects, rObjects) 
+.create_multi_selection_choice_observer <- function(panel_name,  
+    by_field, type_field, saved_field, se, input, session, pObjects, rObjects) 
 {
     repop_name <- paste0(panel_name, "_", .panelRepopulated)
     .safe_reactive_init(rObjects, repop_name)
@@ -90,7 +90,7 @@
             }
         }
 
-        .safe_reactive_bump(rObjects, panel_name)
+        .refreshPanelOutput(panel_name, se, pObjects, rObjects)
 
         # Updating children, if the current panel is set to restrict
         # (and thus the point population changes with a new transmitted selection).
@@ -105,7 +105,7 @@
 #' @rdname INTERNAL_selection_parameter_observers
 #' @importFrom shiny showNotification observeEvent
 .create_multi_selection_effect_observer <- function(plot_name, 
-    by_field, type_field, saved_field, 
+    by_field, type_field, saved_field, se, 
     input, session, pObjects, rObjects) 
 {
     repop_name <- paste0(plot_name, "_", .panelRepopulated)
@@ -127,7 +127,7 @@
             return(NULL)
         }
 
-        .safe_reactive_bump(rObjects, plot_name)
+        .refreshPanelOutput(panel_name, se, pObjects, rObjects)
 
         # Updating children if the selection in the current plot changes due to gain/loss of Restrict.
         if (cur_effect==.selectRestrictTitle || old_effect==.selectRestrictTitle) {
@@ -142,7 +142,7 @@
 #' @rdname INTERNAL_selection_parameter_observers
 .create_multi_selection_type_observers <- function(panel_name, 
     by_field, type_field, saved_field,
-    input, session, pObjects, rObjects) 
+    se, input, session, pObjects, rObjects) 
 {
     repop_name <- paste0(panel_name, "_", .panelRepopulated)
     .safe_reactive_init(rObjects, repop_name)
@@ -170,7 +170,7 @@
             return(NULL)
         }
 
-        .safe_reactive_bump(rObjects, panel_name)
+        .refreshPanelOutput(panel_name, se, pObjects, rObjects)
         if (.multiSelectionRestricted(pObjects$memory[[panel_name]])) {
             .safe_reactive_bump(rObjects, repop_name)
         }
@@ -194,8 +194,11 @@
             return(NULL)
         }
 
-        # Switch of 'Saved' will ALWAYS change the current plot, so no need for other checks.
-        .safe_reactive_bump(rObjects, panel_name)
+        .refreshPanelOutput(panel_name, se, pObjects, rObjects)
+
+        # Switch of 'Saved' will ALWAYS change the current plot, as it's not
+        # possible to do so without being on the "Saved" choice in the first
+        # place; so there's no need for other checks.
         if (.multiSelectionRestricted(pObjects$memory[[panel_name]])) {
             .safe_reactive_bump(rObjects, repop_name)
         }
@@ -241,7 +244,7 @@
 #' Observers to change the multiple selections by saving the active selection or deleting existing saved selections.
 #' This differs from \code{\link{.create_multi_selection_type_observers}}, which just involves using existing saved selections.
 #'
-#' @param plot_name String containing the name of the plot..
+#' @param panel_name String containing the name of the plot..
 #' @param input The Shiny input object from the server function.
 #' @param session The Shiny session object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
@@ -254,31 +257,31 @@
 #'
 #' @importFrom shiny observeEvent 
 #' @rdname INTERNAL_multiple_select_observers
-.create_multi_selection_history_observers <- function(plot_name, input, session, pObjects, rObjects) {
-    save_field <- paste0(plot_name, "_", .multiSelectSave)
-    del_field <- paste0(plot_name, "_", .multiSelectDelete)
-    info_name <- paste0(plot_name, "_", .panelGeneralInfo)
-    saved_select_name <- paste0(plot_name, "_", .updateSavedChoices)
-    resaved_name <- paste0(plot_name, "_", .panelResaved)
+.create_multi_selection_history_observers <- function(panel_name, se, input, session, pObjects, rObjects) {
+    save_field <- paste0(panel_name, "_", .multiSelectSave)
+    del_field <- paste0(panel_name, "_", .multiSelectDelete)
+    info_name <- paste0(panel_name, "_", .panelGeneralInfo)
+    saved_select_name <- paste0(panel_name, "_", .updateSavedChoices)
+    resaved_name <- paste0(panel_name, "_", .panelResaved)
 
     ## Save selection observer. ---
     observeEvent(input[[save_field]], {
-        instance <- pObjects$memory[[plot_name]]
+        instance <- pObjects$memory[[panel_name]]
         current <- instance[[.multiSelectHistory]]
         to_store <- .multiSelectionActive(instance)
         if (is.null(to_store)) {
             return(NULL)
         }
 
-        pObjects$memory[[plot_name]][[.multiSelectHistory]] <- c(current, list(to_store))
+        pObjects$memory[[panel_name]][[.multiSelectHistory]] <- c(current, list(to_store))
 
         # Updating self (replot to get number).
         .safe_reactive_bump(rObjects, info_name)
-        .safe_reactive_bump(rObjects, plot_name)
+        .refreshPanelOutput(panel_name, se, pObjects, rObjects)
 
         trans_row <- .multiSelectionDimension(instance)=="row"
         by_field <- if (trans_row) .selectRowSource else .selectColSource
-        if (instance[[by_field]]==plot_name) {
+        if (instance[[by_field]]==panel_name) {
             .safe_reactive_bump(rObjects, saved_select_name)
         }
 
@@ -294,23 +297,23 @@
 
     ## Deleted selection observer. ---
     observeEvent(input[[del_field]], {
-        instance <- pObjects$memory[[plot_name]]
+        instance <- pObjects$memory[[panel_name]]
         current <- instance[[.multiSelectHistory]]
         current <- head(current, -1)
-        pObjects$memory[[plot_name]][[.multiSelectHistory]] <- current
+        pObjects$memory[[panel_name]][[.multiSelectHistory]] <- current
 
         # Updating self.
         .safe_reactive_bump(rObjects, info_name)
-        .safe_reactive_bump(rObjects, plot_name)
+        .refreshPanelOutput(panel_name, se, pObjects, rObjects)
 
         trans_row <- .multiSelectionDimension(instance)=="row"
         by_field <- if (trans_row) .selectRowSource else .selectColSource
-        if (instance[[by_field]]==plot_name) {
+        if (instance[[by_field]]==panel_name) {
             .safe_reactive_bump(rObjects, saved_select_name)
 
             saved_field <- if (trans_row) .selectRowSaved else .selectColSaved
             if (instance[[saved_field]] > length(current)) {
-                pObjects$memory[[plot_name]][[saved_field]] <- 0L
+                pObjects$memory[[panel_name]][[saved_field]] <- 0L
             }
         }
 

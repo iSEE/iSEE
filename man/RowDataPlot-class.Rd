@@ -4,12 +4,13 @@
 \name{RowDataPlot-class}
 \alias{RowDataPlot-class}
 \alias{RowDataPlot}
+\alias{initialize,RowDataPlot-method}
 \alias{.refineParameters,RowDataPlot-method}
 \alias{.defineDataInterface,RowDataPlot-method}
 \alias{.createObservers,RowDataPlot-method}
 \alias{.fullName,RowDataPlot-method}
 \alias{.panelColor,RowDataPlot-method}
-\alias{.getCommandsDataXY,RowDataPlot-method}
+\alias{.generateDotPlotData,RowDataPlot-method}
 \title{The RowDataPlot panel}
 \description{
 The RowDotPlot is a panel class for creating a \linkS4class{RowDotPlot} where the y-axis represents a variable from the \code{\link{rowData}} of a \linkS4class{SummarizedExperiment} object.
@@ -75,7 +76,7 @@ For defining the panel name:
 
 For creating the plot:
 \itemize{
-\item \code{\link{.getCommandsDataXY}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of row metadata variables.
+\item \code{\link{.generateDotPlotData}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of row metadata variables.
 }
 }
 

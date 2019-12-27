@@ -4,13 +4,14 @@
 \name{SampAssayPlot-class}
 \alias{SampAssayPlot-class}
 \alias{SampAssayPlot}
+\alias{initialize,SampAssayPlot-method}
 \alias{.refineParameters,SampAssayPlot-method}
 \alias{.defineDataInterface,SampAssayPlot-method}
 \alias{.createObservers,SampAssayPlot-method}
 \alias{.singleSelectionSlots,SampAssayPlot-method}
 \alias{.fullName,SampAssayPlot-method}
 \alias{.panelColor,SampAssayPlot-method}
-\alias{.getCommandsDataXY,SampAssayPlot-method}
+\alias{.generateDotPlotData,SampAssayPlot-method}
 \title{The SampAssayPlot panel}
 \description{
 The SampAssayPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents the expression of a sample of interest, using the \code{\link{assay}} values of the \linkS4class{SummarizedExperiment}.
@@ -84,7 +85,7 @@ For defining the panel name:
 
 For creating the plot:
 \itemize{
-\item \code{\link{.getCommandsDataXY}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of sample expression values.
+\item \code{\link{.generateDotPlotData}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of sample expression values.
 }
 
 For managing selections:

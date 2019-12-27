@@ -3,11 +3,12 @@
 \name{RowStatTable}
 \alias{RowStatTable}
 \alias{RowStatTable-class}
+\alias{initialize,RowStatTable-method}
 \alias{.cacheCommonInfo,RowStatTable-method}
 \alias{.refineParameters,RowStatTable-method}
 \alias{.hideInterface,RowStatTable-method}
 \alias{.generateTable,RowStatTable-method}
-\alias{.panelRowor,RowStatTable-method}
+\alias{.panelColor,RowStatTable-method}
 \alias{.fullName,RowStatTable-method}
 \title{The RowStatTable panel}
 \description{

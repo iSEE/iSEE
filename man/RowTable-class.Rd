@@ -57,6 +57,12 @@ For controlling selections:
 Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.
 }
 
+\section{Expectations for \code{\link{.generateTable}}}{
+
+\linkS4class{RowTable} methods for this generic should create a \code{tab} data.frame in which each row corresponds to a row of the SummarizedExperiment object and is named accordingly.
+It is \emph{not} necessary for all rows of the SummarizedExperiment object to be represented as rows in the data.frame.
+}
+
 \seealso{
 \linkS4class{Table}, for the immediate parent class that contains the actual slot definitions.
 }

@@ -4,13 +4,14 @@
 \name{FeatAssayPlot-class}
 \alias{FeatAssayPlot-class}
 \alias{FeatAssayPlot}
+\alias{initialize,FeatAssayPlot-method}
 \alias{.refineParameters,FeatAssayPlot-method}
 \alias{.defineDataInterface,FeatAssayPlot-method}
 \alias{.createObservers,FeatAssayPlot-method}
 \alias{.singleSelectionSlots,FeatAssayPlot-method}
 \alias{.fullName,FeatAssayPlot-method}
 \alias{.panelColor,FeatAssayPlot-method}
-\alias{.getCommandsDataXY,FeatAssayPlot-method}
+\alias{.generateDotPlotData,FeatAssayPlot-method}
 \title{The FeatAssayPlot panel}
 \description{
 The FeatAssayPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents the expression of a feature of interest, using the \code{\link{assay}} values of the \linkS4class{SummarizedExperiment}.
@@ -84,7 +85,7 @@ For defining the panel name:
 
 For creating the plot:
 \itemize{
-\item \code{\link{.getCommandsDataXY}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of feature expression values.
+\item \code{\link{.generateDotPlotData}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of feature expression values.
 }
 
 For managing selections:

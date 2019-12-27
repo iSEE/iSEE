@@ -5,10 +5,15 @@
 \alias{initialize,Panel-method}
 \alias{[[,Panel-method}
 \alias{[[<-,Panel-method}
+\alias{[[,Panel,ANY,ANY-method}
+\alias{[[<-,Panel,ANY,ANY-method}
+\alias{.defineInterface,Panel-method}
 \alias{.refineParameters,Panel-method}
 \alias{.cacheCommonInfo,Panel-method}
 \alias{.createObservers,Panel-method}
 \alias{.hideInterface,Panel-method}
+\alias{.defineDataInterface,Panel-method}
+\alias{.renderOutput,Panel-method}
 \alias{.multiSelectionRestricted,Panel-method}
 \alias{.multiSelectionDimension,Panel-method}
 \alias{.multiSelectionClear,Panel-method}

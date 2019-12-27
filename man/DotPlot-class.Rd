@@ -3,8 +3,8 @@
 \name{DotPlot-class}
 \alias{DotPlot-class}
 \alias{initialize,DotPlot-method}
-\alias{[[,DotPlot-method}
-\alias{[[<-,DotPlot-method}
+\alias{.defineOutput,DotPlot-method}
+\alias{.generateOutput,DotPlot-method}
 \alias{.renderOutput,DotPlot-method}
 \alias{.refineParameters,DotPlot-method}
 \alias{.cacheCommonInfo,DotPlot-method}

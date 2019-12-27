@@ -4,13 +4,14 @@
 \name{RedDimPlot-class}
 \alias{RedDimPlot-class}
 \alias{RedDimPlot}
+\alias{initialize,RedDimPlot-method}
 \alias{.refineParameters,RedDimPlot-method}
 \alias{.cacheCommonInfo,RedDimPlot-method}
 \alias{.defineDataInterface,RedDimPlot-method}
 \alias{.createObservers,RedDimPlot-method}
 \alias{.fullName,RedDimPlot-method}
 \alias{.panelColor,RedDimPlot-method}
-\alias{.getCommandsDataXY,RedDimPlot-method}
+\alias{.generateDotPlotData,RedDimPlot-method}
 \title{The RedDimPlot panel}
 \description{
 The RedDimPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the coordinates of each column/sample are taken from the \code{\link{reducedDims}} of a \linkS4class{SingleCellExperiment} object.
@@ -72,7 +73,7 @@ This will also call the equivalent \linkS4class{ColumnDotPlot} method.
 
 For creating the plot:
 \itemize{
-\item \code{\link{.getCommandsDataXY}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of dimensionality reduction coordinates.
+\item \code{\link{.generateDotPlotData}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of dimensionality reduction coordinates.
 }
 }
 

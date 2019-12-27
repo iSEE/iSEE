@@ -39,7 +39,7 @@ pObjects$memory[[PANEL]][[SLOT]] <- new_value
 }
 
 This enables \pkg{iSEE} to keep a record of the current state of the application.
-In fact, any changes must go through \code{pObjects$memory} before they change the output in \code{\link{.createOutput}};
+In fact, any changes must go through \code{pObjects$memory} before they change the output in \code{\link{.renderOutput}};
 there is no direct interaction between \code{input} and \code{output} in this framework.
 }
 

@@ -3,6 +3,7 @@
 \name{ColStatTable}
 \alias{ColStatTable}
 \alias{ColStatTable-class}
+\alias{initialize,ColStatTable-method}
 \alias{.cacheCommonInfo,ColStatTable-method}
 \alias{.refineParameters,ColStatTable-method}
 \alias{.hideInterface,ColStatTable-method}

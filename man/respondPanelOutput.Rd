@@ -14,7 +14,7 @@
 
 \item{rObjects}{A reactive list of values generated in the \code{\link{iSEE}} app.}
 
-\item{pObjects}{An environment containing \code{memory}, a list of \linkS4class{Panels}s containing parameters for each panel.}
+\item{pObjects}{An environment containing \code{memory}, a list of \linkS4class{Panel}s containing parameters for each panel.}
 
 \item{clear}{Logical scalar indicating whether selections should be cleared upon re-rendering.}
 }

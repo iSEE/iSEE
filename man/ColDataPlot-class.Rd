@@ -4,12 +4,13 @@
 \name{ColDataPlot-class}
 \alias{ColDataPlot-class}
 \alias{ColDataPlot}
+\alias{initialize,ColDataPlot-method}
 \alias{.refineParameters,ColDataPlot-method}
 \alias{.defineDataInterface,ColDataPlot-method}
 \alias{.createObservers,ColDataPlot-method}
 \alias{.fullName,ColDataPlot-method}
 \alias{.panelColor,ColDataPlot-method}
-\alias{.getCommandsDataXY,ColDataPlot-method}
+\alias{.generateDotPlotData,ColDataPlot-method}
 \title{The ColDataPlot panel}
 \description{
 The ColDotPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents a variable from the \code{\link{colData}} of a \linkS4class{SummarizedExperiment} object.
@@ -75,7 +76,7 @@ For defining the panel name:
 
 For creating the plot:
 \itemize{
-\item \code{\link{.getCommandsDataXY}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of column metadata variables.
+\item \code{\link{.generateDotPlotData}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of column metadata variables.
 }
 }
 

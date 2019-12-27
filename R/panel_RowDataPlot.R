@@ -56,7 +56,7 @@
 #'
 #' For creating the plot:
 #' \itemize{
-#' \item \code{\link{.getCommandsDataXY}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of row metadata variables.
+#' \item \code{\link{.generateDotPlotData}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of row metadata variables.
 #' }
 #'
 #' @author Aaron Lun
@@ -97,7 +97,7 @@
 #' .createObservers,RowDataPlot-method
 #' .fullName,RowDataPlot-method
 #' .panelColor,RowDataPlot-method
-#' .getCommandsDataXY,RowDataPlot-method
+#' .generateDotPlotData,RowDataPlot-method
 #' @name RowDataPlot-class
 NULL
 
@@ -201,7 +201,7 @@ setMethod(".fullName", "RowDataPlot", function(x) "Row data plot")
 setMethod(".panelColor", "RowDataPlot", function(x) "#F2B701")
 
 #' @export
-setMethod(".getCommandsDataXY", "RowDataPlot", function(x, envir) {
+setMethod(".generateDotPlotData", "RowDataPlot", function(x, envir) {
     data_cmds <- list()
 
     y_lab <- x[[.rowDataYAxis]]

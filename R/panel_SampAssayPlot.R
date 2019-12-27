@@ -64,7 +64,7 @@
 #'
 #' For creating the plot:
 #' \itemize{
-#' \item \code{\link{.getCommandsDataXY}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of sample expression values.
+#' \item \code{\link{.generateDotPlotData}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of sample expression values.
 #' }
 #'
 #' For managing selections:
@@ -115,7 +115,7 @@
 #' .singleSelectionSlots,SampAssayPlot-method
 #' .fullName,SampAssayPlot-method
 #' .panelColor,SampAssayPlot-method
-#' .getCommandsDataXY,SampAssayPlot-method
+#' .generateDotPlotData,SampAssayPlot-method
 #'
 #' @name SampAssayPlot-class
 NULL
@@ -276,7 +276,7 @@ setMethod(".fullName", "SampAssayPlot", function(x) "Sample assay plot")
 setMethod(".panelColor", "SampAssayPlot", function(x) "#07A274")
 
 #' @export
-setMethod(".getCommandsDataXY", "SampAssayPlot", function(x, envir) {
+setMethod(".generateDotPlotData", "SampAssayPlot", function(x, envir) {
     data_cmds <- list()
 
     samp_selected_y <- x[[.sampAssayYAxisSampName]]

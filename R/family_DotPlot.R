@@ -424,11 +424,11 @@ setMethod(".generateOutput", "DotPlot", function(x, se, colormap, all_memory, al
     plot_env$se <- se
     plot_env$colormap <- colormap
 
-    # Doing this first so that .getCommandsDataXY can respond to the selection.
+    # Doing this first so that .generateDotPlotData can respond to the selection.
     select_cmds <- .processMultiSelections(x, all_memory, all_contents, plot_env)
 
     # Apply the function provided to generate XY commands and axis labels
-    out_xy <- .getCommandsDataXY(x, plot_env)
+    out_xy <- .generateDotPlotData(x, plot_env)
     ggplot_labs <- c(x=out_xy$x_lab, y=out_xy$y_lab, title=out_xy$plot_title)
 
     # Add commands coercing X and Y to appropriate type

@@ -31,7 +31,7 @@
 #' The RowDotPlot will provide user interface elements to change all above slots and in its parent classes \linkS4class{DotPlot} and \linkS4class{Panel}.
 #' It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
 #'
-#' Subclasses are expected to implement methods for (at least) \code{\link{.getCommandsDataXY}}.
+#' Subclasses are expected to implement methods for (at least) \code{\link{.generateDotPlotData}}.
 #'
 #' @section Supported methods:
 #' In the following code snippets, \code{x} is an instance of a \linkS4class{RowDotPlot} class.

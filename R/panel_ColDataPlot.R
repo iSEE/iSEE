@@ -56,7 +56,7 @@
 #'
 #' For creating the plot:
 #' \itemize{
-#' \item \code{\link{.getCommandsDataXY}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of column metadata variables.
+#' \item \code{\link{.generateDotPlotData}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of column metadata variables.
 #' }
 #'
 #' @author Aaron Lun
@@ -100,7 +100,7 @@
 #' .createObservers,ColDataPlot-method
 #' .fullName,ColDataPlot-method
 #' .panelColor,ColDataPlot-method
-#' .getCommandsDataXY,ColDataPlot-method
+#' .generateDotPlotData,ColDataPlot-method
 #'
 #' @name ColDataPlot-class
 NULL
@@ -204,7 +204,7 @@ setMethod(".fullName", "ColDataPlot", function(x) "Column data plot")
 setMethod(".panelColor", "ColDataPlot", function(x) "#DB0230")
 
 #' @export
-setMethod(".getCommandsDataXY", "ColDataPlot", function(x, envir) {
+setMethod(".generateDotPlotData", "ColDataPlot", function(x, envir) {
     data_cmds <- list()
 
     y_lab <- x[[.colDataYAxis]]

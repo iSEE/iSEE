@@ -64,7 +64,7 @@
 #'
 #' For creating the plot:
 #' \itemize{
-#' \item \code{\link{.getCommandsDataXY}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of feature expression values.
+#' \item \code{\link{.generateDotPlotData}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of feature expression values.
 #' }
 #'
 #' For managing selections:
@@ -115,7 +115,7 @@
 #' .singleSelectionSlots,FeatAssayPlot-method
 #' .fullName,FeatAssayPlot-method
 #' .panelColor,FeatAssayPlot-method
-#' .getCommandsDataXY,FeatAssayPlot-method
+#' .generateDotPlotData,FeatAssayPlot-method
 #'
 #' @name FeatAssayPlot-class
 NULL
@@ -266,7 +266,7 @@ setMethod(".fullName", "FeatAssayPlot", function(x) "Feature assay plot")
 setMethod(".panelColor", "FeatAssayPlot", function(x) "#7BB854")
 
 #' @export
-setMethod(".getCommandsDataXY", "FeatAssayPlot", function(x, envir) {
+setMethod(".generateDotPlotData", "FeatAssayPlot", function(x, envir) {
     data_cmds <- list()
 
     ## Setting up the y-axis:

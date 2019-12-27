@@ -52,7 +52,7 @@
 #'
 #' For creating the plot:
 #' \itemize{
-#' \item \code{\link{.getCommandsDataXY}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of dimensionality reduction coordinates.
+#' \item \code{\link{.generateDotPlotData}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of dimensionality reduction coordinates.
 #' }
 #' @author Aaron Lun
 #'
@@ -93,7 +93,7 @@
 #' .createObservers,RedDimPlot-method
 #' .fullName,RedDimPlot-method
 #' .panelColor,RedDimPlot-method
-#' .getCommandsDataXY,RedDimPlot-method
+#' .generateDotPlotData,RedDimPlot-method
 #' @name RedDimPlot-class
 NULL
 
@@ -259,7 +259,7 @@ setMethod(".fullName", "RedDimPlot", function(x) "Reduced dimension plot")
 setMethod(".panelColor", "RedDimPlot", function(x) "#3565AA")
 
 #' @export
-setMethod(".getCommandsDataXY", "RedDimPlot", function(x, envir) {
+setMethod(".generateDotPlotData", "RedDimPlot", function(x, envir) {
     data_cmds <- list()
 
     data_cmds[["reducedDim"]] <- sprintf(

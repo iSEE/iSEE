@@ -201,7 +201,7 @@ setMethod(".fullName", "RowDataPlot", function(x) "Row data plot")
 setMethod(".panelColor", "RowDataPlot", function(x) "#F2B701")
 
 #' @export
-setMethod(".getCommandsDataXY", "RowDataPlot", function(x) {
+setMethod(".getCommandsDataXY", "RowDataPlot", function(x, envir) {
     data_cmds <- list()
 
     y_lab <- x[[.rowDataYAxis]]
@@ -224,5 +224,8 @@ setMethod(".getCommandsDataXY", "RowDataPlot", function(x) {
     x_title <- ifelse(x_lab == '', x_lab, sprintf("vs %s", x_lab))
     plot_title <- sprintf("%s %s", y_lab, x_title)
 
-    return(list(data_cmds=data_cmds, plot_title=plot_title, x_lab=x_lab, y_lab=y_lab))
+    data_cmds <- unlist(data_cmds)
+    .text_eval(data_cmds, envir)
+
+    list(data_cmds=data_cmds, plot_title=plot_title, x_lab=x_lab, y_lab=y_lab)
 })

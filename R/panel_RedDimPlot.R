@@ -259,7 +259,7 @@ setMethod(".fullName", "RedDimPlot", function(x) "Reduced dimension plot")
 setMethod(".panelColor", "RedDimPlot", function(x) "#3565AA")
 
 #' @export
-setMethod(".getCommandsDataXY", "RedDimPlot", function(x) {
+setMethod(".getCommandsDataXY", "RedDimPlot", function(x, envir) {
     data_cmds <- list()
 
     data_cmds[["reducedDim"]] <- sprintf(
@@ -272,5 +272,8 @@ setMethod(".getCommandsDataXY", "RedDimPlot", function(x) {
     x_lab <- sprintf("Dimension %s", x[[.redDimXAxis]])
     y_lab <- sprintf("Dimension %s", x[[.redDimYAxis]])
 
-    return(list(data_cmds=data_cmds, plot_title=plot_title, x_lab=x_lab, y_lab=y_lab))
+    data_cmds <- unlist(data_cmds)
+    .text_eval(data_cmds, envir)
+
+    list(data_cmds=data_cmds, plot_title=plot_title, x_lab=x_lab, y_lab=y_lab)
 })

@@ -276,7 +276,7 @@ setMethod(".fullName", "SampAssayPlot", function(x) "Sample assay plot")
 setMethod(".panelColor", "SampAssayPlot", function(x) "#07A274")
 
 #' @export
-setMethod(".getCommandsDataXY", "SampAssayPlot", function(x) {
+setMethod(".getCommandsDataXY", "SampAssayPlot", function(x, envir) {
     data_cmds <- list()
 
     samp_selected_y <- x[[.sampAssayYAxisSampName]]
@@ -311,5 +311,8 @@ setMethod(".getCommandsDataXY", "SampAssayPlot", function(x) {
         )
     }
 
-    return(list(data_cmds=data_cmds, plot_title=plot_title, x_lab=x_lab, y_lab=y_lab))
+    data_cmds <- unlist(data_cmds)
+    .text_eval(data_cmds, envir)
+
+    list(data_cmds=data_cmds, plot_title=plot_title, x_lab=x_lab, y_lab=y_lab)
 })

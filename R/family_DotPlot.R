@@ -428,13 +428,11 @@ setMethod(".generateOutput", "DotPlot", function(x, se, colormap, all_memory, al
     select_cmds <- .processMultiSelections(x, all_memory, all_contents, plot_env)
 
     # Apply the function provided to generate XY commands and axis labels
-    out_xy <- .getCommandsDataXY(x)
-    data_cmds <- .initialize_cmd_store()
-    data_cmds <- .add_command(data_cmds, out_xy$data_cmds)
-    data_cmds <- .evaluate_commands(data_cmds, plot_env)
+    out_xy <- .getCommandsDataXY(x, plot_env)
     ggplot_labs <- c(x=out_xy$x_lab, y=out_xy$y_lab, title=out_xy$plot_title)
 
     # Add commands coercing X and Y to appropriate type
+    data_cmds <- .initialize_cmd_store()
     data_cmds <- .add_commands_coerce(plot_env, data_cmds, c("X", "Y"))
 
     # Add commands adding optional columns to plot.data
@@ -518,7 +516,7 @@ setMethod(".generateOutput", "DotPlot", function(x, se, colormap, all_memory, al
     # Evaluating the plotting commands.
     plot_out <- .text_eval(plot_cmds, plot_env)
 
-    list(commands=list(select_cmds, data_cmds$processed, plot_cmds), contents=panel_data, plot=plot_out)
+    list(commands=list(select_cmds, out_xy$data_cmds, data_cmds$processed, plot_cmds), contents=panel_data, plot=plot_out)
 })
 
 #' @export

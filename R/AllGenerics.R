@@ -248,7 +248,7 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 ##########################
 
 #' @export
-setGeneric(".getCommandsDataXY", function(x) standardGeneric(".getCommandsDataXY"))
+setGeneric(".getCommandsDataXY", function(x, envir) standardGeneric(".getCommandsDataXY"))
 
 #' @export
 setGeneric(".getCommandsPlot", function(x, plot_data, plot_type, labs, is_subsetted, is_downsampled) standardGeneric(".getCommandsPlot"))

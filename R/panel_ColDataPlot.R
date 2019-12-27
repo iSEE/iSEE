@@ -204,7 +204,7 @@ setMethod(".fullName", "ColDataPlot", function(x) "Column data plot")
 setMethod(".panelColor", "ColDataPlot", function(x) "#DB0230")
 
 #' @export
-setMethod(".getCommandsDataXY", "ColDataPlot", function(x) {
+setMethod(".getCommandsDataXY", "ColDataPlot", function(x, envir) {
     data_cmds <- list()
 
     y_lab <- x[[.colDataYAxis]]
@@ -229,5 +229,8 @@ setMethod(".getCommandsDataXY", "ColDataPlot", function(x) {
     x_title <- ifelse(x_lab == '', x_lab, sprintf("vs %s", x_lab))
     plot_title <- sprintf("%s %s", y_lab, x_title)
 
-    return(list(data_cmds=data_cmds, plot_title=plot_title, x_lab=x_lab, y_lab=y_lab))
+    data_cmds <- unlist(data_cmds)
+    .text_eval(data_cmds, envir)
+
+    list(data_cmds=data_cmds, plot_title=plot_title, x_lab=x_lab, y_lab=y_lab)
 })

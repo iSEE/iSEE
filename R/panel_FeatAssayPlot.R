@@ -266,7 +266,7 @@ setMethod(".fullName", "FeatAssayPlot", function(x) "Feature assay plot")
 setMethod(".panelColor", "FeatAssayPlot", function(x) "#7BB854")
 
 #' @export
-setMethod(".getCommandsDataXY", "FeatAssayPlot", function(x) {
+setMethod(".getCommandsDataXY", "FeatAssayPlot", function(x, envir) {
     data_cmds <- list()
 
     ## Setting up the y-axis:
@@ -301,5 +301,8 @@ setMethod(".getCommandsDataXY", "FeatAssayPlot", function(x) {
         data_cmds[["x"]] <- "plot.data$X <- factor(character(ncol(se)))"
     }
 
-    return(list(data_cmds=data_cmds, plot_title=plot_title, x_lab=x_lab, y_lab=y_lab))
+    data_cmds <- unlist(data_cmds)
+    .text_eval(data_cmds, envir)
+
+    list(data_cmds=data_cmds, plot_title=plot_title, x_lab=x_lab, y_lab=y_lab)
 })

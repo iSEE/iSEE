@@ -150,10 +150,11 @@
 #'
 #' Replaces the edge in the graph if the choice of transmitting panel changes in the current panel.
 #'
-#' @param graph A graph object with encoded panel names as the vertices, see \code{\link{.spawn_selection_chart}}.
+#' @param graph A graph object with encoded panel names as the vertices, see \code{\link{.spawn_multi_selection_graph}}.
 #' @param panel_name A string containing the encoded name of the current receiving panel.
 #' @param new_parent_name A string containing the encoded name of the new transmitting panel.
 #' @param old_parent_name A string containing the encoded name of the old transmitting panel.
+#' @param field String containing the name of the affected field, see \code{\link{.add_interpanel_link}}.
 #'
 #' @return A graph object with the old edge deleted (possibly) and replaced by a new edge (possibly).
 #'

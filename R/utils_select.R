@@ -264,9 +264,7 @@
 #' @author Aaron Lun.
 #' @rdname INTERNAL_populate_selection_environment
 #' @seealso
-#' \code{\link{.process_selectby_choice}},
-#' \code{\link{.self_brush_box}},
-#' \code{\link{.self_lasso_path}}
+#' \code{\link{.process_selectby_choice}}
 .populate_selection_environment <- function(x, envir) {
     envir$all_active <- list(.multiSelectionActive(x))
     envir$all_saved <- list(x[[.multiSelectHistory]])
@@ -283,7 +281,7 @@
 #' Trigger a re-rendering of a particular panel after clearing all active and saved selections.
 #'
 #' @param panel_name String containing the name of the panel.
-#' @param pObjects An environment containing \code{memory}, a list of \linkS4class{Panels}s containing parameters for each panel.
+#' @param pObjects An environment containing \code{memory}, a list of \linkS4class{Panel}s containing parameters for each panel.
 #' @param rObjects A reactive list containing incrementable counters for all panels.
 #'
 #' @return \code{NULL}, invisibly.

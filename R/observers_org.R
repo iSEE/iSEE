@@ -31,7 +31,7 @@
     output$allPanels <- renderUI({
         force(rObjects$rerender)
         rObjects$rerendered <- .increment_counter(isolate(rObjects$rerendered))
-        .panel_generation(pObjects$memory, se)
+        .panel_generation(se, pObjects$memory)
     })
 
     # Persistent objects to give the modal a 'working memory'.
@@ -150,8 +150,8 @@
 }
 
 #' @importFrom shiny observeEvent
-.create_width_height_observers <- function(panel, input, org_pObjects) {
-    panel_name <- .getEncodedName(panel)
+.create_width_height_observers <- function(x, input, org_pObjects) {
+    panel_name <- .getEncodedName(x)
 
     width_name <- paste0(panel_name, "_", .organizationWidth)
     observeEvent(input[[width_name]], {

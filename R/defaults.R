@@ -444,7 +444,6 @@ heatMapPlotDefaults <- function(se, number) {
 #' @author Aaron Lun
 #' @rdname INTERNAL_set_default_assay
 #' @seealso
-#' \code{?"\link{iSEE point parameters}"},
 #' \code{\link{featAssayPlotDefaults}},
 #' \code{\link{heatMapPlotDefaults}}
 #' @importFrom SummarizedExperiment assayNames

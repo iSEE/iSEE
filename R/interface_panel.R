@@ -79,7 +79,7 @@ height_limits <- c(400L, 1000L)
 #' \code{\link{.defineInterface}} and \code{\link{.defineOutput}}, for panel-specific definition of interface elements.
 #'
 #' @rdname INTERNAL_panel_generation
-.panel_generation <- function(memory, se) {
+.panel_generation <- function(se, all_memory) {
     collected <- list()
     counter <- 1L
     cumulative.width <- 0L
@@ -87,23 +87,23 @@ height_limits <- c(400L, 1000L)
     row.counter <- 1L
 
     # Getting all panel choices for single/multiselection links.
-    all_names <- vapply(memory, .getEncodedName, "")
-    names(all_names) <- vapply(memory, .getFullName, "")
+    all_names <- vapply(all_memory, .getEncodedName, "")
+    names(all_names) <- vapply(all_memory, .getFullName, "")
 
-    mdims <- vapply(memory, FUN=.multiSelectionDimension, "")
+    mdims <- vapply(all_memory, FUN=.multiSelectionDimension, "")
     multi_sources <- list(
         row=c(.noSelection, all_names[mdims=="row"]),
         column=c(.noSelection, all_names[mdims=="column"])
     )
 
-    sdims <- vapply(memory, FUN=.singleSelectionDimension, "")
+    sdims <- vapply(all_memory, FUN=.singleSelectionDimension, "")
     single_sources <- list(
         row=c(.noSelection, all_names[sdims=="row"]),
         column=c(.noSelection, all_names[sdims=="column"])
     )
 
-    for (i in seq_along(memory)) {
-        instance <- memory[[i]]
+    for (i in seq_along(all_memory)) {
+        instance <- all_memory[[i]]
         plot_name <- .getEncodedName(instance)
         .input_FUN <- function(field) paste0(plot_name, "_", field)
 

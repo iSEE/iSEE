@@ -80,10 +80,10 @@
 #'
 #' @importFrom shiny updateSelectizeInput
 #' @importFrom methods as
-.setup_dimname_source_observer <- function(plot_name, use_mode_field, use_value, name_field, tab_field, choices, 
+.setup_dimname_source_observer <- function(panel_name, use_mode_field, use_value, name_field, tab_field, choices, 
     input, session, pObjects, rObjects) 
 {
-    .input_FUN <- function(field) paste0(plot_name, "_", field)
+    .input_FUN <- function(field) paste0(panel_name, "_", field)
     uses_use_mode_field <- !is.na(use_mode_field)
 
     # Checking that all the incoming arguments are non-NULL.
@@ -100,27 +100,27 @@
     # Obtaining the old parameter choices, enforcing type and updating memory.
     # The new values should persist due to environment's pass-by-reference.
     if (uses_use_mode_field) {
-        old_choice <- pObjects$memory[[plot_name]][[use_mode_field]]
+        old_choice <- pObjects$memory[[panel_name]][[use_mode_field]]
         choice <- as(choice, typeof(old_choice))
-        pObjects$memory[[plot_name]][[use_mode_field]] <- choice
+        pObjects$memory[[panel_name]][[use_mode_field]] <- choice
     } else {
         old_choice <- choice
     }
 
-    old_tab <- pObjects$memory[[plot_name]][[tab_field]]
+    old_tab <- pObjects$memory[[panel_name]][[tab_field]]
     tab <- as(tab, typeof(old_tab))
-    pObjects$memory[[plot_name]][[tab_field]] <- tab
+    pObjects$memory[[panel_name]][[tab_field]] <- tab
 
     update_info <- FALSE
     if (choice==use_value) {
         if (old_tab!=tab) {
             pObjects$aesthetics_links <- .choose_new_parent(pObjects$aesthetics_links, 
-                plot_name, tab, old_tab, field=name_field)
+                panel_name, tab, old_tab, field=name_field)
             update_info <- TRUE
 
             # Updating the selection, based on the currently selected row.
             if (tab!=.noSelection) {
-                old_selected <- pObjects$memory[[plot_name]][[name_field]]
+                old_selected <- pObjects$memory[[panel_name]][[name_field]]
                 new_selected <- .singleSelectionValue(pObjects$memory[[tab]])
 
                 # We use session=NULL only for unit testing the rest of the function.
@@ -134,14 +134,14 @@
     } else {
         if (old_choice==use_value) {
             pObjects$aesthetics_links <- .delete_interpanel_link(pObjects$aesthetics_links, 
-                plot_name, old_tab, field=name_field)
+                panel_name, old_tab, field=name_field)
             update_info <- TRUE
         }
     }
 
     if (update_info) {
         tab_names <- setdiff(union(old_tab, tab), .noSelection)
-        for (relinked in c(plot_name, tab_names)) {
+        for (relinked in c(panel_name, tab_names)) {
             .safe_reactive_bump(rObjects, paste0(relinked, "_", .panelLinkInfo))
         }
     }
@@ -164,6 +164,7 @@
 #' @param name_field String with the name of the slot containing the chosen row/column for this parameter.
 #' @param tab_field String with the name of the slot containing the name of the single-selection transmitter for the current panel.
 #' @param choices Vector of possible choices for the slot named \code{name_field}.
+#' @param protected Logical scalar indicating whether the slot specified by \code{name_field} is a protected parameter for \code{x}, see \code{?\link{.create_protected_parameter_observers}} for details.
 #'
 #' @return
 #' An observer is set up to track changes to the dimension name, possibly triggering a regeneration of the plot.
@@ -183,35 +184,35 @@
 #'
 #' @rdname INTERNAL_dimname_observer
 #' @importFrom shiny observeEvent observe updateSelectizeInput
-.create_dimname_observers <- function(plot_name, name_field, choices,
-    use_mode_field, use_value, is_protected, tab_field, 
+.create_dimname_observers <- function(panel_name, name_field, choices,
+    use_mode_field, use_value, protected, tab_field, 
     input, session, pObjects, rObjects)
 {
-    name_input <- paste0(plot_name, "_", name_field)
+    name_input <- paste0(panel_name, "_", name_field)
     always_in_use <- is.na(use_mode_field)
 
     # Forcibly evaluating to ensure that the correct values are used in observer expressions.
     force(use_value)
     force(choices)
-    force(is_protected)
+    force(protected)
     force(tab_field)
 
     observeEvent(input[[name_input]], {
         # Required to defend against empty strings before updateSelectizeInput runs upon re-render.
         req(input[[name_input]])
 
-        matched_input <- as(input[[name_input]], typeof(pObjects$memory[[plot_name]][[name_field]]))
-        if (identical(matched_input, pObjects$memory[[plot_name]][[name_field]])) {
+        matched_input <- as(input[[name_input]], typeof(pObjects$memory[[panel_name]][[name_field]]))
+        if (identical(matched_input, pObjects$memory[[panel_name]][[name_field]])) {
             return(NULL)
         }
-        pObjects$memory[[plot_name]][[name_field]] <- matched_input
+        pObjects$memory[[panel_name]][[name_field]] <- matched_input
 
         # Only regenerating if the current parameter is actually in use.
-        if (always_in_use || pObjects$memory[[plot_name]][[use_mode_field]]==use_value) {
-            if (!is_protected) {
-                .safe_reactive_bump(rObjects, plot_name)
+        if (always_in_use || pObjects$memory[[panel_name]][[use_mode_field]]==use_value) {
+            if (!protected) {
+                .safe_reactive_bump(rObjects, panel_name)
             } else {
-                .regenerate_unselected_plot(plot_name, pObjects, rObjects)
+                .regenerate_unselected_plot(panel_name, pObjects, rObjects)
             }
         }
     }, ignoreInit=TRUE)
@@ -220,7 +221,7 @@
     # This either triggers a re-rendering indirectly via the updateSelectizeInput inside (if the choice of transmitter changed)
     # or it triggers a re-rendering explicitly here.
     observe({
-        replot <- .setup_dimname_source_observer(plot_name,
+        replot <- .setup_dimname_source_observer(panel_name,
             use_mode_field=use_mode_field, use_value=use_value,
             name_field=name_field, tab_field=tab_field,
             choices=choices,
@@ -228,10 +229,10 @@
             pObjects=pObjects, rObjects=rObjects)
 
         if (replot) {
-            if (!is_protected) {
-                .safe_reactive_bump(rObjects, plot_name)
+            if (!protected) {
+                .safe_reactive_bump(rObjects, panel_name)
             } else {
-                .regenerate_unselected_plot(plot_name, pObjects, rObjects)
+                .regenerate_unselected_plot(panel_name, pObjects, rObjects)
             }
         }
     })
@@ -240,9 +241,9 @@
         force(rObjects$rerendered)
 
         # Protect against re-rendering after deleting a panel.
-        if (plot_name %in% names(pObjects$memory)) {
-            updateSelectizeInput(session, paste0(plot_name, "_", name_field),
-                choices=choices, selected=pObjects$memory[[plot_name]][[name_field]], server=TRUE)
+        if (panel_name %in% names(pObjects$memory)) {
+            updateSelectizeInput(session, paste0(panel_name, "_", name_field),
+                choices=choices, selected=pObjects$memory[[panel_name]][[name_field]], server=TRUE)
         }
     })
 

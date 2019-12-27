@@ -9,17 +9,17 @@
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_generate_table_filter
-.generate_table_filter <- function(panel, varname="tab") {
+.generate_table_filter <- function(x, varname="tab") {
     filters <- NULL
 
-    search <- panel[[.TableSearch]]
+    search <- x[[.TableSearch]]
     if (search!="") {
         filters <- c(filters,
             sprintf("Reduce('|', lapply(%s, FUN=grepl, pattern=%s))", 
                 varname, deparse(search)))
     }
 
-    searchcols <- panel[[.TableColSearch]]
+    searchcols <- x[[.TableColSearch]]
     involved <- which(searchcols!="")
     if (length(involved)) {
         filters <- c(filters, sprintf("iSEE::filterDTColumn(%s[[%i]], %s)", 

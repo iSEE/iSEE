@@ -62,7 +62,7 @@
 #' Define a series of observers to track \dQuote{protected} or \dQuote{non-fundamental} parameters for a given panel.
 #' 
 #' @inheritParams .create_box_observers
-#' @param nonfundamental Character vector containing the identifies of the UI elements corresponding to non-fundamental parameters.
+#' @param fields Character vector of names of parameters for which to set up observers.
 #' @param session The Shiny session object from the server function.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
 #' @param ignoreInit,ignoreNULL Further arguments to pass to \code{\link{observeEvent}}.
@@ -80,21 +80,21 @@
 #'
 #' @rdname INTERNAL_plot_parameter_observers
 #' @importFrom shiny observeEvent
-.create_nonfundamental_parameter_observers <- function(plot_name, fields, input, session, pObjects, rObjects,
+.create_nonfundamental_parameter_observers <- function(panel_name, fields, input, session, pObjects, rObjects,
     ignoreInit=TRUE, ignoreNULL=TRUE) 
 {
     for (field in fields) {
         local({
             field0 <- field
-            cur_field <- paste0(plot_name, "_", field0)
+            cur_field <- paste0(panel_name, "_", field0)
 
             observeEvent(input[[cur_field]], {
-                matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[plot_name]][[field0]]))
-                if (identical(matched_input, pObjects$memory[[plot_name]][[field0]])) {
+                matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[panel_name]][[field0]]))
+                if (identical(matched_input, pObjects$memory[[panel_name]][[field0]])) {
                     return(NULL)
                 }
-                pObjects$memory[[plot_name]][[field0]] <- matched_input
-                rObjects[[plot_name]] <- .increment_counter(isolate(rObjects[[plot_name]]))
+                pObjects$memory[[panel_name]][[field0]] <- matched_input
+                rObjects[[panel_name]] <- .increment_counter(isolate(rObjects[[panel_name]]))
             }, ignoreInit=ignoreInit, ignoreNULL=ignoreNULL)
         })
     }
@@ -104,21 +104,21 @@
 
 #' @rdname INTERNAL_plot_parameter_observers
 #' @importFrom shiny observeEvent
-.create_protected_parameter_observers <- function(plot_name, fields, input, session, pObjects, rObjects,
+.create_protected_parameter_observers <- function(panel_name, fields, input, session, pObjects, rObjects,
     ignoreInit=TRUE, ignoreNULL=TRUE) 
 {
     for (field in fields) {
         local({
             field0 <- field
-            cur_field <- paste0(plot_name, "_", field0)
+            cur_field <- paste0(panel_name, "_", field0)
 
             observeEvent(input[[cur_field]], {
-                matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[plot_name]][[field0]]))
-                if (identical(matched_input, pObjects$memory[[plot_name]][[field0]])) {
+                matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[panel_name]][[field0]]))
+                if (identical(matched_input, pObjects$memory[[panel_name]][[field0]])) {
                     return(NULL)
                 }
-                pObjects$memory[[plot_name]][[field0]] <- matched_input
-                .regenerate_unselected_plot(plot_name, pObjects, rObjects)
+                pObjects$memory[[panel_name]][[field0]] <- matched_input
+                .regenerate_unselected_plot(panel_name, pObjects, rObjects)
             }, ignoreInit=ignoreInit, ignoreNULL=ignoreNULL)
         })
     }

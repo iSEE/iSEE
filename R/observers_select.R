@@ -2,9 +2,10 @@
 
 #' Selection parameter observers
 #'
-#' A function to set up observers for the choice and effect of transmitting panels for multiple selections.
+#' A function to set up observers for the choice and visual effect of transmitting panels for multiple selections.
+#' Seperate functions are used for the choice and effect observers as the latter is only relevant to plots.
 #'
-#' @param panel_name String containing the name of the panel.
+#' @param panel_name,plot_name String containing the name of the panel.
 #' @param by_field String specifying the name of the slot containing the identity of the panel transmitting to the current panel.
 #' @param type_field String specifying the name of the slot containing the type of multiple selection to use from the transmitter.
 #' @param saved_field String specifying the name of the slot containing the index of the saved selection to use from the transmitter.

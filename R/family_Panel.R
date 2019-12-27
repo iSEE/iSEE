@@ -124,6 +124,8 @@
 #' .cacheCommonInfo,Panel-method
 #' .createObservers,Panel-method
 #' .hideInterface,Panel-method
+#' .defineDataInterface,Panel-method
+#' .renderOutput,Panel-method
 #' .multiSelectionRestricted,Panel-method
 #' .multiSelectionDimension,Panel-method 
 #' .multiSelectionClear,Panel-method 
@@ -254,7 +256,7 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
                 use_mode_field=f$use_mode,
                 use_value=f$use_value,
                 tab_field=f$source,
-                is_protected=f$protected,
+                protected=f$protected,
                 input=input, session=session, pObjects=pObjects, rObjects=rObjects)
         }
     }

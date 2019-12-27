@@ -3,7 +3,7 @@
 #' Respond to or request a re-rendering of the \linkS4class{Panel} output via reactive variables.
 #'
 #' @param panel_name String containing the panel name.
-#' @param pObjects An environment containing \code{memory}, a list of \linkS4class{Panels}s containing parameters for each panel.
+#' @param pObjects An environment containing \code{memory}, a list of \linkS4class{Panel}s containing parameters for each panel.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
 #' @param clear Logical scalar indicating whether selections should be cleared upon re-rendering.
 #'

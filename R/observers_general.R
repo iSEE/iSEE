@@ -59,7 +59,7 @@
             title="Panel settings", size="l", fade=TRUE,
             footer=NULL, easyClose=TRUE,
             aceEditor("acereport_r", mode="r", theme="solarized_light", autoComplete="live",
-                value=paste(.report_memory(rObjects$active_panels, pObjects$memory), collapse="\n"),
+                value=paste(.report_memory(pObjects$memory), collapse="\n"),
                 height="600px")
         ))
     })
@@ -93,7 +93,8 @@
             title="Graph of inter-panel links", size="l",
             fade=TRUE, footer=NULL, easyClose=TRUE,
             renderPlot({
-                .snapshot_graph_linkedpanels(pObjects$selection_links)
+                .snapshot_graph_linkedpanels(pObjects$selection_links,
+                    vapply(pObjects$memory, .getPanelColor, ""))
             })
         ))
     })

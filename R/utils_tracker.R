@@ -148,92 +148,52 @@
 #'
 #' Creates a graph of the current links among all currently active panels, and plots it.
 #'
-#' @param active_panels A data.frame containing information about the currently active panels.
-#' @param pObjects An environment containing \code{pObjects$selection_links}.
+#' @param graph A \link{graph} containing panels as nodes and directional edges as transmissions of multiple selections.
+#' @param panel_colors A named character vector of colors for each panel.
 #'
 #' @return Plots the graph representing the snapshot of links among plots/panels
 #' @author Federico Marini
 #' @rdname INTERNAL_snapshot_graph_linkedpanels
-#' @importFrom igraph delete.vertices set_vertex_attr V add_edges
 #' @importFrom graphics plot
-.snapshot_graph_linkedpanels <- function(graph) {
+.snapshot_graph_linkedpanels <- function(graph, panel_colors) {
     plot(graph,
         edge.arrow.size = .8,
         vertex.label.cex = 1.3,
         vertex.label.family = "Helvetica",
         vertex.label.color = "black",
         vertex.label.dist = 2.5,
-        vertex.color = panel_colors[sub("[0-9]$", "", names(V(graph)))])
+        vertex.color = panel_colors[names(V(graph))])
 }
 
 
 #' Report current memory state
 #'
-#' Report the R commands necessary to reproduce the memory state of the interface,
-#' through parameters passed via the \code{*Args} arguments in \code{\link{iSEE}}.
+#' Report the R commands necessary to reproduce the memory state of the interface.
 #'
-#' @param active_panels A data.frame containing information about the currently active panels.
-#' @param memory A list of DataFrames, where each DataFrame corresponds to a panel type and contains the current settings for each individual panel of that type.
+#' @param all_memory A list of \linkS4class{Panel} objects representing the current state of the application.
 #'
-#' @return A character vector of commands necessary to produce \code{memory} and \code{active_panels}.
+#' @return A character vector of commands necessary to produce \code{all_memory}.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_report_memory
 #' @seealso
 #' \code{\link{iSEE}}
-#' @importClassesFrom S4Vectors DataFrame
-#' @importFrom methods new
-.report_memory <- function(active_panels, memory) {
-    # First, reporting all of the individual panel types.
-    collected <- list()
+.report_memory <- function(all_memory) {
+    collected <- list("initial <- list()")
 
-    for (mode in names(memory)) {
-        current <- memory[[mode]]
-        arg_obj <- paste0(mode, "Args")
-        Npanels <- nrow(current)
-        curcode <- list(strrep("#", 80),
-                sprintf("# Settings for %ss", tolower(panelTypes[mode])),
-                strrep("#", 80), "",
-                sprintf("%s <- new('DataFrame', nrows=%iL, rownames=sprintf('%s%%i', seq_len(%i)))", arg_obj, Npanels, mode, Npanels))
-
-        for (field in colnames(current)) {
-            curvals <- current[[field]]
-            if (!is.list(curvals)) {
-                curcode[[field]] <- sprintf("%s[['%s']] <- %s", arg_obj, field,
-                    .deparse_for_viewing(curvals))
-            } else {
-                list_init <- sprintf("tmp <- vector('list', %i)", Npanels)
-                list_others <- vector("list", Npanels)
-                for (id in seq_len(Npanels)) {
-                    # Need !is.null here, otherwise the list will be shortened
-                    # if the last element is NULL
-                    if (!is.null(curvals[[id]])) {
-                        list_others[[id]] <- sprintf("tmp[[%i]] <- %s", id,
-                                                     .deparse_for_viewing(curvals[[id]]))
-                    }
-                }
-                curcode[[field]] <- paste(c("", list_init, unlist(list_others),
-                    sprintf("%s[['%s']] <- tmp", arg_obj, field)), collapse="\n")
-            }
-        }
-
-        collected[[mode]] <- c(curcode, "")
+    for (i in names(all_memory)) {
+        panel <- all_memory[[i]]
+        collected[[i]] <- list(
+            "",
+            strrep("#", 80),
+            sprintf("# Settings for %s", .getFullName(panel)),
+            strrep("#", 80), "",
+            paste(
+                sprintf("initial[[%s]] <-", deparse(i)),
+                paste(deparse(panel), collapse="\n")
+            )
+        )
     }
 
-    # Secondly reporting on the active panels.
-    initials <- list(strrep("#", 80),
-        "# Initial panel settings",
-        strrep("#", 80), "",
-        sprintf("initialPanels <- DataFrame(
-    Name=%s,
-    Width=%s,
-    Height=%s
-)",
-            .deparse_for_viewing(.decode_panel_name(active_panels$Type, active_panels$ID), indent=2),
-            .deparse_for_viewing(active_panels$Width, indent=2),
-            .deparse_for_viewing(active_panels$Height, indent=2)
-        )
-    )
-
-    return(unlist(c(collected, "", initials)))
+    unlist(collected)
 }

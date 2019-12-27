@@ -13,6 +13,7 @@
 \alias{.multiSelectionDimension,Panel-method}
 \alias{.multiSelectionClear,Panel-method}
 \alias{.multiSelectionActive,Panel-method}
+\alias{.multiSelectionInvalidated,Panel-method}
 \alias{.singleSelectionDimension,Panel-method}
 \alias{.singleSelectionValue,Panel-method}
 \alias{.singleSelectionSlots,Panel-method}
@@ -105,6 +106,9 @@ For setting up data values:
 
 For defining the interface:
 \itemize{
+\item \code{\link{.defineInterface}(x, se, select_info)} will return a list of collapsible boxes for changing data and selection parameters.
+The data parameter box will be populated based on \code{\link{.defineDataInterface}}.
+\item \code{\link{.defineDataInterface}(x, se, select_info)} will return an empty list.
 \item \code{\link{.hideInterface}(x, field)} will always return \code{FALSE}.
 }
 
@@ -123,6 +127,7 @@ For controlling selections:
 \item \code{\link{.multiSelectionDimension}(x)} will always return \code{"none"}.
 \item \code{\link{.multiSelectionActive}(x)} will always return \code{NULL}.
 \item \code{\link{.multiSelectionClear}(x)} will always return \code{x}.
+\item \code{\link{.multiSelectionInvalidated}(x)} will always return \code{FALSE}.
 \item \code{\link{.singleSelectionDimension}(x)} will return \code{.multiSelectionDimension(x)}.
 \item \code{\link{.singleSelectionValue}(x)} will return \code{NULL}.
 \item \code{\link{.singleSelectionSlots}(x)} will return an empty list.

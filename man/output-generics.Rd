@@ -21,7 +21,7 @@ In \code{.defineOutput(x, ...)}, the following arguments are required:
 Methods for this generic are expected to return an output element for inclusion into the \pkg{iSEE} interface, such as the output of \code{\link{plotOutput}}.
 Multiple elements can be provided via a \code{\link{tagList}}.
 
-The IDs of the output elements are expected to be prefixed with \code{PANEL} (the panel name) and an underscore.
+The IDs of the output elements are expected to be prefixed with the panel name from \code{\link{.getEncodedName}(x)} and an underscore, e.g., \code{"RedDimPlot1_someOutput"}.
 One of the output elements may simply have the ID set to \code{PANEL} alone;
 this is usually the case for simple panels with one primary output like a \linkS4class{DotPlot}.
 }
@@ -41,8 +41,8 @@ In \code{.renderOutput(x, se, ..., output, pObjects, rObjects)}, the following a
 It is expected to attach a reactive expression to \code{output} to render the output elements created by \code{.defineOutput}.
 The return value of this generic is not used; only the side-effect of the output set-up is relevant.
 
-Within the rendering expression for each output, developers should call \code{force(rObjects[[PANEL]])} where \code{PANEL} is the panel name.
-This ensures that the output is rerendered upon changes to the appropriate reactive variable, which is itself modified by \code{\link{.renderPanel}} and related functions in \code{\link{.createObservers}}.
+Within the rendering expression for each output, developers should call \code{\link{.respondPanelOutput}(panel_name, rObjects)} where \code{panel_name} is the output of \code{\link{.getEncodedName}(x)}.
+This ensures that the output is rerendered upon changes to the appropriate reactive variable, which is itself modified by \code{\link{.renderOutput}} and related functions in \code{\link{.createObservers}}.
 }
 
 \section{Additional rendering obligations}{

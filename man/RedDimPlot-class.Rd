@@ -6,9 +6,10 @@
 \alias{RedDimPlot}
 \alias{.refineParameters,RedDimPlot-method}
 \alias{.cacheCommonInfo,RedDimPlot-method}
-\alias{.defineInterface,RedDimPlot-method}
+\alias{.defineDataInterface,RedDimPlot-method}
 \alias{.createObservers,RedDimPlot-method}
 \alias{.fullName,RedDimPlot-method}
+\alias{.panelColor,RedDimPlot-method}
 \alias{.getCommandsDataXY,RedDimPlot-method}
 \title{The RedDimPlot panel}
 \description{
@@ -58,8 +59,7 @@ If no dimensionality reduction results are available, \code{NULL} is returned in
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
-This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}.
+\item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
 \item \code{\link{.fullName}(x)} will return the full name of the panel class.
 \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 }

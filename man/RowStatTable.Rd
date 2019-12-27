@@ -3,8 +3,12 @@
 \name{RowStatTable}
 \alias{RowStatTable}
 \alias{RowStatTable-class}
-\alias{.renderOutput,RowStatTable-method}
-\alias{.getEncodedName,RowStatTable-method}
+\alias{.cacheCommonInfo,RowStatTable-method}
+\alias{.refineParameters,RowStatTable-method}
+\alias{.hideInterface,RowStatTable-method}
+\alias{.generateTable,RowStatTable-method}
+\alias{.panelRowor,RowStatTable-method}
+\alias{.fullName,RowStatTable-method}
 \title{The RowStatTable panel}
 \description{
 The RowStatTable is a panel class for creating a \linkS4class{ColumnTable} where the value of the table is defined as the \code{\link{rowData}} of the \linkS4class{SummarizedExperiment}.
@@ -43,13 +47,16 @@ This will also call the equivalent \linkS4class{ColumnTable} method for further 
 
 For defining the interface:
 \itemize{
+\item \code{\link{.hideInterface}(x, field)} returns \code{TRUE} if \code{field="DataBoxOpen"}, 
+otherwise it calls \code{\link{.hideInterface,Table-method}}
 \item \code{\link{.fullName}(x)} will return the full name of the panel class.
 \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 }
 
 For creating the output:
 \itemize{
-\item \code{\link{.getTableCommands}(x, envir)} will return a character vector of R commands to construct the data.frame that is supplied to the \code{\link{datatable}} widget.
+\item \code{\link{.generateTable}(x, envir)} will modify \code{envir} to contain the relevant data.frame for display,
+while returning a character vector of commands required to produce that data.frame.
 Each row of the data.frame should correspond to a row of the SummarizedExperiment.
 }
 }

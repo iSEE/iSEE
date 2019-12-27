@@ -5,10 +5,11 @@
 \alias{SampAssayPlot-class}
 \alias{SampAssayPlot}
 \alias{.refineParameters,SampAssayPlot-method}
-\alias{.defineInterface,SampAssayPlot-method}
+\alias{.defineDataInterface,SampAssayPlot-method}
 \alias{.createObservers,SampAssayPlot-method}
 \alias{.singleSelectionSlots,SampAssayPlot-method}
 \alias{.fullName,SampAssayPlot-method}
+\alias{.panelColor,SampAssayPlot-method}
 \alias{.getCommandsDataXY,SampAssayPlot-method}
 \title{The SampAssayPlot panel}
 \description{
@@ -65,8 +66,9 @@ If no columns or assays are present, \code{NULL} is returned instead.
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
-This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}.
+\item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
+\item \code{\link{.fullName}(x)} will return the full name of the panel class.
+\item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 }
 
 For monitoring reactive expressions:

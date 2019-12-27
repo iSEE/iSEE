@@ -4,6 +4,7 @@
 \name{interface-generics}
 \alias{interface-generics}
 \alias{.defineInterface}
+\alias{.defineDataInterface}
 \alias{.hideInterface}
 \title{Generics for the panel interface}
 \description{
@@ -26,8 +27,24 @@ Methods for this generic are expected to return a list of \code{\link{collapseBo
 Each parameter box can contain arbitrary numbers of additional UI elements, 
 each of which is expected to modify one slot of \code{x} upon user interaction.
 
-The ID of each interface element should follow the form of \code{PANEL_SLOT} where \code{PANEL} is the panel name and \code{SLOT} is the name of the slot modified by the interface element, e.g., \code{"redDimPlot1_RedDimType"}.
+The ID of each interface element should follow the form of \code{PANEL_SLOT} where \code{PANEL} is the panel name (from \code{\link{.getEncodedName}(x)}) and \code{SLOT} is the name of the slot modified by the interface element, 
+e.g., \code{"RedDimPlot1_Type"}.
 Each interface element should have an equivalent observer in \code{\link{.createObservers}} unless they are hidden by \code{\link{.hideInterface}} (see below).
+
+It is the developer's responsibility to call \code{\link{callNextMethod}} to obtain interface elements for parent classes.
+Refer to the contract for each \linkS4class{Panel} class to determine what is already provided by each parent.
+}
+
+\section{Defining the data parameter interface}{
+
+In \code{.defineDataInterface(x, se, select_info)}, the required arguments are the same as those for \code{.defineInterface}.
+Methods for this generic are expected to return a list of UI elements for altering data-related parameters,
+which are automatically placed inside the \dQuote{Data parameters} collapsible box.
+Each element's ID should still follow the \code{PANEL_SLOT} pattern described above.
+
+This method aims to provide a simpler alternative to specializing \code{.defineInterface} for the most common use case,
+where new panels wish to add their own interface elements for altering the contents of the panel.
+In fact, \code{\link{.defineInterface,Panel-method}} will simply call \code{.defineDataInterface} to populate the data parameter box.
 
 It is the developer's responsibility to call \code{\link{callNextMethod}} to obtain interface elements for parent classes.
 Refer to the contract for each \linkS4class{Panel} class to determine what is already provided by each parent.

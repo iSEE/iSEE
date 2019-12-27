@@ -45,14 +45,14 @@ there is no direct interaction between \code{input} and \code{output} in this fr
 
 \section{Triggering re-rendering}{
 
-To trigger re-rendering of an output, observers should call \code{\link{.refreshPanel}(panel_name, rObjects)}, 
-where \code{panel_name} is the name of the current panel.
+To trigger re-rendering of an output, observers should call \code{\link{.refreshPanelOutput}(PANEL, pObjects, rObjects)}, 
+where \code{PANEL} is the name of the current panel.
 This will simply re-render the output with no additional side effects and is most useful for responding to aesthetic parameters.
 
-In the specific case of \linkS4class{DotPlot} subclasses, changes to some parameters may invalidate brushes or lassos,
-e.g., if the variable on the axes are altered.
-Observers responding to such changes should instead call \code{\link{.refreshPlot}(panel_name, rObjects)},
-which will destroy all brushes and lassos to avoid misleading conclusions.
+In some cases, changes to some parameters may invalidate existing multiple selections, 
+e.g., brushes and lassos are no longer valid if the variable on the axes are altered.
+Observers responding to such changes should instead call \code{\link{.refreshPanelOutput}} with \code{clear=TRUE},
+which will destroy all existing selections to avoid misleading conclusions.
 }
 
 \author{

@@ -5,7 +5,8 @@
 \alias{ColStatTable-class}
 \alias{.cacheCommonInfo,ColStatTable-method}
 \alias{.refineParameters,ColStatTable-method}
-\alias{.getTableCommands,ColStatTable-method}
+\alias{.hideInterface,ColStatTable-method}
+\alias{.generateTable,ColStatTable-method}
 \alias{.panelColor,ColStatTable-method}
 \alias{.fullName,ColStatTable-method}
 \title{The ColStatTable panel}
@@ -46,13 +47,16 @@ This will also call the equivalent \linkS4class{ColumnTable} method for further 
 
 For defining the interface:
 \itemize{
+\item \code{\link{.hideInterface}(x, field)} returns \code{TRUE} if \code{field="DataBoxOpen"}, 
+otherwise it calls \code{\link{.hideInterface,Table-method}}
 \item \code{\link{.fullName}(x)} will return the full name of the panel class.
 \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 }
 
 For creating the output:
 \itemize{
-\item \code{\link{.getTableCommands}(x, envir)} will return a character vector of R commands to construct the data.frame that is supplied to the \code{\link{datatable}} widget.
+\item \code{\link{.generateTable}(x, envir)} will modify \code{envir} to contain the relevant data.frame for display,
+while returning a character vector of commands required to produce that data.frame.
 Each row of the data.frame should correspond to a column of the SummarizedExperiment.
 }
 }

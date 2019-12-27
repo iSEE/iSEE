@@ -283,8 +283,8 @@
 #' Trigger a re-rendering of a particular panel after clearing all active and saved selections.
 #'
 #' @param panel_name String containing the name of the panel.
-#' @param pObjects An environment containing \code{memory}, a list of DataFrames containing parameters for each panel of each type.
-#' @param rObjects A reactive list containing incrementable counters for all panels,
+#' @param pObjects An environment containing \code{memory}, a list of \linkS4class{Panels}s containing parameters for each panel.
+#' @param rObjects A reactive list containing incrementable counters for all panels.
 #'
 #' @return \code{NULL}, invisibly.
 #' \code{pObjects} and \code{rObjects} are modified by reference.

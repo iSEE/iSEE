@@ -5,6 +5,7 @@
 \alias{initialize,DotPlot-method}
 \alias{[[,DotPlot-method}
 \alias{[[<-,DotPlot-method}
+\alias{.renderOutput,DotPlot-method}
 \alias{.refineParameters,DotPlot-method}
 \alias{.cacheCommonInfo,DotPlot-method}
 \alias{.createObservers,DotPlot-method}

@@ -5,9 +5,10 @@
 \alias{ColDataPlot-class}
 \alias{ColDataPlot}
 \alias{.refineParameters,ColDataPlot-method}
-\alias{.defineInterface,ColDataPlot-method}
+\alias{.defineDataInterface,ColDataPlot-method}
 \alias{.createObservers,ColDataPlot-method}
 \alias{.fullName,ColDataPlot-method}
+\alias{.panelColor,ColDataPlot-method}
 \alias{.getCommandsDataXY,ColDataPlot-method}
 \title{The ColDataPlot panel}
 \description{
@@ -56,8 +57,9 @@ If no valid column metadata fields are available, \code{NULL} is returned instea
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
-This is combined with the interface elements provided by the \linkS4class{ColumnDotPlot}.
+\item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
+\item \code{\link{.fullName}(x)} will return the full name of the panel class.
+\item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 }
 
 For monitoring reactive expressions:

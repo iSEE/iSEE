@@ -71,7 +71,7 @@
 #' @param all_contents A list of displayed contents for each panel in the app, see \code{\link{.renderOutput}} for details.
 #'
 #' @return
-#' A list containing \code{\link{commands}}, a list of the commands required to produce the data.frame;
+#' A list containing \code{commands}, a list of the commands required to produce the data.frame;
 #' and \code{contents}, a data.frame of the current contents of the Table.
 #'
 #' @author Aaron Lun

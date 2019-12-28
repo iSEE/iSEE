@@ -127,7 +127,7 @@
 #'
 #' Note that this only refers to direct children.
 #' If the selection effect is \code{"Restrict"} in any of the child panels, their children (i.e., the grandchildren of \code{panel}) would also need updating, and so on.
-#' This is achieved via a set of observers to reactive values in \code{\link{iSEE}} to enable this recursion, see \code{\link{.create_child_propagation_observers}}.
+#' This is achieved via a set of observers to reactive values in \code{\link{iSEE}} to enable this recursion, see \code{\link{.create_child_propagation_observer}}.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_get_direct_children

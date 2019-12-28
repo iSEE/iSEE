@@ -49,7 +49,7 @@
               "This will copy the selected parts to the clipboard."),
 
             aceEditor("report_all_cmds", mode="r", theme="solarized_light", autoComplete="live",
-                value=paste0(.track_it_all(pObjects$memory, pObjects, se_name, ecm_name), collapse="\n"),
+                value=paste0(.track_it_all(pObjects, se_name, ecm_name), collapse="\n"),
                 height="600px")
         ))
     })

@@ -2,6 +2,7 @@
 #'
 #' Respond to or request a re-rendering of the \linkS4class{Panel} output via reactive variables.
 #'
+#' @param se A \linkS4class{SummarizedExperiment} object containing the current dataset.
 #' @param panel_name String containing the panel name.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.

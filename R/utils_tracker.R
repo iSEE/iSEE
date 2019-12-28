@@ -1,22 +1,20 @@
 #' Track code for the plots
 #'
 #' Fetches all the code that was used to generate the plots during the live iSEE session.
-#' See section "Functions" for more details.
 #'
-#' @param active_panels A data.frame containing information about the currently active panels, of the same form as that produced by \code{\link{.setup_initial}}.
-#' @param pObjects An environment containing \code{memory}, a list of DataFrames containing parameters for each panel of each type;
-#' \code{selection_links}, a graph object containing point selection links between panels;
-#' and \code{commands}, a list of commands required to generated each plot.
+#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
+#' @param all_memory A list of \linkS4class{Panel}s representing the current state of the application.
+#' @param graph A \link{graph} object containing point selection links between panels.
+#' @param commands A list of lists of character vectors, where each internal list contains commands to generate each panel.
+#' @param varname A list of strings containing the variable name for the contents of each panel.
 #' @param se_name String containing the name of the SummarizedExperiment or SingleCellExperiment object.
 #' @param ecm_name String containing the name of the ExperimentColorMap in use.
-#' @param select_only Logical scalar indicating whether only the commands to generate the selections should be returned.
-#' Otherwise, all commands to generate the plots will also be returned.
 #'
 #' @return A character vector containing all lines of code (plus comments), to use in the \code{shinyAce} editor in \code{\link{iSEE}}.
 #'
 #' @author Federico Marini
 #' @rdname INTERNAL_track_it_all
-.track_it_all <- function(active_panels, pObjects, se_name, ecm_name) {
+.track_it_all <- function(pObjects, se_name, ecm_name) {
     tracked_code <- c(
         "## The following list of commands will generate the plots created in iSEE",
         "## Copy them into a script or an R session containing your SingleCellExperiment.",
@@ -29,9 +27,9 @@
 
         "",
 
-        .track_selection_code(active_panels),
+        .track_selection_code(pObjects$memory),
 
-        .track_plotting_code(active_panels, pObjects),
+        .track_plotting_code(pObjects$memory, pObjects$selection_links, pObjects$commands, pObjects$varname),
 
         strrep("#", 80),
         "## To guarantee the reproducibility of your code, you should also",
@@ -49,21 +47,21 @@
 }
 
 #' @describeIn INTERNAL_track_it_all Returns a character vector of commands that create brushes, lassos, and selection history.
-.track_selection_code  <- function(active_panels) {
+.track_selection_code  <- function(all_memory) {
     brush_code <- history_code <- list()
-    for (panel_name in names(active_panels)) {
-        instance <- active_panels[[panel_name]]
+    for (panel_name in names(all_memory)) {
+        instance <- all_memory[[panel_name]]
         if (!is(instance, "DotPlot")) {
             next
         }
 
-        brush_struct <- active_panels[[panel_name]][[.brushData]]
+        brush_struct <- all_memory[[panel_name]][[.brushData]]
         if (!is.null(brush_struct)) {
             brush_struct <- .deparse_for_viewing(brush_struct, indent=0) # deparsed list() auto-indents.
             brush_code[[panel_name]] <- sprintf("all_brushes[['%s']] <- %s", panel_name, brush_struct)
         }
 
-        saved_struct <- active_panels[[panel_name]][[.multiSelectHistory]]
+        saved_struct <- all_memory[[panel_name]][[.multiSelectHistory]]
         if (length(saved_struct)) {
             saved_struct <- .deparse_for_viewing(saved_struct)
             history_code[[panel_name]] <- sprintf("all_select_histories[['%s']] <- %s", panel_name, saved_struct)
@@ -92,12 +90,12 @@
 
 #' @rdname INTERNAL_track_it_all
 #' @importFrom igraph topo_sort
-.track_plotting_code <- function(active_panels, pObjects, select_only = FALSE) {
+.track_plotting_code <- function(all_memory, graph, commands, varname) { 
     all_tracks <- list()
-    ordering <- names(topo_sort(pObjects$selection_links, "out"))
+    ordering <- names(topo_sort(graph, "out"))
 
     for (panel_name in ordering) {
-        instance <- active_panels[[panel_name]]
+        instance <- all_memory[[panel_name]]
         header_comments <- c(strrep("#", 80),
             paste("##", .getFullName(instance)),
             strrep("#", 80),
@@ -105,16 +103,16 @@
 
         # Adding the plotting commands.
         collated <- character(0)
-        for (cmds in pObjects$commands[[panel_name]]) {
+        for (cmds in commands[[panel_name]]) {
             collated <- c(collated, cmds, "")
         }
 
         # Saving data for transmission after selections have been processed;
         # this is the equivalent point in .create_plots() where coordinates are saved.
-        varname <- pObjects$varname[[panel_name]]
-        if (!is.null(varname)) {
+        var <- varname[[panel_name]]
+        if (!is.null(var)) {
             collated <- c(collated, "# Saving data for transmission",
-                sprintf("all_contents[['%s']] <- %s", panel_name, varname),
+                sprintf("all_contents[['%s']] <- %s", panel_name, var),
                 "")
         }
 

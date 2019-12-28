@@ -28,8 +28,6 @@ names(.all_aes_values) <- .all_aes_names
 #'
 #' Define and execute commands to choose the type of plot based on whether X and/or Y are categorical or continuous.
 #'
-#' @param group_X Logical scalar specifying if X is cateogrical.
-#' @param group_Y Logical scalar specifying if Y is cateogrical.
 #' @param envir Environment containing a \code{plot.data} data.frame with \code{X} and \code{Y} fields.
 #'
 #' @return
@@ -259,7 +257,7 @@ names(.all_aes_values) <- .all_aes_names
 #' (i.e., Y axis categorical and X axis continuous).
 #' @param by_row A logical scalar specifying whether the plot deals with row-level metadata.
 #' @param is_subsetted A logical scalar specifying whether \code{plot_data} was subsetted during \code{\link{.process_selectby_choice}}.
-#' @param is_downsampled A logical scalar specifying whether \code{plot_data} was downsampled in \code{\link{.plot_wrapper}}.
+#' @param is_downsampled A logical scalar specifying whether \code{plot_data} was downsampled.
 #'
 #' @return
 #' For \code{\link{.violin_setup}}, a character vector of commands to be parsed
@@ -1045,10 +1043,10 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
     # Note: Faceting simultaneously on row and column produces a 'flip' effect on the brush data
     if (param_choices[[.facetByRow]]!=.noSelection && param_choices[[.facetByColumn]]!=.noSelection) {
-        facetrow <- 'panelvar2'
-        facetcolumn <- 'panelvar1'
+        facet_row <- 'panelvar2'
+        facet_column <- 'panelvar1'
     } else {
-        facetrow <- facetcolumn <- 'panelvar1'
+        facet_row <- facet_column <- 'panelvar1'
     }
 
     mode <- .encodedName(param_choices)
@@ -1071,11 +1069,11 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
         if (.is_brush(chosen)) {
             draw_cmd <- .draw_brush(plot_name, param_choices, index=i,
-                flip=flip, facetrow=facetrow, facetcolumn=facetcolumn,
+                flip=flip, facet_row=facet_row, facet_column=facet_column,
                 stroke_color=stroke_color, fill_color=fill_color)
         } else {
             cmd.out <- .draw_lasso(plot_name, param_choices, index=i,
-                facetrow=facetrow, facetcolumn=facetcolumn,
+                facet_row=facet_row, facet_column=facet_column,
                 stroke_color=stroke_color, fill_color=fill_color,
                 firstClosed=firstClosed)
             firstClosed <- cmd.out$firstClosed
@@ -1089,7 +1087,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 }
 
 .draw_brush <- function(plot_name, param_choices, index, flip,
-    facetrow, facetcolumn, stroke_color, fill_color)
+    facet_row, facet_column, stroke_color, fill_color)
 {
     if (index == 0L) {
         brush_src <- sprintf("all_active[['%s']]", plot_name)
@@ -1117,10 +1115,10 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     # Collect additional panel information for the brush
     addPanels <- character(0)
     if (param_choices[[.facetByRow]]!=.noSelection) {
-        addPanels["FacetRow"] <- sprintf("FacetRow=%s[['%s']]", brush_src, facetrow)
+        addPanels["FacetRow"] <- sprintf("FacetRow=%s[['%s']]", brush_src, facet_row)
     }
     if (param_choices[[.facetByColumn]]!=.noSelection) {
-        addPanels["FacetColumn"] <- sprintf("FacetColumn=%s[['%s']]", brush_src, facetcolumn)
+        addPanels["FacetColumn"] <- sprintf("FacetColumn=%s[['%s']]", brush_src, facet_column)
     }
 
     # If any facting (row, column) is active, add the relevant data fields
@@ -1157,8 +1155,15 @@ label=%i, size=%s, colour='%s')",
 
 #' Generate ggplot instructions to draw a lasso selection path
 #'
-#' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
-#' @param flip A \code{logical} value that indicates whether \code{\link{coord_flip}} was applied to the plot.
+#' @param plot_name String containing the name of the current plot panel.
+#' @param param_choices A \linkS4class{Panel} instance containing the current plot panel's parameters.
+#' @param index Integer scalar indicating whether to draw the lasso in the active selection (\code{NA})
+#' or one of the saved selections.
+#' @param facet_row,facet_column Strings containing the name of the faceting fields in the lasso.
+#' Usually one of \code{"panelvar1"} or \code{"panelvar2"}.
+#' @param stroke_color String containing the color to use for the lasso stroke.
+#' @param fill_color String containing the color to use for the fill of the closed lasso.
+#' @param firstClosed Logical scalar that does... something.
 #'
 #' @return A character vector containing commands to overlay a point, path or polygon, indicating the position of any active or saved lassos.
 #'
@@ -1188,7 +1193,7 @@ label=%i, size=%s, colour='%s')",
 #' @importFrom ggplot2 geom_point geom_polygon geom_path scale_shape_manual
 #' scale_fill_manual guides
 .draw_lasso <- function(plot_name, param_choices, index,
-    facetrow, facetcolumn, stroke_color, fill_color, firstClosed)
+    facet_row, facet_column, stroke_color, fill_color, firstClosed)
 {
     if (index == 0L) {
         lasso_src <- sprintf("all_active[['%s']]", plot_name)
@@ -1204,10 +1209,10 @@ label=%i, size=%s, colour='%s')",
     # Collect additional panel information for the lasso.
     addPanels <- character(0)
     if (param_choices[[.facetByRow]]!=.noSelection) {
-        addPanels["FacetRow"] <- sprintf("FacetRow=%s[['%s']]", lasso_src, facetrow)
+        addPanels["FacetRow"] <- sprintf("FacetRow=%s[['%s']]", lasso_src, facet_row)
     }
     if (param_choices[[.facetByColumn]]!=.noSelection) {
-        addPanels["FacetColumn"] <- sprintf("FacetColumn=%s[['%s']]", lasso_src, facetcolumn)
+        addPanels["FacetColumn"] <- sprintf("FacetColumn=%s[['%s']]", lasso_src, facet_column)
     }
     if (length(addPanels)) {
         panel_data <- paste(unlist(addPanels), collapse=", ")

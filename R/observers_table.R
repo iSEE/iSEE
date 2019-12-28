@@ -12,7 +12,7 @@
 #' A \code{NULL} value is invisibly returned.
 #'
 #' @details
-#' This needs to plug into the various propagation observers in \code{\link{.create_child_propagation_observers}}
+#' This needs to plug into the various propagation observers in \code{\link{.create_child_propagation_observer}}
 #' and \code{\link{.create_dimname_propagation_observer}} when the search or single selection changes, respectively.
 #' Note that the \pkg{iSEE} multiple selection concept is not the same as the DataTable multiple selection;
 #' rather, our multiple selections correspond to the search filter.

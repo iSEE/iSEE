@@ -57,6 +57,7 @@
     observeEvent(rObjects$modified, {
         if (!isTRUE(pObjects$initialized)) { # Avoid running this on app start and double-generating output.
             pObjects$initialized <- TRUE
+            rObjects$modified <- list()
             return(NULL)
         }
 

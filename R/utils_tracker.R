@@ -57,7 +57,7 @@
 
         brush_struct <- all_memory[[panel_name]][[.brushData]]
         if (!is.null(brush_struct)) {
-            brush_struct <- .deparse_for_viewing(brush_struct, indent=0) # deparsed list() auto-indents.
+            brush_struct <- .deparse_for_viewing(brush_struct)
             brush_code[[panel_name]] <- sprintf("all_active[['%s']] <- %s", panel_name, brush_struct)
         }
 

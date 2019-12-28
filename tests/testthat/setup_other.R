@@ -2,23 +2,12 @@
 # given all elements in memory.
 
 mimic_live_app <- function(se, all_memory) {
-    metadata(se)$colormap <- ExperimentColorMap()
-    for (m in seq_along(all_memory)) {
-        se <- .cacheCommonInfo(all_memory[[m]], se)
-    }
-    for (m in seq_along(all_memory)) {
-        all_memory[[m]] <- .refineParameters(all_memory[[m]], se)
-    }
+    se <- iSEE:::.prepare_SE(se, ExperimentColorMap(), all_memory)
+    init_out <- iSEE:::.setup_initial_state(se, all_memory)
+    res_out <- iSEE:::.define_reservoir(se, list(), init_out$memory, init_out$counter)
+    pObjects <- iSEE:::.create_persistent_objects(init_out$memory, res_out$reservoir, res_out$counter)
 
-    pObjects <- new.env()
-    pObjects$memory <- all_memory
-    pObjects$selection_links <- iSEE:::.spawn_multi_selection_graph(memory)
-    pObjects$coordinates <- list()
-    pObjects$commands <- list()
-    pObjects$varname <- list()
-    pObjects$contents <- list()
     rObjects <- list()
-
     ordering <- names(igraph::topo_sort(pObjects$selection_links, mode="out"))
     for (o in ordering) {
         stuff <- iSEE::.retrieveOutput(o, se, pObjects, rObjects)

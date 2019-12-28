@@ -51,7 +51,7 @@
 #'
 #' x <- RowStatTable()
 #' x[["Selected"]]
-#' x[["Selected"]] <- 2L
+#' x[["Selected"]] <- "SOME_ROW_NAME"
 #'
 #' ##################
 #' # For developers #

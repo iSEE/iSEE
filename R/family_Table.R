@@ -6,7 +6,7 @@
 #' @section Slot overview:
 #' The following slots control aspects of the \code{DT::datatable} interface:
 #' \itemize{
-#' \item \code{Selected}, a string containing the row name of the currently selected row.
+#' \item \code{Selected}, a string containing the name of the currently selected row of the data.frame.
 #' Defaults to \code{NA}, in which case the value should be chosen by the subclass' \code{\link{.refineParameters}} method.
 #' \item \code{Search}, a string containing the regular expression for the global search.
 #' Defaults to \code{""}, i.e., no search.

@@ -51,7 +51,7 @@
 #'
 #' x <- ColStatTable()
 #' x[["Selected"]]
-#' x[["Selected"]] <- 2L
+#' x[["Selected"]] <- "SOME_SAMPLE_NAME"
 #'
 #' ##################
 #' # For developers #

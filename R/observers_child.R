@@ -87,14 +87,14 @@
 
             # Setting up various parameters to decide how to deal with children.
             status <- modified[[current_panel_name]]
+            if (!length(status)) {
+                next
+            }
             re_populated <- .panelRepopulated %in% status
             re_active <- .panelReactivated %in% status
             re_saved <- .panelResaved %in% status
-            if (!re_populated && !re_active && !re_saved) {
-                next
-            }
 
-            children <- names(adjacent_vertices(graph, v=current_panel_name, mode="out"))
+            children <- names(adjacent_vertices(graph, v=current_panel_name, mode="out")[[1]])
             if (!length(children)) {
                 next
             }

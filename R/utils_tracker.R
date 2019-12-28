@@ -58,13 +58,13 @@
         brush_struct <- all_memory[[panel_name]][[.brushData]]
         if (!is.null(brush_struct)) {
             brush_struct <- .deparse_for_viewing(brush_struct, indent=0) # deparsed list() auto-indents.
-            brush_code[[panel_name]] <- sprintf("all_brushes[['%s']] <- %s", panel_name, brush_struct)
+            brush_code[[panel_name]] <- sprintf("all_active[['%s']] <- %s", panel_name, brush_struct)
         }
 
         saved_struct <- all_memory[[panel_name]][[.multiSelectHistory]]
         if (length(saved_struct)) {
             saved_struct <- .deparse_for_viewing(saved_struct)
-            history_code[[panel_name]] <- sprintf("all_select_histories[['%s']] <- %s", panel_name, saved_struct)
+            history_code[[panel_name]] <- sprintf("all_saved[['%s']] <- %s", panel_name, saved_struct)
         }
     }
 
@@ -73,7 +73,7 @@
         tracked_code[[1]] <- c(strrep("#", 80),
             "# Defining brushes",
             strrep("#", 80), "",
-            "all_brushes <- list()",
+            "all_active <- list()",
             unlist(brush_code), "")
     }
 
@@ -81,7 +81,7 @@
         tracked_code[[2]] <- c(strrep("#", 80),
             "# Defining selection histories",
             strrep("#", 80), "",
-            "all_select_histories <- list()",
+            "all_saved <- list()",
             unlist(history_code), "")
     }
 

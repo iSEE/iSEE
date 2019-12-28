@@ -507,7 +507,7 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
         self_select_cmds[intermediate] <- paste(self_select_cmds[intermediate], "+")
         plot_cmds <- c(plot_cmds, self_select_cmds)
 
-        # We overwrite any existing 'all_brushes' or 'all_lassos',
+        # We overwrite any existing 'all_active' or 'all_saved',
         # as they have already served their purpose in defining plot_data above
         .populate_selection_environment(x, plot_env)
     }

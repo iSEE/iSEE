@@ -1018,9 +1018,9 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @details
 #' Evaluation of the output commands require:
 #' \itemize{
-#' \item a list object called \code{all_brushes} where each entry is named by the plot name.
+#' \item a list object called \code{all_active} where each entry is named by the plot name.
 #' The entry corresponding to the current plot should contain the contents of \code{.brushData} in \code{param_choices}.
-#' \item a list object called \code{all_select_histories} where each entry is named by the plot name.
+#' \item a list object called \code{all_saved} where each entry is named by the plot name.
 #' The entry corresponding to the current plot should contain the contents of \code{.multiSelectHistory} in \code{param_choices}.
 #' }
 #' Both of these objects should exist in the environment in which the commands are evaluated.
@@ -1178,9 +1178,9 @@ label=%i, size=%s, colour='%s')",
 #'
 #' Evaluation of the output commands require:
 #' \itemize{
-#' \item a list object called \code{all_lassos} where each entry is named by the plot name.
+#' \item a list object called \code{all_active} where each entry is named by the plot name.
 #' The entry corresponding to the current plot should contain the contents of \code{.lassoData} in \code{param_choices}.
-#' \item a list object called \code{all_select_histories} where each entry is named by the plot name.
+#' \item a list object called \code{all_saved} where each entry is named by the plot name.
 #' The entry corresponding to the current plot should contain the contents of \code{.multiSelectHistory} in \code{param_choices}.
 #' }
 #' Both of these objects should exist in the environment in which the commands are evaluated.

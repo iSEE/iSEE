@@ -1,3 +1,6 @@
+# Tests for the lasso updating functionality.
+# library(testthat); library(iSEE); source("test_lasso.R")
+
 context("lasso")
 
 stopifnot(
@@ -130,14 +133,12 @@ test_that("lassoPoints ignores points within lasso in other facets", {
 
 })
 
-test_that (".any_active_selection detects a closed lasso", {
+test_that (".multiSelectionHasActive detects a closed lasso", {
 
-    redDimArgs <- redDimPlotDefaults(sce, 1)
-    redDimArgs$LassoData[[1]] <- LASSO_CLOSED
-    memory <- list(
-        redDimPlot=redDimArgs
-    )
+    redDimArgs <- RedDimPlot(BrushData=LASSO_CLOSED)
+    expect_true(iSEE:::.multiSelectionHasActive(redDimArgs))
 
-    expect_true(.any_active_selection("redDimPlot", 1, memory))
+    redDimArgs <- RedDimPlot(BrushData=LASSO_OPEN)
+    expect_false(iSEE:::.multiSelectionHasActive(redDimArgs))
 
 })

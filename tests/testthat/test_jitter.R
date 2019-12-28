@@ -1,7 +1,7 @@
-context("jitter")
-
 # Tests jitterViolinPoints, jitterSquarePoints and related functions.
 # library(testthat); library(iSEE); source("test_jitter.R")
+
+context("jitter")
 
 test_that(".define_groups works correctly with multi-factor groupings", {
     nvals <- 100

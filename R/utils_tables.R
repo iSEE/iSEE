@@ -1,6 +1,7 @@
 #' Generate table filter
 #'
 #' Generate R commands to filter a data.frame by the global and column search strings used in the \code{\link{datatable}}.
+#' This is done using a combination of \code{\link{grepl}} and \code{\link{filterDT}}.
 #'
 #' @param x An instance of a \linkS4class{Table} class.
 #' @param varname String containing the name of the data.frame variable to use in the output commands.
@@ -20,10 +21,9 @@
     }
 
     searchcols <- x[[.TableColSearch]]
-    involved <- which(searchcols!="")
-    if (length(involved)) {
-        filters <- c(filters, sprintf("iSEE::filterDTColumn(%s[[%i]], %s)", 
-            varname, involved, vapply(searchcols[involved], deparse, "")))
+    if (any(searchcols!="")) {
+        filters <- c(filters, sprintf("iSEE::filterDT(%s, %s)", 
+            varname, .deparse_for_viewing(searchcols, indent=2)))
     }
 
     if (!is.null(filters)) {

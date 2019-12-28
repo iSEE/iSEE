@@ -18,6 +18,7 @@
 #'
 #' @rdname INTERNAL_create_table_output
 #' @importFrom DT datatable renderDataTable selectRows dataTableProxy
+#' @importFrom utils head
 .create_table_output <- function(panel_name, se, output, pObjects, rObjects) {
     force(se)
 
@@ -32,6 +33,19 @@
         chosen <- param_choices[[.TableSelected]]
         search <- param_choices[[.TableSearch]]
         search_col <- param_choices[[.TableColSearch]]
+
+        # Protection against a change in the number of columns from .generateOutput.
+        # .generate_table_filter protects against a mismatch in use by children,
+        #  so there's no need to edit the memory here (and in fact that won't work
+        # anyway because the children are evaluating way before we get here).
+        delta <- ncol(full_tab) - length(search_col)
+        if (delta!=0L) {
+            if (delta < 0L) {
+                search_col <- head(search_col, ncol(full_tab))
+            } else {
+                search_col <- c(search_col, character(delta))
+            }
+        }
         search_col <- lapply(search_col, FUN=function(x) { list(search=x) })
 
         # If the existing row in memory doesn't exist in the current table, we

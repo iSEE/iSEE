@@ -124,9 +124,9 @@
 
         # Updating children if the selection in the current plot changes due to gain/loss of Restrict.
         if (cur_effect==.selectRestrictTitle || old_effect==.selectRestrictTitle) {
-            .mark_panel_as_modified(panel_name, .panelRepopulated, rObjects)
+            .mark_panel_as_modified(plot_name, .panelRepopulated, rObjects)
         } else {
-            .requestUpdate(panel_name, rObjects)
+            .requestUpdate(plot_name, rObjects)
         }
     }, ignoreInit=TRUE)
 

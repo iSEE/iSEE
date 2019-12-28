@@ -48,7 +48,7 @@
         }
 
         pObjects$memory[[panel_name]][[.TableSearch]] <- search
-        .mark_panel_as_modified(panel_name, .panelReactivated, rObjects)
+        .mark_panel_as_modified(panel_name, c(.panelNorender, .panelReactivated), rObjects)
         .safe_reactive_bump(rObjects, gen_name)
     })
 
@@ -60,7 +60,7 @@
         }
 
         pObjects$memory[[panel_name]][[.TableColSearch]] <- search
-        .mark_panel_as_modified(panel_name, .panelReactivated, rObjects)
+        .mark_panel_as_modified(panel_name, c(.panelNorender, .panelReactivated), rObjects)
         .safe_reactive_bump(rObjects, gen_name)
     })
 }

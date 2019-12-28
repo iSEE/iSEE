@@ -56,7 +56,7 @@ For defining reactive expressions:
 \itemize{
 \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all of the slots. 
 This will also call the equivalent \linkS4class{Panel} method.
-\item \code{\link{.renderOutput}(x, se, colormap, output, pObjects, rObjects)} will add a rendered \code{\link{datatable}} object to \code{output}.
+\item \code{\link{.renderOutput}(x, se, output, pObjects, rObjects)} will add a rendered \code{\link{datatable}} object to \code{output}.
 This will also call the equivalent \linkS4class{Panel} method to render the panel information testboxes.
 }
 

@@ -45,14 +45,14 @@ there is no direct interaction between \code{input} and \code{output} in this fr
 
 \section{Triggering re-rendering}{
 
-To trigger re-rendering of an output, observers should call \code{\link{.refreshPanelOutput}(PANEL, pObjects, rObjects)}, 
+To trigger re-rendering of an output, observers should call \code{\link{.requestUpdate}(PANEL, rObjects)}, 
 where \code{PANEL} is the name of the current panel.
-This will simply re-render the output with no additional side effects and is most useful for responding to aesthetic parameters.
+This will request a re-rendering of the output with no additional side effects and is most useful for responding to aesthetic parameters.
 
 In some cases, changes to some parameters may invalidate existing multiple selections, 
 e.g., brushes and lassos are no longer valid if the variable on the axes are altered.
-Observers responding to such changes should instead call \code{\link{.refreshPanelOutput}} with \code{clear=TRUE},
-which will destroy all existing selections to avoid misleading conclusions.
+Observers responding to such changes should instead call \code{\link{.requestCleanUpdate}},
+which will destroy all existing selections in order to avoid misleading conclusions.
 }
 
 \author{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/iSEE-main.R
 \name{iSEE}
 \alias{iSEE}
-\title{iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer}
+\title{iSEE: interactive SummarizedExperiment Explorer}
 \usage{
 iSEE(
   se,
@@ -44,60 +44,66 @@ iSEE(
 \arguments{
 \item{se}{An object that is coercible to \linkS4class{SingleCellExperiment}.
 If missing, an app is launched with a file upload control allowing users to upload an RDS file that contains such as object.
-See Details for information to set the maximal size limit for file uploads.}
+See Details to set the maximal size limit for file uploads.}
 
-\item{redDimArgs}{A DataFrame similar to that produced by \code{\link{redDimPlotDefaults}}, specifying initial parameters for the reduced dimension plots.}
+\item{initial}{A list of \linkS4class{Panel} objects specifying the initial state of the app.
+The order of panels determines the sequence in which they are laid out in the interface.}
 
-\item{colDataArgs}{A DataFrame similar to that produced by \code{\link{colDataPlotDefaults}}, specifying initial parameters for the column data plots.}
+\item{extra}{A list of additional \linkS4class{Panel} objects that might be added after the app has started.
+Only the first instance of each class will be used.}
 
-\item{featAssayArgs}{A DataFrame similar to that produced by \code{\link{featAssayPlotDefaults}}, specifying initial parameters for the feature assay plots.}
+\item{redDimArgs}{Deprecated, use \code{initial} instead.}
 
-\item{rowStatArgs}{A DataFrame similar to that produced by \code{\link{rowStatTableDefaults}}, specifying initial parameters for the row statistics tables.}
+\item{colDataArgs}{Deprecated, use \code{initial} instead.}
 
-\item{rowDataArgs}{A DataFrame similar to that produced by \code{\link{rowDataPlotDefaults}}, specifying initial parameters for the row data plots.}
+\item{featAssayArgs}{Deprecated, use code{initial} instead.}
 
-\item{sampAssayArgs}{A DataFrame similar to that produced by \code{\link{sampAssayPlotDefaults}}, specifying initial parameters for the sample assay plots.}
+\item{rowStatArgs}{Deprecated, use code{initial} instead.}
 
-\item{colStatArgs}{A DataFrame similar to that produced by \code{\link{colStatTableDefaults}}, specifying initial parameters for the column statistics tables.}
+\item{rowDataArgs}{Deprecated, use code{initial} instead.}
 
-\item{customDataArgs}{A DataFrame similar to that produced by \code{\link{customDataPlotDefaults}}, specifying initial parameters for the custom data plots.}
+\item{sampAssayArgs}{Deprecated, use code{initial} instead.}
 
-\item{customStatArgs}{A DataFrame similar to that produced by \code{\link{customStatTableDefaults}}, specifying initial parameters for the custom statistics tables.}
+\item{colStatArgs}{Deprecated, use code{initial} instead.}
 
-\item{heatMapArgs}{A DataFrame similar to that produced by \code{\link{heatMapPlotDefaults}}, specifying initial parameters for the heatmaps.}
+\item{customDataArgs}{Deprecated, use code{initial} instead.}
 
-\item{redDimMax}{An integer scalar specifying the maximum number of reduced dimension plots in the interface.}
+\item{customStatArgs}{Deprecated, use code{initial} instead.}
 
-\item{colDataMax}{An integer scalar specifying the maximum number of column data plots in the interface.}
+\item{heatMapArgs}{Deprecated, use code{initial} instead.}
 
-\item{featAssayMax}{An integer scalar specifying the maximum number of feature assay plots in the interface.}
+\item{redDimMax}{Deprecated and ignored.}
 
-\item{rowStatMax}{An integer scalar specifying the maximum number of row statistics tables in the interface.}
+\item{colDataMax}{Deprecated and ignored.}
 
-\item{rowDataMax}{An integer scalar specifying the maximum number of row data plots in the interface.}
+\item{featAssayMax}{Deprecated and ignored.}
 
-\item{sampAssayMax}{An integer scalar specifying the maximum number of sample assay plots in the interface.}
+\item{rowStatMax}{Deprecated and ignored.}
 
-\item{colStatMax}{An integer scalar specifying the maximum number of column statistics tables in the interface.}
+\item{rowDataMax}{Deprecated and ignored.}
 
-\item{customDataMax}{An integer scalar specifying the maximum number of custom data plots in the interface.}
+\item{sampAssayMax}{Deprecated and ignored.}
 
-\item{customStatMax}{An integer scalar specifying the maximum number of custom statistics tables in the interface.}
+\item{colStatMax}{Deprecated and ignored.}
 
-\item{heatMapMax}{An integer scalar specifying the maximum number of heatmaps in the interface.}
+\item{customDataMax}{Deprecated and ignored.}
 
-\item{initialPanels}{A DataFrame specifying which panels should be created at initialization.
-This should contain a \code{Name} character field and may have optional \code{Width} and \code{Height} integer fields, see Details.}
+\item{customStatMax}{Deprecated and ignored.}
 
-\item{annotFun}{A function, similar to those returned by \code{\link{annotateEntrez}} or \code{\link{annotateEnsembl}}.
-The function should accept two parameters, \code{se} and \code{row_index}, and return a HTML element with annotation for the selected row.}
+\item{heatMapMax}{Deprecated and ignored.}
 
-\item{customDataFun}{A named list of functions for reporting coordinates to use in a custom data plot.}
+\item{initialPanels}{Deprecated, use \code{initial} instead.}
 
-\item{customStatFun}{A named list of functions for reporting coordinates to use in a custom statistics table.}
+\item{annotFun}{Deprecated and ignored.
+Read the book for the new, more extensible approach for creating custom panels.}
 
-\item{customSendAll}{A logical scalar indicating whether all (active and saved) selections should be passed from transmitting panels to custom plots or tables.
-The default (\code{FALSE}) only passes the row names of the points in the active selection.}
+\item{customDataFun}{Deprecated and ignored.
+Read the book for the new, more extensible approach for creating custom panels.}
+
+\item{customStatFun}{Deprecated and ignored.
+Read the book for the new, more extensible approach for creating custom panels.}
+
+\item{customSendAll}{Deprecated and ignored.}
 
 \item{colormap}{An \linkS4class{ExperimentColorMap} object that defines custom colormaps to apply to individual \code{assays}, \code{colData} and \code{rowData} covariates.}
 
@@ -119,23 +125,19 @@ A Shiny app object is returned, for interactive data exploration of the \linkS4c
 }
 \description{
 Interactive and reproducible visualization of data contained in a
-SummarizedExperiment/SingleCellExperiment, using a Shiny interface.
+\linkS4class{SummarizedExperiment} object, using a Shiny interface.
 }
 \details{
-Users can pass default parameters via DataFrame objects in \code{redDimArgs} and \code{featAssayArgs}.
-Each object can contain some or all of the expected fields (see \code{\link{redDimPlotDefaults}}).
-Any missing fields will be filled in with the defaults.
+Configuring the initial state of the app is as easy as passing a list of \linkS4class{Panel} objects to \code{initial}.
+Each element represents one panel and is typicall constructed with a command like \code{\link{RedDimPlot}()}.
+Panels are filled from left to right in a row-wise manner depending on the available width.
+Each panel can be easily customized by modifying the parameters in each object.
 
-The number of maximum plots for each type of plot is set to the larger of \code{*Max} and \code{nrow(*Args)}.
-Users can specify any number of maximum plots, though increasing the number will increase the time required to render the interface.
-
-The \code{initialPanels} argument specifies the panels to be created upon initializing the interface.
-This should be a DataFrame containing a \code{Name} field specifying the identity of the panel, e.g., \code{"Reduced dimension plot 1"}, \code{"Row statistics table 2"}.
-Please refer to \code{\link{availablePanelTypes}} for the full list of panels available.
-The trailing number should not be greater than the number of maximum plots of that type.
-Users can also define the \code{Width} field, specifying the width of each panel from 2 to 12 (values will be coerced inside this range);
-and the \code{Height} field, specifying the height of each panel from 400 to 1000 pixels.
-By default, one panel of each type (where possible) will be generated, with height of 500 and width of 4.
+The \code{extra} argument should specify \linkS4class{Panel} classes that are not present in \code{initial} 
+but can be added interactively by the user after the app has started.
+The first instance of each new class in \code{extra} will be used as a template when the user adds a new panel of that class.
+Note that \code{extra} will be combined with the classes already present in \code{initial}, 
+so any redundant specification of those initial classes will be ignored.
 
 The \code{tour} argument needs to be provided in a form compatible with the format expected by the \code{rintrojs} package.
 There should be two columns, \code{element} and \code{intro}, with the former describing the element to highlight and the latter providing some descriptive text.

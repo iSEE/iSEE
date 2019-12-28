@@ -41,14 +41,10 @@ In \code{.renderOutput(x, se, ..., output, pObjects, rObjects)}, the following a
 It is expected to attach a reactive expression to \code{output} to render the output elements created by \code{.defineOutput}.
 The return value of this generic is not used; only the side-effect of the output set-up is relevant.
 
-Within the rendering expression for each output, developers should call \code{\link{.respondPanelOutput}(panel_name, rObjects)} where \code{panel_name} is the output of \code{\link{.getEncodedName}(x)}.
-This ensures that the output is rerendered upon changes to the appropriate reactive variable, which is itself modified by \code{\link{.renderOutput}} and related functions in \code{\link{.createObservers}}.
-}
-
-\section{Additional rendering obligations}{
-
 The rendering expression defined in \code{\link{.renderOutput}} is also expected to:
-\itemize{
+\enumerate{
+\item Call \code{force(rObjects[[PANEL]])}, where \code{PANEL} is the output of \code{\link{.getEncodedName}(x)}.
+This ensures that the output is rerendered upon requesting changes in \code{\link{.requestUpdate}}.
 \item Fill \code{pObjects$contents[[PANEL]]} with some content related to the displayed output that allows cross-referencing with single/multiple selection structures.
 This will be used in other generics like \code{\link{.multiSelectionCommands}} and \code{\link{.singleSelectionValue}} to determine the identity of the selected point(s).
 As a result, it is only strictly necessary if the panel is a potential transmitter, as determined by the return value of \code{\link{.multiSelectionDimension}}.
@@ -58,6 +54,11 @@ for plotting panels, the vector should also include code to create the plot.
 \item Fill \code{pObjects$varname[[PANEL]]} with a string containing the R expression in \code{pObjects$commands[[PANEL]]} that holds the contents stored in \code{pObjects$contents[[PANEL]]}.
 This is used for code reporting, and again, is only strictly necessary if the panel is a potential transmitter.
 }
+
+We strongly recommend calling \code{\link{.retrieveOutput}} within the rendering expression,
+which will automatically perform tasks 1-3 above, rather than calling \code{\link{.generateOutput}} manually.
+This means that the only extra work required in the implementation of \code{\link{.renderOutput}} is to perform task 4 and 
+to choose an appropriate rendering function.
 }
 
 \section{Generating content}{
@@ -71,13 +72,18 @@ In \code{.generateOutput(x, se, ..., output, pObjects, rObjects)}, the following
 \item \code{all_contents}, a named list containing the contents of each panel.
 }
 
-Methods for this generic should return a list containing \code{contents}, some arbitrary content for the panel.
+Methods for this generic should return a list containing:
+\itemize{
+\item \code{contents}, some arbitrary content for the panel (usually a data.frame).
 This is used during app initialization to ensure that \code{pObjects$contents} of transmitter panels is filled before rendering their children.
-
+It should be of a structure that allows it to be cross-referenced against the output of \code{\link{.multiSelectionActive}} to determine the selected rows/columns.
+\item \code{commands}, a list of character vectors of R commands that, when executed, produces the contents of the panel and any displayed output (e.g., a \link{ggplot} object).
+Developers should write these commands as if the evaluation environment only contains the SummarizedExperiment \code{se} and ExperimentColorMap \code{coloarmap}.
+}
 The output list may contain any number of other fields that will be ignored.
-We suggest implementing this method to also return \code{commands} so that it can be used in \code{.renderOutput},
-thus avoiding the need to write redundant code for both methods.
 
+We suggest implementing this method using \code{\link{eval}(\link{parse}(text=...))} calls, 
+which enables easy construction and evaluation of the commands and contents at the same time.
 Developers should consider using the \code{\link{.processMultiSelections}} function for easily processing the multiple selection parameters.
 }
 

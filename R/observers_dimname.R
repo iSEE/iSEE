@@ -212,9 +212,9 @@
         # Only regenerating if the current parameter is actually in use.
         if (always_in_use || pObjects$memory[[panel_name]][[use_mode_field]]==use_value) {
             if (!protected) {
-                .refreshPanelOutput(panel_name, rObjects)
+                .requestUpdate(panel_name, rObjects)
             } else {
-                .refreshPanelOutputUnselected(panel_name, pObjects, rObjects)
+                .requestCleanUpdate(panel_name, pObjects, rObjects)
             }
         }
     }, ignoreInit=TRUE)
@@ -232,9 +232,9 @@
 
         if (replot) {
             if (!protected) {
-                .refreshPanelOutput(panel_name, rObjects)
+                .requestUpdate(panel_name, rObjects)
             } else {
-                .refreshPanelOutputUnselected(panel_name, pObjects, rObjects)
+                .requestCleanUpdate(panel_name, pObjects, rObjects)
             }
         }
     })

@@ -25,7 +25,7 @@
         force(rObjects[[panel_name]])
         param_choices <- pObjects$memory[[panel_name]]
 
-        t.out <- .respondPanelOutput(panel_name, se, pObjects, rObjects)
+        t.out <- .retrieveOutput(panel_name, se, pObjects, rObjects)
         full_tab <- t.out$contents
         pObjects$varname[[panel_name]] <- "tab"
 

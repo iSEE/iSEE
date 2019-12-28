@@ -247,7 +247,7 @@ setMethod(".createObservers", "RedDimPlot", function(x, se, input, session, pObj
         updateSelectInput(session, dim_fieldX, choices=new_choices, selected=capped_X)
         updateSelectInput(session, dim_fieldY, choices=new_choices, selected=capped_Y)
 
-        .refreshPanelOutputUnselected(plot_name, pObjects, rObjects)
+        .requestCleanUpdate(plot_name, pObjects, rObjects)
     }, ignoreInit=TRUE)
 })
 

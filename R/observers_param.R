@@ -94,7 +94,7 @@
                     return(NULL)
                 }
                 pObjects$memory[[panel_name]][[field0]] <- matched_input
-                .refreshPanelOutput(panel_name, rObjects)
+                .requestUpdate(panel_name, rObjects)
             }, ignoreInit=ignoreInit, ignoreNULL=ignoreNULL)
         })
     }
@@ -118,7 +118,7 @@
                     return(NULL)
                 }
                 pObjects$memory[[panel_name]][[field0]] <- matched_input
-                .refreshPanelOutputUnselected(panel_name, pObjects, rObjects)
+                .requestCleanUpdate(panel_name, pObjects, rObjects)
             }, ignoreInit=ignoreInit, ignoreNULL=ignoreNULL)
         })
     }

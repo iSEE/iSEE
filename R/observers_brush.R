@@ -130,7 +130,7 @@
             .mark_panel_as_modified(plot_name, .panelReactivated, rObjects)
             .safe_reactive_bump(rObjects, dimprop_name)
         } else {
-            .refreshPanelOutput(plot_name, rObjects)
+            .requestUpdate(plot_name, rObjects)
         }
     })
 

@@ -93,7 +93,7 @@
         if (.multiSelectionRestricted(pObjects$memory[[panel_name]])) {
             .mark_panel_as_modified(panel_name, .panelRepopulated, rObjects)
         } else {
-            .refreshPanelOutput(panel_name, rObjects)
+            .requestUpdate(panel_name, rObjects)
         }
     }, ignoreInit=TRUE)
 
@@ -126,7 +126,7 @@
         if (cur_effect==.selectRestrictTitle || old_effect==.selectRestrictTitle) {
             .mark_panel_as_modified(panel_name, .panelRepopulated, rObjects)
         } else {
-            .refreshPanelOutput(panel_name, rObjects)
+            .requestUpdate(panel_name, rObjects)
         }
     }, ignoreInit=TRUE)
 
@@ -165,7 +165,7 @@
         if (.multiSelectionRestricted(pObjects$memory[[panel_name]])) {
             .mark_panel_as_modified(panel_name, .panelRepopulated, rObjects)
         } else {
-            .refreshPanelOutput(panel_name, rObjects)
+            .requestUpdate(panel_name, rObjects)
         }
     }, ignoreInit=TRUE)
 
@@ -194,7 +194,7 @@
         if (.multiSelectionRestricted(pObjects$memory[[panel_name]])) {
             .mark_panel_as_modified(panel_name, .panelRepopulated, rObjects)
         } else {
-            .refreshPanelOutput(panel_name, rObjects)
+            .requestUpdate(panel_name, rObjects)
         }
     }, ignoreInit=TRUE)
 

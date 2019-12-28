@@ -3,36 +3,34 @@
 #' Respond to or request a re-rendering of the \linkS4class{Panel} output via reactive variables.
 #'
 #' @param panel_name String containing the panel name.
-#' @param se A \linkS4class{SummarizedExperiment} object containing the current dataset.
-#' @param pObjects An environment containing \code{memory}, a list of \linkS4class{Panel}s containing parameters for each panel;
-#' \code{contents}, a list of panel-specific contents to be used to determine the selection values;
-#' and \code{cached}, a list of panel-specific cached values to be used during rendering.
+#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
 #'
 #' @return
-#' \code{.respondPanelOutput} will return the output of running \code{\link{.generateOutput}} for the current panel.
-#' It will also register the use of the \code{panel_name} reactive variable in \code{rObjects}.
+#' \code{.retrieveOutput} will return the output of running \code{\link{.generateOutput}} for the current panel.
 #'
-#' \code{.refreshPanelOutput} will bump the \code{panel_name} reactive variable in \code{rObjects}.
-#' \code{.refreshPanelOutputUnselected} will also remove all selections in the chosen panel.
+#' \code{.requestUpdate} will modify \code{rObjects} to request a re-rendering of the specified panel.
+#' \code{.requestCleanUpdate} will also remove all active/saved selections in the chosen panel.
 #'
 #' Both functions will invisibly return \code{NULL}.
 #'
 #' @details
-#' \code{.respondPanelOutput} should be used in the expression for rendering output, e.g., in \code{\link{.renderOutput}}.
-#' This ensures that this expression is re-evaluated upon requested re-rendering of the panel
+#' \code{.retrieveOutput} should be used in the expression for rendering output, e.g., in \code{\link{.renderOutput}}.
+#' This takes care of a number of house-keeping tasks required to satisfy \code{\link{.renderOutput}}'s requirements
+#' with respect to updating various fields in \code{pObjects}.
+#' It also improves efficiency by retrieving cached outputs that were used elsewhere in the app.
 #'
-#' \code{.refreshPanelOutput} should be used in various observers to request a re-rendering of the panel,
+#' \code{.requestUpdate} should be used in various observers to request a re-rendering of the panel,
 #' usually in response to user-driven parameter changes in \code{\link{.createObservers}}.
 #'
-#' \code{.refreshPanelOutputUnselected} is usually desirable for parameter changes that invalidate previous selections,
+#' \code{.requestCleanUpdate} is usually desirable for parameter changes that invalidate existing multiple selections,
 #' e.g., if the coordinates change in a \linkS4class{DotPlot}, existing brushes and lassos are usually not applicable.
 #'
 #' @author Aaron Lun
 #'
 #' @export
-#' @rdname respondPanelOutput
-.respondPanelOutput <- function(panel_name, se, pObjects, rObjects) {
+#' @rdname retrieveOutput
+.retrieveOutput <- function(panel_name, se, pObjects, rObjects) {
     force(rObjects[[panel_name]])
 
     if (length(pObjects$cached[[panel_name]])!=0L) {
@@ -50,28 +48,24 @@
 }
 
 #' @export
-#' @rdname respondPanelOutput
-.refreshPanelOutput <- function(panel_name, rObjects) {
+#' @rdname retrieveOutput
+.requestUpdate <- function(panel_name, rObjects) {
     .mark_panel_as_modified(panel_name, character(0), rObjects)
     invisible(NULL)
 }
 
 #' @export
-#' @rdname respondPanelOutput
-.refreshPanelOutputUnselected <- function(panel_name, pObjects, rObjects) {
-    has_active <- .multiSelectionHasActive(pObjects$memory[[panel_name]])
-    has_saved <- .any_saved_selection(pObjects$memory[[panel_name]])
-
+#' @rdname retrieveOutput
+.requestCleanUpdate <- function(panel_name, pObjects, rObjects) {
     accumulated <- character(0)
-    if (has_active) {
+    if (.multiSelectionHasActive(pObjects$memory[[panel_name]])) {
         pObjects$memory[[panel_name]] <- .multiSelectionClear(pObjects$memory[[panel_name]])
         accumulated <- c(accumulated, .panelReactivated)
     }
-    if (has_saved) {
+    if (.any_saved_selection(pObjects$memory[[panel_name]])) {
         pObjects$memory[[panel_name]][[.multiSelectHistory]] <- list()
         accumulated <- c(accumulated, .panelResaved)
     }
-
     .mark_panel_as_modified(panel_name, accumulated, rObjects)
 }
 

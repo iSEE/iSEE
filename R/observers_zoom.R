@@ -57,7 +57,7 @@
         if (.is_brush(existing_brush) || .is_closed_lasso(existing_brush)) {
             .mark_panel_as_modified(plot_name, .panelReactivated, rObjects)
         } else {
-            .refreshPanelOutput(plot_name, rObjects)
+            .requestUpdate(plot_name, rObjects)
         }
     })
 }

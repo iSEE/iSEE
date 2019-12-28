@@ -24,7 +24,7 @@
 
     output[[plot_name]] <- renderPlot({
         .safe_reactive_bump(rObjects, gen_field)
-        p.out <- .respondPanelOutput(plot_name, se, pObjects, rObjects)
+        p.out <- .retrieveOutput(plot_name, se, pObjects, rObjects)
         pObjects$varname[[plot_name]] <- "plot.data"
         p.out$plot
     })

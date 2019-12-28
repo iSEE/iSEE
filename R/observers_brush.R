@@ -26,8 +26,7 @@
 #' @rdname INTERNAL_brush_observers
 #' @author Aaron Lun
 #' @importFrom shiny observeEvent
-.create_brush_observer <- function(plot_name, se, input, session, pObjects, rObjects) {
-    act_name <- paste0(plot_name, "_", .panelReactivated)
+.create_brush_observer <- function(plot_name, input, session, pObjects, rObjects) {
     save_field <- paste0(plot_name, "_", .multiSelectSave)
     dimprop_name <- paste0(plot_name, "_", .propagateDimnames)
 
@@ -48,9 +47,9 @@
             .buttonNoSelectionLabel, .buttonSaveLabel, session
         )
 
-        .refreshPanelOutput(plot_name, se, pObjects, rObjects)
-        .safe_reactive_bump(rObjects, act_name)
         .safe_reactive_bump(rObjects, dimprop_name)
+
+        .mark_panel_as_modified(plot_name, .panelReactivated, rObjects)
     }, ignoreInit=TRUE)
 
     invisible(NULL)
@@ -84,10 +83,9 @@
 #' \code{\link{.createObservers,DotPlot-method}}, where this function is called.
 #' @importFrom shiny observeEvent isolate
 #' @rdname INTERNAL_lasso_observers
-.create_lasso_observer <- function(plot_name, se, input, session, pObjects, rObjects) {
+.create_lasso_observer <- function(plot_name, input, session, pObjects, rObjects) {
     click_field <- paste0(plot_name, "_", .lassoClick)
     brush_field <- paste0(plot_name, "_", .brushField)
-    act_name <- paste0(plot_name, "_", .panelReactivated)
     dimprop_name <- paste0(plot_name, "_", .propagateDimnames)
     save_field <- paste0(plot_name, "_", .multiSelectSave)
 
@@ -121,7 +119,6 @@
         }
 
         pObjects$memory[[plot_name]][[.brushData]] <- new_lasso
-        .refreshPanelOutput(plot_name, se, pObjects, rObjects)
 
         .disableButtonIf(
             save_field,
@@ -130,8 +127,10 @@
         )
 
         if (reactivated) {
-            .safe_reactive_bump(rObjects, act_name)
+            .mark_panel_as_modified(plot_name, .panelReactivated, rObjects)
             .safe_reactive_bump(rObjects, dimprop_name)
+        } else {
+            .refreshPanelOutput(plot_name, rObjects)
         }
     })
 

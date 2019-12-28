@@ -197,14 +197,14 @@ setMethod(".createObservers", "ColumnDotPlot", function(x, se, input, session, p
     .create_nonfundamental_parameter_observers(plot_name,
         fields=c(.colorByColData, .colorByFeatNameAssay,
             .shapeByColData, .sizeByColData, .colorBySampNameColor),
-        se=se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_dimname_propagation_observer(plot_name, choices=colnames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_multi_selection_effect_observer(plot_name,
         by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
-        se=se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export

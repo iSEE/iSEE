@@ -314,7 +314,7 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 
     .create_protected_parameter_observers(plot_name,
         fields=c(.facetByRow, .facetByColumn),
-        se=se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_nonfundamental_parameter_observers(plot_name,
         fields=c(
@@ -323,16 +323,16 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
             .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition,
             .plotPointDownsample, .plotPointSampleRes, .contourAdd,
             .contourColor),
-        se=se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     # Filling the plot interaction observers:
-    .create_brush_observer(plot_name, se=se, input=input, session=session,
+    .create_brush_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 
-    .create_lasso_observer(plot_name, se=se, input=input, session=session,
+    .create_lasso_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 
-    .create_zoom_observer(plot_name, se=se, input=input, session=session,
+    .create_zoom_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 })
 

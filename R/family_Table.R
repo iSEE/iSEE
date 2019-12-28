@@ -156,7 +156,8 @@ setMethod(".createObservers", "Table", function(x, se, input, session, pObjects,
 
     panel_name <- .getEncodedName(x)
 
-    .create_table_observers(panel_name, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+    .create_table_observers(panel_name, input=input, 
+        session=session, pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export

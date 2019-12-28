@@ -51,38 +51,28 @@
 
 #' @export
 #' @rdname respondPanelOutput
-.refreshPanelOutput <- function(panel_name, se, pObjects, rObjects) {
-    .safe_reactive_bump(rObjects, panel_name)
-    if (length(pObjects$cached[[panel_name]])==0L) {
-        p.out <- .generateOutput(pObjects$memory[[panel_name]], se, 
-            all_memory=pObjects$memory, all_contents=pObjects$contents)
-        pObjects$contents[[panel_name]] <- p.out$contents
-        pObjects$cached[[panel_name]] <- p.out
-    }
+.refreshPanelOutput <- function(panel_name, rObjects) {
+    .mark_panel_as_modified(panel_name, character(0), rObjects)
     invisible(NULL)
 }
 
 #' @export
 #' @rdname respondPanelOutput
-.refreshPanelOutputUnselected <- function(panel_name, se, pObjects, rObjects) {
+.refreshPanelOutputUnselected <- function(panel_name, pObjects, rObjects) {
     has_active <- .multiSelectionHasActive(pObjects$memory[[panel_name]])
     has_saved <- .any_saved_selection(pObjects$memory[[panel_name]])
 
-    # Destroying active and saved selections, and marking the children to be
-    # updated. Hypothetically, this could cause union children to trigger
-    # twice, as their reactive values will be updated twice. In practice, plot
-    # rendering should occur after all reactives are resolved, so this
-    # shouldn't occur. Oh well.
+    accumulated <- character(0)
     if (has_active) {
         pObjects$memory[[panel_name]] <- .multiSelectionClear(pObjects$memory[[panel_name]])
-        .safe_reactive_bump(rObjects, paste0(panel_name, "_", .panelReactivated))
+        accumulated <- c(accumulated, .panelReactivated)
     }
     if (has_saved) {
         pObjects$memory[[panel_name]][[.multiSelectHistory]] <- list()
-        .safe_reactive_bump(rObjects, paste0(panel_name, "_", .panelResaved))
+        accumulated <- c(accumulated, .panelResaved)
     }
 
-    .refreshPanelOutput(panel_name, se, pObjects, rObjects)
+    .mark_panel_as_modified(panel_name, accumulated, rObjects)
 }
 
 #' Safely use reactive values

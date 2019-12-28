@@ -188,7 +188,7 @@
 #' @importFrom shiny observeEvent observe updateSelectizeInput
 .create_dimname_observers <- function(panel_name, name_field, choices,
     use_mode_field, use_value, protected, tab_field, 
-    se, input, session, pObjects, rObjects)
+    input, session, pObjects, rObjects)
 {
     name_input <- paste0(panel_name, "_", name_field)
     always_in_use <- is.na(use_mode_field)
@@ -212,9 +212,9 @@
         # Only regenerating if the current parameter is actually in use.
         if (always_in_use || pObjects$memory[[panel_name]][[use_mode_field]]==use_value) {
             if (!protected) {
-                .refreshPanelOutput(panel_name, se, pObjects, rObjects)
+                .refreshPanelOutput(panel_name, rObjects)
             } else {
-                .refreshPanelOutputUnselected(panel_name, se, pObjects, rObjects)
+                .refreshPanelOutputUnselected(panel_name, pObjects, rObjects)
             }
         }
     }, ignoreInit=TRUE)
@@ -232,9 +232,9 @@
 
         if (replot) {
             if (!protected) {
-                .refreshPanelOutput(panel_name, se, pObjects, rObjects)
+                .refreshPanelOutput(panel_name, rObjects)
             } else {
-                .refreshPanelOutputUnselected(panel_name, se, pObjects, rObjects)
+                .refreshPanelOutputUnselected(panel_name, pObjects, rObjects)
             }
         }
     })

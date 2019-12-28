@@ -15,7 +15,7 @@
 #' A \code{NULL} value is invisibly returned.
 #'
 #' @details
-#' We expect \code{rObjects} to contain \code{X_INTERNAL_repopulated}, 
+#' We expect \code{rObjects} to contain \code{X_INTERNAL_repopulated},
 #' \code{X_INTERNAL_reactivated} and \code{X_INTERNAL_resaved} for each panel \code{X}.
 #' These are simply integer counters that get triggered every time \code{X} changes.
 #'
@@ -31,150 +31,140 @@
 #'
 #' @author Aaron Lun
 #'
-#' @importFrom shiny isolate observe
 #' @rdname INTERNAL_child_propagation_observers
-.create_child_propagation_observers <- function(panel_name, se, session, pObjects, rObjects) {
-    # Reactive to regenerate children when the point population of the current panel changes.
-    repop_name <- paste0(panel_name, "_", .panelRepopulated)
-    .safe_reactive_init(rObjects, repop_name)
-
-    observeEvent(rObjects[[repop_name]], {
-        instance <- pObjects$memory[[panel_name]]
-
-        has_active <- .multiSelectionHasActive(instance)
-        has_saved <- .any_saved_selection(instance)
-        transmit_dim <- .multiSelectionDimension(instance)
-        if (transmit_dim=="row") {
-            type_field <- .selectRowType
-            saved_field <- .selectRowSaved
-        } else if (transmit_dim=="column") {
-            type_field <- .selectColType
-            saved_field <- .selectColSaved
-        } else {
+#'
+#' @importFrom shiny observeEvent
+#' @importFrom igraph topo_sort adjacent_vertices
+.create_child_propagation_observer <- function(se, pObjects, rObjects) {
+    observeEvent(rObjects$modified, {
+        if (!isTRUE(pObjects$initialized)) { # Avoid running this on app start and double-generating output.
+            pObjects$initialized <- TRUE
             return(NULL)
         }
 
-        children <- names(.get_direct_children(pObjects$selection_links, panel_name))
-        for (child_plot in children) {
-            child_instance <- pObjects$memory[[child_plot]]
-
-            # To warrant replotting of the child, there needs to be
-            # Active or Saved selections in the current panel.
-            # Any point population changes in the current panel will
-            # result in new subsets if those selections are available.
-            replot <- FALSE
-            select_mode <- child_instance[[type_field]]
-            if (select_mode==.selectMultiActiveTitle) {
-                if (has_active) replot <- TRUE
-            } else if (select_mode==.selectMultiSavedTitle && child_instance[[saved_field]]!=0L) {
-                if (has_saved) replot <- TRUE
-            } else if (select_mode==.selectMultiUnionTitle) {
-                if (has_saved || has_active) replot <- TRUE
-            }
-
-            if (replot) {
-                .trigger_child_rerender(child_instance, child_plot, se, pObjects, rObjects)
-            }
-        }
-    })
- 
-    # Reactive to regenerate children when the active selection of the current panel changes.
-    act_name <- paste0(panel_name, "_", .panelReactivated)
-    .safe_reactive_init(rObjects, act_name)
-
-    dimprop_name <- paste0(panel_name, "_", .propagateDimnames)
-    .safe_reactive_init(rObjects, dimprop_name)
-
-    observeEvent(rObjects[[act_name]], {
-        instance <- pObjects$memory[[panel_name]]
-        transmit_dim <- .multiSelectionDimension(instance)
-        if (transmit_dim=="row") {
-            type_field <- .selectRowType
-            saved_field <- .selectRowSaved
-        } else if (transmit_dim=="column") {
-            type_field <- .selectColType
-            saved_field <- .selectColSaved
-        } else {
+        modified <- rObjects$modified
+        if (length(modified)==0L) { # Avoid recursion from the wiping.
             return(NULL)
         }
+        rObjects$modified <- list()
 
-        children <- names(.get_direct_children(pObjects$selection_links, panel_name))
-        for (child_plot in children) {
-            child_instance <- pObjects$memory[[child_plot]]
+        # Looping over panels in topological order, accumulating changes so that
+        # we only ever call .generateOutput once. Note that we must loop over
+        # 'ordering' rather than 'modified' to ensure we only call this thing once.
+        graph <- pObjects$selection_links
+        ordering <- names(topo_sort(graph, mode="out"))
 
-            select_mode <- child_instance[[type_field]]
-            if (select_mode==.selectMultiActiveTitle || select_mode==.selectMultiUnionTitle) {
-                .trigger_child_rerender(child_instance, child_plot, se, pObjects, rObjects)
+        for (idx in seq_along(ordering)) {
+            current_panel_name <- ordering[idx]
+            if (!current_panel_name %in% names(modified)) {
+                next
             }
-        }
-    })
+            instance <- pObjects$memory[[current_panel_name]]
 
-    # Reactive to regenerate children when the saved selection of the current panel changes.
-    save_name <- paste0(panel_name, "_", .panelResaved)
-    .safe_reactive_init(rObjects, save_name)
+            # Generating self and marking it for re-rendering.
+            .safe_reactive_bump(rObjects, current_panel_name)
+            p.out <- .generateOutput(instance, se, all_memory=pObjects$memory, all_contents=pObjects$contents)
+            pObjects$contents[[current_panel_name]] <- p.out$contents
+            pObjects$cached[[current_panel_name]] <- p.out
 
-    observeEvent(rObjects[[save_name]], {
-        instance <- pObjects$memory[[panel_name]]
-        Nsaved <- length(instance[[.multiSelectHistory]])
-        transmit_dim <- .multiSelectionDimension(instance)
-        if (transmit_dim=="row") {
-            type_field <- .selectRowType
-            saved_field <- .selectRowSaved
-        } else if (transmit_dim=="column") {
-            type_field <- .selectColType
-            saved_field <- .selectColSaved
-        } else {
-            return(NULL)
-        }
-
-        children <- names(.get_direct_children(pObjects$selection_links, panel_name))
-        for (child_plot in children) {
-            child_instance <- pObjects$memory[[child_plot]]
-
-            reset <- child_instance[[saved_field]] > Nsaved
-            if (reset) {
-                pObjects$memory[[child_plot]][[saved_field]] <- 0L
+            # Setting up various parameters to decide how to deal with children.
+            status <- modified[[current_panel_name]]
+            re_populated <- .panelRepopulated %in% status
+            re_active <- .panelReactivated %in% status
+            re_saved <- .panelResaved %in% status
+            if (!re_populated && !re_active && !re_saved) {
+                next
             }
 
-            child_select_type <- child_instance[[type_field]]
-            if (child_select_type==.selectMultiUnionTitle || (child_select_type==.selectMultiSavedTitle && reset)) {
-                .trigger_child_rerender(child_instance, child_plot, se, pObjects, rObjects)
+            children <- names(adjacent_vertices(graph, v=current_panel_name, mode="out"))
+            if (!length(children)) {
+                next
             }
 
-            # Updating the selectize as well.
-            child_saved <- paste0(child_plot, "_", .updateSavedChoices)
-            .safe_reactive_bump(rObjects, child_saved)
+            transmit_dim <- .multiSelectionDimension(instance)
+            if (transmit_dim=="row") {
+                type_field <- .selectRowType
+                saved_field <- .selectRowSaved
+            } else if (transmit_dim=="column") {
+                type_field <- .selectColType
+                saved_field <- .selectColSaved
+            } else {
+                return(NULL)
+            }
+
+            has_active <- .multiSelectionHasActive(instance)
+            n_saved <- .any_saved_selection(instance, count=TRUE)
+            has_saved <- n_saved > 0L
+
+            # Looping over children and deciding whether they need to be
+            # regenerated. This depends on the combination of what has changed in
+            # 'current_panel' + what the child was using (active, saved or union).
+            for (child in children) {
+                child_instance <- pObjects$memory[[child]]
+                select_mode <- child_instance[[type_field]]
+
+                regenerate <- FALSE
+                if (select_mode==.selectMultiActiveTitle) {
+                    if (re_populated && has_active) {
+                        regenerate <- TRUE
+                    } else if (re_active) {
+                        regenerate <- TRUE
+                    }
+                } else if (select_mode==.selectMultiSavedTitle) {
+                    if (re_populated && has_saved) {
+                        regenerate <- TRUE
+                    } else if (re_saved) {
+                        if (child_instance[[saved_field]] > n_saved) {
+                            pObjects$memory[[child]][[saved_field]] <- 0L
+                            regenerate <- TRUE
+                        }
+                    }
+                } else if (select_mode==.selectMultiUnionTitle) {
+                    if (re_populated && (has_active || has_saved)) {
+                        regenerate <- TRUE
+                    } else if (re_saved || re_active) {
+                        regenerate <- TRUE
+                    }
+                }
+
+                if (regenerate) {
+                    # Implicit convertion to character(0), so as to trigger
+                    # the call to .generateOutput later.
+                    previous <- as.character(modified[[child]])
+
+                    if (.multiSelectionRestricted(child_instance)) {
+                        previous <- union(previous, .panelRepopulated)
+                    }
+
+                    # Wiping out selections in the child if receiving a new
+                    # selection from the parent invalidates its own selections.
+                    if (.multiSelectionInvalidated(child_instance)) {
+                        if (.multiSelectionHasActive(child_instance)) {
+                            pObjects$memory[[child]] <- .multiSelectionClear(pObjects$memory[[child]])
+                            previous <- union(previous, .panelReactivated)
+                        }
+                        if (.any_saved_selection(child_instance)) {
+                            pObjects$memory[[child]][[.multiSelectHistory]] <- list()
+                            previous <- union(previous, .panelResaved)
+                        }
+                    }
+                    modified[[child]] <- previous
+                }
+
+                # Updating the saved choice selectize for the child.  Note that
+                # this is purely for the user, we've already updated the memory
+                # if the change invalidated anything. 
+                if (re_saved) {
+                    .safe_reactive_bump(rObjects, paste0(child, "_", .updateSavedChoices))
+                } 
+            }
         }
-    })
+    }, priority=-1L, ignoreInit=TRUE)
 
     invisible(NULL)
 }
 
-#' Trigger re-rendering of the child
-#'
-#' Trigger re-rendering of a child panel within observers set up by \code{\link{.create_child_propagation_observers}}.
-#'
-#' @param x An instance of a \linkS4class{Panel} class, representing a child receiving a multiple selection.
-#' @param panel_name String containing the name of \code{x}.
-#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
-#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
-#'
-#' @return \code{NULL} invisibly.
-#' Re-rendering of the child panel is triggered, 
-#' possibly after wiping existing multiple selections depending on \code{\link{.multiSelectionInvalidated}}.
-#' Re-rendering of the grand-children may also be triggered depending on \code{\link{.multiSelectionRestricted}}.
-#'
-#' @author Aaron Lun
-#'
-#' @rdname INTERNAL_trigger_child_rerender
-.trigger_child_rerender <- function(x, panel_name, se, pObjects, rObjects) {
-    if (.multiSelectionInvalidated(x)) {
-        .refreshPanelOutputUnselected(panel_name, se, pObjects, rObjects)
-    } else {
-        .refreshPanelOutput(panel_name, se, pObjects, rObjects)
-    }
-    if (.multiSelectionRestricted(x)) {
-        .safe_reactive_bump(rObjects, paste0(panel_name, "_", .panelRepopulated))
-    }
+.mark_panel_as_modified <- function(panel_name, status, rObjects) {
+    rObjects$modified[[panel_name]] <- union(isolate(rObjects$modified[[panel_name]]), status)
     invisible(NULL)
 }

@@ -80,7 +80,7 @@
 #'
 #' @rdname INTERNAL_plot_parameter_observers
 #' @importFrom shiny observeEvent
-.create_nonfundamental_parameter_observers <- function(panel_name, fields, se, input, session, pObjects, rObjects,
+.create_nonfundamental_parameter_observers <- function(panel_name, fields, input, session, pObjects, rObjects,
     ignoreInit=TRUE, ignoreNULL=TRUE) 
 {
     for (field in fields) {
@@ -94,7 +94,7 @@
                     return(NULL)
                 }
                 pObjects$memory[[panel_name]][[field0]] <- matched_input
-                .refreshPanelOutput(panel_name, se, pObjects, rObjects)
+                .refreshPanelOutput(panel_name, rObjects)
             }, ignoreInit=ignoreInit, ignoreNULL=ignoreNULL)
         })
     }
@@ -104,7 +104,7 @@
 
 #' @rdname INTERNAL_plot_parameter_observers
 #' @importFrom shiny observeEvent
-.create_protected_parameter_observers <- function(panel_name, fields, se, input, session, pObjects, rObjects,
+.create_protected_parameter_observers <- function(panel_name, fields, input, session, pObjects, rObjects,
     ignoreInit=TRUE, ignoreNULL=TRUE) 
 {
     for (field in fields) {
@@ -118,7 +118,7 @@
                     return(NULL)
                 }
                 pObjects$memory[[panel_name]][[field0]] <- matched_input
-                .refreshPanelOutputUnselected(panel_name, se, pObjects, rObjects)
+                .refreshPanelOutputUnselected(panel_name, pObjects, rObjects)
             }, ignoreInit=ignoreInit, ignoreNULL=ignoreNULL)
         })
     }

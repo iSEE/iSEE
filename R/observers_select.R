@@ -28,10 +28,8 @@
 #' @importFrom shiny observeEvent showNotification updateSelectInput 
 #' @importFrom igraph is_dag simplify
 .create_multi_selection_choice_observer <- function(panel_name,  
-    by_field, type_field, saved_field, se, input, session, pObjects, rObjects) 
+    by_field, type_field, saved_field, input, session, pObjects, rObjects) 
 {
-    repop_name <- paste0(panel_name, "_", .panelRepopulated)
-    .safe_reactive_init(rObjects, repop_name)
     saved_select_name <- paste0(panel_name, "_", .updateSavedChoices)
     .safe_reactive_init(rObjects, saved_select_name)
 
@@ -90,12 +88,12 @@
             }
         }
 
-        .refreshPanelOutput(panel_name, se, pObjects, rObjects)
-
         # Updating children, if the current panel is set to restrict
         # (and thus the point population changes with a new transmitted selection).
         if (.multiSelectionRestricted(pObjects$memory[[panel_name]])) {
-            .safe_reactive_bump(rObjects, repop_name)
+            .mark_panel_as_modified(panel_name, .panelRepopulated, rObjects)
+        } else {
+            .refreshPanelOutput(panel_name, rObjects)
         }
     }, ignoreInit=TRUE)
 
@@ -105,12 +103,9 @@
 #' @rdname INTERNAL_selection_parameter_observers
 #' @importFrom shiny showNotification observeEvent
 .create_multi_selection_effect_observer <- function(plot_name, 
-    by_field, type_field, saved_field, se, 
+    by_field, type_field, saved_field, 
     input, session, pObjects, rObjects) 
 {
-    repop_name <- paste0(plot_name, "_", .panelRepopulated)
-    .safe_reactive_init(rObjects, repop_name)
-
     select_effect_field <- paste0(plot_name, "_", .selectEffect)
     observeEvent(input[[select_effect_field]], {
         cur_effect <- input[[select_effect_field]]
@@ -127,11 +122,11 @@
             return(NULL)
         }
 
-        .refreshPanelOutput(panel_name, se, pObjects, rObjects)
-
         # Updating children if the selection in the current plot changes due to gain/loss of Restrict.
         if (cur_effect==.selectRestrictTitle || old_effect==.selectRestrictTitle) {
-            .safe_reactive_bump(rObjects, repop_name)
+            .mark_panel_as_modified(panel_name, .panelRepopulated, rObjects)
+        } else {
+            .refreshPanelOutput(panel_name, rObjects)
         }
     }, ignoreInit=TRUE)
 
@@ -142,11 +137,8 @@
 #' @rdname INTERNAL_selection_parameter_observers
 .create_multi_selection_type_observers <- function(panel_name, 
     by_field, type_field, saved_field,
-    se, input, session, pObjects, rObjects) 
+    input, session, pObjects, rObjects) 
 {
-    repop_name <- paste0(panel_name, "_", .panelRepopulated)
-    .safe_reactive_init(rObjects, repop_name)
-
     ## Type field observers. ---
     select_type_field <- paste0(panel_name, "_", type_field)
     observeEvent(input[[select_type_field]], {
@@ -170,9 +162,10 @@
             return(NULL)
         }
 
-        .refreshPanelOutput(panel_name, se, pObjects, rObjects)
         if (.multiSelectionRestricted(pObjects$memory[[panel_name]])) {
-            .safe_reactive_bump(rObjects, repop_name)
+            .mark_panel_as_modified(panel_name, .panelRepopulated, rObjects)
+        } else {
+            .refreshPanelOutput(panel_name, rObjects)
         }
     }, ignoreInit=TRUE)
 
@@ -194,13 +187,14 @@
             return(NULL)
         }
 
-        .refreshPanelOutput(panel_name, se, pObjects, rObjects)
-
         # Switch of 'Saved' will ALWAYS change the current plot, as it's not
         # possible to do so without being on the "Saved" choice in the first
         # place; so there's no need for other checks.
+
         if (.multiSelectionRestricted(pObjects$memory[[panel_name]])) {
-            .safe_reactive_bump(rObjects, repop_name)
+            .mark_panel_as_modified(panel_name, .panelRepopulated, rObjects)
+        } else {
+            .refreshPanelOutput(panel_name, rObjects)
         }
     }, ignoreInit=TRUE)
 
@@ -257,12 +251,10 @@
 #'
 #' @importFrom shiny observeEvent 
 #' @rdname INTERNAL_multiple_select_observers
-.create_multi_selection_history_observers <- function(panel_name, se, input, session, pObjects, rObjects) {
+.create_multi_selection_history_observers <- function(panel_name, input, session, pObjects, rObjects) {
     save_field <- paste0(panel_name, "_", .multiSelectSave)
     del_field <- paste0(panel_name, "_", .multiSelectDelete)
     info_name <- paste0(panel_name, "_", .panelGeneralInfo)
-    saved_select_name <- paste0(panel_name, "_", .updateSavedChoices)
-    resaved_name <- paste0(panel_name, "_", .panelResaved)
 
     ## Save selection observer. ---
     observeEvent(input[[save_field]], {
@@ -275,12 +267,10 @@
 
         pObjects$memory[[panel_name]][[.multiSelectHistory]] <- c(current, list(to_store))
 
-        # Updating self (replot to get number).
         .safe_reactive_bump(rObjects, info_name)
-        .refreshPanelOutput(panel_name, se, pObjects, rObjects)
 
-        # Updating children's selectize's.
-        .safe_reactive_bump(rObjects, resaved_name)
+        # Updating self (replot to get number), and updating children's selectize's.
+        .mark_panel_as_modified(panel_name, .panelResaved, rObjects)
 
         .disableButtonIf(
             del_field,
@@ -296,12 +286,10 @@
         current <- head(current, -1)
         pObjects$memory[[panel_name]][[.multiSelectHistory]] <- current
 
-        # Updating self.
         .safe_reactive_bump(rObjects, info_name)
-        .refreshPanelOutput(panel_name, se, pObjects, rObjects)
 
-        # Updating children.
-        .safe_reactive_bump(rObjects, resaved_name)
+        # Updating self and children's selectize's.
+        .mark_panel_as_modified(panel_name, .panelResaved, rObjects)
 
         .disableButtonIf(
             del_field,

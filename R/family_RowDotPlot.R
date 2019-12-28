@@ -197,14 +197,14 @@ setMethod(".createObservers", "RowDotPlot", function(x, se, input, session, pObj
     .create_nonfundamental_parameter_observers(plot_name,
         fields=c(.colorByRowData, .colorBySampNameAssay,
             .shapeByRowData, .sizeByRowData, .colorByFeatNameColor),
-        se=se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_dimname_propagation_observer(plot_name, choices=rownames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_multi_selection_effect_observer(plot_name,
         by_field=.selectRowSource, type_field=.selectRowType, saved_field=.selectRowSaved,
-        se=se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export

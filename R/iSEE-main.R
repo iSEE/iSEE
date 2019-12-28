@@ -319,7 +319,7 @@ iSEE <- function(se,
 
     #nocov start
     iSEE_server <- function(input, output, session) {
-        rObjects <- reactiveValues(rerender=1L, rerendered=1L)
+        rObjects <- reactiveValues(rerender=1L, rerendered=1L, modified=list())
 
         initialize_server <- function(se, rObjects) {
             if (grepl("[[:digit:]]+-12-06", Sys.Date())) {
@@ -434,6 +434,8 @@ iSEE <- function(se,
             .create_organization_observers(se=se, 
                 input=input, output=output, session=session,
                 pObjects=pObjects, rObjects=rObjects)
+
+            .create_child_propagation_observer(se, pObjects, rObjects)
 
             for (idx in seq_along(pObjects$memory)) {
                 instance <- pObjects$memory[[idx]]

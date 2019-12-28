@@ -17,9 +17,8 @@
 #'
 #' @importFrom shiny observeEvent
 #' @rdname INTERNAL_zoom_observers
-.create_zoom_observer <- function(plot_name, se, input, session, pObjects, rObjects) {
+.create_zoom_observer <- function(plot_name, input, session, pObjects, rObjects) {
     dblclick_field <- paste0(plot_name, "_", .zoomClick)
-    act_name <- paste0(plot_name, "_", .panelReactivated)
     save_field <- paste0(plot_name, "_", .multiSelectSave)
 
     observeEvent(input[[dblclick_field]], {
@@ -51,13 +50,14 @@
         }
 
         pObjects$memory[[plot_name]][[.zoomData]] <- new_coords
-        .refreshPanelOutput(plot_name, se, pObjects, rObjects)
 
         # While re-creating the plot clears the brush, it doesn't 
         # re-trigger the observer as the observer ignores NULLs.
         # So we have to manually retrigger the downstream effects.
         if (.is_brush(existing_brush) || .is_closed_lasso(existing_brush)) {
-            .safe_reactive_bump(rObjects, act_name)
+            .mark_panel_as_modified(plot_name, .panelReactivated, rObjects)
+        } else {
+            .refreshPanelOutput(plot_name, rObjects)
         }
     })
 }

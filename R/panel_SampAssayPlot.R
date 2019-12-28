@@ -253,7 +253,7 @@ setMethod(".createObservers", "SampAssayPlot", function(x, se, input, session, p
 
     .create_protected_parameter_observers(plot_name,
         fields=c(.sampAssayAssay, .sampAssayXAxisRowData),
-        se=se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export

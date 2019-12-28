@@ -40,19 +40,27 @@
     })
 
     search_field <- paste0(panel_name, .int_statTableSearch)
-    act_name <- paste0(panel_name, "_", .panelReactivated)
     gen_name <- paste0(panel_name, "_", .panelGeneralInfo)
     observeEvent(input[[search_field]], {
-        pObjects$memory[[panel_name]][[.TableSearch]] <- input[[search_field]]
-        .safe_reactive_bump(rObjects, act_name)
+        search <- input[[search_field]]
+        if (identical(search, pObjects$memory[[panel_name]][[.TableSearch]])) {
+            return(NULL)
+        }
+
+        pObjects$memory[[panel_name]][[.TableSearch]] <- search
+        .mark_panel_as_modified(panel_name, .panelReactivated, rObjects)
         .safe_reactive_bump(rObjects, gen_name)
     })
 
     colsearch_field <- paste0(panel_name, .int_statTableColSearch)
     observeEvent(input[[colsearch_field]], {
         search <- input[[colsearch_field]]
+        if (identical(search, pObjects$memory[[panel_name]][[.TableColSearch]])) {
+            return(NULL)
+        }
+
         pObjects$memory[[panel_name]][[.TableColSearch]] <- search
-        .safe_reactive_bump(rObjects, act_name)
+        .mark_panel_as_modified(panel_name, .panelReactivated, rObjects)
         .safe_reactive_bump(rObjects, gen_name)
     })
 }

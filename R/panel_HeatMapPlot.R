@@ -284,11 +284,11 @@ setMethod(".createObservers", "HeatMapPlot", function(x, se, input, session, pOb
     .create_nonfundamental_parameter_observers(plot_name,
         fields=c(.heatMapAssay, .heatMapLower, .heatMapUpper, .heatMapCenteredColors,
             .heatMapFeatName, .heatMapColData),
-        se=se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     # Don't ignore empty inputs.
     .create_nonfundamental_parameter_observers(plot_name, fields=.heatMapCenterScale,
-        se=se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, ignoreNULL=FALSE)
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects, ignoreNULL=FALSE)
 
     .create_heatmap_import_observer(plot_name, .getFullName(x), se, input, session, pObjects, rObjects)
 

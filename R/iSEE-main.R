@@ -347,76 +347,18 @@ iSEE <- function(se,
                 showNotification(ui=ui_msg, type="warning", duration=10)
             }
 
-            metadata(se)$colormap <- colormap
+            # Preparing app state variables.
+            se <- .prepare_SE(se, colormap, c(initial, extra))
 
-            # Caching and refining the initial panels.
-            for (idx in seq_along(initial)) {
-                se <- .cacheCommonInfo(initial[[idx]], se)
-            }
-            for (idx in seq_along(initial)) {
-                initial[idx] <- list(.refineParameters(initial[[idx]], se))
-            }
-            memory <- initial[!vapply(initial, is.null, TRUE)]
+            init_out <- .setup_initial_state(se, initial)
+            memory <- init_out$memory
+            counter <- init_out$counter
 
-            # Assigning names and IDs to each panel.
-            all_modes <- vapply(memory, .encodedName, "")
-            all_ids <- vapply(memory, "[[", i=.organizationId, 0L)
-            by_mode <- split(all_ids, all_modes)
-            counter <- vapply(by_mode, function(x) max(c(0L, x), na.rm=TRUE), 0L)
+            res_out <- .define_reservoir(se, extra, memory, counter)
+            reservoir <- res_out$reservoir
+            counter <- res_out$counter
 
-            for (idx in seq_along(memory)) {
-                instance <- memory[[idx]]
-                curid <- instance[[.organizationId]]
-                if (is.na(curid)) {
-                    nm <- .encodedName(instance)
-                    curid <- counter[nm] + 1L
-                    memory[[idx]][[.organizationId]] <- curid
-                    counter[nm] <- curid
-                }
-            }
-
-            all_names <- vapply(memory, .getEncodedName, "")
-            if (dup <- anyDuplicated(all_names)) {
-                stop("panels of same class with duplicated IDs '", all_names[dup], "'")
-            }
-            names(memory) <- all_names
-
-            # Adding a reservoir of extra panel classes.
-            for (idx in seq_along(extra)) {
-                se <- .cacheCommonInfo(extra[[idx]], se)
-            }
-            for (idx in seq_along(extra)) {
-                extra[idx] <- list(.refineParameters(extra[[idx]], se))
-            }
-            extra <- extra[!vapply(extra, is.null, TRUE)]
-
-            extra_enc <- vapply(extra, .encodedName, "")
-            leftovers <- setdiff(extra_enc, names(counter))
-            empty <- integer(length(leftovers))
-            names(empty) <- leftovers
-            counter <- c(counter, empty)
-
-            reservoir <- c(memory, extra)
-            res_names <- c(all_modes, extra_enc)
-            res_nondup <- !duplicated(res_names)
-            reservoir <- reservoir[res_nondup]
-            names(reservoir) <- res_names[res_nondup]
-
-            # Storage for persistent non-reactive objects.
-            pObjects <- new.env()
-            pObjects$memory <- memory
-            pObjects$reservoir <- reservoir 
-            pObjects$counter <- counter
-
-            pObjects$commands <- list()
-            pObjects$cached <- list()
-            pObjects$contents <- list()
-            pObjects$varname <- list()
-
-            pObjects$aesthetics_links <- .spawn_single_selection_graph(memory)
-            pObjects$selection_links <- .spawn_multi_selection_graph(memory)
-
-            pObjects[[.voiceActivePanel]] <- NA_character_
+            pObjects <- .create_persistent_objects(memory, reservoir, counter)
 
             # Evaluating certain plots to fill the coordinate list, if there are any selections.
             # This is done in topological order so that all dependencies are satisfied.
@@ -475,4 +417,174 @@ iSEE <- function(se,
     #######################################################################
 
     shinyApp(ui=iSEE_ui, server=iSEE_server)
+}
+
+#' Prepare the SummarizedExperiment
+#'
+#' Stores useful information in the \linkS4class{SummarizedExperiment}'s metadata by calling \code{\link{.cacheCommonInfo}}.
+#' Also stuffs the \linkS4class{ExperimentColorMap} in there.
+#' 
+#' @param se A SummarizedExperiment object containing the current dataset.
+#' @param colormap An ExperimentColorMap object.
+#' @param available A list of all available \linkS4class{Panel} objects that might be used in the app.
+#'
+#' @return A modified \code{se} with extra information in its \code{\link{metadata}}.
+#'
+#' @author Aaron Lun
+#' 
+#' @rdname INTERNAL_prepare_SE
+#' @importFrom S4Vectors metadata metadata<- 
+.prepare_SE <- function(se, colormap, available) {
+    metadata(se)$colormap <- colormap
+    for (entry in available) {
+        se <- .cacheCommonInfo(entry, se)
+    }
+    se
+}
+
+#' Set up the initial app state
+#'
+#' Set up the initial memory of the application by calling \code{\link{.refineParameters}} and removing invalid panels;
+#' also filling in the \code{PanelId} slot for each panel that does not have it set to a positive integer.
+#'
+#' @param se A \linkS4class{SummarizedExperiment} object after running \code{\link{.prepare_SE}}.
+#' @param initial A list of \linkS4class{Panel} objects representing the requested initial state of the application.
+#'
+#' @return
+#' A list containing \code{memory}, a list of \linkS4class{Panel}s that is ready for use as the initial state;
+#' and \code{counter}, an integer vector of the current ID counter for each Panel class.
+#'
+#' @author Aaron Lun
+#'
+#' @rdname INTERNAL_setup_initial_state
+.setup_initial_state <- function(se, initial) { 
+    # Refining the initial panels.
+    for (idx in seq_along(initial)) {
+        initial[idx] <- list(.refineParameters(initial[[idx]], se))
+    }
+    memory <- initial[!vapply(initial, is.null, TRUE)]
+
+    # Assigning names and IDs to each panel.
+    all_modes <- vapply(memory, .encodedName, "")
+    all_ids <- vapply(memory, "[[", i=.organizationId, 0L)
+    by_mode <- split(all_ids, all_modes)
+    counter <- vapply(by_mode, function(x) max(c(0L, x), na.rm=TRUE), 0L)
+
+    for (idx in seq_along(memory)) {
+        instance <- memory[[idx]]
+        curid <- instance[[.organizationId]]
+        if (is.na(curid)) {
+            nm <- .encodedName(instance)
+            curid <- counter[nm] + 1L
+            memory[[idx]][[.organizationId]] <- curid
+            counter[nm] <- curid
+        }
+    }
+
+    all_names <- vapply(memory, .getEncodedName, "")
+    if (dup <- anyDuplicated(all_names)) {
+        stop("panels of same class with duplicated IDs '", all_names[dup], "'")
+    }
+    names(memory) <- all_names
+
+    list(memory=memory, counter=counter)
+}
+
+#' Define the reservoir of available Panels 
+#'
+#' Define a reservoir of available \linkS4class{Panel} classes that can be added interactively by the user.
+#'
+#' @param se A \linkS4class{SummarizedExperiment} object after running \code{\link{.prepare_SE}}.
+#' @param extra A list of \linkS4class{Panel} instances representing the classes that can be added.
+#' @param memory A list of \linkS4class{Panel} instances representing the initial app state, 
+#' generated by \code{\link{.setup_initial_state}}.
+#' @param counter An integer vector of the ID counter for each Panel class,
+#' generated by \code{\link{.setup_initial_state}}.
+#'
+#' @author Aaron Lun
+#'
+#' @return
+#' A list containing \code{reservoir}, a list of Panels with one representative instance of each class that can be added;
+#' and \code{counter}, an updated version of the input \code{counter} with entries for the \code{extra}-only classes.
+#'
+#' @rdname INTERNAL_define_reservoir
+.define_reservoir <- function(se, extra, memory, counter) {
+    # Adding a reservoir of extra panel classes.
+    for (idx in seq_along(extra)) {
+        extra[idx] <- list(.refineParameters(extra[[idx]], se))
+    }
+    extra <- extra[!vapply(extra, is.null, TRUE)]
+
+    extra_enc <- vapply(extra, .encodedName, "")
+    leftovers <- setdiff(extra_enc, names(counter))
+    empty <- integer(length(leftovers))
+    names(empty) <- leftovers
+    counter <- c(counter, empty)
+
+    reservoir <- c(memory, extra)
+    res_names <- c(vapply(memory, .encodedName, ""), extra_enc)
+    res_nondup <- !duplicated(res_names)
+    reservoir <- reservoir[res_nondup]
+    names(reservoir) <- res_names[res_nondup]
+
+    list(reservoir=reservoir, counter=counter)
+}
+
+#' Create persistent objects
+#'
+#' Create global persistent objects in an environment that provides pass-by-reference behavior throughout the application.
+#'
+#' @param memory A list of \linkS4class{Panel}s produced by \code{\link{.setup_initial_state}}.
+#' @param reservoir A list of \linkS4class{Panel}s produced by \code{\link{.define_reservoir}}.
+#' @param counter An integer vector produced by \code{\link{.define_reservoir}}.
+#' 
+#' @return 
+#' An environment containing several global variables for use throughout the application.
+#'
+#' @details
+#' The following objects are created:
+#' \itemize{
+#' \item \code{memory}, a list of Panels representing the current state of the application at any point in time.
+#' This may be modified by observers throughout the lifetime of the app.
+#' \item \code{reservoir}, a list of Panels representing the available classes that can be added interactively by the user.
+#' This should not change throughout the lifetime of the app.
+#' \item \code{counter}, an integer vector specifying the largest ID for each class.
+#' This will be incremented every time a user adds an instance of that class.
+#' \item \code{commands}, a list of lists of character vectors.
+#' Each internal list corresponds to a Panel and contains the R commands necessary to produce its output.
+#' \item \code{cached}, a list of the panel-specific outputs of \code{\link{.generateOutput}}.
+#' This is filled by the observer in \code{\link{.create_child_propagation_observer}}
+#' and used by \code{\link{.retrieveOutput}}, usually in \code{\link{.renderOutput}}'s rendering expression.
+#' \item \code{contents}, a list of panel-specific contents.
+#' This is filled by \code{\link{.create_child_propagation_observer}} and is pulled out by each panel's children.
+#' Values are used to cross-reference with that panel's multiple selection structure to determine which points were selected.
+#' \item \code{varname}, a list of strings indicating which variable in a panel's \code{commands} represents that panel's \code{contents}.
+#' This is used within \code{\link{.track_it_all}} to ensure that the reported code makes sense.
+#' \item \code{selection_links}, a \link{graph} containing the links between panels due to transmitted multiple selections.
+#' This is constructed by \code{\link{.spawn_multi_selection_graph}}
+#' and can be modified by \code{\link{.choose_new_parent}}.
+#' \item \code{aesthetics_links}, a \link{graph} containing the links between panels due to transmitted single selections.
+#' This is constructed by \code{\link{.spawn_single_selection_graph}}
+#' and can be modified by \code{\link{.choose_new_parent}}.
+#' }
+#' 
+#' @author Aaron Lun
+#' @rdname INTERNAL_create_persistent_objects
+.create_persistent_objects <- function(memory, reservoir, counter) {
+    pObjects <- new.env()
+    pObjects$memory <- memory
+    pObjects$reservoir <- reservoir 
+    pObjects$counter <- counter
+
+    pObjects$commands <- list()
+    pObjects$cached <- list()
+    pObjects$contents <- list()
+    pObjects$varname <- list()
+
+    pObjects$aesthetics_links <- .spawn_single_selection_graph(memory)
+    pObjects$selection_links <- .spawn_multi_selection_graph(memory)
+
+    pObjects[[.voiceActivePanel]] <- NA_character_
+
+    pObjects
 }

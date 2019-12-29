@@ -18,7 +18,7 @@ height_limits <- c(400L, 1000L)
 #' @rdname INTERNAL_panel_organization
 #' @seealso
 #' \code{\link{.create_organization_observers}}, where this UI element is used.
-#' 
+#'
 #' \code{\link{.panel_generation}}, which uses the set parameters.
 #'
 #' @importFrom shiny tagList selectInput sliderInput
@@ -108,10 +108,10 @@ height_limits <- c(400L, 1000L)
         .input_FUN <- function(field) paste0(plot_name, "_", field)
 
         select_info <- list(
-            single=lapply(single_sources, FUN=setdiff, y=plot_name),
-            multi=lapply(multi_sources, FUN=setdiff, y=plot_name)
+            single=lapply(single_sources, FUN=.setdiffWithNames, y=plot_name),
+            multi=lapply(multi_sources, FUN=.setdiffWithNames, y=plot_name)
         )
-        all.params <- .defineInterface(instance, se=se, select_info=select_info) 
+        all.params <- .defineInterface(instance, se=se, select_info=select_info)
         param <- do.call(tags$div, c(list(class="panel-group", role="tablist"), all.params))
 
         # Deciding whether to continue on the current row, or start a new row.

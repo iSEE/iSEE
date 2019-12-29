@@ -24,7 +24,7 @@
 #' All return values may potentially also be \code{NULL}, depending on \code{\link{.hideInterface}}.
 #'
 #' @details
-#' These functions are used to create a collapsible box that contains point selection options, 
+#' These functions are used to create a collapsible box that contains point selection options,
 #' initialized with the choices in \code{memory}.
 #' Options include the choice of transmitting plot and the type of selection effect.
 #' Each effect option, once selected, may yield a further subset of nested options.
@@ -55,17 +55,17 @@
     }
 
     args <- list(
-        x=x, 
-        field=.selectParamBoxOpen, 
-        title="Selection parameters", 
+        x=x,
+        field=.selectParamBoxOpen,
+        title="Selection parameters",
         open=x[[.selectParamBoxOpen]],
 
         .define_selection_choices(x, by_field=.selectRowSource,
-            type_field=.selectRowType, saved_field=.selectRowSaved, 
+            type_field=.selectRowType, saved_field=.selectRowSaved,
             selectable=row_selectable, "row"),
 
-        .define_selection_choices(x, by_field=.selectColSource, 
-            type_field=.selectColType, saved_field=.selectColSaved, 
+        .define_selection_choices(x, by_field=.selectColSource,
+            type_field=.selectColType, saved_field=.selectColSaved,
             selectable=col_selectable, "column"),
 
         ...
@@ -94,7 +94,7 @@
     select_effect <- paste0(plot_name, "_", .selectEffect)
 
     .create_selection_param_box(x, row_selectable, col_selectable,
-        .radioButtonsHidden(x, field=.selectEffect, 
+        .radioButtonsHidden(x, field=.selectEffect,
             label="Selection effect:", inline=TRUE,
             choices=c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle),
             selected=x[[.selectEffect]]),
@@ -118,7 +118,7 @@
 #' @importFrom shiny selectInput
 .define_selection_transmitter <- function(x, by_field, selectable, source_type="row") {
     .selectInputHidden(
-        x=x, field=by_field, 
+        x=x, field=by_field,
         label=sprintf("Receive %s selection from:", source_type),
         choices=selectable,
         selected=.choose_link(x[[by_field]], selectable)
@@ -127,8 +127,8 @@
 
 #' @rdname INTERNAL_create_selection_param_box
 #' @importFrom shiny tagList radioButtons selectizeInput
-.define_selection_choices <- function(x, by_field, type_field, 
-    saved_field, selectable, source_type="row") 
+.define_selection_choices <- function(x, by_field, type_field,
+    saved_field, selectable, source_type="row")
 {
     select_type <- paste0(.getEncodedName(x), "_", type_field)
 
@@ -144,7 +144,7 @@
         .conditional_on_radio(
             select_type, .selectMultiSavedTitle,
             .selectizeInputHidden(
-                x, field=saved_field, 
+                x, field=saved_field,
                 label=NULL, selected=NULL, choices=NULL, multiple=FALSE
             )
         )

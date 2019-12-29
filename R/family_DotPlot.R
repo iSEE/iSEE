@@ -431,7 +431,6 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
     all_cmds$select <- .processMultiSelections(x, all_memory, all_contents, plot_env)
 
     xy_out <- .generateDotPlotData(x, plot_env)
-    print(xy_out$commands)
     all_cmds$xy <- xy_out$commands
     all_labels <- c(all_labels, xy_out$labels)
 
@@ -461,11 +460,11 @@ setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
     
     args <- list(plot_data,
         param_choices=x,
-        x_lab=labels$x,
-        y_lab=labels$y,
-        color_lab=labels$color,
-        shape_lab=labels$shape,
-        size_lab=labels$size,
+        x_lab=labels$X,
+        y_lab=labels$Y,
+        color_lab=labels$ColorBy,
+        shape_lab=labels$ShapeBy,
+        size_lab=labels$SizeBy,
         title=labels$title,
         is_subsetted=is_subsetted,
         is_downsampled=is_downsampled)
@@ -484,7 +483,6 @@ setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
         plot_cmds[[N]] <- paste(plot_cmds[[N]], "+")
         plot_cmds <- c(plot_cmds, facet_cmd)
     }
-    print("2")
 
     # TODO: move this into exposed developer-accessible function for easy calling.
     # Adding self-brushing boxes, if they exist.
@@ -499,7 +497,6 @@ setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
         plot_cmds <- c(plot_cmds, self_select_cmds)
         .populate_selection_environment(x, envir)
     }
-    print("3")
 
     list(plot=.text_eval(plot_cmds, envir), commands=plot_cmds)
 })

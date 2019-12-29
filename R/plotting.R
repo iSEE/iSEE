@@ -26,13 +26,18 @@ names(.all_aes_values) <- .all_aes_names
 
 #' Choose the plot type
 #'
-#' Define and execute commands to choose the type of plot based on whether X and/or Y are categorical or continuous.
+#' Define and execute commands to prepare X and/or Y for plotting, depending on whether they are categorical or continuous.
+#' This mostly involves coercing categorical variables to factors.
 #'
 #' @param envir Environment containing a \code{plot.data} data.frame with \code{X} and \code{Y} fields.
 #'
 #' @return
-#' A character vector is returned containing commands to perform calculations for each plot type.
-#' All commands are evaluated within \code{envir}.
+#' A character vector is returned containing commands to perform calculations for each plot type
+#' (or \code{NULL}, if no commands need to be executed).
+#' All commands are also evaluated within \code{envir} to modify \code{plot.data}.
+#'
+#' A \code{plot.type} string is added to \code{envir}, indicating the type of plot that should be created
+#' based on whether the x- and/or y-axes are categorical or continuous.
 #'
 #' @details
 #' \code{envir} is effectively passed by reference, as the setup commands are executed in the environment by this function.
@@ -48,7 +53,7 @@ names(.all_aes_values) <- .all_aes_names
     group_Y <- .is_groupable(envir$plot.data$Y)
     if (!group_Y && !group_X) {
         mode <- "scatter"
-        specific <- character()
+        specific <- NULL
     } else if (!group_Y) {
         mode <- "violin"
         specific <- .violin_setup(envir$plot.data, horizontal=FALSE)

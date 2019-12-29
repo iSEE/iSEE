@@ -237,7 +237,7 @@ setMethod(".addDotPlotDataColor", "RowDotPlot", function(x, envir) {
 
     .text_eval(cmds, envir)
 
-    list(commands=cmds, label=label)
+    list(commands=cmds, labels=list(ColorBy=label))
 })
 
 setMethod(".addDotPlotDataShape", "RowDotPlot", function(x, envir) {
@@ -254,7 +254,7 @@ setMethod(".addDotPlotDataShape", "RowDotPlot", function(x, envir) {
 
     .text_eval(cmds, envir)
 
-    list(commands=cmds, label=label)
+    list(commands=cmds, labels=list(ShapeBy=label))
 })
 
 setMethod(".addDotPlotDataSize", "RowDotPlot", function(x, envir) {
@@ -271,27 +271,30 @@ setMethod(".addDotPlotDataSize", "RowDotPlot", function(x, envir) {
 
     .text_eval(cmds, envir)
 
-    list(commands=cmds, label=label)
+    list(commands=cmds, labels=list(SizeBy=label))
 })
 
 setMethod(".addDotPlotDataFacets", "RowDotPlot", function(x, envir) {
-    facet_cmds <- character(0)
+    facet_cmds <- NULL 
+    labels <- list()
 
     facet_row <- x[[.facetByRow]]
     if (facet_row!=.noSelection) {
         facet_cmds["FacetRow"] <- sprintf(
             "plot.data$FacetRow <- rowData(se)[, %s];", deparse(facet_row))
+        labels$FacetRow <- facet_row
     }
 
     facet_column <- x[[.facetByColumn]]
     if (facet_column!=.noSelection) {
         facet_cmds["FacetColumn"] <- sprintf(
             "plot.data$FacetColumn <- rowData(se)[, %s];", deparse(facet_column))
+        labels$FacetColumn <- facet_column
     }
 
     .text_eval(facet_cmds, envir)
 
-    facet_cmds
+    list(commands=facet_cmds, labels=labels)
 })
 
 setMethod(".addDotPlotDataSelected", "RowDotPlot", function(x, envir) {

@@ -76,20 +76,22 @@
     # Add commands adding optional columns to plot.data
     out_color <- .addDotPlotDataColor(x, envir)
     collected$color <- out_color$commands
-    labels$color <- out_color$label
+    labels <- c(labels, out_color$labels)
     if (!is.null(envir$plot.data$ColorBy)) {
         collected$color <- c(collected$color, .coerce_plot_data_columns(envir, "ColorBy"))
     }
 
     out_shape <- .addDotPlotDataShape(x, envir)
     collected$shape <- out_shape$commands
-    labels$shape <- out_shape$label
+    labels <- c(labels, out_shape$labels)
 
     out_size <- .addDotPlotDataSize(x, envir)
     collected$size <- out_size$commands
-    labels$size <- out_size$label
+    labels <- c(labels, out_size$labels)
 
-    collected$facets <- .addDotPlotDataFacets(x, envir)
+    out_facets <- .addDotPlotDataFacets(x, envir)
+    collected$facets <- out_facets$commands
+    labels <- c(labels, out_facets$labels)
 
     # Removing NAs in axes aesthetics as they mess up .process_selectby_choice.
     clean_select_fields <- c("X", "Y", names(collected$facets))
@@ -102,7 +104,7 @@
 }
 
 .coerce_plot_data_columns <- function(envir, fields) {
-    coerce_cmds <- character(0)
+    coerce_cmds <- NULL
     for (f in fields) {
         v <- envir$plot.data[[f]]
         coerce_cmds <- c(coerce_cmds, .coerce_type(v, f, as_numeric=!.is_groupable(v)))

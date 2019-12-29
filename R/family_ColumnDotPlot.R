@@ -237,7 +237,7 @@ setMethod(".addDotPlotDataColor", "ColumnDotPlot", function(x, envir) {
 
     .text_eval(cmds, envir)
 
-    list(commands=cmds, label=label)
+    list(commands=cmds, labels=list(ColorBy=label))
 })
 
 setMethod(".addDotPlotDataShape", "ColumnDotPlot", function(x, envir) {
@@ -254,7 +254,7 @@ setMethod(".addDotPlotDataShape", "ColumnDotPlot", function(x, envir) {
 
     .text_eval(cmds, envir)
 
-    list(commands=cmds, label=label)
+    list(commands=cmds, labels=list(ShapeBy=label))
 })
 
 setMethod(".addDotPlotDataSize", "ColumnDotPlot", function(x, envir) {
@@ -271,27 +271,30 @@ setMethod(".addDotPlotDataSize", "ColumnDotPlot", function(x, envir) {
 
     .text_eval(cmds, envir)
 
-    list(commands=cmds, label=label)
+    list(commands=cmds, labels=list(SizeBy=label))
 })
 
 setMethod(".addDotPlotDataFacets", "ColumnDotPlot", function(x, envir) {
-    facet_cmds <- character(0)
+    facet_cmds <- NULL 
+    labels <- list()
 
     facet_row <- x[[.facetByRow]]
     if (facet_row!=.noSelection) {
         facet_cmds["FacetRow"] <- sprintf(
             "plot.data$FacetRow <- colData(se)[, %s];", deparse(facet_row))
+        labels$FacetRow <- facet_row
     }
 
     facet_column <- x[[.facetByColumn]]
     if (facet_column!=.noSelection) {
         facet_cmds["FacetColumn"] <- sprintf(
             "plot.data$FacetColumn <- colData(se)[, %s];", deparse(facet_column))
+        labels$FacetColumn <- facet_column
     }
 
     .text_eval(facet_cmds, envir)
 
-    facet_cmds
+    list(commands=facet_cmds, labels=labels)
 })
 
 setMethod(".addDotPlotDataSelected", "ColumnDotPlot", function(x, envir) {
@@ -300,8 +303,7 @@ setMethod(".addDotPlotDataSelected", "ColumnDotPlot", function(x, envir) {
     }
 
     cmds <- c(
-        header1="",
-        header2="# Receiving column point selection",
+        header="# Receiving column point selection",
         SelectBy="plot.data$SelectBy <- rownames(plot.data) %in% unlist(col_selected);"
     )
 
@@ -309,7 +311,6 @@ setMethod(".addDotPlotDataSelected", "ColumnDotPlot", function(x, envir) {
         cmds["saved"] <- "plot.data.all <- plot.data;"
         cmds["subset"] <- "plot.data <- subset(plot.data, SelectBy);"
     }
-    cmds["footer"] <- ""
 
     .text_eval(cmds, envir)
 

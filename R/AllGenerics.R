@@ -336,6 +336,83 @@ setGeneric(".generateDotPlotData", function(x, envir) standardGeneric(".generate
 #' @export
 setGeneric(".generateDotPlot", function(x, labels, envir) standardGeneric(".generateDotPlot"))
 
+#' Internal generics for \linkS4class{DotPlot} plotting
+#'
+#' These functions are implemented as generics so as to enable differences in behavior between
+#' \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s.
+#' They will modify \code{plot.data} in the environment while returning the commands used to perform that modification.
+#'
+#' In the following code snippets, \code{x} is an instance of a \linkS4class{DotPlot} class,
+#' and \code{envir} is an environment in which \code{plot.data} can be expected to be present.
+#' 
+#' @section Adding aesthetic parameters:
+#' \code{.addDotPlotDataColor(x, envir)} will add a \code{ColorBy} field to \code{plot.data} in \code{envir},
+#' representing the covariate used to color each point.
+#'
+#' \code{.addDotPlotDataShape(x, envir)} will add a \code{ShapeBy} field to \code{plot.data} in \code{envir},
+#' representing the covariate used to determine the shape of each point.
+#'
+#' \code{.addDotPlotDataSize(x, envir)} will add a \code{SizeBy} field to \code{plot.data} in \code{envir},
+#' representing the covariate used to determine the size of each point.
+#'
+#' \code{.addDotPlotDataFacets(x, envir)} will add \code{FacetRow} and/or \code{FacetColumn} fields to \code{plot.data},
+#' representing the covariate used for faceting by row and/or column respectively.
+#'
+#' All methods should return a list with an entry named \code{commands},
+#' containing a character vector of R commands used to modify \code{plot.data};
+#' and \code{labels}, a list of labels to potentially use in the legend for each newly added aesthetic field. 
+#'
+#' If \code{plot.data} is not modified, methods should return \code{NULL}.
+#' 
+#' @section Adding multiple selection information:
+#' \code{.addDotPlotDataSelected(x, envir)} will add a \code{SelectBy} field to \code{plot.data},
+#' representing the identity of points in a multiple selection transmitted to \code{x}.
+#' It will return a character vector of commands used to modify \code{plot.data}.
+#' If no modification is performed, it will return \code{NULL}.
+#'
+#' @section Controlling the color scale:
+#' \code{.colorDotPlot(x, colorby, x_aes="X", y_aes="Y")} returns a character vector of \pkg{ggplot2}
+#' commands to modify the color scale, given:
+#' \itemize{
+#' \item \code{colorby}, a vector (usually \code{plot.data$ColorBy}) with which colors are decided for each point.
+#' \item \code{x_aes}, a string specifying the column of \code{plot.data} containing the x-axis coordinates.
+#' \item \code{y_aes}, a string specifying the column of \code{plot.data} containing the y-axis coordinates.
+#' }
+#' The last two are used in case of coloring based on the identity of a single point.
+#' 
+#' @section Design note:
+#' We ask the modification to occur inside the method, 
+#' rather than evaluating it ourselves in \code{\link{.add_extra_aesthetic_columns}},
+#' so as to enable concurrent construction and evaluation of commands.
+#' This enables more flexible construction of commands that can change based on intermediate variables;
+#' it also avoids potential double evaluation by making it clear that evaluation is the method's responsibility.
+#' The same philosophy applies to \code{\link{.generateDotPlotData}} and \code{\link{.generateDotPlot}}.
+#'
+#' @aliases
+#' .addDotPlotDataColor
+#' .addDotPlotDataShape
+#' .addDotPlotDataSize
+#' .addDotPlotDataFacets
+#' .addDotPlotDataSelected
+#' .colorDotPlot
+#' .addDotPlotDataColor,ColumnDotPlot-method
+#' .addDotPlotDataShape,ColumnDotPlot-method
+#' .addDotPlotDataSize,ColumnDotPlot-method
+#' .addDotPlotDataFacets,ColumnDotPlot-method
+#' .addDotPlotDataSelected,ColumnDotPlot-method
+#' .colorDotPlot,ColumnDotPlot-method
+#' .addDotPlotDataColor,RowDotPlot-method
+#' .addDotPlotDataShape,RowDotPlot-method
+#' .addDotPlotDataSize,RowDotPlot-method
+#' .addDotPlotDataFacets,RowDotPlot-method
+#' .addDotPlotDataSelected,RowDotPlot-method
+#' .colorDotPlot,RowDotPlot-method
+#' 
+#' @author Kevin Rue-Albrecht
+#' 
+#' @rdname INTERNAL_addDotPlotData
+NULL
+
 setGeneric(".addDotPlotDataColor", function(x, envir) standardGeneric(".addDotPlotDataColor"))
 
 setGeneric(".addDotPlotDataShape", function(x, envir) standardGeneric(".addDotPlotDataShape"))

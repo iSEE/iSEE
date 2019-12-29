@@ -91,7 +91,7 @@
         all_memory=all_memory, varname="col_selected")
 
     if (length(select_cmds)) {
-        select_cmds[["select"]] <- "plot.data$SelectBy <- plot.data$X %in% col_selected;"
+        select_cmds[["select"]] <- "plot.data$SelectBy <- plot.data$X %in% unlist(col_selected);"
 
         transmitter <- param_choices[[.selectColSource]]
         .populate_selection_environment(all_memory[[transmitter]], eval_env)

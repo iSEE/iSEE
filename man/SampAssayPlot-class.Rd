@@ -85,7 +85,8 @@ For defining the panel name:
 
 For creating the plot:
 \itemize{
-\item \code{\link{.generateDotPlotData}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of sample expression values.
+\item \code{\link{.generateDotPlotData}(x, envir)} will create a data.frame of sample assay values in \code{envir}.
+It will return the commands required to do so as well as a list of labels.
 }
 
 For managing selections:

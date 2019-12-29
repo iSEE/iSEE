@@ -69,7 +69,7 @@ Each row of the data.frame should correspond to a column of the SummarizedExperi
 
 x <- ColStatTable()
 x[["Selected"]]
-x[["Selected"]] <- 2L
+x[["Selected"]] <- "SOME_SAMPLE_NAME"
 
 ##################
 # For developers #

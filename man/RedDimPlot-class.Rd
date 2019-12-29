@@ -73,7 +73,8 @@ This will also call the equivalent \linkS4class{ColumnDotPlot} method.
 
 For creating the plot:
 \itemize{
-\item \code{\link{.generateDotPlotData}(x)} will return a list of plotting information, including a character vector of commands to construct a data.frame of dimensionality reduction coordinates.
+\item \code{\link{.generateDotPlotData}(x, envir)} will create a data.frame of reduced dimension coordinates in \code{envir}.
+It will return the commands required to do so as well as a list of labels.
 }
 }
 

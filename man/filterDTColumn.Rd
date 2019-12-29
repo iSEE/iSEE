@@ -2,26 +2,37 @@
 % Please edit documentation in R/filterDTColumn.R
 \name{filterDTColumn}
 \alias{filterDTColumn}
+\alias{filterDT}
 \title{Filter \pkg{DT} columns}
 \usage{
 filterDTColumn(x, search)
+
+filterDT(df, searches)
 }
 \arguments{
 \item{x}{A numeric or character vector, usually representing a column of a data.frame.}
 
 \item{search}{A string specifying the search filter to apply to \code{x}.}
+
+\item{df}{A data.frame that was used in the \code{\link{datatable}} widget.}
+
+\item{searches}{A character vector of per-column search strings.}
 }
 \value{
-A logical vector indicating which entries are returned.
+A logical vector indicating which entries of \code{x} or rows of \code{df} are to be retained.
+For \code{filterDT}, an \code{&} operation is applied to the logical vectors from all columns.
 }
 \description{
-Filter a vector based on the \pkg{DT} \code{\link{datatable}} widget column search string.
+Filter a data.frame based on the \pkg{DT} \code{\link{datatable}} widget column search string.
 }
 \details{
 For character \code{x}, \code{search} is treated as a regular expression.
 
 For numeric \code{x}, \code{search} should have the form \code{LOWER ... UPPER}
 where all elements in [LOWER, UPPER] are retained.
+
+Ideally, \code{ncol(df)} and \code{length(searches)} would be the same, but if not,
+\code{\link{filterDT}} will simply filter on the first N entries where N is the smaller of the two.
 }
 \examples{
 filterDTColumn(LETTERS, "A|B|C")

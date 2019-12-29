@@ -5,6 +5,7 @@
 \alias{initialize,DotPlot-method}
 \alias{.defineOutput,DotPlot-method}
 \alias{.generateOutput,DotPlot-method}
+\alias{.generateDotPlot,DotPlot-method}
 \alias{.renderOutput,DotPlot-method}
 \alias{.refineParameters,DotPlot-method}
 \alias{.cacheCommonInfo,DotPlot-method}
@@ -161,6 +162,8 @@ For generating the output:
 \item \code{\link{.generateOutput}(x, se, all_memory, all_contents)} returns a list containing \code{contents}, a data.frame with one row per point currently present in the plot;
 \code{plot}, a \link{ggplot} object;
 and \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot}.
+\item \code{\link{.generateDotPlot}(x, labels, envir)} returns a list containing \code{plot} and \code{commands}, as described above.
+This is called within \code{\link{.generateOutput}} for all \linkS4class{DotPlot} instances by default.
 }
 
 For defining reactive expressions:

@@ -69,7 +69,7 @@ Each row of the data.frame should correspond to a row of the SummarizedExperimen
 
 x <- RowStatTable()
 x[["Selected"]]
-x[["Selected"]] <- 2L
+x[["Selected"]] <- "SOME_ROW_NAME"
 
 ##################
 # For developers #

@@ -431,6 +431,7 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
     all_cmds$select <- .processMultiSelections(x, all_memory, all_contents, plot_env)
 
     xy_out <- .generateDotPlotData(x, plot_env)
+    print(xy_out$commands)
     all_cmds$xy <- xy_out$commands
     all_labels <- c(all_labels, xy_out$labels)
 
@@ -446,7 +447,7 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
     all_cmds$downsample <- .downsample_points(x, plot_env)
 
     plot_out <- .generateDotPlot(x, all_labels, plot_env)
-    all_cmds$plot <- plot_out$plot
+    all_cmds$plot <- plot_out$commands
 
     list(commands=all_cmds, contents=panel_data, plot=plot_out$plot)
 })

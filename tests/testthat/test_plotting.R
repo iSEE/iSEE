@@ -257,7 +257,6 @@ test_that(".make_rowDataPlot/.violin_plot produce a valid xy with color", {
 # .make_rowDataPlot/.square_plot ----
 
 test_that(".make_rowDataPlot/.square_plot produce a valid list",{
-    rowData(sce)[, "letters"] <- sample(letters[1:5], nrow(sce), replace=TRUE)
     rowData(sce)[, "LETTERS"] <- sample(LETTERS[1:3], nrow(sce), replace=TRUE)
 
     rdp <- pObjects$memory$RowDataPlot
@@ -285,7 +284,6 @@ test_that(".make_rowDataPlot/.square_plot produce a valid list",{
 })
 
 test_that(".make_rowDataPlot/.square_plot produce a valid xy with color",{
-    rowData(sce)[, "letters"] <- sample(letters[1:5], nrow(sce), replace=TRUE)
     rowData(sce)[, "LETTERS"] <- sample(LETTERS[1:3], nrow(sce), replace=TRUE)
 
     rdp <- pObjects$memory$RowDataPlot
@@ -787,294 +785,114 @@ test_that(".coerce_type handles various inputs correctly", {
     expect_identical(lab_out, "plot.data$XYZ <- factor(plot.data$XYZ);")
 })
 
-# .process_selectby_choice ----
+########################################
+# .create_points handles various selection effects ---
 
-test_that(".process_selectby_choice works when sender is another plot", {
+test_that(".create_points handles selection effects", {
+    all_memory <- pObjects$memory
+    rdp <- all_memory$RedDimPlot1
+    fap <- all_memory$FeatAssayPlot1
+    fap[[iSEE:::.selectColSource]] <- .getEncodedName(rdp)
 
-    sourcePlotName <- "Reduced dimension plot 1"
-    sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
+    rd <- reducedDim(sce, rdp[[iSEE:::.redDimType]]) 
+    x_10 <- head(rd[, rdp[[iSEE:::.redDimXAxis]]], 10)
+    y_10 <- head(rd[, rdp[[iSEE:::.redDimYAxis]]], 10)
 
-    # Set up the point selection link: redDim1 --> featAssay1
-    all_memory$featAssayPlot[1, iSEE:::.selectByPlot] <- sourcePlotName
-    # Set up the selected data (in redDim1)
-    params <- all_memory$redDimPlot[1, ]
-    x_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimXAxis]]],
-        10)
-    y_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimYAxis]]],
-        10)
-    all_memory$redDimPlot[[iSEE:::.brushData]][1] <- list(list(
+    all_memory$RedDimPlot1[[iSEE:::.brushData]] <- list(
         xmin=min(x_10), xmax=max(x_10), ymin=min(y_10), ymax=max(y_10),
         direction="xy", mapping=list(x="X", y="Y"),
         brushId="dummy_brush", outputId="dummy_plot"
-    ))
-
-    select_cmd <- iSEE:::.process_selectby_choice(all_memory$featAssayPlot, all_memory)
-
-    # check the source of the selected data
-    expect_match(
-        select_cmd$cmds[1],
-        "shiny::brushedPoints(all_coordinates",
-        fixed=TRUE
     )
 
-    # check the source plot type
-    expect_match(
-        select_cmd$cmds[1],
-        sourcePlotType,
-        fixed=TRUE
-    )
+    # Trying for transparency:
+    fap[[iSEE:::.selectEffect]] <- iSEE:::.selectTransTitle
+    out <- .generateOutput(fap, sce, all_memory=all_memory, all_contents=pObjects$contents)
 
-    # check that the second (hard-coded) command is present
-    expect_match(
-        select_cmd$cmds[2],
-        "plot.data$SelectBy",
-        fixed=TRUE
-    )
+    expect_true(!is.null(out$contents$SelectBy))
+    expect_true(any(grepl("geom_point.*SelectBy.*alpha", unlist(out$commands))))
 
-    # union of multiple selections
-    # set up selection history in the transmitter plot
-    all_memory$redDimPlot[[iSEE:::.multiSelectHistory]][[1]] <- list(
-        all_memory$redDimPlot[[iSEE:::.brushData]][[1]]
-    )
-    # request union of selection history
-    all_memory$featAssayPlot[1, iSEE:::.selectMultiType] <- iSEE:::.selectMultiUnionTitle
-    select_cmd <- iSEE:::.process_selectby_choice(all_memory$featAssayPlot, all_memory)
-    expect_match(
-        select_cmd$cmds["brush1"],
-        "union",
-        fixed=TRUE
-    )
+    # Trying for color:
+    fap[[iSEE:::.selectEffect]] <- iSEE:::.selectColorTitle
+    out <- .generateOutput(fap, sce, all_memory=all_memory, all_contents=pObjects$contents)
 
-    # saved selection with none selected (0)
-    all_memory$featAssayPlot[1, iSEE:::.selectMultiType] <- iSEE:::.selectMultiSavedTitle
-    all_memory$featAssayPlot[1, iSEE:::.selectMultiSaved] <- 0L
-    select_cmd <- iSEE:::.process_selectby_choice(all_memory$featAssayPlot, all_memory)
-    expect_null(select_cmd$cmds)
+    expect_true(!is.null(out$contents$SelectBy))
+    expect_true(any(grepl("geom_point.*SelectBy.*color=\"red\"", unlist(out$commands))))
 
+    # Trying for restriction:
+    fap[[iSEE:::.selectEffect]] <- iSEE:::.selectRestrictTitle
+    out <- .generateOutput(fap, sce, all_memory=all_memory, all_contents=pObjects$contents)
+
+    expect_true(!is.null(out$contents$SelectBy))
+    expect_true(any(grepl("plot.data.all", unlist(out$commands))))
+    expect_true(any(grepl("subset.*SelectBy", unlist(out$commands))))
 })
 
-test_that(".process_selectby_choice works when sender is self plot", {
+########################################
+# brush plotting works.
 
-    sourcePlotName <- "Reduced dimension plot 1"
-    sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
+test_that(".self_brush_box draw multiple shiny brushes", {
+    cdp <- pObjects$memory$ColDataPlot1
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxisColData]] <- "NREADS"
+    cdp[[iSEE:::.colDataYAxis]] <- "driver_1_s"
 
-    # Set up the point selection link: redDim1 --> featAssay1
-    all_memory$redDimPlot[1, iSEE:::.selectByPlot] <- sourcePlotName
-    # Set up the selected data (in redDim1)
-    params <- all_memory$redDimPlot[1, ]
-    x_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimXAxis]]],
-        10)
-    y_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimYAxis]]],
-        10)
-    all_memory$redDimPlot[[iSEE:::.brushData]][1] <- list(list(
-        xmin=min(x_10), xmax=max(x_10), ymin=min(y_10), ymax=max(y_10),
-        direction="xy", mapping=list(x="X", y="Y"),
-        brushId="dummy_brush", outputId="dummy_plot"
-    ))
-
-    select_cmd <- iSEE:::.process_selectby_choice(all_memory$redDimPlot, all_memory)
-
-    # check the source of the selected data
-    expect_match(
-        select_cmd$cmds[1],
-        "shiny::brushedPoints(plot.data",
-        fixed=TRUE
+    brushHistory <- list(
+        list(xmin=1, xmax=2, ymin=3, ymax=4),
+        list(xmin=2, xmax=3, ymin=4, ymax=5)
     )
-    # check that the second (hard-coded) command is present
-    expect_match(
-        select_cmd$cmds[2],
-        "plot.data$SelectBy",
-        fixed=TRUE
-    )
+    cdp[[iSEE:::.multiSelectHistory]] <- brushHistory
 
+    out <- iSEE:::.self_select_boxes(cdp, flip=TRUE)
+    expect_length(out, 2*length(brushHistory))
+    expect_type(out, "character")
+    expect_match(out[1], "geom_rect", fixed=TRUE)
+    expect_match(out[2], "geom_text", fixed=TRUE)
+    expect_match(out[3], "geom_rect", fixed=TRUE)
+    expect_match(out[4], "geom_text", fixed=TRUE)
 })
 
-test_that(".process_selectby_choice works with closed lasso selection", {
+test_that(".self_brush_box can flip axes", {
+    cdp <- pObjects$memory$ColDataPlot1
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxisColData]] <- "NREADS"
+    cdp[[iSEE:::.colDataYAxis]] <- "driver_1_s"
 
-    sourcePlotName <- "Reduced dimension plot 1"
-    sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
-
-    # Set up the point selection link: redDim1 --> featAssay1
-    all_memory$featAssayPlot[1, iSEE:::.selectByPlot] <- sourcePlotName
-    # Set up the selected data (in redDim1)
-    params <- all_memory$redDimPlot[1, ]
-    x_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimXAxis]]],
-        10)
-    y_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimYAxis]]],
-        10)
-
-    new_lasso <- list(lasso=NULL, closed=TRUE, panelvar1=NULL,
-        panelvar2=NULL, mapping=list(x="X", y="Y"))
-    new_lasso$coord <- matrix(
-        data=c(
-            min(x_10), min(y_10),
-            min(x_10), max(y_10),
-            max(x_10), max(y_10),
-            max(x_10), min(y_10)
-        ),
-        ncol=2,
-        byrow=TRUE
-    )
-
-    all_memory$redDimPlot[[iSEE:::.lassoData]][1] <- list(new_lasso)
-
-    select_cmd <- iSEE:::.process_selectby_choice(all_memory$featAssayPlot, all_memory)
-
-    # check the source plot type
-    expect_match(
-        select_cmd$cmds[1],
-        sourcePlotType,
-        fixed=TRUE
-    )
-
-    # check that the second (hard-coded) command is present
-    expect_match(
-        select_cmd$cmds[1],
-        "all_lassos",
-        fixed=TRUE
-    )
-
+    brushData <- list(xmin=1, xmax=2, ymin=3, ymax=4)
+    cdp[[iSEE:::.brushData]] <- brushData
+    
+    out <- iSEE:::.self_select_boxes(cdp, flip=TRUE)
+    expect_match(out, "aes(xmin=ymin, xmax=ymax, ymin=xmin, ymax=xmax)", fixed=TRUE)
 })
 
-# .create_points handles transparency selection effect ----
+test_that(".self_brush_box flip axes when faceting on both X and Y", {
+    cdp <- pObjects$memory$ColDataPlot1
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxisColData]] <- "NREADS"
+    cdp[[iSEE:::.colDataYAxis]] <- "driver_1_s"
+    cdp[[iSEE:::.facetByRow]] <- "Core.Type"
+    cdp[[iSEE:::.facetByColumn]] <- "passes_qc_checks_s"
 
-test_that(".create_points handles transparency selection effect", {
+    brushData <- list(xmin=1, xmax=2, ymin=3, ymax=4)
+    cdp[[iSEE:::.brushData]] <- brushData
 
-    # Implement a self-selection, for convenience
-    sourcePlotName <- "Reduced dimension plot 1"
-    sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
+    out <- iSEE:::.self_select_boxes(cdp, flip=TRUE)
 
-    # Set up the point selection link: redDim1 --> featAssay1
-    all_memory$redDimPlot[1, iSEE:::.selectByPlot] <- sourcePlotName
-    # Set up the selected data (in redDim1)
-    params <- all_memory$redDimPlot[1, ]
-    x_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimXAxis]]],
-        10)
-    y_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimYAxis]]],
-        10)
-    all_memory$redDimPlot[[iSEE:::.brushData]][1] <- list(list(
-        xmin=min(x_10), xmax=max(x_10), ymin=min(y_10), ymax=max(y_10),
-        direction="xy", mapping=list(x="X", y="Y"),
-        brushId="dummy_brush", outputId="dummy_plot"
-    ))
-    # Set up the selection effect type
-    all_memory$redDimPlot[[iSEE:::.selectEffect]][1] <- iSEE:::.selectTransTitle
-
-    p.out <- iSEE:::.make_redDimPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
-
-    expect_named(
-        p.out$commands$select,
-        c("brushNA", "select")
-    )
-    # TODO: better tests
-
-})
-
-# .create_points handles coloured selection effect ----
-
-test_that(".create_points handles coloured selection effect", {
-
-    # Implement a self-selection, for convenience
-    sourcePlotName <- "Reduced dimension plot 1"
-    sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
-
-    # Set up the point selection link: redDim1 --> featAssay1
-    all_memory$redDimPlot[1, iSEE:::.selectByPlot] <- sourcePlotName
-    # Set up the selected data (in redDim1)
-    params <- all_memory$redDimPlot[1, ]
-    x_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimXAxis]]],
-        10)
-    y_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimYAxis]]],
-        10)
-    all_memory$redDimPlot[[iSEE:::.brushData]][1] <- list(list(
-        xmin=min(x_10), xmax=max(x_10), ymin=min(y_10), ymax=max(y_10),
-        direction="xy", mapping=list(x="X", y="Y"),
-        brushId="dummy_brush", outputId="dummy_plot"
-    ))
-    # Set up the selection effect type
-    all_memory$redDimPlot[1, iSEE:::.selectEffect] <- iSEE:::.selectColorTitle
-
-    p.out <- iSEE:::.make_redDimPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
-
-    expect_named(
-        p.out$commands$select,
-        c("brushNA", "select")
-    )
+    # Check that row and column are flipped (to panelvar2 and panelvar1)
     expect_match(
-        p.out$cmd$plot["points.select_color"],
-        all_memory$redDimPlot[1, iSEE:::.selectColor],
-        fixed=TRUE
-    )
-    # TODO: better tests
-
+        out,
+        "list(FacetRow=all_active[['ColDataPlot1']][['panelvar2']], FacetColumn=all_active[['ColDataPlot1']][['panelvar1']])",
+        fixed=TRUE)
 })
 
-# .create_points handles restrict selection effect ----
-
-test_that(".create_points handles restrict selection effect", {
-
-    # Implement a self-selection, for convenience
-    sourcePlotName <- "Reduced dimension plot 1"
-    sourcePlotType <- iSEE:::.encode_panel_name(sourcePlotName)$Type
-
-    # Set up the point selection link: redDim1 --> featAssay1
-    all_memory$redDimPlot[1, iSEE:::.selectByPlot] <- sourcePlotName
-    # Set up the selected data (in redDim1)
-    params <- all_memory$redDimPlot[1, ]
-    x_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimXAxis]]],
-        10)
-    y_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimYAxis]]],
-        10)
-    all_memory$redDimPlot[[iSEE:::.brushData]][1] <- list(list(
-        xmin=min(x_10), xmax=max(x_10), ymin=min(y_10), ymax=max(y_10),
-        direction="xy", mapping=list(x="X", y="Y"),
-        brushId="dummy_brush", outputId="dummy_plot"
-    ))
-    # Set up the selection effect type
-    all_memory$redDimPlot[1, iSEE:::.selectEffect] <- iSEE:::.selectRestrictTitle
-
-    p.out <- iSEE:::.make_redDimPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
-
-    expect_named(
-        p.out$commands$select,
-        c("brushNA", "select", "saved", "subset")
-    )
-    expect_match(
-        p.out$commands$plot["points.select_restrict"],
-        "plot.data",
-        fixed=TRUE
-    )
-    # TODO: better tests
-
-})
-
-# .self_lasso_path work with single point, open, and closed paths ----
+########################################
+# lasso construction works with single point, open, and closed paths ----
 
 test_that(".self_lasso_path work with a single point", {
+    rdp <- pObjects$memory$RedDimPlot1
 
-    # Set up the selected data (in redDim1)
-    params <- all_memory$redDimPlot[1, ]
-    x_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimXAxis]]],
-        10)
-    y_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimYAxis]]],
-        10)
+    rd <- reducedDim(sce, rdp[[iSEE:::.redDimType]])
+    x_10 <- head(rd[, rdp[[iSEE:::.redDimXAxis]]], 10)
+    y_10 <- head(rd[, rdp[[iSEE:::.redDimYAxis]]], 10)
 
     new_lasso <- list(lasso=NULL, closed=FALSE, panelvar1=NULL,
         panelvar2=NULL, mapping=list(x="X", y="Y"))
@@ -1086,28 +904,19 @@ test_that(".self_lasso_path work with a single point", {
         byrow=TRUE
     )
 
-    all_memory$redDimPlot[[iSEE:::.lassoData]][1] <- list(new_lasso)
+    rdp[[iSEE:::.brushData]] <- new_lasso
 
-    lasso_cmd <- iSEE:::.self_lasso_path(all_memory$redDimPlot, flip=FALSE)
-
-    expect_match(
-        lasso_cmd,
-        "geom_point",
-        fixed=TRUE
-    )
+    lasso_cmd <- iSEE:::.self_select_boxes(rdp, flip=FALSE)
+    expect_match(lasso_cmd, "geom_point", fixed=TRUE)
 
 })
 
 test_that(".self_lasso_path work with an open path", {
+    rdp <- pObjects$memory$RedDimPlot1
 
-    # Set up the selected data (in redDim1)
-    params <- all_memory$redDimPlot[1, ]
-    x_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimXAxis]]],
-        10)
-    y_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimYAxis]]],
-        10)
+    rd <- reducedDim(sce, rdp[[iSEE:::.redDimType]])
+    x_10 <- head(rd[, rdp[[iSEE:::.redDimXAxis]]], 10)
+    y_10 <- head(rd[, rdp[[iSEE:::.redDimYAxis]]], 10)
 
     new_lasso <- list(lasso=NULL, closed=FALSE, panelvar1=NULL,
         panelvar2=NULL, mapping=list(x="X", y="Y"))
@@ -1121,41 +930,21 @@ test_that(".self_lasso_path work with an open path", {
         byrow=TRUE
     )
 
-    all_memory$redDimPlot[[iSEE:::.lassoData]][1] <- list(new_lasso)
+    rdp[[iSEE:::.brushData]] <- new_lasso
 
-    lasso_cmd <- iSEE:::.self_lasso_path(all_memory$redDimPlot, flip=FALSE)
-
-    expect_match(
-        lasso_cmd[1],
-        "geom_path",
-        fixed=TRUE
-    )
-    expect_match(
-        lasso_cmd[2],
-        "geom_point",
-        fixed=TRUE
-    )
-    expect_identical(
-        lasso_cmd[3],
-        "scale_shape_manual(values=c('TRUE'=22, 'FALSE'=20))"
-    )
-    expect_identical(
-        lasso_cmd[4],
-        "guides(shape='none')"
-    )
-
+    lasso_cmd <- iSEE:::.self_select_boxes(rdp, flip=FALSE)
+    expect_match(lasso_cmd[1], "geom_path", fixed=TRUE)
+    expect_match(lasso_cmd[2], "geom_point", fixed=TRUE)
+    expect_identical(lasso_cmd[3], "scale_shape_manual(values=c('TRUE'=22, 'FALSE'=20))")
+    expect_identical(lasso_cmd[4], "guides(shape='none')")
 })
 
-test_that(".self_lasso_path work with a closed and flipped path", {
+test_that(".self_lasso_path work with a closed path", {
+    rdp <- pObjects$memory$RedDimPlot1
 
-    # Set up the selected data (in redDim1)
-    params <- all_memory$redDimPlot[1, ]
-    x_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimXAxis]]],
-        10)
-    y_10 <- head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimYAxis]]],
-        10)
+    rd <- reducedDim(sce, rdp[[iSEE:::.redDimType]])
+    x_10 <- head(rd[, rdp[[iSEE:::.redDimXAxis]]], 10)
+    y_10 <- head(rd[, rdp[[iSEE:::.redDimYAxis]]], 10)
 
     new_lasso <- list(lasso=NULL, closed=TRUE, panelvar1=NULL,
         panelvar2=NULL, mapping=list(x="X", y="Y"))
@@ -1171,497 +960,279 @@ test_that(".self_lasso_path work with a closed and flipped path", {
         byrow=TRUE
     )
 
-    all_memory$redDimPlot[[iSEE:::.lassoData]][1] <- list(new_lasso)
+    rdp[[iSEE:::.brushData]] <- new_lasso
 
-    lasso_cmd <- iSEE:::.self_lasso_path(all_memory$redDimPlot, flip=FALSE)
-
+    lasso_cmd <- iSEE:::.self_select_boxes(rdp, flip=FALSE)
     expect_match(lasso_cmd[1], "geom_polygon", fixed=TRUE)
-    expect_match(lasso_cmd[2], "scale_fill_manual", fixed=TRUE)
-    expect_identical(lasso_cmd[3], "guides(shape='none')")
-
 })
 
-# .define_facetby_for_column_plot ----
+test_that(".self_lasso_path works with multiple lassos", {
+    cdp <- pObjects$memory$ColDataPlot
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxisColData]] <- "NREADS"
+    cdp[[iSEE:::.colDataYAxis]] <- "driver_1_s"
+
+    LASSO_CLOSED <- list(
+        lasso=NULL,
+        closed=TRUE,
+        panelvar1=NULL, panelvar2=NULL,
+        mapping=list(x="X", y="Y"),
+        coord=matrix(c(1, 2, 2, 1, 1, 1, 1, 2, 2, 1), ncol=2))
+
+    lassoHistory <- list(LASSO_CLOSED, LASSO_CLOSED) # yeah, ok, twice the same lasso isn't elegant but hey
+    cdp[[iSEE:::.multiSelectHistory]] <- lassoHistory
+
+    lasso_cmd <- iSEE:::.self_select_boxes(cdp, flip=FALSE)
+    expect_type(lasso_cmd, "character")
+    expect_length(lasso_cmd, 2*length(lassoHistory)) # length=(polygon+text)*2 lassos 
+    expect_match(lasso_cmd[1], "geom_polygon", fixed=TRUE)
+    expect_match(lasso_cmd[2], "geom_text", fixed=TRUE)
+})
+
+test_that(".self_lasso_path flip axes when faceting on both X and Y", {
+    cdp <- pObjects$memory$ColDataPlot1
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxisColData]] <- "NREADS"
+    cdp[[iSEE:::.colDataYAxis]] <- "driver_1_s"
+    cdp[[iSEE:::.facetByRow]] <- "Core.Type"
+    cdp[[iSEE:::.facetByColumn]] <- "passes_qc_checks_s"
+
+    LASSO_CLOSED <- list(
+        lasso=NULL,
+        closed=TRUE,
+        panelvar1=NULL, panelvar2=NULL,
+        mapping=list(x="X", y="Y"),
+        coord=matrix(c(1, 2, 2, 1, 1, 1, 1, 2, 2, 1), ncol=2))
+
+    cdp[[iSEE:::.brushData]] <- LASSO_CLOSED
+
+    lasso_cmd <- iSEE:::.self_select_boxes(cdp, flip=FALSE)
+
+    # Check that row and column are flipped (to panelvar2 and panelvar1)
+    expect_match(
+        lasso_cmd,
+        "FacetRow=all_active[['ColDataPlot1']][['panelvar2']], FacetColumn=all_active[['ColDataPlot1']][['panelvar1']]",
+        fixed=TRUE)
+})
+
+########################################
+# Faceting utilities all work correctly. ---
 
 test_that(".define_facetby_for_column_plot works", {
+    params <- pObjects$memory$RedDimPlot1
 
-    params <- all_memory$redDimPlot[1, ]
+    params[["FacetByRow"]] <- "driver_1_s"
+    params[["FacetByColumn"]] <- "Core.Type"
 
-    # Default without faceting
-    out <- iSEE:::.define_facetby_for_column_plot(params)
-    expect_identical(out, c())
+    env <- new.env()
+    env$se <- sce
+    .generateDotPlotData(params, env)
+    facet_out <- iSEE:::.addDotPlotDataFacets(params, env)
 
-     # Non-default choices
-    params[["FacetByRow"]] <- TRUE
-    params[["FacetByColumn"]] <- TRUE
-    params[["RowFacetByColData"]] <- "driver_1_s"
-    params[["ColumnFacetByColData"]] <- "Core.Type"
-
-    out <- iSEE:::.define_facetby_for_column_plot(params)
-    expect_named(out, c("FacetRow", "FacetColumn"))
-    expect_match(out["FacetRow"], "driver_1_s", fixed=TRUE)
-    expect_match(out["FacetColumn"], "Core.Type", fixed=TRUE)
+    expect_true("FacetRow" %in% colnames(env$plot.data))
+    expect_true("FacetColumn" %in% colnames(env$plot.data))
+    expect_match(facet_out$commands["FacetRow"], "driver_1_s", fixed=TRUE)
+    expect_match(facet_out$commands["FacetColumn"], "Core.Type", fixed=TRUE)
 })
-
-# .define_facetby_for_row_plot ----
 
 test_that(".define_facetby_for_row_plot works", {
+    rowData(sce)[, "LETTERS"] <- sample(LETTERS[1:3], nrow(sce), replace=TRUE)
 
-    # Set up the selected data
-    params <- all_memory$rowDataPlot[1, ]
+    params <- pObjects$memory$RowDataPlot1
+    params[["FacetByRow"]] <- "letters"
+    params[["FacetByColumn"]] <- "LETTERS"
 
-    # Default without faceting
-    out <- iSEE:::.define_facetby_for_row_plot(params)
-    expect_identical(out, c())
+    env <- new.env()
+    env$se <- sce
+    .generateDotPlotData(params, env)
+    facet_out <- iSEE:::.addDotPlotDataFacets(params, env)
 
-     # Non-default choices
-    params[["FacetByRow"]] <- TRUE
-    params[["FacetByColumn"]] <- TRUE
-    params[["RowFacetByRowData"]] <- "mean_count"
-    params[["ColumnFacetByRowData"]] <- "num_cells"
-
-    out <- iSEE:::.define_facetby_for_row_plot(params)
-    expect_named(out, c("FacetRow", "FacetColumn"))
-    expect_match(out["FacetRow"], "mean_count", fixed=TRUE)
-    expect_match(out["FacetColumn"], "num_cells", fixed=TRUE)
+    expect_true("FacetRow" %in% colnames(env$plot.data))
+    expect_true("FacetColumn" %in% colnames(env$plot.data))
+    expect_match(facet_out$commands["FacetRow"], "letters", fixed=TRUE)
+    expect_match(facet_out$commands["FacetColumn"], "LETTERS", fixed=TRUE)
 })
 
-
-# .add_facets works for column- and row-based plots ----
-
-test_that(".add_facets works for column data plots", {
-
-    # Set up the selected data (in redDim1)
-    params <- all_memory$redDimPlot[1, ]
-
-    # Default choices
-
+test_that(".add_facets works correctly plots", {
+    params <- pObjects$memory$RedDimPlot1
     out <- iSEE:::.add_facets(params)
     expect_null(out)
 
-    # Non-default choices
-    params[["FacetByRow"]] <- TRUE
-    params[["FacetByColumn"]] <- TRUE
-    params[["RowFacetByColData"]] <- "driver_1_s"
-    params[["ColumnFacetByColData"]] <- "Core.Type"
+    params[["FacetByRow"]] <- "driver_1_s"
+    params[["FacetByColumn"]] <- "Core.Type"
 
     out <- iSEE:::.add_facets(params)
     expect_identical(out, "facet_grid(FacetRow ~ FacetColumn)")
-})
 
-test_that(".add_facets works for row data plots", {
-
-    # Set up the selected data
-    params <- all_memory$rowDataPlot[1, ]
-
-    # Default choices
-
+    params <- pObjects$memory$RowDataPlot1
     out <- iSEE:::.add_facets(params)
     expect_null(out)
 
-    # Non-default choices
-    params[["FacetByRow"]] <- TRUE
-    params[["FacetByColumn"]] <- TRUE
-    params[["RowFacetByRowData"]] <- "mean_count"
-    params[["ColumnFacetByRowData"]] <- "num_cells"
+    params[["FacetByRow"]] <- "letters"
+    params[["FacetByColumn"]] <- iSEE:::.noSelection
 
     out <- iSEE:::.add_facets(params)
-    expect_identical(out, "facet_grid(FacetRow ~ FacetColumn)")
+    expect_identical(out, "facet_grid(FacetRow ~ .)")
+
+    params[["FacetByRow"]] <- iSEE:::.noSelection
+    params[["FacetByColumn"]] <- "letters"
+
+    out <- iSEE:::.add_facets(params)
+    expect_identical(out, "facet_grid(. ~ FacetColumn)")
 })
 
-# .choose_plot_type ----
+########################################
+# plot set up works correctly
 
 test_that(".choose_plot_type flips both full and restricted plot.data for horizontal violins", {
-
-    plot.data <- data.frame(X=seq_along(letters), Y=letters)
+    plot.data <- data.frame(X=runif(10), Y=letters[1:10])
 
     envir <- new.env()
+    assign("plot.data", plot.data, envir=envir)
     assign("plot.data.all", plot.data, envir=envir)
-    out <- iSEE:::.choose_plot_type(group_X=FALSE, group_Y=TRUE, envir=envir)
+    out <- iSEE:::.choose_plot_type(envir=envir)
 
-    expect_true(any(grepl("plot.data.all$X <- plot.data.all$Y;", out, fixed=TRUE)))
-    expect_true(any(grepl("plot.data.all$Y <- tmp;", out, fixed=TRUE)))
-
+    expect_identical(envir$plot.data$X, plot.data$Y)
+    expect_identical(envir$plot.data$Y, plot.data$X)
+    expect_identical(envir$plot.data.all$X, plot.data$Y)
+    expect_identical(envir$plot.data.all$Y, plot.data$X)
 })
 
+test_that("Jitter is properly performed for faceted plots", {
+    # Violin setup.
+    plot.data <- data.frame(Y=runif(10), X=letters[1:10],
+        FacetRow=letters[1:10], FacetColumn=LETTERS[1:10])
+
+    out <- iSEE:::.violin_setup(plot_data=plot.data, horizontal=FALSE)
+
+    expect_match(out[3], "jitterViolinPoints")
+    expect_match(out[3], "FacetRow")
+    expect_match(out[3], "FacetColumn")
+
+    # Square setup
+    plot.data <- data.frame(Y=letters[1:10], X=letters[1:10],
+        FacetRow=letters[1:10], FacetColumn=LETTERS[1:10])
+
+    out <- iSEE:::.square_setup(plot_data=plot.data)
+
+    expect_match(out, "jitterSquarePoints")
+    expect_match(out, "FacetRow")
+    expect_match(out, "FacetColumn")
+})
+
+########################################
 # .downsample_points ----
 
-test_that(".downsample_points produces the appropriate code", {
+test_that(".downsample_points produces the appropriate code for square plots", {
+    cdp <- pObjects$memory$ColDataPlot1
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxisColData]] <- "driver_1_s"
+    cdp[[iSEE:::.colDataYAxis]] <- "passes_qc_checks_s"
 
-    # for square plots
+    ref <- .generateOutput(cdp, sce, all_memory=all_memory, all_contents=pObjects$contents)
+    expect_false(any(grepl("subsetPointsByGrid", unlist(ref$commands))))
+    expect_false(any(grepl("plot.data.pre", unlist(ref$commands))))
 
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "driver_1_s"
-    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "passes_qc_checks_s"
-    all_memory$colDataPlot[1, iSEE:::.plotPointDownsample] <- TRUE
-    all_memory$colDataPlot[1, iSEE:::.plotPointSampleRes] <- 200
-
-    envir <- new.env()
-    plotData <- data.frame(
-        X=colData(sce)[, all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData]],
-        Y=colData(sce)[, all_memory$colDataPlot[1, iSEE:::.colDataYAxis]],
-        jitteredX=rnorm(ncol(sce)),
-        jitteredY=rnorm(ncol(sce)),
-        row.names=colnames(sce)
-    )
-    assign("plot.data", plotData, envir=envir)
-    assign("plot.type", "square", envir=envir)
-
-    out <- iSEE:::.downsample_points(all_memory$colDataPlot[1, ], envir)
-    expect_identical(out, c(
-        "plot.data.pre <- plot.data;",
-        "# Randomize data points to avoid a data set bias during the downsampling",
-        "set.seed(100);",
-        "plot.data <- plot.data[sample(nrow(plot.data)), , drop=FALSE];",
-        "plot.data <- subset(plot.data, subsetPointsByGrid(jitteredX, jitteredY, resolution=200));",
-        ""))
-
-    # for violin plots
-
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "passes_qc_checks_s"
-    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "NREADS"
-    all_memory$colDataPlot[1, iSEE:::.plotPointDownsample] <- TRUE
-    all_memory$colDataPlot[1, iSEE:::.plotPointSampleRes] <- 200
-
-    envir <- new.env()
-    plotData <- data.frame(
-        X=colData(sce)[, all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData]],
-        Y=colData(sce)[, all_memory$colDataPlot[1, iSEE:::.colDataYAxis]],
-        jitteredX=rnorm(ncol(sce)),
-        row.names=colnames(sce)
-    )
-    assign("plot.data", plotData, envir=envir)
-    assign("plot.type", "violin_horizontal", envir=envir)
-    # assign("plot.type", "violin", envir=envir)
-
-    out <- iSEE:::.downsample_points(all_memory$colDataPlot[1, ], envir)
-    expect_identical(out, c(
-        "plot.data.pre <- plot.data;",
-        "# Randomize data points to avoid a data set bias during the downsampling",
-        "set.seed(100);",
-        "plot.data <- plot.data[sample(nrow(plot.data)), , drop=FALSE];",
-        "plot.data <- subset(plot.data, subsetPointsByGrid(jitteredX, Y, resolution=200));",
-        ""))
-
-    # for horizontal violin plots (X and Y are flipped)
-
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "NREADS"
-    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "passes_qc_checks_s"
-    all_memory$colDataPlot[1, iSEE:::.plotPointDownsample] <- TRUE
-    all_memory$colDataPlot[1, iSEE:::.plotPointSampleRes] <- 200
-
-    envir <- new.env()
-    plotData <- data.frame(
-        X=colData(sce)[, all_memory$colDataPlot[1, iSEE:::.colDataYAxis]],
-        Y=colData(sce)[, all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData]],
-        jitteredX=rnorm(ncol(sce)),
-        row.names=colnames(sce)
-    )
-    assign("plot.data", plotData, envir=envir)
-    assign("plot.type", "violin_horizontal", envir=envir)
-    # assign("plot.type", "violin", envir=envir)
-
-    out <- iSEE:::.downsample_points(all_memory$colDataPlot[1, ], envir)
-    expect_identical(out, c(
-        "plot.data.pre <- plot.data;",
-        "# Randomize data points to avoid a data set bias during the downsampling",
-        "set.seed(100);",
-        "plot.data <- plot.data[sample(nrow(plot.data)), , drop=FALSE];",
-        "plot.data <- subset(plot.data, subsetPointsByGrid(jitteredX, Y, resolution=200));",
-        ""))
-
+    cdp[[iSEE:::.plotPointDownsample]] <- TRUE
+    out <- .generateOutput(cdp, sce, all_memory=all_memory, all_contents=pObjects$contents)
+    
+    expect_true(any(grepl("subsetPointsByGrid.*jitteredX.*jitteredY", unlist(out$commands))))
+    expect_true(any(grepl("plot.data.pre", unlist(out$commands))))
 })
 
+test_that(".downsample_points produces the appropriate code for violin plots", {
+    cdp <- pObjects$memory$ColDataPlot1
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxisColData]] <- "passes_qc_checks_s"
+    cdp[[iSEE:::.colDataYAxis]] <- "NREADS"
+
+    ref <- .generateOutput(cdp, sce, all_memory=all_memory, all_contents=pObjects$contents)
+    expect_false(any(grepl("subsetPointsByGrid", unlist(ref$commands))))
+    expect_false(any(grepl("plot.data.pre", unlist(ref$commands))))
+
+    cdp[[iSEE:::.plotPointDownsample]] <- TRUE
+    out <- .generateOutput(cdp, sce, all_memory=all_memory, all_contents=pObjects$contents)
+    
+    expect_true(any(grepl("subsetPointsByGrid.*jitteredX", unlist(out$commands))))
+    expect_true(any(grepl("plot.data.pre", unlist(out$commands))))
+})
+
+test_that(".downsample_points produces the appropriate code for horizontal violin plots", {
+    cdp <- pObjects$memory$ColDataPlot1
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxisColData]] <- "NREADS"
+    cdp[[iSEE:::.colDataYAxis]] <- "passes_qc_checks_s"
+
+    ref <- .generateOutput(cdp, sce, all_memory=all_memory, all_contents=pObjects$contents)
+    expect_false(any(grepl("subsetPointsByGrid", unlist(ref$commands))))
+    expect_false(any(grepl("plot.data.pre", unlist(ref$commands))))
+
+    cdp[[iSEE:::.plotPointDownsample]] <- TRUE
+    out <- .generateOutput(cdp, sce, all_memory=all_memory, all_contents=pObjects$contents)
+    
+    expect_true(any(grepl("subsetPointsByGrid.*jitteredX", unlist(out$commands))))
+    expect_true(any(grepl("plot.data.pre", unlist(out$commands))))
+})
+
+########################################
 # .create_plot ----
 
 test_that(".create_plot can add faceting commands", {
+    rdp <- pObjects$memory$RedDimPlot1 
+    rdp[[iSEE:::.facetByColumn]] <- "driver_1_s"
 
-    all_memory$redDimPlot[1, iSEE:::.facetByRow] <- TRUE
-    all_memory$redDimPlot[1, iSEE:::.facetColumnsByColData] <- "driver_1_s"
-
-    out <- iSEE:::.make_redDimPlot(1, all_memory, all_coordinates, sce, ExperimentColorMap())
-
-    expect_true(any(grepl("facet_grid(FacetRow ~ .)", out$commands$plot, fixed=TRUE)))
+    out <- .generateOutput(rdp, sce, all_memory=all_memory, all_contents=pObjects$contents)
+    expect_true(any(grepl("facet_grid(. ~ FacetColumn)", out$commands$plot, fixed=TRUE)))
 })
-
-# Contours ----
 
 test_that("2d density contours can be added to scatter plots ", {
-
-    all_memory$redDimPlot[1, iSEE:::.contourAddTitle] <- TRUE
-
-    out <- iSEE:::.scatter_plot(
-        plot_data=data.frame(), param_choices=all_memory$redDimPlot,
-        "x_lab", "y_lab", "color_lab", "shape_lab", "size_lab", "title",
-        by_row=FALSE, is_subsetted=TRUE, is_downsampled=FALSE)
-
-    expect_identical(out[["contours"]], "geom_density_2d(aes(x=X, y=Y), plot.data, colour='blue') +")
-
+    rdp <- pObjects$memory$RedDimPlot1 
+    rdp[[iSEE:::.contourAdd]] <- TRUE
+    out <- .generateOutput(rdp, sce, all_memory=all_memory, all_contents=pObjects$contents)
+    expect_true(any(grepl("geom_density_2d", out$commands$plot, fixed=TRUE)))
 })
 
-# .scatter_plot ----
-
 test_that("plots subsetted to no data contain a geom_blank command", {
-
     geom_blank_cmd <- "geom_blank(data=plot.data.all, inherit.aes=FALSE, aes(x=X, y=Y)) +"
 
     # .scatter_plot
-
     out <- iSEE:::.scatter_plot(
-        plot_data=data.frame(), param_choices=all_memory$redDimPlot,
+        plot_data=data.frame(), param_choices=pObjects$memory$RedDimPlot1,
         "x_lab", "y_lab", "color_lab", "shape_lab", "size_lab", "title",
         by_row=FALSE, is_subsetted=TRUE, is_downsampled=FALSE)
 
     expect_identical(out[["select_blank"]], geom_blank_cmd)
 
     # .violin_plot
-
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColDataTitle
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "driver_1_s"
-    all_memory$colDataPlot[1, iSEE:::.colDataYAxis]
+    cdp <- pObjects$memory$ColDataPlot1
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
+    cdp[[iSEE:::.colDataXAxisColData]] <- "driver_1_s"
 
     out <- iSEE:::.violin_plot(
-        plot_data=data.frame(), param_choices=all_memory$colDataPlot,
+        plot_data=data.frame(), param_choices=cdp,
         "x_lab", "y_lab", "color_lab", "shape_lab", "size_lab", "title",
         by_row=FALSE, is_subsetted=TRUE, is_downsampled=FALSE)
 
     expect_identical(out[["select_blank"]], geom_blank_cmd)
 
     # .square_plot
-
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColDataTitle
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "driver_1_s"
-    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "dissection_s"
+    cdp[[iSEE:::.colDataYAxis]] <- "dissection_s"
 
     out <- iSEE:::.square_plot(
-        plot_data=data.frame(), param_choices=all_memory$colDataPlot, sce,
+        plot_data=data.frame(), param_choices=cdp, 
         "x_lab", "y_lab", "color_lab", "shape_lab", "size_lab", "title",
         by_row=FALSE, is_subsetted=TRUE)
 
     expect_identical(out[["select_blank"]], geom_blank_cmd)
-
 })
 
-# .violin_setup ----
-
-test_that("Jitter is properly performed for faceted plots", {
-
-    # .violin_setup
-
-    plotData <- data.frame(
-        FacetRow=letters,
-        FacetColumn=LETTERS
-    )
-
-    out <- iSEE:::.violin_setup(plot_data=plotData, horizontal=FALSE)
-
-    expect_identical(out, c(
-        group="plot.data$GroupBy <- plot.data$X;",
-        seed="set.seed(100);",
-        calcX="plot.data$jitteredX <- iSEE::jitterViolinPoints(plot.data$X, plot.data$Y, \n    list(FacetRow=plot.data$FacetRow, FacetColumn=plot.data$FacetColumn),\n    width=0.4, varwidth=FALSE, adjust=1,\n    method='quasirandom', nbins=NULL);" ))
-
-    # .square_setup
-
-    plotData <- data.frame(
-        FacetRow=letters,
-        FacetColumn=LETTERS
-    )
-
-    out <- iSEE:::.square_setup(plot_data=plotData)
-
-    expect_identical(out, c(
-        jitter="set.seed(100);\nj.out <- iSEE:::jitterSquarePoints(plot.data$X, plot.data$Y,\n    list(FacetRow=plot.data$FacetRow, FacetColumn=plot.data$FacetColumn));\nsummary.data <- j.out$summary;\nplot.data$jitteredX <- j.out$X;\nplot.data$jitteredY <- j.out$Y;")
-        )
-
-})
-
+########################################
 # .build_labs ----
 
 test_that(".build_labs returns NULL for NULL inputs", {
-
     expect_null(iSEE:::.build_labs())
-
 })
 
-# .self_brush_box ----
 
-test_that(".self_brush_box draw multiple shiny brushes", {
-
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "NREADS"
-    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "driver_1_s"
-
-    brushHistory <- list(
-        list(xmin=1, xmax=2, ymin=3, ymax=4),
-        list(xmin=2, xmax=3, ymin=4, ymax=5)
-    )
-    all_memory$colDataPlot[[iSEE:::.multiSelectHistory]][[1]] <- brushHistory
-
-    out <- iSEE:::.self_brush_box(all_memory$colDataPlot, flip=TRUE)
-    expect_length(out, 2*length(brushHistory))
-    expect_type(out, "character")
-    expect_match(out[1], "geom_rect", fixed=TRUE)
-    expect_match(out[2], "geom_text", fixed=TRUE)
-    expect_match(out[3], "geom_rect", fixed=TRUE)
-    expect_match(out[4], "geom_text", fixed=TRUE)
-
-})
-
-test_that(".self_brush_box can flip axes", {
-
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "NREADS"
-    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "driver_1_s"
-
-    brushData <- list(xmin=1, xmax=2, ymin=3, ymax=4)
-    all_memory$colDataPlot[[iSEE:::.brushData]][[1]] <- list(brushData)
-
-    out <- iSEE:::.self_brush_box(all_memory$colDataPlot, flip=TRUE)
-    expect_match(out, "aes(xmin=ymin, xmax=ymax, ymin=xmin, ymax=xmax)", fixed=TRUE)
-
-})
-
-test_that(".self_brush_box flip axes when faceting on both X and Y", {
-
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "NREADS"
-    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "driver_1_s"
-    all_memory$colDataPlot[1, iSEE:::.facetByRow] <- TRUE
-    all_memory$colDataPlot[1, iSEE:::.facetByColumn] <- TRUE
-
-    brushData <- list(xmin=1, xmax=2, ymin=3, ymax=4)
-    all_memory$colDataPlot[[iSEE:::.brushData]][[1]] <- list(brushData)
-
-    out <- iSEE:::.self_brush_box(all_memory$colDataPlot, flip=TRUE)
-
-    # Check that row and column are flipped (to panelvar2 and panelvar1)
-    expect_match(
-        out,
-        "list(FacetRow=all_brushes[['colDataPlot1']][['panelvar2']], FacetColumn=all_brushes[['colDataPlot1']][['panelvar1']])",
-        fixed=TRUE)
-
-    # Check that the faceting data is appended to the brush data
-    expect_match(
-        out,
-        "do.call(data.frame, append(all_brushes[['colDataPlot1']][c('xmin', 'xmax', 'ymin', 'ymax')], list(FacetRow=all_brushes[['colDataPlot1']][['panelvar2']], FacetColumn=all_brushes[['colDataPlot1']][['panelvar1']])))", fixed=TRUE
-    )
-
-})
-
-# .self_lasso_path ----
-
-test_that(".self_lasso_path works with multiple lassos", {
-
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "NREADS"
-    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "driver_1_s"
-
-    LASSO_CLOSED <- list(
-        lasso=NULL,
-        closed=TRUE,
-        panelvar1=NULL, panelvar2=NULL,
-        mapping=list(x="X", y="Y"),
-        coord=matrix(c(1, 2, 2, 1, 1, 1, 1, 2, 2, 1), ncol=2))
-    lassoHistory <- list(LASSO_CLOSED, LASSO_CLOSED) # yeah, ok, twice the same lasso isn't elegant but hey
-    all_memory$colDataPlot[[iSEE:::.multiSelectHistory]][[1]] <- lassoHistory
-
-    out <- iSEE:::.self_lasso_path(all_memory$colDataPlot)
-    expect_type(out, "character")
-    # length=(polygon+text)*2 lassos + scale_fill_manual + guides
-    expect_length(out, 2*length(lassoHistory)+2)
-    expect_match(out[1], "geom_polygon", fixed=TRUE)
-    expect_match(out[2], "geom_text", fixed=TRUE)
-    expect_match(out[3], "scale_fill_manual", fixed=TRUE)
-    expect_match(out[4], "guides(shape='none')", fixed=TRUE)
-})
-
-test_that(".self_lasso_path flip axes when faceting on both X and Y", {
-
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "NREADS"
-    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "driver_1_s"
-    all_memory$colDataPlot[1, iSEE:::.facetByRow] <- TRUE
-    all_memory$colDataPlot[1, iSEE:::.facetByColumn] <- TRUE
-
-    LASSO_CLOSED <- list(
-        lasso=NULL,
-        closed=TRUE,
-        panelvar1=NULL, panelvar2=NULL,
-        mapping=list(x="X", y="Y"),
-        coord=matrix(c(1, 2, 2, 1, 1, 1, 1, 2, 2, 1), ncol=2))
-    all_memory$colDataPlot[[iSEE:::.lassoData]][[1]] <- LASSO_CLOSED
-
-    out <- iSEE:::.self_lasso_path(all_memory$colDataPlot, flip=TRUE)
-
-    # Check that row and column are flipped (to panelvar2 and panelvar1)
-    expect_match(
-        out[1],
-        "FacetRow=all_lassos[['colDataPlot1']][['panelvar2']], FacetColumn=all_lassos[['colDataPlot1']][['panelvar1']]",
-        fixed=TRUE)
-
-    # Check that the faceting data is appended to the brush data
-    expect_match(
-        out[1],
-        "data.frame(X=all_lassos[['colDataPlot1']]$coord[, 1], Y=all_lassos[['colDataPlot1']]$coord[, 2], FacetRow=all_lassos[['colDataPlot1']][['panelvar2']], FacetColumn=all_lassos[['colDataPlot1']][['panelvar1']])", fixed=TRUE
-    )
-
-    expect_identical(
-        out[2],
-        "scale_fill_manual(values=c('TRUE'='#DB0230', 'FALSE'='#F7CCD5'), labels=NULL)")
-
-    expect_identical(out[3], "guides(shape='none')")
-
-})
-
-test_that(".self_lasso_path leaves the shape legend visible if applied to data points", {
-
-    # Note: If data points are not shaped, the shape aesthetic is used to shape
-    # the waypoints of the lasso differently from the start/closing point
-    # In this case, the shape legend should not be shown.
-
-    all_memory$redDimPlot[1, iSEE:::.shapeByField] <- iSEE:::.shapeByColDataTitle
-    all_memory$redDimPlot[1, iSEE:::.shapeByColData] <- "driver_1_s"
-
-    LASSO_CLOSED <- list(
-        lasso=NULL,
-        closed=TRUE,
-        panelvar1=NULL, panelvar2=NULL,
-        mapping=list(x="X", y="Y"),
-        coord=matrix(c(1, 2, 2, 1, 1, 1, 1, 2, 2, 1), ncol=2))
-    all_memory$redDimPlot[[iSEE:::.lassoData]][[1]] <- LASSO_CLOSED
-
-    out <- iSEE:::.self_lasso_path(all_memory$redDimPlot, flip=FALSE)
-    # Do not expect any call to "guides()"
-    expect_false(any(grepl("guides", out)))
-})
-
-test_that(".self_lasso_path uses the size aesthetic to distinguish waypoints of an open lasso when shape is mapped to a covariate", {
-
-    # Note: If data points are not shaped, the shape aesthetic is used to shape
-    # the waypoints of the lasso differently from the start/closing point
-
-    all_memory$redDimPlot[1, iSEE:::.shapeByField] <- iSEE:::.shapeByColDataTitle
-    all_memory$redDimPlot[1, iSEE:::.shapeByColData] <- "driver_1_s"
-
-    LASSO_OPEN <- list(
-        lasso=NULL,
-        closed=FALSE,
-        panelvar1=NULL, panelvar2=NULL,
-        mapping=list(x="X", y="Y"),
-        coord=matrix(c(1, 2, 2, 1, 1, 1, 2, 2), ncol=2))
-    all_memory$redDimPlot[[iSEE:::.lassoData]][[1]] <- LASSO_OPEN
-
-    out <- iSEE:::.self_lasso_path(all_memory$redDimPlot, flip=FALSE)
-
-    expect_identical(
-        out,
-        c(
-            "geom_path(aes(x=X, y=Y),\n    data=data.frame(X=all_lassos[['redDimPlot1']]$coord[, 1], Y=all_lassos[['redDimPlot1']]$coord[, 2]),\n    inherit.aes=FALSE, alpha=1, color='#3565AA', linetype='longdash')",
-            "geom_point(aes(x=X, y=Y, size=First),\n    data=data.frame(X=all_lassos[['redDimPlot1']]$coord[, 1], Y=all_lassos[['redDimPlot1']]$coord[, 2],\n        First=seq_len(nrow(all_lassos[['redDimPlot1']]$coord)) == 1L),\n    inherit.aes=FALSE, alpha=1, stroke=1, shape=22, color='#3565AA')",
-            "scale_size_manual(values=c('TRUE'=1.5, 'FALSE'=0.25))",
-            "guides(size='none')")
-    )
-
-})

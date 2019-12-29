@@ -1,794 +1,475 @@
+# Tests the various plotting functionality.
+# library(testthat); library(iSEE); source("setup_sce.R"); source("setup_other.R"); source("test_plotting.R")
+
 context("plotting")
 
-# Set up plotting parameters
-redDimArgs <- redDimPlotDefaults(sce, 1)
-colDataArgs <- colDataPlotDefaults(sce, 1)
-featAssayArgs <- featAssayPlotDefaults(sce, 1)
-rowDataArgs <- rowDataPlotDefaults(sce, 1)
-sampAssayArgs <- sampAssayPlotDefaults(sce, 3)
+memory <- list(
+    RedDimPlot(),
+    ColDataPlot(),
+    FeatAssayPlot(),
+    RowDataPlot(),
+    SampAssayPlot(),
+    SampAssayPlot(),
+    SampAssayPlot()
+)
 
-# Set up memory
-sce <- iSEE:::.precompute_UI_info(sce, NULL, NULL)
-all_memory <- iSEE:::.setup_memory(sce,
-    redDimArgs=redDimArgs,
-    colDataArgs=colDataArgs,
-    featAssayArgs=featAssayArgs,
-    rowStatArgs=NULL,
-    rowDataArgs=rowDataArgs,
-    sampAssayArgs=sampAssayArgs,
-    colStatArgs=NULL,
-    customDataArgs=NULL,
-    customStatArgs=NULL,
-    heatMapArgs=NULL,
-    redDimMax=1,
-    colDataMax=1,
-    featAssayMax=1,
-    rowStatMax=0,
-    rowDataMax=1,
-    sampAssayMax=0,
-    colStatMax=0,
-    customDataMax=0,
-    customStatMax=0,
-    heatMapMax=0)
+pObjects <- mimic_live_app(sce, memory)
+metadata(sce)$colormap <- ExperimentColorMap()
 
-all_coordinates <- list()
-
-####################
-# Tests start here #
-####################
-
+########################################
 # .make_redDimPlot/.scatter_plot ----
 
 test_that(".make_redDimPlot/.scatter_plot produce a valid list",{
-
-    p.out <- iSEE:::.make_redDimPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
+    p.out <- .generateOutput(pObjects$memory$RedDimPlot1, sce, 
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
     # return value is a named list
-    expect_type(
-        p.out,
-        "list"
-    )
-    expect_named(
-        p.out,
-        c("cmd_list", "xy", "plot")
-    )
+    expect_type(p.out, "list")
+    expect_named(p.out, c("commands", "contents", "plot"))
 
     # cmd value is a named list
-    expect_type(
-        p.out$cmd_list,
-        "list"
-    )
-    expect_named(
-        p.out$cmd_list,
-        c('data', 'select', 'setup', 'plot')
-    )
+    expect_type(p.out$commands, "list")
+    expect_true(all(vapply(p.out$commands, is.character, TRUE)))
 
     # xy value is a data frame
-    expect_s3_class(
-        p.out$xy,
-        "data.frame"
-    )
-    expect_named(
-        p.out$xy,
-        c("X","Y")
-    )
+    expect_s3_class(p.out$contents, "data.frame")
+    expect_named(p.out$contents, c("X","Y"))
 
     #plot
-    expect_s3_class(
-        p.out$plot,
-        c("gg", "ggplot")
-    )
-
+    expect_s3_class(p.out$plot, c("gg", "ggplot"))
 })
 
 test_that(".make_redDimPlot/.scatter_plot produce a valid xy with color", {
+    rdp <- pObjects$memory$RedDimPlot1
+    rdp[[iSEE:::.colorByField]] <- iSEE:::.colorByColDataTitle
 
-    all_memory$redDimPlot[1, iSEE:::.colorByField] <- iSEE:::.colorByColDataTitle
-    p.out <- iSEE:::.make_redDimPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
-    expect_named(
-        p.out$xy,
-        c("X","Y","ColorBy")
-    )
+    p.out <- .generateOutput(rdp, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
+    expect_named(p.out$contents, c("X","Y","ColorBy"))
 })
 
+########################################
 # .make_colDataPlot/.scatter_plot ----
 
 test_that(".make_colDataPlot/.scatter_plot produce a valid list",{
+    cdp <- pObjects$memory$ColDataPlot1
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxisColData]] <- "NREADS"
+    cdp[[iSEE:::.colDataYAxis]] <- "NALIGNED"
 
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "NREADS"
-    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "NALIGNED"
-
-    p.out <- iSEE:::.make_colDataPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
+    p.out <- .generateOutput(cdp, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
     # return value is a named list
-    expect_type(
-        p.out,
-        "list"
-    )
-    expect_named(
-        p.out,
-        c("cmd_list", "xy", "plot")
-    )
+    expect_type(p.out, "list")
+    expect_named(p.out, c("commands", "contents", "plot"))
 
     # cmd value is a named list
-    expect_type(
-        p.out$cmd_list,
-        "list"
-    )
-    expect_named(
-        p.out$cmd_list,
-        c('data', 'select', 'setup', 'plot')
-    )
+    expect_type(p.out$commands, "list")
+    expect_true(all(vapply(p.out$commands, is.character, TRUE)))
 
     # xy value is a data frame
-    expect_s3_class(
-        p.out$xy,
-        "data.frame"
-    )
-    expect_named(
-        p.out$xy,
-        c("Y","X")
-    )
+    expect_s3_class(p.out$contents, "data.frame")
+    expect_named(p.out$contents, c("Y","X"))
 
     #plot
-    expect_s3_class(
-        p.out$plot,
-        c("gg", "ggplot")
-    )
-
+    expect_s3_class(p.out$plot, c("gg", "ggplot"))
 })
 
 test_that(".make_colDataPlot/.scatter_plot produce a valid xy with color", {
+    cdp <- pObjects$memory$ColDataPlot1
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxisColData]] <- "NREADS"
+    cdp[[iSEE:::.colorByField]] <- iSEE:::.colorByColDataTitle
 
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "NREADS"
-    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "NALIGNED"
+    p.out <- .generateOutput(cdp, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
-    all_memory$colDataPlot[1, iSEE:::.colorByField] <- iSEE:::.colorByColDataTitle
-    p.out <- iSEE:::.make_colDataPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
-    expect_named(
-        p.out$xy,
-        c('Y', 'X', 'ColorBy')
-    )
-
+    expect_named(p.out$contents, c('Y', 'X', 'ColorBy'))
 })
 
+########################################
 # .make_colDataPlot/.violin_plot ----
 
 test_that(".make_colDataPlot/.violin_plot produce a valid list",{
-
-    p.out <- iSEE:::.make_colDataPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
+    p.out <- .generateOutput(pObjects$memory$ColDataPlot1, sce, 
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
     # return value is a named list
-    expect_type(
-        p.out,
-        "list"
-    )
-    expect_named(
-        p.out,
-        c("cmd_list", "xy", "plot")
-    )
+    expect_type(p.out, "list")
+    expect_named(p.out, c("commands", "contents", "plot"))
 
     # cmd value is a named list
-    expect_type(
-        p.out$cmd_list,
-        "list"
-    )
-    expect_named(
-        p.out$cmd_list,
-        c("data", "select", "setup", "plot")
-    )
+    expect_type(p.out$commands, "list")
+    expect_true(all(vapply(p.out$commands, is.character, TRUE)))
 
     # xy value is a data frame
-    expect_s3_class(
-        p.out$xy,
-        "data.frame"
-    )
-    expect_named(
-        p.out$xy,
-        c("Y", "X", "GroupBy", "jitteredX")
-    )
+    expect_s3_class(p.out$contents, "data.frame")
+    expect_named(p.out$contents, c("Y", "X", "GroupBy", "jitteredX"))
 
     #plot
-    expect_s3_class(
-        p.out$plot,
-        c("gg", "ggplot")
-    )
-
+    expect_s3_class(p.out$plot, c("gg", "ggplot"))
 })
 
 test_that(".make_colDataPlot/.violin_plot produce a valid xy with color", {
+    cdp <- pObjects$memory$ColDataPlot1
+    cdp[[iSEE:::.colorByField]] <- iSEE:::.colorByColDataTitle
 
-    all_memory$colDataPlot[1, iSEE:::.colorByField] <- iSEE:::.colorByColDataTitle
-    p.out <- iSEE:::.make_colDataPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
-    expect_named(
-        p.out$xy,
-        c("Y","X","ColorBy","GroupBy","jitteredX")
-    )
+    p.out <- .generateOutput(cdp, sce, 
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
+    expect_named(p.out$contents, c("Y","X","ColorBy","GroupBy","jitteredX"))
 })
 
+########################################
 # .make_colDataPlot/.square_plot ----
 
 test_that(".make_colDataPlot/.square_plot produce a valid list",{
+    cdp <- pObjects$memory$ColDataPlot1
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxisColData]] <- "driver_1_s"
+    cdp[[iSEE:::.colDataYAxis]] <- "passes_qc_checks_s"
 
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "driver_1_s"
-    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "passes_qc_checks_s"
-
-    p.out <- iSEE:::.make_colDataPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
+    p.out <- .generateOutput(cdp, sce, 
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
     # return value is a named list
-    expect_type(
-        p.out,
-        "list"
-    )
-    expect_named(
-        p.out,
-        c("cmd_list", "xy", "plot")
-    )
+    expect_type(p.out, "list")
+    expect_named(p.out, c("commands", "contents", "plot"))
 
     # cmd value is a named list
-    expect_type(
-        p.out$cmd_list,
-        "list"
-    )
-    expect_named(
-        p.out$cmd_list,
-        c("data", "select", "setup", "plot")
-    )
+    expect_type(p.out$commands, "list")
+    expect_true(all(vapply(p.out$commands, is.character, TRUE)))
 
     # xy value is a data frame
-    expect_s3_class(
-        p.out$xy,
-        "data.frame"
-    )
-    expect_named(
-        p.out$xy,
-        c("Y","X","jitteredX","jitteredY")
-    )
+    expect_s3_class(p.out$contents, "data.frame")
+    expect_named(p.out$contents, c("Y","X","jitteredX","jitteredY"))
 
     #plot
-    expect_s3_class(
-        p.out$plot,
-        c("gg", "ggplot")
-    )
-
+    expect_s3_class(p.out$plot, c("gg", "ggplot"))
 })
 
 test_that(".make_colDataPlot/.square_plot produce a valid xy with color", {
+    cdp <- pObjects$memory$ColDataPlot1
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxisColData]] <- "driver_1_s"
+    cdp[[iSEE:::.colDataYAxis]] <- "passes_qc_checks_s"
+    cdp[[iSEE:::.colorByField]] <- iSEE:::.colorByColDataTitle
 
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "driver_1_s"
-    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "passes_qc_checks_s"
-    all_memory$colDataPlot[1, iSEE:::.colorByField] <- iSEE:::.colorByColDataTitle
+    p.out <- .generateOutput(cdp, sce, 
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
-    p.out <- iSEE:::.make_colDataPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
-    expect_named(
-        p.out$xy,
-        c("Y","X","ColorBy","jitteredX","jitteredY")
-    )
-
+    expect_named(p.out$contents, c("Y","X","ColorBy","jitteredX","jitteredY"))
 })
 
+########################################
 # .make_rowDataPlot/.scatter_plot ----
 
 test_that(".make_rowDataPlot/.scatter_plot produce a valid list",{
+    rdp <- pObjects$memory$RowDataPlot
+    rdp[[iSEE:::.rowDataXAxis]] <- iSEE:::.rowDataXAxisRowData
+    rdp[[iSEE:::.rowDataXAxisRowData]] <- "num_cells"
+    rdp[[iSEE:::.rowDataYAxis]] <- "mean_count"
 
-    all_memory$rowDataPlot[1, iSEE:::.rowDataXAxis] <- iSEE:::.rowDataXAxisRowData
-    all_memory$rowDataPlot[1, iSEE:::.rowDataXAxisRowData] <- "num_cells"
-    all_memory$rowDataPlot[1, iSEE:::.rowDataYAxis] <- "mean_count"
-
-    p.out <- iSEE:::.make_rowDataPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
+    p.out <- .generateOutput(rdp, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
     # return value is a named list
-    expect_type(
-        p.out,
-        "list"
-    )
-    expect_named(
-        p.out,
-        c("cmd_list", "xy", "plot")
-    )
+    expect_type(p.out, "list")
+    expect_named(p.out, c("commands", "contents", "plot"))
 
     # cmd value is a named list
-    expect_type(
-        p.out$cmd_list,
-        "list"
-    )
-    expect_named(
-        p.out$cmd_list,
-        c("data", "select", "setup", "plot")
-    )
+    expect_type(p.out$commands, "list")
+    expect_true(all(vapply(p.out$commands, is.character, TRUE)))
 
     # xy value is a data frame
-    expect_s3_class(
-        p.out$xy,
-        "data.frame"
-    )
-    expect_named(
-        p.out$xy,
-        c("Y","X")
-    )
+    expect_s3_class(p.out$contents, "data.frame")
+    expect_named(p.out$contents, c("Y","X"))
 
     #plot
-    expect_s3_class(
-        p.out$plot,
-        c("gg", "ggplot")
-    )
-
+    expect_s3_class(p.out$plot, c("gg", "ggplot"))
 })
 
 test_that(".make_rowDataPlot/.violin_plot produce a valid xy with color", {
+    rdp <- pObjects$memory$RowDataPlot
+    rdp[[iSEE:::.rowDataXAxis]] <- iSEE:::.rowDataXAxisRowData
+    rdp[[iSEE:::.rowDataXAxisRowData]] <- "num_cells"
+    rdp[[iSEE:::.rowDataYAxis]] <- "mean_count"
 
-    all_memory$rowDataPlot[1, iSEE:::.rowDataXAxis] <- iSEE:::.rowDataXAxisRowData
-    all_memory$rowDataPlot[1, iSEE:::.rowDataXAxisRowData] <- "num_cells"
-    all_memory$rowDataPlot[1, iSEE:::.rowDataYAxis] <- "mean_count"
+    rdp[[iSEE:::.colorByField]] <- iSEE:::.colorByRowDataTitle
+    p.out <- .generateOutput(rdp, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
-    all_memory$rowDataPlot[1, iSEE:::.colorByField] <- iSEE:::.colorByRowDataTitle
-    p.out <- iSEE:::.make_rowDataPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
-    expect_named(
-        p.out$xy,
-        c('Y', 'X', 'ColorBy')
-    )
+    expect_named(p.out$contents, c('Y', 'X', 'ColorBy'))
 
     # Color by feature name
-    all_memory$rowDataPlot[1, iSEE:::.colorByField] <- iSEE:::.colorByFeatNameTitle
+    rdp[[iSEE:::.colorByField]] <- iSEE:::.colorByFeatNameTitle
+    p.out <- .generateOutput(rdp, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
-    p.out <- iSEE:::.make_rowDataPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
-
+    expect_named(p.out$contents, c('Y', 'X', 'ColorBy'))
 })
 
+########################################
 # .make_rowDataPlot/.violin_plot ----
 
 test_that(".make_rowDataPlot/.violin_plot produce a valid list",{
-
-    p.out <- iSEE:::.make_rowDataPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
+    rdp <- pObjects$memory$RowDataPlot
+    p.out <- .generateOutput(rdp, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
     # return value is a named list
-    expect_type(
-        p.out,
-        "list"
-    )
-    expect_named(
-        p.out,
-        c("cmd_list", "xy", "plot")
-    )
+    expect_type(p.out, "list")
+    expect_named(p.out, c("commands", "contents", "plot"))
 
     # cmd value is a named list
-    expect_type(
-        p.out$cmd_list,
-        "list"
-    )
-    expect_named(
-        p.out$cmd_list,
-        c("data", "select", "setup", "plot")
-    )
+    expect_type(p.out$commands, "list")
+    expect_true(all(vapply(p.out$commands, is.character, TRUE)))
 
     # xy value is a data frame
-    expect_s3_class(
-        p.out$xy,
-        "data.frame"
-    )
-    expect_named(
-        p.out$xy,
-        c("Y", "X", "GroupBy", "jitteredX")
-    )
+    expect_s3_class(p.out$contents, "data.frame")
+    expect_named(p.out$contents, c("Y", "X", "GroupBy", "jitteredX"))
 
     #plot
-    expect_s3_class(
-        p.out$plot,
-        c("gg", "ggplot")
-    )
-
+    expect_s3_class(p.out$plot, c("gg", "ggplot"))
 })
 
 test_that(".make_rowDataPlot/.violin_plot produce a valid xy with color", {
+    rdp <- pObjects$memory$RowDataPlot
+    rdp[[iSEE:::.colorByField]] <- iSEE:::.colorByRowDataTitle
 
-    all_memory$rowDataPlot[1, iSEE:::.colorByField] <- iSEE:::.colorByRowDataTitle
-    p.out <- iSEE:::.make_rowDataPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
-    expect_named(
-        p.out$xy,
-        c("Y","X","ColorBy","GroupBy","jitteredX")
-    )
+    p.out <- .generateOutput(rdp, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
+
+    expect_named(p.out$contents, c("Y","X","ColorBy","GroupBy","jitteredX"))
 
     # Color by feature name
-    all_memory$rowDataPlot[1, iSEE:::.colorByField] <- iSEE:::.colorByFeatNameTitle
+    rdp[[iSEE:::.colorByField]] <- iSEE:::.colorByFeatNameTitle
 
-    p.out <- iSEE:::.make_rowDataPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
+    p.out <- .generateOutput(rdp, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
+    expect_named(p.out$contents, c("Y","X","ColorBy","GroupBy","jitteredX"))
 })
 
+########################################
 # .make_rowDataPlot/.square_plot ----
 
 test_that(".make_rowDataPlot/.square_plot produce a valid list",{
-
     rowData(sce)[, "letters"] <- sample(letters[1:5], nrow(sce), replace=TRUE)
     rowData(sce)[, "LETTERS"] <- sample(LETTERS[1:3], nrow(sce), replace=TRUE)
 
-    all_memory$rowDataPlot[1, iSEE:::.rowDataXAxis] <- iSEE:::.rowDataXAxisRowData
-    all_memory$rowDataPlot[1, iSEE:::.rowDataXAxisRowData] <- "letters"
-    all_memory$rowDataPlot[1, iSEE:::.rowDataYAxis] <- "LETTERS"
+    rdp <- pObjects$memory$RowDataPlot
+    rdp[[iSEE:::.rowDataXAxis]] <- iSEE:::.rowDataXAxisRowData
+    rdp[[iSEE:::.rowDataXAxisRowData]] <- "letters"
+    rdp[[iSEE:::.rowDataYAxis]] <- "LETTERS"
 
-    p.out <- iSEE:::.make_rowDataPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
+    p.out <- .generateOutput(rdp, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
     # return value is a named list
-    expect_type(
-        p.out,
-        "list"
-    )
-    expect_named(
-        p.out,
-        c("cmd_list", "xy", "plot")
-    )
+    expect_type(p.out, "list")
+    expect_named(p.out, c("commands", "contents", "plot"))
 
     # cmd value is a named list
-    expect_type(
-        p.out$cmd_list,
-        "list"
-    )
-    expect_named(
-        p.out$cmd_list,
-        c("data", "select", "setup", "plot")
-    )
+    expect_type(p.out$commands, "list")
+    expect_true(all(vapply(p.out$commands, is.character, TRUE)))
 
     # xy value is a data frame
-    expect_s3_class(
-        p.out$xy,
-        "data.frame"
-    )
-    expect_named(
-        p.out$xy,
-        c('Y', 'X', 'jitteredX', 'jitteredY')
-    )
+    expect_s3_class(p.out$contents, "data.frame")
+    expect_named(p.out$contents, c('Y', 'X', 'jitteredX', 'jitteredY'))
 
     #plot
-    expect_s3_class(
-        p.out$plot,
-        c("gg", "ggplot")
-    )
-
+    expect_s3_class(p.out$plot, c("gg", "ggplot"))
 })
 
 test_that(".make_rowDataPlot/.square_plot produce a valid xy with color",{
-
     rowData(sce)[, "letters"] <- sample(letters[1:5], nrow(sce), replace=TRUE)
     rowData(sce)[, "LETTERS"] <- sample(LETTERS[1:3], nrow(sce), replace=TRUE)
 
-    all_memory$rowDataPlot[1, iSEE:::.rowDataXAxis] <- iSEE:::.rowDataXAxisRowData
-    all_memory$rowDataPlot[1, iSEE:::.rowDataXAxisRowData] <- "letters"
-    all_memory$rowDataPlot[1, iSEE:::.rowDataYAxis] <- "LETTERS"
+    rdp <- pObjects$memory$RowDataPlot
+    rdp[[iSEE:::.rowDataXAxis]] <- iSEE:::.rowDataXAxisRowData
+    rdp[[iSEE:::.rowDataXAxisRowData]] <- "letters"
+    rdp[[iSEE:::.rowDataYAxis]] <- "LETTERS"
 
-    all_memory$rowDataPlot[1, iSEE:::.colorByField] <- iSEE:::.colorByRowDataTitle
+    rdp[[iSEE:::.colorByField]] <- iSEE:::.colorByRowDataTitle
 
-    p.out <- iSEE:::.make_rowDataPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
+    p.out <- .generateOutput(rdp, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
     # return value is a named list
-    expect_type(
-        p.out,
-        "list"
-    )
-    expect_named(
-        p.out,
-        c("cmd_list", "xy", "plot")
-    )
+    expect_type(p.out, "list")
+    expect_named(p.out, c("commands", "contents", "plot"))
 
     # cmd value is a named list
-    expect_type(
-        p.out$cmd_list,
-        "list"
-    )
-    expect_named(
-        p.out$cmd_list,
-        c("data", "select", "setup", "plot")
-    )
+    expect_type(p.out$commands, "list")
+    expect_true(all(vapply(p.out$commands, is.character, TRUE)))
 
     # xy value is a data frame
-    expect_s3_class(
-        p.out$xy,
-        "data.frame"
-    )
-    expect_named(
-        p.out$xy,
-        c('Y', 'X', 'ColorBy', 'jitteredX', 'jitteredY')
-    )
+    expect_s3_class(p.out$contents, "data.frame")
+    expect_named(p.out$contents, c('Y', 'X', 'ColorBy', 'jitteredX', 'jitteredY'))
 
     #plot
-    expect_s3_class(
-        p.out$plot,
-        c("gg", "ggplot")
-    )
+    expect_s3_class(p.out$plot, c("gg", "ggplot"))
 
     # Color by feature name
-    all_memory$rowDataPlot[1, iSEE:::.colorByField] <- iSEE:::.colorByFeatNameTitle
+    rdp[[iSEE:::.colorByField]] <- iSEE:::.colorByFeatNameTitle
 
-    p.out <- iSEE:::.make_rowDataPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
+    p.out <- .generateOutput(rdp, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
+    expect_named(p.out$contents, c('Y', 'X', 'ColorBy', 'jitteredX', 'jitteredY'))
 })
 
+########################################
 # .make_featAssayPlot/.scatter_plot ----
 
 test_that(".make_featAssayPlot/.scatter_plot produce a valid list",{
-
-    all_memory$featAssayPlot[1, iSEE:::.featAssayYAxisRowTable] <- "Row statistics table 1"
-    all_memory$featAssayPlot[1, iSEE:::.featAssayYAxisRowTable] <- "Row statistics table 1"
-
-    p.out <- iSEE:::.make_featAssayPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
+    fdp <- pObjects$memory$FeatAssayPlot1
+    p.out <- .generateOutput(fdp, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
     # return value is a named list
-    expect_type(
-        p.out,
-        "list"
-    )
-    expect_named(
-        p.out,
-        c("cmd_list", "xy", "plot")
-    )
+    expect_type(p.out, "list")
+    expect_named(p.out, c("commands", "xy", "plot"))
 
     # cmd value is a named list
-    expect_type(
-        p.out$cmd_list,
-        "list"
-    )
-    expect_named(
-        p.out$cmd_list,
-        c("data", "select", "setup", "plot")
-    )
+    expect_type(p.out$commands, "list")
+    expect_true(all(vapply(p.out$commands, is.character, TRUE)))
 
     # xy value is a data frame
-    expect_s3_class(
-        p.out$xy,
-        "data.frame"
-    )
-    expect_named(
-        p.out$xy,
-        c("Y", "X", "GroupBy", "jitteredX")
-    )
+    expect_s3_class(p.out$contents, "data.frame")
+    expect_named(p.out$contents, c("Y", "X", "GroupBy", "jitteredX"))
 
     #plot
-    expect_s3_class(
-        p.out$plot,
-        c("gg", "ggplot")
-    )
-
+    expect_s3_class(p.out$plot, c("gg", "ggplot"))
 })
 
 test_that(".make_featAssayPlot/.scatter_plot produce a valid xy with color", {
+    fdp <- pObjects$memory$FeatAssayPlot1
 
-    all_memory$featAssayPlot[1, iSEE:::.featAssayYAxisRowTable] <- "Row statistics table 1"
-    all_memory$featAssayPlot[1, iSEE:::.featAssayYAxisRowTable] <- "Row statistics table 1"
-    all_memory$featAssayPlot[1, iSEE:::.colorByRowTable] <- "Row statistics table 1"
-    all_memory$featAssayPlot[1, iSEE:::.colorByField] <- iSEE:::.colorByFeatNameTitle
+    p.out <- .generateOutput(fdp, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
-    p.out <- iSEE:::.make_featAssayPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
-    expect_named(
-        p.out$xy,
-        c("Y","X","ColorBy","GroupBy","jitteredX")
-    )
-
-})
-
-test_that(".make_featAssayPlot fails for YAxisFeatName set to a character value", {
-    # change the value locally for the specific test
-    selected_gene <- "0610009B22Rik"
-
-    all_memory$featAssayPlot[1,  iSEE:::.featAssayYAxisFeatName] <- selected_gene
-
-    expect_error(
-        iSEE:::.make_featAssayPlot(id=1, all_memory, all_coordinates, sce, ExperimentColorMap()),
-        "invalid format '%i'; use format %s for character objects",
-        fixed=TRUE)
-
+    expect_named(p.out$contents, c("Y","X","ColorBy","GroupBy","jitteredX"))
 })
 
 test_that(".make_featAssayPlot works for XAxis set to Column data", {
-    # change the value locally for the specific test
-    all_memory$featAssayPlot[1, iSEE:::.featAssayXAxis] <- iSEE:::.featAssayXAxisColDataTitle
-    all_memory$featAssayPlot[1, iSEE:::.featAssayXAxisColData] <- "dissection_s"
+    fdp <- pObjects$memory$FeatAssayPlot1
+    fdp[[iSEE:::.featAssayXAxis]] <- iSEE:::.featAssayXAxisColDataTitle
+    fdp[[iSEE:::.featAssayXAxisColData]] <- "dissection_s"
 
-    p.out <- iSEE:::.make_featAssayPlot(id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
+    p.out <- .generateOutput(fdp, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
-    expect_match(
-        p.out$cmd_list$data['x'],
-        "dissection_s",
-        fixed=TRUE
-    )
-
+    expect_true(any(grepl("dissection_s", unlist(p.out$commands))))
 })
 
-test_that(".make_featAssayPlot fails for XAxis set to a character feature name", {
+test_that(".make_featAssayPlot works for XAxis set to a character feature name", {
     selected_gene <- "0610009B22Rik"
 
-    # change the value locally for the specific test
-    all_memory$featAssayPlot[1, iSEE:::.featAssayXAxis] <- iSEE:::.featAssayXAxisFeatNameTitle
-    all_memory$featAssayPlot[1, iSEE:::.featAssayXAxisFeatName] <- selected_gene
+    fdp <- pObjects$memory$FeatAssayPlot1
+    fdp[[iSEE:::.featAssayXAxis]] <- iSEE:::.featAssayXAxisFeatNameTitle
+    fdp[[iSEE:::.featAssayXAxisFeatName]] <- selected_gene
 
-    expect_error(
-        iSEE:::.make_featAssayPlot(id=1, all_memory, all_coordinates, sce, ExperimentColorMap()),
-        "invalid format '%i'; use format %s for character objects",
-        fixed=TRUE)
+    p.out <- .generateOutput(fdp, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
+    expect_true(any(grepl(selected_gene, unlist(p.out$commands))))
 })
 
 test_that(".make_featAssayPlot works for groupable colour covariate", {
     selected_coldata <- "dissection_s"
 
-    # change the value locally for the specific test
-    all_memory$featAssayPlot[1, iSEE:::.colorByField] <- iSEE:::.colorByColDataTitle
-    all_memory$featAssayPlot[1, iSEE:::.colorByColData] <- selected_coldata
+    fdp <- pObjects$memory$FeatAssayPlot1
+    fdp[[iSEE:::.colorByField]] <- iSEE:::.colorByColDataTitle
+    fdp[[iSEE:::.colorByColData]] <- selected_coldata
 
-    p.out <- iSEE:::.make_featAssayPlot(id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
+    p.out <- .generateOutput(fdp, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
-    expect_match(
-        p.out$cmd_list$data['color'],
-        selected_coldata,
-        fixed=TRUE
-    )
-
-    expect_identical(p.out$cmd_list$data[['more_color']], "plot.data$ColorBy <- factor(plot.data$ColorBy);")
-
-    expect_match(
-        p.out$cmd_list$plot["scale_color1"],
-        "^scale_color_manual"
-    )
-    expect_match(
-        p.out$cmd_list$plot["scale_color1"],
-        selected_coldata,
-        fixed=TRUE
-    )
-
-    expect_match(
-        p.out$cmd_list$plot["scale_color2"],
-        "^scale_fill_manual"
-    )
-    expect_match(
-        p.out$cmd_list$plot["scale_color2"],
-        selected_coldata,
-        fixed=TRUE
-    )
-
+    expect_true(any(grepl(selected_coldata, unlist(pObjects$commands))))
+    expect_named(p.out$contents, c("Y", "X", "ColorBy", "GroupBy", "jitteredX"))
 })
 
+########################################
 # .make_sampAssayPlot ----
 
 test_that(".make_sampAssayPlot works with X covariate set to None", {
-
-    p.out <- iSEE:::.make_sampAssayPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
+    sap <- pObjects$memory$SampAssayPlot1
+    p.out <- .generateOutput(sap, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
     # return value is a named list
-    expect_type(
-        p.out,
-        "list"
-    )
-    expect_named(
-        p.out,
-        c("cmd_list", "xy", "plot")
-    )
+    expect_type(p.out, "list")
+    expect_named(p.out, c("commands", "contents", "plot"))
 
     # cmd value is a named list
-    expect_type(
-        p.out$cmd_list,
-        "list"
-    )
-    expect_named(
-        p.out$cmd_list,
-        c("data", "select", "setup", "plot")
-    )
-
-    # x cmd should create a single value
-    expect_identical(
-        p.out$cmd_list$data[["x"]],
-        "plot.data$X <- factor(character(nrow(se)));"
-    )
+    expect_type(p.out$commands, "list")
+    expect_true(all(vapply(p.out$commands, is.character, TRUE)))
 
     # xy value is a data frame
-    expect_s3_class(
-        p.out$xy,
-        "data.frame"
-    )
-    expect_named(
-        p.out$xy,
-        c("Y", "X", "GroupBy", "jitteredX")
-    )
+    expect_s3_class(p.out$contents, "data.frame")
+    expect_named(p.out$contents, c("Y", "X", "GroupBy", "jitteredX"))
+    expect_true(all(p.out$contents$X==""))
 
     #plot
-    expect_s3_class(
-        p.out$plot,
-        c("gg", "ggplot")
-    )
-
+    expect_s3_class(p.out$plot, c("gg", "ggplot"))
 })
 
 test_that(".make_sampAssayPlot works with X variable set to Row data", {
-
     selected_rowdata <- "num_cells"
 
-    # change the value locally for the specific test
-    all_memory$sampAssayPlot[1, iSEE:::.rowDataXAxis] <- iSEE:::.sampAssayXAxisRowDataTitle
-    all_memory$sampAssayPlot[1, iSEE:::.rowDataXAxisRowData] <- selected_rowdata
+    sap <- pObjects$memory$SampAssayPlot1
+    sap[[iSEE:::.rowDataXAxis]] <- iSEE:::.sampAssayXAxisRowDataTitle
+    sap[[iSEE:::.rowDataXAxisRowData]] <- selected_rowdata
 
-    p.out <- iSEE:::.make_sampAssayPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
+    p.out <- .generateOutput(sap, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
-    expect_match(p.out$cmd_list$data[["x"]], selected_rowdata, fixed=TRUE)
-    expect_match(p.out$cmd_list$plot[["labs"]], selected_rowdata, fixed=TRUE)
-
+    expect_true(any(grepl(selected_rowdata, unlist(p.out$commands))))
 })
 
 test_that(".make_sampAssayPlot works with X variable set to Sample name", {
+    selected_sample <- colnames(sce)[2]
 
-    selected_sample <- 2L
+    sap <- pObjects$memory$SampAssayPlot1
+    sap[[iSEE:::.rowDataXAxis]] <- iSEE:::.sampAssayXAxisSampNameTitle
+    sap[[iSEE:::.sampAssayXAxisSampName]] <- selected_sample
 
-    # change the value locally for the specific test
-    all_memory$sampAssayPlot[1, iSEE:::.rowDataXAxis] <- iSEE:::.sampAssayXAxisSampNameTitle
-    all_memory$sampAssayPlot[1, iSEE:::.sampAssayXAxisSampName] <- selected_sample
+    p.out <- .generateOutput(sap, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
 
-    p.out <- iSEE:::.make_sampAssayPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
-
-    expect_match(
-        p.out$cmd_list$data[["x"]],
-        sprintf("plot.data$X <- assay(se, 2, withDimnames=FALSE)[, %i];", selected_sample),
-        fixed=TRUE)
-
-    expect_match(p.out$cmd_list$plot[["labs"]], colnames(sce)[selected_sample], fixed=TRUE)
+    expect_true(any(grepl(selected_sample, unlist(p.out$commands))))
 })
 
+########################################
 # .make_colDataPlot/.create_plot horizontal violin plots ----
 
 test_that(".make_colDataPlot/.create_plot can produce horizontal violins", {
     selected_coldataX <- "NREADS"
     selected_coldataY <- "driver_1_s"
 
-    # change the value locally for the specific test
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colorByColDataTitle
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- selected_coldataX
+    cdp <- pObjects$memory$ColDataPlot
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colorByColDataTitle
 
-    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- selected_coldataY
+    cdp1 <- cdp
+    cdp1[[iSEE:::.colDataXAxisColData]] <- selected_coldataX
+    cdp1[[iSEE:::.colDataYAxis]] <- selected_coldataY
 
-    all_memory$colDataPlot[1, iSEE:::.colorByField] <- iSEE:::.colDataXAxisNothingTitle
+    cdp2 <- cdp
+    cdp2[[iSEE:::.colDataXAxisColData]] <- selected_coldataY
+    cdp2[[iSEE:::.colDataYAxis]] <- selected_coldataX
 
-    p.out <- iSEE:::.make_colDataPlot(id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
+    p.out1 <- .generateOutput(cdp1, sce, all_memory=pObjects$memory, all_contents=pObjects$contents) 
+    p.out2 <- .generateOutput(cdp2, sce, all_memory=pObjects$memory, all_contents=pObjects$contents) 
 
-    expect_match(
-        p.out$cmd_list$data['y'],
-        selected_coldataY,
-        fixed=TRUE
-    )
+    # Contents should be the same.
+    expect_identical(p.out1$contents, p.out2$contents)
 
-    expect_match(
-        p.out$cmd_list$data['x'],
-        selected_coldataX,
-        fixed=TRUE
-    )
-
-    expect_named(
-        p.out$xy,
-        c("Y", "X", "GroupBy", "jitteredX")
-    )
-
+    expect_true(any(grepl("coord_flip", unlist(p.out1$commands))))
+    expect_false(any(grepl("coord_flip", unlist(p.out2$commands))))
 })
 
 # .scatter_plot plot with zoom ----
@@ -819,7 +500,7 @@ test_that(".scatter_plot works with zoom",{
         row.names=colnames(sce)
     )
 
-    expect_identical(p.out$xy, expected_xy)
+    expect_identical(p.out$contents, expected_xy)
 
 })
 
@@ -857,7 +538,7 @@ test_that(".make_colDataPlot/.violin_plot works with zoom",{
         row.names=colnames(sce)
     )
 
-    expect_identical(p.out$xy[, c("Y", "X")], expected_xy)
+    expect_identical(p.out$contents[, c("Y", "X")], expected_xy)
 
 })
 
@@ -898,7 +579,7 @@ test_that(".make_colDataPlot/.violin_plot works with zoom",{
         row.names=colnames(sce)
     )
 
-    expect_identical(p.out$xy[, c("Y","X")], expected_xy)
+    expect_identical(p.out$contents[, c("Y","X")], expected_xy)
 
 })
 
@@ -938,7 +619,7 @@ test_that(".make_colDataPlot/.square_plot works with zoom",{
         row.names=colnames(sce)
     )
 
-    expect_identical(p.out$xy[, c("Y","X")], expected_xy)
+    expect_identical(p.out$contents[, c("Y","X")], expected_xy)
 
 })
 
@@ -1035,7 +716,7 @@ test_that("define_sizeby_for_column_plot produces the expected commands", {
     all_memory_sb$redDimPlot[1, ] <- params
     p.out <- iSEE:::.make_redDimPlot(
         id=1, all_memory_sb, all_coordinates, sce, ExperimentColorMap())
-    expect_equivalent(p.out$cmd_list$plot["points.point"],
+    expect_equivalent(p.out$commands$plot["points.point"],
                       "geom_point(aes(x=X, y=Y, size=SizeBy), alpha=1, plot.data, color='black') +")
 })
 
@@ -1325,7 +1006,7 @@ test_that(".create_points handles transparency selection effect", {
         id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
 
     expect_named(
-        p.out$cmd_list$select,
+        p.out$commands$select,
         c("brushNA", "select")
     )
     # TODO: better tests
@@ -1362,7 +1043,7 @@ test_that(".create_points handles coloured selection effect", {
         id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
 
     expect_named(
-        p.out$cmd_list$select,
+        p.out$commands$select,
         c("brushNA", "select")
     )
     expect_match(
@@ -1404,11 +1085,11 @@ test_that(".create_points handles restrict selection effect", {
         id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
 
     expect_named(
-        p.out$cmd_list$select,
+        p.out$commands$select,
         c("brushNA", "select", "saved", "subset")
     )
     expect_match(
-        p.out$cmd_list$plot["points.select_restrict"],
+        p.out$commands$plot["points.select_restrict"],
         "plot.data",
         fixed=TRUE
     )
@@ -1736,7 +1417,7 @@ test_that(".create_plot can add faceting commands", {
 
     out <- iSEE:::.make_redDimPlot(1, all_memory, all_coordinates, sce, ExperimentColorMap())
 
-    expect_true(any(grepl("facet_grid(FacetRow ~ .)", out$cmd_list$plot, fixed=TRUE)))
+    expect_true(any(grepl("facet_grid(FacetRow ~ .)", out$commands$plot, fixed=TRUE)))
 })
 
 # Contours ----

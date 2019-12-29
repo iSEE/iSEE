@@ -231,7 +231,7 @@ setMethod(".addDotPlotDataColor", "RowDotPlot", function(x, envir) {
         chosen_sample <- x[[.colorBySampName]]
         assay_choice <- x[[.colorBySampNameAssay]]
         label <- sprintf("%s\n(%s)", chosen_sample, assay_choice)
-        cmds <- sprintf("plot.data$ColorBy <- assay(se, %i, withDimnames <- FALSE)[, %i];",
+        cmds <- sprintf("plot.data$ColorBy <- assay(se, %s, withDimnames <- FALSE)[, %s];",
             deparse(assay_choice), deparse(chosen_sample))
 
     } else {

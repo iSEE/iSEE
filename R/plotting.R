@@ -179,7 +179,10 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.generateDotPlot}}
 #'
 #' @importFrom ggplot2 ggplot coord_cartesian theme_bw theme element_text
-.scatter_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, shape_lab, size_lab, title, by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE) {
+.scatter_plot <- function(plot_data, param_choices, 
+    x_lab, y_lab, color_lab, shape_lab, size_lab, title, 
+    by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE) 
+{
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +"
 
@@ -294,10 +297,10 @@ names(.all_aes_values) <- .all_aes_names
 #'
 #' @importFrom ggplot2 ggplot geom_violin coord_cartesian theme_bw theme
 #' coord_flip scale_x_discrete scale_y_discrete
-.violin_plot <- function(
-    plot_data, param_choices, x_lab, y_lab, color_lab, shape_lab, size_lab, title,
-    by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE, horizontal=FALSE) {
-
+.violin_plot <- function(plot_data, param_choices, 
+    x_lab, y_lab, color_lab, shape_lab, size_lab, title,
+    by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE, horizontal=FALSE) 
+{
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +" # do NOT put aes here, it does not play nice with shiny brushes.
     plot_cmds[["violin"]] <- sprintf(
@@ -448,8 +451,9 @@ plot.data$Y <- tmp;")
 #' Set to \code{NULL} to have no color label.
 #' @param title A character title for the plot.
 #' Set to \code{NULL} to have no title.
-#' @param by_row A logical scalar specifying whether the plot deals with row-level metadata.
+#' @param by_row Ignored argument, only provided for consistency with \code{\link{.scatter_plot}}.
 #' @param is_subsetted A logical scalar specifying whether \code{plot_data} was subsetted during \code{\link{.process_selectby_choice}}.
+#' @param is_downsampled Ignored argument, only provided for consistency with \code{\link{.scatter_plot}}.
 #' @param shape_lab A character label for the shape scale.
 #' Set to \code{NULL} to have no shape label.
 #' @param size_lab A character label for the size scale.
@@ -478,7 +482,10 @@ plot.data$Y <- tmp;")
 #'
 #' @importFrom ggplot2 ggplot geom_tile coord_cartesian theme_bw theme
 #' scale_x_discrete scale_y_discrete guides
-.square_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, shape_lab, size_lab, title, by_row=FALSE, is_subsetted=FALSE) {
+.square_plot <- function(plot_data, param_choices, 
+    x_lab, y_lab, color_lab, shape_lab, size_lab, title, 
+    by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE) 
+{
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
     plot_cmds[["tile"]] <-

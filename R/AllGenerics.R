@@ -280,32 +280,26 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #'
 #' @name plot-generics
 #' @aliases .generateDotPlotData
-#' .getCommandsPlot
-#' .getComandsDataColor
-#' .getCommandsDataShape
-#' .getCommandsDataSize
-#' .getCommandsDataFacets
-#' .getCommandsDataSelect
-#' .getCommandsPlotColor
+#' .generateDotPlot
 NULL
 
 #' @export
 setGeneric(".generateDotPlotData", function(x, envir) standardGeneric(".generateDotPlotData"))
 
 #' @export
-setGeneric(".getCommandsPlot", function(x, plot_data, plot_type, labs, is_subsetted, is_downsampled) standardGeneric(".getCommandsPlot"))
+setGeneric(".generateDotPlot", function(x, labels, envir) standardGeneric(".generateDotPlot"))
 
-setGeneric(".getCommandsDataColor", function(x, se) standardGeneric(".getCommandsDataColor"))
+setGeneric(".addDotPlotDataColor", function(x, envir) standardGeneric(".addDotPlotDataColor"))
 
-setGeneric(".getCommandsDataShape", function(x, se) standardGeneric(".getCommandsDataShape"))
+setGeneric(".addDotPlotDataShape", function(x, envir) standardGeneric(".addDotPlotDataShape"))
 
-setGeneric(".getCommandsDataSize", function(x, se) standardGeneric(".getCommandsDataSize"))
+setGeneric(".addDotPlotDataSize", function(x, envir) standardGeneric(".addDotPlotDataSize"))
 
-setGeneric(".getCommandsDataFacets", function(x, se) standardGeneric(".getCommandsDataFacets"))
+setGeneric(".addDotPlotDataFacets", function(x, envir) standardGeneric(".addDotPlotDataFacets"))
 
-setGeneric(".getCommandsDataSelect", function(x, envir) standardGeneric(".getCommandsDataSelect"))
+setGeneric(".addDotPlotDataSelected", function(x, envir) standardGeneric(".addDotPlotDataSelected"))
 
-setGeneric(".getCommandsPlotColor", function(x, colorby, x_aes="X", y_aes="Y") standardGeneric(".getCommandsPlotColor"))
+setGeneric(".colorDotPlot", function(x, colorby, x_aes="X", y_aes="Y") standardGeneric(".colorDotPlot"))
 
 ###########################
 

@@ -424,81 +424,71 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
     plot_env$se <- se
     plot_env$colormap <- metadata(se)$colormap
 
+    all_cmds <- list()
+    all_labels <- list()
+
     # Doing this first so that .generateDotPlotData can respond to the selection.
-    select_cmds <- .processMultiSelections(x, all_memory, all_contents, plot_env)
+    all_cmds$select <- .processMultiSelections(x, all_memory, all_contents, plot_env)
 
-    # Apply the function provided to generate XY commands and axis labels
-    out_xy <- .generateDotPlotData(x, plot_env)
-    ggplot_labs <- c(x=out_xy$x_lab, y=out_xy$y_lab, title=out_xy$plot_title)
+    xy_out <- .generateDotPlotData(x, plot_env)
+    all_cmds$xy <- xy_out$commands
+    all_labels <- c(all_labels, xy_out$labels)
 
-    # Add commands coercing X and Y to appropriate type
-    data_cmds <- .initialize_cmd_store()
-    data_cmds <- .add_commands_coerce(plot_env, data_cmds, c("X", "Y"))
+    extra_out <- .add_extra_aesthetic_columns(x, plot_env)
+    all_cmds <- c(all_cmds, extra_out$commands)
+    all_labels <- c(all_labels, extra_out$labels)
 
-    # Add commands adding optional columns to plot.data
-    out_color <- .getCommandsDataColor(x, se)
-    data_cmds <- .add_command(data_cmds, out_color$cmds, name='color')
-    ggplot_labs <- c(ggplot_labs, color = out_color$label)
-
-    out_shape <- .getCommandsDataShape(x, se)
-    data_cmds <- .add_command(data_cmds, out_shape$cmds, name='shape')
-    ggplot_labs <- c(ggplot_labs, shape = out_shape$label)
-
-    out_size <- .getCommandsDataSize(x, se)
-    data_cmds <- .add_command(data_cmds, out_size$cmds, name='size')
-    ggplot_labs <- c(ggplot_labs, size = out_size$label)
-
-    facets_cmds <- .getCommandsDataFacets(x, se)
-    data_cmds <- .add_command(data_cmds, facets_cmds)
-
-    # Add commands coercing ColorBy to appropriate type, if present
-    data_cmds <- .evaluate_commands(data_cmds, plot_env)
-    color_data <- plot_env$plot.data$ColorBy
-    if (!is.null(color_data)) {
-        data_cmds <- .add_commands_coerce(plot_env, data_cmds, c("ColorBy"))
-    }
-
-    # Removing NAs in axes aesthetics as they mess up .process_selectby_choice.
-    clean_select_fields <- c("X", "Y", names(facets_cmds))
-    clean_expression <- paste(sprintf("!is.na(%s)", clean_select_fields), collapse=" & ")
-    data_cmds <- .add_command(data_cmds, sprintf("plot.data <- subset(plot.data, %s);", clean_expression), name='na.rm')
-
-    data_cmds <- .add_command(data_cmds, .getCommandsDataSelect(x, plot_env))
-    data_cmds <- .evaluate_commands(data_cmds, plot_env)
-
-    # Define the type of plot to create, and add geometry-specific commands, if needed
-    out_specific <- .choose_plot_type(plot_env)
-    data_cmds <- .add_command(data_cmds, out_specific)
-    data_cmds <- .evaluate_commands(data_cmds, plot_env)
+    all_cmds$setup <- .choose_plot_type(plot_env)
 
     # Collect the plot coordinates BEFORE downsampling (which alters the environment value)
     panel_data <- plot_env$plot.data
 
-    # Add downsampling commands, if applicable
-    downsample_cmds <- .downsample_points(x, plot_env)
-    data_cmds <- .add_command(data_cmds, downsample_cmds)
-    data_cmds <- .evaluate_commands(data_cmds, plot_env)
+    all_cmds$downsample <- .downsample_points(x, plot_env)
 
-    # Prepare information about subsetting and downsampling, to generate the plotting commands
-    is_subsetted <- exists("plot.data.all", envir=plot_env, inherits=FALSE)
-    is_downsampled <- exists("plot.data.pre", envir=plot_env, inherits=FALSE)
-    plot_type <- plot_env$plot.type
+    plot_out <- .generateDotPlot(x, all_labels, plot_env)
+    all_cmds$plot <- plot_out$plot
 
-    # Get the ggplot call
-    plot_cmds <- .getCommandsPlot(x, plot_env$plot.data, plot_type, as.list(ggplot_labs), is_subsetted, is_downsampled)
+    list(commands=all_cmds, contents=panel_data, plot=plot_out$plot)
+})
 
-    # Adding a faceting command, if applicable
+#' @export
+setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
+    plot_data <- envir$plot.data 
+    is_subsetted <- exists("plot.data.all", envir=envir, inherits=FALSE)
+    is_downsampled <- exists("plot.data.pre", envir=envir, inherits=FALSE)
+    plot_type <- envir$plot.type
+    
+    args <- list(plot_data,
+        param_choices=x,
+        x_lab=labels$x,
+        y_lab=labels$y,
+        color_lab=labels$color,
+        shape_lab=labels$shape,
+        size_lab=labels$size,
+        title=labels$title,
+        is_subsetted=is_subsetted,
+        is_downsampled=is_downsampled)
+
+    plot_cmds <- switch(plot_type,
+        square=do.call(.square_plot, args),
+        violin=do.call(.violin_plot, args),
+        violin_horizontal=do.call(.violin_plot, c(args, list(horizontal=TRUE))),
+        scatter=do.call(.scatter_plot, args)
+    )
+
+    # Adding a faceting command, if applicable.
     facet_cmd <- .add_facets(x)
     if (length(facet_cmd)) {
         N <- length(plot_cmds)
         plot_cmds[[N]] <- paste(plot_cmds[[N]], "+")
         plot_cmds <- c(plot_cmds, facet_cmd)
     }
+    print("2")
 
+    # TODO: move this into exposed developer-accessible function for easy calling.
     # Adding self-brushing boxes, if they exist.
     to_flip <- plot_type == "violin_horizontal"
     self_select_cmds <- .self_select_boxes(x, flip=to_flip)
-
     if (length(self_select_cmds)) {
         N <- length(plot_cmds)
         plot_cmds[[N]] <- paste(plot_cmds[[N]], "+")
@@ -506,32 +496,9 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
         intermediate <- seq_len(length(self_select_cmds)-1L)
         self_select_cmds[intermediate] <- paste(self_select_cmds[intermediate], "+")
         plot_cmds <- c(plot_cmds, self_select_cmds)
-
-        # We overwrite any existing 'all_active' or 'all_saved',
-        # as they have already served their purpose in defining plot_data above
-        .populate_selection_environment(x, plot_env)
+        .populate_selection_environment(x, envir)
     }
+    print("3")
 
-    # TODO: make sure "plot_env" contains the bare essentials
-    # Evaluating the plotting commands.
-    plot_out <- .text_eval(plot_cmds, plot_env)
-
-    list(commands=list(select_cmds, out_xy$data_cmds, data_cmds$processed, plot_cmds), contents=panel_data, plot=plot_out)
-})
-
-#' @export
-setMethod(".getCommandsPlot", "DotPlot", function(x, plot_data, plot_type, labs, is_subsetted, is_downsampled) {
-    is_row_plot <- is(x, "RowDotPlot")
-
-    # TODO: update the functions below to work with a single list "labs"
-    switch(plot_type,
-        square=.square_plot(plot_data, x, labs$x, labs$y, labs$color, labs$shape, labs$size, labs$title,
-            is_row_plot, is_subsetted),
-        violin=.violin_plot(plot_data = plot_data, x, labs$x, labs$y, labs$color, labs$shape, labs$size, labs$title,
-            is_row_plot, is_subsetted),
-        violin_horizontal=.violin_plot(plot_data = plot_data, x, labs$x, labs$y, labs$color, labs$shape, labs$size, labs$title,
-            is_row_plot, is_subsetted, horizontal=TRUE),
-        scatter=.scatter_plot(plot_data = plot_data, x, labs$x, labs$y, labs$color, labs$shape, labs$size, labs$title,
-            is_row_plot, is_subsetted)
-    )
+    list(plot=.text_eval(plot_cmds, envir), commands=plot_cmds)
 })

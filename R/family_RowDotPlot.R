@@ -210,66 +210,72 @@ setMethod(".createObservers", "RowDotPlot", function(x, se, input, session, pObj
 #' @export
 setMethod(".multiSelectionDimension", "RowDotPlot", function(x) "row")
 
-setMethod(".getCommandsDataColor", "RowDotPlot", function(x, se) {
+setMethod(".addDotPlotDataColor", "RowDotPlot", function(x, envir) {
     color_choice <- x[[.colorByField]]
 
     if (color_choice == .colorByRowDataTitle) {
         covariate_name <- x[[.colorByRowData]]
-        list(
-            label=covariate_name,
-            cmds=sprintf("plot.data$ColorBy <- rowData(se)[, %s];", deparse(covariate_name))
-        )
+        label <- covariate_name
+        cmds <- sprintf("plot.data$ColorBy <- rowData(se)[, %s];", deparse(covariate_name))
 
     } else if (color_choice == .colorByFeatNameTitle) {
         chosen_gene <- x[[.colorByFeatName]]
-        list(
-            label=.feature_axis_label(se, chosen_gene, assay_id=NULL),
-            cmds=sprintf("plot.data$ColorBy <- logical(nrow(plot.data));\nplot.data[%s, 'ColorBy'] <- TRUE;",
-                deparse(chosen_gene))
-        )
+        label <- chosen_gene
+        cmds <- sprintf("plot.data$ColorBy <- logical(nrow(plot.data));\nplot.data[%s, 'ColorBy'] <- TRUE;",
+            deparse(chosen_gene))
 
-    } else if (color_choice == .colorBySampNameTitle) {
+    } else if (color_choice  == .colorBySampNameTitle) {
         chosen_sample <- x[[.colorBySampName]]
         assay_choice <- x[[.colorBySampNameAssay]]
-        list(
-            label=.sample_axis_label(se, chosen_sample, assay_choice, multiline=TRUE),
-            cmds=sprintf("plot.data$ColorBy <- assay(se, %i, withDimnames=FALSE)[, %i];",
-                deparse(assay_choice), deparse(chosen_sample))
-        )
+        label <- sprintf("%s\n(%s)", chosen_sample, assay_choice)
+        cmds <- sprintf("plot.data$ColorBy <- assay(se, %i, withDimnames <- FALSE)[, %i];",
+            deparse(assay_choice), deparse(chosen_sample))
 
     } else {
-        NULL
+        return(NULL)
     }
+
+    .text_eval(cmds, envir)
+
+    list(commands=cmds, label=label)
 })
 
-setMethod(".getCommandsDataShape", "RowDotPlot", function(x, se) {
+setMethod(".addDotPlotDataShape", "RowDotPlot", function(x, envir) {
     shape_choice <- x[[.shapeByField]]
 
     if (shape_choice == .shapeByColDataTitle) {
         covariate_name <- x[[.shapeByColData]]
-        return(list(label=covariate_name,
-            cmds=sprintf("plot.data$ShapeBy <- colData(se)[, %s];", deparse(covariate_name))))
+        label <- covariate_name
+        cmds <- sprintf("plot.data$ShapeBy <- colData(se)[, %s];", deparse(covariate_name))
 
     } else {
         return(NULL)
     }
+
+    .text_eval(cmds, envir)
+
+    list(commands=cmds, label=label)
 })
 
-setMethod(".getCommandsDataSize", "RowDotPlot", function(x, se) {
+setMethod(".addDotPlotDataSize", "RowDotPlot", function(x, envir) {
     size_choice <- x[[.sizeByField]]
 
     if (size_choice == .sizeByRowDataTitle) {
         covariate_name <- x[[.sizeByRowData]]
-        return(list(label=covariate_name,
-                    cmds=sprintf("plot.data$SizeBy <- rowData(se)[, %s];", deparse(covariate_name))))
+        label <- covariate_name
+        cmds <- sprintf("plot.data$SizeBy <- rowData(se)[, %s];", deparse(covariate_name))
 
     } else {
         return(NULL)
     }
+
+    .text_eval(cmds, envir)
+
+    list(commands=cmds, label=label)
 })
 
-setMethod(".getCommandsDataFacets", "RowDotPlot", function(x, se) {
-    facet_cmds <- c()
+setMethod(".addDotPlotDataFacets", "RowDotPlot", function(x, envir) {
+    facet_cmds <- character(0)
 
     facet_row <- x[[.facetByRow]]
     if (facet_row!=.noSelection) {
@@ -283,36 +289,39 @@ setMethod(".getCommandsDataFacets", "RowDotPlot", function(x, se) {
             "plot.data$FacetColumn <- rowData(se)[, %s];", deparse(facet_column))
     }
 
-    return(facet_cmds)
+    .text_eval(facet_cmds, envir)
+
+    facet_cmds
 })
 
-setMethod(".getCommandsDataSelect", "RowDotPlot", function(x, envir) {
-    cmds <- character(0)
+setMethod(".addDotPlotDataSelected", "RowDotPlot", function(x, envir) {
     if (!exists("row_selected", envir=envir, inherits=FALSE)) {
-        return(cmds)
+        return(NULL)
     }
 
-    # TODO: adapt whether row_selected contains active, union, or saved selection
-    cmds["header1"] <- ""
-    cmds["header2"] <- "# Receiving row point selection"
-    cmds["SelectBy"] <- "plot.data$SelectBy <- rownames(plot.data) %in% unlist(row_selected);"
+    cmds <- c(
+        header1="",
+        header2="# Receiving row point selection",
+        SelectBy="plot.data$SelectBy <- rownames(plot.data) %in% unlist(row_selected);"
+    )
 
     if (x[[.selectEffect]] == .selectRestrictTitle) {
         cmds["saved"] <- "plot.data.all <- plot.data;"
         cmds["subset"] <- "plot.data <- subset(plot.data, SelectBy);"
     }
+    cmds["footer"] <- ""
 
-    cmds[["footer"]] <- ""
+    .text_eval(cmds, envir)
+
     cmds
 })
 
 #' @importFrom ggplot2 scale_color_manual geom_point
-setMethod(".getCommandsPlotColor", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="Y") {
+setMethod(".colorDotPlot", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="Y") {
     if (is.null(colorby)) {
         return(NULL)
     }
 
-    cmds <- NULL
     color_choice <- x[[.colorByField]]
 
     # This slightly duplicates the work in .define_colorby_for_row_plot(),
@@ -323,21 +332,25 @@ setMethod(".getCommandsPlotColor", "RowDotPlot", function(x, colorby, x_aes="X",
 
     } else if (color_choice == .colorByFeatNameTitle) {
         col_choice <- x[[.colorByFeatNameColor]]
-        cmds <- c(
+        c(
             sprintf(
                 "scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +",
-                deparse(col_choice)),
+                deparse(col_choice)
+            ),
             sprintf(
                 "geom_point(aes(x=%s, y=%s), data=subset(plot.data, ColorBy == 'TRUE'), col=%s, alpha=1%s) +",
                 x_aes, y_aes, deparse(col_choice),
                 ifelse(x[[.sizeByField]] == .sizeByNothingTitle,
-                       paste0(", size=5*", x[[.plotPointSize]]),
-                       ""))
+                    paste0(", size=5*", x[[.plotPointSize]]),
+                    ""
+                )
+            )
         )
 
     } else if (color_choice == .colorBySampNameTitle) {
         assay_choice <- x[[.colorBySampNameAssay]]
-        cmds <- .create_color_scale("assayColorMap", deparse(assay_choice), colorby)
+        .create_color_scale("assayColorMap", deparse(assay_choice), colorby)
+    } else {
+        NULL
     }
-    return(cmds)
 })

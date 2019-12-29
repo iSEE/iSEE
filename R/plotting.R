@@ -186,7 +186,7 @@ names(.all_aes_values) <- .all_aes_names
     plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set, size_set)
 
     # Defining the color commands.
-    color_scale_cmd <- .getCommandsPlotColor(param_choices, plot_data$ColorBy)
+    color_scale_cmd <- .colorDotPlot(param_choices, plot_data$ColorBy)
 
     # Adding axes labels.
     plot_cmds[["labs"]] <- .build_labs(x=x_lab, y=y_lab, color=color_lab, shape=shape_lab, size=size_lab, title=title)
@@ -309,7 +309,7 @@ names(.all_aes_values) <- .all_aes_names
     plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set, size_set)
 
     # Defining the color commands.
-    color_scale_cmd <- .getCommandsPlotColor(param_choices, plot_data$ColorBy, x_aes="jitteredX")
+    color_scale_cmd <- .colorDotPlot(param_choices, plot_data$ColorBy, x_aes="jitteredX")
 
     # Adding axis labels.
     if (horizontal) {
@@ -488,7 +488,7 @@ plot.data$Y <- tmp;")
     plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set, size_set)
 
     # Defining the color commands.
-    color_scale_cmd <- .getCommandsPlotColor(param_choices, plot_data$ColorBy, x_aes="jitteredX", y_aes="jitteredY")
+    color_scale_cmd <- .colorDotPlot(param_choices, plot_data$ColorBy, x_aes="jitteredX", y_aes="jitteredY")
 
     # Adding the commands to color the points and the point selection area
     # (NULL if undefined).
@@ -769,50 +769,6 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 # Internal functions: aesthetics ----
 ############################################
 
-#' @title Assay axis labels
-#'
-#' @description
-#' Generate an axis label when assay data is used for colouring row- or column-based plots.
-#'
-#' @param se A \linkS4class{SingleCellExperiment} object.
-#' @param feature_id A integer index of the feature in \code{rownames(se)}.
-#' @param sample_id A integer index of the sample in \code{colnames(se)}.
-#' @param name A string containing the feature or sample name.
-#' @param assay_id The integer index of an assay in \code{assayNames(se)}.
-#' If \code{NULL}, only the feature name is reported.
-#' @param multiline A logical value that indicates whether feature/sample and assay names should appear on separate lines.
-#'
-#' @return A character value to use as axis label.
-#'
-#' @author Kevin Rue-Albrecht, Aaron Lun.
-#' @rdname INTERNAL_assay_axis_label
-#' @importFrom BiocGenerics rownames
-.feature_axis_label <- function(se, feature_id, assay_id, multiline=FALSE){
-    .assay_axis_label(se, rownames(se)[feature_id], assay_id, multiline=multiline)
-}
-
-#' @rdname INTERNAL_assay_axis_label
-#' @importFrom BiocGenerics colnames
-.sample_axis_label <- function(se, sample_id, assay_id, multiline=FALSE){
-    .assay_axis_label(se, colnames(se)[sample_id], assay_id, multiline=multiline)
-}
-
-#' @rdname INTERNAL_assay_axis_label
-#' @importFrom SummarizedExperiment assayNames
-.assay_axis_label <- function(se, name, assay_id, multiline=FALSE) {
-    if (is.null(assay_id)) {
-        return(name)
-    }
-
-    assay_name <- assayNames(se)[assay_id]
-    if (is.null(assay_name) || identical(assay_name, "")) {
-        assay_name <- paste("assay", assay_id)
-    }
-
-    sep <- ifelse(multiline, "\n", " ")
-    sprintf("%s%s(%s)", name, sep, assay_name)
-}
-
 #' Generate ggplot aesthetic instructions
 #'
 #' @param x A \code{logical} that indicates whether to enable \code{x} in the
@@ -960,18 +916,6 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         }
     }
     return(NULL)
-}
-
-# TODO: document
-.add_commands_coerce <- function(plot_env, data_cmds_store, fields) {
-
-    for (field0 in fields) {
-        values0 <- plot_env$plot.data[[field0]]
-        groupable0 <- .is_groupable(values0)
-        data_cmds_store <- .add_command(data_cmds_store, .coerce_type(values0, field0, as_numeric=!groupable0), name=sprintf("coerce_%s", field0))
-    }
-
-    return(data_cmds_store)
 }
 
 ############################################

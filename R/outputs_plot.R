@@ -53,8 +53,8 @@
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
     brush.opts <- brushOpts(.input_FUN(.brushField), resetOnNew=TRUE, delay=2000,
-                            direction=brush_direction, fill=brush_fill, stroke=brush_stroke,
-                            opacity=.brushFillOpacity)
+        direction=brush_direction, fill=brush_fill, stroke=brush_stroke,
+        opacity=.brushFillOpacity)
 
     dblclick <- .input_FUN(.zoomClick)
     clickopt <- .input_FUN(.lassoClick)
@@ -64,4 +64,49 @@
         plotOutput(plot_name, brush=brush.opts, dblclick=dblclick, click=clickopt, height=panel_height),
         color=brush_fill
     )
+}
+
+.add_extra_aesthetic_columns <- function(x, envir) {
+    collected <- list()
+    labels <- list()
+
+    # Add commands coercing X and Y to appropriate type
+    collected$coerce <- .coerce_plot_data_columns(envir, c("X", "Y"))
+
+    # Add commands adding optional columns to plot.data
+    out_color <- .addDotPlotDataColor(x, envir)
+    collected$color <- out_color$commands
+    labels$color <- out_color$label
+    if (!is.null(envir$plot.data$ColorBy)) {
+        collected$color <- c(collected$color, .coerce_plot_data_columns(envir, "ColorBy"))
+    }
+
+    out_shape <- .addDotPlotDataShape(x, envir)
+    collected$shape <- out_shape$commands
+    labels$shape <- out_shape$label
+
+    out_size <- .addDotPlotDataSize(x, envir)
+    collected$size <- out_size$commands
+    labels$size <- out_size$label
+
+    collected$facets <- .addDotPlotDataFacets(x, envir)
+
+    # Removing NAs in axes aesthetics as they mess up .process_selectby_choice.
+    clean_select_fields <- c("X", "Y", names(collected$facets))
+    clean_expression <- paste(sprintf("!is.na(%s)", clean_select_fields), collapse=" & ")
+    collected$na.rm <- sprintf("plot.data <- subset(plot.data, %s);", clean_expression)
+
+    collected$select.effect <- .addDotPlotDataSelected(x, envir)
+
+    list(commands=collected, labels=labels)
+}
+
+.coerce_plot_data_columns <- function(envir, fields) {
+    coerce_cmds <- character(0)
+    for (f in fields) {
+        v <- envir$plot.data[[f]]
+        coerce_cmds <- c(coerce_cmds, .coerce_type(v, f, as_numeric=!.is_groupable(v)))
+    }
+    .text_eval(coerce_cmds, envir)
+    coerce_cmds
 }

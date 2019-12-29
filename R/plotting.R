@@ -165,10 +165,10 @@ names(.all_aes_values) <- .all_aes_names
 #' @param is_subsetted A logical scalar specifying whether \code{plot_data} was subsetted during \code{\link{.process_selectby_choice}}.
 #' @param is_downsampled A logical scalar specifying whether \code{plot_data} was downsampled.
 #'
-#' @return A character vector of commands to be parsed and evaluated by \code{\link{.getCommandsPlot}} to produce the scatter plot.
+#' @return A character vector of commands to be parsed and evaluated by \code{\link{.generateDotPlot}} to produce the scatter plot.
 #'
 #' @details
-#' As described in \code{?\link{.getCommandsPlot}}, the \code{\link{.scatter_plot}} function should only contain commands to generate the final ggplot object.
+#' As described in \code{?\link{.generateDotPlot}}, the \code{\link{.scatter_plot}} function should only contain commands to generate the final ggplot object.
 #'
 #' \code{plot.data.all} will be used to define the plot boundaries when selecting points to restrict (see \code{?\link{.process_selectby_choice}}).
 #' If there is no restriction and we are downsampling for speed, \code{plot.data.pre} will be used to define the boundaries.
@@ -176,7 +176,7 @@ names(.all_aes_values) <- .all_aes_names
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_scatter_plot
 #' @seealso
-#' \code{\link{.getCommandsPlot}}
+#' \code{\link{.generateDotPlot}}
 #'
 #' @importFrom ggplot2 ggplot coord_cartesian theme_bw theme element_text
 .scatter_plot <- function(plot_data, param_choices, x_lab, y_lab, color_lab, shape_lab, size_lab, title, by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE) {
@@ -270,27 +270,27 @@ names(.all_aes_values) <- .all_aes_names
 #' required fields.
 #'
 #' For \code{\link{.violin_plot}}, a character vector of commands to be parsed
-#' and evaluated by \code{\link{.getCommandsPlot}} to produce the violin plot.
+#' and evaluated by \code{\link{.generateDotPlot}} to produce the violin plot.
 #'
 #' @details
 #' Any commands to modify \code{plot.data} in preparation for creating a violin plot should be placed in \code{\link{.violin_setup}},
 #' to be called by \code{\link{.generateDotPlotData}}.
 #' This includes swapping of X and Y variables when \code{horizontal=TRUE}, and adding of horizontal/vertical jitter to points.
 #'
-#' As described in \code{?\link{.getCommandsPlot}}, the \code{\link{.violin_plot}} function should only contain commands to generate the final ggplot object.
+#' As described in \code{?\link{.generateDotPlot}}, the \code{\link{.violin_plot}} function should only contain commands to generate the final ggplot object.
 #'
 #' \code{plot.data.all} will be used to define the y-axis boundaries (or x-axis boundaries when \code{horizontal=TRUE}).
 #' This ensures consistent plot boundaries when selecting points to restrict (see \code{?\link{.process_selectby_choice}}),
-#' or when downsampling for speed (see \code{?\link{.getCommandsPlot}}.
+#' or when downsampling for speed (see \code{?\link{.generateDotPlot}}.
 #'
-#' Similarly, \code{envir$plot.data.pre} will be used to create the violins (see \code{\link{.getCommandsPlot}}).
+#' Similarly, \code{envir$plot.data.pre} will be used to create the violins (see \code{\link{.generateDotPlot}}).
 #' This ensures consistent violins when downsampling for speed - otherwise the violins will be computed from the downsampled set of points.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson.
 #' @rdname INTERNAL_violin_plot
 #' @seealso
 #' \code{\link{.generateDotPlotData}},
-#' \code{\link{.getCommandsPlot}}
+#' \code{\link{.generateDotPlot}}
 #'
 #' @importFrom ggplot2 ggplot geom_violin coord_cartesian theme_bw theme
 #' coord_flip scale_x_discrete scale_y_discrete
@@ -458,7 +458,7 @@ plot.data$Y <- tmp;")
 #' @return
 #' For \code{\link{.square_setup}}, a character vector of commands to be parsed and evaluated by \code{\link{.generateDotPlotData}} to set up the required fields.
 #'
-#' For \code{\link{.square_plot}}, a character vector of commands to be parsed and evaluated by \code{\link{.getCommandsPlot}} to produce the square plot.
+#' For \code{\link{.square_plot}}, a character vector of commands to be parsed and evaluated by \code{\link{.generateDotPlot}} to produce the square plot.
 #'
 #' @details
 #' Any commands to modify \code{plot.data} in preparation for creating a square plot should be placed in \code{\link{.square_setup}}.
@@ -468,13 +468,13 @@ plot.data$Y <- tmp;")
 #' This means that the dimensions of the squares on the y-axis are directly comparable, without any need to compare areas.
 #' Similarly, the widths on the y-axis default are constant when there is only one x-axis level.
 #'
-#' As described in \code{?\link{.getCommandsPlot}}, the \code{\link{.square_plot}} function should only contain commands to generate the final ggplot object.
+#' As described in \code{?\link{.generateDotPlot}}, the \code{\link{.square_plot}} function should only contain commands to generate the final ggplot object.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson.
 #' @rdname INTERNAL_square_plot
 #' @seealso
 #' \code{\link{.generateDotPlotData}},
-#' \code{\link{.getCommandsPlot}}
+#' \code{\link{.generateDotPlot}}
 #'
 #' @importFrom ggplot2 ggplot geom_tile coord_cartesian theme_bw theme
 #' scale_x_discrete scale_y_discrete guides
@@ -615,8 +615,8 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson.
 #' @rdname INTERNAL_create_color_scale
 #' @seealso
-#' \code{\link{.getCommandsDataColor,RowDotPlot-method}},
-#' \code{\link{.getCommandsDataColor,ColumnDotPlot-method}}
+#' \code{\link{.colorDotPlot,RowDotPlot-method}},
+#' \code{\link{.colorDotPlot,ColumnDotPlot-method}}
 #'
 #' @importFrom ggplot2 scale_color_manual scale_fill_manual
 #' scale_color_gradientn scale_fill_gradientn
@@ -904,7 +904,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_coerce_type
 #' @seealso
-#' \code{\link{.getCommandsPlot}}.
+#' \code{\link{.generateDotPlot}}.
 .coerce_type <- function(values, field, as_numeric=TRUE) {
     if (as_numeric) {
         if (!is.numeric(values)) {
@@ -977,7 +977,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_self_brush_box
 #' @seealso
-#' \code{\link{.getCommandsPlot}}
+#' \code{\link{.generateDotPlot}}
 #'
 #' @importFrom ggplot2 geom_rect geom_text
 .self_select_boxes <- function(param_choices, flip=FALSE) {
@@ -1137,7 +1137,7 @@ label=%i, size=%s, colour='%s')",
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_self_lasso_path
 #' @seealso
-#' \code{\link{.getCommandsPlot}}
+#' \code{\link{.generateDotPlot}}
 #'
 #' @importFrom ggplot2 geom_point geom_polygon geom_path scale_shape_manual
 #' scale_fill_manual guides

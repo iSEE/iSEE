@@ -210,6 +210,9 @@ setMethod(".createObservers", "ColumnDotPlot", function(x, se, input, session, p
 #' @export
 setMethod(".multiSelectionDimension", "ColumnDotPlot", function(x) "column")
 
+###############################################################
+# See ?.addDotPlotDataColor for documentation on these methods.
+
 setMethod(".addDotPlotDataColor", "ColumnDotPlot", function(x, envir) {
     color_choice <- x[[.colorByField]]
 

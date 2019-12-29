@@ -410,7 +410,7 @@ setGeneric(".generateDotPlot", function(x, labels, envir) standardGeneric(".gene
 #' 
 #' @author Kevin Rue-Albrecht
 #' 
-#' @rdname INTERNAL_addDotPlotData
+#' @name INTERNAL_addDotPlotData
 NULL
 
 setGeneric(".addDotPlotDataColor", function(x, envir) standardGeneric(".addDotPlotDataColor"))

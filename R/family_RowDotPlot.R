@@ -210,6 +210,9 @@ setMethod(".createObservers", "RowDotPlot", function(x, se, input, session, pObj
 #' @export
 setMethod(".multiSelectionDimension", "RowDotPlot", function(x) "row")
 
+###############################################################
+# See ?.addDotPlotDataColor for documentation on these methods.
+
 setMethod(".addDotPlotDataColor", "RowDotPlot", function(x, envir) {
     color_choice <- x[[.colorByField]]
 

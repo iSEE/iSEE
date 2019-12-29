@@ -66,6 +66,21 @@
     )
 }
 
+#' Add extra aesthetic columns
+#'
+#' This is a simple utility that is broken out of \code{\link{.generateOutput,DotPlot-method}}.
+#' It purely serves to run all of the non-exposed generics that modify \code{plot.data}
+#' (e.g., \code{\link{.addDotPlotDataColor}}) and accumulate the resulting commands and labels.
+#'
+#' @param x An instance of a \linkS4class{DotPlot} class.
+#' @param envir An environment containing \code{plot.data}.
+#' 
+#' @return A list containing \code{commands}, a list of character vectors with R commands;
+#' and \code{labels}, a list of strings containing various labels to use in legends.
+#'
+#' @author Aaron Lun, Kevin Rue-Albrecht
+#'
+#' @rdname INTERNAL_add_extra_aesthetic_columns
 .add_extra_aesthetic_columns <- function(x, envir) {
     collected <- list()
     labels <- list()
@@ -103,6 +118,23 @@
     list(commands=collected, labels=labels)
 }
 
+#' Coerce \code{plot.data} columns
+#'
+#' Coerce key columns of \code{plot.data} to factors if they are categorical,
+#' otherwise make them numeric by any means possible.
+#' This ensures that downstream code only has to deal with factors or numbers.
+#'
+#' @param envir An environment containing the \code{plot.data} data.frame.
+#' @param fields A character vector of column names to coerce.
+#'
+#' @return
+#' The specified \code{plot.data} columns are coerced to factors or numeric values.
+#' A character vector is returned containing the commands to do so.
+#'
+#' @seealso
+#' \code{\link{.coerce_type}}, which generates the commands to do the coercion.
+#' @author Aaron Lun, Kevin Rue-Albrecht
+#' @rdname INTERNAL_coerce_plot_data_columns
 .coerce_plot_data_columns <- function(envir, fields) {
     coerce_cmds <- NULL
     for (f in fields) {

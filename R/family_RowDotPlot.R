@@ -246,10 +246,10 @@ setMethod(".addDotPlotDataColor", "RowDotPlot", function(x, envir) {
 setMethod(".addDotPlotDataShape", "RowDotPlot", function(x, envir) {
     shape_choice <- x[[.shapeByField]]
 
-    if (shape_choice == .shapeByColDataTitle) {
-        covariate_name <- x[[.shapeByColData]]
+    if (shape_choice == .shapeByRowDataTitle) {
+        covariate_name <- x[[.shapeByRowData]]
         label <- covariate_name
-        cmds <- sprintf("plot.data$ShapeBy <- colData(se)[, %s];", deparse(covariate_name))
+        cmds <- sprintf("plot.data$ShapeBy <- rowData(se)[, %s];", deparse(covariate_name))
 
     } else {
         return(NULL)

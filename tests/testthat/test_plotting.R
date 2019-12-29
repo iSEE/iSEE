@@ -325,14 +325,14 @@ test_that(".make_rowDataPlot/.square_plot produce a valid xy with color",{
 ########################################
 # .make_featAssayPlot/.scatter_plot ----
 
-test_that(".make_featAssayPlot/.scatter_plot produce a valid list",{
+test_that(".make_featAssayPlot/.violin_plot produce a valid list",{
     fdp <- pObjects$memory$FeatAssayPlot1
     p.out <- .generateOutput(fdp, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)
 
     # return value is a named list
     expect_type(p.out, "list")
-    expect_named(p.out, c("commands", "xy", "plot"))
+    expect_named(p.out, c("commands", "contents", "plot"))
 
     # cmd value is a named list
     expect_type(p.out$commands, "list")
@@ -346,8 +346,9 @@ test_that(".make_featAssayPlot/.scatter_plot produce a valid list",{
     expect_s3_class(p.out$plot, c("gg", "ggplot"))
 })
 
-test_that(".make_featAssayPlot/.scatter_plot produce a valid xy with color", {
+test_that(".make_featAssayPlot/.violin_plot produce a valid xy with color", {
     fdp <- pObjects$memory$FeatAssayPlot1
+    fdp[[iSEE:::.colorByField]] <- iSEE:::.colorByColDataTitle
 
     p.out <- .generateOutput(fdp, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)
@@ -389,7 +390,7 @@ test_that(".make_featAssayPlot works for groupable colour covariate", {
     p.out <- .generateOutput(fdp, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)
 
-    expect_true(any(grepl(selected_coldata, unlist(pObjects$commands))))
+    expect_true(any(grepl(selected_coldata, unlist(p.out$commands))))
     expect_named(p.out$contents, c("Y", "X", "ColorBy", "GroupBy", "jitteredX"))
 })
 
@@ -472,325 +473,290 @@ test_that(".make_colDataPlot/.create_plot can produce horizontal violins", {
     expect_false(any(grepl("coord_flip", unlist(p.out2$commands))))
 })
 
+########################################
 # .scatter_plot plot with zoom ----
 
 test_that(".scatter_plot works with zoom",{
+    params <- pObjects$memory$RedDimPlot1
+    ref <- .generateOutput(params, sce, all_memory=pObjects$memory, all_contents=pObjects$contents)
 
     # Identify range of data
-    params <- all_memory$redDimPlot[1, ]
-    x_range <- range(head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimXAxis]]]
-    ), 10)
-    y_range <- range(head(
-        reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimYAxis]]]
-    ), 10)
+    rd <- reducedDim(sce, params[[iSEE:::.redDimType]])
+    x_range <- range(head(rd[, params[[iSEE:::.redDimXAxis]]]), 10)
+    y_range <- range(head(rd[, params[[iSEE:::.redDimYAxis]]]), 10)
+
     # Set zoom min/max to the first two distinct values in X/Y direction
     zoom_range <- c(x_range, y_range)
     names(zoom_range) <- c("xmin","xmax","ymin","ymax")
-    # Set the zoom
-    all_memory$redDimPlot[[iSEE:::.zoomData]][1] <- list(zoom_range)
 
-    p.out <- iSEE:::.make_redDimPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
+    params[[iSEE:::.zoomData]] <- zoom_range
+    p.out <- .generateOutput(params, sce, all_memory=pObjects$memory, all_contents=pObjects$contents)
 
-    params <- all_memory$redDimPlot[1, ]
-    expected_xy <- data.frame(
-        X=reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimXAxis]]],
-        Y=reducedDim(sce, params[[iSEE:::.redDimType]])[, params[[iSEE:::.redDimYAxis]]],
-        row.names=colnames(sce)
-    )
-
-    expect_identical(p.out$contents, expected_xy)
-
+    expect_identical(p.out$contents, ref$contents)
+    expect_true(any(grepl("coord_cartesian.*xmin.*xmax", unlist(p.out$commands))))
+    expect_false(any(grepl("coord_cartesian.*xmin.*xmax", unlist(ref$commands))))
 })
 
+########################################
 # .make_colDataPlot/.violin_plot works with zoom ----
 
 test_that(".make_colDataPlot/.violin_plot works with zoom",{
+    cdp <- pObjects$memory$ColDataPlot1
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    chosen_x <- "driver_1_s"
+    cdp[[iSEE:::.colDataXAxisColData]] <- chosen_x
 
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "driver_1_s"
+    ref <- .generateOutput(cdp, sce, all_memory=pObjects$memory, all_contents=pObjects$contents)
 
     # Identify valid values
-    x_unique <- unique(as.numeric(as.factor(colData(sce)[,
-        all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData]
-        ])))
-    y_range <- range(head(colData(sce)[,
-        all_memory$colDataPlot[1, iSEE:::.colDataYAxis]
-        ]), 10)
+    x_unique <- unique(as.numeric(as.factor(colData(sce)[,chosen_x])))
+    chosen_y <- cdp[[iSEE:::.colDataYAxis]]
+    y_range <- range(head(colData(sce)[,chosen_y], 10))
+
     # Set zoom min/max to the first two distinct values in X/Y direction
-    zoom_range <- c(
-        sort(head(x_unique, 2)),
-        y_range
-    )
+    zoom_range <- c(sort(head(x_unique, 2)), y_range)
+
     # Extend the zoom to perfectly include the min/max boxes
     zoom_range <- zoom_range + c(-0.5, 0.5, 0, 0)
     names(zoom_range) <- c("xmin","xmax","ymin","ymax")
+
     # Set the zoom
-    all_memory$colDataPlot[[iSEE:::.zoomData]][1] <- list(zoom_range)
+    cdp[[iSEE:::.zoomData]] <- zoom_range
 
-    p.out <- iSEE:::.make_colDataPlot(id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
+    p.out <- .generateOutput(cdp, sce, all_memory=pObjects$memory, all_contents=pObjects$contents)
 
-    params <- all_memory$colDataPlot[1, ]
-    expected_xy <- data.frame(
-        Y=colData(sce)[, params[[iSEE:::.colDataYAxis]]],
-        X=colData(sce)[, params[[iSEE:::.colDataXAxisColData]]],
-        row.names=colnames(sce)
-    )
-
-    expect_identical(p.out$contents[, c("Y", "X")], expected_xy)
-
+    expect_identical(p.out$contents, ref$contents)
+    expect_true(any(grepl("coord_cartesian.*xmin.*xmax", unlist(p.out$commands))))
+    expect_false(any(grepl("coord_cartesian.*xmin.*xmax", unlist(ref$commands))))
 })
 
+########################################
 # .make_colDataPlot/.violin_plot works with horizontal zoom ----
 
 test_that(".make_colDataPlot/.violin_plot works with zoom",{
+    cdp <- pObjects$memory$ColDataPlot1
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    chosen_x <- "NREADS" 
+    cdp[[iSEE:::.colDataXAxisColData]] <- chosen_x
+    chosen_y <- "driver_1_s"
+    cdp[[iSEE:::.colDataYAxis]] <- chosen_y
 
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "NREADS"
-    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "driver_1_s"
+    ref <- .generateOutput(cdp, sce, all_memory=pObjects$memory, all_contents=pObjects$contents)
 
     # Identify valid values
-    x_range <- range(head(colData(sce)[,
-        all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData]
-        ]), 10)
-    y_unique <- unique(as.numeric(as.factor(colData(sce)[,
-        all_memory$colDataPlot[1, iSEE:::.colDataYAxis]
-        ])))
+    x_range <- range(head(colData(sce)[,chosen_x], 10))
+    y_unique <- unique(as.numeric(as.factor(colData(sce)[,chosen_y])))
+
     # Set zoom min/max to the first two distinct values in X/Y direction
-    zoom_range <- c(
-        x_range,
-        sort(head(y_unique, 2))
-    )
+    zoom_range <- c(x_range, sort(head(y_unique, 2)))
+
     # Extend the zoom to perfectly include the min/max boxes
     zoom_range <- zoom_range + c(0, 0, -0.5, 0.5)
     names(zoom_range) <- c("xmin","xmax","ymin","ymax")
+
     # Set the zoom
-    all_memory$colDataPlot[[iSEE:::.zoomData]][1] <- list(zoom_range)
+    cdp[[iSEE:::.zoomData]] <- zoom_range
 
-    p.out <- iSEE:::.make_colDataPlot(id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
+    p.out <- .generateOutput(cdp, sce, all_memory=pObjects$memory, all_contents=pObjects$contents)
 
-    params <- all_memory$colDataPlot[1, ]
-    # This requires some finesse to deal with horizontal plots
-    # where the X and Y coordinates are flipped to draw the violins
-    expected_xy <- data.frame(
-        Y=colData(sce)[, params[[iSEE:::.colDataXAxisColData]]], # Y/X switch
-        X=colData(sce)[, params[[iSEE:::.colDataYAxis]]], # X/Y switch
-        row.names=colnames(sce)
-    )
-
-    expect_identical(p.out$contents[, c("Y","X")], expected_xy)
-
+    expect_identical(p.out$contents, ref$contents)
+    expect_true(any(grepl("coord_flip.*xmin.*xmax", unlist(p.out$commands))))
+    expect_false(any(grepl("coord_flip.*xmin.*xmax", unlist(ref$commands))))
 })
 
+########################################
 # .make_colDataPlot/.square_plot works with zoom ----
 
 test_that(".make_colDataPlot/.square_plot works with zoom",{
+    cdp <- pObjects$memory$ColDataPlot1
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    chosen_x <- "passes_qc_checks_s" 
+    cdp[[iSEE:::.colDataXAxisColData]] <- chosen_x
+    chosen_y <- "driver_1_s"
+    cdp[[iSEE:::.colDataYAxis]] <- chosen_y
 
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxis] <- iSEE:::.colDataXAxisColData
-    all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData] <- "driver_1_s"
-    all_memory$colDataPlot[1, iSEE:::.colDataYAxis] <- "passes_qc_checks_s"
+    ref <- .generateOutput(cdp, sce, all_memory=pObjects$memory, all_contents=pObjects$contents)
 
     # Identify valid values
-    x_unique <- unique(as.numeric(as.factor(colData(sce)[,
-        all_memory$colDataPlot[1, iSEE:::.colDataXAxisColData]
-        ])))
-    y_unique <- unique(as.numeric(as.factor(colData(sce)[,
-        all_memory$colDataPlot[1, iSEE:::.colDataYAxis]
-        ])))
+    x_unique <- unique(as.numeric(as.factor(colData(sce)[,chosen_x])))
+    y_unique <- unique(as.numeric(as.factor(colData(sce)[,chosen_y])))
+
     # Set zoom min/max to the first two distinct values in X/Y direction
     zoom_range <- c(
         sort(head(x_unique, 2)),
         sort(head(y_unique, 2))
     )
+
     # Extend the zoom to perfectly include the min/max boxes
     zoom_range <- zoom_range + rep(c(-0.5, 0.5), times=2)
     names(zoom_range) <- c("xmin","xmax","ymin","ymax")
+
     # Set the zoom
-    all_memory$colDataPlot[[iSEE:::.zoomData]][1] <- list(zoom_range)
+    cdp[[iSEE:::.zoomData]] <- zoom_range
 
-    p.out <- iSEE:::.make_colDataPlot(
-        id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
+    p.out <- .generateOutput(cdp, sce, all_memory=pObjects$memory, all_contents=pObjects$contents)
 
-    params <- all_memory$colDataPlot[1, ]
-    expected_xy <- data.frame(
-        Y=colData(sce)[, params[[iSEE:::.colDataYAxis]]],
-        X=colData(sce)[, params[[iSEE:::.colDataXAxisColData]]],
-        row.names=colnames(sce)
-    )
-
-    expect_identical(p.out$contents[, c("Y","X")], expected_xy)
-
+    expect_identical(p.out$contents, ref$contents)
+    expect_true(any(grepl("coord_cartesian.*xmin.*xmax", unlist(p.out$commands))))
+    expect_false(any(grepl("coord_cartesian.*xmin.*xmax", unlist(ref$commands))))
 })
 
+########################################
 # .define_colorby_for_column_plot ----
 
 test_that(".define_colorby_for_column_plot handles feature selection", {
-    params <- all_memory$redDimPlot[1, ]
+    params <- pObjects$memory$RedDimPlot1
     params[[iSEE:::.colorByField]] <- iSEE:::.colorByFeatNameTitle
-    params[[iSEE:::.colorByFeatName]] <- 1L
+    rn <- rownames(sce)[1]
+    params[[iSEE:::.colorByFeatName]] <- rn
 
-    color_out <- iSEE:::.define_colorby_for_column_plot(params, sce)
-    expect_match(color_out$cmds, "assay(se, 2, withDimnames=FALSE)[1, ]", fixed=TRUE)
+    env <- new.env()
+    env$se <- sce
+    .generateDotPlotData(params, env)
+    color_out <- iSEE:::.addDotPlotDataColor(params, env)
 
-    expect_match(
-        color_out$label,
-        rownames(sce)[1],
-        fixed=TRUE
-    )
+    expect_match(color_out$commands, "assay", fixed=TRUE)
+    expect_match(color_out$commands, rn, fixed=TRUE)
+    expect_true(!is.null(env$plot.data$ColorBy))
 
-    expect_match(
-        color_out$label,
-        assayNames(sce)[params[[iSEE:::.colorByFeatNameAssay]]],
-        fixed=TRUE
-    )
+    expect_match(color_out$labels$ColorBy, rn, fixed=TRUE)
+    expect_match(color_out$labels$ColorBy, assayNames(sce)[1], fixed=TRUE)
 
-    color_add <- iSEE:::.add_color_to_column_plot(assay(sce)[1, ], params)
-
-    expect_match(
-        color_add[1],
-        "scale_color_gradientn",
-        fixed=TRUE
-    )
-
+    color_add <- iSEE:::.colorDotPlot(params, env$plot.data$ColorBy)
+    expect_match(color_add[1], "scale_color_gradientn", fixed=TRUE)
 })
 
 test_that(".define_colorby_for_column_plot handles sample selection", {
-    params <- all_memory$redDimPlot[1, ]
+    params <- pObjects$memory$RedDimPlot1
     params[[iSEE:::.colorByField]] <- iSEE:::.colorBySampNameTitle
-    params[1, iSEE:::.colorBySampName] <- 3L
+    cn <- colnames(sce)[3]
+    params[[ iSEE:::.colorBySampName]] <- cn 
 
-    color_out <- iSEE:::.define_colorby_for_column_plot(params, sce)
-    expect_identical(color_out, list(
-        label="SRR2140055",
-        cmds="plot.data$ColorBy <- logical(nrow(plot.data));\nplot.data[3L, 'ColorBy'] <- TRUE;"))
+    env <- new.env()
+    env$se <- sce
+    .generateDotPlotData(params, env)
+    color_out <- iSEE:::.addDotPlotDataColor(params, env)
 
-    color_add <- iSEE:::.add_color_to_column_plot(assay(sce)[1, ], params)
+    expect_match(color_out$commands, cn, fixed=TRUE)
+    expect_identical(color_out$labels$ColorBy, cn)
+    expect_true(!is.null(env$plot.data$ColorBy))
 
+    color_add <- iSEE:::.colorDotPlot(params, env$plot.data$ColorBy)
     expect_identical(color_add, c(
         "scale_color_manual(values=c(`FALSE`='black', `TRUE`=\"red\"), drop=FALSE) +",
         "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy == 'TRUE'), col=\"red\", alpha=1, size=5*1) +"))
 })
 
+test_that(".define_colorby_for_row_plot handles sample selection", {
+    params <- pObjects$memory$RowDataPlot1
+    params[[iSEE:::.colorByField]] <- iSEE:::.colorByFeatNameTitle
+    rn <- rownames(sce)[3]
+    params[[iSEE:::.colorByFeatName]] <- rn 
+
+    env <- new.env()
+    env$se <- sce
+    .generateDotPlotData(params, env)
+    color_out <- iSEE:::.addDotPlotDataColor(params, env)
+
+    expect_match(color_out$commands, rn, fixed=TRUE)
+    expect_identical(color_out$labels$ColorBy, rn)
+    expect_true(!is.null(env$plot.data$ColorBy))
+
+    color_add <- iSEE:::.colorDotPlot(params, env$plot.data$ColorBy)
+    expect_identical(color_add, c(
+        "scale_color_manual(values=c(`FALSE`='black', `TRUE`=\"red\"), drop=FALSE) +",
+        "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy == 'TRUE'), col=\"red\", alpha=1, size=5*1) +"))
+})
+
+test_that(".define_colorby_for_row_plot handles sample selection", {
+    params <- pObjects$memory$RowDataPlot1
+    params[[iSEE:::.colorByField]] <- iSEE:::.colorBySampNameTitle
+    cn <- colnames(sce)[3]
+    params[[iSEE:::.colorBySampName]] <- cn
+
+    env <- new.env()
+    env$se <- sce
+    .generateDotPlotData(params, env)
+    color_out <- iSEE:::.addDotPlotDataColor(params, env)
+
+    expect_match(color_out$commands, "assay", fixed=TRUE)
+    expect_match(color_out$commands, cn, fixed=TRUE)
+    expect_true(!is.null(env$plot.data$ColorBy))
+
+    expect_match(color_out$labels$ColorBy, cn, fixed=TRUE)
+    expect_match(color_out$labels$ColorBy, assayNames(sce)[1], fixed=TRUE)
+
+    color_add <- iSEE:::.colorDotPlot(params, env$plot.data$ColorBy)
+    expect_match(color_add[1], "scale_color_gradientn", fixed=TRUE)
+})
+
+########################################
 # define_shapeby_for_column_plot ----
 
 test_that("define_shapeby_for_column_plot produces the expected commands", {
-    params <- all_memory$redDimPlot[1, ]
+    params <- pObjects$memory$RedDimPlot1
     params[[iSEE:::.shapeByField]] <- iSEE:::.shapeByColDataTitle
     params[[iSEE:::.shapeByColData]] <- "driver_1_s"
 
-    color_out <- iSEE:::.define_shapeby_for_column_plot(params, sce)
-    expect_identical(color_out, list(
-        label="driver_1_s",
-        cmds="plot.data$ShapeBy <- colData(se)[, \"driver_1_s\"];"))
+    env <- new.env()
+    env$se <- sce
+    .generateDotPlotData(params, env)
+    shape_out <- iSEE:::.addDotPlotDataShape(params, env)
 
+    expect_true(!is.null(env$plot.data$ShapeBy))
+    expect_identical(shape_out$labels$ShapeBy, "driver_1_s")
+    expect_match(shape_out$commands, "driver_1_s", fixed=TRUE)
 })
 
-# .define_shapeby_for_row_plot ----
-
 test_that(".define_shapeby_for_row_plot produces the expected commands", {
-    params <- all_memory$rowDataPlot[1, ]
+    params <- pObjects$memory$RowDataPlot1
     params[[iSEE:::.shapeByField]] <- iSEE:::.shapeByRowDataTitle
     params[[iSEE:::.shapeByRowData]] <- "letters"
 
-    color_out <- iSEE:::.define_shapeby_for_row_plot(params, sce)
-    expect_identical(color_out, list(
-        label="letters",
-        cmds="plot.data$ShapeBy <- rowData(se)[, \"letters\"];"))
+    env <- new.env()
+    env$se <- sce
+    .generateDotPlotData(params, env)
+    shape_out <- iSEE:::.addDotPlotDataShape(params, env)
 
+    expect_true(!is.null(env$plot.data$ShapeBy))
+    expect_identical(shape_out$labels$ShapeBy, "letters")
+    expect_match(shape_out$commands, "letters", fixed=TRUE)
 })
 
+########################################
 # define_sizeby_for_column_plot ----
 
 test_that("define_sizeby_for_column_plot produces the expected commands", {
-    params <- all_memory$redDimPlot[1, ]
+    params <- pObjects$memory$RedDimPlot1
     params[[iSEE:::.sizeByField]] <- iSEE:::.sizeByColDataTitle
     params[[iSEE:::.sizeByColData]] <- "NREADS"
 
-    color_out <- iSEE:::.define_sizeby_for_column_plot(params, sce)
-    expect_identical(color_out, list(
-        label="NREADS",
-        cmds="plot.data$SizeBy <- colData(se)[, \"NREADS\"];"))
+    env <- new.env()
+    env$se <- sce
+    .generateDotPlotData(params, env)
+    size_out <- iSEE:::.addDotPlotDataSize(params, env)
 
-    all_memory_sb <- all_memory
-    all_memory_sb$redDimPlot[1, ] <- params
-    p.out <- iSEE:::.make_redDimPlot(
-        id=1, all_memory_sb, all_coordinates, sce, ExperimentColorMap())
-    expect_equivalent(p.out$commands$plot["points.point"],
-                      "geom_point(aes(x=X, y=Y, size=SizeBy), alpha=1, plot.data, color='black') +")
+    expect_true(!is.null(env$plot.data$SizeBy))
+    expect_identical(size_out$labels$SizeBy, "NREADS")
+    expect_match(size_out$commands, "NREADS", fixed=TRUE)
 })
 
-# .define_sizeby_for_row_plot ----
-
 test_that(".define_sizeby_for_row_plot produces the expected commands", {
-    params <- all_memory$rowDataPlot[1, ]
+    params <- pObjects$memory$RowDataPlot1
     params[[iSEE:::.sizeByField]] <- iSEE:::.sizeByRowDataTitle
     params[[iSEE:::.sizeByRowData]] <- "mean_count"
 
-    color_out <- iSEE:::.define_sizeby_for_row_plot(params, sce)
-    expect_identical(color_out, list(
-        label="mean_count",
-        cmds="plot.data$SizeBy <- rowData(se)[, \"mean_count\"];"))
+    env <- new.env()
+    env$se <- sce
+    .generateDotPlotData(params, env)
+    size_out <- iSEE:::.addDotPlotDataSize(params, env)
 
+    expect_true(!is.null(env$plot.data$SizeBy))
+    expect_identical(size_out$labels$SizeBy, "mean_count")
+    expect_match(size_out$commands, "mean_count", fixed=TRUE)
 })
 
-# .define_colorby_for_row_plot  ----
-
-test_that(".define_colorby_for_row_plot handles sample selection", {
-    params <- all_memory$rowDataPlot[1, ]
-    params[[iSEE:::.colorByField]] <- iSEE:::.colorBySampNameTitle
-    params[1, iSEE:::.colorBySampName] <- 3L
-
-    color_out <- iSEE:::.define_colorby_for_row_plot(params, sce)
-    expect_identical(color_out, list(
-        label="SRR2140055\n(tophat_counts)",
-        cmds="plot.data$ColorBy <- assay(se, 1, withDimnames=FALSE)[, 3];"))
-
-    color_add <- iSEE:::.add_color_to_row_plot(assay(sce)[1, ], params)
-
-    expect_identical(
-        color_add,
-        "scale_color_gradientn(colors=assayColorMap(colormap, 1L, discrete=FALSE)(21), na.value='grey50', limits=range(plot.data$ColorBy, na.rm=TRUE)) +")
-
-})
-
-# .gene_axis_label handles NULL rownames ----
-
-test_that(".gene_axis_label produces a valid axis label", {
-
-    selected_gene_int <- 1L
-    selected_assay <- 1L
-
-    lab_out <- iSEE:::.feature_axis_label(
-        sce, selected_gene_int, selected_assay, multiline=FALSE
-    )
-
-    expect_match(
-        lab_out,
-        rownames(sce)[1],
-        fixed=TRUE
-    )
-
-    expect_match(
-        lab_out,
-        "(tophat_counts)",
-        fixed=TRUE
-    )
-
-    # Handling unnamed assays.
-    assayNames(sce)[] <-""
-
-    lab_out <- iSEE:::.feature_axis_label(
-        sce, selected_gene_int, selected_assay, multiline=FALSE
-    )
-
-    expect_match(
-        lab_out,
-        "(assay 1)",
-        fixed=TRUE
-    )
-})
-
+########################################
 # .coerce_type handles things ----
 
 test_that(".coerce_type handles various inputs correctly", {

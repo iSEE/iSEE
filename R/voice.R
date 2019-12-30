@@ -16,7 +16,15 @@ prepareSpeechRecognition <- function(use=FALSE) {
 
 #' Nearest panel
 #'
-#' Identify the decoded panel name that is the smallest edit distance from a recorded voice input.
+#' @description
+#'
+#' \code{.nearestPanelType} identifies the panel type that is the smallest edit distance from a recorded voice input.
+#' \code{.nearestPanelName} identifies the panel full name that is the smallest edit distance from a recorded voice input.
+#'
+#' @details
+#' A panel full name is composed of a panel type and an identifier.
+#' The panel type is returned by \code{\link{.fullName}}, (e.g., "Reduced dimension plot").
+#' The panel identifier is an integer value set during the initialization of each panel, uniquely identifying each panel of each type.
 #'
 #' @param x Character string expected to match a panel type.
 #' @param panels A list of \code{Panel} objects.
@@ -26,12 +34,19 @@ prepareSpeechRecognition <- function(use=FALSE) {
 #'
 #' @rdname INTERNAL_nearest_decoded_panel
 #' @author Kevin Rue-Albrecht
-.nearestPanelType <- function(x, panels, max.edits=Inf) {
+.nearestPanelByType <- function(x, panels, max.edits=Inf) {
 
     available_types <- vapply(panels, .fullName, character(1))
 
-    matched_index <- .nearest_match(x, available_types, max.edits=max.edits)
-    panels[[matched_index]]
+    .nearest_match(x, available_types, max.edits=max.edits)
+}
+
+#' @rdname INTERNAL_nearest_decoded_panel
+.nearestPanelByName <- function(x, panels, max.edits=Inf) {
+
+    available_names <- vapply(panels, .getFullName, character(1))
+
+    .nearest_match(x, available_names, max.edits=max.edits)
 }
 
 #' Nearest panel type

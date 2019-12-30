@@ -24,7 +24,8 @@
             showNotification(sprintf("<Create panel> %s", voice), type="message")
         }
 
-        new_panel <- .nearestPanelType(voice, pObjects$reservoir, max.edits=Inf)
+        new_panel <- .nearestPanelByType(voice, pObjects$reservoir, max.edits=Inf)
+        new_panel <- pObjects$reservoir[new_panel]
 
         if (is.null(new_panel)) {
             return(NULL)
@@ -63,29 +64,25 @@
     observeEvent(input[[.voiceRemovePanelInput]], {
         voice <- input[[.voiceRemovePanelInput]]
         if (voice != "") {
-            showNotification(sprintf("<Hide panel> %s", voice), type="message")
+            showNotification(sprintf("<Remove panel> %s", voice), type="message")
         }
 
-        decodedPanel <- .nearestPanelType(voice, pObjects$memory, max.edits=Inf)
-        if (is.null(decodedPanel)) { return(NULL) }
-        encodedPanel <- .decoded2encoded(decodedPanel)
-        encodedSplit <- .split_encoded(encodedPanel)
+        target_idx <- .nearestPanelByName(voice, pObjects$memory, max.edits=Inf)
+        target_panel <- pObjects$memory[[target_idx]]
+        pObjects$memory[[target_idx]] <- NULL
 
-        # Remove the panel to the active table if it is currently there
-        all_active <- rObjects$active_panels
-        panelIndex <- which(all_active$Type==encodedSplit$Type & all_active$ID==encodedSplit$ID)
-        if (length(panelIndex) == 0) {
-            showNotification(sprintf("Panel %s is not currently active", decodedPanel), type="error")
-            return(NULL)
-        }
+        # TODO: refactor-start (run when creating panels too)
+        pObjects$selection_links <- .spawn_multi_selection_graph(pObjects$memory)
+        pObjects$aesthetics_links <- .spawn_single_selection_graph(pObjects$memory)
+        rObjects$rerender <- .increment_counter(rObjects$rerender)
+        # TODO: refactor-end (run when creating panels too)
 
-        rObjects$active_panels <- .hidePanel(encodedSplit$Type, encodedSplit$ID, all_active, pObjects)
-
-        showNotification(sprintf("<Hide panel> %s", decodedPanel), type="message")
+        target_full_name <- .getFullName(target_panel)
+        showNotification(sprintf("<Remove panel> %s", target_full_name), type="message")
         # Clear memory of last panel accessed, as this one is now inactive
         pObjects[[.voiceActivePanel]] <- NA_character_
         removeNotification(.voiceActivePanel, session)
-        showNotification("Panel memory cleared", type="message")
+        showNotification("Active panel cleared", type="message")
     })
 
     observeEvent(input[[.voiceControlPanelInput]], {
@@ -94,7 +91,7 @@
             showNotification(sprintf("<Control panel> %s", voice), type="message")
         }
 
-        decodedPanel <- .nearestPanelType(voice, pObjects$memory, max.edits=Inf)
+        decodedPanel <- .nearestPanelByName(voice, pObjects$memory, max.edits=Inf)
         if (is.null(decodedPanel)) { return(NULL) }
         encodedPanel <- .decoded2encoded(decodedPanel)
         encodedSplit <- .split_encoded(encodedPanel)
@@ -217,7 +214,7 @@
             showNotification(sprintf("<Receive from> %s", voice), type="message")
         }
 
-        decodedPanel <- .nearestPanelType(voice, pObjects$memory, max.edits=Inf)
+        decodedPanel <- .nearestPanelByName(voice, pObjects$memory, max.edits=Inf)
         if (is.null(decodedPanel)) { return(NULL) }
 
         updateSelectizeInput(session, paste(activePanel, .selectByPlot, sep="_"), selected=decodedPanel)
@@ -241,7 +238,7 @@
             showNotification(sprintf("<Send to> %s", voice), type="message")
         }
 
-        decodedPanel <- .nearestPanelType(voice, pObjects$memory, max.edits=Inf)
+        decodedPanel <- .nearestPanelByName(voice, pObjects$memory, max.edits=Inf)
         if (is.null(decodedPanel)) { return(NULL) }
         encodedPanel <- .decoded2encoded(decodedPanel)
         encodedSplit <- .split_encoded(encodedPanel)

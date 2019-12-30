@@ -241,33 +241,45 @@
 
         updateSelectizeInput(session, paste0(active_encoded, "_", select_field), selected=target_encoded_name)
 
-        showNotification(sprintf("<Receive from> %s", names(target_encoded_name)), type="message")
+        showNotification(sprintf("<Receive from> %s", target_full_name), type="message")
     })
 
     observeEvent(input[[.voiceSendToInput]], {
         # TODO: refactor next 4 lines into function
         active_panel <- pObjects[[.voiceActivePanel]]
-        if (is.na(activePanel)) {
+        if (is.na(active_panel)) {
             showNotification("No active panel", type="error")
             return(NULL)
         }
-
-        activeSplit <- .split_encoded(activePanel)
-        activeDecoded <- .decode_panel_name(activeSplit$Type, activeSplit$ID)
 
         voice <- input[[.voiceSendToInput]]
         if (voice != "") {
             showNotification(sprintf("<Send to> %s", voice), type="message")
         }
 
-        decodedPanel <- .nearestPanelByName(voice, pObjects$memory, max.edits=Inf)
-        if (is.null(decodedPanel)) { return(NULL) }
-        encodedPanel <- .decoded2encoded(decodedPanel)
-        encodedSplit <- .split_encoded(encodedPanel)
+        active_panel <- pObjects$memory[[active_panel]]
+        active_encoded <- .getEncodedName(active_panel)
+        active_full_name <- .getFullName(active_panel)
+        names(active_encoded) <- active_full_name
 
-        updateSelectizeInput(session, paste(encodedPanel, .selectByPlot, sep="_"), selected=activeDecoded)
+        target_idx <- .nearestPanelByName(voice, pObjects$memory, max.edits=Inf)
+        if (is.na(target_idx)) { return(NULL) }
 
-        showNotification(sprintf("<Send to> %s", decodedPanel), type="message")
+        target_panel <- pObjects$memory[[target_idx]]
+        target_encoded_name <- .getEncodedName(target_panel)
+        target_full_name <- .getFullName(target_panel)
+
+        if (is(active_panel, "ColumnDotPlot")) {
+            select_field <- .selectColSource
+        } else if (is(active_panel, "RowDotPlot")) {
+            select_field <- .selectRowSource
+        } else {
+            return(NULL)
+        }
+
+        updateSelectizeInput(session, paste0(target_encoded_name, "_", select_field), selected=active_encoded)
+
+        showNotification(sprintf("<Send to> %s", target_full_name), type="message")
     })
 
     observeEvent(input[["voiceGoodBoyInput"]], {

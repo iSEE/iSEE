@@ -63,12 +63,22 @@
         # to the new 'full_tab' - not good.
         selectRows(dataTableProxy(panel_name, deferUntilFlush=FALSE), NULL)
 
+        # Dummying up a variable and hiding it to force datatable to show something.
+        # when there are no columns.
+        if (ncol(full_tab)==0L) {
+            full_tab$DUMMY <- integer(nrow(full_tab))
+            columnDefs <- list(list(targets=1L, visible=FALSE))
+        } else {
+            columnDefs <- NULL
+        }
+
         datatable(
             full_tab, filter="top", rownames=TRUE,
             options=list(
                 search=list(search=search, smart=FALSE, regex=TRUE, caseInsensitive=FALSE),
                 searchCols=c(list(NULL), search_col), # row names are the first column!
-                scrollX=TRUE),
+                scrollX=TRUE,
+                columnDefs=columnDefs),
             selection=selection
         )
     })

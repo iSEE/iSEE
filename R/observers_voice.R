@@ -130,21 +130,29 @@
             showNotification(sprintf("<Color using> %s", voice), type="message")
         }
 
-        activeSplit <- .split_encoded(activePanel)
+        active_panel <- pObjects$memory[[activePanel]]
 
         # Check if the choice matches one of the available titles
-        if (activeSplit$Type %in% row_point_plot_types) {
+        if (is(active_panel, "RowDotPlot")) {
+            covariates <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
             create_FUN <- .define_color_options_for_row_plots
-        } else {
+        } else if (is(active_panel, "ColumnDotPlot")) {
+            covariates <- .get_common_info(se, "ColumnDotPlot")$valid.colData.names
             create_FUN <- .define_color_options_for_column_plots
+        } else {
+            return(NULL)
         }
-        choices <- create_FUN(se)
+        all_assays <- .get_common_info(se, "DotPlot")$valid.assay.names
+
+        choices <- create_FUN(se, covariates, all_assays)
         matchedChoice <- .nearestValidChoice(voice, choices, max.edits=Inf)
         if (length(matchedChoice) != 1L) {
             return(NULL)
         }
 
-        updateSelectizeInput(session, paste(activePanel, "ColorBy", sep="_"), selected=matchedChoice)
+        encoded_name <- .getEncodedName(active_panel)
+
+        updateSelectizeInput(session, paste(encoded_name, "ColorBy", sep="_"), selected=matchedChoice)
         showNotification(sprintf("<Color using> %s", matchedChoice), type="message")
     })
 

@@ -169,9 +169,10 @@
             showNotification(sprintf("<Color by> %s", voice), type="message")
         }
 
-        activeSplit <- .split_encoded(activePanel)
+        active_panel <- pObjects$memory[[activePanel]]
+        encoded_name <- .getEncodedName(active_panel)
 
-        colorby_field <- paste0(activeSplit$Type, activeSplit$ID, "_", .colorByField)
+        colorby_field <- paste0(encoded_name, "_", .colorByField)
         colorby_title <- isolate(input[[colorby_field]])
 
         # Fetch the available choices
@@ -199,7 +200,7 @@
             return(NULL)
         }
 
-        updateSelectizeInput(session, paste(activePanel, colorby_param, sep="_"),
+        updateSelectizeInput(session, paste(encoded_name, colorby_param, sep="_"),
             selected=matchedChoice, choices=choices, server=TRUE)
         showNotification(sprintf("<Color by> %s", matchedChoice), type="message")
     })

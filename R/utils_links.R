@@ -18,7 +18,7 @@
 #' These functions are used during app initialization as well as to reconstruct the graph after panel reorganization.
 #'
 #' @rdname INTERNAL_spawn_graph
-#' @importFrom igraph make_graph
+#' @importFrom igraph make_graph is_dag
 .spawn_multi_selection_graph <- function(all_memory) {
     graph <- make_graph(edges=character(0), isolates=names(all_memory))
 
@@ -29,6 +29,10 @@
                 graph <- .add_interpanel_link(graph, x, instance[[f]], field=f)
             }
         }
+    }
+
+    if (!is_dag(graph)) {
+        stop("multiple selection dependencies cannot be cyclic")
     }
 
     graph

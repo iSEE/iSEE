@@ -20,8 +20,23 @@ test_that(".identical_brushes works as expected", {
     expect_false(iSEE:::.identical_brushes(old_brush=example, new_brush=NULL))
     expect_true(iSEE:::.identical_brushes(old_brush=example, new_brush=example))
 
+    # Confirming correct failure.
+    expect_false(iSEE:::.identical_brushes(list(xmin=1, xmax=2, ymin=10, ymax=20),
+        list(xmin=1, xmax=2, ymin=11, ymax=20)))
+    expect_false(iSEE:::.identical_brushes(list(xmin=1, xmax=2, ymin=10, ymax=20),
+        list(xmin=1, xmax=2, ymin=10, ymax=21)))
+    expect_false(iSEE:::.identical_brushes(list(xmin=1, xmax=2, ymin=10, ymax=20),
+        list(xmin=0, xmax=2, ymin=10, ymax=20)))
+    expect_false(iSEE:::.identical_brushes(list(xmin=1, xmax=2, ymin=10, ymax=20),
+        list(xmin=1, xmax=3, ymin=10, ymax=20)))
+
     # Robust to small deviations.
     example2 <- example
     example2$xmin <- example2$xmin + 1e-8
     expect_true(iSEE:::.identical_brushes(old_brush=example, new_brush=example2))
+
+    expect_true(iSEE:::.identical_brushes(list(xmin=1, xmax=2, ymin=10, ymax=20),
+        list(xmin=1, xmax=2.0000001, ymin=10, ymax=20)))
+    expect_false(iSEE:::.identical_brushes(list(xmin=1, xmax=2, ymin=10, ymax=20),
+        list(xmin=1, xmax=2.0001, ymin=10, ymax=20)))
 })

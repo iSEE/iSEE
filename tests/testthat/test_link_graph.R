@@ -1,5 +1,5 @@
 # This script tests the code related to the creation of the point transmission infrastructure.
-# library(iSEE); library(testthat); source("setup_sce.R"); source("setup_other.R"); source("test_selection_links.R")
+# library(iSEE); library(testthat); source("setup_sce.R"); source("setup_other.R"); source("test_link_graph.R")
 
 context("selection_links")
 
@@ -119,38 +119,56 @@ test_that("evaluation order works properly", {
     expect_identical(eval_order, c("RedDimPlot1", "ColDataPlot1", "FeatAssayPlot1"))
 })
 
-test_that(".transmitted_selection detects whether a brush is active", {
-    all_memory <- pObjects$memory
+test_that("graph adding and deleting responds to fields", {
+    # Adding to an existing link augments the available fields.
+    id <- igraph::get.edge.ids(g, c("RedDimPlot1", "ColDataPlot1"))
+    expect_identical(igraph::E(g)$fields[[id]], iSEE:::.selectColSource)
+    
+    g2 <- iSEE:::.add_interpanel_link(g, "ColDataPlot1", "RedDimPlot1", "BLAH")
+    expect_identical(igraph::E(g2)$fields[[id]], c(iSEE:::.selectColSource, "BLAH"))
 
-    # No point selection
-    all_memory$RedDimPlot1[[iSEE:::.brushData]] <- list()
-    out <- iSEE:::.transmitted_selection("ColDataPlot1", "RedDimPlot1", all_memory, 
-        select_type="Active", select_saved=0L)
-    expect_false(out)
+    # Removing a field from a link removes the fields.
+    g3 <- iSEE:::.delete_interpanel_link(g2, "ColDataPlot1", "RedDimPlot1", "BLAH")
+    expect_identical(igraph::E(g3)$fields[[id]], iSEE:::.selectColSource)
 
-    # Active point selection (non-empty brush or lasso)
-    all_memory$RedDimPlot1[[iSEE:::.brushData]] <- list(a=1, b=2)
-    out <- iSEE:::.transmitted_selection("ColDataPlot1", "RedDimPlot1", all_memory, 
-        select_type="Active", select_saved=0L)
-    expect_true(out)
+    # Removing all fields from a link removes the link.
+    g4 <- iSEE:::.delete_interpanel_link(g3, "ColDataPlot1", "RedDimPlot1", iSEE:::.selectColSource)
+    expect_identical(igraph::get.edge.ids(g4, c("RedDimPlot1", "ColDataPlot1")), 0)
 
-    # Panel linked to no transmitter (---)
-    out <- iSEE:::.transmitted_selection("ColDataPlot1", "---", all_memory, 
-        select_type="Active", select_saved=0L)
-    expect_false(out)
+    # Adding a completely new link works as well.
+    id <- igraph::get.edge.ids(g, c("RedDimPlot1", "RedDimPlot2"))
+    expect_identical(id, 0)
 
-    # missing "select_type" argument requires to "SelectMultiSaved"
-    all_memory$RedDimPlot1[[iSEE:::.multiSelectHistory]] <- list(list(a=1, b=2))
-    out <- iSEE:::.transmitted_selection("ColDataPlot1", "RedDimPlot1", all_memory,
-        select_type="Union", select_saved=0L)
-    expect_true(out)
+    g5 <- iSEE:::.add_interpanel_link(g, "RedDimPlot2", "RedDimPlot1", "YAY")
 
-    # "select_type" argument "Saved"
-    out <- iSEE:::.transmitted_selection("ColDataPlot1", "RedDimPlot1", all_memory,
-        select_type="Saved", select_saved=0L)
-    expect_false(out)
+    id <- igraph::get.edge.ids(g5, c("RedDimPlot1", "RedDimPlot2"))
+    expect_identical(igraph::E(g5)$fields[[id]], "YAY")
 
-    out <- iSEE:::.transmitted_selection("ColDataPlot1", "RedDimPlot1", all_memory,
-        select_type="Saved", select_saved=1L)
-    expect_true(out)
+    # Adding or removing links involving non-existent parents has no effect.
+    expect_identical(iSEE:::.add_interpanel_link(g, "ColDataPlot1", "---", "BLAH")[], g[])
+    expect_identical(iSEE:::.delete_interpanel_link(g, "ColDataPlot1", "---", "BLAH")[], g[])
+})
+
+test_that("aesthetics links construction works as expected", {
+    memory <- list(
+        RedDimPlot(ColorByRowTable="RowStatTable1"),
+        RowStatTable(),
+        FeatAssayPlot(YAxisRowTable="RowDataPlot1"),
+        RowDataPlot(),
+        SampAssayPlot(XAxisColTable="ColStatTable1"),
+        ColStatTable()
+    )
+
+    pObjects <- mimic_live_app(sce, memory)
+    g <- pObjects$aesthetics_links
+
+    # All of the correct slots corresponding to each *Table slot are registered:
+    ids <- igraph::get.edge.ids(g, c("RowStatTable1", "RedDimPlot1"))
+    expect_identical(igraph::E(g)$fields[[ids]], "ColorByFeatName")
+
+    ids <- igraph::get.edge.ids(g, c("RowDataPlot1", "FeatAssayPlot1"))
+    expect_identical(igraph::E(g)$fields[[ids]], "YAxisFeatName")
+
+    ids <- igraph::get.edge.ids(g, c("ColStatTable1", "SampAssayPlot1"))
+    expect_identical(igraph::E(g)$fields[[ids]], "XAxisSampName")
 })

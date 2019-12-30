@@ -40,3 +40,39 @@ test_that(".identical_brushes works as expected", {
     expect_false(iSEE:::.identical_brushes(list(xmin=1, xmax=2, ymin=10, ymax=20),
         list(xmin=1, xmax=2.0001, ymin=10, ymax=20)))
 })
+
+test_that(".transmitted_selection detects whether a brush is active", {
+    all_memory <- pObjects$memory
+
+    # No point selection
+    all_memory$RedDimPlot1[[iSEE:::.brushData]] <- list()
+    out <- iSEE:::.transmitted_selection("ColDataPlot1", "RedDimPlot1", all_memory,
+        select_type="Active", select_saved=0L)
+    expect_false(out)
+
+    # Active point selection (non-empty brush or lasso)
+    all_memory$RedDimPlot1[[iSEE:::.brushData]] <- list(a=1, b=2)
+    out <- iSEE:::.transmitted_selection("ColDataPlot1", "RedDimPlot1", all_memory,
+        select_type="Active", select_saved=0L)
+    expect_true(out)
+
+    # Panel linked to no transmitter (---)
+    out <- iSEE:::.transmitted_selection("ColDataPlot1", "---", all_memory,
+        select_type="Active", select_saved=0L)
+    expect_false(out)
+
+    # missing "select_type" argument requires to "SelectMultiSaved"
+    all_memory$RedDimPlot1[[iSEE:::.multiSelectHistory]] <- list(list(a=1, b=2))
+    out <- iSEE:::.transmitted_selection("ColDataPlot1", "RedDimPlot1", all_memory,
+        select_type="Union", select_saved=0L)
+    expect_true(out)
+
+    # "select_type" argument "Saved"
+    out <- iSEE:::.transmitted_selection("ColDataPlot1", "RedDimPlot1", all_memory,
+        select_type="Saved", select_saved=0L)
+    expect_false(out)
+
+    out <- iSEE:::.transmitted_selection("ColDataPlot1", "RedDimPlot1", all_memory,
+        select_type="Saved", select_saved=1L)
+    expect_true(out)
+})

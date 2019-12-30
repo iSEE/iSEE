@@ -29,10 +29,8 @@ prepareSpeechRecognition <- function(use=FALSE) {
 .nearestPanelType <- function(x, panels, max.edits=Inf) {
 
     available_types <- vapply(panels, .fullName, character(1))
-    print(available_types)
 
     matched_index <- .nearest_match(x, available_types, max.edits=max.edits)
-    print(matched_index)
     panels[[matched_index]]
 }
 

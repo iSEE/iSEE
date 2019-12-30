@@ -114,8 +114,8 @@ As a proof of concept, only a subset of spoken commands are currently implemente
 Note that in the commands below, words in brackets are optional.
 
 - "**Show active panel**": shows a persistent notification displaying the name of the panel currently under vocal control.
-- "**Show panel <Reduced dimension plot 1>**": Shows and takes vocal control of the requested panel.
-- "**Hide panel <Reduced dimension plot 1>**": Hides the requested panel and removes any panel from vocal control.
+- "**Create panel <Reduced dimension plot>**": Adds a new panel of the requested type to the GUI and immediately takes vocal control of it.
+- "**Remove panel <Reduced dimension plot 1>**": Removes the requested panel from the GUI. If the panel was under vocal control, clears vocal control.
 - "**Control panel <Reduced dimension plot 1>**": Takes vocal control of the requested panel.
 - "**Colour using <Column data | Feature name | ...>**": Changes the colouring mode of the panel under vocal control.
 - "**Colour by <...>**": Changes the colouring covariate (e.g. gene name, `colData` column name) of the panel under vocal control.

@@ -1,4 +1,4 @@
-var voiceAddPanelInput = "voiceAddPanel";
+var voiceCreatePanelInput = "voiceCreatePanel";
 var voiceRemovePanelInput = "voiceRemovePanel";
 
 var voiceControlPanelInput = "voiceControlPanel";
@@ -14,8 +14,8 @@ var initVoice = function() {
         var showActivePanelCount = 0;
         var goodBoyCount = 0;
         var commands = {
-            'add panel *panel': function(panel) {
-                Shiny.onInputChange(voiceAddPanelInput, panel);
+            'create panel *panel': function(panel) {
+                Shiny.onInputChange(voiceCreatePanelInput, panel);
             },
             'remove panel *panel': function(panel) {
                 Shiny.onInputChange(voiceRemovePanelInput, panel);

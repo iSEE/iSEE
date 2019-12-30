@@ -18,10 +18,10 @@
 #' showNotification removeNotification
 #' @rdname INTERNAL_create_voice_observers
 .create_voice_observers <- function(input, output, session, se, pObjects, rObjects) {
-    observeEvent(input[[.voiceAddPanelInput]], {
-        voice <- input[[.voiceAddPanelInput]]
+    observeEvent(input[[.voiceCreatePanelInput]], {
+        voice <- input[[.voiceCreatePanelInput]]
         if (voice != "") {
-            showNotification(sprintf("<Add panel> %s", voice), type="message")
+            showNotification(sprintf("<Create panel> %s", voice), type="message")
         }
 
         new_panel <- .nearestPanelType(voice, pObjects$reservoir, max.edits=Inf)
@@ -55,7 +55,7 @@
         # Memorize the added panel identity (only if the command succeeded)
         added_full_name <- .getFullName(new_panel)
         added_encoded_name <- .getEncodedName(new_panel)
-        showNotification(sprintf("<Add panel> %s", added_full_name), type="message")
+        showNotification(sprintf("<Create panel> %s", added_full_name), type="message")
         pObjects[[.voiceActivePanel]] <- added_encoded_name
         showNotification(sprintf("Active panel: %s", added_full_name), id=.voiceActivePanel, duration=NULL)
     })

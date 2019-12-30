@@ -49,7 +49,6 @@ prepareSpeechRecognition <- function(use=FALSE) {
 #' @author Kevin Rue-Albrecht
 .nearest_match <- function(x, y, max.edits=Inf) {
     distances <- adist(x, y, partial=FALSE, ignore.case=TRUE)
-    print(distances)
     distances <- distances[1, ]
 
     # refuse the nearest match if excessively different

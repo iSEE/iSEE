@@ -18,51 +18,22 @@ prepareSpeechRecognition <- function(use=FALSE) {
 #'
 #' Identify the decoded panel name that is the smallest edit distance from a recorded voice input.
 #'
-#' @param x Character string expected to match a decoded panel identifier.
-#' See Details.
+#' @param x Character string expected to match a panel type.
+#' @param panels A list of \code{Panel} objects.
 #' @param max.edits Maximal number of mismatches allowed.
-#' @param memory A list of DataFrames, where each DataFrame corresponds to a panel type and contains the initial settings for each individual panel of that type.
-#'
-#' @details
-#' A panel identifier is composed of:
-#' \itemize{
-#' \item a panel type (see \code{\link{panelTypes}}).
-#' \item a numeral identifier within panels of that type.
-#' }
 #'
 #' @return Decoded name of the matched panel identifier.
 #'
 #' @rdname INTERNAL_nearest_decoded_panel
 #' @author Kevin Rue-Albrecht
-.nearestDecodedPanel <- function(x, memory, max.edits=Inf) {
-    # Split the last word apart: it should be a number (e.g. "one" or "22")
-    voiceType <- gsub(" [[:alnum:]]+$", "", x)
-    voiceId <- gsub(".* ([[:alnum:]]+)$", "\\1", x)
+.nearestPanelType <- function(x, panels, max.edits=Inf) {
 
-    decodedType <- .nearestPanelType(voiceType, max.edits=max.edits)
-    if (length(decodedType) != 1L) {
-        return(NULL)
-    }
-    encodedType <- panelCodes[[decodedType]]
+    available_types <- vapply(panels, .fullName, character(1))
+    print(available_types)
 
-    # Then identify the numeral index of the requested panel amongst the available ones
-    maxPanels <- nrow(memory[[encodedType]])
-    # Coerce the recorded word to a numeral
-    # Numbers that would take more than two words to pronounce are already recorded as digits
-    voiceId <- ifelse(.isDigits(voiceId), as.numeric(voiceId), .digitalizeNumbers(voiceId))
-    if (is.na(voiceId)) {
-        return(NULL)
-    }
-
-    if (voiceId > maxPanels) {
-        #nocov start
-        showNotification(sprintf("'%s' max is %i", decodedType, maxPanels), type="error")
-        return(NULL)
-        #nocov end
-    }
-
-    decodedPanel <- paste (decodedType, voiceId)
-    decodedPanel
+    matched_index <- .nearest_match(x, available_types, max.edits=max.edits)
+    print(matched_index)
+    panels[[matched_index]]
 }
 
 #' Nearest panel type
@@ -70,24 +41,26 @@ prepareSpeechRecognition <- function(use=FALSE) {
 #' Identify the panel type name that is the smallest edit distance from a recorded voice input.
 #'
 #' @param x Character string expected to match a panel type.
+#' @param y Character vector of available panel types (candidates for match).
 #' @param max.edits Maximal number of mismatches allowed.
 #'
-#' @return Encoded name of the matched panel type.
+#' @return Index of the nearest match in \code{y}.
 #'
 #' @rdname INTERNAL_nearest_panel_type
 #' @importFrom utils adist
 #' @author Kevin Rue-Albrecht
-.nearestPanelType <- function(x, max.edits=5) {
-    distances <- adist(x, y = panelTypes, partial=FALSE, ignore.case=TRUE)[1, ]
+.nearest_match <- function(x, y, max.edits=Inf) {
+    distances <- adist(x, y, partial=FALSE, ignore.case=TRUE)
+    print(distances)
+    distances <- distances[1, ]
 
-    # we don't want the "closest" at any cost (it can still be very far)
+    # refuse the nearest match if excessively different
     nearEnough <- distances[which(distances <= max.edits)]
     if (length(nearEnough) == 0L){
         return(character(0))
     }
 
-    nearestMatch <- panelTypes[names(which.min(nearEnough))]
-    nearestMatch
+    which.min(nearEnough)
 }
 
 #' Nearest valid choice
@@ -124,7 +97,7 @@ prepareSpeechRecognition <- function(use=FALSE) {
 }
 
 #' @rdname INTERNAL_nearestValidChoice
-.nearestValidNamedChoice <- function(x, choices, max.edits=5) {
+.nearestValidNamedChoice <- function(x, choices, max.edits=Inf) {
     nearestMatch <- .nearestValidChoice(x, names(choices), max.edits)
     choices[nearestMatch]
 }
@@ -201,24 +174,28 @@ prepareSpeechRecognition <- function(use=FALSE) {
 #' @rdname INTERNAL_digitalize_numbers
 #'
 #' @description
-#' \code{.wordIsDigits} tests whether inputs are entirely composed of digits.
+#' \code{.allDigits} tests whether inputs are entirely composed of digits.
 #'
-#' \code{.digitalizeNumbers} substitutes words from "one" to "ten" into the corresponding numeral.
+#' \code{.digitalizeText} substitutes words from "one" to "ten" into the corresponding numeral.
+#' Selected near-matches are also converted (e.g., "too" is substituted to "2").
 #'
 #' @param x Character string.
 #'
 #' @return
 #'
-#' \code{.wordIsDigits} returns \code{TRUE} for each input entirely composed of digits.
+#' \code{.allDigits} returns \code{TRUE} for each input entirely composed of digits
 #'
-#' \code{.digitalizeNumbers} returns the substituted \code{character} string.
+#' \code{.digitalizeText} returns the substituted \code{character} string as a numeric scalar.
 #'
 #' @author Kevin Rue-Albrecht
-.digitalizeNumbers <- function(x) {
-    as.numeric(.numbersText[match(tolower(x), names(.numbersText))])
+.digitalizeText <- function(x) {
+    ifelse(
+        .allDigits(x),
+        as.numeric(x),
+        as.numeric(.numbersText[match(tolower(x), names(.numbersText))]))
 }
 
-#' @rdname INTERNAL_digitalize_numbers
-.isDigits <- function(x) {
+#' @rdname INTERNAL_digitalizeText
+.allDigits <- function(x) {
     grepl("^[[:digit:]]+$", x)
 }

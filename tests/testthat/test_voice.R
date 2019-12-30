@@ -86,21 +86,21 @@ test_that("prepareSpeechRecognition loads", {
 
 })
 
-# .digitalizeNumbers ----
+# .digitalizeText ----
 
 test_that("numbers can be numeralized from text", {
 
-    out <- .digitalizeNumbers("one")
+    out <- .digitalizeText("one")
     expect_identical(out, 1)
 
-    out <- .digitalizeNumbers("two")
+    out <- .digitalizeText("two")
     expect_identical(out, 2)
 
     # allow some vocal typos
-    out <- .digitalizeNumbers("to")
+    out <- .digitalizeText("to")
     expect_identical(out, 2)
 
-    out <- .digitalizeNumbers("too")
+    out <- .digitalizeText("too")
     expect_identical(out, 2)
 
 })
@@ -146,35 +146,35 @@ test_that(".hidePanel removes a row from active panels and associated table link
 
 })
 
-# .nearestPanelType ----
+# .nearestPanelNameType ----
 
-test_that(".nearestPanelType handles vocal typos", {
+test_that(".nearestPanelNameType handles vocal typos", {
 
-    out <- .nearestPanelType("definitely not a proper panel type")
+    out <- .nearestPanelNameType("definitely not a proper panel type")
     expect_identical(out, character(0L))
 
-    out <- .nearestPanelType("reduce dimension plus")
+    out <- .nearestPanelNameType("reduce dimension plus")
     expect_identical(out, c(redDimPlot="Reduced dimension plot"))
 
-    out <- .nearestPanelType("row statistics table")
+    out <- .nearestPanelNameType("row statistics table")
     expect_identical(out, c(rowStatTable = "Row statistics table"))
 
-    out <- .nearestPanelType("row statistics plot")
+    out <- .nearestPanelNameType("row statistics plot")
     expect_identical(out, c(rowStatTable = "Row statistics table"))
     # NOTE: closer than row data plot
 })
 
-# .nearestDecodedPanel ----
+# .nearestPanelName ----
 
-test_that(".nearestDecodedPanel handles vocal typos", {
+test_that(".nearestPanelName handles vocal typos", {
 
-    out <- .nearestDecodedPanel("definitely not a proper panel name")
+    out <- .nearestPanelName("definitely not a proper panel name")
     expect_null(out)
 
-    out <- .nearestDecodedPanel("reduced dimension plot NotANumber", memory)
+    out <- .nearestPanelName("reduced dimension plot NotANumber", memory)
     expect_null(out)
 
-    out <- .nearestDecodedPanel("reduced dimension plot 1", memory)
+    out <- .nearestPanelName("reduced dimension plot 1", memory)
     expect_identical(out, "Reduced dimension plot 1")
 
 })

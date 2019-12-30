@@ -91,8 +91,8 @@
 
 .voiceShowActivePanelInput = "voiceShowActivePanel"
 
-.voiceShowPanelInput <- "voiceShowPanel"
-.voiceHidePanelInput <- "voiceHidePanel"
+.voiceAddPanelInput <- "voiceAddPanel"
+.voiceRemovePanelInput <- "voiceRemovePanel"
 
 .voiceControlPanelInput <- "voiceControlPanel"
 .voiceColorUsingInput <- "voiceColorUsing"

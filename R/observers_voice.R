@@ -17,38 +17,53 @@
 #' showNotification removeNotification
 #' @rdname INTERNAL.create_voice_observers
 .create_voice_observers <- function(input, session, se, pObjects, rObjects) {
-    observeEvent(input[[.voiceShowPanelInput]], {
-        voice <- input[[.voiceShowPanelInput]]
+    observeEvent(input[[.voiceAddPanelInput]], {
+        print(".voiceAddPanelInput")
+        voice <- input[[.voiceAddPanelInput]]
         if (voice != "") {
-            showNotification(sprintf("<Show panel> %s", voice), type="message")
+            showNotification(sprintf("<Add panel> %s", voice), type="message")
         }
 
-        decodedPanel <- .nearestDecodedPanel(voice, pObjects$memory, max.edits=5)
-        if (is.null(decodedPanel)) { return(NULL) }
-        encodedPanel <- .decoded2encoded(decodedPanel)
-        encodedSplit <- .split_encoded(encodedPanel)
+        nearest_panel <- .nearestPanelType(voice, pObjects$reservoir, max.edits=Inf)
+        print(nearest_panel)
+        print(is.null(nearest_panel))
 
-        # Add the panel to the active table if not there yet
-        all_active <- rObjects$active_panels
-        if (any(all_active$Type==encodedSplit$Type & all_active$ID==encodedSplit$ID)) {
+        if (is.null(nearest_panel)) {
             return(NULL)
         }
 
-        rObjects$active_panels <- .showPanel(encodedSplit$Type, encodedSplit$ID, all_active)
+        mode <- class(nearest_panel)
+        print(mode)
+        latest <- pObjects$reservoir[[mode]]
+        idx <- pObjects$counter[[mode]] + 1L
+        print(idx)
+        latest[[.organizationId]] <- idx
+
+        latest <- list(latest)
+        names(latest) <- paste0(mode, idx)
+        pObjects$counter[[mode]] <- idx
+
+        .create_width_height_observers(latest[[1]], input, pObjects)
+
+        pObjects$memory <- append(pObjects$memory, latest)
+        rObjects$rerender <- .increment_counter(rObjects$rerender)
+
+        # rObjects$active_panels <- .showPanel(encodedSplit$Type, encodedSplit$ID, all_active)
 
         # Memorize last valid panel (only if the command succeeded)
-        showNotification(sprintf("<Show panel> %s", decodedPanel), type="message")
-        pObjects[[.voiceActivePanel]] <- encodedPanel
-        showNotification(sprintf("Active panel: %s", decodedPanel), id=.voiceActivePanel, duration=NULL)
+        added_full_name <- .getFullName(latest[[1]])
+        showNotification(sprintf("<Add panel> %s", added_full_name), type="message")
+        pObjects[[.voiceActivePanel]] <- names(latest)
+        showNotification(sprintf("Active panel: %s", added_full_name), id=.voiceActivePanel, duration=NULL)
     })
 
-    observeEvent(input[[.voiceHidePanelInput]], {
-        voice <- input[[.voiceHidePanelInput]]
+    observeEvent(input[[.voiceRemovePanelInput]], {
+        voice <- input[[.voiceRemovePanelInput]]
         if (voice != "") {
             showNotification(sprintf("<Hide panel> %s", voice), type="message")
         }
 
-        decodedPanel <- .nearestDecodedPanel(voice, pObjects$memory, max.edits=5)
+        decodedPanel <- .nearestPanelType(voice, pObjects$memory, max.edits=Inf)
         if (is.null(decodedPanel)) { return(NULL) }
         encodedPanel <- .decoded2encoded(decodedPanel)
         encodedSplit <- .split_encoded(encodedPanel)
@@ -76,7 +91,7 @@
             showNotification(sprintf("<Control panel> %s", voice), type="message")
         }
 
-        decodedPanel <- .nearestDecodedPanel(voice, pObjects$memory, max.edits=5)
+        decodedPanel <- .nearestPanelType(voice, pObjects$memory, max.edits=Inf)
         if (is.null(decodedPanel)) { return(NULL) }
         encodedPanel <- .decoded2encoded(decodedPanel)
         encodedSplit <- .split_encoded(encodedPanel)
@@ -129,7 +144,7 @@
             create_FUN <- .define_color_options_for_column_plots
         }
         choices <- create_FUN(se)
-        matchedChoice <- .nearestValidChoice(voice, choices, max.edits=5)
+        matchedChoice <- .nearestValidChoice(voice, choices, max.edits=Inf)
         if (length(matchedChoice) != 1L) {
             return(NULL)
         }
@@ -165,16 +180,16 @@
             return(NULL)
         } else if (colorby_title == .colorByColDataTitle) {
             colorby_param <- .colorByColData
-            matchedChoice <- .nearestValidChoice(voice, choices, max.edits=5)
+            matchedChoice <- .nearestValidChoice(voice, choices, max.edits=Inf)
         } else if (colorby_title == .colorByRowDataTitle) {
             colorby_param <- .colorByRowData
-            matchedChoice <- .nearestValidChoice(voice, choices, max.edits=5)
+            matchedChoice <- .nearestValidChoice(voice, choices, max.edits=Inf)
         } else if (colorby_title == .colorByFeatNameTitle) {
             colorby_param <- .colorByFeatName
-            matchedChoice <- .nearestValidNamedChoice(voice, choices, max.edits=5)
+            matchedChoice <- .nearestValidNamedChoice(voice, choices, max.edits=Inf)
         } else if (colorby_title == .colorBySampNameTitle) {
             colorby_param <- .colorBySampName
-            matchedChoice <- .nearestValidNamedChoice(voice, choices, max.edits=5)
+            matchedChoice <- .nearestValidNamedChoice(voice, choices, max.edits=Inf)
         }
 
         if (length(matchedChoice) != 1L) {
@@ -199,7 +214,7 @@
             showNotification(sprintf("<Receive from> %s", voice), type="message")
         }
 
-        decodedPanel <- .nearestDecodedPanel(voice, pObjects$memory, max.edits=5)
+        decodedPanel <- .nearestPanelType(voice, pObjects$memory, max.edits=Inf)
         if (is.null(decodedPanel)) { return(NULL) }
 
         updateSelectizeInput(session, paste(activePanel, .selectByPlot, sep="_"), selected=decodedPanel)
@@ -223,7 +238,7 @@
             showNotification(sprintf("<Send to> %s", voice), type="message")
         }
 
-        decodedPanel <- .nearestDecodedPanel(voice, pObjects$memory, max.edits=5)
+        decodedPanel <- .nearestPanelType(voice, pObjects$memory, max.edits=Inf)
         if (is.null(decodedPanel)) { return(NULL) }
         encodedPanel <- .decoded2encoded(decodedPanel)
         encodedSplit <- .split_encoded(encodedPanel)

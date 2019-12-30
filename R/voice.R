@@ -57,7 +57,7 @@ prepareSpeechRecognition <- function(use=FALSE) {
 #' @param y Character vector of available panel types (candidates for match).
 #' @param max.edits Maximal number of mismatches allowed.
 #'
-#' @return Index of the nearest match in \code{y}.
+#' @return Integer index of the nearest match in \code{y}, or \code{NA} if all matches exceed \code{max.edits}.
 #'
 #' @rdname INTERNAL_nearest_panel_type
 #' @importFrom utils adist
@@ -69,7 +69,7 @@ prepareSpeechRecognition <- function(use=FALSE) {
     # refuse the nearest match if excessively different
     nearEnough <- distances[which(distances <= max.edits)]
     if (length(nearEnough) == 0L){
-        return(character(0))
+        return(NA_integer_)
     }
 
     which.min(nearEnough)

@@ -25,11 +25,8 @@
         }
 
         new_panel <- .nearestPanelByType(voice, pObjects$reservoir, max.edits=Inf)
+        if (is.na(new_panel)) { return(NULL) }
         new_panel <- pObjects$reservoir[[new_panel]]
-
-        if (is.null(new_panel)) {
-            return(NULL)
-        }
 
         # From hereon, a combination of "panel_order" and "update_ui" observers
 
@@ -77,11 +74,12 @@
         rObjects$rerender <- .increment_counter(rObjects$rerender)
         # TODO: refactor-end (run when creating panels too)
 
-        target_full_name <- .getFullName(target_panel)
-        target_encoded_name <- .getEncodedName(target_panel)
-        showNotification(sprintf("<Remove panel> %s", target_full_name), type="message")
+        full_name <- .getFullName(target_panel)
+        encoded_name <- .getEncodedName(target_panel)
+
+        showNotification(sprintf("<Remove panel> %s", full_name), type="message")
         # If panel was under voice control, clear memory.
-        if (identical(target_encoded_name, pObjects[[.voiceActivePanel]])) {
+        if (identical(encoded_name, pObjects[[.voiceActivePanel]])) {
             pObjects[[.voiceActivePanel]] <- NA_character_
             removeNotification(.voiceActivePanel, session)
             showNotification("Active panel cleared", type="message")
@@ -94,23 +92,17 @@
             showNotification(sprintf("<Control panel> %s", voice), type="message")
         }
 
-        decodedPanel <- .nearestPanelByName(voice, pObjects$memory, max.edits=Inf)
-        if (is.null(decodedPanel)) { return(NULL) }
-        encodedPanel <- .decoded2encoded(decodedPanel)
-        encodedSplit <- .split_encoded(encodedPanel)
+        target_idx <- .nearestPanelByName(voice, pObjects$memory, max.edits=Inf)
+        if (is.na(target_idx)) { return(NULL) }
+        active_panel <- pObjects$memory[[target_idx]]
 
-        # Take control of the panel if it is currently there
-        all_active <- rObjects$active_panels
-        panelIndex <- which(all_active$Type==encodedSplit$Type & all_active$ID==encodedSplit$ID)
-        if (length(panelIndex) == 0) {
-            showNotification(sprintf("Panel %s is not currently active", decodedPanel), type="error")
-            return(NULL)
-        }
+        full_name <- .getFullName(active_panel)
+        encoded_name <- .getEncodedName(active_panel)
 
-        # Memorize last valid panel (only if the command succeeded)
-        showNotification(sprintf("<Control panel> %s", decodedPanel), type="message")
-        pObjects[[.voiceActivePanel]] <- encodedPanel
-        showNotification(sprintf("Active panel: %s", decodedPanel), id=.voiceActivePanel, duration=NULL)
+        # Memorize the panel
+        showNotification(sprintf("<Control panel> %s", full_name), type="message")
+        pObjects[[.voiceActivePanel]] <- encoded_name
+        showNotification(sprintf("Active panel: %s", full_name), id=.voiceActivePanel, duration=NULL)
     })
 
     observeEvent(input[[.voiceShowActivePanelInput]], {

@@ -15,8 +15,8 @@
 #'
 #' @importFrom shiny observeEvent isolate renderUI updateSelectizeInput
 #' showNotification removeNotification
-#' @rdname INTERNAL_voice_control_observers
-.voice_control_observers <- function(input, session, se, pObjects, rObjects) {
+#' @rdname INTERNAL.create_voice_observers
+.create_voice_observers <- function(input, session, se, pObjects, rObjects) {
     observeEvent(input[[.voiceShowPanelInput]], {
         voice <- input[[.voiceShowPanelInput]]
         if (voice != "") {

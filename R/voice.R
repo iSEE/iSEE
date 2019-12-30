@@ -34,12 +34,12 @@ prepareSpeechRecognition <- function(use=FALSE) {
 #'
 #' @rdname INTERNAL_nearest_decoded_panel
 #' @author Kevin Rue-Albrecht
-.nearestDecodedPanel <- function(x, memory, max.edits=5) {
+.nearestDecodedPanel <- function(x, memory, max.edits=Inf) {
     # Split the last word apart: it should be a number (e.g. "one" or "22")
     voiceType <- gsub(" [[:alnum:]]+$", "", x)
     voiceId <- gsub(".* ([[:alnum:]]+)$", "\\1", x)
 
-    decodedType <- .nearestPanelType(voiceType, max.edits=5)
+    decodedType <- .nearestPanelType(voiceType, max.edits=max.edits)
     if (length(decodedType) != 1L) {
         return(NULL)
     }
@@ -91,14 +91,14 @@ prepareSpeechRecognition <- function(use=FALSE) {
 }
 
 #' Nearest valid choice
-#' 
-#' @description 
+#'
+#' @description
 #' \code{.nearestValidChoice} is intended for unnamed character vectors.
 #' It returns the closest match to the given character value.
-#' 
+#'
 #' \code{.nearestValidNamedChoice} is intended for named vectors.
 #' It returns the value whose name is closest to the given character value.
-#' 
+#'
 #' @rdname INTERNAL_nearestValidChoice
 #'
 #' @param x Character value.
@@ -106,7 +106,7 @@ prepareSpeechRecognition <- function(use=FALSE) {
 #' @param max.edits Allowed edit distance.
 #'
 #' @return Nearest match amongst the choices within the allowed edit distance.
-#' 
+#'
 #' @importFrom utils adist
 #' @author Kevin Rue-Albrecht
 .nearestValidChoice <- function(x, choices, max.edits=5) {
@@ -130,7 +130,7 @@ prepareSpeechRecognition <- function(use=FALSE) {
 }
 
 #' List valid parameter choices
-#' 
+#'
 #' @rdname INTERNAL_getValidParameterChoices
 #'
 #' @param parameterName A column name in a \code{DataFrame} stored in \code{memory}.
@@ -155,7 +155,7 @@ prepareSpeechRecognition <- function(use=FALSE) {
 }
 
 #' List valid coloring choices
-#' 
+#'
 #' @rdname INTERNAL_colorByChoices
 #'
 #' @param colorby_title A character value representing one of the coloring modes.
@@ -164,7 +164,7 @@ prepareSpeechRecognition <- function(use=FALSE) {
 #' @return A character vector of valid coloring choices.
 #' @author Kevin Rue-Albecht
 .colorByChoices <- function(colorby_title, se) {
-    
+
     if (colorby_title == .colorByNothingTitle) {
         choices <- character(0)
     } else if (colorby_title == .colorByColDataTitle) {
@@ -197,7 +197,7 @@ prepareSpeechRecognition <- function(use=FALSE) {
     "nine"=9, "dine"=9, "line"=9)
 
 #' Substitute numbers from words to numerals
-#' 
+#'
 #' @rdname INTERNAL_digitalize_numbers
 #'
 #' @description
@@ -212,7 +212,7 @@ prepareSpeechRecognition <- function(use=FALSE) {
 #' \code{.wordIsDigits} returns \code{TRUE} for each input entirely composed of digits.
 #'
 #' \code{.digitalizeNumbers} returns the substituted \code{character} string.
-#' 
+#'
 #' @author Kevin Rue-Albrecht
 .digitalizeNumbers <- function(x) {
     as.numeric(.numbersText[match(tolower(x), names(.numbersText))])

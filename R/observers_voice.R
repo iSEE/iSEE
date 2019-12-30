@@ -120,9 +120,9 @@
             showNotification("No active panel", type="error")
             return(NULL)
         }
-        activeSplit <- .split_encoded(activePanel)
-        activeDecoded <- .decode_panel_name(activeSplit$Type, activeSplit$ID)
-        showNotification(sprintf("Active panel: %s", activeDecoded), id=.voiceActivePanel, duration=NULL)
+        active_panel <- pObjects$memory[[activePanel]]
+        full_name <- .getFullName(active_panel)
+        showNotification(sprintf("Active panel: %s", full_name), id=.voiceActivePanel, duration=NULL)
     })
 
     observeEvent(input[[.voiceColorUsingInput]], {

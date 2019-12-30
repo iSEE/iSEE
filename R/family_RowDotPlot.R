@@ -194,10 +194,10 @@ setMethod(".createObservers", "RowDotPlot", function(x, se, input, session, pObj
 
     plot_name <- .getEncodedName(x)
 
-    .create_nonfundamental_parameter_observers(plot_name,
+    .createUnprotectedParameterObservers(plot_name,
         fields=c(.colorByRowData, .colorBySampNameAssay,
             .shapeByRowData, .sizeByRowData, .colorByFeatNameColor),
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        input=input, pObjects=pObjects, rObjects=rObjects)
 
     .create_dimname_propagation_observer(plot_name, choices=rownames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)

@@ -194,10 +194,10 @@ setMethod(".createObservers", "ColumnDotPlot", function(x, se, input, session, p
 
     plot_name <- .getEncodedName(x)
 
-    .create_nonfundamental_parameter_observers(plot_name,
+    .createUnprotectedParameterObservers(plot_name,
         fields=c(.colorByColData, .colorByFeatNameAssay,
             .shapeByColData, .sizeByColData, .colorBySampNameColor),
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        input=input, pObjects=pObjects, rObjects=rObjects)
 
     .create_dimname_propagation_observer(plot_name, choices=colnames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)

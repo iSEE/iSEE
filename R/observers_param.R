@@ -57,13 +57,14 @@
     invisible(NULL)
 }
 
-#' Define plot parameter observers
+#' Define parameter observers
 #' 
-#' Define a series of observers to track \dQuote{protected} or \dQuote{non-fundamental} parameters for a given panel.
+#' Define a series of observers to track \dQuote{protected} or \dQuote{unprotected} parameters for a given panel.
+#' These will register input changes to each specified parameter in the app's memory 
+#' and request an update to the output of the affected panel.
 #' 
 #' @inheritParams .create_box_observers
 #' @param fields Character vector of names of parameters for which to set up observers.
-#' @param session The Shiny session object from the server function.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
 #' @param ignoreInit,ignoreNULL Further arguments to pass to \code{\link{observeEvent}}.
 #' 
@@ -72,17 +73,22 @@
 #' A \code{NULL} is invisibly returned.
 #' 
 #' @details
-#' A protected parameter is one that breaks existing multiple selections, usually by changing the actual data being plotted.
-#' Alterations to protected parameters should clear all active and saved selections in the panel.
-#' By comparison, a non-fundamental parameter only changes the aesthetics.
+#' A protected parameter is one that breaks existing multiple selections, e.g., by changing the actual data being plotted.
+#' Alterations to protected parameters will clear all active and saved selections in the panel,
+#' as those existing selections are assumed to not make any sense in the context of the modified output of that panel.
+#'
+#' By comparison, an unprotected parameter only changes the aesthetics and will not clear existing selections.
+#'
+#' @seealso
+#' \code{\link{.requestUpdate}} and \code{\link{.requestCleanUpdate}},
+#' used to trigger updates to the panel output.
 #' 
 #' @author Aaron Lun
 #'
-#' @rdname INTERNAL_plot_parameter_observers
+#' @export
+#' @rdname createProtectedParameterObservers
 #' @importFrom shiny observeEvent
-.create_nonfundamental_parameter_observers <- function(panel_name, fields, input, session, pObjects, rObjects,
-    ignoreInit=TRUE, ignoreNULL=TRUE) 
-{
+.createUnprotectedParameterObservers <- function(panel_name, fields, input, pObjects, rObjects, ignoreInit=TRUE, ignoreNULL=TRUE) {
     for (field in fields) {
         local({
             field0 <- field
@@ -98,15 +104,12 @@
             }, ignoreInit=ignoreInit, ignoreNULL=ignoreNULL)
         })
     }
-
     invisible(NULL)
 }
 
-#' @rdname INTERNAL_plot_parameter_observers
+#' @rdname createProtectedParameterObservers
 #' @importFrom shiny observeEvent
-.create_protected_parameter_observers <- function(panel_name, fields, input, session, pObjects, rObjects,
-    ignoreInit=TRUE, ignoreNULL=TRUE) 
-{
+.createProtectedParameterObservers <- function(panel_name, fields, input, pObjects, rObjects, ignoreInit=TRUE, ignoreNULL=TRUE) {
     for (field in fields) {
         local({
             field0 <- field
@@ -122,6 +125,5 @@
             }, ignoreInit=ignoreInit, ignoreNULL=ignoreNULL)
         })
     }
-
     invisible(NULL)
 }

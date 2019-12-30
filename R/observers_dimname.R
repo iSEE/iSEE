@@ -166,7 +166,7 @@
 #' @param name_field String with the name of the slot containing the chosen row/column for this parameter.
 #' @param tab_field String with the name of the slot containing the name of the single-selection transmitter for the current panel.
 #' @param choices Vector of possible choices for the slot named \code{name_field}.
-#' @param protected Logical scalar indicating whether the slot specified by \code{name_field} is a protected parameter for \code{x}, see \code{?\link{.create_protected_parameter_observers}} for details.
+#' @param protected Logical scalar indicating whether the slot specified by \code{name_field} is a protected parameter for \code{x}, see \code{?\link{.createProtectedParameterObservers}} for details.
 #'
 #' @return
 #' An observer is set up to track changes to the dimension name, possibly triggering a regeneration of the plot.

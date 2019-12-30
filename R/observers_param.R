@@ -107,6 +107,7 @@
     invisible(NULL)
 }
 
+#' @export
 #' @rdname createProtectedParameterObservers
 #' @importFrom shiny observeEvent
 .createProtectedParameterObservers <- function(panel_name, fields, input, pObjects, rObjects, ignoreInit=TRUE, ignoreNULL=TRUE) {

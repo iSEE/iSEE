@@ -115,7 +115,7 @@ setMethod(".refineParameters", "ColStatTable", function(x, se) {
     }
 
     # Then, contracting only to those columns that survived.
-    keep <- match(colnames(df), valid.names)
+    keep <- match(valid.names, colnames(df))
     search_vals <- search_vals[keep]
     x[[.TableColSearch]] <- search_vals
 

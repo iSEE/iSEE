@@ -25,7 +25,7 @@
         }
 
         new_panel <- .nearestPanelByType(voice, pObjects$reservoir, max.edits=Inf)
-        new_panel <- pObjects$reservoir[new_panel]
+        new_panel <- pObjects$reservoir[[new_panel]]
 
         if (is.null(new_panel)) {
             return(NULL)
@@ -78,11 +78,14 @@
         # TODO: refactor-end (run when creating panels too)
 
         target_full_name <- .getFullName(target_panel)
+        target_encoded_name <- .getEncodedName(target_panel)
         showNotification(sprintf("<Remove panel> %s", target_full_name), type="message")
-        # Clear memory of last panel accessed, as this one is now inactive
-        pObjects[[.voiceActivePanel]] <- NA_character_
-        removeNotification(.voiceActivePanel, session)
-        showNotification("Active panel cleared", type="message")
+        # If panel was under voice control, clear memory.
+        if (identical(target_encoded_name, pObjects[[.voiceActivePanel]])) {
+            pObjects[[.voiceActivePanel]] <- NA_character_
+            removeNotification(.voiceActivePanel, session)
+            showNotification("Active panel cleared", type="message")
+        }
     })
 
     observeEvent(input[[.voiceControlPanelInput]], {

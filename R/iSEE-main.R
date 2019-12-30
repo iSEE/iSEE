@@ -387,7 +387,7 @@ iSEE <- function(se,
                     output=output, pObjects=pObjects, rObjects=rObjects)
             }
 
-           .create_voice_observers(input, session, se, pObjects, rObjects)
+           .create_voice_observers(input, output, session, se, pObjects, rObjects)
         }
 
         if (!has_se) {

@@ -3,6 +3,7 @@
 #' Observers to handle voice control.
 #'
 #' @param input The Shiny input object from the server function.
+#' @param output The Shiny output object from the server function.
 #' @param session The Shiny session object from the server function.
 #' @param se The \linkS4class{SummarizedExperiment} object.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
@@ -15,45 +16,47 @@
 #'
 #' @importFrom shiny observeEvent isolate renderUI updateSelectizeInput
 #' showNotification removeNotification
-#' @rdname INTERNAL.create_voice_observers
-.create_voice_observers <- function(input, session, se, pObjects, rObjects) {
+#' @rdname INTERNAL_create_voice_observers
+.create_voice_observers <- function(input, output, session, se, pObjects, rObjects) {
     observeEvent(input[[.voiceAddPanelInput]], {
-        print(".voiceAddPanelInput")
         voice <- input[[.voiceAddPanelInput]]
         if (voice != "") {
             showNotification(sprintf("<Add panel> %s", voice), type="message")
         }
 
-        nearest_panel <- .nearestPanelType(voice, pObjects$reservoir, max.edits=Inf)
-        print(nearest_panel)
-        print(is.null(nearest_panel))
+        new_panel <- .nearestPanelType(voice, pObjects$reservoir, max.edits=Inf)
 
-        if (is.null(nearest_panel)) {
+        if (is.null(new_panel)) {
             return(NULL)
         }
 
-        mode <- class(nearest_panel)
-        print(mode)
-        latest <- pObjects$reservoir[[mode]]
-        idx <- pObjects$counter[[mode]] + 1L
-        print(idx)
-        latest[[.organizationId]] <- idx
+        # From hereon, a combination of "panel_order" and "update_ui" observers
 
-        latest <- list(latest)
-        names(latest) <- paste0(mode, idx)
+        # Set panel ID
+        mode <- class(new_panel)
+        idx <- pObjects$counter[[mode]] + 1L
+        new_panel[[.organizationId]] <- idx
+
+        # Update memory and counter
+        new_panel_list <- list(new_panel)
+        names(new_panel_list) <- paste0(mode, idx)
+        pObjects$memory <- append(pObjects$memory, new_panel_list)
         pObjects$counter[[mode]] <- idx
 
-        .create_width_height_observers(latest[[1]], input, pObjects)
+        # Create observers and render output
+        .createObservers(new_panel, se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        .renderOutput(new_panel, se, output=output, pObjects=pObjects, rObjects=rObjects)
 
-        pObjects$memory <- append(pObjects$memory, latest)
+        pObjects$selection_links <- .spawn_multi_selection_graph(pObjects$memory)
+        pObjects$aesthetics_links <- .spawn_single_selection_graph(pObjects$memory)
+
         rObjects$rerender <- .increment_counter(rObjects$rerender)
 
-        # rObjects$active_panels <- .showPanel(encodedSplit$Type, encodedSplit$ID, all_active)
-
-        # Memorize last valid panel (only if the command succeeded)
-        added_full_name <- .getFullName(latest[[1]])
+        # Memorize the added panel identity (only if the command succeeded)
+        added_full_name <- .getFullName(new_panel)
+        added_encoded_name <- .getEncodedName(new_panel)
         showNotification(sprintf("<Add panel> %s", added_full_name), type="message")
-        pObjects[[.voiceActivePanel]] <- names(latest)
+        pObjects[[.voiceActivePanel]] <- added_encoded_name
         showNotification(sprintf("Active panel: %s", added_full_name), id=.voiceActivePanel, duration=NULL)
     })
 

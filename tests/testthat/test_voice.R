@@ -74,7 +74,7 @@ test_that(".allDigits works", {
 test_that(".nearestPanelByType handles vocal typos", {
 
     out <- .nearestPanelByType("definitely not a proper panel type", reservoir, max.edits = 5L)
-    expect_true(is.na(out))
+    expect_true(is.null(out))
 
     out <- .nearestPanelByType("reduce dimension plus", reservoir)
     expect_identical(out, 1L) # "Reduced dimension plot"
@@ -92,7 +92,7 @@ test_that(".nearestPanelByType handles vocal typos", {
 test_that(".nearestPanelByName handles vocal typos", {
 
     out <- .nearestPanelByName("definitely not a proper panel type", memory, max.edits = 5L)
-    expect_true(is.na(out))
+    expect_true(is.null(out))
 
     out <- .nearestPanelByName("reduce dimension plus 1", reservoir)
     expect_identical(out, 1L) # "Reduced dimension plot 1"

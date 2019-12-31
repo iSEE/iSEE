@@ -3,6 +3,7 @@
 #' @param use Whether speech recognition should be enabled.
 #'
 #' @return A list of HTML content to include in the user interface.
+#'
 #' @author Kevin Rue-Albrecht
 prepareSpeechRecognition <- function(use=FALSE) {
     if (!use) {
@@ -18,8 +19,8 @@ prepareSpeechRecognition <- function(use=FALSE) {
 #'
 #' @description
 #'
-#' \code{.nearestPanelType} identifies the panel type that is the smallest edit distance from a recorded voice input.
-#' \code{.nearestPanelName} identifies the panel full name that is the smallest edit distance from a recorded voice input.
+#' \code{.nearestPanelByType} identifies the panel type that is the smallest edit distance from a recorded voice input.
+#' \code{.nearestPanelByName} identifies the panel full name that is the smallest edit distance from a recorded voice input.
 #'
 #' @details
 #' A panel full name is composed of a panel type and an identifier.
@@ -30,26 +31,27 @@ prepareSpeechRecognition <- function(use=FALSE) {
 #' @param panels A list of \code{Panel} objects.
 #' @param max.edits Maximal number of mismatches allowed.
 #'
-#' @return Decoded name of the matched panel identifier.
+#' @return Integer index of the matched panel, or \code{NA} if all matches exceed \code{max.edits}.
 #'
-#' @rdname INTERNAL_nearest_decoded_panel
+#' @rdname INTERNAL_nearest_panel
+#'
 #' @author Kevin Rue-Albrecht
 .nearestPanelByType <- function(x, panels, max.edits=Inf) {
 
     available_types <- vapply(panels, .fullName, character(1))
 
-    .nearest_match(x, available_types, max.edits=max.edits)
+    .nearestMatch(x, available_types, max.edits=max.edits)
 }
 
-#' @rdname INTERNAL_nearest_decoded_panel
+#' @rdname INTERNAL_nearest_panel
 .nearestPanelByName <- function(x, panels, max.edits=Inf) {
 
     available_names <- vapply(panels, .getFullName, character(1))
 
-    .nearest_match(x, available_names, max.edits=max.edits)
+    .nearestMatch(x, available_names, max.edits=max.edits)
 }
 
-#' Nearest panel type
+#' Nearest match
 #'
 #' Identify the panel type name that is the smallest edit distance from a recorded voice input.
 #'
@@ -57,19 +59,19 @@ prepareSpeechRecognition <- function(use=FALSE) {
 #' @param y Character vector of available panel types (candidates for match).
 #' @param max.edits Maximal number of mismatches allowed.
 #'
-#' @return Integer index of the nearest match in \code{y}, or \code{NA} if all matches exceed \code{max.edits}.
+#' @return Integer index of the nearest match in \code{y}, or \code{NULL} if all matches exceed \code{max.edits}.
 #'
-#' @rdname INTERNAL_nearest_panel_type
+#' @rdname INTERNAL_nearestMatch
 #' @importFrom utils adist
 #' @author Kevin Rue-Albrecht
-.nearest_match <- function(x, y, max.edits=Inf) {
+.nearestMatch <- function(x, y, max.edits=Inf) {
     distances <- adist(x, y, partial=FALSE, ignore.case=TRUE)
     distances <- distances[1, ]
 
     # refuse the nearest match if excessively different
     nearEnough <- distances[which(distances <= max.edits)]
     if (length(nearEnough) == 0L){
-        return(NA_integer_)
+        return(NULL)
     }
 
     which.min(nearEnough)
@@ -94,15 +96,9 @@ prepareSpeechRecognition <- function(use=FALSE) {
 #'
 #' @importFrom utils adist
 #' @author Kevin Rue-Albrecht
-.nearestValidChoice <- function(x, choices, max.edits=5) {
-    names(choices) <- choices
-    distances <- adist(x, y = choices, partial=FALSE, ignore.case=TRUE)[1, ]
-
-    # we don't want the "closest" at any cost (it can still be very far)
-    nearEnough <- distances[which(distances <= max.edits)]
-
-    nearestMatch <- names(nearEnough)[which.min(nearEnough)]
-    nearestMatch
+.nearestValidChoice <- function(x, choices, max.edits=Inf) {
+    idx <- .nearestMatch(x, choices, max.edits)
+    choices[idx]
 }
 
 #' @rdname INTERNAL_nearestValidChoice
@@ -155,7 +151,7 @@ prepareSpeechRecognition <- function(use=FALSE) {
 
 #' Substitute numbers from words to numerals
 #'
-#' @rdname INTERNAL_digitalize_numbers
+#' @rdname INTERNAL_digitalizeText
 #'
 #' @description
 #' \code{.allDigits} tests whether inputs are entirely composed of digits.
@@ -167,7 +163,7 @@ prepareSpeechRecognition <- function(use=FALSE) {
 #'
 #' @return
 #'
-#' \code{.allDigits} returns \code{TRUE} for each input entirely composed of digits
+#' \code{.allDigits} returns \code{TRUE} for each input entirely composed of digits.
 #'
 #' \code{.digitalizeText} returns the substituted \code{character} string as a numeric scalar.
 #'

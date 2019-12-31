@@ -100,9 +100,6 @@ prepareSpeechRecognition <- function(use=FALSE) {
 
     # we don't want the "closest" at any cost (it can still be very far)
     nearEnough <- distances[which(distances <= max.edits)]
-    if (length(nearEnough) == 0L){
-        return(character(0))
-    }
 
     nearestMatch <- names(nearEnough)[which.min(nearEnough)]
     nearestMatch
@@ -112,31 +109,6 @@ prepareSpeechRecognition <- function(use=FALSE) {
 .nearestValidNamedChoice <- function(x, choices, max.edits=Inf) {
     nearestMatch <- .nearestValidChoice(x, names(choices), max.edits)
     choices[nearestMatch]
-}
-
-#' List valid parameter choices
-#'
-#' @rdname INTERNAL_getValidParameterChoices
-#'
-#' @param parameterName A column name in a \code{DataFrame} stored in \code{memory}.
-#' @param mode String specifying the encoded panel type of the current plot.
-#' @param se A SingleCellExperiment object.
-#'
-#' @return A character vector of valid parameter choices.
-#' @author Kevin Rue-Albecht
-.getValidParameterChoices <- function(parameterName, mode, se){
-    if (parameterName == "ColorBy") {
-        if (mode %in% row_point_plot_types) {
-            create_FUN <- .define_color_options_for_row_plots
-        } else {
-            create_FUN <- .define_color_options_for_column_plots
-        }
-    } else {
-        warning(sprintf("Parameter '%s' not supported yet", parameterName))
-        return(character(0))
-    }
-    choices <- create_FUN(se)
-    choices
 }
 
 #' List valid coloring choices
@@ -153,9 +125,9 @@ prepareSpeechRecognition <- function(use=FALSE) {
     if (colorby_title == .colorByNothingTitle) {
         choices <- character(0)
     } else if (colorby_title == .colorByColDataTitle) {
-        choices <- colnames(colData(se))
+        choices <- .get_common_info(se, "ColumnDotPlot")$valid.colData.names
     } else if (colorby_title == .colorByRowDataTitle) {
-        choices <- colnames(rowData(se))
+        choices <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
     } else if (colorby_title == .colorByFeatNameTitle) {
         choices <- seq_len(nrow(se))
         names(choices) <- rownames(se)

@@ -315,18 +315,18 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 
     .create_visual_parameter_choice_observer(plot_name, input, pObjects)
 
-    .create_protected_parameter_observers(plot_name,
+    .createProtectedParameterObservers(plot_name,
         fields=c(.facetByRow, .facetByColumn),
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        input=input, pObjects=pObjects, rObjects=rObjects)
 
-    .create_nonfundamental_parameter_observers(plot_name,
+    .createUnprotectedParameterObservers(plot_name,
         fields=c(
             .colorByDefaultColor, .selectColor, .selectTransAlpha,
             .shapeByField, .sizeByField,
             .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition,
             .plotPointDownsample, .plotPointSampleRes, .contourAdd,
             .contourColor),
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        input=input, pObjects=pObjects, rObjects=rObjects)
 
     # Filling the plot interaction observers:
     .create_brush_observer(plot_name, input=input, session=session,

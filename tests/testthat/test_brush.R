@@ -42,6 +42,13 @@ test_that(".identical_brushes works as expected", {
 })
 
 test_that(".transmitted_selection detects whether a brush is active", {
+    memory <- list(
+        RedDimPlot(),
+        ColDataPlot(SelectColSource="RedDimPlot1"),
+        FeatAssayPlot(SelectColSource="ColDataPlot1")
+    )
+
+    pObjects <- mimic_live_app(sce, memory)
     all_memory <- pObjects$memory
 
     # No point selection

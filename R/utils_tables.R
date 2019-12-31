@@ -7,29 +7,21 @@
 #' @param varname String containing the name of the data.frame variable to use in the output commands.
 #'
 #' @return String containing an R expression to produce a logical vector indicating which rows of the data.frame to retain.
+#' Alternatively, if no filters are present, \code{NULL} is returned.
 #'
+#' @seealso
+#' \code{\link{filterDT}}, on which this function is based.
 #' @author Aaron Lun
 #' @rdname INTERNAL_generate_table_filter
 .generate_table_filter <- function(x, varname="tab") {
-    filters <- NULL
-
     search <- x[[.TableSearch]]
-    if (search!="") {
-        filters <- c(filters,
-            sprintf("Reduce('|', lapply(%s, FUN=grepl, pattern=%s))", 
-                varname, deparse(search)))
-    }
-
     searchcols <- x[[.TableColSearch]]
-    if (any(searchcols!="")) {
-        filters <- c(filters, sprintf("iSEE::filterDT(%s, %s)", 
-            varname, .deparse_for_viewing(searchcols, indent=2)))
+    if (search!="" || any(searchcols!="")) {
+        sprintf("iSEE::filterDT(%s, global=%s,\n    column=%s)", 
+            varname, 
+            deparse(search),
+            .deparse_for_viewing(searchcols, indent=2))
+    } else {
+        NULL
     }
-
-    if (!is.null(filters)) {
-        filters <- paste(filters, collapse="\n    & ")
-    }
-    filters
 }
-
-

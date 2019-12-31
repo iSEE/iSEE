@@ -242,9 +242,9 @@ setMethod(".createObservers", "FeatAssayPlot", function(x, se, input, session, p
 
     plot_name <- .getEncodedName(x)
 
-    .create_protected_parameter_observers(plot_name,
+    .createProtectedParameterObservers(plot_name,
         fields=c(.featAssayAssay, .featAssayXAxisColData),
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        input=input, pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export

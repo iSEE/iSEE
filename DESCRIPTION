@@ -33,8 +33,6 @@ Imports:
     vipor,
     mgcv,
     reshape2,
-    rentrez,
-    AnnotationDbi,
     graphics,
     grDevices,
     viridisLite,

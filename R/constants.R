@@ -26,8 +26,8 @@
 
 # Multiple selection parameters. ---
 
-.multiSelectSave <- "MultiSelectSave"
-.multiSelectDelete <- "MultiSelectDelete"
+.multiSelectSave <- "INTERNAL_MultiSelectSave"
+.multiSelectDelete <- "INTERNAL_MultiSelectDelete"
 
 .selectMultiActiveTitle <- "Active"
 .selectMultiUnionTitle <- "Union"
@@ -38,11 +38,11 @@
 
 # Zooming parameters. ----
 
-.zoomClick <- "ZoomClick"
+.zoomClick <- "INTERNAL_ZoomClick"
 
 # Lasso parameters. ----
 
-.lassoClick <- "LassoClick"
+.lassoClick <- "INTERNAL_LassoClick"
 
 # Brush parameters. ----
 
@@ -51,7 +51,6 @@
 # Button parameters ----
 
 .buttonUpToDateLabel <- "Up to date"
-.buttonUpdateLabel <- "Update"
 .buttonEmptyHistoryLabel <- "No history"
 .buttonDeleteLabel <- "Delete"
 .buttonNoSelectionLabel <- "No selection"

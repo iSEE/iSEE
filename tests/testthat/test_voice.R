@@ -26,7 +26,7 @@ reservoir <- list(
 )
 
 # Set up alternative object.
-sce <- iSEE:::.prepare_SE(se, ExperimentColorMap(), memory)
+sce <- iSEE:::.prepare_SE(sce, ExperimentColorMap(), memory)
 
 # prepareSpeechRecognition ----
 
@@ -139,10 +139,10 @@ test_that(".colorByChoices works", {
     expect_identical(out, character(0L))
 
     out <- .colorByChoices("Column data", sce)
-    expect_identical(out, colnames(colData(sce)))
+    expect_identical(out, .get_common_info(sce, "ColumnDotPlot")$valid.colData.names)
 
     out <- .colorByChoices("Row data", sce)
-    expect_identical(out, colnames(rowData(sce)))
+    expect_identical(out, .get_common_info(sce, "RowDotPlot")$valid.rowData.names)
 
     out <- .colorByChoices("Feature name", sce)
     expectedValue <- seq_len(nrow(sce))

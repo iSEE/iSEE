@@ -309,8 +309,6 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 
     plot_name <- .getEncodedName(x)
 
-    .safe_reactive_init(rObjects, paste0(plot_name, "_", .panelGeneralInfo))
-
     .create_box_observers(plot_name, .visualParamBoxOpen, input, pObjects)
 
     .create_visual_parameter_choice_observer(plot_name, input, pObjects)

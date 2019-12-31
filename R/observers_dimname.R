@@ -26,16 +26,18 @@
 #' @rdname INTERNAL_dimname_prop
 #' @importFrom shiny eventReactive updateSelectizeInput
 .create_dimname_propagation_observer <-  function(panel_name, choices, session, pObjects, rObjects) {
-    dimname_field <- paste0(panel_name, "_", .propagateDimnames)
-    .safe_reactive_init(rObjects, dimname_field)
+    dimname_name <- paste0(panel_name, "_", .propagateDimnames)
+    .safe_reactive_init(rObjects, dimname_name)
+    single_name <- paste0(panel_name, "_", .flagSingleSelect)
 
-    observeEvent(rObjects[[dimname_field]], {
+    observeEvent(rObjects[[dimname_name]], {
         instance <- pObjects$memory[[panel_name]]
 
         chosen <- .singleSelectionValue(instance, pObjects)
         if (is.null(chosen)) {
             return(NULL)
         }
+        .safe_reactive_bump(rObjects, single_name)
 
         dependents <- .get_direct_children(pObjects$aesthetics_links, panel_name)
         for (kid in names(dependents)) {
@@ -144,7 +146,7 @@
     if (update_info) {
         tab_names <- setdiff(union(old_tab, tab), .noSelection)
         for (relinked in c(panel_name, tab_names)) {
-            .safe_reactive_bump(rObjects, paste0(relinked, "_", .panelLinkInfo))
+            .safe_reactive_bump(rObjects, paste0(relinked, "_", .flagRelinkedSelect))
         }
     }
 

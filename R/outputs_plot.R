@@ -20,10 +20,8 @@
 #' @importFrom shiny renderPlot renderUI tagList br
 .create_plot_output <- function(plot_name, se, output, pObjects, rObjects) {
     force(se)
-    gen_field <- paste0(plot_name, "_", .panelGeneralInfo)
 
     output[[plot_name]] <- renderPlot({
-        .safe_reactive_bump(rObjects, gen_field)
         p.out <- .retrieveOutput(plot_name, se, pObjects, rObjects)
         pObjects$varname[[plot_name]] <- "plot.data"
         p.out$plot

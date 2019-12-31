@@ -80,10 +80,15 @@
 .int_statTableSearch <- "_search"
 .int_statTableColSearch <- "_search_columns"
 
-# Panel organization parameters. ----
+# Reactive flags. ---
 
-.panelGeneralInfo <- "PanelGeneralInfo"
-.panelLinkInfo <- "PanelLinkInfo"
+.flagOutputUpdate <- "INTERNAL_output_update"
+.flagSingleSelect <- "INTERNAL_single_select"
+.flagMultiSelect <- "INTERNAL_multi_select"
+.flagRelinkedSelect <- "INTERNAL_relinked_select"
+
+.panelMultiSelectInfo <- "INTERNAL_PanelMultiSelectInfo"
+.panelSelectLinkInfo <- "INTERNAL_PanelSelectLinkInfo"
 
 # Voice parameters ----
 

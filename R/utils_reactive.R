@@ -24,15 +24,18 @@
 #' \code{.requestUpdate} should be used in various observers to request a re-rendering of the panel,
 #' usually in response to user-driven parameter changes in \code{\link{.createObservers}}.
 #'
-#' \code{.requestCleanUpdate} is usually desirable for parameter changes that invalidate existing multiple selections,
+#' \code{.requestCleanUpdate} is used for changes to protected parameters that invalidate existing multiple selections,
 #' e.g., if the coordinates change in a \linkS4class{DotPlot}, existing brushes and lassos are usually not applicable.
 #'
 #' @author Aaron Lun
 #'
+#' @seealso
+#' \code{\link{.createProtectedParameterObservers}}, for examples where the update-requesting functions are used.
+#'
 #' @export
 #' @rdname retrieveOutput
 .retrieveOutput <- function(panel_name, se, pObjects, rObjects) {
-    force(rObjects[[panel_name]])
+    .trackUpdate(panel_name, rObjects)
 
     if (length(pObjects$cached[[panel_name]])!=0L) {
         output <- pObjects$cached[[panel_name]]
@@ -68,6 +71,58 @@
         accumulated <- c(accumulated, .panelResaved)
     }
     .mark_panel_as_modified(panel_name, accumulated, rObjects)
+}
+
+#' Track internal events
+#'
+#' Utility functions to track internal events for a panel by monitoring the status of reactive variables in \code{rObjects}.
+#'
+#' @param panel_name String containing the panel name.
+#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
+#'
+#' @return
+#' All functions will cause the current reactive context to respond to the designated event.
+#' \code{NULL} is returned invisibly.
+#'
+#' @details
+#' \code{.trackUpdate} will track whether an update has been requested to the current panel
+#' (see also \code{\link{.requestUpdate}}).
+#'
+#' \code{.trackSingleSelection} will track whether the single selection in the current panel has changed.
+#' Note that this will not cause a reaction if the change involves cancelling a single selection.
+#'
+#' \code{.trackMultiSelection} will track whether the multiple selections in the current panel have changed.
+#' This will respond for both active and saved selections.
+#' 
+#' \code{.trackRelinkedSelection} will track whether the single or multiple selection sources have changed.
+#' 
+#' @author Aaron Lun
+#'
+#' @name track-utils
+NULL
+
+#' @export
+#' @rdname track-utils
+.trackUpdate <- function(panel_name, rObjects) {
+    force(rObjects[[paste0(panel_name, "_", .flagOutputUpdate)]])
+}
+
+#' @export
+#' @rdname track-utils
+.trackSingleSelection <- function(panel_name, rObjects) {
+    force(rObjects[[paste0(panel_name, "_", .flagSingleSelect)]])
+}
+
+#' @export
+#' @rdname track-utils
+.trackMultiSelection <- function(panel_name, rObjects) {
+    force(rObjects[[paste0(panel_name, "_", .flagMultiSelect)]])
+}
+
+#' @export
+#' @rdname track-utils
+.trackRelinkedSelection <- function(panel_name, rObjects) {
+    force(rObjects[[paste0(panel_name, "_", .flagRelinkedSelect)]])
 }
 
 #' Safely use reactive values

@@ -225,7 +225,9 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
     .input_FUN <- function(field) paste0(panel_name, "_", field)
 
     .safe_reactive_init(rObjects, panel_name)
-    .safe_reactive_init(rObjects, .input_FUN(.panelLinkInfo))
+    .safe_reactive_init(rObjects, .input_FUN(.flagSingleSelect))
+    .safe_reactive_init(rObjects, .input_FUN(.flagMultiSelect))
+    .safe_reactive_init(rObjects, .input_FUN(.flagRelinkedSelect))
 
     .create_box_observers(panel_name, c(.dataParamBoxOpen, .selectParamBoxOpen), pObjects, rObjects)
 

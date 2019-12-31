@@ -57,7 +57,7 @@
 
         # Update the elements reporting the links between panels.
         for (relinked in setdiff(c(old_transmitter, new_transmitter, panel_name), .noSelection)) {
-            relink_name <- paste0(relinked, "_", .panelLinkInfo)
+            relink_name <- paste0(relinked, "_", .flagRelinkedSelect)
             .safe_reactive_bump(rObjects, relink_name)
         }
 
@@ -254,7 +254,7 @@
 .create_multi_selection_history_observers <- function(panel_name, input, session, pObjects, rObjects) {
     save_field <- paste0(panel_name, "_", .multiSelectSave)
     del_field <- paste0(panel_name, "_", .multiSelectDelete)
-    info_name <- paste0(panel_name, "_", .panelGeneralInfo)
+    multi_name <- paste0(panel_name, "_", .flagMultiSelect)
 
     ## Save selection observer. ---
     observeEvent(input[[save_field]], {
@@ -267,7 +267,7 @@
 
         pObjects$memory[[panel_name]][[.multiSelectHistory]] <- c(current, list(to_store))
 
-        .safe_reactive_bump(rObjects, info_name)
+        .safe_reactive_bump(rObjects, multi_name)
 
         # Updating self (replot to get number), and updating children's selectize's.
         .mark_panel_as_modified(panel_name, .panelResaved, rObjects)
@@ -286,7 +286,7 @@
         current <- head(current, -1)
         pObjects$memory[[panel_name]][[.multiSelectHistory]] <- current
 
-        .safe_reactive_bump(rObjects, info_name)
+        .safe_reactive_bump(rObjects, multi_name)
 
         # Updating self and children's selectize's.
         .mark_panel_as_modified(panel_name, .panelResaved, rObjects)

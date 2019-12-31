@@ -88,7 +88,7 @@
             status <- modified[[current_panel_name]]
             if (!.panelNorender %in% status) {
                 # Generating self and marking it for re-rendering.
-                .safe_reactive_bump(rObjects, current_panel_name)
+                .safe_reactive_bump(rObjects, paste0(current_panel_name, "_", .flagOutputUpdate))
                 p.out <- .generateOutput(instance, se, all_memory=pObjects$memory, all_contents=pObjects$contents)
                 pObjects$contents[[current_panel_name]] <- p.out$contents
                 pObjects$cached[[current_panel_name]] <- p.out

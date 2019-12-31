@@ -5,7 +5,8 @@
 #' @param df A data.frame that was used in the \code{\link{datatable}} widget.
 #' @param x A numeric or character vector, usually representing a column of a data.frame.
 #' @param search A string specifying the search filter to apply to \code{x}.
-#' @param searches A character vector of per-column search strings.
+#' @param column A character vector of per-column search strings to apply to \code{df}.
+#' @param global String containing a regular expression to search for across all columns in \code{df} (and row names, if present).
 #'
 #' @return 
 #' A logical vector indicating which entries of \code{x} or rows of \code{df} are to be retained.
@@ -26,9 +27,18 @@
 #' \code{\link{datatable}} and associated documentation for more details about column searches.
 #'
 #' @examples
+#' # Regular expression:
 #' filterDTColumn(LETTERS, "A|B|C")
 #'
+#' # Range query:
 #' filterDTColumn(runif(20), "0.1 ... 0.5")
+#'
+#' # Works on DataFrames:
+#' X <- data.frame(row.names=LETTERS, thing=runif(26), 
+#'     stuff=sample(letters[1:3], 26, replace=TRUE))
+#' filterDT(X, c("0 ... 0.5", "a|b"), "")
+#' filterDT(X, "", "A")
+#' 
 #' @export
 filterDTColumn <- function(x, search) {
     if (is.numeric(x)) {
@@ -41,12 +51,25 @@ filterDTColumn <- function(x, search) {
 
 #' @export
 #' @rdname filterDTColumn
-filterDT <- function(df, searches) {
+filterDT <- function(df, column, global) {
     output <- !logical(nrow(df))
-    for (i in seq_len(min(ncol(df), length(searches)))) {
-        if (searches[i]!="") {
-            output <- output & filterDTColumn(df[[i]], searches[i])
+
+    if (global!="") {
+        g.out <- logical(nrow(df))
+        for (i in seq_len(ncol(df))) {
+            g.out <- g.out | grepl(global, df[[i]])
+        }
+        if (!is.null(rownames(df))) {
+            g.out <- g.out | grepl(global, rownames(df))
+        }
+        output <- output & g.out
+    }
+   
+    for (i in seq_len(min(ncol(df), length(column)))) {
+        if (column[i]!="") {
+            output <- output & filterDTColumn(df[[i]], column[i])
         }
     }
+
     output
 }

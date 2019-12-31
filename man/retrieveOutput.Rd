@@ -41,11 +41,8 @@ It also improves efficiency by retrieving cached outputs that were used elsewher
 \code{.requestUpdate} should be used in various observers to request a re-rendering of the panel,
 usually in response to user-driven parameter changes in \code{\link{.createObservers}}.
 
-\code{.requestCleanUpdate} is used for changes to protected parameters that invalidate existing multiple selections,
+\code{.requestCleanUpdate} is usually desirable for parameter changes that invalidate existing multiple selections,
 e.g., if the coordinates change in a \linkS4class{DotPlot}, existing brushes and lassos are usually not applicable.
-}
-\seealso{
-\code{\link{.createProtectedParameterObservers}}, for examples where the update-requesting functions are used.
 }
 \author{
 Aaron Lun

@@ -30,7 +30,7 @@
 #' @param customDataMax Deprecated and ignored.
 #' @param customStatMax Deprecated and ignored.
 #' @param heatMapMax Deprecated and ignored.
-#' @param initialPanels Deprecated, use \code{initial} instead. 
+#' @param initialPanels Deprecated, use \code{initial} instead.
 #' @param annotFun Deprecated and ignored.
 #' Read the book for the new, more extensible approach for creating custom panels.
 #' @param customDataFun Deprecated and ignored.
@@ -54,10 +54,10 @@
 #' Panels are filled from left to right in a row-wise manner depending on the available width.
 #' Each panel can be easily customized by modifying the parameters in each object.
 #'
-#' The \code{extra} argument should specify \linkS4class{Panel} classes that are not present in \code{initial} 
+#' The \code{extra} argument should specify \linkS4class{Panel} classes that are not present in \code{initial}
 #' but can be added interactively by the user after the app has started.
 #' The first instance of each new class in \code{extra} will be used as a template when the user adds a new panel of that class.
-#' Note that \code{extra} will be combined with the classes already present in \code{initial}, 
+#' Note that \code{extra} will be combined with the classes already present in \code{initial},
 #' so any redundant specification of those initial classes will be ignored.
 #'
 #' The \code{tour} argument needs to be provided in a form compatible with the format expected by the \code{rintrojs} package.
@@ -148,7 +148,7 @@ iSEE <- function(se,
     appTitle=NULL,
     runLocal=TRUE,
     voice=FALSE,
-    bugs=FALSE) 
+    bugs=FALSE)
 {
     # Save the original name of the input object for renaming in the tracker
     if (has_se <- !missing(se)) {
@@ -174,7 +174,7 @@ iSEE <- function(se,
     }
 
     if (is.null(initial)) {
-        initial <- list(RedDimPlot(), RowStatTable(), FeatAssayPlot(), ColDataPlot(), 
+        initial <- list(RedDimPlot(), RowStatTable(), FeatAssayPlot(), ColDataPlot(),
             RowDataPlot(), SampAssayPlot(), ColStatTable(), HeatMapPlot())
     }
 
@@ -364,16 +364,16 @@ iSEE <- function(se,
             # This is done in topological order so that all dependencies are satisfied.
             eval_order <- .establish_eval_order(pObjects$selection_links)
             for (panel_name in eval_order) {
-                p.out <- .generateOutput(pObjects$memory[[panel_name]], se, 
+                p.out <- .generateOutput(pObjects$memory[[panel_name]], se,
                     all_memory=pObjects$memory, all_contents=pObjects$contents)
                 pObjects$contents[[panel_name]] <- p.out$contents
             }
 
             # Observer set-up.
-            .create_general_observers(tour, runLocal, se_name, ecm_name, 
+            .create_general_observers(tour, runLocal, se_name, ecm_name,
                 input, session, pObjects, rObjects)
 
-            .create_organization_observers(se=se, 
+            .create_organization_observers(se=se,
                 input=input, output=output, session=session,
                 pObjects=pObjects, rObjects=rObjects)
 
@@ -383,11 +383,11 @@ iSEE <- function(se,
                 instance <- pObjects$memory[[idx]]
                 .createObservers(instance, se=se, input=input,
                     session=session, pObjects=pObjects, rObjects=rObjects)
-                .renderOutput(instance, se=se, 
+                .renderOutput(instance, se=se,
                     output=output, pObjects=pObjects, rObjects=rObjects)
             }
 
-#            .voice_control_observers(input, session, se, pObjects, rObjects)
+           .create_voice_observers(input, output, session, se, pObjects, rObjects)
         }
 
         if (!has_se) {
@@ -423,7 +423,7 @@ iSEE <- function(se,
 #'
 #' Stores useful information in the \linkS4class{SummarizedExperiment}'s metadata by calling \code{\link{.cacheCommonInfo}}.
 #' Also stuffs the \linkS4class{ExperimentColorMap} in there.
-#' 
+#'
 #' @param se A SummarizedExperiment object containing the current dataset.
 #' @param colormap An ExperimentColorMap object.
 #' @param available A list of all available \linkS4class{Panel} objects that might be used in the app.
@@ -431,9 +431,9 @@ iSEE <- function(se,
 #' @return A modified \code{se} with extra information in its \code{\link{metadata}}.
 #'
 #' @author Aaron Lun
-#' 
+#'
 #' @rdname INTERNAL_prepare_SE
-#' @importFrom S4Vectors metadata metadata<- 
+#' @importFrom S4Vectors metadata metadata<-
 .prepare_SE <- function(se, colormap, available) {
     metadata(se)$colormap <- colormap
     for (entry in available) {
@@ -457,7 +457,7 @@ iSEE <- function(se,
 #' @author Aaron Lun
 #'
 #' @rdname INTERNAL_setup_initial_state
-.setup_initial_state <- function(se, initial) { 
+.setup_initial_state <- function(se, initial) {
     # Refining the initial panels.
     for (idx in seq_along(initial)) {
         initial[idx] <- list(.refineParameters(initial[[idx]], se))
@@ -490,13 +490,13 @@ iSEE <- function(se,
     list(memory=memory, counter=counter)
 }
 
-#' Define the reservoir of available Panels 
+#' Define the reservoir of available Panels
 #'
 #' Define a reservoir of available \linkS4class{Panel} classes that can be added interactively by the user.
 #'
 #' @param se A \linkS4class{SummarizedExperiment} object after running \code{\link{.prepare_SE}}.
 #' @param extra A list of \linkS4class{Panel} instances representing the classes that can be added.
-#' @param memory A list of \linkS4class{Panel} instances representing the initial app state, 
+#' @param memory A list of \linkS4class{Panel} instances representing the initial app state,
 #' generated by \code{\link{.setup_initial_state}}.
 #' @param counter An integer vector of the ID counter for each Panel class,
 #' generated by \code{\link{.setup_initial_state}}.
@@ -537,8 +537,8 @@ iSEE <- function(se,
 #' @param memory A list of \linkS4class{Panel}s produced by \code{\link{.setup_initial_state}}.
 #' @param reservoir A list of \linkS4class{Panel}s produced by \code{\link{.define_reservoir}}.
 #' @param counter An integer vector produced by \code{\link{.define_reservoir}}.
-#' 
-#' @return 
+#'
+#' @return
 #' An environment containing several global variables for use throughout the application.
 #'
 #' @details
@@ -567,13 +567,13 @@ iSEE <- function(se,
 #' This is constructed by \code{\link{.spawn_single_selection_graph}}
 #' and can be modified by \code{\link{.choose_new_parent}}.
 #' }
-#' 
+#'
 #' @author Aaron Lun
 #' @rdname INTERNAL_create_persistent_objects
 .create_persistent_objects <- function(memory, reservoir, counter) {
     pObjects <- new.env()
     pObjects$memory <- memory
-    pObjects$reservoir <- reservoir 
+    pObjects$reservoir <- reservoir
     pObjects$counter <- counter
 
     pObjects$commands <- list()

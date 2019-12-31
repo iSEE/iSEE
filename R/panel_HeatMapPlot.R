@@ -46,8 +46,8 @@
 NULL
 
 #' @export
-HeatMapPlot <- function() {
-    new("HeatMapPlot")
+HeatMapPlot <- function(...) {
+    new("HeatMapPlot", ...)
 }
 
 #' @export
@@ -82,7 +82,7 @@ setMethod("initialize", "HeatMapPlot", function(.Object, ...) {
 setValidity2("HeatMapPlot", function(object) {
     msg <- character(0)
 
-    msg <- .valid_logical_error(msg, object, 
+    msg <- .valid_logical_error(msg, object,
         fields=c(.heatMapFeatNameBoxOpen, .heatMapColDataBoxOpen))
 
     # Checks for the numeric limits.
@@ -97,7 +97,7 @@ setValidity2("HeatMapPlot", function(object) {
     # Checks for the assorted string fields.
     msg <- .single_string_error(msg, object, .heatMapAssay)
 
-    msg <- .valid_string_error(msg, object, 
+    msg <- .valid_string_error(msg, object,
         c(.heatMapImportSource, .heatMapCenteredColors))
 
     # Checks for centering/scaling.
@@ -248,10 +248,10 @@ setMethod(".defineInterface", "HeatMapPlot", function(x, se, select_info) {
             plotOutput(.input_FUN(.heatMapLegend))
         ),
         collapseBox(
-            id=.input_FUN(.selectParamBoxOpen), 
-            title="Selection parameters", 
+            id=.input_FUN(.selectParamBoxOpen),
+            title="Selection parameters",
             open=x[[.selectParamBoxOpen]],
-            .define_selection_choices(x, by_field=.selectColSource, 
+            .define_selection_choices(x, by_field=.selectColSource,
                 type_field=.selectColType, saved_field=.selectColSaved,
                 selectable=col_selectable, source_type="column"),
             radioButtons(

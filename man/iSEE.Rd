@@ -133,10 +133,10 @@ Each element represents one panel and is typicall constructed with a command lik
 Panels are filled from left to right in a row-wise manner depending on the available width.
 Each panel can be easily customized by modifying the parameters in each object.
 
-The \code{extra} argument should specify \linkS4class{Panel} classes that are not present in \code{initial} 
+The \code{extra} argument should specify \linkS4class{Panel} classes that are not present in \code{initial}
 but can be added interactively by the user after the app has started.
 The first instance of each new class in \code{extra} will be used as a template when the user adds a new panel of that class.
-Note that \code{extra} will be combined with the classes already present in \code{initial}, 
+Note that \code{extra} will be combined with the classes already present in \code{initial},
 so any redundant specification of those initial classes will be ignored.
 
 The \code{tour} argument needs to be provided in a form compatible with the format expected by the \code{rintrojs} package.

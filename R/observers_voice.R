@@ -3,6 +3,7 @@
 #' Observers to handle voice control.
 #'
 #' @param input The Shiny input object from the server function.
+#' @param output The Shiny output object from the server function.
 #' @param session The Shiny session object from the server function.
 #' @param se The \linkS4class{SummarizedExperiment} object.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
@@ -15,59 +16,74 @@
 #'
 #' @importFrom shiny observeEvent isolate renderUI updateSelectizeInput
 #' showNotification removeNotification
-#' @rdname INTERNAL_voice_control_observers
-.voice_control_observers <- function(input, session, se, pObjects, rObjects) {
-    observeEvent(input[[.voiceShowPanelInput]], {
-        voice <- input[[.voiceShowPanelInput]]
+#' @rdname INTERNAL_create_voice_observers
+.create_voice_observers <- function(input, output, session, se, pObjects, rObjects) {
+    observeEvent(input[[.voiceCreatePanelInput]], {
+        voice <- input[[.voiceCreatePanelInput]]
         if (voice != "") {
-            showNotification(sprintf("<Show panel> %s", voice), type="message")
+            showNotification(sprintf("<Create panel> %s", voice), type="message")
         }
 
-        decodedPanel <- .nearestDecodedPanel(voice, pObjects$memory, max.edits=5)
-        if (is.null(decodedPanel)) { return(NULL) }
-        encodedPanel <- .decoded2encoded(decodedPanel)
-        encodedSplit <- .split_encoded(encodedPanel)
+        new_panel <- .nearestPanelByType(voice, pObjects$reservoir, max.edits=Inf)
+        if (identical(new_panel, integer(0))) { return(NULL) }
+        new_panel <- pObjects$reservoir[[new_panel]]
 
-        # Add the panel to the active table if not there yet
-        all_active <- rObjects$active_panels
-        if (any(all_active$Type==encodedSplit$Type & all_active$ID==encodedSplit$ID)) {
-            return(NULL)
-        }
+        # From hereon, a combination of "panel_order" and "update_ui" observers
 
-        rObjects$active_panels <- .showPanel(encodedSplit$Type, encodedSplit$ID, all_active)
+        # Set panel ID
+        mode <- class(new_panel)
+        idx <- pObjects$counter[[mode]] + 1L
+        new_panel[[.organizationId]] <- idx
 
-        # Memorize last valid panel (only if the command succeeded)
-        showNotification(sprintf("<Show panel> %s", decodedPanel), type="message")
-        pObjects[[.voiceActivePanel]] <- encodedPanel
-        showNotification(sprintf("Active panel: %s", decodedPanel), id=.voiceActivePanel, duration=NULL)
+        # Update memory and counter
+        new_panel_list <- list(new_panel)
+        names(new_panel_list) <- paste0(mode, idx)
+        pObjects$memory <- append(pObjects$memory, new_panel_list)
+        pObjects$counter[[mode]] <- idx
+
+        # Create observers and render output
+        .createObservers(new_panel, se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        .renderOutput(new_panel, se, output=output, pObjects=pObjects, rObjects=rObjects)
+
+        pObjects$selection_links <- .spawn_multi_selection_graph(pObjects$memory)
+        pObjects$aesthetics_links <- .spawn_single_selection_graph(pObjects$memory)
+
+        rObjects$rerender <- .increment_counter(rObjects$rerender)
+
+        # Memorize the added panel identity (only if the command succeeded)
+        added_full_name <- .getFullName(new_panel)
+        added_encoded_name <- .getEncodedName(new_panel)
+        showNotification(sprintf("<Create panel> %s", added_full_name), type="message")
+        pObjects[[.voiceActivePanel]] <- added_encoded_name
+        showNotification(sprintf("Active panel: %s", added_full_name), id=.voiceActivePanel, duration=NULL)
     })
 
-    observeEvent(input[[.voiceHidePanelInput]], {
-        voice <- input[[.voiceHidePanelInput]]
+    observeEvent(input[[.voiceRemovePanelInput]], {
+        voice <- input[[.voiceRemovePanelInput]]
         if (voice != "") {
-            showNotification(sprintf("<Hide panel> %s", voice), type="message")
+            showNotification(sprintf("<Remove panel> %s", voice), type="message")
         }
 
-        decodedPanel <- .nearestDecodedPanel(voice, pObjects$memory, max.edits=5)
-        if (is.null(decodedPanel)) { return(NULL) }
-        encodedPanel <- .decoded2encoded(decodedPanel)
-        encodedSplit <- .split_encoded(encodedPanel)
+        target_idx <- .nearestPanelByName(voice, pObjects$memory, max.edits=Inf)
+        target_panel <- pObjects$memory[[target_idx]]
+        pObjects$memory[[target_idx]] <- NULL
 
-        # Remove the panel to the active table if it is currently there
-        all_active <- rObjects$active_panels
-        panelIndex <- which(all_active$Type==encodedSplit$Type & all_active$ID==encodedSplit$ID)
-        if (length(panelIndex) == 0) {
-            showNotification(sprintf("Panel %s is not currently active", decodedPanel), type="error")
-            return(NULL)
+        # TODO: refactor-start (run when creating panels too)
+        pObjects$selection_links <- .spawn_multi_selection_graph(pObjects$memory)
+        pObjects$aesthetics_links <- .spawn_single_selection_graph(pObjects$memory)
+        rObjects$rerender <- .increment_counter(rObjects$rerender)
+        # TODO: refactor-end (run when creating panels too)
+
+        full_name <- .getFullName(target_panel)
+        encoded_name <- .getEncodedName(target_panel)
+
+        showNotification(sprintf("<Remove panel> %s", full_name), type="message")
+        # If panel was under voice control, clear memory.
+        if (identical(encoded_name, pObjects[[.voiceActivePanel]])) {
+            pObjects[[.voiceActivePanel]] <- NA_character_
+            removeNotification(.voiceActivePanel, session)
+            showNotification("Active panel cleared", type="message")
         }
-
-        rObjects$active_panels <- .hidePanel(encodedSplit$Type, encodedSplit$ID, all_active, pObjects)
-
-        showNotification(sprintf("<Hide panel> %s", decodedPanel), type="message")
-        # Clear memory of last panel accessed, as this one is now inactive
-        pObjects[[.voiceActivePanel]] <- NA_character_
-        removeNotification(.voiceActivePanel, session)
-        showNotification("Panel memory cleared", type="message")
     })
 
     observeEvent(input[[.voiceControlPanelInput]], {
@@ -76,41 +92,37 @@
             showNotification(sprintf("<Control panel> %s", voice), type="message")
         }
 
-        decodedPanel <- .nearestDecodedPanel(voice, pObjects$memory, max.edits=5)
-        if (is.null(decodedPanel)) { return(NULL) }
-        encodedPanel <- .decoded2encoded(decodedPanel)
-        encodedSplit <- .split_encoded(encodedPanel)
+        target_idx <- .nearestPanelByName(voice, pObjects$memory, max.edits=Inf)
+        if (identical(target_idx, integer(0))) { return(NULL) }
+        active_panel <- pObjects$memory[[target_idx]]
 
-        # Take control of the panel if it is currently there
-        all_active <- rObjects$active_panels
-        panelIndex <- which(all_active$Type==encodedSplit$Type & all_active$ID==encodedSplit$ID)
-        if (length(panelIndex) == 0) {
-            showNotification(sprintf("Panel %s is not currently active", decodedPanel), type="error")
-            return(NULL)
-        }
+        full_name <- .getFullName(active_panel)
+        encoded_name <- .getEncodedName(active_panel)
 
-        # Memorize last valid panel (only if the command succeeded)
-        showNotification(sprintf("<Control panel> %s", decodedPanel), type="message")
-        pObjects[[.voiceActivePanel]] <- encodedPanel
-        showNotification(sprintf("Active panel: %s", decodedPanel), id=.voiceActivePanel, duration=NULL)
+        # Memorize the panel
+        showNotification(sprintf("<Control panel> %s", full_name), type="message")
+        pObjects[[.voiceActivePanel]] <- encoded_name
+        showNotification(sprintf("Active panel: %s", full_name), id=.voiceActivePanel, duration=NULL)
     })
 
     observeEvent(input[[.voiceShowActivePanelInput]], {
         # TODO: refactor next 4 lines into function
-        activePanel <- pObjects[[.voiceActivePanel]]
-        if (is.na(activePanel)) {
+        active_panel <- pObjects[[.voiceActivePanel]]
+        if (is.na(active_panel)) {
             showNotification("No active panel", type="error")
             return(NULL)
         }
-        activeSplit <- .split_encoded(activePanel)
-        activeDecoded <- .decode_panel_name(activeSplit$Type, activeSplit$ID)
-        showNotification(sprintf("Active panel: %s", activeDecoded), id=.voiceActivePanel, duration=NULL)
+
+        active_panel <- pObjects$memory[[active_panel]]
+
+        full_name <- .getFullName(active_panel)
+        showNotification(sprintf("Active panel: %s", full_name), id=.voiceActivePanel, duration=NULL)
     })
 
     observeEvent(input[[.voiceColorUsingInput]], {
         # TODO: refactor next 4 lines into function
-        activePanel <- pObjects[[.voiceActivePanel]]
-        if (is.na(activePanel)) {
+        active_panel <- pObjects[[.voiceActivePanel]]
+        if (is.na(active_panel)) {
             showNotification("No active panel", type="error")
             return(NULL)
         }
@@ -120,28 +132,36 @@
             showNotification(sprintf("<Color using> %s", voice), type="message")
         }
 
-        activeSplit <- .split_encoded(activePanel)
+        active_panel <- pObjects$memory[[active_panel]]
 
         # Check if the choice matches one of the available titles
-        if (activeSplit$Type %in% row_point_plot_types) {
+        if (is(active_panel, "RowDotPlot")) {
+            covariates <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
             create_FUN <- .define_color_options_for_row_plots
-        } else {
+        } else if (is(active_panel, "ColumnDotPlot")) {
+            covariates <- .get_common_info(se, "ColumnDotPlot")$valid.colData.names
             create_FUN <- .define_color_options_for_column_plots
+        } else {
+            return(NULL)
         }
-        choices <- create_FUN(se)
-        matchedChoice <- .nearestValidChoice(voice, choices, max.edits=5)
+        all_assays <- .get_common_info(se, "DotPlot")$valid.assay.names
+
+        choices <- create_FUN(se, covariates, all_assays)
+        matchedChoice <- .nearestValidChoice(voice, choices, max.edits=Inf)
         if (length(matchedChoice) != 1L) {
             return(NULL)
         }
 
-        updateSelectizeInput(session, paste(activePanel, "ColorBy", sep="_"), selected=matchedChoice)
+        encoded_name <- .getEncodedName(active_panel)
+
+        updateSelectizeInput(session, paste0(encoded_name, "_", "ColorBy"), selected=matchedChoice)
         showNotification(sprintf("<Color using> %s", matchedChoice), type="message")
     })
 
     observeEvent(input[[.voiceColorByInput]], {
         # TODO: refactor next 4 lines into function
-        activePanel <- pObjects[[.voiceActivePanel]]
-        if (is.na(activePanel)) {
+        active_panel <- pObjects[[.voiceActivePanel]]
+        if (is.na(active_panel)) {
             showNotification("No active panel", type="error")
             return(NULL)
         }
@@ -151,9 +171,10 @@
             showNotification(sprintf("<Color by> %s", voice), type="message")
         }
 
-        activeSplit <- .split_encoded(activePanel)
+        active_panel <- pObjects$memory[[active_panel]]
+        encoded_name <- .getEncodedName(active_panel)
 
-        colorby_field <- paste0(activeSplit$Type, activeSplit$ID, "_", .colorByField)
+        colorby_field <- paste0(encoded_name, "_", .colorByField)
         colorby_title <- isolate(input[[colorby_field]])
 
         # Fetch the available choices
@@ -165,31 +186,31 @@
             return(NULL)
         } else if (colorby_title == .colorByColDataTitle) {
             colorby_param <- .colorByColData
-            matchedChoice <- .nearestValidChoice(voice, choices, max.edits=5)
+            matchedChoice <- .nearestValidChoice(voice, choices, max.edits=Inf)
         } else if (colorby_title == .colorByRowDataTitle) {
             colorby_param <- .colorByRowData
-            matchedChoice <- .nearestValidChoice(voice, choices, max.edits=5)
+            matchedChoice <- .nearestValidChoice(voice, choices, max.edits=Inf)
         } else if (colorby_title == .colorByFeatNameTitle) {
             colorby_param <- .colorByFeatName
-            matchedChoice <- .nearestValidNamedChoice(voice, choices, max.edits=5)
+            matchedChoice <- .nearestValidNamedChoice(voice, choices, max.edits=Inf)
         } else if (colorby_title == .colorBySampNameTitle) {
             colorby_param <- .colorBySampName
-            matchedChoice <- .nearestValidNamedChoice(voice, choices, max.edits=5)
+            matchedChoice <- .nearestValidNamedChoice(voice, choices, max.edits=Inf)
         }
 
         if (length(matchedChoice) != 1L) {
             return(NULL)
         }
 
-        updateSelectizeInput(session, paste(activePanel, colorby_param, sep="_"),
+        updateSelectizeInput(session, paste0(encoded_name, "_", colorby_param),
             selected=matchedChoice, choices=choices, server=TRUE)
         showNotification(sprintf("<Color by> %s", matchedChoice), type="message")
     })
 
     observeEvent(input[[.voiceReceiveFromInput]], {
         # TODO: refactor next 4 lines into function
-        activePanel <- pObjects[[.voiceActivePanel]]
-        if (is.na(activePanel)) {
+        active_panel <- pObjects[[.voiceActivePanel]]
+        if (is.na(active_panel)) {
             showNotification("No active panel", type="error")
             return(NULL)
         }
@@ -199,38 +220,66 @@
             showNotification(sprintf("<Receive from> %s", voice), type="message")
         }
 
-        decodedPanel <- .nearestDecodedPanel(voice, pObjects$memory, max.edits=5)
-        if (is.null(decodedPanel)) { return(NULL) }
+        active_panel <- pObjects$memory[[active_panel]]
+        active_encoded <- .getEncodedName(active_panel)
 
-        updateSelectizeInput(session, paste(activePanel, .selectByPlot, sep="_"), selected=decodedPanel)
+        target_idx <- .nearestPanelByName(voice, pObjects$memory, max.edits=Inf)
+        if (identical(target_idx, integer(0))) { return(NULL) }
 
-        showNotification(sprintf("<Receive from> %s", decodedPanel), type="message")
+        target_panel <- pObjects$memory[[target_idx]]
+        target_encoded_name <- .getEncodedName(target_panel)
+        target_full_name <- .getFullName(target_panel)
+        names(target_encoded_name) <- target_full_name
+
+        if (is(target_panel, "ColumnDotPlot")) {
+            select_field <- .selectColSource
+        } else if (is(target_panel, "RowDotPlot")) {
+            select_field <- .selectRowSource
+        } else {
+            return(NULL)
+        }
+
+        updateSelectizeInput(session, paste0(active_encoded, "_", select_field), selected=target_encoded_name)
+
+        showNotification(sprintf("<Receive from> %s", target_full_name), type="message")
     })
 
     observeEvent(input[[.voiceSendToInput]], {
         # TODO: refactor next 4 lines into function
-        activePanel <- pObjects[[.voiceActivePanel]]
-        if (is.na(activePanel)) {
+        active_panel <- pObjects[[.voiceActivePanel]]
+        if (is.na(active_panel)) {
             showNotification("No active panel", type="error")
             return(NULL)
         }
-
-        activeSplit <- .split_encoded(activePanel)
-        activeDecoded <- .decode_panel_name(activeSplit$Type, activeSplit$ID)
 
         voice <- input[[.voiceSendToInput]]
         if (voice != "") {
             showNotification(sprintf("<Send to> %s", voice), type="message")
         }
 
-        decodedPanel <- .nearestDecodedPanel(voice, pObjects$memory, max.edits=5)
-        if (is.null(decodedPanel)) { return(NULL) }
-        encodedPanel <- .decoded2encoded(decodedPanel)
-        encodedSplit <- .split_encoded(encodedPanel)
+        active_panel <- pObjects$memory[[active_panel]]
+        active_encoded <- .getEncodedName(active_panel)
+        active_full_name <- .getFullName(active_panel)
+        names(active_encoded) <- active_full_name
 
-        updateSelectizeInput(session, paste(encodedPanel, .selectByPlot, sep="_"), selected=activeDecoded)
+        target_idx <- .nearestPanelByName(voice, pObjects$memory, max.edits=Inf)
+        if (identical(target_idx, 0L)) { return(NULL) }
 
-        showNotification(sprintf("<Send to> %s", decodedPanel), type="message")
+        target_panel <- pObjects$memory[[target_idx]]
+        target_encoded_name <- .getEncodedName(target_panel)
+        target_full_name <- .getFullName(target_panel)
+
+        if (is(active_panel, "ColumnDotPlot")) {
+            select_field <- .selectColSource
+        } else if (is(active_panel, "RowDotPlot")) {
+            select_field <- .selectRowSource
+        } else {
+            return(NULL)
+        }
+
+        updateSelectizeInput(session, paste0(target_encoded_name, "_", select_field), selected=active_encoded)
+
+        showNotification(sprintf("<Send to> %s", target_full_name), type="message")
     })
 
     observeEvent(input[["voiceGoodBoyInput"]], {

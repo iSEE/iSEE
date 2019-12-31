@@ -1,77 +1,32 @@
 context("voice")
 
-initialPanels <- DataFrame(
-    Name=c(
-        paste(c(
-            "Reduced dimension plot",
-            "Column data plot",
-            "Feature assay plot",
-            "Row statistics table",
-            "Row data plot",
-            "Sample assay plot",
-            "Column statistics table",
-            "Custom data plot",
-            "Custom statistics table",
-            "Heat map"), 1),
-        "Custom data plot 2"),
-    Width=3
-)
-
 # Do NOT move to setup; re-defined here to keep tests self-contained.
-redDimArgs <- redDimPlotDefaults(sce, 1)
-colDataArgs <- colDataPlotDefaults(sce, 1)
-featAssayArgs <- featAssayPlotDefaults(sce, 1)
-rowStatArgs <- rowStatTableDefaults(sce, 1)
-rowDataArgs <- rowDataPlotDefaults(sce, 1)
-sampAssayArgs <- sampAssayPlotDefaults(sce, 1)
-colStatArgs <- colStatTableDefaults(sce, 1)
-customDataArgs <- customDataPlotDefaults(sce, 2)
-customStatArgs <- customStatTableDefaults(sce, 1)
-heatMapArgs <- heatMapPlotDefaults(sce, 1)
-
-#
-customDataArgs[1, iSEE:::.customFun] <- "PCA2"
-customDataArgs[2, iSEE:::.customFun] <- "PCA2"
-customDataArgs[2, iSEE:::.customVisibleArgs] <- "arg1 test"
-customDataArgs[2, iSEE:::.customArgs] <- "PCA2"
-customStatArgs[1, iSEE:::.customFun] <- "DE"
-
-# Adding row names to mimic .setup_memory().
-# We don't actually want to run that function, though,
-# as the number of customColPlots will be set to zero.
-rownames(redDimArgs) <- sprintf("redDimPlot%i", seq_len(nrow(redDimArgs)))
-rownames(colDataArgs) <- sprintf("colDataPlot%i", seq_len(nrow(colDataArgs)))
-rownames(featAssayArgs) <- sprintf("featAssayPlot%i", seq_len(nrow(featAssayArgs)))
-rownames(rowStatArgs) <- sprintf("rowStatTable%i", seq_len(nrow(rowStatArgs)))
-rownames(rowDataArgs) <- sprintf("rowDataPlot%i", seq_len(nrow(rowDataArgs)))
-rownames(sampAssayArgs) <- sprintf("sampAssayPlot%i", seq_len(nrow(sampAssayArgs)))
-rownames(colStatArgs) <- sprintf("colStatTable%i", seq_len(nrow(colStatArgs)))
-rownames(customDataArgs) <- sprintf("customDataPlot%i", seq_len(nrow(customDataArgs)))
-rownames(customStatArgs) <- sprintf("customStatTable%i", seq_len(nrow(customStatArgs)))
-rownames(heatMapArgs) <- sprintf("heatMapPlot%i", seq_len(nrow(heatMapArgs)))
 
 # Setting up the memory.
 memory <- list(
-    redDimPlot=redDimArgs,
-    colDataPlot=colDataArgs,
-    featAssayPlot=featAssayArgs,
-    rowStatTable=rowStatArgs,
-    rowDataPlot=rowDataArgs,
-    sampAssayPlot=sampAssayArgs,
-    colStatTable=colStatArgs,
-    customDataPlot=customDataArgs,
-    customStatTable=customStatArgs,
-    heatMapPlot=heatMapArgs)
+    RedDimPlot(PanelId=1L),
+    ColDataPlot(PanelId=1L),
+    FeatAssayPlot(PanelId=1L),
+    RowStatTable(PanelId=1L),
+    RowDataPlot(PanelId=1L),
+    SampAssayPlot(PanelId=1L),
+    ColStatTable(PanelId=1L),
+    HeatMapPlot(PanelId=1L))
+
+# Setting up the reservoir.
+reservoir <- list(
+    RedDimPlot(),
+    ColDataPlot(),
+    FeatAssayPlot(),
+    RowStatTable(),
+    RowDataPlot(),
+    SampAssayPlot(),
+    ColStatTable(),
+    HeatMapPlot()
+)
 
 # Set up alternative object.
-se_out <- .sanitize_SE_input(sce)
-sce <- se_out$object
-sceX <- iSEE:::.precompute_UI_info(sce, list(PCA2=ggplot), list(DE=data.frame))
-active_panels <- iSEE:::.setup_initial(initialPanels, memory)
-memory <- iSEE:::.sanitize_memory(active_panels, memory)
-
-tabs <- iSEE:::.spawn_table_links(memory)
-selection_links <- .spawn_selection_chart(memory)
+sce <- iSEE:::.prepare_SE(sce, ExperimentColorMap(), memory)
 
 # prepareSpeechRecognition ----
 
@@ -86,107 +41,80 @@ test_that("prepareSpeechRecognition loads", {
 
 })
 
-# .digitalizeNumbers ----
+# .digitalizeText ----
 
 test_that("numbers can be numeralized from text", {
 
-    out <- .digitalizeNumbers("one")
+    out <- .digitalizeText("one")
     expect_identical(out, 1)
 
-    out <- .digitalizeNumbers("two")
+    out <- .digitalizeText("two")
     expect_identical(out, 2)
 
     # allow some vocal typos
-    out <- .digitalizeNumbers("to")
+    out <- .digitalizeText("to")
     expect_identical(out, 2)
 
-    out <- .digitalizeNumbers("too")
+    out <- .digitalizeText("too")
     expect_identical(out, 2)
 
 })
 
-# .isDigits ----
+# .allDigits ----
 
-test_that(".isDigits works", {
+test_that(".allDigits works", {
 
-    expect_true(.isDigits("123"))
-    expect_false(.isDigits("oen hundred and three"))
-
-})
-
-# .showPanel ----
-
-test_that(".showPanel adds a valid row to the table of active panels", {
-
-    out <- .showPanel("redDimPlot", 6, active_panels, width=4L, height=400L)
-
-    expect_identical(tail(out$Type, 1), "redDimPlot")
-    expect_identical(tail(out$ID, 1), 6)
-    expect_identical(tail(out$Width, 1), 4L)
-    expect_identical(tail(out$Height, 1), 400L)
+    expect_true(.allDigits("123"))
+    expect_false(.allDigits("oen hundred and three"))
 
 })
 
-# .hidePanel ----
+# .nearestPanelNameType ----
 
-test_that(".hidePanel removes a row from active panels and associated table links", {
+test_that(".nearestPanelByType handles vocal typos", {
 
-    pObjects <- new.env()
-    pObjects$table_links <- tabs
-    pObjects$memory <- memory
-    pObjects$selection_links <- selection_links
+    out <- .nearestPanelByType("definitely not a proper panel type", reservoir, max.edits = 5L)
+    expect_length(out, 0L)
 
-    # Delete a plot panel
-    out <- .hidePanel("redDimPlot", 1, active_panels, pObjects)
-    expect_true(identical(nrow(out), nrow(active_panels)-1L))
+    out <- .nearestPanelByType("reduce dimension plus", reservoir)
+    expect_identical(out, 1L) # "Reduced dimension plot"
 
-    # Delete a table panel
-    out <- .hidePanel("rowStatTable", 1, active_panels, pObjects)
-    expect_true(identical(nrow(out), nrow(active_panels)-1L))
+    out <- .nearestPanelByType("row statistics table", reservoir)
+    expect_identical(out, 4L) # "Row statistics table"
 
+    out <- .nearestPanelByType("row statistics plot", reservoir)
+    expect_identical(out, 4L) # "Row statistics table"
+    # NOTE: closer to "Row statistics table" than "Row data plot"
 })
 
-# .nearestPanelType ----
+# .nearestPanelByName ----
 
-test_that(".nearestPanelType handles vocal typos", {
+test_that(".nearestPanelByName handles vocal typos", {
 
-    out <- .nearestPanelType("definitely not a proper panel type")
-    expect_identical(out, character(0L))
+    out <- .nearestPanelByName("definitely not a proper panel type", memory, max.edits = 5L)
+    expect_length(out, 0L)
 
-    out <- .nearestPanelType("reduce dimension plus")
-    expect_identical(out, c(redDimPlot="Reduced dimension plot"))
+    out <- .nearestPanelByName("reduce dimension plus 1", reservoir)
+    expect_identical(out, 1L) # "Reduced dimension plot 1"
 
-    out <- .nearestPanelType("row statistics table")
-    expect_identical(out, c(rowStatTable = "Row statistics table"))
+    out <- .nearestPanelByName("row statistics table 1", reservoir)
+    expect_identical(out, 4L) # "Row statistics table 1"
 
-    out <- .nearestPanelType("row statistics plot")
-    expect_identical(out, c(rowStatTable = "Row statistics table"))
-    # NOTE: closer than row data plot
-})
-
-# .nearestDecodedPanel ----
-
-test_that(".nearestDecodedPanel handles vocal typos", {
-
-    out <- .nearestDecodedPanel("definitely not a proper panel name")
-    expect_null(out)
-
-    out <- .nearestDecodedPanel("reduced dimension plot NotANumber", memory)
-    expect_null(out)
-
-    out <- .nearestDecodedPanel("reduced dimension plot 1", memory)
-    expect_identical(out, "Reduced dimension plot 1")
-
+    out <- .nearestPanelByName("row statistics plot 1", reservoir)
+    expect_identical(out, 4L) # "Row statistics table 1"
+    # NOTE: closer to "Row statistics table" than "Row data plot"
 })
 
 # .nearestValidChoice ----
 
 test_that(".nearestValidChoice handles vocal typos", {
 
-    out <- .nearestValidChoice("input that cannot be matched", panelTypes)
+    reservoir_types <- vapply(reservoir, .fullName, character(1))
+
+    out <- .nearestValidChoice("input that cannot be matched", reservoir_types, max.edits = 5)
     expect_identical(out, character(0L))
 
-    out <- .nearestValidChoice("reduced dimension plot", panelTypes)
+    out <- .nearestValidChoice("reduced dimension plot", reservoir_types)
     expect_identical(out, "Reduced dimension plot")
 
 })
@@ -195,30 +123,11 @@ test_that(".nearestValidChoice handles vocal typos", {
 
 test_that(".nearestValidNamedChoice handles vocal typos", {
 
-    out <- .nearestValidNamedChoice("reddimplot", panelTypes)
-    expect_identical(out, c(redDimPlot = "Reduced dimension plot"))
+    reservoir_types <- vapply(reservoir, .fullName, character(1))
+    names(reservoir_types) <- vapply(reservoir, class, character(1))
 
-})
-
-# .getValidParameterChoices ----
-
-test_that(".getValidParameterChoices works for column plots", {
-
-    out <- .getValidParameterChoices("ColorBy", "redDimPlot", sce)
-    expect_identical(out, c("None", "Column data", "Feature name", "Sample name"))
-
-    out <- .getValidParameterChoices("Not Supported", "redDimPlot", sce)
-    expect_identical(out, character(0L))
-
-})
-
-test_that(".getValidParameterChoices works for row plots", {
-
-    out <- .getValidParameterChoices("ColorBy", "rowDataPlot", sce)
-    expect_identical(out, c("None", "Row data" , "Feature name", "Sample name"))
-
-    out <- .getValidParameterChoices("Not Supported", "rowDataPlot", sce)
-    expect_identical(out, character(0L))
+    out <- .nearestValidNamedChoice("reddimplot", reservoir_types)
+    expect_identical(out, c(RedDimPlot = "Reduced dimension plot"))
 
 })
 
@@ -230,10 +139,10 @@ test_that(".colorByChoices works", {
     expect_identical(out, character(0L))
 
     out <- .colorByChoices("Column data", sce)
-    expect_identical(out, colnames(colData(sce)))
+    expect_identical(out, .get_common_info(sce, "ColumnDotPlot")$valid.colData.names)
 
     out <- .colorByChoices("Row data", sce)
-    expect_identical(out, colnames(rowData(sce)))
+    expect_identical(out, .get_common_info(sce, "RowDotPlot")$valid.rowData.names)
 
     out <- .colorByChoices("Feature name", sce)
     expectedValue <- seq_len(nrow(sce))
@@ -246,4 +155,3 @@ test_that(".colorByChoices works", {
     expect_identical(out, expectedValue)
 
 })
-

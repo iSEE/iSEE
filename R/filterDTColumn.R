@@ -18,8 +18,13 @@
 #' For numeric \code{x}, \code{search} should have the form \code{LOWER ... UPPER}
 #' where all elements in [LOWER, UPPER] are retained.
 #'
+#' For factor \code{x}, \code{search} should have the form \code{["choice_1", "choice_2", etc.]}.
+#' This is also the case for logical \code{x}, albeit with the only choices being \code{"true"} or \code{"false"}.
+#' 
 #' Ideally, \code{ncol(df)} and \code{length(searches)} would be the same, but if not,
 #' \code{\link{filterDT}} will simply filter on the first N entries where N is the smaller of the two.
+#'
+#' Any \code{NA} element in \code{x} of any column of \code{df} will be treated as a no-match.
 #'
 #' @author Aaron Lun
 #'
@@ -33,19 +38,36 @@
 #' # Range query:
 #' filterDTColumn(runif(20), "0.1 ... 0.5")
 #'
+#' # Factor query:
+#' filterDTColumn(factor(letters), "['a', 'b', 'c']")
+#'
 #' # Works on DataFrames:
 #' X <- data.frame(row.names=LETTERS, thing=runif(26), 
 #'     stuff=sample(letters[1:3], 26, replace=TRUE))
-#' filterDT(X, c("0 ... 0.5", "a|b"), "")
-#' filterDT(X, "", "A")
+#'
+#' filterDT(X, c("0 ... 0.5", "a|b"), global="")
+#' filterDT(X, "", global="A")
 #' 
 #' @export
 filterDTColumn <- function(x, search) {
     if (is.numeric(x)) {
         fragmented <- strsplit(search, " ... ", fixed=TRUE)[[1]]
-        x >= as.numeric(fragmented[1]) & x <= as.numeric(fragmented[2])
+        fragmented <- as.numeric(fragmented)
+        if (length(fragmented)!=2L || any(is.na(fragmented))) {
+            warning(sprintf("'%s' is not a valid search string for numeric 'x'", search))
+            !logical(length(x))
+        } else {
+            x >= fragmented[1] & x <= fragmented[2] & !is.na(x)
+        }
+    } else if (is.factor(x) || is.logical(x)) {
+        search <- paste0("c(", substr(search, 2, nchar(search)-1), ")")
+        used <- eval(parse(text=search))
+        if (is.logical(x)) {
+            used <- c(true=TRUE, false=FALSE)[used]
+        }
+        x %in% used
     } else {
-        grepl(search, x)
+        safegrep(search, x)
     }
 }
 
@@ -57,14 +79,14 @@ filterDT <- function(df, column, global) {
     if (global!="") {
         g.out <- logical(nrow(df))
         for (i in seq_len(ncol(df))) {
-            g.out <- g.out | grepl(global, df[[i]])
+            g.out <- g.out | safegrep(global, df[[i]])
         }
         if (!is.null(rownames(df))) {
-            g.out <- g.out | grepl(global, rownames(df))
+            g.out <- g.out | safegrep(global, rownames(df))
         }
         output <- output & g.out
     }
-   
+
     for (i in seq_len(min(ncol(df), length(column)))) {
         if (column[i]!="") {
             output <- output & filterDTColumn(df[[i]], column[i])
@@ -72,4 +94,8 @@ filterDT <- function(df, column, global) {
     }
 
     output
+}
+
+safegrep <- function(pattern, val) {
+    grepl(pattern, val) & !is.na(val)
 }

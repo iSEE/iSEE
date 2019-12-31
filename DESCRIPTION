@@ -39,7 +39,8 @@ Imports:
     cowplot,
     scales,
     dplyr,
-    shinyWidgets
+    shinyWidgets,
+    ComplexHeatmap
 Suggests:
     testthat,
     BiocStyle,

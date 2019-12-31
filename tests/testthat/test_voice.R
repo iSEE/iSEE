@@ -111,7 +111,7 @@ test_that(".nearestValidChoice handles vocal typos", {
 
     reservoir_types <- vapply(reservoir, .fullName, character(1))
 
-    out <- .nearestValidChoice("input that cannot be matched", reservoir_types)
+    out <- .nearestValidChoice("input that cannot be matched", reservoir_types, max.edits = 5)
     expect_identical(out, character(0L))
 
     out <- .nearestValidChoice("reduced dimension plot", reservoir_types)

@@ -6,11 +6,12 @@
 #' @param x A numeric or character vector, usually representing a column of a data.frame.
 #' @param search A string specifying the search filter to apply to \code{x}.
 #' @param column A character vector of per-column search strings to apply to \code{df}.
+#' If any entry is an empty string, the corresponding column is not used for any filtering.
 #' @param global String containing a regular expression to search for across all columns in \code{df} (and row names, if present).
+#' If an empty string, no filtering is performed.
 #'
 #' @return 
 #' A logical vector indicating which entries of \code{x} or rows of \code{df} are to be retained.
-#' For \code{filterDT}, an \code{&} operation is applied to the logical vectors from all columns.
 #'
 #' @details
 #' For character \code{x}, \code{search} is treated as a regular expression.
@@ -21,10 +22,17 @@
 #' For factor \code{x}, \code{search} should have the form \code{["choice_1", "choice_2", etc.]}.
 #' This is also the case for logical \code{x}, albeit with the only choices being \code{"true"} or \code{"false"}.
 #' 
+#' \code{filterDT} will retain all rows where (i) any value in any column (after coercion to a string) matches \code{global},
+#' and (ii) the value in each column satisfies the filter specified in the corresponding entry of \code{column}.
+#' Setting \code{global} to an empty string will skip requirement (i) while 
+#' setting any entry of \code{column} to an empty string will skip requirement (ii) for the affected column.
+#'
 #' Ideally, \code{ncol(df)} and \code{length(searches)} would be the same, but if not,
 #' \code{\link{filterDT}} will simply filter on the first N entries where N is the smaller of the two.
 #'
-#' Any \code{NA} element in \code{x} of any column of \code{df} will be treated as a no-match.
+#' Any \code{NA} element in \code{x} will be treated as a no-match.
+#' The same applies for each column of \code{df} that has non-empty \code{column}. 
+#' Note that a no-match in one column does not preclude a successful match in another column by \code{global}.
 #'
 #' @author Aaron Lun
 #'

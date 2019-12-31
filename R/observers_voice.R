@@ -25,7 +25,7 @@
         }
 
         new_panel <- .nearestPanelByType(voice, pObjects$reservoir, max.edits=Inf)
-        if (is.null(new_panel)) { return(NULL) }
+        if (identical(new_panel, integer(0))) { return(NULL) }
         new_panel <- pObjects$reservoir[[new_panel]]
 
         # From hereon, a combination of "panel_order" and "update_ui" observers
@@ -93,7 +93,7 @@
         }
 
         target_idx <- .nearestPanelByName(voice, pObjects$memory, max.edits=Inf)
-        if (is.na(target_idx)) { return(NULL) }
+        if (identical(target_idx, integer(0))) { return(NULL) }
         active_panel <- pObjects$memory[[target_idx]]
 
         full_name <- .getFullName(active_panel)
@@ -224,7 +224,7 @@
         active_encoded <- .getEncodedName(active_panel)
 
         target_idx <- .nearestPanelByName(voice, pObjects$memory, max.edits=Inf)
-        if (is.null(target_idx)) { return(NULL) }
+        if (identical(target_idx, integer(0))) { return(NULL) }
 
         target_panel <- pObjects$memory[[target_idx]]
         target_encoded_name <- .getEncodedName(target_panel)
@@ -263,7 +263,7 @@
         names(active_encoded) <- active_full_name
 
         target_idx <- .nearestPanelByName(voice, pObjects$memory, max.edits=Inf)
-        if (is.null(target_idx)) { return(NULL) }
+        if (identical(target_idx, 0L)) { return(NULL) }
 
         target_panel <- pObjects$memory[[target_idx]]
         target_encoded_name <- .getEncodedName(target_panel)

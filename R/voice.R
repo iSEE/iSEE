@@ -17,21 +17,22 @@ prepareSpeechRecognition <- function(use=FALSE) {
 
 #' Nearest panel
 #'
+#' @param x Character string, typically representing a voice input.
+#' @param panels A list of \code{Panel} objects.
+#' @param max.edits Maximal number of mismatches allowed.
+#'
 #' @description
 #'
-#' \code{.nearestPanelByType} identifies the panel type that is the smallest edit distance from a recorded voice input.
-#' \code{.nearestPanelByName} identifies the panel full name that is the smallest edit distance from a recorded voice input.
+#' \code{.nearestPanelByType} identifies the panel with the type that is the smallest edit distance from \code{x}.
+#'
+#' \code{.nearestPanelByName} identifies the panel with the full name that is the smallest edit distance from \code{x}.
 #'
 #' @details
 #' A panel full name is composed of a panel type and an identifier.
 #' The panel type is returned by \code{\link{.fullName}}, (e.g., "Reduced dimension plot").
-#' The panel identifier is an integer value set during the initialization of each panel, uniquely identifying each panel of each type.
+#' The panel identifier is an integer value set during the initialization of each panel, uniquely identifying each individual panel within each panel type.
 #'
-#' @param x Character string expected to match a panel type.
-#' @param panels A list of \code{Panel} objects.
-#' @param max.edits Maximal number of mismatches allowed.
-#'
-#' @return Integer index of the matched panel, or \code{NA} if all matches exceed \code{max.edits}.
+#' @return Integer index of the matched panel, or \code{NULL} if all matches exceed \code{max.edits}.
 #'
 #' @rdname INTERNAL_nearest_panel
 #'
@@ -53,58 +54,50 @@ prepareSpeechRecognition <- function(use=FALSE) {
 
 #' Nearest match
 #'
-#' Identify the panel type name that is the smallest edit distance from a recorded voice input.
-#'
-#' @param x Character string expected to match a panel type.
-#' @param y Character vector of available panel types (candidates for match).
+#' @param x Character string, typically representing a voice input.
+#' @param y Character vector of available choices (candidates for match).
 #' @param max.edits Maximal number of mismatches allowed.
 #'
-#' @return Integer index of the nearest match in \code{y}, or \code{NULL} if all matches exceed \code{max.edits}.
+#' @description
 #'
-#' @rdname INTERNAL_nearestMatch
+#' \code{.nearestMatch} identifies the index of the value in \code{y} that is the smallest edit distance from \code{x}, within the allowed edit distance.
+#'
+#' \code{.nearestValidChoice} is intended for unnamed character vectors.
+#' It identifies the character value in \code{y} that is the smallest edit distance from \code{x}, within the allowed edit distance.
+#'
+#' \code{.nearestValidNamedChoice} is intended for named vectors.
+#' It identifies the character value in \code{y} with the name that is the smallest edit distance from \code{x}, within the allowed edit distance.
+#'
+#' @return
+#'
+#' \code{.nearestMatch} returns the integer index of the nearest match in \code{y}, or an empty integer vector if all matches exceed \code{max.edits}.
+#'
+#' \code{.nearestValidChoice} and \code{.nearestValidNamedChoice} return the closest match as a (named) character value.
+#'
+#'
+#' @rdname INTERNAL_nearestValidChoice
 #' @importFrom utils adist
 #' @author Kevin Rue-Albrecht
 .nearestMatch <- function(x, y, max.edits=Inf) {
     distances <- adist(x, y, partial=FALSE, ignore.case=TRUE)
     distances <- distances[1, ]
 
-    # refuse the nearest match if excessively different
     nearEnough <- distances[which(distances <= max.edits)]
-    if (length(nearEnough) == 0L){
-        return(NULL)
-    }
 
     which.min(nearEnough)
 }
 
-#' Nearest valid choice
-#'
-#' @description
-#' \code{.nearestValidChoice} is intended for unnamed character vectors.
-#' It returns the closest match to the given character value.
-#'
-#' \code{.nearestValidNamedChoice} is intended for named vectors.
-#' It returns the value whose name is closest to the given character value.
-#'
 #' @rdname INTERNAL_nearestValidChoice
-#'
-#' @param x Character value.
-#' @param choices Character vector of valid choices.
-#' @param max.edits Allowed edit distance.
-#'
-#' @return Nearest match amongst the choices within the allowed edit distance.
-#'
 #' @importFrom utils adist
-#' @author Kevin Rue-Albrecht
-.nearestValidChoice <- function(x, choices, max.edits=Inf) {
-    idx <- .nearestMatch(x, choices, max.edits)
-    choices[idx]
+.nearestValidChoice <- function(x, y, max.edits=Inf) {
+    idx <- .nearestMatch(x, y, max.edits)
+    y[idx]
 }
 
 #' @rdname INTERNAL_nearestValidChoice
-.nearestValidNamedChoice <- function(x, choices, max.edits=Inf) {
-    nearestMatch <- .nearestValidChoice(x, names(choices), max.edits)
-    choices[nearestMatch]
+.nearestValidNamedChoice <- function(x, y, max.edits=Inf) {
+    nearestMatch <- .nearestValidChoice(x, names(y), max.edits)
+    y[nearestMatch]
 }
 
 #' List valid coloring choices

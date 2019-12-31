@@ -73,7 +73,7 @@ filterDTColumn <- function(x, search) {
         if (is.logical(x)) {
             used <- c(true=TRUE, false=FALSE)[used]
         }
-        x %in% used
+        x %in% used & !is.na(x)
     } else {
         safegrep(search, x)
     }

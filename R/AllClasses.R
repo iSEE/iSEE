@@ -421,5 +421,15 @@ setClass("HeatMapPlot", contains="Panel", slots=collated)
 
 collated <- character(0)
 
+.visualParamBoxOpen <- "VisualBoxOpen"
+
+collated[.visualParamBoxOpen] <- "logical"
+
+.plotFontSize <- "FontSize"
+.plotLegendPosition <- "LegendPosition"
+
+collated[.plotFontSize] <- "numeric"
+collated[.plotLegendPosition] <- "character"
+
 #' @export
 setClass("ComplexHeatmapPlot", contains="Panel", slots=collated)

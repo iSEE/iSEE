@@ -9,6 +9,11 @@ ComplexHeatmapPlot <- function(...) {
 setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- list(...)
 
+    args <- .empty_default(args, .visualParamBoxOpen, FALSE)
+
+    args <- .empty_default(args, .plotFontSize, 1)
+    args <- .empty_default(args, .plotLegendPosition, .plotLegendBottomTitle)
+
     do.call(callNextMethod, c(list(.Object), args))
 })
 
@@ -65,8 +70,9 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
             sep = ", ")
         # Heatmap
         all_cmds[["heatmap"]] <- sprintf("hm <- Heatmap(matrix = plot.data%s)", heatmap_args)
-        heatmap_legend_side <- 'heatmap_legend_side = "bottom"'
-        annotation_legend_side <- 'annotation_legend_side = "bottom"'
+        # draw
+        heatmap_legend_side <- sprintf('heatmap_legend_side = "%s"', tolower(x[[.plotLegendPosition]]))
+        annotation_legend_side <- sprintf('annotation_legend_side = "%s"', tolower(x[[.plotLegendPosition]]))
         draw_args <- paste(
             "", heatmap_legend_side, annotation_legend_side,
             sep = ", ")
@@ -91,12 +97,25 @@ setMethod(".renderOutput", "ComplexHeatmapPlot", function(x, se, output, pObject
 })
 
 #' @export
-setMethod(".defineInterface", "Panel", function(x, se, select_info) {
+setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info) {
     list(
         .create_data_param_box(x, se, select_info),
+        .create_visual_box_for_complexheatmap(x),
         .create_selection_param_box(x, select_info$multi$row, select_info$multi$column)
     )
 })
+
+.create_visual_box_for_complexheatmap <- function(x) {
+    plot_name <- .getEncodedName(x)
+
+    collapseBox(
+        id=paste0(plot_name, "_", .visualParamBoxOpen),
+        title="Visual parameters",
+        open=x[[.visualParamBoxOpen]],
+        .add_other_UI_elements(x)
+    )
+}
+
 
 #' @export
 setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, session, pObjects, rObjects) {
@@ -109,7 +128,8 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .createUnprotectedParameterObservers(plot_name,
-        fields=c(.selectColor),
+        fields=c(.selectColor,
+            .plotFontSize, .plotLegendPosition),
         input=input, pObjects=pObjects, rObjects=rObjects)
 })
 

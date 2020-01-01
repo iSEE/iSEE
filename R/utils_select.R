@@ -212,11 +212,18 @@
 
         transmit_param <- all_memory[[transmitter]]
         cur_choice <- x[[type_field]]
-        if (cur_choice == .selectMultiUnionTitle) {
-            select_sources <- c(NA_integer_, seq_along(transmit_param[[.multiSelectHistory]]))
-        } else if (cur_choice == .selectMultiActiveTitle) {
+
+        if (.multiSelectionHasActive(transmit_param) && 
+            cur_choice %in% c(.selectMultiUnionTitle, .selectMultiActiveTitle)) 
+        {
             select_sources <- NA_integer_
         } else {
+            select_sources <- integer(0)
+        }
+
+        if (cur_choice == .selectMultiUnionTitle) {
+            select_sources <- c(select_sources, seq_along(transmit_param[[.multiSelectHistory]]))
+        } else if (cur_choice == .selectMultiSavedTitle) {
             select_sources <- x[[saved_field]]
             if (select_sources == 0L) {
                 # '0' selection in memory means no selection.

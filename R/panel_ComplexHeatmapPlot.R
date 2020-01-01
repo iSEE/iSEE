@@ -104,4 +104,8 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     .create_multi_selection_effect_observer(plot_name,
         by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
+    .createUnprotectedParameterObservers(plot_name,
+        fields=c(.selectColor),
+        input=input, pObjects=pObjects, rObjects=rObjects)
 })

@@ -35,6 +35,8 @@ setMethod(".renderOutput", "ComplexHeatmapPlot", function(x, se, output, pObject
     callNextMethod()
 })
 
+#' @export
+#' @importFrom ComplexHeatmap Heatmap
 setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, all_contents) {
     plot_env <- new.env()
     all_cmds <- list()

@@ -40,10 +40,10 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #' }
 #'
 #' Methods for this generic are expected to return a list of \code{\link{collapseBox}} elements.
-#' Each parameter box can contain arbitrary numbers of additional UI elements, 
+#' Each parameter box can contain arbitrary numbers of additional UI elements,
 #' each of which is expected to modify one slot of \code{x} upon user interaction.
 #'
-#' The ID of each interface element should follow the form of \code{PANEL_SLOT} where \code{PANEL} is the panel name (from \code{\link{.getEncodedName}(x)}) and \code{SLOT} is the name of the slot modified by the interface element, 
+#' The ID of each interface element should follow the form of \code{PANEL_SLOT} where \code{PANEL} is the panel name (from \code{\link{.getEncodedName}(x)}) and \code{SLOT} is the name of the slot modified by the interface element,
 #' e.g., \code{"RedDimPlot1_Type"}.
 #' Each interface element should have an equivalent observer in \code{\link{.createObservers}} unless they are hidden by \code{\link{.hideInterface}} (see below).
 #'
@@ -72,7 +72,7 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #'
 #' Methods for this generic are expected to return a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden from the user.
 #' This is useful for hiding UI elements that cannot be changed or have no effect.
-#' 
+#'
 #' It is the developer's responsibility to call \code{\link{callNextMethod}} to hide the same interface elements as parent classes.
 #' This is not strictly required if one wishes to expose previously hidden elements.
 #' Refer to the contract for each \linkS4class{Panel} class to determine what is already provided by each parent.
@@ -95,7 +95,7 @@ setGeneric(".hideInterface", function(x, field) standardGeneric(".hideInterface"
 #' Generic for the panel observers
 #'
 #' An overview of the generic for defining the panel observers, along with recommendations on its implementation.
-#' 
+#'
 #' @section Creating parameter observers:
 #' In \code{.createObservers(x, se, input, session, pObjects, rObjects)}, the required arguments are:
 #' \itemize{
@@ -127,13 +127,13 @@ setGeneric(".hideInterface", function(x, field) standardGeneric(".hideInterface"
 #' This enables \pkg{iSEE} to keep a record of the current state of the application.
 #' In fact, any changes must go through \code{pObjects$memory} before they change the output in \code{\link{.renderOutput}};
 #' there is no direct interaction between \code{input} and \code{output} in this framework.
-#' 
+#'
 #' @section Triggering re-rendering:
-#' To trigger re-rendering of an output, observers should call \code{\link{.requestUpdate}(PANEL, rObjects)}, 
+#' To trigger re-rendering of an output, observers should call \code{\link{.requestUpdate}(PANEL, rObjects)},
 #' where \code{PANEL} is the name of the current panel.
 #' This will request a re-rendering of the output with no additional side effects and is most useful for responding to aesthetic parameters.
 #'
-#' In some cases, changes to some parameters may invalidate existing multiple selections, 
+#' In some cases, changes to some parameters may invalidate existing multiple selections,
 #' e.g., brushes and lassos are no longer valid if the variable on the axes are altered.
 #' Observers responding to such changes should instead call \code{\link{.requestCleanUpdate}},
 #' which will destroy all existing selections in order to avoid misleading conclusions.
@@ -161,7 +161,7 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #'
 #' Methods for this generic are expected to return an output element for inclusion into the \pkg{iSEE} interface, such as the output of \code{\link{plotOutput}}.
 #' Multiple elements can be provided via a \code{\link{tagList}}.
-#' 
+#'
 #' The IDs of the output elements are expected to be prefixed with the panel name from \code{\link{.getEncodedName}(x)} and an underscore, e.g., \code{"RedDimPlot1_someOutput"}.
 #' One of the output elements may simply have the ID set to \code{PANEL} alone;
 #' this is usually the case for simple panels with one primary output like a \linkS4class{DotPlot}.
@@ -176,10 +176,10 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' \item \code{pObjects}, an environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' \item \code{rObjects}, a reactive list of values generated in the \code{\link{iSEE}} app.
 #' }
-#' 
+#'
 #' It is expected to attach a reactive expression to \code{output} to render the output elements created by \code{.defineOutput}.
 #' The return value of this generic is not used; only the side-effect of the output set-up is relevant.
-#' 
+#'
 #' The rendering expression defined in \code{\link{.renderOutput}} is also expected to:
 #' \enumerate{
 #' \item Call \code{force(rObjects[[PANEL]])}, where \code{PANEL} is the output of \code{\link{.getEncodedName}(x)}.
@@ -196,8 +196,8 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #'
 #' We strongly recommend calling \code{\link{.retrieveOutput}} within the rendering expression,
 #' which will automatically perform tasks 1-3 above, rather than calling \code{\link{.generateOutput}} manually.
-#' This means that the only extra work required in the implementation of \code{\link{.renderOutput}} is to perform task 4 and 
-#' to choose an appropriate rendering function. 
+#' This means that the only extra work required in the implementation of \code{\link{.renderOutput}} is to perform task 4 and
+#' to choose an appropriate rendering function.
 #'
 #' @section Generating content:
 #' In \code{.generateOutput(x, se, ..., output, pObjects, rObjects)}, the following arguments are required:
@@ -208,21 +208,21 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' \item \code{all_memory}, a named list containing \linkS4class{Panel} objects with their parameters for the current state of the app.
 #' \item \code{all_contents}, a named list containing the contents of each panel.
 #' }
-#' 
+#'
 #' Methods for this generic should return a list containing:
 #' \itemize{
 #' \item \code{contents}, some arbitrary content for the panel (usually a data.frame).
 #' This is used during app initialization to ensure that \code{pObjects$contents} of transmitter panels is filled before rendering their children.
 #' It should be of a structure that allows it to be cross-referenced against the output of \code{\link{.multiSelectionActive}} to determine the selected rows/columns.
 #' \item \code{commands}, a list of character vectors of R commands that, when executed, produces the contents of the panel and any displayed output (e.g., a \link{ggplot} object).
-#' Developers should write these commands as if the evaluation environment only contains the SummarizedExperiment \code{se} and ExperimentColorMap \code{coloarmap}.
+#' Developers should write these commands as if the evaluation environment only contains the SummarizedExperiment \code{se} and ExperimentColorMap \code{colormap}.
 #' }
 #' The output list may contain any number of other fields that will be ignored.
 #'
-#' We suggest implementing this method using \code{\link{eval}(\link{parse}(text=...))} calls, 
+#' We suggest implementing this method using \code{\link{eval}(\link{parse}(text=...))} calls,
 #' which enables easy construction and evaluation of the commands and contents at the same time.
 #' Developers should consider using the \code{\link{.processMultiSelections}} function for easily processing the multiple selection parameters.
-#' 
+#'
 #' @author Aaron Lun
 #'
 #' @docType methods
@@ -267,16 +267,16 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #' possibly \code{col_selected}, if a multiple column selection is being transmitted to \code{x};
 #' and possibly \code{row_selected}, if a multiple row selection is being transmitted to \code{x}.
 #' }
-#' 
+#'
 #' The method should add a \code{plot.data} variable in \code{envir} containing a data.frame with columns named \code{"X"} and \code{"Y"}, denoting the variables to show on the x- and y-axes respectively.
 #' It should return a list with \code{commands}, a character vector of commands that produces \code{plot.data} when evaluated in \code{envir};
 #' and \code{labels}, a list of strings containing labels for the x-axis (named \code{"X"}), y-axis (\code{"Y"}) and plot (\code{"title"}).
-#' 
+#'
 #' Each row of the \code{plot.data} data.frame should correspond to one row or column in the SummarizedExperiment \code{envir$se} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s respectively.
 #' Note that, even if only a subset of rows/columns in the SummarizedExperiment are to be shown, there must always be one row in the data.frame per row/column of the SummarizedExperiment, and in the same order.
 #' All other rows of the data.frame should be filled in with \code{NA}s rather than omitted entirely.
 #' This is necessary for correct interactions with later methods that add other variables to \code{plot.data}.
-#' 
+#'
 #' Any internal variables that are generated by the commands should be prefixed with \code{.} to avoid potential clashes with reserved variable names in the rest of the application.
 #'
 #' @section Generating the ggplot object:
@@ -295,7 +295,7 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #' The \code{plot.data} has at least the fields \code{"X"} and \code{"Y"} from \code{\link{.generateDotPlotData}}.
 #' Depending on the parameters of \code{x}, it may also have the following columns:
 #' \itemize{
-#' \item \code{"ColorBy"}, the values of the covariate to ue to color each point. 
+#' \item \code{"ColorBy"}, the values of the covariate to ue to color each point.
 #' \item \code{"ShapeBy"}, the values of the covariate to use for shaping each point.
 #' This is guaranteed to be categorical.
 #' \item \code{"SizeBy"}, the values of the covariate to use for sizing each point.
@@ -306,16 +306,16 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #' This is guaranteed to be categorical.
 #' \item \code{"SelectBy"}, a logical field indicating whether the point was included in a multiple selection
 #' (i.e., transmitted from another plot with \code{x} as the receiver).
-#' Note that if \code{SelectEffect="Restrict"}, \code{plot.data} will already have been subsetted 
+#' Note that if \code{SelectEffect="Restrict"}, \code{plot.data} will already have been subsetted
 #' to only retain \code{TRUE} values of this field.
 #' }
-#' 
+#'
 #' \code{envir} may also contain the following variables:
 #' \itemize{
 #' \item \code{plot.data.all}, present when a multiple selection is transmitted to \code{x}
 #' and \code{SelectEffect="Restrict"}.
-#' This is a data.frame that contains all points prior to subsetting and is useful for defining the boundaries of the plot 
-#' such that they do not change when the transmitted multiple selection changes. 
+#' This is a data.frame that contains all points prior to subsetting and is useful for defining the boundaries of the plot
+#' such that they do not change when the transmitted multiple selection changes.
 #' \item \code{plot.data.pre}, present when downsampling is turned on.
 #' This is a data.frame that contains all points prior to downsampling (but after subsetting, if that was performed)
 #' and is again mainly used to fix the boundaries of the plot.
@@ -347,7 +347,7 @@ setGeneric(".generateDotPlot", function(x, labels, envir) standardGeneric(".gene
 #'
 #' In the following code snippets, \code{x} is an instance of a \linkS4class{DotPlot} class,
 #' and \code{envir} is an environment in which \code{plot.data} can be expected to be present.
-#' 
+#'
 #' @section Adding aesthetic parameters:
 #' \code{.addDotPlotDataColor(x, envir)} will add a \code{ColorBy} field to \code{plot.data} in \code{envir},
 #' representing the covariate used to color each point.
@@ -363,10 +363,10 @@ setGeneric(".generateDotPlot", function(x, labels, envir) standardGeneric(".gene
 #'
 #' All methods should return a list with an entry named \code{commands},
 #' containing a character vector of R commands used to modify \code{plot.data};
-#' and \code{labels}, a list of labels to potentially use in the legend for each newly added aesthetic field. 
+#' and \code{labels}, a list of labels to potentially use in the legend for each newly added aesthetic field.
 #'
 #' If \code{plot.data} is not modified, methods should return \code{NULL}.
-#' 
+#'
 #' @section Adding multiple selection information:
 #' \code{.addDotPlotDataSelected(x, envir)} will add a \code{SelectBy} field to \code{plot.data},
 #' representing the identity of points in a multiple selection transmitted to \code{x}.
@@ -382,9 +382,9 @@ setGeneric(".generateDotPlot", function(x, labels, envir) standardGeneric(".gene
 #' \item \code{y_aes}, a string specifying the column of \code{plot.data} containing the y-axis coordinates.
 #' }
 #' The last two are used in case of coloring based on the identity of a single point.
-#' 
+#'
 #' @section Design note:
-#' We ask the modification to occur inside the method, 
+#' We ask the modification to occur inside the method,
 #' rather than evaluating it ourselves in \code{\link{.add_extra_aesthetic_columns}},
 #' so as to enable concurrent construction and evaluation of commands.
 #' This enables more flexible construction of commands that can change based on intermediate variables;
@@ -410,9 +410,9 @@ setGeneric(".generateDotPlot", function(x, labels, envir) standardGeneric(".gene
 #' .addDotPlotDataFacets,RowDotPlot-method
 #' .addDotPlotDataSelected,RowDotPlot-method
 #' .colorDotPlot,RowDotPlot-method
-#' 
+#'
 #' @author Kevin Rue-Albrecht
-#' 
+#'
 #' @name INTERNAL_addDotPlotData
 NULL
 
@@ -436,33 +436,33 @@ setGeneric(".generateTable", function(x, envir) standardGeneric(".generateTable"
 #' Generics for setting up parameters
 #'
 #' These generics are related to the iniial setup of the \pkg{iSEE} application.
-#' 
+#'
 #' @section Caching common information:
 #' In \code{.cacheCommonInfo(x, se)}, the following arguments are required:
 #' \itemize{
 #' \item \code{x}, an instance of a \linkS4class{Panel} class.
 #' \item \code{se}, the \linkS4class{SummarizedExperiment} object containing the current dataset.
 #' }
-#' 
+#'
 #' It is expected to return \code{se} with (optionally) extra fields added to \code{metadata(se)$iSEE}.
 #' Each field should be named according to the class name and contain some common information that is constant for all instances of the class of \code{x}.
 #' The goal is to avoid repeated recomputation of required values when creating user interface elements or observers.
-#' 
+#'
 #' Methods for this generic should start by checking whether the metadata already contains the class name, and returning \code{se} without modification if this is the case.
 #' Otherwise, it should \code{\link{callNextMethod}} to fill in the cache values from the parent classes, before adding cached values under the class name for \code{x}.
 #'
 #' Remember, the cache is strictly for use in defining interface elements and in observers.
 #' Developers should not expect to be able to retrieve cached values when rendering the output for a panel,
 #' as the code tracker does not capture the code used to construct the cache.
-#' 
+#'
 #' @section Refining parameters:
 #' In \code{.refineParameters(x, se)}, the following arguments are required:
 #' \itemize{
 #' \item \code{x}, an instance of a \linkS4class{Panel} class.
 #' \item \code{se}, the \linkS4class{SummarizedExperiment} object containing the current dataset.
 #' }
-#' 
-#' Methods for this generic should return a copy of \code{x} 
+#'
+#' Methods for this generic should return a copy of \code{x}
 #' where slots with invalid values are replaced with appropriate entries from \code{se}.
 #' This is necessary because the constructor and validity methods for \code{x} does not know about \code{se};
 #' thus, certain slots (e.g., for the row/column names) cannot be set to a reasonable default or checked at that point.
@@ -473,7 +473,7 @@ setGeneric(".generateTable", function(x, envir) standardGeneric(".generateTable"
 #'
 #' It is also possible for this generic to return \code{NULL}, which is used as an indicator that \code{se} does not contain information to meaningfully show any instance of the class of \code{x} in the \pkg{iSEE} app.
 #' For example, the method for \linkS4class{RedDimPlot} will return \code{NULL} if \code{se} is not a \linkS4class{SingleCellExperiment} containing some dimensionality reduction results.
-#' 
+#'
 #' @author Aaron Lun
 #' @name setup-generics
 #' @aliases
@@ -490,7 +490,7 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #' @title Generics for controlling multiple selections
 #'
 #' @description
-#' A panel can create a multiple selection on either the rows or columns 
+#' A panel can create a multiple selection on either the rows or columns
 #' and transmit this selection to another panel to affect its set of displayed points.
 #' For example, users can brush on a \linkS4class{DotPlot}s to select a set of points,
 #' and then the panel can transmit the identities of those points to another panel for highlighting.
@@ -527,14 +527,14 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #' For example, a data.frame of coordinates is stored by \linkS4class{DotPlot}s to identify the points selected by a brush/lasso.
 #' \item \code{se}, the \linkS4class{SummarizedExperiment} object containing the current dataset.
 #' }
-#' 
+#'
 #' The output commands are expected to produce a character vector named \code{selected} in the evaluation environment.
 #' All other variables generated by the commands should be prefixed with \code{.} to avoid name clashes.
 #'
 #' @section Determining the available points for selection:
 #' \code{.multiSelectionAvailable(x, contents)} is expected to return an integer scalar specifying the number of points available for selection in the the current instance of the panel \code{x}.
 #' This defaults to \code{nrow(contents)} for all \linkS4class{Panel} subclasses,
-#' assuming that \code{contents} is a data.frame where each row represents a point. 
+#' assuming that \code{contents} is a data.frame where each row represents a point.
 #' If not, this method needs to be specialized in order to return an accurate total of available points
 #' (to be used to compute the percentage selected in the multiple selection information panels).
 #'
@@ -553,7 +553,7 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #'
 #' \code{.multiSelectionInvalidated(x)} should return a logical scalar indicating whether a transmission of a multiple selection to \code{x} invalidates \code{x}'s own existing selections.
 #' This should only be \code{TRUE} in special circumstances, e.g., if receipt of a new multiple selection causes recalculation of coordinates in a \linkS4class{DotPlot}.
-#' 
+#'
 #' @author Aaron Lun
 #' @name multi-select-generics
 #' @aliases .multiSelectionDimension
@@ -595,8 +595,8 @@ setGeneric(".multiSelectionAvailable", function(x, contents) standardGeneric(".m
 #' This suite of generics controls the behavior of these single selections.
 #'
 #' @section Specifying the nature of the selection:
-#' Given an instance of the \linkS4class{Panel} class \code{x}, \code{.singleSelectionDimension(x)} should return a string 
-#' specifying whether the selection contains a row (\code{"row"}), 
+#' Given an instance of the \linkS4class{Panel} class \code{x}, \code{.singleSelectionDimension(x)} should return a string
+#' specifying whether the selection contains a row (\code{"row"}),
 #' column (\code{"column"}) or if the Panel in \code{x} does not perform single selections at all (\code{"none"}).
 #' The output should be constant for all instances of \code{x}.
 #'
@@ -628,7 +628,7 @@ setGeneric(".multiSelectionAvailable", function(x, contents) standardGeneric(".m
 #' if the internal list also contains the following named entries:
 #' \itemize{
 #' \item \code{dimension}, either \code{"row"} or \code{"column"}.
-#' This specifies whether the slot specified by \code{param} contains row or column names; 
+#' This specifies whether the slot specified by \code{param} contains row or column names;
 #' if this is not present, no observers will be set up.
 #' \item \code{use_mode}, the name of the slot of \code{x} containing the current usage mode,
 #' in cases where there are multiple aesthetic choices.
@@ -643,7 +643,7 @@ setGeneric(".multiSelectionAvailable", function(x, contents) standardGeneric(".m
 #' This is \code{FALSE} for purely aesthetic parameters (e.g., coloring) and \code{TRUE} for data-related parameters
 #' (e.g., \code{XAxisFeatName} in \linkS4class{FeatAssayPlot}).
 #' }
-#' 
+#'
 #' @author Aaron Lun
 #' @name single-select-generics
 #' @aliases .singleSelectionDimension

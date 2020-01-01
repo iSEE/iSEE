@@ -24,10 +24,10 @@ see \code{?\link{.multiSelectionDimension}} and \code{?\link{.singleSelectionDim
 }
 
 Methods for this generic are expected to return a list of \code{\link{collapseBox}} elements.
-Each parameter box can contain arbitrary numbers of additional UI elements, 
+Each parameter box can contain arbitrary numbers of additional UI elements,
 each of which is expected to modify one slot of \code{x} upon user interaction.
 
-The ID of each interface element should follow the form of \code{PANEL_SLOT} where \code{PANEL} is the panel name (from \code{\link{.getEncodedName}(x)}) and \code{SLOT} is the name of the slot modified by the interface element, 
+The ID of each interface element should follow the form of \code{PANEL_SLOT} where \code{PANEL} is the panel name (from \code{\link{.getEncodedName}(x)}) and \code{SLOT} is the name of the slot modified by the interface element,
 e.g., \code{"RedDimPlot1_Type"}.
 Each interface element should have an equivalent observer in \code{\link{.createObservers}} unless they are hidden by \code{\link{.hideInterface}} (see below).
 

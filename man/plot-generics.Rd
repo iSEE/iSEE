@@ -49,7 +49,7 @@ This plot will subsequently be the rendered output in \code{\link{.renderOutput}
 The \code{plot.data} has at least the fields \code{"X"} and \code{"Y"} from \code{\link{.generateDotPlotData}}.
 Depending on the parameters of \code{x}, it may also have the following columns:
 \itemize{
-\item \code{"ColorBy"}, the values of the covariate to ue to color each point. 
+\item \code{"ColorBy"}, the values of the covariate to ue to color each point.
 \item \code{"ShapeBy"}, the values of the covariate to use for shaping each point.
 This is guaranteed to be categorical.
 \item \code{"SizeBy"}, the values of the covariate to use for sizing each point.
@@ -60,7 +60,7 @@ This is guaranteed to be categorical.
 This is guaranteed to be categorical.
 \item \code{"SelectBy"}, a logical field indicating whether the point was included in a multiple selection
 (i.e., transmitted from another plot with \code{x} as the receiver).
-Note that if \code{SelectEffect="Restrict"}, \code{plot.data} will already have been subsetted 
+Note that if \code{SelectEffect="Restrict"}, \code{plot.data} will already have been subsetted
 to only retain \code{TRUE} values of this field.
 }
 
@@ -68,8 +68,8 @@ to only retain \code{TRUE} values of this field.
 \itemize{
 \item \code{plot.data.all}, present when a multiple selection is transmitted to \code{x}
 and \code{SelectEffect="Restrict"}.
-This is a data.frame that contains all points prior to subsetting and is useful for defining the boundaries of the plot 
-such that they do not change when the transmitted multiple selection changes. 
+This is a data.frame that contains all points prior to subsetting and is useful for defining the boundaries of the plot
+such that they do not change when the transmitted multiple selection changes.
 \item \code{plot.data.pre}, present when downsampling is turned on.
 This is a data.frame that contains all points prior to downsampling (but after subsetting, if that was performed)
 and is again mainly used to fix the boundaries of the plot.

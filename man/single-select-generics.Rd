@@ -15,8 +15,8 @@ This suite of generics controls the behavior of these single selections.
 }
 \section{Specifying the nature of the selection}{
 
-Given an instance of the \linkS4class{Panel} class \code{x}, \code{.singleSelectionDimension(x)} should return a string 
-specifying whether the selection contains a row (\code{"row"}), 
+Given an instance of the \linkS4class{Panel} class \code{x}, \code{.singleSelectionDimension(x)} should return a string
+specifying whether the selection contains a row (\code{"row"}),
 column (\code{"column"}) or if the Panel in \code{x} does not perform single selections at all (\code{"none"}).
 The output should be constant for all instances of \code{x}.
 }
@@ -52,7 +52,7 @@ In fact, the observers to perform these updates are automatically set up by \cod
 if the internal list also contains the following named entries:
 \itemize{
 \item \code{dimension}, either \code{"row"} or \code{"column"}.
-This specifies whether the slot specified by \code{param} contains row or column names; 
+This specifies whether the slot specified by \code{param} contains row or column names;
 if this is not present, no observers will be set up.
 \item \code{use_mode}, the name of the slot of \code{x} containing the current usage mode,
 in cases where there are multiple aesthetic choices.

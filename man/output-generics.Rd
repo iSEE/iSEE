@@ -57,7 +57,7 @@ This is used for code reporting, and again, is only strictly necessary if the pa
 
 We strongly recommend calling \code{\link{.retrieveOutput}} within the rendering expression,
 which will automatically perform tasks 1-3 above, rather than calling \code{\link{.generateOutput}} manually.
-This means that the only extra work required in the implementation of \code{\link{.renderOutput}} is to perform task 4 and 
+This means that the only extra work required in the implementation of \code{\link{.renderOutput}} is to perform task 4 and
 to choose an appropriate rendering function.
 }
 
@@ -78,11 +78,11 @@ Methods for this generic should return a list containing:
 This is used during app initialization to ensure that \code{pObjects$contents} of transmitter panels is filled before rendering their children.
 It should be of a structure that allows it to be cross-referenced against the output of \code{\link{.multiSelectionActive}} to determine the selected rows/columns.
 \item \code{commands}, a list of character vectors of R commands that, when executed, produces the contents of the panel and any displayed output (e.g., a \link{ggplot} object).
-Developers should write these commands as if the evaluation environment only contains the SummarizedExperiment \code{se} and ExperimentColorMap \code{coloarmap}.
+Developers should write these commands as if the evaluation environment only contains the SummarizedExperiment \code{se} and ExperimentColorMap \code{colormap}.
 }
 The output list may contain any number of other fields that will be ignored.
 
-We suggest implementing this method using \code{\link{eval}(\link{parse}(text=...))} calls, 
+We suggest implementing this method using \code{\link{eval}(\link{parse}(text=...))} calls,
 which enables easy construction and evaluation of the commands and contents at the same time.
 Developers should consider using the \code{\link{.processMultiSelections}} function for easily processing the multiple selection parameters.
 }

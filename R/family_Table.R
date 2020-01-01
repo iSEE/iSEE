@@ -121,12 +121,12 @@ setValidity2("Table", function(object) {
 
 #' @export
 setMethod(".multiSelectionCommands", "Table", function(x, index) {
-    filter_cmds <- .generate_table_filter(x, varname="contents")
-    if (!is.null(filter_cmds)) {
-        sprintf("selected <- rownames(contents)[%s]", filter_cmds)
-    } else {
-        NULL
-    }
+    search <- x[[.TableSearch]]
+    searchcols <- x[[.TableColSearch]]
+    sprintf("selected <- rownames(contents)[iSEE::filterDT(%s, global=%s,\n    column=%s)]", 
+        varname, 
+        deparse(search),
+        .deparse_for_viewing(searchcols, indent=2))
 })
 
 #' @export

@@ -514,7 +514,8 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #' @section Evaluating the selection:
 #' \code{.multiSelectionCommands(x, index)} is expected to return a character vector of commands to generate a character vector of row or column names in the desired multiple selection of \code{x}.
 #' If \code{index=NA}, the desired selection is the currently active one;
-#' otherwise, for an integer \code{index}, it refers to the corresponding saved selection in the \code{MultiSelectHistory}.
+#' developers can assume that \code{.multiSelectionActive(x)} returns a non-\code{NULL} value in this case.
+#' Otherwise, for an integer \code{index}, it refers to the corresponding saved selection in the \code{MultiSelectHistory}.
 #'
 #' The commands will be evaluated in an environment containing:
 #' \itemize{

@@ -233,9 +233,6 @@
 
         for (i in select_sources) {
             cur_cmds <- .multiSelectionCommands(transmit_param, i)
-            if (is.null(cur_cmds)) {
-                next
-            }
 
             if (is.na(i)) {
                 cur_cmds <- c(sprintf("select <- all_active[['%s']]", transmitter), cur_cmds)

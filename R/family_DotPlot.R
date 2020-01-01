@@ -391,10 +391,8 @@ setMethod(".multiSelectionCommands", "DotPlot", function(x, index) {
 
     if (.is_brush(brush_val)) {
         "selected <- rownames(shiny::brushedPoints(contents, select));"
-    } else if (.is_closed_lasso(brush_val)) {
+    } else {
         "selected <- rownames(iSEE::lassoPoints(contents, select));"
-    } else { 
-        NULL
     }
 })
 

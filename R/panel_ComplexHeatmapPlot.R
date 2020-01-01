@@ -13,6 +13,7 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
 
     args <- .empty_default(args, .plotFontSize, 1)
     args <- .empty_default(args, .plotLegendPosition, .plotLegendBottomTitle)
+    args <- .empty_default(args, .plotLegendDirection, .plotLegendHorizontalTitle)
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -64,7 +65,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
         cluster_rows <- sprintf("\ncluster_rows=%s", "TRUE")
         cluster_columns <- sprintf("cluster_columns=%s", "TRUE")
         # Legend
-        heatmap_legend_param <- '\nheatmap_legend_param=list(direction = "horizontal")'
+        heatmap_legend_param <- sprintf('\nheatmap_legend_param=list(direction = "%s")', tolower(x[[.plotLegendDirection]]))
         # Combine options
         heatmap_args <- paste(
             "", heatmap_name, cluster_rows, cluster_columns, show_row_names, show_column_names,
@@ -114,10 +115,13 @@ setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info)
         id=paste0(plot_name, "_", .visualParamBoxOpen),
         title="Visual parameters",
         open=x[[.visualParamBoxOpen]],
-        .add_other_UI_elements(x)
+        .add_other_UI_elements(x),
+        radioButtons(
+            paste0(plot_name, "_", .plotLegendDirection), label="Legend direction:", inline=TRUE,
+            choices=c(.plotLegendHorizontalTitle, .plotLegendVerticalTitle),
+            selected=x[[.plotLegendDirection]])
     )
 }
-
 
 #' @export
 setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, session, pObjects, rObjects) {
@@ -131,7 +135,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
     .createUnprotectedParameterObservers(plot_name,
         fields=c(.selectColor,
-            .plotFontSize, .plotLegendPosition),
+            .plotFontSize, .plotLegendPosition, .plotLegendDirection),
         input=input, pObjects=pObjects, rObjects=rObjects)
 })
 

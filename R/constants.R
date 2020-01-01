@@ -67,6 +67,9 @@
 .plotLegendRightTitle <- "Right"
 .plotLegendBottomTitle <- "Bottom"
 
+.plotLegendHorizontalTitle <- "Horizontal"
+.plotLegendVerticalTitle <- "Vertical"
+
 .plotFontSizeAxisTextDefault <- 10
 .plotFontSizeAxisTitleDefault <- 12
 .plotFontSizeLegendTextDefault <- 9

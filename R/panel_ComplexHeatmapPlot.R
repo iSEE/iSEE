@@ -39,10 +39,12 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, memory, conte
     plot_env <- new.env()
     all_cmds <- list()
 
-    all_cmds[["data"]] <- 'm <- matrix(c(1,2,3, 11,12,13), nrow = 2, ncol = 3, byrow = TRUE, dimnames = list(c("row1", "row2"), c("C.1", "C.2", "C.3")))'
-    all_cmds[["heatmap"]] <- "Heatmap(m)"
+    all_cmds[["data"]] <- 'plot.data <- matrix(c(1,2,3, 11,12,13), nrow = 2, ncol = 3, byrow = TRUE, dimnames = list(c("row1", "row2"), c("C.1", "C.2", "C.3")))'
+    all_cmds[["heatmap"]] <- "Heatmap(plot.data)"
 
     plot_out <- .text_eval(all_cmds, plot_env)
 
-    list(commands=all_cmds, plot=plot_out)
+    panel_data <- plot_env$plot.data
+
+    list(commands=all_cmds, contents=panel_data, plot=plot_out)
 })

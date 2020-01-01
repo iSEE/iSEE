@@ -3,6 +3,7 @@
 #' Create reactive elements to render text field containing various information for a given panel.
 #'
 #' @param plot_name String containing the name of the panel transmitting a multiple selection.
+#' @param se The \linkS4class{SummarizedExperiment} object containing the current dataset.
 #' @param output The Shiny output object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.

@@ -1252,13 +1252,13 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
 #' Add multiple selection plotting commands
 #' 
-#' Add \linkS4class{ggplot} instructions to create brushes and lassos for both saved and active mutliple selections in a \linkS4class{DotPlot} panel.
+#' Add \link{ggplot} instructions to create brushes and lassos for both saved and active mutliple selections in a \linkS4class{DotPlot} panel.
 #'
 #' @param x An instance of a \linkS4class{DotPlot} class.
 #' @param envir The environment in which the \link{ggplot} commands are to be evaluated.
 #' @param flip A logical scalar indicating whether the x- and y-axes are flipped,
 #' only relevant to horizontal violin plots.
-#' @param commands A character vector representing the sequence of commands to create the \linkS4class{ggplot} object.
+#' @param commands A character vector representing the sequence of commands to create the \link{ggplot} object.
 #'
 #' @return A character vector containing \code{commands} plus any additional commands required to draw the self selections.
 #'

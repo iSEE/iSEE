@@ -19,6 +19,7 @@
 \alias{.multiSelectionClear,Panel-method}
 \alias{.multiSelectionActive,Panel-method}
 \alias{.multiSelectionInvalidated,Panel-method}
+\alias{.multiSelectionAvailable,Panel-method}
 \alias{.singleSelectionDimension,Panel-method}
 \alias{.singleSelectionValue,Panel-method}
 \alias{.singleSelectionSlots,Panel-method}
@@ -133,9 +134,10 @@ For controlling selections:
 \item \code{\link{.multiSelectionActive}(x)} will always return \code{NULL}.
 \item \code{\link{.multiSelectionClear}(x)} will always return \code{x}.
 \item \code{\link{.multiSelectionInvalidated}(x)} will always return \code{FALSE}.
+\item \code{\link{.multiSelectionAvailable}(x, contents)} will return \code{nrow(contents)}.
 \item \code{\link{.singleSelectionDimension}(x)} will return \code{.multiSelectionDimension(x)}.
-\item \code{\link{.singleSelectionValue}(x)} will return \code{NULL}.
-\item \code{\link{.singleSelectionSlots}(x)} will return an empty list.
+\item \code{\link{.singleSelectionValue}(x)} will always return \code{NULL}.
+\item \code{\link{.singleSelectionSlots}(x)} will always return an empty list.
 }
 }
 

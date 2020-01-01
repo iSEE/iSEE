@@ -35,9 +35,12 @@ setMethod(".renderOutput", "ComplexHeatmapPlot", function(x, se, output, pObject
     callNextMethod()
 })
 
-setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, memory, contents) {
+setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, all_contents) {
     plot_env <- new.env()
     all_cmds <- list()
+
+    # Doing this first so that .generateDotPlotData can respond to the selection.
+    all_cmds[["select"]] <- .processMultiSelections(x, all_memory, all_contents, plot_env)
 
     all_cmds[["data"]] <- 'plot.data <- matrix(c(1,2,3, 11,12,13), nrow = 2, ncol = 3, byrow = TRUE, dimnames = list(c("row1", "row2"), c("C.1", "C.2", "C.3")))'
     all_cmds[["heatmap"]] <- "Heatmap(plot.data)"

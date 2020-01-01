@@ -144,7 +144,7 @@ collated[.selectColSaved] <- "integer"
 collated[.multiSelectHistory] <- "list"
 
 #' @export
-setClass("Panel", contains="VIRTUAL", slots=collated) 
+setClass("Panel", contains="VIRTUAL", slots=collated)
 
 ####################################################
 
@@ -199,7 +199,7 @@ collated[.visualParamBoxOpen] <- "logical"
 collated[.visualParamChoice] <- "character"
 
 .contourColor <- "ContourColor"
-.contourAdd <- "ContourAdd" 
+.contourAdd <- "ContourAdd"
 
 collated[.contourAdd] <- "logical"
 collated[.contourColor] <- "character"
@@ -294,13 +294,13 @@ setClass("RedDimPlot", contains="ColumnDotPlot", slots=collated)
 .featAssayYAxisFeatName <- "YAxisFeatName"
 
 collated <- character(0)
-collated[.featAssayAssay] <- "character" 
-collated[.featAssayXAxis] <- "character" 
-collated[.featAssayXAxisColData] <- "character" 
-collated[.featAssayXAxisRowTable] <- "character" 
-collated[.featAssayXAxisFeatName] <- "character" 
-collated[.featAssayYAxisRowTable] <- "character" 
-collated[.featAssayYAxisFeatName] <- "character" 
+collated[.featAssayAssay] <- "character"
+collated[.featAssayXAxis] <- "character"
+collated[.featAssayXAxisColData] <- "character"
+collated[.featAssayXAxisRowTable] <- "character"
+collated[.featAssayXAxisFeatName] <- "character"
+collated[.featAssayYAxisRowTable] <- "character"
+collated[.featAssayYAxisFeatName] <- "character"
 
 #' @export
 setClass("FeatAssayPlot", contains="ColumnDotPlot", slots=collated)
@@ -312,9 +312,9 @@ setClass("FeatAssayPlot", contains="ColumnDotPlot", slots=collated)
 .colDataXAxisColData <- "XAxisColData"
 
 collated <- character(0)
-collated[.colDataXAxis] <- "character" 
-collated[.colDataYAxis] <- "character" 
-collated[.colDataXAxisColData] <- "character" 
+collated[.colDataXAxis] <- "character"
+collated[.colDataYAxis] <- "character"
+collated[.colDataXAxisColData] <- "character"
 
 #' @export
 setClass("ColDataPlot", contains="ColumnDotPlot", slots=collated)
@@ -326,9 +326,9 @@ setClass("ColDataPlot", contains="ColumnDotPlot", slots=collated)
 .rowDataXAxisRowData <- "XAxisRowData"
 
 collated <- character(0)
-collated[.rowDataXAxis] <- "character" 
-collated[.rowDataYAxis] <- "character" 
-collated[.rowDataXAxisRowData] <- "character" 
+collated[.rowDataXAxis] <- "character"
+collated[.rowDataYAxis] <- "character"
+collated[.rowDataXAxisRowData] <- "character"
 
 #' @export
 setClass("RowDataPlot", contains="RowDotPlot", slots=collated)
@@ -344,13 +344,13 @@ setClass("RowDataPlot", contains="RowDotPlot", slots=collated)
 .sampAssayYAxisSampName <- "YAxisSampName"
 
 collated <- character(0)
-collated[.sampAssayAssay] <- "character" 
-collated[.sampAssayXAxis] <- "character" 
-collated[.sampAssayXAxisRowData] <- "character" 
-collated[.sampAssayXAxisColTable] <- "character" 
-collated[.sampAssayXAxisSampName] <- "character" 
-collated[.sampAssayYAxisColTable] <- "character" 
-collated[.sampAssayYAxisSampName] <- "character" 
+collated[.sampAssayAssay] <- "character"
+collated[.sampAssayXAxis] <- "character"
+collated[.sampAssayXAxisRowData] <- "character"
+collated[.sampAssayXAxisColTable] <- "character"
+collated[.sampAssayXAxisSampName] <- "character"
+collated[.sampAssayYAxisColTable] <- "character"
+collated[.sampAssayYAxisSampName] <- "character"
 
 #' @export
 setClass("SampAssayPlot", contains="RowDotPlot", slots=collated)
@@ -362,9 +362,9 @@ setClass("SampAssayPlot", contains="RowDotPlot", slots=collated)
 .TableColSearch <- "SearchColumns"
 
 collated <- character(0)
-collated[.TableSelected] <- "character" 
-collated[.TableSearch] <- "character" 
-collated[.TableColSearch] <- "character" 
+collated[.TableSelected] <- "character"
+collated[.TableSearch] <- "character"
+collated[.TableColSearch] <- "character"
 
 #' @export
 setClass("Table", contains=c("Panel", "VIRTUAL"), slots=collated)
@@ -416,3 +416,16 @@ collated[.selectTransAlpha] <- "numeric"
 
 #' @export
 setClass("HeatMapPlot", contains="Panel", slots=collated)
+
+####################################################
+
+collated <- character(0)
+
+.selectEffect <- "SelectEffect"
+.selectColor <- "SelectColor"
+
+collated[.selectEffect] <- "character"
+collated[.selectColor] <- "character"
+
+#' @export
+setClass("ComplexHeatmapPlot", contains="Panel", slots=collated)

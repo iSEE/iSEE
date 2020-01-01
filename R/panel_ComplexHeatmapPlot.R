@@ -1,5 +1,3 @@
-#' @export
-setClass("ComplexHeatmapPlot", contains="Panel")
 
 #' @export
 ComplexHeatmapPlot <- function(...) {
@@ -27,17 +25,9 @@ setMethod(".defineOutput", "ComplexHeatmapPlot", function(x) {
 })
 
 #' @export
-setMethod(".renderOutput", "ComplexHeatmapPlot", function(x, se, output, pObjects, rObjects) {
-    plot_name <- .getEncodedName(x)
-
-    .create_plot_output(plot_name, se=se, output=output, pObjects=pObjects, rObjects=rObjects)
-
-    callNextMethod()
-})
-
-#' @export
 #' @importFrom ComplexHeatmap Heatmap
 setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, all_contents) {
+    print(x)
     plot_env <- new.env()
     all_cmds <- list()
 
@@ -53,3 +43,39 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
 
     list(commands=all_cmds, contents=panel_data, plot=plot_out)
 })
+
+#' @export
+setMethod(".renderOutput", "ComplexHeatmapPlot", function(x, se, output, pObjects, rObjects) {
+    plot_name <- .getEncodedName(x)
+
+    .create_plot_output(plot_name, se=se, output=output, pObjects=pObjects, rObjects=rObjects)
+
+    callNextMethod()
+})
+
+#' @export
+setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info) {
+    list(
+        .create_data_param_box(x, se, select_info),
+        .create_heatmap_selection_param_box(x, select_info$multi$row, select_info$multi$column)
+    )
+})
+
+.create_heatmap_selection_param_box <- function(x, row_selectable, col_selectable) {
+    plot_name <- .getEncodedName(x)
+    select_effect <- paste0(plot_name, "_", .selectEffect)
+
+    .create_selection_param_box(x, row_selectable, col_selectable,
+        .radioButtonsHidden(x, field=.selectEffect,
+            label="Selection effect:", inline=TRUE,
+            choices=c(.selectRestrictTitle, .selectColorTitle),
+            selected=x[[.selectEffect]]),
+
+        .conditional_on_radio(
+            select_effect, .selectColorTitle,
+            colourInput(
+                paste0(plot_name, "_", .selectColor), label=NULL,
+                value=x[[.selectColor]])
+        )
+    )
+}

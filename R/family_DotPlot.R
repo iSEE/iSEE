@@ -485,19 +485,10 @@ setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
         plot_cmds <- c(plot_cmds, facet_cmd)
     }
 
-    # TODO: move this into exposed developer-accessible function for easy calling.
     # Adding self-brushing boxes, if they exist.
-    to_flip <- plot_type == "violin_horizontal"
-    self_select_cmds <- .self_select_boxes(x, flip=to_flip)
-    if (length(self_select_cmds)) {
-        N <- length(plot_cmds)
-        plot_cmds[[N]] <- paste(plot_cmds[[N]], "+")
-
-        intermediate <- seq_len(length(self_select_cmds)-1L)
-        self_select_cmds[intermediate] <- paste(self_select_cmds[intermediate], "+")
-        plot_cmds <- c(plot_cmds, self_select_cmds)
-        .populate_selection_environment(x, envir)
-    }
+    plot_cmds <- .addMultiSelectionPlotCommands(x, 
+        flip=(plot_type == "violin_horizontal"),
+        envir=envir, commands=plot_cmds)
 
     list(plot=.text_eval(plot_cmds, envir), commands=plot_cmds)
 })

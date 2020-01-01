@@ -43,13 +43,31 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
         all_cmds[["geom_text"]] <- sprintf('geom_text(aes(x, y, label=Label), data.frame(x=0, y=0, Label="%s")) +', msg)
         all_cmds[["theme"]] <- "theme_void()"
     } else {
-        all_cmds[["data"]] <- "plot.data <- assay(sce)[unlist(row_selected), unlist(col_selected)]"
+        # Incoming selections
+        row_selected <- ifelse(exists("row_selected", plot_env), "unlist(row_selected)", "")
+        col_selected <- ifelse(exists("col_selected", plot_env), "unlist(col_selected)", "")
+        if (row_selected != "" || col_selected != "") {
+            assay_slice <- sprintf("[%s, %s, drop=FALSE]", row_selected, col_selected)
+        } else {
+            assay_slice <- ""
+        }
+        all_cmds[["data"]] <- sprintf("plot.data <- assay(sce)%s", assay_slice)
+        # Names
         assay_name <- head(assayNames(se), 1)
         assay_name <- ifelse(is.null(assay_name), "assay", assay_name)
         assay_name <- ifelse(assay_name == "", "assay", assay_name)
         heatmap_name <- sprintf('name="%s"', assay_name)
-        TODO <- paste0(", ", heatmap_name, collapse = ", ")
-        all_cmds[["heatmap"]] <- sprintf("Heatmap(matrix = plot.data%s)", TODO)
+        show_row_names <- sprintf("show_row_names=%s", "TRUE")
+        show_column_names <- sprintf("show_column_names=%s", "TRUE")
+        # Clustering
+        cluster_rows <- sprintf("cluster_rows=%s", "TRUE")
+        cluster_columns <- sprintf("cluster_columns=%s", "TRUE")
+        # Combine options
+        extra_args <- paste(
+            "", heatmap_name, cluster_rows, cluster_columns, show_row_names, show_column_names,
+            sep = ", ")
+        cat(extra_args)
+        all_cmds[["heatmap"]] <- sprintf("Heatmap(matrix = plot.data%s)", extra_args)
     }
 
     plot_out <- .text_eval(all_cmds, plot_env)

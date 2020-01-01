@@ -421,11 +421,5 @@ setClass("HeatMapPlot", contains="Panel", slots=collated)
 
 collated <- character(0)
 
-.selectEffect <- "SelectEffect"
-.selectColor <- "SelectColor"
-
-collated[.selectEffect] <- "character"
-collated[.selectColor] <- "character"
-
 #' @export
 setClass("ComplexHeatmapPlot", contains="Panel", slots=collated)

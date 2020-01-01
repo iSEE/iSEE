@@ -9,9 +9,6 @@ ComplexHeatmapPlot <- function(...) {
 setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- list(...)
 
-    args <- .empty_default(args, .selectEffect, .selectRestrictTitle)
-    args <- .empty_default(args, .selectColor, "red")
-
     do.call(callNextMethod, c(list(.Object), args))
 })
 
@@ -44,13 +41,10 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
         all_cmds[["theme"]] <- "theme_void()"
     } else {
         # Incoming selections
-        if (.multiSelectionRestricted(x)) {
-            assay_slice <- sprintf("[%s, %s, drop=FALSE]",
+        assay_slice <- sprintf("[%s, %s, drop=FALSE]",
                 "unique(unlist(row_selected))",
                 "unique(unlist(col_selected))")
-        } else { # color
-            assay_slice <- ""
-        }
+        # plot.data
         all_cmds[["data"]] <- sprintf("plot.data <- assay(sce)%s", assay_slice)
         # Names
         assay_name <- head(assayNames(se), 1)
@@ -87,31 +81,12 @@ setMethod(".renderOutput", "ComplexHeatmapPlot", function(x, se, output, pObject
 })
 
 #' @export
-setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info) {
+setMethod(".defineInterface", "Panel", function(x, se, select_info) {
     list(
         .create_data_param_box(x, se, select_info),
-        .create_heatmap_selection_param_box(x, select_info$multi$row, select_info$multi$column)
+        .create_selection_param_box(x, select_info$multi$row, select_info$multi$column)
     )
 })
-
-.create_heatmap_selection_param_box <- function(x, row_selectable, col_selectable) {
-    plot_name <- .getEncodedName(x)
-    select_effect <- paste0(plot_name, "_", .selectEffect)
-
-    .create_selection_param_box(x, row_selectable, col_selectable,
-        .radioButtonsHidden(x, field=.selectEffect,
-            label="Selection effect:", inline=TRUE,
-            choices=c(.selectRestrictTitle, .selectColorTitle),
-            selected=x[[.selectEffect]]),
-
-        .conditional_on_radio(
-            select_effect, .selectColorTitle,
-            colourInput(
-                paste0(plot_name, "_", .selectColor), label=NULL,
-                value=x[[.selectColor]])
-        )
-    )
-}
 
 #' @export
 setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, session, pObjects, rObjects) {
@@ -126,4 +101,13 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     .createUnprotectedParameterObservers(plot_name,
         fields=c(.selectColor),
         input=input, pObjects=pObjects, rObjects=rObjects)
+})
+
+#' @export
+setMethods(".hideInterface", "ComplexHeatmapPlot", function(x, field) {
+    if (field %in% c(.multiSelectHistory)) {
+        TRUE
+    } else {
+        callNextMethod()
+    }
 })

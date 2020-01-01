@@ -18,7 +18,7 @@
 #'
 #' @rdname INTERNAL_link_info_output
 #' @importFrom shiny tagList renderUI
-.create_selection_info_output <- function(plot_name, output, pObjects, rObjects) {
+.create_selection_info_output <- function(plot_name, se, output, pObjects, rObjects) {
     gen_field <- paste0(plot_name, "_", .panelMultiSelectInfo)
 
     output[[gen_field]] <- renderUI({
@@ -30,6 +30,7 @@
         all_output <- list()
         env <- new.env()
         env$contents <- cur_coords
+        env$se <- se
 
         if (.multiSelectionHasActive(instance)) {
             env$select <- .multiSelectionActive(instance)

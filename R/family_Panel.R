@@ -268,7 +268,7 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
 setMethod(".renderOutput", "Panel", function(x, se, ..., output, pObjects, rObjects) {
     plot_name <- .getEncodedName(x)
 
-    .create_selection_info_output(plot_name,
+    .create_selection_info_output(plot_name, se=se,
         output=output, pObjects=pObjects, rObjects=rObjects)
 
     .create_link_info_output(plot_name,

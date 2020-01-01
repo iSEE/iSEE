@@ -44,8 +44,8 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
         all_cmds[["theme"]] <- "theme_void()"
     } else {
         # Incoming selections
-        row_selected <- ifelse(exists("row_selected", plot_env), "unlist(row_selected)", "")
-        col_selected <- ifelse(exists("col_selected", plot_env), "unlist(col_selected)", "")
+        row_selected <- ifelse(exists("row_selected", plot_env), "unique(unlist(row_selected))", "")
+        col_selected <- ifelse(exists("col_selected", plot_env), "unique(unlist(col_selected))", "")
         if (row_selected != "" || col_selected != "") {
             assay_slice <- sprintf("[%s, %s, drop=FALSE]", row_selected, col_selected)
         } else {

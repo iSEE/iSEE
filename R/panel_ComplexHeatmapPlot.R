@@ -79,3 +79,14 @@ setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info)
         )
     )
 }
+
+#' @export
+setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, session, pObjects, rObjects) {
+    callNextMethod()
+
+    plot_name <- .getEncodedName(x)
+
+    .create_multi_selection_effect_observer(plot_name,
+        by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+})

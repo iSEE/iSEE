@@ -26,8 +26,8 @@
 
 # Multiple selection parameters. ---
 
-.multiSelectSave <- "MultiSelectSave"
-.multiSelectDelete <- "MultiSelectDelete"
+.multiSelectSave <- "INTERNAL_MultiSelectSave"
+.multiSelectDelete <- "INTERNAL_MultiSelectDelete"
 
 .selectMultiActiveTitle <- "Active"
 .selectMultiUnionTitle <- "Union"
@@ -38,11 +38,11 @@
 
 # Zooming parameters. ----
 
-.zoomClick <- "ZoomClick"
+.zoomClick <- "INTERNAL_ZoomClick"
 
 # Lasso parameters. ----
 
-.lassoClick <- "LassoClick"
+.lassoClick <- "INTERNAL_LassoClick"
 
 # Brush parameters. ----
 
@@ -51,7 +51,6 @@
 # Button parameters ----
 
 .buttonUpToDateLabel <- "Up to date"
-.buttonUpdateLabel <- "Update"
 .buttonEmptyHistoryLabel <- "No history"
 .buttonDeleteLabel <- "Delete"
 .buttonNoSelectionLabel <- "No selection"
@@ -80,10 +79,15 @@
 .int_statTableSearch <- "_search"
 .int_statTableColSearch <- "_search_columns"
 
-# Panel organization parameters. ----
+# Reactive flags. ---
 
-.panelGeneralInfo <- "PanelGeneralInfo"
-.panelLinkInfo <- "PanelLinkInfo"
+.flagOutputUpdate <- "INTERNAL_output_update"
+.flagSingleSelect <- "INTERNAL_single_select"
+.flagMultiSelect <- "INTERNAL_multi_select"
+.flagRelinkedSelect <- "INTERNAL_relinked_select"
+
+.panelMultiSelectInfo <- "INTERNAL_PanelMultiSelectInfo"
+.panelSelectLinkInfo <- "INTERNAL_PanelSelectLinkInfo"
 
 # Voice parameters ----
 

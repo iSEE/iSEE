@@ -309,8 +309,6 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 
     plot_name <- .getEncodedName(x)
 
-    .safe_reactive_init(rObjects, paste0(plot_name, "_", .panelGeneralInfo))
-
     .create_box_observers(plot_name, .visualParamBoxOpen, input, pObjects)
 
     .create_visual_parameter_choice_observer(plot_name, input, pObjects)
@@ -393,10 +391,8 @@ setMethod(".multiSelectionCommands", "DotPlot", function(x, index) {
 
     if (.is_brush(brush_val)) {
         "selected <- rownames(shiny::brushedPoints(contents, select));"
-    } else if (.is_closed_lasso(brush_val)) {
+    } else {
         "selected <- rownames(iSEE::lassoPoints(contents, select));"
-    } else { 
-        NULL
     }
 })
 
@@ -487,19 +483,10 @@ setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
         plot_cmds <- c(plot_cmds, facet_cmd)
     }
 
-    # TODO: move this into exposed developer-accessible function for easy calling.
     # Adding self-brushing boxes, if they exist.
-    to_flip <- plot_type == "violin_horizontal"
-    self_select_cmds <- .self_select_boxes(x, flip=to_flip)
-    if (length(self_select_cmds)) {
-        N <- length(plot_cmds)
-        plot_cmds[[N]] <- paste(plot_cmds[[N]], "+")
-
-        intermediate <- seq_len(length(self_select_cmds)-1L)
-        self_select_cmds[intermediate] <- paste(self_select_cmds[intermediate], "+")
-        plot_cmds <- c(plot_cmds, self_select_cmds)
-        .populate_selection_environment(x, envir)
-    }
+    plot_cmds <- .addMultiSelectionPlotCommands(x, 
+        flip=(plot_type == "violin_horizontal"),
+        envir=envir, commands=plot_cmds)
 
     list(plot=.text_eval(plot_cmds, envir), commands=plot_cmds)
 })

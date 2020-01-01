@@ -61,7 +61,8 @@ filterDTColumn(factor(letters), "['a', 'b', 'c']")
 
 # Works on DataFrames:
 X <- data.frame(row.names=LETTERS, thing=runif(26), 
-    stuff=sample(letters[1:3], 26, replace=TRUE))
+    stuff=sample(letters[1:3], 26, replace=TRUE),
+    stringsAsFactors=FALSE)
 
 filterDT(X, c("0 ... 0.5", "a|b"), global="")
 filterDT(X, "", global="A")

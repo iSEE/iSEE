@@ -102,9 +102,10 @@
 #' \item \code{\link{.multiSelectionActive}(x)} will always return \code{NULL}.
 #' \item \code{\link{.multiSelectionClear}(x)} will always return \code{x}.
 #' \item \code{\link{.multiSelectionInvalidated}(x)} will always return \code{FALSE}.
+#' \item \code{\link{.multiSelectionAvailable}(x, contents)} will return \code{nrow(contents)}.
 #' \item \code{\link{.singleSelectionDimension}(x)} will return \code{.multiSelectionDimension(x)}.
-#' \item \code{\link{.singleSelectionValue}(x)} will return \code{NULL}.
-#' \item \code{\link{.singleSelectionSlots}(x)} will return an empty list.
+#' \item \code{\link{.singleSelectionValue}(x)} will always return \code{NULL}.
+#' \item \code{\link{.singleSelectionSlots}(x)} will always return an empty list.
 #' }
 #'
 #' @author Aaron Lun
@@ -131,6 +132,7 @@
 #' .multiSelectionClear,Panel-method 
 #' .multiSelectionActive,Panel-method 
 #' .multiSelectionInvalidated,Panel-method 
+#' .multiSelectionAvailable,Panel-method 
 #' .singleSelectionDimension,Panel-method
 #' .singleSelectionValue,Panel-method
 #' .singleSelectionSlots,Panel-method
@@ -225,7 +227,9 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
     .input_FUN <- function(field) paste0(panel_name, "_", field)
 
     .safe_reactive_init(rObjects, panel_name)
-    .safe_reactive_init(rObjects, .input_FUN(.panelLinkInfo))
+    .safe_reactive_init(rObjects, .input_FUN(.flagSingleSelect))
+    .safe_reactive_init(rObjects, .input_FUN(.flagMultiSelect))
+    .safe_reactive_init(rObjects, .input_FUN(.flagRelinkedSelect))
 
     .create_box_observers(panel_name, c(.dataParamBoxOpen, .selectParamBoxOpen), pObjects, rObjects)
 
@@ -266,7 +270,7 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
 setMethod(".renderOutput", "Panel", function(x, se, ..., output, pObjects, rObjects) {
     plot_name <- .getEncodedName(x)
 
-    .create_selection_info_output(plot_name,
+    .create_selection_info_output(plot_name, se=se,
         output=output, pObjects=pObjects, rObjects=rObjects)
 
     .create_link_info_output(plot_name,
@@ -290,6 +294,9 @@ setMethod(".multiSelectionClear", "Panel", function(x) x)
 
 #' @export
 setMethod(".multiSelectionInvalidated", "Panel", function(x) FALSE)
+
+#' @export
+setMethod(".multiSelectionAvailable", "Panel", function(x, contents) nrow(contents))
 
 #' @export
 setMethod(".singleSelectionDimension", "Panel", function(x) .multiSelectionDimension(x))

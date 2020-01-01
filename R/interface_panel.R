@@ -130,7 +130,7 @@ height_limits <- c(400L, 1000L)
         # Aggregating together everything into a box, and then into a column.
         cur_box <- do.call(box, c(
             list(.defineOutput(instance), param),
-            list(uiOutput(.input_FUN(.panelGeneralInfo)), uiOutput(.input_FUN(.panelLinkInfo))),
+            list(uiOutput(.input_FUN(.panelMultiSelectInfo)), uiOutput(.input_FUN(.panelSelectLinkInfo))),
             list(title=.getFullName(instance), solidHeader=TRUE, width=NULL, status="danger")
         ))
 

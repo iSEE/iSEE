@@ -472,7 +472,7 @@ setMethod(".renderOutput", "HeatMapPlot", function(x, se, output, pObjects, rObj
     # Also triggering an update to the accompanying legend plot.
     legend_field <- paste0(plot_name, "_", .heatMapLegend)
     output[[plot_name]] <- renderPlot({
-        force(rObjects[[plot_name]])
+        .trackUpdate(plot_name, rObjects)
         rObjects[[legend_field]] <- .increment_counter(isolate(rObjects[[legend_field]]))
 
         p.out <- .make_heatMapPlot(pObjects$memory[[plot_name]], pObjects$memory, pObjects$contents, se, metadata(se)$colormap)
@@ -490,9 +490,9 @@ setMethod(".renderOutput", "HeatMapPlot", function(x, se, output, pObjects, rObj
     })
 
     # Defining link information.
-    link_field <- paste0(plot_name, "_", .panelLinkInfo)
+    link_field <- paste0(plot_name, "_", .panelSelectLinkInfo)
     output[[link_field]] <- renderUI({
-        force(rObjects[[link_field]])
+        .trackRelinkedSelection(plot_name, rObjects) 
         select_in <- pObjects$memory[[plot_name]][[.selectColSource]]
         if (select_in==.noSelection) {
             return(NULL)

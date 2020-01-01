@@ -75,6 +75,8 @@ This is a data.frame that contains all points prior to downsampling (but after s
 and is again mainly used to fix the boundaries of the plot.
 }
 
+Developers may wish to use the \code{\link{.addMultiSelectionPlotCommands}} utility to draw brushes and lassos of \code{x}.
+Note that this refers to the brushes and lassos made on \code{x} itself, not those transmitted from another panel to \code{x}.
 It would be very unwise for methods to alter the x-axis, y-axis or faceting values in \code{plot.data}.
 This will lead to uninuitive discrepancies between apparent visual selections for a brush/lasso
 and the actual multiple selection that is evaluated by downstream functions like \code{\link{.processMultiSelections}}.

@@ -962,14 +962,16 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 # Plot update functions ----
 ############################################
 
-#' Draw Shiny brushes
+#' Draw brushes and lassos
 #'
-#' Generate ggplot instructions to draw a rectangular box corresponding to Shiny brush coordinates (both active and saved) in the current plot.
+#' Generate \link{ggplot} instructions to draw all active and saved multiple selections in a \linkS4class{DotPlot} panel.
+#' This utility is intended for use within \code{\link{.generateDotPlot}} methods.
 #'
-#' @param param_choices A single-row DataFrame that contains all the input settings for the current panel.
+#' @param param_choices An instance of a \linkS4class{DotPlot} class.
 #' @param flip A \code{logical} value that indicates whether \code{\link{coord_flip}} was applied to the plot.
 #'
-#' @return A character vector containing a command to overlay one or more rectangles on the plot, indicating the position of the active and saved Shiny brushes.
+#' @return A character vector containing \link{ggplot} commands to create rectangles (for Shiny brushes)
+#' or polygons (for closed lassos) or paths (for open lassos) in the current plot.
 #'
 #' @details
 #' Evaluation of the output commands require:
@@ -982,7 +984,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' Both of these objects should exist in the environment in which the commands are evaluated.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
-#' @rdname INTERNAL_self_brush_box
+#' @rdname INTERNAL_self_select_boxes
 #' @seealso
 #' \code{\link{.generateDotPlot}}
 #'
@@ -1010,12 +1012,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     stroke_color <- .getPanelColor(param_choices)
     fill_color <- .lighten_color_for_fill(stroke_color)
 
-    # TODO: workaround to make brushes visible on non-builtin panels
-    stroke_color <- ifelse(is.na(stroke_color), "gray10", stroke_color)
-    fill_color <- ifelse(is.na(fill_color), "gray90", fill_color)
-
     cmds <- character(0)
-    firstClosed <- FALSE
     for (i in seq_len(total) - has_active) {
         if (i==0L) {
             chosen <- active
@@ -1028,12 +1025,9 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
                 flip=flip, facet_row=facet_row, facet_column=facet_column,
                 stroke_color=stroke_color, fill_color=fill_color)
         } else {
-            cmd.out <- .draw_lasso(plot_name, param_choices, index=i,
+            draw_cmd <- .draw_lasso(plot_name, param_choices, index=i,
                 facet_row=facet_row, facet_column=facet_column,
-                stroke_color=stroke_color, fill_color=fill_color,
-                firstClosed=firstClosed)
-            firstClosed <- cmd.out$firstClosed
-            draw_cmd <- cmd.out$cmds
+                stroke_color=stroke_color, fill_color=fill_color)
         }
 
         cmds <- c(cmds, draw_cmd)
@@ -1086,8 +1080,8 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     # Build up the command that draws the brush
     brush_draw_cmd <- sprintf(
 "geom_rect(aes(%s), color='%s', alpha=%s, fill='%s',
-data=do.call(data.frame, %s),
-inherit.aes=FALSE)",
+    data=do.call(data.frame, %s),
+    inherit.aes=FALSE)",
         aes_call, stroke_color, .brushFillOpacity, fill_color, brush_data)
 
     # Put a number for saved brushes.
@@ -1098,9 +1092,9 @@ inherit.aes=FALSE)",
 
         text_cmd <- sprintf(
 "geom_text(aes(x=x, y=y), inherit.aes=FALSE,
-data=data.frame(
-    %s),
-label=%i, size=%s, colour='%s')",
+    data=data.frame(
+        %s),
+    label=%i, size=%s, colour='%s')",
             paste(text_data, collapse=",\n        "),
             index, param_choices[[.plotFontSize]] * .plotFontSizeLegendTextDefault, stroke_color)
         brush_draw_cmd <- c(brush_draw_cmd, text_cmd)
@@ -1119,7 +1113,6 @@ label=%i, size=%s, colour='%s')",
 #' Usually one of \code{"panelvar1"} or \code{"panelvar2"}.
 #' @param stroke_color String containing the color to use for the lasso stroke.
 #' @param fill_color String containing the color to use for the fill of the closed lasso.
-#' @param firstClosed Logical scalar that does... something.
 #'
 #' @return A character vector containing commands to overlay a point, path or polygon, indicating the position of any active or saved lassos.
 #'
@@ -1149,7 +1142,7 @@ label=%i, size=%s, colour='%s')",
 #' @importFrom ggplot2 geom_point geom_polygon geom_path scale_shape_manual
 #' scale_fill_manual guides
 .draw_lasso <- function(plot_name, param_choices, index,
-    facet_row, facet_column, stroke_color, fill_color, firstClosed)
+    facet_row, facet_column, stroke_color, fill_color)
 {
     if (index == 0L) {
         lasso_src <- sprintf("all_active[['%s']]", plot_name)
@@ -1211,19 +1204,6 @@ label=%i, size=%s, colour='%s')",
 
         full_cmd_list <- polygon_cmd
 
-        if (firstClosed) { # Commands to add only once for both saved/active lassos.
-            scale_fill_cmd <- sprintf(
-                "scale_fill_manual(values=c('TRUE'='%s', 'FALSE'='%s'), labels=NULL)",
-                stroke_color, fill_color)
-            full_cmd_list <- c(polygon_cmd, scale_fill_cmd)
-
-            if (param_choices[[.shapeByField]] == .shapeByNothingTitle) {
-                guides_cmd <- "guides(shape='none')"
-                full_cmd_list <- c(full_cmd_list, guides_cmd)
-            }
-            firstClosed <- FALSE
-        }
-
     } else { # lasso is still open
         path_cmd <- sprintf(
 "geom_path(aes(x=%s, y=%s),
@@ -1267,5 +1247,45 @@ label=%i, size=%s, colour='%s')",
         full_cmd_list <- c(path_cmd, point_cmd, scale_shape_cmd, guides_cmd)
     }
 
-    list(cmds=full_cmd_list, firstClosed=firstClosed)
+    full_cmd_list
+}
+
+#' Add multiple selection plotting commands
+#' 
+#' Add \link{ggplot} instructions to create brushes and lassos for both saved and active mutliple selections in a \linkS4class{DotPlot} panel.
+#'
+#' @param x An instance of a \linkS4class{DotPlot} class.
+#' @param envir The environment in which the \link{ggplot} commands are to be evaluated.
+#' @param flip A logical scalar indicating whether the x- and y-axes are flipped,
+#' only relevant to horizontal violin plots.
+#' @param commands A character vector representing the sequence of commands to create the \link{ggplot} object.
+#'
+#' @return A character vector containing \code{commands} plus any additional commands required to draw the self selections.
+#'
+#' @details
+#' This is a utility function that is intended for use in \code{\link{.generateDotPlot}}.
+#' It will modify \code{envir} by adding \code{all_active} and \code{all_saved} variables,
+#' so developers should not use these names for their own variables in \code{envir}.
+#'
+#' If no self-selection structures exist in \code{x}, \code{commands} is returned directly withou modification.
+#' 
+#' @author Aaron Lun
+#' @export
+#' @rdname addMultiSelectionCommands
+.addMultiSelectionPlotCommands <- function(x, envir, commands, flip=FALSE) {
+    self_select_cmds <- .self_select_boxes(x, flip=flip)
+    
+    if (length(self_select_cmds)) {
+        N <- length(commands)
+        commands[N] <- paste(commands[N], "+")
+
+        intermediate <- seq_len(length(self_select_cmds)-1L)
+        self_select_cmds[intermediate] <- paste(self_select_cmds[intermediate], "+")
+        commands <- c(commands, self_select_cmds)
+
+        .populate_selection_environment(x, envir)
+        envir$all_active[[1]] <- x[[.brushData]] # as open lassos are skipped by multiSelectionActive.
+    }
+
+    commands
 }

@@ -23,7 +23,7 @@
     force(se)
 
     output[[panel_name]] <- renderDataTable({
-        force(rObjects[[panel_name]])
+        .trackUpdate(panel_name, rObjects)
         param_choices <- pObjects$memory[[panel_name]]
 
         t.out <- .retrieveOutput(panel_name, se, pObjects, rObjects)

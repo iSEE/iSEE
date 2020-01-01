@@ -113,6 +113,7 @@
 #' @param all_memory A named list of \linkS4class{Panel} instances containing parameters for the current app state.
 #' @param all_contents A named list of arbitrary contents with one entry per panel.
 #' @param envir The evaluation environment.
+#' This is assumed to already contain \code{se}, the \linkS4class{SummarizedExperiment} object for the current dataset.
 #'
 #' @return 
 #' \code{envir} is populated with one, none or both of \code{col_selected} and/or \code{row_selected},
@@ -211,11 +212,18 @@
 
         transmit_param <- all_memory[[transmitter]]
         cur_choice <- x[[type_field]]
-        if (cur_choice == .selectMultiUnionTitle) {
-            select_sources <- c(NA_integer_, seq_along(transmit_param[[.multiSelectHistory]]))
-        } else if (cur_choice == .selectMultiActiveTitle) {
+
+        if (.multiSelectionHasActive(transmit_param) && 
+            cur_choice %in% c(.selectMultiUnionTitle, .selectMultiActiveTitle)) 
+        {
             select_sources <- NA_integer_
         } else {
+            select_sources <- integer(0)
+        }
+
+        if (cur_choice == .selectMultiUnionTitle) {
+            select_sources <- c(select_sources, seq_along(transmit_param[[.multiSelectHistory]]))
+        } else if (cur_choice == .selectMultiSavedTitle) {
             select_sources <- x[[saved_field]]
             if (select_sources == 0L) {
                 # '0' selection in memory means no selection.
@@ -225,9 +233,6 @@
 
         for (i in select_sources) {
             cur_cmds <- .multiSelectionCommands(transmit_param, i)
-            if (is.null(cur_cmds)) {
-                next
-            }
 
             if (is.na(i)) {
                 cur_cmds <- c(sprintf("select <- all_active[['%s']]", transmitter), cur_cmds)

@@ -3,6 +3,7 @@
 #' Create reactive elements to render text field containing various information for a given panel.
 #'
 #' @param plot_name String containing the name of the panel transmitting a multiple selection.
+#' @param se The \linkS4class{SummarizedExperiment} object containing the current dataset.
 #' @param output The Shiny output object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
@@ -18,18 +19,19 @@
 #'
 #' @rdname INTERNAL_link_info_output
 #' @importFrom shiny tagList renderUI
-.create_selection_info_output <- function(plot_name, output, pObjects, rObjects) {
-    gen_field <- paste0(plot_name, "_", .panelGeneralInfo)
+.create_selection_info_output <- function(plot_name, se, output, pObjects, rObjects) {
+    gen_field <- paste0(plot_name, "_", .panelMultiSelectInfo)
 
     output[[gen_field]] <- renderUI({
-        force(rObjects[[gen_field]])
+        .trackMultiSelection(plot_name, rObjects)
         instance <- pObjects$memory[[plot_name]]
         cur_coords <- pObjects$contents[[plot_name]]
-        n_total <- nrow(cur_coords)
+        n_total <- .multiSelectionAvailable(instance, cur_coords)
 
         all_output <- list()
         env <- new.env()
         env$contents <- cur_coords
+        env$se <- se
 
         if (.multiSelectionHasActive(instance)) {
             env$select <- .multiSelectionActive(instance)
@@ -82,10 +84,10 @@
 #' @importFrom shiny tagList renderUI
 #' @importFrom igraph adjacent_vertices get.edge.ids E
 .create_link_info_output <- function(plot_name, output, pObjects, rObjects) {
-    link_field <- paste0(plot_name, "_", .panelLinkInfo)
+    link_field <- paste0(plot_name, "_", .panelSelectLinkInfo)
 
     output[[link_field]] <- renderUI({
-        force(rObjects[[link_field]])
+        .trackRelinkedSelection(plot_name, rObjects)
         info <- NULL
         graph <- pObjects$selection_links
 

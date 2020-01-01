@@ -25,7 +25,7 @@
         .trackMultiSelection(plot_name, rObjects)
         instance <- pObjects$memory[[plot_name]]
         cur_coords <- pObjects$contents[[plot_name]]
-        n_total <- nrow(cur_coords)
+        n_total <- .multiSelectionAvailable(instance, cur_coords)
 
         all_output <- list()
         env <- new.env()

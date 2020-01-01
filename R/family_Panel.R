@@ -102,9 +102,10 @@
 #' \item \code{\link{.multiSelectionActive}(x)} will always return \code{NULL}.
 #' \item \code{\link{.multiSelectionClear}(x)} will always return \code{x}.
 #' \item \code{\link{.multiSelectionInvalidated}(x)} will always return \code{FALSE}.
+#' \item \code{\link{.multiSelectionAvailable}(x, contents)} will return \code{nrow(contents)}.
 #' \item \code{\link{.singleSelectionDimension}(x)} will return \code{.multiSelectionDimension(x)}.
-#' \item \code{\link{.singleSelectionValue}(x)} will return \code{NULL}.
-#' \item \code{\link{.singleSelectionSlots}(x)} will return an empty list.
+#' \item \code{\link{.singleSelectionValue}(x)} will always return \code{NULL}.
+#' \item \code{\link{.singleSelectionSlots}(x)} will always return an empty list.
 #' }
 #'
 #' @author Aaron Lun
@@ -131,6 +132,7 @@
 #' .multiSelectionClear,Panel-method 
 #' .multiSelectionActive,Panel-method 
 #' .multiSelectionInvalidated,Panel-method 
+#' .multiSelectionAvailable,Panel-method 
 #' .singleSelectionDimension,Panel-method
 #' .singleSelectionValue,Panel-method
 #' .singleSelectionSlots,Panel-method
@@ -292,6 +294,9 @@ setMethod(".multiSelectionClear", "Panel", function(x) x)
 
 #' @export
 setMethod(".multiSelectionInvalidated", "Panel", function(x) FALSE)
+
+#' @export
+setMethod(".multiSelectionAvailable", "Panel", function(x, contents) nrow(contents))
 
 #' @export
 setMethod(".singleSelectionDimension", "Panel", function(x) .multiSelectionDimension(x))

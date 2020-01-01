@@ -123,8 +123,7 @@ setValidity2("Table", function(object) {
 setMethod(".multiSelectionCommands", "Table", function(x, index) {
     search <- x[[.TableSearch]]
     searchcols <- x[[.TableColSearch]]
-    sprintf("selected <- rownames(contents)[iSEE::filterDT(%s, global=%s,\n    column=%s)]", 
-        varname, 
+    sprintf("selected <- rownames(contents)[iSEE::filterDT(contents, global=%s,\n    column=%s)]", 
         deparse(search),
         .deparse_for_viewing(searchcols, indent=2))
 })

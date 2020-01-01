@@ -34,8 +34,20 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     # Doing this first so that .generateDotPlotData can respond to the selection.
     all_cmds[["select"]] <- .processMultiSelections(x, all_memory, all_contents, plot_env)
 
-    all_cmds[["data"]] <- 'plot.data <- matrix(c(1,2,3, 11,12,13), nrow = 2, ncol = 3, byrow = TRUE, dimnames = list(c("row1", "row2"), c("C.1", "C.2", "C.3")))'
-    all_cmds[["heatmap"]] <- "Heatmap(plot.data)"
+    if (!exists("col_selected", plot_env) || !exists("row_selected", plot_env)) {
+        msg <- "This panel requires both row and column incoming selection."
+        all_cmds[["ggplot"]] <- "ggplot() +"
+        all_cmds[["geom_text"]] <- sprintf('geom_text(aes(x, y, label=Label), data.frame(x=0, y=0, Label="%s")) +', msg)
+        all_cmds[["theme"]] <- "theme_void()"
+    } else {
+        all_cmds[["data"]] <- "plot.data <- assay(sce)[unlist(row_selected), unlist(col_selected)]"
+        assay_name <- head(assayNames(se), 1)
+        assay_name <- ifelse(is.null(assay_name), "assay", assay_name)
+        assay_name <- ifelse(assay_name == "", "assay", assay_name)
+        heatmap_name <- sprintf('name="%s"', assay_name)
+        TODO <- paste0(", ", heatmap_name, collapse = ", ")
+        all_cmds[["heatmap"]] <- sprintf("Heatmap(matrix = plot.data%s)", TODO)
+    }
 
     plot_out <- .text_eval(all_cmds, plot_env)
 

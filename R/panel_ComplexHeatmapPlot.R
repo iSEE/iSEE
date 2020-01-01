@@ -30,7 +30,9 @@ setMethod(".defineOutput", "ComplexHeatmapPlot", function(x) {
 })
 
 #' @export
-#' @importFrom ComplexHeatmap Heatmap
+#' @importFrom SummarizedExperiment assay
+#' @importFrom ggplot2 ggplot geom_text aes theme_void
+#' @importFrom ComplexHeatmap Heatmap draw
 setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, all_contents) {
     print(x)
     plot_env <- new.env()
@@ -134,7 +136,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 })
 
 #' @export
-setMethods(".hideInterface", "ComplexHeatmapPlot", function(x, field) {
+setMethod(".hideInterface", "ComplexHeatmapPlot", function(x, field) {
     if (field %in% c(.multiSelectHistory)) {
         TRUE
     } else {

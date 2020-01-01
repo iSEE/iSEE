@@ -34,7 +34,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     # Doing this first so that .generateDotPlotData can respond to the selection.
     all_cmds[["select"]] <- .processMultiSelections(x, all_memory, all_contents, plot_env)
 
-    if (!exists("col_selected", plot_env) || !exists("row_selected", plot_env)) {
+    if (!exists("col_selected", plot_env, inherits = FALSE) || !exists("row_selected", plot_env, inherits = FALSE)) {
         msg <- "This panel requires both row and column incoming selection."
         all_cmds[["ggplot"]] <- "ggplot() +"
         all_cmds[["geom_text"]] <- sprintf('geom_text(aes(x, y, label=Label), data.frame(x=0, y=0, Label="%s")) +', msg)
@@ -45,7 +45,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
                 "unique(unlist(row_selected))",
                 "unique(unlist(col_selected))")
         # plot.data
-        all_cmds[["data"]] <- sprintf("plot.data <- assay(sce)%s", assay_slice)
+        all_cmds[["data"]] <- sprintf("plot.data <- assay(se)%s", assay_slice)
         # Names
         assay_name <- head(assayNames(se), 1)
         assay_name <- ifelse(is.null(assay_name), "assay", assay_name)
@@ -54,15 +54,25 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
         show_row_names <- sprintf("show_row_names=%s", "TRUE")
         show_column_names <- sprintf("show_column_names=%s", "TRUE")
         # Clustering
-        cluster_rows <- sprintf("cluster_rows=%s", "TRUE")
+        cluster_rows <- sprintf("\ncluster_rows=%s", "TRUE")
         cluster_columns <- sprintf("cluster_columns=%s", "TRUE")
+        # Legend
+        heatmap_legend_param <- '\nheatmap_legend_param=list(direction = "horizontal")'
         # Combine options
-        extra_args <- paste(
+        heatmap_args <- paste(
             "", heatmap_name, cluster_rows, cluster_columns, show_row_names, show_column_names,
+            heatmap_legend_param,
             sep = ", ")
-        cat(extra_args)
-        all_cmds[["heatmap"]] <- sprintf("Heatmap(matrix = plot.data%s)", extra_args)
+        # Heatmap
+        all_cmds[["heatmap"]] <- sprintf("hm <- Heatmap(matrix = plot.data%s)", heatmap_args)
+        heatmap_legend_side <- 'heatmap_legend_side = "bottom"'
+        annotation_legend_side <- 'annotation_legend_side = "bottom"'
+        draw_args <- paste(
+            "", heatmap_legend_side, annotation_legend_side,
+            sep = ", ")
+        all_cmds[["draw"]] <- sprintf("draw(hm%s)", draw_args)
     }
+    print(all_cmds)
 
     plot_out <- .text_eval(all_cmds, plot_env)
 

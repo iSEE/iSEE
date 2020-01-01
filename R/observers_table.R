@@ -40,7 +40,6 @@
     })
 
     search_field <- paste0(panel_name, .int_statTableSearch)
-    multi_name <- paste0(panel_name, "_", .flagMultiSelect)
     observeEvent(input[[search_field]], {
         search <- input[[search_field]]
         if (identical(search, pObjects$memory[[panel_name]][[.TableSearch]])) {
@@ -48,8 +47,7 @@
         }
 
         pObjects$memory[[panel_name]][[.TableSearch]] <- search
-        .mark_panel_as_modified(panel_name, c(.panelNorender, .panelReactivated), rObjects)
-        .safe_reactive_bump(rObjects, multi_name)
+        .requestActiveSelectionUpdate(panel_name, rObjects, update_output=FALSE)
     })
 
     colsearch_field <- paste0(panel_name, .int_statTableColSearch)
@@ -60,7 +58,6 @@
         }
 
         pObjects$memory[[panel_name]][[.TableColSearch]] <- search
-        .mark_panel_as_modified(panel_name, c(.panelNorender, .panelReactivated), rObjects)
-        .safe_reactive_bump(rObjects, multi_name)
+        .requestActiveSelectionUpdate(panel_name, rObjects, update_output=FALSE)
     })
 }

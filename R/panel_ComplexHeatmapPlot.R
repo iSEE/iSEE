@@ -9,6 +9,9 @@ ComplexHeatmapPlot <- function(...) {
 setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- list(...)
 
+    args <- .empty_default(args, .selectEffect, .selectRestrictTitle)
+    args <- .empty_default(args, .selectColor, "red")
+
     do.call(callNextMethod, c(list(.Object), args))
 })
 

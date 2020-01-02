@@ -138,7 +138,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
     .createUnprotectedParameterObservers(plot_name,
         fields=c(.selectColor,
-            .plotFontSize, .plotLegendPosition, .plotLegendDirection),
+            .plotLegendPosition, .plotLegendDirection),
         input=input, pObjects=pObjects, rObjects=rObjects)
 })
 

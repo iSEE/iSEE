@@ -425,11 +425,11 @@ collated <- character(0)
 
 collated[.visualParamBoxOpen] <- "logical"
 
-.plotFontSize <- "FontSize"
+.showDimnames <- "ShowDimNames"
 .plotLegendPosition <- "LegendPosition"
 .plotLegendDirection <- "LegendDirection"
 
-collated[.plotFontSize] <- "numeric"
+collated[.showDimnames] <- "character"
 collated[.plotLegendPosition] <- "character"
 collated[.plotLegendDirection] <- "character"
 

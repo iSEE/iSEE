@@ -11,7 +11,7 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
 
     args <- .empty_default(args, .visualParamBoxOpen, FALSE)
 
-    args <- .empty_default(args, .plotFontSize, 1)
+    args <- .empty_default(args, .showDimnames, c(.showNamesRowTitle, .showNamesColumnTitle))
     args <- .empty_default(args, .plotLegendPosition, .plotLegendBottomTitle)
     args <- .empty_default(args, .plotLegendDirection, .plotLegendHorizontalTitle)
 
@@ -59,8 +59,8 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
         assay_name <- ifelse(is.null(assay_name), "assay", assay_name)
         assay_name <- ifelse(assay_name == "", "assay", assay_name)
         heatmap_name <- sprintf('name="%s"', assay_name)
-        show_row_names <- sprintf("show_row_names=%s", "TRUE")
-        show_column_names <- sprintf("show_column_names=%s", "TRUE")
+        show_row_names <- sprintf("show_row_names=%s", .showNamesRowTitle %in% x[[.showDimnames]])
+        show_column_names <- sprintf("show_column_names=%s", .showNamesColumnTitle %in% x[[.showDimnames]])
         # Clustering
         cluster_rows <- sprintf("\ncluster_rows=%s", "TRUE")
         cluster_columns <- sprintf("cluster_columns=%s", "TRUE")
@@ -115,6 +115,10 @@ setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info)
         id=paste0(plot_name, "_", .visualParamBoxOpen),
         title="Visual parameters",
         open=x[[.visualParamBoxOpen]],
+        checkboxGroupInput(
+            inputId=paste0(plot_name, "_", .showDimnames), label="Show names:", inline=TRUE,
+            selected=x[[.showDimnames]],
+            choices=c(.showNamesRowTitle, .showNamesColumnTitle)),
         radioButtons( # Copied from ".add_other_UI_elements()", to avoid "Font size"
             paste0(plot_name, "_", .plotLegendPosition), label="Legend position:", inline=TRUE,
             choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
@@ -138,6 +142,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
     .createUnprotectedParameterObservers(plot_name,
         fields=c(.selectColor,
+            .showDimnames,
             .plotLegendPosition, .plotLegendDirection),
         input=input, pObjects=pObjects, rObjects=rObjects)
 })

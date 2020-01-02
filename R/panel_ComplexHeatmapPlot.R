@@ -8,6 +8,7 @@ ComplexHeatmapPlot <- function(...) {
 #' @importFrom methods callNextMethod
 setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- list(...)
+    args <- .empty_default(args, .heatMapAssay, NA_character_)
 
     args <- .empty_default(args, .visualParamBoxOpen, FALSE)
 
@@ -16,6 +17,21 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- .empty_default(args, .plotLegendDirection, .plotLegendHorizontalTitle)
 
     do.call(callNextMethod, c(list(.Object), args))
+})
+
+#' @export
+#' @importFrom methods callNextMethod
+setMethod(".cacheCommonInfo", "ComplexHeatmapPlot", function(x, se) {
+    if (!is.null(.get_common_info(se, "ComplexHeatmapPlot"))) {
+        return(se)
+    }
+
+    se <- callNextMethod()
+
+    named_assays <- assayNames(se)
+    named_assays <- named_assays[named_assays!=""]
+    .set_common_info(se, "ComplexHeatmapPlot",
+        valid.assay.names=named_assays)
 })
 
 #' @export
@@ -28,6 +44,20 @@ setMethod(".fullName", "ComplexHeatmapPlot", function(x) "Complex heatmap")
 setMethod(".defineOutput", "ComplexHeatmapPlot", function(x) {
     plot_name <- .getEncodedName(x)
     plotOutput(plot_name, height=paste0(x[[.organizationHeight]], "px"))
+})
+
+#' @export
+#' @importFrom shiny selectInput radioButtons
+#' @importFrom methods callNextMethod
+setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_info) {
+    panel_name <- .getEncodedName(x)
+    .input_FUN <- function(field) { paste0(panel_name, "_", field) }
+
+    all_assays <- .get_common_info(se, "ComplexHeatmapPlot")$valid.assay.names
+
+    list(
+        .create_assay_selectize_ui(x, .heatMapAssay, all_assays)
+    )
 })
 
 #' @export
@@ -53,7 +83,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
                 "unique(unlist(row_selected))",
                 "unique(unlist(col_selected))")
         # plot.data
-        all_cmds[["data"]] <- sprintf("plot.data <- assay(se)%s", assay_slice)
+        all_cmds[["data"]] <- sprintf('plot.data <- assay(se, "%s")%s', x[[.heatMapAssay]], assay_slice)
         # Names
         assay_name <- head(assayNames(se), 1)
         assay_name <- ifelse(is.null(assay_name), "assay", assay_name)
@@ -136,15 +166,19 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
     plot_name <- .getEncodedName(x)
 
-    .create_multi_selection_effect_observer(plot_name,
-        by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+    .createProtectedParameterObservers(plot_name,
+        fields=c(.heatMapAssay),
+        input=input, pObjects=pObjects, rObjects=rObjects)
 
     .createUnprotectedParameterObservers(plot_name,
         fields=c(.selectColor,
             .showDimnames,
             .plotLegendPosition, .plotLegendDirection),
         input=input, pObjects=pObjects, rObjects=rObjects)
+
+    .create_multi_selection_effect_observer(plot_name,
+        by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export

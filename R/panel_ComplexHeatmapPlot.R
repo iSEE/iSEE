@@ -9,6 +9,7 @@ ComplexHeatmapPlot <- function(...) {
 setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- list(...)
     args <- .empty_default(args, .heatMapAssay, NA_character_)
+    args <- .empty_default(args, .heatMapColData, character(0))
 
     args <- .empty_default(args, .visualParamBoxOpen, FALSE)
 
@@ -30,8 +31,44 @@ setMethod(".cacheCommonInfo", "ComplexHeatmapPlot", function(x, se) {
 
     named_assays <- assayNames(se)
     named_assays <- named_assays[named_assays!=""]
+
+    df <- colData(se)
+    displayable <- .find_atomic_fields(df)
+
+    subdf <- df[,displayable,drop=FALSE]
+    discrete <- .which_groupable(subdf)
+    continuous <- .which_numeric(subdf)
+
     .set_common_info(se, "ComplexHeatmapPlot",
-        valid.assay.names=named_assays)
+        valid.assay.names=named_assays,
+        valid.colData.names=displayable)
+})
+
+#' @export
+#' @importFrom methods callNextMethod
+setMethod(".refineParameters", "ComplexHeatmapPlot", function(x, se) {
+    x <- callNextMethod()
+    if (is.null(x)) {
+        return(NULL)
+    }
+
+    if (nrow(se)==0L) {
+        warning(sprintf("no rows available for plotting '%s'", class(x)[1]))
+        return(NULL)
+    }
+
+    all_assays <- .get_common_info(se, "ComplexHeatmapPlot")$valid.assay.names
+    if (length(all_assays)==0L) {
+        warning(sprintf("no valid 'assays' for plotting '%s'", class(x)[1]))
+        return(NULL)
+    }
+
+    x <- .replace_na_with_first(x, .heatMapAssay, all_assays)
+
+    # column_covariates <- .get_common_info(se, "ComplexHeatmapPlot")$valid.colData.names
+    # x <- .replace_na_with_first(x, .heatMapColData, column_covariates)
+
+    x
 })
 
 #' @export
@@ -84,6 +121,16 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
                 "unique(unlist(col_selected))")
         # plot.data
         all_cmds[["data"]] <- sprintf('plot.data <- assay(se, "%s")%s', x[[.heatMapAssay]], assay_slice)
+        # column annotation data
+        if (length(x[[.heatMapColData]])) {
+            all_cmds[["column_annot"]] <- sprintf("annot_coldata <- colData(se)[%s, %s, drop=FALSE]",
+                "unique(unlist(col_selected))",
+                deparse(x[[.heatMapColData]]))
+            all_cmds[["top_annotation"]] <- "column_annot <- columnAnnotation(df=annot_coldata)"
+            top_annot <- "top_annotation=column_annot"
+        } else {
+            top_annot <- ""
+        }
         # Names
         assay_name <- head(assayNames(se), 1)
         assay_name <- ifelse(is.null(assay_name), "assay", assay_name)
@@ -91,14 +138,15 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
         heatmap_name <- sprintf('name="%s"', assay_name)
         show_row_names <- sprintf("show_row_names=%s", .showNamesRowTitle %in% x[[.showDimnames]])
         show_column_names <- sprintf("show_column_names=%s", .showNamesColumnTitle %in% x[[.showDimnames]])
-        # Clustering
-        cluster_rows <- sprintf("\ncluster_rows=%s", "TRUE")
+        # Clustering (TODO)
+        cluster_rows <- sprintf("\n\tcluster_rows=%s", "TRUE")
         cluster_columns <- sprintf("cluster_columns=%s", "TRUE")
         # Legend
-        heatmap_legend_param <- sprintf('\nheatmap_legend_param=list(direction = "%s")', tolower(x[[.plotLegendDirection]]))
+        heatmap_legend_param <- sprintf('\n\theatmap_legend_param=list(direction = "%s")', tolower(x[[.plotLegendDirection]]))
         # Combine options
         heatmap_args <- paste(
             "", heatmap_name, cluster_rows, cluster_columns, show_row_names, show_column_names,
+            top_annot,
             heatmap_legend_param,
             sep = ", ")
         # Heatmap
@@ -133,18 +181,22 @@ setMethod(".renderOutput", "ComplexHeatmapPlot", function(x, se, output, pObject
 setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info) {
     list(
         .create_data_param_box(x, se, select_info),
-        .create_visual_box_for_complexheatmap(x),
+        .create_visual_box_for_complexheatmap(x, se),
         .create_selection_param_box(x, select_info$multi$row, select_info$multi$column)
     )
 })
 
-.create_visual_box_for_complexheatmap <- function(x) {
+.create_visual_box_for_complexheatmap <- function(x, se) {
     plot_name <- .getEncodedName(x)
+
+    all_coldata <- .get_common_info(se, "ComplexHeatmapPlot")$valid.colData.names
 
     collapseBox(
         id=paste0(plot_name, "_", .visualParamBoxOpen),
         title="Visual parameters",
         open=x[[.visualParamBoxOpen]],
+        selectInput(paste0(plot_name, "_", .heatMapColData), label="Column annotations:",
+            choices=all_coldata, selected=x[[.heatMapColData]]),
         checkboxGroupInput(
             inputId=paste0(plot_name, "_", .showDimnames), label="Show names:", inline=TRUE,
             selected=x[[.showDimnames]],
@@ -171,7 +223,8 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         input=input, pObjects=pObjects, rObjects=rObjects)
 
     .createUnprotectedParameterObservers(plot_name,
-        fields=c(.selectColor,
+        fields=c(.heatMapColData,
+            .selectColor,
             .showDimnames,
             .plotLegendPosition, .plotLegendDirection),
         input=input, pObjects=pObjects, rObjects=rObjects)

@@ -421,10 +421,12 @@ setClass("HeatMapPlot", contains="Panel", slots=collated)
 
 .heatMapAssay <- "Assay"
 .heatMapColData <- "ColData"
+.heatMapRowData <- "RowData"
 
 collated <- character(0)
 collated[.heatMapAssay] <- "character"
 collated[.heatMapColData] <- "character"
+collated[.heatMapRowData] <- "character"
 
 .visualParamBoxOpen <- "VisualBoxOpen"
 

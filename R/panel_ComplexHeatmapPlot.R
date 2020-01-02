@@ -10,6 +10,7 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- list(...)
     args <- .empty_default(args, .heatMapAssay, NA_character_)
     args <- .empty_default(args, .heatMapColData, character(0))
+    args <- .empty_default(args, .heatMapRowData, character(0))
 
     args <- .empty_default(args, .visualParamBoxOpen, FALSE)
 
@@ -33,15 +34,15 @@ setMethod(".cacheCommonInfo", "ComplexHeatmapPlot", function(x, se) {
     named_assays <- named_assays[named_assays!=""]
 
     df <- colData(se)
-    displayable <- .find_atomic_fields(df)
+    coldata_displayable <- .find_atomic_fields(df)
 
-    subdf <- df[,displayable,drop=FALSE]
-    discrete <- .which_groupable(subdf)
-    continuous <- .which_numeric(subdf)
+    df <- rowData(se)
+    rowdata_displayable <- .find_atomic_fields(df)
 
     .set_common_info(se, "ComplexHeatmapPlot",
         valid.assay.names=named_assays,
-        valid.colData.names=displayable)
+        valid.colData.names=coldata_displayable,
+        valid.rowData.names=rowdata_displayable)
 })
 
 #' @export
@@ -64,9 +65,6 @@ setMethod(".refineParameters", "ComplexHeatmapPlot", function(x, se) {
     }
 
     x <- .replace_na_with_first(x, .heatMapAssay, all_assays)
-
-    # column_covariates <- .get_common_info(se, "ComplexHeatmapPlot")$valid.colData.names
-    # x <- .replace_na_with_first(x, .heatMapColData, column_covariates)
 
     x
 })
@@ -127,9 +125,19 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
                 "unique(unlist(col_selected))",
                 deparse(x[[.heatMapColData]]))
             all_cmds[["top_annotation"]] <- "column_annot <- columnAnnotation(df=annot_coldata)"
-            top_annot <- "\n\ttop_annotation=column_annot"
+            top_annotation <- "\n\ttop_annotation=column_annot"
         } else {
-            top_annot <- ""
+            top_annotation <- ""
+        }
+        # row annotation data
+        if (length(x[[.heatMapRowData]])) {
+            all_cmds[["row_annot"]] <- sprintf("annot_rowdata <- rowData(se)[%s, %s, drop=FALSE]",
+                "unique(unlist(row_selected))",
+                deparse(x[[.heatMapRowData]]))
+            all_cmds[["left_annotation"]] <- "row_annot <- rowAnnotation(df=annot_rowdata)"
+            left_annotation <- "\n\tleft_annotation=row_annot"
+        } else {
+            left_annotation <- ""
         }
         # Names
         assay_name <- head(assayNames(se), 1)
@@ -146,7 +154,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
         # Combine options
         heatmap_args <- paste(
             "", heatmap_name, cluster_rows, cluster_columns, show_row_names, show_column_names,
-            top_annot,
+            top_annotation, left_annotation,
             heatmap_legend_param,
             sep = ", ")
         # Heatmap
@@ -190,6 +198,7 @@ setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info)
     plot_name <- .getEncodedName(x)
 
     all_coldata <- .get_common_info(se, "ComplexHeatmapPlot")$valid.colData.names
+    all_rowdata <- .get_common_info(se, "ComplexHeatmapPlot")$valid.rowData.names
 
     collapseBox(
         id=paste0(plot_name, "_", .visualParamBoxOpen),
@@ -197,6 +206,8 @@ setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info)
         open=x[[.visualParamBoxOpen]],
         selectizeInput(paste0(plot_name, "_", .heatMapColData), label="Column annotations:",
             selected=x[[.heatMapColData]], choices=all_coldata, multiple=TRUE),
+        selectizeInput(paste0(plot_name, "_", .heatMapRowData), label="Row annotations:",
+            selected=x[[.heatMapRowData]], choices=all_rowdata, multiple=TRUE),
         checkboxGroupInput(
             inputId=paste0(plot_name, "_", .showDimnames), label="Show names:", inline=TRUE,
             selected=x[[.showDimnames]],
@@ -223,7 +234,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         input=input, pObjects=pObjects, rObjects=rObjects)
 
     .createUnprotectedParameterObservers(plot_name,
-        fields=c(.heatMapColData,
+        fields=c(.heatMapColData, .heatMapRowData,
             .selectColor,
             .showDimnames,
             .plotLegendPosition, .plotLegendDirection),

@@ -184,7 +184,7 @@ setValidity2("SampAssayPlot", function(object) {
     msg <- .allowable_choice_error(msg, object, .sampAssayXAxis,
         c(.sampAssayXAxisNothingTitle, .sampAssayXAxisRowDataTitle, .sampAssayXAxisSampNameTitle))
 
-    msg <- .single_string_error(msg, object, 
+    msg <- .single_string_error(msg, object,
         c(.sampAssayAssay, .sampAssayXAxisRowData, .sampAssayXAxisColTable,
         .sampAssayXAxisSampName, .sampAssayYAxisColTable, .sampAssayYAxisSampName))
 
@@ -219,9 +219,7 @@ setMethod(".defineDataInterface", "SampAssayPlot", function(x, se, select_info) 
         selectInput(
             .input_FUN(.sampAssayYAxisColTable), label=NULL, choices=tab_by_col,
             selected=.choose_link(x[[.sampAssayYAxisColTable]], tab_by_col)),
-        selectInput(
-            .input_FUN(.sampAssayAssay), label=NULL,
-            choices=all_assays, selected=x[[.sampAssayAssay]]),
+        .create_assay_selectize_ui(x, .sampAssayAssay, all_assays),
         radioButtons(
             .input_FUN(.sampAssayXAxis), label="X-axis:", inline=TRUE,
             choices=xaxis_choices, selected=x[[.sampAssayXAxis]]),

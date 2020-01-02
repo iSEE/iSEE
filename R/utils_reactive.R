@@ -6,6 +6,7 @@
 #' @param panel_name String containing the panel name.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
+#' @param update_output A logical scalar indicating whether to call \code{.requestUpdate} as well.
 #'
 #' @return
 #' \code{.retrieveOutput} will return the output of running \code{\link{.generateOutput}} for the current panel.
@@ -13,7 +14,10 @@
 #' \code{.requestUpdate} will modify \code{rObjects} to request a re-rendering of the specified panel.
 #' \code{.requestCleanUpdate} will also remove all active/saved selections in the chosen panel.
 #'
-#' Both functions will invisibly return \code{NULL}.
+#' \code{.requestActiveSelectionUpdate} will modify \code{rObjects} to indicate that the active multiple selection for \code{panel_name} has changed.
+#' If \code{update_output=TRUE}, it will also call request a re-rendering of the panel.
+#' 
+#' All \code{.request*} functions will invisibly return \code{NULL}.
 #'
 #' @details
 #' \code{.retrieveOutput} should be used in the expression for rendering output, e.g., in \code{\link{.renderOutput}}.
@@ -71,6 +75,16 @@
         accumulated <- c(accumulated, .panelResaved)
     }
     .mark_panel_as_modified(panel_name, accumulated, rObjects)
+}
+
+#' @export
+#' @rdname retrieveOutput
+.requestActiveSelectionUpdate <- function(panel_name, rObjects, update_output=TRUE) {
+    .safe_reactive_bump(rObjects, paste0(panel_name, "_", .flagMultiSelect))
+    .mark_panel_as_modified(panel_name,
+        if (update_output) .panelReactivated else c(.panelNorender, .panelReactivated), 
+        rObjects)
+    invisible(NULL)
 }
 
 #' Track internal events

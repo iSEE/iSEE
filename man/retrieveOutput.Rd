@@ -4,6 +4,7 @@
 \alias{.retrieveOutput}
 \alias{.requestUpdate}
 \alias{.requestCleanUpdate}
+\alias{.requestActiveSelectionUpdate}
 \title{Reactive manipulations for Panel output}
 \usage{
 .retrieveOutput(panel_name, se, pObjects, rObjects)
@@ -11,6 +12,8 @@
 .requestUpdate(panel_name, rObjects)
 
 .requestCleanUpdate(panel_name, pObjects, rObjects)
+
+.requestActiveSelectionUpdate(panel_name, rObjects, update_output = TRUE)
 }
 \arguments{
 \item{panel_name}{String containing the panel name.}
@@ -20,6 +23,8 @@
 \item{pObjects}{An environment containing global parameters generated in the \code{\link{iSEE}} app.}
 
 \item{rObjects}{A reactive list of values generated in the \code{\link{iSEE}} app.}
+
+\item{update_output}{A logical scalar indicating whether to call \code{.requestUpdate} as well.}
 }
 \value{
 \code{.retrieveOutput} will return the output of running \code{\link{.generateOutput}} for the current panel.
@@ -27,7 +32,10 @@
 \code{.requestUpdate} will modify \code{rObjects} to request a re-rendering of the specified panel.
 \code{.requestCleanUpdate} will also remove all active/saved selections in the chosen panel.
 
-Both functions will invisibly return \code{NULL}.
+\code{.requestActiveSelectionUpdate} will modify \code{rObjects} to indicate that the active multiple selection for \code{panel_name} has changed.
+If \code{update_output=TRUE}, it will also call request a re-rendering of the panel.
+
+All \code{.request*} functions will invisibly return \code{NULL}.
 }
 \description{
 Respond to or request a re-rendering of the \linkS4class{Panel} output via reactive variables.

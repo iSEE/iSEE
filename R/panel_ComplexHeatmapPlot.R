@@ -91,14 +91,15 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
     all_assays <- .get_common_info(se, "ComplexHeatmapPlot")$valid.assay.names
 
     list(
-        .create_assay_selectize_ui(x, .heatMapAssay, all_assays)
+        selectInput(paste0(.getEncodedName(x), "_", .heatMapAssay), label=NULL,
+            choices=all_assays, selected=x[[.heatMapAssay]])
     )
 })
 
 #' @export
-#' @importFrom SummarizedExperiment assay
+#' @importFrom SummarizedExperiment assay rowData colData
 #' @importFrom ggplot2 ggplot geom_text aes theme_void
-#' @importFrom ComplexHeatmap Heatmap draw
+#' @importFrom ComplexHeatmap Heatmap draw columnAnnotation rowAnnotation
 setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, all_contents) {
     print(x)
     plot_env <- new.env()

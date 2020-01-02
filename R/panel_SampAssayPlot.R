@@ -219,7 +219,8 @@ setMethod(".defineDataInterface", "SampAssayPlot", function(x, se, select_info) 
         selectInput(
             .input_FUN(.sampAssayYAxisColTable), label=NULL, choices=tab_by_col,
             selected=.choose_link(x[[.sampAssayYAxisColTable]], tab_by_col)),
-        .create_assay_selectize_ui(x, .sampAssayAssay, all_assays),
+        selectInput(paste0(.getEncodedName(x), "_", .sampAssayAssay), label=NULL,
+            choices=all_assays, selected=x[[.sampAssayAssay]]),
         radioButtons(
             .input_FUN(.sampAssayXAxis), label="X-axis:", inline=TRUE,
             choices=xaxis_choices, selected=x[[.sampAssayXAxis]]),

@@ -115,7 +115,10 @@ setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info)
         id=paste0(plot_name, "_", .visualParamBoxOpen),
         title="Visual parameters",
         open=x[[.visualParamBoxOpen]],
-        .add_other_UI_elements(x),
+        radioButtons( # Copied from ".add_other_UI_elements()", to avoid "Font size"
+            paste0(plot_name, "_", .plotLegendPosition), label="Legend position:", inline=TRUE,
+            choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
+            selected=x[[.plotLegendPosition]]),
         radioButtons(
             paste0(plot_name, "_", .plotLegendDirection), label="Legend direction:", inline=TRUE,
             choices=c(.plotLegendHorizontalTitle, .plotLegendVerticalTitle),

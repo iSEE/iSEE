@@ -127,7 +127,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
                 "unique(unlist(col_selected))",
                 deparse(x[[.heatMapColData]]))
             all_cmds[["top_annotation"]] <- "column_annot <- columnAnnotation(df=annot_coldata)"
-            top_annot <- "top_annotation=column_annot"
+            top_annot <- "\n\ttop_annotation=column_annot"
         } else {
             top_annot <- ""
         }
@@ -195,8 +195,8 @@ setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info)
         id=paste0(plot_name, "_", .visualParamBoxOpen),
         title="Visual parameters",
         open=x[[.visualParamBoxOpen]],
-        selectInput(paste0(plot_name, "_", .heatMapColData), label="Column annotations:",
-            choices=all_coldata, selected=x[[.heatMapColData]]),
+        selectizeInput(paste0(plot_name, "_", .heatMapColData), label="Column annotations:",
+            selected=x[[.heatMapColData]], choices=all_coldata, multiple=TRUE),
         checkboxGroupInput(
             inputId=paste0(plot_name, "_", .showDimnames), label="Show names:", inline=TRUE,
             selected=x[[.showDimnames]],

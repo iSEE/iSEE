@@ -201,6 +201,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
         } else {
             top_annotation <- NULL
         }
+        # row annotation data
         cmds <- .process_heatmap_row_annotations(x, se, plot_env)
         if (length(cmds)) {
             all_cmds[["rowdata"]] <- paste0(cmds, collapse = "\n")

@@ -106,6 +106,66 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
     )
 })
 
+.process_heatmap_column_annotations <- function(x, se, plot_env) {
+    cmds <- c()
+    if (length(x[[.heatMapColData]])) {
+        cmds <- c(cmds, sprintf(".column_annot <- colData(se)[, %s, drop=FALSE]", deparse(x[[.heatMapColData]])))
+        .text_eval(cmds, plot_env)
+        # column color maps
+        cmds <- c(cmds, "column_col <- list()", "")
+        for (annot in x[[.heatMapColData]]) {
+            cmds <- c(cmds, .coerce_dataframe_columns(plot_env, annot, ".column_annot"))
+            cmds <- c(cmds, sprintf('.col_values <- .column_annot[["%s"]]', annot))
+            if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.colData.names) {
+                cmds <- c(cmds, sprintf('col_colors <- colDataColorMap(ecm, "%s", discrete=FALSE)(21)', annot))
+                cmds <- c(cmds, 'col_FUN <- colorRamp2(
+    breaks = seq(min(.col_values, na.rm = TRUE), max(.col_values, na.rm = TRUE), length.out = 21L),
+    colors = col_colors)')
+                cmds <- c(cmds, sprintf('column_col[["%s"]] <- col_FUN', annot))
+            } else if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.colData.names) {
+                cmds <- c(cmds, sprintf('.col_values <- setdiff(.col_values, NA)', annot))
+                cmds <- c(cmds, sprintf('col_colors <- colDataColorMap(ecm, "%s", discrete=TRUE)(%s)', annot, 'length(unique(.col_values))'))
+                cmds <- c(cmds, 'if (is.null(names(col_colors))) { names(col_colors) <- unique(.col_values) }')
+                cmds <- c(cmds, sprintf('column_col[["%s"]] <- col_colors', annot))
+            }
+            cmds <- c(cmds, "")
+        }
+        cmds <- c(cmds, sprintf("column_annot <- columnAnnotation(df=.column_annot[unique(unlist(col_selected)), , drop=FALSE], col=column_col)",
+            deparse(x[[.heatMapColData]])))
+    }
+    cmds
+}
+
+.process_heatmap_row_annotations <- function(x, se, plot_env) {
+    cmds <- c()
+    if (length(x[[.heatMapRowData]])) {
+        cmds <- c(cmds, sprintf(".row_annot <- rowData(se)[, %s, drop=FALSE]", deparse(x[[.heatMapRowData]])))
+        .text_eval(cmds, plot_env)
+        # column color maps
+        cmds <- c(cmds, "row_col <- list()", "")
+        for (annot in x[[.heatMapRowData]]) {
+            cmds <- c(cmds, .coerce_dataframe_columns(plot_env, annot, ".row_annot"))
+            cmds <- c(cmds, sprintf('.col_values <- .row_annot[["%s"]]', annot))
+            if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.rowData.names) {
+                cmds <- c(cmds, sprintf('.col_colors <- rowDataColorMap(ecm, "%s", discrete=FALSE)(21)', annot))
+                cmds <- c(cmds, '.col_FUN <- colorRamp2(
+    breaks = seq(min(.col_values, na.rm = TRUE), max(.col_values, na.rm = TRUE), length.out = 21L),
+    colors = .col_colors)')
+                cmds <- c(cmds, sprintf('row_col[["%s"]] <- .col_FUN', annot))
+            } else if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.rowData.names) {
+                cmds <- c(cmds, sprintf('.col_values <- setdiff(.col_values, NA)', annot))
+                cmds <- c(cmds, sprintf('.col_colors <- rowDataColorMap(ecm, "%s", discrete=TRUE)(%s)', annot, 'length(unique(.col_values))'))
+                cmds <- c(cmds, 'if (is.null(names(.col_colors))) { names(.col_colors) <- unique(.col_values) }')
+                cmds <- c(cmds, sprintf('row_col[["%s"]] <- .col_colors', annot))
+            }
+            cmds <- c(cmds, "")
+        }
+        cmds <- c(cmds, sprintf("row_annot <- rowAnnotation(df=.row_annot[unique(unlist(row_selected)), , drop=FALSE], col=row_col)",
+            deparse(x[[.heatMapRowData]])))
+    }
+    cmds
+}
+
 #' @export
 #' @importFrom SummarizedExperiment assay rowData colData
 #' @importFrom ggplot2 ggplot geom_text aes theme_void
@@ -132,60 +192,17 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
                 "unique(unlist(col_selected))")
         # plot.data
         all_cmds[["data"]] <- sprintf('plot.data <- assay(se, "%s")%s', x[[.heatMapAssay]], assay_slice)
+        .text_eval(all_cmds, plot_env)
         # column annotation data
-        if (length(x[[.heatMapColData]])) {
-            cmds <- c()
-            # column color maps
-            cmds <- c(cmds, "column_col <- list()")
-            for (annot in x[[.heatMapColData]]) {
-                cmds <- c(cmds, sprintf('col_values <- colData(se)[["%s"]]', annot))
-                if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.colData.names) {
-                    cmds <- c(cmds, sprintf('col_colors <- colDataColorMap(ecm, "%s", discrete=FALSE)(21)', annot))
-                    cmds <- c(cmds, 'col_FUN <- colorRamp2(
-    breaks = seq(min(col_values, na.rm = TRUE), max(col_values, na.rm = TRUE), length.out = 21L),
-    colors = col_colors)')
-                    cmds <- c(cmds, sprintf('column_col[["%s"]] <- col_FUN', annot))
-                } else if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.colData.names) {
-                    cmds <- c(cmds, sprintf('col_values <- setdiff(col_values, NA)', annot))
-                    cmds <- c(cmds, sprintf('col_colors <- colDataColorMap(ecm, "%s", discrete=TRUE)(%s)', annot, 'length(unique(col_values))'))
-                    cmds <- c(cmds, 'if (is.null(names(col_colors))) { names(col_colors) <- unique(col_values) }')
-                    cmds <- c(cmds, sprintf('column_col[["%s"]] <- col_colors', annot))
-                }
-            }
-            cmds <- c(cmds, sprintf("column_annot <- columnAnnotation(df=colData(se)[%s, %s, drop=FALSE], col=column_col)",
-                "unique(unlist(col_selected))",
-                deparse(x[[.heatMapColData]])))
+        cmds <- .process_heatmap_column_annotations(x, se, plot_env)
+        if (length(cmds)) {
             all_cmds[["coldata"]] <- paste0(cmds, collapse = "\n")
             top_annotation <- "\n\ttop_annotation=column_annot"
         } else {
             top_annotation <- NULL
         }
-        # row annotation data
-        if (length(x[[.heatMapRowData]])) {
-            cmds <- c()
-            cmds <- c(cmds, sprintf("annot_rowdata <- rowData(se)[%s, %s, drop=FALSE]",
-                "unique(unlist(row_selected))",
-                deparse(x[[.heatMapRowData]])))
-            # row color maps
-            cmds <- c(cmds, "", "row_col <- list()")
-            for (annot in x[[.heatMapRowData]]) {
-                cmds <- c(cmds, sprintf('col_values <- rowData(se)[["%s"]]', annot))
-                if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.rowData.names) {
-                    cmds <- c(cmds, sprintf('col_colors <- rowDataColorMap(colormap, "%s", discrete=FALSE)(21)', annot))
-                    cmds <- c(cmds, 'col_FUN <- colorRamp2(
-    breaks = seq(min(col_values, na.rm = TRUE), max(col_values, na.rm = TRUE), length.out = 21L),
-    colors = col_colors)')
-                    cmds <- c(cmds, sprintf('row_col[["%s"]] <- col_FUN', annot))
-                } else if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.rowData.names) {
-                    cmds <- c(cmds, sprintf('col_values <- setdiff(col_values, NA)', annot))
-                    cmds <- c(cmds, sprintf('col_colors <- rowDataColorMap(colormap, "%s", discrete=TRUE)(%s)', annot, 'length(unique(col_values))'))
-                    cmds <- c(cmds, 'if (is.null(names(col_colors))) { names(col_colors) <- unique(col_values) }')
-                    cmds <- c(cmds, sprintf('row_col[["%s"]] <- col_colors', annot))
-                }
-            }
-            cmds <- c(cmds, sprintf("column_annot <- columnAnnotation(df=rowData(se)[%s, %s, drop=FALSE], col=row_col)",
-                "unique(unlist(col_selected))",
-                deparse(x[[.heatMapColData]])))
+        cmds <- .process_heatmap_row_annotations(x, se, plot_env)
+        if (length(cmds)) {
             all_cmds[["rowdata"]] <- paste0(cmds, collapse = "\n")
             left_annotation <- "\n\tleft_annotation=row_annot"
         } else {
@@ -290,7 +307,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
             .selectColor,
             .showDimnames,
             .plotLegendPosition, .plotLegendDirection),
-        input=input, pObjects=pObjects, rObjects=rObjects)
+        input=input, pObjects=pObjects, rObjects=rObjects, ignoreNULL = FALSE)
 
     .create_multi_selection_effect_observer(plot_name,
         by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,

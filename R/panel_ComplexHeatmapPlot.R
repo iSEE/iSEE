@@ -102,7 +102,8 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
 
     list(
         selectInput(paste0(.getEncodedName(x), "_", .heatMapAssay), label=NULL,
-            choices=all_assays, selected=x[[.heatMapAssay]])
+            choices=all_assays, selected=x[[.heatMapAssay]]),
+        actionButton(paste0(panel_name, "_", .rownamesEdit), label=.buttonEditFeaturesLabel)
     )
 })
 
@@ -313,6 +314,19 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     .create_multi_selection_effect_observer(plot_name,
         by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
+    observeEvent(input[[paste0(plot_name, "_", .rownamesEdit)]], {
+        showModal(modalDialog(
+        title=sprintf("Row names for %s", .getFullName(x)),
+        size="l", fade=TRUE,
+        footer=NULL, easyClose=TRUE,
+        aceEditor(paste0(plot_name, "_", "TODO"),
+                    mode="text",
+                    theme="xcode",
+                    autoComplete="disabled",
+                    value=paste0(c(LETTERS, ""), collapse="\n"),
+                    height="500px")))
+    }, ignoreInit=TRUE)
 })
 
 #' @export

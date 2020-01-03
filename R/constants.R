@@ -55,6 +55,9 @@
 .buttonDeleteLabel <- "Delete"
 .buttonNoSelectionLabel <- "No selection"
 .buttonSaveLabel <- "Save"
+.buttonEditFeaturesLabel <- "Edit features"
+
+.rownamesEdit <- "INTERNAL_RowNamesEdit"
 
 # Other plot parameters. ----
 

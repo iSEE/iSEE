@@ -133,7 +133,7 @@
 #' @seealso
 #' \code{\link{.coerce_type}}, which generates the commands to do the coercion.
 #' @author Aaron Lun, Kevin Rue-Albrecht
-#' @rdname INTERNAL.coerce_dataframe_columns
+#' @rdname INTERNAL_coerce_dataframe_columns
 .coerce_dataframe_columns <- function(envir, fields, df="plot.data") {
     coerce_cmds <- NULL
     for (f in fields) {

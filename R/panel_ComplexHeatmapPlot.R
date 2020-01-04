@@ -181,9 +181,9 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
 
     # plot.data
     assay_name <- x[[.heatMapAssay]]
-    assay_slice <- sprintf("[%s, %s, drop=FALSE]",
-        deparse(x[[.heatMapRownames]]),
-        deparse(x[[.heatMapColnames]]))
+    all_cmds[["rows"]] <- sprintf("heatmap_rows <- %s", paste0(deparse(x[[.heatMapRownames]]), collapse = "\n"))
+    all_cmds[["columns"]] <- sprintf("heatmap_columns <- %s", paste0(deparse(x[[.heatMapColnames]]), collapse = "\n"))
+    assay_slice <- "[heatmap_rows, heatmap_columns, drop=FALSE]"
     all_cmds[["data"]] <- sprintf('plot.data <- assay(se, "%s")%s', assay_name, assay_slice)
     .text_eval(all_cmds, plot_env)
     # column annotation data
@@ -305,14 +305,14 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_heatmap_modal_observers(plot_name,
+    .create_heatmap_modal_observers(x,
         se,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
 })
 
 .create_heatmap_dimnames_modal_dialog <- function(plot_name,
-    editor_lines, editor_title, apply_button_suffix, incoming_lines=LETTERS) {
+    editor_lines, editor_title, apply_button_suffix, incoming_lines) {
         modalDialog(
             title=editor_title,
             size="l", fade=TRUE,
@@ -339,18 +339,28 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         )
     }
 
-.create_heatmap_modal_observers <- function(plot_name,
+.create_heatmap_modal_observers <- function(x,
     se,
     input, session, pObjects, rObjects) {
+
+    plot_name <- .getEncodedName(x)
 
     observeEvent(input[[paste0(plot_name, "_", .rownamesEdit)]], {
         editor_lines <- pObjects$memory[[plot_name]][[.heatMapRownames]]
         editor_title <- "Row names editor"
         apply_button_suffix <- .rownamesApply
 
-        modal_ui <- .create_heatmap_dimnames_modal_dialog(plot_name,
-            editor_lines, editor_title, apply_button_suffix)
+        # Compute names for the incoming selection, if any
+        plot_env <- new.env()
+        select_cmds <- .processMultiSelections(x, pObjects$memory, pObjects$contents, plot_env)
+        if (exists("row_selected", envir=plot_env, inherits=FALSE)){
+            incoming_names <- unique(unlist(get("row_selected", envir=plot_env)))
+        } else {
+            incoming_names <- NULL
+        }
 
+        modal_ui <- .create_heatmap_dimnames_modal_dialog(plot_name,
+            editor_lines, editor_title, apply_button_suffix, incoming_names)
         showModal(modal_ui)
     }, ignoreInit=TRUE)
 
@@ -359,9 +369,17 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         editor_title <- "Column names editor"
         apply_button_suffix <- .colnamesApply
 
-        modal_ui <- .create_heatmap_dimnames_modal_dialog(plot_name,
-            editor_lines, editor_title, apply_button_suffix)
+        # Compute names for the incoming selection, if any
+        plot_env <- new.env()
+        select_cmds <- .processMultiSelections(x, pObjects$memory, pObjects$contents, plot_env)
+        if (exists("col_selected", envir=plot_env, inherits=FALSE)){
+            incoming_names <- unique(unlist(get("col_selected", envir=plot_env)))
+        } else {
+            incoming_names <- NULL
+        }
 
+        modal_ui <- .create_heatmap_dimnames_modal_dialog(plot_name,
+            editor_lines, editor_title, apply_button_suffix, incoming_names)
         showModal(modal_ui)
     }, ignoreInit=TRUE)
 

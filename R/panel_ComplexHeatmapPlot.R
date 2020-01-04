@@ -322,39 +322,9 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
 })
 
-.create_heatmap_modal_observers <- function(plot_name,
-    input, session, pObjects, rObjects) {
-
-    observeEvent(input[[paste0(plot_name, "_", .rownamesEdit)]], {
-        editor_lines <- pObjects$memory[[plot_name]][[.heatMapRownames]]
-
-        showModal(
-            modalDialog(
-                title="Row names editor",
-                size="l", fade=TRUE,
-                footer=NULL, easyClose=TRUE,
-                fluidRow(
-                    aceEditor(paste0(plot_name, "_", .rownamesEditor),
-                        mode="text",
-                        theme="xcode",
-                        autoComplete="disabled",
-                        value=paste0(c(editor_lines, ""), collapse="\n"),
-                        height="500px")
-                ),
-                fluidRow(
-                    actionButton(paste0(plot_name, "_", .rownamesApply), label="Apply (TODO)")
-                )
-            )
-        )
-
-    }, ignoreInit=TRUE)
-
-    observeEvent(input[[paste0(plot_name, "_", .colnamesEdit)]], {
-        editor_lines <- pObjects$memory[[plot_name]][[.heatMapColnames]]
-        editor_title <- sprintf("Column names editor for %s", plot_name)
-        apply_label_suffix <- .colnamesApply
-
-        modal_ui <- modalDialog(
+.create_heatmap_dimnames_modal_dialog <- function(plot_name,
+    editor_lines, editor_title, apply_button_suffix) {
+        modalDialog(
             title=editor_title,
             size="l", fade=TRUE,
             footer=NULL, easyClose=TRUE,
@@ -367,21 +337,41 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
                     height="500px")
             ),
             fluidRow(
-                actionButton(paste0(plot_name, "_", apply_label_suffix), label="Apply")
+                actionButton(paste0(plot_name, "_", apply_button_suffix), label="Apply")
             )
         )
+    }
+
+.create_heatmap_modal_observers <- function(plot_name,
+    input, session, pObjects, rObjects) {
+
+    observeEvent(input[[paste0(plot_name, "_", .rownamesEdit)]], {
+        editor_lines <- pObjects$memory[[plot_name]][[.heatMapRownames]]
+        editor_title <- sprintf("Row names editor for %s", plot_name)
+        apply_button_suffix <- .rownamesApply
+
+        modal_ui <- .create_heatmap_dimnames_modal_dialog(plot_name,
+            editor_lines, editor_title, apply_button_suffix)
 
         showModal(modal_ui)
+    }, ignoreInit=TRUE)
 
+    observeEvent(input[[paste0(plot_name, "_", .colnamesEdit)]], {
+        editor_lines <- pObjects$memory[[plot_name]][[.heatMapColnames]]
+        editor_title <- sprintf("Column names editor for %s", plot_name)
+        apply_button_suffix <- .colnamesApply
+
+        modal_ui <- .create_heatmap_dimnames_modal_dialog(plot_name,
+            editor_lines, editor_title, apply_button_suffix)
+
+        showModal(modal_ui)
     }, ignoreInit=TRUE)
 
     observeEvent(input[[paste0(plot_name, "_", .rownamesApply)]], {
         # get aceEditor text
-        editor_input <- input[[paste0(plot_name, "_", .rownamesEditor)]]
+        editor_input <- input[[.modalAceEditor]]
         # process and compare with current rownames
         editor_input <- strsplit(editor_input, "\n")[[1]]
-        # how to remove choices that do not exist in se?
-        # editor_input <- intersect(editor_input, rownames(pObjects$se))
         current_value <- pObjects$memory[[plot_name]][[.heatMapRownames]]
         if (identical(editor_input, current_value)) {
             return(NULL)

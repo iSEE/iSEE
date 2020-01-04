@@ -179,67 +179,55 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     plot_env <- new.env()
     all_cmds <- list()
 
-    # Doing this first so that .generateDotPlotData can respond to the selection.
-    select_cmds <- .processMultiSelections(x, all_memory, all_contents, plot_env)
-
-    if (!exists("col_selected", plot_env, inherits = FALSE) || !exists("row_selected", plot_env, inherits = FALSE)) {
-        msg <- "This panel requires both row and column incoming selection."
-        all_cmds[["ggplot"]] <- "ggplot() +"
-        all_cmds[["geom_text"]] <- sprintf('geom_text(aes(x, y, label=Label), data.frame(x=0, y=0, Label="%s")) +', msg)
-        all_cmds[["theme"]] <- "theme_void()"
+    # plot.data
+    assay_name <- x[[.heatMapAssay]]
+    assay_slice <- sprintf("[%s, %s, drop=FALSE]",
+        deparse(x[[.heatMapRownames]]),
+        deparse(x[[.heatMapColnames]]))
+    all_cmds[["data"]] <- sprintf('plot.data <- assay(se, "%s")%s', assay_name, assay_slice)
+    .text_eval(all_cmds, plot_env)
+    # column annotation data
+    cmds <- .process_heatmap_column_annotations(x, se, plot_env)
+    if (length(cmds)) {
+        all_cmds[["coldata"]] <- paste0(cmds, collapse = "\n")
+        top_annotation <- "\n\ttop_annotation=column_annot"
     } else {
-        all_cmds[["select"]] <- select_cmds
-        # Incoming selections
-        assay_slice <- sprintf("[%s, %s, drop=FALSE]",
-                deparse(x[[.heatMapRownames]]),
-                deparse(x[[.heatMapColnames]]))
-        # plot.data
-        assay_name <- x[[.heatMapAssay]]
-        all_cmds[["data"]] <- sprintf('plot.data <- assay(se, "%s")%s', assay_name, assay_slice)
-        .text_eval(all_cmds, plot_env)
-        # column annotation data
-        cmds <- .process_heatmap_column_annotations(x, se, plot_env)
-        if (length(cmds)) {
-            all_cmds[["coldata"]] <- paste0(cmds, collapse = "\n")
-            top_annotation <- "\n\ttop_annotation=column_annot"
-        } else {
-            top_annotation <- NULL
-        }
-        # row annotation data
-        cmds <- .process_heatmap_row_annotations(x, se, plot_env)
-        if (length(cmds)) {
-            all_cmds[["rowdata"]] <- paste0(cmds, collapse = "\n")
-            left_annotation <- "\n\tleft_annotation=row_annot"
-        } else {
-            left_annotation <- NULL
-        }
-        # Names
-        assay_name <- ifelse(is.null(assay_name), "assay", assay_name)
-        assay_name <- ifelse(assay_name == "", "assay", assay_name)
-        heatmap_name <- sprintf('name="%s"', assay_name)
-        show_row_names <- sprintf("show_row_names=%s", .showNamesRowTitle %in% x[[.showDimnames]])
-        show_column_names <- sprintf("show_column_names=%s", .showNamesColumnTitle %in% x[[.showDimnames]])
-        # Clustering (TODO)
-        cluster_rows <- sprintf("\n\tcluster_rows=%s", "TRUE")
-        cluster_columns <- sprintf("cluster_columns=%s", "TRUE")
-        # Legend
-        heatmap_legend_param <- sprintf('\n\theatmap_legend_param=list(direction = "%s")', tolower(x[[.plotLegendDirection]]))
-        # Combine options
-        heatmap_args <- paste(
-            "", heatmap_name, cluster_rows, cluster_columns, show_row_names, show_column_names,
-            top_annotation, left_annotation,
-            heatmap_legend_param,
-            sep = ", ")
-        # Heatmap
-        all_cmds[["heatmap"]] <- sprintf("hm <- Heatmap(matrix = plot.data%s)", heatmap_args)
-        # draw
-        heatmap_legend_side <- sprintf('heatmap_legend_side = "%s"', tolower(x[[.plotLegendPosition]]))
-        annotation_legend_side <- sprintf('annotation_legend_side = "%s"', tolower(x[[.plotLegendPosition]]))
-        draw_args <- paste(
-            "", heatmap_legend_side, annotation_legend_side,
-            sep = ", ")
-        all_cmds[["draw"]] <- sprintf("draw(hm%s)", draw_args)
+        top_annotation <- NULL
     }
+    # row annotation data
+    cmds <- .process_heatmap_row_annotations(x, se, plot_env)
+    if (length(cmds)) {
+        all_cmds[["rowdata"]] <- paste0(cmds, collapse = "\n")
+        left_annotation <- "\n\tleft_annotation=row_annot"
+    } else {
+        left_annotation <- NULL
+    }
+    # Names
+    assay_name <- ifelse(is.null(assay_name), "assay", assay_name)
+    assay_name <- ifelse(assay_name == "", "assay", assay_name)
+    heatmap_name <- sprintf('name="%s"', assay_name)
+    show_row_names <- sprintf("show_row_names=%s", .showNamesRowTitle %in% x[[.showDimnames]])
+    show_column_names <- sprintf("show_column_names=%s", .showNamesColumnTitle %in% x[[.showDimnames]])
+    # Clustering (TODO)
+    cluster_rows <- sprintf("\n\tcluster_rows=%s", "TRUE")
+    cluster_columns <- sprintf("cluster_columns=%s", "TRUE")
+    # Legend
+    heatmap_legend_param <- sprintf('\n\theatmap_legend_param=list(direction = "%s")', tolower(x[[.plotLegendDirection]]))
+    # Combine options
+    heatmap_args <- paste(
+        "", heatmap_name, cluster_rows, cluster_columns, show_row_names, show_column_names,
+        top_annotation, left_annotation,
+        heatmap_legend_param,
+        sep = ", ")
+    # Heatmap
+    all_cmds[["heatmap"]] <- sprintf("hm <- Heatmap(matrix = plot.data%s)", heatmap_args)
+    # draw
+    heatmap_legend_side <- sprintf('heatmap_legend_side = "%s"', tolower(x[[.plotLegendPosition]]))
+    annotation_legend_side <- sprintf('annotation_legend_side = "%s"', tolower(x[[.plotLegendPosition]]))
+    draw_args <- paste(
+        "", heatmap_legend_side, annotation_legend_side,
+        sep = ", ")
+    all_cmds[["draw"]] <- sprintf("draw(hm%s)", draw_args)
     print(all_cmds)
 
     plot_out <- .text_eval(all_cmds, plot_env)

@@ -312,21 +312,29 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 })
 
 .create_heatmap_dimnames_modal_dialog <- function(plot_name,
-    editor_lines, editor_title, apply_button_suffix) {
+    editor_lines, editor_title, apply_button_suffix, incoming_lines=LETTERS) {
         modalDialog(
             title=editor_title,
             size="l", fade=TRUE,
             footer=NULL, easyClose=TRUE,
             fluidRow(
-                aceEditor(.modalAceEditor,
+                column(width = 6, h4(plot_name), aceEditor(.modalAceEditor,
                     mode="text",
                     theme="xcode",
                     autoComplete="disabled",
                     value=paste0(c(editor_lines, ""), collapse="\n"),
-                    height="500px")
+                    height="500px")),
+                column(width = 6, h4("Incoming selection"), aceEditor("TODO",
+                    mode="text", readOnly = TRUE,
+                    theme="xcode",
+                    autoComplete="disabled",
+                    value=paste0(c(incoming_lines, ""), collapse="\n"),
+                    height="500px")),
             ),
             fluidRow(
-                actionButton(paste0(plot_name, "_", apply_button_suffix), label="Apply")
+                column(width = 12,
+                    actionButton(paste0(plot_name, "_", apply_button_suffix), label="Apply")
+                )
             )
         )
     }
@@ -337,7 +345,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
     observeEvent(input[[paste0(plot_name, "_", .rownamesEdit)]], {
         editor_lines <- pObjects$memory[[plot_name]][[.heatMapRownames]]
-        editor_title <- sprintf("Row names editor for %s", plot_name)
+        editor_title <- "Row names editor"
         apply_button_suffix <- .rownamesApply
 
         modal_ui <- .create_heatmap_dimnames_modal_dialog(plot_name,
@@ -348,7 +356,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
     observeEvent(input[[paste0(plot_name, "_", .colnamesEdit)]], {
         editor_lines <- pObjects$memory[[plot_name]][[.heatMapColnames]]
-        editor_title <- sprintf("Column names editor for %s", plot_name)
+        editor_title <- "Column names editor"
         apply_button_suffix <- .colnamesApply
 
         modal_ui <- .create_heatmap_dimnames_modal_dialog(plot_name,

@@ -306,6 +306,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_heatmap_modal_observers(plot_name,
+        se,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
 })
@@ -331,6 +332,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     }
 
 .create_heatmap_modal_observers <- function(plot_name,
+    se,
     input, session, pObjects, rObjects) {
 
     observeEvent(input[[paste0(plot_name, "_", .rownamesEdit)]], {
@@ -358,8 +360,11 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     observeEvent(input[[paste0(plot_name, "_", .rownamesApply)]], {
         # get aceEditor text
         editor_input <- input[[.modalAceEditor]]
-        # process and compare with current rownames
+        # process and compare with current names
         editor_input <- strsplit(editor_input, "\n")[[1]]
+        # remove invalid names (TODO: preserve lines commented out)
+        editor_input <- intersect(editor_input, rownames(se))
+        updateAceEditor(session, .modalAceEditor, paste0(editor_input, collapse = "\n"))
         current_value <- pObjects$memory[[plot_name]][[.heatMapRownames]]
         if (identical(editor_input, current_value)) {
             return(NULL)
@@ -374,8 +379,11 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     observeEvent(input[[paste0(plot_name, "_", .colnamesApply)]], {
         # get aceEditor text
         editor_input <- input[[.modalAceEditor]]
-        # process and compare with current rownames
+        # process and compare with current names
         editor_input <- strsplit(editor_input, "\n")[[1]]
+        # remove invalid names (TODO: preserve lines commented out)
+        editor_input <- intersect(editor_input, colnames(se))
+        updateAceEditor(session, .modalAceEditor, paste0(editor_input, collapse = "\n"))
         current_value <- pObjects$memory[[plot_name]][[.heatMapColnames]]
         if (identical(editor_input, current_value)) {
             return(NULL)

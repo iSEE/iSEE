@@ -9,6 +9,7 @@ ComplexHeatmapPlot <- function(...) {
 setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- list(...)
     args <- .empty_default(args, .heatMapAssay, NA_character_)
+    args <- .empty_default(args, .heatMapRownames, character(0))
     args <- .empty_default(args, .heatMapColData, character(0))
     args <- .empty_default(args, .heatMapRowData, character(0))
 
@@ -315,19 +316,48 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    observeEvent(input[[paste0(plot_name, "_", .rownamesEdit)]], {
-        showModal(modalDialog(
-        title=sprintf("Row names for %s", .getFullName(x)),
-        size="l", fade=TRUE,
-        footer=NULL, easyClose=TRUE,
-        aceEditor(paste0(plot_name, "_", "TODO"),
-                    mode="text",
-                    theme="xcode",
-                    autoComplete="disabled",
-                    value=paste0(c(LETTERS, ""), collapse="\n"),
-                    height="500px")))
-    }, ignoreInit=TRUE)
+    .create_heatmap_rownames_modal(plot_name,
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
 })
+
+.create_heatmap_rownames_modal <- function(plot_name,
+    input, session, pObjects, rObjects) {
+
+    observeEvent(input[[paste0(plot_name, "_", .rownamesEdit)]], {
+        editor_lines <- pObjects$memory[[plot_name]][[.heatMapRownames]]
+
+        showModal(
+            modalDialog(
+                title="Row names editor",
+                size="l", fade=TRUE,
+                footer=NULL, easyClose=TRUE,
+                fluidRow(
+                    aceEditor(paste0(plot_name, "_", .rownamesEditor),
+                        mode="text",
+                        theme="xcode",
+                        autoComplete="disabled",
+                        value=paste0(c(editor_lines, ""), collapse="\n"),
+                        height="500px")
+                ),
+                fluidRow(
+                    actionButton(paste0(plot_name, "_", .rownamesApply), label="Apply (TODO)")
+                )
+            )
+        )
+
+    }, ignoreInit=TRUE)
+
+    observeEvent(input[[paste0(plot_name, "_", .rownamesApply)]], {
+        print(input[[paste0(plot_name, "_", .rownamesEditor)]])
+        # TODO
+        # get aceEditor text
+        # process and compare with current rownames
+        # update current rownames if necessary (pObjects$memory)
+        # request panel update
+        # matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[panel_name]][[field0]]))
+    })
+}
 
 #' @export
 setMethod(".hideInterface", "ComplexHeatmapPlot", function(x, field) {

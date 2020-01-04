@@ -58,6 +58,8 @@
 .buttonEditFeaturesLabel <- "Edit features"
 
 .rownamesEdit <- "INTERNAL_RowNamesEdit"
+.rownamesApply <- "INTERNAL_RowNamesApply"
+.rownamesEditor <- "INTERNAL_RowNamesEditor"
 
 # Other plot parameters. ----
 

@@ -420,11 +420,13 @@ setClass("HeatMapPlot", contains="Panel", slots=collated)
 ####################################################
 
 .heatMapAssay <- "Assay"
+.heatMapRownames <- "Rownames"
 .heatMapColData <- "ColData"
 .heatMapRowData <- "RowData"
 
 collated <- character(0)
 collated[.heatMapAssay] <- "character"
+collated[.heatMapRownames] <- "character"
 collated[.heatMapColData] <- "character"
 collated[.heatMapRowData] <- "character"
 

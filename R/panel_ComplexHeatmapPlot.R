@@ -187,13 +187,13 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
         all_cmds[["theme"]] <- "theme_void()"
     } else {
         all_cmds[["select"]] <- select_cmds
-
         # Incoming selections
         assay_slice <- sprintf("[%s, %s, drop=FALSE]",
-                "unique(unlist(row_selected))",
+                deparse(x[[.heatMapRownames]]),
                 "unique(unlist(col_selected))")
         # plot.data
-        all_cmds[["data"]] <- sprintf('plot.data <- assay(se, "%s")%s', x[[.heatMapAssay]], assay_slice)
+        assay_name <- x[[.heatMapAssay]]
+        all_cmds[["data"]] <- sprintf('plot.data <- assay(se, "%s")%s', assay_name, assay_slice)
         .text_eval(all_cmds, plot_env)
         # column annotation data
         cmds <- .process_heatmap_column_annotations(x, se, plot_env)
@@ -212,7 +212,6 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
             left_annotation <- NULL
         }
         # Names
-        assay_name <- head(assayNames(se), 1)
         assay_name <- ifelse(is.null(assay_name), "assay", assay_name)
         assay_name <- ifelse(assay_name == "", "assay", assay_name)
         heatmap_name <- sprintf('name="%s"', assay_name)
@@ -352,10 +351,18 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         print(input[[paste0(plot_name, "_", .rownamesEditor)]])
         # TODO
         # get aceEditor text
+        editor_input <- input[[paste0(plot_name, "_", .rownamesEditor)]]
         # process and compare with current rownames
+        editor_input <- strsplit(editor_input, "\n")[[1]]
+        current_value <- pObjects$memory[[plot_name]][[.heatMapRownames]]
+        if (identical(editor_input, current_value)) {
+            return(NULL)
+        }
         # update current rownames if necessary (pObjects$memory)
+        matched_input <- as(editor_input, typeof(current_value))
+        pObjects$memory[[plot_name]][[.heatMapRownames]] <- matched_input
         # request panel update
-        # matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[panel_name]][[field0]]))
+        .requestCleanUpdate(plot_name, pObjects, rObjects)
     })
 }
 

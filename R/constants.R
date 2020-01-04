@@ -55,11 +55,15 @@
 .buttonDeleteLabel <- "Delete"
 .buttonNoSelectionLabel <- "No selection"
 .buttonSaveLabel <- "Save"
-.buttonEditFeaturesLabel <- "Edit features"
+.buttonEditRownamesLabel <- "Edit rownames"
+.buttonEditColnamesLabel <- "Edit colnames"
 
 .rownamesEdit <- "INTERNAL_RowNamesEdit"
+.colnamesEdit <- "INTERNAL_ColNamesEdit"
 .rownamesApply <- "INTERNAL_RowNamesApply"
+.colnamesApply <- "INTERNAL_ColNamesApply"
 .rownamesEditor <- "INTERNAL_RowNamesEditor"
+.modalAceEditor <- "INTERNAL_ModalAceEditor"
 
 # Other plot parameters. ----
 

@@ -10,6 +10,7 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- list(...)
     args <- .empty_default(args, .heatMapAssay, NA_character_)
     args <- .empty_default(args, .heatMapRownames, character(0))
+    args <- .empty_default(args, .heatMapColnames, character(0))
     args <- .empty_default(args, .heatMapColData, character(0))
     args <- .empty_default(args, .heatMapRowData, character(0))
 
@@ -104,7 +105,8 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
     list(
         selectInput(paste0(.getEncodedName(x), "_", .heatMapAssay), label=NULL,
             choices=all_assays, selected=x[[.heatMapAssay]]),
-        actionButton(paste0(panel_name, "_", .rownamesEdit), label=.buttonEditFeaturesLabel)
+        actionButton(paste0(panel_name, "_", .rownamesEdit), label=.buttonEditRownamesLabel),
+        actionButton(paste0(panel_name, "_", .colnamesEdit), label=.buttonEditColnamesLabel)
     )
 })
 
@@ -190,7 +192,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
         # Incoming selections
         assay_slice <- sprintf("[%s, %s, drop=FALSE]",
                 deparse(x[[.heatMapRownames]]),
-                "unique(unlist(col_selected))")
+                deparse(x[[.heatMapColnames]]))
         # plot.data
         assay_name <- x[[.heatMapAssay]]
         all_cmds[["data"]] <- sprintf('plot.data <- assay(se, "%s")%s', assay_name, assay_slice)
@@ -315,12 +317,12 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_heatmap_rownames_modal(plot_name,
+    .create_heatmap_modal_observers(plot_name,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
 })
 
-.create_heatmap_rownames_modal <- function(plot_name,
+.create_heatmap_modal_observers <- function(plot_name,
     input, session, pObjects, rObjects) {
 
     observeEvent(input[[paste0(plot_name, "_", .rownamesEdit)]], {
@@ -347,13 +349,39 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
     }, ignoreInit=TRUE)
 
+    observeEvent(input[[paste0(plot_name, "_", .colnamesEdit)]], {
+        editor_lines <- pObjects$memory[[plot_name]][[.heatMapColnames]]
+        editor_title <- sprintf("Column names editor for %s", plot_name)
+        apply_label_suffix <- .colnamesApply
+
+        modal_ui <- modalDialog(
+            title=editor_title,
+            size="l", fade=TRUE,
+            footer=NULL, easyClose=TRUE,
+            fluidRow(
+                aceEditor(.modalAceEditor,
+                    mode="text",
+                    theme="xcode",
+                    autoComplete="disabled",
+                    value=paste0(c(editor_lines, ""), collapse="\n"),
+                    height="500px")
+            ),
+            fluidRow(
+                actionButton(paste0(plot_name, "_", apply_label_suffix), label="Apply")
+            )
+        )
+
+        showModal(modal_ui)
+
+    }, ignoreInit=TRUE)
+
     observeEvent(input[[paste0(plot_name, "_", .rownamesApply)]], {
-        print(input[[paste0(plot_name, "_", .rownamesEditor)]])
-        # TODO
         # get aceEditor text
         editor_input <- input[[paste0(plot_name, "_", .rownamesEditor)]]
         # process and compare with current rownames
         editor_input <- strsplit(editor_input, "\n")[[1]]
+        # how to remove choices that do not exist in se?
+        # editor_input <- intersect(editor_input, rownames(pObjects$se))
         current_value <- pObjects$memory[[plot_name]][[.heatMapRownames]]
         if (identical(editor_input, current_value)) {
             return(NULL)
@@ -361,6 +389,22 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         # update current rownames if necessary (pObjects$memory)
         matched_input <- as(editor_input, typeof(current_value))
         pObjects$memory[[plot_name]][[.heatMapRownames]] <- matched_input
+        # request panel update
+        .requestCleanUpdate(plot_name, pObjects, rObjects)
+    })
+
+    observeEvent(input[[paste0(plot_name, "_", .colnamesApply)]], {
+        # get aceEditor text
+        editor_input <- input[[.modalAceEditor]]
+        # process and compare with current rownames
+        editor_input <- strsplit(editor_input, "\n")[[1]]
+        current_value <- pObjects$memory[[plot_name]][[.heatMapColnames]]
+        if (identical(editor_input, current_value)) {
+            return(NULL)
+        }
+        # update current rownames if necessary (pObjects$memory)
+        matched_input <- as(editor_input, typeof(current_value))
+        pObjects$memory[[plot_name]][[.heatMapColnames]] <- matched_input
         # request panel update
         .requestCleanUpdate(plot_name, pObjects, rObjects)
     })

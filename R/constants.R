@@ -64,6 +64,9 @@
 .colnamesApply <- "INTERNAL_ColNamesApply"
 .rownamesEditor <- "INTERNAL_RowNamesEditor"
 .modalAceEditor <- "INTERNAL_ModalAceEditor"
+.modalIncomingReadOnly <- "INTERNAL_ModalAceEditorReadOnly"
+.modalAddIncoming <- "INTERNAL_modalAddIncoming"
+
 
 # Other plot parameters. ----
 

@@ -327,7 +327,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
                     autoComplete="disabled",
                     value=paste0(c(editor_lines, ""), collapse="\n"),
                     height="500px")),
-                column(width = 6, h4("Incoming selection"), aceEditor("TODO",
+                column(width = 6, h4("Incoming selection (read-only)"), aceEditor("INTERNAL_ModalAceEditorReadOnly",
                     mode="text", readOnly = TRUE,
                     theme="xcode",
                     autoComplete="disabled",

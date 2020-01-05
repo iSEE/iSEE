@@ -335,6 +335,8 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
                     br(),
                     br(),
                     actionButton(.modalAddIncoming, label = "<< Add <<", width = "100%"),
+                    br(),
+                    br(),
                     actionButton(.modalSetIncoming, label = " < Set < ", width = "100%")
                 ),
                 column(width = 5,

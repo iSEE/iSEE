@@ -435,8 +435,10 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         editor_input <- input[[.modalAceEditor]]
         # process and compare with current names
         editor_input <- strsplit(editor_input, "\n")[[1]]
-        # remove invalid names (TODO: preserve lines commented out)
+        # remove invalid names
         editor_input <- intersect(editor_input, colnames(se))
+        # Remove duplicated names
+        editor_input <- unique(editor_input)
         updateAceEditor(session, .modalAceEditor, paste0(editor_input, collapse = "\n"))
         current_value <- pObjects$memory[[plot_name]][[.heatMapColnames]]
         if (identical(editor_input, current_value)) {

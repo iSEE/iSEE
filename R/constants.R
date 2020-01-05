@@ -65,8 +65,9 @@
 .rownamesEditor <- "INTERNAL_RowNamesEditor"
 .modalAceEditor <- "INTERNAL_ModalAceEditor"
 .modalIncomingReadOnly <- "INTERNAL_ModalAceEditorReadOnly"
-.modalAddIncoming <- "INTERNAL_modalAddIncoming"
 
+.modalAddIncoming <- "INTERNAL_modalAddIncoming"
+.modalSetIncoming <- "INTERNAL_modalSetIncoming"
 
 # Other plot parameters. ----
 

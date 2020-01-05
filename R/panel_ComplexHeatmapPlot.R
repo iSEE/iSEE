@@ -276,7 +276,7 @@ setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info)
             inputId=paste0(plot_name, "_", .showDimnames), label="Show names:", inline=TRUE,
             selected=x[[.showDimnames]],
             choices=c(.showNamesRowTitle, .showNamesColumnTitle)),
-        radioButtons( # Copied from ".add_other_UI_elements()", to avoid "Font size"
+        radioButtons(
             paste0(plot_name, "_", .plotLegendPosition), label="Legend position:", inline=TRUE,
             choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
             selected=x[[.plotLegendPosition]]),
@@ -334,7 +334,8 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
                     br(),
                     br(),
                     br(),
-                    actionButton(.modalAddIncoming, label = "<< Add <<", width = "100%")
+                    actionButton(.modalAddIncoming, label = "<< Add <<", width = "100%"),
+                    actionButton(.modalSetIncoming, label = " < Set < ", width = "100%")
                 ),
                 column(width = 5,
                     h4("Incoming selection (read-only)"),
@@ -384,7 +385,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
         # Compute names for the incoming selection, if any
         plot_env <- new.env()
-        select_cmds <- .processMultiSelections(x, pObjects$memory, pObjects$contents, plot_env)
+        select_cmds <- .processMultiSelections(pObjects$memory[[plot_name]], pObjects$memory, pObjects$contents, plot_env)
         if (exists("col_selected", envir=plot_env, inherits=FALSE)){
             incoming_names <- unique(unlist(get("col_selected", envir=plot_env)))
         } else {
@@ -401,6 +402,11 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         incoming_input <- input[[.modalIncomingReadOnly]]
         editor_input <- paste0(editor_input, "\n", incoming_input)
         updateAceEditor(session, .modalAceEditor, editor_input)
+    })
+
+    observeEvent(input[[.modalSetIncoming]], {
+        incoming_input <- input[[.modalIncomingReadOnly]]
+        updateAceEditor(session, .modalAceEditor, incoming_input)
     })
 
     observeEvent(input[[paste0(plot_name, "_", .rownamesApply)]], {

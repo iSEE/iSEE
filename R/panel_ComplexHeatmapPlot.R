@@ -209,6 +209,15 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
     cmds
 }
 
+.convert_text_to_names <- function(txt) 
+# Remove comment and whitespace.
+{
+    rn <- strsplit(txt, sep="\n")[[1]]
+    rn <- sub("#.*", "", rn)
+    rn <- sub("^ +", "", rn)
+    sub(" +$", "", rn)
+}
+
 #' @export
 #' @importFrom SummarizedExperiment assay rowData colData
 #' @importFrom ggplot2 ggplot geom_text aes theme_void
@@ -222,12 +231,16 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     all_cmds <- list()
 
     # plot.data
+    rn <- .convert_text_to_names(x[[.heatMapFeatNameText]])
+    all_cmds[["rows"]] <- sprintf(".heatmap.rows <- %s", .deparse_for_viewing(rn))
+    cn <- .convert_text_to_names(x[[.heatMapSampNameText]])
+    all_cmds[["columns"]] <- sprintf(".heatmap.columns <- %s", .deparse_for_viewing(cn))
+
     assay_name <- x[[.heatMapAssay]]
-    all_cmds[["rows"]] <- sprintf("heatmap_rows <- %s", paste0(deparse(x[[.heatMapRownames]]), collapse = "\n"))
-    all_cmds[["columns"]] <- sprintf("heatmap_columns <- %s", paste0(deparse(x[[.heatMapColnames]]), collapse = "\n"))
-    assay_slice <- "[heatmap_rows, heatmap_columns, drop=FALSE]"
+    assay_slice <- "[.heatmap.rows, .heatmap.columns, drop=FALSE]"
     all_cmds[["data"]] <- sprintf('plot.data <- assay(se, "%s")%s', assay_name, assay_slice)
     .text_eval(all_cmds, plot_env)
+
     # column annotation data
     cmds <- .process_heatmap_column_annotations(x, se, plot_env)
     if (length(cmds)) {
@@ -437,7 +450,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
             text_field <- paste0(plot_name, "_", text_field0)
             observeEvent(input[[paste0(plot_name, "_", apply_field0)]], {
-                pObjects$memory[[plot_name]][[text_field]] <- input[[text_field]]
+                pObjects$memory[[plot_name]][[text_field0]] <- input[[text_field]]
                 .requestCleanUpdate(plot_name, pObjects, rObjects)
             })
         })

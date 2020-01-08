@@ -20,6 +20,8 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
         args[[.heatMapFeatNameText]] <- paste(vals, collapse="\n")
     }
 
+    args <- .empty_default(args, .heatMapClusterFeatures, FALSE)
+
     args <- .empty_default(args, .visualParamBoxOpen, FALSE)
 
     args <- .empty_default(args, .selectEffect, .selectTransTitle)
@@ -138,7 +140,9 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
             choices=all_assays, selected=x[[.heatMapAssay]]),
         checkboxInput(.input_FUN(.heatMapCustomFeatNames), label="Use custom feature names",
             value=x[[.heatMapCustomFeatNames]]),
-        actionButton(.input_FUN(.rownamesEdit), label=.buttonEditRownamesLabel)
+        actionButton(.input_FUN(.rownamesEdit), label=.buttonEditRownamesLabel), # TODO: show only if .heatMapCustomFeatNames is TRUE
+        checkboxInput(.input_FUN(.heatMapClusterFeatures), label="Cluster features",
+            value=x[[.heatMapClusterFeatures]])
     )
 })
 
@@ -269,7 +273,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     show_row_names <- sprintf("show_row_names=%s", .showNamesRowTitle %in% x[[.showDimnames]])
     show_column_names <- sprintf("show_column_names=%s", .showNamesColumnTitle %in% x[[.showDimnames]])
     # Clustering (TODO)
-    cluster_rows <- sprintf("\n\tcluster_rows=%s", "TRUE")
+    cluster_rows <- sprintf("\n\tcluster_rows=%s", x[[.heatMapClusterFeatures]])
     cluster_columns <- sprintf("cluster_columns=%s", "TRUE")
     # Legend
     heatmap_legend_param <- sprintf('\n\theatmap_legend_param=list(direction = "%s")', tolower(x[[.plotLegendDirection]]))
@@ -358,6 +362,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
     .createUnprotectedParameterObservers(plot_name,
         fields=c(.heatMapColData, .heatMapRowData,
+            .heatMapClusterFeatures,
             .selectColor,
             .showDimnames,
             .plotLegendPosition, .plotLegendDirection),
@@ -377,7 +382,6 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 #' @importFrom shinyAce aceEditor
 .create_heatmap_modal_observers <- function(plot_name, se, input, session, pObjects, rObjects) {
     apply_field <- "INTERNAL_ApplyFeatNameChanges"
-    cluster_field <- "INTERNAL_ClusterFeatNames"
     order_field <- "INTERNAL_OrderFeatNames"
     import_field <- "INTERNAL_ImportFeatNames"
     validate_field <- "INTERNAL_ValidateFeatNames"
@@ -402,7 +406,6 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
                 ),
                 column(width = 4,
                     actionButton(.input_FUN(validate_field), "Validate names"), br(), br(),
-                    actionButton(.input_FUN(cluster_field), "Organize by cluster"), br(), br(),
                     actionButton(.input_FUN(order_field), "Organize by order"), br(), br(),
                     actionButton(.input_FUN(import_field), "Import selection"), br(), br(),
                     actionButton(.input_FUN(apply_field), label="Apply", style=.actionbutton_biocstyle)

@@ -431,6 +431,7 @@ setClass("HeatMapPlot", contains="Panel", slots=collated)
 .heatMapCustomSampNames <- "CustomSampName"
 
 .heatMapClusterFeatures <- "ClusterFeatures"
+.heatMapClusterDistanceFeatures <- "ClusterDistanceFeatures"
 
 collated <- character(0)
 collated[.heatMapAssay] <- "character"
@@ -443,6 +444,7 @@ collated[.heatMapCustomFeatNames] <- "logical"
 collated[.heatMapFeatNameText] <- "character"
 
 collated[.heatMapClusterFeatures] <- "logical"
+collated[.heatMapClusterDistanceFeatures] <- "character"
 
 collated[.selectEffect] <- "character"
 collated[.selectColor] <- "character"

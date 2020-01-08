@@ -122,3 +122,15 @@
 .voiceColorByInput <- "voiceColorBy"
 .voiceReceiveFromInput <- "voiceReceiveFrom"
 .voiceSendToInput <- "voiceSendTo"
+
+# Clustering parameters ----
+
+.clusterDistanceEuclidean <- "euclidean"
+.clusterDistanceMaximum <- "maximum"
+.clusterDistanceManhattan <- "manhattan"
+.clusterDistanceCanberra <- "canberra"
+.clusterDistanceBinary <- "binary"
+.clusterDistanceMinkowski <- "minkowski"
+.clusterDistancePearson <- "pearson"
+.clusterDistanceSpearman <- "spearman"
+.clusterDistanceKendall <- "kendall"

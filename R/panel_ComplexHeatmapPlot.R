@@ -21,6 +21,7 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     }
 
     args <- .empty_default(args, .heatMapClusterFeatures, FALSE)
+    args <- .empty_default(args, .heatMapClusterDistanceFeatures, .clusterDistanceEuclidean)
 
     args <- .empty_default(args, .visualParamBoxOpen, FALSE)
 
@@ -142,7 +143,12 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
             value=x[[.heatMapCustomFeatNames]]),
         actionButton(.input_FUN(.rownamesEdit), label=.buttonEditRownamesLabel), # TODO: show only if .heatMapCustomFeatNames is TRUE
         checkboxInput(.input_FUN(.heatMapClusterFeatures), label="Cluster features",
-            value=x[[.heatMapClusterFeatures]])
+            value=x[[.heatMapClusterFeatures]]),
+        selectInput(.input_FUN(.heatMapClusterDistanceFeatures), label="Clustering distance for features",
+            choices=c(.clusterDistanceEuclidean, .clusterDistancePearson, .clusterDistanceSpearman,
+                .clusterDistanceManhattan, .clusterDistanceMaximum, .clusterDistanceCanberra,
+                .clusterDistanceBinary, .clusterDistanceMinkowski, .clusterDistanceKendall),
+            selected=x[[.heatMapClusterDistanceFeatures]])
     )
 })
 
@@ -246,7 +252,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
 
     assay_name <- x[[.heatMapAssay]]
     all_cmds[["data"]] <- sprintf(
-        'plot.data <- assay(se, "%s")[.heatmap.rows,.heatmap.columns,drop=FALSE]',
+        'plot.data <- assay(se, "%s")[.heatmap.rows, .heatmap.columns, drop=FALSE]',
         assay_name)
     .text_eval(all_cmds, plot_env)
 
@@ -254,17 +260,17 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     cmds <- .process_heatmap_column_annotations(x, se, plot_env)
     if (length(cmds)) {
         all_cmds[["coldata"]] <- paste0(cmds, collapse = "\n")
-        top_annotation <- "\n\ttop_annotation=column_annot"
+        top_annotation <- "top_annotation=column_annot"
     } else {
-        top_annotation <- NULL
+        top_annotation <- ""
     }
     # row annotation data
     cmds <- .process_heatmap_row_annotations(x, se, plot_env)
     if (length(cmds)) {
         all_cmds[["rowdata"]] <- paste0(cmds, collapse = "\n")
-        left_annotation <- "\n\tleft_annotation=row_annot"
+        left_annotation <- "left_annotation=row_annot"
     } else {
-        left_annotation <- NULL
+        left_annotation <- ""
     }
     # Names
     assay_name <- ifelse(is.null(assay_name), "assay", assay_name)
@@ -272,17 +278,25 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     heatmap_name <- sprintf('name="%s"', assay_name)
     show_row_names <- sprintf("show_row_names=%s", .showNamesRowTitle %in% x[[.showDimnames]])
     show_column_names <- sprintf("show_column_names=%s", .showNamesColumnTitle %in% x[[.showDimnames]])
-    # Clustering (TODO)
-    cluster_rows <- sprintf("\n\tcluster_rows=%s", x[[.heatMapClusterFeatures]])
+    # Clustering
+    cluster_rows <- sprintf("cluster_rows=%s", x[[.heatMapClusterFeatures]])
     cluster_columns <- sprintf("cluster_columns=%s", "TRUE")
+    # Clustering options
+    if (x[[.heatMapClusterFeatures]]) {
+        clustering_distance_rows <- sprintf("clustering_distance_rows=%s", deparse(x[[.heatMapClusterDistanceFeatures]]))
+    } else {
+        clustering_distance_rows <- ""
+    }
     # Legend
-    heatmap_legend_param <- sprintf('\n\theatmap_legend_param=list(direction = "%s")', tolower(x[[.plotLegendDirection]]))
+    heatmap_legend_param <- sprintf('heatmap_legend_param=list(direction = "%s")', tolower(x[[.plotLegendDirection]]))
     # Combine options
-    heatmap_args <- paste(
-        "", heatmap_name, cluster_rows, cluster_columns, show_row_names, show_column_names,
-        top_annotation, left_annotation,
-        heatmap_legend_param,
-        sep = ", ")
+    heatmap_args <- ""
+    for (new_arg in c(heatmap_name, cluster_rows, clustering_distance_rows, cluster_columns, show_row_names, show_column_names, top_annotation, left_annotation, heatmap_legend_param)) {
+        if (!identical(new_arg, "")) {
+            heatmap_args <- paste0(heatmap_args, paste0(", ", new_arg))
+        }
+    }
+    heatmap_args <- paste0(strwrap(heatmap_args, width = 80, exdent = 4), collapse = "\n")
     # Heatmap
     all_cmds[["heatmap"]] <- sprintf("hm <- Heatmap(matrix = plot.data%s)", heatmap_args)
     # draw
@@ -362,7 +376,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
     .createUnprotectedParameterObservers(plot_name,
         fields=c(.heatMapColData, .heatMapRowData,
-            .heatMapClusterFeatures,
+            .heatMapClusterFeatures, .heatMapClusterDistanceFeatures,
             .selectColor,
             .showDimnames,
             .plotLegendPosition, .plotLegendDirection),

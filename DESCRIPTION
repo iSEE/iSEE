@@ -40,7 +40,8 @@ Imports:
     scales,
     dplyr,
     shinyWidgets,
-    ComplexHeatmap
+    ComplexHeatmap,
+    circlize
 Suggests:
     testthat,
     BiocStyle,

@@ -425,6 +425,11 @@ setClass("HeatMapPlot", contains="Panel", slots=collated)
 .heatMapColData <- "ColData"
 .heatMapRowData <- "RowData"
 
+.heatMapFeatNameText <- "FeatNameText"
+.heatMapSampNameText <- "SampNameText"
+.heatMapCustomFeatNames <- "CustomFeatName"
+.heatMapCustomSampNames <- "CustomSampName"
+
 collated <- character(0)
 collated[.heatMapAssay] <- "character"
 collated[.heatMapRownames] <- "character"
@@ -432,7 +437,12 @@ collated[.heatMapColnames] <- "character"
 collated[.heatMapColData] <- "character"
 collated[.heatMapRowData] <- "character"
 
-.visualParamBoxOpen <- "VisualBoxOpen"
+collated[.heatMapCustomFeatNames] <- "logical"
+collated[.heatMapFeatNameText] <- "character"
+
+collated[.selectEffect] <- "character"
+collated[.selectColor] <- "character"
+collated[.selectTransAlpha] <- "numeric"
 
 collated[.visualParamBoxOpen] <- "logical"
 

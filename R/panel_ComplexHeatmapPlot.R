@@ -202,7 +202,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
     cmds
 }
 
-.convert_text_to_names <- function(txt) 
+.convert_text_to_names <- function(txt)
 # Remove comment and whitespace.
 {
     rn <- strsplit(txt, split="\n")[[1]]
@@ -223,7 +223,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
 
     all_cmds <- list()
     all_cmds$select <- .processMultiSelections(x, all_memory, all_contents, plot_env)
-    
+
     # Feature names default to custom selection if no multiple selection is available.
     if (x[[.heatMapCustomFeatNames]] || is.null(plot_env$row_selected)) {
         rn <- .convert_text_to_names(x[[.heatMapFeatNameText]])
@@ -242,7 +242,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
 
     assay_name <- x[[.heatMapAssay]]
     all_cmds[["data"]] <- sprintf(
-        'plot.data <- assay(se, "%s")[.heatmap.rows,.heatmap.columns,drop=FALSE]', 
+        'plot.data <- assay(se, "%s")[.heatmap.rows,.heatmap.columns,drop=FALSE]',
         assay_name)
     .text_eval(all_cmds, plot_env)
 
@@ -382,9 +382,10 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     import_field <- "INTERNAL_ImportFeatNames"
     validate_field <- "INTERNAL_ValidateFeatNames"
 
+    .input_FUN <- function(field) paste0(plot_name, "_", field)
+
     observeEvent(input[[paste0(plot_name, "_", .rownamesEdit)]], { # TODO: rename as .heatMapFeatNameEdit
         instance <- pObjects$memory[[plot_name]]
-        .input_FUN <- function(field) paste0(plot_name, "_", field)
 
         modal_ui <- modalDialog(
             title=paste("Custom feature names for", .getFullName(instance)),
@@ -411,6 +412,26 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
         showModal(modal_ui)
     }, ignoreInit=TRUE)
+
+    # The button that imports incoming selection into the aceEditor
+    observeEvent(input[[.input_FUN(import_field)]], {
+        instance <- pObjects$memory[[plot_name]]
+
+        # Compute names for the incoming selection, if any
+        plot_env <- new.env()
+        select_cmds <- .processMultiSelections(pObjects$memory[[plot_name]], pObjects$memory, pObjects$contents, plot_env)
+        print(select_cmds)
+        print(ls(plot_env))
+        if (exists("row_selected", envir=plot_env, inherits=FALSE)){
+            incoming_names <- unique(unlist(get("row_selected", envir=plot_env)))
+        } else {
+            incoming_names <- NULL
+        }
+        print(incoming_names)
+
+        updateAceEditor(session, editorId = .input_FUN(.heatMapFeatNameText),
+            value = paste0(instance[[.heatMapFeatNameText]], "\n", paste0(incoming_names, collapse = "\n")))
+    })
 
     # The button that actually updates the FeatNameText field.
     observeEvent(input[[paste0(plot_name, "_", apply_field)]], {

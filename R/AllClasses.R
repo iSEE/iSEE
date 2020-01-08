@@ -439,10 +439,10 @@ collated[.heatMapRowData] <- "character"
 
 collated[.heatMapCustomFeatNames] <- "logical"
 collated[.heatMapFeatNameText] <- "character"
-collated[.heatMapCustomSampNames] <- "logical"
-collated[.heatMapSampNameText] <- "character"
 
-.visualParamBoxOpen <- "VisualBoxOpen"
+collated[.selectEffect] <- "character"
+collated[.selectColor] <- "character"
+collated[.selectTransAlpha] <- "numeric"
 
 collated[.visualParamBoxOpen] <- "logical"
 

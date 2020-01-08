@@ -15,20 +15,16 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- .empty_default(args, .heatMapRowData, character(0))
 
     args <- .empty_default(args, .heatMapCustomFeatNames, TRUE)
-    args <- .empty_default(args, .heatMapCustomSampNames, FALSE)
-
-    # Doing the courtesy of packing these into a single string.
     args <- .empty_default(args, .heatMapFeatNameText, NA_character_)
     if (!is.na(vals <- args[[.heatMapFeatNameText]])) {
         args[[.heatMapFeatNameText]] <- paste(vals, collapse="\n")
     }
 
-    args <- .empty_default(args, .heatMapSampNameText, NA_character_)
-    if (!is.na(vals <- args[[.heatMapSampNameText]])) {
-        args[[.heatMapSampNameText]] <- paste(vals, collapse="\n")
-    }
-
     args <- .empty_default(args, .visualParamBoxOpen, FALSE)
+
+    args <- .empty_default(args, .selectEffect, .selectTransTitle)
+    args <- .empty_default(args, .selectColor, "red")
+    args <- .empty_default(args, .selectTransAlpha, 0.1)
 
     args <- .empty_default(args, .showDimnames, c(.showNamesRowTitle, .showNamesColumnTitle))
     args <- .empty_default(args, .plotLegendPosition, .plotLegendBottomTitle)
@@ -40,9 +36,13 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
 setValidity2("ComplexHeatmapPlot", function(object) {
     msg <- character(0)
 
-    msg <- .single_string_error(msg, object, c(.heatMapFeatNameText, .heatMapSampNameText))
+    msg <- .single_string_error(msg, object, c(.heatMapFeatNameText, .selectEffect))
 
-    msg <- .valid_logical_error(msg, object, c(.heatMapCustomFeatNames, .heatMapCustomSampNames))
+    msg <- .valid_string_error(msg, object, .selectColor)
+
+    msg <- .valid_number_error(msg, object, .selectTransAlpha, lower=0, upper=1)
+
+    msg <- .valid_logical_error(msg, object, .heatMapCustomFeatNames)
 
     if (length(msg)) {
         return(msg)
@@ -109,10 +109,6 @@ setMethod(".refineParameters", "ComplexHeatmapPlot", function(x, se) {
         x[[.heatMapFeatNameText]] <- rownames(se)[1]
     }
 
-    if (is.na(x[[.heatMapSampNameText]])) {
-        x[[.heatMapSampNameText]] <- paste(colnames(se), collapse="\n")
-    }
-
     x
 })
 
@@ -138,14 +134,11 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
     all_assays <- .get_common_info(se, "ComplexHeatmapPlot")$valid.assay.names
 
     list(
-        selectInput(.input_FUN(.heatMapAssay), label=NULL,
+        selectInput(.input_FUN(.heatMapAssay), label="Assay choice",
             choices=all_assays, selected=x[[.heatMapAssay]]),
         checkboxInput(.input_FUN(.heatMapCustomFeatNames), label="Use custom feature names",
             value=x[[.heatMapCustomFeatNames]]),
-        actionButton(.input_FUN(.rownamesEdit), label=.buttonEditRownamesLabel),
-        checkboxInput(.input_FUN(.heatMapCustomSampNames), label="Use custom sample names",
-            value=x[[.heatMapCustomSampNames]]),
-        actionButton(.input_FUN(.colnamesEdit), label=.buttonEditColnamesLabel)
+        actionButton(.input_FUN(.rownamesEdit), label=.buttonEditRownamesLabel)
     )
 })
 
@@ -212,7 +205,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
 .convert_text_to_names <- function(txt) 
 # Remove comment and whitespace.
 {
-    rn <- strsplit(txt, sep="\n")[[1]]
+    rn <- strsplit(txt, split="\n")[[1]]
     rn <- sub("#.*", "", rn)
     rn <- sub("^ +", "", rn)
     sub(" +$", "", rn)
@@ -233,11 +226,9 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     # plot.data
     rn <- .convert_text_to_names(x[[.heatMapFeatNameText]])
     all_cmds[["rows"]] <- sprintf(".heatmap.rows <- %s", .deparse_for_viewing(rn))
-    cn <- .convert_text_to_names(x[[.heatMapSampNameText]])
-    all_cmds[["columns"]] <- sprintf(".heatmap.columns <- %s", .deparse_for_viewing(cn))
 
     assay_name <- x[[.heatMapAssay]]
-    assay_slice <- "[.heatmap.rows, .heatmap.columns, drop=FALSE]"
+    assay_slice <- "[.heatmap.rows,,drop=FALSE]"
     all_cmds[["data"]] <- sprintf('plot.data <- assay(se, "%s")%s', assay_name, assay_slice)
     .text_eval(all_cmds, plot_env)
 
@@ -306,7 +297,7 @@ setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info)
     list(
         .create_data_param_box(x, se, select_info),
         .create_visual_box_for_complexheatmap(x, se),
-        .create_selection_param_box(x, select_info$multi$row, select_info$multi$column)
+        .create_dotplot_selection_param_box(x, select_info$multi$row, select_info$multi$column)
     )
 })
 
@@ -348,7 +339,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     # Not much point distinguishing between protected and unprotected here,
     # as there aren't any selections transmitted from this panel anyway.
     .createProtectedParameterObservers(plot_name,
-        fields=c(.heatMapAssay, .heatMapCustomSampNames, .heatMapCustomFeatNames),
+        fields=c(.heatMapAssay, .heatMapCustomFeatNames, .heatMapFeatNameText),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
     .createUnprotectedParameterObservers(plot_name,
@@ -370,91 +361,48 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
 #' @importFrom shiny modalDialog fluidRow column h4 actionButton br
 #' @importFrom shinyAce aceEditor
-.create_heatmap_dimnames_modal_dialog <- function(x,
-    text_field, 
-    title, 
-    validate_field,
-    organize_cluster_field,
-    organize_order_field,
-    import_field,
-    apply_field)
-{
-    plot_name <- .getEncodedName(x)
-    .input_FUN <- function(field) paste0(plot_name, "_", field)
+.create_heatmap_modal_observers <- function(plot_name, se, input, session, pObjects, rObjects) {
+    apply_field <- "INTERNAL_ApplyFeatNameChanges"
+    cluster_field <- "INTERNAL_ClusterFeatNames"
+    order_field <- "INTERNAL_OrderFeatNames"
+    import_field <- "INTERNAL_ImportFeatNames"
+    validate_field <- "INTERNAL_ValidateFeatNames"
 
-    modalDialog(
-        title=paste(title, "for", .getFullName(x)),
-        size="l", fade=TRUE,
-        footer=NULL, easyClose=TRUE,
-        fluidRow(
-            column(width = 8,
-                aceEditor(.input_FUN(text_field),
-                    mode="text",
-                    theme="xcode",
-                    autoComplete="disabled",
-                    value=x[[text_field]],
-                    height="500px")
-            ),
-            column(width = 4,
-                actionButton(.input_FUN(validate_field), "Validate names"), br(), br(),
-                actionButton(.input_FUN(organize_cluster_field), "Organize by cluster"), br(), br(),
-                actionButton(.input_FUN(organize_order_field), "Organize by order"), br(), br(),
-                actionButton(.input_FUN(import_field), "Import selection"), br(), br(),
-                actionButton(.input_FUN(apply_field), label="Apply", style=.actionbutton_biocstyle)
-            ),
-        ),
-        fluidRow(
-            column(width = 12,
+    observeEvent(input[[paste0(plot_name, "_", .rownamesEdit)]], { # TODO: rename as .heatMapFeatNameEdit
+        instance <- pObjects$memory[[plot_name]]
+        .input_FUN <- function(field) paste0(plot_name, "_", field)
+
+        modal_ui <- modalDialog(
+            title=paste("Custom feature names for", .getFullName(instance)),
+            size="l", fade=TRUE,
+            footer=NULL, easyClose=TRUE,
+            fluidRow(
+                column(width = 8,
+                    aceEditor(.input_FUN(.heatMapFeatNameText),
+                        mode="text",
+                        theme="xcode",
+                        autoComplete="disabled",
+                        value=instance[[.heatMapFeatNameText]],
+                        height="500px")
+                ),
+                column(width = 4,
+                    actionButton(.input_FUN(validate_field), "Validate names"), br(), br(),
+                    actionButton(.input_FUN(cluster_field), "Organize by cluster"), br(), br(),
+                    actionButton(.input_FUN(order_field), "Organize by order"), br(), br(),
+                    actionButton(.input_FUN(import_field), "Import selection"), br(), br(),
+                    actionButton(.input_FUN(apply_field), label="Apply", style=.actionbutton_biocstyle)
+                )
             )
         )
-    )
-}
 
-.create_heatmap_modal_observers <- function(plot_name, se,
-    input, session, pObjects, rObjects)
-{
-    for (dim in c("row", "column")) {
-        local({
-            if (dim=="row") {
-                text_field0 <- .heatMapFeatNameText 
-                edit_field0 <- .rownamesEdit # TODO: name as .heatMapFeatNameEdit
-                shorttype <- "Feat"
-                longtype <- "Feature"
-            } else {
-                text_field0 <- .heatMapSampNameText 
-                edit_field0 <- .colnamesEdit # TODO: rename as .heatMapSampNameEdit
-                shorttype <- "Samp"
-                longtype <- "Sample"
-            }
+        showModal(modal_ui)
+    }, ignoreInit=TRUE)
 
-            apply_field0 <- sprintf("INTERNAL_Apply%sNameChanges", shorttype)
-            cluster_field0 <- sprintf("INTERNAL_Cluster%sNames", shorttype)
-            order_field0 <- sprintf("INTERNAL_Order%sNames", shorttype)
-            import_field0 <- sprintf("INTERNAL_Import%sNames", shorttype)
-            validate_field0 <- sprintf("INTERNAL_Validate%sNames", shorttype)
-
-            observeEvent(input[[paste0(plot_name, "_", edit_field0)]], {
-                instance <- pObjects$memory[[plot_name]]
-
-                modal_ui <- .create_heatmap_dimnames_modal_dialog(instance,
-                    text_field=text_field0,
-                    title=paste(longtype, "names"),
-                    validate_field=validate_field0,
-                    organize_cluster_field=cluster_field0,
-                    organize_order_field=order_field0,
-                    import_field=import_field0,
-                    apply_field=apply_field0)
-
-                showModal(modal_ui)
-            }, ignoreInit=TRUE)
-
-            text_field <- paste0(plot_name, "_", text_field0)
-            observeEvent(input[[paste0(plot_name, "_", apply_field0)]], {
-                pObjects$memory[[plot_name]][[text_field0]] <- input[[text_field]]
-                .requestCleanUpdate(plot_name, pObjects, rObjects)
-            })
-        })
-    }
+    # The button that actually updates the FeatNameText field.
+    observeEvent(input[[paste0(plot_name, "_", apply_field)]], {
+        pObjects$memory[[plot_name]][[.heatMapFeatNameText]] <- input[[paste0(plot_name, "_", .heatMapFeatNameText)]]
+        .requestCleanUpdate(plot_name, pObjects, rObjects)
+    })
 }
 
 #' @export

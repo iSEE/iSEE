@@ -168,7 +168,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
             }
             cmds <- c(cmds, "")
         }
-        cmds <- c(cmds, "column_annot <- columnAnnotation(df=.column_annot[heatmap_columns, , drop=FALSE], col=column_col)")
+        cmds <- c(cmds, "column_annot <- columnAnnotation(df=.column_annot[.heatmap.columns, , drop=FALSE], col=column_col)")
     }
     cmds
 }
@@ -197,7 +197,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
             }
             cmds <- c(cmds, "")
         }
-        cmds <- c(cmds, "row_annot <- rowAnnotation(df=.row_annot[heatmap_rows, , drop=FALSE], col=row_col)")
+        cmds <- c(cmds, "row_annot <- rowAnnotation(df=.row_annot[.heatmap.rows, , drop=FALSE], col=row_col)")
     }
     cmds
 }
@@ -222,14 +222,28 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     plot_env$colormap <- metadata(se)$colormap
 
     all_cmds <- list()
+    all_cmds$select <- .processMultiSelections(x, all_memory, all_contents, plot_env)
+    
+    # Feature names default to custom selection if no multiple selection is available.
+    if (x[[.heatMapCustomFeatNames]] || is.null(plot_env$row_selected)) {
+        rn <- .convert_text_to_names(x[[.heatMapFeatNameText]])
+        rn <- intersect(rn, rownames(se))
+        all_cmds[["rows"]] <- sprintf(".heatmap.rows <- %s;", .deparse_for_viewing(rn))
+    } else {
+        all_cmds[["rows"]] <- ".heatmap.rows <- intersect(rownames(se), unlist(row_selected));"
+    }
 
-    # plot.data
-    rn <- .convert_text_to_names(x[[.heatMapFeatNameText]])
-    all_cmds[["rows"]] <- sprintf(".heatmap.rows <- %s", .deparse_for_viewing(rn))
+    # TODO: implement visual effects for other forms of selection.
+    if (!is.null(plot_env$col_selected) && x[[.selectEffect]]==.selectRestrictTitle) {
+        all_cmds[["columns"]] <- ".heatmap.columns <- intersect(colnames(se), unlist(col_selected));"
+    } else {
+        all_cmds[["columns"]] <- ".heatmap.columns <- colnames(se);"
+    }
 
     assay_name <- x[[.heatMapAssay]]
-    assay_slice <- "[.heatmap.rows,,drop=FALSE]"
-    all_cmds[["data"]] <- sprintf('plot.data <- assay(se, "%s")%s', assay_name, assay_slice)
+    all_cmds[["data"]] <- sprintf(
+        'plot.data <- assay(se, "%s")[.heatmap.rows,.heatmap.columns,drop=FALSE]', 
+        assay_name)
     .text_eval(all_cmds, plot_env)
 
     # column annotation data

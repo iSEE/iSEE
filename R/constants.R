@@ -134,3 +134,12 @@
 .clusterDistancePearson <- "pearson"
 .clusterDistanceSpearman <- "spearman"
 .clusterDistanceKendall <- "kendall"
+
+.clusterMethodWardD <- "ward.D"
+.clusterMethodWardD2 <- "ward.D2"
+.clusterMethodSingle <- "single"
+.clusterMethodComplete <- "complete"
+.clusterMethodAverage <- "average"
+.clusterMethodMcquitty <- "mcquitty"
+.clusterMethodMedian <- "median"
+.clusterMethodCentroid <- "centroid"

@@ -21,7 +21,8 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     }
 
     args <- .empty_default(args, .heatMapClusterFeatures, FALSE)
-    args <- .empty_default(args, .heatMapClusterDistanceFeatures, .clusterDistanceEuclidean)
+    args <- .empty_default(args, .heatMapClusterDistanceFeatures, .clusterDistanceSpearman)
+    args <- .empty_default(args, .heatMapClusterMethodFeatures, .clusterMethodWardD2)
 
     args <- .empty_default(args, .visualParamBoxOpen, FALSE)
 
@@ -148,7 +149,14 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
             choices=c(.clusterDistanceEuclidean, .clusterDistancePearson, .clusterDistanceSpearman,
                 .clusterDistanceManhattan, .clusterDistanceMaximum, .clusterDistanceCanberra,
                 .clusterDistanceBinary, .clusterDistanceMinkowski, .clusterDistanceKendall),
-            selected=x[[.heatMapClusterDistanceFeatures]])
+            selected=x[[.heatMapClusterDistanceFeatures]]),
+        selectInput(.input_FUN(.heatMapClusterMethodFeatures), label="Clustering method for features",
+            choices=c(.clusterMethodWardD, .clusterMethodWardD2, .clusterMethodSingle, .clusterMethodComplete,
+                "average (= UPGMA)"=.clusterMethodAverage,
+                "mcquitty (= WPGMA)"=.clusterMethodMcquitty,
+                "median (= WPGMC)"=.clusterMethodMedian,
+                "centroid (= UPGMC)"=.clusterMethodCentroid),
+            selected=x[[.heatMapClusterMethodFeatures]])
     )
 })
 
@@ -284,14 +292,18 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     # Clustering options
     if (x[[.heatMapClusterFeatures]]) {
         clustering_distance_rows <- sprintf("clustering_distance_rows=%s", deparse(x[[.heatMapClusterDistanceFeatures]]))
+        clustering_method_rows <- sprintf("clustering_method_rows=%s", deparse(x[[.heatMapClusterMethodFeatures]]))
     } else {
-        clustering_distance_rows <- ""
+        clustering_distance_rows <- clustering_method_rows <- ""
     }
     # Legend
-    heatmap_legend_param <- sprintf('heatmap_legend_param=list(direction = "%s")', tolower(x[[.plotLegendDirection]]))
+    heatmap_legend_param <- sprintf('heatmap_legend_param=list(direction="%s")', tolower(x[[.plotLegendDirection]]))
     # Combine options
     heatmap_args <- ""
-    for (new_arg in c(heatmap_name, cluster_rows, clustering_distance_rows, cluster_columns, show_row_names, show_column_names, top_annotation, left_annotation, heatmap_legend_param)) {
+    new_arg_names <- c(heatmap_name, cluster_rows, clustering_distance_rows,
+        clustering_method_rows, cluster_columns, show_row_names, show_column_names,
+        top_annotation, left_annotation, heatmap_legend_param)
+    for (new_arg in new_arg_names) {
         if (!identical(new_arg, "")) {
             heatmap_args <- paste0(heatmap_args, paste0(", ", new_arg))
         }
@@ -376,7 +388,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
     .createUnprotectedParameterObservers(plot_name,
         fields=c(.heatMapColData, .heatMapRowData,
-            .heatMapClusterFeatures, .heatMapClusterDistanceFeatures,
+            .heatMapClusterFeatures, .heatMapClusterDistanceFeatures, .heatMapClusterMethodFeatures,
             .selectColor,
             .showDimnames,
             .plotLegendPosition, .plotLegendDirection),

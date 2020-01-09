@@ -30,7 +30,7 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- .empty_default(args, .selectColor, "red")
     args <- .empty_default(args, .selectTransAlpha, 0.1)
 
-    args <- .empty_default(args, .showDimnames, c(.showNamesRowTitle, .showNamesColumnTitle))
+    args <- .empty_default(args, .showDimnames, c(.showNamesRowTitle))
     args <- .empty_default(args, .plotLegendPosition, .plotLegendBottomTitle)
     args <- .empty_default(args, .plotLegendDirection, .plotLegendHorizontalTitle)
 
@@ -310,21 +310,23 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     }
     heatmap_args <- paste0(strwrap(heatmap_args, width = 80, exdent = 4), collapse = "\n")
     # Heatmap
-    all_cmds[["heatmap"]] <- sprintf("hm <- Heatmap(matrix = plot.data%s)", heatmap_args)
+    all_cmds[["heatmap"]] <- sprintf("Heatmap(matrix = plot.data%s)", heatmap_args)
     # draw
     heatmap_legend_side <- sprintf('heatmap_legend_side = "%s"', tolower(x[[.plotLegendPosition]]))
     annotation_legend_side <- sprintf('annotation_legend_side = "%s"', tolower(x[[.plotLegendPosition]]))
     draw_args <- paste(
         "", heatmap_legend_side, annotation_legend_side,
         sep = ", ")
-    all_cmds[["draw"]] <- sprintf("draw(hm%s)", draw_args)
-    print(all_cmds)
-
+    
     plot_out <- .text_eval(all_cmds, plot_env)
 
     panel_data <- plot_env$plot.data
+    
+    # Add draw command after all evaluations (avoid drawing in the plotting device)
+    all_cmds[["draw"]] <- sprintf("draw(hm%s)", draw_args)
+    print(all_cmds)
 
-    list(commands=all_cmds, contents=panel_data, plot=plot_out)
+    list(commands=all_cmds, contents=panel_data, plot=plot_out, draw_args=draw_args)
 })
 
 #' @export

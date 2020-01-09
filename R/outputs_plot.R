@@ -25,11 +25,7 @@
         p.out <- .retrieveOutput(plot_name, se, pObjects, rObjects)
         pObjects$varname[[plot_name]] <- "plot.data"
         if (is(p.out$plot, "Heatmap")) {
-            # Add "draw" commands without evaluating it to avoid drawing
-            draw_cmd <- sprintf("draw(object%s)", p.out$draw_args)
-            draw_env <- new.env()
-            draw_env$object <- p.out$plot
-            .text_eval(draw_cmd, draw_env)
+            do.call(draw, append(p.out$draw_args_list, list(object=p.out$plot)))
         } else {
             p.out$plot
         }

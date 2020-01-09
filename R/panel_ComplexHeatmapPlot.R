@@ -312,21 +312,23 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     # Heatmap
     all_cmds[["heatmap"]] <- sprintf("Heatmap(matrix = plot.data%s)", heatmap_args)
     # draw
-    heatmap_legend_side <- sprintf('heatmap_legend_side = "%s"', tolower(x[[.plotLegendPosition]]))
-    annotation_legend_side <- sprintf('annotation_legend_side = "%s"', tolower(x[[.plotLegendPosition]]))
-    draw_args <- paste(
-        "", heatmap_legend_side, annotation_legend_side,
-        sep = ", ")
-    
+    draw_args_list <- list(
+        heatmap_legend_side=tolower(x[[.plotLegendPosition]]),
+        annotation_legend_side=tolower(x[[.plotLegendPosition]])
+    )
+        
     plot_out <- .text_eval(all_cmds, plot_env)
 
     panel_data <- plot_env$plot.data
     
     # Add draw command after all evaluations (avoid drawing in the plotting device)
+    heatmap_legend_side <- sprintf('heatmap_legend_side = "%s"', tolower(x[[.plotLegendPosition]]))
+    annotation_legend_side <- sprintf('annotation_legend_side = "%s"', tolower(x[[.plotLegendPosition]]))
+    draw_args <- paste("", heatmap_legend_side, annotation_legend_side, sep = ", ")
     all_cmds[["draw"]] <- sprintf("draw(hm%s)", draw_args)
     print(all_cmds)
 
-    list(commands=all_cmds, contents=panel_data, plot=plot_out, draw_args=draw_args)
+    list(commands=all_cmds, contents=panel_data, plot=plot_out, draw_args_list=draw_args_list)
 })
 
 #' @export

@@ -170,27 +170,39 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
 #' @importFrom ComplexHeatmap columnAnnotation rowAnnotation
 .process_heatmap_column_annotations <- function(x, se, plot_env) {
     cmds <- c()
-    if (length(x[[.heatMapColData]])) {
+    if (length(x[[.heatMapColData]]) || x[[.selectEffect]] == .selectColorTitle) {
         cmds <- c(cmds, sprintf(".column_annot <- colData(se)[, %s, drop=FALSE]", deparse(x[[.heatMapColData]])))
+        # Process selected points
+        if (x[[.selectEffect]] == .selectColorTitle) {
+            cmds <- c(cmds, '.column_annot <- as.data.frame(.column_annot, optional=TRUE)') # do not convert colnames
+            cmds <- c(cmds, '.column_annot[["Selected points"]] <- rep(FALSE, nrow(.column_annot))')
+            if (exists("col_selected", envir=plot_env, inherits=FALSE)){
+                cmds <- c(cmds, '.column_annot[unlist(col_selected), "Selected points"] <- TRUE')
+            }
+        }
         .text_eval(cmds, plot_env)
-        # column color maps
+        # Collect color maps
         cmds <- c(cmds, "column_col <- list()", "")
         for (annot in x[[.heatMapColData]]) {
             cmds <- c(cmds, .coerce_dataframe_columns(plot_env, annot, ".column_annot"))
             cmds <- c(cmds, sprintf('.col_values <- .column_annot[["%s"]]', annot))
             if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.colData.names) {
-                cmds <- c(cmds, sprintf('col_colors <- colDataColorMap(colormap, "%s", discrete=FALSE)(21)', annot))
+                cmds <- c(cmds, sprintf('.col_colors <- colDataColorMap(colormap, "%s", discrete=FALSE)(21)', annot))
                 cmds <- c(cmds, 'col_FUN <- colorRamp2(
     breaks = seq(min(.col_values, na.rm = TRUE), max(.col_values, na.rm = TRUE), length.out = 21L),
-    colors = col_colors)')
+    colors = .col_colors)')
                 cmds <- c(cmds, sprintf('column_col[["%s"]] <- col_FUN', annot))
             } else if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.colData.names) {
-                cmds <- c(cmds, sprintf('.col_values <- setdiff(.col_values, NA)', annot))
-                cmds <- c(cmds, sprintf('col_colors <- colDataColorMap(colormap, "%s", discrete=TRUE)(%s)', annot, 'length(unique(.col_values))'))
-                cmds <- c(cmds, 'if (is.null(names(col_colors))) { names(col_colors) <- unique(.col_values) }')
-                cmds <- c(cmds, sprintf('column_col[["%s"]] <- col_colors', annot))
+                cmds <- c(cmds, '.col_values <- setdiff(.col_values, NA)')
+                cmds <- c(cmds, sprintf('.col_colors <- colDataColorMap(colormap, "%s", discrete=TRUE)(%s)', annot, 'length(unique(.col_values))'))
+                cmds <- c(cmds, 'if (is.null(names(.col_colors))) { names(.col_colors) <- unique(.col_values) }')
+                cmds <- c(cmds, sprintf('column_col[["%s"]] <- .col_colors', annot))
             }
             cmds <- c(cmds, "")
+        }
+        # Add color map for selected points
+        if (x[[.selectEffect]] == .selectColorTitle) {
+            cmds <- c(cmds, 'column_col[["Selected points"]] <- c("TRUE"="red", "FALSE"="white")')
         }
         cmds <- c(cmds, "column_annot <- columnAnnotation(df=.column_annot[.heatmap.columns, , drop=FALSE], col=column_col)")
     }
@@ -322,7 +334,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
         heatmap_legend_side=tolower(x[[.plotLegendPosition]]),
         annotation_legend_side=tolower(x[[.plotLegendPosition]])
     )
-        
+    print(all_cmds)
     plot_out <- .text_eval(all_cmds, plot_env)
 
     panel_data <- plot_env$plot.data
@@ -332,7 +344,6 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     annotation_legend_side <- sprintf('annotation_legend_side = "%s"', tolower(x[[.plotLegendPosition]]))
     draw_args <- paste("", heatmap_legend_side, annotation_legend_side, sep = ", ")
     all_cmds[["draw"]] <- sprintf("draw(hm%s)", draw_args)
-    print(all_cmds)
 
     list(commands=all_cmds, contents=panel_data, plot=plot_out, draw_args_list=draw_args_list)
 })
@@ -399,7 +410,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     .createUnprotectedParameterObservers(plot_name,
         fields=c(.heatMapColData, .heatMapRowData,
             .heatMapClusterFeatures, .heatMapClusterDistanceFeatures, .heatMapClusterMethodFeatures,
-            .selectColor,
+            .selectEffect, .selectColor,
             .showDimnames,
             .plotLegendPosition, .plotLegendDirection),
         input=input, pObjects=pObjects, rObjects=rObjects, ignoreNULL = FALSE)

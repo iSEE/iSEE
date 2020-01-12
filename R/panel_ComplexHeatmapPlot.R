@@ -142,7 +142,10 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
             choices=all_assays, selected=x[[.heatMapAssay]]),
         checkboxInput(.input_FUN(.heatMapCustomFeatNames), label="Use custom feature names",
             value=x[[.heatMapCustomFeatNames]]),
-        actionButton(.input_FUN(.rownamesEdit), label=.buttonEditRownamesLabel), # TODO: show only if .heatMapCustomFeatNames is TRUE
+        .conditional_on_check_solo(
+                .input_FUN(.heatMapCustomFeatNames),
+                on_select=TRUE,
+                actionButton(.input_FUN(.rownamesEdit), label=.buttonEditRownamesLabel)),
         checkboxInput(.input_FUN(.heatMapClusterFeatures), label="Cluster features",
             value=x[[.heatMapClusterFeatures]]),
         selectInput(.input_FUN(.heatMapClusterDistanceFeatures), label="Clustering distance for features",

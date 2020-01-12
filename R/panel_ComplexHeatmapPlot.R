@@ -168,13 +168,13 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
 
 #' @importFrom circlize colorRamp2
 #' @importFrom ComplexHeatmap columnAnnotation rowAnnotation
+#' @importFrom dplyr arrange
 .process_heatmap_column_annotations <- function(x, se, plot_env) {
     cmds <- c()
     if (length(x[[.heatMapColData]]) || x[[.selectEffect]] == .selectColorTitle) {
-        cmds <- c(cmds, sprintf(".column_annot <- colData(se)[, %s, drop=FALSE]", deparse(x[[.heatMapColData]])))
+        cmds <- c(cmds, sprintf(".column_annot <- colData(se)[.heatmap.columns, %s, drop=FALSE]", deparse(x[[.heatMapColData]])))
         # Process selected points
         if (x[[.selectEffect]] == .selectColorTitle) {
-            cmds <- c(cmds, '.column_annot <- as.data.frame(.column_annot, optional=TRUE)') # do not convert colnames
             cmds <- c(cmds, '.column_annot[["Selected points"]] <- rep(FALSE, nrow(.column_annot))')
             if (exists("col_selected", envir=plot_env, inherits=FALSE)){
                 cmds <- c(cmds, '.column_annot[unlist(col_selected), "Selected points"] <- TRUE')
@@ -202,11 +202,14 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
         }
         # Add color map for selected points
         if (x[[.selectEffect]] == .selectColorTitle) {
-            cmds <- c(cmds, sprintf(
-                'column_col[["Selected points"]] <- c("TRUE"=%s, "FALSE"="white")',
-                deparse(x[[.selectColor]])))
+            cmds <- c(cmds,
+                sprintf('column_col[["Selected points"]] <- c("TRUE"=%s, "FALSE"="white")', deparse(x[[.selectColor]])),
+                "")
         }
-        cmds <- c(cmds, "column_annot <- columnAnnotation(df=.column_annot[.heatmap.columns, , drop=FALSE], col=column_col)")
+        cmds <- c(cmds, '.column_annot <- as.data.frame(.column_annot, optional=TRUE)') # preserve colnames
+        cmds <- c(cmds, sprintf(".column_annot <- dplyr::arrange(.column_annot, %s);",
+            paste0(x[[.heatMapColData]], collapse=", ")))
+        cmds <- c(cmds, "column_annot <- columnAnnotation(df=.column_annot[, , drop=FALSE], col=column_col)")
     }
     cmds
 }
@@ -309,7 +312,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     show_column_names <- sprintf("show_column_names=%s", .showNamesColumnTitle %in% x[[.showDimnames]])
     # Clustering
     cluster_rows <- sprintf("cluster_rows=%s", x[[.heatMapClusterFeatures]])
-    cluster_columns <- sprintf("cluster_columns=%s", "TRUE")
+    cluster_columns <- "cluster_columns=FALSE"
     # Clustering options
     if (x[[.heatMapClusterFeatures]]) {
         clustering_distance_rows <- sprintf("clustering_distance_rows=%s", deparse(x[[.heatMapClusterDistanceFeatures]]))

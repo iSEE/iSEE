@@ -55,8 +55,8 @@
 .buttonDeleteLabel <- "Delete"
 .buttonNoSelectionLabel <- "No selection"
 .buttonSaveLabel <- "Save"
-.buttonEditRownamesLabel <- "Edit rownames"
-.buttonEditColnamesLabel <- "Edit colnames"
+.buttonEditRownamesLabel <- "Edit feature names"
+.buttonEditColnamesLabel <- "Edit sample names"
 
 .rownamesEdit <- "INTERNAL_RowNamesEdit"
 .colnamesEdit <- "INTERNAL_ColNamesEdit"

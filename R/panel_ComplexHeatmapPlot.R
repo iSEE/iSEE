@@ -310,7 +310,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     }
     heatmap_args <- paste0(strwrap(heatmap_args, width = 80, exdent = 4), collapse = "\n")
     # Heatmap
-    all_cmds[["heatmap"]] <- sprintf("Heatmap(matrix = plot.data%s)", heatmap_args)
+    all_cmds[["heatmap"]] <- sprintf("hm <- Heatmap(matrix = plot.data%s)", heatmap_args)
     # draw
     draw_args_list <- list(
         heatmap_legend_side=tolower(x[[.plotLegendPosition]]),

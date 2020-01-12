@@ -143,23 +143,26 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
         checkboxInput(.input_FUN(.heatMapCustomFeatNames), label="Use custom feature names",
             value=x[[.heatMapCustomFeatNames]]),
         .conditional_on_check_solo(
-                .input_FUN(.heatMapCustomFeatNames),
-                on_select=TRUE,
-                actionButton(.input_FUN(.rownamesEdit), label=.buttonEditRownamesLabel)),
+            .input_FUN(.heatMapCustomFeatNames),
+            on_select=TRUE,
+            actionButton(.input_FUN(.rownamesEdit), label=.buttonEditRownamesLabel)),
         checkboxInput(.input_FUN(.heatMapClusterFeatures), label="Cluster features",
             value=x[[.heatMapClusterFeatures]]),
-        selectInput(.input_FUN(.heatMapClusterDistanceFeatures), label="Clustering distance for features",
-            choices=c(.clusterDistanceEuclidean, .clusterDistancePearson, .clusterDistanceSpearman,
-                .clusterDistanceManhattan, .clusterDistanceMaximum, .clusterDistanceCanberra,
-                .clusterDistanceBinary, .clusterDistanceMinkowski, .clusterDistanceKendall),
-            selected=x[[.heatMapClusterDistanceFeatures]]),
-        selectInput(.input_FUN(.heatMapClusterMethodFeatures), label="Clustering method for features",
-            choices=c(.clusterMethodWardD, .clusterMethodWardD2, .clusterMethodSingle, .clusterMethodComplete,
-                "average (= UPGMA)"=.clusterMethodAverage,
-                "mcquitty (= WPGMA)"=.clusterMethodMcquitty,
-                "median (= WPGMC)"=.clusterMethodMedian,
-                "centroid (= UPGMC)"=.clusterMethodCentroid),
-            selected=x[[.heatMapClusterMethodFeatures]])
+        .conditional_on_check_solo(
+            .input_FUN(.heatMapClusterFeatures),
+            on_select=TRUE,
+            selectInput(.input_FUN(.heatMapClusterDistanceFeatures), label="Clustering distance for features",
+                choices=c(.clusterDistanceEuclidean, .clusterDistancePearson, .clusterDistanceSpearman,
+                    .clusterDistanceManhattan, .clusterDistanceMaximum, .clusterDistanceCanberra,
+                    .clusterDistanceBinary, .clusterDistanceMinkowski, .clusterDistanceKendall),
+                selected=x[[.heatMapClusterDistanceFeatures]]),
+            selectInput(.input_FUN(.heatMapClusterMethodFeatures), label="Clustering method for features",
+                choices=c(.clusterMethodWardD, .clusterMethodWardD2, .clusterMethodSingle, .clusterMethodComplete,
+                    "average (= UPGMA)"=.clusterMethodAverage,
+                    "mcquitty (= WPGMA)"=.clusterMethodMcquitty,
+                    "median (= WPGMC)"=.clusterMethodMedian,
+                    "centroid (= UPGMC)"=.clusterMethodCentroid),
+                selected=x[[.heatMapClusterMethodFeatures]]))
     )
 })
 

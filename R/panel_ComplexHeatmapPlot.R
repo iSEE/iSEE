@@ -202,7 +202,9 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
         }
         # Add color map for selected points
         if (x[[.selectEffect]] == .selectColorTitle) {
-            cmds <- c(cmds, 'column_col[["Selected points"]] <- c("TRUE"="red", "FALSE"="white")')
+            cmds <- c(cmds, sprintf(
+                'column_col[["Selected points"]] <- c("TRUE"=%s, "FALSE"="white")',
+                deparse(x[[.selectColor]])))
         }
         cmds <- c(cmds, "column_annot <- columnAnnotation(df=.column_annot[.heatmap.columns, , drop=FALSE], col=column_col)")
     }
@@ -273,6 +275,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     if (!is.null(plot_env$col_selected) && x[[.selectEffect]]==.selectRestrictTitle) {
         all_cmds[["columns"]] <- ".heatmap.columns <- intersect(colnames(se), unlist(col_selected));"
     } else {
+        # includes color effect
         all_cmds[["columns"]] <- ".heatmap.columns <- colnames(se);"
     }
 

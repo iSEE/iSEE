@@ -114,6 +114,26 @@
     )
 }
 
+#' @importFrom colourpicker colourInput
+.create_heatmap_selection_param_box <- function(x, row_selectable, col_selectable) {
+    plot_name <- .getEncodedName(x)
+    select_effect <- paste0(plot_name, "_", .selectEffect)
+
+    .create_selection_param_box(x, row_selectable, col_selectable,
+        .radioButtonsHidden(x, field=.selectEffect,
+            label="Selection effect:", inline=TRUE,
+            choices=c(.selectRestrictTitle, .selectColorTitle),
+            selected=x[[.selectEffect]]),
+
+        .conditional_on_radio(
+            select_effect, .selectColorTitle,
+            colourInput(
+                paste0(plot_name, "_", .selectColor), label=NULL,
+                value=x[[.selectColor]])
+        )
+    )
+}
+
 #' @rdname INTERNAL_create_selection_param_box
 #' @importFrom shiny selectInput
 .define_selection_transmitter <- function(x, by_field, selectable, source_type="row") {

@@ -26,7 +26,7 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
 
     args <- .empty_default(args, .visualParamBoxOpen, FALSE)
 
-    args <- .empty_default(args, .selectEffect, .selectTransTitle)
+    args <- .empty_default(args, .selectEffect, .selectColorTitle)
     args <- .empty_default(args, .selectColor, "red")
     args <- .empty_default(args, .selectTransAlpha, 0.1)
 
@@ -188,10 +188,10 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
             cmds <- c(cmds, sprintf('.col_values <- .column_annot[["%s"]]', annot))
             if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.colData.names) {
                 cmds <- c(cmds, sprintf('.col_colors <- colDataColorMap(colormap, "%s", discrete=FALSE)(21)', annot))
-                cmds <- c(cmds, 'col_FUN <- colorRamp2(
+                cmds <- c(cmds, '.col_FUN <- colorRamp2(
     breaks = seq(min(.col_values, na.rm = TRUE), max(.col_values, na.rm = TRUE), length.out = 21L),
     colors = .col_colors)')
-                cmds <- c(cmds, sprintf('column_col[["%s"]] <- col_FUN', annot))
+                cmds <- c(cmds, sprintf('column_col[["%s"]] <- .col_FUN', annot))
             } else if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.colData.names) {
                 cmds <- c(cmds, '.col_values <- setdiff(.col_values, NA)')
                 cmds <- c(cmds, sprintf('.col_colors <- colDataColorMap(colormap, "%s", discrete=TRUE)(%s)', annot, 'length(unique(.col_values))'))
@@ -209,7 +209,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
         cmds <- c(cmds, '.column_annot <- as.data.frame(.column_annot, optional=TRUE)') # preserve colnames
         cmds <- c(cmds, sprintf(".column_annot <- dplyr::arrange(.column_annot, %s);",
             paste0(x[[.heatMapColData]], collapse=", ")))
-        cmds <- c(cmds, "column_annot <- columnAnnotation(df=.column_annot[, , drop=FALSE], col=column_col)")
+        cmds <- c(cmds, "column_annot <- columnAnnotation(df=.column_annot, col=column_col)")
     }
     cmds
 }
@@ -238,6 +238,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
             }
             cmds <- c(cmds, "")
         }
+        cmds <- c(cmds, '.row_annot <- as.data.frame(.row_annot, optional=TRUE)') # preserve colnames
         cmds <- c(cmds, "row_annot <- rowAnnotation(df=.row_annot[.heatmap.rows, , drop=FALSE], col=row_col)")
     }
     cmds
@@ -368,7 +369,7 @@ setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info)
     list(
         .create_data_param_box(x, se, select_info),
         .create_visual_box_for_complexheatmap(x, se),
-        .create_dotplot_selection_param_box(x, select_info$multi$row, select_info$multi$column)
+        .create_heatmap_selection_param_box(x, select_info$multi$row, select_info$multi$column)
     )
 })
 

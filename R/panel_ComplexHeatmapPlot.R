@@ -266,18 +266,18 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
 
 .process_heatmap_assay_colormap <- function(x, se, plot_env) {
     assay_name <- x[[.heatMapAssay]]
-    
+
     cmds <- c()
-    
+
     cmds <- c(cmds, sprintf('.col_colors <- assayColorMap(colormap, "%s", discrete=FALSE)(21L)', assay_name))
-    
+
     cmd_get_value <- '.col_values <- as.vector(plot.data)'
     cmds <- c(cmds, cmd_get_value)
     .text_eval(cmd_get_value, plot_env)
-    
+
     cmds <- c(cmds, .process_heatmap_continuous_annotation(plot_env))
     cmds <- c(cmds, "heatmap_col <- .col_FUN")
-    
+
     cmds
 }
 
@@ -325,10 +325,14 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
         'plot.data <- assay(se, "%s")[.heatmap.rows, .heatmap.columns, drop=FALSE]',
         assay_name)
     .text_eval(all_cmds, plot_env) # TODO: use a command store to avoid re-evaluating those commands below
-    
-    cmds <- .process_heatmap_assay_colormap(x, se, plot_env)
-    all_cmds[["assay"]] <- paste0(cmds, collapse = "\n")
-    heatmap_col <- sprintf('col=heatmap_col')
+
+    if (length(rn) && length(plot_env[[".heatmap.columns"]])) {
+        cmds <- .process_heatmap_assay_colormap(x, se, plot_env)
+        all_cmds[["assay"]] <- paste0(cmds, collapse = "\n")
+        heatmap_col <- 'col=heatmap_col'
+    } else {
+        heatmap_col <- ''
+    }
 
     # column annotation data
     cmds <- .process_heatmap_column_annotations(x, se, plot_env)
@@ -387,7 +391,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     plot_out <- .text_eval(all_cmds, plot_env)
 
     panel_data <- plot_env$plot.data
-    
+
     # Add draw command after all evaluations (avoid drawing in the plotting device)
     heatmap_legend_side <- sprintf('heatmap_legend_side = "%s"', tolower(x[[.plotLegendPosition]]))
     annotation_legend_side <- sprintf('annotation_legend_side = "%s"', tolower(x[[.plotLegendPosition]]))
@@ -526,26 +530,26 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         } else {
             incoming_names <- NULL
         }
-        
+
         editor_text <- input[[.input_FUN(.heatMapFeatNameText)]]
         if (!is.null(incoming_names)) {
             editor_names <- strsplit(gsub("\n$", "", editor_text), split="\n")[[1]]
             editor_names <- union(editor_names, incoming_names)
             editor_text <- paste0(editor_names, collapse = "\n")
         }
-        
+
         updateAceEditor(session, editorId = .input_FUN(.heatMapFeatNameText), value = editor_text)
     })
-    
+
     # Button to clear the editor
     observeEvent(input[[.input_FUN(clear_field)]], {
         updateAceEditor(session, editorId = .input_FUN(.heatMapFeatNameText), value = "")
     })
-    
+
     # Button to comment out invalid names
     observeEvent(input[[.input_FUN(validate_field)]], {
         instance <- pObjects$memory[[plot_name]]
-        
+
         editor_text <- input[[.input_FUN(.heatMapFeatNameText)]]
         editor_lines <- strsplit(editor_text, split="\n")[[1]]
         invalid_idx <- !editor_lines %in% rownames(se) & !grepl("^[ ]*#", editor_lines)
@@ -553,11 +557,11 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         editor_text <- paste0(editor_lines, collapse = "\n")
         updateAceEditor(session, editorId = .input_FUN(.heatMapFeatNameText), value = editor_text)
     })
-    
+
     # Button to order names alphabetically
     observeEvent(input[[.input_FUN(order_field)]], {
         instance <- pObjects$memory[[plot_name]]
-        
+
         editor_text <- input[[.input_FUN(.heatMapFeatNameText)]]
         editor_lines <- strsplit(editor_text, split="\n")[[1]]
         editor_lines <- sort(editor_lines)

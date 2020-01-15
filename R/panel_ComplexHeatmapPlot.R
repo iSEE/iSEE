@@ -172,7 +172,8 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
 .process_heatmap_column_annotations <- function(x, se, plot_env) {
     cmds <- c()
     if (length(x[[.heatMapColData]]) || x[[.selectEffect]] == .selectColorTitle) {
-        cmds <- c(cmds, sprintf(".column_annot <- colData(se)[.heatmap.columns, %s, drop=FALSE]", deparse(x[[.heatMapColData]])))
+        cmds <- c(cmds, "# Keep all samples to compute the full range of continuous annotations")
+        cmds <- c(cmds, sprintf(".column_annot <- colData(se)[, %s, drop=FALSE]", deparse(x[[.heatMapColData]])))
         # Process selected points
         if (x[[.selectEffect]] == .selectColorTitle) {
             cmds <- c(cmds, '.column_annot[["Selected points"]] <- rep(FALSE, nrow(.column_annot))')
@@ -182,7 +183,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
         }
         .text_eval(cmds, plot_env)
         # Collect color maps
-        cmds <- c(cmds, "column_col <- list()", "")
+        cmds <- c(cmds, "", "column_col <- list()", "")
         for (annot in x[[.heatMapColData]]) {
             cmds <- c(cmds, .coerce_dataframe_columns(plot_env, annot, ".column_annot"))
             cmds <- c(cmds, sprintf('.col_values <- .column_annot[["%s"]]', annot))
@@ -206,9 +207,13 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
                 sprintf('column_col[["Selected points"]] <- c("TRUE"=%s, "FALSE"="white")', deparse(x[[.selectColor]])),
                 "")
         }
+        cmds <- c(cmds, '.column_annot <- .column_annot[.heatmap.columns, , drop=FALSE]')
         cmds <- c(cmds, '.column_annot <- as.data.frame(.column_annot, optional=TRUE)') # preserve colnames
-        cmds <- c(cmds, sprintf(".column_annot <- dplyr::arrange(.column_annot, %s);",
-            paste0(x[[.heatMapColData]], collapse=", ")))
+        if (length(x[[.heatMapColData]])) {
+            # Note that dplyr::arrange drops rownames, so this must happen after ".column_annot" is subsetted to ".heatmap.columns"
+            cmds <- c(cmds, sprintf(".column_annot <- dplyr::arrange(.column_annot, %s);",
+                                    paste0(x[[.heatMapColData]], collapse=", ")))
+        }
         cmds <- c(cmds, "column_annot <- columnAnnotation(df=.column_annot, col=column_col)")
     }
     cmds
@@ -217,10 +222,11 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
 .process_heatmap_row_annotations <- function(x, se, plot_env) {
     cmds <- c()
     if (length(x[[.heatMapRowData]])) {
+        cmds <- c(cmds, "# Keep all features to compute the full range of continuous annotations")
         cmds <- c(cmds, sprintf(".row_annot <- rowData(se)[, %s, drop=FALSE]", deparse(x[[.heatMapRowData]])))
         .text_eval(cmds, plot_env)
         # column color maps
-        cmds <- c(cmds, "row_col <- list()", "")
+        cmds <- c(cmds, "", "row_col <- list()", "")
         for (annot in x[[.heatMapRowData]]) {
             cmds <- c(cmds, .coerce_dataframe_columns(plot_env, annot, ".row_annot"))
             cmds <- c(cmds, sprintf('.col_values <- .row_annot[["%s"]]', annot))
@@ -238,8 +244,9 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
             }
             cmds <- c(cmds, "")
         }
+        cmds <- c(cmds, '.row_annot <- .row_annot[.heatmap.rows, , drop=FALSE]')
         cmds <- c(cmds, '.row_annot <- as.data.frame(.row_annot, optional=TRUE)') # preserve colnames
-        cmds <- c(cmds, "row_annot <- rowAnnotation(df=.row_annot[.heatmap.rows, , drop=FALSE], col=row_col)")
+        cmds <- c(cmds, "row_annot <- rowAnnotation(df=.row_annot, col=row_col)")
     }
     cmds
 }

@@ -431,9 +431,11 @@ setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info)
         title="Visual parameters",
         open=x[[.visualParamBoxOpen]],
         selectizeInput(paste0(plot_name, "_", .heatMapColData), label="Column annotations:",
-            selected=x[[.heatMapColData]], choices=all_coldata, multiple=TRUE),
+            selected=x[[.heatMapColData]], choices=all_coldata, multiple=TRUE,
+            options=list(plugins=list('remove_button', 'drag_drop'))),
         selectizeInput(paste0(plot_name, "_", .heatMapRowData), label="Row annotations:",
-            selected=x[[.heatMapRowData]], choices=all_rowdata, multiple=TRUE),
+            selected=x[[.heatMapRowData]], choices=all_rowdata, multiple=TRUE,
+            options=list(plugins=list('remove_button', 'drag_drop'))),
         checkboxGroupInput(
             inputId=paste0(plot_name, "_", .showDimnames), label="Show names:", inline=TRUE,
             selected=x[[.showDimnames]],

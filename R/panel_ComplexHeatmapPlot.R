@@ -453,7 +453,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     # Not much point distinguishing between protected and unprotected here,
     # as there aren't any selections transmitted from this panel anyway.
     .createProtectedParameterObservers(plot_name,
-        fields=c(.heatMapAssay, .heatMapCustomFeatNames, .heatMapFeatNameText),
+        fields=c(.heatMapAssay, .heatMapCustomFeatNames),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
     .createUnprotectedParameterObservers(plot_name,

@@ -55,19 +55,9 @@
 .buttonDeleteLabel <- "Delete"
 .buttonNoSelectionLabel <- "No selection"
 .buttonSaveLabel <- "Save"
-.buttonEditRownamesLabel <- "Edit feature names"
-.buttonEditColnamesLabel <- "Edit sample names"
+.buttonEditFeatureNamesLabel <- "Edit feature names"
 
-.rownamesEdit <- "INTERNAL_RowNamesEdit"
-.colnamesEdit <- "INTERNAL_ColNamesEdit"
-.rownamesApply <- "INTERNAL_RowNamesApply"
-.colnamesApply <- "INTERNAL_ColNamesApply"
-.rownamesEditor <- "INTERNAL_RowNamesEditor"
-.modalAceEditor <- "INTERNAL_ModalAceEditor"
-.modalIncomingReadOnly <- "INTERNAL_ModalAceEditorReadOnly"
-
-.modalAddIncoming <- "INTERNAL_modalAddIncoming"
-.modalSetIncoming <- "INTERNAL_modalSetIncoming"
+.featureNamesEdit <- "INTERNAL_RowNamesEdit"
 
 # Other plot parameters. ----
 

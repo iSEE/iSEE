@@ -145,7 +145,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
         .conditional_on_check_solo(
             .input_FUN(.heatMapCustomFeatNames),
             on_select=TRUE,
-            actionButton(.input_FUN(.rownamesEdit), label=.buttonEditRownamesLabel)),
+            actionButton(.input_FUN(.featureNamesEdit), label=.buttonEditFeatureNamesLabel)),
         checkboxInput(.input_FUN(.heatMapClusterFeatures), label="Cluster features",
             value=x[[.heatMapClusterFeatures]]),
         .conditional_on_check_solo(
@@ -485,7 +485,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
     .input_FUN <- function(field) paste0(plot_name, "_", field)
 
-    observeEvent(input[[paste0(plot_name, "_", .rownamesEdit)]], { # TODO: rename as .heatMapFeatNameEdit
+    observeEvent(input[[.input_FUN(.featureNamesEdit)]], {
         instance <- pObjects$memory[[plot_name]]
 
         modal_ui <- modalDialog(

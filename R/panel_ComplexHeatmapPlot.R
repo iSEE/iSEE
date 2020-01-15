@@ -194,7 +194,6 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
             if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.colData.names) {
                 cmds <- c(cmds, .process_heatmap_continuous_annotation(plot_env))
                 cmds <- c(cmds, sprintf('column_col[["%s"]] <- .col_FUN', annot))
-                print(cmds)
             } else if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.colData.names) {
                 cmds <- c(cmds, '.col_values <- setdiff(.col_values, NA)')
                 cmds <- c(cmds, sprintf('.col_colors <- colDataColorMap(colormap, "%s", discrete=TRUE)(%s)', annot, 'length(unique(.col_values))'))

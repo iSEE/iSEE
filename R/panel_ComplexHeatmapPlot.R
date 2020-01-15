@@ -186,7 +186,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
         cmds <- c(cmds, "", "column_col <- list()", "")
         for (annot in x[[.heatMapColData]]) {
             cmds <- c(cmds, .coerce_dataframe_columns(plot_env, annot, ".column_annot"))
-            cmds <- c(cmds, sprintf('.col_colors <- colDataColorMap(colormap, "%s", discrete=FALSE)(21)', annot))
+            cmds <- c(cmds, sprintf('.col_colors <- colDataColorMap(colormap, "%s", discrete=FALSE)(21L)', annot))
             # Need to store and evaluate this command, without re-evaluating all the previous ones (TODO: use a command store)
             cmd_get_value <- sprintf('.col_values <- .column_annot[["%s"]]', annot)
             cmds <- c(cmds, cmd_get_value)
@@ -230,7 +230,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
         cmds <- c(cmds, "", "row_col <- list()", "")
         for (annot in x[[.heatMapRowData]]) {
             cmds <- c(cmds, .coerce_dataframe_columns(plot_env, annot, ".row_annot"))
-            cmds <- c(cmds, sprintf('.col_colors <- rowDataColorMap(colormap, "%s", discrete=FALSE)(21)', annot))
+            cmds <- c(cmds, sprintf('.col_colors <- rowDataColorMap(colormap, "%s", discrete=FALSE)(21L)', annot))
             # Need to store and evaluate this command, without re-evaluating all the previous ones (TODO: use a command store)
             cmd_get_value <- sprintf('.col_values <- .row_annot[["%s"]]', annot)
             cmds <- c(cmds, cmd_get_value)
@@ -262,6 +262,23 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
     return(sprintf(
         '.col_FUN <- colorRamp2(breaks = seq(%s, %s, length.out = 21L), colors = .col_colors)',
         col_range[1], col_range[2]))
+}
+
+.process_heatmap_assay_colormap <- function(x, se, plot_env) {
+    assay_name <- x[[.heatMapAssay]]
+    
+    cmds <- c()
+    
+    cmds <- c(cmds, sprintf('.col_colors <- assayColorMap(colormap, "%s", discrete=FALSE)(21L)', assay_name))
+    
+    cmd_get_value <- '.col_values <- as.vector(plot.data)'
+    cmds <- c(cmds, cmd_get_value)
+    .text_eval(cmd_get_value, plot_env)
+    
+    cmds <- c(cmds, .process_heatmap_continuous_annotation(plot_env))
+    cmds <- c(cmds, "heatmap_col <- .col_FUN")
+    
+    cmds
 }
 
 .convert_text_to_names <- function(txt)
@@ -307,7 +324,11 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     all_cmds[["data"]] <- sprintf(
         'plot.data <- assay(se, "%s")[.heatmap.rows, .heatmap.columns, drop=FALSE]',
         assay_name)
-    .text_eval(all_cmds, plot_env)
+    .text_eval(all_cmds, plot_env) # TODO: use a command store to avoid re-evaluating those commands below
+    
+    cmds <- .process_heatmap_assay_colormap(x, se, plot_env)
+    all_cmds[["assay"]] <- paste0(cmds, collapse = "\n")
+    heatmap_col <- sprintf('col=heatmap_col')
 
     # column annotation data
     cmds <- .process_heatmap_column_annotations(x, se, plot_env)
@@ -345,7 +366,8 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     heatmap_legend_param <- sprintf('heatmap_legend_param=list(direction="%s")', tolower(x[[.plotLegendDirection]]))
     # Combine options
     heatmap_args <- ""
-    new_arg_names <- c(heatmap_name, cluster_rows, clustering_distance_rows,
+    new_arg_names <- c(heatmap_col, heatmap_name,
+        cluster_rows, clustering_distance_rows,
         clustering_method_rows, cluster_columns, show_row_names, show_column_names,
         top_annotation, left_annotation, heatmap_legend_param)
     for (new_arg in new_arg_names) {

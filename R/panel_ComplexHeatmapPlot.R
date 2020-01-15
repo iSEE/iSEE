@@ -168,7 +168,6 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
 
 #' @importFrom circlize colorRamp2
 #' @importFrom ComplexHeatmap columnAnnotation rowAnnotation
-#' @importFrom dplyr arrange
 .process_heatmap_column_annotations <- function(x, se, plot_env) {
     cmds <- c()
     if (length(x[[.heatMapColData]]) || x[[.selectEffect]] == .selectColorTitle) {
@@ -211,9 +210,9 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
         cmds <- c(cmds, '.column_annot <- .column_annot[.heatmap.columns, , drop=FALSE]')
         cmds <- c(cmds, '.column_annot <- as.data.frame(.column_annot, optional=TRUE)') # preserve colnames
         if (length(x[[.heatMapColData]])) {
-            # Note that dplyr::arrange drops rownames, so this must happen after ".column_annot" is subsetted to ".heatmap.columns"
-            cmds <- c(cmds, sprintf(".column_annot <- dplyr::arrange(.column_annot, %s);",
-                                    paste0(x[[.heatMapColData]], collapse=", ")))
+            cmds <- c(cmds, sprintf(".column_annot_order <- with(.column_annot, order(%s))",
+                paste0(x[[.heatMapColData]], collapse=", ")))
+            cmds <- c(cmds, ".column_annot <- .column_annot[.column_annot_order, , drop=FALSE]")
         }
         cmds <- c(cmds, "column_annot <- columnAnnotation(df=.column_annot, col=column_col)")
     }
@@ -356,6 +355,11 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
                 sprintf("clustering_distance_rows=%s", deparse(x[[.heatMapClusterDistanceFeatures]])))
             heatmap_args <- paste0(heatmap_args, ", ",
                 sprintf("clustering_method_rows=%s", deparse(x[[.heatMapClusterMethodFeatures]])))
+        }
+
+        .text_eval(all_cmds[["coldata"]], plot_env)
+        if (exists(".column_annot_order", plot_env, inherits = FALSE)) {
+            all_cmds[["order_columns"]] <- c("plot.data <- plot.data[, .column_annot_order, drop=FALSE]")
         }
 
     }

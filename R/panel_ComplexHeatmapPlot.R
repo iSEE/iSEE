@@ -186,13 +186,15 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
         cmds <- c(cmds, "", "column_col <- list()", "")
         for (annot in x[[.heatMapColData]]) {
             cmds <- c(cmds, .coerce_dataframe_columns(plot_env, annot, ".column_annot"))
-            cmds <- c(cmds, sprintf('.col_values <- .column_annot[["%s"]]', annot))
+            cmds <- c(cmds, sprintf('.col_colors <- colDataColorMap(colormap, "%s", discrete=FALSE)(21)', annot))
+            # Need to store and evaluate this command, without re-evaluating all the previous ones (TODO: use a command store)
+            cmd_get_value <- sprintf('.col_values <- .column_annot[["%s"]]', annot)
+            cmds <- c(cmds, cmd_get_value)
+            .text_eval(cmd_get_value, plot_env)
             if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.colData.names) {
-                cmds <- c(cmds, sprintf('.col_colors <- colDataColorMap(colormap, "%s", discrete=FALSE)(21)', annot))
-                cmds <- c(cmds, '.col_FUN <- colorRamp2(
-    breaks = seq(min(.col_values, na.rm = TRUE), max(.col_values, na.rm = TRUE), length.out = 21L),
-    colors = .col_colors)')
+                cmds <- c(cmds, .process_heatmap_continuous_annotation(plot_env))
                 cmds <- c(cmds, sprintf('column_col[["%s"]] <- .col_FUN', annot))
+                print(cmds)
             } else if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.colData.names) {
                 cmds <- c(cmds, '.col_values <- setdiff(.col_values, NA)')
                 cmds <- c(cmds, sprintf('.col_colors <- colDataColorMap(colormap, "%s", discrete=TRUE)(%s)', annot, 'length(unique(.col_values))'))
@@ -229,12 +231,13 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
         cmds <- c(cmds, "", "row_col <- list()", "")
         for (annot in x[[.heatMapRowData]]) {
             cmds <- c(cmds, .coerce_dataframe_columns(plot_env, annot, ".row_annot"))
-            cmds <- c(cmds, sprintf('.col_values <- .row_annot[["%s"]]', annot))
+            cmds <- c(cmds, sprintf('.col_colors <- rowDataColorMap(colormap, "%s", discrete=FALSE)(21)', annot))
+            # Need to store and evaluate this command, without re-evaluating all the previous ones (TODO: use a command store)
+            cmd_get_value <- sprintf('.col_values <- .row_annot[["%s"]]', annot)
+            cmds <- c(cmds, cmd_get_value)
+            .text_eval(cmd_get_value, plot_env)
             if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.rowData.names) {
-                cmds <- c(cmds, sprintf('.col_colors <- rowDataColorMap(colormap, "%s", discrete=FALSE)(21)', annot))
-                cmds <- c(cmds, '.col_FUN <- colorRamp2(
-    breaks = seq(min(.col_values, na.rm = TRUE), max(.col_values, na.rm = TRUE), length.out = 21L),
-    colors = .col_colors)')
+                cmds <- c(cmds, .process_heatmap_continuous_annotation(plot_env))
                 cmds <- c(cmds, sprintf('row_col[["%s"]] <- .col_FUN', annot))
             } else if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.rowData.names) {
                 cmds <- c(cmds, sprintf('.col_values <- setdiff(.col_values, NA)', annot))
@@ -249,6 +252,17 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
         cmds <- c(cmds, "row_annot <- rowAnnotation(df=.row_annot, col=row_col)")
     }
     cmds
+}
+
+.process_heatmap_continuous_annotation <- function(plot_env) {
+    col_range <- .text_eval("range(.col_values, na.rm = TRUE)", plot_env)
+    if (identical(col_range[1], col_range[2])) {
+        # "colorRamp2" does not like all-identical breaks
+        col_range[2] <- col_range[2] + 1
+    }
+    return(sprintf(
+        '.col_FUN <- colorRamp2(breaks = seq(%s, %s, length.out = 21L), colors = .col_colors)',
+        col_range[1], col_range[2]))
 }
 
 .convert_text_to_names <- function(txt)

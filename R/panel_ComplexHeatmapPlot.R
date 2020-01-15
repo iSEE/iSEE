@@ -529,8 +529,9 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         
         editor_text <- input[[.input_FUN(.heatMapFeatNameText)]]
         if (!is.null(incoming_names)) {
-            editor_text <- paste0(editor_text, ifelse(grepl("\n$", editor_text), "", "\n"))
-            editor_text <- paste0(editor_text, paste0(incoming_names, collapse = "\n"))
+            editor_names <- strsplit(gsub("\n$", "", editor_text), split="\n")[[1]]
+            editor_names <- union(editor_names, incoming_names)
+            editor_text <- paste0(editor_names, collapse = "\n")
         }
         
         updateAceEditor(session, editorId = .input_FUN(.heatMapFeatNameText), value = editor_text)

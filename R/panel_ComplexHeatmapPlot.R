@@ -503,9 +503,9 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
                 ),
                 column(width = 4,
                     actionButton(.input_FUN(clear_field), "Clear editor"), br(), br(),
-                    actionButton(.input_FUN(validate_field), "Validate names"), br(), br(),
-                    actionButton(.input_FUN(order_field), "Organize by order"), br(), br(),
                     actionButton(.input_FUN(import_field), "Import selection"), br(), br(),
+                    actionButton(.input_FUN(order_field), "Organize by order"), br(), br(),
+                    actionButton(.input_FUN(validate_field), "Validate names"), br(), br(),
                     actionButton(.input_FUN(apply_field), label="Apply", style=.actionbutton_biocstyle)
                 )
             )
@@ -521,8 +521,6 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         # Compute names for the incoming selection, if any
         plot_env <- new.env()
         select_cmds <- .processMultiSelections(pObjects$memory[[plot_name]], pObjects$memory, pObjects$contents, plot_env)
-        print(select_cmds)
-        print(ls(plot_env))
         if (exists("row_selected", envir=plot_env, inherits=FALSE)){
             incoming_names <- unique(unlist(get("row_selected", envir=plot_env)))
         } else {
@@ -536,12 +534,23 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     
     # Button to clear the editor
     observeEvent(input[[.input_FUN(clear_field)]], {
-        updateAceEditor(session, editorId = .input_FUN(.heatMapFeatNameText),
-            value = "")
+        updateAceEditor(session, editorId = .input_FUN(.heatMapFeatNameText), value = "")
+    })
+    
+    # Button to comment out invalid names
+    observeEvent(input[[.input_FUN(validate_field)]], {
+        instance <- pObjects$memory[[plot_name]]
+        
+        editor_text <- instance[[.heatMapFeatNameText]]
+        editor_lines <- strsplit(editor_text, split="\n")[[1]]
+        invalid_idx <- !editor_lines %in% rownames(se) & !grepl("^[ ]*#", editor_lines)
+        editor_lines[invalid_idx] <- paste0("# ", editor_lines[invalid_idx])
+        editor_text <- paste0(editor_lines, collapse = "\n")
+        updateAceEditor(session, editorId = .input_FUN(.heatMapFeatNameText), value = editor_text)
     })
 
     # The button that actually updates the FeatNameText field.
-    observeEvent(input[[paste0(plot_name, "_", apply_field)]], {
+    observeEvent(input[[.input_FUN(apply_field)]], {
         pObjects$memory[[plot_name]][[.heatMapFeatNameText]] <- input[[paste0(plot_name, "_", .heatMapFeatNameText)]]
         .requestCleanUpdate(plot_name, pObjects, rObjects)
     })

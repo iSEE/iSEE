@@ -460,6 +460,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     order_field <- "INTERNAL_OrderFeatNames"
     import_field <- "INTERNAL_ImportFeatNames"
     validate_field <- "INTERNAL_ValidateFeatNames"
+    clear_field <- "INTERNAL_ClearFeatNames"
 
     .input_FUN <- function(field) paste0(plot_name, "_", field)
 
@@ -480,6 +481,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
                         height="500px")
                 ),
                 column(width = 4,
+                    actionButton(.input_FUN(clear_field), "Clear editor"), br(), br(),
                     actionButton(.input_FUN(validate_field), "Validate names"), br(), br(),
                     actionButton(.input_FUN(order_field), "Organize by order"), br(), br(),
                     actionButton(.input_FUN(import_field), "Import selection"), br(), br(),
@@ -509,6 +511,12 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
         updateAceEditor(session, editorId = .input_FUN(.heatMapFeatNameText),
             value = paste0(instance[[.heatMapFeatNameText]], "\n", paste0(incoming_names, collapse = "\n")))
+    })
+    
+    # Button to clear the editor
+    observeEvent(input[[.input_FUN(clear_field)]], {
+        updateAceEditor(session, editorId = .input_FUN(.heatMapFeatNameText),
+            value = "")
     })
 
     # The button that actually updates the FeatNameText field.

@@ -67,8 +67,8 @@
 .visualParamChoiceFacetTitle <- "Facets"
 .visualParamChoiceOtherTitle <- "Other"
 
-.showNamesRowTitle <- "Row"
-.showNamesColumnTitle <- "Column"
+.showNamesRowTitle <- "Features"
+.showNamesColumnTitle <- "Samples"
 
 .plotLegendRightTitle <- "Right"
 .plotLegendBottomTitle <- "Bottom"

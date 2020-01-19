@@ -13,7 +13,7 @@ test_that(".add_facet_UI_elements produces a valid tag list for column data plot
 
 memory <- list(RedDimPlot(), RowStatTable(), FeatAssayPlot(),
     ColDataPlot(), RowDataPlot(), SampAssayPlot(), ColStatTable(),
-    HeatMapPlot())
+    ComplexHeatmapPlot())
 
 pObjects <- mimic_live_app(sce, memory)
 sce <- iSEE:::.prepare_SE(sce, ExperimentColorMap(), memory)

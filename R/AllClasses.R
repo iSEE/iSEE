@@ -384,83 +384,37 @@ setClass("ColStatTable", contains="ColumnTable")
 ####################################################
 
 .heatMapAssay <- "Assay"
-.heatMapFeatName <- "FeatName"
-.heatMapFeatNameBoxOpen <- "FeatNameBoxOpen"
-.heatMapImportSource <- "FeatNameSource"
-.heatMapColData <- "ColData"
-.heatMapColDataBoxOpen <- "ColDataBoxOpen"
-.heatMapCenterScale <- "CenterScale"
-.heatMapLower <- "Lower"
-.heatMapUpper <- "Upper"
-.heatMapCenteredColors <- "ColorScale"
-
-collated <- character(0)
-collated[.heatMapAssay] <- "character"
-collated[.heatMapFeatName] <- "character"
-collated[.heatMapFeatNameBoxOpen] <- "logical"
-collated[.heatMapImportSource] <- "character"
-collated[.heatMapColData] <- "character"
-collated[.heatMapColDataBoxOpen] <- "logical"
-collated[.heatMapCenterScale] <- "character"
-collated[.heatMapLower] <- "numeric"
-collated[.heatMapUpper] <- "numeric"
-collated[.heatMapCenteredColors] <- "character"
-
-.selectEffect <- "SelectEffect"
-.selectColor <- "SelectColor"
-.selectTransAlpha <- "SelectAlpha"
-
-collated[.selectEffect] <- "character"
-collated[.selectColor] <- "character"
-collated[.selectTransAlpha] <- "numeric"
-
-#' @export
-setClass("HeatMapPlot", contains="Panel", slots=collated)
-
-####################################################
-
-.heatMapAssay <- "Assay"
-.heatMapRownames <- "Rownames"
-.heatMapColnames <- "Colnames"
-.heatMapColData <- "ColData"
-.heatMapRowData <- "RowData"
-
-.heatMapFeatNameText <- "FeatNameText"
-.heatMapSampNameText <- "SampNameText"
 .heatMapCustomFeatNames <- "CustomFeatName"
-.heatMapCustomSampNames <- "CustomSampName"
-
+.heatMapFeatNameText <- "FeatNameText"
 .heatMapClusterFeatures <- "ClusterFeatures"
 .heatMapClusterDistanceFeatures <- "ClusterDistanceFeatures"
 .heatMapClusterMethodFeatures <- "ClusterMethodFeatures"
 
-collated <- character(0)
-collated[.heatMapAssay] <- "character"
-collated[.heatMapRownames] <- "character"
-collated[.heatMapColnames] <- "character"
-collated[.heatMapColData] <- "character"
-collated[.heatMapRowData] <- "character"
+.heatMapColData <- "ColData"
+.heatMapRowData <- "RowData"
+.showDimnames <- "ShowDimNames"
+.plotLegendDirection <- "LegendDirection"
 
+collated <- character(0)
+
+collated[.heatMapAssay] <- "character"
 collated[.heatMapCustomFeatNames] <- "logical"
 collated[.heatMapFeatNameText] <- "character"
-
 collated[.heatMapClusterFeatures] <- "logical"
 collated[.heatMapClusterDistanceFeatures] <- "character"
 collated[.heatMapClusterMethodFeatures] <- "character"
+collated[.dataParamBoxOpen] <- "logical"
 
-collated[.selectEffect] <- "character"
-collated[.selectColor] <- "character"
-collated[.selectTransAlpha] <- "numeric"
-
-collated[.visualParamBoxOpen] <- "logical"
-
-.showDimnames <- "ShowDimNames"
-.plotLegendPosition <- "LegendPosition"
-.plotLegendDirection <- "LegendDirection"
+collated[.heatMapColData] <- "character"
+collated[.heatMapRowData] <- "character"
 
 collated[.showDimnames] <- "character"
 collated[.plotLegendPosition] <- "character"
 collated[.plotLegendDirection] <- "character"
+collated[.visualParamBoxOpen] <- "logical"
+
+collated[.selectEffect] <- "character"
+collated[.selectColor] <- "character"
 
 #' @export
 setClass("ComplexHeatmapPlot", contains="Panel", slots=collated)

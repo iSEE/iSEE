@@ -8,31 +8,30 @@ ComplexHeatmapPlot <- function(...) {
 #' @importFrom methods callNextMethod
 setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- list(...)
+    
     args <- .empty_default(args, .heatMapAssay, NA_character_)
-    args <- .empty_default(args, .heatMapRownames, character(0))
-    args <- .empty_default(args, .heatMapColnames, character(0))
-    args <- .empty_default(args, .heatMapColData, character(0))
-    args <- .empty_default(args, .heatMapRowData, character(0))
-
     args <- .empty_default(args, .heatMapCustomFeatNames, TRUE)
     args <- .empty_default(args, .heatMapFeatNameText, NA_character_)
     if (!is.na(vals <- args[[.heatMapFeatNameText]])) {
         args[[.heatMapFeatNameText]] <- paste(vals, collapse="\n")
     }
-
+    
     args <- .empty_default(args, .heatMapClusterFeatures, FALSE)
     args <- .empty_default(args, .heatMapClusterDistanceFeatures, .clusterDistanceSpearman)
     args <- .empty_default(args, .heatMapClusterMethodFeatures, .clusterMethodWardD2)
-
-    args <- .empty_default(args, .visualParamBoxOpen, FALSE)
-
-    args <- .empty_default(args, .selectEffect, .selectColorTitle)
-    args <- .empty_default(args, .selectColor, "red")
-    args <- .empty_default(args, .selectTransAlpha, 0.1)
+    args <- .empty_default(args, .dataParamBoxOpen, FALSE)
+    
+    args <- .empty_default(args, .heatMapColData, character(0))
+    args <- .empty_default(args, .heatMapRowData, character(0))
 
     args <- .empty_default(args, .showDimnames, c(.showNamesRowTitle))
+    
     args <- .empty_default(args, .plotLegendPosition, .plotLegendBottomTitle)
     args <- .empty_default(args, .plotLegendDirection, .plotLegendHorizontalTitle)
+    args <- .empty_default(args, .visualParamBoxOpen, FALSE)
+    
+    args <- .empty_default(args, .selectEffect, .selectColorTitle)
+    args <- .empty_default(args, .selectColor, "red")
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -43,8 +42,6 @@ setValidity2("ComplexHeatmapPlot", function(object) {
     msg <- .single_string_error(msg, object, c(.heatMapFeatNameText, .selectEffect))
 
     msg <- .valid_string_error(msg, object, .selectColor)
-
-    msg <- .valid_number_error(msg, object, .selectTransAlpha, lower=0, upper=1)
 
     msg <- .valid_logical_error(msg, object, .heatMapCustomFeatNames)
 
@@ -126,6 +123,7 @@ setMethod(".panelColor", "ComplexHeatmapPlot", function(x) "#ABCDEF")
 #' @export
 setMethod(".fullName", "ComplexHeatmapPlot", function(x) "Complex heatmap")
 
+#' @importFrom shiny plotOutput
 #' @export
 setMethod(".defineOutput", "ComplexHeatmapPlot", function(x) {
     plot_name <- .getEncodedName(x)
@@ -200,21 +198,21 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
     cmds <- c()
     if (length(x[[.heatMapColData]]) || x[[.selectEffect]] == .selectColorTitle) {
         cmds <- c(cmds, "# Keep all samples to compute the full range of continuous annotations")
-        cmds <- c(cmds, sprintf(".column_annot <- colData(se)[, %s, drop=FALSE]", deparse(x[[.heatMapColData]])))
+        cmds <- c(cmds, sprintf("column_data <- colData(se)[, %s, drop=FALSE]", deparse(x[[.heatMapColData]])))
         # Process selected points
         if (x[[.selectEffect]] == .selectColorTitle) {
-            cmds <- c(cmds, '.column_annot[["Selected points"]] <- rep(FALSE, nrow(.column_annot))')
+            cmds <- c(cmds, 'column_data[["Selected points"]] <- rep(FALSE, nrow(column_data))')
             if (exists("col_selected", envir=plot_env, inherits=FALSE)){
-                cmds <- c(cmds, '.column_annot[unlist(col_selected), "Selected points"] <- TRUE')
+                cmds <- c(cmds, 'column_data[unlist(col_selected), "Selected points"] <- TRUE')
             }
         }
         .text_eval(cmds, plot_env)
         # Collect color maps
         cmds <- c(cmds, "", "column_col <- list()", "")
         for (annot in x[[.heatMapColData]]) {
-            cmds <- c(cmds, .coerce_dataframe_columns(plot_env, annot, ".column_annot"))
+            cmds <- c(cmds, .coerce_dataframe_columns(plot_env, annot, "column_data"))
             # Need to store and evaluate this command, without re-evaluating all the previous ones (TODO: use a command store)
-            cmd_get_value <- sprintf(".col_values <- .column_annot[[%s]]", deparse(annot))
+            cmd_get_value <- sprintf(".col_values <- column_data[[%s]]", deparse(annot))
             cmds <- c(cmds, cmd_get_value)
             .text_eval(cmd_get_value, plot_env)
             if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.colData.names) {
@@ -236,14 +234,14 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
                 sprintf('column_col[["Selected points"]] <- c("TRUE"=%s, "FALSE"="white")', deparse(x[[.selectColor]])),
                 "")
         }
-        cmds <- c(cmds, '.column_annot <- .column_annot[.heatmap.columns, , drop=FALSE]')
-        cmds <- c(cmds, '.column_annot <- as.data.frame(.column_annot, optional=TRUE)') # preserve colnames
+        cmds <- c(cmds, 'column_data <- column_data[.heatmap.columns, , drop=FALSE]')
+        cmds <- c(cmds, 'column_data <- as.data.frame(column_data, optional=TRUE)') # preserve colnames
         if (length(x[[.heatMapColData]])) {
-            cmds <- c(cmds, sprintf(".column_annot_order <- with(.column_annot, order(%s))",
+            cmds <- c(cmds, sprintf(".column_annot_order <- with(column_data, order(%s))",
                 paste0(x[[.heatMapColData]], collapse=", ")))
-            cmds <- c(cmds, ".column_annot <- .column_annot[.column_annot_order, , drop=FALSE]")
+            cmds <- c(cmds, "column_data <- column_data[.column_annot_order, , drop=FALSE]")
         }
-        cmds <- c(cmds, "column_annot <- columnAnnotation(df=.column_annot, col=column_col)")
+        cmds <- c(cmds, "column_annot <- columnAnnotation(df=column_data, col=column_col)")
     }
     cmds
 }
@@ -252,14 +250,14 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
     cmds <- c()
     if (length(x[[.heatMapRowData]])) {
         cmds <- c(cmds, "# Keep all features to compute the full range of continuous annotations")
-        cmds <- c(cmds, sprintf(".row_annot <- rowData(se)[, %s, drop=FALSE]", deparse(x[[.heatMapRowData]])))
+        cmds <- c(cmds, sprintf("row_data <- rowData(se)[, %s, drop=FALSE]", deparse(x[[.heatMapRowData]])))
         .text_eval(cmds, plot_env)
         # column color maps
         cmds <- c(cmds, "", "row_col <- list()", "")
         for (annot in x[[.heatMapRowData]]) {
-            cmds <- c(cmds, .coerce_dataframe_columns(plot_env, annot, ".row_annot"))
+            cmds <- c(cmds, .coerce_dataframe_columns(plot_env, annot, "row_data"))
             # Need to store and evaluate this command, without re-evaluating all the previous ones (TODO: use a command store)
-            cmd_get_value <- sprintf('.col_values <- .row_annot[[%s]]', deparse(annot))
+            cmd_get_value <- sprintf('.col_values <- row_data[[%s]]', deparse(annot))
             cmds <- c(cmds, cmd_get_value)
             .text_eval(cmd_get_value, plot_env)
             if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.rowData.names) {
@@ -275,9 +273,9 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
             }
             cmds <- c(cmds, "")
         }
-        cmds <- c(cmds, '.row_annot <- .row_annot[.heatmap.rows, , drop=FALSE]')
-        cmds <- c(cmds, '.row_annot <- as.data.frame(.row_annot, optional=TRUE)') # preserve colnames
-        cmds <- c(cmds, "row_annot <- rowAnnotation(df=.row_annot, col=row_col)")
+        cmds <- c(cmds, 'row_data <- row_data[.heatmap.rows, , drop=FALSE]')
+        cmds <- c(cmds, 'row_data <- as.data.frame(row_data, optional=TRUE)') # preserve colnames
+        cmds <- c(cmds, "row_annot <- rowAnnotation(df=row_data, col=row_col)")
     }
     cmds
 }
@@ -495,7 +493,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 })
 
 #' @importFrom shiny modalDialog fluidRow column h4 actionButton br
-#' @importFrom shinyAce aceEditor
+#' @importFrom shinyAce aceEditor updateAceEditor
 .create_heatmap_modal_observers <- function(plot_name, se, input, session, pObjects, rObjects) {
     apply_field <- "INTERNAL_ApplyFeatNameChanges"
     order_field <- "INTERNAL_OrderFeatNames"

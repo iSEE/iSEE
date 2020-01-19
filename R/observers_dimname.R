@@ -187,7 +187,7 @@
 #' @author Aaron Lun
 #'
 #' @rdname INTERNAL_dimname_observer
-#' @importFrom shiny observeEvent observe updateSelectizeInput
+#' @importFrom shiny observeEvent observe updateSelectizeInput req
 .create_dimname_observers <- function(panel_name, name_field, choices,
     use_mode_field, use_value, protected, tab_field, 
     input, session, pObjects, rObjects)

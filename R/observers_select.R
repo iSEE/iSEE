@@ -133,7 +133,7 @@
     invisible(NULL)
 }
 
-#' @importFrom shiny observeEvent observe updateSelectInput 
+#' @importFrom shiny observeEvent observe updateSelectInput req
 #' @rdname INTERNAL_selection_parameter_observers
 .create_multi_selection_type_observers <- function(panel_name, 
     by_field, type_field, saved_field,

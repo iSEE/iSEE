@@ -46,6 +46,7 @@ Suggests:
     testthat,
     BiocStyle,
     knitr,
+    magick,
     rmarkdown,
     scRNAseq,
     scater,

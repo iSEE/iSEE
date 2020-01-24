@@ -48,7 +48,8 @@ knitr::opts_chunk$set(
     comment = "#>",
     error = FALSE,
     warning = FALSE,
-    message = FALSE
+    message = FALSE,
+    crop = NULL
 )
 stopifnot(requireNamespace("htmltools"))
 htmltools::tagList(rmarkdown::html_dependency_font_awesome())

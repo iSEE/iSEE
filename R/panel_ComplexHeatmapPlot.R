@@ -1,3 +1,158 @@
+#' The ComplexHeatmapPlot panel
+#'
+#' The ComplexHeatmapPlot is a panel class for creating a \linkS4class{Panel} that displays an assay of a \linkS4class{SummarizedExperiment} object as a \code{\link{Heatmap}} with features as rows and samples and columns, respectively.
+#' It provides slots and methods for specifying which assay to display in the main heatmap, and which metadata variables to display as row and column heatmap annotations.
+#'
+#' @section Slot overview:
+#' The following slots control the assay that is used:
+#' \itemize{
+#' \item \code{Assay}, string specifying the name of the assay to use for obtaining expression values.
+#' Defaults to the first valid assay name (see \code{?"\link{.refineParameters,ComplexHeatmapPlot-method}"} for details).
+#' \item \code{CustomFeatName}, a logical scalar indicating whether the custom list of features should be used.
+#' If \code{FALSE}, the incoming selection is used instead. Defaults to \code{TRUE}.
+#' \item \code{FeatNameText}, string speciyfing a custom list of features to use, as newline-separated row names.
+#' If \code{NA}, defaults to the first row name of the SummarizedExperiment object.
+#' }
+#' 
+#' The following slots control the metadata variables that are used:
+#' \itemize{
+#' \item \code{ColData}, a character vector specifying columns of the \code{\link{colData}} to show as \code{\link{columnAnnotation}}.
+#' Defaults to \code{character(0)}.
+#' \item \code{RowData}, a character vector specifying columns of the \code{\link{rowData}} to show as \code{\link{columnAnnotation}}.
+#' Defaults to \code{character(0)}.
+#' }
+#' 
+#' The following slots control the clustering of features:
+#' \itemize{
+#' \item \code{ClusterFeatures}, a logical scalar indicating whether features should be clustered by assay data.
+#' Defaults to \code{FALSE}.
+#' \item \code{ClusterDistanceFeatures}, string specifying a distance measure to use.
+#' This can be any one of \code{"euclidean"}, \code{"maximum"}, \code{"manhattan"}, \code{"canberra"}, \code{"binary"}, \code{"minkowski"}, \code{"pearson"}, \code{"spearman"}, or \code{"kendall"}.
+#' Defaults to \code{"spearman"}.
+#' \item \code{ClusterMethodFeatures}, string specifying a distance measure to use.
+#' This can be any one of \code{"ward.D"}, \code{"ward.D2"}, \code{"single"}, \code{"complete"}, \code{"average"}, \code{"mcquitty"}, \code{"median"}, or \code{"centroid"}.
+#' Defaults to \code{"ward.D2"}.
+#' }
+#' 
+#' The following slots refer to general plotting parameters:
+#' \itemize{
+#' \item \code{ShowDimNames}, a character vector specifying the dimensions for which to display names.
+#' This can contain zero or more of \code{"Features"} and \code{"Samples"}.
+#' Defaults to \code{"Features"}.
+#' \item \code{LegendPosition}, string specifying the position of the legend on the plot.
+#' Defaults to \code{"Bottom"} but can also be \code{"Right"}.
+#' \item \code{LegendDirection}, string specifying the orientation of the legend on the plot for continuous covariates.
+#' Defaults to \code{"Horizontal"} but can also be \code{"Vertical"}.
+#' }
+#' 
+#' The following slots control the effect of the transmitted selection from another panel:
+#' \itemize{
+#' \item \code{SelectEffect}, a string specifying the selection effect.
+#' This should be one of \code{"Color"} (the default), here all selected points change to the specified color;
+#' \code{"Restrict"}, where all non-selected points are not plotted.
+#' \item \code{SelectColor}, a string specifying the color to use for selected points when \code{SelectEffect="Color"}.
+#' Defaults to \code{"red"}.
+#' }
+#' 
+#' The following slots control some aspects of the user interface:
+#' \itemize{
+#' \item \code{DataBoxOpen}, a logical scalar indicating whether the data parameter box should be open.
+#' Defaults to \code{FALSE}.
+#' \item \code{VisualBoxOpen}, a logical scalar indicating whether the visual parameter box should be open.
+#' Defaults to \code{FALSE}.
+#' }
+#'
+#' In addition, this class inherits all slots from its parent \linkS4class{Panel} class.
+#'
+#' @section Constructor:
+#' \code{ComplexHeatmapPlot(...)} creates an instance of a ComplexHeatmapPlot class, where any slot and its value can be passed to \code{...} as a named argument.
+#'
+#' @section Contract description:
+#' The ComplexHeatmapPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
+#' It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
+#' Subclasses do not have to provide any methods, as this is a concrete class.
+#'
+#' @section Supported methods:
+#' In the following code snippets, \code{x} is an instance of a \linkS4class{ComplexHeatmapPlot} class.
+#' Refer to the documentation for each method for more details on the remaining arguments.
+#'
+#' For setting up data values:
+#' \itemize{
+#' \item \code{\link{.refineParameters}(x, se)} returns \code{x} after replacing any \code{NA} value in \code{"Assay"} with the first valid assay name; and any \code{NA} values in \code{FeatNameText} with the first row name.
+#' This will also call the equivalent \linkS4class{Panel} method for further refinements to \code{x}.
+#' If no valid column metadata fields are available, \code{NULL} is returned instead.
+#' }
+#'
+#' For defining the interface:
+#' \itemize{
+#' \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
+#' \item \code{\link{.fullName}(x)} will return the full name of the panel class.
+#' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
+#' }
+#'
+#' For monitoring reactive expressions:
+#' \itemize{
+#' \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
+#' This will also call the equivalent \linkS4class{Panel} method.
+#' }
+#'
+#' For defining the panel name:
+#' \itemize{
+#' \item \code{\link{.fullName}(x)} will return \code{"Complex heatmap"}.
+#' }
+#'
+#' @author Kevin Rue-Albrecht
+#'
+#' @seealso
+#' \linkS4class{Panel}, for the immediate parent class.
+#' 
+#' @examples
+#' #################
+#' # For end-users #
+#' #################
+#'
+#' x <- ComplexHeatmapPlot()
+#' x[["ShowDimNames"]]
+#' x[["ShowDimNames"]] <- c("Features", "Samples")
+#'
+#' ##################
+#' # For developers #
+#' ##################
+#'
+#' library(scater)
+#' sce <- mockSCE()
+#' sce <- logNormCounts(sce)
+#'
+#' old_cd <- colData(sce)
+#' colData(sce) <- NULL
+#'
+#' # Spits out a NULL and a warning if there is nothing to plot.
+#' sce0 <- .cacheCommonInfo(x, sce)
+#' .refineParameters(x, sce0)
+#'
+#' # Replaces the default with something sensible.
+#' colData(sce) <- old_cd
+#' sce0 <- .cacheCommonInfo(x, sce)
+#' .refineParameters(x, sce0)
+#' 
+#' @docType methods
+#' @aliases ComplexHeatmapPlot ComplexHeatmapPlot-class
+#' .cacheCommonInfo,ComplexHeatmapPlot-method
+#' .createObservers,ComplexHeatmapPlot-method
+#' .defineDataInterface,ComplexHeatmapPlot-method
+#' .defineInterface,ComplexHeatmapPlot-method
+#' .defineOutput,ComplexHeatmapPlot-method
+#' .defineInterface,ComplexHeatmapPlot-method
+#' .fullName,ComplexHeatmapPlot-method
+#' .generateOutput,ComplexHeatmapPlot-method
+#' .hideInterface,ComplexHeatmapPlot-method
+#' .panelColor,ComplexHeatmapPlot-method
+#' .refineParameters,ComplexHeatmapPlot-method
+#' .renderOutput,ComplexHeatmapPlot-method
+#' initialize,ComplexHeatmapPlot-method
+#' 
+#' @name ComplexHeatmapPlot-class
+NULL
 
 #' @export
 ComplexHeatmapPlot <- function(...) {

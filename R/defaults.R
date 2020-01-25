@@ -234,7 +234,7 @@ sampAssayPlotDefaults <- function(se, number) {
 #' @export
 #' @rdname defaults
 heatMapPlotDefaults <- function(se, number) {
-    .Deprecated(new="HeatMapPlot")
+    .Deprecated(new="ComplexHeatmapPlot")
 
     # Ensure that we define all the fields with the right types, using a transient 1-row DF
     # number=0 guarantees that se is not touched to define dummy values of the right type
@@ -249,28 +249,29 @@ heatMapPlotDefaults <- function(se, number) {
 
     out <- new("DataFrame", nrows=as.integer(number))
     out[[.heatMapAssay]] <- def_assay
-    out[[.heatMapFeatNameBoxOpen]] <- FALSE
-    out[[.heatMapFeatName]] <- rep(list(1L), nrow(out))
-
-    out[[.heatMapColDataBoxOpen]] <- FALSE
-    out[[.heatMapColData]] <- rep(list(def_coldata), nrow(out))
-    out[[.heatMapImportSource]] <- .noSelection
-
-    out[[.heatMapCenterScale]] <- rep(list(.heatMapCenterTitle), nrow(out))
-    out[[.heatMapLower]] <- -Inf
-    out[[.heatMapUpper]] <- Inf
-    out[[.heatMapCenteredColors]] <- "purple-black-yellow"
-
-    out[[.zoomData]] <- rep(list(NULL), nrow(out))
-
-    out[[.selectParamBoxOpen]] <- FALSE
-    out[[.selectByPlot]] <- .noSelection
-    out[[.selectEffect]] <- .selectTransTitle
-    out[[.selectTransAlpha]] <- 0.1
+    out[[.heatMapCustomFeatNames]] <- TRUE
+    out[[.heatMapFeatNameText]] <- rownames(se)[1]
+    out[[.heatMapClusterFeatures]] <- FALSE
+    out[[.heatMapClusterDistanceFeatures]] <- .clusterDistanceSpearman
+    out[[.heatMapClusterMethodFeatures]] <- .clusterMethodWardD2
+    out[[.dataParamBoxOpen]] <- FALSE
+    
+    out[[.heatMapColData]] <- def_coldata
+    out[[.heatMapRowData]] <- NA_character_
+    
+    out[[.showDimnames]] <- c(.showNamesRowTitle)
+    
+    out[[.plotLegendPosition]] <- .plotLegendBottomTitle
+    out[[.plotLegendDirection]] <- .plotLegendHorizontalTitle
+    out[[.visualParamBoxOpen]] <- FALSE
+    
+    out[[.selectEffect]] <- .selectColorTitle
     out[[.selectColor]] <- "red"
-
+    
+    out[[.selectByPlot]] <- .noSelection
     out[[.selectMultiType]] <- .selectMultiActiveTitle
     out[[.selectMultiSaved]] <- 0L
+    out[[.selectParamBoxOpen]] <- FALSE
 
     if (waszero) out <- out[0, , drop=FALSE]
     return(out)
@@ -485,36 +486,41 @@ heatMapPlotDefaults <- function(se, number) {
     }
     collected <- c(collected, .translate_to_class(redDimArgs, RedDimPlot, se, FALSE))
 
-    if (is.null(featAssayArgs)) {
-        suppressWarnings(featAssayArgs <- featAssayPlotDefaults(se, 5))
-    }
-    collected <- c(collected, .translate_to_class(featAssayArgs, FeatAssayPlot, se, FALSE))
-
     if (is.null(colDataArgs)) {
         suppressWarnings(colDataArgs <- colDataPlotDefaults(se, 5))
     }
     collected <- c(collected, .translate_to_class(colDataArgs, ColDataPlot, se, FALSE))
 
-    if (is.null(colStatArgs)) {
-        suppressWarnings(colStatArgs <- colStatTableDefaults(se, 5))
+    if (is.null(featAssayArgs)) {
+        suppressWarnings(featAssayArgs <- featAssayPlotDefaults(se, 5))
     }
-    collected <- c(collected, .translate_to_class(colStatArgs, ColStatTable, se, FALSE))
-
-    if (is.null(sampAssayArgs)) {
-        suppressWarnings(sampAssayArgs <- sampAssayPlotDefaults(se, 5))
-    }
-    collected <- c(collected, .translate_to_class(sampAssayArgs, SampAssayPlot, se, TRUE))
-
-    if (is.null(rowDataArgs)) {
-        suppressWarnings(rowDataArgs <- rowDataPlotDefaults(se, 5))
-    }
-    collected <- c(collected, .translate_to_class(rowDataArgs, RowDataPlot, se, TRUE))
+    collected <- c(collected, .translate_to_class(featAssayArgs, FeatAssayPlot, se, FALSE))
 
     if (is.null(rowStatArgs)) {
         suppressWarnings(rowStatArgs <- rowStatTableDefaults(se, 5))
     }
     collected <- c(collected, .translate_to_class(rowStatArgs, RowStatTable, se, TRUE))
+    
+    if (is.null(rowDataArgs)) {
+        suppressWarnings(rowDataArgs <- rowDataPlotDefaults(se, 5))
+    }
+    collected <- c(collected, .translate_to_class(rowDataArgs, RowDataPlot, se, TRUE))
 
+    if (is.null(sampAssayArgs)) {
+        suppressWarnings(sampAssayArgs <- sampAssayPlotDefaults(se, 5))
+    }
+    collected <- c(collected, .translate_to_class(sampAssayArgs, SampAssayPlot, se, TRUE))
+    
+    if (is.null(colStatArgs)) {
+        suppressWarnings(colStatArgs <- colStatTableDefaults(se, 5))
+    }
+    collected <- c(collected, .translate_to_class(colStatArgs, ColStatTable, se, FALSE))
+    
+    if (is.null(heatMapArgs)) {
+        suppressWarnings(heatMapArgs <- heatMapPlotDefaults(se, 5))
+    }
+    collected <- c(collected, .translate_to_class(heatMapArgs, ComplexHeatmapPlot, se, FALSE))
+    
     names(collected) <- vapply(collected, .getEncodedName, "")
 
     # Pulling out the initialPanels only.
@@ -635,7 +641,8 @@ heatMapPlotDefaults <- function(se, number) {
         ColDataPlot="Column data plot", 
         RowDataPlot="Row data plot", 
         RowStatTable="Row statistics table", 
-        SampAssayPlot="Sample assay plot")
+        SampAssayPlot="Sample assay plot",
+        ComplexHeatmapPlot="Heat map")
     
     if (ref %in% converter) {
         idx <- as.integer(sub(".* ", "", old_name))

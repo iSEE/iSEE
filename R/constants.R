@@ -55,6 +55,9 @@
 .buttonDeleteLabel <- "Delete"
 .buttonNoSelectionLabel <- "No selection"
 .buttonSaveLabel <- "Save"
+.buttonEditFeatureNamesLabel <- "Edit feature names"
+
+.featureNamesEdit <- "INTERNAL_RowNamesEdit"
 
 # Other plot parameters. ----
 
@@ -64,8 +67,14 @@
 .visualParamChoiceFacetTitle <- "Facets"
 .visualParamChoiceOtherTitle <- "Other"
 
+.showNamesRowTitle <- "Features"
+.showNamesColumnTitle <- "Samples"
+
 .plotLegendRightTitle <- "Right"
 .plotLegendBottomTitle <- "Bottom"
+
+.plotLegendHorizontalTitle <- "Horizontal"
+.plotLegendVerticalTitle <- "Vertical"
 
 .plotFontSizeAxisTextDefault <- 10
 .plotFontSizeAxisTitleDefault <- 12
@@ -103,3 +112,24 @@
 .voiceColorByInput <- "voiceColorBy"
 .voiceReceiveFromInput <- "voiceReceiveFrom"
 .voiceSendToInput <- "voiceSendTo"
+
+# Clustering parameters ----
+
+.clusterDistanceEuclidean <- "euclidean"
+.clusterDistanceMaximum <- "maximum"
+.clusterDistanceManhattan <- "manhattan"
+.clusterDistanceCanberra <- "canberra"
+.clusterDistanceBinary <- "binary"
+.clusterDistanceMinkowski <- "minkowski"
+.clusterDistancePearson <- "pearson"
+.clusterDistanceSpearman <- "spearman"
+.clusterDistanceKendall <- "kendall"
+
+.clusterMethodWardD <- "ward.D"
+.clusterMethodWardD2 <- "ward.D2"
+.clusterMethodSingle <- "single"
+.clusterMethodComplete <- "complete"
+.clusterMethodAverage <- "average"
+.clusterMethodMcquitty <- "mcquitty"
+.clusterMethodMedian <- "median"
+.clusterMethodCentroid <- "centroid"

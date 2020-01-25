@@ -179,9 +179,9 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.generateDotPlot}}
 #'
 #' @importFrom ggplot2 ggplot coord_cartesian theme_bw theme element_text
-.scatter_plot <- function(plot_data, param_choices, 
-    x_lab, y_lab, color_lab, shape_lab, size_lab, title, 
-    by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE) 
+.scatter_plot <- function(plot_data, param_choices,
+    x_lab, y_lab, color_lab, shape_lab, size_lab, title,
+    by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE)
 {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +"
@@ -297,9 +297,9 @@ names(.all_aes_values) <- .all_aes_names
 #'
 #' @importFrom ggplot2 ggplot geom_violin coord_cartesian theme_bw theme
 #' coord_flip scale_x_discrete scale_y_discrete
-.violin_plot <- function(plot_data, param_choices, 
+.violin_plot <- function(plot_data, param_choices,
     x_lab, y_lab, color_lab, shape_lab, size_lab, title,
-    by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE, horizontal=FALSE) 
+    by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE, horizontal=FALSE)
 {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot() +" # do NOT put aes here, it does not play nice with shiny brushes.
@@ -482,9 +482,9 @@ plot.data$Y <- tmp;")
 #'
 #' @importFrom ggplot2 ggplot geom_tile coord_cartesian theme_bw theme
 #' scale_x_discrete scale_y_discrete guides
-.square_plot <- function(plot_data, param_choices, 
-    x_lab, y_lab, color_lab, shape_lab, size_lab, title, 
-    by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE) 
+.square_plot <- function(plot_data, param_choices,
+    x_lab, y_lab, color_lab, shape_lab, size_lab, title,
+    by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE)
 {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
@@ -912,19 +912,19 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @rdname INTERNAL_coerce_type
 #' @seealso
 #' \code{\link{.generateDotPlot}}.
-.coerce_type <- function(values, field, as_numeric=TRUE) {
+.coerce_type <- function(values, field, as_numeric=TRUE, df="plot.data") {
     if (as_numeric) {
         if (!is.numeric(values)) {
             warning("coloring covariate has too many unique values, coercing to numeric")
-            col_var <- sprintf("plot.data$%s", field)
+            col_var <- sprintf("%s$%s", df, field)
             if (!is.factor(values)) {
                 col_var <- sprintf("as.factor(%s)", col_var)
             }
-            return(sprintf("plot.data$%s <- as.numeric(%s);", field, col_var))
+            return(sprintf("%s$%s <- as.numeric(%s);", df, field, col_var))
         }
     } else {
         if (!is.factor(values)) {
-            return(sprintf("plot.data$%s <- factor(plot.data$%s);", field, field))
+            return(sprintf("%s$%s <- factor(%s$%s);", df, field, df, field))
         }
     }
     return(NULL)
@@ -1251,7 +1251,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 }
 
 #' Add multiple selection plotting commands
-#' 
+#'
 #' Add \link{ggplot} instructions to create brushes and lassos for both saved and active mutliple selections in a \linkS4class{DotPlot} panel.
 #'
 #' @param x An instance of a \linkS4class{DotPlot} class.
@@ -1268,13 +1268,13 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' so developers should not use these names for their own variables in \code{envir}.
 #'
 #' If no self-selection structures exist in \code{x}, \code{commands} is returned directly withou modification.
-#' 
+#'
 #' @author Aaron Lun
 #' @export
 #' @rdname addMultiSelectionCommands
 .addMultiSelectionPlotCommands <- function(x, envir, commands, flip=FALSE) {
     self_select_cmds <- .self_select_boxes(x, flip=flip)
-    
+
     if (length(self_select_cmds)) {
         N <- length(commands)
         commands[N] <- paste(commands[N], "+")

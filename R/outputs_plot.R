@@ -24,7 +24,11 @@
     output[[plot_name]] <- renderPlot({
         p.out <- .retrieveOutput(plot_name, se, pObjects, rObjects)
         pObjects$varname[[plot_name]] <- "plot.data"
-        p.out$plot
+        if (is(p.out$plot, "Heatmap")) {
+            do.call(draw, append(p.out$draw_args_list, list(object=p.out$plot)))
+        } else {
+            p.out$plot
+        }
     })
 
     invisible(NULL)
@@ -46,7 +50,7 @@
 #'
 #' @rdname INTERNAL_define_plot_ui
 #' @importFrom shinyWidgets addSpinner
-#' @importFrom shiny brushOpts
+#' @importFrom shiny brushOpts plotOutput
 .define_plot_ui <- function(plot_name, height, brush_direction, brush_fill, brush_stroke) {
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
@@ -72,7 +76,7 @@
 #'
 #' @param x An instance of a \linkS4class{DotPlot} class.
 #' @param envir An environment containing \code{plot.data}.
-#' 
+#'
 #' @return A list containing \code{commands}, a list of character vectors with R commands;
 #' and \code{labels}, a list of strings containing various labels to use in legends.
 #'
@@ -84,14 +88,14 @@
     labels <- list()
 
     # Add commands coercing X and Y to appropriate type
-    collected$coerce <- .coerce_plot_data_columns(envir, c("X", "Y"))
+    collected$coerce <- .coerce_dataframe_columns(envir, c("X", "Y"), "plot.data")
 
     # Add commands adding optional columns to plot.data
     out_color <- .addDotPlotDataColor(x, envir)
     collected$color <- out_color$commands
     labels <- c(labels, out_color$labels)
     if (!is.null(envir$plot.data$ColorBy)) {
-        collected$color <- c(collected$color, .coerce_plot_data_columns(envir, "ColorBy"))
+        collected$color <- c(collected$color, .coerce_dataframe_columns(envir, "ColorBy", "plot.data"))
     }
 
     out_shape <- .addDotPlotDataShape(x, envir)
@@ -122,8 +126,9 @@
 #' otherwise make them numeric by any means possible.
 #' This ensures that downstream code only has to deal with factors or numbers.
 #'
-#' @param envir An environment containing the \code{plot.data} data.frame.
+#' @param envir An environment containing the \code{df} data.frame.
 #' @param fields A character vector of column names to coerce.
+#' @param df Name of the data.frame in \code{envir}.
 #'
 #' @return
 #' The specified \code{plot.data} columns are coerced to factors or numeric values.
@@ -132,12 +137,12 @@
 #' @seealso
 #' \code{\link{.coerce_type}}, which generates the commands to do the coercion.
 #' @author Aaron Lun, Kevin Rue-Albrecht
-#' @rdname INTERNAL_coerce_plot_data_columns
-.coerce_plot_data_columns <- function(envir, fields) {
+#' @rdname INTERNAL_coerce_dataframe_columns
+.coerce_dataframe_columns <- function(envir, fields, df="plot.data") {
     coerce_cmds <- NULL
     for (f in fields) {
-        v <- envir$plot.data[[f]]
-        coerce_cmds <- c(coerce_cmds, .coerce_type(v, f, as_numeric=!.is_groupable(v)))
+        v <- get(df, envir = envir)[[f]]
+        coerce_cmds <- c(coerce_cmds, .coerce_type(v, f, as_numeric=!.is_groupable(v), df=df))
     }
     .text_eval(coerce_cmds, envir)
     coerce_cmds

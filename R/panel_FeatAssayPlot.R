@@ -163,7 +163,7 @@ setMethod(".refineParameters", "FeatAssayPlot", function(x, se) {
 
     x <- .replace_na_with_first(x, .featAssayAssay, all_assays)
 
-    for (field in c(.featAssayXAxisFeatName, .featAssayYAxisFeatName)) { 
+    for (field in c(.featAssayXAxisFeatName, .featAssayYAxisFeatName)) {
         x <- .replace_na_with_first(x, field, rownames(se))
     }
 
@@ -184,7 +184,7 @@ setValidity2("FeatAssayPlot", function(object) {
     msg <- .allowable_choice_error(msg, object, .featAssayXAxis,
         c(.featAssayXAxisNothingTitle, .featAssayXAxisColDataTitle, .featAssayXAxisFeatNameTitle))
 
-    msg <- .single_string_error(msg, object, 
+    msg <- .single_string_error(msg, object,
         c(.featAssayAssay, .featAssayXAxisColData, .featAssayXAxisRowTable,
         .featAssayXAxisFeatName, .featAssayYAxisRowTable, .featAssayYAxisFeatName))
 
@@ -216,7 +216,7 @@ setMethod(".defineDataInterface", "FeatAssayPlot", function(x, se, select_info) 
             label="Y-axis feature:", choices=NULL, selected=NULL, multiple=FALSE),
         selectInput(.input_FUN(.featAssayYAxisRowTable), label=NULL, choices=tab_by_row,
             selected=.choose_link(x[[.featAssayYAxisRowTable]], tab_by_row)),
-        selectInput(.input_FUN(.featAssayAssay), label=NULL,
+        selectInput(paste0(.getEncodedName(x), "_", .featAssayAssay), label=NULL,
             choices=all_assays, selected=x[[.featAssayAssay]]),
         radioButtons(.input_FUN(.featAssayXAxis), label="X-axis:", inline=TRUE,
             choices=xaxis_choices, selected=x[[.featAssayXAxis]]),

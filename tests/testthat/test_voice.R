@@ -11,7 +11,7 @@ memory <- list(
     RowDataPlot(PanelId=1L),
     SampAssayPlot(PanelId=1L),
     ColStatTable(PanelId=1L),
-    HeatMapPlot(PanelId=1L))
+    ComplexHeatmapPlot(PanelId=1L))
 
 # Setting up the reservoir.
 reservoir <- list(
@@ -22,7 +22,7 @@ reservoir <- list(
     RowDataPlot(),
     SampAssayPlot(),
     ColStatTable(),
-    HeatMapPlot()
+    ComplexHeatmapPlot()
 )
 
 # Set up alternative object.

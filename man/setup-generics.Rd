@@ -36,7 +36,7 @@ In \code{.refineParameters(x, se)}, the following arguments are required:
 \item \code{se}, the \linkS4class{SummarizedExperiment} object containing the current dataset.
 }
 
-Methods for this generic should return a copy of \code{x} 
+Methods for this generic should return a copy of \code{x}
 where slots with invalid values are replaced with appropriate entries from \code{se}.
 This is necessary because the constructor and validity methods for \code{x} does not know about \code{se};
 thus, certain slots (e.g., for the row/column names) cannot be set to a reasonable default or checked at that point.

@@ -31,13 +31,13 @@ DUMMY_BRUSH <- list(
 
 test_that(".process_selectby_choice works with a column-based brush", {
     plot_env <- new.env()
-    cmds <- .processMultiSelections(pObjects$memory$ColDataPlot1, pObjects$memory, pObjects$contents, plot_env) 
+    cmds <- .processMultiSelections(pObjects$memory$ColDataPlot1, pObjects$memory, pObjects$contents, plot_env)
     expect_false(exists('col_selected', envir=plot_env))
     expect_identical(length(cmds), 0L)
 
     pObjects$memory$RedDimPlot1[[iSEE:::.brushData]] <- DUMMY_BRUSH
     plot_env <- new.env()
-    cmds <- .processMultiSelections(pObjects$memory$ColDataPlot1, pObjects$memory, pObjects$contents, plot_env) 
+    cmds <- .processMultiSelections(pObjects$memory$ColDataPlot1, pObjects$memory, pObjects$contents, plot_env)
 
     expect_true(exists('col_selected', envir=plot_env))
     expect_true(any(grepl("RedDimPlot1", unlist(cmds))))
@@ -48,13 +48,13 @@ test_that(".process_selectby_choice works with a column-based brush", {
 
 test_that(".process_selectby_choice works with a row-based brush", {
     plot_env <- new.env()
-    cmds <- .processMultiSelections(pObjects$memory$RowDataPlot1, pObjects$memory, pObjects$contents, plot_env) 
+    cmds <- .processMultiSelections(pObjects$memory$RowDataPlot1, pObjects$memory, pObjects$contents, plot_env)
     expect_false(exists('row_selected', envir=plot_env))
     expect_identical(length(cmds), 0L)
 
     pObjects$memory$SampAssayPlot1[[iSEE:::.brushData]] <- DUMMY_BRUSH
     plot_env <- new.env()
-    cmds <- .processMultiSelections(pObjects$memory$RowDataPlot1, pObjects$memory, pObjects$contents, plot_env) 
+    cmds <- .processMultiSelections(pObjects$memory$RowDataPlot1, pObjects$memory, pObjects$contents, plot_env)
 
     expect_true(exists('row_selected', envir=plot_env))
     expect_true(any(grepl("SampAssayPlot1", unlist(cmds))))
@@ -85,14 +85,14 @@ OPEN_LASSO$closed <- FALSE
 
 test_that(".process_selectby_choice works with a column-based lasso", {
     plot_env <- new.env()
-    pObjects$memory$RedDimPlot1[[iSEE:::.brushData]] <- OPEN_LASSO 
-    cmds <- .processMultiSelections(pObjects$memory$ColDataPlot1, pObjects$memory, pObjects$contents, plot_env) 
+    pObjects$memory$RedDimPlot1[[iSEE:::.brushData]] <- OPEN_LASSO
+    cmds <- .processMultiSelections(pObjects$memory$ColDataPlot1, pObjects$memory, pObjects$contents, plot_env)
     expect_false(exists('col_selected', envir=plot_env))
     expect_identical(length(cmds), 0L)
 
     pObjects$memory$RedDimPlot1[[iSEE:::.brushData]] <- DUMMY_LASSO
     plot_env <- new.env()
-    cmds <- .processMultiSelections(pObjects$memory$ColDataPlot1, pObjects$memory, pObjects$contents, plot_env) 
+    cmds <- .processMultiSelections(pObjects$memory$ColDataPlot1, pObjects$memory, pObjects$contents, plot_env)
 
     expect_true(exists('col_selected', envir=plot_env))
     expect_true(any(grepl("RedDimPlot1", unlist(cmds))))
@@ -103,14 +103,14 @@ test_that(".process_selectby_choice works with a column-based lasso", {
 
 test_that(".process_selectby_choice works with a row-based lasso", {
     plot_env <- new.env()
-    pObjects$memory$SampAssayPlot1[[iSEE:::.brushData]] <- OPEN_LASSO 
-    cmds <- .processMultiSelections(pObjects$memory$RowDataPlot1, pObjects$memory, pObjects$contents, plot_env) 
+    pObjects$memory$SampAssayPlot1[[iSEE:::.brushData]] <- OPEN_LASSO
+    cmds <- .processMultiSelections(pObjects$memory$RowDataPlot1, pObjects$memory, pObjects$contents, plot_env)
     expect_false(exists('row_selected', envir=plot_env))
     expect_identical(length(cmds), 0L)
 
     pObjects$memory$SampAssayPlot1[[iSEE:::.brushData]] <- DUMMY_LASSO
     plot_env <- new.env()
-    cmds <- .processMultiSelections(pObjects$memory$RowDataPlot1, pObjects$memory, pObjects$contents, plot_env) 
+    cmds <- .processMultiSelections(pObjects$memory$RowDataPlot1, pObjects$memory, pObjects$contents, plot_env)
 
     expect_true(exists('row_selected', envir=plot_env))
     expect_true(any(grepl("SampAssayPlot1", unlist(cmds))))
@@ -118,7 +118,7 @@ test_that(".process_selectby_choice works with a row-based lasso", {
 
     pObjects$memory$SampAssayPlot1[[iSEE:::.brushData]] <- list()
 })
-  
+
 ###############################################
 
 test_that(".process_selectby_choice works with saved column selections", {
@@ -127,14 +127,14 @@ test_that(".process_selectby_choice works with saved column selections", {
 
     # No response when still looking for the active brush.
     plot_env <- new.env()
-    cmds <- .processMultiSelections(cdp, pObjects$memory, pObjects$contents, plot_env) 
+    cmds <- .processMultiSelections(cdp, pObjects$memory, pObjects$contents, plot_env)
     expect_false(exists('col_selected', envir=plot_env))
     expect_identical(length(cmds), 0L)
 
     # Responds after asking for the union.
     cdp[[iSEE:::.selectColType]] <- iSEE:::.selectMultiUnionTitle
     plot_env <- new.env()
-    cmds <- .processMultiSelections(cdp, pObjects$memory, pObjects$contents, plot_env) 
+    cmds <- .processMultiSelections(cdp, pObjects$memory, pObjects$contents, plot_env)
 
     expect_true(exists('col_selected', envir=plot_env))
     expect_true(any(grepl("RedDimPlot1", unlist(cmds))))
@@ -143,13 +143,13 @@ test_that(".process_selectby_choice works with saved column selections", {
     # No response after asking for save... until we specify which saved element we want.
     plot_env <- new.env()
     cdp[[iSEE:::.selectColType]] <- iSEE:::.selectMultiSavedTitle
-    cmds <- .processMultiSelections(cdp, pObjects$memory, pObjects$contents, plot_env) 
+    cmds <- .processMultiSelections(cdp, pObjects$memory, pObjects$contents, plot_env)
     expect_false(exists('col_selected', envir=plot_env))
     expect_identical(length(cmds), 0L)
 
     cdp[[iSEE:::.selectColSaved]] <- 1L
     plot_env <- new.env()
-    cmds <- .processMultiSelections(cdp, pObjects$memory, pObjects$contents, plot_env) 
+    cmds <- .processMultiSelections(cdp, pObjects$memory, pObjects$contents, plot_env)
 
     expect_true(exists('col_selected', envir=plot_env))
     expect_true(any(grepl("RedDimPlot1", unlist(cmds))))
@@ -194,3 +194,18 @@ test_that(".process_selectby_choice works with saved row selections", {
 
     pObjects$memory$SampAssayPlot1[[iSEE:::.brushData]] <- list()
 })
+
+test_that(".any_saved_selection returns the appropriate value ", {
+
+  x <- RedDimPlot()
+
+  # Return whether there is at least one saved selection
+  out <- .any_saved_selection(x, count = FALSE)
+  expect_identical(out, FALSE)
+
+  # Return the count of selections instead
+  out <- .any_saved_selection(x, count = TRUE)
+  expect_identical(out, 0L)
+
+})
+

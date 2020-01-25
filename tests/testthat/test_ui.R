@@ -41,4 +41,8 @@ test_that(".choose_links behaves as expected", {
     # Return first available value if chosen is not available, and default is forced
     out <- iSEE:::.choose_link(chosenValue, availableValues)
     expect_identical(out, availableValues[1])
+
+    # Return "" is there are no available values
+    out <- iSEE:::.choose_link(chosenValue, character(0))
+    expect_identical(out, "")
 })

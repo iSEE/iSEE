@@ -20,7 +20,7 @@ metadata(sce)$colormap <- ExperimentColorMap()
 # .make_redDimPlot/.scatter_plot ----
 
 test_that(".make_redDimPlot/.scatter_plot produce a valid list",{
-    p.out <- .generateOutput(pObjects$memory$RedDimPlot1, sce, 
+    p.out <- .generateOutput(pObjects$memory$RedDimPlot1, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)
 
     # return value is a named list
@@ -93,7 +93,7 @@ test_that(".make_colDataPlot/.scatter_plot produce a valid xy with color", {
 # .make_colDataPlot/.violin_plot ----
 
 test_that(".make_colDataPlot/.violin_plot produce a valid list",{
-    p.out <- .generateOutput(pObjects$memory$ColDataPlot1, sce, 
+    p.out <- .generateOutput(pObjects$memory$ColDataPlot1, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)
 
     # return value is a named list
@@ -116,7 +116,7 @@ test_that(".make_colDataPlot/.violin_plot produce a valid xy with color", {
     cdp <- pObjects$memory$ColDataPlot1
     cdp[[iSEE:::.colorByField]] <- iSEE:::.colorByColDataTitle
 
-    p.out <- .generateOutput(cdp, sce, 
+    p.out <- .generateOutput(cdp, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)
 
     expect_named(p.out$contents, c("Y","X","ColorBy","GroupBy","jitteredX"))
@@ -131,7 +131,7 @@ test_that(".make_colDataPlot/.square_plot produce a valid list",{
     cdp[[iSEE:::.colDataXAxisColData]] <- "driver_1_s"
     cdp[[iSEE:::.colDataYAxis]] <- "passes_qc_checks_s"
 
-    p.out <- .generateOutput(cdp, sce, 
+    p.out <- .generateOutput(cdp, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)
 
     # return value is a named list
@@ -157,7 +157,7 @@ test_that(".make_colDataPlot/.square_plot produce a valid xy with color", {
     cdp[[iSEE:::.colDataYAxis]] <- "passes_qc_checks_s"
     cdp[[iSEE:::.colorByField]] <- iSEE:::.colorByColDataTitle
 
-    p.out <- .generateOutput(cdp, sce, 
+    p.out <- .generateOutput(cdp, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)
 
     expect_named(p.out$contents, c("Y","X","ColorBy","jitteredX","jitteredY"))
@@ -461,8 +461,8 @@ test_that(".make_colDataPlot/.create_plot can produce horizontal violins", {
     cdp2[[iSEE:::.colDataXAxisColData]] <- selected_coldataY
     cdp2[[iSEE:::.colDataYAxis]] <- selected_coldataX
 
-    p.out1 <- .generateOutput(cdp1, sce, all_memory=pObjects$memory, all_contents=pObjects$contents) 
-    p.out2 <- .generateOutput(cdp2, sce, all_memory=pObjects$memory, all_contents=pObjects$contents) 
+    p.out1 <- .generateOutput(cdp1, sce, all_memory=pObjects$memory, all_contents=pObjects$contents)
+    p.out2 <- .generateOutput(cdp2, sce, all_memory=pObjects$memory, all_contents=pObjects$contents)
 
     # Contents should be the same.
     expect_identical(p.out1$contents, p.out2$contents)
@@ -534,7 +534,7 @@ test_that(".make_colDataPlot/.violin_plot works with zoom",{
 test_that(".make_colDataPlot/.violin_plot works with zoom",{
     cdp <- pObjects$memory$ColDataPlot1
     cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
-    chosen_x <- "NREADS" 
+    chosen_x <- "NREADS"
     cdp[[iSEE:::.colDataXAxisColData]] <- chosen_x
     chosen_y <- "driver_1_s"
     cdp[[iSEE:::.colDataYAxis]] <- chosen_y
@@ -568,7 +568,7 @@ test_that(".make_colDataPlot/.violin_plot works with zoom",{
 test_that(".make_colDataPlot/.square_plot works with zoom",{
     cdp <- pObjects$memory$ColDataPlot1
     cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
-    chosen_x <- "passes_qc_checks_s" 
+    chosen_x <- "passes_qc_checks_s"
     cdp[[iSEE:::.colDataXAxisColData]] <- chosen_x
     chosen_y <- "driver_1_s"
     cdp[[iSEE:::.colDataYAxis]] <- chosen_y
@@ -628,7 +628,7 @@ test_that(".define_colorby_for_column_plot handles sample selection", {
     params <- pObjects$memory$RedDimPlot1
     params[[iSEE:::.colorByField]] <- iSEE:::.colorBySampNameTitle
     cn <- colnames(sce)[3]
-    params[[ iSEE:::.colorBySampName]] <- cn 
+    params[[ iSEE:::.colorBySampName]] <- cn
 
     env <- new.env()
     env$se <- sce
@@ -649,7 +649,7 @@ test_that(".define_colorby_for_row_plot handles sample selection", {
     params <- pObjects$memory$RowDataPlot1
     params[[iSEE:::.colorByField]] <- iSEE:::.colorByFeatNameTitle
     rn <- rownames(sce)[3]
-    params[[iSEE:::.colorByFeatName]] <- rn 
+    params[[iSEE:::.colorByFeatName]] <- rn
 
     env <- new.env()
     env$se <- sce
@@ -786,7 +786,7 @@ test_that(".coerce_type handles various inputs correctly", {
 })
 
 ########################################
-# .create_points handles various selection effects ---
+# .create_points handles various selection effects ----
 
 test_that(".create_points handles selection effects", {
     all_memory <- pObjects$memory
@@ -794,7 +794,7 @@ test_that(".create_points handles selection effects", {
     fap <- all_memory$FeatAssayPlot1
     fap[[iSEE:::.selectColSource]] <- .getEncodedName(rdp)
 
-    rd <- reducedDim(sce, rdp[[iSEE:::.redDimType]]) 
+    rd <- reducedDim(sce, rdp[[iSEE:::.redDimType]])
     x_10 <- head(rd[, rdp[[iSEE:::.redDimXAxis]]], 10)
     y_10 <- head(rd[, rdp[[iSEE:::.redDimYAxis]]], 10)
 
@@ -825,6 +825,22 @@ test_that(".create_points handles selection effects", {
     expect_true(!is.null(out$contents$SelectBy))
     expect_true(any(grepl("plot.data.all", unlist(out$commands))))
     expect_true(any(grepl("subset.*SelectBy", unlist(out$commands))))
+})
+
+########################################
+# .create_points handles sizing effects ----
+
+test_that(".create_points handles sizing effects", {
+
+    all_memory <- pObjects$memory
+    rdp <- all_memory$RedDimPlot1
+    rdp[[iSEE:::.sizeByField]] <- iSEE:::.sizeByColDataTitle
+
+    out <- .generateOutput(rdp, sce, all_memory=all_memory, all_contents=pObjects$contents)
+
+    expect_true(!is.null(out$contents$SizeBy))
+    expect_true(any(grepl("geom_point.*SizeBy.*alpha", unlist(out$commands))))
+
 })
 
 ########################################
@@ -859,7 +875,7 @@ test_that(".self_brush_box can flip axes", {
 
     brushData <- list(xmin=1, xmax=2, ymin=3, ymax=4)
     cdp[[iSEE:::.brushData]] <- brushData
-    
+
     out <- iSEE:::.self_select_boxes(cdp, flip=TRUE)
     expect_match(out, "aes(xmin=ymin, xmax=ymax, ymin=xmin, ymax=xmax)", fixed=TRUE)
 })
@@ -939,6 +955,36 @@ test_that(".self_lasso_path work with an open path", {
     expect_identical(lasso_cmd[4], "guides(shape='none')")
 })
 
+test_that(".self_lasso_path work with an open path and a ShapeBy covariate", {
+    rdp <- pObjects$memory$RedDimPlot1
+
+    rdp[[iSEE:::.shapeByField]] <- iSEE:::.shapeByColDataTitle
+
+    rd <- reducedDim(sce, rdp[[iSEE:::.redDimType]])
+    x_10 <- head(rd[, rdp[[iSEE:::.redDimXAxis]]], 10)
+    y_10 <- head(rd[, rdp[[iSEE:::.redDimYAxis]]], 10)
+
+    new_lasso <- list(lasso=NULL, closed=FALSE, panelvar1=NULL,
+        panelvar2=NULL, mapping=list(x="X", y="Y"))
+    new_lasso$coord <- matrix(
+        data=c(
+            min(x_10), min(y_10),
+            max(x_10), min(y_10),
+            max(x_10), max(y_10)
+        ),
+        ncol=2,
+        byrow=TRUE
+    )
+
+    rdp[[iSEE:::.brushData]] <- new_lasso
+
+    lasso_cmd <- iSEE:::.self_select_boxes(rdp, flip=FALSE)
+    expect_match(lasso_cmd[1], "geom_path", fixed=TRUE)
+    expect_match(lasso_cmd[2], "geom_point", fixed=TRUE)
+    expect_identical(lasso_cmd[3], "scale_size_manual(values=c('TRUE'=1.5, 'FALSE'=0.25))")
+    expect_identical(lasso_cmd[4], "guides(size='none')")
+})
+
 test_that(".self_lasso_path work with a closed path", {
     rdp <- pObjects$memory$RedDimPlot1
 
@@ -984,7 +1030,7 @@ test_that(".self_lasso_path works with multiple lassos", {
 
     lasso_cmd <- iSEE:::.self_select_boxes(cdp, flip=FALSE)
     expect_type(lasso_cmd, "character")
-    expect_length(lasso_cmd, 2*length(lassoHistory)) # length=(polygon+text)*2 lassos 
+    expect_length(lasso_cmd, 2*length(lassoHistory)) # length=(polygon+text)*2 lassos
     expect_match(lasso_cmd[1], "geom_polygon", fixed=TRUE)
     expect_match(lasso_cmd[2], "geom_text", fixed=TRUE)
 })
@@ -1135,7 +1181,7 @@ test_that(".downsample_points produces the appropriate code for square plots", {
 
     cdp[[iSEE:::.plotPointDownsample]] <- TRUE
     out <- .generateOutput(cdp, sce, all_memory=all_memory, all_contents=pObjects$contents)
-    
+
     expect_true(any(grepl("subsetPointsByGrid.*jitteredX.*jitteredY", unlist(out$commands))))
     expect_true(any(grepl("plot.data.pre", unlist(out$commands))))
 })
@@ -1153,7 +1199,7 @@ test_that(".downsample_points produces the appropriate code for violin plots", {
 
     cdp[[iSEE:::.plotPointDownsample]] <- TRUE
     out <- .generateOutput(cdp, sce, all_memory=all_memory, all_contents=pObjects$contents)
-    
+
     expect_true(any(grepl("subsetPointsByGrid.*jitteredX", unlist(out$commands))))
     expect_true(any(grepl("plot.data.pre", unlist(out$commands))))
 })
@@ -1171,7 +1217,7 @@ test_that(".downsample_points produces the appropriate code for horizontal violi
 
     cdp[[iSEE:::.plotPointDownsample]] <- TRUE
     out <- .generateOutput(cdp, sce, all_memory=all_memory, all_contents=pObjects$contents)
-    
+
     expect_true(any(grepl("subsetPointsByGrid.*jitteredX", unlist(out$commands))))
     expect_true(any(grepl("plot.data.pre", unlist(out$commands))))
 })
@@ -1180,7 +1226,7 @@ test_that(".downsample_points produces the appropriate code for horizontal violi
 # .create_plot ----
 
 test_that(".create_plot can add faceting commands", {
-    rdp <- pObjects$memory$RedDimPlot1 
+    rdp <- pObjects$memory$RedDimPlot1
     rdp[[iSEE:::.facetByColumn]] <- "driver_1_s"
 
     out <- .generateOutput(rdp, sce, all_memory=all_memory, all_contents=pObjects$contents)
@@ -1188,7 +1234,7 @@ test_that(".create_plot can add faceting commands", {
 })
 
 test_that("2d density contours can be added to scatter plots ", {
-    rdp <- pObjects$memory$RedDimPlot1 
+    rdp <- pObjects$memory$RedDimPlot1
     rdp[[iSEE:::.contourAdd]] <- TRUE
     out <- .generateOutput(rdp, sce, all_memory=all_memory, all_contents=pObjects$contents)
     expect_true(any(grepl("geom_density_2d", out$commands$plot, fixed=TRUE)))
@@ -1221,7 +1267,7 @@ test_that("plots subsetted to no data contain a geom_blank command", {
     cdp[[iSEE:::.colDataYAxis]] <- "dissection_s"
 
     out <- iSEE:::.square_plot(
-        plot_data=data.frame(), param_choices=cdp, 
+        plot_data=data.frame(), param_choices=cdp,
         "x_lab", "y_lab", "color_lab", "shape_lab", "size_lab", "title",
         by_row=FALSE, is_subsetted=TRUE)
 

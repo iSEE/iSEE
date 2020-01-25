@@ -351,9 +351,15 @@ test_that("assayColorMap returns appropriate values",{
         COUNT_COLORS(21L)
     )
 
-    # specific > (continuous) all > global
+    # specific > (continuous) all > global (character)
     expect_equal(
         assayColorMap(ecm, "undefined", discrete=FALSE)(21L),
+        ASSAY_CONTINUOUS_COLORS(21L)
+    )
+
+    # specific > (continuous) all > global (numeric out-of-bound)
+    expect_equal(
+        assayColorMap(ecm, 2, discrete = FALSE)(21L),
         ASSAY_CONTINUOUS_COLORS(21L)
     )
 

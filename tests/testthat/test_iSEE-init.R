@@ -8,7 +8,7 @@ memory <- list(
     ColDataPlot(SelectColSource="RedDimPlot1", ColorBy="Feature name", ColorByRowTable="RowStatTable1"),
     ColDataPlot(SelectColSource="RedDimPlot1"),
     FeatAssayPlot(SelectColSource="ColDataPlot1"),
-    FeatAssayPlot(SelectColSource="FeatAssayPlot1", XAxis="Feature name", 
+    FeatAssayPlot(SelectColSource="FeatAssayPlot1", XAxis="Feature name",
         YAxisRowTable="RowStatTable1", XAxisRowTable="RowStatTable2"),
     RowStatTable(),
     RowStatTable(),
@@ -81,7 +81,7 @@ test_that(".define_reservoir works correctly", {
     expect_identical(res_out2$reservoir, c(res_out$reservoir, list(RowDataPlot=.refineParameters(RowDataPlot(), sce))))
 
     # Multiple copies don't change the outcome.
-    res_out3 <- iSEE:::.define_reservoir(sce, 
+    res_out3 <- iSEE:::.define_reservoir(sce,
         list(RowDataPlot(), RowDataPlot(PanelHeight=1000L), ColDataPlot(), RedDimPlot(Type="TSNE")),
         init_out$memory, init_out$counter)
     expect_identical(res_out3, res_out2)
@@ -96,4 +96,11 @@ test_that("persistent object setup works as expected", {
     expect_identical(pObjects$memory, init_out$memory)
     expect_type(pObjects$commands, "list")
     expect_true(is(pObjects$selection_links, "igraph"))
+})
+
+test_that(".setup_initial_state throws an error for duplicated panel identifiers", {
+    sce <- iSEE:::.prepare_SE(sce, ExperimentColorMap(), memory)
+    memory <- list(RedDimPlot(PanelId=1L), RedDimPlot(PanelId=1L))
+    expect_error(.setup_initial_state(sce, memory),
+        "panels of same class with duplicated IDs 'RedDimPlot1'", fixed=TRUE)
 })

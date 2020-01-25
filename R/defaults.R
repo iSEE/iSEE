@@ -17,12 +17,12 @@
 #' @param number Integer scalar specfiying the number of panels to use.
 #'
 #' @details
-#' The \code{\link{iSEE}} function will attempt to translate the default parameters here into a 
+#' The \code{\link{iSEE}} function will attempt to translate the default parameters here into a
 #' the new S4 framework based on the \linkS4class{Panel} and its subclasses.
-#' 
+#'
 #' @author Aaron Lun
 #'
-#' @return 
+#' @return
 #' A DataFrame containing default settings for parameters of each of \code{number} feature assay panels.
 #'
 #' @examples
@@ -255,19 +255,19 @@ heatMapPlotDefaults <- function(se, number) {
     out[[.heatMapClusterDistanceFeatures]] <- .clusterDistanceSpearman
     out[[.heatMapClusterMethodFeatures]] <- .clusterMethodWardD2
     out[[.dataParamBoxOpen]] <- FALSE
-    
+
     out[[.heatMapColData]] <- def_coldata
     out[[.heatMapRowData]] <- NA_character_
-    
+
     out[[.showDimnames]] <- c(.showNamesRowTitle)
-    
+
     out[[.plotLegendPosition]] <- .plotLegendBottomTitle
     out[[.plotLegendDirection]] <- .plotLegendHorizontalTitle
     out[[.visualParamBoxOpen]] <- FALSE
-    
+
     out[[.selectEffect]] <- .selectColorTitle
     out[[.selectColor]] <- "red"
-    
+
     out[[.selectByPlot]] <- .noSelection
     out[[.selectMultiType]] <- .selectMultiActiveTitle
     out[[.selectMultiSaved]] <- 0L
@@ -500,7 +500,7 @@ heatMapPlotDefaults <- function(se, number) {
         suppressWarnings(rowStatArgs <- rowStatTableDefaults(se, 5))
     }
     collected <- c(collected, .translate_to_class(rowStatArgs, RowStatTable, se, TRUE))
-    
+
     if (is.null(rowDataArgs)) {
         suppressWarnings(rowDataArgs <- rowDataPlotDefaults(se, 5))
     }
@@ -510,22 +510,22 @@ heatMapPlotDefaults <- function(se, number) {
         suppressWarnings(sampAssayArgs <- sampAssayPlotDefaults(se, 5))
     }
     collected <- c(collected, .translate_to_class(sampAssayArgs, SampAssayPlot, se, TRUE))
-    
+
     if (is.null(colStatArgs)) {
         suppressWarnings(colStatArgs <- colStatTableDefaults(se, 5))
     }
     collected <- c(collected, .translate_to_class(colStatArgs, ColStatTable, se, FALSE))
-    
+
     if (is.null(heatMapArgs)) {
         suppressWarnings(heatMapArgs <- heatMapPlotDefaults(se, 5))
     }
     collected <- c(collected, .translate_to_class(heatMapArgs, ComplexHeatmapPlot, se, FALSE))
-    
+
     names(collected) <- vapply(collected, .getEncodedName, "")
 
     # Pulling out the initialPanels only.
     memory <- list()
-    for (x in seq_len(nrow(initialPanels))) {
+    for (x in seq_len(max(nrow(initialPanels), 0L))) {
         name <- .convert_old_name_to_new(initialPanels$Name[x])
         if (!name %in% names(collected)) {
             next
@@ -567,7 +567,7 @@ heatMapPlotDefaults <- function(se, number) {
         # Converting the faceting to the new world:
         if (.facetByRow %in% nm) {
             row_target <- if (is_row) .facetRowsByRowData else .facetRowsByColData
-            col_target <- if (is_row) .facetColumnsByRowData else .facetColumnsByColData 
+            col_target <- if (is_row) .facetColumnsByRowData else .facetColumnsByColData
 
             parameters[[.facetByRow]] <- parameters[[row_target]]
             if (is.na(parameters[[.facetByRow]])) parameters[[.facetByRow]] <- .noSelection
@@ -635,15 +635,15 @@ heatMapPlotDefaults <- function(se, number) {
 .convert_old_name_to_new <- function(old_name) {
     ref <- sub(" [0-9]+$", "", old_name)
     converter <- c(
-        RedDimPlot="Reduced dimension plot", 
-        FeatAssayPlot="Feature assay plot", 
-        ColStatTable="Column statistics table", 
-        ColDataPlot="Column data plot", 
-        RowDataPlot="Row data plot", 
-        RowStatTable="Row statistics table", 
+        RedDimPlot="Reduced dimension plot",
+        FeatAssayPlot="Feature assay plot",
+        ColStatTable="Column statistics table",
+        ColDataPlot="Column data plot",
+        RowDataPlot="Row data plot",
+        RowStatTable="Row statistics table",
         SampAssayPlot="Sample assay plot",
         ComplexHeatmapPlot="Heat map")
-    
+
     if (ref %in% converter) {
         idx <- as.integer(sub(".* ", "", old_name))
         if (!is.na(idx)) {

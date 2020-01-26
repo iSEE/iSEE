@@ -63,3 +63,17 @@ test_that(".refineParameters handles corner case where x is NULL", {
     expect_null(out, NULL)
 
 })
+
+test_that(".colorDotPlot returns NULL when coloring DotPlot by nothing", {
+
+    x <- ColDataPlot()
+    x[[iSEE:::.colorByField]] <- iSEE:::.colorByNothingTitle
+    out <- .colorDotPlot(x, LETTERS)
+    expect_null(out)
+
+    x <- RowDataPlot()
+    x[[iSEE:::.colorByField]] <- iSEE:::.colorByNothingTitle
+    out <- .colorDotPlot(x, LETTERS)
+    expect_null(out)
+
+})

@@ -111,6 +111,27 @@ test_that(".refineParameters identifies impossible SampAssayPlot", {
 
 })
 
+test_that(".refineParameters identifies impossible FeatAssayPlot", {
+
+    x <- FeatAssayPlot()
+
+    sce0 <- sce[0, ]
+    sce0 <- .cacheCommonInfo(x, sce0)
+    expect_warning(.refineParameters(x, sce0),
+        "no rows available for plotting 'FeatAssayPlot'", fixed=TRUE)
+    out <- .refineParameters(x, sce0)
+    expect_null(out)
+
+    sce0 <- sce
+    assays(sce0) <- List()
+    sce0 <- .cacheCommonInfo(x, sce0)
+    expect_warning(.refineParameters(x, sce0),
+        "no valid 'assays' for plotting 'FeatAssayPlot'", fixed=TRUE)
+    out <- .refineParameters(x, sce0)
+    expect_null(out)
+
+})
+
 test_that(".colorDotPlot returns NULL when coloring DotPlot by nothing", {
 
     x <- ColDataPlot()

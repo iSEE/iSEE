@@ -159,7 +159,11 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
     x <- .replace_na_with_first(x, .colorByRowData, available)
 
     assays <- dp_cached$valid.assay.names
-    x <- .replace_na_with_first(x, .colorBySampNameAssay, assays)
+    if (length(assays)) {
+        x <- .replace_na_with_first(x, .colorBySampNameAssay, assays)
+    } else {
+        x[[.colorBySampNameAssay]] <- NA_character_
+    }
 
     discrete <- rdp_cached$discrete.rowData.names
     x <- .replace_na_with_first(x, .shapeByRowData, discrete)
@@ -173,7 +177,7 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
 #' @export
 setMethod(".defineInterface", "RowDotPlot", function(x, se, select_info) {
     list(
-        .create_data_param_box(x, se, select_info), 
+        .create_data_param_box(x, se, select_info),
         .create_visual_box_for_row_plots(x, select_info$single$row, select_info$single$column, se),
         .create_dotplot_selection_param_box(x, select_info$multi$row, select_info$multi$column)
     )
@@ -278,7 +282,7 @@ setMethod(".addDotPlotDataSize", "RowDotPlot", function(x, envir) {
 })
 
 setMethod(".addDotPlotDataFacets", "RowDotPlot", function(x, envir) {
-    facet_cmds <- NULL 
+    facet_cmds <- NULL
     labels <- list()
 
     facet_row <- x[[.facetByRow]]

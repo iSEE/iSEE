@@ -1,6 +1,6 @@
 context("API")
 
-test_that(".refineParameters handles corner case where x is NULL", {
+test_that(".refineParameters handles NULL x", {
 
     FUN <- selectMethod(".refineParameters", signature="ColumnDotPlot")
     out <- FUN(NULL, sce)
@@ -61,6 +61,53 @@ test_that(".refineParameters handles corner case where x is NULL", {
     FUN <- selectMethod(".refineParameters", signature="SampAssayPlot")
     out <- FUN(NULL, sce)
     expect_null(out, NULL)
+
+})
+
+test_that(".refineParameters identifies impossible ColDataPlot", {
+
+    x <- ColDataPlot()
+
+    colData(sce) <- DataFrame(row.names = colnames(sce))
+    sce <- .cacheCommonInfo(x, sce)
+    expect_warning(.refineParameters(x, sce),
+        "no valid 'colData' fields for 'ColDataPlot'", fixed=TRUE)
+    out <- .refineParameters(x, sce)
+    expect_null(out)
+
+})
+
+test_that(".refineParameters identifies impossible RowDataPlot", {
+
+    x <- RowDataPlot()
+
+    rowData(sce) <- DataFrame(row.names = rownames(sce))
+    sce <- .cacheCommonInfo(x, sce)
+    expect_warning(.refineParameters(x, sce),
+        "no atomic 'rowData' fields for 'RowDataPlot'", fixed=TRUE)
+    out <- .refineParameters(x, sce)
+    expect_null(out)
+
+})
+
+test_that(".refineParameters identifies impossible SampAssayPlot", {
+
+    x <- SampAssayPlot()
+
+    sce0 <- sce[, 0]
+    sce0 <- .cacheCommonInfo(x, sce0)
+    expect_warning(.refineParameters(x, sce0),
+        "no columns for plotting 'SampAssayPlot'", fixed=TRUE)
+    out <- .refineParameters(x, sce0)
+    expect_null(out)
+
+    sce0 <- sce
+    assays(sce0) <- List()
+    sce0 <- .cacheCommonInfo(x, sce0)
+    expect_warning(.refineParameters(x, sce0),
+        "no valid 'assays' for plotting 'SampAssayPlot'", fixed=TRUE)
+    out <- .refineParameters(x, sce0)
+    expect_null(out)
 
 })
 

@@ -89,3 +89,14 @@ test_that(".create_width_height_observers returns NULL", {
     expect_null(out)
 
 })
+
+test_that(".create_table_observers returns NULL", {
+
+    input <- new.env()
+    pObjects <- new.env()
+    rObjects <- new.env()
+
+    out <- .create_table_observers("RedDimPlot1", input, session = NULL, pObjects, rObjects)
+    expect_null(out)
+
+})

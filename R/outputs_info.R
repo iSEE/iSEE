@@ -1,4 +1,4 @@
-#' Create information boxes 
+#' Create information boxes
 #'
 #' Create reactive elements to render text field containing various information for a given panel.
 #'
@@ -78,6 +78,8 @@
             do.call(tagList, all_output)
         }
     })
+
+    invisible(NULL)
 }
 
 #' @rdname INTERNAL_link_info_output
@@ -92,7 +94,7 @@
         graph <- pObjects$selection_links
 
         # Defining from 'selection_links' first.
-        parents <- names(adjacent_vertices(graph, plot_name, mode="in")[[1]]) 
+        parents <- names(adjacent_vertices(graph, plot_name, mode="in")[[1]])
         for (p in parents) {
             full_name <- .getFullName(pObjects$memory[[p]])
             info <- c(info, list("Receiving selection from", em(strong(full_name)), br()))
@@ -135,6 +137,8 @@
             do.call(tagList, info)
         }
     })
+
+    invisible(NULL)
 }
 
 #' @importFrom shiny tagList HTML a br

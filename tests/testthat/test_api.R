@@ -105,7 +105,7 @@ test_that(".refineParameters identifies impossible SampAssayPlot", {
     assays(sce0) <- List()
     sce0 <- .cacheCommonInfo(x, sce0)
     expect_warning(.refineParameters(x, sce0),
-        "no valid 'assays' for plotting 'SampAssayPlot'", fixed=TRUE)
+        "no named 'assays' for plotting 'SampAssayPlot'", fixed=TRUE)
     out <- .refineParameters(x, sce0)
     expect_null(out)
 

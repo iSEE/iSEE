@@ -13,7 +13,7 @@
 #' @return
 #' A reactive element to render the table is added to \code{output}.
 #' A \code{NULL} is invisibly returned.
-#' 
+#'
 #' @author Aaron Lun
 #'
 #' @rdname INTERNAL_create_table_output
@@ -21,7 +21,7 @@
 #' @importFrom utils head
 .create_table_output <- function(panel_name, se, output, pObjects, rObjects) {
     force(se)
-
+    # nocov start
     output[[panel_name]] <- renderDataTable({
         .trackUpdate(panel_name, rObjects)
         param_choices <- pObjects$memory[[panel_name]]
@@ -82,13 +82,15 @@
             selection=selection
         )
     })
+    # nocov end
+    invisible(NULL)
 }
 
 #' Generate the Table
 #'
 #' Define commands to generate the contents of the \linkS4class{Table}.
 #' This uses \code{\link{.generateTable}} and is itself called inside \code{\link{.generateOutput}}.
-#' 
+#'
 #' @param x An instance of a \linkS4class{Table} class.
 #' @param se A \linkS4class{SummarizedExperiment} object for the current dataset.
 #' @param all_memory A list of \linkS4class{Panel} instances representing the current state of the application.

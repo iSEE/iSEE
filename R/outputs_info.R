@@ -21,7 +21,7 @@
 #' @importFrom shiny tagList renderUI
 .create_selection_info_output <- function(plot_name, se, output, pObjects, rObjects) {
     gen_field <- paste0(plot_name, "_", .panelMultiSelectInfo)
-
+    # nocov start
     output[[gen_field]] <- renderUI({
         .trackMultiSelection(plot_name, rObjects)
         instance <- pObjects$memory[[plot_name]]
@@ -78,7 +78,7 @@
             do.call(tagList, all_output)
         }
     })
-
+    # nocov end
     invisible(NULL)
 }
 
@@ -87,7 +87,7 @@
 #' @importFrom igraph adjacent_vertices get.edge.ids E
 .create_link_info_output <- function(plot_name, output, pObjects, rObjects) {
     link_field <- paste0(plot_name, "_", .panelSelectLinkInfo)
-
+    # nocov start
     output[[link_field]] <- renderUI({
         .trackRelinkedSelection(plot_name, rObjects)
         info <- NULL
@@ -137,7 +137,7 @@
             do.call(tagList, info)
         }
     })
-
+    # nocov end
     invisible(NULL)
 }
 

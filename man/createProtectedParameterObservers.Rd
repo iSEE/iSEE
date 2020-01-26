@@ -44,7 +44,7 @@ A \code{NULL} is invisibly returned.
 }
 \description{
 Define a series of observers to track \dQuote{protected} or \dQuote{unprotected} parameters for a given panel.
-These will register input changes to each specified parameter in the app's memory 
+These will register input changes to each specified parameter in the app's memory
 and request an update to the output of the affected panel.
 }
 \details{

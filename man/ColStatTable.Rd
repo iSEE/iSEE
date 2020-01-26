@@ -48,7 +48,7 @@ This will also call the equivalent \linkS4class{ColumnTable} method for further 
 
 For defining the interface:
 \itemize{
-\item \code{\link{.hideInterface}(x, field)} returns \code{TRUE} if \code{field="DataBoxOpen"}, 
+\item \code{\link{.hideInterface}(x, field)} returns \code{TRUE} if \code{field="DataBoxOpen"},
 otherwise it calls \code{\link{.hideInterface,Table-method}}
 \item \code{\link{.fullName}(x)} will return the full name of the panel class.
 \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.

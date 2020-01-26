@@ -27,11 +27,13 @@
 #' @importFrom shiny renderUI reactiveValues observeEvent
 #' showModal modalDialog isolate removeModal
 .create_organization_observers <- function(se, input, output, session, pObjects, rObjects) {
+    # nocov start
     output$allPanels <- renderUI({
         force(rObjects$rerender)
         rObjects$rerendered <- .increment_counter(isolate(rObjects$rerendered))
         .panel_generation(se, pObjects$memory)
     })
+    # nocov end
 
     # Persistent objects to give the modal a 'working memory'.
     # These get captured in the current environment to persist
@@ -43,16 +45,9 @@
     available_enc <- vapply(pObjects$reservoir, .encodedName, "")
     names(available_enc) <- vapply(pObjects$reservoir, .fullName, "")
 
-    .define_choices <- function(memory, named=TRUE) {
-        enc_names <- vapply(memory, .getEncodedName, "")
-        if (named) {
-            names(enc_names) <- vapply(memory, .getFullName, "")
-        }
-        enc_names
-    }
     # nocov start
     observeEvent(input$organize_panels, {
-        enc_names <- .define_choices(pObjects$memory)
+        enc_names <- .define_memory_panel_choices(pObjects$memory)
         org_pObjects$memory <- pObjects$memory
         org_pObjects$counter <- pObjects$counter
 
@@ -86,7 +81,7 @@
     # nocov start
     observeEvent(input$panel_order, {
         ipo <- unname(input$panel_order)
-        enc_names <- .define_choices(org_pObjects$memory, named=FALSE)
+        enc_names <- .define_memory_panel_choices(org_pObjects$memory, named=FALSE)
         if (identical(ipo, enc_names)) {
             return(NULL)
         }
@@ -108,7 +103,7 @@
 
                 .create_width_height_observers(latest, input, org_pObjects)
             }
-            updated_names <- .define_choices(adjusted)
+            updated_names <- .define_memory_panel_choices(adjusted)
             updateSelectizeInput(session, 'panel_order',
                 choices=c(updated_names, available_enc), selected=updated_names)
         }
@@ -151,6 +146,22 @@
     # nocov end
 
     invisible(NULL)
+}
+
+#' List active panels in memory
+#'
+#' @param memory A list of \linkS4class{Panel} instances representing the app state.
+#' @param named A logical scalar indicating whether to name the return value with panel full names.
+#'
+#' @return A character name of encoded panel identifiers, optionally named with their full name.
+#'
+#' @rdname INTERNAL_define_memory_panel_choices
+.define_memory_panel_choices <- function(memory, named=TRUE) {
+    enc_names <- vapply(memory, .getEncodedName, "")
+    if (named) {
+        names(enc_names) <- vapply(memory, .getFullName, "")
+    }
+    enc_names
 }
 
 #' @importFrom shiny observeEvent

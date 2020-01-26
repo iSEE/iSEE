@@ -1,15 +1,15 @@
 context("Observers")
 
 memory <- list(
-    RedDimPlot(),
-    ColDataPlot(),
-    ColDataPlot(),
-    FeatAssayPlot(),
-    FeatAssayPlot(),
-    RowStatTable(),
-    RowStatTable(),
-    SampAssayPlot(),
-    ColStatTable()
+    RedDimPlot(PanelId=1L),
+    ColDataPlot(PanelId=1L),
+    ColDataPlot(PanelId=1L),
+    FeatAssayPlot(PanelId=1L),
+    FeatAssayPlot(PanelId=1L),
+    RowStatTable(PanelId=1L),
+    RowStatTable(PanelId=1L),
+    SampAssayPlot(PanelId=1L),
+    ColStatTable(PanelId=1L)
 )
 
 test_that("Observers return NULL", {
@@ -98,5 +98,24 @@ test_that(".create_table_observers returns NULL", {
 
     out <- .create_table_observers("RedDimPlot1", input, session = NULL, pObjects, rObjects)
     expect_null(out)
+
+})
+
+test_that(".define_memory_panel_choices returns expected values", {
+
+    UNNAMED <- NAMED <- c("RedDimPlot1", "ColDataPlot1", "ColDataPlot1",
+        "FeatAssayPlot1",  "FeatAssayPlot1", "RowStatTable1", "RowStatTable1",
+        "SampAssayPlot1",  "ColStatTable1")
+
+    names(NAMED) <- c("Reduced dimension plot 1", "Column data plot 1",
+        "Column data plot 1",  "Feature assay plot 1", "Feature assay plot 1",
+        "Row statistics table 1",  "Row statistics table 1", "Sample assay plot 1",
+        "Column statistics table 1")
+
+    out <- .define_memory_panel_choices(memory, named = FALSE)
+    expect_identical(out, UNNAMED)
+
+    out <- .define_memory_panel_choices(memory, named = TRUE)
+    expect_identical(out, NAMED)
 
 })

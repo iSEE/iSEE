@@ -40,7 +40,7 @@ A DataFrame containing default settings for parameters of each of \code{number} 
 These default-creating functions are deprecated and should be replaced by constructor calls.
 }
 \details{
-The \code{\link{iSEE}} function will attempt to translate the default parameters here into a 
+The \code{\link{iSEE}} function will attempt to translate the default parameters here into a
 the new S4 framework based on the \linkS4class{Panel} and its subclasses.
 }
 \examples{

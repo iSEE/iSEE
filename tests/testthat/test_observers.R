@@ -52,7 +52,6 @@ test_that("Observers return NULL", {
 
 })
 
-
 test_that(".mark_panel_as_modified appends the requested modes to rObjects", {
 
     rObjects <- new.env()
@@ -61,5 +60,32 @@ test_that(".mark_panel_as_modified appends the requested modes to rObjects", {
     out <- .mark_panel_as_modified(panel_name = "RedDimPlot1", mode = iSEE:::.panelResaved, rObjects = rObjects)
     expect_null(out)
     expect_identical(rObjects$modified[["RedDimPlot1"]], iSEE:::.panelResaved)
+
+})
+
+test_that(".create_organization_observers returns NULL", {
+
+    input <- new.env()
+    output <- new.env()
+    pObjects <- new.env()
+    rObjects <- new.env()
+
+    out <- .create_organization_observers(sce, input, output, session = NULL, pObjects = pObjects, rObjects = rObjects)
+    expect_null(out)
+
+    expect_named(output, c("allPanels", "panelParams"))
+    expect_is(output$allPanels, "shiny.render.function")
+    expect_is(output$panelParams, "shiny.render.function")
+
+})
+
+test_that(".create_width_height_observers returns NULL", {
+
+    x <- RedDimPlot()
+    input <- new.env()
+    pObjects <- new.env()
+
+    out <- .create_width_height_observers(x, input, pObjects)
+    expect_null(out)
 
 })

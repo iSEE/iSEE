@@ -50,7 +50,7 @@
         }
         enc_names
     }
-
+    # nocov start
     observeEvent(input$organize_panels, {
         enc_names <- .define_choices(pObjects$memory)
         org_pObjects$memory <- pObjects$memory
@@ -68,20 +68,22 @@
             footer=NULL, easyClose=TRUE,
             actionButton("update_ui", "Apply settings", icon=icon("object-ungroup"), width='100%'),
             hr(),
-            selectizeInput("panel_order", label=NULL, 
-                selected=enc_names, 
+            selectizeInput("panel_order", label=NULL,
+                selected=enc_names,
                 choices=c(enc_names, available_enc), # Choosing the unnumbered panel choice will add a new panel.
                 multiple=TRUE,
                 options=list(plugins=list('remove_button', 'drag_drop')), width="500px"),
             uiOutput("panelParams")
         ))
     })
+    # nocov end
 
     output$panelParams <- renderUI({
         force(org_rObjects$rerender)
         .panel_organization(org_pObjects$memory)
     })
 
+    # nocov start
     observeEvent(input$panel_order, {
         ipo <- unname(input$panel_order)
         enc_names <- .define_choices(org_pObjects$memory, named=FALSE)
@@ -91,7 +93,7 @@
 
         adjusted <- org_pObjects$memory[ipo]
 
-        # Adding some newly created panels. This assumes that 
+        # Adding some newly created panels. This assumes that
         # the reservoir types have already been cached and refined.
         if (length(added <- which(ipo %in% available_enc))) {
             for (a in added) {
@@ -100,21 +102,23 @@
                 idx <- org_pObjects$counter[[mode]] + 1L
                 latest[[.organizationId]] <- idx
 
-                adjusted[[a]] <- latest 
+                adjusted[[a]] <- latest
                 names(adjusted)[a] <- paste0(mode, idx)
                 org_pObjects$counter[[mode]] <- idx
 
                 .create_width_height_observers(latest, input, org_pObjects)
             }
             updated_names <- .define_choices(adjusted)
-            updateSelectizeInput(session, 'panel_order', 
+            updateSelectizeInput(session, 'panel_order',
                 choices=c(updated_names, available_enc), selected=updated_names)
         }
 
         org_pObjects$memory <- adjusted
         org_rObjects$rerender <- .increment_counter(org_rObjects$rerender)
     })
+    # nocov end
 
+    # nocov start
     observeEvent(input$update_ui, {
         left <- names(org_pObjects$memory)
         right <- names(pObjects$memory)
@@ -122,7 +126,7 @@
         pObjects$memory <- org_pObjects$memory
         pObjects$counter <- org_pObjects$counter
 
-        added <- setdiff(left, right)           
+        added <- setdiff(left, right)
         for (a in added) {
             instance <- pObjects$memory[[a]]
             .createObservers(instance, se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
@@ -139,11 +143,12 @@
         # having to recapitulate all of that in this observer. As a consequence,
         # though, some downstream observers need to be robustified to references
         # to panels that no longer exist in the brief time after panel deletion
-        # but before the memory is resync'd. See .add_interpanel_links() and 
+        # but before the memory is resync'd. See .add_interpanel_links() and
         # .create_dimname_observers() for some affected functions.
 
         rObjects$rerender <- .increment_counter(rObjects$rerender)
     })
+    # nocov end
 
     invisible(NULL)
 }
@@ -153,6 +158,7 @@
     panel_name <- .getEncodedName(x)
 
     width_name <- paste0(panel_name, "_", .organizationWidth)
+    # nocov start
     observeEvent(input[[width_name]], {
         cur.width <- org_pObjects$memory[[panel_name]][[.organizationWidth]]
         new.width <- as.integer(input[[width_name]])
@@ -160,8 +166,10 @@
             org_pObjects$memory[[panel_name]][[.organizationWidth]] <- new.width
         }
     }, ignoreInit=TRUE)
+    # nocov end
 
     height_name <- paste0(panel_name, "_", .organizationHeight)
+    # nocov start
     observeEvent(input[[height_name]], {
         cur.height <- org_pObjects$memory[[panel_name]][[.organizationHeight]]
         new.height <- as.integer(input[[height_name]])
@@ -169,4 +177,7 @@
             org_pObjects$memory[[panel_name]][[.organizationHeight]] <- new.height
         }
     }, ignoreInit=TRUE)
+    # nocov end
+
+    invisible(NULL)
 }

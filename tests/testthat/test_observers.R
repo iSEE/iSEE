@@ -51,3 +51,15 @@ test_that("Observers return NULL", {
     expect_null(out)
 
 })
+
+
+test_that(".mark_panel_as_modified appends the requested modes to rObjects", {
+
+    rObjects <- new.env()
+    rObjects$modified=list("RedDimPlot1"=character(0))
+
+    out <- .mark_panel_as_modified(panel_name = "RedDimPlot1", mode = iSEE:::.panelResaved, rObjects = rObjects)
+    expect_null(out)
+    expect_identical(rObjects$modified[["RedDimPlot1"]], iSEE:::.panelResaved)
+
+})

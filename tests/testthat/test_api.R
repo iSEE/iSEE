@@ -1,6 +1,6 @@
 context("API")
 
-test_that("", {
+test_that(".refineParameters handles corner case where x is NULL", {
 
     FUN <- selectMethod(".refineParameters", signature="ColumnDotPlot")
     out <- FUN(NULL, sce)

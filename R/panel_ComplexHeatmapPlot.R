@@ -13,7 +13,7 @@
 #' \item \code{FeatNameText}, string speciyfing a custom list of features to use, as newline-separated row names.
 #' If \code{NA}, defaults to the first row name of the SummarizedExperiment object.
 #' }
-#' 
+#'
 #' The following slots control the metadata variables that are used:
 #' \itemize{
 #' \item \code{ColData}, a character vector specifying columns of the \code{\link{colData}} to show as \code{\link{columnAnnotation}}.
@@ -21,7 +21,7 @@
 #' \item \code{RowData}, a character vector specifying columns of the \code{\link{rowData}} to show as \code{\link{columnAnnotation}}.
 #' Defaults to \code{character(0)}.
 #' }
-#' 
+#'
 #' The following slots control the clustering of features:
 #' \itemize{
 #' \item \code{ClusterFeatures}, a logical scalar indicating whether features should be clustered by assay data.
@@ -33,7 +33,7 @@
 #' This can be any one of \code{"ward.D"}, \code{"ward.D2"}, \code{"single"}, \code{"complete"}, \code{"average"}, \code{"mcquitty"}, \code{"median"}, or \code{"centroid"}.
 #' Defaults to \code{"ward.D2"}.
 #' }
-#' 
+#'
 #' The following slots refer to general plotting parameters:
 #' \itemize{
 #' \item \code{ShowDimNames}, a character vector specifying the dimensions for which to display names.
@@ -44,7 +44,7 @@
 #' \item \code{LegendDirection}, string specifying the orientation of the legend on the plot for continuous covariates.
 #' Defaults to \code{"Horizontal"} but can also be \code{"Vertical"}.
 #' }
-#' 
+#'
 #' The following slots control the effect of the transmitted selection from another panel:
 #' \itemize{
 #' \item \code{SelectEffect}, a string specifying the selection effect.
@@ -53,7 +53,7 @@
 #' \item \code{SelectColor}, a string specifying the color to use for selected points when \code{SelectEffect="Color"}.
 #' Defaults to \code{"red"}.
 #' }
-#' 
+#'
 #' The following slots control some aspects of the user interface:
 #' \itemize{
 #' \item \code{DataBoxOpen}, a logical scalar indicating whether the data parameter box should be open.
@@ -105,7 +105,7 @@
 #'
 #' @seealso
 #' \linkS4class{Panel}, for the immediate parent class.
-#' 
+#'
 #' @examples
 #' #################
 #' # For end-users #
@@ -134,7 +134,7 @@
 #' colData(sce) <- old_cd
 #' sce0 <- .cacheCommonInfo(x, sce)
 #' .refineParameters(x, sce0)
-#' 
+#'
 #' @docType methods
 #' @aliases ComplexHeatmapPlot ComplexHeatmapPlot-class
 #' .cacheCommonInfo,ComplexHeatmapPlot-method
@@ -150,7 +150,7 @@
 #' .refineParameters,ComplexHeatmapPlot-method
 #' .renderOutput,ComplexHeatmapPlot-method
 #' initialize,ComplexHeatmapPlot-method
-#' 
+#'
 #' @name ComplexHeatmapPlot-class
 NULL
 
@@ -163,28 +163,28 @@ ComplexHeatmapPlot <- function(...) {
 #' @importFrom methods callNextMethod
 setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- list(...)
-    
+
     args <- .empty_default(args, .heatMapAssay, NA_character_)
     args <- .empty_default(args, .heatMapCustomFeatNames, TRUE)
     args <- .empty_default(args, .heatMapFeatNameText, NA_character_)
     if (!is.na(vals <- args[[.heatMapFeatNameText]])) {
         args[[.heatMapFeatNameText]] <- paste(vals, collapse="\n")
     }
-    
+
     args <- .empty_default(args, .heatMapClusterFeatures, FALSE)
     args <- .empty_default(args, .heatMapClusterDistanceFeatures, .clusterDistanceSpearman)
     args <- .empty_default(args, .heatMapClusterMethodFeatures, .clusterMethodWardD2)
     args <- .empty_default(args, .dataParamBoxOpen, FALSE)
-    
+
     args <- .empty_default(args, .heatMapColData, character(0))
     args <- .empty_default(args, .heatMapRowData, character(0))
 
     args <- .empty_default(args, .showDimnames, c(.showNamesRowTitle))
-    
+
     args <- .empty_default(args, .plotLegendPosition, .plotLegendBottomTitle)
     args <- .empty_default(args, .plotLegendDirection, .plotLegendHorizontalTitle)
     args <- .empty_default(args, .visualParamBoxOpen, FALSE)
-    
+
     args <- .empty_default(args, .selectEffect, .selectColorTitle)
     args <- .empty_default(args, .selectColor, "red")
 
@@ -645,6 +645,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         se,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
+    invisible(NULL)
 })
 
 #' @importFrom shiny modalDialog fluidRow column h4 actionButton br
@@ -658,6 +659,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
     .input_FUN <- function(field) paste0(plot_name, "_", field)
 
+    # nocov start
     observeEvent(input[[.input_FUN(.featureNamesEdit)]], {
         instance <- pObjects$memory[[plot_name]]
 
@@ -686,8 +688,10 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
         showModal(modal_ui)
     }, ignoreInit=TRUE)
+    # nocov end
 
     # The button that imports incoming selection into the aceEditor
+    # nocov start
     observeEvent(input[[.input_FUN(import_field)]], {
         instance <- pObjects$memory[[plot_name]]
 
@@ -709,13 +713,17 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
         updateAceEditor(session, editorId = .input_FUN(.heatMapFeatNameText), value = editor_text)
     })
+    # nocov end
 
     # Button to clear the editor
+    # nocov start
     observeEvent(input[[.input_FUN(clear_field)]], {
         updateAceEditor(session, editorId = .input_FUN(.heatMapFeatNameText), value = "")
     })
+    # nocov end
 
     # Button to comment out invalid names
+    # nocov start
     observeEvent(input[[.input_FUN(validate_field)]], {
         instance <- pObjects$memory[[plot_name]]
 
@@ -726,8 +734,10 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         editor_text <- paste0(editor_lines, collapse = "\n")
         updateAceEditor(session, editorId = .input_FUN(.heatMapFeatNameText), value = editor_text)
     })
+    # nocov end
 
     # Button to order names alphabetically
+    # nocov start
     observeEvent(input[[.input_FUN(order_field)]], {
         instance <- pObjects$memory[[plot_name]]
 
@@ -737,12 +747,15 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         editor_text <- paste0(editor_lines, collapse = "\n")
         updateAceEditor(session, editorId = .input_FUN(.heatMapFeatNameText), value = editor_text)
     })
+    # nocov end
 
     # The button that actually updates the FeatNameText field.
+    # nocov start
     observeEvent(input[[.input_FUN(apply_field)]], {
         pObjects$memory[[plot_name]][[.heatMapFeatNameText]] <- input[[.input_FUN(.heatMapFeatNameText)]]
         .requestCleanUpdate(plot_name, pObjects, rObjects)
     })
+    # nocov end
 }
 
 #' @export

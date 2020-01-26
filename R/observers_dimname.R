@@ -4,7 +4,7 @@
 #'
 #' Set up an observer to re-transmit a single selection to the dimension names of all child plots.
 #' This differs from \code{\link{.setup_dimname_source_observer}} in that the current panel is the transmitter, not the receiver.
-#' 
+#'
 #' @param panel_name String containing the name of the current transmitting panel.
 #' @param choices Character vector containing all of possible choices for the transmitted dimension names.
 #' Usually set to the row or column names of the provided \linkS4class{SummarizedExperiment} object.
@@ -29,7 +29,7 @@
     dimname_name <- paste0(panel_name, "_", .propagateDimnames)
     .safe_reactive_init(rObjects, dimname_name)
     single_name <- paste0(panel_name, "_", .flagSingleSelect)
-
+    # nocov start
     observeEvent(rObjects[[dimname_name]], {
         instance <- pObjects$memory[[panel_name]]
 
@@ -46,11 +46,13 @@
             # There is a possibility that this would cause multi-rendering as they
             # trigger different observers. Oh well.
             for (field in all_fields) {
-                updateSelectizeInput(session, paste0(kid, "_", field), server=TRUE, 
+                updateSelectizeInput(session, paste0(kid, "_", field), server=TRUE,
                     choices=choices, selected=chosen)
             }
         }
     })
+    # nocov end
+    invisible(NULL)
 }
 
 #' Set up a dimname choice observer
@@ -59,7 +61,7 @@
 #'
 #' @inheritParams .create_dimname_observers
 #'
-#' @return 
+#' @return
 #' \code{pObjects} and \code{rObjects} are modified and selectize elements are possibly updated.
 #' A logical scalar is returned indicating whether the current panel should be re-rendered
 #' based on whether the choice of usage mode has changed.
@@ -84,8 +86,8 @@
 #'
 #' @importFrom shiny updateSelectizeInput
 #' @importFrom methods as
-.setup_dimname_source_observer <- function(panel_name, use_mode_field, use_value, name_field, tab_field, choices, 
-    input, session, pObjects, rObjects) 
+.setup_dimname_source_observer <- function(panel_name, use_mode_field, use_value, name_field, tab_field, choices,
+    input, session, pObjects, rObjects)
 {
     .input_FUN <- function(field) paste0(panel_name, "_", field)
     uses_use_mode_field <- !is.na(use_mode_field)
@@ -118,7 +120,7 @@
     update_info <- FALSE
     if (choice==use_value) {
         if (old_tab!=tab) {
-            pObjects$aesthetics_links <- .choose_new_parent(pObjects$aesthetics_links, 
+            pObjects$aesthetics_links <- .choose_new_parent(pObjects$aesthetics_links,
                 panel_name, tab, old_tab, field=name_field)
             update_info <- TRUE
 
@@ -128,16 +130,16 @@
                 new_selected <- .singleSelectionValue(pObjects$memory[[tab]])
 
                 # We use session=NULL only for unit testing the rest of the function.
-                if (!is.null(new_selected) && new_selected != old_selected && !is.null(session)) { 
+                if (!is.null(new_selected) && new_selected != old_selected && !is.null(session)) {
                     all_choices <- rownames(pObjects$contents[[tab]])
-                    updateSelectizeInput(session, .input_FUN(name_field), label = NULL, 
+                    updateSelectizeInput(session, .input_FUN(name_field), label = NULL,
                         choices = choices, server = TRUE, selected = new_selected) # nocov
                 }
             }
         }
     } else {
         if (old_choice==use_value) {
-            pObjects$aesthetics_links <- .delete_interpanel_link(pObjects$aesthetics_links, 
+            pObjects$aesthetics_links <- .delete_interpanel_link(pObjects$aesthetics_links,
                 panel_name, old_tab, field=name_field)
             update_info <- TRUE
         }
@@ -189,7 +191,7 @@
 #' @rdname INTERNAL_dimname_observer
 #' @importFrom shiny observeEvent observe updateSelectizeInput req
 .create_dimname_observers <- function(panel_name, name_field, choices,
-    use_mode_field, use_value, protected, tab_field, 
+    use_mode_field, use_value, protected, tab_field,
     input, session, pObjects, rObjects)
 {
     name_input <- paste0(panel_name, "_", name_field)
@@ -200,7 +202,7 @@
     force(choices)
     force(protected)
     force(tab_field)
-
+    # nocov start
     observeEvent(input[[name_input]], {
         # Required to defend against empty strings before updateSelectizeInput runs upon re-render.
         req(input[[name_input]])
@@ -220,10 +222,12 @@
             }
         }
     }, ignoreInit=TRUE)
+    # nocov end
 
     # Observer for the linked panel that controls the dimname selection.
     # This either triggers a re-rendering indirectly via the updateSelectizeInput inside (if the choice of transmitter changed)
     # or it triggers a re-rendering explicitly here.
+    # nocov start
     observe({
         replot <- .setup_dimname_source_observer(panel_name,
             use_mode_field=use_mode_field, use_value=use_value,
@@ -240,7 +244,9 @@
             }
         }
     })
+    # nocov end
 
+    # nocov start
     observe({
         force(rObjects$rerendered)
 
@@ -250,6 +256,7 @@
                 choices=choices, selected=pObjects$memory[[panel_name]][[name_field]], server=TRUE)
         }
     })
+    # nocov end
 
     invisible(NULL)
 }

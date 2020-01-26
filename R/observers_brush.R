@@ -31,6 +31,7 @@
     dimprop_name <- paste0(plot_name, "_", .propagateDimnames)
 
     brush_field <- paste0(plot_name, "_", .brushField)
+    # nocov start
     observeEvent(input[[brush_field]], {
         cur_brush <- input[[brush_field]]
         old_brush <- pObjects$memory[[plot_name]][[.brushData]]
@@ -50,7 +51,7 @@
         .safe_reactive_bump(rObjects, dimprop_name)
         .requestActiveSelectionUpdate(plot_name, rObjects)
     }, ignoreInit=TRUE)
-
+    # nocov end
     invisible(NULL)
 }
 
@@ -69,7 +70,7 @@
 #'
 #' @details
 #' Unlike Shiny brushing, the lasso involves some work to check whether the click event closes the lasso.
-#' Only a closed lasso will result in rendering the children of \code{plot_name}; 
+#' Only a closed lasso will result in rendering the children of \code{plot_name};
 #' before that, no selection is considered to have been made.
 #'
 #' Like brushing, the lasso structure itself is stored in the \code{.brushData} slot.
@@ -87,7 +88,7 @@
     brush_field <- paste0(plot_name, "_", .brushField)
     dimprop_name <- paste0(plot_name, "_", .propagateDimnames)
     save_field <- paste0(plot_name, "_", .multiSelectSave)
-
+    # nocov start
     observeEvent(input[[click_field]], {
         # Hack to resolve https://github.com/rstudio/shiny/issues/947.
         # By luck, the triggering of the click field seems to be delayed enough
@@ -132,6 +133,6 @@
             .requestUpdate(plot_name, rObjects)
         }
     })
-
+    # nocov end
     invisible(NULL)
 }

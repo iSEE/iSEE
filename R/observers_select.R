@@ -25,15 +25,16 @@
 #' \code{\link{.renderOutput,DotPlot-method}}, where \code{.create_multi_selection_effect_observer} is called.
 #'
 #' @rdname INTERNAL_selection_parameter_observers
-#' @importFrom shiny observeEvent showNotification updateSelectInput 
+#' @importFrom shiny observeEvent showNotification updateSelectInput
 #' @importFrom igraph is_dag simplify
-.create_multi_selection_choice_observer <- function(panel_name,  
-    by_field, type_field, saved_field, input, session, pObjects, rObjects) 
+.create_multi_selection_choice_observer <- function(panel_name,
+    by_field, type_field, saved_field, input, session, pObjects, rObjects)
 {
     saved_select_name <- paste0(panel_name, "_", .updateSavedChoices)
     .safe_reactive_init(rObjects, saved_select_name)
 
     select_panel_field <- paste0(panel_name, "_", by_field)
+    # nocov start
     observeEvent(input[[select_panel_field]], {
         old_transmitter <- pObjects$memory[[panel_name]][[by_field]]
         new_transmitter <- input[[select_panel_field]]
@@ -41,7 +42,7 @@
             return(NULL)
         }
 
-        tmp <- .choose_new_parent(pObjects$selection_links, panel_name, 
+        tmp <- .choose_new_parent(pObjects$selection_links, panel_name,
             new_parent_name=new_transmitter, old_parent_name=old_transmitter,
             field=by_field)
 
@@ -96,28 +97,29 @@
             .requestUpdate(panel_name, rObjects)
         }
     }, ignoreInit=TRUE)
-
+    # nocov end
     invisible(NULL)
 }
 
 #' @rdname INTERNAL_selection_parameter_observers
 #' @importFrom shiny showNotification observeEvent
-.create_multi_selection_effect_observer <- function(plot_name, 
-    by_field, type_field, saved_field, 
-    input, session, pObjects, rObjects) 
+.create_multi_selection_effect_observer <- function(plot_name,
+    by_field, type_field, saved_field,
+    input, session, pObjects, rObjects)
 {
     select_effect_field <- paste0(plot_name, "_", .selectEffect)
+    # nocov start
     observeEvent(input[[select_effect_field]], {
         cur_effect <- input[[select_effect_field]]
         old_effect <- pObjects$memory[[plot_name]][[.selectEffect]]
         pObjects$memory[[plot_name]][[.selectEffect]] <- cur_effect
 
         # Avoiding replotting if there was no transmitting selection.
-        if (!.transmitted_selection(plot_name, 
+        if (!.transmitted_selection(plot_name,
             pObjects$memory[[plot_name]][[by_field]],
             all_memory=pObjects$memory,
             select_type=pObjects$memory[[plot_name]][[type_field]],
-            select_saved=pObjects$memory[[plot_name]][[saved_field]])) 
+            select_saved=pObjects$memory[[plot_name]][[saved_field]]))
         {
             return(NULL)
         }
@@ -129,18 +131,19 @@
             .requestUpdate(plot_name, rObjects)
         }
     }, ignoreInit=TRUE)
-
+    # nocov end
     invisible(NULL)
 }
 
 #' @importFrom shiny observeEvent observe updateSelectInput req
 #' @rdname INTERNAL_selection_parameter_observers
-.create_multi_selection_type_observers <- function(panel_name, 
+.create_multi_selection_type_observers <- function(panel_name,
     by_field, type_field, saved_field,
-    input, session, pObjects, rObjects) 
+    input, session, pObjects, rObjects)
 {
     ## Type field observers. ---
     select_type_field <- paste0(panel_name, "_", type_field)
+    # nocov start
     observeEvent(input[[select_type_field]], {
         old_type <- pObjects$memory[[panel_name]][[type_field]]
         new_type <- as(input[[select_type_field]], typeof(old_type))
@@ -153,9 +156,9 @@
         transmitter <- pObjects$memory[[panel_name]][[by_field]]
         select_saved <- pObjects$memory[[panel_name]][[saved_field]]
 
-        no_old_selection <- !.transmitted_selection(panel_name, transmitter, pObjects$memory, 
+        no_old_selection <- !.transmitted_selection(panel_name, transmitter, pObjects$memory,
             select_type=old_type, select_saved=select_saved)
-        no_new_selection <- !.transmitted_selection(panel_name, transmitter, pObjects$memory, 
+        no_new_selection <- !.transmitted_selection(panel_name, transmitter, pObjects$memory,
             select_type=new_type, select_saved=select_saved)
 
         if (no_old_selection && no_new_selection) {
@@ -168,14 +171,16 @@
             .requestUpdate(panel_name, rObjects)
         }
     }, ignoreInit=TRUE)
+    # nocov end
 
     ## Saved field observers. ---
     saved_select_field <- paste0(panel_name, "_", saved_field)
+    # nocov start
     observeEvent(input[[saved_select_field]], {
         # Required to defend against empty strings before updateSelectizeInput runs.
-        req(input[[saved_select_field]]) 
+        req(input[[saved_select_field]])
 
-        matched_input <- as(input[[saved_select_field]], 
+        matched_input <- as(input[[saved_select_field]],
             typeof(pObjects$memory[[panel_name]][[saved_field]]))
         if (identical(matched_input, pObjects$memory[[panel_name]][[saved_field]])) {
             return(NULL)
@@ -197,14 +202,15 @@
             .requestUpdate(panel_name, rObjects)
         }
     }, ignoreInit=TRUE)
+    # nocov end
 
     ## Selectize observer. ---
     # Do NOT be tempted to centralize code by setting 'saved_field' in the above observer.
-    # This needs to be done in a separate observer that actually executes to set the 
+    # This needs to be done in a separate observer that actually executes to set the
     # the field to something upon initialization of the panel.
     saved_choice_name <- paste0(panel_name, "_", .updateSavedChoices)
     .safe_reactive_init(rObjects, saved_choice_name)
-
+    # nocov start
     observe({
         force(rObjects[[saved_choice_name]])
         force(rObjects$rerendered)
@@ -229,7 +235,7 @@
         updateSelectizeInput(session, saved_select_field, choices=available_choices, server=TRUE,
             selected=pObjects$memory[[panel_name]][[saved_field]])
     })
-
+    # nocov end
     invisible(NULL)
 }
 
@@ -249,7 +255,7 @@
 #'
 #' @author Aaron Lun
 #'
-#' @importFrom shiny observeEvent 
+#' @importFrom shiny observeEvent
 #' @rdname INTERNAL_multiple_select_observers
 .create_multi_selection_history_observers <- function(panel_name, input, session, pObjects, rObjects) {
     save_field <- paste0(panel_name, "_", .multiSelectSave)
@@ -257,6 +263,7 @@
     multi_name <- paste0(panel_name, "_", .flagMultiSelect)
 
     ## Save selection observer. ---
+    # nocov start
     observeEvent(input[[save_field]], {
         instance <- pObjects$memory[[panel_name]]
         current <- instance[[.multiSelectHistory]]
@@ -278,8 +285,10 @@
             .buttonEmptyHistoryLabel, .buttonDeleteLabel, session
         )
     })
+    # nocov end
 
     ## Deleted selection observer. ---
+    # nocov start
     observeEvent(input[[del_field]], {
         instance <- pObjects$memory[[panel_name]]
         current <- instance[[.multiSelectHistory]]
@@ -297,6 +306,6 @@
             .buttonEmptyHistoryLabel, .buttonDeleteLabel, session
         )
     })
-
+    # nocov end
     invisible(NULL)
 }

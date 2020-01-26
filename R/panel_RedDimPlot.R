@@ -222,7 +222,7 @@ setMethod(".createObservers", "RedDimPlot", function(x, se, input, session, pObj
 
     plot_name <- .getEncodedName(x)
 
-    .createProtectedParameterObservers(plot_name, 
+    .createProtectedParameterObservers(plot_name,
         fields=c(.redDimXAxis, .redDimYAxis),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
@@ -230,6 +230,7 @@ setMethod(".createObservers", "RedDimPlot", function(x, se, input, session, pObj
     dim_fieldX <- paste0(plot_name, "_", .redDimXAxis)
     dim_fieldY <- paste0(plot_name, "_", .redDimYAxis)
 
+    # nocov start
     observeEvent(input[[cur_field]], {
         matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[plot_name]][[.redDimType]]))
         if (identical(matched_input, pObjects$memory[[plot_name]][[.redDimType]])) {
@@ -251,6 +252,9 @@ setMethod(".createObservers", "RedDimPlot", function(x, se, input, session, pObj
 
         .requestCleanUpdate(plot_name, pObjects, rObjects)
     }, ignoreInit=TRUE)
+    # nocov end
+
+    invisible(NULL)
 })
 
 #' @export

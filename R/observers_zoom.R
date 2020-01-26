@@ -20,11 +20,11 @@
 .create_zoom_observer <- function(plot_name, input, session, pObjects, rObjects) {
     dblclick_field <- paste0(plot_name, "_", .zoomClick)
     save_field <- paste0(plot_name, "_", .multiSelectSave)
-
+    # nocov start
     observeEvent(input[[dblclick_field]], {
         existing_brush <- pObjects$memory[[plot_name]][[.brushData]]
 
-        # Zooming destroys all active brushes or lassos. 
+        # Zooming destroys all active brushes or lassos.
         pObjects$memory[[plot_name]][[.brushData]] <- list()
 
         new_coords <- numeric(0)
@@ -51,7 +51,7 @@
 
         pObjects$memory[[plot_name]][[.zoomData]] <- new_coords
 
-        # While re-creating the plot clears the brush, it doesn't 
+        # While re-creating the plot clears the brush, it doesn't
         # re-trigger the observer as the observer ignores NULLs.
         # So we have to manually retrigger the downstream effects.
         if (.is_brush(existing_brush) || .is_closed_lasso(existing_brush)) {
@@ -60,4 +60,6 @@
             .requestUpdate(plot_name, rObjects)
         }
     })
+    # nocov end
+    invisible(NULL)
 }

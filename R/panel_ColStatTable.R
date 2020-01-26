@@ -9,7 +9,7 @@
 #' \code{ColStatTable(...)} creates an instance of a ColStatTable class, where any slot and its value can be passed to \code{...} as a named argument.
 #'
 #' Note that \code{ColSearch} should be a character vector of length equal to the total number of columns in the \code{\link{colData}}, though only the entries for the atomic fields will actually be used.
-#' 
+#'
 #' @section Contract description:
 #' The ColStatTable will provide user interface elements and observers to change all of its slots.
 #' The \code{\link{datatable}} is rendered with all atomic contents of the \code{\link{colData}} of the SummarizedExperiment.
@@ -29,7 +29,7 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.hideInterface}(x, field)} returns \code{TRUE} if \code{field="DataBoxOpen"}, 
+#' \item \code{\link{.hideInterface}(x, field)} returns \code{TRUE} if \code{field="DataBoxOpen"},
 #' otherwise it calls \code{\link{.hideInterface,Table-method}}
 #' \item \code{\link{.fullName}(x)} will return the full name of the panel class.
 #' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.

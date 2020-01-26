@@ -2,65 +2,17 @@ context("API")
 
 test_that(".refineParameters handles NULL x", {
 
-    FUN <- selectMethod(".refineParameters", signature="ColumnDotPlot")
-    out <- FUN(NULL, sce)
-    expect_null(out, NULL)
+    x_classes <- c("ColumnDotPlot", "ColumnTable", "DotPlot", "Panel",
+        "RowDotPlot", "RowTable", "Table", "ColDataPlot", "ColStatTable",
+        "ComplexHeatmapPlot", "FeatAssayPlot", "RedDimPlot", "RowDataPlot",
+        "RowStatTable", "SampAssayPlot"
+    )
 
-    FUN <- selectMethod(".refineParameters", signature="ColumnTable")
-    out <- FUN(NULL, sce)
-    expect_null(out, NULL)
-
-    FUN <- selectMethod(".refineParameters", signature="DotPlot")
-    out <- FUN(NULL, sce)
-    expect_null(out, NULL)
-
-    FUN <- selectMethod(".refineParameters", signature="Panel")
-    out <- FUN(NULL, sce)
-    expect_null(out, NULL)
-
-    FUN <- selectMethod(".refineParameters", signature="RowDotPlot")
-    out <- FUN(NULL, sce)
-    expect_null(out, NULL)
-
-    FUN <- selectMethod(".refineParameters", signature="RowTable")
-    out <- FUN(NULL, sce)
-    expect_null(out, NULL)
-
-    FUN <- selectMethod(".refineParameters", signature="Table")
-    out <- FUN(NULL, sce)
-    expect_null(out, NULL)
-
-    FUN <- selectMethod(".refineParameters", signature="ColDataPlot")
-    out <- FUN(NULL, sce)
-    expect_null(out, NULL)
-
-    FUN <- selectMethod(".refineParameters", signature="ColStatTable")
-    out <- FUN(NULL, sce)
-    expect_null(out, NULL)
-
-    FUN <- selectMethod(".refineParameters", signature="ComplexHeatmapPlot")
-    out <- FUN(NULL, sce)
-    expect_null(out, NULL)
-
-    FUN <- selectMethod(".refineParameters", signature="FeatAssayPlot")
-    out <- FUN(NULL, sce)
-    expect_null(out, NULL)
-
-    FUN <- selectMethod(".refineParameters", signature="RedDimPlot")
-    out <- FUN(NULL, sce)
-    expect_null(out, NULL)
-
-    FUN <- selectMethod(".refineParameters", signature="RowDataPlot")
-    out <- FUN(NULL, sce)
-    expect_null(out, NULL)
-
-    FUN <- selectMethod(".refineParameters", signature="RowStatTable")
-    out <- FUN(NULL, sce)
-    expect_null(out, NULL)
-
-    FUN <- selectMethod(".refineParameters", signature="SampAssayPlot")
-    out <- FUN(NULL, sce)
-    expect_null(out, NULL)
+    for (x_class in x_classes) {
+        FUN <- selectMethod(".refineParameters", signature=x_class)
+        out <- FUN(NULL, sce)
+        expect_null(out, NULL)
+    }
 
 })
 
@@ -157,5 +109,22 @@ test_that(".cacheCommonInfo identifies valid reduced dimension names for RedDimP
     se <- as(sce, "SummarizedExperiment")
     out <- .cacheCommonInfo(x, se)
     expect_identical(.get_common_info(out, "RedDimPlot")[["valid.reducedDim.names"]], character(0))
+
+})
+
+test_that(".cacheCommonInfo detects earlier cache", {
+
+    x_classes <- c("ColDataPlot", "ColStatTable", "ComplexHeatmapPlot",
+        "FeatAssayPlot", "RedDimPlot", "RowDataPlot", "RowStatTable", "SampAssayPlot"
+    )
+
+    for (x_class in x_classes) {
+        x_instance <- new(x_class)
+        for (i in seq_len(2)) {
+            sce <- .cacheCommonInfo(x, sce)
+            # Run again to trigger !is.null(.get_common_info(se, "CLASS"))
+            sce <- .cacheCommonInfo(x, sce)
+        }
+    }
 
 })

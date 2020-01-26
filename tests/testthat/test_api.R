@@ -121,9 +121,9 @@ test_that(".cacheCommonInfo detects earlier cache", {
     for (x_class in x_classes) {
         x_instance <- new(x_class)
         for (i in seq_len(2)) {
-            sce <- .cacheCommonInfo(x, sce)
+            sce <- .cacheCommonInfo(x_instance, sce)
             # Run again to trigger !is.null(.get_common_info(se, "CLASS"))
-            sce <- .cacheCommonInfo(x, sce)
+            sce <- .cacheCommonInfo(x_instance, sce)
         }
     }
 

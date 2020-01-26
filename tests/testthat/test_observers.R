@@ -47,4 +47,7 @@ test_that("Observers return NULL", {
     out <- .createObservers(x, sce, NULL, NULL, NULL, NULL)
     expect_null(out)
 
+    out <- .create_voice_observers(NULL, NULL, NULL, sce, NULL, NULL)
+    expect_null(out)
+
 })

@@ -18,6 +18,7 @@
 #' showNotification removeNotification
 #' @rdname INTERNAL_create_voice_observers
 .create_voice_observers <- function(input, output, session, se, pObjects, rObjects) {
+    # nocov start
     observeEvent(input[[.voiceCreatePanelInput]], {
         voice <- input[[.voiceCreatePanelInput]]
         if (voice != "") {
@@ -57,7 +58,9 @@
         pObjects[[.voiceActivePanel]] <- added_encoded_name
         showNotification(sprintf("Active panel: %s", added_full_name), id=.voiceActivePanel, duration=NULL)
     })
+    # nocov end
 
+    # nocov start
     observeEvent(input[[.voiceRemovePanelInput]], {
         voice <- input[[.voiceRemovePanelInput]]
         if (voice != "") {
@@ -85,7 +88,9 @@
             showNotification("Active panel cleared", type="message")
         }
     })
+    # nocov end
 
+    # nocov start
     observeEvent(input[[.voiceControlPanelInput]], {
         voice <- input[[.voiceControlPanelInput]]
         if (voice != "") {
@@ -104,7 +109,9 @@
         pObjects[[.voiceActivePanel]] <- encoded_name
         showNotification(sprintf("Active panel: %s", full_name), id=.voiceActivePanel, duration=NULL)
     })
+    # nocov end
 
+    # nocov start
     observeEvent(input[[.voiceShowActivePanelInput]], {
         # TODO: refactor next 4 lines into function
         active_panel <- pObjects[[.voiceActivePanel]]
@@ -118,7 +125,9 @@
         full_name <- .getFullName(active_panel)
         showNotification(sprintf("Active panel: %s", full_name), id=.voiceActivePanel, duration=NULL)
     })
+    # nocov end
 
+    # nocov start
     observeEvent(input[[.voiceColorUsingInput]], {
         # TODO: refactor next 4 lines into function
         active_panel <- pObjects[[.voiceActivePanel]]
@@ -157,7 +166,9 @@
         updateSelectizeInput(session, paste0(encoded_name, "_", "ColorBy"), selected=matchedChoice)
         showNotification(sprintf("<Color using> %s", matchedChoice), type="message")
     })
+    # nocov end
 
+    # nocov start
     observeEvent(input[[.voiceColorByInput]], {
         # TODO: refactor next 4 lines into function
         active_panel <- pObjects[[.voiceActivePanel]]
@@ -206,7 +217,9 @@
             selected=matchedChoice, choices=choices, server=TRUE)
         showNotification(sprintf("<Color by> %s", matchedChoice), type="message")
     })
+    # nocov end
 
+    # nocov start
     observeEvent(input[[.voiceReceiveFromInput]], {
         # TODO: refactor next 4 lines into function
         active_panel <- pObjects[[.voiceActivePanel]]
@@ -243,7 +256,9 @@
 
         showNotification(sprintf("<Receive from> %s", target_full_name), type="message")
     })
+    # nocov end
 
+    # nocov start
     observeEvent(input[[.voiceSendToInput]], {
         # TODO: refactor next 4 lines into function
         active_panel <- pObjects[[.voiceActivePanel]]
@@ -281,10 +296,13 @@
 
         showNotification(sprintf("<Send to> %s", target_full_name), type="message")
     })
+    # nocov end
 
+    # nocov start
     observeEvent(input[["voiceGoodBoyInput"]], {
         showNotification(HTML("<p style='font-size:300%; text-align:right;'>&#x1F357; &#x1F436;</p>"), type="message")
     })
+    # nocov end
 
     invisible(NULL)
 }

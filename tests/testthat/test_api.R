@@ -77,3 +77,17 @@ test_that(".colorDotPlot returns NULL when coloring DotPlot by nothing", {
     expect_null(out)
 
 })
+
+test_that(".cacheCommonInfo identifies valid reduced dimension names for RedDimPlot", {
+
+    x <- RedDimPlot()
+
+    reducedDim(sce, "empty") <- matrix(numeric(0), nrow = ncol(sce), ncol = 0)
+    out <- .cacheCommonInfo(x, sce)
+    expect_false("empty" %in% .get_common_info(out, "RedDimPlot")[["valid.reducedDim.names"]])
+
+    se <- as(sce, "SummarizedExperiment")
+    out <- .cacheCommonInfo(x, se)
+    expect_identical(.get_common_info(out, "RedDimPlot")[["valid.reducedDim.names"]], character(0))
+
+})

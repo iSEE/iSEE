@@ -238,6 +238,14 @@ test_that(".multiSelectionRestricted handles DotPlot", {
     expect_true(out)
 })
 
+test_that(".multiSelectionRestricted handles Panel", {
+
+    x <- new("PanelChildClass")
+
+    out <- .multiSelectionRestricted(x)
+    expect_true(out)
+})
+
 # .multiSelectionClear ----
 context(".multiSelectionClear")
 
@@ -249,6 +257,14 @@ test_that(".multiSelectionClear handles DotPlot", {
 
     out <- .multiSelectionClear(x)
     expect_identical(out[[iSEE:::.brushData]], list())
+})
+
+test_that(".multiSelectionClear handles Panel", {
+
+    x <- new("PanelChildClass")
+
+    out <- .multiSelectionClear(x)
+    expect_identical(out, x)
 })
 
 # .singleSelectionValue ----
@@ -280,4 +296,29 @@ test_that(".singleSelectionValue handles DotPlot", {
 
     out <- .singleSelectionValue(x, pObjects)
     expect_null(out)
+})
+
+# multiSelectionInvalidated ----
+context(".multiSelectionInvalidated")
+
+test_that(".multiSelectionInvalidated handles Panel", {
+
+    x <- new("PanelChildClass")
+
+    out <- .multiSelectionInvalidated(x)
+    expect_false(out)
+
+})
+
+# .multiSelectionAvailable ----
+context(".multiSelectionAvailable")
+
+test_that(".multiSelectionAvailable handles Panel", {
+
+    x <- new("PanelChildClass")
+    contents <- data.frame(row.names = letters)
+
+    out <- .multiSelectionAvailable(x, contents)
+    expect_identical(out, length(letters))
+
 })

@@ -72,12 +72,12 @@
         ))
     })
     # nocov end
-
+    # nocov start
     output$panelParams <- renderUI({
         force(org_rObjects$rerender)
         .panel_organization(org_pObjects$memory)
     })
-
+    # nocov end
     # nocov start
     observeEvent(input$panel_order, {
         ipo <- unname(input$panel_order)

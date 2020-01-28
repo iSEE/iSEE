@@ -1,3 +1,4 @@
+# utils_colors.R ----
 context("Color utilities")
 
 test_that(".getPanelColor returns the expected colors", {
@@ -39,8 +40,8 @@ test_that(".getPanelColor returns the expected colors", {
     x <- RedDimPlot()
     out <- .getPanelColor(x)
     expect_identical(out, "dodgerblue")
-
 })
+
 
 # utils_reactive.R ----
 
@@ -68,6 +69,7 @@ test_that(".retrieveOutput detects cached panels", {
 test_that(".requestUpdate updates rObjects", {
 
     rObjects <- new.env()
+
     rObjects$modified <- list()
 
     .requestUpdate("RedDimPlot1", rObjects)
@@ -78,8 +80,9 @@ test_that(".requestUpdate updates rObjects", {
 test_that(".requestCleanUpdate updates rObjects", {
 
     pObjects <- new.env()
-    pObjects$memory <- list()
     rObjects <- new.env()
+
+    pObjects$memory <- list()
 
     x <- RedDimPlot()
     x[[iSEE:::.brushData]] <- list(xmin=1, xmax=2, ymin=1, ymax=2)
@@ -95,6 +98,7 @@ test_that(".requestCleanUpdate updates rObjects", {
 test_that(".requestActiveSelectionUpdate updates rObjects", {
 
     rObjects <- new.env()
+
     rObjects$modified <- list()
 
     .requestActiveSelectionUpdate("RedDimPlot1", rObjects, update_output = TRUE)
@@ -144,6 +148,7 @@ test_that(".trackRelinkedSelection forces evaluation of .flagRelinkedSelect", {
 test_that(".safe_reactive_bump reset counter to 0 at a threhsold", {
 
     rObjects <- new.env()
+
     rObjects$counter <- 8L
 
     .safe_reactive_bump(rObjects, "counter", 10L)
@@ -163,5 +168,83 @@ test_that(".increment_counter", {
 
     out <- .increment_counter(counter, max = 9L)
     expect_identical(out, 0L)
+
+})
+
+# utils_class.R ----
+
+context("Class utilities")
+
+test_that(".single_string_error detects issues", {
+
+    msg <- character(0)
+
+    x <- RedDimPlot()
+    x[[iSEE:::.colorByField]] <- character(0)
+
+    out <- .single_string_error(msg, x, fields = iSEE:::.colorByField)
+    expect_identical(out, "'ColorBy' should be a single string for 'RedDimPlot'")
+
+})
+
+test_that(".valid_logical_error detects issues", {
+
+    msg <- character(0)
+
+    x <- RedDimPlot()
+    x[[iSEE:::.visualParamBoxOpen]] <- NA
+
+    out <- .valid_logical_error(msg, x, fields = iSEE:::.visualParamBoxOpen)
+    expect_identical(out, "'VisualBoxOpen' should be a non-NA logical scalar for 'RedDimPlot'")
+
+})
+
+test_that(".valid_string_error detects issues", {
+
+    msg <- character(0)
+
+    x <- RedDimPlot()
+    x[[iSEE:::.colorByDefaultColor]] <- c("a", "b")
+
+    out <- .valid_string_error(msg, x, fields = iSEE:::.colorByDefaultColor)
+    expect_identical(out, "'ColorByDefaultColor' should be a non-NA string for 'RedDimPlot'")
+
+})
+
+test_that(".allowable_choice_error detects issues", {
+
+    msg <- character(0)
+
+    x <- RedDimPlot()
+    x[[iSEE:::.selectEffect]] <- "other"
+
+    out <- .allowable_choice_error(msg, x, .selectEffect, c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle))
+    expect_identical(out, "'SelectEffect' for 'RedDimPlot' should be one of 'Restrict', 'Color', 'Transparent'")
+
+})
+
+test_that(".multiple_choice_error detects issues", {
+
+    msg <- character(0)
+
+    x <- RedDimPlot()
+    x[[iSEE:::.visualParamChoice]] <- "other"
+
+    out <- .multiple_choice_error(msg, x, .visualParamChoice,
+                                  c(.visualParamChoiceColorTitle, .visualParamChoiceShapeTitle, .visualParamChoicePointTitle,
+                                    .visualParamChoiceFacetTitle, .visualParamChoiceOtherTitle))
+    expect_identical(out, "values of 'VisualChoices' for 'RedDimPlot' should be in 'Color', 'Shape', 'Points', 'Facets', 'Other'")
+
+})
+
+test_that(".valid_number_error detects issues", {
+
+    msg <- character(0)
+
+    x <- RedDimPlot()
+    x[[iSEE:::.selectTransAlpha]] <- 2
+
+    out <- .valid_number_error(msg, x, .selectTransAlpha, lower=0, upper=1)
+    expect_identical(out, "'SelectAlpha' for 'RedDimPlot' should be a numeric scalar in [0, 1]")
 
 })

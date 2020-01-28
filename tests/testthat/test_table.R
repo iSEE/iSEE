@@ -52,3 +52,58 @@ test_that(".renderOutput populates output", {
     expect_is(output$ColStatTable1_INTERNAL_PanelMultiSelectInfo, "shiny.render.function")
     expect_is(output$ColStatTable1_INTERNAL_PanelSelectLinkInfo, "shiny.render.function")
 })
+
+test_that(".generateTable handles RowStatTable", {
+
+    table_env <- new.env()
+
+    x <- RowStatTable()
+
+    sce <- .cacheCommonInfo(x, sce)
+    table_env$se <- sce
+
+    # default
+    out <- .generateTable(x, table_env)
+    expect_identical(out, "tab <- as.data.frame(rowData(se));")
+
+    # row_selected exists in the environment
+    table_env$row_selected <- head(rownames(sce))
+    out <- .generateTable(x, table_env)
+    expect_identical(out, c(
+        "tab <- as.data.frame(rowData(se));",
+        "tab <- tab[unique(unlist(row_selected)),,drop=FALSE]"))
+
+    # Some of the columns of rowData(se) are not valid atomic fields
+    rowData(table_env$se)[["DataFrame"]] <- rowData(table_env$se)
+    out <- .generateTable(x, table_env)
+    expect_identical(out, c(
+        "tab <- as.data.frame(rowData(se));",
+        "tab <- tab[unique(unlist(row_selected)),,drop=FALSE]",
+        "tab <- tab[,c(\"num_cells\", \"mean_count\", \"letters\"),drop=FALSE]"))
+})
+
+test_that(".generateTable handles ColStatTable", {
+
+    table_env <- new.env()
+
+    x <- ColStatTable()
+
+    sce <- .cacheCommonInfo(x, sce)
+    table_env$se <- sce
+
+    # default
+    out <- .generateTable(x, table_env)
+    expect_identical(out, c(
+        "tab <- as.data.frame(colData(se));",
+        "tab <- tab[,c(\"NREADS\", \"NALIGNED\", \"RALIGN\", \"TOTAL_DUP\", \"PRIMER\", \"PCT_RIBOSOMAL_BASES\", \n     \"PCT_CODING_BASES\", \"PCT_UTR_BASES\", \"PCT_INTRONIC_BASES\", \"PCT_INTERGENIC_BASES\", \n     \"PCT_MRNA_BASES\", \"MEDIAN_CV_COVERAGE\", \"MEDIAN_5PRIME_BIAS\", \n     \"MEDIAN_3PRIME_BIAS\", \"MEDIAN_5PRIME_TO_3PRIME_BIAS\", \"driver_1_s\", \n     \"dissection_s\", \"Core.Type\", \"Primary.Type\", \"Secondary.Type\", \n     \"Animal.ID\", \"passes_qc_checks_s\"),drop=FALSE]"))
+
+    # col_selected exists in the environment
+    # Some of the columns of rowData(se) are not valid atomic fields
+    table_env$col_selected <- head(colnames(sce))
+    out <- .generateTable(x, table_env)
+    expect_identical(out, c(
+        "tab <- as.data.frame(colData(se));",
+        "tab <- tab[unique(unlist(col_selected)),,drop=FALSE]",
+        "tab <- tab[,c(\"NREADS\", \"NALIGNED\", \"RALIGN\", \"TOTAL_DUP\", \"PRIMER\", \"PCT_RIBOSOMAL_BASES\", \n     \"PCT_CODING_BASES\", \"PCT_UTR_BASES\", \"PCT_INTRONIC_BASES\", \"PCT_INTERGENIC_BASES\", \n     \"PCT_MRNA_BASES\", \"MEDIAN_CV_COVERAGE\", \"MEDIAN_5PRIME_BIAS\", \n     \"MEDIAN_3PRIME_BIAS\", \"MEDIAN_5PRIME_TO_3PRIME_BIAS\", \"driver_1_s\", \n     \"dissection_s\", \"Core.Type\", \"Primary.Type\", \"Secondary.Type\", \n     \"Animal.ID\", \"passes_qc_checks_s\"),drop=FALSE]" ))
+
+})

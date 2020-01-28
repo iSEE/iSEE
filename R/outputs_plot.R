@@ -20,7 +20,7 @@
 #' @importFrom shiny renderPlot renderUI tagList br
 .create_plot_output <- function(plot_name, se, output, pObjects, rObjects) {
     force(se)
-
+    # nocov start
     output[[plot_name]] <- renderPlot({
         p.out <- .retrieveOutput(plot_name, se, pObjects, rObjects)
         pObjects$varname[[plot_name]] <- "plot.data"
@@ -30,7 +30,7 @@
             p.out$plot
         }
     })
-
+    # nocov end
     invisible(NULL)
 }
 

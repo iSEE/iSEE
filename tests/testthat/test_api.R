@@ -172,3 +172,39 @@ test_that(".renderOutput populates output for ComplexHeatmapPlot", {
     expect_is(output$ComplexHeatmapPlot1_INTERNAL_PanelMultiSelectInfo, "shiny.render.function")
     expect_is(output$ComplexHeatmapPlot1_INTERNAL_PanelSelectLinkInfo, "shiny.render.function")
 })
+
+# .addDotPlotDataSelected ----
+context(".addDotPlotDataSelected")
+
+test_that(".addDotPlotDataSelected handles RowDotPlot", {
+
+    plot_env <- new.env()
+
+    x <- SampAssayPlot()
+
+    # no row_selected in plot_env
+    out <- .addDotPlotDataSelected(x, plot_env)
+    expect_null(out)
+
+    # row_selected exists in plot_env
+    plot_env$row_selected <- head(letters, 3)
+    plot_env$plot.data <- data.frame(row.names = letters)
+    out <- .addDotPlotDataSelected(x, plot_env)
+    expect_identical(out, c(
+        header1 = "",
+        header2 = "# Receiving row point selection",
+        SelectBy = "plot.data$SelectBy <- rownames(plot.data) %in% unlist(row_selected);",
+        footer = ""))
+
+    # row_selected exists in plot_env with effect Restrict
+    x[[iSEE:::.selectEffect]] <- iSEE:::.selectRestrictTitle
+    out <- .addDotPlotDataSelected(x, plot_env)
+    expect_identical(out, c(
+        header1 = "",
+        header2 = "# Receiving row point selection",
+        SelectBy = "plot.data$SelectBy <- rownames(plot.data) %in% unlist(row_selected);",
+        saved = "plot.data.all <- plot.data;",
+        subset = "plot.data <- subset(plot.data, SelectBy);",
+        footer = ""))
+
+})

@@ -1,4 +1,5 @@
-context("API")
+# .refineParameters ----
+context(".refineParameters")
 
 test_that(".refineParameters handles NULL x", {
 
@@ -105,6 +106,9 @@ test_that(".refineParameters identifies impossible ComplexHeatmapPlot", {
 
 })
 
+# .colorDotPlot ----
+context(".colorDotPlot")
+
 test_that(".colorDotPlot returns NULL when coloring DotPlot by nothing", {
 
     x <- ColDataPlot()
@@ -119,6 +123,8 @@ test_that(".colorDotPlot returns NULL when coloring DotPlot by nothing", {
 
 })
 
+# .cacheCommonInfo ----
+context(".cacheCommonInfo")
 test_that(".cacheCommonInfo identifies valid reduced dimension names for RedDimPlot", {
 
     x <- RedDimPlot()
@@ -148,4 +154,21 @@ test_that(".cacheCommonInfo detects earlier cache", {
         }
     }
 
+})
+
+# .renderOutput ----
+context(".renderOutput")
+
+test_that(".renderOutput populates output for ComplexHeatmapPlot", {
+
+    x <- ComplexHeatmapPlot(PanelId=1L)
+    output <- new.env()
+    pObjects <- new.env()
+    rObjects <- new.env()
+
+    out <- .renderOutput(x, sce, output = output, pObjects = pObjects, rObjects = rObjects)
+    expect_null(out)
+    expect_is(output$ComplexHeatmapPlot1, "shiny.render.function")
+    expect_is(output$ComplexHeatmapPlot1_INTERNAL_PanelMultiSelectInfo, "shiny.render.function")
+    expect_is(output$ComplexHeatmapPlot1_INTERNAL_PanelSelectLinkInfo, "shiny.render.function")
 })

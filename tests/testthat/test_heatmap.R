@@ -1,9 +1,9 @@
 context("heatmap")
 
 memory <- list(
-    ComplexHeatmapPlot1=ComplexHeatmapPlot(SelectRowSource="SampAssayPlot1", SelectColSource="FeatAssayPlot1"),
-    SampAssayPlot1=SampAssayPlot(),
-    FeatAssayPlot1=FeatAssayPlot()
+    ComplexHeatmapPlot1=ComplexHeatmapPlot(PanelId=1L),
+    SampAssayPlot1=SampAssayPlot(PanelId=1L),
+    FeatAssayPlot1=FeatAssayPlot(PanelId=1L)
 )
 
 pObjects <- mimic_live_app(sce, memory)
@@ -90,4 +90,113 @@ test_that(".process_heatmap_continuous_annotation handles continuous scale for a
 
     out <- .process_heatmap_continuous_annotation(plot_env)
     expect_identical(out, ".col_FUN <- colorRamp2(breaks = seq(1, 2, length.out = 21L), colors = .col_colors)")
+})
+
+test_that(".generateOutput detects col_selected and row_selected", {
+
+    pObjects <- new.env()
+
+    x <- memory$FeatAssayPlot1
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+    x[[iSEE:::.brushData]] <- list(
+        xmin = 0.7, xmax = 1.3, ymin = 1000, ymax = 2000,
+        mapping = list(x = "X", y = "Y"),
+        log = list(x = NULL, y = NULL), direction = "xy",
+        brushId = "FeatAssayPlot1_Brush",
+        outputId = "FeatAssayPlot1")
+    memory$FeatAssayPlot1 <- x
+    out <- .generateOutput(memory$FeatAssayPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
+    pObjects$contents[["FeatAssayPlot1"]] <- out$contents
+
+    x <- ComplexHeatmapPlot()
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+    x[[iSEE:::.selectColSource]] <- "FeatAssayPlot1"
+    x[[iSEE:::.selectEffect]] <- iSEE:::.selectRestrictTitle
+    x[[iSEE:::.heatMapCustomFeatNames]] <- TRUE
+    x[[iSEE:::.heatMapFeatNameText]] <- paste0(head(rownames(sce), 2), collapse = "\n")
+    memory$ComplexHeatmapPlot1 <- x
+
+    out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
+    expect_identical(out$commands$columns, ".heatmap.columns <- intersect(colnames(se), unlist(col_selected));")
+    expect_identical(out$commands$rows, '.heatmap.rows <- c("0610007P14Rik", "0610009B22Rik");')
+})
+
+test_that(".generateOutput handles row_selected when not using custom feature names", {
+
+    pObjects <- new.env()
+
+    x <- memory$SampAssayPlot1
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+    x[[iSEE:::.brushData]] <- list(
+        xmin = 0.7, xmax = 1.3, ymin = 25000, ymax = 50000,
+        mapping = list(x = "X", y = "Y"),
+        log = list(x = NULL, y = NULL), direction = "xy",
+        brushId = "SampAssayPlot1_Brush",
+        outputId = "SampAssayPlot1")
+    memory$SampAssayPlot1 <- x
+    out <- .generateOutput(memory$SampAssayPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
+    pObjects$contents[["SampAssayPlot1"]] <- out$contents
+
+    x <- ComplexHeatmapPlot()
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+    x[[iSEE:::.selectRowSource]] <- "SampAssayPlot1"
+    x[[iSEE:::.heatMapCustomFeatNames]] <- FALSE
+    memory$ComplexHeatmapPlot1 <- x
+
+    out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
+    expect_identical(out$commands$rows, ".heatmap.rows <- intersect(rownames(se), unlist(row_selected));")
+})
+
+test_that(".generateOutput handles row annotations", {
+
+    pObjects <- new.env()
+
+    x <- ComplexHeatmapPlot()
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+    x[[iSEE:::.heatMapRowData]] <- c("mean_count", "letters")
+    memory$ComplexHeatmapPlot1 <- x
+
+    out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
+    expect_true(grepl("left_annotation=row_annot", out$commands$heatmap, fixed = TRUE))
+    expect_true(grepl('row_data <- rowData(se)[, c(\"mean_count\", \"letters\"), drop=FALSE]', out$commands$rowdata, fixed = TRUE))
+
+})
+
+test_that(".generateOutput handles column annotations", {
+
+    pObjects <- new.env()
+
+    x <- ComplexHeatmapPlot()
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+    x[[iSEE:::.heatMapColData]] <- c("driver_1_s", "NREADS")
+    memory$ComplexHeatmapPlot1 <- x
+
+    out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
+    expect_true(grepl("top_annotation=column_annot", out$commands$heatmap, fixed = TRUE))
+    expect_true(grepl('column_data <- colData(se)[, c(\"driver_1_s\", \"NREADS\"), drop=FALSE]', out$commands$coldata, fixed = TRUE))
+    expect_true(grepl("plot.data <- plot.data[, .column_annot_order, drop=FALSE]", out$commands$order_columns, fixed = TRUE))
+})
+
+
+test_that(".generateOutput handles clustering", {
+
+    pObjects <- new.env()
+
+    x <- ComplexHeatmapPlot()
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+    x[[iSEE:::.heatMapClusterFeatures]] <- TRUE
+    memory$ComplexHeatmapPlot1 <- x
+
+    out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
+    expect_true(grepl("cluster_rows=TRUE", out$commands$heatmap, fixed = TRUE))
+    expect_true(grepl("clustering_distance_rows=\"spearman\"", out$commands$heatmap, fixed = TRUE))
+    expect_true(grepl("clustering_method_rows=\"ward.D2\"", out$commands$heatmap, fixed = TRUE))
+    expect_true(grepl("clustering_distance_rows=\"spearman\"", out$commands$heatmap, fixed = TRUE))
 })

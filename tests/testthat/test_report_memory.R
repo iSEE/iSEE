@@ -16,8 +16,8 @@ memory <- list(
                          bottom = 468.220917166096,
                          top = 24.8879973724842),
             log = list(x = NULL, y = NULL), direction = "xy",
-            brushId = "redDimPlot1_Brush",
-            outputId = "redDimPlot1"
+            brushId = "RedDimPlot1_Brush",
+            outputId = "RedDimPlot1"
         )
     ),
     RedDimPlot(

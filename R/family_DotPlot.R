@@ -131,7 +131,7 @@
 #' \itemize{
 #' \item \code{\link{.defineOutput}(x, id)} returns a UI element for a brushable plot.
 #' }
-#'
+#' 
 #' For generating the output:
 #' \itemize{
 #' \item \code{\link{.generateOutput}(x, se, all_memory, all_contents)} returns a list containing \code{contents}, a data.frame with one row per point currently present in the plot;
@@ -157,7 +157,7 @@
 #' The active selection is returned if \code{index=NA}, otherwise one of the saved selection is returned.
 #' \item \code{\link{.multiSelectionActive}(x)} returns \code{x[["BrushData"]]} or \code{NULL} if there is no brush or closed lasso.
 #' \item \code{\link{.multiSelectionClear}(x)} returns \code{x} after setting the \code{BrushData} slot to an empty list.
-#' \item \code{\link{.singleSelectionValue}(x)} returns the name of the first selected element in the active brush.
+#' \item \code{\link{.singleSelectionValue}(x)} returns the name of the first selected element in the active brush. 
 #' If no brush is active, \code{NULL} is returned instead.
 #' \item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of coloring parameters.
 #' This includes the output of \code{callNextMethod}.
@@ -405,14 +405,14 @@ setMethod(".singleSelectionValue", "DotPlot", function(x, pObjects) {
 
 #' @export
 setMethod(".singleSelectionSlots", "DotPlot", function(x) {
-    c(callNextMethod(),
+    c(callNextMethod(), 
         list(
-            list(parameter=.colorByFeatName, source=.colorByRowTable, dimension="row",
+            list(parameter=.colorByFeatName, source=.colorByRowTable, dimension="row", 
                 use_mode=.colorByField, use_value=.colorByFeatNameTitle, protected=FALSE),
             list(parameter=.colorBySampName, source=.colorByColTable, dimension="column",
                 use_mode=.colorByField, use_value=.colorBySampNameTitle, protected=FALSE)
         )
-    )
+    ) 
 })
 
 #' @export
@@ -452,11 +452,11 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
 
 #' @export
 setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
-    plot_data <- envir$plot.data
+    plot_data <- envir$plot.data 
     is_subsetted <- exists("plot.data.all", envir=envir, inherits=FALSE)
     is_downsampled <- exists("plot.data.pre", envir=envir, inherits=FALSE)
     plot_type <- envir$plot.type
-
+    
     args <- list(plot_data,
         param_choices=x,
         x_lab=labels$X,
@@ -484,7 +484,7 @@ setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
     }
 
     # Adding self-brushing boxes, if they exist.
-    plot_cmds <- .addMultiSelectionPlotCommands(x,
+    plot_cmds <- .addMultiSelectionPlotCommands(x, 
         flip=(plot_type == "violin_horizontal"),
         envir=envir, commands=plot_cmds)
 

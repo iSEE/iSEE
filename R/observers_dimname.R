@@ -129,7 +129,6 @@
                 old_selected <- pObjects$memory[[panel_name]][[name_field]]
                 new_selected <- .singleSelectionValue(pObjects$memory[[tab]])
 
-                # We use session=NULL only for unit testing the rest of the function.
                 if (!is.null(new_selected) && new_selected != old_selected) {
                     all_choices <- rownames(pObjects$contents[[tab]])
                     updateSelectizeInput(session, .input_FUN(name_field), label = NULL,

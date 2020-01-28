@@ -173,6 +173,20 @@ test_that(".renderOutput populates output for ComplexHeatmapPlot", {
     expect_is(output$ComplexHeatmapPlot1_INTERNAL_PanelSelectLinkInfo, "shiny.render.function")
 })
 
+test_that(".renderOutput populates output for DotPlot", {
+
+    x <- RedDimPlot(PanelId=1L)
+    output <- new.env()
+    pObjects <- new.env()
+    rObjects <- new.env()
+
+    out <- .renderOutput(x, sce, output = output, pObjects = pObjects, rObjects = rObjects)
+    expect_null(out)
+    expect_is(output$RedDimPlot1, "shiny.render.function")
+    expect_is(output$RedDimPlot1_INTERNAL_PanelMultiSelectInfo, "shiny.render.function")
+    expect_is(output$RedDimPlot1_INTERNAL_PanelSelectLinkInfo, "shiny.render.function")
+})
+
 # .addDotPlotDataSelected ----
 context(".addDotPlotDataSelected")
 
@@ -207,4 +221,63 @@ test_that(".addDotPlotDataSelected handles RowDotPlot", {
         subset = "plot.data <- subset(plot.data, SelectBy);",
         footer = ""))
 
+})
+
+# .multiSelectionRestricted ----
+context(".multiSelectionRestricted")
+
+test_that(".multiSelectionRestricted handles DotPlot", {
+
+    x <- RedDimPlot()
+
+    out <- .multiSelectionRestricted(x)
+    expect_false(out)
+
+    x[[iSEE:::.selectEffect]] <- iSEE:::.selectRestrictTitle
+    out <- .multiSelectionRestricted(x)
+    expect_true(out)
+})
+
+# .multiSelectionClear ----
+context(".multiSelectionClear")
+
+test_that(".multiSelectionClear handles DotPlot", {
+
+    x <- RedDimPlot()
+
+    x[[iSEE:::.brushData]] <- list(anything=1L)
+
+    out <- .multiSelectionClear(x)
+    expect_identical(out[[iSEE:::.brushData]], list())
+})
+
+# .singleSelectionValue ----
+context(".singleSelectionValue")
+
+test_that(".singleSelectionValue handles DotPlot", {
+
+    x <- RedDimPlot(PanelId=1L)
+    pObjects <- new.env()
+    pObjects$contents[["RedDimPlot1"]] <- data.frame(X=1, Y=seq_len(100), row.names = paste0("X", seq_len(100)))
+
+    x[[iSEE:::.brushData]] <- list(
+        xmin = 0.7, xmax = 1.3, ymin = 1, ymax = 50,
+        mapping = list(x = "X", y = "Y"),
+        log = list(x = NULL, y = NULL), direction = "xy",
+        brushId = "RedDimPlot1_Brush",
+        outputId = "RedDimPlot1")
+
+    out <- .singleSelectionValue(x, pObjects)
+    expect_identical(out, "X1")
+
+    # Brush does not include any data point
+    x[[iSEE:::.brushData]] <- list(
+        xmin = 0.7, xmax = 1.3, ymin = 1000, ymax = 2000,
+        mapping = list(x = "X", y = "Y"),
+        log = list(x = NULL, y = NULL), direction = "xy",
+        brushId = "RedDimPlot1_Brush",
+        outputId = "RedDimPlot1")
+
+    out <- .singleSelectionValue(x, pObjects)
+    expect_null(out)
 })

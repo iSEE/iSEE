@@ -18,9 +18,9 @@ test_that("dimname observers work to change the source", {
     out <- iSEE:::.setup_dimname_source_observer(
         "FeatAssayPlot1", use_mode_field=NA, use_value=NA,
         pObjects=pObjects, rObjects=rObjects, input=input, session=NULL,
-        name_field=iSEE:::.featAssayYAxisFeatName, 
+        name_field=iSEE:::.featAssayYAxisFeatName,
         tab_field=iSEE:::.featAssayYAxisRowTable,
-        choices=NULL) 
+        choices=NULL)
 
     expect_false(out)
     expect_identical(pObjects$memory$FeatAssayPlot1[["YAxisRowTable"]], "RowStatTable1")
@@ -32,9 +32,9 @@ test_that("dimname observers work to change the source", {
     out <- iSEE:::.setup_dimname_source_observer(
         "FeatAssayPlot1", use_mode_field=NA, use_value=NA,
         pObjects=pObjects, rObjects=rObjects, input=input, session=NULL,
-        name_field=iSEE:::.featAssayYAxisFeatName, 
+        name_field=iSEE:::.featAssayYAxisFeatName,
         tab_field=iSEE:::.featAssayYAxisRowTable,
-        choices=NULL) 
+        choices=NULL)
 
     expect_false(out)
     expect_identical(pObjects$memory$FeatAssayPlot1[["YAxisRowTable"]], "RowStatTable2")
@@ -47,9 +47,9 @@ test_that("dimname observers work to change the source", {
     out <- iSEE:::.setup_dimname_source_observer(
         "FeatAssayPlot1", use_mode_field=NA, use_value=NA,
         pObjects=pObjects, rObjects=rObjects, input=input, session=NULL,
-        name_field=iSEE:::.featAssayYAxisFeatName, 
+        name_field=iSEE:::.featAssayYAxisFeatName,
         tab_field=iSEE:::.featAssayYAxisRowTable,
-        choices=NULL) 
+        choices=NULL)
 
     expect_false(out)
     expect_identical(pObjects$memory$FeatAssayPlot1[["YAxisRowTable"]], "---")
@@ -67,7 +67,7 @@ test_that("dimname observers work to change the usage mode", {
     pObjects <- mimic_live_app(sce, memory)
     rObjects <- new.env()
     input <- list()
-    
+
     # The color choice has changed.
     input$RedDimPlot1_ColorBy <- "Feature name"
     input$RedDimPlot1_ColorByRowTable <- "RowStatTable1"
@@ -75,12 +75,12 @@ test_that("dimname observers work to change the usage mode", {
     expect_false(igraph::are_adjacent(pObjects$aesthetics_links, "RowStatTable1", "RedDimPlot1"))
 
     out <- iSEE:::.setup_dimname_source_observer(
-        "RedDimPlot1", 
+        "RedDimPlot1",
         use_mode_field=iSEE:::.colorByField, use_value=iSEE:::.colorByFeatNameTitle,
         pObjects=pObjects, rObjects=rObjects, input=input, session=NULL,
-        name_field=iSEE:::.colorByFeatName, 
+        name_field=iSEE:::.colorByFeatName,
         tab_field=iSEE:::.colorByRowTable,
-        choices=NULL) 
+        choices=NULL)
 
     expect_true(out)
     expect_identical(pObjects$memory$RedDimPlot1[["ColorBy"]], "Feature name")
@@ -95,30 +95,62 @@ test_that("dimname observers work to change the usage mode", {
     expect_identical(igraph::E(pObjects$aesthetics_links)$fields[[id]], iSEE:::.featAssayYAxisFeatName)
 
     out <- iSEE:::.setup_dimname_source_observer(
-        "FeatAssayPlot1", 
+        "FeatAssayPlot1",
         use_mode_field=iSEE:::.featAssayXAxis, use_value=iSEE:::.featAssayXAxisFeatNameTitle,
         pObjects=pObjects, rObjects=rObjects, input=input, session=NULL,
-        name_field=iSEE:::.featAssayXAxisFeatName, 
+        name_field=iSEE:::.featAssayXAxisFeatName,
         tab_field=iSEE:::.featAssayXAxisRowTable,
-        choices=NULL) 
+        choices=NULL)
 
     expect_true(out)
     expect_identical(pObjects$memory$FeatAssayPlot1[["XAxis"]], "Feature name")
-    expect_identical(igraph::E(pObjects$aesthetics_links)$fields[[id]], 
+    expect_identical(igraph::E(pObjects$aesthetics_links)$fields[[id]],
         c(iSEE:::.featAssayYAxisFeatName, iSEE:::.featAssayXAxisFeatName))
 
     # Changing it back deletes the link.
     input$FeatAssayPlot1_XAxis <- "None"
 
     out <- iSEE:::.setup_dimname_source_observer(
-        "FeatAssayPlot1", 
+        "FeatAssayPlot1",
         use_mode_field=iSEE:::.featAssayXAxis, use_value=iSEE:::.featAssayXAxisFeatNameTitle,
         pObjects=pObjects, rObjects=rObjects, input=input, session=NULL,
-        name_field=iSEE:::.featAssayXAxisFeatName, 
+        name_field=iSEE:::.featAssayXAxisFeatName,
         tab_field=iSEE:::.featAssayXAxisRowTable,
-        choices=NULL) 
+        choices=NULL)
 
     expect_true(out)
     expect_identical(pObjects$memory$FeatAssayPlot1[["XAxis"]], "None")
     expect_identical(igraph::E(pObjects$aesthetics_links)$fields[[id]], iSEE:::.featAssayYAxisFeatName)
+})
+
+test_that(".setup_dimname_source_observer", {
+
+    memory <- list(
+        RedDimPlot(),
+        FeatAssayPlot(YAxisRowTable="RowStatTable1"),
+        RowStatTable(Selected=tail(rownames(sce), 1))
+    )
+
+    pObjects <- mimic_live_app(sce, memory)
+    rObjects <- new.env()
+    input <- list()
+
+    # The color choice has changed.
+    input$RedDimPlot1_ColorBy <- "Feature name"
+    input$RedDimPlot1_ColorByRowTable <- "RowStatTable1"
+
+    # Define dummy functions called by updateSelectizeInput
+    session <- new.env()
+    session$registerDataObj <- function(inputId, choices, selectizeJSON) { NULL }
+    session$sendInputMessage <- function(inputId, message) { NULL }
+
+    .setup_dimname_source_observer(
+        "RedDimPlot1",
+        use_mode_field=iSEE:::.colorByField, use_value=iSEE:::.colorByFeatNameTitle,
+        name_field=iSEE:::.colorByFeatName,
+        tab_field=iSEE:::.colorByRowTable,
+        choices=letters,
+        input=input, session=session,
+        pObjects=pObjects, rObjects=rObjects)
+
 })

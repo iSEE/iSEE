@@ -57,7 +57,7 @@
 
 #' Set up a dimname choice observer
 #'
-#' Set up the actions of an observer for a parameter choice in a panel that may recieve a single selection from another panel.
+#' Set up the actions of an observer for a parameter choice in a panel that may receive a single selection from another panel.
 #'
 #' @inheritParams .create_dimname_observers
 #'
@@ -130,7 +130,7 @@
                 new_selected <- .singleSelectionValue(pObjects$memory[[tab]])
 
                 # We use session=NULL only for unit testing the rest of the function.
-                if (!is.null(new_selected) && new_selected != old_selected && !is.null(session)) {
+                if (!is.null(new_selected) && new_selected != old_selected) {
                     all_choices <- rownames(pObjects$contents[[tab]])
                     updateSelectizeInput(session, .input_FUN(name_field), label = NULL,
                         choices = choices, server = TRUE, selected = new_selected) # nocov

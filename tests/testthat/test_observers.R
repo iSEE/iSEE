@@ -129,3 +129,13 @@ test_that(".define_memory_panel_choices returns expected values", {
     expect_identical(out, NAMED)
 
 })
+
+test_that(".create_child_propagation_observer returns NULL", {
+
+    pObjects <- new.env()
+    rObjects <- new.env()
+
+    out <- .create_child_propagation_observer(sce, pObjects, rObjects)
+    expect_null(out)
+
+})

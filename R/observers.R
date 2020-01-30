@@ -2353,7 +2353,7 @@
 
                 combined <- union(pObjects$memory[[mode0]][id0, .heatMapFeatName][[1]], incoming)
                 updateSelectizeInput(
-                    session, .input_FUN(.heatMapFeaturesTextInput), choices=feature_choices,
+                    session, .input_FUN(.heatMapFeatName), choices=feature_choices,
                     server=TRUE, selected=combined)
             }, ignoreInit=TRUE)
 

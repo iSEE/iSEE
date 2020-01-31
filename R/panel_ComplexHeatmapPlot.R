@@ -179,6 +179,13 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- .empty_default(args, .heatMapColData, character(0))
     args <- .empty_default(args, .heatMapRowData, character(0))
 
+    args <- .empty_default(args, .heatMapCustomAssayBounds, FALSE)
+    args <- .empty_default(args, .assayLowerBound, NA_real_)
+    args <- .empty_default(args, .assayUpperBound, NA_real_)
+    args <- .empty_default(args, .assayCenterRowsTitle, FALSE)
+    args <- .empty_default(args, .assayScaleRowsTitle, FALSE)
+    args <- .empty_default(args, .heatMapDivergentColormap, .colormapPurpleBlackYellow)
+
     args <- .empty_default(args, .showDimnames, c(.showNamesRowTitle))
 
     args <- .empty_default(args, .plotLegendPosition, .plotLegendBottomTitle)
@@ -194,11 +201,32 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
 setValidity2("ComplexHeatmapPlot", function(object) {
     msg <- character(0)
 
-    msg <- .single_string_error(msg, object, c(.heatMapFeatNameText, .selectEffect))
+    msg <- .single_string_error(msg, object, c(.heatMapAssay, .heatMapFeatNameText,
+        .heatMapClusterDistanceFeatures, .heatMapClusterMethodFeatures,
+        .heatMapDivergentColormap,
+        .selectEffect, .selectColor))
 
     msg <- .valid_string_error(msg, object, .selectColor)
+    
+    msg <- .multiple_choice_error(msg, object, .visualParamChoice,
+        c(.visualParamChoiceMetadataTitle, .visualParamChoiceTransformTitle, .visualParamChoiceColorTitle,
+          .visualParamChoiceLabelsTitle, .visualParamChoiceLegendTitle))
+    
+    msg <- .multiple_choice_error(msg, object, .showDimnames,
+        c(.showNamesRowTitle, .showNamesColumnTitle))
+    
+    msg <- .allowable_choice_error(msg, object, .plotLegendPosition,
+        c(.plotLegendRightTitle, .plotLegendBottomTitle))
+    
+    msg <- .allowable_choice_error(msg, object, .plotLegendDirection,
+        c(.plotLegendHorizontalTitle, .plotLegendVerticalTitle))
 
-    msg <- .valid_logical_error(msg, object, .heatMapCustomFeatNames)
+    msg <- .valid_logical_error(msg, object, c(
+        .heatMapCustomFeatNames, .heatMapCustomFeatNames,
+        .heatMapClusterFeatures, .dataParamBoxOpen,
+        .heatMapCustomAssayBounds,
+        .assayCenterRowsTitle, .assayScaleRowsTitle,
+        .visualParamBoxOpen))
 
     if (length(msg)) {
         return(msg)
@@ -269,6 +297,19 @@ setMethod(".refineParameters", "ComplexHeatmapPlot", function(x, se) {
     if (is.na(x[[.heatMapFeatNameText]])) {
         x[[.heatMapFeatNameText]] <- rownames(se)[1]
     }
+    
+    # TODO: plot_range should consider only the features and samples present in the heatmap, not the whole assay
+    # Get active features (either text field or incoming from another panel)
+    # Get active samples (possibly incoming with Restrict effect!)
+    # Get the range of that!
+    # plot_data <- TODO
+    plot_range <- range(assay(se, x[[.heatMapAssay]]), na.rm = TRUE)
+    if (is.na(x[[.assayLowerBound]])) {
+        x[[.assayLowerBound]] <- plot_range[1]
+    }
+    if (is.na(x[[.assayUpperBound]])) {
+        x[[.assayUpperBound]] <- plot_range[2]
+    }
 
     x
 })
@@ -329,13 +370,17 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
 
     cmds <- c()
 
-    cmd_get_value <- sprintf(".col_values <- as.vector(plot.data)")
-    cmds <- c(cmds, cmd_get_value)
-    .text_eval(cmd_get_value, plot_env)
-
     if (assay_name %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.assay.names) {
-        cmds <- c(cmds, sprintf(".col_colors <- assayColorMap(colormap, %s, discrete=FALSE)(21L)", deparse(assay_name)))
-        cmds <- c(cmds, .process_heatmap_continuous_annotation(plot_env))
+        is_centered <- x[[.assayCenterRowsTitle]]
+        if (is_centered) {
+            choice_colors <- x[[.heatMapDivergentColormap]]
+            choice_colors <- strsplit(choice_colors, split = " < ", fixed = TRUE)[[1]]
+            cmds <- c(cmds, sprintf(".col_colors <- %s", deparse(choice_colors)))
+        } else {
+            cmds <- c(cmds, sprintf(".col_colors <- assayColorMap(colormap, %s, discrete=FALSE)(21L)", deparse(assay_name)))
+        }
+        .text_eval(cmds, plot_env)
+        cmds <- c(cmds, .process_heatmap_continuous_annotation(x, plot_env, is_centered))
         cmds <- c(cmds, "heatmap_col <- .col_FUN")
     } else if (assay_name %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.assay.names) {
         cmds <- c(cmds, '.col_values <- setdiff(.col_values, NA)')
@@ -373,7 +418,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
             .text_eval(cmd_get_value, plot_env)
             if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.colData.names) {
                 cmds <- c(cmds, sprintf('.col_colors <- colDataColorMap(colormap, %s, discrete=FALSE)(21L)', deparse(annot)))
-                cmds <- c(cmds, .process_heatmap_continuous_annotation(plot_env))
+                cmds <- c(cmds, .process_heatmap_continuous_annotation(x, plot_env, centered = FALSE))
                 cmds <- c(cmds, sprintf("column_col[[%s]] <- .col_FUN", deparse(annot)))
             } else if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.colData.names) {
                 cmds <- c(cmds, ".col_values <- setdiff(.col_values, NA)")
@@ -397,7 +442,8 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
                 paste0(x[[.heatMapColData]], collapse=", ")))
             cmds <- c(cmds, "column_data <- column_data[.column_annot_order, , drop=FALSE]")
         }
-        cmds <- c(cmds, "column_annot <- columnAnnotation(df=column_data, col=column_col)")
+        cmds <- c(cmds, sprintf("column_annot <- columnAnnotation(df=column_data, col=column_col, annotation_legend_param=list(direction=%s))",
+            deparse(tolower(x[[.plotLegendDirection]]))))
     }
     cmds
 }
@@ -418,7 +464,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
             .text_eval(cmd_get_value, plot_env)
             if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.rowData.names) {
                 cmds <- c(cmds, sprintf('.col_colors <- rowDataColorMap(colormap, %s, discrete=FALSE)(21L)', deparse(annot)))
-                cmds <- c(cmds, .process_heatmap_continuous_annotation(plot_env))
+                cmds <- c(cmds, .process_heatmap_continuous_annotation(x, plot_env, centered = FALSE))
                 cmds <- c(cmds, sprintf('row_col[[%s]] <- .col_FUN', deparse(annot)))
             } else if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.rowData.names) {
                 cmds <- c(cmds, sprintf('.col_values <- setdiff(.col_values, NA)', annot))
@@ -431,20 +477,55 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
         }
         cmds <- c(cmds, 'row_data <- row_data[.heatmap.rows, , drop=FALSE]')
         cmds <- c(cmds, 'row_data <- as.data.frame(row_data, optional=TRUE)') # preserve colnames
-        cmds <- c(cmds, "row_annot <- rowAnnotation(df=row_data, col=row_col)")
+        cmds <- c(cmds, sprintf("row_annot <- rowAnnotation(df=row_data, col=row_col, annotation_legend_param=list(direction=%s))",
+            deparse(tolower(x[[.plotLegendDirection]]))))
     }
     cmds
 }
 
-.process_heatmap_continuous_annotation <- function(plot_env) {
-    col_range <- .text_eval("range(.col_values, na.rm = TRUE)", plot_env)
+.process_heatmap_continuous_annotation <- function(x, plot_env, centered=FALSE) {
+    cmds <- c()
+    
+    if (x[[.heatMapCustomAssayBounds]]) {
+        col_range <- c(x[[.assayLowerBound]], x[[.assayUpperBound]])
+    } else {
+        cmds <- c(cmds,  sprintf(".col_values <- as.vector(plot.data)"))
+        .text_eval(cmds, plot_env)
+        col_range <- .text_eval("range(.col_values, na.rm = TRUE)", plot_env)
+    }
+    
     if (identical(col_range[1], col_range[2])) {
         # "colorRamp2" does not like all-identical breaks
         col_range[2] <- col_range[2] + 1
+        if (centered) {
+            col_range[1] <- col_range[1] - 1
+        }
     }
-    return(sprintf(
-        '.col_FUN <- colorRamp2(breaks = seq(%s, %s, length.out = 21L), colors = .col_colors)',
-        col_range[1], col_range[2]))
+    
+    if (centered) {
+        cmds <- c(cmds, sprintf(
+            '.col_FUN <- colorRamp2(breaks = c(%s, 0, %s), colors = .col_colors)',
+            col_range[1], col_range[2]))
+    } else {
+        cmds <- c(cmds, sprintf(
+            '.col_FUN <- colorRamp2(breaks = seq(%s, %s, length.out = 21L), colors = .col_colors)',
+            col_range[1], col_range[2]))
+    }
+    
+    return(cmds)
+}
+
+.process_heatmap_assay_row_transformations <- function(x) {
+    cmds <- c()
+    
+    if (x[[.assayCenterRowsTitle]]) {
+        cmds <- c(cmds, "plot.data <- plot.data - rowMeans(plot.data)")
+        if (x[[.assayScaleRowsTitle]]) {
+            cmds <- c(cmds, "plot.data <- plot.data / rowSds(plot.data)")
+        }
+    }
+    
+    return(cmds)
 }
 
 .convert_text_to_names <- function(txt)
@@ -461,7 +542,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
 #' @importFrom ggplot2 ggplot geom_text aes theme_void
 #' @importFrom ComplexHeatmap Heatmap draw columnAnnotation rowAnnotation
 setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, all_contents) {
-    print(x)
+    print(str(x))
     plot_env <- new.env()
     plot_env$se <- se
     plot_env$colormap <- metadata(se)$colormap
@@ -497,19 +578,24 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     # If there is a matrix to work with at all
     if (all(dim(plot_env[["plot.data"]]) > 0)) {
         # Assay matrix
+        cmds <- .process_heatmap_assay_row_transformations(x)
+        .text_eval(cmds, plot_env) # TODO: use a command store to avoid re-evaluating those commands below
+        all_cmds[["assay_transforms"]] <- paste0(cmds, collapse = "\n")
+        
+        # Compute the assay colormap after the transformations
         cmds <- .process_heatmap_assay_colormap(x, se, plot_env)
-        all_cmds[["assay"]] <- paste0(cmds, collapse = "\n")
+        all_cmds[["assay_colormap"]] <- paste0(cmds, collapse = "\n")
         heatmap_args <- paste0(heatmap_args, ", col=heatmap_col")
 
         # Side annotations
         cmds <- .process_heatmap_column_annotations(x, se, plot_env)
         if (length(cmds)) {
-            all_cmds[["coldata"]] <- paste0(cmds, collapse = "\n")
+            all_cmds[["column_annotations"]] <- paste0(cmds, collapse = "\n")
             heatmap_args <- paste0(heatmap_args, ", top_annotation=column_annot")
         }
         cmds <- .process_heatmap_row_annotations(x, se, plot_env)
         if (length(cmds)) {
-            all_cmds[["rowdata"]] <- paste0(cmds, collapse = "\n")
+            all_cmds[["row_annotations"]] <- paste0(cmds, collapse = "\n")
             heatmap_args <- paste0(heatmap_args, ", left_annotation=row_annot")
         }
 
@@ -524,7 +610,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
                 sprintf("clustering_method_rows=%s", deparse(x[[.heatMapClusterMethodFeatures]])))
         }
 
-        .text_eval(all_cmds[["coldata"]], plot_env)
+        .text_eval(all_cmds[["column_annotations"]], plot_env) # TODO, use command store
         if (exists(".column_annot_order", plot_env, inherits = FALSE)) {
             all_cmds[["order_columns"]] <- c("plot.data <- plot.data[, .column_annot_order, drop=FALSE]")
         }
@@ -552,7 +638,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     all_cmds[["heatmap"]] <- sprintf("hm <- Heatmap(matrix = plot.data%s)", heatmap_args)
 
     print(all_cmds)
-    plot_out <- .text_eval(all_cmds, plot_env)
+    plot_out <- .text_eval(all_cmds, plot_env) # TODO, use command store
 
     panel_data <- plot_env$plot.data
 
@@ -592,29 +678,72 @@ setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info)
 
     all_coldata <- .get_common_info(se, "ComplexHeatmapPlot")$valid.colData.names
     all_rowdata <- .get_common_info(se, "ComplexHeatmapPlot")$valid.rowData.names
+    
+    assay_range <- range(assay(se, x[[.heatMapAssay]]), na.rm = TRUE)
+    
+    .input_FUN <- function(field) paste0(plot_name, "_", field)
+    
+    pchoice_field <- .input_FUN(.visualParamChoice)
 
     collapseBox(
         id=paste0(plot_name, "_", .visualParamBoxOpen),
         title="Visual parameters",
         open=x[[.visualParamBoxOpen]],
-        selectizeInput(paste0(plot_name, "_", .heatMapColData), label="Column annotations:",
-            selected=x[[.heatMapColData]], choices=all_coldata, multiple=TRUE,
-            options=list(plugins=list('remove_button', 'drag_drop'))),
-        selectizeInput(paste0(plot_name, "_", .heatMapRowData), label="Row annotations:",
-            selected=x[[.heatMapRowData]], choices=all_rowdata, multiple=TRUE,
-            options=list(plugins=list('remove_button', 'drag_drop'))),
         checkboxGroupInput(
-            inputId=paste0(plot_name, "_", .showDimnames), label="Show names:", inline=TRUE,
-            selected=x[[.showDimnames]],
-            choices=c(.showNamesRowTitle, .showNamesColumnTitle)),
-        radioButtons(
-            paste0(plot_name, "_", .plotLegendPosition), label="Legend position:", inline=TRUE,
-            choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
-            selected=x[[.plotLegendPosition]]),
-        radioButtons(
-            paste0(plot_name, "_", .plotLegendDirection), label="Legend direction:", inline=TRUE,
-            choices=c(.plotLegendHorizontalTitle, .plotLegendVerticalTitle),
-            selected=x[[.plotLegendDirection]])
+            inputId=pchoice_field, label=NULL, inline=TRUE,
+            selected=x[[.visualParamChoice]],
+            choices=c(.visualParamChoiceMetadataTitle, .visualParamChoiceTransformTitle, .visualParamChoiceColorTitle, .visualParamChoiceLabelsTitle, .visualParamChoiceLegendTitle)),
+        .conditional_on_check_group(
+            pchoice_field, .visualParamChoiceMetadataTitle,
+            hr(),
+            selectizeInput(.input_FUN(.heatMapColData), label="Column annotations:",
+                selected=x[[.heatMapColData]], choices=all_coldata, multiple=TRUE,
+                options=list(plugins=list('remove_button', 'drag_drop'))),
+            selectizeInput(.input_FUN(.heatMapRowData), label="Row annotations:",
+                selected=x[[.heatMapRowData]], choices=all_rowdata, multiple=TRUE,
+                options=list(plugins=list('remove_button', 'drag_drop')))
+        ),
+        .conditional_on_check_group(
+            pchoice_field, .visualParamChoiceTransformTitle,
+            hr(),
+            strong("Row transformations:"),
+            checkboxInput(.input_FUN(.assayCenterRowsTitle), "Center", value=x[[.assayCenterRowsTitle]]),
+            .conditional_on_check_solo(.input_FUN(.assayCenterRowsTitle), on_select = TRUE,
+                checkboxInput(.input_FUN(.assayScaleRowsTitle), "Scale", value=x[[.assayCenterRowsTitle]]),
+                selectizeInput(.input_FUN(.heatMapDivergentColormap), label="Divergent assay colormap:",
+                    selected=x[[.heatMapDivergentColormap]],
+                    choices=c(.colormapPurpleBlackYellow, .colormapBlueWhiteOrange, .colormapBlueWhiteRed, .colormapGreenWhiteRed))
+            )
+        ),
+        .conditional_on_check_group(
+            pchoice_field, .visualParamChoiceColorTitle,
+            hr(),
+            checkboxInput(.input_FUN(.heatMapCustomAssayBounds), "Use custom colorscale bounds",
+                value = x[[.heatMapCustomAssayBounds]]),
+            .conditional_on_check_solo(.input_FUN(.heatMapCustomAssayBounds), on_select = TRUE,
+                numericInput(.input_FUN(.assayLowerBound), "Lower bound",
+                    value=x[[.assayLowerBound]], min = assay_range[1], max = assay_range[2]),
+                numericInput(.input_FUN(.assayUpperBound), "Upper bound",
+                    value=x[[.assayUpperBound]], min = assay_range[1], max = assay_range[2]))
+        ),
+        .conditional_on_check_group(
+            pchoice_field, .visualParamChoiceLabelsTitle,
+            hr(),
+            checkboxGroupInput(
+                inputId=.input_FUN(.showDimnames), label="Show names:", inline=TRUE,
+                selected=x[[.showDimnames]],
+                choices=c(.showNamesRowTitle, .showNamesColumnTitle))
+        ),
+        .conditional_on_check_group(
+            pchoice_field, .visualParamChoiceLegendTitle,
+            hr(),
+            radioButtons(.input_FUN(.plotLegendPosition), label="Legend position:", inline=TRUE,
+                choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
+                selected=x[[.plotLegendPosition]]),
+            radioButtons(.input_FUN(.plotLegendDirection), label="Legend direction:", inline=TRUE,
+                choices=c(.plotLegendHorizontalTitle, .plotLegendVerticalTitle),
+                selected=x[[.plotLegendDirection]])
+        )
     )
 }
 
@@ -627,7 +756,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     # Not much point distinguishing between protected and unprotected here,
     # as there aren't any selections transmitted from this panel anyway.
     .createProtectedParameterObservers(plot_name,
-        fields=c(.heatMapAssay, .heatMapCustomFeatNames),
+        fields=c(.heatMapCustomFeatNames),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
     .createUnprotectedParameterObservers(plot_name,
@@ -642,12 +771,126 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
+    .create_heatmap_extra_observers(plot_name,
+        se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
     .create_heatmap_modal_observers(plot_name,
-        se,
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+        se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     invisible(NULL)
 })
+
+
+.create_heatmap_extra_observers <- function(plot_name, se, input, session, pObjects, rObjects) {
+
+    .input_FUN <- function(field) paste0(plot_name, "_", field)
+    # nocov start
+    observeEvent(input[[.input_FUN(.heatMapAssay)]], {
+        # .createProtectedParameterObservers with a twist
+        matched_input <- as(input[[.input_FUN(.heatMapAssay)]], typeof(pObjects$memory[[plot_name]][[.heatMapAssay]]))
+        if (identical(matched_input, pObjects$memory[[plot_name]][[.heatMapAssay]])) {
+            return(NULL)
+        }
+        pObjects$memory[[plot_name]][[.heatMapAssay]] <- matched_input
+        
+        # Twist: update the value of lower/upper bounds based on the new data
+        plot_range <- range(assay(se, input[[.input_FUN(.heatMapAssay)]]), na.rm = TRUE)
+        updateNumericInput(session, .input_FUN(.assayLowerBound), value = plot_range[1])
+        updateNumericInput(session, .input_FUN(.assayUpperBound), value = plot_range[2])
+        
+        .requestCleanUpdate(plot_name, pObjects, rObjects)
+    }, ignoreInit=TRUE, ignoreNULL=TRUE)
+    # nocov end
+    # nocov start
+    observeEvent(input[[.input_FUN(.heatMapCustomAssayBounds)]], {
+        
+        cur_value <- input[[.input_FUN(.heatMapCustomAssayBounds)]]
+        
+        pObjects$memory[[plot_name]][[.heatMapCustomAssayBounds]] <- cur_value
+        # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
+        .requestUpdate(plot_name,rObjects)
+    })
+    # nocov end
+    # nocov start
+    observeEvent(input[[.input_FUN(.assayLowerBound)]], {
+        
+        cur_value <- input[[.input_FUN(.assayLowerBound)]]
+        if (is.na(cur_value)) {
+            return(NULL)
+        }
+        upper_bound <- input[[.input_FUN(.assayUpperBound)]]
+        
+        pObjects$memory[[plot_name]][[.assayLowerBound]] <- cur_value
+        
+        # The upper bound cannot be lower than the lower bound
+        if (cur_value > upper_bound) {
+            # .process_heatmap_continuous_annotation handles identical values downstream
+            pObjects$memory[[plot_name]][[.assayUpperBound]] <- cur_value
+            updateNumericInput(session, .input_FUN(.assayUpperBound), value = cur_value)
+        }
+        
+        # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
+        .requestUpdate(plot_name,rObjects)
+    })
+    # nocov end
+    # nocov start
+    observeEvent(input[[.input_FUN(.assayUpperBound)]], {
+        
+        cur_value <- input[[.input_FUN(.assayUpperBound)]]
+        if (is.na(cur_value)) {
+            return(NULL)
+        }
+        lower_bound <- input[[.input_FUN(.assayLowerBound)]]
+        
+        pObjects$memory[[plot_name]][[.assayUpperBound]] <- cur_value
+        
+        # The lower bound cannot be higher than the upper bound
+        if (cur_value < lower_bound) {
+            # .process_heatmap_continuous_annotation handles identical values downstream
+            pObjects$memory[[plot_name]][[.assayLowerBound]] <- cur_value
+            updateNumericInput(session, .input_FUN(.assayLowerBound), value = cur_value)
+        }
+        
+        # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
+        .requestUpdate(plot_name,rObjects)
+    })
+    # nocov end
+    # nocov start
+    observeEvent(input[[.input_FUN(.assayCenterRowsTitle)]], {
+        
+        cur_value <- input[[.input_FUN(.assayCenterRowsTitle)]]
+        
+        # TODO: update the value of lower/upper bounds based on the new data (do the same for centering)
+        # updateNumericInput(session, .input_FUN(.assayLowerBound), value = plot_range[1])
+        # updateNumericInput(session, .input_FUN(.assayUpperBound), value = plot_range[2])
+        
+        pObjects$memory[[plot_name]][[.assayCenterRowsTitle]] <- cur_value
+        # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
+        .requestUpdate(plot_name,rObjects)
+    })
+    # nocov end
+    # nocov start
+    observeEvent(input[[.input_FUN(.assayScaleRowsTitle)]], {
+        
+        cur_value <- input[[.input_FUN(.assayScaleRowsTitle)]]
+        
+        pObjects$memory[[plot_name]][[.assayScaleRowsTitle]] <- cur_value
+        # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
+        .requestUpdate(plot_name,rObjects)
+    })
+    # nocov end
+    # nocov start
+    observeEvent(input[[.input_FUN(.heatMapDivergentColormap)]], {
+        
+        cur_value <- input[[.input_FUN(.heatMapDivergentColormap)]]
+        
+        pObjects$memory[[plot_name]][[.heatMapDivergentColormap]] <- cur_value
+        # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
+        .requestUpdate(plot_name,rObjects)
+    })
+    # nocov end
+    invisible(NULL)
+}
 
 #' @importFrom shiny modalDialog fluidRow column h4 actionButton br
 #' @importFrom shinyAce aceEditor updateAceEditor
@@ -754,7 +997,8 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     # nocov start
     observeEvent(input[[.input_FUN(apply_field)]], {
         pObjects$memory[[plot_name]][[.heatMapFeatNameText]] <- input[[.input_FUN(.heatMapFeatNameText)]]
-        .requestCleanUpdate(plot_name, pObjects, rObjects)
+        # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
+        .requestUpdate(plot_name,rObjects)
     })
     # nocov end
 }

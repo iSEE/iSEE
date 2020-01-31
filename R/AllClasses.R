@@ -392,6 +392,14 @@ setClass("ColStatTable", contains="ColumnTable")
 
 .heatMapColData <- "ColData"
 .heatMapRowData <- "RowData"
+
+.heatMapCustomAssayBounds <- "CustomBounds"
+.assayLowerBound <- "LowerBound"
+.assayUpperBound <- "UpperBound"
+.assayCenterRowsTitle <- "AssayCenterRows"
+.assayScaleRowsTitle <- "AssayScaleRows"
+.heatMapDivergentColormap <- "DivergentColors"
+
 .showDimnames <- "ShowDimNames"
 .plotLegendDirection <- "LegendDirection"
 
@@ -405,8 +413,16 @@ collated[.heatMapClusterDistanceFeatures] <- "character"
 collated[.heatMapClusterMethodFeatures] <- "character"
 collated[.dataParamBoxOpen] <- "logical"
 
+collated[.visualParamChoice] <- "character"
 collated[.heatMapColData] <- "character"
 collated[.heatMapRowData] <- "character"
+
+collated[.heatMapCustomAssayBounds] <- "logical"
+collated[.assayLowerBound] <- "numeric"
+collated[.assayUpperBound] <- "numeric"
+collated[.assayCenterRowsTitle] <- "logical"
+collated[.assayScaleRowsTitle] <- "logical"
+collated[.heatMapDivergentColormap] <- "character"
 
 collated[.showDimnames] <- "character"
 collated[.plotLegendPosition] <- "character"

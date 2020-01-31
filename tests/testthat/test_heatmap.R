@@ -30,6 +30,25 @@ test_that(".process_heatmap_assay_colormap handles discrete assays", {
         "heatmap_col <- .col_colors"))
 })
 
+test_that(".process_heatmap_assay_colormap handles centered values", {
+
+    plot_env <- new.env()
+    
+    plot_env$plot.data <- matrix(seq_len(10), 5, 2)
+
+    x <- memory[["ComplexHeatmapPlot1"]]
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+    x[[iSEE:::.assayCenterRowsTitle]] <- TRUE
+
+    out <- .process_heatmap_assay_colormap(x, sce, plot_env)
+    expect_identical(out, c(
+        ".col_values <- as.vector(plot.data)",
+        '.col_colors <- c("purple", "black", "yellow")',
+        ".col_FUN <- colorRamp2(breaks = c(1, 0, 10), colors = .col_colors)",
+        "heatmap_col <- .col_FUN"))
+})
+
 test_that(".process_heatmap_column_annotations handles column selections", {
 
     plot_env <- new.env()
@@ -83,13 +102,27 @@ test_that(".process_heatmap_row_annotations handles row annotations", {
     expect_true(any(out == 'row_data <- row_data[.heatmap.rows, , drop=FALSE]'))
 })
 
+test_that(".process_heatmap_continuous_annotation handles centered values", {
+    plot_env <- new.env()
+    
+    plot_env$.col_values <- -5:5
+    out <- .process_heatmap_continuous_annotation(plot_env, centered = TRUE)
+    expect_identical(out, ".col_FUN <- colorRamp2(breaks = c(-5, 0, 5), colors = .col_colors)")
+    
+})
+
 test_that(".process_heatmap_continuous_annotation handles continuous scale for all-identical values", {
 
     plot_env <- new.env()
+    
     plot_env$.col_values <- rep(1, 2)
-
     out <- .process_heatmap_continuous_annotation(plot_env)
     expect_identical(out, ".col_FUN <- colorRamp2(breaks = seq(1, 2, length.out = 21L), colors = .col_colors)")
+    
+    plot_env$.col_values <- 0
+    out <- .process_heatmap_continuous_annotation(plot_env, centered = TRUE)
+    expect_identical(out, ".col_FUN <- colorRamp2(breaks = c(-1, 0, 1), colors = .col_colors)")
+    
 })
 
 test_that(".generateOutput detects col_selected and row_selected", {
@@ -163,7 +196,7 @@ test_that(".generateOutput handles row annotations", {
 
     out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
     expect_true(grepl("left_annotation=row_annot", out$commands$heatmap, fixed = TRUE))
-    expect_true(grepl('row_data <- rowData(se)[, c(\"mean_count\", \"letters\"), drop=FALSE]', out$commands$rowdata, fixed = TRUE))
+    expect_true(grepl('row_data <- rowData(se)[, c(\"mean_count\", \"letters\"), drop=FALSE]', out$commands$row_annotations, fixed = TRUE))
 
 })
 
@@ -179,7 +212,7 @@ test_that(".generateOutput handles column annotations", {
 
     out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
     expect_true(grepl("top_annotation=column_annot", out$commands$heatmap, fixed = TRUE))
-    expect_true(grepl('column_data <- colData(se)[, c(\"driver_1_s\", \"NREADS\"), drop=FALSE]', out$commands$coldata, fixed = TRUE))
+    expect_true(grepl('column_data <- colData(se)[, c(\"driver_1_s\", \"NREADS\"), drop=FALSE]', out$commands$column_annotations, fixed = TRUE))
     expect_true(grepl("plot.data <- plot.data[, .column_annot_order, drop=FALSE]", out$commands$order_columns, fixed = TRUE))
 })
 
@@ -199,4 +232,17 @@ test_that(".generateOutput handles clustering", {
     expect_true(grepl("clustering_distance_rows=\"spearman\"", out$commands$heatmap, fixed = TRUE))
     expect_true(grepl("clustering_method_rows=\"ward.D2\"", out$commands$heatmap, fixed = TRUE))
     expect_true(grepl("clustering_distance_rows=\"spearman\"", out$commands$heatmap, fixed = TRUE))
+})
+
+test_that("process_heatmap_assay_row_transformations handles row centering and scaling", {
+    
+    x <- ComplexHeatmapPlot()
+    
+    x[[.assayCenterRowsTitle]] <- TRUE
+    x[[.assayScaleRowsTitle]] <- TRUE
+    
+    out <- .process_heatmap_assay_row_transformations(x)
+    expect_identical(out, c(
+        "plot.data <- plot.data - rowMeans(plot.data)",
+        "plot.data <- plot.data / rowSds(plot.data)"))
 })

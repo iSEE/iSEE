@@ -65,6 +65,10 @@
 .visualParamChoiceShapeTitle <- "Shape"
 .visualParamChoicePointTitle <- "Points"
 .visualParamChoiceFacetTitle <- "Facets"
+.visualParamChoiceMetadataTitle <- "Annotations"
+.visualParamChoiceLabelsTitle <- "Labels"
+.visualParamChoiceTransformTitle <- "Transforms"
+.visualParamChoiceLegendTitle <- "Legends"
 .visualParamChoiceOtherTitle <- "Other"
 
 .showNamesRowTitle <- "Features"
@@ -133,3 +137,10 @@
 .clusterMethodMcquitty <- "mcquitty"
 .clusterMethodMedian <- "median"
 .clusterMethodCentroid <- "centroid"
+
+# Divergent colormaps ----
+
+.colormapPurpleBlackYellow <- "purple < black < yellow"
+.colormapBlueWhiteOrange <- "blue < white < orange"
+.colormapBlueWhiteRed <- "blue < white < red"
+.colormapGreenWhiteRed <- "green < black < red"

@@ -472,6 +472,7 @@
     # nocov start
     observeEvent(input[[.input_FUN(.featureNamesEdit)]], {
         instance <- pObjects$memory[[plot_name]]
+        transmitter <- pObjects$memory[[instance[[.selectRowSource]]]]
 
         modal_ui <- modalDialog(
             title=paste("Custom feature names for", .getFullName(instance)),
@@ -489,6 +490,7 @@
                 column(width = 4,
                     actionButton(.input_FUN(clear_field), "Clear editor"), br(), br(),
                     actionButton(.input_FUN(import_field), "Import selection"), br(), br(),
+                    tagList("Receiving selection from", em(strong(.getFullName(transmitter)))), br(), br(),
                     actionButton(.input_FUN(order_field), "Order alphabetically"), br(), br(),
                     actionButton(.input_FUN(validate_field), "Validate names"), br(), br(),
                     actionButton(.input_FUN(apply_field), label="Apply", style=.actionbutton_biocstyle)

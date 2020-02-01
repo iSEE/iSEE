@@ -177,7 +177,7 @@ setMethod(".refineParameters", "FeatAssayPlot", function(x, se) {
 .featAssayXAxisColDataTitle <- "Column data"
 .featAssayXAxisFeatNameTitle <- "Feature name"
 
-#' @importFrom S4Vectors setValidity2 isSingleString
+#' @importFrom S4Vectors setValidity2
 setValidity2("FeatAssayPlot", function(object) {
     msg <- character(0)
 

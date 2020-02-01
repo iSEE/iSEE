@@ -177,7 +177,7 @@ setMethod(".refineParameters", "SampAssayPlot", function(x, se) {
 .sampAssayXAxisRowDataTitle <- "Row data"
 .sampAssayXAxisSampNameTitle <- "Sample name"
 
-#' @importFrom S4Vectors setValidity2 isSingleString
+#' @importFrom S4Vectors setValidity2
 setValidity2("SampAssayPlot", function(object) {
     msg <- character(0)
 

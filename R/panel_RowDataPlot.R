@@ -142,7 +142,7 @@ setMethod(".refineParameters", "RowDataPlot", function(x, se) {
     x
 })
 
-#' @importFrom S4Vectors setValidity2 isSingleString
+#' @importFrom S4Vectors setValidity2
 setValidity2("RowDataPlot", function(object) {
     msg <- character(0)
 
@@ -195,7 +195,7 @@ setMethod(".createObservers", "RowDataPlot", function(x, se, input, session, pOb
 })
 
 #' @export
-setMethod(".fullName", "RowDataPlot", function(x) "Row data plot") 
+setMethod(".fullName", "RowDataPlot", function(x) "Row data plot")
 
 #' @export
 setMethod(".panelColor", "RowDataPlot", function(x) "#F2B701")

@@ -172,7 +172,7 @@ setMethod(".refineParameters", "RedDimPlot", function(x, se) {
     x
 })
 
-#' @importFrom S4Vectors setValidity2 isSingleString
+#' @importFrom S4Vectors setValidity2
 setValidity2("RedDimPlot", function(object) {
     msg <- character(0)
 

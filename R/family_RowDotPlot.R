@@ -99,7 +99,7 @@ setMethod("initialize", "RowDotPlot", function(.Object, ...) {
     do.call(callNextMethod, c(list(.Object), args))
 })
 
-#' @importFrom S4Vectors isSingleString setValidity2
+#' @importFrom S4Vectors setValidity2
 setValidity2("RowDotPlot", function(object) {
     msg <- character(0)
 

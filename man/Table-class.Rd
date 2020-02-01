@@ -35,7 +35,7 @@ In addition, this class inherits all slots from its parent \linkS4class{Panel} c
 \section{Contract description}{
 
 The Table will provide interface elements to create the \code{DT::datatble} widget.
-It will also provide observers to update slots based on user interactions with the widget. 
+It will also provide observers to update slots based on user interactions with the widget.
 Interface elements and observers are also provided for slots in its parent class \linkS4class{Panel}.
 
 Subclasses are expected to implement methods for (at least) \code{\link{.generateTable}}.
@@ -54,13 +54,13 @@ For defining the interface:
 
 For defining reactive expressions:
 \itemize{
-\item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all of the slots. 
+\item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all of the slots.
 This will also call the equivalent \linkS4class{Panel} method.
 \item \code{\link{.renderOutput}(x, se, output, pObjects, rObjects)} will add a rendered \code{\link{datatable}} object to \code{output}.
 This will also call the equivalent \linkS4class{Panel} method to render the panel information testboxes.
 }
 
-For controlling selections: 
+For controlling selections:
 \itemize{
 \item \code{\link{.multiSelectionRestricted}(x)} returns \code{TRUE}.
 Transmission of a selection to a Table will manifest as a subsetting of the rows.

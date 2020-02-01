@@ -198,6 +198,7 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     do.call(callNextMethod, c(list(.Object), args))
 })
 
+#' @importFrom S4Vectors setValidity2
 setValidity2("ComplexHeatmapPlot", function(object) {
     msg <- character(0)
 
@@ -352,7 +353,28 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
     )
 })
 
-.process_heatmap_assay_colormap <- function(x, se, plot_env) {
+#' Process heatmap colorscales
+#'
+#' These functions generate sets of commands ultimately evaluated  in the panel environment to generate various colorscale for the \code{\link{ComplexHeatmap}} plot.
+#'
+#' @param x An instance of a \linkS4class{ComplexHeatmapPlot} class.
+#' @param se A \linkS4class{SummarizedExperiment} object after running \code{\link{.cacheCommonInfo}}.
+#' @param envir An environment containing \code{plot.data}.
+#'
+#' @return
+#' \code{.process_heatmap_assay_colormap} defines \code{heatmap_col}, which is either a named set of color for discrete assays, or a \code{\link{colorRamp2}} function that interpolates colors for continuous assays.
+#'
+#' \code{.process_heatmap_column_annotations_colorscale} defines \code{column_annot}, a \code{\link{columnAnnotation}}, if any column metadata is selected. Otherwise returns an empty vector.
+#'
+#' \code{.process_heatmap_row_annotations_colorscale} defines \code{row_annot}, a \code{\link{rowAnnotation}}., if any row metadata is selected. Otherwise returns an empty vector.
+#'
+#' \code{.process_heatmap_continuous_annotation_colorscale} defines \code{.col_FUN}, a function which accepts a vector of numeric values and returns interpolated colors.
+#'
+#' @author Kevin Rue-Albrecht
+#'
+#' @rdname INTERNAL_process_heatmap_colormap
+#' @aliases .process_heatmap_assay_colormap
+.process_heatmap_assay_colormap <- function(x, se, envir) {
     assay_name <- x[[.heatMapAssay]]
 
     cmds <- c()
@@ -366,8 +388,8 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
         } else {
             cmds <- c(cmds, sprintf(".col_colors <- assayColorMap(colormap, %s, discrete=FALSE)(21L)", deparse(assay_name)))
         }
-        .text_eval(cmds, plot_env)
-        cmds <- c(cmds, .process_heatmap_continuous_assay_colorscale(x, plot_env, is_centered))
+        .text_eval(cmds, envir)
+        cmds <- c(cmds, .process_heatmap_continuous_assay_colorscale(x, envir, is_centered))
         cmds <- c(cmds, "heatmap_col <- .col_FUN")
     } else if (assay_name %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.assay.names) {
         cmds <- c(cmds, ".col_values <- as.vector(plot.data)")
@@ -383,7 +405,10 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
 
 #' @importFrom circlize colorRamp2
 #' @importFrom ComplexHeatmap columnAnnotation rowAnnotation
-.process_heatmap_column_annotations <- function(x, se, plot_env) {
+#'
+#' @rdname INTERNAL_process_heatmap_colormap
+#' @aliases .process_heatmap_column_annotations_colorscale
+.process_heatmap_column_annotations_colorscale <- function(x, se, envir) {
     cmds <- c()
     if (length(x[[.heatMapColData]]) || x[[.selectEffect]] == .selectColorTitle) {
         cmds <- c(cmds, "# Keep all samples to compute the full range of continuous annotations")
@@ -391,22 +416,22 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
         # Process selected points
         if (x[[.selectEffect]] == .selectColorTitle) {
             cmds <- c(cmds, 'column_data[["Selected points"]] <- rep(FALSE, nrow(column_data))')
-            if (exists("col_selected", envir=plot_env, inherits=FALSE)){
+            if (exists("col_selected", envir=envir, inherits=FALSE)){
                 cmds <- c(cmds, 'column_data[unlist(col_selected), "Selected points"] <- TRUE')
             }
         }
-        .text_eval(cmds, plot_env)
+        .text_eval(cmds, envir)
         # Collect color maps
         cmds <- c(cmds, "", "column_col <- list()", "")
         for (annot in x[[.heatMapColData]]) {
-            cmds <- c(cmds, .coerce_dataframe_columns(plot_env, annot, "column_data"))
+            cmds <- c(cmds, .coerce_dataframe_columns(envir, annot, "column_data"))
             # Need to store and evaluate this command, without re-evaluating all the previous ones (TODO: use a command store)
             cmd_get_value <- sprintf(".col_values <- column_data[[%s]]", deparse(annot))
             cmds <- c(cmds, cmd_get_value)
-            .text_eval(cmd_get_value, plot_env)
+            .text_eval(cmd_get_value, envir)
             if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.colData.names) {
                 cmds <- c(cmds, sprintf('.col_colors <- colDataColorMap(colormap, %s, discrete=FALSE)(21L)', deparse(annot)))
-                cmds <- c(cmds, .process_heatmap_continuous_annotation_colorscale(x, plot_env))
+                cmds <- c(cmds, .process_heatmap_continuous_annotation_colorscale(x, envir))
                 cmds <- c(cmds, sprintf("column_col[[%s]] <- .col_FUN", deparse(annot)))
             } else if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.colData.names) {
                 cmds <- c(cmds, ".col_values <- setdiff(.col_values, NA)")
@@ -436,23 +461,25 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
     cmds
 }
 
-.process_heatmap_row_annotations <- function(x, se, plot_env) {
+#' @rdname INTERNAL_process_heatmap_colormap
+#' @aliases .process_heatmap_row_annotations_colorscale
+.process_heatmap_row_annotations_colorscale <- function(x, se, envir) {
     cmds <- c()
     if (length(x[[.heatMapRowData]])) {
         cmds <- c(cmds, "# Keep all features to compute the full range of continuous annotations")
         cmds <- c(cmds, sprintf("row_data <- rowData(se)[, %s, drop=FALSE]", deparse(x[[.heatMapRowData]])))
-        .text_eval(cmds, plot_env)
+        .text_eval(cmds, envir)
         # column color maps
         cmds <- c(cmds, "", "row_col <- list()", "")
         for (annot in x[[.heatMapRowData]]) {
-            cmds <- c(cmds, .coerce_dataframe_columns(plot_env, annot, "row_data"))
+            cmds <- c(cmds, .coerce_dataframe_columns(envir, annot, "row_data"))
             # Need to store and evaluate this command, without re-evaluating all the previous ones (TODO: use a command store)
             cmd_get_value <- sprintf('.col_values <- row_data[[%s]]', deparse(annot))
             cmds <- c(cmds, cmd_get_value)
-            .text_eval(cmd_get_value, plot_env)
+            .text_eval(cmd_get_value, envir)
             if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.rowData.names) {
                 cmds <- c(cmds, sprintf('.col_colors <- rowDataColorMap(colormap, %s, discrete=FALSE)(21L)', deparse(annot)))
-                cmds <- c(cmds, .process_heatmap_continuous_annotation_colorscale(x, plot_env))
+                cmds <- c(cmds, .process_heatmap_continuous_annotation_colorscale(x, envir))
                 cmds <- c(cmds, sprintf('row_col[[%s]] <- .col_FUN', deparse(annot)))
             } else if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.rowData.names) {
                 cmds <- c(cmds, sprintf('.col_values <- setdiff(.col_values, NA)', annot))
@@ -471,48 +498,15 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
     cmds
 }
 
-#' Range utilities
-#'
-#' \code{.clean_colorscale_range} adds 1 to the upper bound of 0-length ranges.
-#' It also subtracts 1 from the lower bound if the range is meant to be centered.
-#'
-#' @param col_range A numeric vector of length 2.
-#'
-#' @return The input given range with boundaries edited
-#'
-#' @author Kevin Rue-Albrecht
-#'
-#' @rdname INTERNAL_range
-.clean_colorscale_range <- function(range, centered) {
-    if (identical(range[1], range[2])) {
-        # "colorRamp2" does not like all-identical breaks
-        range[2] <- range[2] + 1
-        if (centered) {
-            range[1] <- range[1] - 1
-        }
-    }
-    range
-}
-
-#' Process continuous colorscales
-#'
-#' @param x An instance of a \linkS4class{ComplexHeatmapPlot} class.
-#' @param envir An environment containing \code{plot.data}.
-#'
-#' @return A character vector of commands that define \code{.col_FUN}, a function which accepts a vector of numeric values and returns interpolated colors.
-#'
-#' @author Kevin Rue-Albrecht
-#'
-#' @seealso \code{\link{colorRamp2}}
-#'
-#' @rdname INTERNAL_process_heatmap_continuous_colorscale
+#' @rdname INTERNAL_process_heatmap_colormap
+#' @aliases .process_heatmap_continuous_annotation_colorscale
 .process_heatmap_continuous_annotation_colorscale <- function(x, envir) {
     cmds <- c()
 
     col_values <- as.vector(envir$plot.data)
     col_range <- range(col_values, na.rm = TRUE)
 
-    col_range <- .clean_colorscale_range(col_range, centered = FALSE)
+    col_range <- .safe_nonzero_range(col_range, centered = FALSE)
 
     return(sprintf(
         '.col_FUN <- colorRamp2(breaks = seq(%s, %s, length.out = 21L), colors = .col_colors)',
@@ -521,7 +515,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
 
 #' @param centered A logical scalar that indicates whether \code{plot.data} rows are centered.
 #'
-#' @rdname INTERNAL_process_heatmap_continuous_colorscale
+#' @rdname INTERNAL_process_heatmap_colormap
 .process_heatmap_continuous_assay_colorscale <- function(x, envir, centered=FALSE) {
     cmds <- c()
 
@@ -543,7 +537,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
         col_range <- range(envir$plot.data, na.rm = TRUE)
     }
 
-    col_range <- .clean_colorscale_range(col_range, centered)
+    col_range <- .safe_nonzero_range(col_range, centered)
 
     if (centered) {
         cmds <- c(cmds, sprintf(
@@ -558,6 +552,14 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
     return(cmds)
 }
 
+#' Process transfomations applied to rows of a heatmap matrix
+#'
+#' @param x An instance of a \linkS4class{ComplexHeatmapPlot} class.
+#'
+#' @return A character vector of commands that apply transformations to \code{plot.data}.
+#'
+#' @author Kevin Rue-Albrecht
+#' @rdname INTERNAL_process_heatmap_assay_row_transformations
 .process_heatmap_assay_row_transformations <- function(x) {
     cmds <- c()
 
@@ -569,15 +571,6 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
     }
 
     return(cmds)
-}
-
-.convert_text_to_names <- function(txt)
-# Remove comment and whitespace.
-{
-    rn <- strsplit(txt, split="\n")[[1]]
-    rn <- sub("#.*", "", rn)
-    rn <- sub("^ +", "", rn)
-    sub(" +$", "", rn)
 }
 
 #' @export
@@ -631,12 +624,12 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
         heatmap_args <- paste0(heatmap_args, ", col=heatmap_col")
 
         # Side annotations
-        cmds <- .process_heatmap_column_annotations(x, se, plot_env)
+        cmds <- .process_heatmap_column_annotations_colorscale(x, se, plot_env)
         if (length(cmds)) {
             all_cmds[["column_annotations"]] <- paste0(cmds, collapse = "\n")
             heatmap_args <- paste0(heatmap_args, ", top_annotation=column_annot")
         }
-        cmds <- .process_heatmap_row_annotations(x, se, plot_env)
+        cmds <- .process_heatmap_row_annotations_colorscale(x, se, plot_env)
         if (length(cmds)) {
             all_cmds[["row_annotations"]] <- paste0(cmds, collapse = "\n")
             heatmap_args <- paste0(heatmap_args, ", left_annotation=row_annot")
@@ -716,6 +709,32 @@ setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info)
     )
 })
 
+#' Add a visual parameter box for heatmap plots
+#'
+#' Create a visual parameter box for heatmap plots, i.e., where features are rows and samples are columns.
+#'
+#' @param x A DataFrame with one row, containing the parameter choices for the current plot.
+#' @param se A \linkS4class{SummarizedExperiment} object after running \code{\link{.cacheCommonInfo}}.
+#'
+#' @return
+#' A HTML tag object containing a \code{\link{collapseBox}} with visual parameters for heatmap plots.
+#'
+#' @details
+#' Heatmap plots can be annotated by row and column metadata.
+#' Rows or the heatmap matrix can be transformed using centering and scaling.
+#' This function creates a collapsible box that contains all of these options, initialized with the choices in \code{memory}.
+#' The box will also contain options for color scales and limits, visibility of row and column names, and legend placement and direction.
+#'
+#' Each option, once selected, yields a further subset of nested options.
+#' For example, choosing to center the heatmap rows will open a \code{selectInput} to specify the divergent colorscale to use.
+#'
+#' @author Kevin Rue-Albrecht
+#' @seealso
+#' \code{\link{.defineInterface}}, where this function is typically called.
+#'
+#' @importFrom shiny checkboxGroupInput selectizeInput checkboxInput numericInput radioButtons
+#'
+#' @rdname INTERNAL_create_visual_box_for_column_plots
 .create_visual_box_for_complexheatmap <- function(x, se) {
     plot_name <- .getEncodedName(x)
 
@@ -825,7 +844,32 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     invisible(NULL)
 })
 
-
+#' Define additional heatmap observers
+#'
+#' Define a series of observers to track additional parameters specific to the \code{ComplexHeatmapPlot} panel.
+#' These register input changes to each specified parameter in the app's memory
+#' and request an update to the output of the affected panel.
+#'
+#' @param plot_name String containing the name of the panel.
+#' @param se A \linkS4class{SummarizedExperiment} object after running \code{\link{.cacheCommonInfo}}.
+#' @param input The Shiny input object from the server function.
+#' @param session The Shiny session object from the server function.
+#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
+#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
+#'
+#' @return
+#' Observers are set up to monitor the UI elements that can change various parameters specific to the \code{ComplexHeatmapPlot} panel.
+#' A \code{NULL} is invisibly returned.
+#'
+#'
+#' @seealso
+#' \code{\link{.requestUpdate}} and \code{\link{.requestCleanUpdate}},
+#' used to trigger updates to the panel output.
+#'
+#' @author Kevin Rue-Albrecht
+#'
+#' @rdname INTERNAL_create_heatmap_extra_observers
+#' @importFrom shiny observeEvent
 .create_heatmap_extra_observers <- function(plot_name, se, input, session, pObjects, rObjects) {
 
     .input_FUN <- function(field) paste0(plot_name, "_", field)
@@ -909,6 +953,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
 #' @importFrom shiny modalDialog fluidRow column h4 actionButton br
 #' @importFrom shinyAce aceEditor updateAceEditor
+#' @rdname INTERNAL_create_heatmap_extra_observers
 .create_heatmap_modal_observers <- function(plot_name, se, input, session, pObjects, rObjects) {
     apply_field <- "INTERNAL_ApplyFeatNameChanges"
     order_field <- "INTERNAL_OrderFeatNames"

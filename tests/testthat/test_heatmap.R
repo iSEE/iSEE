@@ -48,7 +48,7 @@ test_that(".process_heatmap_assay_colormap handles centered values", {
         "heatmap_col <- .col_FUN"))
 })
 
-test_that(".process_heatmap_column_annotations handles column selections", {
+test_that(".process_heatmap_column_annotations_colorscale handles column selections", {
 
     plot_env <- new.env()
     plot_env$col_selected <- head(colnames(sce))
@@ -59,12 +59,12 @@ test_that(".process_heatmap_column_annotations handles column selections", {
 
     plot_env$se <- sce
 
-    out <- .process_heatmap_column_annotations(x, sce, plot_env)
+    out <- .process_heatmap_column_annotations_colorscale(x, sce, plot_env)
     expect_true(any(out == 'column_col[["Selected points"]] <- c("TRUE"="red", "FALSE"="white")'))
 
 })
 
-test_that(".process_heatmap_column_annotations handles column annotations", {
+test_that(".process_heatmap_column_annotations_colorscale handles column annotations", {
 
     plot_env <- new.env()
 
@@ -75,14 +75,14 @@ test_that(".process_heatmap_column_annotations handles column annotations", {
 
     plot_env$se <- sce
 
-    out <- .process_heatmap_column_annotations(x, sce, plot_env)
+    out <- .process_heatmap_column_annotations_colorscale(x, sce, plot_env)
     expect_true(any(out == '.col_values <- column_data[["driver_1_s"]]'))
     expect_true(any(out == '.col_values <- column_data[["NREADS"]]'))
     expect_true(any(out == '.column_annot_order <- with(column_data, order(driver_1_s, NREADS))'))
     expect_true(any(out == 'column_data <- column_data[.column_annot_order, , drop=FALSE]'))
 })
 
-test_that(".process_heatmap_row_annotations handles row annotations", {
+test_that(".process_heatmap_row_annotations_colorscale handles row annotations", {
 
     rowData(sce)[["letters"]] <- sample(letters[1:3], nrow(sce), TRUE)
 
@@ -95,7 +95,7 @@ test_that(".process_heatmap_row_annotations handles row annotations", {
 
     plot_env$se <- sce
 
-    out <- .process_heatmap_row_annotations(x, sce, plot_env)
+    out <- .process_heatmap_row_annotations_colorscale(x, sce, plot_env)
     expect_true(any(out == '.col_values <- row_data[["letters"]]'))
     expect_true(any(out == '.col_values <- row_data[["num_cells"]]'))
     expect_true(any(out == 'row_data <- row_data[.heatmap.rows, , drop=FALSE]'))

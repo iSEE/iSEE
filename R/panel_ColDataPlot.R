@@ -146,7 +146,7 @@ setMethod(".refineParameters", "ColDataPlot", function(x, se) {
     x
 })
 
-#' @importFrom S4Vectors setValidity2 isSingleString
+#' @importFrom S4Vectors setValidity2
 setValidity2("ColDataPlot", function(object) {
     msg <- character(0)
 

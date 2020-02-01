@@ -367,9 +367,10 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
             cmds <- c(cmds, sprintf(".col_colors <- assayColorMap(colormap, %s, discrete=FALSE)(21L)", deparse(assay_name)))
         }
         .text_eval(cmds, plot_env)
-        cmds <- c(cmds, .process_heatmap_continuous_annotation(x, plot_env, is_centered))
+        cmds <- c(cmds, .process_heatmap_continuous_assay_colorscale(x, plot_env, is_centered))
         cmds <- c(cmds, "heatmap_col <- .col_FUN")
     } else if (assay_name %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.assay.names) {
+        cmds <- c(cmds, ".col_values <- as.vector(plot.data)")
         cmds <- c(cmds, '.col_values <- setdiff(.col_values, NA)')
         cmds <- c(cmds, sprintf(".col_colors <- colDataColorMap(colormap, %s, discrete=TRUE)(%s)",
             deparse(assay_name), 'length(unique(.col_values))'))
@@ -405,7 +406,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
             .text_eval(cmd_get_value, plot_env)
             if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.colData.names) {
                 cmds <- c(cmds, sprintf('.col_colors <- colDataColorMap(colormap, %s, discrete=FALSE)(21L)', deparse(annot)))
-                cmds <- c(cmds, .process_heatmap_continuous_annotation(x, plot_env, centered = FALSE))
+                cmds <- c(cmds, .process_heatmap_continuous_annotation_colorscale(x, plot_env))
                 cmds <- c(cmds, sprintf("column_col[[%s]] <- .col_FUN", deparse(annot)))
             } else if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.colData.names) {
                 cmds <- c(cmds, ".col_values <- setdiff(.col_values, NA)")
@@ -451,7 +452,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
             .text_eval(cmd_get_value, plot_env)
             if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.rowData.names) {
                 cmds <- c(cmds, sprintf('.col_colors <- rowDataColorMap(colormap, %s, discrete=FALSE)(21L)', deparse(annot)))
-                cmds <- c(cmds, .process_heatmap_continuous_annotation(x, plot_env, centered = FALSE))
+                cmds <- c(cmds, .process_heatmap_continuous_annotation_colorscale(x, plot_env))
                 cmds <- c(cmds, sprintf('row_col[[%s]] <- .col_FUN', deparse(annot)))
             } else if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.rowData.names) {
                 cmds <- c(cmds, sprintf('.col_values <- setdiff(.col_values, NA)', annot))
@@ -470,8 +471,58 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
     cmds
 }
 
-.process_heatmap_continuous_annotation <- function(x, plot_env, centered=FALSE) {
-    # TODO: this function currently handles both assay and metadata: split it in two functions
+#' Range utilities
+#'
+#' \code{.clean_colorscale_range} adds 1 to the upper bound of 0-length ranges.
+#' It also subtracts 1 from the lower bound if the range is meant to be centered.
+#'
+#' @param col_range A numeric vector of length 2.
+#'
+#' @return The input given range with boundaries edited
+#'
+#' @author Kevin Rue-Albrecht
+#'
+#' @rdname INTERNAL_range
+.clean_colorscale_range <- function(range, centered) {
+    if (identical(range[1], range[2])) {
+        # "colorRamp2" does not like all-identical breaks
+        range[2] <- range[2] + 1
+        if (centered) {
+            range[1] <- range[1] - 1
+        }
+    }
+    range
+}
+
+#' Process continuous colorscales
+#'
+#' @param x An instance of a \linkS4class{ComplexHeatmapPlot} class.
+#' @param envir An environment containing \code{plot.data}.
+#'
+#' @return A character vector of commands that define \code{.col_FUN}, a function which accepts a vector of numeric values and returns interpolated colors.
+#'
+#' @author Kevin Rue-Albrecht
+#'
+#' @seealso \code{\link{colorRamp2}}
+#'
+#' @rdname INTERNAL_process_heatmap_continuous_colorscale
+.process_heatmap_continuous_annotation_colorscale <- function(x, envir) {
+    cmds <- c()
+
+    col_values <- as.vector(envir$plot.data)
+    col_range <- range(col_values, na.rm = TRUE)
+
+    col_range <- .clean_colorscale_range(col_range, centered = FALSE)
+
+    return(sprintf(
+        '.col_FUN <- colorRamp2(breaks = seq(%s, %s, length.out = 21L), colors = .col_colors)',
+        col_range[1], col_range[2]))
+}
+
+#' @param centered A logical scalar that indicates whether \code{plot.data} rows are centered.
+#'
+#' @rdname INTERNAL_process_heatmap_continuous_colorscale
+.process_heatmap_continuous_assay_colorscale <- function(x, envir, centered=FALSE) {
     cmds <- c()
 
     if (x[[.heatMapCustomAssayBounds]]) {
@@ -479,30 +530,20 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
         upper_bound <- x[[.assayUpperBound]]
 
         if (any(is.na(c(lower_bound, upper_bound)))) {
-            .col_values <- as.vector(plot_env$plot.data)
-            col_range <- range(.col_values, na.rm = TRUE)
-
+            col_range <- range(envir$plot.data, na.rm = TRUE)
             if (is.na(lower_bound)) {
-                lower_bound <- min(.col_values, na.rm = TRUE)
+                lower_bound <- col_range[1]
             }
             if (is.na(upper_bound)) {
-                upper_bound <- max(.col_values, na.rm = TRUE)
+                upper_bound <- col_range[2]
             }
         }
         col_range <- c(lower_bound, upper_bound)
-
     } else {
-        .col_values <- as.vector(plot_env$plot.data)
-        col_range <- range(.col_values, na.rm = TRUE)
+        col_range <- range(envir$plot.data, na.rm = TRUE)
     }
 
-    if (identical(col_range[1], col_range[2])) {
-        # "colorRamp2" does not like all-identical breaks
-        col_range[2] <- col_range[2] + 1
-        if (centered) {
-            col_range[1] <- col_range[1] - 1
-        }
-    }
+    col_range <- .clean_colorscale_range(col_range, centered)
 
     if (centered) {
         cmds <- c(cmds, sprintf(
@@ -510,7 +551,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
             col_range[1], col_range[2]))
     } else {
         cmds <- c(cmds, sprintf(
-            '.col_FUN <- colorRamp2(breaks = seq(%s, %s, length.out = 21L), colors = .col_colors)',
+            ".col_FUN <- colorRamp2(breaks = seq(%s, %s, length.out = 21L), colors = .col_colors)",
             col_range[1], col_range[2]))
     }
 
@@ -762,8 +803,10 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         input=input, pObjects=pObjects, rObjects=rObjects)
 
     .createUnprotectedParameterObservers(plot_name,
-        fields=c(.heatMapColData, .heatMapRowData,
-            .heatMapClusterFeatures, .heatMapClusterDistanceFeatures, .heatMapClusterMethodFeatures,
+        fields=c(.heatMapClusterFeatures, .heatMapClusterDistanceFeatures, .heatMapClusterMethodFeatures,
+            .heatMapColData, .heatMapRowData,
+            .heatMapCustomAssayBounds,
+            .assayCenterRowsTitle, .assayScaleRowsTitle, .heatMapDivergentColormap,
             .selectEffect, .selectColor,
             .showDimnames,
             .plotLegendPosition, .plotLegendDirection),
@@ -804,16 +847,6 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     }, ignoreInit=TRUE, ignoreNULL=TRUE)
     # nocov end
     # nocov start
-    observeEvent(input[[.input_FUN(.heatMapCustomAssayBounds)]], {
-
-        cur_value <- input[[.input_FUN(.heatMapCustomAssayBounds)]]
-
-        pObjects$memory[[plot_name]][[.heatMapCustomAssayBounds]] <- cur_value
-        # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
-        .requestUpdate(plot_name,rObjects)
-    })
-    # nocov end
-    # nocov start
     observeEvent(input[[.input_FUN(.assayLowerBound)]], {
 
         cur_value <- input[[.input_FUN(.assayLowerBound)]]
@@ -822,7 +855,6 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
             return(NULL)
         }
 
-        # Field contains "-" (valid UI input, invalid numeric value)
         if (is.na(cur_value)) {
             pObjects$memory[[plot_name]][[.assayLowerBound]] <- NA_real_
             .requestUpdate(plot_name, rObjects)
@@ -852,7 +884,6 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
             return(NULL)
         }
 
-        # Field contains "-" (valid UI input, invalid numeric value)
         if (is.na(cur_value)) {
             pObjects$memory[[plot_name]][[.assayUpperBound]] <- NA_real_
             .requestUpdate(plot_name, rObjects)
@@ -872,36 +903,6 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
         .requestUpdate(plot_name,rObjects)
     }, ignoreInit=TRUE, ignoreNULL=FALSE)
-    # nocov end
-    # nocov start
-    observeEvent(input[[.input_FUN(.assayCenterRowsTitle)]], {
-
-        cur_value <- input[[.input_FUN(.assayCenterRowsTitle)]]
-
-        pObjects$memory[[plot_name]][[.assayCenterRowsTitle]] <- cur_value
-        # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
-        .requestUpdate(plot_name,rObjects)
-    })
-    # nocov end
-    # nocov start
-    observeEvent(input[[.input_FUN(.assayScaleRowsTitle)]], {
-
-        cur_value <- input[[.input_FUN(.assayScaleRowsTitle)]]
-
-        pObjects$memory[[plot_name]][[.assayScaleRowsTitle]] <- cur_value
-        # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
-        .requestUpdate(plot_name,rObjects)
-    })
-    # nocov end
-    # nocov start
-    observeEvent(input[[.input_FUN(.heatMapDivergentColormap)]], {
-
-        cur_value <- input[[.input_FUN(.heatMapDivergentColormap)]]
-
-        pObjects$memory[[plot_name]][[.heatMapDivergentColormap]] <- cur_value
-        # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
-        .requestUpdate(plot_name,rObjects)
-    })
     # nocov end
     invisible(NULL)
 }

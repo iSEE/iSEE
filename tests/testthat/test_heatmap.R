@@ -105,10 +105,31 @@ test_that(".process_heatmap_continuous_assay_colorscale handles centered values"
     plot_env <- new.env()
 
     x <- memory[["ComplexHeatmapPlot1"]]
+    x[[iSEE:::.heatMapCustomAssayBounds]] <- TRUE
 
+    x[[iSEE:::.assayLowerBound]] <- NA_real_
+    x[[iSEE:::.assayUpperBound]] <- NA_real_
     plot_env$plot.data <- matrix(c(5, -5), nrow=1)
     out <- .process_heatmap_continuous_assay_colorscale(x, plot_env, centered = TRUE)
     expect_identical(out, ".col_FUN <- colorRamp2(breaks = c(-5, 0, 5), colors = .col_colors)")
+
+    x[[iSEE:::.assayLowerBound]] <- -1
+    x[[iSEE:::.assayUpperBound]] <- NA_real_
+    plot_env$plot.data <- matrix(c(5, -5), nrow=1)
+    out <- .process_heatmap_continuous_assay_colorscale(x, plot_env, centered = TRUE)
+    expect_identical(out, ".col_FUN <- colorRamp2(breaks = c(-1, 0, 5), colors = .col_colors)")
+
+    x[[iSEE:::.assayLowerBound]] <- NA_real_
+    x[[iSEE:::.assayUpperBound]] <- 4
+    plot_env$plot.data <- matrix(c(5, -5), nrow=1)
+    out <- .process_heatmap_continuous_assay_colorscale(x, plot_env, centered = TRUE)
+    expect_identical(out, ".col_FUN <- colorRamp2(breaks = c(-5, 0, 4), colors = .col_colors)")
+
+    x[[iSEE:::.assayLowerBound]] <- -2
+    x[[iSEE:::.assayUpperBound]] <- 4
+    plot_env$plot.data <- matrix(c(5, -5), nrow=1)
+    out <- .process_heatmap_continuous_assay_colorscale(x, plot_env, centered = TRUE)
+    expect_identical(out, ".col_FUN <- colorRamp2(breaks = c(-2, 0, 4), colors = .col_colors)")
 
 })
 

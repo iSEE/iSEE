@@ -207,17 +207,17 @@ setValidity2("ComplexHeatmapPlot", function(object) {
         .selectEffect, .selectColor))
 
     msg <- .valid_string_error(msg, object, .selectColor)
-    
+
     msg <- .multiple_choice_error(msg, object, .visualParamChoice,
         c(.visualParamChoiceMetadataTitle, .visualParamChoiceTransformTitle, .visualParamChoiceColorTitle,
           .visualParamChoiceLabelsTitle, .visualParamChoiceLegendTitle))
-    
+
     msg <- .multiple_choice_error(msg, object, .showDimnames,
         c(.showNamesRowTitle, .showNamesColumnTitle))
-    
+
     msg <- .allowable_choice_error(msg, object, .plotLegendPosition,
         c(.plotLegendRightTitle, .plotLegendBottomTitle))
-    
+
     msg <- .allowable_choice_error(msg, object, .plotLegendDirection,
         c(.plotLegendHorizontalTitle, .plotLegendVerticalTitle))
 
@@ -296,19 +296,6 @@ setMethod(".refineParameters", "ComplexHeatmapPlot", function(x, se) {
 
     if (is.na(x[[.heatMapFeatNameText]])) {
         x[[.heatMapFeatNameText]] <- rownames(se)[1]
-    }
-    
-    # TODO: plot_range should consider only the features and samples present in the heatmap, not the whole assay
-    # Get active features (either text field or incoming from another panel)
-    # Get active samples (possibly incoming with Restrict effect!)
-    # Get the range of that!
-    # plot_data <- TODO
-    plot_range <- range(assay(se, x[[.heatMapAssay]]), na.rm = TRUE)
-    if (is.na(x[[.assayLowerBound]])) {
-        x[[.assayLowerBound]] <- plot_range[1]
-    }
-    if (is.na(x[[.assayUpperBound]])) {
-        x[[.assayUpperBound]] <- plot_range[2]
     }
 
     x
@@ -484,16 +471,31 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
 }
 
 .process_heatmap_continuous_annotation <- function(x, plot_env, centered=FALSE) {
+    # TODO: this function currently handles both assay and metadata: split it in two functions
     cmds <- c()
-    
+
     if (x[[.heatMapCustomAssayBounds]]) {
-        col_range <- c(x[[.assayLowerBound]], x[[.assayUpperBound]])
+        lower_bound <- x[[.assayLowerBound]]
+        upper_bound <- x[[.assayUpperBound]]
+
+        if (any(is.na(c(lower_bound, upper_bound)))) {
+            .col_values <- as.vector(plot_env$plot.data)
+            col_range <- range(.col_values, na.rm = TRUE)
+
+            if (is.na(lower_bound)) {
+                lower_bound <- min(.col_values, na.rm = TRUE)
+            }
+            if (is.na(upper_bound)) {
+                upper_bound <- max(.col_values, na.rm = TRUE)
+            }
+        }
+        col_range <- c(lower_bound, upper_bound)
+
     } else {
-        cmds <- c(cmds,  sprintf(".col_values <- as.vector(plot.data)"))
-        .text_eval(cmds, plot_env)
-        col_range <- .text_eval("range(.col_values, na.rm = TRUE)", plot_env)
+        .col_values <- as.vector(plot_env$plot.data)
+        col_range <- range(.col_values, na.rm = TRUE)
     }
-    
+
     if (identical(col_range[1], col_range[2])) {
         # "colorRamp2" does not like all-identical breaks
         col_range[2] <- col_range[2] + 1
@@ -501,7 +503,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
             col_range[1] <- col_range[1] - 1
         }
     }
-    
+
     if (centered) {
         cmds <- c(cmds, sprintf(
             '.col_FUN <- colorRamp2(breaks = c(%s, 0, %s), colors = .col_colors)',
@@ -511,20 +513,20 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
             '.col_FUN <- colorRamp2(breaks = seq(%s, %s, length.out = 21L), colors = .col_colors)',
             col_range[1], col_range[2]))
     }
-    
+
     return(cmds)
 }
 
 .process_heatmap_assay_row_transformations <- function(x) {
     cmds <- c()
-    
+
     if (x[[.assayCenterRowsTitle]]) {
         cmds <- c(cmds, "plot.data <- plot.data - rowMeans(plot.data)")
         if (x[[.assayScaleRowsTitle]]) {
             cmds <- c(cmds, "plot.data <- plot.data / rowSds(plot.data)")
         }
     }
-    
+
     return(cmds)
 }
 
@@ -581,7 +583,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
         cmds <- .process_heatmap_assay_row_transformations(x)
         .text_eval(cmds, plot_env) # TODO: use a command store to avoid re-evaluating those commands below
         all_cmds[["assay_transforms"]] <- paste0(cmds, collapse = "\n")
-        
+
         # Compute the assay colormap after the transformations
         cmds <- .process_heatmap_assay_colormap(x, se, plot_env)
         all_cmds[["assay_colormap"]] <- paste0(cmds, collapse = "\n")
@@ -678,11 +680,11 @@ setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info)
 
     all_coldata <- .get_common_info(se, "ComplexHeatmapPlot")$valid.colData.names
     all_rowdata <- .get_common_info(se, "ComplexHeatmapPlot")$valid.rowData.names
-    
+
     assay_range <- range(assay(se, x[[.heatMapAssay]]), na.rm = TRUE)
-    
+
     .input_FUN <- function(field) paste0(plot_name, "_", field)
-    
+
     pchoice_field <- .input_FUN(.visualParamChoice)
 
     collapseBox(
@@ -722,9 +724,9 @@ setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info)
                 value = x[[.heatMapCustomAssayBounds]]),
             .conditional_on_check_solo(.input_FUN(.heatMapCustomAssayBounds), on_select = TRUE,
                 numericInput(.input_FUN(.assayLowerBound), "Lower bound",
-                    value=x[[.assayLowerBound]], min = assay_range[1], max = assay_range[2]),
+                    value=x[[.assayLowerBound]], min = -Inf, max = Inf),
                 numericInput(.input_FUN(.assayUpperBound), "Upper bound",
-                    value=x[[.assayUpperBound]], min = assay_range[1], max = assay_range[2]))
+                    value=x[[.assayUpperBound]], min = -Inf, max = Inf))
         ),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoiceLabelsTitle,
@@ -792,20 +794,20 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
             return(NULL)
         }
         pObjects$memory[[plot_name]][[.heatMapAssay]] <- matched_input
-        
-        # Twist: update the value of lower/upper bounds based on the new data
+
+        # Twist: update the value and limits of lower/upper bounds based on the new data
         plot_range <- range(assay(se, input[[.input_FUN(.heatMapAssay)]]), na.rm = TRUE)
         updateNumericInput(session, .input_FUN(.assayLowerBound), value = plot_range[1])
         updateNumericInput(session, .input_FUN(.assayUpperBound), value = plot_range[2])
-        
+
         .requestCleanUpdate(plot_name, pObjects, rObjects)
     }, ignoreInit=TRUE, ignoreNULL=TRUE)
     # nocov end
     # nocov start
     observeEvent(input[[.input_FUN(.heatMapCustomAssayBounds)]], {
-        
+
         cur_value <- input[[.input_FUN(.heatMapCustomAssayBounds)]]
-        
+
         pObjects$memory[[plot_name]][[.heatMapCustomAssayBounds]] <- cur_value
         # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
         .requestUpdate(plot_name,rObjects)
@@ -813,57 +815,69 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     # nocov end
     # nocov start
     observeEvent(input[[.input_FUN(.assayLowerBound)]], {
-        
+
         cur_value <- input[[.input_FUN(.assayLowerBound)]]
-        if (is.na(cur_value)) {
+
+        if (is.null(cur_value)) {
             return(NULL)
         }
-        upper_bound <- input[[.input_FUN(.assayUpperBound)]]
-        
+
+        # Field contains "-" (valid UI input, invalid numeric value)
+        if (is.na(cur_value)) {
+            pObjects$memory[[plot_name]][[.assayLowerBound]] <- NA_real_
+            .requestUpdate(plot_name, rObjects)
+            return(NULL)
+        }
+
         pObjects$memory[[plot_name]][[.assayLowerBound]] <- cur_value
-        
+
         # The upper bound cannot be lower than the lower bound
-        if (cur_value > upper_bound) {
-            # .process_heatmap_continuous_annotation handles identical values downstream
+        upper_bound <- input[[.input_FUN(.assayUpperBound)]]
+        if (!is.null(upper_bound) && !is.na(upper_bound) && cur_value > upper_bound) {
+            # set identical values; 0-length range is handled later
             pObjects$memory[[plot_name]][[.assayUpperBound]] <- cur_value
             updateNumericInput(session, .input_FUN(.assayUpperBound), value = cur_value)
         }
-        
+
         # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
         .requestUpdate(plot_name,rObjects)
-    })
+    }, ignoreInit=TRUE, ignoreNULL=FALSE)
     # nocov end
     # nocov start
     observeEvent(input[[.input_FUN(.assayUpperBound)]], {
-        
+
         cur_value <- input[[.input_FUN(.assayUpperBound)]]
-        if (is.na(cur_value)) {
+
+        if (is.null(cur_value)) {
             return(NULL)
         }
-        lower_bound <- input[[.input_FUN(.assayLowerBound)]]
-        
+
+        # Field contains "-" (valid UI input, invalid numeric value)
+        if (is.na(cur_value)) {
+            pObjects$memory[[plot_name]][[.assayUpperBound]] <- NA_real_
+            .requestUpdate(plot_name, rObjects)
+            return(NULL)
+        }
+
         pObjects$memory[[plot_name]][[.assayUpperBound]] <- cur_value
-        
+
         # The lower bound cannot be higher than the upper bound
-        if (cur_value < lower_bound) {
-            # .process_heatmap_continuous_annotation handles identical values downstream
+        lower_bound <- input[[.input_FUN(.assayLowerBound)]]
+        if (!is.null(lower_bound) && !is.na(lower_bound) && cur_value < lower_bound) {
+            # set identical values; 0-length range is handled later
             pObjects$memory[[plot_name]][[.assayLowerBound]] <- cur_value
             updateNumericInput(session, .input_FUN(.assayLowerBound), value = cur_value)
         }
-        
+
         # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
         .requestUpdate(plot_name,rObjects)
-    })
+    }, ignoreInit=TRUE, ignoreNULL=FALSE)
     # nocov end
     # nocov start
     observeEvent(input[[.input_FUN(.assayCenterRowsTitle)]], {
-        
+
         cur_value <- input[[.input_FUN(.assayCenterRowsTitle)]]
-        
-        # TODO: update the value of lower/upper bounds based on the new data (do the same for centering)
-        # updateNumericInput(session, .input_FUN(.assayLowerBound), value = plot_range[1])
-        # updateNumericInput(session, .input_FUN(.assayUpperBound), value = plot_range[2])
-        
+
         pObjects$memory[[plot_name]][[.assayCenterRowsTitle]] <- cur_value
         # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
         .requestUpdate(plot_name,rObjects)
@@ -871,9 +885,9 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     # nocov end
     # nocov start
     observeEvent(input[[.input_FUN(.assayScaleRowsTitle)]], {
-        
+
         cur_value <- input[[.input_FUN(.assayScaleRowsTitle)]]
-        
+
         pObjects$memory[[plot_name]][[.assayScaleRowsTitle]] <- cur_value
         # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
         .requestUpdate(plot_name,rObjects)
@@ -881,9 +895,9 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     # nocov end
     # nocov start
     observeEvent(input[[.input_FUN(.heatMapDivergentColormap)]], {
-        
+
         cur_value <- input[[.input_FUN(.heatMapDivergentColormap)]]
-        
+
         pObjects$memory[[plot_name]][[.heatMapDivergentColormap]] <- cur_value
         # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
         .requestUpdate(plot_name,rObjects)

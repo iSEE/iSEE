@@ -457,7 +457,7 @@
     invisible(NULL)
 }
 
-#' @importFrom shiny modalDialog fluidRow column h4 actionButton br
+#' @importFrom shiny modalDialog removeModal fluidRow column h4 actionButton br
 #' @importFrom shinyAce aceEditor updateAceEditor
 #' @rdname INTERNAL_create_heatmap_extra_observers
 .create_heatmap_modal_observers <- function(plot_name, se, input, session, pObjects, rObjects) {
@@ -565,6 +565,7 @@
         pObjects$memory[[plot_name]][[.heatMapFeatNameText]] <- input[[.input_FUN(.heatMapFeatNameText)]]
         # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
         .requestUpdate(plot_name,rObjects)
+        removeModal()
     })
     # nocov end
 }

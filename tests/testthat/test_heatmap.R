@@ -33,7 +33,7 @@ test_that(".process_heatmap_assay_colormap handles discrete assays", {
 test_that(".process_heatmap_assay_colormap handles centered values", {
 
     plot_env <- new.env()
-    
+
     plot_env$plot.data <- matrix(seq_len(10), 5, 2)
 
     x <- memory[["ComplexHeatmapPlot1"]]
@@ -43,7 +43,6 @@ test_that(".process_heatmap_assay_colormap handles centered values", {
 
     out <- .process_heatmap_assay_colormap(x, sce, plot_env)
     expect_identical(out, c(
-        ".col_values <- as.vector(plot.data)",
         '.col_colors <- c("purple", "black", "yellow")',
         ".col_FUN <- colorRamp2(breaks = c(1, 0, 10), colors = .col_colors)",
         "heatmap_col <- .col_FUN"))
@@ -102,27 +101,31 @@ test_that(".process_heatmap_row_annotations handles row annotations", {
     expect_true(any(out == 'row_data <- row_data[.heatmap.rows, , drop=FALSE]'))
 })
 
-test_that(".process_heatmap_continuous_annotation handles centered values", {
+test_that(".process_heatmap_continuous_assay_colorscale handles centered values", {
     plot_env <- new.env()
-    
-    plot_env$.col_values <- -5:5
-    out <- .process_heatmap_continuous_annotation(plot_env, centered = TRUE)
+
+    x <- memory[["ComplexHeatmapPlot1"]]
+
+    plot_env$plot.data <- matrix(c(5, -5), nrow=1)
+    out <- .process_heatmap_continuous_assay_colorscale(x, plot_env, centered = TRUE)
     expect_identical(out, ".col_FUN <- colorRamp2(breaks = c(-5, 0, 5), colors = .col_colors)")
-    
+
 })
 
-test_that(".process_heatmap_continuous_annotation handles continuous scale for all-identical values", {
+test_that(".process_heatmap_continuous_assay_colorscale handles continuous scale for all-identical values", {
 
     plot_env <- new.env()
-    
-    plot_env$.col_values <- rep(1, 2)
-    out <- .process_heatmap_continuous_annotation(plot_env)
+
+    x <- memory[["ComplexHeatmapPlot1"]]
+
+    plot_env$plot.data <- matrix(c(1, 1), nrow=1)
+    out <- .process_heatmap_continuous_assay_colorscale(x, plot_env, centered = FALSE)
     expect_identical(out, ".col_FUN <- colorRamp2(breaks = seq(1, 2, length.out = 21L), colors = .col_colors)")
-    
-    plot_env$.col_values <- 0
-    out <- .process_heatmap_continuous_annotation(plot_env, centered = TRUE)
+
+    plot_env$plot.data <- 0
+    out <- .process_heatmap_continuous_assay_colorscale(x, plot_env, centered = TRUE)
     expect_identical(out, ".col_FUN <- colorRamp2(breaks = c(-1, 0, 1), colors = .col_colors)")
-    
+
 })
 
 test_that(".generateOutput detects col_selected and row_selected", {
@@ -235,12 +238,12 @@ test_that(".generateOutput handles clustering", {
 })
 
 test_that("process_heatmap_assay_row_transformations handles row centering and scaling", {
-    
+
     x <- ComplexHeatmapPlot()
-    
+
     x[[.assayCenterRowsTitle]] <- TRUE
     x[[.assayScaleRowsTitle]] <- TRUE
-    
+
     out <- .process_heatmap_assay_row_transformations(x)
     expect_identical(out, c(
         "plot.data <- plot.data - rowMeans(plot.data)",

@@ -578,7 +578,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
 #' @importFrom ggplot2 ggplot geom_text aes theme_void
 #' @importFrom ComplexHeatmap Heatmap draw columnAnnotation rowAnnotation
 setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, all_contents) {
-    print(str(x))
+    # print(str(x))
     plot_env <- new.env()
     plot_env$se <- se
     plot_env$colormap <- metadata(se)$colormap
@@ -673,7 +673,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     # Heatmap
     all_cmds[["heatmap"]] <- sprintf("hm <- Heatmap(matrix = plot.data%s)", heatmap_args)
 
-    print(all_cmds)
+    # print(all_cmds)
     plot_out <- .text_eval(all_cmds, plot_env) # TODO, use command store
 
     panel_data <- plot_env$plot.data
@@ -825,7 +825,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         fields=c(.heatMapClusterFeatures, .heatMapClusterDistanceFeatures, .heatMapClusterMethodFeatures,
             .heatMapColData, .heatMapRowData,
             .heatMapCustomAssayBounds,
-            .assayCenterRowsTitle, .assayScaleRowsTitle, .heatMapDivergentColormap,
+            .heatMapDivergentColormap,
             .selectEffect, .selectColor,
             .showDimnames,
             .plotLegendPosition, .plotLegendDirection),
@@ -875,19 +875,51 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     .input_FUN <- function(field) paste0(plot_name, "_", field)
     # nocov start
     observeEvent(input[[.input_FUN(.heatMapAssay)]], {
-        # .createProtectedParameterObservers with a twist
+        # .createUnprotectedParameterObservers with a twist
         matched_input <- as(input[[.input_FUN(.heatMapAssay)]], typeof(pObjects$memory[[plot_name]][[.heatMapAssay]]))
         if (identical(matched_input, pObjects$memory[[plot_name]][[.heatMapAssay]])) {
             return(NULL)
         }
         pObjects$memory[[plot_name]][[.heatMapAssay]] <- matched_input
 
-        # Twist: update the value and limits of lower/upper bounds based on the new data
+        # Twist: clear and update the limits of lower/upper bounds based on the new data
         plot_range <- range(assay(se, input[[.input_FUN(.heatMapAssay)]]), na.rm = TRUE)
-        updateNumericInput(session, .input_FUN(.assayLowerBound), value = plot_range[1])
-        updateNumericInput(session, .input_FUN(.assayUpperBound), value = plot_range[2])
+        updateNumericInput(session, .input_FUN(.assayLowerBound), value = numeric(0), min = -Inf, max = 0)
+        updateNumericInput(session, .input_FUN(.assayUpperBound), value = numeric(0), min = 0, max = Inf)
 
-        .requestCleanUpdate(plot_name, pObjects, rObjects)
+        .requestUpdate(plot_name, rObjects)
+    }, ignoreInit=TRUE, ignoreNULL=TRUE)
+    # nocov end
+    # nocov start
+    observeEvent(input[[.input_FUN(.assayCenterRowsTitle)]], {
+        # .createUnprotectedParameterObservers with a twist
+        matched_input <- as(input[[.input_FUN(.assayCenterRowsTitle)]], typeof(pObjects$memory[[plot_name]][[.assayCenterRowsTitle]]))
+        if (identical(matched_input, pObjects$memory[[plot_name]][[.assayCenterRowsTitle]])) {
+            return(NULL)
+        }
+        pObjects$memory[[plot_name]][[.assayCenterRowsTitle]] <- matched_input
+
+        # Twist: clear and update the limits of lower/upper bounds based on the new data
+        updateNumericInput(session, .input_FUN(.assayLowerBound), value = numeric(0), min = -Inf, max = 0)
+        updateNumericInput(session, .input_FUN(.assayUpperBound), value = numeric(0), min = 0, max = Inf)
+
+        .requestUpdate(plot_name, rObjects)
+    }, ignoreInit=TRUE, ignoreNULL=TRUE)
+    # nocov end
+    # nocov start
+    observeEvent(input[[.input_FUN(.assayScaleRowsTitle)]], {
+        # .createUnprotectedParameterObservers with a twist
+        matched_input <- as(input[[.input_FUN(.assayScaleRowsTitle)]], typeof(pObjects$memory[[plot_name]][[.assayScaleRowsTitle]]))
+        if (identical(matched_input, pObjects$memory[[plot_name]][[.assayScaleRowsTitle]])) {
+            return(NULL)
+        }
+        pObjects$memory[[plot_name]][[.assayScaleRowsTitle]] <- matched_input
+
+        # Twist: clear and update the limits of lower/upper bounds based on the new data
+        updateNumericInput(session, .input_FUN(.assayLowerBound), value = numeric(0), min = -Inf, max = 0)
+        updateNumericInput(session, .input_FUN(.assayUpperBound), value = numeric(0), min = 0, max = Inf)
+
+        .requestUpdate(plot_name, rObjects)
     }, ignoreInit=TRUE, ignoreNULL=TRUE)
     # nocov end
     # nocov start

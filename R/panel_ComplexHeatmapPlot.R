@@ -176,6 +176,7 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- .empty_default(args, .heatMapClusterMethodFeatures, .clusterMethodWardD2)
     args <- .empty_default(args, .dataParamBoxOpen, FALSE)
 
+    args <- .empty_default(args, .visualParamChoice, .visualParamChoiceMetadataTitle)
     args <- .empty_default(args, .heatMapColData, character(0))
     args <- .empty_default(args, .heatMapRowData, character(0))
 

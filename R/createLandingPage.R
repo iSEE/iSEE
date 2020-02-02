@@ -74,6 +74,7 @@ createLandingPage <- function(seUI=NULL, seLoad=NULL, initUI=NULL, initLoad=NULL
     force(requireButton)
 
     function (FUN, input, output, session) {
+        # nocov start
         output$allPanels <- renderUI({
             tagList(
                seUI(.initializeSE),
@@ -81,9 +82,9 @@ createLandingPage <- function(seUI=NULL, seLoad=NULL, initUI=NULL, initLoad=NULL
                if (requireButton) actionButton(.initializeLaunch, label="Launch", style=.actionbutton_biocstyle)
             )
         })
-
+        # nocov end
         target <- if (requireButton) .initializeLaunch else .initializeSE
-
+        # nocov start
         observeEvent(input[[target]], {
             se2 <- try(seLoad(input[[.initializeSE]]), silent=TRUE)
             if (is(se2, "try-error")) {
@@ -98,6 +99,8 @@ createLandingPage <- function(seUI=NULL, seLoad=NULL, initUI=NULL, initLoad=NULL
                 FUN(SE=se2, INITIAL=init)
             }
         }, ignoreNULL=TRUE, ignoreInit=TRUE)
+        # nocov end
+        invisible(NULL)
     }
 }
 

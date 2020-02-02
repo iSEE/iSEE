@@ -144,7 +144,7 @@
 .process_heatmap_continuous_annotation_colorscale <- function(x, envir) {
     cmds <- c()
 
-    col_values <- as.vector(envir$plot.data)
+    col_values <- as.vector(envir$.col_values)
     col_range <- range(col_values, na.rm = TRUE)
 
     col_range <- .safe_nonzero_range(col_range, centered = FALSE)

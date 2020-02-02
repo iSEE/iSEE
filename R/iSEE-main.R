@@ -67,24 +67,11 @@
 #' By default, categorical data types such as factor and character are limited to 24 levels, beyond which they are coerced to numeric variables for faster plotting.
 #' This limit may be set to a different value as a global option, e.g. \code{options(iSEE.maxlevels=30)}.
 #'
-#' @section Defining a landing page:
-#' \code{landingPage} should be a function with the following argument signature:
-#' \itemize{
-#' \item \code{FUN}, a function to initialize the \code{\link{iSEE}} observer architecture.
-#' This function expects to be passed \code{SE}, a SummarizedExperiment object;
-#' and \code{INITIAL}, a list of \linkS4class{Panel} objects describing the initial application state.
-#' If \code{INITIAL=NULL}, the initial state from \code{initial} is used instead.
-#' \item \code{input}, the Shiny input list.
-#' \item \code{output}, the Shiny output list.
-#' \item \code{session}, the Shiny session object.
-#' }
-#'
-#' The function should render UI elements into \code{output$allPanels}
-#' containing the required widgets to allow a user to set up an \code{\link{iSEE}} session interactively.
-#' It should also define observers to respond to those elements and call \code{FUN} with appropriate arguments.
-#' All elements should have IDs prefixed with \code{"initialize_INTERNAL"} to avoid conflicts with other elements.
-#'
-#' The default landing page allows uploading of RDS files, see \code{\link{createUploadLandingPage}} for details.
+#' The default landing page allows users to upload their own RDS files to initialize the app.
+#' By default, the maximum request size for file uploads defaults to 5MB 
+#' (\url{https://shiny.rstudio.com/reference/shiny/0.14/shiny-options.html}).
+#' To raise the limit (e.g., 50MB), run \code{options(shiny.maxRequestSize=50*1024^2)}.
+#' See \code{\link{createLandingPage}} for details on creating a custom landing page.
 #'
 #' @return A Shiny app object is returned, for interactive data exploration of the \linkS4class{SummarizedExperiment} or \linkS4class{SingleCellExperiment} object.
 #'
@@ -160,7 +147,7 @@ iSEE <- function(se,
     customStatFun=NULL,
     customSendAll=FALSE,
     colormap=ExperimentColorMap(),
-    landingPage=createUploadLandingPage(),
+    landingPage=createLandingPage(),
     tour=NULL,
     appTitle=NULL,
     runLocal=TRUE,
@@ -339,14 +326,21 @@ iSEE <- function(se,
         rObjects <- reactiveValues(rerender=1L, rerendered=1L, modified=list())
 
         if (!has_se) {
-            FUN <- function(SE, INITIAL, ..., rObjects) {
-                if (is.null(INITIAL)) INITIAL <- initial
-                .initialize_server(SE, INITIAL, ..., rObjects=rObjects)
+            FUN <- function(SE, INITIAL) {
+                if (is.null(INITIAL)) {
+                    INITIAL <- initial
+                } else {
+                    requested <- vapply(INITIAL, .encodedName, "")
+                    available <- c(vapply(initial, .encodedName, ""), vapply(extra, .encodedName, ""))
+                    keep <- requested %in% available
+                    INITIAL <- INITIAL[keep]
+                }
+                .initialize_server(SE, initial=INITIAL, extra=extra, colormap=colormap, 
+                    tour=tour, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name,
+                    input=input, output=output, session=session, rObjects=rObjects)
                 rObjects$rerendered <- .increment_counter(isolate(rObjects$rerendered))
             }
-            landingPage(FUN, tour=tour, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name,
-                extra=extra, colormap=colormap, rObjects=rObjects,
-                input=input, output=output, session=session)
+            landingPage(FUN, input=input, output=output, session=session)
         } else {
             .initialize_server(se, initial=initial, extra=extra, colormap=colormap, 
                 tour=tour, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name,

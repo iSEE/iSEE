@@ -905,6 +905,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @param values Input vector that must be coerced to \code{numeric}.
 #' @param field Column name in the \code{plot.data} data.frame that contains \code{values}.
 #' @param as_numeric A logical scalar indicating whether the column should be coerced to numeric (if \code{TRUE}) or factor (otherwise).
+#' @param df String containing the variable name of the data.frame containing the plotting data.
 #'
 #' @return A command that coerces the plot data.frame column to the specified type, or \code{NULL} if no coercion is required.
 #'

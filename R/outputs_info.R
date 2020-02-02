@@ -83,7 +83,7 @@
 }
 
 #' @rdname INTERNAL_link_info_output
-#' @importFrom shiny tagList renderUI
+#' @importFrom shiny tagList renderUI em strong br
 #' @importFrom igraph adjacent_vertices get.edge.ids E
 .create_link_info_output <- function(plot_name, output, pObjects, rObjects) {
     link_field <- paste0(plot_name, "_", .panelSelectLinkInfo)

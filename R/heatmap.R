@@ -343,7 +343,7 @@
 #' @author Kevin Rue-Albrecht
 #'
 #' @rdname INTERNAL_create_heatmap_extra_observers
-#' @importFrom shiny observeEvent
+#' @importFrom shiny observeEvent updateNumericInput
 .create_heatmap_extra_observers <- function(plot_name, se, input, session, pObjects, rObjects) {
 
     .input_FUN <- function(field) paste0(plot_name, "_", field)

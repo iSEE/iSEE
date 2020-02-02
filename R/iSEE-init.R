@@ -27,7 +27,7 @@
 #' (as the original \code{initial} or in the \code{extra}) will be used for security and other reasons.
 #'
 #' The UI elements for discovering the SummarizedExperiment and the initial state are named
-#' \code{initialize_INTERNAL_se} and \code{initialize_INTERNAL_encoded}, respectively.
+#' \code{initialize_INTERNAL_se} and \code{initialize_INTERNAL_init}, respectively.
 #' This can be used in Shiny bookmarking to initialize an \code{\link{iSEE}} in a desired state by simply clicking a link,
 #' provided that \code{requireButton=FALSE} so that the reactive expressions are triggered by \code{initialize_INTERNAL_se}.
 #' We do not use bookmarking to set parameters directly as we will run afoul of URL character limits.

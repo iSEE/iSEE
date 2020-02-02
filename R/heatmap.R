@@ -55,15 +55,14 @@
 #' @aliases .process_heatmap_column_annotations_colorscale
 .process_heatmap_column_annotations_colorscale <- function(x, se, envir) {
     cmds <- c()
-    if (length(x[[.heatMapColData]]) || x[[.selectEffect]] == .selectColorTitle) {
+    has_incoming_color <- x[[.selectEffect]] == .selectColorTitle && exists("col_selected", envir, inherits = FALSE)
+    if (length(x[[.heatMapColData]]) || has_incoming_color) {
         cmds <- c(cmds, "# Keep all samples to compute the full range of continuous annotations")
         cmds <- c(cmds, sprintf("column_data <- colData(se)[, %s, drop=FALSE]", .deparse_for_viewing(x[[.heatMapColData]])))
         # Process selected points
-        if (x[[.selectEffect]] == .selectColorTitle) {
+        if (has_incoming_color) {
             cmds <- c(cmds, 'column_data[["Selected points"]] <- rep(FALSE, nrow(column_data))')
-            if (exists("col_selected", envir=envir, inherits=FALSE)){
-                cmds <- c(cmds, 'column_data[unlist(col_selected), "Selected points"] <- TRUE')
-            }
+            cmds <- c(cmds, 'column_data[unlist(col_selected), "Selected points"] <- TRUE')
         }
         .text_eval(cmds, envir)
         # Collect color maps
@@ -89,15 +88,12 @@
         }
         # Add color map for selected points
         if (x[[.selectEffect]] == .selectColorTitle) {
-            cmds <- c(cmds,
-                sprintf('column_col[["Selected points"]] <- c("TRUE"=%s, "FALSE"="white")', deparse(x[[.selectColor]])),
-                "")
+            cmds <- c(cmds, sprintf('column_col[["Selected points"]] <- c("TRUE"=%s, "FALSE"="white")', deparse(x[[.selectColor]])), "")
         }
         cmds <- c(cmds, 'column_data <- column_data[.heatmap.columns, , drop=FALSE]')
         cmds <- c(cmds, 'column_data <- as.data.frame(column_data, optional=TRUE)') # preserve colnames
         if (length(x[[.heatMapColData]])) {
-            cmds <- c(cmds, sprintf(".column_annot_order <- with(column_data, order(%s))",
-                paste0(x[[.heatMapColData]], collapse=", ")))
+            cmds <- c(cmds, sprintf(".column_annot_order <- with(column_data, order(%s))", paste0(x[[.heatMapColData]], collapse=", ")))
             cmds <- c(cmds, "column_data <- column_data[.column_annot_order, , drop=FALSE]")
         }
         cmds <- c(cmds, sprintf("column_annot <- columnAnnotation(df=column_data, col=column_col, annotation_legend_param=list(direction=%s))",

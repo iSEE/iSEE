@@ -46,7 +46,7 @@
 #' @param voice A logical indicating whether the voice recognition should be enabled.
 #' @param bugs Set to \code{TRUE} to enable the bugs Easter egg.
 #' Alternatively, a named numeric vector control the respective number of each bug type (e.g., \code{c(bugs=3L, spiders=1L)}).
-#' Credits to \url{https://github.com/Auz/Bug} for the JavaScript code.
+#' @param ... Further arguments to pass to \code{\link{shinyApp}}.
 #'
 #' @details
 #' Configuring the initial state of the app is as easy as passing a list of \linkS4class{Panel} objects to \code{initial}.
@@ -73,29 +73,16 @@
 #' To raise the limit (e.g., 50MB), run \code{options(shiny.maxRequestSize=50*1024^2)}.
 #' See \code{\link{createLandingPage}} for details on creating a custom landing page.
 #'
-#' @return A Shiny app object is returned, for interactive data exploration of the \linkS4class{SummarizedExperiment} or \linkS4class{SingleCellExperiment} object.
+#' @return A Shiny app object is returned for interactive data exploration of \code{se},
+#' either by simply printing the object or by explicitly running it with \code{\link{runApp}}.
 #'
-#' @export
-#' @importFrom utils packageVersion
-#' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu notificationItem
-#' @importFrom utils packageVersion read.delim citation sessionInfo browseURL head
-#' @importFrom shinyjs useShinyjs
-#' @importFrom rintrojs introjsUI introjs
-#' @importFrom shiny reactiveValues uiOutput
-#' renderUI renderPrint
-#' actionButton selectizeInput
-#' shinyApp runApp
-#' HTML br icon hr p em strong img code pre h1
-#' tagList tags
-#' tabsetPanel tabPanel
-#' includeCSS singleton includeScript
-#' fileInput observeEvent isolate
-#' @importFrom DT datatable renderDataTable dataTableOutput
-#' @importFrom S4Vectors DataFrame metadata metadata<-
-#' @importFrom methods as
-#' @importFrom cowplot plot_grid
-#' @importFrom igraph make_graph
+#' @references 
+#' Rue-Albrecht K, Marini F, Soneson C, Lun ATL.
+#' iSEE: Interactive SummarizedExperiment Explorer
+#' \emph{F1000Research} 7.
 #'
+#' Javascript code for \code{bugs} was based on \url{https://github.com/Auz/Bug}.
+#' 
 #' @examples
 #' library(scRNAseq)
 #'
@@ -118,6 +105,15 @@
 #' if (interactive()) {
 #'   shiny::runApp(app, port=1234)
 #' }
+#'
+#' @export
+#' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage 
+#' dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu notificationItem
+#' @importFrom utils packageVersion 
+#' @importFrom shinyjs useShinyjs
+#' @importFrom rintrojs introjsUI
+#' @importFrom shiny reactiveValues uiOutput actionButton shinyApp 
+#' HTML icon tags includeCSS isolate
 iSEE <- function(se,
     initial=NULL,
     extra=NULL,
@@ -152,7 +148,8 @@ iSEE <- function(se,
     appTitle=NULL,
     runLocal=TRUE,
     voice=FALSE,
-    bugs=FALSE)
+    bugs=FALSE,
+    ...)
 {
     # Save the original name of the input object for renaming in the tracker
     if (has_se <- !missing(se)) {
@@ -362,7 +359,7 @@ iSEE <- function(se,
     # Launching the app.
     #######################################################################
 
-    shinyApp(ui=function(request) iSEE_ui, server=iSEE_server)
+    shinyApp(ui=function(request) iSEE_ui, server=iSEE_server, ...)
 }
 
 #' Server-side initialization of the app

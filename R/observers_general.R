@@ -26,7 +26,7 @@
 #'
 #' @author Aaron Lun
 #'
-#' @importFrom utils read.delim
+#' @importFrom utils read.delim sessionInfo citation browseURL
 #' @importFrom shiny observeEvent showModal modalDialog
 #' HTML br renderPrint tagList showNotification
 #' @importFrom rintrojs introjs

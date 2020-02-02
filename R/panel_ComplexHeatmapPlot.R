@@ -394,10 +394,12 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
 
     # If there is a matrix to work with at all
     if (all(dim(plot_env[["plot.data"]]) > 0)) {
-        # Assay matrix
+        # Row transformations
         cmds <- .process_heatmap_assay_row_transformations(x)
-        .text_eval(cmds, plot_env) # TODO: use a command store to avoid re-evaluating those commands below
-        all_cmds[["assay_transforms"]] <- paste0(cmds, collapse = "\n")
+        if (length(cmds)){
+            .text_eval(cmds, plot_env)
+            all_cmds[["assay_transforms"]] <- paste0(cmds, collapse = "\n")
+        }
 
         # Compute the assay colormap after the transformations
         cmds <- .process_heatmap_assay_colormap(x, se, plot_env)

@@ -258,6 +258,21 @@ test_that(".generateOutput handles clustering", {
     expect_true(grepl("clustering_distance_rows=\"spearman\"", out$commands$heatmap, fixed = TRUE))
 })
 
+test_that(".generateOutput handles centering and scaling", {
+
+    pObjects <- new.env()
+
+    x <- ComplexHeatmapPlot()
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+    x[[iSEE:::.assayCenterRowsTitle]] <- TRUE
+    x[[iSEE:::.assayScaleRowsTitle]] <- TRUE
+    memory$ComplexHeatmapPlot1 <- x
+
+    out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
+    expect_identical(out$commands$assay_transforms, "plot.data <- plot.data - rowMeans(plot.data)\nplot.data <- plot.data / rowSds(plot.data)")
+})
+
 test_that("process_heatmap_assay_row_transformations handles row centering and scaling", {
 
     x <- ComplexHeatmapPlot()

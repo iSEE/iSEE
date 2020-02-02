@@ -256,11 +256,6 @@
 
     pchoice_field <- .input_FUN(.visualParamChoice)
 
-    pchoice_choices <- c(.visualParamChoiceMetadataTitle, .visualParamChoiceLabelsTitle, .visualParamChoiceLegendTitle)
-    if (assay_continuous) {
-        pchoice_choices <- c(pchoice_choices, .visualParamChoiceTransformTitle, .visualParamChoiceColorTitle)
-    }
-
     collapseBox(
         id=paste0(plot_name, "_", .visualParamBoxOpen),
         title="Visual parameters",
@@ -268,7 +263,8 @@
         checkboxGroupInput(
             inputId=pchoice_field, label=NULL, inline=TRUE,
             selected=x[[.visualParamChoice]],
-            choices=pchoice_choices),
+            choices=c(.visualParamChoiceMetadataTitle, .visualParamChoiceTransformTitle, .visualParamChoiceColorTitle,
+                .visualParamChoiceLabelsTitle, .visualParamChoiceLegendTitle)),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoiceMetadataTitle,
             hr(),
@@ -348,7 +344,7 @@
 #' @author Kevin Rue-Albrecht
 #'
 #' @rdname INTERNAL_create_heatmap_extra_observers
-#' @importFrom shiny observeEvent updateNumericInput
+#' @importFrom shiny observeEvent updateNumericInput disable enable
 .create_heatmap_extra_observers <- function(plot_name, se, input, session, pObjects, rObjects) {
 
     .input_FUN <- function(field) paste0(plot_name, "_", field)
@@ -368,14 +364,19 @@
 
         # Twist2: if toggle UI related to discrete/continuous assays
         if (matched_input %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.assay.names) {
-            updateCheckboxGroupInput(session, .input_FUN(.visualParamChoice),
-                choices = c(.visualParamChoiceMetadataTitle, .visualParamChoiceLabelsTitle, .visualParamChoiceLegendTitle),
-                inline = TRUE)
+            disable(.input_FUN(.assayCenterRowsTitle))
+            disable(.input_FUN(.assayScaleRowsTitle))
+            disable(.input_FUN(.heatMapDivergentColormap))
+            disable(.input_FUN(.heatMapCustomAssayBounds))
+            disable(.input_FUN(.assayLowerBound))
+            disable(.input_FUN(.assayUpperBound))
         } else if (matched_input %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.assay.names) {
-            updateCheckboxGroupInput(session, .input_FUN(.visualParamChoice),
-                choices = c(.visualParamChoiceMetadataTitle, .visualParamChoiceLabelsTitle, .visualParamChoiceLegendTitle,
-                    .visualParamChoiceTransformTitle, .visualParamChoiceColorTitle),
-                inline = TRUE)
+            enable(.input_FUN(.assayCenterRowsTitle))
+            enable(.input_FUN(.assayScaleRowsTitle))
+            enable(.input_FUN(.heatMapDivergentColormap))
+            enable(.input_FUN(.heatMapCustomAssayBounds))
+            enable(.input_FUN(.assayLowerBound))
+            enable(.input_FUN(.assayUpperBound))
         }
 
         .requestUpdate(plot_name, rObjects)

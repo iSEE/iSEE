@@ -198,7 +198,8 @@ iSEE <- function(se,
                 headerText = "Organization",
                 notificationItem(
                     text = actionButton(
-                        'organize_panels', label="Organize panels",
+                        .generalOrganizePanels,
+                        label="Organize panels",
                         icon = icon("object-ungroup"),
                         style=.actionbutton_biocstyle
                     ),
@@ -212,7 +213,8 @@ iSEE <- function(se,
                 headerText = "Diagnostics",
                 notificationItem(
                     text=actionButton(
-                        'open_linkgraph', label="Examine panel chart",
+                        .generalLinkGraph, 
+                        label="Examine panel chart",
                         icon=icon("chain"),
                         style=.actionbutton_biocstyle
                     ),
@@ -220,7 +222,8 @@ iSEE <- function(se,
                 ),
                 notificationItem(
                     text=actionButton(
-                        'getcode_all', label="Extract the R code",
+                        .generalTrackedCode, 
+                        label="Extract the R code",
                         icon=icon("magic"),
                         style=.actionbutton_biocstyle
                     ),
@@ -228,9 +231,10 @@ iSEE <- function(se,
                 ),
                 notificationItem(
                     text=actionButton(
-                        'get_panel_settings', label="Display panel settings",
-                         icon=icon("clipboard"),
-                         style=.actionbutton_biocstyle
+                        .generalPanelSettings,
+                        label="Display panel settings",
+                        icon=icon("clipboard"),
+                        style=.actionbutton_biocstyle
                     ),
                     icon=icon(""), status="primary"
                 )
@@ -242,7 +246,8 @@ iSEE <- function(se,
                 headerText="Documentation",
                 notificationItem(
                     text=actionButton(
-                        "tour_firststeps", "Click me for a quick tour",
+                        .generalTourSteps, 
+                        "Click me for a quick tour",
                         icon("hand-o-right"),
                         style=.actionbutton_biocstyle
                     ),
@@ -251,7 +256,8 @@ iSEE <- function(se,
                 ),
                 notificationItem(
                     text=actionButton(
-                        'open_vignette', label="Open the vignette",
+                        .generalVignetteOpen,
+                        label="Open the vignette",
                         icon=icon("book"),
                         style=.actionbutton_biocstyle,
                         onclick=ifelse(runLocal, "",
@@ -271,14 +277,17 @@ iSEE <- function(se,
                 headerText="Additional information",
                 notificationItem(
                     text=actionButton(
-                        'session_info', label="About this session",
+                        .generalSessionInfo,
+                        label="About this session",
                         icon=icon("window-maximize"),
                         style=.actionbutton_biocstyle
                     ),
                     icon=icon(""), status="primary"
                 ),
                 notificationItem(
-                    text=actionButton('iSEE_info', label="About iSEE",
+                    text=actionButton(
+                        .generalCitationInfo,
+                        label="About iSEE",
                         icon=icon("heart"),
                         style=.actionbutton_biocstyle
                     ),

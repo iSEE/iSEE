@@ -1,3 +1,5 @@
+.generalOrganizePanels <- "iSEE_INTERNAL_organize_panels"
+
 #' Panel organization observers for \code{\link{iSEE}}
 #'
 #' A function to set up observers for the panel organization observers used in the app.
@@ -46,7 +48,7 @@
     names(available_enc) <- vapply(pObjects$reservoir, .fullName, "")
 
     # nocov start
-    observeEvent(input$organize_panels, {
+    observeEvent(input[[.generalOrganizePanels]], {
         enc_names <- .define_memory_panel_choices(pObjects$memory)
         org_pObjects$memory <- pObjects$memory
         org_pObjects$counter <- pObjects$counter

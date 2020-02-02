@@ -1,3 +1,11 @@
+.generalLinkGraph <- "iSEE_INTERNAL_link_graph"
+.generalTrackedCode <- "iSEE_INTERNAL_tracked_code"
+.generalPanelSettings <- "iSEE_INTERNAL_panel_settings"
+.generalTourSteps <- "iSEE_INTERNAL_tour_steps"
+.generalVignetteOpen <- "iSEE_INTERNAL_open_vignette"
+.generalSessionInfo <- "iSEE_INTERNAL_session_info"
+.generalCitationInfo <- "iSEE_INTERNAL_citation_info"
+
 #nocov start
 
 #' General observers for \code{\link{iSEE}}
@@ -26,7 +34,7 @@
 #'
 #' @rdname INTERNAL_general_observers
 .create_general_observers <- function(tour, runLocal, se_name, ecm_name, input, session, pObjects, rObjects) {
-    observeEvent(input$tour_firststeps, {
+    observeEvent(input[[.generalTourSteps]], {
         if(is.null(tour)) {
             tour <- read.delim(system.file("extdata", "intro_firststeps.txt", package="iSEE"),
                 sep=";", stringsAsFactors=FALSE, row.names=NULL, quote="")
@@ -39,7 +47,7 @@
         session$onFlushed(function() { introjs(session, options=list(steps=tour)) })
     }
 
-    observeEvent(input$getcode_all, {
+    observeEvent(input[[.generalTrackedCode]], {
         showModal(modalDialog(
             title="My code", size="l",fade=TRUE,
             footer=NULL, easyClose=TRUE,
@@ -54,7 +62,7 @@
         ))
     })
 
-    observeEvent(input$get_panel_settings, {
+    observeEvent(input[[.generalPanelSettings]], {
         showModal(modalDialog(
             title="Panel settings", size="l", fade=TRUE,
             footer=NULL, easyClose=TRUE,
@@ -64,7 +72,7 @@
         ))
     })
 
-    observeEvent(input$session_info, {
+    observeEvent(input[[.generalSessionInfo]], {
         showModal(modalDialog(
             title="Session information", size="l",fade=TRUE,
             footer=NULL, easyClose=TRUE,
@@ -74,7 +82,7 @@
         ))
     })
 
-    observeEvent(input$iSEE_info, {
+    observeEvent(input[[.generalCitationInfo]], {
         showModal(modalDialog(
             title="About iSEE", size="m", fade=TRUE,
             footer=NULL, easyClose=TRUE,
@@ -88,7 +96,7 @@
         ))
     })
 
-    observeEvent(input$open_linkgraph, {
+    observeEvent(input[[.generalLinkGraph]], {
         showModal(modalDialog(
             title="Graph of inter-panel links", size="l",
             fade=TRUE, footer=NULL, easyClose=TRUE,
@@ -100,7 +108,7 @@
     })
 
     if (runLocal) {
-        observeEvent(input$open_vignette, {
+        observeEvent(input[[.generalTourSteps]], {
             path <- system.file("doc", "basic.html", package="iSEE")
             if (path=="") {
                 showNotification("vignette has not been built on this system", type="error")

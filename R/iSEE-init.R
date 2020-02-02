@@ -26,8 +26,7 @@
 #' Note that only \link{Panel}s classes that were in the original \code{\link{iSEE}} call
 #' (as the original \code{initial} or in the \code{extra}) will be used for security and other reasons.
 #'
-#' The UI elements for discovering the SummarizedExperiment and the initial state are named
-#' \code{initialize_INTERNAL_se} and \code{initialize_INTERNAL_init}, respectively.
+#' The UI elements for the SummarizedExperiment and the initial state are named \code{se} and \code{initial} respectively.
 #' This can be used in Shiny bookmarking to initialize an \code{\link{iSEE}} in a desired state by simply clicking a link,
 #' provided that \code{requireButton=FALSE} so that the reactive expressions are triggered by \code{initialize_INTERNAL_se}.
 #' We do not use bookmarking to set parameters directly as we will run afoul of URL character limits.
@@ -48,7 +47,7 @@
 #' The function should render UI elements into \code{output$allPanels}
 #' containing the required widgets to allow a user to set up an \code{\link{iSEE}} session interactively.
 #' It should also define observers to respond to those elements and call \code{FUN} with appropriate arguments.
-#' All elements should have IDs prefixed with \code{"initialize_INTERNAL"} to avoid conflicts with other elements.
+#' We suggest that all elements have IDs prefixed with \code{"initialize_INTERNAL"} to avoid conflicts with other elements.
 #'
 #' @author Aaron Lun
 #' @examples
@@ -77,22 +76,22 @@ createLandingPage <- function(seUI=NULL, seLoad=NULL, initUI=NULL, initLoad=NULL
     function (FUN, input, output, session) {
         output$allPanels <- renderUI({
             tagList(
-               seUI("initialize_INTERNAL_se"),
-               initUI("initialize_INTERNAL_init"),
-               if (requireButton) actionButton("initialize_INTERNAL_launch", label="Launch", style=.actionbutton_biocstyle)
+               seUI(.initializeSE),
+               initUI(.initializeInitial),
+               if (requireButton) actionButton(.initializeLaunch, label="Launch", style=.actionbutton_biocstyle)
             )
         })
 
-        target <- if (requireButton) "initialize_INTERNAL_launch" else "initialize_INTERNAL_se"
+        target <- if (requireButton) .initializeLaunch else .initializeSE
 
         observeEvent(input[[target]], {
-            se2 <- try(seLoad(input$initialize_INTERNAL_se), silent=TRUE)
+            se2 <- try(seLoad(input[[.initializeSE]]), silent=TRUE)
             if (is(se2, "try-error")) {
                 showNotification("must upload a valid RDS file", type="error")
             } else if (!is(se2, "SummarizedExperiment")) {
                 showNotification("must upload a SummarizedExperiment object", type="error")
             } else {
-                init <- try(initLoad(input$initialize_INTERNAL_init), silent=TRUE)
+                init <- try(initLoad(input[[.initializeInitial]], silent=TRUE))
                 if (is(init, "try-error")) {
                     init <- NULL
                 }
@@ -101,3 +100,8 @@ createLandingPage <- function(seUI=NULL, seLoad=NULL, initUI=NULL, initLoad=NULL
         }, ignoreNULL=TRUE, ignoreInit=TRUE)
     }
 }
+
+# Using the same names as iSEE() for convenience.
+.initializeSE <- "se"
+.initializeInitial <- "initial"
+.initializeLaunch <- "iSEE_INTERNAL_launch_init"

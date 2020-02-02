@@ -45,8 +45,7 @@ Again, any source can be used to create this list if \code{initUI} and \code{ini
 Note that only \link{Panel}s classes that were in the original \code{\link{iSEE}} call
 (as the original \code{initial} or in the \code{extra}) will be used for security and other reasons.
 
-The UI elements for discovering the SummarizedExperiment and the initial state are named
-\code{initialize_INTERNAL_se} and \code{initialize_INTERNAL_init}, respectively.
+The UI elements for the SummarizedExperiment and the initial state are named \code{se} and \code{initial} respectively.
 This can be used in Shiny bookmarking to initialize an \code{\link{iSEE}} in a desired state by simply clicking a link,
 provided that \code{requireButton=FALSE} so that the reactive expressions are triggered by \code{initialize_INTERNAL_se}.
 We do not use bookmarking to set parameters directly as we will run afoul of URL character limits.
@@ -68,7 +67,7 @@ If \code{INITIAL=NULL}, the initial state from \code{initial} is used instead.
 The function should render UI elements into \code{output$allPanels}
 containing the required widgets to allow a user to set up an \code{\link{iSEE}} session interactively.
 It should also define observers to respond to those elements and call \code{FUN} with appropriate arguments.
-All elements should have IDs prefixed with \code{"initialize_INTERNAL"} to avoid conflicts with other elements.
+We suggest that all elements have IDs prefixed with \code{"initialize_INTERNAL"} to avoid conflicts with other elements.
 }
 
 \examples{

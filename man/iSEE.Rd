@@ -152,7 +152,7 @@ By default, categorical data types such as factor and character are limited to 2
 This limit may be set to a different value as a global option, e.g. \code{options(iSEE.maxlevels=30)}.
 
 The default landing page allows users to upload their own RDS files to initialize the app.
-By default, the maximum request size for file uploads defaults to 5MB 
+By default, the maximum request size for file uploads defaults to 5MB
 (\url{https://shiny.rstudio.com/reference/shiny/0.14/shiny-options.html}).
 To raise the limit (e.g., 50MB), run \code{options(shiny.maxRequestSize=50*1024^2)}.
 See \code{\link{createLandingPage}} for details on creating a custom landing page.

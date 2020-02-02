@@ -250,11 +250,20 @@
     all_coldata <- .get_common_info(se, "ComplexHeatmapPlot")$valid.colData.names
     all_rowdata <- .get_common_info(se, "ComplexHeatmapPlot")$valid.rowData.names
 
-    assay_range <- range(assay(se, x[[.heatMapAssay]]), na.rm = TRUE)
+    assay_name <- x[[.heatMapAssay]]
+
+    assay_range <- range(assay(se, assay_name), na.rm = TRUE)
+
+    assay_continuous <- assay_name %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.assay.names
 
     .input_FUN <- function(field) paste0(plot_name, "_", field)
 
     pchoice_field <- .input_FUN(.visualParamChoice)
+
+    pchoice_choices <- c(.visualParamChoiceMetadataTitle, .visualParamChoiceLabelsTitle, .visualParamChoiceLegendTitle)
+    if (assay_continuous) {
+        pchoice_choices <- c(pchoice_choices, .visualParamChoiceTransformTitle, .visualParamChoiceColorTitle)
+    }
 
     collapseBox(
         id=paste0(plot_name, "_", .visualParamBoxOpen),
@@ -263,7 +272,7 @@
         checkboxGroupInput(
             inputId=pchoice_field, label=NULL, inline=TRUE,
             selected=x[[.visualParamChoice]],
-            choices=c(.visualParamChoiceMetadataTitle, .visualParamChoiceTransformTitle, .visualParamChoiceColorTitle, .visualParamChoiceLabelsTitle, .visualParamChoiceLegendTitle)),
+            choices=pchoice_choices),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoiceMetadataTitle,
             hr(),
@@ -360,6 +369,18 @@
         plot_range <- range(assay(se, input[[.input_FUN(.heatMapAssay)]]), na.rm = TRUE)
         updateNumericInput(session, .input_FUN(.assayLowerBound), value = numeric(0), min = -Inf, max = 0)
         updateNumericInput(session, .input_FUN(.assayUpperBound), value = numeric(0), min = 0, max = Inf)
+
+        # Twist2: if toggle UI related to discrete/continuous assays
+        if (matched_input %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.assay.names) {
+            updateCheckboxGroupInput(session, .input_FUN(.visualParamChoice),
+                choices = c(.visualParamChoiceMetadataTitle, .visualParamChoiceLabelsTitle, .visualParamChoiceLegendTitle),
+                inline = TRUE)
+        } else if (matched_input %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.assay.names) {
+            updateCheckboxGroupInput(session, .input_FUN(.visualParamChoice),
+                choices = c(.visualParamChoiceMetadataTitle, .visualParamChoiceLabelsTitle, .visualParamChoiceLegendTitle,
+                    .visualParamChoiceTransformTitle, .visualParamChoiceColorTitle),
+                inline = TRUE)
+        }
 
         .requestUpdate(plot_name, rObjects)
     }, ignoreInit=TRUE, ignoreNULL=TRUE)

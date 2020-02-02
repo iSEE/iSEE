@@ -353,7 +353,7 @@ iSEE <- function(se,
     # Launching the app.
     #######################################################################
 
-    shinyApp(ui=iSEE_ui, server=iSEE_server)
+    shinyApp(ui=function(request) iSEE_ui, server=iSEE_server)
 }
 
 #' Server-side initialization of the app

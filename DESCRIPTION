@@ -36,9 +36,7 @@ Imports:
     graphics,
     grDevices,
     viridisLite,
-    cowplot,
     scales,
-    dplyr,
     shinyWidgets,
     ComplexHeatmap,
     circlize
@@ -49,12 +47,9 @@ Suggests:
     rmarkdown,
     scRNAseq,
     scater,
-    DelayedArray (>= 0.7.44),
-    Rtsne,
-    irlba,
+    DelayedArray,
     RColorBrewer,
     viridis,
-    org.Mm.eg.db,
     htmltools
 URL: https://github.com/csoneson/iSEE
 BugReports: https://github.com/csoneson/iSEE/issues

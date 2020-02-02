@@ -39,7 +39,8 @@ iSEE(
   appTitle = NULL,
   runLocal = TRUE,
   voice = FALSE,
-  bugs = FALSE
+  bugs = FALSE,
+  ...
 )
 }
 \arguments{
@@ -119,11 +120,13 @@ If not provided, the app displays the version info of \code{\link{iSEE}}.}
 \item{voice}{A logical indicating whether the voice recognition should be enabled.}
 
 \item{bugs}{Set to \code{TRUE} to enable the bugs Easter egg.
-Alternatively, a named numeric vector control the respective number of each bug type (e.g., \code{c(bugs=3L, spiders=1L)}).
-Credits to \url{https://github.com/Auz/Bug} for the JavaScript code.}
+Alternatively, a named numeric vector control the respective number of each bug type (e.g., \code{c(bugs=3L, spiders=1L)}).}
+
+\item{...}{Further arguments to pass to \code{\link{shinyApp}}.}
 }
 \value{
-A Shiny app object is returned, for interactive data exploration of the \linkS4class{SummarizedExperiment} or \linkS4class{SingleCellExperiment} object.
+A Shiny app object is returned for interactive data exploration of \code{se},
+either by simply printing the object or by explicitly running it with \code{\link{runApp}}.
 }
 \description{
 Interactive and reproducible visualization of data contained in a
@@ -176,4 +179,12 @@ app <- iSEE(sce)
 if (interactive()) {
   shiny::runApp(app, port=1234)
 }
+
+}
+\references{
+Rue-Albrecht K, Marini F, Soneson C, Lun ATL.
+iSEE: Interactive SummarizedExperiment Explorer
+\emph{F1000Research} 7.
+
+Javascript code for \code{bugs} was based on \url{https://github.com/Auz/Bug}.
 }

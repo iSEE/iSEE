@@ -68,7 +68,7 @@
 #' This limit may be set to a different value as a global option, e.g. \code{options(iSEE.maxlevels=30)}.
 #'
 #' The default landing page allows users to upload their own RDS files to initialize the app.
-#' By default, the maximum request size for file uploads defaults to 5MB 
+#' By default, the maximum request size for file uploads defaults to 5MB
 #' (\url{https://shiny.rstudio.com/reference/shiny/0.14/shiny-options.html}).
 #' To raise the limit (e.g., 50MB), run \code{options(shiny.maxRequestSize=50*1024^2)}.
 #' See \code{\link{createLandingPage}} for details on creating a custom landing page.
@@ -76,13 +76,13 @@
 #' @return A Shiny app object is returned for interactive data exploration of \code{se},
 #' either by simply printing the object or by explicitly running it with \code{\link{runApp}}.
 #'
-#' @references 
+#' @references
 #' Rue-Albrecht K, Marini F, Soneson C, Lun ATL.
 #' iSEE: Interactive SummarizedExperiment Explorer
 #' \emph{F1000Research} 7.
 #'
 #' Javascript code for \code{bugs} was based on \url{https://github.com/Auz/Bug}.
-#' 
+#'
 #' @examples
 #' library(scRNAseq)
 #'
@@ -107,12 +107,12 @@
 #' }
 #'
 #' @export
-#' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage 
+#' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
 #' dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu notificationItem
-#' @importFrom utils packageVersion 
+#' @importFrom utils packageVersion
 #' @importFrom shinyjs useShinyjs
 #' @importFrom rintrojs introjsUI
-#' @importFrom shiny reactiveValues uiOutput actionButton shinyApp 
+#' @importFrom shiny reactiveValues uiOutput actionButton shinyApp
 #' HTML icon tags includeCSS isolate
 iSEE <- function(se,
     initial=NULL,
@@ -210,7 +210,7 @@ iSEE <- function(se,
                 headerText = "Diagnostics",
                 notificationItem(
                     text=actionButton(
-                        .generalLinkGraph, 
+                        .generalLinkGraph,
                         label="Examine panel chart",
                         icon=icon("chain"),
                         style=.actionbutton_biocstyle
@@ -219,7 +219,7 @@ iSEE <- function(se,
                 ),
                 notificationItem(
                     text=actionButton(
-                        .generalTrackedCode, 
+                        .generalTrackedCode,
                         label="Extract the R code",
                         icon=icon("magic"),
                         style=.actionbutton_biocstyle
@@ -243,7 +243,7 @@ iSEE <- function(se,
                 headerText="Documentation",
                 notificationItem(
                     text=actionButton(
-                        .generalTourSteps, 
+                        .generalTourSteps,
                         "Click me for a quick tour",
                         icon("hand-o-right"),
                         style=.actionbutton_biocstyle
@@ -341,14 +341,14 @@ iSEE <- function(se,
                     keep <- requested %in% available
                     INITIAL <- INITIAL[keep]
                 }
-                .initialize_server(SE, initial=INITIAL, extra=extra, colormap=colormap, 
+                .initialize_server(SE, initial=INITIAL, extra=extra, colormap=colormap,
                     tour=tour, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name,
                     input=input, output=output, session=session, rObjects=rObjects)
                 rObjects$rerendered <- .increment_counter(isolate(rObjects$rerendered))
             }
             landingPage(FUN, input=input, output=output, session=session)
         } else {
-            .initialize_server(se, initial=initial, extra=extra, colormap=colormap, 
+            .initialize_server(se, initial=initial, extra=extra, colormap=colormap,
                 tour=tour, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name,
                 input=input, output=output, session=session, rObjects=rObjects)
         }
@@ -381,10 +381,11 @@ iSEE <- function(se,
 #'
 #' @rdname INTERNAL_initialize_server
 #' @importFrom shiny showNotification tagList HTML strong br code
-.initialize_server <- function(se, initial, extra, colormap, 
+.initialize_server <- function(se, initial, extra, colormap,
     tour, runLocal, se_name, ecm_name,
-    input, output, session, rObjects) 
+    input, output, session, rObjects)
 {
+    # nocov start
     if (grepl("[[:digit:]]+-12-06", Sys.Date())) {
         showNotification(ui=HTML(paste0(
             "<p style='font-size:500%; text-align:center;'>&#x1F382;</p>",
@@ -451,6 +452,9 @@ iSEE <- function(se,
     }
 
    .create_voice_observers(input, output, session, se, pObjects, rObjects)
+
+   invisible(NULL)
+   # nocov end
 }
 
 #' Prepare the SummarizedExperiment

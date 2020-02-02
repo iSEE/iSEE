@@ -23,7 +23,7 @@
 #' The default landing page also allows users to upload a RDS file containing a list of \linkS4class{Panel}s,
 #' which specifies the initial state of the \code{\link{iSEE}} instance (effectively replacing the \code{initial} argument).
 #' Again, any source can be used to create this list if \code{initUI} and \code{initLoad} are modified appropriately.
-#' Note that only \link{Panel}s classes that were in the original \code{\link{iSEE}} call
+#' Note that only \linkS4class{Panel}s classes that were in the original \code{\link{iSEE}} call
 #' (as the original \code{initial} or in the \code{extra}) will be used for security and other reasons.
 #'
 #' The UI elements for the SummarizedExperiment and the initial state are named \code{se} and \code{initial} respectively.

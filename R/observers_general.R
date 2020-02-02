@@ -28,7 +28,7 @@
 #'
 #' @importFrom utils read.delim sessionInfo citation browseURL
 #' @importFrom shiny observeEvent showModal modalDialog
-#' HTML br renderPrint tagList showNotification
+#' HTML br renderPrint tagList showNotification p
 #' @importFrom rintrojs introjs
 #' @importFrom shinyAce aceEditor
 #'

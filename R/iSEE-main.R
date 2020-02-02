@@ -368,10 +368,9 @@ iSEE <- function(se,
 #' We roll it out into a separate function so that it can be run either immediately on the \code{\link{iSEE}} call
 #' or upon user interaction with the landing page.
 #'
-#' @param se The input \linkS4class{SummarizedExperiment} object.
-#' @param initial A list of \linkS4class{Panel} objects describing the panels in the initial app state.
-#' @param extra A list of \linkS4class{Panel} objects describing additional possible (but currently unused) panels.
-#' @param colormap A \linkS4class{ExperimentColorMap} object.
+#' @inheritParams iSEE
+#' @param se_name String containing the variable name of the SummarizedExperiment object.
+#' @param ecm_name String containing the variable name of the ExperimentColorMap object.
 #' @param input,output,session The typical Shiny objects to be used in various reactive expressions.
 #' @param rObjects A list of reactive variables used throughout the app.
 #'

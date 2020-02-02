@@ -5,6 +5,9 @@
 #' @return A list of HTML content to include in the user interface.
 #'
 #' @author Kevin Rue-Albrecht
+#'
+#' @rdname INTERNAL_prepare_speech_recognition
+#' @importFrom shiny singleton includeScript
 prepareSpeechRecognition <- function(use=FALSE) {
     if (!use) {
         return(list())

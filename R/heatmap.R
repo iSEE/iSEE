@@ -344,10 +344,11 @@
 #' @author Kevin Rue-Albrecht
 #'
 #' @rdname INTERNAL_create_heatmap_extra_observers
-#' @importFrom shiny observeEvent updateNumericInput disable enable
+#' @importFrom shiny observeEvent updateNumericInput
+#' @importFrom shinyjs disable enable
 .create_heatmap_extra_observers <- function(plot_name, se, input, session, pObjects, rObjects) {
-
     .input_FUN <- function(field) paste0(plot_name, "_", field)
+
     # nocov start
     observeEvent(input[[.input_FUN(.heatMapAssay)]], {
         # .createUnprotectedParameterObservers with a twist
@@ -446,8 +447,9 @@
     invisible(NULL)
 }
 
-#' @importFrom shiny modalDialog removeModal fluidRow column h4 actionButton br
+#' @importFrom shiny modalDialog removeModal fluidRow column h4 actionButton br tagList em strong
 #' @importFrom shinyAce aceEditor updateAceEditor
+#' @importFrom shinyjs disabled
 #' @rdname INTERNAL_create_heatmap_extra_observers
 .create_heatmap_modal_observers <- function(plot_name, se, input, session, pObjects, rObjects) {
     apply_field <- "INTERNAL_ApplyFeatNameChanges"
@@ -461,7 +463,15 @@
     # nocov start
     observeEvent(input[[.input_FUN(.featureNamesEdit)]], {
         instance <- pObjects$memory[[plot_name]]
-        transmitter <- pObjects$memory[[instance[[.selectRowSource]]]]
+        transmitter <- instance[[.selectRowSource]]
+        if (transmitter==.noSelection) {
+            txt <- "No panel chosen for row selection"
+            FUN <- disabled
+        } else {
+            transmitter <- .getFullName(pObjects$memory[[transmitter]])
+            txt <- tagList("Receiving row selection from", em(strong(transmitter))) 
+            FUN <- identity
+        }
 
         modal_ui <- modalDialog(
             title=paste("Custom feature names for", .getFullName(instance)),
@@ -478,8 +488,8 @@
                 ),
                 column(width = 4,
                     actionButton(.input_FUN(clear_field), "Clear editor"), br(), br(),
-                    actionButton(.input_FUN(import_field), "Import selection"), br(), br(),
-                    tagList("Receiving selection from", em(strong(.getFullName(transmitter)))), br(), br(),
+                    FUN(actionButton(.input_FUN(import_field), "Import selection")), br(), br(),
+                    txt, br(), br(),
                     actionButton(.input_FUN(order_field), "Order alphabetically"), br(), br(),
                     actionButton(.input_FUN(validate_field), "Validate names"), br(), br(),
                     actionButton(.input_FUN(apply_field), label="Apply", style=.actionbutton_biocstyle)

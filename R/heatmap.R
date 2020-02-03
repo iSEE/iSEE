@@ -370,6 +370,9 @@
             disable(.input_FUN(.heatMapCustomAssayBounds))
             disable(.input_FUN(.assayLowerBound))
             disable(.input_FUN(.assayUpperBound))
+            disable(.input_FUN(.heatMapClusterFeatures))
+            disable(.input_FUN(.heatMapClusterDistanceFeatures))
+            disable(.input_FUN(.heatMapClusterMethodFeatures))
         } else if (matched_input %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.assay.names) {
             enable(.input_FUN(.assayCenterRowsTitle))
             enable(.input_FUN(.assayScaleRowsTitle))
@@ -377,6 +380,9 @@
             enable(.input_FUN(.heatMapCustomAssayBounds))
             enable(.input_FUN(.assayLowerBound))
             enable(.input_FUN(.assayUpperBound))
+            enable(.input_FUN(.heatMapClusterFeatures))
+            enable(.input_FUN(.heatMapClusterDistanceFeatures))
+            enable(.input_FUN(.heatMapClusterMethodFeatures))
         }
 
         .requestUpdate(plot_name, rObjects)

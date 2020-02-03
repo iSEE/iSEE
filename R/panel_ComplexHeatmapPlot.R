@@ -422,15 +422,17 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
             heatmap_args <- paste0(heatmap_args, ", left_annotation=row_annot")
         }
 
-        # Row clustering
-        heatmap_args <- paste0(heatmap_args, ", ",
-            sprintf("cluster_rows=%s", x[[.heatMapClusterFeatures]]))
-        # Row clustering options
-        if (x[[.heatMapClusterFeatures]]) {
+        if (assay_continuous) {
+            # Row clustering
             heatmap_args <- paste0(heatmap_args, ", ",
-                sprintf("clustering_distance_rows=%s", deparse(x[[.heatMapClusterDistanceFeatures]])))
-            heatmap_args <- paste0(heatmap_args, ", ",
-                sprintf("clustering_method_rows=%s", deparse(x[[.heatMapClusterMethodFeatures]])))
+                sprintf("cluster_rows=%s", x[[.heatMapClusterFeatures]]))
+            # Row clustering options
+            if (x[[.heatMapClusterFeatures]]) {
+                heatmap_args <- paste0(heatmap_args, ", ",
+                    sprintf("clustering_distance_rows=%s", deparse(x[[.heatMapClusterDistanceFeatures]])))
+                heatmap_args <- paste0(heatmap_args, ", ",
+                    sprintf("clustering_method_rows=%s", deparse(x[[.heatMapClusterMethodFeatures]])))
+            }
         }
 
         .text_eval(all_cmds[["column_annotations"]], plot_env) # TODO, use command store

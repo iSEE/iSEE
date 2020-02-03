@@ -363,121 +363,86 @@
         updateNumericInput(session, .input_FUN(.assayUpperBound), value = numeric(0), min = 0, max = Inf)
 
         # Twist2: if toggle UI related to discrete/continuous assays
-        if (matched_input %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.assay.names) {
-            disable(.input_FUN(.assayCenterRowsTitle))
-            disable(.input_FUN(.assayScaleRowsTitle))
-            disable(.input_FUN(.heatMapDivergentColormap))
-            disable(.input_FUN(.heatMapCustomAssayBounds))
-            disable(.input_FUN(.assayLowerBound))
-            disable(.input_FUN(.assayUpperBound))
-            disable(.input_FUN(.heatMapClusterFeatures))
-            disable(.input_FUN(.heatMapClusterDistanceFeatures))
-            disable(.input_FUN(.heatMapClusterMethodFeatures))
-        } else if (matched_input %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.assay.names) {
-            enable(.input_FUN(.assayCenterRowsTitle))
-            enable(.input_FUN(.assayScaleRowsTitle))
-            enable(.input_FUN(.heatMapDivergentColormap))
-            enable(.input_FUN(.heatMapCustomAssayBounds))
-            enable(.input_FUN(.assayLowerBound))
-            enable(.input_FUN(.assayUpperBound))
-            enable(.input_FUN(.heatMapClusterFeatures))
-            enable(.input_FUN(.heatMapClusterDistanceFeatures))
-            enable(.input_FUN(.heatMapClusterMethodFeatures))
+        ABLEFUN <- if (matched_input %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.assay.names) {
+            disable
+        } else {
+            enable
         }
+
+        ABLEFUN(.input_FUN(.assayCenterRowsTitle))
+        ABLEFUN(.input_FUN(.assayScaleRowsTitle))
+        ABLEFUN(.input_FUN(.heatMapDivergentColormap))
+        ABLEFUN(.input_FUN(.heatMapCustomAssayBounds))
+        ABLEFUN(.input_FUN(.assayLowerBound))
+        ABLEFUN(.input_FUN(.assayUpperBound))
+        ABLEFUN(.input_FUN(.heatMapClusterFeatures))
+        ABLEFUN(.input_FUN(.heatMapClusterDistanceFeatures))
+        ABLEFUN(.input_FUN(.heatMapClusterMethodFeatures))
 
         .requestUpdate(plot_name, rObjects)
     }, ignoreInit=TRUE, ignoreNULL=TRUE)
     # nocov end
+
     # nocov start
-    observeEvent(input[[.input_FUN(.assayCenterRowsTitle)]], {
-        # .createUnprotectedParameterObservers with a twist
-        matched_input <- as(input[[.input_FUN(.assayCenterRowsTitle)]], typeof(pObjects$memory[[plot_name]][[.assayCenterRowsTitle]]))
-        if (identical(matched_input, pObjects$memory[[plot_name]][[.assayCenterRowsTitle]])) {
-            return(NULL)
-        }
-        pObjects$memory[[plot_name]][[.assayCenterRowsTitle]] <- matched_input
+    for (field in c(.assayCenterRowsTitle, .assayScaleRowsTitle)) {
+        local({
+            field0 <- field
+            observeEvent(input[[.input_FUN(field0)]], {
+                # .createUnprotectedParameterObservers with a twist
+                matched_input <- as(input[[.input_FUN(field0)]],
+                    typeof(pObjects$memory[[plot_name]][[field0]]))
+                if (identical(matched_input, pObjects$memory[[plot_name]][[field0]])) {
+                    return(NULL)
+                }
+                pObjects$memory[[plot_name]][[field0]] <- matched_input
 
-        # Twist: clear and update the limits of lower/upper bounds based on the new data
-        updateNumericInput(session, .input_FUN(.assayLowerBound), value = numeric(0), min = -Inf, max = 0)
-        updateNumericInput(session, .input_FUN(.assayUpperBound), value = numeric(0), min = 0, max = Inf)
+                # Twist: clear and update the limits of lower/upper bounds based on the new data
+                updateNumericInput(session, .input_FUN(.assayLowerBound), value = numeric(0), min = -Inf, max = 0)
+                updateNumericInput(session, .input_FUN(.assayUpperBound), value = numeric(0), min = 0, max = Inf)
 
-        .requestUpdate(plot_name, rObjects)
-    }, ignoreInit=TRUE, ignoreNULL=TRUE)
+                .requestUpdate(plot_name, rObjects)
+            }, ignoreInit=TRUE, ignoreNULL=TRUE)
+        })
+    }
     # nocov end
+
     # nocov start
-    observeEvent(input[[.input_FUN(.assayScaleRowsTitle)]], {
-        # .createUnprotectedParameterObservers with a twist
-        matched_input <- as(input[[.input_FUN(.assayScaleRowsTitle)]], typeof(pObjects$memory[[plot_name]][[.assayScaleRowsTitle]]))
-        if (identical(matched_input, pObjects$memory[[plot_name]][[.assayScaleRowsTitle]])) {
-            return(NULL)
-        }
-        pObjects$memory[[plot_name]][[.assayScaleRowsTitle]] <- matched_input
+    all.bounds <- c(.assayLowerBound, .assayUpperBound)
+    for (bound in all.bounds) {
+        local({
+            bound0 <- bound
+            other <- setdiff(all.bounds, bound)
 
-        # Twist: clear and update the limits of lower/upper bounds based on the new data
-        updateNumericInput(session, .input_FUN(.assayLowerBound), value = numeric(0), min = -Inf, max = 0)
-        updateNumericInput(session, .input_FUN(.assayUpperBound), value = numeric(0), min = 0, max = Inf)
+            observeEvent(input[[.input_FUN(bound0)]], {
+                cur_value <- input[[.input_FUN(bound0)]]
+                if (is.null(cur_value)) {
+                    return(NULL)
+                }
+                if (is.na(cur_value)) {
+                    pObjects$memory[[plot_name]][[bound0]] <- NA_real_
+                    .requestUpdate(plot_name, rObjects)
+                    return(NULL)
+                }
+                pObjects$memory[[plot_name]][[bound0]] <- cur_value
 
-        .requestUpdate(plot_name, rObjects)
-    }, ignoreInit=TRUE, ignoreNULL=TRUE)
+                # The upper bound cannot be lower than the lower bound.
+                other_bound <- pObjects$memory[[plot_name]][[other]]
+                if (!is.null(other_bound) && !is.na(other_bound) && 
+                    ((bound0==.assayLowerBound && cur_value > other_bound) ||
+                        (bound0==.assayUpperBound && cur_value < other_bound)))
+                {
+                    # set identical values; 0-length range is handled later
+                    pObjects$memory[[plot_name]][[other]] <- cur_value
+                    updateNumericInput(session, .input_FUN(other), value = cur_value)
+                }
+
+                # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
+                .requestUpdate(plot_name,rObjects)
+            }, ignoreInit=TRUE, ignoreNULL=FALSE)
+        })
+    }
     # nocov end
-    # nocov start
-    observeEvent(input[[.input_FUN(.assayLowerBound)]], {
 
-        cur_value <- input[[.input_FUN(.assayLowerBound)]]
-
-        if (is.null(cur_value)) {
-            return(NULL)
-        }
-
-        if (is.na(cur_value)) {
-            pObjects$memory[[plot_name]][[.assayLowerBound]] <- NA_real_
-            .requestUpdate(plot_name, rObjects)
-            return(NULL)
-        }
-
-        pObjects$memory[[plot_name]][[.assayLowerBound]] <- cur_value
-
-        # The upper bound cannot be lower than the lower bound
-        upper_bound <- input[[.input_FUN(.assayUpperBound)]]
-        if (!is.null(upper_bound) && !is.na(upper_bound) && cur_value > upper_bound) {
-            # set identical values; 0-length range is handled later
-            pObjects$memory[[plot_name]][[.assayUpperBound]] <- cur_value
-            updateNumericInput(session, .input_FUN(.assayUpperBound), value = cur_value)
-        }
-
-        # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
-        .requestUpdate(plot_name,rObjects)
-    }, ignoreInit=TRUE, ignoreNULL=FALSE)
-    # nocov end
-    # nocov start
-    observeEvent(input[[.input_FUN(.assayUpperBound)]], {
-
-        cur_value <- input[[.input_FUN(.assayUpperBound)]]
-
-        if (is.null(cur_value)) {
-            return(NULL)
-        }
-
-        if (is.na(cur_value)) {
-            pObjects$memory[[plot_name]][[.assayUpperBound]] <- NA_real_
-            .requestUpdate(plot_name, rObjects)
-            return(NULL)
-        }
-
-        pObjects$memory[[plot_name]][[.assayUpperBound]] <- cur_value
-
-        # The lower bound cannot be higher than the upper bound
-        lower_bound <- input[[.input_FUN(.assayLowerBound)]]
-        if (!is.null(lower_bound) && !is.na(lower_bound) && cur_value < lower_bound) {
-            # set identical values; 0-length range is handled later
-            pObjects$memory[[plot_name]][[.assayLowerBound]] <- cur_value
-            updateNumericInput(session, .input_FUN(.assayLowerBound), value = cur_value)
-        }
-
-        # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
-        .requestUpdate(plot_name,rObjects)
-    }, ignoreInit=TRUE, ignoreNULL=FALSE)
-    # nocov end
     invisible(NULL)
 }
 

@@ -325,6 +325,14 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
 
     all_assays <- .get_common_info(se, "ComplexHeatmapPlot")$valid.assay.names
 
+    assay_name <- x[[.heatMapAssay]]
+    assay_discrete <- assay_name %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.assay.names
+    ABLEFUN <- if (assay_discrete) {
+        disabled
+    } else {
+        identity
+    }
+
     list(
         selectInput(.input_FUN(.heatMapAssay), label="Assay choice",
             choices=all_assays, selected=x[[.heatMapAssay]]),
@@ -334,23 +342,23 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
             .input_FUN(.heatMapCustomFeatNames),
             on_select=TRUE,
             actionButton(.input_FUN(.featureNamesEdit), label=.buttonEditFeatureNamesLabel)),
-        checkboxInput(.input_FUN(.heatMapClusterFeatures), label="Cluster features",
-            value=x[[.heatMapClusterFeatures]]),
+        ABLEFUN(checkboxInput(.input_FUN(.heatMapClusterFeatures), label="Cluster features",
+            value=x[[.heatMapClusterFeatures]])),
         .conditional_on_check_solo(
             .input_FUN(.heatMapClusterFeatures),
             on_select=TRUE,
-            selectInput(.input_FUN(.heatMapClusterDistanceFeatures), label="Clustering distance for features",
+            ABLEFUN(selectInput(.input_FUN(.heatMapClusterDistanceFeatures), label="Clustering distance for features",
                 choices=c(.clusterDistanceEuclidean, .clusterDistancePearson, .clusterDistanceSpearman,
                     .clusterDistanceManhattan, .clusterDistanceMaximum, .clusterDistanceCanberra,
                     .clusterDistanceBinary, .clusterDistanceMinkowski, .clusterDistanceKendall),
-                selected=x[[.heatMapClusterDistanceFeatures]]),
-            selectInput(.input_FUN(.heatMapClusterMethodFeatures), label="Clustering method for features",
+                selected=x[[.heatMapClusterDistanceFeatures]])),
+            ABLEFUN(selectInput(.input_FUN(.heatMapClusterMethodFeatures), label="Clustering method for features",
                 choices=c(.clusterMethodWardD, .clusterMethodWardD2, .clusterMethodSingle, .clusterMethodComplete,
                     "average (= UPGMA)"=.clusterMethodAverage,
                     "mcquitty (= WPGMA)"=.clusterMethodMcquitty,
                     "median (= WPGMC)"=.clusterMethodMedian,
                     "centroid (= UPGMC)"=.clusterMethodCentroid),
-                selected=x[[.heatMapClusterMethodFeatures]]))
+                selected=x[[.heatMapClusterMethodFeatures]])))
     )
 })
 

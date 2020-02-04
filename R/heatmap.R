@@ -237,7 +237,7 @@
 #' @seealso
 #' \code{\link{.defineInterface}}, where this function is typically called.
 #'
-#' @importFrom shiny checkboxGroupInput selectizeInput checkboxInput numericInput radioButtons
+#' @importFrom shiny checkboxGroupInput selectizeInput checkboxInput numericInput radioButtons disabled
 #'
 #' @rdname INTERNAL_create_visual_box_for_column_plots
 .create_visual_box_for_complexheatmap <- function(x, se) {
@@ -247,14 +247,17 @@
     all_rowdata <- .get_common_info(se, "ComplexHeatmapPlot")$valid.rowData.names
 
     assay_name <- x[[.heatMapAssay]]
-
-    assay_range <- range(assay(se, assay_name), na.rm = TRUE)
-
-    assay_continuous <- assay_name %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.assay.names
+    assay_discrete <- assay_name %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.assay.names
 
     .input_FUN <- function(field) paste0(plot_name, "_", field)
 
     pchoice_field <- .input_FUN(.visualParamChoice)
+
+    ABLEFUN <- if (assay_discrete) {
+        disabled
+    } else {
+        identity
+    }
 
     collapseBox(
         id=paste0(plot_name, "_", .visualParamBoxOpen),
@@ -279,24 +282,23 @@
             pchoice_field, .visualParamChoiceTransformTitle,
             hr(),
             strong("Row transformations:"),
-            checkboxInput(.input_FUN(.assayCenterRowsTitle), "Center", value=x[[.assayCenterRowsTitle]]),
+            ABLEFUN(checkboxInput(.input_FUN(.assayCenterRowsTitle), "Center", value=x[[.assayCenterRowsTitle]])),
             .conditional_on_check_solo(.input_FUN(.assayCenterRowsTitle), on_select = TRUE,
-                checkboxInput(.input_FUN(.assayScaleRowsTitle), "Scale", value=x[[.assayCenterRowsTitle]]),
-                selectizeInput(.input_FUN(.heatMapDivergentColormap), label="Divergent assay colormap:",
+                ABLEFUN(checkboxInput(.input_FUN(.assayScaleRowsTitle), "Scale", value=x[[.assayCenterRowsTitle]])),
+                ABLEFUN(selectizeInput(.input_FUN(.heatMapDivergentColormap), label="Divergent assay colormap:",
                     selected=x[[.heatMapDivergentColormap]],
-                    choices=c(.colormapPurpleBlackYellow, .colormapBlueWhiteOrange, .colormapBlueWhiteRed, .colormapGreenWhiteRed))
-            )
+                    choices=c(.colormapPurpleBlackYellow, .colormapBlueWhiteOrange, .colormapBlueWhiteRed, .colormapGreenWhiteRed))))
         ),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoiceColorTitle,
             hr(),
-            checkboxInput(.input_FUN(.heatMapCustomAssayBounds), "Use custom colorscale bounds",
-                value = x[[.heatMapCustomAssayBounds]]),
+            ABLEFUN(checkboxInput(.input_FUN(.heatMapCustomAssayBounds), "Use custom colorscale bounds",
+                value = x[[.heatMapCustomAssayBounds]])),
             .conditional_on_check_solo(.input_FUN(.heatMapCustomAssayBounds), on_select = TRUE,
-                numericInput(.input_FUN(.assayLowerBound), "Lower bound",
-                    value=x[[.assayLowerBound]], min = -Inf, max = Inf),
-                numericInput(.input_FUN(.assayUpperBound), "Upper bound",
-                    value=x[[.assayUpperBound]], min = -Inf, max = Inf))
+                ABLEFUN(numericInput(.input_FUN(.assayLowerBound), "Lower bound",
+                    value=x[[.assayLowerBound]], min = -Inf, max = Inf)),
+                ABLEFUN(numericInput(.input_FUN(.assayUpperBound), "Upper bound",
+                    value=x[[.assayUpperBound]], min = -Inf, max = Inf)))
         ),
         .conditional_on_check_group(
             pchoice_field, .visualParamChoiceLabelsTitle,
@@ -428,7 +430,7 @@
 
                 # The upper bound cannot be lower than the lower bound.
                 other_bound <- pObjects$memory[[plot_name]][[other]]
-                if (!is.null(other_bound) && !is.na(other_bound) && 
+                if (!is.null(other_bound) && !is.na(other_bound) &&
                     ((bound0==.assayLowerBound && cur_value > other_bound) ||
                         (bound0==.assayUpperBound && cur_value < other_bound)))
                 {
@@ -469,7 +471,7 @@
             FUN <- disabled
         } else {
             transmitter <- .getFullName(pObjects$memory[[transmitter]])
-            txt <- tagList("Receiving row selection from", em(strong(transmitter))) 
+            txt <- tagList("Receiving row selection from", em(strong(transmitter)))
             FUN <- identity
         }
 

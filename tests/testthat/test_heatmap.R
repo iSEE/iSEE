@@ -39,7 +39,7 @@ test_that(".process_heatmap_assay_colormap handles centered values", {
     x <- memory[["ComplexHeatmapPlot1"]]
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
-    x[[iSEE:::.assayCenterRowsTitle]] <- TRUE
+    x[[iSEE:::.assayCenterRows]] <- TRUE
 
     out <- .process_heatmap_assay_colormap(x, sce, plot_env)
     expect_identical(out, c(
@@ -265,8 +265,8 @@ test_that(".generateOutput handles centering and scaling", {
     x <- ComplexHeatmapPlot()
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
-    x[[iSEE:::.assayCenterRowsTitle]] <- TRUE
-    x[[iSEE:::.assayScaleRowsTitle]] <- TRUE
+    x[[iSEE:::.assayCenterRows]] <- TRUE
+    x[[iSEE:::.assayScaleRows]] <- TRUE
     memory$ComplexHeatmapPlot1 <- x
 
     out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
@@ -277,8 +277,8 @@ test_that("process_heatmap_assay_row_transformations handles row centering and s
 
     x <- ComplexHeatmapPlot()
 
-    x[[.assayCenterRowsTitle]] <- TRUE
-    x[[.assayScaleRowsTitle]] <- TRUE
+    x[[iSEE:::.assayCenterRows]] <- TRUE
+    x[[iSEE:::.assayScaleRows]] <- TRUE
 
     out <- .process_heatmap_assay_row_transformations(x)
     expect_identical(out, c(

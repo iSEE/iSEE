@@ -138,7 +138,7 @@
 .clusterMethodMedian <- "median"
 .clusterMethodCentroid <- "centroid"
 
-# Divergent colormaps ----
+# .heatMapCenteredColormap colormaps ----
 
 .colormapPurpleBlackYellow <- "purple < black < yellow"
 .colormapBlueWhiteOrange <- "blue < white < orange"

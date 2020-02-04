@@ -51,7 +51,7 @@
 
         ABLEFUN(.input_FUN(.assayCenterRowsTitle))
         ABLEFUN(.input_FUN(.assayScaleRowsTitle))
-        ABLEFUN(.input_FUN(.heatMapDivergentColormap))
+        ABLEFUN(.input_FUN(.heatMapCenteredColormap))
         ABLEFUN(.input_FUN(.heatMapCustomAssayBounds))
         ABLEFUN(.input_FUN(.assayLowerBound))
         ABLEFUN(.input_FUN(.assayUpperBound))

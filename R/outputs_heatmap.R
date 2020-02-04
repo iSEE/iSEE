@@ -27,7 +27,7 @@
     if (assay_name %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.assay.names) {
         is_centered <- x[[.assayCenterRowsTitle]]
         if (is_centered) {
-            choice_colors <- x[[.heatMapDivergentColormap]]
+            choice_colors <- x[[.heatMapCenteredColormap]]
             choice_colors <- strsplit(choice_colors, split = " < ", fixed = TRUE)[[1]]
             cmds <- c(cmds, sprintf(".col_colors <- %s", deparse(choice_colors)))
         } else {

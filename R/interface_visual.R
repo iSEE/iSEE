@@ -412,8 +412,8 @@
             ABLEFUN(checkboxInput(.input_FUN(.assayCenterRowsTitle), "Center", value=x[[.assayCenterRowsTitle]])),
             .conditional_on_check_solo(.input_FUN(.assayCenterRowsTitle), on_select = TRUE,
                 ABLEFUN(checkboxInput(.input_FUN(.assayScaleRowsTitle), "Scale", value=x[[.assayCenterRowsTitle]])),
-                ABLEFUN(selectizeInput(.input_FUN(.heatMapDivergentColormap), label="Divergent assay colormap:",
-                    selected=x[[.heatMapDivergentColormap]],
+                ABLEFUN(selectizeInput(.input_FUN(.heatMapCenteredColormap), label="`Centered` assay colormap:",
+                    selected=x[[.heatMapCenteredColormap]],
                     choices=c(.colormapPurpleBlackYellow, .colormapBlueWhiteOrange, .colormapBlueWhiteRed, .colormapGreenWhiteRed))))
         ),
         .conditional_on_check_group(

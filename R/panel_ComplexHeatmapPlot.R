@@ -185,7 +185,7 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- .empty_default(args, .assayUpperBound, NA_real_)
     args <- .empty_default(args, .assayCenterRowsTitle, FALSE)
     args <- .empty_default(args, .assayScaleRowsTitle, FALSE)
-    args <- .empty_default(args, .heatMapDivergentColormap, .colormapPurpleBlackYellow)
+    args <- .empty_default(args, .heatMapCenteredColormap, .colormapPurpleBlackYellow)
 
     args <- .empty_default(args, .showDimnames, c(.showNamesRowTitle))
 
@@ -205,7 +205,7 @@ setValidity2("ComplexHeatmapPlot", function(object) {
 
     msg <- .single_string_error(msg, object, c(.heatMapAssay, .heatMapFeatNameText,
         .heatMapClusterDistanceFeatures, .heatMapClusterMethodFeatures,
-        .heatMapDivergentColormap,
+        .heatMapCenteredColormap,
         .selectEffect, .selectColor))
 
     msg <- .valid_string_error(msg, object, .selectColor)
@@ -522,7 +522,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         fields=c(.heatMapClusterFeatures, .heatMapClusterDistanceFeatures, .heatMapClusterMethodFeatures,
             .heatMapColData, .heatMapRowData,
             .heatMapCustomAssayBounds,
-            .heatMapDivergentColormap,
+            .heatMapCenteredColormap,
             .selectEffect, .selectColor,
             .showDimnames,
             .plotLegendPosition, .plotLegendDirection),

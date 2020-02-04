@@ -803,9 +803,9 @@ synchronizeAssays <- function(ecm, se){
                 ecm_warning)
         }
         # Fetch named-matched assay colormaps
-        assay_discrete <- se_assay_names %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.assay.names
+        assay_numeric <- vapply(se_assay_names, .is_assay_numeric, logical(1), se)
         new_ecm_assays <- mapply(FUN = function(i, discrete) { assayColorMap(ecm, i, discrete = discrete) },
-            i = se_assay_names, discrete = assay_discrete)
+            i = se_assay_names, discrete = !assay_numeric)
 
     } else if (all(se_assay_names == "")){
         # If none of the SCE assays are named
@@ -838,10 +838,16 @@ synchronizeAssays <- function(ecm, se){
         }
         # Exclude unnamed assay colormaps in the ExperimentColorMap
         assays(ecm) <- assays(ecm)[assayNames(ecm) != ""]
+        FUN_TEST <- function(i, names, se) {
+            if (names[i] != "") {
+                i <- names[i]
+            }
+            .is_assay_numeric(i, se)
+        }
         # Fetch named-matched assay colormaps
-        assay_discrete <- se_assay_names %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.assay.names
+        assay_numeric <- vapply(seq_along(se_assay_names), FUN_TEST, logical(1), se_assay_names, se)
         new_ecm_assays <- mapply(FUN = function(i, discrete) { assayColorMap(ecm, i, discrete = discrete) },
-            i = se_assay_names, discrete = assay_discrete)
+            i = se_assay_names, discrete = !assay_numeric)
 
     }
 

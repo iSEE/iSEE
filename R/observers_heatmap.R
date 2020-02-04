@@ -49,8 +49,8 @@
             enable
         }
 
-        ABLEFUN(.input_FUN(.assayCenterRowsTitle))
-        ABLEFUN(.input_FUN(.assayScaleRowsTitle))
+        ABLEFUN(.input_FUN(.assayCenterRows))
+        ABLEFUN(.input_FUN(.assayScaleRows))
         ABLEFUN(.input_FUN(.heatMapCenteredColormap))
         ABLEFUN(.input_FUN(.heatMapCustomAssayBounds))
         ABLEFUN(.input_FUN(.assayLowerBound))
@@ -64,7 +64,7 @@
     # nocov end
 
     # nocov start
-    for (field in c(.assayCenterRowsTitle, .assayScaleRowsTitle)) {
+    for (field in c(.assayCenterRows, .assayScaleRows)) {
         local({
             field0 <- field
             observeEvent(input[[.input_FUN(field0)]], {

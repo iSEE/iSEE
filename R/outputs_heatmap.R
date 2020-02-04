@@ -25,7 +25,7 @@
     cmds <- c()
 
     if (assay_name %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.assay.names) {
-        is_centered <- x[[.assayCenterRowsTitle]]
+        is_centered <- x[[.assayCenterRows]]
         if (is_centered) {
             choice_colors <- x[[.heatMapCenteredColormap]]
             choice_colors <- strsplit(choice_colors, split = " < ", fixed = TRUE)[[1]]
@@ -204,9 +204,9 @@
 .process_heatmap_assay_row_transformations <- function(x) {
     cmds <- c()
 
-    if (x[[.assayCenterRowsTitle]]) {
+    if (x[[.assayCenterRows]]) {
         cmds <- c(cmds, "plot.data <- plot.data - rowMeans(plot.data)")
-        if (x[[.assayScaleRowsTitle]]) {
+        if (x[[.assayScaleRows]]) {
             cmds <- c(cmds, "plot.data <- plot.data / rowSds(plot.data)")
         }
     }

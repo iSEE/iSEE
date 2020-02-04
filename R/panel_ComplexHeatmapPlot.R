@@ -183,8 +183,8 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- .empty_default(args, .heatMapCustomAssayBounds, FALSE)
     args <- .empty_default(args, .assayLowerBound, NA_real_)
     args <- .empty_default(args, .assayUpperBound, NA_real_)
-    args <- .empty_default(args, .assayCenterRowsTitle, FALSE)
-    args <- .empty_default(args, .assayScaleRowsTitle, FALSE)
+    args <- .empty_default(args, .assayCenterRows, FALSE)
+    args <- .empty_default(args, .assayScaleRows, FALSE)
     args <- .empty_default(args, .heatMapCenteredColormap, .colormapPurpleBlackYellow)
 
     args <- .empty_default(args, .showDimnames, c(.showNamesRowTitle))
@@ -227,7 +227,7 @@ setValidity2("ComplexHeatmapPlot", function(object) {
         .heatMapCustomFeatNames, .heatMapCustomFeatNames,
         .heatMapClusterFeatures, .dataParamBoxOpen,
         .heatMapCustomAssayBounds,
-        .assayCenterRowsTitle, .assayScaleRowsTitle,
+        .assayCenterRows, .assayScaleRows,
         .visualParamBoxOpen))
 
     if (length(msg)) {

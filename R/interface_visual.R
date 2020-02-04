@@ -409,9 +409,9 @@
             pchoice_field, .visualParamChoiceTransformTitle,
             hr(),
             strong("Row transformations:"),
-            ABLEFUN(checkboxInput(.input_FUN(.assayCenterRowsTitle), "Center", value=x[[.assayCenterRowsTitle]])),
-            .conditional_on_check_solo(.input_FUN(.assayCenterRowsTitle), on_select = TRUE,
-                ABLEFUN(checkboxInput(.input_FUN(.assayScaleRowsTitle), "Scale", value=x[[.assayCenterRowsTitle]])),
+            ABLEFUN(checkboxInput(.input_FUN(.assayCenterRows), "Center", value=x[[.assayCenterRows]])),
+            .conditional_on_check_solo(.input_FUN(.assayCenterRows), on_select = TRUE,
+                ABLEFUN(checkboxInput(.input_FUN(.assayScaleRows), "Scale", value=x[[.assayScaleRows]])),
                 ABLEFUN(selectizeInput(.input_FUN(.heatMapCenteredColormap), label="`Centered` assay colormap:",
                     selected=x[[.heatMapCenteredColormap]],
                     choices=c(.colormapPurpleBlackYellow, .colormapBlueWhiteOrange, .colormapBlueWhiteRed, .colormapGreenWhiteRed))))

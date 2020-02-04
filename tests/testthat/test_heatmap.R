@@ -13,7 +13,6 @@ test_that(".process_heatmap_assay_colormap handles discrete assays", {
 
     plot_env <- new.env()
 
-    assay(sce, "letters") <- matrix(sample(letters[1:3], prod(dim(sce)), TRUE), nrow = nrow(sce), ncol = ncol(sce))
     plot_env$plot.data <- assay(sce, "letters")[1:3, 1:3]
 
     x <- memory[["ComplexHeatmapPlot1"]]
@@ -284,4 +283,36 @@ test_that("process_heatmap_assay_row_transformations handles row centering and s
     expect_identical(out, c(
         "plot.data <- plot.data - rowMeans(plot.data)",
         "plot.data <- plot.data / rowSds(plot.data)"))
+})
+
+test_that(".create_visual_box_for_complexheatmap handles continuous and discrete assays", {
+
+    x <- ComplexHeatmapPlot()
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+
+    out <- .create_visual_box_for_complexheatmap(x, sce)
+    expect_false(any(grepl("shinyjs-disabled", unlist(out)))) # none of the UI are disabled
+
+    x[[iSEE:::.heatMapAssay]] <- "letters"
+
+    out <- .create_visual_box_for_complexheatmap(x, sce)
+    expect_true(any(grepl("shinyjs-disabled", unlist(out)))) # some of the UI are disabled
+
+})
+
+test_that(".defineDataInterface handles continuous and discrete assays", {
+
+    x <- ComplexHeatmapPlot()
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+
+    out <- .defineDataInterface(x, sce)
+    expect_false(any(grepl("shinyjs-disabled", unlist(out)))) # none of the UI are disabled
+
+    x[[iSEE:::.heatMapAssay]] <- "letters"
+
+    out <- .defineDataInterface(x, sce)
+    expect_true(any(grepl("shinyjs-disabled", unlist(out)))) # some of the UI are disabled
+
 })

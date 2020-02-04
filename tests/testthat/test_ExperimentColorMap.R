@@ -745,7 +745,7 @@ test_that("synchronizeAssays works for fully named assays", {
         assays=list(
             tophat_counts=COUNT_COLORS,
             logcounts=iSEE:::.defaultContinuousColorMap,
-            letters=iSEE:::.defaultContinuousColorMap # TODO: synchronizeAssays should give set the discrete colormap here (see ExperimentColorMap.R, line 804)
+            letters=iSEE:::.defaultDiscreteColorMap
         )
     )
 
@@ -846,7 +846,7 @@ test_that("synchronizeAssays works for partially named assays", {
         assays=list(
             tophat_counts=COUNT_COLORS,
             logcounts=iSEE:::.defaultContinuousColorMap,
-            letters=iSEE:::.defaultContinuousColorMap,
+            letters=iSEE:::.defaultDiscreteColorMap,
             iSEE:::.defaultContinuousColorMap
 
         )

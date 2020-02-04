@@ -79,7 +79,7 @@
             .conditional_on_radio(
                 colorby_field, .colorByFeatNameTitle,
                 tagList(
-                    selectizeInput(paste0(plot_name, "_", .colorByFeatName), label=NULL, 
+                    selectizeInput(paste0(plot_name, "_", .colorByFeatName), label=NULL,
                         choices=NULL, selected=NULL, multiple=FALSE),
                     selectInput(
                         paste0(plot_name, "_", .colorByFeatNameAssay), label=NULL,
@@ -90,7 +90,7 @@
             ),
             .conditional_on_radio(colorby_field, .colorBySampNameTitle,
                 tagList(
-                    selectizeInput(paste0(plot_name, "_", .colorBySampName), 
+                    selectizeInput(paste0(plot_name, "_", .colorBySampName),
                         label=NULL, selected=NULL, choices=NULL, multiple=FALSE),
                     selectInput(
                         paste0(plot_name, "_", .colorByColTable), label=NULL, choices=col_selectable,
@@ -214,7 +214,7 @@
     if (length(discrete_covariates)) {
         pchoices <- c(pchoices, .visualParamChoiceFacetTitle)
     }
-    
+
     c(pchoices, .visualParamChoiceOtherTitle)
 }
 
@@ -262,7 +262,7 @@
             ),
             .conditional_on_radio(colorby_field, .colorByFeatNameTitle,
                 tagList(
-                    selectizeInput(paste0(plot_name, "_", .colorByFeatName), 
+                    selectizeInput(paste0(plot_name, "_", .colorByFeatName),
                         label=NULL, selected=NULL, choices=NULL, multiple=FALSE),
                     selectInput(
                         paste0(plot_name, "_", .colorByRowTable), label=NULL, choices=row_selectable,
@@ -272,7 +272,7 @@
             ),
             .conditional_on_radio(colorby_field, .colorBySampNameTitle,
                 tagList(
-                    selectizeInput(paste0(plot_name, "_", .colorBySampName), 
+                    selectizeInput(paste0(plot_name, "_", .colorBySampName),
                         label=NULL, choices=NULL, selected=NULL, multiple=FALSE),
                     selectInput(
                         paste0(plot_name, "_", .colorBySampNameAssay), label=NULL,
@@ -341,6 +341,113 @@
     color_choices
 }
 
+#' Add a visual parameter box for heatmap plots
+#'
+#' Create a visual parameter box for heatmap plots, i.e., where features are rows and samples are columns.
+#'
+#' @param x A DataFrame with one row, containing the parameter choices for the current plot.
+#' @param se A \linkS4class{SummarizedExperiment} object after running \code{\link{.cacheCommonInfo}}.
+#'
+#' @return
+#' A HTML tag object containing a \code{\link{collapseBox}} with visual parameters for heatmap plots.
+#'
+#' @details
+#' Heatmap plots can be annotated by row and column metadata.
+#' Rows or the heatmap matrix can be transformed using centering and scaling.
+#' This function creates a collapsible box that contains all of these options, initialized with the choices in \code{memory}.
+#' The box will also contain options for color scales and limits, visibility of row and column names, and legend placement and direction.
+#'
+#' Each option, once selected, yields a further subset of nested options.
+#' For example, choosing to center the heatmap rows will open a \code{selectInput} to specify the divergent colorscale to use.
+#'
+#' @author Kevin Rue-Albrecht
+#' @seealso
+#' \code{\link{.defineInterface}}, where this function is typically called.
+#'
+#' @importFrom shiny checkboxGroupInput selectizeInput checkboxInput numericInput radioButtons disabled
+#'
+#' @rdname INTERNAL_create_visual_box_for_column_plots
+.create_visual_box_for_complexheatmap <- function(x, se) {
+    plot_name <- .getEncodedName(x)
+
+    all_coldata <- .get_common_info(se, "ComplexHeatmapPlot")$valid.colData.names
+    all_rowdata <- .get_common_info(se, "ComplexHeatmapPlot")$valid.rowData.names
+
+    assay_name <- x[[.heatMapAssay]]
+    assay_discrete <- assay_name %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.assay.names
+
+    .input_FUN <- function(field) paste0(plot_name, "_", field)
+
+    pchoice_field <- .input_FUN(.visualParamChoice)
+
+    ABLEFUN <- if (assay_discrete) {
+        disabled
+    } else {
+        identity
+    }
+
+    collapseBox(
+        id=paste0(plot_name, "_", .visualParamBoxOpen),
+        title="Visual parameters",
+        open=x[[.visualParamBoxOpen]],
+        checkboxGroupInput(
+            inputId=pchoice_field, label=NULL, inline=TRUE,
+            selected=x[[.visualParamChoice]],
+            choices=c(.visualParamChoiceMetadataTitle, .visualParamChoiceTransformTitle, .visualParamChoiceColorTitle,
+                .visualParamChoiceLabelsTitle, .visualParamChoiceLegendTitle)),
+        .conditional_on_check_group(
+            pchoice_field, .visualParamChoiceMetadataTitle,
+            hr(),
+            selectizeInput(.input_FUN(.heatMapColData), label="Column annotations:",
+                selected=x[[.heatMapColData]], choices=all_coldata, multiple=TRUE,
+                options=list(plugins=list('remove_button', 'drag_drop'))),
+            selectizeInput(.input_FUN(.heatMapRowData), label="Row annotations:",
+                selected=x[[.heatMapRowData]], choices=all_rowdata, multiple=TRUE,
+                options=list(plugins=list('remove_button', 'drag_drop')))
+        ),
+        .conditional_on_check_group(
+            pchoice_field, .visualParamChoiceTransformTitle,
+            hr(),
+            strong("Row transformations:"),
+            ABLEFUN(checkboxInput(.input_FUN(.assayCenterRowsTitle), "Center", value=x[[.assayCenterRowsTitle]])),
+            .conditional_on_check_solo(.input_FUN(.assayCenterRowsTitle), on_select = TRUE,
+                ABLEFUN(checkboxInput(.input_FUN(.assayScaleRowsTitle), "Scale", value=x[[.assayCenterRowsTitle]])),
+                ABLEFUN(selectizeInput(.input_FUN(.heatMapDivergentColormap), label="Divergent assay colormap:",
+                    selected=x[[.heatMapDivergentColormap]],
+                    choices=c(.colormapPurpleBlackYellow, .colormapBlueWhiteOrange, .colormapBlueWhiteRed, .colormapGreenWhiteRed))))
+        ),
+        .conditional_on_check_group(
+            pchoice_field, .visualParamChoiceColorTitle,
+            hr(),
+            ABLEFUN(checkboxInput(.input_FUN(.heatMapCustomAssayBounds), "Use custom colorscale bounds",
+                value = x[[.heatMapCustomAssayBounds]])),
+            .conditional_on_check_solo(.input_FUN(.heatMapCustomAssayBounds), on_select = TRUE,
+                ABLEFUN(numericInput(.input_FUN(.assayLowerBound), "Lower bound",
+                    value=x[[.assayLowerBound]], min = -Inf, max = Inf)),
+                ABLEFUN(numericInput(.input_FUN(.assayUpperBound), "Upper bound",
+                    value=x[[.assayUpperBound]], min = -Inf, max = Inf)))
+        ),
+        .conditional_on_check_group(
+            pchoice_field, .visualParamChoiceLabelsTitle,
+            hr(),
+            checkboxGroupInput(
+                inputId=.input_FUN(.showDimnames), label="Show names:", inline=TRUE,
+                selected=x[[.showDimnames]],
+                choices=c(.showNamesRowTitle, .showNamesColumnTitle))
+        ),
+        .conditional_on_check_group(
+            pchoice_field, .visualParamChoiceLegendTitle,
+            hr(),
+            radioButtons(.input_FUN(.plotLegendPosition), label="Legend position:", inline=TRUE,
+                choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
+                selected=x[[.plotLegendPosition]]),
+            radioButtons(.input_FUN(.plotLegendDirection), label="Legend direction:", inline=TRUE,
+                choices=c(.plotLegendHorizontalTitle, .plotLegendVerticalTitle),
+                selected=x[[.plotLegendDirection]])
+        )
+    )
+}
+
 #' Faceting visual parameters
 #'
 #' Create UI elements for selection of faceting visual parameters.
@@ -366,7 +473,7 @@
     rowId <- paste0(plot_name, "_", .facetByRow)
     columnId <- paste0(plot_name, "_", .facetByColumn)
     choices <- c(.noSelection, covariates)
-    
+
     tagList(
         selectInput(paste0(plot_name, "_", .facetByRow), label="Facet by row:",
             choices=choices, selected=x[[.facetByRow]]),

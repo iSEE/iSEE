@@ -304,7 +304,7 @@ setMethod(".refineParameters", "ComplexHeatmapPlot", function(x, se) {
 })
 
 #' @export
-setMethod(".panelColor", "ComplexHeatmapPlot", function(x) "#ABCDEF")
+setMethod(".panelColor", "ComplexHeatmapPlot", function(x) "#440154FF")
 
 #' @export
 setMethod(".fullName", "ComplexHeatmapPlot", function(x) "Complex heatmap")

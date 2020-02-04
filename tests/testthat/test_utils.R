@@ -13,7 +13,7 @@ test_that(".getPanelColor returns the expected colors", {
 
     x <- ComplexHeatmapPlot()
     out <- .getPanelColor(x)
-    expect_identical(out, "#ABCDEF")
+    expect_identical(out, "#440154FF")
 
     x <- FeatAssayPlot()
     out <- .getPanelColor(x)

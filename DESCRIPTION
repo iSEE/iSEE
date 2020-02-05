@@ -1,16 +1,18 @@
 Package: iSEE
 Title: Interactive SummarizedExperiment Explorer
-Version: 1.7.2
-Date: 2019-12-05
+Version: 1.99.0
+Date: 2020-02-01
 Authors@R: c(person("Kevin", "Rue-Albrecht", role = "aut", email = "kevin.rue-albrecht@kennedy.ox.ac.uk", comment = c(ORCID = "0000-0003-3899-3872")),
     person("Federico", "Marini", role="aut", email="marinif@uni-mainz.de", comment = c(ORCID = '0000-0003-3252-7758')),
     person("Charlotte", "Soneson", role=c("aut", "cre"), email="charlottesoneson@gmail.com", comment = c(ORCID = '0000-0003-3833-2169')),
     person("Aaron", "Lun", role="aut", email="infinite.monkeys.with.keyboards@gmail.com", comment = c(ORCID = '0000-0002-3564-4813')))
-Description: Provides functions for creating an interactive 
-    Shiny-based graphical user interface for exploring data 
-    stored in SummarizedExperiment objects, including row- and
-    column-level metadata. Particular attention is given to 
-    single-cell data in a SingleCellExperiment object with 
+Description: Create an interactive Shiny-based graphical user interface 
+    for exploring data stored in SummarizedExperiment objects, including 
+    row- and column-level metadata. The interface supports transmission of 
+    selections between plots and tables, code tracking, interactive tours, 
+    interactive or programmatic initialization, preservation of app state,
+    and extensibility to new panel types via S4 classes. Special attention 
+    is given to single-cell data in a SingleCellExperiment object with 
     visualization of dimensionality reduction results.
 Depends:
     SummarizedExperiment, 
@@ -32,15 +34,12 @@ Imports:
     igraph,
     vipor,
     mgcv,
-    reshape2,
-    rentrez,
-    AnnotationDbi,
     graphics,
     grDevices,
     viridisLite,
-    cowplot,
-    scales,
-    dplyr
+    shinyWidgets,
+    ComplexHeatmap,
+    circlize
 Suggests:
     testthat,
     BiocStyle,
@@ -48,12 +47,9 @@ Suggests:
     rmarkdown,
     scRNAseq,
     scater,
-    DelayedArray (>= 0.7.44),
-    Rtsne,
-    irlba,
+    DelayedArray,
     RColorBrewer,
     viridis,
-    org.Mm.eg.db,
     htmltools
 URL: https://github.com/csoneson/iSEE
 BugReports: https://github.com/csoneson/iSEE/issues
@@ -63,4 +59,4 @@ biocViews: ImmunoOncology, Visualization, GUI, DimensionReduction,
 License: MIT + file LICENSE
 VignetteBuilder: knitr
 Encoding: UTF-8
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2

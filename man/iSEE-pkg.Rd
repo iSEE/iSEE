@@ -3,7 +3,6 @@
 \docType{package}
 \name{iSEE-pkg}
 \alias{iSEE-pkg}
-\alias{iSEE-pkg-package}
 \title{iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer}
 \description{
 \code{iSEE} is a Bioconductor package that provides an interactive Shiny-based

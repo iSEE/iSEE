@@ -1,257 +1,358 @@
 context("heatmap")
 
-# Set up plotting parameters
-redDimArgs <- redDimPlotDefaults(sce, 1)
-rowDataArgs <- rowDataPlotDefaults(sce, 1)
-heatMapArgs <- heatMapPlotDefaults(sce, 1)
+memory <- list(
+    ComplexHeatmapPlot1=ComplexHeatmapPlot(PanelId=1L),
+    SampAssayPlot1=SampAssayPlot(PanelId=1L),
+    FeatAssayPlot1=FeatAssayPlot(PanelId=1L)
+)
 
-redDimArgs$Type <- 2L
-redDimArgs[[iSEE:::.colorByField]] <- iSEE:::.colorByColDataTitle
-redDimArgs[[iSEE:::.colorByColData]] <- "driver_1_s"
-redDimArgs$BrushData <- list(list(xmin=-5.8936302389057, xmax=2.3755515915654, ymin=4.3811474670046, ymax=12.602031654675,
-    mapping=list(x="X", y="Y"), domain=list(left=-9.30648713007475, right=11.286214260173,
-        bottom=-9.17816645795467, top=13.1270784675571), range=list(left=35.3889661815069,
-        right=386.520547945205, bottom=466.050486943493, top=23.7921069615253),
-    log=list(x=NULL, y=NULL), direction="xy", brushId="redDimPlot1_Brush",
-    outputId="redDimPlot1"))
+pObjects <- mimic_live_app(sce, memory)
+metadata(sce)$colormap <- ExperimentColorMap()
 
-heatMapArgs[[iSEE:::.heatMapFeatName]][[1]] <- head(which(rowData(sce)[, "num_cells"] == ncol(sce)), 100)
-heatMapArgs[[iSEE:::.heatMapColData]][[1]] <- c("driver_1_s", "NREADS")
-heatMapArgs[[iSEE:::.heatMapCenterScale]][[1]] <- c(iSEE:::.heatMapCenterTitle, iSEE:::.heatMapScaleTitle)
-heatMapArgs[[iSEE:::.zoomData]][[1]] <- seq_len(min(10, nrow(sce)))
+test_that(".process_heatmap_assay_colormap handles discrete assays", {
 
-# Set up memory
-sce <- iSEE:::.precompute_UI_info(sce, NULL, NULL)
-all_memory <- iSEE:::.setup_memory(sce,
-    redDimArgs=redDimArgs,
-    colDataArgs=NULL,
-    featAssayArgs=NULL,
-    rowStatArgs=NULL,
-    rowDataArgs=rowDataArgs,
-    sampAssayArgs=NULL,
-    colStatArgs=NULL,
-    customDataArgs=NULL,
-    customStatArgs=NULL,
-    heatMapArgs=heatMapArgs,
-    redDimMax=1,
-    colDataMax=0,
-    featAssayMax=0,
-    rowStatMax=0,
-    rowDataMax=1,
-    sampAssayMax=0,
-    colStatMax=0,
-    customDataMax=0,
-    customStatMax=0,
-    heatMapMax=1)
+    plot_env <- new.env()
 
-all_coordinates <- list()
+    plot_env$plot.data <- assay(sce, "letters")[1:3, 1:3]
 
-p.out <- iSEE:::.make_redDimPlot(id=1, all_memory, all_coordinates, sce, ExperimentColorMap())
-all_coordinates[["redDimPlot1"]] <- p.out$xy[, intersect(iSEE:::.allCoordinatesNames, colnames(p.out$xy))]
+    x <- memory[["ComplexHeatmapPlot1"]]
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+    x[[iSEE:::.heatMapAssay]] <- "letters"
 
-# .make_heatMapPlot ----
+    out <- .process_heatmap_assay_colormap(x, sce, plot_env)
+    expect_identical(out, c(
+        ".col_values <- as.vector(plot.data)",
+        ".col_values <- setdiff(.col_values, NA)",
+        '.col_colors <- colDataColorMap(colormap, "letters", discrete=TRUE)(length(unique(.col_values)))',
+        "if (is.null(names(.col_colors))) { names(.col_colors) <- unique(.col_values) }",
+        "heatmap_col <- .col_colors"))
+})
 
-test_that(".make_heatMapPlot with groupable and non-groupable colData", {
+test_that(".process_heatmap_assay_colormap handles centered values", {
 
-    out <- iSEE:::.make_heatMapPlot(1, all_memory, all_coordinates, se=sce, colormap=ExperimentColorMap())
+    plot_env <- new.env()
 
-    expect_named(out, c("cmd_list", "xy", "plot", "legends"))
-    expect_true(any(grepl("driver_1_s", out$cmd_list$data)))
-    expect_true(any(grepl("NREADS", out$cmd_list$data)))
+    plot_env$plot.data <- matrix(seq_len(10), 5, 2)
 
-    # Check that zoom was applied
-    expect_true(
-        grepl(
-            "plot.data <- subset(plot.data, Y %in% rownames(value.mat)[c(1,2,3,4,5,6,7,8,9,10)]);",
-            out$cmd_list$zoom, fixed=TRUE
-        )
-    )
+    x <- memory[["ComplexHeatmapPlot1"]]
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+    x[[iSEE:::.assayCenterRows]] <- TRUE
+
+    out <- .process_heatmap_assay_colormap(x, sce, plot_env)
+    expect_identical(out, c(
+        '.col_colors <- c("purple", "black", "yellow")',
+        ".col_FUN <- colorRamp2(breaks = c(1, 0, 10), colors = .col_colors)",
+        "heatmap_col <- .col_FUN"))
+})
+
+test_that(".process_heatmap_column_annotations_colorscale handles column selections", {
+
+    plot_env <- new.env()
+    plot_env$col_selected <- head(colnames(sce))
+
+    x <- memory[["ComplexHeatmapPlot1"]]
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+
+    plot_env$se <- sce
+
+    out <- .process_heatmap_column_annotations_colorscale(x, sce, plot_env)
+    expect_true(any(out == 'column_col[["Selected points"]] <- c("TRUE"="red", "FALSE"="white")'))
 
 })
 
-test_that(".make_heatMapPlot works with incoming selection", {
+test_that(".process_heatmap_column_annotations_colorscale handles column annotations", {
 
-    ## Transparency effect for selection
+    plot_env <- new.env()
 
-    all_memory$heatMapPlot$SelectByPlot <- "Reduced dimension plot 1"
-    all_memory$heatMapPlot$SelectEffect <- iSEE:::.selectTransTitle
+    x <- memory[["ComplexHeatmapPlot1"]]
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+    x[[iSEE:::.heatMapColData]] <- c("driver_1_s", "NREADS")
 
-    out <- iSEE:::.make_heatMapPlot(1, all_memory, all_coordinates, se=sce, colormap=ExperimentColorMap())
+    plot_env$se <- sce
 
-    expect_named(out, c("cmd_list", "xy", "plot", "legends"))
-    expect_true(any(grepl("driver_1_s", out$cmd_list$data)))
-    expect_true(any(grepl("NREADS", out$cmd_list$data)))
-    expect_true(any(grepl("geom_raster(aes(fill=OrderBy1, alpha=SelectBy)) +", out$cmd_list$annot, fixed=TRUE)))
+    out <- .process_heatmap_column_annotations_colorscale(x, sce, plot_env)
+    expect_true(any(out == '.col_values <- column_data[["driver_1_s"]]'))
+    expect_true(any(out == '.col_values <- column_data[["NREADS"]]'))
+    expect_true(any(out == '.column_annot_order <- with(column_data, order(driver_1_s, NREADS))'))
+    expect_true(any(out == 'column_data <- column_data[.column_annot_order, , drop=FALSE]'))
+})
 
-    ## Color effect for selection
+test_that(".process_heatmap_row_annotations_colorscale handles row annotations", {
 
-    all_memory$heatMapPlot$SelectEffect <- iSEE:::.selectColorTitle
+    rowData(sce)[["letters"]] <- sample(letters[1:3], nrow(sce), TRUE)
 
-    out <- iSEE:::.make_heatMapPlot(1, all_memory, all_coordinates, se=sce, colormap=ExperimentColorMap())
+    plot_env <- new.env()
 
-    expect_true(any(grepl("geom_raster(aes(fill=SelectBy))", out$cmd_list$annot, fixed=TRUE)))
+    x <- memory[["ComplexHeatmapPlot1"]]
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+    x[[iSEE:::.heatMapRowData]] <- c("letters", "num_cells")
+
+    plot_env$se <- sce
+
+    out <- .process_heatmap_row_annotations_colorscale(x, sce, plot_env)
+    expect_true(any(out == '.col_values <- row_data[["letters"]]'))
+    expect_true(any(out == '.col_values <- row_data[["num_cells"]]'))
+    expect_true(any(out == 'row_data <- row_data[.heatmap.rows, , drop=FALSE]'))
+})
+
+test_that(".process_heatmap_continuous_assay_colorscale handles centered values", {
+    plot_env <- new.env()
+
+    x <- memory[["ComplexHeatmapPlot1"]]
+    x[[iSEE:::.heatMapCustomAssayBounds]] <- TRUE
+
+    x[[iSEE:::.assayLowerBound]] <- NA_real_
+    x[[iSEE:::.assayUpperBound]] <- NA_real_
+    plot_env$plot.data <- matrix(c(5, -5), nrow=1)
+    out <- .process_heatmap_continuous_assay_colorscale(x, plot_env, centered = TRUE)
+    expect_identical(out, ".col_FUN <- colorRamp2(breaks = c(-5, 0, 5), colors = .col_colors)")
+
+    x[[iSEE:::.assayLowerBound]] <- -1
+    x[[iSEE:::.assayUpperBound]] <- NA_real_
+    plot_env$plot.data <- matrix(c(5, -5), nrow=1)
+    out <- .process_heatmap_continuous_assay_colorscale(x, plot_env, centered = TRUE)
+    expect_identical(out, ".col_FUN <- colorRamp2(breaks = c(-1, 0, 5), colors = .col_colors)")
+
+    x[[iSEE:::.assayLowerBound]] <- NA_real_
+    x[[iSEE:::.assayUpperBound]] <- 4
+    plot_env$plot.data <- matrix(c(5, -5), nrow=1)
+    out <- .process_heatmap_continuous_assay_colorscale(x, plot_env, centered = TRUE)
+    expect_identical(out, ".col_FUN <- colorRamp2(breaks = c(-5, 0, 4), colors = .col_colors)")
+
+    x[[iSEE:::.assayLowerBound]] <- -2
+    x[[iSEE:::.assayUpperBound]] <- 4
+    plot_env$plot.data <- matrix(c(5, -5), nrow=1)
+    out <- .process_heatmap_continuous_assay_colorscale(x, plot_env, centered = TRUE)
+    expect_identical(out, ".col_FUN <- colorRamp2(breaks = c(-2, 0, 4), colors = .col_colors)")
 
 })
 
-# .get_colorscale_limits ----
+test_that(".process_heatmap_continuous_assay_colorscale handles continuous scale for all-identical values", {
 
-test_that(".get_colorscale_limits produces expected color scale limits", {
+    plot_env <- new.env()
 
-    # No bounds defined
-    min.value <- -1
-    max.value <- 1
-    lower.bound <- -Inf
-    upper.bound <- Inf
+    x <- memory[["ComplexHeatmapPlot1"]]
 
-    out <- iSEE:::.get_colorscale_limits(min.value, max.value, lower.bound, upper.bound, include.zero=TRUE)
-    expect_identical(out, c(min.value, 0, max.value))
+    plot_env$plot.data <- matrix(c(1, 1), nrow=1)
+    out <- .process_heatmap_continuous_assay_colorscale(x, plot_env, centered = FALSE)
+    expect_identical(out, ".col_FUN <- colorRamp2(breaks = seq(1, 2, length.out = 21L), colors = .col_colors)")
 
-    out <- iSEE:::.get_colorscale_limits(min.value, max.value, lower.bound, upper.bound, include.zero=FALSE)
-    expect_identical(out, c(min.value, max.value))
-
-    # Bounds defined
-    lower.bound <- -0.5
-    upper.bound <- 0.5
-
-    out <- iSEE:::.get_colorscale_limits(min.value, max.value, lower.bound, upper.bound, include.zero=TRUE)
-    expect_identical(out, c(lower.bound, 0, upper.bound))
-
-    out <- iSEE:::.get_colorscale_limits(min.value, max.value, lower.bound, upper.bound, include.zero=FALSE)
-    expect_identical(out, c(lower.bound, upper.bound))
+    plot_env$plot.data <- 0
+    out <- .process_heatmap_continuous_assay_colorscale(x, plot_env, centered = TRUE)
+    expect_identical(out, ".col_FUN <- colorRamp2(breaks = c(-1, 0, 1), colors = .col_colors)")
 
 })
 
-# .cluster_genes ----
+test_that(".generateOutput detects col_selected and row_selected", {
 
-test_that(".cluster_genes clusters rows of a given matrix", {
+    pObjects <- new.env()
 
-    selectedGenes <- heatMapArgs[[iSEE:::.heatMapFeatName]][[1]]
-    selectedCells <- seq_len(min(10, ncol(sce)))
-    X <- assay(sce, "logcounts")[selectedGenes, selectedCells]
+    x <- memory$FeatAssayPlot1
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+    x[[iSEE:::.brushData]] <- list(
+        xmin = 0.7, xmax = 1.3, ymin = 1000, ymax = 2000,
+        mapping = list(x = "X", y = "Y"),
+        log = list(x = NULL, y = NULL), direction = "xy",
+        brushId = "FeatAssayPlot1_Brush",
+        outputId = "FeatAssayPlot1")
+    memory$FeatAssayPlot1 <- x
+    out <- .generateOutput(memory$FeatAssayPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
+    pObjects$contents[["FeatAssayPlot1"]] <- out$contents
 
-    # The return value should include all the rownames of the input matrix
-    out <- iSEE:::.cluster_genes(X)
-    expect_identical(sort(out),  sort(rownames(X)))
+    x <- ComplexHeatmapPlot()
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+    x[[iSEE:::.selectColSource]] <- "FeatAssayPlot1"
+    x[[iSEE:::.selectEffect]] <- iSEE:::.selectRestrictTitle
+    x[[iSEE:::.heatMapCustomFeatNames]] <- TRUE
+    x[[iSEE:::.heatMapFeatNameText]] <- paste0(head(rownames(sce), 2), collapse = "\n")
+    memory$ComplexHeatmapPlot1 <- x
 
+    out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
+    expect_identical(out$commands$columns, ".heatmap.columns <- intersect(colnames(se), unlist(col_selected));")
+    expect_identical(out$commands$rows, '.heatmap.rows <- c("0610007P14Rik", "0610009B22Rik");')
+})
 
-    # Clustering a clustered matrix should not change the order
-    cluteredX <- X[out, ]
+test_that(".generateOutput handles row_selected when not using custom feature names", {
 
-    out2 <- iSEE:::.cluster_genes(cluteredX)
-    expect_identical(out, out2)
+    pObjects <- new.env()
+
+    x <- memory$SampAssayPlot1
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+    x[[iSEE:::.brushData]] <- list(
+        xmin = 0.7, xmax = 1.3, ymin = 25000, ymax = 50000,
+        mapping = list(x = "X", y = "Y"),
+        log = list(x = NULL, y = NULL), direction = "xy",
+        brushId = "SampAssayPlot1_Brush",
+        outputId = "SampAssayPlot1")
+    memory$SampAssayPlot1 <- x
+    out <- .generateOutput(memory$SampAssayPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
+    pObjects$contents[["SampAssayPlot1"]] <- out$contents
+
+    x <- ComplexHeatmapPlot()
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+    x[[iSEE:::.selectRowSource]] <- "SampAssayPlot1"
+    x[[iSEE:::.heatMapCustomFeatNames]] <- FALSE
+    memory$ComplexHeatmapPlot1 <- x
+
+    out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
+    expect_identical(out$commands$rows, ".heatmap.rows <- intersect(rownames(se), unlist(row_selected));")
+})
+
+test_that(".generateOutput handles row annotations", {
+
+    pObjects <- new.env()
+
+    x <- ComplexHeatmapPlot()
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+    x[[iSEE:::.heatMapRowData]] <- c("mean_count", "letters")
+    memory$ComplexHeatmapPlot1 <- x
+
+    out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
+    expect_true(grepl("left_annotation=row_annot", out$commands$heatmap, fixed = TRUE))
+    expect_true(grepl('row_data <- rowData(se)[, c(\"mean_count\", \"letters\"), drop=FALSE]', out$commands$row_annotations, fixed = TRUE))
 
 })
 
-# .transform_global_to_local_y ----
+test_that(".generateOutput handles column annotations", {
 
-test_that(".transform_global_to_local_y works", {
+    pObjects <- new.env()
 
-    n.genes <- 10
-    n.annot <- 2
+    x <- ComplexHeatmapPlot()
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+    x[[iSEE:::.heatMapColData]] <- c("driver_1_s", "NREADS")
+    memory$ComplexHeatmapPlot1 <- x
 
-    # The maximal local value is capped to n.genes
-    out <- iSEE:::.transform_global_to_local_y(2, n.annot, n.genes)
-    expect_identical(out, n.genes)
+    out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
+    expect_true(grepl("top_annotation=column_annot", out$commands$heatmap, fixed = TRUE))
+    expect_true(grepl('column_data <- colData(se)[, c(\"driver_1_s\", \"NREADS\"), drop=FALSE]', out$commands$column_annotations, fixed = TRUE))
+    expect_true(grepl("plot.data <- plot.data[, .column_annot_order, drop=FALSE]", out$commands$order_columns, fixed = TRUE))
+})
 
-    # The maximal local value is capped to 1
-    out <- iSEE:::.transform_global_to_local_y(-Inf, n.annot, n.genes)
-    expect_identical(out, 1)
 
-    # Global coordinates range from 0 to 1; values between 0 and 1 return a valid gene index
-    out <- iSEE:::.transform_global_to_local_y(0.5, n.annot, n.genes)
-    expect_lte(out, n.genes)
-    expect_gte(out, 1)
+test_that(".generateOutput handles clustering", {
+
+    pObjects <- new.env()
+
+    x <- ComplexHeatmapPlot()
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+    x[[iSEE:::.heatMapClusterFeatures]] <- TRUE
+    memory$ComplexHeatmapPlot1 <- x
+
+    out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
+    expect_true(grepl("cluster_rows=TRUE", out$commands$heatmap, fixed = TRUE))
+    expect_true(grepl("clustering_distance_rows=\"spearman\"", out$commands$heatmap, fixed = TRUE))
+    expect_true(grepl("clustering_method_rows=\"ward.D2\"", out$commands$heatmap, fixed = TRUE))
+    expect_true(grepl("clustering_distance_rows=\"spearman\"", out$commands$heatmap, fixed = TRUE))
+})
+
+test_that(".generateOutput handles centering and scaling", {
+
+    pObjects <- new.env()
+
+    x <- ComplexHeatmapPlot()
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+    x[[iSEE:::.assayCenterRows]] <- TRUE
+    x[[iSEE:::.assayScaleRows]] <- TRUE
+    memory$ComplexHeatmapPlot1 <- x
+
+    out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
+    expect_identical(out$commands$assay_transforms, "plot.data <- plot.data - rowMeans(plot.data)\nplot.data <- plot.data / rowSds(plot.data)")
+})
+
+test_that("process_heatmap_assay_row_transformations handles row centering and scaling", {
+
+    x <- ComplexHeatmapPlot()
+
+    x[[iSEE:::.assayCenterRows]] <- TRUE
+    x[[iSEE:::.assayScaleRows]] <- TRUE
+
+    out <- .process_heatmap_assay_row_transformations(x)
+    expect_identical(out, c(
+        "plot.data <- plot.data - rowMeans(plot.data)",
+        "plot.data <- plot.data / rowSds(plot.data)"))
+})
+
+test_that(".create_visual_box_for_complexheatmap handles continuous and discrete assays", {
+
+    x <- ComplexHeatmapPlot()
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+
+    out <- .create_visual_box_for_complexheatmap(x, sce)
+    expect_false(any(grepl("shinyjs-disabled", unlist(out)))) # none of the UI are disabled
+
+    x[[iSEE:::.heatMapAssay]] <- "letters"
+
+    out <- .create_visual_box_for_complexheatmap(x, sce)
+    expect_true(any(grepl("shinyjs-disabled", unlist(out)))) # some of the UI are disabled
 
 })
 
-# .get_heatmap_fill_cmd ----
+test_that(".defineDataInterface handles continuous and discrete assays", {
 
-test_that(".get_heatmap_fill_cmd adapts fill limits to bounds set within the observed range", {
+    x <- ComplexHeatmapPlot()
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
 
-    # Bounds defined within the min/max observed range
-    lower.bound <- -0.5
-    upper.bound <- 0.5
-    min.obs <- -6
-    max.obs <- 6
+    out <- .defineDataInterface(x, sce)
+    expect_false(any(grepl("shinyjs-disabled", unlist(out)))) # none of the UI are disabled
 
-    param_choices <- heatMapArgs
-    param_choices[[iSEE:::.heatMapLower]] <- lower.bound
-    param_choices[[iSEE:::.heatMapUpper]] <- upper.bound
+    x[[iSEE:::.heatMapAssay]] <- "letters"
 
-    out <- iSEE:::.get_heatmap_fill_cmd(param_choices, ExperimentColorMap(), min.obs, max.obs)
-    expectedLimits <- sprintf("limits=c(%i,%i)", min.obs, max.obs)
-    expect_match(out, expectedLimits, fixed=TRUE)
+    out <- .defineDataInterface(x, sce)
+    expect_true(any(grepl("shinyjs-disabled", unlist(out)))) # some of the UI are disabled
 
 })
 
-test_that(".get_heatmap_fill_cmd adapts fill limits to bounds set within the observed range when centred", {
+test_that(".build_heatmap_assay_legend_title handles centering and scaling", {
 
-    # If there is only one value in the matrix (since the data is centered, the value is 0)
-    min.obs <- 0
-    max.obs <- 0
+    x <- ComplexHeatmapPlot()
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
 
-    param_choices <- heatMapArgs
+    x[[iSEE:::.heatMapAssay]] <- "letters"
 
-    out <- iSEE:::.get_heatmap_fill_cmd(param_choices, ExperimentColorMap(), min.obs, max.obs)
-    expect_match(out, "scale_fill_gradientn(colors=c('black'),
-                                na.value='grey50') +", fixed=TRUE)
+    out <- .build_heatmap_assay_legend_title(x, discrete = TRUE)
+    expect_identical(out, "letters")
 
-})
+    x[[iSEE:::.heatMapAssay]] <- "tophat_counts"
 
-test_that(".get_heatmap_fill_cmd works when not centred", {
+    out <- .build_heatmap_assay_legend_title(x, discrete = FALSE)
+    expect_identical(out, "tophat_counts")
 
-    param_choices <- heatMapArgs
-    param_choices[[iSEE:::.heatMapCenterScale]][[1]] <- "Scaled"
+    x[[iSEE:::.assayCenterRows]] <- TRUE
+    x[[iSEE:::.assayScaleRows]] <- FALSE
+    out <- .build_heatmap_assay_legend_title(x, discrete = FALSE)
+    expect_identical(out, "tophat_counts (centered)")
 
-    # Bounds defined within the min/max observed range
-    lower.bound <- -0.5
-    upper.bound <- 0.5
-    min.obs <- -6
-    max.obs <- 6
+    x[[iSEE:::.assayCenterRows]] <- TRUE
+    x[[iSEE:::.assayScaleRows]] <- TRUE
+    out <- .build_heatmap_assay_legend_title(x, discrete = FALSE)
+    expect_identical(out, "tophat_counts (centered, scaled)")
 
-    param_choices[[iSEE:::.heatMapLower]] <- lower.bound
-    param_choices[[iSEE:::.heatMapUpper]] <- upper.bound
+    x[[iSEE:::.assayCenterRows]] <- TRUE
+    x[[iSEE:::.assayScaleRows]] <- FALSE
+    x[[iSEE:::.plotLegendDirection]] <- "Vertical"
+    out <- .build_heatmap_assay_legend_title(x, discrete = FALSE)
+    expect_identical(out, "tophat_counts\n(centered)")
 
-    out <- iSEE:::.get_heatmap_fill_cmd(param_choices, ExperimentColorMap(), min.obs, max.obs)
-    expect_match(
-        out,
-        "colors=c('#440154FF', assayColorMap(colormap, '2', discrete=FALSE)(21L), '#FDE725FF')",
-        fixed=TRUE)
-    expect_match(
-        out,
-        "values=scales::rescale(c(-6, seq(-0.5, 0.5, length.out=21L), 6), to=c(0, 1), from=c(-6, 6))",
-        fixed=TRUE)
-
-    # Disabling the upper limit only adds an additional lower color and break (to the left)
-    lower.bound <- -0.5
-    upper.bound <- Inf
-    param_choices[[iSEE:::.heatMapLower]] <- lower.bound
-    param_choices[[iSEE:::.heatMapUpper]] <- upper.bound
-
-    out <- iSEE:::.get_heatmap_fill_cmd(param_choices, ExperimentColorMap(), min.obs, max.obs)
-    expect_match(
-        out,
-        "colors=c('#440154FF', assayColorMap(colormap, '2', discrete=FALSE)(21L))",
-        fixed=TRUE)
-    expect_match(
-        out,
-        "values=scales::rescale(c(-6, seq(-0.5, 6, length.out=21L)), to=c(0, 1), from=c(-6, 6))",
-        fixed=TRUE)
-
-    # Disabling the lower limit only adds an additional upper color and break (to the right)
-    lower.bound <- -Inf
-    upper.bound <- 0.5
-    param_choices[[iSEE:::.heatMapLower]] <- lower.bound
-    param_choices[[iSEE:::.heatMapUpper]] <- upper.bound
-
-    out <- iSEE:::.get_heatmap_fill_cmd(param_choices, ExperimentColorMap(), min.obs, max.obs)
-    expect_match(
-        out,
-        "colors=c(assayColorMap(colormap, '2', discrete=FALSE)(21L), '#FDE725FF')",
-        fixed=TRUE)
-    expect_match(
-        out,
-        "values=scales::rescale(c(seq(-6, 0.5, length.out=21L), 6), to=c(0, 1), from=c(-6, 6))",
-        fixed=TRUE)
+    x[[iSEE:::.assayCenterRows]] <- TRUE
+    x[[iSEE:::.assayScaleRows]] <- TRUE
+    x[[iSEE:::.plotLegendDirection]] <- "Vertical"
+    out <- .build_heatmap_assay_legend_title(x, discrete = FALSE)
+    expect_identical(out, "tophat_counts\n(centered, scaled)")
 
 })

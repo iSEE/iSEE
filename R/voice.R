@@ -3,7 +3,11 @@
 #' @param use Whether speech recognition should be enabled.
 #'
 #' @return A list of HTML content to include in the user interface.
+#'
 #' @author Kevin Rue-Albrecht
+#'
+#' @rdname INTERNAL_prepare_speech_recognition
+#' @importFrom shiny singleton includeScript
 prepareSpeechRecognition <- function(use=FALSE) {
     if (!use) {
         return(list())
@@ -16,146 +20,91 @@ prepareSpeechRecognition <- function(use=FALSE) {
 
 #' Nearest panel
 #'
-#' Identify the decoded panel name that is the smallest edit distance from a recorded voice input.
-#'
-#' @param x Character string expected to match a decoded panel identifier.
-#' See Details.
+#' @param x Character string, typically representing a voice input.
+#' @param panels A list of \code{Panel} objects.
 #' @param max.edits Maximal number of mismatches allowed.
-#' @param memory A list of DataFrames, where each DataFrame corresponds to a panel type and contains the initial settings for each individual panel of that type.
+#'
+#' @description
+#'
+#' \code{.nearestPanelByType} identifies the panel with the type that is the smallest edit distance from \code{x}.
+#'
+#' \code{.nearestPanelByName} identifies the panel with the full name that is the smallest edit distance from \code{x}.
 #'
 #' @details
-#' A panel identifier is composed of:
-#' \itemize{
-#' \item a panel type (see \code{\link{panelTypes}}).
-#' \item a numeral identifier within panels of that type.
-#' }
+#' A panel full name is composed of a panel type and an identifier.
+#' The panel type is returned by \code{\link{.fullName}}, (e.g., "Reduced dimension plot").
+#' The panel identifier is an integer value set during the initialization of each panel, uniquely identifying each individual panel within each panel type.
 #'
-#' @return Decoded name of the matched panel identifier.
+#' @return Integer index of the matched panel, or \code{NULL} if all matches exceed \code{max.edits}.
 #'
-#' @rdname INTERNAL_nearest_decoded_panel
+#' @rdname INTERNAL_nearest_panel
+#'
 #' @author Kevin Rue-Albrecht
-.nearestDecodedPanel <- function(x, memory, max.edits=5) {
-    # Split the last word apart: it should be a number (e.g. "one" or "22")
-    voiceType <- gsub(" [[:alnum:]]+$", "", x)
-    voiceId <- gsub(".* ([[:alnum:]]+)$", "\\1", x)
+.nearestPanelByType <- function(x, panels, max.edits=Inf) {
 
-    decodedType <- .nearestPanelType(voiceType, max.edits=5)
-    if (length(decodedType) != 1L) {
-        return(NULL)
-    }
-    encodedType <- panelCodes[[decodedType]]
+    available_types <- vapply(panels, .fullName, character(1))
 
-    # Then identify the numeral index of the requested panel amongst the available ones
-    maxPanels <- nrow(memory[[encodedType]])
-    # Coerce the recorded word to a numeral
-    # Numbers that would take more than two words to pronounce are already recorded as digits
-    voiceId <- ifelse(.isDigits(voiceId), as.numeric(voiceId), .digitalizeNumbers(voiceId))
-    if (is.na(voiceId)) {
-        return(NULL)
-    }
-
-    if (voiceId > maxPanels) {
-        #nocov start
-        showNotification(sprintf("'%s' max is %i", decodedType, maxPanels), type="error")
-        return(NULL)
-        #nocov end
-    }
-
-    decodedPanel <- paste (decodedType, voiceId)
-    decodedPanel
+    .nearestMatch(x, available_types, max.edits=max.edits)
 }
 
-#' Nearest panel type
+#' @rdname INTERNAL_nearest_panel
+.nearestPanelByName <- function(x, panels, max.edits=Inf) {
+
+    available_names <- vapply(panels, .getFullName, character(1))
+
+    .nearestMatch(x, available_names, max.edits=max.edits)
+}
+
+#' Nearest match
 #'
-#' Identify the panel type name that is the smallest edit distance from a recorded voice input.
-#'
-#' @param x Character string expected to match a panel type.
+#' @param x Character string, typically representing a voice input.
+#' @param y Character vector of available choices (candidates for match).
 #' @param max.edits Maximal number of mismatches allowed.
 #'
-#' @return Encoded name of the matched panel type.
+#' @description
 #'
-#' @rdname INTERNAL_nearest_panel_type
-#' @importFrom utils adist
-#' @author Kevin Rue-Albrecht
-.nearestPanelType <- function(x, max.edits=5) {
-    distances <- adist(x, y = panelTypes, partial=FALSE, ignore.case=TRUE)[1, ]
-
-    # we don't want the "closest" at any cost (it can still be very far)
-    nearEnough <- distances[which(distances <= max.edits)]
-    if (length(nearEnough) == 0L){
-        return(character(0))
-    }
-
-    nearestMatch <- panelTypes[names(which.min(nearEnough))]
-    nearestMatch
-}
-
-#' Nearest valid choice
-#' 
-#' @description 
+#' \code{.nearestMatch} identifies the index of the value in \code{y} that is the smallest edit distance from \code{x}, within the allowed edit distance.
+#'
 #' \code{.nearestValidChoice} is intended for unnamed character vectors.
-#' It returns the closest match to the given character value.
-#' 
+#' It identifies the character value in \code{y} that is the smallest edit distance from \code{x}, within the allowed edit distance.
+#'
 #' \code{.nearestValidNamedChoice} is intended for named vectors.
-#' It returns the value whose name is closest to the given character value.
-#' 
+#' It identifies the character value in \code{y} with the name that is the smallest edit distance from \code{x}, within the allowed edit distance.
+#'
+#' @return
+#'
+#' \code{.nearestMatch} returns the integer index of the nearest match in \code{y}, or an empty integer vector if all matches exceed \code{max.edits}.
+#'
+#' \code{.nearestValidChoice} and \code{.nearestValidNamedChoice} return the closest match as a (named) character value.
+#'
+#'
 #' @rdname INTERNAL_nearestValidChoice
-#'
-#' @param x Character value.
-#' @param choices Character vector of valid choices.
-#' @param max.edits Allowed edit distance.
-#'
-#' @return Nearest match amongst the choices within the allowed edit distance.
-#' 
 #' @importFrom utils adist
 #' @author Kevin Rue-Albrecht
-.nearestValidChoice <- function(x, choices, max.edits=5) {
-    names(choices) <- choices
-    distances <- adist(x, y = choices, partial=FALSE, ignore.case=TRUE)[1, ]
+.nearestMatch <- function(x, y, max.edits=Inf) {
+    distances <- adist(x, y, partial=FALSE, ignore.case=TRUE)
+    distances <- distances[1, ]
 
-    # we don't want the "closest" at any cost (it can still be very far)
     nearEnough <- distances[which(distances <= max.edits)]
-    if (length(nearEnough) == 0L){
-        return(character(0))
-    }
 
-    nearestMatch <- names(nearEnough)[which.min(nearEnough)]
-    nearestMatch
+    which.min(nearEnough)
 }
 
 #' @rdname INTERNAL_nearestValidChoice
-.nearestValidNamedChoice <- function(x, choices, max.edits=5) {
-    nearestMatch <- .nearestValidChoice(x, names(choices), max.edits)
-    choices[nearestMatch]
+#' @importFrom utils adist
+.nearestValidChoice <- function(x, y, max.edits=Inf) {
+    idx <- .nearestMatch(x, y, max.edits)
+    y[idx]
 }
 
-#' List valid parameter choices
-#' 
-#' @rdname INTERNAL_getValidParameterChoices
-#'
-#' @param parameterName A column name in a \code{DataFrame} stored in \code{memory}.
-#' @param mode String specifying the encoded panel type of the current plot.
-#' @param se A SingleCellExperiment object.
-#'
-#' @return A character vector of valid parameter choices.
-#' @author Kevin Rue-Albecht
-.getValidParameterChoices <- function(parameterName, mode, se){
-    if (parameterName == "ColorBy") {
-        if (mode %in% row_point_plot_types) {
-            create_FUN <- .define_color_options_for_row_plots
-        } else {
-            create_FUN <- .define_color_options_for_column_plots
-        }
-    } else {
-        warning(sprintf("Parameter '%s' not supported yet", parameterName))
-        return(character(0))
-    }
-    choices <- create_FUN(se)
-    choices
+#' @rdname INTERNAL_nearestValidChoice
+.nearestValidNamedChoice <- function(x, y, max.edits=Inf) {
+    nearestMatch <- .nearestValidChoice(x, names(y), max.edits)
+    y[nearestMatch]
 }
 
 #' List valid coloring choices
-#' 
+#'
 #' @rdname INTERNAL_colorByChoices
 #'
 #' @param colorby_title A character value representing one of the coloring modes.
@@ -164,13 +113,13 @@ prepareSpeechRecognition <- function(use=FALSE) {
 #' @return A character vector of valid coloring choices.
 #' @author Kevin Rue-Albecht
 .colorByChoices <- function(colorby_title, se) {
-    
+
     if (colorby_title == .colorByNothingTitle) {
         choices <- character(0)
     } else if (colorby_title == .colorByColDataTitle) {
-        choices <- colnames(colData(se))
+        choices <- .get_common_info(se, "ColumnDotPlot")$valid.colData.names
     } else if (colorby_title == .colorByRowDataTitle) {
-        choices <- colnames(rowData(se))
+        choices <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
     } else if (colorby_title == .colorByFeatNameTitle) {
         choices <- seq_len(nrow(se))
         names(choices) <- rownames(se)
@@ -197,28 +146,32 @@ prepareSpeechRecognition <- function(use=FALSE) {
     "nine"=9, "dine"=9, "line"=9)
 
 #' Substitute numbers from words to numerals
-#' 
-#' @rdname INTERNAL_digitalize_numbers
+#'
+#' @rdname INTERNAL_digitalizeText
 #'
 #' @description
-#' \code{.wordIsDigits} tests whether inputs are entirely composed of digits.
+#' \code{.allDigits} tests whether inputs are entirely composed of digits.
 #'
-#' \code{.digitalizeNumbers} substitutes words from "one" to "ten" into the corresponding numeral.
+#' \code{.digitalizeText} substitutes words from "one" to "ten" into the corresponding numeral.
+#' Selected near-matches are also converted (e.g., "too" is substituted to "2").
 #'
 #' @param x Character string.
 #'
 #' @return
 #'
-#' \code{.wordIsDigits} returns \code{TRUE} for each input entirely composed of digits.
+#' \code{.allDigits} returns \code{TRUE} for each input entirely composed of digits.
 #'
-#' \code{.digitalizeNumbers} returns the substituted \code{character} string.
-#' 
+#' \code{.digitalizeText} returns the substituted \code{character} string as a numeric scalar.
+#'
 #' @author Kevin Rue-Albrecht
-.digitalizeNumbers <- function(x) {
-    as.numeric(.numbersText[match(tolower(x), names(.numbersText))])
+.digitalizeText <- function(x) {
+    ifelse(
+        .allDigits(x),
+        as.numeric(x),
+        as.numeric(.numbersText[match(tolower(x), names(.numbersText))]))
 }
 
-#' @rdname INTERNAL_digitalize_numbers
-.isDigits <- function(x) {
+#' @rdname INTERNAL_digitalizeText
+.allDigits <- function(x) {
     grepl("^[[:digit:]]+$", x)
 }

@@ -364,7 +364,8 @@
 #' @seealso
 #' \code{\link{.defineInterface}}, where this function is typically called.
 #'
-#' @importFrom shiny checkboxGroupInput selectizeInput checkboxInput numericInput radioButtons disabled
+#' @importFrom shiny checkboxGroupInput selectizeInput checkboxInput numericInput radioButtons
+#' @importFrom shinyjs disabled
 #'
 #' @rdname INTERNAL_create_visual_box_for_column_plots
 .create_visual_box_for_complexheatmap <- function(x, se) {

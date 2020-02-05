@@ -2,8 +2,8 @@
 
 language: r
 r: bioc-devel
+os: linux
 
-sudo: false
 cache: packages
 
 warnings_are_errors: false
@@ -33,8 +33,7 @@ before_deploy: Rscript -e 'remotes::install_cran("pkgdown")'
 deploy:
   provider: script
   script: Rscript -e 'pkgdown::deploy_site_github()'
-  skip_cleanup: true
+  cleanup: true
   on:
     branch:
       - master
-      - pkgdown

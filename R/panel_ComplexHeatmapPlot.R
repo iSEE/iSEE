@@ -521,7 +521,6 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     .createUnprotectedParameterObservers(plot_name,
         fields=c(.heatMapClusterFeatures, .heatMapClusterDistanceFeatures, .heatMapClusterMethodFeatures,
             .heatMapColData, .heatMapRowData,
-            .heatMapCustomAssayBounds,
             .heatMapCenteredColormap,
             .selectEffect, .selectColor,
             .showDimnames,

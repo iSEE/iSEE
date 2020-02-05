@@ -42,7 +42,7 @@
         updateNumericInput(session, .input_FUN(.assayLowerBound), value = numeric(0), min = -Inf, max = 0)
         updateNumericInput(session, .input_FUN(.assayUpperBound), value = numeric(0), min = 0, max = Inf)
 
-        # Twist2: if toggle UI related to discrete/continuous assays
+        # Twist2: toggle UI related to discrete/continuous assays
         ABLEFUN <- if (matched_input %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.assay.names) {
             disable
         } else {
@@ -62,7 +62,27 @@
         .requestUpdate(plot_name, rObjects)
     }, ignoreInit=TRUE, ignoreNULL=TRUE)
     # nocov end
-
+    
+    # nocov start
+    observeEvent(input[[.input_FUN(.heatMapCustomAssayBounds)]], {
+        # .createUnprotectedParameterObservers with a twist
+        matched_input <- as(input[[.input_FUN(.heatMapCustomAssayBounds)]],
+            typeof(pObjects$memory[[plot_name]][[.heatMapCustomAssayBounds]]))
+        
+        if (identical(matched_input, pObjects$memory[[plot_name]][[.heatMapCustomAssayBounds]])) {
+            return(NULL)
+        }
+        pObjects$memory[[plot_name]][[.heatMapCustomAssayBounds]] <- matched_input
+        
+        # Twist: do not rerender if both custom assay bounds UI are empty
+        if (is.na(input[[.input_FUN(.assayLowerBound)]]) && is.na(input[[.input_FUN(.assayUpperBound)]])) {
+            return(NULL)
+        }
+        
+        .requestUpdate(plot_name, rObjects)
+    }, ignoreInit=TRUE, ignoreNULL=TRUE)
+    # nocov end
+    
     # nocov start
     for (field in c(.assayCenterRows, .assayScaleRows)) {
         local({

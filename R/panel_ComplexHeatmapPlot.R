@@ -454,7 +454,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     heatmap_args <- paste0(heatmap_args, ", cluster_columns=FALSE")
 
     # Names
-    heatmap_args <- paste0(heatmap_args, ", ", sprintf('name=%s', deparse(assay_name)))
+    heatmap_args <- paste0(heatmap_args, ", ", sprintf('name=%s', deparse(.build_heatmap_assay_legend_title(x, !assay_continuous))))
     heatmap_args <- paste0(heatmap_args, ", ",
         sprintf("show_row_names=%s", .showNamesRowTitle %in% x[[.showDimnames]]))
     heatmap_args <- paste0(heatmap_args, ", ",

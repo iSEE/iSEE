@@ -213,3 +213,31 @@
 
     return(cmds)
 }
+
+#' Build the main heatmap legend title
+#'
+#' @param x An instance of a \linkS4class{ComplexHeatmapPlot} class.
+#' @param discrete A logical scalar indicating whether the selected assay is discrete.
+#'
+#' @return A character value to use as the title of the heatmap legend.
+#' @author Kevin Rue-Albrecht
+#'
+#' @rdname INTERNAL_build_heatmap_assay_name
+.build_heatmap_assay_legend_title <- function(x, discrete) {
+    assay_name <- x[[.heatMapAssay]]
+
+    if (discrete) {
+        return(assay_name)
+    }
+
+    if (x[[.assayCenterRows]]) {
+        transform_labels <- c("centered"=TRUE, "scaled"=x[[.assayScaleRows]])
+        transform_str <- sprintf("(%s)", paste0(names(which(transform_labels)), collapse = ", "))
+    } else {
+        transform_str <- NULL
+    }
+    legend_sep <- ifelse(x[[.plotLegendDirection]] == "Vertical", "\n", " ")
+    title <- paste0(c(assay_name, transform_str), collapse = legend_sep)
+
+    return(title)
+}

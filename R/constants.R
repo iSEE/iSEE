@@ -67,7 +67,7 @@
 .visualParamChoiceFacetTitle <- "Facets"
 .visualParamChoiceMetadataTitle <- "Annotations"
 .visualParamChoiceLabelsTitle <- "Labels"
-.visualParamChoiceTransformTitle <- "Transforms"
+.visualParamChoiceTransformTitle <- "Transform"
 .visualParamChoiceLegendTitle <- "Legends"
 .visualParamChoiceOtherTitle <- "Other"
 

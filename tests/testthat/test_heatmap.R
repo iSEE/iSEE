@@ -316,3 +316,43 @@ test_that(".defineDataInterface handles continuous and discrete assays", {
     expect_true(any(grepl("shinyjs-disabled", unlist(out)))) # some of the UI are disabled
 
 })
+
+test_that(".build_heatmap_assay_legend_title handles centering and scaling", {
+
+    x <- ComplexHeatmapPlot()
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+
+    x[[iSEE:::.heatMapAssay]] <- "letters"
+
+    out <- .build_heatmap_assay_legend_title(x, discrete = TRUE)
+    expect_identical(out, "letters")
+
+    x[[iSEE:::.heatMapAssay]] <- "tophat_counts"
+
+    out <- .build_heatmap_assay_legend_title(x, discrete = FALSE)
+    expect_identical(out, "tophat_counts")
+
+    x[[iSEE:::.assayCenterRows]] <- TRUE
+    x[[iSEE:::.assayScaleRows]] <- FALSE
+    out <- .build_heatmap_assay_legend_title(x, discrete = FALSE)
+    expect_identical(out, "tophat_counts (centered)")
+
+    x[[iSEE:::.assayCenterRows]] <- TRUE
+    x[[iSEE:::.assayScaleRows]] <- TRUE
+    out <- .build_heatmap_assay_legend_title(x, discrete = FALSE)
+    expect_identical(out, "tophat_counts (centered, scaled)")
+
+    x[[iSEE:::.assayCenterRows]] <- TRUE
+    x[[iSEE:::.assayScaleRows]] <- FALSE
+    x[[iSEE:::.plotLegendDirection]] <- "Vertical"
+    out <- .build_heatmap_assay_legend_title(x, discrete = FALSE)
+    expect_identical(out, "tophat_counts\n(centered)")
+
+    x[[iSEE:::.assayCenterRows]] <- TRUE
+    x[[iSEE:::.assayScaleRows]] <- TRUE
+    x[[iSEE:::.plotLegendDirection]] <- "Vertical"
+    out <- .build_heatmap_assay_legend_title(x, discrete = FALSE)
+    expect_identical(out, "tophat_counts\n(centered, scaled)")
+
+})

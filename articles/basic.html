@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.0</span>
       </span>
     </div>
 
@@ -114,7 +114,7 @@
       Cancer Research UK Cambridge Institute, University of Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com">infinite.monkeys.with.keyboards@gmail.com</a>
       </address>
                   
-            <h4 class="date">31 December 2019</h4>
+            <h4 class="date">6 February 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/csoneson/iSEE/blob/master/vignettes/basic.Rmd"><code>vignettes/basic.Rmd</code></a></small>
       <div class="hidden name"><code>basic.Rmd</code></div>
@@ -123,7 +123,7 @@
 
     
     
-<p><strong>Compiled date</strong>: 2019-12-31</p>
+<p><strong>Compiled date</strong>: 2020-02-06</p>
 <p><strong>Last edited</strong>: 2018-03-08</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <p><img src="../../../../R/Library/iSEE/www/iSEE.png" width="50%" style="display: block; margin: auto;"></p>
@@ -294,7 +294,7 @@
 <div id="row-statistics-tables" class="section level3">
 <h3 class="hasAnchor">
 <a href="#row-statistics-tables" class="anchor"></a>Row statistics tables</h3>
-<p>A <em>Row statistics table</em> contains the values of the <code>rowData</code> slot for the <code>SingleCellExperiment</code>/<code>SummarizedExperiment</code> object. If none are available, a column named <code>Present</code> is added and set to <code>TRUE</code> for all features, to avoid issues with <code><a href="https://rdrr.io/pkg/DT/man/datatable.html">DT::datatable</a></code> and an empty <code>DataFrame</code>. Typically, these tables are used to link to other plots to determine the features to use for plotting or coloring. However, they can also be used to retrieve gene-specific annotation on the fly by specifying the <code>annotFun</code> parameter, e.g. using the <code>annotateEntrez</code> or <code>annotateEnsembl</code> functions, provided in <em><a href="https://bioconductor.org/packages/3.11/iSEE">iSEE</a></em>. Alternatively, users can create a customized annotation function; for more details on this, please consult the manual pages <code><a href="../reference/annotateEntrez.html">?annotateEntrez</a></code> and <code><a href="../reference/annotateEnsembl.html">?annotateEnsembl</a></code>.</p>
+<p>A <em>Row statistics table</em> contains the values of the <code>rowData</code> slot for the <code>SingleCellExperiment</code>/<code>SummarizedExperiment</code> object. If none are available, a column named <code>Present</code> is added and set to <code>TRUE</code> for all features, to avoid issues with <code><a href="https://rdrr.io/pkg/DT/man/datatable.html">DT::datatable</a></code> and an empty <code>DataFrame</code>. Typically, these tables are used to link to other plots to determine the features to use for plotting or coloring. However, they can also be used to retrieve gene-specific annotation on the fly by specifying the <code>annotFun</code> parameter, e.g. using the <code>annotateEntrez</code> or <code>annotateEnsembl</code> functions, provided in <em><a href="https://bioconductor.org/packages/3.11/iSEE">iSEE</a></em>. Alternatively, users can create a customized annotation function; for more details on this, please consult the manual pages <code>?annotateEntrez</code> and <code>?annotateEnsembl</code>.</p>
 </div>
 <div id="column-statistics-tables" class="section level3">
 <h3 class="hasAnchor">
@@ -406,7 +406,7 @@
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session Info</h1>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</a>
-<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="co">#&gt; R Under development (unstable) (2019-12-29 r77627)</span></a>
+<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="co">#&gt; R Under development (unstable) (2020-02-06 r77774)</span></a>
 <a class="sourceLine" id="cb12-3" data-line-number="3"><span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span></a>
 <a class="sourceLine" id="cb12-4" data-line-number="4"><span class="co">#&gt; Running under: Ubuntu 16.04.6 LTS</span></a>
 <a class="sourceLine" id="cb12-5" data-line-number="5"><span class="co">#&gt; </span></a>
@@ -427,68 +427,70 @@
 <a class="sourceLine" id="cb12-20" data-line-number="20"><span class="co">#&gt; [8] methods   base     </span></a>
 <a class="sourceLine" id="cb12-21" data-line-number="21"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb12-22" data-line-number="22"><span class="co">#&gt; other attached packages:</span></a>
-<a class="sourceLine" id="cb12-23" data-line-number="23"><span class="co">#&gt;  [1] scater_1.15.12              ggplot2_3.2.1              </span></a>
-<a class="sourceLine" id="cb12-24" data-line-number="24"><span class="co">#&gt;  [3] scRNAseq_2.1.5              iSEE_1.7.2                 </span></a>
+<a class="sourceLine" id="cb12-23" data-line-number="23"><span class="co">#&gt;  [1] scater_1.15.20              ggplot2_3.2.1              </span></a>
+<a class="sourceLine" id="cb12-24" data-line-number="24"><span class="co">#&gt;  [3] scRNAseq_2.1.5              iSEE_1.99.0                </span></a>
 <a class="sourceLine" id="cb12-25" data-line-number="25"><span class="co">#&gt;  [5] SingleCellExperiment_1.9.1  SummarizedExperiment_1.17.1</span></a>
-<a class="sourceLine" id="cb12-26" data-line-number="26"><span class="co">#&gt;  [7] DelayedArray_0.13.1         BiocParallel_1.21.2        </span></a>
+<a class="sourceLine" id="cb12-26" data-line-number="26"><span class="co">#&gt;  [7] DelayedArray_0.13.3         BiocParallel_1.21.2        </span></a>
 <a class="sourceLine" id="cb12-27" data-line-number="27"><span class="co">#&gt;  [9] matrixStats_0.55.0          Biobase_2.47.2             </span></a>
-<a class="sourceLine" id="cb12-28" data-line-number="28"><span class="co">#&gt; [11] GenomicRanges_1.39.1        GenomeInfoDb_1.23.1        </span></a>
-<a class="sourceLine" id="cb12-29" data-line-number="29"><span class="co">#&gt; [13] IRanges_2.21.2              S4Vectors_0.25.8           </span></a>
-<a class="sourceLine" id="cb12-30" data-line-number="30"><span class="co">#&gt; [15] BiocGenerics_0.33.0         BiocStyle_2.15.3           </span></a>
+<a class="sourceLine" id="cb12-28" data-line-number="28"><span class="co">#&gt; [11] GenomicRanges_1.39.2        GenomeInfoDb_1.23.10       </span></a>
+<a class="sourceLine" id="cb12-29" data-line-number="29"><span class="co">#&gt; [13] IRanges_2.21.3              S4Vectors_0.25.12          </span></a>
+<a class="sourceLine" id="cb12-30" data-line-number="30"><span class="co">#&gt; [15] BiocGenerics_0.33.0         BiocStyle_2.15.6           </span></a>
 <a class="sourceLine" id="cb12-31" data-line-number="31"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb12-32" data-line-number="32"><span class="co">#&gt; loaded via a namespace (and not attached):</span></a>
 <a class="sourceLine" id="cb12-33" data-line-number="33"><span class="co">#&gt;   [1] Rtsne_0.15                    ggbeeswarm_0.6.0             </span></a>
-<a class="sourceLine" id="cb12-34" data-line-number="34"><span class="co">#&gt;   [3] colorspace_1.4-1              rprojroot_1.3-2              </span></a>
-<a class="sourceLine" id="cb12-35" data-line-number="35"><span class="co">#&gt;   [5] XVector_0.27.0                BiocNeighbors_1.5.1          </span></a>
-<a class="sourceLine" id="cb12-36" data-line-number="36"><span class="co">#&gt;   [7] fs_1.3.1                      DT_0.11                      </span></a>
-<a class="sourceLine" id="cb12-37" data-line-number="37"><span class="co">#&gt;   [9] bit64_0.9-7                   interactiveDisplayBase_1.25.0</span></a>
-<a class="sourceLine" id="cb12-38" data-line-number="38"><span class="co">#&gt;  [11] AnnotationDbi_1.49.0          splines_4.0.0                </span></a>
-<a class="sourceLine" id="cb12-39" data-line-number="39"><span class="co">#&gt;  [13] knitr_1.26                    zeallot_0.1.0                </span></a>
-<a class="sourceLine" id="cb12-40" data-line-number="40"><span class="co">#&gt;  [15] jsonlite_1.6                  dbplyr_1.4.2                 </span></a>
-<a class="sourceLine" id="cb12-41" data-line-number="41"><span class="co">#&gt;  [17] shinydashboard_0.7.1          shiny_1.4.0                  </span></a>
-<a class="sourceLine" id="cb12-42" data-line-number="42"><span class="co">#&gt;  [19] BiocManager_1.30.10           rentrez_1.2.2                </span></a>
-<a class="sourceLine" id="cb12-43" data-line-number="43"><span class="co">#&gt;  [21] compiler_4.0.0                httr_1.4.1                   </span></a>
-<a class="sourceLine" id="cb12-44" data-line-number="44"><span class="co">#&gt;  [23] backports_1.1.5               assertthat_0.2.1             </span></a>
-<a class="sourceLine" id="cb12-45" data-line-number="45"><span class="co">#&gt;  [25] Matrix_1.2-18                 fastmap_1.0.1                </span></a>
-<a class="sourceLine" id="cb12-46" data-line-number="46"><span class="co">#&gt;  [27] lazyeval_0.2.2                later_1.0.0                  </span></a>
-<a class="sourceLine" id="cb12-47" data-line-number="47"><span class="co">#&gt;  [29] BiocSingular_1.3.1            htmltools_0.4.0              </span></a>
-<a class="sourceLine" id="cb12-48" data-line-number="48"><span class="co">#&gt;  [31] tools_4.0.0                   rsvd_1.0.2                   </span></a>
-<a class="sourceLine" id="cb12-49" data-line-number="49"><span class="co">#&gt;  [33] igraph_1.2.4.2                gtable_0.3.0                 </span></a>
-<a class="sourceLine" id="cb12-50" data-line-number="50"><span class="co">#&gt;  [35] glue_1.3.1                    GenomeInfoDbData_1.2.2       </span></a>
-<a class="sourceLine" id="cb12-51" data-line-number="51"><span class="co">#&gt;  [37] reshape2_1.4.3                dplyr_0.8.3                  </span></a>
-<a class="sourceLine" id="cb12-52" data-line-number="52"><span class="co">#&gt;  [39] rappdirs_0.3.1                Rcpp_1.0.3                   </span></a>
-<a class="sourceLine" id="cb12-53" data-line-number="53"><span class="co">#&gt;  [41] pkgdown_1.4.1                 vctrs_0.2.1                  </span></a>
-<a class="sourceLine" id="cb12-54" data-line-number="54"><span class="co">#&gt;  [43] nlme_3.1-143                  ExperimentHub_1.13.5         </span></a>
-<a class="sourceLine" id="cb12-55" data-line-number="55"><span class="co">#&gt;  [45] rintrojs_0.2.2                DelayedMatrixStats_1.9.0     </span></a>
-<a class="sourceLine" id="cb12-56" data-line-number="56"><span class="co">#&gt;  [47] xfun_0.11                     stringr_1.4.0                </span></a>
-<a class="sourceLine" id="cb12-57" data-line-number="57"><span class="co">#&gt;  [49] mime_0.8                      miniUI_0.1.1.1               </span></a>
-<a class="sourceLine" id="cb12-58" data-line-number="58"><span class="co">#&gt;  [51] lifecycle_0.1.0               irlba_2.3.3                  </span></a>
-<a class="sourceLine" id="cb12-59" data-line-number="59"><span class="co">#&gt;  [53] XML_3.98-1.20                 shinyAce_0.4.1               </span></a>
-<a class="sourceLine" id="cb12-60" data-line-number="60"><span class="co">#&gt;  [55] AnnotationHub_2.19.3          zlibbioc_1.33.0              </span></a>
-<a class="sourceLine" id="cb12-61" data-line-number="61"><span class="co">#&gt;  [57] MASS_7.3-51.5                 scales_1.1.0                 </span></a>
-<a class="sourceLine" id="cb12-62" data-line-number="62"><span class="co">#&gt;  [59] colourpicker_1.0              promises_1.1.0               </span></a>
-<a class="sourceLine" id="cb12-63" data-line-number="63"><span class="co">#&gt;  [61] yaml_2.2.0                    curl_4.3                     </span></a>
-<a class="sourceLine" id="cb12-64" data-line-number="64"><span class="co">#&gt;  [63] gridExtra_2.3                 memoise_1.1.0                </span></a>
-<a class="sourceLine" id="cb12-65" data-line-number="65"><span class="co">#&gt;  [65] stringi_1.4.3                 RSQLite_2.1.5                </span></a>
-<a class="sourceLine" id="cb12-66" data-line-number="66"><span class="co">#&gt;  [67] BiocVersion_3.11.1            desc_1.2.0                   </span></a>
-<a class="sourceLine" id="cb12-67" data-line-number="67"><span class="co">#&gt;  [69] rlang_0.4.2                   pkgconfig_2.0.3              </span></a>
-<a class="sourceLine" id="cb12-68" data-line-number="68"><span class="co">#&gt;  [71] bitops_1.0-6                  evaluate_0.14                </span></a>
-<a class="sourceLine" id="cb12-69" data-line-number="69"><span class="co">#&gt;  [73] lattice_0.20-38               purrr_0.3.3                  </span></a>
-<a class="sourceLine" id="cb12-70" data-line-number="70"><span class="co">#&gt;  [75] htmlwidgets_1.5.1             cowplot_1.0.0                </span></a>
-<a class="sourceLine" id="cb12-71" data-line-number="71"><span class="co">#&gt;  [77] bit_1.1-14                    tidyselect_0.2.5             </span></a>
-<a class="sourceLine" id="cb12-72" data-line-number="72"><span class="co">#&gt;  [79] plyr_1.8.5                    magrittr_1.5                 </span></a>
-<a class="sourceLine" id="cb12-73" data-line-number="73"><span class="co">#&gt;  [81] bookdown_0.16                 R6_2.4.1                     </span></a>
-<a class="sourceLine" id="cb12-74" data-line-number="74"><span class="co">#&gt;  [83] DBI_1.1.0                     pillar_1.4.3                 </span></a>
-<a class="sourceLine" id="cb12-75" data-line-number="75"><span class="co">#&gt;  [85] withr_2.1.2                   mgcv_1.8-31                  </span></a>
-<a class="sourceLine" id="cb12-76" data-line-number="76"><span class="co">#&gt;  [87] RCurl_1.95-4.12               tibble_2.1.3                 </span></a>
-<a class="sourceLine" id="cb12-77" data-line-number="77"><span class="co">#&gt;  [89] crayon_1.3.4                  BiocFileCache_1.11.4         </span></a>
-<a class="sourceLine" id="cb12-78" data-line-number="78"><span class="co">#&gt;  [91] rmarkdown_2.0                 viridis_0.5.1                </span></a>
-<a class="sourceLine" id="cb12-79" data-line-number="79"><span class="co">#&gt;  [93] grid_4.0.0                    blob_1.2.0                   </span></a>
-<a class="sourceLine" id="cb12-80" data-line-number="80"><span class="co">#&gt;  [95] digest_0.6.23                 xtable_1.8-4                 </span></a>
-<a class="sourceLine" id="cb12-81" data-line-number="81"><span class="co">#&gt;  [97] httpuv_1.5.2                  munsell_0.5.0                </span></a>
-<a class="sourceLine" id="cb12-82" data-line-number="82"><span class="co">#&gt;  [99] beeswarm_0.2.3                viridisLite_0.3.0            </span></a>
-<a class="sourceLine" id="cb12-83" data-line-number="83"><span class="co">#&gt; [101] vipor_0.4.5                   shinyjs_1.0</span></a>
-<a class="sourceLine" id="cb12-84" data-line-number="84"><span class="co"># devtools::session_info()</span></a></code></pre></div>
+<a class="sourceLine" id="cb12-34" data-line-number="34"><span class="co">#&gt;   [3] colorspace_1.4-1              rjson_0.2.20                 </span></a>
+<a class="sourceLine" id="cb12-35" data-line-number="35"><span class="co">#&gt;   [5] rprojroot_1.3-2               circlize_0.4.8               </span></a>
+<a class="sourceLine" id="cb12-36" data-line-number="36"><span class="co">#&gt;   [7] XVector_0.27.0                BiocNeighbors_1.5.1          </span></a>
+<a class="sourceLine" id="cb12-37" data-line-number="37"><span class="co">#&gt;   [9] GlobalOptions_0.1.1           fs_1.3.1                     </span></a>
+<a class="sourceLine" id="cb12-38" data-line-number="38"><span class="co">#&gt;  [11] clue_0.3-57                   DT_0.12                      </span></a>
+<a class="sourceLine" id="cb12-39" data-line-number="39"><span class="co">#&gt;  [13] bit64_0.9-7                   interactiveDisplayBase_1.25.0</span></a>
+<a class="sourceLine" id="cb12-40" data-line-number="40"><span class="co">#&gt;  [15] AnnotationDbi_1.49.1          splines_4.0.0                </span></a>
+<a class="sourceLine" id="cb12-41" data-line-number="41"><span class="co">#&gt;  [17] knitr_1.28                    jsonlite_1.6.1               </span></a>
+<a class="sourceLine" id="cb12-42" data-line-number="42"><span class="co">#&gt;  [19] cluster_2.1.0                 dbplyr_1.4.2                 </span></a>
+<a class="sourceLine" id="cb12-43" data-line-number="43"><span class="co">#&gt;  [21] png_0.1-7                     shinydashboard_0.7.1         </span></a>
+<a class="sourceLine" id="cb12-44" data-line-number="44"><span class="co">#&gt;  [23] shiny_1.4.0                   BiocManager_1.30.10          </span></a>
+<a class="sourceLine" id="cb12-45" data-line-number="45"><span class="co">#&gt;  [25] compiler_4.0.0                httr_1.4.1                   </span></a>
+<a class="sourceLine" id="cb12-46" data-line-number="46"><span class="co">#&gt;  [27] backports_1.1.5               assertthat_0.2.1             </span></a>
+<a class="sourceLine" id="cb12-47" data-line-number="47"><span class="co">#&gt;  [29] Matrix_1.2-18                 fastmap_1.0.1                </span></a>
+<a class="sourceLine" id="cb12-48" data-line-number="48"><span class="co">#&gt;  [31] lazyeval_0.2.2                BiocSingular_1.3.1           </span></a>
+<a class="sourceLine" id="cb12-49" data-line-number="49"><span class="co">#&gt;  [33] later_1.0.0                   htmltools_0.4.0              </span></a>
+<a class="sourceLine" id="cb12-50" data-line-number="50"><span class="co">#&gt;  [35] tools_4.0.0                   rsvd_1.0.2                   </span></a>
+<a class="sourceLine" id="cb12-51" data-line-number="51"><span class="co">#&gt;  [37] igraph_1.2.4.2                gtable_0.3.0                 </span></a>
+<a class="sourceLine" id="cb12-52" data-line-number="52"><span class="co">#&gt;  [39] glue_1.3.1                    GenomeInfoDbData_1.2.2       </span></a>
+<a class="sourceLine" id="cb12-53" data-line-number="53"><span class="co">#&gt;  [41] dplyr_0.8.4                   rappdirs_0.3.1               </span></a>
+<a class="sourceLine" id="cb12-54" data-line-number="54"><span class="co">#&gt;  [43] Rcpp_1.0.3                    pkgdown_1.4.1                </span></a>
+<a class="sourceLine" id="cb12-55" data-line-number="55"><span class="co">#&gt;  [45] vctrs_0.2.2                   nlme_3.1-144                 </span></a>
+<a class="sourceLine" id="cb12-56" data-line-number="56"><span class="co">#&gt;  [47] ExperimentHub_1.13.5          DelayedMatrixStats_1.9.0     </span></a>
+<a class="sourceLine" id="cb12-57" data-line-number="57"><span class="co">#&gt;  [49] rintrojs_0.2.2                xfun_0.12                    </span></a>
+<a class="sourceLine" id="cb12-58" data-line-number="58"><span class="co">#&gt;  [51] stringr_1.4.0                 irlba_2.3.3                  </span></a>
+<a class="sourceLine" id="cb12-59" data-line-number="59"><span class="co">#&gt;  [53] mime_0.9                      miniUI_0.1.1.1               </span></a>
+<a class="sourceLine" id="cb12-60" data-line-number="60"><span class="co">#&gt;  [55] lifecycle_0.1.0               shinyAce_0.4.1               </span></a>
+<a class="sourceLine" id="cb12-61" data-line-number="61"><span class="co">#&gt;  [57] AnnotationHub_2.19.7          zlibbioc_1.33.1              </span></a>
+<a class="sourceLine" id="cb12-62" data-line-number="62"><span class="co">#&gt;  [59] MASS_7.3-51.5                 scales_1.1.0                 </span></a>
+<a class="sourceLine" id="cb12-63" data-line-number="63"><span class="co">#&gt;  [61] colourpicker_1.0              promises_1.1.0               </span></a>
+<a class="sourceLine" id="cb12-64" data-line-number="64"><span class="co">#&gt;  [63] RColorBrewer_1.1-2            ComplexHeatmap_2.3.0         </span></a>
+<a class="sourceLine" id="cb12-65" data-line-number="65"><span class="co">#&gt;  [65] yaml_2.2.1                    curl_4.3                     </span></a>
+<a class="sourceLine" id="cb12-66" data-line-number="66"><span class="co">#&gt;  [67] gridExtra_2.3                 memoise_1.1.0                </span></a>
+<a class="sourceLine" id="cb12-67" data-line-number="67"><span class="co">#&gt;  [69] stringi_1.4.5                 RSQLite_2.2.0                </span></a>
+<a class="sourceLine" id="cb12-68" data-line-number="68"><span class="co">#&gt;  [71] BiocVersion_3.11.1            desc_1.2.0                   </span></a>
+<a class="sourceLine" id="cb12-69" data-line-number="69"><span class="co">#&gt;  [73] shape_1.4.4                   rlang_0.4.4                  </span></a>
+<a class="sourceLine" id="cb12-70" data-line-number="70"><span class="co">#&gt;  [75] pkgconfig_2.0.3               bitops_1.0-6                 </span></a>
+<a class="sourceLine" id="cb12-71" data-line-number="71"><span class="co">#&gt;  [77] evaluate_0.14                 lattice_0.20-38              </span></a>
+<a class="sourceLine" id="cb12-72" data-line-number="72"><span class="co">#&gt;  [79] purrr_0.3.3                   htmlwidgets_1.5.1            </span></a>
+<a class="sourceLine" id="cb12-73" data-line-number="73"><span class="co">#&gt;  [81] bit_1.1-15.1                  tidyselect_1.0.0             </span></a>
+<a class="sourceLine" id="cb12-74" data-line-number="74"><span class="co">#&gt;  [83] magrittr_1.5                  bookdown_0.17                </span></a>
+<a class="sourceLine" id="cb12-75" data-line-number="75"><span class="co">#&gt;  [85] R6_2.4.1                      DBI_1.1.0                    </span></a>
+<a class="sourceLine" id="cb12-76" data-line-number="76"><span class="co">#&gt;  [87] pillar_1.4.3                  withr_2.1.2                  </span></a>
+<a class="sourceLine" id="cb12-77" data-line-number="77"><span class="co">#&gt;  [89] mgcv_1.8-31                   RCurl_1.98-1.1               </span></a>
+<a class="sourceLine" id="cb12-78" data-line-number="78"><span class="co">#&gt;  [91] tibble_2.1.3                  crayon_1.3.4                 </span></a>
+<a class="sourceLine" id="cb12-79" data-line-number="79"><span class="co">#&gt;  [93] shinyWidgets_0.5.0            BiocFileCache_1.11.4         </span></a>
+<a class="sourceLine" id="cb12-80" data-line-number="80"><span class="co">#&gt;  [95] rmarkdown_2.1                 viridis_0.5.1                </span></a>
+<a class="sourceLine" id="cb12-81" data-line-number="81"><span class="co">#&gt;  [97] GetoptLong_0.1.8              grid_4.0.0                   </span></a>
+<a class="sourceLine" id="cb12-82" data-line-number="82"><span class="co">#&gt;  [99] blob_1.2.1                    digest_0.6.23                </span></a>
+<a class="sourceLine" id="cb12-83" data-line-number="83"><span class="co">#&gt; [101] xtable_1.8-4                  httpuv_1.5.2                 </span></a>
+<a class="sourceLine" id="cb12-84" data-line-number="84"><span class="co">#&gt; [103] munsell_0.5.0                 beeswarm_0.2.3               </span></a>
+<a class="sourceLine" id="cb12-85" data-line-number="85"><span class="co">#&gt; [105] viridisLite_0.3.0             vipor_0.4.5                  </span></a>
+<a class="sourceLine" id="cb12-86" data-line-number="86"><span class="co">#&gt; [107] shinyjs_1.1</span></a></code></pre></div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">

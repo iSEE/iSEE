@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer — iSEE-pkg • iSEE</title>
+<title>The ColumnTable class — ColumnTable-class • iSEE</title>
 
 
 <!-- jquery -->
@@ -35,13 +35,9 @@
 
 
 
-<meta property="og:title" content="iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer — iSEE-pkg" />
-<meta property="og:description" content="iSEE is a Bioconductor package that provides an interactive Shiny-based
- graphical user interface for exploring data stored in SummarizedExperiment
- objects, including row- and column-level metadata. 
- Particular attention is given to single-cell data in a SingleCellExperiment
- object with visualization of dimensionality reduction results, e.g., from principal
- components analysis (PCA) or t-distributed stochastic neighbour embedding (t-SNE)" />
+<meta property="og:title" content="The ColumnTable class — ColumnTable-class" />
+<meta property="og:description" content="The ColumnTable is a virtual class where each column in the SummarizedExperiment is represented by a row in a datatable widget.
+It provides observers for monitoring table selection, global search and column-specific search." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -136,34 +132,79 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer</h1>
-    <small class="dont-index">Source: <a href='https://github.com/csoneson/iSEE/blob/master/R/iSEE-pkg.R'><code>R/iSEE-pkg.R</code></a></small>
-    <div class="hidden name"><code>iSEE-pkg.Rd</code></div>
+    <h1>The ColumnTable class</h1>
+    <small class="dont-index">Source: <a href='https://github.com/csoneson/iSEE/blob/master/R/family_ColumnTable.R'><code>R/family_ColumnTable.R</code></a></small>
+    <div class="hidden name"><code>ColumnTable-class.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>iSEE</code> is a Bioconductor package that provides an interactive Shiny-based
- graphical user interface for exploring data stored in <code>SummarizedExperiment</code>
- objects, including row- and column-level metadata. 
- Particular attention is given to single-cell data in a <code>SingleCellExperiment</code>
- object with visualization of dimensionality reduction results, e.g., from principal
- components analysis (PCA) or t-distributed stochastic neighbour embedding (t-SNE)</p>
+    <p>The ColumnTable is a virtual class where each column in the SummarizedExperiment is represented by a row in a <code>datatable</code> widget.
+It provides observers for monitoring table selection, global search and column-specific search.</p>
     </div>
 
 
 
+    <h2 class="hasAnchor" id="slot-overview"><a class="anchor" href="#slot-overview"></a>Slot overview</h2>
+
+    
+
+<p>No new slots are added.
+All slots provided in the <a href='Table-class.html'>Table</a> parent class are available.</p>
+    <h2 class="hasAnchor" id="contract-description"><a class="anchor" href="#contract-description"></a>Contract description</h2>
+
+    
+
+<p>The contract for ColumnTables is the same as that for Tables, with the added condition that each row should represent a column of the SummarizedExperiment object.</p>
+    <h2 class="hasAnchor" id="supported-methods"><a class="anchor" href="#supported-methods"></a>Supported methods</h2>
+
+    
+
+<p>In the following code snippets, <code>x</code> is an instance of a ColumnTable class.
+Refer to the documentation for each method for more details on the remaining arguments.</p>
+<p>For setting up data values:</p><ul>
+<li><p><code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code> replaces <code>NA</code> values in <code>Selected</code> with the first column name of <code>se</code>.
+This will also call the equivalent <a href='DotPlot-class.html'>DotPlot</a> method.</p></li>
+</ul>
+
+<p>For defining the interface:</p><ul>
+<li><p><code><a href='interface-generics.html'>.hideInterface</a>(x, field)</code> returns a logical scalar indicating whether the interface element corresponding to <code>field</code> should be hidden.
+This returns <code>TRUE</code> for row selection parameters (<code>"SelectRowSource"</code>, <code>"SelectRowType"</code> and <code>"SelectRowSaved"</code>),
+otherwise it dispatches to the <a href='Panel-class.html'>Panel</a> method.</p></li>
+</ul>
+
+<p>For monitoring reactive expressions:</p><ul>
+<li><p><code><a href='observer-generics.html'>.createObservers</a>(x, se, input, session, pObjects, rObjects)</code> sets up observers to propagate changes in the <code>Selected</code> to linked plots.
+This will also call the equivalent <a href='Table-class.html'>Table</a> method.</p></li>
+</ul>
+
+<p>For controlling selections:</p><ul>
+<li><p><code><a href='multi-select-generics.html'>.multiSelectionDimension</a>(x)</code> returns <code>"column"</code> to indicate that a column selection is being transmitted.</p></li>
+</ul>
+
+<p>Unless explicitly specialized above, all methods from the parent classes <a href='DotPlot-class.html'>DotPlot</a> and <a href='Panel-class.html'>Panel</a> are also available.</p>
+    <h2 class="hasAnchor" id="expectations-for-generatetable"><a class="anchor" href="#expectations-for-generatetable"></a>Expectations for <code><a href='Table-class.html'>.generateTable</a></code></h2>
+
+    
+
+<p><a href='RowTable-class.html'>RowTable</a> methods for this generic should create a <code>tab</code> data.frame in which each row corresponds to a column of the SummarizedExperiment object and is named accordingly.
+It is <em>not</em> necessary for all columns of the SummarizedExperiment object to be represented as rows in the data.frame.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><a href='Table-class.html'>Table</a>, for the immediate parent class that contains the actual slot definitions.</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#slot-overview">Slot overview</a></li>
+      <li><a href="#contract-description">Contract description</a></li>
+      <li><a href="#supported-methods">Supported methods</a></li>
+      <li><a href="#expectations-for-generatetable">Expectations for <code><a href='Table-class.html'>.generateTable</a></code></a></li>
+      <li><a href="#see-also">See also</a></li>
     </ul>
 
     <h2>Author</h2>
-    <p>Aaron Lun <a href='mailto:infinite.monkeys.with.keyboards@gmail.com'>infinite.monkeys.with.keyboards@gmail.com</a></p>
-<p>Charlotte Soneson <a href='mailto:charlotte.soneson@uzh.ch'>charlotte.soneson@uzh.ch</a></p>
-<p>Federico Marini <a href='mailto:marinif@uni-mainz.de'>marinif@uni-mainz.de</a></p>
-<p>Kevin Rue-Albrecht <a href='mailto:kevin.rue-albrecht@kennedy.ox.ac.uk'>kevin.rue-albrecht@kennedy.ox.ac.uk</a></p>
+    <p>Aaron Lun</p>
   </div>
 </div>
 

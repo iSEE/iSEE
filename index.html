@@ -11,11 +11,13 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Interactive SummarizedExperiment Explorer">
-<meta property="og:description" content="Provides functions for creating an interactive 
-    Shiny-based graphical user interface for exploring data 
-    stored in SummarizedExperiment objects, including row- and
-    column-level metadata. Particular attention is given to 
-    single-cell data in a SingleCellExperiment object with 
+<meta property="og:description" content="Create an interactive Shiny-based graphical user interface 
+    for exploring data stored in SummarizedExperiment objects, including 
+    row- and column-level metadata. The interface supports transmission of 
+    selections between plots and tables, code tracking, interactive tours, 
+    interactive or programmatic initialization, preservation of app state,
+    and extensibility to new panel types via S4 classes. Special attention 
+    is given to single-cell data in a SingleCellExperiment object with 
     visualization of dimensionality reduction results.">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -36,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.0</span>
       </span>
     </div>
 
@@ -116,8 +118,8 @@
 <tr class="odd">
 <td align="center">Travis CI</td>
 <td align="center">Linux</td>
-<td align="center"><a href="https://travis-ci.org/csoneson/iSEE"><img src="https://travis-ci.org/csoneson/iSEE.svg?branch=master" alt="Travis CI build status"></a></td>
-<td align="center"><a href="https://codecov.io/github/csoneson/iSEE"><img src="https://codecov.io/github/csoneson/iSEE/coverage.svg?branch=master" alt="Codecov.io coverage status"></a></td>
+<td align="center"><a href="https://travis-ci.org/iSEE/iSEE"><img src="https://travis-ci.org/iSEE/iSEE.svg?branch=master" alt="Travis CI build status"></a></td>
+<td align="center"><a href="https://codecov.io/github/iSEE/iSEE"><img src="https://codecov.io/github/iSEE/iSEE/coverage.svg?branch=master" alt="Codecov.io coverage status"></a></td>
 </tr>
 <tr class="even">
 <td align="center">Bioc (<a href="http://bioconductor.org/packages/devel/bioc/html/iSEE.html"><em>devel</em></a>)</td>
@@ -133,6 +135,7 @@
 </tr>
 </tbody>
 </table>
+<p><img src="https://img.shields.io/docker/cloud/automated/iseedevelopers/isee" alt="Docker Cloud Automated build"><img src="https://img.shields.io/docker/cloud/build/iseedevelopers/isee" alt="Docker Cloud Build Status"></p>
 </div>
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">

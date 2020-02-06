@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer — iSEE-pkg • iSEE</title>
+<title>Define parameter observers — .createUnprotectedParameterObservers • iSEE</title>
 
 
 <!-- jquery -->
@@ -35,13 +35,10 @@
 
 
 
-<meta property="og:title" content="iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer — iSEE-pkg" />
-<meta property="og:description" content="iSEE is a Bioconductor package that provides an interactive Shiny-based
- graphical user interface for exploring data stored in SummarizedExperiment
- objects, including row- and column-level metadata. 
- Particular attention is given to single-cell data in a SingleCellExperiment
- object with visualization of dimensionality reduction results, e.g., from principal
- components analysis (PCA) or t-distributed stochastic neighbour embedding (t-SNE)" />
+<meta property="og:title" content="Define parameter observers — .createUnprotectedParameterObservers" />
+<meta property="og:description" content="Define a series of observers to track &amp;#8220;protected&amp;#8221; or &amp;#8220;unprotected&amp;#8221; parameters for a given panel.
+These will register input changes to each specified parameter in the app's memory
+and request an update to the output of the affected panel." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -136,34 +133,93 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer</h1>
-    <small class="dont-index">Source: <a href='https://github.com/csoneson/iSEE/blob/master/R/iSEE-pkg.R'><code>R/iSEE-pkg.R</code></a></small>
-    <div class="hidden name"><code>iSEE-pkg.Rd</code></div>
+    <h1>Define parameter observers</h1>
+    <small class="dont-index">Source: <a href='https://github.com/csoneson/iSEE/blob/master/R/observers_param.R'><code>R/observers_param.R</code></a></small>
+    <div class="hidden name"><code>createProtectedParameterObservers.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>iSEE</code> is a Bioconductor package that provides an interactive Shiny-based
- graphical user interface for exploring data stored in <code>SummarizedExperiment</code>
- objects, including row- and column-level metadata. 
- Particular attention is given to single-cell data in a <code>SingleCellExperiment</code>
- object with visualization of dimensionality reduction results, e.g., from principal
- components analysis (PCA) or t-distributed stochastic neighbour embedding (t-SNE)</p>
+    <p>Define a series of observers to track &#8220;protected&#8221; or &#8220;unprotected&#8221; parameters for a given panel.
+These will register input changes to each specified parameter in the app's memory
+and request an update to the output of the affected panel.</p>
     </div>
 
+    <pre class="usage"><span class='fu'>.createUnprotectedParameterObservers</span>(
+  <span class='no'>panel_name</span>,
+  <span class='no'>fields</span>,
+  <span class='no'>input</span>,
+  <span class='no'>pObjects</span>,
+  <span class='no'>rObjects</span>,
+  <span class='kw'>ignoreInit</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>ignoreNULL</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)
 
+<span class='fu'>.createProtectedParameterObservers</span>(
+  <span class='no'>panel_name</span>,
+  <span class='no'>fields</span>,
+  <span class='no'>input</span>,
+  <span class='no'>pObjects</span>,
+  <span class='no'>rObjects</span>,
+  <span class='kw'>ignoreInit</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>ignoreNULL</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)</pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>panel_name</th>
+      <td><p>String containing the name of the panel.</p></td>
+    </tr>
+    <tr>
+      <th>fields</th>
+      <td><p>Character vector of names of parameters for which to set up observers.</p></td>
+    </tr>
+    <tr>
+      <th>input</th>
+      <td><p>The Shiny input object from the server function.</p></td>
+    </tr>
+    <tr>
+      <th>pObjects</th>
+      <td><p>An environment containing global parameters generated in the <code><a href='iSEE.html'>iSEE</a></code> app.</p></td>
+    </tr>
+    <tr>
+      <th>rObjects</th>
+      <td><p>A reactive list of values generated in the <code><a href='iSEE.html'>iSEE</a></code> app.</p></td>
+    </tr>
+    <tr>
+      <th>ignoreInit, ignoreNULL</th>
+      <td><p>Further arguments to pass to <code>observeEvent</code>.</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Observers are set up to monitor the UI elements that can change the protected and non-fundamental parameters.
+A <code>NULL</code> is invisibly returned.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>A protected parameter is one that breaks existing multiple selections, e.g., by changing the actual data being plotted.
+Alterations to protected parameters will clear all active and saved selections in the panel,
+as those existing selections are assumed to not make any sense in the context of the modified output of that panel.</p>
+<p>By comparison, an unprotected parameter only changes the aesthetics and will not clear existing selections.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='retrieveOutput.html'>.requestUpdate</a></code> and <code><a href='retrieveOutput.html'>.requestCleanUpdate</a></code>,
+used to trigger updates to the panel output.</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
+      <li><a href="#see-also">See also</a></li>
     </ul>
 
     <h2>Author</h2>
-    <p>Aaron Lun <a href='mailto:infinite.monkeys.with.keyboards@gmail.com'>infinite.monkeys.with.keyboards@gmail.com</a></p>
-<p>Charlotte Soneson <a href='mailto:charlotte.soneson@uzh.ch'>charlotte.soneson@uzh.ch</a></p>
-<p>Federico Marini <a href='mailto:marinif@uni-mainz.de'>marinif@uni-mainz.de</a></p>
-<p>Kevin Rue-Albrecht <a href='mailto:kevin.rue-albrecht@kennedy.ox.ac.uk'>kevin.rue-albrecht@kennedy.ox.ac.uk</a></p>
+    <p>Aaron Lun</p>
   </div>
 </div>
 

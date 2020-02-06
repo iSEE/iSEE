@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.0</span>
       </span>
     </div>
 
@@ -132,7 +132,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Find rows of data within a closed lasso</h1>
-    <small class="dont-index">Source: <a href='https://github.com/csoneson/iSEE/blob/master/R/lasso.R'><code>R/lasso.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/csoneson/iSEE/blob/master/R/lassoPoints.R'><code>R/lassoPoints.R</code></a></small>
     <div class="hidden name"><code>lassoPoints.Rd</code></div>
     </div>
 
@@ -171,19 +171,18 @@ This involves a boundary crossing algorithm that may not be robust in the presen
     <span class='kw'>closed</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>mapping</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>x</span><span class='kw'>=</span><span class='st'>"X"</span>, <span class='kw'>y</span><span class='kw'>=</span><span class='st'>"Y"</span>))
 <span class='no'>values</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>X</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fl'>100</span>), <span class='kw'>Y</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fl'>100</span>),
     <span class='kw'>row.names</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/sprintf.html'>sprintf</a></span>(<span class='st'>"VALUE_%i"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_len</a></span>(<span class='fl'>100</span>)))
-<span class='fu'>lassoPoints</span>(<span class='no'>values</span>, <span class='no'>lasso</span>)</div><div class='output co'>#&gt;                    X           Y
-#&gt; VALUE_23  0.19683119 0.061290366
-#&gt; VALUE_27  0.32555417 0.079383677
-#&gt; VALUE_30  0.23715157 0.026118110
-#&gt; VALUE_32  0.02999358 0.003102932
-#&gt; VALUE_61  0.05928708 0.371652227
-#&gt; VALUE_66  0.02921266 0.322149973
-#&gt; VALUE_82  0.21216811 0.125067769
-#&gt; VALUE_90  0.32759886 0.019050268
-#&gt; VALUE_93  0.03824633 0.219185519
-#&gt; VALUE_94  0.12055161 0.004279430
-#&gt; VALUE_96  0.14499324 0.024045952
-#&gt; VALUE_100 0.03344382 0.234577399</div><div class='input'>
+<span class='fu'>lassoPoints</span>(<span class='no'>values</span>, <span class='no'>lasso</span>)</div><div class='output co'>#&gt;                   X          Y
+#&gt; VALUE_2  0.10755208 0.15116259
+#&gt; VALUE_6  0.10185579 0.04733540
+#&gt; VALUE_42 0.02417635 0.44010943
+#&gt; VALUE_44 0.01242362 0.33999553
+#&gt; VALUE_48 0.15457472 0.14770804
+#&gt; VALUE_58 0.05906241 0.08626348
+#&gt; VALUE_61 0.01367948 0.36652593
+#&gt; VALUE_71 0.20161398 0.01702956
+#&gt; VALUE_89 0.10638783 0.22449326
+#&gt; VALUE_92 0.01570809 0.45465769
+#&gt; VALUE_94 0.09790863 0.04292259</div><div class='input'>
 <span class='co'># With faceting information:</span>
 <span class='no'>lasso</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>coord</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.5</span>, <span class='fl'>0</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0.5</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>)),
     <span class='kw'>panelvar1</span><span class='kw'>=</span><span class='st'>"A"</span>, <span class='kw'>panelvar2</span><span class='kw'>=</span><span class='st'>"B"</span>, <span class='kw'>closed</span><span class='kw'>=</span><span class='fl'>TRUE</span>,

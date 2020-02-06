@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer — iSEE-pkg • iSEE</title>
+<title>Reactive manipulations for Panel output — .retrieveOutput • iSEE</title>
 
 
 <!-- jquery -->
@@ -35,13 +35,8 @@
 
 
 
-<meta property="og:title" content="iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer — iSEE-pkg" />
-<meta property="og:description" content="iSEE is a Bioconductor package that provides an interactive Shiny-based
- graphical user interface for exploring data stored in SummarizedExperiment
- objects, including row- and column-level metadata. 
- Particular attention is given to single-cell data in a SingleCellExperiment
- object with visualization of dimensionality reduction results, e.g., from principal
- components analysis (PCA) or t-distributed stochastic neighbour embedding (t-SNE)" />
+<meta property="og:title" content="Reactive manipulations for Panel output — .retrieveOutput" />
+<meta property="og:description" content="Respond to or request a re-rendering of the Panel output via reactive variables." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -136,34 +131,82 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer</h1>
-    <small class="dont-index">Source: <a href='https://github.com/csoneson/iSEE/blob/master/R/iSEE-pkg.R'><code>R/iSEE-pkg.R</code></a></small>
-    <div class="hidden name"><code>iSEE-pkg.Rd</code></div>
+    <h1>Reactive manipulations for Panel output</h1>
+    <small class="dont-index">Source: <a href='https://github.com/csoneson/iSEE/blob/master/R/utils_reactive.R'><code>R/utils_reactive.R</code></a></small>
+    <div class="hidden name"><code>retrieveOutput.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>iSEE</code> is a Bioconductor package that provides an interactive Shiny-based
- graphical user interface for exploring data stored in <code>SummarizedExperiment</code>
- objects, including row- and column-level metadata. 
- Particular attention is given to single-cell data in a <code>SingleCellExperiment</code>
- object with visualization of dimensionality reduction results, e.g., from principal
- components analysis (PCA) or t-distributed stochastic neighbour embedding (t-SNE)</p>
+    <p>Respond to or request a re-rendering of the <a href='Panel-class.html'>Panel</a> output via reactive variables.</p>
     </div>
 
+    <pre class="usage"><span class='fu'>.retrieveOutput</span>(<span class='no'>panel_name</span>, <span class='no'>se</span>, <span class='no'>pObjects</span>, <span class='no'>rObjects</span>)
 
+<span class='fu'>.requestUpdate</span>(<span class='no'>panel_name</span>, <span class='no'>rObjects</span>)
 
+<span class='fu'>.requestCleanUpdate</span>(<span class='no'>panel_name</span>, <span class='no'>pObjects</span>, <span class='no'>rObjects</span>)
+
+<span class='fu'>.requestActiveSelectionUpdate</span>(<span class='no'>panel_name</span>, <span class='no'>rObjects</span>, <span class='kw'>update_output</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>panel_name</th>
+      <td><p>String containing the panel name.</p></td>
+    </tr>
+    <tr>
+      <th>se</th>
+      <td><p>A SummarizedExperiment object containing the current dataset.</p></td>
+    </tr>
+    <tr>
+      <th>pObjects</th>
+      <td><p>An environment containing global parameters generated in the <code><a href='iSEE.html'>iSEE</a></code> app.</p></td>
+    </tr>
+    <tr>
+      <th>rObjects</th>
+      <td><p>A reactive list of values generated in the <code><a href='iSEE.html'>iSEE</a></code> app.</p></td>
+    </tr>
+    <tr>
+      <th>update_output</th>
+      <td><p>A logical scalar indicating whether to call <code>.requestUpdate</code> as well.</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p><code>.retrieveOutput</code> will return the output of running <code><a href='output-generics.html'>.generateOutput</a></code> for the current panel.</p>
+<p><code>.requestUpdate</code> will modify <code>rObjects</code> to request a re-rendering of the specified panel.
+<code>.requestCleanUpdate</code> will also remove all active/saved selections in the chosen panel.</p>
+<p><code>.requestActiveSelectionUpdate</code> will modify <code>rObjects</code> to indicate that the active multiple selection for <code>panel_name</code> has changed.
+If <code>update_output=TRUE</code>, it will also call request a re-rendering of the panel.</p>
+<p>All <code>.request*</code> functions will invisibly return <code>NULL</code>.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p><code>.retrieveOutput</code> should be used in the expression for rendering output, e.g., in <code><a href='output-generics.html'>.renderOutput</a></code>.
+This takes care of a number of house-keeping tasks required to satisfy <code><a href='output-generics.html'>.renderOutput</a></code>'s requirements
+with respect to updating various fields in <code>pObjects</code>.
+It also improves efficiency by retrieving cached outputs that were used elsewhere in the app.</p>
+<p><code>.requestUpdate</code> should be used in various observers to request a re-rendering of the panel,
+usually in response to user-driven parameter changes in <code><a href='observer-generics.html'>.createObservers</a></code>.</p>
+<p><code>.requestCleanUpdate</code> is used for changes to protected parameters that invalidate existing multiple selections,
+e.g., if the coordinates change in a <a href='DotPlot-class.html'>DotPlot</a>, existing brushes and lassos are usually not applicable.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='createProtectedParameterObservers.html'>.createProtectedParameterObservers</a></code>, for examples where the update-requesting functions are used.</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
+      <li><a href="#see-also">See also</a></li>
     </ul>
 
     <h2>Author</h2>
-    <p>Aaron Lun <a href='mailto:infinite.monkeys.with.keyboards@gmail.com'>infinite.monkeys.with.keyboards@gmail.com</a></p>
-<p>Charlotte Soneson <a href='mailto:charlotte.soneson@uzh.ch'>charlotte.soneson@uzh.ch</a></p>
-<p>Federico Marini <a href='mailto:marinif@uni-mainz.de'>marinif@uni-mainz.de</a></p>
-<p>Kevin Rue-Albrecht <a href='mailto:kevin.rue-albrecht@kennedy.ox.ac.uk'>kevin.rue-albrecht@kennedy.ox.ac.uk</a></p>
+    <p>Aaron Lun</p>
   </div>
 </div>
 

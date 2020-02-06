@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer — iSEE-pkg • iSEE</title>
+<title>Generic for the panel observers — observer-generics • iSEE</title>
 
 
 <!-- jquery -->
@@ -35,13 +35,8 @@
 
 
 
-<meta property="og:title" content="iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer — iSEE-pkg" />
-<meta property="og:description" content="iSEE is a Bioconductor package that provides an interactive Shiny-based
- graphical user interface for exploring data stored in SummarizedExperiment
- objects, including row- and column-level metadata. 
- Particular attention is given to single-cell data in a SingleCellExperiment
- object with visualization of dimensionality reduction results, e.g., from principal
- components analysis (PCA) or t-distributed stochastic neighbour embedding (t-SNE)" />
+<meta property="og:title" content="Generic for the panel observers — observer-generics" />
+<meta property="og:description" content="An overview of the generic for defining the panel observers, along with recommendations on its implementation." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -136,34 +131,73 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer</h1>
-    <small class="dont-index">Source: <a href='https://github.com/csoneson/iSEE/blob/master/R/iSEE-pkg.R'><code>R/iSEE-pkg.R</code></a></small>
-    <div class="hidden name"><code>iSEE-pkg.Rd</code></div>
+    <h1>Generic for the panel observers</h1>
+    <small class="dont-index">Source: <a href='https://github.com/csoneson/iSEE/blob/master/R/AllGenerics.R'><code>R/AllGenerics.R</code></a></small>
+    <div class="hidden name"><code>observer-generics.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>iSEE</code> is a Bioconductor package that provides an interactive Shiny-based
- graphical user interface for exploring data stored in <code>SummarizedExperiment</code>
- objects, including row- and column-level metadata. 
- Particular attention is given to single-cell data in a <code>SingleCellExperiment</code>
- object with visualization of dimensionality reduction results, e.g., from principal
- components analysis (PCA) or t-distributed stochastic neighbour embedding (t-SNE)</p>
+    <p>An overview of the generic for defining the panel observers, along with recommendations on its implementation.</p>
     </div>
 
 
 
+    <h2 class="hasAnchor" id="creating-parameter-observers"><a class="anchor" href="#creating-parameter-observers"></a>Creating parameter observers</h2>
+
+    
+
+<p>In <code>.createObservers(x, se, input, session, pObjects, rObjects)</code>, the required arguments are:</p><ul>
+<li><p><code>x</code>, an instance of a <a href='Panel-class.html'>Panel</a> class.</p></li>
+<li><p><code>se</code>, a SummarizedExperiment object containing the current dataset.
+This can be assumed to have been produced by running <code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code>.</p></li>
+<li><p><code>input</code>, the Shiny input object from the server function.</p></li>
+<li><p><code>session</code>, the Shiny session object from the server function.</p></li>
+<li><p><code>pObjects</code>, an environment containing global parameters generated in the <code><a href='iSEE.html'>iSEE</a></code> app.</p></li>
+<li><p><code>rObjects</code>, a reactive list of values generated in the <code><a href='iSEE.html'>iSEE</a></code> app.</p></li>
+</ul>
+
+<p>Methods for this generic are expected to set up all observers required to respond to changes in the interface elements set up by <code><a href='interface-generics.html'>.defineInterface</a></code>.
+Recall that each interface element has an ID of the form of <code>PANEL_SLOT</code>, where <code>PANEL</code> is the panel name and <code>SLOT</code> is the name of the slot modified by the interface element; so observers should respond to those names in <code>input</code>.
+The return value of this generic is not used; only the side-effect of observer set-up is relevant.</p>
+<p>It is the developer's responsibility to call <code>callNextMethod</code> to set up the observers required by the parent class.
+This is best done by calling <code>callNextMethod</code> at the top of the method before defining up additional observers.
+Each parent class should implement observers for its slots, so it is usually only necessary to implement observers for any newly added slots in a particular class.</p>
+    <h2 class="hasAnchor" id="modifying-the-memory"><a class="anchor" href="#modifying-the-memory"></a>Modifying the memory</h2>
+
+    
+
+<p>Consider an observer for an interface element that modifies a slot of <code>x</code>.
+The code within this observer is expected to modify the &#8220;memory&#8221; of the app state in <code>pObjects</code>, via:</p><pre>
+new_value &lt;- input[[paste0(PANEL, "_", SLOT)]]
+pObjects$memory[[PANEL]][[SLOT]] &lt;- new_value
+</pre>
+
+<p>This enables <span class="pkg">iSEE</span> to keep a record of the current state of the application.
+In fact, any changes must go through <code>pObjects$memory</code> before they change the output in <code><a href='output-generics.html'>.renderOutput</a></code>;
+there is no direct interaction between <code>input</code> and <code>output</code> in this framework.</p>
+    <h2 class="hasAnchor" id="triggering-re-rendering"><a class="anchor" href="#triggering-re-rendering"></a>Triggering re-rendering</h2>
+
+    
+
+<p>To trigger re-rendering of an output, observers should call <code><a href='retrieveOutput.html'>.requestUpdate</a>(PANEL, rObjects)</code>,
+where <code>PANEL</code> is the name of the current panel.
+This will request a re-rendering of the output with no additional side effects and is most useful for responding to aesthetic parameters.</p>
+<p>In some cases, changes to some parameters may invalidate existing multiple selections,
+e.g., brushes and lassos are no longer valid if the variable on the axes are altered.
+Observers responding to such changes should instead call <code><a href='retrieveOutput.html'>.requestCleanUpdate</a></code>,
+which will destroy all existing selections in order to avoid misleading conclusions.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#creating-parameter-observers">Creating parameter observers</a></li>
+      <li><a href="#modifying-the-memory">Modifying the memory</a></li>
+      <li><a href="#triggering-re-rendering">Triggering re-rendering</a></li>
     </ul>
 
     <h2>Author</h2>
-    <p>Aaron Lun <a href='mailto:infinite.monkeys.with.keyboards@gmail.com'>infinite.monkeys.with.keyboards@gmail.com</a></p>
-<p>Charlotte Soneson <a href='mailto:charlotte.soneson@uzh.ch'>charlotte.soneson@uzh.ch</a></p>
-<p>Federico Marini <a href='mailto:marinif@uni-mainz.de'>marinif@uni-mainz.de</a></p>
-<p>Kevin Rue-Albrecht <a href='mailto:kevin.rue-albrecht@kennedy.ox.ac.uk'>kevin.rue-albrecht@kennedy.ox.ac.uk</a></p>
+    <p>Aaron Lun</p>
   </div>
 </div>
 

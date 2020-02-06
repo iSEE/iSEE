@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer — iSEE • iSEE</title>
+<title>iSEE: interactive SummarizedExperiment Explorer — iSEE • iSEE</title>
 
 
 <!-- jquery -->
@@ -35,9 +35,9 @@
 
 
 
-<meta property="og:title" content="iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer — iSEE" />
+<meta property="og:title" content="iSEE: interactive SummarizedExperiment Explorer — iSEE" />
 <meta property="og:description" content="Interactive and reproducible visualization of data contained in a
-SummarizedExperiment/SingleCellExperiment, using a Shiny interface." />
+SummarizedExperiment object, using a Shiny interface." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -70,7 +70,7 @@ SummarizedExperiment/SingleCellExperiment, using a Shiny interface." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.0</span>
       </span>
     </div>
 
@@ -132,27 +132,54 @@ SummarizedExperiment/SingleCellExperiment, using a Shiny interface." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer</h1>
+    <h1>iSEE: interactive SummarizedExperiment Explorer</h1>
     <small class="dont-index">Source: <a href='https://github.com/csoneson/iSEE/blob/master/R/iSEE-main.R'><code>R/iSEE-main.R</code></a></small>
     <div class="hidden name"><code>iSEE.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>Interactive and reproducible visualization of data contained in a
-SummarizedExperiment/SingleCellExperiment, using a Shiny interface.</p>
+SummarizedExperiment object, using a Shiny interface.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>iSEE</span>(<span class='no'>se</span>, <span class='kw'>redDimArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>colDataArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>featAssayArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>rowStatArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>rowDataArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sampAssayArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>colStatArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>customDataArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>customStatArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>heatMapArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>redDimMax</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>colDataMax</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>featAssayMax</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>rowStatMax</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>rowDataMax</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>sampAssayMax</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>colStatMax</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>customDataMax</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>customStatMax</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>heatMapMax</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>initialPanels</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>annotFun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>customDataFun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>customStatFun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>customSendAll</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>colormap</span> <span class='kw'>=</span> <span class='fu'><a href='ExperimentColorMap-class.html'>ExperimentColorMap</a></span>(),
-  <span class='kw'>tour</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>appTitle</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>runLocal</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>voice</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>bugs</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>iSEE</span>(
+  <span class='no'>se</span>,
+  <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>extra</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>redDimArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>colDataArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>featAssayArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>rowStatArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>rowDataArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>sampAssayArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>colStatArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>customDataArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>customStatArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>heatMapArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>redDimMax</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>colDataMax</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>featAssayMax</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>rowStatMax</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>rowDataMax</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>sampAssayMax</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>colStatMax</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>customDataMax</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>customStatMax</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>heatMapMax</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>initialPanels</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>annotFun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>customDataFun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>customStatFun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>customSendAll</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>colormap</span> <span class='kw'>=</span> <span class='fu'><a href='ExperimentColorMap-class.html'>ExperimentColorMap</a></span>(),
+  <span class='kw'>landingPage</span> <span class='kw'>=</span> <span class='fu'><a href='createLandingPage.html'>createLandingPage</a></span>(),
+  <span class='kw'>tour</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>appTitle</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>runLocal</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>voice</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>bugs</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -160,115 +187,128 @@ SummarizedExperiment/SingleCellExperiment, using a Shiny interface.</p>
     <tr>
       <th>se</th>
       <td><p>An object that is coercible to SingleCellExperiment.
-If missing, an app is launched with a file upload control allowing users to upload an RDS file that contains such as object.
-See Details for information to set the maximal size limit for file uploads.</p></td>
+If missing, an app is launched with a landing page generated by the <code>landingPage</code> argument.</p></td>
+    </tr>
+    <tr>
+      <th>initial</th>
+      <td><p>A list of <a href='Panel-class.html'>Panel</a> objects specifying the initial state of the app.
+The order of panels determines the sequence in which they are laid out in the interface.</p></td>
+    </tr>
+    <tr>
+      <th>extra</th>
+      <td><p>A list of additional <a href='Panel-class.html'>Panel</a> objects that might be added after the app has started.
+Only the first instance of each class will be used.</p></td>
     </tr>
     <tr>
       <th>redDimArgs</th>
-      <td><p>A DataFrame similar to that produced by <code><a href='redDimPlotDefaults.html'>redDimPlotDefaults</a></code>, specifying initial parameters for the reduced dimension plots.</p></td>
+      <td><p>Deprecated, use <code>initial</code> instead.</p></td>
     </tr>
     <tr>
       <th>colDataArgs</th>
-      <td><p>A DataFrame similar to that produced by <code><a href='colDataPlotDefaults.html'>colDataPlotDefaults</a></code>, specifying initial parameters for the column data plots.</p></td>
+      <td><p>Deprecated, use <code>initial</code> instead.</p></td>
     </tr>
     <tr>
       <th>featAssayArgs</th>
-      <td><p>A DataFrame similar to that produced by <code><a href='featAssayPlotDefaults.html'>featAssayPlotDefaults</a></code>, specifying initial parameters for the feature assay plots.</p></td>
+      <td><p>Deprecated, use codeinitial instead.</p></td>
     </tr>
     <tr>
       <th>rowStatArgs</th>
-      <td><p>A DataFrame similar to that produced by <code><a href='rowStatTableDefaults.html'>rowStatTableDefaults</a></code>, specifying initial parameters for the row statistics tables.</p></td>
+      <td><p>Deprecated, use codeinitial instead.</p></td>
     </tr>
     <tr>
       <th>rowDataArgs</th>
-      <td><p>A DataFrame similar to that produced by <code><a href='rowDataPlotDefaults.html'>rowDataPlotDefaults</a></code>, specifying initial parameters for the row data plots.</p></td>
+      <td><p>Deprecated, use codeinitial instead.</p></td>
     </tr>
     <tr>
       <th>sampAssayArgs</th>
-      <td><p>A DataFrame similar to that produced by <code><a href='sampAssayPlotDefaults.html'>sampAssayPlotDefaults</a></code>, specifying initial parameters for the sample assay plots.</p></td>
+      <td><p>Deprecated, use codeinitial instead.</p></td>
     </tr>
     <tr>
       <th>colStatArgs</th>
-      <td><p>A DataFrame similar to that produced by <code><a href='colStatTableDefaults.html'>colStatTableDefaults</a></code>, specifying initial parameters for the column statistics tables.</p></td>
+      <td><p>Deprecated, use codeinitial instead.</p></td>
     </tr>
     <tr>
       <th>customDataArgs</th>
-      <td><p>A DataFrame similar to that produced by <code><a href='customDataPlotDefaults.html'>customDataPlotDefaults</a></code>, specifying initial parameters for the custom data plots.</p></td>
+      <td><p>Deprecated, use codeinitial instead.</p></td>
     </tr>
     <tr>
       <th>customStatArgs</th>
-      <td><p>A DataFrame similar to that produced by <code><a href='customStatTableDefaults.html'>customStatTableDefaults</a></code>, specifying initial parameters for the custom statistics tables.</p></td>
+      <td><p>Deprecated, use codeinitial instead.</p></td>
     </tr>
     <tr>
       <th>heatMapArgs</th>
-      <td><p>A DataFrame similar to that produced by <code><a href='heatMapPlotDefaults.html'>heatMapPlotDefaults</a></code>, specifying initial parameters for the heatmaps.</p></td>
+      <td><p>Deprecated, use codeinitial instead.</p></td>
     </tr>
     <tr>
       <th>redDimMax</th>
-      <td><p>An integer scalar specifying the maximum number of reduced dimension plots in the interface.</p></td>
+      <td><p>Deprecated and ignored.</p></td>
     </tr>
     <tr>
       <th>colDataMax</th>
-      <td><p>An integer scalar specifying the maximum number of column data plots in the interface.</p></td>
+      <td><p>Deprecated and ignored.</p></td>
     </tr>
     <tr>
       <th>featAssayMax</th>
-      <td><p>An integer scalar specifying the maximum number of feature assay plots in the interface.</p></td>
+      <td><p>Deprecated and ignored.</p></td>
     </tr>
     <tr>
       <th>rowStatMax</th>
-      <td><p>An integer scalar specifying the maximum number of row statistics tables in the interface.</p></td>
+      <td><p>Deprecated and ignored.</p></td>
     </tr>
     <tr>
       <th>rowDataMax</th>
-      <td><p>An integer scalar specifying the maximum number of row data plots in the interface.</p></td>
+      <td><p>Deprecated and ignored.</p></td>
     </tr>
     <tr>
       <th>sampAssayMax</th>
-      <td><p>An integer scalar specifying the maximum number of sample assay plots in the interface.</p></td>
+      <td><p>Deprecated and ignored.</p></td>
     </tr>
     <tr>
       <th>colStatMax</th>
-      <td><p>An integer scalar specifying the maximum number of column statistics tables in the interface.</p></td>
+      <td><p>Deprecated and ignored.</p></td>
     </tr>
     <tr>
       <th>customDataMax</th>
-      <td><p>An integer scalar specifying the maximum number of custom data plots in the interface.</p></td>
+      <td><p>Deprecated and ignored.</p></td>
     </tr>
     <tr>
       <th>customStatMax</th>
-      <td><p>An integer scalar specifying the maximum number of custom statistics tables in the interface.</p></td>
+      <td><p>Deprecated and ignored.</p></td>
     </tr>
     <tr>
       <th>heatMapMax</th>
-      <td><p>An integer scalar specifying the maximum number of heatmaps in the interface.</p></td>
+      <td><p>Deprecated and ignored.</p></td>
     </tr>
     <tr>
       <th>initialPanels</th>
-      <td><p>A DataFrame specifying which panels should be created at initialization.
-This should contain a <code>Name</code> character field and may have optional <code>Width</code> and <code>Height</code> integer fields, see Details.</p></td>
+      <td><p>Deprecated, use <code>initial</code> instead.</p></td>
     </tr>
     <tr>
       <th>annotFun</th>
-      <td><p>A function, similar to those returned by <code><a href='annotateEntrez.html'>annotateEntrez</a></code> or <code><a href='annotateEnsembl.html'>annotateEnsembl</a></code>.
-The function should accept two parameters, <code>se</code> and <code>row_index</code>, and return a HTML element with annotation for the selected row.</p></td>
+      <td><p>Deprecated and ignored.
+Read the book for the new, more extensible approach for creating custom panels.</p></td>
     </tr>
     <tr>
       <th>customDataFun</th>
-      <td><p>A named list of functions for reporting coordinates to use in a custom data plot.</p></td>
+      <td><p>Deprecated and ignored.
+Read the book for the new, more extensible approach for creating custom panels.</p></td>
     </tr>
     <tr>
       <th>customStatFun</th>
-      <td><p>A named list of functions for reporting coordinates to use in a custom statistics table.</p></td>
+      <td><p>Deprecated and ignored.
+Read the book for the new, more extensible approach for creating custom panels.</p></td>
     </tr>
     <tr>
       <th>customSendAll</th>
-      <td><p>A logical scalar indicating whether all (active and saved) selections should be passed from transmitting panels to custom plots or tables.
-The default (<code>FALSE</code>) only passes the row names of the points in the active selection.</p></td>
+      <td><p>Deprecated and ignored.</p></td>
     </tr>
     <tr>
       <th>colormap</th>
       <td><p>An <a href='ExperimentColorMap-class.html'>ExperimentColorMap</a> object that defines custom colormaps to apply to individual <code>assays</code>, <code>colData</code> and <code>rowData</code> covariates.</p></td>
+    </tr>
+    <tr>
+      <th>landingPage</th>
+      <td><p>A function that renders a landing page when <code>se</code> is started without any specified <code>se</code>.</p></td>
     </tr>
     <tr>
       <th>tour</th>
@@ -290,44 +330,55 @@ If not provided, the app displays the version info of <code>iSEE</code>.</p></td
     <tr>
       <th>bugs</th>
       <td><p>Set to <code>TRUE</code> to enable the bugs Easter egg.
-Alternatively, a named numeric vector control the respective number of each bug type (e.g., <code><a href='https://rdrr.io/r/base/c.html'>c(bugs=3L, spiders=1L)</a></code>).
-Credits to https://github.com/Auz/Bug for the JavaScript code.</p></td>
+Alternatively, a named numeric vector control the respective number of each bug type (e.g., <code><a href='https://rdrr.io/r/base/c.html'>c(bugs=3L, spiders=1L)</a></code>).</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Further arguments to pass to <code>shinyApp</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A Shiny app object is returned, for interactive data exploration of the SummarizedExperiment or SingleCellExperiment object.</p>
+    <p>A Shiny app object is returned for interactive data exploration of <code>se</code>,
+either by simply printing the object or by explicitly running it with <code>runApp</code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Users can pass default parameters via DataFrame objects in <code>redDimArgs</code> and <code>featAssayArgs</code>.
-Each object can contain some or all of the expected fields (see <code><a href='redDimPlotDefaults.html'>redDimPlotDefaults</a></code>).
-Any missing fields will be filled in with the defaults.</p>
-<p>The number of maximum plots for each type of plot is set to the larger of <code>*Max</code> and <code>nrow(*Args)</code>.
-Users can specify any number of maximum plots, though increasing the number will increase the time required to render the interface.</p>
-<p>The <code>initialPanels</code> argument specifies the panels to be created upon initializing the interface.
-This should be a DataFrame containing a <code>Name</code> field specifying the identity of the panel, e.g., <code>"Reduced dimension plot 1"</code>, <code>"Row statistics table 2"</code>.
-Please refer to <code><a href='availablePanelTypes.html'>availablePanelTypes</a></code> for the full list of panels available.
-The trailing number should not be greater than the number of maximum plots of that type.
-Users can also define the <code>Width</code> field, specifying the width of each panel from 2 to 12 (values will be coerced inside this range);
-and the <code>Height</code> field, specifying the height of each panel from 400 to 1000 pixels.
-By default, one panel of each type (where possible) will be generated, with height of 500 and width of 4.</p>
+    <p>Configuring the initial state of the app is as easy as passing a list of <a href='Panel-class.html'>Panel</a> objects to <code>initial</code>.
+Each element represents one panel and is typicall constructed with a command like <code><a href='RedDimPlot-class.html'>RedDimPlot</a>()</code>.
+Panels are filled from left to right in a row-wise manner depending on the available width.
+Each panel can be easily customized by modifying the parameters in each object.</p>
+<p>The <code>extra</code> argument should specify <a href='Panel-class.html'>Panel</a> classes that are not present in <code>initial</code>
+but can be added interactively by the user after the app has started.
+The first instance of each new class in <code>extra</code> will be used as a template when the user adds a new panel of that class.
+Note that <code>extra</code> will be combined with the classes already present in <code>initial</code>,
+so any redundant specification of those initial classes will be ignored.</p>
 <p>The <code>tour</code> argument needs to be provided in a form compatible with the format expected by the <code>rintrojs</code> package.
 There should be two columns, <code>element</code> and <code>intro</code>, with the former describing the element to highlight and the latter providing some descriptive text.
 See <a href='https://github.com/carlganz/rintrojs#usage'>https://github.com/carlganz/rintrojs#usage</a> for more information.</p>
 <p>By default, categorical data types such as factor and character are limited to 24 levels, beyond which they are coerced to numeric variables for faster plotting.
 This limit may be set to a different value as a global option, e.g. <code><a href='https://rdrr.io/r/base/options.html'>options(iSEE.maxlevels=30)</a></code>.</p>
-<p>By default, the maximum request size for file uploads defaults to 5MB (https://shiny.rstudio.com/reference/shiny/0.14/shiny-options.html).
-To raise the limit (e.g., 50MB), run <code><a href='https://rdrr.io/r/base/options.html'>options(shiny.maxRequestSize=50*1024^2)</a></code>.</p>
+<p>The default landing page allows users to upload their own RDS files to initialize the app.
+By default, the maximum request size for file uploads defaults to 5MB
+(<a href='https://shiny.rstudio.com/reference/shiny/0.14/shiny-options.html'>https://shiny.rstudio.com/reference/shiny/0.14/shiny-options.html</a>).
+To raise the limit (e.g., 50MB), run <code><a href='https://rdrr.io/r/base/options.html'>options(shiny.maxRequestSize=50*1024^2)</a></code>.
+See <code><a href='createLandingPage.html'>createLandingPage</a></code> for details on creating a custom landing page.</p>
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Rue-Albrecht K, Marini F, Soneson C, Lun ATL.
+iSEE: Interactive SummarizedExperiment Explorer
+<em>F1000Research</em> 7.</p>
+<p>Javascript code for <code>bugs</code> was based on <a href='https://github.com/Auz/Bug'>https://github.com/Auz/Bug</a>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scRNAseq</span>)
 
 <span class='co'># Example data ----</span>
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedAllenData</a></span>(<span class='kw'>assays</span><span class='kw'>=</span><span class='st'>"tophat_counts"</span>)</div><div class='output co'>#&gt; <span class='message'>snapshotDate(): 2019-12-27</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; [1] "SingleCellExperiment"
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedAllenData</a></span>(<span class='kw'>assays</span><span class='kw'>=</span><span class='st'>"tophat_counts"</span>)</div><div class='output co'>#&gt; <span class='message'>snapshotDate(): 2020-01-08</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; [1] "SingleCellExperiment"
 #&gt; attr(,"package")
 #&gt; [1] "SingleCellExperiment"</div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scater</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: ggplot2</span></div><div class='input'><span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/logNormCounts.html'>logNormCounts</a></span>(<span class='no'>sce</span>, <span class='kw'>exprs_values</span><span class='kw'>=</span><span class='st'>"tophat_counts"</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scater</span>)
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/logNormCounts.html'>logNormCounts</a></span>(<span class='no'>sce</span>, <span class='kw'>exprs_values</span><span class='kw'>=</span><span class='st'>"tophat_counts"</span>)
 
 <span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/runPCA.html'>runPCA</a></span>(<span class='no'>sce</span>, <span class='kw'>ncomponents</span><span class='kw'>=</span><span class='fl'>4</span>)
 <span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/runTSNE.html'>runTSNE</a></span>(<span class='no'>sce</span>)
@@ -357,6 +408,7 @@ To raise the limit (e.g., 50MB), run <code><a href='https://rdrr.io/r/base/optio
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
       <li><a href="#details">Details</a></li>
+      <li><a href="#references">References</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>
 

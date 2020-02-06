@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Citation and Authors • iSEE</title>
+<title>Process multiple selections — .processMultiSelections • iSEE</title>
 
 
 <!-- jquery -->
@@ -29,13 +29,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
-<link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script>
+<link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script>
 
 
 
 
-<meta property="og:title" content="Citation and Authors" />
+<meta property="og:title" content="Process multiple selections — .processMultiSelections" />
+<meta property="og:description" content="Generate and execute commands to process multiple selections,
+creating variables in the evaluation environment with the identity of the selected rows or columns." />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -54,7 +57,7 @@
   </head>
 
   <body>
-    <div class="container template-citation-authors">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -66,7 +69,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">iSEE</a>
+        <a class="navbar-link" href="../index.html">iSEE</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.0</span>
       </span>
     </div>
@@ -74,13 +77,13 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">
+  <a href="../index.html">
     <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -90,21 +93,21 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="articles/basic.html">An introduction to the `r Biocpkg("iSEE")` interface 
+      <a href="../articles/basic.html">An introduction to the `r Biocpkg("iSEE")` interface 
 </a>
     </li>
     <li>
-      <a href="articles/configure.html">Configuring `r Biocpkg("iSEE")` apps
+      <a href="../articles/configure.html">Configuring `r Biocpkg("iSEE")` apps
 </a>
     </li>
     <li>
-      <a href="articles/custom.html">Deploying custom panels in the `iSEE` interface</a>
+      <a href="../articles/custom.html">Deploying custom panels in the `iSEE` interface</a>
     </li>
     <li>
-      <a href="articles/ecm.html">Describing the `ExperimentColorMap` class</a>
+      <a href="../articles/ecm.html">Describing the `ExperimentColorMap` class</a>
     </li>
     <li>
-      <a href="articles/voice.html">Controlling the `iSEE` interface using speech recognition</a>
+      <a href="../articles/voice.html">Controlling the `iSEE` interface using speech recognition</a>
     </li>
   </ul>
 </li>
@@ -127,56 +130,71 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Citation</h1>
-      <small class="dont-index">Source: <a href='https://github.com/csoneson/iSEE/blob/master/inst/CITATION'><code>inst/CITATION</code></a></small>
+    <h1>Process multiple selections</h1>
+    <small class="dont-index">Source: <a href='https://github.com/csoneson/iSEE/blob/master/R/utils_select.R'><code>R/utils_select.R</code></a></small>
+    <div class="hidden name"><code>processMultiSelections.Rd</code></div>
     </div>
 
-    <p>Rue-Albrecht K, Marini F, Soneson C, Lun ATL (2018).
-&ldquo;iSEE: Interactive SummarizedExperiment Explorer.&rdquo;
-<em>F1000Research</em>, <b>7</b>, 741.
-doi: <a href="https://doi.org/10.12688/f1000research.14966.1">10.12688/f1000research.14966.1</a>. 
-</p>
-    <pre>@Article{,
-  title = {iSEE: Interactive SummarizedExperiment Explorer},
-  author = {Kevin Rue-Albrecht and Federico Marini and Charlotte Soneson and Aaron T. L. Lun},
-  publisher = {F1000 Research, Ltd.},
-  journal = {F1000Research},
-  year = {2018},
-  month = {Jun},
-  volume = {7},
-  pages = {741},
-  doi = {10.12688/f1000research.14966.1},
-}</pre>
-
-    <div class="page-header">
-      <h1>Authors</h1>
+    <div class="ref-description">
+    <p>Generate and execute commands to process multiple selections,
+creating variables in the evaluation environment with the identity of the selected rows or columns.</p>
     </div>
 
-    <ul class="list-unstyled">
-      <li>
-        <p><strong>Kevin Rue-Albrecht</strong>. Author. <a href='https://orcid.org/0000-0003-3899-3872' target='orcid.widget'><img src='https://members.orcid.org/sites/default/files/vector_iD_icon.svg' class='orcid' alt='ORCID'></a>
-        </p>
-      </li>
-      <li>
-        <p><strong>Federico Marini</strong>. Author. <a href='https://orcid.org/0000-0003-3252-7758' target='orcid.widget'><img src='https://members.orcid.org/sites/default/files/vector_iD_icon.svg' class='orcid' alt='ORCID'></a>
-        </p>
-      </li>
-      <li>
-        <p><strong>Charlotte Soneson</strong>. Author, maintainer. <a href='https://orcid.org/0000-0003-3833-2169' target='orcid.widget'><img src='https://members.orcid.org/sites/default/files/vector_iD_icon.svg' class='orcid' alt='ORCID'></a>
-        </p>
-      </li>
-      <li>
-        <p><strong>Aaron Lun</strong>. Author. <a href='https://orcid.org/0000-0002-3564-4813' target='orcid.widget'><img src='https://members.orcid.org/sites/default/files/vector_iD_icon.svg' class='orcid' alt='ORCID'></a>
-        </p>
-      </li>
-    </ul>
+    <pre class="usage"><span class='fu'>.processMultiSelections</span>(<span class='no'>x</span>, <span class='no'>all_memory</span>, <span class='no'>all_contents</span>, <span class='no'>envir</span>)</pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>An instance of a <a href='Panel-class.html'>Panel</a> class.</p></td>
+    </tr>
+    <tr>
+      <th>all_memory</th>
+      <td><p>A named list of <a href='Panel-class.html'>Panel</a> instances containing parameters for the current app state.</p></td>
+    </tr>
+    <tr>
+      <th>all_contents</th>
+      <td><p>A named list of arbitrary contents with one entry per panel.</p></td>
+    </tr>
+    <tr>
+      <th>envir</th>
+      <td><p>The evaluation environment.
+This is assumed to already contain <code>se</code>, the SummarizedExperiment object for the current dataset.</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p><code>envir</code> is populated with one, none or both of <code>col_selected</code> and/or <code>row_selected</code>,
+depending on whether <code>x</code> is receiving a multiple selection on the rows and/or columns.
+The return value is the  character vector of commands required to construct those variables.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This function is primarily intended for use by developers of new panels.
+It should be called inside <code><a href='output-generics.html'>.generateOutput</a></code> to easily process row/column multiple selections.
+Developers can check whether <code>row_selected</code> or <code>col_selected</code> exists in <code>envir</code>
+to determine whether any row or column selection was performed (and adjust the behavior of <code>.generateOutput</code> accordingly).</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='output-generics.html'>.generateOutput</a></code> and its related generic <code><a href='output-generics.html'>.renderOutput</a></code>, where this function should generally be used.</p></div>
 
   </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
+      <li><a href="#see-also">See also</a></li>
+    </ul>
 
+    <h2>Author</h2>
+    <p>Aaron Lun</p>
+  </div>
 </div>
-
 
 
       <footer>

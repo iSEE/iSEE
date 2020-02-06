@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer — iSEE-pkg • iSEE</title>
+<title>Generics for setting up parameters — setup-generics • iSEE</title>
 
 
 <!-- jquery -->
@@ -35,13 +35,8 @@
 
 
 
-<meta property="og:title" content="iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer — iSEE-pkg" />
-<meta property="og:description" content="iSEE is a Bioconductor package that provides an interactive Shiny-based
- graphical user interface for exploring data stored in SummarizedExperiment
- objects, including row- and column-level metadata. 
- Particular attention is given to single-cell data in a SingleCellExperiment
- object with visualization of dimensionality reduction results, e.g., from principal
- components analysis (PCA) or t-distributed stochastic neighbour embedding (t-SNE)" />
+<meta property="og:title" content="Generics for setting up parameters — setup-generics" />
+<meta property="og:description" content="These generics are related to the iniial setup of the iSEE application." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -136,34 +131,63 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer</h1>
-    <small class="dont-index">Source: <a href='https://github.com/csoneson/iSEE/blob/master/R/iSEE-pkg.R'><code>R/iSEE-pkg.R</code></a></small>
-    <div class="hidden name"><code>iSEE-pkg.Rd</code></div>
+    <h1>Generics for setting up parameters</h1>
+    <small class="dont-index">Source: <a href='https://github.com/csoneson/iSEE/blob/master/R/AllGenerics.R'><code>R/AllGenerics.R</code></a></small>
+    <div class="hidden name"><code>setup-generics.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>iSEE</code> is a Bioconductor package that provides an interactive Shiny-based
- graphical user interface for exploring data stored in <code>SummarizedExperiment</code>
- objects, including row- and column-level metadata. 
- Particular attention is given to single-cell data in a <code>SingleCellExperiment</code>
- object with visualization of dimensionality reduction results, e.g., from principal
- components analysis (PCA) or t-distributed stochastic neighbour embedding (t-SNE)</p>
+    <p>These generics are related to the iniial setup of the <span class="pkg">iSEE</span> application.</p>
     </div>
 
 
 
+    <h2 class="hasAnchor" id="caching-common-information"><a class="anchor" href="#caching-common-information"></a>Caching common information</h2>
+
+    
+
+<p>In <code>.cacheCommonInfo(x, se)</code>, the following arguments are required:</p><ul>
+<li><p><code>x</code>, an instance of a <a href='Panel-class.html'>Panel</a> class.</p></li>
+<li><p><code>se</code>, the SummarizedExperiment object containing the current dataset.</p></li>
+</ul>
+
+<p>It is expected to return <code>se</code> with (optionally) extra fields added to <code>metadata(se)$iSEE</code>.
+Each field should be named according to the class name and contain some common information that is constant for all instances of the class of <code>x</code>.
+The goal is to avoid repeated recomputation of required values when creating user interface elements or observers.</p>
+<p>Methods for this generic should start by checking whether the metadata already contains the class name, and returning <code>se</code> without modification if this is the case.
+Otherwise, it should <code>callNextMethod</code> to fill in the cache values from the parent classes, before adding cached values under the class name for <code>x</code>.</p>
+<p>Remember, the cache is strictly for use in defining interface elements and in observers.
+Developers should not expect to be able to retrieve cached values when rendering the output for a panel,
+as the code tracker does not capture the code used to construct the cache.</p>
+    <h2 class="hasAnchor" id="refining-parameters"><a class="anchor" href="#refining-parameters"></a>Refining parameters</h2>
+
+    
+
+<p>In <code>.refineParameters(x, se)</code>, the following arguments are required:</p><ul>
+<li><p><code>x</code>, an instance of a <a href='Panel-class.html'>Panel</a> class.</p></li>
+<li><p><code>se</code>, the SummarizedExperiment object containing the current dataset.</p></li>
+</ul>
+
+<p>Methods for this generic should return a copy of <code>x</code>
+where slots with invalid values are replaced with appropriate entries from <code>se</code>.
+This is necessary because the constructor and validity methods for <code>x</code> does not know about <code>se</code>;
+thus, certain slots (e.g., for the row/column names) cannot be set to a reasonable default or checked at that point.</p>
+<p>We generally recommend specializing <code>initialize</code> to fill any yet-to-be-determined slots with <code>NA</code> defaults.
+<code>.refineParameters</code> can then be used to sweep across these slots and replace them with appropriate entries.
+Of course, any slots that are not <code>se</code>-dependent should be set at construction and checked by the validity method.</p>
+<p>It is also possible for this generic to return <code>NULL</code>, which is used as an indicator that <code>se</code> does not contain information to meaningfully show any instance of the class of <code>x</code> in the <span class="pkg">iSEE</span> app.
+For example, the method for <a href='RedDimPlot-class.html'>RedDimPlot</a> will return <code>NULL</code> if <code>se</code> is not a SingleCellExperiment containing some dimensionality reduction results.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#caching-common-information">Caching common information</a></li>
+      <li><a href="#refining-parameters">Refining parameters</a></li>
     </ul>
 
     <h2>Author</h2>
-    <p>Aaron Lun <a href='mailto:infinite.monkeys.with.keyboards@gmail.com'>infinite.monkeys.with.keyboards@gmail.com</a></p>
-<p>Charlotte Soneson <a href='mailto:charlotte.soneson@uzh.ch'>charlotte.soneson@uzh.ch</a></p>
-<p>Federico Marini <a href='mailto:marinif@uni-mainz.de'>marinif@uni-mainz.de</a></p>
-<p>Kevin Rue-Albrecht <a href='mailto:kevin.rue-albrecht@kennedy.ox.ac.uk'>kevin.rue-albrecht@kennedy.ox.ac.uk</a></p>
+    <p>Aaron Lun</p>
   </div>
 </div>
 

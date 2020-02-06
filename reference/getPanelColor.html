@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer — iSEE-pkg • iSEE</title>
+<title>Get panel colors — .panelColor • iSEE</title>
 
 
 <!-- jquery -->
@@ -35,13 +35,9 @@
 
 
 
-<meta property="og:title" content="iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer — iSEE-pkg" />
-<meta property="og:description" content="iSEE is a Bioconductor package that provides an interactive Shiny-based
- graphical user interface for exploring data stored in SummarizedExperiment
- objects, including row- and column-level metadata. 
- Particular attention is given to single-cell data in a SingleCellExperiment
- object with visualization of dimensionality reduction results, e.g., from principal
- components analysis (PCA) or t-distributed stochastic neighbour embedding (t-SNE)" />
+<meta property="og:title" content="Get panel colors — .panelColor" />
+<meta property="og:description" content="Functions to get/set panel colors at the user and developer level.
+This determines the color of the panel header as well as (for DotPlots) the color and fill of the brush." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -136,34 +132,64 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer</h1>
-    <small class="dont-index">Source: <a href='https://github.com/csoneson/iSEE/blob/master/R/iSEE-pkg.R'><code>R/iSEE-pkg.R</code></a></small>
-    <div class="hidden name"><code>iSEE-pkg.Rd</code></div>
+    <h1>Get panel colors</h1>
+    <small class="dont-index">Source: <a href='https://github.com/csoneson/iSEE/blob/master/R/AllGenerics.R'><code>R/AllGenerics.R</code></a>, <a href='https://github.com/csoneson/iSEE/blob/master/R/utils_colors.R'><code>R/utils_colors.R</code></a></small>
+    <div class="hidden name"><code>getPanelColor.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>iSEE</code> is a Bioconductor package that provides an interactive Shiny-based
- graphical user interface for exploring data stored in <code>SummarizedExperiment</code>
- objects, including row- and column-level metadata. 
- Particular attention is given to single-cell data in a <code>SingleCellExperiment</code>
- object with visualization of dimensionality reduction results, e.g., from principal
- components analysis (PCA) or t-distributed stochastic neighbour embedding (t-SNE)</p>
+    <p>Functions to get/set panel colors at the user and developer level.
+This determines the color of the panel header as well as (for <a href='DotPlot-class.html'>DotPlot</a>s) the color and fill of the brush.</p>
     </div>
 
+    <pre class="usage"><span class='fu'>.panelColor</span>(<span class='no'>x</span>)
 
+<span class='fu'>.getPanelColor</span>(<span class='no'>x</span>)</pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>An instance of a <a href='Panel-class.html'>Panel</a> class.</p></td>
+    </tr>
+    </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A string containing the color assigned to the class of <code>x</code>.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>For developers: <code>.panelColor</code> is a method that should be subclassed for each <a href='Panel-class.html'>Panel</a> subclass.
+and determines the default color for all instances of that class.</p>
+<p>For users: by default, <code>.getPanelColor</code> will return the default color of each panel as specified by the developer in <code>.panelColor</code>.
+However, users can override this by setting the <code>"iSEE_panel_colors"</code> global variable to a named character vector of colors (see Examples).
+This can be used to customize the color scheme for any given call to <code><a href='iSEE.html'>iSEE</a></code>.
+The names of the vector should be set to the name of class to be overridden; if a class is not named here, its default color is used.</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>rdp</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='RedDimPlot-class.html'>RedDimPlot</a></span>()
+
+<span class='co'># Default color, as specified by the developer:</span>
+<span class='fu'>.panelColor</span>(<span class='no'>rdp</span>)</div><div class='output co'>#&gt; [1] "#3565AA"</div><div class='input'>
+<span class='co'># Still the default color:</span>
+<span class='fu'>.getPanelColor</span>(<span class='no'>rdp</span>)</div><div class='output co'>#&gt; [1] "#3565AA"</div><div class='input'>
+<span class='co'># Overriding the default colors</span>
+<span class='fu'><a href='https://rdrr.io/r/base/options.html'>options</a></span>(<span class='kw'>iSEE_panel_colors</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>RedDimPlot</span><span class='kw'>=</span><span class='st'>"dodgerblue"</span>))
+<span class='fu'>.getPanelColor</span>(<span class='no'>rdp</span>)</div><div class='output co'>#&gt; [1] "dodgerblue"</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>
-    <p>Aaron Lun <a href='mailto:infinite.monkeys.with.keyboards@gmail.com'>infinite.monkeys.with.keyboards@gmail.com</a></p>
-<p>Charlotte Soneson <a href='mailto:charlotte.soneson@uzh.ch'>charlotte.soneson@uzh.ch</a></p>
-<p>Federico Marini <a href='mailto:marinif@uni-mainz.de'>marinif@uni-mainz.de</a></p>
-<p>Kevin Rue-Albrecht <a href='mailto:kevin.rue-albrecht@kennedy.ox.ac.uk'>kevin.rue-albrecht@kennedy.ox.ac.uk</a></p>
+    <p>Aaron Lun</p>
   </div>
 </div>
 

@@ -41,7 +41,7 @@
 #' This will also call the equivalent \linkS4class{Panel} method to render the panel information testboxes.
 #' \item \code{\link{.generateOutput}(x, se, all_memory, all_contents)} returns a list containing \code{contents}, a data.frame with one row per point currently present in the table;
 #' and \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot}.
-#' \item \code{\link{.exportOutput}(x, path, se, all_memory, all_contents)} will create a CSV file in \code{path} containing the current table, and return a string containing the path to that file. 
+#' \item \code{\link{.exportOutput}(x, se, all_memory, all_contents)} will create a CSV file containing the current table, and return a string containing the path to that file. 
 #' This assumes that the \code{contents} field returned by \code{\link{generateOutput}} is a data.frame or can be coerced into one.
 #' }
 #'
@@ -179,9 +179,9 @@ setMethod(".generateOutput", "Table", function(x, se, ..., all_memory, all_conte
 })
 
 #' @export
-setMethod(".exportOutput", "Table", function(x, path, se, all_memory, all_contents) {
+setMethod(".exportOutput", "Table", function(x, se, all_memory, all_contents) {
     contents <- .generateOutput(x, se, all_memory=all_memory, all_contents=all_contents)
-    newpath <- file.path(path, paste0(.getEncodedName(x), ".csv"))
+    newpath <- paste0(.getEncodedName(x), ".csv")
     write.csv(file=newpath, contents$contents)
     newpath
 })

@@ -97,7 +97,7 @@
 #'
 #' For generating output:
 #' \itemize{
-#' \item \code{\link{.exportOutput}(x, path, se, all_memory, all_contents)} is a no-op,
+#' \item \code{\link{.exportOutput}(x, se, all_memory, all_contents)} is a no-op,
 #' i.e., it will return an empty character vector and create no files.
 #' }
 #' 
@@ -285,7 +285,7 @@ setMethod(".renderOutput", "Panel", function(x, se, ..., output, pObjects, rObje
 })
 
 #' @export
-setMethod(".exportOutput", "Panel", function(x, path, se, all_memory, all_contents) {
+setMethod(".exportOutput", "Panel", function(x, se, all_memory, all_contents) {
     character(0)
 })
 

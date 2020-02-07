@@ -223,10 +223,9 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' Developers should consider using the \code{\link{.processMultiSelections}} function for easily processing the multiple selection parameters.
 #'
 #' @section Exporting content:
-#' In \code{.exportOutput(x, path, se, all_memory, all_contents)}, the following arguments are required:
+#' In \code{.exportOutput(x, se, all_memory, all_contents)}, the following arguments are required:
 #' \itemize{
 #' \item \code{x}, an instance of a \linkS4class{Panel} class.
-#' \item \code{path}, a string containing a path to the directory in which files are to be created.
 #' \item \code{se}, a \linkS4class{SummarizedExperiment} object containing the current dataset.
 #' \item \code{all_memory}, a named list containing \linkS4class{Panel} objects parameterizing the current state of the app.
 #' \item \code{all_contents}, a named list containing the contents of each panel.
@@ -234,9 +233,9 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #'
 #' Methods for this generic should generate appropriate files containing the content of \code{x}.
 #' (For example, plots may create PDFs while tables may create CSV files.)
-#' All files created in this manner should reside inside \code{path}, possibly in further subdirectories.
+#' All files should be created in the working directory at the time of the function call, possibly in further subdirectories.
 #' Each file name should be prefixed with the \code{\link{.getEncodedName}}.
-#' The method itself should return a character vector containing paths to all newly created files.
+#' The method itself should return a character vector containing \emph{relative} paths to all newly created files.
 #' 
 #' To implement this method, we suggest simply passing all arguments onto \code{\link{.generateOutput}}
 #' and then handling the contents appropriately.
@@ -264,7 +263,7 @@ setGeneric(".generateOutput", function(x, se, ..., all_memory, all_contents) {
 })
 
 #' @export
-setGeneric(".exportOutput", function(x, path, se, all_memory, all_contents) {
+setGeneric(".exportOutput", function(x, se, all_memory, all_contents) {
     standardGeneric(".exportOutput")
 })
 

@@ -40,7 +40,6 @@
 #' For defining the interface:
 #' \itemize{
 #' \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
-#' \item \code{\link{.fullName}(x)} will return the full name of the panel class.
 #' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 #' }
 #'
@@ -50,6 +49,11 @@
 #' This will also call the equivalent \linkS4class{ColumnDotPlot} method.
 #' }
 #'
+#' For defining the panel name:
+#' \itemize{
+#' \item \code{\link{.fullName}(x)} will return \code{"Reduced dimension plot"}.
+#' }
+#' 
 #' For creating the plot:
 #' \itemize{
 #' \item \code{\link{.generateDotPlotData}(x, envir)} will create a data.frame of reduced dimension coordinates in \code{envir}.

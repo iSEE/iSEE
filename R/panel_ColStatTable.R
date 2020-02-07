@@ -35,6 +35,11 @@
 #' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 #' }
 #'
+#' For defining the panel name:
+#' \itemize{
+#' \item \code{\link{.fullName}(x)} will return \code{"Column statistics table"}.
+#' }
+#' 
 #' For creating the output:
 #' \itemize{
 #' \item \code{\link{.generateTable}(x, envir)} will modify \code{envir} to contain the relevant data.frame for display,

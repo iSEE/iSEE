@@ -18,7 +18,7 @@ RUN Rscript -e "BiocManager::install(c('shinyWidgets', 'ComplexHeatmap', 'circli
 
 # Reinstall the latest iSEE from GitHub branch master.
 WORKDIR /isee
-RUN git clone https://github.com/csoneson/iSEE.git
+RUN git clone https://github.com/iSEE/iSEE.git
 RUN R CMD INSTALL iSEE
 
 CMD R

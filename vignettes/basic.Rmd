@@ -14,7 +14,7 @@ author:
   email: marinif@uni-mainz.de
 - name: Charlotte Soneson
   affiliation: 
-  - &id3 Institute of Molecular Life Sciences, University of Zurich
+  - &id3 Friedrich Miescher Institute for Biomedical Research, Basel, Switzerland
   - SIB Swiss Institute of Bioinformatics
   email: charlottesoneson@gmail.com
 - name: Aaron Lun
@@ -207,7 +207,7 @@ The "Additional Information" dropdown menu is accessible through the information
 - The "About this session" button (<i class="fa fa-window-maximize"></i>), which reports the output of the `sessionInfo()` function in a modal popup window.
     This is particularly useful for reproducing or reporting the environment, especially when reporting errors or unexpected behaviors.
 - The "About iSEE" button (<i class="fa fa-heart"></i>) shows the information on the development team, licensing and citation information for the `r Biocpkg("iSEE")` package.
-    You can follow the development of the package by checking the GitHub repository (https://github.com/csoneson/iSEE), where new functionality will be added.
+    You can follow the development of the package by checking the GitHub repository (https://github.com/iSEE/iSEE), where new functionality will be added.
     Well-considered suggestions in the form of issues or pull requests are welcome.
 
 ## Body
@@ -417,7 +417,7 @@ Please keep in mind this is only for demonstration purposes, yet those instances
 
 # Additional information
 
-Bug reports can be posted on the [Bioconductor support site](https://support.bioconductor.org) or raised as issues in the `r Githubpkg("csoneson/iSEE")` GitHub repository.
+Bug reports can be posted on the [Bioconductor support site](https://support.bioconductor.org) or raised as issues in the `r Githubpkg("iSEE/iSEE")` GitHub repository.
 The GitHub repository also contains the development version of the package, where new functionality is added over time.
 The authors appreciate well-considered suggestions for improvements or new features, or even better, pull requests.
 

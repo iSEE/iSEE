@@ -14,6 +14,7 @@
 \alias{.hideInterface,Panel-method}
 \alias{.defineDataInterface,Panel-method}
 \alias{.renderOutput,Panel-method}
+\alias{.exportOutput,Panel-method}
 \alias{.multiSelectionRestricted,Panel-method}
 \alias{.multiSelectionDimension,Panel-method}
 \alias{.multiSelectionClear,Panel-method}
@@ -122,9 +123,15 @@ For monitoring reactive expressions:
 \itemize{
 \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} will add observers to respond to changes in multiple selection options.
 It will also call \code{\link{.singleSelectionSlots}(x)} to set up observers for responding to transmitted single selections.
-\item \code{\link{.renderOutput}(x, se, ..., output, pObjects, rObjects)} will add elements to \code{output} for rendering the information textboxes at the bottom of each panel.
+\item \code{\link{.renderOutput}(x, se, output, pObjects, rObjects)} will add elements to \code{output} for rendering the information textboxes at the bottom of each panel.
 Each panel should specialize this method to add rendering expressions for the actual output (e.g., plots, tables),
 followed by a \code{callNextMethod} to create the textboxes.
+}
+
+For generating output:
+\itemize{
+\item \code{\link{.exportOutput}(x, se, all_memory, all_contents)} is a no-op,
+i.e., it will return an empty character vector and create no files.
 }
 
 For controlling selections:

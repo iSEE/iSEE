@@ -1,4 +1,5 @@
 .generalLinkGraph <- "iSEE_INTERNAL_link_graph"
+.generalLinkGraphPlot <- "iSEE_INTERNAL_link_graph_plot"
 .generalTrackedCode <- "iSEE_INTERNAL_tracked_code"
 .generalPanelSettings <- "iSEE_INTERNAL_panel_settings"
 .generalTourSteps <- "iSEE_INTERNAL_tour_steps"
@@ -28,9 +29,8 @@
 #'
 #' @author Aaron Lun
 #'
-#' @importFrom utils read.delim sessionInfo citation browseURL
-#' @importFrom shiny observeEvent showModal modalDialog
-#' HTML br renderPrint tagList showNotification p
+#' @importFrom utils read.delim sessionInfo citation browseURL capture.output
+#' @importFrom shiny observeEvent showModal modalDialog HTML br tagList showNotification p pre
 #' @importFrom rintrojs introjs
 #' @importFrom shinyAce aceEditor
 #'
@@ -78,9 +78,7 @@
         showModal(modalDialog(
             title="Session information", size="l",fade=TRUE,
             footer=NULL, easyClose=TRUE,
-            renderPrint({
-                sessionInfo()
-            })
+            pre(paste(capture.output(sessionInfo()), collapse="\n"))
         ))
     })
 
@@ -91,9 +89,7 @@
             tagList(
                 iSEE_info, br(), br(),
                 HTML("If you use this package, please use the following citation information:"),
-                renderPrint({
-                    citation("iSEE")
-                })
+                pre(paste(capture.output(citation("iSEE")), collapse="\n"))
             )
         ))
     })
@@ -102,10 +98,7 @@
         showModal(modalDialog(
             title="Graph of inter-panel links", size="l",
             fade=TRUE, footer=NULL, easyClose=TRUE,
-            renderPlot({
-                .snapshot_graph_linkedpanels(pObjects$selection_links,
-                    vapply(pObjects$memory, .getPanelColor, ""))
-            })
+            plotOutput(.generalLinkGraphPlot)
         ))
     })
 

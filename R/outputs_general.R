@@ -1,6 +1,12 @@
 #' @importFrom utils zip
-#' @importFrom shiny downloadHandler
+#' @importFrom shiny downloadHandler renderPlot
 .create_general_output <- function(se, input, output, session, pObjects, rObjects) {
+    output[[.generalLinkGraphPlot]] <- renderPlot({
+        force(input[[.generalLinkGraph]]) # trigger re-rendering every time the button is clicked.
+        .snapshot_graph_linkedpanels(pObjects$selection_links,
+            vapply(pObjects$memory, .getPanelColor, ""))
+    })
+
     output[[.generalExportOutputAll]] <- downloadHandler(
         filename="iSEE_exports.zip",
         content=function(file) {

@@ -139,6 +139,8 @@
 #' and \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot}.
 #' \item \code{\link{.generateDotPlot}(x, labels, envir)} returns a list containing \code{plot} and \code{commands}, as described above.
 #' This is called within \code{\link{.generateOutput}} for all \linkS4class{DotPlot} instances by default.
+#' \item \code{\link{.exportOutput}(x, path, se, all_memory, all_contents)} will create a PDF file in \code{path} containing the current plot, and return a string containing the path to that PDF.
+#' This assumes that the \code{plot} field returned by \code{\link{.generateOutput}} is a \link{ggplot} object.
 #' }
 #'
 #' For defining reactive expressions:
@@ -177,6 +179,7 @@
 #' .generateOutput,DotPlot-method
 #' .generateDotPlot,DotPlot-method
 #' .renderOutput,DotPlot-method
+#' .exportOutput,DotPlot-method
 #' .refineParameters,DotPlot-method
 #' .cacheCommonInfo,DotPlot-method
 #' .createObservers,DotPlot-method
@@ -356,6 +359,20 @@ setMethod(".renderOutput", "DotPlot", function(x, se, output, pObjects, rObjects
     .create_plot_output(plot_name, se=se, output=output, pObjects=pObjects, rObjects=rObjects)
 
     callNextMethod()
+})
+
+#' @export
+setMethod(".exportOutput", "DotPlot", function(x, path, se, all_memory, all_contents) {
+    contents <- .generateOutput(x, se, all_memory=all_memory, all_contents=all_contents)
+    newpath <- file.path(path, paste0(.getEncodedName(x), ".pdf"))
+
+    # These are reasonably satisfactory heuristics:
+    # Width = Pixels -> Inches, Height = Bootstrap -> Inches.
+    pdf(newpath, width=x[[.organizationHeight]]/50, height=x[[.organizationWidth]]*2)
+    print(contents$plot)
+    dev.off()
+
+    newpath
 })
 
 #' @export

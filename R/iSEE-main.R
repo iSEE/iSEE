@@ -219,6 +219,15 @@ iSEE <- function(se,
                 ),
                 notificationItem(
                     text=actionButton(
+                        .generalExportOutput,
+                        label="Download panel output",
+                        icon=icon("download"),
+                        style=.actionbutton_biocstyle
+                    ),
+                    icon=icon(""), status="primary"
+                ),
+                notificationItem(
+                    text=actionButton(
                         .generalTrackedCode,
                         label="Extract the R code",
                         icon=icon("magic"),
@@ -452,6 +461,8 @@ iSEE <- function(se,
     }
 
    .create_voice_observers(input, output, session, se, pObjects, rObjects)
+
+   .create_general_output(se, input, output, session, pObjects, rObjects)
 
    invisible(NULL)
    # nocov end

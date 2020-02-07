@@ -5,6 +5,8 @@
 .generalVignetteOpen <- "iSEE_INTERNAL_open_vignette"
 .generalSessionInfo <- "iSEE_INTERNAL_session_info"
 .generalCitationInfo <- "iSEE_INTERNAL_citation_info"
+.generalExportOutput <- "iSEE_INTERNAL_export_content"
+.generalExportOutputAll <- "iSEE_INTERNAL_export_content_all"
 
 #nocov start
 
@@ -76,9 +78,9 @@
         showModal(modalDialog(
             title="Session information", size="l",fade=TRUE,
             footer=NULL, easyClose=TRUE,
-            tagList(renderPrint({
+            renderPrint({
                 sessionInfo()
-            }))
+            })
         ))
     })
 
@@ -104,6 +106,14 @@
                 .snapshot_graph_linkedpanels(pObjects$selection_links,
                     vapply(pObjects$memory, .getPanelColor, ""))
             })
+        ))
+    })
+
+    observeEvent(input[[.generalExportOutput]], {
+        showModal(modalDialog(
+            title="Download panel contents", size="s",
+            fade=TRUE, footer=NULL, easyClose=TRUE,
+            downloadButton(.generalExportOutputAll, "All panels")
         ))
     })
 

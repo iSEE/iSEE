@@ -12,14 +12,14 @@
 #' @param landingPage A function that renders a landing page when \code{se} is started without any specified \code{se}.
 #' @param redDimArgs Deprecated, use \code{initial} instead.
 #' @param colDataArgs Deprecated, use \code{initial} instead.
-#' @param featAssayArgs Deprecated, use code{initial} instead.
-#' @param rowStatArgs Deprecated, use code{initial} instead.
-#' @param rowDataArgs Deprecated, use code{initial} instead.
-#' @param sampAssayArgs Deprecated, use code{initial} instead.
-#' @param colStatArgs Deprecated, use code{initial} instead.
-#' @param customDataArgs Deprecated, use code{initial} instead.
-#' @param customStatArgs Deprecated, use code{initial} instead.
-#' @param heatMapArgs Deprecated, use code{initial} instead.
+#' @param featAssayArgs Deprecated, use \code{initial} instead.
+#' @param rowStatArgs Deprecated, use \code{initial} instead.
+#' @param rowDataArgs Deprecated, use \code{initial} instead.
+#' @param sampAssayArgs Deprecated, use \code{initial} instead.
+#' @param colStatArgs Deprecated, use \code{initial} instead.
+#' @param customDataArgs Deprecated, use \code{initial} instead.
+#' @param customStatArgs Deprecated, use \code{initial} instead.
+#' @param heatMapArgs Deprecated, use \code{initial} instead.
 #' @param redDimMax Deprecated and ignored.
 #' @param colDataMax Deprecated and ignored.
 #' @param featAssayMax Deprecated and ignored.

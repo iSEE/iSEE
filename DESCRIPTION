@@ -51,8 +51,8 @@ Suggests:
     RColorBrewer,
     viridis,
     htmltools
-URL: https://github.com/csoneson/iSEE
-BugReports: https://github.com/csoneson/iSEE/issues
+URL: https://github.com/iSEE/iSEE
+BugReports: https://github.com/iSEE/iSEE/issues
 biocViews: ImmunoOncology, Visualization, GUI, DimensionReduction, 
     FeatureExtraction, Clustering, Transcription, 
     GeneExpression, Transcriptomics, SingleCell, CellBasedAssays

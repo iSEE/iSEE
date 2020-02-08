@@ -201,13 +201,7 @@ iSEE <- function(se,
                         style=.actionbutton_biocstyle
                     ),
                     icon = icon(""), status = "primary"
-                )
-            ),
-
-            dropdownMenu(type = "tasks",
-                icon = icon("wrench fa-1g"),
-                badgeStatus = NULL,
-                headerText = "Diagnostics",
+                ),
                 notificationItem(
                     text=actionButton(
                         .generalLinkGraph,
@@ -216,7 +210,14 @@ iSEE <- function(se,
                         style=.actionbutton_biocstyle
                     ),
                     icon=icon(""), status="primary"
-                ),
+                )
+            ),
+
+            dropdownMenu(type = "tasks",
+                icon = icon("download fa-1g"),
+                badgeStatus = NULL,
+                headerText = "Export",
+
                 notificationItem(
                     text=actionButton(
                         .generalExportOutput,

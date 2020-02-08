@@ -1,6 +1,6 @@
 #' The RowDataPlot panel
 #'
-#' The RowDotPlot is a panel class for creating a \linkS4class{RowDotPlot} where the y-axis represents a variable from the \code{\link{rowData}} of a \linkS4class{SummarizedExperiment} object.
+#' The RowDataPlot is a panel class for creating a \linkS4class{RowDotPlot} where the y-axis represents a variable from the \code{\link{rowData}} of a \linkS4class{SummarizedExperiment} object.
 #' It provides slots and methods for specifying which row metadata variable to use and what to plot on the x-axis.
 #'
 #' @section Slot overview:

@@ -10,7 +10,7 @@
 #' Defaults to the first valid assay name (see \code{?"\link{.refineParameters,ComplexHeatmapPlot-method}"} for details).
 #' \item \code{CustomFeatName}, a logical scalar indicating whether the custom list of features should be used.
 #' If \code{FALSE}, the incoming selection is used instead. Defaults to \code{TRUE}.
-#' \item \code{FeatNameText}, string speciyfing a custom list of features to use, as newline-separated row names.
+#' \item \code{FeatNameText}, string specifying a custom list of features to use, as newline-separated row names.
 #' If \code{NA}, defaults to the first row name of the SummarizedExperiment object.
 #' }
 #'
@@ -48,7 +48,7 @@
 #' The following slots control the effect of the transmitted selection from another panel:
 #' \itemize{
 #' \item \code{SelectEffect}, a string specifying the selection effect.
-#' This should be one of \code{"Color"} (the default), here all selected points change to the specified color;
+#' This should be one of \code{"Color"} (the default), where all selected points change to the specified color;
 #' \code{"Restrict"}, where all non-selected points are not plotted.
 #' \item \code{SelectColor}, a string specifying the color to use for selected points when \code{SelectEffect="Color"}.
 #' Defaults to \code{"red"}.

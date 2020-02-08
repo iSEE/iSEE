@@ -1,39 +1,3 @@
-#' Create the plot output
-#'
-#' Create a reactive expression to render the plot output.
-#' This is used inside \code{\link{.renderOutput,DotPlot-method}} to satisfy the requirements of that generic.
-#' It calls \code{\link{.generateOutput}} to do the heavy lifting of creating a panel-specific plot.
-#'
-#' @param plot_name String containing the current name of the plot panel.
-#' @param se The \linkS4class{SingleCellExperiment} object to be visualized.
-#' @param output The Shiny output object from the server function.
-#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
-#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
-#'
-#' @return
-#' A reactive element to render the plot is added to \code{output}.
-#' A \code{NULL} is invisibly returned.
-#'
-#' @author Aaron Lun
-#'
-#' @rdname INTERNAL_create_plot_output
-#' @importFrom shiny renderPlot renderUI tagList br
-.create_plot_output <- function(plot_name, se, output, pObjects, rObjects) {
-    force(se)
-    # nocov start
-    output[[plot_name]] <- renderPlot({
-        p.out <- .retrieveOutput(plot_name, se, pObjects, rObjects)
-        pObjects$varname[[plot_name]] <- "plot.data"
-        if (is(p.out$plot, "Heatmap")) {
-            do.call(draw, append(p.out$draw_args_list, list(object=p.out$plot)))
-        } else {
-            p.out$plot
-        }
-    })
-    # nocov end
-    invisible(NULL)
-}
-
 #' Define the plot UI
 #'
 #' Define the \code{\link{plotOutput}} object for a given panel containing a single plot.

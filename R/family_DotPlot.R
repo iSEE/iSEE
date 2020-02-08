@@ -353,10 +353,17 @@ setMethod(".defineOutput", "DotPlot", function(x, id) {
 })
 
 #' @export
+#' @importFrom shiny renderPlot tagList
 setMethod(".renderOutput", "DotPlot", function(x, se, output, pObjects, rObjects) {
     plot_name <- .getEncodedName(x)
 
-    .create_plot_output(plot_name, se=se, output=output, pObjects=pObjects, rObjects=rObjects)
+    # nocov start
+    output[[plot_name]] <- renderPlot({
+        p.out <- .retrieveOutput(plot_name, se, pObjects, rObjects)
+        pObjects$varname[[plot_name]] <- "plot.data"
+        p.out$plot
+    })
+    # nocov end
 
     callNextMethod()
 })

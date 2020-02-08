@@ -114,7 +114,7 @@ It provides observers for monitoring table selection, global search and column-s
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/csoneson/iSEE">
+  <a href="https://github.com/iSEE/iSEE">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -133,7 +133,7 @@ It provides observers for monitoring table selection, global search and column-s
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>The ColumnTable class</h1>
-    <small class="dont-index">Source: <a href='https://github.com/csoneson/iSEE/blob/master/R/family_ColumnTable.R'><code>R/family_ColumnTable.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/family_ColumnTable.R'><code>R/family_ColumnTable.R</code></a></small>
     <div class="hidden name"><code>ColumnTable-class.Rd</code></div>
     </div>
 
@@ -163,7 +163,7 @@ All slots provided in the <a href='Table-class.html'>Table</a> parent class are 
 Refer to the documentation for each method for more details on the remaining arguments.</p>
 <p>For setting up data values:</p><ul>
 <li><p><code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code> replaces <code>NA</code> values in <code>Selected</code> with the first column name of <code>se</code>.
-This will also call the equivalent <a href='DotPlot-class.html'>DotPlot</a> method.</p></li>
+This will also call the equivalent <a href='Table-class.html'>Table</a> method.</p></li>
 </ul>
 
 <p>For defining the interface:</p><ul>
@@ -181,12 +181,12 @@ This will also call the equivalent <a href='Table-class.html'>Table</a> method.<
 <li><p><code><a href='multi-select-generics.html'>.multiSelectionDimension</a>(x)</code> returns <code>"column"</code> to indicate that a column selection is being transmitted.</p></li>
 </ul>
 
-<p>Unless explicitly specialized above, all methods from the parent classes <a href='DotPlot-class.html'>DotPlot</a> and <a href='Panel-class.html'>Panel</a> are also available.</p>
+<p>Unless explicitly specialized above, all methods from the parent classes <a href='Table-class.html'>Table</a> and <a href='Panel-class.html'>Panel</a> are also available.</p>
     <h2 class="hasAnchor" id="expectations-for-generatetable"><a class="anchor" href="#expectations-for-generatetable"></a>Expectations for <code><a href='Table-class.html'>.generateTable</a></code></h2>
 
     
 
-<p><a href='RowTable-class.html'>RowTable</a> methods for this generic should create a <code>tab</code> data.frame in which each row corresponds to a column of the SummarizedExperiment object and is named accordingly.
+<p>ColumnTable methods for this generic should create a <code>tab</code> data.frame in which each row corresponds to a column of the SummarizedExperiment object and is named accordingly.
 It is <em>not</em> necessary for all columns of the SummarizedExperiment object to be represented as rows in the data.frame.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 

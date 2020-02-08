@@ -113,7 +113,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/csoneson/iSEE">
+  <a href="https://github.com/iSEE/iSEE">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -132,7 +132,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>The ColStatTable panel</h1>
-    <small class="dont-index">Source: <a href='https://github.com/csoneson/iSEE/blob/master/R/panel_ColStatTable.R'><code>R/panel_ColStatTable.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/panel_ColStatTable.R'><code>R/panel_ColStatTable.R</code></a></small>
     <div class="hidden name"><code>ColStatTable.Rd</code></div>
     </div>
 
@@ -164,7 +164,7 @@ Subclasses do not have to provide any methods, as this is a concrete class.</p>
 
     
 
-<p>In the following code snippets, <code>x</code> is an instance of a <a href='RedDimPlot-class.html'>RedDimPlot</a> class.
+<p>In the following code snippets, <code>x</code> is an instance of a ColStatTable class.
 Refer to the documentation for each method for more details on the remaining arguments.</p>
 <p>For setting up data values:</p><ul>
 <li><p><code><a href='setup-generics.html'>.cacheCommonInfo</a>(x)</code> adds a <code>"ColStatTable"</code> entry containing <code>valid.colData.names</code>, a character vector of names of atomic columns of the <code>colData</code>.
@@ -178,6 +178,10 @@ This will also call the equivalent <a href='ColumnTable-class.html'>ColumnTable<
 otherwise it calls <code><a href='Table-class.html'>.hideInterface,Table-method</a></code></p></li>
 <li><p><code><a href='getEncodedName.html'>.fullName</a>(x)</code> will return the full name of the panel class.</p></li>
 <li><p><code><a href='getPanelColor.html'>.panelColor</a>(x)</code> will return the specified default color for this panel class.</p></li>
+</ul>
+
+<p>For defining the panel name:</p><ul>
+<li><p><code><a href='getEncodedName.html'>.fullName</a>(x)</code> will return <code>"Column statistics table"</code>.</p></li>
 </ul>
 
 <p>For creating the output:</p><ul>

@@ -36,7 +36,7 @@
 
 
 <meta property="og:title" content="The ColDataPlot panel — ColDataPlot-class" />
-<meta property="og:description" content="The ColDotPlot is a panel class for creating a ColumnDotPlot where the y-axis represents a variable from the colData of a SummarizedExperiment object.
+<meta property="og:description" content="The ColDataPlot is a panel class for creating a ColumnDotPlot where the y-axis represents a variable from the colData of a SummarizedExperiment object.
 It provides slots and methods for specifying which column metadata variable to use and what to plot on the x-axis." />
 <meta name="twitter:card" content="summary" />
 
@@ -114,7 +114,7 @@ It provides slots and methods for specifying which column metadata variable to u
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/csoneson/iSEE">
+  <a href="https://github.com/iSEE/iSEE">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -133,12 +133,12 @@ It provides slots and methods for specifying which column metadata variable to u
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>The ColDataPlot panel</h1>
-    <small class="dont-index">Source: <a href='https://github.com/csoneson/iSEE/blob/master/R/panel_ColDataPlot.R'><code>R/panel_ColDataPlot.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/panel_ColDataPlot.R'><code>R/panel_ColDataPlot.R</code></a></small>
     <div class="hidden name"><code>ColDataPlot-class.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The ColDotPlot is a panel class for creating a <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> where the y-axis represents a variable from the <code>colData</code> of a SummarizedExperiment object.
+    <p>The ColDataPlot is a panel class for creating a <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> where the y-axis represents a variable from the <code>colData</code> of a SummarizedExperiment object.
 It provides slots and methods for specifying which column metadata variable to use and what to plot on the x-axis.</p>
     </div>
 
@@ -148,7 +148,7 @@ It provides slots and methods for specifying which column metadata variable to u
 
     
 
-<p>The following slots control the dimensionality reduction result that is used:</p><ul>
+<p>The following slots control the column data information that is used:</p><ul>
 <li><p><code>YAxis</code>, a string specifying the column of the <code>colData</code> to show on the y-axis.
 If <code>NA</code>, defaults to the first valid field (see <code>?"<a href='ColumnDotPlot-class.html'>.refineParameters,ColumnDotPlot-method</a>"</code>).</p></li>
 <li><p><code>XAxis</code>, string specifying what should be plotting on the x-axis.
@@ -185,7 +185,6 @@ If no valid column metadata fields are available, <code>NULL</code> is returned 
 
 <p>For defining the interface:</p><ul>
 <li><p><code><a href='interface-generics.html'>.defineDataInterface</a>(x, se, select_info)</code> returns a list of interface elements for manipulating all slots described above.</p></li>
-<li><p><code><a href='getEncodedName.html'>.fullName</a>(x)</code> will return the full name of the panel class.</p></li>
 <li><p><code><a href='getPanelColor.html'>.panelColor</a>(x)</code> will return the specified default color for this panel class.</p></li>
 </ul>
 

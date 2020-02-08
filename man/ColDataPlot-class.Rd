@@ -13,12 +13,12 @@
 \alias{.generateDotPlotData,ColDataPlot-method}
 \title{The ColDataPlot panel}
 \description{
-The ColDotPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents a variable from the \code{\link{colData}} of a \linkS4class{SummarizedExperiment} object.
+The ColDataPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents a variable from the \code{\link{colData}} of a \linkS4class{SummarizedExperiment} object.
 It provides slots and methods for specifying which column metadata variable to use and what to plot on the x-axis.
 }
 \section{Slot overview}{
 
-The following slots control the dimensionality reduction result that is used:
+The following slots control the column data information that is used:
 \itemize{
 \item \code{YAxis}, a string specifying the column of the \code{\link{colData}} to show on the y-axis.
 If \code{NA}, defaults to the first valid field (see \code{?"\link{.refineParameters,ColumnDotPlot-method}"}).
@@ -59,7 +59,6 @@ If no valid column metadata fields are available, \code{NULL} is returned instea
 For defining the interface:
 \itemize{
 \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
-\item \code{\link{.fullName}(x)} will return the full name of the panel class.
 \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 }
 

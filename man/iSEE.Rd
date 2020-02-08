@@ -57,21 +57,21 @@ Only the first instance of each class will be used.}
 
 \item{colDataArgs}{Deprecated, use \code{initial} instead.}
 
-\item{featAssayArgs}{Deprecated, use code{initial} instead.}
+\item{featAssayArgs}{Deprecated, use \code{initial} instead.}
 
-\item{rowStatArgs}{Deprecated, use code{initial} instead.}
+\item{rowStatArgs}{Deprecated, use \code{initial} instead.}
 
-\item{rowDataArgs}{Deprecated, use code{initial} instead.}
+\item{rowDataArgs}{Deprecated, use \code{initial} instead.}
 
-\item{sampAssayArgs}{Deprecated, use code{initial} instead.}
+\item{sampAssayArgs}{Deprecated, use \code{initial} instead.}
 
-\item{colStatArgs}{Deprecated, use code{initial} instead.}
+\item{colStatArgs}{Deprecated, use \code{initial} instead.}
 
-\item{customDataArgs}{Deprecated, use code{initial} instead.}
+\item{customDataArgs}{Deprecated, use \code{initial} instead.}
 
-\item{customStatArgs}{Deprecated, use code{initial} instead.}
+\item{customStatArgs}{Deprecated, use \code{initial} instead.}
 
-\item{heatMapArgs}{Deprecated, use code{initial} instead.}
+\item{heatMapArgs}{Deprecated, use \code{initial} instead.}
 
 \item{redDimMax}{Deprecated and ignored.}
 

@@ -68,7 +68,6 @@ If no columns or assays are present, \code{NULL} is returned instead.
 For defining the interface:
 \itemize{
 \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
-\item \code{\link{.fullName}(x)} will return the full name of the panel class.
 \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 }
 

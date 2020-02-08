@@ -35,7 +35,7 @@ Subclasses do not have to provide any methods, as this is a concrete class.
 
 \section{Supported methods}{
 
-In the following code snippets, \code{x} is an instance of a \linkS4class{RedDimPlot} class.
+In the following code snippets, \code{x} is an instance of a \linkS4class{ColStatTable} class.
 Refer to the documentation for each method for more details on the remaining arguments.
 
 For setting up data values:
@@ -52,6 +52,11 @@ For defining the interface:
 otherwise it calls \code{\link{.hideInterface,Table-method}}
 \item \code{\link{.fullName}(x)} will return the full name of the panel class.
 \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
+}
+
+For defining the panel name:
+\itemize{
+\item \code{\link{.fullName}(x)} will return \code{"Column statistics table"}.
 }
 
 For creating the output:

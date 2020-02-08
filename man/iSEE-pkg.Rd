@@ -15,7 +15,7 @@
 \author{
 Aaron Lun \email{infinite.monkeys.with.keyboards@gmail.com}
 
-Charlotte Soneson \email{charlotte.soneson@uzh.ch}
+Charlotte Soneson \email{charlottesoneson@gmail.com}
 
 Federico Marini \email{marinif@uni-mainz.de}
 

@@ -29,7 +29,7 @@
 #' \item \code{ClusterDistanceFeatures}, string specifying a distance measure to use.
 #' This can be any one of \code{"euclidean"}, \code{"maximum"}, \code{"manhattan"}, \code{"canberra"}, \code{"binary"}, \code{"minkowski"}, \code{"pearson"}, \code{"spearman"}, or \code{"kendall"}.
 #' Defaults to \code{"spearman"}.
-#' \item \code{ClusterMethodFeatures}, string specifying a distance measure to use.
+#' \item \code{ClusterMethodFeatures}, string specifying a linkage method to use.
 #' This can be any one of \code{"ward.D"}, \code{"ward.D2"}, \code{"single"}, \code{"complete"}, \code{"average"}, \code{"mcquitty"}, \code{"median"}, or \code{"centroid"}.
 #' Defaults to \code{"ward.D2"}.
 #' }

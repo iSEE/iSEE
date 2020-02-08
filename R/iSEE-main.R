@@ -159,6 +159,10 @@ iSEE <- function(se,
     }
     ecm_name <- deparse(substitute(colormap))
 
+    dn_out <- .fill_se_dimnames(se)
+    se <- dn_out$se
+    track_info <- list(se_name=se_name, ecm_name=ecm_name, mod_commands=dn_out$commands)
+
     old_stuff <- .create_new_from_old(se, redDimArgs=redDimArgs,
         colDataArgs=colDataArgs,
         featAssayArgs=featAssayArgs,
@@ -352,14 +356,14 @@ iSEE <- function(se,
                     INITIAL <- INITIAL[keep]
                 }
                 .initialize_server(SE, initial=INITIAL, extra=extra, colormap=colormap,
-                    tour=tour, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name,
+                    tour=tour, runLocal=runLocal, track_info=track_info,
                     input=input, output=output, session=session, rObjects=rObjects)
                 rObjects$rerendered <- .increment_counter(isolate(rObjects$rerendered))
             }
             landingPage(FUN, input=input, output=output, session=session)
         } else {
             .initialize_server(se, initial=initial, extra=extra, colormap=colormap,
-                tour=tour, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name,
+                tour=tour, runLocal=runLocal, track_info=track_info,
                 input=input, output=output, session=session, rObjects=rObjects)
         }
     } # end of iSEE_server
@@ -379,8 +383,10 @@ iSEE <- function(se,
 #' or upon user interaction with the landing page.
 #'
 #' @inheritParams iSEE
-#' @param se_name String containing the variable name of the SummarizedExperiment object.
-#' @param ecm_name String containing the variable name of the ExperimentColorMap object.
+#' @param track_info A list containing command tracking information.
+#' This should have a \code{se_name} string containing the variable name of the SummarizedExperiment object,
+#' a \code{ecm_name} string containing the variable name of the ExperimentColorMap object,
+#' and a \code{mod_commands} character vector containing additional commands applied to either object before app initialization.
 #' @param input,output,session The typical Shiny objects to be used in various reactive expressions.
 #' @param rObjects A list of reactive variables used throughout the app.
 #'
@@ -392,8 +398,7 @@ iSEE <- function(se,
 #' @rdname INTERNAL_initialize_server
 #' @importFrom shiny showNotification tagList HTML strong br code
 .initialize_server <- function(se, initial, extra, colormap,
-    tour, runLocal, se_name, ecm_name,
-    input, output, session, rObjects)
+    tour, runLocal, track_info, input, output, session, rObjects)
 {
     # nocov start
     if (grepl("[[:digit:]]+-12-06", Sys.Date())) {
@@ -444,7 +449,7 @@ iSEE <- function(se,
     }
 
     # Observer set-up.
-    .create_general_observers(tour, runLocal, se_name, ecm_name,
+    .create_general_observers(tour, runLocal, track_info,
         input, session, pObjects, rObjects)
 
     .create_organization_observers(se=se,
@@ -637,4 +642,31 @@ iSEE <- function(se,
     pObjects[[.voiceActivePanel]] <- NA_character_
 
     pObjects
+}
+
+#' Fill SummarizedExperiment dimnames
+#'
+#' Fill the dimension names of the SummarizedExperiment object,
+#' as the app assumes that rows and columns are named for setting up the UI.
+#'
+#' @param se The \linkS4class{SummarizedExperiment} object.
+#'
+#' @return A list of length 2 containing \code{se}, the dimnamed SummarizedExperiment object,
+#' and \code{commands}, a character vector of R commands required to create names.
+#'
+#' @author Aaron Lun
+#'
+#' @rdname INTERNAL_fill_se_dimnames
+.fill_se_dimnames <- function(se) {
+    cmds <- character(0)
+    if (is.null(rownames(se))) {
+        cmds <- c(cmds, "rownames(se) <- seq_len(nrow(se));")
+    } 
+    if (is.null(colnames(se))) {
+        cmds <- c(cmds, "colnames(se) <- seq_len(ncol(se));")
+    }
+    env <- new.env()
+    env$se <- se
+    eval(parse(text=cmds), envir=env)
+    list(se=env$se, commands=cmds)
 }

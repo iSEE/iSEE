@@ -47,8 +47,8 @@ Note that only \linkS4class{Panel}s classes that were in the original \code{\lin
 
 The UI elements for the SummarizedExperiment and the initial state are named \code{se} and \code{initial} respectively.
 This can be used in Shiny bookmarking to initialize an \code{\link{iSEE}} in a desired state by simply clicking a link,
-provided that \code{requireButton=FALSE} so that the reactive expressions are triggered by \code{initialize_INTERNAL_se}.
-We do not use bookmarking to set parameters directly as we will run afoul of URL character limits.
+provided that \code{requireButton=FALSE} so that the reactive expressions are triggered by updates to \code{se} and \code{initial}.
+We do not use bookmarking to set all individual \code{\link{iSEE}} parameters directly as we will run afoul of URL character limits.
 }
 \section{Defining a custom landing page}{
 
@@ -73,7 +73,20 @@ We suggest that all elements have IDs prefixed with \code{"initialize_INTERNAL"}
 \examples{
 createLandingPage()
 
-# Alternative approach:
+# Alternative approach, to create a landing page
+# that opens one of the datasets from the scRNAseq package.
+all.data <- as.character(lsf.str("package:scRNAseq"))
+all.data <- all.data[grep("Data$", all.data)]
+
+FUN <- createLandingPage(
+    seUI=function(id) selectInput(id, "Dataset:", choices=all.data),
+    seLoad=function(x) get(paste0("scRNAseq::", x))()
+)
+
+app <- iSEE(landingPage=FUN)
+if (interactive()) {
+  shiny::runApp(app, port=1234)
+}
 
 }
 \author{

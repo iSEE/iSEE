@@ -159,23 +159,25 @@ iSEE <- function(se,
     }
     ecm_name <- deparse(substitute(colormap))
 
-    dn_out <- .fill_se_dimnames(se)
-    se <- dn_out$se
-    track_info <- list(se_name=se_name, ecm_name=ecm_name, mod_commands=dn_out$commands)
+    if (has_se) {
+        dn_out <- .fill_se_dimnames(se)
+        se <- dn_out$se
+        track_info <- list(se_name=se_name, ecm_name=ecm_name, mod_commands=dn_out$commands)
 
-    old_stuff <- .create_new_from_old(se, redDimArgs=redDimArgs,
-        colDataArgs=colDataArgs,
-        featAssayArgs=featAssayArgs,
-        rowStatArgs=rowStatArgs,
-        rowDataArgs=rowDataArgs,
-        sampAssayArgs=sampAssayArgs,
-        colStatArgs=colStatArgs,
-        heatMapArgs=heatMapArgs,
-        initialPanels=initialPanels)
+        old_stuff <- .create_new_from_old(se, redDimArgs=redDimArgs,
+            colDataArgs=colDataArgs,
+            featAssayArgs=featAssayArgs,
+            rowStatArgs=rowStatArgs,
+            rowDataArgs=rowDataArgs,
+            sampAssayArgs=sampAssayArgs,
+            colStatArgs=colStatArgs,
+            heatMapArgs=heatMapArgs,
+            initialPanels=initialPanels)
 
-    if (!is.null(old_stuff)) {
-        initial <- old_stuff$initial
-        extra <- old_stuff$extra
+        if (!is.null(old_stuff)) {
+            initial <- old_stuff$initial
+            extra <- old_stuff$extra
+        }
     }
 
     if (is.null(initial)) {

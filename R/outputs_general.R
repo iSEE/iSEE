@@ -4,7 +4,7 @@
 #'
 #' @param se A \linkS4class{SummarizedExperiment} object containing the data of interest.
 #' @param input The Shiny input object from the server function.
-#' @param outpu The Shiny outpu object from the server function.
+#' @param output The Shiny outpu object from the server function.
 #' @param session The Shiny session object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
@@ -16,7 +16,7 @@
 #'
 #' @rdname INTERNAL_create_general_output
 #' @importFrom utils zip
-#' @importFrom shiny downloadHandler renderPlot checkboxGroupInput actionButton
+#' @importFrom shiny downloadHandler renderPlot checkboxGroupInput actionButton downloadButton
 .create_general_output <- function(se, input, output, session, pObjects, rObjects) {
     output[[.generalLinkGraphPlot]] <- renderPlot({
         force(input[[.generalLinkGraph]]) # trigger re-rendering every time the button is clicked.
@@ -35,6 +35,13 @@
             downloadButton(.generalExportOutputDownload, "Download")
         )
     })
+
+    output[[.generalMemoryExport]] <- downloadHandler(
+        filename="iSEE_memory.rds",
+        content=function(file) {
+            saveRDS(file=file, pObjects$memory)
+        }
+    )
 
     output[[.generalExportOutputDownload]] <- downloadHandler(
         filename="iSEE_exports.zip",

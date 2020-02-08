@@ -9,6 +9,10 @@
 .generalSessionInfo <- "iSEE_INTERNAL_session_info"
 .generalCitationInfo <- "iSEE_INTERNAL_citation_info"
 
+.generalCodeTracker <- "iSEE_INTERNAL_tracked_code"
+.generalMemoryTracker <- "iSEE_INTERNAL_tracked_memory"
+.generalMemoryExport <- "iSEE_INTERNAL_memory_export"
+
 .generalExportOutput <- "iSEE_INTERNAL_export_content"
 .generalExportOutputUI <- "iSEE_INTERNAL_export_content_ui"
 .generalExportOutputDownload <- "iSEE_INTERNAL_export_content_download"
@@ -37,7 +41,7 @@
 #' @author Aaron Lun
 #'
 #' @importFrom utils read.delim sessionInfo citation browseURL capture.output
-#' @importFrom shiny observeEvent showModal modalDialog HTML br tagList showNotification p pre
+#' @importFrom shiny observeEvent showModal modalDialog HTML br tagList showNotification p pre downloadButton
 #' @importFrom rintrojs introjs
 #' @importFrom shinyAce aceEditor
 #'
@@ -65,7 +69,7 @@
               "followed by Ctrl/Cmd + C).",
               "This will copy the selected parts to the clipboard."),
 
-            aceEditor("report_all_cmds", mode="r", theme="solarized_light", autoComplete="live",
+            aceEditor(.generalCodeTracker, mode="r", theme="solarized_light", autoComplete="live",
                 value=paste0(.track_it_all(pObjects, se_name, ecm_name), collapse="\n"),
                 height="600px")
         ))
@@ -75,9 +79,10 @@
         showModal(modalDialog(
             title="Panel settings", size="l", fade=TRUE,
             footer=NULL, easyClose=TRUE,
-            aceEditor("acereport_r", mode="r", theme="solarized_light", autoComplete="live",
+            aceEditor(.generalMemoryTracker, mode="r", theme="solarized_light", autoComplete="live",
                 value=paste(.report_memory(pObjects$memory), collapse="\n"),
-                height="600px")
+                height="600px"),
+            downloadButton(.generalMemoryExport, "Download RDS")
         ))
     })
 

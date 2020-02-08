@@ -28,8 +28,8 @@
 #'
 #' The UI elements for the SummarizedExperiment and the initial state are named \code{se} and \code{initial} respectively.
 #' This can be used in Shiny bookmarking to initialize an \code{\link{iSEE}} in a desired state by simply clicking a link,
-#' provided that \code{requireButton=FALSE} so that the reactive expressions are triggered by \code{initialize_INTERNAL_se}.
-#' We do not use bookmarking to set parameters directly as we will run afoul of URL character limits.
+#' provided that \code{requireButton=FALSE} so that reactive expressions are immediately triggered upon setting \code{se} and \code{initial}.
+#' We do not use bookmarking to set all individual \code{\link{iSEE}} parameters as we will run afoul of URL character limits.
 #'
 #' @section Defining a custom landing page:
 #' We note that \code{createLandingPage} is just a limited wrapper around the landing page API.
@@ -53,7 +53,21 @@
 #' @examples
 #' createLandingPage()
 #'
-#' # Alternative approach:
+#' # Alternative approach, to create a landing page
+#' # that opens one of the datasets from the scRNAseq package.
+#' library(scRNAseq)
+#' all.data <- ls("package:scRNAseq")
+#' all.data <- all.data[grep("Data$", all.data)]
+#'
+#' FUN <- createLandingPage(
+#'     seUI=function(id) selectInput(id, "Dataset:", choices=all.data),
+#'     seLoad=function(x) get(x, as.environment("package:scRNAseq"))()
+#' )
+#'
+#' app <- iSEE(landingPage=FUN)
+#' if (interactive()) {
+#'   shiny::runApp(app, port=1234)
+#' }
 #'
 #' @export
 #' @importFrom shiny showNotification fileInput HTML observeEvent textInput actionButton
@@ -83,23 +97,25 @@ createLandingPage <- function(seUI=NULL, seLoad=NULL, initUI=NULL, initLoad=NULL
             )
         })
         # nocov end
+
         target <- if (requireButton) .initializeLaunch else .initializeSE
+
         # nocov start
         observeEvent(input[[target]], {
-            se2 <- try(seLoad(input[[.initializeSE]]), silent=TRUE)
+            se2 <- try(seLoad(input[[.initializeSE]]))
             if (is(se2, "try-error")) {
-                showNotification("must upload a valid RDS file", type="error")
-            } else if (!is(se2, "SummarizedExperiment")) {
-                showNotification("must upload a SummarizedExperiment object", type="error")
+                showNotification("invalid SummarizedExperiment supplied", type="error")
             } else {
-                init <- try(initLoad(input[[.initializeInitial]], silent=TRUE))
+                init <- try(initLoad(input[[.initializeInitial]]))
                 if (is(init, "try-error")) {
+                    showNotification("invalid initial state supplied", type="warning")
                     init <- NULL
                 }
                 FUN(SE=se2, INITIAL=init)
             }
         }, ignoreNULL=TRUE, ignoreInit=TRUE)
         # nocov end
+
         invisible(NULL)
     }
 }

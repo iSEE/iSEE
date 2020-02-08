@@ -339,3 +339,17 @@ test_that(".exportOutput handles DotPlot", {
     expect_identical(out, "RedDimPlot1.pdf")
 
 })
+
+test_that(".exportOutput handles Table", {
+
+    ColStatTable1 <- ColStatTable(PanelId=1L)
+    sce <- .cacheCommonInfo(ColStatTable1, sce)
+    ColStatTable1 <- .refineParameters(ColStatTable1, sce)
+    memory <- list(ColStatTable1=ColStatTable1)
+    pObjects <- mimic_live_app(sce, memory)
+    metadata(sce)$colormap <- ExperimentColorMap()
+
+    out <- .exportOutput(memory$ColStatTable1, sce, memory, pObjects$contents)
+    expect_identical(out, "ColStatTable1.csv")
+
+})

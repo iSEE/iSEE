@@ -7,6 +7,7 @@
 \alias{.generateOutput,Table-method}
 \alias{.renderOutput,Table-method}
 \alias{.defineOutput,Table-method}
+\alias{.exportOutput,Table-method}
 \alias{.hideInterface,Table-method}
 \alias{.multiSelectionCommands,Table-method}
 \alias{.multiSelectionActive,Table-method}
@@ -34,7 +35,7 @@ In addition, this class inherits all slots from its parent \linkS4class{Panel} c
 
 \section{Contract description}{
 
-The Table will provide interface elements to create the \code{DT::datatble} widget.
+The Table will provide interface elements to create the \code{DT::datatable} widget.
 It will also provide observers to update slots based on user interactions with the widget.
 Interface elements and observers are also provided for slots in its parent class \linkS4class{Panel}.
 
@@ -58,6 +59,10 @@ For defining reactive expressions:
 This will also call the equivalent \linkS4class{Panel} method.
 \item \code{\link{.renderOutput}(x, se, output, pObjects, rObjects)} will add a rendered \code{\link{datatable}} object to \code{output}.
 This will also call the equivalent \linkS4class{Panel} method to render the panel information testboxes.
+\item \code{\link{.generateOutput}(x, se, all_memory, all_contents)} returns a list containing \code{contents}, a data.frame with one row per point currently present in the table;
+and \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot}.
+\item \code{\link{.exportOutput}(x, se, all_memory, all_contents)} will create a CSV file containing the current table, and return a string containing the path to that file. 
+This assumes that the \code{contents} field returned by \code{\link{.generateOutput}} is a data.frame or can be coerced into one.
 }
 
 For controlling selections:

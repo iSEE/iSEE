@@ -1,6 +1,6 @@
 #' Process heatmap colorscales
 #'
-#' These functions generate sets of commands ultimately evaluated  in the panel environment to generate various colorscale for the \code{\link{ComplexHeatmap}} plot.
+#' These functions generate sets of commands ultimately evaluated in the panel environment to generate various colorscales for a \code{Complex\link{Heatmap}}.
 #'
 #' @param x An instance of a \linkS4class{ComplexHeatmapPlot} class.
 #' @param se A \linkS4class{SummarizedExperiment} object after running \code{\link{.cacheCommonInfo}}.

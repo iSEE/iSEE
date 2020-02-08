@@ -201,18 +201,28 @@ iSEE <- function(se,
                         style=.actionbutton_biocstyle
                     ),
                     icon = icon(""), status = "primary"
-                )
-            ),
-
-            dropdownMenu(type = "tasks",
-                icon = icon("wrench fa-1g"),
-                badgeStatus = NULL,
-                headerText = "Diagnostics",
+                ),
                 notificationItem(
                     text=actionButton(
                         .generalLinkGraph,
                         label="Examine panel chart",
                         icon=icon("chain"),
+                        style=.actionbutton_biocstyle
+                    ),
+                    icon=icon(""), status="primary"
+                )
+            ),
+
+            dropdownMenu(type = "tasks",
+                icon = icon("download fa-1g"),
+                badgeStatus = NULL,
+                headerText = "Export",
+
+                notificationItem(
+                    text=actionButton(
+                        .generalExportOutput,
+                        label="Download panel output",
+                        icon=icon("download"),
                         style=.actionbutton_biocstyle
                     ),
                     icon=icon(""), status="primary"
@@ -452,6 +462,8 @@ iSEE <- function(se,
     }
 
    .create_voice_observers(input, output, session, se, pObjects, rObjects)
+
+   .create_general_output(se, input, output, session, pObjects, rObjects)
 
    invisible(NULL)
    # nocov end

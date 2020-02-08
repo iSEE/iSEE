@@ -81,10 +81,11 @@ jitterSquarePoints <- function(X, Y, grouping=NULL) {
         }
 
         current$Marker <- seq_len(nrow(current))
-        combined <- merge(current, summary_data, by=c('X', 'Y'), all_x=TRUE)
+        combined <- merge(current, summary_data, by=c('X', 'Y'), all.x=TRUE)
         o <- order(combined$Marker)
         width_x <- combined$XWidth[o]
         width_y <- combined$YWidth[o]
+
         jittered_X[grp] <- width_x*runif(nrow(current), -1, 1)
         jittered_Y[grp] <- width_y*runif(nrow(current), -1, 1)
 

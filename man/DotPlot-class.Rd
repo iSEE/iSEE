@@ -7,6 +7,7 @@
 \alias{.generateOutput,DotPlot-method}
 \alias{.generateDotPlot,DotPlot-method}
 \alias{.renderOutput,DotPlot-method}
+\alias{.exportOutput,DotPlot-method}
 \alias{.refineParameters,DotPlot-method}
 \alias{.cacheCommonInfo,DotPlot-method}
 \alias{.createObservers,DotPlot-method}
@@ -164,6 +165,8 @@ For generating the output:
 and \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot}.
 \item \code{\link{.generateDotPlot}(x, labels, envir)} returns a list containing \code{plot} and \code{commands}, as described above.
 This is called within \code{\link{.generateOutput}} for all \linkS4class{DotPlot} instances by default.
+\item \code{\link{.exportOutput}(x, se, all_memory, all_contents)} will create a PDF file containing the current plot, and return a string containing the path to that PDF.
+This assumes that the \code{plot} field returned by \code{\link{.generateOutput}} is a \link{ggplot} object.
 }
 
 For defining reactive expressions:

@@ -1,13 +1,20 @@
 .generalLinkGraph <- "iSEE_INTERNAL_link_graph"
 .generalLinkGraphPlot <- "iSEE_INTERNAL_link_graph_plot"
 .generalTrackedCode <- "iSEE_INTERNAL_tracked_code"
+
 .generalPanelSettings <- "iSEE_INTERNAL_panel_settings"
 .generalTourSteps <- "iSEE_INTERNAL_tour_steps"
 .generalVignetteOpen <- "iSEE_INTERNAL_open_vignette"
+
 .generalSessionInfo <- "iSEE_INTERNAL_session_info"
 .generalCitationInfo <- "iSEE_INTERNAL_citation_info"
+
 .generalExportOutput <- "iSEE_INTERNAL_export_content"
+.generalExportOutputUI <- "iSEE_INTERNAL_export_content_ui"
+.generalExportOutputDownload <- "iSEE_INTERNAL_export_content_download"
 .generalExportOutputAll <- "iSEE_INTERNAL_export_content_all"
+.generalExportOutputNone <- "iSEE_INTERNAL_export_content_none"
+.generalExportOutputChoices <- "iSEE_INTERNAL_export_content_choices"
 
 #nocov start
 
@@ -102,14 +109,6 @@
         ))
     })
 
-    observeEvent(input[[.generalExportOutput]], {
-        showModal(modalDialog(
-            title="Download panel contents", size="s",
-            fade=TRUE, footer=NULL, easyClose=TRUE,
-            downloadButton(.generalExportOutputAll, "All panels")
-        ))
-    })
-
     if (runLocal) {
         observeEvent(input[[.generalTourSteps]], {
             path <- system.file("doc", "basic.html", package="iSEE")
@@ -120,6 +119,44 @@
             }
         })
     }
+
+    .create_export_observers(input, session, pObjects)
+
+    invisible(NULL)
+}
+
+#' Create the export observers
+#'
+#' Create observers that are dedicated to exporting panel content (e.g., as PDFs or CSVs).
+#'
+#' @inheritParams .create_general_observers
+#'
+#' @return Observers are created in the server function in which this is called.
+#' A \code{NULL} value is invisibly returned.
+#'
+#' @author Aaron Lun
+#'
+#' @rdname INTERNAL_export_observers
+#' @importFrom shiny observeEvent showModal modalDialog updateCheckboxGroupInput uiOutput
+.create_export_observers <- function(input, session, pObjects) {
+    observeEvent(input[[.generalExportOutput]], {
+        showModal(modalDialog(
+            title="Download panel contents", size="m",
+            fade=TRUE, footer=NULL, easyClose=TRUE,
+            uiOutput(.generalExportOutputUI)
+        ))
+    }, ignoreInit=TRUE)
+
+    observeEvent(input[[.generalExportOutputAll]], {
+        all_options <- .define_export_choices(pObjects$memory)
+        updateCheckboxGroupInput(session, .generalExportOutputChoices, 
+            choices=all_options, selected=all_options)
+    }, ignoreInit=TRUE)
+
+    observeEvent(input[[.generalExportOutputNone]], {
+        all_options <- .define_export_choices(pObjects$memory)
+        updateCheckboxGroupInput(session, .generalExportOutputChoices, selected=character(0))
+    }, ignoreInit=TRUE)
 
     invisible(NULL)
 }

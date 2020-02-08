@@ -493,6 +493,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
 #' @importFrom ComplexHeatmap draw
 setMethod(".renderOutput", "ComplexHeatmapPlot", function(x, se, output, pObjects, rObjects) {
     plot_name <- .getEncodedName(x)
+    force(se) # defensive programming to avoid difficult bugs due to delayed evaluation.
 
     # nocov start
     output[[plot_name]] <- renderPlot({

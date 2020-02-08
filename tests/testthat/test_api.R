@@ -322,3 +322,20 @@ test_that(".multiSelectionAvailable handles Panel", {
     expect_identical(out, length(letters))
 
 })
+
+# .exportOutput ----
+context(".exportOutput")
+
+test_that(".exportOutput handles DotPlot", {
+
+    RedDimPlot1 <- RedDimPlot(PanelId=1L)
+    sce <- .cacheCommonInfo(RedDimPlot1, sce)
+    RedDimPlot1 <- .refineParameters(RedDimPlot1, sce)
+    memory <- list(RedDimPlot1=RedDimPlot1)
+    pObjects <- mimic_live_app(sce, memory)
+    metadata(sce)$colormap <- ExperimentColorMap()
+
+    out <- .exportOutput(memory$RedDimPlot1, sce, memory, pObjects$contents)
+    expect_identical(out, "RedDimPlot1.pdf")
+
+})

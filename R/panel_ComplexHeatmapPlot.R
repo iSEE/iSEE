@@ -488,10 +488,19 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
 })
 
 #' @export
+#' @importFrom shiny renderPlot tagList
+#' @importFrom ComplexHeatmap draw
 setMethod(".renderOutput", "ComplexHeatmapPlot", function(x, se, output, pObjects, rObjects) {
     plot_name <- .getEncodedName(x)
+    force(se) # defensive programming to avoid difficult bugs due to delayed evaluation.
 
-    .create_plot_output(plot_name, se=se, output=output, pObjects=pObjects, rObjects=rObjects)
+    # nocov start
+    output[[plot_name]] <- renderPlot({
+        p.out <- .retrieveOutput(plot_name, se, pObjects, rObjects)
+        pObjects$varname[[plot_name]] <- "plot.data"
+        do.call(draw, c(p.out$draw_args_list, list(object=p.out$plot)))
+    })
+    # nocov end
 
     callNextMethod()
 })

@@ -6,6 +6,7 @@
 \alias{.renderOutput}
 \alias{.defineOutput}
 \alias{.generateOutput}
+\alias{.exportOutput}
 \title{Generics for Panel outputs}
 \description{
 An overview of the generics for defining the panel outputs, along with recommendations on their implementation.
@@ -63,12 +64,11 @@ to choose an appropriate rendering function.
 
 \section{Generating content}{
 
-In \code{.generateOutput(x, se, ..., output, pObjects, rObjects)}, the following arguments are required:
+In \code{.generateOutput(x, se, all_memory, all_contents)}, the following arguments are required:
 \itemize{
 \item \code{x}, an instance of a \linkS4class{Panel} class.
 \item \code{se}, a \linkS4class{SummarizedExperiment} object containing the current dataset.
-\item \code{...}, further arguments that may be used by specific methods.
-\item \code{all_memory}, a named list containing \linkS4class{Panel} objects with their parameters for the current state of the app.
+\item \code{all_memory}, a named list containing \linkS4class{Panel} objects parameterizing the current state of the app.
 \item \code{all_contents}, a named list containing the contents of each panel.
 }
 
@@ -85,6 +85,26 @@ The output list may contain any number of other fields that will be ignored.
 We suggest implementing this method using \code{\link{eval}(\link{parse}(text=...))} calls,
 which enables easy construction and evaluation of the commands and contents at the same time.
 Developers should consider using the \code{\link{.processMultiSelections}} function for easily processing the multiple selection parameters.
+}
+
+\section{Exporting content}{
+
+In \code{.exportOutput(x, se, all_memory, all_contents)}, the following arguments are required:
+\itemize{
+\item \code{x}, an instance of a \linkS4class{Panel} class.
+\item \code{se}, a \linkS4class{SummarizedExperiment} object containing the current dataset.
+\item \code{all_memory}, a named list containing \linkS4class{Panel} objects parameterizing the current state of the app.
+\item \code{all_contents}, a named list containing the contents of each panel.
+}
+
+Methods for this generic should generate appropriate files containing the content of \code{x}.
+(For example, plots may create PDFs while tables may create CSV files.)
+All files should be created in the working directory at the time of the function call, possibly in further subdirectories.
+Each file name should be prefixed with the \code{\link{.getEncodedName}}.
+The method itself should return a character vector containing \emph{relative} paths to all newly created files.
+
+To implement this method, we suggest simply passing all arguments onto \code{\link{.generateOutput}}
+and then handling the contents appropriately.
 }
 
 \author{

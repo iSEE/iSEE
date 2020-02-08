@@ -61,7 +61,6 @@ If no dimensionality reduction results are available, \code{NULL} is returned in
 For defining the interface:
 \itemize{
 \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
-\item \code{\link{.fullName}(x)} will return the full name of the panel class.
 \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 }
 
@@ -69,6 +68,11 @@ For monitoring reactive expressions:
 \itemize{
 \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
 This will also call the equivalent \linkS4class{ColumnDotPlot} method.
+}
+
+For defining the panel name:
+\itemize{
+\item \code{\link{.fullName}(x)} will return \code{"Reduced dimension plot"}.
 }
 
 For creating the plot:

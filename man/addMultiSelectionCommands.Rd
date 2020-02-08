@@ -27,7 +27,7 @@ This is a utility function that is intended for use in \code{\link{.generateDotP
 It will modify \code{envir} by adding \code{all_active} and \code{all_saved} variables,
 so developers should not use these names for their own variables in \code{envir}.
 
-If no self-selection structures exist in \code{x}, \code{commands} is returned directly withou modification.
+If no self-selection structures exist in \code{x}, \code{commands} is returned directly without modification.
 }
 \author{
 Aaron Lun

@@ -13,7 +13,7 @@
 \alias{.generateDotPlotData,RowDataPlot-method}
 \title{The RowDataPlot panel}
 \description{
-The RowDotPlot is a panel class for creating a \linkS4class{RowDotPlot} where the y-axis represents a variable from the \code{\link{rowData}} of a \linkS4class{SummarizedExperiment} object.
+The RowDataPlot is a panel class for creating a \linkS4class{RowDotPlot} where the y-axis represents a variable from the \code{\link{rowData}} of a \linkS4class{SummarizedExperiment} object.
 It provides slots and methods for specifying which row metadata variable to use and what to plot on the x-axis.
 }
 \section{Slot overview}{
@@ -59,7 +59,6 @@ If no valid row metadata fields are available, \code{NULL} is returned instead.
 For defining the interface:
 \itemize{
 \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
-\item \code{\link{.fullName}(x)} will return the full name of the panel class.
 \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 }
 

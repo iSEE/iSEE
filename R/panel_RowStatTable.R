@@ -16,7 +16,7 @@
 #' Subclasses do not have to provide any methods, as this is a concrete class.
 #'
 #' @section Supported methods:
-#' In the following code snippets, \code{x} is an instance of a \linkS4class{RedDimPlot} class.
+#' In the following code snippets, \code{x} is an instance of a \linkS4class{RowStatTable} class.
 #' Refer to the documentation for each method for more details on the remaining arguments.
 #'
 #' For setting up data values:

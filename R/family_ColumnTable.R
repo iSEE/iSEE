@@ -17,7 +17,7 @@
 #' For setting up data values:
 #' \itemize{
 #' \item \code{\link{.refineParameters}(x, se)} replaces \code{NA} values in \code{Selected} with the first column name of \code{se}.
-#' This will also call the equivalent \linkS4class{DotPlot} method.
+#' This will also call the equivalent \linkS4class{Table} method.
 #' }
 #'
 #' For defining the interface:
@@ -38,10 +38,10 @@
 #' \item \code{\link{.multiSelectionDimension}(x)} returns \code{"column"} to indicate that a column selection is being transmitted.
 #' }
 #'
-#' Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.
+#' Unless explicitly specialized above, all methods from the parent classes \linkS4class{Table} and \linkS4class{Panel} are also available.
 #'
 #' @section Expectations for \code{\link{.generateTable}}:
-#' \linkS4class{RowTable} methods for this generic should create a \code{tab} data.frame in which each row corresponds to a column of the SummarizedExperiment object and is named accordingly.
+#' \linkS4class{ColumnTable} methods for this generic should create a \code{tab} data.frame in which each row corresponds to a column of the SummarizedExperiment object and is named accordingly.
 #' It is \emph{not} necessary for all columns of the SummarizedExperiment object to be represented as rows in the data.frame.
 #'
 #' @seealso

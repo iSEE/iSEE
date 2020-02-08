@@ -17,7 +17,7 @@
 #' For setting up data values:
 #' \itemize{
 #' \item \code{\link{.refineParameters}(x, se)} replaces \code{NA} values in \code{Selected} with the first row name of \code{se}.
-#' This will also call the equivalent \linkS4class{DotPlot} method.
+#' This will also call the equivalent \linkS4class{Table} method.
 #' }
 #'
 #' For defining the interface:

@@ -162,7 +162,7 @@ Defaults to an empty character vector, i.e., no search.</p></li>
 
     
 
-<p>The Table will provide interface elements to create the <code>DT::datatble</code> widget.
+<p>The Table will provide interface elements to create the <code><a href='https://rdrr.io/pkg/DT/man/datatable.html'>DT::datatable</a></code> widget.
 It will also provide observers to update slots based on user interactions with the widget.
 Interface elements and observers are also provided for slots in its parent class <a href='Panel-class.html'>Panel</a>.</p>
 <p>Subclasses are expected to implement methods for (at least) <code>.generateTable</code>.
@@ -182,6 +182,10 @@ Refer to the documentation for each method for more details on the remaining arg
 This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.</p></li>
 <li><p><code><a href='output-generics.html'>.renderOutput</a>(x, se, output, pObjects, rObjects)</code> will add a rendered <code>datatable</code> object to <code>output</code>.
 This will also call the equivalent <a href='Panel-class.html'>Panel</a> method to render the panel information testboxes.</p></li>
+<li><p><code><a href='output-generics.html'>.generateOutput</a>(x, se, all_memory, all_contents)</code> returns a list containing <code>contents</code>, a data.frame with one row per point currently present in the table;
+and <code>commands</code>, a list of character vector containing the R commands required to generate <code>contents</code> and <code>plot</code>.</p></li>
+<li><p><code><a href='output-generics.html'>.exportOutput</a>(x, se, all_memory, all_contents)</code> will create a CSV file containing the current table, and return a string containing the path to that file. 
+This assumes that the <code>contents</code> field returned by <code><a href='output-generics.html'>.generateOutput</a></code> is a data.frame or can be coerced into one.</p></li>
 </ul>
 
 <p>For controlling selections:</p><ul>

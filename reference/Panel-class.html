@@ -232,9 +232,14 @@ The data parameter box will be populated based on <code><a href='interface-gener
 <p>For monitoring reactive expressions:</p><ul>
 <li><p><code><a href='observer-generics.html'>.createObservers</a>(x, se, input, session, pObjects, rObjects)</code> will add observers to respond to changes in multiple selection options.
 It will also call <code><a href='single-select-generics.html'>.singleSelectionSlots</a>(x)</code> to set up observers for responding to transmitted single selections.</p></li>
-<li><p><code><a href='output-generics.html'>.renderOutput</a>(x, se, ..., output, pObjects, rObjects)</code> will add elements to <code>output</code> for rendering the information textboxes at the bottom of each panel.
+<li><p><code><a href='output-generics.html'>.renderOutput</a>(x, se, output, pObjects, rObjects)</code> will add elements to <code>output</code> for rendering the information textboxes at the bottom of each panel.
 Each panel should specialize this method to add rendering expressions for the actual output (e.g., plots, tables),
 followed by a <code>callNextMethod</code> to create the textboxes.</p></li>
+</ul>
+
+<p>For generating output:</p><ul>
+<li><p><code><a href='output-generics.html'>.exportOutput</a>(x, se, all_memory, all_contents)</code> is a no-op,
+i.e., it will return an empty character vector and create no files.</p></li>
 </ul>
 
 <p>For controlling selections:</p><ul>

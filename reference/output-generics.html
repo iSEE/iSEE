@@ -192,11 +192,10 @@ to choose an appropriate rendering function.</p>
 
     
 
-<p>In <code>.generateOutput(x, se, ..., output, pObjects, rObjects)</code>, the following arguments are required:</p><ul>
+<p>In <code>.generateOutput(x, se, all_memory, all_contents)</code>, the following arguments are required:</p><ul>
 <li><p><code>x</code>, an instance of a <a href='Panel-class.html'>Panel</a> class.</p></li>
 <li><p><code>se</code>, a SummarizedExperiment object containing the current dataset.</p></li>
-<li><p><code>...</code>, further arguments that may be used by specific methods.</p></li>
-<li><p><code>all_memory</code>, a named list containing <a href='Panel-class.html'>Panel</a> objects with their parameters for the current state of the app.</p></li>
+<li><p><code>all_memory</code>, a named list containing <a href='Panel-class.html'>Panel</a> objects parameterizing the current state of the app.</p></li>
 <li><p><code>all_contents</code>, a named list containing the contents of each panel.</p></li>
 </ul>
 
@@ -210,6 +209,24 @@ Developers should write these commands as if the evaluation environment only con
 <p>We suggest implementing this method using <code><a href='https://rdrr.io/r/base/eval.html'>eval</a>(<a href='https://rdrr.io/r/base/parse.html'>parse</a>(text=...))</code> calls,
 which enables easy construction and evaluation of the commands and contents at the same time.
 Developers should consider using the <code><a href='processMultiSelections.html'>.processMultiSelections</a></code> function for easily processing the multiple selection parameters.</p>
+    <h2 class="hasAnchor" id="exporting-content"><a class="anchor" href="#exporting-content"></a>Exporting content</h2>
+
+    
+
+<p>In <code>.exportOutput(x, se, all_memory, all_contents)</code>, the following arguments are required:</p><ul>
+<li><p><code>x</code>, an instance of a <a href='Panel-class.html'>Panel</a> class.</p></li>
+<li><p><code>se</code>, a SummarizedExperiment object containing the current dataset.</p></li>
+<li><p><code>all_memory</code>, a named list containing <a href='Panel-class.html'>Panel</a> objects parameterizing the current state of the app.</p></li>
+<li><p><code>all_contents</code>, a named list containing the contents of each panel.</p></li>
+</ul>
+
+<p>Methods for this generic should generate appropriate files containing the content of <code>x</code>.
+(For example, plots may create PDFs while tables may create CSV files.)
+All files should be created in the working directory at the time of the function call, possibly in further subdirectories.
+Each file name should be prefixed with the <code><a href='getEncodedName.html'>.getEncodedName</a></code>.
+The method itself should return a character vector containing <em>relative</em> paths to all newly created files.</p>
+<p>To implement this method, we suggest simply passing all arguments onto <code>.generateOutput</code>
+and then handling the contents appropriately.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -218,6 +235,7 @@ Developers should consider using the <code><a href='processMultiSelections.html'
       <li><a href="#defining-the-output-element">Defining the output element</a></li>
       <li><a href="#defining-the-rendered-output">Defining the rendered output</a></li>
       <li><a href="#generating-content">Generating content</a></li>
+      <li><a href="#exporting-content">Exporting content</a></li>
     </ul>
 
     <h2>Author</h2>

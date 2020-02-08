@@ -353,3 +353,17 @@ test_that(".exportOutput handles Table", {
     expect_identical(out, "ColStatTable1.csv")
 
 })
+
+test_that(".exportOutput handles Panel", {
+
+    ComplexHeatmapPlot1 <- ComplexHeatmapPlot(PanelId=1L)
+    sce <- .cacheCommonInfo(ComplexHeatmapPlot1, sce)
+    ComplexHeatmapPlot1 <- .refineParameters(ComplexHeatmapPlot1, sce)
+    memory <- list(ComplexHeatmapPlot1=ComplexHeatmapPlot1)
+    pObjects <- mimic_live_app(sce, memory)
+    metadata(sce)$colormap <- ExperimentColorMap()
+
+    out <- .exportOutput(memory$ComplexHeatmapPlot1, sce, memory, pObjects$contents)
+    expect_identical(out, character(0))
+
+})

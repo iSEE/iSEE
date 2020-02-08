@@ -18,12 +18,14 @@
 #' @importFrom utils zip
 #' @importFrom shiny downloadHandler renderPlot checkboxGroupInput actionButton downloadButton
 .create_general_output <- function(se, input, output, session, pObjects, rObjects) {
+    # nocov start
     output[[.generalLinkGraphPlot]] <- renderPlot({
         force(input[[.generalLinkGraph]]) # trigger re-rendering every time the button is clicked.
         .snapshot_graph_linkedpanels(pObjects$selection_links,
             vapply(pObjects$memory, .getPanelColor, ""))
     })
-
+    # nocov end
+    # nocov start
     output[[.generalExportOutputUI]] <- renderUI({
         force(input[[.generalExportOutput]]) # trigger rerendering every time the button is clicked.
         all_options <- .define_export_choices(pObjects$memory)
@@ -35,21 +37,23 @@
             downloadButton(.generalExportOutputDownload, "Download")
         )
     })
-
+    # nocov end
+    # nocov start
     output[[.generalMemoryExport]] <- downloadHandler(
         filename="iSEE_memory.rds",
         content=function(file) {
             saveRDS(file=file, pObjects$memory)
         }
     )
-
+    # nocov end
+    # nocov start
     output[[.generalExportOutputDownload]] <- downloadHandler(
         filename="iSEE_exports.zip",
         content=function(file) {
             dumptmp <- tempfile()
             dir.create(dumptmp)
             oldwd <- getwd()
-            setwd(dumptmp) 
+            setwd(dumptmp)
 
             on.exit({
                 setwd(oldwd)
@@ -60,14 +64,14 @@
             # to be summarized, and then saves their gunk to file.
             all.files <- list()
             for (i in input[[.generalExportOutputChoices]]) {
-                all.files[[i]] <- .exportOutput(pObjects$memory[[i]], se=se, 
+                all.files[[i]] <- .exportOutput(pObjects$memory[[i]], se=se,
                     all_memory=pObjects$memory, all_contents=pObjects$contents)
             }
 
             zip(file, files=unlist(all.files))
         }
     )
-
+    # nocov end
     invisible(NULL)
 }
 

@@ -275,7 +275,7 @@ setMethod(".generateDotPlotData", "FeatAssayPlot", function(x, envir) {
     plot_title <- gene_selected_y
     y_lab <- sprintf("%s (%s)", gene_selected_y, assay_choice)
     data_cmds[["y"]] <- sprintf(
-        "plot.data <- data.frame(Y=assay(se, %s, withDimnames=FALSE)[%s, ], row.names=colnames(se))",
+        "plot.data <- data.frame(Y=assay(se, %s)[%s, ], row.names=colnames(se))",
         deparse(assay_choice), deparse(gene_selected_y)
     )
 

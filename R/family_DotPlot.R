@@ -369,6 +369,7 @@ setMethod(".renderOutput", "DotPlot", function(x, se, output, pObjects, rObjects
 })
 
 #' @export
+#' @importFrom grDevices pdf dev.off
 setMethod(".exportOutput", "DotPlot", function(x, se, all_memory, all_contents) {
     contents <- .generateOutput(x, se, all_memory=all_memory, all_contents=all_contents)
     newpath <- paste0(.getEncodedName(x), ".pdf")

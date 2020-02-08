@@ -7,14 +7,15 @@
 #' @param graph A \link{graph} object containing point selection links between panels.
 #' @param commands A list of lists of character vectors, where each internal list contains commands to generate each panel.
 #' @param varname A list of strings containing the variable name for the contents of each panel.
-#' @param se_name String containing the name of the SummarizedExperiment or SingleCellExperiment object.
-#' @param ecm_name String containing the name of the ExperimentColorMap in use.
+#' @param se_name String containing the initial name of the SummarizedExperiment or SingleCellExperiment object.
+#' @param ecm_name String containing the initial name of the ExperimentColorMap in use.
+#' @param mod_commands Character vector of commands to modify the SummarizedExperiment or ExperimentColorMap at the start.
 #'
 #' @return A character vector containing all lines of code (plus comments), to use in the \code{shinyAce} editor in \code{\link{iSEE}}.
 #'
 #' @author Federico Marini
 #' @rdname INTERNAL_track_it_all
-.track_it_all <- function(pObjects, se_name, ecm_name) {
+.track_it_all <- function(pObjects, se_name, ecm_name, mod_commands=character(0)) {
     tracked_code <- c(
         "## The following list of commands will generate the plots created in iSEE",
         "## Copy them into a script or an R session containing your SingleCellExperiment.",
@@ -22,6 +23,7 @@
         "",
         sprintf("se <- %s", se_name),
         sprintf("colormap <- %s", ecm_name),
+        mod_commands,
         sprintf("colormap <- synchronizeAssays(colormap, se)"),
         "all_contents <- list()",
 

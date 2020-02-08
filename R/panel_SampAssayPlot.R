@@ -283,7 +283,7 @@ setMethod(".generateDotPlotData", "SampAssayPlot", function(x, envir) {
     plot_title <- samp_selected_y
     y_lab <- sprintf("%s (%s)", samp_selected_y, assay_choice)
     data_cmds[["y"]] <- sprintf(
-        "plot.data <- data.frame(Y=assay(se, %s, withDimnames=FALSE)[,%s], row.names=rownames(se));",
+        "plot.data <- data.frame(Y=assay(se, %s)[,%s], row.names=rownames(se));",
         deparse(assay_choice), deparse(samp_selected_y)
     )
 

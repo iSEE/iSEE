@@ -136,7 +136,7 @@
 .processMultiSelections <- function(x, all_memory, all_contents, envir) {
     # Defining the row and column selections, and hoping that the
     # plot-generating functions know what to do with them.
-    select_cmds <- .initialize_cmd_store()
+    select_cmds <- list()
     row_select_cmds <- .process_selectby_choice(x,
         by_field=.selectRowSource, type_field=.selectRowType, saved_field=.selectRowSaved,
         all_memory=all_memory, varname="row_selected")
@@ -145,8 +145,8 @@
         transmitter <- x[[.selectRowSource]]
         .populate_selection_environment(all_memory[[transmitter]], envir)
         envir$all_contents <- all_contents
-        select_cmds <- .add_command(select_cmds, row_select_cmds)
-        select_cmds <- .evaluate_commands(select_cmds, envir)
+        .text_eval(row_select_cmds, envir)
+        select_cmds[["row"]] <- row_select_cmds
     }
 
     col_select_cmds <- .process_selectby_choice(x,
@@ -157,11 +157,15 @@
         transmitter <- x[[.selectColSource]]
         .populate_selection_environment(all_memory[[transmitter]], envir)
         envir$all_contents <- all_contents
-        select_cmds <- .add_command(select_cmds, col_select_cmds)
-        select_cmds <- .evaluate_commands(select_cmds, envir)
+        .text_eval(col_select_cmds, envir)
+        select_cmds[["col"]] <- col_select_cmds
     }
 
-    select_cmds$processed
+    if (length(select_cmds)) {
+        unlist(select_cmds)
+    } else {
+        character(0)
+    }
 }
 
 #' Process multiple selection choice

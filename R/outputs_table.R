@@ -104,7 +104,6 @@
 #'
 #' @rdname INTERNAL_table_commands
 .define_table_commands <- function(x, se, all_memory, all_contents) {
-    tab_cmds <- .initialize_cmd_store()
     eval_env <- new.env()
     eval_env$se <- se
 

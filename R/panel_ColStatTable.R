@@ -69,7 +69,7 @@
 #' sce0 <- .cacheCommonInfo(x, sce)
 #' .refineParameters(x, sce0)
 #'
-#' @name ColStatTable
+#' @name ColStatTable-class
 #' @aliases ColStatTable ColStatTable-class
 #' initialize,ColStatTable-method
 #' .cacheCommonInfo,ColStatTable-method

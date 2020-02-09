@@ -68,7 +68,7 @@
 #' sce <- .cacheCommonInfo(x, sce)
 #' .refineParameters(x, sce)
 #'
-#' @name RowStatTable
+#' @name RowStatTable-class
 #' @aliases RowStatTable RowStatTable-class
 #' initialize,RowStatTable-method
 #' .cacheCommonInfo,RowStatTable-method

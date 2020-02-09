@@ -193,8 +193,8 @@ Note that only <a href='Panel-class.html'>Panel</a>s classes that were in the or
 (as the original <code>initial</code> or in the <code>extra</code>) will be used for security and other reasons.</p>
 <p>The UI elements for the SummarizedExperiment and the initial state are named <code>se</code> and <code>initial</code> respectively.
 This can be used in Shiny bookmarking to initialize an <code><a href='iSEE.html'>iSEE</a></code> in a desired state by simply clicking a link,
-provided that <code>requireButton=FALSE</code> so that the reactive expressions are triggered by <code>initialize_INTERNAL_se</code>.
-We do not use bookmarking to set parameters directly as we will run afoul of URL character limits.</p>
+provided that <code>requireButton=FALSE</code> so that reactive expressions are immediately triggered upon setting <code>se</code> and <code>initial</code>.
+We do not use bookmarking to set all individual <code><a href='iSEE.html'>iSEE</a></code> parameters as we will run afoul of URL character limits.</p>
     <h2 class="hasAnchor" id="defining-a-custom-landing-page"><a class="anchor" href="#defining-a-custom-landing-page"></a>Defining a custom landing page</h2>
 
     
@@ -228,19 +228,16 @@ We suggest that all elements have IDs prefixed with <code>"initialize_INTERNAL"<
 #&gt;         .initializeLaunch
 #&gt;     else .initializeSE
 #&gt;     observeEvent(input[[target]], {
-#&gt;         se2 &lt;- try(seLoad(input[[.initializeSE]]), silent = TRUE)
+#&gt;         se2 &lt;- try(seLoad(input[[.initializeSE]]))
 #&gt;         if (is(se2, "try-error")) {
-#&gt;             showNotification("must upload a valid RDS file", 
-#&gt;                 type = "error")
-#&gt;         }
-#&gt;         else if (!is(se2, "SummarizedExperiment")) {
-#&gt;             showNotification("must upload a SummarizedExperiment object", 
+#&gt;             showNotification("invalid SummarizedExperiment supplied", 
 #&gt;                 type = "error")
 #&gt;         }
 #&gt;         else {
-#&gt;             init &lt;- try(initLoad(input[[.initializeInitial]], 
-#&gt;                 silent = TRUE))
+#&gt;             init &lt;- try(initLoad(input[[.initializeInitial]]))
 #&gt;             if (is(init, "try-error")) {
+#&gt;                 showNotification("invalid initial state supplied", 
+#&gt;                   type = "warning")
 #&gt;                 init &lt;- NULL
 #&gt;             }
 #&gt;             FUN(SE = se2, INITIAL = init)
@@ -248,11 +245,23 @@ We suggest that all elements have IDs prefixed with <code>"initialize_INTERNAL"<
 #&gt;     }, ignoreNULL = TRUE, ignoreInit = TRUE)
 #&gt;     invisible(NULL)
 #&gt; }
-#&gt; &lt;bytecode: 0x2c81fb50&gt;
-#&gt; &lt;environment: 0x2c81e288&gt;</div><div class='input'>
-# Alternative approach:
+#&gt; &lt;bytecode: 0x319bf150&gt;
+#&gt; &lt;environment: 0x217ef268&gt;</div><div class='input'>
+<span class='co'># Alternative approach, to create a landing page</span>
+<span class='co'># that opens one of the datasets from the scRNAseq package.</span>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scRNAseq</span>)
+<span class='no'>all.data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/ls.html'>ls</a></span>(<span class='st'>"package:scRNAseq"</span>)
+<span class='no'>all.data</span> <span class='kw'>&lt;-</span> <span class='no'>all.data</span>[<span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span>(<span class='st'>"Data$"</span>, <span class='no'>all.data</span>)]
 
-</div></pre>
+<span class='no'>FUN</span> <span class='kw'>&lt;-</span> <span class='fu'>createLandingPage</span>(
+    <span class='kw'>seUI</span><span class='kw'>=</span><span class='kw'>function</span>(<span class='no'>id</span>) <span class='fu'>selectInput</span>(<span class='no'>id</span>, <span class='st'>"Dataset:"</span>, <span class='kw'>choices</span><span class='kw'>=</span><span class='no'>all.data</span>),
+    <span class='kw'>seLoad</span><span class='kw'>=</span><span class='kw'>function</span>(<span class='no'>x</span>) <span class='fu'><a href='https://rdrr.io/r/base/get.html'>get</a></span>(<span class='no'>x</span>, <span class='fu'><a href='https://rdrr.io/r/base/as.environment.html'>as.environment</a></span>(<span class='st'>"package:scRNAseq"</span>))()
+)
+
+<span class='no'>app</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='iSEE.html'>iSEE</a></span>(<span class='kw'>landingPage</span><span class='kw'>=</span><span class='no'>FUN</span>)
+<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span>()) {
+  <span class='kw pkg'>shiny</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/shiny/man/runApp.html'>runApp</a></span>(<span class='no'>app</span>, <span class='kw'>port</span><span class='kw'>=</span><span class='fl'>1234</span>)
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

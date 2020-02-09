@@ -372,123 +372,53 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     plot_env$colormap <- metadata(se)$colormap
 
     all_cmds <- list()
+    heatmap_args <- character(0)
+
     all_cmds$select <- .processMultiSelections(x, all_memory, all_contents, plot_env)
-
-    heatmap_args <- ""
-
-    # Feature names default to custom selection if no multiple selection is available.
-    if (x[[.heatMapCustomFeatNames]] || is.null(plot_env$row_selected)) {
-        rn <- .convert_text_to_names(x[[.heatMapFeatNameText]])
-        rn <- intersect(rn, rownames(se))
-        all_cmds[["rows"]] <- sprintf(".heatmap.rows <- %s;", .deparse_for_viewing(rn))
-    } else {
-        all_cmds[["rows"]] <- ".heatmap.rows <- intersect(rownames(se), unlist(row_selected));"
-    }
-
-    # TODO: implement visual effects for other forms of selection.
-    if (!is.null(plot_env$col_selected) && x[[.selectEffect]]==.selectRestrictTitle) {
-        all_cmds[["columns"]] <- ".heatmap.columns <- intersect(colnames(se), unlist(col_selected));"
-    } else {
-        # includes color effect
-        all_cmds[["columns"]] <- ".heatmap.columns <- colnames(se);"
-    }
-
-    assay_name <- x[[.heatMapAssay]]
-    all_cmds[["data"]] <- c(
-        sprintf(
-            'plot.data <- assay(se, %s)[.heatmap.rows, .heatmap.columns, drop=FALSE]',
-            deparse(assay_name)
-        ),
-        'plot.data <- as.matrix(plot.data);'
-    )
-    .text_eval(unlist(all_cmds), plot_env) # TODO: use a command store to avoid re-evaluating those commands below
+    all_cmds$assay <- .process_heatmap_assay_values(x, se, plot_env)
 
     # If there is a matrix to work with at all
     if (all(dim(plot_env[["plot.data"]]) > 0)) {
-        # Row transformations
-        assay_range <- range(assay(se, assay_name), na.rm = TRUE)
-        assay_continuous <- assay_name %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.assay.names
-        if (assay_continuous) {
-            cmds <- .process_heatmap_assay_row_transformations(x)
-            if (length(cmds)){
-                .text_eval(cmds, plot_env)
-                all_cmds[["assay_transforms"]] <- paste0(cmds, collapse = "\n")
-            }
+        trans_cmds <- .process_heatmap_assay_transform(x, se, plot_env)
+        if (length(trans_cmds)) {
+            all_cmds$transform <- trans_cmds
         }
 
-        # Compute the assay colormap after the transformations
-        cmds <- .process_heatmap_assay_colormap(x, se, plot_env)
-        all_cmds[["assay_colormap"]] <- paste0(cmds, collapse = "\n")
-        heatmap_args <- paste0(heatmap_args, ", col=heatmap_col")
+        col_out <- .process_heatmap_colors(x, se, plot_env)
+        all_cmds$color <- col_out$commands
+        heatmap_args <- c(heatmap_args, col_out$args)
 
-        # Side annotations
-        cmds <- .process_heatmap_column_annotations_colorscale(x, se, plot_env)
-        if (length(cmds)) {
-            all_cmds[["column_annotations"]] <- paste0(cmds, collapse = "\n")
-            heatmap_args <- paste0(heatmap_args, ", top_annotation=column_annot")
+        ord_out <- .process_heatmap_ordering(x, se, plot_env)
+        if (length(ord_out$commands)) {
+            all_cmds$ordering <- ord_out$commands
         }
-        cmds <- .process_heatmap_row_annotations_colorscale(x, se, plot_env)
-        if (length(cmds)) {
-            all_cmds[["row_annotations"]] <- paste0(cmds, collapse = "\n")
-            heatmap_args <- paste0(heatmap_args, ", left_annotation=row_annot")
-        }
-
-        if (assay_continuous) {
-            # Row clustering
-            heatmap_args <- paste0(heatmap_args, ", ",
-                sprintf("cluster_rows=%s", x[[.heatMapClusterFeatures]]))
-            # Row clustering options
-            if (x[[.heatMapClusterFeatures]]) {
-                heatmap_args <- paste0(heatmap_args, ", ",
-                    sprintf("clustering_distance_rows=%s", deparse(x[[.heatMapClusterDistanceFeatures]])))
-                heatmap_args <- paste0(heatmap_args, ", ",
-                    sprintf("clustering_method_rows=%s", deparse(x[[.heatMapClusterMethodFeatures]])))
-            }
-        }
-
-        .text_eval(all_cmds[["column_annotations"]], plot_env) # TODO, use command store
-        if (exists(".column_annot_order", plot_env, inherits = FALSE)) {
-            all_cmds[["order_columns"]] <- c("plot.data <- plot.data[, .column_annot_order, drop=FALSE]")
-        }
-
+        heatmap_args <- c(heatmap_args, ord_out$args)
     }
 
     # Column clustering is disabled (ordering by column metadata)
-    heatmap_args <- paste0(heatmap_args, ", cluster_columns=FALSE")
+    heatmap_args[["cluster_columns"]] <- "FALSE"
 
     # Names
-    heatmap_args <- paste0(heatmap_args, ", ", sprintf('name=%s', deparse(.build_heatmap_assay_legend_title(x, !assay_continuous))))
-    heatmap_args <- paste0(heatmap_args, ", ",
-        sprintf("show_row_names=%s", .showNamesRowTitle %in% x[[.showDimnames]]))
-    heatmap_args <- paste0(heatmap_args, ", ",
-        sprintf("show_column_names=%s", .showNamesColumnTitle %in% x[[.showDimnames]]))
+    heatmap_args[["name"]] <- deparse(.build_heatmap_assay_legend_title(x, !.is_heatmap_continuous(x, se)))
+    heatmap_args[["show_row_names"]] <- as.character(.showNamesRowTitle %in% x[[.showDimnames]])
+    heatmap_args[["show_column_names"]] <- as.character(.showNamesColumnTitle %in% x[[.showDimnames]])
 
     # Legend parameters
-    heatmap_args <- paste0(heatmap_args, ", ",
-        sprintf('heatmap_legend_param=list(direction=%s)', deparse(tolower(x[[.plotLegendDirection]]))))
-
-    # Cleanup
-    heatmap_args <- paste0(strwrap(heatmap_args, width = 80, exdent = 4), collapse = "\n")
+    heatmap_args[['heatmap_legend_param']] <- sprintf('list(direction=%s)', deparse(tolower(x[[.plotLegendDirection]])))
 
     # Heatmap
-    all_cmds[["heatmap"]] <- sprintf("hm <- Heatmap(matrix = plot.data%s)", heatmap_args)
-
-    # print(all_cmds)
-    plot_out <- .text_eval(all_cmds, plot_env) # TODO, use command store
-
-    panel_data <- plot_env$plot.data
+    heatmap_args <- sprintf("%s=%s", names(heatmap_args), heatmap_args)
+    heatmap_args <- paste(heatmap_args, collapse=", ")
+    heatmap_call <- sprintf("hm <- Heatmap(matrix=plot.data, %s)", heatmap_args)
+    all_cmds[["heatmap"]] <- paste(strwrap(heatmap_call, width = 80, exdent = 4), collapse = "\n")
+    plot_out <- .text_eval(all_cmds[["heatmap"]], plot_env) 
 
     # Add draw command after all evaluations (avoid drawing in the plotting device)
-    draw_args_list <- list(
-        heatmap_legend_side=tolower(x[[.plotLegendPosition]]),
-        annotation_legend_side=tolower(x[[.plotLegendPosition]])
-    )
-    heatmap_legend_side <- sprintf('heatmap_legend_side = %s', deparse(tolower(x[[.plotLegendPosition]])))
-    annotation_legend_side <- sprintf('annotation_legend_side = %s', deparse(tolower(x[[.plotLegendPosition]])))
-    draw_args <- paste("", heatmap_legend_side, annotation_legend_side, sep = ", ")
-    all_cmds[["draw"]] <- sprintf("draw(hm%s)", draw_args)
+    heatmap_legend_side <- sprintf('heatmap_legend_side=%s', deparse(tolower(x[[.plotLegendPosition]])))
+    annotation_legend_side <- sprintf('annotation_legend_side=%s', deparse(tolower(x[[.plotLegendPosition]])))
+    all_cmds[["draw"]] <- sprintf("draw(hm, %s, %s)", heatmap_legend_side, annotation_legend_side)
 
-    list(commands=all_cmds, contents=panel_data, plot=plot_out, draw_args_list=draw_args_list)
+    list(commands=all_cmds, contents=plot_env$plot.data, plot=plot_out)
 })
 
 #' @export
@@ -502,7 +432,10 @@ setMethod(".renderOutput", "ComplexHeatmapPlot", function(x, se, output, pObject
     output[[plot_name]] <- renderPlot({
         p.out <- .retrieveOutput(plot_name, se, pObjects, rObjects)
         pObjects$varname[[plot_name]] <- "plot.data"
-        do.call(draw, c(p.out$draw_args_list, list(object=p.out$plot)))
+
+        tmp.env <- new.env()
+        tmp.env$hm <- p.out$plot
+        eval(parse(text=p.out$commands[["draw"]]), envir=tmp.env)
     })
     # nocov end
 

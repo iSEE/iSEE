@@ -1,3 +1,104 @@
+#' @importFrom SummarizedExperiment assay
+.process_heatmap_assay_values <- function(x, se, envir) {
+    all_cmds <- character(0)
+
+    # Feature names default to custom selection if no multiple selection is available.
+    if (x[[.heatMapCustomFeatNames]] || is.null(envir$row_selected)) {
+        rn <- .convert_text_to_names(x[[.heatMapFeatNameText]])
+        rn <- intersect(rn, rownames(se))
+        all_cmds[["rows"]] <- sprintf(".heatmap.rows <- %s;", .deparse_for_viewing(rn))
+    } else {
+        all_cmds[["rows"]] <- ".heatmap.rows <- intersect(rownames(se), unlist(row_selected));"
+    }
+
+    if (!is.null(envir$col_selected) && x[[.selectEffect]]==.selectRestrictTitle) {
+        # TODO: implement visual effects for other forms of selection.
+        all_cmds[["columns"]] <- ".heatmap.columns <- intersect(colnames(se), unlist(col_selected));"
+    } else {
+        # includes color effect
+        all_cmds[["columns"]] <- ".heatmap.columns <- colnames(se);"
+    }
+
+    all_cmds[["data"]] <- paste(
+        sprintf(
+            'plot.data <- assay(se, %s)[.heatmap.rows, .heatmap.columns, drop=FALSE]',
+            deparse(x[[.heatMapAssay]])
+        ),
+        'plot.data <- as.matrix(plot.data);',
+        sep='\n'
+    )
+
+    .text_eval(all_cmds, envir) 
+    all_cmds
+}
+
+.is_heatmap_continuous <- function(x, se) {
+    x[[.heatMapAssay]] %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.assay.names
+}
+
+.process_heatmap_assay_transform <- function(x, se, envir) {
+    trans_cmds <- character(0)
+
+    if (.is_heatmap_continuous(x, se)) {
+        cmds <- .process_heatmap_assay_row_transformations(x)
+        if (length(cmds)){
+            .text_eval(cmds, envir)
+            trans_cmds[["assay_transforms"]] <- paste(cmds, collapse = "\n")
+        }
+    }
+
+    trans_cmds
+}
+
+.process_heatmap_colors <- function(x, se, envir) {
+    all_cmds <- character(0)
+    heatmap_args <- character(0)
+
+    # Compute the assay colormap after the transformations
+    cmds <- .process_heatmap_assay_colormap(x, se, envir)
+    all_cmds[["assay_colormap"]] <- paste(cmds, collapse = "\n")
+    heatmap_args[["col"]] <- "heatmap_col"
+
+    # Side annotations
+    cmds <- .process_heatmap_column_annotations_colorscale(x, se, envir)
+    if (length(cmds)) {
+        all_cmds[["column_annotations"]] <- paste0(cmds, collapse = "\n")
+        heatmap_args[["top_annotation"]] <- "column_annot"
+    }
+
+    cmds <- .process_heatmap_row_annotations_colorscale(x, se, envir)
+    if (length(cmds)) {
+        all_cmds[["row_annotations"]] <- paste0(cmds, collapse = "\n")
+        heatmap_args[["left_annotation"]] <- "row_annot"
+    }
+
+    .text_eval(all_cmds, envir) 
+    list(commands=all_cmds, args=heatmap_args)
+}
+
+.process_heatmap_ordering <- function(x, se, envir) {
+    heatmap_args <- character(0)
+
+    # Row clustering and options.
+    if (.is_heatmap_continuous(x, se)) {
+        heatmap_args[["cluster_rows"]] <- as.character(x[[.heatMapClusterFeatures]])
+        if (x[[.heatMapClusterFeatures]]) {
+            heatmap_args[["clustering_distance_rows"]] <- deparse(x[[.heatMapClusterDistanceFeatures]])
+            heatmap_args[["clustering_method_rows"]] <- deparse(x[[.heatMapClusterMethodFeatures]])
+        }
+    }
+
+    if (exists(".column_annot_order", envir, inherits = FALSE)) {
+        all_cmds <- c(order_columns="plot.data <- plot.data[, .column_annot_order, drop=FALSE]")
+        .text_eval(all_cmds, envir) 
+    } else {
+        all_cmds <- character(0)
+    }
+    
+    list(commands=all_cmds, args=heatmap_args)
+}
+
+
 #' Process heatmap colorscales
 #'
 #' These functions generate sets of commands ultimately evaluated in the panel environment to generate various colorscales for a \code{Complex\link{Heatmap}}.

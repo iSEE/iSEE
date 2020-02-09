@@ -394,10 +394,14 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     }
 
     assay_name <- x[[.heatMapAssay]]
-    all_cmds[["data"]] <- sprintf(
-        'plot.data <- assay(se, %s)[.heatmap.rows, .heatmap.columns, drop=FALSE]',
-        deparse(assay_name))
-    .text_eval(all_cmds, plot_env) # TODO: use a command store to avoid re-evaluating those commands below
+    all_cmds[["data"]] <- c(
+        sprintf(
+            'plot.data <- assay(se, %s)[.heatmap.rows, .heatmap.columns, drop=FALSE]',
+            deparse(assay_name)
+        ),
+        'plot.data <- as.matrix(plot.data);'
+    )
+    .text_eval(unlist(all_cmds), plot_env) # TODO: use a command store to avoid re-evaluating those commands below
 
     # If there is a matrix to work with at all
     if (all(dim(plot_env[["plot.data"]]) > 0)) {

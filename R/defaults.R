@@ -261,12 +261,12 @@ heatMapPlotDefaults <- function(se, number) {
 
     out[[.showDimnames]] <- c(.showNamesRowTitle)
 
-    out[[.plotLegendPosition]] <- .plotLegendBottomTitle
-    out[[.plotLegendDirection]] <- .plotLegendHorizontalTitle
+    out[[.plotLegendPosition]] <- opts_panel$get("legend.position")
+    out[[.plotLegendDirection]] <- opts_panel$get("legend.direction")
     out[[.visualParamBoxOpen]] <- FALSE
 
     out[[.selectEffect]] <- .selectColorTitle
-    out[[.selectColor]] <- "red"
+    out[[.selectColor]] <- opts_panel$get("selected.color")
 
     out[[.selectByPlot]] <- .noSelection
     out[[.selectMultiType]] <- .selectMultiActiveTitle
@@ -306,8 +306,8 @@ heatMapPlotDefaults <- function(se, number) {
 
     incoming[[.selectByPlot]] <- .noSelection
     incoming[[.selectEffect]] <- .selectTransTitle
-    incoming[[.selectTransAlpha]] <- 0.1
-    incoming[[.selectColor]] <- "red"
+    incoming[[.selectTransAlpha]] <-opts_panel$get("selected.alpha")
+    incoming[[.selectColor]] <- opts_panel$get("selected.color")
     incoming[[.brushData]] <- rep(list(NULL), nrow(incoming))
 
     incoming[[.multiSelectHistory]] <- rep(list(NULL), nrow(incoming))
@@ -317,19 +317,19 @@ heatMapPlotDefaults <- function(se, number) {
 
     incoming[[.visualParamChoice]] <- rep(list(.visualParamChoiceColorTitle), nrow(incoming))
 
-    incoming[[.plotPointSize]] <- 1
-    incoming[[.plotPointAlpha]] <- 1
-    incoming[[.plotPointDownsample]] <- FALSE
-    incoming[[.plotPointSampleRes]] <- 200
+    incoming[[.plotPointSize]] <- opts_panel$get("point.size")
+    incoming[[.plotPointAlpha]] <- opts_panel$get("point.alpha")
+    incoming[[.plotPointDownsample]] <- opts_panel$get("downsample")
+    incoming[[.plotPointSampleRes]] <- opts_panel$get("downsample.res")
 
-    incoming[[.plotFontSize]] <- 1
-    incoming[[.plotLegendPosition]] <- .plotLegendBottomTitle
+    incoming[[.plotFontSize]] <- opts_panel$get("font.size")
+    incoming[[.plotLegendPosition]] <- opts_panel$get("legend.position")
 
     incoming[[.zoomData]] <- rep(list(NULL), nrow(incoming))
     incoming[[.lassoData]] <- rep(list(NULL), nrow(incoming))
 
     incoming[[.contourAdd]] <- FALSE
-    incoming[[.contourColor]] <- "blue"
+    incoming[[.contourColor]] <- opts_panel$get("contour.color")
     return(incoming)
 }
 
@@ -359,7 +359,7 @@ heatMapPlotDefaults <- function(se, number) {
     }
 
     incoming[[.colorByField]] <- .colorByNothingTitle
-    incoming[[.colorByDefaultColor]] <- "black"
+    incoming[[.colorByDefaultColor]] <- opts_panel$get("point.color")
     incoming[[.colorByColData]] <- def_cov
 
     incoming[[.shapeByField]] <- .shapeByNothingTitle
@@ -373,7 +373,7 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.colorByFeatNameAssay]] <- def_assay
     incoming[[.colorByColTable]] <- .noSelection
     incoming[[.colorBySampName]] <- 1L
-    incoming[[.colorBySampNameColor]] <- "red"
+    incoming[[.colorBySampNameColor]] <- opts_panel$get("selected.color")
 
     incoming[[.facetByRow]] <- FALSE
     incoming[[.facetByColumn]] <- FALSE
@@ -405,7 +405,7 @@ heatMapPlotDefaults <- function(se, number) {
     }
 
     incoming[[.colorByField]] <- .colorByNothingTitle
-    incoming[[.colorByDefaultColor]] <- "black"
+    incoming[[.colorByDefaultColor]] <- opts_panel$get("point.color")
     incoming[[.colorByRowData]] <- def_cov
 
     incoming[[.shapeByField]] <- .shapeByNothingTitle
@@ -416,7 +416,7 @@ heatMapPlotDefaults <- function(se, number) {
 
     incoming[[.colorByRowTable]] <- .noSelection
     incoming[[.colorByFeatName]] <- 1L
-    incoming[[.colorByFeatNameColor]] <- "red"
+    incoming[[.colorByFeatNameColor]] <- opts_panel$get("selected.color")
     incoming[[.colorByColTable]] <- .noSelection
     incoming[[.colorBySampName]] <- 1L
     incoming[[.colorBySampNameAssay]] <- 1L

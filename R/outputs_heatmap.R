@@ -10,10 +10,6 @@
 #' \code{.process_heatmap_assay_values} returns a character vector of commands to set up the assay submatrix,
 #' after evaluating them within \code{envir}.
 #'
-#' \code{.process_heatmap_ordering} returns a list containing \code{commands},
-#' a (possibly empty) character vector to define the ordering of columns;
-#' and \code{args}, a named character vector of R expressions to be passed as arguments to the \code{\link{Heatmap}} command.
-#'
 #' \code{.is_heatmap_continuous} returns a logical scalar indicating whether the assay values are continuous.
 #'
 #' @author
@@ -59,12 +55,6 @@
     x[[.heatMapAssay]] %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.assay.names
 }
 
-#' @rdname INTERNAL_process_heatmap
-.process_heatmap_ordering <- function(x, se, envir) {
-    
-    list(commands=all_cmds, args=heatmap_args)
-}
-
 #' Process heatmap colorscales
 #'
 #' These functions construct and evaluate commands to generate various colorscales for a \code{Complex\link{Heatmap}}.
@@ -90,7 +80,6 @@
 #' @author Kevin Rue-Albrecht
 #'
 #' @rdname INTERNAL_process_heatmap_colormap
-#' @aliases .process_heatmap_assay_colormap
 .process_heatmap_assay_colormap <- function(x, se, envir) {
     assay_name <- x[[.heatMapAssay]]
     cmds <- character(0)

@@ -379,20 +379,38 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
 
     # If there is a matrix to work with at all
     if (all(dim(plot_env[["plot.data"]]) > 0)) {
-        trans_cmds <- .process_heatmap_assay_transform(x, se, plot_env)
+
+        # Applying tranfsormation
+        trans_cmds <- .process_heatmap_assay_row_transformations(x, se, plot_env)
         if (length(trans_cmds)) {
             all_cmds$transform <- trans_cmds
         }
 
-        col_out <- .process_heatmap_colors(x, se, plot_env)
-        all_cmds$color <- col_out$commands
-        heatmap_args <- c(heatmap_args, col_out$args)
+        # Compute the assay colormap after the transformations
+        all_cmds$assay_colormap <- .process_heatmap_assay_colormap(x, se, plot_env)
+        heatmap_args[["col"]] <- ".assay_colors"
 
-        ord_out <- .process_heatmap_ordering(x, se, plot_env)
-        if (length(ord_out$commands)) {
-            all_cmds$ordering <- ord_out$commands
+        # Compute the annotations
+        cmds <- .process_heatmap_column_annotations_colorscale(x, se, plot_env)
+        if (length(cmds)) {
+            all_cmds$column_annotations <- paste0(cmds, collapse = "\n")
+            heatmap_args[["top_annotation"]] <- ".column_annot"
         }
-        heatmap_args <- c(heatmap_args, ord_out$args)
+
+        cmds <- .process_heatmap_row_annotations_colorscale(x, se, plot_env)
+        if (length(cmds)) {
+            all_cmds$row_annotations <- paste0(cmds, collapse = "\n")
+            heatmap_args[["left_annotation"]] <- ".row_annot"
+        }
+
+        # Row clustering. 
+        if (.is_heatmap_continuous(x, se)) {
+            heatmap_args[["cluster_rows"]] <- as.character(x[[.heatMapClusterFeatures]])
+            if (x[[.heatMapClusterFeatures]]) {
+                heatmap_args[["clustering_distance_rows"]] <- deparse(x[[.heatMapClusterDistanceFeatures]])
+                heatmap_args[["clustering_method_rows"]] <- deparse(x[[.heatMapClusterMethodFeatures]])
+            }
+        }
     }
 
     # Column clustering is disabled (ordering by column metadata)
@@ -410,8 +428,10 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     heatmap_args <- sprintf("%s=%s", names(heatmap_args), heatmap_args)
     heatmap_args <- paste(heatmap_args, collapse=", ")
     heatmap_call <- sprintf("hm <- Heatmap(matrix=plot.data, %s)", heatmap_args)
-    all_cmds[["heatmap"]] <- paste(strwrap(heatmap_call, width = 80, exdent = 4), collapse = "\n")
-    plot_out <- .text_eval(all_cmds[["heatmap"]], plot_env) 
+
+    heat_cmd <- paste(strwrap(heatmap_call, width = 80, exdent = 4), collapse = "\n")
+    plot_out <- .text_eval(heat_cmd, plot_env) 
+    all_cmds[["heatmap"]] <- heat_cmd
 
     # Add draw command after all evaluations (avoid drawing in the plotting device)
     heatmap_legend_side <- sprintf('heatmap_legend_side=%s', deparse(tolower(x[[.plotLegendPosition]])))

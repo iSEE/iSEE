@@ -53,7 +53,7 @@ test_that(".single_string_error detects issues", {
     x <- RedDimPlot()
     x[[iSEE:::.colorByField]] <- character(0)
 
-    out <- .single_string_error(msg, x, fields = iSEE:::.colorByField)
+    out <- iSEE:::.single_string_error(msg, x, fields = iSEE:::.colorByField)
     expect_identical(out, "'ColorBy' should be a single string for 'RedDimPlot'")
 
 })
@@ -65,7 +65,7 @@ test_that(".valid_logical_error detects issues", {
     x <- RedDimPlot()
     x[[iSEE:::.visualParamBoxOpen]] <- NA
 
-    out <- .valid_logical_error(msg, x, fields = iSEE:::.visualParamBoxOpen)
+    out <- iSEE:::.valid_logical_error(msg, x, fields = iSEE:::.visualParamBoxOpen)
     expect_identical(out, "'VisualBoxOpen' should be a non-NA logical scalar for 'RedDimPlot'")
 
 })
@@ -77,7 +77,7 @@ test_that(".valid_string_error detects issues", {
     x <- RedDimPlot()
     x[[iSEE:::.colorByDefaultColor]] <- c("a", "b")
 
-    out <- .valid_string_error(msg, x, fields = iSEE:::.colorByDefaultColor)
+    out <- iSEE:::.valid_string_error(msg, x, fields = iSEE:::.colorByDefaultColor)
     expect_identical(out, "'ColorByDefaultColor' should be a non-NA string for 'RedDimPlot'")
 
 })
@@ -89,7 +89,7 @@ test_that(".allowable_choice_error detects issues", {
     x <- RedDimPlot()
     x[[iSEE:::.selectEffect]] <- "other"
 
-    out <- .allowable_choice_error(msg, x, .selectEffect, c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle))
+    out <- iSEE:::.allowable_choice_error(msg, x, .selectEffect, c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle))
     expect_identical(out, "'SelectEffect' for 'RedDimPlot' should be one of 'Restrict', 'Color', 'Transparent'")
 
 })
@@ -102,8 +102,7 @@ test_that(".multiple_choice_error detects issues", {
     x[[iSEE:::.visualParamChoice]] <- "other"
 
     out <- .multiple_choice_error(msg, x, .visualParamChoice,
-                                  c(.visualParamChoiceColorTitle, .visualParamChoiceShapeTitle, .visualParamChoicePointTitle,
-                                    .visualParamChoiceFacetTitle, .visualParamChoiceOtherTitle))
+        c(.visualParamChoiceColorTitle, .visualParamChoiceShapeTitle, .visualParamChoicePointTitle, .visualParamChoiceFacetTitle, .visualParamChoiceOtherTitle))
     expect_identical(out, "values of 'VisualChoices' for 'RedDimPlot' should be in 'Color', 'Shape', 'Points', 'Facets', 'Other'")
 
 })
@@ -115,7 +114,7 @@ test_that(".valid_number_error detects issues", {
     x <- RedDimPlot()
     x[[iSEE:::.selectTransAlpha]] <- 2
 
-    out <- .valid_number_error(msg, x, .selectTransAlpha, lower=0, upper=1)
+    out <- iSEE:::.valid_number_error(msg, x, .selectTransAlpha, lower=0, upper=1)
     expect_identical(out, "'SelectAlpha' for 'RedDimPlot' should be a numeric scalar in [0, 1]")
 
 })
@@ -223,22 +222,35 @@ test_that(".safe_reactive_bump reset counter to 0 at a threhsold", {
     rObjects <- new.env()
     rObjects$counter <- 8L
 
-    .safe_reactive_bump(rObjects, "counter", 10L)
+    iSEE:::.safe_reactive_bump(rObjects, "counter", 10L)
     expect_identical(rObjects$counter, 9L)
 
-    .safe_reactive_bump(rObjects, "counter", 10L)
+    iSEE:::.safe_reactive_bump(rObjects, "counter", 10L)
     expect_identical(rObjects$counter, 0L)
 
 })
 
-test_that(".increment_counter", {
+test_that(".increment_counter works", {
 
     counter <- 8L
 
-    out <- .increment_counter(counter, max = 10L)
+    out <- iSEE:::.increment_counter(counter, max = 10L)
     expect_identical(out, 9L)
 
-    out <- .increment_counter(counter, max = 9L)
+    out <- iSEE:::.increment_counter(counter, max = 9L)
     expect_identical(out, 0L)
+
+})
+
+test_that(".safe_nonzero_range works", {
+
+    out <- iSEE:::.safe_nonzero_range(range = c(3, 4), centered = FALSE)
+    expect_identical(out, c(3, 4))
+
+    out <- iSEE:::.safe_nonzero_range(range = c(2, 2), centered = FALSE)
+    expect_identical(out, c(2, 3))
+
+    out <- iSEE:::.safe_nonzero_range(range = c(2, 2), centered = TRUE)
+    expect_identical(out, c(1, 3))
 
 })

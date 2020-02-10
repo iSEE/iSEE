@@ -41,9 +41,9 @@
 #'
 #' @examples
 #' library(scater)
-#' CUSTOM_PCA <- function(se, rows, columns, ntop=500, scale_features=TRUE) {
+#' CUSTOM_PCA <- function(se, rows, columns, ntop=500, scale=TRUE) {
 #'     if (!is.null(columns)) {
-#'         kept <- se[, columns]
+#'         kept <- se[, unique(unlist(columns))]
 #'     } else {
 #'         return(
 #'             ggplot() + theme_void() + geom_text(
@@ -53,20 +53,30 @@
 #'             )
 #'     }
 #' 
-#'     scale_features <- as.logical(scale_features)
-#'     kept <- runPCA(kept, ntop=ntop, scale_features=scale_features)
-#'     plotPCA(kept, colour_by=colour_by)
+#'     if (!is.null(rows)) {
+#'         subset_row <- unique(unlist(rows))
+#'     } else {
+#'         subset_row <- NULL
+#'     }
+#'
+#'     kept <- runPCA(kept, ncomponents=2, ntop=ntop, 
+#'         scale=scale, subset_row=subset_row)
+#'     plotPCA(kept)
 #' }
 #'
-#' GEN <- createCustomPlot(CUSTOM_PCA, argNumbers="ntop", argFlags="scale_features")
+#' GEN <- createCustomPlot(CUSTOM_PCA, argNumbers="ntop", argFlags="scale")
 #' GEN()
 #'
-#' \dontrun{
-#' # Assume we have a SCE object lying around:
-#' iSEE(sce, initial=list(
-#'     RedDimPlot(PanelId=1L),
-#'     GEN(SelectColSource="RedDimPlot1")
-#' )
+#' if (interactive()) {
+#'     library(scRNAseq)
+#'     sce <- ReprocessedAllenData("tophat_counts")
+#'     library(scater)
+#'     sce <- logNormCounts(sce, exprs_values="tophat_counts")
+#'
+#'     iSEE(sce, initial=list(
+#'         ColDataPlot(PanelId=1L),
+#'         GEN(SelectColSource="ColDataPlot1")
+#'     ))
 #' }
 #' @author Aaron Lun
 #' 
@@ -88,7 +98,9 @@ createCustomTable <- function(FUN,
 
     fn_name <- deparse(substitute(FUN))
     setMethod(".generateTable", className, function(x, envir) {
-        .execute_custom_function(FUN, fn_name, assigned="tab", envir=envir)
+        .execute_custom_function(x, FUN, 
+            fn_name=fn_name, assigned="tab", envir=envir,
+            fn_args=c(argStrings, argNumbers, argFlags))
     }, where=.GlobalEnv)
 
     generator
@@ -110,13 +122,19 @@ createCustomPlot <- function(FUN,
     .spawn_custom_methods(FUN, className=className, fullName=fullName,
         argStrings=argStrings, argNumbers=argNumbers, argFlags=argFlags)
 
+    setMethod(".defineOutput", className, function(x) {
+        plotOutput(.getEncodedName(x))
+    }, where=.GlobalEnv)
+
     fn_name <- deparse(substitute(FUN))
     setMethod(".generateOutput", className, function(x, se, all_memory, all_contents) {
         plot_env <- new.env()
         plot_env$se <- se
 
         selected <- .processMultiSelections(x, all_memory, all_contents, plot_env)
-        commands <- .execute_custom_function(FUN, fn_name, assigned="gg", envir=plot_env)
+        commands <- .execute_custom_function(x, FUN, 
+            fn_name=fn_name, assigned="gg", envir=plot_env,
+            fn_args=c(argStrings, argNumbers, argFlags))
         commands <- sub("^gg <- ", "", commands) # to avoid an unnecessary variable.
         
         list(contents=plot_env$gg, commands=list(select=selected, plot=commands))
@@ -154,7 +172,7 @@ createCustomPlot <- function(FUN,
             textInput(paste0(tab_name, "_", id),  label=id, value=x[[id]])
         })
 
-        number_ui <- lapply(argStrings, function(id) {
+        number_ui <- lapply(argNumbers, function(id) {
             numericInput(paste0(tab_name, "_", id), label=id, value=x[[id]])
         })
 
@@ -166,30 +184,32 @@ createCustomPlot <- function(FUN,
     }, where=.GlobalEnv)
 
     setMethod(".fullName", className, function(x) fullName, where=.GlobalEnv)
+
+    setMethod(".panelColor", className, function(x) "#4D4D4D", where=.GlobalEnv)
 }
 
-.execute_custom_function <- function(FUN, fn_name, assigned, envir) {
-    fn_args <- paste(assigned, "<- %s(se,") 
+.execute_custom_function <- function(x, FUN, fn_name, fn_args, assigned, envir) {
+    fn_call <- paste(assigned, "<- %s(se,") 
 
     if (exists("row_selected", envir, inherits=FALSE)) {
-        fn_args <- paste(fn_args, "row_selected,")
+        fn_call <- paste(fn_call, "row_selected,")
     } else {
-        fn_args <- paste(fn_args, "NULL,")
+        fn_call <- paste(fn_call, "NULL,")
     }
     
     if (exists("col_selected", envir, inherits=FALSE)) {
-        fn_args <- paste(fn_args, "col_selected,")
+        fn_call <- paste(fn_call, "col_selected,")
     } else {
-        fn_args <- paste(fn_args, "NULL,")
+        fn_call <- paste(fn_call, "NULL,")
     }
 
     extra_args <- list()
-    for (i in c(argStrings, argNumbers, argFlags)) {
+    for (i in fn_args) {
         extra_args[[i]] <- deparse(x[[i]])
     }
-    extra_args <- paste(sprintf("%s=%s", names(fn_args), unlist(constructed)), collapse=", ")
+    extra_args <- paste(sprintf("%s=%s", names(extra_args), unlist(extra_args)), collapse=", ")
 
-    total_call <- paste(fn_args, extra_args)
+    total_call <- paste(fn_call, extra_args)
     total_call <- paste0(total_call, ")")
     total_call <- paste(strwrap(total_call, exdent=4), collapse="\n")
 

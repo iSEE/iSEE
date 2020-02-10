@@ -46,6 +46,26 @@ test_that(".process_heatmap_assay_colormap handles centered values", {
         ".assay_colors <- circlize::colorRamp2(breaks = c(1, 0, 10), colors = .assay_colors)" ))
 })
 
+test_that(".process_heatmap_assay_colormap handles custom bounds", {
+
+    plot_env <- new.env()
+
+    plot_env$plot.data <- assay(sce, "tophat_counts")[1:3, 1:3]
+    plot_env$colormap <- ExperimentColorMap()
+
+    x <- memory[["ComplexHeatmapPlot1"]]
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+    x[[iSEE:::.heatMapCustomAssayBounds]] <- TRUE
+    x[[iSEE:::.assayLowerBound]] <- NA_real_
+    x[[iSEE:::.assayUpperBound]] <- NA_real_
+
+    out <- iSEE:::.process_heatmap_assay_colormap(x, sce, plot_env)
+    expect_identical(out, c(
+        '.assay_colors <- assayColorMap(colormap, "tophat_counts", discrete=FALSE)(21L)',
+        ".assay_colors <- circlize::colorRamp2(breaks = seq(0, 690, length.out = 21L), colors = .assay_colors)" ))
+})
+
 test_that(".process_heatmap_column_annotations_colorscale handles column selections", {
 
     plot_env <- new.env()

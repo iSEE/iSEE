@@ -183,6 +183,15 @@ createCustomPlot <- function(FUN,
         do.call(tagList, c(string_ui, number_ui, flag_ui))
     }, where=.GlobalEnv)
 
+    setMethod(".createObservers", className, function(x, se, input, session, pObjects, rObjects) {
+        panel_name <- .getEncodedName(x)
+
+        # Doesn't matter all that much whether they're protected or not,
+        # given that custom panels cannot transmit.
+        .createProtectedParameterObservers(panel_name, c(argStrings, argNumbers, argFlags),
+            input=input, pObjects=pObjects, rObjects=rObjects)
+    }, where=.GlobalEnv)
+
     setMethod(".fullName", className, function(x) fullName, where=.GlobalEnv)
 
     setMethod(".panelColor", className, function(x) "#4D4D4D", where=.GlobalEnv)

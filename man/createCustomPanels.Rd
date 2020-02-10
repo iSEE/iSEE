@@ -12,7 +12,8 @@ createCustomTable(
   argNumbers = character(0),
   argFlags = character(0),
   className = "CustomTable",
-  fullName = "Custom table"
+  fullName = "Custom table",
+  where = topenv(parent.frame())
 )
 
 createCustomPlot(
@@ -21,7 +22,8 @@ createCustomPlot(
   argNumbers = character(0),
   argFlags = character(0),
   className = "CustomPlot",
-  fullName = "Custom plot"
+  fullName = "Custom plot",
+  where = topenv(parent.frame())
 )
 }
 \arguments{
@@ -38,6 +40,8 @@ See Details for the expected arguments.}
 \item{className}{String containing the name of the new \linkS4class{Panel} class.}
 
 \item{fullName}{String containing the full name of the new class.}
+
+\item{where}{An environment indicating where the class and method definitions should be stored.}
 }
 \value{
 A new class and its methods are defined in the global environment.
@@ -109,6 +113,7 @@ if (interactive()) {
         GEN(SelectColSource="ColDataPlot1")
     ))
 }
+
 }
 \author{
 Aaron Lun

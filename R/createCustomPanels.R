@@ -12,6 +12,7 @@
 #' @param argFlags Character vector of names of optional (scalar) logical arguments to \code{FUN}.
 #' @param className String containing the name of the new \linkS4class{Panel} class.
 #' @param fullName String containing the full name of the new class.
+#' @param where An environment indicating where the class and method definitions should be stored.
 #' 
 #' @return
 #' A new class and its methods are defined in the global environment.
@@ -78,30 +79,32 @@
 #'         GEN(SelectColSource="ColDataPlot1")
 #'     ))
 #' }
+#'
 #' @author Aaron Lun
 #' 
 #' @export
 #' @name createCustomPanels
 createCustomTable <- function(FUN, 
     argStrings=character(0), argNumbers=character(0), argFlags=character(0),
-    className="CustomTable", fullName="Custom table")
+    className="CustomTable", fullName="Custom table", where=topenv(parent.frame()))
 {
     collated <- character(0)
     collated[argStrings] <- "character"
     collated[argNumbers] <- "numeric"
     collated[argFlags] <- "logical"
 
-    generator <- setClass(className, contains="Table", slots=collated, where=.GlobalEnv)
+    generator <- setClass(className, contains="Table", slots=collated, where=where)
 
     .spawn_custom_methods(FUN, className=className, fullName=fullName,
-        argStrings=argStrings, argNumbers=argNumbers, argFlags=argFlags)
+        argStrings=argStrings, argNumbers=argNumbers, argFlags=argFlags,
+        where=where)
 
     fn_name <- deparse(substitute(FUN))
     setMethod(".generateTable", className, function(x, envir) {
         .execute_custom_function(x, FUN, 
             fn_name=fn_name, assigned="tab", envir=envir,
             fn_args=c(argStrings, argNumbers, argFlags))
-    }, where=.GlobalEnv)
+    }, where=where)
 
     generator
 }
@@ -110,21 +113,22 @@ createCustomTable <- function(FUN,
 #' @rdname createCustomPanels
 createCustomPlot <- function(FUN,
     argStrings=character(0), argNumbers=character(0), argFlags=character(0),
-    className="CustomPlot", fullName="Custom plot")
+    className="CustomPlot", fullName="Custom plot", where=topenv(parent.frame()))
 {
     collated <- character(0)
     collated[argStrings] <- "character"
     collated[argNumbers] <- "numeric"
     collated[argFlags] <- "logical"
 
-    generator <- setClass(className, contains="Panel", slots=collated, where=.GlobalEnv)
+    generator <- setClass(className, contains="Panel", slots=collated, where=where)
 
     .spawn_custom_methods(FUN, className=className, fullName=fullName,
-        argStrings=argStrings, argNumbers=argNumbers, argFlags=argFlags)
+        argStrings=argStrings, argNumbers=argNumbers, argFlags=argFlags,
+        where=where)
 
     setMethod(".defineOutput", className, function(x) {
         plotOutput(.getEncodedName(x))
-    }, where=.GlobalEnv)
+    }, where=where)
 
     fn_name <- deparse(substitute(FUN))
     setMethod(".generateOutput", className, function(x, se, all_memory, all_contents) {
@@ -138,7 +142,7 @@ createCustomPlot <- function(FUN,
         commands <- sub("^gg <- ", "", commands) # to avoid an unnecessary variable.
         
         list(contents=plot_env$gg, commands=list(select=selected, plot=commands))
-    }, where=.GlobalEnv)
+    }, where=where)
 
     setMethod(".renderOutput", className, function(x, se, output, pObjects, rObjects) {
         plot_name <- .getEncodedName(x)
@@ -147,14 +151,15 @@ createCustomPlot <- function(FUN,
             p.out <- .retrieveOutput(plot_name, se, pObjects, rObjects)
             p.out$contents
         })
-    }, where=.GlobalEnv)
+    }, where=where)
 
     generator
 }
 
 #' @importFrom shiny tagList textInput numericInput checkboxInput
 .spawn_custom_methods <- function(FUN, className, fullName,
-    argStrings=character(0), argNumbers=character(0), argFlags=character(0))
+    argStrings=character(0), argNumbers=character(0), argFlags=character(0),
+    where=topenv(parent.frame()))
 {
     defaults <- formals(FUN)
     setMethod("initialize", className, function(.Object, ...) {
@@ -163,7 +168,7 @@ createCustomPlot <- function(FUN,
             args <- .empty_default(args, x, defaults[[x]])
         }
         do.call(callNextMethod, c(list(.Object), args))
-    }, where=.GlobalEnv)
+    }, where=where)
 
     setMethod(".defineDataInterface", className, function(x, se, select_info) {
         tab_name <- .getEncodedName(x)
@@ -181,7 +186,7 @@ createCustomPlot <- function(FUN,
         })
 
         do.call(tagList, c(string_ui, number_ui, flag_ui))
-    }, where=.GlobalEnv)
+    }, where=where)
 
     setMethod(".createObservers", className, function(x, se, input, session, pObjects, rObjects) {
         panel_name <- .getEncodedName(x)
@@ -190,11 +195,11 @@ createCustomPlot <- function(FUN,
         # given that custom panels cannot transmit.
         .createProtectedParameterObservers(panel_name, c(argStrings, argNumbers, argFlags),
             input=input, pObjects=pObjects, rObjects=rObjects)
-    }, where=.GlobalEnv)
+    }, where=where)
 
-    setMethod(".fullName", className, function(x) fullName, where=.GlobalEnv)
+    setMethod(".fullName", className, function(x) fullName, where=where)
 
-    setMethod(".panelColor", className, function(x) "#4D4D4D", where=.GlobalEnv)
+    setMethod(".panelColor", className, function(x) "#4D4D4D", where=where)
 }
 
 .execute_custom_function <- function(x, FUN, fn_name, fn_args, assigned, envir) {

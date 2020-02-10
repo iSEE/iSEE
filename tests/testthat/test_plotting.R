@@ -776,13 +776,13 @@ test_that(".coerce_type handles various inputs correctly", {
     expect_identical(lab_out, NULL)
 
     lab_out <- iSEE:::.coerce_type(letters, input_field, as_numeric=FALSE)
-    expect_identical(lab_out, "plot.data$XYZ <- factor(plot.data$XYZ);")
+    expect_identical(lab_out, 'plot.data[["XYZ"]] <- factor(plot.data[["XYZ"]]);')
 
     lab_out <- iSEE:::.coerce_type(factor(letters), input_field, as_numeric=FALSE)
     expect_identical(lab_out, NULL)
 
     lab_out <- iSEE:::.coerce_type(1:10, input_field, as_numeric=FALSE)
-    expect_identical(lab_out, "plot.data$XYZ <- factor(plot.data$XYZ);")
+    expect_identical(lab_out, 'plot.data[["XYZ"]] <- factor(plot.data[["XYZ"]]);')
 })
 
 ########################################

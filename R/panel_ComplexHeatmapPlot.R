@@ -403,7 +403,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
             heatmap_args[["left_annotation"]] <- ".row_annot"
         }
 
-        # Row clustering. 
+        # Row clustering.
         if (.is_heatmap_continuous(x, se)) {
             heatmap_args[["cluster_rows"]] <- as.character(x[[.heatMapClusterFeatures]])
             if (x[[.heatMapClusterFeatures]]) {
@@ -427,16 +427,16 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     # Heatmap
     heatmap_args <- sprintf("%s=%s", names(heatmap_args), heatmap_args)
     heatmap_args <- paste(heatmap_args, collapse=", ")
-    heatmap_call <- sprintf("hm <- Heatmap(matrix=plot.data, %s)", heatmap_args)
+    heatmap_call <- sprintf("hm <- ComplexHeatmap::Heatmap(matrix=plot.data, %s)", heatmap_args)
 
     heat_cmd <- paste(strwrap(heatmap_call, width = 80, exdent = 4), collapse = "\n")
-    plot_out <- .text_eval(heat_cmd, plot_env) 
+    plot_out <- .text_eval(heat_cmd, plot_env)
     all_cmds[["heatmap"]] <- heat_cmd
 
     # Add draw command after all evaluations (avoid drawing in the plotting device)
     heatmap_legend_side <- sprintf('heatmap_legend_side=%s', deparse(tolower(x[[.plotLegendPosition]])))
     annotation_legend_side <- sprintf('annotation_legend_side=%s', deparse(tolower(x[[.plotLegendPosition]])))
-    all_cmds[["draw"]] <- sprintf("draw(hm, %s, %s)", heatmap_legend_side, annotation_legend_side)
+    all_cmds[["draw"]] <- sprintf("ComplexHeatmap::draw(hm, %s, %s)", heatmap_legend_side, annotation_legend_side)
 
     list(commands=all_cmds, contents=plot_env$plot.data, plot=plot_out)
 })

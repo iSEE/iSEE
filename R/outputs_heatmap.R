@@ -1,3 +1,33 @@
+#' Heatmap processing commands 
+#'
+#' Constructs, evaluates and returns commands to process the heatmap values.
+#'
+#' @param x A \linkS4class{ComplexHeatmapPlot} instance.
+#' @param se The current \linkS4class{SummarizedExperiment} object.
+#' @param envir The evaluation environment.
+#'
+#' @return
+#' \code{.process_heatmap_assay_values} returns a character vector of commands to set up the assay submatrix,
+#' after evaluating them within \code{envir}.
+#'
+#' \code{.process_heatmap_assay_transform} returns a character vector of commands to transform the assay values by row,
+#' after evaluating them within \code{envir}.
+#' Note that this output may potentially be empty.
+#'
+#' \code{.process_heatmap_colors} returns a list containing \code{commands},
+#' a character vector to define assay colors and column/row annotation;
+#' and \code{args}, a named character vector of R expressions to be passed as arguments to the \code{\link{Heatmap}} command.
+#' 
+#' \code{.process_heatmap_ordering} returns a list containing \code{commands},
+#' a (possibly empty) character vector to define the ordering of columns;
+#' and \code{args}, a named character vector of R expressions to be passed as arguments to the \code{\link{Heatmap}} command.
+#'
+#' \code{.is_heatmap_continuous} returns a logical scalar indicating whether the assay values are continuous.
+#'
+#' @author
+#' Kevin Rue-Albrecht
+#'
+#' @rdname INTERNAL_process_heatmap
 #' @importFrom SummarizedExperiment assay
 .process_heatmap_assay_values <- function(x, se, envir) {
     all_cmds <- character(0)
@@ -32,10 +62,12 @@
     all_cmds
 }
 
+#' @rdname INTERNAL_process_heatmap
 .is_heatmap_continuous <- function(x, se) {
     x[[.heatMapAssay]] %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.assay.names
 }
 
+#' @rdname INTERNAL_process_heatmap
 .process_heatmap_assay_transform <- function(x, se, envir) {
     trans_cmds <- character(0)
 
@@ -50,6 +82,7 @@
     trans_cmds
 }
 
+#' @rdname INTERNAL_process_heatmap
 .process_heatmap_colors <- function(x, se, envir) {
     all_cmds <- character(0)
     heatmap_args <- character(0)
@@ -76,6 +109,7 @@
     list(commands=all_cmds, args=heatmap_args)
 }
 
+#' @rdname INTERNAL_process_heatmap
 .process_heatmap_ordering <- function(x, se, envir) {
     heatmap_args <- character(0)
 
@@ -97,7 +131,6 @@
     
     list(commands=all_cmds, args=heatmap_args)
 }
-
 
 #' Process heatmap colorscales
 #'

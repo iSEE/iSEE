@@ -1,4 +1,4 @@
-#' Heatmap processing commands 
+#' Heatmap processing commands
 #'
 #' Constructs, evaluates and returns commands to process the heatmap values.
 #'
@@ -46,7 +46,7 @@
         sep='\n'
     )
 
-    .text_eval(all_cmds, envir) 
+    .text_eval(all_cmds, envir)
     all_cmds
 }
 
@@ -84,7 +84,7 @@
     assay_name <- x[[.heatMapAssay]]
     cmds <- character(0)
 
-    if (.is_heatmap_continuous(x, se)) { 
+    if (.is_heatmap_continuous(x, se)) {
         if (x[[.assayCenterRows]]) {
             choice_colors <- x[[.heatMapCenteredColormap]]
             choice_colors <- strsplit(choice_colors, split = " < ", fixed = TRUE)[[1]]
@@ -109,16 +109,16 @@
 
         col_range <- .safe_nonzero_range(col_range, centered)
         if (x[[.assayCenterRows]]) {
-            fmt <- '.assay_colors <- colorRamp2(breaks = c(%s, 0, %s), colors = .assay_colors)'
+            fmt <- '.assay_colors <- circlize::colorRamp2(breaks = c(%s, 0, %s), colors = .assay_colors)'
         } else {
-            fmt <- ".assay_colors <- colorRamp2(breaks = seq(%s, %s, length.out = 21L), colors = .assay_colors)"
+            fmt <- ".assay_colors <- circlize::colorRamp2(breaks = seq(%s, %s, length.out = 21L), colors = .assay_colors)"
         }
         col_cmd <- sprintf(fmt, col_range[1], col_range[2])
         cmds <- c(cmds, col_cmd)
 
     } else if (assay_name %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.assay.names) {
         cmds <- c(cmds, '.assay_values <- unique(as.vector(plot.data))')
-        cmds <- c(cmds, '.assay_values <- setdiff(assay.values, NA)')
+        cmds <- c(cmds, '.assay_values <- setdiff(.assay_values, NA)')
         cmds <- c(cmds, sprintf(".assay_colors <- colDataColorMap(colormap, %s, discrete=TRUE)(%s)",
             deparse(assay_name), 'length(.assay_values)'))
         cmds <- c(cmds, 'names(.assay_colors) <- .assay_values')
@@ -147,7 +147,7 @@
         cmds <- c(cmds, '.column_data[unlist(col_selected), "Selected points"] <- TRUE')
     }
     .text_eval(cmds, envir)
-    
+
     # Collect color maps
     init_cmd <- ".column_col <- list()"
     .text_eval(init_cmd, envir)
@@ -156,24 +156,24 @@
     for (annot in x[[.heatMapColData]]) {
         cmds <- c(cmds, .coerce_dataframe_columns(envir, annot, ".column_data"))
 
-        cmd_get_value <- sprintf(".col_values <- .column_data[[%s]]", deparse(annot))
+        cmd_get_value <- sprintf(".color_values <- .column_data[[%s]]", deparse(annot))
         .text_eval(cmd_get_value, envir)
         cmds <- c(cmds, cmd_get_value)
 
         if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.colData.names) {
             colcmds <- sprintf('.col_colors <- colDataColorMap(colormap, %s, discrete=FALSE)(21L)', deparse(annot))
-            colcmds <- c(colcmds, 
+            colcmds <- c(colcmds,
                 sprintf(
-                    ".column_col[[%s]] <- %s", 
+                    ".column_col[[%s]] <- %s",
                     deparse(annot),
-                    .define_continuous_annotation_colorscale(envir$.col_values, ".col_colors")
+                    .define_continuous_annotation_colorscale(envir$.color_values, ".col_colors")
                 )
             )
         } else if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.colData.names) {
-            colcmds <- ".col_values <- setdiff(unique(.col_values), NA)"
+            colcmds <- ".color_values <- setdiff(unique(.color_values), NA)"
             colcmds <- c(colcmds, sprintf(".col_colors <- colDataColorMap(colormap, %s, discrete=TRUE)(%s)",
-                deparse(annot), 'length(.col_values)'))
-            colcmds <- c(colcmds, 'names(.col_colors) <- unique(.col_values)')
+                deparse(annot), 'length(.color_values)'))
+            colcmds <- c(colcmds, 'names(.col_colors) <- unique(.color_values)')
             colcmds <- c(colcmds, sprintf(".column_col[[%s]] <- .col_colors", deparse(annot)))
         }
 
@@ -185,27 +185,27 @@
     additional <- character(0)
 
     if (has_incoming_color) {
-        additional <- c(additional, sprintf('.column_col[["Selected points"]] <- c("TRUE"=%s, "FALSE"="white")', 
+        additional <- c(additional, sprintf('.column_col[["Selected points"]] <- c("TRUE"=%s, "FALSE"="white")',
             deparse(x[[.selectColor]])), "")
     }
 
-    additional <- c(additional, '.column_data <- .column_data[.heatmap.columns,,drop=FALSE]')
+    additional <- c(additional, '.column_data <- .column_data[.heatmap.columns, , drop=FALSE]')
     additional <- c(additional, '.column_data <- as.data.frame(.column_data, optional=TRUE)') # preserve colnames
 
     if (length(x[[.heatMapColData]])) {
         # Reordering by the column annotations.
-        additional <- c(additional, sprintf(".column_annot_order <- with(.column_data, order(%s))", 
+        additional <- c(additional, sprintf(".column_annot_order <- with(.column_data, order(%s))",
             paste(x[[.heatMapColData]], collapse=", ")))
-        additional <- c(additional, ".column_data <- .column_data[.column_annot_order,,drop=FALSE]")
-        additional <- c(additional, "plot.data <- plot.data[,.column_annot_order,drop=FALSE]")
+        additional <- c(additional, ".column_data <- .column_data[.column_annot_order, , drop=FALSE]")
+        additional <- c(additional, "plot.data <- plot.data[, .column_annot_order, drop=FALSE]")
     }
 
     additional <- c(additional,
         sprintf(
-            ".column_annot <- columnAnnotation(df=.column_data, col=.column_col, annotation_legend_param=list(direction=%s))",
+            ".column_annot <- ComplexHeatmap::columnAnnotation(df=.column_data, col=.column_col, annotation_legend_param=list(direction=%s))",
             deparse(tolower(x[[.plotLegendDirection]]))
         )
-    ) 
+    )
 
     .text_eval(additional, envir)
     c(cmds, additional)
@@ -232,24 +232,24 @@
     for (annot in x[[.heatMapRowData]]) {
         cmds <- c(cmds, .coerce_dataframe_columns(envir, annot, ".row_data"))
 
-        cmd_get_value <- sprintf('.row_values <- .row_data[[%s]]', deparse(annot))
+        cmd_get_value <- sprintf('.color_values <- .row_data[[%s]]', deparse(annot))
         .text_eval(cmd_get_value, envir)
         cmds <- c(cmds, cmd_get_value)
 
         if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$continuous.rowData.names) {
             rowcmds <- sprintf('.row_colors <- rowDataColorMap(colormap, %s, discrete=FALSE)(21L)', deparse(annot))
-            rowcmds <- c(rowcmds, 
+            rowcmds <- c(rowcmds,
                 sprintf(
-                    ".row_col[[%s]] <- %s", 
+                    ".row_col[[%s]] <- %s",
                     deparse(annot),
-                    .define_continuous_annotation_colorscale(envir$.row_values, ".row_colors")
+                    .define_continuous_annotation_colorscale(envir$.color_values, ".row_colors")
                 )
             )
         } else if (annot %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.rowData.names) {
-            rowcmds <- sprintf('.row_values <- setdiff(unique(.row_values), NA)', annot)
+            rowcmds <- sprintf('.color_values <- setdiff(unique(.color_values), NA)', annot)
             rowcmds <- c(rowcmds, sprintf('.row_colors <- rowDataColorMap(colormap, %s, discrete=TRUE)(%s)',
-                deparse(annot), 'length(.row_values)'))
-            rowcmds <- c(rowcmds, 'names(.row_colors) <- .row_values')
+                deparse(annot), 'length(.color_values)'))
+            rowcmds <- c(rowcmds, 'names(.row_colors) <- .color_values')
             rowcmds <- c(rowcmds, sprintf('.row_col[[%s]] <- .row_colors', deparse(annot)))
         }
 
@@ -257,11 +257,11 @@
         cmds <- c(cmds, rowcmds, "")
     }
 
-    additional <- '.row_data <- .row_data[.heatmap.rows,,drop=FALSE]'
+    additional <- '.row_data <- .row_data[.heatmap.rows, , drop=FALSE]'
     additional <- c(additional, '.row_data <- as.data.frame(.row_data, optional=TRUE)') # preserve colnames
-    additional <- c(additional, 
+    additional <- c(additional,
         sprintf(
-            ".row_annot <- rowAnnotation(df=.row_data, col=.row_col, annotation_legend_param=list(direction=%s))",
+            ".row_annot <- ComplexHeatmap::rowAnnotation(df=.row_data, col=.row_col, annotation_legend_param=list(direction=%s))",
             deparse(tolower(x[[.plotLegendDirection]]))
         )
     )
@@ -287,7 +287,7 @@
     col_range <- range(val, na.rm = TRUE)
     col_range <- .safe_nonzero_range(col_range, centered = FALSE)
     sprintf(
-        'colorRamp2(breaks = seq(%s, %s, length.out = 21L), colors = %s)',
+        'circlize::colorRamp2(breaks = seq(%s, %s, length.out = 21L), colors = %s)',
         col_range[1], col_range[2], map
     )
 }

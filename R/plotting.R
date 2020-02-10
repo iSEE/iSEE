@@ -925,7 +925,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         }
     } else {
         if (!is.factor(values)) {
-            return(sprintf("%s$%s <- factor(%s$%s);", df, field, df, field))
+            return(sprintf('%s[["%s"]] <- factor(%s[["%s"]]);', df, field, df, field))
         }
     }
     return(NULL)

@@ -14,19 +14,19 @@ test_that(".process_heatmap_assay_colormap handles discrete assays", {
     plot_env <- new.env()
 
     plot_env$plot.data <- assay(sce, "letters")[1:3, 1:3]
+    plot_env$colormap <- ExperimentColorMap()
 
     x <- memory[["ComplexHeatmapPlot1"]]
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
     x[[iSEE:::.heatMapAssay]] <- "letters"
 
-    out <- .process_heatmap_assay_colormap(x, sce, plot_env)
+    out <- iSEE:::.process_heatmap_assay_colormap(x, sce, plot_env)
     expect_identical(out, c(
-        ".col_values <- as.vector(plot.data)",
-        ".col_values <- setdiff(.col_values, NA)",
-        '.col_colors <- colDataColorMap(colormap, "letters", discrete=TRUE)(length(unique(.col_values)))',
-        "if (is.null(names(.col_colors))) { names(.col_colors) <- unique(.col_values) }",
-        "heatmap_col <- .col_colors"))
+        ".assay_values <- unique(as.vector(plot.data))",
+        ".assay_values <- setdiff(.assay_values, NA)",
+        '.assay_colors <- colDataColorMap(colormap, "letters", discrete=TRUE)(length(.assay_values))',
+        "names(.assay_colors) <- .assay_values"))
 })
 
 test_that(".process_heatmap_assay_colormap handles centered values", {
@@ -40,11 +40,10 @@ test_that(".process_heatmap_assay_colormap handles centered values", {
     x <- .refineParameters(x, sce)
     x[[iSEE:::.assayCenterRows]] <- TRUE
 
-    out <- .process_heatmap_assay_colormap(x, sce, plot_env)
+    out <- iSEE:::.process_heatmap_assay_colormap(x, sce, plot_env)
     expect_identical(out, c(
-        '.col_colors <- c("purple", "black", "yellow")',
-        ".col_FUN <- colorRamp2(breaks = c(1, 0, 10), colors = .col_colors)",
-        "heatmap_col <- .col_FUN"))
+        '.assay_colors <- c("purple", "black", "yellow")',
+        ".assay_colors <- circlize::colorRamp2(breaks = c(1, 0, 10), colors = .assay_colors)" ))
 })
 
 test_that(".process_heatmap_column_annotations_colorscale handles column selections", {
@@ -57,9 +56,10 @@ test_that(".process_heatmap_column_annotations_colorscale handles column selecti
     x <- .refineParameters(x, sce)
 
     plot_env$se <- sce
+    plot_env$.heatmap.columns <- head(colnames(sce))
 
-    out <- .process_heatmap_column_annotations_colorscale(x, sce, plot_env)
-    expect_true(any(out == 'column_col[["Selected points"]] <- c("TRUE"="red", "FALSE"="white")'))
+    out <- iSEE:::.process_heatmap_column_annotations_colorscale(x, sce, plot_env)
+    expect_true(any(out == '.column_col[["Selected points"]] <- c("TRUE"="red", "FALSE"="white")'))
 
 })
 
@@ -73,12 +73,15 @@ test_that(".process_heatmap_column_annotations_colorscale handles column annotat
     x[[iSEE:::.heatMapColData]] <- c("driver_1_s", "NREADS")
 
     plot_env$se <- sce
+    plot_env$colormap <- ExperimentColorMap()
+    plot_env$plot.data <- assay(sce)[1, , drop=FALSE]
+    plot_env$.heatmap.columns <- head(colnames(sce))
 
-    out <- .process_heatmap_column_annotations_colorscale(x, sce, plot_env)
-    expect_true(any(out == '.col_values <- column_data[["driver_1_s"]]'))
-    expect_true(any(out == '.col_values <- column_data[["NREADS"]]'))
-    expect_true(any(out == '.column_annot_order <- with(column_data, order(driver_1_s, NREADS))'))
-    expect_true(any(out == 'column_data <- column_data[.column_annot_order, , drop=FALSE]'))
+    out <- iSEE:::.process_heatmap_column_annotations_colorscale(x, sce, plot_env)
+    expect_true(any(out == '.color_values <- .column_data[[\"driver_1_s\"]]'))
+    expect_true(any(out == '.color_values <- .column_data[["NREADS"]]'))
+    expect_true(any(out == '.column_annot_order <- with(.column_data, order(driver_1_s, NREADS))'))
+    expect_true(any(out == '.column_data <- .column_data[.column_annot_order, , drop=FALSE]'))
 })
 
 test_that(".process_heatmap_row_annotations_colorscale handles row annotations", {
@@ -93,59 +96,13 @@ test_that(".process_heatmap_row_annotations_colorscale handles row annotations",
     x[[iSEE:::.heatMapRowData]] <- c("letters", "num_cells")
 
     plot_env$se <- sce
+    plot_env$colormap <- ExperimentColorMap()
+    plot_env$.heatmap.rows <- head(rownames(sce))
 
-    out <- .process_heatmap_row_annotations_colorscale(x, sce, plot_env)
-    expect_true(any(out == '.col_values <- row_data[["letters"]]'))
-    expect_true(any(out == '.col_values <- row_data[["num_cells"]]'))
-    expect_true(any(out == 'row_data <- row_data[.heatmap.rows, , drop=FALSE]'))
-})
-
-test_that(".process_heatmap_continuous_assay_colorscale handles centered values", {
-    plot_env <- new.env()
-
-    x <- memory[["ComplexHeatmapPlot1"]]
-    x[[iSEE:::.heatMapCustomAssayBounds]] <- TRUE
-
-    x[[iSEE:::.assayLowerBound]] <- NA_real_
-    x[[iSEE:::.assayUpperBound]] <- NA_real_
-    plot_env$plot.data <- matrix(c(5, -5), nrow=1)
-    out <- .process_heatmap_continuous_assay_colorscale(x, plot_env, centered = TRUE)
-    expect_identical(out, ".col_FUN <- colorRamp2(breaks = c(-5, 0, 5), colors = .col_colors)")
-
-    x[[iSEE:::.assayLowerBound]] <- -1
-    x[[iSEE:::.assayUpperBound]] <- NA_real_
-    plot_env$plot.data <- matrix(c(5, -5), nrow=1)
-    out <- .process_heatmap_continuous_assay_colorscale(x, plot_env, centered = TRUE)
-    expect_identical(out, ".col_FUN <- colorRamp2(breaks = c(-1, 0, 5), colors = .col_colors)")
-
-    x[[iSEE:::.assayLowerBound]] <- NA_real_
-    x[[iSEE:::.assayUpperBound]] <- 4
-    plot_env$plot.data <- matrix(c(5, -5), nrow=1)
-    out <- .process_heatmap_continuous_assay_colorscale(x, plot_env, centered = TRUE)
-    expect_identical(out, ".col_FUN <- colorRamp2(breaks = c(-5, 0, 4), colors = .col_colors)")
-
-    x[[iSEE:::.assayLowerBound]] <- -2
-    x[[iSEE:::.assayUpperBound]] <- 4
-    plot_env$plot.data <- matrix(c(5, -5), nrow=1)
-    out <- .process_heatmap_continuous_assay_colorscale(x, plot_env, centered = TRUE)
-    expect_identical(out, ".col_FUN <- colorRamp2(breaks = c(-2, 0, 4), colors = .col_colors)")
-
-})
-
-test_that(".process_heatmap_continuous_assay_colorscale handles continuous scale for all-identical values", {
-
-    plot_env <- new.env()
-
-    x <- memory[["ComplexHeatmapPlot1"]]
-
-    plot_env$plot.data <- matrix(c(1, 1), nrow=1)
-    out <- .process_heatmap_continuous_assay_colorscale(x, plot_env, centered = FALSE)
-    expect_identical(out, ".col_FUN <- colorRamp2(breaks = seq(1, 2, length.out = 21L), colors = .col_colors)")
-
-    plot_env$plot.data <- 0
-    out <- .process_heatmap_continuous_assay_colorscale(x, plot_env, centered = TRUE)
-    expect_identical(out, ".col_FUN <- colorRamp2(breaks = c(-1, 0, 1), colors = .col_colors)")
-
+    out <- iSEE:::.process_heatmap_row_annotations_colorscale(x, sce, plot_env)
+    expect_true(any(out == '.color_values <- .row_data[["letters"]]'))
+    expect_true(any(out == '.color_values <- .row_data[["num_cells"]]'))
+    expect_true(any(out == '.row_data <- .row_data[.heatmap.rows, , drop=FALSE]'))
 })
 
 test_that(".generateOutput detects col_selected and row_selected", {
@@ -175,8 +132,10 @@ test_that(".generateOutput detects col_selected and row_selected", {
     memory$ComplexHeatmapPlot1 <- x
 
     out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
-    expect_identical(out$commands$columns, ".heatmap.columns <- intersect(colnames(se), unlist(col_selected));")
-    expect_identical(out$commands$rows, '.heatmap.rows <- c("0610007P14Rik", "0610009B22Rik");')
+    expect_identical(out$commands$assay[["rows"]], '.heatmap.rows <- c("0610007P14Rik", "0610009B22Rik");')
+    expect_identical(out$commands$assay[["columns"]], '.heatmap.columns <- intersect(colnames(se), unlist(col_selected));')
+    expect_identical(out$commands$assay[["columns"]], '.heatmap.columns <- intersect(colnames(se), unlist(col_selected));')
+    expect_identical(out$commands$assay[["data"]], 'plot.data <- assay(se, "tophat_counts")[.heatmap.rows, .heatmap.columns, drop=FALSE]\nplot.data <- as.matrix(plot.data);')
 })
 
 test_that(".generateOutput handles row_selected when not using custom feature names", {
@@ -204,7 +163,7 @@ test_that(".generateOutput handles row_selected when not using custom feature na
     memory$ComplexHeatmapPlot1 <- x
 
     out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
-    expect_identical(out$commands$rows, ".heatmap.rows <- intersect(rownames(se), unlist(row_selected));")
+    expect_identical(out$commands$assay[["rows"]], ".heatmap.rows <- intersect(rownames(se), unlist(row_selected));")
 })
 
 test_that(".generateOutput handles row annotations", {
@@ -218,8 +177,8 @@ test_that(".generateOutput handles row annotations", {
     memory$ComplexHeatmapPlot1 <- x
 
     out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
-    expect_true(grepl("left_annotation=row_annot", out$commands$heatmap, fixed = TRUE))
-    expect_true(grepl('row_data <- rowData(se)[, c(\"mean_count\", \"letters\"), drop=FALSE]', out$commands$row_annotations, fixed = TRUE))
+    expect_true(grepl("left_annotation=.row_annot", out$commands$heatmap, fixed = TRUE))
+    expect_true(grepl('.row_data <- rowData(se)[, c("mean_count", "letters"), drop=FALSE]', out$commands$row_annotations, fixed = TRUE))
 
 })
 
@@ -234,9 +193,9 @@ test_that(".generateOutput handles column annotations", {
     memory$ComplexHeatmapPlot1 <- x
 
     out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
-    expect_true(grepl("top_annotation=column_annot", out$commands$heatmap, fixed = TRUE))
-    expect_true(grepl('column_data <- colData(se)[, c(\"driver_1_s\", \"NREADS\"), drop=FALSE]', out$commands$column_annotations, fixed = TRUE))
-    expect_true(grepl("plot.data <- plot.data[, .column_annot_order, drop=FALSE]", out$commands$order_columns, fixed = TRUE))
+    expect_true(grepl("top_annotation=.column_annot", out$commands$heatmap, fixed = TRUE))
+    expect_true(grepl('.column_data <- colData(se)[, c("driver_1_s", "NREADS"), drop=FALSE]', out$commands$column_annotations, fixed = TRUE))
+    expect_true(grepl("plot.data <- plot.data[, .column_annot_order, drop=FALSE]", out$commands$column_annotations, fixed = TRUE))
 })
 
 
@@ -269,20 +228,28 @@ test_that(".generateOutput handles centering and scaling", {
     memory$ComplexHeatmapPlot1 <- x
 
     out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
-    expect_identical(out$commands$assay_transforms, "plot.data <- plot.data - rowMeans(plot.data)\nplot.data <- plot.data / rowSds(plot.data)")
+    expect_identical(out$commands$transform, c(
+        "plot.data <- plot.data - rowMeans(plot.data)",
+        "plot.data <- plot.data / apply(plot.data, 1, sd)"))
 })
 
 test_that("process_heatmap_assay_row_transformations handles row centering and scaling", {
 
-    x <- ComplexHeatmapPlot()
+    envir <- new.env()
+    envir$plot.data <- assay(sce, "tophat_counts")[1, , drop=FALSE]
 
+    x <- memory[["ComplexHeatmapPlot1"]]
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+
+    x[[.heatMapAssay]] <- "tophat_counts"
     x[[iSEE:::.assayCenterRows]] <- TRUE
     x[[iSEE:::.assayScaleRows]] <- TRUE
 
-    out <- .process_heatmap_assay_row_transformations(x)
+    out <- .process_heatmap_assay_row_transformations(x, sce, envir)
     expect_identical(out, c(
         "plot.data <- plot.data - rowMeans(plot.data)",
-        "plot.data <- plot.data / rowSds(plot.data)"))
+        "plot.data <- plot.data / apply(plot.data, 1, sd)" ))
 })
 
 test_that(".create_visual_box_for_complexheatmap handles continuous and discrete assays", {

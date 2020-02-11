@@ -3,18 +3,13 @@
 
 test_that("createCustomPlot works as expected", {
     library(ggplot2)
-    FUNNY <- function(se, rows, columns, some_str1="A", some_str2="B",
+    FUNNY <- function(se, rows, columns, some_str1="A", some_str2=c("B", "C"),
         some_number1=1, some_number2=2, some_flag1=TRUE, some_flag2=FALSE)
     {
-
         ggplot(as.data.frame(colData(se))) + ggtitle(paste0(some_str1, some_str2))  
     }
 
-    GEN <- createCustomPlot(FUNNY, 
-        argStrings=c("some_str1", "some_str2"),
-        argNumbers=c("some_number1", "some_number2"),
-        argFlags=c("some_flag1", "some_flag2")
-    )
+    GEN <- createCustomPlot(FUNNY)
     x <- GEN(PanelId=1L)
 
     # Checking that the custom methods work.
@@ -32,17 +27,13 @@ test_that("createCustomPlot works as expected", {
 
 test_that("createCustomTable works as expected", {
     library(ggplot2)
-    FUNNY <- function(se, rows, columns, some_str1="A", some_str2="B",
+    FUNNY <- function(se, rows, columns, some_str1="A", some_str2=c("B", "C"),
         some_number1=1, some_number2=2, some_flag1=TRUE, some_flag2=FALSE)
     {
         as.data.frame(colData(se))[c(some_number1, some_number2),]
     }
 
-    GEN <- createCustomTable(FUNNY, 
-        argStrings=c("some_str1", "some_str2"),
-        argNumbers=c("some_number1", "some_number2"),
-        argFlags=c("some_flag1", "some_flag2")
-    )
+    GEN <- createCustomTable(FUNNY)
     x <- GEN(PanelId=1L)
 
     # Checking that the custom methods work.
@@ -58,4 +49,19 @@ test_that("createCustomTable works as expected", {
     output <- .generateTable(x, env)
     expect_match(output, "FUNNY")
     expect_true(is.data.frame(env$tab))
+})
+
+test_that("grab_all_args works with restriction", {
+    library(ggplot2)
+    FUNNY <- function(se, rows, columns, some_str1="A", some_str2=c("B", "C"), some_str3=character(0),
+        some_number1=1, some_number2=1:10, some_flag1=TRUE, some_flag2=logical(0), some_null=NULL)
+    {
+        NULL
+    }
+
+    out <- iSEE:::.grab_all_args(FUNNY)
+    expect_identical(out, list(some_str1="A", some_str2=c("B", "C"), some_number1=1, some_flag1=TRUE))
+
+    out <- iSEE:::.grab_all_args(FUNNY, restrict=c("some_str1"))
+    expect_identical(out, list(some_str1="A"))
 })

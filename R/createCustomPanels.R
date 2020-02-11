@@ -111,6 +111,14 @@ createCustomTable <- function(FUN, restrict=NULL, className="CustomTable",
             fn_args=names(fn_args))
     }, where=where)
 
+    setMethod(".refineParameters", className, function(x, se) {
+        x <- callNextMethod()
+        if (is.null(x)) {
+            return(NULL)
+        }
+        .replace_na_with_first(x, .TableSelected, "")
+    }, where=where)
+
     generator
 }
 
@@ -187,7 +195,16 @@ createCustomPlot <- function(FUN, restrict=NULL, className="CustomPlot",
         for (i in names(defaults)) {
             extra_args <- .empty_default(extra_args, i, defaults[[i]][1]) # select first element when multiple choice.
         }
+        extra_args <- .empty_default(extra_args, .selectColType, .selectMultiUnionTitle)
+        extra_args <- .empty_default(extra_args, .selectRowType, .selectMultiUnionTitle)
         do.call(callNextMethod, c(list(.Object), extra_args))
+    }, where=where)
+
+    setMethod(".hideInterface", className, function(x, field) {
+        if (field %in% c(.selectColType, .selectRowType)) {
+            return(TRUE)
+        }
+        callNextMethod()
     }, where=where)
 
     setMethod(".defineDataInterface", className, function(x, se, select_info) {
@@ -214,6 +231,8 @@ createCustomPlot <- function(FUN, restrict=NULL, className="CustomPlot",
     }, where=where)
 
     setMethod(".createObservers", className, function(x, se, input, session, pObjects, rObjects) {
+        callNextMethod()
+
         panel_name <- .getEncodedName(x)
 
         # Doesn't matter all that much whether they're protected or not,

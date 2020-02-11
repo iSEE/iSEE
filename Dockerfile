@@ -1,4 +1,4 @@
-FROM bioconductor/devel_base2
+FROM bioconductor/release_base2
 
 MAINTAINER kevin.rue-albrecht@kennedy.ox.ac.uk
 LABEL authors="kevin.rue-albrecht@kennedy.ox.ac.uk" \

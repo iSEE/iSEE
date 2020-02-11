@@ -1,7 +1,7 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: r
-r: bioc-devel
+r: bioc-release
 
 sudo: false
 cache: packages
@@ -27,7 +27,7 @@ r_packages:
 
 after_success:
   - Rscript -e 'library(covr); codecov()'
-  
+
 before_deploy: Rscript -e 'remotes::install_cran("pkgdown")'
 deploy:
   provider: script

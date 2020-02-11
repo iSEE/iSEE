@@ -188,12 +188,12 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
 
     args <- .empty_default(args, .showDimnames, c(.showNamesRowTitle))
 
-    args <- .empty_default(args, .plotLegendPosition, opts_panel$get("legend.position"))
-    args <- .empty_default(args, .plotLegendDirection, opts_panel$get("legend.direction"))
+    args <- .empty_default(args, .plotLegendPosition, iSEEOptions$get("legend.position"))
+    args <- .empty_default(args, .plotLegendDirection, iSEEOptions$get("legend.direction"))
     args <- .empty_default(args, .visualParamBoxOpen, FALSE)
 
     args <- .empty_default(args, .selectEffect, .selectColorTitle)
-    args <- .empty_default(args, .selectColor, opts_panel$get("selected.color"))
+    args <- .empty_default(args, .selectColor, iSEEOptions$get("selected.color"))
 
     do.call(callNextMethod, c(list(.Object), args))
 })

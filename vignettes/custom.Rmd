@@ -38,7 +38,7 @@ bibliography: iSEE.bib
 
 **Compiled date**: `r Sys.Date()`
 
-**Last edited**: 2018-03-08
+**Last edited**: 2020-02-10
 
 **License**: `r packageDescription("iSEE")[["License"]]`
 
@@ -58,9 +58,225 @@ sce <- readRDS('sce.rds')
 
 # Background
 
-Previous versions of `r Biocpkg("iSEE")` enabled the use of custom panels via a primitive function passing system.
-This system is no longer available.
-Instead, we now provide a framework for native integration of user-created panels into the application.
+Users can define their own custom plots or tables to include in the `iSEE` interface [@kra2018iSEE]. 
+These custom panels are intended to receive subsets of rows and/or columns from other transmitting panels in the interface.
+The values in the custom panels are then recomputed on the fly by user-defined functions using the transmitted subset.
+This provides a flexible and convenient framework for lightweight interactive analysis during data exploration.
+For example, selection of a particular subset of samples can be transmitted to a custom plot panel that performs dimensionality reduction on that subset.
+Alternatively, the subset can be transmitted to a custom table that performs a differential expression analysis between that subset and all other samples.
+
+# Defining custom functions
+
+## Minimum requirements
+
+Recalculations in custom panels are performed using user-defined functions that are supplied to the `iSEE()` call.
+The only requirements are that the function must accept:
+
+- A `SummarizedExperiment` object or its derivatives as the first argument.
+- A list of character vectors containing row names as the _second_ argument.
+  Each vector specifies the rows that are currently selected in the transmitting _row-based_ panel,
+  as an active selection or as one of the saved selection.
+  This may be `NULL` if no transmitting panel was selected or if no selections are available.
+- A list of character vectors containing column names as the _third_ argument.
+  Each vector specifies the columns that are currently selected in the transmitting _column-based_ panel,
+  as an active selection or as one of the saved selection.
+  This may be `NULL` if no transmitting panel was selected or if no selections are available.
+
+The output of the function should be:
+
+- A `ggplot` object for functions used in _custom plot panels_.
+- A `data.frame` for functions used in _custom table panels_.
+
+## Example of custom plot panel
+
+To demonstrate the use of _custom plot panels_, we define an example function `CUSTOM_DIMRED` that takes a subset of features and cells in a `SingleCellExperiment` object and performs dimensionality reduction on that subset with `r Biocpkg("scater")` function [@mccarthy2017scater].
+
+```{r CUSTOM_PCA}
+library(scater)
+ CUSTOM_DIMRED <- function(se, rows, columns, ntop=500, scale=TRUE,
+     mode=c("PCA", "TSNE", "UMAP"))
+ {
+     if (is.null(columns)) {
+         return(
+             ggplot() + theme_void() + geom_text(
+                 aes(x, y, label=label),
+                 data.frame(x=0, y=0, label="No column data selected."),
+                 size=5)
+             )
+     }
+
+     mode <- match.arg(mode)
+     if (mode=="PCA") {
+         calcFUN <- runPCA
+     } else if (mode=="TSNE") {
+         calcFUN <- runTSNE
+     } else if (mode=="UMAP") {
+         calcFUN <- runUMAP
+     }
+
+     kept <- se[, unique(unlist(columns))]
+     kept <- calcFUN(kept, ncomponents=2, ntop=ntop,
+         scale=scale, subset_row=unique(unlist(rows)))
+     plotReducedDim(kept, mode)
+ }
+```
+
+As mentioned above, `rows` and `columns` may be `NULL` if no selection was made in the respective transmitting panels.
+How these should be treated is up to the user-defined function.
+In this example, an empty _ggplot_ is returned if there is no selection on the columns, while the default behaviour of `runPCA`, `runTSNE`, etc. is used if `rows=NULL`.
+
+To create instances of our panel, we call the `createCustomPlot()` function with `CUSTOM_DIMRED` to set up the custom plot class and its methods.
+This returns a constructor function that can be directly used to generate an instance of our custom plot.
+
+```{r}
+library(iSEE)
+GENERATOR <- createCustomPlot(CUSTOM_DIMRED)
+custom_panel <- GENERATOR()
+class(custom_panel)
+```
+
+We can now easily supply instances of our new custom plot class to `iSEE()` like any other `Panel` instance.
+The example below creates an application where a column data plot transmits a selection to our custom plot,
+the latter of which is initialized in $t$-SNE mode with the top 1000 most variable genes.
+
+```{r}
+app <- iSEE(sce,
+    initial=list(
+        ColDataPlot(XAxis="Column data", XAxisColData="Primary.Type", 
+            PanelId=1L),
+        GENERATOR(mode="TSNE", ntop=1000, SelectColSource="ColDataPlot1")
+    )
+)
+```
+
+The most interesting aspect of `createCustomPlot()` is that the UI elements for modifying the optional arguments in `CUSTOM_DIMRED` are also automatically generated.
+This provides a convenient way to generate a reasonably intuitive UI for rapid prototyping, though there are limitations - see the documentation for more details.
+
+## Example of custom table panel
+
+To demonstrate the use of _custom table panels_, we define an example function `CUSTOM_SUMMARY` below.
+This takes a subset of features and cells in a `SingleCellExperiment` object and creates dataframe that details the `mean`, `variance` and count of samples with expression above a given cut-off within the selection.
+If either `rows` or `columns` are `NULL`, all rows or columns are used, respectively.
+
+```{r CUSTOM_SUMMARY}
+CUSTOM_SUMMARY <- function(se, ri, ci, assay="logcounts", min_exprs=0) {
+    if (is.null(ri)) {
+        ri <- rownames(se)
+    } else {
+        ri <- unique(unlist(ri))
+    }
+    if (is.null(ci)) {
+        ci <- colnames(se)
+    } else {
+        ci <- unique(unlist(ci))
+    }
+    
+    assayMatrix <- assay(se, assay)[ri, ci, drop=FALSE]
+    
+    data.frame(
+        Mean = rowMeans(assayMatrix),
+        Var = rowVars(assayMatrix),
+        Sum = rowSums(assayMatrix),
+        n_detected = rowSums(assayMatrix > min_exprs),
+        row.names = ri
+    )
+}
+```
+
+To create instances of our panel, we call the `createCustomTable()` function with `CUSTOM_SUMMARY`,
+which again returns a constructor function that can be used directly in `iSEE()`.
+Again, the function will attempt to auto-pick an appropriate UI element for each optional argument in `CUSTOM_SUMMARY`.
+
+```{r}
+library(iSEE)
+GENERATOR <- createCustomTable(CUSTOM_SUMMARY)
+app <- iSEE(sce,
+    initial=list(
+        RedDimPlot(PanelId=1L),
+        GENERATOR(SelectColSource="RedDimPlot1")
+    )
+)
+```
+
+# Handling active and saved selections
+
+Recall that the second and third arguments are actually lists containing both active and saved selections from the transmitter.
+More advanced custom panels can take advantage of these multiple selections to perform more sophisticated data processing.
+For example, we can write a function that computes log-fold changes between the samples in the active selection and the samples in each saved selection.
+(It would be trivial to extend this to obtain actual differential expression statistics, e.g., using `scran::findMarkers()` or functions from packages like `r Biocpkg("limma")`.)
+
+```{r}
+CUSTOM_DIFFEXP <- function(se, ri, ci, assay="logcounts") {
+    ri <- ri$active
+    if (is.null(ri)) { 
+        ri <- rownames(se)
+    }
+    assayMatrix <- assay(se, assay)[ri, , drop=FALSE]
+
+    if (is.null(ci$active) || length(ci)<2L) {
+        return(data.frame(row.names=character(0), LogFC=integer(0))) # dummy value.
+    }
+    active <- rowMeans(assayMatrix[,ci$active,drop=FALSE])
+
+    all_saved <- ci[grep("saved", names(ci))]
+    lfcs <- vector("list", length(all_saved))
+    for (i in seq_along(lfcs)) {
+        saved <- rowMeans(assayMatrix[,all_saved[[i]],drop=FALSE])
+        lfcs[[i]] <- active - saved
+    }
+
+    names(lfcs) <- sprintf("LogFC/%i", seq_along(lfcs))
+    do.call(data.frame, lfcs)
+}
+```
+
+We also re-use these statistics to visualize some of the genes with the largest log-fold changes:
+
+```{r}
+CUSTOM_HEAT <- function(se, ri, ci, assay="logcounts") {
+    everything <- CUSTOM_DIFFEXP(se, ri, ci, assay=assay)
+    if (nrow(everything) == 0L) {
+        return(ggplot()) # empty ggplot if no genes reported.
+    }
+
+    everything <- as.matrix(everything)
+    top <- head(order(rowMeans(abs(everything)), decreasing=TRUE), 50)
+    topFC <- everything[top, , drop=FALSE]
+    dfFC <- data.frame(
+        gene=rep(rownames(topFC), ncol(topFC)),
+        contrast=rep(colnames(topFC), each=nrow(topFC)),
+        value=as.vector(topFC)
+    )
+    ggplot(dfFC, aes(contrast, gene)) + geom_raster(aes(fill = value))
+}
+```
+
+We test this out as shown below.
+Note that each saved selection is also the active selection when it is first generated, hence the log-fold changes of zero in the last column of the heat map until a new active selection is drawn.
+
+```{r}
+TAB_GEN <- createCustomTable(CUSTOM_DIFFEXP)
+HEAT_GEN <- createCustomPlot(CUSTOM_HEAT)
+
+app <- iSEE(sce, initial=list(RedDimPlot(PanelId=1L),
+    TAB_GEN(SelectColSource="RedDimPlot1"),
+    HEAT_GEN(SelectColSource="RedDimPlot1"))
+)
+```
+
+# Advanced extensions
+
+The system described above is rather limited and is only provided for quick-and-dirty customizations.
+For more serious extensions, we provide a S4 framework for native integration of user-created panels into the application.
 This allows specification of custom interface elements and observers and transmission of multiple selections to other panels.
 Prospective panel developers are advised to [read the book](https://kevinrue.github.io/iSEE-book),
 as there are too many cool things that will not fit into this vignette.
+
+# Session Info {.unnumbered}
+
+```{r sessioninfo}
+sessionInfo()
+# devtools::session_info()
+```
+
+# References {.unnumbered}

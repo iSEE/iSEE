@@ -20,7 +20,6 @@ new_defaults = function(value = list()) {
     }
     set = function(...) {
         dots = resolve(...)
-        if (!all(names(dots) %in% names(defaults))) return()
         if (length(dots)) defaults <<- merge(dots)
         invisible(NULL)
     }
@@ -35,15 +34,15 @@ new_defaults = function(value = list()) {
 
 #' Default panel options
 #'
-#' Set global options using \code{opts_panel$set()}, so that all panels will use these default values during initialization.
+#' Set global options using \code{iSEEOptions$set()}, so that all panels will use these default values during initialization.
 #'
-#' See \code{str(knitr::opts_panel$get())} for a list of default panel options.
+#' See \code{str(knitr::iSEEOptions$get())} for a list of default panel options.
 #'
-#' Note that \code{opts_panel$restore()} can be used to reset the global options to the package default values.
+#' Note that \code{iSEEOptions$restore()} can be used to reset the global options to the package default values.
 #'
 #' @export
-#' @examples opts_chunk$get('downsample'); opts_chunk$get('selected.color')
-opts_panel <- new_defaults(list(
+#' @examples iSEEOptions$get('downsample'); iSEEOptions$get('selected.color')
+iSEEOptions <- new_defaults(list(
 
     point.color = "black",
     point.size = 1,
@@ -65,6 +64,6 @@ opts_panel <- new_defaults(list(
 # merge elements of y into x with the same names
 # credit: knitr
 merge_list = function(x, y) {
-  x[names(y)] = y
-  x
+    x[names(y)] = y
+    x
 }

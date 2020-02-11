@@ -201,7 +201,7 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
     args <- .empty_default(args, .facetByColumn, .noSelection)
 
     args <- .empty_default(args, .colorByField, .colorByNothingTitle)
-    args <- .empty_default(args, .colorByDefaultColor, opts_panel$get("point.color"))
+    args <- .empty_default(args, .colorByDefaultColor, iSEEOptions$get("point.color"))
     args <- .empty_default(args, .colorByFeatName, NA_character_)
     args <- .empty_default(args, .colorByRowTable, .noSelection)
     args <- .empty_default(args, .colorBySampName, NA_character_)
@@ -212,22 +212,22 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
     args <- .empty_default(args, .sizeByField, .sizeByNothingTitle)
 
     args <- .empty_default(args, .selectEffect, .selectTransTitle)
-    args <- .empty_default(args, .selectColor, opts_panel$get("selected.color"))
-    args <- .empty_default(args, .selectTransAlpha, opts_panel$get("selected.alpha"))
+    args <- .empty_default(args, .selectColor, iSEEOptions$get("selected.color"))
+    args <- .empty_default(args, .selectTransAlpha, iSEEOptions$get("selected.alpha"))
 
     args <- .empty_default(args, .visualParamBoxOpen, FALSE)
     args <- .empty_default(args, .visualParamChoice, .visualParamChoiceColorTitle)
 
     args <- .empty_default(args, .contourAdd, FALSE)
-    args <- .empty_default(args, .contourColor, opts_panel$get("contour.color"))
+    args <- .empty_default(args, .contourColor, iSEEOptions$get("contour.color"))
 
-    args <- .empty_default(args, .plotPointSize, opts_panel$get("point.size"))
-    args <- .empty_default(args, .plotPointAlpha, opts_panel$get("point.alpha"))
-    args <- .empty_default(args, .plotPointDownsample, opts_panel$get("downsample"))
-    args <- .empty_default(args, .plotPointSampleRes, opts_panel$get("downsample.res"))
+    args <- .empty_default(args, .plotPointSize, iSEEOptions$get("point.size"))
+    args <- .empty_default(args, .plotPointAlpha, iSEEOptions$get("point.alpha"))
+    args <- .empty_default(args, .plotPointDownsample, iSEEOptions$get("downsample"))
+    args <- .empty_default(args, .plotPointSampleRes, iSEEOptions$get("downsample.res"))
 
-    args <- .empty_default(args, .plotFontSize, opts_panel$get("font.size"))
-    args <- .empty_default(args, .plotLegendPosition, opts_panel$get("legend.position"))
+    args <- .empty_default(args, .plotFontSize, iSEEOptions$get("font.size"))
+    args <- .empty_default(args, .plotLegendPosition, iSEEOptions$get("legend.position"))
 
     do.call(callNextMethod, c(list(.Object), args))
 })

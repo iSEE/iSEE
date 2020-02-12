@@ -1,6 +1,18 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.99.0}{
+\itemize{
+    \item Refactored panel implementation as S4 classes.
+    \item Display a spinner while panels are rerendering.
+    \item Refactored heatmap panel to use \code{ComplexHeatmap}.
+    \item Allowed customization of landing pages (from calling \code{iSEE()} in no-SE mode) for enterprise deployments.
+    \item Allowed export of plot and table panel outputs as PDF and CSV files, respectively.
+    \item Fixed handling of \code{se} objects missing \code{dimnames}.
+    \item Added \code{createCustomPlot} and \code{createCustomTable} to provide on-ramp for making customized panels.
+}
+}
+
 \section{iSEE VERSION 1.7.2}{
 \itemize{
     \item Added notification on birthday.
@@ -9,10 +21,10 @@
 
 \section{iSEE VERSION 1.7.1}{
 \itemize{
-    \item Fixed \code{rbind} of \code{data.frame} and \code{DataFrame}.
-    \item Fixed error related to using \code{&&} with variable length greater than 1.
-    \item Replaced deprecated scater argument.
-    \item Replaced deprecated functions: \code{clearSpikes}, \code{clearSizeFactors}.
+    \item Fix \code{rbind} of \code{data.frame} and \code{DataFrame}.
+    \item Fix error related to using \code{&&} with variable length greater than 1.
+    \item Replace deprecated scater argument.
+    \item Replace deprecated functions: \code{clearSpikes}, \code{clearSizeFactors}.
 }
 }
 

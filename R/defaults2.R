@@ -1,4 +1,4 @@
-# Adapted from knitr
+# Credits: Adapted from knitr
 # https://github.com/yihui/knitr/blob/670a530b53d6cc5002797d54034ec8b07b74702c/R/defaults.R
 new_defaults = function(value = list()) {
     defaults = value
@@ -36,7 +36,7 @@ new_defaults = function(value = list()) {
 #'
 #' Set global options using \code{iSEEOptions$set()}, so that all panels will use these default values during initialization.
 #'
-#' See \code{str(knitr::iSEEOptions$get())} for a list of default panel options.
+#' See \code{str(iSEEOptions$get())} for a list of default panel options.
 #'
 #' Note that \code{iSEEOptions$restore()} can be used to reset the global options to the package default values.
 #'
@@ -62,7 +62,7 @@ iSEEOptions <- new_defaults(list(
 ))
 
 # merge elements of y into x with the same names
-# credit: knitr
+# Credits: knitr
 merge_list = function(x, y) {
     x[names(y)] = y
     x

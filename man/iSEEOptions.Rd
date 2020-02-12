@@ -12,7 +12,7 @@ iSEEOptions
 Set global options using \code{iSEEOptions$set()}, so that all panels will use these default values during initialization.
 }
 \details{
-See \code{str(knitr::iSEEOptions$get())} for a list of default panel options.
+See \code{str(iSEEOptions$get())} for a list of default panel options.
 
 Note that \code{iSEEOptions$restore()} can be used to reset the global options to the package default values.
 }

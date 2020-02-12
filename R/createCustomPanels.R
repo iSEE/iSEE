@@ -12,7 +12,7 @@
 #' @param className String containing the name of the new \linkS4class{Panel} class.
 #' @param fullName String containing the full name of the new class.
 #' @param where An environment indicating where the class and method definitions should be stored.
-#' 
+#'
 #' @return
 #' A new class and its methods are defined in the global environment.
 #' A generator function for creating new instances of the class is returned.
@@ -31,7 +31,7 @@
 #'
 #' Any number of additional named arguments may also be present in \code{FUN}.
 #' All such arguments should have default values,
-#' as these are used to automatically generate UI elements in the panel: 
+#' as these are used to automatically generate UI elements in the panel:
 #' \itemize{
 #' \item Character vectors will get a \code{\link{selectInput}}.
 #' \item Strings will get a \code{\link{textInput}}.
@@ -50,7 +50,7 @@
 #' @examples
 #' library(scater)
 #' CUSTOM_DIMRED <- function(se, rows, columns, ntop=500, scale=TRUE,
-#'     mode=c("PCA", "TSNE", "UMAP")) 
+#'     mode=c("PCA", "TSNE", "UMAP"))
 #' {
 #'     if (is.null(columns)) {
 #'         return(
@@ -60,7 +60,7 @@
 #'                 size=5)
 #'             )
 #'     }
-#' 
+#'
 #'     mode <- match.arg(mode)
 #'     if (mode=="PCA") {
 #'         calcFUN <- runPCA
@@ -71,7 +71,7 @@
 #'     }
 #'
 #'     kept <- se[, unique(unlist(columns))]
-#'     kept <- calcFUN(kept, ncomponents=2, ntop=ntop, 
+#'     kept <- calcFUN(kept, ncomponents=2, ntop=ntop,
 #'         scale=scale, subset_row=unique(unlist(rows)))
 #'     plotReducedDim(kept, mode)
 #' }
@@ -92,10 +92,10 @@
 #' }
 #'
 #' @author Aaron Lun
-#' 
+#'
 #' @export
 #' @name createCustomPanels
-createCustomTable <- function(FUN, restrict=NULL, className="CustomTable", 
+createCustomTable <- function(FUN, restrict=NULL, className="CustomTable",
     fullName="Custom table", where=topenv(parent.frame()))
 {
     fn_args <- .grab_all_args(FUN, restrict)
@@ -106,7 +106,7 @@ createCustomTable <- function(FUN, restrict=NULL, className="CustomTable",
 
     fn_name <- deparse(substitute(FUN))
     setMethod(".generateTable", className, function(x, envir) {
-        .execute_custom_function(x, FUN, 
+        .execute_custom_function(x, FUN,
             fn_name=fn_name, assigned="tab", envir=envir,
             fn_args=names(fn_args))
     }, where=where)
@@ -124,7 +124,7 @@ createCustomTable <- function(FUN, restrict=NULL, className="CustomTable",
 
 #' @export
 #' @rdname createCustomPanels
-createCustomPlot <- function(FUN, restrict=NULL, className="CustomPlot", 
+createCustomPlot <- function(FUN, restrict=NULL, className="CustomPlot",
     fullName="Custom plot", where=topenv(parent.frame()))
 {
     fn_args <- .grab_all_args(FUN, restrict)
@@ -143,7 +143,7 @@ createCustomPlot <- function(FUN, restrict=NULL, className="CustomPlot",
         plot_env$se <- se
 
         selected <- .processMultiSelections(x, all_memory, all_contents, plot_env)
-        commands <- .execute_custom_function(x, FUN, 
+        commands <- .execute_custom_function(x, FUN,
             fn_name=fn_name, assigned="gg", envir=plot_env,
             fn_args=names(fn_args))
 
@@ -154,10 +154,12 @@ createCustomPlot <- function(FUN, restrict=NULL, className="CustomPlot",
     setMethod(".renderOutput", className, function(x, se, output, pObjects, rObjects) {
         plot_name <- .getEncodedName(x)
         force(se) # defensive programming to avoid difficult bugs due to delayed evaluation.
+        # nocov start
         output[[plot_name]] <- renderPlot({
             p.out <- .retrieveOutput(plot_name, se, pObjects, rObjects)
             p.out$contents
         })
+        # nocov end
     }, where=where)
 
     generator
@@ -239,6 +241,8 @@ createCustomPlot <- function(FUN, restrict=NULL, className="CustomPlot",
         # given that custom panels cannot transmit.
         .createProtectedParameterObservers(panel_name, names(defaults),
             input=input, pObjects=pObjects, rObjects=rObjects)
+
+        invisible(NULL)
     }, where=where)
 
     setMethod(".fullName", className, function(x) fullName, where=where)
@@ -272,18 +276,18 @@ createCustomPlot <- function(FUN, restrict=NULL, className="CustomPlot",
 
 #' @rdname INTERNAL_custom_panel_methods
 .execute_custom_function <- function(x, FUN, fn_name, fn_args, assigned, envir) {
-    fn_call <- paste(assigned, "<- %s(se,") 
+    fn_call <- paste(assigned, "<- %s(se")
 
     if (exists("row_selected", envir, inherits=FALSE)) {
-        fn_call <- paste(fn_call, "row_selected,")
+        fn_call <- paste(fn_call, ", row_selected")
     } else {
-        fn_call <- paste(fn_call, "NULL,")
+        fn_call <- paste(fn_call, ", NULL")
     }
-    
+
     if (exists("col_selected", envir, inherits=FALSE)) {
-        fn_call <- paste(fn_call, "col_selected,")
+        fn_call <- paste(fn_call, ", col_selected")
     } else {
-        fn_call <- paste(fn_call, "NULL,")
+        fn_call <- paste(fn_call, ", NULL")
     }
 
     extra_args <- list()
@@ -292,15 +296,17 @@ createCustomPlot <- function(FUN, restrict=NULL, className="CustomPlot",
     }
     extra_args <- paste(sprintf("%s=%s", names(extra_args), unlist(extra_args)), collapse=", ")
 
-    total_call <- paste(fn_call, extra_args)
-    total_call <- paste0(total_call, ")")
-    total_call <- paste(strwrap(total_call, exdent=4), collapse="\n")
+    if (!identical(extra_args, "")) {
+        fn_call <- paste(fn_call, extra_args, sep = ", ")
+    }
+    fn_call <- paste0(fn_call, ")")
+    fn_call <- paste(strwrap(fn_call, exdent=4), collapse="\n")
 
     # Not using 'fn_name' to assign to 'envir', to avoid potentially
-    # overwriting important variables like 'se' with arbitrary user names. 
+    # overwriting important variables like 'se' with arbitrary user names.
     envir$.customFUN <- FUN
-    tmp_call <- sprintf(total_call, ".customFUN")
+    tmp_call <- sprintf(fn_call, ".customFUN")
     .text_eval(tmp_call, envir)
 
-    sprintf(total_call, fn_name)
+    sprintf(fn_call, fn_name)
 }

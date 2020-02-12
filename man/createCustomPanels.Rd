@@ -59,7 +59,7 @@ Alternatively, this may be \code{NULL} if no selection has been made in the tran
 
 Any number of additional named arguments may also be present in \code{FUN}.
 All such arguments should have default values,
-as these are used to automatically generate UI elements in the panel: 
+as these are used to automatically generate UI elements in the panel:
 \itemize{
 \item Character vectors will get a \code{\link{selectInput}}.
 \item Strings will get a \code{\link{textInput}}.
@@ -78,7 +78,7 @@ serious \linkS4class{Panel} extensions should be done explicitly.
 \examples{
 library(scater)
 CUSTOM_DIMRED <- function(se, rows, columns, ntop=500, scale=TRUE,
-    mode=c("PCA", "TSNE", "UMAP")) 
+    mode=c("PCA", "TSNE", "UMAP"))
 {
     if (is.null(columns)) {
         return(
@@ -99,7 +99,7 @@ CUSTOM_DIMRED <- function(se, rows, columns, ntop=500, scale=TRUE,
     }
 
     kept <- se[, unique(unlist(columns))]
-    kept <- calcFUN(kept, ncomponents=2, ntop=ntop, 
+    kept <- calcFUN(kept, ncomponents=2, ntop=ntop,
         scale=scale, subset_row=unique(unlist(rows)))
     plotReducedDim(kept, mode)
 }

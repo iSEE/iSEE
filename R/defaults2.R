@@ -34,11 +34,27 @@ new_defaults = function(value = list()) {
 
 #' Default panel options
 #'
-#' Set global options using \code{iSEEOptions$set()}, so that all panels will use these default values during initialization.
+#' Set global options using \code{iSEEOptions$set()}, so that all relevant panels will use these default values during initialization.
 #'
 #' See \code{str(iSEEOptions$get())} for a list of default panel options.
 #'
 #' Note that \code{iSEEOptions$restore()} can be used to reset the global options to the package default values.
+#' 
+#' @section Available options:
+#' 
+#' \describe{
+#' \item{\code{point.color}}{Default color of data points in \code{DotPlot} panels (character).}
+#' \item{\code{point.size}}{Default size of data points in \code{DotPlot} panels (numeric).}
+#' \item{\code{point.alpha}}{Default alpha level controlling transparency of data points in \code{DotPlot} panels (numeric).}
+#' \item{\code{downsample}}{Enable visual downsampling in \code{DotPlot} panels (logical).}
+#' \item{\code{downsample.res}}{Resolution of the visual downsampling, if active (numeric).}
+#' \item{\code{selected.color}}{Color of selected data points in \code{DotPlot} panels (character).}
+#' \item{\code{selected.alpha}}{Alpha level controlling transparency of data points \emph{not} selected in \code{DotPlot} panels (numeric).}
+#' \item{\code{contour.color}}{Color of the 2d density estimation contour in \code{DotPlot} panels (character).}
+#' \item{\code{font.size}}{Global multiplier controlling the magnification of plot title and text elements in \code{DotPlot} panels (numeric).}
+#' \item{\code{legend.position}}{Position of the legend in \code{DotPlot} and \code{ComplexHeatmapPlot} panels (one of \code{"Bottom"}, \code{"Right"}).}
+#' \item{\code{legend.direction}}{Position of the legend in \code{DotPlot} and \code{ComplexHeatmapPlot} panels (one of \code{"Horizontal"}, \code{"Vertical"}).}
+#' }
 #'
 #' @export
 #' @examples iSEEOptions$get('downsample'); iSEEOptions$get('selected.color')

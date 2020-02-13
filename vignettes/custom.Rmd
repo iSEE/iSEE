@@ -269,7 +269,7 @@ app <- iSEE(sce, initial=list(RedDimPlot(PanelId=1L),
 The system described above is rather limited and is only provided for quick-and-dirty customizations.
 For more serious extensions, we provide a S4 framework for native integration of user-created panels into the application.
 This allows specification of custom interface elements and observers and transmission of multiple selections to other panels.
-Prospective panel developers are advised to [read the book](https://kevinrue.github.io/iSEE-book),
+Prospective panel developers are advised to [read the book](https://isee.github.io/iSEE-book),
 as there are too many cool things that will not fit into this vignette.
 
 # Session Info {.unnumbered}

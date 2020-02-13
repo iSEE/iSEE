@@ -109,7 +109,6 @@ sce <- logNormCounts(sce, exprs_values="tophat_counts")
 
 Next, we apply PCA and *t*-SNE to generate two low-dimensional representations of the cells.
 The dimensionality reduction results are stored in `reducedDim(sce)`.
-Note that all computations (e.g., dimension reduction, clustering) must be performed *before* passing the object to the `iSEE` function.
 
 ```{r allen-dataset-2}
 sce <- runPCA(sce)
@@ -125,7 +124,7 @@ rowData(sce)$mean_log <- rowMeans(logcounts(sce))
 rowData(sce)$var_log <- apply(logcounts(sce), 1, var)
 ```
 
-It is important to note that `iSEE` relies solely^[Except when dealing with `r Biocpkg("iSEE", vignette="custom.html", label="custom panels")`.] on precomputed values in the `SummarizedExperiment` object.
+It is important to note that `iSEE` relies primarily on precomputed values stored in the various slots of objects derived from the `SummarizedExperiment` class^[Except when dealing with `r Biocpkg("iSEE", vignette="custom.html", label="custom panels")`.].
 This allows users to visualize any metrics of interest, but also requires them to do so before the initialization of the app.
 That said, it is straightforward to iteratively explore a precomputed object, take notes of new metrics to compute, close the app, store new results in the `SummarizedExperiment` object, and launch a new app using the updated object.
 

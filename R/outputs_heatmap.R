@@ -107,7 +107,7 @@
             col_range <- range(envir$plot.data, na.rm = TRUE)
         }
 
-        col_range <- .safe_nonzero_range(col_range, centered)
+        col_range <- .safe_nonzero_range(col_range, x[[.assayCenterRows]])
         if (x[[.assayCenterRows]]) {
             fmt <- '.assay_colors <- circlize::colorRamp2(breaks = c(%s, 0, %s), colors = .assay_colors)'
         } else {

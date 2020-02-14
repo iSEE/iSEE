@@ -1280,5 +1280,3 @@ test_that("plots subsetted to no data contain a geom_blank command", {
 test_that(".build_labs returns NULL for NULL inputs", {
     expect_null(iSEE:::.build_labs())
 })
-
-

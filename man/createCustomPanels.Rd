@@ -8,9 +8,7 @@
 \usage{
 createCustomTable(
   FUN,
-  argStrings = character(0),
-  argNumbers = character(0),
-  argFlags = character(0),
+  restrict = NULL,
   className = "CustomTable",
   fullName = "Custom table",
   where = topenv(parent.frame())
@@ -18,9 +16,7 @@ createCustomTable(
 
 createCustomPlot(
   FUN,
-  argStrings = character(0),
-  argNumbers = character(0),
-  argFlags = character(0),
+  restrict = NULL,
   className = "CustomPlot",
   fullName = "Custom plot",
   where = topenv(parent.frame())
@@ -31,11 +27,8 @@ createCustomPlot(
 for \code{createCustomTable} and \code{createCustomPlot} respectively.
 See Details for the expected arguments.}
 
-\item{argStrings}{Character vector of names of optional string arguments to \code{FUN}.}
-
-\item{argNumbers}{Character vector of names of optional (scalar) numeric arguments to \code{FUN}.}
-
-\item{argFlags}{Character vector of names of optional (scalar) logical arguments to \code{FUN}.}
+\item{restrict}{Character vector of names of optional arguments in \code{FUN} to which the UI is restricted.
+If specified, only the listed arguments receive UI elements in the interface.}
 
 \item{className}{String containing the name of the new \linkS4class{Panel} class.}
 
@@ -65,9 +58,17 @@ Alternatively, this may be \code{NULL} if no selection has been made in the tran
 }
 
 Any number of additional named arguments may also be present in \code{FUN}.
-These will be passed from UI elements in the panel if the names of those arguments are listed in \code{argStrings}, etc.
-All such additional arguments should have default values,
-which are extracted for use as the default vfalues in the UI.
+All such arguments should have default values,
+as these are used to automatically generate UI elements in the panel:
+\itemize{
+\item Character vectors will get a \code{\link{selectInput}}.
+\item Strings will get a \code{\link{textInput}}.
+\item Numeric scalars will get a \code{\link{numericInput}}.
+\item Logical scalars will get a \code{\link{checkboxInput}}.
+}
+Arguments with other types of default values are ignored.
+If \code{restrict} is specified, arguments will only have corresponding UI elements if they are listed in \code{restrict}.
+All user interactions with these elements will automatically trigger regeneration of the panel contents.
 
 Classes created via these functions are extremely limited.
 Only scalar inputs are supported via the UI and all panels cannot transmit to the rest of the app.
@@ -76,10 +77,10 @@ serious \linkS4class{Panel} extensions should be done explicitly.
 }
 \examples{
 library(scater)
-CUSTOM_PCA <- function(se, rows, columns, ntop=500, scale=TRUE) {
-    if (!is.null(columns)) {
-        kept <- se[, unique(unlist(columns))]
-    } else {
+CUSTOM_DIMRED <- function(se, rows, columns, ntop=500, scale=TRUE,
+    mode=c("PCA", "TSNE", "UMAP"))
+{
+    if (is.null(columns)) {
         return(
             ggplot() + theme_void() + geom_text(
                 aes(x, y, label=label),
@@ -88,18 +89,22 @@ CUSTOM_PCA <- function(se, rows, columns, ntop=500, scale=TRUE) {
             )
     }
 
-    if (!is.null(rows)) {
-        subset_row <- unique(unlist(rows))
-    } else {
-        subset_row <- NULL
+    mode <- match.arg(mode)
+    if (mode=="PCA") {
+        calcFUN <- runPCA
+    } else if (mode=="TSNE") {
+        calcFUN <- runTSNE
+    } else if (mode=="UMAP") {
+        calcFUN <- runUMAP
     }
 
-    kept <- runPCA(kept, ncomponents=2, ntop=ntop, 
-        scale=scale, subset_row=subset_row)
-    plotPCA(kept)
+    kept <- se[, unique(unlist(columns))]
+    kept <- calcFUN(kept, ncomponents=2, ntop=ntop,
+        scale=scale, subset_row=unique(unlist(rows)))
+    plotReducedDim(kept, mode)
 }
 
-GEN <- createCustomPlot(CUSTOM_PCA, argNumbers="ntop", argFlags="scale")
+GEN <- createCustomPlot(CUSTOM_DIMRED)
 GEN()
 
 if (interactive()) {

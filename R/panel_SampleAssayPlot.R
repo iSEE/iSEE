@@ -1,6 +1,6 @@
-#' The SampAssayPlot panel
+#' The SampleAssayPlot panel
 #'
-#' The SampAssayPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents the expression of a sample of interest, using the \code{\link{assay}} values of the \linkS4class{SummarizedExperiment}.
+#' The SampleAssayPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents the expression of a sample of interest, using the \code{\link{assay}} values of the \linkS4class{SummarizedExperiment}.
 #' It provides slots and methods for specifying which sample to use and what to plot on the x-axis.
 #'
 #' @section Slot overview:
@@ -26,15 +26,15 @@
 #' In addition, this class inherits all slots from its parent \linkS4class{ColumnDotPlot}, \linkS4class{DotPlot} and \linkS4class{Panel} classes.
 #'
 #' @section Constructor:
-#' \code{SampAssayPlot(...)} creates an instance of a SampAssayPlot class, where any slot and its value can be passed to \code{...} as a named argument.
+#' \code{SampleAssayPlot(...)} creates an instance of a SampleAssayPlot class, where any slot and its value can be passed to \code{...} as a named argument.
 #'
 #' @section Contract description:
-#' The SampAssayPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
+#' The SampleAssayPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
 #' It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
 #' Subclasses do not have to provide any methods, as this is a concrete class.
 #'
 #' @section Supported methods:
-#' In the following code snippets, \code{x} is an instance of a \linkS4class{SampAssayPlot} class.
+#' In the following code snippets, \code{x} is an instance of a \linkS4class{SampleAssayPlot} class.
 #' Refer to the documentation for each method for more details on the remaining arguments.
 #'
 #' For setting up data values:
@@ -82,7 +82,7 @@
 #' # For end-users #
 #' #################
 #'
-#' x <- SampAssayPlot()
+#' x <- SampleAssayPlot()
 #' x[["XAxis"]]
 #' x[["Assay"]] <- "logcounts"
 #' x[["XAxisRowData"]] <- "stuff"
@@ -108,27 +108,27 @@
 #' .refineParameters(x, sce0)
 #'
 #' @docType methods
-#' @aliases SampAssayPlot SampAssayPlot-class
-#' initialize,SampAssayPlot-method
-#' .refineParameters,SampAssayPlot-method
-#' .defineDataInterface,SampAssayPlot-method
-#' .createObservers,SampAssayPlot-method
-#' .singleSelectionSlots,SampAssayPlot-method
-#' .fullName,SampAssayPlot-method
-#' .panelColor,SampAssayPlot-method
-#' .generateDotPlotData,SampAssayPlot-method
+#' @aliases SampleAssayPlot SampleAssayPlot-class
+#' initialize,SampleAssayPlot-method
+#' .refineParameters,SampleAssayPlot-method
+#' .defineDataInterface,SampleAssayPlot-method
+#' .createObservers,SampleAssayPlot-method
+#' .singleSelectionSlots,SampleAssayPlot-method
+#' .fullName,SampleAssayPlot-method
+#' .panelColor,SampleAssayPlot-method
+#' .generateDotPlotData,SampleAssayPlot-method
 #'
-#' @name SampAssayPlot-class
+#' @name SampleAssayPlot-class
 NULL
 
 #' @export
-SampAssayPlot <- function(...) {
-    new("SampAssayPlot", ...)
+SampleAssayPlot <- function(...) {
+    new("SampleAssayPlot", ...)
 }
 
 #' @export
 #' @importFrom methods callNextMethod
-setMethod("initialize", "SampAssayPlot", function(.Object, ...) {
+setMethod("initialize", "SampleAssayPlot", function(.Object, ...) {
     args <- list(...)
     args <- .empty_default(args, .sampAssayAssay, NA_character_)
     args <- .empty_default(args, .sampAssayXAxis, .sampAssayXAxisNothingTitle)
@@ -143,7 +143,7 @@ setMethod("initialize", "SampAssayPlot", function(.Object, ...) {
 #' @export
 #' @importFrom SingleCellExperiment reducedDim
 #' @importFrom methods callNextMethod
-setMethod(".refineParameters", "SampAssayPlot", function(x, se) {
+setMethod(".refineParameters", "SampleAssayPlot", function(x, se) {
     x <- callNextMethod()
     if (is.null(x)) {
         return(NULL)
@@ -177,7 +177,7 @@ setMethod(".refineParameters", "SampAssayPlot", function(x, se) {
 .sampAssayXAxisSampNameTitle <- "Sample name"
 
 #' @importFrom S4Vectors setValidity2
-setValidity2("SampAssayPlot", function(object) {
+setValidity2("SampleAssayPlot", function(object) {
     msg <- character(0)
 
     msg <- .allowable_choice_error(msg, object, .sampAssayXAxis,
@@ -196,7 +196,7 @@ setValidity2("SampAssayPlot", function(object) {
 #' @export
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
-setMethod(".defineDataInterface", "SampAssayPlot", function(x, se, select_info) {
+setMethod(".defineDataInterface", "SampleAssayPlot", function(x, se, select_info) {
     panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
@@ -245,7 +245,7 @@ setMethod(".defineDataInterface", "SampAssayPlot", function(x, se, select_info) 
 #' @export
 #' @importFrom shiny observeEvent updateSelectInput
 #' @importFrom methods callNextMethod
-setMethod(".createObservers", "SampAssayPlot", function(x, se, input, session, pObjects, rObjects) {
+setMethod(".createObservers", "SampleAssayPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
     plot_name <- .getEncodedName(x)
@@ -256,7 +256,7 @@ setMethod(".createObservers", "SampAssayPlot", function(x, se, input, session, p
 })
 
 #' @export
-setMethod(".singleSelectionSlots", "SampAssayPlot", function(x) {
+setMethod(".singleSelectionSlots", "SampleAssayPlot", function(x) {
     c(callNextMethod(),
         list(
             list(parameter=.sampAssayXAxisSampName, source=.sampAssayXAxisColTable, dimension="column",
@@ -268,13 +268,13 @@ setMethod(".singleSelectionSlots", "SampAssayPlot", function(x) {
 })
 
 #' @export
-setMethod(".fullName", "SampAssayPlot", function(x) "Sample assay plot")
+setMethod(".fullName", "SampleAssayPlot", function(x) "Sample assay plot")
 
 #' @export
-setMethod(".panelColor", "SampAssayPlot", function(x) "#07A274")
+setMethod(".panelColor", "SampleAssayPlot", function(x) "#07A274")
 
 #' @export
-setMethod(".generateDotPlotData", "SampAssayPlot", function(x, envir) {
+setMethod(".generateDotPlotData", "SampleAssayPlot", function(x, envir) {
     data_cmds <- list()
 
     samp_selected_y <- x[[.sampAssayYAxisSampName]]

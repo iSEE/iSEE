@@ -317,7 +317,7 @@ collated[.colDataYAxis] <- "character"
 collated[.colDataXAxisColData] <- "character"
 
 #' @export
-setClass("ColDataPlot", contains="ColumnDotPlot", slots=collated)
+setClass("ColumnDataPlot", contains="ColumnDotPlot", slots=collated)
 
 ####################################################
 

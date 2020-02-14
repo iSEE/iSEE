@@ -1,27 +1,27 @@
-#' The ColStatTable panel
+#' The ColumnDataTable panel
 #'
-#' The ColStatTable is a panel class for creating a \linkS4class{ColumnTable} where the value of the table is defined as the \code{\link{colData}} of the \linkS4class{SummarizedExperiment}.
+#' The ColumnDataTable is a panel class for creating a \linkS4class{ColumnTable} where the value of the table is defined as the \code{\link{colData}} of the \linkS4class{SummarizedExperiment}.
 #'
 #' @section Slot overview:
 #' This class inherits all slots from its parent \linkS4class{ColumnTable} and \linkS4class{Table} classes.
 #'
 #' @section Constructor:
-#' \code{ColStatTable(...)} creates an instance of a ColStatTable class, where any slot and its value can be passed to \code{...} as a named argument.
+#' \code{ColumnDataTable(...)} creates an instance of a ColumnDataTable class, where any slot and its value can be passed to \code{...} as a named argument.
 #'
 #' Note that \code{ColSearch} should be a character vector of length equal to the total number of columns in the \code{\link{colData}}, though only the entries for the atomic fields will actually be used.
 #'
 #' @section Contract description:
-#' The ColStatTable will provide user interface elements and observers to change all of its slots.
+#' The ColumnDataTable will provide user interface elements and observers to change all of its slots.
 #' The \code{\link{datatable}} is rendered with all atomic contents of the \code{\link{colData}} of the SummarizedExperiment.
 #' Subclasses do not have to provide any methods, as this is a concrete class.
 #'
 #' @section Supported methods:
-#' In the following code snippets, \code{x} is an instance of a \linkS4class{ColStatTable} class.
+#' In the following code snippets, \code{x} is an instance of a \linkS4class{ColumnDataTable} class.
 #' Refer to the documentation for each method for more details on the remaining arguments.
 #'
 #' For setting up data values:
 #' \itemize{
-#' \item \code{\link{.cacheCommonInfo}(x)} adds a \code{"ColStatTable"} entry containing \code{valid.colData.names}, a character vector of names of atomic columns of the \code{\link{colData}}.
+#' \item \code{\link{.cacheCommonInfo}(x)} adds a \code{"ColumnDataTable"} entry containing \code{valid.colData.names}, a character vector of names of atomic columns of the \code{\link{colData}}.
 #' This will also call the equivalent \linkS4class{ColumnTable} method.
 #' \item \code{\link{.refineParameters}(x, se)} adjusts \code{ColSearch} to a character vector of length equal to the number of atomic fields in the \code{\link{colData}}.
 #' This will also call the equivalent \linkS4class{ColumnTable} method for further refinements to \code{x}.
@@ -54,7 +54,7 @@
 #' # For end-users #
 #' #################
 #'
-#' x <- ColStatTable()
+#' x <- ColumnDataTable()
 #' x[["Selected"]]
 #' x[["Selected"]] <- "SOME_SAMPLE_NAME"
 #'
@@ -69,27 +69,27 @@
 #' sce0 <- .cacheCommonInfo(x, sce)
 #' .refineParameters(x, sce0)
 #'
-#' @name ColStatTable-class
-#' @aliases ColStatTable ColStatTable-class
-#' initialize,ColStatTable-method
-#' .cacheCommonInfo,ColStatTable-method
-#' .refineParameters,ColStatTable-method
-#' .hideInterface,ColStatTable-method
-#' .generateTable,ColStatTable-method
-#' .panelColor,ColStatTable-method
-#' .fullName,ColStatTable-method
-#' .generateTable,ColStatTable-method
+#' @name ColumnDataTable-class
+#' @aliases ColumnDataTable ColumnDataTable-class
+#' initialize,ColumnDataTable-method
+#' .cacheCommonInfo,ColumnDataTable-method
+#' .refineParameters,ColumnDataTable-method
+#' .hideInterface,ColumnDataTable-method
+#' .generateTable,ColumnDataTable-method
+#' .panelColor,ColumnDataTable-method
+#' .fullName,ColumnDataTable-method
+#' .generateTable,ColumnDataTable-method
 NULL
 
 #' @export
-ColStatTable <- function(...) {
-    new("ColStatTable", ...)
+ColumnDataTable <- function(...) {
+    new("ColumnDataTable", ...)
 }
 
 #' @export
 #' @importFrom SummarizedExperiment colData
-setMethod(".cacheCommonInfo", "ColStatTable", function(x, se) {
-    if (!is.null(.get_common_info(se, "ColStatTable"))) {
+setMethod(".cacheCommonInfo", "ColumnDataTable", function(x, se) {
+    if (!is.null(.get_common_info(se, "ColumnDataTable"))) {
         return(se)
     }
 
@@ -97,19 +97,19 @@ setMethod(".cacheCommonInfo", "ColStatTable", function(x, se) {
 
     df <- colData(se)
     available <- .find_atomic_fields(df)
-    .set_common_info(se, "ColStatTable",
+    .set_common_info(se, "ColumnDataTable",
         valid.colData.names=available)
 })
 
 #' @export
 #' @importFrom SummarizedExperiment colData
-setMethod(".refineParameters", "ColStatTable", function(x, se) {
+setMethod(".refineParameters", "ColumnDataTable", function(x, se) {
     x <- callNextMethod()
     if (is.null(x)) {
         return(NULL)
     }
 
-    valid.names <- .get_common_info(se, "ColStatTable")$valid.colData.names
+    valid.names <- .get_common_info(se, "ColumnDataTable")$valid.colData.names
     df <- colData(se)
 
     # First, expanding out so that we cover all columns.
@@ -128,13 +128,13 @@ setMethod(".refineParameters", "ColStatTable", function(x, se) {
 })
 
 #' @export
-setMethod(".fullName", "ColStatTable", function(x) "Column statistics table")
+setMethod(".fullName", "ColumnDataTable", function(x) "Column statistics table")
 
 #' @export
-setMethod(".panelColor", "ColStatTable", function(x) "#B00258")
+setMethod(".panelColor", "ColumnDataTable", function(x) "#B00258")
 
 #' @export
-setMethod(".hideInterface", "ColStatTable", function(x, field) {
+setMethod(".hideInterface", "ColumnDataTable", function(x, field) {
     if (field %in% .dataParamBoxOpen) {
         TRUE
     } else {
@@ -144,14 +144,14 @@ setMethod(".hideInterface", "ColStatTable", function(x, field) {
 
 #' @export
 #' @importFrom SummarizedExperiment colData
-setMethod(".generateTable", "ColStatTable", function(x, envir) {
+setMethod(".generateTable", "ColumnDataTable", function(x, envir) {
     cmds <-"tab <- as.data.frame(colData(se));"
 
     if (exists("col_selected", envir=envir, inherits=FALSE)) {
         cmds <- c(cmds, "tab <- tab[unique(unlist(col_selected)),,drop=FALSE]")
     }
 
-    valid.names <- .get_common_info(envir$se, "ColStatTable")$valid.colData.names
+    valid.names <- .get_common_info(envir$se, "ColumnDataTable")$valid.colData.names
     if (!identical(colnames(colData(envir$se)), valid.names)) {
         cmds <- c(cmds, sprintf("tab <- tab[,%s,drop=FALSE]",
             paste(deparse(valid.names), collapse="\n     ")))

@@ -281,7 +281,7 @@ collated[.redDimXAxis] <- "integer"
 collated[.redDimYAxis] <- "integer"
 
 #' @export
-setClass("RedDimPlot", contains="ColumnDotPlot", slots=collated)
+setClass("ReducedDimPlot", contains="ColumnDotPlot", slots=collated)
 
 ####################################################
 

@@ -68,7 +68,7 @@
 #' @author Aaron Lun
 #'
 #' @examples
-#' rdp <- RedDimPlot()
+#' rdp <- ReducedDimPlot()
 #'
 #' # Default color, as specified by the developer:
 #' .panelColor(rdp)
@@ -77,7 +77,7 @@
 #' .getPanelColor(rdp)
 #'
 #' # Overriding the default colors
-#' options(iSEE_panel_colors=c(RedDimPlot="dodgerblue"))
+#' options(iSEE_panel_colors=c(ReducedDimPlot="dodgerblue"))
 #' .getPanelColor(rdp)
 #'
 #' @rdname getPanelColor

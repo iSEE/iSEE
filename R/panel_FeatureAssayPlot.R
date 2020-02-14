@@ -1,6 +1,6 @@
-#' The FeatAssayPlot panel
+#' The FeatureAssayPlot panel
 #'
-#' The FeatAssayPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents the expression of a feature of interest, using the \code{\link{assay}} values of the \linkS4class{SummarizedExperiment}.
+#' The FeatureAssayPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents the expression of a feature of interest, using the \code{\link{assay}} values of the \linkS4class{SummarizedExperiment}.
 #' It provides slots and methods for specifying which feature to use and what to plot on the x-axis.
 #'
 #' @section Slot overview:
@@ -26,15 +26,15 @@
 #' In addition, this class inherits all slots from its parent \linkS4class{ColumnDotPlot}, \linkS4class{DotPlot} and \linkS4class{Panel} classes.
 #'
 #' @section Constructor:
-#' \code{FeatAssayPlot(...)} creates an instance of a FeatAssayPlot class, where any slot and its value can be passed to \code{...} as a named argument.
+#' \code{FeatureAssayPlot(...)} creates an instance of a FeatureAssayPlot class, where any slot and its value can be passed to \code{...} as a named argument.
 #'
 #' @section Contract description:
-#' The FeatAssayPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
+#' The FeatureAssayPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
 #' It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
 #' Subclasses do not have to provide any methods, as this is a concrete class.
 #'
 #' @section Supported methods:
-#' In the following code snippets, \code{x} is an instance of a \linkS4class{FeatAssayPlot} class.
+#' In the following code snippets, \code{x} is an instance of a \linkS4class{FeatureAssayPlot} class.
 #' Refer to the documentation for each method for more details on the remaining arguments.
 #'
 #' For setting up data values:
@@ -82,7 +82,7 @@
 #' # For end-users #
 #' #################
 #'
-#' x <- FeatAssayPlot()
+#' x <- FeatureAssayPlot()
 #' x[["XAxis"]]
 #' x[["Assay"]] <- "logcounts"
 #' x[["XAxisColData"]] <- "stuff"
@@ -108,27 +108,27 @@
 #' .refineParameters(x, sce0)
 #'
 #' @docType methods
-#' @aliases FeatAssayPlot FeatAssayPlot-class
-#' initialize,FeatAssayPlot-method
-#' .refineParameters,FeatAssayPlot-method
-#' .defineDataInterface,FeatAssayPlot-method
-#' .createObservers,FeatAssayPlot-method
-#' .singleSelectionSlots,FeatAssayPlot-method
-#' .fullName,FeatAssayPlot-method
-#' .panelColor,FeatAssayPlot-method
-#' .generateDotPlotData,FeatAssayPlot-method
+#' @aliases FeatureAssayPlot FeatureAssayPlot-class
+#' initialize,FeatureAssayPlot-method
+#' .refineParameters,FeatureAssayPlot-method
+#' .defineDataInterface,FeatureAssayPlot-method
+#' .createObservers,FeatureAssayPlot-method
+#' .singleSelectionSlots,FeatureAssayPlot-method
+#' .fullName,FeatureAssayPlot-method
+#' .panelColor,FeatureAssayPlot-method
+#' .generateDotPlotData,FeatureAssayPlot-method
 #'
-#' @name FeatAssayPlot-class
+#' @name FeatureAssayPlot-class
 NULL
 
 #' @export
-FeatAssayPlot <- function(...) {
-    new("FeatAssayPlot", ...)
+FeatureAssayPlot <- function(...) {
+    new("FeatureAssayPlot", ...)
 }
 
 #' @export
 #' @importFrom methods callNextMethod
-setMethod("initialize", "FeatAssayPlot", function(.Object, ...) {
+setMethod("initialize", "FeatureAssayPlot", function(.Object, ...) {
     args <- list(...)
     args <- .empty_default(args, .featAssayAssay, NA_character_)
     args <- .empty_default(args, .featAssayXAxis, .featAssayXAxisNothingTitle)
@@ -143,7 +143,7 @@ setMethod("initialize", "FeatAssayPlot", function(.Object, ...) {
 #' @export
 #' @importFrom SingleCellExperiment reducedDim
 #' @importFrom methods callNextMethod
-setMethod(".refineParameters", "FeatAssayPlot", function(x, se) {
+setMethod(".refineParameters", "FeatureAssayPlot", function(x, se) {
     x <- callNextMethod()
     if (is.null(x)) {
         return(NULL)
@@ -177,7 +177,7 @@ setMethod(".refineParameters", "FeatAssayPlot", function(x, se) {
 .featAssayXAxisFeatNameTitle <- "Feature name"
 
 #' @importFrom S4Vectors setValidity2
-setValidity2("FeatAssayPlot", function(object) {
+setValidity2("FeatureAssayPlot", function(object) {
     msg <- character(0)
 
     msg <- .allowable_choice_error(msg, object, .featAssayXAxis,
@@ -196,7 +196,7 @@ setValidity2("FeatAssayPlot", function(object) {
 #' @export
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
-setMethod(".defineDataInterface", "FeatAssayPlot", function(x, se, select_info) {
+setMethod(".defineDataInterface", "FeatureAssayPlot", function(x, se, select_info) {
     panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
@@ -236,7 +236,7 @@ setMethod(".defineDataInterface", "FeatAssayPlot", function(x, se, select_info) 
 #' @export
 #' @importFrom shiny observeEvent updateSelectInput
 #' @importFrom methods callNextMethod
-setMethod(".createObservers", "FeatAssayPlot", function(x, se, input, session, pObjects, rObjects) {
+setMethod(".createObservers", "FeatureAssayPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
     plot_name <- .getEncodedName(x)
@@ -247,7 +247,7 @@ setMethod(".createObservers", "FeatAssayPlot", function(x, se, input, session, p
 })
 
 #' @export
-setMethod(".singleSelectionSlots", "FeatAssayPlot", function(x) {
+setMethod(".singleSelectionSlots", "FeatureAssayPlot", function(x) {
     c(callNextMethod(),
         list(
             list(parameter=.featAssayXAxisFeatName, source=.featAssayXAxisRowTable, dimension="row",
@@ -259,13 +259,13 @@ setMethod(".singleSelectionSlots", "FeatAssayPlot", function(x) {
 })
 
 #' @export
-setMethod(".fullName", "FeatAssayPlot", function(x) "Feature assay plot")
+setMethod(".fullName", "FeatureAssayPlot", function(x) "Feature assay plot")
 
 #' @export
-setMethod(".panelColor", "FeatAssayPlot", function(x) "#7BB854")
+setMethod(".panelColor", "FeatureAssayPlot", function(x) "#7BB854")
 
 #' @export
-setMethod(".generateDotPlotData", "FeatAssayPlot", function(x, envir) {
+setMethod(".generateDotPlotData", "FeatureAssayPlot", function(x, envir) {
     data_cmds <- list()
 
     ## Setting up the y-axis:

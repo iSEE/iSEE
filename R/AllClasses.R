@@ -376,7 +376,7 @@ setClass("RowTable", contains="Table", representation("VIRTUAL"))
 setClass("ColumnTable", contains="Table", representation("VIRTUAL"))
 
 #' @export
-setClass("RowStatTable", contains="RowTable")
+setClass("RowDataTable", contains="RowTable")
 
 #' @export
 setClass("ColumnDataTable", contains="ColumnTable")

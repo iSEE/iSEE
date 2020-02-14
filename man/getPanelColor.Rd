@@ -29,7 +29,7 @@ This can be used to customize the color scheme for any given call to \code{\link
 The names of the vector should be set to the name of class to be overridden; if a class is not named here, its default color is used.
 }
 \examples{
-rdp <- RedDimPlot()
+rdp <- ReducedDimPlot()
 
 # Default color, as specified by the developer:
 .panelColor(rdp)
@@ -38,7 +38,7 @@ rdp <- RedDimPlot()
 .getPanelColor(rdp)
 
 # Overriding the default colors
-options(iSEE_panel_colors=c(RedDimPlot="dodgerblue"))
+options(iSEE_panel_colors=c(ReducedDimPlot="dodgerblue"))
 .getPanelColor(rdp)
 
 }

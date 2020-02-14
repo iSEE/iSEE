@@ -71,7 +71,7 @@ If not, this method needs to be specialized in order to return an accurate total
 
 \code{.multiSelectionClear(x)} should return \code{x} after removing the active selection, i.e., so that nothing is selected.
 This is used internally to remove multiple selections that do not make sense after protected parameters have changed.
-For example, a brush or lasso made on a PCA plot in \linkS4class{RedDimPlot}s would not make sense after switching to t-SNE coordinates, so the application will automatically erase those selections to avoid misleading conclusions.
+For example, a brush or lasso made on a PCA plot in \linkS4class{ReducedDimPlot}s would not make sense after switching to t-SNE coordinates, so the application will automatically erase those selections to avoid misleading conclusions.
 }
 
 \section{Responding to selections}{

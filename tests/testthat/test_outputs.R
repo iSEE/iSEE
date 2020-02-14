@@ -7,9 +7,9 @@ test_that(".create_selection_info_output works as expected", {
     pObjects = new.env()
     rObjects = new.env()
 
-    out <- .create_selection_info_output("RedDimPlot", sce, output, pObjects, rObjects)
+    out <- .create_selection_info_output("ReducedDimPlot", sce, output, pObjects, rObjects)
     expect_null(out)
-    expect_is(output[["RedDimPlot_INTERNAL_PanelMultiSelectInfo"]], "shiny.render.function")
+    expect_is(output[["ReducedDimPlot_INTERNAL_PanelMultiSelectInfo"]], "shiny.render.function")
 
 })
 
@@ -19,9 +19,9 @@ test_that(".create_link_info_output works as expected", {
     pObjects = new.env()
     rObjects = new.env()
 
-    out <- .create_link_info_output("RedDimPlot", output, pObjects, rObjects)
+    out <- .create_link_info_output("ReducedDimPlot", output, pObjects, rObjects)
     expect_null(out)
-    expect_is(output[["RedDimPlot_INTERNAL_PanelSelectLinkInfo"]], "shiny.render.function")
+    expect_is(output[["ReducedDimPlot_INTERNAL_PanelSelectLinkInfo"]], "shiny.render.function")
 
 })
 
@@ -34,9 +34,9 @@ test_that(".create_table_output works as expected", {
     pObjects <- new.env()
     rObjects <- new.env()
 
-    out <- .create_table_output("RowStatTable1", sce, output, pObjects, rObjects)
+    out <- .create_table_output("RowDataTable1", sce, output, pObjects, rObjects)
     expect_null(out)
-    expect_is(output[["RowStatTable1"]], "shiny.render.function")
+    expect_is(output[["RowDataTable1"]], "shiny.render.function")
 
 })
 
@@ -69,8 +69,8 @@ test_that("define_export_choices supports empty memory", {
 
 test_that("define_export_choices supports non-empty memory", {
 
-    memory <- list(RedDimPlot(PanelId=1L))
+    memory <- list(ReducedDimPlot(PanelId=1L))
 
     out <- .define_export_choices(memory)
-    expect_identical(out, c("Reduced dimension plot 1" = "RedDimPlot1"))
+    expect_identical(out, c("Reduced dimension plot 1" = "ReducedDimPlot1"))
 })

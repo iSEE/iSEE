@@ -2,7 +2,7 @@ context("Tables")
 
 test_that(".multiSelectionCommands handles tables", {
     
-    x <- ColStatTable()
+    x <- ColumnDataTable()
     x[[iSEE:::.TableSearch]] <- "main search"
     x[[iSEE:::.TableColSearch]] <- c("column 1", "column 2")
     
@@ -13,7 +13,7 @@ test_that(".multiSelectionCommands handles tables", {
 
 test_that(".multiSelectionActive handles tables", {
     
-    x <- ColStatTable()
+    x <- ColumnDataTable()
     x[[iSEE:::.TableSearch]] <- "main search"
     x[[iSEE:::.TableColSearch]] <- c("column 1", "column 2")
     
@@ -24,40 +24,40 @@ test_that(".multiSelectionActive handles tables", {
 
 test_that(".createObservers populates rObjects for tables", {
     
-    x <- ColStatTable(PanelId=1L)
+    x <- ColumnDataTable(PanelId=1L)
     input <- new.env()
     pObjects <- new.env()
     rObjects <- new.env()
     
     .createObservers(x, sce, input, NULL, pObjects, rObjects)
     
-    expect_identical(rObjects$ColStatTable1, 1L)
-    expect_identical(rObjects$ColStatTable1_INTERNAL_dimnames, 1L)
-    expect_identical(rObjects$ColStatTable1_INTERNAL_multi_select, 1L)
-    expect_identical(rObjects$ColStatTable1_INTERNAL_relinked_select, 1L)
-    expect_identical(rObjects$ColStatTable1_INTERNAL_saved_choices, 1L)
-    expect_identical(rObjects$ColStatTable1_INTERNAL_single_select, 1L)
+    expect_identical(rObjects$ColumnDataTable1, 1L)
+    expect_identical(rObjects$ColumnDataTable1_INTERNAL_dimnames, 1L)
+    expect_identical(rObjects$ColumnDataTable1_INTERNAL_multi_select, 1L)
+    expect_identical(rObjects$ColumnDataTable1_INTERNAL_relinked_select, 1L)
+    expect_identical(rObjects$ColumnDataTable1_INTERNAL_saved_choices, 1L)
+    expect_identical(rObjects$ColumnDataTable1_INTERNAL_single_select, 1L)
 })
 
 test_that(".renderOutput populates output", {
     
-    x <- ColStatTable(PanelId=1L)
+    x <- ColumnDataTable(PanelId=1L)
     output <- new.env()
     pObjects <- new.env()
     rObjects <- new.env()
     
     out <- .renderOutput(x, sce, output = output, pObjects = pObjects, rObjects = rObjects)
     expect_null(out)
-    expect_is(output$ColStatTable1, "shiny.render.function")
-    expect_is(output$ColStatTable1_INTERNAL_PanelMultiSelectInfo, "shiny.render.function")
-    expect_is(output$ColStatTable1_INTERNAL_PanelSelectLinkInfo, "shiny.render.function")
+    expect_is(output$ColumnDataTable1, "shiny.render.function")
+    expect_is(output$ColumnDataTable1_INTERNAL_PanelMultiSelectInfo, "shiny.render.function")
+    expect_is(output$ColumnDataTable1_INTERNAL_PanelSelectLinkInfo, "shiny.render.function")
 })
 
-test_that(".generateTable handles RowStatTable", {
+test_that(".generateTable handles RowDataTable", {
     
     table_env <- new.env()
     
-    x <- RowStatTable()
+    x <- RowDataTable()
     
     sce <- .cacheCommonInfo(x, sce)
     table_env$se <- sce
@@ -82,11 +82,11 @@ test_that(".generateTable handles RowStatTable", {
         "tab <- tab[,c(\"num_cells\", \"mean_count\", \"letters\"),drop=FALSE]"))
 })
 
-test_that(".generateTable handles ColStatTable", {
+test_that(".generateTable handles ColumnDataTable", {
     
     table_env <- new.env()
     
-    x <- ColStatTable()
+    x <- ColumnDataTable()
     
     sce <- .cacheCommonInfo(x, sce)
     table_env$se <- sce

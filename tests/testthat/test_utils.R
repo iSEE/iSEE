@@ -3,11 +3,11 @@ context("Color utilities")
 
 test_that(".getPanelColor returns the expected colors", {
 
-    x <- ColDataPlot()
+    x <- ColumnDataPlot()
     out <- .getPanelColor(x)
     expect_identical(out, "#DB0230")
 
-    x <- ColStatTable()
+    x <- ColumnDataTable()
     out <- .getPanelColor(x)
     expect_identical(out, "#B00258")
 
@@ -15,11 +15,11 @@ test_that(".getPanelColor returns the expected colors", {
     out <- .getPanelColor(x)
     expect_identical(out, "#440154FF")
 
-    x <- FeatAssayPlot()
+    x <- FeatureAssayPlot()
     out <- .getPanelColor(x)
     expect_identical(out, "#7BB854")
 
-    x <- RedDimPlot()
+    x <- ReducedDimPlot()
     out <- .getPanelColor(x)
     expect_identical(out, "#3565AA")
 
@@ -27,17 +27,17 @@ test_that(".getPanelColor returns the expected colors", {
     out <- .getPanelColor(x)
     expect_identical(out, "#F2B701")
 
-    x <- RowStatTable()
+    x <- RowDataTable()
     out <- .getPanelColor(x)
     expect_identical(out, "#E47E04")
 
-    x <- SampAssayPlot()
+    x <- SampleAssayPlot()
     out <- .getPanelColor(x)
     expect_identical(out, "#07A274")
 
-    options(iSEE_panel_colors=c(RedDimPlot="dodgerblue"))
+    options(iSEE_panel_colors=c(ReducedDimPlot="dodgerblue"))
 
-    x <- RedDimPlot()
+    x <- ReducedDimPlot()
     out <- .getPanelColor(x)
     expect_identical(out, "dodgerblue")
 
@@ -50,11 +50,11 @@ test_that(".single_string_error detects issues", {
 
     msg <- character(0)
 
-    x <- RedDimPlot()
+    x <- ReducedDimPlot()
     x[[iSEE:::.colorByField]] <- character(0)
 
     out <- iSEE:::.single_string_error(msg, x, fields = iSEE:::.colorByField)
-    expect_identical(out, "'ColorBy' should be a single string for 'RedDimPlot'")
+    expect_identical(out, "'ColorBy' should be a single string for 'ReducedDimPlot'")
 
 })
 
@@ -62,11 +62,11 @@ test_that(".valid_logical_error detects issues", {
 
     msg <- character(0)
 
-    x <- RedDimPlot()
+    x <- ReducedDimPlot()
     x[[iSEE:::.visualParamBoxOpen]] <- NA
 
     out <- iSEE:::.valid_logical_error(msg, x, fields = iSEE:::.visualParamBoxOpen)
-    expect_identical(out, "'VisualBoxOpen' should be a non-NA logical scalar for 'RedDimPlot'")
+    expect_identical(out, "'VisualBoxOpen' should be a non-NA logical scalar for 'ReducedDimPlot'")
 
 })
 
@@ -74,11 +74,11 @@ test_that(".valid_string_error detects issues", {
 
     msg <- character(0)
 
-    x <- RedDimPlot()
+    x <- ReducedDimPlot()
     x[[iSEE:::.colorByDefaultColor]] <- c("a", "b")
 
     out <- iSEE:::.valid_string_error(msg, x, fields = iSEE:::.colorByDefaultColor)
-    expect_identical(out, "'ColorByDefaultColor' should be a non-NA string for 'RedDimPlot'")
+    expect_identical(out, "'ColorByDefaultColor' should be a non-NA string for 'ReducedDimPlot'")
 
 })
 
@@ -86,11 +86,11 @@ test_that(".allowable_choice_error detects issues", {
 
     msg <- character(0)
 
-    x <- RedDimPlot()
+    x <- ReducedDimPlot()
     x[[iSEE:::.selectEffect]] <- "other"
 
     out <- iSEE:::.allowable_choice_error(msg, x, .selectEffect, c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle))
-    expect_identical(out, "'SelectEffect' for 'RedDimPlot' should be one of 'Restrict', 'Color', 'Transparent'")
+    expect_identical(out, "'SelectEffect' for 'ReducedDimPlot' should be one of 'Restrict', 'Color', 'Transparent'")
 
 })
 
@@ -98,12 +98,12 @@ test_that(".multiple_choice_error detects issues", {
 
     msg <- character(0)
 
-    x <- RedDimPlot()
+    x <- ReducedDimPlot()
     x[[iSEE:::.visualParamChoice]] <- "other"
 
     out <- .multiple_choice_error(msg, x, .visualParamChoice,
         c(.visualParamChoiceColorTitle, .visualParamChoiceShapeTitle, .visualParamChoicePointTitle, .visualParamChoiceFacetTitle, .visualParamChoiceOtherTitle))
-    expect_identical(out, "values of 'VisualChoices' for 'RedDimPlot' should be in 'Color', 'Shape', 'Points', 'Facets', 'Other'")
+    expect_identical(out, "values of 'VisualChoices' for 'ReducedDimPlot' should be in 'Color', 'Shape', 'Points', 'Facets', 'Other'")
 
 })
 
@@ -111,11 +111,11 @@ test_that(".valid_number_error detects issues", {
 
     msg <- character(0)
 
-    x <- RedDimPlot()
+    x <- ReducedDimPlot()
     x[[iSEE:::.selectTransAlpha]] <- 2
 
     out <- iSEE:::.valid_number_error(msg, x, .selectTransAlpha, lower=0, upper=1)
-    expect_identical(out, "'SelectAlpha' for 'RedDimPlot' should be a numeric scalar in [0, 1]")
+    expect_identical(out, "'SelectAlpha' for 'ReducedDimPlot' should be a numeric scalar in [0, 1]")
 
 })
 
@@ -132,9 +132,9 @@ test_that(".retrieveOutput detects cached panels", {
         contents = data.frame()
     )
 
-    pObjects$cached <- list(RedDimPlot1=cachedInfo)
+    pObjects$cached <- list(ReducedDimPlot1=cachedInfo)
 
-    out <- .retrieveOutput("RedDimPlot1", sce, pObjects, rObjects)
+    out <- .retrieveOutput("ReducedDimPlot1", sce, pObjects, rObjects)
     expect_identical(out, cachedInfo)
     expect_identical(out$commands, cachedInfo$commands)
     expect_identical(out$contents, cachedInfo$contents)
@@ -146,9 +146,9 @@ test_that(".requestUpdate updates rObjects", {
     rObjects <- new.env()
     rObjects$modified <- list()
 
-    .requestUpdate("RedDimPlot1", rObjects)
+    .requestUpdate("ReducedDimPlot1", rObjects)
 
-    expect_identical(rObjects$modified, list(RedDimPlot1 = character(0)))
+    expect_identical(rObjects$modified, list(ReducedDimPlot1 = character(0)))
 })
 
 test_that(".requestCleanUpdate updates rObjects", {
@@ -157,15 +157,15 @@ test_that(".requestCleanUpdate updates rObjects", {
     pObjects$memory <- list()
     rObjects <- new.env()
 
-    x <- RedDimPlot()
+    x <- ReducedDimPlot()
     x[[iSEE:::.brushData]] <- list(xmin=1, xmax=2, ymin=1, ymax=2)
     x[[iSEE:::.multiSelectHistory]] <- list(list(xmin=1, xmax=2, ymin=1, ymax=2))
-    pObjects$memory <- list(RedDimPlot1=x)
+    pObjects$memory <- list(ReducedDimPlot1=x)
 
-    .requestCleanUpdate("RedDimPlot1", pObjects, rObjects)
+    .requestCleanUpdate("ReducedDimPlot1", pObjects, rObjects)
 
-    expect_identical(pObjects$memory$RedDimPlot1[[iSEE:::.brushData]], list())
-    expect_identical(pObjects$memory$RedDimPlot1[[iSEE:::.multiSelectHistory]], list())
+    expect_identical(pObjects$memory$ReducedDimPlot1[[iSEE:::.brushData]], list())
+    expect_identical(pObjects$memory$ReducedDimPlot1[[iSEE:::.multiSelectHistory]], list())
 })
 
 test_that(".requestActiveSelectionUpdate updates rObjects", {
@@ -173,25 +173,25 @@ test_that(".requestActiveSelectionUpdate updates rObjects", {
     rObjects <- new.env()
     rObjects$modified <- list()
 
-    .requestActiveSelectionUpdate("RedDimPlot1", rObjects, update_output = TRUE)
+    .requestActiveSelectionUpdate("ReducedDimPlot1", rObjects, update_output = TRUE)
 
-    expect_identical(rObjects$RedDimPlot1_INTERNAL_multi_select, 2L)
-    expect_identical(rObjects$modified, list(RedDimPlot1 = "Reactivated"))
+    expect_identical(rObjects$ReducedDimPlot1_INTERNAL_multi_select, 2L)
+    expect_identical(rObjects$modified, list(ReducedDimPlot1 = "Reactivated"))
 
-    .requestActiveSelectionUpdate("RedDimPlot1", rObjects, update_output = FALSE)
+    .requestActiveSelectionUpdate("ReducedDimPlot1", rObjects, update_output = FALSE)
 
-    expect_identical(rObjects$RedDimPlot1_INTERNAL_multi_select, 3L)
-    expect_identical(rObjects$modified, list(RedDimPlot1 = c("Reactivated", "Norender")))
+    expect_identical(rObjects$ReducedDimPlot1_INTERNAL_multi_select, 3L)
+    expect_identical(rObjects$modified, list(ReducedDimPlot1 = c("Reactivated", "Norender")))
 })
 
 test_that(".trackSingleSelection forces evaluation of .flagSingleSelect", {
 
     rObjects <- new.env()
 
-    panel_name <- "RedDimPlot1"
+    panel_name <- "ReducedDimPlot1"
     rObjects[[paste0(panel_name, "_", iSEE:::.flagSingleSelect)]] <- "forced output"
 
-    out <- .trackSingleSelection("RedDimPlot1", rObjects)
+    out <- .trackSingleSelection("ReducedDimPlot1", rObjects)
     expect_identical(out, "forced output")
 })
 
@@ -199,10 +199,10 @@ test_that(".trackMultiSelection forces evaluation of .flagMultiSelect", {
 
     rObjects <- new.env()
 
-    panel_name <- "RedDimPlot1"
+    panel_name <- "ReducedDimPlot1"
     rObjects[[paste0(panel_name, "_", iSEE:::.flagMultiSelect)]] <- "forced output"
 
-    out <- .trackMultiSelection("RedDimPlot1", rObjects)
+    out <- .trackMultiSelection("ReducedDimPlot1", rObjects)
     expect_identical(out, "forced output")
 })
 
@@ -210,10 +210,10 @@ test_that(".trackRelinkedSelection forces evaluation of .flagRelinkedSelect", {
 
     rObjects <- new.env()
 
-    panel_name <- "RedDimPlot1"
+    panel_name <- "ReducedDimPlot1"
     rObjects[[paste0(panel_name, "_", iSEE:::.flagRelinkedSelect)]] <- "forced output"
 
-    out <- .trackRelinkedSelection("RedDimPlot1", rObjects)
+    out <- .trackRelinkedSelection("ReducedDimPlot1", rObjects)
     expect_identical(out, "forced output")
 })
 

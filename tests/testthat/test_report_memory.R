@@ -3,7 +3,7 @@
 context("report_memory")
 
 memory <- list(
-    RedDimPlot(
+    ReducedDimPlot(
         BrushData=list(xmin = -11.514034644046, xmax = 9.423465477988,
             ymin = -10.767314578073, ymax = -1.6587346435671,
             mapping = list(x = "X", y = "Y"),
@@ -16,22 +16,22 @@ memory <- list(
                          bottom = 468.220917166096,
                          top = 24.8879973724842),
             log = list(x = NULL, y = NULL), direction = "xy",
-            brushId = "RedDimPlot1_Brush",
-            outputId = "RedDimPlot1"
+            brushId = "ReducedDimPlot1_Brush",
+            outputId = "ReducedDimPlot1"
         )
     ),
-    RedDimPlot(
+    ReducedDimPlot(
         ZoomData=c(xmin = -12.351904605072, xmax = 10.614725533384,
             ymin = -12.000238947242, ymax = 0.0090335134551633
         )
     ),
-    ColDataPlot(),
-    ColDataPlot(),
-    FeatAssayPlot(),
-    FeatAssayPlot(),
-    FeatAssayPlot(),
-    RowStatTable(),
-    SampAssayPlot(),
+    ColumnDataPlot(),
+    ColumnDataPlot(),
+    FeatureAssayPlot(),
+    FeatureAssayPlot(),
+    FeatureAssayPlot(),
+    RowDataTable(),
+    SampleAssayPlot(),
     RowDataPlot(),
     RowDataPlot()
 )

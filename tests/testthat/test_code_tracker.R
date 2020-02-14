@@ -5,12 +5,12 @@ context("codeTracker")
 
 # Setting up a chain of plots.
 memory <- list(
-    RedDimPlot(ColorByRowTable="RowStatTable1", ColorBy="Feature name"),
-    ColDataPlot(SelectColSource="RedDimPlot1"),
-    ColDataPlot(SelectColSource="RedDimPlot1"),
-    FeatAssayPlot(SelectColSource="ColDataPlot1"),
-    FeatAssayPlot(SelectColSource="FeatAssayPlot1", YAxisRowTable="RowStatTable1"),
-    RowStatTable()
+    ReducedDimPlot(ColorByRowTable="RowDataTable1", ColorBy="Feature name"),
+    ColumnDataPlot(SelectColSource="ReducedDimPlot1"),
+    ColumnDataPlot(SelectColSource="ReducedDimPlot1"),
+    FeatureAssayPlot(SelectColSource="ColumnDataPlot1"),
+    FeatureAssayPlot(SelectColSource="FeatureAssayPlot1", YAxisRowTable="RowDataTable1"),
+    RowDataTable()
 )
 
 # .track_it_all / .track_selection_code ----
@@ -26,15 +26,15 @@ test_that("code trackers run correctly for plots", {
     expect_true(any(grepl("ggplot", out)))
 
     # Adding a brush to featAssayPlot1, such that we get it back.
-    pObjects$memory$FeatAssayPlot1[[iSEE:::.brushData]] <- list("this is a mock brush")
+    pObjects$memory$FeatureAssayPlot1[[iSEE:::.brushData]] <- list("this is a mock brush")
     out <- iSEE:::.track_it_all(pObjects, se_name="sce", ecm_name="ecm")
-    expect_true(any(grepl("FeatAssayPlot1.*this is a mock", out)))
+    expect_true(any(grepl("FeatureAssayPlot1.*this is a mock", out)))
 
     # Adding a brush to redDimPlot, which also gives us the feature assay plot above.
-    pObjects$memory$RedDimPlot1[[iSEE:::.brushData]] <- list("this is a mock brush")
+    pObjects$memory$ReducedDimPlot1[[iSEE:::.brushData]] <- list("this is a mock brush")
     out <- iSEE:::.track_it_all(pObjects, se_name="sce", ecm_name="ecm")
-    expect_true(any(grepl("RedDimPlot1.*this is a mock", out)))
-    expect_true(any(grepl("FeatAssayPlot1.*this is a mock", out)))
+    expect_true(any(grepl("ReducedDimPlot1.*this is a mock", out)))
+    expect_true(any(grepl("FeatureAssayPlot1.*this is a mock", out)))
 })
 
 # .track_selection_code ----
@@ -47,13 +47,13 @@ test_that("code trackers can deparse a lasso", {
         mapping=list(x="X", y="Y"),
         coord=matrix(c(1, 2, 2, 1, 1, 1, 1, 2, 2, 1), ncol=2))
 
-    memory <- list(RedDimPlot(BrushData=LASSO_CLOSED))
+    memory <- list(ReducedDimPlot(BrushData=LASSO_CLOSED))
 
     # Mimicking a running instance of the app.
     pObjects <- mimic_live_app(sce, memory)
 
     out <- iSEE:::.track_it_all(pObjects, se_name="sce", ecm_name="ecm")
-    expect_true(any(grepl("all_active[['RedDimPlot1']] <-", out, fixed=TRUE)))
+    expect_true(any(grepl("all_active[['ReducedDimPlot1']] <-", out, fixed=TRUE)))
 
     # Caompare with .deparse_for_viewing directly
     out2 <- iSEE:::.deparse_for_viewing(LASSO_CLOSED)
@@ -69,13 +69,13 @@ test_that("code trackers can deparse a selection history", {
         mapping=list(x="X", y="Y"),
         coord=matrix(c(1, 2, 2, 1, 1, 1, 1, 2, 2, 1), ncol=2))
 
-    memory <- list(RedDimPlot(MultiSelectHistory=list(LASSO_CLOSED)))
+    memory <- list(ReducedDimPlot(MultiSelectHistory=list(LASSO_CLOSED)))
 
     # Mimicking a running instance of the app.
     pObjects <- mimic_live_app(sce, memory)
 
     out <- iSEE:::.track_it_all(pObjects, se_name="sce", ecm_name="ecm")
-    expect_true(any(grepl("all_saved[['RedDimPlot1']] <-", out, fixed=TRUE)))
+    expect_true(any(grepl("all_saved[['ReducedDimPlot1']] <-", out, fixed=TRUE)))
 
     # Compare with .deparse_for_viewing directly
     out2 <- iSEE:::.deparse_for_viewing(LASSO_CLOSED)

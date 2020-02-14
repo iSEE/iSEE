@@ -28,7 +28,7 @@ Each parameter box can contain arbitrary numbers of additional UI elements,
 each of which is expected to modify one slot of \code{x} upon user interaction.
 
 The ID of each interface element should follow the form of \code{PANEL_SLOT} where \code{PANEL} is the panel name (from \code{\link{.getEncodedName}(x)}) and \code{SLOT} is the name of the slot modified by the interface element,
-e.g., \code{"RedDimPlot1_Type"}.
+e.g., \code{"ReducedDimPlot1_Type"}.
 Each interface element should have an equivalent observer in \code{\link{.createObservers}} unless they are hidden by \code{\link{.hideInterface}} (see below).
 
 It is the developer's responsibility to call \code{\link{callNextMethod}} to obtain interface elements for parent classes.

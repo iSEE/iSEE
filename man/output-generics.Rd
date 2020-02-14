@@ -22,7 +22,7 @@ In \code{.defineOutput(x, ...)}, the following arguments are required:
 Methods for this generic are expected to return an output element for inclusion into the \pkg{iSEE} interface, such as the output of \code{\link{plotOutput}}.
 Multiple elements can be provided via a \code{\link{tagList}}.
 
-The IDs of the output elements are expected to be prefixed with the panel name from \code{\link{.getEncodedName}(x)} and an underscore, e.g., \code{"RedDimPlot1_someOutput"}.
+The IDs of the output elements are expected to be prefixed with the panel name from \code{\link{.getEncodedName}(x)} and an underscore, e.g., \code{"ReducedDimPlot1_someOutput"}.
 One of the output elements may simply have the ID set to \code{PANEL} alone;
 this is usually the case for simple panels with one primary output like a \linkS4class{DotPlot}.
 }

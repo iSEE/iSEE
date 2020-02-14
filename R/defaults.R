@@ -148,7 +148,7 @@ rowStatTableDefaults <- function(se, number) {
 #' @export
 #' @rdname defaults
 colStatTableDefaults <- function(se, number) {
-    .Deprecated(new="ColStatTable")
+    .Deprecated(new="ColumnDataTable")
 
     # Ensure that we define all the fields with the right types, using a transient 1-row DF
     # number=0 guarantees that se is not touched to define dummy values of the right type
@@ -514,7 +514,7 @@ heatMapPlotDefaults <- function(se, number) {
     if (is.null(colStatArgs)) {
         suppressWarnings(colStatArgs <- colStatTableDefaults(se, 5))
     }
-    collected <- c(collected, .translate_to_class(colStatArgs, ColStatTable, se, FALSE))
+    collected <- c(collected, .translate_to_class(colStatArgs, ColumnDataTable, se, FALSE))
 
     if (is.null(heatMapArgs)) {
         suppressWarnings(heatMapArgs <- heatMapPlotDefaults(se, 5))
@@ -637,7 +637,7 @@ heatMapPlotDefaults <- function(se, number) {
     converter <- c(
         ReducedDimPlot="Reduced dimension plot",
         FeatureAssayPlot="Feature assay plot",
-        ColStatTable="Column statistics table",
+        ColumnDataTable="Column statistics table",
         ColumnDataPlot="Column data plot",
         RowDataPlot="Row data plot",
         RowStatTable="Row statistics table",

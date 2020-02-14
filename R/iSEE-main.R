@@ -182,7 +182,7 @@ iSEE <- function(se,
 
     if (is.null(initial)) {
         initial <- list(ReducedDimPlot(), RowStatTable(), FeatureAssayPlot(), ColumnDataPlot(),
-            RowDataPlot(), SampleAssayPlot(), ColStatTable(), ComplexHeatmapPlot())
+            RowDataPlot(), SampleAssayPlot(), ColumnDataTable(), ComplexHeatmapPlot())
     }
 
     #######################################################################

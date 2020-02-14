@@ -379,7 +379,7 @@ setClass("ColumnTable", contains="Table", representation("VIRTUAL"))
 setClass("RowStatTable", contains="RowTable")
 
 #' @export
-setClass("ColStatTable", contains="ColumnTable")
+setClass("ColumnDataTable", contains="ColumnTable")
 
 ####################################################
 

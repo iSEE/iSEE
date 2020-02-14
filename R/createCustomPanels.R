@@ -75,8 +75,8 @@
 #'     sce <- logNormCounts(sce, exprs_values="tophat_counts")
 #'
 #'     iSEE(sce, initial=list(
-#'         ColDataPlot(PanelId=1L),
-#'         GEN(SelectColSource="ColDataPlot1")
+#'         ColumnDataPlot(PanelId=1L),
+#'         GEN(SelectColSource="ColumnDataPlot1")
 #'     ))
 #' }
 #'

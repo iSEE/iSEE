@@ -96,7 +96,7 @@ featAssayPlotDefaults <- function(se, number) {
 #' @export
 #' @rdname defaults
 colDataPlotDefaults <- function(se, number) {
-    .Deprecated(new="ColDataPlot")
+    .Deprecated(new="ColumnDataPlot")
 
     # Ensure that we define all the fields with the right types, using a transient 1-row DF
     # number=0 guarantees that se is not touched to define dummy values of the right type
@@ -489,7 +489,7 @@ heatMapPlotDefaults <- function(se, number) {
     if (is.null(colDataArgs)) {
         suppressWarnings(colDataArgs <- colDataPlotDefaults(se, 5))
     }
-    collected <- c(collected, .translate_to_class(colDataArgs, ColDataPlot, se, FALSE))
+    collected <- c(collected, .translate_to_class(colDataArgs, ColumnDataPlot, se, FALSE))
 
     if (is.null(featAssayArgs)) {
         suppressWarnings(featAssayArgs <- featAssayPlotDefaults(se, 5))
@@ -638,7 +638,7 @@ heatMapPlotDefaults <- function(se, number) {
         ReducedDimPlot="Reduced dimension plot",
         FeatureAssayPlot="Feature assay plot",
         ColStatTable="Column statistics table",
-        ColDataPlot="Column data plot",
+        ColumnDataPlot="Column data plot",
         RowDataPlot="Row data plot",
         RowStatTable="Row statistics table",
         SampleAssayPlot="Sample assay plot",

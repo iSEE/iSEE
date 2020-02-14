@@ -4,15 +4,15 @@
 context("ui")
 
 test_that(".add_facet_UI_elements produces a valid tag list for column data plots", {
-    rdp <- RedDimPlot(FacetByRow="driver_1_s", FacetByColumn="Core.Type")
+    rdp <- ReducedDimPlot(FacetByRow="driver_1_s", FacetByColumn="Core.Type")
     groupable_colData <- colnames(colData(sce))[iSEE:::.which_groupable(colData(sce))]
 
     out <- iSEE:::.add_facet_UI_elements(rdp, groupable_colData)
     expect_s3_class(out, "shiny.tag.list")
 })
 
-memory <- list(RedDimPlot(), RowStatTable(), FeatAssayPlot(),
-    ColDataPlot(), RowDataPlot(), SampAssayPlot(), ColStatTable(),
+memory <- list(ReducedDimPlot(), RowDataTable(), FeatureAssayPlot(),
+    ColumnDataPlot(), RowDataPlot(), SampleAssayPlot(), ColumnDataTable(),
     ComplexHeatmapPlot())
 
 pObjects <- mimic_live_app(sce, memory)

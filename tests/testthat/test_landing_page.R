@@ -3,7 +3,7 @@ context("Landing page")
 tempfile_sce <- tempfile(fileext = "_sce.rds")
 saveRDS(sce, file = tempfile_sce)
 
-thing <- list(RedDimPlot(), RedDimPlot())
+thing <- list(ReducedDimPlot(), ReducedDimPlot())
 tempfile_params <- tempfile(fileext = "_params.rds")
 saveRDS(thing, file = tempfile_params)
 

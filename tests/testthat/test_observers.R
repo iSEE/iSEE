@@ -1,27 +1,27 @@
 context("Observers")
 
 memory <- list(
-    RedDimPlot(PanelId=1L),
-    ColDataPlot(PanelId=1L),
-    ColDataPlot(PanelId=1L),
-    FeatAssayPlot(PanelId=1L),
-    FeatAssayPlot(PanelId=1L),
-    RowStatTable(PanelId=1L),
-    RowStatTable(PanelId=1L),
-    SampAssayPlot(PanelId=1L),
-    ColStatTable(PanelId=1L)
+    ReducedDimPlot(PanelId=1L),
+    ColumnDataPlot(PanelId=1L),
+    ColumnDataPlot(PanelId=1L),
+    FeatureAssayPlot(PanelId=1L),
+    FeatureAssayPlot(PanelId=1L),
+    RowDataTable(PanelId=1L),
+    RowDataTable(PanelId=1L),
+    SampleAssayPlot(PanelId=1L),
+    ColumnDataTable(PanelId=1L)
 )
 
 test_that("Observers return NULL", {
 
     sce <- iSEE:::.prepare_SE(sce, ExperimentColorMap(), memory)
 
-    x <- ColDataPlot()
+    x <- ColumnDataPlot()
     x <- .refineParameters(x, sce)
     out <- .createObservers(x, sce, NULL, NULL, NULL, NULL)
     expect_null(out)
 
-    x <- ColStatTable()
+    x <- ColumnDataTable()
     x <- .refineParameters(x, sce)
     out <- .createObservers(x, sce, NULL, NULL, NULL, NULL)
     expect_null(out)
@@ -32,12 +32,12 @@ test_that("Observers return NULL", {
     out <- .createObservers(x, sce, NULL, NULL, NULL, NULL)
     expect_null(out)
 
-    x <- FeatAssayPlot()
+    x <- FeatureAssayPlot()
     x <- .refineParameters(x, sce)
     out <- .createObservers(x, sce, NULL, NULL, NULL, NULL)
     expect_null(out)
 
-    x <- RedDimPlot()
+    x <- ReducedDimPlot()
     x <- .refineParameters(x, sce)
     out <- .createObservers(x, sce, NULL, NULL, NULL, NULL)
     expect_null(out)
@@ -47,12 +47,12 @@ test_that("Observers return NULL", {
     out <- .createObservers(x, sce, NULL, NULL, NULL, NULL)
     expect_null(out)
 
-    x <- RowStatTable()
+    x <- RowDataTable()
     x <- .refineParameters(x, sce)
     out <- .createObservers(x, sce, NULL, NULL, NULL, NULL)
     expect_null(out)
 
-    x <- SampAssayPlot()
+    x <- SampleAssayPlot()
     x <- .refineParameters(x, sce)
     out <- .createObservers(x, sce, NULL, NULL, NULL, NULL)
     expect_null(out)
@@ -65,11 +65,11 @@ test_that("Observers return NULL", {
 test_that(".mark_panel_as_modified appends the requested modes to rObjects", {
 
     rObjects <- new.env()
-    rObjects$modified=list("RedDimPlot1"=character(0))
+    rObjects$modified=list("ReducedDimPlot1"=character(0))
 
-    out <- .mark_panel_as_modified(panel_name = "RedDimPlot1", mode = iSEE:::.panelResaved, rObjects = rObjects)
+    out <- .mark_panel_as_modified(panel_name = "ReducedDimPlot1", mode = iSEE:::.panelResaved, rObjects = rObjects)
     expect_null(out)
-    expect_identical(rObjects$modified[["RedDimPlot1"]], iSEE:::.panelResaved)
+    expect_identical(rObjects$modified[["ReducedDimPlot1"]], iSEE:::.panelResaved)
 
 })
 
@@ -91,7 +91,7 @@ test_that(".create_organization_observers returns NULL", {
 
 test_that(".create_width_height_observers returns NULL", {
 
-    x <- RedDimPlot()
+    x <- ReducedDimPlot()
     input <- new.env()
     pObjects <- new.env()
 
@@ -106,16 +106,16 @@ test_that(".create_table_observers returns NULL", {
     pObjects <- new.env()
     rObjects <- new.env()
 
-    out <- .create_table_observers("RedDimPlot1", input, session = NULL, pObjects, rObjects)
+    out <- .create_table_observers("ReducedDimPlot1", input, session = NULL, pObjects, rObjects)
     expect_null(out)
 
 })
 
 test_that(".define_memory_panel_choices returns expected values", {
 
-    UNNAMED <- NAMED <- c("RedDimPlot1", "ColDataPlot1", "ColDataPlot1",
-        "FeatAssayPlot1",  "FeatAssayPlot1", "RowStatTable1", "RowStatTable1",
-        "SampAssayPlot1",  "ColStatTable1")
+    UNNAMED <- NAMED <- c("ReducedDimPlot1", "ColumnDataPlot1", "ColumnDataPlot1",
+        "FeatureAssayPlot1",  "FeatureAssayPlot1", "RowDataTable1", "RowDataTable1",
+        "SampleAssayPlot1",  "ColumnDataTable1")
 
     names(NAMED) <- c("Reduced dimension plot 1", "Column data plot 1",
         "Column data plot 1",  "Feature assay plot 1", "Feature assay plot 1",

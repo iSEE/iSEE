@@ -71,8 +71,8 @@ Note that each panel is set to occupy half the width of the application window, 
 ```{r init}
 library(iSEE)
 app <- iSEE(sce, initial=list(
-    FeatAssayPlot(PanelWidth=6L),
-    FeatAssayPlot(PanelWidth=6L)
+    FeatureAssayPlot(PanelWidth=6L),
+    FeatureAssayPlot(PanelWidth=6L)
 ))
 ```
 
@@ -81,8 +81,8 @@ In this case, we want to modify the `YAxis` and `YAxisFeatName` defaults for the
 
 ```{r fexArg}
 app <- iSEE(sce, initial=list(
-    FeatAssayPlot(YAxisFeatName="0610009L18Rik"),
-    FeatAssayPlot(YAxisFeatName="0610009B22Rik")
+    FeatureAssayPlot(YAxisFeatName="0610009L18Rik"),
+    FeatureAssayPlot(YAxisFeatName="0610009B22Rik")
 )) 
 ```
 
@@ -108,8 +108,8 @@ Users can preconfigure the Y-axis of individual _column data plot_ panels as fol
 
 ```{r yaxis}
 app <- iSEE(sce, initial=list(
-    ColDataPlot(YAxis="NREADS", PanelWidth=6L, DataBoxOpen=TRUE),
-    ColDataPlot(YAxis="TOTAL_DUP", PanelWidth=6L, DataBoxOpen=TRUE)
+    ColumnDataPlot(YAxis="NREADS", PanelWidth=6L, DataBoxOpen=TRUE),
+    ColumnDataPlot(YAxis="TOTAL_DUP", PanelWidth=6L, DataBoxOpen=TRUE)
 ))
 ```
 
@@ -130,7 +130,7 @@ For instance, the `XAxis` column of _feature assay plot_ arguments can have up t
 Each of these scenarios is demonstrated below:
 
 ```{r xaxis}
-fex <- FeatAssayPlot(DataBoxOpen=TRUE, PanelWidth=6L)
+fex <- FeatureAssayPlot(DataBoxOpen=TRUE, PanelWidth=6L)
 
 # Example 1
 fex1 <- fex
@@ -149,8 +149,8 @@ fex3[["XAxisFeatName"]] <- "Zyx"
 # Example 4 (also requires a row statistic table)
 fex4 <- fex
 fex4[["XAxis"]] <- "Feature name"
-fex4[["XAxisRowTable"]] <- "RowStatTable1"
-rex <- RowStatTable(Selected="Ints2", Search="Ints", PanelWidth=12L)
+fex4[["XAxisRowTable"]] <- "RowDataTable1"
+rex <- RowDataTable(Selected="Ints2", Search="Ints", PanelWidth=12L)
 
 # Initialisation
 app <- iSEE(sce, initial=list(fex1, fex2, fex3, fex4, rex))
@@ -167,7 +167,7 @@ This information is stored in the `Type` column:
 
 ```{r redDimPlotDefaults-type}
 app <- iSEE(sce, initial=list(
-    RedDimPlot(DataBoxOpen=TRUE, Type="TSNE", 
+    ReducedDimPlot(DataBoxOpen=TRUE, Type="TSNE", 
         XAxis=2L, YAxis=1L, PanelWidth=6L)
 ))
 ```
@@ -180,8 +180,8 @@ For axes linked to an assay, such as the Y-axis of _feature assay plot_ panels, 
 
 ```{r featAssayPlotDefaults-assay}
 app <- iSEE(sce, initial=list(
-    FeatAssayPlot(DataBoxOpen=TRUE, Assay="logcounts", PanelWidth=6L),
-    FeatAssayPlot(DataBoxOpen=TRUE, Assay="tophat_counts", PanelWidth=6L)
+    FeatureAssayPlot(DataBoxOpen=TRUE, Assay="logcounts", PanelWidth=6L),
+    FeatureAssayPlot(DataBoxOpen=TRUE, Assay="tophat_counts", PanelWidth=6L)
 ))
 ```
 
@@ -208,7 +208,7 @@ while the default transparency value is controlled through the `PointAlpha` colu
 Here, we alter several default visual parameters in the second panel:
 
 ```{r ColorByDefaultColor}
-cdp <- ColDataPlot(VisualBoxOpen=TRUE, 
+cdp <- ColumnDataPlot(VisualBoxOpen=TRUE, 
     VisualChoices=c("Color", "Points", "Other"))
 
 cdp2 <- cdp
@@ -231,7 +231,7 @@ The color and point of data points can be linked to variables in a manner simila
 For instance, the color of data points in _column data plot_ panels can be set to a variable in `colData(sce)` by setting the `ColorBy` value to `"Column data"`, and the `ColorByColData` value to the desired coloumn name:
 
 ```{r aesthetic-covariate}
-cdp <- ColDataPlot(VisualBoxOpen=TRUE, VisualChoices=c("Color", "Shape"),
+cdp <- ColumnDataPlot(VisualBoxOpen=TRUE, VisualChoices=c("Color", "Shape"),
     ColorByColData="Core.Type", ShapeByColData="Core.Type",
     ColorBy="Column data", ShapeBy="Column data")
 
@@ -253,7 +253,7 @@ Users can enable faceting by setting `FacetByRow` and/or `FacetByColumn` columns
 We demonstrate below how faceting may be enabled by row, column, or both:
 
 ```{r facet}
-cdp <- ColDataPlot(VisualBoxOpen=TRUE, VisualChoices="Facets",
+cdp <- ColumnDataPlot(VisualBoxOpen=TRUE, VisualChoices="Facets",
     FacetByRow="driver_1_s", FacetByColumn="Core.Type", PanelWidth=4L)
 
 cdp2 <- cdp
@@ -276,12 +276,12 @@ The result should look as below:
 
 ```{r select-brish}
 # Preconfigure the receiver panel
-cdArgs <- ColDataPlot(SelectBoxOpen=TRUE, SelectColSource="RedDimPlot1",
+cdArgs <- ColumnDataPlot(SelectBoxOpen=TRUE, SelectColSource="ReducedDimPlot1",
     SelectEffect="Color", SelectColor="purple", 
     ColorByDefaultColor="#BDB3B3", PanelWidth=6L)
 
 # Preconfigure the sender panel, including the point selection
-rdArgs <- RedDimPlot(
+rdArgs <- ReducedDimPlot(
     BrushData=list(
         xmin = 2.8, xmax = 10.4, ymin = 0.6, ymax = 13.2, 
         mapping = list(x = "X", y = "Y"), domain = list(left = -14.0, right = 10.9, 
@@ -355,12 +355,12 @@ To do so, simply put a hash sign before a word which does not link directly to a
 
 Users should refer to the following help pages for the full list of values that can be specified in `iSEE`:
 
-- `?RedDimPlot`
-- `?ColDataPlot`
-- `?FeatAssayPlot`
+- `?ReducedDimPlot`
+- `?ColumnDataPlot`
+- `?FeatureAssayPlot`
 - `?RowDataPlot`
-- `?RowStatTable`
-- `?SampAssayPlot`
+- `?RowDataTable`
+- `?SampleAssayPlot`
 - `?HeatMapPlot`
 
 Some fairly complex configurations for a variety of data sets can be found at https://github.com/LTLA/iSEE2018.

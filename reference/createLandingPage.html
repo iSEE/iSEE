@@ -186,21 +186,22 @@ as the <code>landingPage</code> argument.</p>
 which is subsequently read by <code><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></code> to launch an instance of <code><a href='iSEE.html'>iSEE</a></code>.
 However, any source of SummarizedExperiment objects can be used;
 for example, we can retrieve them from databases by modifying <code>seUI</code> and <code>seLoad</code> appropriately.</p>
-<p>The default landing page also allows users to upload a RDS file containing a list of <a href='Panel-class.html'>Panel</a>s,
-which specifies the initial state of the <code><a href='iSEE.html'>iSEE</a></code> instance (effectively replacing the <code>initial</code> argument).
+<p>The default landing page also allows users to upload a RDS file containing a list of <a href='Panel-class.html'>Panel</a>s
+that specifies the initial state of the <code><a href='iSEE.html'>iSEE</a></code> instance 
+(to be used as the <code>initial</code> argument in <code><a href='iSEE.html'>iSEE</a></code>).
 Again, any source can be used to create this list if <code>initUI</code> and <code>initLoad</code> are modified appropriately.
-Note that only <a href='Panel-class.html'>Panel</a>s classes that were in the original <code><a href='iSEE.html'>iSEE</a></code> call
+Note that only <a href='Panel-class.html'>Panel</a> classes that were in the original <code><a href='iSEE.html'>iSEE</a>()</code> call
 (as the original <code>initial</code> or in the <code>extra</code>) will be used for security and other reasons.</p>
-<p>The UI elements for the SummarizedExperiment and the initial state are named <code>se</code> and <code>initial</code> respectively.
+<p>The UI elements for the SummarizedExperiment and the initial state are named <code>"se"</code> and <code>"initial"</code> respectively.
 This can be used in Shiny bookmarking to initialize an <code><a href='iSEE.html'>iSEE</a></code> in a desired state by simply clicking a link,
-provided that <code>requireButton=FALSE</code> so that reactive expressions are immediately triggered upon setting <code>se</code> and <code>initial</code>.
+provided that <code>requireButton=FALSE</code> so that reactive expressions are immediately triggered upon setting <code>se=</code> and <code>initial=</code> in the URL.
 We do not use bookmarking to set all individual <code><a href='iSEE.html'>iSEE</a></code> parameters as we will run afoul of URL character limits.</p>
     <h2 class="hasAnchor" id="defining-a-custom-landing-page"><a class="anchor" href="#defining-a-custom-landing-page"></a>Defining a custom landing page</h2>
 
     
 
 <p>We note that <code>createLandingPage</code> is just a limited wrapper around the landing page API.
-In <code><a href='iSEE.html'>iSEE</a></code>, <code>landingPage</code> can be any function with the following argument signature:</p><ul>
+In <code><a href='iSEE.html'>iSEE</a></code>, <code>landingPage</code> can be any function that accepts the following arguments:</p><ul>
 <li><p><code>FUN</code>, a function to initialize the <code><a href='iSEE.html'>iSEE</a></code> observer architecture.
 This function expects to be passed <code>SE</code>, a SummarizedExperiment object;
 and <code>INITIAL</code>, a list of <a href='Panel-class.html'>Panel</a> objects describing the initial application state.
@@ -210,10 +211,16 @@ If <code>INITIAL=NULL</code>, the initial state from <code>initial</code> is use
 <li><p><code>session</code>, the Shiny session object.</p></li>
 </ul>
 
-<p>The function should render UI elements into <code>output$allPanels</code>
-containing the required widgets to allow a user to set up an <code><a href='iSEE.html'>iSEE</a></code> session interactively.
-It should also define observers to respond to those elements and call <code>FUN</code> with appropriate arguments.
-We suggest that all elements have IDs prefixed with <code>"initialize_INTERNAL"</code> to avoid conflicts with other elements.</p>
+<p>The function should define a <code>renderUI</code> expression that is assigned to <code>output$allPanels</code>.
+This should define a UI that contains all widgets necessary for a user to set up an <code><a href='iSEE.html'>iSEE</a></code> session interactively.
+We suggest that all UI elements have IDs prefixed with <code>"initialize_INTERNAL"</code> to avoid conflicts.</p>
+<p>The function should also define observers to respond to user interactions with the UI elements.
+These are typically used to define a SummarizedExperiment object and an input state as a list of Panels;
+any one of these observers may then call <code>FUN</code> on those arguments to launch the main <code><a href='iSEE.html'>iSEE</a></code> instance.</p>
+<p>Note that, once the main app is launched, 
+the UI elements constructed here are lost and observers will never be called again.
+There is no explicit &#8220;unload&#8221; mechanism to return to the landing page from the main app,
+though a browser refresh is usually sufficient.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>createLandingPage</span>()</div><div class='output co'>#&gt; function (FUN, input, output, session) 
@@ -245,8 +252,8 @@ We suggest that all elements have IDs prefixed with <code>"initialize_INTERNAL"<
 #&gt;     }, ignoreNULL = TRUE, ignoreInit = TRUE)
 #&gt;     invisible(NULL)
 #&gt; }
-#&gt; &lt;bytecode: 0x15f3fbe8&gt;
-#&gt; &lt;environment: 0x15f3e010&gt;</div><div class='input'>
+#&gt; &lt;bytecode: 0x1516fcc0&gt;
+#&gt; &lt;environment: 0x1515aa88&gt;</div><div class='input'>
 <span class='co'># Alternative approach, to create a landing page</span>
 <span class='co'># that opens one of the datasets from the scRNAseq package.</span>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scRNAseq</span>)

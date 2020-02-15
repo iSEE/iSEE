@@ -126,7 +126,7 @@ test_that(".nearestValidNamedChoice handles vocal typos", {
     reservoir_types <- vapply(reservoir, .fullName, character(1))
     names(reservoir_types) <- vapply(reservoir, class, character(1))
 
-    out <- .nearestValidNamedChoice("reddimplot", reservoir_types)
+    out <- .nearestValidNamedChoice("reduced dimension", reservoir_types)
     expect_identical(out, c(ReducedDimensionPlot = "Reduced dimension plot"))
 
 })

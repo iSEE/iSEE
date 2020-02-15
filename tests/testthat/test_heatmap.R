@@ -1,3 +1,4 @@
+# library(iSEE); library(testthat); source("setup_sce.R"); source("setup_other.R"); source("test_heatmap.R")
 context("heatmap")
 
 memory <- list(
@@ -100,7 +101,7 @@ test_that(".process_heatmap_column_annotations_colorscale handles column annotat
     out <- iSEE:::.process_heatmap_column_annotations_colorscale(x, sce, plot_env)
     expect_true(any(out == '.color_values <- .column_data[[\"driver_1_s\"]]'))
     expect_true(any(out == '.color_values <- .column_data[["NREADS"]]'))
-    expect_true(any(out == '.column_annot_order <- with(.column_data, order(driver_1_s, NREADS))'))
+    expect_true(any(out == '.column_annot_order <- order(.column_data[["driver_1_s"]], .column_data[["NREADS"]])'))
     expect_true(any(out == '.column_data <- .column_data[.column_annot_order, , drop=FALSE]'))
 })
 
@@ -262,11 +263,11 @@ test_that("process_heatmap_assay_row_transformations handles row centering and s
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
 
-    x[[.heatMapAssay]] <- "tophat_counts"
+    x[[iSEE:::.heatMapAssay]] <- "tophat_counts"
     x[[iSEE:::.assayCenterRows]] <- TRUE
     x[[iSEE:::.assayScaleRows]] <- TRUE
 
-    out <- .process_heatmap_assay_row_transformations(x, sce, envir)
+    out <- iSEE:::.process_heatmap_assay_row_transformations(x, sce, envir)
     expect_identical(out, c(
         "plot.data <- plot.data - rowMeans(plot.data)",
         "plot.data <- plot.data / apply(plot.data, 1, sd)" ))
@@ -278,12 +279,12 @@ test_that(".create_visual_box_for_complexheatmap handles continuous and discrete
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
 
-    out <- .create_visual_box_for_complexheatmap(x, sce)
+    out <- iSEE:::.create_visual_box_for_complexheatmap(x, sce)
     expect_false(any(grepl("shinyjs-disabled", unlist(out)))) # none of the UI are disabled
 
     x[[iSEE:::.heatMapAssay]] <- "letters"
 
-    out <- .create_visual_box_for_complexheatmap(x, sce)
+    out <- iSEE:::.create_visual_box_for_complexheatmap(x, sce)
     expect_true(any(grepl("shinyjs-disabled", unlist(out)))) # some of the UI are disabled
 
 })
@@ -312,34 +313,34 @@ test_that(".build_heatmap_assay_legend_title handles centering and scaling", {
 
     x[[iSEE:::.heatMapAssay]] <- "letters"
 
-    out <- .build_heatmap_assay_legend_title(x, discrete = TRUE)
+    out <- iSEE:::.build_heatmap_assay_legend_title(x, discrete = TRUE)
     expect_identical(out, "letters")
 
     x[[iSEE:::.heatMapAssay]] <- "tophat_counts"
 
-    out <- .build_heatmap_assay_legend_title(x, discrete = FALSE)
+    out <- iSEE:::.build_heatmap_assay_legend_title(x, discrete = FALSE)
     expect_identical(out, "tophat_counts")
 
     x[[iSEE:::.assayCenterRows]] <- TRUE
     x[[iSEE:::.assayScaleRows]] <- FALSE
-    out <- .build_heatmap_assay_legend_title(x, discrete = FALSE)
+    out <- iSEE:::.build_heatmap_assay_legend_title(x, discrete = FALSE)
     expect_identical(out, "tophat_counts (centered)")
 
     x[[iSEE:::.assayCenterRows]] <- TRUE
     x[[iSEE:::.assayScaleRows]] <- TRUE
-    out <- .build_heatmap_assay_legend_title(x, discrete = FALSE)
+    out <- iSEE:::.build_heatmap_assay_legend_title(x, discrete = FALSE)
     expect_identical(out, "tophat_counts (centered, scaled)")
 
     x[[iSEE:::.assayCenterRows]] <- TRUE
     x[[iSEE:::.assayScaleRows]] <- FALSE
     x[[iSEE:::.plotLegendDirection]] <- "Vertical"
-    out <- .build_heatmap_assay_legend_title(x, discrete = FALSE)
+    out <- iSEE:::.build_heatmap_assay_legend_title(x, discrete = FALSE)
     expect_identical(out, "tophat_counts\n(centered)")
 
     x[[iSEE:::.assayCenterRows]] <- TRUE
     x[[iSEE:::.assayScaleRows]] <- TRUE
     x[[iSEE:::.plotLegendDirection]] <- "Vertical"
-    out <- .build_heatmap_assay_legend_title(x, discrete = FALSE)
+    out <- iSEE:::.build_heatmap_assay_legend_title(x, discrete = FALSE)
     expect_identical(out, "tophat_counts\n(centered, scaled)")
 
 })

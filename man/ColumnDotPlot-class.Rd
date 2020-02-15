@@ -39,6 +39,8 @@ The specified field should contain categorical values; defaults to the first suc
 if \code{SizeBy="Column data"} (see the \linkS4class{Panel} class).
 The specified field should contain continuous values; defaults to the first such valid field.
 }
+
+In addition, this class inherits all slots from its \linkS4class{DotPlot} and \linkS4class{Panel} classes.
 }
 
 \section{Contract description}{

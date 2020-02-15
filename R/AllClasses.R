@@ -281,7 +281,7 @@ collated[.redDimXAxis] <- "integer"
 collated[.redDimYAxis] <- "integer"
 
 #' @export
-setClass("ReducedDimPlot", contains="ColumnDotPlot", slots=collated)
+setClass("ReducedDimensionPlot", contains="ColumnDotPlot", slots=collated)
 
 ####################################################
 
@@ -317,7 +317,7 @@ collated[.colDataYAxis] <- "character"
 collated[.colDataXAxisColData] <- "character"
 
 #' @export
-setClass("ColumnDataPlot", contains="ColumnDotPlot", slots=collated)
+setClass("SampleDataPlot", contains="ColumnDotPlot", slots=collated)
 
 ####################################################
 
@@ -331,7 +331,7 @@ collated[.rowDataYAxis] <- "character"
 collated[.rowDataXAxisRowData] <- "character"
 
 #' @export
-setClass("RowDataPlot", contains="RowDotPlot", slots=collated)
+setClass("FeatureDataPlot", contains="RowDotPlot", slots=collated)
 
 ####################################################
 

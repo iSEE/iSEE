@@ -3,7 +3,7 @@
 context("report_memory")
 
 memory <- list(
-    ReducedDimPlot(
+    ReducedDimensionPlot(
         BrushData=list(xmin = -11.514034644046, xmax = 9.423465477988,
             ymin = -10.767314578073, ymax = -1.6587346435671,
             mapping = list(x = "X", y = "Y"),
@@ -16,24 +16,24 @@ memory <- list(
                          bottom = 468.220917166096,
                          top = 24.8879973724842),
             log = list(x = NULL, y = NULL), direction = "xy",
-            brushId = "ReducedDimPlot1_Brush",
-            outputId = "ReducedDimPlot1"
+            brushId = "ReducedDimensionPlot1_Brush",
+            outputId = "ReducedDimensionPlot1"
         )
     ),
-    ReducedDimPlot(
+    ReducedDimensionPlot(
         ZoomData=c(xmin = -12.351904605072, xmax = 10.614725533384,
             ymin = -12.000238947242, ymax = 0.0090335134551633
         )
     ),
-    ColumnDataPlot(),
-    ColumnDataPlot(),
+    SampleDataPlot(),
+    SampleDataPlot(),
     FeatureAssayPlot(),
     FeatureAssayPlot(),
     FeatureAssayPlot(),
     RowDataTable(),
     SampleAssayPlot(),
-    RowDataPlot(),
-    RowDataPlot()
+    FeatureDataPlot(),
+    FeatureDataPlot()
 )
 
 pObjects <- mimic_live_app(sce, memory)

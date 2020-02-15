@@ -142,7 +142,7 @@ the latter of which is initialized in $t$-SNE mode with the top 1000 most variab
 ```{r}
 app <- iSEE(sce,
     initial=list(
-        ColumnDataPlot(XAxis="Column data", XAxisColData="Primary.Type", 
+        SampleDataPlot(XAxis="Column data", XAxisColData="Primary.Type", 
             PanelId=1L),
         GENERATOR(mode="TSNE", ntop=1000, SelectColSource="ColDataPlot1")
     )
@@ -192,7 +192,7 @@ library(iSEE)
 GENERATOR <- createCustomTable(CUSTOM_SUMMARY)
 app <- iSEE(sce,
     initial=list(
-        ReducedDimPlot(PanelId=1L),
+        ReducedDimensionPlot(PanelId=1L),
         GENERATOR(SelectColSource="RedDimPlot1")
     )
 )
@@ -258,7 +258,7 @@ Note that each saved selection is also the active selection when it is first gen
 TAB_GEN <- createCustomTable(CUSTOM_DIFFEXP)
 HEAT_GEN <- createCustomPlot(CUSTOM_HEAT)
 
-app <- iSEE(sce, initial=list(ReducedDimPlot(PanelId=1L),
+app <- iSEE(sce, initial=list(ReducedDimensionPlot(PanelId=1L),
     TAB_GEN(SelectColSource="RedDimPlot1"),
     HEAT_GEN(SelectColSource="RedDimPlot1"))
 )

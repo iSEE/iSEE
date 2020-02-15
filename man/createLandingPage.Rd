@@ -40,7 +40,7 @@ However, any source of SummarizedExperiment objects can be used;
 for example, we can retrieve them from databases by modifying \code{seUI} and \code{seLoad} appropriately.
 
 The default landing page also allows users to upload a RDS file containing a list of \linkS4class{Panel}s
-that specifies the initial state of the \code{\link{iSEE}} instance 
+that specifies the initial state of the \code{\link{iSEE}} instance
 (to be used as the \code{initial} argument in \code{\link{iSEE}}).
 Again, any source can be used to create this list if \code{initUI} and \code{initLoad} are modified appropriately.
 Note that only \linkS4class{Panel} classes that were in the original \code{\link{iSEE}()} call
@@ -70,10 +70,10 @@ This should define a UI that contains all widgets necessary for a user to set up
 We suggest that all UI elements have IDs prefixed with \code{"initialize_INTERNAL"} to avoid conflicts.
 
 The function should also define observers to respond to user interactions with the UI elements.
-These are typically used to define a SummarizedExperiment object and an input state as a list of \linkS4class{Panels};
+These are typically used to define a SummarizedExperiment object and an input state as a list of \linkS4class{Panel}s;
 any one of these observers may then call \code{FUN} on those arguments to launch the main \code{\link{iSEE}} instance.
 
-Note that, once the main app is launched, 
+Note that, once the main app is launched,
 the UI elements constructed here are lost and observers will never be called again.
 There is no explicit \dQuote{unload} mechanism to return to the landing page from the main app,
 though a browser refresh is usually sufficient.

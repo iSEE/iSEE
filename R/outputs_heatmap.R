@@ -194,8 +194,7 @@
 
     if (length(x[[.heatMapColData]])) {
         # Reordering by the column annotations.
-        additional <- c(additional, sprintf(".column_annot_order <- with(.column_data, order(%s))",
-            paste(x[[.heatMapColData]], collapse=", ")))
+        additional <- c(additional, sprintf(".column_annot_order <- order(%s)", paste(sprintf('.column_data[["%s"]]', x[[.heatMapColData]]), collapse=", ")))
         additional <- c(additional, ".column_data <- .column_data[.column_annot_order, , drop=FALSE]")
         additional <- c(additional, "plot.data <- plot.data[, .column_annot_order, drop=FALSE]")
     }

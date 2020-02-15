@@ -114,7 +114,7 @@
       Cancer Research UK Cambridge Institute, University of Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com">infinite.monkeys.with.keyboards@gmail.com</a>
       </address>
                   
-            <h4 class="date">13 February 2020</h4>
+            <h4 class="date">15 February 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/configure.Rmd"><code>vignettes/configure.Rmd</code></a></small>
       <div class="hidden name"><code>configure.Rmd</code></div>
@@ -123,7 +123,7 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-02-13</p>
+<p><strong>Compiled date</strong>: 2020-02-15</p>
 <p><strong>Last edited</strong>: 2018-03-08</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div id="changing-the-default-start-configuration" class="section level1">
@@ -133,13 +133,13 @@
 <p>To demonstrate this feature, let’s assume that we are only interested in <em>feature assay plot</em> panels. The default set of panels can be changed via the <code>initialPanels</code> argument of the <code>iSEE</code> function call. Given a <code>SingleCellExperiment</code> or <code>SummarizedExperiment</code> object named <code>sce</code><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, the following code opens an app with two adjacent feature assay plots. Note that each panel is set to occupy half the width of the application window, which is set to 12 units by the <em><a href="https://CRAN.R-project.org/package=shiny">shiny</a></em> package.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(iSEE)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce, <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3">    <span class="kw"><a href="../reference/FeatAssayPlot-class.html">FeatAssayPlot</a></span>(<span class="dt">PanelWidth=</span>6L),</a>
-<a class="sourceLine" id="cb1-4" data-line-number="4">    <span class="kw"><a href="../reference/FeatAssayPlot-class.html">FeatAssayPlot</a></span>(<span class="dt">PanelWidth=</span>6L)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">    <span class="kw"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="dt">PanelWidth=</span>6L),</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">    <span class="kw"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="dt">PanelWidth=</span>6L)</a>
 <a class="sourceLine" id="cb1-5" data-line-number="5">))</a></code></pre></div>
 <p>The genes to show on the Y-axis in the two plots can be specified via the <code>featAssayArgs</code> argument to <code>iSEE</code>. This is a <code>DataFrame</code>, specifying the initial parameters for each plot. In this case, we want to modify the <code>YAxis</code> and <code>YAxisFeatName</code> defaults for the two plots:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce, <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">    <span class="kw"><a href="../reference/FeatAssayPlot-class.html">FeatAssayPlot</a></span>(<span class="dt">YAxisFeatName=</span><span class="st">"0610009L18Rik"</span>),</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3">    <span class="kw"><a href="../reference/FeatAssayPlot-class.html">FeatAssayPlot</a></span>(<span class="dt">YAxisFeatName=</span><span class="st">"0610009B22Rik"</span>)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">    <span class="kw"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="dt">YAxisFeatName=</span><span class="st">"0610009L18Rik"</span>),</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">    <span class="kw"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="dt">YAxisFeatName=</span><span class="st">"0610009B22Rik"</span>)</a>
 <a class="sourceLine" id="cb2-4" data-line-number="4">)) </a></code></pre></div>
 <p>This will open the app with two feature assay plots, showing the selected genes. Of course, from this starting point, all the interactive functionality is still available, and new panels can be added, modified and linked via point selection.</p>
 </div>
@@ -158,8 +158,8 @@
 <a href="#setting-the-y-axis" class="anchor"></a>Setting the Y-axis</h2>
 <p>The nature of the Y-axis is defined by the type of panel. For instance, <em>column data plot</em> panels require the name of a column in the <code>colData(sce)</code>. Users can preconfigure the Y-axis of individual <em>column data plot</em> panels as follows:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce, <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">    <span class="kw"><a href="../reference/ColDataPlot-class.html">ColDataPlot</a></span>(<span class="dt">YAxis=</span><span class="st">"NREADS"</span>, <span class="dt">PanelWidth=</span>6L, <span class="dt">DataBoxOpen=</span><span class="ot">TRUE</span>),</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3">    <span class="kw"><a href="../reference/ColDataPlot-class.html">ColDataPlot</a></span>(<span class="dt">YAxis=</span><span class="st">"TOTAL_DUP"</span>, <span class="dt">PanelWidth=</span>6L, <span class="dt">DataBoxOpen=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">    <span class="kw"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(<span class="dt">YAxis=</span><span class="st">"NREADS"</span>, <span class="dt">PanelWidth=</span>6L, <span class="dt">DataBoxOpen=</span><span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">    <span class="kw"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(<span class="dt">YAxis=</span><span class="st">"TOTAL_DUP"</span>, <span class="dt">PanelWidth=</span>6L, <span class="dt">DataBoxOpen=</span><span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb3-4" data-line-number="4">))</a></code></pre></div>
 </div>
 <div id="xaxis" class="section level2">
@@ -183,7 +183,7 @@
 </li>
 </ol>
 <p>Each of these scenarios is demonstrated below:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">fex &lt;-<span class="st"> </span><span class="kw"><a href="../reference/FeatAssayPlot-class.html">FeatAssayPlot</a></span>(<span class="dt">DataBoxOpen=</span><span class="ot">TRUE</span>, <span class="dt">PanelWidth=</span>6L)</a>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">fex &lt;-<span class="st"> </span><span class="kw"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="dt">DataBoxOpen=</span><span class="ot">TRUE</span>, <span class="dt">PanelWidth=</span>6L)</a>
 <a class="sourceLine" id="cb4-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co"># Example 1</span></a>
 <a class="sourceLine" id="cb4-4" data-line-number="4">fex1 &lt;-<span class="st"> </span>fex</a>
@@ -202,8 +202,8 @@
 <a class="sourceLine" id="cb4-17" data-line-number="17"><span class="co"># Example 4 (also requires a row statistic table)</span></a>
 <a class="sourceLine" id="cb4-18" data-line-number="18">fex4 &lt;-<span class="st"> </span>fex</a>
 <a class="sourceLine" id="cb4-19" data-line-number="19">fex4[[<span class="st">"XAxis"</span>]] &lt;-<span class="st"> "Feature name"</span></a>
-<a class="sourceLine" id="cb4-20" data-line-number="20">fex4[[<span class="st">"XAxisRowTable"</span>]] &lt;-<span class="st"> "RowStatTable1"</span></a>
-<a class="sourceLine" id="cb4-21" data-line-number="21">rex &lt;-<span class="st"> </span><span class="kw"><a href="../reference/RowStatTable-class.html">RowStatTable</a></span>(<span class="dt">Selected=</span><span class="st">"Ints2"</span>, <span class="dt">Search=</span><span class="st">"Ints"</span>, <span class="dt">PanelWidth=</span>12L)</a>
+<a class="sourceLine" id="cb4-20" data-line-number="20">fex4[[<span class="st">"XAxisRowTable"</span>]] &lt;-<span class="st"> "RowDataTable1"</span></a>
+<a class="sourceLine" id="cb4-21" data-line-number="21">rex &lt;-<span class="st"> </span><span class="kw"><a href="../reference/RowDataTable-class.html">RowDataTable</a></span>(<span class="dt">Selected=</span><span class="st">"Ints2"</span>, <span class="dt">Search=</span><span class="st">"Ints"</span>, <span class="dt">PanelWidth=</span>12L)</a>
 <a class="sourceLine" id="cb4-22" data-line-number="22"></a>
 <a class="sourceLine" id="cb4-23" data-line-number="23"><span class="co"># Initialisation</span></a>
 <a class="sourceLine" id="cb4-24" data-line-number="24">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce, <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(fex1, fex2, fex3, fex4, rex))</a></code></pre></div>
@@ -214,7 +214,7 @@
 <a href="#configuring-the-type-of-dimensionality-reduction" class="anchor"></a>Configuring the type of dimensionality reduction</h2>
 <p>In the case of reduced dimension plots, <em>data parameters</em> include the name of the reduced dimension slot from which to fetch coordinates. This information is stored in the <code>Type</code> column:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce, <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">    <span class="kw"><a href="../reference/RedDimPlot-class.html">RedDimPlot</a></span>(<span class="dt">DataBoxOpen=</span><span class="ot">TRUE</span>, <span class="dt">Type=</span><span class="st">"TSNE"</span>, </a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">    <span class="kw"><a href="../reference/ReducedDimPlot-class.html">ReducedDimPlot</a></span>(<span class="dt">DataBoxOpen=</span><span class="ot">TRUE</span>, <span class="dt">Type=</span><span class="st">"TSNE"</span>, </a>
 <a class="sourceLine" id="cb5-3" data-line-number="3">        <span class="dt">XAxis=</span>2L, <span class="dt">YAxis=</span>1L, <span class="dt">PanelWidth=</span>6L)</a>
 <a class="sourceLine" id="cb5-4" data-line-number="4">))</a></code></pre></div>
 <p>We refer users to the <code><a href="../reference/defaults.html">?redDimPlotDefaults</a></code> help page to learn more about the choices of default parameters for <em>reduced dimension plot</em> panels.</p>
@@ -224,8 +224,8 @@
 <a href="#assay" class="anchor"></a>Configuring the type of assay data</h2>
 <p>For axes linked to an assay, such as the Y-axis of <em>feature assay plot</em> panels, the assay to display can be set through the <code>Assay</code> column of the arguments:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce, <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">    <span class="kw"><a href="../reference/FeatAssayPlot-class.html">FeatAssayPlot</a></span>(<span class="dt">DataBoxOpen=</span><span class="ot">TRUE</span>, <span class="dt">Assay=</span><span class="st">"logcounts"</span>, <span class="dt">PanelWidth=</span>6L),</a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">    <span class="kw"><a href="../reference/FeatAssayPlot-class.html">FeatAssayPlot</a></span>(<span class="dt">DataBoxOpen=</span><span class="ot">TRUE</span>, <span class="dt">Assay=</span><span class="st">"tophat_counts"</span>, <span class="dt">PanelWidth=</span>6L)</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">    <span class="kw"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="dt">DataBoxOpen=</span><span class="ot">TRUE</span>, <span class="dt">Assay=</span><span class="st">"logcounts"</span>, <span class="dt">PanelWidth=</span>6L),</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">    <span class="kw"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="dt">DataBoxOpen=</span><span class="ot">TRUE</span>, <span class="dt">Assay=</span><span class="st">"tophat_counts"</span>, <span class="dt">PanelWidth=</span>6L)</a>
 <a class="sourceLine" id="cb6-4" data-line-number="4">))</a></code></pre></div>
 </div>
 </div>
@@ -243,7 +243,7 @@
 <a href="#configuring-default-visual-parameters" class="anchor"></a>Configuring default visual parameters</h2>
 <p>Certain visual parameters can be set to a constant user-defined value. Those include: color, transparency (i.e., alpha), downsampling resolution, as well as text font size and legend position.</p>
 <p>For instance, the default color of data points in <em>column data plot</em> panels can be set to a value different than the default <code>"black"</code> through the <code>ColorByDefaultColor</code> column, while the default transparency value is controlled through the <code>PointAlpha</code> column. Here, we alter several default visual parameters in the second panel:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">cdp &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ColDataPlot-class.html">ColDataPlot</a></span>(<span class="dt">VisualBoxOpen=</span><span class="ot">TRUE</span>, </a>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">cdp &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(<span class="dt">VisualBoxOpen=</span><span class="ot">TRUE</span>, </a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">    <span class="dt">VisualChoices=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Color"</span>, <span class="st">"Points"</span>, <span class="st">"Other"</span>))</a>
 <a class="sourceLine" id="cb7-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb7-4" data-line-number="4">cdp2 &lt;-<span class="st"> </span>cdp</a>
@@ -262,7 +262,7 @@
 <a href="#linking-point-aesthetics-to-variables" class="anchor"></a>Linking point aesthetics to variables</h2>
 <p>The color and point of data points can be linked to variables in a manner similar to the X-axis parameters demonstrated <a href="#xaxis">above</a>.</p>
 <p>For instance, the color of data points in <em>column data plot</em> panels can be set to a variable in <code>colData(sce)</code> by setting the <code>ColorBy</code> value to <code>"Column data"</code>, and the <code>ColorByColData</code> value to the desired coloumn name:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">cdp &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ColDataPlot-class.html">ColDataPlot</a></span>(<span class="dt">VisualBoxOpen=</span><span class="ot">TRUE</span>, <span class="dt">VisualChoices=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Color"</span>, <span class="st">"Shape"</span>),</a>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">cdp &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(<span class="dt">VisualBoxOpen=</span><span class="ot">TRUE</span>, <span class="dt">VisualChoices=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Color"</span>, <span class="st">"Shape"</span>),</a>
 <a class="sourceLine" id="cb8-2" data-line-number="2">    <span class="dt">ColorByColData=</span><span class="st">"Core.Type"</span>, <span class="dt">ShapeByColData=</span><span class="st">"Core.Type"</span>,</a>
 <a class="sourceLine" id="cb8-3" data-line-number="3">    <span class="dt">ColorBy=</span><span class="st">"Column data"</span>, <span class="dt">ShapeBy=</span><span class="st">"Column data"</span>)</a>
 <a class="sourceLine" id="cb8-4" data-line-number="4"></a>
@@ -278,7 +278,7 @@
 <a href="#configuring-plot-facets" class="anchor"></a>Configuring plot facets</h2>
 <p>Categorical variables may also be used to facet plots by row and column.</p>
 <p>For instance, <em>column data plot</em> panels can be facet by variables stored in the columns of <code>colData(sce)</code>. Users can enable faceting by setting <code>FacetByRow</code> and/or <code>FacetByColumn</code> columns to the appropriate column name in <code>colData(sce)</code>. We demonstrate below how faceting may be enabled by row, column, or both:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">cdp &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ColDataPlot-class.html">ColDataPlot</a></span>(<span class="dt">VisualBoxOpen=</span><span class="ot">TRUE</span>, <span class="dt">VisualChoices=</span><span class="st">"Facets"</span>,</a>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">cdp &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(<span class="dt">VisualBoxOpen=</span><span class="ot">TRUE</span>, <span class="dt">VisualChoices=</span><span class="st">"Facets"</span>,</a>
 <a class="sourceLine" id="cb9-2" data-line-number="2">    <span class="dt">FacetByRow=</span><span class="st">"driver_1_s"</span>, <span class="dt">FacetByColumn=</span><span class="st">"Core.Type"</span>, <span class="dt">PanelWidth=</span>4L)</a>
 <a class="sourceLine" id="cb9-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb9-4" data-line-number="4">cdp2 &lt;-<span class="st"> </span>cdp</a>
@@ -296,12 +296,12 @@
 <p>The initial state of <em>iSEE</em> applications can be configured all the way down to point selections and links between panels. For instance, in the example below, we preconfigure the <code>SelectByPlot</code> column of a <em>column data plot</em> panel to receive a point selection from a <em>reduced dimension plot</em> panel. This requires an active selection in the <em>reduced dimension plot</em> panel, which is achieved by preconfiguring the <code>BrushData</code> column of the arguments.</p>
 <p>The simplest way to obtain a valid input for the <code>BrushData</code> column is to launch an <em>iSEE</em> application, make the desired selection using a Shiny brush, open the <em>iSEE</em> code tracker, and copy paste the relevant point selection data. The result should look as below:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="co"># Preconfigure the receiver panel</span></a>
-<a class="sourceLine" id="cb10-2" data-line-number="2">cdArgs &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ColDataPlot-class.html">ColDataPlot</a></span>(<span class="dt">SelectBoxOpen=</span><span class="ot">TRUE</span>, <span class="dt">SelectColSource=</span><span class="st">"RedDimPlot1"</span>,</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2">cdArgs &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(<span class="dt">SelectBoxOpen=</span><span class="ot">TRUE</span>, <span class="dt">SelectColSource=</span><span class="st">"ReducedDimPlot1"</span>,</a>
 <a class="sourceLine" id="cb10-3" data-line-number="3">    <span class="dt">SelectEffect=</span><span class="st">"Color"</span>, <span class="dt">SelectColor=</span><span class="st">"purple"</span>, </a>
 <a class="sourceLine" id="cb10-4" data-line-number="4">    <span class="dt">ColorByDefaultColor=</span><span class="st">"#BDB3B3"</span>, <span class="dt">PanelWidth=</span>6L)</a>
 <a class="sourceLine" id="cb10-5" data-line-number="5"></a>
 <a class="sourceLine" id="cb10-6" data-line-number="6"><span class="co"># Preconfigure the sender panel, including the point selection</span></a>
-<a class="sourceLine" id="cb10-7" data-line-number="7">rdArgs &lt;-<span class="st"> </span><span class="kw"><a href="../reference/RedDimPlot-class.html">RedDimPlot</a></span>(</a>
+<a class="sourceLine" id="cb10-7" data-line-number="7">rdArgs &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ReducedDimPlot-class.html">ReducedDimPlot</a></span>(</a>
 <a class="sourceLine" id="cb10-8" data-line-number="8">    <span class="dt">BrushData=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
 <a class="sourceLine" id="cb10-9" data-line-number="9">        <span class="dt">xmin =</span> <span class="fl">2.8</span>, <span class="dt">xmax =</span> <span class="fl">10.4</span>, <span class="dt">ymin =</span> <span class="fl">0.6</span>, <span class="dt">ymax =</span> <span class="fl">13.2</span>, </a>
 <a class="sourceLine" id="cb10-10" data-line-number="10">        <span class="dt">mapping =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">x =</span> <span class="st">"X"</span>, <span class="dt">y =</span> <span class="st">"Y"</span>), <span class="dt">domain =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">left =</span> <span class="fl">-14.0</span>, <span class="dt">right =</span> <span class="fl">10.9</span>, </a>
@@ -363,12 +363,12 @@
 <a href="#further" class="anchor"></a>Further reading</h1>
 <p>Users should refer to the following help pages for the full list of values that can be specified in <code>iSEE</code>:</p>
 <ul>
-<li><code><a href="../reference/RedDimPlot-class.html">?RedDimPlot</a></code></li>
-<li><code><a href="../reference/ColDataPlot-class.html">?ColDataPlot</a></code></li>
-<li><code><a href="../reference/FeatAssayPlot-class.html">?FeatAssayPlot</a></code></li>
+<li><code><a href="../reference/ReducedDimPlot-class.html">?ReducedDimPlot</a></code></li>
+<li><code><a href="../reference/ColumnDataPlot-class.html">?ColumnDataPlot</a></code></li>
+<li><code><a href="../reference/FeatureAssayPlot-class.html">?FeatureAssayPlot</a></code></li>
 <li><code><a href="../reference/RowDataPlot-class.html">?RowDataPlot</a></code></li>
-<li><code><a href="../reference/RowStatTable-class.html">?RowStatTable</a></code></li>
-<li><code><a href="../reference/SampAssayPlot-class.html">?SampAssayPlot</a></code></li>
+<li><code><a href="../reference/RowDataTable-class.html">?RowDataTable</a></code></li>
+<li><code><a href="../reference/SampleAssayPlot-class.html">?SampleAssayPlot</a></code></li>
 <li><code>?HeatMapPlot</code></li>
 </ul>
 <p>Some fairly complex configurations for a variety of data sets can be found at <a href="https://github.com/LTLA/iSEE2018" class="uri">https://github.com/LTLA/iSEE2018</a>. These may serve as useful examples for setting up your own configurations.</p>
@@ -377,7 +377,7 @@
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session Info</h1>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</a>
-<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="co">#&gt; R Under development (unstable) (2020-02-13 r77801)</span></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="co">#&gt; R Under development (unstable) (2020-02-14 r77805)</span></a>
 <a class="sourceLine" id="cb13-3" data-line-number="3"><span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span></a>
 <a class="sourceLine" id="cb13-4" data-line-number="4"><span class="co">#&gt; Running under: Ubuntu 16.04.6 LTS</span></a>
 <a class="sourceLine" id="cb13-5" data-line-number="5"><span class="co">#&gt; </span></a>
@@ -399,7 +399,7 @@
 <a class="sourceLine" id="cb13-21" data-line-number="21"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb13-22" data-line-number="22"><span class="co">#&gt; other attached packages:</span></a>
 <a class="sourceLine" id="cb13-23" data-line-number="23"><span class="co">#&gt;  [1] iSEE_1.99.0                 SingleCellExperiment_1.9.1 </span></a>
-<a class="sourceLine" id="cb13-24" data-line-number="24"><span class="co">#&gt;  [3] SummarizedExperiment_1.17.1 DelayedArray_0.13.3        </span></a>
+<a class="sourceLine" id="cb13-24" data-line-number="24"><span class="co">#&gt;  [3] SummarizedExperiment_1.17.1 DelayedArray_0.13.4        </span></a>
 <a class="sourceLine" id="cb13-25" data-line-number="25"><span class="co">#&gt;  [5] BiocParallel_1.21.2         matrixStats_0.55.0         </span></a>
 <a class="sourceLine" id="cb13-26" data-line-number="26"><span class="co">#&gt;  [7] Biobase_2.47.2              GenomicRanges_1.39.2       </span></a>
 <a class="sourceLine" id="cb13-27" data-line-number="27"><span class="co">#&gt;  [9] GenomeInfoDb_1.23.13        IRanges_2.21.3             </span></a>

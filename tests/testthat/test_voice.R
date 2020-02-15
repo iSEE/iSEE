@@ -4,22 +4,22 @@ context("voice")
 
 # Setting up the memory.
 memory <- list(
-    ReducedDimPlot(PanelId=1L),
-    ColumnDataPlot(PanelId=1L),
+    ReducedDimensionPlot(PanelId=1L),
+    SampleDataPlot(PanelId=1L),
     FeatureAssayPlot(PanelId=1L),
     RowDataTable(PanelId=1L),
-    RowDataPlot(PanelId=1L),
+    FeatureDataPlot(PanelId=1L),
     SampleAssayPlot(PanelId=1L),
     ColumnDataTable(PanelId=1L),
     ComplexHeatmapPlot(PanelId=1L))
 
 # Setting up the reservoir.
 reservoir <- list(
-    ReducedDimPlot(),
-    ColumnDataPlot(),
+    ReducedDimensionPlot(),
+    SampleDataPlot(),
     FeatureAssayPlot(),
     RowDataTable(),
-    RowDataPlot(),
+    FeatureDataPlot(),
     SampleAssayPlot(),
     ColumnDataTable(),
     ComplexHeatmapPlot()
@@ -127,7 +127,7 @@ test_that(".nearestValidNamedChoice handles vocal typos", {
     names(reservoir_types) <- vapply(reservoir, class, character(1))
 
     out <- .nearestValidNamedChoice("reddimplot", reservoir_types)
-    expect_identical(out, c(ReducedDimPlot = "Reduced dimension plot"))
+    expect_identical(out, c(ReducedDimensionPlot = "Reduced dimension plot"))
 
 })
 

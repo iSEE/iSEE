@@ -13,7 +13,7 @@ test_that(".identical_brushes works as expected", {
             right = 49.1019902822796, bottom = -70.389479254644, top = 53.5190834641125),
         range = list(left = 50.986301369863, right = 566.922374429224, bottom = 603.013698630137,
             top = 33.1552511415525), log = list(x = NULL, y = NULL), direction = "xy",
-        brushId = "ReducedDimPlot1_Brush", outputId = "ReducedDimPlot1")
+        brushId = "ReducedDimensionPlot1_Brush", outputId = "ReducedDimensionPlot1")
 
     expect_true(iSEE:::.identical_brushes(old_brush=NULL, new_brush=NULL))
     expect_false(iSEE:::.identical_brushes(old_brush=NULL, new_brush=example))
@@ -43,43 +43,43 @@ test_that(".identical_brushes works as expected", {
 
 test_that(".transmitted_selection detects whether a brush is active", {
     memory <- list(
-        ReducedDimPlot(),
-        ColumnDataPlot(SelectColSource="ReducedDimPlot1"),
-        FeatureAssayPlot(SelectColSource="ColumnDataPlot1")
+        ReducedDimensionPlot(),
+        SampleDataPlot(SelectColSource="ReducedDimensionPlot1"),
+        FeatureAssayPlot(SelectColSource="SampleDataPlot1")
     )
 
     pObjects <- mimic_live_app(sce, memory)
     all_memory <- pObjects$memory
 
     # No point selection
-    all_memory$ReducedDimPlot1[[iSEE:::.brushData]] <- list()
-    out <- iSEE:::.transmitted_selection("ColumnDataPlot1", "ReducedDimPlot1", all_memory,
+    all_memory$ReducedDimensionPlot1[[iSEE:::.brushData]] <- list()
+    out <- iSEE:::.transmitted_selection("SampleDataPlot1", "ReducedDimensionPlot1", all_memory,
         select_type="Active", select_saved=0L)
     expect_false(out)
 
     # Active point selection (non-empty brush or lasso)
-    all_memory$ReducedDimPlot1[[iSEE:::.brushData]] <- list(a=1, b=2)
-    out <- iSEE:::.transmitted_selection("ColumnDataPlot1", "ReducedDimPlot1", all_memory,
+    all_memory$ReducedDimensionPlot1[[iSEE:::.brushData]] <- list(a=1, b=2)
+    out <- iSEE:::.transmitted_selection("SampleDataPlot1", "ReducedDimensionPlot1", all_memory,
         select_type="Active", select_saved=0L)
     expect_true(out)
 
     # Panel linked to no transmitter (---)
-    out <- iSEE:::.transmitted_selection("ColumnDataPlot1", "---", all_memory,
+    out <- iSEE:::.transmitted_selection("SampleDataPlot1", "---", all_memory,
         select_type="Active", select_saved=0L)
     expect_false(out)
 
     # missing "select_type" argument requires to "SelectMultiSaved"
-    all_memory$ReducedDimPlot1[[iSEE:::.multiSelectHistory]] <- list(list(a=1, b=2))
-    out <- iSEE:::.transmitted_selection("ColumnDataPlot1", "ReducedDimPlot1", all_memory,
+    all_memory$ReducedDimensionPlot1[[iSEE:::.multiSelectHistory]] <- list(list(a=1, b=2))
+    out <- iSEE:::.transmitted_selection("SampleDataPlot1", "ReducedDimensionPlot1", all_memory,
         select_type="Union", select_saved=0L)
     expect_true(out)
 
     # "select_type" argument "Saved"
-    out <- iSEE:::.transmitted_selection("ColumnDataPlot1", "ReducedDimPlot1", all_memory,
+    out <- iSEE:::.transmitted_selection("SampleDataPlot1", "ReducedDimensionPlot1", all_memory,
         select_type="Saved", select_saved=0L)
     expect_false(out)
 
-    out <- iSEE:::.transmitted_selection("ColumnDataPlot1", "ReducedDimPlot1", all_memory,
+    out <- iSEE:::.transmitted_selection("SampleDataPlot1", "ReducedDimensionPlot1", all_memory,
         select_type="Saved", select_saved=1L)
     expect_true(out)
 })
@@ -103,8 +103,8 @@ test_that(".get_brushed_point returns the identity of selected points or NULL", 
         xmin = 0.7, xmax = 1.3, ymin = 0.5, ymax = 50.5,
         mapping = list(x = "X", y = "Y"),
         log = list(x = NULL, y = NULL), direction = "xy",
-        brushId = "ReducedDimPlot1_Brush",
-        outputId = "ReducedDimPlot1")
+        brushId = "ReducedDimensionPlot1_Brush",
+        outputId = "ReducedDimensionPlot1")
     out <- .get_brushed_points(contents, brush_data)
     expect_identical(out, paste0("X", seq_len(50)))
 

@@ -1,6 +1,6 @@
-#' The ColumnDataPlot panel
+#' The SampleDataPlot panel
 #'
-#' The ColumnDataPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents a variable from the \code{\link{colData}} of a \linkS4class{SummarizedExperiment} object.
+#' The SampleDataPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents a variable from the \code{\link{colData}} of a \linkS4class{SummarizedExperiment} object.
 #' It provides slots and methods for specifying which column metadata variable to use and what to plot on the x-axis.
 #'
 #' @section Slot overview:
@@ -18,15 +18,15 @@
 #' In addition, this class inherits all slots from its parent \linkS4class{ColumnDotPlot}, \linkS4class{DotPlot} and \linkS4class{Panel} classes.
 #'
 #' @section Constructor:
-#' \code{ColumnDataPlot(...)} creates an instance of a ColumnDataPlot class, where any slot and its value can be passed to \code{...} as a named argument.
+#' \code{SampleDataPlot(...)} creates an instance of a SampleDataPlot class, where any slot and its value can be passed to \code{...} as a named argument.
 #'
 #' @section Contract description:
-#' The ColumnDataPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
+#' The SampleDataPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
 #' It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
 #' Subclasses do not have to provide any methods, as this is a concrete class.
 #'
 #' @section Supported methods:
-#' In the following code snippets, \code{x} is an instance of a \linkS4class{ColumnDataPlot} class.
+#' In the following code snippets, \code{x} is an instance of a \linkS4class{SampleDataPlot} class.
 #' Refer to the documentation for each method for more details on the remaining arguments.
 #'
 #' For setting up data values:
@@ -69,7 +69,7 @@
 #' # For end-users #
 #' #################
 #'
-#' x <- ColumnDataPlot()
+#' x <- SampleDataPlot()
 #' x[["XAxis"]]
 #' x[["XAxis"]] <- "Column data"
 #'
@@ -94,26 +94,26 @@
 #' .refineParameters(x, sce0)
 #'
 #' @docType methods
-#' @aliases ColumnDataPlot ColumnDataPlot-class
-#' initialize,ColumnDataPlot-method
-#' .refineParameters,ColumnDataPlot-method
-#' .defineDataInterface,ColumnDataPlot-method
-#' .createObservers,ColumnDataPlot-method
-#' .fullName,ColumnDataPlot-method
-#' .panelColor,ColumnDataPlot-method
-#' .generateDotPlotData,ColumnDataPlot-method
+#' @aliases SampleDataPlot SampleDataPlot-class
+#' initialize,SampleDataPlot-method
+#' .refineParameters,SampleDataPlot-method
+#' .defineDataInterface,SampleDataPlot-method
+#' .createObservers,SampleDataPlot-method
+#' .fullName,SampleDataPlot-method
+#' .panelColor,SampleDataPlot-method
+#' .generateDotPlotData,SampleDataPlot-method
 #'
-#' @name ColumnDataPlot-class
+#' @name SampleDataPlot-class
 NULL
 
 #' @export
-ColumnDataPlot <- function(...) {
-    new("ColumnDataPlot", ...)
+SampleDataPlot <- function(...) {
+    new("SampleDataPlot", ...)
 }
 
 #' @export
 #' @importFrom methods callNextMethod
-setMethod("initialize", "ColumnDataPlot", function(.Object, ...) {
+setMethod("initialize", "SampleDataPlot", function(.Object, ...) {
     args <- list(...)
     args <- .empty_default(args, .colDataXAxis, .colDataXAxisNothingTitle)
     args <- .empty_default(args, .colDataXAxisColData, NA_character_)
@@ -126,7 +126,7 @@ setMethod("initialize", "ColumnDataPlot", function(.Object, ...) {
 
 #' @export
 #' @importFrom methods callNextMethod
-setMethod(".refineParameters", "ColumnDataPlot", function(x, se) {
+setMethod(".refineParameters", "SampleDataPlot", function(x, se) {
     x <- callNextMethod() # Do this first to trigger warnings from base classes.
     if (is.null(x)) {
         return(NULL)
@@ -146,7 +146,7 @@ setMethod(".refineParameters", "ColumnDataPlot", function(x, se) {
 })
 
 #' @importFrom S4Vectors setValidity2
-setValidity2("ColumnDataPlot", function(object) {
+setValidity2("SampleDataPlot", function(object) {
     msg <- character(0)
 
     msg <- .allowable_choice_error(msg, object, .colDataXAxis,
@@ -164,7 +164,7 @@ setValidity2("ColumnDataPlot", function(object) {
 #' @export
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
-setMethod(".defineDataInterface", "ColumnDataPlot", function(x, se, select_info) {
+setMethod(".defineDataInterface", "SampleDataPlot", function(x, se, select_info) {
     panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
@@ -188,7 +188,7 @@ setMethod(".defineDataInterface", "ColumnDataPlot", function(x, se, select_info)
 #' @export
 #' @importFrom shiny observeEvent updateSelectInput
 #' @importFrom methods callNextMethod
-setMethod(".createObservers", "ColumnDataPlot", function(x, se, input, session, pObjects, rObjects) {
+setMethod(".createObservers", "SampleDataPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
     plot_name <- .getEncodedName(x)
@@ -199,13 +199,13 @@ setMethod(".createObservers", "ColumnDataPlot", function(x, se, input, session, 
 })
 
 #' @export
-setMethod(".fullName", "ColumnDataPlot", function(x) "Column data plot")
+setMethod(".fullName", "SampleDataPlot", function(x) "Column data plot")
 
 #' @export
-setMethod(".panelColor", "ColumnDataPlot", function(x) "#DB0230")
+setMethod(".panelColor", "SampleDataPlot", function(x) "#DB0230")
 
 #' @export
-setMethod(".generateDotPlotData", "ColumnDataPlot", function(x, envir) {
+setMethod(".generateDotPlotData", "SampleDataPlot", function(x, envir) {
     data_cmds <- list()
 
     y_lab <- x[[.colDataYAxis]]

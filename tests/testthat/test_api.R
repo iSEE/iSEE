@@ -4,8 +4,8 @@ context(".refineParameters")
 test_that(".refineParameters handles NULL x", {
 
     x_classes <- c("ColumnDotPlot", "ColumnTable", "DotPlot", "Panel",
-        "RowDotPlot", "RowTable", "Table", "ColumnDataPlot", "ColumnDataTable",
-        "ComplexHeatmapPlot", "FeatureAssayPlot", "ReducedDimPlot", "RowDataPlot",
+        "RowDotPlot", "RowTable", "Table", "SampleDataPlot", "ColumnDataTable",
+        "ComplexHeatmapPlot", "FeatureAssayPlot", "ReducedDimensionPlot", "FeatureDataPlot",
         "RowDataTable", "SampleAssayPlot"
     )
 
@@ -17,27 +17,27 @@ test_that(".refineParameters handles NULL x", {
 
 })
 
-test_that(".refineParameters identifies impossible ColumnDataPlot", {
+test_that(".refineParameters identifies impossible SampleDataPlot", {
 
-    x <- ColumnDataPlot()
+    x <- SampleDataPlot()
 
     colData(sce) <- DataFrame(row.names = colnames(sce))
     sce <- .cacheCommonInfo(x, sce)
     expect_warning(.refineParameters(x, sce),
-        "no valid 'colData' fields for 'ColumnDataPlot'", fixed=TRUE)
+        "no valid 'colData' fields for 'SampleDataPlot'", fixed=TRUE)
     out <- .refineParameters(x, sce)
     expect_null(out)
 
 })
 
-test_that(".refineParameters identifies impossible RowDataPlot", {
+test_that(".refineParameters identifies impossible FeatureDataPlot", {
 
-    x <- RowDataPlot()
+    x <- FeatureDataPlot()
 
     rowData(sce) <- DataFrame(row.names = rownames(sce))
     sce <- .cacheCommonInfo(x, sce)
     expect_warning(.refineParameters(x, sce),
-        "no atomic 'rowData' fields for 'RowDataPlot'", fixed=TRUE)
+        "no atomic 'rowData' fields for 'FeatureDataPlot'", fixed=TRUE)
     out <- .refineParameters(x, sce)
     expect_null(out)
 
@@ -111,12 +111,12 @@ context(".colorDotPlot")
 
 test_that(".colorDotPlot returns NULL when coloring DotPlot by nothing", {
 
-    x <- ColumnDataPlot()
+    x <- SampleDataPlot()
     x[[iSEE:::.colorByField]] <- iSEE:::.colorByNothingTitle
     out <- .colorDotPlot(x, LETTERS)
     expect_null(out)
 
-    x <- RowDataPlot()
+    x <- FeatureDataPlot()
     x[[iSEE:::.colorByField]] <- iSEE:::.colorByNothingTitle
     out <- .colorDotPlot(x, LETTERS)
     expect_null(out)
@@ -125,24 +125,24 @@ test_that(".colorDotPlot returns NULL when coloring DotPlot by nothing", {
 
 # .cacheCommonInfo ----
 context(".cacheCommonInfo")
-test_that(".cacheCommonInfo identifies valid reduced dimension names for ReducedDimPlot", {
+test_that(".cacheCommonInfo identifies valid reduced dimension names for ReducedDimensionPlot", {
 
-    x <- ReducedDimPlot()
+    x <- ReducedDimensionPlot()
 
     reducedDim(sce, "empty") <- matrix(numeric(0), nrow = ncol(sce), ncol = 0)
     out <- .cacheCommonInfo(x, sce)
-    expect_false("empty" %in% .get_common_info(out, "ReducedDimPlot")[["valid.reducedDim.names"]])
+    expect_false("empty" %in% .get_common_info(out, "ReducedDimensionPlot")[["valid.reducedDim.names"]])
 
     se <- as(sce, "SummarizedExperiment")
     out <- .cacheCommonInfo(x, se)
-    expect_identical(.get_common_info(out, "ReducedDimPlot")[["valid.reducedDim.names"]], character(0))
+    expect_identical(.get_common_info(out, "ReducedDimensionPlot")[["valid.reducedDim.names"]], character(0))
 
 })
 
 test_that(".cacheCommonInfo detects earlier cache", {
 
-    x_classes <- c("ColumnDataPlot", "ColumnDataTable", "ComplexHeatmapPlot",
-        "FeatureAssayPlot", "ReducedDimPlot", "RowDataPlot", "RowDataTable", "SampleAssayPlot"
+    x_classes <- c("SampleDataPlot", "ColumnDataTable", "ComplexHeatmapPlot",
+        "FeatureAssayPlot", "ReducedDimensionPlot", "FeatureDataPlot", "RowDataTable", "SampleAssayPlot"
     )
 
     for (x_class in x_classes) {
@@ -175,16 +175,16 @@ test_that(".renderOutput populates output for ComplexHeatmapPlot", {
 
 test_that(".renderOutput populates output for DotPlot", {
 
-    x <- ReducedDimPlot(PanelId=1L)
+    x <- ReducedDimensionPlot(PanelId=1L)
     output <- new.env()
     pObjects <- new.env()
     rObjects <- new.env()
 
     out <- .renderOutput(x, sce, output = output, pObjects = pObjects, rObjects = rObjects)
     expect_null(out)
-    expect_is(output$ReducedDimPlot1, "shiny.render.function")
-    expect_is(output$ReducedDimPlot1_INTERNAL_PanelMultiSelectInfo, "shiny.render.function")
-    expect_is(output$ReducedDimPlot1_INTERNAL_PanelSelectLinkInfo, "shiny.render.function")
+    expect_is(output$ReducedDimensionPlot1, "shiny.render.function")
+    expect_is(output$ReducedDimensionPlot1_INTERNAL_PanelMultiSelectInfo, "shiny.render.function")
+    expect_is(output$ReducedDimensionPlot1_INTERNAL_PanelSelectLinkInfo, "shiny.render.function")
 })
 
 # .addDotPlotDataSelected ----
@@ -228,7 +228,7 @@ context(".multiSelectionRestricted")
 
 test_that(".multiSelectionRestricted handles DotPlot", {
 
-    x <- ReducedDimPlot()
+    x <- ReducedDimensionPlot()
 
     out <- .multiSelectionRestricted(x)
     expect_false(out)
@@ -251,7 +251,7 @@ context(".multiSelectionClear")
 
 test_that(".multiSelectionClear handles DotPlot", {
 
-    x <- ReducedDimPlot()
+    x <- ReducedDimensionPlot()
 
     x[[iSEE:::.brushData]] <- list(anything=1L)
 
@@ -272,16 +272,16 @@ context(".singleSelectionValue")
 
 test_that(".singleSelectionValue handles DotPlot", {
 
-    x <- ReducedDimPlot(PanelId=1L)
+    x <- ReducedDimensionPlot(PanelId=1L)
     pObjects <- new.env()
-    pObjects$contents[["ReducedDimPlot1"]] <- data.frame(X=1, Y=seq_len(100), row.names = paste0("X", seq_len(100)))
+    pObjects$contents[["ReducedDimensionPlot1"]] <- data.frame(X=1, Y=seq_len(100), row.names = paste0("X", seq_len(100)))
 
     x[[iSEE:::.brushData]] <- list(
         xmin = 0.7, xmax = 1.3, ymin = 1, ymax = 50,
         mapping = list(x = "X", y = "Y"),
         log = list(x = NULL, y = NULL), direction = "xy",
-        brushId = "ReducedDimPlot1_Brush",
-        outputId = "ReducedDimPlot1")
+        brushId = "ReducedDimensionPlot1_Brush",
+        outputId = "ReducedDimensionPlot1")
 
     out <- .singleSelectionValue(x, pObjects)
     expect_identical(out, "X1")
@@ -291,8 +291,8 @@ test_that(".singleSelectionValue handles DotPlot", {
         xmin = 0.7, xmax = 1.3, ymin = 1000, ymax = 2000,
         mapping = list(x = "X", y = "Y"),
         log = list(x = NULL, y = NULL), direction = "xy",
-        brushId = "ReducedDimPlot1_Brush",
-        outputId = "ReducedDimPlot1")
+        brushId = "ReducedDimensionPlot1_Brush",
+        outputId = "ReducedDimensionPlot1")
 
     out <- .singleSelectionValue(x, pObjects)
     expect_null(out)
@@ -328,15 +328,15 @@ context(".exportOutput")
 
 test_that(".exportOutput handles DotPlot", {
 
-    ReducedDimPlot1 <- ReducedDimPlot(PanelId=1L)
-    sce <- .cacheCommonInfo(ReducedDimPlot1, sce)
-    ReducedDimPlot1 <- .refineParameters(ReducedDimPlot1, sce)
-    memory <- list(ReducedDimPlot1=ReducedDimPlot1)
+    ReducedDimensionPlot1 <- ReducedDimensionPlot(PanelId=1L)
+    sce <- .cacheCommonInfo(ReducedDimensionPlot1, sce)
+    ReducedDimensionPlot1 <- .refineParameters(ReducedDimensionPlot1, sce)
+    memory <- list(ReducedDimensionPlot1=ReducedDimensionPlot1)
     pObjects <- mimic_live_app(sce, memory)
     metadata(sce)$colormap <- ExperimentColorMap()
 
-    out <- .exportOutput(memory$ReducedDimPlot1, sce, memory, pObjects$contents)
-    expect_identical(out, "ReducedDimPlot1.pdf")
+    out <- .exportOutput(memory$ReducedDimensionPlot1, sce, memory, pObjects$contents)
+    expect_identical(out, "ReducedDimensionPlot1.pdf")
 
 })
 

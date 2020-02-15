@@ -39,21 +39,22 @@ which is subsequently read by \code{\link{readRDS}} to launch an instance of \co
 However, any source of SummarizedExperiment objects can be used;
 for example, we can retrieve them from databases by modifying \code{seUI} and \code{seLoad} appropriately.
 
-The default landing page also allows users to upload a RDS file containing a list of \linkS4class{Panel}s,
-which specifies the initial state of the \code{\link{iSEE}} instance (effectively replacing the \code{initial} argument).
+The default landing page also allows users to upload a RDS file containing a list of \linkS4class{Panel}s
+that specifies the initial state of the \code{\link{iSEE}} instance 
+(to be used as the \code{initial} argument in \code{\link{iSEE}}).
 Again, any source can be used to create this list if \code{initUI} and \code{initLoad} are modified appropriately.
-Note that only \linkS4class{Panel}s classes that were in the original \code{\link{iSEE}} call
+Note that only \linkS4class{Panel} classes that were in the original \code{\link{iSEE}()} call
 (as the original \code{initial} or in the \code{extra}) will be used for security and other reasons.
 
-The UI elements for the SummarizedExperiment and the initial state are named \code{se} and \code{initial} respectively.
+The UI elements for the SummarizedExperiment and the initial state are named \code{"se"} and \code{"initial"} respectively.
 This can be used in Shiny bookmarking to initialize an \code{\link{iSEE}} in a desired state by simply clicking a link,
-provided that \code{requireButton=FALSE} so that reactive expressions are immediately triggered upon setting \code{se} and \code{initial}.
+provided that \code{requireButton=FALSE} so that reactive expressions are immediately triggered upon setting \code{se=} and \code{initial=} in the URL.
 We do not use bookmarking to set all individual \code{\link{iSEE}} parameters as we will run afoul of URL character limits.
 }
 \section{Defining a custom landing page}{
 
 We note that \code{createLandingPage} is just a limited wrapper around the landing page API.
-In \code{\link{iSEE}}, \code{landingPage} can be any function with the following argument signature:
+In \code{\link{iSEE}}, \code{landingPage} can be any function that accepts the following arguments:
 \itemize{
 \item \code{FUN}, a function to initialize the \code{\link{iSEE}} observer architecture.
 This function expects to be passed \code{SE}, a SummarizedExperiment object;
@@ -64,10 +65,18 @@ If \code{INITIAL=NULL}, the initial state from \code{initial} is used instead.
 \item \code{session}, the Shiny session object.
 }
 
-The function should render UI elements into \code{output$allPanels}
-containing the required widgets to allow a user to set up an \code{\link{iSEE}} session interactively.
-It should also define observers to respond to those elements and call \code{FUN} with appropriate arguments.
-We suggest that all elements have IDs prefixed with \code{"initialize_INTERNAL"} to avoid conflicts with other elements.
+The function should define a \code{\link{renderUI}} expression that is assigned to \code{output$allPanels}.
+This should define a UI that contains all widgets necessary for a user to set up an \code{\link{iSEE}} session interactively.
+We suggest that all UI elements have IDs prefixed with \code{"initialize_INTERNAL"} to avoid conflicts.
+
+The function should also define observers to respond to user interactions with the UI elements.
+These are typically used to define a SummarizedExperiment object and an input state as a list of \linkS4class{Panels};
+any one of these observers may then call \code{FUN} on those arguments to launch the main \code{\link{iSEE}} instance.
+
+Note that, once the main app is launched, 
+the UI elements constructed here are lost and observers will never be called again.
+There is no explicit \dQuote{unload} mechanism to return to the landing page from the main app,
+though a browser refresh is usually sufficient.
 }
 
 \examples{

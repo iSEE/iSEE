@@ -27,6 +27,8 @@
 #' The specified field should contain continuous values; defaults to the first such field.
 #' }
 #'
+#' In addition, this class inherits all slots from its parent \linkS4class{DotPlot} and \linkS4class{Panel} classes.
+#'
 #' @section Contract description:
 #' The RowDotPlot will provide user interface elements to change all above slots and in its parent classes \linkS4class{DotPlot} and \linkS4class{Panel}.
 #' It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.

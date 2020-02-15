@@ -16,12 +16,6 @@
 #'
 #' In addition, this class inherits all slots from its parent \linkS4class{ColumnDotPlot}, \linkS4class{DotPlot} and \linkS4class{Panel} classes.
 #'
-#' @inheritSection ColumnDotPlot-class ColumnDotPlot slot overview
-#' 
-#' @inheritSection DotPlot-class DotPlot slot overview
-#'
-#' @inheritSection Panel-class Panel slot overview
-#'
 #' @section Constructor:
 #' \code{ReducedDimPlot(...)} creates an instance of a ReducedDimPlot class, where any slot and its value can be passed to \code{...} as a named argument.
 #'

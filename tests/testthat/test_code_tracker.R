@@ -8,8 +8,8 @@ memory <- list(
     ReducedDimPlot(ColorByRowTable="RowDataTable1", ColorBy="Feature name"),
     ColumnDataPlot(SelectColSource="ReducedDimPlot1"),
     ColumnDataPlot(SelectColSource="ReducedDimPlot1"),
-    RowAssayPlot(SelectColSource="ColumnDataPlot1"),
-    RowAssayPlot(SelectColSource="RowAssayPlot1", YAxisRowTable="RowDataTable1"),
+    FeatureAssayPlot(SelectColSource="ColumnDataPlot1"),
+    FeatureAssayPlot(SelectColSource="FeatureAssayPlot1", YAxisRowTable="RowDataTable1"),
     RowDataTable()
 )
 
@@ -26,15 +26,15 @@ test_that("code trackers run correctly for plots", {
     expect_true(any(grepl("ggplot", out)))
 
     # Adding a brush to featAssayPlot1, such that we get it back.
-    pObjects$memory$RowAssayPlot1[[iSEE:::.brushData]] <- list("this is a mock brush")
+    pObjects$memory$FeatureAssayPlot1[[iSEE:::.brushData]] <- list("this is a mock brush")
     out <- iSEE:::.track_it_all(pObjects, se_name="sce", ecm_name="ecm")
-    expect_true(any(grepl("RowAssayPlot1.*this is a mock", out)))
+    expect_true(any(grepl("FeatureAssayPlot1.*this is a mock", out)))
 
     # Adding a brush to redDimPlot, which also gives us the feature assay plot above.
     pObjects$memory$ReducedDimPlot1[[iSEE:::.brushData]] <- list("this is a mock brush")
     out <- iSEE:::.track_it_all(pObjects, se_name="sce", ecm_name="ecm")
     expect_true(any(grepl("ReducedDimPlot1.*this is a mock", out)))
-    expect_true(any(grepl("RowAssayPlot1.*this is a mock", out)))
+    expect_true(any(grepl("FeatureAssayPlot1.*this is a mock", out)))
 })
 
 # .track_selection_code ----

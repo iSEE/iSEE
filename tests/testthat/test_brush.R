@@ -45,7 +45,7 @@ test_that(".transmitted_selection detects whether a brush is active", {
     memory <- list(
         ReducedDimPlot(),
         ColumnDataPlot(SelectColSource="ReducedDimPlot1"),
-        RowAssayPlot(SelectColSource="ColumnDataPlot1")
+        FeatureAssayPlot(SelectColSource="ColumnDataPlot1")
     )
 
     pObjects <- mimic_live_app(sce, memory)

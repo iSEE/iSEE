@@ -6,10 +6,10 @@ context("voice")
 memory <- list(
     ReducedDimPlot(PanelId=1L),
     ColumnDataPlot(PanelId=1L),
-    RowAssayPlot(PanelId=1L),
+    FeatureAssayPlot(PanelId=1L),
     RowDataTable(PanelId=1L),
     RowDataPlot(PanelId=1L),
-    ColumnAssayPlot(PanelId=1L),
+    SampleAssayPlot(PanelId=1L),
     ColumnDataTable(PanelId=1L),
     ComplexHeatmapPlot(PanelId=1L))
 
@@ -17,10 +17,10 @@ memory <- list(
 reservoir <- list(
     ReducedDimPlot(),
     ColumnDataPlot(),
-    RowAssayPlot(),
+    FeatureAssayPlot(),
     RowDataTable(),
     RowDataPlot(),
-    ColumnAssayPlot(),
+    SampleAssayPlot(),
     ColumnDataTable(),
     ComplexHeatmapPlot()
 )

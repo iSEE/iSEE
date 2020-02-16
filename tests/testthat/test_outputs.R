@@ -7,9 +7,9 @@ test_that(".create_selection_info_output works as expected", {
     pObjects = new.env()
     rObjects = new.env()
 
-    out <- .create_selection_info_output("ReducedDimensionPlot", sce, output, pObjects, rObjects)
+    out <- .create_selection_info_output("ReducedDimPlot", sce, output, pObjects, rObjects)
     expect_null(out)
-    expect_is(output[["ReducedDimensionPlot_INTERNAL_PanelMultiSelectInfo"]], "shiny.render.function")
+    expect_is(output[["ReducedDimPlot_INTERNAL_PanelMultiSelectInfo"]], "shiny.render.function")
 
 })
 
@@ -19,9 +19,9 @@ test_that(".create_link_info_output works as expected", {
     pObjects = new.env()
     rObjects = new.env()
 
-    out <- .create_link_info_output("ReducedDimensionPlot", output, pObjects, rObjects)
+    out <- .create_link_info_output("ReducedDimPlot", output, pObjects, rObjects)
     expect_null(out)
-    expect_is(output[["ReducedDimensionPlot_INTERNAL_PanelSelectLinkInfo"]], "shiny.render.function")
+    expect_is(output[["ReducedDimPlot_INTERNAL_PanelSelectLinkInfo"]], "shiny.render.function")
 
 })
 
@@ -69,8 +69,8 @@ test_that("define_export_choices supports empty memory", {
 
 test_that("define_export_choices supports non-empty memory", {
 
-    memory <- list(ReducedDimensionPlot(PanelId=1L))
+    memory <- list(ReducedDimPlot(PanelId=1L))
 
     out <- .define_export_choices(memory)
-    expect_identical(out, c("Reduced dimension plot 1" = "ReducedDimensionPlot1"))
+    expect_identical(out, c("Reduced dimension plot 1" = "ReducedDimPlot1"))
 })

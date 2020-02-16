@@ -167,7 +167,7 @@ This information is stored in the `Type` column:
 
 ```{r redDimPlotDefaults-type}
 app <- iSEE(sce, initial=list(
-    ReducedDimensionPlot(DataBoxOpen=TRUE, Type="TSNE", 
+    ReducedDimPlot(DataBoxOpen=TRUE, Type="TSNE", 
         XAxis=2L, YAxis=1L, PanelWidth=6L)
 ))
 ```
@@ -276,12 +276,12 @@ The result should look as below:
 
 ```{r select-brish}
 # Preconfigure the receiver panel
-cdArgs <- ColumnDataPlot(SelectBoxOpen=TRUE, SelectColSource="ReducedDimensionPlot1",
+cdArgs <- ColumnDataPlot(SelectBoxOpen=TRUE, SelectColSource="ReducedDimPlot1",
     SelectEffect="Color", SelectColor="purple", 
     ColorByDefaultColor="#BDB3B3", PanelWidth=6L)
 
 # Preconfigure the sender panel, including the point selection
-rdArgs <- ReducedDimensionPlot(
+rdArgs <- ReducedDimPlot(
     BrushData=list(
         xmin = 2.8, xmax = 10.4, ymin = 0.6, ymax = 13.2, 
         mapping = list(x = "X", y = "Y"), domain = list(left = -14.0, right = 10.9, 
@@ -355,7 +355,7 @@ To do so, simply put a hash sign before a word which does not link directly to a
 
 Users should refer to the following help pages for the full list of values that can be specified in `iSEE`:
 
-- `?ReducedDimensionPlot`
+- `?ReducedDimPlot`
 - `?ColumnDataPlot`
 - `?RowAssayPlot`
 - `?RowDataPlot`

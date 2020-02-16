@@ -1,9 +1,9 @@
-#' The ReducedDimensionPlot panel
+#' The ReducedDimPlot panel
 #'
-#' The ReducedDimensionPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the coordinates of each column/sample are taken from the \code{\link{reducedDims}} of a \linkS4class{SingleCellExperiment} object.
+#' The ReducedDimPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the coordinates of each column/sample are taken from the \code{\link{reducedDims}} of a \linkS4class{SingleCellExperiment} object.
 #' It provides slots and methods for specifying which dimensionality reduction result to use.
 #'
-#' @section ReducedDimensionPlot slot overview:
+#' @section ReducedDimPlot slot overview:
 #' The following slots control the dimensionality reduction result that is used:
 #' \itemize{
 #' \item \code{RedDimType}, a string specifying the name of the dimensionality reduction result.
@@ -17,20 +17,20 @@
 #' In addition, this class inherits all slots from its parent \linkS4class{ColumnDotPlot}, \linkS4class{DotPlot} and \linkS4class{Panel} classes.
 #'
 #' @section Constructor:
-#' \code{ReducedDimensionPlot(...)} creates an instance of a ReducedDimensionPlot class, where any slot and its value can be passed to \code{...} as a named argument.
+#' \code{ReducedDimPlot(...)} creates an instance of a ReducedDimPlot class, where any slot and its value can be passed to \code{...} as a named argument.
 #'
 #' @section Contract description:
-#' The ReducedDimensionPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
+#' The ReducedDimPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
 #' It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
 #' Subclasses do not have to provide any methods, as this is a concrete class.
 #'
 #' @section Supported methods:
-#' In the following code snippets, \code{x} is an instance of a \linkS4class{ReducedDimensionPlot} class.
+#' In the following code snippets, \code{x} is an instance of a \linkS4class{ReducedDimPlot} class.
 #' Refer to the documentation for each method for more details on the remaining arguments.
 #'
 #' For setting up data values:
 #' \itemize{
-#' \item \code{\link{.cacheCommonInfo}(x)} adds a \code{"ReducedDimensionPlot"} entry containing \code{valid.reducedDim.names}, a character vector of names of valid dimensionality reduction results (i.e., at least one dimension).
+#' \item \code{\link{.cacheCommonInfo}(x)} adds a \code{"ReducedDimPlot"} entry containing \code{valid.reducedDim.names}, a character vector of names of valid dimensionality reduction results (i.e., at least one dimension).
 #' This will also call the equivalent \linkS4class{ColumnDotPlot} method.
 #' \item \code{\link{.refineParameters}(x, se)} replaces \code{NA} values in \code{RedDimType} with the first valid dimensionality reduction result name in \code{se}.
 #' This will also call the equivalent \linkS4class{ColumnDotPlot} method for further refinements to \code{x}.
@@ -69,7 +69,7 @@
 #' # For end-users #
 #' #################
 #'
-#' x <- ReducedDimensionPlot()
+#' x <- ReducedDimPlot()
 #' x[["Type"]]
 #' x[["Type"]] <- "TSNE"
 #'
@@ -91,26 +91,26 @@
 #' .refineParameters(x, sce0)
 #'
 #' @docType methods
-#' @aliases ReducedDimensionPlot ReducedDimensionPlot-class
-#' initialize,ReducedDimensionPlot-method
-#' .refineParameters,ReducedDimensionPlot-method
-#' .cacheCommonInfo,ReducedDimensionPlot-method
-#' .defineDataInterface,ReducedDimensionPlot-method
-#' .createObservers,ReducedDimensionPlot-method
-#' .fullName,ReducedDimensionPlot-method
-#' .panelColor,ReducedDimensionPlot-method
-#' .generateDotPlotData,ReducedDimensionPlot-method
-#' @name ReducedDimensionPlot-class
+#' @aliases ReducedDimPlot ReducedDimPlot-class
+#' initialize,ReducedDimPlot-method
+#' .refineParameters,ReducedDimPlot-method
+#' .cacheCommonInfo,ReducedDimPlot-method
+#' .defineDataInterface,ReducedDimPlot-method
+#' .createObservers,ReducedDimPlot-method
+#' .fullName,ReducedDimPlot-method
+#' .panelColor,ReducedDimPlot-method
+#' .generateDotPlotData,ReducedDimPlot-method
+#' @name ReducedDimPlot-class
 NULL
 
 #' @export
-ReducedDimensionPlot <- function(...) {
-    new("ReducedDimensionPlot", ...)
+ReducedDimPlot <- function(...) {
+    new("ReducedDimPlot", ...)
 }
 
 #' @export
 #' @importFrom methods callNextMethod
-setMethod("initialize", "ReducedDimensionPlot", function(.Object, ...) {
+setMethod("initialize", "ReducedDimPlot", function(.Object, ...) {
     args <- list(...)
     args <- .empty_default(args, .redDimType, NA_character_)
     args <- .empty_default(args, .redDimXAxis, 1L)
@@ -122,8 +122,8 @@ setMethod("initialize", "ReducedDimensionPlot", function(.Object, ...) {
 #' @importFrom SingleCellExperiment reducedDimNames reducedDim
 #' @importClassesFrom SingleCellExperiment SingleCellExperiment
 #' @importFrom methods callNextMethod
-setMethod(".cacheCommonInfo", "ReducedDimensionPlot", function(x, se) {
-    if (!is.null(.get_common_info(se, "ReducedDimensionPlot"))) {
+setMethod(".cacheCommonInfo", "ReducedDimPlot", function(x, se) {
+    if (!is.null(.get_common_info(se, "ReducedDimPlot"))) {
         return(se)
     }
 
@@ -141,20 +141,20 @@ setMethod(".cacheCommonInfo", "ReducedDimensionPlot", function(x, se) {
         available <- character(0)
     }
 
-    .set_common_info(se, "ReducedDimensionPlot",
+    .set_common_info(se, "ReducedDimPlot",
         valid.reducedDim.names=available)
 })
 
 #' @export
 #' @importFrom SingleCellExperiment reducedDim
 #' @importFrom methods callNextMethod
-setMethod(".refineParameters", "ReducedDimensionPlot", function(x, se) {
+setMethod(".refineParameters", "ReducedDimPlot", function(x, se) {
     x <- callNextMethod()
     if (is.null(x)) {
         return(NULL)
     }
 
-    available <- .get_common_info(se, "ReducedDimensionPlot")$valid.reducedDim.names
+    available <- .get_common_info(se, "ReducedDimPlot")$valid.reducedDim.names
     if (!is.na(chosen <- x[[.redDimType]]) &&
         chosen %in% available &&
         x[[.redDimXAxis]] <= ncol(reducedDim(se, chosen)) &&
@@ -177,7 +177,7 @@ setMethod(".refineParameters", "ReducedDimensionPlot", function(x, se) {
 })
 
 #' @importFrom S4Vectors setValidity2
-setValidity2("ReducedDimensionPlot", function(object) {
+setValidity2("ReducedDimPlot", function(object) {
     msg <- character(0)
 
     msg <- .single_string_error(msg, object, .redDimType)
@@ -198,7 +198,7 @@ setValidity2("ReducedDimensionPlot", function(object) {
 #' @importFrom SingleCellExperiment reducedDim reducedDimNames
 #' @importFrom shiny selectInput
 #' @importFrom methods callNextMethod
-setMethod(".defineDataInterface", "ReducedDimensionPlot", function(x, se, select_info) {
+setMethod(".defineDataInterface", "ReducedDimPlot", function(x, se, select_info) {
     cur_reddim <- x[[.redDimType]]
     max_dim <- ncol(reducedDim(se, cur_reddim))
     choices <- seq_len(max_dim)
@@ -208,7 +208,7 @@ setMethod(".defineDataInterface", "ReducedDimensionPlot", function(x, se, select
 
     list(
         selectInput(.input_FUN(.redDimType), label="Type",
-            choices=.get_common_info(se, "ReducedDimensionPlot")$valid.reducedDim.names,
+            choices=.get_common_info(se, "ReducedDimPlot")$valid.reducedDim.names,
             selected=cur_reddim),
         selectInput(.input_FUN(.redDimXAxis), label="Dimension 1",
             choices=choices, selected=x[[.redDimXAxis]]),
@@ -221,7 +221,7 @@ setMethod(".defineDataInterface", "ReducedDimensionPlot", function(x, se, select
 #' @importFrom SingleCellExperiment reducedDim
 #' @importFrom shiny observeEvent updateSelectInput
 #' @importFrom methods callNextMethod
-setMethod(".createObservers", "ReducedDimensionPlot", function(x, se, input, session, pObjects, rObjects) {
+setMethod(".createObservers", "ReducedDimPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
     plot_name <- .getEncodedName(x)
@@ -262,13 +262,13 @@ setMethod(".createObservers", "ReducedDimensionPlot", function(x, se, input, ses
 })
 
 #' @export
-setMethod(".fullName", "ReducedDimensionPlot", function(x) "Reduced dimension plot")
+setMethod(".fullName", "ReducedDimPlot", function(x) "Reduced dimension plot")
 
 #' @export
-setMethod(".panelColor", "ReducedDimensionPlot", function(x) "#3565AA")
+setMethod(".panelColor", "ReducedDimPlot", function(x) "#3565AA")
 
 #' @export
-setMethod(".generateDotPlotData", "ReducedDimensionPlot", function(x, envir) {
+setMethod(".generateDotPlotData", "ReducedDimPlot", function(x, envir) {
     data_cmds <- list()
 
     data_cmds[["reducedDim"]] <- sprintf(

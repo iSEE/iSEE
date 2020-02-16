@@ -44,7 +44,7 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #' each of which is expected to modify one slot of \code{x} upon user interaction.
 #'
 #' The ID of each interface element should follow the form of \code{PANEL_SLOT} where \code{PANEL} is the panel name (from \code{\link{.getEncodedName}(x)}) and \code{SLOT} is the name of the slot modified by the interface element,
-#' e.g., \code{"ReducedDimensionPlot1_Type"}.
+#' e.g., \code{"ReducedDimPlot1_Type"}.
 #' Each interface element should have an equivalent observer in \code{\link{.createObservers}} unless they are hidden by \code{\link{.hideInterface}} (see below).
 #'
 #' It is the developer's responsibility to call \code{\link{callNextMethod}} to obtain interface elements for parent classes.
@@ -162,7 +162,7 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' Methods for this generic are expected to return an output element for inclusion into the \pkg{iSEE} interface, such as the output of \code{\link{plotOutput}}.
 #' Multiple elements can be provided via a \code{\link{tagList}}.
 #'
-#' The IDs of the output elements are expected to be prefixed with the panel name from \code{\link{.getEncodedName}(x)} and an underscore, e.g., \code{"ReducedDimensionPlot1_someOutput"}.
+#' The IDs of the output elements are expected to be prefixed with the panel name from \code{\link{.getEncodedName}(x)} and an underscore, e.g., \code{"ReducedDimPlot1_someOutput"}.
 #' One of the output elements may simply have the ID set to \code{PANEL} alone;
 #' this is usually the case for simple panels with one primary output like a \linkS4class{DotPlot}.
 #'
@@ -530,7 +530,7 @@ setGeneric(".generateTable", function(x, envir) standardGeneric(".generateTable"
 #' Of course, any slots that are not \code{se}-dependent should be set at construction and checked by the validity method.
 #'
 #' It is also possible for this generic to return \code{NULL}, which is used as an indicator that \code{se} does not contain information to meaningfully show any instance of the class of \code{x} in the \pkg{iSEE} app.
-#' For example, the method for \linkS4class{ReducedDimensionPlot} will return \code{NULL} if \code{se} is not a \linkS4class{SingleCellExperiment} containing some dimensionality reduction results.
+#' For example, the method for \linkS4class{ReducedDimPlot} will return \code{NULL} if \code{se} is not a \linkS4class{SingleCellExperiment} containing some dimensionality reduction results.
 #'
 #' @author Aaron Lun
 #' @name setup-generics
@@ -599,7 +599,7 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #' @section Destroying selections:
 #' \code{.multiSelectionClear(x)} should return \code{x} after removing the active selection, i.e., so that nothing is selected.
 #' This is used internally to remove multiple selections that do not make sense after protected parameters have changed.
-#' For example, a brush or lasso made on a PCA plot in \linkS4class{ReducedDimensionPlot}s would not make sense after switching to t-SNE coordinates, so the application will automatically erase those selections to avoid misleading conclusions.
+#' For example, a brush or lasso made on a PCA plot in \linkS4class{ReducedDimPlot}s would not make sense after switching to t-SNE coordinates, so the application will automatically erase those selections to avoid misleading conclusions.
 #'
 #' @section Responding to selections:
 #' These generics pertain to how \code{x} responds to a transmitted selection, not how \code{x} itself transmits selections.

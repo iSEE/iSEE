@@ -1,6 +1,6 @@
-#' Row dot plot panel family
+#' The RowDotPlot virtual class
 #'
-#' The RowDotPlot is a virtual class where each row in the \linkS4class{SummarizedExperiment} is represented by a point (\dQuote{dot}) in a brushable plot.
+#' The RowDotPlot is a virtual class where each row in the \linkS4class{SummarizedExperiment} is represented by no more than one point (i.e., a \dQuote{dot}) in a brushable \link{ggplot} plot.
 #' It provides slots and methods to control various aesthetics of the dots and to store the brush or lasso selection.
 #'
 #' @section Slot overview:
@@ -28,12 +28,6 @@
 #' }
 #'
 #' In addition, this class inherits all slots from its parent \linkS4class{DotPlot} and \linkS4class{Panel} classes.
-#'
-#' @section Contract description:
-#' The RowDotPlot will provide user interface elements to change all above slots and in its parent classes \linkS4class{DotPlot} and \linkS4class{Panel}.
-#' It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
-#'
-#' Subclasses are expected to implement methods for (at least) \code{\link{.generateDotPlotData}}.
 #'
 #' @section Supported methods:
 #' In the following code snippets, \code{x} is an instance of a \linkS4class{RowDotPlot} class.
@@ -69,6 +63,16 @@
 #' }
 #'
 #' Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.
+#'
+#' @section Subclass expectations:
+#' Subclasses are expected to implement methods for:
+#' \itemize{
+#' \item \code{\link{.generateDotPlotData}}
+#' \item \code{\link{.fullName}}
+#' \item \code{\link{.panelColor}}
+#' }
+#'
+#' The method for \code{\link{.generateDotPlotData}} should create a \code{plot.data} data.frame with one row per row in the \linkS4class{SummarizedExperiment} object.
 #'
 #' @author Aaron Lun
 #' @seealso

@@ -1,6 +1,6 @@
 #' The DotPlot virtual class
 #'
-#' The DotPlot is a virtual class for all panels where each row or column in the \linkS4class{SummarizedExperiment} is represented by a point (\dQuote{dot}) in a brushable plot.
+#' The DotPlot is a virtual class for all panels where each row or column in the \linkS4class{SummarizedExperiment} is represented by no more than one point (i.e., a \dQuote{dot}) in a brushable \link{ggplot} plot.
 #' It provides slots and methods to control various aesthetics of the dots and to store the brush or lasso selection.
 #'
 #' @section Slot overview:
@@ -109,11 +109,6 @@
 #'
 #' In addition, this class inherits all slots from its parent \linkS4class{Panel} class.
 #'
-#' @section Contract description:
-#' This is a rather vaguely defined class for which the only purpose is to avoid duplicating code for \linkS4class{ColumnDotPlot}s and \linkS4class{RowDotPlot}s.
-#' Observers are only provided for some slots - the remainders are supported by the aforementioned subclasses - and no interface elements are provided at all.
-#' It is likely that developers will prefer to extend these subclasses instead of the \linkS4class{DotPlot} directly, as the former have more well-defined contracts.
-#'
 #' @section Supported methods:
 #' In the following code snippets, \code{x} is an instance of a \linkS4class{DotPlot} class.
 #' Refer to the documentation for each method for more details on the remaining arguments.
@@ -166,6 +161,10 @@
 #' }
 #'
 #' Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.
+#'
+#' @section Subclass expectations:
+#' The DotPlot is a rather vaguely defined class for which the only purpose is to avoid duplicating code for \linkS4class{ColumnDotPlot}s and \linkS4class{RowDotPlot}s.
+#' We recommend extending those subclasses instead.
 #'
 #' @seealso
 #' \linkS4class{RowDotPlot} and \linkS4class{ColumnDotPlot}, which are more amenable to extension.

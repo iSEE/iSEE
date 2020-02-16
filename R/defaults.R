@@ -43,7 +43,7 @@ NULL
 #' @export
 #' @rdname defaults
 redDimPlotDefaults <- function(se, number) {
-    .Deprecated(new="ReducedDimensionPlot")
+    .Deprecated(new="ReducedDimPlot")
 
     # Ensure that we define all the fields with the right types, using a transient 1-row DF
     # number=0 guarantees that se is not touched to define dummy values of the right type
@@ -96,7 +96,7 @@ featAssayPlotDefaults <- function(se, number) {
 #' @export
 #' @rdname defaults
 colDataPlotDefaults <- function(se, number) {
-    .Deprecated(new="SampleDataPlot")
+    .Deprecated(new="ColumnDataPlot")
 
     # Ensure that we define all the fields with the right types, using a transient 1-row DF
     # number=0 guarantees that se is not touched to define dummy values of the right type
@@ -178,7 +178,7 @@ colStatTableDefaults <- function(se, number) {
 #' @export
 #' @rdname defaults
 rowDataPlotDefaults <- function(se, number) {
-    .Deprecated(new="FeatureDataPlot")
+    .Deprecated(new="RowDataPlot")
 
     # Ensure that we define all the fields with the right types, using a transient 1-row DF
     # number=0 guarantees that se is not touched to define dummy values of the right type
@@ -484,12 +484,12 @@ heatMapPlotDefaults <- function(se, number) {
     if (is.null(redDimArgs)) {
         suppressWarnings(redDimArgs <- redDimPlotDefaults(se, 5))
     }
-    collected <- c(collected, .translate_to_class(redDimArgs, ReducedDimensionPlot, se, FALSE))
+    collected <- c(collected, .translate_to_class(redDimArgs, ReducedDimPlot, se, FALSE))
 
     if (is.null(colDataArgs)) {
         suppressWarnings(colDataArgs <- colDataPlotDefaults(se, 5))
     }
-    collected <- c(collected, .translate_to_class(colDataArgs, SampleDataPlot, se, FALSE))
+    collected <- c(collected, .translate_to_class(colDataArgs, ColumnDataPlot, se, FALSE))
 
     if (is.null(featAssayArgs)) {
         suppressWarnings(featAssayArgs <- featAssayPlotDefaults(se, 5))
@@ -504,7 +504,7 @@ heatMapPlotDefaults <- function(se, number) {
     if (is.null(rowDataArgs)) {
         suppressWarnings(rowDataArgs <- rowDataPlotDefaults(se, 5))
     }
-    collected <- c(collected, .translate_to_class(rowDataArgs, FeatureDataPlot, se, TRUE))
+    collected <- c(collected, .translate_to_class(rowDataArgs, RowDataPlot, se, TRUE))
 
     if (is.null(sampAssayArgs)) {
         suppressWarnings(sampAssayArgs <- sampAssayPlotDefaults(se, 5))
@@ -635,11 +635,11 @@ heatMapPlotDefaults <- function(se, number) {
 .convert_old_name_to_new <- function(old_name) {
     ref <- sub(" [0-9]+$", "", old_name)
     converter <- c(
-        ReducedDimensionPlot="Reduced dimension plot",
+        ReducedDimPlot="Reduced dimension plot",
         FeatureAssayPlot="Feature assay plot",
         ColumnDataTable="Column statistics table",
-        SampleDataPlot="Column data plot",
-        FeatureDataPlot="Row data plot",
+        ColumnDataPlot="Column data plot",
+        RowDataPlot="Row data plot",
         RowDataTable="Row statistics table",
         SampleAssayPlot="Sample assay plot",
         ComplexHeatmapPlot="Heat map")

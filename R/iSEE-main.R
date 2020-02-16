@@ -50,7 +50,7 @@
 #'
 #' @details
 #' Configuring the initial state of the app is as easy as passing a list of \linkS4class{Panel} objects to \code{initial}.
-#' Each element represents one panel and is typicall constructed with a command like \code{\link{ReducedDimensionPlot}()}.
+#' Each element represents one panel and is typicall constructed with a command like \code{\link{ReducedDimPlot}()}.
 #' Panels are filled from left to right in a row-wise manner depending on the available width.
 #' Each panel can be easily customized by modifying the parameters in each object.
 #'
@@ -181,8 +181,8 @@ iSEE <- function(se,
     }
 
     if (is.null(initial)) {
-        initial <- list(ReducedDimensionPlot(), RowDataTable(), FeatureAssayPlot(), SampleDataPlot(),
-            FeatureDataPlot(), SampleAssayPlot(), ColumnDataTable(), ComplexHeatmapPlot())
+        initial <- list(ReducedDimPlot(), RowDataTable(), FeatureAssayPlot(), ColumnDataPlot(),
+            RowDataPlot(), SampleAssayPlot(), ColumnDataTable(), ComplexHeatmapPlot())
     }
 
     #######################################################################

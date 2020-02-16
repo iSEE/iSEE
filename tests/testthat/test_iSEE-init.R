@@ -4,10 +4,10 @@
 context("iSEE-extras")
 
 memory <- list(
-    ReducedDimensionPlot(),
-    SampleDataPlot(SelectColSource="ReducedDimensionPlot1", ColorBy="Feature name", ColorByRowTable="RowDataTable1"),
-    SampleDataPlot(SelectColSource="ReducedDimensionPlot1"),
-    FeatureAssayPlot(SelectColSource="SampleDataPlot1"),
+    ReducedDimPlot(),
+    ColumnDataPlot(SelectColSource="ReducedDimPlot1", ColorBy="Feature name", ColorByRowTable="RowDataTable1"),
+    ColumnDataPlot(SelectColSource="ReducedDimPlot1"),
+    FeatureAssayPlot(SelectColSource="ColumnDataPlot1"),
     FeatureAssayPlot(SelectColSource="FeatureAssayPlot1", XAxis="Feature name",
         YAxisRowTable="RowDataTable1", XAxisRowTable="RowDataTable2"),
     RowDataTable(),
@@ -23,7 +23,7 @@ test_that(".prepare_SE works correctly", {
     expect_identical(ExperimentColorMap(), metadata(sce)$colormap)
 
     # Caches common information:
-    expect_true(all(c("DotPlot", "ColumnDotPlot", "ReducedDimensionPlot", "RowDataTable", "RowDotPlot", "ColumnDataTable")
+    expect_true(all(c("DotPlot", "ColumnDotPlot", "ReducedDimPlot", "RowDataTable", "RowDotPlot", "ColumnDataTable")
         %in% names(metadata(sce)$iSEE)))
 })
 
@@ -39,8 +39,8 @@ test_that(".setup_initial_state works correctly", {
 
     # Actually runs the refinement.
     expect_identical(memory2[["FeatureAssayPlot1"]][["YAxisFeatName"]], rownames(sce)[1])
-    expect_identical(memory2[["ReducedDimensionPlot1"]][["Type"]], "PCA")
-    expect_identical(memory2[["SampleDataPlot1"]][["YAxis"]], colnames(colData(sce))[1])
+    expect_identical(memory2[["ReducedDimPlot1"]][["Type"]], "PCA")
+    expect_identical(memory2[["ColumnDataPlot1"]][["YAxis"]], colnames(colData(sce))[1])
     expect_identical(memory2[["SampleAssayPlot1"]][["YAxisSampName"]], colnames(sce)[1])
 
     # Counter makes sense.
@@ -61,7 +61,7 @@ test_that(".setup_initial_state works correctly", {
     metadata(sce2) <- list()
     sce2 <- iSEE:::.prepare_SE(sce2, ExperimentColorMap(), memory)
     init_out <- iSEE:::.setup_initial_state(sce2, memory)
-    expect_false("ReducedDimensionPlot" %in% names(init_out$counter))
+    expect_false("ReducedDimPlot" %in% names(init_out$counter))
 })
 
 test_that(".define_reservoir works correctly", {
@@ -76,13 +76,13 @@ test_that(".define_reservoir works correctly", {
     expect_identical(init_out$reservoir, res_out$memory[!duplicated(enc)])
 
     # Adding a new panel class.
-    res_out2 <- iSEE:::.define_reservoir(sce, list(FeatureDataPlot()), init_out$memory, init_out$counter)
-    expect_identical(res_out2$counter, c(res_out$counter, FeatureDataPlot=0L))
-    expect_identical(res_out2$reservoir, c(res_out$reservoir, list(FeatureDataPlot=.refineParameters(FeatureDataPlot(), sce))))
+    res_out2 <- iSEE:::.define_reservoir(sce, list(RowDataPlot()), init_out$memory, init_out$counter)
+    expect_identical(res_out2$counter, c(res_out$counter, RowDataPlot=0L))
+    expect_identical(res_out2$reservoir, c(res_out$reservoir, list(RowDataPlot=.refineParameters(RowDataPlot(), sce))))
 
     # Multiple copies don't change the outcome.
     res_out3 <- iSEE:::.define_reservoir(sce,
-        list(FeatureDataPlot(), FeatureDataPlot(PanelHeight=1000L), SampleDataPlot(), ReducedDimensionPlot(Type="TSNE")),
+        list(RowDataPlot(), RowDataPlot(PanelHeight=1000L), ColumnDataPlot(), ReducedDimPlot(Type="TSNE")),
         init_out$memory, init_out$counter)
     expect_identical(res_out3, res_out2)
 })
@@ -100,7 +100,7 @@ test_that("persistent object setup works as expected", {
 
 test_that(".setup_initial_state throws an error for duplicated panel identifiers", {
     sce <- iSEE:::.prepare_SE(sce, ExperimentColorMap(), memory)
-    memory <- list(ReducedDimensionPlot(PanelId=1L), ReducedDimensionPlot(PanelId=1L))
+    memory <- list(ReducedDimPlot(PanelId=1L), ReducedDimPlot(PanelId=1L))
     expect_error(.setup_initial_state(sce, memory),
-        "panels of same class with duplicated IDs 'ReducedDimensionPlot1'", fixed=TRUE)
+        "panels of same class with duplicated IDs 'ReducedDimPlot1'", fixed=TRUE)
 })

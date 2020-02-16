@@ -1,6 +1,6 @@
-#' The FeatureDataPlot panel
+#' The RowDataPlot panel
 #'
-#' The FeatureDataPlot is a panel class for creating a \linkS4class{RowDotPlot} where the y-axis represents a variable from the \code{\link{rowData}} of a \linkS4class{SummarizedExperiment} object.
+#' The RowDataPlot is a panel class for creating a \linkS4class{RowDotPlot} where the y-axis represents a variable from the \code{\link{rowData}} of a \linkS4class{SummarizedExperiment} object.
 #' It provides slots and methods for specifying which row metadata variable to use and what to plot on the x-axis.
 #'
 #' @section Slot overview:
@@ -18,10 +18,15 @@
 #' In addition, this class inherits all slots from its parent \linkS4class{RowDotPlot}, \linkS4class{DotPlot} and \linkS4class{Panel} classes.
 #'
 #' @section Constructor:
-#' \code{FeatureDataPlot(...)} creates an instance of a FeatureDataPlot class, where any slot and its value can be passed to \code{...} as a named argument.
+#' \code{RowDataPlot(...)} creates an instance of a RowDataPlot class, where any slot and its value can be passed to \code{...} as a named argument.
+#'
+#' @section Contract description:
+#' The RowDataPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
+#' It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
+#' Subclasses do not have to provide any methods, as this is a concrete class.
 #'
 #' @section Supported methods:
-#' In the following code snippets, \code{x} is an instance of a \linkS4class{FeatureDataPlot} class.
+#' In the following code snippets, \code{x} is an instance of a \linkS4class{RowDataPlot} class.
 #' Refer to the documentation for each method for more details on the remaining arguments.
 #'
 #' For setting up data values:
@@ -64,7 +69,7 @@
 #' # For end-users #
 #' #################
 #'
-#' x <- FeatureDataPlot()
+#' x <- RowDataPlot()
 #' x[["XAxis"]]
 #' x[["XAxis"]] <- "Row data"
 #'
@@ -86,25 +91,25 @@
 #' .refineParameters(x, sce0)
 #'
 #' @docType methods
-#' @aliases FeatureDataPlot FeatureDataPlot-class
-#' initialize,FeatureDataPlot-method
-#' .refineParameters,FeatureDataPlot-method
-#' .defineDataInterface,FeatureDataPlot-method
-#' .createObservers,FeatureDataPlot-method
-#' .fullName,FeatureDataPlot-method
-#' .panelColor,FeatureDataPlot-method
-#' .generateDotPlotData,FeatureDataPlot-method
-#' @name FeatureDataPlot-class
+#' @aliases RowDataPlot RowDataPlot-class
+#' initialize,RowDataPlot-method
+#' .refineParameters,RowDataPlot-method
+#' .defineDataInterface,RowDataPlot-method
+#' .createObservers,RowDataPlot-method
+#' .fullName,RowDataPlot-method
+#' .panelColor,RowDataPlot-method
+#' .generateDotPlotData,RowDataPlot-method
+#' @name RowDataPlot-class
 NULL
 
 #' @export
-FeatureDataPlot <- function(...) {
-    new("FeatureDataPlot", ...)
+RowDataPlot <- function(...) {
+    new("RowDataPlot", ...)
 }
 
 #' @export
 #' @importFrom methods callNextMethod
-setMethod("initialize", "FeatureDataPlot", function(.Object, ...) {
+setMethod("initialize", "RowDataPlot", function(.Object, ...) {
     args <- list(...)
     args <- .empty_default(args, .rowDataXAxis, .rowDataXAxisNothingTitle)
     args <- .empty_default(args, .rowDataXAxisRowData, NA_character_)
@@ -117,7 +122,7 @@ setMethod("initialize", "FeatureDataPlot", function(.Object, ...) {
 
 #' @export
 #' @importFrom methods callNextMethod
-setMethod(".refineParameters", "FeatureDataPlot", function(x, se) {
+setMethod(".refineParameters", "RowDataPlot", function(x, se) {
     x <- callNextMethod()
     if (is.null(x)) {
         return(NULL)
@@ -137,7 +142,7 @@ setMethod(".refineParameters", "FeatureDataPlot", function(x, se) {
 })
 
 #' @importFrom S4Vectors setValidity2
-setValidity2("FeatureDataPlot", function(object) {
+setValidity2("RowDataPlot", function(object) {
     msg <- character(0)
 
     msg <- .allowable_choice_error(msg, object, .rowDataXAxis,
@@ -154,7 +159,7 @@ setValidity2("FeatureDataPlot", function(object) {
 #' @export
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
-setMethod(".defineDataInterface", "FeatureDataPlot", function(x, se, select_info) {
+setMethod(".defineDataInterface", "RowDataPlot", function(x, se, select_info) {
     panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
@@ -178,7 +183,7 @@ setMethod(".defineDataInterface", "FeatureDataPlot", function(x, se, select_info
 #' @export
 #' @importFrom shiny observeEvent updateSelectInput
 #' @importFrom methods callNextMethod
-setMethod(".createObservers", "FeatureDataPlot", function(x, se, input, session, pObjects, rObjects) {
+setMethod(".createObservers", "RowDataPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
     plot_name <- .getEncodedName(x)
@@ -189,13 +194,13 @@ setMethod(".createObservers", "FeatureDataPlot", function(x, se, input, session,
 })
 
 #' @export
-setMethod(".fullName", "FeatureDataPlot", function(x) "Row data plot")
+setMethod(".fullName", "RowDataPlot", function(x) "Row data plot")
 
 #' @export
-setMethod(".panelColor", "FeatureDataPlot", function(x) "#F2B701")
+setMethod(".panelColor", "RowDataPlot", function(x) "#F2B701")
 
 #' @export
-setMethod(".generateDotPlotData", "FeatureDataPlot", function(x, envir) {
+setMethod(".generateDotPlotData", "RowDataPlot", function(x, envir) {
     data_cmds <- list()
 
     y_lab <- x[[.rowDataYAxis]]

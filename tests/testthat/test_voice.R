@@ -4,22 +4,22 @@ context("voice")
 
 # Setting up the memory.
 memory <- list(
-    ReducedDimensionPlot(PanelId=1L),
-    SampleDataPlot(PanelId=1L),
+    ReducedDimPlot(PanelId=1L),
+    ColumnDataPlot(PanelId=1L),
     FeatureAssayPlot(PanelId=1L),
     RowDataTable(PanelId=1L),
-    FeatureDataPlot(PanelId=1L),
+    RowDataPlot(PanelId=1L),
     SampleAssayPlot(PanelId=1L),
     ColumnDataTable(PanelId=1L),
     ComplexHeatmapPlot(PanelId=1L))
 
 # Setting up the reservoir.
 reservoir <- list(
-    ReducedDimensionPlot(),
-    SampleDataPlot(),
+    ReducedDimPlot(),
+    ColumnDataPlot(),
     FeatureAssayPlot(),
     RowDataTable(),
-    FeatureDataPlot(),
+    RowDataPlot(),
     SampleAssayPlot(),
     ColumnDataTable(),
     ComplexHeatmapPlot()

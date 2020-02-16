@@ -4,11 +4,11 @@ memory <- list(
     ReducedDimPlot(PanelId=1L),
     ColumnDataPlot(PanelId=1L),
     ColumnDataPlot(PanelId=1L),
-    FeatureAssayPlot(PanelId=1L),
-    FeatureAssayPlot(PanelId=1L),
+    RowAssayPlot(PanelId=1L),
+    RowAssayPlot(PanelId=1L),
     RowDataTable(PanelId=1L),
     RowDataTable(PanelId=1L),
-    SampleAssayPlot(PanelId=1L),
+    ColumnAssayPlot(PanelId=1L),
     ColumnDataTable(PanelId=1L)
 )
 
@@ -32,7 +32,7 @@ test_that("Observers return NULL", {
     out <- .createObservers(x, sce, NULL, NULL, NULL, NULL)
     expect_null(out)
 
-    x <- FeatureAssayPlot()
+    x <- RowAssayPlot()
     x <- .refineParameters(x, sce)
     out <- .createObservers(x, sce, NULL, NULL, NULL, NULL)
     expect_null(out)
@@ -52,7 +52,7 @@ test_that("Observers return NULL", {
     out <- .createObservers(x, sce, NULL, NULL, NULL, NULL)
     expect_null(out)
 
-    x <- SampleAssayPlot()
+    x <- ColumnAssayPlot()
     x <- .refineParameters(x, sce)
     out <- .createObservers(x, sce, NULL, NULL, NULL, NULL)
     expect_null(out)
@@ -114,8 +114,8 @@ test_that(".create_table_observers returns NULL", {
 test_that(".define_memory_panel_choices returns expected values", {
 
     UNNAMED <- NAMED <- c("ReducedDimPlot1", "ColumnDataPlot1", "ColumnDataPlot1",
-        "FeatureAssayPlot1",  "FeatureAssayPlot1", "RowDataTable1", "RowDataTable1",
-        "SampleAssayPlot1",  "ColumnDataTable1")
+        "RowAssayPlot1",  "RowAssayPlot1", "RowDataTable1", "RowDataTable1",
+        "ColumnAssayPlot1",  "ColumnDataTable1")
 
     names(NAMED) <- c("Reduced dimension plot 1", "Column data plot 1",
         "Column data plot 1",  "Feature assay plot 1", "Feature assay plot 1",

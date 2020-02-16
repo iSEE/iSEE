@@ -5,8 +5,8 @@ test_that(".refineParameters handles NULL x", {
 
     x_classes <- c("ColumnDotPlot", "ColumnTable", "DotPlot", "Panel",
         "RowDotPlot", "RowTable", "Table", "ColumnDataPlot", "ColumnDataTable",
-        "ComplexHeatmapPlot", "FeatureAssayPlot", "ReducedDimPlot", "RowDataPlot",
-        "RowDataTable", "SampleAssayPlot"
+        "ComplexHeatmapPlot", "RowAssayPlot", "ReducedDimPlot", "RowDataPlot",
+        "RowDataTable", "ColumnAssayPlot"
     )
 
     for (x_class in x_classes) {
@@ -43,14 +43,14 @@ test_that(".refineParameters identifies impossible RowDataPlot", {
 
 })
 
-test_that(".refineParameters identifies impossible SampleAssayPlot", {
+test_that(".refineParameters identifies impossible ColumnAssayPlot", {
 
-    x <- SampleAssayPlot()
+    x <- ColumnAssayPlot()
 
     sce0 <- sce[, 0]
     sce0 <- .cacheCommonInfo(x, sce0)
     expect_warning(.refineParameters(x, sce0),
-        "no columns for plotting 'SampleAssayPlot'", fixed=TRUE)
+        "no columns for plotting 'ColumnAssayPlot'", fixed=TRUE)
     out <- .refineParameters(x, sce0)
     expect_null(out)
 
@@ -58,20 +58,20 @@ test_that(".refineParameters identifies impossible SampleAssayPlot", {
     assays(sce0) <- List()
     sce0 <- .cacheCommonInfo(x, sce0)
     expect_warning(.refineParameters(x, sce0),
-        "no named 'assays' for plotting 'SampleAssayPlot'", fixed=TRUE)
+        "no named 'assays' for plotting 'ColumnAssayPlot'", fixed=TRUE)
     out <- .refineParameters(x, sce0)
     expect_null(out)
 
 })
 
-test_that(".refineParameters identifies impossible FeatureAssayPlot", {
+test_that(".refineParameters identifies impossible RowAssayPlot", {
 
-    x <- FeatureAssayPlot()
+    x <- RowAssayPlot()
 
     sce0 <- sce[0, ]
     sce0 <- .cacheCommonInfo(x, sce0)
     expect_warning(.refineParameters(x, sce0),
-        "no rows available for plotting 'FeatureAssayPlot'", fixed=TRUE)
+        "no rows available for plotting 'RowAssayPlot'", fixed=TRUE)
     out <- .refineParameters(x, sce0)
     expect_null(out)
 
@@ -79,7 +79,7 @@ test_that(".refineParameters identifies impossible FeatureAssayPlot", {
     assays(sce0) <- List()
     sce0 <- .cacheCommonInfo(x, sce0)
     expect_warning(.refineParameters(x, sce0),
-        "no valid 'assays' for plotting 'FeatureAssayPlot'", fixed=TRUE)
+        "no valid 'assays' for plotting 'RowAssayPlot'", fixed=TRUE)
     out <- .refineParameters(x, sce0)
     expect_null(out)
 
@@ -142,7 +142,7 @@ test_that(".cacheCommonInfo identifies valid reduced dimension names for Reduced
 test_that(".cacheCommonInfo detects earlier cache", {
 
     x_classes <- c("ColumnDataPlot", "ColumnDataTable", "ComplexHeatmapPlot",
-        "FeatureAssayPlot", "ReducedDimPlot", "RowDataPlot", "RowDataTable", "SampleAssayPlot"
+        "RowAssayPlot", "ReducedDimPlot", "RowDataPlot", "RowDataTable", "ColumnAssayPlot"
     )
 
     for (x_class in x_classes) {
@@ -194,7 +194,7 @@ test_that(".addDotPlotDataSelected handles RowDotPlot", {
 
     plot_env <- new.env()
 
-    x <- SampleAssayPlot()
+    x <- ColumnAssayPlot()
 
     # no row_selected in plot_env
     out <- .addDotPlotDataSelected(x, plot_env)

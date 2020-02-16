@@ -1,6 +1,6 @@
-#' The FeatureAssayPlot panel
+#' The RowAssayPlot panel
 #'
-#' The FeatureAssayPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents the expression of a feature of interest, using the \code{\link{assay}} values of the \linkS4class{SummarizedExperiment}.
+#' The RowAssayPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents the expression of a feature of interest, using the \code{\link{assay}} values of the \linkS4class{SummarizedExperiment}.
 #' It provides slots and methods for specifying which feature to use and what to plot on the x-axis.
 #'
 #' @section Slot overview:
@@ -26,10 +26,10 @@
 #' In addition, this class inherits all slots from its parent \linkS4class{ColumnDotPlot}, \linkS4class{DotPlot} and \linkS4class{Panel} classes.
 #'
 #' @section Constructor:
-#' \code{FeatureAssayPlot(...)} creates an instance of a FeatureAssayPlot class, where any slot and its value can be passed to \code{...} as a named argument.
+#' \code{RowAssayPlot(...)} creates an instance of a RowAssayPlot class, where any slot and its value can be passed to \code{...} as a named argument.
 #'
 #' @section Supported methods:
-#' In the following code snippets, \code{x} is an instance of a \linkS4class{FeatureAssayPlot} class.
+#' In the following code snippets, \code{x} is an instance of a \linkS4class{RowAssayPlot} class.
 #' Refer to the documentation for each method for more details on the remaining arguments.
 #'
 #' For setting up data values:
@@ -77,7 +77,7 @@
 #' # For end-users #
 #' #################
 #'
-#' x <- FeatureAssayPlot()
+#' x <- RowAssayPlot()
 #' x[["XAxis"]]
 #' x[["Assay"]] <- "logcounts"
 #' x[["XAxisColData"]] <- "stuff"
@@ -103,27 +103,27 @@
 #' .refineParameters(x, sce0)
 #'
 #' @docType methods
-#' @aliases FeatureAssayPlot FeatureAssayPlot-class
-#' initialize,FeatureAssayPlot-method
-#' .refineParameters,FeatureAssayPlot-method
-#' .defineDataInterface,FeatureAssayPlot-method
-#' .createObservers,FeatureAssayPlot-method
-#' .singleSelectionSlots,FeatureAssayPlot-method
-#' .fullName,FeatureAssayPlot-method
-#' .panelColor,FeatureAssayPlot-method
-#' .generateDotPlotData,FeatureAssayPlot-method
+#' @aliases RowAssayPlot RowAssayPlot-class
+#' initialize,RowAssayPlot-method
+#' .refineParameters,RowAssayPlot-method
+#' .defineDataInterface,RowAssayPlot-method
+#' .createObservers,RowAssayPlot-method
+#' .singleSelectionSlots,RowAssayPlot-method
+#' .fullName,RowAssayPlot-method
+#' .panelColor,RowAssayPlot-method
+#' .generateDotPlotData,RowAssayPlot-method
 #'
-#' @name FeatureAssayPlot-class
+#' @name RowAssayPlot-class
 NULL
 
 #' @export
-FeatureAssayPlot <- function(...) {
-    new("FeatureAssayPlot", ...)
+RowAssayPlot <- function(...) {
+    new("RowAssayPlot", ...)
 }
 
 #' @export
 #' @importFrom methods callNextMethod
-setMethod("initialize", "FeatureAssayPlot", function(.Object, ...) {
+setMethod("initialize", "RowAssayPlot", function(.Object, ...) {
     args <- list(...)
     args <- .empty_default(args, .featAssayAssay, NA_character_)
     args <- .empty_default(args, .featAssayXAxis, .featAssayXAxisNothingTitle)
@@ -138,7 +138,7 @@ setMethod("initialize", "FeatureAssayPlot", function(.Object, ...) {
 #' @export
 #' @importFrom SingleCellExperiment reducedDim
 #' @importFrom methods callNextMethod
-setMethod(".refineParameters", "FeatureAssayPlot", function(x, se) {
+setMethod(".refineParameters", "RowAssayPlot", function(x, se) {
     x <- callNextMethod()
     if (is.null(x)) {
         return(NULL)
@@ -172,7 +172,7 @@ setMethod(".refineParameters", "FeatureAssayPlot", function(x, se) {
 .featAssayXAxisFeatNameTitle <- "Feature name"
 
 #' @importFrom S4Vectors setValidity2
-setValidity2("FeatureAssayPlot", function(object) {
+setValidity2("RowAssayPlot", function(object) {
     msg <- character(0)
 
     msg <- .allowable_choice_error(msg, object, .featAssayXAxis,
@@ -191,7 +191,7 @@ setValidity2("FeatureAssayPlot", function(object) {
 #' @export
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
-setMethod(".defineDataInterface", "FeatureAssayPlot", function(x, se, select_info) {
+setMethod(".defineDataInterface", "RowAssayPlot", function(x, se, select_info) {
     panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
@@ -231,7 +231,7 @@ setMethod(".defineDataInterface", "FeatureAssayPlot", function(x, se, select_inf
 #' @export
 #' @importFrom shiny observeEvent updateSelectInput
 #' @importFrom methods callNextMethod
-setMethod(".createObservers", "FeatureAssayPlot", function(x, se, input, session, pObjects, rObjects) {
+setMethod(".createObservers", "RowAssayPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
     plot_name <- .getEncodedName(x)
@@ -242,7 +242,7 @@ setMethod(".createObservers", "FeatureAssayPlot", function(x, se, input, session
 })
 
 #' @export
-setMethod(".singleSelectionSlots", "FeatureAssayPlot", function(x) {
+setMethod(".singleSelectionSlots", "RowAssayPlot", function(x) {
     c(callNextMethod(),
         list(
             list(parameter=.featAssayXAxisFeatName, source=.featAssayXAxisRowTable, dimension="row",
@@ -254,13 +254,13 @@ setMethod(".singleSelectionSlots", "FeatureAssayPlot", function(x) {
 })
 
 #' @export
-setMethod(".fullName", "FeatureAssayPlot", function(x) "Feature assay plot")
+setMethod(".fullName", "RowAssayPlot", function(x) "Feature assay plot")
 
 #' @export
-setMethod(".panelColor", "FeatureAssayPlot", function(x) "#7BB854")
+setMethod(".panelColor", "RowAssayPlot", function(x) "#7BB854")
 
 #' @export
-setMethod(".generateDotPlotData", "FeatureAssayPlot", function(x, envir) {
+setMethod(".generateDotPlotData", "RowAssayPlot", function(x, envir) {
     data_cmds <- list()
 
     ## Setting up the y-axis:

@@ -3,8 +3,8 @@ context("heatmap")
 
 memory <- list(
     ComplexHeatmapPlot1=ComplexHeatmapPlot(PanelId=1L),
-    SampleAssayPlot1=SampleAssayPlot(PanelId=1L),
-    FeatureAssayPlot1=FeatureAssayPlot(PanelId=1L)
+    ColumnAssayPlot1=ColumnAssayPlot(PanelId=1L),
+    RowAssayPlot1=RowAssayPlot(PanelId=1L)
 )
 
 pObjects <- mimic_live_app(sce, memory)
@@ -130,23 +130,23 @@ test_that(".generateOutput detects col_selected and row_selected", {
 
     pObjects <- new.env()
 
-    x <- memory$FeatureAssayPlot1
+    x <- memory$RowAssayPlot1
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
     x[[iSEE:::.brushData]] <- list(
         xmin = 0.7, xmax = 1.3, ymin = 1000, ymax = 2000,
         mapping = list(x = "X", y = "Y"),
         log = list(x = NULL, y = NULL), direction = "xy",
-        brushId = "FeatureAssayPlot1_Brush",
-        outputId = "FeatureAssayPlot1")
-    memory$FeatureAssayPlot1 <- x
-    out <- .generateOutput(memory$FeatureAssayPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
-    pObjects$contents[["FeatureAssayPlot1"]] <- out$contents
+        brushId = "RowAssayPlot1_Brush",
+        outputId = "RowAssayPlot1")
+    memory$RowAssayPlot1 <- x
+    out <- .generateOutput(memory$RowAssayPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
+    pObjects$contents[["RowAssayPlot1"]] <- out$contents
 
     x <- ComplexHeatmapPlot()
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
-    x[[iSEE:::.selectColSource]] <- "FeatureAssayPlot1"
+    x[[iSEE:::.selectColSource]] <- "RowAssayPlot1"
     x[[iSEE:::.selectEffect]] <- iSEE:::.selectRestrictTitle
     x[[iSEE:::.heatMapCustomFeatNames]] <- TRUE
     x[[iSEE:::.heatMapFeatNameText]] <- paste0(head(rownames(sce), 2), collapse = "\n")
@@ -163,23 +163,23 @@ test_that(".generateOutput handles row_selected when not using custom feature na
 
     pObjects <- new.env()
 
-    x <- memory$SampleAssayPlot1
+    x <- memory$ColumnAssayPlot1
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
     x[[iSEE:::.brushData]] <- list(
         xmin = 0.7, xmax = 1.3, ymin = 25000, ymax = 50000,
         mapping = list(x = "X", y = "Y"),
         log = list(x = NULL, y = NULL), direction = "xy",
-        brushId = "SampleAssayPlot1_Brush",
-        outputId = "SampleAssayPlot1")
-    memory$SampleAssayPlot1 <- x
-    out <- .generateOutput(memory$SampleAssayPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
-    pObjects$contents[["SampleAssayPlot1"]] <- out$contents
+        brushId = "ColumnAssayPlot1_Brush",
+        outputId = "ColumnAssayPlot1")
+    memory$ColumnAssayPlot1 <- x
+    out <- .generateOutput(memory$ColumnAssayPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
+    pObjects$contents[["ColumnAssayPlot1"]] <- out$contents
 
     x <- ComplexHeatmapPlot()
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
-    x[[iSEE:::.selectRowSource]] <- "SampleAssayPlot1"
+    x[[iSEE:::.selectRowSource]] <- "ColumnAssayPlot1"
     x[[iSEE:::.heatMapCustomFeatNames]] <- FALSE
     memory$ComplexHeatmapPlot1 <- x
 

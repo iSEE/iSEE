@@ -66,7 +66,7 @@ redDimPlotDefaults <- function(se, number) {
 #' @export
 #' @rdname defaults
 featAssayPlotDefaults <- function(se, number) {
-    .Deprecated(new="FeatureAssayPlot")
+    .Deprecated(new="RowAssayPlot")
 
     # Ensure that we define all the fields with the right types, using a transient 1-row DF
     # number=0 guarantees that se is not touched to define dummy values of the right type
@@ -201,7 +201,7 @@ rowDataPlotDefaults <- function(se, number) {
 #' @export
 #' @rdname defaults
 sampAssayPlotDefaults <- function(se, number) {
-    .Deprecated(new="SampleAssayPlot")
+    .Deprecated(new="ColumnAssayPlot")
 
     # Ensure that we define all the fields with the right types, using a transient 1-row DF
     # number=0 guarantees that se is not touched to define dummy values of the right type
@@ -494,7 +494,7 @@ heatMapPlotDefaults <- function(se, number) {
     if (is.null(featAssayArgs)) {
         suppressWarnings(featAssayArgs <- featAssayPlotDefaults(se, 5))
     }
-    collected <- c(collected, .translate_to_class(featAssayArgs, FeatureAssayPlot, se, FALSE))
+    collected <- c(collected, .translate_to_class(featAssayArgs, RowAssayPlot, se, FALSE))
 
     if (is.null(rowStatArgs)) {
         suppressWarnings(rowStatArgs <- rowStatTableDefaults(se, 5))
@@ -509,7 +509,7 @@ heatMapPlotDefaults <- function(se, number) {
     if (is.null(sampAssayArgs)) {
         suppressWarnings(sampAssayArgs <- sampAssayPlotDefaults(se, 5))
     }
-    collected <- c(collected, .translate_to_class(sampAssayArgs, SampleAssayPlot, se, TRUE))
+    collected <- c(collected, .translate_to_class(sampAssayArgs, ColumnAssayPlot, se, TRUE))
 
     if (is.null(colStatArgs)) {
         suppressWarnings(colStatArgs <- colStatTableDefaults(se, 5))
@@ -636,12 +636,12 @@ heatMapPlotDefaults <- function(se, number) {
     ref <- sub(" [0-9]+$", "", old_name)
     converter <- c(
         ReducedDimPlot="Reduced dimension plot",
-        FeatureAssayPlot="Feature assay plot",
+        RowAssayPlot="Feature assay plot",
         ColumnDataTable="Column statistics table",
         ColumnDataPlot="Column data plot",
         RowDataPlot="Row data plot",
         RowDataTable="Row statistics table",
-        SampleAssayPlot="Sample assay plot",
+        ColumnAssayPlot="Sample assay plot",
         ComplexHeatmapPlot="Heat map")
 
     if (ref %in% converter) {

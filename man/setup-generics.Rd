@@ -46,7 +46,7 @@ We generally recommend specializing \code{\link{initialize}} to fill any yet-to-
 Of course, any slots that are not \code{se}-dependent should be set at construction and checked by the validity method.
 
 It is also possible for this generic to return \code{NULL}, which is used as an indicator that \code{se} does not contain information to meaningfully show any instance of the class of \code{x} in the \pkg{iSEE} app.
-For example, the method for \linkS4class{ReducedDimensionPlot} will return \code{NULL} if \code{se} is not a \linkS4class{SingleCellExperiment} containing some dimensionality reduction results.
+For example, the method for \linkS4class{ReducedDimPlot} will return \code{NULL} if \code{se} is not a \linkS4class{SingleCellExperiment} containing some dimensionality reduction results.
 }
 
 \author{

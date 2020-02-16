@@ -102,10 +102,10 @@ test_that("lassoPoints ignores points within lasso in other facets", {
 
 test_that (".multiSelectionHasActive detects a closed lasso", {
 
-    redDimArgs <- ReducedDimensionPlot(BrushData=LASSO_CLOSED)
+    redDimArgs <- ReducedDimPlot(BrushData=LASSO_CLOSED)
     expect_true(iSEE:::.multiSelectionHasActive(redDimArgs))
 
-    redDimArgs <- ReducedDimensionPlot(BrushData=LASSO_OPEN)
+    redDimArgs <- ReducedDimPlot(BrushData=LASSO_OPEN)
     expect_false(iSEE:::.multiSelectionHasActive(redDimArgs))
 
 })

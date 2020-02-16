@@ -3,9 +3,9 @@
 
 # Setting up a chain of plots.
 memory <- list(
-    ReducedDimensionPlot(ColorByRowTable="RowDataTable1", ColorBy="Feature name"),
-    ColumnDataPlot(SelectColSource="ReducedDimensionPlot1"),
-    ColumnDataPlot(SelectColSource="ReducedDimensionPlot1"),
+    ReducedDimPlot(ColorByRowTable="RowDataTable1", ColorBy="Feature name"),
+    ColumnDataPlot(SelectColSource="ReducedDimPlot1"),
+    ColumnDataPlot(SelectColSource="ReducedDimPlot1"),
     RowAssayPlot(SelectColSource="ColumnDataPlot1"),
     RowAssayPlot(SelectColSource="RowAssayPlot1", YAxisRowTable="RowDataTable1"),
     RowDataPlot(SelectRowSource="ColumnAssayPlot1"),
@@ -16,7 +16,7 @@ memory <- list(
 pObjects <- mimic_live_app(sce, memory)
 
 # Set up the selected data (in redDim1)
-rdp <- pObjects$memory$ReducedDimensionPlot1
+rdp <- pObjects$memory$ReducedDimPlot1
 rd <- reducedDim(sce, rdp[[iSEE:::.redDimType]])
 x_10 <- head(rd[, rdp[[iSEE:::.redDimXAxis]]], 10)
 y_10 <- head(rd[, rdp[[iSEE:::.redDimYAxis]]], 10)
@@ -35,15 +35,15 @@ test_that(".process_selectby_choice works with a column-based brush", {
     expect_false(exists('col_selected', envir=plot_env))
     expect_identical(length(cmds), 0L)
 
-    pObjects$memory$ReducedDimensionPlot1[[iSEE:::.brushData]] <- DUMMY_BRUSH
+    pObjects$memory$ReducedDimPlot1[[iSEE:::.brushData]] <- DUMMY_BRUSH
     plot_env <- new.env()
     cmds <- .processMultiSelections(pObjects$memory$ColumnDataPlot1, pObjects$memory, pObjects$contents, plot_env)
 
     expect_true(exists('col_selected', envir=plot_env))
-    expect_true(any(grepl("ReducedDimensionPlot1", unlist(cmds))))
+    expect_true(any(grepl("ReducedDimPlot1", unlist(cmds))))
     expect_true(any(grepl("shiny::brushedPoints", unlist(cmds))))
 
-    pObjects$memory$ReducedDimensionPlot1[[iSEE:::.brushData]] <- list()
+    pObjects$memory$ReducedDimPlot1[[iSEE:::.brushData]] <- list()
 })
 
 test_that(".process_selectby_choice works with a row-based brush", {
@@ -85,20 +85,20 @@ OPEN_LASSO$closed <- FALSE
 
 test_that(".process_selectby_choice works with a column-based lasso", {
     plot_env <- new.env()
-    pObjects$memory$ReducedDimensionPlot1[[iSEE:::.brushData]] <- OPEN_LASSO
+    pObjects$memory$ReducedDimPlot1[[iSEE:::.brushData]] <- OPEN_LASSO
     cmds <- .processMultiSelections(pObjects$memory$ColumnDataPlot1, pObjects$memory, pObjects$contents, plot_env)
     expect_false(exists('col_selected', envir=plot_env))
     expect_identical(length(cmds), 0L)
 
-    pObjects$memory$ReducedDimensionPlot1[[iSEE:::.brushData]] <- DUMMY_LASSO
+    pObjects$memory$ReducedDimPlot1[[iSEE:::.brushData]] <- DUMMY_LASSO
     plot_env <- new.env()
     cmds <- .processMultiSelections(pObjects$memory$ColumnDataPlot1, pObjects$memory, pObjects$contents, plot_env)
 
     expect_true(exists('col_selected', envir=plot_env))
-    expect_true(any(grepl("ReducedDimensionPlot1", unlist(cmds))))
+    expect_true(any(grepl("ReducedDimPlot1", unlist(cmds))))
     expect_true(any(grepl("iSEE::lassoPoints", unlist(cmds))))
 
-    pObjects$memory$ReducedDimensionPlot1[[iSEE:::.brushData]] <- list()
+    pObjects$memory$ReducedDimPlot1[[iSEE:::.brushData]] <- list()
 })
 
 test_that(".process_selectby_choice works with a row-based lasso", {
@@ -122,7 +122,7 @@ test_that(".process_selectby_choice works with a row-based lasso", {
 ###############################################
 
 test_that(".process_selectby_choice works with saved column selections", {
-    pObjects$memory$ReducedDimensionPlot1[[iSEE:::.multiSelectHistory]] <- list(DUMMY_BRUSH)
+    pObjects$memory$ReducedDimPlot1[[iSEE:::.multiSelectHistory]] <- list(DUMMY_BRUSH)
     cdp <- pObjects$memory$ColumnDataPlot1
 
     # No response when still looking for the active brush.
@@ -137,7 +137,7 @@ test_that(".process_selectby_choice works with saved column selections", {
     cmds <- .processMultiSelections(cdp, pObjects$memory, pObjects$contents, plot_env)
 
     expect_true(exists('col_selected', envir=plot_env))
-    expect_true(any(grepl("ReducedDimensionPlot1", unlist(cmds))))
+    expect_true(any(grepl("ReducedDimPlot1", unlist(cmds))))
     expect_true(any(grepl("shiny::brushedPoints", unlist(cmds))))
 
     # No response after asking for save... until we specify which saved element we want.
@@ -152,10 +152,10 @@ test_that(".process_selectby_choice works with saved column selections", {
     cmds <- .processMultiSelections(cdp, pObjects$memory, pObjects$contents, plot_env)
 
     expect_true(exists('col_selected', envir=plot_env))
-    expect_true(any(grepl("ReducedDimensionPlot1", unlist(cmds))))
+    expect_true(any(grepl("ReducedDimPlot1", unlist(cmds))))
     expect_true(any(grepl("shiny::brushedPoints", unlist(cmds))))
 
-    pObjects$memory$ReducedDimensionPlot1[[iSEE:::.brushData]] <- list()
+    pObjects$memory$ReducedDimPlot1[[iSEE:::.brushData]] <- list()
 })
 
 test_that(".process_selectby_choice works with saved row selections", {
@@ -197,7 +197,7 @@ test_that(".process_selectby_choice works with saved row selections", {
 
 test_that(".any_saved_selection returns the appropriate value ", {
 
-  x <- ReducedDimensionPlot()
+  x <- ReducedDimPlot()
 
   # Return whether there is at least one saved selection
   out <- .any_saved_selection(x, count = FALSE)

@@ -101,7 +101,7 @@ test_that(".translate_to_class handles NA values for faceting metadata", {
     redDimArgs[[iSEE:::.facetRowsByColData]] <- NA
     redDimArgs[[iSEE:::.facetColumnsByColData]] <- NA
 
-    .translate_to_class(redDimArgs, ReducedDimensionPlot, sce, is_row = FALSE)
+    .translate_to_class(redDimArgs, ReducedDimPlot, sce, is_row = FALSE)
 
 })
 
@@ -109,7 +109,7 @@ test_that(".translate_to_class properly converts panel names", {
 
     redDimArgs$SelectByPlot <- "Column data plot 1"
 
-    out <- .translate_to_class(redDimArgs, ReducedDimensionPlot, sce, is_row = FALSE)
+    out <- .translate_to_class(redDimArgs, ReducedDimPlot, sce, is_row = FALSE)
     expect_identical(out[[1]][["SelectColSource"]], "ColumnDataPlot1")
 
 })

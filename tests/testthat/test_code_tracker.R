@@ -5,9 +5,9 @@ context("codeTracker")
 
 # Setting up a chain of plots.
 memory <- list(
-    ReducedDimPlot(ColorByRowTable="RowDataTable1", ColorBy="Feature name"),
-    ColumnDataPlot(SelectColSource="ReducedDimPlot1"),
-    ColumnDataPlot(SelectColSource="ReducedDimPlot1"),
+    ReducedDimensionPlot(ColorByRowTable="RowDataTable1", ColorBy="Feature name"),
+    ColumnDataPlot(SelectColSource="ReducedDimensionPlot1"),
+    ColumnDataPlot(SelectColSource="ReducedDimensionPlot1"),
     RowAssayPlot(SelectColSource="ColumnDataPlot1"),
     RowAssayPlot(SelectColSource="RowAssayPlot1", YAxisRowTable="RowDataTable1"),
     RowDataTable()
@@ -31,9 +31,9 @@ test_that("code trackers run correctly for plots", {
     expect_true(any(grepl("RowAssayPlot1.*this is a mock", out)))
 
     # Adding a brush to redDimPlot, which also gives us the feature assay plot above.
-    pObjects$memory$ReducedDimPlot1[[iSEE:::.brushData]] <- list("this is a mock brush")
+    pObjects$memory$ReducedDimensionPlot1[[iSEE:::.brushData]] <- list("this is a mock brush")
     out <- iSEE:::.track_it_all(pObjects, se_name="sce", ecm_name="ecm")
-    expect_true(any(grepl("ReducedDimPlot1.*this is a mock", out)))
+    expect_true(any(grepl("ReducedDimensionPlot1.*this is a mock", out)))
     expect_true(any(grepl("RowAssayPlot1.*this is a mock", out)))
 })
 
@@ -47,13 +47,13 @@ test_that("code trackers can deparse a lasso", {
         mapping=list(x="X", y="Y"),
         coord=matrix(c(1, 2, 2, 1, 1, 1, 1, 2, 2, 1), ncol=2))
 
-    memory <- list(ReducedDimPlot(BrushData=LASSO_CLOSED))
+    memory <- list(ReducedDimensionPlot(BrushData=LASSO_CLOSED))
 
     # Mimicking a running instance of the app.
     pObjects <- mimic_live_app(sce, memory)
 
     out <- iSEE:::.track_it_all(pObjects, se_name="sce", ecm_name="ecm")
-    expect_true(any(grepl("all_active[['ReducedDimPlot1']] <-", out, fixed=TRUE)))
+    expect_true(any(grepl("all_active[['ReducedDimensionPlot1']] <-", out, fixed=TRUE)))
 
     # Caompare with .deparse_for_viewing directly
     out2 <- iSEE:::.deparse_for_viewing(LASSO_CLOSED)
@@ -69,13 +69,13 @@ test_that("code trackers can deparse a selection history", {
         mapping=list(x="X", y="Y"),
         coord=matrix(c(1, 2, 2, 1, 1, 1, 1, 2, 2, 1), ncol=2))
 
-    memory <- list(ReducedDimPlot(MultiSelectHistory=list(LASSO_CLOSED)))
+    memory <- list(ReducedDimensionPlot(MultiSelectHistory=list(LASSO_CLOSED)))
 
     # Mimicking a running instance of the app.
     pObjects <- mimic_live_app(sce, memory)
 
     out <- iSEE:::.track_it_all(pObjects, se_name="sce", ecm_name="ecm")
-    expect_true(any(grepl("all_saved[['ReducedDimPlot1']] <-", out, fixed=TRUE)))
+    expect_true(any(grepl("all_saved[['ReducedDimensionPlot1']] <-", out, fixed=TRUE)))
 
     # Compare with .deparse_for_viewing directly
     out2 <- iSEE:::.deparse_for_viewing(LASSO_CLOSED)

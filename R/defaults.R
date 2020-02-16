@@ -43,7 +43,7 @@ NULL
 #' @export
 #' @rdname defaults
 redDimPlotDefaults <- function(se, number) {
-    .Deprecated(new="ReducedDimPlot")
+    .Deprecated(new="ReducedDimensionPlot")
 
     # Ensure that we define all the fields with the right types, using a transient 1-row DF
     # number=0 guarantees that se is not touched to define dummy values of the right type
@@ -484,7 +484,7 @@ heatMapPlotDefaults <- function(se, number) {
     if (is.null(redDimArgs)) {
         suppressWarnings(redDimArgs <- redDimPlotDefaults(se, 5))
     }
-    collected <- c(collected, .translate_to_class(redDimArgs, ReducedDimPlot, se, FALSE))
+    collected <- c(collected, .translate_to_class(redDimArgs, ReducedDimensionPlot, se, FALSE))
 
     if (is.null(colDataArgs)) {
         suppressWarnings(colDataArgs <- colDataPlotDefaults(se, 5))
@@ -635,7 +635,7 @@ heatMapPlotDefaults <- function(se, number) {
 .convert_old_name_to_new <- function(old_name) {
     ref <- sub(" [0-9]+$", "", old_name)
     converter <- c(
-        ReducedDimPlot="Reduced dimension plot",
+        ReducedDimensionPlot="Reduced dimension plot",
         RowAssayPlot="Feature assay plot",
         ColumnDataTable="Column statistics table",
         ColumnDataPlot="Column data plot",

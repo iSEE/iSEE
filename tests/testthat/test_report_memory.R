@@ -27,11 +27,11 @@ memory <- list(
     ),
     ColumnDataPlot(),
     ColumnDataPlot(),
-    RowAssayPlot(),
-    RowAssayPlot(),
-    RowAssayPlot(),
+    FeatureAssayPlot(),
+    FeatureAssayPlot(),
+    FeatureAssayPlot(),
     RowDataTable(),
-    ColumnAssayPlot(),
+    SampleAssayPlot(),
     RowDataPlot(),
     RowDataPlot()
 )

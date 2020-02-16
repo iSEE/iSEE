@@ -6,11 +6,11 @@ context("plotting")
 memory <- list(
     ReducedDimPlot(),
     ColumnDataPlot(),
-    RowAssayPlot(),
+    FeatureAssayPlot(),
     RowDataPlot(),
-    ColumnAssayPlot(),
-    ColumnAssayPlot(),
-    ColumnAssayPlot()
+    SampleAssayPlot(),
+    SampleAssayPlot(),
+    SampleAssayPlot()
 )
 
 pObjects <- mimic_live_app(sce, memory)
@@ -324,7 +324,7 @@ test_that(".make_rowDataPlot/.square_plot produce a valid xy with color",{
 # .make_featAssayPlot/.scatter_plot ----
 
 test_that(".make_featAssayPlot/.violin_plot produce a valid list",{
-    fdp <- pObjects$memory$RowAssayPlot1
+    fdp <- pObjects$memory$FeatureAssayPlot1
     p.out <- .generateOutput(fdp, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)
 
@@ -345,7 +345,7 @@ test_that(".make_featAssayPlot/.violin_plot produce a valid list",{
 })
 
 test_that(".make_featAssayPlot/.violin_plot produce a valid xy with color", {
-    fdp <- pObjects$memory$RowAssayPlot1
+    fdp <- pObjects$memory$FeatureAssayPlot1
     fdp[[iSEE:::.colorByField]] <- iSEE:::.colorByColDataTitle
 
     p.out <- .generateOutput(fdp, sce,
@@ -355,7 +355,7 @@ test_that(".make_featAssayPlot/.violin_plot produce a valid xy with color", {
 })
 
 test_that(".make_featAssayPlot works for XAxis set to Column data", {
-    fdp <- pObjects$memory$RowAssayPlot1
+    fdp <- pObjects$memory$FeatureAssayPlot1
     fdp[[iSEE:::.featAssayXAxis]] <- iSEE:::.featAssayXAxisColDataTitle
     fdp[[iSEE:::.featAssayXAxisColData]] <- "dissection_s"
 
@@ -368,7 +368,7 @@ test_that(".make_featAssayPlot works for XAxis set to Column data", {
 test_that(".make_featAssayPlot works for XAxis set to a character feature name", {
     selected_gene <- "0610009B22Rik"
 
-    fdp <- pObjects$memory$RowAssayPlot1
+    fdp <- pObjects$memory$FeatureAssayPlot1
     fdp[[iSEE:::.featAssayXAxis]] <- iSEE:::.featAssayXAxisFeatNameTitle
     fdp[[iSEE:::.featAssayXAxisFeatName]] <- selected_gene
 
@@ -381,7 +381,7 @@ test_that(".make_featAssayPlot works for XAxis set to a character feature name",
 test_that(".make_featAssayPlot works for groupable colour covariate", {
     selected_coldata <- "dissection_s"
 
-    fdp <- pObjects$memory$RowAssayPlot1
+    fdp <- pObjects$memory$FeatureAssayPlot1
     fdp[[iSEE:::.colorByField]] <- iSEE:::.colorByColDataTitle
     fdp[[iSEE:::.colorByColData]] <- selected_coldata
 
@@ -396,7 +396,7 @@ test_that(".make_featAssayPlot works for groupable colour covariate", {
 # .make_sampAssayPlot ----
 
 test_that(".make_sampAssayPlot works with X covariate set to None", {
-    sap <- pObjects$memory$ColumnAssayPlot1
+    sap <- pObjects$memory$SampleAssayPlot1
     p.out <- .generateOutput(sap, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)
 
@@ -420,7 +420,7 @@ test_that(".make_sampAssayPlot works with X covariate set to None", {
 test_that(".make_sampAssayPlot works with X variable set to Row data", {
     selected_rowdata <- "num_cells"
 
-    sap <- pObjects$memory$ColumnAssayPlot1
+    sap <- pObjects$memory$SampleAssayPlot1
     sap[[iSEE:::.rowDataXAxis]] <- iSEE:::.sampAssayXAxisRowDataTitle
     sap[[iSEE:::.rowDataXAxisRowData]] <- selected_rowdata
 
@@ -433,7 +433,7 @@ test_that(".make_sampAssayPlot works with X variable set to Row data", {
 test_that(".make_sampAssayPlot works with X variable set to Sample name", {
     selected_sample <- colnames(sce)[2]
 
-    sap <- pObjects$memory$ColumnAssayPlot1
+    sap <- pObjects$memory$SampleAssayPlot1
     sap[[iSEE:::.rowDataXAxis]] <- iSEE:::.sampAssayXAxisSampNameTitle
     sap[[iSEE:::.sampAssayXAxisSampName]] <- selected_sample
 
@@ -791,7 +791,7 @@ test_that(".coerce_type handles various inputs correctly", {
 test_that(".create_points handles selection effects", {
     all_memory <- pObjects$memory
     rdp <- all_memory$ReducedDimPlot1
-    fap <- all_memory$RowAssayPlot1
+    fap <- all_memory$FeatureAssayPlot1
     fap[[iSEE:::.selectColSource]] <- .getEncodedName(rdp)
 
     rd <- reducedDim(sce, rdp[[iSEE:::.redDimType]])

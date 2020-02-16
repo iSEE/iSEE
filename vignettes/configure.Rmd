@@ -71,8 +71,8 @@ Note that each panel is set to occupy half the width of the application window, 
 ```{r init}
 library(iSEE)
 app <- iSEE(sce, initial=list(
-    RowAssayPlot(PanelWidth=6L),
-    RowAssayPlot(PanelWidth=6L)
+    FeatureAssayPlot(PanelWidth=6L),
+    FeatureAssayPlot(PanelWidth=6L)
 ))
 ```
 
@@ -81,8 +81,8 @@ In this case, we want to modify the `YAxis` and `YAxisFeatName` defaults for the
 
 ```{r fexArg}
 app <- iSEE(sce, initial=list(
-    RowAssayPlot(YAxisFeatName="0610009L18Rik"),
-    RowAssayPlot(YAxisFeatName="0610009B22Rik")
+    FeatureAssayPlot(YAxisFeatName="0610009L18Rik"),
+    FeatureAssayPlot(YAxisFeatName="0610009B22Rik")
 )) 
 ```
 
@@ -130,7 +130,7 @@ For instance, the `XAxis` column of _feature assay plot_ arguments can have up t
 Each of these scenarios is demonstrated below:
 
 ```{r xaxis}
-fex <- RowAssayPlot(DataBoxOpen=TRUE, PanelWidth=6L)
+fex <- FeatureAssayPlot(DataBoxOpen=TRUE, PanelWidth=6L)
 
 # Example 1
 fex1 <- fex
@@ -180,8 +180,8 @@ For axes linked to an assay, such as the Y-axis of _feature assay plot_ panels, 
 
 ```{r featAssayPlotDefaults-assay}
 app <- iSEE(sce, initial=list(
-    RowAssayPlot(DataBoxOpen=TRUE, Assay="logcounts", PanelWidth=6L),
-    RowAssayPlot(DataBoxOpen=TRUE, Assay="tophat_counts", PanelWidth=6L)
+    FeatureAssayPlot(DataBoxOpen=TRUE, Assay="logcounts", PanelWidth=6L),
+    FeatureAssayPlot(DataBoxOpen=TRUE, Assay="tophat_counts", PanelWidth=6L)
 ))
 ```
 
@@ -357,10 +357,10 @@ Users should refer to the following help pages for the full list of values that 
 
 - `?ReducedDimPlot`
 - `?ColumnDataPlot`
-- `?RowAssayPlot`
+- `?FeatureAssayPlot`
 - `?RowDataPlot`
 - `?RowDataTable`
-- `?ColumnAssayPlot`
+- `?SampleAssayPlot`
 - `?HeatMapPlot`
 
 Some fairly complex configurations for a variety of data sets can be found at https://github.com/LTLA/iSEE2018.

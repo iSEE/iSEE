@@ -7,12 +7,12 @@ memory <- list(
     ReducedDimPlot(),
     ColumnDataPlot(SelectColSource="ReducedDimPlot1", ColorBy="Feature name", ColorByRowTable="RowDataTable1"),
     ColumnDataPlot(SelectColSource="ReducedDimPlot1"),
-    RowAssayPlot(SelectColSource="ColumnDataPlot1"),
-    RowAssayPlot(SelectColSource="RowAssayPlot1", XAxis="Feature name",
+    FeatureAssayPlot(SelectColSource="ColumnDataPlot1"),
+    FeatureAssayPlot(SelectColSource="FeatureAssayPlot1", XAxis="Feature name",
         YAxisRowTable="RowDataTable1", XAxisRowTable="RowDataTable2"),
     RowDataTable(),
     RowDataTable(),
-    ColumnAssayPlot(XAxis="Sample name", XAxisColTable="ColumnDataTable1"),
+    SampleAssayPlot(XAxis="Sample name", XAxisColTable="ColumnDataTable1"),
     ColumnDataTable()
 )
 
@@ -38,10 +38,10 @@ test_that(".setup_initial_state works correctly", {
     expect_identical(names(memory2), unname(vapply(memory2, .getEncodedName, "")))
 
     # Actually runs the refinement.
-    expect_identical(memory2[["RowAssayPlot1"]][["YAxisFeatName"]], rownames(sce)[1])
+    expect_identical(memory2[["FeatureAssayPlot1"]][["YAxisFeatName"]], rownames(sce)[1])
     expect_identical(memory2[["ReducedDimPlot1"]][["Type"]], "PCA")
     expect_identical(memory2[["ColumnDataPlot1"]][["YAxis"]], colnames(colData(sce))[1])
-    expect_identical(memory2[["ColumnAssayPlot1"]][["YAxisSampName"]], colnames(sce)[1])
+    expect_identical(memory2[["SampleAssayPlot1"]][["YAxisSampName"]], colnames(sce)[1])
 
     # Counter makes sense.
     tab <- table(vapply(memory2, iSEE:::.encodedName, ""))
@@ -51,9 +51,9 @@ test_that(".setup_initial_state works correctly", {
     # Counter and IDs respect user-specified IDs.
     memory[[5]][["PanelId"]] <- 100L
     init_out <- iSEE:::.setup_initial_state(sce, memory)
-    expect_identical(init_out$counter[["RowAssayPlot"]], 101L)
-    expect_identical("RowAssayPlot100", names(init_out$memory)[5])
-    expect_identical("RowAssayPlot101", names(init_out$memory)[4])
+    expect_identical(init_out$counter[["FeatureAssayPlot"]], 101L)
+    expect_identical("FeatureAssayPlot100", names(init_out$memory)[5])
+    expect_identical("FeatureAssayPlot101", names(init_out$memory)[4])
 
     # Refinement tosses out panels that can't exist.
     sce2 <- sce

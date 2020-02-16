@@ -699,7 +699,7 @@ setGeneric(".multiSelectionAvailable", function(x, contents) standardGeneric(".m
 #' i.e., changing this value will cause all existing selections to be invalidated
 #' and will trigger re-rendering of the children receiving multiple selections.
 #' This is \code{FALSE} for purely aesthetic parameters (e.g., coloring) and \code{TRUE} for data-related parameters
-#' (e.g., \code{XAxisFeatName} in \linkS4class{FeatureAssayPlot}).
+#' (e.g., \code{XAxisFeatName} in \linkS4class{RowAssayPlot}).
 #' }
 #'
 #' @author Aaron Lun

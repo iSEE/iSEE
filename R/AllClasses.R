@@ -303,7 +303,7 @@ collated[.featAssayYAxisRowTable] <- "character"
 collated[.featAssayYAxisFeatName] <- "character"
 
 #' @export
-setClass("FeatureAssayPlot", contains="ColumnDotPlot", slots=collated)
+setClass("RowAssayPlot", contains="ColumnDotPlot", slots=collated)
 
 ####################################################
 
@@ -353,7 +353,7 @@ collated[.sampAssayYAxisColTable] <- "character"
 collated[.sampAssayYAxisSampName] <- "character"
 
 #' @export
-setClass("SampleAssayPlot", contains="RowDotPlot", slots=collated)
+setClass("ColumnAssayPlot", contains="RowDotPlot", slots=collated)
 
 ####################################################
 

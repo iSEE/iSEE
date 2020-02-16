@@ -11,8 +11,8 @@ test_that(".add_facet_UI_elements produces a valid tag list for column data plot
     expect_s3_class(out, "shiny.tag.list")
 })
 
-memory <- list(ReducedDimPlot(), RowDataTable(), FeatureAssayPlot(),
-    ColumnDataPlot(), RowDataPlot(), SampleAssayPlot(), ColumnDataTable(),
+memory <- list(ReducedDimPlot(), RowDataTable(), RowAssayPlot(),
+    ColumnDataPlot(), RowDataPlot(), ColumnAssayPlot(), ColumnDataTable(),
     ComplexHeatmapPlot())
 
 pObjects <- mimic_live_app(sce, memory)

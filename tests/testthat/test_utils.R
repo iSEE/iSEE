@@ -15,7 +15,7 @@ test_that(".getPanelColor returns the expected colors", {
     out <- .getPanelColor(x)
     expect_identical(out, "#440154FF")
 
-    x <- FeatureAssayPlot()
+    x <- RowAssayPlot()
     out <- .getPanelColor(x)
     expect_identical(out, "#7BB854")
 
@@ -31,7 +31,7 @@ test_that(".getPanelColor returns the expected colors", {
     out <- .getPanelColor(x)
     expect_identical(out, "#E47E04")
 
-    x <- SampleAssayPlot()
+    x <- ColumnAssayPlot()
     out <- .getPanelColor(x)
     expect_identical(out, "#07A274")
 

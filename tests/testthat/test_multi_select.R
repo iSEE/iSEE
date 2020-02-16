@@ -6,10 +6,10 @@ memory <- list(
     ReducedDimPlot(ColorByRowTable="RowDataTable1", ColorBy="Feature name"),
     ColumnDataPlot(SelectColSource="ReducedDimPlot1"),
     ColumnDataPlot(SelectColSource="ReducedDimPlot1"),
-    FeatureAssayPlot(SelectColSource="ColumnDataPlot1"),
-    FeatureAssayPlot(SelectColSource="FeatureAssayPlot1", YAxisRowTable="RowDataTable1"),
-    RowDataPlot(SelectRowSource="SampleAssayPlot1"),
-    SampleAssayPlot(),
+    RowAssayPlot(SelectColSource="ColumnDataPlot1"),
+    RowAssayPlot(SelectColSource="RowAssayPlot1", YAxisRowTable="RowDataTable1"),
+    RowDataPlot(SelectRowSource="ColumnAssayPlot1"),
+    ColumnAssayPlot(),
     RowDataTable()
 )
 
@@ -52,15 +52,15 @@ test_that(".process_selectby_choice works with a row-based brush", {
     expect_false(exists('row_selected', envir=plot_env))
     expect_identical(length(cmds), 0L)
 
-    pObjects$memory$SampleAssayPlot1[[iSEE:::.brushData]] <- DUMMY_BRUSH
+    pObjects$memory$ColumnAssayPlot1[[iSEE:::.brushData]] <- DUMMY_BRUSH
     plot_env <- new.env()
     cmds <- .processMultiSelections(pObjects$memory$RowDataPlot1, pObjects$memory, pObjects$contents, plot_env)
 
     expect_true(exists('row_selected', envir=plot_env))
-    expect_true(any(grepl("SampleAssayPlot1", unlist(cmds))))
+    expect_true(any(grepl("ColumnAssayPlot1", unlist(cmds))))
     expect_true(any(grepl("shiny::brushedPoints", unlist(cmds))))
 
-    pObjects$memory$SampleAssayPlot1[[iSEE:::.brushData]] <- list()
+    pObjects$memory$ColumnAssayPlot1[[iSEE:::.brushData]] <- list()
 })
 
 ###############################################
@@ -103,20 +103,20 @@ test_that(".process_selectby_choice works with a column-based lasso", {
 
 test_that(".process_selectby_choice works with a row-based lasso", {
     plot_env <- new.env()
-    pObjects$memory$SampleAssayPlot1[[iSEE:::.brushData]] <- OPEN_LASSO
+    pObjects$memory$ColumnAssayPlot1[[iSEE:::.brushData]] <- OPEN_LASSO
     cmds <- .processMultiSelections(pObjects$memory$RowDataPlot1, pObjects$memory, pObjects$contents, plot_env)
     expect_false(exists('row_selected', envir=plot_env))
     expect_identical(length(cmds), 0L)
 
-    pObjects$memory$SampleAssayPlot1[[iSEE:::.brushData]] <- DUMMY_LASSO
+    pObjects$memory$ColumnAssayPlot1[[iSEE:::.brushData]] <- DUMMY_LASSO
     plot_env <- new.env()
     cmds <- .processMultiSelections(pObjects$memory$RowDataPlot1, pObjects$memory, pObjects$contents, plot_env)
 
     expect_true(exists('row_selected', envir=plot_env))
-    expect_true(any(grepl("SampleAssayPlot1", unlist(cmds))))
+    expect_true(any(grepl("ColumnAssayPlot1", unlist(cmds))))
     expect_true(any(grepl("iSEE::lassoPoints", unlist(cmds))))
 
-    pObjects$memory$SampleAssayPlot1[[iSEE:::.brushData]] <- list()
+    pObjects$memory$ColumnAssayPlot1[[iSEE:::.brushData]] <- list()
 })
 
 ###############################################
@@ -159,7 +159,7 @@ test_that(".process_selectby_choice works with saved column selections", {
 })
 
 test_that(".process_selectby_choice works with saved row selections", {
-    pObjects$memory$SampleAssayPlot1[[iSEE:::.multiSelectHistory]] <- list(DUMMY_BRUSH)
+    pObjects$memory$ColumnAssayPlot1[[iSEE:::.multiSelectHistory]] <- list(DUMMY_BRUSH)
     cdp <- pObjects$memory$RowDataPlot1
 
     # No response when still looking for the active brush.
@@ -174,7 +174,7 @@ test_that(".process_selectby_choice works with saved row selections", {
     cmds <- .processMultiSelections(cdp, pObjects$memory, pObjects$contents, plot_env)
 
     expect_true(exists('row_selected', envir=plot_env))
-    expect_true(any(grepl("SampleAssayPlot1", unlist(cmds))))
+    expect_true(any(grepl("ColumnAssayPlot1", unlist(cmds))))
     expect_true(any(grepl("shiny::brushedPoints", unlist(cmds))))
 
     # No response after asking for save... until we specify which saved element we want.
@@ -189,10 +189,10 @@ test_that(".process_selectby_choice works with saved row selections", {
     cmds <- .processMultiSelections(cdp, pObjects$memory, pObjects$contents, plot_env)
 
     expect_true(exists('row_selected', envir=plot_env))
-    expect_true(any(grepl("SampleAssayPlot1", unlist(cmds))))
+    expect_true(any(grepl("ColumnAssayPlot1", unlist(cmds))))
     expect_true(any(grepl("shiny::brushedPoints", unlist(cmds))))
 
-    pObjects$memory$SampleAssayPlot1[[iSEE:::.brushData]] <- list()
+    pObjects$memory$ColumnAssayPlot1[[iSEE:::.brushData]] <- list()
 })
 
 test_that(".any_saved_selection returns the appropriate value ", {

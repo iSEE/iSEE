@@ -46,13 +46,6 @@ In addition, this class inherits all slots from its parent \linkS4class{ColumnDo
 \code{FeatureAssayPlot(...)} creates an instance of a FeatureAssayPlot class, where any slot and its value can be passed to \code{...} as a named argument.
 }
 
-\section{Contract description}{
-
-The FeatureAssayPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
-It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
-Subclasses do not have to provide any methods, as this is a concrete class.
-}
-
 \section{Supported methods}{
 
 In the following code snippets, \code{x} is an instance of a \linkS4class{FeatureAssayPlot} class.

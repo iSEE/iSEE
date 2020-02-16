@@ -7,7 +7,7 @@
 \title{Plotting generics}
 \description{
 A series of generics for controlling how plotting is performed in \linkS4class{DotPlot} panels.
-Subclasses can specialize one or more of them to modify their behavior in specific panels.
+\linkS4class{DotPlot} subclasses can specialize one or more of them to modify the behavior of \code{\link{.generateOutput}}.
 }
 \section{Generating plotting data}{
 

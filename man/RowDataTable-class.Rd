@@ -26,13 +26,6 @@ This class inherits all slots from its parent \linkS4class{ColumnTable} and \lin
 Note that \code{ColSearch} should be a character vector of length equal to the total number of columns in the \code{\link{rowData}}, though only the entries for the atomic fields will actually be used.
 }
 
-\section{Contract description}{
-
-The RowDataTable will provide user interface elements and observers to change all of its slots.
-The \code{\link{datatable}} is rendered with all atomic contents of the \code{\link{rowData}} of the SummarizedExperiment.
-Subclasses do not have to provide any methods, as this is a concrete class.
-}
-
 \section{Supported methods}{
 
 In the following code snippets, \code{x} is an instance of a \linkS4class{RowDataTable} class.

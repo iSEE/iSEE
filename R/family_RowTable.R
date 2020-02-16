@@ -1,14 +1,11 @@
 #' The RowTable class
 #'
-#' The RowTable is a virtual class where each row in the \linkS4class{SummarizedExperiment} is represented by a row in a \code{\link{datatable}} widget.
+#' The RowTable is a virtual class where each row in the \linkS4class{SummarizedExperiment} is represented by no more than one row in a \code{\link{datatable}} widget.
 #' It provides observers for monitoring table selection, global search and column-specific search.
 #' 
 #' @section Slot overview:
 #' No new slots are added.
 #' All slots provided in the \linkS4class{Table} parent class are available.
-#'
-#' @section Contract description:
-#' The contract for RowTables is the same as that for Tables, with the added condition that each row should represent a row of the SummarizedExperiment object.
 #'
 #' @section Supported methods:
 #' In the following code snippets, \code{x} is an instance of a \linkS4class{RowTable} class.
@@ -40,9 +37,15 @@
 #'
 #' Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.
 #'
-#' @section Expectations for \code{\link{.generateTable}}:
-#' \linkS4class{RowTable} methods for this generic should create a \code{tab} data.frame in which each row corresponds to a row of the SummarizedExperiment object and is named accordingly.
-#' It is \emph{not} necessary for all rows of the SummarizedExperiment object to be represented as rows in the data.frame.
+#' @section Subclass expectations:
+#' Subclasses are expected to implement methods for:
+#' \itemize{
+#' \item \code{\link{.generateTable}}
+#' \item \code{\link{.fullName}}
+#' \item \code{\link{.panelColor}}
+#' }
+#'
+#' The method for \code{\link{.generateTable}} should create a \code{tab} data.frame where each row corresponds to a row in the \linkS4class{SummarizedExperiment} object.
 #'
 #' @seealso
 #' \linkS4class{Table}, for the immediate parent class that contains the actual slot definitions.

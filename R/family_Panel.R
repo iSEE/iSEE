@@ -54,20 +54,6 @@
 #' \item \code{x[[i]] <- value} modifies \code{x} so that the value in slot \code{i} is replaced with \code{value}.
 #' }
 #'
-#' @section Contract description:
-#' The Panel class offers interface elements to modify all of its slots.
-#' Observers are also created to trigger rerendering upon changes to a slot or when a selection in a transmitting panel changes.
-#'
-#' Subclasses are required to implement methods for:
-#' \itemize{
-#' \item \code{\link{.defineOutput}}
-#' \item \code{\link{.generateOutput}}
-#' \item \code{\link{.renderOutput}}
-#' \item \code{\link{.fullName}}
-#' \item \code{\link{.panelColor}}
-#' }
-#' Subclasses that transmit selections should also implement specialized methods for selection-related parameters listed below.
-#'
 #' @section Supported methods:
 #' In the following code snippets, \code{x} is an instance of a \linkS4class{ColumnDotPlot} class.
 #' Refer to the documentation for each method for more details on the remaining arguments.
@@ -113,6 +99,17 @@
 #' \item \code{\link{.singleSelectionValue}(x)} will always return \code{NULL}.
 #' \item \code{\link{.singleSelectionSlots}(x)} will always return an empty list.
 #' }
+#'
+#' @section Subclass expectations:
+#' Subclasses are required to implement methods for:
+#' \itemize{
+#' \item \code{\link{.defineOutput}}
+#' \item \code{\link{.generateOutput}}
+#' \item \code{\link{.renderOutput}}
+#' \item \code{\link{.fullName}}
+#' \item \code{\link{.panelColor}}
+#' }
+#' Subclasses that transmit selections should also implement specialized methods for selection-related parameters listed above.
 #'
 #' @author Aaron Lun
 #'

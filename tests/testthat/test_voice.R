@@ -1,4 +1,5 @@
 context("voice")
+# library(testthat); library(iSEE); source("setup_sce.R"); source("test_voice.R")
 
 # Do NOT move to setup; re-defined here to keep tests self-contained.
 
@@ -32,7 +33,7 @@ sce <- iSEE:::.prepare_SE(sce, ExperimentColorMap(), memory)
 
 test_that("prepareSpeechRecognition loads", {
 
-    out <- prepareSpeechRecognition(use = TRUE)
+    out <- iSEE:::prepareSpeechRecognition(use = TRUE)
 
     expect_identical(
         names(out),
@@ -45,17 +46,17 @@ test_that("prepareSpeechRecognition loads", {
 
 test_that("numbers can be numeralized from text", {
 
-    out <- .digitalizeText("one")
+    out <- iSEE:::.digitalizeText("one")
     expect_identical(out, 1)
 
-    out <- .digitalizeText("two")
+    out <- iSEE:::.digitalizeText("two")
     expect_identical(out, 2)
 
     # allow some vocal typos
-    out <- .digitalizeText("to")
+    out <- iSEE:::.digitalizeText("to")
     expect_identical(out, 2)
 
-    out <- .digitalizeText("too")
+    out <- iSEE:::.digitalizeText("too")
     expect_identical(out, 2)
 
 })
@@ -64,8 +65,8 @@ test_that("numbers can be numeralized from text", {
 
 test_that(".allDigits works", {
 
-    expect_true(.allDigits("123"))
-    expect_false(.allDigits("oen hundred and three"))
+    expect_true(iSEE:::.allDigits("123"))
+    expect_false(iSEE:::.allDigits("oen hundred and three"))
 
 })
 
@@ -73,16 +74,16 @@ test_that(".allDigits works", {
 
 test_that(".nearestPanelByType handles vocal typos", {
 
-    out <- .nearestPanelByType("definitely not a proper panel type", reservoir, max.edits = 5L)
+    out <- iSEE:::.nearestPanelByType("definitely not a proper panel type", reservoir, max.edits = 5L)
     expect_length(out, 0L)
 
-    out <- .nearestPanelByType("reduce dimension plus", reservoir)
+    out <- iSEE:::.nearestPanelByType("reduce dimension plus", reservoir)
     expect_identical(out, 1L) # "Reduced dimension plot"
 
-    out <- .nearestPanelByType("row statistics table", reservoir)
+    out <- iSEE:::.nearestPanelByType("row statistics table", reservoir)
     expect_identical(out, 4L) # "Row statistics table"
 
-    out <- .nearestPanelByType("row statistics plot", reservoir)
+    out <- iSEE:::.nearestPanelByType("row statistics plot", reservoir)
     expect_identical(out, 4L) # "Row statistics table"
     # NOTE: closer to "Row statistics table" than "Row data plot"
 })
@@ -91,16 +92,16 @@ test_that(".nearestPanelByType handles vocal typos", {
 
 test_that(".nearestPanelByName handles vocal typos", {
 
-    out <- .nearestPanelByName("definitely not a proper panel type", memory, max.edits = 5L)
+    out <- iSEE:::.nearestPanelByName("definitely not a proper panel type", memory, max.edits = 5L)
     expect_length(out, 0L)
 
-    out <- .nearestPanelByName("reduce dimension plus 1", reservoir)
+    out <- iSEE:::.nearestPanelByName("reduce dimension plus 1", reservoir)
     expect_identical(out, 1L) # "Reduced dimension plot 1"
 
-    out <- .nearestPanelByName("row statistics table 1", reservoir)
+    out <- iSEE:::.nearestPanelByName("row statistics table 1", reservoir)
     expect_identical(out, 4L) # "Row statistics table 1"
 
-    out <- .nearestPanelByName("row statistics plot 1", reservoir)
+    out <- iSEE:::.nearestPanelByName("row statistics plot 1", reservoir)
     expect_identical(out, 4L) # "Row statistics table 1"
     # NOTE: closer to "Row statistics table" than "Row data plot"
 })
@@ -111,10 +112,10 @@ test_that(".nearestValidChoice handles vocal typos", {
 
     reservoir_types <- vapply(reservoir, .fullName, character(1))
 
-    out <- .nearestValidChoice("input that cannot be matched", reservoir_types, max.edits = 5)
+    out <- iSEE:::.nearestValidChoice("input that cannot be matched", reservoir_types, max.edits = 5)
     expect_identical(out, character(0L))
 
-    out <- .nearestValidChoice("reduced dimension plot", reservoir_types)
+    out <- iSEE:::.nearestValidChoice("reduced dimension plot", reservoir_types)
     expect_identical(out, "Reduced dimension plot")
 
 })
@@ -126,8 +127,8 @@ test_that(".nearestValidNamedChoice handles vocal typos", {
     reservoir_types <- vapply(reservoir, .fullName, character(1))
     names(reservoir_types) <- vapply(reservoir, class, character(1))
 
-    out <- .nearestValidNamedChoice("reduced dimension", reservoir_types)
-    expect_identical(out, c(ReducedDimensionPlot = "Reduced dimension plot"))
+    out <- iSEE:::.nearestValidNamedChoice("reduced dimension", reservoir_types)
+    expect_identical(out, c(ReducedDimPlot = "Reduced dimension plot"))
 
 })
 
@@ -135,21 +136,21 @@ test_that(".nearestValidNamedChoice handles vocal typos", {
 
 test_that(".colorByChoices works", {
 
-    out <- .colorByChoices("None", sce)
+    out <- iSEE:::.colorByChoices("None", sce)
     expect_identical(out, character(0L))
 
-    out <- .colorByChoices("Column data", sce)
-    expect_identical(out, .get_common_info(sce, "ColumnDotPlot")$valid.colData.names)
+    out <- iSEE:::.colorByChoices("Column data", sce)
+    expect_identical(out, iSEE:::.get_common_info(sce, "ColumnDotPlot")$valid.colData.names)
 
-    out <- .colorByChoices("Row data", sce)
-    expect_identical(out, .get_common_info(sce, "RowDotPlot")$valid.rowData.names)
+    out <- iSEE:::.colorByChoices("Row data", sce)
+    expect_identical(out, iSEE:::.get_common_info(sce, "RowDotPlot")$valid.rowData.names)
 
-    out <- .colorByChoices("Feature name", sce)
+    out <- iSEE:::.colorByChoices("Feature name", sce)
     expectedValue <- seq_len(nrow(sce))
     names(expectedValue) <- rownames(sce)
     expect_identical(out, expectedValue)
 
-    out <- .colorByChoices("Sample name", sce)
+    out <- iSEE:::.colorByChoices("Sample name", sce)
     expectedValue <- seq_len(ncol(sce))
     names(expectedValue) <- colnames(sce)
     expect_identical(out, expectedValue)

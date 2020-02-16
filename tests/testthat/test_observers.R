@@ -1,7 +1,7 @@
 context("Observers")
 
 memory <- list(
-    ReducedDimPlot(PanelId=1L),
+    ReducedDimensionPlot(PanelId=1L),
     ColumnDataPlot(PanelId=1L),
     ColumnDataPlot(PanelId=1L),
     RowAssayPlot(PanelId=1L),
@@ -37,7 +37,7 @@ test_that("Observers return NULL", {
     out <- .createObservers(x, sce, NULL, NULL, NULL, NULL)
     expect_null(out)
 
-    x <- ReducedDimPlot()
+    x <- ReducedDimensionPlot()
     x <- .refineParameters(x, sce)
     out <- .createObservers(x, sce, NULL, NULL, NULL, NULL)
     expect_null(out)
@@ -65,11 +65,11 @@ test_that("Observers return NULL", {
 test_that(".mark_panel_as_modified appends the requested modes to rObjects", {
 
     rObjects <- new.env()
-    rObjects$modified=list("ReducedDimPlot1"=character(0))
+    rObjects$modified=list("ReducedDimensionPlot1"=character(0))
 
-    out <- .mark_panel_as_modified(panel_name = "ReducedDimPlot1", mode = iSEE:::.panelResaved, rObjects = rObjects)
+    out <- .mark_panel_as_modified(panel_name = "ReducedDimensionPlot1", mode = iSEE:::.panelResaved, rObjects = rObjects)
     expect_null(out)
-    expect_identical(rObjects$modified[["ReducedDimPlot1"]], iSEE:::.panelResaved)
+    expect_identical(rObjects$modified[["ReducedDimensionPlot1"]], iSEE:::.panelResaved)
 
 })
 
@@ -91,7 +91,7 @@ test_that(".create_organization_observers returns NULL", {
 
 test_that(".create_width_height_observers returns NULL", {
 
-    x <- ReducedDimPlot()
+    x <- ReducedDimensionPlot()
     input <- new.env()
     pObjects <- new.env()
 
@@ -106,14 +106,14 @@ test_that(".create_table_observers returns NULL", {
     pObjects <- new.env()
     rObjects <- new.env()
 
-    out <- .create_table_observers("ReducedDimPlot1", input, session = NULL, pObjects, rObjects)
+    out <- .create_table_observers("ReducedDimensionPlot1", input, session = NULL, pObjects, rObjects)
     expect_null(out)
 
 })
 
 test_that(".define_memory_panel_choices returns expected values", {
 
-    UNNAMED <- NAMED <- c("ReducedDimPlot1", "ColumnDataPlot1", "ColumnDataPlot1",
+    UNNAMED <- NAMED <- c("ReducedDimensionPlot1", "ColumnDataPlot1", "ColumnDataPlot1",
         "RowAssayPlot1",  "RowAssayPlot1", "RowDataTable1", "RowDataTable1",
         "ColumnAssayPlot1",  "ColumnDataTable1")
 

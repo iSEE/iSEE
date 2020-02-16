@@ -4,9 +4,9 @@
 context("iSEE-extras")
 
 memory <- list(
-    ReducedDimPlot(),
-    ColumnDataPlot(SelectColSource="ReducedDimPlot1", ColorBy="Feature name", ColorByRowTable="RowDataTable1"),
-    ColumnDataPlot(SelectColSource="ReducedDimPlot1"),
+    ReducedDimensionPlot(),
+    ColumnDataPlot(SelectColSource="ReducedDimensionPlot1", ColorBy="Feature name", ColorByRowTable="RowDataTable1"),
+    ColumnDataPlot(SelectColSource="ReducedDimensionPlot1"),
     RowAssayPlot(SelectColSource="ColumnDataPlot1"),
     RowAssayPlot(SelectColSource="RowAssayPlot1", XAxis="Feature name",
         YAxisRowTable="RowDataTable1", XAxisRowTable="RowDataTable2"),
@@ -23,7 +23,7 @@ test_that(".prepare_SE works correctly", {
     expect_identical(ExperimentColorMap(), metadata(sce)$colormap)
 
     # Caches common information:
-    expect_true(all(c("DotPlot", "ColumnDotPlot", "ReducedDimPlot", "RowDataTable", "RowDotPlot", "ColumnDataTable")
+    expect_true(all(c("DotPlot", "ColumnDotPlot", "ReducedDimensionPlot", "RowDataTable", "RowDotPlot", "ColumnDataTable")
         %in% names(metadata(sce)$iSEE)))
 })
 
@@ -39,7 +39,7 @@ test_that(".setup_initial_state works correctly", {
 
     # Actually runs the refinement.
     expect_identical(memory2[["RowAssayPlot1"]][["YAxisFeatName"]], rownames(sce)[1])
-    expect_identical(memory2[["ReducedDimPlot1"]][["Type"]], "PCA")
+    expect_identical(memory2[["ReducedDimensionPlot1"]][["Type"]], "PCA")
     expect_identical(memory2[["ColumnDataPlot1"]][["YAxis"]], colnames(colData(sce))[1])
     expect_identical(memory2[["ColumnAssayPlot1"]][["YAxisSampName"]], colnames(sce)[1])
 
@@ -61,7 +61,7 @@ test_that(".setup_initial_state works correctly", {
     metadata(sce2) <- list()
     sce2 <- iSEE:::.prepare_SE(sce2, ExperimentColorMap(), memory)
     init_out <- iSEE:::.setup_initial_state(sce2, memory)
-    expect_false("ReducedDimPlot" %in% names(init_out$counter))
+    expect_false("ReducedDimensionPlot" %in% names(init_out$counter))
 })
 
 test_that(".define_reservoir works correctly", {
@@ -82,7 +82,7 @@ test_that(".define_reservoir works correctly", {
 
     # Multiple copies don't change the outcome.
     res_out3 <- iSEE:::.define_reservoir(sce,
-        list(RowDataPlot(), RowDataPlot(PanelHeight=1000L), ColumnDataPlot(), ReducedDimPlot(Type="TSNE")),
+        list(RowDataPlot(), RowDataPlot(PanelHeight=1000L), ColumnDataPlot(), ReducedDimensionPlot(Type="TSNE")),
         init_out$memory, init_out$counter)
     expect_identical(res_out3, res_out2)
 })
@@ -100,7 +100,7 @@ test_that("persistent object setup works as expected", {
 
 test_that(".setup_initial_state throws an error for duplicated panel identifiers", {
     sce <- iSEE:::.prepare_SE(sce, ExperimentColorMap(), memory)
-    memory <- list(ReducedDimPlot(PanelId=1L), ReducedDimPlot(PanelId=1L))
+    memory <- list(ReducedDimensionPlot(PanelId=1L), ReducedDimensionPlot(PanelId=1L))
     expect_error(.setup_initial_state(sce, memory),
-        "panels of same class with duplicated IDs 'ReducedDimPlot1'", fixed=TRUE)
+        "panels of same class with duplicated IDs 'ReducedDimensionPlot1'", fixed=TRUE)
 })

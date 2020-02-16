@@ -134,7 +134,7 @@ Interactive and reproducible visualization of data contained in a
 }
 \details{
 Configuring the initial state of the app is as easy as passing a list of \linkS4class{Panel} objects to \code{initial}.
-Each element represents one panel and is typicall constructed with a command like \code{\link{ReducedDimPlot}()}.
+Each element represents one panel and is typicall constructed with a command like \code{\link{ReducedDimensionPlot}()}.
 Panels are filled from left to right in a row-wise manner depending on the available width.
 Each panel can be easily customized by modifying the parameters in each object.
 

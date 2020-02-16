@@ -22,4 +22,4 @@ colData(sce)[["nested"]] <- DataFrame(
         nested2 = sample(letters, ncol(sce), TRUE), row.names = colnames(sce)
     )
 
-assay(sce, "letters") <- matrix(sample(letters[1:3], prod(dim(sce)), TRUE), nrow = nrow(sce), ncol = ncol(sce))
+assay(sce, "letters") <- matrix(sample(letters[1:3], prod(dim(sce)), TRUE), nrow = nrow(sce), ncol = ncol(sce), dimnames = list(rownames(sce), colnames(sce)))

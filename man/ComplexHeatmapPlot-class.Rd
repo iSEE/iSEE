@@ -66,10 +66,10 @@ Defaults to \code{"Horizontal"} but can also be \code{"Vertical"}.
 
 The following slots control the effect of the transmitted selection from another panel:
 \itemize{
-\item \code{SelectEffect}, a string specifying the selection effect.
+\item \code{SelectionEffect}, a string specifying the selection effect.
 This should be one of \code{"Color"} (the default), where all selected points change to the specified color;
 \code{"Restrict"}, where all non-selected points are not plotted.
-\item \code{SelectColor}, a string specifying the color to use for selected points when \code{SelectEffect="Color"}.
+\item \code{SelectionColor}, a string specifying the color to use for selected points when \code{SelectionEffect="Color"}.
 Defaults to \code{"red"}.
 }
 

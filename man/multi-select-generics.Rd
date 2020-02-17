@@ -80,7 +80,7 @@ These generics pertain to how \code{x} responds to a transmitted selection, not 
 
 \code{.multiSelectionRestricted(x)} should return a logical scalar indicating whether \code{x}'s displayed contents will be restricted to the selection transmitted from \emph{another panel}.
 This is used to determine whether child panels of \code{x} need to be re-rendered when \code{x}'s transmitter changes its multiple selection.
-For example, in \linkS4class{DotPlot}s, the method for this generic would return \code{TRUE} if \code{SelectEffect="Restrict"}.
+For example, in \linkS4class{DotPlot}s, the method for this generic would return \code{TRUE} if \code{SelectionEffect="Restrict"}.
 Otherwise, it would be \code{FALSE} as the transmitted selection is only used for aesthetics, not for changing the identity of the displayed points.
 
 \code{.multiSelectionInvalidated(x)} should return a logical scalar indicating whether a transmission of a multiple selection to \code{x} invalidates \code{x}'s own existing selections.

@@ -5,7 +5,7 @@ context("voice")
 
 # Setting up the memory.
 memory <- list(
-    ReducedDimPlot(PanelId=1L),
+    ReducedDimensionPlot(PanelId=1L),
     ColumnDataPlot(PanelId=1L),
     FeatureAssayPlot(PanelId=1L),
     RowDataTable(PanelId=1L),
@@ -16,7 +16,7 @@ memory <- list(
 
 # Setting up the reservoir.
 reservoir <- list(
-    ReducedDimPlot(),
+    ReducedDimensionPlot(),
     ColumnDataPlot(),
     FeatureAssayPlot(),
     RowDataTable(),
@@ -128,7 +128,7 @@ test_that(".nearestValidNamedChoice handles vocal typos", {
     names(reservoir_types) <- vapply(reservoir, class, character(1))
 
     out <- iSEE:::.nearestValidNamedChoice("reduced dimension", reservoir_types)
-    expect_identical(out, c(ReducedDimPlot = "Reduced dimension plot"))
+    expect_identical(out, c(ReducedDimensionPlot = "Reduced dimension plot"))
 
 })
 

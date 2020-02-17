@@ -91,19 +91,21 @@ test_that(".generateTable handles ColumnDataTable", {
     sce <- .cacheCommonInfo(x, sce)
     table_env$se <- sce
     
-    # default
-    out <- .generateTable(x, table_env)
-    expect_identical(out, c(
-        "tab <- as.data.frame(colData(se));",
-        "tab <- tab[,c(\"NREADS\", \"NALIGNED\", \"RALIGN\", \"TOTAL_DUP\", \"PRIMER\", \"PCT_RIBOSOMAL_BASES\", \n     \"PCT_CODING_BASES\", \"PCT_UTR_BASES\", \"PCT_INTRONIC_BASES\", \"PCT_INTERGENIC_BASES\", \n     \"PCT_MRNA_BASES\", \"MEDIAN_CV_COVERAGE\", \"MEDIAN_5PRIME_BIAS\", \n     \"MEDIAN_3PRIME_BIAS\", \"MEDIAN_5PRIME_TO_3PRIME_BIAS\", \"driver_1_s\", \n     \"dissection_s\", \"Core.Type\", \"Primary.Type\", \"Secondary.Type\", \n     \"Animal.ID\", \"passes_qc_checks_s\"),drop=FALSE]"))
-    
-    # col_selected exists in the environment
     # Some of the columns of rowData(se) are not valid atomic fields
+    out <- .generateTable(x, table_env)
+    expect_identical(out[1], "tab <- as.data.frame(colData(se));")
+    expect_match(out[2], "tab <- tab\\[,c\\(.*\\),drop=FALSE\\]")
+
+    # default
+    table_env$se$nested <- NULL
+    out <- .generateTable(x, table_env)
+    expect_identical(out, "tab <- as.data.frame(colData(se));")
+
+    # col_selected exists in the environment
     table_env$col_selected <- head(colnames(sce))
     out <- .generateTable(x, table_env)
     expect_identical(out, c(
         "tab <- as.data.frame(colData(se));",
-        "tab <- tab[unique(unlist(col_selected)),,drop=FALSE]",
-        "tab <- tab[,c(\"NREADS\", \"NALIGNED\", \"RALIGN\", \"TOTAL_DUP\", \"PRIMER\", \"PCT_RIBOSOMAL_BASES\", \n     \"PCT_CODING_BASES\", \"PCT_UTR_BASES\", \"PCT_INTRONIC_BASES\", \"PCT_INTERGENIC_BASES\", \n     \"PCT_MRNA_BASES\", \"MEDIAN_CV_COVERAGE\", \"MEDIAN_5PRIME_BIAS\", \n     \"MEDIAN_3PRIME_BIAS\", \"MEDIAN_5PRIME_TO_3PRIME_BIAS\", \"driver_1_s\", \n     \"dissection_s\", \"Core.Type\", \"Primary.Type\", \"Secondary.Type\", \n     \"Animal.ID\", \"passes_qc_checks_s\"),drop=FALSE]" ))
-    
+        "tab <- tab[unique(unlist(col_selected)),,drop=FALSE]"
+    ))
 })

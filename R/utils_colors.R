@@ -62,7 +62,7 @@
 #' Note that colors should be defined as hex color codes, for full compatibility with both HTML elements and R plots.
 #'
 #' For users: by default, \code{.getPanelColor} will return the default color of each panel as specified by the developer in \code{.panelColor}.
-#' However, users can override this by setting the \code{"iSEE_panel_colors"} global variable to a named character vector of colors (see Examples).
+#' However, users can override this by setting the \code{panel.color} global option to a named character vector of colors (see Examples). 
 #' This can be used to customize the color scheme for any given call to \code{\link{iSEE}}.
 #' The names of the vector should be set to the name of class to be overridden; if a class is not named here, its default color is used.
 #'
@@ -78,15 +78,15 @@
 #' .getPanelColor(rdp)
 #'
 #' # Overriding the default colors
-#' options(iSEE_panel_colors=c(ReducedDimensionPlot="#1e90ff"))
+#' iSEEOptions$set(panel.color=c(ReducedDimensionPlot="#1e90ff"))
 #' .getPanelColor(rdp)
 #'
 #' @rdname getPanelColor
 #' @export
 .getPanelColor <- function(x) {
-    opts <- getOption("iSEE_panel_colors", NULL)
+    opts <- iSEEOptions$get("panel.color")
     if (.encodedName(x) %in% names(opts)) {
-        as.vector(opts[.encodedName(x)])
+        as.character(opts[.encodedName(x)])
     } else {
         .panelColor(x)
     }

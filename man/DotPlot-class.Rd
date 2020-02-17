@@ -71,13 +71,13 @@ Defaults to \code{"---"}, i.e., no column faceting.
 
 The following slots control the effect of the transmitted selection from another panel:
 \itemize{
-\item \code{SelectEffect}, a string specifying the selection effect.
+\item \code{SelectionEffect}, a string specifying the selection effect.
 This should be one of \code{"Transparent"} (the default), where all non-selected points become transparent;
 \code{"Color"}, where all selected points change to the specified color;
 \code{"Restrict"}, where all non-selected points are not plotted.
-\item \code{SelectAlpha}, a numeric scalar in [0, 1] specifying the transparency to use for non-selected points when \code{SelectEffect="Transparent"}.
+\item \code{SelectionAlpha}, a numeric scalar in [0, 1] specifying the transparency to use for non-selected points when \code{SelectionEffect="Transparent"}.
 Defaults to 0.1.
-\item \code{SelectColor}, a string specifying the color to use for selected points when \code{SelectEffect="Color"}.
+\item \code{SelectionColor}, a string specifying the color to use for selected points when \code{SelectionEffect="Color"}.
 Defaults to \code{"red"}.
 }
 
@@ -173,7 +173,7 @@ This will also call the equivalent \linkS4class{Panel} method to render the pane
 
 For controlling selections:
 \itemize{
-\item \code{\link{.multiSelectionRestricted}(x)} returns a logical scalar indicating whether \code{x} is restricting the plotted points to those that were selected in a transmitting panel, i.e., is \code{SelectEffect="Restrict"}?
+\item \code{\link{.multiSelectionRestricted}(x)} returns a logical scalar indicating whether \code{x} is restricting the plotted points to those that were selected in a transmitting panel, i.e., is \code{SelectionEffect="Restrict"}?
 \item \code{\link{.multiSelectionCommands}(x, index)} returns a character vector of R expressions that - when evaluated - returns a character vector of the names of selected points in the active and/or saved selections of \code{x}.
 The active selection is returned if \code{index=NA}, otherwise one of the saved selection is returned.
 \item \code{\link{.multiSelectionActive}(x)} returns \code{x[["BrushData"]]} or \code{NULL} if there is no brush or closed lasso.

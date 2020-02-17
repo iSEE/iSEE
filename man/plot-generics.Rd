@@ -60,14 +60,14 @@ This is guaranteed to be categorical.
 This is guaranteed to be categorical.
 \item \code{"SelectBy"}, a logical field indicating whether the point was included in a multiple selection
 (i.e., transmitted from another plot with \code{x} as the receiver).
-Note that if \code{SelectEffect="Restrict"}, \code{plot.data} will already have been subsetted
+Note that if \code{SelectionEffect="Restrict"}, \code{plot.data} will already have been subsetted
 to only retain \code{TRUE} values of this field.
 }
 
 \code{envir} may also contain the following variables:
 \itemize{
 \item \code{plot.data.all}, present when a multiple selection is transmitted to \code{x}
-and \code{SelectEffect="Restrict"}.
+and \code{SelectionEffect="Restrict"}.
 This is a data.frame that contains all points prior to subsetting and is useful for defining the boundaries of the plot
 such that they do not change when the transmitted multiple selection changes.
 \item \code{plot.data.pre}, present when downsampling is turned on.

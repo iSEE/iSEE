@@ -9,10 +9,10 @@
 #' \item \code{ColorByColumnData}, a string specifying the \code{\link{colData}} field for controlling point color,
 #' if \code{ColorBy="Column data"} (see the \linkS4class{Panel} class).
 #' Defaults to the first valid field (see \code{.refineParameters} below).
-#' \item \code{ColorByFeatNameAssay}, a string specifying the assay of the SummarizedExperiment object containing values to use for coloring,
+#' \item \code{ColorByFeatureNameAssay}, a string specifying the assay of the SummarizedExperiment object containing values to use for coloring,
 #' if \code{ColorBy="Feature name"}.
 #' Defaults to the name of the first valid assay (see \code{?"\link{.refineParameters,DotPlot-method}"} for details).
-#' \item \code{ColorBySampNameColor}, a string specifying the color to use for coloring an individual sample on the plot,
+#' \item \code{ColorBySampleNameColor}, a string specifying the color to use for coloring an individual sample on the plot,
 #' if \code{ColorBy="Sample name"}.
 #' Defaults to \code{"red"}.
 #' }
@@ -47,7 +47,7 @@
 #' It will also create a data parameter box that can respond to specialized \code{\link{.defineDataInterface}}.
 #' This will \emph{override} the \linkS4class{Panel} method.
 #' \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
-#' This returns \code{TRUE} for row selection parameters (\code{"SelectRowSource"}, \code{"SelectRowType"} and \code{"SelectRowSaved"}),
+#' This returns \code{TRUE} for row selection parameters (\code{"RowSelectionSource"}, \code{"RowSelectionType"} and \code{"RowSelectionSaved"}),
 #' otherwise it dispatches to the \linkS4class{Panel} method.
 #' }
 #'

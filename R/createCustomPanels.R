@@ -87,7 +87,7 @@
 #'
 #'     iSEE(sce, initial=list(
 #'         ColumnDataPlot(PanelId=1L),
-#'         GEN(SelectColSource="ColumnDataPlot1")
+#'         GEN(ColumnSelectionSource="ColumnDataPlot1")
 #'     ))
 #' }
 #'

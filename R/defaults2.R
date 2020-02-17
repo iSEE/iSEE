@@ -76,7 +76,7 @@ iSEEOptions <- new_defaults(list(
     legend.position = .plotLegendBottomTitle,
     legend.direction = .plotLegendHorizontalTitle,
     
-    panel.color = list()
+    panel.color = c()
 ))
 
 # merge elements of y into x with the same names

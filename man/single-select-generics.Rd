@@ -37,7 +37,7 @@ For example, a data.frame of coordinates is stored by \linkS4class{DotPlot}s to 
 This internal list should contain at least entries with the following names:
 \itemize{
 \item \code{param}, the name of the slot of \code{x} that can potentially respond to a single selection in a transmitting panel,
-e.g., \code{ColorByFeatName} in \linkS4class{DotPlot}s.
+e.g., \code{ColorByFeatureName} in \linkS4class{DotPlot}s.
 \item \code{source}, the name of the slot of \code{x} that indicates which transmitting panel to respond to,
 e.g., \code{ColorByFeatureSource} in \linkS4class{DotPlot}s.
 }
@@ -65,7 +65,7 @@ An example would be \code{"Feature name"} in \linkS4class{DotPlot}s.
 i.e., changing this value will cause all existing selections to be invalidated
 and will trigger re-rendering of the children receiving multiple selections.
 This is \code{FALSE} for purely aesthetic parameters (e.g., coloring) and \code{TRUE} for data-related parameters
-(e.g., \code{XAxisFeatName} in \linkS4class{FeatureAssayPlot}).
+(e.g., \code{XAxisFeatureName} in \linkS4class{FeatureAssayPlot}).
 }
 }
 

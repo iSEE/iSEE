@@ -55,7 +55,7 @@ Refer to the documentation for each method for more details on the remaining arg
 
 For setting up data values:
 \itemize{
-\item \code{\link{.refineParameters}(x, se)} replaces any \code{NA} values in \code{XAxisFeatName} and \code{YAxisFeatName} with the first row name; any \code{NA} value in \code{Assay} with the first valid assay name; and any \code{NA} value in \code{XAxisColumnData} with the first valid column metadata field.
+\item \code{\link{.refineParameters}(x, se)} replaces any \code{NA} values in \code{XAxisFeatureName} and \code{YAxisFeatureName} with the first row name; any \code{NA} value in \code{Assay} with the first valid assay name; and any \code{NA} value in \code{XAxisColumnData} with the first valid column metadata field.
 This will also call the equivalent \linkS4class{ColumnDotPlot} method for further refinements to \code{x}.
 If no rows or assays are present, \code{NULL} is returned instead.
 }

@@ -37,13 +37,13 @@ Defaults to \code{"black"}.
 For \linkS4class{RowDotPlot}s, this is used to highlight the point corresponding to the selected feature;
 for \linkS4class{ColumnDotPlot}s, this is used to color each point according to the expression of that feature.
 If \code{NA}, this defaults to the name of the first row.
-\item \code{ColorByFeatureSource}, a string specifying the name of the panel to use for transmitting the feature selection to \code{ColorByFeatName}.
+\item \code{ColorByFeatureSource}, a string specifying the name of the panel to use for transmitting the feature selection to \code{ColorByFeatureName}.
 Defaults to \code{"---"}.
 \item \code{ColorBySampleName}, a string specifying the sample to be used for coloring points when \code{ColorBy="Sample name"}.
 For \linkS4class{RowDotPlot}s, this is used to color each point according to the expression of that sample;
 for \linkS4class{ColumnDotPlot}s, this is used to highlight the point corresponding to the selected sample.
 If \code{NA}, this defaults to the name of the first column.
-\item \code{ColorBySampleSource}, a string specifying the name of the panel to use for transmitting the sample selection to \code{ColorBySampName}.
+\item \code{ColorBySampleSource}, a string specifying the name of the panel to use for transmitting the sample selection to \code{ColorBySampleNameColor}.
 Defaults to \code{"---"}.
 }
 
@@ -142,7 +142,7 @@ For setting up the objects:
 \item \code{\link{.cacheCommonInfo}(x)} adds a \code{"DotPlot"} entry containing \code{valid.assay.names}, a character vector of valid assay names.
 Valid names are defined as those that are non-empty, i.e., not \code{""}.
 This method will also call the equivalent \linkS4class{Panel} method.
-\item \code{\link{.refineParameters}(x, se)} replaces \code{NA} values in \code{ColorByFeatName} and \code{ColorBySampName} with the first row and column name, respectively, of \code{se}.
+\item \code{\link{.refineParameters}(x, se)} replaces \code{NA} values in \code{ColorByFeatureName} and \code{ColorBySampleNameColor} with the first row and column name, respectively, of \code{se}.
 This will also call the equivalent \linkS4class{Panel} method.
 }
 

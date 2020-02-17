@@ -96,7 +96,7 @@ Refer to the documentation for each method for more details on the remaining arg
 
 For setting up data values:
 \itemize{
-\item \code{\link{.refineParameters}(x, se)} returns \code{x} after replacing any \code{NA} value in \code{"Assay"} with the first valid assay name; and any \code{NA} values in \code{FeatNameText} with the first row name.
+\item \code{\link{.refineParameters}(x, se)} returns \code{x} after replacing \code{NA} values in \code{"Assay"} with the first valid assay name; and \code{NA} values in \code{CustomRowsText} with the first row name.
 This will also call the equivalent \linkS4class{Panel} method for further refinements to \code{x}.
 If no valid column metadata fields are available, \code{NULL} is returned instead.
 }

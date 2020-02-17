@@ -31,7 +31,7 @@ The output should be constant for all instances of \code{x} and is used to gover
 If \code{.multiSelectionActive(x)} returns \code{NULL}, \code{x} is assumed to have no active multiple selection.
 
 The active selection is considered to be the one that can be directly changed by the user, as compared to saved selections that are not modifiable (other than being deleted on a first-in-last-out basis).
-This generic is primarily used to bundle up selection parameters to be stored in the \code{MultiSelectHistory} slot when the user saves the current active selection.
+This generic is primarily used to bundle up selection parameters to be stored in the \code{SelectionHistory} slot when the user saves the current active selection.
 
 As an example, in \linkS4class{DotPlot}s, the method for this generic would return the contents of the \code{BrushData} slot.
 }
@@ -41,7 +41,7 @@ As an example, in \linkS4class{DotPlot}s, the method for this generic would retu
 \code{.multiSelectionCommands(x, index)} is expected to return a character vector of commands to generate a character vector of row or column names in the desired multiple selection of \code{x}.
 If \code{index=NA}, the desired selection is the currently active one;
 developers can assume that \code{.multiSelectionActive(x)} returns a non-\code{NULL} value in this case.
-Otherwise, for an integer \code{index}, it refers to the corresponding saved selection in the \code{MultiSelectHistory}.
+Otherwise, for an integer \code{index}, it refers to the corresponding saved selection in the \code{SelectionHistory}.
 
 The commands will be evaluated in an environment containing:
 \itemize{

@@ -34,7 +34,7 @@ This will also call the equivalent \linkS4class{Table} method.
 For defining the interface:
 \itemize{
 \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
-This returns \code{TRUE} for row selection parameters (\code{"SelectRowSource"}, \code{"SelectRowType"} and \code{"SelectRowSaved"}),
+This returns \code{TRUE} for row selection parameters (\code{"RowSelectionSource"}, \code{"RowSelectionType"} and \code{"RowSelectionSaved"}),
 otherwise it dispatches to the \linkS4class{Panel} method.
 }
 

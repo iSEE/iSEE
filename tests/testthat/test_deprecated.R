@@ -103,7 +103,7 @@ test_that(".translate_to_class handles NA values for faceting metadata", {
     redDimArgs[[iSEE:::.facetRowsByColData]] <- NA
     redDimArgs[[iSEE:::.facetColumnsByColData]] <- NA
 
-    iSEE:::.translate_to_class(redDimArgs, ReducedDimPlot, sce, is_row = FALSE)
+    iSEE:::.translate_to_class(redDimArgs, ReducedDimensionPlot, sce, is_row = FALSE)
 
 })
 
@@ -111,7 +111,7 @@ test_that(".translate_to_class properly converts panel names", {
 
     redDimArgs$SelectByPlot <- "Column data plot 1"
 
-    out <- iSEE:::.translate_to_class(redDimArgs, ReducedDimPlot, sce, is_row = FALSE)
+    out <- iSEE:::.translate_to_class(redDimArgs, ReducedDimensionPlot, sce, is_row = FALSE)
     expect_identical(out[[1]][["ColumnSelectionSource"]], "ColumnDataPlot1")
 
 })
@@ -120,7 +120,7 @@ test_that(".translate_to_class renames deprecated slot names", {
     
     names(redDimArgs)[names(redDimArgs) == "SelectionBoxOpen"] <- "SelectBoxOpen"
 
-    out <- iSEE:::.translate_to_class(redDimArgs, ReducedDimPlot, sce, is_row = FALSE)
+    out <- iSEE:::.translate_to_class(redDimArgs, ReducedDimensionPlot, sce, is_row = FALSE)
     expect_true(any(slotNames(out[[1]]) == "SelectionBoxOpen"))
     
 })

@@ -59,7 +59,7 @@ test_that("dimname observers work to change the source", {
 
 test_that("dimname observers work to change the usage mode", {
     memory <- list(
-        ReducedDimPlot(),
+        ReducedDimensionPlot(),
         FeatureAssayPlot(YAxisFeatureSource="RowDataTable1"),
         RowDataTable()
     )
@@ -69,13 +69,13 @@ test_that("dimname observers work to change the usage mode", {
     input <- list()
 
     # The color choice has changed.
-    input$ReducedDimPlot1_ColorBy <- "Feature name"
-    input$ReducedDimPlot1_ColorByFeatureSource <- "RowDataTable1"
-    expect_identical(pObjects$memory$ReducedDimPlot1[["ColorBy"]], "None")
-    expect_false(igraph::are_adjacent(pObjects$aesthetics_links, "RowDataTable1", "ReducedDimPlot1"))
+    input$ReducedDimensionPlot1_ColorBy <- "Feature name"
+    input$ReducedDimensionPlot1_ColorByFeatureSource <- "RowDataTable1"
+    expect_identical(pObjects$memory$ReducedDimensionPlot1[["ColorBy"]], "None")
+    expect_false(igraph::are_adjacent(pObjects$aesthetics_links, "RowDataTable1", "ReducedDimensionPlot1"))
 
     out <- iSEE:::.setup_dimname_source_observer(
-        "ReducedDimPlot1",
+        "ReducedDimensionPlot1",
         use_mode_field=iSEE:::.colorByField, use_value=iSEE:::.colorByFeatNameTitle,
         pObjects=pObjects, rObjects=rObjects, input=input, session=NULL,
         name_field=iSEE:::.colorByFeatName,
@@ -83,8 +83,8 @@ test_that("dimname observers work to change the usage mode", {
         choices=NULL)
 
     expect_true(out)
-    expect_identical(pObjects$memory$ReducedDimPlot1[["ColorBy"]], "Feature name")
-    expect_true(igraph::are_adjacent(pObjects$aesthetics_links, "RowDataTable1", "ReducedDimPlot1"))
+    expect_identical(pObjects$memory$ReducedDimensionPlot1[["ColorBy"]], "Feature name")
+    expect_true(igraph::are_adjacent(pObjects$aesthetics_links, "RowDataTable1", "ReducedDimensionPlot1"))
 
     # The feature choice has changed.
     input$FeatureAssayPlot1_XAxis <- "Feature name"
@@ -126,7 +126,7 @@ test_that("dimname observers work to change the usage mode", {
 test_that(".setup_dimname_source_observer", {
 
     memory <- list(
-        ReducedDimPlot(),
+        ReducedDimensionPlot(),
         FeatureAssayPlot(YAxisFeatureSource="RowDataTable1"),
         RowDataTable(Selected=tail(rownames(sce), 1))
     )
@@ -136,8 +136,8 @@ test_that(".setup_dimname_source_observer", {
     input <- list()
 
     # The color choice has changed.
-    input$ReducedDimPlot1_ColorBy <- "Feature name"
-    input$ReducedDimPlot1_ColorByFeatureSource <- "RowDataTable1"
+    input$ReducedDimensionPlot1_ColorBy <- "Feature name"
+    input$ReducedDimensionPlot1_ColorByFeatureSource <- "RowDataTable1"
 
     # Define dummy functions called by updateSelectizeInput
     session <- new.env()
@@ -145,7 +145,7 @@ test_that(".setup_dimname_source_observer", {
     session$sendInputMessage <- function(inputId, message) { NULL }
 
     .setup_dimname_source_observer(
-        "ReducedDimPlot1",
+        "ReducedDimensionPlot1",
         use_mode_field=iSEE:::.colorByField, use_value=iSEE:::.colorByFeatNameTitle,
         name_field=iSEE:::.colorByFeatName,
         tab_field=iSEE:::.colorByRowTable,

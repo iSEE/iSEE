@@ -193,7 +193,7 @@ library(iSEE)
 GENERATOR <- createCustomTable(CUSTOM_SUMMARY)
 app <- iSEE(sce,
     initial=list(
-        ReducedDimPlot(PanelId=1L),
+        ReducedDimensionPlot(PanelId=1L),
         GENERATOR(ColumnSelectionSource="RedDimPlot1")
     )
 )
@@ -259,7 +259,7 @@ Note that each saved selection is also the active selection when it is first gen
 TAB_GEN <- createCustomTable(CUSTOM_DIFFEXP)
 HEAT_GEN <- createCustomPlot(CUSTOM_HEAT)
 
-app <- iSEE(sce, initial=list(ReducedDimPlot(PanelId=1L),
+app <- iSEE(sce, initial=list(ReducedDimensionPlot(PanelId=1L),
     TAB_GEN(ColumnSelectionSource="RedDimPlot1"),
     HEAT_GEN(ColumnSelectionSource="RedDimPlot1"))
 )

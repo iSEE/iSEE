@@ -5,6 +5,10 @@
 .selectParamBoxOpen0 <- "SelectBoxOpen"
 .multiSelectHistory0 <- "MultiSelectHistory"
 
+.selectEffect0 <- "SelectEffect"
+.selectColor0 <- "SelectColor"
+.selectTransAlpha0 <- "SelectAlpha"
+
 .colorByFeatName0 <- "ColorByFeatName"
 .colorByRowTable0 <- "ColorByRowTable"
 .colorBySampName0 <- "ColorBySampName"
@@ -591,6 +595,9 @@ heatMapPlotDefaults <- function(se, number) {
         renamer <- list(
             c(.selectParamBoxOpen0, .selectParamBoxOpen),
             c(.multiSelectHistory0, .multiSelectHistory),
+            c(.selectEffect0, .selectEffect),
+            c(.selectColor0, .selectColor),
+            c(.selectTransAlpha0, .selectTransAlpha),
             c(.colorByFeatName0, .colorByFeatName),
             c(.colorByRowTable0, .colorByRowTable),
             c(.colorBySampName0, .colorBySampName),

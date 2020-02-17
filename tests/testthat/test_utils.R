@@ -90,7 +90,7 @@ test_that(".allowable_choice_error detects issues", {
     x[[iSEE:::.selectEffect]] <- "other"
 
     out <- iSEE:::.allowable_choice_error(msg, x, .selectEffect, c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle))
-    expect_identical(out, "'SelectEffect' for 'ReducedDimPlot' should be one of 'Restrict', 'Color', 'Transparent'")
+    expect_identical(out, "'SelectionEffect' for 'ReducedDimPlot' should be one of 'Restrict', 'Color', 'Transparent'")
 
 })
 
@@ -115,7 +115,7 @@ test_that(".valid_number_error detects issues", {
     x[[iSEE:::.selectTransAlpha]] <- 2
 
     out <- iSEE:::.valid_number_error(msg, x, .selectTransAlpha, lower=0, upper=1)
-    expect_identical(out, "'SelectAlpha' for 'ReducedDimPlot' should be a numeric scalar in [0, 1]")
+    expect_identical(out, "'SelectionAlpha' for 'ReducedDimPlot' should be a numeric scalar in [0, 1]")
 
 })
 

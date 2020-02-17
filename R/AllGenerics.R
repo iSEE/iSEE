@@ -328,14 +328,14 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #' This is guaranteed to be categorical.
 #' \item \code{"SelectBy"}, a logical field indicating whether the point was included in a multiple selection
 #' (i.e., transmitted from another plot with \code{x} as the receiver).
-#' Note that if \code{SelectEffect="Restrict"}, \code{plot.data} will already have been subsetted
+#' Note that if \code{SelectionEffect="Restrict"}, \code{plot.data} will already have been subsetted
 #' to only retain \code{TRUE} values of this field.
 #' }
 #'
 #' \code{envir} may also contain the following variables:
 #' \itemize{
 #' \item \code{plot.data.all}, present when a multiple selection is transmitted to \code{x}
-#' and \code{SelectEffect="Restrict"}.
+#' and \code{SelectionEffect="Restrict"}.
 #' This is a data.frame that contains all points prior to subsetting and is useful for defining the boundaries of the plot
 #' such that they do not change when the transmitted multiple selection changes.
 #' \item \code{plot.data.pre}, present when downsampling is turned on.
@@ -606,7 +606,7 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #'
 #' \code{.multiSelectionRestricted(x)} should return a logical scalar indicating whether \code{x}'s displayed contents will be restricted to the selection transmitted from \emph{another panel}.
 #' This is used to determine whether child panels of \code{x} need to be re-rendered when \code{x}'s transmitter changes its multiple selection.
-#' For example, in \linkS4class{DotPlot}s, the method for this generic would return \code{TRUE} if \code{SelectEffect="Restrict"}.
+#' For example, in \linkS4class{DotPlot}s, the method for this generic would return \code{TRUE} if \code{SelectionEffect="Restrict"}.
 #' Otherwise, it would be \code{FALSE} as the transmitted selection is only used for aesthetics, not for changing the identity of the displayed points.
 #'
 #' \code{.multiSelectionInvalidated(x)} should return a logical scalar indicating whether a transmission of a multiple selection to \code{x} invalidates \code{x}'s own existing selections.

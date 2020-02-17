@@ -178,9 +178,9 @@ collated[.shapeByField] <- "character"
 
 collated[.sizeByField] <- "character"
 
-.selectEffect <- "SelectEffect"
-.selectColor <- "SelectColor"
-.selectTransAlpha <- "SelectAlpha"
+.selectEffect <- "SelectionEffect"
+.selectColor <- "SelectionColor"
+.selectTransAlpha <- "SelectionAlpha"
 
 collated[.selectEffect] <- "character"
 collated[.selectColor] <- "character"

@@ -122,7 +122,7 @@ At runtime, this allows the app to remember the last selected variable of each t
 For instance, the `XAxis` column of _feature assay plot_ arguments can have up to four different values:
 
 1. `"None"`: does not require any addition input (draws a single violin for all features).
-2. `"Column data"`: requires `XAxisColData` to be set to a column name in the `colData(sce)`.
+2. `"Column data"`: requires `XAxisColumnData` to be set to a column name in the `colData(sce)`.
 3. `"Feature name"`: requires either
     a. `XAxisFeatureName` to be set to a feature name (or positional index) in `rownames(sce)`.
     b. `XAxisFeatureSource` to be set to the name of a _Row statistics table_ panel with an active selection set in its own `Selected` column.
@@ -139,7 +139,7 @@ fex1[["XAxis"]] <- "None"
 # Example 2
 fex2 <- fex
 fex2[["XAxis"]] <- "Column data"
-fex2[["XAxisColData"]] <- "Core.Type"
+fex2[["XAxisColumnData"]] <- "Core.Type"
 
 # Example 3a
 fex3 <- fex
@@ -228,16 +228,16 @@ Note that for this demonstration, we facilitate visualization of the preconfigur
 
 The color and point of data points can be linked to variables in a manner similar to the X-axis parameters demonstrated [above](#xaxis).
 
-For instance, the color of data points in _column data plot_ panels can be set to a variable in `colData(sce)` by setting the `ColorBy` value to `"Column data"`, and the `ColorByColData` value to the desired coloumn name:
+For instance, the color of data points in _column data plot_ panels can be set to a variable in `colData(sce)` by setting the `ColorBy` value to `"Column data"`, and the `ColorByColumnData` value to the desired coloumn name:
 
 ```{r aesthetic-covariate}
 cdp <- ColumnDataPlot(VisualBoxOpen=TRUE, VisualChoices=c("Color", "Shape"),
-    ColorByColData="Core.Type", ShapeByColData="Core.Type",
+    ColorByColumnData="Core.Type", ShapeByColumnData="Core.Type",
     ColorBy="Column data", ShapeBy="Column data")
 
 cdp2 <- cdp
-cdp2[["ColorByColData"]] <- "TOTAL_DUP"
-cdp2[["ShapeByColData"]] <- "driver_1_s"
+cdp2[["ColorByColumnData"]] <- "TOTAL_DUP"
+cdp2[["ShapeByColumnData"]] <- "driver_1_s"
 
 app <- iSEE(sce, initial=list(cdp, cdp2))
 ```
@@ -268,7 +268,7 @@ app <- iSEE(sce, initial=list(cdp, cdp2, cdp3))
 # Selection parameters
 
 The initial state of _iSEE_ applications can be configured all the way down to point selections and links between panels.
-For instance, in the example below, we preconfigure the `SelectByPlot` column of a _column data plot_ panel to receive a point selection from a _reduced dimension plot_ panel.
+For instance, in the example below, we preconfigure the `ColumnSelectionSource` column of a _column data plot_ panel to receive a point selection from a _reduced dimension plot_ panel.
 This requires an active selection in the _reduced dimension plot_ panel, which is achieved by preconfiguring the `BrushData` column of the arguments.
 
 The simplest way to obtain a valid input for the `BrushData` column is to launch an _iSEE_ application, make the desired selection using a Shiny brush, open the _iSEE_ code tracker, and copy paste the relevant point selection data.
@@ -276,7 +276,8 @@ The result should look as below:
 
 ```{r select-brish}
 # Preconfigure the receiver panel
-cdArgs <- ColumnDataPlot(SelectBoxOpen=TRUE, SelectColSource="ReducedDimPlot1",
+cdArgs <- ColumnDataPlot(SelectionBoxOpen=TRUE, 
+    ColumnSelectionSource="ReducedDimPlot1",
     SelectEffect="Color", SelectColor="purple", 
     ColorByDefaultColor="#BDB3B3", PanelWidth=6L)
 
@@ -345,7 +346,7 @@ We recommend one of the following options:
 - Alternatively, the [SelectorGadget](https://selectorgadget.com) browser extension can be used.
 
 Most elements can be identified using the above strategies.
-Selectize widgets are trickier but can be handled with, e.g., `#heatMapPlot1_ColData + .selectize-control`.
+Selectize widgets are trickier but can be handled with, e.g., `#ComplexHeatmapPlot1_ColumnData + .selectize-control`.
 Please see the `intro_firststeps.txt` file in the `inst/extdata` folder for more of these examples.
 
 Sometimes it is useful to place one step of the tour in the center.

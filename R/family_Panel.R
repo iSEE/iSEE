@@ -29,7 +29,7 @@
 #' Defaults to \code{"Active"}.
 #' \item \code{RowSelectionSaved}, an integer scalar specifying the index of the saved multiple row selection to use when \code{RowSelectionType="Saved"}.
 #' Defaults to 0.
-#' \item \code{ColumnSelectionSource}, a string specifying the name of the transmitting panel from which to receive a multiple column selection (e.g., \code{"ColDataPlot1"}).
+#' \item \code{ColumnSelectionSource}, a string specifying the name of the transmitting panel from which to receive a multiple column selection (e.g., \code{"ColumnDataPlot1"}).
 #' Defaults to \code{"---"}.
 #' \item \code{ColumnSelectionType}, a string specifying which of the column-based selections from the transmitting panel should be used.
 #' Takes one of \code{"Active"}, only the active selection;

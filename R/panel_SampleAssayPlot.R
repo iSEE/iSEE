@@ -15,7 +15,7 @@
 #' \item \code{XAxis}, string specifying what should be plotting on the x-axis.
 #' This can be any one of \code{"None"}, \code{"Sample name"} or \code{"Column data"}.
 #' Defaults to \code{"None"}.
-#' \item \code{XAxisColData}, string specifying which column of the \code{\link{colData}} should be shown on the x-axis,
+#' \item \code{XAxisColumnData}, string specifying which column of the \code{\link{colData}} should be shown on the x-axis,
 #' if \code{XAxis="Column data"}.
 #' Defaults to the first valid \code{\link{colData}} field (see \code{?"\link{.refineParameters,ColumnDotPlot-method}"} for details).
 #' \item \code{XAaxisSampleName}, string specifying the name of the sample to plot on the x-axis,
@@ -36,7 +36,7 @@
 #'
 #' For setting up data values:
 #' \itemize{
-#' \item \code{\link{.refineParameters}(x, se)} replaces any \code{NA} values in \code{XAxisSampName} and \code{YAxisSampName} with the first column name; any \code{NA} value in \code{Assay} with the first valid assay name; and any \code{NA} value in \code{XAxisColData} with the first valid column metadata field.
+#' \item \code{\link{.refineParameters}(x, se)} replaces any \code{NA} values in \code{XAxisSampName} and \code{YAxisSampName} with the first column name; any \code{NA} value in \code{Assay} with the first valid assay name; and any \code{NA} value in \code{XAxisColumnData} with the first valid column metadata field.
 #' This will also call the equivalent \linkS4class{ColumnDotPlot} method for further refinements to \code{x}.
 #' If no columns or assays are present, \code{NULL} is returned instead.
 #' }

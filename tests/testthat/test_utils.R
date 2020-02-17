@@ -1,3 +1,5 @@
+# library(iSEE); library(testthat); source("setup_sce.R"); source("test_utils.R")
+
 # utils_colors.R ----
 context("Color utilities")
 
@@ -35,11 +37,17 @@ test_that(".getPanelColor returns the expected colors", {
     out <- .getPanelColor(x)
     expect_identical(out, "#07A274")
 
-    options(iSEE_panel_colors=c(ReducedDimensionPlot="dodgerblue"))
+    iSEEOptions$set(panel.color=list(ReducedDimensionPlot="#1e90ff"))
 
     x <- ReducedDimensionPlot()
     out <- .getPanelColor(x)
-    expect_identical(out, "dodgerblue")
+    expect_identical(out, "#1e90ff")
+    
+    iSEEOptions$restore()
+    
+    x <- ReducedDimensionPlot()
+    out <- .getPanelColor(x)
+    expect_identical(out, "#3565AA")
 
 })
 
@@ -89,7 +97,8 @@ test_that(".allowable_choice_error detects issues", {
     x <- ReducedDimensionPlot()
     x[[iSEE:::.selectEffect]] <- "other"
 
-    out <- iSEE:::.allowable_choice_error(msg, x, .selectEffect, c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle))
+    out <- iSEE:::.allowable_choice_error(msg, x, iSEE:::.selectEffect,
+        c(iSEE:::.selectRestrictTitle, iSEE:::.selectColorTitle, iSEE:::.selectTransTitle))
     expect_identical(out, "'SelectionEffect' for 'ReducedDimensionPlot' should be one of 'Restrict', 'Color', 'Transparent'")
 
 })
@@ -101,8 +110,8 @@ test_that(".multiple_choice_error detects issues", {
     x <- ReducedDimensionPlot()
     x[[iSEE:::.visualParamChoice]] <- "other"
 
-    out <- .multiple_choice_error(msg, x, .visualParamChoice,
-        c(.visualParamChoiceColorTitle, .visualParamChoiceShapeTitle, .visualParamChoicePointTitle, .visualParamChoiceFacetTitle, .visualParamChoiceOtherTitle))
+    out <- iSEE:::.multiple_choice_error(msg, x, iSEE:::.visualParamChoice,
+        c(iSEE:::.visualParamChoiceColorTitle, iSEE:::.visualParamChoiceShapeTitle, iSEE:::.visualParamChoicePointTitle, iSEE:::.visualParamChoiceFacetTitle, iSEE:::.visualParamChoiceOtherTitle))
     expect_identical(out, "values of 'VisualChoices' for 'ReducedDimensionPlot' should be in 'Color', 'Shape', 'Points', 'Facets', 'Other'")
 
 })
@@ -114,7 +123,7 @@ test_that(".valid_number_error detects issues", {
     x <- ReducedDimensionPlot()
     x[[iSEE:::.selectTransAlpha]] <- 2
 
-    out <- iSEE:::.valid_number_error(msg, x, .selectTransAlpha, lower=0, upper=1)
+    out <- iSEE:::.valid_number_error(msg, x, iSEE:::.selectTransAlpha, lower=0, upper=1)
     expect_identical(out, "'SelectionAlpha' for 'ReducedDimensionPlot' should be a numeric scalar in [0, 1]")
 
 })

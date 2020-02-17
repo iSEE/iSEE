@@ -31,7 +31,7 @@
 #'
 #' For setting up data values:
 #' \itemize{
-#' \item \code{\link{.refineParameters}(x, se)} returns \code{x} after replacing any \code{NA} value in \code{YAxis} or \code{XAxisColData} with the name of the first valid \code{\link{colData}} field.
+#' \item \code{\link{.refineParameters}(x, se)} returns \code{x} after replacing any \code{NA} value in \code{YAxis} or \code{XAxisColumnData} with the name of the first valid \code{\link{colData}} field.
 #' This will also call the equivalent \linkS4class{ColumnDotPlot} method for further refinements to \code{x}.
 #' If no valid column metadata fields are available, \code{NULL} is returned instead.
 #' }

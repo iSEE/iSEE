@@ -28,7 +28,8 @@
 \description{
 The Panel is a virtual base class for all \pkg{iSEE} panels.
 It provides slots and methods to control the height and width of each panel,
-as well as to control the choice of transmitting panels from which to receive a selection.
+as well as to control the choice of transmitting panels from which to receive a multiple selection
+(i.e., a selection of multiple rows or columns from a \linkS4class{SingleCellExperiment}).
 }
 \section{Slot overview}{
 
@@ -42,34 +43,34 @@ Bootstrap coordinates are used so this value should lie between 2 and 12; defaul
 This is expected to lie between 400 and 1000; defaults to 500.
 }
 
-The following slots are relevant to receiving a selection of points:
+The following slots are relevant to \emph{receiving} a multiple selection:
 \itemize{
-\item \code{SelectBoxOpen}, a logical scalar indicating whether the selection parameter box should be open.
+\item \code{SelectionBoxOpen}, a logical scalar indicating whether the selection parameter box should be open at initialization.
 Defaults to \code{FALSE}.
-\item \code{SelectRowSource}, a string specifying the name of the panel from which to receive a selection along the rows (e.g., \code{"rowDataPlot1"}).
+\item \code{RowSelectionSource}, a string specifying the name of the transmitting panel from which to receive a multiple row selection (e.g., \code{"RowDataPlot1"}).
 Defaults to \code{"---"}.
-\item \code{SelectRowType}, a string specifying which row-based selections should be used.
+\item \code{RowSelectionType}, a string specifying which of the multiple row selections from the transmitting panel should be used.
 Takes one of \code{"Active"}, only the active selection;
 \code{"Union"}, the union of active and saved selections;
 and \code{"Saved"}, one of the saved selections.
 Defaults to \code{"Active"}.
-\item \code{SelectRowSaved}, an integer scalar specifying the index of the saved selection to use when \code{SelectRowType="Saved"}.
+\item \code{RowSelectionSaved}, an integer scalar specifying the index of the saved multiple row selection to use when \code{RowSelectionType="Saved"}.
 Defaults to 0.
-\item \code{"SelectColSource"}, a string specifying the name of the panel from which to receive a selection along the columns (e.g., \code{"colDataPlot1"}).
+\item \code{ColumnSelectionSource}, a string specifying the name of the transmitting panel from which to receive a multiple column selection (e.g., \code{"ColDataPlot1"}).
 Defaults to \code{"---"}.
-\item \code{SelectColType}, a string specifying which column-based selections should be used.
+\item \code{ColumnSelectionType}, a string specifying which of the column-based selections from the transmitting panel should be used.
 Takes one of \code{"Active"}, only the active selection;
 \code{"Union"}, the union of active and saved selections;
 and \code{"Saved"}, one of the saved selections.
 Defaults to \code{"Active"}.
-\item \code{SelectColSaved}, an integer scalar specifying the index of the saved selection to use when \code{SelectColType="Saved"}.
+\item \code{ColumnSelectionSaved}, an integer scalar specifying the index of the saved multiple column selection to use when \code{ColumnSelectionType="Saved"}.
 Defaults to 0.
 }
 
 The following slots are relevant to transmitting a selection of points:
 \itemize{
-\item \code{MultiSelectHistory}, a list of arbitrary elements that contain parameters for saved selections.
-Each element of this list corresponds to one saved selection.
+\item \code{SelectionHistory}, a list of arbitrary elements that contain parameters for saved multiple selections.
+Each element of this list corresponds to one saved selection in the current panel.
 Defaults to an empty list.
 }
 }

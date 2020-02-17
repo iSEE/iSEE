@@ -21,21 +21,23 @@ It provides slots and methods for specifying which feature to use and what to pl
 
 The following slots control the dimensionality reduction result that is used:
 \itemize{
-\item \code{YAxisFeatName}, a string specifying the name of the feature to plot on the y-axis.
+\item \code{YAxisFeatureName}, a string specifying the name of the feature to plot on the y-axis.
 If \code{NA}, defaults to the first row name of the SummarizedExperiment object.
 \item \code{Assay}, string specifying the name of the assay to use for obtaining expression values.
 Defaults to the first valid assay name (see \code{?"\link{.refineParameters,DotPlot-method}"} for details).
-\item \code{YAxisRowTable}, string specifying the encoded name of the transmitting panel to obtain a single selection that replaces \code{YAxisFeatName}.
+\item \code{YAxisFeatureSource}, string specifying the encoded name of the transmitting panel to obtain a single selection that replaces \code{YAxisFeatureName}.
 Defaults to \code{"---"}, i.e., no transmission is performed.
 \item \code{XAxis}, string specifying what should be plotting on the x-axis.
 This can be any one of \code{"None"}, \code{"Feature name"} or \code{"Column data"}.
 Defaults to \code{"None"}.
-\item \code{XAxisColData}, string specifying which column of the \code{\link{colData}} should be shown on the x-axis,
+\item \code{XAxisColumnData}, string specifying which column of the \code{\link{colData}} should be shown on the x-axis,
 if \code{XAxis="Column data"}.
 Defaults to the first valid \code{\link{colData}} field (see \code{?"\link{.refineParameters,ColumnDotPlot-method}"} for details).
-\item \code{XAaxisFeatName}, string specifying the name of the feature to plot on the x-axis,
+\item \code{XAaxisFeatureName}, string specifying the name of the feature to plot on the x-axis,
 if \code{XAxis="Feature name"}.
 Defaults to the first row name.
+\item \code{XAxisFeatureSource}, string specifying the encoded name of the transmitting panel to obtain a single selection that replaces \code{XAxisFeatureName}.
+Defaults to \code{"---"}, i.e., no transmission is performed.
 }
 
 In addition, this class inherits all slots from its parent \linkS4class{ColumnDotPlot}, \linkS4class{DotPlot} and \linkS4class{Panel} classes.

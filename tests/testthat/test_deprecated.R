@@ -1,3 +1,5 @@
+# library(iSEE); library(testthat); source("setup_sce.R"); source("test_deprecated.R")
+
 context("Deprecated")
 
 redDimArgs <- redDimPlotDefaults(sce, 1)
@@ -87,11 +89,11 @@ test_that("default functions supports 0-zero DataFrames", {
 
 test_that(".set_default_assay returns the appropriate value in the absence of logcounts", {
 
-    out <- .set_default_assay(sce)
+    out <- iSEE:::.set_default_assay(sce)
     expect_identical(out, 2L)
 
     assayNames(sce) <- c("assay1", "assay2")
-    out <- .set_default_assay(sce)
+    out <- iSEE:::.set_default_assay(sce)
     expect_identical(out, 1L)
 
 })
@@ -101,7 +103,7 @@ test_that(".translate_to_class handles NA values for faceting metadata", {
     redDimArgs[[iSEE:::.facetRowsByColData]] <- NA
     redDimArgs[[iSEE:::.facetColumnsByColData]] <- NA
 
-    .translate_to_class(redDimArgs, ReducedDimPlot, sce, is_row = FALSE)
+    iSEE:::.translate_to_class(redDimArgs, ReducedDimPlot, sce, is_row = FALSE)
 
 })
 
@@ -109,13 +111,22 @@ test_that(".translate_to_class properly converts panel names", {
 
     redDimArgs$SelectByPlot <- "Column data plot 1"
 
-    out <- .translate_to_class(redDimArgs, ReducedDimPlot, sce, is_row = FALSE)
+    out <- iSEE:::.translate_to_class(redDimArgs, ReducedDimPlot, sce, is_row = FALSE)
     expect_identical(out[[1]][["ColumnSelectionSource"]], "ColumnDataPlot1")
 
 })
 
+test_that(".translate_to_class renames deprecated slot names", {
+    
+    names(redDimArgs)[names(redDimArgs) == "SelectionBoxOpen"] <- "SelectBoxOpen"
+
+    out <- iSEE:::.translate_to_class(redDimArgs, ReducedDimPlot, sce, is_row = FALSE)
+    expect_true(any(slotNames(out[[1]]) == "SelectionBoxOpen"))
+    
+})
+
 test_that(".convert_old_name_to_new works as expected", {
 
-    out <- .convert_old_name_to_new("Column data plot 1")
+    out <- iSEE:::.convert_old_name_to_new("Column data plot 1")
     expect_identical(out, "ColumnDataPlot1")
 })

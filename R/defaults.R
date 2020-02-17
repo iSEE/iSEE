@@ -622,7 +622,7 @@ heatMapPlotDefaults <- function(se, number) {
         )
 
         for (i in renamer) {
-            replace <- which(i[1] %in% names(parameters))
+            replace <- which(names(parameters) %in% i[1])
             if (length(replace)) {
                 names(parameters)[replace] <- i[2]
             }

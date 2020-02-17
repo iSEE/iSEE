@@ -86,7 +86,7 @@
 .getPanelColor <- function(x) {
     opts <- iSEEOptions$get("panel.color")
     if (.encodedName(x) %in% names(opts)) {
-        as.character(opts[.encodedName(x)])
+        as.vector(opts[.encodedName(x)])
     } else {
         .panelColor(x)
     }

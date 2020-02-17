@@ -37,7 +37,7 @@ test_that(".getPanelColor returns the expected colors", {
     out <- .getPanelColor(x)
     expect_identical(out, "#07A274")
 
-    iSEEOptions$set(panel.color=list(ReducedDimensionPlot="#1e90ff"))
+    iSEEOptions$set(panel.color=c(ReducedDimensionPlot="#1e90ff"))
 
     x <- ReducedDimensionPlot()
     out <- .getPanelColor(x)

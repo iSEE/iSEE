@@ -39,7 +39,7 @@ rdp <- ReducedDimensionPlot()
 .getPanelColor(rdp)
 
 # Overriding the default colors
-iSEEOptions$set(panel.color=list(ReducedDimensionPlot="#1e90ff"))
+iSEEOptions$set(panel.color=c(ReducedDimensionPlot="#1e90ff"))
 .getPanelColor(rdp)
 
 }

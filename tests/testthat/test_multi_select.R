@@ -3,12 +3,12 @@
 
 # Setting up a chain of plots.
 memory <- list(
-    ReducedDimPlot(ColorByRowTable="RowDataTable1", ColorBy="Feature name"),
-    ColumnDataPlot(SelectColSource="ReducedDimPlot1"),
-    ColumnDataPlot(SelectColSource="ReducedDimPlot1"),
-    FeatureAssayPlot(SelectColSource="ColumnDataPlot1"),
-    FeatureAssayPlot(SelectColSource="FeatureAssayPlot1", YAxisRowTable="RowDataTable1"),
-    RowDataPlot(SelectRowSource="SampleAssayPlot1"),
+    ReducedDimPlot(ColorByFeatureSource="RowDataTable1", ColorBy="Feature name"),
+    ColumnDataPlot(ColumnSelectionSource="ReducedDimPlot1"),
+    ColumnDataPlot(ColumnSelectionSource="ReducedDimPlot1"),
+    FeatureAssayPlot(ColumnSelectionSource="ColumnDataPlot1"),
+    FeatureAssayPlot(ColumnSelectionSource="FeatureAssayPlot1", YAxisFeatureSource="RowDataTable1"),
+    RowDataPlot(RowSelectionSource="SampleAssayPlot1"),
     SampleAssayPlot(),
     RowDataTable()
 )

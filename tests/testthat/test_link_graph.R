@@ -7,10 +7,10 @@ context("selection_links")
 memory <- list(
     ReducedDimPlot(),
     ReducedDimPlot(),
-    ColumnDataPlot(SelectColSource="ReducedDimPlot1"),
-    ColumnDataPlot(SelectColSource="ReducedDimPlot1"),
-    FeatureAssayPlot(SelectColSource="ColumnDataPlot1"),
-    FeatureAssayPlot(SelectColSource="FeatureAssayPlot1"),
+    ColumnDataPlot(ColumnSelectionSource="ReducedDimPlot1"),
+    ColumnDataPlot(ColumnSelectionSource="ReducedDimPlot1"),
+    FeatureAssayPlot(ColumnSelectionSource="ColumnDataPlot1"),
+    FeatureAssayPlot(ColumnSelectionSource="FeatureAssayPlot1"),
     RowDataTable()
 )
 
@@ -151,11 +151,11 @@ test_that("graph adding and deleting responds to fields", {
 
 test_that("aesthetics links construction works as expected", {
     memory <- list(
-        ReducedDimPlot(ColorByRowTable="RowDataTable1"),
+        ReducedDimPlot(ColorByFeatureSource="RowDataTable1"),
         RowDataTable(),
-        FeatureAssayPlot(YAxisRowTable="RowDataPlot1"),
+        FeatureAssayPlot(YAxisFeatureSource="RowDataPlot1"),
         RowDataPlot(),
-        SampleAssayPlot(XAxisColTable="ColumnDataTable1"),
+        SampleAssayPlot(XAxisSampleSource="ColumnDataTable1"),
         ColumnDataTable()
     )
 
@@ -164,11 +164,11 @@ test_that("aesthetics links construction works as expected", {
 
     # All of the correct slots corresponding to each *Table slot are registered:
     ids <- igraph::get.edge.ids(g, c("RowDataTable1", "ReducedDimPlot1"))
-    expect_identical(igraph::E(g)$fields[[ids]], "ColorByFeatName")
+    expect_identical(igraph::E(g)$fields[[ids]], "ColorByFeatureName")
 
     ids <- igraph::get.edge.ids(g, c("RowDataPlot1", "FeatureAssayPlot1"))
-    expect_identical(igraph::E(g)$fields[[ids]], "YAxisFeatName")
+    expect_identical(igraph::E(g)$fields[[ids]], "YAxisFeatureName")
 
     ids <- igraph::get.edge.ids(g, c("ColumnDataTable1", "SampleAssayPlot1"))
-    expect_identical(igraph::E(g)$fields[[ids]], "XAxisSampName")
+    expect_identical(igraph::E(g)$fields[[ids]], "XAxisSampleName")
 })

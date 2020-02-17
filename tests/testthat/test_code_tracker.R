@@ -5,11 +5,11 @@ context("codeTracker")
 
 # Setting up a chain of plots.
 memory <- list(
-    ReducedDimPlot(ColorByRowTable="RowDataTable1", ColorBy="Feature name"),
-    ColumnDataPlot(SelectColSource="ReducedDimPlot1"),
-    ColumnDataPlot(SelectColSource="ReducedDimPlot1"),
-    FeatureAssayPlot(SelectColSource="ColumnDataPlot1"),
-    FeatureAssayPlot(SelectColSource="FeatureAssayPlot1", YAxisRowTable="RowDataTable1"),
+    ReducedDimPlot(ColorByFeatureSource="RowDataTable1", ColorBy="Feature name"),
+    ColumnDataPlot(ColumnSelectionSource="ReducedDimPlot1"),
+    ColumnDataPlot(ColumnSelectionSource="ReducedDimPlot1"),
+    FeatureAssayPlot(ColumnSelectionSource="ColumnDataPlot1"),
+    FeatureAssayPlot(ColumnSelectionSource="FeatureAssayPlot1", YAxisFeatureSource="RowDataTable1"),
     RowDataTable()
 )
 
@@ -69,7 +69,7 @@ test_that("code trackers can deparse a selection history", {
         mapping=list(x="X", y="Y"),
         coord=matrix(c(1, 2, 2, 1, 1, 1, 1, 2, 2, 1), ncol=2))
 
-    memory <- list(ReducedDimPlot(MultiSelectHistory=list(LASSO_CLOSED)))
+    memory <- list(ReducedDimPlot(SelectionHistory=list(LASSO_CLOSED)))
 
     # Mimicking a running instance of the app.
     pObjects <- mimic_live_app(sce, memory)

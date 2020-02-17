@@ -11,17 +11,17 @@
 #' Defaults to \code{"None"}.
 #' \item \code{ColorByDefaultColor}, a string specifying the default color to use for all points if \code{ColorBy="None"}.
 #' Defaults to \code{"black"}.
-#' \item \code{ColorByFeatName}, a string specifying the feature to be used for coloring points when \code{ColorBy="Feature name"}.
+#' \item \code{ColorByFeatureName}, a string specifying the feature to be used for coloring points when \code{ColorBy="Feature name"}.
 #' For \linkS4class{RowDotPlot}s, this is used to highlight the point corresponding to the selected feature;
 #' for \linkS4class{ColumnDotPlot}s, this is used to color each point according to the expression of that feature.
 #' If \code{NA}, this defaults to the name of the first row.
-#' \item \code{ColorByRowTable}, a string specifying the name of the panel to use for transmitting the feature selection to \code{ColorByFeatName}.
+#' \item \code{ColorByFeatureSource}, a string specifying the name of the panel to use for transmitting the feature selection to \code{ColorByFeatName}.
 #' Defaults to \code{"---"}.
-#' \item \code{ColorBySampName}, a string specifying the sample to be used for coloring points when \code{ColorBy="Sample name"}.
+#' \item \code{ColorBySampleName}, a string specifying the sample to be used for coloring points when \code{ColorBy="Sample name"}.
 #' For \linkS4class{RowDotPlot}s, this is used to color each point according to the expression of that sample;
 #' for \linkS4class{ColumnDotPlot}s, this is used to highlight the point corresponding to the selected sample.
 #' If \code{NA}, this defaults to the name of the first column.
-#' \item \code{ColorByColTable}, a string specifying the name of the panel to use for transmitting the sample selection to \code{ColorBySampName}.
+#' \item \code{ColorBySampleSource}, a string specifying the name of the panel to use for transmitting the sample selection to \code{ColorBySampName}.
 #' Defaults to \code{"---"}.
 #' }
 #'

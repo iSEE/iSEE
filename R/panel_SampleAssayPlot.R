@@ -6,11 +6,11 @@
 #' @section Slot overview:
 #' The following slots control the dimensionality reduction result that is used:
 #' \itemize{
-#' \item \code{YAxisSampName}, a string specifying the name of the sample to plot on the y-axis.
+#' \item \code{YAxisSampleName}, a string specifying the name of the sample to plot on the y-axis.
 #' If \code{NA}, defaults to the first column name of the SummarizedExperiment object.
 #' \item \code{Assay}, string specifying the name of the assay to use for obtaining expression values.
 #' Defaults to the first valid assay name (see \code{?"\link{.refineParameters,DotPlot-method}"} for details).
-#' \item \code{YAxisRowTable}, string specifying the encoded name of the transmitting panel to obtain a single selection that replaces \code{YAxisSampName}.
+#' \item \code{YAxisSampleSource}, string specifying the encoded name of the transmitting panel to obtain a single selection that replaces \code{YAxisSampleName}.
 #' Defaults to \code{"---"}, i.e., no transmission is performed.
 #' \item \code{XAxis}, string specifying what should be plotting on the x-axis.
 #' This can be any one of \code{"None"}, \code{"Sample name"} or \code{"Column data"}.
@@ -18,9 +18,11 @@
 #' \item \code{XAxisColData}, string specifying which column of the \code{\link{colData}} should be shown on the x-axis,
 #' if \code{XAxis="Column data"}.
 #' Defaults to the first valid \code{\link{colData}} field (see \code{?"\link{.refineParameters,ColumnDotPlot-method}"} for details).
-#' \item \code{XAaxisSampName}, string specifying the name of the sample to plot on the x-axis,
+#' \item \code{XAaxisSampleName}, string specifying the name of the sample to plot on the x-axis,
 #' if \code{XAxis="Sample name"}.
 #' Defaults to the first column name.
+#' \item \code{XAxisSampleSource}, string specifying the encoded name of the transmitting panel to obtain a single selection that replaces \code{XAxisSampleName}.
+#' Defaults to \code{"---"}, i.e., no transmission is performed.
 #' }
 #'
 #' In addition, this class inherits all slots from its parent \linkS4class{ColumnDotPlot}, \linkS4class{DotPlot} and \linkS4class{Panel} classes.

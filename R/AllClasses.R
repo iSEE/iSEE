@@ -115,9 +115,9 @@ collated[.organizationId] <- "integer"
 collated[.organizationHeight] <- "integer"
 collated[.organizationWidth] <- "integer"
 
-.selectParamBoxOpen <- "SelectBoxOpen"
-.selectRowSource <- "SelectRowSource"
-.selectColSource <- "SelectColSource"
+.selectParamBoxOpen <- "SelectionBoxOpen"
+.selectRowSource <- "RowSelectionSource"
+.selectColSource <- "ColumnSelectionSource"
 
 collated[.selectParamBoxOpen] <- "logical"
 collated[.selectRowSource] <- "character"
@@ -127,10 +127,10 @@ collated[.selectColSource] <- "character"
 
 collated[.dataParamBoxOpen] <- "logical"
 
-.selectRowType <- "SelectRowType"
-.selectRowSaved <- "SelectRowSaved"
-.selectColType <- "SelectColType"
-.selectColSaved <- "SelectColSaved"
+.selectRowType <- "RowSelectionType"
+.selectRowSaved <- "RowSelectionSaved"
+.selectColType <- "ColumnSelectionType"
+.selectColSaved <- "ColumnSelectionSaved"
 
 collated[.selectRowType] <- "character"
 collated[.selectRowSaved] <- "integer"
@@ -139,7 +139,7 @@ collated[.selectColSaved] <- "integer"
 
 # Practically, this is only a DotPlot feature, but we put it here otherwise the
 # Saved concept is not generic.
-.multiSelectHistory <- "MultiSelectHistory"
+.multiSelectHistory <- "SelectionHistory"
 
 collated[.multiSelectHistory] <- "list"
 
@@ -158,10 +158,10 @@ collated[.facetByColumn] <- "character"
 
 .colorByField <- "ColorBy"
 .colorByDefaultColor <- "ColorByDefaultColor"
-.colorByFeatName <- "ColorByFeatName"
-.colorByRowTable <- "ColorByRowTable"
-.colorBySampName <- "ColorBySampName"
-.colorByColTable <- "ColorByColTable"
+.colorByFeatName <- "ColorByFeatureName"
+.colorByRowTable <- "ColorByFeatureSource"
+.colorBySampName <- "ColorBySampleName"
+.colorByColTable <- "ColorBySampleSource"
 
 collated[.colorByField] <- "character"
 collated[.colorByDefaultColor] <- "character"
@@ -227,19 +227,19 @@ setClass("DotPlot", contains=c("Panel", "VIRTUAL"), slots=collated)
 
 collated <- character(0)
 
-.colorByColData <- "ColorByColData"
-.colorByFeatNameAssay <- "ColorByFeatNameAssay"
-.colorBySampNameColor <- "ColorBySampNameColor"
+.colorByColData <- "ColorByColumnData"
+.colorByFeatNameAssay <- "ColorByFeatureNameAssay"
+.colorBySampNameColor <- "ColorBySampleNameColor"
 
 collated[.colorByColData] <- "character"
 collated[.colorByFeatNameAssay] <- "character"
 collated[.colorBySampNameColor] <- "character"
 
-.shapeByColData <- "ShapeByColData"
+.shapeByColData <- "ShapeByColumnData"
 
 collated[.shapeByColData] <- "character"
 
-.sizeByColData <- "SizeByColData"
+.sizeByColData <- "SizeByColumnData"
 
 collated[.sizeByColData] <- "character"
 
@@ -251,8 +251,8 @@ setClass("ColumnDotPlot", contains=c("DotPlot", "VIRTUAL"), slots=collated)
 collated <- character(0)
 
 .colorByRowData <- "ColorByRowData"
-.colorBySampNameAssay <- "ColorBySampNameAssay"
-.colorByFeatNameColor <- "ColorByFeatNameColor"
+.colorBySampNameAssay <- "ColorBySampleNameAssay"
+.colorByFeatNameColor <- "ColorByFeatureNameColor"
 
 collated[.colorByRowData] <- "character"
 collated[.colorBySampNameAssay] <- "character"
@@ -287,11 +287,11 @@ setClass("ReducedDimPlot", contains="ColumnDotPlot", slots=collated)
 
 .featAssayAssay <- "Assay"
 .featAssayXAxis <- "XAxis"
-.featAssayXAxisColData <- "XAxisColData"
-.featAssayXAxisRowTable <- "XAxisRowTable"
-.featAssayXAxisFeatName <- "XAxisFeatName"
-.featAssayYAxisRowTable <- "YAxisRowTable"
-.featAssayYAxisFeatName <- "YAxisFeatName"
+.featAssayXAxisColData <- "XAxisColumnData"
+.featAssayXAxisRowTable <- "XAxisFeatureSource"
+.featAssayXAxisFeatName <- "XAxisFeatureName"
+.featAssayYAxisRowTable <- "YAxisFeatureSource"
+.featAssayYAxisFeatName <- "YAxisFeatureName"
 
 collated <- character(0)
 collated[.featAssayAssay] <- "character"
@@ -309,7 +309,7 @@ setClass("FeatureAssayPlot", contains="ColumnDotPlot", slots=collated)
 
 .colDataYAxis <- "YAxis"
 .colDataXAxis <- "XAxis"
-.colDataXAxisColData <- "XAxisColData"
+.colDataXAxisColData <- "XAxisColumnData"
 
 collated <- character(0)
 collated[.colDataXAxis] <- "character"
@@ -338,10 +338,10 @@ setClass("RowDataPlot", contains="RowDotPlot", slots=collated)
 .sampAssayAssay <- "Assay"
 .sampAssayXAxis <- "XAxis"
 .sampAssayXAxisRowData <- "XAxisRowData"
-.sampAssayXAxisColTable <- "XAxisColTable"
-.sampAssayXAxisSampName <- "XAxisSampName"
-.sampAssayYAxisColTable <- "YAxisColTable"
-.sampAssayYAxisSampName <- "YAxisSampName"
+.sampAssayXAxisColTable <- "XAxisSampleSource"
+.sampAssayXAxisSampName <- "XAxisSampleName"
+.sampAssayYAxisColTable <- "YAxisSampleSource"
+.sampAssayYAxisSampName <- "YAxisSampleName"
 
 collated <- character(0)
 collated[.sampAssayAssay] <- "character"
@@ -384,13 +384,13 @@ setClass("ColumnDataTable", contains="ColumnTable")
 ####################################################
 
 .heatMapAssay <- "Assay"
-.heatMapCustomFeatNames <- "CustomFeatName"
-.heatMapFeatNameText <- "FeatNameText"
-.heatMapClusterFeatures <- "ClusterFeatures"
-.heatMapClusterDistanceFeatures <- "ClusterDistanceFeatures"
-.heatMapClusterMethodFeatures <- "ClusterMethodFeatures"
+.heatMapCustomFeatNames <- "CustomRows"
+.heatMapFeatNameText <- "CustomRowsText"
+.heatMapClusterFeatures <- "ClusterRows"
+.heatMapClusterDistanceFeatures <- "ClusterRowsDistance"
+.heatMapClusterMethodFeatures <- "ClusterRowsMethod"
 
-.heatMapColData <- "ColData"
+.heatMapColData <- "ColumnData"
 .heatMapRowData <- "RowData"
 
 .heatMapCustomAssayBounds <- "CustomBounds"

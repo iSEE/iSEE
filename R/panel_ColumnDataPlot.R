@@ -11,7 +11,7 @@
 #' \item \code{XAxis}, string specifying what should be plotting on the x-axis.
 #' This can be any one of \code{"None"} or \code{"Column data"}.
 #' Defaults to \code{"None"}.
-#' \item \code{XAxisColData}, string specifying the column of the \code{\link{colData}} to show on the x-axis.
+#' \item \code{XAxisColumnData}, string specifying the column of the \code{\link{colData}} to show on the x-axis.
 #' If \code{NA}, defaults to the first valid field.
 #' }
 #'

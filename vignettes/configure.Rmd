@@ -77,12 +77,12 @@ app <- iSEE(sce, initial=list(
 ```
 
 The genes to show on the Y-axis in the two plots can be specified via the `featAssayArgs` argument to `iSEE`. This is a `DataFrame`, specifying the initial parameters for each plot.
-In this case, we want to modify the `YAxis` and `YAxisFeatName` defaults for the two plots:
+In this case, we want to modify the `YAxis` and `YAxisFeatureName` defaults for the two plots:
 
 ```{r fexArg}
 app <- iSEE(sce, initial=list(
-    FeatureAssayPlot(YAxisFeatName="0610009L18Rik"),
-    FeatureAssayPlot(YAxisFeatName="0610009B22Rik")
+    FeatureAssayPlot(YAxisFeatureName="0610009L18Rik"),
+    FeatureAssayPlot(YAxisFeatureName="0610009B22Rik")
 )) 
 ```
 
@@ -124,8 +124,8 @@ For instance, the `XAxis` column of _feature assay plot_ arguments can have up t
 1. `"None"`: does not require any addition input (draws a single violin for all features).
 2. `"Column data"`: requires `XAxisColData` to be set to a column name in the `colData(sce)`.
 3. `"Feature name"`: requires either
-    a. `XAxisFeatName` to be set to a feature name (or positional index) in `rownames(sce)`.
-    b. `XAxisRowTable` to be set to the name of a _Row statistics table_ panel with an active selection set in its own `Selected` column.
+    a. `XAxisFeatureName` to be set to a feature name (or positional index) in `rownames(sce)`.
+    b. `XAxisFeatureSource` to be set to the name of a _Row statistics table_ panel with an active selection set in its own `Selected` column.
 
 Each of these scenarios is demonstrated below:
 
@@ -144,12 +144,12 @@ fex2[["XAxisColData"]] <- "Core.Type"
 # Example 3a
 fex3 <- fex
 fex3[["XAxis"]] <- "Feature name"
-fex3[["XAxisFeatName"]] <- "Zyx"
+fex3[["XAxisFeatureName"]] <- "Zyx"
 
 # Example 4 (also requires a row statistic table)
 fex4 <- fex
 fex4[["XAxis"]] <- "Feature name"
-fex4[["XAxisRowTable"]] <- "RowDataTable1"
+fex4[["XAxisFeatureSource"]] <- "RowDataTable1"
 rex <- RowDataTable(Selected="Ints2", Search="Ints", PanelWidth=12L)
 
 # Initialisation

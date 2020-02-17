@@ -110,7 +110,7 @@ test_that(".translate_to_class properly converts panel names", {
     redDimArgs$SelectByPlot <- "Column data plot 1"
 
     out <- .translate_to_class(redDimArgs, ReducedDimPlot, sce, is_row = FALSE)
-    expect_identical(out[[1]][["SelectColSource"]], "ColumnDataPlot1")
+    expect_identical(out[[1]][["ColumnSelectionSource"]], "ColumnDataPlot1")
 
 })
 

@@ -5,14 +5,14 @@ context("iSEE-extras")
 
 memory <- list(
     ReducedDimPlot(),
-    ColumnDataPlot(SelectColSource="ReducedDimPlot1", ColorBy="Feature name", ColorByRowTable="RowDataTable1"),
-    ColumnDataPlot(SelectColSource="ReducedDimPlot1"),
-    FeatureAssayPlot(SelectColSource="ColumnDataPlot1"),
-    FeatureAssayPlot(SelectColSource="FeatureAssayPlot1", XAxis="Feature name",
-        YAxisRowTable="RowDataTable1", XAxisRowTable="RowDataTable2"),
+    ColumnDataPlot(ColumnSelectionSource="ReducedDimPlot1", ColorBy="Feature name", ColorByFeatureSource="RowDataTable1"),
+    ColumnDataPlot(ColumnSelectionSource="ReducedDimPlot1"),
+    FeatureAssayPlot(ColumnSelectionSource="ColumnDataPlot1"),
+    FeatureAssayPlot(ColumnSelectionSource="FeatureAssayPlot1", XAxis="Feature name",
+        YAxisFeatureSource="RowDataTable1", XAxisFeatureSource="RowDataTable2"),
     RowDataTable(),
     RowDataTable(),
-    SampleAssayPlot(XAxis="Sample name", XAxisColTable="ColumnDataTable1"),
+    SampleAssayPlot(XAxis="Sample name", XAxisSampleSource="ColumnDataTable1"),
     ColumnDataTable()
 )
 
@@ -38,10 +38,10 @@ test_that(".setup_initial_state works correctly", {
     expect_identical(names(memory2), unname(vapply(memory2, .getEncodedName, "")))
 
     # Actually runs the refinement.
-    expect_identical(memory2[["FeatureAssayPlot1"]][["YAxisFeatName"]], rownames(sce)[1])
+    expect_identical(memory2[["FeatureAssayPlot1"]][["YAxisFeatureName"]], rownames(sce)[1])
     expect_identical(memory2[["ReducedDimPlot1"]][["Type"]], "PCA")
     expect_identical(memory2[["ColumnDataPlot1"]][["YAxis"]], colnames(colData(sce))[1])
-    expect_identical(memory2[["SampleAssayPlot1"]][["YAxisSampName"]], colnames(sce)[1])
+    expect_identical(memory2[["SampleAssayPlot1"]][["YAxisSampleName"]], colnames(sce)[1])
 
     # Counter makes sense.
     tab <- table(vapply(memory2, iSEE:::.encodedName, ""))

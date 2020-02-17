@@ -5,7 +5,7 @@ context("table_links")
 
 test_that("dimname observers work to change the source", {
     memory <- list(
-        FeatureAssayPlot(YAxisRowTable="RowDataTable1"),
+        FeatureAssayPlot(YAxisFeatureSource="RowDataTable1"),
         RowDataTable(),
         RowDataTable()
     )
@@ -23,11 +23,11 @@ test_that("dimname observers work to change the source", {
         choices=NULL)
 
     expect_false(out)
-    expect_identical(pObjects$memory$FeatureAssayPlot1[["YAxisRowTable"]], "RowDataTable1")
+    expect_identical(pObjects$memory$FeatureAssayPlot1[["YAxisFeatureSource"]], "RowDataTable1")
     expect_true(igraph::are_adjacent(pObjects$aesthetics_links, "RowDataTable1", "FeatureAssayPlot1"))
 
     # Changing the table.
-    input$FeatureAssayPlot1_YAxisRowTable <- "RowDataTable2"
+    input$FeatureAssayPlot1_YAxisFeatureSource <- "RowDataTable2"
 
     out <- iSEE:::.setup_dimname_source_observer(
         "FeatureAssayPlot1", use_mode_field=NA, use_value=NA,
@@ -37,12 +37,12 @@ test_that("dimname observers work to change the source", {
         choices=NULL)
 
     expect_false(out)
-    expect_identical(pObjects$memory$FeatureAssayPlot1[["YAxisRowTable"]], "RowDataTable2")
+    expect_identical(pObjects$memory$FeatureAssayPlot1[["YAxisFeatureSource"]], "RowDataTable2")
     expect_false(igraph::are_adjacent(pObjects$aesthetics_links, "RowDataTable1", "FeatureAssayPlot1"))
     expect_true(igraph::are_adjacent(pObjects$aesthetics_links, "RowDataTable2", "FeatureAssayPlot1"))
 
     # Erasing the table.
-    input$FeatureAssayPlot1_YAxisRowTable <- "---"
+    input$FeatureAssayPlot1_YAxisFeatureSource <- "---"
 
     out <- iSEE:::.setup_dimname_source_observer(
         "FeatureAssayPlot1", use_mode_field=NA, use_value=NA,
@@ -52,7 +52,7 @@ test_that("dimname observers work to change the source", {
         choices=NULL)
 
     expect_false(out)
-    expect_identical(pObjects$memory$FeatureAssayPlot1[["YAxisRowTable"]], "---")
+    expect_identical(pObjects$memory$FeatureAssayPlot1[["YAxisFeatureSource"]], "---")
     expect_false(igraph::are_adjacent(pObjects$aesthetics_links, "RowDataTable1", "FeatureAssayPlot1"))
     expect_false(igraph::are_adjacent(pObjects$aesthetics_links, "RowDataTable2", "FeatureAssayPlot1"))
 })
@@ -60,7 +60,7 @@ test_that("dimname observers work to change the source", {
 test_that("dimname observers work to change the usage mode", {
     memory <- list(
         ReducedDimPlot(),
-        FeatureAssayPlot(YAxisRowTable="RowDataTable1"),
+        FeatureAssayPlot(YAxisFeatureSource="RowDataTable1"),
         RowDataTable()
     )
 
@@ -70,7 +70,7 @@ test_that("dimname observers work to change the usage mode", {
 
     # The color choice has changed.
     input$ReducedDimPlot1_ColorBy <- "Feature name"
-    input$ReducedDimPlot1_ColorByRowTable <- "RowDataTable1"
+    input$ReducedDimPlot1_ColorByFeatureSource <- "RowDataTable1"
     expect_identical(pObjects$memory$ReducedDimPlot1[["ColorBy"]], "None")
     expect_false(igraph::are_adjacent(pObjects$aesthetics_links, "RowDataTable1", "ReducedDimPlot1"))
 
@@ -88,7 +88,7 @@ test_that("dimname observers work to change the usage mode", {
 
     # The feature choice has changed.
     input$FeatureAssayPlot1_XAxis <- "Feature name"
-    input$FeatureAssayPlot1_XAxisRowTable <- "RowDataTable1"
+    input$FeatureAssayPlot1_XAxisFeatureSource <- "RowDataTable1"
     expect_identical(pObjects$memory$FeatureAssayPlot1[["XAxis"]], "None")
 
     id <- igraph::get.edge.ids(pObjects$aesthetics_links, c("RowDataTable1", "FeatureAssayPlot1"))
@@ -127,7 +127,7 @@ test_that(".setup_dimname_source_observer", {
 
     memory <- list(
         ReducedDimPlot(),
-        FeatureAssayPlot(YAxisRowTable="RowDataTable1"),
+        FeatureAssayPlot(YAxisFeatureSource="RowDataTable1"),
         RowDataTable(Selected=tail(rownames(sce), 1))
     )
 
@@ -137,7 +137,7 @@ test_that(".setup_dimname_source_observer", {
 
     # The color choice has changed.
     input$ReducedDimPlot1_ColorBy <- "Feature name"
-    input$ReducedDimPlot1_ColorByRowTable <- "RowDataTable1"
+    input$ReducedDimPlot1_ColorByFeatureSource <- "RowDataTable1"
 
     # Define dummy functions called by updateSelectizeInput
     session <- new.env()

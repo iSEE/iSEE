@@ -673,7 +673,7 @@ setGeneric(".multiSelectionAvailable", function(x, contents) standardGeneric(".m
 #' \item \code{param}, the name of the slot of \code{x} that can potentially respond to a single selection in a transmitting panel,
 #' e.g., \code{ColorByFeatName} in \linkS4class{DotPlot}s.
 #' \item \code{source}, the name of the slot of \code{x} that indicates which transmitting panel to respond to,
-#' e.g., \code{ColorByRowTable} in \linkS4class{DotPlot}s.
+#' e.g., \code{ColorByFeatureSource} in \linkS4class{DotPlot}s.
 #' }
 #'
 #' The paradigm here is that the interface will contain two \code{\link{selectInput}} elements, one for each of the \code{param} and \code{source} slots.

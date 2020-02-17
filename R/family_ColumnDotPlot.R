@@ -6,7 +6,7 @@
 #' @section Slot overview:
 #' The following slots control coloring of the points:
 #' \itemize{
-#' \item \code{ColorByColData}, a string specifying the \code{\link{colData}} field for controlling point color,
+#' \item \code{ColorByColumnData}, a string specifying the \code{\link{colData}} field for controlling point color,
 #' if \code{ColorBy="Column data"} (see the \linkS4class{Panel} class).
 #' Defaults to the first valid field (see \code{.refineParameters} below).
 #' \item \code{ColorByFeatNameAssay}, a string specifying the assay of the SummarizedExperiment object containing values to use for coloring,
@@ -19,10 +19,10 @@
 #'
 #' The following slots control other metadata-related aesthetic aspects of the points:
 #' \itemize{
-#' \item \code{ShapeByColData}, a string specifying the \code{\link{colData}} field for controlling point shape,
+#' \item \code{ShapeByColumnData}, a string specifying the \code{\link{colData}} field for controlling point shape,
 #' if \code{ShapeBy="Column data"} (see the \linkS4class{Panel} class).
 #' The specified field should contain categorical values; defaults to the first such valid field.
-#' \item \code{SizeByColData}, a string specifying the \code{\link{colData}} field for controlling point size,
+#' \item \code{SizeByColumnData}, a string specifying the \code{\link{colData}} field for controlling point size,
 #' if \code{SizeBy="Column data"} (see the \linkS4class{Panel} class).
 #' The specified field should contain continuous values; defaults to the first such valid field.
 #' }

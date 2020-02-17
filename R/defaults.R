@@ -2,6 +2,36 @@
 .selectMultiType <- "SelectMultiType"
 .selectMultiSaved <- "SelectMultiSaved"
 
+.selectParamBoxOpen0 <- "SelectBoxOpen"
+.multiSelectHistory0 <- "MultiSelectHistory"
+
+.colorByFeatName0 <- "ColorByFeatName"
+.colorByRowTable0 <- "ColorByRowTable"
+.colorBySampName0 <- "ColorBySampName"
+.colorByColTable0 <- "ColorByColTable"
+
+.colorByFeatNameAssay0 <- "ColorByFeatNameAssay"
+.colorBySampNameColor0 <- "ColorBySampNameColor"
+.colorBySampNameAssay0 <- "ColorBySampNameAssay"
+.colorByFeatNameColor0 <- "ColorByFeatNameColor"
+
+.colorByColData0 <- "ColorByColData"
+.shapeByColData0 <- "ShapeByColData"
+.sizeByColData0 <- "SizeByColData"
+
+.featAssayXAxisColData0 <- "XAxisColData"
+.featAssayXAxisRowTable0 <- "XAxisRowTable"
+.featAssayXAxisFeatName0 <- "XAxisFeatName"
+.featAssayYAxisRowTable0 <- "YAxisRowTable"
+.featAssayYAxisFeatName0 <- "YAxisFeatName"
+
+.sampAssayXAxisColTable0 <- "XAxisColTable"
+.sampAssayXAxisSampName0 <- "XAxisSampName"
+.sampAssayYAxisColTable0 <- "YAxisColTable"
+.sampAssayYAxisSampName0 <- "YAxisSampName"
+
+.colDataXAxisColData0 <- "XAxisColData"
+
 .lassoData <- "LassoData"
 
 .facetRowsByRowData <- "RowFacetByRowData"
@@ -558,6 +588,39 @@ heatMapPlotDefaults <- function(se, number) {
         names(parameters)[nm==.selectMultiType] <- if (is_row) .selectRowType else .selectColType
         names(parameters)[nm==.selectMultiSaved] <- if (is_row) .selectRowSaved else .selectColSaved
 
+        renamer <- list(
+            c(.selectParamBoxOpen0, .selectParamBoxOpen),
+            c(.multiSelectHistory0, .multiSelectHistory),
+            c(.colorByFeatName0, .colorByFeatName),
+            c(.colorByRowTable0, .colorByRowTable),
+            c(.colorBySampName0, .colorBySampName),
+            c(.colorByColTable0, .colorByColTable),
+            c(.colorByColData0, .colorByColData),
+            c(.shapeByColData0, .shapeByColData),
+            c(.sizeByColData0, .sizeByColData),
+            c(.featAssayXAxisColData0, .featAssayXAxisColData),
+            c(.colDataXAxisColData0, .colDataXAxisColData),
+            c(.colorByFeatNameAssay0, .colorByFeatNameAssay),
+            c(.colorBySampNameColor0, .colorBySampNameColor),
+            c(.colorBySampNameAssay0, .colorBySampNameAssay),
+            c(.colorByFeatNameColor0, .colorByFeatNameColor),
+            c(.featAssayXAxisRowTable0, .featAssayXAxisRowTable),
+            c(.featAssayXAxisFeatName0, .featAssayXAxisFeatName),
+            c(.featAssayYAxisRowTable0, .featAssayYAxisRowTable),
+            c(.featAssayYAxisFeatName0, .featAssayYAxisFeatName),
+            c(.sampAssayXAxisColTable0, .sampAssayXAxisColTable),
+            c(.sampAssayXAxisSampName0, .sampAssayXAxisSampName),
+            c(.sampAssayYAxisColTable0, .sampAssayYAxisColTable),
+            c(.sampAssayYAxisSampName0, .sampAssayYAxisSampName)
+        )
+
+        for (i in renamer) {
+            replace <- which(i[1] %in% names(parameters))
+            if (length(replace)) {
+                names(parameters)[replace] <- i[2]
+            }
+        }
+
         # Migrating non-empty lasso to the brush data.
         if (length(parameters[[.lassoData]])) {
             parameters[[.brushData]] <- parameters[[.lassoData]]
@@ -609,9 +672,9 @@ heatMapPlotDefaults <- function(se, number) {
             if (!is.integer(parameters[[i]])) {
                 next
             }
-            if (grepl("FeatName$", i)) {
+            if (grepl("FeatureName$", i)) {
                 parameters[[i]] <- rownames(se)[parameters[[i]]]
-            } else if (grepl("SampName$", i)) {
+            } else if (grepl("SampleName$", i)) {
                 parameters[[i]] <- colnames(se)[parameters[[i]]]
             } else if (grepl("Assay$", i)) {
                 parameters[[i]] <- assayNames(se)[parameters[[i]]]

@@ -71,8 +71,8 @@
 .visualParamChoiceLegendTitle <- "Legends"
 .visualParamChoiceOtherTitle <- "Other"
 
-.showNamesRowTitle <- "Features"
-.showNamesColumnTitle <- "Samples"
+.showNamesRowTitle <- "Rows"
+.showNamesColumnTitle <- "Columns"
 
 .plotLegendRightTitle <- "Right"
 .plotLegendBottomTitle <- "Bottom"

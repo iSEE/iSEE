@@ -27,15 +27,15 @@ The following slots control the assay that is used:
 \itemize{
 \item \code{Assay}, string specifying the name of the assay to use for obtaining expression values.
 Defaults to the first valid assay name (see \code{?"\link{.refineParameters,ComplexHeatmapPlot-method}"} for details).
-\item \code{CustomFeatName}, a logical scalar indicating whether the custom list of features should be used.
+\item \code{CustomRows}, a logical scalar indicating whether the custom list of features should be used.
 If \code{FALSE}, the incoming selection is used instead. Defaults to \code{TRUE}.
-\item \code{FeatNameText}, string specifying a custom list of features to use, as newline-separated row names.
-If \code{NA}, defaults to the first row name of the SummarizedExperiment object.
+\item \code{CustomRowsText}, string specifying a custom list of features to use, as newline-separated row names.
+If \code{NA}, defaults to the first row name of the \linkS4class{SummarizedExperiment} object.
 }
 
 The following slots control the metadata variables that are used:
 \itemize{
-\item \code{ColData}, a character vector specifying columns of the \code{\link{colData}} to show as \code{\link{columnAnnotation}}.
+\item \code{ColumnData}, a character vector specifying columns of the \code{\link{colData}} to show as \code{\link{columnAnnotation}}.
 Defaults to \code{character(0)}.
 \item \code{RowData}, a character vector specifying columns of the \code{\link{rowData}} to show as \code{\link{columnAnnotation}}.
 Defaults to \code{character(0)}.
@@ -43,12 +43,12 @@ Defaults to \code{character(0)}.
 
 The following slots control the clustering of features:
 \itemize{
-\item \code{ClusterFeatures}, a logical scalar indicating whether features should be clustered by assay data.
+\item \code{ClusterRows}, a logical scalar indicating whether features should be clustered by assay data.
 Defaults to \code{FALSE}.
-\item \code{ClusterDistanceFeatures}, string specifying a distance measure to use.
+\item \code{ClusterRowsDistance}, string specifying a distance measure to use.
 This can be any one of \code{"euclidean"}, \code{"maximum"}, \code{"manhattan"}, \code{"canberra"}, \code{"binary"}, \code{"minkowski"}, \code{"pearson"}, \code{"spearman"}, or \code{"kendall"}.
 Defaults to \code{"spearman"}.
-\item \code{ClusterMethodFeatures}, string specifying a linkage method to use.
+\item \code{ClusterRowsMethod}, string specifying a linkage method to use.
 This can be any one of \code{"ward.D"}, \code{"ward.D2"}, \code{"single"}, \code{"complete"}, \code{"average"}, \code{"mcquitty"}, \code{"median"}, or \code{"centroid"}.
 Defaults to \code{"ward.D2"}.
 }
@@ -56,8 +56,8 @@ Defaults to \code{"ward.D2"}.
 The following slots refer to general plotting parameters:
 \itemize{
 \item \code{ShowDimNames}, a character vector specifying the dimensions for which to display names.
-This can contain zero or more of \code{"Features"} and \code{"Samples"}.
-Defaults to \code{"Features"}.
+This can contain zero or more of \code{"Rows"} and \code{"Columns"}.
+Defaults to \code{"Rows"}.
 \item \code{LegendPosition}, string specifying the position of the legend on the plot.
 Defaults to \code{"Bottom"} but can also be \code{"Right"}.
 \item \code{LegendDirection}, string specifying the orientation of the legend on the plot for continuous covariates.
@@ -126,7 +126,7 @@ For defining the panel name:
 
 x <- ComplexHeatmapPlot()
 x[["ShowDimNames"]]
-x[["ShowDimNames"]] <- c("Features", "Samples")
+x[["ShowDimNames"]] <- c("Rows", "Columns")
 
 ##################
 # For developers #

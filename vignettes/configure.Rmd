@@ -125,7 +125,7 @@ For instance, the `XAxis` column of _feature assay plot_ arguments can have up t
 2. `"Column data"`: requires `XAxisColumnData` to be set to a column name in the `colData(sce)`.
 3. `"Feature name"`: requires either
     a. `XAxisFeatureName` to be set to a feature name (or positional index) in `rownames(sce)`.
-    b. `XAxisFeatureSource` to be set to the name of a _Row statistics table_ panel with an active selection set in its own `Selected` column.
+    b. `XAxisFeatureSource` to be set to the name of a _Row data table_ panel with an active selection set in its own `Selected` column.
 
 Each of these scenarios is demonstrated below:
 
@@ -156,7 +156,7 @@ rex <- RowDataTable(Selected="Ints2", Search="Ints", PanelWidth=12L)
 app <- iSEE(sce, initial=list(fex1, fex2, fex3, fex4, rex))
 ```
 
-Note how _Example 3b_ requires an active _row statistics table_ as a source of selection.
+Note how _Example 3b_ requires an active _row data table_ as a source of selection.
 To facilitate visualisation, we added the features identifiers as the `gene_id` column in `rowData(sce)`,
 we preselected the feature `"Ints2"`, and we prefiltered the table using the pattern `"Ints"` on the `gene_id` column to show this active selection.
 

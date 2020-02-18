@@ -32,7 +32,7 @@
 #'
 #' For defining the panel name:
 #' \itemize{
-#' \item \code{\link{.fullName}(x)} will return \code{"Column statistics table"}.
+#' \item \code{\link{.fullName}(x)} will return \code{"Column data table"}.
 #' }
 #' 
 #' For creating the output:
@@ -123,7 +123,7 @@ setMethod(".refineParameters", "ColumnDataTable", function(x, se) {
 })
 
 #' @export
-setMethod(".fullName", "ColumnDataTable", function(x) "Column statistics table")
+setMethod(".fullName", "ColumnDataTable", function(x) "Column data table")
 
 #' @export
 setMethod(".panelColor", "ColumnDataTable", function(x) "#B00258")

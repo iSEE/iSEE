@@ -49,7 +49,7 @@ otherwise it calls \code{\link{.hideInterface,Table-method}}
 
 For defining the panel name:
 \itemize{
-\item \code{\link{.fullName}(x)} will return \code{"Column statistics table"}.
+\item \code{\link{.fullName}(x)} will return \code{"Column data table"}.
 }
 
 For creating the output:

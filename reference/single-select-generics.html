@@ -73,7 +73,7 @@ This suite of generics controls the behavior of these single selections." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.1</span>
       </span>
     </div>
 
@@ -174,9 +174,9 @@ For example, a data.frame of coordinates is stored by <a href='DotPlot-class.htm
 <p><code>.singleSelectionSlots(x)</code> should return a list with one internal list for each slot in <code>x</code> that might respond to a single selection from a transmitting panel.
 This internal list should contain at least entries with the following names:</p><ul>
 <li><p><code>param</code>, the name of the slot of <code>x</code> that can potentially respond to a single selection in a transmitting panel,
-e.g., <code>ColorByFeatName</code> in <a href='DotPlot-class.html'>DotPlot</a>s.</p></li>
+e.g., <code>ColorByFeatureName</code> in <a href='DotPlot-class.html'>DotPlot</a>s.</p></li>
 <li><p><code>source</code>, the name of the slot of <code>x</code> that indicates which transmitting panel to respond to,
-e.g., <code>ColorByRowTable</code> in <a href='DotPlot-class.html'>DotPlot</a>s.</p></li>
+e.g., <code>ColorByFeatureSource</code> in <a href='DotPlot-class.html'>DotPlot</a>s.</p></li>
 </ul>
 
 <p>The paradigm here is that the interface will contain two <code>selectInput</code> elements, one for each of the <code>param</code> and <code>source</code> slots.
@@ -200,7 +200,7 @@ An example would be <code>"Feature name"</code> in <a href='DotPlot-class.html'>
 i.e., changing this value will cause all existing selections to be invalidated
 and will trigger re-rendering of the children receiving multiple selections.
 This is <code>FALSE</code> for purely aesthetic parameters (e.g., coloring) and <code>TRUE</code> for data-related parameters
-(e.g., <code>XAxisFeatName</code> in <a href='FeatureAssayPlot-class.html'>FeatureAssayPlot</a>).</p></li>
+(e.g., <code>XAxisFeatureName</code> in <a href='FeatureAssayPlot-class.html'>FeatureAssayPlot</a>).</p></li>
 </ul>
 
 

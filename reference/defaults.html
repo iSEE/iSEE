@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.1</span>
       </span>
     </div>
 
@@ -180,183 +180,189 @@ the new S4 framework based on the <a href='Panel-class.html'>Panel</a> and its s
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/example.html'>example</a></span>(<span class='no'>SingleCellExperiment</span>, <span class='kw'>echo</span><span class='kw'>=</span><span class='fl'>FALSE</span>) <span class='co'># mock up 'sce'.</span>
 <span class='fu'>redDimPlotDefaults</span>(<span class='no'>sce</span>, <span class='kw'>n</span><span class='kw'>=</span><span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: 'redDimPlotDefaults' is deprecated.</span>
-#&gt; <span class='warning'>Use 'ReducedDimPlot' instead.</span>
+#&gt; <span class='warning'>Use 'ReducedDimensionPlot' instead.</span>
 #&gt; <span class='warning'>See help("Deprecated")</span></div><div class='output co'>#&gt; DataFrame with 1 row and 42 columns
-#&gt;        Type     XAxis     YAxis DataBoxOpen VisualBoxOpen SelectBoxOpen
-#&gt;   &lt;integer&gt; &lt;integer&gt; &lt;integer&gt;   &lt;logical&gt;     &lt;logical&gt;     &lt;logical&gt;
-#&gt; 1         1         1         2       FALSE         FALSE         FALSE
-#&gt;   SelectByPlot SelectEffect SelectAlpha SelectColor BrushData
-#&gt;    &lt;character&gt;  &lt;character&gt;   &lt;numeric&gt; &lt;character&gt;    &lt;list&gt;
-#&gt; 1          ---  Transparent         0.1         red          
-#&gt;   MultiSelectHistory SelectMultiType SelectMultiSaved VisualChoices PointSize
-#&gt;               &lt;list&gt;     &lt;character&gt;        &lt;integer&gt;        &lt;list&gt; &lt;numeric&gt;
-#&gt; 1                             Active                0         Color         1
-#&gt;   PointAlpha Downsample SampleRes  FontSize LegendPosition ZoomData LassoData
-#&gt;    &lt;numeric&gt;  &lt;logical&gt; &lt;numeric&gt; &lt;numeric&gt;    &lt;character&gt;   &lt;list&gt;    &lt;list&gt;
-#&gt; 1          1      FALSE       200         1         Bottom                   
-#&gt;   ContourAdd ContourColor     ColorBy ColorByDefaultColor ColorByColData
-#&gt;    &lt;logical&gt;  &lt;character&gt; &lt;character&gt;         &lt;character&gt;    &lt;character&gt;
-#&gt; 1      FALSE         blue        None               black             NA
-#&gt;       ShapeBy ShapeByColData      SizeBy SizeByColData ColorByRowTable
-#&gt;   &lt;character&gt;    &lt;character&gt; &lt;character&gt;   &lt;character&gt;     &lt;character&gt;
-#&gt; 1        None             NA        None            NA             ---
-#&gt;   ColorByFeatName ColorByFeatNameAssay ColorByColTable ColorBySampName
-#&gt;         &lt;integer&gt;            &lt;integer&gt;     &lt;character&gt;       &lt;integer&gt;
-#&gt; 1               1                    2             ---               1
-#&gt;   ColorBySampNameColor FacetByRow FacetByColumn RowFacetByColData
-#&gt;            &lt;character&gt;  &lt;logical&gt;     &lt;logical&gt;       &lt;character&gt;
-#&gt; 1                  red      FALSE         FALSE                NA
-#&gt;   ColumnFacetByColData
-#&gt;            &lt;character&gt;
-#&gt; 1                   NA</div><div class='input'><span class='fu'>featAssayPlotDefaults</span>(<span class='no'>sce</span>, <span class='kw'>n</span><span class='kw'>=</span><span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: 'featAssayPlotDefaults' is deprecated.</span>
+#&gt;        Type     XAxis     YAxis DataBoxOpen VisualBoxOpen SelectionBoxOpen
+#&gt;   &lt;integer&gt; &lt;integer&gt; &lt;integer&gt;   &lt;logical&gt;     &lt;logical&gt;        &lt;logical&gt;
+#&gt; 1         1         1         2       FALSE         FALSE            FALSE
+#&gt;   SelectByPlot SelectionEffect SelectionAlpha SelectionColor BrushData
+#&gt;    &lt;character&gt;     &lt;character&gt;      &lt;numeric&gt;    &lt;character&gt;    &lt;list&gt;
+#&gt; 1          ---     Transparent            0.1            red          
+#&gt;   SelectionHistory SelectMultiType SelectMultiSaved VisualChoices PointSize
+#&gt;             &lt;list&gt;     &lt;character&gt;        &lt;integer&gt;        &lt;list&gt; &lt;numeric&gt;
+#&gt; 1                           Active                0         Color         1
+#&gt;   PointAlpha Downsample DownsampleResolution  FontSize LegendPosition ZoomData
+#&gt;    &lt;numeric&gt;  &lt;logical&gt;            &lt;numeric&gt; &lt;numeric&gt;    &lt;character&gt;   &lt;list&gt;
+#&gt; 1          1      FALSE                  200         1         Bottom         
+#&gt;   LassoData ContourAdd ContourColor     ColorBy ColorByDefaultColor
+#&gt;      &lt;list&gt;  &lt;logical&gt;  &lt;character&gt; &lt;character&gt;         &lt;character&gt;
+#&gt; 1                FALSE         blue        None               black
+#&gt;   ColorByColumnData     ShapeBy ShapeByColumnData      SizeBy SizeByColumnData
+#&gt;         &lt;character&gt; &lt;character&gt;       &lt;character&gt; &lt;character&gt;      &lt;character&gt;
+#&gt; 1                NA        None                NA        None               NA
+#&gt;   ColorByFeatureSource ColorByFeatureName ColorByFeatureNameAssay
+#&gt;            &lt;character&gt;          &lt;integer&gt;               &lt;integer&gt;
+#&gt; 1                  ---                  1                       2
+#&gt;   ColorBySampleSource ColorBySampleName ColorBySampleNameColor FacetByRow
+#&gt;           &lt;character&gt;         &lt;integer&gt;            &lt;character&gt;  &lt;logical&gt;
+#&gt; 1                 ---                 1                    red      FALSE
+#&gt;   FacetByColumn RowFacetByColData ColumnFacetByColData
+#&gt;       &lt;logical&gt;       &lt;character&gt;          &lt;character&gt;
+#&gt; 1         FALSE                NA                   NA</div><div class='input'><span class='fu'>featAssayPlotDefaults</span>(<span class='no'>sce</span>, <span class='kw'>n</span><span class='kw'>=</span><span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: 'featAssayPlotDefaults' is deprecated.</span>
 #&gt; <span class='warning'>Use 'FeatureAssayPlot' instead.</span>
 #&gt; <span class='warning'>See help("Deprecated")</span></div><div class='output co'>#&gt; DataFrame with 1 row and 46 columns
-#&gt;       Assay       XAxis XAxisColData XAxisFeatName XAxisRowTable YAxisFeatName
-#&gt;   &lt;integer&gt; &lt;character&gt;  &lt;character&gt;     &lt;integer&gt;   &lt;character&gt;     &lt;integer&gt;
-#&gt; 1         2        None           NA             1           ---             1
-#&gt;   YAxisRowTable DataBoxOpen VisualBoxOpen SelectBoxOpen SelectByPlot
-#&gt;     &lt;character&gt;   &lt;logical&gt;     &lt;logical&gt;     &lt;logical&gt;  &lt;character&gt;
-#&gt; 1           ---       FALSE         FALSE         FALSE          ---
-#&gt;   SelectEffect SelectAlpha SelectColor BrushData MultiSelectHistory
-#&gt;    &lt;character&gt;   &lt;numeric&gt; &lt;character&gt;    &lt;list&gt;             &lt;list&gt;
-#&gt; 1  Transparent         0.1         red                             
-#&gt;   SelectMultiType SelectMultiSaved VisualChoices PointSize PointAlpha
-#&gt;       &lt;character&gt;        &lt;integer&gt;        &lt;list&gt; &lt;numeric&gt;  &lt;numeric&gt;
-#&gt; 1          Active                0         Color         1          1
-#&gt;   Downsample SampleRes  FontSize LegendPosition ZoomData LassoData ContourAdd
-#&gt;    &lt;logical&gt; &lt;numeric&gt; &lt;numeric&gt;    &lt;character&gt;   &lt;list&gt;    &lt;list&gt;  &lt;logical&gt;
-#&gt; 1      FALSE       200         1         Bottom                         FALSE
-#&gt;   ContourColor     ColorBy ColorByDefaultColor ColorByColData     ShapeBy
-#&gt;    &lt;character&gt; &lt;character&gt;         &lt;character&gt;    &lt;character&gt; &lt;character&gt;
-#&gt; 1         blue        None               black             NA        None
-#&gt;   ShapeByColData      SizeBy SizeByColData ColorByRowTable ColorByFeatName
-#&gt;      &lt;character&gt; &lt;character&gt;   &lt;character&gt;     &lt;character&gt;       &lt;integer&gt;
-#&gt; 1             NA        None            NA             ---               1
-#&gt;   ColorByFeatNameAssay ColorByColTable ColorBySampName ColorBySampNameColor
-#&gt;              &lt;integer&gt;     &lt;character&gt;       &lt;integer&gt;          &lt;character&gt;
-#&gt; 1                    2             ---               1                  red
-#&gt;   FacetByRow FacetByColumn RowFacetByColData ColumnFacetByColData
-#&gt;    &lt;logical&gt;     &lt;logical&gt;       &lt;character&gt;          &lt;character&gt;
-#&gt; 1      FALSE         FALSE                NA                   NA</div><div class='input'><span class='fu'>colDataPlotDefaults</span>(<span class='no'>sce</span>, <span class='kw'>n</span><span class='kw'>=</span><span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: 'colDataPlotDefaults' is deprecated.</span>
+#&gt;       Assay       XAxis XAxisColumnData XAxisFeatureName XAxisFeatureSource
+#&gt;   &lt;integer&gt; &lt;character&gt;     &lt;character&gt;        &lt;integer&gt;        &lt;character&gt;
+#&gt; 1         2        None              NA                1                ---
+#&gt;   YAxisFeatureName YAxisFeatureSource DataBoxOpen VisualBoxOpen
+#&gt;          &lt;integer&gt;        &lt;character&gt;   &lt;logical&gt;     &lt;logical&gt;
+#&gt; 1                1                ---       FALSE         FALSE
+#&gt;   SelectionBoxOpen SelectByPlot SelectionEffect SelectionAlpha SelectionColor
+#&gt;          &lt;logical&gt;  &lt;character&gt;     &lt;character&gt;      &lt;numeric&gt;    &lt;character&gt;
+#&gt; 1            FALSE          ---     Transparent            0.1            red
+#&gt;   BrushData SelectionHistory SelectMultiType SelectMultiSaved VisualChoices
+#&gt;      &lt;list&gt;           &lt;list&gt;     &lt;character&gt;        &lt;integer&gt;        &lt;list&gt;
+#&gt; 1                                     Active                0         Color
+#&gt;   PointSize PointAlpha Downsample DownsampleResolution  FontSize LegendPosition
+#&gt;   &lt;numeric&gt;  &lt;numeric&gt;  &lt;logical&gt;            &lt;numeric&gt; &lt;numeric&gt;    &lt;character&gt;
+#&gt; 1         1          1      FALSE                  200         1         Bottom
+#&gt;   ZoomData LassoData ContourAdd ContourColor     ColorBy ColorByDefaultColor
+#&gt;     &lt;list&gt;    &lt;list&gt;  &lt;logical&gt;  &lt;character&gt; &lt;character&gt;         &lt;character&gt;
+#&gt; 1                         FALSE         blue        None               black
+#&gt;   ColorByColumnData     ShapeBy ShapeByColumnData      SizeBy SizeByColumnData
+#&gt;         &lt;character&gt; &lt;character&gt;       &lt;character&gt; &lt;character&gt;      &lt;character&gt;
+#&gt; 1                NA        None                NA        None               NA
+#&gt;   ColorByFeatureSource ColorByFeatureName ColorByFeatureNameAssay
+#&gt;            &lt;character&gt;          &lt;integer&gt;               &lt;integer&gt;
+#&gt; 1                  ---                  1                       2
+#&gt;   ColorBySampleSource ColorBySampleName ColorBySampleNameColor FacetByRow
+#&gt;           &lt;character&gt;         &lt;integer&gt;            &lt;character&gt;  &lt;logical&gt;
+#&gt; 1                 ---                 1                    red      FALSE
+#&gt;   FacetByColumn RowFacetByColData ColumnFacetByColData
+#&gt;       &lt;logical&gt;       &lt;character&gt;          &lt;character&gt;
+#&gt; 1         FALSE                NA                   NA</div><div class='input'><span class='fu'>colDataPlotDefaults</span>(<span class='no'>sce</span>, <span class='kw'>n</span><span class='kw'>=</span><span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: 'colDataPlotDefaults' is deprecated.</span>
 #&gt; <span class='warning'>Use 'ColumnDataPlot' instead.</span>
 #&gt; <span class='warning'>See help("Deprecated")</span></div><div class='output co'>#&gt; DataFrame with 1 row and 42 columns
-#&gt;         YAxis       XAxis XAxisColData DataBoxOpen VisualBoxOpen SelectBoxOpen
-#&gt;   &lt;character&gt; &lt;character&gt;  &lt;character&gt;   &lt;logical&gt;     &lt;logical&gt;     &lt;logical&gt;
-#&gt; 1          NA        None           NA       FALSE         FALSE         FALSE
-#&gt;   SelectByPlot SelectEffect SelectAlpha SelectColor BrushData
-#&gt;    &lt;character&gt;  &lt;character&gt;   &lt;numeric&gt; &lt;character&gt;    &lt;list&gt;
-#&gt; 1          ---  Transparent         0.1         red          
-#&gt;   MultiSelectHistory SelectMultiType SelectMultiSaved VisualChoices PointSize
-#&gt;               &lt;list&gt;     &lt;character&gt;        &lt;integer&gt;        &lt;list&gt; &lt;numeric&gt;
-#&gt; 1                             Active                0         Color         1
-#&gt;   PointAlpha Downsample SampleRes  FontSize LegendPosition ZoomData LassoData
-#&gt;    &lt;numeric&gt;  &lt;logical&gt; &lt;numeric&gt; &lt;numeric&gt;    &lt;character&gt;   &lt;list&gt;    &lt;list&gt;
-#&gt; 1          1      FALSE       200         1         Bottom                   
-#&gt;   ContourAdd ContourColor     ColorBy ColorByDefaultColor ColorByColData
-#&gt;    &lt;logical&gt;  &lt;character&gt; &lt;character&gt;         &lt;character&gt;    &lt;character&gt;
-#&gt; 1      FALSE         blue        None               black             NA
-#&gt;       ShapeBy ShapeByColData      SizeBy SizeByColData ColorByRowTable
-#&gt;   &lt;character&gt;    &lt;character&gt; &lt;character&gt;   &lt;character&gt;     &lt;character&gt;
-#&gt; 1        None             NA        None            NA             ---
-#&gt;   ColorByFeatName ColorByFeatNameAssay ColorByColTable ColorBySampName
-#&gt;         &lt;integer&gt;            &lt;integer&gt;     &lt;character&gt;       &lt;integer&gt;
-#&gt; 1               1                    2             ---               1
-#&gt;   ColorBySampNameColor FacetByRow FacetByColumn RowFacetByColData
-#&gt;            &lt;character&gt;  &lt;logical&gt;     &lt;logical&gt;       &lt;character&gt;
-#&gt; 1                  red      FALSE         FALSE                NA
-#&gt;   ColumnFacetByColData
-#&gt;            &lt;character&gt;
-#&gt; 1                   NA</div><div class='input'>
+#&gt;         YAxis       XAxis XAxisColumnData DataBoxOpen VisualBoxOpen
+#&gt;   &lt;character&gt; &lt;character&gt;     &lt;character&gt;   &lt;logical&gt;     &lt;logical&gt;
+#&gt; 1          NA        None              NA       FALSE         FALSE
+#&gt;   SelectionBoxOpen SelectByPlot SelectionEffect SelectionAlpha SelectionColor
+#&gt;          &lt;logical&gt;  &lt;character&gt;     &lt;character&gt;      &lt;numeric&gt;    &lt;character&gt;
+#&gt; 1            FALSE          ---     Transparent            0.1            red
+#&gt;   BrushData SelectionHistory SelectMultiType SelectMultiSaved VisualChoices
+#&gt;      &lt;list&gt;           &lt;list&gt;     &lt;character&gt;        &lt;integer&gt;        &lt;list&gt;
+#&gt; 1                                     Active                0         Color
+#&gt;   PointSize PointAlpha Downsample DownsampleResolution  FontSize LegendPosition
+#&gt;   &lt;numeric&gt;  &lt;numeric&gt;  &lt;logical&gt;            &lt;numeric&gt; &lt;numeric&gt;    &lt;character&gt;
+#&gt; 1         1          1      FALSE                  200         1         Bottom
+#&gt;   ZoomData LassoData ContourAdd ContourColor     ColorBy ColorByDefaultColor
+#&gt;     &lt;list&gt;    &lt;list&gt;  &lt;logical&gt;  &lt;character&gt; &lt;character&gt;         &lt;character&gt;
+#&gt; 1                         FALSE         blue        None               black
+#&gt;   ColorByColumnData     ShapeBy ShapeByColumnData      SizeBy SizeByColumnData
+#&gt;         &lt;character&gt; &lt;character&gt;       &lt;character&gt; &lt;character&gt;      &lt;character&gt;
+#&gt; 1                NA        None                NA        None               NA
+#&gt;   ColorByFeatureSource ColorByFeatureName ColorByFeatureNameAssay
+#&gt;            &lt;character&gt;          &lt;integer&gt;               &lt;integer&gt;
+#&gt; 1                  ---                  1                       2
+#&gt;   ColorBySampleSource ColorBySampleName ColorBySampleNameColor FacetByRow
+#&gt;           &lt;character&gt;         &lt;integer&gt;            &lt;character&gt;  &lt;logical&gt;
+#&gt; 1                 ---                 1                    red      FALSE
+#&gt;   FacetByColumn RowFacetByColData ColumnFacetByColData
+#&gt;       &lt;logical&gt;       &lt;character&gt;          &lt;character&gt;
+#&gt; 1         FALSE                NA                   NA</div><div class='input'>
 <span class='fu'>rowStatTableDefaults</span>(<span class='no'>sce</span>, <span class='kw'>n</span><span class='kw'>=</span><span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: 'rowStatTableDefaults' is deprecated.</span>
 #&gt; <span class='warning'>Use 'RowDataTable' instead.</span>
 #&gt; <span class='warning'>See help("Deprecated")</span></div><div class='output co'>#&gt; DataFrame with 1 row and 7 columns
-#&gt;    Selected      Search SearchColumns SelectBoxOpen SelectByPlot
-#&gt;   &lt;integer&gt; &lt;character&gt;        &lt;list&gt;     &lt;logical&gt;  &lt;character&gt;
-#&gt; 1         1                                   FALSE          ---
+#&gt;    Selected      Search SearchColumns SelectionBoxOpen SelectByPlot
+#&gt;   &lt;integer&gt; &lt;character&gt;        &lt;list&gt;        &lt;logical&gt;  &lt;character&gt;
+#&gt; 1         1                                      FALSE          ---
 #&gt;   SelectMultiType SelectMultiSaved
 #&gt;       &lt;character&gt;        &lt;integer&gt;
 #&gt; 1          Active                0</div><div class='input'><span class='fu'>colStatTableDefaults</span>(<span class='no'>sce</span>, <span class='kw'>n</span><span class='kw'>=</span><span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: 'colStatTableDefaults' is deprecated.</span>
 #&gt; <span class='warning'>Use 'ColumnDataTable' instead.</span>
 #&gt; <span class='warning'>See help("Deprecated")</span></div><div class='output co'>#&gt; DataFrame with 1 row and 7 columns
-#&gt;    Selected      Search SearchColumns SelectBoxOpen SelectByPlot
-#&gt;   &lt;integer&gt; &lt;character&gt;        &lt;list&gt;     &lt;logical&gt;  &lt;character&gt;
-#&gt; 1         1                                   FALSE          ---
+#&gt;    Selected      Search SearchColumns SelectionBoxOpen SelectByPlot
+#&gt;   &lt;integer&gt; &lt;character&gt;        &lt;list&gt;        &lt;logical&gt;  &lt;character&gt;
+#&gt; 1         1                                      FALSE          ---
 #&gt;   SelectMultiType SelectMultiSaved
 #&gt;       &lt;character&gt;        &lt;integer&gt;
 #&gt; 1          Active                0</div><div class='input'>
 <span class='fu'>rowDataPlotDefaults</span>(<span class='no'>sce</span>, <span class='kw'>n</span><span class='kw'>=</span><span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: 'rowDataPlotDefaults' is deprecated.</span>
 #&gt; <span class='warning'>Use 'RowDataPlot' instead.</span>
 #&gt; <span class='warning'>See help("Deprecated")</span></div><div class='output co'>#&gt; DataFrame with 1 row and 42 columns
-#&gt;         YAxis       XAxis XAxisRowData DataBoxOpen VisualBoxOpen SelectBoxOpen
-#&gt;   &lt;character&gt; &lt;character&gt;  &lt;character&gt;   &lt;logical&gt;     &lt;logical&gt;     &lt;logical&gt;
-#&gt; 1          NA        None           NA       FALSE         FALSE         FALSE
-#&gt;   SelectByPlot SelectEffect SelectAlpha SelectColor BrushData
-#&gt;    &lt;character&gt;  &lt;character&gt;   &lt;numeric&gt; &lt;character&gt;    &lt;list&gt;
-#&gt; 1          ---  Transparent         0.1         red          
-#&gt;   MultiSelectHistory SelectMultiType SelectMultiSaved VisualChoices PointSize
-#&gt;               &lt;list&gt;     &lt;character&gt;        &lt;integer&gt;        &lt;list&gt; &lt;numeric&gt;
-#&gt; 1                             Active                0         Color         1
-#&gt;   PointAlpha Downsample SampleRes  FontSize LegendPosition ZoomData LassoData
-#&gt;    &lt;numeric&gt;  &lt;logical&gt; &lt;numeric&gt; &lt;numeric&gt;    &lt;character&gt;   &lt;list&gt;    &lt;list&gt;
-#&gt; 1          1      FALSE       200         1         Bottom                   
-#&gt;   ContourAdd ContourColor     ColorBy ColorByDefaultColor ColorByRowData
-#&gt;    &lt;logical&gt;  &lt;character&gt; &lt;character&gt;         &lt;character&gt;    &lt;character&gt;
-#&gt; 1      FALSE         blue        None               black             NA
-#&gt;       ShapeBy ShapeByRowData      SizeBy SizeByRowData ColorByRowTable
-#&gt;   &lt;character&gt;    &lt;character&gt; &lt;character&gt;   &lt;character&gt;     &lt;character&gt;
-#&gt; 1        None             NA        None            NA             ---
-#&gt;   ColorByFeatName ColorByFeatNameColor ColorByColTable ColorBySampName
-#&gt;         &lt;integer&gt;          &lt;character&gt;     &lt;character&gt;       &lt;integer&gt;
-#&gt; 1               1                  red             ---               1
-#&gt;   ColorBySampNameAssay FacetByRow FacetByColumn RowFacetByRowData
-#&gt;              &lt;integer&gt;  &lt;logical&gt;     &lt;logical&gt;       &lt;character&gt;
-#&gt; 1                    1      FALSE         FALSE                NA
-#&gt;   ColumnFacetByRowData
-#&gt;            &lt;character&gt;
-#&gt; 1                   NA</div><div class='input'><span class='fu'>sampAssayPlotDefaults</span>(<span class='no'>sce</span>, <span class='kw'>n</span><span class='kw'>=</span><span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: 'sampAssayPlotDefaults' is deprecated.</span>
+#&gt;         YAxis       XAxis XAxisRowData DataBoxOpen VisualBoxOpen
+#&gt;   &lt;character&gt; &lt;character&gt;  &lt;character&gt;   &lt;logical&gt;     &lt;logical&gt;
+#&gt; 1          NA        None           NA       FALSE         FALSE
+#&gt;   SelectionBoxOpen SelectByPlot SelectionEffect SelectionAlpha SelectionColor
+#&gt;          &lt;logical&gt;  &lt;character&gt;     &lt;character&gt;      &lt;numeric&gt;    &lt;character&gt;
+#&gt; 1            FALSE          ---     Transparent            0.1            red
+#&gt;   BrushData SelectionHistory SelectMultiType SelectMultiSaved VisualChoices
+#&gt;      &lt;list&gt;           &lt;list&gt;     &lt;character&gt;        &lt;integer&gt;        &lt;list&gt;
+#&gt; 1                                     Active                0         Color
+#&gt;   PointSize PointAlpha Downsample DownsampleResolution  FontSize LegendPosition
+#&gt;   &lt;numeric&gt;  &lt;numeric&gt;  &lt;logical&gt;            &lt;numeric&gt; &lt;numeric&gt;    &lt;character&gt;
+#&gt; 1         1          1      FALSE                  200         1         Bottom
+#&gt;   ZoomData LassoData ContourAdd ContourColor     ColorBy ColorByDefaultColor
+#&gt;     &lt;list&gt;    &lt;list&gt;  &lt;logical&gt;  &lt;character&gt; &lt;character&gt;         &lt;character&gt;
+#&gt; 1                         FALSE         blue        None               black
+#&gt;   ColorByRowData     ShapeBy ShapeByRowData      SizeBy SizeByRowData
+#&gt;      &lt;character&gt; &lt;character&gt;    &lt;character&gt; &lt;character&gt;   &lt;character&gt;
+#&gt; 1             NA        None             NA        None            NA
+#&gt;   ColorByFeatureSource ColorByFeatureName ColorByFeatureNameColor
+#&gt;            &lt;character&gt;          &lt;integer&gt;             &lt;character&gt;
+#&gt; 1                  ---                  1                     red
+#&gt;   ColorBySampleSource ColorBySampleName ColorBySampleNameAssay FacetByRow
+#&gt;           &lt;character&gt;         &lt;integer&gt;              &lt;integer&gt;  &lt;logical&gt;
+#&gt; 1                 ---                 1                      1      FALSE
+#&gt;   FacetByColumn RowFacetByRowData ColumnFacetByRowData
+#&gt;       &lt;logical&gt;       &lt;character&gt;          &lt;character&gt;
+#&gt; 1         FALSE                NA                   NA</div><div class='input'><span class='fu'>sampAssayPlotDefaults</span>(<span class='no'>sce</span>, <span class='kw'>n</span><span class='kw'>=</span><span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: 'sampAssayPlotDefaults' is deprecated.</span>
 #&gt; <span class='warning'>Use 'SampleAssayPlot' instead.</span>
 #&gt; <span class='warning'>See help("Deprecated")</span></div><div class='output co'>#&gt; DataFrame with 1 row and 46 columns
-#&gt;   YAxisSampName YAxisColTable     Assay       XAxis XAxisRowData XAxisSampName
-#&gt;       &lt;integer&gt;   &lt;character&gt; &lt;integer&gt; &lt;character&gt;  &lt;character&gt;     &lt;integer&gt;
-#&gt; 1             1           ---         2        None           NA             2
-#&gt;   XAxisColTable DataBoxOpen VisualBoxOpen SelectBoxOpen SelectByPlot
-#&gt;     &lt;character&gt;   &lt;logical&gt;     &lt;logical&gt;     &lt;logical&gt;  &lt;character&gt;
-#&gt; 1           ---       FALSE         FALSE         FALSE          ---
-#&gt;   SelectEffect SelectAlpha SelectColor BrushData MultiSelectHistory
-#&gt;    &lt;character&gt;   &lt;numeric&gt; &lt;character&gt;    &lt;list&gt;             &lt;list&gt;
-#&gt; 1  Transparent         0.1         red                             
-#&gt;   SelectMultiType SelectMultiSaved VisualChoices PointSize PointAlpha
-#&gt;       &lt;character&gt;        &lt;integer&gt;        &lt;list&gt; &lt;numeric&gt;  &lt;numeric&gt;
-#&gt; 1          Active                0         Color         1          1
-#&gt;   Downsample SampleRes  FontSize LegendPosition ZoomData LassoData ContourAdd
-#&gt;    &lt;logical&gt; &lt;numeric&gt; &lt;numeric&gt;    &lt;character&gt;   &lt;list&gt;    &lt;list&gt;  &lt;logical&gt;
-#&gt; 1      FALSE       200         1         Bottom                         FALSE
-#&gt;   ContourColor     ColorBy ColorByDefaultColor ColorByRowData     ShapeBy
-#&gt;    &lt;character&gt; &lt;character&gt;         &lt;character&gt;    &lt;character&gt; &lt;character&gt;
-#&gt; 1         blue        None               black             NA        None
-#&gt;   ShapeByRowData      SizeBy SizeByRowData ColorByRowTable ColorByFeatName
-#&gt;      &lt;character&gt; &lt;character&gt;   &lt;character&gt;     &lt;character&gt;       &lt;integer&gt;
-#&gt; 1             NA        None            NA             ---               1
-#&gt;   ColorByFeatNameColor ColorByColTable ColorBySampName ColorBySampNameAssay
-#&gt;            &lt;character&gt;     &lt;character&gt;       &lt;integer&gt;            &lt;integer&gt;
-#&gt; 1                  red             ---               1                    1
-#&gt;   FacetByRow FacetByColumn RowFacetByRowData ColumnFacetByRowData
-#&gt;    &lt;logical&gt;     &lt;logical&gt;       &lt;character&gt;          &lt;character&gt;
-#&gt; 1      FALSE         FALSE                NA                   NA</div><div class='input'><span class='fu'>heatMapPlotDefaults</span>(<span class='no'>sce</span>, <span class='kw'>n</span><span class='kw'>=</span><span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: 'heatMapPlotDefaults' is deprecated.</span>
+#&gt;   YAxisSampleName YAxisSampleSource     Assay       XAxis XAxisRowData
+#&gt;         &lt;integer&gt;       &lt;character&gt; &lt;integer&gt; &lt;character&gt;  &lt;character&gt;
+#&gt; 1               1               ---         2        None           NA
+#&gt;   XAxisSampleName XAxisSampleSource DataBoxOpen VisualBoxOpen SelectionBoxOpen
+#&gt;         &lt;integer&gt;       &lt;character&gt;   &lt;logical&gt;     &lt;logical&gt;        &lt;logical&gt;
+#&gt; 1               2               ---       FALSE         FALSE            FALSE
+#&gt;   SelectByPlot SelectionEffect SelectionAlpha SelectionColor BrushData
+#&gt;    &lt;character&gt;     &lt;character&gt;      &lt;numeric&gt;    &lt;character&gt;    &lt;list&gt;
+#&gt; 1          ---     Transparent            0.1            red          
+#&gt;   SelectionHistory SelectMultiType SelectMultiSaved VisualChoices PointSize
+#&gt;             &lt;list&gt;     &lt;character&gt;        &lt;integer&gt;        &lt;list&gt; &lt;numeric&gt;
+#&gt; 1                           Active                0         Color         1
+#&gt;   PointAlpha Downsample DownsampleResolution  FontSize LegendPosition ZoomData
+#&gt;    &lt;numeric&gt;  &lt;logical&gt;            &lt;numeric&gt; &lt;numeric&gt;    &lt;character&gt;   &lt;list&gt;
+#&gt; 1          1      FALSE                  200         1         Bottom         
+#&gt;   LassoData ContourAdd ContourColor     ColorBy ColorByDefaultColor
+#&gt;      &lt;list&gt;  &lt;logical&gt;  &lt;character&gt; &lt;character&gt;         &lt;character&gt;
+#&gt; 1                FALSE         blue        None               black
+#&gt;   ColorByRowData     ShapeBy ShapeByRowData      SizeBy SizeByRowData
+#&gt;      &lt;character&gt; &lt;character&gt;    &lt;character&gt; &lt;character&gt;   &lt;character&gt;
+#&gt; 1             NA        None             NA        None            NA
+#&gt;   ColorByFeatureSource ColorByFeatureName ColorByFeatureNameColor
+#&gt;            &lt;character&gt;          &lt;integer&gt;             &lt;character&gt;
+#&gt; 1                  ---                  1                     red
+#&gt;   ColorBySampleSource ColorBySampleName ColorBySampleNameAssay FacetByRow
+#&gt;           &lt;character&gt;         &lt;integer&gt;              &lt;integer&gt;  &lt;logical&gt;
+#&gt; 1                 ---                 1                      1      FALSE
+#&gt;   FacetByColumn RowFacetByRowData ColumnFacetByRowData
+#&gt;       &lt;logical&gt;       &lt;character&gt;          &lt;character&gt;
+#&gt; 1         FALSE                NA                   NA</div><div class='input'><span class='fu'>heatMapPlotDefaults</span>(<span class='no'>sce</span>, <span class='kw'>n</span><span class='kw'>=</span><span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: 'heatMapPlotDefaults' is deprecated.</span>
 #&gt; <span class='warning'>Use 'ComplexHeatmapPlot' instead.</span>
 #&gt; <span class='warning'>See help("Deprecated")</span></div><div class='output co'>#&gt; DataFrame with 1 row and 18 columns
-#&gt;       Assay CustomFeatName ClusterFeatures ClusterDistanceFeatures
-#&gt;   &lt;integer&gt;      &lt;logical&gt;       &lt;logical&gt;             &lt;character&gt;
-#&gt; 1         2           TRUE           FALSE                spearman
-#&gt;   ClusterMethodFeatures DataBoxOpen     ColData     RowData ShowDimNames
-#&gt;             &lt;character&gt;   &lt;logical&gt; &lt;character&gt; &lt;character&gt;  &lt;character&gt;
-#&gt; 1               ward.D2       FALSE          NA          NA     Features
-#&gt;   LegendPosition LegendDirection VisualBoxOpen SelectEffect SelectColor
-#&gt;      &lt;character&gt;     &lt;character&gt;     &lt;logical&gt;  &lt;character&gt; &lt;character&gt;
-#&gt; 1         Bottom      Horizontal         FALSE        Color         red
-#&gt;   SelectByPlot SelectMultiType SelectMultiSaved SelectBoxOpen
-#&gt;    &lt;character&gt;     &lt;character&gt;        &lt;integer&gt;     &lt;logical&gt;
-#&gt; 1          ---          Active                0         FALSE</div></pre>
+#&gt;       Assay CustomRows ClusterRows ClusterRowsDistance ClusterRowsMethod
+#&gt;   &lt;integer&gt;  &lt;logical&gt;   &lt;logical&gt;         &lt;character&gt;       &lt;character&gt;
+#&gt; 1         2       TRUE       FALSE            spearman           ward.D2
+#&gt;   DataBoxOpen  ColumnData     RowData ShowDimNames LegendPosition
+#&gt;     &lt;logical&gt; &lt;character&gt; &lt;character&gt;  &lt;character&gt;    &lt;character&gt;
+#&gt; 1       FALSE          NA          NA         Rows         Bottom
+#&gt;   LegendDirection VisualBoxOpen SelectionEffect SelectionColor SelectByPlot
+#&gt;       &lt;character&gt;     &lt;logical&gt;     &lt;character&gt;    &lt;character&gt;  &lt;character&gt;
+#&gt; 1      Horizontal         FALSE           Color            red          ---
+#&gt;   SelectMultiType SelectMultiSaved SelectionBoxOpen
+#&gt;       &lt;character&gt;        &lt;integer&gt;        &lt;logical&gt;
+#&gt; 1          Active                0            FALSE</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

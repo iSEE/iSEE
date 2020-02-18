@@ -38,7 +38,8 @@
 <meta property="og:title" content="The Panel virtual class — Panel-class" />
 <meta property="og:description" content="The Panel is a virtual base class for all iSEE panels.
 It provides slots and methods to control the height and width of each panel,
-as well as to control the choice of transmitting panels from which to receive a selection." />
+as well as to control the choice of transmitting panels from which to receive a multiple selection
+(i.e., a selection of multiple rows or columns from a SingleCellExperiment)." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -71,7 +72,7 @@ as well as to control the choice of transmitting panels from which to receive a 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.1</span>
       </span>
     </div>
 
@@ -141,7 +142,8 @@ as well as to control the choice of transmitting panels from which to receive a 
     <div class="ref-description">
     <p>The Panel is a virtual base class for all <span class="pkg">iSEE</span> panels.
 It provides slots and methods to control the height and width of each panel,
-as well as to control the choice of transmitting panels from which to receive a selection.</p>
+as well as to control the choice of transmitting panels from which to receive a multiple selection
+(i.e., a selection of multiple rows or columns from a SingleCellExperiment).</p>
     </div>
 
 
@@ -159,32 +161,32 @@ Bootstrap coordinates are used so this value should lie between 2 and 12; defaul
 This is expected to lie between 400 and 1000; defaults to 500.</p></li>
 </ul>
 
-<p>The following slots are relevant to receiving a selection of points:</p><ul>
-<li><p><code>SelectBoxOpen</code>, a logical scalar indicating whether the selection parameter box should be open.
+<p>The following slots are relevant to <em>receiving</em> a multiple selection:</p><ul>
+<li><p><code>SelectionBoxOpen</code>, a logical scalar indicating whether the selection parameter box should be open at initialization.
 Defaults to <code>FALSE</code>.</p></li>
-<li><p><code>SelectRowSource</code>, a string specifying the name of the panel from which to receive a selection along the rows (e.g., <code>"rowDataPlot1"</code>).
+<li><p><code>RowSelectionSource</code>, a string specifying the name of the transmitting panel from which to receive a multiple row selection (e.g., <code>"RowDataPlot1"</code>).
 Defaults to <code>"---"</code>.</p></li>
-<li><p><code>SelectRowType</code>, a string specifying which row-based selections should be used.
+<li><p><code>RowSelectionType</code>, a string specifying which of the multiple row selections from the transmitting panel should be used.
 Takes one of <code>"Active"</code>, only the active selection;
 <code>"Union"</code>, the union of active and saved selections;
 and <code>"Saved"</code>, one of the saved selections.
 Defaults to <code>"Active"</code>.</p></li>
-<li><p><code>SelectRowSaved</code>, an integer scalar specifying the index of the saved selection to use when <code>SelectRowType="Saved"</code>.
+<li><p><code>RowSelectionSaved</code>, an integer scalar specifying the index of the saved multiple row selection to use when <code>RowSelectionType="Saved"</code>.
 Defaults to 0.</p></li>
-<li><p><code>"SelectColSource"</code>, a string specifying the name of the panel from which to receive a selection along the columns (e.g., <code>"colDataPlot1"</code>).
+<li><p><code>ColumnSelectionSource</code>, a string specifying the name of the transmitting panel from which to receive a multiple column selection (e.g., <code>"ColumnDataPlot1"</code>).
 Defaults to <code>"---"</code>.</p></li>
-<li><p><code>SelectColType</code>, a string specifying which column-based selections should be used.
+<li><p><code>ColumnSelectionType</code>, a string specifying which of the column-based selections from the transmitting panel should be used.
 Takes one of <code>"Active"</code>, only the active selection;
 <code>"Union"</code>, the union of active and saved selections;
 and <code>"Saved"</code>, one of the saved selections.
 Defaults to <code>"Active"</code>.</p></li>
-<li><p><code>SelectColSaved</code>, an integer scalar specifying the index of the saved selection to use when <code>SelectColType="Saved"</code>.
+<li><p><code>ColumnSelectionSaved</code>, an integer scalar specifying the index of the saved multiple column selection to use when <code>ColumnSelectionType="Saved"</code>.
 Defaults to 0.</p></li>
 </ul>
 
 <p>The following slots are relevant to transmitting a selection of points:</p><ul>
-<li><p><code>MultiSelectHistory</code>, a list of arbitrary elements that contain parameters for saved selections.
-Each element of this list corresponds to one saved selection.
+<li><p><code>SelectionHistory</code>, a list of arbitrary elements that contain parameters for saved multiple selections.
+Each element of this list corresponds to one saved selection in the current panel.
 Defaults to an empty list.</p></li>
 </ul>
 
@@ -198,19 +200,6 @@ and <code>i</code> is a string containing the slot name:</p><ul>
 <li><p><code>x[[i]] &lt;- value</code> modifies <code>x</code> so that the value in slot <code>i</code> is replaced with <code>value</code>.</p></li>
 </ul>
 
-    <h2 class="hasAnchor" id="contract-description"><a class="anchor" href="#contract-description"></a>Contract description</h2>
-
-    
-
-<p>The Panel class offers interface elements to modify all of its slots.
-Observers are also created to trigger rerendering upon changes to a slot or when a selection in a transmitting panel changes.</p>
-<p>Subclasses are required to implement methods for:</p><ul>
-<li><p><code><a href='output-generics.html'>.defineOutput</a></code></p></li>
-<li><p><code><a href='output-generics.html'>.generateOutput</a></code></p></li>
-<li><p><code><a href='output-generics.html'>.renderOutput</a></code></p></li>
-<li><p><code><a href='getEncodedName.html'>.fullName</a></code></p></li>
-<li><p><code><a href='getPanelColor.html'>.panelColor</a></code></p></li>
-</ul><p>Subclasses that transmit selections should also implement specialized methods for selection-related parameters listed below.</p>
     <h2 class="hasAnchor" id="supported-methods"><a class="anchor" href="#supported-methods"></a>Supported methods</h2>
 
     
@@ -254,6 +243,17 @@ i.e., it will return an empty character vector and create no files.</p></li>
 <li><p><code><a href='single-select-generics.html'>.singleSelectionSlots</a>(x)</code> will always return an empty list.</p></li>
 </ul>
 
+    <h2 class="hasAnchor" id="subclass-expectations"><a class="anchor" href="#subclass-expectations"></a>Subclass expectations</h2>
+
+    
+
+<p>Subclasses are required to implement methods for:</p><ul>
+<li><p><code><a href='output-generics.html'>.defineOutput</a></code></p></li>
+<li><p><code><a href='output-generics.html'>.generateOutput</a></code></p></li>
+<li><p><code><a href='output-generics.html'>.renderOutput</a></code></p></li>
+<li><p><code><a href='getEncodedName.html'>.fullName</a></code></p></li>
+<li><p><code><a href='getPanelColor.html'>.panelColor</a></code></p></li>
+</ul><p>Subclasses that transmit selections should also implement specialized methods for selection-related parameters listed above.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><a href='DotPlot-class.html'>DotPlot</a> and <a href='Table-class.html'>Table</a>, for examples of direct subclasses.</p></div>
@@ -264,8 +264,8 @@ i.e., it will return an empty character vector and create no files.</p></li>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#slot-overview">Slot overview</a></li>
       <li><a href="#getting-and-setting-slots">Getting and setting slots</a></li>
-      <li><a href="#contract-description">Contract description</a></li>
       <li><a href="#supported-methods">Supported methods</a></li>
+      <li><a href="#subclass-expectations">Subclass expectations</a></li>
       <li><a href="#see-also">See also</a></li>
     </ul>
 

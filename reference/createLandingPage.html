@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.1</span>
       </span>
     </div>
 
@@ -187,7 +187,7 @@ which is subsequently read by <code><a href='https://rdrr.io/r/base/readRDS.html
 However, any source of SummarizedExperiment objects can be used;
 for example, we can retrieve them from databases by modifying <code>seUI</code> and <code>seLoad</code> appropriately.</p>
 <p>The default landing page also allows users to upload a RDS file containing a list of <a href='Panel-class.html'>Panel</a>s
-that specifies the initial state of the <code><a href='iSEE.html'>iSEE</a></code> instance 
+that specifies the initial state of the <code><a href='iSEE.html'>iSEE</a></code> instance
 (to be used as the <code>initial</code> argument in <code><a href='iSEE.html'>iSEE</a></code>).
 Again, any source can be used to create this list if <code>initUI</code> and <code>initLoad</code> are modified appropriately.
 Note that only <a href='Panel-class.html'>Panel</a> classes that were in the original <code><a href='iSEE.html'>iSEE</a>()</code> call
@@ -215,9 +215,9 @@ If <code>INITIAL=NULL</code>, the initial state from <code>initial</code> is use
 This should define a UI that contains all widgets necessary for a user to set up an <code><a href='iSEE.html'>iSEE</a></code> session interactively.
 We suggest that all UI elements have IDs prefixed with <code>"initialize_INTERNAL"</code> to avoid conflicts.</p>
 <p>The function should also define observers to respond to user interactions with the UI elements.
-These are typically used to define a SummarizedExperiment object and an input state as a list of Panels;
+These are typically used to define a SummarizedExperiment object and an input state as a list of <a href='Panel-class.html'>Panel</a>s;
 any one of these observers may then call <code>FUN</code> on those arguments to launch the main <code><a href='iSEE.html'>iSEE</a></code> instance.</p>
-<p>Note that, once the main app is launched, 
+<p>Note that, once the main app is launched,
 the UI elements constructed here are lost and observers will never be called again.
 There is no explicit &#8220;unload&#8221; mechanism to return to the landing page from the main app,
 though a browser refresh is usually sufficient.</p>
@@ -252,8 +252,8 @@ though a browser refresh is usually sufficient.</p>
 #&gt;     }, ignoreNULL = TRUE, ignoreInit = TRUE)
 #&gt;     invisible(NULL)
 #&gt; }
-#&gt; &lt;bytecode: 0x15226828&gt;
-#&gt; &lt;environment: 0x15211ac0&gt;</div><div class='input'>
+#&gt; &lt;bytecode: 0x27e48ad8&gt;
+#&gt; &lt;environment: 0x27e46f00&gt;</div><div class='input'>
 <span class='co'># Alternative approach, to create a landing page</span>
 <span class='co'># that opens one of the datasets from the scRNAseq package.</span>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scRNAseq</span>)

@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.1</span>
       </span>
     </div>
 
@@ -176,7 +176,7 @@ thus, certain slots (e.g., for the row/column names) cannot be set to a reasonab
 <code>.refineParameters</code> can then be used to sweep across these slots and replace them with appropriate entries.
 Of course, any slots that are not <code>se</code>-dependent should be set at construction and checked by the validity method.</p>
 <p>It is also possible for this generic to return <code>NULL</code>, which is used as an indicator that <code>se</code> does not contain information to meaningfully show any instance of the class of <code>x</code> in the <span class="pkg">iSEE</span> app.
-For example, the method for <a href='ReducedDimPlot-class.html'>ReducedDimPlot</a> will return <code>NULL</code> if <code>se</code> is not a SingleCellExperiment containing some dimensionality reduction results.</p>
+For example, the method for <a href='ReducedDimensionPlot-class.html'>ReducedDimensionPlot</a> will return <code>NULL</code> if <code>se</code> is not a SingleCellExperiment containing some dimensionality reduction results.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

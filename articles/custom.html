@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.1</span>
       </span>
     </div>
 
@@ -113,7 +113,7 @@
       Cancer Research UK Cambridge Institute, University of Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com">infinite.monkeys.with.keyboards@gmail.com</a>
       </address>
                   
-            <h4 class="date">15 February 2020</h4>
+            <h4 class="date">18 February 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/custom.Rmd"><code>vignettes/custom.Rmd</code></a></small>
       <div class="hidden name"><code>custom.Rmd</code></div>
@@ -122,7 +122,7 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-02-15</p>
+<p><strong>Compiled date</strong>: 2020-02-18</p>
 <p><strong>Last edited</strong>: 2020-02-10</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div id="background" class="section level1">
@@ -191,11 +191,12 @@
 <p>We can now easily supply instances of our new custom plot class to <code><a href="../reference/iSEE.html">iSEE()</a></code> like any other <code>Panel</code> instance. The example below creates an application where a column data plot transmits a selection to our custom plot, the latter of which is initialized in <span class="math inline">\(t\)</span>-SNE mode with the top 1000 most variable genes.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce,</a>
 <a class="sourceLine" id="cb3-2" data-line-number="2">    <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3">        <span class="kw"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(<span class="dt">XAxis=</span><span class="st">"Column data"</span>, <span class="dt">XAxisColData=</span><span class="st">"Primary.Type"</span>, </a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">        <span class="kw"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(<span class="dt">XAxis=</span><span class="st">"Column data"</span>, <span class="dt">XAxisColumnData=</span><span class="st">"Primary.Type"</span>, </a>
 <a class="sourceLine" id="cb3-4" data-line-number="4">            <span class="dt">PanelId=</span>1L),</a>
-<a class="sourceLine" id="cb3-5" data-line-number="5">        <span class="kw">GENERATOR</span>(<span class="dt">mode=</span><span class="st">"TSNE"</span>, <span class="dt">ntop=</span><span class="dv">1000</span>, <span class="dt">SelectColSource=</span><span class="st">"ColDataPlot1"</span>)</a>
-<a class="sourceLine" id="cb3-6" data-line-number="6">    )</a>
-<a class="sourceLine" id="cb3-7" data-line-number="7">)</a></code></pre></div>
+<a class="sourceLine" id="cb3-5" data-line-number="5">        <span class="kw">GENERATOR</span>(<span class="dt">mode=</span><span class="st">"TSNE"</span>, <span class="dt">ntop=</span><span class="dv">1000</span>, </a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">            <span class="dt">ColumnSelectionSource=</span><span class="st">"ColumnDataPlot1"</span>)</a>
+<a class="sourceLine" id="cb3-7" data-line-number="7">    )</a>
+<a class="sourceLine" id="cb3-8" data-line-number="8">)</a></code></pre></div>
 <p>The most interesting aspect of <code><a href="../reference/createCustomPanels.html">createCustomPlot()</a></code> is that the UI elements for modifying the optional arguments in <code>CUSTOM_DIMRED</code> are also automatically generated. This provides a convenient way to generate a reasonably intuitive UI for rapid prototyping, though there are limitations - see the documentation for more details.</p>
 </div>
 <div id="example-of-custom-table-panel" class="section level2">
@@ -229,8 +230,8 @@
 <a class="sourceLine" id="cb5-2" data-line-number="2">GENERATOR &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createCustomPanels.html">createCustomTable</a></span>(CUSTOM_SUMMARY)</a>
 <a class="sourceLine" id="cb5-3" data-line-number="3">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce,</a>
 <a class="sourceLine" id="cb5-4" data-line-number="4">    <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb5-5" data-line-number="5">        <span class="kw"><a href="../reference/ReducedDimPlot-class.html">ReducedDimPlot</a></span>(<span class="dt">PanelId=</span>1L),</a>
-<a class="sourceLine" id="cb5-6" data-line-number="6">        <span class="kw">GENERATOR</span>(<span class="dt">SelectColSource=</span><span class="st">"RedDimPlot1"</span>)</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">        <span class="kw"><a href="../reference/ReducedDimensionPlot-class.html">ReducedDimensionPlot</a></span>(<span class="dt">PanelId=</span>1L),</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">        <span class="kw">GENERATOR</span>(<span class="dt">ColumnSelectionSource=</span><span class="st">"RedDimPlot1"</span>)</a>
 <a class="sourceLine" id="cb5-7" data-line-number="7">    )</a>
 <a class="sourceLine" id="cb5-8" data-line-number="8">)</a></code></pre></div>
 </div>
@@ -282,9 +283,9 @@
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">TAB_GEN &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createCustomPanels.html">createCustomTable</a></span>(CUSTOM_DIFFEXP)</a>
 <a class="sourceLine" id="cb8-2" data-line-number="2">HEAT_GEN &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createCustomPanels.html">createCustomPlot</a></span>(CUSTOM_HEAT)</a>
 <a class="sourceLine" id="cb8-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb8-4" data-line-number="4">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce, <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="../reference/ReducedDimPlot-class.html">ReducedDimPlot</a></span>(<span class="dt">PanelId=</span>1L),</a>
-<a class="sourceLine" id="cb8-5" data-line-number="5">    <span class="kw">TAB_GEN</span>(<span class="dt">SelectColSource=</span><span class="st">"RedDimPlot1"</span>),</a>
-<a class="sourceLine" id="cb8-6" data-line-number="6">    <span class="kw">HEAT_GEN</span>(<span class="dt">SelectColSource=</span><span class="st">"RedDimPlot1"</span>))</a>
+<a class="sourceLine" id="cb8-4" data-line-number="4">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce, <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="../reference/ReducedDimensionPlot-class.html">ReducedDimensionPlot</a></span>(<span class="dt">PanelId=</span>1L),</a>
+<a class="sourceLine" id="cb8-5" data-line-number="5">    <span class="kw">TAB_GEN</span>(<span class="dt">ColumnSelectionSource=</span><span class="st">"RedDimPlot1"</span>),</a>
+<a class="sourceLine" id="cb8-6" data-line-number="6">    <span class="kw">HEAT_GEN</span>(<span class="dt">ColumnSelectionSource=</span><span class="st">"RedDimPlot1"</span>))</a>
 <a class="sourceLine" id="cb8-7" data-line-number="7">)</a></code></pre></div>
 </div>
 <div id="advanced-extensions" class="section level1">
@@ -296,7 +297,7 @@
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session Info</h1>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</a>
-<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="co">#&gt; R Under development (unstable) (2020-02-15 r77807)</span></a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="co">#&gt; R Under development (unstable) (2020-02-18 r77826)</span></a>
 <a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span></a>
 <a class="sourceLine" id="cb9-4" data-line-number="4"><span class="co">#&gt; Running under: Ubuntu 16.04.6 LTS</span></a>
 <a class="sourceLine" id="cb9-5" data-line-number="5"><span class="co">#&gt; </span></a>
@@ -317,9 +318,9 @@
 <a class="sourceLine" id="cb9-20" data-line-number="20"><span class="co">#&gt; [8] methods   base     </span></a>
 <a class="sourceLine" id="cb9-21" data-line-number="21"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb9-22" data-line-number="22"><span class="co">#&gt; other attached packages:</span></a>
-<a class="sourceLine" id="cb9-23" data-line-number="23"><span class="co">#&gt;  [1] iSEE_1.99.0                 scater_1.15.22             </span></a>
-<a class="sourceLine" id="cb9-24" data-line-number="24"><span class="co">#&gt;  [3] ggplot2_3.2.1               SingleCellExperiment_1.9.1 </span></a>
-<a class="sourceLine" id="cb9-25" data-line-number="25"><span class="co">#&gt;  [5] SummarizedExperiment_1.17.1 DelayedArray_0.13.4        </span></a>
+<a class="sourceLine" id="cb9-23" data-line-number="23"><span class="co">#&gt;  [1] iSEE_1.99.1                 scater_1.15.25             </span></a>
+<a class="sourceLine" id="cb9-24" data-line-number="24"><span class="co">#&gt;  [3] ggplot2_3.2.1               SingleCellExperiment_1.9.2 </span></a>
+<a class="sourceLine" id="cb9-25" data-line-number="25"><span class="co">#&gt;  [5] SummarizedExperiment_1.17.2 DelayedArray_0.13.4        </span></a>
 <a class="sourceLine" id="cb9-26" data-line-number="26"><span class="co">#&gt;  [7] BiocParallel_1.21.2         matrixStats_0.55.0         </span></a>
 <a class="sourceLine" id="cb9-27" data-line-number="27"><span class="co">#&gt;  [9] Biobase_2.47.2              GenomicRanges_1.39.2       </span></a>
 <a class="sourceLine" id="cb9-28" data-line-number="28"><span class="co">#&gt; [11] GenomeInfoDb_1.23.13        IRanges_2.21.3             </span></a>
@@ -341,10 +342,10 @@
 <a class="sourceLine" id="cb9-44" data-line-number="44"><span class="co">#&gt; [34] htmlwidgets_1.5.1        rlang_0.4.4              GlobalOptions_0.1.1     </span></a>
 <a class="sourceLine" id="cb9-45" data-line-number="45"><span class="co">#&gt; [37] shiny_1.4.0              DelayedMatrixStats_1.9.0 shape_1.4.4             </span></a>
 <a class="sourceLine" id="cb9-46" data-line-number="46"><span class="co">#&gt; [40] jsonlite_1.6.1           dplyr_0.8.4              RCurl_1.98-1.1          </span></a>
-<a class="sourceLine" id="cb9-47" data-line-number="47"><span class="co">#&gt; [43] magrittr_1.5             BiocSingular_1.3.1       GenomeInfoDbData_1.2.2  </span></a>
+<a class="sourceLine" id="cb9-47" data-line-number="47"><span class="co">#&gt; [43] magrittr_1.5             BiocSingular_1.3.2       GenomeInfoDbData_1.2.2  </span></a>
 <a class="sourceLine" id="cb9-48" data-line-number="48"><span class="co">#&gt; [46] Matrix_1.2-18            Rcpp_1.0.3               ggbeeswarm_0.6.0        </span></a>
 <a class="sourceLine" id="cb9-49" data-line-number="49"><span class="co">#&gt; [49] munsell_0.5.0            viridis_0.5.1            lifecycle_0.1.0         </span></a>
-<a class="sourceLine" id="cb9-50" data-line-number="50"><span class="co">#&gt; [52] rintrojs_0.2.2           stringi_1.4.5            yaml_2.2.1              </span></a>
+<a class="sourceLine" id="cb9-50" data-line-number="50"><span class="co">#&gt; [52] rintrojs_0.2.2           stringi_1.4.6            yaml_2.2.1              </span></a>
 <a class="sourceLine" id="cb9-51" data-line-number="51"><span class="co">#&gt; [55] MASS_7.3-51.5            zlibbioc_1.33.1          grid_4.0.0              </span></a>
 <a class="sourceLine" id="cb9-52" data-line-number="52"><span class="co">#&gt; [58] promises_1.1.0           shinydashboard_0.7.1     crayon_1.3.4            </span></a>
 <a class="sourceLine" id="cb9-53" data-line-number="53"><span class="co">#&gt; [61] miniUI_0.1.1.1           lattice_0.20-38          splines_4.0.0           </span></a>
@@ -353,7 +354,7 @@
 <a class="sourceLine" id="cb9-56" data-line-number="56"><span class="co">#&gt; [70] glue_1.3.1               evaluate_0.14            BiocManager_1.30.10     </span></a>
 <a class="sourceLine" id="cb9-57" data-line-number="57"><span class="co">#&gt; [73] png_0.1-7                httpuv_1.5.2             gtable_0.3.0            </span></a>
 <a class="sourceLine" id="cb9-58" data-line-number="58"><span class="co">#&gt; [76] purrr_0.3.3              clue_0.3-57              assertthat_0.2.1        </span></a>
-<a class="sourceLine" id="cb9-59" data-line-number="59"><span class="co">#&gt; [79] xfun_0.12                mime_0.9                 rsvd_1.0.2              </span></a>
+<a class="sourceLine" id="cb9-59" data-line-number="59"><span class="co">#&gt; [79] xfun_0.12                mime_0.9                 rsvd_1.0.3              </span></a>
 <a class="sourceLine" id="cb9-60" data-line-number="60"><span class="co">#&gt; [82] xtable_1.8-4             later_1.0.0              viridisLite_0.3.0       </span></a>
 <a class="sourceLine" id="cb9-61" data-line-number="61"><span class="co">#&gt; [85] tibble_2.1.3             beeswarm_0.2.3           memoise_1.1.0           </span></a>
 <a class="sourceLine" id="cb9-62" data-line-number="62"><span class="co">#&gt; [88] cluster_2.1.0            shinyWidgets_0.5.0       shinyAce_0.4.1</span></a>

@@ -36,7 +36,7 @@
 
 
 <meta property="og:title" content="The RowTable class — RowTable-class" />
-<meta property="og:description" content="The RowTable is a virtual class where each row in the SummarizedExperiment is represented by a row in a datatable widget.
+<meta property="og:description" content="The RowTable is a virtual class where each row in the SummarizedExperiment is represented by no more than one row in a datatable widget.
 It provides observers for monitoring table selection, global search and column-specific search." />
 <meta name="twitter:card" content="summary" />
 
@@ -70,7 +70,7 @@ It provides observers for monitoring table selection, global search and column-s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.1</span>
       </span>
     </div>
 
@@ -138,7 +138,7 @@ It provides observers for monitoring table selection, global search and column-s
     </div>
 
     <div class="ref-description">
-    <p>The RowTable is a virtual class where each row in the SummarizedExperiment is represented by a row in a <code>datatable</code> widget.
+    <p>The RowTable is a virtual class where each row in the SummarizedExperiment is represented by no more than one row in a <code>datatable</code> widget.
 It provides observers for monitoring table selection, global search and column-specific search.</p>
     </div>
 
@@ -150,11 +150,6 @@ It provides observers for monitoring table selection, global search and column-s
 
 <p>No new slots are added.
 All slots provided in the <a href='Table-class.html'>Table</a> parent class are available.</p>
-    <h2 class="hasAnchor" id="contract-description"><a class="anchor" href="#contract-description"></a>Contract description</h2>
-
-    
-
-<p>The contract for RowTables is the same as that for Tables, with the added condition that each row should represent a row of the SummarizedExperiment object.</p>
     <h2 class="hasAnchor" id="supported-methods"><a class="anchor" href="#supported-methods"></a>Supported methods</h2>
 
     
@@ -168,7 +163,7 @@ This will also call the equivalent <a href='Table-class.html'>Table</a> method.<
 
 <p>For defining the interface:</p><ul>
 <li><p><code><a href='interface-generics.html'>.hideInterface</a>(x, field)</code> returns a logical scalar indicating whether the interface element corresponding to <code>field</code> should be hidden.
-This returns <code>TRUE</code> for column selection parameters (<code>"SelectColSource"</code>, <code>"SelectColType"</code> and <code>"SelectColSaved"</code>),
+This returns <code>TRUE</code> for column selection parameters (<code>"ColumnSelectionSource"</code>, <code>"ColumnSelectionType"</code> and <code>"ColumnSelectionSaved"</code>),
 otherwise it dispatches to the <a href='Panel-class.html'>Panel</a> method.</p></li>
 </ul>
 
@@ -182,12 +177,17 @@ This will also call the equivalent <a href='Table-class.html'>Table</a> method.<
 </ul>
 
 <p>Unless explicitly specialized above, all methods from the parent classes <a href='DotPlot-class.html'>DotPlot</a> and <a href='Panel-class.html'>Panel</a> are also available.</p>
-    <h2 class="hasAnchor" id="expectations-for-generatetable"><a class="anchor" href="#expectations-for-generatetable"></a>Expectations for <code><a href='Table-class.html'>.generateTable</a></code></h2>
+    <h2 class="hasAnchor" id="subclass-expectations"><a class="anchor" href="#subclass-expectations"></a>Subclass expectations</h2>
 
     
 
-<p>RowTable methods for this generic should create a <code>tab</code> data.frame in which each row corresponds to a row of the SummarizedExperiment object and is named accordingly.
-It is <em>not</em> necessary for all rows of the SummarizedExperiment object to be represented as rows in the data.frame.</p>
+<p>Subclasses are expected to implement methods for:</p><ul>
+<li><p><code><a href='table-generics.html'>.generateTable</a></code></p></li>
+<li><p><code><a href='getEncodedName.html'>.fullName</a></code></p></li>
+<li><p><code><a href='getPanelColor.html'>.panelColor</a></code></p></li>
+</ul>
+
+<p>The method for <code><a href='table-generics.html'>.generateTable</a></code> should create a <code>tab</code> data.frame where each row corresponds to a row in the SummarizedExperiment object.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><a href='Table-class.html'>Table</a>, for the immediate parent class that contains the actual slot definitions.</p></div>
@@ -197,9 +197,8 @@ It is <em>not</em> necessary for all rows of the SummarizedExperiment object to 
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#slot-overview">Slot overview</a></li>
-      <li><a href="#contract-description">Contract description</a></li>
       <li><a href="#supported-methods">Supported methods</a></li>
-      <li><a href="#expectations-for-generatetable">Expectations for <code><a href='Table-class.html'>.generateTable</a></code></a></li>
+      <li><a href="#subclass-expectations">Subclass expectations</a></li>
       <li><a href="#see-also">See also</a></li>
     </ul>
 

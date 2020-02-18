@@ -36,7 +36,7 @@
 
 
 <meta property="og:title" content="The ColumnDotPlot virtual class — ColumnDotPlot-class" />
-<meta property="og:description" content="The ColumnDotPlot is a virtual class where each column in the SummarizedExperiment is represented by a point (&amp;#8220;dot&amp;#8221;) in a brushable plot.
+<meta property="og:description" content="The ColumnDotPlot is a virtual class where each column in the SummarizedExperiment is represented by no more than one point (i.e., a &amp;#8220;dot&amp;#8221;) in a brushable ggplot plot.
 It provides slots and methods to control various aesthetics of the dots and to store the brush or lasso selection." />
 <meta name="twitter:card" content="summary" />
 
@@ -70,7 +70,7 @@ It provides slots and methods to control various aesthetics of the dots and to s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.1</span>
       </span>
     </div>
 
@@ -138,7 +138,7 @@ It provides slots and methods to control various aesthetics of the dots and to s
     </div>
 
     <div class="ref-description">
-    <p>The ColumnDotPlot is a virtual class where each column in the SummarizedExperiment is represented by a point (&#8220;dot&#8221;) in a brushable plot.
+    <p>The ColumnDotPlot is a virtual class where each column in the SummarizedExperiment is represented by no more than one point (i.e., a &#8220;dot&#8221;) in a brushable ggplot plot.
 It provides slots and methods to control various aesthetics of the dots and to store the brush or lasso selection.</p>
     </div>
 
@@ -149,34 +149,27 @@ It provides slots and methods to control various aesthetics of the dots and to s
     
 
 <p>The following slots control coloring of the points:</p><ul>
-<li><p><code>ColorByColData</code>, a string specifying the <code>colData</code> field for controlling point color,
+<li><p><code>ColorByColumnData</code>, a string specifying the <code>colData</code> field for controlling point color,
 if <code>ColorBy="Column data"</code> (see the <a href='Panel-class.html'>Panel</a> class).
 Defaults to the first valid field (see <code>.refineParameters</code> below).</p></li>
-<li><p><code>ColorByFeatNameAssay</code>, a string specifying the assay of the SummarizedExperiment object containing values to use for coloring,
+<li><p><code>ColorByFeatureNameAssay</code>, a string specifying the assay of the SummarizedExperiment object containing values to use for coloring,
 if <code>ColorBy="Feature name"</code>.
 Defaults to the name of the first valid assay (see <code>?"<a href='DotPlot-class.html'>.refineParameters,DotPlot-method</a>"</code> for details).</p></li>
-<li><p><code>ColorBySampNameColor</code>, a string specifying the color to use for coloring an individual sample on the plot,
+<li><p><code>ColorBySampleNameColor</code>, a string specifying the color to use for coloring an individual sample on the plot,
 if <code>ColorBy="Sample name"</code>.
 Defaults to <code>"red"</code>.</p></li>
 </ul>
 
 <p>The following slots control other metadata-related aesthetic aspects of the points:</p><ul>
-<li><p><code>ShapeByColData</code>, a string specifying the <code>colData</code> field for controlling point shape,
+<li><p><code>ShapeByColumnData</code>, a string specifying the <code>colData</code> field for controlling point shape,
 if <code>ShapeBy="Column data"</code> (see the <a href='Panel-class.html'>Panel</a> class).
 The specified field should contain categorical values; defaults to the first such valid field.</p></li>
-<li><p><code>SizeByColData</code>, a string specifying the <code>colData</code> field for controlling point size,
+<li><p><code>SizeByColumnData</code>, a string specifying the <code>colData</code> field for controlling point size,
 if <code>SizeBy="Column data"</code> (see the <a href='Panel-class.html'>Panel</a> class).
 The specified field should contain continuous values; defaults to the first such valid field.</p></li>
 </ul>
 
 <p>In addition, this class inherits all slots from its <a href='DotPlot-class.html'>DotPlot</a> and <a href='Panel-class.html'>Panel</a> classes.</p>
-    <h2 class="hasAnchor" id="contract-description"><a class="anchor" href="#contract-description"></a>Contract description</h2>
-
-    
-
-<p>The ColumnDotPlot will provide user interface elements to change all above slots as well as slots in its parent classes <a href='DotPlot-class.html'>DotPlot</a> and <a href='Panel-class.html'>Panel</a>.
-It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.</p>
-<p>Subclasses are expected to implement methods for (at least) <code><a href='plot-generics.html'>.generateDotPlotData</a></code>.</p>
     <h2 class="hasAnchor" id="supported-methods"><a class="anchor" href="#supported-methods"></a>Supported methods</h2>
 
     
@@ -195,7 +188,7 @@ This will also call the equivalent <a href='DotPlot-class.html'>DotPlot</a> meth
 It will also create a data parameter box that can respond to specialized <code><a href='interface-generics.html'>.defineDataInterface</a></code>.
 This will <em>override</em> the <a href='Panel-class.html'>Panel</a> method.</p></li>
 <li><p><code><a href='interface-generics.html'>.hideInterface</a>(x, field)</code> returns a logical scalar indicating whether the interface element corresponding to <code>field</code> should be hidden.
-This returns <code>TRUE</code> for row selection parameters (<code>"SelectRowSource"</code>, <code>"SelectRowType"</code> and <code>"SelectRowSaved"</code>),
+This returns <code>TRUE</code> for row selection parameters (<code>"RowSelectionSource"</code>, <code>"RowSelectionType"</code> and <code>"RowSelectionSaved"</code>),
 otherwise it dispatches to the <a href='Panel-class.html'>Panel</a> method.</p></li>
 </ul>
 
@@ -209,6 +202,17 @@ This will also call the equivalent <a href='DotPlot-class.html'>DotPlot</a> meth
 </ul>
 
 <p>Unless explicitly specialized above, all methods from the parent classes <a href='DotPlot-class.html'>DotPlot</a> and <a href='Panel-class.html'>Panel</a> are also available.</p>
+    <h2 class="hasAnchor" id="subclass-expectations"><a class="anchor" href="#subclass-expectations"></a>Subclass expectations</h2>
+
+    
+
+<p>Subclasses are expected to implement methods for:</p><ul>
+<li><p><code><a href='plot-generics.html'>.generateDotPlotData</a></code></p></li>
+<li><p><code><a href='getEncodedName.html'>.fullName</a></code></p></li>
+<li><p><code><a href='getPanelColor.html'>.panelColor</a></code></p></li>
+</ul>
+
+<p>The method for <code><a href='plot-generics.html'>.generateDotPlotData</a></code> should create a <code>plot.data</code> data.frame with one row per column in the SummarizedExperiment object.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><a href='DotPlot-class.html'>DotPlot</a>, for the immediate parent class that contains the actual slot definitions.</p></div>
@@ -218,8 +222,8 @@ This will also call the equivalent <a href='DotPlot-class.html'>DotPlot</a> meth
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#slot-overview">Slot overview</a></li>
-      <li><a href="#contract-description">Contract description</a></li>
       <li><a href="#supported-methods">Supported methods</a></li>
+      <li><a href="#subclass-expectations">Subclass expectations</a></li>
       <li><a href="#see-also">See also</a></li>
     </ul>
 

@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.1</span>
       </span>
     </div>
 
@@ -114,7 +114,7 @@
       Cancer Research UK Cambridge Institute, University of Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com">infinite.monkeys.with.keyboards@gmail.com</a>
       </address>
                   
-            <h4 class="date">15 February 2020</h4>
+            <h4 class="date">18 February 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/basic.Rmd"><code>vignettes/basic.Rmd</code></a></small>
       <div class="hidden name"><code>basic.Rmd</code></div>
@@ -123,7 +123,7 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-02-15</p>
+<p><strong>Compiled date</strong>: 2020-02-18</p>
 <p><strong>Last edited</strong>: 2018-03-08</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <p><img src="../../../../R/Library/iSEE/www/iSEE.png" width="50%" style="display: block; margin: auto;"></p>
@@ -153,8 +153,7 @@
 <a class="sourceLine" id="cb4-10" data-line-number="10"><span class="co">#&gt; colnames(379): SRR2140028 SRR2140022 ... SRR2139341 SRR2139336</span></a>
 <a class="sourceLine" id="cb4-11" data-line-number="11"><span class="co">#&gt; colData names(22): NREADS NALIGNED ... Animal.ID passes_qc_checks_s</span></a>
 <a class="sourceLine" id="cb4-12" data-line-number="12"><span class="co">#&gt; reducedDimNames(0):</span></a>
-<a class="sourceLine" id="cb4-13" data-line-number="13"><span class="co">#&gt; spikeNames(0):</span></a>
-<a class="sourceLine" id="cb4-14" data-line-number="14"><span class="co">#&gt; altExpNames(1): ERCC</span></a></code></pre></div>
+<a class="sourceLine" id="cb4-13" data-line-number="13"><span class="co">#&gt; altExpNames(1): ERCC</span></a></code></pre></div>
 <p>As provided, the <code>sce</code> object contains raw data and a number of quality control and experimental cell annotations, all available in <code>colData(sce)</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="kw">colData</span>(sce))</a>
 <a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co">#&gt;  [1] "NREADS"                       "NALIGNED"                    </span></a>
@@ -228,19 +227,19 @@
 <a href="#overview-of-panel-types" class="anchor"></a>Overview of panel types</h3>
 <p>The main element in the body of <em><a href="https://bioconductor.org/packages/3.11/iSEE">iSEE</a></em> is the combination of panels, generated (and optionally linked to one another) according to your actions. There are currently eight standard panel types that can be generated with <em><a href="https://bioconductor.org/packages/3.11/iSEE">iSEE</a></em>:</p>
 <ul>
-<li>Reduced dimension plots</li>
-<li>Columns statistics tables</li>
-<li>Column data plots</li>
-<li>Feature assay plots</li>
-<li>Row statistics tables</li>
-<li>Row data plots</li>
-<li>Sample assay plots</li>
-<li>Heat maps</li>
+<li>Reduced dimension plot</li>
+<li>Column data table</li>
+<li>Column data plot</li>
+<li>Feature assay plot</li>
+<li>Row data table</li>
+<li>Row data plot</li>
+<li>Sample assay plot</li>
+<li>Complex heatmap</li>
 </ul>
 <p>In addition, two custom panel types are available<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>:</p>
 <ul>
-<li>Custom statistics table</li>
-<li>Custom data plot</li>
+<li>Custom table</li>
+<li>Custom plot</li>
 </ul>
 <p>For each standard plot panel, three different sets of parameters will be available in collapsible boxes:</p>
 <ul>
@@ -270,7 +269,7 @@
 <h3 class="hasAnchor">
 <a href="#feature-assay-plots" class="anchor"></a>Feature assay plots</h3>
 <p>A <em>Feature assay plot</em> visualizes the assayed values (e.g., gene expression) for a particular feature (e.g., gene) across the samples on the y-axis. This usually results in a (grouped) violin plot, if the x-axis is set to <code>"None"</code> or a categorical variable; or a scatter plot, if the x-axis is another continuous variable<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>.</p>
-<p>Gene selection for the y-axis can be achieved by using a <em>linked row statistics table</em> in another panel. Clicking on a row in the table automatically changes the assayed values plotted on the y-axis. Alternatively, the row name can be directly entered as text that corresponds to an entry of <code><a href="https://rdrr.io/r/base/colnames.html">rownames(se)</a></code><a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>.</p>
+<p>Gene selection for the y-axis can be achieved by using a <em>linked row data table</em> in another panel. Clicking on a row in the table automatically changes the assayed values plotted on the y-axis. Alternatively, the row name can be directly entered as text that corresponds to an entry of <code><a href="https://rdrr.io/r/base/colnames.html">rownames(se)</a></code><a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>.</p>
 <p>The x-axis covariate can also be selected from the plotting parameters. This can be <code>"None"</code>, sample metadata, or the assayed values of another feature (also identified using a linked table or via text). The measurement units are selected as one of the <code>assays(se)</code>, which is applied to both the X and Y axes.</p>
 <p>Obviously, any other assayed value for any feature can be visualized in this manner, not limited to the expression of genes. The only requirement for this type of panel is that the observations can be stored as a matrix in the <code>SummarizedExperiment</code> object.</p>
 </div>
@@ -291,21 +290,21 @@
 <li>Another sample, to visualize and compare the assayed values in any two samples.</li>
 </ul>
 </div>
-<div id="row-statistics-tables" class="section level3">
+<div id="row-data-tables" class="section level3">
 <h3 class="hasAnchor">
-<a href="#row-statistics-tables" class="anchor"></a>Row statistics tables</h3>
-<p>A <em>Row statistics table</em> contains the values of the <code>rowData</code> slot for the <code>SingleCellExperiment</code>/<code>SummarizedExperiment</code> object. If none are available, a column named <code>Present</code> is added and set to <code>TRUE</code> for all features, to avoid issues with <code><a href="https://rdrr.io/pkg/DT/man/datatable.html">DT::datatable</a></code> and an empty <code>DataFrame</code>. Typically, these tables are used to link to other plots to determine the features to use for plotting or coloring. However, they can also be used to retrieve gene-specific annotation on the fly by specifying the <code>annotFun</code> parameter, e.g. using the <code>annotateEntrez</code> or <code>annotateEnsembl</code> functions, provided in <em><a href="https://bioconductor.org/packages/3.11/iSEE">iSEE</a></em>. Alternatively, users can create a customized annotation function; for more details on this, please consult the manual pages <code>?annotateEntrez</code> and <code>?annotateEnsembl</code>.</p>
+<a href="#row-data-tables" class="anchor"></a>Row data tables</h3>
+<p>A <em>Row data table</em> contains the values of the <code>rowData</code> slot for the <code>SingleCellExperiment</code>/<code>SummarizedExperiment</code> object. If none are available, a column named <code>Present</code> is added and set to <code>TRUE</code> for all features, to avoid issues with <code><a href="https://rdrr.io/pkg/DT/man/datatable.html">DT::datatable</a></code> and an empty <code>DataFrame</code>. Typically, these tables are used to link to other plots to determine the features to use for plotting or coloring. However, they can also be used to retrieve gene-specific annotation on the fly by specifying the <code>annotFun</code> parameter, e.g. using the <code>annotateEntrez</code> or <code>annotateEnsembl</code> functions, provided in <em><a href="https://bioconductor.org/packages/3.11/iSEE">iSEE</a></em>. Alternatively, users can create a customized annotation function; for more details on this, please consult the manual pages <code>?annotateEntrez</code> and <code>?annotateEnsembl</code>.</p>
 </div>
-<div id="column-statistics-tables" class="section level3">
+<div id="column-data-tables" class="section level3">
 <h3 class="hasAnchor">
-<a href="#column-statistics-tables" class="anchor"></a>Column statistics tables</h3>
-<p>A <em>Column statistics table</em> contains the values of the <code>colData</code> slot for the <code>SingleCellExperiment</code>/<code>SummarizedExperiment</code> object. Its behavior mirrors the implementation for the <em>Row statistics table</em>. Correspondingly, if none are available, a column named <code>Present</code> is added and set to <code>TRUE</code> for all samples, to avoid issues with <code><a href="https://rdrr.io/pkg/DT/man/datatable.html">DT::datatable</a></code> and an empty <code>DataFrame</code>. Typically, these tables are used to link to other plots to determine the samples to use for plotting or coloring.</p>
+<a href="#column-data-tables" class="anchor"></a>Column data tables</h3>
+<p>A <em>Column data table</em> contains the values of the <code>colData</code> slot for the <code>SingleCellExperiment</code>/<code>SummarizedExperiment</code> object. Its behavior mirrors the implementation for the <em>Row data table</em>. Correspondingly, if none are available, a column named <code>Present</code> is added and set to <code>TRUE</code> for all samples, to avoid issues with <code><a href="https://rdrr.io/pkg/DT/man/datatable.html">DT::datatable</a></code> and an empty <code>DataFrame</code>. Typically, these tables are used to link to other plots to determine the samples to use for plotting or coloring.</p>
 </div>
 <div id="heat-maps" class="section level3">
 <h3 class="hasAnchor">
 <a href="#heat-maps" class="anchor"></a>Heat maps</h3>
 <p><em>Heat map</em> panels provide a compact overview of the data for multiple features in the form of color-coded matrices. These correspond to the <code>assays</code> stored in the <code>SummarizedExperiment</code> object, where features (e.g., genes) are the rows and samples are the columns.</p>
-<p>User can select features (rows) to display from the selectize widget (which supports autocompletion), or also via other panels, like row data plots or row statistics tables. In addition, users can rapidly import custom lists of feature names using a modal popup that provides an <a href="https://ace.c9.io/">Ace editor</a> where they can directly type of paste feature names, and a file upload button that accepts text files containing one feature name per line. Users should remember to click the “Apply” button before closing the modal, to update the heat map with the new list of features.</p>
+<p>User can select features (rows) to display from the selectize widget (which supports autocompletion), or also via other panels, like row data plots or row data tables. In addition, users can rapidly import custom lists of feature names using a modal popup that provides an <a href="https://ace.c9.io/">Ace editor</a> where they can directly type of paste feature names, and a file upload button that accepts text files containing one feature name per line. Users should remember to click the “Apply” button before closing the modal, to update the heat map with the new list of features.</p>
 <p>The “Suggest feature order” button clusters the rows, and also rearranges the elements in the selectize according to the clustering. It is also possible to choose which assay type is displayed (<code>"logcounts"</code> being the default choice, if available). Samples in the heat map can also be annotated, simply by selecting relevant column metadata. A zooming functionality is also available, restricted to the y-axis (i.e., allowing closer inspection on the individual features included).</p>
 </div>
 </div>
@@ -354,7 +353,7 @@
 <li>If set to <code>"Transparent"</code>, the selected subset will be drawn with no transparency, while all non-selected points will be plotted with the specified alpha value.</li>
 </ul>
 <p>It is possible to set up a tree of panels that transmit selections to each other, much like the gating structures used in flow cytometry. This requires all panels acting as both receivers and transmitters to have their effects set to <code>"Restrict"</code> - see <a href="https://github.com/LTLA/iSEE2018/blob/master/tours/cytof/app.R">this mass cytometry tour</a> for an example.</p>
-<p>While we have focused above on receiving point selections for plots, it is also possible to transmit from plots to tables. This will subset the table so that only the rows corresponding to selected points are visible. Obviously, this means that users should only transmit from row-based plots to row statistics tables, and from column-based plots to column statistics tables.</p>
+<p>While we have focused above on receiving point selections for plots, it is also possible to transmit from plots to tables. This will subset the table so that only the rows corresponding to selected points are visible. Obviously, this means that users should only transmit from row-based plots to <em>row data tables</em>, and from column-based plots to <em>column data tables</em>.</p>
 <p>Custom data panels can receive point selections from both row- and column-based plots, see <a href="https://bioconductor.org/packages/3.11/iSEE/vignettes/custom.html">here</a> for more details.</p>
 <p>Note that some panels are strictly “end-point” panels and cannot transmit - this includes heat maps, tables and custom data plots.</p>
 </div>
@@ -406,7 +405,7 @@
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session Info</h1>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</a>
-<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="co">#&gt; R Under development (unstable) (2020-02-15 r77807)</span></a>
+<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="co">#&gt; R Under development (unstable) (2020-02-18 r77826)</span></a>
 <a class="sourceLine" id="cb12-3" data-line-number="3"><span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span></a>
 <a class="sourceLine" id="cb12-4" data-line-number="4"><span class="co">#&gt; Running under: Ubuntu 16.04.6 LTS</span></a>
 <a class="sourceLine" id="cb12-5" data-line-number="5"><span class="co">#&gt; </span></a>
@@ -427,9 +426,9 @@
 <a class="sourceLine" id="cb12-20" data-line-number="20"><span class="co">#&gt; [8] methods   base     </span></a>
 <a class="sourceLine" id="cb12-21" data-line-number="21"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb12-22" data-line-number="22"><span class="co">#&gt; other attached packages:</span></a>
-<a class="sourceLine" id="cb12-23" data-line-number="23"><span class="co">#&gt;  [1] scater_1.15.22              ggplot2_3.2.1              </span></a>
-<a class="sourceLine" id="cb12-24" data-line-number="24"><span class="co">#&gt;  [3] scRNAseq_2.1.5              iSEE_1.99.0                </span></a>
-<a class="sourceLine" id="cb12-25" data-line-number="25"><span class="co">#&gt;  [5] SingleCellExperiment_1.9.1  SummarizedExperiment_1.17.1</span></a>
+<a class="sourceLine" id="cb12-23" data-line-number="23"><span class="co">#&gt;  [1] scater_1.15.25              ggplot2_3.2.1              </span></a>
+<a class="sourceLine" id="cb12-24" data-line-number="24"><span class="co">#&gt;  [3] scRNAseq_2.1.6              iSEE_1.99.1                </span></a>
+<a class="sourceLine" id="cb12-25" data-line-number="25"><span class="co">#&gt;  [5] SingleCellExperiment_1.9.2  SummarizedExperiment_1.17.2</span></a>
 <a class="sourceLine" id="cb12-26" data-line-number="26"><span class="co">#&gt;  [7] DelayedArray_0.13.4         BiocParallel_1.21.2        </span></a>
 <a class="sourceLine" id="cb12-27" data-line-number="27"><span class="co">#&gt;  [9] matrixStats_0.55.0          Biobase_2.47.2             </span></a>
 <a class="sourceLine" id="cb12-28" data-line-number="28"><span class="co">#&gt; [11] GenomicRanges_1.39.2        GenomeInfoDb_1.23.13       </span></a>
@@ -452,9 +451,9 @@
 <a class="sourceLine" id="cb12-45" data-line-number="45"><span class="co">#&gt;  [25] compiler_4.0.0                httr_1.4.1                   </span></a>
 <a class="sourceLine" id="cb12-46" data-line-number="46"><span class="co">#&gt;  [27] backports_1.1.5               assertthat_0.2.1             </span></a>
 <a class="sourceLine" id="cb12-47" data-line-number="47"><span class="co">#&gt;  [29] Matrix_1.2-18                 fastmap_1.0.1                </span></a>
-<a class="sourceLine" id="cb12-48" data-line-number="48"><span class="co">#&gt;  [31] lazyeval_0.2.2                BiocSingular_1.3.1           </span></a>
+<a class="sourceLine" id="cb12-48" data-line-number="48"><span class="co">#&gt;  [31] lazyeval_0.2.2                BiocSingular_1.3.2           </span></a>
 <a class="sourceLine" id="cb12-49" data-line-number="49"><span class="co">#&gt;  [33] later_1.0.0                   htmltools_0.4.0              </span></a>
-<a class="sourceLine" id="cb12-50" data-line-number="50"><span class="co">#&gt;  [35] tools_4.0.0                   rsvd_1.0.2                   </span></a>
+<a class="sourceLine" id="cb12-50" data-line-number="50"><span class="co">#&gt;  [35] tools_4.0.0                   rsvd_1.0.3                   </span></a>
 <a class="sourceLine" id="cb12-51" data-line-number="51"><span class="co">#&gt;  [37] igraph_1.2.4.2                gtable_0.3.0                 </span></a>
 <a class="sourceLine" id="cb12-52" data-line-number="52"><span class="co">#&gt;  [39] glue_1.3.1                    GenomeInfoDbData_1.2.2       </span></a>
 <a class="sourceLine" id="cb12-53" data-line-number="53"><span class="co">#&gt;  [41] dplyr_0.8.4                   rappdirs_0.3.1               </span></a>
@@ -471,7 +470,7 @@
 <a class="sourceLine" id="cb12-64" data-line-number="64"><span class="co">#&gt;  [63] RColorBrewer_1.1-2            ComplexHeatmap_2.3.0         </span></a>
 <a class="sourceLine" id="cb12-65" data-line-number="65"><span class="co">#&gt;  [65] yaml_2.2.1                    curl_4.3                     </span></a>
 <a class="sourceLine" id="cb12-66" data-line-number="66"><span class="co">#&gt;  [67] gridExtra_2.3                 memoise_1.1.0                </span></a>
-<a class="sourceLine" id="cb12-67" data-line-number="67"><span class="co">#&gt;  [69] stringi_1.4.5                 RSQLite_2.2.0                </span></a>
+<a class="sourceLine" id="cb12-67" data-line-number="67"><span class="co">#&gt;  [69] stringi_1.4.6                 RSQLite_2.2.0                </span></a>
 <a class="sourceLine" id="cb12-68" data-line-number="68"><span class="co">#&gt;  [71] BiocVersion_3.11.1            desc_1.2.0                   </span></a>
 <a class="sourceLine" id="cb12-69" data-line-number="69"><span class="co">#&gt;  [73] shape_1.4.4                   rlang_0.4.4                  </span></a>
 <a class="sourceLine" id="cb12-70" data-line-number="70"><span class="co">#&gt;  [75] pkgconfig_2.0.3               bitops_1.0-6                 </span></a>

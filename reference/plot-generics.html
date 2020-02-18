@@ -37,7 +37,7 @@
 
 <meta property="og:title" content="Plotting generics — plot-generics" />
 <meta property="og:description" content="A series of generics for controlling how plotting is performed in DotPlot panels.
-Subclasses can specialize one or more of them to modify their behavior in specific panels." />
+DotPlot subclasses can specialize one or more of them to modify the behavior of .generateOutput." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -70,7 +70,7 @@ Subclasses can specialize one or more of them to modify their behavior in specif
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.1</span>
       </span>
     </div>
 
@@ -139,7 +139,7 @@ Subclasses can specialize one or more of them to modify their behavior in specif
 
     <div class="ref-description">
     <p>A series of generics for controlling how plotting is performed in <a href='DotPlot-class.html'>DotPlot</a> panels.
-Subclasses can specialize one or more of them to modify their behavior in specific panels.</p>
+<a href='DotPlot-class.html'>DotPlot</a> subclasses can specialize one or more of them to modify the behavior of <code><a href='output-generics.html'>.generateOutput</a></code>.</p>
     </div>
 
 
@@ -191,13 +191,13 @@ This is guaranteed to be categorical.</p></li>
 This is guaranteed to be categorical.</p></li>
 <li><p><code>"SelectBy"</code>, a logical field indicating whether the point was included in a multiple selection
 (i.e., transmitted from another plot with <code>x</code> as the receiver).
-Note that if <code>SelectEffect="Restrict"</code>, <code>plot.data</code> will already have been subsetted
+Note that if <code>SelectionEffect="Restrict"</code>, <code>plot.data</code> will already have been subsetted
 to only retain <code>TRUE</code> values of this field.</p></li>
 </ul>
 
 <p><code>envir</code> may also contain the following variables:</p><ul>
 <li><p><code>plot.data.all</code>, present when a multiple selection is transmitted to <code>x</code>
-and <code>SelectEffect="Restrict"</code>.
+and <code>SelectionEffect="Restrict"</code>.
 This is a data.frame that contains all points prior to subsetting and is useful for defining the boundaries of the plot
 such that they do not change when the transmitted multiple selection changes.</p></li>
 <li><p><code>plot.data.pre</code>, present when downsampling is turned on.

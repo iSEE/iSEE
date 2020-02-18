@@ -70,7 +70,7 @@ It provides slots and methods for specifying which column metadata variable to u
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.1</span>
       </span>
     </div>
 
@@ -154,7 +154,7 @@ If <code>NA</code>, defaults to the first valid field (see <code>?"<a href='Colu
 <li><p><code>XAxis</code>, string specifying what should be plotting on the x-axis.
 This can be any one of <code>"None"</code> or <code>"Column data"</code>.
 Defaults to <code>"None"</code>.</p></li>
-<li><p><code>XAxisColData</code>, string specifying the column of the <code>colData</code> to show on the x-axis.
+<li><p><code>XAxisColumnData</code>, string specifying the column of the <code>colData</code> to show on the x-axis.
 If <code>NA</code>, defaults to the first valid field.</p></li>
 </ul>
 
@@ -178,7 +178,7 @@ Subclasses do not have to provide any methods, as this is a concrete class.</p>
 <p>In the following code snippets, <code>x</code> is an instance of a ColumnDataPlot class.
 Refer to the documentation for each method for more details on the remaining arguments.</p>
 <p>For setting up data values:</p><ul>
-<li><p><code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code> returns <code>x</code> after replacing any <code>NA</code> value in <code>YAxis</code> or <code>XAxisColData</code> with the name of the first valid <code>colData</code> field.
+<li><p><code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code> returns <code>x</code> after replacing any <code>NA</code> value in <code>YAxis</code> or <code>XAxisColumnData</code> with the name of the first valid <code>colData</code> field.
 This will also call the equivalent <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> method for further refinements to <code>x</code>.
 If no valid column metadata fields are available, <code>NULL</code> is returned instead.</p></li>
 </ul>
@@ -237,23 +237,23 @@ It will return the commands required to do so as well as a list of labels.</p></
 #&gt; Slot "YAxis":
 #&gt; [1] "Mutation_Status"
 #&gt; 
-#&gt; Slot "XAxisColData":
+#&gt; Slot "XAxisColumnData":
 #&gt; [1] "Mutation_Status"
 #&gt; 
-#&gt; Slot "ColorByColData":
+#&gt; Slot "ColorByColumnData":
 #&gt; [1] "Mutation_Status"
 #&gt; 
-#&gt; Slot "ColorByFeatNameAssay":
+#&gt; Slot "ColorByFeatureNameAssay":
 #&gt; [1] "counts"
 #&gt; 
-#&gt; Slot "ColorBySampNameColor":
+#&gt; Slot "ColorBySampleNameColor":
 #&gt; [1] "red"
 #&gt; 
-#&gt; Slot "ShapeByColData":
+#&gt; Slot "ShapeByColumnData":
 #&gt; [1] "Mutation_Status"
 #&gt; 
-#&gt; Slot "SizeByColData":
-#&gt; [1] NA
+#&gt; Slot "SizeByColumnData":
+#&gt; [1] "sizeFactor"
 #&gt; 
 #&gt; Slot "FacetByRow":
 #&gt; [1] "---"
@@ -267,16 +267,16 @@ It will return the commands required to do so as well as a list of labels.</p></
 #&gt; Slot "ColorByDefaultColor":
 #&gt; [1] "black"
 #&gt; 
-#&gt; Slot "ColorByFeatName":
+#&gt; Slot "ColorByFeatureName":
 #&gt; [1] "Gene_0001"
 #&gt; 
-#&gt; Slot "ColorByRowTable":
+#&gt; Slot "ColorByFeatureSource":
 #&gt; [1] "---"
 #&gt; 
-#&gt; Slot "ColorBySampName":
+#&gt; Slot "ColorBySampleName":
 #&gt; [1] "Cell_001"
 #&gt; 
-#&gt; Slot "ColorByColTable":
+#&gt; Slot "ColorBySampleSource":
 #&gt; [1] "---"
 #&gt; 
 #&gt; Slot "ShapeBy":
@@ -285,13 +285,13 @@ It will return the commands required to do so as well as a list of labels.</p></
 #&gt; Slot "SizeBy":
 #&gt; [1] "None"
 #&gt; 
-#&gt; Slot "SelectEffect":
+#&gt; Slot "SelectionEffect":
 #&gt; [1] "Transparent"
 #&gt; 
-#&gt; Slot "SelectColor":
+#&gt; Slot "SelectionColor":
 #&gt; [1] "red"
 #&gt; 
-#&gt; Slot "SelectAlpha":
+#&gt; Slot "SelectionAlpha":
 #&gt; [1] 0.1
 #&gt; 
 #&gt; Slot "ZoomData":
@@ -321,7 +321,7 @@ It will return the commands required to do so as well as a list of labels.</p></
 #&gt; Slot "Downsample":
 #&gt; [1] FALSE
 #&gt; 
-#&gt; Slot "SampleRes":
+#&gt; Slot "DownsampleResolution":
 #&gt; [1] 200
 #&gt; 
 #&gt; Slot "FontSize":
@@ -339,31 +339,31 @@ It will return the commands required to do so as well as a list of labels.</p></
 #&gt; Slot "PanelWidth":
 #&gt; [1] 4
 #&gt; 
-#&gt; Slot "SelectBoxOpen":
+#&gt; Slot "SelectionBoxOpen":
 #&gt; [1] FALSE
 #&gt; 
-#&gt; Slot "SelectRowSource":
+#&gt; Slot "RowSelectionSource":
 #&gt; [1] "---"
 #&gt; 
-#&gt; Slot "SelectColSource":
+#&gt; Slot "ColumnSelectionSource":
 #&gt; [1] "---"
 #&gt; 
 #&gt; Slot "DataBoxOpen":
 #&gt; [1] FALSE
 #&gt; 
-#&gt; Slot "SelectRowType":
+#&gt; Slot "RowSelectionType":
 #&gt; [1] "Active"
 #&gt; 
-#&gt; Slot "SelectRowSaved":
+#&gt; Slot "RowSelectionSaved":
 #&gt; [1] 0
 #&gt; 
-#&gt; Slot "SelectColType":
+#&gt; Slot "ColumnSelectionType":
 #&gt; [1] "Active"
 #&gt; 
-#&gt; Slot "SelectColSaved":
+#&gt; Slot "ColumnSelectionSaved":
 #&gt; [1] 0
 #&gt; 
-#&gt; Slot "MultiSelectHistory":
+#&gt; Slot "SelectionHistory":
 #&gt; list()
 #&gt; </div><div class='input'>
 </div></pre>

@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.1</span>
       </span>
     </div>
 
@@ -160,7 +160,7 @@ see <code>?<a href='multi-select-generics.html'>.multiSelectionDimension</a></co
 Each parameter box can contain arbitrary numbers of additional UI elements,
 each of which is expected to modify one slot of <code>x</code> upon user interaction.</p>
 <p>The ID of each interface element should follow the form of <code>PANEL_SLOT</code> where <code>PANEL</code> is the panel name (from <code><a href='getEncodedName.html'>.getEncodedName</a>(x)</code>) and <code>SLOT</code> is the name of the slot modified by the interface element,
-e.g., <code>"ReducedDimPlot1_Type"</code>.
+e.g., <code>"ReducedDimensionPlot1_Type"</code>.
 Each interface element should have an equivalent observer in <code><a href='observer-generics.html'>.createObservers</a></code> unless they are hidden by <code>.hideInterface</code> (see below).</p>
 <p>It is the developer's responsibility to call <code>callNextMethod</code> to obtain interface elements for parent classes.
 Refer to the contract for each <a href='Panel-class.html'>Panel</a> class to determine what is already provided by each parent.</p>

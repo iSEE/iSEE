@@ -36,7 +36,7 @@
 
 
 <meta property="og:title" content="The DotPlot virtual class — DotPlot-class" />
-<meta property="og:description" content="The DotPlot is a virtual class for all panels where each row or column in the SummarizedExperiment is represented by a point (&amp;#8220;dot&amp;#8221;) in a brushable plot.
+<meta property="og:description" content="The DotPlot is a virtual class for all panels where each row or column in the SummarizedExperiment is represented by no more than one point (i.e., a &amp;#8220;dot&amp;#8221;) in a brushable ggplot plot.
 It provides slots and methods to control various aesthetics of the dots and to store the brush or lasso selection." />
 <meta name="twitter:card" content="summary" />
 
@@ -70,7 +70,7 @@ It provides slots and methods to control various aesthetics of the dots and to s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.1</span>
       </span>
     </div>
 
@@ -138,7 +138,7 @@ It provides slots and methods to control various aesthetics of the dots and to s
     </div>
 
     <div class="ref-description">
-    <p>The DotPlot is a virtual class for all panels where each row or column in the SummarizedExperiment is represented by a point (&#8220;dot&#8221;) in a brushable plot.
+    <p>The DotPlot is a virtual class for all panels where each row or column in the SummarizedExperiment is represented by no more than one point (i.e., a &#8220;dot&#8221;) in a brushable ggplot plot.
 It provides slots and methods to control various aesthetics of the dots and to store the brush or lasso selection.</p>
     </div>
 
@@ -154,17 +154,17 @@ This should be one of <code>"None"</code>, <code>"Feature name"</code>, <code>"S
 Defaults to <code>"None"</code>.</p></li>
 <li><p><code>ColorByDefaultColor</code>, a string specifying the default color to use for all points if <code>ColorBy="None"</code>.
 Defaults to <code>"black"</code>.</p></li>
-<li><p><code>ColorByFeatName</code>, a string specifying the feature to be used for coloring points when <code>ColorBy="Feature name"</code>.
+<li><p><code>ColorByFeatureName</code>, a string specifying the feature to be used for coloring points when <code>ColorBy="Feature name"</code>.
 For <a href='RowDotPlot-class.html'>RowDotPlot</a>s, this is used to highlight the point corresponding to the selected feature;
 for <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s, this is used to color each point according to the expression of that feature.
 If <code>NA</code>, this defaults to the name of the first row.</p></li>
-<li><p><code>ColorByRowTable</code>, a string specifying the name of the panel to use for transmitting the feature selection to <code>ColorByFeatName</code>.
+<li><p><code>ColorByFeatureSource</code>, a string specifying the name of the panel to use for transmitting the feature selection to <code>ColorByFeatureName</code>.
 Defaults to <code>"---"</code>.</p></li>
-<li><p><code>ColorBySampName</code>, a string specifying the sample to be used for coloring points when <code>ColorBy="Sample name"</code>.
+<li><p><code>ColorBySampleName</code>, a string specifying the sample to be used for coloring points when <code>ColorBy="Sample name"</code>.
 For <a href='RowDotPlot-class.html'>RowDotPlot</a>s, this is used to color each point according to the expression of that sample;
 for <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s, this is used to highlight the point corresponding to the selected sample.
 If <code>NA</code>, this defaults to the name of the first column.</p></li>
-<li><p><code>ColorByColTable</code>, a string specifying the name of the panel to use for transmitting the sample selection to <code>ColorBySampName</code>.
+<li><p><code>ColorBySampleSource</code>, a string specifying the name of the panel to use for transmitting the sample selection to <code>ColorBySampleNameColor</code>.
 Defaults to <code>"---"</code>.</p></li>
 </ul>
 
@@ -189,13 +189,13 @@ Defaults to <code>"---"</code>, i.e., no column faceting.</p></li>
 </ul>
 
 <p>The following slots control the effect of the transmitted selection from another panel:</p><ul>
-<li><p><code>SelectEffect</code>, a string specifying the selection effect.
+<li><p><code>SelectionEffect</code>, a string specifying the selection effect.
 This should be one of <code>"Transparent"</code> (the default), where all non-selected points become transparent;
 <code>"Color"</code>, where all selected points change to the specified color;
 <code>"Restrict"</code>, where all non-selected points are not plotted.</p></li>
-<li><p><code>SelectAlpha</code>, a numeric scalar in [0, 1] specifying the transparency to use for non-selected points when <code>SelectEffect="Transparent"</code>.
+<li><p><code>SelectionAlpha</code>, a numeric scalar in [0, 1] specifying the transparency to use for non-selected points when <code>SelectionEffect="Transparent"</code>.
 Defaults to 0.1.</p></li>
-<li><p><code>SelectColor</code>, a string specifying the color to use for selected points when <code>SelectEffect="Color"</code>.
+<li><p><code>SelectionColor</code>, a string specifying the color to use for selected points when <code>SelectionEffect="Color"</code>.
 Defaults to <code>"red"</code>.</p></li>
 </ul>
 
@@ -230,7 +230,7 @@ Defaults to 1.</p></li>
 Defaults to 1, i.e., not transparent.</p></li>
 <li><p><code>Downsample</code>, logical scalar indicating whether to downsample points for faster plotting.
 Defaults to <code>FALSE</code>.</p></li>
-<li><p><code>SampleRes</code>, numeric scalar specifying the resolution of the downsampling grid (see <code>?<a href='subsetPointsByGrid.html'>subsetPointsByGrid</a></code>) if <code>Downsample=TRUE</code>.
+<li><p><code>DownsampleResolution</code>, numeric scalar specifying the resolution of the downsampling grid (see <code>?<a href='subsetPointsByGrid.html'>subsetPointsByGrid</a></code>) if <code>Downsample=TRUE</code>.
 Larger values correspond to reduced downsampling at the cost of plotting speed.
 Defaults to 200.</p></li>
 </ul>
@@ -243,13 +243,6 @@ Defaults to <code>"Right"</code> but can also be <code>"Bottom"</code>.</p></li>
 </ul>
 
 <p>In addition, this class inherits all slots from its parent <a href='Panel-class.html'>Panel</a> class.</p>
-    <h2 class="hasAnchor" id="contract-description"><a class="anchor" href="#contract-description"></a>Contract description</h2>
-
-    
-
-<p>This is a rather vaguely defined class for which the only purpose is to avoid duplicating code for <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s and <a href='RowDotPlot-class.html'>RowDotPlot</a>s.
-Observers are only provided for some slots - the remainders are supported by the aforementioned subclasses - and no interface elements are provided at all.
-It is likely that developers will prefer to extend these subclasses instead of the DotPlot directly, as the former have more well-defined contracts.</p>
     <h2 class="hasAnchor" id="supported-methods"><a class="anchor" href="#supported-methods"></a>Supported methods</h2>
 
     
@@ -260,7 +253,7 @@ Refer to the documentation for each method for more details on the remaining arg
 <li><p><code><a href='setup-generics.html'>.cacheCommonInfo</a>(x)</code> adds a <code>"DotPlot"</code> entry containing <code>valid.assay.names</code>, a character vector of valid assay names.
 Valid names are defined as those that are non-empty, i.e., not <code>""</code>.
 This method will also call the equivalent <a href='Panel-class.html'>Panel</a> method.</p></li>
-<li><p><code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code> replaces <code>NA</code> values in <code>ColorByFeatName</code> and <code>ColorBySampName</code> with the first row and column name, respectively, of <code>se</code>.
+<li><p><code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code> replaces <code>NA</code> values in <code>ColorByFeatureName</code> and <code>ColorBySampleNameColor</code> with the first row and column name, respectively, of <code>se</code>.
 This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.</p></li>
 </ul>
 
@@ -287,7 +280,7 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method t
 </ul>
 
 <p>For controlling selections:</p><ul>
-<li><p><code><a href='multi-select-generics.html'>.multiSelectionRestricted</a>(x)</code> returns a logical scalar indicating whether <code>x</code> is restricting the plotted points to those that were selected in a transmitting panel, i.e., is <code>SelectEffect="Restrict"</code>?</p></li>
+<li><p><code><a href='multi-select-generics.html'>.multiSelectionRestricted</a>(x)</code> returns a logical scalar indicating whether <code>x</code> is restricting the plotted points to those that were selected in a transmitting panel, i.e., is <code>SelectionEffect="Restrict"</code>?</p></li>
 <li><p><code><a href='multi-select-generics.html'>.multiSelectionCommands</a>(x, index)</code> returns a character vector of R expressions that - when evaluated - returns a character vector of the names of selected points in the active and/or saved selections of <code>x</code>.
 The active selection is returned if <code>index=NA</code>, otherwise one of the saved selection is returned.</p></li>
 <li><p><code><a href='multi-select-generics.html'>.multiSelectionActive</a>(x)</code> returns <code>x[["BrushData"]]</code> or <code>NULL</code> if there is no brush or closed lasso.</p></li>
@@ -299,6 +292,12 @@ This includes the output of <code>callNextMethod</code>.</p></li>
 </ul>
 
 <p>Unless explicitly specialized above, all methods from the parent class <a href='Panel-class.html'>Panel</a> are also available.</p>
+    <h2 class="hasAnchor" id="subclass-expectations"><a class="anchor" href="#subclass-expectations"></a>Subclass expectations</h2>
+
+    
+
+<p>The DotPlot is a rather vaguely defined class for which the only purpose is to avoid duplicating code for <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s and <a href='RowDotPlot-class.html'>RowDotPlot</a>s.
+We recommend extending those subclasses instead.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><a href='RowDotPlot-class.html'>RowDotPlot</a> and <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>, which are more amenable to extension.</p></div>
@@ -308,8 +307,8 @@ This includes the output of <code>callNextMethod</code>.</p></li>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#slot-overview">Slot overview</a></li>
-      <li><a href="#contract-description">Contract description</a></li>
       <li><a href="#supported-methods">Supported methods</a></li>
+      <li><a href="#subclass-expectations">Subclass expectations</a></li>
       <li><a href="#see-also">See also</a></li>
     </ul>
 

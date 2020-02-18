@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>The RowDataPlot panel — RowDataPlot-class • iSEE</title>
+<title>The ReducedDimensionPlot panel — ReducedDimensionPlot-class • iSEE</title>
 
 
 <!-- jquery -->
@@ -35,9 +35,9 @@
 
 
 
-<meta property="og:title" content="The RowDataPlot panel — RowDataPlot-class" />
-<meta property="og:description" content="The RowDataPlot is a panel class for creating a RowDotPlot where the y-axis represents a variable from the rowData of a SummarizedExperiment object.
-It provides slots and methods for specifying which row metadata variable to use and what to plot on the x-axis." />
+<meta property="og:title" content="The ReducedDimensionPlot panel — ReducedDimensionPlot-class" />
+<meta property="og:description" content="The ReducedDimensionPlot is a panel class for creating a ColumnDotPlot where the coordinates of each column/sample are taken from the reducedDims of a SingleCellExperiment object.
+It provides slots and methods for specifying which dimensionality reduction result to use." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -132,55 +132,56 @@ It provides slots and methods for specifying which row metadata variable to use 
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>The RowDataPlot panel</h1>
-    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/panel_RowDataPlot.R'><code>R/panel_RowDataPlot.R</code></a></small>
-    <div class="hidden name"><code>RowDataPlot-class.Rd</code></div>
+    <h1>The ReducedDimensionPlot panel</h1>
+    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/panel_ReducedDimensionPlot.R'><code>R/panel_ReducedDimensionPlot.R</code></a></small>
+    <div class="hidden name"><code>ReducedDimensionPlot-class.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The RowDataPlot is a panel class for creating a <a href='RowDotPlot-class.html'>RowDotPlot</a> where the y-axis represents a variable from the <code>rowData</code> of a SummarizedExperiment object.
-It provides slots and methods for specifying which row metadata variable to use and what to plot on the x-axis.</p>
+    <p>The ReducedDimensionPlot is a panel class for creating a <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> where the coordinates of each column/sample are taken from the <code>reducedDims</code> of a SingleCellExperiment object.
+It provides slots and methods for specifying which dimensionality reduction result to use.</p>
     </div>
 
 
 
-    <h2 class="hasAnchor" id="slot-overview"><a class="anchor" href="#slot-overview"></a>Slot overview</h2>
+    <h2 class="hasAnchor" id="reduceddimensionplot-slot-overview"><a class="anchor" href="#reduceddimensionplot-slot-overview"></a>ReducedDimensionPlot slot overview</h2>
 
     
 
 <p>The following slots control the dimensionality reduction result that is used:</p><ul>
-<li><p><code>YAxis</code>, a string specifying the row of the <code>rowData</code> to show on the y-axis.
-If <code>NA</code>, defaults to the first valid field (see <code>?"<a href='RowDotPlot-class.html'>.refineParameters,RowDotPlot-method</a>"</code>).</p></li>
-<li><p><code>XAxis</code>, string specifying what should be plotting on the x-axis.
-This can be any one of <code>"None"</code> or <code>"Row data"</code>.
-Defaults to <code>"None"</code>.</p></li>
-<li><p><code>XAxisRowData</code>, string specifying the row of the <code>rowData</code> to show on the x-axis.
-If <code>NA</code>, defaults to the first valid field.</p></li>
+<li><p><code>RedDimType</code>, a string specifying the name of the dimensionality reduction result.
+If <code>NA</code>, defaults to the first entry of <code>reducedDims</code>.</p></li>
+<li><p><code>RedDimXAxis</code>, integer scalar specifying the dimension to plot on the x-axis.
+Defaults to 1.</p></li>
+<li><p><code>RedDimYAxis</code>, integer scalar specifying the dimension to plot on the y-axis.
+Defaults to 2.</p></li>
 </ul>
 
-<p>In addition, this class inherits all slots from its parent <a href='RowDotPlot-class.html'>RowDotPlot</a>, <a href='DotPlot-class.html'>DotPlot</a> and <a href='Panel-class.html'>Panel</a> classes.</p>
+<p>In addition, this class inherits all slots from its parent <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>, <a href='DotPlot-class.html'>DotPlot</a> and <a href='Panel-class.html'>Panel</a> classes.</p>
     <h2 class="hasAnchor" id="constructor"><a class="anchor" href="#constructor"></a>Constructor</h2>
 
     
 
-<p><code>RowDataPlot(...)</code> creates an instance of a RowDataPlot class, where any slot and its value can be passed to <code>...</code> as a named argument.</p>
+<p><code>ReducedDimensionPlot(...)</code> creates an instance of a ReducedDimensionPlot class, where any slot and its value can be passed to <code>...</code> as a named argument.</p>
     <h2 class="hasAnchor" id="contract-description"><a class="anchor" href="#contract-description"></a>Contract description</h2>
 
     
 
-<p>The RowDataPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
+<p>The ReducedDimensionPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
 It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
 Subclasses do not have to provide any methods, as this is a concrete class.</p>
     <h2 class="hasAnchor" id="supported-methods"><a class="anchor" href="#supported-methods"></a>Supported methods</h2>
 
     
 
-<p>In the following code snippets, <code>x</code> is an instance of a RowDataPlot class.
+<p>In the following code snippets, <code>x</code> is an instance of a ReducedDimensionPlot class.
 Refer to the documentation for each method for more details on the remaining arguments.</p>
 <p>For setting up data values:</p><ul>
-<li><p><code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code> returns <code>x</code> after replacing any <code>NA</code> value in <code>YAxis</code> or <code>XAxisRowData</code> with the name of the first valid <code>rowData</code> field.
-This will also call the equivalent <a href='RowDotPlot-class.html'>RowDotPlot</a> method for further refinements to <code>x</code>.
-If no valid row metadata fields are available, <code>NULL</code> is returned instead.</p></li>
+<li><p><code><a href='setup-generics.html'>.cacheCommonInfo</a>(x)</code> adds a <code>"ReducedDimensionPlot"</code> entry containing <code>valid.reducedDim.names</code>, a character vector of names of valid dimensionality reduction results (i.e., at least one dimension).
+This will also call the equivalent <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> method.</p></li>
+<li><p><code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code> replaces <code>NA</code> values in <code>RedDimType</code> with the first valid dimensionality reduction result name in <code>se</code>.
+This will also call the equivalent <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> method for further refinements to <code>x</code>.
+If no dimensionality reduction results are available, <code>NULL</code> is returned instead.</p></li>
 </ul>
 
 <p>For defining the interface:</p><ul>
@@ -190,29 +191,29 @@ If no valid row metadata fields are available, <code>NULL</code> is returned ins
 
 <p>For monitoring reactive expressions:</p><ul>
 <li><p><code><a href='observer-generics.html'>.createObservers</a>(x, se, input, session, pObjects, rObjects)</code> sets up observers for all slots described above and in the parent classes.
-This will also call the equivalent <a href='RowDotPlot-class.html'>RowDotPlot</a> method.</p></li>
+This will also call the equivalent <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> method.</p></li>
 </ul>
 
 <p>For defining the panel name:</p><ul>
-<li><p><code><a href='getEncodedName.html'>.fullName</a>(x)</code> will return <code>"Row data plot"</code>.</p></li>
+<li><p><code><a href='getEncodedName.html'>.fullName</a>(x)</code> will return <code>"Reduced dimension plot"</code>.</p></li>
 </ul>
 
 <p>For creating the plot:</p><ul>
-<li><p><code><a href='plot-generics.html'>.generateDotPlotData</a>(x, envir)</code> will create a data.frame of row metadata variables in <code>envir</code>.
+<li><p><code><a href='plot-generics.html'>.generateDotPlotData</a>(x, envir)</code> will create a data.frame of reduced dimension coordinates in <code>envir</code>.
 It will return the commands required to do so as well as a list of labels.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><a href='RowDotPlot-class.html'>RowDotPlot</a>, for the immediate parent class.</p></div>
+    <div class='dont-index'><p><a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>, for the immediate parent class.</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>#################</span>
 <span class='co'># For end-users #</span>
 <span class='co'>#################</span>
 
-<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>RowDataPlot</span>()
-<span class='no'>x</span><span class='kw'>[[</span><span class='st'>"XAxis"</span>]]</div><div class='output co'>#&gt; [1] "None"</div><div class='input'><span class='no'>x</span><span class='kw'>[[</span><span class='st'>"XAxis"</span>]] <span class='kw'>&lt;-</span> <span class='st'>"Row data"</span>
+<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>ReducedDimensionPlot</span>()
+<span class='no'>x</span><span class='kw'>[[</span><span class='st'>"Type"</span>]]</div><div class='output co'>#&gt; [1] NA</div><div class='input'><span class='no'>x</span><span class='kw'>[[</span><span class='st'>"Type"</span>]] <span class='kw'>&lt;-</span> <span class='st'>"TSNE"</span>
 
 <span class='co'>##################</span>
 <span class='co'># For developers #</span>
@@ -222,36 +223,36 @@ It will return the commands required to do so as well as a list of labels.</p></
 <span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/mockSCE.html'>mockSCE</a></span>()
 <span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/logNormCounts.html'>logNormCounts</a></span>(<span class='no'>sce</span>)
 
-<span class='co'># Spits out a NULL and a warning if is nothing to plot.</span>
+<span class='co'># Spits out a NULL and a warning if no reducedDims are available.</span>
 <span class='no'>sce0</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span>(<span class='no'>x</span>, <span class='no'>sce</span>)
-<span class='fu'><a href='setup-generics.html'>.refineParameters</a></span>(<span class='no'>x</span>, <span class='no'>sce0</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: no atomic 'rowData' fields for 'RowDataPlot'</span></div><div class='output co'>#&gt; NULL</div><div class='input'>
+<span class='fu'><a href='setup-generics.html'>.refineParameters</a></span>(<span class='no'>x</span>, <span class='no'>sce0</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: no 'reducedDims' with non-zero dimensions for 'ReducedDimensionPlot'</span></div><div class='output co'>#&gt; NULL</div><div class='input'>
 <span class='co'># Replaces the default with something sensible.</span>
-<span class='fu'>rowData</span>(<span class='no'>sce</span>)$<span class='no'>Stuff</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>sce</span>))
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/runPCA.html'>runPCA</a></span>(<span class='no'>sce</span>)
 <span class='no'>sce0</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span>(<span class='no'>x</span>, <span class='no'>sce</span>)
-<span class='fu'><a href='setup-generics.html'>.refineParameters</a></span>(<span class='no'>x</span>, <span class='no'>sce0</span>)</div><div class='output co'>#&gt; An object of class "RowDataPlot"
+<span class='fu'><a href='setup-generics.html'>.refineParameters</a></span>(<span class='no'>x</span>, <span class='no'>sce0</span>)</div><div class='output co'>#&gt; An object of class "ReducedDimensionPlot"
+#&gt; Slot "Type":
+#&gt; [1] "PCA"
+#&gt; 
 #&gt; Slot "XAxis":
-#&gt; [1] "Row data"
+#&gt; [1] 1
 #&gt; 
 #&gt; Slot "YAxis":
-#&gt; [1] "Stuff"
+#&gt; [1] 2
 #&gt; 
-#&gt; Slot "XAxisRowData":
-#&gt; [1] "Stuff"
+#&gt; Slot "ColorByColumnData":
+#&gt; [1] "Mutation_Status"
 #&gt; 
-#&gt; Slot "ColorByRowData":
-#&gt; [1] "Stuff"
-#&gt; 
-#&gt; Slot "ColorBySampleNameAssay":
+#&gt; Slot "ColorByFeatureNameAssay":
 #&gt; [1] "counts"
 #&gt; 
-#&gt; Slot "ColorByFeatureNameColor":
+#&gt; Slot "ColorBySampleNameColor":
 #&gt; [1] "red"
 #&gt; 
-#&gt; Slot "ShapeByRowData":
-#&gt; [1] NA
+#&gt; Slot "ShapeByColumnData":
+#&gt; [1] "Mutation_Status"
 #&gt; 
-#&gt; Slot "SizeByRowData":
-#&gt; [1] "Stuff"
+#&gt; Slot "SizeByColumnData":
+#&gt; [1] "sizeFactor"
 #&gt; 
 #&gt; Slot "FacetByRow":
 #&gt; [1] "---"
@@ -369,7 +370,7 @@ It will return the commands required to do so as well as a list of labels.</p></
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#slot-overview">Slot overview</a></li>
+      <li><a href="#reduceddimensionplot-slot-overview">ReducedDimensionPlot slot overview</a></li>
       <li><a href="#constructor">Constructor</a></li>
       <li><a href="#contract-description">Contract description</a></li>
       <li><a href="#supported-methods">Supported methods</a></li>

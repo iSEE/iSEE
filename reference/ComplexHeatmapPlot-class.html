@@ -70,7 +70,7 @@ It provides slots and methods for specifying which assay to display in the main 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.1</span>
       </span>
     </div>
 
@@ -151,34 +151,34 @@ It provides slots and methods for specifying which assay to display in the main 
 <p>The following slots control the assay that is used:</p><ul>
 <li><p><code>Assay</code>, string specifying the name of the assay to use for obtaining expression values.
 Defaults to the first valid assay name (see <code>?".refineParameters,ComplexHeatmapPlot-method"</code> for details).</p></li>
-<li><p><code>CustomFeatName</code>, a logical scalar indicating whether the custom list of features should be used.
+<li><p><code>CustomRows</code>, a logical scalar indicating whether the custom list of features should be used.
 If <code>FALSE</code>, the incoming selection is used instead. Defaults to <code>TRUE</code>.</p></li>
-<li><p><code>FeatNameText</code>, string specifying a custom list of features to use, as newline-separated row names.
+<li><p><code>CustomRowsText</code>, string specifying a custom list of features to use, as newline-separated row names.
 If <code>NA</code>, defaults to the first row name of the SummarizedExperiment object.</p></li>
 </ul>
 
 <p>The following slots control the metadata variables that are used:</p><ul>
-<li><p><code>ColData</code>, a character vector specifying columns of the <code>colData</code> to show as <code>columnAnnotation</code>.
+<li><p><code>ColumnData</code>, a character vector specifying columns of the <code>colData</code> to show as <code>columnAnnotation</code>.
 Defaults to <code><a href='https://rdrr.io/r/base/character.html'>character(0)</a></code>.</p></li>
 <li><p><code>RowData</code>, a character vector specifying columns of the <code>rowData</code> to show as <code>columnAnnotation</code>.
 Defaults to <code><a href='https://rdrr.io/r/base/character.html'>character(0)</a></code>.</p></li>
 </ul>
 
 <p>The following slots control the clustering of features:</p><ul>
-<li><p><code>ClusterFeatures</code>, a logical scalar indicating whether features should be clustered by assay data.
+<li><p><code>ClusterRows</code>, a logical scalar indicating whether features should be clustered by assay data.
 Defaults to <code>FALSE</code>.</p></li>
-<li><p><code>ClusterDistanceFeatures</code>, string specifying a distance measure to use.
+<li><p><code>ClusterRowsDistance</code>, string specifying a distance measure to use.
 This can be any one of <code>"euclidean"</code>, <code>"maximum"</code>, <code>"manhattan"</code>, <code>"canberra"</code>, <code>"binary"</code>, <code>"minkowski"</code>, <code>"pearson"</code>, <code>"spearman"</code>, or <code>"kendall"</code>.
 Defaults to <code>"spearman"</code>.</p></li>
-<li><p><code>ClusterMethodFeatures</code>, string specifying a linkage method to use.
+<li><p><code>ClusterRowsMethod</code>, string specifying a linkage method to use.
 This can be any one of <code>"ward.D"</code>, <code>"ward.D2"</code>, <code>"single"</code>, <code>"complete"</code>, <code>"average"</code>, <code>"mcquitty"</code>, <code>"median"</code>, or <code>"centroid"</code>.
 Defaults to <code>"ward.D2"</code>.</p></li>
 </ul>
 
 <p>The following slots refer to general plotting parameters:</p><ul>
 <li><p><code>ShowDimNames</code>, a character vector specifying the dimensions for which to display names.
-This can contain zero or more of <code>"Features"</code> and <code>"Samples"</code>.
-Defaults to <code>"Features"</code>.</p></li>
+This can contain zero or more of <code>"Rows"</code> and <code>"Columns"</code>.
+Defaults to <code>"Rows"</code>.</p></li>
 <li><p><code>LegendPosition</code>, string specifying the position of the legend on the plot.
 Defaults to <code>"Bottom"</code> but can also be <code>"Right"</code>.</p></li>
 <li><p><code>LegendDirection</code>, string specifying the orientation of the legend on the plot for continuous covariates.
@@ -186,10 +186,10 @@ Defaults to <code>"Horizontal"</code> but can also be <code>"Vertical"</code>.</
 </ul>
 
 <p>The following slots control the effect of the transmitted selection from another panel:</p><ul>
-<li><p><code>SelectEffect</code>, a string specifying the selection effect.
+<li><p><code>SelectionEffect</code>, a string specifying the selection effect.
 This should be one of <code>"Color"</code> (the default), where all selected points change to the specified color;
 <code>"Restrict"</code>, where all non-selected points are not plotted.</p></li>
-<li><p><code>SelectColor</code>, a string specifying the color to use for selected points when <code>SelectEffect="Color"</code>.
+<li><p><code>SelectionColor</code>, a string specifying the color to use for selected points when <code>SelectionEffect="Color"</code>.
 Defaults to <code>"red"</code>.</p></li>
 </ul>
 
@@ -206,13 +206,6 @@ Defaults to <code>FALSE</code>.</p></li>
     
 
 <p><code>ComplexHeatmapPlot(...)</code> creates an instance of a ComplexHeatmapPlot class, where any slot and its value can be passed to <code>...</code> as a named argument.</p>
-    <h2 class="hasAnchor" id="contract-description"><a class="anchor" href="#contract-description"></a>Contract description</h2>
-
-    
-
-<p>The ComplexHeatmapPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
-It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
-Subclasses do not have to provide any methods, as this is a concrete class.</p>
     <h2 class="hasAnchor" id="supported-methods"><a class="anchor" href="#supported-methods"></a>Supported methods</h2>
 
     
@@ -220,7 +213,7 @@ Subclasses do not have to provide any methods, as this is a concrete class.</p>
 <p>In the following code snippets, <code>x</code> is an instance of a ComplexHeatmapPlot class.
 Refer to the documentation for each method for more details on the remaining arguments.</p>
 <p>For setting up data values:</p><ul>
-<li><p><code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code> returns <code>x</code> after replacing any <code>NA</code> value in <code>"Assay"</code> with the first valid assay name; and any <code>NA</code> values in <code>FeatNameText</code> with the first row name.
+<li><p><code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code> returns <code>x</code> after replacing <code>NA</code> values in <code>"Assay"</code> with the first valid assay name; and <code>NA</code> values in <code>CustomRowsText</code> with the first row name.
 This will also call the equivalent <a href='Panel-class.html'>Panel</a> method for further refinements to <code>x</code>.
 If no valid column metadata fields are available, <code>NULL</code> is returned instead.</p></li>
 </ul>
@@ -249,7 +242,7 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.<
 <span class='co'>#################</span>
 
 <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>ComplexHeatmapPlot</span>()
-<span class='no'>x</span><span class='kw'>[[</span><span class='st'>"ShowDimNames"</span>]]</div><div class='output co'>#&gt; [1] "Features"</div><div class='input'><span class='no'>x</span><span class='kw'>[[</span><span class='st'>"ShowDimNames"</span>]] <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Features"</span>, <span class='st'>"Samples"</span>)
+<span class='no'>x</span><span class='kw'>[[</span><span class='st'>"ShowDimNames"</span>]]</div><div class='output co'>#&gt; [1] "Rows"</div><div class='input'><span class='no'>x</span><span class='kw'>[[</span><span class='st'>"ShowDimNames"</span>]] <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Rows"</span>, <span class='st'>"Columns"</span>)
 
 <span class='co'>##################</span>
 <span class='co'># For developers #</span>
@@ -268,19 +261,19 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.<
 #&gt; Slot "Assay":
 #&gt; [1] "counts"
 #&gt; 
-#&gt; Slot "CustomFeatName":
+#&gt; Slot "CustomRows":
 #&gt; [1] TRUE
 #&gt; 
-#&gt; Slot "FeatNameText":
+#&gt; Slot "CustomRowsText":
 #&gt; [1] "Gene_0001"
 #&gt; 
-#&gt; Slot "ClusterFeatures":
+#&gt; Slot "ClusterRows":
 #&gt; [1] FALSE
 #&gt; 
-#&gt; Slot "ClusterDistanceFeatures":
+#&gt; Slot "ClusterRowsDistance":
 #&gt; [1] "spearman"
 #&gt; 
-#&gt; Slot "ClusterMethodFeatures":
+#&gt; Slot "ClusterRowsMethod":
 #&gt; [1] "ward.D2"
 #&gt; 
 #&gt; Slot "DataBoxOpen":
@@ -289,7 +282,7 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.<
 #&gt; Slot "VisualChoices":
 #&gt; [1] "Annotations"
 #&gt; 
-#&gt; Slot "ColData":
+#&gt; Slot "ColumnData":
 #&gt; character(0)
 #&gt; 
 #&gt; Slot "RowData":
@@ -314,7 +307,7 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.<
 #&gt; [1] "purple &lt; black &lt; yellow"
 #&gt; 
 #&gt; Slot "ShowDimNames":
-#&gt; [1] "Features" "Samples" 
+#&gt; [1] "Rows"    "Columns"
 #&gt; 
 #&gt; Slot "LegendPosition":
 #&gt; [1] "Bottom"
@@ -325,10 +318,10 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.<
 #&gt; Slot "VisualBoxOpen":
 #&gt; [1] FALSE
 #&gt; 
-#&gt; Slot "SelectEffect":
+#&gt; Slot "SelectionEffect":
 #&gt; [1] "Color"
 #&gt; 
-#&gt; Slot "SelectColor":
+#&gt; Slot "SelectionColor":
 #&gt; [1] "red"
 #&gt; 
 #&gt; Slot "PanelId":
@@ -340,28 +333,28 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.<
 #&gt; Slot "PanelWidth":
 #&gt; [1] 4
 #&gt; 
-#&gt; Slot "SelectBoxOpen":
+#&gt; Slot "SelectionBoxOpen":
 #&gt; [1] FALSE
 #&gt; 
-#&gt; Slot "SelectRowSource":
+#&gt; Slot "RowSelectionSource":
 #&gt; [1] "---"
 #&gt; 
-#&gt; Slot "SelectColSource":
+#&gt; Slot "ColumnSelectionSource":
 #&gt; [1] "---"
 #&gt; 
-#&gt; Slot "SelectRowType":
+#&gt; Slot "RowSelectionType":
 #&gt; [1] "Active"
 #&gt; 
-#&gt; Slot "SelectRowSaved":
+#&gt; Slot "RowSelectionSaved":
 #&gt; [1] 0
 #&gt; 
-#&gt; Slot "SelectColType":
+#&gt; Slot "ColumnSelectionType":
 #&gt; [1] "Active"
 #&gt; 
-#&gt; Slot "SelectColSaved":
+#&gt; Slot "ColumnSelectionSaved":
 #&gt; [1] 0
 #&gt; 
-#&gt; Slot "MultiSelectHistory":
+#&gt; Slot "SelectionHistory":
 #&gt; list()
 #&gt; </div><div class='input'>
 <span class='co'># Replaces the default with something sensible.</span>
@@ -371,19 +364,19 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.<
 #&gt; Slot "Assay":
 #&gt; [1] "counts"
 #&gt; 
-#&gt; Slot "CustomFeatName":
+#&gt; Slot "CustomRows":
 #&gt; [1] TRUE
 #&gt; 
-#&gt; Slot "FeatNameText":
+#&gt; Slot "CustomRowsText":
 #&gt; [1] "Gene_0001"
 #&gt; 
-#&gt; Slot "ClusterFeatures":
+#&gt; Slot "ClusterRows":
 #&gt; [1] FALSE
 #&gt; 
-#&gt; Slot "ClusterDistanceFeatures":
+#&gt; Slot "ClusterRowsDistance":
 #&gt; [1] "spearman"
 #&gt; 
-#&gt; Slot "ClusterMethodFeatures":
+#&gt; Slot "ClusterRowsMethod":
 #&gt; [1] "ward.D2"
 #&gt; 
 #&gt; Slot "DataBoxOpen":
@@ -392,7 +385,7 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.<
 #&gt; Slot "VisualChoices":
 #&gt; [1] "Annotations"
 #&gt; 
-#&gt; Slot "ColData":
+#&gt; Slot "ColumnData":
 #&gt; character(0)
 #&gt; 
 #&gt; Slot "RowData":
@@ -417,7 +410,7 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.<
 #&gt; [1] "purple &lt; black &lt; yellow"
 #&gt; 
 #&gt; Slot "ShowDimNames":
-#&gt; [1] "Features" "Samples" 
+#&gt; [1] "Rows"    "Columns"
 #&gt; 
 #&gt; Slot "LegendPosition":
 #&gt; [1] "Bottom"
@@ -428,10 +421,10 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.<
 #&gt; Slot "VisualBoxOpen":
 #&gt; [1] FALSE
 #&gt; 
-#&gt; Slot "SelectEffect":
+#&gt; Slot "SelectionEffect":
 #&gt; [1] "Color"
 #&gt; 
-#&gt; Slot "SelectColor":
+#&gt; Slot "SelectionColor":
 #&gt; [1] "red"
 #&gt; 
 #&gt; Slot "PanelId":
@@ -443,28 +436,28 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.<
 #&gt; Slot "PanelWidth":
 #&gt; [1] 4
 #&gt; 
-#&gt; Slot "SelectBoxOpen":
+#&gt; Slot "SelectionBoxOpen":
 #&gt; [1] FALSE
 #&gt; 
-#&gt; Slot "SelectRowSource":
+#&gt; Slot "RowSelectionSource":
 #&gt; [1] "---"
 #&gt; 
-#&gt; Slot "SelectColSource":
+#&gt; Slot "ColumnSelectionSource":
 #&gt; [1] "---"
 #&gt; 
-#&gt; Slot "SelectRowType":
+#&gt; Slot "RowSelectionType":
 #&gt; [1] "Active"
 #&gt; 
-#&gt; Slot "SelectRowSaved":
+#&gt; Slot "RowSelectionSaved":
 #&gt; [1] 0
 #&gt; 
-#&gt; Slot "SelectColType":
+#&gt; Slot "ColumnSelectionType":
 #&gt; [1] "Active"
 #&gt; 
-#&gt; Slot "SelectColSaved":
+#&gt; Slot "ColumnSelectionSaved":
 #&gt; [1] 0
 #&gt; 
-#&gt; Slot "MultiSelectHistory":
+#&gt; Slot "SelectionHistory":
 #&gt; list()
 #&gt; </div><div class='input'>
 </div></pre>
@@ -474,7 +467,6 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.<
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#slot-overview">Slot overview</a></li>
       <li><a href="#constructor">Constructor</a></li>
-      <li><a href="#contract-description">Contract description</a></li>
       <li><a href="#supported-methods">Supported methods</a></li>
       <li><a href="#see-also">See also</a></li>
       <li><a href="#examples">Examples</a></li>

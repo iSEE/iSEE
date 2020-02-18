@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.1</span>
       </span>
     </div>
 
@@ -153,13 +153,6 @@
 
 <p><code>RowDataTable(...)</code> creates an instance of a RowDataTable class, where any slot and its value can be passed to <code>...</code> as a named argument.</p>
 <p>Note that <code>ColSearch</code> should be a character vector of length equal to the total number of columns in the <code>rowData</code>, though only the entries for the atomic fields will actually be used.</p>
-    <h2 class="hasAnchor" id="contract-description"><a class="anchor" href="#contract-description"></a>Contract description</h2>
-
-    
-
-<p>The RowDataTable will provide user interface elements and observers to change all of its slots.
-The <code>datatable</code> is rendered with all atomic contents of the <code>rowData</code> of the SummarizedExperiment.
-Subclasses do not have to provide any methods, as this is a concrete class.</p>
     <h2 class="hasAnchor" id="supported-methods"><a class="anchor" href="#supported-methods"></a>Supported methods</h2>
 
     
@@ -180,11 +173,11 @@ otherwise it calls <code><a href='Table-class.html'>.hideInterface,Table-method<
 </ul>
 
 <p>For defining the panel name:</p><ul>
-<li><p><code><a href='getEncodedName.html'>.fullName</a>(x)</code> will return <code>"Row statistics table"</code>.</p></li>
+<li><p><code><a href='getEncodedName.html'>.fullName</a>(x)</code> will return <code>"Row data table"</code>.</p></li>
 </ul>
 
 <p>For creating the output:</p><ul>
-<li><p><code><a href='Table-class.html'>.generateTable</a>(x, envir)</code> will modify <code>envir</code> to contain the relevant data.frame for display,
+<li><p><code><a href='table-generics.html'>.generateTable</a>(x, envir)</code> will modify <code>envir</code> to contain the relevant data.frame for display,
 while returning a character vector of commands required to produce that data.frame.
 Each row of the data.frame should correspond to a row of the SummarizedExperiment.</p></li>
 </ul>
@@ -226,31 +219,31 @@ Each row of the data.frame should correspond to a row of the SummarizedExperimen
 #&gt; Slot "PanelWidth":
 #&gt; [1] 4
 #&gt; 
-#&gt; Slot "SelectBoxOpen":
+#&gt; Slot "SelectionBoxOpen":
 #&gt; [1] FALSE
 #&gt; 
-#&gt; Slot "SelectRowSource":
+#&gt; Slot "RowSelectionSource":
 #&gt; [1] "---"
 #&gt; 
-#&gt; Slot "SelectColSource":
+#&gt; Slot "ColumnSelectionSource":
 #&gt; [1] "---"
 #&gt; 
 #&gt; Slot "DataBoxOpen":
 #&gt; [1] FALSE
 #&gt; 
-#&gt; Slot "SelectRowType":
+#&gt; Slot "RowSelectionType":
 #&gt; [1] "Active"
 #&gt; 
-#&gt; Slot "SelectRowSaved":
+#&gt; Slot "RowSelectionSaved":
 #&gt; [1] 0
 #&gt; 
-#&gt; Slot "SelectColType":
+#&gt; Slot "ColumnSelectionType":
 #&gt; [1] "Active"
 #&gt; 
-#&gt; Slot "SelectColSaved":
+#&gt; Slot "ColumnSelectionSaved":
 #&gt; [1] 0
 #&gt; 
-#&gt; Slot "MultiSelectHistory":
+#&gt; Slot "SelectionHistory":
 #&gt; list()
 #&gt; </div><div class='input'>
 </div></pre>
@@ -260,7 +253,6 @@ Each row of the data.frame should correspond to a row of the SummarizedExperimen
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#slot-overview">Slot overview</a></li>
       <li><a href="#constructor">Constructor</a></li>
-      <li><a href="#contract-description">Contract description</a></li>
       <li><a href="#supported-methods">Supported methods</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>

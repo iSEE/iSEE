@@ -1,5 +1,5 @@
+# library(iSEE); library(testthat); source("setup_sce.R"); source("test_voice.R")
 context("voice")
-# library(testthat); library(iSEE); source("setup_sce.R"); source("test_voice.R")
 
 # Do NOT move to setup; re-defined here to keep tests self-contained.
 
@@ -80,12 +80,11 @@ test_that(".nearestPanelByType handles vocal typos", {
     out <- iSEE:::.nearestPanelByType("reduce dimension plus", reservoir)
     expect_identical(out, 1L) # "Reduced dimension plot"
 
-    out <- iSEE:::.nearestPanelByType("row statistics table", reservoir)
-    expect_identical(out, 4L) # "Row statistics table"
+    out <- iSEE:::.nearestPanelByType("row data table", reservoir)
+    expect_identical(out, 4L) # "Row data table"
 
-    out <- iSEE:::.nearestPanelByType("row statistics plot", reservoir)
-    expect_identical(out, 4L) # "Row statistics table"
-    # NOTE: closer to "Row statistics table" than "Row data plot"
+    out <- iSEE:::.nearestPanelByType("row data plot", reservoir)
+    expect_identical(out, 5L) # "Row data plot"
 })
 
 # .nearestPanelByName ----
@@ -98,12 +97,11 @@ test_that(".nearestPanelByName handles vocal typos", {
     out <- iSEE:::.nearestPanelByName("reduce dimension plus 1", reservoir)
     expect_identical(out, 1L) # "Reduced dimension plot 1"
 
-    out <- iSEE:::.nearestPanelByName("row statistics table 1", reservoir)
-    expect_identical(out, 4L) # "Row statistics table 1"
+    out <- iSEE:::.nearestPanelByName("row data table 1", reservoir)
+    expect_identical(out, 4L) # "Row data table 1"
 
-    out <- iSEE:::.nearestPanelByName("row statistics plot 1", reservoir)
-    expect_identical(out, 4L) # "Row statistics table 1"
-    # NOTE: closer to "Row statistics table" than "Row data plot"
+    out <- iSEE:::.nearestPanelByName("row data plot 1", reservoir)
+    expect_identical(out, 5L) # "Row data plot 1"
 })
 
 # .nearestValidChoice ----

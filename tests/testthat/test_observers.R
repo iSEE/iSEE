@@ -1,3 +1,4 @@
+# library(iSEE); library(testthat); source("setup_sce.R"); source("test_observers.R")
 context("Observers")
 
 memory <- list(
@@ -57,7 +58,7 @@ test_that("Observers return NULL", {
     out <- .createObservers(x, sce, NULL, NULL, NULL, NULL)
     expect_null(out)
 
-    out <- .create_voice_observers(NULL, NULL, NULL, sce, NULL, NULL)
+    out <- iSEE:::.create_voice_observers(NULL, NULL, NULL, sce, NULL, NULL)
     expect_null(out)
 
 })
@@ -67,7 +68,7 @@ test_that(".mark_panel_as_modified appends the requested modes to rObjects", {
     rObjects <- new.env()
     rObjects$modified=list("ReducedDimensionPlot1"=character(0))
 
-    out <- .mark_panel_as_modified(panel_name = "ReducedDimensionPlot1", mode = iSEE:::.panelResaved, rObjects = rObjects)
+    out <- iSEE:::.mark_panel_as_modified(panel_name = "ReducedDimensionPlot1", mode = iSEE:::.panelResaved, rObjects = rObjects)
     expect_null(out)
     expect_identical(rObjects$modified[["ReducedDimensionPlot1"]], iSEE:::.panelResaved)
 
@@ -80,7 +81,7 @@ test_that(".create_organization_observers returns NULL", {
     pObjects <- new.env()
     rObjects <- new.env()
 
-    out <- .create_organization_observers(sce, input, output, session = NULL, pObjects = pObjects, rObjects = rObjects)
+    out <- iSEE:::.create_organization_observers(sce, input, output, session = NULL, pObjects = pObjects, rObjects = rObjects)
     expect_null(out)
 
     expect_named(output, c("allPanels", "panelParams"))
@@ -95,7 +96,7 @@ test_that(".create_width_height_observers returns NULL", {
     input <- new.env()
     pObjects <- new.env()
 
-    out <- .create_width_height_observers(x, input, pObjects)
+    out <- iSEE:::.create_width_height_observers(x, input, pObjects)
     expect_null(out)
 
 })
@@ -106,7 +107,7 @@ test_that(".create_table_observers returns NULL", {
     pObjects <- new.env()
     rObjects <- new.env()
 
-    out <- .create_table_observers("ReducedDimensionPlot1", input, session = NULL, pObjects, rObjects)
+    out <- iSEE:::.create_table_observers("ReducedDimensionPlot1", input, session = NULL, pObjects, rObjects)
     expect_null(out)
 
 })
@@ -119,13 +120,13 @@ test_that(".define_memory_panel_choices returns expected values", {
 
     names(NAMED) <- c("Reduced dimension plot 1", "Column data plot 1",
         "Column data plot 1",  "Feature assay plot 1", "Feature assay plot 1",
-        "Row statistics table 1",  "Row statistics table 1", "Sample assay plot 1",
-        "Column statistics table 1")
+        "Row data table 1",  "Row data table 1", "Sample assay plot 1",
+        "Column data table 1")
 
-    out <- .define_memory_panel_choices(memory, named = FALSE)
+    out <- iSEE:::.define_memory_panel_choices(memory, named = FALSE)
     expect_identical(out, UNNAMED)
 
-    out <- .define_memory_panel_choices(memory, named = TRUE)
+    out <- iSEE:::.define_memory_panel_choices(memory, named = TRUE)
     expect_identical(out, NAMED)
 
 })
@@ -135,7 +136,7 @@ test_that(".create_child_propagation_observer returns NULL", {
     pObjects <- new.env()
     rObjects <- new.env()
 
-    out <- .create_child_propagation_observer(sce, pObjects, rObjects)
+    out <- iSEE:::.create_child_propagation_observer(sce, pObjects, rObjects)
     expect_null(out)
 
 })

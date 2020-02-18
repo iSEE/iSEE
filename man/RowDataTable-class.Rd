@@ -48,7 +48,7 @@ otherwise it calls \code{\link{.hideInterface,Table-method}}
 
 For defining the panel name:
 \itemize{
-\item \code{\link{.fullName}(x)} will return \code{"Row statistics table"}.
+\item \code{\link{.fullName}(x)} will return \code{"Row data table"}.
 }
 
 For creating the output:

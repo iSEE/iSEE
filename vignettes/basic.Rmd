@@ -216,19 +216,19 @@ The "Additional Information" dropdown menu is accessible through the information
 The main element in the body of `r Biocpkg("iSEE")` is the combination of panels, generated (and optionally linked to one another) according to your actions.
 There are currently eight standard panel types that can be generated with `r Biocpkg("iSEE")`:
 
-- Reduced dimension plots
-- Columns statistics tables
-- Column data plots
-- Feature assay plots
-- Row statistics tables
-- Row data plots
-- Sample assay plots
-- Heat maps
+- Reduced dimension plot
+- Column data table
+- Column data plot
+- Feature assay plot
+- Row data table
+- Row data plot
+- Sample assay plot
+- Complex heatmap
 
 In addition, two custom panel types are available^[Those are described in a `r Biocpkg("iSEE", vignette="custom.html", label="separate dedicated vignette")`.]:
 
-- Custom statistics table
-- Custom data plot
+- Custom table
+- Custom plot
 
 For each standard plot panel, three different sets of parameters will be available in collapsible boxes:
 
@@ -263,7 +263,7 @@ Note that an x-axis setting of "None" is considered to be categorical with a sin
 A *Feature assay plot* visualizes the assayed values (e.g., gene expression) for a particular feature (e.g., gene) across the samples on the y-axis.
 This usually results in a (grouped) violin plot, if the x-axis is set to `"None"` or a categorical variable; or a scatter plot, if the x-axis is another continuous variable^[That said, if there are categorical values for the assayed values, these will be handled as described in the column data plots.].
 
-Gene selection for the y-axis can be achieved by using a _linked row statistics table_ in another panel.
+Gene selection for the y-axis can be achieved by using a _linked row data table_ in another panel.
 Clicking on a row in the table automatically changes the assayed values plotted on the y-axis.
 Alternatively, the row name can be directly entered as text that corresponds to an entry of `rownames(se)`^[This is not effective if `se` does not contain row names.].
 
@@ -290,18 +290,18 @@ Notably, the x-axis covariate can also be set to:
 - A continuous row data covariate (e.g., count of cells expressing each gene)
 - Another sample, to visualize and compare the assayed values in any two samples.
 
-### Row statistics tables
+### Row data tables
 
-A *Row statistics table* contains the values of the `rowData` slot for the `SingleCellExperiment`/`SummarizedExperiment` object. 
+A *Row data table* contains the values of the `rowData` slot for the `SingleCellExperiment`/`SummarizedExperiment` object. 
 If none are available, a column named `Present` is added and set to `TRUE` for all features, to avoid issues with `DT::datatable` and an empty `DataFrame`.
 Typically, these tables are used to link to other plots to determine the features to use for plotting or coloring.
 However, they can also be used to retrieve gene-specific annotation on the fly by specifying the `annotFun` parameter, e.g. using the `annotateEntrez` or `annotateEnsembl` functions, provided in `r Biocpkg("iSEE")`. 
 Alternatively, users can create a customized annotation function; for more details on this, please consult the manual pages `?annotateEntrez` and `?annotateEnsembl`.
 
-### Column statistics tables
+### Column data tables
 
-A *Column statistics table* contains the values of the `colData` slot for the `SingleCellExperiment`/`SummarizedExperiment` object.
-Its behavior mirrors the implementation for the *Row statistics table*.
+A *Column data table* contains the values of the `colData` slot for the `SingleCellExperiment`/`SummarizedExperiment` object.
+Its behavior mirrors the implementation for the *Row data table*.
 Correspondingly, if none are available, a column named `Present` is added and set to `TRUE` for all samples, to avoid issues with `DT::datatable` and an empty `DataFrame`.
 Typically, these tables are used to link to other plots to determine the samples to use for plotting or coloring.
 
@@ -310,7 +310,7 @@ Typically, these tables are used to link to other plots to determine the samples
 *Heat map* panels provide a compact overview of the data for multiple features in the form of color-coded matrices.
 These correspond to the `assays` stored in the `SummarizedExperiment` object, where features (e.g., genes) are the rows and samples are the columns.
 
-User can select features (rows) to display from the selectize widget (which supports autocompletion), or also via other panels, like row data plots or row statistics tables. 
+User can select features (rows) to display from the selectize widget (which supports autocompletion), or also via other panels, like row data plots or row data tables. 
 In addition, users can rapidly import custom lists of feature names using a modal popup that provides an [Ace editor](https://ace.c9.io/) where they can directly type of paste feature names, and a file upload button that accepts text files containing one feature name per line.
 Users should remember to click the "Apply" button before closing the modal, to update the heat map with the new list of features. 
 
@@ -380,7 +380,7 @@ This requires all panels acting as both receivers and transmitters to have their
 
 While we have focused above on receiving point selections for plots, it is also possible to transmit from plots to tables.
 This will subset the table so that only the rows corresponding to selected points are visible.
-Obviously, this means that users should only transmit from row-based plots to row statistics tables, and from column-based plots to column statistics tables.
+Obviously, this means that users should only transmit from row-based plots to *row data tables*, and from column-based plots to *column data tables*.
 
 Custom data panels can receive point selections from both row- and column-based plots, see `r Biocpkg("iSEE", vignette="custom.html", label="here")` for more details.
 

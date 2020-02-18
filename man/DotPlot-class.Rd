@@ -116,7 +116,7 @@ Defaults to 1.
 Defaults to 1, i.e., not transparent.
 \item \code{Downsample}, logical scalar indicating whether to downsample points for faster plotting.
 Defaults to \code{FALSE}.
-\item \code{SampleRes}, numeric scalar specifying the resolution of the downsampling grid (see \code{?\link{subsetPointsByGrid}}) if \code{Downsample=TRUE}.
+\item \code{DownsampleResolution}, numeric scalar specifying the resolution of the downsampling grid (see \code{?\link{subsetPointsByGrid}}) if \code{Downsample=TRUE}.
 Larger values correspond to reduced downsampling at the cost of plotting speed.
 Defaults to 200.
 }

@@ -216,7 +216,7 @@ cdp2[["ColorByDefaultColor"]] <- "chocolate3"
 cdp2[["PointAlpha"]] <- 0.2
 cdp2[["PointSize"]] <- 2
 cdp2[["Downsample"]] <- TRUE
-cdp2[["SampleRes"]] <- 150
+cdp2[["DownsampleResolution"]] <- 150
 cdp2[["FontSize"]] <- 2
 
 app <- iSEE(sce, initial=list(cdp, cdp2))

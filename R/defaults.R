@@ -36,6 +36,8 @@
 
 .colDataXAxisColData0 <- "XAxisColData"
 
+.plotPointSampleRes0 <- "SampleRes"
+
 .lassoData <- "LassoData"
 
 .facetRowsByRowData <- "RowFacetByRowData"
@@ -354,7 +356,7 @@ heatMapPlotDefaults <- function(se, number) {
     incoming[[.plotPointSize]] <- iSEEOptions$get("point.size")
     incoming[[.plotPointAlpha]] <- iSEEOptions$get("point.alpha")
     incoming[[.plotPointDownsample]] <- iSEEOptions$get("downsample")
-    incoming[[.plotPointSampleRes]] <- iSEEOptions$get("downsample.res")
+    incoming[[.plotPointSampleRes]] <- iSEEOptions$get("downsample.resolution")
 
     incoming[[.plotFontSize]] <- iSEEOptions$get("font.size")
     incoming[[.plotLegendPosition]] <- iSEEOptions$get("legend.position")
@@ -618,7 +620,8 @@ heatMapPlotDefaults <- function(se, number) {
             c(.sampAssayXAxisColTable0, .sampAssayXAxisColTable),
             c(.sampAssayXAxisSampName0, .sampAssayXAxisSampName),
             c(.sampAssayYAxisColTable0, .sampAssayYAxisColTable),
-            c(.sampAssayYAxisSampName0, .sampAssayYAxisSampName)
+            c(.sampAssayYAxisSampName0, .sampAssayYAxisSampName),
+            c(.plotPointSampleRes0, .plotPointSampleRes)
         )
 
         for (i in renamer) {

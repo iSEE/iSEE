@@ -47,7 +47,7 @@ new_defaults = function(value = list()) {
 #' \item{\code{point.size}}{Default size of data points in \code{DotPlot} panels (numeric).}
 #' \item{\code{point.alpha}}{Default alpha level controlling transparency of data points in \code{DotPlot} panels (numeric).}
 #' \item{\code{downsample}}{Enable visual downsampling in \code{DotPlot} panels (logical).}
-#' \item{\code{downsample.res}}{Resolution of the visual downsampling, if active (numeric).}
+#' \item{\code{downsample.resolution}}{Resolution of the visual downsampling, if active (numeric).}
 #' \item{\code{selected.color}}{Color of selected data points in \code{DotPlot} panels (character).}
 #' \item{\code{selected.alpha}}{Alpha level controlling transparency of data points \emph{not} selected in \code{DotPlot} panels (numeric).}
 #' \item{\code{contour.color}}{Color of the 2d density estimation contour in \code{DotPlot} panels (character).}
@@ -65,7 +65,7 @@ iSEEOptions <- new_defaults(list(
     point.alpha = 1,
 
     downsample = FALSE,
-    downsample.res = 200,
+    downsample.resolution = 200,
 
     selected.color = "red",
     selected.alpha = 0.1,

@@ -207,7 +207,7 @@ collated[.contourColor] <- "character"
 .plotPointSize <- "PointSize"
 .plotPointAlpha <- "PointAlpha"
 .plotPointDownsample <- "Downsample"
-.plotPointSampleRes <- "SampleRes"
+.plotPointSampleRes <- "DownsampleResolution"
 
 collated[.plotPointSize] <- "numeric"
 collated[.plotPointAlpha] <- "numeric"

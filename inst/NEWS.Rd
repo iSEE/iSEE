@@ -8,6 +8,8 @@
     \item Fixed handling of \code{se} objects missing \code{dimnames}.
     \item Added \code{createCustomPlot} and \code{createCustomTable} to provide on-ramp for making customized panels.
     \item Allowed global setting using \code{iSEEOptions}.
+    \item Expanded class and slot names from "Feat" to "Feature", "Samp" to "Sample", "RedDimPlot" to "ReducedDimensionPlot".
+    \item Renamed "StatTable" to "DataTable".
 }
 }
 

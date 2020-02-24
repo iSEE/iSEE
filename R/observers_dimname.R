@@ -29,6 +29,7 @@
     dimname_name <- paste0(panel_name, "_", .propagateDimnames)
     .safe_reactive_init(rObjects, dimname_name)
     single_name <- paste0(panel_name, "_", .flagSingleSelect)
+
     # nocov start
     observeEvent(rObjects[[dimname_name]], {
         instance <- pObjects$memory[[panel_name]]
@@ -52,6 +53,7 @@
         }
     })
     # nocov end
+
     invisible(NULL)
 }
 
@@ -98,50 +100,67 @@
     } else {
         choice <- use_value <- ""
     }
+
     tab <- input[[.input_FUN(tab_field)]]
     if (is.null(choice) || is.null(tab)) {
         return(FALSE)
     }
 
-    # Obtaining the old parameter choices, enforcing type and updating memory.
-    # The new values should persist due to environment's pass-by-reference.
+    # NOTE: do NOT try to use old_choice in conditionals to refine table
+    # updates!  Multiple observers may be monitoring `input[[use_mode_field]]`
+    # (one for some but not all options of use_value, e.g., "Feature name",
+    # "Sample name"). It is possible for one observer to fire and update the
+    # memory for `use_mode_field` even when `choice` is not equal to that
+    # observer's `use_value`.  Then, when the observer for which
+    # `choice==use_value` fires, the `old_choice` is also equal `use_value`.
+    # This means that any comparison to `old_choice` in the second observer is
+    # going to be wrong as `old_choice` has already been updated to `choice`.
+    #
+    # Arguably this was probably a mistake to have separate observers being
+    # able to monitor `input[[use_mode_field]]`, but it is what it is for now.
+    # I note that the use of `old_choice` to define `replot` is fine as it
+    # doesn't matter which observer triggers the replotting, as long as one
+    # does (assuming that all or none of the observers consider
+    # `use_mode_field` a protected field).
+    replot <- FALSE
     if (uses_use_mode_field) {
         old_choice <- pObjects$memory[[panel_name]][[use_mode_field]]
         choice <- as(choice, typeof(old_choice))
         pObjects$memory[[panel_name]][[use_mode_field]] <- choice
-    } else {
-        old_choice <- choice
+        replot <- old_choice!=choice
     }
 
     old_tab <- pObjects$memory[[panel_name]][[tab_field]]
     tab <- as(tab, typeof(old_tab))
-    pObjects$memory[[panel_name]][[tab_field]] <- tab
 
     update_info <- FALSE
     if (choice==use_value) {
         if (old_tab!=tab) {
+            pObjects$memory[[panel_name]][[tab_field]] <- tab
             pObjects$aesthetics_links <- .choose_new_parent(pObjects$aesthetics_links,
                 panel_name, tab, old_tab, field=name_field)
             update_info <- TRUE
+        } else if (tab!=.noSelection) {
+            pObjects$aesthetics_links <- .add_interpanel_link(pObjects$aesthetics_links,
+                panel_name, tab, field=name_field)
+            update_info <- TRUE
+        }
 
-            # Updating the selection, based on the currently selected row.
-            if (tab!=.noSelection) {
-                old_selected <- pObjects$memory[[panel_name]][[name_field]]
-                new_selected <- .singleSelectionValue(pObjects$memory[[tab]])
+        # Updating the selection, based on the currently selected row.
+        if (tab!=.noSelection) {
+            old_selected <- pObjects$memory[[panel_name]][[name_field]]
+            new_selected <- .singleSelectionValue(pObjects$memory[[tab]])
 
-                if (!is.null(new_selected) && new_selected != old_selected) {
-                    all_choices <- rownames(pObjects$contents[[tab]])
-                    updateSelectizeInput(session, .input_FUN(name_field), label = NULL,
-                        choices = choices, server = TRUE, selected = new_selected) # nocov
-                }
+            if (!is.null(new_selected) && new_selected != old_selected) {
+                all_choices <- rownames(pObjects$contents[[tab]])
+                updateSelectizeInput(session, .input_FUN(name_field), label = NULL,
+                    choices = choices, server = TRUE, selected = new_selected) # nocov
             }
         }
     } else {
-        if (old_choice==use_value) {
-            pObjects$aesthetics_links <- .delete_interpanel_link(pObjects$aesthetics_links,
-                panel_name, old_tab, field=name_field)
-            update_info <- TRUE
-        }
+        pObjects$aesthetics_links <- .delete_interpanel_link(pObjects$aesthetics_links,
+            panel_name, old_tab, field=name_field)
+        update_info <- TRUE
     }
 
     if (update_info) {
@@ -151,7 +170,7 @@
         }
     }
 
-    !identical(old_choice, choice)
+    replot
 }
 
 #' Define dimension name observers
@@ -201,6 +220,7 @@
     force(choices)
     force(protected)
     force(tab_field)
+
     # nocov start
     observeEvent(input[[name_input]], {
         # Required to defend against empty strings before updateSelectizeInput runs upon re-render.

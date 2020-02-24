@@ -212,8 +212,14 @@
 #' \code{\link{.requestUpdate}} and \code{\link{.requestCleanUpdate}},
 #' which call this function.
 #'
+#' @importFrom shiny isolate
 #' @rdname INTERNAL_mark_panel_as_modified
 .mark_panel_as_modified <- function(panel_name, mode, rObjects) {
-    rObjects$modified[[panel_name]] <- union(isolate(rObjects$modified[[panel_name]]), mode)
+    # Do NOT simplify to `rObjects$modified[[panel_name]] <-`,
+    # as this performs an un-`isolate`d extraction that exposes
+    # a potential infinite recursion bug.
+    modified <- isolate(rObjects$modified)
+    modified[[panel_name]] <- union(modified[[panel_name]], mode)
+    rObjects$modified <- modified
     invisible(NULL)
 }

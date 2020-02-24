@@ -74,12 +74,14 @@
         ))
     })
     # nocov end
+
     # nocov start
     output$panelParams <- renderUI({
         force(org_rObjects$rerender)
         .panel_organization(org_pObjects$memory)
     })
     # nocov end
+
     # nocov start
     observeEvent(input$panel_order, {
         ipo <- unname(input$panel_order)
@@ -140,10 +142,12 @@
         # having to recapitulate all of that in this observer. As a consequence,
         # though, some downstream observers need to be robustified to references
         # to panels that no longer exist in the brief time after panel deletion
-        # but before the memory is resync'd. See .add_interpanel_links() and
+        # but before the memory is resync'd. See .add_interpanel_link() and
         # .create_dimname_observers() for some affected functions.
 
         rObjects$rerender <- .increment_counter(rObjects$rerender)
+
+        removeModal(session)
     })
     # nocov end
 

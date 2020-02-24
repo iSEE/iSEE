@@ -75,7 +75,8 @@
 
         # Looping over panels in topological order, accumulating changes so that
         # we only ever call .generateOutput once. Note that we must loop over
-        # 'ordering' rather than 'modified' to ensure we only call this thing once.
+        # `ordering` rather than `modified` to ensure that any children of earlier
+        # panels are computing off up-to-date version of the parent panels. 
         graph <- pObjects$selection_links
         ordering <- names(topo_sort(graph, mode="out"))
 

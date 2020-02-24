@@ -1,5 +1,5 @@
 # This script tests the code related to initialization utilities.
-# library(iSEE); library(testthat); source("setup_sce.R"); source("test_iSEE-extras.R")
+# library(iSEE); library(testthat); source("setup_sce.R"); source("test_iSEE-init.R")
 
 context("iSEE-extras")
 
@@ -75,16 +75,28 @@ test_that(".define_reservoir works correctly", {
     enc <- vapply(res_out$memory, iSEE:::.encodedName, "")
     expect_identical(init_out$reservoir, res_out$memory[!duplicated(enc)])
 
-    # Adding a new panel class.
+    # Adding a new panel class (assuming RowDataPlot wasn't in 'memory').
     res_out2 <- iSEE:::.define_reservoir(sce, list(RowDataPlot()), init_out$memory, init_out$counter)
     expect_identical(res_out2$counter, c(res_out$counter, RowDataPlot=0L))
-    expect_identical(res_out2$reservoir, c(res_out$reservoir, list(RowDataPlot=.refineParameters(RowDataPlot(), sce))))
+    expect_identical(res_out2$reservoir, c(list(RowDataPlot=.refineParameters(RowDataPlot(), sce)), res_out$reservoir))
 
     # Multiple copies don't change the outcome.
     res_out3 <- iSEE:::.define_reservoir(sce,
-        list(RowDataPlot(), RowDataPlot(PanelHeight=1000L), ColumnDataPlot(), ReducedDimensionPlot(Type="TSNE")),
+        list(RowDataPlot(), RowDataPlot(PanelHeight=1000L)),
         init_out$memory, init_out$counter)
     expect_identical(res_out3, res_out2)
+
+    # Parameters in 'extra' override those in 'memory'.
+    res_out4 <- iSEE:::.define_reservoir(sce,
+        list(RowDataPlot(PanelHeight=1000L), ColumnDataPlot(PanelWidth=12L), ReducedDimensionPlot(Type="TSNE")),
+        init_out$memory, init_out$counter)
+
+    expect_identical(sum(names(res_out4$reservoir)=="RowDataPlot"), 1L)
+    expect_identical(res_out4$reservoir$RowDataPlot[["PanelHeight"]], 1000L)
+    expect_identical(sum(names(res_out4$reservoir)=="ColumnDataPlot"), 1L)
+    expect_identical(res_out4$reservoir$ColumnDataPlot[["PanelWidth"]], 12L)
+    expect_identical(sum(names(res_out4$reservoir)=="ReducedDimensionPlot"), 1L)
+    expect_identical(res_out4$reservoir$ReducedDimensionPlot[["Type"]], "TSNE")
 })
 
 test_that("persistent object setup works as expected", {

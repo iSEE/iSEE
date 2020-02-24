@@ -116,12 +116,12 @@
     # This means that any comparison to `old_choice` in the second observer is
     # going to be wrong as `old_choice` has already been updated to `choice`.
     #
-    # Arguably this was probably a mistake to have separate observers being
-    # able to monitor `input[[use_mode_field]]`, but it is what it is for now.
-    # I note that the use of `old_choice` to define `replot` is fine as it
-    # doesn't matter which observer triggers the replotting, as long as one
-    # does (assuming that all or none of the observers consider
-    # `use_mode_field` a protected field).
+    # It was probably a mistake to have separate observers being able to
+    # monitor `input[[use_mode_field]]`, but it is what it is for now. Note
+    # that the use of `old_choice` to define `replot` is fine as it doesn't
+    # matter which observer triggers the replotting, as long as one does
+    # (assuming that all or none of the observers monitoring `use_mode_field`
+    # consider it a protected field).
     replot <- FALSE
     if (uses_use_mode_field) {
         old_choice <- pObjects$memory[[panel_name]][[use_mode_field]]
@@ -141,6 +141,7 @@
                 panel_name, tab, old_tab, field=name_field)
             update_info <- TRUE
         } else if (tab!=.noSelection) {
+            # Add link in case `choice` was recently changed to `use_value`.
             pObjects$aesthetics_links <- .add_interpanel_link(pObjects$aesthetics_links,
                 panel_name, tab, field=name_field)
             update_info <- TRUE

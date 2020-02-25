@@ -383,9 +383,12 @@ setGeneric(".generateDotPlot", function(x, labels, envir) standardGeneric(".gene
 #' \code{.addDotPlotDataFacets(x, envir)} will add \code{FacetRow} and/or \code{FacetColumn} fields to \code{plot.data},
 #' representing the covariate used for faceting by row and/or column respectively.
 #'
-#' All methods should return a list with an entry named \code{commands},
-#' containing a character vector of R commands used to modify \code{plot.data};
-#' and \code{labels}, a list of labels to potentially use in the legend for each newly added aesthetic field.
+#' All methods should return a list containing:
+#' \itemize{
+#' \item \code{commands}, a character vector of R commands used to modify \code{plot.data}.
+#' \item \code{labels}, a named list of strings where each name corresponds to the newly added column of \code{plot.data}
+#' and each string corresponds to a label that might be used in the legend for that column.
+#' }
 #'
 #' If \code{plot.data} is not modified, methods should return \code{NULL}.
 #'

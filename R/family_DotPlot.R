@@ -134,6 +134,7 @@
 #' and \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot}.
 #' \item \code{\link{.generateDotPlot}(x, labels, envir)} returns a list containing \code{plot} and \code{commands}, as described above.
 #' This is called within \code{\link{.generateOutput}} for all \linkS4class{DotPlot} instances by default.
+#' \item \code{\link{.prioritizeDotPlotData}(x, envir)} returns \code{NULL}.
 #' \item \code{\link{.exportOutput}(x, se, all_memory, all_contents)} will create a PDF file containing the current plot, and return a string containing the path to that PDF.
 #' This assumes that the \code{plot} field returned by \code{\link{.generateOutput}} is a \link{ggplot} object.
 #' }
@@ -515,3 +516,6 @@ setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
 
     list(plot=.text_eval(plot_cmds, envir), commands=plot_cmds)
 })
+
+#' @export
+setMethod(".prioritizeDotPlotData", "DotPlot", function(x, envir) NULL)

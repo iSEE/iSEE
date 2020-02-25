@@ -306,8 +306,11 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #' \itemize{
 #' \item \code{x}, an instance of a \linkS4class{DotPlot} subclass.
 #' \item \code{labels}, a list of labels corresponding to the columns of \code{plot.data}.
+#' This is typically used to define axis or legend labels in the plot.
 #' \item \code{envir}, the evaluation environment in which the \link{ggplot} object is to be constructed.
 #' This can be assumed to have \code{plot.data}, a data.frame of plotting data.
+#' (\code{se}, \code{row_selected} and \code{col_selected} will still be present,
+#' but it is simplest to only use information that has already been incorporated into \code{plot.data} where possible.)
 #' }
 #'
 #' The method should return a list with \code{plot}, a \link{ggplot} object;
@@ -345,14 +348,42 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #'
 #' Developers may wish to use the \code{\link{.addMultiSelectionPlotCommands}} utility to draw brushes and lassos of \code{x}.
 #' Note that this refers to the brushes and lassos made on \code{x} itself, not those transmitted from another panel to \code{x}.
-#"
+#'
 #' It would be very unwise for methods to alter the x-axis, y-axis or faceting values in \code{plot.data}.
 #' This will lead to uninuitive discrepancies between apparent visual selections for a brush/lasso
 #' and the actual multiple selection that is evaluated by downstream functions like \code{\link{.processMultiSelections}}.
 #'
+#' @section Prioritizing points:
+#' In \code{.prioritizeDotPlotData(x, envir)}, the following arguments are required:
+#' \itemize{
+#' \item \code{x}, an instance of a \linkS4class{DotPlot} subclass.
+#' \item \code{envir}, the evaluation environment in which the \link{ggplot} object is to be constructed.
+#' This can be assumed to have \code{se}, the \linkS4class{SummarizedExperiment} object containing the current dataset;
+#' and \code{plot.data}, a data.frame of plotting data.
+#' }
+#'
+#' Methods for this generic are expected to generate a \code{.priority} variable in \code{envir},
+#' an ordered factor of length equal to \code{nrow(plot.data)} indicating the priority of each point.
+#' They may also generate a \code{.resolution} variable,
+#' a named numeric vector containing the scaling factor to apply to the downsampling resolution for each level of \code{.priority}.
+#'
+#' The method itself should return a list containing \code{commands}, 
+#' a character vector of R commands required to generate these variables;
+#' and \code{scaled}, a logical scalar indicating whether a \code{.resolution} variable was produced.
+#'
+#' Points assigned the highest level in \code{.priority} are regarded as having the highest visual importance.
+#' Such points will be shown on top of other points if there are overlaps on the plot,
+#' allowing developers to specify that, e.g., DE genes should be shown on top of non-DE genes. 
+#' Scaling of the resolution enables developers to peform more aggressive downsampling for unimportant points.
+#'
+#' Methods for this generic may also return \code{NULL}, in which case no special action is taken.
+#' 
+#' @author Kevin \dQuote{K-pop} Rue-Albrecht, Aaron \dQuote{A-bomb} Lun
+#'
 #' @name plot-generics
 #' @aliases .generateDotPlotData
 #' .generateDotPlot
+#' .prioritizeDotPlotData
 NULL
 
 #' @export
@@ -452,6 +483,8 @@ setGeneric(".addDotPlotDataFacets", function(x, envir) standardGeneric(".addDotP
 setGeneric(".addDotPlotDataSelected", function(x, envir) standardGeneric(".addDotPlotDataSelected"))
 
 setGeneric(".colorDotPlot", function(x, colorby, x_aes="X", y_aes="Y") standardGeneric(".colorDotPlot"))
+
+setGeneric(".prioritizeDotPlotData", function(x, envir) standardGeneric(".prioritizeDotPlotData"))
 
 ###########################
 

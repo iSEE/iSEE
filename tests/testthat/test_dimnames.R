@@ -86,6 +86,25 @@ test_that("dimname observers work to change the usage mode", {
     expect_identical(pObjects$memory$ReducedDimensionPlot1[["ColorBy"]], "Feature name")
     expect_true(igraph::are_adjacent(pObjects$aesthetics_links, "RowDataTable1", "ReducedDimensionPlot1"))
 
+    # Rerunning the observer will continue to restore the link,
+    # even if the memory has already been updated (to handle 
+    # situations where multiple observers respond to the same change).
+    old_memory <- pObjects$memory
+    pObjects$aesthetics_links <- iSEE:::.delete_interpanel_link(pObjects$aesthetics_links,
+        "ReducedDimensionPlot1", "RowDataTable1", field=iSEE:::.colorByFeatName)
+    expect_false(igraph::are_adjacent(pObjects$aesthetics_links, "RowDataTable1", "ReducedDimensionPlot1"))
+
+    out <- iSEE:::.setup_dimname_source_observer(
+        "ReducedDimensionPlot1",
+        use_mode_field=iSEE:::.colorByField, use_value=iSEE:::.colorByFeatNameTitle,
+        pObjects=pObjects, rObjects=rObjects, input=input, session=NULL,
+        name_field=iSEE:::.colorByFeatName,
+        tab_field=iSEE:::.colorByRowTable,
+        choices=NULL)
+
+    expect_identical(old_memory, pObjects$memory)
+    expect_true(igraph::are_adjacent(pObjects$aesthetics_links, "RowDataTable1", "ReducedDimensionPlot1"))
+
     # The feature choice has changed.
     input$FeatureAssayPlot1_XAxis <- "Feature name"
     input$FeatureAssayPlot1_XAxisFeatureSource <- "RowDataTable1"
@@ -123,7 +142,7 @@ test_that("dimname observers work to change the usage mode", {
     expect_identical(igraph::E(pObjects$aesthetics_links)$fields[[id]], iSEE:::.featAssayYAxisFeatName)
 })
 
-test_that(".setup_dimname_source_observer", {
+test_that(".setup_dimname_source_observer works with a mimicked app", {
 
     memory <- list(
         ReducedDimensionPlot(),

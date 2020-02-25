@@ -463,12 +463,37 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
     all_cmds <- c(all_cmds, extra_out$commands)
     all_labels <- c(all_labels, extra_out$labels)
 
+    # We need to set up the plot type before downsampling,
+    # to ensure the X/Y jitter is correctly computed. 
     all_cmds$setup <- .choose_plot_type(plot_env)
 
-    # Collect the plot coordinates BEFORE downsampling (which alters the environment value)
+    # Also collect the plot coordinates before downsampling.
     panel_data <- plot_env$plot.data
 
-    all_cmds$downsample <- .downsample_points(x, plot_env)
+    # Non-data-related fiddling to affect the visual display.
+    # First, scrambling the plot.data to avoid biases.
+    scramble_cmds <- c(
+        "# Avoid visual biases from default ordering by shuffling the points",
+        sprintf("set.seed(%i);", nrow(panel_data)), # Using a deterministically different seed to keep things exciting.
+        "plot.data <- plot.data[sample(nrow(plot.data)),,drop=FALSE];"
+    )
+    .text_eval(scramble_cmds, plot_env)
+    all_cmds$shuffle <- scramble_cmds
+
+    # Next, reordering by priority (this is stable so any ordering due to the
+    # shuffling above is still preserved within each priority level).
+    priority_out <- .prioritizeDotPlotData(x, plot_env)
+    rescaled_res <- FALSE
+    if (has_priority <- !is.null(priority_out)) {
+        order_cmds <- "plot.data <- plot.data[order(.priority, decreasing=TRUE),,drop=FALSE];"
+        .text_eval(order_cmds, plot_env)
+        all_cmds$priority <- c(priority_out$commands, order_cmds)
+        rescaled_res <- priority_out$rescaled
+        all_cmds$priority <- scramble_cmds
+    }
+
+    # Finally, the big kahuna of downsampling.
+    all_cmds$downsample <- .downsample_points(x, plot_env, priority=has_priority, rescaled=rescaled_res)
 
     plot_out <- .generateDotPlot(x, all_labels, plot_env)
     all_cmds$plot <- plot_out$commands

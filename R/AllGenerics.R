@@ -364,12 +364,12 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #'
 #' Methods for this generic are expected to generate a \code{.priority} variable in \code{envir},
 #' an ordered factor of length equal to \code{nrow(plot.data)} indicating the priority of each point.
-#' They may also generate a \code{.resolution} variable,
+#' They may also generate a \code{.rescaled} variable,
 #' a named numeric vector containing the scaling factor to apply to the downsampling resolution for each level of \code{.priority}.
 #'
 #' The method itself should return a list containing \code{commands}, 
 #' a character vector of R commands required to generate these variables;
-#' and \code{scaled}, a logical scalar indicating whether a \code{.resolution} variable was produced.
+#' and \code{rescaled}, a logical scalar indicating whether a \code{.rescaled} variable was produced.
 #'
 #' Points assigned the highest level in \code{.priority} are regarded as having the highest visual importance.
 #' Such points will be shown on top of other points if there are overlaps on the plot,

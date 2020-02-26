@@ -463,6 +463,9 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
     all_cmds <- c(all_cmds, extra_out$commands)
     all_labels <- c(all_labels, extra_out$labels)
 
+    select_out2 <- .add_selectby_column(x, plot_env)
+    all_cmds <- c(all_cmds, select_out2)
+
     # We need to set up the plot type before downsampling,
     # to ensure the X/Y jitter is correctly computed. 
     all_cmds$setup <- .choose_plot_type(plot_env)

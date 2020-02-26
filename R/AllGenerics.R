@@ -426,7 +426,9 @@ setGeneric(".generateDotPlot", function(x, labels, envir) standardGeneric(".gene
 #' @section Adding multiple selection information:
 #' \code{.addDotPlotDataSelected(x, envir)} will add a \code{SelectBy} field to \code{plot.data},
 #' representing the identity of points in a multiple selection transmitted to \code{x}.
-#' It will return a character vector of commands used to modify \code{plot.data}.
+#' \code{plot.data} may also be subsetted if \code{x} is restricting its points to the transmitted multiple selection.
+#'
+#' The method will return a character vector of commands used to modify \code{plot.data}.
 #' If no modification is performed, it will return \code{NULL}.
 #'
 #' @section Controlling the color scale:

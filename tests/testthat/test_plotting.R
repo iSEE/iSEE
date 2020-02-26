@@ -1335,3 +1335,26 @@ test_that("plots subsetted to no data contain a geom_blank command", {
 test_that(".build_labs returns NULL for NULL inputs", {
     expect_null(iSEE:::.build_labs())
 })
+
+########################################
+# .add_selectby_column considers NAs ----
+
+test_that(".add_selectby_column handles NAs correctly", {
+    rdp <- pObjects$memory$ReducedDimensionPlot1 # any plot will do here.
+    env <- new.env()
+
+    env$plot.data <- data.frame(X=1, Y=2, FacetRow=1, FacetColumn=2)
+    out <- iSEE:::.add_selectby_column(rdp, env)
+    expect_false(any(grepl("subset.*is.na", unlist(out))))
+    expect_identical(nrow(env$plot.data), 1L)
+
+    env$plot.data <- data.frame(X=1, Y=NA_real_)
+    out <- iSEE:::.add_selectby_column(rdp, env)
+    expect_true(any(grepl("subset.*is.na", unlist(out))))
+    expect_identical(nrow(env$plot.data), 0L)
+
+    env$plot.data <- data.frame(X=1, Y=1, FacetRow=NA_real_)
+    out <- iSEE:::.add_selectby_column(rdp, env)
+    expect_true(any(grepl("subset.*is.na", unlist(out))))
+    expect_identical(nrow(env$plot.data), 0L)
+})

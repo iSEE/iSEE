@@ -74,14 +74,40 @@
     collected$facets <- out_facets$commands
     labels <- c(labels, out_facets$labels)
 
+    list(commands=collected, labels=labels)
+}
+
+#' Add a \code{SelectBy} column
+#'
+#' This is another simple utility to just add a \code{SelectBy} column to \code{plot.data},
+#' indicating whether each row was included in a multiple selection transmitted from another panel.
+#' If \code{x} restricts its multiple selections, \code{plot.data} will be subsetted to only those rows with \code{SelectBy=TRUE}.
+#'
+#' @param x An instance of a \linkS4class{DotPlot} class.
+#' @param envir An environment containing \code{plot.data}.
+#'
+#' @return A list of character vectors containing commands necessary to add \code{SelectBy} and,
+#' if necessary, perform the subsetting.
+#'
+#' @author Aaron Lun
+#'
+#' @rdname INTERNAL_add_selectby_column
+.add_selectby_column <- function(x, envir) {
+    collected <- list()
+    plot.data <- envir$plot.data
+
     # Removing NAs in axes aesthetics as they mess up .process_selectby_choice.
-    clean_select_fields <- c("X", "Y", names(collected$facets))
-    clean_expression <- paste(sprintf("!is.na(%s)", clean_select_fields), collapse=" & ")
-    collected$na.rm <- sprintf("plot.data <- subset(plot.data, %s);", clean_expression)
+    clean_select_fields <- c("X", "Y", intersect(c("FacetRow", "FacetColumn"), colnames(plot.data)))
+    clean_affected <- vapply(clean_select_fields, function(i) any(is.na(plot.data[[i]])), TRUE)
+
+    if (any(clean_affected)) {
+        clean_expression <- paste(sprintf("!is.na(%s)", clean_select_fields[clean_affected]), collapse=" & ")
+        collected$na.rm <- sprintf("plot.data <- subset(plot.data, %s);", clean_expression)
+        .text_eval(collected$na.rm, envir)
+    }
 
     collected$select.effect <- .addDotPlotDataSelected(x, envir)
-
-    list(commands=collected, labels=labels)
+    collected
 }
 
 #' Coerce \code{plot.data} columns

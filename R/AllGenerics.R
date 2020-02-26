@@ -309,8 +309,10 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #' This is typically used to define axis or legend labels in the plot.
 #' \item \code{envir}, the evaluation environment in which the \link{ggplot} object is to be constructed.
 #' This can be assumed to have \code{plot.data}, a data.frame of plotting data.
-#' (\code{se}, \code{row_selected} and \code{col_selected} will still be present,
-#' but it is simplest to only use information that has already been incorporated into \code{plot.data} where possible.)
+#'
+#' Note that \code{se}, \code{row_selected} and \code{col_selected} will still be present in \code{envir},
+#' but it is simplest to only use information that has already been incorporated into \code{plot.data} where possible.
+#' This is because the order and number of rows in \code{plot.data} may have changed since \code{\link{.generateDotPlotData}}.
 #' }
 #'
 #' The method should return a list with \code{plot}, a \link{ggplot} object;
@@ -358,8 +360,11 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #' \itemize{
 #' \item \code{x}, an instance of a \linkS4class{DotPlot} subclass.
 #' \item \code{envir}, the evaluation environment in which the \link{ggplot} object is to be constructed.
-#' This can be assumed to have \code{se}, the \linkS4class{SummarizedExperiment} object containing the current dataset;
-#' and \code{plot.data}, a data.frame of plotting data.
+#' This can be assumed to have \code{plot.data}, a data.frame of plotting data.
+#'
+#' Again, note that \code{se}, \code{row_selected} and \code{col_selected} will still be present in \code{envir},
+#' but it is simplest to only use information that has already been incorporated into \code{plot.data} where possible.
+#' This is because the order and number of rows in \code{plot.data} may have changed since \code{\link{.generateDotPlotData}}.
 #' }
 #'
 #' Methods for this generic are expected to generate a \code{.priority} variable in \code{envir},

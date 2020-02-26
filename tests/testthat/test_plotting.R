@@ -1223,6 +1223,61 @@ test_that(".downsample_points produces the appropriate code for horizontal violi
 })
 
 ########################################
+# priority-related tests.
+
+setClass("ColumnDataPlotPrioritized", contains="ColumnDataPlot")
+
+setMethod(".prioritizeDotPlotData", "ColumnDataPlotPrioritized", function(x, envir) {
+    cmds <- c(
+        ".priority <- rep(letters[1:5], length.out=ncol(se));",
+        ".priority <- factor(.priority, ordered=TRUE);",
+        ".rescaled <- c(a=1, b=0.5, c=2, d=3, e=1);"
+    )
+    eval(parse(text=cmds), envir=envir)
+    list(commands=cmds, rescaled=TRUE)
+})
+
+test_that(".generateDotPlot responds to priority", {
+    cdp <- pObjects$memory$ColumnDataPlot1
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxisColData]] <- "driver_1_s"
+    cdp[[iSEE:::.colDataYAxis]] <- "passes_qc_checks_s"
+
+    ref <- .generateOutput(cdp, sce, all_memory=all_memory, all_contents=pObjects$contents)
+    expect_false(any(grepl('plot.data\\[order\\(.priority\\)', unlist(ref$commands))))
+
+    cdpp <- as(cdp, "ColumnDataPlotPrioritized")
+    out <- .generateOutput(cdpp, sce, all_memory=all_memory, all_contents=pObjects$contents)
+    expect_true(any(grepl('plot.data\\[order\\(.priority\\)', unlist(out$commands))))
+
+    expect_identical(out$contents, ref$contents)
+    expect_identical(sort(rownames(out$plot$data)), sort(rownames(ref$plot$data)))
+    expect_false(identical(out$plot$data, ref$plot$data))
+})
+
+test_that(".downsample_points responds to priority", {
+    cdp <- pObjects$memory$ColumnDataPlot1
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxisColData]] <- "driver_1_s"
+    cdp[[iSEE:::.colDataYAxis]] <- "passes_qc_checks_s"
+
+    cdp[[iSEE:::.plotPointDownsample]] <- TRUE
+    cdp[[iSEE:::.plotPointSampleRes]] <- 50
+
+    ref <- .generateOutput(cdp, sce, all_memory=all_memory, all_contents=pObjects$contents)
+    expect_false(any(grepl('grouping=\\.priority', unlist(ref$commands))))
+    expect_false(any(grepl('resolution=50\\*\\.rescaled', unlist(ref$commands))))
+
+    cdpp <- as(cdp, "ColumnDataPlotPrioritized")
+    out <- .generateOutput(cdpp, sce, all_memory=all_memory, all_contents=pObjects$contents)
+    expect_true(any(grepl('grouping=\\.priority', unlist(out$commands))))
+    expect_true(any(grepl('resolution=50\\*\\.rescaled', unlist(out$commands))))
+
+    expect_identical(out$contents, ref$contents)
+    expect_false(identical(out$plot$data, ref$plot$data))
+})
+
+########################################
 # .create_plot ----
 
 test_that(".create_plot can add faceting commands", {

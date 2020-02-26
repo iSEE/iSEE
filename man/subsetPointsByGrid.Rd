@@ -4,14 +4,20 @@
 \alias{subsetPointsByGrid}
 \title{Subset points for faster plotting}
 \usage{
-subsetPointsByGrid(X, Y, resolution = 200)
+subsetPointsByGrid(X, Y, resolution = 200, grouping = NULL)
 }
 \arguments{
 \item{X}{A numeric vector of x-coordinates for all points.}
 
 \item{Y}{A numeric vector of y-coordinates for all points, of the same length as \code{X}.}
 
-\item{resolution}{A positive integer specifying the number of bins on each axis of the grid.}
+\item{resolution}{A positive integer specifying the number of bins on each axis of the grid.
+
+Alternatively, if \code{grouping} is specified, 
+this may be a named integer vector containing the number of bins to be used for each level.}
+
+\item{grouping}{A character vector of length equal to \code{X} specifying the group to which each point is assigned.
+By default, all points belong to the same group.}
 }
 \value{
 A logical vector indicating which points should be retained.
@@ -26,9 +32,11 @@ If multiple points are allocated to a given location, only the last/right-most p
 This mimics the fact that plotting will overwrite earlier points with later points.
 In this manner, we can avoid unnecessary rendering of earlier points that would not show up anyway.
 
-Note that the \code{resolution} should be a positive integer less than the square root of the maximum integer size,
-and will be coerced into the valid range if necessary.
-This enables fast calculation of the grid locations for all points.
+If \code{grouping} is specified, redundant points are only identified within each unique level.
+The resolution of downsampling within each level can be varied by passing an integer vector to \code{resolution}.
+This can be useful for tuning the downsampling when points differ in importance,
+e.g., in a MA plot, points corresponding to non-DE genes can be aggressively downsampled 
+while points corresponding to DE genes should generally be retained.
 
 For plots where \code{X} and \code{Y} are originally categorical, use the jittered versions as input to this function.
 }

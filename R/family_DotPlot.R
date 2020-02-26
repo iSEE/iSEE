@@ -485,11 +485,10 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
     priority_out <- .prioritizeDotPlotData(x, plot_env)
     rescaled_res <- FALSE
     if (has_priority <- !is.null(priority_out)) {
-        order_cmds <- "plot.data <- plot.data[order(.priority, decreasing=TRUE),,drop=FALSE];"
+        order_cmds <- "plot.data <- plot.data[order(.priority),,drop=FALSE];"
         .text_eval(order_cmds, plot_env)
         all_cmds$priority <- c(priority_out$commands, order_cmds)
         rescaled_res <- priority_out$rescaled
-        all_cmds$priority <- scramble_cmds
     }
 
     # Finally, the big kahuna of downsampling.

@@ -20,26 +20,23 @@
 #' @section Constructor:
 #' \code{RowDataPlot(...)} creates an instance of a RowDataPlot class, where any slot and its value can be passed to \code{...} as a named argument.
 #'
-#' @section Contract description:
-#' The RowDataPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
-#' It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
-#' Subclasses do not have to provide any methods, as this is a concrete class.
-#'
 #' @section Supported methods:
 #' In the following code snippets, \code{x} is an instance of a \linkS4class{RowDataPlot} class.
 #' Refer to the documentation for each method for more details on the remaining arguments.
 #'
 #' For setting up data values:
 #' \itemize{
-#' \item \code{\link{.refineParameters}(x, se)} returns \code{x} after replacing any \code{NA} value in \code{YAxis} or \code{XAxisRowData} with the name of the first valid \code{\link{rowData}} field.
+#' \item \code{\link{.refineParameters}(x, se)} returns \code{x} after replacing any \code{NA} value in \code{YAxis} or \code{XAxisRowData} with the name of the first valid \code{\link{rowData}} variable.
 #' This will also call the equivalent \linkS4class{RowDotPlot} method for further refinements to \code{x}.
-#' If no valid row metadata fields are available, \code{NULL} is returned instead.
+#' If no valid row metadata variables are available, \code{NULL} is returned instead.
 #' }
 #'
 #' For defining the interface:
 #' \itemize{
 #' \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
 #' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
+#' \item \code{\link{.availableXAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{rowData}(se)} that can be used as choices for the x-axis. 
+#' \item \code{\link{.availableYAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{rowData}(se)} that can be used as choices for the y-axis. 
 #' }
 #'
 #' For monitoring reactive expressions:
@@ -59,6 +56,9 @@
 #' It will return the commands required to do so as well as a list of labels.
 #' }
 #'
+#' @section Subclass expectations:
+#' Subclasses do not have to provide any methods, as this is a concrete class.
+#' 
 #' @author Aaron Lun
 #'
 #' @seealso
@@ -99,6 +99,9 @@
 #' .fullName,RowDataPlot-method
 #' .panelColor,RowDataPlot-method
 #' .generateDotPlotData,RowDataPlot-method
+#' .allowableXAxisChoices,RowDataPlot-method
+#' .allowableYAxisChoices,RowDataPlot-method
+#'
 #' @name RowDataPlot-class
 NULL
 
@@ -163,12 +166,11 @@ setMethod(".defineDataInterface", "RowDataPlot", function(x, se, select_info) {
     panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
-    row_covariates <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
-
     list(
         selectInput(.input_FUN(.rowDataYAxis),
             label="Column of interest (Y-axis):",
-            choices=row_covariates, selected=x[[.rowDataYAxis]]),
+            choices=.allowableYAxisChoices(x, se), 
+            selected=x[[.rowDataYAxis]]),
         radioButtons(.input_FUN(.rowDataXAxis), label="X-axis:", inline=TRUE,
             choices=c(.rowDataXAxisNothingTitle, .rowDataXAxisRowDataTitle),
             selected=x[[.rowDataXAxis]]),
@@ -176,9 +178,21 @@ setMethod(".defineDataInterface", "RowDataPlot", function(x, se, select_info) {
             .rowDataXAxisRowDataTitle,
             selectInput(.input_FUN(.rowDataXAxisRowData),
                 label="Column of interest (X-axis):",
-                choices=row_covariates, selected=x[[.rowDataXAxisRowData]]))
+                choices=.allowableXAxisChoices(x, se), 
+                selected=x[[.rowDataXAxisRowData]]))
     )
 })
+
+#' @export
+setMethod(".allowableXAxisChoices", "RowDataPlot", function(x, se) {
+    .get_common_info(se, "RowDotPlot")$valid.rowData.names
+})
+
+#' @export
+setMethod(".allowableYAxisChoices", "RowDataPlot", function(x, se) {
+    .get_common_info(se, "RowDotPlot")$valid.rowData.names
+})
+
 
 #' @export
 #' @importFrom shiny observeEvent updateSelectInput

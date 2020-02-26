@@ -1,7 +1,7 @@
 #' The ColumnDataPlot panel
 #'
 #' The ColumnDataPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents a variable from the \code{\link{colData}} of a \linkS4class{SummarizedExperiment} object.
-#' It provides slots and methods for specifying which column metadata variable to use and what to plot on the x-axis.
+#' It provides slots and methods for specifying which column metadata variable to use on the y-axis and what to plot on the x-axis.
 #'
 #' @section Slot overview:
 #' The following slots control the column data information that is used:
@@ -20,26 +20,23 @@
 #' @section Constructor:
 #' \code{ColumnDataPlot(...)} creates an instance of a ColumnDataPlot class, where any slot and its value can be passed to \code{...} as a named argument.
 #'
-#' @section Contract description:
-#' The ColumnDataPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
-#' It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
-#' Subclasses do not have to provide any methods, as this is a concrete class.
-#'
 #' @section Supported methods:
 #' In the following code snippets, \code{x} is an instance of a \linkS4class{ColumnDataPlot} class.
 #' Refer to the documentation for each method for more details on the remaining arguments.
 #'
 #' For setting up data values:
 #' \itemize{
-#' \item \code{\link{.refineParameters}(x, se)} returns \code{x} after replacing any \code{NA} value in \code{YAxis} or \code{XAxisColumnData} with the name of the first valid \code{\link{colData}} field.
+#' \item \code{\link{.refineParameters}(x, se)} returns \code{x} after replacing any \code{NA} value in \code{YAxis} or \code{XAxisColumnData} with the name of the first valid \code{\link{colData}} variable.
 #' This will also call the equivalent \linkS4class{ColumnDotPlot} method for further refinements to \code{x}.
-#' If no valid column metadata fields are available, \code{NULL} is returned instead.
+#' If no valid column metadata variables are available, \code{NULL} is returned instead.
 #' }
 #'
 #' For defining the interface:
 #' \itemize{
 #' \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
 #' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
+#' \item \code{\link{.availableXAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{colData}(se)} that can be used as choices for the x-axis. 
+#' \item \code{\link{.availableYAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{colData}(se)} that can be used as choices for the y-axis. 
 #' }
 #'
 #' For monitoring reactive expressions:
@@ -59,6 +56,9 @@
 #' It will return the commands required to do so as well as a list of labels.
 #' }
 #'
+#' @section Subclass expectations:
+#' Subclasses do not have to provide any methods, as this is a concrete class.
+#' 
 #' @author Aaron Lun
 #'
 #' @seealso
@@ -102,6 +102,8 @@
 #' .fullName,ColumnDataPlot-method
 #' .panelColor,ColumnDataPlot-method
 #' .generateDotPlotData,ColumnDataPlot-method
+#' .allowableXAxisChoices,ColumnDataPlot-method
+#' .allowableYAxisChoices,ColumnDataPlot-method
 #'
 #' @name ColumnDataPlot-class
 NULL
@@ -168,12 +170,11 @@ setMethod(".defineDataInterface", "ColumnDataPlot", function(x, se, select_info)
     panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
-    column_covariates <- .get_common_info(se, "ColumnDotPlot")$valid.colData.names
-
     list(
         selectInput(.input_FUN(.colDataYAxis),
             label="Column of interest (Y-axis):",
-            choices=column_covariates, selected=x[[.colDataYAxis]]),
+            choices=.allowableYAxisChoices(x, se),
+            selected=x[[.colDataYAxis]]),
         radioButtons(.input_FUN(.colDataXAxis), label="X-axis:", inline=TRUE,
             choices=c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle),
             selected=x[[.colDataXAxis]]),
@@ -181,8 +182,19 @@ setMethod(".defineDataInterface", "ColumnDataPlot", function(x, se, select_info)
             .colDataXAxisColDataTitle,
             selectInput(.input_FUN(.colDataXAxisColData),
                 label="Column of interest (X-axis):",
-                choices=column_covariates, selected=x[[.colDataXAxisColData]]))
+                choices=.allowableXAxisChoices(x, se),
+                selected=x[[.colDataXAxisColData]]))
     )
+})
+
+#' @export
+setMethod(".allowableXAxisChoices", "ColumnDataPlot", function(x, se) {
+    .get_common_info(se, "ColumnDotPlot")$valid.colData.names
+})
+
+#' @export
+setMethod(".allowableYAxisChoices", "ColumnDataPlot", function(x, se) {
+    .get_common_info(se, "ColumnDotPlot")$valid.colData.names
 })
 
 #' @export

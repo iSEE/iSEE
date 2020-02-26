@@ -760,3 +760,40 @@ setGeneric(".singleSelectionValue", function(x, pObjects) standardGeneric(".sing
 
 #' @export
 setGeneric(".singleSelectionSlots", function(x) standardGeneric(".singleSelectionSlots"))
+
+###########################
+
+#' Generics for row/column metadata plots
+#'
+#' These generics allow subclasses to refine the choices of allowable variables on the x- and y-axes
+#' of a \linkS4class{ColumnDataPlot} or \linkS4class{RowDataPlot}.
+#' This is most useful for restricting the visualization to a subset of variables, e.g.,
+#' only taking log-fold changes in a y-axis of a MA plot.
+#'
+#' @section Allowable y-axis choices:
+#' \code{.allowableYAxisChoices(x, se)} takes \code{x}, a \linkS4class{Panel} instance,
+#' and \code{se}, the \linkS4class{SummarizedExperiment} object.
+#' It is expected to return a character vector containing the names of acceptable variables to show on the y-axis.
+#' For \linkS4class{ColumnDataPlot}s, these should be a subset of the variables in \code{\link{colData}(se)},
+#' while for \linkS4class{RowDataPlot}s, these should be a subset of the variables in \code{\link{rowData}(se)}.
+#'
+#' In practice, it is a good idea to make use of information precomputed by \code{\link{.cacheCommonInfo}}.
+#' For example, \code{\link{.cacheCommonInfo,ColumnDotPlot-method}} will add vectors specifying whether a variable in the \code{\link{colData}} is valid and discrete or continuous.
+#' This can be intersected with additional requirements in this function.
+#'
+#' @section Allowable x-axis choices:
+#' \code{.allowableXAxisChoices(x, se)} is the same as above but for the variables to show on the x-axis.
+#' This need not return the same subset of variables as \code{.allowableYAxisChoices}.
+#' 
+#' @author Aaron Lun
+#'
+#' @name metadata-plot-generics
+#' @aliases .allowableYAxisChoices
+#' .allowableXAxisChoices
+NULL
+
+#' @export
+setGeneric(".allowableYAxisChoices", function(x, se) standardGeneric(".allowableYAxisChoices"))
+
+#' @export
+setGeneric(".allowableXAxisChoices", function(x, se) standardGeneric(".allowableXAxisChoices"))

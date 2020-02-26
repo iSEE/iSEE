@@ -170,9 +170,12 @@ This is necessary for correct interactions with later methods that add other var
 
 <p>In <code>.generateDotPlot(x, labels, envir)</code>, the following arguments are required:</p><ul>
 <li><p><code>x</code>, an instance of a <a href='DotPlot-class.html'>DotPlot</a> subclass.</p></li>
-<li><p><code>labels</code>, a list of labels corresponding to the columns of <code>plot.data</code>.</p></li>
+<li><p><code>labels</code>, a list of labels corresponding to the columns of <code>plot.data</code>.
+This is typically used to define axis or legend labels in the plot.</p></li>
 <li><p><code>envir</code>, the evaluation environment in which the ggplot object is to be constructed.
-This can be assumed to have <code>plot.data</code>, a data.frame of plotting data.</p></li>
+This can be assumed to have <code>plot.data</code>, a data.frame of plotting data.
+(<code>se</code>, <code>row_selected</code> and <code>col_selected</code> will still be present,
+but it is simplest to only use information that has already been incorporated into <code>plot.data</code> where possible.)</p></li>
 </ul>
 
 <p>The method should return a list with <code>plot</code>, a ggplot object;
@@ -206,10 +209,33 @@ and is again mainly used to fix the boundaries of the plot.</p></li>
 </ul>
 
 <p>Developers may wish to use the <code><a href='addMultiSelectionCommands.html'>.addMultiSelectionPlotCommands</a></code> utility to draw brushes and lassos of <code>x</code>.
-Note that this refers to the brushes and lassos made on <code>x</code> itself, not those transmitted from another panel to <code>x</code>.
-It would be very unwise for methods to alter the x-axis, y-axis or faceting values in <code>plot.data</code>.
+Note that this refers to the brushes and lassos made on <code>x</code> itself, not those transmitted from another panel to <code>x</code>.</p>
+<p>It would be very unwise for methods to alter the x-axis, y-axis or faceting values in <code>plot.data</code>.
 This will lead to uninuitive discrepancies between apparent visual selections for a brush/lasso
 and the actual multiple selection that is evaluated by downstream functions like <code><a href='processMultiSelections.html'>.processMultiSelections</a></code>.</p>
+    <h2 class="hasAnchor" id="prioritizing-points"><a class="anchor" href="#prioritizing-points"></a>Prioritizing points</h2>
+
+    
+
+<p>In <code>.prioritizeDotPlotData(x, envir)</code>, the following arguments are required:</p><ul>
+<li><p><code>x</code>, an instance of a <a href='DotPlot-class.html'>DotPlot</a> subclass.</p></li>
+<li><p><code>envir</code>, the evaluation environment in which the ggplot object is to be constructed.
+This can be assumed to have <code>se</code>, the SummarizedExperiment object containing the current dataset;
+and <code>plot.data</code>, a data.frame of plotting data.</p></li>
+</ul>
+
+<p>Methods for this generic are expected to generate a <code>.priority</code> variable in <code>envir</code>,
+an ordered factor of length equal to <code><a href='https://rdrr.io/r/base/nrow.html'>nrow(plot.data)</a></code> indicating the priority of each point.
+They may also generate a <code>.rescaled</code> variable,
+a named numeric vector containing the scaling factor to apply to the downsampling resolution for each level of <code>.priority</code>.</p>
+<p>The method itself should return a list containing <code>commands</code>, 
+a character vector of R commands required to generate these variables;
+and <code>rescaled</code>, a logical scalar indicating whether a <code>.rescaled</code> variable was produced.</p>
+<p>Points assigned the highest level in <code>.priority</code> are regarded as having the highest visual importance.
+Such points will be shown on top of other points if there are overlaps on the plot,
+allowing developers to specify that, e.g., DE genes should be shown on top of non-DE genes. 
+Scaling of the resolution enables developers to peform more aggressive downsampling for unimportant points.</p>
+<p>Methods for this generic may also return <code>NULL</code>, in which case no special action is taken.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -217,8 +243,11 @@ and the actual multiple selection that is evaluated by downstream functions like
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#generating-plotting-data">Generating plotting data</a></li>
       <li><a href="#generating-the-ggplot-object">Generating the ggplot object</a></li>
+      <li><a href="#prioritizing-points">Prioritizing points</a></li>
     </ul>
 
+    <h2>Author</h2>
+    <p>Kevin &#8220;K-pop&#8221; Rue-Albrecht, Aaron &#8220;A-bomb&#8221; Lun</p>
   </div>
 </div>
 

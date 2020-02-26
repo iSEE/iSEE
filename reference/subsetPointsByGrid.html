@@ -140,7 +140,7 @@
     <p>Subset points using a grid-based system, to avoid unnecessary rendering when plotting.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>subsetPointsByGrid</span>(<span class='no'>X</span>, <span class='no'>Y</span>, <span class='kw'>resolution</span> <span class='kw'>=</span> <span class='fl'>200</span>)</pre>
+    <pre class="usage"><span class='fu'>subsetPointsByGrid</span>(<span class='no'>X</span>, <span class='no'>Y</span>, <span class='kw'>resolution</span> <span class='kw'>=</span> <span class='fl'>200</span>, <span class='kw'>grouping</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -155,7 +155,14 @@
     </tr>
     <tr>
       <th>resolution</th>
-      <td><p>A positive integer specifying the number of bins on each axis of the grid.</p></td>
+      <td><p>A positive integer specifying the number of bins on each axis of the grid.</p>
+<p>Alternatively, if <code>grouping</code> is specified, 
+this may be a named integer vector containing the number of bins to be used for each level.</p></td>
+    </tr>
+    <tr>
+      <th>grouping</th>
+      <td><p>A character vector of length equal to <code>X</code> specifying the group to which each point is assigned.
+By default, all points belong to the same group.</p></td>
     </tr>
     </table>
 
@@ -169,9 +176,11 @@ Each point is allocated to a grid location (i.e., pair of bins on the x- and y-a
 If multiple points are allocated to a given location, only the last/right-most point is retained. 
 This mimics the fact that plotting will overwrite earlier points with later points.
 In this manner, we can avoid unnecessary rendering of earlier points that would not show up anyway.</p>
-<p>Note that the <code>resolution</code> should be a positive integer less than the square root of the maximum integer size,
-and will be coerced into the valid range if necessary.
-This enables fast calculation of the grid locations for all points.</p>
+<p>If <code>grouping</code> is specified, redundant points are only identified within each unique level.
+The resolution of downsampling within each level can be varied by passing an integer vector to <code>resolution</code>.
+This can be useful for tuning the downsampling when points differ in importance,
+e.g., in a MA plot, points corresponding to non-DE genes can be aggressively downsampled 
+while points corresponding to DE genes should generally be retained.</p>
 <p>For plots where <code>X</code> and <code>Y</code> are originally categorical, use the jittered versions as input to this function.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>

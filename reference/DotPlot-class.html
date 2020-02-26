@@ -267,6 +267,7 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.<
 and <code>commands</code>, a list of character vector containing the R commands required to generate <code>contents</code> and <code>plot</code>.</p></li>
 <li><p><code><a href='plot-generics.html'>.generateDotPlot</a>(x, labels, envir)</code> returns a list containing <code>plot</code> and <code>commands</code>, as described above.
 This is called within <code><a href='output-generics.html'>.generateOutput</a></code> for all DotPlot instances by default.</p></li>
+<li><p><code><a href='plot-generics.html'>.prioritizeDotPlotData</a>(x, envir)</code> returns <code>NULL</code>.</p></li>
 <li><p><code><a href='output-generics.html'>.exportOutput</a>(x, se, all_memory, all_contents)</code> will create a PDF file containing the current plot, and return a string containing the path to that PDF.
 This assumes that the <code>plot</code> field returned by <code><a href='output-generics.html'>.generateOutput</a></code> is a ggplot object.</p></li>
 </ul>

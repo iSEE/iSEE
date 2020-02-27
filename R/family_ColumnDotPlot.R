@@ -362,6 +362,6 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
             )
         )
     } else {
-        NULL
+        .colorByNoneDotPlotScale(x)
     }
 })

@@ -1,3 +1,6 @@
+# This tests the various class set-up methods.
+# library(testthat); library(iSEE); source('setup_sce.R'); source('test_api.R')
+
 # .refineParameters ----
 context(".refineParameters")
 
@@ -18,29 +21,49 @@ test_that(".refineParameters handles NULL x", {
 })
 
 test_that(".refineParameters identifies impossible ColumnDataPlot", {
+    # Wiping out the metadata to trigger the NULL.
+    copy <- sce
+    colData(copy) <- DataFrame(row.names = colnames(copy))
 
     x <- ColumnDataPlot()
-
-    colData(sce) <- DataFrame(row.names = colnames(sce))
-    sce <- .cacheCommonInfo(x, sce)
-    expect_warning(.refineParameters(x, sce),
+    copy <- .cacheCommonInfo(x, copy)
+    expect_warning(out <- .refineParameters(x, copy),
         "no valid y-axis 'colData' fields for 'ColumnDataPlot'", fixed=TRUE)
-    out <- .refineParameters(x, sce)
     expect_null(out)
 
+    # Making up a class to meet damn coverage targets.
+    setClass("ColumnDataPlot342", contains="ColumnDataPlot")
+    setMethod(".allowableXAxisChoices", "ColumnDataPlot342", function(x, se) character(0)) 
+    x2 <- as(x, "ColumnDataPlot342")
+
+    copy <- sce
+    copy <- .cacheCommonInfo(x2, copy)
+    expect_warning(out <- .refineParameters(x2, copy),
+        "no valid x-axis 'colData' fields for 'ColumnDataPlot342'", fixed=TRUE)
+    expect_null(out)
 })
 
 test_that(".refineParameters identifies impossible RowDataPlot", {
+    # Wiping out the metadata to trigger the NULL.
+    copy <- sce
+    rowData(copy) <- DataFrame(row.names = rownames(copy))
 
     x <- RowDataPlot()
-
-    rowData(sce) <- DataFrame(row.names = rownames(sce))
-    sce <- .cacheCommonInfo(x, sce)
-    expect_warning(.refineParameters(x, sce),
+    copy <- .cacheCommonInfo(x, copy)
+    expect_warning(out <- .refineParameters(x, copy),
         "no valid y-axis 'rowData' fields for 'RowDataPlot'", fixed=TRUE)
-    out <- .refineParameters(x, sce)
     expect_null(out)
 
+    # Making up a class to meet damn coverage targets.
+    setClass("RowDataPlot342", contains="RowDataPlot")
+    setMethod(".allowableXAxisChoices", "RowDataPlot342", function(x) character(0))
+    x2 <- as(x, "RowDataPlot342")
+
+    copy <- sce
+    copy <- .cacheCommonInfo(x2, copy)
+    expect_warning(out <- .refineParameters(x2, copy),
+        "no valid x-axis 'rowData' fields for 'RowDataPlot342'", fixed=TRUE)
+    expect_null(out)
 })
 
 test_that(".refineParameters identifies impossible SampleAssayPlot", {

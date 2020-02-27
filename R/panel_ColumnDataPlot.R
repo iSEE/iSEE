@@ -134,15 +134,20 @@ setMethod(".refineParameters", "ColumnDataPlot", function(x, se) {
         return(NULL)
     }
 
-    covariates <- .get_common_info(se, "ColumnDotPlot")$valid.colData.names
-    if (length(covariates)==0L) {
-        warning(sprintf("no valid 'colData' fields for '%s'", class(x)[1]))
+    yaxis <- .allowableYAxisChoices(x, se)
+    if (length(yaxis)==0L) {
+        warning(sprintf("no valid y-axis 'colData' fields for '%s'", class(x)[1]))
         return(NULL)
     }
 
-    for (field in c(.colDataXAxisColData, .colDataYAxis)) {
-        x <- .replace_na_with_first(x, field, covariates)
+    xaxis <- .allowableXAxisChoices(x, se)
+    if (length(xaxis)==0L) {
+        warning(sprintf("no valid x-axis 'colData' fields for '%s'", class(x)[1]))
+        return(NULL)
     }
+
+    x <- .replace_na_with_first(x, .colDataYAxis, yaxis)
+    x <- .replace_na_with_first(x, .colDataXAxisColData, xaxis)
 
     x
 })

@@ -331,10 +331,6 @@ setMethod(".addDotPlotDataSelected", "ColumnDotPlot", function(x, envir) {
 })
 
 setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_aes="Y") {
-    if (is.null(colorby)) {
-        return(NULL)
-    }
-
     color_choice <- x[[.colorByField]]
 
     if (color_choice == .colorByColDataTitle) {

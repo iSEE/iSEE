@@ -131,15 +131,20 @@ setMethod(".refineParameters", "RowDataPlot", function(x, se) {
         return(NULL)
     }
 
-    covariates <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
-    if (length(covariates)==0L) {
-        warning(sprintf("no atomic 'rowData' fields for '%s'", class(x)[1]))
+    yaxis <- .allowableYAxisChoices(x, se)
+    if (length(yaxis)==0L) {
+        warning(sprintf("no valid y-axis 'rowData' fields for '%s'", class(x)[1]))
         return(NULL)
     }
 
-    for (field in c(.rowDataXAxisRowData, .rowDataYAxis)) {
-        x <- .replace_na_with_first(x, field, covariates)
+    xaxis <- .allowableXAxisChoices(x, se)
+    if (length(xaxis)==0L) {
+        warning(sprintf("no valid x-axis 'rowData' fields for '%s'", class(x)[1]))
+        return(NULL)
     }
+
+    x <- .replace_na_with_first(x, .rowDataYAxis, yaxis)
+    x <- .replace_na_with_first(x, .rowDataXAxisRowData, xaxis)
 
     x
 })

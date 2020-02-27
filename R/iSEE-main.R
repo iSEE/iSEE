@@ -162,11 +162,10 @@ iSEE <- function(se,
     ecm_name <- deparse(substitute(colormap))
 
     if (has_se) {
-        dn_out <- .fill_se_dimnames(se)
-        se <- dn_out$se
-        track_info <- list(se_name=se_name, ecm_name=ecm_name, mod_commands=dn_out$commands)
+        # This will get re-done in initialize_server(), anyway.
+        placeholder <- .fill_se_dimnames(se)$se
 
-        old_stuff <- .create_new_from_old(se, redDimArgs=redDimArgs,
+        old_stuff <- .create_new_from_old(placeholder, redDimArgs=redDimArgs,
             colDataArgs=colDataArgs,
             featAssayArgs=featAssayArgs,
             rowStatArgs=rowStatArgs,
@@ -375,14 +374,14 @@ iSEE <- function(se,
                     INITIAL <- INITIAL[keep]
                 }
                 .initialize_server(SE, initial=INITIAL, extra=extra, colormap=colormap,
-                    tour=tour, runLocal=runLocal, track_info=track_info,
+                    tour=tour, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name,
                     input=input, output=output, session=session, rObjects=rObjects)
                 rObjects$rerendered <- .increment_counter(isolate(rObjects$rerendered))
             }
             landingPage(FUN, input=input, output=output, session=session)
         } else {
             .initialize_server(se, initial=initial, extra=extra, colormap=colormap,
-                tour=tour, runLocal=runLocal, track_info=track_info,
+                tour=tour, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name,
                 input=input, output=output, session=session, rObjects=rObjects)
         }
     } # end of iSEE_server
@@ -402,10 +401,8 @@ iSEE <- function(se,
 #' or upon user interaction with the landing page.
 #'
 #' @inheritParams iSEE
-#' @param track_info A list containing command tracking information.
-#' This should have a \code{se_name} string containing the variable name of the SummarizedExperiment object,
-#' a \code{ecm_name} string containing the variable name of the ExperimentColorMap object,
-#' and a \code{mod_commands} character vector containing additional commands applied to either object before app initialization.
+#' @param se_name String containing the variable name of the SummarizedExperiment object.
+#' @param ecm_name String containing the variable name of the ExperimentColorMap object.
 #' @param input,output,session The typical Shiny objects to be used in various reactive expressions.
 #' @param rObjects A list of reactive variables used throughout the app.
 #'
@@ -417,7 +414,7 @@ iSEE <- function(se,
 #' @rdname INTERNAL_initialize_server
 #' @importFrom shiny showNotification tagList HTML strong br code
 .initialize_server <- function(se, initial, extra, colormap,
-    tour, runLocal, track_info, input, output, session, rObjects)
+    tour, runLocal, se_name, ecm_name, input, output, session, rObjects)
 {
     # nocov start
     if (grepl("[[:digit:]]+-12-06", Sys.Date())) {
@@ -426,6 +423,10 @@ iSEE <- function(se,
             "<p style='font-size:200%; text-align:center;'>Happy Birthday <code>iSEE</code>!</p>", collapse = "")),
             type="default", duration = NULL)
     }
+
+    dn_out <- .fill_se_dimnames(se)
+    se <- dn_out$se
+    track_info <- list(se_name=se_name, ecm_name=ecm_name, mod_commands=dn_out$commands)
 
     # Display an error notifications if colormap is not compatible with se
     # Display one warning notification for each incompatibility issue

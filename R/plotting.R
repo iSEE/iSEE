@@ -760,7 +760,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     # If there is already coloring information available in the aes, don't add an
     # additional color= statement to the geom_point() command, since this will
     # overrule the one given in aes().
-    if (color) {
+    if (color || !is.null(.set_colorby_when_none(param_choices))) {
         default_color <- ""
     } else {
         default_color <- sprintf(", color='%s'", param_choices[[.colorByDefaultColor]])

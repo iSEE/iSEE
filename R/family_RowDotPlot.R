@@ -334,10 +334,6 @@ setMethod(".addDotPlotDataSelected", "RowDotPlot", function(x, envir) {
 
 #' @importFrom ggplot2 scale_color_manual geom_point
 setMethod(".colorDotPlot", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="Y") {
-    if (is.null(colorby)) {
-        return(NULL)
-    }
-
     color_choice <- x[[.colorByField]]
 
     # This slightly duplicates the work in .define_colorby_for_row_plot(),

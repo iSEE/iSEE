@@ -5,6 +5,8 @@
 \alias{.generateDotPlotData}
 \alias{.generateDotPlot}
 \alias{.prioritizeDotPlotData}
+\alias{.colorByNoneDotPlotField}
+\alias{.colorByNoneDotPlotScale}
 \title{Plotting generics}
 \description{
 A series of generics for controlling how plotting is performed in \linkS4class{DotPlot} panels.
@@ -42,8 +44,10 @@ In \code{.generateDotPlot(x, labels, envir)}, the following arguments are requir
 This is typically used to define axis or legend labels in the plot.
 \item \code{envir}, the evaluation environment in which the \link{ggplot} object is to be constructed.
 This can be assumed to have \code{plot.data}, a data.frame of plotting data.
-(\code{se}, \code{row_selected} and \code{col_selected} will still be present,
-but it is simplest to only use information that has already been incorporated into \code{plot.data} where possible.)
+
+Note that \code{se}, \code{row_selected} and \code{col_selected} will still be present in \code{envir},
+but it is simplest to only use information that has already been incorporated into \code{plot.data} where possible.
+This is because the order and number of rows in \code{plot.data} may have changed since \code{\link{.generateDotPlotData}}.
 }
 
 The method should return a list with \code{plot}, a \link{ggplot} object;
@@ -93,8 +97,11 @@ In \code{.prioritizeDotPlotData(x, envir)}, the following arguments are required
 \itemize{
 \item \code{x}, an instance of a \linkS4class{DotPlot} subclass.
 \item \code{envir}, the evaluation environment in which the \link{ggplot} object is to be constructed.
-This can be assumed to have \code{se}, the \linkS4class{SummarizedExperiment} object containing the current dataset;
-and \code{plot.data}, a data.frame of plotting data.
+This can be assumed to have \code{plot.data}, a data.frame of plotting data.
+
+Again, note that \code{se}, \code{row_selected} and \code{col_selected} will still be present in \code{envir},
+but it is simplest to only use information that has already been incorporated into \code{plot.data} where possible.
+This is because the order and number of rows in \code{plot.data} may have changed since \code{\link{.generateDotPlotData}}.
 }
 
 Methods for this generic are expected to generate a \code{.priority} variable in \code{envir},
@@ -112,6 +119,22 @@ allowing developers to specify that, e.g., DE genes should be shown on top of no
 Scaling of the resolution enables developers to peform more aggressive downsampling for unimportant points.
 
 Methods for this generic may also return \code{NULL}, in which case no special action is taken.
+}
+
+\section{Controlling the \dQuote{None} color scale}{
+
+In some cases, it is desirable to insert a default scale when \code{ColorBy="None"}.
+This is useful for highlighting points in a manner that is integral to the nature of the plot,
+e.g., up- or down-regulated genes in a MA plot. 
+We provide a few generics to help control which points are highlighted and how they are colored.
+
+\code{.colorByNoneDotPlotField(x)} expects \code{x}, an instance of a \linkS4class{DotPlot} subclass,
+and returns a string containing a name of a column in \code{plot.data} to use for coloring in the \code{ggplot} mapping.
+This assumes that the relevant field was added to \code{plot.data} by a method for \code{\link{.generateDotPlotData}}.
+
+\code{.colorByNoneDotPlotScale(x)} expects \code{x}, an instance of a \linkS4class{DotPlot} subclass,
+and returns a string containing a \pkg{ggplot2} \code{scale_color_*} call, e.g., \code{\link{scale_color_manual}}.
+This string should end with a \code{"+"} operator as additional \pkg{ggplot2} layers will be added by \pkg{iSEE}.
 }
 
 \author{

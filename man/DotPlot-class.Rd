@@ -19,6 +19,9 @@
 \alias{.multiSelectionDimension,DotPlot-method}
 \alias{.singleSelectionValue,DotPlot-method}
 \alias{.singleSelectionSlots,DotPlot-method}
+\alias{.prioritizeDotPlotData,DotPlot-method}
+\alias{.colorByNoneDotPlotField,DotPlot-method}
+\alias{.colorByNoneDotPlotScale,DotPlot-method}
 \title{The DotPlot virtual class}
 \description{
 The DotPlot is a virtual class for all panels where each row or column in the \linkS4class{SummarizedExperiment} is represented by no more than one point (i.e., a \dQuote{dot}) in a brushable \link{ggplot} plot.
@@ -159,6 +162,8 @@ and \code{commands}, a list of character vector containing the R commands requir
 \item \code{\link{.generateDotPlot}(x, labels, envir)} returns a list containing \code{plot} and \code{commands}, as described above.
 This is called within \code{\link{.generateOutput}} for all \linkS4class{DotPlot} instances by default.
 \item \code{\link{.prioritizeDotPlotData}(x, envir)} returns \code{NULL}.
+\item \code{\link{.colorByNoneDotPlotField}(x)} returns \code{NULL}.
+\item \code{\link{.colorByNoneDotPlotScale}(x)} returns \code{NULL}.
 \item \code{\link{.exportOutput}(x, se, all_memory, all_contents)} will create a PDF file containing the current plot, and return a string containing the path to that PDF.
 This assumes that the \code{plot} field returned by \code{\link{.generateOutput}} is a \link{ggplot} object.
 }

@@ -27,6 +27,7 @@
 #' A function to set up observers for general (i.e., not panel-specific) observers used in the app.
 #'
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
+#' @param mod_commands A character vector of commands performed to modify \code{se} before running the app proper.
 #' @inheritParams .initialize_server
 #' 
 #' @return Observers are created in the server function in which this is called.
@@ -40,7 +41,7 @@
 #' @importFrom shinyAce aceEditor
 #'
 #' @rdname INTERNAL_general_observers
-.create_general_observers <- function(tour, runLocal, track_info, input, session, pObjects, rObjects) {
+.create_general_observers <- function(tour, runLocal, se_name, ecm_name, mod_commands, input, session, pObjects, rObjects) {
     observeEvent(input[[.generalTourSteps]], {
         if(is.null(tour)) {
             tour <- read.delim(system.file("extdata", "intro_firststeps.txt", package="iSEE"),
@@ -55,7 +56,7 @@
     }
 
     observeEvent(input[[.generalTrackedCode]], {
-        all_cmds <- .track_it_all(pObjects, track_info$se_name, track_info$ecm_name, track_info$mod_commands)
+        all_cmds <- .track_it_all(pObjects, se_name, ecm_name, mod_commands)
         all_cmds <- paste(all_cmds, collapse="\n")
 
         showModal(modalDialog(

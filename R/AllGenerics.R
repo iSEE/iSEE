@@ -382,6 +382,20 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #' Scaling of the resolution enables developers to peform more aggressive downsampling for unimportant points.
 #'
 #' Methods for this generic may also return \code{NULL}, in which case no special action is taken.
+#'
+#' @section Controlling the \dQuote{None} color scale:
+#' In some cases, it is desirable to insert a default scale when \code{ColorBy="None"}.
+#' This is useful for highlighting points in a manner that is integral to the nature of the plot,
+#' e.g., up- or down-regulated genes in a MA plot. 
+#' We provide a few generics to help control which points are highlighted and how they are colored.
+#'
+#' \code{.colorByNoneDotPlotField(x)} expects \code{x}, an instance of a \linkS4class{DotPlot} subclass,
+#' and returns a string containing a name of a column in \code{plot.data} to use for coloring in the \code{ggplot} mapping.
+#' This assumes that the relevant field was added to \code{plot.data} by a method for \code{\link{.generateDotPlotData}}.
+#'
+#' \code{.colorByNoneDotPlotScale(x)} expects \code{x}, an instance of a \linkS4class{DotPlot} subclass,
+#' and returns a string containing a \pkg{ggplot2} \code{scale_color_*} call, e.g., \code{\link{scale_color_manual}}.
+#' This string should end with a \code{"+"} operator as additional \pkg{ggplot2} layers will be added by \pkg{iSEE}.
 #' 
 #' @author Kevin \dQuote{K-pop} Rue-Albrecht, Aaron \dQuote{A-bomb} Lun
 #'
@@ -389,6 +403,8 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #' @aliases .generateDotPlotData
 #' .generateDotPlot
 #' .prioritizeDotPlotData
+#' .colorByNoneDotPlotField
+#' .colorByNoneDotPlotScale
 NULL
 
 #' @export
@@ -492,6 +508,10 @@ setGeneric(".addDotPlotDataSelected", function(x, envir) standardGeneric(".addDo
 setGeneric(".colorDotPlot", function(x, colorby, x_aes="X", y_aes="Y") standardGeneric(".colorDotPlot"))
 
 setGeneric(".prioritizeDotPlotData", function(x, envir) standardGeneric(".prioritizeDotPlotData"))
+
+setGeneric(".colorByNoneDotPlotField", function(x) standardGeneric(".colorByNoneDotPlotField"))
+
+setGeneric(".colorByNoneDotPlotScale", function(x) standardGeneric(".colorByNoneDotPlotScale"))
 
 ###########################
 

@@ -201,8 +201,12 @@ names(.all_aes_values) <- .all_aes_names
     color_set <- !is.null(plot_data$ColorBy)
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
     size_set <- param_choices[[.sizeByField]] != .sizeByNothingTitle
-    new_aes <- .build_aes(color=color_set, shape=shape_set, size=size_set)
-    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set, size_set)
+
+    new_aes <- .build_aes(color=color_set, shape=shape_set, size=size_set, 
+        alt=c(color=.set_colorby_when_none(param_choices)))
+
+    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), 
+        new_aes, color_set, size_set)
 
     # Defining the color commands.
     color_scale_cmd <- .colorDotPlot(param_choices, plot_data$ColorBy)
@@ -324,8 +328,12 @@ names(.all_aes_values) <- .all_aes_names
     color_set <- !is.null(plot_data$ColorBy)
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
     size_set <- param_choices[[.sizeByField]] != .sizeByNothingTitle
-    new_aes <- .build_aes(color=color_set, shape=shape_set, size=size_set, alt=c(x="jitteredX"))
-    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set, size_set)
+
+    new_aes <- .build_aes(color=color_set, shape=shape_set, size=size_set, 
+        alt=c(x="jitteredX", color=.set_colorby_when_none(param_choices)))
+
+    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), 
+        new_aes, color_set, size_set)
 
     # Defining the color commands.
     color_scale_cmd <- .colorDotPlot(param_choices, plot_data$ColorBy, x_aes="jitteredX")
@@ -507,8 +515,12 @@ plot.data$Y <- tmp;")
     color_set <- !is.null(plot_data$ColorBy)
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
     size_set <- param_choices[[.sizeByField]] != .sizeByNothingTitle
-    new_aes <- .build_aes(color=color_set, shape=shape_set, size=size_set, alt=c(x="jitteredX", y="jitteredY"))
-    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), new_aes, color_set, size_set)
+
+    new_aes <- .build_aes(color=color_set, shape=shape_set, size=size_set, 
+        alt=c(x="jitteredX", y="jitteredY", color=.set_colorby_when_none(param_choices)))
+
+    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), 
+        new_aes, color_set, size_set)
 
     # Defining the color commands.
     color_scale_cmd <- .colorDotPlot(param_choices, plot_data$ColorBy, x_aes="jitteredX", y_aes="jitteredY")
@@ -606,6 +618,29 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 ############################################
 # Internal functions: coloring ----
 ############################################
+
+#' Set a default variable to color by
+#'
+#' Specify a variable in \code{plot.data} to color by when \code{ColorBy="None"}.
+#' Typically used for plots that have some sensible default coloring scheme.
+#'
+#' @param x A \linkS4class{DotPlot} instance.
+#'
+#' @return A string containing the variable name, if \code{ColorBy="None"}; otherwise \code{NULL}.
+#'
+#' @details
+#' This function is simply a utility to avoid having to write the conditionals in each of the plotting functions above.
+#' 
+#' @author Aaron Lun
+#'
+#' @rdname INTERNAL_set_colorby_when_none
+.set_colorby_when_none <- function(x) {
+    if (x[[.colorByField]]==.colorByNothingTitle) {
+        .colorByNoneDotPlotField(x)
+    } else {
+        NULL
+    }
+}
 
 #' Choose between discrete and continuous color scales
 #'

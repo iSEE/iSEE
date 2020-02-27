@@ -367,6 +367,6 @@ setMethod(".colorDotPlot", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="
         assay_choice <- x[[.colorBySampNameAssay]]
         .create_color_scale("assayColorMap", deparse(assay_choice), colorby)
     } else {
-        NULL
+        .colorByNoneDotPlotScale(x)
     }
 })

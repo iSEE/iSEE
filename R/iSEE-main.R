@@ -426,7 +426,7 @@ iSEE <- function(se,
 
     dn_out <- .fill_se_dimnames(se)
     se <- dn_out$se
-    track_info <- list(se_name=se_name, ecm_name=ecm_name, mod_commands=dn_out$commands)
+    mod_commands <- dn_out$commands
 
     # Display an error notifications if colormap is not compatible with se
     # Display one warning notification for each incompatibility issue
@@ -469,8 +469,9 @@ iSEE <- function(se,
     }
 
     # Observer set-up.
-    .create_general_observers(tour, runLocal, track_info,
-        input, session, pObjects, rObjects)
+    .create_general_observers(tour, runLocal, 
+        se_name=se_name, ecm_name=ecm_name, mod_commands=mod_commands,
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_organization_observers(se=se,
         input=input, output=output, session=session,

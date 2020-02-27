@@ -24,7 +24,7 @@ test_that(".refineParameters identifies impossible ColumnDataPlot", {
     colData(sce) <- DataFrame(row.names = colnames(sce))
     sce <- .cacheCommonInfo(x, sce)
     expect_warning(.refineParameters(x, sce),
-        "no valid 'colData' fields for 'ColumnDataPlot'", fixed=TRUE)
+        "no valid y-axis 'colData' fields for 'ColumnDataPlot'", fixed=TRUE)
     out <- .refineParameters(x, sce)
     expect_null(out)
 
@@ -37,7 +37,7 @@ test_that(".refineParameters identifies impossible RowDataPlot", {
     rowData(sce) <- DataFrame(row.names = rownames(sce))
     sce <- .cacheCommonInfo(x, sce)
     expect_warning(.refineParameters(x, sce),
-        "no atomic 'rowData' fields for 'RowDataPlot'", fixed=TRUE)
+        "no valid y-axis 'rowData' fields for 'RowDataPlot'", fixed=TRUE)
     out <- .refineParameters(x, sce)
     expect_null(out)
 

@@ -37,7 +37,7 @@
 
 <meta property="og:title" content="The ColumnDataPlot panel — ColumnDataPlot-class" />
 <meta property="og:description" content="The ColumnDataPlot is a panel class for creating a ColumnDotPlot where the y-axis represents a variable from the colData of a SummarizedExperiment object.
-It provides slots and methods for specifying which column metadata variable to use and what to plot on the x-axis." />
+It provides slots and methods for specifying which column metadata variable to use on the y-axis and what to plot on the x-axis." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -139,7 +139,7 @@ It provides slots and methods for specifying which column metadata variable to u
 
     <div class="ref-description">
     <p>The ColumnDataPlot is a panel class for creating a <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> where the y-axis represents a variable from the <code>colData</code> of a SummarizedExperiment object.
-It provides slots and methods for specifying which column metadata variable to use and what to plot on the x-axis.</p>
+It provides slots and methods for specifying which column metadata variable to use on the y-axis and what to plot on the x-axis.</p>
     </div>
 
 
@@ -164,13 +164,6 @@ If <code>NA</code>, defaults to the first valid field.</p></li>
     
 
 <p><code>ColumnDataPlot(...)</code> creates an instance of a ColumnDataPlot class, where any slot and its value can be passed to <code>...</code> as a named argument.</p>
-    <h2 class="hasAnchor" id="contract-description"><a class="anchor" href="#contract-description"></a>Contract description</h2>
-
-    
-
-<p>The ColumnDataPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
-It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
-Subclasses do not have to provide any methods, as this is a concrete class.</p>
     <h2 class="hasAnchor" id="supported-methods"><a class="anchor" href="#supported-methods"></a>Supported methods</h2>
 
     
@@ -178,14 +171,16 @@ Subclasses do not have to provide any methods, as this is a concrete class.</p>
 <p>In the following code snippets, <code>x</code> is an instance of a ColumnDataPlot class.
 Refer to the documentation for each method for more details on the remaining arguments.</p>
 <p>For setting up data values:</p><ul>
-<li><p><code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code> returns <code>x</code> after replacing any <code>NA</code> value in <code>YAxis</code> or <code>XAxisColumnData</code> with the name of the first valid <code>colData</code> field.
+<li><p><code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code> returns <code>x</code> after replacing any <code>NA</code> value in <code>YAxis</code> or <code>XAxisColumnData</code> with the name of the first valid <code>colData</code> variable.
 This will also call the equivalent <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> method for further refinements to <code>x</code>.
-If no valid column metadata fields are available, <code>NULL</code> is returned instead.</p></li>
+If no valid column metadata variables are available, <code>NULL</code> is returned instead.</p></li>
 </ul>
 
 <p>For defining the interface:</p><ul>
 <li><p><code><a href='interface-generics.html'>.defineDataInterface</a>(x, se, select_info)</code> returns a list of interface elements for manipulating all slots described above.</p></li>
 <li><p><code><a href='getPanelColor.html'>.panelColor</a>(x)</code> will return the specified default color for this panel class.</p></li>
+<li><p><code>.allowableXAxisChoices(x, se)</code> returns a character vector specifying the acceptable variables in <code>colData(se)</code> that can be used as choices for the x-axis.</p></li>
+<li><p><code>.allowableYAxisChoices(x, se)</code> returns a character vector specifying the acceptable variables in <code>colData(se)</code> that can be used as choices for the y-axis.</p></li>
 </ul>
 
 <p>For monitoring reactive expressions:</p><ul>
@@ -202,6 +197,11 @@ This will also call the equivalent <a href='ColumnDotPlot-class.html'>ColumnDotP
 It will return the commands required to do so as well as a list of labels.</p></li>
 </ul>
 
+    <h2 class="hasAnchor" id="subclass-expectations"><a class="anchor" href="#subclass-expectations"></a>Subclass expectations</h2>
+
+    
+
+<p>Subclasses do not have to provide any methods, as this is a concrete class.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>, for the immediate parent class.</p></div>
@@ -226,7 +226,7 @@ It will return the commands required to do so as well as a list of labels.</p></
 
 <span class='co'># Spits out a NULL and a warning if there is nothing to plot.</span>
 <span class='no'>sce0</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span>(<span class='no'>x</span>, <span class='no'>sce</span>)
-<span class='fu'><a href='setup-generics.html'>.refineParameters</a></span>(<span class='no'>x</span>, <span class='no'>sce0</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: no valid 'colData' fields for 'ColumnDataPlot'</span></div><div class='output co'>#&gt; NULL</div><div class='input'>
+<span class='fu'><a href='setup-generics.html'>.refineParameters</a></span>(<span class='no'>x</span>, <span class='no'>sce0</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: no valid y-axis 'colData' fields for 'ColumnDataPlot'</span></div><div class='output co'>#&gt; NULL</div><div class='input'>
 <span class='co'># Replaces the default with something sensible.</span>
 <span class='fu'>colData</span>(<span class='no'>sce</span>) <span class='kw'>&lt;-</span> <span class='no'>old_cd</span>
 <span class='no'>sce0</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span>(<span class='no'>x</span>, <span class='no'>sce</span>)
@@ -373,8 +373,8 @@ It will return the commands required to do so as well as a list of labels.</p></
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#slot-overview">Slot overview</a></li>
       <li><a href="#constructor">Constructor</a></li>
-      <li><a href="#contract-description">Contract description</a></li>
       <li><a href="#supported-methods">Supported methods</a></li>
+      <li><a href="#subclass-expectations">Subclass expectations</a></li>
       <li><a href="#see-also">See also</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>

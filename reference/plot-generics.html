@@ -173,9 +173,10 @@ This is necessary for correct interactions with later methods that add other var
 <li><p><code>labels</code>, a list of labels corresponding to the columns of <code>plot.data</code>.
 This is typically used to define axis or legend labels in the plot.</p></li>
 <li><p><code>envir</code>, the evaluation environment in which the ggplot object is to be constructed.
-This can be assumed to have <code>plot.data</code>, a data.frame of plotting data.
-(<code>se</code>, <code>row_selected</code> and <code>col_selected</code> will still be present,
-but it is simplest to only use information that has already been incorporated into <code>plot.data</code> where possible.)</p></li>
+This can be assumed to have <code>plot.data</code>, a data.frame of plotting data.</p>
+<p>Note that <code>se</code>, <code>row_selected</code> and <code>col_selected</code> will still be present in <code>envir</code>,
+but it is simplest to only use information that has already been incorporated into <code>plot.data</code> where possible.
+This is because the order and number of rows in <code>plot.data</code> may have changed since <code>.generateDotPlotData</code>.</p></li>
 </ul>
 
 <p>The method should return a list with <code>plot</code>, a ggplot object;
@@ -220,8 +221,10 @@ and the actual multiple selection that is evaluated by downstream functions like
 <p>In <code>.prioritizeDotPlotData(x, envir)</code>, the following arguments are required:</p><ul>
 <li><p><code>x</code>, an instance of a <a href='DotPlot-class.html'>DotPlot</a> subclass.</p></li>
 <li><p><code>envir</code>, the evaluation environment in which the ggplot object is to be constructed.
-This can be assumed to have <code>se</code>, the SummarizedExperiment object containing the current dataset;
-and <code>plot.data</code>, a data.frame of plotting data.</p></li>
+This can be assumed to have <code>plot.data</code>, a data.frame of plotting data.</p>
+<p>Again, note that <code>se</code>, <code>row_selected</code> and <code>col_selected</code> will still be present in <code>envir</code>,
+but it is simplest to only use information that has already been incorporated into <code>plot.data</code> where possible.
+This is because the order and number of rows in <code>plot.data</code> may have changed since <code>.generateDotPlotData</code>.</p></li>
 </ul>
 
 <p>Methods for this generic are expected to generate a <code>.priority</code> variable in <code>envir</code>,
@@ -236,6 +239,20 @@ Such points will be shown on top of other points if there are overlaps on the pl
 allowing developers to specify that, e.g., DE genes should be shown on top of non-DE genes. 
 Scaling of the resolution enables developers to peform more aggressive downsampling for unimportant points.</p>
 <p>Methods for this generic may also return <code>NULL</code>, in which case no special action is taken.</p>
+    <h2 class="hasAnchor" id="controlling-the-none-color-scale"><a class="anchor" href="#controlling-the-none-color-scale"></a>Controlling the &#8220;None&#8221; color scale</h2>
+
+    
+
+<p>In some cases, it is desirable to insert a default scale when <code>ColorBy="None"</code>.
+This is useful for highlighting points in a manner that is integral to the nature of the plot,
+e.g., up- or down-regulated genes in a MA plot. 
+We provide a few generics to help control which points are highlighted and how they are colored.</p>
+<p><code>.colorByNoneDotPlotField(x)</code> expects <code>x</code>, an instance of a <a href='DotPlot-class.html'>DotPlot</a> subclass,
+and returns a string containing a name of a column in <code>plot.data</code> to use for coloring in the <code>ggplot</code> mapping.
+This assumes that the relevant field was added to <code>plot.data</code> by a method for <code>.generateDotPlotData</code>.</p>
+<p><code>.colorByNoneDotPlotScale(x)</code> expects <code>x</code>, an instance of a <a href='DotPlot-class.html'>DotPlot</a> subclass,
+and returns a string containing a <span class="pkg">ggplot2</span> <code>scale_color_*</code> call, e.g., <code>scale_color_manual</code>.
+This string should end with a <code><a href='https://rdrr.io/r/base/Arithmetic.html'>"+"</a></code> operator as additional <span class="pkg">ggplot2</span> layers will be added by <span class="pkg">iSEE</span>.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -244,6 +261,7 @@ Scaling of the resolution enables developers to peform more aggressive downsampl
       <li><a href="#generating-plotting-data">Generating plotting data</a></li>
       <li><a href="#generating-the-ggplot-object">Generating the ggplot object</a></li>
       <li><a href="#prioritizing-points">Prioritizing points</a></li>
+      <li><a href="#controlling-the-none-color-scale">Controlling the &#8220;None&#8221; color scale</a></li>
     </ul>
 
     <h2>Author</h2>

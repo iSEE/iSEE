@@ -22,10 +22,10 @@ This determines the color of the panel header as well as (for \linkS4class{DotPl
 \details{
 For developers: \code{.panelColor} is a method that should be subclassed for each \linkS4class{Panel} subclass.
 and determines the default color for all instances of that class.
-Note that colors should be defined as hex color codes, for full compatibility with both HTML elements and R plots.
+It is highly recommended to define colors as hex color codes, for full compatibility with both HTML elements and R plots.
 
 For users: by default, \code{.getPanelColor} will return the default color of each panel as specified by the developer in \code{.panelColor}.
-However, users can override this by setting the \code{panel.color} global option to a named character vector of colors (see Examples). 
+However, users can override this by setting the \code{panel.color} global option to a named character vector of colors (see Examples).
 This can be used to customize the color scheme for any given call to \code{\link{iSEE}}.
 The names of the vector should be set to the name of class to be overridden; if a class is not named here, its default color is used.
 }

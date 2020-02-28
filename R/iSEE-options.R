@@ -39,9 +39,9 @@ new_defaults = function(value = list()) {
 #' See \code{str(iSEEOptions$get())} for a list of default panel options.
 #'
 #' Note that \code{iSEEOptions$restore()} can be used to reset the global options to the package default values.
-#' 
+#'
 #' @section Available options:
-#' 
+#'
 #' \describe{
 #' \item{\code{point.color}}{Default color of data points in \code{DotPlot} panels (character).}
 #' \item{\code{point.size}}{Default size of data points in \code{DotPlot} panels (numeric).}
@@ -54,7 +54,12 @@ new_defaults = function(value = list()) {
 #' \item{\code{font.size}}{Global multiplier controlling the magnification of plot title and text elements in \code{DotPlot} panels (numeric).}
 #' \item{\code{legend.position}}{Position of the legend in \code{DotPlot} and \code{ComplexHeatmapPlot} panels (one of \code{"Bottom"}, \code{"Right"}).}
 #' \item{\code{legend.direction}}{Position of the legend in \code{DotPlot} and \code{ComplexHeatmapPlot} panels (one of \code{"Horizontal"}, \code{"Vertical"}).}
+#' \item{\code{panel.color}}{Named character vector of colors.
+#' The names of the vector should be set to the name of class to be overridden; if a class is not named here, its default color is used.
+#' It is highly recommended to define colors as hex color codes (e.g., \code{"#1e90ff"}), for full compatibility with both HTML elements and R plots.}
 #' }
+#'
+#' @author Kevin Rue-Albrecht
 #'
 #' @export
 #' @examples iSEEOptions$get('downsample'); iSEEOptions$get('selected.color')
@@ -75,7 +80,7 @@ iSEEOptions <- new_defaults(list(
     font.size = 1,
     legend.position = .plotLegendBottomTitle,
     legend.direction = .plotLegendHorizontalTitle,
-    
+
     panel.color = c()
 ))
 

@@ -31,10 +31,16 @@ Note that \code{iSEEOptions$restore()} can be used to reset the global options t
 \item{\code{font.size}}{Global multiplier controlling the magnification of plot title and text elements in \code{DotPlot} panels (numeric).}
 \item{\code{legend.position}}{Position of the legend in \code{DotPlot} and \code{ComplexHeatmapPlot} panels (one of \code{"Bottom"}, \code{"Right"}).}
 \item{\code{legend.direction}}{Position of the legend in \code{DotPlot} and \code{ComplexHeatmapPlot} panels (one of \code{"Horizontal"}, \code{"Vertical"}).}
+\item{\code{panel.color}}{Named character vector of colors.
+The names of the vector should be set to the name of class to be overridden; if a class is not named here, its default color is used.
+It is highly recommended to define colors as hex color codes (e.g., \code{"#1e90ff"}), for full compatibility with both HTML elements and R plots.}
 }
 }
 
 \examples{
 iSEEOptions$get('downsample'); iSEEOptions$get('selected.color')
+}
+\author{
+Kevin Rue-Albrecht
 }
 \keyword{datasets}

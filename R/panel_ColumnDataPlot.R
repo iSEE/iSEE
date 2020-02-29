@@ -176,16 +176,17 @@ setMethod(".defineDataInterface", "ColumnDataPlot", function(x, se, select_info)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
     list(
-        selectInput(.input_FUN(.colDataYAxis),
+        .selectInputHidden(x, .colDataYAxis,
             label="Column of interest (Y-axis):",
             choices=.allowableYAxisChoices(x, se),
             selected=x[[.colDataYAxis]]),
-        radioButtons(.input_FUN(.colDataXAxis), label="X-axis:", inline=TRUE,
+        radioButtonsHidden(x, .colDataXAxis, 
+            label="X-axis:", inline=TRUE,
             choices=c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle),
             selected=x[[.colDataXAxis]]),
         .conditional_on_radio(.input_FUN(.colDataXAxis),
             .colDataXAxisColDataTitle,
-            selectInput(.input_FUN(.colDataXAxisColData),
+            selectInputHidden(x, .colDataXAxisColData,
                 label="Column of interest (X-axis):",
                 choices=.allowableXAxisChoices(x, se),
                 selected=x[[.colDataXAxisColData]]))

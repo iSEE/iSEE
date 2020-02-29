@@ -195,7 +195,7 @@ names(.all_aes_values) <- .all_aes_names
     by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE)
 {
     plot_cmds <- list()
-    plot_cmds[["ggplot"]] <- "ggplot() +"
+    plot_cmds[["ggplot"]] <- "dot.plot <- ggplot() +"
 
     # Adding points to the plot.
     color_set <- !is.null(plot_data$ColorBy)
@@ -317,7 +317,7 @@ names(.all_aes_values) <- .all_aes_names
     by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE, horizontal=FALSE)
 {
     plot_cmds <- list()
-    plot_cmds[["ggplot"]] <- "ggplot() +" # do NOT put aes here, it does not play nice with shiny brushes.
+    plot_cmds[["ggplot"]] <- "dot.plot <- ggplot() +" # do NOT put aes here, it does not play nice with shiny brushes.
     plot_cmds[["violin"]] <- sprintf(
         "geom_violin(%s, alpha=0.2, data=%s, scale='width', width=0.8) +",
         .build_aes(color=FALSE, group=TRUE),
@@ -506,7 +506,7 @@ plot.data$Y <- tmp;")
     by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE)
 {
     plot_cmds <- list()
-    plot_cmds[["ggplot"]] <- "ggplot(plot.data) +"
+    plot_cmds[["ggplot"]] <- "dot.plot <- ggplot(plot.data) +"
     plot_cmds[["tile"]] <-
 "geom_tile(aes(x=X, y=Y, height=2*YWidth, width=2*XWidth, group=interaction(X, Y)),
     summary.data, color='black', alpha=0, size=0.5) +"

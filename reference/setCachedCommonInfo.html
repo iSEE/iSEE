@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check compatibility between ExperimentColorMap and SummarizedExperiment
-objects — checkColormapCompatibility • iSEE</title>
+<title>Set and get cached commons — .setCachedCommonInfo • iSEE</title>
 
 
 <!-- jquery -->
@@ -36,12 +35,10 @@ objects — checkColormapCompatibility • iSEE</title>
 
 
 
-<meta property="og:title" content="Check compatibility between ExperimentColorMap and SummarizedExperiment
-objects — checkColormapCompatibility" />
-<meta property="og:description" content="This function compares a pair of ExperimentColorMap and
-SingleCellExperiment objects, and examines whether
-all of the assays, colData, and rowData defined
-in the ExperimentColorMap object exist in the SingleCellExperiment object." />
+<meta property="og:title" content="Set and get cached commons — .setCachedCommonInfo" />
+<meta property="og:description" content="Get and set common cached information for each class.
+The setter is usually called in .cacheCommonInfo 
+while the getter is usually called in .defineInterface." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -136,68 +133,60 @@ in the ExperimentColorMap object exist in the SingleCellExperiment object." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check compatibility between ExperimentColorMap and SummarizedExperiment
-objects</h1>
-    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/ExperimentColorMap.R'><code>R/ExperimentColorMap.R</code></a></small>
-    <div class="hidden name"><code>checkColormapCompatibility.Rd</code></div>
+    <h1>Set and get cached commons</h1>
+    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/utils_class.R'><code>R/utils_class.R</code></a></small>
+    <div class="hidden name"><code>setCachedCommonInfo.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function compares a pair of <a href='ExperimentColorMap-class.html'>ExperimentColorMap</a> and
-SingleCellExperiment objects, and examines whether
-all of the <code>assays</code>, <code>colData</code>, and <code>rowData</code> defined
-in the ExperimentColorMap object exist in the SingleCellExperiment object.</p>
+    <p>Get and set common cached information for each class.
+The setter is usually called in <code><a href='setup-generics.html'>.cacheCommonInfo</a></code> 
+while the getter is usually called in <code><a href='interface-generics.html'>.defineInterface</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>checkColormapCompatibility</span>(<span class='no'>ecm</span>, <span class='no'>se</span>)</pre>
+    <pre class="usage"><span class='fu'>.setCachedCommonInfo</span>(<span class='no'>se</span>, <span class='no'>cls</span>, <span class='no'>...</span>)
+
+<span class='fu'>.getCachedCommonInfo</span>(<span class='no'>se</span>, <span class='no'>cls</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>ecm</th>
-      <td><p>An <a href='ExperimentColorMap-class.html'>ExperimentColorMap</a>.</p></td>
+      <th>se</th>
+      <td><p>A SummarizedExperiment object containing the current dataset.</p></td>
     </tr>
     <tr>
-      <th>se</th>
-      <td><p>A SingleCellExperiment.</p></td>
+      <th>cls</th>
+      <td><p>String containing the name of the class for which this information is cached.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Any number of named R objects to cache.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A character vector of incompability error messages, if any.</p>
+    <p><code>.setCachedCommonInfo</code> returns <code>se</code> with <code>...</code> added to its <code>metadata</code>.</p>
+<p><code>.getCachedCommonInfo</code> retrieves the cached common information for class <code>cls</code>.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This function is intended for use by developers of <a href='Panel-class.html'>Panel</a> classes.
+If you're an end-user and you're reading this, you probably took a wrong turn somewhere.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'># Example colormaps ----</span>
-
-<span class='no'>count_colors</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>n</span>){
-  <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"black"</span>,<span class='st'>"brown"</span>,<span class='st'>"red"</span>,<span class='st'>"orange"</span>,<span class='st'>"yellow"</span>)
-}
-
-<span class='no'>qc_color_fun</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>n</span>){
-  <span class='no'>qc_colors</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"forestgreen"</span>, <span class='st'>"firebrick1"</span>)
-  <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>qc_colors</span>) <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Y"</span>, <span class='st'>"N"</span>)
-  <span class='fu'><a href='https://rdrr.io/r/base/function.html'>return</a></span>(<span class='no'>qc_colors</span>)
-}
-
-<span class='no'>ecm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='ExperimentColorMap-class.html'>ExperimentColorMap</a></span>(
-    <span class='kw'>assays</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
-        <span class='kw'>tophat_counts</span> <span class='kw'>=</span> <span class='no'>count_colors</span>
-    ),
-    <span class='kw'>colData</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
-        <span class='kw'>passes_qc_checks_s</span> <span class='kw'>=</span> <span class='no'>qc_color_fun</span>
-    )
-)
-
-<span class='co'># Example SingleCellExperiment ----</span>
-
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scRNAseq</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedAllenData</a></span>(<span class='kw'>assays</span><span class='kw'>=</span><span class='st'>"tophat_counts"</span>)</div><div class='output co'>#&gt; <span class='message'>using temporary cache /tmp/RtmpKFHjz5/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>snapshotDate(): 2020-02-26</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='input'>
-<span class='co'># Test for compatibility ----</span>
-
-<span class='fu'>checkColormapCompatibility</span>(<span class='no'>ecm</span>, <span class='no'>sce</span>)</div><div class='output co'>#&gt; NULL</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='no'>se</span> <span class='kw'>&lt;-</span> <span class='fu'>SummarizedExperiment</span>()
+<span class='no'>se</span> <span class='kw'>&lt;-</span> <span class='fu'>.setCachedCommonInfo</span>(<span class='no'>se</span>, <span class='st'>"SomePanelClass"</span>,
+    <span class='kw'>something</span><span class='kw'>=</span><span class='fl'>1</span>, <span class='kw'>more_things</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>something_else</span><span class='kw'>=</span><span class='st'>"A"</span>)
+<span class='fu'>.getCachedCommonInfo</span>(<span class='no'>se</span>, <span class='st'>"SomePanelClass"</span>)</div><div class='output co'>#&gt; $something
+#&gt; [1] 1
+#&gt; 
+#&gt; $more_things
+#&gt; [1] TRUE
+#&gt; 
+#&gt; $something_else
+#&gt; [1] "A"
+#&gt; </div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -205,11 +194,12 @@ in the ExperimentColorMap object exist in the SingleCellExperiment object.</p>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>
-    <p>Kevin Rue-Albrecht</p>
+    <p>Aaron Lun</p>
   </div>
 </div>
 

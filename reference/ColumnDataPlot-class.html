@@ -179,8 +179,8 @@ If no valid column metadata variables are available, <code>NULL</code> is return
 <p>For defining the interface:</p><ul>
 <li><p><code><a href='interface-generics.html'>.defineDataInterface</a>(x, se, select_info)</code> returns a list of interface elements for manipulating all slots described above.</p></li>
 <li><p><code><a href='getPanelColor.html'>.panelColor</a>(x)</code> will return the specified default color for this panel class.</p></li>
-<li><p><code>.allowableXAxisChoices(x, se)</code> returns a character vector specifying the acceptable variables in <code>colData(se)</code> that can be used as choices for the x-axis.</p></li>
-<li><p><code>.allowableYAxisChoices(x, se)</code> returns a character vector specifying the acceptable variables in <code>colData(se)</code> that can be used as choices for the y-axis.</p></li>
+<li><p><code><a href='metadata-plot-generics.html'>.allowableXAxisChoices</a>(x, se)</code> returns a character vector specifying the acceptable variables in <code>colData(se)</code> that can be used as choices for the x-axis.</p></li>
+<li><p><code><a href='metadata-plot-generics.html'>.allowableYAxisChoices</a>(x, se)</code> returns a character vector specifying the acceptable variables in <code>colData(se)</code> that can be used as choices for the y-axis.</p></li>
 </ul>
 
 <p>For monitoring reactive expressions:</p><ul>

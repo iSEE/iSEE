@@ -10,10 +10,14 @@
 #' or whichever widget is being used in the specialized functions.
 #'
 #' @return
-#' If \code{.hideInterface(x, field)} is \code{TRUE},
-#' the output of \code{FUN(id, ..)} is returned where \code{id} is defined 
-#' by concatenating \code{\link{.getEncodedName}(x)} and \code{field} (separated by an underscore).
-#' Otherwise, \code{NULL} is returned.
+#' The output of \code{FUN(id, ..)} is returned where \code{id} is defined by concatenating \code{\link{.getEncodedName}(x)} and \code{field} (separated by an underscore).
+#' 
+#' If \code{.hideInterface(x, field)} is \code{TRUE}, the output is wrapped inside a \code{\link{hidden}} call.
+#'
+#' @details
+#' Wrapping the output inside a \code{\link{hidden}} call is intended to avoid problems with conditional elements.
+#' Consider a situation where \code{\link{.conditional_on_radio}} depends on the value of a UI element;
+#' one needs the upstream element to exist for the conditional element to have correct behavior.
 #'
 #' @author Aaron Lun
 #' @seealso
@@ -22,12 +26,15 @@
 #' \code{\link{.defineInterface}}, where these functions are typically used.
 #' 
 #' \code{\link{.create_selection_param_box}}, for a specific usage example.
+#'
 #' @rdname INTERNAL_hidden_elements 
+#' @importFrom shinyjs hidden
 .hide_this_thing <- function(x, field, FUN, ...) {
+    element <- FUN(paste0(.getEncodedName(x), "_", field), ...)
     if (.hideInterface(x, field)) {
-        NULL        
+        hidden(element)
     } else {
-        FUN(paste0(.getEncodedName(x), "_", field), ...)
+        element 
     }
 }
 

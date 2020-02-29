@@ -83,7 +83,7 @@ RowDataTable <- function(...) {
 #' @export
 #' @importFrom SummarizedExperiment rowData
 setMethod(".cacheCommonInfo", "RowDataTable", function(x, se) {
-    if (!is.null(.get_common_info(se, "RowDataTable"))) {
+    if (!is.null(.getCachedCommonInfo(se, "RowDataTable"))) {
         return(se)
     }
 
@@ -91,7 +91,7 @@ setMethod(".cacheCommonInfo", "RowDataTable", function(x, se) {
 
     df <- rowData(se)
     available <- .find_atomic_fields(df)
-    .set_common_info(se, "RowDataTable",
+    .setCachedCommonInfo(se, "RowDataTable",
         valid.rowData.names=available)
 })
 
@@ -103,7 +103,7 @@ setMethod(".refineParameters", "RowDataTable", function(x, se) {
         return(NULL)
     }
 
-    valid.names <- .get_common_info(se, "RowDataTable")$valid.rowData.names
+    valid.names <- .getCachedCommonInfo(se, "RowDataTable")$valid.rowData.names
     df <- rowData(se)
 
     # First, expanding out so that we cover all columns.
@@ -145,7 +145,7 @@ setMethod(".generateTable", "RowDataTable", function(x, envir) {
         cmds <- c(cmds, "tab <- tab[unique(unlist(row_selected)),,drop=FALSE]")
     }
 
-    valid.names <- .get_common_info(envir$se, "RowDataTable")$valid.rowData.names
+    valid.names <- .getCachedCommonInfo(envir$se, "RowDataTable")$valid.rowData.names
     if (!identical(colnames(rowData(envir$se)), valid.names)) {
         cmds <- c(cmds, sprintf("tab <- tab[,%s,drop=FALSE]",
             paste(deparse(valid.names), collapse="\n     ")))

@@ -194,12 +194,12 @@ setMethod(".defineDataInterface", "ColumnDataPlot", function(x, se, select_info)
 
 #' @export
 setMethod(".allowableXAxisChoices", "ColumnDataPlot", function(x, se) {
-    .get_common_info(se, "ColumnDotPlot")$valid.colData.names
+    .getCachedCommonInfo(se, "ColumnDotPlot")$valid.colData.names
 })
 
 #' @export
 setMethod(".allowableYAxisChoices", "ColumnDataPlot", function(x, se) {
-    .get_common_info(se, "ColumnDotPlot")$valid.colData.names
+    .getCachedCommonInfo(se, "ColumnDotPlot")$valid.colData.names
 })
 
 #' @export

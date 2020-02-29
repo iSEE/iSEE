@@ -43,7 +43,7 @@
         updateNumericInput(session, .input_FUN(.assayUpperBound), value = numeric(0), min = 0, max = Inf)
 
         # Twist2: toggle UI related to discrete/continuous assays
-        ABLEFUN <- if (matched_input %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.assay.names) {
+        ABLEFUN <- if (matched_input %in% .getCachedCommonInfo(se, "ComplexHeatmapPlot")$discrete.assay.names) {
             disable
         } else {
             enable

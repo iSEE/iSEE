@@ -131,7 +131,7 @@ setValidity2("ColumnDotPlot", function(object) {
 #' @importFrom SummarizedExperiment colData
 #' @importFrom methods callNextMethod
 setMethod(".cacheCommonInfo", "ColumnDotPlot", function(x, se) {
-    if (!is.null(.get_common_info(se, "ColumnDotPlot"))) {
+    if (!is.null(.getCachedCommonInfo(se, "ColumnDotPlot"))) {
         return(se)
     }
 
@@ -144,7 +144,7 @@ setMethod(".cacheCommonInfo", "ColumnDotPlot", function(x, se) {
     discrete <- .which_groupable(subdf)
     continuous <- .which_numeric(subdf)
 
-    .set_common_info(se, "ColumnDotPlot",
+    .setCachedCommonInfo(se, "ColumnDotPlot",
         valid.colData.names=displayable,
         discrete.colData.names=displayable[discrete],
         continuous.colData.names=displayable[continuous])
@@ -158,8 +158,8 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
         return(NULL)
     }
 
-    cdp_cached <- .get_common_info(se, "ColumnDotPlot")
-    dp_cached <- .get_common_info(se, "DotPlot")
+    cdp_cached <- .getCachedCommonInfo(se, "ColumnDotPlot")
+    dp_cached <- .getCachedCommonInfo(se, "DotPlot")
 
     available <- cdp_cached$valid.colData.names
     x <- .replace_na_with_first(x, .colorByColData, available)

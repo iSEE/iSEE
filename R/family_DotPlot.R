@@ -285,7 +285,7 @@ setValidity2("DotPlot", function(object) {
 #' @export
 #' @importFrom methods callNextMethod
 setMethod(".cacheCommonInfo", "DotPlot", function(x, se) {
-    if (!is.null(.get_common_info(se, "DotPlot"))) {
+    if (!is.null(.getCachedCommonInfo(se, "DotPlot"))) {
         return(se)
     }
 
@@ -293,7 +293,7 @@ setMethod(".cacheCommonInfo", "DotPlot", function(x, se) {
 
     named_assays <- assayNames(se)
     named_assays <- named_assays[named_assays!=""]
-    .set_common_info(se, "DotPlot",
+    .setCachedCommonInfo(se, "DotPlot",
         valid.assay.names=named_assays)
 })
 

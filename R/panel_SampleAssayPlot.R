@@ -151,7 +151,7 @@ setMethod(".refineParameters", "SampleAssayPlot", function(x, se) {
         return(NULL)
     }
 
-    all_assays <- .get_common_info(se, "DotPlot")$valid.assay.names
+    all_assays <- .getCachedCommonInfo(se, "DotPlot")$valid.assay.names
     if (length(all_assays)==0L) {
         warning(sprintf("no named 'assays' for plotting '%s'", class(x)[1]))
         return(NULL)
@@ -163,7 +163,7 @@ setMethod(".refineParameters", "SampleAssayPlot", function(x, se) {
         x <- .replace_na_with_first(x, field, colnames(se))
     }
 
-    row_covariates <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
+    row_covariates <- .getCachedCommonInfo(se, "RowDotPlot")$valid.rowData.names
     x <- .replace_na_with_first(x, .sampAssayXAxisRowData, row_covariates)
 
     x
@@ -197,8 +197,8 @@ setMethod(".defineDataInterface", "SampleAssayPlot", function(x, se, select_info
     panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
-    row_covariates <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
-    all_assays <- .get_common_info(se, "DotPlot")$valid.assay.names
+    row_covariates <- .getCachedCommonInfo(se, "RowDotPlot")$valid.rowData.names
+    all_assays <- .getCachedCommonInfo(se, "DotPlot")$valid.assay.names
     tab_by_col <- select_info$single$column
 
     xaxis_choices <- c(.sampAssayXAxisNothingTitle)

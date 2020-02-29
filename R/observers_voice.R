@@ -145,15 +145,15 @@
 
         # Check if the choice matches one of the available titles
         if (is(active_panel, "RowDotPlot")) {
-            covariates <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
+            covariates <- .getCachedCommonInfo(se, "RowDotPlot")$valid.rowData.names
             create_FUN <- .define_color_options_for_row_plots
         } else if (is(active_panel, "ColumnDotPlot")) {
-            covariates <- .get_common_info(se, "ColumnDotPlot")$valid.colData.names
+            covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$valid.colData.names
             create_FUN <- .define_color_options_for_column_plots
         } else {
             return(NULL)
         }
-        all_assays <- .get_common_info(se, "DotPlot")$valid.assay.names
+        all_assays <- .getCachedCommonInfo(se, "DotPlot")$valid.assay.names
 
         choices <- create_FUN(se, covariates, all_assays)
         matchedChoice <- .nearestValidChoice(voice, choices, max.edits=Inf)

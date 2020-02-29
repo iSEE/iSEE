@@ -1,22 +1,34 @@
-#' Set and get common information
+#' Set and get cached commons
 #'
-#' Set and get common cached information, 
-#' usually called in \code{\link{.cacheCommonInfo}} and \code{\link{.defineInterface}}, respectively.
+#' Get and set common cached information for each class.
+#' The setter is usually called in \code{\link{.cacheCommonInfo}} 
+#' while the getter is usually called in \code{\link{.defineInterface}}.
 #'
 #' @param se A \linkS4class{SummarizedExperiment} object containing the current dataset.
 #' @param cls String containing the name of the class for which this information is cached.
 #' @param ... Any number of named R objects to cache.
 #'
 #' @return
-#' \code{.set_common_info} returns \code{se} with \code{...} added to its \code{\link{metadata}}.
+#' \code{.setCachedCommonInfo} returns \code{se} with \code{...} added to its \code{\link{metadata}}.
 #' 
-#' \code{.get_common_info} retrieves the cached common information for class \code{cls}.
+#' \code{.getCachedCommonInfo} retrieves the cached common information for class \code{cls}.
 #'
-#' @author Aaron Lun
+#' @details
+#' This function is intended for use by developers of \linkS4class{Panel} classes.
+#' If you're an end-user and you're reading this, you probably took a wrong turn somewhere.
 #' 
-#' @rdname INTERNAL_set_common_info
+#' @author Aaron Lun
+#'
+#' @examples
+#' se <- SummarizedExperiment()
+#' se <- .setCachedCommonInfo(se, "SomePanelClass", 
+#'     something=1, more_things=TRUE, something_else="A")
+#' .getCachedCommonInfo(se, "SomePanelClass")
+#' 
+#' @export
+#' @rdname setCachedCommonInfo
 #' @importFrom S4Vectors metadata metadata<-
-.set_common_info <- function(se, cls, ...) {
+.setCachedCommonInfo <- function(se, cls, ...) {
     if (is.null(metadata(se)$iSEE)) {
         metadata(se)$iSEE <- list()
     }
@@ -24,9 +36,10 @@
     se
 }
 
-#' @rdname INTERNAL_set_common_info
+#' @export
+#' @rdname setCachedCommonInfo
 #' @importFrom S4Vectors metadata
-.get_common_info <- function(se, cls) {
+.getCachedCommonInfo <- function(se, cls) {
     metadata(se)$iSEE[[cls]]
 }
 

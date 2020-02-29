@@ -154,11 +154,11 @@ test_that(".cacheCommonInfo identifies valid reduced dimension names for Reduced
 
     reducedDim(sce, "empty") <- matrix(numeric(0), nrow = ncol(sce), ncol = 0)
     out <- .cacheCommonInfo(x, sce)
-    expect_false("empty" %in% .get_common_info(out, "ReducedDimensionPlot")[["valid.reducedDim.names"]])
+    expect_false("empty" %in% .getCachedCommonInfo(out, "ReducedDimensionPlot")[["valid.reducedDim.names"]])
 
     se <- as(sce, "SummarizedExperiment")
     out <- .cacheCommonInfo(x, se)
-    expect_identical(.get_common_info(out, "ReducedDimensionPlot")[["valid.reducedDim.names"]], character(0))
+    expect_identical(.getCachedCommonInfo(out, "ReducedDimensionPlot")[["valid.reducedDim.names"]], character(0))
 
 })
 
@@ -172,7 +172,7 @@ test_that(".cacheCommonInfo detects earlier cache", {
         x_instance <- new(x_class)
         for (i in seq_len(2)) {
             sce <- .cacheCommonInfo(x_instance, sce)
-            # Run again to trigger !is.null(.get_common_info(se, "CLASS"))
+            # Run again to trigger !is.null(.getCachedCommonInfo(se, "CLASS"))
             sce <- .cacheCommonInfo(x_instance, sce)
         }
     }

@@ -233,7 +233,7 @@ setValidity2("ComplexHeatmapPlot", function(object) {
 #' @export
 #' @importFrom methods callNextMethod
 setMethod(".cacheCommonInfo", "ComplexHeatmapPlot", function(x, se) {
-    if (!is.null(.get_common_info(se, "ComplexHeatmapPlot"))) {
+    if (!is.null(.getCachedCommonInfo(se, "ComplexHeatmapPlot"))) {
         return(se)
     }
 
@@ -257,7 +257,7 @@ setMethod(".cacheCommonInfo", "ComplexHeatmapPlot", function(x, se) {
     rowdata_discrete <- .which_groupable(subdf)
     rowdata_continuous <- .which_numeric(subdf)
 
-    .set_common_info(se, "ComplexHeatmapPlot",
+    .setCachedCommonInfo(se, "ComplexHeatmapPlot",
         valid.assay.names=named_assays,
         discrete.assay.names=named_assays[assays_discrete],
         continuous.assay.names=named_assays[assays_continuous],
@@ -282,7 +282,7 @@ setMethod(".refineParameters", "ComplexHeatmapPlot", function(x, se) {
         return(NULL)
     }
 
-    all_assays <- .get_common_info(se, "ComplexHeatmapPlot")$valid.assay.names
+    all_assays <- .getCachedCommonInfo(se, "ComplexHeatmapPlot")$valid.assay.names
     if (length(all_assays)==0L) {
         warning(sprintf("no valid 'assays' for plotting '%s'", class(x)[1]))
         return(NULL)
@@ -317,10 +317,10 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
     panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
-    all_assays <- .get_common_info(se, "ComplexHeatmapPlot")$valid.assay.names
+    all_assays <- .getCachedCommonInfo(se, "ComplexHeatmapPlot")$valid.assay.names
 
     assay_name <- x[[.heatMapAssay]]
-    assay_discrete <- assay_name %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.assay.names
+    assay_discrete <- assay_name %in% .getCachedCommonInfo(se, "ComplexHeatmapPlot")$discrete.assay.names
     ABLEFUN <- if (assay_discrete) {
         disabled
     } else {

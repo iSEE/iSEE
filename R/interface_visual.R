@@ -39,10 +39,10 @@
 #'
 #' @rdname INTERNAL_create_visual_box_for_column_plots
 .create_visual_box_for_column_plots <- function(x, row_selectable, col_selectable, se) {
-    covariates <- .get_common_info(se, "ColumnDotPlot")$valid.colData.names
-    discrete_covariates <- .get_common_info(se, "ColumnDotPlot")$discrete.colData.names
-    numeric_covariates <- .get_common_info(se, "ColumnDotPlot")$continuous.colData.names
-    all_assays <- .get_common_info(se, "DotPlot")$valid.assay.names
+    covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$valid.colData.names
+    discrete_covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$discrete.colData.names
+    numeric_covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$continuous.colData.names
+    all_assays <- .getCachedCommonInfo(se, "DotPlot")$valid.assay.names
 
     plot_name <- .getEncodedName(x)
     colorby_field <- paste0(plot_name, "_", .colorByField)
@@ -222,10 +222,10 @@
 #' @importFrom colourpicker colourInput
 #' @rdname INTERNAL_create_visual_box_for_column_plots
 .create_visual_box_for_row_plots <- function(x, row_selectable, col_selectable, se) {
-    covariates <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
-    discrete_covariates <- .get_common_info(se, "RowDotPlot")$discrete.rowData.names
-    numeric_covariates <- .get_common_info(se, "RowDotPlot")$continuous.rowData.names
-    all_assays <- .get_common_info(se, "DotPlot")$valid.assay.names
+    covariates <- .getCachedCommonInfo(se, "RowDotPlot")$valid.rowData.names
+    discrete_covariates <- .getCachedCommonInfo(se, "RowDotPlot")$discrete.rowData.names
+    numeric_covariates <- .getCachedCommonInfo(se, "RowDotPlot")$continuous.rowData.names
+    all_assays <- .getCachedCommonInfo(se, "DotPlot")$valid.assay.names
 
     plot_name <- .getEncodedName(x)
     colorby_field <- paste0(plot_name, "_", .colorByField)
@@ -371,11 +371,11 @@
 .create_visual_box_for_complexheatmap <- function(x, se) {
     plot_name <- .getEncodedName(x)
 
-    all_coldata <- .get_common_info(se, "ComplexHeatmapPlot")$valid.colData.names
-    all_rowdata <- .get_common_info(se, "ComplexHeatmapPlot")$valid.rowData.names
+    all_coldata <- .getCachedCommonInfo(se, "ComplexHeatmapPlot")$valid.colData.names
+    all_rowdata <- .getCachedCommonInfo(se, "ComplexHeatmapPlot")$valid.rowData.names
 
     assay_name <- x[[.heatMapAssay]]
-    assay_discrete <- assay_name %in% .get_common_info(se, "ComplexHeatmapPlot")$discrete.assay.names
+    assay_discrete <- assay_name %in% .getCachedCommonInfo(se, "ComplexHeatmapPlot")$discrete.assay.names
 
     .input_FUN <- function(field) paste0(plot_name, "_", field)
 

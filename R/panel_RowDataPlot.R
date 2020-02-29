@@ -190,12 +190,12 @@ setMethod(".defineDataInterface", "RowDataPlot", function(x, se, select_info) {
 
 #' @export
 setMethod(".allowableXAxisChoices", "RowDataPlot", function(x, se) {
-    .get_common_info(se, "RowDotPlot")$valid.rowData.names
+    .getCachedCommonInfo(se, "RowDotPlot")$valid.rowData.names
 })
 
 #' @export
 setMethod(".allowableYAxisChoices", "RowDataPlot", function(x, se) {
-    .get_common_info(se, "RowDotPlot")$valid.rowData.names
+    .getCachedCommonInfo(se, "RowDotPlot")$valid.rowData.names
 })
 
 

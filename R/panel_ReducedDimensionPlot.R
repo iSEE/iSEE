@@ -123,7 +123,7 @@ setMethod("initialize", "ReducedDimensionPlot", function(.Object, ...) {
 #' @importClassesFrom SingleCellExperiment SingleCellExperiment
 #' @importFrom methods callNextMethod
 setMethod(".cacheCommonInfo", "ReducedDimensionPlot", function(x, se) {
-    if (!is.null(.get_common_info(se, "ReducedDimensionPlot"))) {
+    if (!is.null(.getCachedCommonInfo(se, "ReducedDimensionPlot"))) {
         return(se)
     }
 
@@ -141,7 +141,7 @@ setMethod(".cacheCommonInfo", "ReducedDimensionPlot", function(x, se) {
         available <- character(0)
     }
 
-    .set_common_info(se, "ReducedDimensionPlot",
+    .setCachedCommonInfo(se, "ReducedDimensionPlot",
         valid.reducedDim.names=available)
 })
 
@@ -154,7 +154,7 @@ setMethod(".refineParameters", "ReducedDimensionPlot", function(x, se) {
         return(NULL)
     }
 
-    available <- .get_common_info(se, "ReducedDimensionPlot")$valid.reducedDim.names
+    available <- .getCachedCommonInfo(se, "ReducedDimensionPlot")$valid.reducedDim.names
     if (!is.na(chosen <- x[[.redDimType]]) &&
         chosen %in% available &&
         x[[.redDimXAxis]] <= ncol(reducedDim(se, chosen)) &&
@@ -208,7 +208,7 @@ setMethod(".defineDataInterface", "ReducedDimensionPlot", function(x, se, select
 
     list(
         selectInput(.input_FUN(.redDimType), label="Type",
-            choices=.get_common_info(se, "ReducedDimensionPlot")$valid.reducedDim.names,
+            choices=.getCachedCommonInfo(se, "ReducedDimensionPlot")$valid.reducedDim.names,
             selected=cur_reddim),
         selectInput(.input_FUN(.redDimXAxis), label="Dimension 1",
             choices=choices, selected=x[[.redDimXAxis]]),

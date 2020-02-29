@@ -117,9 +117,9 @@ prepareSpeechRecognition <- function(use=FALSE) {
     if (colorby_title == .colorByNothingTitle) {
         choices <- character(0)
     } else if (colorby_title == .colorByColDataTitle) {
-        choices <- .get_common_info(se, "ColumnDotPlot")$valid.colData.names
+        choices <- .getCachedCommonInfo(se, "ColumnDotPlot")$valid.colData.names
     } else if (colorby_title == .colorByRowDataTitle) {
-        choices <- .get_common_info(se, "RowDotPlot")$valid.rowData.names
+        choices <- .getCachedCommonInfo(se, "RowDotPlot")$valid.rowData.names
     } else if (colorby_title == .colorByFeatNameTitle) {
         choices <- seq_len(nrow(se))
         names(choices) <- rownames(se)

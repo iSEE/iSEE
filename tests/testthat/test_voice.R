@@ -138,10 +138,10 @@ test_that(".colorByChoices works", {
     expect_identical(out, character(0L))
 
     out <- iSEE:::.colorByChoices("Column data", sce)
-    expect_identical(out, iSEE:::.get_common_info(sce, "ColumnDotPlot")$valid.colData.names)
+    expect_identical(out, .getCachedCommonInfo(sce, "ColumnDotPlot")$valid.colData.names)
 
     out <- iSEE:::.colorByChoices("Row data", sce)
-    expect_identical(out, iSEE:::.get_common_info(sce, "RowDotPlot")$valid.rowData.names)
+    expect_identical(out, .getCachedCommonInfo(sce, "RowDotPlot")$valid.rowData.names)
 
     out <- iSEE:::.colorByChoices("Feature name", sce)
     expectedValue <- seq_len(nrow(sce))

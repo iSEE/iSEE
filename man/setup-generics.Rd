@@ -17,7 +17,7 @@ In \code{.cacheCommonInfo(x, se)}, the following arguments are required:
 }
 
 It is expected to return \code{se} with (optionally) extra fields added to \code{metadata(se)$iSEE}.
-Each field should be named according to the class name and contain some common information that is constant for all instances of the class of \code{x}.
+Each field should be named according to the class name and contain some common information that is constant for all instances of the class of \code{x} - see \code{\link{.setCachedCommonInfo}} for an appropriate setter utility.
 The goal is to avoid repeated recomputation of required values when creating user interface elements or observers.
 
 Methods for this generic should start by checking whether the metadata already contains the class name, and returning \code{se} without modification if this is the case.
@@ -36,13 +36,13 @@ In \code{.refineParameters(x, se)}, the following arguments are required:
 \item \code{se}, the \linkS4class{SummarizedExperiment} object containing the current dataset.
 }
 
-Methods for this generic should return a copy of \code{x}
-where slots with invalid values are replaced with appropriate entries from \code{se}.
+Methods for this generic should return a copy of \code{x} where slots with invalid values are replaced with appropriate entries from \code{se}.
 This is necessary because the constructor and validity methods for \code{x} does not know about \code{se};
 thus, certain slots (e.g., for the row/column names) cannot be set to a reasonable default or checked at that point.
 
-We generally recommend specializing \code{\link{initialize}} to fill any yet-to-be-determined slots with \code{NA} defaults.
-\code{\link{.refineParameters}} can then be used to sweep across these slots and replace them with appropriate entries.
+We recommend specializing \code{\link{initialize}} to fill any yet-to-be-determined slots with \code{NA} defaults.
+\code{\link{.refineParameters}} can then be used to sweep across these slots and replace them with appropriate entries,
+typically by using \code{\link{.getCachedCommonInfo}} to extract previously cached valid values.
 Of course, any slots that are not \code{se}-dependent should be set at construction and checked by the validity method.
 
 It is also possible for this generic to return \code{NULL}, which is used as an indicator that \code{se} does not contain information to meaningfully show any instance of the class of \code{x} in the \pkg{iSEE} app.

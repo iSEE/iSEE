@@ -134,6 +134,7 @@
 #' and \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot}.
 #' \item \code{\link{.generateDotPlot}(x, labels, envir)} returns a list containing \code{plot} and \code{commands}, as described above.
 #' This is called within \code{\link{.generateOutput}} for all \linkS4class{DotPlot} instances by default.
+#' Methods are also guaranteed to generate a \code{dot.plot} variable in \code{envir} containing the \link{ggplot} object corresponding to \code{plot}.
 #' \item \code{\link{.prioritizeDotPlotData}(x, envir)} returns \code{NULL}.
 #' \item \code{\link{.colorByNoneDotPlotField}(x)} returns \code{NULL}.
 #' \item \code{\link{.colorByNoneDotPlotScale}(x)} returns \code{NULL}.

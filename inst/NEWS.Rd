@@ -1,6 +1,15 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.99.2}{
+\itemize{
+    \item Added extension points to the API.
+    \item Added global setting using \code{iSEEOptions}.
+    \item Added \code{.allowableYAxisChoices} and \code{.allowableXAxisChoices} methods
+        to intercept choices of x/y-axis variables.
+}
+}
+
 \section{iSEE VERSION 1.99.1}{
 \itemize{
     \item Allowed customization of landing pages (from calling \code{iSEE()} in no-SE mode) for enterprise deployments.
@@ -24,6 +33,7 @@
 \section{iSEE VERSION 1.7.2}{
 \itemize{
     \item Added notification on birthday.
+    \item Enabled hiding of the \code{*DataPlot} UI elements.
 }
 }
 

@@ -30,6 +30,24 @@ Current contributors include:
 
 [![Figure 1. _iSEE_ uses a customisable multi-panel layout.][Figure1]](https://f1000research.com/articles/7-741/v1)
 
+## Installation
+
+_iSEE_ can be easily installed from Bioconductor using `BiocManager::install()`:
+
+```
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install("iSEE")
+```
+
+Optionally, if you want to install the development version from GitHub, you can use:
+
+```
+BiocManager::install("iSEE/iSEE")
+# or alternatively...
+remotes::install_github("iSEE/iSEE")
+```
+
 ## Functionalities
 
 <details>

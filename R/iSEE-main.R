@@ -371,6 +371,9 @@ iSEE <- function(se,
                     requested <- vapply(INITIAL, .encodedName, "")
                     available <- c(vapply(initial, .encodedName, ""), vapply(extra, .encodedName, ""))
                     keep <- requested %in% available
+                    if (!all(keep)) {
+                        warning("not all requested Panels exist in 'initial' or 'extra'")
+                    }
                     INITIAL <- INITIAL[keep]
                 }
                 .initialize_server(SE, initial=INITIAL, extra=extra, colormap=colormap,

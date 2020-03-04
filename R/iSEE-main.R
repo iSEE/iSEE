@@ -110,12 +110,13 @@
 #'
 #' @export
 #' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
-#' dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu notificationItem
+#' dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu 
+#' notificationItem
 #' @importFrom utils packageVersion
 #' @importFrom shinyjs useShinyjs
 #' @importFrom rintrojs introjsUI
 #' @importFrom shiny reactiveValues uiOutput actionButton shinyApp
-#' HTML icon tags includeCSS isolate
+#' HTML icon tags includeCSS isolate showNotification
 iSEE <- function(se,
     initial=NULL,
     extra=NULL,
@@ -372,7 +373,7 @@ iSEE <- function(se,
                     available <- c(vapply(initial, .encodedName, ""), vapply(extra, .encodedName, ""))
                     keep <- requested %in% available
                     if (!all(keep)) {
-                        warning("not all requested Panels exist in 'initial' or 'extra'")
+                        showNotification("not all requested Panels exist in 'initial' or 'extra'", type="warning")
                     }
                     INITIAL <- INITIAL[keep]
                 }

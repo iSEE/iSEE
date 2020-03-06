@@ -89,8 +89,7 @@ checkboxInputHidden <- function(x, field, ...) {
 #' @seealso
 #' \code{\link{.panel_generation}},
 #' \code{\link{.create_selection_param_box}},
-#' \code{\link{.create_visual_box_for_row_plots}},
-#' \code{\link{.create_visual_box_for_column_plots}}
+#' \code{\link{.create_visual_box}}
 #'
 #' @importFrom shiny conditionalPanel
 .conditional_on_radio <- function(id, choice, ...) {

@@ -37,7 +37,7 @@
 #' @importFrom colourpicker colourInput
 #' @importFrom stats setNames
 #'
-#' @rdname INTERNAL_create_visual_box_for_column_plots
+#' @rdname INTERNAL_create_visual_box
 .create_visual_box <- function(x, se, select_info) {
 
     plot_name <- .getEncodedName(x)
@@ -193,7 +193,7 @@
 #' @importFrom shiny checkboxGroupInput selectizeInput checkboxInput numericInput radioButtons
 #' @importFrom shinyjs disabled
 #'
-#' @rdname INTERNAL_create_visual_box_for_column_plots
+#' @rdname INTERNAL_create_visual_box
 .create_visual_box_for_complexheatmap <- function(x, se) {
     plot_name <- .getEncodedName(x)
 
@@ -291,8 +291,7 @@
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_add_facet_UI_elements
 #' @seealso
-#' \code{\link{.create_visual_box_for_column_plots}},
-#' \code{\link{.create_visual_box_for_row_plots}}
+#' \code{\link{.create_visual_box_for}}
 #'
 #' @importFrom shiny tagList selectInput
 .add_facet_UI_elements <- function(x, covariates) {
@@ -324,8 +323,7 @@
 #' @author Aaron Lun
 #' @rdname INTERNAL_add_visual_UI_elements
 #' @seealso
-#' \code{\link{.create_visual_box_for_column_plots}},
-#' \code{\link{.create_visual_box_for_row_plots}}
+#' \code{\link{.create_visual_box}}
 #'
 #' @importFrom shiny tagList numericInput sliderInput hr checkboxInput
 .add_point_UI_elements <- function(x) {

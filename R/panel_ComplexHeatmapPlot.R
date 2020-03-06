@@ -288,6 +288,7 @@ setMethod(".refineParameters", "ComplexHeatmapPlot", function(x, se) {
         return(NULL)
     }
 
+    all_assays <- c(intersect(iSEEOptions$get("assay"), all_assays), all_assays)
     x <- .replace_na_with_first(x, .heatMapAssay, all_assays)
 
     if (is.na(x[[.heatMapFeatNameText]])) {

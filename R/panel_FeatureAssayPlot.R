@@ -157,6 +157,7 @@ setMethod(".refineParameters", "FeatureAssayPlot", function(x, se) {
         return(NULL)
     }
 
+    all_assays <- c(intersect(iSEEOptions$get("assay"), all_assays), all_assays)
     x <- .replace_na_with_first(x, .featAssayAssay, all_assays)
 
     for (field in c(.featAssayXAxisFeatName, .featAssayYAxisFeatName)) {

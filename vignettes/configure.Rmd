@@ -209,7 +209,7 @@ Here, we alter several default visual parameters in the second panel:
 
 ```{r ColorByDefaultColor}
 cdp <- ColumnDataPlot(VisualBoxOpen=TRUE, 
-    VisualChoices=c("Color", "Points", "Other"))
+    VisualChoices=c("Color", "Size", "Point", "Text"))
 
 cdp2 <- cdp
 cdp2[["ColorByDefaultColor"]] <- "chocolate3"
@@ -253,7 +253,7 @@ Users can enable faceting by setting `FacetByRow` and/or `FacetByColumn` columns
 We demonstrate below how faceting may be enabled by row, column, or both:
 
 ```{r facet}
-cdp <- ColumnDataPlot(VisualBoxOpen=TRUE, VisualChoices="Facets",
+cdp <- ColumnDataPlot(VisualBoxOpen=TRUE, VisualChoices=c("Facet"),
     FacetByRow="driver_1_s", FacetByColumn="Core.Type", PanelWidth=4L)
 
 cdp2 <- cdp

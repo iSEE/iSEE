@@ -263,8 +263,8 @@ setValidity2("DotPlot", function(object) {
     msg <- .valid_number_error(msg, object, .selectTransAlpha, lower=0, upper=1)
 
     msg <- .multiple_choice_error(msg, object, .visualParamChoice,
-        c(.visualParamChoiceColorTitle, .visualParamChoiceShapeTitle, .visualParamChoicePointTitle,
-            .visualParamChoiceFacetTitle, .visualParamChoiceOtherTitle))
+        c(.visualParamChoiceColorTitle, .visualParamChoiceShapeTitle, .visualParamChoiceSizeTitle, .visualParamChoicePointTitle,
+            .visualParamChoiceFacetTitle, .visualParamChoiceTextTitle, .visualParamChoiceOtherTitle))
 
     msg <- .valid_number_error(msg, object, .plotPointSize, lower=0, upper=Inf)
 

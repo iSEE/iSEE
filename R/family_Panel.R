@@ -87,7 +87,7 @@
 #' \item \code{\link{.exportOutput}(x, se, all_memory, all_contents)} is a no-op,
 #' i.e., it will return an empty character vector and create no files.
 #' }
-#' 
+#'
 #' For controlling selections:
 #' \itemize{
 #' \item \code{\link{.multiSelectionRestricted}(x)} will always return \code{TRUE}.
@@ -116,9 +116,9 @@
 #'
 #' @seealso
 #' \linkS4class{DotPlot} and \linkS4class{Table}, for examples of direct subclasses.
-#' 
+#'
 #' @name Panel-class
-#' @aliases 
+#' @aliases
 #' initialize,Panel-method
 #' [[,Panel-method
 #' [[<-,Panel-method
@@ -133,11 +133,11 @@
 #' .renderOutput,Panel-method
 #' .exportOutput,Panel-method
 #' .multiSelectionRestricted,Panel-method
-#' .multiSelectionDimension,Panel-method 
-#' .multiSelectionClear,Panel-method 
-#' .multiSelectionActive,Panel-method 
-#' .multiSelectionInvalidated,Panel-method 
-#' .multiSelectionAvailable,Panel-method 
+#' .multiSelectionDimension,Panel-method
+#' .multiSelectionClear,Panel-method
+#' .multiSelectionActive,Panel-method
+#' .multiSelectionInvalidated,Panel-method
+#' .multiSelectionAvailable,Panel-method
 #' .singleSelectionDimension,Panel-method
 #' .singleSelectionValue,Panel-method
 #' .singleSelectionSlots,Panel-method
@@ -148,8 +148,8 @@ setMethod("initialize", "Panel", function(.Object, ...) {
     args <- list(...)
 
     args <- .empty_default(args, .organizationId, NA_integer_)
-    args <- .empty_default(args, .organizationHeight, 500L)
-    args <- .empty_default(args, .organizationWidth, 4L)
+    args <- .empty_default(args, .organizationHeight, iSEEOptions$get("panel.height"))
+    args <- .empty_default(args, .organizationWidth, iSEEOptions$get("panel.width"))
 
     args <- .empty_default(args, .selectParamBoxOpen, FALSE)
     args <- .empty_default(args, .selectRowSource, .noSelection)
@@ -196,7 +196,7 @@ setValidity2("Panel", function(object) {
 
 #' @export
 setMethod("[[", "Panel", function(x, i, j, ...) {
-    slot(x, i)        
+    slot(x, i)
 })
 
 #' @export
@@ -218,7 +218,7 @@ setMethod(".cacheCommonInfo", "Panel", function(x, se) {
 #' @export
 setMethod(".defineInterface", "Panel", function(x, se, select_info) {
     list(
-        .create_data_param_box(x, se, select_info), 
+        .create_data_param_box(x, se, select_info),
         .create_selection_param_box(x, select_info$multi$row, select_info$multi$column)
     )
 })
@@ -238,11 +238,11 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
 
     .create_box_observers(panel_name, c(.dataParamBoxOpen, .selectParamBoxOpen), pObjects, rObjects)
 
-    .create_multi_selection_choice_observer(panel_name, by_field=.selectRowSource, 
+    .create_multi_selection_choice_observer(panel_name, by_field=.selectRowSource,
         type_field=.selectRowType, saved_field=.selectRowSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_multi_selection_choice_observer(panel_name, by_field=.selectColSource, 
+    .create_multi_selection_choice_observer(panel_name, by_field=.selectColSource,
         type_field=.selectColType, saved_field=.selectColSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
@@ -254,7 +254,7 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
         type_field=.selectColType, saved_field=.selectColSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_multi_selection_history_observers(panel_name, 
+    .create_multi_selection_history_observers(panel_name,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     for (f in .singleSelectionSlots(x)) {

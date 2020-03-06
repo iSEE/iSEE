@@ -33,7 +33,7 @@ test_that(".refineParameters identifies impossible ColumnDataPlot", {
 
     # Making up a class to meet damn coverage targets.
     setClass("ColumnDataPlot342", contains="ColumnDataPlot")
-    setMethod(".allowableXAxisChoices", "ColumnDataPlot342", function(x, se) character(0)) 
+    setMethod(".allowableXAxisChoices", "ColumnDataPlot342", function(x, se) character(0))
     x2 <- as(x, "ColumnDataPlot342")
 
     copy <- sce
@@ -389,4 +389,25 @@ test_that(".exportOutput handles Panel", {
     out <- .exportOutput(memory$ComplexHeatmapPlot1, sce, memory, pObjects$contents)
     expect_identical(out, character(0))
 
+})
+
+# .defineVisualShapeInterface ----
+context(".defineVisualShapeInterface")
+
+test_that(".defineVisualShapeInterface returns NULL if there are no discrete covariate", {
+
+    # Note that at this point there is no discrete covariate cached, even if such a covariate exists
+    expect_null(.defineVisualShapeInterface(ColumnDataPlot(), sce))
+
+    # Note that at this point there is no discrete covariate cached, even if such a covariate exists
+    expect_null(.defineVisualShapeInterface(RowDataPlot(), sce))
+})
+
+test_that(".defineVisualFacetInterface returns NULL if there are no discrete covariate", {
+
+    # Note that at this point there is no discrete covariate cached, even if such a covariate exists
+    expect_null(.defineVisualFacetInterface(ColumnDataPlot(), sce))
+
+    # Note that at this point there is no discrete covariate cached, even if such a covariate exists
+    expect_null(.defineVisualFacetInterface(RowDataPlot(), sce))
 })

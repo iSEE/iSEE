@@ -263,3 +263,11 @@ test_that(".safe_nonzero_range works", {
     expect_identical(out, c(1, 3))
 
 })
+
+test_that("define_visual_options throws an error for unnamed list input", {
+
+    expect_error(
+        iSEE:::.define_visual_options(X = list(1, 2, 3)),
+        "Visual parameters UI elements must be named"
+    )
+})

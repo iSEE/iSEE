@@ -36,6 +36,7 @@ Note that \code{iSEEOptions$restore()} can be used to reset the global options t
 \item{\code{panel.color}}{Named character vector of colors.
 The names of the vector should be set to the name of class to be overridden; if a class is not named here, its default color is used.
 It is highly recommended to define colors as hex color codes (e.g., \code{"#1e90ff"}), for full compatibility with both HTML elements and R plots.}
+\item{\code{assay}}{Character vector of assay names to use if available, in order of preference.}
 }
 }
 

@@ -291,7 +291,7 @@
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_add_facet_UI_elements
 #' @seealso
-#' \code{\link{.create_visual_box_for}}
+#' \code{\link{.create_visual_box}}
 #'
 #' @importFrom shiny tagList selectInput
 .add_facet_UI_elements <- function(x, covariates) {

@@ -35,7 +35,7 @@
 #'
 #' For setting up data values:
 #' \itemize{
-#' \item \code{\link{.cacheCommonInfo}(x)} adds a \code{"RowDotPlot"} entry containing \code{valid.colData.names}, a character vector of valid column data names (i.e., containing atomic values); \code{discrete.colData.names}, a character vector of names for discrete columns; and \code{continuous.colData.names}, a character vector of names of continuous columns.
+#' \item \code{\link{.cacheCommonInfo}(x)} adds a \code{"RowDotPlot"} entry containing \code{valid.rowData.names}, a character vector of valid column data names (i.e., containing atomic values); \code{discrete.rowData.names}, a character vector of names for discrete columns; and \code{continuous.rowData.names}, a character vector of names of continuous columns.
 #' This will also call the equivalent \linkS4class{DotPlot} method.
 #' \item \code{\link{.refineParameters}(x, se)} replaces \code{NA} values in \code{ColorByFeatAssay} with the first valid assay name in \code{se}.
 #' This will also call the equivalent \linkS4class{DotPlot} method.
@@ -191,7 +191,7 @@ setMethod(".defineInterface", "RowDotPlot", function(x, se, select_info) {
 
 #' @export
 setMethod(".defineVisualColorInterface", "RowDotPlot", function(x, se, select_info) {
-    covariates <- .getCachedCommonInfo(se, "RowDotPlot")$valid.colData.names
+    covariates <- .getCachedCommonInfo(se, "RowDotPlot")$valid.rowData.names
     all_assays <- .getCachedCommonInfo(se, "DotPlot")$valid.assay.names
 
     plot_name <- .getEncodedName(x)
@@ -269,7 +269,7 @@ setMethod(".defineVisualShapeInterface", "RowDotPlot", function(x, se) {
 
 #' @export
 setMethod(".defineVisualSizeInterface", "RowDotPlot", function(x, se) {
-    numeric_covariates <- .getCachedCommonInfo(se, "RowDotPlot")$continuous.colData.names
+    numeric_covariates <- .getCachedCommonInfo(se, "RowDotPlot")$continuous.rowData.names
 
     plot_name <- .getEncodedName(x)
     sizeby_field <- paste0(plot_name, "_", .shapeByField)

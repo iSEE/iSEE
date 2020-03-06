@@ -336,8 +336,8 @@
             paste0(plot_name, "_", .plotPointAlpha), label="Point opacity",
             min=0.1, max=1, value=x[[.plotPointAlpha]]),
         hr(),
-        checkboxInput(
-            ds_id, label="Downsample points for speed",
+        checkboxInputHidden(x, field=.plotPointDownsample,
+            label="Downsample points for speed",
             value=x[[.plotPointDownsample]]),
         .conditional_on_check_solo(
             ds_id, on_select=TRUE,

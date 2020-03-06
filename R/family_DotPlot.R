@@ -74,7 +74,7 @@
 #' \item \code{VisualBoxOpen}, a logical scalar indicating whether the visual parameter box should be open.
 #' Defaults to \code{FALSE}.
 #' \item \code{VisualChoices}, a character vector specifying the visible interface elements upon initialization.
-#' This can contain zero or more of \code{"Color"}, \code{"Shape"}, \code{"Facets"}, \code{"Points"} and \code{"Other"}.
+#' This can contain zero or more of \code{"Color"}, \code{"Shape"}, \code{"Size"}, \code{"Point"} , \code{"Facet"}, \code{"Text"}, and \code{"Other"}.
 #' Defaults to \code{"Color"}.
 #' }
 #'
@@ -346,6 +346,53 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
         pObjects=pObjects, rObjects=rObjects)
 })
 
+# Interface ----
+
+#' @export
+setMethod(".defineVisualPointInterface", "DotPlot", function(x, se) {
+    numeric_covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$continuous.colData.names
+
+    plot_name <- .getEncodedName(x)
+    sizeby_field <- paste0(plot_name, "_", .shapeByField)
+
+    tagList(
+        hr(),
+        .add_point_UI_elements(x),
+        checkboxInput(
+            inputId=paste0(plot_name, "_", .contourAdd),
+            label="Add contour (scatter only)",
+            value=FALSE),
+        .conditional_on_check_solo(
+            paste0(plot_name, "_", .contourAdd),
+            on_select=TRUE,
+            colourInput(
+                paste0(plot_name, "_", .contourColor), label=NULL,
+                value=x[[.contourColor]]))
+    )
+})
+
+#' @export
+setMethod(".defineVisualTextInterface", "DotPlot", function(x) {
+    plot_name <- .getEncodedName(x)
+
+    tagList(
+        numericInput(
+            paste0(plot_name, "_", .plotFontSize), label="Font size:",
+            min=0, value=x[[.plotFontSize]]),
+        radioButtons(
+            paste0(plot_name, "_", .plotLegendPosition), label="Legend position:", inline=TRUE,
+            choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
+            selected=x[[.plotLegendPosition]])
+    )
+
+})
+
+#' @export
+#' @export
+setMethod(".defineVisualOtherInterface", "DotPlot", function(x) {
+    NULL
+})
+
 #' @export
 setMethod(".defineOutput", "DotPlot", function(x, id) {
     plot_name <- .getEncodedName(x)
@@ -473,7 +520,7 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
     all_cmds <- c(all_cmds, select_out2)
 
     # We need to set up the plot type before downsampling,
-    # to ensure the X/Y jitter is correctly computed. 
+    # to ensure the X/Y jitter is correctly computed.
     all_cmds$setup <- .choose_plot_type(plot_env)
 
     # Also collect the plot coordinates before downsampling.

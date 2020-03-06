@@ -42,9 +42,9 @@ test_that(".getPanelColor returns the expected colors", {
     x <- ReducedDimensionPlot()
     out <- .getPanelColor(x)
     expect_identical(out, "#1e90ff")
-    
+
     iSEEOptions$restore()
-    
+
     x <- ReducedDimensionPlot()
     out <- .getPanelColor(x)
     expect_identical(out, "#3565AA")
@@ -111,8 +111,8 @@ test_that(".multiple_choice_error detects issues", {
     x[[iSEE:::.visualParamChoice]] <- "other"
 
     out <- iSEE:::.multiple_choice_error(msg, x, iSEE:::.visualParamChoice,
-        c(iSEE:::.visualParamChoiceColorTitle, iSEE:::.visualParamChoiceShapeTitle, iSEE:::.visualParamChoicePointTitle, iSEE:::.visualParamChoiceFacetTitle, iSEE:::.visualParamChoiceOtherTitle))
-    expect_identical(out, "values of 'VisualChoices' for 'ReducedDimensionPlot' should be in 'Color', 'Shape', 'Points', 'Facets', 'Other'")
+        c(iSEE:::.visualParamChoiceColorTitle, iSEE:::.visualParamChoiceShapeTitle, iSEE:::.visualParamChoiceSizeTitle, iSEE:::.visualParamChoicePointTitle, iSEE:::.visualParamChoiceFacetTitle, iSEE:::.visualParamChoiceTextTitle, iSEE:::.visualParamChoiceOtherTitle))
+    expect_identical(out, "values of 'VisualChoices' for 'ReducedDimensionPlot' should be in 'Color', 'Shape', 'Size', 'Point', 'Facet', 'Text', 'Other'")
 
 })
 

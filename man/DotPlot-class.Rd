@@ -99,7 +99,7 @@ Defaults to \code{FALSE}.
 \item \code{VisualBoxOpen}, a logical scalar indicating whether the visual parameter box should be open.
 Defaults to \code{FALSE}.
 \item \code{VisualChoices}, a character vector specifying the visible interface elements upon initialization.
-This can contain zero or more of \code{"Color"}, \code{"Shape"}, \code{"Facets"}, \code{"Points"} and \code{"Other"}.
+This can contain zero or more of \code{"Color"}, \code{"Shape"}, \code{"Size"}, \code{"Point"} , \code{"Facet"}, \code{"Text"}, and \code{"Other"}.
 Defaults to \code{"Color"}.
 }
 

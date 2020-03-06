@@ -184,9 +184,130 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
 setMethod(".defineInterface", "RowDotPlot", function(x, se, select_info) {
     list(
         .create_data_param_box(x, se, select_info),
-        .create_visual_box_for_row_plots(x, select_info$single$row, select_info$single$column, se),
+        .create_visual_box(x, se, select_info$single),
         .create_dotplot_selection_param_box(x, select_info$multi$row, select_info$multi$column)
     )
+})
+
+#' @export
+setMethod(".defineVisualColorInterface", "RowDotPlot", function(x, se, select_info) {
+    covariates <- .getCachedCommonInfo(se, "RowDotPlot")$valid.colData.names
+    all_assays <- .getCachedCommonInfo(se, "DotPlot")$valid.assay.names
+
+    plot_name <- .getEncodedName(x)
+    colorby_field <- paste0(plot_name, "_", .colorByField)
+
+    tagList(
+        hr(),
+        radioButtons(
+            colorby_field, label="Color by:", inline=TRUE,
+            choices=.define_color_options_for_row_plots(se, covariates, all_assays),
+            selected=x[[.colorByField]]
+        ),
+        .conditional_on_radio(
+            colorby_field, .colorByNothingTitle,
+            colourInput(
+                paste0(plot_name, "_", .colorByDefaultColor), label=NULL,
+                value=x[[.colorByDefaultColor]])
+        ),
+        .conditional_on_radio(
+            colorby_field, .colorByRowDataTitle,
+            selectInput(
+                paste0(plot_name, "_", .colorByRowData), label=NULL,
+                choices=covariates, selected=x[[.colorByRowData]])
+        ),
+        .conditional_on_radio(colorby_field, .colorByFeatNameTitle,
+            tagList(
+                selectizeInput(paste0(plot_name, "_", .colorByFeatName),
+                    label=NULL, selected=NULL, choices=NULL, multiple=FALSE),
+                selectInput(
+                    paste0(plot_name, "_", .colorByRowTable), label=NULL, choices=select_info$row,
+                    selected=.choose_link(x[[.colorByRowTable]], select_info$row)),
+                colourInput(paste0(plot_name, "_", .colorByFeatNameColor), label=NULL,
+                    value=x[[.colorByFeatNameColor]]))
+        ),
+        .conditional_on_radio(colorby_field, .colorBySampNameTitle,
+            tagList(
+                selectizeInput(paste0(plot_name, "_", .colorBySampName),
+                    label=NULL, choices=NULL, selected=NULL, multiple=FALSE),
+                selectInput(
+                    paste0(plot_name, "_", .colorBySampNameAssay), label=NULL,
+                    choices=all_assays, selected=x[[.colorBySampNameAssay]])),
+            selectInput(
+                paste0(plot_name, "_", .colorByColTable), label=NULL, choices=select_info$column,
+                selected=.choose_link(x[[.colorByColTable]], select_info$column))
+        )
+    )
+})
+
+#' @export
+setMethod(".defineVisualShapeInterface", "RowDotPlot", function(x, se) {
+    discrete_covariates <- .getCachedCommonInfo(se, "RowDotPlot")$discrete.rowData.names
+
+    plot_name <- .getEncodedName(x)
+    shapeby_field <- paste0(plot_name, "_", .shapeByField)
+
+    if (length(discrete_covariates)) {
+        tagList(
+            hr(),
+            radioButtons(
+                shapeby_field, label="Shape by:", inline=TRUE,
+                choices=c(.shapeByNothingTitle, if (length(discrete_covariates)) .shapeByRowDataTitle),
+                selected=x[[.shapeByField]]
+            ),
+            .conditional_on_radio(
+                shapeby_field, .shapeByRowDataTitle,
+                selectInput(
+                    paste0(plot_name, "_", .shapeByRowData), label=NULL,
+                    choices=discrete_covariates, selected=x[[.shapeByRowData]])
+            )
+        )
+    } else {
+        NULL
+    }
+})
+
+#' @export
+setMethod(".defineVisualSizeInterface", "RowDotPlot", function(x, se) {
+    numeric_covariates <- .getCachedCommonInfo(se, "RowDotPlot")$continuous.colData.names
+
+    plot_name <- .getEncodedName(x)
+    sizeby_field <- paste0(plot_name, "_", .shapeByField)
+
+    tagList(
+        hr(),
+        radioButtons(
+            sizeby_field, label="Size by:", inline=TRUE,
+            choices=c(.sizeByNothingTitle, if (length(numeric_covariates)) .sizeByRowDataTitle),
+            selected=x[[.sizeByField]]
+        ),
+        .conditional_on_radio(
+            sizeby_field, .sizeByNothingTitle,
+            numericInput(
+                paste0(plot_name, "_", .plotPointSize), label="Point size:",
+                min=0, value=x[[.plotPointSize]])
+        ),
+        .conditional_on_radio(
+            sizeby_field, .sizeByRowDataTitle,
+            selectInput(paste0(plot_name, "_", .sizeByRowData), label=NULL,
+                        choices=numeric_covariates, selected=x[[.sizeByRowData]])
+        )
+    )
+})
+
+#' @export
+setMethod(".defineVisualFacetInterface", "RowDotPlot", function(x, se) {
+    discrete_covariates <- .getCachedCommonInfo(se, "RowDotPlot")$discrete.rowData.names
+
+    if (length(discrete_covariates)) {
+        tagList(
+            hr(),
+            .add_facet_UI_elements(x, discrete_covariates)
+        )
+    } else {
+        NULL
+    }
+
 })
 
 #' @export

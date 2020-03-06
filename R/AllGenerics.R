@@ -236,7 +236,7 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' All files should be created in the working directory at the time of the function call, possibly in further subdirectories.
 #' Each file name should be prefixed with the \code{\link{.getEncodedName}}.
 #' The method itself should return a character vector containing \emph{relative} paths to all newly created files.
-#' 
+#'
 #' To implement this method, we suggest simply passing all arguments onto \code{\link{.generateOutput}}
 #' and then handling the contents appropriately.
 #'
@@ -318,7 +318,7 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #' Methods for this generic should return a list with \code{plot}, a \link{ggplot} object;
 #' and \code{commands}, a character vector of commands to produce that object when evaluated inside \code{envir}.
 #' This plot will subsequently be the rendered output in \code{\link{.renderOutput}}.
-#' Note that \code{envir} should contain a copy of the \code{plot} object in a variable named \code{dot.plot} - 
+#' Note that \code{envir} should contain a copy of the \code{plot} object in a variable named \code{dot.plot} -
 #' see below for details.
 #'
 #' Methods are expected to respond to the presence of various fields in the \code{plot.data}.
@@ -379,13 +379,13 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #' They may also generate a \code{.rescaled} variable,
 #' a named numeric vector containing the scaling factor to apply to the downsampling resolution for each level of \code{.priority}.
 #'
-#' The method itself should return a list containing \code{commands}, 
+#' The method itself should return a list containing \code{commands},
 #' a character vector of R commands required to generate these variables;
 #' and \code{rescaled}, a logical scalar indicating whether a \code{.rescaled} variable was produced.
 #'
 #' Points assigned the highest level in \code{.priority} are regarded as having the highest visual importance.
 #' Such points will be shown on top of other points if there are overlaps on the plot,
-#' allowing developers to specify that, e.g., DE genes should be shown on top of non-DE genes. 
+#' allowing developers to specify that, e.g., DE genes should be shown on top of non-DE genes.
 #' Scaling of the resolution enables developers to peform more aggressive downsampling for unimportant points.
 #'
 #' Methods for this generic may also return \code{NULL}, in which case no special action is taken.
@@ -393,7 +393,7 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #' @section Controlling the \dQuote{None} color scale:
 #' In some cases, it is desirable to insert a default scale when \code{ColorBy="None"}.
 #' This is useful for highlighting points in a manner that is integral to the nature of the plot,
-#' e.g., up- or down-regulated genes in a MA plot. 
+#' e.g., up- or down-regulated genes in a MA plot.
 #' We provide a few generics to help control which points are highlighted and how they are colored.
 #'
 #' \code{.colorByNoneDotPlotField(x)} expects \code{x}, an instance of a \linkS4class{DotPlot} subclass,
@@ -403,7 +403,7 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #' \code{.colorByNoneDotPlotScale(x)} expects \code{x}, an instance of a \linkS4class{DotPlot} subclass,
 #' and returns a string containing a \pkg{ggplot2} \code{scale_color_*} call, e.g., \code{\link{scale_color_manual}}.
 #' This string should end with a \code{"+"} operator as additional \pkg{ggplot2} layers will be added by \pkg{iSEE}.
-#' 
+#'
 #' @author Kevin \dQuote{K-pop} Rue-Albrecht, Aaron \dQuote{A-bomb} Lun
 #'
 #' @name plot-generics
@@ -811,7 +811,7 @@ setGeneric(".singleSelectionSlots", function(x) standardGeneric(".singleSelectio
 #' @section Allowable x-axis choices:
 #' \code{.allowableXAxisChoices(x, se)} is the same as above but for the variables to show on the x-axis.
 #' This need not return the same subset of variables as \code{.allowableYAxisChoices}.
-#' 
+#'
 #' @author Aaron Lun
 #'
 #' @name metadata-plot-generics
@@ -824,3 +824,68 @@ setGeneric(".allowableYAxisChoices", function(x, se) standardGeneric(".allowable
 
 #' @export
 setGeneric(".allowableXAxisChoices", function(x, se) standardGeneric(".allowableXAxisChoices"))
+
+###########################
+
+#' Generics for row/column visual parameters
+#'
+#' These generics allow subclasses to override the user inputs controlling visual parameters
+#' of a \linkS4class{ColumnDataPlot} or \linkS4class{RowDataPlot}.
+#'
+#' @section Color parameters:
+#' \code{.defineVisualColorInterface(x, se, select_info)} takes \code{x}, a \linkS4class{Panel} instance,
+#' \code{se}, the \linkS4class{SummarizedExperiment} object,
+#' and \code{select_info} a list of character vectors named \code{row} and \code{column} which specifies the names of panels available for transmitting single selections on the rows/columns.
+#' It is expected to return an HTML tag definition that contains the user inputs to display in the \code{"Color"} section of the visual parameters.
+#'
+#' In practice, it is a good idea to make use of information precomputed by \code{\link{.cacheCommonInfo}}.
+#' For example, \code{\link{.cacheCommonInfo,ColumnDotPlot-method}} will add vectors specifying whether a variable in the \code{\link{colData}} is valid and discrete or continuous.
+#'
+#' @section Shape parameters:
+#' \code{.defineVisualShapeInterface} takes \code{x}, a \linkS4class{Panel} instance,
+#' and \code{se}, the \linkS4class{SummarizedExperiment} object.
+#' It is expected to return an HTML tag definition that contains the user inputs to display in the \code{"Shape"} section of the visual parameters.
+#'
+#' @section Point parameters:
+#' \code{.defineVisualPointInterface} takes \code{x}, a \linkS4class{Panel} instance,
+#' and \code{se}, the \linkS4class{SummarizedExperiment} object.
+#' It is expected to return an HTML tag definition that contains the user inputs to display in the \code{"Point"} section of the visual parameters.
+#'
+#' @section Facet paraeters:
+#' \code{.defineVisualFacetInterface} takes \code{x}, a \linkS4class{Panel} instance,
+#' and \code{se}, the \linkS4class{SummarizedExperiment} object.
+#' It is expected to return an HTML tag definition that contains the user inputs to display in the \code{"Facet"} section of the visual parameters.
+#'
+#' @section Other parameters:
+#' \code{.defineVisualOtherInterface} takes \code{x}, a \linkS4class{Panel} instance.
+#' It is expected to return an HTML tag definition that contains the user inputs to display in the \code{"Other"} section of the visual parameters.
+#'
+#' @seealso
+#' \code{tagList}
+#'
+#' @author Kevin Rue-Albrecht
+#'
+#' @name visual-parameters-generics
+#' @aliases .defineVisualColorInterface
+NULL
+
+#' @export
+setGeneric(".defineVisualColorInterface", function(x, se, select_info) standardGeneric(".defineVisualColorInterface"))
+
+#' @export
+setGeneric(".defineVisualShapeInterface", function(x, se) standardGeneric(".defineVisualShapeInterface"))
+
+#' @export
+setGeneric(".defineVisualSizeInterface", function(x, se) standardGeneric(".defineVisualSizeInterface"))
+
+#' @export
+setGeneric(".defineVisualPointInterface", function(x, se) standardGeneric(".defineVisualPointInterface"))
+
+#' @export
+setGeneric(".defineVisualFacetInterface", function(x, se) standardGeneric(".defineVisualFacetInterface"))
+
+#' @export
+setGeneric(".defineVisualTextInterface", function(x, se) standardGeneric(".defineVisualTextInterface"))
+
+#' @export
+setGeneric(".defineVisualOtherInterface", function(x) standardGeneric(".defineVisualOtherInterface"))

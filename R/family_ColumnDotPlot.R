@@ -166,6 +166,7 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
 
     assays <- dp_cached$valid.assay.names
     if (length(assays)) {
+        assays <- c(intersect(iSEEOptions$get("assay"), assays), assays)
         x <- .replace_na_with_first(x, .colorByFeatNameAssay, assays)
     } else {
         x[[.colorByFeatNameAssay]] <- NA_character_

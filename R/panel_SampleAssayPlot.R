@@ -157,6 +157,7 @@ setMethod(".refineParameters", "SampleAssayPlot", function(x, se) {
         return(NULL)
     }
 
+    all_assays <- c(intersect(iSEEOptions$get("assay"), all_assays), all_assays)
     x <- .replace_na_with_first(x, .sampAssayAssay, all_assays)
 
     for (field in c(.sampAssayXAxisSampName, .sampAssayYAxisSampName)) {

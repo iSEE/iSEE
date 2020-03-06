@@ -166,6 +166,7 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
 
     assays <- dp_cached$valid.assay.names
     if (length(assays)) {
+        assays <- c(intersect(iSEEOptions$get("assay"), assays), assays)
         x <- .replace_na_with_first(x, .colorBySampNameAssay, assays)
     } else {
         x[[.colorBySampNameAssay]] <- NA_character_

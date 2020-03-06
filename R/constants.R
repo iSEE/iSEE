@@ -63,13 +63,15 @@
 
 .visualParamChoiceColorTitle <- "Color"
 .visualParamChoiceShapeTitle <- "Shape"
-.visualParamChoicePointTitle <- "Points"
-.visualParamChoiceFacetTitle <- "Facets"
+.visualParamChoiceSizeTitle <- "Size"
+.visualParamChoicePointTitle <- "Point"
+.visualParamChoiceFacetTitle <- "Facet"
+.visualParamChoiceTextTitle <- "Text"
+.visualParamChoiceOtherTitle <- "Other"
 .visualParamChoiceMetadataTitle <- "Annotations"
 .visualParamChoiceLabelsTitle <- "Labels"
 .visualParamChoiceTransformTitle <- "Transform"
 .visualParamChoiceLegendTitle <- "Legends"
-.visualParamChoiceOtherTitle <- "Other"
 
 .showNamesRowTitle <- "Rows"
 .showNamesColumnTitle <- "Columns"

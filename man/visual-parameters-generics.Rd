@@ -3,6 +3,12 @@
 \name{visual-parameters-generics}
 \alias{visual-parameters-generics}
 \alias{.defineVisualColorInterface}
+\alias{.defineVisualShapeInterface}
+\alias{.defineVisualSizeInterface}
+\alias{.defineVisualPointInterface}
+\alias{.defineVisualFacetInterface}
+\alias{.defineVisualTextInterface}
+\alias{.defineVisualOtherInterface}
 \title{Generics for row/column visual parameters}
 \description{
 These generics allow subclasses to override the user inputs controlling visual parameters

@@ -87,6 +87,10 @@
 #' .createObservers,RowDotPlot-method
 #' .hideInterface,RowDotPlot-method
 #' .multiSelectionDimension,RowDotPlot-method
+#' .defineVisualColorInterface,RowDotPlot-method
+#' .defineVisualShapeInterface,RowDotPlot-method
+#' .defineVisualSizeInterface,RowDotPlot-method
+#' .defineVisualFacetInterface,RowDotPlot-method
 #' @name RowDotPlot-class
 NULL
 

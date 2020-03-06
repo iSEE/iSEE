@@ -197,6 +197,9 @@
 #' .prioritizeDotPlotData,DotPlot-method
 #' .colorByNoneDotPlotField,DotPlot-method
 #' .colorByNoneDotPlotScale,DotPlot-method
+#' .defineVisualPointInterface,DotPlot-method
+#' .defineVisualTextInterface,DotPlot-method
+#' .defineVisualOtherInterface,DotPlot-method
 NULL
 
 #' @export

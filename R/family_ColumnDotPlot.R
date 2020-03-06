@@ -87,6 +87,10 @@
 #' .createObservers,ColumnDotPlot-method
 #' .hideInterface,ColumnDotPlot-method
 #' .multiSelectionDimension,ColumnDotPlot-method
+#' .defineVisualColorInterface,ColumnDotPlot-method
+#' .defineVisualShapeInterface,ColumnDotPlot-method
+#' .defineVisualSizeInterface,ColumnDotPlot-method
+#' .defineVisualFacetInterface,ColumnDotPlot-method
 #' @name ColumnDotPlot-class
 NULL
 

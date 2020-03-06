@@ -883,6 +883,12 @@ setGeneric(".allowableXAxisChoices", function(x, se) standardGeneric(".allowable
 #'
 #' @name visual-parameters-generics
 #' @aliases .defineVisualColorInterface
+#' .defineVisualShapeInterface
+#' .defineVisualSizeInterface
+#' .defineVisualPointInterface
+#' .defineVisualFacetInterface
+#' .defineVisualTextInterface
+#' .defineVisualOtherInterface
 NULL
 
 #' @export

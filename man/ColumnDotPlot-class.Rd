@@ -10,6 +10,10 @@
 \alias{.createObservers,ColumnDotPlot-method}
 \alias{.hideInterface,ColumnDotPlot-method}
 \alias{.multiSelectionDimension,ColumnDotPlot-method}
+\alias{.defineVisualColorInterface,ColumnDotPlot-method}
+\alias{.defineVisualShapeInterface,ColumnDotPlot-method}
+\alias{.defineVisualSizeInterface,ColumnDotPlot-method}
+\alias{.defineVisualFacetInterface,ColumnDotPlot-method}
 \title{The ColumnDotPlot virtual class}
 \description{
 The ColumnDotPlot is a virtual class where each column in the \linkS4class{SummarizedExperiment} is represented by no more than one point (i.e., a \dQuote{dot}) in a brushable \link{ggplot} plot.

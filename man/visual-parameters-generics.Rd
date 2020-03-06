@@ -8,42 +8,62 @@
 These generics allow subclasses to override the user inputs controlling visual parameters
 of a \linkS4class{ColumnDataPlot} or \linkS4class{RowDataPlot}.
 }
+\details{
+In practice, it is a good idea to make use of information precomputed by \code{\link{.cacheCommonInfo}}.
+For example, \code{\link{.cacheCommonInfo,ColumnDotPlot-method}} will add vectors specifying whether a variable in the \code{\link{colData}} is valid and discrete or continuous.
+
+It is possible to hide individual sections by returning \code{NULL}.
+}
 \section{Color parameters}{
 
 \code{.defineVisualColorInterface(x, se, select_info)} takes \code{x}, a \linkS4class{Panel} instance,
 \code{se}, the \linkS4class{SummarizedExperiment} object,
 and \code{select_info} a list of character vectors named \code{row} and \code{column} which specifies the names of panels available for transmitting single selections on the rows/columns.
-It is expected to return an HTML tag definition that contains the user inputs to display in the \code{"Color"} section of the visual parameters.
+It is expected to return an HTML tag definition that contains user inputs controlling the \code{color} aesthetic of \code{ggplot} objects.
 
-In practice, it is a good idea to make use of information precomputed by \code{\link{.cacheCommonInfo}}.
-For example, \code{\link{.cacheCommonInfo,ColumnDotPlot-method}} will add vectors specifying whether a variable in the \code{\link{colData}} is valid and discrete or continuous.
+display in the \code{"Color"} section of the visual parameters.
 }
 
 \section{Shape parameters}{
 
 \code{.defineVisualShapeInterface} takes \code{x}, a \linkS4class{Panel} instance,
 and \code{se}, the \linkS4class{SummarizedExperiment} object.
-It is expected to return an HTML tag definition that contains the user inputs to display in the \code{"Shape"} section of the visual parameters.
+It is expected to return an HTML tag definition that contains user inputs controlling the \code{shape} aesthetic of \code{ggplot} objects.
+}
+
+\section{Size parameters}{
+
+\code{.defineVisualSizeInterface} takes \code{x}, a \linkS4class{Panel} instance,
+and \code{se}, the \linkS4class{SummarizedExperiment} object.
+It is expected to return an HTML tag definition that contains user inputs controlling the \code{size} aesthetic of \code{ggplot} objects.
 }
 
 \section{Point parameters}{
 
 \code{.defineVisualPointInterface} takes \code{x}, a \linkS4class{Panel} instance,
 and \code{se}, the \linkS4class{SummarizedExperiment} object.
-It is expected to return an HTML tag definition that contains the user inputs to display in the \code{"Point"} section of the visual parameters.
+It is expected to return an HTML tag definition that contains user inputs to controlling other aesthetics of \code{ggplot} objects (e.g. \code{alpha}).
 }
 
-\section{Facet paraeters}{
+\section{Facet parameters}{
 
 \code{.defineVisualFacetInterface} takes \code{x}, a \linkS4class{Panel} instance,
 and \code{se}, the \linkS4class{SummarizedExperiment} object.
-It is expected to return an HTML tag definition that contains the user inputs to display in the \code{"Facet"} section of the visual parameters.
+It is expected to return an HTML tag definition that contains user inputs controlling the \code{facet_grid} applied to
+\code{ggplot} objects.
+}
+
+\section{Text parameters}{
+
+\code{.defineVisualTextInterface} takes \code{x}, a \linkS4class{Panel} instance,
+and \code{se}, the \linkS4class{SummarizedExperiment} object.
+It is expected to return an HTML tag definition that contains user inputs controlling the appearance of non-data text elements of \code{ggplot} objects (e.g., font size, legend position).
 }
 
 \section{Other parameters}{
 
 \code{.defineVisualOtherInterface} takes \code{x}, a \linkS4class{Panel} instance.
-It is expected to return an HTML tag definition that contains the user inputs to display in the \code{"Other"} section of the visual parameters.
+It is expected to return an HTML tag definition that contains user inputs to display in the \code{"Other"} section of the visual parameters.
 }
 
 \seealso{

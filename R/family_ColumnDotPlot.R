@@ -96,7 +96,7 @@ setMethod("initialize", "ColumnDotPlot", function(.Object, ...) {
     args <- list(...)
     args <- .empty_default(args, .colorByColData, NA_character_)
     args <- .empty_default(args, .colorByFeatNameAssay, NA_character_)
-    args <- .empty_default(args, .colorBySampNameColor, "red")
+    args <- .empty_default(args, .colorBySampNameColor, iSEEOptions$get("selected.color"))
 
     args <- .empty_default(args, .shapeByColData, NA_character_)
 

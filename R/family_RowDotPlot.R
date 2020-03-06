@@ -96,7 +96,7 @@ setMethod("initialize", "RowDotPlot", function(.Object, ...) {
     args <- list(...)
     args <- .empty_default(args, .colorByRowData, NA_character_)
     args <- .empty_default(args, .colorBySampNameAssay, NA_character_)
-    args <- .empty_default(args, .colorByFeatNameColor, "red")
+    args <- .empty_default(args, .colorByFeatNameColor, iSEEOptions$get("selected.color"))
 
     args <- .empty_default(args, .shapeByRowData, NA_character_)
 

@@ -618,7 +618,7 @@ test_that(".define_colorby_for_column_plot handles feature selection", {
     expect_true(!is.null(env$plot.data$ColorBy))
 
     expect_match(color_out$labels$ColorBy, rn, fixed=TRUE)
-    expect_match(color_out$labels$ColorBy, assayNames(sce)[1], fixed=TRUE)
+    expect_match(color_out$labels$ColorBy, iSEEOptions$get("assay")[1], fixed=TRUE)
 
     color_add <- iSEE:::.colorDotPlot(params, env$plot.data$ColorBy)
     expect_match(color_add[1], "scale_color_gradientn", fixed=TRUE)
@@ -682,7 +682,7 @@ test_that(".define_colorby_for_row_plot handles sample selection", {
     expect_true(!is.null(env$plot.data$ColorBy))
 
     expect_match(color_out$labels$ColorBy, cn, fixed=TRUE)
-    expect_match(color_out$labels$ColorBy, assayNames(sce)[1], fixed=TRUE)
+    expect_match(color_out$labels$ColorBy, iSEEOptions$get("assay")[1], fixed=TRUE)
 
     color_add <- iSEE:::.colorDotPlot(params, env$plot.data$ColorBy)
     expect_match(color_add[1], "scale_color_gradientn", fixed=TRUE)

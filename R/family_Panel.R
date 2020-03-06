@@ -160,6 +160,9 @@ setMethod("initialize", "Panel", function(.Object, ...) {
     args <- .empty_default(args, .selectColType, .selectMultiActiveTitle)
     args <- .empty_default(args, .selectColSaved, 0L)
 
+    args <- .empty_default(args, .selectRowGlobal, FALSE)
+    args <- .empty_default(args, .selectColGlobal, FALSE)
+
     args <- .empty_default(args, .dataParamBoxOpen, FALSE)
 
     do.call(callNextMethod, c(list(.Object), args))
@@ -167,7 +170,10 @@ setMethod("initialize", "Panel", function(.Object, ...) {
 
 setValidity2("Panel", function(object) {
     msg <- character(0)
-    msg <- .valid_logical_error(msg, object, c(.selectParamBoxOpen, .dataParamBoxOpen))
+
+    msg <- .valid_logical_error(msg, object, c(.selectParamBoxOpen, .dataParamBoxOpen,
+        .selectRowGlobal, .selectColGlobal))
+
     msg <- .single_string_error(msg, object, c(.selectRowSource, .selectColSource))
 
     msg <- .valid_number_error(msg, object, .organizationHeight, lower=height_limits[1], upper=height_limits[2])

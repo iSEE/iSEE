@@ -154,12 +154,11 @@
     select_global <- paste0(.getEncodedName(x), "_", global_field)
 
     tagList(
-        checkboxInput(select_global, label=paste("Use global", source_type, "selection"),
+        .define_selection_transmitter(x, by_field, selectable, source_type),
+
+        .checkboxInputHidden(x, field=global_field,
+            label=paste("Use dynamic", source_type, "selection"),
             value=x[[global_field]]),
-            
-        .conditional_on_check_solo(select_global, FALSE,
-            .define_selection_transmitter(x, by_field, selectable, source_type)
-        ),
 
         .radioButtonsHidden(
             x, field=type_field, label=NULL, inline=TRUE,

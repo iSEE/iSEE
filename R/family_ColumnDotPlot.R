@@ -342,7 +342,7 @@ setMethod(".defineVisualFacetInterface", "ColumnDotPlot", function(x, se) {
 
 #' @export
 setMethod(".hideInterface", "ColumnDotPlot", function(x, field) {
-    if (field %in% c(.selectRowSource, .selectRowType, .selectRowSaved)) {
+    if (field %in% c(.selectRowSource, .selectRowType, .selectRowSaved, .selectRowDynamic)) {
         TRUE
     } else {
         callNextMethod()

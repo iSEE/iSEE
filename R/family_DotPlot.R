@@ -197,7 +197,6 @@
 #' .prioritizeDotPlotData,DotPlot-method
 #' .colorByNoneDotPlotField,DotPlot-method
 #' .colorByNoneDotPlotScale,DotPlot-method
-#' .defineVisualPointInterface,DotPlot-method
 #' .defineVisualTextInterface,DotPlot-method
 #' .defineVisualOtherInterface,DotPlot-method
 NULL
@@ -350,29 +349,6 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 })
 
 # Interface ----
-
-#' @export
-setMethod(".defineVisualPointInterface", "DotPlot", function(x, se) {
-    numeric_covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$continuous.colData.names
-
-    plot_name <- .getEncodedName(x)
-    sizeby_field <- paste0(plot_name, "_", .shapeByField)
-
-    tagList(
-        hr(),
-        .add_point_UI_elements(x),
-        checkboxInput(
-            inputId=paste0(plot_name, "_", .contourAdd),
-            label="Add contour (scatter only)",
-            value=FALSE),
-        .conditional_on_check_solo(
-            paste0(plot_name, "_", .contourAdd),
-            on_select=TRUE,
-            colourInput(
-                paste0(plot_name, "_", .contourColor), label=NULL,
-                value=x[[.contourColor]]))
-    )
-})
 
 #' @export
 setMethod(".defineVisualTextInterface", "DotPlot", function(x) {

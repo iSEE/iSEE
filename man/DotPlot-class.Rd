@@ -22,7 +22,6 @@
 \alias{.prioritizeDotPlotData,DotPlot-method}
 \alias{.colorByNoneDotPlotField,DotPlot-method}
 \alias{.colorByNoneDotPlotScale,DotPlot-method}
-\alias{.defineVisualPointInterface,DotPlot-method}
 \alias{.defineVisualTextInterface,DotPlot-method}
 \alias{.defineVisualOtherInterface,DotPlot-method}
 \title{The DotPlot virtual class}

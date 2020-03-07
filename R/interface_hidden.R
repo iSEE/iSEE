@@ -57,7 +57,7 @@
 
 #' @rdname INTERNAL_hidden_elements
 #' @importFrom shiny radioButtons
-checkboxInputHidden <- function(x, field, ...) {
+.checkboxInputHidden <- function(x, field, ...) {
     .hide_this_thing(x, field, checkboxInput, ...)
 }
 

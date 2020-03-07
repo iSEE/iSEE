@@ -32,6 +32,30 @@
 #' \code{.requestCleanUpdate} is used for changes to protected parameters that invalidate existing multiple selections,
 #' e.g., if the coordinates change in a \linkS4class{DotPlot}, existing brushes and lassos are usually not applicable.
 #'
+#' @section Comments on handling dynamic sources:
+#' If \code{x} is using a dynamic selection source,
+#' \code{.requestActiveSelectionUpdate} will modify all other panels using dynamic sources 
+#' so that they receive their multiple selections from \code{x}.
+#' This involves updating the \code{session} to change the chosen source in the UI,
+#' which is a reasonably transparent way of plugging into the rest of the reactive machinery for handling multiple selections.
+#'
+#' However, this strategy means that we need to manually edit \code{pObjects$selection_links} 
+#' so that \code{x} is no longer linked to the panel that was the previous selection source.
+#' This is necessary because the observers for the selection source will respond in arbitrary order to the session update;
+#' if \code{x} is still linked to the previous source, we will end up with circularity.
+#'
+#' Thus, we delete this link before control leaves \code{.requestActiveSelectionUpdate}.
+#' Doing so here hopefully should not be a problem as \code{\link{.create_multi_selection_choice_observer}}
+#' (the observer responding to the change in the source choice)
+#' doesn't make any other decisions based on \code{pObjects$selection_links} anyway.
+#' 
+#' Incidentally, the circularity problem is why a panel cannot purely contribute to the dynamic selection source.
+#' Imagine a situation where \code{x} contributes to the dynamic source but receives a selection from a fixed source.
+#' We would then need to check that the fixed source or its parents do not respond to the dynamic source.
+#' This is not too hard but there is no obvious solution to break circularity;
+#' doing so would change the identity of selected points in \code{x}, which would be surprising to the user.
+#' Thus, to keep things simple, any panel that contributes as a dynamic source must also receive from a dynamic source.
+#'
 #' @author Aaron Lun
 #'
 #' @seealso
@@ -78,17 +102,18 @@
     .mark_panel_as_modified(panel_name, accumulated, rObjects)
 }
 
+
 #' @export
 #' @rdname retrieveOutput
 #' @importFrom igraph adjacent_vertices get.edge.ids E
 #' @importFrom shiny updateSelectInput
 .requestActiveSelectionUpdate <- function(panel_name, session, pObjects, rObjects, update_output=TRUE) {
     .safe_reactive_bump(rObjects, paste0(panel_name, "_", .flagMultiSelect))
-    .mark_panel_as_modified(panel_name,
-        if (update_output) .panelReactivated else c(.panelNorender, .panelReactivated), 
-        rObjects)
 
-    # Handling the panels that respond to global selections.
+    modes <- if (update_output) .panelReactivated else c(.panelNorender, .panelReactivated)
+    .mark_panel_as_modified(panel_name, modes, rObjects) 
+
+    # Handling the global selections.
     target <- pObjects$memory[[panel_name]]
     dim <- .multiSelectionDimension(target)
     src <- if (dim=="row") .selectRowGlobal else .selectColGlobal
@@ -97,14 +122,19 @@
         all_affected <- pObjects$global_panels[[dim]]
         field <- if (dim=="row") .selectRowSource else .selectColSource
         
+        # nocov start
         if (!is.null(session)) { # put here to avoid attempting to test it.
-            # nocov start
+
+            # See above comments in the documentation for this function.
+            updateSelectInput(session=session, inputId=paste0(panel_name, "_", field), selected=.noSelection)
+            pObjects$selection_links <- .delete_interpanel_link(pObjects$selection_links,
+                panel_name, parent_name=target[[field]], field=field)
+
             for (i in setdiff(all_affected, panel_name)) {
                 updateSelectInput(session=session, inputId=paste0(i, "_", field), selected=panel_name)
             }
-            updateSelectInput(session=session, inputId=paste0(panel_name, "_", field), selected=.noSelection)
-            # nocov end
         }
+        # nocov end
     }
 
     invisible(NULL)

@@ -50,7 +50,7 @@
         }
 
         pObjects$memory[[panel_name]][[.TableSearch]] <- search
-        .requestActiveSelectionUpdate(panel_name, rObjects, update_output=FALSE)
+        .requestActiveSelectionUpdate(panel_name, session, pObjects, rObjects, update_output=FALSE)
     })
     # nocov end
 
@@ -63,7 +63,7 @@
         }
 
         pObjects$memory[[panel_name]][[.TableColSearch]] <- search
-        .requestActiveSelectionUpdate(panel_name, rObjects, update_output=FALSE)
+        .requestActiveSelectionUpdate(panel_name, session, pObjects, rObjects, update_output=FALSE)
     })
     # nocov end
     invisible(NULL)

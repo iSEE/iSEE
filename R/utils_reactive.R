@@ -4,6 +4,7 @@
 #'
 #' @param se A \linkS4class{SummarizedExperiment} object containing the current dataset.
 #' @param panel_name String containing the panel name.
+#' @param session The Shiny session object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
 #' @param update_output A logical scalar indicating whether to call \code{.requestUpdate} as well.
@@ -79,11 +80,33 @@
 
 #' @export
 #' @rdname retrieveOutput
-.requestActiveSelectionUpdate <- function(panel_name, rObjects, update_output=TRUE) {
+#' @importFrom igraph adjacent_vertices get.edge.ids E
+#' @importFrom shiny updateSelectInput
+.requestActiveSelectionUpdate <- function(panel_name, session, pObjects, rObjects, update_output=TRUE) {
     .safe_reactive_bump(rObjects, paste0(panel_name, "_", .flagMultiSelect))
     .mark_panel_as_modified(panel_name,
         if (update_output) .panelReactivated else c(.panelNorender, .panelReactivated), 
         rObjects)
+
+    # Handling the panels that respond to global selections.
+    target <- pObjects$memory[[panel_name]]
+    dim <- .multiSelectionDimension(target)
+    src <- if (dim=="row") .selectRowGlobal else .selectColGlobal
+
+    if (target[[src]]) {
+        all_affected <- pObjects$global_panels[[dim]]
+        field <- if (dim=="row") .selectRowSource else .selectColSource
+        
+        if (!is.null(session)) { # put here to avoid attempting to test it.
+            # nocov start
+            for (i in setdiff(all_affected, panel_name)) {
+                updateSelectInput(session=session, inputId=paste0(i, "_", field), selected=panel_name)
+            }
+            updateSelectInput(session=session, inputId=paste0(panel_name, "_", field), selected=.noSelection)
+            # nocov end
+        }
+    }
+
     invisible(NULL)
 }
 

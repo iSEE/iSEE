@@ -263,6 +263,12 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
     .create_multi_selection_history_observers(panel_name,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
+    .create_multi_selection_global_observer(panel_name, global_field=.selectRowGlobal,
+        source_type="row", input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
+    .create_multi_selection_global_observer(panel_name, global_field=.selectColGlobal, 
+        source_type="column", input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
     for (f in .singleSelectionSlots(x)) {
         if ("dimension" %in% names(f)) {
             .create_dimname_observers(panel_name,

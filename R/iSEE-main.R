@@ -646,6 +646,8 @@ iSEE <- function(se,
 #' \item \code{aesthetics_links}, a \link{graph} containing the links between panels due to transmitted single selections.
 #' This is constructed by \code{\link{.spawn_single_selection_graph}}
 #' and can be modified by \code{\link{.choose_new_parent}}.
+#' \item \code{global_panels}, a list containing the panels participating in the global multiple selection scheme.
+#' This is constructed by \code{\link{.spawn_global_selection_list}}. 
 #' }
 #'
 #' @author Aaron Lun
@@ -663,6 +665,7 @@ iSEE <- function(se,
 
     pObjects$aesthetics_links <- .spawn_single_selection_graph(memory)
     pObjects$selection_links <- .spawn_multi_selection_graph(memory)
+    pObjects$global_panels <- .spawn_global_selection_list(memory)
 
     pObjects[[.voiceActivePanel]] <- NA_character_
 

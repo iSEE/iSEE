@@ -49,7 +49,7 @@
         )
 
         .safe_reactive_bump(rObjects, dimprop_name)
-        .requestActiveSelectionUpdate(plot_name, rObjects)
+        .requestActiveSelectionUpdate(plot_name, session, pObjects, rObjects)
     }, ignoreInit=TRUE)
     # nocov end
     invisible(NULL)
@@ -127,7 +127,7 @@
         )
 
         if (reactivated) {
-            .requestActiveSelectionUpdate(plot_name, rObjects)
+            .requestActiveSelectionUpdate(plot_name, session, pObjects, rObjects)
             .safe_reactive_bump(rObjects, dimprop_name)
         } else {
             .requestUpdate(plot_name, rObjects)

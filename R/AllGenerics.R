@@ -827,24 +827,21 @@ setGeneric(".allowableXAxisChoices", function(x, se) standardGeneric(".allowable
 
 ###########################
 
-#' Generics for row/column visual parameters
+#' Generics for visual parameters
 #'
-#' These generics allow subclasses to override the user inputs controlling visual parameters
-#' of a \linkS4class{ColumnDataPlot} or \linkS4class{RowDataPlot}.
+#' These generics allow subclasses to override the user inputs controlling visual parameters of \linkS4class{DotPlot} panels.
 #'
 #' @details
 #' In practice, it is a good idea to make use of information precomputed by \code{\link{.cacheCommonInfo}}.
 #' For example, \code{\link{.cacheCommonInfo,ColumnDotPlot-method}} will add vectors specifying whether a variable in the \code{\link{colData}} is valid and discrete or continuous.
 #'
-#' It is possible to hide individual sections by returning \code{NULL}.
+#' It is possible to hide individual sections of visual parameters by returning \code{NULL}.
 #'
 #' @section Color parameters:
 #' \code{.defineVisualColorInterface(x, se, select_info)} takes \code{x}, a \linkS4class{Panel} instance,
 #' \code{se}, the \linkS4class{SummarizedExperiment} object,
 #' and \code{select_info} a list of character vectors named \code{row} and \code{column} which specifies the names of panels available for transmitting single selections on the rows/columns.
 #' It is expected to return an HTML tag definition that contains user inputs controlling the \code{color} aesthetic of \code{ggplot} objects.
-#'
-#' display in the \code{"Color"} section of the visual parameters.
 #'
 #' @section Shape parameters:
 #' \code{.defineVisualShapeInterface} takes \code{x}, a \linkS4class{Panel} instance,

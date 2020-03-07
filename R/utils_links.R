@@ -1,3 +1,6 @@
+.global_row_node <- "iSEE_internal_global_rows"
+.global_col_node <- "iSEE_internal_global_columns"
+
 #' Spawn transmitter graphs
 #'
 #' Create graphs for the links between panels due to multiple or single selections.
@@ -20,13 +23,25 @@
 #' @rdname INTERNAL_spawn_graph
 #' @importFrom igraph make_graph is_dag
 .spawn_multi_selection_graph <- function(all_memory) {
-    graph <- make_graph(edges=character(0), isolates=names(all_memory))
+    graph <- make_graph(edges=character(0), 
+        isolates=c(names(all_memory), .global_row_node, .global_col_node))
+
+    params <- list(
+        row=list(by=.selectRowSource, global=.selectRowGlobal, node=.global_row_node),
+        column=list(by=.selectColSource, global=.selectColGlobal, node=.global_col_node)
+    )
 
     for (x in names(all_memory)) {
         instance <- all_memory[[x]]
-        for (f in c(.selectRowSource, .selectColSource)) {
-            if (instance[[f]] %in% names(all_memory)) {
-                graph <- .add_interpanel_link(graph, x, instance[[f]], field=f)
+
+        for (f in params) {
+            by <- instance[[f$by]]
+            global <- instance[[f$global]]
+
+            if (global) {
+                graph <- .add_interpanel_link(graph, x, f$node, field=f$by)
+            } else if (by %in% names(all_memory)) {
+                graph <- .add_interpanel_link(graph, x, by, field=f$by)
             }
         }
     }
@@ -205,4 +220,36 @@
     iso <- V(graph)[degree(graph, mode="out") == 0]
     graph <- delete.vertices(graph, iso)
     names(topo_sort(graph, mode="out"))
+}
+
+
+#' Spawn the global selection list
+#'
+#' Create a list of all panels that can respond/contribute to the global multiple selection scheme.
+#'
+#' @param all_memory A named list of \linkS4class{Panel} objects representing the current state of the application.
+#'
+#' @return A list containing two character vectors,
+#' each specifying all panels responding or contributing to the global row or column selections. 
+#' 
+#' @details
+#' The idea is to provide a quick reference that can be used in \code{\link{.requestActiveSelectionUpdate}} and friends,
+#' to trigger resetting of the links between panels that are contributing to a global selection scheme.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_spawn_global_selection_list
+.spawn_global_selection_list <- function(all_memory) {
+    all_rows <- all_cols <- character(0)
+
+    for (x in all_memory) {
+        panel_name <- .getEncodedName(x)
+        if (x[[.selectRowGlobal]]) {
+            all_rows <- c(all_rows, panel_name)            
+        } 
+        if (x[[.selectColGlobal]]) {
+            all_cols <- c(all_cols, panel_name)            
+        }
+    }
+
+    list(row=all_rows, column=all_cols)
 }

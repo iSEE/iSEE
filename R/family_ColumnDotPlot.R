@@ -91,6 +91,8 @@
 #' .defineVisualShapeInterface,ColumnDotPlot-method
 #' .defineVisualSizeInterface,ColumnDotPlot-method
 #' .defineVisualFacetInterface,ColumnDotPlot-method
+#' .defineVisualPointInterface,ColumnDotPlot-method
+#'
 #' @name ColumnDotPlot-class
 NULL
 
@@ -297,6 +299,29 @@ setMethod(".defineVisualSizeInterface", "ColumnDotPlot", function(x, se) {
             selectInput(paste0(plot_name, "_", .sizeByColData), label=NULL,
                 choices=numeric_covariates, selected=x[[.sizeByColData]])
         )
+    )
+})
+
+#' @export
+setMethod(".defineVisualPointInterface", "ColumnDotPlot", function(x, se) {
+    numeric_covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$continuous.colData.names
+
+    plot_name <- .getEncodedName(x)
+    sizeby_field <- paste0(plot_name, "_", .shapeByField)
+
+    tagList(
+        hr(),
+        .add_point_UI_elements(x),
+        checkboxInput(
+            inputId=paste0(plot_name, "_", .contourAdd),
+            label="Add contour (scatter only)",
+            value=FALSE),
+        .conditional_on_check_solo(
+            paste0(plot_name, "_", .contourAdd),
+            on_select=TRUE,
+            colourInput(
+                paste0(plot_name, "_", .contourColor), label=NULL,
+                value=x[[.contourColor]]))
     )
 })
 

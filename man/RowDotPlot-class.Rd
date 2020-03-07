@@ -14,6 +14,7 @@
 \alias{.defineVisualShapeInterface,RowDotPlot-method}
 \alias{.defineVisualSizeInterface,RowDotPlot-method}
 \alias{.defineVisualFacetInterface,RowDotPlot-method}
+\alias{.defineVisualPointInterface,RowDotPlot-method}
 \title{The RowDotPlot virtual class}
 \description{
 The RowDotPlot is a virtual class where each row in the \linkS4class{SummarizedExperiment} is represented by no more than one point (i.e., a \dQuote{dot}) in a brushable \link{ggplot} plot.

@@ -127,19 +127,19 @@ collated[.selectColSource] <- "character"
 
 collated[.dataParamBoxOpen] <- "logical"
 
-.selectRowGlobal <- "GlobalRowSelection"
+.selectRowDynamic <- "DynamicRowSelectionSource"
 .selectRowType <- "RowSelectionType"
 .selectRowSaved <- "RowSelectionSaved"
 
-collated[.selectRowGlobal] <- "logical"
+collated[.selectRowDynamic] <- "logical"
 collated[.selectRowType] <- "character"
 collated[.selectRowSaved] <- "integer"
 
-.selectColGlobal <- "GlobalColumnSelection"
+.selectColDynamic <- "DynamicColumnSelectionSource"
 .selectColType <- "ColumnSelectionType"
 .selectColSaved <- "ColumnSelectionSaved"
 
-collated[.selectColGlobal] <- "logical"
+collated[.selectColDynamic] <- "logical"
 collated[.selectColType] <- "character"
 collated[.selectColSaved] <- "integer"
 

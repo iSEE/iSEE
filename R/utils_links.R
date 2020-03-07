@@ -27,8 +27,8 @@
         isolates=c(names(all_memory), .global_row_node, .global_col_node))
 
     params <- list(
-        row=list(by=.selectRowSource, global=.selectRowGlobal, node=.global_row_node),
-        column=list(by=.selectColSource, global=.selectColGlobal, node=.global_col_node)
+        row=list(by=.selectRowSource, global=.selectRowDynamic, node=.global_row_node),
+        column=list(by=.selectColSource, global=.selectColDynamic, node=.global_col_node)
     )
 
     for (x in names(all_memory)) {
@@ -222,31 +222,33 @@
     names(topo_sort(graph, mode="out"))
 }
 
-
-#' Spawn the global selection list
+#' Spawn the dynamic multiple selection source list
 #'
-#' Create a list of all panels that can respond/contribute to the global multiple selection scheme.
+#' Create a list of all panels that can respond to a multiple selection as a dynamic source.
 #'
 #' @param all_memory A named list of \linkS4class{Panel} objects representing the current state of the application.
 #'
-#' @return A list containing two character vectors,
-#' each specifying all panels responding or contributing to the global row or column selections. 
+#' @return A named list containing two character vectors \code{"row"} or \code{"column"},
+#' each specifying all panels responding to dynamic sources of row or column selections.
 #' 
 #' @details
 #' The idea is to provide a quick reference that can be used in \code{\link{.requestActiveSelectionUpdate}} and friends,
-#' to trigger resetting of the links between panels that are contributing to a global selection scheme.
+#' to trigger resetting of the links between panels that are involved in the a dynamic source scheme.
+#'
+#' The panels that might serve as dynamic sources are always a subset of those that can respond to dynamic sources.
+#' This is imposed by the desire to avoid circularity problems - see \code{?\link{.requestActiveSelectionUpdate}} for details.
 #'
 #' @author Aaron Lun
-#' @rdname INTERNAL_spawn_global_selection_list
-.spawn_global_selection_list <- function(all_memory) {
+#' @rdname INTERNAL_spawn_dynamic_multi_selection_list
+.spawn_dynamic_multi_selection_list <- function(all_memory) {
     all_rows <- all_cols <- character(0)
 
     for (x in all_memory) {
         panel_name <- .getEncodedName(x)
-        if (x[[.selectRowGlobal]]) {
+        if (x[[.selectRowDynamic]]) {
             all_rows <- c(all_rows, panel_name)            
         } 
-        if (x[[.selectColGlobal]]) {
+        if (x[[.selectColDynamic]]) {
             all_cols <- c(all_cols, panel_name)            
         }
     }

@@ -160,8 +160,8 @@ setMethod("initialize", "Panel", function(.Object, ...) {
     args <- .empty_default(args, .selectColType, .selectMultiActiveTitle)
     args <- .empty_default(args, .selectColSaved, 0L)
 
-    args <- .empty_default(args, .selectRowGlobal, FALSE)
-    args <- .empty_default(args, .selectColGlobal, FALSE)
+    args <- .empty_default(args, .selectRowDynamic, FALSE)
+    args <- .empty_default(args, .selectColDynamic, FALSE)
 
     args <- .empty_default(args, .dataParamBoxOpen, FALSE)
 
@@ -172,7 +172,7 @@ setValidity2("Panel", function(object) {
     msg <- character(0)
 
     msg <- .valid_logical_error(msg, object, c(.selectParamBoxOpen, .dataParamBoxOpen,
-        .selectRowGlobal, .selectColGlobal))
+        .selectRowDynamic, .selectColDynamic))
 
     msg <- .single_string_error(msg, object, c(.selectRowSource, .selectColSource))
 
@@ -263,10 +263,10 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
     .create_multi_selection_history_observers(panel_name,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_multi_selection_global_observer(panel_name, global_field=.selectRowGlobal,
+    .create_multi_selection_global_observer(panel_name, global_field=.selectRowDynamic,
         source_type="row", input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_multi_selection_global_observer(panel_name, global_field=.selectColGlobal, 
+    .create_multi_selection_global_observer(panel_name, global_field=.selectColDynamic, 
         source_type="column", input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     for (f in .singleSelectionSlots(x)) {

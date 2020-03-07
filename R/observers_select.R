@@ -318,6 +318,7 @@
 {
     # nocov start
     select_global_field <- paste0(panel_name, "_", global_field)
+
     observeEvent(input[[select_global_field]], {
         matched_input <- as(input[[select_global_field]],
             typeof(pObjects$memory[[panel_name]][[global_field]]))
@@ -327,7 +328,7 @@
 
         pObjects$memory[[panel_name]][[global_field]] <- matched_input
         FUN <- if (matched_input) union else setdiff
-        pObjects$global_panels[[source_type]] <- FUN(pObjects$global_panels[[source_type]], panel_name)
+        pObjects$dynamic_sources[[source_type]] <- FUN(pObjects$dynamic_sources[[source_type]], panel_name)
     })
     # nocov end
 }

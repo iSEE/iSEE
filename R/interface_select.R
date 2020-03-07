@@ -62,11 +62,11 @@
 
         .define_selection_choices(x, by_field=.selectRowSource,
             type_field=.selectRowType, saved_field=.selectRowSaved,
-            global_field=.selectRowGlobal, selectable=row_selectable, "row"),
+            global_field=.selectRowDynamic, selectable=row_selectable, "row"),
 
         .define_selection_choices(x, by_field=.selectColSource,
             type_field=.selectColType, saved_field=.selectColSaved,
-            global_field=.selectColGlobal, selectable=col_selectable, "column"),
+            global_field=.selectColDynamic, selectable=col_selectable, "column"),
 
         ...
     )

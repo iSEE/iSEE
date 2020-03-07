@@ -33,7 +33,7 @@
 #' e.g., if the coordinates change in a \linkS4class{DotPlot}, existing brushes and lassos are usually not applicable.
 #'
 #' @section Comments on handling dynamic sources:
-#' If \code{x} is using a dynamic selection source,
+#' If \code{x} is using a dynamic multiple selection source,
 #' \code{.requestActiveSelectionUpdate} will modify all other panels using dynamic sources 
 #' so that they receive their multiple selections from \code{x}.
 #' This involves updating the \code{session} to change the chosen source in the UI,
@@ -116,10 +116,10 @@
     # Handling the global selections.
     target <- pObjects$memory[[panel_name]]
     dim <- .multiSelectionDimension(target)
-    src <- if (dim=="row") .selectRowGlobal else .selectColGlobal
+    src <- if (dim=="row") .selectRowDynamic else .selectColDynamic
 
     if (target[[src]]) {
-        all_affected <- pObjects$global_panels[[dim]]
+        all_affected <- pObjects$dynamic_sources[[dim]]
         field <- if (dim=="row") .selectRowSource else .selectColSource
         
         # nocov start

@@ -641,13 +641,11 @@ iSEE <- function(se,
 #' \item \code{varname}, a list of strings indicating which variable in a panel's \code{commands} represents that panel's \code{contents}.
 #' This is used within \code{\link{.track_it_all}} to ensure that the reported code makes sense.
 #' \item \code{selection_links}, a \link{graph} containing the links between panels due to transmitted multiple selections.
-#' This is constructed by \code{\link{.spawn_multi_selection_graph}}
-#' and can be modified by \code{\link{.choose_new_parent}}.
+#' This is constructed by \code{\link{.spawn_multi_selection_graph}} and can be modified by \code{\link{.choose_new_parent}}.
 #' \item \code{aesthetics_links}, a \link{graph} containing the links between panels due to transmitted single selections.
-#' This is constructed by \code{\link{.spawn_single_selection_graph}}
-#' and can be modified by \code{\link{.choose_new_parent}}.
-#' \item \code{global_panels}, a list containing the panels participating in the global multiple selection scheme.
-#' This is constructed by \code{\link{.spawn_global_selection_list}}. 
+#' This is constructed by \code{\link{.spawn_single_selection_graph}} and can be modified by \code{\link{.choose_new_parent}}.
+#' \item \code{dynamic}, a list containing the panels participating in the dynamic multiple selection scheme.
+#' This is constructed by \code{\link{.spawn_dynamic_multi_selection_list}}.
 #' }
 #'
 #' @author Aaron Lun
@@ -665,7 +663,7 @@ iSEE <- function(se,
 
     pObjects$aesthetics_links <- .spawn_single_selection_graph(memory)
     pObjects$selection_links <- .spawn_multi_selection_graph(memory)
-    pObjects$global_panels <- .spawn_global_selection_list(memory)
+    pObjects$dynamic_sources <- .spawn_dynamic_multi_selection_list(memory)
 
     pObjects[[.voiceActivePanel]] <- NA_character_
 

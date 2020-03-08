@@ -10,6 +10,7 @@
 \alias{.createObservers,RowDotPlot-method}
 \alias{.hideInterface,RowDotPlot-method}
 \alias{.multiSelectionDimension,RowDotPlot-method}
+\alias{.singleSelectionDimension,RowDotPlot-method}
 \alias{.defineVisualColorInterface,RowDotPlot-method}
 \alias{.defineVisualShapeInterface,RowDotPlot-method}
 \alias{.defineVisualSizeInterface,RowDotPlot-method}

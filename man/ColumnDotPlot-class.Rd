@@ -10,6 +10,7 @@
 \alias{.createObservers,ColumnDotPlot-method}
 \alias{.hideInterface,ColumnDotPlot-method}
 \alias{.multiSelectionDimension,ColumnDotPlot-method}
+\alias{.singleSelectionDimension,ColumnDotPlot-method}
 \alias{.defineVisualColorInterface,ColumnDotPlot-method}
 \alias{.defineVisualShapeInterface,ColumnDotPlot-method}
 \alias{.defineVisualSizeInterface,ColumnDotPlot-method}

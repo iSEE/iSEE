@@ -181,13 +181,15 @@ test_that(".requestActiveSelectionUpdate updates rObjects", {
 
     rObjects <- new.env()
     rObjects$modified <- list()
-
-    .requestActiveSelectionUpdate("ReducedDimensionPlot1", rObjects, update_output = TRUE)
+    pObjects <- new.env()
+    pObjects$memory <- list(ReducedDimensionPlot1=ReducedDimensionPlot())
+    
+    .requestActiveSelectionUpdate("ReducedDimensionPlot1", session=NULL, pObjects, rObjects, update_output = TRUE)
 
     expect_identical(rObjects$ReducedDimensionPlot1_INTERNAL_multi_select, 2L)
     expect_identical(rObjects$modified, list(ReducedDimensionPlot1 = "Reactivated"))
 
-    .requestActiveSelectionUpdate("ReducedDimensionPlot1", rObjects, update_output = FALSE)
+    .requestActiveSelectionUpdate("ReducedDimensionPlot1", session=NULL, pObjects, rObjects, update_output = FALSE)
 
     expect_identical(rObjects$ReducedDimensionPlot1_INTERNAL_multi_select, 3L)
     expect_identical(rObjects$modified, list(ReducedDimensionPlot1 = c("Reactivated", "Norender")))

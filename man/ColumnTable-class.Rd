@@ -9,6 +9,7 @@
 \alias{.createObservers,ColumnTable-method}
 \alias{.hideInterface,ColumnTable-method}
 \alias{.multiSelectionDimension,ColumnTable-method}
+\alias{.singleSelectionDimension,ColumnTable-method}
 \title{The ColumnTable class}
 \description{
 The ColumnTable is a virtual class where each column in the \linkS4class{SummarizedExperiment} is represented by no more than row in a \code{\link{datatable}} widget.

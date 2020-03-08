@@ -9,6 +9,7 @@
 \alias{.createObservers,RowTable-method}
 \alias{.hideInterface,RowTable-method}
 \alias{.multiSelectionDimension,RowTable-method}
+\alias{.singleSelectionDimension,RowTable-method}
 \title{The RowTable class}
 \description{
 The RowTable is a virtual class where each row in the \linkS4class{SummarizedExperiment} is represented by no more than one row in a \code{\link{datatable}} widget.

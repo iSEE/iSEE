@@ -1,6 +1,14 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.99.4}{
+\itemize{
+    \item Added options for dynamic choice of single/multiple selection sources.
+    \item Fixed bug around \code{NA} groupings in \code{subsetPointsByGrid()}.
+    \item Explicitly notify the user when removing invalid panels supplied by a landing page.
+}
+}
+
 \section{iSEE VERSION 1.99.3}{
 \itemize{
     \item Fixed occurences of \code{rowData} in \code{RowDotPlot} panels.

@@ -159,7 +159,7 @@
         # Updating the selection, based on the currently selected row.
         if (tab!=.noSelection) {
             old_selected <- pObjects$memory[[panel_name]][[name_field]]
-            new_selected <- .singleSelectionValue(pObjects$memory[[tab]])
+            new_selected <- .singleSelectionValue(pObjects$memory[[tab]], pObjects)
 
             if (!is.null(new_selected) && new_selected != old_selected) {
                 all_choices <- rownames(pObjects$contents[[tab]])

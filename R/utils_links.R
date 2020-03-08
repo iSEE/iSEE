@@ -1,6 +1,3 @@
-.global_row_node <- "iSEE_internal_global_rows"
-.global_col_node <- "iSEE_internal_global_columns"
-
 #' Spawn transmitter graphs
 #'
 #' Create graphs for the links between panels due to multiple or single selections.
@@ -23,25 +20,14 @@
 #' @rdname INTERNAL_spawn_graph
 #' @importFrom igraph make_graph is_dag
 .spawn_multi_selection_graph <- function(all_memory) {
-    graph <- make_graph(edges=character(0), 
-        isolates=c(names(all_memory), .global_row_node, .global_col_node))
-
-    params <- list(
-        row=list(by=.selectRowSource, global=.selectRowDynamic, node=.global_row_node),
-        column=list(by=.selectColSource, global=.selectColDynamic, node=.global_col_node)
-    )
+    graph <- make_graph(edges=character(0), isolates=names(all_memory))
 
     for (x in names(all_memory)) {
         instance <- all_memory[[x]]
 
-        for (f in params) {
-            by <- instance[[f$by]]
-            global <- instance[[f$global]]
-
-            if (global) {
-                graph <- .add_interpanel_link(graph, x, f$node, field=f$by)
-            } else if (by %in% names(all_memory)) {
-                graph <- .add_interpanel_link(graph, x, by, field=f$by)
+        for (f in c(.selectRowSource, .selectColSource)) {
+            if (instance[[f]] %in% names(all_memory)) {
+                graph <- .add_interpanel_link(graph, x, instance[[f]], field=f)
             }
         }
     }

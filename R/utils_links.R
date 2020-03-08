@@ -315,7 +315,7 @@
 .delete_panel_from_dynamic_sources <- function(listing, panel_name, source_type, field) {
     existing <- listing[[source_type]][[panel_name]] 
     existing <- setdiff(existing, field)
-    if (length(existing)) {
+    if (!length(existing)) {
         existing <- NULL
     }
     listing[[source_type]][[panel_name]] <- existing

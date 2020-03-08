@@ -272,10 +272,24 @@ setMethod(".createObservers", "SampleAssayPlot", function(x, se, input, session,
 setMethod(".singleSelectionSlots", "SampleAssayPlot", function(x) {
     c(callNextMethod(),
         list(
-            list(parameter=.sampAssayXAxisSampName, source=.sampAssayXAxisColTable, dimension="column",
-                use_mode=.sampAssayXAxis, use_value=.sampAssayXAxisSampNameTitle, protected=TRUE),
-            list(parameter=.sampAssayYAxisSampName, source=.sampAssayYAxisColTable, dimension="column",
-                use_mode=NA, use_value=NA, protected=TRUE)
+            list(
+                parameter=.sampAssayXAxisSampName, 
+                source=.sampAssayXAxisColTable, 
+                dimension="column",
+                dynamic=.sampAssayXAxisSampDynamic,
+                use_mode=.sampAssayXAxis, 
+                use_value=.sampAssayXAxisSampNameTitle, 
+                protected=TRUE
+            ),
+            list(
+                parameter=.sampAssayYAxisSampName, 
+                source=.sampAssayYAxisColTable, 
+                dimension="column",
+                dynamic=.sampAssayYAxisSampDynamic,
+                use_mode=NA, 
+                use_value=NA, 
+                protected=TRUE
+            )
         )
     )
 })

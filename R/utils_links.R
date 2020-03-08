@@ -263,16 +263,16 @@
 
         for (s in all_singles) {
             if (is.null(s$dimension)) {
-                next
+                next # nocov
             } 
             if (is.null(s$dynamic) || !x[[s$dynamic]]) {
                 next
             }
 
             if (s$dimension=="feature") {
-                cur_feat <- c(cur_feat, s$param)
+                cur_feat <- c(cur_feat, s$source)
             } else {
-                cur_samp <- c(cur_samp, s$param)
+                cur_samp <- c(cur_samp, s$source)
             }
         }
 

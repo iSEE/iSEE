@@ -269,11 +269,13 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
     .create_multi_selection_history_observers(panel_name,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_multi_selection_global_observer(panel_name, global_field=.selectRowDynamic,
-        source_type="row", input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+    .create_dynamic_multi_selection_observer(panel_name, dyn_field=.selectRowDynamic,
+        by_field=.selectRowSource, source_type="row",
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_multi_selection_global_observer(panel_name, global_field=.selectColDynamic, 
-        source_type="column", input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+    .create_dynamic_multi_selection_observer(panel_name, dyn_field=.selectColDynamic, 
+        by_field=.selectColSource, source_type="column",
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     for (f in .singleSelectionSlots(x)) {
         if ("dimension" %in% names(f)) {

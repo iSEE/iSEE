@@ -62,11 +62,11 @@
 
         .define_selection_choices(x, by_field=.selectRowSource,
             type_field=.selectRowType, saved_field=.selectRowSaved,
-            global_field=.selectRowDynamic, selectable=row_selectable, "row"),
+            dyn_field=.selectRowDynamic, selectable=row_selectable, "row"),
 
         .define_selection_choices(x, by_field=.selectColSource,
             type_field=.selectColType, saved_field=.selectColSaved,
-            global_field=.selectColDynamic, selectable=col_selectable, "column"),
+            dyn_field=.selectColDynamic, selectable=col_selectable, "column"),
 
         ...
     )
@@ -148,17 +148,16 @@
 #' @rdname INTERNAL_create_selection_param_box
 #' @importFrom shiny tagList radioButtons selectizeInput
 .define_selection_choices <- function(x, by_field, type_field,
-    saved_field, global_field, selectable, source_type="row")
+    saved_field, dyn_field, selectable, source_type="row")
 {
     select_type <- paste0(.getEncodedName(x), "_", type_field)
-    select_global <- paste0(.getEncodedName(x), "_", global_field)
 
     tagList(
         .define_selection_transmitter(x, by_field, selectable, source_type),
 
-        .checkboxInputHidden(x, field=global_field,
+        .checkboxInputHidden(x, field=dyn_field,
             label=paste("Use dynamic", source_type, "selection"),
-            value=x[[global_field]]),
+            value=x[[dyn_field]]),
 
         .radioButtonsHidden(
             x, field=type_field, label=NULL, inline=TRUE,

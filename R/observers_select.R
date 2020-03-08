@@ -244,7 +244,7 @@
 #' Observers to change the multiple selections by saving the active selection or deleting existing saved selections.
 #' This differs from \code{\link{.create_multi_selection_type_observers}}, which just involves using existing saved selections.
 #'
-#' @param panel_name String containing the name of the plot..
+#' @param panel_name String containing the name of the plot.
 #' @param input The Shiny input object from the server function.
 #' @param session The Shiny session object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
@@ -310,25 +310,49 @@
     invisible(NULL)
 }
 
-#' Global selection observers
+#' Dynamic multiple selection observer
 #'
-#' @rdname INTERNAL_create_global_selection_observer
-.create_multi_selection_global_observer <- function(panel_name, global_field, source_type, 
-    input, session, pObjects, rObjects) 
+#' Create an observer for (un)checking of the dynamic multiple selection option.
+#'
+#' @param panel_name String containing the name of the plot.
+#' @param dyn_field String containing the name of the slot determining whether a dynamic source is to be used.
+#' @param by_field String containing the name of the slot determining the source of the multiple selection.
+#' @param source_type String specifying whether the observer is to monitor multiple \code{"row"} or \code{"column"} selections.
+#' @param input The Shiny input object from the server function.
+#' @param session The Shiny session object from the server function.
+#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
+#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
+#'
+#' @return An observer is created in the server function in which this is called.
+#' A \code{NULL} value is invisibly returned.
+#'
+#' @author Aaron Lun
+#'
+#' @importFrom shiny observeEvent
+#' @rdname INTERNAL_create_dynamic_multi_selection_observer
+.create_dynamic_multi_selection_observer <- function(panel_name, 
+    dyn_field, by_field, source_type, input, session, pObjects, rObjects) 
 {
-    # nocov start
-    select_global_field <- paste0(panel_name, "_", global_field)
+    select_dyn_field <- paste0(panel_name, "_", dyn_field)
 
-    observeEvent(input[[select_global_field]], {
-        matched_input <- as(input[[select_global_field]],
-            typeof(pObjects$memory[[panel_name]][[global_field]]))
-        if (identical(matched_input, pObjects$memory[[panel_name]][[global_field]])) {
+    # nocov start
+    observeEvent(input[[select_dyn_field]], {
+        matched_input <- as(input[[select_dyn_field]], typeof(pObjects$memory[[panel_name]][[dyn_field]]))
+        if (identical(matched_input, pObjects$memory[[panel_name]][[dyn_field]])) {
             return(NULL)
         }
+        pObjects$memory[[panel_name]][[dyn_field]] <- matched_input
 
-        pObjects$memory[[panel_name]][[global_field]] <- matched_input
-        FUN <- if (matched_input) union else setdiff
-        pObjects$dynamic_sources[[source_type]] <- FUN(pObjects$dynamic_sources[[source_type]], panel_name)
+        if (matched_input) {
+            FUN <- .add_panel_to_dynamic_sources 
+        } else {
+            FUN <- .delete_panel_from_dynamic_sources
+        }
+
+        pObjects$dynamic_multi_selections <- FUN(pObjects$dynamic_multi_selections, 
+            panel_name=panel_name, source_type=source_type, field=by_field)
     })
     # nocov end
+    
+    invisible(NULL)
 }

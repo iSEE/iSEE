@@ -222,36 +222,112 @@
     names(topo_sort(graph, mode="out"))
 }
 
-#' Spawn the dynamic multiple selection source list
+#' Spawn the dynamic selection source lists
 #'
-#' Create a list of all panels that can respond to a multiple selection as a dynamic source.
+#' Create a list of all panels that can respond to a dynamic source of multiple or single selections.
 #'
 #' @param all_memory A named list of \linkS4class{Panel} objects representing the current state of the application.
 #'
-#' @return A named list containing two character vectors \code{"row"} or \code{"column"},
-#' each specifying all panels responding to dynamic sources of row or column selections.
+#' @return A list of two named lists of character vectors.
+#' Each internal vector corresponds to a panel and contains all fields responding to a dynamic row/column source in that panel.
+#' 
+#' For multiple selections, only one field will be present for each panel (i.e., the row/column selection source),
+#' but for single selections, multiple fields may be present depending on the contents of \code{\link{.singleSelectionSlots}}.
+#'
+#' For multiple selections, the two internal lists are named \code{"row"} and \code{"column"}.
+#' For single selections, they are instead named \code{"feature"} and \code{"sample"}, 
+#' consistent with the nomenclature in the rest of the package.
 #' 
 #' @details
 #' The idea is to provide a quick reference that can be used in \code{\link{.requestActiveSelectionUpdate}} and friends,
-#' to trigger resetting of the links between panels that are involved in the a dynamic source scheme.
+#' to trigger resetting of the links between panels that are involved in a dynamic multiple selection source scheme.
+#' A similar principle applies to single selections via the observer in \code{\link{.create_dimname_propagation_observer}}.
 #'
-#' The panels that might serve as dynamic sources are always a subset of those that can respond to dynamic sources.
-#' This is imposed by the desire to avoid circularity problems - see \code{?\link{.requestActiveSelectionUpdate}} for details.
+#' Note that the panels that might serve as dynamic sources for multiple selections
+#' are always a subset of those that can respond to dynamic sources.
+#' This is imposed by the desire to avoid circularity problems - 
+#' see \code{?\link{.requestActiveSelectionUpdate}} for details.
 #'
 #' @author Aaron Lun
-#' @rdname INTERNAL_spawn_dynamic_multi_selection_list
+#' @rdname INTERNAL_spawn_dynamic_selection_list
 .spawn_dynamic_multi_selection_list <- function(all_memory) {
-    all_rows <- all_cols <- character(0)
+    multi_rows <- multi_cols <- list() 
 
     for (x in all_memory) {
         panel_name <- .getEncodedName(x)
         if (x[[.selectRowDynamic]]) {
-            all_rows <- c(all_rows, panel_name)            
+            multi_rows[[panel_name]] <- .selectRowSource
         } 
         if (x[[.selectColDynamic]]) {
-            all_cols <- c(all_cols, panel_name)            
+            multi_cols[[panel_name]] <- .selectColSource
         }
     }
 
-    list(row=all_rows, column=all_cols)
+    list(row=multi_rows, column=multi_cols)
+}
+
+#' @author Aaron Lun
+#' @rdname INTERNAL_spawn_dynamic_selection_list
+.spawn_dynamic_single_selection_list <- function(all_memory) {
+    single_feat <- single_samp <- list() 
+
+    for (x in all_memory) {
+        all_singles <- .singleSelectionSlots(x)
+        cur_feat <- cur_samp <- character(0)
+
+        for (s in all_singles) {
+            if (is.null(s$dimension)) {
+                next
+            } 
+            if (is.null(s$dynamic) || !x[[s$dynamic]]) {
+                next
+            }
+
+            if (s$dimension=="row") {
+                cur_feat <- c(cur_feat, s$param)
+            } else {
+                cur_samp <- c(cur_samp, s$param)
+            }
+        }
+
+        panel_name <- .getEncodedName(x)
+        single_feat[[panel_name]] <- cur_feat
+        single_samp[[panel_name]] <- cur_feat
+    }
+
+    list(row=single_feat, column=single_samp)
+}
+
+#' Modify the dynamic source listing
+#'
+#' Add or delete entries from the dynamic source listing.
+#'
+#' @param listing A list of lists, typically the output of \code{\link{.spawn_dynamic_multi_selection_list}} or friends.
+#' @param panel_name String containing the name of the current panel.
+#' @param source_type String specifying whether we are working with \code{"row"} or \code{"column"} selections.
+#' (For single-selections, this will be \code{"feature"} or \code{"sample"}.)
+#' @param field String specifying the field responding to the dynamic source.
+#'
+#' @return 
+#' For \code{.add_panel_to_dynamic_sources}, \code{listing} is returned with \code{field} added to the character vector for \code{panel_name}; if no such vector existed, a new entry named after \code{panel_name} is added.
+#'
+#' For \code{.delete_panel_from_dynamic_sources}, \code{listing} is returned with \code{field} removed from the character vector for \code{panel_name}; if this results in a zero-length vector, the entire entry for that panel is removed.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_add_panel_to_dynamic_sources
+.add_panel_to_dynamic_sources <- function(listing, panel_name, source_type, field) {
+    existing <- listing[[source_type]][[panel_name]] 
+    listing[[source_type]][[panel_name]] <- union(existing, field)
+    listing
+}
+
+#' @rdname INTERNAL_add_panel_to_dynamic_sources
+.delete_panel_from_dynamic_sources <- function(listing, panel_name, source_type, field) {
+    existing <- listing[[source_type]][[panel_name]] 
+    existing <- setdiff(existing, field)
+    if (length(existing)) {
+        existing <- NULL
+    }
+    listing[[source_type]][[panel_name]] <- existing
+    listing
 }

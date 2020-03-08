@@ -469,10 +469,22 @@ setMethod(".singleSelectionValue", "DotPlot", function(x, pObjects) {
 setMethod(".singleSelectionSlots", "DotPlot", function(x) {
     c(callNextMethod(),
         list(
-            list(parameter=.colorByFeatName, source=.colorByRowTable, dimension="row",
-                use_mode=.colorByField, use_value=.colorByFeatNameTitle, protected=FALSE),
-            list(parameter=.colorBySampName, source=.colorByColTable, dimension="column",
-                use_mode=.colorByField, use_value=.colorBySampNameTitle, protected=FALSE)
+            list(parameter=.colorByFeatName, 
+                source=.colorByRowTable, 
+                dimension="row",
+                use_mode=.colorByField, 
+                use_value=.colorByFeatNameTitle, 
+                dynamic=.colorByFeatDynamic,
+                protected=FALSE
+            ),
+            list(parameter=.colorBySampName, 
+                source=.colorByColTable, 
+                dimension="column",
+                use_mode=.colorByField, 
+                use_value=.colorBySampNameTitle, 
+                dynamic=.colorBySampDynamic,
+                protected=FALSE
+            )
         )
     )
 })

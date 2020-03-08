@@ -12,6 +12,7 @@
 #' @param by_field String specifying the name of the slot containing the identity of the panel transmitting to \code{x}.
 #' @param type_field String specifying the name of the slot containing the type of multiple selection to use in \code{x}.
 #' @param saved_field String specifying the name of the slot containing the index of the saved selection to use in \code{x}.
+#' @param dyn_field String specifying the name of the slot indicating whether to use a dynamic selection source.
 #'
 #' @return
 #' For \code{.create_selection_param_box} and \code{.create_dotplot_selection_param_box},

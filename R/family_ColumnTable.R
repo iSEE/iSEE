@@ -61,6 +61,7 @@
 #' .createObservers,ColumnTable-method
 #' .hideInterface,ColumnTable-method
 #' .multiSelectionDimension,ColumnTable-method
+#' .singleSelectionDimension,ColumnTable-method
 #' @name ColumnTable-class
 NULL
 

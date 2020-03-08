@@ -60,6 +60,7 @@
 #' For controlling selections:
 #' \itemize{
 #' \item \code{\link{.multiSelectionDimension}(x)} returns \code{"column"} to indicate that a column selection is being transmitted.
+#' \item \code{\link{.singleSelectionDimension}(x)} returns \code{"sample"} to indicate that a sample identity is being transmitted.
 #' }
 #'
 #' Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.
@@ -373,6 +374,9 @@ setMethod(".createObservers", "ColumnDotPlot", function(x, se, input, session, p
 
 #' @export
 setMethod(".multiSelectionDimension", "ColumnDotPlot", function(x) "column")
+
+#' @export
+setMethod(".singleSelectionDimension", "ColumnDotPlot", function(x) "sample")
 
 ###############################################################
 # See ?.addDotPlotDataColor for documentation on these methods.

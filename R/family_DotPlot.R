@@ -471,7 +471,7 @@ setMethod(".singleSelectionSlots", "DotPlot", function(x) {
         list(
             list(parameter=.colorByFeatName, 
                 source=.colorByRowTable, 
-                dimension="row",
+                dimension="feature",
                 use_mode=.colorByField, 
                 use_value=.colorByFeatNameTitle, 
                 dynamic=.colorByFeatDynamic,
@@ -479,7 +479,7 @@ setMethod(".singleSelectionSlots", "DotPlot", function(x) {
             ),
             list(parameter=.colorBySampName, 
                 source=.colorByColTable, 
-                dimension="column",
+                dimension="sample",
                 use_mode=.colorByField, 
                 use_value=.colorBySampNameTitle, 
                 dynamic=.colorBySampDynamic,

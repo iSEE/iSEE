@@ -52,7 +52,7 @@
             }
         }
 
-        dim <- if (.singleSelectionDimension(instance)=="row") "feature" else "sample" # TODO: replace all 'row' with 'feature'.
+        dim <- .singleSelectionDimension(instance)
         dynamic_dependents <- pObjects$dynamic_single_selections[[dim]]
         for (kid in names(dynamic_dependents)) {
             all_fields <- dynamic_dependents[[kid]]

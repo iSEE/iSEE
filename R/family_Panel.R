@@ -102,7 +102,7 @@
 #' \item \code{\link{.multiSelectionClear}(x)} will always return \code{x}.
 #' \item \code{\link{.multiSelectionInvalidated}(x)} will always return \code{FALSE}.
 #' \item \code{\link{.multiSelectionAvailable}(x, contents)} will return \code{nrow(contents)}.
-#' \item \code{\link{.singleSelectionDimension}(x)} will return \code{.multiSelectionDimension(x)}.
+#' \item \code{\link{.singleSelectionDimension}(x)} will always return \code{"none"}.
 #' \item \code{\link{.singleSelectionValue}(x)} will always return \code{NULL}.
 #' \item \code{\link{.singleSelectionSlots}(x)} will always return an empty list.
 #' }
@@ -281,7 +281,7 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
         if ("dimension" %in% names(f)) {
             .create_dimname_observers(panel_name,
                 name_field=f$parameter,
-                choices=if (f$dimension=="column") colnames(se) else rownames(se),
+                choices=if (f$dimension=="sample") colnames(se) else rownames(se),
                 use_mode_field=f$use_mode,
                 use_value=f$use_value,
                 tab_field=f$source,
@@ -290,8 +290,7 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
 
             if (!is.null(f$dynamic)) {
                 .create_dynamic_single_selection_source_observer(panel_name, dyn_field=f$dynamic,
-                    by_field=f$source,
-                    source_type=if (f$dimension=="column") "sample" else "feature", # TODO: flip to 'sample'.
+                    by_field=f$source, source_type=f$dimension,
                     input=input, session=session, pObjects=pObjects, rObjects=rObjects)
             }
         }
@@ -336,7 +335,7 @@ setMethod(".multiSelectionInvalidated", "Panel", function(x) FALSE)
 setMethod(".multiSelectionAvailable", "Panel", function(x, contents) nrow(contents))
 
 #' @export
-setMethod(".singleSelectionDimension", "Panel", function(x) .multiSelectionDimension(x))
+setMethod(".singleSelectionDimension", "Panel", function(x) "none")
 
 #' @export
 setMethod(".singleSelectionSlots", "Panel", function(x) list())

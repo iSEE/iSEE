@@ -127,7 +127,7 @@ collated[.selectColSource] <- "character"
 
 collated[.dataParamBoxOpen] <- "logical"
 
-.selectRowDynamic <- "DynamicRowSelectionSource"
+.selectRowDynamic <- "RowSelectionDynamicSource"
 .selectRowType <- "RowSelectionType"
 .selectRowSaved <- "RowSelectionSaved"
 
@@ -135,7 +135,7 @@ collated[.selectRowDynamic] <- "logical"
 collated[.selectRowType] <- "character"
 collated[.selectRowSaved] <- "integer"
 
-.selectColDynamic <- "DynamicColumnSelectionSource"
+.selectColDynamic <- "ColumnSelectionDynamicSource"
 .selectColType <- "ColumnSelectionType"
 .selectColSaved <- "ColumnSelectionSaved"
 
@@ -166,15 +166,19 @@ collated[.facetByColumn] <- "character"
 .colorByDefaultColor <- "ColorByDefaultColor"
 .colorByFeatName <- "ColorByFeatureName"
 .colorByRowTable <- "ColorByFeatureSource"
+.colorByFeatDynamic <- "ColorByFeatureDynamicSource"
 .colorBySampName <- "ColorBySampleName"
 .colorByColTable <- "ColorBySampleSource"
+.colorBySampDynamic <- "ColorBySampleDynamicSource"
 
 collated[.colorByField] <- "character"
 collated[.colorByDefaultColor] <- "character"
 collated[.colorByFeatName] <- "character"
 collated[.colorByRowTable] <- "character"
+collated[.colorByFeatDynamic] <- "logical"
 collated[.colorBySampName] <- "character"
 collated[.colorByColTable] <- "character"
+collated[.colorBySampDynamic] <- "logical"
 
 .shapeByField <- "ShapeBy"
 
@@ -294,19 +298,27 @@ setClass("ReducedDimensionPlot", contains="ColumnDotPlot", slots=collated)
 .featAssayAssay <- "Assay"
 .featAssayXAxis <- "XAxis"
 .featAssayXAxisColData <- "XAxisColumnData"
-.featAssayXAxisRowTable <- "XAxisFeatureSource"
+
 .featAssayXAxisFeatName <- "XAxisFeatureName"
-.featAssayYAxisRowTable <- "YAxisFeatureSource"
+.featAssayXAxisRowTable <- "XAxisFeatureSource"
+.featAssayXAxisFeatDynamic <- "XAxisFeatureDynamicSource"
+
 .featAssayYAxisFeatName <- "YAxisFeatureName"
+.featAssayYAxisRowTable <- "YAxisFeatureSource"
+.featAssayYAxisFeatDynamic <- "YAxisFeatureDynamicSource"
 
 collated <- character(0)
 collated[.featAssayAssay] <- "character"
 collated[.featAssayXAxis] <- "character"
 collated[.featAssayXAxisColData] <- "character"
-collated[.featAssayXAxisRowTable] <- "character"
+
 collated[.featAssayXAxisFeatName] <- "character"
-collated[.featAssayYAxisRowTable] <- "character"
+collated[.featAssayXAxisRowTable] <- "character"
+collated[.featAssayXAxisFeatDynamic] <- "logical"
+
 collated[.featAssayYAxisFeatName] <- "character"
+collated[.featAssayYAxisRowTable] <- "character"
+collated[.featAssayYAxisFeatDynamic] <- "logical"
 
 #' @export
 setClass("FeatureAssayPlot", contains="ColumnDotPlot", slots=collated)
@@ -344,19 +356,27 @@ setClass("RowDataPlot", contains="RowDotPlot", slots=collated)
 .sampAssayAssay <- "Assay"
 .sampAssayXAxis <- "XAxis"
 .sampAssayXAxisRowData <- "XAxisRowData"
-.sampAssayXAxisColTable <- "XAxisSampleSource"
+
 .sampAssayXAxisSampName <- "XAxisSampleName"
-.sampAssayYAxisColTable <- "YAxisSampleSource"
+.sampAssayXAxisColTable <- "XAxisSampleSource"
+.sampAssayXAxisSampDynamic <- "XAxisSampleDynamicSource"
+
 .sampAssayYAxisSampName <- "YAxisSampleName"
+.sampAssayYAxisColTable <- "YAxisSampleSource"
+.sampAssayYAxisSampDynamic <- "YAxisSampleDynamicSource"
 
 collated <- character(0)
 collated[.sampAssayAssay] <- "character"
 collated[.sampAssayXAxis] <- "character"
 collated[.sampAssayXAxisRowData] <- "character"
-collated[.sampAssayXAxisColTable] <- "character"
+
 collated[.sampAssayXAxisSampName] <- "character"
-collated[.sampAssayYAxisColTable] <- "character"
+collated[.sampAssayXAxisColTable] <- "character"
+collated[.sampAssayXAxisSampDynamic] <- "logical"
+
 collated[.sampAssayYAxisSampName] <- "character"
+collated[.sampAssayYAxisColTable] <- "character"
+collated[.sampAssayYAxisSampDynamic] <- "logical"
 
 #' @export
 setClass("SampleAssayPlot", contains="RowDotPlot", slots=collated)

@@ -130,10 +130,15 @@ setMethod("initialize", "FeatureAssayPlot", function(.Object, ...) {
     args <- .empty_default(args, .featAssayAssay, NA_character_)
     args <- .empty_default(args, .featAssayXAxis, .featAssayXAxisNothingTitle)
     args <- .empty_default(args, .featAssayXAxisColData, NA_character_)
+
     args <- .empty_default(args, .featAssayXAxisRowTable, .noSelection)
     args <- .empty_default(args, .featAssayXAxisFeatName, NA_character_)
+    args <- .empty_default(args, .featAssayXAxisFeatDynamic, FALSE)
+
     args <- .empty_default(args, .featAssayYAxisRowTable, .noSelection)
     args <- .empty_default(args, .featAssayYAxisFeatName, NA_character_)
+    args <- .empty_default(args, .featAssayYAxisFeatDynamic, FALSE)
+
     do.call(callNextMethod, c(list(.Object), args))
 })
 
@@ -213,21 +218,31 @@ setMethod(".defineDataInterface", "FeatureAssayPlot", function(x, se, select_inf
             label="Y-axis feature:", choices=NULL, selected=NULL, multiple=FALSE),
         selectInput(.input_FUN(.featAssayYAxisRowTable), label=NULL, choices=tab_by_row,
             selected=.choose_link(x[[.featAssayYAxisRowTable]], tab_by_row)),
+        checkboxInput(.input_FUN(.featAssayYAxisFeatDynamic), 
+            label="Use dynamic feature selection for the y-axis", 
+            value=x[[.featAssayYAxisFeatDynamic]]),
+
         selectInput(paste0(.getEncodedName(x), "_", .featAssayAssay), label=NULL,
             choices=all_assays, selected=x[[.featAssayAssay]]),
         radioButtons(.input_FUN(.featAssayXAxis), label="X-axis:", inline=TRUE,
             choices=xaxis_choices, selected=x[[.featAssayXAxis]]),
+
         .conditional_on_radio(.input_FUN(.featAssayXAxis),
             .featAssayXAxisColDataTitle,
             selectInput(.input_FUN(.featAssayXAxisColData),
                 label="X-axis column data:",
                 choices=column_covariates, selected=x[[.featAssayXAxisColData]])),
+
         .conditional_on_radio(.input_FUN(.featAssayXAxis),
             .featAssayXAxisFeatNameTitle,
             selectizeInput(.input_FUN(.featAssayXAxisFeatName),
                 label="X-axis feature:", choices=NULL, selected=NULL, multiple=FALSE),
             selectInput(.input_FUN(.featAssayXAxisRowTable), label=NULL,
-                choices=tab_by_row, selected=x[[.featAssayXAxisRowTable]]))
+                choices=tab_by_row, selected=x[[.featAssayXAxisRowTable]]),
+            checkboxInput(.input_FUN(.featAssayXAxisFeatDynamic), 
+                label="Use dynamic feature selection for the x-axis", 
+                value=x[[.featAssayXAxisFeatDynamic]])
+        )
     )
 })
 

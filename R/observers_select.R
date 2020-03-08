@@ -310,13 +310,13 @@
     invisible(NULL)
 }
 
-#' Dynamic multiple selection observer
+#' Dynamic multiple selection source observer
 #'
-#' Create an observer for (un)checking of the dynamic multiple selection option.
+#' Create an observer for (un)checking of the dynamic multiple selection source option.
 #'
 #' @param panel_name String containing the name of the plot.
 #' @param dyn_field String containing the name of the slot determining whether a dynamic source is to be used.
-#' @param by_field String containing the name of the slot determining the source of the multiple selection.
+#' @param by_field String containing the name of the slot controlling the multiple selection source.
 #' @param source_type String specifying whether the observer is to monitor multiple \code{"row"} or \code{"column"} selections.
 #' @param input The Shiny input object from the server function.
 #' @param session The Shiny session object from the server function.
@@ -328,12 +328,25 @@
 #'
 #' @author Aaron Lun
 #'
-#' @importFrom shiny observeEvent
-#' @rdname INTERNAL_create_dynamic_multi_selection_observer
-.create_dynamic_multi_selection_observer <- function(panel_name, 
+#' @rdname INTERNAL_create_dynamic_multi_selection_source_observer
+.create_dynamic_multi_selection_source_observer <- function(panel_name, 
     dyn_field, by_field, source_type, input, session, pObjects, rObjects) 
 {
+    .create_dynamic_selection_source_observer(panel_name,
+        dyn_field=dyn_field, by_field=by_field, source_type=source_type,
+        object_name="dynamic_multi_selections",
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+}
+
+#' @importFrom shiny observeEvent
+.create_dynamic_selection_source_observer <- function(panel_name, 
+    dyn_field, by_field, source_type, object_name,
+    input, session, pObjects, rObjects) 
+{
     select_dyn_field <- paste0(panel_name, "_", dyn_field)
+    force(by_field)
+    force(object_name)
+    force(source_type)
 
     # nocov start
     observeEvent(input[[select_dyn_field]], {
@@ -349,7 +362,7 @@
             FUN <- .delete_panel_from_dynamic_sources
         }
 
-        pObjects$dynamic_multi_selections <- FUN(pObjects$dynamic_multi_selections, 
+        pObjects[[object_name]] <- FUN(pObjects[[object_name]], 
             panel_name=panel_name, source_type=source_type, field=by_field)
     })
     # nocov end

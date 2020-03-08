@@ -269,12 +269,12 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
     .create_multi_selection_history_observers(panel_name,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_dynamic_multi_selection_observer(panel_name, dyn_field=.selectRowDynamic,
-        by_field=.selectRowSource, source_type="row",
+    .create_dynamic_multi_selection_source_observer(panel_name, 
+        dyn_field=.selectRowDynamic, by_field=.selectRowSource, source_type="row",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_dynamic_multi_selection_observer(panel_name, dyn_field=.selectColDynamic, 
-        by_field=.selectColSource, source_type="column",
+    .create_dynamic_multi_selection_source_observer(panel_name, 
+        dyn_field=.selectColDynamic, by_field=.selectColSource, source_type="column",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     for (f in .singleSelectionSlots(x)) {
@@ -287,6 +287,13 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
                 tab_field=f$source,
                 protected=f$protected,
                 input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
+            if (!is.null(f$dynamic)) {
+                .create_dynamic_single_selection_source_observer(panel_name, dyn_field=f$dynamic,
+                    by_field=f$source,
+                    source_type=if (f$dimension=="column") "sample" else "feature", # TODO: flip to 'sample'.
+                    input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+            }
         }
     }
 })

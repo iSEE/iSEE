@@ -365,11 +365,11 @@ Users can facet by row and/or column, using categorical factors in `colData(se)`
 This provides a convenient way to stratify points in a single plot by multiple factors of interest.
 Note that point selection can only occur _within_ a single facet at a time; points cannot be selected across facets.
 
-## Selecting data points and linking panels {#select-and-link}
+## Point selections between linked panels {#select-and-link}
 
-To link one plot to another, users can instruct a plotting panel to receive a selection of data points from another (transmitting) plot.
+To link one plot to another, users can instruct a plotting panel to receive a selection of data points from another (transmitting) panel.
 This is done using the appropriate field in the "Selection parameters" box.
-Once this is done, data point selection on the transmitting plot affects the receiving plot in a variety of ways:
+Data point selection on the transmitting panel can then affect the receiving plot in a variety of ways:
 
 - If the point selection effect is set to `"Restrict"`, only the subset of points selected in the transmitter are visible in the receiver.
 - If set to `"Color"`, the selected subset of points is plotted in the receiver with a user-selected color.
@@ -382,9 +382,9 @@ While we have focused above on receiving point selections for plots, it is also 
 This will subset the table so that only the rows corresponding to selected points are visible.
 Obviously, this means that users should only transmit from row-based plots to *row data tables*, and from column-based plots to *column data tables*.
 
-Custom data panels can receive point selections from both row- and column-based plots, see `r Biocpkg("iSEE", vignette="custom.html", label="here")` for more details.
-
-Note that some panels are strictly "end-point" panels and cannot transmit - this includes heat maps, tables and custom data plots.
+Most panels will also have an option to dynamically change the choice of transmitting panel according to the last active selection in the app.
+This allows users to, for example, simply brush on any plot in the app and have all participating receiving panels immediately use that selection without requiring manual resetting of the transmitter.
+Note that this option will not change the app state when it is set; it only has an effect on the next user-mediated selection of points in the app.
 
 ## Zooming in and out
 

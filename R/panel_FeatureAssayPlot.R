@@ -263,10 +263,24 @@ setMethod(".createObservers", "FeatureAssayPlot", function(x, se, input, session
 setMethod(".singleSelectionSlots", "FeatureAssayPlot", function(x) {
     c(callNextMethod(),
         list(
-            list(parameter=.featAssayXAxisFeatName, source=.featAssayXAxisRowTable, dimension="row",
-                use_mode=.featAssayXAxis, use_value=.featAssayXAxisFeatNameTitle, protected=TRUE),
-            list(parameter=.featAssayYAxisFeatName, source=.featAssayYAxisRowTable, dimension="row",
-                use_mode=NA, use_value=NA, protected=TRUE)
+            list(
+                parameter=.featAssayXAxisFeatName, 
+                source=.featAssayXAxisRowTable, 
+                dimension="row",
+                dynamic=.featAssayXAxisFeatDynamic,
+                use_mode=.featAssayXAxis, 
+                use_value=.featAssayXAxisFeatNameTitle, 
+                protected=TRUE
+            ),
+            list(
+                parameter=.featAssayYAxisFeatName, 
+                source=.featAssayYAxisRowTable, 
+                dimension="row",
+                dynamic=.featAssayYAxisFeatDynamic,
+                use_mode=NA, 
+                use_value=NA, 
+                protected=TRUE
+            )
         )
     )
 })

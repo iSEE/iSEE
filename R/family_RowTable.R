@@ -61,6 +61,7 @@
 #' .createObservers,RowTable-method
 #' .hideInterface,RowTable-method
 #' .multiSelectionDimension,RowTable-method
+#' .singleSelectionDimension,RowTable-method
 #' @name RowTable-class
 NULL
 

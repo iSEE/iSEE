@@ -13,7 +13,13 @@
 
 .requestCleanUpdate(panel_name, pObjects, rObjects)
 
-.requestActiveSelectionUpdate(panel_name, rObjects, update_output = TRUE)
+.requestActiveSelectionUpdate(
+  panel_name,
+  session,
+  pObjects,
+  rObjects,
+  update_output = TRUE
+)
 }
 \arguments{
 \item{panel_name}{String containing the panel name.}
@@ -23,6 +29,8 @@
 \item{pObjects}{An environment containing global parameters generated in the \code{\link{iSEE}} app.}
 
 \item{rObjects}{A reactive list of values generated in the \code{\link{iSEE}} app.}
+
+\item{session}{The Shiny session object from the server function.}
 
 \item{update_output}{A logical scalar indicating whether to call \code{.requestUpdate} as well.}
 }

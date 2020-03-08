@@ -109,7 +109,8 @@ Read the book for the new, more extensible approach for creating custom panels.}
 
 \item{colormap}{An \linkS4class{ExperimentColorMap} object that defines custom colormaps to apply to individual \code{assays}, \code{colData} and \code{rowData} covariates.}
 
-\item{landingPage}{A function that renders a landing page when \code{se} is started without any specified \code{se}.}
+\item{landingPage}{A function that renders a landing page when \code{se} is started without any specified \code{se}.
+See \code{\link{createLandingPage}} for more details.}
 
 \item{tour}{A data.frame with the content of the interactive tour to be displayed after starting up the app.}
 
@@ -144,7 +145,7 @@ but can be added interactively by the user after the app has started.
 The first instance of each new class in \code{extra} will be used as a template when the user adds a new panel of that class.
 Note that \code{initial} will automatically be appended to \code{extra} to form the final set of available panels,
 so it is not strictly necessary to re-specify instances of those initial panels in \code{extra}.
-(unless we want the parameters of newly created panels to be different from those at initializtaion).
+(unless we want the parameters of newly created panels to be different from those at initialization).
 
 The \code{tour} argument needs to be provided in a form compatible with the format expected by the \code{rintrojs} package.
 There should be two columns, \code{element} and \code{intro}, with the former describing the element to highlight and the latter providing some descriptive text.
@@ -157,7 +158,6 @@ The default landing page allows users to upload their own RDS files to initializ
 By default, the maximum request size for file uploads defaults to 5MB
 (\url{https://shiny.rstudio.com/reference/shiny/0.14/shiny-options.html}).
 To raise the limit (e.g., 50MB), run \code{options(shiny.maxRequestSize=50*1024^2)}.
-See \code{\link{createLandingPage}} for details on creating a custom landing page.
 }
 \examples{
 library(scRNAseq)

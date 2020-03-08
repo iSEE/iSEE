@@ -221,28 +221,31 @@ setMethod(".defineVisualColorInterface", "ColumnDotPlot", function(x, se, select
             selectInput(paste0(plot_name, "_", .colorByColData), label=NULL,
                 choices=covariates, selected=x[[.colorByColData]])
         ),
-        .conditional_on_radio(
-            colorby_field, .colorByFeatNameTitle,
-            tagList(
-                selectizeInput(paste0(plot_name, "_", .colorByFeatName), label=NULL,
-                    choices=NULL, selected=NULL, multiple=FALSE),
-                selectInput(
-                    paste0(plot_name, "_", .colorByFeatNameAssay), label=NULL,
-                    choices=all_assays, selected=x[[.colorByFeatNameAssay]])),
+        .conditional_on_radio(colorby_field, .colorByFeatNameTitle,
+            selectizeInput(paste0(plot_name, "_", .colorByFeatName), label=NULL,
+                choices=NULL, selected=NULL, multiple=FALSE),
+            selectInput(
+                paste0(plot_name, "_", .colorByFeatNameAssay), label=NULL,
+                choices=all_assays, selected=x[[.colorByFeatNameAssay]]),
             selectInput(
                 paste0(plot_name, "_", .colorByRowTable), label=NULL, choices=select_info$row,
-                selected=.choose_link(x[[.colorByRowTable]], select_info$row))
+                selected=.choose_link(x[[.colorByRowTable]], select_info$row)),
+            checkboxInput(
+                paste0(plot_name, "_", .colorByFeatDynamic), label="Use dynamic feature selection for coloring",
+                value=x[[.colorByFeatDynamic]])
         ),
         .conditional_on_radio(colorby_field, .colorBySampNameTitle,
-            tagList(
-                selectizeInput(paste0(plot_name, "_", .colorBySampName),
-                    label=NULL, selected=NULL, choices=NULL, multiple=FALSE),
-                selectInput(
-                    paste0(plot_name, "_", .colorByColTable), label=NULL, choices=select_info$column,
-                    selected=.choose_link(x[[.colorByColTable]], select_info$column)),
-                colourInput(
-                    paste0(plot_name, "_", .colorBySampNameColor), label=NULL,
-                    value=x[[.colorBySampNameColor]]))
+            selectizeInput(paste0(plot_name, "_", .colorBySampName),
+                label=NULL, selected=NULL, choices=NULL, multiple=FALSE),
+            selectInput(
+                paste0(plot_name, "_", .colorByColTable), label=NULL, choices=select_info$column,
+                selected=.choose_link(x[[.colorByColTable]], select_info$column)),
+            colourInput(
+                paste0(plot_name, "_", .colorBySampNameColor), label=NULL,
+                value=x[[.colorBySampNameColor]]),
+            checkboxInput(
+                paste0(plot_name, "_", .colorBySampDynamic), label="Use dynamic sample selection for coloring",
+                value=x[[.colorByFeatDynamic]])
         )
     )
 })

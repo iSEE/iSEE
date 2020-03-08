@@ -210,9 +210,13 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
 
     args <- .empty_default(args, .colorByField, .colorByNothingTitle)
     args <- .empty_default(args, .colorByDefaultColor, iSEEOptions$get("point.color"))
+
     args <- .empty_default(args, .colorByFeatName, NA_character_)
+    args <- .empty_default(args, .colorByFeatDynamic, FALSE)
     args <- .empty_default(args, .colorByRowTable, .noSelection)
+
     args <- .empty_default(args, .colorBySampName, NA_character_)
+    args <- .empty_default(args, .colorBySampDynamic, FALSE)
     args <- .empty_default(args, .colorByColTable, .noSelection)
 
     args <- .empty_default(args, .shapeByField, .shapeByNothingTitle)

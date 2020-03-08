@@ -119,13 +119,13 @@
     src <- if (dim=="row") .selectRowDynamic else .selectColDynamic
 
     if (target[[src]]) {
-        all_affected <- pObjects$dynamic_sources[[dim]]
+        all_affected <- names(pObjects$dynamic_multi_selections[[dim]])
         field <- if (dim=="row") .selectRowSource else .selectColSource
         
         # nocov start
         if (!is.null(session)) { # put here to avoid attempting to test it.
 
-            # See above comments in the documentation for this function.
+            # See above comments in the documentation for this part.
             updateSelectInput(session=session, inputId=paste0(panel_name, "_", field), selected=.noSelection)
             pObjects$selection_links <- .delete_interpanel_link(pObjects$selection_links,
                 panel_name, parent_name=target[[field]], field=field)

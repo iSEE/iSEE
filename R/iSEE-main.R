@@ -644,8 +644,10 @@ iSEE <- function(se,
 #' This is constructed by \code{\link{.spawn_multi_selection_graph}} and can be modified by \code{\link{.choose_new_parent}}.
 #' \item \code{aesthetics_links}, a \link{graph} containing the links between panels due to transmitted single selections.
 #' This is constructed by \code{\link{.spawn_single_selection_graph}} and can be modified by \code{\link{.choose_new_parent}}.
-#' \item \code{dynamic}, a list containing the panels participating in the dynamic multiple selection scheme.
+#' \item \code{dynamic_multi_selections}, a list containing the panels participating in the dynamic multiple selection scheme.
 #' This is constructed by \code{\link{.spawn_dynamic_multi_selection_list}}.
+#' \item \code{dynamic_single_selections}, a list containing the panels participating in the dynamic single selection scheme.
+#' This is constructed by \code{\link{.spawn_dynamic_single_selection_list}}.
 #' }
 #'
 #' @author Aaron Lun
@@ -663,7 +665,9 @@ iSEE <- function(se,
 
     pObjects$aesthetics_links <- .spawn_single_selection_graph(memory)
     pObjects$selection_links <- .spawn_multi_selection_graph(memory)
-    pObjects$dynamic_sources <- .spawn_dynamic_multi_selection_list(memory)
+
+    pObjects$dynamic_multi_selections <- .spawn_dynamic_multi_selection_list(memory)
+    pObjects$dynamic_single_selections <- .spawn_dynamic_single_selection_list(memory)
 
     pObjects[[.voiceActivePanel]] <- NA_character_
 

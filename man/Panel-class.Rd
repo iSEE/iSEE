@@ -43,10 +43,8 @@ Bootstrap coordinates are used so this value should lie between 2 and 12; defaul
 This is expected to lie between 400 and 1000; defaults to 500.
 }
 
-The following slots are relevant to \emph{receiving} a multiple selection:
+The following slots are relevant to \emph{receiving} a multiple selection on the rows:
 \itemize{
-\item \code{SelectionBoxOpen}, a logical scalar indicating whether the selection parameter box should be open at initialization.
-Defaults to \code{FALSE}.
 \item \code{RowSelectionSource}, a string specifying the name of the transmitting panel from which to receive a multiple row selection (e.g., \code{"RowDataPlot1"}).
 Defaults to \code{"---"}.
 \item \code{RowSelectionType}, a string specifying which of the multiple row selections from the transmitting panel should be used.
@@ -56,6 +54,11 @@ and \code{"Saved"}, one of the saved selections.
 Defaults to \code{"Active"}.
 \item \code{RowSelectionSaved}, an integer scalar specifying the index of the saved multiple row selection to use when \code{RowSelectionType="Saved"}.
 Defaults to 0.
+\item \code{DynamicRowSelectionSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for multiple row selections.
+}
+
+The following slots are relevant to \emph{receiving} a multiple selection on the columns:
+\itemize{
 \item \code{ColumnSelectionSource}, a string specifying the name of the transmitting panel from which to receive a multiple column selection (e.g., \code{"ColumnDataPlot1"}).
 Defaults to \code{"---"}.
 \item \code{ColumnSelectionType}, a string specifying which of the column-based selections from the transmitting panel should be used.
@@ -65,10 +68,13 @@ and \code{"Saved"}, one of the saved selections.
 Defaults to \code{"Active"}.
 \item \code{ColumnSelectionSaved}, an integer scalar specifying the index of the saved multiple column selection to use when \code{ColumnSelectionType="Saved"}.
 Defaults to 0.
+\item \code{DynamicColumnSelectionSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for multiple column selections.
 }
 
-The following slots are relevant to transmitting a selection of points:
+There are also the following miscellaneous slots:
 \itemize{
+\item \code{SelectionBoxOpen}, a logical scalar indicating whether the selection parameter box should be open at initialization.
+Defaults to \code{FALSE}.
 \item \code{SelectionHistory}, a list of arbitrary elements that contain parameters for saved multiple selections.
 Each element of this list corresponds to one saved selection in the current panel.
 Defaults to an empty list.
@@ -127,7 +133,7 @@ For controlling selections:
 \item \code{\link{.multiSelectionClear}(x)} will always return \code{x}.
 \item \code{\link{.multiSelectionInvalidated}(x)} will always return \code{FALSE}.
 \item \code{\link{.multiSelectionAvailable}(x, contents)} will return \code{nrow(contents)}.
-\item \code{\link{.singleSelectionDimension}(x)} will return \code{.multiSelectionDimension(x)}.
+\item \code{\link{.singleSelectionDimension}(x)} will always return \code{"none"}.
 \item \code{\link{.singleSelectionValue}(x)} will always return \code{NULL}.
 \item \code{\link{.singleSelectionSlots}(x)} will always return an empty list.
 }

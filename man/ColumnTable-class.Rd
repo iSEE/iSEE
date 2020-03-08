@@ -47,6 +47,7 @@ This will also call the equivalent \linkS4class{Table} method.
 For controlling selections:
 \itemize{
 \item \code{\link{.multiSelectionDimension}(x)} returns \code{"column"} to indicate that a column selection is being transmitted.
+\item \code{\link{.singleSelectionDimension}(x)} returns \code{"sample"} to indicate that a sample identity is being transmitted.
 }
 
 Unless explicitly specialized above, all methods from the parent classes \linkS4class{Table} and \linkS4class{Panel} are also available.

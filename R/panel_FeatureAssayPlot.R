@@ -266,7 +266,7 @@ setMethod(".singleSelectionSlots", "FeatureAssayPlot", function(x) {
             list(
                 parameter=.featAssayXAxisFeatName, 
                 source=.featAssayXAxisRowTable, 
-                dimension="row",
+                dimension="feature",
                 dynamic=.featAssayXAxisFeatDynamic,
                 use_mode=.featAssayXAxis, 
                 use_value=.featAssayXAxisFeatNameTitle, 
@@ -275,7 +275,7 @@ setMethod(".singleSelectionSlots", "FeatureAssayPlot", function(x) {
             list(
                 parameter=.featAssayYAxisFeatName, 
                 source=.featAssayYAxisRowTable, 
-                dimension="row",
+                dimension="feature",
                 dynamic=.featAssayYAxisFeatDynamic,
                 use_mode=NA, 
                 use_value=NA, 

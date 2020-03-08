@@ -275,7 +275,7 @@ setMethod(".singleSelectionSlots", "SampleAssayPlot", function(x) {
             list(
                 parameter=.sampAssayXAxisSampName, 
                 source=.sampAssayXAxisColTable, 
-                dimension="column",
+                dimension="sample",
                 dynamic=.sampAssayXAxisSampDynamic,
                 use_mode=.sampAssayXAxis, 
                 use_value=.sampAssayXAxisSampNameTitle, 
@@ -284,7 +284,7 @@ setMethod(".singleSelectionSlots", "SampleAssayPlot", function(x) {
             list(
                 parameter=.sampAssayYAxisSampName, 
                 source=.sampAssayYAxisColTable, 
-                dimension="column",
+                dimension="sample",
                 dynamic=.sampAssayYAxisSampDynamic,
                 use_mode=NA, 
                 use_value=NA, 

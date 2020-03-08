@@ -269,7 +269,7 @@
                 next
             }
 
-            if (s$dimension=="row") { # TODO: flip this to 'feature'.
+            if (s$dimension=="feature") {
                 cur_feat <- c(cur_feat, s$param)
             } else {
                 cur_samp <- c(cur_samp, s$param)

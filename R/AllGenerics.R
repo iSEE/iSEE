@@ -663,8 +663,8 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #' \code{.multiSelectionAvailable(x, contents)} is expected to return an integer scalar specifying the number of points available for selection in the the current instance of the panel \code{x}.
 #' This defaults to \code{nrow(contents)} for all \linkS4class{Panel} subclasses,
 #' assuming that \code{contents} is a data.frame where each row represents a point.
-#' If not, this method needs to be specialized in order to return an accurate total of available points
-#' (to be used to compute the percentage selected in the multiple selection information panels).
+#' If not, this method needs to be specialized in order to return an accurate total of available points,
+#' which is ultimately used to compute the percentage selected in the multiple selection information panels.
 #'
 #' @section Destroying selections:
 #' \code{.multiSelectionClear(x)} should return \code{x} after removing the active selection, i.e., so that nothing is selected.
@@ -724,8 +724,8 @@ setGeneric(".multiSelectionAvailable", function(x, contents) standardGeneric(".m
 #'
 #' @section Specifying the nature of the selection:
 #' Given an instance of the \linkS4class{Panel} class \code{x}, \code{.singleSelectionDimension(x)} should return a string
-#' specifying whether the selection contains a row (\code{"row"}),
-#' column (\code{"column"}) or if the Panel in \code{x} does not perform single selections at all (\code{"none"}).
+#' specifying whether the selection contains a single \code{"feature"},
+#' \code{"sample"}, or if the Panel in \code{x} does not perform single selections at all (\code{"none"}).
 #' The output should be constant for all instances of \code{x}.
 #'
 #' @section Obtaining the selected element:
@@ -755,11 +755,14 @@ setGeneric(".multiSelectionAvailable", function(x, contents) standardGeneric(".m
 #' In fact, the observers to perform these updates are automatically set up by \code{\link{.createObservers,Panel-method}}
 #' if the internal list also contains the following named entries:
 #' \itemize{
-#' \item \code{dimension}, either \code{"row"} or \code{"column"}.
-#' This specifies whether the slot specified by \code{param} contains row or column names;
-#' if this is not present, no observers will be set up.
+#' \item \code{dimension}, a string set to either \code{"feature"} or \code{"sample"}.
+#' This specifies whether the slot specified by \code{param} contains the identity of a single feature or a single sample.
+#' If this is not present, no observers will be set up.
+#' \item \code{dynamic}, the name of the slot indicating whether the choice of transmitting panel should change dynamically.
+#' One example would be \code{"ColorByFeatureDynamicSource"} for \linkS4class{DotPlot}s.
+#' This can be missing if the current panel does not support dynamic selection sources.
 #' \item \code{use_mode}, the name of the slot of \code{x} containing the current usage mode,
-#' in cases where there are multiple aesthetic choices.
+#' in cases where there are multiple choices of which only one involves using information held in \code{source}.
 #' An example would be \code{ColorBy} in \linkS4class{DotPlot}s where coloring by feature name is only one of many options,
 #' such that the panel should only respond to transmitted single selections when the user intends to color by feature name.
 #' If this is \code{NA}, the usage mode is assumed to be such that the panel should always respond to transmissions.

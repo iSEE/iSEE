@@ -98,8 +98,8 @@ height_limits <- c(400L, 1000L)
 
     sdims <- vapply(all_memory, FUN=.singleSelectionDimension, "")
     single_sources <- list(
-        row=c(.noSelection, all_names[sdims=="row"]),
-        column=c(.noSelection, all_names[sdims=="column"])
+        row=c(.noSelection, all_names[sdims=="feature"]),
+        column=c(.noSelection, all_names[sdims=="sample"])
     )
 
     for (i in seq_along(all_memory)) {

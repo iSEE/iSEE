@@ -245,7 +245,7 @@ setMethod(".defineVisualColorInterface", "ColumnDotPlot", function(x, se, select
                 value=x[[.colorBySampNameColor]]),
             checkboxInput(
                 paste0(plot_name, "_", .colorBySampDynamic), label="Use dynamic sample selection for coloring",
-                value=x[[.colorByFeatDynamic]])
+                value=x[[.colorBySampDynamic]])
         )
     )
 })

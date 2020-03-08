@@ -245,7 +245,7 @@ setMethod(".defineVisualColorInterface", "RowDotPlot", function(x, se, select_in
                 selected=.choose_link(x[[.colorByColTable]], select_info$column)),
             checkboxInput(
                 paste0(plot_name, "_", .colorBySampDynamic), label="Use dynamic sample selection",
-                value=x[[.colorByFeatDynamic]])
+                value=x[[.colorBySampDynamic]])
         )
     )
 })

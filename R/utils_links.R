@@ -283,7 +283,7 @@
                 next
             }
 
-            if (s$dimension=="row") {
+            if (s$dimension=="row") { # TODO: flip this to 'feature'.
                 cur_feat <- c(cur_feat, s$param)
             } else {
                 cur_samp <- c(cur_samp, s$param)
@@ -291,11 +291,15 @@
         }
 
         panel_name <- .getEncodedName(x)
-        single_feat[[panel_name]] <- cur_feat
-        single_samp[[panel_name]] <- cur_feat
+        if (length(cur_feat)) {
+            single_feat[[panel_name]] <- cur_feat
+        }
+        if (length(cur_samp)) {
+            single_samp[[panel_name]] <- cur_samp
+        }
     }
 
-    list(row=single_feat, column=single_samp)
+    list(feature=single_feat, sample=single_samp)
 }
 
 #' Modify the dynamic source listing

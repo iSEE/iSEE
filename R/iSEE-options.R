@@ -50,6 +50,7 @@ new_defaults = function(value = list()) {
 #' \item{\code{downsample.resolution}}{Resolution of the visual downsampling, if active (numeric).}
 #' \item{\code{selected.color}}{Color of selected data points in \code{DotPlot} panels (character).}
 #' \item{\code{selected.alpha}}{Alpha level controlling transparency of data points \emph{not} selected in \code{DotPlot} panels (numeric).}
+#' \item{\code{selection.dynamic}}{Toggle dynamic selection for all panels (logical).}
 #' \item{\code{contour.color}}{Color of the 2d density estimation contour in \code{DotPlot} panels (character).}
 #' \item{\code{font.size}}{Global multiplier controlling the magnification of plot title and text elements in \code{DotPlot} panels (numeric).}
 #' \item{\code{legend.position}}{Position of the legend in \code{DotPlot} and \code{ComplexHeatmapPlot} panels (one of \code{"Bottom"}, \code{"Right"}).}
@@ -77,6 +78,8 @@ iSEEOptions <- new_defaults(list(
 
     selected.color = "red",
     selected.alpha = 0.1,
+
+    selection.dynamic = FALSE,
 
     contour.color = "blue",
 

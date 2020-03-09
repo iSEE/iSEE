@@ -133,11 +133,11 @@ setMethod("initialize", "FeatureAssayPlot", function(.Object, ...) {
 
     args <- .empty_default(args, .featAssayXAxisRowTable, .noSelection)
     args <- .empty_default(args, .featAssayXAxisFeatName, NA_character_)
-    args <- .empty_default(args, .featAssayXAxisFeatDynamic, FALSE)
+    args <- .empty_default(args, .featAssayXAxisFeatDynamic, iSEEOptions$get("selection.dynamic"))
 
     args <- .empty_default(args, .featAssayYAxisRowTable, .noSelection)
     args <- .empty_default(args, .featAssayYAxisFeatName, NA_character_)
-    args <- .empty_default(args, .featAssayYAxisFeatDynamic, FALSE)
+    args <- .empty_default(args, .featAssayYAxisFeatDynamic, iSEEOptions$get("selection.dynamic"))
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -218,8 +218,8 @@ setMethod(".defineDataInterface", "FeatureAssayPlot", function(x, se, select_inf
             label="Y-axis feature:", choices=NULL, selected=NULL, multiple=FALSE),
         selectInput(.input_FUN(.featAssayYAxisRowTable), label=NULL, choices=tab_by_row,
             selected=.choose_link(x[[.featAssayYAxisRowTable]], tab_by_row)),
-        checkboxInput(.input_FUN(.featAssayYAxisFeatDynamic), 
-            label="Use dynamic feature selection for the y-axis", 
+        checkboxInput(.input_FUN(.featAssayYAxisFeatDynamic),
+            label="Use dynamic feature selection for the y-axis",
             value=x[[.featAssayYAxisFeatDynamic]]),
 
         selectInput(paste0(.getEncodedName(x), "_", .featAssayAssay), label=NULL,
@@ -239,8 +239,8 @@ setMethod(".defineDataInterface", "FeatureAssayPlot", function(x, se, select_inf
                 label="X-axis feature:", choices=NULL, selected=NULL, multiple=FALSE),
             selectInput(.input_FUN(.featAssayXAxisRowTable), label=NULL,
                 choices=tab_by_row, selected=x[[.featAssayXAxisRowTable]]),
-            checkboxInput(.input_FUN(.featAssayXAxisFeatDynamic), 
-                label="Use dynamic feature selection for the x-axis", 
+            checkboxInput(.input_FUN(.featAssayXAxisFeatDynamic),
+                label="Use dynamic feature selection for the x-axis",
                 value=x[[.featAssayXAxisFeatDynamic]])
         )
     )
@@ -264,21 +264,21 @@ setMethod(".singleSelectionSlots", "FeatureAssayPlot", function(x) {
     c(callNextMethod(),
         list(
             list(
-                parameter=.featAssayXAxisFeatName, 
-                source=.featAssayXAxisRowTable, 
+                parameter=.featAssayXAxisFeatName,
+                source=.featAssayXAxisRowTable,
                 dimension="feature",
                 dynamic=.featAssayXAxisFeatDynamic,
-                use_mode=.featAssayXAxis, 
-                use_value=.featAssayXAxisFeatNameTitle, 
+                use_mode=.featAssayXAxis,
+                use_value=.featAssayXAxisFeatNameTitle,
                 protected=TRUE
             ),
             list(
-                parameter=.featAssayYAxisFeatName, 
-                source=.featAssayYAxisRowTable, 
+                parameter=.featAssayYAxisFeatName,
+                source=.featAssayYAxisRowTable,
                 dimension="feature",
                 dynamic=.featAssayYAxisFeatDynamic,
-                use_mode=NA, 
-                use_value=NA, 
+                use_mode=NA,
+                use_value=NA,
                 protected=TRUE
             )
         )

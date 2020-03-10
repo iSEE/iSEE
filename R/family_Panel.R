@@ -166,8 +166,8 @@ setMethod("initialize", "Panel", function(.Object, ...) {
     args <- .empty_default(args, .selectColType, .selectMultiActiveTitle)
     args <- .empty_default(args, .selectColSaved, 0L)
 
-    args <- .empty_default(args, .selectRowDynamic, iSEEOptions$get("selection.dynamic"))
-    args <- .empty_default(args, .selectColDynamic, iSEEOptions$get("selection.dynamic"))
+    args <- .empty_default(args, .selectRowDynamic, iSEEOptions$get("selection.dynamic.multiple"))
+    args <- .empty_default(args, .selectColDynamic, iSEEOptions$get("selection.dynamic.multiple"))
 
     args <- .empty_default(args, .dataParamBoxOpen, FALSE)
 

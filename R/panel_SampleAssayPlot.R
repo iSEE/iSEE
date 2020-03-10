@@ -133,11 +133,11 @@ setMethod("initialize", "SampleAssayPlot", function(.Object, ...) {
 
     args <- .empty_default(args, .sampAssayXAxisColTable, .noSelection)
     args <- .empty_default(args, .sampAssayXAxisSampName, NA_character_)
-    args <- .empty_default(args, .sampAssayXAxisSampDynamic, iSEEOptions$get("selection.dynamic"))
+    args <- .empty_default(args, .sampAssayXAxisSampDynamic, iSEEOptions$get("selection.dynamic.single"))
 
     args <- .empty_default(args, .sampAssayYAxisColTable, .noSelection)
     args <- .empty_default(args, .sampAssayYAxisSampName, NA_character_)
-    args <- .empty_default(args, .sampAssayYAxisSampDynamic, iSEEOptions$get("selection.dynamic"))
+    args <- .empty_default(args, .sampAssayYAxisSampDynamic, iSEEOptions$get("selection.dynamic.single"))
 
     do.call(callNextMethod, c(list(.Object), args))
 })

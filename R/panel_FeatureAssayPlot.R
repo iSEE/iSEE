@@ -133,11 +133,11 @@ setMethod("initialize", "FeatureAssayPlot", function(.Object, ...) {
 
     args <- .empty_default(args, .featAssayXAxisRowTable, .noSelection)
     args <- .empty_default(args, .featAssayXAxisFeatName, NA_character_)
-    args <- .empty_default(args, .featAssayXAxisFeatDynamic, iSEEOptions$get("selection.dynamic"))
+    args <- .empty_default(args, .featAssayXAxisFeatDynamic, iSEEOptions$get("selection.dynamic.single"))
 
     args <- .empty_default(args, .featAssayYAxisRowTable, .noSelection)
     args <- .empty_default(args, .featAssayYAxisFeatName, NA_character_)
-    args <- .empty_default(args, .featAssayYAxisFeatDynamic, iSEEOptions$get("selection.dynamic"))
+    args <- .empty_default(args, .featAssayYAxisFeatDynamic, iSEEOptions$get("selection.dynamic.single"))
 
     do.call(callNextMethod, c(list(.Object), args))
 })

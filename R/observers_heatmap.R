@@ -222,14 +222,14 @@
         }
 
         updateAceEditor(session, editorId = .input_FUN(.heatMapFeatNameText), value = editor_text)
-    })
+    }, ignoreInit=TRUE)
     # nocov end
 
     # Button to clear the editor
     # nocov start
     observeEvent(input[[.input_FUN(clear_field)]], {
         updateAceEditor(session, editorId = .input_FUN(.heatMapFeatNameText), value = "")
-    })
+    }, ignoreInit=TRUE)
     # nocov end
 
     # Button to comment out invalid names
@@ -243,7 +243,7 @@
         editor_lines[invalid_idx] <- paste0("# ", editor_lines[invalid_idx])
         editor_text <- paste0(editor_lines, collapse = "\n")
         updateAceEditor(session, editorId = .input_FUN(.heatMapFeatNameText), value = editor_text)
-    })
+    }, ignoreInit=TRUE)
     # nocov end
 
     # Button to order names alphabetically
@@ -256,7 +256,7 @@
         editor_lines <- sort(editor_lines)
         editor_text <- paste0(editor_lines, collapse = "\n")
         updateAceEditor(session, editorId = .input_FUN(.heatMapFeatNameText), value = editor_text)
-    })
+    }, ignoreInit=TRUE)
     # nocov end
 
     # The button that actually updates the FeatNameText field.
@@ -266,6 +266,6 @@
         # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
         .requestUpdate(plot_name,rObjects)
         removeModal()
-    })
+    }, ignoreInit=TRUE)
     # nocov end
 }

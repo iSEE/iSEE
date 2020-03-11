@@ -31,6 +31,7 @@
     dimprop_name <- paste0(plot_name, "_", .propagateDimnames)
 
     brush_field <- paste0(plot_name, "_", .brushField)
+
     # nocov start
     observeEvent(input[[brush_field]], {
         cur_brush <- input[[brush_field]]
@@ -52,6 +53,7 @@
         .requestActiveSelectionUpdate(plot_name, session, pObjects, rObjects)
     }, ignoreInit=TRUE)
     # nocov end
+
     invisible(NULL)
 }
 
@@ -88,6 +90,7 @@
     brush_field <- paste0(plot_name, "_", .brushField)
     dimprop_name <- paste0(plot_name, "_", .propagateDimnames)
     save_field <- paste0(plot_name, "_", .multiSelectSave)
+
     # nocov start
     observeEvent(input[[click_field]], {
         # Hack to resolve https://github.com/rstudio/shiny/issues/947.
@@ -132,7 +135,8 @@
         } else {
             .requestUpdate(plot_name, rObjects)
         }
-    })
+    }, ignoreInit=TRUE)
     # nocov end
+
     invisible(NULL)
 }

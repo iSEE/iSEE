@@ -34,6 +34,7 @@
     .safe_reactive_init(rObjects, saved_select_name)
 
     select_panel_field <- paste0(panel_name, "_", by_field)
+
     # nocov start
     observeEvent(input[[select_panel_field]], {
         old_transmitter <- pObjects$memory[[panel_name]][[by_field]]
@@ -98,6 +99,7 @@
         }
     }, ignoreInit=TRUE)
     # nocov end
+
     invisible(NULL)
 }
 
@@ -108,6 +110,7 @@
     input, session, pObjects, rObjects)
 {
     select_effect_field <- paste0(plot_name, "_", .selectEffect)
+
     # nocov start
     observeEvent(input[[select_effect_field]], {
         cur_effect <- input[[select_effect_field]]
@@ -132,6 +135,7 @@
         }
     }, ignoreInit=TRUE)
     # nocov end
+
     invisible(NULL)
 }
 
@@ -143,6 +147,7 @@
 {
     ## Type field observers. ---
     select_type_field <- paste0(panel_name, "_", type_field)
+
     # nocov start
     observeEvent(input[[select_type_field]], {
         old_type <- pObjects$memory[[panel_name]][[type_field]]
@@ -175,6 +180,7 @@
 
     ## Saved field observers. ---
     saved_select_field <- paste0(panel_name, "_", saved_field)
+
     # nocov start
     observeEvent(input[[saved_select_field]], {
         # Required to defend against empty strings before updateSelectizeInput runs.
@@ -210,6 +216,7 @@
     # the field to something upon initialization of the panel.
     saved_choice_name <- paste0(panel_name, "_", .updateSavedChoices)
     .safe_reactive_init(rObjects, saved_choice_name)
+
     # nocov start
     observe({
         force(rObjects[[saved_choice_name]])
@@ -236,6 +243,7 @@
             selected=pObjects$memory[[panel_name]][[saved_field]])
     })
     # nocov end
+
     invisible(NULL)
 }
 
@@ -263,6 +271,7 @@
     multi_name <- paste0(panel_name, "_", .flagMultiSelect)
 
     ## Save selection observer. ---
+
     # nocov start
     observeEvent(input[[save_field]], {
         instance <- pObjects$memory[[panel_name]]
@@ -284,10 +293,11 @@
             FALSE,
             .buttonEmptyHistoryLabel, .buttonDeleteLabel, session
         )
-    })
+    }, ignoreInit=TRUE)
     # nocov end
 
     ## Deleted selection observer. ---
+
     # nocov start
     observeEvent(input[[del_field]], {
         instance <- pObjects$memory[[panel_name]]
@@ -305,8 +315,9 @@
             length(current)==0,
             .buttonEmptyHistoryLabel, .buttonDeleteLabel, session
         )
-    })
+    }, ignoreInit=TRUE)
     # nocov end
+
     invisible(NULL)
 }
 
@@ -364,7 +375,7 @@
 
         pObjects[[object_name]] <- FUN(pObjects[[object_name]], 
             panel_name=panel_name, source_type=source_type, field=by_field)
-    })
+    }, ignoreInit=TRUE)
     # nocov end
     
     invisible(NULL)

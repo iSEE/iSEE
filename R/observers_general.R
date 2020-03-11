@@ -48,7 +48,7 @@
                 sep=";", stringsAsFactors=FALSE, row.names=NULL, quote="")
         }
         introjs(session, options=list(steps=tour))
-    })
+    }, ignoreInit=TRUE)
 
     if (!is.null(tour)) {
         # Only triggers _after_ panels are fully setup, so observers are properly ID'd.
@@ -69,7 +69,7 @@
             aceEditor(.generalCodeTracker, mode="r", theme="solarized_light", autoComplete="live",
                 value=all_cmds, height="600px")
         ))
-    })
+    }, ignoreInit=TRUE)
 
     observeEvent(input[[.generalPanelSettings]], {
         showModal(modalDialog(
@@ -80,7 +80,7 @@
                 height="600px"),
             downloadButton(.generalMemoryExport, "Download RDS")
         ))
-    })
+    }, ignoreInit=TRUE)
 
     observeEvent(input[[.generalSessionInfo]], {
         showModal(modalDialog(
@@ -88,7 +88,7 @@
             footer=NULL, easyClose=TRUE,
             pre(paste(capture.output(sessionInfo()), collapse="\n"))
         ))
-    })
+    }, ignoreInit=TRUE)
 
     observeEvent(input[[.generalCitationInfo]], {
         showModal(modalDialog(
@@ -100,7 +100,7 @@
                 pre(paste(capture.output(citation("iSEE")), collapse="\n"))
             )
         ))
-    })
+    }, ignoreInit=TRUE)
 
     observeEvent(input[[.generalLinkGraph]], {
         showModal(modalDialog(
@@ -108,7 +108,7 @@
             fade=TRUE, footer=NULL, easyClose=TRUE,
             plotOutput(.generalLinkGraphPlot)
         ))
-    })
+    }, ignoreInit=TRUE)
 
     if (runLocal) {
         observeEvent(input[[.generalTourSteps]], {
@@ -118,7 +118,7 @@
             } else {
                 browseURL(path)
             }
-        })
+        }, ignoreInit=TRUE)
     }
 
     .create_export_observers(input, session, pObjects)

@@ -256,7 +256,7 @@ setMethod(".defineDataInterface", "SampleAssayPlot", function(x, se, select_info
 })
 
 #' @export
-#' @importFrom shiny observeEvent updateSelectInput
+#' @importFrom shiny updateSelectInput
 #' @importFrom methods callNextMethod
 setMethod(".createObservers", "SampleAssayPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()

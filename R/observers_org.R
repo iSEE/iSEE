@@ -72,7 +72,7 @@
                 options=list(plugins=list('remove_button', 'drag_drop')), width="500px"),
             uiOutput("panelParams")
         ))
-    })
+    }, ignoreInit=TRUE)
     # nocov end
 
     # nocov start
@@ -114,7 +114,7 @@
 
         org_pObjects$memory <- adjusted
         org_rObjects$rerender <- .increment_counter(org_rObjects$rerender)
-    })
+    }, ignoreInit=TRUE)
     # nocov end
 
     # nocov start
@@ -148,7 +148,7 @@
         rObjects$rerender <- .increment_counter(rObjects$rerender)
 
         removeModal(session)
-    })
+    }, ignoreInit=TRUE)
     # nocov end
 
     invisible(NULL)

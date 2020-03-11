@@ -60,7 +60,7 @@
                 updateSelectInput(session, paste0(kid, "_", field), selected=panel_name)
             }
         }
-    })
+    }, ignoreInit=TRUE)
     # nocov end
 
     invisible(NULL)

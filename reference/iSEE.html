@@ -70,7 +70,7 @@ SummarizedExperiment object, using a Shiny interface." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.4</span>
       </span>
     </div>
 
@@ -309,7 +309,8 @@ Read the book for the new, more extensible approach for creating custom panels.<
     </tr>
     <tr>
       <th>landingPage</th>
-      <td><p>A function that renders a landing page when <code>se</code> is started without any specified <code>se</code>.</p></td>
+      <td><p>A function that renders a landing page when <code>se</code> is started without any specified <code>se</code>.
+See <code><a href='createLandingPage.html'>createLandingPage</a></code> for more details.</p></td>
     </tr>
     <tr>
       <th>tour</th>
@@ -354,7 +355,7 @@ but can be added interactively by the user after the app has started.
 The first instance of each new class in <code>extra</code> will be used as a template when the user adds a new panel of that class.
 Note that <code>initial</code> will automatically be appended to <code>extra</code> to form the final set of available panels,
 so it is not strictly necessary to re-specify instances of those initial panels in <code>extra</code>.
-(unless we want the parameters of newly created panels to be different from those at initializtaion).</p>
+(unless we want the parameters of newly created panels to be different from those at initialization).</p>
 <p>The <code>tour</code> argument needs to be provided in a form compatible with the format expected by the <code>rintrojs</code> package.
 There should be two columns, <code>element</code> and <code>intro</code>, with the former describing the element to highlight and the latter providing some descriptive text.
 See <a href='https://github.com/carlganz/rintrojs#usage'>https://github.com/carlganz/rintrojs#usage</a> for more information.</p>
@@ -363,8 +364,7 @@ This limit may be set to a different value as a global option, e.g. <code><a hre
 <p>The default landing page allows users to upload their own RDS files to initialize the app.
 By default, the maximum request size for file uploads defaults to 5MB
 (<a href='https://shiny.rstudio.com/reference/shiny/0.14/shiny-options.html'>https://shiny.rstudio.com/reference/shiny/0.14/shiny-options.html</a>).
-To raise the limit (e.g., 50MB), run <code><a href='https://rdrr.io/r/base/options.html'>options(shiny.maxRequestSize=50*1024^2)</a></code>.
-See <code><a href='createLandingPage.html'>createLandingPage</a></code> for details on creating a custom landing page.</p>
+To raise the limit (e.g., 50MB), run <code><a href='https://rdrr.io/r/base/options.html'>options(shiny.maxRequestSize=50*1024^2)</a></code>.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Rue-Albrecht K, Marini F, Soneson C, Lun ATL.
@@ -376,7 +376,7 @@ iSEE: Interactive SummarizedExperiment Explorer
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scRNAseq</span>)
 
 <span class='co'># Example data ----</span>
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedAllenData</a></span>(<span class='kw'>assays</span><span class='kw'>=</span><span class='st'>"tophat_counts"</span>)</div><div class='output co'>#&gt; <span class='message'>snapshotDate(): 2020-02-26</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; [1] "SingleCellExperiment"
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedAllenData</a></span>(<span class='kw'>assays</span><span class='kw'>=</span><span class='st'>"tophat_counts"</span>)</div><div class='output co'>#&gt; <span class='message'>snapshotDate(): 2020-03-09</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; [1] "SingleCellExperiment"
 #&gt; attr(,"package")
 #&gt; [1] "SingleCellExperiment"</div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scater</span>)

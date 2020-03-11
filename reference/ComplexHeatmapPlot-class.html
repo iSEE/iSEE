@@ -70,7 +70,7 @@ It provides slots and methods for specifying which assay to display in the main 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.4</span>
       </span>
     </div>
 
@@ -259,7 +259,7 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.<
 <span class='no'>sce0</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span>(<span class='no'>x</span>, <span class='no'>sce</span>)
 <span class='fu'><a href='setup-generics.html'>.refineParameters</a></span>(<span class='no'>x</span>, <span class='no'>sce0</span>)</div><div class='output co'>#&gt; An object of class "ComplexHeatmapPlot"
 #&gt; Slot "Assay":
-#&gt; [1] "counts"
+#&gt; [1] "logcounts"
 #&gt; 
 #&gt; Slot "CustomRows":
 #&gt; [1] TRUE
@@ -342,11 +342,17 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.<
 #&gt; Slot "ColumnSelectionSource":
 #&gt; [1] "---"
 #&gt; 
+#&gt; Slot "RowSelectionDynamicSource":
+#&gt; [1] FALSE
+#&gt; 
 #&gt; Slot "RowSelectionType":
 #&gt; [1] "Active"
 #&gt; 
 #&gt; Slot "RowSelectionSaved":
 #&gt; [1] 0
+#&gt; 
+#&gt; Slot "ColumnSelectionDynamicSource":
+#&gt; [1] FALSE
 #&gt; 
 #&gt; Slot "ColumnSelectionType":
 #&gt; [1] "Active"
@@ -362,7 +368,7 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.<
 <span class='no'>sce0</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span>(<span class='no'>x</span>, <span class='no'>sce</span>)
 <span class='fu'><a href='setup-generics.html'>.refineParameters</a></span>(<span class='no'>x</span>, <span class='no'>sce0</span>)</div><div class='output co'>#&gt; An object of class "ComplexHeatmapPlot"
 #&gt; Slot "Assay":
-#&gt; [1] "counts"
+#&gt; [1] "logcounts"
 #&gt; 
 #&gt; Slot "CustomRows":
 #&gt; [1] TRUE
@@ -445,11 +451,17 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.<
 #&gt; Slot "ColumnSelectionSource":
 #&gt; [1] "---"
 #&gt; 
+#&gt; Slot "RowSelectionDynamicSource":
+#&gt; [1] FALSE
+#&gt; 
 #&gt; Slot "RowSelectionType":
 #&gt; [1] "Active"
 #&gt; 
 #&gt; Slot "RowSelectionSaved":
 #&gt; [1] 0
+#&gt; 
+#&gt; Slot "ColumnSelectionDynamicSource":
+#&gt; [1] FALSE
 #&gt; 
 #&gt; Slot "ColumnSelectionType":
 #&gt; [1] "Active"

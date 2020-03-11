@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Track internal events — track-utils • iSEE</title>
+<title>Generics for visual parameters — visual-parameters-generics • iSEE</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Track internal events — track-utils" />
-<meta property="og:description" content="Utility functions to track internal events for a panel by monitoring the status of reactive variables in rObjects." />
+<meta property="og:title" content="Generics for visual parameters — visual-parameters-generics" />
+<meta property="og:description" content="These generics allow subclasses to override the user inputs controlling visual parameters of DotPlot panels." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -131,61 +131,93 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Track internal events</h1>
-    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/utils_reactive.R'><code>R/utils_reactive.R</code></a></small>
-    <div class="hidden name"><code>track-utils.Rd</code></div>
+    <h1>Generics for visual parameters</h1>
+    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/AllGenerics.R'><code>R/AllGenerics.R</code></a></small>
+    <div class="hidden name"><code>visual-parameters-generics.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Utility functions to track internal events for a panel by monitoring the status of reactive variables in <code>rObjects</code>.</p>
+    <p>These generics allow subclasses to override the user inputs controlling visual parameters of <a href='DotPlot-class.html'>DotPlot</a> panels.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.trackUpdate</span>(<span class='no'>panel_name</span>, <span class='no'>rObjects</span>)
 
-<span class='fu'>.trackSingleSelection</span>(<span class='no'>panel_name</span>, <span class='no'>rObjects</span>)
 
-<span class='fu'>.trackMultiSelection</span>(<span class='no'>panel_name</span>, <span class='no'>rObjects</span>)
-
-<span class='fu'>.trackRelinkedSelection</span>(<span class='no'>panel_name</span>, <span class='no'>rObjects</span>)</pre>
-
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>panel_name</th>
-      <td><p>String containing the panel name.</p></td>
-    </tr>
-    <tr>
-      <th>rObjects</th>
-      <td><p>A reactive list of values generated in the <code><a href='iSEE.html'>iSEE</a></code> app.</p></td>
-    </tr>
-    </table>
-
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>All functions will cause the current reactive context to respond to the designated event.
-<code>NULL</code> is returned invisibly.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>.trackUpdate</code> will track whether an update has been requested to the current panel
-(see also <code><a href='retrieveOutput.html'>.requestUpdate</a></code>).</p>
-<p><code>.trackSingleSelection</code> will track whether the single selection in the current panel has changed.
-Note that this will not cause a reaction if the change involves cancelling a single selection.</p>
-<p><code>.trackMultiSelection</code> will track whether the multiple selections in the current panel have changed.
-This will respond for both active and saved selections.</p>
-<p><code>.trackRelinkedSelection</code> will track whether the single or multiple selection sources have changed.</p>
+    <p>In practice, it is a good idea to make use of information precomputed by <code><a href='setup-generics.html'>.cacheCommonInfo</a></code>.
+For example, <code><a href='ColumnDotPlot-class.html'>.cacheCommonInfo,ColumnDotPlot-method</a></code> will add vectors specifying whether a variable in the <code>colData</code> is valid and discrete or continuous.</p>
+<p>It is possible to hide individual sections of visual parameters by returning <code>NULL</code>.</p>
+    <h2 class="hasAnchor" id="color-parameters"><a class="anchor" href="#color-parameters"></a>Color parameters</h2>
+
+    
+
+<p><code>.defineVisualColorInterface(x, se, select_info)</code> takes <code>x</code>, a <a href='Panel-class.html'>Panel</a> instance,
+<code>se</code>, the SummarizedExperiment object,
+and <code>select_info</code> a list of character vectors named <code>row</code> and <code>column</code> which specifies the names of panels available for transmitting single selections on the rows/columns.
+It is expected to return an HTML tag definition that contains user inputs controlling the <code>color</code> aesthetic of <code>ggplot</code> objects.</p>
+    <h2 class="hasAnchor" id="shape-parameters"><a class="anchor" href="#shape-parameters"></a>Shape parameters</h2>
+
+    
+
+<p><code>.defineVisualShapeInterface</code> takes <code>x</code>, a <a href='Panel-class.html'>Panel</a> instance,
+and <code>se</code>, the SummarizedExperiment object.
+It is expected to return an HTML tag definition that contains user inputs controlling the <code>shape</code> aesthetic of <code>ggplot</code> objects.</p>
+    <h2 class="hasAnchor" id="size-parameters"><a class="anchor" href="#size-parameters"></a>Size parameters</h2>
+
+    
+
+<p><code>.defineVisualSizeInterface</code> takes <code>x</code>, a <a href='Panel-class.html'>Panel</a> instance,
+and <code>se</code>, the SummarizedExperiment object.
+It is expected to return an HTML tag definition that contains user inputs controlling the <code>size</code> aesthetic of <code>ggplot</code> objects.</p>
+    <h2 class="hasAnchor" id="point-parameters"><a class="anchor" href="#point-parameters"></a>Point parameters</h2>
+
+    
+
+<p><code>.defineVisualPointInterface</code> takes <code>x</code>, a <a href='Panel-class.html'>Panel</a> instance,
+and <code>se</code>, the SummarizedExperiment object.
+It is expected to return an HTML tag definition that contains user inputs to controlling other aesthetics of <code>ggplot</code> objects (e.g. <code>alpha</code>).</p>
+    <h2 class="hasAnchor" id="facet-parameters"><a class="anchor" href="#facet-parameters"></a>Facet parameters</h2>
+
+    
+
+<p><code>.defineVisualFacetInterface</code> takes <code>x</code>, a <a href='Panel-class.html'>Panel</a> instance,
+and <code>se</code>, the SummarizedExperiment object.
+It is expected to return an HTML tag definition that contains user inputs controlling the <code>facet_grid</code> applied to
+<code>ggplot</code> objects.</p>
+    <h2 class="hasAnchor" id="text-parameters"><a class="anchor" href="#text-parameters"></a>Text parameters</h2>
+
+    
+
+<p><code>.defineVisualTextInterface</code> takes <code>x</code>, a <a href='Panel-class.html'>Panel</a> instance,
+and <code>se</code>, the SummarizedExperiment object.
+It is expected to return an HTML tag definition that contains user inputs controlling the appearance of non-data text elements of <code>ggplot</code> objects (e.g., font size, legend position).</p>
+    <h2 class="hasAnchor" id="other-parameters"><a class="anchor" href="#other-parameters"></a>Other parameters</h2>
+
+    
+
+<p><code>.defineVisualOtherInterface</code> takes <code>x</code>, a <a href='Panel-class.html'>Panel</a> instance.
+It is expected to return an HTML tag definition that contains user inputs to display in the <code>"Other"</code> section of the visual parameters.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code>tagList</code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
       <li><a href="#details">Details</a></li>
+      <li><a href="#color-parameters">Color parameters</a></li>
+      <li><a href="#shape-parameters">Shape parameters</a></li>
+      <li><a href="#size-parameters">Size parameters</a></li>
+      <li><a href="#point-parameters">Point parameters</a></li>
+      <li><a href="#facet-parameters">Facet parameters</a></li>
+      <li><a href="#text-parameters">Text parameters</a></li>
+      <li><a href="#other-parameters">Other parameters</a></li>
+      <li><a href="#see-also">See also</a></li>
     </ul>
 
     <h2>Author</h2>
-    <p>Aaron Lun</p>
+    <p>Kevin Rue-Albrecht</p>
   </div>
 </div>
 

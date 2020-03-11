@@ -73,7 +73,7 @@ This suite of generics controls the behavior of these single selections." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.4</span>
       </span>
     </div>
 
@@ -155,8 +155,8 @@ This suite of generics controls the behavior of these single selections.</p>
     
 
 <p>Given an instance of the <a href='Panel-class.html'>Panel</a> class <code>x</code>, <code>.singleSelectionDimension(x)</code> should return a string
-specifying whether the selection contains a row (<code>"row"</code>),
-column (<code>"column"</code>) or if the Panel in <code>x</code> does not perform single selections at all (<code>"none"</code>).
+specifying whether the selection contains a single <code>"feature"</code>,
+<code>"sample"</code>, or if the Panel in <code>x</code> does not perform single selections at all (<code>"none"</code>).
 The output should be constant for all instances of <code>x</code>.</p>
     <h2 class="hasAnchor" id="obtaining-the-selected-element"><a class="anchor" href="#obtaining-the-selected-element"></a>Obtaining the selected element</h2>
 
@@ -186,11 +186,14 @@ which will then trigger automatic updates to the chosen entry in the <code>param
 <p>Developers are strongly recommended to follow the above paradigm.
 In fact, the observers to perform these updates are automatically set up by <code><a href='Panel-class.html'>.createObservers,Panel-method</a></code>
 if the internal list also contains the following named entries:</p><ul>
-<li><p><code>dimension</code>, either <code>"row"</code> or <code>"column"</code>.
-This specifies whether the slot specified by <code>param</code> contains row or column names;
-if this is not present, no observers will be set up.</p></li>
+<li><p><code>dimension</code>, a string set to either <code>"feature"</code> or <code>"sample"</code>.
+This specifies whether the slot specified by <code>param</code> contains the identity of a single feature or a single sample.
+If this is not present, no observers will be set up.</p></li>
+<li><p><code>dynamic</code>, the name of the slot indicating whether the choice of transmitting panel should change dynamically.
+One example would be <code>"ColorByFeatureDynamicSource"</code> for <a href='DotPlot-class.html'>DotPlot</a>s.
+This can be missing if the current panel does not support dynamic selection sources.</p></li>
 <li><p><code>use_mode</code>, the name of the slot of <code>x</code> containing the current usage mode,
-in cases where there are multiple aesthetic choices.
+in cases where there are multiple choices of which only one involves using information held in <code>source</code>.
 An example would be <code>ColorBy</code> in <a href='DotPlot-class.html'>DotPlot</a>s where coloring by feature name is only one of many options,
 such that the panel should only respond to transmitted single selections when the user intends to color by feature name.
 If this is <code>NA</code>, the usage mode is assumed to be such that the panel should always respond to transmissions.</p></li>

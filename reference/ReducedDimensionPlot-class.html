@@ -70,7 +70,7 @@ It provides slots and methods for specifying which dimensionality reduction resu
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.4</span>
       </span>
     </div>
 
@@ -163,13 +163,6 @@ Defaults to 2.</p></li>
     
 
 <p><code>ReducedDimensionPlot(...)</code> creates an instance of a ReducedDimensionPlot class, where any slot and its value can be passed to <code>...</code> as a named argument.</p>
-    <h2 class="hasAnchor" id="contract-description"><a class="anchor" href="#contract-description"></a>Contract description</h2>
-
-    
-
-<p>The ReducedDimensionPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
-It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
-Subclasses do not have to provide any methods, as this is a concrete class.</p>
     <h2 class="hasAnchor" id="supported-methods"><a class="anchor" href="#supported-methods"></a>Supported methods</h2>
 
     
@@ -203,6 +196,7 @@ This will also call the equivalent <a href='ColumnDotPlot-class.html'>ColumnDotP
 It will return the commands required to do so as well as a list of labels.</p></li>
 </ul>
 
+<p>Subclasses do not have to provide any methods, as this is a concrete class.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>, for the immediate parent class.</p></div>
@@ -243,7 +237,7 @@ It will return the commands required to do so as well as a list of labels.</p></
 #&gt; [1] "Mutation_Status"
 #&gt; 
 #&gt; Slot "ColorByFeatureNameAssay":
-#&gt; [1] "counts"
+#&gt; [1] "logcounts"
 #&gt; 
 #&gt; Slot "ColorBySampleNameColor":
 #&gt; [1] "red"
@@ -272,11 +266,17 @@ It will return the commands required to do so as well as a list of labels.</p></
 #&gt; Slot "ColorByFeatureSource":
 #&gt; [1] "---"
 #&gt; 
+#&gt; Slot "ColorByFeatureDynamicSource":
+#&gt; [1] FALSE
+#&gt; 
 #&gt; Slot "ColorBySampleName":
 #&gt; [1] "Cell_001"
 #&gt; 
 #&gt; Slot "ColorBySampleSource":
 #&gt; [1] "---"
+#&gt; 
+#&gt; Slot "ColorBySampleDynamicSource":
+#&gt; [1] FALSE
 #&gt; 
 #&gt; Slot "ShapeBy":
 #&gt; [1] "None"
@@ -350,11 +350,17 @@ It will return the commands required to do so as well as a list of labels.</p></
 #&gt; Slot "DataBoxOpen":
 #&gt; [1] FALSE
 #&gt; 
+#&gt; Slot "RowSelectionDynamicSource":
+#&gt; [1] FALSE
+#&gt; 
 #&gt; Slot "RowSelectionType":
 #&gt; [1] "Active"
 #&gt; 
 #&gt; Slot "RowSelectionSaved":
 #&gt; [1] 0
+#&gt; 
+#&gt; Slot "ColumnSelectionDynamicSource":
+#&gt; [1] FALSE
 #&gt; 
 #&gt; Slot "ColumnSelectionType":
 #&gt; [1] "Active"
@@ -372,7 +378,6 @@ It will return the commands required to do so as well as a list of labels.</p></
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#reduceddimensionplot-slot-overview">ReducedDimensionPlot slot overview</a></li>
       <li><a href="#constructor">Constructor</a></li>
-      <li><a href="#contract-description">Contract description</a></li>
       <li><a href="#supported-methods">Supported methods</a></li>
       <li><a href="#see-also">See also</a></li>
       <li><a href="#examples">Examples</a></li>

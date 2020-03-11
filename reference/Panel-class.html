@@ -72,7 +72,7 @@ as well as to control the choice of transmitting panels from which to receive a 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.4</span>
       </span>
     </div>
 
@@ -161,9 +161,7 @@ Bootstrap coordinates are used so this value should lie between 2 and 12; defaul
 This is expected to lie between 400 and 1000; defaults to 500.</p></li>
 </ul>
 
-<p>The following slots are relevant to <em>receiving</em> a multiple selection:</p><ul>
-<li><p><code>SelectionBoxOpen</code>, a logical scalar indicating whether the selection parameter box should be open at initialization.
-Defaults to <code>FALSE</code>.</p></li>
+<p>The following slots are relevant to <em>receiving</em> a multiple selection on the rows:</p><ul>
 <li><p><code>RowSelectionSource</code>, a string specifying the name of the transmitting panel from which to receive a multiple row selection (e.g., <code>"RowDataPlot1"</code>).
 Defaults to <code>"---"</code>.</p></li>
 <li><p><code>RowSelectionType</code>, a string specifying which of the multiple row selections from the transmitting panel should be used.
@@ -173,6 +171,10 @@ and <code>"Saved"</code>, one of the saved selections.
 Defaults to <code>"Active"</code>.</p></li>
 <li><p><code>RowSelectionSaved</code>, an integer scalar specifying the index of the saved multiple row selection to use when <code>RowSelectionType="Saved"</code>.
 Defaults to 0.</p></li>
+<li><p><code>DynamicRowSelectionSource</code>, a logical scalar indicating whether <code>x</code> should dynamically change its selection source for multiple row selections.</p></li>
+</ul>
+
+<p>The following slots are relevant to <em>receiving</em> a multiple selection on the columns:</p><ul>
 <li><p><code>ColumnSelectionSource</code>, a string specifying the name of the transmitting panel from which to receive a multiple column selection (e.g., <code>"ColumnDataPlot1"</code>).
 Defaults to <code>"---"</code>.</p></li>
 <li><p><code>ColumnSelectionType</code>, a string specifying which of the column-based selections from the transmitting panel should be used.
@@ -182,9 +184,12 @@ and <code>"Saved"</code>, one of the saved selections.
 Defaults to <code>"Active"</code>.</p></li>
 <li><p><code>ColumnSelectionSaved</code>, an integer scalar specifying the index of the saved multiple column selection to use when <code>ColumnSelectionType="Saved"</code>.
 Defaults to 0.</p></li>
+<li><p><code>DynamicColumnSelectionSource</code>, a logical scalar indicating whether <code>x</code> should dynamically change its selection source for multiple column selections.</p></li>
 </ul>
 
-<p>The following slots are relevant to transmitting a selection of points:</p><ul>
+<p>There are also the following miscellaneous slots:</p><ul>
+<li><p><code>SelectionBoxOpen</code>, a logical scalar indicating whether the selection parameter box should be open at initialization.
+Defaults to <code>FALSE</code>.</p></li>
 <li><p><code>SelectionHistory</code>, a list of arbitrary elements that contain parameters for saved multiple selections.
 Each element of this list corresponds to one saved selection in the current panel.
 Defaults to an empty list.</p></li>
@@ -238,7 +243,7 @@ i.e., it will return an empty character vector and create no files.</p></li>
 <li><p><code><a href='multi-select-generics.html'>.multiSelectionClear</a>(x)</code> will always return <code>x</code>.</p></li>
 <li><p><code><a href='multi-select-generics.html'>.multiSelectionInvalidated</a>(x)</code> will always return <code>FALSE</code>.</p></li>
 <li><p><code><a href='multi-select-generics.html'>.multiSelectionAvailable</a>(x, contents)</code> will return <code><a href='https://rdrr.io/r/base/nrow.html'>nrow(contents)</a></code>.</p></li>
-<li><p><code><a href='single-select-generics.html'>.singleSelectionDimension</a>(x)</code> will return <code><a href='multi-select-generics.html'>.multiSelectionDimension(x)</a></code>.</p></li>
+<li><p><code><a href='single-select-generics.html'>.singleSelectionDimension</a>(x)</code> will always return <code>"none"</code>.</p></li>
 <li><p><code><a href='single-select-generics.html'>.singleSelectionValue</a>(x)</code> will always return <code>NULL</code>.</p></li>
 <li><p><code><a href='single-select-generics.html'>.singleSelectionSlots</a>(x)</code> will always return an empty list.</p></li>
 </ul>

@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.4</span>
       </span>
     </div>
 
@@ -114,7 +114,7 @@
       Cancer Research UK Cambridge Institute, University of Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com">infinite.monkeys.with.keyboards@gmail.com</a>
       </address>
                   
-            <h4 class="date">1 March 2020</h4>
+            <h4 class="date">11 March 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/basic.Rmd"><code>vignettes/basic.Rmd</code></a></small>
       <div class="hidden name"><code>basic.Rmd</code></div>
@@ -123,7 +123,7 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-03-01</p>
+<p><strong>Compiled date</strong>: 2020-03-11</p>
 <p><strong>Last edited</strong>: 2018-03-08</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <p><img src="../../../../R/Library/iSEE/www/iSEE.png" width="50%" style="display: block; margin: auto;"></p>
@@ -345,8 +345,8 @@
 </div>
 <div id="select-and-link" class="section level2">
 <h2 class="hasAnchor">
-<a href="#select-and-link" class="anchor"></a>Selecting data points and linking panels</h2>
-<p>To link one plot to another, users can instruct a plotting panel to receive a selection of data points from another (transmitting) plot. This is done using the appropriate field in the “Selection parameters” box. Once this is done, data point selection on the transmitting plot affects the receiving plot in a variety of ways:</p>
+<a href="#select-and-link" class="anchor"></a>Point selections between linked panels</h2>
+<p>To link one plot to another, users can instruct a plotting panel to receive a selection of data points from another (transmitting) panel. This is done using the appropriate field in the “Selection parameters” box. Data point selection on the transmitting panel can then affect the receiving plot in a variety of ways:</p>
 <ul>
 <li>If the point selection effect is set to <code>"Restrict"</code>, only the subset of points selected in the transmitter are visible in the receiver.</li>
 <li>If set to <code>"Color"</code>, the selected subset of points is plotted in the receiver with a user-selected color.</li>
@@ -354,8 +354,7 @@
 </ul>
 <p>It is possible to set up a tree of panels that transmit selections to each other, much like the gating structures used in flow cytometry. This requires all panels acting as both receivers and transmitters to have their effects set to <code>"Restrict"</code> - see <a href="https://github.com/LTLA/iSEE2018/blob/master/tours/cytof/app.R">this mass cytometry tour</a> for an example.</p>
 <p>While we have focused above on receiving point selections for plots, it is also possible to transmit from plots to tables. This will subset the table so that only the rows corresponding to selected points are visible. Obviously, this means that users should only transmit from row-based plots to <em>row data tables</em>, and from column-based plots to <em>column data tables</em>.</p>
-<p>Custom data panels can receive point selections from both row- and column-based plots, see <a href="https://bioconductor.org/packages/3.11/iSEE/vignettes/custom.html">here</a> for more details.</p>
-<p>Note that some panels are strictly “end-point” panels and cannot transmit - this includes heat maps, tables and custom data plots.</p>
+<p>Most panels will also have an option to dynamically change the choice of transmitting panel according to the last active selection in the app. This allows users to, for example, simply brush on any plot in the app and have all participating receiving panels immediately use that selection without requiring manual resetting of the transmitter. Note that this option will not change the app state when it is set; it only has an effect on the next user-mediated selection of points in the app.</p>
 </div>
 <div id="zooming-in-and-out" class="section level2">
 <h2 class="hasAnchor">
@@ -405,7 +404,7 @@
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session Info</h1>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</a>
-<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="co">#&gt; R Under development (unstable) (2020-03-01 r77880)</span></a>
+<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="co">#&gt; R Under development (unstable) (2020-03-11 r77927)</span></a>
 <a class="sourceLine" id="cb12-3" data-line-number="3"><span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span></a>
 <a class="sourceLine" id="cb12-4" data-line-number="4"><span class="co">#&gt; Running under: Ubuntu 16.04.6 LTS</span></a>
 <a class="sourceLine" id="cb12-5" data-line-number="5"><span class="co">#&gt; </span></a>
@@ -426,10 +425,10 @@
 <a class="sourceLine" id="cb12-20" data-line-number="20"><span class="co">#&gt; [8] methods   base     </span></a>
 <a class="sourceLine" id="cb12-21" data-line-number="21"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb12-22" data-line-number="22"><span class="co">#&gt; other attached packages:</span></a>
-<a class="sourceLine" id="cb12-23" data-line-number="23"><span class="co">#&gt;  [1] scater_1.15.28              ggplot2_3.2.1              </span></a>
-<a class="sourceLine" id="cb12-24" data-line-number="24"><span class="co">#&gt;  [3] scRNAseq_2.1.6              iSEE_1.99.2                </span></a>
+<a class="sourceLine" id="cb12-23" data-line-number="23"><span class="co">#&gt;  [1] scater_1.15.28              ggplot2_3.3.0              </span></a>
+<a class="sourceLine" id="cb12-24" data-line-number="24"><span class="co">#&gt;  [3] scRNAseq_2.1.6              iSEE_1.99.4                </span></a>
 <a class="sourceLine" id="cb12-25" data-line-number="25"><span class="co">#&gt;  [5] SingleCellExperiment_1.9.2  SummarizedExperiment_1.17.3</span></a>
-<a class="sourceLine" id="cb12-26" data-line-number="26"><span class="co">#&gt;  [7] DelayedArray_0.13.4         BiocParallel_1.21.2        </span></a>
+<a class="sourceLine" id="cb12-26" data-line-number="26"><span class="co">#&gt;  [7] DelayedArray_0.13.5         BiocParallel_1.21.2        </span></a>
 <a class="sourceLine" id="cb12-27" data-line-number="27"><span class="co">#&gt;  [9] matrixStats_0.55.0          Biobase_2.47.2             </span></a>
 <a class="sourceLine" id="cb12-28" data-line-number="28"><span class="co">#&gt; [11] GenomicRanges_1.39.2        GenomeInfoDb_1.23.13       </span></a>
 <a class="sourceLine" id="cb12-29" data-line-number="29"><span class="co">#&gt; [13] IRanges_2.21.3              S4Vectors_0.25.12          </span></a>
@@ -440,7 +439,7 @@
 <a class="sourceLine" id="cb12-34" data-line-number="34"><span class="co">#&gt;   [3] colorspace_1.4-1              rjson_0.2.20                 </span></a>
 <a class="sourceLine" id="cb12-35" data-line-number="35"><span class="co">#&gt;   [5] rprojroot_1.3-2               circlize_0.4.8               </span></a>
 <a class="sourceLine" id="cb12-36" data-line-number="36"><span class="co">#&gt;   [7] XVector_0.27.0                BiocNeighbors_1.5.2          </span></a>
-<a class="sourceLine" id="cb12-37" data-line-number="37"><span class="co">#&gt;   [9] GlobalOptions_0.1.1           fs_1.3.1                     </span></a>
+<a class="sourceLine" id="cb12-37" data-line-number="37"><span class="co">#&gt;   [9] GlobalOptions_0.1.1           fs_1.3.2                     </span></a>
 <a class="sourceLine" id="cb12-38" data-line-number="38"><span class="co">#&gt;  [11] clue_0.3-57                   DT_0.12                      </span></a>
 <a class="sourceLine" id="cb12-39" data-line-number="39"><span class="co">#&gt;  [13] bit64_0.9-7                   interactiveDisplayBase_1.25.0</span></a>
 <a class="sourceLine" id="cb12-40" data-line-number="40"><span class="co">#&gt;  [15] AnnotationDbi_1.49.1          splines_4.0.0                </span></a>
@@ -451,45 +450,44 @@
 <a class="sourceLine" id="cb12-45" data-line-number="45"><span class="co">#&gt;  [25] compiler_4.0.0                httr_1.4.1                   </span></a>
 <a class="sourceLine" id="cb12-46" data-line-number="46"><span class="co">#&gt;  [27] backports_1.1.5               assertthat_0.2.1             </span></a>
 <a class="sourceLine" id="cb12-47" data-line-number="47"><span class="co">#&gt;  [29] Matrix_1.2-18                 fastmap_1.0.1                </span></a>
-<a class="sourceLine" id="cb12-48" data-line-number="48"><span class="co">#&gt;  [31] lazyeval_0.2.2                BiocSingular_1.3.2           </span></a>
-<a class="sourceLine" id="cb12-49" data-line-number="49"><span class="co">#&gt;  [33] later_1.0.0                   htmltools_0.4.0              </span></a>
-<a class="sourceLine" id="cb12-50" data-line-number="50"><span class="co">#&gt;  [35] tools_4.0.0                   rsvd_1.0.3                   </span></a>
-<a class="sourceLine" id="cb12-51" data-line-number="51"><span class="co">#&gt;  [37] igraph_1.2.4.2                gtable_0.3.0                 </span></a>
-<a class="sourceLine" id="cb12-52" data-line-number="52"><span class="co">#&gt;  [39] glue_1.3.1                    GenomeInfoDbData_1.2.2       </span></a>
-<a class="sourceLine" id="cb12-53" data-line-number="53"><span class="co">#&gt;  [41] dplyr_0.8.4                   rappdirs_0.3.1               </span></a>
-<a class="sourceLine" id="cb12-54" data-line-number="54"><span class="co">#&gt;  [43] Rcpp_1.0.3                    pkgdown_1.4.1                </span></a>
-<a class="sourceLine" id="cb12-55" data-line-number="55"><span class="co">#&gt;  [45] vctrs_0.2.3                   nlme_3.1-144                 </span></a>
-<a class="sourceLine" id="cb12-56" data-line-number="56"><span class="co">#&gt;  [47] ExperimentHub_1.13.5          DelayedMatrixStats_1.9.0     </span></a>
-<a class="sourceLine" id="cb12-57" data-line-number="57"><span class="co">#&gt;  [49] rintrojs_0.2.2                xfun_0.12                    </span></a>
-<a class="sourceLine" id="cb12-58" data-line-number="58"><span class="co">#&gt;  [51] stringr_1.4.0                 irlba_2.3.3                  </span></a>
-<a class="sourceLine" id="cb12-59" data-line-number="59"><span class="co">#&gt;  [53] mime_0.9                      miniUI_0.1.1.1               </span></a>
-<a class="sourceLine" id="cb12-60" data-line-number="60"><span class="co">#&gt;  [55] lifecycle_0.1.0               shinyAce_0.4.1               </span></a>
-<a class="sourceLine" id="cb12-61" data-line-number="61"><span class="co">#&gt;  [57] AnnotationHub_2.19.7          zlibbioc_1.33.1              </span></a>
-<a class="sourceLine" id="cb12-62" data-line-number="62"><span class="co">#&gt;  [59] MASS_7.3-51.5                 scales_1.1.0                 </span></a>
-<a class="sourceLine" id="cb12-63" data-line-number="63"><span class="co">#&gt;  [61] colourpicker_1.0              promises_1.1.0               </span></a>
-<a class="sourceLine" id="cb12-64" data-line-number="64"><span class="co">#&gt;  [63] RColorBrewer_1.1-2            ComplexHeatmap_2.3.0         </span></a>
-<a class="sourceLine" id="cb12-65" data-line-number="65"><span class="co">#&gt;  [65] yaml_2.2.1                    curl_4.3                     </span></a>
-<a class="sourceLine" id="cb12-66" data-line-number="66"><span class="co">#&gt;  [67] gridExtra_2.3                 memoise_1.1.0                </span></a>
-<a class="sourceLine" id="cb12-67" data-line-number="67"><span class="co">#&gt;  [69] stringi_1.4.6                 RSQLite_2.2.0                </span></a>
-<a class="sourceLine" id="cb12-68" data-line-number="68"><span class="co">#&gt;  [71] BiocVersion_3.11.1            desc_1.2.0                   </span></a>
-<a class="sourceLine" id="cb12-69" data-line-number="69"><span class="co">#&gt;  [73] shape_1.4.4                   rlang_0.4.5                  </span></a>
-<a class="sourceLine" id="cb12-70" data-line-number="70"><span class="co">#&gt;  [75] pkgconfig_2.0.3               bitops_1.0-6                 </span></a>
-<a class="sourceLine" id="cb12-71" data-line-number="71"><span class="co">#&gt;  [77] evaluate_0.14                 lattice_0.20-40              </span></a>
-<a class="sourceLine" id="cb12-72" data-line-number="72"><span class="co">#&gt;  [79] purrr_0.3.3                   htmlwidgets_1.5.1            </span></a>
-<a class="sourceLine" id="cb12-73" data-line-number="73"><span class="co">#&gt;  [81] bit_1.1-15.2                  tidyselect_1.0.0             </span></a>
-<a class="sourceLine" id="cb12-74" data-line-number="74"><span class="co">#&gt;  [83] magrittr_1.5                  bookdown_0.17                </span></a>
-<a class="sourceLine" id="cb12-75" data-line-number="75"><span class="co">#&gt;  [85] R6_2.4.1                      DBI_1.1.0                    </span></a>
-<a class="sourceLine" id="cb12-76" data-line-number="76"><span class="co">#&gt;  [87] pillar_1.4.3                  withr_2.1.2                  </span></a>
-<a class="sourceLine" id="cb12-77" data-line-number="77"><span class="co">#&gt;  [89] mgcv_1.8-31                   RCurl_1.98-1.1               </span></a>
-<a class="sourceLine" id="cb12-78" data-line-number="78"><span class="co">#&gt;  [91] tibble_2.1.3                  crayon_1.3.4                 </span></a>
-<a class="sourceLine" id="cb12-79" data-line-number="79"><span class="co">#&gt;  [93] shinyWidgets_0.5.0            BiocFileCache_1.11.4         </span></a>
-<a class="sourceLine" id="cb12-80" data-line-number="80"><span class="co">#&gt;  [95] rmarkdown_2.1                 viridis_0.5.1                </span></a>
-<a class="sourceLine" id="cb12-81" data-line-number="81"><span class="co">#&gt;  [97] GetoptLong_0.1.8              grid_4.0.0                   </span></a>
-<a class="sourceLine" id="cb12-82" data-line-number="82"><span class="co">#&gt;  [99] blob_1.2.1                    digest_0.6.25                </span></a>
-<a class="sourceLine" id="cb12-83" data-line-number="83"><span class="co">#&gt; [101] xtable_1.8-4                  httpuv_1.5.2                 </span></a>
-<a class="sourceLine" id="cb12-84" data-line-number="84"><span class="co">#&gt; [103] munsell_0.5.0                 beeswarm_0.2.3               </span></a>
-<a class="sourceLine" id="cb12-85" data-line-number="85"><span class="co">#&gt; [105] viridisLite_0.3.0             vipor_0.4.5                  </span></a>
-<a class="sourceLine" id="cb12-86" data-line-number="86"><span class="co">#&gt; [107] shinyjs_1.1</span></a></code></pre></div>
+<a class="sourceLine" id="cb12-48" data-line-number="48"><span class="co">#&gt;  [31] BiocSingular_1.3.2            later_1.0.0                  </span></a>
+<a class="sourceLine" id="cb12-49" data-line-number="49"><span class="co">#&gt;  [33] htmltools_0.4.0               tools_4.0.0                  </span></a>
+<a class="sourceLine" id="cb12-50" data-line-number="50"><span class="co">#&gt;  [35] rsvd_1.0.3                    igraph_1.2.4.2               </span></a>
+<a class="sourceLine" id="cb12-51" data-line-number="51"><span class="co">#&gt;  [37] gtable_0.3.0                  glue_1.3.1                   </span></a>
+<a class="sourceLine" id="cb12-52" data-line-number="52"><span class="co">#&gt;  [39] GenomeInfoDbData_1.2.2        dplyr_0.8.5                  </span></a>
+<a class="sourceLine" id="cb12-53" data-line-number="53"><span class="co">#&gt;  [41] rappdirs_0.3.1                Rcpp_1.0.3                   </span></a>
+<a class="sourceLine" id="cb12-54" data-line-number="54"><span class="co">#&gt;  [43] pkgdown_1.4.1                 vctrs_0.2.4                  </span></a>
+<a class="sourceLine" id="cb12-55" data-line-number="55"><span class="co">#&gt;  [45] nlme_3.1-145                  ExperimentHub_1.13.5         </span></a>
+<a class="sourceLine" id="cb12-56" data-line-number="56"><span class="co">#&gt;  [47] DelayedMatrixStats_1.9.0      rintrojs_0.2.2               </span></a>
+<a class="sourceLine" id="cb12-57" data-line-number="57"><span class="co">#&gt;  [49] xfun_0.12                     stringr_1.4.0                </span></a>
+<a class="sourceLine" id="cb12-58" data-line-number="58"><span class="co">#&gt;  [51] irlba_2.3.3                   mime_0.9                     </span></a>
+<a class="sourceLine" id="cb12-59" data-line-number="59"><span class="co">#&gt;  [53] miniUI_0.1.1.1                lifecycle_0.2.0              </span></a>
+<a class="sourceLine" id="cb12-60" data-line-number="60"><span class="co">#&gt;  [55] shinyAce_0.4.1                AnnotationHub_2.19.7         </span></a>
+<a class="sourceLine" id="cb12-61" data-line-number="61"><span class="co">#&gt;  [57] zlibbioc_1.33.1               MASS_7.3-51.5                </span></a>
+<a class="sourceLine" id="cb12-62" data-line-number="62"><span class="co">#&gt;  [59] scales_1.1.0                  colourpicker_1.0             </span></a>
+<a class="sourceLine" id="cb12-63" data-line-number="63"><span class="co">#&gt;  [61] promises_1.1.0                RColorBrewer_1.1-2           </span></a>
+<a class="sourceLine" id="cb12-64" data-line-number="64"><span class="co">#&gt;  [63] ComplexHeatmap_2.3.2          yaml_2.2.1                   </span></a>
+<a class="sourceLine" id="cb12-65" data-line-number="65"><span class="co">#&gt;  [65] curl_4.3                      gridExtra_2.3                </span></a>
+<a class="sourceLine" id="cb12-66" data-line-number="66"><span class="co">#&gt;  [67] memoise_1.1.0                 stringi_1.4.6                </span></a>
+<a class="sourceLine" id="cb12-67" data-line-number="67"><span class="co">#&gt;  [69] RSQLite_2.2.0                 BiocVersion_3.11.1           </span></a>
+<a class="sourceLine" id="cb12-68" data-line-number="68"><span class="co">#&gt;  [71] desc_1.2.0                    shape_1.4.4                  </span></a>
+<a class="sourceLine" id="cb12-69" data-line-number="69"><span class="co">#&gt;  [73] rlang_0.4.5                   pkgconfig_2.0.3              </span></a>
+<a class="sourceLine" id="cb12-70" data-line-number="70"><span class="co">#&gt;  [75] bitops_1.0-6                  evaluate_0.14                </span></a>
+<a class="sourceLine" id="cb12-71" data-line-number="71"><span class="co">#&gt;  [77] lattice_0.20-40               purrr_0.3.3                  </span></a>
+<a class="sourceLine" id="cb12-72" data-line-number="72"><span class="co">#&gt;  [79] htmlwidgets_1.5.1             bit_1.1-15.2                 </span></a>
+<a class="sourceLine" id="cb12-73" data-line-number="73"><span class="co">#&gt;  [81] tidyselect_1.0.0              magrittr_1.5                 </span></a>
+<a class="sourceLine" id="cb12-74" data-line-number="74"><span class="co">#&gt;  [83] bookdown_0.18                 R6_2.4.1                     </span></a>
+<a class="sourceLine" id="cb12-75" data-line-number="75"><span class="co">#&gt;  [85] DBI_1.1.0                     pillar_1.4.3                 </span></a>
+<a class="sourceLine" id="cb12-76" data-line-number="76"><span class="co">#&gt;  [87] withr_2.1.2                   mgcv_1.8-31                  </span></a>
+<a class="sourceLine" id="cb12-77" data-line-number="77"><span class="co">#&gt;  [89] RCurl_1.98-1.1                tibble_2.1.3                 </span></a>
+<a class="sourceLine" id="cb12-78" data-line-number="78"><span class="co">#&gt;  [91] crayon_1.3.4                  shinyWidgets_0.5.1           </span></a>
+<a class="sourceLine" id="cb12-79" data-line-number="79"><span class="co">#&gt;  [93] BiocFileCache_1.11.4          rmarkdown_2.1                </span></a>
+<a class="sourceLine" id="cb12-80" data-line-number="80"><span class="co">#&gt;  [95] viridis_0.5.1                 GetoptLong_0.1.8             </span></a>
+<a class="sourceLine" id="cb12-81" data-line-number="81"><span class="co">#&gt;  [97] grid_4.0.0                    blob_1.2.1                   </span></a>
+<a class="sourceLine" id="cb12-82" data-line-number="82"><span class="co">#&gt;  [99] digest_0.6.25                 xtable_1.8-4                 </span></a>
+<a class="sourceLine" id="cb12-83" data-line-number="83"><span class="co">#&gt; [101] httpuv_1.5.2                  munsell_0.5.0                </span></a>
+<a class="sourceLine" id="cb12-84" data-line-number="84"><span class="co">#&gt; [103] beeswarm_0.2.3                viridisLite_0.3.0            </span></a>
+<a class="sourceLine" id="cb12-85" data-line-number="85"><span class="co">#&gt; [105] vipor_0.4.5                   shinyjs_1.1</span></a></code></pre></div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
@@ -541,7 +539,7 @@
 <li><a href="#coloring-plots-by-sample-attributes">Coloring plots by sample attributes</a></li>
       <li><a href="#controlling-point-aesthetics">Controlling point aesthetics</a></li>
       <li><a href="#faceting">Faceting</a></li>
-      <li><a href="#select-and-link">Selecting data points and linking panels</a></li>
+      <li><a href="#select-and-link">Point selections between linked panels</a></li>
       <li><a href="#zooming-in-and-out">Zooming in and out</a></li>
       </ul>
 </li>

@@ -13,7 +13,7 @@ sce <- runTSNE(sce)
 rowData(sce)$num_cells <- rowSums(assay(sce, "tophat_counts") > 0)
 rowData(sce)$mean_count <- rowMeans(assay(sce, "tophat_counts"))
 # Add a groupable field in rowData
-rowData(sce)$letters <- sample(letters[1:3], nrow(sce), TRUE)
+rowData(sce)$letters <- factor(sample(letters[1:3], nrow(sce), TRUE))
 
 sizeFactors(sce)  <- runif(ncol(sce))
 

@@ -1131,7 +1131,7 @@ test_that(".add_facets works correctly plots", {
 # plot set up works correctly
 
 test_that(".choose_plot_type flips both full and restricted plot.data for horizontal violins", {
-    plot.data <- data.frame(X=runif(10), Y=letters[1:10])
+    plot.data <- data.frame(X=runif(10), Y=factor(letters[1:10]))
 
     envir <- new.env()
     assign("plot.data", plot.data, envir=envir)
@@ -1146,8 +1146,8 @@ test_that(".choose_plot_type flips both full and restricted plot.data for horizo
 
 test_that("Jitter is properly performed for faceted plots", {
     # Violin setup.
-    plot.data <- data.frame(Y=runif(10), X=letters[1:10],
-        FacetRow=letters[1:10], FacetColumn=LETTERS[1:10])
+    plot.data <- data.frame(Y=runif(10), X=factor(letters[1:10]),
+        FacetRow=factor(letters[1:10]), FacetColumn=factor(LETTERS[1:10]))
 
     out <- iSEE:::.violin_setup(plot_data=plot.data, horizontal=FALSE)
 
@@ -1156,8 +1156,8 @@ test_that("Jitter is properly performed for faceted plots", {
     expect_match(out[3], "FacetColumn")
 
     # Square setup
-    plot.data <- data.frame(Y=letters[1:10], X=letters[1:10],
-        FacetRow=letters[1:10], FacetColumn=LETTERS[1:10])
+    plot.data <- data.frame(Y=factor(letters[1:10]), X=factor(letters[1:10]),
+        FacetRow=factor(letters[1:10]), FacetColumn=factor(LETTERS[1:10]))
 
     out <- iSEE:::.square_setup(plot_data=plot.data)
 

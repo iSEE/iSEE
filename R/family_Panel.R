@@ -29,7 +29,7 @@
 #' Defaults to 0.
 #' \item \code{DynamicRowSelectionSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for multiple row selections.
 #' }
-#' 
+#'
 #' The following slots are relevant to \emph{receiving} a multiple selection on the columns:
 #' \itemize{
 #' \item \code{ColumnSelectionSource}, a string specifying the name of the transmitting panel from which to receive a multiple column selection (e.g., \code{"ColumnDataPlot1"}).
@@ -166,8 +166,8 @@ setMethod("initialize", "Panel", function(.Object, ...) {
     args <- .empty_default(args, .selectColType, .selectMultiActiveTitle)
     args <- .empty_default(args, .selectColSaved, 0L)
 
-    args <- .empty_default(args, .selectRowDynamic, FALSE)
-    args <- .empty_default(args, .selectColDynamic, FALSE)
+    args <- .empty_default(args, .selectRowDynamic, iSEEOptions$get("selection.dynamic.multiple"))
+    args <- .empty_default(args, .selectColDynamic, iSEEOptions$get("selection.dynamic.multiple"))
 
     args <- .empty_default(args, .dataParamBoxOpen, FALSE)
 
@@ -269,11 +269,11 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
     .create_multi_selection_history_observers(panel_name,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_dynamic_multi_selection_source_observer(panel_name, 
+    .create_dynamic_multi_selection_source_observer(panel_name,
         dyn_field=.selectRowDynamic, by_field=.selectRowSource, source_type="row",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_dynamic_multi_selection_source_observer(panel_name, 
+    .create_dynamic_multi_selection_source_observer(panel_name,
         dyn_field=.selectColDynamic, by_field=.selectColSource, source_type="column",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 

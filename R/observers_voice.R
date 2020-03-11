@@ -57,7 +57,7 @@
         showNotification(sprintf("<Create panel> %s", added_full_name), type="message")
         pObjects[[.voiceActivePanel]] <- added_encoded_name
         showNotification(sprintf("Active panel: %s", added_full_name), id=.voiceActivePanel, duration=NULL)
-    })
+    }, ignoreInit=TRUE)
     # nocov end
 
     # nocov start
@@ -87,7 +87,7 @@
             removeNotification(.voiceActivePanel, session)
             showNotification("Active panel cleared", type="message")
         }
-    })
+    }, ignoreInit=TRUE)
     # nocov end
 
     # nocov start
@@ -108,7 +108,7 @@
         showNotification(sprintf("<Control panel> %s", full_name), type="message")
         pObjects[[.voiceActivePanel]] <- encoded_name
         showNotification(sprintf("Active panel: %s", full_name), id=.voiceActivePanel, duration=NULL)
-    })
+    }, ignoreInit=TRUE)
     # nocov end
 
     # nocov start
@@ -165,7 +165,7 @@
 
         updateSelectizeInput(session, paste0(encoded_name, "_", "ColorBy"), selected=matchedChoice)
         showNotification(sprintf("<Color using> %s", matchedChoice), type="message")
-    })
+    }, ignoreInit=TRUE)
     # nocov end
 
     # nocov start
@@ -216,7 +216,7 @@
         updateSelectizeInput(session, paste0(encoded_name, "_", colorby_param),
             selected=matchedChoice, choices=choices, server=TRUE)
         showNotification(sprintf("<Color by> %s", matchedChoice), type="message")
-    })
+    }, ignoreInit=TRUE)
     # nocov end
 
     # nocov start
@@ -255,7 +255,7 @@
         updateSelectizeInput(session, paste0(active_encoded, "_", select_field), selected=target_encoded_name)
 
         showNotification(sprintf("<Receive from> %s", target_full_name), type="message")
-    })
+    }, ignoreInit=TRUE)
     # nocov end
 
     # nocov start
@@ -295,13 +295,13 @@
         updateSelectizeInput(session, paste0(target_encoded_name, "_", select_field), selected=active_encoded)
 
         showNotification(sprintf("<Send to> %s", target_full_name), type="message")
-    })
+    }, ignoreInit=TRUE)
     # nocov end
 
     # nocov start
     observeEvent(input[["voiceGoodBoyInput"]], {
         showNotification(HTML("<p style='font-size:300%; text-align:right;'>&#x1F357; &#x1F436;</p>"), type="message")
-    })
+    }, ignoreInit=TRUE)
     # nocov end
 
     invisible(NULL)

@@ -124,7 +124,6 @@ setMethod(".defineOutput", "Table", function(x, ...) {
 })
 
 #' @export
-#' @importFrom shiny observeEvent
 #' @importFrom utils head
 setMethod(".createObservers", "Table", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()

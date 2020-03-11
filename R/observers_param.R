@@ -20,10 +20,11 @@
         local({
             box0 <- box
             open_field <- paste0(panel_name, "_", box0)
+
             # nocov start
             observeEvent(input[[open_field]], {
                 pObjects$memory[[panel_name]][[box0]] <- input[[open_field]]
-            })
+            }, ignoreInit=TRUE)
             # nocov end
         })
     }
@@ -47,6 +48,7 @@
 #' @importFrom shiny observeEvent
 .create_visual_parameter_choice_observer  <- function(panel_name, input, pObjects) {
     cur_field <- paste0(panel_name, "_", .visualParamChoice)
+
     # nocov start
     observeEvent(input[[cur_field]], {
         existing <- pObjects$memory[[panel_name]][[.visualParamChoice]]
@@ -57,6 +59,7 @@
         pObjects$memory[[panel_name]][[.visualParamChoice]] <- incoming
     }, ignoreInit=TRUE, ignoreNULL=FALSE)
     # nocov end
+
     invisible(NULL)
 }
 
@@ -96,6 +99,7 @@
         local({
             field0 <- field
             cur_field <- paste0(panel_name, "_", field0)
+
             # nocov start
             observeEvent(input[[cur_field]], {
                 matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[panel_name]][[field0]]))
@@ -119,6 +123,7 @@
         local({
             field0 <- field
             cur_field <- paste0(panel_name, "_", field0)
+
             # nocov start
             observeEvent(input[[cur_field]], {
                 matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[panel_name]][[field0]]))
